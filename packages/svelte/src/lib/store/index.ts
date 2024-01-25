@@ -15,7 +15,6 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  type NodeBase,
   type NodeDragItem,
   errorMessages
 } from '@xyflow/system';
@@ -67,7 +66,7 @@ export function createStore({
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     store.nodes.update((nds) => {
       return nds.map((node) => {
-        const nodeDragItem = (nodeDragItems as Array<NodeBase | NodeDragItem>).find(
+        const nodeDragItem = (nodeDragItems as Array<Node | NodeDragItem>).find(
           (ndi) => ndi.id === node.id
         );
 
@@ -112,6 +111,10 @@ export function createStore({
     }
 
     store.nodes.set(nextNodes);
+
+    if (!get(store.nodesInitialized)) {
+      store.nodesInitialized.set(true);
+    }
   }
 
   function fitView(nodes: Node[], options?: FitViewOptions) {
@@ -354,6 +357,29 @@ export function createStore({
       [store.edges, store.defaultMarkerColor, store.flowId],
       ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
     ),
+    initialized: (() => {
+      let initialized = false;
+      const initialNodesLength = get(store.nodes).length;
+      const initialEdgesLength = get(store.edges).length;
+      return derived(
+        [store.nodesInitialized, store.edgesInitialized, store.viewportInitialized],
+        ([nodesInitialized, edgesInitialized, viewportInitialized]) => {
+          // If it was already initialized, return true from then on
+          if (initialized) return initialized;
+
+          // if it hasn't been initialised check if it's now
+          if (initialNodesLength === 0) {
+            initialized = viewportInitialized;
+          } else if (initialEdgesLength === 0) {
+            initialized = viewportInitialized && nodesInitialized;
+          } else {
+            initialized = viewportInitialized && nodesInitialized && edgesInitialized;
+          }
+
+          return initialized;
+        }
+      );
+    })(),
 
     // actions
     syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),

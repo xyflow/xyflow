@@ -28,7 +28,9 @@ export type FlowRendererProps = Omit<
   children: ReactNode;
 };
 
-const selector = (s: ReactFlowState) => s.nodesSelectionActive;
+const selector = (s: ReactFlowState) => {
+  return { nodesSelectionActive: s.nodesSelectionActive, userSelectionActive: s.userSelectionActive };
+};
 
 const FlowRendererComponent = ({
   children,
@@ -67,13 +69,13 @@ const FlowRendererComponent = ({
   onViewportChange,
   isControlledViewport,
 }: FlowRendererProps) => {
-  const nodesSelectionActive = useStore(selector);
+  const { nodesSelectionActive, userSelectionActive } = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode);
 
   const panOnDrag = panActivationKeyPressed || _panOnDrag;
   const panOnScroll = panActivationKeyPressed || _panOnScroll;
-  const isSelecting = selectionKeyPressed || (selectionOnDrag && panOnDrag !== true);
+  const isSelecting = selectionKeyPressed || userSelectionActive || (selectionOnDrag && panOnDrag !== true);
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
 

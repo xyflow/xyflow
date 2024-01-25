@@ -23,7 +23,6 @@ import {
   type OnConnectStart,
   type OnConnectEnd,
   type NodeLookup,
-  type OnBeforeDelete,
   type EdgeLookup
 } from '@xyflow/system';
 
@@ -47,7 +46,8 @@ import type {
   Edge,
   FitViewOptions,
   OnDelete,
-  OnEdgeCreate
+  OnEdgeCreate,
+  OnBeforeDelete
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
 import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
@@ -92,7 +92,8 @@ export const getInitialStore = ({
 
   if (fitView && width && height) {
     const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
-    const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
+    // @todo users nodeOrigin should be used here
+    const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
 
@@ -152,6 +153,10 @@ export const getInitialStore = ({
     onconnect: writable<OnConnect>(undefined),
     onconnectstart: writable<OnConnectStart>(undefined),
     onconnectend: writable<OnConnectEnd>(undefined),
-    onbeforedelete: writable<OnBeforeDelete>(undefined)
+    onbeforedelete: writable<OnBeforeDelete>(undefined),
+    nodesInitialized: writable<boolean>(false),
+    edgesInitialized: writable<boolean>(false),
+    viewportInitialized: writable<boolean>(false),
+    initialized: readable<boolean>(false)
   };
 };

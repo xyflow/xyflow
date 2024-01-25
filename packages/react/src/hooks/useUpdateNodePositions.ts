@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { calcNextPosition, snapPosition } from '@xyflow/system';
+import { calculateNodePosition, snapPosition } from '@xyflow/system';
 
 import { Node } from '../types';
 import { useStoreApi } from '../hooks/useStore';
@@ -17,7 +17,17 @@ export function useUpdateNodePositions() {
   const store = useStoreApi();
 
   const updatePositions = useCallback((params: { x: number; y: number; isShiftPressed: boolean }) => {
-    const { nodeExtent, nodes, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions } = store.getState();
+    const {
+      nodeExtent,
+      nodes,
+      snapToGrid,
+      snapGrid,
+      nodesDraggable,
+      onError,
+      updateNodePositions,
+      nodeLookup,
+      nodeOrigin,
+    } = store.getState();
     const selectedNodes = nodes.filter(selectedAndDraggable(nodesDraggable));
     // by default a node moves 5px on each key press, or 20px if shift is pressed
     // if snap grid is enabled, we use that for the velocity.
@@ -31,27 +41,24 @@ export function useUpdateNodePositions() {
     const nodeUpdates = selectedNodes.map((node) => {
       if (node.computed?.positionAbsolute) {
         let nextPosition = {
-          x: node.computed?.positionAbsolute.x + xDiff,
-          y: node.computed?.positionAbsolute.y + yDiff,
+          x: node.computed.positionAbsolute.x + xDiff,
+          y: node.computed.positionAbsolute.y + yDiff,
         };
 
         if (snapToGrid) {
           nextPosition = snapPosition(nextPosition, snapGrid);
         }
 
-        const { positionAbsolute, position } = calcNextPosition(
-          node,
+        const { position, positionAbsolute } = calculateNodePosition({
+          nodeId: node.id,
           nextPosition,
-          nodes,
+          nodeLookup,
           nodeExtent,
-          undefined,
-          onError
-        );
+          nodeOrigin,
+          onError,
+        });
 
         node.position = position;
-        if (!node.computed) {
-          node.computed = {};
-        }
         node.computed.positionAbsolute = positionAbsolute;
       }
 

@@ -3,19 +3,14 @@
 @import '../../../system/src/styles/style.css';
 @import '../../../system/src/styles/node-resizer.css';
 
-.svelte-flow {
-  --edge-label-color-default: inherit;
-}
-
-.svelte-flow.dark {
-  --edge-label-color-default: #f8f8f8;
-}
-
 .svelte-flow__edge-label {
   text-align: center;
   position: absolute;
+  padding: 2px;
   font-size: 10px;
-  color: var(--edge-label-color, var(--edge-label-color-default));
+  cursor: pointer;
+  color: var(--xy-edge-label-color, var(--xy-edge-label-color-default));
+  background: var(--xy-edge-label-background-color, var(--xy-edge-label-background-color-default));
 }
 
 .svelte-flow__nodes {

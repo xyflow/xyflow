@@ -5,7 +5,7 @@ import { handleNodeClick } from '../components/Nodes/utils';
 import { useStoreApi } from './useStore';
 
 type UseDragParams = {
-  nodeRef: RefObject<Element>;
+  nodeRef: RefObject<HTMLDivElement>;
   disabled?: boolean;
   noDragClassName?: string;
   handleSelector?: string;
@@ -39,7 +39,7 @@ export function useDrag({
           handleNodeClick({
             id,
             store,
-            nodeRef: nodeRef as RefObject<HTMLDivElement>,
+            nodeRef,
           });
         },
         onDragStart: () => {

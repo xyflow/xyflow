@@ -114,11 +114,6 @@ function getHandle(bounds: HandleElement[], handleId?: string | null): HandleEle
     return null;
   }
 
-  if (bounds.length === 1 || !handleId) {
-    return bounds[0];
-  } else if (handleId) {
-    return bounds.find((d) => d.id === handleId) || null;
-  }
-
-  return null;
+  // if no handleId is given, we use the first handle, otherwise we check for the id
+  return (!handleId ? bounds[0] : bounds.find((d) => d.id === handleId)) || null;
 }

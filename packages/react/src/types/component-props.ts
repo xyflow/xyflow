@@ -21,7 +21,6 @@ import type {
   IsValidConnection,
   ColorMode,
   SnapGrid,
-  OnBeforeDelete,
 } from '@xyflow/system';
 
 import type {
@@ -40,17 +39,18 @@ import type {
   OnDelete,
   OnNodesChange,
   OnEdgesChange,
-  NodeDragHandler,
   NodeMouseHandler,
   SelectionDragHandler,
   EdgeMouseHandler,
+  OnNodeDrag,
+  OnBeforeDelete,
 } from '.';
 
 /**
  * ReactFlow component props.
  * @public
  */
-export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
+export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'> {
   /** An array of nodes to render in a controlled flow.
    * @example
    * const nodes = [
@@ -111,11 +111,11 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   /** This event handler is called when a user right clicks on a node */
   onNodeContextMenu?: NodeMouseHandler;
   /** This event handler is called when a user starts to drag a node */
-  onNodeDragStart?: NodeDragHandler;
+  onNodeDragStart?: OnNodeDrag;
   /** This event handler is called when a user drags a node */
-  onNodeDrag?: NodeDragHandler;
+  onNodeDrag?: OnNodeDrag;
   /** This event handler is called when a user stops dragging a node */
-  onNodeDragStop?: NodeDragHandler;
+  onNodeDragStop?: OnNodeDrag;
   /** This event handler is called when a user clicks on an edge */
   onEdgeClick?: (event: ReactMouseEvent, edge: Edge) => void;
   /** This event handler is called when a user right clicks on an edge */
@@ -502,6 +502,6 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
    * @example 'system' | 'light' | 'dark'
    */
   colorMode?: ColorMode;
-};
+}
 
 export type ReactFlowRefType = HTMLDivElement;

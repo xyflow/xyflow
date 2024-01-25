@@ -6,6 +6,7 @@ import {
   getViewportForBounds,
   Transform,
   updateConnectionLookup,
+  devWarn,
 } from '@xyflow/system';
 
 import type { Edge, Node, ReactFlowStore } from '../types';
@@ -37,7 +38,8 @@ const getInitialState = ({
 
   if (fitView && width && height) {
     const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
-    const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
+    // @todo users nodeOrigin should be used here
+    const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
     const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
     transform = [x, y, zoom];
   }
@@ -100,7 +102,7 @@ const getInitialState = ({
     autoPanOnConnect: true,
     autoPanOnNodeDrag: true,
     connectionRadius: 20,
-    onError: () => null,
+    onError: devWarn,
     isValidConnection: undefined,
     onSelectionChangeHandlers: [],
 

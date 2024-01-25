@@ -1,14 +1,14 @@
 <svelte:options immutable />
 
 <script lang="ts">
+  import { createEventDispatcher, setContext } from 'svelte';
   import cc from 'classcat';
-  import { createEventDispatcher } from 'svelte';
-  import { errorMessages, getMarkerId } from '@xyflow/system';
+  import { getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import { BezierEdgeInternal } from '$lib/components/edges';
   import type { EdgeLayouted, Edge } from '$lib/types';
-  import { get } from 'svelte/store';
+  import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
 
   type $$Props = EdgeLayouted;
 
@@ -22,7 +22,6 @@
 
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
-  export let selectable: $$Props['selectable'] = true;
   export let hidden: $$Props['hidden'] = false;
   export let label: $$Props['label'] = undefined;
   export let labelStyle: $$Props['labelStyle'] = undefined;
@@ -43,16 +42,9 @@
   let className: string = '';
   export { className as class };
 
-  const {
-    edges,
-    edgeTypes,
-    flowId,
-    selectionRect,
-    selectionRectMode,
-    multiselectionKeyPressed,
-    addSelectedEdges,
-    unselectNodesAndEdges
-  } = useStore();
+  setContext('svelteflow__edge_id', id);
+
+  const { edgeLookup, edgeTypes, flowId } = useStore();
   const dispatch = createEventDispatcher<{
     edgeclick: { edge: Edge; event: MouseEvent | TouchEvent };
     edgecontextmenu: { edge: Edge; event: MouseEvent };
@@ -62,30 +54,19 @@
   $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
   $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
 
+  const handleEdgeSelect = useHandleEdgeSelect();
+
   function onClick(event: MouseEvent | TouchEvent) {
-    const edge = $edges.find((e) => e.id === id);
+    const edge = $edgeLookup.get(id);
 
-    if (!edge) {
-      console.warn('012', errorMessages['error012'](id));
-      return;
+    if (edge) {
+      handleEdgeSelect(id);
+      dispatch('edgeclick', { event, edge });
     }
-
-    if (selectable) {
-      selectionRect.set(null);
-      selectionRectMode.set(null);
-
-      if (!edge.selected) {
-        addSelectedEdges([id]);
-      } else if (edge.selected && get(multiselectionKeyPressed)) {
-        unselectNodesAndEdges({ nodes: [], edges: [edge] });
-      }
-    }
-
-    dispatch('edgeclick', { event, edge });
   }
 
   function onContextMenu(event: MouseEvent) {
-    const edge = $edges.find((e) => e.id === id);
+    const edge = $edgeLookup.get(id);
 
     if (edge) {
       dispatch('edgecontextmenu', { event, edge });

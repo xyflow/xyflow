@@ -4,11 +4,11 @@ import {
   clampPosition,
   getBoundsOfBoxes,
   getOverlappingArea,
-  isNumeric,
   rectToBox,
   nodeToRect,
   pointToRendererPoint,
   getViewportForBounds,
+  isCoordinateExtent,
 } from './general';
 import {
   type Transform,
@@ -19,10 +19,10 @@ import {
   type EdgeBase,
   type FitViewParamsBase,
   type FitViewOptionsBase,
-  NodeDragItem,
   CoordinateExtent,
   OnError,
-  OnBeforeDelete,
+  OnBeforeDeleteBase,
+  NodeLookup,
 } from '../types';
 import { errorMessages } from '../constants';
 
@@ -102,11 +102,13 @@ export const getIncomers = <NodeType extends NodeBase = NodeBase, EdgeType exten
 export const getNodePositionWithOrigin = (
   node: NodeBase | undefined,
   nodeOrigin: NodeOrigin = [0, 0]
-): XYPosition & { positionAbsolute: XYPosition } => {
+): { position: XYPosition; positionAbsolute: XYPosition } => {
   if (!node) {
     return {
-      x: 0,
-      y: 0,
+      position: {
+        x: 0,
+        y: 0,
+      },
       positionAbsolute: {
         x: 0,
         y: 0,
@@ -123,7 +125,7 @@ export const getNodePositionWithOrigin = (
   };
 
   return {
-    ...position,
+    position,
     positionAbsolute: node.computed?.positionAbsolute
       ? {
           x: node.computed.positionAbsolute.x - offsetX,
@@ -133,27 +135,35 @@ export const getNodePositionWithOrigin = (
   };
 };
 
+export type GetNodesBoundsParams = {
+  nodeOrigin?: NodeOrigin;
+  useRelativePosition?: boolean;
+};
+
 /**
  * Determines a bounding box that contains all given nodes in an array
  * @public
  * @remarks Useful when combined with {@link getViewportForBounds} to calculate the correct transform to fit the given nodes in a viewport.
  * @param nodes - Nodes to calculate the bounds for
- * @param nodeOrigin - Origin of the nodes: [0, 0] - top left, [0.5, 0.5] - center
+ * @param params.nodeOrigin - Origin of the nodes: [0, 0] - top left, [0.5, 0.5] - center
+ * @param params.useRelativePosition - Whether to use the relative or absolute node positions
  * @returns Bounding box enclosing all nodes
  */
-export const getNodesBounds = (nodes: NodeBase[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+export const getNodesBounds = (
+  nodes: NodeBase[],
+  params: GetNodesBoundsParams = { nodeOrigin: [0, 0], useRelativePosition: false }
+): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
   const box = nodes.reduce(
     (currBox, node) => {
-      const { x, y } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
+      const nodePos = getNodePositionWithOrigin(node, node.origin || params.nodeOrigin);
       return getBoundsOfBoxes(
         currBox,
         rectToBox({
-          x,
-          y,
+          ...nodePos[params.useRelativePosition ? 'position' : 'positionAbsolute'],
           width: node.computed?.width ?? node.width ?? 0,
           height: node.computed?.height ?? node.height ?? 0,
         })
@@ -239,7 +249,7 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   });
 
   if (filteredNodes.length > 0) {
-    const bounds = getNodesBounds(filteredNodes, nodeOrigin);
+    const bounds = getNodesBounds(filteredNodes, { nodeOrigin });
 
     const viewport = getViewportForBounds(
       bounds,
@@ -258,69 +268,87 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   return false;
 }
 
-function clampNodeExtent(node: NodeDragItem | NodeBase, extent?: CoordinateExtent | 'parent') {
+/**
+ * This function clamps the passed extend by the node's width and height.
+ * This is needed to prevent the node from being dragged outside of its extent.
+ *
+ * @param node
+ * @param extent
+ * @returns
+ */
+function clampNodeExtent<NodeType extends NodeBase>(
+  node: NodeType,
+  extent?: CoordinateExtent | 'parent'
+): CoordinateExtent | 'parent' | undefined {
   if (!extent || extent === 'parent') {
     return extent;
   }
   return [extent[0], [extent[1][0] - (node.computed?.width ?? 0), extent[1][1] - (node.computed?.height ?? 0)]];
 }
 
-export function calcNextPosition<NodeType extends NodeBase>(
-  node: NodeDragItem | NodeType,
-  nextPosition: XYPosition,
-  nodes: NodeType[],
-  nodeExtent?: CoordinateExtent,
-  nodeOrigin: NodeOrigin = [0, 0],
-  onError?: OnError
-): { position: XYPosition; positionAbsolute: XYPosition } {
-  const clampedNodeExtent = clampNodeExtent(node, node.extent || nodeExtent);
-  let currentExtent = clampedNodeExtent;
-  let parentNode: NodeType | null = null;
-  let parentPos = { x: 0, y: 0 };
-
-  if (node.parentNode) {
-    parentNode = nodes.find((n) => n.id === node.parentNode) || null;
-    parentPos = parentNode
-      ? getNodePositionWithOrigin(parentNode, parentNode.origin || nodeOrigin).positionAbsolute
-      : parentPos;
-  }
+/**
+ * This function calculates the next position of a node, taking into account the node's extent, parent node, and origin.
+ *
+ * @internal
+ * @returns position, positionAbsolute
+ */
+export function calculateNodePosition<NodeType extends NodeBase>({
+  nodeId,
+  nextPosition,
+  nodeLookup,
+  nodeOrigin = [0, 0],
+  nodeExtent,
+  onError,
+}: {
+  nodeId: string;
+  nextPosition: XYPosition;
+  nodeLookup: NodeLookup<NodeType>;
+  nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
+  onError?: OnError;
+}): { position: XYPosition; positionAbsolute: XYPosition } {
+  const node = nodeLookup.get(nodeId)!;
+  const parentNode = node.parentNode ? nodeLookup.get(node.parentNode) : undefined;
+  const { x: parentX, y: parentY } = parentNode
+    ? getNodePositionWithOrigin(parentNode, parentNode.origin || nodeOrigin).positionAbsolute
+    : { x: 0, y: 0 };
+  let currentExtent = clampNodeExtent(node, node.extent || nodeExtent);
 
   if (node.extent === 'parent' && !node.expandParent) {
-    const nodeWidth = node.computed?.width;
-    const nodeHeight = node.computed?.height;
-    if (node.parentNode && nodeWidth && nodeHeight) {
-      const currNodeOrigin = node.origin || nodeOrigin;
-
-      currentExtent =
-        parentNode && isNumeric(parentNode.computed?.width) && isNumeric(parentNode.computed?.height)
-          ? [
-              [parentPos.x + nodeWidth * currNodeOrigin[0], parentPos.y + nodeHeight * currNodeOrigin[1]],
-              [
-                parentPos.x + (parentNode.computed?.width ?? 0) - nodeWidth + nodeWidth * currNodeOrigin[0],
-                parentPos.y + (parentNode.computed?.height ?? 0) - nodeHeight + nodeHeight * currNodeOrigin[1],
-              ],
-            ]
-          : currentExtent;
-    } else {
+    if (!parentNode) {
       onError?.('005', errorMessages['error005']());
-      currentExtent = clampedNodeExtent;
+    } else {
+      const nodeWidth = node.computed?.width;
+      const nodeHeight = node.computed?.height;
+      const parentWidth = parentNode?.computed?.width;
+      const parentHeight = parentNode?.computed?.height;
+
+      if (nodeWidth && nodeHeight && parentWidth && parentHeight) {
+        const currNodeOrigin = node.origin || nodeOrigin;
+        const extentX = parentX + nodeWidth * currNodeOrigin[0];
+        const extentY = parentY + nodeHeight * currNodeOrigin[1];
+
+        currentExtent = [
+          [extentX, extentY],
+          [extentX + parentWidth - nodeWidth, extentY + parentHeight - nodeHeight],
+        ];
+      }
     }
-  } else if (node.extent && node.parentNode && node.extent !== 'parent') {
+  } else if (parentNode && isCoordinateExtent(node.extent)) {
     currentExtent = [
-      [node.extent[0][0] + parentPos.x, node.extent[0][1] + parentPos.y],
-      [node.extent[1][0] + parentPos.x, node.extent[1][1] + parentPos.y],
+      [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
+      [node.extent[1][0] + parentX, node.extent[1][1] + parentY],
     ];
   }
 
-  const positionAbsolute =
-    currentExtent && currentExtent !== 'parent'
-      ? clampPosition(nextPosition, currentExtent as CoordinateExtent)
-      : nextPosition;
+  const positionAbsolute = isCoordinateExtent(currentExtent)
+    ? clampPosition(nextPosition, currentExtent)
+    : nextPosition;
 
   return {
     position: {
-      x: positionAbsolute.x - parentPos.x,
-      y: positionAbsolute.y - parentPos.y,
+      x: positionAbsolute.x - parentX,
+      y: positionAbsolute.y - parentY,
     },
     positionAbsolute,
   };
@@ -347,7 +375,7 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
   edgesToRemove: Partial<EdgeType>[];
   nodes: NodeType[];
   edges: EdgeType[];
-  onBeforeDelete?: OnBeforeDelete;
+  onBeforeDelete?: OnBeforeDeleteBase<NodeType, EdgeType>;
 }): Promise<{
   nodes: NodeType[];
   edges: EdgeType[];

@@ -17,7 +17,6 @@ import {
   type PanBy,
   type OnConnectStart,
   type OnConnectEnd,
-  type OnNodeDrag,
   type OnSelectionDrag,
   type OnMoveStart,
   type OnMove,
@@ -27,7 +26,6 @@ import {
   type EdgeLookup,
   type ConnectionLookup,
   type NodeLookup,
-  OnBeforeDelete,
 } from '@xyflow/system';
 
 import type {
@@ -43,6 +41,8 @@ import type {
   OnSelectionChangeFunc,
   UnselectNodesAndEdgesParams,
   OnDelete,
+  OnNodeDrag,
+  OnBeforeDelete,
 } from '.';
 
 export type ReactFlowStore = {
