@@ -199,7 +199,7 @@ export const getNodesBounds = (nodes: Node[], nodeOrigin: NodeOrigin = [0, 0]): 
 
   const box = nodes.reduce(
     (currBox, node) => {
-      const { x, y } = getNodePositionWithOrigin(node, nodeOrigin);
+      const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
       return getBoundsOfBoxes(
         currBox,
         rectToBox({
