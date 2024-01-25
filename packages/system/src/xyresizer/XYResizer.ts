@@ -3,7 +3,7 @@ import { select } from 'd3-selection';
 
 import { getControlDirection, getDimensionsAfterResize, getPositionAfterResize, getResizeDirection } from './utils';
 import { getPointerPosition } from '../utils';
-import type { NodeBase, NodeLookup, Transform } from '../types';
+import type { CoordinateExtent, NodeBase, NodeLookup, Transform } from '../types';
 import type { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, ControlPosition } from './types';
 
 const initPrevValues = { width: 0, height: 0, x: 0, y: 0 };
@@ -34,6 +34,7 @@ export type XYResizerChildChange = {
     x: number;
     y: number;
   };
+  extent?: 'parent' | CoordinateExtent;
 };
 
 type XYResizerParams = {
@@ -68,6 +69,13 @@ export type XYResizerInstance = {
   update: (params: XYResizerUpdateParams) => void;
   destroy: () => void;
 };
+
+function nodeToParentExtent(node: NodeBase): CoordinateExtent {
+  return [
+    [0, 0],
+    [node.computed!.width!, node.computed!.height!],
+  ];
+}
 
 export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResizerParams): XYResizerInstance {
   const selection = select(domNode);
@@ -114,6 +122,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
             childNodes.push({
               id: _nodeId,
               position: { ..._node.position },
+              extent: _node.extent,
             });
           }
         });
@@ -131,20 +140,31 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
 
           const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
 
-          const { width, height } = getDimensionsAfterResize(
+          let extent = undefined;
+          if (node.extent === 'parent') {
+            const parentNode = nodeLookup.get(node.parentNode!);
+            if (parentNode) {
+              extent = nodeToParentExtent(parentNode);
+            }
+          }
+
+          const { width, height, x, y } = getDimensionsAfterResize(
             startValues,
             controlDirection,
             pointerPosition,
             boundaries,
-            keepAspectRatio
+            keepAspectRatio,
+            extent
           );
 
           const isWidthChange = width !== prevWidth;
           const isHeightChange = height !== prevHeight;
 
           if (controlDirection.affectsX || controlDirection.affectsY) {
-            const { x, y } = getPositionAfterResize(startValues, controlDirection, width, height);
-
+            // const {
+            //   x,
+            //   y,
+            // } = getPositionAfterResize(startValues, controlDirection, width, height, extent);
             // only transform the node if the width or height changes
             const isXPosChange = x !== prevX && isWidthChange;
             const isYPosChange = y !== prevY && isHeightChange;
@@ -173,12 +193,15 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           }
 
           if (isWidthChange || isHeightChange) {
+            if (extent) {
+            }
+            // console.log(clampedX, clampedY);
             change.isWidthChange = isWidthChange;
             change.isHeightChange = isHeightChange;
             change.width = width;
             change.height = height;
-            prevValues.width = width;
-            prevValues.height = height;
+            prevValues.width = change.width;
+            prevValues.height = change.height;
           }
 
           if (!change.isXPosChange && !change.isYPosChange && !isWidthChange && !isHeightChange) {
