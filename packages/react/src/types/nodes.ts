@@ -48,3 +48,5 @@ export type NodeWrapperProps<NodeType extends Node> = {
   nodeOrigin: NodeOrigin;
   onError?: OnError;
 };
+
+export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'>;

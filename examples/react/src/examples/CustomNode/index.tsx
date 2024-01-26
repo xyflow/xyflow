@@ -16,6 +16,7 @@ import {
   OnNodesChange,
   OnConnect,
   OnBeforeDelete,
+  BuiltInNode,
 } from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
@@ -24,7 +25,7 @@ export type ColorSelectorNode = Node<
   { color: string; onChange: (event: ChangeEvent<HTMLInputElement>) => void },
   'selectorNode'
 >;
-export type MyNode = Node | ColorSelectorNode;
+export type MyNode = BuiltInNode | ColorSelectorNode;
 
 const onInit: OnInit<MyNode> = (reactFlowInstance) => {
   console.log('flow loaded:', reactFlowInstance);
@@ -61,7 +62,7 @@ const CustomNodeFlow = () => {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
       setNodes((nds) =>
         nds.map((node) => {
-          if (node.id !== '2') {
+          if (node.id !== '2' || node.type !== 'selectorNode') {
             return node;
           }
 
@@ -164,7 +165,7 @@ const CustomNodeFlow = () => {
       maxZoom={2}
       onBeforeDelete={onBeforeDelete}
     >
-      <MiniMap
+      <MiniMap<MyNode>
         nodeStrokeColor={(n: MyNode): string => {
           if (n.type === 'input') return '#0041d0';
           if (n.type === 'selectorNode') return bgColor;

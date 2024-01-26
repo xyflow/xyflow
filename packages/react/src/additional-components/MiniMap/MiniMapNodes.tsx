@@ -6,16 +6,17 @@ import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
 import { MiniMapNode } from './MiniMapNode';
-import type { ReactFlowState } from '../../types';
+import type { ReactFlowState, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
 
 declare const window: any;
 
 const selector = (s: ReactFlowState) => s.nodeOrigin;
 const selectorNodeIds = (s: ReactFlowState) => s.nodes.map((node) => node.id);
-const getAttrFunction = (func: any): GetMiniMapNodeAttribute => (func instanceof Function ? func : () => func);
+const getAttrFunction = <NodeType extends Node>(func: any): GetMiniMapNodeAttribute<NodeType> =>
+  func instanceof Function ? func : () => func;
 
-function MiniMapNodes({
+function MiniMapNodes<NodeType extends Node>({
   nodeStrokeColor,
   nodeColor,
   nodeClassName = '',
@@ -25,12 +26,12 @@ function MiniMapNodes({
   // a component properly.
   nodeComponent: NodeComponent = MiniMapNode,
   onClick,
-}: MiniMapNodesProps) {
+}: MiniMapNodesProps<NodeType>) {
   const nodeIds = useStore(selectorNodeIds, shallow);
   const nodeOrigin = useStore(selector);
-  const nodeColorFunc = getAttrFunction(nodeColor);
-  const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
-  const nodeClassNameFunc = getAttrFunction(nodeClassName);
+  const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
+  const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
+  const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
 
   const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
 
@@ -42,7 +43,7 @@ function MiniMapNodes({
         // minimize the cost of updates when individual nodes change.
         //
         // For more details, see a similar commit in `NodeRenderer/index.tsx`.
-        <NodeComponentWrapper
+        <NodeComponentWrapper<NodeType>
           key={nodeId}
           id={nodeId}
           nodeOrigin={nodeOrigin}
@@ -60,7 +61,7 @@ function MiniMapNodes({
   );
 }
 
-const NodeComponentWrapper = memo(function NodeComponentWrapper({
+function NodeComponentWrapperInner<NodeType extends Node>({
   id,
   nodeOrigin,
   nodeColorFunc,
@@ -74,9 +75,9 @@ const NodeComponentWrapper = memo(function NodeComponentWrapper({
 }: {
   id: string;
   nodeOrigin: NodeOrigin;
-  nodeColorFunc: GetMiniMapNodeAttribute;
-  nodeStrokeColorFunc: GetMiniMapNodeAttribute;
-  nodeClassNameFunc: GetMiniMapNodeAttribute;
+  nodeColorFunc: GetMiniMapNodeAttribute<NodeType>;
+  nodeStrokeColorFunc: GetMiniMapNodeAttribute<NodeType>;
+  nodeClassNameFunc: GetMiniMapNodeAttribute<NodeType>;
   nodeBorderRadius: number;
   nodeStrokeWidth?: number;
   NodeComponent: ComponentType<MiniMapNodeProps>;
@@ -84,7 +85,7 @@ const NodeComponentWrapper = memo(function NodeComponentWrapper({
   shapeRendering: string;
 }) {
   const { node, x, y } = useStore((s) => {
-    const node = s.nodeLookup.get(id);
+    const node = s.nodeLookup.get(id) as NodeType;
     const { x, y } = getNodePositionWithOrigin(node, node?.origin || nodeOrigin).positionAbsolute;
 
     return {
@@ -115,6 +116,8 @@ const NodeComponentWrapper = memo(function NodeComponentWrapper({
       id={node.id}
     />
   );
-});
+}
 
-export default memo(MiniMapNodes);
+const NodeComponentWrapper = memo(NodeComponentWrapperInner) as typeof NodeComponentWrapperInner;
+
+export default memo(MiniMapNodes) as typeof MiniMapNodes;

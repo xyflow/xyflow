@@ -7,7 +7,7 @@ import { getNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapI
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { Panel } from '../../components/Panel';
-import type { ReactFlowState } from '../../types';
+import type { ReactFlowState, Node } from '../../types';
 
 import MiniMapNodes from './MiniMapNodes';
 import type { MiniMapProps } from './types';
@@ -38,7 +38,7 @@ const selector = (s: ReactFlowState) => {
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 
-function MiniMapComponent({
+function MiniMapComponent<NodeType extends Node = Node>({
   style,
   className,
   nodeStrokeColor,
@@ -61,7 +61,7 @@ function MiniMapComponent({
   inversePan,
   zoomStep = 10,
   offsetScale = 5,
-}: MiniMapProps) {
+}: MiniMapProps<NodeType>) {
   const store = useStoreApi();
   const svg = useRef<SVGSVGElement>(null);
   const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight } = useStore(selector, shallow);
@@ -119,7 +119,7 @@ function MiniMapComponent({
 
   const onSvgNodeClick = onNodeClick
     ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node = store.getState().nodeLookup.get(nodeId)!;
+        const node = store.getState().nodeLookup.get(nodeId)! as NodeType;
         onNodeClick(event, node);
       }, [])
     : undefined;
@@ -149,7 +149,7 @@ function MiniMapComponent({
         onClick={onSvgClick}
       >
         {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
-        <MiniMapNodes
+        <MiniMapNodes<NodeType>
           onClick={onSvgNodeClick}
           nodeColor={nodeColor}
           nodeStrokeColor={nodeStrokeColor}
@@ -174,4 +174,4 @@ function MiniMapComponent({
 
 MiniMapComponent.displayName = 'MiniMap';
 
-export const MiniMap = memo(MiniMapComponent);
+export const MiniMap = memo(MiniMapComponent) as typeof MiniMapComponent;
