@@ -102,11 +102,13 @@ export const getIncomers = <NodeType extends NodeBase = NodeBase, EdgeType exten
 export const getNodePositionWithOrigin = (
   node: NodeBase | undefined,
   nodeOrigin: NodeOrigin = [0, 0]
-): XYPosition & { positionAbsolute: XYPosition } => {
+): { position: XYPosition; positionAbsolute: XYPosition } => {
   if (!node) {
     return {
-      x: 0,
-      y: 0,
+      position: {
+        x: 0,
+        y: 0,
+      },
       positionAbsolute: {
         x: 0,
         y: 0,
@@ -123,7 +125,7 @@ export const getNodePositionWithOrigin = (
   };
 
   return {
-    ...position,
+    position,
     positionAbsolute: node.computed?.positionAbsolute
       ? {
           x: node.computed.positionAbsolute.x - offsetX,
@@ -133,27 +135,35 @@ export const getNodePositionWithOrigin = (
   };
 };
 
+export type GetNodesBoundsParams = {
+  nodeOrigin?: NodeOrigin;
+  useRelativePosition?: boolean;
+};
+
 /**
  * Determines a bounding box that contains all given nodes in an array
  * @public
  * @remarks Useful when combined with {@link getViewportForBounds} to calculate the correct transform to fit the given nodes in a viewport.
  * @param nodes - Nodes to calculate the bounds for
- * @param nodeOrigin - Origin of the nodes: [0, 0] - top left, [0.5, 0.5] - center
+ * @param params.nodeOrigin - Origin of the nodes: [0, 0] - top left, [0.5, 0.5] - center
+ * @param params.useRelativePosition - Whether to use the relative or absolute node positions
  * @returns Bounding box enclosing all nodes
  */
-export const getNodesBounds = (nodes: NodeBase[], nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+export const getNodesBounds = (
+  nodes: NodeBase[],
+  params: GetNodesBoundsParams = { nodeOrigin: [0, 0], useRelativePosition: false }
+): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
   const box = nodes.reduce(
     (currBox, node) => {
-      const { x, y } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
+      const nodePos = getNodePositionWithOrigin(node, node.origin || params.nodeOrigin);
       return getBoundsOfBoxes(
         currBox,
         rectToBox({
-          x,
-          y,
+          ...nodePos[params.useRelativePosition ? 'position' : 'positionAbsolute'],
           width: node.computed?.width ?? node.width ?? 0,
           height: node.computed?.height ?? node.height ?? 0,
         })
@@ -239,7 +249,7 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   });
 
   if (filteredNodes.length > 0) {
-    const bounds = getNodesBounds(filteredNodes, nodeOrigin);
+    const bounds = getNodesBounds(filteredNodes, { nodeOrigin });
 
     const viewport = getViewportForBounds(
       bounds,

@@ -6,7 +6,10 @@
 
 - selection box is not interrupted by selectionKey being let go
 - fix `OnNodeDrag` type
-- refactor(handles): do not use fallback handle if an id is being used #3409
+- do not use fallback handle if a specific id is being used
+- fix `defaultEdgeOptions` markers not being applied
+- fix `getNodesBounds` and add second param for passing options
+- fix `expandParent` for child nodes
 
 ## 12.0.0-next.7
 

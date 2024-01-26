@@ -260,9 +260,10 @@ function isValidHandle(
   }: IsValidParams
 ) {
   const isTarget = fromType === 'target';
-  const handleDomNode = doc.querySelector(
-    `.${lib}-flow__handle[data-id="${flowId}-${handle?.nodeId}-${handle?.id}-${handle?.type}"]`
-  );
+  const handleDomNode = handle
+    ? doc.querySelector(`.${lib}-flow__handle[data-id="${flowId}-${handle?.nodeId}-${handle?.id}-${handle?.type}"]`)
+    : null;
+
   const { x, y } = getEventPosition(event);
   const handleBelow = doc.elementFromPoint(x, y);
   // we always want to prioritize the handle below the mouse cursor over the closest distance handle,

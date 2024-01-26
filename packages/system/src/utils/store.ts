@@ -136,7 +136,7 @@ function calculateXYZPosition<NodeType extends NodeBase>(
   }
 
   const parentNode = nodeLookup.get(node.parentNode)!;
-  const parentNodePosition = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin);
+  const { position: parentNodePosition } = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin);
 
   return calculateXYZPosition(
     parentNode,

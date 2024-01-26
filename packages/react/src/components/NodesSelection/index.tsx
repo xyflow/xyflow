@@ -22,7 +22,7 @@ export type NodesSelectionProps<NodeType> = {
 
 const selector = (s: ReactFlowState) => {
   const selectedNodes = s.nodes.filter((n) => n.selected);
-  const { width, height, x, y } = getNodesBounds(selectedNodes, s.nodeOrigin);
+  const { width, height, x, y } = getNodesBounds(selectedNodes, { nodeOrigin: s.nodeOrigin });
 
   return {
     width,

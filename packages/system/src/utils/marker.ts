@@ -19,21 +19,32 @@ export function getMarkerId(marker: EdgeMarkerType | undefined, id?: string | nu
 
 export function createMarkerIds(
   edges: EdgeBase[],
-  { id, defaultColor }: { id?: string | null; defaultColor?: string }
+  {
+    id,
+    defaultColor,
+    defaultMarkerStart,
+    defaultMarkerEnd,
+  }: {
+    id?: string | null;
+    defaultColor?: string;
+    defaultMarkerStart?: EdgeMarkerType;
+    defaultMarkerEnd?: EdgeMarkerType;
+  }
 ) {
-  const ids: string[] = [];
+  const ids = new Set<string>();
 
   return edges
     .reduce<MarkerProps[]>((markers, edge) => {
-      [edge.markerStart, edge.markerEnd].forEach((marker) => {
+      [edge.markerStart || defaultMarkerStart, edge.markerEnd || defaultMarkerEnd].forEach((marker) => {
         if (marker && typeof marker === 'object') {
           const markerId = getMarkerId(marker, id);
-          if (!ids.includes(markerId)) {
+          if (!ids.has(markerId)) {
             markers.push({ id: markerId, color: marker.color || defaultColor, ...marker });
-            ids.push(markerId);
+            ids.add(markerId);
           }
         }
       });
+
       return markers;
     }, [])
     .sort((a, b) => a.id.localeCompare(b.id));

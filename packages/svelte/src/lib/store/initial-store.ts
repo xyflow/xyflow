@@ -92,7 +92,8 @@ export const getInitialStore = ({
 
   if (fitView && width && height) {
     const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
-    const bounds = getNodesBounds(nodesWithDimensions, [0, 0]);
+    // @todo users nodeOrigin should be used here
+    const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
 

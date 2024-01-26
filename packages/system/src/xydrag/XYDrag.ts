@@ -120,7 +120,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       let nodesBox: Box = { x: 0, y: 0, x2: 0, y2: 0 };
 
       if (dragItems.length > 1 && nodeExtent) {
-        const rect = getNodesBounds(dragItems as unknown as NodeBase[], nodeOrigin);
+        const rect = getNodesBounds(dragItems as unknown as NodeBase[], { nodeOrigin });
         nodesBox = rectToBox(rect);
       }
 

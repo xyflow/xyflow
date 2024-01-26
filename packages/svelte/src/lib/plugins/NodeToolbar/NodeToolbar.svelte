@@ -58,7 +58,7 @@
         height: toolbarNode.computed?.height ?? toolbarNode.height ?? 0
       };
     } else if (toolbarNodes.length > 1) {
-      nodeRect = getNodesBounds(toolbarNodes, $nodeOrigin);
+      nodeRect = getNodesBounds(toolbarNodes, { nodeOrigin: $nodeOrigin });
     }
 
     if (nodeRect) {

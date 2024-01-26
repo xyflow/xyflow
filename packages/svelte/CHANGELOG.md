@@ -11,7 +11,9 @@
 
 - selection box is not interrupted by selectionKey being let go
 - Edge label has a default background and is clickable
-- refactor(handles): do not use fallback handle if an id is being used #3409
+- do not use fallback handle if a specific id is being used
+- use correct id for `<Handle />` data-id attribute
+- fix `getNodesBounds` and add second param for passing options
 
 ## 0.0.34
 

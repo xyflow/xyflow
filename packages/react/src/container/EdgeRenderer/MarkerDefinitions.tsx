@@ -1,9 +1,8 @@
-import { memo, useCallback } from 'react';
+import { memo, useMemo } from 'react';
 import { type MarkerProps, createMarkerIds } from '@xyflow/system';
 
 import { useStore } from '../../hooks/useStore';
 import { useMarkerSymbol } from './MarkerSymbols';
-import type { ReactFlowState } from '../../types';
 
 type MarkerDefinitionsProps = {
   defaultColor: string;
@@ -43,23 +42,23 @@ const Marker = ({
   );
 };
 
-const markerSelector =
-  ({ defaultColor, rfId }: { defaultColor: string; rfId?: string }) =>
-  (s: ReactFlowState) => {
-    const markers = createMarkerIds(s.edges, { id: rfId, defaultColor });
-
-    return markers;
-  };
-
-const markersEqual = (a: MarkerProps[], b: MarkerProps[]) =>
-  // the id includes all marker options, so we just need to look at that part of the marker
-  !(a.length !== b.length || a.some((m, i) => m.id !== b[i].id));
-
 // when you have multiple flows on a page and you hide the first one, the other ones have no markers anymore
 // when they do have markers with the same ids. To prevent this the user can pass a unique id to the react flow wrapper
 // that we can then use for creating our unique marker ids
 const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
-  const markers = useStore(useCallback(markerSelector({ defaultColor, rfId }), [defaultColor, rfId]), markersEqual);
+  const edges = useStore((s) => s.edges);
+  const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
+
+  const markers = useMemo(() => {
+    const markers = createMarkerIds(edges, {
+      id: rfId,
+      defaultColor,
+      defaultMarkerStart: defaultEdgeOptions?.markerStart,
+      defaultMarkerEnd: defaultEdgeOptions?.markerEnd,
+    });
+
+    return markers;
+  }, [edges, defaultEdgeOptions, rfId, defaultColor]);
 
   if (!markers.length) {
     return null;
