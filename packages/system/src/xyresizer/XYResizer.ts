@@ -1,7 +1,7 @@
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
 
-import { getControlDirection, getDimensionsAfterResize, getPositionAfterResize, getResizeDirection } from './utils';
+import { getControlDirection, getDimensionsAfterResize, getResizeDirection } from './utils';
 import { getPointerPosition } from '../utils';
 import type { CoordinateExtent, NodeBase, NodeLookup, Transform } from '../types';
 import type { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, ControlPosition } from './types';
@@ -77,6 +77,16 @@ function nodeToParentExtent(node: NodeBase): CoordinateExtent {
   ];
 }
 
+function nodeToChildExtent(child: NodeBase, parent: NodeBase): CoordinateExtent {
+  return [
+    [parent.position.x + child.position.x, parent.position.y + child.position.y],
+    [
+      parent.position.x + child.position.x + child.computed!.width!,
+      parent.position.y + child.position.y + child.computed!.height!,
+    ],
+  ];
+}
+
 export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResizerParams): XYResizerInstance {
   const selection = select(domNode);
 
@@ -94,44 +104,71 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
 
     const controlDirection = getControlDirection(controlPosition);
 
+    let node: NodeBase | undefined = undefined;
     let childNodes: XYResizerChildChange[] = [];
+    let parentExtent: CoordinateExtent | undefined = undefined;
+    let childExtent: CoordinateExtent | undefined = undefined;
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
         const { nodeLookup, transform, snapGrid, snapToGrid } = getStoreItems();
-        const node = nodeLookup.get(nodeId);
-        const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+        node = nodeLookup.get(nodeId);
 
-        prevValues = {
-          width: node?.computed?.width ?? 0,
-          height: node?.computed?.height ?? 0,
-          x: node?.position.x ?? 0,
-          y: node?.position.y ?? 0,
-        };
+        if (node) {
+          const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
 
-        startValues = {
-          ...prevValues,
-          pointerX: xSnapped,
-          pointerY: ySnapped,
-          aspectRatio: prevValues.width / prevValues.height,
-        };
+          prevValues = {
+            width: node.computed?.width ?? 0,
+            height: node.computed?.height ?? 0,
+            x: node.position.x ?? 0,
+            y: node.position.y ?? 0,
+          };
 
-        childNodes = [];
-        nodeLookup.forEach((_node, _nodeId) => {
-          if (_node.parentNode === nodeId) {
-            childNodes.push({
-              id: _nodeId,
-              position: { ..._node.position },
-              extent: _node.extent,
-            });
+          startValues = {
+            ...prevValues,
+            pointerX: xSnapped,
+            pointerY: ySnapped,
+            aspectRatio: prevValues.width / prevValues.height,
+          };
+
+          if (node.extent === 'parent') {
+            const parentNode = nodeLookup.get(node.parentNode!);
+            if (parentNode) {
+              parentExtent = nodeToParentExtent(parentNode);
+            }
           }
-        });
-        onResizeStart?.(event, { ...prevValues });
+
+          // Collect all child nodes to correct their relative positions when top/left changes
+          // Determine largest minimal extent the parent node is allowed to resize to
+          childNodes = [];
+          childExtent = undefined;
+          nodeLookup.forEach((child, childId) => {
+            if (child.parentNode === nodeId) {
+              childNodes.push({
+                id: childId,
+                position: { ...child.position },
+                extent: child.extent,
+              });
+              if (child.extent === 'parent' || child.expandParent) {
+                const extent = nodeToChildExtent(child, node!);
+                if (childExtent) {
+                  childExtent = [
+                    [Math.min(extent[0][0], childExtent[0][0]), Math.min(extent[0][1], childExtent[0][1])],
+                    [Math.max(extent[1][0], childExtent[1][0]), Math.max(extent[1][1], childExtent[1][1])],
+                  ];
+                } else {
+                  childExtent = extent;
+                }
+              }
+            }
+          });
+
+          onResizeStart?.(event, { ...prevValues });
+        }
       })
       .on('drag', (event: ResizeDragEvent) => {
-        const { nodeLookup, transform, snapGrid, snapToGrid } = getStoreItems();
+        const { transform, snapGrid, snapToGrid } = getStoreItems();
         const pointerPosition = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
-        const node = nodeLookup.get(nodeId);
 
         let childChanges: XYResizerChildChange[] = [];
 
@@ -140,32 +177,20 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
 
           const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
 
-          let extent = undefined;
-          if (node.extent === 'parent') {
-            const parentNode = nodeLookup.get(node.parentNode!);
-            if (parentNode) {
-              extent = nodeToParentExtent(parentNode);
-            }
-          }
-
           const { width, height, x, y } = getDimensionsAfterResize(
             startValues,
             controlDirection,
             pointerPosition,
             boundaries,
             keepAspectRatio,
-            extent
+            parentExtent,
+            childExtent
           );
 
           const isWidthChange = width !== prevWidth;
           const isHeightChange = height !== prevHeight;
 
           if (controlDirection.affectsX || controlDirection.affectsY) {
-            // const {
-            //   x,
-            //   y,
-            // } = getPositionAfterResize(startValues, controlDirection, width, height, extent);
-            // only transform the node if the width or height changes
             const isXPosChange = x !== prevX && isWidthChange;
             const isYPosChange = y !== prevY && isHeightChange;
 
@@ -193,9 +218,6 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           }
 
           if (isWidthChange || isHeightChange) {
-            if (extent) {
-            }
-            // console.log(clampedX, clampedY);
             change.isWidthChange = isWidthChange;
             change.isHeightChange = isHeightChange;
             change.width = width;
