@@ -144,7 +144,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           // Determine largest minimal extent the parent node is allowed to resize to
           childNodes = [];
           childExtent = undefined;
-          nodeLookup.forEach((child, childId) => {
+          for (const [childId, child] of nodeLookup) {
             if (child.parentNode === nodeId) {
               childNodes.push({
                 id: childId,
@@ -163,7 +163,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
                 }
               }
             }
-          });
+          }
 
           onResizeStart?.(event, { ...prevValues });
         }
@@ -222,13 +222,13 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
             if (childNodes.length > 0) {
               const xChange = x - prevX;
               const yChange = y - prevY;
-              childNodes.forEach((childNode) => {
+              for (const childNode of childNodes) {
                 childNode.position = {
                   x: childNode.position.x - xChange,
                   y: childNode.position.y - yChange,
                 };
                 childChanges.push(childNode);
-              });
+              }
             }
           }
 

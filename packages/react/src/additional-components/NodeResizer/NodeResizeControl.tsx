@@ -90,14 +90,14 @@ function ResizeControl({
             changes.push(dimensionChange);
           }
 
-          childChanges.forEach((childChange) => {
+          for (const childChange of childChanges) {
             const positionChange: NodePositionChange = {
               ...childChange,
               type: 'position',
             };
 
             changes.push(positionChange);
-          });
+          }
 
           triggerNodeChanges(changes);
         },

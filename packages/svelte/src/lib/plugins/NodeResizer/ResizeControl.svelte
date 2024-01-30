@@ -77,12 +77,12 @@
                 ? { x: change.x, y: change.y }
                 : node.position;
 
-            childChanges.forEach((childChange) => {
+            for (const childChange of childChanges) {
               const childNode = $nodeLookup.get(childChange.id);
               if (childNode) {
                 childNode.position = childChange.position;
               }
-            });
+            }
 
             $nodes = $nodes;
           }
