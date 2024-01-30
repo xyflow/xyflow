@@ -106,6 +106,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
 
     let node: NodeBase | undefined = undefined;
     let childNodes: XYResizerChildChange[] = [];
+    let parentNode: NodeBase | undefined = undefined; // Needed to fix expandParent
     let parentExtent: CoordinateExtent | undefined = undefined;
     let childExtent: CoordinateExtent | undefined = undefined;
 
@@ -131,9 +132,10 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
             aspectRatio: prevValues.width / prevValues.height,
           };
 
-          if (node.extent === 'parent') {
-            const parentNode = nodeLookup.get(node.parentNode!);
-            if (parentNode) {
+          parentNode = undefined;
+          if (node.extent === 'parent' || node.expandParent) {
+            parentNode = nodeLookup.get(node.parentNode!);
+            if (parentNode && node.extent === 'parent') {
               parentExtent = nodeToParentExtent(parentNode);
             }
           }
@@ -202,6 +204,19 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
 
               prevValues.x = change.x;
               prevValues.y = change.y;
+
+              // Fix expandParent when resizing from top/left
+              if (parentNode && node.expandParent) {
+                if (change.x < 0) {
+                  prevValues.x = 0;
+                  startValues.x = startValues.x - change.x;
+                }
+
+                if (change.y < 0) {
+                  prevValues.y = 0;
+                  startValues.y = startValues.y - change.y;
+                }
+              }
             }
 
             if (childNodes.length > 0) {
