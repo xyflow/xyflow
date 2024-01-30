@@ -187,7 +187,17 @@ export function getDimensionsAfterResize(
         clampX = Math.max(clampX, aspectExtentClamp);
       }
 
-      // TODO: Check if the child extent is restricting the resize
+      // Check if the child extent is restricting the resize
+      if (childExtent) {
+        let aspectExtentClamp = 0;
+        if ((!affectsX && !affectsY) || (affectsX && !affectsY && isDiagonal)) {
+          aspectExtentClamp = getLowerExtentClamp(startY + newWidth / aspectRatio, childExtent[1][1]) * aspectRatio;
+        } else {
+          aspectExtentClamp =
+            getUpperExtentClamp(startY + (affectsX ? distX : -distX) / aspectRatio, childExtent[0][1]) * aspectRatio;
+        }
+        clampX = Math.max(clampX, aspectExtentClamp);
+      }
     }
 
     // Do the same thing for vertical resizing
@@ -206,7 +216,16 @@ export function getDimensionsAfterResize(
         clampY = Math.max(clampY, aspectExtentClamp);
       }
 
-      // TODO: Check if the child extent is restricting the resize
+      if (childExtent) {
+        let aspectExtentClamp = 0;
+        if ((!affectsX && !affectsY) || (affectsY && !affectsX && isDiagonal)) {
+          aspectExtentClamp = getLowerExtentClamp(startX + newHeight * aspectRatio, childExtent[1][0]) / aspectRatio;
+        } else {
+          aspectExtentClamp =
+            getUpperExtentClamp(startX + (affectsY ? distY : -distY) * aspectRatio, childExtent[0][0]) / aspectRatio;
+        }
+        clampY = Math.max(clampY, aspectExtentClamp);
+      }
     }
   }
 
