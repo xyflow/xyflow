@@ -5,7 +5,7 @@ import {
   calcAutoPan,
   getEventPosition,
   getPointerPosition,
-  calcNextPosition,
+  calculateNodePosition,
   snapPosition,
   getNodesBounds,
   rectToBox,
@@ -103,7 +103,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   function update({ noDragClassName, handleSelector, domNode, isSelectable, nodeId }: DragUpdateParams) {
     function updateNodes({ x, y }: XYPosition) {
       const {
-        nodes,
         nodeLookup,
         nodeExtent,
         snapGrid,
@@ -121,7 +120,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       let nodesBox: Box = { x: 0, y: 0, x2: 0, y2: 0 };
 
       if (dragItems.length > 1 && nodeExtent) {
-        const rect = getNodesBounds(dragItems as unknown as NodeBase[], nodeOrigin);
+        const rect = getNodesBounds(dragItems as unknown as NodeBase[], { nodeOrigin });
         nodesBox = rectToBox(rect);
       }
 
@@ -149,13 +148,20 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
             n.computed.positionAbsolute.y + (n.computed?.height ?? 0) - nodesBox.y2 + nodeExtent[1][1];
         }
 
-        const updatedPos = calcNextPosition(n, nextPosition, nodes, adjustedNodeExtent, nodeOrigin, onError);
+        const { position, positionAbsolute } = calculateNodePosition({
+          nodeId: n.id,
+          nextPosition,
+          nodeLookup,
+          nodeExtent: adjustedNodeExtent,
+          nodeOrigin,
+          onError,
+        });
 
         // we want to make sure that we only fire a change event when there is a change
-        hasChange = hasChange || n.position.x !== updatedPos.position.x || n.position.y !== updatedPos.position.y;
+        hasChange = hasChange || n.position.x !== position.x || n.position.y !== position.y;
 
-        n.position = updatedPos.position;
-        n.computed.positionAbsolute = updatedPos.positionAbsolute;
+        n.position = position;
+        n.computed.positionAbsolute = positionAbsolute;
 
         return n;
       });

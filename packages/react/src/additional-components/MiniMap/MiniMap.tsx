@@ -25,7 +25,8 @@ const selector = (s: ReactFlowState) => {
 
   return {
     viewBB,
-    boundingRect: s.nodes.length > 0 ? getBoundsOfRects(getNodesBounds(s.nodes, s.nodeOrigin), viewBB) : viewBB,
+    boundingRect:
+      s.nodes.length > 0 ? getBoundsOfRects(getNodesBounds(s.nodes, { nodeOrigin: s.nodeOrigin }), viewBB) : viewBB,
     rfId: s.rfId,
     nodeOrigin: s.nodeOrigin,
     panZoom: s.panZoom,

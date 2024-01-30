@@ -13,7 +13,7 @@ type useHandleConnectionsParams = {
 };
 
 /**
- *  Hook to check if a <Handle /> is connected to another <Handle /> and get the connections.
+ * Hook to check if a <Handle /> is connected to another <Handle /> and get the connections.
  *
  * @public
  * @param param.type - handle type 'source' or 'target'

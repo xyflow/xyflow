@@ -22,6 +22,7 @@
 	import CustomEdge from './CustomEdge.svelte';
 
 	import '@xyflow/svelte/dist/style.css';
+	import InitTracker from './InitTracker.svelte';
 
 	const nodeTypes: NodeTypes = {
 		custom: CustomNode,
@@ -148,6 +149,7 @@
 	selectionMode={SelectionMode.Full}
 	initialViewport={{ x: 100, y: 100, zoom: 2 }}
 	snapGrid={[25, 25]}
+	oninit={() => console.log('on init')}
 	on:nodeclick={(event) => console.log('on node click', event)}
 	on:nodemouseenter={(event) => console.log('on node enter', event)}
 	on:nodemouseleave={(event) => console.log('on node leave', event)}
@@ -207,6 +209,8 @@
 			}}>hide/unhide</button
 		>
 	</Panel>
+
+	<InitTracker />
 </SvelteFlow>
 
 <style>

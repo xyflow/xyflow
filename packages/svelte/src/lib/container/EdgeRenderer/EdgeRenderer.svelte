@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { EdgeWrapper } from '$lib/components/EdgeWrapper';
+  import { CallOnMount } from '$lib/components/CallOnMount';
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
   import type { DefaultEdgeOptions } from '$lib/types';
@@ -8,8 +9,8 @@
   export let defaultEdgeOptions: DefaultEdgeOptions | undefined;
 
   const {
-    elementsSelectable,
     visibleEdges,
+    edgesInitialized,
     edges: { setDefaultOptions }
   } = useStore();
 
@@ -54,4 +55,15 @@
       on:edgecontextmenu
     />
   {/each}
+
+  {#if $visibleEdges.length > 0}
+    <CallOnMount
+      onMount={() => {
+        $edgesInitialized = true;
+      }}
+      onDestroy={() => {
+        $edgesInitialized = false;
+      }}
+    />
+  {/if}
 </div>

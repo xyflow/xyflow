@@ -86,31 +86,31 @@ const useViewportHelper = (): ViewportHelperFunctions => {
 
         panZoom?.setViewport(viewport, { duration: options?.duration });
       },
-      screenToFlowPosition: (position: XYPosition, options: { snapToGrid: boolean } = { snapToGrid: true }) => {
+      screenToFlowPosition: (clientPosition: XYPosition, options: { snapToGrid: boolean } = { snapToGrid: true }) => {
         const { transform, snapGrid, domNode } = store.getState();
 
         if (!domNode) {
-          return position;
+          return clientPosition;
         }
 
         const { x: domX, y: domY } = domNode.getBoundingClientRect();
 
         const correctedPosition = {
-          x: position.x - domX,
-          y: position.y - domY,
+          x: clientPosition.x - domX,
+          y: clientPosition.y - domY,
         };
 
         return pointToRendererPoint(correctedPosition, transform, options.snapToGrid, snapGrid);
       },
-      flowToScreenPosition: (position: XYPosition) => {
+      flowToScreenPosition: (flowPosition: XYPosition) => {
         const { transform, domNode } = store.getState();
 
         if (!domNode) {
-          return position;
+          return flowPosition;
         }
 
         const { x: domX, y: domY } = domNode.getBoundingClientRect();
-        const rendererPosition = rendererPointToPoint(position, transform);
+        const rendererPosition = rendererPointToPoint(flowPosition, transform);
 
         return {
           x: rendererPosition.x + domX,

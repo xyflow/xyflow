@@ -79,7 +79,6 @@ export {
   type ColorMode,
   type ColorModeClass,
   type HandleType,
-  type OnBeforeDelete,
   type ShouldResize,
   type OnResizeStart,
   type OnResize,

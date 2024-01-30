@@ -6,10 +6,7 @@ export function handleParentExpand(updatedElements: any[], updateItem: any) {
   for (const [index, item] of updatedElements.entries()) {
     if (item.id === updateItem.parentNode) {
       const parent = { ...item };
-
-      if (!parent.computed) {
-        parent.computed = {};
-      }
+      parent.computed ??= {};
 
       const extendWidth = updateItem.position.x + updateItem.computed.width - parent.computed.width;
       const extendHeight = updateItem.position.y + updateItem.computed.height - parent.computed.height;

@@ -333,4 +333,6 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   onconnectstart?: OnConnectStart;
   /** When a user stops dragging a connection line, this event gets fired. */
   onconnectend?: OnConnectEnd;
+  /** This handler gets called when the flow is finished initializing */
+  oninit?: () => void;
 };

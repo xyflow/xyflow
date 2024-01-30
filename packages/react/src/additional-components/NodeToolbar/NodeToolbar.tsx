@@ -73,7 +73,7 @@ export function NodeToolbar({
     return null;
   }
 
-  const nodeRect: Rect = getNodesBounds(nodes, nodeOrigin);
+  const nodeRect: Rect = getNodesBounds(nodes, { nodeOrigin });
   const zIndex: number = Math.max(...nodes.map((node) => (node[internalsSymbol]?.z || 1) + 1));
 
   const wrapperStyle: CSSProperties = {
