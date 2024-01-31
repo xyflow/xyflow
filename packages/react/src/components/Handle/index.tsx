@@ -185,6 +185,7 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
 
     return (
       <div
+        id={id}
         data-handleid={handleId}
         data-nodeid={nodeId}
         data-handlepos={position}
