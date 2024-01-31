@@ -61,7 +61,7 @@
   }
 
   const nodeComponent: ComponentType<SvelteComponent<NodeProps>> =
-    $nodeTypes[nodeType] || DefaultNode;
+    $nodeTypes[nodeType] || $nodeTypes['default'] || DefaultNode;
   const dispatch = createEventDispatcher<{
     nodeclick: { node: Node; event: MouseEvent | TouchEvent };
     nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };
