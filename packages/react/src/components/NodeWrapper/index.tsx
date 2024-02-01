@@ -88,7 +88,7 @@ export function NodeWrapper({
 
       return () => resizeObserver?.unobserve(currNode);
     }
-  }, [node.hidden]);
+  }, [node]);
 
   useEffect(() => {
     // when the user programmatically changes the source or handle position, we re-initialize the node

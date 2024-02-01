@@ -99,7 +99,7 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
       },
     };
     const z = (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0);
-    const currInternals = n?.[internalsSymbol] || currentStoreNode?.[internalsSymbol];
+    const currInternals = n?.[internalsSymbol]; //|| currentStoreNode?.[internalsSymbol];
 
     if (node.parentNode) {
       parentNodes[node.parentNode] = true;
