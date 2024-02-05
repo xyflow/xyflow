@@ -2,7 +2,10 @@
 
 ## 0.0.36
 
-- a better NodeResizer (child nodes do not move when parent node gets resized) 
+## Minor changes
+
+- a better NodeResizer (child nodes do not move when parent node gets resized)
+- fix `on:panecontextmenu`
 
 ## 0.0.35
 
