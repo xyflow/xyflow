@@ -1,5 +1,5 @@
 import { CoordinateExtent } from '../types';
-import { clamp, getPointerPosition } from '../utils';
+import { getPointerPosition } from '../utils';
 import { ControlPosition } from './types';
 
 type GetResizeDirectionParams = {
@@ -107,7 +107,7 @@ function xor(a: boolean, b: boolean) {
  * @param pointerPosition - the current pointer position corrected for snapping
  * @param boundaries - minimum and maximum dimensions of the node
  * @param keepAspectRatio - prevent changes of asprect ratio
- * @returns width: new width of node, height: new height of node
+ * @returns x, y, width and height of the node after resize
  */
 export function getDimensionsAfterResize(
   startValues: StartValues,
@@ -129,8 +129,8 @@ export function getDimensionsAfterResize(
   let distX = Math.floor(isHorizontal ? xSnapped - startValues.pointerX : 0);
   let distY = Math.floor(isVertical ? ySnapped - startValues.pointerY : 0);
 
-  let newWidth = startWidth + (affectsX ? -distX : distX);
-  let newHeight = startHeight + (affectsY ? -distY : distY);
+  const newWidth = startWidth + (affectsX ? -distX : distX);
+  const newHeight = startHeight + (affectsY ? -distY : distY);
 
   // Check if maxWidth, minWWidth, maxHeight, minHeight are restricting the resize
   let clampX = getSizeClamp(newWidth, minWidth, maxWidth);
@@ -258,16 +258,10 @@ export function getDimensionsAfterResize(
     }
   }
 
-  let width = startWidth + (affectsX ? -distX : distX);
-  let height = startHeight + (affectsY ? -distY : distY);
-
-  let x = affectsX ? startX + distX : startX;
-  let y = affectsY ? startY + distY : startY;
-
   return {
-    width,
-    height,
-    x,
-    y,
+    width: startWidth + (affectsX ? -distX : distX),
+    height: startHeight + (affectsY ? -distY : distY),
+    x: affectsX ? startX + distX : startX,
+    y: affectsY ? startY + distY : startY,
   };
 }

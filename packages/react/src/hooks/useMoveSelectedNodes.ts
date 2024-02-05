@@ -8,7 +8,7 @@ const selectedAndDraggable = (nodesDraggable: boolean) => (n: Node) =>
   n.selected && (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'));
 
 /**
- * Hook for updating node positions with keyboard presses
+ * Hook for updating node positions by passing a direction and factor
  *
  * @internal
  * @returns function for updating node positions

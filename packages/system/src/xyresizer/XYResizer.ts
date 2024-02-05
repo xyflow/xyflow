@@ -3,7 +3,7 @@ import { select } from 'd3-selection';
 
 import { getControlDirection, getDimensionsAfterResize, getResizeDirection } from './utils';
 import { getPointerPosition } from '../utils';
-import type { CoordinateExtent, NodeBase, NodeLookup, Transform } from '../types';
+import type { CoordinateExtent, NodeBase, NodeLookup, Transform, XYPosition } from '../types';
 import type { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, ControlPosition } from './types';
 
 const initPrevValues = { width: 0, height: 0, x: 0, y: 0 };
@@ -30,10 +30,7 @@ export type XYResizerChange = typeof initChange;
 
 export type XYResizerChildChange = {
   id: string;
-  position: {
-    x: number;
-    y: number;
-  };
+  position: XYPosition;
   extent?: 'parent' | CoordinateExtent;
 };
 
@@ -144,6 +141,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           // Determine largest minimal extent the parent node is allowed to resize to
           childNodes = [];
           childExtent = undefined;
+
           for (const [childId, child] of nodeLookup) {
             if (child.parentNode === nodeId) {
               childNodes.push({
@@ -151,8 +149,10 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
                 position: { ...child.position },
                 extent: child.extent,
               });
+
               if (child.extent === 'parent' || child.expandParent) {
                 const extent = nodeToChildExtent(child, node!);
+
                 if (childExtent) {
                   childExtent = [
                     [Math.min(extent[0][0], childExtent[0][0]), Math.min(extent[0][1], childExtent[0][1])],
@@ -171,8 +171,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
       .on('drag', (event: ResizeDragEvent) => {
         const { transform, snapGrid, snapToGrid } = getStoreItems();
         const pointerPosition = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
-
-        let childChanges: XYResizerChildChange[] = [];
+        const childChanges: XYResizerChildChange[] = [];
 
         if (node) {
           const change = { ...initChange };
