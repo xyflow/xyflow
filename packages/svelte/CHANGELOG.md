@@ -6,6 +6,7 @@
 
 - a better NodeResizer (child nodes do not move when parent node gets resized)
 - fix `on:panecontextmenu`
+- add `role="button"` to `<EdgeLabel />` to prevent a11y warnings
 
 ## 0.0.35
 
