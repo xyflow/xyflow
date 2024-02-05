@@ -7,7 +7,8 @@
     ResizeControlVariant,
     type ControlPosition,
     type XYResizerInstance,
-    type XYResizerChange
+    type XYResizerChange,
+    type XYResizerChildChange
   } from '@xyflow/system';
   import type { ResizeControlProps } from './types';
 
@@ -66,7 +67,7 @@
             snapToGrid: !!$snapGrid
           };
         },
-        onChange: (change: XYResizerChange) => {
+        onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
           const node = $nodeLookup.get(id);
           if (node) {
             node.height = change.isHeightChange ? change.height : node.height;
@@ -75,6 +76,13 @@
               change.isXPosChange || change.isYPosChange
                 ? { x: change.x, y: change.y }
                 : node.position;
+
+            for (const childChange of childChanges) {
+              const childNode = $nodeLookup.get(childChange.id);
+              if (childNode) {
+                childNode.position = childChange.position;
+              }
+            }
 
             $nodes = $nodes;
           }

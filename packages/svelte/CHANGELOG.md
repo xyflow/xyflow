@@ -1,5 +1,9 @@
 # @xyflow/svelte
 
+## 0.0.36
+
+- a better NodeResizer (child nodes do not move when parent node gets resized) 
+
 ## 0.0.35
 
 ## Minor changes

@@ -116,6 +116,42 @@ const initialNodes: Node[] = [
     position: { x: 250, y: 400 },
     style: { ...nodeStyle },
   },
+  {
+    id: '5',
+    type: 'defaultResizer',
+    data: { label: 'Parent', keepAspectRatio: true },
+    position: { x: 700, y: 0 },
+    style: { ...nodeStyle, width: 300, height: 400 },
+  },
+  {
+    id: '5a',
+    type: 'defaultResizer',
+    data: {
+      label: 'Child with extent: parent',
+    },
+    position: { x: 50, y: 50 },
+    parentNode: '5',
+    extent: 'parent',
+    style: { ...nodeStyle, width: 50, height: 100 },
+  },
+  {
+    id: '5b',
+    type: 'defaultResizer',
+    data: { label: 'Child with expandParent' },
+    position: { x: 150, y: 100 },
+    parentNode: '5',
+    expandParent: true,
+    style: { ...nodeStyle },
+  },
+  {
+    id: '5c',
+    type: 'defaultResizer',
+    data: { label: 'Child with expandParent & keepAspectRatio', keepAspectRatio: true },
+    position: { x: 25, y: 200 },
+    parentNode: '5',
+    expandParent: true,
+    style: { ...nodeStyle },
+  },
 ];
 
 const CustomNodeFlow = () => {

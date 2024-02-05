@@ -100,6 +100,29 @@
 			data: { label: 'horizontal resizer with maxWidth', maxWidth: 300 },
 			position: { x: 250, y: 400 },
 			style: nodeStyle
+		},
+		{
+			id: '5',
+			type: 'defaultResizer',
+			data: { label: 'Parent' },
+			position: { x: 700, y: 0 },
+			style: nodeStyle + 'width: 300px; height: 300px'
+		},
+		{
+			id: '5a',
+			type: 'defaultResizer',
+			data: { label: 'Child' },
+			position: { x: 50, y: 50 },
+			parentNode: '5',
+			style: nodeStyle
+		},
+		{
+			id: '5b',
+			type: 'defaultResizer',
+			data: { label: 'Child' },
+			position: { x: 100, y: 100 },
+			parentNode: '5',
+			style: nodeStyle
 		}
 	]);
 

@@ -14,7 +14,7 @@ import { useStore, useStoreApi } from '../../hooks/useStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
-import { useUpdateNodePositions } from '../../hooks/useUpdateNodePositions';
+import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes } from './utils';
 import type { NodeWrapperProps } from '../../types';
@@ -79,7 +79,7 @@ export function NodeWrapper({
   const prevTargetPosition = useRef(node.targetPosition);
   const prevType = useRef(nodeType);
 
-  const updatePositions = useUpdateNodePositions();
+  const moveSelectedNodes = useMoveSelectedNodes();
 
   useEffect(() => {
     if (nodeRef.current && !node.hidden) {
@@ -188,10 +188,9 @@ export function NodeWrapper({
           .toLowerCase()}. New position, x: ${~~positionAbsoluteX}, y: ${~~positionAbsoluteY}`,
       });
 
-      updatePositions({
-        x: arrowKeyDiffs[event.key].x,
-        y: arrowKeyDiffs[event.key].y,
-        isShiftPressed: event.shiftKey,
+      moveSelectedNodes({
+        direction: arrowKeyDiffs[event.key],
+        factor: event.shiftKey ? 4 : 1,
       });
     }
   };
