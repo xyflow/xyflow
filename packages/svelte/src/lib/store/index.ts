@@ -64,28 +64,22 @@ export function createStore({
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    store.nodes.update((nds) => {
-      return nds.map((node) => {
-        const nodeDragItem = (nodeDragItems as Array<Node | NodeDragItem>).find(
-          (ndi) => ndi.id === node.id
-        );
+    const nodeLookup = get(store.nodeLookup);
 
-        if (nodeDragItem) {
-          return {
-            ...node,
-            dragging,
-            position: nodeDragItem.position,
-            computed: {
-              ...node.computed,
-              positionAbsolute: nodeDragItem.computed?.positionAbsolute
-            },
-            [internalsSymbol]: node[internalsSymbol]
-          };
-        }
+    nodeDragItems.forEach((nodeDragItem) => {
+      const node = nodeLookup.get(nodeDragItem.id);
 
-        return node;
-      });
+      if (node) {
+        node.position = nodeDragItem.position;
+        node.dragging = dragging;
+        node.computed = {
+          ...node.computed,
+          positionAbsolute: nodeDragItem.computed?.positionAbsolute
+        };
+      }
     });
+
+    store.nodes.set(get(store.nodes));
   };
 
   function updateNodeDimensions(updates: Map<string, NodeDimensionUpdate>) {

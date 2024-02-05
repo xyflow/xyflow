@@ -1,4 +1,5 @@
-import { clamp, getPointerPosition } from '../utils';
+import { CoordinateExtent } from '../types';
+import { getPointerPosition } from '../utils';
 import { ControlPosition } from './types';
 
 type GetResizeDirectionParams = {
@@ -75,81 +76,192 @@ type StartValues = PrevValues & {
   aspectRatio: number;
 };
 
+function getLowerExtentClamp(lowerExtent: number, lowerBound: number) {
+  return Math.max(0, lowerBound - lowerExtent);
+}
+
+function getUpperExtentClamp(upperExtent: number, upperBound: number) {
+  return Math.max(0, upperExtent - upperBound);
+}
+
+function getSizeClamp(size: number, minSize: number, maxSize: number) {
+  return Math.max(0, minSize - size, size - maxSize);
+}
+
+function xor(a: boolean, b: boolean) {
+  return a ? !b : b;
+}
+
 /**
- * Calculates new width & height of node after resize based on pointer position
+ * Calculates new width & height and x & y of node after resize based on pointer position
+ * @description - Buckle up, this is a chunky one! If you want to determine the new dimensions of a node after a resize,
+ * you have to account for all possible restrictions: min/max width/height of the node, the maximum extent the node is allowed
+ * to move in (in this case: resize into) determined by the parent node, the minimal extent determined by child nodes
+ * with expandParent or extent: 'parent' set and oh yeah, these things also have to work with keepAspectRatio!
+ * The way this is done is by determining how much each of these restricting actually restricts the resize and then applying the
+ * strongest restriction. Because the resize affects x, y and width, height and width, height of a opposing side with keepAspectRatio,
+ * the resize amount is always kept in distX & distY amount (the distance in mouse movement)
+ * Instead of clamping each value, we first calculate the biggest 'clamp' (for the lack of a better name) and then apply it to all values.
  * @param startValues - starting values of resize
  * @param controlDirection - dimensions affected by the resize
  * @param pointerPosition - the current pointer position corrected for snapping
  * @param boundaries - minimum and maximum dimensions of the node
  * @param keepAspectRatio - prevent changes of asprect ratio
- * @returns width: new width of node, height: new height of node
+ * @returns x, y, width and height of the node after resize
  */
 export function getDimensionsAfterResize(
   startValues: StartValues,
   controlDirection: ReturnType<typeof getControlDirection>,
   pointerPosition: ReturnType<typeof getPointerPosition>,
   boundaries: { minWidth: number; maxWidth: number; minHeight: number; maxHeight: number },
-  keepAspectRatio: boolean
+  keepAspectRatio: boolean,
+  extent?: CoordinateExtent,
+  childExtent?: CoordinateExtent
 ) {
-  const { isHorizontal, isVertical, affectsX, affectsY } = controlDirection;
+  let { affectsX, affectsY } = controlDirection;
+  const { isHorizontal, isVertical } = controlDirection;
+  const isDiagonal = isHorizontal && isVertical;
+
   const { xSnapped, ySnapped } = pointerPosition;
   const { minWidth, maxWidth, minHeight, maxHeight } = boundaries;
 
-  const { pointerX: startX, pointerY: startY, width: startWidth, height: startHeight, aspectRatio } = startValues;
-  const distX = Math.floor(isHorizontal ? xSnapped - startX : 0);
-  const distY = Math.floor(isVertical ? ySnapped - startY : 0);
+  const { x: startX, y: startY, width: startWidth, height: startHeight, aspectRatio } = startValues;
+  let distX = Math.floor(isHorizontal ? xSnapped - startValues.pointerX : 0);
+  let distY = Math.floor(isVertical ? ySnapped - startValues.pointerY : 0);
 
-  let width = clamp(startWidth + (affectsX ? -distX : distX), minWidth, maxWidth);
-  let height = clamp(startHeight + (affectsY ? -distY : distY), minHeight, maxHeight);
+  const newWidth = startWidth + (affectsX ? -distX : distX);
+  const newHeight = startHeight + (affectsY ? -distY : distY);
 
-  if (keepAspectRatio) {
-    const nextAspectRatio = width / height;
-    const isDiagonal = isHorizontal && isVertical;
-    const isOnlyHorizontal = isHorizontal && !isVertical;
-    const isOnlyVertical = isVertical && !isHorizontal;
+  // Check if maxWidth, minWWidth, maxHeight, minHeight are restricting the resize
+  let clampX = getSizeClamp(newWidth, minWidth, maxWidth);
+  let clampY = getSizeClamp(newHeight, minHeight, maxHeight);
 
-    width = (nextAspectRatio <= aspectRatio && isDiagonal) || isOnlyVertical ? height * aspectRatio : width;
-    height = (nextAspectRatio > aspectRatio && isDiagonal) || isOnlyHorizontal ? width / aspectRatio : height;
-
-    if (width >= maxWidth) {
-      width = maxWidth;
-      height = maxWidth / aspectRatio;
-    } else if (width <= minWidth) {
-      width = minWidth;
-      height = minWidth / aspectRatio;
+  // Check if extent is restricting the resize
+  if (extent) {
+    let xExtentClamp = 0;
+    let yExtentClamp = 0;
+    if (affectsX && distX < 0) {
+      xExtentClamp = getLowerExtentClamp(startX + distX, extent[0][0]);
+    } else if (!affectsX && distX > 0) {
+      xExtentClamp = getUpperExtentClamp(startX + newWidth, extent[1][0]);
     }
 
-    if (height >= maxHeight) {
-      height = maxHeight;
-      width = maxHeight * aspectRatio;
-    } else if (height <= minHeight) {
-      height = minHeight;
-      width = minHeight * aspectRatio;
+    if (affectsY && distY < 0) {
+      yExtentClamp = getLowerExtentClamp(startY + distY, extent[0][1]);
+    } else if (!affectsY && distY > 0) {
+      yExtentClamp = getUpperExtentClamp(startY + newHeight, extent[1][1]);
+    }
+
+    clampX = Math.max(clampX, xExtentClamp);
+    clampY = Math.max(clampY, yExtentClamp);
+  }
+
+  // Check if the child extent is restricting the resize
+  if (childExtent) {
+    let xExtentClamp = 0;
+    let yExtentClamp = 0;
+    if (affectsX && distX > 0) {
+      xExtentClamp = getUpperExtentClamp(startX + distX, childExtent[0][0]);
+    } else if (!affectsX && distX < 0) {
+      xExtentClamp = getLowerExtentClamp(startX + newWidth, childExtent[1][0]);
+    }
+
+    if (affectsY && distY > 0) {
+      yExtentClamp = getUpperExtentClamp(startY + distY, childExtent[0][1]);
+    } else if (!affectsY && distY < 0) {
+      yExtentClamp = getLowerExtentClamp(startY + newHeight, childExtent[1][1]);
+    }
+
+    clampX = Math.max(clampX, xExtentClamp);
+    clampY = Math.max(clampY, yExtentClamp);
+  }
+
+  // Check if the aspect ratio resizing of the other side is restricting the resize
+  if (keepAspectRatio) {
+    if (isHorizontal) {
+      // Check if the max dimensions might be restricting the resize
+      const aspectHeightClamp = getSizeClamp(newWidth / aspectRatio, minHeight, maxHeight) * aspectRatio;
+      clampX = Math.max(clampX, aspectHeightClamp);
+
+      // Check if the extent is restricting the resize
+      if (extent) {
+        let aspectExtentClamp = 0;
+        if ((!affectsX && !affectsY) || (affectsX && !affectsY && isDiagonal)) {
+          aspectExtentClamp = getUpperExtentClamp(startY + newWidth / aspectRatio, extent[1][1]) * aspectRatio;
+        } else {
+          aspectExtentClamp =
+            getLowerExtentClamp(startY + (affectsX ? distX : -distX) / aspectRatio, extent[0][1]) * aspectRatio;
+        }
+        clampX = Math.max(clampX, aspectExtentClamp);
+      }
+
+      // Check if the child extent is restricting the resize
+      if (childExtent) {
+        let aspectExtentClamp = 0;
+        if ((!affectsX && !affectsY) || (affectsX && !affectsY && isDiagonal)) {
+          aspectExtentClamp = getLowerExtentClamp(startY + newWidth / aspectRatio, childExtent[1][1]) * aspectRatio;
+        } else {
+          aspectExtentClamp =
+            getUpperExtentClamp(startY + (affectsX ? distX : -distX) / aspectRatio, childExtent[0][1]) * aspectRatio;
+        }
+        clampX = Math.max(clampX, aspectExtentClamp);
+      }
+    }
+
+    // Do the same thing for vertical resizing
+    if (isVertical) {
+      const aspectWidthClamp = getSizeClamp(newHeight * aspectRatio, minWidth, maxWidth) / aspectRatio;
+      clampY = Math.max(clampY, aspectWidthClamp);
+
+      if (extent) {
+        let aspectExtentClamp = 0;
+        if ((!affectsX && !affectsY) || (affectsY && !affectsX && isDiagonal)) {
+          aspectExtentClamp = getUpperExtentClamp(startX + newHeight * aspectRatio, extent[1][0]) / aspectRatio;
+        } else {
+          aspectExtentClamp =
+            getLowerExtentClamp(startX + (affectsY ? distY : -distY) * aspectRatio, extent[0][0]) / aspectRatio;
+        }
+        clampY = Math.max(clampY, aspectExtentClamp);
+      }
+
+      if (childExtent) {
+        let aspectExtentClamp = 0;
+        if ((!affectsX && !affectsY) || (affectsY && !affectsX && isDiagonal)) {
+          aspectExtentClamp = getLowerExtentClamp(startX + newHeight * aspectRatio, childExtent[1][0]) / aspectRatio;
+        } else {
+          aspectExtentClamp =
+            getUpperExtentClamp(startX + (affectsY ? distY : -distY) * aspectRatio, childExtent[0][0]) / aspectRatio;
+        }
+        clampY = Math.max(clampY, aspectExtentClamp);
+      }
+    }
+  }
+
+  distY = distY + (distY < 0 ? clampY : -clampY);
+  distX = distX + (distX < 0 ? clampX : -clampX);
+
+  if (keepAspectRatio) {
+    if (isDiagonal) {
+      if (newWidth > newHeight * aspectRatio) {
+        distY = (xor(affectsX, affectsY) ? -distX : distX) / aspectRatio;
+      } else {
+        distX = (xor(affectsX, affectsY) ? -distY : distY) * aspectRatio;
+      }
+    } else {
+      if (isHorizontal) {
+        distY = distX / aspectRatio;
+        affectsY = affectsX;
+      } else {
+        distX = distY * aspectRatio;
+        affectsX = affectsY;
+      }
     }
   }
 
   return {
-    width,
-    height,
-  };
-}
-
-/**
- * Determines new x & y position of node after resize based on new width & height
- * @param startValues - starting values of resize
- * @param controlDirection - dimensions affected by the resize
- * @param width - new width of node
- * @param height - new height of node
- * @returns x: new x position of node, y: new y position of node
- */
-export function getPositionAfterResize(
-  startValues: StartValues,
-  controlDirection: ReturnType<typeof getControlDirection>,
-  width: number,
-  height: number
-) {
-  return {
-    x: controlDirection.affectsX ? startValues.x - (width - startValues.width) : startValues.x,
-    y: controlDirection.affectsY ? startValues.y - (height - startValues.height) : startValues.y,
+    width: startWidth + (affectsX ? -distX : distX),
+    height: startHeight + (affectsY ? -distY : distY),
+    x: affectsX ? startX + distX : startX,
+    y: affectsY ? startY + distY : startY,
   };
 }
