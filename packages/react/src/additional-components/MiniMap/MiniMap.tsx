@@ -49,6 +49,7 @@ function MiniMapComponent({
   // We need to rename the prop to be `CapitalCase` so that JSX will render it as
   // a component properly.
   nodeComponent,
+  bgColor,
   maskColor,
   maskStrokeColor = 'none',
   maskStrokeWidth = 1,
@@ -130,7 +131,8 @@ function MiniMapComponent({
       style={
         {
           ...style,
-          '--xy-minimap-mask-color-props': typeof maskColor === 'string' ? maskColor : undefined,
+          '--xy-minimap-background-color-props': typeof bgColor === 'string' ? bgColor : undefined,
+          '--xy-minimap-mask-background-color-props': typeof maskColor === 'string' ? maskColor : undefined,
           '--xy-minimap-node-background-color-props': typeof nodeColor === 'string' ? nodeColor : undefined,
           '--xy-minimap-node-stroke-color-props': typeof nodeStrokeColor === 'string' ? nodeStrokeColor : undefined,
           '--xy-minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'string' ? nodeStrokeWidth : undefined,
@@ -143,6 +145,7 @@ function MiniMapComponent({
         width={elementWidth}
         height={elementHeight}
         viewBox={`${x} ${y} ${width} ${height}`}
+        className="react-flow__minimap-svg"
         role="img"
         aria-labelledby={labelledBy}
         ref={svg}
@@ -164,7 +167,7 @@ function MiniMapComponent({
         M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
           fillRule="evenodd"
           stroke={maskStrokeColor}
-          strokeWidth={maskStrokeWidth}
+          strokeWidth={maskStrokeWidth * viewScale}
           pointerEvents="none"
         />
       </svg>

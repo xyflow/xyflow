@@ -310,7 +310,14 @@ svg.xy-flow__connectionline {
 }
 
 .xy-flow__minimap {
-  background: var(--xy-minimap-background-color, var(--xy-minimap-background-color-default));
+  background: var(
+    --xy-minimap-background-color,
+    var(--xy-minimap-background-color-props, var(--xy-minimap-background-color-default))
+  );
+
+  &-svg {
+    display: block;
+  }
 
   &-mask {
     fill: var(

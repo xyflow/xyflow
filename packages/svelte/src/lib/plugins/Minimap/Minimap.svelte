@@ -27,7 +27,7 @@
   export let bgColor: $$Props['bgColor'] = undefined;
   export let maskColor: $$Props['maskColor'] = undefined;
   export let maskStrokeColor: $$Props['maskStrokeColor'] = undefined;
-  export let maskStrokeWidth: $$Props['maskStrokeWidth'] = undefined;
+  export let maskStrokeWidth: $$Props['maskStrokeWidth'] = 1;
   export let width: $$Props['width'] = undefined;
   export let height: $$Props['height'] = undefined;
   export let pannable: $$Props['pannable'] = true;
@@ -83,7 +83,7 @@
 
 <Panel
   {position}
-  {style}
+  style={style + `;--xy-minimap-background-color-props:${bgColor}`}
   class={cc(['svelte-flow__minimap', className])}
   data-testid="svelte-flow__minimap"
 >
@@ -92,12 +92,10 @@
       width={elementWidth}
       height={elementHeight}
       viewBox="{x} {y} {viewboxWidth} {viewboxHeight}"
+      class="svelte-flow__minimap-svg"
       role="img"
       aria-labelledby={labelledBy}
-      style:--xy-minimap-background-color-props={bgColor}
-      style:--xy-minimap-mask-color-props={maskColor}
-      style:--xy-minimap-mask-stroke-color-props={maskStrokeColor}
-      style:--xy-minimap-mask-stroke-width-props={maskStrokeWidth}
+      style:--xy-minimap-mask-background-color-props={maskColor}
       use:interactive={{
         panZoom: $panZoom,
         viewport,
@@ -137,6 +135,8 @@
           offset * 2}h{-viewboxWidth - offset * 2}z
       M{viewBB.x},{viewBB.y}h{viewBB.width}v{viewBB.height}h{-viewBB.width}z"
         fill-rule="evenodd"
+        stroke={maskStrokeColor}
+        stroke-width={maskStrokeWidth ?? 1 * viewScale}
         pointer-events="none"
       />
     </svg>
