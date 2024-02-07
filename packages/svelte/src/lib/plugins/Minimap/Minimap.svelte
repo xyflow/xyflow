@@ -97,7 +97,9 @@
       aria-labelledby={labelledBy}
       style:--xy-minimap-mask-background-color-props={maskColor}
       style:--xy-minimap-mask-stroke-color-props={maskStrokeColor}
-      style:--xy-minimap-mask-stroke-width-props={(maskStrokeWidth ?? 0) * viewScale}
+      style:--xy-minimap-mask-stroke-width-props={maskStrokeWidth
+        ? maskStrokeWidth * viewScale
+        : undefined}
       use:interactive={{
         panZoom: $panZoom,
         viewport,
