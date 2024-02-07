@@ -84,8 +84,8 @@ const CustomNodeFlow = () => {
 
   return (
     <ReactFlow
-      defaultNodes={nodes}
-      defaultEdges={edges}
+      nodes={nodes}
+      edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
