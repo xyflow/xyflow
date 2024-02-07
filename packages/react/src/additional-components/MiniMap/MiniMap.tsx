@@ -49,9 +49,10 @@ function MiniMapComponent({
   // We need to rename the prop to be `CapitalCase` so that JSX will render it as
   // a component properly.
   nodeComponent,
+  bgColor,
   maskColor,
-  maskStrokeColor = 'none',
-  maskStrokeWidth = 1,
+  maskStrokeColor,
+  maskStrokeWidth,
   position = 'bottom-right',
   onClick,
   onNodeClick,
@@ -130,7 +131,11 @@ function MiniMapComponent({
       style={
         {
           ...style,
-          '--xy-minimap-mask-color-props': typeof maskColor === 'string' ? maskColor : undefined,
+          '--xy-minimap-background-color-props': typeof bgColor === 'string' ? bgColor : undefined,
+          '--xy-minimap-mask-background-color-props': typeof maskColor === 'string' ? maskColor : undefined,
+          '--xy-minimap-mask-stroke-color-props': typeof maskStrokeColor === 'string' ? maskStrokeColor : undefined,
+          '--xy-minimap-mask-stroke-width-props':
+            typeof maskStrokeWidth === 'number' ? maskStrokeWidth * viewScale : undefined,
           '--xy-minimap-node-background-color-props': typeof nodeColor === 'string' ? nodeColor : undefined,
           '--xy-minimap-node-stroke-color-props': typeof nodeStrokeColor === 'string' ? nodeStrokeColor : undefined,
           '--xy-minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'string' ? nodeStrokeWidth : undefined,
@@ -143,6 +148,7 @@ function MiniMapComponent({
         width={elementWidth}
         height={elementHeight}
         viewBox={`${x} ${y} ${width} ${height}`}
+        className="react-flow__minimap-svg"
         role="img"
         aria-labelledby={labelledBy}
         ref={svg}
@@ -163,8 +169,6 @@ function MiniMapComponent({
           d={`M${x - offset},${y - offset}h${width + offset * 2}v${height + offset * 2}h${-width - offset * 2}z
         M${viewBB.x},${viewBB.y}h${viewBB.width}v${viewBB.height}h${-viewBB.width}z`}
           fillRule="evenodd"
-          stroke={maskStrokeColor}
-          strokeWidth={maskStrokeWidth}
           pointerEvents="none"
         />
       </svg>
