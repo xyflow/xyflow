@@ -11,21 +11,17 @@ function getNodeIntersection(intersectionNode: Node, targetNode: Node): XYPositi
     position: intersectionNodePosition,
   } = intersectionNode;
 
-  const {
-    width: targetNodeWidth,
-    height: targetNodeHeight,
-    positionAbsolute: targetNodePosition,
-  } = targetNode;
+  const { width: targetNodeWidth, height: targetNodeHeight, positionAbsolute: targetNodePosition } = targetNode;
 
   const w = (intersectionNodeWidth ?? 0) / 2;
   const h = (intersectionNodeHeight ?? 0) / 2;
-  const targetW = (targetNodeWidth ?? 0) / 2
-  const targetH = (targetNodeHeight ?? 0) / 2
+  const targetW = (targetNodeWidth ?? 0) / 2;
+  const targetH = (targetNodeHeight ?? 0) / 2;
 
   const x2 = intersectionNodePosition.x + w;
   const y2 = intersectionNodePosition.y + h;
-  const x1 = targetNodePosition.x + targetW;
-  const y1 = targetNodePosition.y + targetH;
+  const x1 = (targetNodePosition?.x ?? 0) + targetW;
+  const y1 = (targetNodePosition?.y ?? 0) + targetH;
 
   const xx1 = (x1 - x2) / (2 * w) - (y1 - y2) / (2 * h);
   const yy1 = (x1 - x2) / (2 * w) + (y1 - y2) / (2 * h);

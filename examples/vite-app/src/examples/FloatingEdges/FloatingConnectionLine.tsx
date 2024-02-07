@@ -3,38 +3,33 @@ import { getBezierPath, ConnectionLineComponentProps, Node } from 'reactflow';
 
 import { getEdgeParams } from './utils';
 
-const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({
-  targetX,
-  targetY,
-  sourcePosition,
-  targetPosition,
-  sourceNode,
-}) => {
-  if (!sourceNode) {
+const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({ toX, toY, fromPosition, toPosition, fromNode }) => {
+  if (!fromNode) {
     return null;
   }
 
-  const targetNode = {
+  const toNode = {
     id: 'connection-target',
     width: 1,
     height: 1,
-    position: { x: targetX, y: targetY },
+    position: { x: toX, y: toY },
+    positionAbsolute: { x: toX, y: toY },
   } as Node;
 
-  const { sx, sy } = getEdgeParams(sourceNode, targetNode);
-  const d = getBezierPath({
+  const { sx, sy } = getEdgeParams(fromNode, toNode);
+  const [d] = getBezierPath({
     sourceX: sx,
     sourceY: sy,
-    sourcePosition,
-    targetPosition,
-    targetX,
-    targetY,
+    sourcePosition: fromPosition,
+    targetPosition: toPosition,
+    targetX: toX,
+    targetY: toY,
   });
 
   return (
     <g>
       <path fill="none" stroke="#222" strokeWidth={1.5} className="animated" d={d} />
-      <circle cx={targetX} cy={targetY} fill="#fff" r={3} stroke="#222" strokeWidth={1.5} />
+      <circle cx={toX} cy={toY} fill="#fff" r={3} stroke="#222" strokeWidth={1.5} />
     </g>
   );
 };
