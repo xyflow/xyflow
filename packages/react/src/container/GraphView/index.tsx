@@ -27,7 +27,6 @@ export type GraphViewProps = Omit<
       | 'maxZoom'
       | 'defaultMarkerColor'
       | 'noDragClassName'
-      | 'noDragClassName'
       | 'noWheelClassName'
       | 'noPanClassName'
       | 'defaultViewport'
