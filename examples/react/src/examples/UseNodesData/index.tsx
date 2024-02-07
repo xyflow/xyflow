@@ -41,7 +41,6 @@ const initNodes: MyNode[] = [
     data: {},
     position: { x: 100, y: 0 },
   },
-
   {
     id: '2',
     type: 'text',

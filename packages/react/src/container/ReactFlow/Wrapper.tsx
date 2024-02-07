@@ -8,6 +8,8 @@ export function Wrapper({
   children,
   nodes,
   edges,
+  defaultNodes,
+  defaultEdges,
   width,
   height,
   fitView,
@@ -15,6 +17,8 @@ export function Wrapper({
   children: ReactNode;
   nodes?: Node[];
   edges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
@@ -31,6 +35,8 @@ export function Wrapper({
     <ReactFlowProvider
       initialNodes={nodes}
       initialEdges={edges}
+      defaultNodes={defaultNodes}
+      defaultEdges={defaultEdges}
       initialWidth={width}
       initialHeight={height}
       fitView={fitView}
