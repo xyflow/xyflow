@@ -15,8 +15,6 @@ import { initNodeOrigin } from '../../container/ReactFlow';
 const reactFlowFieldsToTrack = [
   'nodes',
   'edges',
-  'defaultNodes',
-  'defaultEdges',
   'onConnect',
   'onConnectStart',
   'onConnectEnd',
@@ -76,7 +74,6 @@ const fieldsToTrack = [...reactFlowFieldsToTrack, 'rfId'] as const;
 const selector = (s: ReactFlowState) => ({
   setNodes: s.setNodes,
   setEdges: s.setEdges,
-  setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
   setMinZoom: s.setMinZoom,
   setMaxZoom: s.setMaxZoom,
   setTranslateExtent: s.setTranslateExtent,
@@ -85,22 +82,13 @@ const selector = (s: ReactFlowState) => ({
 });
 
 export function StoreUpdater(props: StoreUpdaterProps) {
-  const {
-    setNodes,
-    setEdges,
-    setDefaultNodesAndEdges,
-    setMinZoom,
-    setMaxZoom,
-    setTranslateExtent,
-    setNodeExtent,
-    reset,
-  } = useStore(selector, shallow);
+  const { setNodes, setEdges, setMinZoom, setMaxZoom, setTranslateExtent, setNodeExtent, reset } = useStore(
+    selector,
+    shallow
+  );
   const store = useStoreApi();
 
   useEffect(() => {
-    const edgesWithDefaults = props.defaultEdges?.map((e) => ({ ...e, ...props.defaultEdgeOptions }));
-    setDefaultNodesAndEdges(props.defaultNodes, edgesWithDefaults);
-
     return () => {
       reset();
     };

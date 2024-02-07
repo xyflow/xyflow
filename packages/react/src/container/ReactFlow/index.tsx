@@ -166,7 +166,15 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
         data-testid="rf__wrapper"
         id={id}
       >
-        <Wrapper nodes={nodes} edges={edges} width={width} height={height} fitView={fitView}>
+        <Wrapper
+          nodes={nodes}
+          edges={edges}
+          defaultNodes={defaultNodes}
+          defaultEdges={defaultEdges}
+          width={width}
+          height={height}
+          fitView={fitView}
+        >
           <GraphView
             onInit={onInit}
             onNodeClick={onNodeClick}
@@ -234,8 +242,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
           <StoreUpdater
             nodes={nodes}
             edges={edges}
-            defaultNodes={defaultNodes}
-            defaultEdges={defaultEdges}
             onConnect={onConnect}
             onConnectStart={onConnectStart}
             onConnectEnd={onConnectEnd}

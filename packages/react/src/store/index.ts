@@ -28,19 +28,23 @@ import type {
 const createRFStore = ({
   nodes,
   edges,
+  defaultNodes,
+  defaultEdges,
   width,
   height,
   fitView,
 }: {
   nodes?: Node[];
   edges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
 }) =>
   createWithEqualityFn<ReactFlowState>(
     (set, get) => ({
-      ...getInitialState({ nodes, edges, width, height, fitView }),
+      ...getInitialState({ nodes, edges, width, height, fitView, defaultNodes, defaultEdges }),
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
         // setNodes() is called exclusively in response to user actions:
@@ -60,38 +64,6 @@ const createRFStore = ({
         updateConnectionLookup(connectionLookup, edgeLookup, edges);
 
         set({ edges });
-      },
-      // when the user works with an uncontrolled flow,
-      // we set a flag `hasDefaultNodes` / `hasDefaultEdges`
-      setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
-        const hasDefaultNodes = typeof nodes !== 'undefined';
-        const hasDefaultEdges = typeof edges !== 'undefined';
-
-        const nextState: {
-          nodes?: Node[];
-          edges?: Edge[];
-          hasDefaultNodes: boolean;
-          hasDefaultEdges: boolean;
-        } = {
-          hasDefaultNodes,
-          hasDefaultEdges,
-        };
-
-        if (hasDefaultNodes) {
-          const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
-          nextState.nodes = adoptUserProvidedNodes(nodes, nodeLookup, {
-            nodeOrigin,
-            elevateNodesOnSelect,
-          });
-        }
-        if (hasDefaultEdges) {
-          const { connectionLookup, edgeLookup } = get();
-          updateConnectionLookup(connectionLookup, edgeLookup, edges);
-
-          nextState.edges = edges;
-        }
-
-        set(nextState);
       },
       // Every node gets registerd at a ResizeObserver. Whenever a node
       // changes its dimensions, this function is called to measure the

@@ -10,6 +10,8 @@ export function ReactFlowProvider({
   children,
   initialNodes,
   initialEdges,
+  defaultNodes,
+  defaultEdges,
   initialWidth,
   initialHeight,
   fitView,
@@ -17,6 +19,8 @@ export function ReactFlowProvider({
   children: ReactNode;
   initialNodes?: Node[];
   initialEdges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
   initialWidth?: number;
   initialHeight?: number;
   fitView?: boolean;
@@ -27,6 +31,8 @@ export function ReactFlowProvider({
     storeRef.current = createRFStore({
       nodes: initialNodes,
       edges: initialEdges,
+      defaultNodes,
+      defaultEdges,
       width: initialWidth,
       height: initialHeight,
       fitView,
