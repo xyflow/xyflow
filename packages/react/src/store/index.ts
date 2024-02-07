@@ -10,8 +10,7 @@ import {
   updateConnectionLookup,
 } from '@xyflow/system';
 
-import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { updateNodesAndEdgesSelections } from './utils';
+import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import getInitialState from './initialState';
 import type {
   ReactFlowState,
@@ -53,7 +52,6 @@ const createRFStore = ({
         //
         // When this happens, we take the note objects passed by the user and extend them with fields
         // relevant for internal React Flow operations.
-        // TODO: consider updating the types to reflect the distinction between user-provided nodes and internal nodes.
         const nodesWithInternalData = adoptUserProvidedNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
 
         set({ nodes: nodesWithInternalData });
@@ -138,81 +136,67 @@ const createRFStore = ({
 
         get().triggerNodeChanges(changes);
       },
-
       triggerNodeChanges: (changes) => {
-        const { onNodesChange, nodeLookup, nodes, hasDefaultNodes, nodeOrigin, elevateNodesOnSelect } = get();
+        const { onNodesChange, setNodes, nodes, hasDefaultNodes } = get();
 
         if (changes?.length) {
           if (hasDefaultNodes) {
             const updatedNodes = applyNodeChanges(changes, nodes);
-            const nextNodes = adoptUserProvidedNodes(updatedNodes, nodeLookup, {
-              nodeOrigin,
-              elevateNodesOnSelect,
-            });
-            set({ nodes: nextNodes });
+            setNodes(updatedNodes);
           }
 
           onNodesChange?.(changes);
         }
       },
+      triggerEdgeChanges: (changes) => {
+        const { onEdgesChange, setEdges, edges, hasDefaultEdges } = get();
 
+        if (changes?.length) {
+          if (hasDefaultEdges) {
+            const updatedEdges = applyEdgeChanges(changes, edges);
+            setEdges(updatedEdges);
+          }
+
+          onEdgesChange?.(changes);
+        }
+      },
       addSelectedNodes: (selectedNodeIds) => {
-        const { multiSelectionActive, edges, nodes } = get();
-        let changedNodes: NodeSelectionChange[];
-        let changedEdges: EdgeSelectionChange[] | null = null;
+        const { multiSelectionActive, edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
 
         if (multiSelectionActive) {
-          changedNodes = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true)) as NodeSelectionChange[];
-        } else {
-          changedNodes = getSelectionChanges(nodes, new Set([...selectedNodeIds]), true);
-          changedEdges = getSelectionChanges(edges);
+          const nodeChanges = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true));
+          triggerNodeChanges(nodeChanges as NodeSelectionChange[]);
+          return;
         }
 
-        updateNodesAndEdgesSelections({
-          changedNodes,
-          changedEdges,
-          get,
-          set,
-        });
+        triggerNodeChanges(getSelectionChanges(nodes, new Set([...selectedNodeIds]), true));
+        triggerEdgeChanges(getSelectionChanges(edges));
       },
       addSelectedEdges: (selectedEdgeIds) => {
-        const { multiSelectionActive, edges, nodes } = get();
-        let changedEdges: EdgeSelectionChange[];
-        let changedNodes: NodeSelectionChange[] | null = null;
+        const { multiSelectionActive, edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
 
         if (multiSelectionActive) {
-          changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true)) as EdgeSelectionChange[];
-        } else {
-          changedEdges = getSelectionChanges(edges, new Set([...selectedEdgeIds]));
-          changedNodes = getSelectionChanges(nodes, new Set(), true);
+          const changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true));
+          triggerEdgeChanges(changedEdges as EdgeSelectionChange[]);
+          return;
         }
 
-        updateNodesAndEdgesSelections({
-          changedNodes,
-          changedEdges,
-          get,
-          set,
-        });
+        triggerEdgeChanges(getSelectionChanges(edges, new Set([...selectedEdgeIds])));
+        triggerNodeChanges(getSelectionChanges(nodes, new Set(), true));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
-        const { edges: storeEdges, nodes: storeNodes } = get();
+        const { edges: storeEdges, nodes: storeNodes, triggerNodeChanges, triggerEdgeChanges } = get();
         const nodesToUnselect = nodes ? nodes : storeNodes;
         const edgesToUnselect = edges ? edges : storeEdges;
 
-        const changedNodes = nodesToUnselect.map((n) => {
+        const nodeChanges = nodesToUnselect.map((n) => {
           n.selected = false;
           return createSelectionChange(n.id, false);
-        }) as NodeSelectionChange[];
-        const changedEdges = edgesToUnselect.map((edge) =>
-          createSelectionChange(edge.id, false)
-        ) as EdgeSelectionChange[];
-
-        updateNodesAndEdgesSelections({
-          changedNodes,
-          changedEdges,
-          get,
-          set,
         });
+        const edgeChanges = edgesToUnselect.map((edge) => createSelectionChange(edge.id, false));
+
+        triggerNodeChanges(nodeChanges as NodeSelectionChange[]);
+        triggerEdgeChanges(edgeChanges as EdgeSelectionChange[]);
       },
       setMinZoom: (minZoom) => {
         const { panZoom, maxZoom } = get();
@@ -232,21 +216,19 @@ const createRFStore = ({
         set({ translateExtent });
       },
       resetSelectedElements: () => {
-        const { edges, nodes } = get();
+        const { edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
 
-        const nodesToUnselect = nodes
-          .filter((e) => e.selected)
-          .map((n) => createSelectionChange(n.id, false)) as NodeSelectionChange[];
-        const edgesToUnselect = edges
-          .filter((e) => e.selected)
-          .map((e) => createSelectionChange(e.id, false)) as EdgeSelectionChange[];
+        const nodeChanges = nodes.reduce<NodeSelectionChange[]>(
+          (res, node) => (node.selected ? [...res, createSelectionChange(node.id, false) as NodeSelectionChange] : res),
+          []
+        );
+        const edgeChanges = edges.reduce<EdgeSelectionChange[]>(
+          (res, edge) => (edge.selected ? [...res, createSelectionChange(edge.id, false) as EdgeSelectionChange] : res),
+          []
+        );
 
-        updateNodesAndEdgesSelections({
-          changedNodes: nodesToUnselect,
-          changedEdges: edgesToUnselect,
-          get,
-          set,
-        });
+        triggerNodeChanges(nodeChanges);
+        triggerEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nodeExtent) => {
         const { nodes } = get();
