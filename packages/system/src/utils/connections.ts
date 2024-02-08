@@ -1,9 +1,9 @@
-import { Connection } from '../types';
+import { HandleConnection } from '../types';
 
 /**
  * @internal
  */
-export function areConnectionMapsEqual(a?: Map<string, Connection>, b?: Map<string, Connection>) {
+export function areConnectionMapsEqual(a?: Map<string, HandleConnection>, b?: Map<string, HandleConnection>) {
   if (!a && !b) {
     return true;
   }
@@ -31,15 +31,15 @@ export function areConnectionMapsEqual(a?: Map<string, Connection>, b?: Map<stri
  * @internal
  */
 export function handleConnectionChange(
-  a: Map<string, Connection>,
-  b: Map<string, Connection>,
-  cb?: (diff: Connection[]) => void
+  a: Map<string, HandleConnection>,
+  b: Map<string, HandleConnection>,
+  cb?: (diff: HandleConnection[]) => void
 ) {
   if (!cb) {
     return;
   }
 
-  const diff: Connection[] = [];
+  const diff: HandleConnection[] = [];
 
   a.forEach((connection, key) => {
     if (!b?.has(key)) {

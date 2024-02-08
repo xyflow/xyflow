@@ -6,7 +6,7 @@
     Position,
     XYHandle,
     isMouseEvent,
-    type Connection,
+    type HandleConnection,
     areConnectionMapsEqual,
     handleConnectionChange
   } from '@xyflow/system';
@@ -103,8 +103,8 @@
     }
   }
 
-  let prevConnections: Map<string, Connection> | null = null;
-  let connections: Map<string, Connection> | undefined;
+  let prevConnections: Map<string, HandleConnection> | null = null;
+  let connections: Map<string, HandleConnection> | undefined;
 
   $: if (onconnect || ondisconnect) {
     // connectionLookup is not reactive, so we use edges to get notified about updates
