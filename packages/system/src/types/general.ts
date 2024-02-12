@@ -28,6 +28,10 @@ export type Connection = {
   targetHandle: string | null;
 };
 
+export type HandleConnection = Connection & {
+  edgeId: string;
+};
+
 export type ConnectionStatus = 'valid' | 'invalid';
 
 export enum ConnectionMode {
@@ -136,7 +140,7 @@ export type UpdateConnection = (params: {
 export type ColorModeClass = 'light' | 'dark';
 export type ColorMode = ColorModeClass | 'system';
 
-export type ConnectionLookup = Map<string, Map<string, Connection>>;
+export type ConnectionLookup = Map<string, Map<string, HandleConnection>>;
 
 export type OnBeforeDeleteBase<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = ({
   nodes,

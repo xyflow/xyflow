@@ -1,5 +1,5 @@
 import { derived } from 'svelte/store';
-import { areConnectionMapsEqual, type Connection, type HandleType } from '@xyflow/system';
+import { areConnectionMapsEqual, type HandleConnection, type HandleType } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
 
@@ -9,7 +9,7 @@ export type useHandleConnectionsParams = {
   id?: string | null;
 };
 
-const initialConnections: Connection[] = [];
+const initialConnections: HandleConnection[] = [];
 
 /**
  *  Hook to check if a <Handle /> is connected to another <Handle /> and get the connections.
@@ -22,7 +22,7 @@ const initialConnections: Connection[] = [];
  */
 export function useHandleConnections({ nodeId, type, id = null }: useHandleConnectionsParams) {
   const { edges, connectionLookup } = useStore();
-  let prevConnections: Map<string, Connection> | undefined = undefined;
+  let prevConnections: Map<string, HandleConnection> | undefined = undefined;
 
   return derived(
     [edges, connectionLookup],

@@ -260,7 +260,7 @@ export function updateConnectionLookup(connectionLookup: ConnectionLookup, edgeL
 
     const prevSource = connectionLookup.get(sourceKey) || new Map();
     const prevTarget = connectionLookup.get(targetKey) || new Map();
-    const connection = { source, target, sourceHandle, targetHandle };
+    const connection = { edgeId: edge.id, source, target, sourceHandle, targetHandle };
 
     edgeLookup.set(edge.id, edge);
     connectionLookup.set(sourceKey, prevSource.set(`${target}-${targetHandle}`, connection));
