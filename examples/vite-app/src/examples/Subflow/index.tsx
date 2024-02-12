@@ -82,9 +82,9 @@ const initialNodes: Node[] = [
     id: '5',
     type: 'group',
     data: { label: 'Node 5' },
-    position: { x: 650, y: 250 },
+    position: { x: 650, y: 400 },
     className: 'light',
-    style: { width: 400, height: 150 },
+    style: { width: 50, height: 50 },
     zIndex: 1000,
   },
   {
@@ -98,7 +98,7 @@ const initialNodes: Node[] = [
   {
     id: '5b',
     data: { label: 'Node 5b' },
-    position: { x: 225, y: 50 },
+    position: { x: 100, y: 100 },
     className: 'light',
     parentNode: '5',
     expandParent: true,
@@ -212,19 +212,18 @@ const Subflow = () => {
       <Background />
 
       <Panel position="top-right">
-        <button onClick={resetTransform} style={{ marginRight: 5 }}>
-          reset transform
-        </button>
-        <button onClick={updatePos} style={{ marginRight: 5 }}>
-          change pos
-        </button>
-        <button onClick={toggleClassnames} style={{ marginRight: 5 }}>
-          toggle classnames
-        </button>
-        <button style={{ marginRight: 5 }} onClick={toggleChildNodes}>
-          toggleChildNodes
-        </button>
+        <button onClick={resetTransform}>reset transform</button>
+        <button onClick={updatePos}>change pos</button>
+        <button onClick={toggleClassnames}>toggle classnames</button>
+        <button onClick={toggleChildNodes}>toggleChildNodes</button>
         <button onClick={logToObject}>toObject</button>
+        <button
+          onClick={() => {
+            setNodes(initialNodes);
+          }}
+        >
+          reset nodes
+        </button>
       </Panel>
     </ReactFlow>
   );

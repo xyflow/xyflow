@@ -126,11 +126,16 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     useEffect(() => {
       if (nodeRef.current && !hidden) {
         const currNode = nodeRef.current;
-        resizeObserver?.observe(currNode);
 
+        if (!initialized) {
+          resizeObserver?.observe(currNode);
+        } else {
+          resizeObserver?.unobserve(currNode);
+        }
+        resizeObserver?.observe(currNode);
         return () => resizeObserver?.unobserve(currNode);
       }
-    }, [hidden]);
+    }, [hidden, initialized]);
 
     useEffect(() => {
       // when the user programmatically changes the source or handle position, we re-initialize the node
