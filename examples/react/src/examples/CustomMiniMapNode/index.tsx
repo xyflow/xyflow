@@ -27,9 +27,9 @@ const buttonStyle: CSSProperties = {
   zIndex: 4,
 };
 
-const CustomMiniMapNode = ({ x, y, width, height, color }: MiniMapNodeProps) => (
-  <circle cx={x} cy={y} r={Math.max(width, height) / 2} fill={color} />
-);
+const CustomMiniMapNode = ({ x, y, width, height }: MiniMapNodeProps) => {
+  return <circle cx={x} cy={y} r={Math.max(width, height) / 2} fill="#ffcc00" />;
+};
 
 const CustomMiniMapNodeFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);

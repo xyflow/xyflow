@@ -79,16 +79,27 @@ export function NodeWrapper({
   const prevTargetPosition = useRef(node.targetPosition);
   const prevType = useRef(nodeType);
 
+  const width = node.width ?? undefined;
+  const height = node.height ?? undefined;
+  const computedWidth = node.computed?.width;
+  const computedHeight = node.computed?.height;
+  const initialized = (!!computedWidth && !!computedHeight) || (!!width && !!height);
+
   const moveSelectedNodes = useMoveSelectedNodes();
 
   useEffect(() => {
     if (nodeRef.current && !node.hidden) {
       const currNode = nodeRef.current;
-      resizeObserver?.observe(currNode);
+
+      if (!initialized) {
+        resizeObserver?.observe(currNode);
+      } else {
+        resizeObserver?.unobserve(currNode);
+      }
 
       return () => resizeObserver?.unobserve(currNode);
     }
-  }, [node.hidden]);
+  }, [node.hidden, initialized]);
 
   useEffect(() => {
     // when the user programmatically changes the source or handle position, we re-initialize the node
@@ -123,11 +134,6 @@ export function NodeWrapper({
     return null;
   }
 
-  const width = node.width ?? undefined;
-  const height = node.height ?? undefined;
-  const computedWidth = node.computed?.width;
-  const computedHeight = node.computed?.height;
-
   const positionAbsoluteOrigin = getPositionWithOrigin({
     x: positionAbsoluteX,
     y: positionAbsoluteY,
@@ -135,7 +141,6 @@ export function NodeWrapper({
     height: computedHeight ?? height ?? 0,
     origin: node.origin || nodeOrigin,
   });
-  const initialized = (!!computedWidth && !!computedHeight) || (!!width && !!height);
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
 
   const onMouseEnterHandler = onMouseEnter ? (event: MouseEvent) => onMouseEnter(event, { ...node }) : undefined;

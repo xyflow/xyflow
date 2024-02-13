@@ -94,8 +94,8 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
       ...n,
       computed: {
         positionAbsolute: n.position,
-        width: n.computed?.width || currentStoreNode?.computed?.width,
-        height: n.computed?.height || currentStoreNode?.computed?.height,
+        width: n.computed?.width,
+        height: n.computed?.height,
       },
     };
     const z = (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0);
