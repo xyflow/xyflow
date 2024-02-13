@@ -14,8 +14,16 @@ function TextNode({ id, data }: NodeProps) {
   return (
     <div style={{ background: '#eee', color: '#222', padding: 10, fontSize: 12, borderRadius: 10 }}>
       <div>node {id}</div>
-      <div>
-        <input onChange={(evt) => updateText(evt.target.value)} value={text} />
+      <div style={{ marginTop: 5 }}>
+        <label style={{ fontSize: 12 }}>useState + updateNodeData</label>
+        <input onChange={(evt) => updateText(evt.target.value)} value={text} style={{ display: 'block' }} />
+
+        <label style={{ fontSize: 12 }}>updateNodeData</label>
+        <input
+          onChange={(evt) => updateNodeData(id, { text: evt.target.value })}
+          value={data.text}
+          style={{ display: 'block' }}
+        />
       </div>
       <Handle type="source" position={Position.Right} />
     </div>
