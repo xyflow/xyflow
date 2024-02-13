@@ -7,6 +7,7 @@
 - a better NodeResizer (child nodes do not move when parent node gets resized)
 - fix `on:panecontextmenu`
 - add `role="button"` to `<EdgeLabel />` to prevent a11y warnings
+- don't delete node when input is focused and user presses Backspace + Ctrl (or any other mod key)
 
 ## 0.0.35
 

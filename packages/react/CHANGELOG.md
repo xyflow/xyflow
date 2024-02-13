@@ -3,6 +3,7 @@
 ## 12.0.0-next.9
 
 - a better NodeResizer that works with subflows. Child nodes do not move when parent node gets resized and parent extent is taken into account
+- don't delete node when input is focused and user presses Backspace + Ctrl (or any other mod key)
 
 ## 12.0.0-next.8
 
