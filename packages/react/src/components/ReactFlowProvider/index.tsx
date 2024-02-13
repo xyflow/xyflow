@@ -26,7 +26,6 @@ export function ReactFlowProvider({
   fitView?: boolean;
 }) {
   const storeRef = useRef<UseBoundStoreWithEqualityFn<StoreApi<ReactFlowState>> | null>(null);
-
   if (!storeRef.current) {
     storeRef.current = createRFStore({
       nodes: initialNodes,

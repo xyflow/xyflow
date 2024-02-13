@@ -168,6 +168,7 @@ export type ReactFlowActions = {
   triggerEdgeChanges: (changes: EdgeChange[] | null) => void;
   panBy: PanBy;
   fitView: (nodes: Node[], options?: FitViewOptions) => boolean;
+  setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

@@ -63,6 +63,18 @@ const createRFStore = ({
 
         set({ edges });
       },
+      setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
+        if (nodes) {
+          const { setNodes } = get();
+          setNodes(nodes);
+          set({ hasDefaultNodes: true });
+        }
+        if (edges) {
+          const { setEdges } = get();
+          setEdges(edges);
+          set({ hasDefaultEdges: true });
+        }
+      },
       // Every node gets registerd at a ResizeObserver. Whenever a node
       // changes its dimensions, this function is called to measure the
       // new dimensions and update the nodes.

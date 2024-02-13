@@ -242,6 +242,8 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
           <StoreUpdater
             nodes={nodes}
             edges={edges}
+            defaultNodes={defaultNodes}
+            defaultEdges={defaultEdges}
             onConnect={onConnect}
             onConnectStart={onConnectStart}
             onConnectEnd={onConnectEnd}
