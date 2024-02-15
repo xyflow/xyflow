@@ -37,8 +37,9 @@ export function useHandleConnections({
   onDisconnect,
 }: useHandleConnectionsParams): HandleConnection[] {
   const _nodeId = useNodeId();
+  const currentNodeId = nodeId ?? _nodeId;
+
   const prevConnections = useRef<Map<string, HandleConnection> | null>(null);
-  const currentNodeId = nodeId || _nodeId;
 
   const connections = useStore(
     (state) => state.connectionLookup.get(`${currentNodeId}-${type}-${id}`),
