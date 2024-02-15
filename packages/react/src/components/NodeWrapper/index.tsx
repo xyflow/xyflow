@@ -84,22 +84,28 @@ export function NodeWrapper({
   const computedWidth = node.computed?.width;
   const computedHeight = node.computed?.height;
   const initialized = (!!computedWidth && !!computedHeight) || (!!width && !!height);
+  const hasHandleBounds = !!node[internalsSymbol]?.handleBounds;
 
   const moveSelectedNodes = useMoveSelectedNodes();
+
+  useEffect(() => {
+    return () => {
+      if (nodeRef.current) {
+        resizeObserver?.unobserve(nodeRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (nodeRef.current && !node.hidden) {
       const currNode = nodeRef.current;
 
-      if (!initialized) {
-        resizeObserver?.observe(currNode);
-      } else {
+      if (!initialized || !hasHandleBounds) {
         resizeObserver?.unobserve(currNode);
+        resizeObserver?.observe(currNode);
       }
-
-      return () => resizeObserver?.unobserve(currNode);
     }
-  }, [node.hidden, initialized]);
+  }, [node.hidden, initialized, hasHandleBounds]);
 
   useEffect(() => {
     // when the user programmatically changes the source or handle position, we re-initialize the node

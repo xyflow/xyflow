@@ -303,13 +303,7 @@ const createRFStore = ({
         set(currentConnection);
       },
 
-      reset: () => {
-        // @todo: what should we do about this? Do we still need it?
-        // if you are on a SPA with multiple flows, we want to make sure that the store gets resetted
-        // when you switch pages. Does this reset solves this? Currently it always gets called. This
-        // leads to an emtpy nodes array at the beginning.
-        // set({ ...getInitialState() });
-      },
+      reset: () => set({ ...getInitialState() }),
     }),
     Object.is
   );
