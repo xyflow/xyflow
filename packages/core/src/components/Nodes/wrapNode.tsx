@@ -54,6 +54,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     disableKeyboardA11y,
     ariaLabel,
     rfId,
+    hasHandleBounds,
   }: WrapNodeProps) => {
     const store = useStoreApi();
     const nodeRef = useRef<HTMLDivElement>(null);
@@ -124,13 +125,25 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     };
 
     useEffect(() => {
+      return () => {
+        if (nodeRef.current) {
+          resizeObserver?.unobserve(nodeRef.current);
+        }
+      };
+    }, []);
+
+    useEffect(() => {
       if (nodeRef.current && !hidden) {
         const currNode = nodeRef.current;
-        resizeObserver?.observe(currNode);
 
-        return () => resizeObserver?.unobserve(currNode);
+        if (!initialized || !hasHandleBounds) {
+          // At this point we always want to make sure that the node gets re-measured / re-initialized.
+          // We need to unobserve it first in case it is still observed
+          resizeObserver?.unobserve(currNode);
+          resizeObserver?.observe(currNode);
+        }
       }
-    }, [hidden]);
+    }, [hidden, initialized, hasHandleBounds]);
 
     useEffect(() => {
       // when the user programmatically changes the source or handle position, we re-initialize the node
