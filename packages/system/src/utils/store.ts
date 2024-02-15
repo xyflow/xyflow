@@ -17,7 +17,7 @@ import { getDimensions, getHandleBounds } from './dom';
 import { isNumeric } from './general';
 import { getNodePositionWithOrigin } from './graph';
 
-type ParentNodes = Record<string, boolean>;
+type ParentNodes = Set<string>;
 
 export function updateAbsolutePositions<NodeType extends NodeBase>(
   nodes: NodeType[],
@@ -26,12 +26,13 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
   parentNodes?: ParentNodes
 ) {
   return nodes.map((node) => {
-    if (node.parentNode && !nodeLookup.has(node.parentNode)) {
-      throw new Error(`Parent node ${node.parentNode} not found`);
-    }
+    if (node.parentNode) {
+      const parentNode = nodeLookup.get(node.parentNode);
 
-    if (node.parentNode || parentNodes?.[node.id]) {
-      const parentNode = node.parentNode ? nodeLookup.get(node.parentNode) : null;
+      if (!parentNode) {
+        throw new Error(`Parent node ${node.parentNode} not found`);
+      }
+
       const { x, y, z } = calculateXYZPosition(
         node,
         nodes,
@@ -52,10 +53,10 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
         : node.computed?.positionAbsolute;
 
       node[internalsSymbol]!.z = z;
+    }
 
-      if (parentNodes?.[node.id]) {
-        node[internalsSymbol]!.isParent = true;
-      }
+    if (parentNodes?.has(node.id)) {
+      node[internalsSymbol]!.isParent = true;
     }
 
     return node;
@@ -79,7 +80,7 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
 ): NodeType[] {
   const tmpLookup = new Map(nodeLookup);
   nodeLookup.clear();
-  const parentNodes: ParentNodes = {};
+  const parentNodes: ParentNodes = new Set<string>();
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
   const nextNodes = nodes.map((n) => {
@@ -102,7 +103,7 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
     const currInternals = n?.[internalsSymbol] || currentStoreNode?.[internalsSymbol];
 
     if (node.parentNode) {
-      parentNodes[node.parentNode] = true;
+      parentNodes.add(node.id);
     }
 
     Object.defineProperty(node, internalsSymbol, {
