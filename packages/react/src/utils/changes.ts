@@ -219,11 +219,13 @@ export function applyEdgeChanges<EdgeType extends Edge = Edge>(
   return applyChanges(changes, edges) as EdgeType[];
 }
 
-export const createSelectionChange = (id: string, selected: boolean): NodeSelectionChange | EdgeSelectionChange => ({
-  id,
-  type: 'select',
-  selected,
-});
+export function createSelectionChange(id: string, selected: boolean): NodeSelectionChange | EdgeSelectionChange {
+  return {
+    id,
+    type: 'select',
+    selected,
+  };
+}
 
 export function getSelectionChanges(
   items: any[],

@@ -19,6 +19,8 @@ export type MiniMapProps<NodeType extends Node = Node> = Omit<HTMLAttributes<SVG
   nodeStrokeWidth?: number;
   /** Component used to render nodes on minimap */
   nodeComponent?: ComponentType<MiniMapNodeProps>;
+  /** Background color of minimap */
+  bgColor?: string;
   /** Color of mask representing viewport */
   maskColor?: string;
   /** Stroke color of mask representing viewport */

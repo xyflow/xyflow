@@ -12,6 +12,8 @@
 
   --xy-minimap-background-color-default: #fff;
   --xy-minimap-mask-background-color-default: rgb(240, 240, 240, 0.6);
+  --xy-minimap-mask-stroke-color-default: transparent;
+  --xy-minimap-mask-stroke-width-default: 1;
   --xy-minimap-node-background-color-default: #e2e2e2;
   --xy-minimap-node-stroke-color-default: transparent;
   --xy-minimap-node-stroke-width-default: 2;
@@ -34,6 +36,8 @@
 
   --xy-minimap-background-color-default: #141414;
   --xy-minimap-mask-background-color-default: rgb(60, 60, 60, 0.6);
+  --xy-minimap-mask-stroke-color-default: transparent;
+  --xy-minimap-mask-stroke-width-default: 1;
   --xy-minimap-node-background-color-default: #2b2b2b;
   --xy-minimap-node-stroke-color-default: transparent;
   --xy-minimap-node-stroke-width-default: 2;
@@ -310,12 +314,27 @@ svg.xy-flow__connectionline {
 }
 
 .xy-flow__minimap {
-  background: var(--xy-minimap-background-color, var(--xy-minimap-background-color-default));
+  background: var(
+    --xy-minimap-background-color-props,
+    var(--xy-minimap-background-color, var(--xy-minimap-background-color-default))
+  );
+
+  &-svg {
+    display: block;
+  }
 
   &-mask {
     fill: var(
       --xy-minimap-mask-background-color-props,
       var(--xy-minimap-mask-background-color, var(--xy-minimap-mask-background-color-default))
+    );
+    stroke: var(
+      --xy-minimap-mask-stroke-color-props,
+      var(--xy-minimap-mask-stroke-color, var(--xy-minimap-mask-stroke-color-default))
+    );
+    stroke-width: var(
+      --xy-minimap-mask-stroke-width-props,
+      var(--xy-minimap-mask-stroke-width, var(--xy-minimap-mask-stroke-width-default))
     );
   }
 

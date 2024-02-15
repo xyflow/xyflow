@@ -1,14 +1,6 @@
 import { forwardRef, type CSSProperties } from 'react';
 import cc from 'classcat';
-import {
-  ConnectionLineType,
-  PanOnScrollMode,
-  SelectionMode,
-  infiniteExtent,
-  isMacOs,
-  type NodeOrigin,
-  type Viewport,
-} from '@xyflow/system';
+import { ConnectionLineType, PanOnScrollMode, SelectionMode, infiniteExtent, isMacOs } from '@xyflow/system';
 
 import { A11yDescriptions } from '../../components/A11yDescriptions';
 import { Attribution } from '../../components/Attribution';
@@ -18,9 +10,7 @@ import { useColorModeClass } from '../../hooks/useColorModeClass';
 import { GraphView } from '../GraphView';
 import { Wrapper } from './Wrapper';
 import type { ReactFlowProps, ReactFlowRefType } from '../../types';
-
-export const initNodeOrigin: NodeOrigin = [0, 0];
-const initDefaultViewport: Viewport = { x: 0, y: 0, zoom: 1 };
+import { defaultViewport as initViewport, defaultNodeOrigin } from './init-values';
 
 const wrapperStyle: CSSProperties = {
   width: '100%',
@@ -89,11 +79,11 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       nodesDraggable,
       nodesConnectable,
       nodesFocusable,
-      nodeOrigin = initNodeOrigin,
+      nodeOrigin = defaultNodeOrigin,
       edgesFocusable,
       edgesUpdatable,
       elementsSelectable = true,
-      defaultViewport = initDefaultViewport,
+      defaultViewport = initViewport,
       minZoom = 0.5,
       maxZoom = 2,
       translateExtent = infiniteExtent,
@@ -166,7 +156,15 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
         data-testid="rf__wrapper"
         id={id}
       >
-        <Wrapper nodes={nodes} edges={edges} width={width} height={height} fitView={fitView}>
+        <Wrapper
+          nodes={nodes}
+          edges={edges}
+          defaultNodes={defaultNodes}
+          defaultEdges={defaultEdges}
+          width={width}
+          height={height}
+          fitView={fitView}
+        >
           <GraphView
             onInit={onInit}
             onNodeClick={onNodeClick}

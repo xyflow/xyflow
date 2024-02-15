@@ -1,5 +1,14 @@
 # @xyflow/react
 
+## 12.0.0-next.9
+
+### Patch changes
+
+- a better `NodeResizer` that works with subflows. Child nodes do not move when parent node gets resized and parent extent is taken into account
+- refactor `setNodes` batching
+- re-measure nodes when necessary
+- don't trigger drag start / end when node is not draggable
+
 ## 12.0.0-next.8
 
 ### Patch changes

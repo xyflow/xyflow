@@ -43,6 +43,7 @@ import type {
   OnDelete,
   OnNodeDrag,
   OnBeforeDelete,
+  EdgeChange,
 } from '.';
 
 export type ReactFlowStore = {
@@ -150,7 +151,6 @@ export type ReactFlowStore = {
 export type ReactFlowActions = {
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
-  setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
   updateNodeDimensions: (updates: Map<string, NodeDimensionUpdate>) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
@@ -164,9 +164,11 @@ export type ReactFlowActions = {
   cancelConnection: () => void;
   updateConnection: UpdateConnection;
   reset: () => void;
-  triggerNodeChanges: (changes: NodeChange[]) => void;
+  triggerNodeChanges: (changes: NodeChange[] | null) => void;
+  triggerEdgeChanges: (changes: EdgeChange[] | null) => void;
   panBy: PanBy;
   fitView: (nodes: Node[], options?: FitViewOptions) => boolean;
+  setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => void;
 };
 
 export type ReactFlowState = ReactFlowStore & ReactFlowActions;

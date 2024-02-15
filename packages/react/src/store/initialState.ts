@@ -12,14 +12,18 @@ import {
 import type { Edge, Node, ReactFlowStore } from '../types';
 
 const getInitialState = ({
-  nodes = [],
-  edges = [],
+  nodes,
+  edges,
+  defaultNodes,
+  defaultEdges,
   width,
   height,
   fitView,
 }: {
   nodes?: Node[];
   edges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
@@ -27,9 +31,11 @@ const getInitialState = ({
   const nodeLookup = new Map();
   const connectionLookup = new Map();
   const edgeLookup = new Map();
+  const storeEdges = defaultEdges ?? edges ?? [];
+  const storeNodes = defaultNodes ?? nodes ?? [];
 
-  updateConnectionLookup(connectionLookup, edgeLookup, edges);
-  const nextNodes = adoptUserProvidedNodes(nodes, nodeLookup, {
+  updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
+  const nextNodes = adoptUserProvidedNodes(storeNodes, nodeLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false,
   });
@@ -51,13 +57,13 @@ const getInitialState = ({
     transform,
     nodes: nextNodes,
     nodeLookup,
-    edges,
+    edges: storeEdges,
     edgeLookup,
     connectionLookup,
     onNodesChange: null,
     onEdgesChange: null,
-    hasDefaultNodes: false,
-    hasDefaultEdges: false,
+    hasDefaultNodes: defaultNodes !== undefined,
+    hasDefaultEdges: defaultEdges !== undefined,
     panZoom: null,
     minZoom: 0.5,
     maxZoom: 2,

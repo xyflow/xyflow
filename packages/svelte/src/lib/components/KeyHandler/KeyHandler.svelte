@@ -113,7 +113,15 @@
       {
         ...deleteKeyDefinition,
         enabled: deleteKeyDefinition.key !== null,
-        callback: (detail) => !isInputDOMNode(detail.originalEvent) && deleteKeyPressed.set(true)
+        callback: (detail) => {
+          const isModifierKey =
+            detail.originalEvent.ctrlKey ||
+            detail.originalEvent.metaKey ||
+            detail.originalEvent.shiftKey;
+          if (!isModifierKey && !isInputDOMNode(detail.originalEvent)) {
+            deleteKeyPressed.set(true);
+          }
+        }
       }
     ],
     type: 'keydown'

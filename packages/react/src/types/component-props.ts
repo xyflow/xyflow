@@ -346,11 +346,11 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    */
   panOnDrag?: boolean | number[];
   /** Minimum zoom level
-   * @default 0.1
+   * @default 0.5
    */
   minZoom?: number;
   /** Maximum zoom level
-   * @default 1
+   * @default 2
    */
   maxZoom?: number;
   /** Controlled viewport to be used instead of internal one */

@@ -10,7 +10,7 @@ import { getNodesBounds } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useDrag } from '../../hooks/useDrag';
-import { useUpdateNodePositions } from '../../hooks/useUpdateNodePositions';
+import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
 import type { Node, ReactFlowState } from '../../types';
 
@@ -35,7 +35,7 @@ const selector = (s: ReactFlowState) => {
 export function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
   const store = useStoreApi();
   const { width, height, transformString, userSelectionActive } = useStore(selector, shallow);
-  const updatePositions = useUpdateNodePositions();
+  const moveSelectedNodes = useMoveSelectedNodes();
 
   const nodeRef = useRef<HTMLDivElement>(null);
 
@@ -64,10 +64,9 @@ export function NodesSelection({ onSelectionContextMenu, noPanClassName, disable
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
-      updatePositions({
-        x: arrowKeyDiffs[event.key].x,
-        y: arrowKeyDiffs[event.key].y,
-        isShiftPressed: event.shiftKey,
+      moveSelectedNodes({
+        direction: arrowKeyDiffs[event.key],
+        factor: event.shiftKey ? 4 : 1,
       });
     }
   };

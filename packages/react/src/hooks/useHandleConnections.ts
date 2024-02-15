@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Connection, HandleType, areConnectionMapsEqual, handleConnectionChange } from '@xyflow/system';
+import {
+  Connection,
+  HandleConnection,
+  HandleType,
+  areConnectionMapsEqual,
+  handleConnectionChange,
+} from '@xyflow/system';
 
 import { useStore } from './useStore';
 import { useNodeId } from '../contexts/NodeIdContext';
@@ -21,7 +27,7 @@ type useHandleConnectionsParams = {
  * @param param.id - the handle id (this is only needed if the node has multiple handles of the same type)
  * @param param.onConnect - gets called when a connection is established
  * @param param.onDisconnect - gets called when a connection is removed
- * @returns an array with connections
+ * @returns an array with handle connections
  */
 export function useHandleConnections({
   type,
@@ -29,10 +35,11 @@ export function useHandleConnections({
   nodeId,
   onConnect,
   onDisconnect,
-}: useHandleConnectionsParams): Connection[] {
+}: useHandleConnectionsParams): HandleConnection[] {
   const _nodeId = useNodeId();
-  const prevConnections = useRef<Map<string, Connection> | null>(null);
-  const currentNodeId = nodeId || _nodeId;
+  const currentNodeId = nodeId ?? _nodeId;
+
+  const prevConnections = useRef<Map<string, HandleConnection> | null>(null);
 
   const connections = useStore(
     (state) => state.connectionLookup.get(`${currentNodeId}-${type}-${id}`),

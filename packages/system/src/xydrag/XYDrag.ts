@@ -170,7 +170,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         return;
       }
 
-      updateNodePositions(dragItems, true, true);
+      updateNodePositions(dragItems, true);
       const onNodeOrSelectionDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
 
       if (dragEvent && (onDrag || onNodeOrSelectionDrag)) {
@@ -238,7 +238,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
       const onNodeOrSelectionDragStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
 
-      if (dragItems && (onDragStart || onNodeOrSelectionDragStart)) {
+      if (dragItems.length > 0 && (onDragStart || onNodeOrSelectionDragStart)) {
         const [currentNode, currentNodes] = getEventHandlerParams({
           nodeId,
           dragItems,
@@ -298,11 +298,11 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         dragStarted = false;
         cancelAnimationFrame(autoPanId);
 
-        if (dragItems) {
+        if (dragItems.length > 0) {
           const { nodeLookup, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
           const onNodeOrSelectionDragStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
 
-          updateNodePositions(dragItems, false, false);
+          updateNodePositions(dragItems, false);
 
           if (onDragStop || onNodeOrSelectionDragStop) {
             const [currentNode, currentNodes] = getEventHandlerParams({

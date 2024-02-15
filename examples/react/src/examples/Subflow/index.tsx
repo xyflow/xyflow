@@ -90,7 +90,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 5' },
     position: { x: 650, y: 250 },
     className: 'light',
-    style: { width: 400, height: 150 },
+    style: { width: 100, height: 100 },
     zIndex: 1000,
   },
   {
@@ -161,9 +161,12 @@ const Subflow = () => {
     setNodes((nds) => {
       return nds.map((n) => {
         if (!n.parentNode) {
-          n.position = {
-            x: Math.random() * 400,
-            y: Math.random() * 400,
+          return {
+            ...n,
+            position: {
+              x: Math.random() * 400,
+              y: Math.random() * 400,
+            },
           };
         }
 
@@ -178,8 +181,10 @@ const Subflow = () => {
   const toggleClassnames = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        n.className = n.className === 'light' ? 'dark' : 'light';
-        return n;
+        return {
+          ...n,
+          className: n.className === 'light' ? 'dark' : 'light',
+        };
       });
     });
   };
@@ -187,8 +192,10 @@ const Subflow = () => {
   const toggleChildNodes = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        n.hidden = !!n.parentNode && !n.hidden;
-        return n;
+        return {
+          ...n,
+          hidden: !!n.parentNode && !n.hidden,
+        };
       });
     });
   };
@@ -215,19 +222,12 @@ const Subflow = () => {
       <Background />
 
       <Panel position="top-right">
-        <button onClick={resetTransform} style={{ marginRight: 5 }}>
-          reset transform
-        </button>
-        <button onClick={updatePos} style={{ marginRight: 5 }}>
-          change pos
-        </button>
-        <button onClick={toggleClassnames} style={{ marginRight: 5 }}>
-          toggle classnames
-        </button>
-        <button style={{ marginRight: 5 }} onClick={toggleChildNodes}>
-          toggleChildNodes
-        </button>
+        <button onClick={resetTransform}>reset transform</button>
+        <button onClick={updatePos}>change pos</button>
+        <button onClick={toggleClassnames}>toggle classnames</button>
+        <button onClick={toggleChildNodes}>toggleChildNodes</button>
         <button onClick={logToObject}>toObject</button>
+        <button onClick={() => setNodes(initialNodes)}>setNodes</button>
       </Panel>
     </ReactFlow>
   );
