@@ -91,8 +91,6 @@ export function createNodeInternals(
     const currInternals = nodeInternals.get(node.id);
 
     const internals: Node = {
-      width: currInternals?.width,
-      height: currInternals?.height,
       ...node,
       positionAbsolute: {
         x: node.position.x,
@@ -101,14 +99,15 @@ export function createNodeInternals(
     };
 
     if (node.parentNode) {
-      internals.parentNode = node.parentNode;
       parentNodes[node.parentNode] = true;
     }
+
+    const resetHandleBounds = currInternals?.type && currInternals?.type !== node.type;
 
     Object.defineProperty(internals, internalsSymbol, {
       enumerable: false,
       value: {
-        handleBounds: currInternals?.[internalsSymbol]?.handleBounds,
+        handleBounds: resetHandleBounds ? undefined : currInternals?.[internalsSymbol]?.handleBounds,
         z,
       },
     });

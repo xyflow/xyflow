@@ -141,6 +141,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
             rfId={props.rfId}
             disableKeyboardA11y={props.disableKeyboardA11y}
             ariaLabel={node.ariaLabel}
+            hasHandleBounds={!!node[internalsSymbol]?.handleBounds}
           />
         );
       })}

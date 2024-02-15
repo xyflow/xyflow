@@ -48,7 +48,6 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     return changes.filter((c) => c.type === 'reset').map((c) => c.item);
   }
   const initElements: any[] = changes.filter((c) => c.type === 'add').map((c) => c.item);
-
   return elements.reduce((res: any[], item: any) => {
     const currentChanges = changes.filter((c) => c.id === item.id);
 

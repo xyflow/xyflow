@@ -1,5 +1,19 @@
 # reactflow
 
+## 11.10.4
+
+### Patch Changes
+
+- [#3918](https://github.com/xyflow/xyflow/pull/3918) [`7c8c8574`](https://github.com/xyflow/xyflow/commit/7c8c85743dd78656203569567d862f95a6578690) - fix(edge-marker): use quotes for marker urls to support css vars
+- [#3897](https://github.com/xyflow/xyflow/pull/3897) [`7722305c`](https://github.com/xyflow/xyflow/commit/7722305cdfcda77fed97ea93c7d5d6b21f95e94d) - fix(nodes): re-measure/ re-init correctly
+- Updated dependencies [[`7c8c8574`](https://github.com/xyflow/xyflow/commit/7c8c85743dd78656203569567d862f95a6578690), [`7722305c`](https://github.com/xyflow/xyflow/commit/7722305cdfcda77fed97ea93c7d5d6b21f95e94d)]:
+  - @reactflow/core@11.10.4
+  - @reactflow/background@11.3.9
+  - @reactflow/controls@11.2.9
+  - @reactflow/minimap@11.7.9
+  - @reactflow/node-resizer@2.2.9
+  - @reactflow/node-toolbar@1.3.9
+
 ## 11.10.3
 
 ### Patch Changes
