@@ -102,10 +102,12 @@ export function createNodeInternals(
       parentNodes[node.parentNode] = true;
     }
 
+    const resetHandleBounds = currInternals?.type && currInternals?.type !== node.type;
+
     Object.defineProperty(internals, internalsSymbol, {
       enumerable: false,
       value: {
-        handleBounds: currInternals?.[internalsSymbol]?.handleBounds,
+        handleBounds: resetHandleBounds ? undefined : currInternals?.[internalsSymbol]?.handleBounds,
         z,
       },
     });
