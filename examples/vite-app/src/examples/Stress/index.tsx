@@ -1,6 +1,5 @@
 import { useState, CSSProperties, useCallback } from 'react';
 import ReactFlow, {
-  ReactFlowInstance,
   Edge,
   Node,
   NodeChange,
@@ -23,14 +22,10 @@ const buttonWrapperStyles: CSSProperties = {
   zIndex: 4,
 };
 
-const onInit = (reactFlowInstance: ReactFlowInstance) => {
-  reactFlowInstance.fitView();
-  console.log(reactFlowInstance.getNodes());
-};
-
 const { nodes: initialNodes, edges: initialEdges } = getNodesAndEdges(25, 25);
 
 const StressFlow = () => {
+  const [key, setKey] = useState(0);
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
   const onConnect = useCallback((connection: Connection) => {
@@ -67,22 +62,22 @@ const StressFlow = () => {
 
   return (
     <ReactFlow
+      key={key}
       nodes={nodes}
       edges={edges}
-      onInit={onInit}
       onConnect={onConnect}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgeChange}
+      fitView
     >
       <MiniMap />
       <Controls />
       <Background />
 
       <div style={buttonWrapperStyles}>
-        <button onClick={updatePos} style={{ marginRight: 5 }}>
-          change pos
-        </button>
+        <button onClick={updatePos}>change pos</button>
         <button onClick={updateElements}>update elements</button>
+        <button onClick={() => setKey((k) => k + 1)}>re-mount</button>
       </div>
     </ReactFlow>
   );
