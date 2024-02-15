@@ -64,8 +64,8 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const [updating, setUpdating] = useState<boolean>(false);
     const store = useStoreApi();
 
-    const markerStartUrl = useMemo(() => `url(#${getMarkerId(markerStart, rfId)})`, [markerStart, rfId]);
-    const markerEndUrl = useMemo(() => `url(#${getMarkerId(markerEnd, rfId)})`, [markerEnd, rfId]);
+    const markerStartUrl = useMemo(() => `url('#${getMarkerId(markerStart, rfId)}')`, [markerStart, rfId]);
+    const markerEndUrl = useMemo(() => `url('#${getMarkerId(markerEnd, rfId)}')`, [markerEnd, rfId]);
 
     if (hidden) {
       return null;
