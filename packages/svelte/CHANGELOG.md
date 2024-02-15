@@ -2,12 +2,14 @@
 
 ## 0.0.36
 
-## Minor changes
+## Patch changes
 
 - a better NodeResizer (child nodes do not move when parent node gets resized)
 - fix `on:panecontextmenu`
 - add `role="button"` to `<EdgeLabel />` to prevent a11y warnings
 - don't delete node when input is focused and user presses Backspace + Ctrl (or any other mod key)
+- `useHandleConnections`: use context node id when no node id is passed  
+- don't trigger drag start / end when node is not draggable
 
 ## 0.0.35
 

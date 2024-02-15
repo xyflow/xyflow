@@ -2,8 +2,12 @@
 
 ## 12.0.0-next.9
 
-- a better NodeResizer that works with subflows. Child nodes do not move when parent node gets resized and parent extent is taken into account
-- don't delete node when input is focused and user presses Backspace + Ctrl (or any other mod key)
+### Patch changes
+
+- a better `NodeResizer` that works with subflows. Child nodes do not move when parent node gets resized and parent extent is taken into account
+- refactor `setNodes` batching
+- re-measure nodes when necessary
+- don't trigger drag start / end when node is not draggable
 
 ## 12.0.0-next.8
 
