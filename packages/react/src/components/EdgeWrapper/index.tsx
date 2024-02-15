@@ -101,12 +101,12 @@ export function EdgeWrapper({
   );
 
   const markerStartUrl = useMemo(
-    () => (edge.markerStart ? `url(#${getMarkerId(edge.markerStart, rfId)})` : undefined),
+    () => (edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId)}')` : undefined),
     [edge.markerStart, rfId]
   );
 
   const markerEndUrl = useMemo(
-    () => (edge.markerEnd ? `url(#${getMarkerId(edge.markerEnd, rfId)})` : undefined),
+    () => (edge.markerEnd ? `url('#${getMarkerId(edge.markerEnd, rfId)}')` : undefined),
     [edge.markerEnd, rfId]
   );
 

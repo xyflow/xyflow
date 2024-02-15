@@ -9,7 +9,7 @@ import { infiniteExtent, type CoordinateExtent } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
-import { initNodeOrigin } from '../../container/ReactFlow';
+import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
 // these fields exist in the global store and we need to keep them up to date
 const reactFlowFieldsToTrack = [
@@ -84,6 +84,19 @@ const selector = (s: ReactFlowState) => ({
   setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
 });
 
+const initPrevValues = {
+  // these are values that are also passed directly to other components
+  // than the StoreUpdater. We can reduce the number of setStore calls
+  // by setting the same values here as prev fields.
+  translateExtent: infiniteExtent,
+  nodeOrigin: defaultNodeOrigin,
+  minZoom: 0.5,
+  maxZoom: 2,
+  elementsSelectable: true,
+  noPanClassName: 'nopan',
+  rfId: '1',
+};
+
 export function StoreUpdater(props: StoreUpdaterProps) {
   const {
     setNodes,
@@ -99,23 +112,15 @@ export function StoreUpdater(props: StoreUpdaterProps) {
 
   useEffect(() => {
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
+
     return () => {
+      // when we reset the store we also need to reset the previous fields
+      previousFields.current = initPrevValues;
       reset();
     };
   }, []);
 
-  const previousFields = useRef<Partial<StoreUpdaterProps>>({
-    // these are values that are also passed directly to other components
-    // than the StoreUpdater. We can reduce the number of setStore calls
-    // by setting the same values here as prev fields.
-    translateExtent: infiniteExtent,
-    nodeOrigin: initNodeOrigin,
-    minZoom: 0.5,
-    maxZoom: 2,
-    elementsSelectable: true,
-    noPanClassName: 'nopan',
-    rfId: '1',
-  });
+  const previousFields = useRef<Partial<StoreUpdaterProps>>(initPrevValues);
 
   useEffect(
     () => {
