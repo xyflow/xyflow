@@ -14,8 +14,11 @@ const zustandErrorMessage = errorMessages['error001']();
  * @param selector
  * @param equalityFn
  * @returns The selected state slice
+ *
+ * @example
+ * const nodes = useStore((state: ReactFlowState<MyNodeType>) => state.nodes);
+ *
  */
-
 function useStore<StateSlice = unknown>(
   selector: (state: ReactFlowState) => StateSlice,
   equalityFn?: (a: StateSlice, b: StateSlice) => boolean
