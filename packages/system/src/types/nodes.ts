@@ -9,7 +9,10 @@ import { Optional } from '../utils/types';
  * @typeParam T - type of the node data
  * @typeParam U - type of the node
  */
-export type NodeBase<T = any, U extends string | undefined = string | undefined> = {
+export type NodeBase<
+  NodeData extends Record<string, unknown> = Record<string, unknown>,
+  NodeType extends string | undefined = string | undefined
+> = {
   /** Unique id of a node */
   id: string;
   /** Position of a node on the pane
@@ -17,9 +20,9 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
    */
   position: XYPosition;
   /** Arbitrary data passed to a node */
-  data: T;
+  data: NodeData;
   /** Type of node defined in nodeTypes */
-  type?: U;
+  type?: NodeType;
   /** Only relevant for default, source, target nodeType. controls source position
    * @example 'right', 'left', 'top', 'bottom'
    */
@@ -70,7 +73,7 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
     /** Holds a reference to the original node object provided by the user
      * (which may lack some fields, like `computed` or `[internalSymbol]`. Used
      * as an optimization to avoid certain operations. */
-    userProvidedNode: NodeBase<T, U>;
+    userProvidedNode: NodeBase<NodeData, NodeType>;
   };
 };
 

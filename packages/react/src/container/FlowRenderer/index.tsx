@@ -9,7 +9,7 @@ import { Pane } from '../Pane';
 import { NodesSelection } from '../../components/NodesSelection';
 import type { ReactFlowState, Node } from '../../types';
 
-export type FlowRendererProps<NodeType extends Node> = Omit<
+export type FlowRendererProps<NodeType extends Node = Node> = Omit<
   GraphViewProps<NodeType>,
   | 'snapToGrid'
   | 'nodeTypes'
@@ -32,7 +32,7 @@ const selector = (s: ReactFlowState) => {
   return { nodesSelectionActive: s.nodesSelectionActive, userSelectionActive: s.userSelectionActive };
 };
 
-function FlowRendererComponent<NodeType extends Node>({
+function FlowRendererComponent<NodeType extends Node = Node>({
   children,
   onPaneClick,
   onPaneMouseEnter,

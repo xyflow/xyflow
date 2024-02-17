@@ -11,8 +11,8 @@ const edgesSelector = (state: ReactFlowState) => state.edges;
  * @public
  * @returns An array of edges
  */
-export function useEdges<EdgeData>(): Edge<EdgeData>[] {
-  const edges = useStore(edgesSelector, shallow);
+export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
+  const edges = useStore(edgesSelector, shallow) as EdgeType[];
 
   return edges;
 }

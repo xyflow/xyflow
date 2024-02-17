@@ -3,7 +3,7 @@ import { derived, type Readable } from 'svelte/store';
 import type { Node } from '$lib/types';
 import { useStore } from '$lib/store';
 
-function areNodesDataEqual(a: Node['data'][] | null, b: Node['data'][] | null) {
+function areNodesDataEqual(a: (Node['data'] | null)[] | null, b: (Node['data'] | null)[] | null) {
   if ((!a && !b) || (!a?.length && !b?.length)) {
     true;
   }

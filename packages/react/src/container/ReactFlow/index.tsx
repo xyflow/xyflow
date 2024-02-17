@@ -17,7 +17,7 @@ import { StoreUpdater } from '../../components/StoreUpdater';
 import { useColorModeClass } from '../../hooks/useColorModeClass';
 import { GraphView } from '../GraphView';
 import { Wrapper } from './Wrapper';
-import type { ReactFlowProps, ReactFlowRefType, Node } from '../../types';
+import type { ReactFlowProps, ReactFlowRefType, Node, Edge } from '../../types';
 
 export const initNodeOrigin: NodeOrigin = [0, 0];
 const initDefaultViewport: Viewport = { x: 0, y: 0, zoom: 1 };
@@ -30,13 +30,7 @@ const wrapperStyle: CSSProperties = {
   zIndex: 0,
 };
 
-declare module 'react' {
-  function forwardRef<T, P = Record<string, never>>(
-    render: (props: P, ref: React.Ref<T>) => React.ReactNode | null
-  ): (props: P & React.RefAttributes<T>) => React.ReactNode | null;
-}
-
-function ReactFlow<NodeType extends Node = Node>(
+function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   {
     nodes,
     edges,
@@ -156,7 +150,7 @@ function ReactFlow<NodeType extends Node = Node>(
     height,
     colorMode = 'light',
     ...rest
-  }: ReactFlowProps<NodeType>,
+  }: ReactFlowProps<NodeType, EdgeType>,
   ref: ForwardedRef<ReactFlowRefType>
 ) {
   const rfId = id || '1';
@@ -172,7 +166,7 @@ function ReactFlow<NodeType extends Node = Node>(
       id={id}
     >
       <Wrapper nodes={nodes} edges={edges} width={width} height={height} fitView={fitView}>
-        <GraphView<NodeType>
+        <GraphView<NodeType, EdgeType>
           onInit={onInit}
           onNodeClick={onNodeClick}
           onEdgeClick={onEdgeClick}
@@ -300,6 +294,4 @@ function ReactFlow<NodeType extends Node = Node>(
   );
 }
 
-export default forwardRef(ReactFlow) as <T extends Node = Node>(
-  props: ReactFlowProps<T> & { ref?: React.ForwardedRef<HTMLUListElement> }
-) => ReturnType<typeof ReactFlow>;
+export default forwardRef(ReactFlow) as typeof ReactFlow;

@@ -21,7 +21,6 @@ import {
   type OnMoveStart,
   type OnMove,
   type OnMoveEnd,
-  type IsValidConnection,
   type UpdateConnection,
   type EdgeLookup,
   type ConnectionLookup,
@@ -43,9 +42,10 @@ import type {
   OnDelete,
   OnNodeDrag,
   OnBeforeDelete,
+  IsValidConnection,
 } from '.';
 
-export type ReactFlowStore<NodeType extends Node = Node> = {
+export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   rfId: string;
   width: number;
   height: number;
@@ -53,10 +53,10 @@ export type ReactFlowStore<NodeType extends Node = Node> = {
   nodes: NodeType[];
   nodeLookup: NodeLookup<NodeType>;
   edges: Edge[];
-  edgeLookup: EdgeLookup<Edge>;
+  edgeLookup: EdgeLookup<EdgeType>;
   connectionLookup: ConnectionLookup;
   onNodesChange: OnNodesChange<NodeType> | null;
-  onEdgesChange: OnEdgesChange | null;
+  onEdgesChange: OnEdgesChange<EdgeType> | null;
   hasDefaultNodes: boolean;
   hasDefaultEdges: boolean;
   domNode: HTMLDivElement | null;
@@ -124,8 +124,8 @@ export type ReactFlowStore<NodeType extends Node = Node> = {
   fitViewDone: boolean;
   fitViewOnInitOptions: FitViewOptions | undefined;
 
-  onNodesDelete?: OnNodesDelete;
-  onEdgesDelete?: OnEdgesDelete;
+  onNodesDelete?: OnNodesDelete<NodeType>;
+  onEdgesDelete?: OnEdgesDelete<EdgeType>;
   onDelete?: OnDelete;
   onError?: OnError;
 
@@ -133,7 +133,7 @@ export type ReactFlowStore<NodeType extends Node = Node> = {
   onViewportChangeStart?: OnViewportChange;
   onViewportChange?: OnViewportChange;
   onViewportChangeEnd?: OnViewportChange;
-  onBeforeDelete?: OnBeforeDelete;
+  onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
 
   onSelectionChangeHandlers: OnSelectionChangeFunc[];
 
@@ -142,15 +142,15 @@ export type ReactFlowStore<NodeType extends Node = Node> = {
   autoPanOnNodeDrag: boolean;
   connectionRadius: number;
 
-  isValidConnection?: IsValidConnection;
+  isValidConnection?: IsValidConnection<EdgeType>;
 
   lib: string;
 };
 
-export type ReactFlowActions<NodeType extends Node> = {
+export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodes: (nodes: NodeType[]) => void;
-  setEdges: (edges: Edge[]) => void;
-  setDefaultNodesAndEdges: (nodes?: NodeType[], edges?: Edge[]) => void;
+  setEdges: (edges: EdgeType[]) => void;
+  setDefaultNodesAndEdges: (nodes?: NodeType[], edges?: EdgeType[]) => void;
   updateNodeDimensions: (updates: Map<string, NodeDimensionUpdate>) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
@@ -169,4 +169,8 @@ export type ReactFlowActions<NodeType extends Node> = {
   fitView: (nodes: NodeType[], options?: FitViewOptions) => boolean;
 };
 
-export type ReactFlowState<NodeType extends Node = Node> = ReactFlowStore<NodeType> & ReactFlowActions<NodeType>;
+export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = ReactFlowStore<
+  NodeType,
+  EdgeType
+> &
+  ReactFlowActions<NodeType, EdgeType>;

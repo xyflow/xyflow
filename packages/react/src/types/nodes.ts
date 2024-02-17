@@ -7,11 +7,10 @@ import { NodeTypes } from './general';
  * The node data structure that gets used for the nodes prop.
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = NodeBase<
-  NodeData,
-  NodeType
-> & {
+export type Node<
+  NodeData extends Record<string, unknown> = Record<string, unknown>,
+  NodeType extends string | undefined = string | undefined
+> = NodeBase<NodeData, NodeType> & {
   style?: CSSProperties;
   className?: string;
   resizing?: boolean;

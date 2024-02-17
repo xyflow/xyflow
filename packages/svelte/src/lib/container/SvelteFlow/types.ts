@@ -10,7 +10,6 @@ import type {
   OnMoveEnd,
   CoordinateExtent,
   PanOnScrollMode,
-  IsValidConnection,
   OnError,
   ConnectionMode,
   PanelPosition,
@@ -18,8 +17,7 @@ import type {
   ColorMode,
   OnConnect,
   OnConnectStart,
-  OnConnectEnd,
-  OnBeforeDelete
+  OnConnectEnd
 } from '@xyflow/system';
 
 import type {
@@ -31,7 +29,9 @@ import type {
   DefaultEdgeOptions,
   FitViewOptions,
   OnDelete,
-  OnEdgeCreate
+  OnEdgeCreate,
+  OnBeforeDelete,
+  IsValidConnection
 } from '$lib/types';
 import type { Writable } from 'svelte/store';
 

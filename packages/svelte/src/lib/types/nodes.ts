@@ -7,7 +7,7 @@ import type { NodeBase, NodeProps } from '@xyflow/system';
  * @public
  */
 export type Node<
-  NodeData = any,
+  NodeData extends Record<string, unknown> = Record<string, unknown>,
   NodeType extends string | undefined = string | undefined
 > = NodeBase<NodeData, NodeType> & {
   class?: string;
@@ -17,3 +17,5 @@ export type Node<
 export type NodeTypes = Record<string, ComponentType<SvelteComponent<NodeProps>>>;
 
 export type DefaultNodeOptions = Partial<Omit<Node, 'id'>>;
+
+export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'>;

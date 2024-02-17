@@ -8,15 +8,15 @@ import { useOnInitHandler } from '../../hooks/useOnInitHandler';
 import { useViewportSync } from '../../hooks/useViewportSync';
 import { ConnectionLineWrapper } from '../../components/ConnectionLine';
 import { useNodeOrEdgeTypesWarning } from './useNodeOrEdgeTypesWarning';
-import type { Node, ReactFlowProps } from '../../types';
+import type { Edge, Node, ReactFlowProps } from '../../types';
 
-export type GraphViewProps<NodeType extends Node = Node> = Omit<
-  ReactFlowProps<NodeType>,
+export type GraphViewProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Omit<
+  ReactFlowProps<NodeType, EdgeType>,
   'onSelectionChange' | 'nodes' | 'edges' | 'onMove' | 'onMoveStart' | 'onMoveEnd' | 'elevateEdgesOnSelect'
 > &
   Required<
     Pick<
-      ReactFlowProps<NodeType>,
+      ReactFlowProps<NodeType, EdgeType>,
       | 'selectionKeyCode'
       | 'deleteKeyCode'
       | 'multiSelectionKeyCode'
@@ -38,7 +38,7 @@ export type GraphViewProps<NodeType extends Node = Node> = Omit<
     rfId: string;
   };
 
-function GraphViewComponent<NodeType extends Node = Node>({
+function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   nodeTypes,
   edgeTypes,
   onInit,
@@ -102,7 +102,7 @@ function GraphViewComponent<NodeType extends Node = Node>({
   rfId,
   viewport,
   onViewportChange,
-}: GraphViewProps<NodeType>) {
+}: GraphViewProps<NodeType, EdgeType>) {
   useNodeOrEdgeTypesWarning(nodeTypes);
   useNodeOrEdgeTypesWarning(edgeTypes);
 
@@ -148,7 +148,7 @@ function GraphViewComponent<NodeType extends Node = Node>({
       isControlledViewport={!!viewport}
     >
       <Viewport>
-        <EdgeRenderer
+        <EdgeRenderer<EdgeType>
           edgeTypes={edgeTypes}
           onEdgeClick={onEdgeClick}
           onEdgeDoubleClick={onEdgeDoubleClick}

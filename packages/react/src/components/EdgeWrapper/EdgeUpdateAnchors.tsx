@@ -5,20 +5,20 @@ import { EdgeAnchor } from '../Edges/EdgeAnchor';
 import type { EdgeWrapperProps, Edge } from '../../types/edges';
 import { useStoreApi } from '../../hooks/useStore';
 
-type EdgeUpdateAnchorsProps = {
-  edge: Edge;
+type EdgeUpdateAnchorsProps<EdgeType extends Edge = Edge> = {
+  edge: EdgeType;
   isUpdatable: boolean | 'source' | 'target';
   edgeUpdaterRadius: EdgeWrapperProps['edgeUpdaterRadius'];
   sourceHandleId: Edge['sourceHandle'];
   targetHandleId: Edge['targetHandle'];
-  onEdgeUpdate: EdgeWrapperProps['onEdgeUpdate'];
-  onEdgeUpdateStart: EdgeWrapperProps['onEdgeUpdateStart'];
-  onEdgeUpdateEnd: EdgeWrapperProps['onEdgeUpdateEnd'];
+  onEdgeUpdate: EdgeWrapperProps<EdgeType>['onEdgeUpdate'];
+  onEdgeUpdateStart: EdgeWrapperProps<EdgeType>['onEdgeUpdateStart'];
+  onEdgeUpdateEnd: EdgeWrapperProps<EdgeType>['onEdgeUpdateEnd'];
   setUpdateHover: (hover: boolean) => void;
   setUpdating: (updating: boolean) => void;
 } & EdgePosition;
 
-export function EdgeUpdateAnchors({
+export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
   isUpdatable,
   edgeUpdaterRadius,
   edge,
@@ -35,7 +35,7 @@ export function EdgeUpdateAnchors({
   onEdgeUpdateEnd,
   setUpdating,
   setUpdateHover,
-}: EdgeUpdateAnchorsProps) {
+}: EdgeUpdateAnchorsProps<EdgeType>) {
   const store = useStoreApi();
 
   const handleEdgeUpdater = (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {

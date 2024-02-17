@@ -14,7 +14,6 @@ import {
   type MarkerProps,
   type PanZoomInstance,
   type CoordinateExtent,
-  type IsValidConnection,
   type NodeOrigin,
   type OnError,
   type Viewport,
@@ -47,7 +46,8 @@ import type {
   FitViewOptions,
   OnDelete,
   OnEdgeCreate,
-  OnBeforeDelete
+  OnBeforeDelete,
+  IsValidConnection
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
 import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
