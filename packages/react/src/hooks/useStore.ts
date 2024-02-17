@@ -1,14 +1,11 @@
 import { useContext, useMemo } from 'react';
 import { useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
-import type { StoreApi } from 'zustand';
 import { errorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/RFStoreContext';
 import type { ReactFlowState } from '../types';
 
 const zustandErrorMessage = errorMessages['error001']();
-
-type ExtractState = StoreApi<ReactFlowState> extends { getState: () => infer T } ? T : never;
 
 /**
  * Hook for accessing the internal store. Should only be used in rare cases.
@@ -18,7 +15,8 @@ type ExtractState = StoreApi<ReactFlowState> extends { getState: () => infer T }
  * @param equalityFn
  * @returns The selected state slice
  */
-function useStore<StateSlice = ExtractState>(
+
+function useStore<StateSlice = unknown>(
   selector: (state: ReactFlowState) => StateSlice,
   equalityFn?: (a: StateSlice, b: StateSlice) => boolean
 ) {

@@ -45,7 +45,7 @@ import type {
   OnBeforeDelete,
 } from '.';
 
-export type ReactFlowStore<NodeType extends Node> = {
+export type ReactFlowStore<NodeType extends Node = Node> = {
   rfId: string;
   width: number;
   height: number;
