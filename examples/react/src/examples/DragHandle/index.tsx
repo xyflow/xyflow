@@ -14,7 +14,7 @@ const initialNodes: Node[] = [
     dragHandle: '.custom-drag-handle',
     style: { border: '1px solid #ddd', padding: '20px 40px' },
     position: { x: 200, y: 200 },
-    data: null,
+    data: {},
   },
 ];
 

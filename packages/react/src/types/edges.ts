@@ -45,22 +45,22 @@ export type Edge<
     focusable?: boolean;
   };
 
-type SmoothStepEdgeType<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData> & {
-  type: 'smoothstep';
+type SmoothStepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<
+  EdgeData,
+  'smoothstep'
+> & {
   pathOptions?: SmoothStepPathOptions;
 };
 
-type BezierEdgeType<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData> & {
-  type: 'default';
+type BezierEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData, 'default'> & {
   pathOptions?: BezierPathOptions;
 };
 
-type StepEdgeType<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData> & {
-  type: 'step';
+type StepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData, 'step'> & {
   pathOptions?: StepPathOptions;
 };
 
-export type BuiltInEdge = SmoothStepEdgeType | BezierEdgeType | StepEdgeType;
+export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge;
 
 export type EdgeMouseHandler<EdgeType extends Edge = Edge> = (event: ReactMouseEvent, edge: EdgeType) => void;
 

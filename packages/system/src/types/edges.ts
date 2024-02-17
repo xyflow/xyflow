@@ -1,6 +1,5 @@
 import { Position } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EdgeBase<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
   EdgeType extends string | undefined = string | undefined

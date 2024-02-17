@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType, SvelteComponent } from 'svelte';
 import type { NodeBase, NodeProps } from '@xyflow/system';
 
