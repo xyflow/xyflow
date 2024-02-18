@@ -79,7 +79,7 @@ export const getInitialStore = ({
   height?: number;
   fitView?: boolean;
 }) => {
-  const nodeLookup = new Map();
+  const nodeLookup: NodeLookup = new Map();
   const nextNodes = adoptUserProvidedNodes(nodes, nodeLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false
