@@ -45,7 +45,7 @@ export type {
   DefaultEdgeOptions
 } from '$lib/types/edges';
 export type { HandleComponentProps, FitViewOptions } from '$lib/types/general';
-export type { Node, NodeTypes, DefaultNodeOptions } from '$lib/types/nodes';
+export type { Node, NodeTypes, DefaultNodeOptions, BuiltInNode } from '$lib/types/nodes';
 export type { SvelteFlowStore } from '$lib/store/types';
 
 // system types
