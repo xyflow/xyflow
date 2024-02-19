@@ -27,6 +27,7 @@ import type {
   UpdateNodePositions,
   Box,
 } from '../types';
+import { on } from 'events';
 
 export type OnDrag = (event: MouseEvent, dragItems: NodeDragItem[], node: NodeBase, nodes: NodeBase[]) => void;
 
@@ -171,16 +172,19 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       }
 
       updateNodePositions(dragItems, true);
-      const onNodeOrSelectionDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
 
-      if (dragEvent && (onDrag || onNodeOrSelectionDrag)) {
+      if (dragEvent) {
         const [currentNode, currentNodes] = getEventHandlerParams({
           nodeId,
           dragItems,
           nodeLookup,
         });
         onDrag?.(dragEvent as MouseEvent, dragItems, currentNode, currentNodes);
-        onNodeOrSelectionDrag?.(dragEvent as MouseEvent, currentNode, currentNodes);
+        onNodeDrag?.(dragEvent as MouseEvent, currentNode, currentNodes);
+        if (!nodeId) {
+          const _onSelectionDrag = wrapSelectionDragFunc(onSelectionDrag);
+          _onSelectionDrag?.(dragEvent as MouseEvent, currentNode, currentNodes);
+        }
       }
     }
 
@@ -236,16 +240,18 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       lastPos = pointerPos;
       dragItems = getDragItems(nodes, nodesDraggable, pointerPos, nodeId);
 
-      const onNodeOrSelectionDragStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
-
-      if (dragItems.length > 0 && (onDragStart || onNodeOrSelectionDragStart)) {
+      if (dragItems.length > 0) {
         const [currentNode, currentNodes] = getEventHandlerParams({
           nodeId,
           dragItems,
           nodeLookup,
         });
         onDragStart?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-        onNodeOrSelectionDragStart?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+        onNodeDragStart?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+        if (!nodeId) {
+          const _onSelectionDragStart = wrapSelectionDragFunc(onSelectionDragStart);
+          _onSelectionDragStart?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+        }
       }
     }
 
@@ -300,18 +306,19 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
         if (dragItems.length > 0) {
           const { nodeLookup, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
-          const onNodeOrSelectionDragStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
 
           updateNodePositions(dragItems, false);
 
-          if (onDragStop || onNodeOrSelectionDragStop) {
-            const [currentNode, currentNodes] = getEventHandlerParams({
-              nodeId,
-              dragItems,
-              nodeLookup,
-            });
-            onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-            onNodeOrSelectionDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+          const [currentNode, currentNodes] = getEventHandlerParams({
+            nodeId,
+            dragItems,
+            nodeLookup,
+          });
+          onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
+          onNodeDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+          if (!nodeId) {
+            const _onSelectionDragStop = wrapSelectionDragFunc(onSelectionDragStop);
+            _onSelectionDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
           }
         }
       })
