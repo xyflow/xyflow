@@ -27,7 +27,6 @@ import type {
   UpdateNodePositions,
   Box,
 } from '../types';
-import { on } from 'events';
 
 export type OnDrag = (event: MouseEvent, dragItems: NodeDragItem[], node: NodeBase, nodes: NodeBase[]) => void;
 
