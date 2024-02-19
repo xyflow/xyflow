@@ -1,9 +1,10 @@
 import { useContext, useMemo } from 'react';
-import { useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
+import { UseBoundStoreWithEqualityFn, useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
 import { errorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/RFStoreContext';
-import type { ReactFlowState } from '../types';
+import type { Edge, Node, ReactFlowState } from '../types';
+import { StoreApi } from 'zustand';
 
 const zustandErrorMessage = errorMessages['error001']();
 
@@ -32,8 +33,10 @@ function useStore<StateSlice = unknown>(
   return useZustandStore(store, selector, equalityFn);
 }
 
-function useStoreApi() {
-  const store = useContext(StoreContext);
+function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>() {
+  const store = useContext(StoreContext) as UseBoundStoreWithEqualityFn<
+    StoreApi<ReactFlowState<NodeType, EdgeType>>
+  > | null;
 
   if (store === null) {
     throw new Error(zustandErrorMessage);

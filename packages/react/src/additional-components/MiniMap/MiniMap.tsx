@@ -63,7 +63,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
   zoomStep = 10,
   offsetScale = 5,
 }: MiniMapProps<NodeType>) {
-  const store = useStoreApi();
+  const store = useStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
   const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight } = useStore(selector, shallow);
   const elementWidth = (style?.width as number) ?? defaultWidth;
@@ -120,7 +120,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
   const onSvgNodeClick = onNodeClick
     ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node = store.getState().nodeLookup.get(nodeId)! as NodeType;
+        const node = store.getState().nodeLookup.get(nodeId)!;
         onNodeClick(event, node);
       }, [])
     : undefined;

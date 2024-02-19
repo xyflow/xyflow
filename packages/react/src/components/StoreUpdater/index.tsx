@@ -115,7 +115,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     reset,
     setDefaultNodesAndEdges,
   } = useStore(selector, shallow);
-  const store = useStoreApi();
+  const store = useStoreApi<NodeType, EdgeType>();
 
   useEffect(() => {
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
