@@ -10,6 +10,8 @@ export function ReactFlowProvider({
   children,
   initialNodes,
   initialEdges,
+  defaultNodes,
+  defaultEdges,
   initialWidth,
   initialHeight,
   fitView,
@@ -17,16 +19,19 @@ export function ReactFlowProvider({
   children: ReactNode;
   initialNodes?: Node[];
   initialEdges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
   initialWidth?: number;
   initialHeight?: number;
   fitView?: boolean;
 }) {
   const storeRef = useRef<UseBoundStoreWithEqualityFn<StoreApi<ReactFlowState>> | null>(null);
-
   if (!storeRef.current) {
     storeRef.current = createRFStore({
       nodes: initialNodes,
       edges: initialEdges,
+      defaultNodes,
+      defaultEdges,
       width: initialWidth,
       height: initialHeight,
       fitView,

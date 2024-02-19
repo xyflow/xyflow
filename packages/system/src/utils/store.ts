@@ -94,8 +94,8 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
       ...n,
       computed: {
         positionAbsolute: n.position,
-        width: n.computed?.width || currentStoreNode?.computed?.width,
-        height: n.computed?.height || currentStoreNode?.computed?.height,
+        width: n.computed?.width,
+        height: n.computed?.height,
       },
     };
     const z = (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0);
@@ -260,7 +260,7 @@ export function updateConnectionLookup(connectionLookup: ConnectionLookup, edgeL
 
     const prevSource = connectionLookup.get(sourceKey) || new Map();
     const prevTarget = connectionLookup.get(targetKey) || new Map();
-    const connection = { source, target, sourceHandle, targetHandle };
+    const connection = { edgeId: edge.id, source, target, sourceHandle, targetHandle };
 
     edgeLookup.set(edge.id, edge);
     connectionLookup.set(sourceKey, prevSource.set(`${target}-${targetHandle}`, connection));

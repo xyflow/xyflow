@@ -83,7 +83,7 @@
 
 <Panel
   {position}
-  {style}
+  style={style + (bgColor ? `;--xy-minimap-background-color-props:${bgColor}` : '')}
   class={cc(['svelte-flow__minimap', className])}
   data-testid="svelte-flow__minimap"
 >
@@ -92,12 +92,14 @@
       width={elementWidth}
       height={elementHeight}
       viewBox="{x} {y} {viewboxWidth} {viewboxHeight}"
+      class="svelte-flow__minimap-svg"
       role="img"
       aria-labelledby={labelledBy}
-      style:--xy-minimap-background-color-props={bgColor}
-      style:--xy-minimap-mask-color-props={maskColor}
+      style:--xy-minimap-mask-background-color-props={maskColor}
       style:--xy-minimap-mask-stroke-color-props={maskStrokeColor}
-      style:--xy-minimap-mask-stroke-width-props={maskStrokeWidth}
+      style:--xy-minimap-mask-stroke-width-props={maskStrokeWidth
+        ? maskStrokeWidth * viewScale
+        : undefined}
       use:interactive={{
         panZoom: $panZoom,
         viewport,

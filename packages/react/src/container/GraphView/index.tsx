@@ -27,7 +27,6 @@ export type GraphViewProps<NodeType extends Node = Node, EdgeType extends Edge =
       | 'maxZoom'
       | 'defaultMarkerColor'
       | 'noDragClassName'
-      | 'noDragClassName'
       | 'noWheelClassName'
       | 'noPanClassName'
       | 'defaultViewport'

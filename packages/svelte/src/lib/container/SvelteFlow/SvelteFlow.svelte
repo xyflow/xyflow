@@ -215,7 +215,12 @@
     panOnScroll={panOnScroll === undefined ? false : panOnScroll}
     panOnDrag={panOnDrag === undefined ? true : panOnDrag}
   >
-    <Pane on:paneclick panOnDrag={panOnDrag === undefined ? true : panOnDrag} {selectionOnDrag}>
+    <Pane
+      on:paneclick
+      on:panecontextmenu
+      panOnDrag={panOnDrag === undefined ? true : panOnDrag}
+      {selectionOnDrag}
+    >
       <ViewportComponent>
         <EdgeRenderer on:edgeclick on:edgecontextmenu {defaultEdgeOptions} />
         <ConnectionLine

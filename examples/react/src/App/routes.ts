@@ -28,6 +28,7 @@ import NodeTypesObjectChange from '../examples/NodeTypesObjectChange';
 import Overview from '../examples/Overview';
 import Provider from '../examples/Provider';
 import SaveRestore from '../examples/SaveRestore';
+import SetNodesBatching from '../examples/SetNodesBatching';
 import Stress from '../examples/Stress';
 import Subflow from '../examples/Subflow';
 import SwitchFlow from '../examples/Switch';
@@ -225,6 +226,11 @@ const routes: IRoute[] = [
     name: 'Save/Restore',
     path: 'save-restore',
     component: SaveRestore,
+  },
+  {
+    name: 'SetNodes Batching',
+    path: 'setnodes-batching',
+    component: SetNodesBatching,
   },
   {
     name: 'Stress',

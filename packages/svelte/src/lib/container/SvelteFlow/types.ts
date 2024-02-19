@@ -135,11 +135,11 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
    */
   nodeDragThreshold?: number;
   /** Minimum zoom level
-   * @default 0.1
+   * @default 0.5
    */
   minZoom?: number;
   /** Maximum zoom level
-   * @default 1
+   * @default 2
    */
   maxZoom?: number;
   /** Sets the initial position and zoom of the viewport.

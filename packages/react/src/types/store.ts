@@ -43,6 +43,7 @@ import type {
   OnNodeDrag,
   OnBeforeDelete,
   IsValidConnection,
+  EdgeChange,
 } from '.';
 
 export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
@@ -165,6 +166,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   updateConnection: UpdateConnection;
   reset: () => void;
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
+  triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
   fitView: (nodes: NodeType[], options?: FitViewOptions) => boolean;
 };
