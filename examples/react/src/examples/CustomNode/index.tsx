@@ -9,7 +9,6 @@ import {
   SnapGrid,
   useEdgesState,
   Background,
-  Edge,
   OnNodeDrag,
   OnInit,
   applyNodeChanges,
@@ -17,6 +16,7 @@ import {
   OnConnect,
   OnBeforeDelete,
   BuiltInNode,
+  BuiltInEdge,
 } from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
@@ -26,8 +26,9 @@ export type ColorSelectorNode = Node<
   'selectorNode'
 >;
 export type MyNode = BuiltInNode | ColorSelectorNode;
+export type MyEdge = BuiltInEdge;
 
-const onInit: OnInit<MyNode> = (reactFlowInstance) => {
+const onInit: OnInit<MyNode, MyEdge> = (reactFlowInstance) => {
   console.log('flow loaded:', reactFlowInstance);
 };
 
@@ -54,7 +55,7 @@ const CustomNodeFlow = () => {
     [setNodes]
   );
 
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<MyEdge>([]);
 
   const [bgColor, setBgColor] = useState<string>(initBgColor);
 
@@ -144,7 +145,7 @@ const CustomNodeFlow = () => {
     [setEdges]
   );
 
-  const onBeforeDelete: OnBeforeDelete<MyNode> = useCallback(async (params) => true, []);
+  const onBeforeDelete: OnBeforeDelete<MyNode, MyEdge> = useCallback(async (params) => true, []);
 
   return (
     <ReactFlow
