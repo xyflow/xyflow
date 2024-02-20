@@ -1,10 +1,11 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type Rect } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
 import type { ReactFlowInstance, Instance, Node, Edge } from '../types';
 import { getElementsDiffChanges, isNode } from '../utils';
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 /**
  * Hook for accessing the ReactFlow instance.
@@ -54,7 +55,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   // Layout effects are guaranteed to run before the next render which means we
   // shouldn't run into any issues with stale state or weird issues that come from
   // rendering things one frame later than expected (we used to use `setTimeout`).
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     // Because we need to flip the state back to false after flushing, this should
     // trigger the hook again (!). If the hook is being run again we know that any
     // updates should have been processed by now and we can safely clear the queue
