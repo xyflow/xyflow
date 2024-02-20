@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { XYPosition, Dimensions } from '@xyflow/system';
 
 import type { Node, Edge } from '.';

@@ -13,9 +13,9 @@ import { useStoreApi, useStore } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
-import type { EdgeWrapperProps } from '../../types';
+import type { Edge, EdgeWrapperProps } from '../../types';
 
-export function EdgeWrapper({
+export function EdgeWrapper<EdgeType extends Edge = Edge>({
   id,
   edgesFocusable,
   edgesUpdatable,
@@ -34,8 +34,8 @@ export function EdgeWrapper({
   edgeTypes,
   noPanClassName,
   onError,
-}: EdgeWrapperProps): JSX.Element | null {
-  let edge = useStore((s) => s.edgeLookup.get(id)!);
+}: EdgeWrapperProps<EdgeType>): JSX.Element | null {
+  let edge = useStore((s) => s.edgeLookup.get(id)!) as EdgeType;
   const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
@@ -236,7 +236,7 @@ export function EdgeWrapper({
           />
         )}
         {isUpdatable && (
-          <EdgeUpdateAnchors
+          <EdgeUpdateAnchors<EdgeType>
             edge={edge}
             isUpdatable={isUpdatable}
             edgeUpdaterRadius={edgeUpdaterRadius}

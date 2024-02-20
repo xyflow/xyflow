@@ -9,13 +9,14 @@ import {
   SnapGrid,
   useEdgesState,
   Background,
-  Edge,
   OnNodeDrag,
   OnInit,
   applyNodeChanges,
   OnNodesChange,
   OnConnect,
   OnBeforeDelete,
+  BuiltInNode,
+  BuiltInEdge,
 } from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
@@ -24,9 +25,10 @@ export type ColorSelectorNode = Node<
   { color: string; onChange: (event: ChangeEvent<HTMLInputElement>) => void },
   'selectorNode'
 >;
-export type MyNode = Node | ColorSelectorNode;
+export type MyNode = BuiltInNode | ColorSelectorNode;
+export type MyEdge = BuiltInEdge;
 
-const onInit: OnInit<MyNode> = (reactFlowInstance) => {
+const onInit: OnInit<MyNode, MyEdge> = (reactFlowInstance) => {
   console.log('flow loaded:', reactFlowInstance);
 };
 
@@ -44,7 +46,7 @@ const nodeTypes = {
 
 const CustomNodeFlow = () => {
   const [nodes, setNodes] = useState<MyNode[]>([]);
-  const onNodesChange: OnNodesChange = useCallback(
+  const onNodesChange: OnNodesChange<MyNode> = useCallback(
     (changes) =>
       setNodes((nds) => {
         const nextNodes = applyNodeChanges(changes, nds);
@@ -53,7 +55,7 @@ const CustomNodeFlow = () => {
     [setNodes]
   );
 
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<MyEdge>([]);
 
   const [bgColor, setBgColor] = useState<string>(initBgColor);
 
@@ -61,7 +63,7 @@ const CustomNodeFlow = () => {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
       setNodes((nds) =>
         nds.map((node) => {
-          if (node.id !== '2') {
+          if (node.id !== '2' || node.type !== 'selectorNode') {
             return node;
           }
 
@@ -143,7 +145,7 @@ const CustomNodeFlow = () => {
     [setEdges]
   );
 
-  const onBeforeDelete: OnBeforeDelete<MyNode> = useCallback(async (params) => true, []);
+  const onBeforeDelete: OnBeforeDelete<MyNode, MyEdge> = useCallback(async (params) => true, []);
 
   return (
     <ReactFlow
@@ -164,7 +166,7 @@ const CustomNodeFlow = () => {
       maxZoom={2}
       onBeforeDelete={onBeforeDelete}
     >
-      <MiniMap
+      <MiniMap<MyNode>
         nodeStrokeColor={(n: MyNode): string => {
           if (n.type === 'input') return '#0041d0';
           if (n.type === 'selectorNode') return bgColor;

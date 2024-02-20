@@ -6,10 +6,10 @@ import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
 import { EdgeWrapper } from '../../components/EdgeWrapper';
-import type { ReactFlowState } from '../../types';
+import type { Edge, ReactFlowState, Node } from '../../types';
 
-type EdgeRendererProps = Pick<
-  GraphViewProps,
+type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
+  GraphViewProps<Node, EdgeType>,
   | 'onEdgeClick'
   | 'onEdgeDoubleClick'
   | 'defaultMarkerColor'
@@ -40,7 +40,7 @@ const selector = (s: ReactFlowState) => ({
   onError: s.onError,
 });
 
-function EdgeRendererComponent({
+function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   defaultMarkerColor,
   onlyRenderVisibleElements,
   rfId,
@@ -56,7 +56,7 @@ function EdgeRendererComponent({
   onEdgeDoubleClick,
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
-}: EdgeRendererProps) {
+}: EdgeRendererProps<EdgeType>) {
   const { edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
@@ -66,7 +66,7 @@ function EdgeRendererComponent({
 
       {edgeIds.map((id) => {
         return (
-          <EdgeWrapper
+          <EdgeWrapper<EdgeType>
             key={id}
             id={id}
             edgesFocusable={edgesFocusable}
@@ -95,4 +95,4 @@ function EdgeRendererComponent({
 
 EdgeRendererComponent.displayName = 'EdgeRenderer';
 
-export const EdgeRenderer = memo(EdgeRendererComponent);
+export const EdgeRenderer = memo(EdgeRendererComponent) as typeof EdgeRendererComponent;

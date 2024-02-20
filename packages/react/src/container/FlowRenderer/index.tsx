@@ -7,10 +7,10 @@ import { GraphViewProps } from '../GraphView';
 import { ZoomPane } from '../ZoomPane';
 import { Pane } from '../Pane';
 import { NodesSelection } from '../../components/NodesSelection';
-import type { ReactFlowState } from '../../types';
+import type { ReactFlowState, Node } from '../../types';
 
-export type FlowRendererProps = Omit<
-  GraphViewProps,
+export type FlowRendererProps<NodeType extends Node = Node> = Omit<
+  GraphViewProps<NodeType>,
   | 'snapToGrid'
   | 'nodeTypes'
   | 'edgeTypes'
@@ -32,7 +32,7 @@ const selector = (s: ReactFlowState) => {
   return { nodesSelectionActive: s.nodesSelectionActive, userSelectionActive: s.userSelectionActive };
 };
 
-const FlowRendererComponent = ({
+function FlowRendererComponent<NodeType extends Node = Node>({
   children,
   onPaneClick,
   onPaneMouseEnter,
@@ -68,7 +68,7 @@ const FlowRendererComponent = ({
   disableKeyboardA11y,
   onViewportChange,
   isControlledViewport,
-}: FlowRendererProps) => {
+}: FlowRendererProps<NodeType>) {
   const { nodesSelectionActive, userSelectionActive } = useStore(selector);
   const selectionKeyPressed = useKeyPress(selectionKeyCode);
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode);
@@ -125,8 +125,8 @@ const FlowRendererComponent = ({
       </Pane>
     </ZoomPane>
   );
-};
+}
 
 FlowRendererComponent.displayName = 'FlowRenderer';
 
-export const FlowRenderer = memo(FlowRendererComponent);
+export const FlowRenderer = memo(FlowRendererComponent) as typeof FlowRendererComponent;

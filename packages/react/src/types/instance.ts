@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-namespace */
 import type { Rect, Viewport } from '@xyflow/system';
 import type { Node, Edge, ViewportHelperFunctions } from '.';

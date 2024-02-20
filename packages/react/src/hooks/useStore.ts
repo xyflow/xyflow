@@ -1,14 +1,12 @@
 import { useContext, useMemo } from 'react';
-import { useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
-import type { StoreApi } from 'zustand';
+import { UseBoundStoreWithEqualityFn, useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
 import { errorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/RFStoreContext';
-import type { ReactFlowState } from '../types';
+import type { Edge, Node, ReactFlowState } from '../types';
+import { StoreApi } from 'zustand';
 
 const zustandErrorMessage = errorMessages['error001']();
-
-type ExtractState = StoreApi<ReactFlowState> extends { getState: () => infer T } ? T : never;
 
 /**
  * Hook for accessing the internal store. Should only be used in rare cases.
@@ -17,8 +15,12 @@ type ExtractState = StoreApi<ReactFlowState> extends { getState: () => infer T }
  * @param selector
  * @param equalityFn
  * @returns The selected state slice
+ *
+ * @example
+ * const nodes = useStore((state: ReactFlowState<MyNodeType>) => state.nodes);
+ *
  */
-function useStore<StateSlice = ExtractState>(
+function useStore<StateSlice = unknown>(
   selector: (state: ReactFlowState) => StateSlice,
   equalityFn?: (a: StateSlice, b: StateSlice) => boolean
 ) {
@@ -31,8 +33,10 @@ function useStore<StateSlice = ExtractState>(
   return useZustandStore(store, selector, equalityFn);
 }
 
-const useStoreApi = () => {
-  const store = useContext(StoreContext);
+function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>() {
+  const store = useContext(StoreContext) as UseBoundStoreWithEqualityFn<
+    StoreApi<ReactFlowState<NodeType, EdgeType>>
+  > | null;
 
   if (store === null) {
     throw new Error(zustandErrorMessage);
@@ -47,6 +51,6 @@ const useStoreApi = () => {
     }),
     [store]
   );
-};
+}
 
 export { useStore, useStoreApi };
