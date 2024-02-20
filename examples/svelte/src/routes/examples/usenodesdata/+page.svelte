@@ -1,3 +1,15 @@
+<script context="module" lang="ts">
+	import TextNode from './TextNode.svelte';
+	import UppercaseNode from './UppercaseNode.svelte';
+	import ResultNode from './ResultNode.svelte';
+
+	export function isTextNode(node: any): node is TextNode | UppercaseNode {
+		return node.type === 'text' || node.type === 'uppercase';
+	}
+
+	export type MyNode = TextNode | UppercaseNode | ResultNode;
+</script>
+
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import {
@@ -11,10 +23,6 @@
 		type Edge
 	} from '@xyflow/svelte';
 	import '@xyflow/svelte/dist/style.css';
-
-	import TextNode from './TextNode.svelte';
-	import UppercaseNode from './UppercaseNode.svelte';
-	import ResultNode from './ResultNode.svelte';
 
 	const nodeTypes: NodeTypes = {
 		text: TextNode,
@@ -34,7 +42,9 @@
 		{
 			id: '1a',
 			type: 'uppercase',
-			data: {},
+			data: {
+				text: ''
+			},
 			position: { x: 100, y: 0 }
 		},
 		{
