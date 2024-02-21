@@ -220,6 +220,7 @@ export function NodeWrapper<NodeType extends Node>({
           selected: node.selected,
           selectable: isSelectable,
           parent: isParent,
+          draggable: isDraggable,
           dragging,
         },
       ])}

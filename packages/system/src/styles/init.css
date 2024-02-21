@@ -186,16 +186,15 @@ svg.xy-flow__connectionline {
   pointer-events: all;
   transform-origin: 0 0;
   box-sizing: border-box;
-  cursor: grab;
+  cursor: default;
 
-  &.dragging {
-    cursor: grabbing;
-  }
-
-  /* only used in Svelte Flow, should we remove it here? */
   &.draggable {
     cursor: grab;
     pointer-events: all;
+
+    &.dragging {
+      cursor: grabbing;
+    }
   }
 }
 
