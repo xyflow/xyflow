@@ -34,6 +34,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
   edgeTypes,
   noPanClassName,
   onError,
+  disableKeyboardA11y,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
   let edge = useStore((s) => s.edgeLookup.get(id)!) as EdgeType;
   const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
@@ -160,7 +161,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
     : undefined;
 
   const onKeyDown = (event: KeyboardEvent) => {
-    if (elementSelectionKeys.includes(event.key) && isSelectable) {
+    if (!disableKeyboardA11y && elementSelectionKeys.includes(event.key) && isSelectable) {
       const { unselectNodesAndEdges, addSelectedEdges } = store.getState();
       const unselect = event.key === 'Escape';
 

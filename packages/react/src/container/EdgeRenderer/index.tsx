@@ -56,6 +56,7 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   onEdgeDoubleClick,
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
+  disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
   const { edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
@@ -86,6 +87,7 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
             rfId={rfId}
             onError={onError}
             edgeTypes={edgeTypes}
+            disableKeyboardA11y={disableKeyboardA11y}
           />
         );
       })}
