@@ -33,6 +33,7 @@
       style={edge.style}
       animated={edge.animated}
       selected={edge.selected}
+      selectable={edge.selectable}
       hidden={edge.hidden}
       label={edge.label}
       labelStyle={edge.labelStyle}

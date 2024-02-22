@@ -123,7 +123,10 @@
 
 .xy-flow__edge {
   pointer-events: visibleStroke;
-  cursor: pointer;
+
+  &.selectable {
+    cursor: pointer;
+  }
 
   &.animated path {
     stroke-dasharray: 5;
@@ -187,6 +190,10 @@ svg.xy-flow__connectionline {
   transform-origin: 0 0;
   box-sizing: border-box;
   cursor: default;
+
+  &.selectable {
+    cursor: pointer;
+  }
 
   &.draggable {
     cursor: grab;
