@@ -50,20 +50,27 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       fitView: (options) => {
         const { nodes, width, height, nodeOrigin, minZoom, maxZoom, panZoom } = store.getState();
 
-        return panZoom
-          ? fitView(
-              {
-                nodes,
-                width,
-                height,
-                nodeOrigin,
-                minZoom,
-                maxZoom,
-                panZoom,
-              },
-              options
-            )
-          : false;
+        if (!panZoom) {
+          return false;
+        }
+
+        if (options?.waitForInit) {
+          store.setState({ fitViewScheduled: options });
+          return true; // TODO: what should be returned here
+        }
+
+        return fitView(
+          {
+            nodes,
+            width,
+            height,
+            panZoom,
+            minZoom,
+            maxZoom,
+            nodeOrigin,
+          },
+          options
+        );
       },
       setCenter: (x, y, options) => {
         const { width, height, maxZoom, panZoom } = store.getState();

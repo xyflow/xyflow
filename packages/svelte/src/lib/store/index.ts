@@ -95,13 +95,18 @@ export function createStore({
       return;
     }
 
-    if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
-      const fitViewOptions = get(store.fitViewOptions);
-      const fitViewOnInitDone = fitView(nextNodes, {
-        ...fitViewOptions,
-        nodes: fitViewOptions?.nodes || nextNodes
-      });
-      store.fitViewOnInitDone.set(fitViewOnInitDone);
+    const fitViewScheduled = get(store.fitViewScheduled);
+    if (fitViewScheduled) {
+      const fitViewOptions =
+        typeof fitViewScheduled === 'boolean'
+          ? { nodes: nextNodes }
+          : {
+              ...fitViewScheduled,
+              waitForInit: false,
+              nodes: fitViewScheduled.nodes ?? nextNodes
+            };
+      const fitViewDone = fitView(nextNodes, fitViewOptions);
+      if (fitViewDone) store.fitViewScheduled.set(false);
     }
 
     store.nodes.set(nextNodes);
@@ -116,6 +121,11 @@ export function createStore({
 
     if (!panZoom) {
       return false;
+    }
+
+    if (options?.waitForInit) {
+      store.fitViewScheduled.set(options);
+      return true; // TODO: What should this return?
     }
 
     return fitViewUtil(
@@ -327,7 +337,7 @@ export function createStore({
   }
 
   function reset() {
-    store.fitViewOnInitDone.set(false);
+    // store.fitViewOnInitDone.set(false); // TODO: what implications does this have
     store.selectionRect.set(null);
     store.selectionRectMode.set(null);
     store.snapGrid.set(null);

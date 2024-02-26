@@ -121,9 +121,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   connectOnClick: boolean;
   defaultEdgeOptions?: DefaultEdgeOptions;
 
-  fitViewOnInit: boolean;
-  fitViewDone: boolean;
-  fitViewOnInitOptions: FitViewOptions | undefined;
+  fitViewScheduled: boolean | FitViewOptions;
 
   onNodesDelete?: OnNodesDelete<NodeType>;
   onEdgesDelete?: OnEdgesDelete<EdgeType>;
