@@ -6,7 +6,7 @@
 		useNodesData,
 		type NodeProps
 	} from '@xyflow/svelte';
-	import { isTextNode } from './+page.svelte';
+	import { isTextNode, type MyNode } from './+page.svelte';
 
 	type $$Props = NodeProps;
 
@@ -17,7 +17,7 @@
 		type: 'target'
 	});
 
-	$: nodeData = useNodesData($connections.map((connection) => connection.source));
+	$: nodeData = useNodesData<MyNode>($connections.map((connection) => connection.source));
 	$: textNodes = $nodeData.filter(isTextNode);
 </script>
 

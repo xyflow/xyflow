@@ -22,33 +22,21 @@ function areNodesDataEqual(a: any[], b: any[]) {
  *
  * @public
  * @param nodeId - The id (or ids) of the node to get the data from
- * @param guard - Optional guard function to narrow down the node type
  * @returns A readable store with an array of data objects
  */
 export function useNodesData<NodeType extends Node = Node>(
   nodeId: string
-): Readable<{
-  id: string;
-  type: NodeType['type'];
-  data: NodeType['data'];
-} | null>;
+): Readable<Pick<NodeType, 'id' | 'data' | 'type'> | null>;
 export function useNodesData<NodeType extends Node = Node>(
   nodeIds: string[]
-): Readable<
-  {
-    id: string;
-    type: NodeType['type'];
-    data: NodeType['data'];
-  }[]
->;
+): Readable<Pick<NodeType, 'id' | 'data' | 'type'>[]>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: any): any {
   const { nodes, nodeLookup } = useStore();
   let prevNodesData: any = [];
 
   return derived([nodes, nodeLookup], ([, nodeLookup], set) => {
-    let nextNodesData = [];
-
+    const nextNodesData = [];
     const isArrayOfIds = Array.isArray(nodeIds);
     const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
 

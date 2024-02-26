@@ -20,18 +20,8 @@ export interface NodeDataReturn<NodeType extends Node> {
  */
 export function useNodesData<NodeType extends Node = Node>(
   nodeId: string
-): {
-  id: string;
-  type: NodeType['type'];
-  data: NodeType['data'];
-} | null;
-export function useNodesData<NodeType extends Node = Node>(
-  nodeIds: string[]
-): {
-  id: string;
-  type: NodeType['type'];
-  data: NodeType['data'];
-}[];
+): Pick<NodeType, 'id' | 'type' | 'data'> | null;
+export function useNodesData<NodeType extends Node = Node>(nodeIds: string[]): Pick<NodeType, 'id' | 'type' | 'data'>[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: any): any {
   const nodesData = useStore(

@@ -1,13 +1,15 @@
 <script context="module" lang="ts">
-	import TextNode from './TextNode.svelte';
-	import UppercaseNode from './UppercaseNode.svelte';
-	import ResultNode from './ResultNode.svelte';
+	import type { Node } from '@xyflow/svelte';
 
-	export function isTextNode(node: any): node is TextNode | UppercaseNode {
-		return node.type === 'text' || node.type === 'uppercase';
+	type TextNodeType = Node<{ text: string }, 'text'>;
+	type UppercaseNodeType = Node<{ text: string }, 'uppercase'>;
+	type ResultNodeType = Node<{}, 'result'>;
+
+	export function isTextNode(node: any): node is TextNodeType {
+		return node.type === 'text';
 	}
 
-	export type MyNode = TextNode | UppercaseNode | ResultNode;
+	export type MyNode = TextNodeType | UppercaseNodeType | ResultNodeType;
 </script>
 
 <script lang="ts">
@@ -18,11 +20,14 @@
 		Background,
 		BackgroundVariant,
 		MiniMap,
-		type Node,
 		type NodeTypes,
 		type Edge
 	} from '@xyflow/svelte';
 	import '@xyflow/svelte/dist/style.css';
+
+	import TextNode from './TextNode.svelte';
+	import UppercaseNode from './UppercaseNode.svelte';
+	import ResultNode from './ResultNode.svelte';
 
 	const nodeTypes: NodeTypes = {
 		text: TextNode,
@@ -30,7 +35,7 @@
 		result: ResultNode
 	};
 
-	const nodes = writable<Node[]>([
+	const nodes = writable<MyNode[]>([
 		{
 			id: '1',
 			type: 'text',

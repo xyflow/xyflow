@@ -1,15 +1,13 @@
 import { memo } from 'react';
 import { Handle, Position, useHandleConnections, useNodesData } from '@xyflow/react';
-import { TextNode, isTextNode, type MyNode } from '.';
+import { isTextNode, type MyNode } from '.';
 
 function ResultNode() {
   const connections = useHandleConnections({
     type: 'target',
   });
   const nodesData = useNodesData<MyNode>(connections.map((connection) => connection.source));
-  const textNodes = nodesData.filter(isTextNode) as TextNode[];
-
-  textNodes[0].data;
+  const textNodes = nodesData.filter(isTextNode);
 
   return (
     <div style={{ background: '#eee', color: '#222', padding: 10, fontSize: 12, borderRadius: 10 }}>
