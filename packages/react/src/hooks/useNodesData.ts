@@ -4,40 +4,45 @@ import { shallow } from 'zustand/shallow';
 import { useStore } from '../hooks/useStore';
 import type { Node } from '../types';
 
+export interface NodeDataReturn<NodeType extends Node> {
+  id: string;
+  type: NodeType['type'];
+  data: NodeType['data'];
+}
+
 /**
  * Hook for receiving data of one or multiple nodes
  *
  * @public
  * @param nodeId - The id (or ids) of the node to get the data from
  * @param guard - Optional guard function to narrow down the node type
- * @returns An array od data objects
+ * @returns An object (or array of object) with {id, type, data} representing each node
  */
-export function useNodesData<NodeType extends Node = Node>(nodeId: string): NodeType['data'] | null;
-export function useNodesData<NodeType extends Node = Node>(nodeIds: string[]): NodeType['data'][];
 export function useNodesData<NodeType extends Node = Node>(
-  nodeIds: string[],
-  guard: (node: Node) => node is NodeType
-): NodeType['data'][];
+  nodeId: string
+): Pick<NodeType, 'id' | 'type' | 'data'> | null;
+export function useNodesData<NodeType extends Node = Node>(nodeIds: string[]): Pick<NodeType, 'id' | 'type' | 'data'>[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: any): any {
   const nodesData = useStore(
     useCallback(
       (s) => {
-        if (!Array.isArray(nodeIds)) {
-          return s.nodeLookup.get(nodeIds)?.data || null;
-        }
-
         const data = [];
+        const isArrayOfIds = Array.isArray(nodeIds);
+        const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
 
-        for (const nodeId of nodeIds) {
-          const nodeData = s.nodeLookup.get(nodeId)?.data;
-
-          if (nodeData) {
-            data.push(nodeData);
+        for (const nodeId of _nodeIds) {
+          const node = s.nodeLookup.get(nodeId);
+          if (node) {
+            data.push({
+              id: node.id,
+              type: node.type,
+              data: node.data,
+            });
           }
         }
 
-        return data;
+        return isArrayOfIds ? data : data[0] ?? null;
       },
       [nodeIds]
     ),

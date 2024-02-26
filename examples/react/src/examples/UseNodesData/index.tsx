@@ -17,8 +17,12 @@ import UppercaseNode from './UppercaseNode';
 
 export type TextNode = Node<{ text: string }, 'text'>;
 export type ResultNode = Node<{}, 'result'>;
-export type UppercaseNode = Node<{}, 'uppercase'>;
+export type UppercaseNode = Node<{ text: string }, 'uppercase'>;
 export type MyNode = TextNode | ResultNode | UppercaseNode;
+
+export function isTextNode(node: any): node is TextNode {
+  return node.type === 'text';
+}
 
 const nodeTypes = {
   text: TextNode,
@@ -38,7 +42,7 @@ const initNodes: MyNode[] = [
   {
     id: '1a',
     type: 'uppercase',
-    data: {},
+    data: { text: '' },
     position: { x: 100, y: 0 },
   },
   {
