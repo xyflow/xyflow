@@ -33,7 +33,6 @@ export function useDrag({
   useEffect(() => {
     if (nodeRef?.current) {
       xyDrag.current = XYDrag({
-        domNode: nodeRef.current,
         getStoreItems: () => store.getState(),
         onNodeMouseDown: (id: string) => {
           handleNodeClick({
@@ -55,11 +54,11 @@ export function useDrag({
   useEffect(() => {
     if (disabled) {
       xyDrag.current?.destroy();
-    } else {
+    } else if (nodeRef.current) {
       xyDrag.current?.update({
         noDragClassName,
         handleSelector,
-        domNode: nodeRef.current as Element,
+        domNode: nodeRef.current,
         isSelectable,
         nodeId,
       });

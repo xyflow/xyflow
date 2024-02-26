@@ -1,5 +1,5 @@
 import { drag } from 'd3-drag';
-import { select } from 'd3-selection';
+import { select, type Selection } from 'd3-selection';
 
 import {
   calcAutoPan,
@@ -58,7 +58,6 @@ type StoreItems<OnNodeDrag> = {
 };
 
 export type XYDragParams<OnNodeDrag> = {
-  domNode: Element;
   getStoreItems: () => StoreItems<OnNodeDrag>;
   onDragStart?: OnDrag;
   onDrag?: OnDrag;
@@ -81,7 +80,6 @@ export type DragUpdateParams = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => void | undefined>({
-  domNode,
   onNodeMouseDown,
   getStoreItems,
   onDragStart,
@@ -95,11 +93,11 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let mousePosition: XYPosition = { x: 0, y: 0 };
   let containerBounds: DOMRect | null = null;
   let dragStarted = false;
-
-  const d3Selection = select(domNode);
+  let d3Selection: Selection<Element, unknown, null, undefined> | null = null;
 
   // public functions
   function update({ noDragClassName, handleSelector, domNode, isSelectable, nodeId }: DragUpdateParams) {
+    d3Selection = select(domNode);
     function updateNodes({ x, y }: XYPosition, dragEvent: MouseEvent | null) {
       const {
         nodeLookup,
@@ -342,7 +340,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   }
 
   function destroy() {
-    d3Selection.on('.drag', null);
+    d3Selection?.on('.drag', null);
   }
 
   return {

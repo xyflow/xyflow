@@ -10,7 +10,7 @@
 
 - better cursor defaults for the pane, nodes and edges
 - `disableKeyboardA11y` now also disables Enter and Escape for selecting/deselecting nodes and edges
-
+- fix bug where users couldn't drag a node after toggle nodes `hidden` attribute
 
 ## 12.0.0-next.9
 
