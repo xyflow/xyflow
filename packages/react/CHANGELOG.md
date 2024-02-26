@@ -1,5 +1,17 @@
 # @xyflow/react
 
+## 12.0.0-next.10
+
+## ⚠️ Breaking changes
+
+- `useNodesData` not only returns data objects but also the type and the id of the node. 
+
+## Patch changes
+
+- better cursor defaults for the pane, nodes and edges
+- `disableKeyboardA11y` now also disables Enter and Escape for selecting/deselecting nodes and edges
+
+
 ## 12.0.0-next.9
 
 ### Patch changes

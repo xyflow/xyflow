@@ -1,5 +1,15 @@
 # @xyflow/svelte
 
+## 0.0.37
+
+## ⚠️ Breaking changes
+
+- `useNodesData` not only returns data objects but also the type and the id of the node. 
+
+## Patch changes
+
+- better cursor defaults for the pane, nodes and edges.
+
 ## 0.0.36
 
 ## Patch changes
