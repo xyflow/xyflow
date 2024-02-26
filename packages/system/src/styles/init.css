@@ -66,14 +66,17 @@
 
 .xy-flow__pane {
   z-index: 1;
-  cursor: grab;
 
   &.selection {
     cursor: pointer;
   }
 
-  &.dragging {
-    cursor: grabbing;
+  &.draggable {
+    cursor: grab;
+
+    &.dragging {
+      cursor: grabbing;
+    }
   }
 }
 
@@ -120,7 +123,10 @@
 
 .xy-flow__edge {
   pointer-events: visibleStroke;
-  cursor: pointer;
+
+  &.selectable {
+    cursor: pointer;
+  }
 
   &.animated path {
     stroke-dasharray: 5;
@@ -183,16 +189,19 @@ svg.xy-flow__connectionline {
   pointer-events: all;
   transform-origin: 0 0;
   box-sizing: border-box;
-  cursor: grab;
+  cursor: default;
 
-  &.dragging {
-    cursor: grabbing;
+  &.selectable {
+    cursor: pointer;
   }
 
-  /* only used in Svelte Flow, should we remove it here? */
   &.draggable {
     cursor: grab;
     pointer-events: all;
+
+    &.dragging {
+      cursor: grabbing;
+    }
   }
 }
 

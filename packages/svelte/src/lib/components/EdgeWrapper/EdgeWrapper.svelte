@@ -22,6 +22,7 @@
 
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
+  export let selectable: $$Props['selectable'] = undefined;
   export let hidden: $$Props['hidden'] = false;
   export let label: $$Props['label'] = undefined;
   export let labelStyle: $$Props['labelStyle'] = undefined;
@@ -44,7 +45,7 @@
 
   setContext('svelteflow__edge_id', id);
 
-  const { edgeLookup, edgeTypes, flowId } = useStore();
+  const { edgeLookup, edgeTypes, flowId, elementsSelectable } = useStore();
   const dispatch = createEventDispatcher<{
     edgeclick: { edge: Edge; event: MouseEvent | TouchEvent };
     edgecontextmenu: { edge: Edge; event: MouseEvent };
@@ -53,6 +54,7 @@
   $: edgeComponent = $edgeTypes[type!] || BezierEdgeInternal;
   $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
   $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
+  $: isSelectable = selectable || ($elementsSelectable && typeof selectable === 'undefined');
 
   const handleEdgeSelect = useHandleEdgeSelect();
 
@@ -82,6 +84,7 @@
       class={cc(['svelte-flow__edge', className])}
       class:animated
       class:selected
+      class:selectable={isSelectable}
       data-id={id}
       on:click={onClick}
       on:contextmenu={onContextMenu}

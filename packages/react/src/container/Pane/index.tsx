@@ -220,7 +220,7 @@ export function Pane({
 
   return (
     <div
-      className={cc(['react-flow__pane', { dragging, selection: isSelecting }])}
+      className={cc(['react-flow__pane', { draggable: panOnDrag, dragging, selection: isSelecting }])}
       onClick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
