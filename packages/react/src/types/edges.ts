@@ -83,6 +83,7 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   rfId?: string;
   edgeTypes?: EdgeTypes;
   onError?: OnError;
+  disableKeyboardA11y?: boolean;
 };
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
