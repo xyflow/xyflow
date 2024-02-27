@@ -43,7 +43,9 @@ const getInitialState = ({
   let transform: Transform = [0, 0, 1];
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
+    const nodesWithDimensions = nextNodes.filter(
+      (node) => (node.width || node.initialWidth) && (node.height || node.initialHeight)
+    );
     // @todo users nodeOrigin should be used here
     const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
     const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
@@ -113,6 +115,7 @@ const getInitialState = ({
     onSelectionChangeHandlers: [],
 
     lib: 'react',
+    debug: false,
   };
 };
 

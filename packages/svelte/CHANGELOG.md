@@ -4,11 +4,12 @@
 
 ## ⚠️ Breaking changes
 
-- `useNodesData` not only returns data objects but also the type and the id of the node. 
+- `useNodesData` not only returns data objects but also the type and the id of the node
 
 ## Patch changes
 
-- better cursor defaults for the pane, nodes and edges.
+- better cursor defaults for the pane, nodes and edges
+- add `initialWidth` and `initialHeight` node attributes for specifying initial dimensions for ssr
 
 ## 0.0.36
 

@@ -81,6 +81,8 @@ const initialNodes: Node[] = [
     id: '4',
     data: { label: 'Node 4' },
     position: { x: 400, y: 200 },
+    width: 200,
+    height: 50,
     type: 'custom',
   },
 ];

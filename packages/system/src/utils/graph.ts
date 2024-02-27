@@ -9,6 +9,7 @@ import {
   pointToRendererPoint,
   getViewportForBounds,
   isCoordinateExtent,
+  getNodeDimensions,
 } from './general';
 import {
   type Transform,
@@ -116,8 +117,9 @@ export const getNodePositionWithOrigin = (
     };
   }
 
-  const offsetX = (node.computed?.width ?? node.width ?? 0) * nodeOrigin[0];
-  const offsetY = (node.computed?.height ?? node.height ?? 0) * nodeOrigin[1];
+  const { width, height } = getNodeDimensions(node);
+  const offsetX = width * nodeOrigin[0];
+  const offsetY = height * nodeOrigin[1];
 
   const position: XYPosition = {
     x: node.position.x - offsetX,
@@ -164,8 +166,7 @@ export const getNodesBounds = (
         currBox,
         rectToBox({
           ...nodePos[params.useRelativePosition ? 'position' : 'positionAbsolute'],
-          width: node.computed?.width ?? node.width ?? 0,
-          height: node.computed?.height ?? node.height ?? 0,
+          ...getNodeDimensions(node),
         })
       );
     },
@@ -192,8 +193,8 @@ export const getNodesInside = <NodeType extends NodeBase>(
 
   const visibleNodes = nodes.reduce<NodeType[]>((res, node) => {
     const { computed, selectable = true, hidden = false } = node;
-    const width = computed?.width ?? node.width ?? null;
-    const height = computed?.height ?? node.height ?? null;
+    const width = computed?.width ?? node.width ?? node.initialWidth ?? null;
+    const height = computed?.height ?? node.height ?? node.initialHeight ?? null;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
       return res;

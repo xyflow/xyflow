@@ -39,8 +39,10 @@ export type NodeBase<
   connectable?: boolean;
   deletable?: boolean;
   dragHandle?: string;
-  width?: number | null;
-  height?: number | null;
+  width?: number;
+  height?: number;
+  initialWidth?: number;
+  initialHeight?: number;
   /** Parent node id, used for creating sub-flows */
   parentNode?: string;
   zIndex?: number;

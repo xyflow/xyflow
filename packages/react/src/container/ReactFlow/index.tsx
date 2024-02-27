@@ -139,6 +139,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     width,
     height,
     colorMode = 'light',
+    debug,
     ...rest
   }: ReactFlowProps<NodeType, EdgeType>,
   ref: ForwardedRef<ReactFlowRefType>
@@ -274,6 +275,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           selectNodesOnDrag={selectNodesOnDrag}
           nodeDragThreshold={nodeDragThreshold}
           onBeforeDelete={onBeforeDelete}
+          debug={debug}
         />
         <SelectionListener onSelectionChange={onSelectionChange} />
         {children}

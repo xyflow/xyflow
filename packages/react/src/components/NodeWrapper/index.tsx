@@ -5,9 +5,11 @@ import {
   clampPosition,
   elementSelectionKeys,
   errorMessages,
+  getNodeDimensions,
   getPositionWithOrigin,
   internalsSymbol,
   isInputDOMNode,
+  nodeHasDimensions,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -16,7 +18,7 @@ import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { handleNodeClick } from '../Nodes/utils';
-import { arrowKeyDiffs, builtinNodeTypes } from './utils';
+import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
 import type { Node, NodeWrapperProps } from '../../types';
 
 export function NodeWrapper<NodeType extends Node>({
@@ -79,11 +81,9 @@ export function NodeWrapper<NodeType extends Node>({
   const prevTargetPosition = useRef(node.targetPosition);
   const prevType = useRef(nodeType);
 
-  const width = node.width ?? undefined;
-  const height = node.height ?? undefined;
-  const computedWidth = node.computed?.width;
-  const computedHeight = node.computed?.height;
-  const initialized = (!!computedWidth && !!computedHeight) || (!!width && !!height);
+  const nodeDimensions = getNodeDimensions(node);
+  const inlineDimensions = getNodeInlineStyleDimensions(node);
+  const initialized = nodeHasDimensions(node);
   const hasHandleBounds = !!node[internalsSymbol]?.handleBounds;
 
   const moveSelectedNodes = useMoveSelectedNodes();
@@ -143,8 +143,7 @@ export function NodeWrapper<NodeType extends Node>({
   const positionAbsoluteOrigin = getPositionWithOrigin({
     x: positionAbsoluteX,
     y: positionAbsoluteY,
-    width: computedWidth ?? width ?? 0,
-    height: computedHeight ?? height ?? 0,
+    ...nodeDimensions,
     origin: node.origin || nodeOrigin,
   });
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
@@ -226,8 +225,7 @@ export function NodeWrapper<NodeType extends Node>({
         pointerEvents: hasPointerEvents ? 'all' : 'none',
         visibility: initialized ? 'visible' : 'hidden',
         ...node.style,
-        width: width ?? node.style?.width,
-        height: height ?? node.style?.height,
+        ...inlineDimensions,
       }}
       data-id={id}
       data-testid={`rf__node-${id}`}
@@ -248,8 +246,6 @@ export function NodeWrapper<NodeType extends Node>({
           id={id}
           data={node.data}
           type={nodeType}
-          width={computedWidth}
-          height={computedHeight}
           positionAbsoluteX={positionAbsoluteX}
           positionAbsoluteY={positionAbsoluteY}
           selected={node.selected}
@@ -259,6 +255,7 @@ export function NodeWrapper<NodeType extends Node>({
           dragging={dragging}
           dragHandle={node.dragHandle}
           zIndex={zIndex}
+          {...nodeDimensions}
         />
       </Provider>
     </div>

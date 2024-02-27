@@ -4,6 +4,7 @@ import { NodeBase, NodeHandle } from '../../types/nodes';
 import { Position } from '../../types/utils';
 import { errorMessages, internalsSymbol } from '../../constants';
 import { HandleElement } from '../../types';
+import { getNodeDimensions } from '../general';
 
 export type GetEdgePositionParams = {
   id: string;
@@ -16,7 +17,10 @@ export type GetEdgePositionParams = {
 };
 
 function isNodeInitialized(node: NodeBase): boolean {
-  return !!(node?.[internalsSymbol]?.handleBounds || node?.handles?.length) && !!(node?.computed?.width || node?.width);
+  return (
+    !!(node?.[internalsSymbol]?.handleBounds || node?.handles?.length) &&
+    !!(node?.computed?.width || node?.width || node?.initialWidth)
+  );
 }
 
 export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | null {
@@ -75,8 +79,8 @@ function toHandleBounds(handles?: NodeHandle[]) {
   const target = [];
 
   for (const handle of handles) {
-    handle.width = handle.width || 1;
-    handle.height = handle.height || 1;
+    handle.width = handle.width ?? 1;
+    handle.height = handle.height ?? 1;
 
     if (handle.type === 'source') {
       source.push(handle as HandleElement);
@@ -94,8 +98,7 @@ function toHandleBounds(handles?: NodeHandle[]) {
 function getHandlePosition(position: Position, node: NodeBase, handle: HandleElement | null = null): number[] {
   const x = (handle?.x ?? 0) + (node.computed?.positionAbsolute?.x ?? 0);
   const y = (handle?.y ?? 0) + (node.computed?.positionAbsolute?.y ?? 0);
-  const width = handle?.width || (node?.computed?.width ?? node?.width ?? 0);
-  const height = handle?.height || (node?.computed?.height ?? node?.height ?? 0);
+  const { width, height } = handle ?? getNodeDimensions(node);
 
   switch (position) {
     case Position.Top:

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentType, memo } from 'react';
-import { NodeOrigin, getNodePositionWithOrigin } from '@xyflow/system';
+import { NodeOrigin, getNodeDimensions, getNodePositionWithOrigin, nodeHasDimensions } from '@xyflow/system';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
@@ -94,16 +94,19 @@ function NodeComponentWrapperInner<NodeType extends Node>({
       y,
     };
   }, shallow);
-  if (!node || node.hidden || !(node.computed?.width || node.width) || !(node.computed?.height || node.height)) {
+
+  if (!node || node.hidden || !nodeHasDimensions(node)) {
     return null;
   }
+
+  const { width, height } = getNodeDimensions(node);
 
   return (
     <NodeComponent
       x={x}
       y={y}
-      width={node.computed?.width ?? node.width ?? 0}
-      height={node.computed?.height ?? node.height ?? 0}
+      width={width}
+      height={height}
       style={node.style}
       selected={!!node.selected}
       className={nodeClassNameFunc(node)}
