@@ -230,7 +230,6 @@ svg.xy-flow__connectionline {
   &.connectionindicator {
     pointer-events: all;
     cursor: crosshair;
-    background: green;
   }
 
   &-bottom {
