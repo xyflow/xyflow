@@ -146,6 +146,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   isValidConnection?: IsValidConnection<EdgeType>;
 
   lib: string;
+  debug: boolean;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {

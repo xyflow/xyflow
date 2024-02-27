@@ -16,9 +16,13 @@ export type NodeWrapperProps = Pick<
   | 'targetPosition'
   | 'dragHandle'
   | 'hidden'
+  | 'width'
+  | 'height'
+  | 'initialWidth'
+  | 'initialHeight'
 > & {
-  width?: number;
-  height?: number;
+  computedWidth?: number;
+  computedHeight?: number;
   type: string;
   positionX: number;
   positionY: number;

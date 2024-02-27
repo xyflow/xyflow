@@ -4,13 +4,14 @@
 
 ## ⚠️ Breaking changes
 
-- `useNodesData` not only returns data objects but also the type and the id of the node. 
+- `useNodesData` not only returns data objects but also the type and the id of the node
 
 ## Patch changes
 
 - better cursor defaults for the pane, nodes and edges
 - `disableKeyboardA11y` now also disables Enter and Escape for selecting/deselecting nodes and edges
 - fix bug where users couldn't drag a node after toggle nodes `hidden` attribute
+- add `initialWidth` and `initialHeight` node attributes for specifying initial dimensions for ssr
 
 ## 12.0.0-next.9
 
