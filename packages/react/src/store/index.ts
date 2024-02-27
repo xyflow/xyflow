@@ -291,13 +291,11 @@ const createRFStore = ({
           connectionEndHandle: null,
         }),
       updateConnection: (params) => {
-        const { connectionStatus, connectionStartHandle, connectionEndHandle, connectionPosition } = get();
+        const { connectionPosition } = get();
 
         const currentConnection = {
+          ...params,
           connectionPosition: params.connectionPosition ?? connectionPosition,
-          connectionStatus: params.connectionStatus ?? connectionStatus,
-          connectionStartHandle: params.connectionStartHandle ?? connectionStartHandle,
-          connectionEndHandle: params.connectionEndHandle ?? connectionEndHandle,
         };
 
         set(currentConnection);

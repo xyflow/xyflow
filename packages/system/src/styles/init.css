@@ -223,9 +223,14 @@ svg.xy-flow__connectionline {
   min-width: 5px;
   min-height: 5px;
 
+  &.connecting {
+    pointer-events: all;
+  }
+
   &.connectionindicator {
     pointer-events: all;
     cursor: crosshair;
+    background: green;
   }
 
   &-bottom {

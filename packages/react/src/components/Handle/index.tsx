@@ -16,6 +16,7 @@ import {
   type HandleProps,
   type Connection,
   type HandleType,
+  ConnectionMode,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -36,14 +37,19 @@ const connectingSelector =
       connectionStartHandle: startHandle,
       connectionEndHandle: endHandle,
       connectionClickStartHandle: clickHandle,
+      connectionMode,
     } = state;
-
     return {
       connecting:
         (startHandle?.nodeId === nodeId && startHandle?.handleId === handleId && startHandle?.type === type) ||
         (endHandle?.nodeId === nodeId && endHandle?.handleId === handleId && endHandle?.type === type),
       clickConnecting:
         clickHandle?.nodeId === nodeId && clickHandle?.handleId === handleId && clickHandle?.type === type,
+      isPossibleEndHandle:
+        connectionMode === ConnectionMode.Strict
+          ? startHandle?.type !== type
+          : nodeId !== startHandle?.nodeId || handleId !== startHandle?.handleId,
+      connectionInProcess: !!startHandle,
     };
   };
 
@@ -71,7 +77,10 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
     const store = useStoreApi();
     const nodeId = useNodeId();
     const { connectOnClick, noPanClassName, rfId } = useStore(selector, shallow);
-    const { connecting, clickConnecting } = useStore(connectingSelector(nodeId, handleId, type), shallow);
+    const { connecting, clickConnecting, isPossibleEndHandle, connectionInProcess } = useStore(
+      connectingSelector(nodeId, handleId, type),
+      shallow
+    );
 
     if (!nodeId) {
       store.getState().onError?.('010', errorMessages['error010']());
@@ -201,10 +210,12 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
             connectable: isConnectable,
             connectablestart: isConnectableStart,
             connectableend: isConnectableEnd,
-            connecting: clickConnecting,
+            connecting: connecting || clickConnecting,
             // this class is used to style the handle when the user is connecting
             connectionindicator:
-              isConnectable && ((isConnectableStart && !connecting) || (isConnectableEnd && connecting)),
+              isConnectable &&
+              (!connectionInProcess || isPossibleEndHandle) &&
+              (connectionInProcess ? isConnectableEnd : isConnectableStart),
           },
         ])}
         onMouseDown={onPointerDown}
