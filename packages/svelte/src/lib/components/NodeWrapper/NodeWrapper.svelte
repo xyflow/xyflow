@@ -11,6 +11,7 @@
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import type { NodeWrapperProps } from './types';
   import type { Node } from '$lib/types';
+  import { getNodeInlineStyleDimensions } from './utils';
 
   interface $$Props extends NodeWrapperProps {}
 
@@ -34,6 +35,10 @@
   export let sourcePosition: NodeWrapperProps['sourcePosition'] = undefined;
   export let targetPosition: NodeWrapperProps['targetPosition'] = undefined;
   export let zIndex: NodeWrapperProps['zIndex'];
+  export let computedWidth: NodeWrapperProps['computedWidth'] = undefined;
+  export let computedHeight: NodeWrapperProps['computedHeight'] = undefined;
+  export let initialWidth: NodeWrapperProps['initialWidth'] = undefined;
+  export let initialHeight: NodeWrapperProps['initialHeight'] = undefined;
   export let width: NodeWrapperProps['width'] = undefined;
   export let height: NodeWrapperProps['height'] = undefined;
   export let dragHandle: NodeWrapperProps['dragHandle'] = undefined;
@@ -76,6 +81,15 @@
   let prevType: string | undefined = undefined;
   let prevSourcePosition: Position | undefined = undefined;
   let prevTargetPosition: Position | undefined = undefined;
+
+  $: inlineStyleDimensions = getNodeInlineStyleDimensions({
+    width,
+    height,
+    initialWidth,
+    initialHeight,
+    computedWidth,
+    computedHeight
+  });
 
   $: {
     connectableStore.set(!!connectable);
@@ -170,9 +184,7 @@
     style:z-index={zIndex}
     style:transform="translate({positionOriginX}px, {positionOriginY}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
-    style="{style ?? ''}; {!width ? '' : `width:${width}px;`} {!height
-      ? ''
-      : `height:${height}px;`}"
+    style="{inlineStyleDimensions.width} {inlineStyleDimensions.height} {style ?? ''};"
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
     on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}

@@ -1,6 +1,11 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { internalsSymbol, getPositionWithOrigin } from '@xyflow/system';
+  import {
+    internalsSymbol,
+    getPositionWithOrigin,
+    getNodeDimensions,
+    nodeHasDimensions
+  } from '@xyflow/system';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
@@ -39,11 +44,11 @@
 
 <div class="svelte-flow__nodes">
   {#each $visibleNodes as node (node.id)}
+    {@const nodeDimesions = getNodeDimensions(node)}
     {@const posOrigin = getPositionWithOrigin({
       x: node.computed?.positionAbsolute?.x ?? 0,
       y: node.computed?.positionAbsolute?.y ?? 0,
-      width: node.computed?.width ?? node.width ?? 0,
-      height: node.computed?.height ?? node.height ?? 0,
+      ...nodeDimesions,
       origin: node.origin
     })}
     <NodeWrapper
@@ -74,10 +79,13 @@
       dragging={node.dragging}
       zIndex={node[internalsSymbol]?.z ?? 0}
       dragHandle={node.dragHandle}
-      width={node.width ?? undefined}
-      height={node.height ?? undefined}
-      initialized={(!!node.computed?.width && !!node.computed?.height) ||
-        (!!node.width && !!node.height)}
+      initialized={nodeHasDimensions(node)}
+      width={node.width}
+      height={node.height}
+      initialWidth={node.initialWidth}
+      initialHeight={node.initialHeight}
+      computedWidth={node.computed?.width}
+      computedHeight={node.computed?.height}
       {resizeObserver}
       on:nodeclick
       on:nodemouseenter

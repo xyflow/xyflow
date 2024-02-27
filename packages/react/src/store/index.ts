@@ -89,6 +89,7 @@ const createRFStore = ({
           fitViewOnInitOptions,
           domNode,
           nodeOrigin,
+          debug,
         } = get();
         const changes: NodeDimensionChange[] = [];
 
@@ -130,6 +131,9 @@ const createRFStore = ({
         set({ nodes: nextNodes, fitViewDone: nextFitViewDone });
 
         if (changes?.length > 0) {
+          if (debug) {
+            console.log('React Flow: trigger node changes', changes);
+          }
           onNodesChange?.(changes);
         }
       },
@@ -149,7 +153,7 @@ const createRFStore = ({
         get().triggerNodeChanges(changes);
       },
       triggerNodeChanges: (changes) => {
-        const { onNodesChange, setNodes, nodes, hasDefaultNodes } = get();
+        const { onNodesChange, setNodes, nodes, hasDefaultNodes, debug } = get();
 
         if (changes?.length) {
           if (hasDefaultNodes) {
@@ -157,16 +161,24 @@ const createRFStore = ({
             setNodes(updatedNodes);
           }
 
+          if (debug) {
+            console.log('React Flow: trigger node changes', changes);
+          }
+
           onNodesChange?.(changes);
         }
       },
       triggerEdgeChanges: (changes) => {
-        const { onEdgesChange, setEdges, edges, hasDefaultEdges } = get();
+        const { onEdgesChange, setEdges, edges, hasDefaultEdges, debug } = get();
 
         if (changes?.length) {
           if (hasDefaultEdges) {
             const updatedEdges = applyEdgeChanges(changes, edges);
             setEdges(updatedEdges);
+          }
+
+          if (debug) {
+            console.log('React Flow: trigger edge changes', changes);
           }
 
           onEdgesChange?.(changes);

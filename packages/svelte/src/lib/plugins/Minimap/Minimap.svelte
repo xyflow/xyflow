@@ -7,7 +7,13 @@
 
 <script lang="ts">
   import cc from 'classcat';
-  import { getBoundsOfRects, getNodePositionWithOrigin, getNodesBounds } from '@xyflow/system';
+  import {
+    getBoundsOfRects,
+    getNodeDimensions,
+    getNodePositionWithOrigin,
+    getNodesBounds,
+    nodeHasDimensions
+  } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import { Panel } from '$lib/container/Panel';
@@ -116,13 +122,13 @@
       {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
 
       {#each $nodes as node (node.id)}
-        {#if (node.computed?.width || node?.width) && (node.computed?.height || node.height)}
+        {#if nodeHasDimensions(node)}
           {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
+          {@const nodeDimesions = getNodeDimensions(node)}
           <MinimapNode
             x={pos.x}
             y={pos.y}
-            width={node.computed?.width ?? node.width ?? 0}
-            height={node.computed?.height ?? node.height ?? 0}
+            {...nodeDimesions}
             selected={node.selected}
             color={nodeColorFunc?.(node)}
             borderRadius={nodeBorderRadius}

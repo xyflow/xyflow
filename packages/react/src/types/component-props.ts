@@ -503,6 +503,11 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @example 'system' | 'light' | 'dark'
    */
   colorMode?: ColorMode;
+  /** If set true, some debug information will be logged to the console like which events are fired.
+   *
+   * @default undefined
+   */
+  debug?: boolean;
 }
 
 export type ReactFlowRefType = HTMLDivElement;
