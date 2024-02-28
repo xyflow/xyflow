@@ -49,6 +49,7 @@ import UseConnection from '../examples/UseConnection';
 import UseNodesInitialized from '../examples/UseNodesInit';
 import UseNodesData from '../examples/UseNodesData';
 import UseHandleConnections from '../examples/UseHandleConnections';
+import AddNodeOnEdgeDrop from '../examples/AddNodeOnEdgeDrop';
 
 export interface IRoute {
   name: string;
@@ -57,6 +58,11 @@ export interface IRoute {
 }
 
 const routes: IRoute[] = [
+  {
+    name: 'Add Node on edge Drop',
+    path: 'add-node-edge-drop',
+    component: AddNodeOnEdgeDrop,
+  },
   {
     name: 'Basic',
     path: 'basic',
