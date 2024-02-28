@@ -102,8 +102,8 @@ function xor(a: boolean, b: boolean) {
  * strongest restriction. Because the resize affects x, y and width, height and width, height of a opposing side with keepAspectRatio,
  * the resize amount is always kept in distX & distY amount (the distance in mouse movement)
  * Instead of clamping each value, we first calculate the biggest 'clamp' (for the lack of a better name) and then apply it to all values.
- * To complicate things nodeOrigin has to be taken into account as well. This is done by offsetting the nodes depending on their origin,
- * calculating the restrictions, normally and then
+ * To complicate things nodeOrigin has to be taken into account as well. This is done by offsetting the nodes as if their origin is [0, 0],
+ * then calculating the restrictions as usual
  * @param startValues - starting values of resize
  * @param controlDirection - dimensions affected by the resize
  * @param pointerPosition - the current pointer position corrected for snapping
