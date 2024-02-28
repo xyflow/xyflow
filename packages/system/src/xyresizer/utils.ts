@@ -94,7 +94,7 @@ function xor(a: boolean, b: boolean) {
 
 /**
  * Calculates new width & height and x & y of node after resize based on pointer position
- * @description - Buckle up, this is a chunky one! If you want to determine the new dimensions of a node after a resize,
+ * @description - Buckle up, this is a chunky one... If you want to determine the new dimensions of a node after a resize,
  * you have to account for all possible restrictions: min/max width/height of the node, the maximum extent the node is allowed
  * to move in (in this case: resize into) determined by the parent node, the minimal extent determined by child nodes
  * with expandParent or extent: 'parent' set and oh yeah, these things also have to work with keepAspectRatio!
@@ -102,6 +102,8 @@ function xor(a: boolean, b: boolean) {
  * strongest restriction. Because the resize affects x, y and width, height and width, height of a opposing side with keepAspectRatio,
  * the resize amount is always kept in distX & distY amount (the distance in mouse movement)
  * Instead of clamping each value, we first calculate the biggest 'clamp' (for the lack of a better name) and then apply it to all values.
+ * To complicate things nodeOrigin has to be taken into account as well. This is done by offsetting the nodes depending on their origin,
+ * calculating the restrictions, normally and then
  * @param startValues - starting values of resize
  * @param controlDirection - dimensions affected by the resize
  * @param pointerPosition - the current pointer position corrected for snapping
@@ -266,15 +268,12 @@ export function getDimensionsAfterResize(
     }
   }
 
-  const width = startWidth + (affectsX ? -distX : distX);
-  const height = startHeight + (affectsY ? -distY : distY);
-
   const x = affectsX ? startX + distX : startX;
   const y = affectsY ? startY + distY : startY;
 
   return {
-    width: width,
-    height: height,
+    width: startWidth + (affectsX ? -distX : distX),
+    height: startHeight + (affectsY ? -distY : distY),
     x: nodeOrigin[0] * distX * (!affectsX ? 1 : -1) + x,
     y: nodeOrigin[1] * distY * (!affectsY ? 1 : -1) + y,
   };
