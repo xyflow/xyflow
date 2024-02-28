@@ -156,7 +156,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
               });
 
               if (child.extent === 'parent' || child.expandParent) {
-                const extent = nodeToChildExtent(child, node!, nodeOrigin);
+                const extent = nodeToChildExtent(child, node!, child.origin ?? nodeOrigin);
 
                 if (childExtent) {
                   childExtent = [
@@ -174,14 +174,14 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
         }
       })
       .on('drag', (event: ResizeDragEvent) => {
-        const { transform, snapGrid, snapToGrid, nodeOrigin } = getStoreItems();
+        const { transform, snapGrid, snapToGrid, nodeOrigin: storeNodeOrigin } = getStoreItems();
         const pointerPosition = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
         const childChanges: XYResizerChildChange[] = [];
 
         if (node) {
-          const change = { ...initChange };
-
           const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
+          const change = { ...initChange };
+          const nodeOrigin = node.origin ?? storeNodeOrigin;
 
           const { width, height, x, y } = getDimensionsAfterResize(
             startValues,
