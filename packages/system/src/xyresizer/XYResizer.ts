@@ -3,7 +3,7 @@ import { select } from 'd3-selection';
 
 import { getControlDirection, getDimensionsAfterResize, getResizeDirection } from './utils';
 import { getPointerPosition } from '../utils';
-import type { CoordinateExtent, NodeBase, NodeLookup, Transform, XYPosition } from '../types';
+import type { CoordinateExtent, NodeBase, NodeLookup, NodeOrigin, Transform, XYPosition } from '../types';
 import type { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, ControlPosition } from './types';
 
 const initPrevValues = { width: 0, height: 0, x: 0, y: 0 };
@@ -42,6 +42,7 @@ type XYResizerParams = {
     transform: Transform;
     snapGrid?: [number, number];
     snapToGrid: boolean;
+    nodeOrigin: NodeOrigin;
   };
   onChange: (changes: XYResizerChange, childChanges: XYResizerChildChange[]) => void;
   onEnd?: () => void;
@@ -74,13 +75,17 @@ function nodeToParentExtent(node: NodeBase): CoordinateExtent {
   ];
 }
 
-function nodeToChildExtent(child: NodeBase, parent: NodeBase): CoordinateExtent {
+function nodeToChildExtent(child: NodeBase, parent: NodeBase, nodeOrigin: NodeOrigin): CoordinateExtent {
+  const x = parent.position.x + child.position.x;
+  const y = parent.position.y + child.position.y;
+  const width = child.computed!.width! ?? 0;
+  const height = child.computed!.height! ?? 0;
+  const originOffsetX = nodeOrigin[0] * width;
+  const originOffsetY = nodeOrigin[1] * height;
+
   return [
-    [parent.position.x + child.position.x, parent.position.y + child.position.y],
-    [
-      parent.position.x + child.position.x + child.computed!.width!,
-      parent.position.y + child.position.y + child.computed!.height!,
-    ],
+    [x - originOffsetX, y - originOffsetY],
+    [x + width - originOffsetX, y + height - originOffsetY],
   ];
 }
 
@@ -109,7 +114,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
-        const { nodeLookup, transform, snapGrid, snapToGrid } = getStoreItems();
+        const { nodeLookup, transform, snapGrid, snapToGrid, nodeOrigin } = getStoreItems();
         node = nodeLookup.get(nodeId);
 
         if (node) {
@@ -151,7 +156,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
               });
 
               if (child.extent === 'parent' || child.expandParent) {
-                const extent = nodeToChildExtent(child, node!);
+                const extent = nodeToChildExtent(child, node!, nodeOrigin);
 
                 if (childExtent) {
                   childExtent = [
@@ -169,7 +174,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
         }
       })
       .on('drag', (event: ResizeDragEvent) => {
-        const { transform, snapGrid, snapToGrid } = getStoreItems();
+        const { transform, snapGrid, snapToGrid, nodeOrigin } = getStoreItems();
         const pointerPosition = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
         const childChanges: XYResizerChildChange[] = [];
 
@@ -184,6 +189,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
             pointerPosition,
             boundaries,
             keepAspectRatio,
+            nodeOrigin,
             parentExtent,
             childExtent
           );
@@ -191,40 +197,39 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           const isWidthChange = width !== prevWidth;
           const isHeightChange = height !== prevHeight;
 
-          if (controlDirection.affectsX || controlDirection.affectsY) {
-            const isXPosChange = x !== prevX && isWidthChange;
-            const isYPosChange = y !== prevY && isHeightChange;
+          const isXPosChange = x !== prevX && isWidthChange;
+          const isYPosChange = y !== prevY && isHeightChange;
 
-            if (isXPosChange || isYPosChange) {
-              change.isXPosChange = isXPosChange;
-              change.isYPosChange = isYPosChange;
-              change.x = isXPosChange ? x : prevX;
-              change.y = isYPosChange ? y : prevY;
+          if (isXPosChange || isYPosChange || nodeOrigin[0] === 1 || nodeOrigin[1] == 1) {
+            change.isXPosChange = isXPosChange;
+            change.isYPosChange = isYPosChange;
+            change.x = isXPosChange ? x : prevX;
+            change.y = isYPosChange ? y : prevY;
 
-              prevValues.x = change.x;
-              prevValues.y = change.y;
+            prevValues.x = change.x;
+            prevValues.y = change.y;
 
-              // Fix expandParent when resizing from top/left
-              if (parentNode && node.expandParent) {
-                if (change.x < 0) {
-                  prevValues.x = 0;
-                  startValues.x = startValues.x - change.x;
-                }
+            // Fix expandParent when resizing from top/left
+            if (parentNode && node.expandParent) {
+              if (change.x < 0) {
+                prevValues.x = 0;
+                startValues.x = startValues.x - change.x;
+              }
 
-                if (change.y < 0) {
-                  prevValues.y = 0;
-                  startValues.y = startValues.y - change.y;
-                }
+              if (change.y < 0) {
+                prevValues.y = 0;
+                startValues.y = startValues.y - change.y;
               }
             }
 
             if (childNodes.length > 0) {
               const xChange = x - prevX;
               const yChange = y - prevY;
+
               for (const childNode of childNodes) {
                 childNode.position = {
-                  x: childNode.position.x - xChange,
-                  y: childNode.position.y - yChange,
+                  x: childNode.position.x - xChange + nodeOrigin[0] * (width - prevWidth),
+                  y: childNode.position.y - yChange + nodeOrigin[1] * (height - prevHeight),
                 };
                 childChanges.push(childNode);
               }
