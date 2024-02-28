@@ -39,12 +39,10 @@ const connectingSelector =
       connectionClickStartHandle: clickHandle,
       connectionMode,
     } = state;
-    const connectingFrom =
-      startHandle?.nodeId === nodeId && startHandle?.handleId === handleId && startHandle?.type === type;
-    const connectingTo = endHandle?.nodeId === nodeId && endHandle?.handleId === handleId && endHandle?.type === type;
     return {
-      connectingFrom,
-      connectingTo,
+      connectingFrom:
+        startHandle?.nodeId === nodeId && startHandle?.handleId === handleId && startHandle?.type === type,
+      connectingTo: endHandle?.nodeId === nodeId && endHandle?.handleId === handleId && endHandle?.type === type,
       clickConnecting:
         clickHandle?.nodeId === nodeId && clickHandle?.handleId === handleId && clickHandle?.type === type,
       isPossibleEndHandle:
