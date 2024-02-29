@@ -1,5 +1,19 @@
 # @xyflow/svelte
 
+## 0.0.37
+
+## ⚠️ Breaking changes
+
+- `useNodesData` not only returns data objects but also the type and the id of the node
+- status class names for Handle components are slightly different. It's now "connectingfrom" and "connectingto" instead of "connecting"
+
+## Patch changes
+
+- better cursor defaults for the pane, nodes and edges
+- add `initialWidth` and `initialHeight` node attributes for specifying initial dimensions for ssr
+- always re-measure nodes when new nodes get passed
+- fix `NodeResizer` when used in combination with `nodeOrigin`
+
 ## 0.0.36
 
 ## Patch changes

@@ -7,11 +7,10 @@ import { NodeTypes } from './general';
  * The node data structure that gets used for the nodes prop.
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Node<NodeData = any, NodeType extends string | undefined = string | undefined> = NodeBase<
-  NodeData,
-  NodeType
-> & {
+export type Node<
+  NodeData extends Record<string, unknown> = Record<string, unknown>,
+  NodeType extends string | undefined = string | undefined
+> = NodeBase<NodeData, NodeType> & {
   style?: CSSProperties;
   className?: string;
   resizing?: boolean;
@@ -26,18 +25,18 @@ export type OnNodeDrag<NodeType extends Node = Node> = (
   nodes: NodeType[]
 ) => void;
 
-export type NodeWrapperProps = {
+export type NodeWrapperProps<NodeType extends Node> = {
   id: string;
   nodesConnectable: boolean;
   elementsSelectable: boolean;
   nodesDraggable: boolean;
   nodesFocusable: boolean;
-  onClick?: NodeMouseHandler;
-  onDoubleClick?: NodeMouseHandler;
-  onMouseEnter?: NodeMouseHandler;
-  onMouseMove?: NodeMouseHandler;
-  onMouseLeave?: NodeMouseHandler;
-  onContextMenu?: NodeMouseHandler;
+  onClick?: NodeMouseHandler<NodeType>;
+  onDoubleClick?: NodeMouseHandler<NodeType>;
+  onMouseEnter?: NodeMouseHandler<NodeType>;
+  onMouseMove?: NodeMouseHandler<NodeType>;
+  onMouseLeave?: NodeMouseHandler<NodeType>;
+  onContextMenu?: NodeMouseHandler<NodeType>;
   resizeObserver: ResizeObserver | null;
   noDragClassName: string;
   noPanClassName: string;
@@ -48,3 +47,5 @@ export type NodeWrapperProps = {
   nodeOrigin: NodeOrigin;
   onError?: OnError;
 };
+
+export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'>;

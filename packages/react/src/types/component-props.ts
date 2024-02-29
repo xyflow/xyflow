@@ -18,7 +18,6 @@ import type {
   HandleType,
   SelectionMode,
   OnError,
-  IsValidConnection,
   ColorMode,
   SnapGrid,
 } from '@xyflow/system';
@@ -44,13 +43,15 @@ import type {
   EdgeMouseHandler,
   OnNodeDrag,
   OnBeforeDelete,
+  IsValidConnection,
 } from '.';
 
 /**
  * ReactFlow component props.
  * @public
  */
-export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'> {
+export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge>
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'> {
   /** An array of nodes to render in a controlled flow.
    * @example
    * const nodes = [
@@ -62,7 +63,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    *  }
    * ];
    */
-  nodes?: Node[];
+  nodes?: NodeType[];
   /** An array of edges to render in a controlled flow.
    * @example
    * const edges = [
@@ -73,11 +74,11 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    *  }
    * ];
    */
-  edges?: Edge[];
+  edges?: EdgeType[];
   /** The initial nodes to render in an uncontrolled flow. */
-  defaultNodes?: Node[];
+  defaultNodes?: NodeType[];
   /** The initial edges to render in an uncontrolled flow. */
-  defaultEdges?: Edge[];
+  defaultEdges?: EdgeType[];
   /** Defaults to be applied to all new edges that are added to the flow.
    *
    * Properties on a new edge will override these defaults if they exist.
@@ -99,38 +100,38 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    */
   defaultEdgeOptions?: DefaultEdgeOptions;
   /** This event handler is called when a user clicks on a node */
-  onNodeClick?: NodeMouseHandler;
+  onNodeClick?: NodeMouseHandler<NodeType>;
   /** This event handler is called when a user double clicks on a node */
-  onNodeDoubleClick?: NodeMouseHandler;
+  onNodeDoubleClick?: NodeMouseHandler<NodeType>;
   /** This event handler is called when mouse of a user enters a node */
-  onNodeMouseEnter?: NodeMouseHandler;
+  onNodeMouseEnter?: NodeMouseHandler<NodeType>;
   /** This event handler is called when mouse of a user moves over a node */
-  onNodeMouseMove?: NodeMouseHandler;
+  onNodeMouseMove?: NodeMouseHandler<NodeType>;
   /** This event handler is called when mouse of a user leaves a node */
-  onNodeMouseLeave?: NodeMouseHandler;
+  onNodeMouseLeave?: NodeMouseHandler<NodeType>;
   /** This event handler is called when a user right clicks on a node */
-  onNodeContextMenu?: NodeMouseHandler;
+  onNodeContextMenu?: NodeMouseHandler<NodeType>;
   /** This event handler is called when a user starts to drag a node */
-  onNodeDragStart?: OnNodeDrag;
+  onNodeDragStart?: OnNodeDrag<NodeType>;
   /** This event handler is called when a user drags a node */
-  onNodeDrag?: OnNodeDrag;
+  onNodeDrag?: OnNodeDrag<NodeType>;
   /** This event handler is called when a user stops dragging a node */
-  onNodeDragStop?: OnNodeDrag;
+  onNodeDragStop?: OnNodeDrag<NodeType>;
   /** This event handler is called when a user clicks on an edge */
-  onEdgeClick?: (event: ReactMouseEvent, edge: Edge) => void;
+  onEdgeClick?: (event: ReactMouseEvent, edge: EdgeType) => void;
   /** This event handler is called when a user right clicks on an edge */
-  onEdgeContextMenu?: EdgeMouseHandler;
+  onEdgeContextMenu?: EdgeMouseHandler<EdgeType>;
   /** This event handler is called when mouse of a user enters an edge */
-  onEdgeMouseEnter?: EdgeMouseHandler;
+  onEdgeMouseEnter?: EdgeMouseHandler<EdgeType>;
   /** This event handler is called when mouse of a user moves over an edge */
-  onEdgeMouseMove?: EdgeMouseHandler;
+  onEdgeMouseMove?: EdgeMouseHandler<EdgeType>;
   /** This event handler is called when mouse of a user leaves an edge */
-  onEdgeMouseLeave?: EdgeMouseHandler;
+  onEdgeMouseLeave?: EdgeMouseHandler<EdgeType>;
   /** This event handler is called when a user double clicks on an edge */
-  onEdgeDoubleClick?: EdgeMouseHandler;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdate?: OnEdgeUpdateFunc;
+  onEdgeDoubleClick?: EdgeMouseHandler<EdgeType>;
+  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: EdgeType, handleType: HandleType) => void;
+  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
+  onEdgeUpdate?: OnEdgeUpdateFunc<EdgeType>;
   /** This event handler is called when a Node is updated
    * @example // Use NodesState hook to create edges and get onNodesChange handler
    * import ReactFlow, { useNodesState } from '@xyflow/react';
@@ -147,7 +148,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    *
    * return (<ReactFlow onNodeChange={onNodeChange} {...rest} />)
    */
-  onNodesChange?: OnNodesChange;
+  onNodesChange?: OnNodesChange<NodeType>;
   /** This event handler is called when a Edge is updated
    * @example // Use EdgesState hook to create edges and get onEdgesChange handler
    * import ReactFlow, { useEdgesState } from '@xyflow/react';
@@ -164,22 +165,22 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    *
    * return (<ReactFlow onEdgesChange={onEdgesChange} {...rest} />)
    */
-  onEdgesChange?: OnEdgesChange;
+  onEdgesChange?: OnEdgesChange<EdgeType>;
   /** This event handler gets called when a Node is deleted */
-  onNodesDelete?: OnNodesDelete;
+  onNodesDelete?: OnNodesDelete<NodeType>;
   /** This event handler gets called when a Edge is deleted */
-  onEdgesDelete?: OnEdgesDelete;
+  onEdgesDelete?: OnEdgesDelete<EdgeType>;
   /** This event handler gets called when a Node or Edge is deleted */
-  onDelete?: OnDelete;
+  onDelete?: OnDelete<NodeType, EdgeType>;
   /** This event handler gets called when a user starts to drag a selection box */
-  onSelectionDragStart?: SelectionDragHandler;
+  onSelectionDragStart?: SelectionDragHandler<NodeType>;
   /** This event handler gets called when a user drags a selection box */
-  onSelectionDrag?: SelectionDragHandler;
+  onSelectionDrag?: SelectionDragHandler<NodeType>;
   /** This event handler gets called when a user stops dragging a selection box */
-  onSelectionDragStop?: SelectionDragHandler;
+  onSelectionDragStop?: SelectionDragHandler<NodeType>;
   onSelectionStart?: (event: ReactMouseEvent) => void;
   onSelectionEnd?: (event: ReactMouseEvent) => void;
-  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: Node[]) => void;
+  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: NodeType[]) => void;
   /** When a connection line is completed and two nodes are connected by the user, this event fires with the new connection.
    *
    * You can use the addEdge utility to convert the connection to a complete edge.
@@ -201,7 +202,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   onClickConnectStart?: OnConnectStart;
   onClickConnectEnd?: OnConnectEnd;
   /** This event handler gets called when a flow has finished initializing */
-  onInit?: OnInit;
+  onInit?: OnInit<NodeType, EdgeType>;
   /** This event handler is called while the user is either panning or zooming the viewport. */
   onMove?: OnMove;
   /** This event handler gets called when a user starts to pan or zoom the viewport */
@@ -223,7 +224,7 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
   /** This event handler gets called when mouse leaves the pane */
   onPaneMouseLeave?: (event: ReactMouseEvent) => void;
   /** This handler gets called before the user deletes nodes or edges and provides a way to abort the deletion by returning false. */
-  onBeforeDelete?: OnBeforeDelete;
+  onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
   /** Custom node types to be available in a flow.
    *
    * React Flow matches a node's type to a component in the nodeTypes object.
@@ -502,6 +503,11 @@ export interface ReactFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'on
    * @example 'system' | 'light' | 'dark'
    */
   colorMode?: ColorMode;
+  /** If set true, some debug information will be logged to the console like which events are fired.
+   *
+   * @default undefined
+   */
+  debug?: boolean;
 }
 
 export type ReactFlowRefType = HTMLDivElement;

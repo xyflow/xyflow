@@ -6,6 +6,7 @@
 		useNodesData,
 		type NodeProps
 	} from '@xyflow/svelte';
+	import { isTextNode, type MyNode } from './+page.svelte';
 
 	type $$Props = NodeProps;
 
@@ -16,15 +17,16 @@
 		type: 'target'
 	});
 
-	$: nodeData = useNodesData($connections.map((connection) => connection.source));
+	$: nodeData = useNodesData<MyNode>($connections.map((connection) => connection.source));
+	$: textNodes = $nodeData.filter(isTextNode);
 </script>
 
 <div class="custom">
 	<Handle type="target" position={Position.Left} />
 	<div>incoming texts:</div>
 
-	{#each $nodeData as data}
-		<div>{data.text}</div>
+	{#each textNodes as textNode}
+		<div>{textNode.data.text}</div>
 	{/each}
 </div>
 

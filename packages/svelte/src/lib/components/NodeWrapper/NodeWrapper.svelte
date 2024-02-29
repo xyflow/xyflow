@@ -1,7 +1,13 @@
 <svelte:options immutable />
 
 <script lang="ts">
-  import { createEventDispatcher, setContext, SvelteComponent, type ComponentType } from 'svelte';
+  import {
+    createEventDispatcher,
+    setContext,
+    SvelteComponent,
+    type ComponentType,
+    onDestroy
+  } from 'svelte';
   import { get, writable } from 'svelte/store';
   import cc from 'classcat';
   import { errorMessages, Position, type NodeProps } from '@xyflow/system';
@@ -11,6 +17,7 @@
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import type { NodeWrapperProps } from './types';
   import type { Node } from '$lib/types';
+  import { getNodeInlineStyleDimensions } from './utils';
 
   interface $$Props extends NodeWrapperProps {}
 
@@ -34,6 +41,10 @@
   export let sourcePosition: NodeWrapperProps['sourcePosition'] = undefined;
   export let targetPosition: NodeWrapperProps['targetPosition'] = undefined;
   export let zIndex: NodeWrapperProps['zIndex'];
+  export let computedWidth: NodeWrapperProps['computedWidth'] = undefined;
+  export let computedHeight: NodeWrapperProps['computedHeight'] = undefined;
+  export let initialWidth: NodeWrapperProps['initialWidth'] = undefined;
+  export let initialHeight: NodeWrapperProps['initialHeight'] = undefined;
   export let width: NodeWrapperProps['width'] = undefined;
   export let height: NodeWrapperProps['height'] = undefined;
   export let dragHandle: NodeWrapperProps['dragHandle'] = undefined;
@@ -77,6 +88,15 @@
   let prevSourcePosition: Position | undefined = undefined;
   let prevTargetPosition: Position | undefined = undefined;
 
+  $: inlineStyleDimensions = getNodeInlineStyleDimensions({
+    width,
+    height,
+    initialWidth,
+    initialHeight,
+    computedWidth,
+    computedHeight
+  });
+
   $: {
     connectableStore.set(!!connectable);
   }
@@ -115,14 +135,21 @@
   setContext('svelteflow__node_connectable', connectableStore);
 
   $: {
-    // hiding the noder removes html element is removed from the dom
     if (nodeRef) {
-      resizeObserver?.observe(nodeRef);
-      prevNodeRef = nodeRef;
-    } else if (prevNodeRef) {
-      resizeObserver?.unobserve(prevNodeRef);
+      if (!prevNodeRef) {
+        resizeObserver?.observe(nodeRef);
+        prevNodeRef = nodeRef;
+      } else if (prevNodeRef !== nodeRef || (!computedWidth && !computedHeight)) {
+        resizeObserver?.unobserve(prevNodeRef);
+        resizeObserver?.observe(nodeRef);
+        prevNodeRef = nodeRef;
+      }
     }
   }
+
+  onDestroy(() => {
+    resizeObserver?.unobserve(nodeRef);
+  });
 
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
     if (selectable && (!get(selectNodesOnDrag) || !draggable || get(nodeDragThreshold) > 0)) {
@@ -170,9 +197,7 @@
     style:z-index={zIndex}
     style:transform="translate({positionOriginX}px, {positionOriginY}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
-    style="{style ?? ''}; {!width ? '' : `width:${width}px;`} {!height
-      ? ''
-      : `height:${height}px;`}"
+    style="{style ?? ''};{inlineStyleDimensions.width}{inlineStyleDimensions.height}"
     on:click={onSelectNodeHandler}
     on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
     on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}

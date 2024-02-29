@@ -2,7 +2,6 @@
  * The nodes selection rectangle gets displayed when a user
  * made a selection with on or several nodes
  */
-
 import { useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
@@ -14,8 +13,8 @@ import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
 import type { Node, ReactFlowState } from '../../types';
 
-export type NodesSelectionProps = {
-  onSelectionContextMenu?: (event: MouseEvent, nodes: Node[]) => void;
+export type NodesSelectionProps<NodeType> = {
+  onSelectionContextMenu?: (event: MouseEvent, nodes: NodeType[]) => void;
   noPanClassName?: string;
   disableKeyboardA11y: boolean;
 };
@@ -32,8 +31,12 @@ const selector = (s: ReactFlowState) => {
   };
 };
 
-export function NodesSelection({ onSelectionContextMenu, noPanClassName, disableKeyboardA11y }: NodesSelectionProps) {
-  const store = useStoreApi();
+export function NodesSelection<NodeType extends Node>({
+  onSelectionContextMenu,
+  noPanClassName,
+  disableKeyboardA11y,
+}: NodesSelectionProps<NodeType>) {
+  const store = useStoreApi<NodeType>();
   const { width, height, transformString, userSelectionActive } = useStore(selector, shallow);
   const moveSelectedNodes = useMoveSelectedNodes();
 

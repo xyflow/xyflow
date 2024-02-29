@@ -50,12 +50,13 @@ function ResizeControl({
         domNode: resizeControlRef.current,
         nodeId: id,
         getStoreItems: () => {
-          const { nodeLookup, transform, snapGrid, snapToGrid } = store.getState();
+          const { nodeLookup, transform, snapGrid, snapToGrid, nodeOrigin } = store.getState();
           return {
             nodeLookup,
             transform,
             snapGrid,
             snapToGrid,
+            nodeOrigin,
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {

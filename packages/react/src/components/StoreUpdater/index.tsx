@@ -65,10 +65,16 @@ const reactFlowFieldsToTrack = [
   'selectNodesOnDrag',
   'nodeDragThreshold',
   'onBeforeDelete',
+  'debug',
 ] as const;
 
 type ReactFlowFieldsToTrack = (typeof reactFlowFieldsToTrack)[number];
-type StoreUpdaterProps = Pick<ReactFlowProps, ReactFlowFieldsToTrack> & { rfId: string };
+type StoreUpdaterProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Pick<
+  ReactFlowProps<NodeType, EdgeType>,
+  ReactFlowFieldsToTrack
+> & {
+  rfId: string;
+};
 
 // rfId doesn't exist in ReactFlowProps, but it's one of the fields we want to update
 const fieldsToTrack = [...reactFlowFieldsToTrack, 'rfId'] as const;
@@ -97,7 +103,9 @@ const initPrevValues = {
   rfId: '1',
 };
 
-export function StoreUpdater(props: StoreUpdaterProps) {
+export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
+  props: StoreUpdaterProps<NodeType, EdgeType>
+) {
   const {
     setNodes,
     setEdges,
@@ -108,7 +116,7 @@ export function StoreUpdater(props: StoreUpdaterProps) {
     reset,
     setDefaultNodesAndEdges,
   } = useStore(selector, shallow);
-  const store = useStoreApi();
+  const store = useStoreApi<NodeType, EdgeType>();
 
   useEffect(() => {
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
@@ -120,7 +128,7 @@ export function StoreUpdater(props: StoreUpdaterProps) {
     };
   }, []);
 
-  const previousFields = useRef<Partial<StoreUpdaterProps>>(initPrevValues);
+  const previousFields = useRef<Partial<StoreUpdaterProps<NodeType, EdgeType>>>(initPrevValues);
 
   useEffect(
     () => {

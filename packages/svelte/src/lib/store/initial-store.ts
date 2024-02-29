@@ -14,7 +14,6 @@ import {
   type MarkerProps,
   type PanZoomInstance,
   type CoordinateExtent,
-  type IsValidConnection,
   type NodeOrigin,
   type OnError,
   type Viewport,
@@ -47,7 +46,8 @@ import type {
   FitViewOptions,
   OnDelete,
   OnEdgeCreate,
-  OnBeforeDelete
+  OnBeforeDelete,
+  IsValidConnection
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
 import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
@@ -79,7 +79,7 @@ export const getInitialStore = ({
   height?: number;
   fitView?: boolean;
 }) => {
-  const nodeLookup = new Map();
+  const nodeLookup: NodeLookup = new Map();
   const nextNodes = adoptUserProvidedNodes(nodes, nodeLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false
@@ -91,7 +91,9 @@ export const getInitialStore = ({
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.filter((node) => node.width && node.height);
+    const nodesWithDimensions = nextNodes.filter(
+      (node) => (node.width && node.height) || (node.initialWidth && node.initialHeight)
+    );
     // @todo users nodeOrigin should be used here
     const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
@@ -101,7 +103,7 @@ export const getInitialStore = ({
     flowId: writable<string | null>(null),
     nodes: createNodesStore(nextNodes, nodeLookup),
     nodeLookup: readable<NodeLookup<Node>>(nodeLookup),
-    edgeLookup: readable<EdgeLookup>(edgeLookup),
+    edgeLookup: readable<EdgeLookup<Edge>>(edgeLookup),
     visibleNodes: readable<Node[]>([]),
     edges: createEdgesStore(edges, connectionLookup, edgeLookup),
     visibleEdges: readable<EdgeLayouted[]>([]),

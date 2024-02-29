@@ -5,9 +5,11 @@ import {
   clampPosition,
   elementSelectionKeys,
   errorMessages,
+  getNodeDimensions,
   getPositionWithOrigin,
   internalsSymbol,
   isInputDOMNode,
+  nodeHasDimensions,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -16,10 +18,10 @@ import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { handleNodeClick } from '../Nodes/utils';
-import { arrowKeyDiffs, builtinNodeTypes } from './utils';
-import type { NodeWrapperProps } from '../../types';
+import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
+import type { Node, NodeWrapperProps } from '../../types';
 
-export function NodeWrapper({
+export function NodeWrapper<NodeType extends Node>({
   id,
   onClick,
   onMouseEnter,
@@ -40,9 +42,9 @@ export function NodeWrapper({
   nodeExtent,
   nodeOrigin,
   onError,
-}: NodeWrapperProps) {
+}: NodeWrapperProps<NodeType>) {
   const { node, positionAbsoluteX, positionAbsoluteY, zIndex, isParent } = useStore((s) => {
-    const node = s.nodeLookup.get(id)!;
+    const node = s.nodeLookup.get(id)! as NodeType;
 
     const positionAbsolute = nodeExtent
       ? clampPosition(node.computed?.positionAbsolute, nodeExtent)
@@ -79,11 +81,9 @@ export function NodeWrapper({
   const prevTargetPosition = useRef(node.targetPosition);
   const prevType = useRef(nodeType);
 
-  const width = node.width ?? undefined;
-  const height = node.height ?? undefined;
-  const computedWidth = node.computed?.width;
-  const computedHeight = node.computed?.height;
-  const initialized = (!!computedWidth && !!computedHeight) || (!!width && !!height);
+  const nodeDimensions = getNodeDimensions(node);
+  const inlineDimensions = getNodeInlineStyleDimensions(node);
+  const initialized = nodeHasDimensions(node);
   const hasHandleBounds = !!node[internalsSymbol]?.handleBounds;
 
   const moveSelectedNodes = useMoveSelectedNodes();
@@ -143,8 +143,7 @@ export function NodeWrapper({
   const positionAbsoluteOrigin = getPositionWithOrigin({
     x: positionAbsoluteX,
     y: positionAbsoluteY,
-    width: computedWidth ?? width ?? 0,
-    height: computedHeight ?? height ?? 0,
+    ...nodeDimensions,
     origin: node.origin || nodeOrigin,
   });
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
@@ -174,7 +173,7 @@ export function NodeWrapper({
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
-    if (isInputDOMNode(event.nativeEvent)) {
+    if (isInputDOMNode(event.nativeEvent) || disableKeyboardA11y) {
       return;
     }
 
@@ -187,12 +186,7 @@ export function NodeWrapper({
         unselect,
         nodeRef,
       });
-    } else if (
-      !disableKeyboardA11y &&
-      isDraggable &&
-      node.selected &&
-      Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)
-    ) {
+    } else if (isDraggable && node.selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
       store.setState({
         ariaLiveMessage: `Moved selected node ${event.key
           .replace('Arrow', '')
@@ -220,6 +214,7 @@ export function NodeWrapper({
           selected: node.selected,
           selectable: isSelectable,
           parent: isParent,
+          draggable: isDraggable,
           dragging,
         },
       ])}
@@ -230,8 +225,7 @@ export function NodeWrapper({
         pointerEvents: hasPointerEvents ? 'all' : 'none',
         visibility: initialized ? 'visible' : 'hidden',
         ...node.style,
-        width: width ?? node.style?.width,
-        height: height ?? node.style?.height,
+        ...inlineDimensions,
       }}
       data-id={id}
       data-testid={`rf__node-${id}`}
@@ -252,8 +246,6 @@ export function NodeWrapper({
           id={id}
           data={node.data}
           type={nodeType}
-          width={computedWidth}
-          height={computedHeight}
           positionAbsoluteX={positionAbsoluteX}
           positionAbsoluteY={positionAbsoluteY}
           selected={node.selected}
@@ -263,6 +255,7 @@ export function NodeWrapper({
           dragging={dragging}
           dragHandle={node.dragHandle}
           zIndex={zIndex}
+          {...nodeDimensions}
         />
       </Provider>
     </div>

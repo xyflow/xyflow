@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { SvelteComponent, ComponentType } from 'svelte';
 import type {
   EdgeBase,
@@ -11,41 +10,49 @@ import type {
 
 import type { Node } from '$lib/types';
 
-export type DefaultEdge<EdgeData = any> = EdgeBase<EdgeData> & {
+/**
+ * The Edge type is mainly used for the `edges` that get passed to the SvelteFlow component.
+ */
+export type Edge<
+  EdgeData extends Record<string, unknown> = Record<string, unknown>,
+  EdgeType extends string | undefined = string | undefined
+> = EdgeBase<EdgeData, EdgeType> & {
   label?: string;
   labelStyle?: string;
   style?: string;
   class?: string;
 };
 
-type SmoothStepEdgeType<T> = DefaultEdge<T> & {
-  type: 'smoothstep';
+type SmoothStepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<
+  EdgeData,
+  'smoothstep'
+> & {
   pathOptions?: SmoothStepPathOptions;
 };
 
-type BezierEdgeType<T> = DefaultEdge<T> & {
-  type: 'default';
+type BezierEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<
+  EdgeData,
+  'default'
+> & {
   pathOptions?: BezierPathOptions;
 };
 
-type StepEdgeType<T> = DefaultEdge<T> & {
-  type: 'step';
+type StepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<
+  EdgeData,
+  'step'
+> & {
   pathOptions?: StepPathOptions;
 };
 
-/**
- * The Edge type is mainly used for the `edges` that get passed to the SvelteFlow component.
- */
-export type Edge<T = any> =
-  | DefaultEdge<T>
-  | SmoothStepEdgeType<T>
-  | BezierEdgeType<T>
-  | StepEdgeType<T>;
+export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge;
 
 /**
  * Custom edge component props.
  */
-export type EdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle' | 'type'> &
+export type EdgeProps<
+  EdgeData extends Record<string, unknown> = Record<string, unknown>,
+  EdgeType extends string | undefined = string | undefined
+> = Omit<Edge<EdgeData, EdgeType>, 'sourceHandle' | 'targetHandle' | 'type'> &
   EdgePosition & {
     markerStart?: string;
     markerEnd?: string;

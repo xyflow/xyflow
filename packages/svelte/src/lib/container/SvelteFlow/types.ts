@@ -10,7 +10,6 @@ import type {
   OnMoveEnd,
   CoordinateExtent,
   PanOnScrollMode,
-  IsValidConnection,
   OnError,
   ConnectionMode,
   PanelPosition,
@@ -31,7 +30,8 @@ import type {
   FitViewOptions,
   OnDelete,
   OnEdgeCreate,
-  OnBeforeDelete
+  OnBeforeDelete,
+  IsValidConnection
 } from '$lib/types';
 import type { Writable } from 'svelte/store';
 

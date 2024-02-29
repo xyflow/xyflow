@@ -7,6 +7,7 @@
 		useSvelteFlow,
 		type NodeProps
 	} from '@xyflow/svelte';
+	import { isTextNode, type MyNode } from './+page.svelte';
 
 	type $$Props = NodeProps;
 
@@ -18,10 +19,11 @@
 		type: 'target'
 	});
 
-	$: nodeData = useNodesData($connections[0]?.source);
+	$: nodeData = useNodesData<MyNode>($connections[0]?.source);
+	$: textNode = isTextNode($nodeData) ? $nodeData : null;
 
 	$: {
-		updateNodeData(id, { text: $nodeData?.text?.toUpperCase() || '' });
+		updateNodeData(id, { text: textNode?.data.text.toUpperCase() || '' });
 	}
 </script>
 

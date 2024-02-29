@@ -202,3 +202,19 @@ export const isMacOs = () => typeof navigator !== 'undefined' && navigator?.user
 export function isCoordinateExtent(extent?: CoordinateExtent | 'parent'): extent is CoordinateExtent {
   return extent !== undefined && extent !== 'parent';
 }
+
+export function getNodeDimensions<NodeType extends NodeBase = NodeBase>(
+  node: NodeType
+): { width: number; height: number } {
+  return {
+    width: node.computed?.width ?? node.width ?? node.initialWidth ?? 0,
+    height: node.computed?.height ?? node.height ?? node.initialHeight ?? 0,
+  };
+}
+
+export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: NodeType): boolean {
+  return (
+    (node.computed?.width ?? node.width ?? node.initialWidth) !== undefined &&
+    (node.computed?.height ?? node.height ?? node.initialHeight) !== undefined
+  );
+}

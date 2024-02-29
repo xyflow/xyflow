@@ -19,7 +19,6 @@ export type UseDragParams = {
 export default function drag(domNode: Element, params: UseDragParams) {
   const { store, onDrag, onDragStart, onDragStop, onNodeMouseDown } = params;
   const dragInstance = XYDrag({
-    domNode,
     onDrag,
     onDragStart,
     onDragStop,

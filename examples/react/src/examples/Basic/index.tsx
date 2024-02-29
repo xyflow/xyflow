@@ -13,9 +13,12 @@ import {
   OnNodeDrag,
 } from '@xyflow/react';
 
-const onNodeDrag: OnNodeDrag = (_, node) => console.log('drag', node);
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
+const onNodeDragStart = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
+const onNodeDragStop = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag stop', node, nodes);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
+
+const printSelectionEvent = (name: string) => (_: MouseEvent, nodes: Node[]) => console.log(name, nodes);
 
 const initialNodes: Node[] = [
   {
@@ -113,7 +116,11 @@ const BasicFlow = () => {
       defaultEdges={initialEdges}
       onNodeClick={onNodeClick}
       onNodeDragStop={onNodeDragStop}
+      onNodeDragStart={onNodeDragStart}
       onNodeDrag={onNodeDrag}
+      onSelectionDragStart={printSelectionEvent('selection drag start')}
+      onSelectionDrag={printSelectionEvent('selection drag')}
+      onSelectionDragStop={printSelectionEvent('selection drag stop')}
       className="react-flow-basic-example"
       minZoom={0.2}
       maxZoom={4}

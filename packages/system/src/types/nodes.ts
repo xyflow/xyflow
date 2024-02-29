@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { internalsSymbol } from '../constants';
 import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
 import { Optional } from '../utils/types';
@@ -6,10 +5,13 @@ import { Optional } from '../utils/types';
 /**
  * Framework independent node data structure.
  *
- * @typeParam T - type of the node data
- * @typeParam U - type of the node
+ * @typeParam NodeData - type of the node data
+ * @typeParam NodeType - type of the node
  */
-export type NodeBase<T = any, U extends string | undefined = string | undefined> = {
+export type NodeBase<
+  NodeData extends Record<string, unknown> = Record<string, unknown>,
+  NodeType extends string | undefined = string | undefined
+> = {
   /** Unique id of a node */
   id: string;
   /** Position of a node on the pane
@@ -17,9 +19,9 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
    */
   position: XYPosition;
   /** Arbitrary data passed to a node */
-  data: T;
+  data: NodeData;
   /** Type of node defined in nodeTypes */
-  type?: U;
+  type?: NodeType;
   /** Only relevant for default, source, target nodeType. controls source position
    * @example 'right', 'left', 'top', 'bottom'
    */
@@ -37,8 +39,10 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
   connectable?: boolean;
   deletable?: boolean;
   dragHandle?: string;
-  width?: number | null;
-  height?: number | null;
+  width?: number;
+  height?: number;
+  initialWidth?: number;
+  initialHeight?: number;
   /** Parent node id, used for creating sub-flows */
   parentNode?: string;
   zIndex?: number;
@@ -70,21 +74,20 @@ export type NodeBase<T = any, U extends string | undefined = string | undefined>
     /** Holds a reference to the original node object provided by the user
      * (which may lack some fields, like `computed` or `[internalSymbol]`. Used
      * as an optimization to avoid certain operations. */
-    userProvidedNode: NodeBase<T, U>;
+    userProvidedNode: NodeBase<NodeData, NodeType>;
   };
 };
 
-// props that get passed to a custom node
 /**
  * The node data structure that gets used for the nodes prop.
  *
  * @public
  * @param id - The id of the node.
  */
-export type NodeProps<T = any> = {
-  /** Id of the node */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type NodeProps<NodeData = any> = {
   id: NodeBase['id'];
-  data: T;
+  data: NodeData;
   dragHandle: NodeBase['dragHandle'];
   type: NodeBase['type'];
   selected: NodeBase['selected'];

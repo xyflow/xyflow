@@ -53,7 +53,6 @@ export {
   type OnConnectStart,
   type OnConnect,
   type OnConnectEnd,
-  type IsValidConnection,
   type Viewport,
   type SnapGrid,
   PanOnScrollMode,

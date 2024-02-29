@@ -1,7 +1,6 @@
 import { getContext, setContext } from 'svelte';
 import { derived, get, writable } from 'svelte/store';
 import {
-  internalsSymbol,
   createMarkerIds,
   fitView as fitViewUtil,
   getElementsToRemove,
@@ -15,7 +14,6 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  type NodeDragItem,
   errorMessages
 } from '@xyflow/system';
 

@@ -111,9 +111,10 @@
 		{
 			id: '5a',
 			type: 'defaultResizer',
-			data: { label: 'Child' },
+			data: { label: 'Child with extent parent' },
 			position: { x: 50, y: 50 },
 			parentNode: '5',
+			extent: 'parent',
 			style: nodeStyle
 		},
 		{
@@ -137,6 +138,7 @@
 	maxZoom={5}
 	snapGrid={snapToGrid ? [10, 10] : undefined}
 	fitView
+	nodeOrigin={[0.5, 0.5]}
 >
 	<Controls />
 	<Panel position="bottom-right">

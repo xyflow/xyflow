@@ -1,11 +1,13 @@
 import { Position } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type EdgeBase<EdgeData = any> = {
+export type EdgeBase<
+  EdgeData extends Record<string, unknown> = Record<string, unknown>,
+  EdgeType extends string | undefined = string | undefined
+> = {
   /** Unique id of an edge */
   id: string;
   /** Type of an edge defined in edgeTypes */
-  type?: string;
+  type?: EdgeType;
   /** Id of source node */
   source: string;
   /** Id of target node */

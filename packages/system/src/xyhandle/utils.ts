@@ -38,7 +38,7 @@ export function getClosestHandle(
   let closestHandles: ConnectionHandle[] = [];
   let minDistance = Infinity;
 
-  handles.forEach((handle) => {
+  for (const handle of handles) {
     const distance = Math.sqrt(Math.pow(handle.x - pos.x, 2) + Math.pow(handle.y - pos.y, 2));
     if (distance <= connectionRadius) {
       if (distance < minDistance) {
@@ -49,7 +49,7 @@ export function getClosestHandle(
       }
       minDistance = distance;
     }
-  });
+  }
 
   if (!closestHandles.length) {
     return null;
@@ -99,10 +99,6 @@ export function getHandleType(
   }
 
   return null;
-}
-
-export function resetRecentHandle(handleDomNode: Element, lib: string): void {
-  handleDomNode?.classList.remove('valid', 'connecting', `${lib}-flow__handle-valid`, `${lib}-flow__handle-connecting`);
 }
 
 export function getConnectionStatus(isInsideConnectionRadius: boolean, isHandleValid: boolean) {

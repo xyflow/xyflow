@@ -1,3 +1,17 @@
+<script context="module" lang="ts">
+	import type { Node } from '@xyflow/svelte';
+
+	type TextNodeType = Node<{ text: string }, 'text'>;
+	type UppercaseNodeType = Node<{ text: string }, 'uppercase'>;
+	type ResultNodeType = Node<{}, 'result'>;
+
+	export function isTextNode(node: any): node is TextNodeType {
+		return node.type === 'text';
+	}
+
+	export type MyNode = TextNodeType | UppercaseNodeType | ResultNodeType;
+</script>
+
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import {
@@ -6,7 +20,6 @@
 		Background,
 		BackgroundVariant,
 		MiniMap,
-		type Node,
 		type NodeTypes,
 		type Edge
 	} from '@xyflow/svelte';
@@ -22,7 +35,7 @@
 		result: ResultNode
 	};
 
-	const nodes = writable<Node[]>([
+	const nodes = writable<MyNode[]>([
 		{
 			id: '1',
 			type: 'text',
@@ -34,7 +47,9 @@
 		{
 			id: '1a',
 			type: 'uppercase',
-			data: {},
+			data: {
+				text: ''
+			},
 			position: { x: 100, y: 0 }
 		},
 		{

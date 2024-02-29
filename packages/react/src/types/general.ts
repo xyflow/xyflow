@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   FitViewParamsBase,
   FitViewOptionsBase,
@@ -12,6 +11,7 @@ import {
   XYPosition,
   NodeProps,
   OnBeforeDeleteBase,
+  Connection,
 } from '@xyflow/system';
 
 import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance, EdgeProps } from '.';
@@ -21,8 +21,11 @@ export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<N
 export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChange<EdgeType>[]) => void;
 
 export type OnNodesDelete<NodeType extends Node = Node> = (nodes: NodeType[]) => void;
-export type OnEdgesDelete = (edges: Edge[]) => void;
-export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
+export type OnEdgesDelete<EdgeType extends Edge = Edge> = (edges: EdgeType[]) => void;
+export type OnDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (params: {
+  nodes: NodeType[];
+  edges: EdgeType[];
+}) => void;
 
 export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
 export type EdgeTypes = { [key: string]: ComponentType<EdgeProps> };
@@ -139,3 +142,5 @@ export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge =
   NodeType,
   EdgeType
 >;
+
+export type IsValidConnection<EdgeType extends Edge = Edge> = (edge: EdgeType | Connection) => boolean;

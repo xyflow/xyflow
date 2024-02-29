@@ -81,8 +81,8 @@ function getPoints({
 
   // opposite handle positions, default case
   if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
-    centerX = center.x || defaultCenterX;
-    centerY = center.y || defaultCenterY;
+    centerX = center.x ?? defaultCenterX;
+    centerY = center.y ?? defaultCenterY;
     //    --->
     //    |
     // >---

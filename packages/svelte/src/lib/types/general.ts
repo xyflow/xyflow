@@ -57,3 +57,7 @@ export type OnBeforeDelete<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
 > = OnBeforeDeleteBase<NodeType, EdgeType>;
+
+export type IsValidConnection<EdgeType extends Edge = Edge> = (
+  edge: EdgeType | Connection
+) => boolean;
