@@ -5,6 +5,7 @@
 ## ⚠️ Breaking changes
 
 - `useNodesData` not only returns data objects but also the type and the id of the node
+- status class names for Handle components are slightly different. It's now "connectingfrom" and "connectingto" instead of "connecting"
 
 ## Patch changes
 
