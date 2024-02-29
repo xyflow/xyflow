@@ -24,8 +24,12 @@
   background: #fff;
 }
 
-.validationflow :global .connecting {
+.validationflow :global .connectingto {
   background: #ff6060;
+}
+
+.validationflow :global .react-flow__node-custominput .connectingfrom {
+  background: #55dd99;
 }
 
 .validationflow :global .valid {

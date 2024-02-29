@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { ReactFlow, Node, Edge, useNodesState, useEdgesState, Position, Connection, addEdge } from '@xyflow/react';
 
-import styles from './touch-device.module.css';
+import './touch-device.css';
 
 const initialNodes: Node[] = [
   {
@@ -42,7 +42,7 @@ const TouchDeviceFlow = () => {
       onConnectEnd={onConnectEnd}
       onClickConnectStart={onClickConnectStart}
       onClickConnectEnd={onClickConnectEnd}
-      className={styles.flow}
+      className="touch-flow"
     />
   );
 };

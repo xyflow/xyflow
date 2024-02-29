@@ -1,0 +1,27 @@
+.react-flow.touch-flow .react-flow__handle {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  background-color: #9f7aea;
+}
+
+.touch-flow .react-flow__handle-right {
+  --translate: translate(50%, -50%);
+}
+
+.touch-flow .react-flow__handle-left {
+  --translate: translate(-50%, -50%);
+}
+
+@keyframes bounce {
+  0% {
+    transform: var(--translate) scale(1);
+  }
+  50% {
+    transform: var(--translate) scale(1.1);
+  }
+}
+
+.react-flow.touch-flow .react-flow__handle.clickconnecting {
+  animation: bounce 1600ms infinite ease-in;
+}

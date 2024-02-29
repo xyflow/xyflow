@@ -56,7 +56,8 @@
     onconnect: onConnectAction,
     onconnectstart: onConnectStartAction,
     onconnectend: onConnectEndAction,
-    flowId
+    flowId,
+    connection
   } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -123,6 +124,16 @@
     prevConnections = connections ?? new Map();
   }
 
+  $: connectingFrom =
+    $connection.startHandle?.nodeId === nodeId &&
+    $connection.startHandle?.type === type &&
+    $connection.startHandle?.handleId === handleId;
+  $: connectingTo =
+    $connection.endHandle?.nodeId === nodeId &&
+    $connection.endHandle?.type === type &&
+    $connection.endHandle?.handleId === handleId;
+  $: valid = connectingTo && $connection.status === 'valid';
+
   // @todo implement connectablestart, connectableend
 </script>
 
@@ -141,6 +152,11 @@ The Handle component is the part of a node that can be used to connect nodes.
     'nodrag',
     'nopan',
     position,
+    {
+      valid,
+      connectingto: connectingTo,
+      connectingfrom: connectingFrom
+    },
     className
   ])}
   class:source={!isTarget}
