@@ -15,7 +15,7 @@ import {
   type ConnectionHandle,
 } from '../types';
 
-import { getClosestHandle, getConnectionStatus, getHandleLookup, getHandleType, resetRecentHandle } from './utils';
+import { getClosestHandle, getConnectionStatus, getHandleLookup, getHandleType } from './utils';
 
 export type OnPointerDownParams = {
   autoPanOnConnect: boolean;
@@ -107,7 +107,6 @@ function onPointerDown(
     return;
   }
 
-  let prevActiveHandle: Element;
   let connectionPosition = getEventPosition(event, containerBounds);
   let autoPanStarted = false;
   let connection: Connection | null = null;
@@ -194,18 +193,6 @@ function onPointerDown(
       connectionStatus: getConnectionStatus(!!closestHandle, isValid),
       connectionEndHandle: result.endHandle,
     });
-
-    if (!closestHandle && !isValid && !handleDomNode) {
-      return resetRecentHandle(prevActiveHandle, lib);
-    }
-
-    if (connection?.source !== connection?.target && handleDomNode) {
-      resetRecentHandle(prevActiveHandle, lib);
-      prevActiveHandle = handleDomNode;
-      handleDomNode.classList.add('connecting', `${lib}-flow__handle-connecting`);
-      handleDomNode.classList.toggle('valid', isValid);
-      handleDomNode.classList.toggle(`${lib}-flow__handle-valid`, isValid);
-    }
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
@@ -221,7 +208,6 @@ function onPointerDown(
       onEdgeUpdateEnd?.(event);
     }
 
-    resetRecentHandle(prevActiveHandle, lib);
     cancelConnection();
     cancelAnimationFrame(autoPanId);
     autoPanStarted = false;
