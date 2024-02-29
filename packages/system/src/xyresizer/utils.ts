@@ -1,4 +1,4 @@
-import { CoordinateExtent } from '../types';
+import { CoordinateExtent, NodeOrigin } from '../types';
 import { getPointerPosition } from '../utils';
 import { ControlPosition } from './types';
 
@@ -94,7 +94,7 @@ function xor(a: boolean, b: boolean) {
 
 /**
  * Calculates new width & height and x & y of node after resize based on pointer position
- * @description - Buckle up, this is a chunky one! If you want to determine the new dimensions of a node after a resize,
+ * @description - Buckle up, this is a chunky one... If you want to determine the new dimensions of a node after a resize,
  * you have to account for all possible restrictions: min/max width/height of the node, the maximum extent the node is allowed
  * to move in (in this case: resize into) determined by the parent node, the minimal extent determined by child nodes
  * with expandParent or extent: 'parent' set and oh yeah, these things also have to work with keepAspectRatio!
@@ -102,6 +102,8 @@ function xor(a: boolean, b: boolean) {
  * strongest restriction. Because the resize affects x, y and width, height and width, height of a opposing side with keepAspectRatio,
  * the resize amount is always kept in distX & distY amount (the distance in mouse movement)
  * Instead of clamping each value, we first calculate the biggest 'clamp' (for the lack of a better name) and then apply it to all values.
+ * To complicate things nodeOrigin has to be taken into account as well. This is done by offsetting the nodes as if their origin is [0, 0],
+ * then calculating the restrictions as usual
  * @param startValues - starting values of resize
  * @param controlDirection - dimensions affected by the resize
  * @param pointerPosition - the current pointer position corrected for snapping
@@ -115,6 +117,7 @@ export function getDimensionsAfterResize(
   pointerPosition: ReturnType<typeof getPointerPosition>,
   boundaries: { minWidth: number; maxWidth: number; minHeight: number; maxHeight: number },
   keepAspectRatio: boolean,
+  nodeOrigin: NodeOrigin,
   extent?: CoordinateExtent,
   childExtent?: CoordinateExtent
 ) {
@@ -132,6 +135,9 @@ export function getDimensionsAfterResize(
   const newWidth = startWidth + (affectsX ? -distX : distX);
   const newHeight = startHeight + (affectsY ? -distY : distY);
 
+  const originOffsetX = -nodeOrigin[0] * startWidth;
+  const originOffsetY = -nodeOrigin[1] * startHeight;
+
   // Check if maxWidth, minWWidth, maxHeight, minHeight are restricting the resize
   let clampX = getSizeClamp(newWidth, minWidth, maxWidth);
   let clampY = getSizeClamp(newHeight, minHeight, maxHeight);
@@ -141,15 +147,15 @@ export function getDimensionsAfterResize(
     let xExtentClamp = 0;
     let yExtentClamp = 0;
     if (affectsX && distX < 0) {
-      xExtentClamp = getLowerExtentClamp(startX + distX, extent[0][0]);
+      xExtentClamp = getLowerExtentClamp(startX + distX + originOffsetX, extent[0][0]);
     } else if (!affectsX && distX > 0) {
-      xExtentClamp = getUpperExtentClamp(startX + newWidth, extent[1][0]);
+      xExtentClamp = getUpperExtentClamp(startX + newWidth + originOffsetX, extent[1][0]);
     }
 
     if (affectsY && distY < 0) {
-      yExtentClamp = getLowerExtentClamp(startY + distY, extent[0][1]);
+      yExtentClamp = getLowerExtentClamp(startY + distY + originOffsetY, extent[0][1]);
     } else if (!affectsY && distY > 0) {
-      yExtentClamp = getUpperExtentClamp(startY + newHeight, extent[1][1]);
+      yExtentClamp = getUpperExtentClamp(startY + newHeight + originOffsetY, extent[1][1]);
     }
 
     clampX = Math.max(clampX, xExtentClamp);
@@ -187,10 +193,12 @@ export function getDimensionsAfterResize(
       if (extent) {
         let aspectExtentClamp = 0;
         if ((!affectsX && !affectsY) || (affectsX && !affectsY && isDiagonal)) {
-          aspectExtentClamp = getUpperExtentClamp(startY + newWidth / aspectRatio, extent[1][1]) * aspectRatio;
+          aspectExtentClamp =
+            getUpperExtentClamp(startY + originOffsetY + newWidth / aspectRatio, extent[1][1]) * aspectRatio;
         } else {
           aspectExtentClamp =
-            getLowerExtentClamp(startY + (affectsX ? distX : -distX) / aspectRatio, extent[0][1]) * aspectRatio;
+            getLowerExtentClamp(startY + originOffsetY + (affectsX ? distX : -distX) / aspectRatio, extent[0][1]) *
+            aspectRatio;
         }
         clampX = Math.max(clampX, aspectExtentClamp);
       }
@@ -216,10 +224,12 @@ export function getDimensionsAfterResize(
       if (extent) {
         let aspectExtentClamp = 0;
         if ((!affectsX && !affectsY) || (affectsY && !affectsX && isDiagonal)) {
-          aspectExtentClamp = getUpperExtentClamp(startX + newHeight * aspectRatio, extent[1][0]) / aspectRatio;
+          aspectExtentClamp =
+            getUpperExtentClamp(startX + newHeight * aspectRatio + originOffsetX, extent[1][0]) / aspectRatio;
         } else {
           aspectExtentClamp =
-            getLowerExtentClamp(startX + (affectsY ? distY : -distY) * aspectRatio, extent[0][0]) / aspectRatio;
+            getLowerExtentClamp(startX + (affectsY ? distY : -distY) * aspectRatio + originOffsetX, extent[0][0]) /
+            aspectRatio;
         }
         clampY = Math.max(clampY, aspectExtentClamp);
       }
@@ -258,10 +268,13 @@ export function getDimensionsAfterResize(
     }
   }
 
+  const x = affectsX ? startX + distX : startX;
+  const y = affectsY ? startY + distY : startY;
+
   return {
     width: startWidth + (affectsX ? -distX : distX),
     height: startHeight + (affectsY ? -distY : distY),
-    x: affectsX ? startX + distX : startX,
-    y: affectsY ? startY + distY : startY,
+    x: nodeOrigin[0] * distX * (!affectsX ? 1 : -1) + x,
+    y: nodeOrigin[1] * distY * (!affectsY ? 1 : -1) + y,
   };
 }

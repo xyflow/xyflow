@@ -13,6 +13,7 @@
 - `disableKeyboardA11y` now also disables Enter and Escape for selecting/deselecting nodes and edges
 - fix bug where users couldn't drag a node after toggle nodes `hidden` attribute
 - add `initialWidth` and `initialHeight` node attributes for specifying initial dimensions for ssr
+- fix `NodeResizer` when used in combination with `nodeOrigin`
 
 ## 12.0.0-next.9
 
