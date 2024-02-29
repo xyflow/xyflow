@@ -10,6 +10,7 @@
 
 - better cursor defaults for the pane, nodes and edges
 - add `initialWidth` and `initialHeight` node attributes for specifying initial dimensions for ssr
+- always re-measure nodes when new nodes get passed
 
 ## 0.0.36
 
