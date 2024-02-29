@@ -23,7 +23,8 @@
 		'usenodesdata',
 		'usesvelteflow',
 		'useupdatenodeinternals',
-		'validation'
+		'validation',
+		'reset'
 	];
 
 	const onChange = (event: Event) => {
