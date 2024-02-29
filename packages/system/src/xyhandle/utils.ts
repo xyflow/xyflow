@@ -101,10 +101,6 @@ export function getHandleType(
   return null;
 }
 
-export function resetRecentHandle(handleDomNode: Element, lib: string): void {
-  handleDomNode?.classList.remove('valid', 'connecting', `${lib}-flow__handle-valid`, `${lib}-flow__handle-connecting`);
-}
-
 export function getConnectionStatus(isInsideConnectionRadius: boolean, isHandleValid: boolean) {
   let connectionStatus = null;
 

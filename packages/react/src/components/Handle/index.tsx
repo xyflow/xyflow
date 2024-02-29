@@ -38,11 +38,15 @@ const connectingSelector =
       connectionEndHandle: endHandle,
       connectionClickStartHandle: clickHandle,
       connectionMode,
+      connectionStatus,
     } = state;
+
+    const connectingTo = endHandle?.nodeId === nodeId && endHandle?.handleId === handleId && endHandle?.type === type;
+
     return {
       connectingFrom:
         startHandle?.nodeId === nodeId && startHandle?.handleId === handleId && startHandle?.type === type,
-      connectingTo: endHandle?.nodeId === nodeId && endHandle?.handleId === handleId && endHandle?.type === type,
+      connectingTo,
       clickConnecting:
         clickHandle?.nodeId === nodeId && clickHandle?.handleId === handleId && clickHandle?.type === type,
       isPossibleEndHandle:
@@ -50,6 +54,7 @@ const connectingSelector =
           ? startHandle?.type !== type
           : nodeId !== startHandle?.nodeId || handleId !== startHandle?.handleId,
       connectionInProcess: !!startHandle,
+      valid: connectingTo && connectionStatus === 'valid',
     };
   };
 
@@ -77,7 +82,7 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
     const store = useStoreApi();
     const nodeId = useNodeId();
     const { connectOnClick, noPanClassName, rfId } = useStore(selector, shallow);
-    const { connectingFrom, connectingTo, clickConnecting, isPossibleEndHandle, connectionInProcess } = useStore(
+    const { connectingFrom, connectingTo, clickConnecting, isPossibleEndHandle, connectionInProcess, valid } = useStore(
       connectingSelector(nodeId, handleId, type),
       shallow
     );
@@ -213,6 +218,7 @@ const HandleComponent = forwardRef<HTMLDivElement, HandleComponentProps>(
             clickconnecting: clickConnecting,
             connectingfrom: connectingFrom,
             connectingto: connectingTo,
+            valid,
             // shows where you can start a connection from
             // and where you can end it while connecting
             connectionindicator:

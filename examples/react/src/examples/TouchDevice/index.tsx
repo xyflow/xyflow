@@ -42,6 +42,7 @@ const TouchDeviceFlow = () => {
       onConnectEnd={onConnectEnd}
       onClickConnectStart={onClickConnectStart}
       onClickConnectEnd={onClickConnectEnd}
+      className="touch-flow"
     />
   );
 };
