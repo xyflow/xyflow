@@ -11,6 +11,7 @@
 
 - better cursor defaults for the pane, nodes and edges
 - add `initialWidth` and `initialHeight` node attributes for specifying initial dimensions for ssr
+- fix `NodeResizer` when used in combination with `nodeOrigin`
 
 ## 0.0.36
 
