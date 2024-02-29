@@ -1,5 +1,9 @@
-.svelte-flow__handle.connecting {
+.svelte-flow__handle.connectingto {
 	background: #ff6060;
+}
+
+.svelte-flow__handle.connectingfrom {
+	background: #55dd99;
 }
 
 .svelte-flow__handle.valid {

@@ -35,7 +35,7 @@
   let className: $$Props['class'] = '';
   export { className as class };
 
-  const { nodeLookup, snapGrid, viewport, nodes } = useStore();
+  const { nodeLookup, snapGrid, viewport, nodes, nodeOrigin } = useStore();
 
   const contextNodeId = getContext<string>('svelteflow__node_id');
   $: id = typeof nodeId === 'string' ? nodeId : contextNodeId;
@@ -64,7 +64,8 @@
             nodeLookup: $nodeLookup,
             transform: [$viewport.x, $viewport.y, $viewport.zoom],
             snapGrid: $snapGrid ?? undefined,
-            snapToGrid: !!$snapGrid
+            snapToGrid: !!$snapGrid,
+            nodeOrigin: $nodeOrigin
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
