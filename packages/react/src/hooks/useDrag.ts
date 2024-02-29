@@ -31,24 +31,22 @@ export function useDrag({
   const xyDrag = useRef<XYDragInstance>();
 
   useEffect(() => {
-    if (nodeRef?.current) {
-      xyDrag.current = XYDrag({
-        getStoreItems: () => store.getState(),
-        onNodeMouseDown: (id: string) => {
-          handleNodeClick({
-            id,
-            store,
-            nodeRef,
-          });
-        },
-        onDragStart: () => {
-          setDragging(true);
-        },
-        onDragStop: () => {
-          setDragging(false);
-        },
-      });
-    }
+    xyDrag.current = XYDrag({
+      getStoreItems: () => store.getState(),
+      onNodeMouseDown: (id: string) => {
+        handleNodeClick({
+          id,
+          store,
+          nodeRef,
+        });
+      },
+      onDragStart: () => {
+        setDragging(true);
+      },
+      onDragStop: () => {
+        setDragging(false);
+      },
+    });
   }, []);
 
   useEffect(() => {
