@@ -1,3 +1,4 @@
+import { ComponentType } from 'react';
 import {
   FitViewParamsBase,
   FitViewOptionsBase,
@@ -15,7 +16,13 @@ import {
 } from '@xyflow/system';
 
 import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance, EdgeProps } from '.';
-import { ComponentType } from 'react';
+
+// this is needed, to use generics + forwardRef
+declare module 'react' {
+  function forwardRef<T, P>(
+    render: (props: P, ref: React.Ref<T>) => React.ReactNode | null
+  ): (props: P & React.RefAttributes<T>) => React.ReactNode | null;
+}
 
 export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<NodeType>[]) => void;
 export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChange<EdgeType>[]) => void;
