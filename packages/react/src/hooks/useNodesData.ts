@@ -4,10 +4,23 @@ import { shallow } from 'zustand/shallow';
 import { useStore } from '../hooks/useStore';
 import type { Node } from '../types';
 
-export interface NodeDataReturn<NodeType extends Node> {
-  id: string;
-  type: NodeType['type'];
-  data: NodeType['data'];
+type NodeData = Pick<Node, 'id' | 'type' | 'data'>;
+
+function nodeDatasEqual(a: NodeData | NodeData[], b: NodeData | NodeData[]) {
+  const _a = Array.isArray(a) ? a : [a];
+  const _b = Array.isArray(b) ? b : [b];
+
+  if (_a.length !== _b.length) {
+    return false;
+  }
+
+  for (let i = 0; i < _a.length; i++) {
+    if (!(_a[i].id === _b[i].id && _a[i].type === _b[i].type && shallow(_a[i].data, _b[i].data))) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -46,7 +59,7 @@ export function useNodesData(nodeIds: any): any {
       },
       [nodeIds]
     ),
-    shallow
+    nodeDatasEqual
   );
 
   return nodesData;
