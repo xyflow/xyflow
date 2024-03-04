@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.0.0-next.11
+
+## Patch changes
+
+- fix `ref` prop for `ReactFlow` and `Handle` component
+
 ## 12.0.0-next.10
 
 ## ⚠️ Breaking changes

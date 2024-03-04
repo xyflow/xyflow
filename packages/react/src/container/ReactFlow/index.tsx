@@ -9,7 +9,7 @@ import { StoreUpdater } from '../../components/StoreUpdater';
 import { useColorModeClass } from '../../hooks/useColorModeClass';
 import { GraphView } from '../GraphView';
 import { Wrapper } from './Wrapper';
-import type { Edge, Node, ReactFlowProps, ReactFlowRefType } from '../../types';
+import type { Edge, Node, ReactFlowProps } from '../../types';
 import { defaultViewport as initViewport, defaultNodeOrigin } from './init-values';
 
 const wrapperStyle: CSSProperties = {
@@ -142,7 +142,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     debug,
     ...rest
   }: ReactFlowProps<NodeType, EdgeType>,
-  ref: ForwardedRef<ReactFlowRefType>
+  ref: ForwardedRef<HTMLDivElement>
 ) {
   const rfId = id || '1';
   const colorModeClassName = useColorModeClass(colorMode);
@@ -286,4 +286,4 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   );
 }
 
-export default forwardRef(ReactFlow) as typeof ReactFlow;
+export default forwardRef(ReactFlow);

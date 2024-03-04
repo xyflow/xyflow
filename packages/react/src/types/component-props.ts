@@ -509,5 +509,3 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    */
   debug?: boolean;
 }
-
-export type ReactFlowRefType = HTMLDivElement;
