@@ -1,5 +1,5 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
-import type { CoordinateExtent, NodeBase, NodeOrigin, OnError } from '@xyflow/system';
+import type { CoordinateExtent, NodeBase, NodeOrigin, OnError, NodeProps as NodePropsBase } from '@xyflow/system';
 
 import { NodeTypes } from './general';
 
@@ -9,7 +9,7 @@ import { NodeTypes } from './general';
  */
 export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+  NodeType extends string = string
 > = NodeBase<NodeData, NodeType> & {
   style?: CSSProperties;
   className?: string;
@@ -49,3 +49,5 @@ export type NodeWrapperProps<NodeType extends Node> = {
 };
 
 export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'>;
+
+export type NodeProps<NodeType extends Node = Node> = NodePropsBase<NodeType>;

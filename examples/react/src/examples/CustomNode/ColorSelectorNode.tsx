@@ -1,4 +1,4 @@
-import React, { memo, FC, CSSProperties, useCallback } from 'react';
+import React, { memo, CSSProperties, useCallback } from 'react';
 import { Handle, Position, NodeProps, Connection, Edge, useOnViewportChange, Viewport } from '@xyflow/react';
 
 import type { ColorSelectorNode } from '.';
@@ -13,7 +13,7 @@ const sourceHandleStyleB: CSSProperties = {
 
 const onConnect = (params: Connection | Edge) => console.log('handle onConnect', params);
 
-const ColorSelectorNode: FC<NodeProps<ColorSelectorNode['data']>> = ({ data, isConnectable }) => {
+function ColorSelectorNode({ data, isConnectable }: NodeProps<ColorSelectorNode>) {
   const onStart = useCallback((viewport: Viewport) => console.log('onStart', viewport), []);
   const onChange = useCallback((viewport: Viewport) => console.log('onChange', viewport), []);
   const onEnd = useCallback((viewport: Viewport) => console.log('onEnd', viewport), []);
@@ -26,7 +26,13 @@ const ColorSelectorNode: FC<NodeProps<ColorSelectorNode['data']>> = ({ data, isC
 
   return (
     <>
-      <Handle type="target" position={Position.Left} style={targetHandleStyle} onConnect={onConnect} />
+      <Handle
+        type="target"
+        position={Position.Left}
+        style={targetHandleStyle}
+        onConnect={onConnect}
+        isConnectable={false}
+      />
       <div>
         Custom Color Picker Node: <strong>{data.color}</strong>
       </div>
@@ -44,6 +50,6 @@ const ColorSelectorNode: FC<NodeProps<ColorSelectorNode['data']>> = ({ data, isC
       <Handle type="source" position={Position.Right} id="b" style={sourceHandleStyleB} isConnectable={isConnectable} />
     </>
   );
-};
+}
 
 export default memo(ColorSelectorNode);

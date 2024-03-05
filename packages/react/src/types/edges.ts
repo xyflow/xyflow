@@ -98,10 +98,10 @@ export type EdgeTextProps = HTMLAttributes<SVGElement> &
  * Custom edge component props
  * @public
  */
-export type EdgeProps<
-  EdgeData extends Record<string, unknown> = Record<string, unknown>,
-  EdgeType extends string | undefined = string | undefined
-> = Pick<Edge<EdgeData, EdgeType>, 'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target'> &
+export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
+  EdgeType,
+  'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target'
+> &
   EdgePosition &
   EdgeLabelOptions & {
     sourceHandleId?: string | null;

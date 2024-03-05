@@ -10,7 +10,7 @@ import { Optional } from '../utils/types';
  */
 export type NodeBase<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+  NodeType extends string = string
 > = {
   /** Unique id of a node */
   id: string;
@@ -82,25 +82,19 @@ export type NodeBase<
  * The node data structure that gets used for the nodes prop.
  *
  * @public
- * @param id - The id of the node.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type NodeProps<NodeData = any> = {
-  id: NodeBase['id'];
-  data: NodeData;
-  dragHandle: NodeBase['dragHandle'];
-  type: NodeBase['type'];
-  selected: NodeBase['selected'];
-  isConnectable: NodeBase['connectable'];
-  zIndex: NodeBase['zIndex'];
-  positionAbsoluteX: number;
-  positionAbsoluteY: number;
-  width?: number;
-  height?: number;
-  dragging: NodeBase['dragging'];
-  sourcePosition?: NodeBase['sourcePosition'];
-  targetPosition?: NodeBase['targetPosition'];
-};
+export type NodeProps<NodeType extends NodeBase> = Pick<
+  NodeType,
+  'id' | 'data' | 'width' | 'height' | 'sourcePosition' | 'targetPosition' | 'selected' | 'dragHandle'
+> &
+  Required<Pick<NodeType, 'type' | 'dragging' | 'zIndex'>> & {
+    /** whether a node is connectable or not */
+    isConnectable: boolean;
+    /** position absolute x value */
+    positionAbsoluteX: number;
+    /** position absolute x value */
+    positionAbsoluteY: number;
+  };
 
 export type NodeHandleBounds = {
   source: HandleElement[] | null;

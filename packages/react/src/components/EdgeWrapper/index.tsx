@@ -212,6 +212,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
             id={id}
             source={edge.source}
             target={edge.target}
+            type={edge.type}
             selected={edge.selected}
             animated={edge.animated}
             label={edge.label}

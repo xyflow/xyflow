@@ -64,7 +64,6 @@ export {
   SelectionMode,
   type SelectionRect,
   type OnError,
-  type NodeProps,
   type NodeOrigin,
   type OnSelectionDrag,
   Position,

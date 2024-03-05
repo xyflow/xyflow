@@ -1,5 +1,4 @@
-import type { ComponentType } from 'react';
-import type { EdgeProps, EdgeTypes } from '../../types';
+import type { EdgeTypes } from '../../types';
 import {
   BezierEdgeInternal,
   StraightEdgeInternal,
@@ -9,11 +8,11 @@ import {
 } from '../Edges';
 
 export const builtinEdgeTypes: EdgeTypes = {
-  default: BezierEdgeInternal as ComponentType<EdgeProps>,
-  straight: StraightEdgeInternal as ComponentType<EdgeProps>,
-  step: StepEdgeInternal as ComponentType<EdgeProps>,
-  smoothstep: SmoothStepEdgeInternal as ComponentType<EdgeProps>,
-  simplebezier: SimpleBezierEdgeInternal as ComponentType<EdgeProps>,
+  default: BezierEdgeInternal,
+  straight: StraightEdgeInternal,
+  step: StepEdgeInternal,
+  smoothstep: SmoothStepEdgeInternal,
+  simplebezier: SimpleBezierEdgeInternal,
 };
 
 export const nullPosition = {

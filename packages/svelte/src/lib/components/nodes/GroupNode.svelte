@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { NodeProps } from '@xyflow/system';
+  import type { NodeProps } from '$lib/types';
 
-  interface $$Props extends NodeProps<{}> {}
+  interface $$Props extends NodeProps {}
 
   // unused props - we need to list them here in order to prevent warnings
   export let id: $$Props['id'] = '';
@@ -12,12 +12,12 @@
   export let sourcePosition: $$Props['sourcePosition'] = undefined;
   export let targetPosition: $$Props['targetPosition'] = undefined;
   export let type: $$Props['type'] = undefined;
-  export let zIndex: $$Props['zIndex'] = undefined;
   export let dragging: $$Props['dragging'] = false;
   export let dragHandle: $$Props['dragHandle'] = undefined;
   export let positionAbsoluteX: $$Props['positionAbsoluteX'] = 0;
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] = 0;
-  export let isConnectable: $$Props['isConnectable'] = undefined;
+  export let isConnectable: $$Props['isConnectable'];
+  export let zIndex: $$Props['zIndex'];
 
   // @todo: there must be a better way to do this
   id;
