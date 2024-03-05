@@ -9,6 +9,7 @@
 ## Patch changes
 
 - unify `Edge` and `Node` type handling
+- fix safari: prevent selection of viewport
 
 ## 0.0.37
 

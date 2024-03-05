@@ -6,6 +6,8 @@
 
 - fix `ref` prop for `ReactFlow` and `Handle` component
 - unify `Edge` and `Node` type handling
+- fix safari: prevent selection of viewport
+- fix `useNodesData` hook to prevent re-renderings
 
 ## 12.0.0-next.10
 
