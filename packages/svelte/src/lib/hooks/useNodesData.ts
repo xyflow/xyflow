@@ -1,21 +1,8 @@
 import { derived, type Readable } from 'svelte/store';
+import { shallowNodeData } from '@xyflow/system';
 
 import type { Node } from '$lib/types';
 import { useStore } from '$lib/store';
-
-function areNodesDataEqual(a: any[], b: any[]) {
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  for (let i = 0; i < a.length; i++) {
-    if (a[i].data !== b[i].data) {
-      return false;
-    }
-  }
-
-  return true;
-}
 
 /**
  * Hook for receiving data of one or multiple nodes
@@ -51,7 +38,7 @@ export function useNodesData(nodeIds: any): any {
       }
     }
 
-    if (!areNodesDataEqual(nextNodesData, prevNodesData)) {
+    if (!shallowNodeData(nextNodesData, prevNodesData)) {
       prevNodesData = nextNodesData;
       set(isArrayOfIds ? nextNodesData : nextNodesData[0] ?? null);
     }
