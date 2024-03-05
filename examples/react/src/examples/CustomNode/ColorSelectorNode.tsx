@@ -26,13 +26,7 @@ function ColorSelectorNode({ data, isConnectable }: NodeProps<ColorSelectorNode>
 
   return (
     <>
-      <Handle
-        type="target"
-        position={Position.Left}
-        style={targetHandleStyle}
-        onConnect={onConnect}
-        isConnectable={false}
-      />
+      <Handle type="target" position={Position.Left} style={targetHandleStyle} onConnect={onConnect} />
       <div>
         Custom Color Picker Node: <strong>{data.color}</strong>
       </div>
