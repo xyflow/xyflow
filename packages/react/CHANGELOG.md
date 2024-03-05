@@ -5,6 +5,7 @@
 ## Patch changes
 
 - fix `ref` prop for `ReactFlow` and `Handle` component
+- unify `Edge` and `Node` type handling
 
 ## 12.0.0-next.10
 

@@ -11,6 +11,7 @@
   export let source: $$Props['source'] = '';
   export let target: $$Props['target'] = '';
 
+  export let type: $$Props['type'] = 'straight';
   export let animated: $$Props['animated'] = undefined;
   export let selected: $$Props['selected'] = undefined;
   export let label: $$Props['label'] = undefined;

@@ -17,6 +17,8 @@ import {
   OnBeforeDelete,
   BuiltInNode,
   BuiltInEdge,
+  NodeTypes,
+  ReactFlowProvider,
 } from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
@@ -40,7 +42,7 @@ const initBgColor = '#1A192B';
 const connectionLineStyle = { stroke: '#fff' };
 const snapGrid: SnapGrid = [16, 16];
 
-const nodeTypes = {
+const nodeTypes: NodeTypes = {
   selectorNode: ColorSelectorNode,
 };
 
@@ -188,4 +190,8 @@ const CustomNodeFlow = () => {
   );
 };
 
-export default CustomNodeFlow;
+export default () => (
+  <ReactFlowProvider>
+    <CustomNodeFlow />
+  </ReactFlowProvider>
+);

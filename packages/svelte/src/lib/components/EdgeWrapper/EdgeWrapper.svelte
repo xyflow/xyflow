@@ -51,7 +51,8 @@
     edgecontextmenu: { edge: Edge; event: MouseEvent };
   }>();
 
-  $: edgeComponent = $edgeTypes[type!] || BezierEdgeInternal;
+  const edgeType = type || 'default';
+  $: edgeComponent = $edgeTypes[edgeType] || BezierEdgeInternal;
   $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
   $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
   $: isSelectable = selectable || ($elementsSelectable && typeof selectable === 'undefined');
@@ -113,6 +114,7 @@
         {data}
         {style}
         {interactionWidth}
+        type={edgeType}
         sourceHandleId={sourceHandle}
         targetHandleId={targetHandle}
         markerStart={markerStartUrl}

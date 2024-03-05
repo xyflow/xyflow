@@ -1,13 +1,14 @@
-import { Position, type NodeProps } from '@xyflow/system';
+import { Position } from '@xyflow/system';
 
 import { Handle } from '../../components/Handle';
+import type { BuiltInNode, NodeProps } from '../../types/nodes';
 
 export function DefaultNode({
   data,
   isConnectable,
   targetPosition = Position.Top,
   sourcePosition = Position.Bottom,
-}: NodeProps) {
+}: NodeProps<BuiltInNode>) {
   return (
     <>
       <Handle type="target" position={targetPosition} isConnectable={isConnectable} />

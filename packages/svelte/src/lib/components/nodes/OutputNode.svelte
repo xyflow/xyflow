@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { Position, type NodeProps } from '@xyflow/system';
+  import { Position } from '@xyflow/system';
+  import type { NodeProps } from '$lib/types';
 
   import { Handle } from '$lib/components/Handle';
 
-  interface $$Props extends NodeProps<{ label: string }> {}
+  interface $$Props extends NodeProps {}
 
   export let data: $$Props['data'] = { label: 'Node' };
   export let targetPosition: $$Props['targetPosition'] = Position.Top;
@@ -15,12 +16,12 @@
   export let selected: $$Props['selected'] = undefined;
   export let sourcePosition: $$Props['sourcePosition'] = undefined;
   export let type: $$Props['type'] = undefined;
-  export let zIndex: $$Props['zIndex'] = undefined;
   export let dragging: $$Props['dragging'] = false;
   export let dragHandle: $$Props['dragHandle'] = undefined;
   export let positionAbsoluteX: $$Props['positionAbsoluteX'] = 0;
   export let positionAbsoluteY: $$Props['positionAbsoluteY'] = 0;
-  export let isConnectable: $$Props['isConnectable'] = undefined;
+  export let isConnectable: $$Props['isConnectable'];
+  export let zIndex: $$Props['zIndex'];
 
   // @todo: there must be a better way to do this
   id;
