@@ -8,6 +8,7 @@
 - unify `Edge` and `Node` type handling
 - fix safari: prevent selection of viewport
 - fix `useNodesData` hook to prevent re-renderings
+- fix edges: allow start at 0,0
 
 ## 12.0.0-next.10
 
