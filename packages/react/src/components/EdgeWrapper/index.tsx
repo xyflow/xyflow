@@ -111,7 +111,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
     [edge.markerEnd, rfId]
   );
 
-  if (edge.hidden || !sourceX || !sourceY || !targetX || !targetY) {
+  if (edge.hidden || sourceX === null || sourceY === null || targetX === null || targetY === null) {
     return null;
   }
 
