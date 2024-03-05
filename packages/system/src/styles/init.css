@@ -84,7 +84,6 @@
   transform-origin: 0 0;
   z-index: 2;
   pointer-events: none;
-  user-select: none;
 }
 
 .xy-flow__renderer {
@@ -325,6 +324,7 @@ svg.xy-flow__connectionline {
   height: 100%;
   left: 0;
   top: 0;
+  user-select: none;
 }
 
 .xy-flow__minimap {
