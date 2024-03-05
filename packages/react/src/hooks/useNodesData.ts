@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../hooks/useStore';
 import type { Node } from '../types';
@@ -15,7 +14,7 @@ function nodeDatasEqual(a: NodeData | NodeData[], b: NodeData | NodeData[]) {
   }
 
   for (let i = 0; i < _a.length; i++) {
-    if (!(_a[i].id === _b[i].id && _a[i].type === _b[i].type && shallow(_a[i].data, _b[i].data))) {
+    if (!(_a[i].id === _b[i].id && _a[i].type === _b[i].type && Object.is(_a[i].data, _b[i].data))) {
       return false;
     }
   }
