@@ -16,6 +16,7 @@ import {
 
 import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
 
+// this is needed, to use generics + forwardRef
 declare module 'react' {
   // eslint-disable-next-line @typescript-eslint/ban-types
   function forwardRef<T, P = {}>(

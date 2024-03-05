@@ -1,5 +1,15 @@
 # @xyflow/svelte
 
+## 0.0.38
+
+## ⚠️ Breaking changes
+
+- `NodeProps` generic is a node and not only node data. `type $$Props = NodeProps<AppNode>`  
+
+## Patch changes
+
+- unify `Edge` and `Node` type handling
+
 ## 0.0.37
 
 ## ⚠️ Breaking changes

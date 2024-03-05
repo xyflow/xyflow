@@ -59,7 +59,7 @@ export const initialNodeTypes = {
   group: GroupNode
 };
 
-export const initialEdgeTypes: EdgeTypes = {
+export const initialEdgeTypes = {
   straight: StraightEdgeInternal,
   smoothstep: SmoothStepEdgeInternal,
   default: BezierEdgeInternal,
