@@ -69,13 +69,6 @@ export function handlePointerDown({
   let isValid = false;
   let handleDomNode: Element | null = null;
 
-  const handleLookup = getHandleLookup({
-    nodes: getNodes(),
-    nodeId,
-    handleId,
-    handleType,
-  });
-
   // when the user is moving the mouse close to the edge of the canvas while connecting we move the canvas
   const autoPan = (): void => {
     if (!autoPanOnConnect) {
@@ -114,7 +107,12 @@ export function handlePointerDown({
       doc,
       pointToRendererPoint(connectionPosition, transform, false, [1, 1]),
       connectionRadius,
-      handleLookup,
+      getHandleLookup({
+        nodes: getNodes(),
+        nodeId,
+        handleId,
+        handleType,
+      }),
       (handle) =>
         isValidHandle(handle, connectionMode, nodeId, handleId, isTarget ? 'target' : 'source', isValidConnection, doc)
     );
