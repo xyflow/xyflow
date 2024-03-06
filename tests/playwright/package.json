@@ -13,11 +13,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.40.1",
+    "@playwright/test": "^1.42.1",
     "@types/node": "^18.7.16"
   },
   "dependencies": {
-    "@playwright/experimental-ct-react": "^1.40.1",
+    "@playwright/experimental-ct-react": "^1.42.1",
     "@types/react": "^18.2.31",
     "@types/react-dom": "^18.2.14",
     "react": "^18.2.0",

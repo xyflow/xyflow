@@ -3,6 +3,7 @@ import { MarkerType } from '@xyflow/react';
 export default {
   flowProps: {
     fitView: true,
+    multiSelectionKeyCode: 's',
     nodes: [
       {
         id: '1',
