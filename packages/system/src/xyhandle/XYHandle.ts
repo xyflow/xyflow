@@ -113,13 +113,6 @@ function onPointerDown(
   let isValid = false;
   let handleDomNode: Element | null = null;
 
-  const handleLookup = getHandleLookup({
-    nodes,
-    nodeId,
-    handleId,
-    handleType,
-  });
-
   // when the user is moving the mouse close to the edge of the canvas while connecting we move the canvas
   function autoPan(): void {
     if (!autoPanOnConnect || !containerBounds) {
@@ -154,7 +147,7 @@ function onPointerDown(
     closestHandle = getClosestHandle(
       pointToRendererPoint(connectionPosition, transform, false, [1, 1]),
       connectionRadius,
-      handleLookup
+      getHandleLookup({ nodes, nodeId, handleId, handleType })
     );
 
     if (!autoPanStarted) {
