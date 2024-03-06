@@ -9,7 +9,7 @@ Cypress.Commands.add('drag', (selector, { x, y }) =>
       const nextY: number = centerY + y;
 
       return elementToDrag
-        .trigger('mousedown', { view: window })
+        .trigger('mousedown', { view: window, force: true })
         .trigger('mousemove', nextX, nextY, { force: true })
         .wait(50)
         .trigger('mouseup', { view: window, force: true });

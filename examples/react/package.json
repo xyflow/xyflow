@@ -30,8 +30,8 @@
     "@types/react-dom": "^18.2.14",
     "@vitejs/plugin-react": "4.1.1",
     "@vitejs/plugin-react-swc": "^3.4.1",
-    "cypress": "12.17.3",
-    "cypress-real-events": "1.11.0",
+    "cypress": "13.6.6",
+    "cypress-real-events": "1.12.0",
     "start-server-and-test": "^2.0.2",
     "typescript": "5.2.2",
     "vite": "4.5.0"

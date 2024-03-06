@@ -6,7 +6,7 @@ import * as simpleflow from '../../fixtures/simpleflow';
 describe('<ReactFlow />: Basic Props', () => {
   describe('uses defaultNodes and defaultEdges', () => {
     beforeEach(() => {
-      cy.mount(<ReactFlow defaultNodes={simpleflow.nodes} defaultEdges={simpleflow.edges} />);
+      cy.mount(<ReactFlow defaultNodes={simpleflow.nodes} defaultEdges={simpleflow.edges} nodeDragThreshold={0} />);
     });
 
     it('mounts nodes and edges', () => {
