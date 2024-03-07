@@ -2,7 +2,7 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import { CSSProperties, useRef, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
+import { useRef, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 import { getNodesInside, getEventPosition, SelectionMode } from '@xyflow/system';
@@ -12,11 +12,6 @@ import { containerStyle } from '../../styles/utils';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils';
 import type { ReactFlowProps, ReactFlowState, NodeChange, EdgeChange } from '../../types';
-
-export const paneStyle: CSSProperties = {
-  ...containerStyle,
-  position: 'fixed',
-};
 
 type PaneProps = {
   isSelecting: boolean;
@@ -232,7 +227,7 @@ export function Pane({
       onMouseUp={hasActiveSelection ? onMouseUp : undefined}
       onMouseLeave={hasActiveSelection ? onMouseLeave : onPaneMouseLeave}
       ref={container}
-      style={paneStyle}
+      style={containerStyle}
     >
       {children}
       <UserSelection />
