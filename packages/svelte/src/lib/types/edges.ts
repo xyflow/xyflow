@@ -49,11 +49,14 @@ export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge;
 /**
  * Custom edge component props.
  */
-export type EdgeProps<
-  EdgeData extends Record<string, unknown> = Record<string, unknown>,
-  EdgeType extends string | undefined = string | undefined
-> = Omit<Edge<EdgeData, EdgeType>, 'sourceHandle' | 'targetHandle' | 'type'> &
+export type EdgeProps<EdgeType extends Edge = Edge> = Omit<
+  EdgeType,
+  'sourceHandle' | 'targetHandle'
+> &
   EdgePosition & {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data?: any;
+    type: string;
     markerStart?: string;
     markerEnd?: string;
     sourceHandleId?: string | null;
@@ -103,7 +106,19 @@ export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
  */
 export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
-export type EdgeTypes = Record<string, ComponentType<SvelteComponent<EdgeProps>>>;
+export type EdgeTypes = Record<
+  string,
+  ComponentType<
+    SvelteComponent<
+      EdgeProps & {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data?: any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        type: any;
+      }
+    >
+  >
+>;
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 

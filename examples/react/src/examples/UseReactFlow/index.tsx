@@ -27,18 +27,21 @@ const initialNodes: Node[] = [
     data: { label: 'Node 2' },
     position: { x: 100, y: 100 },
     className: 'light',
+    type: 'default',
   },
   {
     id: '3',
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
     className: 'light',
+    type: 'default',
   },
   {
     id: '4',
     data: { label: 'Node 4' },
     position: { x: 400, y: 200 },
     className: 'light',
+    type: 'default',
   },
 ];
 
@@ -85,6 +88,7 @@ const UseZoomPanHelperFlow = () => {
           data: {
             label: `${projectedPosition.x}-${projectedPosition.y}`,
           },
+          type: 'default',
         })
       );
     },
@@ -106,6 +110,7 @@ const UseZoomPanHelperFlow = () => {
       data: {
         label: 'New Node',
       },
+      type: 'default',
     };
 
     addNodes(newNode);
@@ -139,8 +144,8 @@ const UseZoomPanHelperFlow = () => {
 
   const onSetNodes = () => {
     setNodes([
-      { id: 'a', position: { x: 0, y: 0 }, data: { label: 'Node a' } },
-      { id: 'b', position: { x: 0, y: 150 }, data: { label: 'Node b' } },
+      { id: 'a', type: 'default', position: { x: 0, y: 0 }, data: { label: 'Node a' } },
+      { id: 'b', type: 'default', position: { x: 0, y: 150 }, data: { label: 'Node b' } },
     ]);
 
     setEdges([{ id: 'a-b', source: 'a', target: 'b' }]);

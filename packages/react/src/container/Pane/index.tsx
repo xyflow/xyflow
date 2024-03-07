@@ -128,7 +128,8 @@ export function Pane({
   };
 
   const onMouseMove = (event: ReactMouseEvent): void => {
-    const { userSelectionRect, edges, transform, nodeOrigin, nodes, onNodesChange, onEdgesChange } = store.getState();
+    const { userSelectionRect, edges, transform, nodeOrigin, nodes, triggerNodeChanges, triggerEdgeChanges } =
+      store.getState();
     if (!isSelecting || !containerBounds.current || !userSelectionRect) {
       return;
     }
@@ -172,17 +173,13 @@ export function Pane({
     if (prevSelectedNodesCount.current !== selectedNodeIds.size) {
       prevSelectedNodesCount.current = selectedNodeIds.size;
       const changes = getSelectionChanges(nodes, selectedNodeIds, true) as NodeChange[];
-      if (changes.length) {
-        onNodesChange?.(changes);
-      }
+      triggerNodeChanges(changes);
     }
 
     if (prevSelectedEdgesCount.current !== selectedEdgeIds.size) {
       prevSelectedEdgesCount.current = selectedEdgeIds.size;
       const changes = getSelectionChanges(edges, selectedEdgeIds) as EdgeChange[];
-      if (changes.length) {
-        onEdgesChange?.(changes);
-      }
+      triggerEdgeChanges(changes);
     }
 
     store.setState({

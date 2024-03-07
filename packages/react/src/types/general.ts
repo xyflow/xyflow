@@ -1,3 +1,4 @@
+import { ComponentType } from 'react';
 import {
   FitViewParamsBase,
   FitViewOptionsBase,
@@ -9,13 +10,19 @@ import {
   SetCenter,
   FitBounds,
   XYPosition,
-  NodeProps,
   OnBeforeDeleteBase,
   Connection,
 } from '@xyflow/system';
 
-import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance, EdgeProps } from '.';
-import { ComponentType } from 'react';
+import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
+
+// this is needed, to use generics + forwardRef
+declare module 'react' {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  function forwardRef<T, P = {}>(
+    render: (props: P, ref: React.Ref<T>) => React.ReactElement | null
+  ): (props: P & React.RefAttributes<T>) => React.ReactElement | null;
+}
 
 export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<NodeType>[]) => void;
 export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChange<EdgeType>[]) => void;
@@ -27,8 +34,28 @@ export type OnDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge>
   edges: EdgeType[];
 }) => void;
 
-export type NodeTypes = { [key: string]: ComponentType<NodeProps> };
-export type EdgeTypes = { [key: string]: ComponentType<EdgeProps> };
+export type NodeTypes = Record<
+  string,
+  ComponentType<
+    NodeProps & {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      type: any;
+    }
+  >
+>;
+export type EdgeTypes = Record<
+  string,
+  ComponentType<
+    EdgeProps & {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      type: any;
+    }
+  >
+>;
 
 export type UnselectNodesAndEdgesParams = {
   nodes?: Node[];

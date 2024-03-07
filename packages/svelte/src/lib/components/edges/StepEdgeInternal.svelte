@@ -10,6 +10,7 @@
   export let id: $$Props['id'] = '';
   export let source: $$Props['source'] = '';
   export let target: $$Props['target'] = '';
+  export let type: $$Props['type'] = 'step';
 
   export let animated: $$Props['animated'] = undefined;
   export let selected: $$Props['selected'] = undefined;
@@ -44,6 +45,7 @@
   id;
   source;
   target;
+  type;
   animated;
   selected;
   data;

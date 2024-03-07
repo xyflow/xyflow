@@ -1,14 +1,8 @@
 import { useCallback } from 'react';
-import { shallow } from 'zustand/shallow';
+import { shallowNodeData } from '@xyflow/system';
 
 import { useStore } from '../hooks/useStore';
 import type { Node } from '../types';
-
-export interface NodeDataReturn<NodeType extends Node> {
-  id: string;
-  type: NodeType['type'];
-  data: NodeType['data'];
-}
 
 /**
  * Hook for receiving data of one or multiple nodes
@@ -46,7 +40,7 @@ export function useNodesData(nodeIds: any): any {
       },
       [nodeIds]
     ),
-    shallow
+    shallowNodeData
   );
 
   return nodesData;

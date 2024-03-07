@@ -1,16 +1,10 @@
 <svelte:options immutable />
 
 <script lang="ts">
-  import {
-    createEventDispatcher,
-    setContext,
-    SvelteComponent,
-    type ComponentType,
-    onDestroy
-  } from 'svelte';
+  import { createEventDispatcher, setContext, onDestroy } from 'svelte';
   import { get, writable } from 'svelte/store';
   import cc from 'classcat';
-  import { errorMessages, Position, type NodeProps } from '@xyflow/system';
+  import { errorMessages, Position } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
@@ -71,8 +65,7 @@
     console.warn('003', errorMessages['error003'](type!));
   }
 
-  const nodeComponent: ComponentType<SvelteComponent<NodeProps>> =
-    $nodeTypes[nodeType] || DefaultNode;
+  const nodeComponent = $nodeTypes[nodeType] || DefaultNode;
   const dispatch = createEventDispatcher<{
     nodeclick: { node: Node; event: MouseEvent | TouchEvent };
     nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };
@@ -211,11 +204,11 @@
       {selected}
       {sourcePosition}
       {targetPosition}
-      {type}
       {zIndex}
       {dragging}
       {dragHandle}
-      isConnectable={connectable}
+      type={nodeType}
+      isConnectable={$connectableStore}
       positionAbsoluteX={positionX}
       positionAbsoluteY={positionY}
       {width}

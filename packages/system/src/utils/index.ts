@@ -7,3 +7,4 @@ export * from './marker';
 export * from './node-toolbar';
 export * from './store';
 export * from './types';
+export * from './shallow-node-data';

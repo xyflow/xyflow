@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent, ChangeEvent, useCallback } from 'react';
+import { useState, useEffect, MouseEvent, ChangeEvent, useCallback, useRef } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -17,6 +17,8 @@ import {
   OnBeforeDelete,
   BuiltInNode,
   BuiltInEdge,
+  NodeTypes,
+  ReactFlowProvider,
 } from '@xyflow/react';
 
 import ColorSelectorNode from './ColorSelectorNode';
@@ -40,11 +42,12 @@ const initBgColor = '#1A192B';
 const connectionLineStyle = { stroke: '#fff' };
 const snapGrid: SnapGrid = [16, 16];
 
-const nodeTypes = {
+const nodeTypes: NodeTypes = {
   selectorNode: ColorSelectorNode,
 };
 
 const CustomNodeFlow = () => {
+  const ref = useRef(null);
   const [nodes, setNodes] = useState<MyNode[]>([]);
   const onNodesChange: OnNodesChange<MyNode> = useCallback(
     (changes) =>
@@ -165,6 +168,7 @@ const CustomNodeFlow = () => {
       minZoom={0.3}
       maxZoom={2}
       onBeforeDelete={onBeforeDelete}
+      ref={ref}
     >
       <MiniMap<MyNode>
         nodeStrokeColor={(n: MyNode): string => {
@@ -186,4 +190,8 @@ const CustomNodeFlow = () => {
   );
 };
 
-export default CustomNodeFlow;
+export default () => (
+  <ReactFlowProvider>
+    <CustomNodeFlow />
+  </ReactFlowProvider>
+);

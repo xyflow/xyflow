@@ -1,5 +1,4 @@
-import type { ComponentType } from 'react';
-import type { NodeProps, XYPosition } from '@xyflow/system';
+import type { XYPosition } from '@xyflow/system';
 
 import { InputNode } from '../Nodes/InputNode';
 import { DefaultNode } from '../Nodes/DefaultNode';
@@ -15,10 +14,10 @@ export const arrowKeyDiffs: Record<string, XYPosition> = {
 };
 
 export const builtinNodeTypes: NodeTypes = {
-  input: InputNode as ComponentType<NodeProps>,
-  default: DefaultNode as ComponentType<NodeProps>,
-  output: OutputNode as ComponentType<NodeProps>,
-  group: GroupNode as ComponentType<NodeProps>,
+  input: InputNode,
+  default: DefaultNode,
+  output: OutputNode,
+  group: GroupNode,
 };
 
 export function getNodeInlineStyleDimensions<NodeType extends Node = Node>(

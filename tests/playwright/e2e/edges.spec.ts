@@ -30,11 +30,12 @@ test.describe('Edges', () => {
       await edge1.click();
       await expect(edge1).toHaveClass(/selected/);
 
-      // FIXME: I cannot get this to work
-      await page.keyboard.down('MetaLeft');
+      // we are using "s" here because Meta doesn't work for some reason
+      await page.keyboard.down('s');
       await edge2.click();
-      await expect(edge2).toHaveClass(/selected/);
+      await page.keyboard.up('s');
 
+      await expect(edge2).toHaveClass(/selected/);
       await expect(edge1).toHaveClass(/selected/);
     });
   });
@@ -87,8 +88,6 @@ test.describe('Edges', () => {
       const edge = page.locator('[data-id="edge-with-class"]');
 
       await expect(edge).toBeAttached();
-
-      const edgeBox = await edge.boundingBox();
 
       await edge.click();
       await expect(edge).toHaveClass(/selected/);
@@ -154,8 +153,8 @@ test.describe('Edges', () => {
 
       await expect(edge).toBeAttached();
 
-      await expect(edge).toHaveAttribute('marker-start', 'url(#1__type=arrowclosed)');
-      await expect(edge).toHaveAttribute('marker-end', 'url(#1__type=arrow)');
+      await expect(edge).toHaveAttribute('marker-start', "url('#1__type=arrowclosed')");
+      await expect(edge).toHaveAttribute('marker-end', "url('#1__type=arrow')");
     });
   });
 });

@@ -1,5 +1,15 @@
 # @xyflow/react
 
+## 12.0.0-next.11
+
+## Patch changes
+
+- fix `ref` prop for `ReactFlow` and `Handle` component
+- unify `Edge` and `Node` type handling
+- fix safari: prevent selection of viewport
+- fix `useNodesData` hook to prevent re-renderings
+- fix edges: allow start at 0,0
+
 ## 12.0.0-next.10
 
 ## ⚠️ Breaking changes

@@ -52,7 +52,7 @@ test.describe('Pane default', () => {
   });
 
   test.describe('minZoom & maxZoom', () => {
-    test('minZoom works as intended', async ({ page }) => {
+    test('minZoom', async ({ page }) => {
       const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
       const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
 
@@ -67,7 +67,7 @@ test.describe('Pane default', () => {
       expect(transformsMinZoom.scale).toBe(0.25);
     });
 
-    test('maxZoom works as intended', async ({ page }) => {
+    test('maxZoom', async ({ page }) => {
       const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
       const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
 
@@ -84,7 +84,7 @@ test.describe('Pane default', () => {
   });
 
   test.describe('autoPan', () => {
-    test('autoPanOnNodeDrag works as intended', async ({ page }) => {
+    test('autoPanOnNodeDrag', async ({ page }) => {
       const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
       const node = page.locator('[data-id="1"]');
 
@@ -96,7 +96,8 @@ test.describe('Pane default', () => {
       await page.mouse.down();
       await page.mouse.move(0, 0);
       await page.waitForTimeout(500);
-      await page.mouse.move(100, 100);
+      await page.mouse.move(1000, 100, { steps: 100 });
+      await page.mouse.up();
 
       const transformAfter = await getTransform(viewport);
 
@@ -104,7 +105,7 @@ test.describe('Pane default', () => {
       await expect(transformAfter.translateY).toBeGreaterThan(transformBefore.translateY);
     });
 
-    test('autoPanOnConnect works as intended', async ({ page }) => {
+    test('autoPanOnConnect', async ({ page }) => {
       const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
       const handle = page.locator(`[data-id="1"] .${FRAMEWORK}-flow__handle`);
 
@@ -116,7 +117,7 @@ test.describe('Pane default', () => {
       await page.mouse.down();
       await page.mouse.move(0, 0);
       await page.waitForTimeout(500);
-      await page.mouse.move(100, 100);
+      await page.mouse.move(100, 100, { steps: 100 });
 
       const transformAfter = await getTransform(viewport);
 
