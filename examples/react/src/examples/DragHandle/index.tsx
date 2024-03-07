@@ -33,6 +33,7 @@ const DragHandleFlow = () => {
       edges={edges}
       nodeTypes={nodeTypes}
       onNodeClick={onNodeClick}
+      nodeDragThreshold={0}
     />
   );
 };

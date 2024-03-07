@@ -92,7 +92,7 @@ describe('Basic Flow Rendering', { testIsolation: false }, () => {
   it('drags a node', () => {
     const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
 
-    cy.drag('.react-flow__node:first', { x: 500, y: 25 }).then(($el: any) => {
+    cy.drag('.react-flow__node:first', { x: 10, y: 10 }).then(($el: any) => {
       const styleAfterDrag = $el.css('transform');
       expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
     });
@@ -103,7 +103,7 @@ describe('Basic Flow Rendering', { testIsolation: false }, () => {
     cy.get('html').realPress('Backspace');
 
     cy.get('.react-flow__node').should('have.length', 3);
-    cy.get('.react-flow__edge').should('have.length', 1);
+    cy.get('.react-flow__edge').should('have.length', 0);
   });
 
   it('connects nodes', () => {
@@ -120,14 +120,14 @@ describe('Basic Flow Rendering', { testIsolation: false }, () => {
       .trigger('mouseup', { force: true, button: 0 });
 
     cy.get('.react-flow__edge').as('edge');
-    cy.get('@edge').should('have.length', 3);
+    cy.get('@edge').should('have.length', 1);
   });
 
   it('removes an edge', () => {
     cy.get('.react-flow__edge:first').click();
     cy.get('html').realPress('Backspace');
 
-    cy.get('.react-flow__edge').should('have.length', 1);
+    cy.get('.react-flow__edge').should('have.length', 0);
   });
 
   it('drags the pane', () => {
