@@ -6,6 +6,7 @@
   import { Selection } from '$lib/components/Selection';
   import drag from '$lib/actions/drag';
   import type { Node } from '$lib/types';
+  import { createNodeEventDispatcher } from '$lib';
 
   const store = useStore();
   const { selectionRectMode, nodes } = store;
@@ -14,6 +15,7 @@
     selectioncontextmenu: { nodes: Node[]; event: MouseEvent | TouchEvent };
     selectionclick: { nodes: Node[]; event: MouseEvent | TouchEvent };
   }>();
+  const dispatchNodeEvent = createNodeEventDispatcher();
 
   $: selectedNodes = $nodes.filter((n) => n.selected);
   $: bounds = getNodesBounds(selectedNodes);
@@ -31,7 +33,19 @@
   <div
     class="selection-wrapper nopan"
     style="width: {bounds.width}px; height: {bounds.height}px; transform: translate({bounds.x}px, {bounds.y}px)"
-    use:drag={{ disabled: false, store }}
+    use:drag={{
+      disabled: false,
+      store,
+      onDrag: (event, _, node, nodes) => {
+        dispatchNodeEvent('nodedrag', { event, node, nodes });
+      },
+      onDragStart: (event, _, node, nodes) => {
+        dispatchNodeEvent('nodedragstart', { event, node, nodes });
+      },
+      onDragStop: (event, _, node, nodes) => {
+        dispatchNodeEvent('nodedragstop', { event, node, nodes });
+      }
+    }}
     on:contextmenu={onContextMenu}
     on:click={onClick}
   >
