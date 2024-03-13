@@ -99,7 +99,8 @@
         onConnectEnd: (event) => {
           $onConnectEndAction?.(event);
         },
-        getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom]
+        getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom],
+        getConnectionStartHandle: () => $connection.startHandle
       });
     }
   }

@@ -140,6 +140,7 @@ function HandleComponent(
         onConnect: onConnectExtended,
         isValidConnection: isValidConnection || currentStore.isValidConnection,
         getTransform: () => store.getState().transform,
+        getConnectionStartHandle: () => store.getState().connectionStartHandle,
       });
     }
 
