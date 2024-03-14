@@ -8,7 +8,8 @@
     isMouseEvent,
     type HandleConnection,
     areConnectionMapsEqual,
-    handleConnectionChange
+    handleConnectionChange,
+    ConnectionMode
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
@@ -23,6 +24,7 @@
   export let isConnectable: $$Props['isConnectable'] = undefined;
   export let onconnect: $$Props['onconnect'] = undefined;
   export let ondisconnect: $$Props['ondisconnect'] = undefined;
+  // @todo implement connectablestart, connectableend
   // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
   // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
 
@@ -32,7 +34,7 @@
   const isTarget = type === 'target';
   const nodeId = getContext<string>('svelteflow__node_id');
   const connectable = getContext<Writable<boolean>>('svelteflow__node_connectable');
-  $: handleConnectable = isConnectable !== undefined ? isConnectable : $connectable;
+  $: isConnectable = isConnectable !== undefined ? isConnectable : $connectable;
 
   const handleId = id || null;
 
@@ -124,6 +126,7 @@
     prevConnections = connections ?? new Map();
   }
 
+  $: connectionInProcess = !!$connection.startHandle;
   $: connectingFrom =
     $connection.startHandle?.nodeId === nodeId &&
     $connection.startHandle?.type === type &&
@@ -132,9 +135,12 @@
     $connection.endHandle?.nodeId === nodeId &&
     $connection.endHandle?.type === type &&
     $connection.endHandle?.handleId === handleId;
+  $: isPossibleEndHandle =
+    $connectionMode === ConnectionMode.Strict
+      ? $connection.startHandle?.type !== type
+      : nodeId !== $connection.startHandle?.nodeId ||
+        handleId !== $connection.startHandle?.handleId;
   $: valid = connectingTo && $connection.status === 'valid';
-
-  // @todo implement connectablestart, connectableend
 </script>
 
 <!--
@@ -152,19 +158,17 @@ The Handle component is the part of a node that can be used to connect nodes.
     'nodrag',
     'nopan',
     position,
-    {
-      valid,
-      connectingto: connectingTo,
-      connectingfrom: connectingFrom
-    },
     className
   ])}
+  class:valid
+  class:connectingto={connectingTo}
+  class:connectingfrom={connectingFrom}
   class:source={!isTarget}
   class:target={isTarget}
-  class:connectablestart={handleConnectable}
-  class:connectableend={handleConnectable}
-  class:connectable={handleConnectable}
-  class:connectionindicator={handleConnectable}
+  class:connectablestart={isConnectable}
+  class:connectableend={isConnectable}
+  class:connectable={isConnectable}
+  class:connectionindicator={isConnectable && (!connectionInProcess || isPossibleEndHandle)}
   on:mousedown={onPointerDown}
   on:touchstart={onPointerDown}
   {style}
