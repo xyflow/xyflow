@@ -242,7 +242,13 @@
           on:nodedragstop
           on:nodecontextmenu
         />
-        <NodeSelection on:selectionclick on:selectioncontextmenu />
+        <NodeSelection
+          on:selectionclick
+          on:selectioncontextmenu
+          on:nodedragstart
+          on:nodedrag
+          on:nodedragstop
+        />
       </ViewportComponent>
       <UserSelection />
     </Pane>

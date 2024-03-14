@@ -12,6 +12,7 @@
   import type { NodeWrapperProps } from './types';
   import type { Node } from '$lib/types';
   import { getNodeInlineStyleDimensions } from './utils';
+  import { createNodeEventDispatcher } from '$lib';
 
   interface $$Props extends NodeWrapperProps {}
 
@@ -66,16 +67,7 @@
   }
 
   const nodeComponent = $nodeTypes[nodeType] || DefaultNode;
-  const dispatch = createEventDispatcher<{
-    nodeclick: { node: Node; event: MouseEvent | TouchEvent };
-    nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };
-    nodedrag: { node: Node; nodes: Node[]; event: MouseEvent | TouchEvent };
-    nodedragstart: { node: Node; nodes: Node[]; event: MouseEvent | TouchEvent };
-    nodedragstop: { node: Node; nodes: Node[]; event: MouseEvent | TouchEvent };
-    nodemouseenter: { node: Node; event: MouseEvent | TouchEvent };
-    nodemouseleave: { node: Node; event: MouseEvent | TouchEvent };
-    nodemousemove: { node: Node; event: MouseEvent | TouchEvent };
-  }>();
+  const dispatchNodeEvent = createNodeEventDispatcher();
   const connectableStore = writable(connectable);
   let prevType: string | undefined = undefined;
   let prevSourcePosition: Position | undefined = undefined;
@@ -151,7 +143,7 @@
       handleNodeSelection(id);
     }
 
-    dispatch('nodeclick', { node, event });
+    dispatchNodeEvent('nodeclick', { node, event });
   }
 </script>
 
@@ -166,14 +158,14 @@
       handleSelector: dragHandle,
       noDragClass: 'nodrag',
       onNodeMouseDown: handleNodeSelection,
-      onDrag: (event, _, node, nodes) => {
-        dispatch('nodedrag', { event, node, nodes });
+      onDrag: (event, _, targetNode, nodes) => {
+        dispatchNodeEvent('nodedrag', { event, targetNode, nodes });
       },
-      onDragStart: (event, _, node, nodes) => {
-        dispatch('nodedragstart', { event, node, nodes });
+      onDragStart: (event, _, targetNode, nodes) => {
+        dispatchNodeEvent('nodedragstart', { event, targetNode, nodes });
       },
-      onDragStop: (event, _, node, nodes) => {
-        dispatch('nodedragstop', { event, node, nodes });
+      onDragStop: (event, _, targetNode, nodes) => {
+        dispatchNodeEvent('nodedragstop', { event, targetNode, nodes });
       },
       store
     }}
@@ -192,10 +184,10 @@
     style:visibility={initialized ? 'visible' : 'hidden'}
     style="{style ?? ''};{inlineStyleDimensions.width}{inlineStyleDimensions.height}"
     on:click={onSelectNodeHandler}
-    on:mouseenter={(event) => dispatch('nodemouseenter', { node, event })}
-    on:mouseleave={(event) => dispatch('nodemouseleave', { node, event })}
-    on:mousemove={(event) => dispatch('nodemousemove', { node, event })}
-    on:contextmenu={(event) => dispatch('nodecontextmenu', { node, event })}
+    on:mouseenter={(event) => dispatchNodeEvent('nodemouseenter', { node, event })}
+    on:mouseleave={(event) => dispatchNodeEvent('nodemouseleave', { node, event })}
+    on:mousemove={(event) => dispatchNodeEvent('nodemousemove', { node, event })}
+    on:contextmenu={(event) => dispatchNodeEvent('nodecontextmenu', { node, event })}
   >
     <svelte:component
       this={nodeComponent}
