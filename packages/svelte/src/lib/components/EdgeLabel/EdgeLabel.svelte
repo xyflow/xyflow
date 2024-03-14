@@ -20,6 +20,8 @@
     style:transform="translate(-50%, -50%) translate({x}px,{y}px)"
     style={'pointer-events: all;' + style}
     role="button"
+    tabindex="-1"
+    on:keyup={() => {}}
     on:click={() => {
       if (id) handleEdgeSelect(id);
     }}

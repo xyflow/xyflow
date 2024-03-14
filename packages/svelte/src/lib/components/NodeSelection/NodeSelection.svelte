@@ -34,6 +34,9 @@
     use:drag={{ disabled: false, store }}
     on:contextmenu={onContextMenu}
     on:click={onClick}
+    role="button"
+    tabindex="-1"
+    on:keyup={() => {}}
   >
     <Selection width="100%" height="100%" x={0} y={0} />
   </div>
