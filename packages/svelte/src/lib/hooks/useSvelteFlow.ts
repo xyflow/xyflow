@@ -13,7 +13,8 @@ import {
   type Rect,
   getViewportForBounds,
   getElementsToRemove,
-  rendererPointToPoint
+  rendererPointToPoint,
+  nodeHasDimensions
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -242,19 +243,12 @@ export function useSvelteFlow(): {
     edgeLookup
   } = useStore();
 
-  const getNodeRect = (
-    nodeOrRect: Node | { id: Node['id'] } | Rect
-  ): [Rect | null, Node | null | undefined, boolean] => {
-    const isRect = isRectObject(nodeOrRect);
-    const node = isRect ? null : get(nodes).find((n) => n.id === nodeOrRect.id);
-
-    if (!isRect && !node) {
-      return [null, null, isRect];
-    }
-
-    const nodeRect = isRect ? nodeOrRect : nodeToRect(node!);
-
-    return [nodeRect, node, isRect];
+  const getNodeRect = (nodeOrRect: Node | { id: Node['id'] }): Rect | null => {
+    const node =
+      isNode(nodeOrRect) && nodeHasDimensions(nodeOrRect)
+        ? nodeOrRect
+        : get(nodeLookup).get(nodeOrRect.id);
+    return node ? nodeToRect(node) : null;
   };
 
   const updateNode = (
@@ -329,14 +323,15 @@ export function useSvelteFlow(): {
       partially = true,
       nodesToIntersect?: Node[]
     ) => {
-      const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
+      const isRect = isRectObject(nodeOrRect);
+      const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
 
       if (!nodeRect) {
         return [];
       }
 
       return (nodesToIntersect || get(nodes)).filter((n) => {
-        if (!isRect && (n.id === node!.id || !n.computed?.positionAbsolute)) {
+        if (!isRect && (n.id === nodeOrRect.id || !n.computed?.positionAbsolute)) {
           return false;
         }
 
@@ -352,7 +347,8 @@ export function useSvelteFlow(): {
       area: Rect,
       partially = true
     ) => {
-      const [nodeRect] = getNodeRect(nodeOrRect);
+      const isRect = isRectObject(nodeOrRect);
+      const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
 
       if (!nodeRect) {
         return false;

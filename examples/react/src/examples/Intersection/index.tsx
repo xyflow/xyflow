@@ -18,27 +18,33 @@ const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const initialNodes: Node[] = [
   {
+    id: '0',
+    data: { label: 'rectangle' },
+    position: { x: 0, y: 0 },
+    width: 100,
+    height: 100,
+    draggable: false,
+    style: {
+      opacity: 0.5,
+    },
+  },
+  {
     id: '1',
     type: 'input',
     data: { label: 'Node 1' },
     position: { x: 0, y: 0 },
-    className: 'light',
-    style: {
-      width: 200,
-      height: 100,
-    },
+    width: 200,
+    height: 100,
   },
   {
     id: '2',
     data: { label: 'Node 2' },
     position: { x: 0, y: 150 },
-    className: 'light',
   },
   {
     id: '3',
     data: { label: 'Node 3' },
     position: { x: 250, y: 0 },
-    className: 'light',
   },
   {
     id: '4',
@@ -48,7 +54,6 @@ const initialNodes: Node[] = [
       width: 50,
       height: 50,
     },
-    className: 'light',
   },
 ];
 

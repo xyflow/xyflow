@@ -1,5 +1,12 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type Rect } from '@xyflow/system';
+import {
+  getElementsToRemove,
+  getOverlappingArea,
+  isRectObject,
+  nodeHasDimensions,
+  nodeToRect,
+  type Rect,
+} from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
@@ -216,32 +223,26 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     []
   );
 
-  const getNodeRect = useCallback(
-    (nodeOrRect: NodeType | { id: Node['id'] } | Rect): [Rect | null, NodeType | null | undefined, boolean] => {
-      const isRect = isRectObject(nodeOrRect);
-      const node = isRect ? null : (store.getState().nodeLookup.get(nodeOrRect.id) as NodeType);
+  const getNodeRect = useCallback((nodeOrRect: NodeType | { id: Node['id'] }): Rect | null => {
+    const node =
+      isNode(nodeOrRect) && nodeHasDimensions(nodeOrRect)
+        ? nodeOrRect
+        : (store.getState().nodeLookup.get(nodeOrRect.id) as NodeType);
 
-      if (!isRect && !node) {
-        return [null, null, isRect];
-      }
-
-      const nodeRect = isRect ? nodeOrRect : nodeToRect(node!);
-
-      return [nodeRect, node, isRect];
-    },
-    []
-  );
+    return node ? nodeToRect(node) : null;
+  }, []);
 
   const getIntersectingNodes = useCallback<Instance.GetIntersectingNodes<NodeType>>(
     (nodeOrRect, partially = true, nodes) => {
-      const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
+      const isRect = isRectObject(nodeOrRect);
+      const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
 
       if (!nodeRect) {
         return [];
       }
 
       return (nodes || store.getState().nodes).filter((n) => {
-        if (!isRect && (n.id === node!.id || !n.computed?.positionAbsolute)) {
+        if (!isRect && (n.id === nodeOrRect!.id || !n.computed?.positionAbsolute)) {
           return false;
         }
 
@@ -257,7 +258,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
   const isNodeIntersecting = useCallback<Instance.IsNodeIntersecting<NodeType>>(
     (nodeOrRect, area, partially = true) => {
-      const [nodeRect] = getNodeRect(nodeOrRect);
+      const isRect = isRectObject(nodeOrRect);
+      const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
 
       if (!nodeRect) {
         return false;
