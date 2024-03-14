@@ -27,9 +27,9 @@ export const createNodeEventDispatcher = () =>
   createEventDispatcher<{
     nodeclick: { node: Node; event: MouseEvent | TouchEvent };
     nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };
-    nodedrag: { node: Node; nodes: Node[]; event: MouseEvent | TouchEvent };
-    nodedragstart: { node: Node; nodes: Node[]; event: MouseEvent | TouchEvent };
-    nodedragstop: { node: Node; nodes: Node[]; event: MouseEvent | TouchEvent };
+    nodedrag: { targetNode: Node | null; nodes: Node[]; event: MouseEvent | TouchEvent };
+    nodedragstart: { targetNode: Node | null; nodes: Node[]; event: MouseEvent | TouchEvent };
+    nodedragstop: { targetNode: Node | null; nodes: Node[]; event: MouseEvent | TouchEvent };
     nodemouseenter: { node: Node; event: MouseEvent | TouchEvent };
     nodemouseleave: { node: Node; event: MouseEvent | TouchEvent };
     nodemousemove: { node: Node; event: MouseEvent | TouchEvent };

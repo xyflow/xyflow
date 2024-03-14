@@ -36,14 +36,14 @@
     use:drag={{
       disabled: false,
       store,
-      onDrag: (event, _, node, nodes) => {
-        dispatchNodeEvent('nodedrag', { event, node, nodes });
+      onDrag: (event, _, __, nodes) => {
+        dispatchNodeEvent('nodedrag', { event, targetNode: null, nodes });
       },
-      onDragStart: (event, _, node, nodes) => {
-        dispatchNodeEvent('nodedragstart', { event, node, nodes });
+      onDragStart: (event, _, __, nodes) => {
+        dispatchNodeEvent('nodedragstart', { event, targetNode: null, nodes });
       },
-      onDragStop: (event, _, node, nodes) => {
-        dispatchNodeEvent('nodedragstop', { event, node, nodes });
+      onDragStop: (event, _, __, nodes) => {
+        dispatchNodeEvent('nodedragstop', { event, targetNode: null, nodes });
       }
     }}
     on:contextmenu={onContextMenu}

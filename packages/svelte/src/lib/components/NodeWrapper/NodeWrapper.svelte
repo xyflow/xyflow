@@ -158,14 +158,14 @@
       handleSelector: dragHandle,
       noDragClass: 'nodrag',
       onNodeMouseDown: handleNodeSelection,
-      onDrag: (event, _, node, nodes) => {
-        dispatchNodeEvent('nodedrag', { event, node, nodes });
+      onDrag: (event, _, targetNode, nodes) => {
+        dispatchNodeEvent('nodedrag', { event, targetNode, nodes });
       },
-      onDragStart: (event, _, node, nodes) => {
-        dispatchNodeEvent('nodedragstart', { event, node, nodes });
+      onDragStart: (event, _, targetNode, nodes) => {
+        dispatchNodeEvent('nodedragstart', { event, targetNode, nodes });
       },
-      onDragStop: (event, _, node, nodes) => {
-        dispatchNodeEvent('nodedragstop', { event, node, nodes });
+      onDragStop: (event, _, targetNode, nodes) => {
+        dispatchNodeEvent('nodedragstop', { event, targetNode, nodes });
       },
       store
     }}
