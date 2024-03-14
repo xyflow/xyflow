@@ -223,7 +223,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     []
   );
 
-  const getNodeRect = useCallback((nodeOrRect: NodeType | { id: Node['id'] }): Rect | null => {
+  const getNodeRect = useCallback((nodeOrRect: NodeType | { id: NodeType['id'] }): Rect | null => {
     const node =
       isNode(nodeOrRect) && nodeHasDimensions(nodeOrRect)
         ? nodeOrRect
