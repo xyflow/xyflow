@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.0.39
+
+## Patch changes
+
+- add "connectionindicator" class for `Handle` component
+
 ## 0.0.38
 
 ## ⚠️ Breaking changes

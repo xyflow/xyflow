@@ -24,6 +24,7 @@
   export let isConnectable: $$Props['isConnectable'] = undefined;
   export let onconnect: $$Props['onconnect'] = undefined;
   export let ondisconnect: $$Props['ondisconnect'] = undefined;
+  // @todo implement connectablestart, connectableend
   // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
   // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
 
@@ -140,8 +141,6 @@
       : nodeId !== $connection.startHandle?.nodeId ||
         handleId !== $connection.startHandle?.handleId;
   $: valid = connectingTo && $connection.status === 'valid';
-
-  // @todo implement connectablestart, connectableend
 </script>
 
 <!--
@@ -159,13 +158,11 @@ The Handle component is the part of a node that can be used to connect nodes.
     'nodrag',
     'nopan',
     position,
-    {
-      valid,
-      connectingto: connectingTo,
-      connectingfrom: connectingFrom
-    },
     className
   ])}
+  class:valid
+  class:connectingto={connectingTo}
+  class:connectingfrom={connectingFrom}
   class:source={!isTarget}
   class:target={isTarget}
   class:connectablestart={isConnectable}
