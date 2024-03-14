@@ -4,6 +4,7 @@
 
 ## Patch changes
 
+- export `EdgeLabel` component
 - add "connectionindicator" class for `Handle` component
 
 ## 0.0.38
