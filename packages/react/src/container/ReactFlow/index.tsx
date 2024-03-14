@@ -1,4 +1,4 @@
-import { ForwardedRef, forwardRef, type CSSProperties } from 'react';
+import { ForwardedRef, type CSSProperties } from 'react';
 import cc from 'classcat';
 import { ConnectionLineType, PanOnScrollMode, SelectionMode, infiniteExtent, isMacOs } from '@xyflow/system';
 
@@ -11,6 +11,7 @@ import { GraphView } from '../GraphView';
 import { Wrapper } from './Wrapper';
 import type { Edge, Node, ReactFlowProps } from '../../types';
 import { defaultViewport as initViewport, defaultNodeOrigin } from './init-values';
+import { fixedForwardRef } from '../../utils/general';
 
 const wrapperStyle: CSSProperties = {
   width: '100%',
@@ -286,4 +287,4 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   );
 }
 
-export default forwardRef(ReactFlow);
+export default fixedForwardRef(ReactFlow);
