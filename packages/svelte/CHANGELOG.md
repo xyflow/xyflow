@@ -6,11 +6,11 @@
 
 - `on:nodedragstart`, `on:nodedrag` and `on:nodedragstop` are also getting fired if a selection bix is being dragged. We renamed the `node` param to `targetNode` and set it to `null` if a selection is being dragged.
 
-
 ## Patch changes
 
 - export `EdgeLabel` component
 - add "connectionindicator" class for `Handle` component
+- address a11y warnings
 
 ## 0.0.38
 
