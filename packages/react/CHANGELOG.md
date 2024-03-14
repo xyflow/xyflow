@@ -5,6 +5,7 @@
 ## Patch changes
 
 - fix useNodesData: handle invalid node id thanks @saswatax
+- fix forwardRef: use custom fixForwardRef function
 
 ## 12.0.0-next.11
 
