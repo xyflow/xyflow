@@ -1,7 +1,7 @@
+import { ReactNode, Ref, RefAttributes, forwardRef } from 'react';
 import { isNodeBase, isEdgeBase } from '@xyflow/system';
 
 import type { Edge, Node } from '../types';
-import React from 'react';
 
 /**
  * Test whether an object is useable as a Node
@@ -25,8 +25,8 @@ export const isEdge = <EdgeType extends Edge = Edge>(element: unknown): element 
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function fixedForwardRef<T, P = {}>(
-  render: (props: P, ref: React.Ref<T>) => React.ReactNode
-): (props: P & React.RefAttributes<T>) => React.ReactNode {
+  render: (props: P, ref: Ref<T>) => ReactNode
+): (props: P & RefAttributes<T>) => ReactNode {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return React.forwardRef(render) as any;
+  return forwardRef(render) as any;
 }
