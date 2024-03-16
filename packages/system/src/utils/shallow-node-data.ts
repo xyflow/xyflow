@@ -2,7 +2,11 @@ import { NodeBase } from '../types';
 
 type NodeData = Pick<NodeBase, 'id' | 'type' | 'data'>;
 
-export function shallowNodeData(a: NodeData | NodeData[], b: NodeData | NodeData[]) {
+export function shallowNodeData(a: NodeData | NodeData[] | null, b: NodeData | NodeData[] | null) {
+  if (a === null || b === null) {
+    return false;
+  }
+
   const _a = Array.isArray(a) ? a : [a];
   const _b = Array.isArray(b) ? b : [b];
 

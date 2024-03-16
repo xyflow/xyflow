@@ -10,6 +10,7 @@ export * from '$lib/components/ViewportPortal';
 export * from '$lib/components/BaseEdge';
 export { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '$lib/components/edges';
 export * from '$lib/components/Handle';
+export * from '$lib/components/EdgeLabel';
 
 // plugins
 export * from '$lib/plugins/Controls';

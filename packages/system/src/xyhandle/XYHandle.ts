@@ -38,6 +38,7 @@ export type OnPointerDownParams = {
   isValidConnection?: IsValidConnection;
   onEdgeUpdateEnd?: (evt: MouseEvent | TouchEvent) => void;
   getTransform: () => Transform;
+  getConnectionStartHandle: () => ConnectingHandle | null;
 };
 
 export type IsValidParams = {
@@ -91,6 +92,7 @@ function onPointerDown(
     onEdgeUpdateEnd,
     updateConnection,
     getTransform,
+    getConnectionStartHandle,
   }: OnPointerDownParams
 ) {
   // when xyflow is used inside a shadow root we can't use document
@@ -149,6 +151,10 @@ function onPointerDown(
   onConnectStart?.(event, { nodeId, handleId, handleType });
 
   function onPointerMove(event: MouseEvent | TouchEvent) {
+    if (!getConnectionStartHandle()) {
+      onPointerUp(event);
+    }
+
     const transform = getTransform();
     connectionPosition = getEventPosition(event, containerBounds);
     closestHandle = getClosestHandle(

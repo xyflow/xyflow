@@ -45,7 +45,7 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): 
  * @returns A boolean indicating whether the element is an Node
  */
 export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: any): element is NodeType =>
-  'id' in element && !('source' in element) && !('target' in element);
+  'id' in element && 'position' in element && !('source' in element) && !('target' in element);
 
 /**
  * Pass in a node, and get connected nodes where edge.source === node.id

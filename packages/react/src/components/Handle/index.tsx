@@ -4,7 +4,6 @@ import {
   type TouchEvent as ReactTouchEvent,
   type ForwardedRef,
   memo,
-  forwardRef,
 } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
@@ -24,6 +23,7 @@ import {
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { type ReactFlowState } from '../../types';
+import { fixedForwardRef } from '../../utils';
 
 export interface HandleComponentProps extends HandleProps, Omit<HTMLAttributes<HTMLDivElement>, 'id'> {}
 
@@ -140,6 +140,7 @@ function HandleComponent(
         onConnect: onConnectExtended,
         isValidConnection: isValidConnection || currentStore.isValidConnection,
         getTransform: () => store.getState().transform,
+        getConnectionStartHandle: () => store.getState().connectionStartHandle,
       });
     }
 
@@ -242,4 +243,4 @@ function HandleComponent(
 /**
  * The Handle component is a UI element that is used to connect nodes.
  */
-export const Handle = memo(forwardRef(HandleComponent));
+export const Handle = memo(fixedForwardRef(HandleComponent));
