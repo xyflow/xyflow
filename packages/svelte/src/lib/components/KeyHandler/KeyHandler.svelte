@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { shortcut, type ShortcutModifierDefinition } from '@svelte-put/shortcut';
+  import {
+    shortcut,
+    type ShortcutEventDetail,
+    type ShortcutModifierDefinition
+  } from '@svelte-put/shortcut';
   import { isInputDOMNode, isMacOs } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
@@ -40,140 +44,101 @@
     return isKeyObject(key) ? key.key : key;
   }
 
-  $: selectionKeyDefinition = {
-    key: getKeyString(selectionKey),
-    modifier: getModifier(selectionKey)
-  };
+  function getShortcutDefinition(keyString: KeyDefinition | KeyDefinition[] | null | undefined) {
+    return Array.isArray(keyString)
+      ? keyString.map((key) => ({
+          key: getKeyString(key),
+          modifier: getModifier(key)
+        }))
+      : [
+          {
+            key: getKeyString(keyString),
+            modifier: getModifier(keyString)
+          }
+        ];
+  }
 
-  $: multiSelectionKeyDefinition = {
-    key: getKeyString(multiSelectionKey),
-    modifier: getModifier(multiSelectionKey)
-  };
+  function getShortcutTrigger(
+    keyDefinition: KeyDefinitionObject[],
+    callback: (detail: ShortcutEventDetail) => void
+  ) {
+    return keyDefinition.map((definition) => ({
+      ...definition,
+      enabled: definition.key !== null,
+      callback
+    }));
+  }
 
-  $: deleteKeyDefinition = {
-    key: getKeyString(deleteKey),
-    modifier: getModifier(deleteKey)
-  };
+  $: selectionKeyDefinition = getShortcutDefinition(selectionKey);
 
-  $: panActivationKeyDefinition = {
-    key: getKeyString(panActivationKey),
-    modifier: getModifier(panActivationKey)
-  };
+  $: multiSelectionKeyDefinition = getShortcutDefinition(multiSelectionKey);
 
-  $: zoomActivationKeyDefinition = {
-    key: getKeyString(zoomActivationKey),
-    modifier: getModifier(zoomActivationKey)
-  };
+  $: deleteKeyDefinition = getShortcutDefinition(deleteKey);
+
+  $: panActivationKeyDefinition = getShortcutDefinition(panActivationKey);
+
+  $: zoomActivationKeyDefinition = getShortcutDefinition(zoomActivationKey);
 </script>
 
 <svelte:window
   use:shortcut={{
-    trigger: [
-      {
-        ...selectionKeyDefinition,
-        enabled: selectionKeyDefinition.key !== null,
-        callback: () => selectionKeyPressed.set(true)
-      }
-    ],
-
+    trigger: getShortcutTrigger(selectionKeyDefinition, () => selectionKeyPressed.set(true)),
     type: 'keydown'
   }}
   use:shortcut={{
-    trigger: [
-      {
-        ...selectionKeyDefinition,
-        enabled: selectionKeyDefinition.key !== null,
-        callback: () => selectionKeyPressed.set(false)
-      }
-    ],
+    trigger: getShortcutTrigger(selectionKeyDefinition, () => selectionKeyPressed.set(false)),
     type: 'keyup'
   }}
   use:shortcut={{
-    trigger: [
-      {
-        ...multiSelectionKeyDefinition,
-        enabled: multiSelectionKeyDefinition.key !== null,
-        callback: () => multiselectionKeyPressed.set(true)
-      }
-    ],
+    trigger: getShortcutTrigger(multiSelectionKeyDefinition, () =>
+      multiselectionKeyPressed.set(true)
+    ),
     type: 'keydown'
   }}
   use:shortcut={{
-    trigger: [
-      {
-        ...multiSelectionKeyDefinition,
-        enabled: multiSelectionKeyDefinition.key !== null,
-        callback: () => multiselectionKeyPressed.set(false)
-      }
-    ],
+    trigger: getShortcutTrigger(multiSelectionKeyDefinition, () =>
+      multiselectionKeyPressed.set(false)
+    ),
     type: 'keyup'
   }}
   use:shortcut={{
-    trigger: [
-      {
-        ...deleteKeyDefinition,
-        enabled: deleteKeyDefinition.key !== null,
-        callback: (detail) => {
-          const isModifierKey =
-            detail.originalEvent.ctrlKey ||
-            detail.originalEvent.metaKey ||
-            detail.originalEvent.shiftKey;
-          if (!isModifierKey && !isInputDOMNode(detail.originalEvent)) {
-            deleteKeyPressed.set(true);
-          }
-        }
+    trigger: getShortcutTrigger(deleteKeyDefinition, (detail) => {
+      const isModifierKey =
+        detail.originalEvent.ctrlKey ||
+        detail.originalEvent.metaKey ||
+        detail.originalEvent.shiftKey;
+      if (!isModifierKey && !isInputDOMNode(detail.originalEvent)) {
+        deleteKeyPressed.set(true);
       }
-    ],
+    }),
     type: 'keydown'
   }}
   use:shortcut={{
-    trigger: [
-      {
-        ...deleteKeyDefinition,
-        enabled: deleteKeyDefinition.key !== null,
-        callback: () => deleteKeyPressed.set(false)
-      }
-    ],
+    trigger: getShortcutTrigger(deleteKeyDefinition, () => deleteKeyPressed.set(false)),
     type: 'keyup'
   }}
   use:shortcut={{
-    trigger: [
-      {
-        ...panActivationKeyDefinition,
-        enabled: panActivationKeyDefinition.key !== null,
-        callback: () => panActivationKeyPressed.set(true)
-      }
-    ],
+    trigger: getShortcutTrigger(panActivationKeyDefinition, () =>
+      panActivationKeyPressed.set(true)
+    ),
     type: 'keydown'
   }}
   use:shortcut={{
-    trigger: [
-      {
-        ...panActivationKeyDefinition,
-        enabled: panActivationKeyDefinition.key !== null,
-        callback: () => panActivationKeyPressed.set(false)
-      }
-    ],
+    trigger: getShortcutTrigger(panActivationKeyDefinition, () =>
+      panActivationKeyPressed.set(false)
+    ),
     type: 'keyup'
   }}
   use:shortcut={{
-    trigger: [
-      {
-        ...zoomActivationKeyDefinition,
-        enabled: zoomActivationKeyDefinition.key !== null,
-        callback: () => zoomActivationKeyPressed.set(true)
-      }
-    ],
+    trigger: getShortcutTrigger(zoomActivationKeyDefinition, () =>
+      zoomActivationKeyPressed.set(true)
+    ),
     type: 'keydown'
   }}
   use:shortcut={{
-    trigger: [
-      {
-        ...zoomActivationKeyDefinition,
-        enabled: zoomActivationKeyDefinition.key !== null,
-        callback: () => zoomActivationKeyPressed.set(false)
-      }
-    ],
+    trigger: getShortcutTrigger(zoomActivationKeyDefinition, () =>
+      zoomActivationKeyPressed.set(false)
+    ),
     type: 'keyup'
   }}
 />
