@@ -1,3 +1,4 @@
+import { internalsSymbol } from '..';
 import { type NodeDragItem, type XYPosition, NodeBase } from '../types';
 
 export function wrapSelectionDragFunc(selectionFunc?: (event: MouseEvent, nodes: NodeBase[]) => void) {
@@ -52,8 +53,8 @@ export function getDragItems<NodeType extends NodeBase>(
       id: n.id,
       position: n.position || { x: 0, y: 0 },
       distance: {
-        x: mousePos.x - (n.computed?.positionAbsolute?.x ?? 0),
-        y: mousePos.y - (n.computed?.positionAbsolute?.y ?? 0),
+        x: mousePos.x - (n[internalsSymbol]?.positionAbsolute?.x ?? 0),
+        y: mousePos.y - (n[internalsSymbol]?.positionAbsolute?.y ?? 0),
       },
       delta: {
         x: 0,
@@ -63,10 +64,10 @@ export function getDragItems<NodeType extends NodeBase>(
       parentNode: n.parentNode,
       origin: n.origin,
       expandParent: n.expandParent,
-      computed: {
-        positionAbsolute: n.computed?.positionAbsolute || { x: 0, y: 0 },
-        width: n.computed?.width || 0,
-        height: n.computed?.height || 0,
+      [internalsSymbol]: {
+        positionAbsolute: n[internalsSymbol]?.positionAbsolute || { x: 0, y: 0 },
+        width: n[internalsSymbol]?.width || 0,
+        height: n[internalsSymbol]?.height || 0,
       },
     }));
 }
@@ -89,10 +90,6 @@ export function getEventHandlerParams<NodeType extends NodeBase>({
     return {
       ...node,
       position: n.position,
-      computed: {
-        ...n.computed,
-        positionAbsolute: n.computed.positionAbsolute,
-      },
     };
   });
 

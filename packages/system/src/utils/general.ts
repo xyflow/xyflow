@@ -1,3 +1,4 @@
+import { internalsSymbol } from '../constants';
 import type {
   Dimensions,
   XYPosition,
@@ -70,8 +71,8 @@ export const nodeToRect = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rec
 
   return {
     ...positionAbsolute,
-    width: node.computed?.width ?? node.width ?? 0,
-    height: node.computed?.height ?? node.height ?? 0,
+    width: node[internalsSymbol]?.width ?? node.width ?? 0,
+    height: node[internalsSymbol]?.height ?? node.height ?? 0,
   };
 };
 
@@ -80,8 +81,8 @@ export const nodeToBox = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box 
 
   return {
     ...positionAbsolute,
-    x2: positionAbsolute.x + (node.computed?.width ?? node.width ?? 0),
-    y2: positionAbsolute.y + (node.computed?.height ?? node.height ?? 0),
+    x2: positionAbsolute.x + (node[internalsSymbol]?.width ?? node.width ?? 0),
+    y2: positionAbsolute.y + (node[internalsSymbol]?.height ?? node.height ?? 0),
   };
 };
 
@@ -207,14 +208,14 @@ export function getNodeDimensions<NodeType extends NodeBase = NodeBase>(
   node: NodeType
 ): { width: number; height: number } {
   return {
-    width: node.computed?.width ?? node.width ?? node.initialWidth ?? 0,
-    height: node.computed?.height ?? node.height ?? node.initialHeight ?? 0,
+    width: node[internalsSymbol]?.width ?? node.width ?? node.initialWidth ?? 0,
+    height: node[internalsSymbol]?.height ?? node.height ?? node.initialHeight ?? 0,
   };
 }
 
 export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: NodeType): boolean {
   return (
-    (node.computed?.width ?? node.width ?? node.initialWidth) !== undefined &&
-    (node.computed?.height ?? node.height ?? node.initialHeight) !== undefined
+    (node[internalsSymbol]?.width ?? node.width ?? node.initialWidth) !== undefined &&
+    (node[internalsSymbol]?.height ?? node.height ?? node.initialHeight) !== undefined
   );
 }

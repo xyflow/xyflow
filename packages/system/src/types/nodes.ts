@@ -60,17 +60,16 @@ export type NodeBase<
    */
   origin?: NodeOrigin;
   handles?: NodeHandle[];
-  computed?: {
-    width?: number;
-    height?: number;
-    positionAbsolute?: XYPosition;
-  };
 
   // Only used internally
   [internalsSymbol]?: {
     z?: number;
     handleBounds?: NodeHandleBounds;
     isParent?: boolean;
+    width?: number;
+    height?: number;
+    positionAbsolute?: XYPosition;
+
     /** Holds a reference to the original node object provided by the user
      * (which may lack some fields, like `computed` or `[internalSymbol]`. Used
      * as an optimization to avoid certain operations. */
@@ -117,16 +116,16 @@ export type NodeDragItem = {
   position: XYPosition;
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
-  computed: {
-    width: number | null;
-    height: number | null;
-    positionAbsolute: XYPosition;
-  };
   extent?: 'parent' | CoordinateExtent;
   parentNode?: string;
   dragging?: boolean;
   origin?: NodeOrigin;
   expandParent?: boolean;
+  [internalsSymbol]: {
+    width: number | null;
+    height: number | null;
+    positionAbsolute: XYPosition;
+  };
 };
 
 export type NodeOrigin = [number, number];

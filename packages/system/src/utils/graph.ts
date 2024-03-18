@@ -25,7 +25,7 @@ import {
   OnBeforeDeleteBase,
   NodeLookup,
 } from '../types';
-import { errorMessages } from '../constants';
+import { errorMessages, internalsSymbol } from '../constants';
 
 /**
  * Test whether an object is useable as an Edge
@@ -128,10 +128,10 @@ export const getNodePositionWithOrigin = (
 
   return {
     position,
-    positionAbsolute: node.computed?.positionAbsolute
+    positionAbsolute: node[internalsSymbol]?.positionAbsolute
       ? {
-          x: node.computed.positionAbsolute.x - offsetX,
-          y: node.computed.positionAbsolute.y - offsetY,
+          x: node[internalsSymbol].positionAbsolute.x - offsetX,
+          y: node[internalsSymbol].positionAbsolute.y - offsetY,
         }
       : position,
   };
@@ -192,9 +192,10 @@ export const getNodesInside = <NodeType extends NodeBase>(
   };
 
   const visibleNodes = nodes.reduce<NodeType[]>((res, node) => {
-    const { computed, selectable = true, hidden = false } = node;
-    const width = computed?.width ?? node.width ?? node.initialWidth ?? null;
-    const height = computed?.height ?? node.height ?? node.initialHeight ?? null;
+    const { selectable = true, hidden = false } = node;
+    const internals = node[internalsSymbol];
+    const width = internals?.width ?? node.width ?? node.initialWidth ?? null;
+    const height = internals?.height ?? node.height ?? node.initialHeight ?? null;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
       return res;
@@ -240,7 +241,8 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   options?: Options
 ) {
   const filteredNodes = nodes.filter((n) => {
-    const isVisible = n.computed?.width && n.computed?.height && (options?.includeHiddenNodes || !n.hidden);
+    const isVisible =
+      n[internalsSymbol]?.width && n[internalsSymbol]?.height && (options?.includeHiddenNodes || !n.hidden);
 
     if (options?.nodes?.length) {
       return isVisible && options?.nodes.some((optionNode) => optionNode.id === n.id);
@@ -284,7 +286,10 @@ function clampNodeExtent<NodeType extends NodeBase>(
   if (!extent || extent === 'parent') {
     return extent;
   }
-  return [extent[0], [extent[1][0] - (node.computed?.width ?? 0), extent[1][1] - (node.computed?.height ?? 0)]];
+  return [
+    extent[0],
+    [extent[1][0] - (node[internalsSymbol]?.width ?? 0), extent[1][1] - (node[internalsSymbol]?.height ?? 0)],
+  ];
 }
 
 /**
@@ -319,10 +324,10 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      const nodeWidth = node.computed?.width;
-      const nodeHeight = node.computed?.height;
-      const parentWidth = parentNode?.computed?.width;
-      const parentHeight = parentNode?.computed?.height;
+      const nodeWidth = node[internalsSymbol]?.width;
+      const nodeHeight = node[internalsSymbol]?.height;
+      const parentWidth = parentNode[internalsSymbol]?.width;
+      const parentHeight = parentNode[internalsSymbol]?.height;
 
       if (nodeWidth && nodeHeight && parentWidth && parentHeight) {
         const currNodeOrigin = node.origin || nodeOrigin;

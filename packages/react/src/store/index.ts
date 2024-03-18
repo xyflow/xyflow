@@ -8,6 +8,7 @@ import {
   Dimensions,
   updateNodeDimensions as updateNodeDimensionsSystem,
   updateConnectionLookup,
+  internalsSymbol,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -100,11 +101,11 @@ const createRFStore = ({
           domNode,
           nodeOrigin,
           (id: string, dimensions: Dimensions) => {
-            changes.push({
+            /*changes.push({
               id: id,
               type: 'dimensions',
               dimensions,
-            });
+            });*/
           }
         );
 
@@ -130,6 +131,8 @@ const createRFStore = ({
         // attribute which they get from this handler.
         set({ nodes: nextNodes, fitViewDone: nextFitViewDone });
 
+        console.log(changes, nextNodes);
+
         if (changes?.length > 0) {
           if (debug) {
             console.log('React Flow: trigger node changes', changes);
@@ -143,7 +146,7 @@ const createRFStore = ({
             id: node.id,
             type: 'position',
             position: node.position,
-            positionAbsolute: node.computed?.positionAbsolute,
+            positionAbsolute: node[internalsSymbol]?.positionAbsolute,
             dragging,
           };
 

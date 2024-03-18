@@ -47,8 +47,8 @@ export function NodeWrapper<NodeType extends Node>({
     const node = s.nodeLookup.get(id)! as NodeType;
 
     const positionAbsolute = nodeExtent
-      ? clampPosition(node.computed?.positionAbsolute, nodeExtent)
-      : node.computed?.positionAbsolute || { x: 0, y: 0 };
+      ? clampPosition(node[internalsSymbol]?.positionAbsolute, nodeExtent)
+      : node[internalsSymbol]?.positionAbsolute || { x: 0, y: 0 };
 
     return {
       node,
