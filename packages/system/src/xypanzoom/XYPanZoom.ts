@@ -168,8 +168,8 @@ export function XYPanZoom({
     d3ZoomInstance.filter(filter);
 
     // We cannot add zoomOnDoubleClick to the filter above because
-    // if double tapping on touch screens circumvents the filter and
-    // dblclick.zoom is triggered on the selection directly
+    // double tapping on touch screens circumvents the filter and
+    // dblclick.zoom is fired on the selection directly
     if (zoomOnDoubleClick) {
       d3Selection.on('dblclick.zoom', d3DblClickZoomHandler);
     } else {
