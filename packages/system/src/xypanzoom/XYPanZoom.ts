@@ -69,6 +69,7 @@ export function XYPanZoom({
   );
 
   const d3ZoomHandler = d3Selection.on('wheel.zoom')!;
+  const d3DblClickZoomHandler = d3Selection.on('dblclick.zoom')!;
   d3ZoomInstance.wheelDelta(wheelDelta);
 
   function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
@@ -165,6 +166,15 @@ export function XYPanZoom({
       lib,
     });
     d3ZoomInstance.filter(filter);
+
+    // We cannot add zoomOnDoubleClick to the filter above because
+    // if double tapping on touch screens circumvents the filter and
+    // dblclick.zoom is triggered on the selection directly
+    if (zoomOnDoubleClick) {
+      d3Selection.on('dblclick.zoom', d3DblClickZoomHandler);
+    } else {
+      d3Selection.on('dblclick.zoom', null);
+    }
   }
 
   function destroy() {
