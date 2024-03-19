@@ -44,65 +44,42 @@
     return isKeyObject(key) ? key.key : key;
   }
 
-  function getShortcutDefinition(keyString: KeyDefinition | KeyDefinition[] | null | undefined) {
-    return Array.isArray(keyString)
-      ? keyString.map((key) => ({
-          key: getKeyString(key),
-          modifier: getModifier(key)
-        }))
-      : [
-          {
-            key: getKeyString(keyString),
-            modifier: getModifier(keyString)
-          }
-        ];
-  }
-
   function getShortcutTrigger(
-    keyDefinition: KeyDefinitionObject[],
+    key: KeyDefinition | KeyDefinition[] | null | undefined,
     callback: (detail: ShortcutEventDetail) => void
   ) {
-    return keyDefinition.map((definition) => ({
-      ...definition,
-      enabled: definition.key !== null,
-      callback
-    }));
+    const keys = Array.isArray(key) ? key : [key];
+    return keys.map((_key) => {
+      const keyString = getKeyString(_key);
+      return {
+        key: keyString,
+        modifier: getModifier(_key),
+        enabled: keyString !== null,
+        callback
+      };
+    });
   }
-
-  $: selectionKeyDefinition = getShortcutDefinition(selectionKey);
-
-  $: multiSelectionKeyDefinition = getShortcutDefinition(multiSelectionKey);
-
-  $: deleteKeyDefinition = getShortcutDefinition(deleteKey);
-
-  $: panActivationKeyDefinition = getShortcutDefinition(panActivationKey);
-
-  $: zoomActivationKeyDefinition = getShortcutDefinition(zoomActivationKey);
 </script>
 
 <svelte:window
   use:shortcut={{
-    trigger: getShortcutTrigger(selectionKeyDefinition, () => selectionKeyPressed.set(true)),
+    trigger: getShortcutTrigger(selectionKey, () => selectionKeyPressed.set(true)),
     type: 'keydown'
   }}
   use:shortcut={{
-    trigger: getShortcutTrigger(selectionKeyDefinition, () => selectionKeyPressed.set(false)),
+    trigger: getShortcutTrigger(selectionKey, () => selectionKeyPressed.set(false)),
     type: 'keyup'
   }}
   use:shortcut={{
-    trigger: getShortcutTrigger(multiSelectionKeyDefinition, () =>
-      multiselectionKeyPressed.set(true)
-    ),
+    trigger: getShortcutTrigger(multiSelectionKey, () => multiselectionKeyPressed.set(true)),
     type: 'keydown'
   }}
   use:shortcut={{
-    trigger: getShortcutTrigger(multiSelectionKeyDefinition, () =>
-      multiselectionKeyPressed.set(false)
-    ),
+    trigger: getShortcutTrigger(multiSelectionKey, () => multiselectionKeyPressed.set(false)),
     type: 'keyup'
   }}
   use:shortcut={{
-    trigger: getShortcutTrigger(deleteKeyDefinition, (detail) => {
+    trigger: getShortcutTrigger(deleteKey, (detail) => {
       const isModifierKey =
         detail.originalEvent.ctrlKey ||
         detail.originalEvent.metaKey ||
@@ -114,31 +91,23 @@
     type: 'keydown'
   }}
   use:shortcut={{
-    trigger: getShortcutTrigger(deleteKeyDefinition, () => deleteKeyPressed.set(false)),
+    trigger: getShortcutTrigger(deleteKey, () => deleteKeyPressed.set(false)),
     type: 'keyup'
   }}
   use:shortcut={{
-    trigger: getShortcutTrigger(panActivationKeyDefinition, () =>
-      panActivationKeyPressed.set(true)
-    ),
+    trigger: getShortcutTrigger(panActivationKey, () => panActivationKeyPressed.set(true)),
     type: 'keydown'
   }}
   use:shortcut={{
-    trigger: getShortcutTrigger(panActivationKeyDefinition, () =>
-      panActivationKeyPressed.set(false)
-    ),
+    trigger: getShortcutTrigger(panActivationKey, () => panActivationKeyPressed.set(false)),
     type: 'keyup'
   }}
   use:shortcut={{
-    trigger: getShortcutTrigger(zoomActivationKeyDefinition, () =>
-      zoomActivationKeyPressed.set(true)
-    ),
+    trigger: getShortcutTrigger(zoomActivationKey, () => zoomActivationKeyPressed.set(true)),
     type: 'keydown'
   }}
   use:shortcut={{
-    trigger: getShortcutTrigger(zoomActivationKeyDefinition, () =>
-      zoomActivationKeyPressed.set(false)
-    ),
+    trigger: getShortcutTrigger(zoomActivationKey, () => zoomActivationKeyPressed.set(false)),
     type: 'keyup'
   }}
 />
