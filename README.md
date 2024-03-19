@@ -18,7 +18,7 @@ Powerful open source libraries for building node-based UIs with React or Svelte.
 
 The xyflow repository is the home of four packages:
 * React Flow 11 `reactflow` [v11 branch](https://github.com/xyflow/xyflow/tree/v11)
-* React Flow 12 (beta) `@xyflow/svelte` [packages/react](./packages/react)
+* React Flow 12 (beta) `@xyflow/react` [packages/react](./packages/react)
 * Svelte Flow `@xyflow/svelte` [packages/svelte](./packages/svelte)
 * Shared helper library `@xyflow/system` [packages/system](./packages/system)
 
