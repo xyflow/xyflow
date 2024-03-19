@@ -99,10 +99,10 @@ const BasicFlow = () => {
       onEdgesChange={onEdgesChange}
       onNodeClick={onNodeClick}
       onConnect={onConnect}
-      onNodeDragStart={onNodeDragStart}
-      onNodeDrag={onNodeDrag}
-      onNodeDragStop={onNodeDragStop}
-      nodeDragThreshold={10}
+      // onNodeDragStart={onNodeDragStart}
+      // onNodeDrag={onNodeDrag}
+      // onNodeDragStop={onNodeDragStop}
+      // nodeDragThreshold={10}
     >
       <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
         <button

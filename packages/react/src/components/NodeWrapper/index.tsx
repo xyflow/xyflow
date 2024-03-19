@@ -7,7 +7,6 @@ import {
   errorMessages,
   getNodeDimensions,
   getPositionWithOrigin,
-  internalsSymbol,
   isInputDOMNode,
   nodeHasDimensions,
 } from '@xyflow/system';
@@ -19,7 +18,7 @@ import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
-import type { Node, NodeWrapperProps } from '../../types';
+import type { InternalNode, Node, NodeWrapperProps } from '../../types';
 
 export function NodeWrapper<NodeType extends Node>({
   id,
@@ -43,25 +42,30 @@ export function NodeWrapper<NodeType extends Node>({
   nodeOrigin,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const { node, positionAbsoluteX, positionAbsoluteY, zIndex, isParent } = useStore((s) => {
-    const node = s.nodeLookup.get(id)! as NodeType;
+  const { internalNode, userNode, positionAbsoluteX, positionAbsoluteY, zIndex, isParent, hasHandleBounds } = useStore(
+    (s) => {
+      const internalNode = s.nodeLookup.get(id)! as InternalNode;
 
-    const positionAbsolute = nodeExtent
-      ? clampPosition(node[internalsSymbol]?.positionAbsolute, nodeExtent)
-      : node[internalsSymbol]?.positionAbsolute || { x: 0, y: 0 };
+      const positionAbsolute = nodeExtent
+        ? clampPosition(internalNode.computed.positionAbsolute, nodeExtent)
+        : internalNode.computed.positionAbsolute || { x: 0, y: 0 };
 
-    return {
-      node,
-      // we are mutating positionAbsolute, z and isParent attributes for sub flows
-      // so we we need to force a re-render when some change
-      positionAbsoluteX: positionAbsolute.x,
-      positionAbsoluteY: positionAbsolute.y,
-      zIndex: node[internalsSymbol]?.z ?? 0,
-      isParent: !!node[internalsSymbol]?.isParent,
-    };
-  }, shallow);
+      return {
+        internalNode,
+        userNode: internalNode.computed.userProvidedNode as NodeType,
+        // we are mutating positionAbsolute, z and isParent attributes for sub flows
+        // so we we need to force a re-render when some change
+        positionAbsoluteX: positionAbsolute.x,
+        positionAbsoluteY: positionAbsolute.y,
+        zIndex: internalNode.computed.z ?? 0,
+        isParent: !!internalNode.computed.isParent,
+        hasHandleBounds: !!internalNode.computed.handleBounds,
+      };
+    },
+    shallow
+  );
 
-  let nodeType = node.type || 'default';
+  let nodeType = userNode.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
 
   if (NodeComponent === undefined) {
@@ -70,21 +74,20 @@ export function NodeWrapper<NodeType extends Node>({
     NodeComponent = builtinNodeTypes.default;
   }
 
-  const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
-  const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
-  const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
-  const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
+  const isDraggable = !!(userNode.draggable || (nodesDraggable && typeof userNode.draggable === 'undefined'));
+  const isSelectable = !!(userNode.selectable || (elementsSelectable && typeof userNode.selectable === 'undefined'));
+  const isConnectable = !!(userNode.connectable || (nodesConnectable && typeof userNode.connectable === 'undefined'));
+  const isFocusable = !!(userNode.focusable || (nodesFocusable && typeof userNode.focusable === 'undefined'));
 
   const store = useStoreApi();
   const nodeRef = useRef<HTMLDivElement>(null);
-  const prevSourcePosition = useRef(node.sourcePosition);
-  const prevTargetPosition = useRef(node.targetPosition);
+  const prevSourcePosition = useRef(userNode.sourcePosition);
+  const prevTargetPosition = useRef(userNode.targetPosition);
   const prevType = useRef(nodeType);
 
-  const nodeDimensions = getNodeDimensions(node);
-  const inlineDimensions = getNodeInlineStyleDimensions(node);
-  const initialized = nodeHasDimensions(node);
-  const hasHandleBounds = !!node[internalsSymbol]?.handleBounds;
+  const nodeDimensions = getNodeDimensions(internalNode);
+  const inlineDimensions = getNodeInlineStyleDimensions(internalNode);
+  const initialized = nodeHasDimensions(internalNode);
 
   const moveSelectedNodes = useMoveSelectedNodes();
 
@@ -97,7 +100,7 @@ export function NodeWrapper<NodeType extends Node>({
   }, []);
 
   useEffect(() => {
-    if (nodeRef.current && !node.hidden) {
+    if (nodeRef.current && !userNode.hidden) {
       const currNode = nodeRef.current;
 
       if (!initialized || !hasHandleBounds) {
@@ -105,38 +108,38 @@ export function NodeWrapper<NodeType extends Node>({
         resizeObserver?.observe(currNode);
       }
     }
-  }, [node.hidden, initialized, hasHandleBounds]);
+  }, [userNode.hidden, initialized, hasHandleBounds]);
 
   useEffect(() => {
     // when the user programmatically changes the source or handle position, we re-initialize the node
     const typeChanged = prevType.current !== nodeType;
-    const sourcePosChanged = prevSourcePosition.current !== node.sourcePosition;
-    const targetPosChanged = prevTargetPosition.current !== node.targetPosition;
+    const sourcePosChanged = prevSourcePosition.current !== userNode.sourcePosition;
+    const targetPosChanged = prevTargetPosition.current !== userNode.targetPosition;
 
     if (nodeRef.current && (typeChanged || sourcePosChanged || targetPosChanged)) {
       if (typeChanged) {
         prevType.current = nodeType;
       }
       if (sourcePosChanged) {
-        prevSourcePosition.current = node.sourcePosition;
+        prevSourcePosition.current = userNode.sourcePosition;
       }
       if (targetPosChanged) {
-        prevTargetPosition.current = node.targetPosition;
+        prevTargetPosition.current = userNode.targetPosition;
       }
       store.getState().updateNodeDimensions(new Map([[id, { id, nodeElement: nodeRef.current, forceUpdate: true }]]));
     }
-  }, [id, nodeType, node.sourcePosition, node.targetPosition]);
+  }, [id, nodeType, userNode.sourcePosition, userNode.targetPosition]);
 
   const dragging = useDrag({
     nodeRef,
-    disabled: node.hidden || !isDraggable,
+    disabled: userNode.hidden || !isDraggable,
     noDragClassName,
-    handleSelector: node.dragHandle,
+    handleSelector: userNode.dragHandle,
     nodeId: id,
     isSelectable,
   });
 
-  if (node.hidden) {
+  if (userNode.hidden) {
     return null;
   }
 
@@ -144,15 +147,16 @@ export function NodeWrapper<NodeType extends Node>({
     x: positionAbsoluteX,
     y: positionAbsoluteY,
     ...nodeDimensions,
-    origin: node.origin || nodeOrigin,
+    origin: userNode.origin || nodeOrigin,
   });
+
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
 
-  const onMouseEnterHandler = onMouseEnter ? (event: MouseEvent) => onMouseEnter(event, { ...node }) : undefined;
-  const onMouseMoveHandler = onMouseMove ? (event: MouseEvent) => onMouseMove(event, { ...node }) : undefined;
-  const onMouseLeaveHandler = onMouseLeave ? (event: MouseEvent) => onMouseLeave(event, { ...node }) : undefined;
-  const onContextMenuHandler = onContextMenu ? (event: MouseEvent) => onContextMenu(event, { ...node }) : undefined;
-  const onDoubleClickHandler = onDoubleClick ? (event: MouseEvent) => onDoubleClick(event, { ...node }) : undefined;
+  const onMouseEnterHandler = onMouseEnter ? (event: MouseEvent) => onMouseEnter(event, { ...userNode }) : undefined;
+  const onMouseMoveHandler = onMouseMove ? (event: MouseEvent) => onMouseMove(event, { ...userNode }) : undefined;
+  const onMouseLeaveHandler = onMouseLeave ? (event: MouseEvent) => onMouseLeave(event, { ...userNode }) : undefined;
+  const onContextMenuHandler = onContextMenu ? (event: MouseEvent) => onContextMenu(event, { ...userNode }) : undefined;
+  const onDoubleClickHandler = onDoubleClick ? (event: MouseEvent) => onDoubleClick(event, { ...userNode }) : undefined;
 
   const onSelectNodeHandler = (event: MouseEvent) => {
     const { selectNodesOnDrag, nodeDragThreshold } = store.getState();
@@ -168,7 +172,7 @@ export function NodeWrapper<NodeType extends Node>({
     }
 
     if (onClick) {
-      onClick(event, { ...node });
+      onClick(event, { ...userNode });
     }
   };
 
@@ -186,7 +190,7 @@ export function NodeWrapper<NodeType extends Node>({
         unselect,
         nodeRef,
       });
-    } else if (isDraggable && node.selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
+    } else if (isDraggable && userNode.selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
       store.setState({
         ariaLiveMessage: `Moved selected node ${event.key
           .replace('Arrow', '')
@@ -209,9 +213,9 @@ export function NodeWrapper<NodeType extends Node>({
           // this is overwritable by passing `nopan` as a class name
           [noPanClassName]: isDraggable,
         },
-        node.className,
+        userNode.className,
         {
-          selected: node.selected,
+          selected: userNode.selected,
           selectable: isSelectable,
           parent: isParent,
           draggable: isDraggable,
@@ -224,7 +228,7 @@ export function NodeWrapper<NodeType extends Node>({
         transform: `translate(${positionAbsoluteOrigin.x}px,${positionAbsoluteOrigin.y}px)`,
         pointerEvents: hasPointerEvents ? 'all' : 'none',
         visibility: initialized ? 'visible' : 'hidden',
-        ...node.style,
+        ...userNode.style,
         ...inlineDimensions,
       }}
       data-id={id}
@@ -239,21 +243,21 @@ export function NodeWrapper<NodeType extends Node>({
       tabIndex={isFocusable ? 0 : undefined}
       role={isFocusable ? 'button' : undefined}
       aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}
-      aria-label={node.ariaLabel}
+      aria-label={userNode.ariaLabel}
     >
       <Provider value={id}>
         <NodeComponent
           id={id}
-          data={node.data}
+          data={userNode.data}
           type={nodeType}
           positionAbsoluteX={positionAbsoluteX}
           positionAbsoluteY={positionAbsoluteY}
-          selected={node.selected}
+          selected={userNode.selected}
           isConnectable={isConnectable}
-          sourcePosition={node.sourcePosition}
-          targetPosition={node.targetPosition}
+          sourcePosition={userNode.sourcePosition}
+          targetPosition={userNode.targetPosition}
           dragging={dragging}
-          dragHandle={node.dragHandle}
+          dragHandle={userNode.dragHandle}
           zIndex={zIndex}
           {...nodeDimensions}
         />

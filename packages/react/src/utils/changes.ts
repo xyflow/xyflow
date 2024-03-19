@@ -1,51 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { EdgeLookup, NodeLookup } from '@xyflow/system';
-import type { Node, Edge, EdgeChange, NodeChange, NodeSelectionChange, EdgeSelectionChange } from '../types';
-
-export function handleParentExpand(updatedElements: any[], updateItem: any) {
-  for (const [index, item] of updatedElements.entries()) {
-    if (item.id === updateItem.parentNode) {
-      const parent = { ...item };
-      parent.computed ??= {};
-
-      const extendWidth = updateItem.position.x + updateItem.computed.width - parent.computed.width;
-      const extendHeight = updateItem.position.y + updateItem.computed.height - parent.computed.height;
-
-      if (extendWidth > 0 || extendHeight > 0 || updateItem.position.x < 0 || updateItem.position.y < 0) {
-        parent.width = parent.width ?? parent.computed.width;
-        parent.height = parent.height ?? parent.computed.height;
-
-        if (extendWidth > 0) {
-          parent.width += extendWidth;
-        }
-
-        if (extendHeight > 0) {
-          parent.height += extendHeight;
-        }
-
-        if (updateItem.position.x < 0) {
-          const xDiff = Math.abs(updateItem.position.x);
-          parent.position.x = parent.position.x - xDiff;
-          parent.width += xDiff;
-          updateItem.position.x = 0;
-        }
-
-        if (updateItem.position.y < 0) {
-          const yDiff = Math.abs(updateItem.position.y);
-          parent.position.y = parent.position.y - yDiff;
-          parent.height += yDiff;
-          updateItem.position.y = 0;
-        }
-
-        parent.computed.width = parent.width;
-        parent.computed.height = parent.height;
-
-        updatedElements[index] = parent;
-      }
-      break;
-    }
-  }
-}
+import type {
+  Node,
+  Edge,
+  EdgeChange,
+  NodeChange,
+  NodeSelectionChange,
+  EdgeSelectionChange,
+  InternalNode,
+} from '../types';
 
 // This function applies changes to nodes or edges that are triggered by React Flow internally.
 // When you drag a node for example, React Flow will send a position change update.
@@ -103,7 +66,7 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     const updatedElement = { ...element };
 
     for (const change of changes) {
-      applyChange(change, updatedElement, updatedElements);
+      applyChange(change, updatedElement);
     }
 
     updatedElements.push(updatedElement);
@@ -113,7 +76,7 @@ function applyChanges(changes: any[], elements: any[]): any[] {
 }
 
 // Applies a single change to an element. This is a *mutable* update.
-function applyChange(change: any, element: any, elements: any[] = []): any {
+function applyChange(change: any, element: any): any {
   switch (change.type) {
     case 'select': {
       element.selected = change.selected;
@@ -134,17 +97,15 @@ function applyChange(change: any, element: any, elements: any[] = []): any {
         element.dragging = change.dragging;
       }
 
-      if (element.expandParent) {
-        handleParentExpand(elements, element);
-      }
       break;
     }
 
     case 'dimensions': {
       if (typeof change.dimensions !== 'undefined') {
-        element.computed ??= {};
-        element.computed.width = change.dimensions.width;
-        element.computed.height = change.dimensions.height;
+        // @todo do we still need to apply this change here
+        // or can we reanme dimension change to resize change?
+        element.width = change.dimensions.width;
+        element.height = change.dimensions.height;
 
         if (change.resizing) {
           element.width = change.dimensions.width;
@@ -154,10 +115,6 @@ function applyChange(change: any, element: any, elements: any[] = []): any {
 
       if (typeof change.resizing === 'boolean') {
         element.resizing = change.resizing;
-      }
-
-      if (element.expandParent) {
-        handleParentExpand(elements, element);
       }
 
       break;
@@ -266,7 +223,7 @@ export function getElementsDiffChanges({
   lookup,
 }: {
   items: Node[] | undefined;
-  lookup: NodeLookup<Node>;
+  lookup: NodeLookup<InternalNode<Node>>;
 }): NodeChange[];
 export function getElementsDiffChanges({
   items,

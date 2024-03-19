@@ -24,8 +24,9 @@ import {
   OnError,
   OnBeforeDeleteBase,
   NodeLookup,
+  InternalNodeBase,
 } from '../types';
-import { errorMessages, internalsSymbol } from '../constants';
+import { errorMessages } from '../constants';
 
 /**
  * Test whether an object is useable as an Edge
@@ -46,6 +47,10 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): 
  */
 export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: any): element is NodeType =>
   'id' in element && 'position' in element && !('source' in element) && !('target' in element);
+
+export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalNodeBase>(
+  element: any
+): element is NodeType => 'id' in element && 'computed' in element && !('source' in element) && !('target' in element);
 
 /**
  * Pass in a node, and get connected nodes where edge.source === node.id
@@ -101,7 +106,7 @@ export const getIncomers = <NodeType extends NodeBase = NodeBase, EdgeType exten
 };
 
 export const getNodePositionWithOrigin = (
-  node: NodeBase | undefined,
+  node: NodeBase | InternalNodeBase | undefined,
   nodeOrigin: NodeOrigin = [0, 0]
 ): { position: XYPosition; positionAbsolute: XYPosition } => {
   if (!node) {
@@ -126,14 +131,19 @@ export const getNodePositionWithOrigin = (
     y: node.position.y - offsetY,
   };
 
+  if (isInternalNodeBase(node) && node.computed.positionAbsolute) {
+    return {
+      position,
+      positionAbsolute: {
+        x: node.computed.positionAbsolute.x - offsetX,
+        y: node.computed.positionAbsolute.y - offsetY,
+      },
+    };
+  }
+
   return {
     position,
-    positionAbsolute: node[internalsSymbol]?.positionAbsolute
-      ? {
-          x: node[internalsSymbol].positionAbsolute.x - offsetX,
-          y: node[internalsSymbol].positionAbsolute.y - offsetY,
-        }
-      : position,
+    positionAbsolute: position,
   };
 };
 
@@ -151,10 +161,7 @@ export type GetNodesBoundsParams = {
  * @param params.useRelativePosition - Whether to use the relative or absolute node positions
  * @returns Bounding box enclosing all nodes
  */
-export const getNodesBounds = (
-  nodes: NodeBase[],
-  params: GetNodesBoundsParams = { nodeOrigin: [0, 0], useRelativePosition: false }
-): Rect => {
+export const getNodesBounds = (nodes: NodeBase[], params: GetNodesBoundsParams = { nodeOrigin: [0, 0] }): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
@@ -165,7 +172,7 @@ export const getNodesBounds = (
       return getBoundsOfBoxes(
         currBox,
         rectToBox({
-          ...nodePos[params.useRelativePosition ? 'position' : 'positionAbsolute'],
+          ...nodePos.position,
           ...getNodeDimensions(node),
         })
       );
@@ -176,8 +183,47 @@ export const getNodesBounds = (
   return boxToRect(box);
 };
 
-export const getNodesInside = <NodeType extends NodeBase>(
-  nodes: NodeType[],
+export type GetInternalNodesBoundsParams = {
+  nodeOrigin?: NodeOrigin;
+  useRelativePosition?: boolean;
+  filter?: (node: NodeBase) => boolean;
+};
+
+/**
+ * Determines a bounding box that contains all given nodes in an array
+ * @internal
+ */
+export const getInternalNodesBounds = (
+  nodeLookup: NodeLookup,
+  params: GetInternalNodesBoundsParams = {
+    nodeOrigin: [0, 0],
+    useRelativePosition: false,
+  }
+): Rect => {
+  if (nodeLookup.size === 0) {
+    return { x: 0, y: 0, width: 0, height: 0 };
+  }
+
+  let box = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity };
+
+  nodeLookup.forEach((node) => {
+    if (params.filter == undefined || params.filter(node)) {
+      const nodePos = getNodePositionWithOrigin(node, node.origin || params.nodeOrigin);
+      box = getBoundsOfBoxes(
+        box,
+        rectToBox({
+          ...nodePos[params.useRelativePosition ? 'position' : 'positionAbsolute'],
+          ...getNodeDimensions(node),
+        })
+      );
+    }
+  });
+
+  return boxToRect(box);
+};
+
+export const getNodesInside = <NodeType extends InternalNodeBase>(
+  nodeLookup: NodeLookup<NodeType>,
   rect: Rect,
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially = false,
@@ -191,14 +237,15 @@ export const getNodesInside = <NodeType extends NodeBase>(
     height: rect.height / tScale,
   };
 
-  const visibleNodes = nodes.reduce<NodeType[]>((res, node) => {
+  const visibleNodes: NodeType[] = [];
+
+  nodeLookup.forEach((node) => {
     const { selectable = true, hidden = false } = node;
-    const internals = node[internalsSymbol];
-    const width = internals?.width ?? node.width ?? node.initialWidth ?? null;
-    const height = internals?.height ?? node.height ?? node.initialHeight ?? null;
+    const width = node.computed.width ?? node.width ?? node.initialWidth ?? null;
+    const height = node.computed.height ?? node.height ?? node.initialHeight ?? null;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
-      return res;
+      return;
     }
 
     const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node, nodeOrigin));
@@ -209,11 +256,9 @@ export const getNodesInside = <NodeType extends NodeBase>(
     const isVisible = notInitialized || partiallyVisible || overlappingArea >= area;
 
     if (isVisible || node.dragging) {
-      res.push(node);
+      visibleNodes.push(node);
     }
-
-    return res;
-  }, []);
+  });
 
   return visibleNodes;
 };
@@ -237,22 +282,31 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
 };
 
 export function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
-  { nodes, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
+  { nodes, width, height, panZoom, nodeLookup, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
   options?: Options
 ) {
-  const filteredNodes = nodes.filter((n) => {
+  const filteredNodeIds = new Set();
+
+  nodes.forEach((n) => {
+    const internalNode = nodeLookup.get(n.id);
     const isVisible =
-      n[internalsSymbol]?.width && n[internalsSymbol]?.height && (options?.includeHiddenNodes || !n.hidden);
+      internalNode &&
+      internalNode.computed.width &&
+      internalNode.computed.height &&
+      (options?.includeHiddenNodes || !n.hidden);
 
-    if (options?.nodes?.length) {
-      return isVisible && options?.nodes.some((optionNode) => optionNode.id === n.id);
+    if (isVisible) {
+      if (
+        !options?.nodes?.length ||
+        (options?.nodes?.length && options?.nodes.some((optionNode) => optionNode.id === n.id))
+      ) {
+        filteredNodeIds.add(n.id);
+      }
     }
-
-    return isVisible;
   });
 
-  if (filteredNodes.length > 0) {
-    const bounds = getNodesBounds(filteredNodes, { nodeOrigin });
+  if (filteredNodeIds.size > 0) {
+    const bounds = getInternalNodesBounds(nodeLookup, { nodeOrigin, filter: (n) => filteredNodeIds.has(n.id) });
 
     const viewport = getViewportForBounds(
       bounds,
@@ -279,17 +333,14 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
  * @param extent
  * @returns
  */
-function clampNodeExtent<NodeType extends NodeBase>(
+function clampNodeExtent<NodeType extends InternalNodeBase>(
   node: NodeType,
   extent?: CoordinateExtent | 'parent'
 ): CoordinateExtent | 'parent' | undefined {
   if (!extent || extent === 'parent') {
     return extent;
   }
-  return [
-    extent[0],
-    [extent[1][0] - (node[internalsSymbol]?.width ?? 0), extent[1][1] - (node[internalsSymbol]?.height ?? 0)],
-  ];
+  return [extent[0], [extent[1][0] - (node.computed.width ?? 0), extent[1][1] - (node.computed.height ?? 0)]];
 }
 
 /**
@@ -298,7 +349,7 @@ function clampNodeExtent<NodeType extends NodeBase>(
  * @internal
  * @returns position, positionAbsolute
  */
-export function calculateNodePosition<NodeType extends NodeBase>({
+export function calculateNodePosition<NodeType extends InternalNodeBase>({
   nodeId,
   nextPosition,
   nodeLookup,
@@ -324,10 +375,10 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      const nodeWidth = node[internalsSymbol]?.width;
-      const nodeHeight = node[internalsSymbol]?.height;
-      const parentWidth = parentNode[internalsSymbol]?.width;
-      const parentHeight = parentNode[internalsSymbol]?.height;
+      const nodeWidth = node.computed.width;
+      const nodeHeight = node.computed.height;
+      const parentWidth = parentNode.computed.width;
+      const parentHeight = parentNode.computed.height;
 
       if (nodeWidth && nodeHeight && parentWidth && parentHeight) {
         const currNodeOrigin = node.origin || nodeOrigin;

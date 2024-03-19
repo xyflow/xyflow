@@ -25,65 +25,65 @@ const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 const initialNodes: Node[] = [
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'Node 1' },
-    position: { x: 250, y: 5 },
-    className: 'light',
-    origin: [0.5, 0.5],
-  },
-  {
-    id: '4',
-    data: { label: 'Node 4' },
-    position: { x: 100, y: 200 },
-    className: 'light',
-    origin: [0.5, 0.5],
-    style: {
-      backgroundColor: 'rgba(255,50, 50, 0.5)',
-      width: 500,
-      height: 300,
-    },
-  },
-  {
-    id: '4a',
-    data: { label: 'Node 4a' },
-    position: { x: 15, y: 15 },
-    className: 'light',
-    parentNode: '4',
-    origin: [0.5, 0.5],
+  // {
+  //   id: '1',
+  //   type: 'input',
+  //   data: { label: 'Node 1' },
+  //   position: { x: 250, y: 5 },
+  //   className: 'light',
+  //   origin: [0.5, 0.5],
+  // },
+  // {
+  //   id: '4',
+  //   data: { label: 'Node 4' },
+  //   position: { x: 100, y: 200 },
+  //   className: 'light',
+  //   origin: [0.5, 0.5],
+  //   style: {
+  //     backgroundColor: 'rgba(255,50, 50, 0.5)',
+  //     width: 500,
+  //     height: 300,
+  //   },
+  // },
+  // {
+  //   id: '4a',
+  //   data: { label: 'Node 4a' },
+  //   position: { x: 15, y: 15 },
+  //   className: 'light',
+  //   parentNode: '4',
+  //   origin: [0.5, 0.5],
 
-    extent: [
-      [0, 0],
-      [100, 100],
-    ],
-  },
-  {
-    id: '4b',
-    data: { label: 'Node 4b' },
-    position: { x: 100, y: 60 },
-    className: 'light',
-    style: {
-      backgroundColor: 'rgba(50, 50, 255, 0.5)',
-      height: 200,
-      width: 300,
-    },
-    parentNode: '4',
-  },
-  {
-    id: '4b1',
-    data: { label: 'Node 4b1' },
-    position: { x: 40, y: 20 },
-    className: 'light',
-    parentNode: '4b',
-  },
-  {
-    id: '4b2',
-    data: { label: 'Node 4b2' },
-    position: { x: 20, y: 100 },
-    className: 'light',
-    parentNode: '4b',
-  },
+  //   extent: [
+  //     [0, 0],
+  //     [100, 100],
+  //   ],
+  // },
+  // {
+  //   id: '4b',
+  //   data: { label: 'Node 4b' },
+  //   position: { x: 100, y: 60 },
+  //   className: 'light',
+  //   style: {
+  //     backgroundColor: 'rgba(50, 50, 255, 0.5)',
+  //     height: 200,
+  //     width: 300,
+  //   },
+  //   parentNode: '4',
+  // },
+  // {
+  //   id: '4b1',
+  //   data: { label: 'Node 4b1' },
+  //   position: { x: 40, y: 20 },
+  //   className: 'light',
+  //   parentNode: '4b',
+  // },
+  // {
+  //   id: '4b2',
+  //   data: { label: 'Node 4b2' },
+  //   position: { x: 20, y: 100 },
+  //   className: 'light',
+  //   parentNode: '4b',
+  // },
   {
     id: '5',
     type: 'group',
@@ -93,14 +93,14 @@ const initialNodes: Node[] = [
     style: { width: 100, height: 100 },
     zIndex: 1000,
   },
-  {
-    id: '5a',
-    data: { label: 'Node 5a' },
-    position: { x: 0, y: 0 },
-    className: 'light',
-    parentNode: '5',
-    extent: 'parent',
-  },
+  // {
+  //   id: '5a',
+  //   data: { label: 'Node 5a' },
+  //   position: { x: 0, y: 0 },
+  //   className: 'light',
+  //   parentNode: '5',
+  //   extent: 'parent',
+  // },
   {
     id: '5b',
     data: { label: 'Node 5b' },
@@ -109,40 +109,40 @@ const initialNodes: Node[] = [
     parentNode: '5',
     expandParent: true,
   },
-  {
-    id: '2',
-    data: { label: 'Node 2' },
-    position: { x: 100, y: 100 },
-    className: 'light',
-  },
-  {
-    id: '3',
-    data: { label: 'Node 3' },
-    position: { x: 400, y: 100 },
-    className: 'light',
-    extent: 'parent',
-  },
+  // {
+  //   id: '2',
+  //   data: { label: 'Node 2' },
+  //   position: { x: 100, y: 100 },
+  //   className: 'light',
+  // },
+  // {
+  //   id: '3',
+  //   data: { label: 'Node 3' },
+  //   position: { x: 400, y: 100 },
+  //   className: 'light',
+  //   extent: 'parent',
+  // },
 ];
 
 const initialEdges: Edge[] = [
-  {
-    id: 'e1-2',
-    source: '1',
-    target: '2',
-    markerEnd: {
-      type: MarkerType.Arrow,
-      strokeWidth: 2,
-      width: 15,
-      height: 15,
-      color: '#f00',
-    },
-  },
-  { id: 'e1-3', source: '1', target: '3' },
-  { id: 'e3-4', source: '3', target: '4', zIndex: 100 },
-  { id: 'e3-4b', source: '3', target: '4b' },
-  { id: 'e4a-4b1', source: '4a', target: '4b1' },
-  { id: 'e4a-4b2', source: '4a', target: '4b2', zIndex: 100 },
-  { id: 'e4b1-4b2', source: '4b1', target: '4b2' },
+  // {
+  //   id: 'e1-2',
+  //   source: '1',
+  //   target: '2',
+  //   markerEnd: {
+  //     type: MarkerType.Arrow,
+  //     strokeWidth: 2,
+  //     width: 15,
+  //     height: 15,
+  //     color: '#f00',
+  //   },
+  // },
+  // { id: 'e1-3', source: '1', target: '3' },
+  // { id: 'e3-4', source: '3', target: '4', zIndex: 100 },
+  // { id: 'e3-4b', source: '3', target: '4b' },
+  // { id: 'e4a-4b1', source: '4a', target: '4b1' },
+  // { id: 'e4a-4b2', source: '4a', target: '4b2', zIndex: 100 },
+  // { id: 'e4b1-4b2', source: '4b1', target: '4b2' },
 ];
 
 const nodeTypes = {
@@ -207,15 +207,16 @@ const Subflow = () => {
       onInit={onInit}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
-      onNodeClick={onNodeClick}
-      onEdgeClick={onEdgeClick}
+      // onNodeClick={onNodeClick}
+      // onEdgeClick={onEdgeClick}
       onConnect={onConnect}
-      onNodeDrag={onNodeDrag}
-      onNodeDragStop={onNodeDragStop}
+      // onNodeDrag={onNodeDrag}
+      // onNodeDragStop={onNodeDragStop}
       className="react-flow-basic-example"
       onlyRenderVisibleElements={false}
       nodeTypes={nodeTypes}
       fitView
+      debug
     >
       <MiniMap />
       <Controls />

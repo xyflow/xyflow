@@ -26,14 +26,14 @@ import type {
   OnSelectionDrag,
   UpdateNodePositions,
   Box,
+  InternalNodeBase,
 } from '../types';
-import { internalsSymbol } from '..';
 
 export type OnDrag = (event: MouseEvent, dragItems: NodeDragItem[], node: NodeBase, nodes: NodeBase[]) => void;
 
 type StoreItems<OnNodeDrag> = {
   nodes: NodeBase[];
-  nodeLookup: Map<string, NodeBase>;
+  nodeLookup: Map<string, InternalNodeBase>;
   edges: EdgeBase[];
   nodeExtent: CoordinateExtent;
   snapGrid: SnapGrid;
@@ -137,13 +137,13 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         ];
 
         if (dragItems.length > 1 && nodeExtent && !n.extent) {
-          adjustedNodeExtent[0][0] = n[internalsSymbol]?.positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
+          adjustedNodeExtent[0][0] = n.computed.positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
           adjustedNodeExtent[1][0] =
-            n[internalsSymbol]?.positionAbsolute.x + (n[internalsSymbol]?.width ?? 0) - nodesBox.x2 + nodeExtent[1][0];
+            n.computed.positionAbsolute.x + (n.computed.width ?? 0) - nodesBox.x2 + nodeExtent[1][0];
 
-          adjustedNodeExtent[0][1] = n[internalsSymbol]?.positionAbsolute.y - nodesBox.y + nodeExtent[0][1];
+          adjustedNodeExtent[0][1] = n.computed.positionAbsolute.y - nodesBox.y + nodeExtent[0][1];
           adjustedNodeExtent[1][1] =
-            n[internalsSymbol]?.positionAbsolute.y + (n[internalsSymbol]?.height ?? 0) - nodesBox.y2 + nodeExtent[1][1];
+            n.computed.positionAbsolute.y + (n.computed.height ?? 0) - nodesBox.y2 + nodeExtent[1][1];
         }
 
         const { position, positionAbsolute } = calculateNodePosition({
@@ -159,7 +159,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         hasChange = hasChange || n.position.x !== position.x || n.position.y !== position.y;
 
         n.position = position;
-        n[internalsSymbol].positionAbsolute = positionAbsolute;
+        n.computed.positionAbsolute = positionAbsolute;
 
         return n;
       });
@@ -237,7 +237,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
       const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
       lastPos = pointerPos;
-      dragItems = getDragItems(nodes, nodesDraggable, pointerPos, nodeId);
+      dragItems = getDragItems(nodes, nodesDraggable, pointerPos, nodeLookup, nodeId);
 
       if (dragItems.length > 0 && (onDragStart || onNodeDragStart || (!nodeId && onSelectionDragStart))) {
         const [currentNode, currentNodes] = getEventHandlerParams({

@@ -2,7 +2,6 @@ import { CSSProperties, useCallback } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 import {
-  internalsSymbol,
   Position,
   ConnectionLineType,
   ConnectionMode,
@@ -53,7 +52,7 @@ const ConnectionLine = ({
     ),
     shallow
   );
-  const fromHandleBounds = fromNode?.[internalsSymbol]?.handleBounds;
+  const fromHandleBounds = fromNode?.computed.handleBounds;
   let handleBounds = fromHandleBounds?.[handleType];
 
   if (connectionMode === ConnectionMode.Loose) {

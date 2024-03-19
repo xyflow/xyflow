@@ -1,7 +1,7 @@
 import { ReactNode, Ref, RefAttributes, forwardRef } from 'react';
-import { isNodeBase, isEdgeBase } from '@xyflow/system';
+import { isNodeBase, isEdgeBase, isInternalNodeBase } from '@xyflow/system';
 
-import type { Edge, Node } from '../types';
+import type { Edge, InternalNode, Node } from '../types';
 
 /**
  * Test whether an object is useable as a Node
@@ -12,6 +12,8 @@ import type { Edge, Node } from '../types';
  */
 export const isNode = <NodeType extends Node = Node>(element: unknown): element is NodeType =>
   isNodeBase<NodeType>(element);
+
+export const isInternalNode = (element: unknown): element is InternalNode => isInternalNodeBase(element);
 
 /**
  * Test whether an object is useable as an Edge

@@ -5,7 +5,7 @@
 import { useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { getNodesBounds } from '@xyflow/system';
+import { getInternalNodesBounds } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useDrag } from '../../hooks/useDrag';
@@ -20,8 +20,10 @@ export type NodesSelectionProps<NodeType> = {
 };
 
 const selector = (s: ReactFlowState) => {
-  const selectedNodes = s.nodes.filter((n) => n.selected);
-  const { width, height, x, y } = getNodesBounds(selectedNodes, { nodeOrigin: s.nodeOrigin });
+  const { width, height, x, y } = getInternalNodesBounds(s.nodeLookup, {
+    nodeOrigin: s.nodeOrigin,
+    filter: (n) => !!n.selected,
+  });
 
   return {
     width,
@@ -54,7 +56,7 @@ export function NodesSelection<NodeType extends Node>({
     nodeRef,
   });
 
-  if (userSelectionActive || !width || !height) {
+  if (userSelectionActive || !width || !height || width === -Infinity || height === -Infinity) {
     return null;
   }
 

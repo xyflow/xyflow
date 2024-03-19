@@ -32,7 +32,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   }, []);
 
   const getNode = useCallback<Instance.GetNode<NodeType>>((id) => {
-    return store.getState().nodeLookup.get(id) as NodeType;
+    return store.getState().nodeLookup.get(id)?.computed.userProvidedNode as NodeType;
   }, []);
 
   const getEdges = useCallback<Instance.GetEdges<EdgeType>>(() => {
@@ -225,9 +225,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
   const getNodeRect = useCallback((nodeOrRect: NodeType | { id: NodeType['id'] }): Rect | null => {
     const node =
-      isNode(nodeOrRect) && nodeHasDimensions(nodeOrRect)
-        ? nodeOrRect
-        : (store.getState().nodeLookup.get(nodeOrRect.id) as NodeType);
+      isNode(nodeOrRect) && nodeHasDimensions(nodeOrRect) ? nodeOrRect : store.getState().nodeLookup.get(nodeOrRect.id);
 
     return node ? nodeToRect(node) : null;
   }, []);
@@ -242,7 +240,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       }
 
       return (nodes || store.getState().nodes).filter((n) => {
-        if (!isRect && (n.id === nodeOrRect!.id || !n.computed?.positionAbsolute)) {
+        const internalNode = store.getState().nodeLookup.get(n.id);
+        if (!isRect && (n.id === nodeOrRect!.id || !internalNode?.computed.positionAbsolute)) {
           return false;
         }
 

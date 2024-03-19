@@ -26,6 +26,8 @@ export function useResizeObserver() {
         });
       });
 
+      console.log('React Flow: resize observer updates', Array.from(updates.values()));
+
       updateNodeDimensions(updates);
     });
 

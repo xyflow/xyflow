@@ -1,4 +1,4 @@
-import { internalsSymbol } from '..';
+import { InternalNodeBase, NodeLookup } from '..';
 import { type NodeDragItem, type XYPosition, NodeBase } from '../types';
 
 export function wrapSelectionDragFunc(selectionFunc?: (event: MouseEvent, nodes: NodeBase[]) => void) {
@@ -36,10 +36,11 @@ export function hasSelector(target: Element, selector: string, domNode: Element)
 }
 
 // looks for all selected nodes and created a NodeDragItem for each of them
-export function getDragItems<NodeType extends NodeBase>(
+export function getDragItems<NodeType extends InternalNodeBase>(
   nodes: NodeType[],
   nodesDraggable: boolean,
   mousePos: XYPosition,
+  nodeLookup: NodeLookup<NodeType>,
   nodeId?: string
 ): NodeDragItem[] {
   return nodes
@@ -49,27 +50,31 @@ export function getDragItems<NodeType extends NodeBase>(
         (!n.parentNode || !isParentSelected(n, nodes)) &&
         (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'))
     )
-    .map((n) => ({
-      id: n.id,
-      position: n.position || { x: 0, y: 0 },
-      distance: {
-        x: mousePos.x - (n[internalsSymbol]?.positionAbsolute?.x ?? 0),
-        y: mousePos.y - (n[internalsSymbol]?.positionAbsolute?.y ?? 0),
-      },
-      delta: {
-        x: 0,
-        y: 0,
-      },
-      extent: n.extent,
-      parentNode: n.parentNode,
-      origin: n.origin,
-      expandParent: n.expandParent,
-      [internalsSymbol]: {
-        positionAbsolute: n[internalsSymbol]?.positionAbsolute || { x: 0, y: 0 },
-        width: n[internalsSymbol]?.width || 0,
-        height: n[internalsSymbol]?.height || 0,
-      },
-    }));
+    .map((n) => {
+      const nodeWithInternals = nodeLookup.get(n.id)!;
+
+      return {
+        id: n.id,
+        position: n.position || { x: 0, y: 0 },
+        distance: {
+          x: mousePos.x - (nodeWithInternals.computed?.positionAbsolute?.x ?? 0),
+          y: mousePos.y - (nodeWithInternals.computed?.positionAbsolute?.y ?? 0),
+        },
+        delta: {
+          x: 0,
+          y: 0,
+        },
+        extent: n.extent,
+        parentNode: n.parentNode,
+        origin: n.origin,
+        expandParent: n.expandParent,
+        computed: {
+          positionAbsolute: nodeWithInternals.computed?.positionAbsolute || { x: 0, y: 0 },
+          width: nodeWithInternals.computed?.width || 0,
+          height: nodeWithInternals.computed?.height || 0,
+        },
+      };
+    });
 }
 
 // returns two params:

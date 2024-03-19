@@ -1,4 +1,3 @@
-import { internalsSymbol } from '../constants';
 import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
 import { Optional } from '../utils/types';
 
@@ -60,9 +59,11 @@ export type NodeBase<
    */
   origin?: NodeOrigin;
   handles?: NodeHandle[];
+};
 
+export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & {
   // Only used internally
-  [internalsSymbol]?: {
+  computed: {
     z?: number;
     handleBounds?: NodeHandleBounds;
     isParent?: boolean;
@@ -73,7 +74,7 @@ export type NodeBase<
     /** Holds a reference to the original node object provided by the user
      * (which may lack some fields, like `computed` or `[internalSymbol]`. Used
      * as an optimization to avoid certain operations. */
-    userProvidedNode: NodeBase<NodeData, NodeType>;
+    userProvidedNode: NodeType;
   };
 };
 
@@ -121,7 +122,7 @@ export type NodeDragItem = {
   dragging?: boolean;
   origin?: NodeOrigin;
   expandParent?: boolean;
-  [internalsSymbol]: {
+  computed: {
     width: number | null;
     height: number | null;
     positionAbsolute: XYPosition;
@@ -136,4 +137,4 @@ export type NodeHandle = Optional<HandleElement, 'width' | 'height'>;
 
 export type Align = 'center' | 'start' | 'end';
 
-export type NodeLookup<NodeType extends NodeBase = NodeBase> = Map<string, NodeType>;
+export type NodeLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType>;
