@@ -19,9 +19,9 @@ import type {
   Edge,
   EdgeSelectionChange,
   NodeSelectionChange,
-  NodePositionChange,
   UnselectNodesAndEdgesParams,
   FitViewOptions,
+  NodeChange,
 } from '../types';
 
 const createRFStore = ({
@@ -53,7 +53,6 @@ const createRFStore = ({
         // When this happens, we take the note objects passed by the user and extend them with fields
         // relevant for internal React Flow operations.
         adoptUserProvidedNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
-        console.log(nodeLookup);
         set({ nodes });
       },
       setEdges: (edges: Edge[]) => {
@@ -78,7 +77,7 @@ const createRFStore = ({
       // Every node gets registerd at a ResizeObserver. Whenever a node
       // changes its dimensions, this function is called to measure the
       // new dimensions and update the nodes.
-      updateNodeDimensions: (updates) => {
+      updateInternalNodeValues: (updates) => {
         const {
           onNodesChange,
           fitView,
@@ -93,7 +92,7 @@ const createRFStore = ({
         } = get();
 
         const { hasUpdate, changes } = updateNodeDimensionsSystem(updates, nodeLookup, domNode, nodeOrigin);
-        console.log('update dims', changes, hasUpdate);
+
         if (!hasUpdate) {
           return;
         }
@@ -128,7 +127,7 @@ const createRFStore = ({
         const triggerChangeNodes: InternalNodeBase[] = [];
 
         const changes = nodeDragItems.map((node) => {
-          const change: NodePositionChange = {
+          const change = {
             id: node.id,
             type: 'position',
             position: node.position,
@@ -137,10 +136,13 @@ const createRFStore = ({
           };
 
           if (node.expandParent) {
+            change.position.x = Math.max(node.position.x, 0);
+            change.position.y = Math.max(node.position.y, 0);
+
             triggerChangeNodes.push(node as InternalNodeBase);
           }
 
-          return change;
+          return change as NodeChange;
         });
 
         if (triggerChangeNodes.length > 0) {

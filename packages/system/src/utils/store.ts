@@ -79,30 +79,33 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
   }
 ) {
   const tmpLookup = new Map(nodeLookup);
-  nodeLookup.clear();
   const parentNodes: ParentNodes = {};
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
+  nodeLookup.clear();
+
   nodes.forEach((n) => {
     const storeNode = tmpLookup.get(n.id);
+
     if (n === storeNode?.computed.userProvidedNode) {
       nodeLookup.set(n.id, storeNode);
       return storeNode;
     }
 
-    const z = (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0);
-    const currInternals = storeNode?.computed;
-
     const node: InternalNodeBase<NodeType> = {
       ...options.defaults,
       ...n,
       computed: {
-        handleBounds: currInternals?.handleBounds,
+        handleBounds: storeNode?.computed?.handleBounds,
         positionAbsolute: n.position,
-        width: n.width || currInternals?.width,
-        height: n.height || currInternals?.height,
+        // @todo how to deal with stored dimensions?
+        // if we do not add computed.width/height to user nodes
+        // it's hard to figure out, if node needs to be re-measured
+        // we can't just use the existing dimensions, because they might be outdated
+        width: n.width ?? storeNode?.computed.width,
+        height: n.height ?? storeNode?.computed.height,
         userProvidedNode: n,
-        z,
+        z: (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0),
       },
     };
 
@@ -143,29 +146,41 @@ function calculateXYZPosition<NodeType extends NodeBase>(
 
 export function handleParentExpand(nodes: InternalNodeBase[], nodeLookup: NodeLookup): NodeChange[] {
   const changes: NodeChange[] = [];
-  const parentRects = new Map<string, Rect>();
+  const chilNodeRects = new Map<string, Rect>();
 
   nodes.forEach((node) => {
     if (node.expandParent && node.parentNode) {
       const parentNode = nodeLookup.get(node.parentNode);
 
       if (parentNode) {
-        const parentRect = parentRects.get(node.parentNode) || nodeToRect(parentNode, node.origin);
+        const parentRect = chilNodeRects.get(node.parentNode) || nodeToRect(parentNode, node.origin);
         const expandedRect = getBoundsOfRects(parentRect, nodeToRect(node, node.origin));
-        parentRects.set(node.parentNode, expandedRect);
+        chilNodeRects.set(node.parentNode, expandedRect);
       }
     }
   });
 
-  // @todo handle position changes
-  if (parentRects.size > 0) {
-    parentRects.forEach((rect, id) => {
+  if (chilNodeRects.size > 0) {
+    chilNodeRects.forEach((rect, id) => {
       const origParent = nodeLookup.get(id)!;
-      const { positionAbsolute } = getNodePositionWithOrigin(origParent, origParent.origin);
+      const { position } = getNodePositionWithOrigin(origParent, origParent.origin);
       const dimensions = getNodeDimensions(origParent);
 
-      if (positionAbsolute.x < rect.x || positionAbsolute.y < rect.y) {
-        console.log('position and dim change');
+      let xChange = null;
+      let yChange = null;
+
+      if (rect.x < position.x || rect.y < position.y) {
+        xChange = Math.abs(position.x - rect.x);
+        yChange = Math.abs(position.y - rect.y);
+
+        changes.push({
+          id,
+          type: 'position',
+          position: {
+            x: position.x - xChange,
+            y: position.y - yChange,
+          },
+        });
       }
 
       if (dimensions.width < rect.width || dimensions.height < rect.height) {
@@ -208,17 +223,23 @@ export function updateNodeDimensions<NodeType extends InternalNodeBase>(
     const internalNode = nodeLookup.get(update.id);
 
     if (internalNode) {
-      const dimensions = getDimensions(update.nodeElement);
+      const dimensions =
+        internalNode.width && internalNode.height
+          ? { width: internalNode.width, height: internalNode.height }
+          : getDimensions(update.nodeElement);
+
       const doUpdate = !!(
         dimensions.width &&
         dimensions.height &&
         (internalNode.computed.width !== dimensions.width ||
           internalNode.computed.height !== dimensions.height ||
-          update.forceUpdate)
+          !internalNode.computed?.handleBounds ||
+          update.force)
       );
 
       if (doUpdate) {
         hasUpdate = true;
+
         const newNode = {
           ...internalNode,
           computed: {

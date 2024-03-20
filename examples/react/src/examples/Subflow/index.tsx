@@ -14,6 +14,8 @@ import {
   Background,
   Panel,
   NodeOrigin,
+  OnNodesChange,
+  applyNodeChanges,
 } from '@xyflow/react';
 
 import DebugNode from './DebugNode';
@@ -88,24 +90,22 @@ const initialNodes: Node[] = [
     id: '5',
     type: 'group',
     data: { label: 'Node 5' },
-    position: { x: 650, y: 250 },
-    className: 'light',
+    position: { x: 650, y: 100 },
     style: { width: 100, height: 100 },
     zIndex: 1000,
   },
-  // {
-  //   id: '5a',
-  //   data: { label: 'Node 5a' },
-  //   position: { x: 0, y: 0 },
-  //   className: 'light',
-  //   parentNode: '5',
-  //   extent: 'parent',
-  // },
+  {
+    id: '5a',
+    data: { label: 'Node 5a' },
+    position: { x: 50, y: 50 },
+    parentNode: '5',
+    extent: 'parent',
+    expandParent: true,
+  },
   {
     id: '5b',
     data: { label: 'Node 5b' },
-    position: { x: 225, y: 50 },
-    className: 'light',
+    position: { x: 200, y: 200 },
     parentNode: '5',
     expandParent: true,
   },
@@ -151,8 +151,18 @@ const nodeTypes = {
 
 const Subflow = () => {
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const onNodesChange: OnNodesChange = useCallback(
+    (changes) =>
+      setNodes((nds) => {
+        const nextNodes = applyNodeChanges(changes, nds);
+
+        return nextNodes;
+      }),
+    []
+  );
 
   const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), [setEdges]);
   const onInit = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);

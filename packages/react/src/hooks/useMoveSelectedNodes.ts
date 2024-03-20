@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { calculateNodePosition, snapPosition, type XYPosition } from '@xyflow/system';
 
-import { Node } from '../types';
+import { InternalNode } from '../types';
 import { useStoreApi } from './useStore';
 
-const selectedAndDraggable = (nodesDraggable: boolean) => (n: Node) =>
+const selectedAndDraggable = (nodesDraggable: boolean) => (n: InternalNode) =>
   n.selected && (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'));
 
 /**
@@ -17,18 +17,15 @@ export function useMoveSelectedNodes() {
   const store = useStoreApi();
 
   const moveSelectedNodes = useCallback((params: { direction: XYPosition; factor: number }) => {
-    const {
-      nodeExtent,
-      nodes,
-      snapToGrid,
-      snapGrid,
-      nodesDraggable,
-      onError,
-      updateNodePositions,
-      nodeLookup,
-      nodeOrigin,
-    } = store.getState();
-    const selectedNodes = nodes.filter(selectedAndDraggable(nodesDraggable));
+    const { nodeExtent, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions, nodeLookup, nodeOrigin } =
+      store.getState();
+    const selectedNodes = [];
+
+    for (const [, node] of nodeLookup) {
+      if (selectedAndDraggable(nodesDraggable)(node)) {
+        selectedNodes.push(node);
+      }
+    }
     // by default a node moves 5px on each key press
     // if snap grid is enabled, we use that for the velocity
     const xVelo = snapToGrid ? snapGrid[0] : 5;

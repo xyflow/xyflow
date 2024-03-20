@@ -65,6 +65,7 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & 
   // Only used internally
   computed: {
     z?: number;
+    // @todo should we rename this to "handles" and use same type as node.handles?
     handleBounds?: NodeHandleBounds;
     isParent?: boolean;
     width?: number;
@@ -104,7 +105,7 @@ export type NodeHandleBounds = {
 export type NodeDimensionUpdate = {
   id: string;
   nodeElement: HTMLDivElement;
-  forceUpdate?: boolean;
+  force?: boolean;
 };
 
 export type NodeBounds = XYPosition & {
