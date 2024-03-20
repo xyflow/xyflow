@@ -32,7 +32,7 @@ The xyflow repository is the home of four packages:
 
 ## Getting started
 
-The best way to get started is to check out the [React Flow](https://reactflow.dev/learn) or [Svelte Flow](https://svelteflow.dev/learn) learn section. However if you want to get a sneak peek of how to install the and use the libraries you can see it here: 
+The best way to get started is to check out the [React Flow](https://reactflow.dev/learn) or [Svelte Flow](https://svelteflow.dev/learn) learn section. However if you want to get a sneak peek of how to install and use the libraries you can see it here: 
 
 <details>
   <summary><strong>React Flow</strong> basic usage</summary>
