@@ -50,6 +50,7 @@ import UseNodesInitialized from '../examples/UseNodesInit';
 import UseNodesData from '../examples/UseNodesData';
 import UseHandleConnections from '../examples/UseHandleConnections';
 import AddNodeOnEdgeDrop from '../examples/AddNodeOnEdgeDrop';
+import DevTools from '../examples/DevTools';
 
 export interface IRoute {
   name: string;
@@ -112,6 +113,11 @@ const routes: IRoute[] = [
     name: 'Default Nodes',
     path: 'default-nodes',
     component: DefaultNodes,
+  },
+  {
+    name: 'DevTools',
+    path: 'devtools',
+    component: DevTools,
   },
   {
     name: 'Drag Handle',
