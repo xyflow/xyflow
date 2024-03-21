@@ -5,12 +5,12 @@ export function wrapSelectionDragFunc(selectionFunc?: (event: MouseEvent, nodes:
   return (event: MouseEvent, _: NodeBase, nodes: NodeBase[]) => selectionFunc?.(event, nodes);
 }
 
-export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodes: NodeType[]): boolean {
+export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodeLookup: NodeLookup): boolean {
   if (!node.parentNode) {
     return false;
   }
 
-  const parentNode = nodes.find((node) => node.id === node.parentNode);
+  const parentNode = nodeLookup.get(node.parentNode);
 
   if (!parentNode) {
     return false;
@@ -20,7 +20,7 @@ export function isParentSelected<NodeType extends NodeBase>(node: NodeType, node
     return true;
   }
 
-  return isParentSelected(parentNode, nodes);
+  return isParentSelected(parentNode, nodeLookup);
 }
 
 export function hasSelector(target: Element, selector: string, domNode: Element): boolean {
@@ -37,44 +37,42 @@ export function hasSelector(target: Element, selector: string, domNode: Element)
 
 // looks for all selected nodes and created a NodeDragItem for each of them
 export function getDragItems<NodeType extends InternalNodeBase>(
-  nodes: NodeType[],
   nodesDraggable: boolean,
   mousePos: XYPosition,
   nodeLookup: NodeLookup<NodeType>,
   nodeId?: string
 ): NodeDragItem[] {
-  return nodes
-    .filter(
-      (n) =>
-        (n.selected || n.id === nodeId) &&
-        (!n.parentNode || !isParentSelected(n, nodes)) &&
-        (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'))
-    )
-    .map((n) => {
-      const nodeWithInternals = nodeLookup.get(n.id)!;
+  const dragItems: NodeDragItem[] = [];
 
-      return {
-        id: n.id,
-        position: n.position || { x: 0, y: 0 },
+  for (const [id, node] of nodeLookup) {
+    if (
+      (node.selected || node.id === nodeId) &&
+      (!node.parentNode || !isParentSelected(node, nodeLookup)) &&
+      (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'))
+    ) {
+      const internalNode = nodeLookup.get(id)!;
+
+      dragItems.push({
+        id: internalNode.id,
+        position: internalNode.position || { x: 0, y: 0 },
         distance: {
-          x: mousePos.x - (nodeWithInternals.computed?.positionAbsolute?.x ?? 0),
-          y: mousePos.y - (nodeWithInternals.computed?.positionAbsolute?.y ?? 0),
+          x: mousePos.x - (internalNode.internals.positionAbsolute?.x ?? 0),
+          y: mousePos.y - (internalNode.internals.positionAbsolute?.y ?? 0),
         },
-        delta: {
-          x: 0,
-          y: 0,
+        extent: internalNode.extent,
+        parentNode: internalNode.parentNode,
+        origin: internalNode.origin,
+        expandParent: internalNode.expandParent,
+        internals: {
+          positionAbsolute: internalNode.internals.positionAbsolute || { x: 0, y: 0 },
+          width: internalNode.internals.width || 0,
+          height: internalNode.internals.height || 0,
         },
-        extent: n.extent,
-        parentNode: n.parentNode,
-        origin: n.origin,
-        expandParent: n.expandParent,
-        computed: {
-          positionAbsolute: nodeWithInternals.computed?.positionAbsolute || { x: 0, y: 0 },
-          width: nodeWithInternals.computed?.width || 0,
-          height: nodeWithInternals.computed?.height || 0,
-        },
-      };
-    });
+      });
+    }
+  }
+
+  return dragItems;
 }
 
 // returns two params:

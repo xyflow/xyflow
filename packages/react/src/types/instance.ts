@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import type { Rect, Viewport } from '@xyflow/system';
-import type { Node, Edge, ViewportHelperFunctions } from '.';
+import type { NodeHandleBounds, NodeLookup, Rect, Viewport, XYPosition } from '@xyflow/system';
+import type { Node, Edge, ViewportHelperFunctions, InternalNode } from '.';
 
 export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   nodes: NodeType[];
@@ -165,5 +165,17 @@ export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edg
    * updateNodeData('node-1', { label: 'A new label' });
    */
   updateNodeData: Instance.UpdateNodeData<NodeType>;
+
+  getInternalNode: (id: string) => InternalNode<NodeType> | undefined;
+  getInternalNodeValues: (id: string) =>
+    | {
+        width?: number;
+        height?: number;
+        positionAbsolute?: XYPosition;
+        handles?: NodeHandleBounds;
+        zIndex?: number;
+      }
+    | undefined;
+  getInternalNodeLookup: () => NodeLookup<InternalNode<NodeType>>;
   viewportInitialized: boolean;
 } & Omit<ViewportHelperFunctions, 'initialized'>;

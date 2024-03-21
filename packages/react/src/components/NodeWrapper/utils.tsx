@@ -26,7 +26,7 @@ export function getNodeInlineStyleDimensions<NodeType extends InternalNode = Int
   width: number | string | undefined;
   height: number | string | undefined;
 } {
-  if (!node.computed.width && !node.computed.height) {
+  if (!node.internals.width && !node.internals.height) {
     return {
       width: node.width ?? node.initialWidth ?? node.style?.width,
       height: node.height ?? node.initialHeight ?? node.style?.height,

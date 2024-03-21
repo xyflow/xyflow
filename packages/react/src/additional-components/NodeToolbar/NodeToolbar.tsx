@@ -10,12 +10,12 @@ import { NodeToolbarPortal } from './NodeToolbarPortal';
 import type { NodeToolbarProps } from './types';
 
 const nodeEqualityFn = (a?: InternalNode, b?: InternalNode) =>
-  a?.computed.positionAbsolute?.x !== b?.computed.positionAbsolute?.x ||
-  a?.computed.positionAbsolute?.y !== b?.computed.positionAbsolute?.y ||
-  a?.computed.width !== b?.computed.width ||
-  a?.computed.height !== b?.computed.height ||
+  a?.internals.positionAbsolute?.x !== b?.internals.positionAbsolute?.x ||
+  a?.internals.positionAbsolute?.y !== b?.internals.positionAbsolute?.y ||
+  a?.internals.width !== b?.internals.width ||
+  a?.internals.height !== b?.internals.height ||
   a?.selected !== b?.selected ||
-  a?.computed.z !== b?.computed.z;
+  a?.internals.z !== b?.internals.z;
 
 const nodesEqualityFn = (a: InternalNode[], b: InternalNode[]) => {
   if (a.length !== b.length) {
@@ -74,7 +74,7 @@ export function NodeToolbar({
   }
 
   const nodeRect: Rect = getNodesBounds(nodes, { nodeOrigin });
-  const zIndex: number = Math.max(...nodes.map((node) => (node.computed.z || 1) + 1));
+  const zIndex: number = Math.max(...nodes.map((node) => (node.internals.z || 1) + 1));
 
   const wrapperStyle: CSSProperties = {
     position: 'absolute',

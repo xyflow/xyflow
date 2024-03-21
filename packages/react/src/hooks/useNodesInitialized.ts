@@ -12,7 +12,7 @@ const selector = (options: UseNodesInitializedOptions) => (s: ReactFlowState) =>
 
   for (const node of s.nodeLookup.values()) {
     if (options.includeHiddenNodes || !node.hidden) {
-      if (node.computed.handleBounds === undefined) {
+      if (node.internals.handleBounds === undefined) {
         return false;
       }
     }

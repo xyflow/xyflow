@@ -63,7 +63,7 @@ export type NodeBase<
 
 export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & {
   // Only used internally
-  computed: {
+  internals: {
     z?: number;
     // @todo should we rename this to "handles" and use same type as node.handles?
     handleBounds?: NodeHandleBounds;
@@ -123,7 +123,7 @@ export type NodeDragItem = {
   dragging?: boolean;
   origin?: NodeOrigin;
   expandParent?: boolean;
-  computed: {
+  internals: {
     width: number | null;
     height: number | null;
     positionAbsolute: XYPosition;

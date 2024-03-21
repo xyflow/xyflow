@@ -35,10 +35,10 @@ export function useMoveSelectedNodes() {
     const yDiff = params.direction.y * yVelo * params.factor;
 
     const nodeUpdates = selectedNodes.map((node) => {
-      if (node.computed?.positionAbsolute) {
+      if (node.internals?.positionAbsolute) {
         let nextPosition = {
-          x: node.computed.positionAbsolute.x + xDiff,
-          y: node.computed.positionAbsolute.y + yDiff,
+          x: node.internals.positionAbsolute.x + xDiff,
+          y: node.internals.positionAbsolute.y + yDiff,
         };
 
         if (snapToGrid) {
@@ -55,7 +55,7 @@ export function useMoveSelectedNodes() {
         });
 
         node.position = position;
-        node.computed.positionAbsolute = positionAbsolute;
+        node.internals.positionAbsolute = positionAbsolute;
       }
 
       return node;

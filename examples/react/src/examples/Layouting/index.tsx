@@ -31,7 +31,7 @@ const nodeExtent: CoordinateExtent = [
 const LayoutFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialItems.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialItems.edges);
-  const { fitView } = useReactFlow();
+  const { fitView, getInternalNode } = useReactFlow();
 
   const onConnect = useCallback(
     (connection: Connection) => {
@@ -45,7 +45,12 @@ const LayoutFlow = () => {
     dagreGraph.setGraph({ rankdir: direction });
 
     nodes.forEach((node) => {
-      dagreGraph.setNode(node.id, { width: 150, height: 50 });
+      const internalNode = getInternalNode(node.id);
+
+      dagreGraph.setNode(node.id, {
+        width: internalNode?.internals.width ?? 150,
+        height: internalNode?.internals.height ?? 50,
+      });
     });
 
     edges.forEach((edge) => {

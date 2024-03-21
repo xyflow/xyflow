@@ -88,9 +88,10 @@ function applyChange(change: any, element: any): any {
         element.position = change.position;
       }
 
+      // @todo do we still need to apply this change here or do we only want to handle it internally?
       if (typeof change.positionAbsolute !== 'undefined') {
-        element.computed ??= {};
-        element.computed.positionAbsolute = change.positionAbsolute;
+        element.internals ??= {};
+        element.internals.positionAbsolute = change.positionAbsolute;
       }
 
       if (typeof change.dragging !== 'undefined') {
@@ -185,13 +186,13 @@ export function createSelectionChange(id: string, selected: boolean): NodeSelect
 }
 
 export function getSelectionChanges(
-  items: any[],
+  items: Map<string, any>,
   selectedIds: Set<string> = new Set(),
   mutateItem = false
 ): NodeSelectionChange[] | EdgeSelectionChange[] {
   const changes: NodeSelectionChange[] | EdgeSelectionChange[] = [];
 
-  for (const item of items) {
+  for (const [, item] of items) {
     const willBeSelected = selectedIds.has(item.id);
 
     // we don't want to set all items to selected=false on the first selection

@@ -131,7 +131,7 @@ const createRFStore = ({
             id: node.id,
             type: 'position',
             position: node.position,
-            positionAbsolute: node.computed.positionAbsolute,
+            positionAbsolute: node.internals.positionAbsolute,
             dragging,
           };
 
@@ -185,7 +185,7 @@ const createRFStore = ({
         }
       },
       addSelectedNodes: (selectedNodeIds) => {
-        const { multiSelectionActive, edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { multiSelectionActive, edgeLookup, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
 
         if (multiSelectionActive) {
           const nodeChanges = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true));
@@ -193,11 +193,11 @@ const createRFStore = ({
           return;
         }
 
-        triggerNodeChanges(getSelectionChanges(nodes, new Set([...selectedNodeIds]), true));
-        triggerEdgeChanges(getSelectionChanges(edges));
+        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
+        triggerEdgeChanges(getSelectionChanges(edgeLookup));
       },
       addSelectedEdges: (selectedEdgeIds) => {
-        const { multiSelectionActive, edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { multiSelectionActive, edgeLookup, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
 
         if (multiSelectionActive) {
           const changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true));
@@ -205,8 +205,8 @@ const createRFStore = ({
           return;
         }
 
-        triggerEdgeChanges(getSelectionChanges(edges, new Set([...selectedEdgeIds])));
-        triggerNodeChanges(getSelectionChanges(nodes, new Set(), true));
+        triggerEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
+        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
         const { edges: storeEdges, nodes: storeNodes, triggerNodeChanges, triggerEdgeChanges } = get();
@@ -260,7 +260,7 @@ const createRFStore = ({
         nodeLookup.forEach((node) => {
           const positionAbsolute = clampPosition(node.position, nodeExtent);
 
-          nodeLookup.set(node.id, { ...node, computed: { ...node.computed, positionAbsolute } });
+          nodeLookup.set(node.id, { ...node, internals: { ...node.internals, positionAbsolute } });
         });
 
         set({

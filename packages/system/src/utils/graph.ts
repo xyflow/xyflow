@@ -131,12 +131,12 @@ export const getNodePositionWithOrigin = (
     y: node.position.y - offsetY,
   };
 
-  if (isInternalNodeBase(node) && node.computed.positionAbsolute) {
+  if (isInternalNodeBase(node) && node.internals.positionAbsolute) {
     return {
       position,
       positionAbsolute: {
-        x: node.computed.positionAbsolute.x - offsetX,
-        y: node.computed.positionAbsolute.y - offsetY,
+        x: node.internals.positionAbsolute.x - offsetX,
+        y: node.internals.positionAbsolute.y - offsetY,
       },
     };
   }
@@ -241,8 +241,8 @@ export const getNodesInside = <NodeType extends InternalNodeBase>(
 
   nodeLookup.forEach((node) => {
     const { selectable = true, hidden = false } = node;
-    const width = node.computed.width ?? node.width ?? node.initialWidth ?? null;
-    const height = node.computed.height ?? node.height ?? node.initialHeight ?? null;
+    const width = node.internals.width ?? node.width ?? node.initialWidth ?? null;
+    const height = node.internals.height ?? node.height ?? node.initialHeight ?? null;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
       return;
@@ -291,8 +291,8 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
     const internalNode = nodeLookup.get(n.id);
     const isVisible =
       internalNode &&
-      internalNode.computed.width &&
-      internalNode.computed.height &&
+      internalNode.internals.width &&
+      internalNode.internals.height &&
       (options?.includeHiddenNodes || !n.hidden);
 
     if (isVisible) {
@@ -340,7 +340,7 @@ function clampNodeExtent<NodeType extends InternalNodeBase>(
   if (!extent || extent === 'parent') {
     return extent;
   }
-  return [extent[0], [extent[1][0] - (node.computed.width ?? 0), extent[1][1] - (node.computed.height ?? 0)]];
+  return [extent[0], [extent[1][0] - (node.internals.width ?? 0), extent[1][1] - (node.internals.height ?? 0)]];
 }
 
 /**
@@ -375,10 +375,10 @@ export function calculateNodePosition<NodeType extends InternalNodeBase>({
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      const nodeWidth = node.computed.width;
-      const nodeHeight = node.computed.height;
-      const parentWidth = parentNode.computed.width;
-      const parentHeight = parentNode.computed.height;
+      const nodeWidth = node.internals.width;
+      const nodeHeight = node.internals.height;
+      const parentWidth = parentNode.internals.width;
+      const parentHeight = parentNode.internals.height;
 
       if (nodeWidth && nodeHeight && parentWidth && parentHeight) {
         const currNodeOrigin = node.origin || nodeOrigin;

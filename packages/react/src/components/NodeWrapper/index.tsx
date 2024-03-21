@@ -47,19 +47,19 @@ export function NodeWrapper<NodeType extends Node>({
       const internalNode = s.nodeLookup.get(id)! as InternalNode;
 
       const positionAbsolute = nodeExtent
-        ? clampPosition(internalNode.computed.positionAbsolute, nodeExtent)
-        : internalNode.computed.positionAbsolute || { x: 0, y: 0 };
+        ? clampPosition(internalNode.internals.positionAbsolute, nodeExtent)
+        : internalNode.internals.positionAbsolute || { x: 0, y: 0 };
 
       return {
         internalNode,
-        userNode: internalNode.computed.userProvidedNode as NodeType,
+        userNode: internalNode.internals.userProvidedNode as NodeType,
         // we are mutating positionAbsolute, z and isParent attributes for sub flows
         // so we we need to force a re-render when some change
         positionAbsoluteX: positionAbsolute.x,
         positionAbsoluteY: positionAbsolute.y,
-        zIndex: internalNode.computed.z ?? 0,
-        isParent: !!internalNode.computed.isParent,
-        hasHandleBounds: !!internalNode.computed.handleBounds,
+        zIndex: internalNode.internals.z ?? 0,
+        isParent: !!internalNode.internals.isParent,
+        hasHandleBounds: !!internalNode.internals.handleBounds,
       };
     },
     shallow

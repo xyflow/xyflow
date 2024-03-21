@@ -71,8 +71,8 @@ export const nodeToRect = (node: InternalNodeBase, nodeOrigin: NodeOrigin = [0, 
 
   return {
     ...positionAbsolute,
-    width: node.computed.width ?? node.width ?? 0,
-    height: node.computed.height ?? node.height ?? 0,
+    width: node.internals.width ?? node.width ?? 0,
+    height: node.internals.height ?? node.height ?? 0,
   };
 };
 
@@ -81,8 +81,8 @@ export const nodeToBox = (node: InternalNodeBase, nodeOrigin: NodeOrigin = [0, 0
 
   return {
     ...positionAbsolute,
-    x2: positionAbsolute.x + (node.computed.width ?? node.width ?? 0),
-    y2: positionAbsolute.y + (node.computed.height ?? node.height ?? 0),
+    x2: positionAbsolute.x + (node.internals.width ?? node.width ?? 0),
+    y2: positionAbsolute.y + (node.internals.height ?? node.height ?? 0),
   };
 };
 
@@ -207,19 +207,19 @@ export function isCoordinateExtent(extent?: CoordinateExtent | 'parent'): extent
 export function getNodeDimensions<NodeType extends InternalNodeBase | NodeBase>(
   node: NodeType
 ): { width: number; height: number } {
-  const computedDimensions = 'computed' in node ? node.computed : { width: undefined, height: undefined };
+  const internalDimensions = 'internals' in node ? node.internals : { width: undefined, height: undefined };
 
   return {
-    width: computedDimensions.width ?? node.width ?? node.initialWidth ?? 0,
-    height: computedDimensions.height ?? node.height ?? node.initialHeight ?? 0,
+    width: internalDimensions.width ?? node.width ?? node.initialWidth ?? 0,
+    height: internalDimensions.height ?? node.height ?? node.initialHeight ?? 0,
   };
 }
 
 export function nodeHasDimensions<NodeType extends InternalNodeBase | NodeBase>(node: NodeType): boolean {
-  const computedDimensions = 'computed' in node ? node.computed : { width: undefined, height: undefined };
+  const internalDimensions = 'internals' in node ? node.internals : { width: undefined, height: undefined };
 
   return (
-    (computedDimensions.width ?? node.width ?? node.initialWidth) !== undefined &&
-    (computedDimensions.height ?? node.height ?? node.initialHeight) !== undefined
+    (internalDimensions.width ?? node.width ?? node.initialWidth) !== undefined &&
+    (internalDimensions.height ?? node.height ?? node.initialHeight) !== undefined
   );
 }

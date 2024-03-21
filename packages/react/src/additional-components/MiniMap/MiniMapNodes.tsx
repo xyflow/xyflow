@@ -109,10 +109,10 @@ function NodeComponentWrapperInner<NodeType extends Node>({
       height={height}
       style={node.style}
       selected={!!node.selected}
-      className={nodeClassNameFunc(node.computed.userProvidedNode)}
-      color={nodeColorFunc(node.computed.userProvidedNode)}
+      className={nodeClassNameFunc(node.internals.userProvidedNode)}
+      color={nodeColorFunc(node.internals.userProvidedNode)}
       borderRadius={nodeBorderRadius}
-      strokeColor={nodeStrokeColorFunc(node.computed.userProvidedNode)}
+      strokeColor={nodeStrokeColorFunc(node.internals.userProvidedNode)}
       strokeWidth={nodeStrokeWidth}
       shapeRendering={shapeRendering}
       onClick={onClick}

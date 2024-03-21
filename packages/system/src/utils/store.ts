@@ -40,24 +40,24 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
         nodeLookup,
         {
           ...node.position,
-          z: internalNode.computed.z ?? 0,
+          z: internalNode.internals.z ?? 0,
         },
         parentNode?.origin || nodeOrigin
       );
 
       const positionChanged =
-        x !== internalNode.computed.positionAbsolute?.x || y !== internalNode.computed.positionAbsolute?.y;
-      internalNode.computed.positionAbsolute = positionChanged
+        x !== internalNode.internals.positionAbsolute?.x || y !== internalNode.internals.positionAbsolute?.y;
+      internalNode.internals.positionAbsolute = positionChanged
         ? {
             x,
             y,
           }
-        : internalNode.computed.positionAbsolute;
+        : internalNode.internals.positionAbsolute;
 
-      internalNode.computed.z = z;
+      internalNode.internals.z = z;
 
       if (parentNodes?.[node.id]) {
-        internalNode.computed.isParent = true;
+        internalNode.internals.isParent = true;
       }
     }
   });
@@ -87,7 +87,7 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
   nodes.forEach((n) => {
     const storeNode = tmpLookup.get(n.id);
 
-    if (n === storeNode?.computed.userProvidedNode) {
+    if (n === storeNode?.internals.userProvidedNode) {
       nodeLookup.set(n.id, storeNode);
       return storeNode;
     }
@@ -95,15 +95,15 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
     const node: InternalNodeBase<NodeType> = {
       ...options.defaults,
       ...n,
-      computed: {
-        handleBounds: storeNode?.computed?.handleBounds,
+      internals: {
+        handleBounds: storeNode?.internals?.handleBounds,
         positionAbsolute: n.position,
         // @todo how to deal with stored dimensions?
         // if we do not add computed.width/height to user nodes
         // it's hard to figure out, if node needs to be re-measured
         // we can't just use the existing dimensions, because they might be outdated
-        width: n.width ?? storeNode?.computed.width,
-        height: n.height ?? storeNode?.computed.height,
+        width: n.width ?? storeNode?.internals.width,
+        height: n.height ?? storeNode?.internals.height,
         userProvidedNode: n,
         z: (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0),
       },
@@ -138,7 +138,7 @@ function calculateXYZPosition<NodeType extends NodeBase>(
     {
       x: (result.x ?? 0) + parentNodePosition.x,
       y: (result.y ?? 0) + parentNodePosition.y,
-      z: (parentNode.computed.z ?? 0) > (result.z ?? 0) ? parentNode.computed.z ?? 0 : result.z ?? 0,
+      z: (parentNode.internals.z ?? 0) > (result.z ?? 0) ? parentNode.internals.z ?? 0 : result.z ?? 0,
     },
     parentNode.origin || nodeOrigin
   );
@@ -231,9 +231,9 @@ export function updateNodeDimensions<NodeType extends InternalNodeBase>(
       const doUpdate = !!(
         dimensions.width &&
         dimensions.height &&
-        (internalNode.computed.width !== dimensions.width ||
-          internalNode.computed.height !== dimensions.height ||
-          !internalNode.computed?.handleBounds ||
+        (internalNode.internals.width !== dimensions.width ||
+          internalNode.internals.height !== dimensions.height ||
+          !internalNode.internals?.handleBounds ||
           update.force)
       );
 
@@ -242,8 +242,8 @@ export function updateNodeDimensions<NodeType extends InternalNodeBase>(
 
         const newNode = {
           ...internalNode,
-          computed: {
-            ...internalNode.computed,
+          internals: {
+            ...internalNode.internals,
             ...dimensions,
             handleBounds: {
               source: getHandleBounds('.source', update.nodeElement, zoom, internalNode.origin || nodeOrigin),

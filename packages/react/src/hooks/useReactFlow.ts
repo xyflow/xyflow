@@ -4,13 +4,14 @@ import {
   getOverlappingArea,
   isRectObject,
   nodeHasDimensions,
+  NodeLookup,
   nodeToRect,
   type Rect,
 } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
-import type { ReactFlowInstance, Instance, Node, Edge } from '../types';
+import type { ReactFlowInstance, Instance, Node, Edge, InternalNode } from '../types';
 import { getElementsDiffChanges, isNode } from '../utils';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
@@ -32,7 +33,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   }, []);
 
   const getNode = useCallback<Instance.GetNode<NodeType>>((id) => {
-    return store.getState().nodeLookup.get(id)?.computed.userProvidedNode as NodeType;
+    return store.getState().nodeLookup.get(id)?.internals.userProvidedNode as NodeType;
   }, []);
 
   const getEdges = useCallback<Instance.GetEdges<EdgeType>>(() => {
@@ -241,7 +242,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
       return (nodes || store.getState().nodes).filter((n) => {
         const internalNode = store.getState().nodeLookup.get(n.id);
-        if (!isRect && (n.id === nodeOrRect!.id || !internalNode?.computed.positionAbsolute)) {
+        if (!isRect && (n.id === nodeOrRect!.id || !internalNode?.internals.positionAbsolute)) {
           return false;
         }
 
@@ -302,6 +303,35 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     [updateNode]
   );
 
+  const getInternalNode = useCallback(
+    (id: string) => store.getState().nodeLookup.get(id) as InternalNode<NodeType> | undefined,
+    []
+  );
+
+  const getInternalNodeValues = useCallback(
+    (id: string) => {
+      const internalNode = getInternalNode(id);
+
+      if (!internalNode) {
+        return undefined;
+      }
+
+      return {
+        width: internalNode.width ?? internalNode.internals.width,
+        height: internalNode.height ?? internalNode.internals.height,
+        positionAbsolute: internalNode.internals.positionAbsolute,
+        handles: internalNode.internals.handleBounds,
+        zIndex: internalNode.internals.z,
+      };
+    },
+    [getInternalNode]
+  );
+
+  const getInternalNodeLookup = useCallback(
+    () => store.getState().nodeLookup as NodeLookup<InternalNode<NodeType>>,
+    []
+  );
+
   return useMemo(() => {
     return {
       ...viewportHelper,
@@ -319,6 +349,9 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       isNodeIntersecting,
       updateNode,
       updateNodeData,
+      getInternalNode,
+      getInternalNodeValues,
+      getInternalNodeLookup,
     };
   }, [
     viewportHelper,
@@ -336,5 +369,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     isNodeIntersecting,
     updateNode,
     updateNodeData,
+    getInternalNode,
+    getInternalNodeValues,
+    getInternalNodeLookup,
   ]);
 }

@@ -137,13 +137,13 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         ];
 
         if (dragItems.length > 1 && nodeExtent && !n.extent) {
-          adjustedNodeExtent[0][0] = n.computed.positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
+          adjustedNodeExtent[0][0] = n.internals.positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
           adjustedNodeExtent[1][0] =
-            n.computed.positionAbsolute.x + (n.computed.width ?? 0) - nodesBox.x2 + nodeExtent[1][0];
+            n.internals.positionAbsolute.x + (n.internals.width ?? 0) - nodesBox.x2 + nodeExtent[1][0];
 
-          adjustedNodeExtent[0][1] = n.computed.positionAbsolute.y - nodesBox.y + nodeExtent[0][1];
+          adjustedNodeExtent[0][1] = n.internals.positionAbsolute.y - nodesBox.y + nodeExtent[0][1];
           adjustedNodeExtent[1][1] =
-            n.computed.positionAbsolute.y + (n.computed.height ?? 0) - nodesBox.y2 + nodeExtent[1][1];
+            n.internals.positionAbsolute.y + (n.internals.height ?? 0) - nodesBox.y2 + nodeExtent[1][1];
         }
 
         const { position, positionAbsolute } = calculateNodePosition({
@@ -159,7 +159,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         hasChange = hasChange || n.position.x !== position.x || n.position.y !== position.y;
 
         n.position = position;
-        n.computed.positionAbsolute = positionAbsolute;
+        n.internals.positionAbsolute = positionAbsolute;
 
         return n;
       });
@@ -209,7 +209,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
     function startDrag(event: UseDragEvent) {
       const {
-        nodes,
         nodeLookup,
         multiSelectionActive,
         nodesDraggable,
@@ -237,7 +236,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
       const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
       lastPos = pointerPos;
-      dragItems = getDragItems(nodes, nodesDraggable, pointerPos, nodeLookup, nodeId);
+      dragItems = getDragItems(nodesDraggable, pointerPos, nodeLookup, nodeId);
 
       if (dragItems.length > 0 && (onDragStart || onNodeDragStart || (!nodeId && onSelectionDragStart))) {
         const [currentNode, currentNodes] = getEventHandlerParams({
