@@ -86,27 +86,27 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   /** Pressing down this key you can select multiple elements with a selection box.
    * @default 'Shift'
    */
-  selectionKey?: KeyDefinition | null;
+  selectionKey?: KeyDefinition | KeyDefinition[] | null;
   /** If a key is set, you can pan the viewport while that key is held down even if panOnScroll is set to false.
    *
    * By setting this prop to null you can disable this functionality.
    * @default 'Space'
    */
-  panActivationKey?: KeyDefinition | null;
+  panActivationKey?: KeyDefinition | KeyDefinition[] | null;
   /** Pressing down this key deletes all selected nodes & edges.
    * @default 'Backspace'
    */
-  deleteKey?: KeyDefinition | null;
+  deleteKey?: KeyDefinition | KeyDefinition[] | null;
   /** Pressing down this key you can select multiple elements by clicking.
    * @default 'Meta' for macOS, "Ctrl" for other systems
    */
-  multiSelectionKey?: KeyDefinition | null;
+  multiSelectionKey?: KeyDefinition | KeyDefinition[] | null;
   /** If a key is set, you can zoom the viewport while that key is held down even if panOnScroll is set to false.
    *
    * By setting this prop to null you can disable this functionality.
    * @default 'Meta' for macOS, "Ctrl" for other systems
    * */
-  zoomActivationKey?: KeyDefinition | null;
+  zoomActivationKey?: KeyDefinition | KeyDefinition[] | null;
   /** If set, initial viewport will show all nodes & edges */
   fitView?: boolean;
   /** Options to be used in combination with fitView
