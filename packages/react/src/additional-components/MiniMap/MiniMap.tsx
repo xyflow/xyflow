@@ -153,6 +153,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         aria-labelledby={labelledBy}
         ref={svg}
         onClick={onSvgClick}
+        display="block"
       >
         {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
         <MiniMapNodes<NodeType>
