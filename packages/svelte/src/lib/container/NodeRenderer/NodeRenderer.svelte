@@ -87,6 +87,7 @@
       computedWidth={node.computed?.width}
       computedHeight={node.computed?.height}
       {resizeObserver}
+      parentNode={node.parentNode}
       on:nodeclick
       on:nodemouseenter
       on:nodemousemove

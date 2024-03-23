@@ -20,6 +20,7 @@ export type NodeWrapperProps = Pick<
   | 'height'
   | 'initialWidth'
   | 'initialHeight'
+  | 'parentNode'
 > & {
   computedWidth?: number;
   computedHeight?: number;
