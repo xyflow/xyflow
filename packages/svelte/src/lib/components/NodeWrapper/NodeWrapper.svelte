@@ -44,6 +44,7 @@
   export let height: NodeWrapperProps['height'] = undefined;
   export let dragHandle: NodeWrapperProps['dragHandle'] = undefined;
   export let initialized: NodeWrapperProps['initialized'] = false;
+  export let parentNode: NodeWrapperProps['parentNode'] = undefined;
   let className: string = '';
   export { className as class };
 
@@ -205,6 +206,7 @@
       positionAbsoluteY={positionY}
       {width}
       {height}
+      {parentNode}
     />
   </div>
 {/if}

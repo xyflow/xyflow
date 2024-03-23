@@ -85,7 +85,7 @@ export type NodeBase<
  */
 export type NodeProps<NodeType extends NodeBase> = Pick<
   NodeType,
-  'id' | 'data' | 'width' | 'height' | 'sourcePosition' | 'targetPosition' | 'selected' | 'dragHandle'
+  'id' | 'data' | 'width' | 'height' | 'sourcePosition' | 'targetPosition' | 'selected' | 'dragHandle' | 'parentNode'
 > &
   Required<Pick<NodeType, 'type' | 'dragging' | 'zIndex'>> & {
     /** whether a node is connectable or not */
