@@ -40,6 +40,14 @@
     return isKeyObject(key) ? key.key : key;
   }
 
+  function resetAll() {
+    selectionKeyPressed.set(false);
+    multiselectionKeyPressed.set(false);
+    deleteKeyPressed.set(false);
+    panActivationKeyPressed.set(false);
+    zoomActivationKeyPressed.set(false);
+  }
+
   $: selectionKeyDefinition = {
     key: getKeyString(selectionKey),
     modifier: getModifier(selectionKey)
@@ -67,6 +75,8 @@
 </script>
 
 <svelte:window
+  on:blur={resetAll}
+  on:contextmenu={resetAll}
   use:shortcut={{
     trigger: [
       {
