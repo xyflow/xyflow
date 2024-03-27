@@ -44,6 +44,7 @@ import type {
   OnBeforeDelete,
   IsValidConnection,
   EdgeChange,
+  InternalNode,
 } from '.';
 
 export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
@@ -52,7 +53,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   height: number;
   transform: Transform;
   nodes: NodeType[];
-  nodeLookup: NodeLookup<NodeType>;
+  nodeLookup: NodeLookup<InternalNode<NodeType>>;
   edges: Edge[];
   edgeLookup: EdgeLookup<EdgeType>;
   connectionLookup: ConnectionLookup;
@@ -169,7 +170,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
-  fitView: (nodes: NodeType[], options?: FitViewOptions) => boolean;
+  fitView: (options?: FitViewOptions) => boolean;
 };
 
 export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = ReactFlowStore<

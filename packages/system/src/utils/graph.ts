@@ -24,6 +24,7 @@ import {
   OnError,
   OnBeforeDeleteBase,
   NodeLookup,
+  InternalNodeBase,
 } from '../types';
 import { errorMessages } from '../constants';
 
@@ -46,6 +47,10 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): 
  */
 export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: any): element is NodeType =>
   'id' in element && 'position' in element && !('source' in element) && !('target' in element);
+
+export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalNodeBase>(
+  element: any
+): element is NodeType => 'id' in element && 'computed' in element && !('source' in element) && !('target' in element);
 
 /**
  * Pass in a node, and get connected nodes where edge.source === node.id
@@ -101,7 +106,7 @@ export const getIncomers = <NodeType extends NodeBase = NodeBase, EdgeType exten
 };
 
 export const getNodePositionWithOrigin = (
-  node: NodeBase | undefined,
+  node: InternalNodeBase | undefined,
   nodeOrigin: NodeOrigin = [0, 0]
 ): { position: XYPosition; positionAbsolute: XYPosition } => {
   if (!node) {
@@ -128,12 +133,10 @@ export const getNodePositionWithOrigin = (
 
   return {
     position,
-    positionAbsolute: node.computed?.positionAbsolute
-      ? {
-          x: node.computed.positionAbsolute.x - offsetX,
-          y: node.computed.positionAbsolute.y - offsetY,
-        }
-      : position,
+    positionAbsolute: {
+      x: node.internals.positionAbsolute.x - offsetX,
+      y: node.internals.positionAbsolute.y - offsetY,
+    },
   };
 };
 
@@ -151,6 +154,7 @@ export type GetNodesBoundsParams = {
  * @param params.useRelativePosition - Whether to use the relative or absolute node positions
  * @returns Bounding box enclosing all nodes
  */
+// @todo how to handle this if users do not have absolute positions?
 export const getNodesBounds = (
   nodes: NodeBase[],
   params: GetNodesBoundsParams = { nodeOrigin: [0, 0], useRelativePosition: false }
@@ -161,6 +165,7 @@ export const getNodesBounds = (
 
   const box = nodes.reduce(
     (currBox, node) => {
+      // @ts-expect-error
       const nodePos = getNodePositionWithOrigin(node, node.origin || params.nodeOrigin);
       return getBoundsOfBoxes(
         currBox,
@@ -176,8 +181,47 @@ export const getNodesBounds = (
   return boxToRect(box);
 };
 
-export const getNodesInside = <NodeType extends NodeBase>(
-  nodes: NodeType[],
+export type GetInternalNodesBoundsParams = {
+  nodeOrigin?: NodeOrigin;
+  useRelativePosition?: boolean;
+  filter?: (node: NodeBase) => boolean;
+};
+
+/**
+ * Determines a bounding box that contains all given nodes in an array
+ * @internal
+ */
+export const getInternalNodesBounds = (
+  nodeLookup: NodeLookup,
+  params: GetInternalNodesBoundsParams = {
+    nodeOrigin: [0, 0],
+    useRelativePosition: false,
+  }
+): Rect => {
+  if (nodeLookup.size === 0) {
+    return { x: 0, y: 0, width: 0, height: 0 };
+  }
+
+  let box = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity };
+
+  nodeLookup.forEach((node) => {
+    if (params.filter == undefined || params.filter(node)) {
+      const nodePos = getNodePositionWithOrigin(node, node.origin || params.nodeOrigin);
+      box = getBoundsOfBoxes(
+        box,
+        rectToBox({
+          ...nodePos[params.useRelativePosition ? 'position' : 'positionAbsolute'],
+          ...getNodeDimensions(node),
+        })
+      );
+    }
+  });
+
+  return boxToRect(box);
+};
+
+export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
+  nodeLookup: Map<string, InternalNodeBase<NodeType>>,
   rect: Rect,
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially = false,
@@ -191,13 +235,15 @@ export const getNodesInside = <NodeType extends NodeBase>(
     height: rect.height / tScale,
   };
 
-  const visibleNodes = nodes.reduce<NodeType[]>((res, node) => {
+  const visibleNodes: NodeType[] = [];
+
+  for (const [, node] of nodeLookup) {
     const { computed, selectable = true, hidden = false } = node;
     const width = computed?.width ?? node.width ?? node.initialWidth ?? null;
     const height = computed?.height ?? node.height ?? node.initialHeight ?? null;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
-      return res;
+      continue;
     }
 
     const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node, nodeOrigin));
@@ -208,11 +254,9 @@ export const getNodesInside = <NodeType extends NodeBase>(
     const isVisible = notInitialized || partiallyVisible || overlappingArea >= area;
 
     if (isVisible || node.dragging) {
-      res.push(node);
+      visibleNodes.push(node);
     }
-
-    return res;
-  }, []);
+  }
 
   return visibleNodes;
 };
@@ -236,17 +280,20 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
 };
 
 export function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
-  { nodes, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
+  { nodeLookup, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
   options?: Options
 ) {
-  const filteredNodes = nodes.filter((n) => {
+  const filteredNodes: InternalNodeBase[] = [];
+
+  nodeLookup.forEach((n) => {
     const isVisible = n.computed?.width && n.computed?.height && (options?.includeHiddenNodes || !n.hidden);
 
-    if (options?.nodes?.length) {
-      return isVisible && options?.nodes.some((optionNode) => optionNode.id === n.id);
+    if (
+      isVisible &&
+      (!options?.nodes || (options?.nodes.length && options?.nodes.some((optionNode) => optionNode.id === n.id)))
+    ) {
+      filteredNodes.push(n);
     }
-
-    return isVisible;
   });
 
   if (filteredNodes.length > 0) {
@@ -303,7 +350,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
 }: {
   nodeId: string;
   nextPosition: XYPosition;
-  nodeLookup: NodeLookup<NodeType>;
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>;
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
   onError?: OnError;
@@ -313,16 +360,17 @@ export function calculateNodePosition<NodeType extends NodeBase>({
   const { x: parentX, y: parentY } = parentNode
     ? getNodePositionWithOrigin(parentNode, parentNode.origin || nodeOrigin).positionAbsolute
     : { x: 0, y: 0 };
+
   let currentExtent = clampNodeExtent(node, node.extent || nodeExtent);
 
   if (node.extent === 'parent' && !node.expandParent) {
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      const nodeWidth = node.computed?.width;
-      const nodeHeight = node.computed?.height;
-      const parentWidth = parentNode?.computed?.width;
-      const parentHeight = parentNode?.computed?.height;
+      const nodeWidth = node.computed.width;
+      const nodeHeight = node.computed.height;
+      const parentWidth = parentNode.computed.width;
+      const parentHeight = parentNode.computed.height;
 
       if (nodeWidth && nodeHeight && parentWidth && parentHeight) {
         const currNodeOrigin = node.origin || nodeOrigin;

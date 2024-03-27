@@ -8,6 +8,7 @@ import type {
   NodeOrigin,
   SnapGrid,
   Transform,
+  InternalNodeBase,
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin } from './graph';
@@ -65,7 +66,7 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
   height: y2 - y,
 });
 
-export const nodeToRect = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+export const nodeToRect = (node: InternalNodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
   const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
 
   return {
@@ -75,7 +76,7 @@ export const nodeToRect = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rec
   };
 };
 
-export const nodeToBox = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box => {
+export const nodeToBox = (node: InternalNodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box => {
   const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
 
   return {

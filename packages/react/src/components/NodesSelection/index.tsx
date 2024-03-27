@@ -11,7 +11,7 @@ import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
-import type { Node, ReactFlowState } from '../../types';
+import type { InternalNode, Node, ReactFlowState } from '../../types';
 
 export type NodesSelectionProps<NodeType> = {
   onSelectionContextMenu?: (event: MouseEvent, nodes: NodeType[]) => void;
@@ -20,7 +20,13 @@ export type NodesSelectionProps<NodeType> = {
 };
 
 const selector = (s: ReactFlowState) => {
-  const selectedNodes = s.nodes.filter((n) => n.selected);
+  const selectedNodes: InternalNode[] = [];
+  for (const [, node] of s.nodeLookup) {
+    if (node.selected) {
+      selectedNodes.push(node);
+    }
+  }
+
   const { width, height, x, y } = getNodesBounds(selectedNodes, { nodeOrigin: s.nodeOrigin });
 
   return {

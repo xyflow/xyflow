@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { EdgeLookup, NodeLookup } from '@xyflow/system';
-import type { Node, Edge, EdgeChange, NodeChange, NodeSelectionChange, EdgeSelectionChange } from '../types';
+import type {
+  Node,
+  Edge,
+  EdgeChange,
+  NodeChange,
+  NodeSelectionChange,
+  EdgeSelectionChange,
+  InternalNode,
+} from '../types';
 
 export function handleParentExpand(updatedElements: any[], updateItem: any) {
   for (const [index, item] of updatedElements.entries()) {
@@ -125,11 +133,6 @@ function applyChange(change: any, element: any, elements: any[] = []): any {
         element.position = change.position;
       }
 
-      if (typeof change.positionAbsolute !== 'undefined') {
-        element.computed ??= {};
-        element.computed.positionAbsolute = change.positionAbsolute;
-      }
-
       if (typeof change.dragging !== 'undefined') {
         element.dragging = change.dragging;
       }
@@ -228,13 +231,13 @@ export function createSelectionChange(id: string, selected: boolean): NodeSelect
 }
 
 export function getSelectionChanges(
-  items: any[],
+  items: Map<string, any>,
   selectedIds: Set<string> = new Set(),
   mutateItem = false
 ): NodeSelectionChange[] | EdgeSelectionChange[] {
   const changes: NodeSelectionChange[] | EdgeSelectionChange[] = [];
 
-  for (const item of items) {
+  for (const [, item] of items) {
     const willBeSelected = selectedIds.has(item.id);
 
     // we don't want to set all items to selected=false on the first selection
@@ -266,7 +269,7 @@ export function getElementsDiffChanges({
   lookup,
 }: {
   items: Node[] | undefined;
-  lookup: NodeLookup<Node>;
+  lookup: NodeLookup<InternalNode<Node>>;
 }): NodeChange[];
 export function getElementsDiffChanges({
   items,

@@ -3,15 +3,15 @@ import {
   type HandleType,
   type NodeHandleBounds,
   type XYPosition,
-  type NodeBase,
   type ConnectionHandle,
+  InternalNodeBase,
+  NodeLookup,
 } from '../types';
-import { internalsSymbol } from '../constants';
 
 // this functions collects all handles and adds an absolute position
 // so that we can later find the closest handle to the mouse position
 export function getHandles(
-  node: NodeBase,
+  node: InternalNodeBase,
   handleBounds: NodeHandleBounds,
   type: HandleType,
   currentHandle: string
@@ -22,8 +22,8 @@ export function getHandles(
         id: h.id || null,
         type,
         nodeId: node.id,
-        x: (node.computed?.positionAbsolute?.x ?? 0) + h.x + h.width / 2,
-        y: (node.computed?.positionAbsolute?.y ?? 0) + h.y + h.height / 2,
+        x: (node.internals.positionAbsolute.x ?? 0) + h.x + h.width / 2,
+        y: (node.internals.positionAbsolute.y ?? 0) + h.y + h.height / 2,
       });
     }
     return res;
@@ -62,28 +62,30 @@ export function getClosestHandle(
 }
 
 type GetHandleLookupParams = {
-  nodes: NodeBase[];
+  nodeLookup: NodeLookup;
   nodeId: string;
   handleId: string | null;
   handleType: string;
 };
 
-export function getHandleLookup({ nodes, nodeId, handleId, handleType }: GetHandleLookupParams) {
-  return nodes.reduce<ConnectionHandle[]>((res, node) => {
-    if (node[internalsSymbol]) {
-      const { handleBounds } = node[internalsSymbol];
-      let sourceHandles: ConnectionHandle[] = [];
-      let targetHandles: ConnectionHandle[] = [];
+export function getHandleLookup({
+  nodeLookup,
+  nodeId,
+  handleId,
+  handleType,
+}: GetHandleLookupParams): ConnectionHandle[] {
+  const connectionHandles: ConnectionHandle[] = [];
 
-      if (handleBounds) {
-        sourceHandles = getHandles(node, handleBounds, 'source', `${nodeId}-${handleId}-${handleType}`);
-        targetHandles = getHandles(node, handleBounds, 'target', `${nodeId}-${handleId}-${handleType}`);
-      }
-
-      res.push(...sourceHandles, ...targetHandles);
+  for (const [, node] of nodeLookup) {
+    if (node.internals.handleBounds) {
+      const id = `${nodeId}-${handleId}-${handleType}`;
+      const sourceHandles = getHandles(node, node.internals.handleBounds, 'source', id);
+      const targetHandles = getHandles(node, node.internals.handleBounds, 'target', id);
+      connectionHandles.push(...sourceHandles, ...targetHandles);
     }
-    return res;
-  }, []);
+  }
+
+  return connectionHandles;
 }
 
 export function getHandleType(
