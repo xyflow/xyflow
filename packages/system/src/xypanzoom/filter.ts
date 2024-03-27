@@ -48,11 +48,6 @@ export function createFilter({
       return false;
     }
 
-    // if zoom on double click is disabled, we prevent the double click event
-    if (!zoomOnDoubleClick && event.type === 'dblclick') {
-      return false;
-    }
-
     // if the target element is inside an element with the nowheel class, we prevent zooming
     if (isWrappedWithClass(event, noWheelClassName) && event.type === 'wheel') {
       return false;
