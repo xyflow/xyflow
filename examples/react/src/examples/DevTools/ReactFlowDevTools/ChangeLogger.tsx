@@ -10,7 +10,7 @@ type ChangeInfoProps = {
   change: NodeChange;
 };
 
-function ChangeInfo({ change, index }: ChangeInfoProps) {
+function ChangeInfo({ change }: ChangeInfoProps) {
   const id = 'id' in change ? change.id : '-';
   const { type } = change;
 
@@ -46,17 +46,15 @@ export default function ChangeLogger({ color = '#555', limit = 20 }: ChangeLogge
     const onNodesChangeLogger: OnNodesChange = (changes) => {
       userOnNodesChange(changes);
 
-      requestAnimationFrame(() => {
-        setChanges((c) => {
-          changes.forEach((change) => {
-            if (c.length >= limit) {
-              c.pop();
-            }
+      setChanges((c) => {
+        changes.forEach((change) => {
+          if (c.length >= limit) {
+            c.pop();
+          }
 
-            c = [change, ...c];
-          });
-          return c;
+          c = [change, ...c];
         });
+        return c;
       });
     };
 
