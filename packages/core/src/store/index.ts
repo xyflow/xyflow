@@ -70,8 +70,19 @@ const createRFStore = () =>
         const changes: NodeDimensionChange[] = updates.reduce<NodeDimensionChange[]>((res, update) => {
           const node = nodeInternals.get(update.id);
 
-          if (node) {
+          if (node?.hidden) {
+            nodeInternals.set(node.id, {
+              ...node,
+              [internalsSymbol]: {
+                ...node[internalsSymbol],
+                // we need to reset the handle bounds when the node is hidden
+                // in order to force a new observation when the node is shown again
+                handleBounds: undefined,
+              },
+            });
+          } else if (node) {
             const dimensions = getDimensions(update.nodeElement);
+
             const doUpdate = !!(
               dimensions.width &&
               dimensions.height &&
