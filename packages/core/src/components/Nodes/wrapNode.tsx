@@ -125,9 +125,11 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     };
 
     useEffect(() => {
+      const currNode = nodeRef.current;
+
       return () => {
-        if (nodeRef.current) {
-          resizeObserver?.unobserve(nodeRef.current);
+        if (currNode) {
+          resizeObserver?.unobserve(currNode);
         }
       };
     }, []);
