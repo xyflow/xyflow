@@ -1,7 +1,6 @@
 import {
   NodeBase,
   CoordinateExtent,
-  Dimensions,
   NodeDimensionUpdate,
   NodeOrigin,
   PanZoomInstance,
@@ -12,9 +11,12 @@ import {
   EdgeBase,
   EdgeLookup,
   InternalNodeBase,
+  NodeChange,
+  NodeLookup,
+  Rect,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
-import { isNumeric } from './general';
+import { getBoundsOfRects, getNodeDimensions, isNumeric, nodeToRect } from './general';
 import { getNodePositionWithOrigin } from './graph';
 
 type ParentNodes = Set<string>;
@@ -139,38 +141,102 @@ function calculateXYZPosition<NodeType extends NodeBase>(
   );
 }
 
-export function updateNodeDimensions<NodeType extends NodeBase>(
-  updates: Map<string, NodeDimensionUpdate>,
-  nodeLookup: Map<string, InternalNodeBase<NodeType>>,
-  domNode: HTMLElement | null,
-  nodeOrigin?: NodeOrigin,
-  onUpdate?: (id: string, dimensions: Dimensions) => void
-): { hasUpdate: boolean } {
-  const viewportNode = domNode?.querySelector('.xyflow__viewport');
-  let hasUpdate = false;
+export function handleParentExpand(nodes: InternalNodeBase[], nodeLookup: NodeLookup): NodeChange[] {
+  const changes: NodeChange[] = [];
+  const chilNodeRects = new Map<string, Rect>();
 
-  if (!viewportNode) {
-    return { hasUpdate };
+  nodes.forEach((node) => {
+    if (node.expandParent && node.parentNode) {
+      const parentNode = nodeLookup.get(node.parentNode);
+
+      if (parentNode) {
+        const parentRect = chilNodeRects.get(node.parentNode) || nodeToRect(parentNode, node.origin);
+        const expandedRect = getBoundsOfRects(parentRect, nodeToRect(node, node.origin));
+        chilNodeRects.set(node.parentNode, expandedRect);
+      }
+    }
+  });
+
+  if (chilNodeRects.size > 0) {
+    chilNodeRects.forEach((rect, id) => {
+      const origParent = nodeLookup.get(id)!;
+      const { position } = getNodePositionWithOrigin(origParent, origParent.origin);
+      const dimensions = getNodeDimensions(origParent);
+
+      let xChange = null;
+      let yChange = null;
+
+      if (rect.x < position.x || rect.y < position.y) {
+        xChange = Math.abs(position.x - rect.x);
+        yChange = Math.abs(position.y - rect.y);
+
+        changes.push({
+          id,
+          type: 'position',
+          position: {
+            x: position.x - xChange,
+            y: position.y - yChange,
+          },
+        });
+
+        // @todo we need to reset child node positions if < 0
+      }
+
+      if (dimensions.width < rect.width || dimensions.height < rect.height) {
+        changes.push({
+          id,
+          type: 'dimensions',
+          resizing: true,
+          dimensions: {
+            width: Math.max(dimensions.width, rect.width),
+            height: Math.max(dimensions.height, rect.height),
+          },
+        });
+      }
+    });
   }
 
+  return changes;
+}
+
+export function updateNodeDimensions<NodeType extends InternalNodeBase>(
+  updates: Map<string, NodeDimensionUpdate>,
+  nodeLookup: Map<string, NodeType>,
+  domNode: HTMLElement | null,
+  nodeOrigin?: NodeOrigin
+): NodeChange[] {
+  const viewportNode = domNode?.querySelector('.xyflow__viewport');
+
+  if (!viewportNode) {
+    return [];
+  }
+
+  const changes: NodeChange[] = [];
   const style = window.getComputedStyle(viewportNode);
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
+  // in this array we collect nodes, that might trigger changes (like expanding parent)
+  const triggerChangeNodes: NodeType[] = [];
 
   updates.forEach((update) => {
     const node = nodeLookup.get(update.id);
 
-    if (node) {
+    if (node?.hidden) {
+      nodeLookup.set(node.id, {
+        ...node,
+        internals: {
+          ...node.internals,
+          handleBounds: undefined,
+        },
+      });
+    } else if (node) {
       const dimensions = getDimensions(update.nodeElement);
       const doUpdate = !!(
         dimensions.width &&
         dimensions.height &&
-        (node.computed?.width !== dimensions.width || node.computed?.height !== dimensions.height || update.forceUpdate)
+        (node.computed?.width !== dimensions.width || node.computed?.height !== dimensions.height || update.force)
       );
 
       if (doUpdate) {
-        hasUpdate = true;
-        onUpdate?.(node.id, dimensions);
-
         const newNode = {
           ...node,
           computed: {
@@ -185,12 +251,28 @@ export function updateNodeDimensions<NodeType extends NodeBase>(
             },
           },
         };
+
         nodeLookup.set(node.id, newNode);
+
+        changes.push({
+          id: newNode.id,
+          type: 'dimensions',
+          dimensions,
+        });
+
+        if (newNode.expandParent) {
+          triggerChangeNodes.push(newNode);
+        }
       }
     }
   });
 
-  return { hasUpdate };
+  if (triggerChangeNodes.length > 0) {
+    const parentExpandChanges = handleParentExpand(triggerChangeNodes, nodeLookup);
+    changes.push(...parentExpandChanges);
+  }
+
+  return changes;
 }
 
 export function panBy({

@@ -5,9 +5,10 @@ import {
   adoptUserProvidedNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
-  Dimensions,
   updateNodeDimensions as updateNodeDimensionsSystem,
   updateConnectionLookup,
+  handleParentExpand,
+  NodeChange,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -16,12 +17,12 @@ import type {
   ReactFlowState,
   Node,
   Edge,
-  NodeDimensionChange,
   EdgeSelectionChange,
   NodeSelectionChange,
   NodePositionChange,
   UnselectNodesAndEdgesParams,
   FitViewOptions,
+  InternalNode,
 } from '../types';
 
 const createRFStore = ({
@@ -91,23 +92,10 @@ const createRFStore = ({
           nodeOrigin,
           debug,
         } = get();
-        const changes: NodeDimensionChange[] = [];
 
-        const updatedNodes = updateNodeDimensionsSystem(
-          updates,
-          nodeLookup,
-          domNode,
-          nodeOrigin,
-          (id: string, dimensions: Dimensions) => {
-            changes.push({
-              id: id,
-              type: 'dimensions',
-              dimensions,
-            });
-          }
-        );
+        const changes = updateNodeDimensionsSystem(updates, nodeLookup, domNode, nodeOrigin);
 
-        if (!updatedNodes) {
+        if (changes.length === 0) {
           return;
         }
 
@@ -137,16 +125,29 @@ const createRFStore = ({
         }
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
-        const changes = nodeDragItems.map((node) => {
-          const change: NodePositionChange = {
+        const { nodeLookup } = get();
+        const triggerChangeNodes: InternalNode[] = [];
+
+        const changes: NodeChange[] = nodeDragItems.map((node) => {
+          const internalNode = nodeLookup.get(node.id);
+          const change: NodeChange = {
             id: node.id,
             type: 'position',
             position: node.position,
             dragging,
           };
 
+          if (internalNode?.expandParent) {
+            triggerChangeNodes.push(internalNode);
+          }
+
           return change;
         });
+
+        if (triggerChangeNodes.length > 0) {
+          const parentExpandChanges = handleParentExpand(triggerChangeNodes, nodeLookup);
+          changes.push(...parentExpandChanges);
+        }
 
         get().triggerNodeChanges(changes);
       },

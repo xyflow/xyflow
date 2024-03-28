@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 
 import { ReactFlowState } from '../../types';
 import { useStore } from '../../hooks/useStore';
+import { NodeDimensionUpdate } from '@xyflow/system';
 
 const selector = (s: ReactFlowState) => s.updateNodeDimensions;
 
@@ -15,14 +16,13 @@ export function useResizeObserver() {
     }
 
     const observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      const updates = new Map();
+      const updates = new Map<string, NodeDimensionUpdate>();
 
       entries.forEach((entry: ResizeObserverEntry) => {
         const id = entry.target.getAttribute('data-id') as string;
         updates.set(id, {
           id,
           nodeElement: entry.target as HTMLDivElement,
-          forceUpdate: true,
         });
       });
 

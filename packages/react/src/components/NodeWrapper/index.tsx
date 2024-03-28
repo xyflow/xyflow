@@ -88,9 +88,11 @@ export function NodeWrapper<NodeType extends Node>({
   const moveSelectedNodes = useMoveSelectedNodes();
 
   useEffect(() => {
+    const currNode = nodeRef.current;
+
     return () => {
-      if (nodeRef.current) {
-        resizeObserver?.unobserve(nodeRef.current);
+      if (currNode) {
+        resizeObserver?.unobserve(currNode);
       }
     };
   }, []);
@@ -122,7 +124,7 @@ export function NodeWrapper<NodeType extends Node>({
       if (targetPosChanged) {
         prevTargetPosition.current = node.targetPosition;
       }
-      store.getState().updateNodeDimensions(new Map([[id, { id, nodeElement: nodeRef.current, forceUpdate: true }]]));
+      store.getState().updateNodeDimensions(new Map([[id, { id, nodeElement: nodeRef.current, force: true }]]));
     }
   }, [id, nodeType, node.sourcePosition, node.targetPosition]);
 

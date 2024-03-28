@@ -110,7 +110,7 @@ export type NodeHandleBounds = {
 export type NodeDimensionUpdate = {
   id: string;
   nodeElement: HTMLDivElement;
-  forceUpdate?: boolean;
+  force?: boolean;
 };
 
 export type NodeBounds = XYPosition & {

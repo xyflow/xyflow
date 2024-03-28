@@ -28,7 +28,7 @@ export { useNodesData } from './hooks/useNodesData';
 export { useConnection } from './hooks/useConnection';
 export { useNodeId } from './contexts/NodeIdContext';
 
-export { applyNodeChanges, applyEdgeChanges, handleParentExpand } from './utils/changes';
+export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { isNode, isEdge } from './utils/general';
 
 export * from './additional-components';
