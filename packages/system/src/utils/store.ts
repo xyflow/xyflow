@@ -38,7 +38,7 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
         nodeLookup,
         {
           ...node.position,
-          z: 0,
+          z: node.zIndex ?? 0,
         },
         parentNode?.origin || nodeOrigin
       );
