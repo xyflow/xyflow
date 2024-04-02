@@ -19,46 +19,45 @@ import { getDimensions, getHandleBounds } from './dom';
 import { getBoundsOfRects, getNodeDimensions, isNumeric, nodeToRect } from './general';
 import { getNodePositionWithOrigin } from './graph';
 
-type ParentNodes = Set<string>;
-
 export function updateAbsolutePositions<NodeType extends NodeBase>(
   nodeLookup: Map<string, InternalNodeBase<NodeType>>,
-  nodeOrigin: NodeOrigin = [0, 0],
-  parentNodes?: ParentNodes
+  options: UpdateNodesOptions<NodeType> = {
+    nodeOrigin: [0, 0] as NodeOrigin,
+    elevateNodesOnSelect: true,
+    defaults: {},
+  },
+  parentNodeIds?: Set<string>
 ) {
-  for (const [, node] of nodeLookup) {
-    if (node.parentNode && !nodeLookup.has(node.parentNode)) {
-      throw new Error(`Parent node ${node.parentNode} not found`);
+  const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
+
+  for (const [id, node] of nodeLookup) {
+    const parentId = node.parentNode;
+
+    if (parentId && !nodeLookup.has(parentId)) {
+      throw new Error(`Parent node ${parentId} not found`);
     }
 
-    if (node.parentNode || parentNodes?.has(node.id)) {
-      const parentNode = node.parentNode ? nodeLookup.get(node.parentNode) : null;
+    if (node.parentNode || node.internals.isParent || parentNodeIds?.has(id)) {
+      const parentNode = parentId ? nodeLookup.get(parentId) : null;
       const { x, y, z } = calculateXYZPosition(
         node,
         nodeLookup,
         {
           ...node.position,
-          z: node.internals.z ?? 0,
+          z: (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0),
         },
-        parentNode?.origin || nodeOrigin
+        parentNode?.origin || options.nodeOrigin
       );
 
-      const positionChanged = x !== node.internals.positionAbsolute?.x || y !== node.internals.positionAbsolute?.y;
-      node.internals.positionAbsolute = positionChanged
-        ? {
-            x,
-            y,
-          }
-        : node.internals.positionAbsolute;
+      const currPosition = node.internals.positionAbsolute;
+      const positionChanged = x !== currPosition.x || y !== currPosition.y;
 
+      node.internals.positionAbsolute = positionChanged ? { x, y } : currPosition;
       node.internals.z = z;
+      node.internals.isParent = !!parentNodeIds?.has(id);
 
-      if (parentNodes?.has(node.id)) {
-        node.internals.isParent = true;
-      }
+      nodeLookup.set(id, node);
     }
-
-    nodeLookup.set(node.id, node);
   }
 }
 
@@ -79,14 +78,16 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
 ) {
   const tmpLookup = new Map(nodeLookup);
   nodeLookup.clear();
-  const parentNodes: ParentNodes = new Set();
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
+  const parentNodeIds = new Set<string>();
 
   nodes.forEach((n) => {
     const currentStoreNode = tmpLookup.get(n.id);
+
     if (n.parentNode) {
-      parentNodes.add(n.parentNode);
+      parentNodeIds.add(n.parentNode);
     }
+
     if (n === currentStoreNode?.internals?.userProvidedNode) {
       nodeLookup.set(n.id, currentStoreNode);
       return currentStoreNode;
@@ -111,8 +112,8 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
     nodeLookup.set(node.id, node);
   });
 
-  if (parentNodes.size > 0) {
-    updateAbsolutePositions(nodeLookup, options.nodeOrigin, parentNodes);
+  if (parentNodeIds.size > 0) {
+    updateAbsolutePositions(nodeLookup, options, parentNodeIds);
   }
 }
 
@@ -120,7 +121,7 @@ function calculateXYZPosition<NodeType extends NodeBase>(
   node: NodeType,
   nodeLookup: Map<string, InternalNodeBase<NodeType>>,
   result: XYZPosition,
-  nodeOrigin: NodeOrigin
+  nodeOrigin: NodeOrigin = [0, 0]
 ): XYZPosition {
   if (!node.parentNode) {
     return result;

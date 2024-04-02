@@ -19,7 +19,6 @@ import type {
   Edge,
   EdgeSelectionChange,
   NodeSelectionChange,
-  NodePositionChange,
   UnselectNodesAndEdgesParams,
   FitViewOptions,
   InternalNode,
@@ -99,7 +98,7 @@ const createRFStore = ({
           return;
         }
 
-        updateAbsolutePositions(nodeLookup, nodeOrigin);
+        updateAbsolutePositions(nodeLookup, { nodeOrigin });
 
         // we call fitView once initially after all dimensions are set
         let nextFitViewDone = fitViewDone;
