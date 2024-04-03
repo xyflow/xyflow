@@ -57,7 +57,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     hasHandleBounds,
   }: WrapNodeProps) => {
     const store = useStoreApi();
-    const nodeRef = useRef<HTMLDivElement>(null);
+    const nodeRef = useRef<HTMLDivElement | null>(null);
+    const prevNodeRef = useRef<HTMLDivElement | null>(null);
     const prevSourcePosition = useRef(sourcePosition);
     const prevTargetPosition = useRef(targetPosition);
     const prevType = useRef(type);
@@ -124,11 +125,9 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     };
 
     useEffect(() => {
-      const currNode = nodeRef.current;
-
       return () => {
-        if (currNode) {
-          resizeObserver?.unobserve(currNode);
+        if (prevNodeRef.current) {
+          resizeObserver?.unobserve(prevNodeRef.current);
         }
       };
     }, []);
@@ -140,8 +139,11 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         if (!initialized || !hasHandleBounds) {
           // At this point we always want to make sure that the node gets re-measured / re-initialized.
           // We need to unobserve it first in case it is still observed
-          resizeObserver?.unobserve(currNode);
+          if (prevNodeRef.current) {
+            resizeObserver?.unobserve(prevNodeRef.current);
+          }
           resizeObserver?.observe(currNode);
+          prevNodeRef.current = currNode;
         }
       }
     }, [hidden, initialized, hasHandleBounds]);
