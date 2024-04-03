@@ -54,7 +54,10 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
 
       node.internals.positionAbsolute = positionChanged ? { x, y } : currPosition;
       node.internals.z = z;
-      node.internals.isParent = !!parentNodeIds?.has(id);
+
+      if (parentNodeIds !== undefined) {
+        node.internals.isParent = !!parentNodeIds?.has(id);
+      }
 
       nodeLookup.set(id, node);
     }
@@ -164,12 +167,9 @@ export function handleParentExpand(nodes: InternalNodeBase[], nodeLookup: NodeLo
       const { position } = getNodePositionWithOrigin(origParent, origParent.origin);
       const dimensions = getNodeDimensions(origParent);
 
-      let xChange = null;
-      let yChange = null;
-
       if (rect.x < position.x || rect.y < position.y) {
-        xChange = Math.abs(position.x - rect.x);
-        yChange = Math.abs(position.y - rect.y);
+        const xChange = Math.round(Math.abs(position.x - rect.x));
+        const yChange = Math.round(Math.abs(position.y - rect.y));
 
         changes.push({
           id,
@@ -180,10 +180,18 @@ export function handleParentExpand(nodes: InternalNodeBase[], nodeLookup: NodeLo
           },
         });
 
-        // @todo we need to reset child node positions if < 0
-      }
+        changes.push({
+          id,
+          type: 'dimensions',
+          resizing: true,
+          dimensions: {
+            width: dimensions.width + xChange,
+            height: dimensions.height + yChange,
+          },
+        });
 
-      if (dimensions.width < rect.width || dimensions.height < rect.height) {
+        // @todo we need to reset child node positions if < 0
+      } else if (dimensions.width < rect.width || dimensions.height < rect.height) {
         changes.push({
           id,
           type: 'dimensions',
