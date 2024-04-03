@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { EdgeLookup, NodeLookup } from '@xyflow/system';
-import type {
-  Node,
-  Edge,
+import {
+  EdgeLookup,
+  NodeLookup,
   EdgeChange,
   NodeChange,
   NodeSelectionChange,
   EdgeSelectionChange,
-  InternalNode,
-} from '../types';
+} from '@xyflow/system';
+import type { Node, Edge, InternalNode } from '../types';
 
 // This function applies changes to nodes or edges that are triggered by React Flow internally.
 // When you drag a node for example, React Flow will send a position change update.
@@ -97,9 +96,9 @@ function applyChange(change: any, element: any): any {
 
     case 'dimensions': {
       if (typeof change.dimensions !== 'undefined') {
-        element.computed ??= {};
-        element.computed.width = change.dimensions.width;
-        element.computed.height = change.dimensions.height;
+        element.measured ??= {};
+        element.measured.width = change.dimensions.width;
+        element.measured.height = change.dimensions.height;
 
         if (change.resizing) {
           element.width = change.dimensions.width;

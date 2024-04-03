@@ -50,7 +50,7 @@ export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: any): 
 
 export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalNodeBase>(
   element: any
-): element is NodeType => 'id' in element && 'computed' in element && !('source' in element) && !('target' in element);
+): element is NodeType => 'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
 
 /**
  * Pass in a node, and get connected nodes where edge.source === node.id
@@ -106,7 +106,7 @@ export const getIncomers = <NodeType extends NodeBase = NodeBase, EdgeType exten
 };
 
 export const getNodePositionWithOrigin = (
-  node: InternalNodeBase | undefined,
+  node: InternalNodeBase | NodeBase | undefined,
   nodeOrigin: NodeOrigin = [0, 0]
 ): { position: XYPosition; positionAbsolute: XYPosition } => {
   if (!node) {
@@ -133,10 +133,13 @@ export const getNodePositionWithOrigin = (
 
   return {
     position,
-    positionAbsolute: {
-      x: node.internals.positionAbsolute.x - offsetX,
-      y: node.internals.positionAbsolute.y - offsetY,
-    },
+    positionAbsolute:
+      'internals' in node
+        ? {
+            x: node.internals.positionAbsolute.x - offsetX,
+            y: node.internals.positionAbsolute.y - offsetY,
+          }
+        : position,
   };
 };
 
@@ -165,7 +168,6 @@ export const getNodesBounds = (
 
   const box = nodes.reduce(
     (currBox, node) => {
-      // @ts-expect-error
       const nodePos = getNodePositionWithOrigin(node, node.origin || params.nodeOrigin);
       return getBoundsOfBoxes(
         currBox,
@@ -238,9 +240,9 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
   const visibleNodes: NodeType[] = [];
 
   for (const [, node] of nodeLookup) {
-    const { computed, selectable = true, hidden = false } = node;
-    const width = computed?.width ?? node.width ?? node.initialWidth ?? null;
-    const height = computed?.height ?? node.height ?? node.initialHeight ?? null;
+    const { measured, selectable = true, hidden = false } = node;
+    const width = measured.width ?? node.width ?? node.initialWidth ?? null;
+    const height = measured.height ?? node.height ?? node.initialHeight ?? null;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
       continue;
@@ -286,7 +288,7 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   const filteredNodes: InternalNodeBase[] = [];
 
   nodeLookup.forEach((n) => {
-    const isVisible = n.computed?.width && n.computed?.height && (options?.includeHiddenNodes || !n.hidden);
+    const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
 
     if (
       isVisible &&
@@ -331,7 +333,7 @@ function clampNodeExtent<NodeType extends NodeBase>(
   if (!extent || extent === 'parent') {
     return extent;
   }
-  return [extent[0], [extent[1][0] - (node.computed?.width ?? 0), extent[1][1] - (node.computed?.height ?? 0)]];
+  return [extent[0], [extent[1][0] - (node.measured?.width ?? 0), extent[1][1] - (node.measured?.height ?? 0)]];
 }
 
 /**
@@ -367,10 +369,10 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      const nodeWidth = node.computed.width;
-      const nodeHeight = node.computed.height;
-      const parentWidth = parentNode.computed.width;
-      const parentHeight = parentNode.computed.height;
+      const nodeWidth = node.measured.width;
+      const nodeHeight = node.measured.height;
+      const parentWidth = parentNode.measured.width;
+      const parentHeight = parentNode.measured.height;
 
       if (nodeWidth && nodeHeight && parentWidth && parentHeight) {
         const currNodeOrigin = node.origin || nodeOrigin;

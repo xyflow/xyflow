@@ -12,8 +12,8 @@ import type { NodeToolbarProps } from './types';
 const nodeEqualityFn = (a?: InternalNode, b?: InternalNode) =>
   a?.internals.positionAbsolute.x !== b?.internals.positionAbsolute.x ||
   a?.internals.positionAbsolute.y !== b?.internals.positionAbsolute.y ||
-  a?.computed.width !== b?.computed.width ||
-  a?.computed.height !== b?.computed.height ||
+  a?.measured.width !== b?.measured.width ||
+  a?.measured.height !== b?.measured.height ||
   a?.selected !== b?.selected ||
   a?.internals.z !== b?.internals.z;
 

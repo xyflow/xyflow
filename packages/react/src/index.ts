@@ -26,6 +26,7 @@ export { useNodesInitialized, type UseNodesInitializedOptions } from './hooks/us
 export { useHandleConnections } from './hooks/useHandleConnections';
 export { useNodesData } from './hooks/useNodesData';
 export { useConnection } from './hooks/useConnection';
+export { useInternalNode } from './hooks/useInternalNode';
 export { useNodeId } from './contexts/NodeIdContext';
 
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';

@@ -59,27 +59,25 @@ export type NodeBase<
    */
   origin?: NodeOrigin;
   handles?: NodeHandle[];
-  computed?: {
+  measured?: {
     width?: number;
     height?: number;
   };
 };
 
 export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & {
-  computed: {
+  measured: {
     width?: number;
     height?: number;
   };
-  // Only used internally
   internals: {
     positionAbsolute: XYPosition;
     z: number;
     // @todo should we rename this to "handles" and use same type as node.handles?
     isParent: boolean;
-    /** Holds a reference to the original node object provided by the user
-     * (which may lack some fields, like `computed` or `[internalSymbol]`. Used
-     * as an optimization to avoid certain operations. */
-    userProvidedNode: NodeType;
+    /** Holds a reference to the original node object provided by the user.
+     * Used as an optimization to avoid certain operations. */
+    userNode: NodeType;
     handleBounds?: NodeHandleBounds;
   };
 };
@@ -123,7 +121,7 @@ export type NodeDragItem = {
   position: XYPosition;
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
-  computed: {
+  measured: {
     width: number | null;
     height: number | null;
   };

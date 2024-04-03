@@ -48,7 +48,7 @@ describe('<ReactFlow />: onNodesChange', () => {
         id: '1',
         item: {
           ...nodes[0],
-          computed: { positionAbsolute: nodes[0].position, width: 200, height: 100 },
+          measured: { width: 200, height: 100 },
           style: { width: 200, height: 100 },
         },
       },

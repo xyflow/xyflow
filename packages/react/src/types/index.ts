@@ -1,6 +1,5 @@
 export * from './nodes';
 export * from './edges';
-export * from './changes';
 export * from './component-props';
 export * from './general';
 export * from './store';

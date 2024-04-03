@@ -25,12 +25,13 @@ import {
   type EdgeLookup,
   type ConnectionLookup,
   type NodeLookup,
+  NodeChange,
+  EdgeChange,
 } from '@xyflow/system';
 
 import type {
   Edge,
   Node,
-  NodeChange,
   OnNodesChange,
   OnEdgesChange,
   DefaultEdgeOptions,
@@ -43,7 +44,6 @@ import type {
   OnNodeDrag,
   OnBeforeDelete,
   IsValidConnection,
-  EdgeChange,
   InternalNode,
 } from '.';
 

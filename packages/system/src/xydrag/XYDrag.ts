@@ -139,10 +139,10 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         if (dragItems.length > 1 && nodeExtent && !n.extent) {
           const { positionAbsolute } = n.internals;
           const x1 = positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
-          const x2 = positionAbsolute.x + (n.computed?.width ?? 0) - nodesBox.x2 + nodeExtent[1][0];
+          const x2 = positionAbsolute.x + (n.measured?.width ?? 0) - nodesBox.x2 + nodeExtent[1][0];
 
           const y1 = positionAbsolute.y - nodesBox.y + nodeExtent[0][1];
-          const y2 = positionAbsolute.y + (n.computed?.height ?? 0) - nodesBox.y2 + nodeExtent[1][1];
+          const y2 = positionAbsolute.y + (n.measured?.height ?? 0) - nodesBox.y2 + nodeExtent[1][1];
 
           adjustedNodeExtent = [
             [x1, y1],

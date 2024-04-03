@@ -70,7 +70,7 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
   defaults?: Partial<NodeType>;
 };
 
-export function adoptUserProvidedNodes<NodeType extends NodeBase>(
+export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodeLookup: Map<string, InternalNodeBase<NodeType>>,
   options: UpdateNodesOptions<NodeType> = {
@@ -84,33 +84,31 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
   const parentNodeIds = new Set<string>();
 
-  nodes.forEach((n) => {
-    const currentStoreNode = tmpLookup.get(n.id);
+  nodes.forEach((userNode) => {
+    const currentStoreNode = tmpLookup.get(userNode.id);
 
-    if (n.parentNode) {
-      parentNodeIds.add(n.parentNode);
+    if (userNode.parentNode) {
+      parentNodeIds.add(userNode.parentNode);
     }
 
-    if (n === currentStoreNode?.internals.userProvidedNode) {
-      nodeLookup.set(n.id, currentStoreNode);
+    if (userNode === currentStoreNode?.internals.userNode) {
+      nodeLookup.set(userNode.id, currentStoreNode);
     } else {
-      const node: InternalNodeBase<NodeType> = {
+      nodeLookup.set(userNode.id, {
         ...options.defaults,
-        ...n,
-        computed: {
-          width: n.computed?.width,
-          height: n.computed?.height,
+        ...userNode,
+        measured: {
+          width: userNode.measured?.width,
+          height: userNode.measured?.height,
         },
         internals: {
-          positionAbsolute: n.position,
+          positionAbsolute: userNode.position,
           handleBounds: currentStoreNode?.internals?.handleBounds,
-          z: (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0),
-          userProvidedNode: n,
+          z: (isNumeric(userNode.zIndex) ? userNode.zIndex : 0) + (userNode.selected ? selectedNodeZ : 0),
+          userNode,
           isParent: false,
         },
-      };
-
-      nodeLookup.set(node.id, node);
+      });
     }
   });
 
@@ -241,14 +239,14 @@ export function updateNodeDimensions<NodeType extends InternalNodeBase>(
       const doUpdate = !!(
         dimensions.width &&
         dimensions.height &&
-        (node.computed?.width !== dimensions.width || node.computed?.height !== dimensions.height || update.force)
+        (node.measured?.width !== dimensions.width || node.measured?.height !== dimensions.height || update.force)
       );
 
       if (doUpdate) {
         const newNode = {
           ...node,
-          computed: {
-            ...node.computed,
+          measured: {
+            ...node.measured,
             ...dimensions,
           },
           internals: {

@@ -6,7 +6,7 @@ import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
 import { MiniMapNode } from './MiniMapNode';
-import type { ReactFlowState, Node } from '../../types';
+import type { ReactFlowState, Node, InternalNode } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
 
 declare const window: any;
@@ -85,7 +85,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   shapeRendering: string;
 }) {
   const { node, x, y } = useStore((s) => {
-    const node = s.nodeLookup.get(id) as NodeType;
+    const node = s.nodeLookup.get(id) as InternalNode<NodeType>;
     const { x, y } = getNodePositionWithOrigin(node, node?.origin || nodeOrigin).positionAbsolute;
 
     return {

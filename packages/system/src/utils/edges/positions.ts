@@ -20,7 +20,7 @@ function isNodeInitialized(node: InternalNodeBase): boolean {
   return (
     node &&
     !!(node.internals.handleBounds || node.handles?.length) &&
-    !!(node.computed.width || node.width || node.initialWidth)
+    !!(node.measured.width || node.width || node.initialWidth)
   );
 }
 

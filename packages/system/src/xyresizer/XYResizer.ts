@@ -71,15 +71,15 @@ export type XYResizerInstance = {
 function nodeToParentExtent(node: NodeBase): CoordinateExtent {
   return [
     [0, 0],
-    [node.computed!.width!, node.computed!.height!],
+    [node.measured!.width!, node.measured!.height!],
   ];
 }
 
 function nodeToChildExtent(child: NodeBase, parent: NodeBase, nodeOrigin: NodeOrigin): CoordinateExtent {
   const x = parent.position.x + child.position.x;
   const y = parent.position.y + child.position.y;
-  const width = child.computed!.width! ?? 0;
-  const height = child.computed!.height! ?? 0;
+  const width = child.measured!.width! ?? 0;
+  const height = child.measured!.height! ?? 0;
   const originOffsetX = nodeOrigin[0] * width;
   const originOffsetY = nodeOrigin[1] * height;
 
@@ -121,8 +121,8 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
 
           prevValues = {
-            width: node.computed?.width ?? 0,
-            height: node.computed?.height ?? 0,
+            width: node.measured?.width ?? 0,
+            height: node.measured?.height ?? 0,
             x: node.position.x ?? 0,
             y: node.position.y ?? 0,
           };

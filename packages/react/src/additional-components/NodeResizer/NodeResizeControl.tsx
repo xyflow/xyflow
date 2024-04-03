@@ -5,12 +5,14 @@ import {
   ResizeControlVariant,
   type XYResizerInstance,
   type XYResizerChange,
-  XYResizerChildChange,
+  type XYResizerChildChange,
+  type NodeChange,
+  type NodeDimensionChange,
+  type NodePositionChange,
 } from '@xyflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
-import type { NodeChange, NodeDimensionChange, NodePositionChange } from '../../types';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
 
 function ResizeControl({

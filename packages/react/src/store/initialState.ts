@@ -1,7 +1,7 @@
 import {
   infiniteExtent,
   ConnectionMode,
-  adoptUserProvidedNodes,
+  adoptUserNodes,
   getNodesBounds,
   getViewportForBounds,
   Transform,
@@ -35,7 +35,7 @@ const getInitialState = ({
   const storeNodes = defaultNodes ?? nodes ?? [];
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
-  adoptUserProvidedNodes(storeNodes, nodeLookup, {
+  adoptUserNodes(storeNodes, nodeLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false,
   });

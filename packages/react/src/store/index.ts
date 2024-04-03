@@ -2,27 +2,20 @@ import { createWithEqualityFn } from 'zustand/traditional';
 import {
   clampPosition,
   fitView as fitViewSystem,
-  adoptUserProvidedNodes,
+  adoptUserNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
   updateNodeDimensions as updateNodeDimensionsSystem,
   updateConnectionLookup,
   handleParentExpand,
   NodeChange,
+  EdgeSelectionChange,
+  NodeSelectionChange,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import getInitialState from './initialState';
-import type {
-  ReactFlowState,
-  Node,
-  Edge,
-  EdgeSelectionChange,
-  NodeSelectionChange,
-  UnselectNodesAndEdgesParams,
-  FitViewOptions,
-  InternalNode,
-} from '../types';
+import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions, InternalNode } from '../types';
 
 const createRFStore = ({
   nodes,
@@ -52,7 +45,7 @@ const createRFStore = ({
         //
         // When this happens, we take the note objects passed by the user and extend them with fields
         // relevant for internal React Flow operations.
-        adoptUserProvidedNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
+        adoptUserNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
 
         set({ nodes });
       },
@@ -263,21 +256,22 @@ const createRFStore = ({
         triggerEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nodeExtent) => {
-        const { nodes } = get();
+        const { nodeLookup } = get();
+
+        for (const [, node] of nodeLookup) {
+          const positionAbsolute = clampPosition(node.position, nodeExtent);
+
+          nodeLookup.set(node.id, {
+            ...node,
+            internals: {
+              ...node.internals,
+              positionAbsolute,
+            },
+          });
+        }
 
         set({
           nodeExtent,
-          nodes: nodes.map((node) => {
-            const positionAbsolute = clampPosition(node.position, nodeExtent);
-
-            return {
-              ...node,
-              computed: {
-                ...node.computed,
-                positionAbsolute,
-              },
-            };
-          }),
         });
       },
       panBy: (delta): boolean => {

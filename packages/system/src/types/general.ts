@@ -127,7 +127,7 @@ export type SelectionRect = Rect & {
 
 export type OnError = (id: string, message: string) => void;
 
-export type UpdateNodePositions = (dragItems: NodeDragItem[] | NodeBase[], dragging?: boolean) => void;
+export type UpdateNodePositions = (dragItems: NodeDragItem[] | InternalNodeBase[], dragging?: boolean) => void;
 export type PanBy = (delta: XYPosition) => boolean;
 
 export type UpdateConnection = (params: {
