@@ -3,7 +3,7 @@ import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
-import type { ReactFlowInstance, Instance, Node, Edge } from '../types';
+import type { ReactFlowInstance, Instance, Node, Edge, InternalNode } from '../types';
 import { getElementsDiffChanges, isNode } from '../utils';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
@@ -20,13 +20,20 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   const viewportHelper = useViewportHelper();
   const store = useStoreApi();
 
-  const getNodes = useCallback<Instance.GetNodes<NodeType>>(() => {
-    return store.getState().nodes.map((n) => ({ ...n })) as NodeType[];
-  }, []);
+  const getNodes = useCallback<Instance.GetNodes<NodeType>>(
+    () => store.getState().nodes.map((n) => ({ ...n })) as NodeType[],
+    []
+  );
 
-  const getNode = useCallback<Instance.GetNode<NodeType>>((id) => {
-    return store.getState().nodeLookup.get(id)?.internals.userNode as NodeType;
-  }, []);
+  const getInternalNode = useCallback<Instance.GetInternalNode<NodeType>>(
+    (id) => store.getState().nodeLookup.get(id) as InternalNode<NodeType>,
+    []
+  );
+
+  const getNode = useCallback<Instance.GetNode<NodeType>>(
+    (id) => getInternalNode(id)?.internals.userNode as NodeType,
+    [getInternalNode]
+  );
 
   const getEdges = useCallback<Instance.GetEdges<EdgeType>>(() => {
     const { edges = [] } = store.getState();
@@ -299,6 +306,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       ...viewportHelper,
       getNodes,
       getNode,
+      getInternalNode,
       getEdges,
       getEdge,
       setNodes,
@@ -316,6 +324,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     viewportHelper,
     getNodes,
     getNode,
+    getInternalNode,
     getEdges,
     getEdge,
     setNodes,
