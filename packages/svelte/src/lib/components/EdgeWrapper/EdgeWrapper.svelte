@@ -51,7 +51,7 @@
     edgecontextmenu: { edge: Edge; event: MouseEvent };
   }>();
 
-  const edgeType = type || 'default';
+  $: edgeType = type || 'default';
   $: edgeComponent = $edgeTypes[edgeType] || BezierEdgeInternal;
   $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
   $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
@@ -92,8 +92,8 @@
       aria-label={ariaLabel === null
         ? undefined
         : ariaLabel
-        ? ariaLabel
-        : `Edge from ${source} to ${target}`}
+          ? ariaLabel
+          : `Edge from ${source} to ${target}`}
       role="img"
     >
       <svelte:component
