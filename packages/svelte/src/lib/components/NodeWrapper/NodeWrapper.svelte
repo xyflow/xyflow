@@ -58,7 +58,7 @@
   const nodeType = type || 'default';
 
   let nodeRef: HTMLDivElement;
-  let prevNodeRef: HTMLDivElement;
+  let prevNodeRef: HTMLDivElement | null = null;
 
   const nodeTypeValid = !!$nodeTypes[nodeType];
 
@@ -129,11 +129,16 @@
         resizeObserver?.observe(nodeRef);
         prevNodeRef = nodeRef;
       }
+    } else if (prevNodeRef) {
+      resizeObserver?.unobserve(prevNodeRef);
+      prevNodeRef = null;
     }
   }
 
   onDestroy(() => {
-    resizeObserver?.unobserve(nodeRef);
+    if (prevNodeRef) {
+      resizeObserver?.unobserve(prevNodeRef);
+    }
   });
 
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
