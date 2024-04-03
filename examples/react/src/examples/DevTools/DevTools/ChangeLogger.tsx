@@ -29,7 +29,7 @@ function ChangeInfo({ change }: ChangeInfoProps) {
   );
 }
 
-export default function ChangeLogger({ color = '#555', limit = 20 }: ChangeLoggerProps) {
+export default function ChangeLogger({ limit = 20 }: ChangeLoggerProps) {
   const [changes, setChanges] = useState<NodeChange[]>([]);
   const onNodesChangeIntercepted = useRef(false);
   const onNodesChange = useStore((s) => s.onNodesChange);
@@ -62,19 +62,13 @@ export default function ChangeLogger({ color = '#555', limit = 20 }: ChangeLogge
   }, [onNodesChange]);
 
   return (
-    <div
-      style={{ fontFamily: 'monospace', fontSize: 10, position: 'relative', top: 45, left: 15, width: '100%', color }}
-    >
-      <div style={{ margin: '5px 0' }}>
-        <strong>Change Logger</strong>
-      </div>
-      <div>
-        {changes.length === 0 ? (
-          <>no changes triggered</>
-        ) : (
-          changes.map((change, index) => <ChangeInfo key={index} change={change} />)
-        )}
-      </div>
+    <div className="react-flow__devtools-changelogger">
+      <div className="react-flow__devtools-title">Change Logger</div>
+      {changes.length === 0 ? (
+        <>no changes triggered</>
+      ) : (
+        changes.map((change, index) => <ChangeInfo key={index} change={change} />)
+      )}
     </div>
   );
 }

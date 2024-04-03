@@ -12,17 +12,15 @@ type NodeInfoProps = {
 
 function NodeInfo({ id, type, x, y, width, height, data }: NodeInfoProps) {
   if (!width || !height) {
-    return <div></div>;
+    return null;
   }
 
   return (
     <div
+      className="react-flow__devtools-nodeinfo"
       style={{
         position: 'absolute',
-        zIndex: 9999,
         transform: `translate(${x}px, ${y + height}px)`,
-        padding: 5,
-        boxSizing: 'border-box',
         width: width * 2,
       }}
     >
@@ -39,16 +37,12 @@ function NodeInfo({ id, type, x, y, width, height, data }: NodeInfoProps) {
   );
 }
 
-type NodeInspectorProps = {
-  color: string;
-};
-
-export default function NodeInspector({ color = '#555' }: NodeInspectorProps) {
+export default function NodeInspector() {
   const nodes = useNodes();
 
   return (
     <ViewportPortal>
-      <div style={{ color, fontSize: 10, fontFamily: 'monospace' }}>
+      <div className="react-flow__devtools-nodeinspector">
         {nodes.map((node) => {
           const x = node.computed?.positionAbsolute?.x || 0;
           const y = node.computed?.positionAbsolute?.y || 0;
