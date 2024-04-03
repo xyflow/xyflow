@@ -55,23 +55,24 @@
     handleNodeSelection,
     updateNodeDimensions
   } = store;
-  const nodeType = type || 'default';
 
   let nodeRef: HTMLDivElement;
   let prevNodeRef: HTMLDivElement;
-
-  const nodeTypeValid = !!$nodeTypes[nodeType];
-
-  if (!nodeTypeValid) {
-    console.warn('003', errorMessages['error003'](type!));
-  }
-
-  const nodeComponent = $nodeTypes[nodeType] || DefaultNode;
   const dispatchNodeEvent = createNodeEventDispatcher();
   const connectableStore = writable(connectable);
   let prevType: string | undefined = undefined;
   let prevSourcePosition: Position | undefined = undefined;
   let prevTargetPosition: Position | undefined = undefined;
+
+  $: nodeType = type || 'default';
+  $: nodeTypeValid = !!$nodeTypes[nodeType];
+  $: nodeComponent = $nodeTypes[nodeType] || DefaultNode;
+
+  $: {
+    if (!nodeTypeValid) {
+      console.warn('003', errorMessages['error003'](type!));
+    }
+  }
 
   $: inlineStyleDimensions = getNodeInlineStyleDimensions({
     width,
