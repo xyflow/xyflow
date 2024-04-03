@@ -189,6 +189,7 @@
 	autoPanOnNodeDrag
 	connectionMode={ConnectionMode.Strict}
 	attributionPosition={'top-center'}
+	deleteKey={['Backspace', 'd']}
 >
 	<Controls>
 		<ControlButton slot="before">xy</ControlButton>
