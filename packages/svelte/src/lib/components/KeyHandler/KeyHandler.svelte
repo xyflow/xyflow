@@ -23,7 +23,8 @@
     multiselectionKeyPressed,
     deleteKeyPressed,
     panActivationKeyPressed,
-    zoomActivationKeyPressed
+    zoomActivationKeyPressed,
+    selectionRect
   } = useStore();
 
   function isKeyObject(key?: KeyDefinition | null): key is KeyDefinitionObject {
@@ -60,7 +61,8 @@
     });
   }
 
-  function resetAll() {
+  function resetKeysAndSelection() {
+    selectionRect.set(null);
     selectionKeyPressed.set(false);
     multiselectionKeyPressed.set(false);
     deleteKeyPressed.set(false);
@@ -70,8 +72,8 @@
 </script>
 
 <svelte:window
-  on:blur={resetAll}
-  on:contextmenu={resetAll}
+  on:blur={resetKeysAndSelection}
+  on:contextmenu={resetKeysAndSelection}
   use:shortcut={{
     trigger: getShortcutTrigger(selectionKey, () => selectionKeyPressed.set(true)),
     type: 'keydown'
