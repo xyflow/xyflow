@@ -20,7 +20,8 @@ export function useNodesData<NodeType extends Node = Node>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: any): any {
   const { nodes, nodeLookup } = useStore();
-  let prevNodesData: any = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let prevNodesData: any[] = [];
 
   return derived([nodes, nodeLookup], ([, nodeLookup], set) => {
     const nextNodesData = [];

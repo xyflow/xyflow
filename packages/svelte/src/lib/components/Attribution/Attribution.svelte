@@ -4,8 +4,8 @@
 
   type $$Props = AttributionProps;
 
-  export let proOptions: AttributionProps['proOptions'] = undefined;
-  export let position: AttributionProps['position'] = 'bottom-right';
+  export let proOptions: $$Props['proOptions'] = undefined;
+  export let position: $$Props['position'] = 'bottom-right';
 </script>
 
 {#if !proOptions?.hideAttribution}

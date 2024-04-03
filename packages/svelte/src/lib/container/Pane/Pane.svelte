@@ -178,7 +178,7 @@
     // onSelectionEnd?.(event);
   }
 
-  const onMouseLeave = (event: MouseEvent) => {
+  const onMouseLeave = () => {
     if ($selectionRectMode === 'user') {
       selectionRectMode.set(selectedNodes.length > 0 ? 'nodes' : null);
       //  onSelectionEnd?.(event);

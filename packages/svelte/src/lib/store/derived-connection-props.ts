@@ -6,7 +6,8 @@ import {
   ConnectionLineType,
   ConnectionMode,
   Position,
-  internalsSymbol
+  internalsSymbol,
+  type HandleElement
 } from '@xyflow/system';
 
 import type { SvelteFlowStoreState } from './types';
@@ -68,16 +69,16 @@ export function getDerivedConnectionProps(
       const fromHandleBounds = fromNode?.[internalsSymbol]?.handleBounds;
       const handleBoundsStrict =
         fromHandleBounds?.[connection.connectionStartHandle.type || 'source'] || [];
-      const handleBoundsLoose = handleBoundsStrict
+      const handleBoundsLoose: HandleElement[] | undefined | null = handleBoundsStrict
         ? handleBoundsStrict
         : fromHandleBounds?.[
             connection?.connectionStartHandle?.type === 'source' ? 'target' : 'source'
-          ]!;
+          ];
       const handleBounds =
         connectionMode === ConnectionMode.Strict ? handleBoundsStrict : handleBoundsLoose;
       const fromHandle = connection.connectionStartHandle?.handleId
-        ? handleBounds.find((d) => d.id === connection.connectionStartHandle?.handleId)
-        : handleBounds[0];
+        ? handleBounds?.find((d) => d.id === connection.connectionStartHandle?.handleId)
+        : handleBounds?.[0];
       const fromHandleX = fromHandle
         ? fromHandle.x + fromHandle.width / 2
         : (fromNode?.computed?.width ?? 0) / 2;
