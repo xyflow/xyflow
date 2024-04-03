@@ -1,7 +1,7 @@
 <svelte:options immutable />
 
 <script lang="ts">
-  import { createEventDispatcher, setContext, onDestroy } from 'svelte';
+  import { setContext, onDestroy } from 'svelte';
   import { get, writable } from 'svelte/store';
   import cc from 'classcat';
   import { errorMessages, Position } from '@xyflow/system';
@@ -10,7 +10,6 @@
   import { useStore } from '$lib/store';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import type { NodeWrapperProps } from './types';
-  import type { Node } from '$lib/types';
   import { getNodeInlineStyleDimensions } from './utils';
   import { createNodeEventDispatcher } from '$lib';
 
@@ -120,18 +119,10 @@
   setContext('svelteflow__node_connectable', connectableStore);
 
   $: {
-    if (nodeRef) {
-      if (!prevNodeRef) {
-        resizeObserver?.observe(nodeRef);
-        prevNodeRef = nodeRef;
-      } else if (prevNodeRef !== nodeRef || (!computedWidth && !computedHeight)) {
-        resizeObserver?.unobserve(prevNodeRef);
-        resizeObserver?.observe(nodeRef);
-        prevNodeRef = nodeRef;
-      }
-    } else if (prevNodeRef) {
-      resizeObserver?.unobserve(prevNodeRef);
-      prevNodeRef = null;
+    if (resizeObserver && nodeRef !== prevNodeRef) {
+      prevNodeRef && resizeObserver.unobserve(prevNodeRef);
+      nodeRef && resizeObserver.observe(nodeRef);
+      prevNodeRef = nodeRef;
     }
   }
 
