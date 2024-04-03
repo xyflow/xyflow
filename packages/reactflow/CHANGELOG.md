@@ -1,5 +1,21 @@
 # reactflow
 
+## 11.10.5
+
+### Patch Changes
+
+- [#3957](https://github.com/xyflow/xyflow/pull/3957) [`c7a140bd`](https://github.com/xyflow/xyflow/commit/c7a140bd7bc4442bf4121b1bca936a05e19117a4) - fixed smoothstep edge if center = 0
+- [#4082](https://github.com/xyflow/xyflow/pull/4082) [`ba3809b1`](https://github.com/xyflow/xyflow/commit/ba3809b18413fa581a4e7098611ebcb9067c971f) - fix: re-observe nodes when hidden is toggled
+- [#3935](https://github.com/xyflow/xyflow/pull/3935) [`6228d499`](https://github.com/xyflow/xyflow/commit/6228d499464408fc7bad0ce89b321a59ca5ecbe1) - `disableKeyboardA11y` now correctly prevents enter and escape key presses
+
+- Updated dependencies [[`c7a140bd`](https://github.com/xyflow/xyflow/commit/c7a140bd7bc4442bf4121b1bca936a05e19117a4), [`ba3809b1`](https://github.com/xyflow/xyflow/commit/ba3809b18413fa581a4e7098611ebcb9067c971f), [`6228d499`](https://github.com/xyflow/xyflow/commit/6228d499464408fc7bad0ce89b321a59ca5ecbe1)]:
+  - @reactflow/core@11.10.5
+  - @reactflow/background@11.3.10
+  - @reactflow/controls@11.2.10
+  - @reactflow/minimap@11.7.10
+  - @reactflow/node-resizer@2.2.10
+  - @reactflow/node-toolbar@1.3.10
+
 ## 11.10.4
 
 ### Patch Changes

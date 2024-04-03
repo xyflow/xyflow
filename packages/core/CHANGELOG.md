@@ -1,5 +1,13 @@
 # @reactflow/core
 
+## 11.10.5
+
+### Patch Changes
+
+- [#3957](https://github.com/xyflow/xyflow/pull/3957) [`c7a140bd`](https://github.com/xyflow/xyflow/commit/c7a140bd7bc4442bf4121b1bca936a05e19117a4) - fixed smoothstep edge if center = 0
+- [#4082](https://github.com/xyflow/xyflow/pull/4082) [`ba3809b1`](https://github.com/xyflow/xyflow/commit/ba3809b18413fa581a4e7098611ebcb9067c971f) - fix: re-observe nodes when hidden is toggled
+- [#3935](https://github.com/xyflow/xyflow/pull/3935) [`6228d499`](https://github.com/xyflow/xyflow/commit/6228d499464408fc7bad0ce89b321a59ca5ecbe1) - disableKeyboardA11y now correctly prevents escape key presses
+
 ## 11.10.4
 
 ### Patch Changes
