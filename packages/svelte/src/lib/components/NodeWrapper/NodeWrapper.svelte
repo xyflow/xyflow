@@ -57,7 +57,7 @@
   const nodeType = type || 'default';
 
   let nodeRef: HTMLDivElement;
-  let prevNodeRef: HTMLDivElement;
+  let prevNodeRef: HTMLDivElement | null = null;
 
   const nodeTypeValid = !!$nodeTypes[nodeType];
 
@@ -119,20 +119,17 @@
   setContext('svelteflow__node_connectable', connectableStore);
 
   $: {
-    if (nodeRef) {
-      if (!prevNodeRef) {
-        resizeObserver?.observe(nodeRef);
-        prevNodeRef = nodeRef;
-      } else if (prevNodeRef !== nodeRef || (!computedWidth && !computedHeight)) {
-        resizeObserver?.unobserve(prevNodeRef);
-        resizeObserver?.observe(nodeRef);
-        prevNodeRef = nodeRef;
-      }
+    if (resizeObserver && nodeRef !== prevNodeRef) {
+      prevNodeRef && resizeObserver.unobserve(prevNodeRef);
+      nodeRef && resizeObserver.observe(nodeRef);
+      prevNodeRef = nodeRef;
     }
   }
 
   onDestroy(() => {
-    resizeObserver?.unobserve(nodeRef);
+    if (prevNodeRef) {
+      resizeObserver?.unobserve(prevNodeRef);
+    }
   });
 
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
