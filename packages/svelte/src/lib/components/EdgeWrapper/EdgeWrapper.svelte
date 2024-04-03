@@ -80,7 +80,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 {#if !hidden}
-  <svg style:zIndex>
+  <svg style:z-index={zIndex}>
     <g
       class={cc(['svelte-flow__edge', className])}
       class:animated
@@ -92,8 +92,8 @@
       aria-label={ariaLabel === null
         ? undefined
         : ariaLabel
-        ? ariaLabel
-        : `Edge from ${source} to ${target}`}
+          ? ariaLabel
+          : `Edge from ${source} to ${target}`}
       role="img"
     >
       <svelte:component

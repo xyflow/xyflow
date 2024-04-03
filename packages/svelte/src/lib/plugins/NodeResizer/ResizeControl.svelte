@@ -52,7 +52,7 @@
 
   $: colorStyleProp = variant === ResizeControlVariant.Line ? 'border-color' : 'background-color';
   $: _style = style ?? '';
-  $: controlStyle = !!color ? `${_style} ${colorStyleProp}: ${color};` : _style;
+  $: controlStyle = color ? `${_style} ${colorStyleProp}: ${color};` : _style;
 
   onMount(() => {
     if (resizeControlRef) {

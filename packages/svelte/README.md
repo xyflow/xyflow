@@ -10,7 +10,7 @@ Svelte Flow is a highly customizable component for building interactive graphs a
 
 ☣️ **Svelte Flow is still alpha and currently under heavy development. The API is relatively stable but some things might change.** ☣️
 
-[🚀 Getting Started](https://svelteflow.dev/learn) | [📖 Documentation](https://svelteflow.dev/api-reference/svelte-flow) | [📺 Examples](https://svelteflow.dev/examples/overview) | [☎️ Discord](https://discord.gg/RVmnytFmGW) 
+[🚀 Getting Started](https://svelteflow.dev/learn) | [📖 Documentation](https://svelteflow.dev/api-reference/svelte-flow) | [📺 Examples](https://svelteflow.dev/examples/overview) | [☎️ Discord](https://discord.gg/RVmnytFmGW)
 
 </div>
 
@@ -18,7 +18,7 @@ Svelte Flow is a highly customizable component for building interactive graphs a
 
 - **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
 - **Customizable:** Different [node](https://svelteflow.dev/examples) and [edge types](https://svelteflow.dev/examples/edges/edge-types) and support for custom nodes with multiple handles and custom edges
-- **Fast rendering:** Only nodes that have changed are re-rendered 
+- **Fast rendering:** Only nodes that have changed are re-rendered
 - **Hooks and Utils:** [Hooks](https://svelteflow.dev/api-reference/hooks) for handling nodes, edges and the viewport and graph [helper functions](https://svelteflow.dev/api-reference/utils)
 - **Plugin Components:** [Background](https://svelteflow.dev/api-reference/components/background), [MiniMap](https://svelteflow.dev/api-reference/components/minimap) and [Controls](https://svelteflow.dev/api-reference/components/controls)
 - **Reliable**: Written in [Typescript](https://www.typescriptlang.org) and tested with [Playwright](https://www.playwright.dev)
@@ -38,18 +38,12 @@ You only need a few lines to get a fully interactive (e.g. select and drag nodes
 ```svelte
 <script lang="ts">
   import { writable } from 'svelte/store';
-  import {
-    SvelteFlow,
-    Controls,
-    Background,
-    BackgroundVariant,
-    MiniMap,
-  } from '@xyflow/svelte';
+  import { SvelteFlow, Controls, Background, BackgroundVariant, MiniMap } from '@xyflow/svelte';
 
   // you need to import the styles for Svelte Flow to work
   // if you just want to load the basic styleds, you can import '@xyflow/svelte/dist/base.css'
-  import '@xyflow/svelte/dist/style.css'
-  
+  import '@xyflow/svelte/dist/style.css';
+
   // We are using writables for the nodes and edges to sync them easily. When a user drags a node for example, Svelte Flow updates its position. This also makes it easier to update nodes in user land.
   const nodes = writable([
     {
@@ -78,12 +72,7 @@ You only need a few lines to get a fully interactive (e.g. select and drag nodes
   ]);
 </script>
 
-<SvelteFlow
-  {nodes}
-  {edges}
-  fitView
-  on:nodeclick={(event) => console.log('on node click', event)}
->
+<SvelteFlow {nodes} {edges} fitView on:nodeclick={(event) => console.log('on node click', event)}>
   <Controls />
   <Background variant={BackgroundVariant.Dots} />
   <MiniMap />
@@ -102,7 +91,6 @@ You only need a few lines to get a fully interactive (e.g. select and drag nodes
 
 And of course, we love Github stars ⭐
 
-
 ## Development
 
 If you want to check out the current version you need to run the following command from the root directory:
@@ -112,7 +100,6 @@ If you want to check out the current version you need to run the following comma
 3. `pnpm dev` - starts dev server
 
 You can now access the examples under http://127.0.0.1:5173
-
 
 ## Maintainers
 
