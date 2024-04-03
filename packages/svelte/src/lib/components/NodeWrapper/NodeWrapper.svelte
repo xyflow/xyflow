@@ -58,13 +58,6 @@
   let nodeRef: HTMLDivElement;
   let prevNodeRef: HTMLDivElement | null = null;
 
-  const nodeTypeValid = !!$nodeTypes[nodeType];
-
-  if (!nodeTypeValid) {
-    console.warn('003', errorMessages['error003'](type!));
-  }
-
-  const nodeComponent = $nodeTypes[nodeType] || DefaultNode;
   const dispatchNodeEvent = createNodeEventDispatcher();
   const connectableStore = writable(connectable);
   let prevType: string | undefined = undefined;
