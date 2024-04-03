@@ -95,6 +95,10 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         return;
       }
 
+      if (disableKeyboardA11y) {
+        return;
+      }
+
       if (elementSelectionKeys.includes(event.key) && isSelectable) {
         const unselect = event.key === 'Escape';
 
@@ -104,12 +108,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           unselect,
           nodeRef,
         });
-      } else if (
-        !disableKeyboardA11y &&
-        isDraggable &&
-        selected &&
-        Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)
-      ) {
+      } else if (isDraggable && selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
         store.setState({
           ariaLiveMessage: `Moved selected node ${event.key
             .replace('Arrow', '')
