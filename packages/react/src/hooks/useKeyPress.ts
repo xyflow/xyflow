@@ -109,11 +109,13 @@ export function useKeyPress(
       target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
       target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
       window.addEventListener('blur', resetHandler);
+      window.addEventListener('contextmenu', resetHandler);
 
       return () => {
         target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
         target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
         window.removeEventListener('blur', resetHandler);
+        window.removeEventListener('contextmenu', resetHandler);
       };
     }
   }, [keyCode, setKeyPressed]);
