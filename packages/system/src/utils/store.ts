@@ -91,28 +91,27 @@ export function adoptUserProvidedNodes<NodeType extends NodeBase>(
       parentNodeIds.add(n.parentNode);
     }
 
-    if (n === currentStoreNode?.internals?.userProvidedNode) {
+    if (n === currentStoreNode?.internals.userProvidedNode) {
       nodeLookup.set(n.id, currentStoreNode);
-      return currentStoreNode;
+    } else {
+      const node: InternalNodeBase<NodeType> = {
+        ...options.defaults,
+        ...n,
+        computed: {
+          width: n.computed?.width,
+          height: n.computed?.height,
+        },
+        internals: {
+          positionAbsolute: n.position,
+          handleBounds: currentStoreNode?.internals?.handleBounds,
+          z: (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0),
+          userProvidedNode: n,
+          isParent: false,
+        },
+      };
+
+      nodeLookup.set(node.id, node);
     }
-
-    const node: InternalNodeBase<NodeType> = {
-      ...options.defaults,
-      ...n,
-      computed: {
-        width: n.computed?.width,
-        height: n.computed?.height,
-      },
-      internals: {
-        positionAbsolute: n.position,
-        handleBounds: currentStoreNode?.internals?.handleBounds,
-        z: (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0),
-        userProvidedNode: n,
-        isParent: false,
-      },
-    };
-
-    nodeLookup.set(node.id, node);
   });
 
   if (parentNodeIds.size > 0) {

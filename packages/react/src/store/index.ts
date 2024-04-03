@@ -136,8 +136,18 @@ const createRFStore = ({
             dragging,
           };
 
-          if (internalNode?.expandParent) {
-            triggerChangeNodes.push(internalNode);
+          if (internalNode?.expandParent && change.position) {
+            triggerChangeNodes.push({
+              ...internalNode,
+              position: change.position,
+              internals: {
+                ...internalNode.internals,
+                positionAbsolute: node.internals.positionAbsolute,
+              },
+            });
+
+            change.position.x = Math.max(0, change.position.x);
+            change.position.y = Math.max(0, change.position.y);
           }
 
           return change;
