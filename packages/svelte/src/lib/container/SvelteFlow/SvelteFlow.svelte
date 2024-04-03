@@ -194,6 +194,9 @@
   on:drop
   {...$$restProps}
   role="application"
+  on:keydown={(e) => {
+    console.log(e);
+  }}
 >
   <KeyHandler
     {selectionKey}
@@ -201,6 +204,7 @@
     {panActivationKey}
     {multiSelectionKey}
     {zoomActivationKey}
+    {domNode}
   />
   <Zoom
     {initialViewport}

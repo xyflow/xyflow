@@ -6,6 +6,8 @@
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
 
+  import Shortcut from './Shortcut.svelte';
+
   type $$Props = KeyHandlerProps;
 
   export let selectionKey: $$Props['selectionKey'] = 'Shift';
@@ -13,6 +15,7 @@
   export let deleteKey: $$Props['deleteKey'] = 'Backspace';
   export let panActivationKey: $$Props['panActivationKey'] = ' ';
   export let zoomActivationKey: $$Props['zoomActivationKey'] = isMacOs() ? 'Meta' : 'Control';
+  export let domNode: $$Props['domNode'] = null;
 
   const {
     selectionKeyPressed,
@@ -111,34 +114,6 @@
   use:shortcut={{
     trigger: [
       {
-        ...deleteKeyDefinition,
-        enabled: deleteKeyDefinition.key !== null,
-        callback: (detail) => {
-          const isModifierKey =
-            detail.originalEvent.ctrlKey ||
-            detail.originalEvent.metaKey ||
-            detail.originalEvent.shiftKey;
-          if (!isModifierKey && !isInputDOMNode(detail.originalEvent)) {
-            deleteKeyPressed.set(true);
-          }
-        }
-      }
-    ],
-    type: 'keydown'
-  }}
-  use:shortcut={{
-    trigger: [
-      {
-        ...deleteKeyDefinition,
-        enabled: deleteKeyDefinition.key !== null,
-        callback: () => deleteKeyPressed.set(false)
-      }
-    ],
-    type: 'keyup'
-  }}
-  use:shortcut={{
-    trigger: [
-      {
         ...panActivationKeyDefinition,
         enabled: panActivationKeyDefinition.key !== null,
         callback: () => panActivationKeyPressed.set(true)
@@ -172,6 +147,40 @@
         ...zoomActivationKeyDefinition,
         enabled: zoomActivationKeyDefinition.key !== null,
         callback: () => zoomActivationKeyPressed.set(false)
+      }
+    ],
+    type: 'keyup'
+  }}
+/>
+<Shortcut
+  {domNode}
+  options={{
+    trigger: [
+      {
+        ...deleteKeyDefinition,
+        enabled: deleteKeyDefinition.key !== null,
+        callback: (detail) => {
+          const isModifierKey =
+            detail.originalEvent.ctrlKey ||
+            detail.originalEvent.metaKey ||
+            detail.originalEvent.shiftKey;
+          if (!isModifierKey && !isInputDOMNode(detail.originalEvent)) {
+            deleteKeyPressed.set(true);
+          }
+        }
+      }
+    ],
+    type: 'keydown'
+  }}
+/>
+<Shortcut
+  {domNode}
+  options={{
+    trigger: [
+      {
+        ...deleteKeyDefinition,
+        enabled: deleteKeyDefinition.key !== null,
+        callback: () => deleteKeyPressed.set(false)
       }
     ],
     type: 'keyup'

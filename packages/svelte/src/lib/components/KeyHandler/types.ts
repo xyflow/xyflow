@@ -6,4 +6,5 @@ export type KeyHandlerProps = {
   deleteKey?: KeyDefinition | null;
   panActivationKey?: KeyDefinition | null;
   zoomActivationKey?: KeyDefinition | null;
+  domNode: HTMLElement | null;
 };
