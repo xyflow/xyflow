@@ -2,7 +2,7 @@
 
 ## 11.11.0
 
-This is hopefully the last release for React Flow 11. It fixes some bugs and adds a deprecation warning for `node.parentNode` which is now called `node.parentId`. The reasons for this change are that `parentNode` is already used for the DOM API and that you pass an id instead of a node, so it should be more clear what to expect. 
+This is hopefully the last release for React Flow 11. It fixes some bugs and adds a deprecation warning for `node.parentNode` which is now called `node.parentId`. There are two reasons for this: `parentNode` poses a name collision with the DOM API and it actually is an id not a node.
 
 ### Minor Changes
 
