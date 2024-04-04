@@ -1,6 +1,10 @@
 # @reactflow/core
 
-## 11.10.5
+## 11.11.0
+
+### Minor Changes
+
+- [#4110](https://github.com/xyflow/xyflow/pull/4110) [`d80b9e7b`](https://github.com/xyflow/xyflow/commit/d80b9e7b18476f11d91a68cfcae0e3f5e5fcac36) Thanks [@moklick](https://github.com/moklick)! - deprecate node.parentNode, rename to node.parentId
 
 ### Patch Changes
 

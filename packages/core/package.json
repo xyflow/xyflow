@@ -1,6 +1,6 @@
 {
   "name": "@reactflow/core",
-  "version": "11.10.5",
+  "version": "11.11.0",
   "description": "Core components and util functions of React Flow.",
   "keywords": [
     "react",
