@@ -23,10 +23,11 @@ function calculateXYZPosition(
   result: XYZPosition,
   nodeOrigin: NodeOrigin
 ): XYZPosition {
-  if (!node.parentNode) {
+  const parentId = node.parentNode || node.parentId;
+  if (!parentId) {
     return result;
   }
-  const parentNode = nodeInternals.get(node.parentNode)!;
+  const parentNode = nodeInternals.get(parentId)!;
   const parentNodePosition = getNodePositionWithOrigin(parentNode, nodeOrigin);
 
   return calculateXYZPosition(
@@ -47,11 +48,13 @@ export function updateAbsoluteNodePositions(
   parentNodes?: ParentNodes
 ) {
   nodeInternals.forEach((node) => {
-    if (node.parentNode && !nodeInternals.has(node.parentNode)) {
-      throw new Error(`Parent node ${node.parentNode} not found`);
+    const parentId = node.parentNode || node.parentId;
+
+    if (parentId && !nodeInternals.has(parentId)) {
+      throw new Error(`Parent node ${parentId} not found`);
     }
 
-    if (node.parentNode || parentNodes?.[node.id]) {
+    if (parentId || parentNodes?.[node.id]) {
       const { x, y, z } = calculateXYZPosition(
         node,
         nodeInternals,
@@ -98,8 +101,10 @@ export function createNodeInternals(
       },
     };
 
-    if (node.parentNode) {
-      parentNodes[node.parentNode] = true;
+    const parentId = node.parentNode || node.parentId;
+
+    if (parentId) {
+      parentNodes[parentId] = true;
     }
 
     const resetHandleBounds = currInternals?.type && currInternals?.type !== node.type;

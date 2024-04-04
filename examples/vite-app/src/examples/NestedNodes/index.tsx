@@ -35,7 +35,7 @@ const initialNodes: Node[] = [
     id: '2a',
     data: { label: 'Node 2a' },
     position: { x: 10, y: 50 },
-    parentNode: '2',
+    parentId: '2',
   },
   {
     id: '3',
@@ -55,7 +55,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 4a' },
     position: { x: 15, y: 65 },
     className: 'light',
-    parentNode: '4',
+    parentId: '4',
     extent: 'parent',
   },
   {
@@ -68,21 +68,21 @@ const initialNodes: Node[] = [
       height: 150,
       width: 270,
     },
-    parentNode: '4',
+    parentId: '4',
   },
   {
     id: '4b1',
     data: { label: 'Node 4b1' },
     position: { x: 20, y: 40 },
     className: 'light',
-    parentNode: '4b',
+    parentId: '4b',
   },
   {
     id: '4b2',
     data: { label: 'Node 4b2' },
     position: { x: 100, y: 100 },
     className: 'light',
-    parentNode: '4b',
+    parentId: '4b',
   },
 ];
 
@@ -138,7 +138,7 @@ const NestedFlow = () => {
   const toggleChildNodes = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        n.hidden = !!n.parentNode && !n.hidden;
+        n.hidden = !!n.parentId && !n.hidden;
         return n;
       });
     });

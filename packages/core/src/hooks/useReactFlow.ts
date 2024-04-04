@@ -130,7 +130,8 @@ export default function useReactFlow<NodeData = any, EdgeData = any>(): ReactFlo
     const nodeIds = (nodesDeleted || []).map((node) => node.id);
     const edgeIds = (edgesDeleted || []).map((edge) => edge.id);
     const nodesToRemove = getNodes().reduce<Node[]>((res, node) => {
-      const parentHit = !nodeIds.includes(node.id) && node.parentNode && res.find((n) => n.id === node.parentNode);
+      const parentId = node.parentNode || node.parentId;
+      const parentHit = !nodeIds.includes(node.id) && parentId && res.find((n) => n.id === parentId);
       const deletable = typeof node.deletable === 'boolean' ? node.deletable : true;
       if (deletable && (nodeIds.includes(node.id) || parentHit)) {
         res.push(node);

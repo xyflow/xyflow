@@ -6,11 +6,12 @@ import { getNodePositionWithOrigin } from '../../utils/graph';
 import { errorMessages } from '../../contants';
 
 export function isParentSelected(node: Node, nodeInternals: NodeInternals): boolean {
-  if (!node.parentNode) {
+  const parentId = node.parentNode || node.parentId;
+  if (!parentId) {
     return false;
   }
 
-  const parentNode = nodeInternals.get(node.parentNode);
+  const parentNode = nodeInternals.get(parentId);
 
   if (!parentNode) {
     return false;
@@ -46,7 +47,7 @@ export function getDragItems(
     .filter(
       (n) =>
         (n.selected || n.id === nodeId) &&
-        (!n.parentNode || !isParentSelected(n, nodeInternals)) &&
+        (!n.parentNode || n.parentId || !isParentSelected(n, nodeInternals)) &&
         (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'))
     )
     .map((n) => ({
@@ -62,7 +63,8 @@ export function getDragItems(
         y: 0,
       },
       extent: n.extent,
-      parentNode: n.parentNode,
+      parentNode: n.parentNode || n.parentId,
+      parentId: n.parentNode || n.parentId,
       width: n.width,
       height: n.height,
       expandParent: n.expandParent,
@@ -86,10 +88,11 @@ export function calcNextPosition(
 ): { position: XYPosition; positionAbsolute: XYPosition } {
   const clampedNodeExtent = clampNodeExtent(node, node.extent || nodeExtent);
   let currentExtent = clampedNodeExtent;
+  const parentId = node.parentNode || node.parentId;
 
   if (node.extent === 'parent' && !node.expandParent) {
-    if (node.parentNode && node.width && node.height) {
-      const parent = nodeInternals.get(node.parentNode);
+    if (parentId && node.width && node.height) {
+      const parent = nodeInternals.get(parentId);
       const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, nodeOrigin).positionAbsolute;
       currentExtent =
         parent && isNumeric(parentX) && isNumeric(parentY) && isNumeric(parent.width) && isNumeric(parent.height)
@@ -106,8 +109,8 @@ export function calcNextPosition(
 
       currentExtent = clampedNodeExtent;
     }
-  } else if (node.extent && node.parentNode && node.extent !== 'parent') {
-    const parent = nodeInternals.get(node.parentNode);
+  } else if (node.extent && parentId && node.extent !== 'parent') {
+    const parent = nodeInternals.get(parentId);
     const { x: parentX, y: parentY } = getNodePositionWithOrigin(parent, nodeOrigin).positionAbsolute;
     currentExtent = [
       [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
@@ -117,8 +120,8 @@ export function calcNextPosition(
 
   let parentPosition = { x: 0, y: 0 };
 
-  if (node.parentNode) {
-    const parentNode = nodeInternals.get(node.parentNode);
+  if (parentId) {
+    const parentNode = nodeInternals.get(parentId);
     parentPosition = getNodePositionWithOrigin(parentNode, nodeOrigin).positionAbsolute;
   }
 
