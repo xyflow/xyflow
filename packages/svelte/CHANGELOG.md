@@ -1,5 +1,13 @@
 # @xyflow/svelte
 
+## 0.0.40
+
+- add `orientation` ('horizontal' or 'vertical'), `style` and `class` prop for `Controls` component
+- allow multiple keys for `deleteKey`, `selectionKey`, `multiSelectionKey`, `panActivationKey` and `zoomActivationKey`
+- fix node observe / unobserve
+- fix edge and node types
+- active context menu releases pressed keys to reset selection
+
 ## 0.0.39
 
 ## ⚠️ Breaking changes

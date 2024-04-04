@@ -18,6 +18,9 @@ export type ControlsProps = {
   buttonColor?: string;
   buttonColorHover?: string;
   'aria-label'?: string;
+  style?: string;
+  class?: string;
+  orientation?: 'horizontal' | 'vertical';
 };
 
 export type ControlButtonProps = HTMLButtonAttributes & {

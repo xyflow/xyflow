@@ -34,6 +34,7 @@ function ControlsComponent({
   className,
   children,
   position = 'bottom-left',
+  orientation = 'vertical',
   'aria-label': ariaLabel = 'React Flow controls',
 }: ControlProps) {
   const store = useStoreApi();
@@ -65,9 +66,11 @@ function ControlsComponent({
     onInteractiveChange?.(!isInteractive);
   };
 
+  const orientationClass = orientation === 'horizontal' ? 'horizontal' : 'vertical';
+
   return (
     <Panel
-      className={cc(['react-flow__controls', className])}
+      className={cc(['react-flow__controls', orientationClass, className])}
       position={position}
       style={style}
       data-testid="rf__controls"

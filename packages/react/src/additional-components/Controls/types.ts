@@ -31,6 +31,7 @@ export type ControlProps = {
   /** ClassName applied to container */
   className?: string;
   'aria-label'?: string;
+  orientation?: 'horizontal' | 'vertical';
 };
 
 export type ControlButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;

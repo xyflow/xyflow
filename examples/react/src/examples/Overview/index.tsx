@@ -237,7 +237,7 @@ const OverviewFlow = () => {
       onPaneMouseMove={onPaneMouseMove}
     >
       <MiniMap nodeBorderRadius={2} />
-      <Controls />
+      <Controls orientation="horizontal" />
       <Background gap={25} />
     </ReactFlow>
   );
