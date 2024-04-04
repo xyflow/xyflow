@@ -2,7 +2,8 @@
 import type { Node, Edge, EdgeChange, NodeChange } from '../types';
 
 export function handleParentExpand(res: any[], updateItem: any) {
-  const parent = res.find((e) => e.id === updateItem.parentNode);
+  const parentId = updateItem.parentNode || updateItem.parentId;
+  const parent = res.find((e) => e.id === parentId);
 
   if (parent) {
     const extendWidth = updateItem.position.x + updateItem.width - parent.width;

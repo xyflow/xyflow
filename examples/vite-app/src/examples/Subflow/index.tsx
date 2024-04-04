@@ -46,7 +46,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 4a' },
     position: { x: 15, y: 15 },
     className: 'light',
-    parentNode: '4',
+    parentId: '4',
     extent: [
       [0, 0],
       [100, 100],
@@ -62,21 +62,21 @@ const initialNodes: Node[] = [
       height: 200,
       width: 300,
     },
-    parentNode: '4',
+    parentId: '4',
   },
   {
     id: '4b1',
     data: { label: 'Node 4b1' },
     position: { x: 40, y: 20 },
     className: 'light',
-    parentNode: '4b',
+    parentId: '4b',
   },
   {
     id: '4b2',
     data: { label: 'Node 4b2' },
     position: { x: 20, y: 100 },
     className: 'light',
-    parentNode: '4b',
+    parentId: '4b',
   },
   {
     id: '5',
@@ -92,7 +92,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 5a' },
     position: { x: 0, y: 0 },
     className: 'light',
-    parentNode: '5',
+    parentId: '5',
     extent: 'parent',
   },
   {
@@ -100,7 +100,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 5b' },
     position: { x: 100, y: 100 },
     className: 'light',
-    parentNode: '5',
+    parentId: '5',
     expandParent: true,
   },
   {
@@ -153,10 +153,13 @@ const Subflow = () => {
   const updatePos = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        if (!n.parentNode) {
-          n.position = {
-            x: Math.random() * 400,
-            y: Math.random() * 400,
+        if (!n.parentId) {
+          return {
+            ...n,
+            position: {
+              x: Math.random() * 400,
+              y: Math.random() * 400,
+            },
           };
         }
 
@@ -171,8 +174,10 @@ const Subflow = () => {
   const toggleClassnames = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        n.className = n.className === 'light' ? 'dark' : 'light';
-        return n;
+        return {
+          ...n,
+          className: n.className === 'light' ? 'dark' : 'light',
+        };
       });
     });
   };
@@ -180,8 +185,10 @@ const Subflow = () => {
   const toggleChildNodes = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        n.hidden = !!n.parentNode && !n.hidden;
-        return n;
+        return {
+          ...n,
+          hidden: !!n.parentId && !n.hidden,
+        };
       });
     });
   };
