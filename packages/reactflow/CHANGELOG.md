@@ -1,5 +1,27 @@
 # reactflow
 
+## 11.11.0
+
+This is hopefully the last release for React Flow 11. It fixes some bugs and adds a deprecation warning for `node.parentNode` which is now called `node.parentId`. There are two reasons for this: `parentNode` poses a name collision with the DOM API and it actually is an id not a node.
+
+### Minor Changes
+
+- [#4110](https://github.com/xyflow/xyflow/pull/4110) [`d80b9e7b`](https://github.com/xyflow/xyflow/commit/d80b9e7b18476f11d91a68cfcae0e3f5e5fcac36) - deprecate `node.parentNode`, rename to `node.parentId`
+
+### Patch Changes
+
+- [#3957](https://github.com/xyflow/xyflow/pull/3957) [`c7a140bd`](https://github.com/xyflow/xyflow/commit/c7a140bd7bc4442bf4121b1bca936a05e19117a4) - fixed smoothstep edge if center = 0
+- [#4082](https://github.com/xyflow/xyflow/pull/4082) [`ba3809b1`](https://github.com/xyflow/xyflow/commit/ba3809b18413fa581a4e7098611ebcb9067c971f) - fix: re-observe nodes when hidden is toggled
+- [#3935](https://github.com/xyflow/xyflow/pull/3935) [`6228d499`](https://github.com/xyflow/xyflow/commit/6228d499464408fc7bad0ce89b321a59ca5ecbe1) - `disableKeyboardA11y` now correctly prevents enter and escape key presses
+
+- Updated dependencies [[`c7a140bd`](https://github.com/xyflow/xyflow/commit/c7a140bd7bc4442bf4121b1bca936a05e19117a4), [`ba3809b1`](https://github.com/xyflow/xyflow/commit/ba3809b18413fa581a4e7098611ebcb9067c971f), [`6228d499`](https://github.com/xyflow/xyflow/commit/6228d499464408fc7bad0ce89b321a59ca5ecbe1)]:
+  - @reactflow/core@11.10.5
+  - @reactflow/background@11.3.10
+  - @reactflow/controls@11.2.10
+  - @reactflow/minimap@11.7.10
+  - @reactflow/node-resizer@2.2.10
+  - @reactflow/node-toolbar@1.3.10
+
 ## 11.10.4
 
 ### Patch Changes

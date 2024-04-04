@@ -24,7 +24,9 @@ export type Node<T = any, U extends string | undefined = string | undefined> = {
   dragHandle?: string;
   width?: number | null;
   height?: number | null;
+  /** @deprecated use `parentId` instead */
   parentNode?: string;
+  parentId?: string;
   zIndex?: number;
   extent?: 'parent' | CoordinateExtent;
   expandParent?: boolean;
@@ -113,6 +115,7 @@ export type NodeDragItem = {
   height?: number | null;
   extent?: 'parent' | CoordinateExtent;
   parentNode?: string;
+  parentId?: string;
   dragging?: boolean;
   expandParent?: boolean;
 };

@@ -57,7 +57,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     hasHandleBounds,
   }: WrapNodeProps) => {
     const store = useStoreApi();
-    const nodeRef = useRef<HTMLDivElement>(null);
+    const nodeRef = useRef<HTMLDivElement | null>(null);
+    const prevNodeRef = useRef<HTMLDivElement | null>(null);
     const prevSourcePosition = useRef(sourcePosition);
     const prevTargetPosition = useRef(targetPosition);
     const prevType = useRef(type);
@@ -95,6 +96,10 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         return;
       }
 
+      if (disableKeyboardA11y) {
+        return;
+      }
+
       if (elementSelectionKeys.includes(event.key) && isSelectable) {
         const unselect = event.key === 'Escape';
 
@@ -104,12 +109,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
           unselect,
           nodeRef,
         });
-      } else if (
-        !disableKeyboardA11y &&
-        isDraggable &&
-        selected &&
-        Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)
-      ) {
+      } else if (isDraggable && selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
         store.setState({
           ariaLiveMessage: `Moved selected node ${event.key
             .replace('Arrow', '')
@@ -126,8 +126,8 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
 
     useEffect(() => {
       return () => {
-        if (nodeRef.current) {
-          resizeObserver?.unobserve(nodeRef.current);
+        if (prevNodeRef.current) {
+          resizeObserver?.unobserve(prevNodeRef.current);
         }
       };
     }, []);
@@ -139,8 +139,11 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
         if (!initialized || !hasHandleBounds) {
           // At this point we always want to make sure that the node gets re-measured / re-initialized.
           // We need to unobserve it first in case it is still observed
-          resizeObserver?.unobserve(currNode);
+          if (prevNodeRef.current) {
+            resizeObserver?.unobserve(prevNodeRef.current);
+          }
           resizeObserver?.observe(currNode);
+          prevNodeRef.current = currNode;
         }
       }
     }, [hidden, initialized, hasHandleBounds]);

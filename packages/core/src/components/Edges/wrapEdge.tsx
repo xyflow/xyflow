@@ -58,6 +58,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     isUpdatable,
     pathOptions,
     interactionWidth,
+    disableKeyboardA11y,
   }: WrapEdgeProps): JSX.Element | null => {
     const edgeRef = useRef<SVGGElement>(null);
     const [updateHover, setUpdateHover] = useState<boolean>(false);
@@ -151,7 +152,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     const inactive = !elementsSelectable && !onClick;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (elementSelectionKeys.includes(event.key) && elementsSelectable) {
+      if (!disableKeyboardA11y && elementSelectionKeys.includes(event.key) && elementsSelectable) {
         const { unselectNodesAndEdges, addSelectedEdges, edges } = store.getState();
         const unselect = event.key === 'Escape';
 

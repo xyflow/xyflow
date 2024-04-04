@@ -66,6 +66,7 @@ const EdgeRenderer = ({
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
   children,
+  disableKeyboardA11y,
 }: EdgeRendererProps) => {
   const { edgesFocusable, edgesUpdatable, elementsSelectable, width, height, connectionMode, nodeInternals, onError } =
     useStore(selector, shallow);
@@ -178,6 +179,7 @@ const EdgeRenderer = ({
                   isUpdatable={isUpdatable}
                   pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
                   interactionWidth={edge.interactionWidth}
+                  disableKeyboardA11y={disableKeyboardA11y}
                 />
               );
             })}
