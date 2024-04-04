@@ -1,4 +1,6 @@
 <script lang="ts">
+  import cc from 'classcat';
+
   import Panel from '$lib/container/Panel/Panel.svelte';
   import { useStore } from '$lib/store';
   import ControlButton from './ControlButton.svelte';
@@ -22,6 +24,11 @@
   export let buttonColorHover: $$Props['buttonColorHover'] = undefined;
   export let buttonBorderColor: $$Props['buttonColorHover'] = undefined;
   export let ariaLabel: $$Props['aria-label'] = undefined;
+  export let style: $$Props['style'] = undefined;
+  export let orientation: $$Props['orientation'] = 'vertical';
+
+  let className: $$Props['class'] = '';
+  export { className as class };
 
   const {
     zoomIn,
@@ -66,13 +73,16 @@
     nodesConnectable.set(isInteractive);
     elementsSelectable.set(isInteractive);
   };
+
+  $: orientationClass = orientation === 'horizontal' ? 'horizontal' : 'vertical';
 </script>
 
 <Panel
-  class="svelte-flow__controls"
+  class={cc(['svelte-flow__controls', orientationClass, className])}
   {position}
   data-testid="svelte-flow__controls"
   aria-label={ariaLabel ?? 'Svelte Flow controls'}
+  {style}
 >
   <slot name="before" />
   {#if showZoom}

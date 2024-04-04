@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
-  declare const window: any;
-
+  declare const window: Window | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getAttrFunction = (func: any): GetMiniMapNodeAttribute =>
     func instanceof Function ? func : () => func;
 </script>
@@ -61,6 +61,7 @@
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
   const nodeClassFunc = getAttrFunction(nodeClass);
   const shapeRendering =
+    // @ts-expect-error - TS doesn't know about chrome
     typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
   const labelledBy = `svelte-flow__minimap-desc-${$flowId}`;
 

@@ -76,8 +76,7 @@ export function updateStoreByKeys(store: SvelteFlowStore, keys: UpdatableStorePr
   getKeys(keys).forEach((prop) => {
     const update = keys[prop];
     if (update !== undefined) {
-      // @todo: how to fix this TS error?
-      // @ts-ignore
+      // @ts-expect-error @todo: how to fix this TS error?
       store[prop].set(update);
     }
   });

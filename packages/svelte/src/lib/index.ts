@@ -96,7 +96,8 @@ export {
   type OnResizeEnd,
   type ControlPosition,
   type ControlLinePosition,
-  type ResizeControlVariant
+  type ResizeControlVariant,
+  type IsValidConnection
 } from '@xyflow/system';
 
 // system utils

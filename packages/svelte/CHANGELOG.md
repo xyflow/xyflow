@@ -1,5 +1,13 @@
 # @xyflow/svelte
 
+## 0.0.40
+
+- add `orientation` ('horizontal' or 'vertical'), `style` and `class` prop for `Controls` component
+- allow multiple keys for `deleteKey`, `selectionKey`, `multiSelectionKey`, `panActivationKey` and `zoomActivationKey`
+- fix node observe / unobserve
+- fix edge and node types
+- active context menu releases pressed keys to reset selection
+
 ## 0.0.39
 
 ## ⚠️ Breaking changes
@@ -16,7 +24,7 @@
 
 ## ⚠️ Breaking changes
 
-- `NodeProps` generic is a node and not only node data. `type $$Props = NodeProps<AppNode>`  
+- `NodeProps` generic is a node and not only node data. `type $$Props = NodeProps<AppNode>`
 
 ## Patch changes
 
@@ -45,7 +53,7 @@
 - fix `on:panecontextmenu`
 - add `role="button"` to `<EdgeLabel />` to prevent a11y warnings
 - don't delete node when input is focused and user presses Backspace + Ctrl (or any other mod key)
-- `useHandleConnections`: use context node id when no node id is passed  
+- `useHandleConnections`: use context node id when no node id is passed
 - don't trigger drag start / end when node is not draggable
 
 ## 0.0.35
@@ -87,7 +95,7 @@
 
 ### ⚠️ Breaking
 
-- `deleteElements` function now takes one object as an argument `{ nodes: [], edges: [] }` instead of two `(nodes, edges)`  
+- `deleteElements` function now takes one object as an argument `{ nodes: [], edges: [] }` instead of two `(nodes, edges)`
 
 ## 0.0.32
 
@@ -106,7 +114,7 @@
 ### Features
 
 - add `onbeforedelete` handler to prevent/ manage deletions
-- TSDocs for hooks and some types 
+- TSDocs for hooks and some types
 
 ### Patch changes
 
@@ -302,4 +310,4 @@ This very first release comes with lots of features already:
 - draggable, selectable and deletable nodes
 - support for custom `nodeTypes` and `edgeTypes`
 - basic viewport settings like `fitView`, `minZoom` and `maxZoom`
-- additional components: `<MiniMap />`, `<Controls />` & `<Background />` 
+- additional components: `<MiniMap />`, `<Controls />` & `<Background />`

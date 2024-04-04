@@ -2,8 +2,6 @@
   import portal from '$lib/actions/portal';
   import { useStore } from '$lib/store';
 
-  type $$Props = {};
-
   const { domNode } = useStore();
 </script>
 
