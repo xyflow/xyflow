@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/system",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "xyflow core system that powers React Flow and Svelte Flow.",
   "keywords": [
     "node-based UI",
