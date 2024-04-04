@@ -34,6 +34,6 @@
     "cypress-real-events": "1.12.0",
     "start-server-and-test": "^2.0.2",
     "typescript": "5.2.2",
-    "vite": "4.5.0"
+    "vite": "4.5.3"
   }
 }
