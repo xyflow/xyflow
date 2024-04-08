@@ -73,7 +73,6 @@ const createRFStore = ({
       // new dimensions and update the nodes.
       updateNodeDimensions: (updates) => {
         const {
-          nodes,
           onNodesChange,
           fitView,
           nodeLookup,
@@ -98,7 +97,7 @@ const createRFStore = ({
         if (!fitViewDone && fitViewOnInit) {
           nextFitViewDone = fitView({
             ...fitViewOnInitOptions,
-            nodes: fitViewOnInitOptions?.nodes || nodes,
+            nodes: fitViewOnInitOptions?.nodes,
           });
         }
 
@@ -107,7 +106,7 @@ const createRFStore = ({
         // has not provided an onNodesChange handler.
         // Nodes are only rendered if they have a width and height
         // attribute which they get from this handler.
-        set({ nodes, fitViewDone: nextFitViewDone });
+        set({ fitViewDone: nextFitViewDone });
 
         if (changes?.length > 0) {
           if (debug) {

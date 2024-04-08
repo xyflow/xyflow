@@ -56,18 +56,19 @@ const initialEdges: Edge[] = [
 const defaultEdgeOptions = {};
 
 const BasicFlow = () => {
-  const { setNodes, getNodes, setEdges, getEdges, deleteElements, updateNodeData, toObject, setViewport } =
+  const { addNodes, setNodes, getNodes, setEdges, getEdges, deleteElements, updateNodeData, toObject, setViewport } =
     useReactFlow();
 
   const updatePos = () => {
     setNodes((nodes) =>
       nodes.map((node) => {
-        node.position = {
-          x: Math.random() * 400,
-          y: Math.random() * 400,
+        return {
+          ...node,
+          position: {
+            x: Math.random() * 400,
+            y: Math.random() * 400,
+          },
         };
-
-        return node;
       })
     );
   };
@@ -78,9 +79,10 @@ const BasicFlow = () => {
   const toggleClassnames = () => {
     setNodes((nodes) =>
       nodes.map((node) => {
-        node.className = node.className === 'light' ? 'dark' : 'light';
-
-        return node;
+        return {
+          ...node,
+          className: node.className === 'light' ? 'dark' : 'light',
+        };
       })
     );
   };
@@ -107,6 +109,14 @@ const BasicFlow = () => {
   const onUpdateNode = () => {
     updateNodeData('1', { label: 'update' });
     updateNodeData('2', { label: 'update' });
+  };
+  const addNode = () => {
+    addNodes({
+      id: `${Math.random()}`,
+      data: { label: 'Node' },
+      position: { x: Math.random() * 300, y: Math.random() * 300 },
+      className: 'light',
+    });
   };
 
   return (
@@ -144,6 +154,7 @@ const BasicFlow = () => {
         <button onClick={deleteSomeElements}>deleteSomeElements</button>
         <button onClick={onSetNodes}>setNodes</button>
         <button onClick={onUpdateNode}>updateNode</button>
+        <button onClick={addNode}>addNode</button>
       </Panel>
     </ReactFlow>
   );
