@@ -7,7 +7,7 @@ import {
   type Writable
 } from 'svelte/store';
 import {
-  adoptUserProvidedNodes,
+  adoptUserNodes,
   updateConnectionLookup,
   type Viewport,
   type PanZoomInstance,
@@ -141,7 +141,7 @@ export const createNodesStore = (
   let elevateNodesOnSelect = true;
 
   const _set = (nds: Node[]): Node[] => {
-    const nextNodes = adoptUserProvidedNodes(nds, nodeLookup, {
+    const nextNodes = adoptUserNodes(nds, nodeLookup, {
       elevateNodesOnSelect,
       defaults
     });

@@ -5,8 +5,8 @@ import { getEdgeParams } from './utils';
 
 const FloatingEdge: FC<EdgeProps> = ({ id, source, target, style }) => {
   const { sourceNode, targetNode } = useStore((s) => {
-    const sourceNode = s.nodes.find((n) => n.id === source);
-    const targetNode = s.nodes.find((n) => n.id === target);
+    const sourceNode = s.nodeLookup.get(source);
+    const targetNode = s.nodeLookup.get(target);
 
     return { sourceNode, targetNode };
   });

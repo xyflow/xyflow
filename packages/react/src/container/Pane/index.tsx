@@ -5,13 +5,13 @@
 import { useRef, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
-import { getNodesInside, getEventPosition, SelectionMode } from '@xyflow/system';
+import { getNodesInside, getEventPosition, SelectionMode, type NodeChange, type EdgeChange } from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils';
-import type { ReactFlowProps, ReactFlowState, NodeChange, EdgeChange } from '../../types';
+import type { ReactFlowProps, ReactFlowState } from '../../types';
 
 type PaneProps = {
   isSelecting: boolean;
@@ -128,7 +128,7 @@ export function Pane({
   };
 
   const onMouseMove = (event: ReactMouseEvent): void => {
-    const { userSelectionRect, edges, transform, nodeOrigin, nodes, triggerNodeChanges, triggerEdgeChanges } =
+    const { userSelectionRect, edgeLookup, transform, nodeOrigin, nodeLookup, triggerNodeChanges, triggerEdgeChanges } =
       store.getState();
     if (!isSelecting || !containerBounds.current || !userSelectionRect) {
       return;
@@ -149,7 +149,7 @@ export function Pane({
     };
 
     const selectedNodes = getNodesInside(
-      nodes,
+      nodeLookup,
       nextUserSelectRect,
       transform,
       selectionMode === SelectionMode.Partial,
@@ -163,22 +163,22 @@ export function Pane({
     for (const selectedNode of selectedNodes) {
       selectedNodeIds.add(selectedNode.id);
 
-      for (const edge of edges) {
+      for (const [edgeId, edge] of edgeLookup) {
         if (edge.source === selectedNode.id || edge.target === selectedNode.id) {
-          selectedEdgeIds.add(edge.id);
+          selectedEdgeIds.add(edgeId);
         }
       }
     }
 
     if (prevSelectedNodesCount.current !== selectedNodeIds.size) {
       prevSelectedNodesCount.current = selectedNodeIds.size;
-      const changes = getSelectionChanges(nodes, selectedNodeIds, true) as NodeChange[];
+      const changes = getSelectionChanges(nodeLookup, selectedNodeIds, true) as NodeChange[];
       triggerNodeChanges(changes);
     }
 
     if (prevSelectedEdgesCount.current !== selectedEdgeIds.size) {
       prevSelectedEdgesCount.current = selectedEdgeIds.size;
-      const changes = getSelectionChanges(edges, selectedEdgeIds) as EdgeChange[];
+      const changes = getSelectionChanges(edgeLookup, selectedEdgeIds) as EdgeChange[];
       triggerEdgeChanges(changes);
     }
 

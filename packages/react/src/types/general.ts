@@ -12,9 +12,11 @@ import {
   XYPosition,
   OnBeforeDeleteBase,
   Connection,
+  NodeChange,
+  EdgeChange,
 } from '@xyflow/system';
 
-import type { NodeChange, EdgeChange, Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
+import type { Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
 
 export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<NodeType>[]) => void;
 export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChange<EdgeType>[]) => void;

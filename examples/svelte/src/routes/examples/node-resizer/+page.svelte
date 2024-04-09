@@ -113,7 +113,7 @@
 			type: 'defaultResizer',
 			data: { label: 'Child with extent parent' },
 			position: { x: 50, y: 50 },
-			parentNode: '5',
+			parentId: '5',
 			extent: 'parent',
 			style: nodeStyle
 		},
@@ -122,7 +122,7 @@
 			type: 'defaultResizer',
 			data: { label: 'Child' },
 			position: { x: 100, y: 100 },
-			parentNode: '5',
+			parentId: '5',
 			style: nodeStyle
 		}
 	]);

@@ -1,8 +1,6 @@
-import { internalsSymbol } from '../constants';
 import {
   NodeBase,
   CoordinateExtent,
-  Dimensions,
   NodeDimensionUpdate,
   NodeOrigin,
   PanZoomInstance,
@@ -12,54 +10,58 @@ import {
   ConnectionLookup,
   EdgeBase,
   EdgeLookup,
+  InternalNodeBase,
+  NodeChange,
+  NodeLookup,
+  Rect,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
-import { isNumeric } from './general';
+import { getBoundsOfRects, getNodeDimensions, isNumeric, nodeToRect } from './general';
 import { getNodePositionWithOrigin } from './graph';
 
-type ParentNodes = Record<string, boolean>;
-
 export function updateAbsolutePositions<NodeType extends NodeBase>(
-  nodes: NodeType[],
-  nodeLookup: Map<string, NodeType>,
-  nodeOrigin: NodeOrigin = [0, 0],
-  parentNodes?: ParentNodes
+  nodeLookup: Map<string, InternalNodeBase<NodeType>>,
+  options: UpdateNodesOptions<NodeType> = {
+    nodeOrigin: [0, 0] as NodeOrigin,
+    elevateNodesOnSelect: true,
+    defaults: {},
+  },
+  parentNodeIds?: Set<string>
 ) {
-  return nodes.map((node) => {
-    if (node.parentNode && !nodeLookup.has(node.parentNode)) {
-      throw new Error(`Parent node ${node.parentNode} not found`);
+  const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
+
+  for (const [id, node] of nodeLookup) {
+    const parentId = node.parentId;
+
+    if (parentId && !nodeLookup.has(parentId)) {
+      throw new Error(`Parent node ${parentId} not found`);
     }
 
-    if (node.parentNode || parentNodes?.[node.id]) {
-      const parentNode = node.parentNode ? nodeLookup.get(node.parentNode) : null;
+    if (parentId || node.internals.isParent || parentNodeIds?.has(id)) {
+      const parentNode = parentId ? nodeLookup.get(parentId) : null;
       const { x, y, z } = calculateXYZPosition(
         node,
-        nodes,
         nodeLookup,
         {
           ...node.position,
-          z: node[internalsSymbol]?.z ?? 0,
+          z: (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0),
         },
-        parentNode?.origin || nodeOrigin
+        parentNode?.origin || options.nodeOrigin
       );
 
-      const positionChanged = x !== node.computed?.positionAbsolute?.x || y !== node.computed?.positionAbsolute?.y;
-      node.computed!.positionAbsolute = positionChanged
-        ? {
-            x,
-            y,
-          }
-        : node.computed?.positionAbsolute;
+      const currPosition = node.internals.positionAbsolute;
+      const positionChanged = x !== currPosition.x || y !== currPosition.y;
 
-      node[internalsSymbol]!.z = z;
+      node.internals.positionAbsolute = positionChanged ? { x, y } : currPosition;
+      node.internals.z = z;
 
-      if (parentNodes?.[node.id]) {
-        node[internalsSymbol]!.isParent = true;
+      if (parentNodeIds !== undefined) {
+        node.internals.isParent = !!parentNodeIds?.has(id);
       }
-    }
 
-    return node;
-  });
+      nodeLookup.set(id, node);
+    }
+  }
 }
 
 type UpdateNodesOptions<NodeType extends NodeBase> = {
@@ -68,128 +70,188 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
   defaults?: Partial<NodeType>;
 };
 
-export function adoptUserProvidedNodes<NodeType extends NodeBase>(
+export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
-  nodeLookup: Map<string, NodeType>,
+  nodeLookup: Map<string, InternalNodeBase<NodeType>>,
   options: UpdateNodesOptions<NodeType> = {
     nodeOrigin: [0, 0] as NodeOrigin,
     elevateNodesOnSelect: true,
     defaults: {},
   }
-): NodeType[] {
+) {
   const tmpLookup = new Map(nodeLookup);
   nodeLookup.clear();
-  const parentNodes: ParentNodes = {};
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
+  const parentNodeIds = new Set<string>();
 
-  const nextNodes = nodes.map((n) => {
-    const currentStoreNode = tmpLookup.get(n.id);
-    if (n === currentStoreNode?.[internalsSymbol]?.userProvidedNode) {
-      nodeLookup.set(n.id, currentStoreNode);
-      return currentStoreNode;
+  nodes.forEach((userNode) => {
+    const currentStoreNode = tmpLookup.get(userNode.id);
+
+    if (userNode.parentId) {
+      parentNodeIds.add(userNode.parentId);
     }
 
-    const node: NodeType = {
-      ...options.defaults,
-      ...n,
-      computed: {
-        positionAbsolute: n.position,
-        width: n.computed?.width,
-        height: n.computed?.height,
-      },
-    };
-    const z = (isNumeric(n.zIndex) ? n.zIndex : 0) + (n.selected ? selectedNodeZ : 0);
-    const currInternals = n?.[internalsSymbol] || currentStoreNode?.[internalsSymbol];
-
-    if (node.parentNode) {
-      parentNodes[node.parentNode] = true;
+    if (userNode === currentStoreNode?.internals.userNode) {
+      nodeLookup.set(userNode.id, currentStoreNode);
+    } else {
+      nodeLookup.set(userNode.id, {
+        ...options.defaults,
+        ...userNode,
+        measured: {
+          width: userNode.measured?.width,
+          height: userNode.measured?.height,
+        },
+        internals: {
+          positionAbsolute: userNode.position,
+          handleBounds: currentStoreNode?.internals?.handleBounds,
+          z: (isNumeric(userNode.zIndex) ? userNode.zIndex : 0) + (userNode.selected ? selectedNodeZ : 0),
+          userNode,
+          isParent: false,
+        },
+      });
     }
-
-    Object.defineProperty(node, internalsSymbol, {
-      enumerable: false,
-      value: {
-        handleBounds: currInternals?.handleBounds,
-        z,
-        userProvidedNode: n,
-      },
-    });
-
-    nodeLookup.set(node.id, node);
-
-    return node;
   });
 
-  const nodesWithPositions = updateAbsolutePositions(nextNodes, nodeLookup, options.nodeOrigin, parentNodes);
-
-  return nodesWithPositions;
+  if (parentNodeIds.size > 0) {
+    updateAbsolutePositions(nodeLookup, options, parentNodeIds);
+  }
 }
 
 function calculateXYZPosition<NodeType extends NodeBase>(
   node: NodeType,
-  nodes: NodeType[],
-  nodeLookup: Map<string, NodeType>,
+  nodeLookup: Map<string, InternalNodeBase<NodeType>>,
   result: XYZPosition,
-  nodeOrigin: NodeOrigin
+  nodeOrigin: NodeOrigin = [0, 0]
 ): XYZPosition {
-  if (!node.parentNode) {
+  if (!node.parentId) {
     return result;
   }
 
-  const parentNode = nodeLookup.get(node.parentNode)!;
+  const parentNode = nodeLookup.get(node.parentId)!;
   const { position: parentNodePosition } = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin);
 
   return calculateXYZPosition(
     parentNode,
-    nodes,
     nodeLookup,
     {
       x: (result.x ?? 0) + parentNodePosition.x,
       y: (result.y ?? 0) + parentNodePosition.y,
-      z: (parentNode[internalsSymbol]?.z ?? 0) > (result.z ?? 0) ? parentNode[internalsSymbol]?.z ?? 0 : result.z ?? 0,
+      z: (parentNode.internals.z ?? 0) > (result.z ?? 0) ? parentNode.internals.z ?? 0 : result.z ?? 0,
     },
     parentNode.origin || nodeOrigin
   );
 }
 
-export function updateNodeDimensions<NodeType extends NodeBase>(
+export function handleParentExpand(nodes: InternalNodeBase[], nodeLookup: NodeLookup): NodeChange[] {
+  const changes: NodeChange[] = [];
+  const chilNodeRects = new Map<string, Rect>();
+
+  nodes.forEach((node) => {
+    const parentId = node.parentId;
+    if (node.expandParent && parentId) {
+      const parentNode = nodeLookup.get(parentId);
+
+      if (parentNode) {
+        const parentRect = chilNodeRects.get(parentId) || nodeToRect(parentNode, node.origin);
+        const expandedRect = getBoundsOfRects(parentRect, nodeToRect(node, node.origin));
+        chilNodeRects.set(parentId, expandedRect);
+      }
+    }
+  });
+
+  if (chilNodeRects.size > 0) {
+    chilNodeRects.forEach((rect, id) => {
+      const origParent = nodeLookup.get(id)!;
+      const { position } = getNodePositionWithOrigin(origParent, origParent.origin);
+      const dimensions = getNodeDimensions(origParent);
+
+      if (rect.x < position.x || rect.y < position.y) {
+        const xChange = Math.round(Math.abs(position.x - rect.x));
+        const yChange = Math.round(Math.abs(position.y - rect.y));
+
+        changes.push({
+          id,
+          type: 'position',
+          position: {
+            x: position.x - xChange,
+            y: position.y - yChange,
+          },
+        });
+
+        changes.push({
+          id,
+          type: 'dimensions',
+          resizing: true,
+          dimensions: {
+            width: dimensions.width + xChange,
+            height: dimensions.height + yChange,
+          },
+        });
+
+        // @todo we need to reset child node positions if < 0
+      } else if (dimensions.width < rect.width || dimensions.height < rect.height) {
+        changes.push({
+          id,
+          type: 'dimensions',
+          resizing: true,
+          dimensions: {
+            width: Math.max(dimensions.width, rect.width),
+            height: Math.max(dimensions.height, rect.height),
+          },
+        });
+      }
+    });
+  }
+
+  return changes;
+}
+
+export function updateNodeDimensions<NodeType extends InternalNodeBase>(
   updates: Map<string, NodeDimensionUpdate>,
-  nodes: NodeType[],
   nodeLookup: Map<string, NodeType>,
   domNode: HTMLElement | null,
-  nodeOrigin?: NodeOrigin,
-  onUpdate?: (id: string, dimensions: Dimensions) => void
-): NodeType[] | null {
+  nodeOrigin?: NodeOrigin
+): NodeChange[] {
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
 
   if (!viewportNode) {
-    return null;
+    return [];
   }
 
+  const changes: NodeChange[] = [];
   const style = window.getComputedStyle(viewportNode);
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
+  // in this array we collect nodes, that might trigger changes (like expanding parent)
+  const triggerChangeNodes: NodeType[] = [];
 
-  const nextNodes = nodes.map((node) => {
-    const update = updates.get(node.id);
+  updates.forEach((update) => {
+    const node = nodeLookup.get(update.id);
 
-    if (update) {
+    if (node?.hidden) {
+      nodeLookup.set(node.id, {
+        ...node,
+        internals: {
+          ...node.internals,
+          handleBounds: undefined,
+        },
+      });
+    } else if (node) {
       const dimensions = getDimensions(update.nodeElement);
       const doUpdate = !!(
         dimensions.width &&
         dimensions.height &&
-        (node.computed?.width !== dimensions.width || node.computed?.height !== dimensions.height || update.forceUpdate)
+        (node.measured?.width !== dimensions.width || node.measured?.height !== dimensions.height || update.force)
       );
 
       if (doUpdate) {
-        onUpdate?.(node.id, dimensions);
-
         const newNode = {
           ...node,
-          computed: {
-            ...node.computed,
+          measured: {
+            ...node.measured,
             ...dimensions,
           },
-          [internalsSymbol]: {
-            ...node[internalsSymbol],
+          internals: {
+            ...node.internals,
             handleBounds: {
               source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
               target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
@@ -199,14 +261,25 @@ export function updateNodeDimensions<NodeType extends NodeBase>(
 
         nodeLookup.set(node.id, newNode);
 
-        return newNode;
+        changes.push({
+          id: newNode.id,
+          type: 'dimensions',
+          dimensions,
+        });
+
+        if (newNode.expandParent) {
+          triggerChangeNodes.push(newNode);
+        }
       }
     }
-
-    return node;
   });
 
-  return nextNodes;
+  if (triggerChangeNodes.length > 0) {
+    const parentExpandChanges = handleParentExpand(triggerChangeNodes, nodeLookup);
+    changes.push(...parentExpandChanges);
+  }
+
+  return changes;
 }
 
 export function panBy({

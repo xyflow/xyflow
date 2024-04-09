@@ -1,16 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import {
-  getElementsToRemove,
-  getOverlappingArea,
-  isRectObject,
-  nodeHasDimensions,
-  nodeToRect,
-  type Rect,
-} from '@xyflow/system';
+import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type Rect } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
-import type { ReactFlowInstance, Instance, Node, Edge } from '../types';
+import type { ReactFlowInstance, Instance, Node, Edge, InternalNode } from '../types';
 import { getElementsDiffChanges, isNode } from '../utils';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
@@ -27,13 +20,20 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   const viewportHelper = useViewportHelper();
   const store = useStoreApi();
 
-  const getNodes = useCallback<Instance.GetNodes<NodeType>>(() => {
-    return store.getState().nodes.map((n) => ({ ...n })) as NodeType[];
-  }, []);
+  const getNodes = useCallback<Instance.GetNodes<NodeType>>(
+    () => store.getState().nodes.map((n) => ({ ...n })) as NodeType[],
+    []
+  );
 
-  const getNode = useCallback<Instance.GetNode<NodeType>>((id) => {
-    return store.getState().nodeLookup.get(id) as NodeType;
-  }, []);
+  const getInternalNode = useCallback<Instance.GetInternalNode<NodeType>>(
+    (id) => store.getState().nodeLookup.get(id) as InternalNode<NodeType>,
+    []
+  );
+
+  const getNode = useCallback<Instance.GetNode<NodeType>>(
+    (id) => getInternalNode(id)?.internals.userNode as NodeType,
+    [getInternalNode]
+  );
 
   const getEdges = useCallback<Instance.GetEdges<EdgeType>>(() => {
     const { edges = [] } = store.getState();
@@ -223,13 +223,9 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     []
   );
 
-  const getNodeRect = useCallback((nodeOrRect: NodeType | { id: NodeType['id'] }): Rect | null => {
-    const node =
-      isNode(nodeOrRect) && nodeHasDimensions(nodeOrRect)
-        ? nodeOrRect
-        : (store.getState().nodeLookup.get(nodeOrRect.id) as NodeType);
-
-    return node ? nodeToRect(node) : null;
+  const getNodeRect = useCallback(({ id }: { id: string }): Rect | null => {
+    const internalNode = store.getState().nodeLookup.get(id);
+    return internalNode ? nodeToRect(internalNode) : null;
   }, []);
 
   const getIntersectingNodes = useCallback<Instance.GetIntersectingNodes<NodeType>>(
@@ -242,7 +238,9 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       }
 
       return (nodes || store.getState().nodes).filter((n) => {
-        if (!isRect && (n.id === nodeOrRect!.id || !n.computed?.positionAbsolute)) {
+        const internalNode = store.getState().nodeLookup.get(n.id);
+
+        if (internalNode && !isRect && (n.id === nodeOrRect!.id || !internalNode.internals.positionAbsolute)) {
           return false;
         }
 
@@ -308,6 +306,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       ...viewportHelper,
       getNodes,
       getNode,
+      getInternalNode,
       getEdges,
       getEdge,
       setNodes,
@@ -325,6 +324,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     viewportHelper,
     getNodes,
     getNode,
+    getInternalNode,
     getEdges,
     getEdge,
     setNodes,

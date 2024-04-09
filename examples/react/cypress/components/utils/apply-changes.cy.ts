@@ -136,8 +136,8 @@ describe('applyChanges Testing', () => {
     ];
     const nextNodes = applyNodeChanges(nodeChanges, nodes);
 
-    expect(nodes[0].computed).to.be.undefined;
-    expect(nextNodes[0].computed).to.be.deep.equal({ width: newWidth, height: newHeight });
+    expect(nodes[0].measured).to.be.undefined;
+    expect(nextNodes[0].measured).to.be.deep.equal({ width: newWidth, height: newHeight });
     expect(nextNodes[0].width).to.be.undefined;
     expect(nextNodes[0].height).to.be.undefined;
   });
@@ -153,7 +153,7 @@ describe('applyChanges Testing', () => {
     const nextNodes = applyNodeChanges(nodeChanges, nodes);
 
     expect(nextNodes[0].position).to.be.deep.equal(newPosition);
-    expect(nextNodes[0].computed).to.be.deep.equal({ width: newWidth, height: newHeight });
+    expect(nextNodes[0].measured).to.be.deep.equal({ width: newWidth, height: newHeight });
   });
 
   it('replaces nodes/edges', () => {

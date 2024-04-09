@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import type { Rect, Viewport } from '@xyflow/system';
-import type { Node, Edge, ViewportHelperFunctions } from '.';
+import type { Node, Edge, ViewportHelperFunctions, InternalNode } from '.';
 
 export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   nodes: NodeType[];
@@ -20,6 +20,7 @@ export namespace Instance {
   ) => void;
   export type AddNodes<NodeType extends Node = Node> = (payload: NodeType[] | NodeType) => void;
   export type GetNode<NodeType extends Node = Node> = (id: string) => NodeType | undefined;
+  export type GetInternalNode<NodeType extends Node = Node> = (id: string) => InternalNode<NodeType> | undefined;
   export type GetEdges<EdgeType extends Edge = Edge> = () => EdgeType[];
   export type SetEdges<EdgeType extends Edge = Edge> = (
     payload: EdgeType[] | ((edges: EdgeType[]) => EdgeType[])
@@ -83,6 +84,13 @@ export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edg
    * @returns the node or undefined if no node was found
    */
   getNode: Instance.GetNode<NodeType>;
+  /**
+   * Returns an internal node by id.
+   *
+   * @param id - the node id
+   * @returns the internal node or undefined if no node was found
+   */
+  getInternalNode: Instance.GetInternalNode<NodeType>;
   /**
    * Returns edges.
    *

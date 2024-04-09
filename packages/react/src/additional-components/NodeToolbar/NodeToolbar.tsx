@@ -1,23 +1,23 @@
 import { useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { getNodesBounds, Rect, Position, internalsSymbol, getNodeToolbarTransform } from '@xyflow/system';
+import { Rect, Position, getNodeToolbarTransform, getNodesBounds } from '@xyflow/system';
 
-import { Node, ReactFlowState } from '../../types';
+import { InternalNode, ReactFlowState } from '../../types';
 import { useStore } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { NodeToolbarPortal } from './NodeToolbarPortal';
 import type { NodeToolbarProps } from './types';
 
-const nodeEqualityFn = (a?: Node, b?: Node) =>
-  a?.computed?.positionAbsolute?.x !== b?.computed?.positionAbsolute?.x ||
-  a?.computed?.positionAbsolute?.y !== b?.computed?.positionAbsolute?.y ||
-  a?.computed?.width !== b?.computed?.width ||
-  a?.computed?.height !== b?.computed?.height ||
+const nodeEqualityFn = (a?: InternalNode, b?: InternalNode) =>
+  a?.internals.positionAbsolute.x !== b?.internals.positionAbsolute.x ||
+  a?.internals.positionAbsolute.y !== b?.internals.positionAbsolute.y ||
+  a?.measured.width !== b?.measured.width ||
+  a?.measured.height !== b?.measured.height ||
   a?.selected !== b?.selected ||
-  a?.[internalsSymbol]?.z !== b?.[internalsSymbol]?.z;
+  a?.internals.z !== b?.internals.z;
 
-const nodesEqualityFn = (a: Node[], b: Node[]) => {
+const nodesEqualityFn = (a: InternalNode[], b: InternalNode[]) => {
   if (a.length !== b.length) {
     return false;
   }
@@ -49,10 +49,10 @@ export function NodeToolbar({
   const contextNodeId = useNodeId();
 
   const nodesSelector = useCallback(
-    (state: ReactFlowState): Node[] => {
+    (state: ReactFlowState): InternalNode[] => {
       const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
 
-      return nodeIds.reduce<Node[]>((acc, id) => {
+      return nodeIds.reduce<InternalNode[]>((acc, id) => {
         const node = state.nodeLookup.get(id);
         if (node) {
           acc.push(node);
@@ -74,7 +74,7 @@ export function NodeToolbar({
   }
 
   const nodeRect: Rect = getNodesBounds(nodes, { nodeOrigin });
-  const zIndex: number = Math.max(...nodes.map((node) => (node[internalsSymbol]?.z || 1) + 1));
+  const zIndex: number = Math.max(...nodes.map((node) => (node.internals?.z || 1) + 1));
 
   const wrapperStyle: CSSProperties = {
     position: 'absolute',

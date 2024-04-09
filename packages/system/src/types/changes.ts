@@ -1,6 +1,4 @@
-import type { XYPosition, Dimensions } from '@xyflow/system';
-
-import type { Node, Edge } from '.';
+import type { XYPosition, Dimensions, NodeBase, EdgeBase } from '.';
 
 export type NodeDimensionChange = {
   id: string;
@@ -28,12 +26,12 @@ export type NodeRemoveChange = {
   type: 'remove';
 };
 
-export type NodeAddChange<NodeType extends Node = Node> = {
+export type NodeAddChange<NodeType extends NodeBase = NodeBase> = {
   item: NodeType;
   type: 'add';
 };
 
-export type NodeReplaceChange<NodeType extends Node = Node> = {
+export type NodeReplaceChange<NodeType extends NodeBase = NodeBase> = {
   id: string;
   item: NodeType;
   type: 'replace';
@@ -43,7 +41,7 @@ export type NodeReplaceChange<NodeType extends Node = Node> = {
  * Union type of all possible node changes.
  * @public
  */
-export type NodeChange<NodeType extends Node = Node> =
+export type NodeChange<NodeType extends NodeBase = NodeBase> =
   | NodeDimensionChange
   | NodePositionChange
   | NodeSelectionChange
@@ -53,18 +51,18 @@ export type NodeChange<NodeType extends Node = Node> =
 
 export type EdgeSelectionChange = NodeSelectionChange;
 export type EdgeRemoveChange = NodeRemoveChange;
-export type EdgeAddChange<EdgeType extends Edge = Edge> = {
+export type EdgeAddChange<EdgeType extends EdgeBase = EdgeBase> = {
   item: EdgeType;
   type: 'add';
 };
 
-export type EdgeReplaceChange<EdgeType extends Edge = Edge> = {
+export type EdgeReplaceChange<EdgeType extends EdgeBase = EdgeBase> = {
   id: string;
   item: EdgeType;
   type: 'replace';
 };
 
-export type EdgeChange<EdgeType extends Edge = Edge> =
+export type EdgeChange<EdgeType extends EdgeBase = EdgeBase> =
   | EdgeSelectionChange
   | EdgeRemoveChange
   | EdgeAddChange<EdgeType>

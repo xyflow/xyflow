@@ -1,7 +1,7 @@
 import {
   infiniteExtent,
   ConnectionMode,
-  adoptUserProvidedNodes,
+  adoptUserNodes,
   getNodesBounds,
   getViewportForBounds,
   Transform,
@@ -35,7 +35,7 @@ const getInitialState = ({
   const storeNodes = defaultNodes ?? nodes ?? [];
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
-  const nextNodes = adoptUserProvidedNodes(storeNodes, nodeLookup, {
+  adoptUserNodes(storeNodes, nodeLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false,
   });
@@ -43,7 +43,7 @@ const getInitialState = ({
   let transform: Transform = [0, 0, 1];
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.filter(
+    const nodesWithDimensions = storeNodes.filter(
       (node) => (node.width || node.initialWidth) && (node.height || node.initialHeight)
     );
     // @todo users nodeOrigin should be used here
@@ -57,7 +57,7 @@ const getInitialState = ({
     width: 0,
     height: 0,
     transform,
-    nodes: nextNodes,
+    nodes: storeNodes,
     nodeLookup,
     edges: storeEdges,
     edgeLookup,

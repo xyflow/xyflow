@@ -1,4 +1,3 @@
-import { internalsSymbol } from '../constants';
 import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
 import { Optional } from '../utils/types';
 
@@ -44,7 +43,7 @@ export type NodeBase<
   initialWidth?: number;
   initialHeight?: number;
   /** Parent node id, used for creating sub-flows */
-  parentNode?: string;
+  parentId?: string;
   zIndex?: number;
   /** Boundary a node can be moved in
    * @example 'parent' or [[0, 0], [100, 100]]
@@ -60,21 +59,26 @@ export type NodeBase<
    */
   origin?: NodeOrigin;
   handles?: NodeHandle[];
-  computed?: {
+  measured?: {
     width?: number;
     height?: number;
-    positionAbsolute?: XYPosition;
   };
+};
 
-  // Only used internally
-  [internalsSymbol]?: {
-    z?: number;
+export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & {
+  measured: {
+    width?: number;
+    height?: number;
+  };
+  internals: {
+    positionAbsolute: XYPosition;
+    z: number;
+    // @todo should we rename this to "handles" and use same type as node.handles?
+    isParent: boolean;
+    /** Holds a reference to the original node object provided by the user.
+     * Used as an optimization to avoid certain operations. */
+    userNode: NodeType;
     handleBounds?: NodeHandleBounds;
-    isParent?: boolean;
-    /** Holds a reference to the original node object provided by the user
-     * (which may lack some fields, like `computed` or `[internalSymbol]`. Used
-     * as an optimization to avoid certain operations. */
-    userProvidedNode: NodeBase<NodeData, NodeType>;
   };
 };
 
@@ -104,7 +108,7 @@ export type NodeHandleBounds = {
 export type NodeDimensionUpdate = {
   id: string;
   nodeElement: HTMLDivElement;
-  forceUpdate?: boolean;
+  force?: boolean;
 };
 
 export type NodeBounds = XYPosition & {
@@ -117,13 +121,15 @@ export type NodeDragItem = {
   position: XYPosition;
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
-  computed: {
+  measured: {
     width: number | null;
     height: number | null;
+  };
+  internals: {
     positionAbsolute: XYPosition;
   };
   extent?: 'parent' | CoordinateExtent;
-  parentNode?: string;
+  parentId?: string;
   dragging?: boolean;
   origin?: NodeOrigin;
   expandParent?: boolean;
@@ -137,4 +143,4 @@ export type NodeHandle = Optional<HandleElement, 'width' | 'height'>;
 
 export type Align = 'center' | 'start' | 'end';
 
-export type NodeLookup<NodeType extends NodeBase = NodeBase> = Map<string, NodeType>;
+export type NodeLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType>;

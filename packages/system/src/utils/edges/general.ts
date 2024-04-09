@@ -1,5 +1,4 @@
-import { Connection, Transform, errorMessages, internalsSymbol, isEdgeBase } from '../..';
-import { EdgeBase, NodeBase } from '../../types';
+import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase } from '../..';
 import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
@@ -24,8 +23,8 @@ export function getEdgeCenter({
 }
 
 export type GetEdgeZIndexParams = {
-  sourceNode: NodeBase;
-  targetNode: NodeBase;
+  sourceNode: InternalNodeBase;
+  targetNode: InternalNodeBase;
   selected?: boolean;
   zIndex?: number;
   elevateOnSelect?: boolean;
@@ -43,14 +42,14 @@ export function getElevatedEdgeZIndex({
   }
 
   const edgeOrConnectedNodeSelected = selected || targetNode.selected || sourceNode.selected;
-  const selectedZIndex = Math.max(sourceNode[internalsSymbol]?.z || 0, targetNode[internalsSymbol]?.z || 0, 1000);
+  const selectedZIndex = Math.max(sourceNode.internals.z || 0, targetNode.internals.z || 0, 1000);
 
   return zIndex + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
 }
 
 type IsEdgeVisibleParams = {
-  sourceNode: NodeBase;
-  targetNode: NodeBase;
+  sourceNode: InternalNodeBase;
+  targetNode: InternalNodeBase;
   width: number;
   height: number;
   transform: Transform;

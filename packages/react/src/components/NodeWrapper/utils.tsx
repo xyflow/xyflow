@@ -4,7 +4,7 @@ import { InputNode } from '../Nodes/InputNode';
 import { DefaultNode } from '../Nodes/DefaultNode';
 import { GroupNode } from '../Nodes/GroupNode';
 import { OutputNode } from '../Nodes/OutputNode';
-import type { Node, NodeTypes } from '../../types';
+import type { InternalNode, Node, NodeTypes } from '../../types';
 
 export const arrowKeyDiffs: Record<string, XYPosition> = {
   ArrowUp: { x: 0, y: -1 },
@@ -21,12 +21,12 @@ export const builtinNodeTypes: NodeTypes = {
 };
 
 export function getNodeInlineStyleDimensions<NodeType extends Node = Node>(
-  node: NodeType
+  node: InternalNode<NodeType>
 ): {
   width: number | string | undefined;
   height: number | string | undefined;
 } {
-  if (!node.computed) {
+  if (node.internals.handleBounds === undefined) {
     return {
       width: node.width ?? node.initialWidth ?? node.style?.width,
       height: node.height ?? node.initialHeight ?? node.style?.height,

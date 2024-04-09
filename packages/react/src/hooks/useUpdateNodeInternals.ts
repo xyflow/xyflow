@@ -21,7 +21,7 @@ export function useUpdateNodeInternals(): UpdateNodeInternals {
       const nodeElement = domNode?.querySelector(`.react-flow__node[data-id="${updateId}"]`) as HTMLDivElement;
 
       if (nodeElement) {
-        updates.set(updateId, { id: updateId, nodeElement, forceUpdate: true });
+        updates.set(updateId, { id: updateId, nodeElement, force: true });
       }
     });
 

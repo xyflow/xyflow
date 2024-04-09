@@ -126,7 +126,7 @@ function HandleComponent(
         connectionMode: currentStore.connectionMode,
         connectionRadius: currentStore.connectionRadius,
         domNode: currentStore.domNode,
-        nodes: currentStore.nodes,
+        nodeLookup: currentStore.nodeLookup,
         lib: currentStore.lib,
         isTarget,
         handleId,
