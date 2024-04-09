@@ -43,7 +43,7 @@ export type NodeBase<
   initialWidth?: number;
   initialHeight?: number;
   /** Parent node id, used for creating sub-flows */
-  parentNode?: string;
+  parentId?: string;
   zIndex?: number;
   /** Boundary a node can be moved in
    * @example 'parent' or [[0, 0], [100, 100]]
@@ -129,7 +129,7 @@ export type NodeDragItem = {
     positionAbsolute: XYPosition;
   };
   extent?: 'parent' | CoordinateExtent;
-  parentNode?: string;
+  parentId?: string;
   dragging?: boolean;
   origin?: NodeOrigin;
   expandParent?: boolean;

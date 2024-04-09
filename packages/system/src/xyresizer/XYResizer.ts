@@ -136,7 +136,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
 
           parentNode = undefined;
           if (node.extent === 'parent' || node.expandParent) {
-            parentNode = nodeLookup.get(node.parentNode!);
+            parentNode = nodeLookup.get(node.parentId!);
             if (parentNode && node.extent === 'parent') {
               parentExtent = nodeToParentExtent(parentNode);
             }
@@ -148,7 +148,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           childExtent = undefined;
 
           for (const [childId, child] of nodeLookup) {
-            if (child.parentNode === nodeId) {
+            if (child.parentId === nodeId) {
               childNodes.push({
                 id: childId,
                 position: { ...child.position },

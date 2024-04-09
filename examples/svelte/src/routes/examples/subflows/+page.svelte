@@ -36,7 +36,7 @@
 			id: '4a',
 			data: { label: 'Node 4a' },
 			position: { x: 15, y: 15 },
-			parentNode: '4',
+			parentId: '4',
 			extent: [
 				[0, 0],
 				[100, 100]
@@ -47,19 +47,19 @@
 			data: { label: 'Node 4b' },
 			position: { x: 100, y: 60 },
 			style: 'width: 300px; height: 200px;',
-			parentNode: '4'
+			parentId: '4'
 		},
 		{
 			id: '4b1',
 			data: { label: 'Node 4b1' },
 			position: { x: 40, y: 20 },
-			parentNode: '4b'
+			parentId: '4b'
 		},
 		{
 			id: '4b2',
 			data: { label: 'Node 4b2' },
 			position: { x: 20, y: 100 },
-			parentNode: '4b'
+			parentId: '4b'
 		},
 		{
 			id: '5',
@@ -73,14 +73,14 @@
 			id: '5a',
 			data: { label: 'Node 5a' },
 			position: { x: 0, y: 0 },
-			parentNode: '5',
+			parentId: '5',
 			extent: 'parent'
 		},
 		{
 			id: '5b',
 			data: { label: 'Node 5b' },
 			position: { x: 225, y: 50 },
-			parentNode: '5',
+			parentId: '5',
 			expandParent: true
 		},
 		{

@@ -120,6 +120,7 @@ const createRFStore = ({
         const triggerChangeNodes: InternalNode[] = [];
 
         const changes: NodeChange[] = nodeDragItems.map((node) => {
+          // @todo add expandParent to drag item so that we can get rid of the look up here
           const internalNode = nodeLookup.get(node.id);
           const change: NodeChange = {
             id: node.id,

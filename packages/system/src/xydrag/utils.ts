@@ -5,11 +5,11 @@ export function wrapSelectionDragFunc(selectionFunc?: (event: MouseEvent, nodes:
 }
 
 export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodeLookup: NodeLookup): boolean {
-  if (!node.parentNode) {
+  if (!node.parentId) {
     return false;
   }
 
-  const parentNode = nodeLookup.get(node.parentNode);
+  const parentNode = nodeLookup.get(node.parentId);
 
   if (!parentNode) {
     return false;
@@ -46,7 +46,7 @@ export function getDragItems<NodeType extends NodeBase>(
   for (const [id, node] of nodeLookup) {
     if (
       (node.selected || node.id === nodeId) &&
-      (!node.parentNode || !isParentSelected(node, nodeLookup)) &&
+      (!node.parentId || !isParentSelected(node, nodeLookup)) &&
       (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'))
     ) {
       const internalNode = nodeLookup.get(id)!;
@@ -59,7 +59,7 @@ export function getDragItems<NodeType extends NodeBase>(
           y: mousePos.y - (internalNode.internals.positionAbsolute?.y ?? 0),
         },
         extent: internalNode.extent,
-        parentNode: internalNode.parentNode,
+        parentId: internalNode.parentId,
         origin: internalNode.origin,
         expandParent: internalNode.expandParent,
         internals: {

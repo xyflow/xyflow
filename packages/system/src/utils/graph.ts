@@ -358,7 +358,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
   onError?: OnError;
 }): { position: XYPosition; positionAbsolute: XYPosition } {
   const node = nodeLookup.get(nodeId)!;
-  const parentNode = node.parentNode ? nodeLookup.get(node.parentNode) : undefined;
+  const parentNode = node.parentId ? nodeLookup.get(node.parentId) : undefined;
   const { x: parentX, y: parentY } = parentNode
     ? getNodePositionWithOrigin(parentNode, parentNode.origin || nodeOrigin).positionAbsolute
     : { x: 0, y: 0 };
@@ -440,7 +440,7 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
     }
 
     const isIncluded = nodeIds.includes(node.id);
-    const parentHit = !isIncluded && node.parentNode && matchingNodes.find((n) => n.id === node.parentNode);
+    const parentHit = !isIncluded && node.parentId && matchingNodes.find((n) => n.id === node.parentId);
 
     if (isIncluded || parentHit) {
       matchingNodes.push(node);

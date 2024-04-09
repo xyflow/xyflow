@@ -31,13 +31,13 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
   for (const [id, node] of nodeLookup) {
-    const parentId = node.parentNode;
+    const parentId = node.parentId;
 
     if (parentId && !nodeLookup.has(parentId)) {
       throw new Error(`Parent node ${parentId} not found`);
     }
 
-    if (node.parentNode || node.internals.isParent || parentNodeIds?.has(id)) {
+    if (parentId || node.internals.isParent || parentNodeIds?.has(id)) {
       const parentNode = parentId ? nodeLookup.get(parentId) : null;
       const { x, y, z } = calculateXYZPosition(
         node,
@@ -87,8 +87,8 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   nodes.forEach((userNode) => {
     const currentStoreNode = tmpLookup.get(userNode.id);
 
-    if (userNode.parentNode) {
-      parentNodeIds.add(userNode.parentNode);
+    if (userNode.parentId) {
+      parentNodeIds.add(userNode.parentId);
     }
 
     if (userNode === currentStoreNode?.internals.userNode) {
@@ -123,11 +123,11 @@ function calculateXYZPosition<NodeType extends NodeBase>(
   result: XYZPosition,
   nodeOrigin: NodeOrigin = [0, 0]
 ): XYZPosition {
-  if (!node.parentNode) {
+  if (!node.parentId) {
     return result;
   }
 
-  const parentNode = nodeLookup.get(node.parentNode)!;
+  const parentNode = nodeLookup.get(node.parentId)!;
   const { position: parentNodePosition } = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin);
 
   return calculateXYZPosition(
@@ -147,13 +147,14 @@ export function handleParentExpand(nodes: InternalNodeBase[], nodeLookup: NodeLo
   const chilNodeRects = new Map<string, Rect>();
 
   nodes.forEach((node) => {
-    if (node.expandParent && node.parentNode) {
-      const parentNode = nodeLookup.get(node.parentNode);
+    const parentId = node.parentId;
+    if (node.expandParent && parentId) {
+      const parentNode = nodeLookup.get(parentId);
 
       if (parentNode) {
-        const parentRect = chilNodeRects.get(node.parentNode) || nodeToRect(parentNode, node.origin);
+        const parentRect = chilNodeRects.get(parentId) || nodeToRect(parentNode, node.origin);
         const expandedRect = getBoundsOfRects(parentRect, nodeToRect(node, node.origin));
-        chilNodeRects.set(node.parentNode, expandedRect);
+        chilNodeRects.set(parentId, expandedRect);
       }
     }
   });
