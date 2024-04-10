@@ -1,5 +1,29 @@
 # @xyflow/react
 
+## 12.0.0-next.x
+
+## Patch changes
+
+- fix hidden nodes
+
+## 12.0.0-next.13
+
+## ⚠️ Breaking changes
+
+- rename `node.parentNode` to `node.parentId`
+- rename node.computed to node.measured
+- remove positionAbsolute from `node.computed` 
+
+## Minor Changes
+
+- new helpers: `useInternalNode` hook, `getInternalNode` function
+
+## Patch changes
+
+- remove `internalsSymbol` (now called internals and only available for internal nodes)
+- handle parentExpand on library side instead of applyChanges
+- new type `InternalNode`
+
 ## 12.0.0-next.12
 
 ## Patch changes
