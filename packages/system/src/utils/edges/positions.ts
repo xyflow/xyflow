@@ -97,8 +97,8 @@ function toHandleBounds(handles?: NodeHandle[]) {
 }
 
 function getHandlePosition(position: Position, node: InternalNodeBase, handle: HandleElement | null = null): number[] {
-  const x = (handle?.x ?? 0) + (node.internals.positionAbsolute?.x ?? 0);
-  const y = (handle?.y ?? 0) + (node.internals.positionAbsolute?.y ?? 0);
+  const x = (handle?.x ?? 0) + node.internals.positionAbsolute.x;
+  const y = (handle?.y ?? 0) + node.internals.positionAbsolute.y;
   const { width, height } = handle ?? getNodeDimensions(node);
 
   switch (position) {

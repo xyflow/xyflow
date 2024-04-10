@@ -80,14 +80,14 @@ export function createStore({
 
   function updateNodeDimensions(updates: Map<string, NodeDimensionUpdate>) {
     const nodeLookup = get(store.nodeLookup);
-    const nodeUpdates = updateNodeDimensionsSystem(
+    const changes = updateNodeDimensionsSystem(
       updates,
       nodeLookup,
       get(store.domNode),
       get(store.nodeOrigin)
     );
 
-    if (!nodeUpdates) {
+    if (!changes) {
       return;
     }
 
@@ -100,23 +100,23 @@ export function createStore({
       store.fitViewOnInitDone.set(fitViewOnInitDone);
     }
 
-    for (const nodeUpdate of nodeUpdates) {
-      const node = nodeLookup.get(nodeUpdate.id)?.internals.userNode;
+    for (const change of changes) {
+      const node = nodeLookup.get(change.id)?.internals.userNode;
 
       if (!node) {
         continue;
       }
 
-      switch (nodeUpdate.type) {
+      switch (change.type) {
         case 'dimensions': {
-          const measured = { ...node.measured, ...nodeUpdate.dimensions };
-          node.width = nodeUpdate.dimensions?.width ?? node.width;
-          node.height = nodeUpdate.dimensions?.height ?? node.height;
+          const measured = { ...node.measured, ...change.dimensions };
+          node.width = change.dimensions?.width ?? node.width;
+          node.height = change.dimensions?.height ?? node.height;
           node.measured = measured;
           break;
         }
         case 'position':
-          node.position = nodeUpdate.position ?? node.position;
+          node.position = change.position ?? node.position;
           break;
       }
     }

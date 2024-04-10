@@ -107,7 +107,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         },
         internals: {
           positionAbsolute: userNode.position,
-          handleBounds: currentStoreNode?.internals?.handleBounds,
+          handleBounds: currentStoreNode?.internals.handleBounds,
           z: (isNumeric(userNode.zIndex) ? userNode.zIndex : 0) + (userNode.selected ? selectedNodeZ : 0),
           userNode,
           isParent: false,

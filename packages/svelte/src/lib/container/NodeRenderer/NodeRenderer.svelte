@@ -41,8 +41,8 @@
   {#each $visibleNodes as node (node.id)}
     {@const nodeDimesions = getNodeDimensions(node)}
     {@const posOrigin = getPositionWithOrigin({
-      x: node.internals.positionAbsolute.x ?? 0,
-      y: node.internals.positionAbsolute.y ?? 0,
+      x: node.internals.positionAbsolute.x,
+      y: node.internals.positionAbsolute.y,
       ...nodeDimesions,
       origin: node.origin
     })}
@@ -61,8 +61,8 @@
         node.connectable ||
         ($nodesConnectable && typeof node.connectable === 'undefined')
       )}
-      positionX={node.internals.positionAbsolute?.x ?? 0}
-      positionY={node.internals.positionAbsolute?.y ?? 0}
+      positionX={node.internals.positionAbsolute.x}
+      positionY={node.internals.positionAbsolute.y}
       positionOriginX={posOrigin.x ?? 0}
       positionOriginY={posOrigin.y ?? 0}
       isParent={!!node.internals.isParent}
@@ -79,8 +79,8 @@
       height={node.height}
       initialWidth={node.initialWidth}
       initialHeight={node.initialHeight}
-      computedWidth={node.measured.width}
-      computedHeight={node.measured.height}
+      measuredWidth={node.measured.width}
+      measuredHeight={node.measured.height}
       {resizeObserver}
       on:nodeclick
       on:nodemouseenter

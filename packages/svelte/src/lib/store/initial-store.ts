@@ -93,7 +93,7 @@ export const getInitialStore = ({
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
   if (fitView && width && height) {
-    const nodesWithDimensions = Array.from(nodeLookup.values()).filter(
+    const nodesWithDimensions = nodes.filter(
       (node) => (node.width && node.height) || (node.initialWidth && node.initialHeight)
     );
 

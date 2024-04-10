@@ -74,7 +74,7 @@ export function NodeToolbar({
   }
 
   const nodeRect: Rect = getNodesBounds(nodes, { nodeOrigin });
-  const zIndex: number = Math.max(...nodes.map((node) => (node.internals?.z || 1) + 1));
+  const zIndex: number = Math.max(...nodes.map((node) => node.internals.z + 1));
 
   const wrapperStyle: CSSProperties = {
     position: 'absolute',

@@ -467,11 +467,7 @@ export function useSvelteFlow(): {
 
       const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
 
-      if (options?.replace) {
-        node.data = nextData;
-      } else {
-        node.data = { ...node.data, ...nextData };
-      }
+      node.data = options?.replace ? nextData : { ...node.data, ...nextData };
 
       nodes.update((nds) => nds);
     },
