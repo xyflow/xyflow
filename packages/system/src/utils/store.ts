@@ -240,7 +240,10 @@ export function updateNodeDimensions<NodeType extends InternalNodeBase>(
       const doUpdate = !!(
         dimensions.width &&
         dimensions.height &&
-        (node.measured?.width !== dimensions.width || node.measured?.height !== dimensions.height || update.force)
+        (node.measured?.width !== dimensions.width ||
+          node.measured?.height !== dimensions.height ||
+          !node.internals.handleBounds ||
+          update.force)
       );
 
       if (doUpdate) {
