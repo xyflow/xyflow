@@ -331,11 +331,12 @@ export function useSvelteFlow(): {
       }
 
       return (nodesToIntersect || get(nodes)).filter((n) => {
-        if (!isRect && (n.id === nodeOrRect.id || !n.computed?.positionAbsolute)) {
+        const internalNode = get(nodeLookup).get(n.id);
+        if (!internalNode || (!isRect && n.id === nodeOrRect.id)) {
           return false;
         }
 
-        const currNodeRect = nodeToRect(n);
+        const currNodeRect = nodeToRect(internalNode);
         const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
         const partiallyVisible = partially && overlappingArea > 0;
 

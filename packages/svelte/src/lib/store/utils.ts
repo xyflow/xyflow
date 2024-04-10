@@ -16,7 +16,7 @@ import {
   type NodeLookup
 } from '@xyflow/system';
 
-import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
+import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, InternalNode, Node } from '$lib/types';
 
 // we need to sync the user nodes and the internal nodes so that the user can receive the updates
 // made by Svelte Flow (like dragging or selecting a node).
@@ -127,7 +127,7 @@ export type NodeStoreOptions = {
 // The user only passes in relative positions, so we need to calculate the absolute positions based on the parent nodes.
 export const createNodesStore = (
   nodes: Node[],
-  nodeLookup: NodeLookup<Node>
+  nodeLookup: NodeLookup<InternalNode>
 ): {
   subscribe: (this: void, run: Subscriber<Node[]>) => Unsubscriber;
   update: (this: void, updater: Updater<Node[]>) => void;
@@ -141,12 +141,13 @@ export const createNodesStore = (
   let elevateNodesOnSelect = true;
 
   const _set = (nds: Node[]): Node[] => {
-    const nextNodes = adoptUserNodes(nds, nodeLookup, {
+    adoptUserNodes(nds, nodeLookup, {
       elevateNodesOnSelect,
-      defaults
+      defaults,
+      checkEquality: false
     });
 
-    value = nextNodes;
+    value = nodes;
 
     set(value);
 

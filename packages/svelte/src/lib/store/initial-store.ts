@@ -5,7 +5,7 @@ import {
   ConnectionMode,
   ConnectionLineType,
   devWarn,
-  adoptUserProvidedNodes,
+  adoptUserNodes,
   getNodesBounds,
   getViewportForBounds,
   updateConnectionLookup,
@@ -47,7 +47,8 @@ import type {
   OnDelete,
   OnEdgeCreate,
   OnBeforeDelete,
-  IsValidConnection
+  IsValidConnection,
+  InternalNode
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
 import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
@@ -80,9 +81,10 @@ export const getInitialStore = ({
   fitView?: boolean;
 }) => {
   const nodeLookup: NodeLookup = new Map();
-  const nextNodes = adoptUserProvidedNodes(nodes, nodeLookup, {
+  adoptUserNodes(nodes, nodeLookup, {
     nodeOrigin: [0, 0],
-    elevateNodesOnSelect: false
+    elevateNodesOnSelect: false,
+    checkEquality: false
   });
   const connectionLookup = new Map();
   const edgeLookup = new Map();
@@ -91,9 +93,10 @@ export const getInitialStore = ({
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.filter(
+    const nodesWithDimensions = Array.from(nodeLookup.values()).filter(
       (node) => (node.width && node.height) || (node.initialWidth && node.initialHeight)
     );
+
     // @todo users nodeOrigin should be used here
     const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
@@ -101,10 +104,10 @@ export const getInitialStore = ({
 
   return {
     flowId: writable<string | null>(null),
-    nodes: createNodesStore(nextNodes, nodeLookup),
-    nodeLookup: readable<NodeLookup<Node>>(nodeLookup),
+    nodes: createNodesStore(nodes, nodeLookup),
+    nodeLookup: readable<NodeLookup<InternalNode>>(nodeLookup),
     edgeLookup: readable<EdgeLookup<Edge>>(edgeLookup),
-    visibleNodes: readable<Node[]>([]),
+    visibleNodes: readable<InternalNode[]>([]),
     edges: createEdgesStore(edges, connectionLookup, edgeLookup),
     visibleEdges: readable<EdgeLayouted[]>([]),
     connectionLookup: readable<ConnectionLookup>(connectionLookup),

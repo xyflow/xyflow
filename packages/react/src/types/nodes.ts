@@ -24,6 +24,12 @@ export type Node<
   focusable?: boolean;
 };
 
+/**
+ * The node data structure that gets used for internal nodes.
+ * There are some data structures added under node.internal
+ * that are needed for tracking some properties
+ * @public
+ */
 export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeType>;
 
 export type NodeMouseHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, node: NodeType) => void;

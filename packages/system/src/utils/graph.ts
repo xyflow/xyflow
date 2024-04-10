@@ -230,14 +230,14 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
   excludeNonSelectableNodes = false,
   nodeOrigin: NodeOrigin = [0, 0]
-): NodeType[] => {
+): InternalNodeBase<NodeType>[] => {
   const paneRect = {
     ...pointToRendererPoint(rect, [tx, ty, tScale]),
     width: rect.width / tScale,
     height: rect.height / tScale,
   };
 
-  const visibleNodes: NodeType[] = [];
+  const visibleNodes: InternalNodeBase<NodeType>[] = [];
 
   for (const [, node] of nodeLookup) {
     const { measured, selectable = true, hidden = false } = node;
@@ -290,6 +290,7 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   nodeLookup.forEach((n) => {
     const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
 
+    // TODO: this remove options.nodes.some with a Set
     if (
       isVisible &&
       (!options?.nodes || (options?.nodes.length && options?.nodes.some((optionNode) => optionNode.id === n.id)))

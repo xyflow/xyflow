@@ -20,6 +20,8 @@
   $: selectedNodes = $nodes.filter((n) => n.selected);
   $: bounds = getNodesBounds(selectedNodes);
 
+  $: console.log($nodes);
+
   function onContextMenu(event: MouseEvent | TouchEvent) {
     dispatch('selectioncontextmenu', { nodes: selectedNodes, event });
   }

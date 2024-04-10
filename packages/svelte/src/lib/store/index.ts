@@ -64,52 +64,72 @@ export function createStore({
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     const nodeLookup = get(store.nodeLookup);
 
-    nodeDragItems.forEach((nodeDragItem) => {
+    for (const nodeDragItem of nodeDragItems) {
       const node = nodeLookup.get(nodeDragItem.id);
 
-      if (node) {
-        node.position = nodeDragItem.position;
-        node.dragging = dragging;
-        node.computed = {
-          ...node.computed,
-          positionAbsolute: nodeDragItem.computed?.positionAbsolute
-        };
+      if (!node) {
+        continue;
       }
-    });
+
+      const userNode = node.internals.userNode;
+      userNode.position = nodeDragItem.position;
+      userNode.dragging = dragging;
+      // node.internals.positionAbsolute = nodeDragItem.internals.positionAbsolute;
+    }
 
     store.nodes.set(get(store.nodes));
+    //$nodes = $nodes
   };
 
   function updateNodeDimensions(updates: Map<string, NodeDimensionUpdate>) {
-    const nextNodes = updateNodeDimensionsSystem(
+    const nodeLookup = get(store.nodeLookup);
+    const nodeUpdates = updateNodeDimensionsSystem(
       updates,
-      get(store.nodes),
-      get(store.nodeLookup),
+      nodeLookup,
       get(store.domNode),
       get(store.nodeOrigin)
     );
 
-    if (!nextNodes) {
+    if (!nodeUpdates) {
       return;
     }
 
     if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
       const fitViewOptions = get(store.fitViewOptions);
-      const fitViewOnInitDone = fitView(nextNodes, {
+      const fitViewOnInitDone = fitView({
         ...fitViewOptions,
-        nodes: fitViewOptions?.nodes || nextNodes
+        nodes: fitViewOptions?.nodes
       });
       store.fitViewOnInitDone.set(fitViewOnInitDone);
     }
 
-    store.nodes.set(nextNodes);
+    for (const nodeUpdate of nodeUpdates) {
+      const node = nodeLookup.get(nodeUpdate.id)?.internals.userNode;
+
+      if (!node) {
+        continue;
+      }
+
+      switch (nodeUpdate.type) {
+        case 'dimensions':
+          node.width = nodeUpdate.dimensions?.width ?? node.width;
+          node.height = nodeUpdate.dimensions?.height ?? node.height;
+          // TODO: do we need measured here?
+          break;
+        case 'position':
+          node.position = nodeUpdate.position ?? node.position;
+          break;
+      }
+    }
+
+    store.nodes.set(get(store.nodes));
 
     if (!get(store.nodesInitialized)) {
       store.nodesInitialized.set(true);
     }
   }
 
-  function fitView(nodes: Node[], options?: FitViewOptions) {
+  function fitView(options?: FitViewOptions) {
     const panZoom = get(store.panZoom);
 
     if (!panZoom) {
@@ -118,7 +138,7 @@ export function createStore({
 
     return fitViewUtil(
       {
-        nodes,
+        nodeLookup: get(store.nodeLookup),
         width: get(store.width),
         height: get(store.height),
         minZoom: get(store.minZoom),
@@ -384,7 +404,7 @@ export function createStore({
     updateNodeDimensions,
     zoomIn,
     zoomOut,
-    fitView: (options?: FitViewOptions) => fitView(get(store.nodes), options),
+    fitView: (options?: FitViewOptions) => fitView(options),
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,

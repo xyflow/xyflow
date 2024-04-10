@@ -42,7 +42,7 @@
   const {
     connectionMode,
     domNode,
-    nodes,
+    nodeLookup,
     connectionRadius,
     viewport,
     isValidConnection,
@@ -72,7 +72,7 @@
         isTarget,
         connectionRadius: $connectionRadius,
         domNode: $domNode,
-        nodes: $nodes,
+        nodeLookup: $nodeLookup,
         connectionMode: $connectionMode,
         lib: $lib,
         autoPanOnConnect: $autoPanOnConnect,

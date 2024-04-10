@@ -14,6 +14,8 @@ import {
   NodeChange,
   NodeLookup,
   Rect,
+  NodeDimensionChange,
+  NodePositionChange,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
 import { getBoundsOfRects, getNodeDimensions, isNumeric, nodeToRect } from './general';
@@ -68,6 +70,7 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
   elevateNodesOnSelect?: boolean;
   defaults?: Partial<NodeType>;
+  checkEquality?: boolean;
 };
 
 export function adoptUserNodes<NodeType extends NodeBase>(
@@ -77,6 +80,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     nodeOrigin: [0, 0] as NodeOrigin,
     elevateNodesOnSelect: true,
     defaults: {},
+    checkEquality: true,
   }
 ) {
   const tmpLookup = new Map(nodeLookup);
@@ -91,7 +95,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       parentNodeIds.add(userNode.parentId);
     }
 
-    if (userNode === currentStoreNode?.internals.userNode) {
+    if (options.checkEquality && userNode === currentStoreNode?.internals.userNode) {
       nodeLookup.set(userNode.id, currentStoreNode);
     } else {
       nodeLookup.set(userNode.id, {
@@ -142,8 +146,11 @@ function calculateXYZPosition<NodeType extends NodeBase>(
   );
 }
 
-export function handleParentExpand(nodes: InternalNodeBase[], nodeLookup: NodeLookup): NodeChange[] {
-  const changes: NodeChange[] = [];
+export function handleParentExpand(
+  nodes: InternalNodeBase[],
+  nodeLookup: NodeLookup
+): (NodeDimensionChange | NodePositionChange)[] {
+  const changes: (NodeDimensionChange | NodePositionChange)[] = [];
   const chilNodeRects = new Map<string, Rect>();
 
   nodes.forEach((node) => {
@@ -211,14 +218,14 @@ export function updateNodeDimensions<NodeType extends InternalNodeBase>(
   nodeLookup: Map<string, NodeType>,
   domNode: HTMLElement | null,
   nodeOrigin?: NodeOrigin
-): NodeChange[] {
+): (NodeDimensionChange | NodePositionChange)[] {
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
 
   if (!viewportNode) {
     return [];
   }
 
-  const changes: NodeChange[] = [];
+  const changes: (NodeDimensionChange | NodePositionChange)[] = [];
   const style = window.getComputedStyle(viewportNode);
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
   // in this array we collect nodes, that might trigger changes (like expanding parent)
