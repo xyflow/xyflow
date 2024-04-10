@@ -55,15 +55,12 @@
 	const onDragOver = (event: DragEvent) => {
 		event.preventDefault();
 
-		console.log(event);
-
 		if (event.dataTransfer) {
 			event.dataTransfer.dropEffect = 'move';
 		}
 	};
 
 	const onDrop = (event: DragEvent) => {
-		console.log(event);
 		event.preventDefault();
 
 		if (!event.dataTransfer) {
