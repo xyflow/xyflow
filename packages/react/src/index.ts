@@ -85,6 +85,18 @@ export {
   type ControlPosition,
   type ControlLinePosition,
   type ResizeControlVariant,
+  type NodeChange,
+  type NodeDimensionChange,
+  type NodePositionChange,
+  type NodeSelectionChange,
+  type NodeRemoveChange,
+  type NodeAddChange,
+  type NodeReplaceChange,
+  type EdgeChange,
+  type EdgeSelectionChange,
+  type EdgeRemoveChange,
+  type EdgeAddChange,
+  type EdgeReplaceChange,
 } from '@xyflow/system';
 
 // system utils
