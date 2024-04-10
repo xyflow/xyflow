@@ -6,7 +6,7 @@ import ChangeLogger from './ChangeLogger';
 
 import './style.css';
 
-export default function ReactFlowDevTools({ position = 'top-left' }: { position: PanelPosition }) {
+export default function ReactFlowDevTools({ position = 'top-left' }: { position?: PanelPosition }) {
   const [nodeInspectorActive, setNodeInspectorActive] = useState(false);
   const [changeLoggerActive, setChangeLoggerActive] = useState(false);
 

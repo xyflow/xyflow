@@ -33,7 +33,7 @@ const initEdges: Edge[] = [
 ];
 
 const BasicFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
+  const [nodes, , onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
 
   const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
