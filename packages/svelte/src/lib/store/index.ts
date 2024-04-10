@@ -75,7 +75,7 @@ export function createStore({
       node.dragging = dragging;
     }
 
-    store.nodes.set(get(store.nodes));
+    store.nodes.update((nds) => nds);
   };
 
   function updateNodeDimensions(updates: Map<string, NodeDimensionUpdate>) {
@@ -121,7 +121,7 @@ export function createStore({
       }
     }
 
-    store.nodes.set(get(store.nodes));
+    store.nodes.update((nds) => nds);
 
     if (!get(store.nodesInitialized)) {
       store.nodesInitialized.set(true);
@@ -205,10 +205,10 @@ export function createStore({
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
     const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
-    if (resetNodes) store.nodes.set(get(store.nodes));
+    if (resetNodes) store.nodes.update((nds) => nds);
 
     const resetEdges = resetSelectedElements(params?.edges || get(store.edges));
-    if (resetEdges) store.edges.set(get(store.edges));
+    if (resetEdges) store.edges.update((nds) => nds);
   }
 
   store.deleteKeyPressed.subscribe(async (deleteKeyPressed) => {

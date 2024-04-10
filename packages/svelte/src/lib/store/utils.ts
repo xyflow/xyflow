@@ -147,7 +147,7 @@ export const createNodesStore = (
       checkEquality: false
     });
 
-    value = nodes;
+    value = nds;
 
     set(value);
 
