@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { ReactFlow, addEdge, Node, Connection, Edge, useNodesState, useEdgesState } from '@xyflow/react';
 
 import DevTools from './DevTools';
-import './Devtools/style.css';
 
 const initNodes: Node[] = [
   {

@@ -11,6 +11,7 @@ import {
   MiniMap,
   Controls,
 } from '@xyflow/react';
+import ReactFlowDevTools from '../DevTools/DevTools';
 
 const initialNodes: Node[] = [
   {
@@ -82,6 +83,7 @@ const HiddenFlow = () => {
     >
       <MiniMap />
       <Controls />
+      <ReactFlowDevTools position="top-right" />
 
       <div style={{ position: 'absolute', left: 10, top: 10, zIndex: 4 }}>
         <div>

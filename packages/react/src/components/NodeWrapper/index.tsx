@@ -100,7 +100,6 @@ export function NodeWrapper<NodeType extends Node>({
   useEffect(() => {
     if (nodeRef.current && !node.hidden) {
       const currNode = nodeRef.current;
-
       if (!initialized || !hasHandleBounds) {
         resizeObserver?.unobserve(currNode);
         resizeObserver?.observe(currNode);

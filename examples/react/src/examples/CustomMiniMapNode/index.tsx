@@ -59,7 +59,7 @@ const CustomMiniMapNodeFlow = () => {
       onNodeClick={onNodeClick}
       onConnect={(p) => onConnect(p)}
       onNodeDragStop={onNodeDragStop}
-      onlyRenderVisibleElements={false}
+      onlyRenderVisibleElements={true}
     >
       <Controls />
       <Background variant={BackgroundVariant.Lines} />

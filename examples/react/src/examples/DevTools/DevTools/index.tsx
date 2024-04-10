@@ -1,16 +1,18 @@
 import { useState, type Dispatch, type SetStateAction, type ReactNode, HTMLAttributes } from 'react';
-import { Panel } from '@xyflow/react';
+import { Panel, PanelPosition } from '@xyflow/react';
 
 import NodeInspector from './NodeInspector';
 import ChangeLogger from './ChangeLogger';
 
-export default function ReactFlowDevTools() {
+import './style.css';
+
+export default function ReactFlowDevTools({ position = 'top-left' }: { position: PanelPosition }) {
   const [nodeInspectorActive, setNodeInspectorActive] = useState(false);
   const [changeLoggerActive, setChangeLoggerActive] = useState(false);
 
   return (
     <div className="react-flow__devtools">
-      <Panel position="top-left">
+      <Panel position={position}>
         <DevToolButton setActive={setNodeInspectorActive} active={nodeInspectorActive} title="Toggle Node Inspector">
           Node Inspector
         </DevToolButton>
