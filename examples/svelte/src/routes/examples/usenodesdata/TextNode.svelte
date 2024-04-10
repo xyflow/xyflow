@@ -7,6 +7,7 @@
 	export let data: $$Props['data'];
 
 	const { updateNodeData } = useSvelteFlow();
+	$$restProps;
 </script>
 
 <div class="custom">

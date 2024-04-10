@@ -13,7 +13,7 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	const nodes = writable([
+	const nodes = writable<Node[]>([
 		{
 			id: '1',
 			type: 'input',
@@ -55,8 +55,6 @@
 	const onDragOver = (event: DragEvent) => {
 		event.preventDefault();
 
-		console.log(event);
-
 		if (event.dataTransfer) {
 			event.dataTransfer.dropEffect = 'move';
 		}
@@ -81,7 +79,8 @@
 			data: { label: `${type} node` }
 		};
 
-		nodes.update((nds) => nds.concat(newNode));
+		$nodes.push(newNode);
+		$nodes = $nodes;
 	};
 
 	$: {

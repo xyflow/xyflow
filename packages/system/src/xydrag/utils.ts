@@ -55,8 +55,8 @@ export function getDragItems<NodeType extends NodeBase>(
         id: internalNode.id,
         position: internalNode.position || { x: 0, y: 0 },
         distance: {
-          x: mousePos.x - (internalNode.internals.positionAbsolute?.x ?? 0),
-          y: mousePos.y - (internalNode.internals.positionAbsolute?.y ?? 0),
+          x: mousePos.x - internalNode.internals.positionAbsolute.x,
+          y: mousePos.y - internalNode.internals.positionAbsolute.y,
         },
         extent: internalNode.extent,
         parentId: internalNode.parentId,

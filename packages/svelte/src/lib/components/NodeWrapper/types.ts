@@ -21,8 +21,8 @@ export type NodeWrapperProps = Pick<
   | 'initialWidth'
   | 'initialHeight'
 > & {
-  computedWidth?: number;
-  computedHeight?: number;
+  measuredWidth?: number;
+  measuredHeight?: number;
   type: string;
   positionX: number;
   positionY: number;

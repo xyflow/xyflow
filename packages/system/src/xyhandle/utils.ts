@@ -22,8 +22,8 @@ export function getHandles(
         id: h.id || null,
         type,
         nodeId: node.id,
-        x: (node.internals.positionAbsolute.x ?? 0) + h.x + h.width / 2,
-        y: (node.internals.positionAbsolute.y ?? 0) + h.y + h.height / 2,
+        x: node.internals.positionAbsolute.x + h.x + h.width / 2,
+        y: node.internals.positionAbsolute.y + h.y + h.height / 2,
       });
     }
     return res;
