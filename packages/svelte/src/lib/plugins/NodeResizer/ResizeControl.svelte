@@ -69,7 +69,7 @@
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const node = $nodeLookup.get(id);
+          const node = $nodeLookup.get(id)?.internals.userNode;
           if (node) {
             node.height = change.isHeightChange ? change.height : node.height;
             node.width = change.isWidthChange ? change.width : node.width;
@@ -79,7 +79,7 @@
                 : node.position;
 
             for (const childChange of childChanges) {
-              const childNode = $nodeLookup.get(childChange.id);
+              const childNode = $nodeLookup.get(childChange.id)?.internals.userNode;
               if (childNode) {
                 childNode.position = childChange.position;
               }

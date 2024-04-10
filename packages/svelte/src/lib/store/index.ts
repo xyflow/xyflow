@@ -65,20 +65,17 @@ export function createStore({
     const nodeLookup = get(store.nodeLookup);
 
     for (const nodeDragItem of nodeDragItems) {
-      const node = nodeLookup.get(nodeDragItem.id);
+      const node = nodeLookup.get(nodeDragItem.id)?.internals.userNode;
 
       if (!node) {
         continue;
       }
 
-      const userNode = node.internals.userNode;
-      userNode.position = nodeDragItem.position;
-      userNode.dragging = dragging;
-      // node.internals.positionAbsolute = nodeDragItem.internals.positionAbsolute;
+      node.position = nodeDragItem.position;
+      node.dragging = dragging;
     }
 
     store.nodes.set(get(store.nodes));
-    //$nodes = $nodes
   };
 
   function updateNodeDimensions(updates: Map<string, NodeDimensionUpdate>) {
@@ -111,11 +108,13 @@ export function createStore({
       }
 
       switch (nodeUpdate.type) {
-        case 'dimensions':
+        case 'dimensions': {
+          const measured = { ...node.measured, ...nodeUpdate.dimensions };
           node.width = nodeUpdate.dimensions?.width ?? node.width;
           node.height = nodeUpdate.dimensions?.height ?? node.height;
-          // TODO: do we need measured here?
+          node.measured = measured;
           break;
+        }
         case 'position':
           node.position = nodeUpdate.position ?? node.position;
           break;

@@ -256,17 +256,28 @@ export function useSvelteFlow(): {
     nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
     options: { replace: boolean } = { replace: false }
   ) => {
-    nodes.update((nds) =>
-      nds.map((node) => {
-        if (node.id === id) {
-          const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
+    const node = get(nodeLookup).get(id)?.internals.userNode;
 
-          return options.replace && isNode(nextNode) ? nextNode : { ...node, ...nextNode };
-        }
+    if (!node) {
+      return;
+    }
 
-        return node;
-      })
-    );
+    const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
+
+    if (options.replace) {
+      nodes.update((nds) =>
+        nds.map((node) => {
+          if (node.id === id) {
+            return isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+          }
+
+          return node;
+        })
+      );
+    } else {
+      Object.assign(node, nextNode);
+      nodes.update((nds) => nds);
+    }
   };
 
   return {
@@ -448,13 +459,21 @@ export function useSvelteFlow(): {
     },
     updateNode,
     updateNodeData: (id, dataUpdate, options) => {
-      updateNode(id, (node) => {
-        const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
+      const node = get(nodeLookup).get(id)?.internals.userNode;
 
-        return options?.replace
-          ? { ...node, data: nextData }
-          : { ...node, data: { ...node.data, ...nextData } };
-      });
+      if (!node) {
+        return;
+      }
+
+      const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
+
+      if (options?.replace) {
+        node.data = nextData;
+      } else {
+        node.data = { ...node.data, ...nextData };
+      }
+
+      nodes.update((nds) => nds);
     },
     viewport
   };
