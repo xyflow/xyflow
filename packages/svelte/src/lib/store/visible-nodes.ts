@@ -5,14 +5,14 @@ import type { SvelteFlowStoreState } from './types';
 export function getVisibleNodes(store: SvelteFlowStoreState) {
   return derived(
     [
-      store.nodes,
       store.nodeLookup,
       store.onlyRenderVisibleElements,
       store.width,
       store.height,
-      store.viewport
+      store.viewport,
+      store.nodes
     ],
-    ([_, nodeLookup, onlyRenderVisibleElements, width, height, viewport]) => {
+    ([nodeLookup, onlyRenderVisibleElements, width, height, viewport]) => {
       const transform: Transform = [viewport.x, viewport.y, viewport.zoom];
 
       return onlyRenderVisibleElements
