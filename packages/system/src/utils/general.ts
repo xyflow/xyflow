@@ -8,6 +8,7 @@ import type {
   NodeOrigin,
   SnapGrid,
   Transform,
+  InternalNodeBase,
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin } from './graph';
@@ -65,23 +66,23 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
   height: y2 - y,
 });
 
-export const nodeToRect = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
+export const nodeToRect = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
   const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
 
   return {
     ...positionAbsolute,
-    width: node.computed?.width ?? node.width ?? 0,
-    height: node.computed?.height ?? node.height ?? 0,
+    width: node.measured?.width ?? node.width ?? 0,
+    height: node.measured?.height ?? node.height ?? 0,
   };
 };
 
-export const nodeToBox = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box => {
+export const nodeToBox = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box => {
   const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
 
   return {
     ...positionAbsolute,
-    x2: positionAbsolute.x + (node.computed?.width ?? node.width ?? 0),
-    y2: positionAbsolute.y + (node.computed?.height ?? node.height ?? 0),
+    x2: positionAbsolute.x + (node.measured?.width ?? node.width ?? 0),
+    y2: positionAbsolute.y + (node.measured?.height ?? node.height ?? 0),
   };
 };
 
@@ -207,14 +208,14 @@ export function getNodeDimensions<NodeType extends NodeBase = NodeBase>(
   node: NodeType
 ): { width: number; height: number } {
   return {
-    width: node.computed?.width ?? node.width ?? node.initialWidth ?? 0,
-    height: node.computed?.height ?? node.height ?? node.initialHeight ?? 0,
+    width: node.measured?.width ?? node.width ?? node.initialWidth ?? 0,
+    height: node.measured?.height ?? node.height ?? node.initialHeight ?? 0,
   };
 }
 
 export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: NodeType): boolean {
   return (
-    (node.computed?.width ?? node.width ?? node.initialWidth) !== undefined &&
-    (node.computed?.height ?? node.height ?? node.initialHeight) !== undefined
+    (node.measured?.width ?? node.width ?? node.initialWidth) !== undefined &&
+    (node.measured?.height ?? node.height ?? node.initialHeight) !== undefined
   );
 }

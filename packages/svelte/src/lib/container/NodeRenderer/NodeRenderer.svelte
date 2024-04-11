@@ -1,11 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import {
-    internalsSymbol,
-    getPositionWithOrigin,
-    getNodeDimensions,
-    nodeHasDimensions
-  } from '@xyflow/system';
+  import { getPositionWithOrigin, getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
@@ -15,7 +10,7 @@
     nodesDraggable,
     nodesConnectable,
     elementsSelectable,
-    updateNodeDimensions
+    updateNodeInternals
   } = useStore();
 
   const resizeObserver: ResizeObserver | null =
@@ -34,7 +29,7 @@
             });
           });
 
-          updateNodeDimensions(updates);
+          updateNodeInternals(updates);
         });
 
   onDestroy(() => {
@@ -46,8 +41,8 @@
   {#each $visibleNodes as node (node.id)}
     {@const nodeDimesions = getNodeDimensions(node)}
     {@const posOrigin = getPositionWithOrigin({
-      x: node.computed?.positionAbsolute?.x ?? 0,
-      y: node.computed?.positionAbsolute?.y ?? 0,
+      x: node.internals.positionAbsolute.x,
+      y: node.internals.positionAbsolute.y,
       ...nodeDimesions,
       origin: node.origin
     })}
@@ -66,26 +61,26 @@
         node.connectable ||
         ($nodesConnectable && typeof node.connectable === 'undefined')
       )}
-      positionX={node.computed?.positionAbsolute?.x ?? 0}
-      positionY={node.computed?.positionAbsolute?.y ?? 0}
+      positionX={node.internals.positionAbsolute.x}
+      positionY={node.internals.positionAbsolute.y}
       positionOriginX={posOrigin.x ?? 0}
       positionOriginY={posOrigin.y ?? 0}
-      isParent={!!node[internalsSymbol]?.isParent}
+      isParent={!!node.internals.isParent}
       style={node.style}
       class={node.class}
       type={node.type ?? 'default'}
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       dragging={node.dragging}
-      zIndex={node[internalsSymbol]?.z ?? 0}
+      zIndex={node.internals.z ?? 0}
       dragHandle={node.dragHandle}
       initialized={nodeHasDimensions(node)}
       width={node.width}
       height={node.height}
       initialWidth={node.initialWidth}
       initialHeight={node.initialHeight}
-      computedWidth={node.computed?.width}
-      computedHeight={node.computed?.height}
+      measuredWidth={node.measured.width}
+      measuredHeight={node.measured.height}
       {resizeObserver}
       on:nodeclick
       on:nodemouseenter

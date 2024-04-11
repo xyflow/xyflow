@@ -3,20 +3,20 @@ export function getNodeInlineStyleDimensions({
   height,
   initialWidth,
   initialHeight,
-  computedWidth,
-  computedHeight
+  measuredWidth,
+  measuredHeight
 }: {
   width?: number;
   height?: number;
   initialWidth?: number;
   initialHeight?: number;
-  computedWidth?: number;
-  computedHeight?: number;
+  measuredWidth?: number;
+  measuredHeight?: number;
 }): {
   width: string | undefined;
   height: string | undefined;
 } {
-  if (computedWidth === undefined && computedHeight === undefined) {
+  if (measuredWidth === undefined && measuredHeight === undefined) {
     const styleWidth = width ?? initialWidth;
     const styleHeight = height ?? initialHeight;
 

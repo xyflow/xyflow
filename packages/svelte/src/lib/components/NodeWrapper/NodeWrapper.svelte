@@ -35,8 +35,8 @@
   export let sourcePosition: $$Props['sourcePosition'] = undefined;
   export let targetPosition: $$Props['targetPosition'] = undefined;
   export let zIndex: $$Props['zIndex'];
-  export let computedWidth: $$Props['computedWidth'] = undefined;
-  export let computedHeight: $$Props['computedHeight'] = undefined;
+  export let measuredWidth: $$Props['measuredWidth'] = undefined;
+  export let measuredHeight: $$Props['measuredHeight'] = undefined;
   export let initialWidth: $$Props['initialWidth'] = undefined;
   export let initialHeight: $$Props['initialHeight'] = undefined;
   export let width: $$Props['width'] = undefined;
@@ -52,7 +52,7 @@
     nodeDragThreshold,
     selectNodesOnDrag,
     handleNodeSelection,
-    updateNodeDimensions
+    updateNodeInternals
   } = store;
 
   let nodeRef: HTMLDivElement;
@@ -79,8 +79,8 @@
     height,
     initialWidth,
     initialHeight,
-    computedWidth,
-    computedHeight
+    measuredWidth,
+    measuredHeight
   });
 
   $: {
@@ -97,7 +97,7 @@
 
     if (doUpdate) {
       requestAnimationFrame(() =>
-        updateNodeDimensions(
+        updateNodeInternals(
           new Map([
             [
               id,

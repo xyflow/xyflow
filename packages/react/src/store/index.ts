@@ -2,27 +2,20 @@ import { createWithEqualityFn } from 'zustand/traditional';
 import {
   clampPosition,
   fitView as fitViewSystem,
-  adoptUserProvidedNodes,
+  adoptUserNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
-  Dimensions,
-  updateNodeDimensions as updateNodeDimensionsSystem,
+  updateNodeInternals as updateNodeInternalsSystem,
   updateConnectionLookup,
+  handleParentExpand,
+  NodeChange,
+  EdgeSelectionChange,
+  NodeSelectionChange,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import getInitialState from './initialState';
-import type {
-  ReactFlowState,
-  Node,
-  Edge,
-  NodeDimensionChange,
-  EdgeSelectionChange,
-  NodeSelectionChange,
-  NodePositionChange,
-  UnselectNodesAndEdgesParams,
-  FitViewOptions,
-} from '../types';
+import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions, InternalNode } from '../types';
 
 const createRFStore = ({
   nodes,
@@ -52,9 +45,9 @@ const createRFStore = ({
         //
         // When this happens, we take the note objects passed by the user and extend them with fields
         // relevant for internal React Flow operations.
-        const nodesWithInternalData = adoptUserProvidedNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
+        adoptUserNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
 
-        set({ nodes: nodesWithInternalData });
+        set({ nodes });
       },
       setEdges: (edges: Edge[]) => {
         const { connectionLookup, edgeLookup } = get();
@@ -78,11 +71,10 @@ const createRFStore = ({
       // Every node gets registerd at a ResizeObserver. Whenever a node
       // changes its dimensions, this function is called to measure the
       // new dimensions and update the nodes.
-      updateNodeDimensions: (updates) => {
+      updateNodeInternals: (updates) => {
         const {
           onNodesChange,
           fitView,
-          nodes,
           nodeLookup,
           fitViewOnInit,
           fitViewDone,
@@ -91,35 +83,21 @@ const createRFStore = ({
           nodeOrigin,
           debug,
         } = get();
-        const changes: NodeDimensionChange[] = [];
 
-        const updatedNodes = updateNodeDimensionsSystem(
-          updates,
-          nodes,
-          nodeLookup,
-          domNode,
-          nodeOrigin,
-          (id: string, dimensions: Dimensions) => {
-            changes.push({
-              id: id,
-              type: 'dimensions',
-              dimensions,
-            });
-          }
-        );
+        const { changes, updatedInternals } = updateNodeInternalsSystem(updates, nodeLookup, domNode, nodeOrigin);
 
-        if (!updatedNodes) {
+        if (!updatedInternals) {
           return;
         }
 
-        const nextNodes = updateAbsolutePositions(updatedNodes, nodeLookup, nodeOrigin);
+        updateAbsolutePositions(nodeLookup, { nodeOrigin });
 
         // we call fitView once initially after all dimensions are set
         let nextFitViewDone = fitViewDone;
         if (!fitViewDone && fitViewOnInit) {
-          nextFitViewDone = fitView(nextNodes, {
+          nextFitViewDone = fitView({
             ...fitViewOnInitOptions,
-            nodes: fitViewOnInitOptions?.nodes || nextNodes,
+            nodes: fitViewOnInitOptions?.nodes,
           });
         }
 
@@ -128,7 +106,7 @@ const createRFStore = ({
         // has not provided an onNodesChange handler.
         // Nodes are only rendered if they have a width and height
         // attribute which they get from this handler.
-        set({ nodes: nextNodes, fitViewDone: nextFitViewDone });
+        set({ fitViewDone: nextFitViewDone });
 
         if (changes?.length > 0) {
           if (debug) {
@@ -138,17 +116,40 @@ const createRFStore = ({
         }
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
-        const changes = nodeDragItems.map((node) => {
-          const change: NodePositionChange = {
+        const { nodeLookup } = get();
+        const triggerChangeNodes: InternalNode[] = [];
+
+        const changes: NodeChange[] = nodeDragItems.map((node) => {
+          // @todo add expandParent to drag item so that we can get rid of the look up here
+          const internalNode = nodeLookup.get(node.id);
+          const change: NodeChange = {
             id: node.id,
             type: 'position',
             position: node.position,
-            positionAbsolute: node.computed?.positionAbsolute,
             dragging,
           };
 
+          if (internalNode?.expandParent && change.position) {
+            triggerChangeNodes.push({
+              ...internalNode,
+              position: change.position,
+              internals: {
+                ...internalNode.internals,
+                positionAbsolute: node.internals.positionAbsolute,
+              },
+            });
+
+            change.position.x = Math.max(0, change.position.x);
+            change.position.y = Math.max(0, change.position.y);
+          }
+
           return change;
         });
+
+        if (triggerChangeNodes.length > 0) {
+          const parentExpandChanges = handleParentExpand(triggerChangeNodes, nodeLookup);
+          changes.push(...parentExpandChanges);
+        }
 
         get().triggerNodeChanges(changes);
       },
@@ -185,7 +186,7 @@ const createRFStore = ({
         }
       },
       addSelectedNodes: (selectedNodeIds) => {
-        const { multiSelectionActive, edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { multiSelectionActive, edgeLookup, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
 
         if (multiSelectionActive) {
           const nodeChanges = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true));
@@ -193,11 +194,11 @@ const createRFStore = ({
           return;
         }
 
-        triggerNodeChanges(getSelectionChanges(nodes, new Set([...selectedNodeIds]), true));
-        triggerEdgeChanges(getSelectionChanges(edges));
+        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
+        triggerEdgeChanges(getSelectionChanges(edgeLookup));
       },
       addSelectedEdges: (selectedEdgeIds) => {
-        const { multiSelectionActive, edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { multiSelectionActive, edgeLookup, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
 
         if (multiSelectionActive) {
           const changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true));
@@ -205,8 +206,8 @@ const createRFStore = ({
           return;
         }
 
-        triggerEdgeChanges(getSelectionChanges(edges, new Set([...selectedEdgeIds])));
-        triggerNodeChanges(getSelectionChanges(nodes, new Set(), true));
+        triggerEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
+        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
         const { edges: storeEdges, nodes: storeNodes, triggerNodeChanges, triggerEdgeChanges } = get();
@@ -255,29 +256,30 @@ const createRFStore = ({
         triggerEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nodeExtent) => {
-        const { nodes } = get();
+        const { nodeLookup } = get();
+
+        for (const [, node] of nodeLookup) {
+          const positionAbsolute = clampPosition(node.position, nodeExtent);
+
+          nodeLookup.set(node.id, {
+            ...node,
+            internals: {
+              ...node.internals,
+              positionAbsolute,
+            },
+          });
+        }
 
         set({
           nodeExtent,
-          nodes: nodes.map((node) => {
-            const positionAbsolute = clampPosition(node.position, nodeExtent);
-
-            return {
-              ...node,
-              computed: {
-                ...node.computed,
-                positionAbsolute,
-              },
-            };
-          }),
         });
       },
       panBy: (delta): boolean => {
         const { transform, width, height, panZoom, translateExtent } = get();
         return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
       },
-      fitView: (nodes: Node[], options?: FitViewOptions): boolean => {
-        const { panZoom, width, height, minZoom, maxZoom, nodeOrigin } = get();
+      fitView: (options?: FitViewOptions): boolean => {
+        const { panZoom, width, height, minZoom, maxZoom, nodeOrigin, nodeLookup } = get();
 
         if (!panZoom) {
           return false;
@@ -285,7 +287,7 @@ const createRFStore = ({
 
         return fitViewSystem(
           {
-            nodes,
+            nodeLookup,
             width,
             height,
             panZoom,

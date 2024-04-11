@@ -1,6 +1,8 @@
 /* these are the necessary styles for React/Svelte Flow, they get used by base.css and style.css */
 
 .xy-flow {
+  direction: ltr;
+
   --xy-edge-stroke-default: #b1b1b7;
   --xy-edge-stroke-width-default: 1;
   --xy-edge-stroke-selected-default: #555;

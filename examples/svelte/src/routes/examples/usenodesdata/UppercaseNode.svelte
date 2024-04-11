@@ -12,6 +12,8 @@
 	type $$Props = NodeProps;
 
 	export let id: $$Props['id'];
+	export let data: $$Props['data'];
+	$$restProps;
 
 	const { updateNodeData } = useSvelteFlow();
 	const connections = useHandleConnections({
@@ -22,8 +24,12 @@
 	$: nodeData = useNodesData<MyNode>($connections[0]?.source);
 	$: textNode = isTextNode($nodeData) ? $nodeData : null;
 
+	$: console.log(textNode?.data, data);
+
 	$: {
-		updateNodeData(id, { text: textNode?.data.text.toUpperCase() || '' });
+		const input = textNode?.data.text.toUpperCase() ?? '';
+		updateNodeData(id, { text: input });
+		console.log('updatedNodeData with', input);
 	}
 </script>
 

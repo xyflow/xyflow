@@ -2,7 +2,7 @@
 import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
 
 import type { XYPosition, Rect } from './utils';
-import type { NodeBase, NodeDragItem, NodeOrigin } from './nodes';
+import type { InternalNodeBase, NodeBase, NodeDragItem, NodeOrigin } from './nodes';
 import type { ConnectingHandle, HandleType } from './handles';
 import { PanZoomInstance } from './panzoom';
 import { EdgeBase } from '..';
@@ -52,7 +52,7 @@ export type OnConnectEnd = (event: MouseEvent | TouchEvent) => void;
 export type IsValidConnection = (edge: EdgeBase | Connection) => boolean;
 
 export type FitViewParamsBase<NodeType extends NodeBase> = {
-  nodes: NodeType[];
+  nodeLookup: Map<string, InternalNodeBase<NodeType>>;
   width: number;
   height: number;
   panZoom: PanZoomInstance;
@@ -127,7 +127,7 @@ export type SelectionRect = Rect & {
 
 export type OnError = (id: string, message: string) => void;
 
-export type UpdateNodePositions = (dragItems: NodeDragItem[] | NodeBase[], dragging?: boolean) => void;
+export type UpdateNodePositions = (dragItems: NodeDragItem[] | InternalNodeBase[], dragging?: boolean) => void;
 export type PanBy = (delta: XYPosition) => boolean;
 
 export type UpdateConnection = (params: {

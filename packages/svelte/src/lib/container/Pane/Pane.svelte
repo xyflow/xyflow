@@ -17,10 +17,7 @@
       const isSelected = ids.includes(item.id);
 
       if (item.selected !== isSelected) {
-        return {
-          ...item,
-          selected: isSelected
-        };
+        item.selected = isSelected;
       }
 
       return item;
@@ -56,6 +53,7 @@
   }>();
   const {
     nodes,
+    nodeLookup,
     edges,
     viewport,
     dragging,
@@ -130,8 +128,8 @@
     const prevSelectedNodeIds = selectedNodes.map((n) => n.id);
     const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
 
-    selectedNodes = getNodesInside<Node>(
-      $nodes,
+    selectedNodes = getNodesInside(
+      $nodeLookup,
       nextUserSelectRect,
       [$viewport.x, $viewport.y, $viewport.zoom],
       $selectionMode === SelectionMode.Partial,
@@ -172,7 +170,7 @@
     selectionRect.set(null);
 
     if (selectedNodes.length > 0) {
-      selectionRectMode.set('nodes');
+      $selectionRectMode = 'nodes';
     }
 
     // onSelectionEnd?.(event);

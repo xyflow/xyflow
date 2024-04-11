@@ -6,7 +6,6 @@ import {
   ConnectionLineType,
   ConnectionMode,
   Position,
-  internalsSymbol,
   type HandleElement
 } from '@xyflow/system';
 
@@ -65,8 +64,9 @@ export function getDerivedConnectionProps(
         return initConnectionProps;
       }
 
+      // TODO: it should bail out if the node is not found
       const fromNode = nodeLookup.get(connection.connectionStartHandle?.nodeId);
-      const fromHandleBounds = fromNode?.[internalsSymbol]?.handleBounds;
+      const fromHandleBounds = fromNode?.internals.handleBounds;
       const handleBoundsStrict =
         fromHandleBounds?.[connection.connectionStartHandle.type || 'source'] || [];
       const handleBoundsLoose: HandleElement[] | undefined | null = handleBoundsStrict
@@ -81,12 +81,12 @@ export function getDerivedConnectionProps(
         : handleBounds?.[0];
       const fromHandleX = fromHandle
         ? fromHandle.x + fromHandle.width / 2
-        : (fromNode?.computed?.width ?? 0) / 2;
+        : (fromNode?.measured.width ?? 0) / 2;
       const fromHandleY = fromHandle
         ? fromHandle.y + fromHandle.height / 2
-        : fromNode?.computed?.height ?? 0;
-      const fromX = (fromNode?.computed?.positionAbsolute?.x ?? 0) + fromHandleX;
-      const fromY = (fromNode?.computed?.positionAbsolute?.y ?? 0) + fromHandleY;
+        : fromNode?.measured.height ?? 0;
+      const fromX = (fromNode?.internals.positionAbsolute.x ?? 0) + fromHandleX;
+      const fromY = (fromNode?.internals.positionAbsolute.y ?? 0) + fromHandleY;
       const fromPosition = fromHandle?.position;
       const toPosition = fromPosition ? oppositePosition[fromPosition] : undefined;
 

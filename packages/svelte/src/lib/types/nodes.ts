@@ -1,5 +1,13 @@
 import type { ComponentType, SvelteComponent } from 'svelte';
-import type { NodeBase, NodeProps as NodePropsBase } from '@xyflow/system';
+import type { InternalNodeBase, NodeBase, NodeProps as NodePropsBase } from '@xyflow/system';
+
+/**
+ * The node data structure that gets used for internal nodes.
+ * There are some data structures added under node.internal
+ * that are needed for tracking some properties
+ * @public
+ */
+export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeType>;
 
 /**
  * The node data structure that gets used for the nodes prop.

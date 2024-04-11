@@ -11,6 +11,7 @@
 	type $$Props = NodeProps;
 
 	export let id: $$Props['id'];
+	$$restProps;
 
 	const connections = useHandleConnections({
 		nodeId: id,

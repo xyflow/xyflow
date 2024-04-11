@@ -1,14 +1,8 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import {
-    getNodesBounds,
-    Position,
-    type Rect,
-    internalsSymbol,
-    getNodeToolbarTransform
-  } from '@xyflow/system';
+  import { getNodesBounds, Position, type Rect, getNodeToolbarTransform } from '@xyflow/system';
   import portal from '$lib/actions/portal';
-  import type { Node } from '$lib/types';
+  import type { InternalNode } from '$lib/types';
   import { useStore } from '$lib/store';
 
   import type { NodeToolbarProps } from './types';
@@ -25,26 +19,26 @@
   const contextNodeId = getContext<string>('svelteflow__node_id');
 
   let transform: string;
-  let toolbarNodes: Node[] = [];
+  let toolbarNodes: InternalNode[] = [];
   let _offset = offset !== undefined ? offset : 10;
   let _position = position !== undefined ? position : Position.Top;
   let _align = align !== undefined ? align : 'center';
 
   $: {
-    // $nodes only needed to trigger updates, $nodeLookup is just a helper that does not trigger any updates
-    if ($nodes) {
-      const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId];
+    // nly needed to trigger updates, $nodeLookup is just a helper that does not trigger any updates
+    $nodes;
 
-      toolbarNodes = nodeIds.reduce<Node[]>((res, nodeId) => {
-        const node = $nodeLookup.get(nodeId);
+    const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId];
 
-        if (node) {
-          res.push(node);
-        }
+    toolbarNodes = nodeIds.reduce<InternalNode[]>((res, nodeId) => {
+      const node = $nodeLookup.get(nodeId);
 
-        return res;
-      }, []);
-    }
+      if (node) {
+        res.push(node);
+      }
+
+      return res;
+    }, []);
   }
 
   $: {
@@ -54,8 +48,8 @@
       const toolbarNode = toolbarNodes[0];
       nodeRect = {
         ...toolbarNode.position,
-        width: toolbarNode.computed?.width ?? toolbarNode.width ?? 0,
-        height: toolbarNode.computed?.height ?? toolbarNode.height ?? 0
+        width: toolbarNode.measured.width ?? toolbarNode.width ?? 0,
+        height: toolbarNode.measured.height ?? toolbarNode.height ?? 0
       };
     } else if (toolbarNodes.length > 1) {
       nodeRect = getNodesBounds(toolbarNodes, { nodeOrigin: $nodeOrigin });
@@ -69,7 +63,7 @@
   $: zIndex =
     toolbarNodes.length === 0
       ? 1
-      : Math.max(...toolbarNodes.map((node) => (node[internalsSymbol]?.z || 5) + 1));
+      : Math.max(...toolbarNodes.map((node) => (node.internals.z || 5) + 1));
 
   //FIXME: Possible performance bottleneck
   $: selectedNodesCount = $nodes.filter((node) => node.selected).length;

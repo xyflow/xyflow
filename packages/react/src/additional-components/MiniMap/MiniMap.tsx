@@ -3,7 +3,7 @@
 import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { getNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
+import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { Panel } from '../../components/Panel';
@@ -26,7 +26,9 @@ const selector = (s: ReactFlowState) => {
   return {
     viewBB,
     boundingRect:
-      s.nodes.length > 0 ? getBoundsOfRects(getNodesBounds(s.nodes, { nodeOrigin: s.nodeOrigin }), viewBB) : viewBB,
+      s.nodeLookup.size > 0
+        ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { nodeOrigin: s.nodeOrigin }), viewBB)
+        : viewBB,
     rfId: s.rfId,
     nodeOrigin: s.nodeOrigin,
     panZoom: s.panZoom,

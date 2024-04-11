@@ -15,8 +15,7 @@ const initialNodes: Node[] = nodes.map((n) => ({
 
 const expectedNodes: Node[] = initialNodes.map((n) => ({
   ...n,
-  computed: {
-    positionAbsolute: n.position,
+  measured: {
     ...nodeDimensions,
   },
 }));

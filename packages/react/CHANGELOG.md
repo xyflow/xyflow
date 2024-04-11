@@ -1,5 +1,33 @@
 # @xyflow/react
 
+## 12.0.0-next.14
+
+## Patch changes
+
+- fix hidden nodes
+- use `direction=ltr` for outer wrapper to support rtl sites
+- allow pinch zoom even if `preventScrolling=false`
+- export node and edge change related types
+- only trigger dimensions updates when changes detected
+
+## 12.0.0-next.13
+
+## ⚠️ Breaking changes
+
+- rename `node.parentNode` to `node.parentId`
+- rename node.computed to node.measured
+- remove positionAbsolute from `node.computed` 
+
+## Minor Changes
+
+- new helpers: `useInternalNode` hook, `getInternalNode` function
+
+## Patch changes
+
+- remove `internalsSymbol` (now called internals and only available for internal nodes)
+- handle parentExpand on library side instead of applyChanges
+- new type `InternalNode`
+
 ## 12.0.0-next.12
 
 ## Patch changes

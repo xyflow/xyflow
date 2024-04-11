@@ -5,10 +5,10 @@ import {
   fitView as fitViewUtil,
   getElementsToRemove,
   panBy as panBySystem,
-  updateNodeDimensions as updateNodeDimensionsSystem,
+  updateNodeInternals as updateNodeInternalsSystem,
   addEdge as addEdgeUtil,
   type UpdateNodePositions,
-  type NodeDimensionUpdate,
+  type InternalNodeUpdate,
   type ViewportHelperFunctionOptions,
   type Connection,
   type XYPosition,
@@ -64,52 +64,71 @@ export function createStore({
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     const nodeLookup = get(store.nodeLookup);
 
-    nodeDragItems.forEach((nodeDragItem) => {
-      const node = nodeLookup.get(nodeDragItem.id);
+    for (const nodeDragItem of nodeDragItems) {
+      const node = nodeLookup.get(nodeDragItem.id)?.internals.userNode;
 
-      if (node) {
-        node.position = nodeDragItem.position;
-        node.dragging = dragging;
-        node.computed = {
-          ...node.computed,
-          positionAbsolute: nodeDragItem.computed?.positionAbsolute
-        };
+      if (!node) {
+        continue;
       }
-    });
 
-    store.nodes.set(get(store.nodes));
+      node.position = nodeDragItem.position;
+      node.dragging = dragging;
+    }
+
+    store.nodes.update((nds) => nds);
   };
 
-  function updateNodeDimensions(updates: Map<string, NodeDimensionUpdate>) {
-    const nextNodes = updateNodeDimensionsSystem(
+  function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
+    const nodeLookup = get(store.nodeLookup);
+    const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,
-      get(store.nodes),
-      get(store.nodeLookup),
+      nodeLookup,
       get(store.domNode),
       get(store.nodeOrigin)
     );
 
-    if (!nextNodes) {
+    if (!updatedInternals) {
       return;
     }
 
     if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
       const fitViewOptions = get(store.fitViewOptions);
-      const fitViewOnInitDone = fitView(nextNodes, {
+      const fitViewOnInitDone = fitView({
         ...fitViewOptions,
-        nodes: fitViewOptions?.nodes || nextNodes
+        nodes: fitViewOptions?.nodes
       });
       store.fitViewOnInitDone.set(fitViewOnInitDone);
     }
 
-    store.nodes.set(nextNodes);
+    for (const change of changes) {
+      const node = nodeLookup.get(change.id)?.internals.userNode;
+
+      if (!node) {
+        continue;
+      }
+
+      switch (change.type) {
+        case 'dimensions': {
+          const measured = { ...node.measured, ...change.dimensions };
+          node.width = change.dimensions?.width ?? node.width;
+          node.height = change.dimensions?.height ?? node.height;
+          node.measured = measured;
+          break;
+        }
+        case 'position':
+          node.position = change.position ?? node.position;
+          break;
+      }
+    }
+
+    store.nodes.update((nds) => nds);
 
     if (!get(store.nodesInitialized)) {
       store.nodesInitialized.set(true);
     }
   }
 
-  function fitView(nodes: Node[], options?: FitViewOptions) {
+  function fitView(options?: FitViewOptions) {
     const panZoom = get(store.panZoom);
 
     if (!panZoom) {
@@ -118,7 +137,7 @@ export function createStore({
 
     return fitViewUtil(
       {
-        nodes,
+        nodeLookup: get(store.nodeLookup),
         width: get(store.width),
         height: get(store.height),
         minZoom: get(store.minZoom),
@@ -186,10 +205,10 @@ export function createStore({
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
     const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
-    if (resetNodes) store.nodes.set(get(store.nodes));
+    if (resetNodes) store.nodes.update((nds) => nds);
 
     const resetEdges = resetSelectedElements(params?.edges || get(store.edges));
-    if (resetEdges) store.edges.set(get(store.edges));
+    if (resetEdges) store.edges.update((nds) => nds);
   }
 
   store.deleteKeyPressed.subscribe(async (deleteKeyPressed) => {
@@ -381,10 +400,10 @@ export function createStore({
     setEdgeTypes,
     addEdge,
     updateNodePositions,
-    updateNodeDimensions,
+    updateNodeInternals,
     zoomIn,
     zoomOut,
-    fitView: (options?: FitViewOptions) => fitView(get(store.nodes), options),
+    fitView: (options?: FitViewOptions) => fitView(options),
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,

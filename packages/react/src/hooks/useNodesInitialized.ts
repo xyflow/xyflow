@@ -1,5 +1,3 @@
-import { internalsSymbol } from '@xyflow/system';
-
 import { useStore } from './useStore';
 import type { ReactFlowState } from '../types';
 
@@ -8,13 +6,13 @@ export type UseNodesInitializedOptions = {
 };
 
 const selector = (options: UseNodesInitializedOptions) => (s: ReactFlowState) => {
-  if (s.nodes.length === 0) {
+  if (s.nodeLookup.size === 0) {
     return false;
   }
 
-  for (const node of s.nodes) {
+  for (const [, node] of s.nodeLookup) {
     if (options.includeHiddenNodes || !node.hidden) {
-      if (node[internalsSymbol]?.handleBounds === undefined) {
+      if (node.internals.handleBounds === undefined) {
         return false;
       }
     }

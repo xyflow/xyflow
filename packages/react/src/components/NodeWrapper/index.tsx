@@ -7,7 +7,6 @@ import {
   errorMessages,
   getNodeDimensions,
   getPositionWithOrigin,
-  internalsSymbol,
   isInputDOMNode,
   nodeHasDimensions,
 } from '@xyflow/system';
@@ -19,7 +18,7 @@ import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
-import type { Node, NodeWrapperProps } from '../../types';
+import type { InternalNode, Node, NodeWrapperProps } from '../../types';
 
 export function NodeWrapper<NodeType extends Node>({
   id,
@@ -44,11 +43,11 @@ export function NodeWrapper<NodeType extends Node>({
   onError,
 }: NodeWrapperProps<NodeType>) {
   const { node, positionAbsoluteX, positionAbsoluteY, zIndex, isParent } = useStore((s) => {
-    const node = s.nodeLookup.get(id)! as NodeType;
+    const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
 
     const positionAbsolute = nodeExtent
-      ? clampPosition(node.computed?.positionAbsolute, nodeExtent)
-      : node.computed?.positionAbsolute || { x: 0, y: 0 };
+      ? clampPosition(node.internals.positionAbsolute, nodeExtent)
+      : node.internals.positionAbsolute || { x: 0, y: 0 };
 
     return {
       node,
@@ -56,8 +55,8 @@ export function NodeWrapper<NodeType extends Node>({
       // so we we need to force a re-render when some change
       positionAbsoluteX: positionAbsolute.x,
       positionAbsoluteY: positionAbsolute.y,
-      zIndex: node[internalsSymbol]?.z ?? 0,
-      isParent: !!node[internalsSymbol]?.isParent,
+      zIndex: node.internals.z,
+      isParent: node.internals.isParent,
     };
   }, shallow);
 
@@ -84,14 +83,16 @@ export function NodeWrapper<NodeType extends Node>({
   const nodeDimensions = getNodeDimensions(node);
   const inlineDimensions = getNodeInlineStyleDimensions(node);
   const initialized = nodeHasDimensions(node);
-  const hasHandleBounds = !!node[internalsSymbol]?.handleBounds;
+  const hasHandleBounds = !!node.internals.handleBounds;
 
   const moveSelectedNodes = useMoveSelectedNodes();
 
   useEffect(() => {
+    const currNode = nodeRef.current;
+
     return () => {
-      if (nodeRef.current) {
-        resizeObserver?.unobserve(nodeRef.current);
+      if (currNode) {
+        resizeObserver?.unobserve(currNode);
       }
     };
   }, []);
@@ -99,7 +100,6 @@ export function NodeWrapper<NodeType extends Node>({
   useEffect(() => {
     if (nodeRef.current && !node.hidden) {
       const currNode = nodeRef.current;
-
       if (!initialized || !hasHandleBounds) {
         resizeObserver?.unobserve(currNode);
         resizeObserver?.observe(currNode);
@@ -123,7 +123,7 @@ export function NodeWrapper<NodeType extends Node>({
       if (targetPosChanged) {
         prevTargetPosition.current = node.targetPosition;
       }
-      store.getState().updateNodeDimensions(new Map([[id, { id, nodeElement: nodeRef.current, forceUpdate: true }]]));
+      store.getState().updateNodeInternals(new Map([[id, { id, nodeElement: nodeRef.current, force: true }]]));
     }
   }, [id, nodeType, node.sourcePosition, node.targetPosition]);
 

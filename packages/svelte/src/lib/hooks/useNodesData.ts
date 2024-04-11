@@ -29,7 +29,7 @@ export function useNodesData(nodeIds: any): any {
     const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
 
     for (const nodeId of _nodeIds) {
-      const node = nodeLookup.get(nodeId);
+      const node = nodeLookup.get(nodeId)?.internals.userNode;
       if (node) {
         nextNodesData.push({
           id: node.id,

@@ -6,13 +6,13 @@ import {
   type HandleType,
   type Connection,
   type PanBy,
-  type NodeBase,
   type Transform,
   type ConnectingHandle,
   type OnConnectEnd,
   type UpdateConnection,
   type IsValidConnection,
   type ConnectionHandle,
+  NodeLookup,
 } from '../types';
 
 import { getClosestHandle, getConnectionStatus, getHandleLookup, getHandleType } from './utils';
@@ -25,7 +25,7 @@ export type OnPointerDownParams = {
   handleId: string | null;
   nodeId: string;
   isTarget: boolean;
-  nodes: NodeBase[];
+  nodeLookup: NodeLookup;
   lib: string;
   flowId: string | null;
   edgeUpdaterType?: HandleType;
@@ -79,7 +79,7 @@ function onPointerDown(
     edgeUpdaterType,
     isTarget,
     domNode,
-    nodes,
+    nodeLookup,
     lib,
     autoPanOnConnect,
     flowId,
@@ -116,7 +116,7 @@ function onPointerDown(
   let handleDomNode: Element | null = null;
 
   const handleLookup = getHandleLookup({
-    nodes,
+    nodeLookup,
     nodeId,
     handleId,
     handleType,

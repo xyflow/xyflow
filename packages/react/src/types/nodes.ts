@@ -1,5 +1,12 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
-import type { CoordinateExtent, NodeBase, NodeOrigin, OnError, NodeProps as NodePropsBase } from '@xyflow/system';
+import type {
+  CoordinateExtent,
+  NodeBase,
+  NodeOrigin,
+  OnError,
+  NodeProps as NodePropsBase,
+  InternalNodeBase,
+} from '@xyflow/system';
 
 import { NodeTypes } from './general';
 
@@ -16,6 +23,14 @@ export type Node<
   resizing?: boolean;
   focusable?: boolean;
 };
+
+/**
+ * The node data structure that gets used for internal nodes.
+ * There are some data structures added under node.internal
+ * that are needed for tracking some properties
+ * @public
+ */
+export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeType>;
 
 export type NodeMouseHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, node: NodeType) => void;
 export type SelectionDragHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, nodes: NodeType[]) => void;

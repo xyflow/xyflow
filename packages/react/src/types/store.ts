@@ -2,7 +2,7 @@ import {
   ConnectionMode,
   type ConnectionStatus,
   type CoordinateExtent,
-  type NodeDimensionUpdate,
+  type InternalNodeUpdate,
   type UpdateNodePositions,
   type NodeOrigin,
   type OnConnect,
@@ -25,12 +25,13 @@ import {
   type EdgeLookup,
   type ConnectionLookup,
   type NodeLookup,
+  NodeChange,
+  EdgeChange,
 } from '@xyflow/system';
 
 import type {
   Edge,
   Node,
-  NodeChange,
   OnNodesChange,
   OnEdgesChange,
   DefaultEdgeOptions,
@@ -43,7 +44,7 @@ import type {
   OnNodeDrag,
   OnBeforeDelete,
   IsValidConnection,
-  EdgeChange,
+  InternalNode,
 } from '.';
 
 export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
@@ -52,7 +53,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   height: number;
   transform: Transform;
   nodes: NodeType[];
-  nodeLookup: NodeLookup<NodeType>;
+  nodeLookup: NodeLookup<InternalNode<NodeType>>;
   edges: Edge[];
   edgeLookup: EdgeLookup<EdgeType>;
   connectionLookup: ConnectionLookup;
@@ -153,7 +154,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodes: (nodes: NodeType[]) => void;
   setEdges: (edges: EdgeType[]) => void;
   setDefaultNodesAndEdges: (nodes?: NodeType[], edges?: EdgeType[]) => void;
-  updateNodeDimensions: (updates: Map<string, NodeDimensionUpdate>) => void;
+  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
@@ -169,7 +170,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
-  fitView: (nodes: NodeType[], options?: FitViewOptions) => boolean;
+  fitView: (options?: FitViewOptions) => boolean;
 };
 
 export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = ReactFlowStore<

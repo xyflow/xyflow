@@ -26,9 +26,10 @@ export { useNodesInitialized, type UseNodesInitializedOptions } from './hooks/us
 export { useHandleConnections } from './hooks/useHandleConnections';
 export { useNodesData } from './hooks/useNodesData';
 export { useConnection } from './hooks/useConnection';
+export { useInternalNode } from './hooks/useInternalNode';
 export { useNodeId } from './contexts/NodeIdContext';
 
-export { applyNodeChanges, applyEdgeChanges, handleParentExpand } from './utils/changes';
+export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { isNode, isEdge } from './utils/general';
 
 export * from './additional-components';
@@ -84,6 +85,18 @@ export {
   type ControlPosition,
   type ControlLinePosition,
   type ResizeControlVariant,
+  type NodeChange,
+  type NodeDimensionChange,
+  type NodePositionChange,
+  type NodeSelectionChange,
+  type NodeRemoveChange,
+  type NodeAddChange,
+  type NodeReplaceChange,
+  type EdgeChange,
+  type EdgeSelectionChange,
+  type EdgeRemoveChange,
+  type EdgeAddChange,
+  type EdgeReplaceChange,
 } from '@xyflow/system';
 
 // system utils
@@ -103,5 +116,4 @@ export {
   addEdge,
   updateEdge,
   getConnectedEdges,
-  internalsSymbol,
 } from '@xyflow/system';
