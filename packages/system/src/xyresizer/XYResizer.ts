@@ -202,8 +202,6 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           return;
         }
 
-        console.log(isXPosChange, x, isYPosChange, y);
-
         if (isXPosChange || isYPosChange || nodeOrigin[0] === 1 || nodeOrigin[1] == 1) {
           change.x = isXPosChange ? x : prevValues.x;
           change.y = isYPosChange ? y : prevValues.y;
@@ -244,8 +242,6 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
           prevValues.width = change.width;
           prevValues.height = change.height;
         }
-
-        console.log(change);
 
         const direction = getResizeDirection({
           width: prevValues.width,
