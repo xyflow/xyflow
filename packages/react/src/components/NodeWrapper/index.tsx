@@ -123,7 +123,7 @@ export function NodeWrapper<NodeType extends Node>({
       if (targetPosChanged) {
         prevTargetPosition.current = node.targetPosition;
       }
-      store.getState().updateNodeDimensions(new Map([[id, { id, nodeElement: nodeRef.current, force: true }]]));
+      store.getState().updateNodeInternals(new Map([[id, { id, nodeElement: nodeRef.current, force: true }]]));
     }
   }, [id, nodeType, node.sourcePosition, node.targetPosition]);
 

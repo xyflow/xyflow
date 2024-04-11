@@ -5,7 +5,7 @@ import {
   adoptUserNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
-  updateNodeDimensions as updateNodeDimensionsSystem,
+  updateNodeInternals as updateNodeInternalsSystem,
   updateConnectionLookup,
   handleParentExpand,
   NodeChange,
@@ -71,7 +71,7 @@ const createRFStore = ({
       // Every node gets registerd at a ResizeObserver. Whenever a node
       // changes its dimensions, this function is called to measure the
       // new dimensions and update the nodes.
-      updateNodeDimensions: (updates) => {
+      updateNodeInternals: (updates) => {
         const {
           onNodesChange,
           fitView,
@@ -84,9 +84,9 @@ const createRFStore = ({
           debug,
         } = get();
 
-        const changes = updateNodeDimensionsSystem(updates, nodeLookup, domNode, nodeOrigin);
+        const { changes, updatedInternals } = updateNodeInternalsSystem(updates, nodeLookup, domNode, nodeOrigin);
 
-        if (changes.length === 0) {
+        if (!updatedInternals) {
           return;
         }
 

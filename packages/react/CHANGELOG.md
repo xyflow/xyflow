@@ -1,10 +1,14 @@
 # @xyflow/react
 
-## 12.0.0-next.x
+## 12.0.0-next.14
 
 ## Patch changes
 
 - fix hidden nodes
+- use `direction=ltr` for outer wrapper to support rtl sites
+- allow pinch zoom even if `preventScrolling=false`
+- export node and edge change related types
+- only trigger dimensions updates when changes detected
 
 ## 12.0.0-next.13
 

@@ -52,7 +52,7 @@
     nodeDragThreshold,
     selectNodesOnDrag,
     handleNodeSelection,
-    updateNodeDimensions
+    updateNodeInternals
   } = store;
 
   let nodeRef: HTMLDivElement;
@@ -97,7 +97,7 @@
 
     if (doUpdate) {
       requestAnimationFrame(() =>
-        updateNodeDimensions(
+        updateNodeInternals(
           new Map([
             [
               id,
