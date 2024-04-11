@@ -1,4 +1,8 @@
 /* these are the necessary styles for React Flow, they get used by base.css and style.css */
+.react-flow {
+  direction: ltr;
+}
+
 .react-flow__container {
   position: absolute;
   width: 100%;
