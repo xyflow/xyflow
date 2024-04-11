@@ -193,7 +193,9 @@ const ZoomPane = ({
         d3Selection.on(
           'wheel.zoom',
           function (this: any, event: any, d: any) {
-            if (!preventScrolling || isWrappedWithClass(event, noWheelClassName)) {
+            // we still want to enable pinch zooming even if preventScrolling is set to false
+            const invalidEvent = !preventScrolling && event.type === 'wheel' && !event.ctrlKey;
+            if (invalidEvent || isWrappedWithClass(event, noWheelClassName)) {
               return null;
             }
 
