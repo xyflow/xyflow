@@ -1,5 +1,19 @@
 # reactflow
 
+## 11.11.1
+
+### Patch Changes
+
+- [#4137](https://github.com/xyflow/xyflow/pull/4137) [`d39d4269`](https://github.com/xyflow/xyflow/commit/d39d42699a7351465cd2e9876e86560f182b8df3) - allow pinch zoom if preventScrolling=false
+- [#4139](https://github.com/xyflow/xyflow/pull/4139) [`685825c5`](https://github.com/xyflow/xyflow/commit/685825c5bba61265cdf11d974d0bdb8a53e1aff9) - set direction="ltr" for wrapper div
+- Updated dependencies [[`d39d4269`](https://github.com/xyflow/xyflow/commit/d39d42699a7351465cd2e9876e86560f182b8df3), [`685825c5`](https://github.com/xyflow/xyflow/commit/685825c5bba61265cdf11d974d0bdb8a53e1aff9)]:
+  - @reactflow/core@11.11.1
+  - @reactflow/background@11.3.11
+  - @reactflow/controls@11.2.11
+  - @reactflow/minimap@11.7.11
+  - @reactflow/node-resizer@2.2.11
+  - @reactflow/node-toolbar@1.3.11
+
 ## 11.11.0
 
 This is hopefully the last release for React Flow 11. It fixes some bugs and adds a deprecation warning for `node.parentNode` which is now called `node.parentId`. There are two reasons for this: `parentNode` poses a name collision with the DOM API and it actually is an id not a node.
