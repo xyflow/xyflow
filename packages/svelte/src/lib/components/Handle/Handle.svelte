@@ -22,11 +22,14 @@
   export let position: $$Props['position'] = Position.Top;
   export let style: $$Props['style'] = undefined;
   export let isConnectable: $$Props['isConnectable'] = undefined;
+  export let isValidConnection: $$Props['isValidConnection'] = undefined;
   export let onconnect: $$Props['onconnect'] = undefined;
   export let ondisconnect: $$Props['ondisconnect'] = undefined;
   // @todo implement connectablestart, connectableend
   // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
   // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
+
+  $: console.log(isValidConnection);
 
   let className: $$Props['class'] = undefined;
   export { className as class };
@@ -45,7 +48,7 @@
     nodeLookup,
     connectionRadius,
     viewport,
-    isValidConnection,
+    isValidConnection: isValidConnectionStore,
     lib,
     addEdge,
     onedgecreate,
@@ -77,7 +80,7 @@
         lib: $lib,
         autoPanOnConnect: $autoPanOnConnect,
         flowId: $flowId,
-        isValidConnection: $isValidConnection,
+        isValidConnection: isValidConnection ?? $isValidConnectionStore,
         updateConnection,
         cancelConnection,
         panBy,
