@@ -145,25 +145,25 @@ function calculateXYZPosition<NodeType extends NodeBase>(
   );
 }
 
+type NodeWithExpandParent<NodeType> = NodeType & { parentId: string; expandParent: true };
+
 export function handleParentExpand(
-  nodes: InternalNodeBase[],
+  nodes: NodeWithExpandParent<InternalNodeBase>[],
   nodeLookup: NodeLookup
 ): (NodeDimensionChange | NodePositionChange)[] {
   const changes: (NodeDimensionChange | NodePositionChange)[] = [];
   const chilNodeRects = new Map<string, Rect>();
 
-  nodes.forEach((node) => {
-    const parentId = node.parentId;
-    if (node.expandParent && parentId) {
-      const parentNode = nodeLookup.get(parentId);
-
-      if (parentNode) {
-        const parentRect = chilNodeRects.get(parentId) || nodeToRect(parentNode, node.origin);
-        const expandedRect = getBoundsOfRects(parentRect, nodeToRect(node, node.origin));
-        chilNodeRects.set(parentId, expandedRect);
-      }
+  for (const node of nodes) {
+    const parentNode = nodeLookup.get(node.parentId);
+    if (!parentNode) {
+      continue;
     }
-  });
+
+    const parentRect = chilNodeRects.get(node.parentId) || nodeToRect(parentNode, node.origin);
+    const expandedRect = getBoundsOfRects(parentRect, nodeToRect(node, node.origin));
+    chilNodeRects.set(node.parentId, expandedRect);
+  }
 
   if (chilNodeRects.size > 0) {
     chilNodeRects.forEach((rect, id) => {
@@ -193,9 +193,8 @@ export function handleParentExpand(
             height: dimensions.height + yChange,
           },
         });
-
-        // @todo we need to reset child node positions if < 0
-      } else if (dimensions.width < rect.width || dimensions.height < rect.height) {
+      }
+      if (dimensions.width < rect.width || dimensions.height < rect.height) {
         changes.push({
           id,
           type: 'dimensions',
@@ -229,7 +228,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   const style = window.getComputedStyle(viewportNode);
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
   // in this array we collect nodes, that might trigger changes (like expanding parent)
-  const triggerChangeNodes: NodeType[] = [];
+  const parentExpandNodes: NodeWithExpandParent<NodeType>[] = [];
 
   updates.forEach((update) => {
     const node = nodeLookup.get(update.id);
@@ -275,16 +274,16 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
             dimensions,
           });
 
-          if (newNode.expandParent) {
-            triggerChangeNodes.push(newNode);
+          if (newNode.expandParent && newNode.parentId) {
+            parentExpandNodes.push(newNode as NodeWithExpandParent<NodeType>);
           }
         }
       }
     }
   });
 
-  if (triggerChangeNodes.length > 0) {
-    const parentExpandChanges = handleParentExpand(triggerChangeNodes, nodeLookup);
+  if (parentExpandNodes.length > 0) {
+    const parentExpandChanges = handleParentExpand(parentExpandNodes, nodeLookup);
     changes.push(...parentExpandChanges);
   }
 
