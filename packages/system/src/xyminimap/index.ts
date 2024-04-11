@@ -71,12 +71,12 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
         return;
       }
 
-      const panNow = [
+      const panCurrent = [
         event.sourceEvent.clientX ?? event.sourceEvent.touches[0].clientX,
         event.sourceEvent.clientY ?? event.sourceEvent.touches[0].clientY,
       ];
-      const panDelta = [panNow[0] - panStart[0], panNow[1] - panStart[1]];
-      panStart = panNow;
+      const panDelta = [panCurrent[0] - panStart[0], panCurrent[1] - panStart[1]];
+      panStart = panCurrent;
 
       const moveScale = getViewScale() * Math.max(transform[2], Math.log(transform[2])) * (inversePan ? -1 : 1);
       const position = {
