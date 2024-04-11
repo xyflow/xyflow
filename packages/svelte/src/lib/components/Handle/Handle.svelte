@@ -29,8 +29,6 @@
   // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
   // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
 
-  $: console.log(isValidConnection);
-
   let className: $$Props['class'] = undefined;
   export { className as class };
 
