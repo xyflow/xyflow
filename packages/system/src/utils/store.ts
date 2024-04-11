@@ -1,7 +1,7 @@
 import {
   NodeBase,
   CoordinateExtent,
-  NodeDimensionUpdate,
+  InternalNodeUpdate,
   NodeOrigin,
   PanZoomInstance,
   Transform,
@@ -11,7 +11,6 @@ import {
   EdgeBase,
   EdgeLookup,
   InternalNodeBase,
-  NodeChange,
   NodeLookup,
   Rect,
   NodeDimensionChange,
@@ -213,16 +212,17 @@ export function handleParentExpand(
   return changes;
 }
 
-export function updateNodeDimensions<NodeType extends InternalNodeBase>(
-  updates: Map<string, NodeDimensionUpdate>,
+export function updateNodeInternals<NodeType extends InternalNodeBase>(
+  updates: Map<string, InternalNodeUpdate>,
   nodeLookup: Map<string, NodeType>,
   domNode: HTMLElement | null,
   nodeOrigin?: NodeOrigin
-): (NodeDimensionChange | NodePositionChange)[] {
+): { changes: (NodeDimensionChange | NodePositionChange)[]; updatedInternals: boolean } {
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
+  let updatedInternals = false;
 
   if (!viewportNode) {
-    return [];
+    return { changes: [], updatedInternals };
   }
 
   const changes: (NodeDimensionChange | NodePositionChange)[] = [];
@@ -242,24 +242,20 @@ export function updateNodeDimensions<NodeType extends InternalNodeBase>(
           handleBounds: undefined,
         },
       });
+      updatedInternals = true;
     } else if (node) {
       const dimensions = getDimensions(update.nodeElement);
+      const dimensionChanged = node.measured.width !== dimensions.width || node.measured.height !== dimensions.height;
       const doUpdate = !!(
         dimensions.width &&
         dimensions.height &&
-        (node.measured?.width !== dimensions.width ||
-          node.measured?.height !== dimensions.height ||
-          !node.internals.handleBounds ||
-          update.force)
+        (dimensionChanged || !node.internals.handleBounds || update.force)
       );
 
       if (doUpdate) {
         const newNode = {
           ...node,
-          measured: {
-            ...node.measured,
-            ...dimensions,
-          },
+          measured: dimensions,
           internals: {
             ...node.internals,
             handleBounds: {
@@ -270,15 +266,18 @@ export function updateNodeDimensions<NodeType extends InternalNodeBase>(
         };
 
         nodeLookup.set(node.id, newNode);
+        updatedInternals = true;
 
-        changes.push({
-          id: newNode.id,
-          type: 'dimensions',
-          dimensions,
-        });
+        if (dimensionChanged) {
+          changes.push({
+            id: newNode.id,
+            type: 'dimensions',
+            dimensions,
+          });
 
-        if (newNode.expandParent) {
-          triggerChangeNodes.push(newNode);
+          if (newNode.expandParent) {
+            triggerChangeNodes.push(newNode);
+          }
         }
       }
     }
@@ -289,7 +288,7 @@ export function updateNodeDimensions<NodeType extends InternalNodeBase>(
     changes.push(...parentExpandChanges);
   }
 
-  return changes;
+  return { changes, updatedInternals };
 }
 
 export function panBy({

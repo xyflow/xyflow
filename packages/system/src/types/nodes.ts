@@ -105,7 +105,7 @@ export type NodeHandleBounds = {
   target: HandleElement[] | null;
 };
 
-export type NodeDimensionUpdate = {
+export type InternalNodeUpdate = {
   id: string;
   nodeElement: HTMLDivElement;
   force?: boolean;

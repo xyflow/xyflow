@@ -5,10 +5,10 @@ import {
   fitView as fitViewUtil,
   getElementsToRemove,
   panBy as panBySystem,
-  updateNodeDimensions as updateNodeDimensionsSystem,
+  updateNodeInternals as updateNodeInternalsSystem,
   addEdge as addEdgeUtil,
   type UpdateNodePositions,
-  type NodeDimensionUpdate,
+  type InternalNodeUpdate,
   type ViewportHelperFunctionOptions,
   type Connection,
   type XYPosition,
@@ -78,16 +78,16 @@ export function createStore({
     store.nodes.update((nds) => nds);
   };
 
-  function updateNodeDimensions(updates: Map<string, NodeDimensionUpdate>) {
+  function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
     const nodeLookup = get(store.nodeLookup);
-    const changes = updateNodeDimensionsSystem(
+    const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,
       nodeLookup,
       get(store.domNode),
       get(store.nodeOrigin)
     );
 
-    if (!changes) {
+    if (!updatedInternals) {
       return;
     }
 
@@ -400,7 +400,7 @@ export function createStore({
     setEdgeTypes,
     addEdge,
     updateNodePositions,
-    updateNodeDimensions,
+    updateNodeInternals,
     zoomIn,
     zoomOut,
     fitView: (options?: FitViewOptions) => fitView(options),

@@ -19,6 +19,7 @@ import {
 import initialItems from './initial-elements';
 
 import styles from './layouting.module.css';
+import ReactFlowDevTools from '../DevTools/DevTools';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -98,6 +99,7 @@ const LayoutFlow = () => {
         onEdgesChange={onEdgesChange}
       >
         <Controls />
+        <ReactFlowDevTools />
       </ReactFlow>
       <Panel position="top-right">
         <button onClick={() => onLayout('TB')}>vertical layout</button>

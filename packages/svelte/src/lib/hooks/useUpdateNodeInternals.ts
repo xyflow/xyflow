@@ -10,7 +10,7 @@ import { useStore } from '$lib/store';
  * @returns function for updating node internals
  */
 export function useUpdateNodeInternals(): UpdateNodeInternals {
-  const { domNode, updateNodeDimensions } = useStore();
+  const { domNode, updateNodeInternals } = useStore();
 
   // @todo: do we want to add this to system?
   const updateInternals = (id: string | string[]) => {
@@ -27,7 +27,7 @@ export function useUpdateNodeInternals(): UpdateNodeInternals {
       }
     });
 
-    requestAnimationFrame(() => updateNodeDimensions(updates));
+    requestAnimationFrame(() => updateNodeInternals(updates));
   };
 
   return updateInternals;
