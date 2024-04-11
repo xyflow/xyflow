@@ -2,7 +2,7 @@ import {
   ConnectionMode,
   type ConnectionStatus,
   type CoordinateExtent,
-  type NodeDimensionUpdate,
+  type InternalNodeUpdate,
   type UpdateNodePositions,
   type NodeOrigin,
   type OnConnect,
@@ -154,7 +154,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodes: (nodes: NodeType[]) => void;
   setEdges: (edges: EdgeType[]) => void;
   setDefaultNodesAndEdges: (nodes?: NodeType[], edges?: EdgeType[]) => void;
-  updateNodeDimensions: (updates: Map<string, NodeDimensionUpdate>) => void;
+  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;

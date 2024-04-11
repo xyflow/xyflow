@@ -5,6 +5,9 @@
 ## Patch changes
 
 - fix hidden nodes
+- use `direction=ltr` for outer wrapper to support rtl sites
+- allow pinch zoom even if `preventScrolling=false`
+- export node and edge change related types
 
 ## 12.0.0-next.13
 

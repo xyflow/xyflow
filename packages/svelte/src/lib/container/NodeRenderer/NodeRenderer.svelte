@@ -10,7 +10,7 @@
     nodesDraggable,
     nodesConnectable,
     elementsSelectable,
-    updateNodeDimensions
+    updateNodeInternals
   } = useStore();
 
   const resizeObserver: ResizeObserver | null =
@@ -29,7 +29,7 @@
             });
           });
 
-          updateNodeDimensions(updates);
+          updateNodeInternals(updates);
         });
 
   onDestroy(() => {
