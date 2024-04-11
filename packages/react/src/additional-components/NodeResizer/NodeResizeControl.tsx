@@ -66,7 +66,7 @@ function ResizeControl({
 
           const changes: NodeChange[] = [];
 
-          if (change.isXPosChange || change.isYPosChange) {
+          if (change.x !== undefined && change.y !== undefined) {
             const positionChange: NodePositionChange = {
               id,
               type: 'position',
@@ -79,7 +79,7 @@ function ResizeControl({
             changes.push(positionChange);
           }
 
-          if (change.isWidthChange || change.isHeightChange) {
+          if (change.width !== undefined && change.height !== undefined) {
             const dimensionChange: NodeDimensionChange = {
               id,
               type: 'dimensions',
