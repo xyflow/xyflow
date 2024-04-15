@@ -1,5 +1,12 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type Rect } from '@xyflow/system';
+import {
+  evaluateNodePosition,
+  getElementsToRemove,
+  getOverlappingArea,
+  isRectObject,
+  nodeToRect,
+  type Rect,
+} from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
@@ -223,15 +230,19 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     []
   );
 
-  const getNodeRect = useCallback(({ id }: { id: string }): Rect | null => {
-    const internalNode = store.getState().nodeLookup.get(id);
-    return internalNode ? nodeToRect(internalNode) : null;
+  const getNodeRect = useCallback((node: NodeType | { id: string }): Rect | null => {
+    const { nodeLookup, nodeOrigin } = store.getState();
+    const nodeToUse = isNode(node) ? node : nodeLookup.get(node.id)!;
+    const nodeWithPos = evaluateNodePosition(nodeToUse, nodeLookup, nodeOrigin);
+
+    return nodeWithPos ? nodeToRect(nodeWithPos) : null;
   }, []);
 
   const getIntersectingNodes = useCallback<Instance.GetIntersectingNodes<NodeType>>(
     (nodeOrRect, partially = true, nodes) => {
       const isRect = isRectObject(nodeOrRect);
       const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
+      const hasNodesOption = nodes !== undefined;
 
       if (!nodeRect) {
         return [];
@@ -244,7 +255,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           return false;
         }
 
-        const currNodeRect = nodeToRect(n);
+        const currNodeRect = nodeToRect(hasNodesOption ? n : internalNode!);
         const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
         const partiallyVisible = partially && overlappingArea > 0;
 
