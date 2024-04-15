@@ -38,14 +38,14 @@ const createRFStore = ({
     (set, get) => ({
       ...getInitialState({ nodes, edges, width, height, fitView, defaultNodes, defaultEdges }),
       setNodes: (nodes: Node[]) => {
-        const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
+        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
         // setNodes() is called exclusively in response to user actions:
         // - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
         // - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
         //
         // When this happens, we take the note objects passed by the user and extend them with fields
         // relevant for internal React Flow operations.
-        adoptUserNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
+        adoptUserNodes(nodes, nodeLookup, parentLookup, { nodeOrigin, elevateNodesOnSelect });
 
         set({ nodes });
       },

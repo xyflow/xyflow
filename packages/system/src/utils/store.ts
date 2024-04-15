@@ -27,7 +27,7 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
     elevateNodesOnSelect: true,
     defaults: {},
   },
-  parentNodeIds?: Set<string>
+  parentLookup?: Map<string, InternalNodeBase<NodeType>[]>
 ) {
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
@@ -38,7 +38,7 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
       throw new Error(`Parent node ${parentId} not found`);
     }
 
-    if (parentId || node.internals.isParent || parentNodeIds?.has(id)) {
+    if (parentId || node.internals.isParent || parentLookup?.has(id)) {
       const parentNode = parentId ? nodeLookup.get(parentId) : null;
       const { x, y, z } = calculateXYZPosition(
         node,
@@ -47,20 +47,21 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
           ...node.position,
           z: (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0),
         },
-        parentNode?.origin || options.nodeOrigin
+        parentNode?.origin ?? options.nodeOrigin
       );
 
       const currPosition = node.internals.positionAbsolute;
       const positionChanged = x !== currPosition.x || y !== currPosition.y;
 
-      node.internals.positionAbsolute = positionChanged ? { x, y } : currPosition;
-      node.internals.z = z;
+      node.internals = {
+        ...node.internals,
+        positionAbsolute: positionChanged ? { x, y } : currPosition,
+        z,
+      };
 
-      if (parentNodeIds !== undefined) {
-        node.internals.isParent = !!parentNodeIds?.has(id);
+      if (parentLookup !== undefined) {
+        node.internals.isParent = !!parentLookup.has(id);
       }
-
-      nodeLookup.set(id, node);
     }
   }
 }
@@ -75,6 +76,7 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
 export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodeLookup: Map<string, InternalNodeBase<NodeType>>,
+  parentLookup: Map<string, InternalNodeBase<NodeType>[]>,
   options: UpdateNodesOptions<NodeType> = {
     nodeOrigin: [0, 0] as NodeOrigin,
     elevateNodesOnSelect: true,
@@ -84,20 +86,19 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 ) {
   const tmpLookup = new Map(nodeLookup);
   nodeLookup.clear();
+  parentLookup.clear();
+
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
-  const parentNodeIds = new Set<string>();
+  // const parentNodeIds = new Set<string>();
 
   nodes.forEach((userNode) => {
     const currentStoreNode = tmpLookup.get(userNode.id);
 
-    if (userNode.parentId) {
-      parentNodeIds.add(userNode.parentId);
-    }
-
+    let internalNode = currentStoreNode!;
     if (options.checkEquality && userNode === currentStoreNode?.internals.userNode) {
       nodeLookup.set(userNode.id, currentStoreNode);
     } else {
-      nodeLookup.set(userNode.id, {
+      internalNode = {
         ...options.defaults,
         ...userNode,
         measured: {
@@ -111,12 +112,22 @@ export function adoptUserNodes<NodeType extends NodeBase>(
           userNode,
           isParent: false,
         },
-      });
+      };
+      nodeLookup.set(userNode.id, internalNode);
+    }
+
+    if (userNode.parentId) {
+      const childNodes = parentLookup.get(userNode.parentId);
+      if (childNodes) {
+        childNodes.push(internalNode);
+      } else {
+        parentLookup.set(userNode.parentId, [internalNode]);
+      }
     }
   });
 
-  if (parentNodeIds.size > 0) {
-    updateAbsolutePositions(nodeLookup, options, parentNodeIds);
+  if (parentLookup.size > 0) {
+    updateAbsolutePositions(nodeLookup, options, parentLookup);
   }
 }
 

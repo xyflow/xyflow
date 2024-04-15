@@ -42,7 +42,7 @@ export function NodeWrapper<NodeType extends Node>({
   nodeOrigin,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const { node, positionAbsoluteX, positionAbsoluteY, zIndex, isParent } = useStore((s) => {
+  const { node, positionAbsoluteX, positionAbsoluteY, internals } = useStore((s) => {
     const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
 
     const positionAbsolute = nodeExtent
@@ -55,8 +55,9 @@ export function NodeWrapper<NodeType extends Node>({
       // so we we need to force a re-render when some change
       positionAbsoluteX: positionAbsolute.x,
       positionAbsoluteY: positionAbsolute.y,
-      zIndex: node.internals.z,
-      isParent: node.internals.isParent,
+      internals: node.internals,
+      // zIndex: node.internals.z,
+      // isParent: node.internals.isParent,
     };
   }, shallow);
 
@@ -213,14 +214,14 @@ export function NodeWrapper<NodeType extends Node>({
         {
           selected: node.selected,
           selectable: isSelectable,
-          parent: isParent,
+          parent: internals.isParent,
           draggable: isDraggable,
           dragging,
         },
       ])}
       ref={nodeRef}
       style={{
-        zIndex,
+        zIndex: internals.z,
         transform: `translate(${positionAbsoluteOrigin.x}px,${positionAbsoluteOrigin.y}px)`,
         pointerEvents: hasPointerEvents ? 'all' : 'none',
         visibility: initialized ? 'visible' : 'hidden',
@@ -254,7 +255,7 @@ export function NodeWrapper<NodeType extends Node>({
           targetPosition={node.targetPosition}
           dragging={dragging}
           dragHandle={node.dragHandle}
-          zIndex={zIndex}
+          zIndex={internals.z}
           {...nodeDimensions}
         />
       </Provider>
