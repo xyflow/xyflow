@@ -198,7 +198,7 @@ export function handleParentExpand(
 
         const childNodes = parentLookup.get(id);
         childNodes?.forEach((childNode) => {
-          if (!nodes.find((n) => n.id === childNode.id)) {
+          if (!nodes.some((n) => n.id === childNode.id)) {
             changes.push({
               id: childNode.id,
               type: 'position',
