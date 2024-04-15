@@ -117,7 +117,8 @@ const createRFStore = ({
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
         const { nodeLookup } = get();
-        const triggerChangeNodes: InternalNode[] = [];
+        type ExpandParentInternalNode = InternalNode & { parentId: string; expandParent: true };
+        const expandParentNodes: ExpandParentInternalNode[] = [];
 
         const changes: NodeChange[] = nodeDragItems.map((node) => {
           // @todo add expandParent to drag item so that we can get rid of the look up here
@@ -129,15 +130,15 @@ const createRFStore = ({
             dragging,
           };
 
-          if (internalNode?.expandParent && change.position) {
-            triggerChangeNodes.push({
+          if (internalNode?.expandParent && internalNode?.parentId && change.position) {
+            expandParentNodes.push({
               ...internalNode,
-              position: change.position,
+              position: { ...node.position },
               internals: {
                 ...internalNode.internals,
                 positionAbsolute: node.internals.positionAbsolute,
               },
-            });
+            } as ExpandParentInternalNode);
 
             change.position.x = Math.max(0, change.position.x);
             change.position.y = Math.max(0, change.position.y);
@@ -146,8 +147,8 @@ const createRFStore = ({
           return change;
         });
 
-        if (triggerChangeNodes.length > 0) {
-          const parentExpandChanges = handleParentExpand(triggerChangeNodes, nodeLookup);
+        if (expandParentNodes.length > 0) {
+          const parentExpandChanges = handleParentExpand(expandParentNodes, nodeLookup);
           changes.push(...parentExpandChanges);
         }
 

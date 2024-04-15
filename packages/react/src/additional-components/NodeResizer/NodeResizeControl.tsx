@@ -10,12 +10,13 @@ import {
   type NodeDimensionChange,
   type NodePositionChange,
   handleParentExpand,
+  evaluateNodePosition,
 } from '@xyflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
-import { InternalNode } from '../../types';
+import { InternalNode, Node } from '../../types';
 
 type InternalNodeWithParentExpand = InternalNode & { expandParent: true; parentId: string };
 
@@ -73,32 +74,25 @@ function ResizeControl({
 
           const node = nodeLookup.get(id);
           if (node && node.expandParent && node.parentId) {
-            const nodeWithChange = {
+            const nodeWithChange: Node = {
               ...node,
               position: {
-                x: change.x,
-                y: change.y,
+                x: change.x ?? node.position.x,
+                y: change.y ?? node.position.y,
               },
               width: change.width,
               height: change.height,
-              measured: {
-                width: change.width ?? node.measured?.width,
-                height: change.height ?? node.measured?.height,
-              },
-            } as InternalNodeWithParentExpand;
+            };
 
-            const parentExpandChanges = handleParentExpand([nodeWithChange], nodeLookup);
-            if (parentExpandChanges.length > 0) {
-              newPosition.x = change.x && change.x < 0 ? 0 : change.x;
-              newPosition.y = change.y && change.y < 0 ? 0 : change.y;
-            } else {
-              console.log('there was no parent expand');
-            }
+            const nodeWith = evaluateNodePosition(nodeWithChange, nodeLookup) as InternalNodeWithParentExpand;
+
+            const parentExpandChanges = handleParentExpand([nodeWith], nodeLookup);
             changes.push(...parentExpandChanges);
+            newPosition.x = change.x ? Math.max(0, change.x) : undefined;
+            newPosition.y = change.y ? Math.max(0, change.y) : undefined;
           }
 
           if (change.x !== undefined && change.y !== undefined) {
-            console.log(newPosition);
             const positionChange: NodePositionChange = {
               id,
               type: 'position',
