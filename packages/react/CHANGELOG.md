@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.0.0-next.xx
+
+## Patch changes
+
+- use correct positions for intersection helpers
+
 ## 12.0.0-next.14
 
 ## Patch changes

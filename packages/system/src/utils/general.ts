@@ -9,6 +9,7 @@ import type {
   SnapGrid,
   Transform,
   InternalNodeBase,
+  NodeLookup,
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin } from './graph';
@@ -218,4 +219,49 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
     (node.measured?.width ?? node.width ?? node.initialWidth) !== undefined &&
     (node.measured?.height ?? node.height ?? node.initialHeight) !== undefined
   );
+}
+
+/**
+ * Helper to calculate the absolute position of a node
+ *
+ * @internal
+ * @param node
+ * @param nodeLookup
+ * @param nodeOrigin
+ * @returns an internal node with an absolute position
+ */
+export function evaluateNodePosition(
+  node: NodeBase | InternalNodeBase,
+  nodeLookup: NodeLookup,
+  nodeOrigin: NodeOrigin = [0, 0]
+): InternalNodeBase | null {
+  const internalNode = nodeLookup.get(node.id);
+
+  if (!internalNode) {
+    return null;
+  }
+
+  let parentId = internalNode.parentId;
+  const positionAbsolute = { ...node.position };
+
+  while (parentId) {
+    const parent = nodeLookup.get(parentId);
+    parentId = parent?.parentId;
+
+    if (parent) {
+      const origin = parent.origin || nodeOrigin;
+      const xOffset = (parent.measured.width ?? 0) * origin[0];
+      const yOffset = (parent.measured.height ?? 0) * origin[1];
+      positionAbsolute.x += parent.position.x - xOffset;
+      positionAbsolute.y += parent.position.y - yOffset;
+    }
+  }
+
+  return {
+    ...internalNode,
+    internals: {
+      ...internalNode.internals,
+      positionAbsolute,
+    },
+  };
 }
