@@ -67,7 +67,7 @@ function ResizeControl({
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const { triggerNodeChanges, nodeLookup } = store.getState();
+          const { triggerNodeChanges, nodeLookup, parentLookup } = store.getState();
 
           const changes: NodeChange[] = [];
           const newPosition = { x: change.x, y: change.y };
@@ -86,7 +86,7 @@ function ResizeControl({
 
             const nodeWith = evaluateNodePosition(nodeWithChange, nodeLookup) as InternalNodeWithParentExpand;
 
-            const parentExpandChanges = handleParentExpand([nodeWith], nodeLookup);
+            const parentExpandChanges = handleParentExpand([nodeWith], nodeLookup, parentLookup);
             changes.push(...parentExpandChanges);
             newPosition.x = change.x ? Math.max(0, change.x) : undefined;
             newPosition.y = change.y ? Math.max(0, change.y) : undefined;

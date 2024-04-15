@@ -15,6 +15,7 @@ import {
   Rect,
   NodeDimensionChange,
   NodePositionChange,
+  ParentLookup,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
 import { getBoundsOfRects, getNodeDimensions, isNumeric, nodeToRect } from './general';
@@ -160,7 +161,8 @@ type ExpandParentNode<NodeType> = NodeType & { parentId: string; expandParent: t
 
 export function handleParentExpand(
   nodes: ExpandParentNode<InternalNodeBase>[],
-  nodeLookup: NodeLookup
+  nodeLookup: NodeLookup,
+  parentLookup: ParentLookup
 ): (NodeDimensionChange | NodePositionChange)[] {
   const changes: (NodeDimensionChange | NodePositionChange)[] = [];
   const chilNodeRects = new Map<string, Rect>();
@@ -193,6 +195,20 @@ export function handleParentExpand(
             y: position.y - yChange,
           },
         });
+
+        const childNodes = parentLookup.get(id);
+        childNodes?.forEach((childNode) => {
+          if (!nodes.find((n) => n.id === childNode.id)) {
+            changes.push({
+              id: childNode.id,
+              type: 'position',
+              position: {
+                x: childNode.position.x + xChange,
+                y: childNode.position.y + yChange,
+              },
+            });
+          }
+        });
       }
 
       if (dimensions.width < rect.width || dimensions.height < rect.height) {
@@ -214,7 +230,8 @@ export function handleParentExpand(
 
 export function updateNodeInternals<NodeType extends InternalNodeBase>(
   updates: Map<string, InternalNodeUpdate>,
-  nodeLookup: Map<string, NodeType>,
+  nodeLookup: NodeLookup<NodeType>,
+  parentLookup: ParentLookup<NodeType>,
   domNode: HTMLElement | null,
   nodeOrigin?: NodeOrigin
 ): { changes: (NodeDimensionChange | NodePositionChange)[]; updatedInternals: boolean } {
@@ -284,7 +301,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   });
 
   if (parentExpandNodes.length > 0) {
-    const parentExpandChanges = handleParentExpand(parentExpandNodes, nodeLookup);
+    const parentExpandChanges = handleParentExpand(parentExpandNodes, nodeLookup, parentLookup);
     changes.push(...parentExpandChanges);
   }
 

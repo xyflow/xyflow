@@ -76,6 +76,7 @@ const createRFStore = ({
           onNodesChange,
           fitView,
           nodeLookup,
+          parentLookup,
           fitViewOnInit,
           fitViewDone,
           fitViewOnInitOptions,
@@ -84,7 +85,13 @@ const createRFStore = ({
           debug,
         } = get();
 
-        const { changes, updatedInternals } = updateNodeInternalsSystem(updates, nodeLookup, domNode, nodeOrigin);
+        const { changes, updatedInternals } = updateNodeInternalsSystem(
+          updates,
+          nodeLookup,
+          parentLookup,
+          domNode,
+          nodeOrigin
+        );
 
         if (!updatedInternals) {
           return;
@@ -116,7 +123,7 @@ const createRFStore = ({
         }
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
-        const { nodeLookup } = get();
+        const { nodeLookup, parentLookup } = get();
         type ExpandParentInternalNode = InternalNode & { parentId: string; expandParent: true };
         const expandParentNodes: ExpandParentInternalNode[] = [];
 
@@ -148,7 +155,7 @@ const createRFStore = ({
         });
 
         if (expandParentNodes.length > 0) {
-          const parentExpandChanges = handleParentExpand(expandParentNodes, nodeLookup);
+          const parentExpandChanges = handleParentExpand(expandParentNodes, nodeLookup, parentLookup);
           changes.push(...parentExpandChanges);
         }
 

@@ -144,3 +144,4 @@ export type NodeHandle = Optional<HandleElement, 'width' | 'height'>;
 export type Align = 'center' | 'start' | 'end';
 
 export type NodeLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType>;
+export type ParentLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType[]>;

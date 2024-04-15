@@ -83,6 +83,7 @@ export function createStore({
     const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,
       nodeLookup,
+      get(store.parentLookup),
       get(store.domNode),
       get(store.nodeOrigin)
     );
