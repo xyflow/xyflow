@@ -81,7 +81,8 @@ export const getInitialStore = ({
   fitView?: boolean;
 }) => {
   const nodeLookup: NodeLookup = new Map();
-  adoptUserNodes(nodes, nodeLookup, {
+  const parentLookup = new Map();
+  adoptUserNodes(nodes, nodeLookup, parentLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false,
     checkEquality: false
@@ -104,8 +105,9 @@ export const getInitialStore = ({
 
   return {
     flowId: writable<string | null>(null),
-    nodes: createNodesStore(nodes, nodeLookup),
+    nodes: createNodesStore(nodes, nodeLookup, parentLookup),
     nodeLookup: readable<NodeLookup<InternalNode>>(nodeLookup),
+    parentLookup: readable<Map<string, InternalNode[]>>(parentLookup),
     edgeLookup: readable<EdgeLookup<Edge>>(edgeLookup),
     visibleNodes: readable<InternalNode[]>([]),
     edges: createEdgesStore(edges, connectionLookup, edgeLookup),
