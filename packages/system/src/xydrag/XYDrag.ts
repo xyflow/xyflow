@@ -10,7 +10,7 @@ import {
   getInternalNodesBounds,
   rectToBox,
 } from '../utils';
-import { getDragItems, getEventHandlerParams, hasSelector, wrapSelectionDragFunc } from './utils';
+import { getDragItems, getEventHandlerParams, hasSelector } from './utils';
 import type {
   NodeBase,
   NodeDragItem,
