@@ -121,7 +121,7 @@
   setContext('svelteflow__node_connectable', connectableStore);
 
   $: {
-    if (resizeObserver && nodeRef !== prevNodeRef) {
+    if (resizeObserver && (nodeRef !== prevNodeRef || !initialized)) {
       prevNodeRef && resizeObserver.unobserve(prevNodeRef);
       nodeRef && resizeObserver.observe(nodeRef);
       prevNodeRef = nodeRef;
