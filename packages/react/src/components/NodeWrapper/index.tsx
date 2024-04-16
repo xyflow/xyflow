@@ -42,12 +42,14 @@ export function NodeWrapper<NodeType extends Node>({
   nodeOrigin,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const { node, internals } = useStore((s) => {
+  const { node, internals, isParent } = useStore((s) => {
     const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
+    const isParent = s.parentLookup.has(id);
 
     return {
       node,
       internals: node.internals,
+      isParent,
     };
   }, shallow);
 
@@ -209,7 +211,7 @@ export function NodeWrapper<NodeType extends Node>({
         {
           selected: node.selected,
           selectable: isSelectable,
-          parent: internals.isParent,
+          parent: isParent,
           draggable: isDraggable,
           dragging,
         },

@@ -10,7 +10,8 @@
     nodesDraggable,
     nodesConnectable,
     elementsSelectable,
-    updateNodeInternals
+    updateNodeInternals,
+    parentLookup
   } = useStore();
 
   const resizeObserver: ResizeObserver | null =
@@ -65,7 +66,7 @@
       positionY={node.internals.positionAbsolute.y}
       positionOriginX={posOrigin.x ?? 0}
       positionOriginY={posOrigin.y ?? 0}
-      isParent={!!node.internals.isParent}
+      isParent={$parentLookup.has(node.id)}
       style={node.style}
       class={node.class}
       type={node.type ?? 'default'}

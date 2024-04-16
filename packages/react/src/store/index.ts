@@ -11,6 +11,7 @@ import {
   NodeChange,
   EdgeSelectionChange,
   NodeSelectionChange,
+  ParentExpandChild,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -124,8 +125,7 @@ const createRFStore = ({
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
         const { nodeLookup, parentLookup } = get();
-        type ExpandParentInternalNode = InternalNode & { parentId: string; expandParent: true };
-        const expandParentNodes: ExpandParentInternalNode[] = [];
+        const parentExpandChildren: ParentExpandChild[] = [];
 
         const changes: NodeChange[] = nodeDragItems.map((node) => {
           // @todo add expandParent to drag item so that we can get rid of the look up here
@@ -138,14 +138,15 @@ const createRFStore = ({
           };
 
           if (internalNode?.expandParent && internalNode?.parentId && change.position) {
-            expandParentNodes.push({
-              ...internalNode,
-              position: { ...node.position },
-              internals: {
-                ...internalNode.internals,
-                positionAbsolute: node.internals.positionAbsolute,
+            parentExpandChildren.push({
+              id: internalNode.id,
+              parentId: internalNode.parentId,
+              rect: {
+                ...node.internals.positionAbsolute,
+                width: internalNode.measured.width!,
+                height: internalNode.measured.height!,
               },
-            } as ExpandParentInternalNode);
+            });
 
             change.position.x = Math.max(0, change.position.x);
             change.position.y = Math.max(0, change.position.y);
@@ -154,8 +155,8 @@ const createRFStore = ({
           return change;
         });
 
-        if (expandParentNodes.length > 0) {
-          const parentExpandChanges = handleExpandParent(expandParentNodes, nodeLookup, parentLookup);
+        if (parentExpandChildren.length > 0) {
+          const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup);
           changes.push(...parentExpandChanges);
         }
 

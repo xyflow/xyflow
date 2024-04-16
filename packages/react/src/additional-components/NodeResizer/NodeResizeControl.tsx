@@ -10,7 +10,8 @@ import {
   type NodeDimensionChange,
   type NodePositionChange,
   handleExpandParent,
-  evaluateNodePosition,
+  evaluateAbsolutePosition,
+  ParentExpandChild,
 } from '@xyflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
@@ -67,36 +68,32 @@ function ResizeControl({
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const { triggerNodeChanges, nodeLookup, parentLookup } = store.getState();
+          const { triggerNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
 
           const changes: NodeChange[] = [];
           const newPosition = { x: change.x, y: change.y };
 
           const node = nodeLookup.get(id);
           if (node && node.expandParent && node.parentId) {
-            // We create a new node that will be used to handleExpandParent ...
-            const nodeWithChange = {
-              ...(node as InternalNodeWithParentExpand),
-              position: {
-                x: change.x ?? node.position.x,
-                y: change.y ?? node.position.y,
+            const child: ParentExpandChild = {
+              id: node.id,
+              parentId: node.parentId,
+              rect: {
+                width: change.width ?? node.measured.width!,
+                height: change.height ?? node.measured.height!,
+                ...evaluateAbsolutePosition(
+                  {
+                    x: change.x ?? node.position.x,
+                    y: change.y ?? node.position.y,
+                  },
+                  node.parentId,
+                  nodeLookup,
+                  node.origin ?? nodeOrigin
+                ),
               },
-              measured: {
-                width: change.width,
-                height: change.height,
-              },
-              width: change.width,
-              height: change.height,
             };
 
-            // ...determine its new absolute position...
-            nodeWithChange.internals = {
-              ...nodeWithChange.internals,
-              positionAbsolute: evaluateNodePosition(nodeWithChange, nodeLookup),
-            };
-
-            // ... and use it to expand the parent
-            const parentExpandChanges = handleExpandParent([nodeWithChange], nodeLookup, parentLookup);
+            const parentExpandChanges = handleExpandParent([child], nodeLookup, parentLookup, nodeOrigin);
             changes.push(...parentExpandChanges);
 
             // when the parent was expanded by the child node, its position will be clamped at 0,0

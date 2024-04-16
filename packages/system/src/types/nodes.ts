@@ -73,8 +73,6 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & 
   internals: {
     positionAbsolute: XYPosition;
     z: number;
-    // @todo should we rename this to "handles" and use same type as node.handles?
-    isParent: boolean;
     /** Holds a reference to the original node object provided by the user.
      * Used as an optimization to avoid certain operations. */
     userNode: NodeType;

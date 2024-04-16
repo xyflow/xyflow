@@ -20,6 +20,7 @@ import {
 import { getDimensions, getHandleBounds } from './dom';
 import { getBoundsOfRects, getNodeDimensions, isNumeric, nodeToRect } from './general';
 import { getNodePositionWithOrigin } from './graph';
+import { ParentExpandChild } from './types';
 
 export function updateAbsolutePositions<NodeType extends NodeBase>(
   nodeLookup: Map<string, InternalNodeBase<NodeType>>,
@@ -27,42 +28,41 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
     nodeOrigin: [0, 0] as NodeOrigin,
     elevateNodesOnSelect: true,
     defaults: {},
-  },
-  parentLookup?: Map<string, InternalNodeBase<NodeType>[]>
+  }
 ) {
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
-  for (const [id, node] of nodeLookup) {
+  for (const [, node] of nodeLookup) {
     const parentId = node.parentId;
 
-    if (parentId && !nodeLookup.has(parentId)) {
+    if (!parentId) {
+      continue;
+    }
+
+    if (!nodeLookup.has(parentId)) {
       throw new Error(`Parent node ${parentId} not found`);
     }
 
-    if (parentId || node.internals.isParent || parentLookup?.has(id)) {
-      const parentNode = parentId ? nodeLookup.get(parentId) : null;
-      const { x, y, z } = calculateXYZPosition(
-        node,
-        nodeLookup,
-        {
-          ...node.position,
-          z: (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0),
-        },
-        parentNode?.origin ?? options.nodeOrigin
-      );
+    const parentNode = nodeLookup.get(parentId);
+    const { x, y, z } = calculateXYZPosition(
+      node,
+      nodeLookup,
+      {
+        ...node.position,
+        z: (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0),
+      },
+      parentNode?.origin ?? options.nodeOrigin
+    );
 
-      const currPosition = node.internals.positionAbsolute;
-      const positionChanged = x !== currPosition.x || y !== currPosition.y;
+    const currPosition = node.internals.positionAbsolute;
+    const positionChanged = x !== currPosition.x || y !== currPosition.y;
 
+    if (positionChanged || z !== node.internals.z) {
       node.internals = {
         ...node.internals,
         positionAbsolute: positionChanged ? { x, y } : currPosition,
         z,
       };
-
-      if (parentLookup !== undefined) {
-        node.internals.isParent = !!parentLookup.has(id);
-      }
     }
   }
 }
@@ -111,7 +111,6 @@ export function adoptUserNodes<NodeType extends NodeBase>(
           handleBounds: currentStoreNode?.internals.handleBounds,
           z: (isNumeric(userNode.zIndex) ? userNode.zIndex : 0) + (userNode.selected ? selectedNodeZ : 0),
           userNode,
-          isParent: false,
         },
       };
       nodeLookup.set(userNode.id, internalNode);
@@ -128,7 +127,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   });
 
   if (parentLookup.size > 0) {
-    updateAbsolutePositions(nodeLookup, options, parentLookup);
+    updateAbsolutePositions(nodeLookup, options);
   }
 }
 
@@ -157,30 +156,30 @@ function calculateXYZPosition<NodeType extends NodeBase>(
   );
 }
 
-type ExpandParentNode<NodeType> = NodeType & { parentId: string; expandParent: true };
-
 export function handleExpandParent(
-  nodes: ExpandParentNode<InternalNodeBase>[],
+  children: ParentExpandChild[],
   nodeLookup: NodeLookup,
-  parentLookup: ParentLookup
+  parentLookup: ParentLookup,
+  nodeOrigin?: NodeOrigin
 ): (NodeDimensionChange | NodePositionChange)[] {
   const changes: (NodeDimensionChange | NodePositionChange)[] = [];
-  const childNodeRects = new Map<string, { expandedRect: Rect; parent: InternalNodeBase }>();
+  const parentExpansions = new Map<string, { expandedRect: Rect; parent: InternalNodeBase }>();
 
   // determine the expanded rectangle the child nodes would take for each parent
-  for (const node of nodes) {
-    const parent = nodeLookup.get(node.parentId);
+  for (const child of children) {
+    const parent = nodeLookup.get(child.parentId);
     if (!parent) {
       continue;
     }
 
-    const parentRect = childNodeRects.get(node.parentId)?.expandedRect ?? nodeToRect(parent, node.origin);
-    const expandedRect = getBoundsOfRects(parentRect, nodeToRect(node, node.origin));
-    childNodeRects.set(node.parentId, { expandedRect, parent });
+    const parentRect =
+      parentExpansions.get(child.parentId)?.expandedRect ?? nodeToRect(parent, parent.origin ?? nodeOrigin);
+    const expandedRect = getBoundsOfRects(parentRect, child.rect);
+    parentExpansions.set(child.parentId, { expandedRect, parent });
   }
 
-  if (childNodeRects.size > 0) {
-    childNodeRects.forEach(({ expandedRect, parent }, parentId) => {
+  if (parentExpansions.size > 0) {
+    parentExpansions.forEach(({ expandedRect, parent }, parentId) => {
       // determine the position & dimensions of the parent
       const { position } = getNodePositionWithOrigin(parent, parent.origin);
       const dimensions = getNodeDimensions(parent);
@@ -202,7 +201,7 @@ export function handleExpandParent(
         // so the x,y changes of the parent do not move the children
         const childNodes = parentLookup.get(parentId);
         childNodes?.forEach((childNode) => {
-          if (!nodes.some((n) => n.id === childNode.id)) {
+          if (!children.some((child) => child.id === childNode.id)) {
             changes.push({
               id: childNode.id,
               type: 'position',
@@ -250,7 +249,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   const style = window.getComputedStyle(viewportNode);
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
   // in this array we collect nodes, that might trigger changes (like expanding parent)
-  const parentExpandNodes: ExpandParentNode<NodeType>[] = [];
+  const parentExpandChildren: ParentExpandChild[] = [];
 
   updates.forEach((update) => {
     const node = nodeLookup.get(update.id);
@@ -297,15 +296,19 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
           });
 
           if (newNode.expandParent && newNode.parentId) {
-            parentExpandNodes.push(newNode as ExpandParentNode<NodeType>);
+            parentExpandChildren.push({
+              id: newNode.id,
+              parentId: newNode.parentId,
+              rect: nodeToRect(newNode, newNode.origin || nodeOrigin),
+            });
           }
         }
       }
     }
   });
 
-  if (parentExpandNodes.length > 0) {
-    const parentExpandChanges = handleExpandParent(parentExpandNodes, nodeLookup, parentLookup);
+  if (parentExpandChildren.length > 0) {
+    const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup, nodeOrigin);
     changes.push(...parentExpandChanges);
   }
 

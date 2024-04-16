@@ -1,9 +1,8 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import {
-  evaluateNodePosition,
+  evaluateAbsolutePosition,
   getElementsToRemove,
   getOverlappingArea,
-  isInternalNodeBase,
   isRectObject,
   nodeToRect,
   type Rect,
@@ -233,12 +232,15 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
   const getNodeRect = useCallback((node: NodeType | { id: string }): Rect | null => {
     const { nodeLookup, nodeOrigin } = store.getState();
+
     const nodeToUse = isNode<NodeType>(node) ? node : nodeLookup.get(node.id)!;
-    const positionAbsolute = evaluateNodePosition(nodeToUse, nodeLookup, nodeOrigin);
+    const position = nodeToUse.parentId
+      ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.parentId, nodeLookup, nodeOrigin)
+      : nodeToUse.position;
 
     const nodeWithPosition = {
       id: nodeToUse.id,
-      position: positionAbsolute,
+      position,
       width: nodeToUse.measured?.width ?? nodeToUse.width,
       height: nodeToUse.measured?.height ?? nodeToUse.height,
       data: nodeToUse.data,

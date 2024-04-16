@@ -222,25 +222,27 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
 }
 
 /**
- * Helper to calculate the absolute position of a node
+ * Convert child position to aboslute position
  *
  * @internal
- * @param node
+ * @param position
+ * @param parentId
  * @param nodeLookup
  * @param nodeOrigin
  * @returns an internal node with an absolute position
  */
-export function evaluateNodePosition(
-  node: NodeBase | InternalNodeBase,
+export function evaluateAbsolutePosition(
+  position: XYPosition,
+  parentId: string,
   nodeLookup: NodeLookup,
   nodeOrigin: NodeOrigin = [0, 0]
 ): XYPosition {
-  let parentId = node.parentId;
-  const positionAbsolute = { ...node.position };
+  let nextParentId: string | undefined = parentId;
+  const positionAbsolute = { ...position };
 
-  while (parentId) {
+  while (nextParentId) {
     const parent = nodeLookup.get(parentId);
-    parentId = parent?.parentId;
+    nextParentId = parent?.parentId;
 
     if (parent) {
       const origin = parent.origin || nodeOrigin;
