@@ -234,14 +234,8 @@ export function evaluateNodePosition(
   node: NodeBase | InternalNodeBase,
   nodeLookup: NodeLookup,
   nodeOrigin: NodeOrigin = [0, 0]
-): InternalNodeBase | null {
-  const internalNode = nodeLookup.get(node.id);
-
-  if (!internalNode) {
-    return null;
-  }
-
-  let parentId = internalNode.parentId;
+): XYPosition {
+  let parentId = node.parentId;
   const positionAbsolute = { ...node.position };
 
   while (parentId) {
@@ -257,11 +251,5 @@ export function evaluateNodePosition(
     }
   }
 
-  return {
-    ...internalNode,
-    internals: {
-      ...internalNode.internals,
-      positionAbsolute,
-    },
-  };
+  return positionAbsolute;
 }

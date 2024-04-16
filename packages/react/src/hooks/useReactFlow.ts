@@ -3,6 +3,7 @@ import {
   evaluateNodePosition,
   getElementsToRemove,
   getOverlappingArea,
+  isInternalNodeBase,
   isRectObject,
   nodeToRect,
   type Rect,
@@ -232,10 +233,18 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
   const getNodeRect = useCallback((node: NodeType | { id: string }): Rect | null => {
     const { nodeLookup, nodeOrigin } = store.getState();
-    const nodeToUse = isNode(node) ? node : nodeLookup.get(node.id)!;
-    const nodeWithPos = evaluateNodePosition(nodeToUse, nodeLookup, nodeOrigin);
+    const nodeToUse = isNode<NodeType>(node) ? node : nodeLookup.get(node.id)!;
+    const positionAbsolute = evaluateNodePosition(nodeToUse, nodeLookup, nodeOrigin);
 
-    return nodeWithPos ? nodeToRect(nodeWithPos) : null;
+    const nodeWithPosition = {
+      id: nodeToUse.id,
+      position: positionAbsolute,
+      width: nodeToUse.measured?.width ?? nodeToUse.width,
+      height: nodeToUse.measured?.height ?? nodeToUse.height,
+      data: nodeToUse.data,
+    };
+
+    return nodeToRect(nodeWithPosition);
   }, []);
 
   const getIntersectingNodes = useCallback<Instance.GetIntersectingNodes<NodeType>>(

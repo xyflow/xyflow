@@ -42,22 +42,12 @@ export function NodeWrapper<NodeType extends Node>({
   nodeOrigin,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const { node, positionAbsoluteX, positionAbsoluteY, internals } = useStore((s) => {
+  const { node, internals } = useStore((s) => {
     const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
-
-    const positionAbsolute = nodeExtent
-      ? clampPosition(node.internals.positionAbsolute, nodeExtent)
-      : node.internals.positionAbsolute || { x: 0, y: 0 };
 
     return {
       node,
-      // we are mutating positionAbsolute, z and isParent attributes for sub flows
-      // so we we need to force a re-render when some change
-      positionAbsoluteX: positionAbsolute.x,
-      positionAbsoluteY: positionAbsolute.y,
       internals: node.internals,
-      // zIndex: node.internals.z,
-      // isParent: node.internals.isParent,
     };
   }, shallow);
 
@@ -141,10 +131,15 @@ export function NodeWrapper<NodeType extends Node>({
     return null;
   }
 
-  const positionAbsoluteOrigin = getPositionWithOrigin({
-    x: positionAbsoluteX,
-    y: positionAbsoluteY,
-    ...nodeDimensions,
+  const positionAbsolute = nodeExtent
+    ? clampPosition(node.internals.positionAbsolute, nodeExtent)
+    : node.internals.positionAbsolute || { x: 0, y: 0 };
+
+  const positionWithOrigin = getPositionWithOrigin({
+    x: positionAbsolute.x,
+    y: positionAbsolute.y,
+    width: nodeDimensions.width,
+    height: nodeDimensions.height,
     origin: node.origin || nodeOrigin,
   });
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
@@ -191,7 +186,7 @@ export function NodeWrapper<NodeType extends Node>({
       store.setState({
         ariaLiveMessage: `Moved selected node ${event.key
           .replace('Arrow', '')
-          .toLowerCase()}. New position, x: ${~~positionAbsoluteX}, y: ${~~positionAbsoluteY}`,
+          .toLowerCase()}. New position, x: ${~~positionAbsolute.x}, y: ${~~positionAbsolute.y}`,
       });
 
       moveSelectedNodes({
@@ -222,7 +217,7 @@ export function NodeWrapper<NodeType extends Node>({
       ref={nodeRef}
       style={{
         zIndex: internals.z,
-        transform: `translate(${positionAbsoluteOrigin.x}px,${positionAbsoluteOrigin.y}px)`,
+        transform: `translate(${positionWithOrigin.x}px,${positionWithOrigin.y}px)`,
         pointerEvents: hasPointerEvents ? 'all' : 'none',
         visibility: initialized ? 'visible' : 'hidden',
         ...node.style,
@@ -247,8 +242,8 @@ export function NodeWrapper<NodeType extends Node>({
           id={id}
           data={node.data}
           type={nodeType}
-          positionAbsoluteX={positionAbsoluteX}
-          positionAbsoluteY={positionAbsoluteY}
+          positionAbsoluteX={positionAbsolute.x}
+          positionAbsoluteY={positionAbsolute.y}
           selected={node.selected}
           isConnectable={isConnectable}
           sourcePosition={node.sourcePosition}

@@ -159,36 +159,38 @@ function calculateXYZPosition<NodeType extends NodeBase>(
 
 type ExpandParentNode<NodeType> = NodeType & { parentId: string; expandParent: true };
 
-export function handleParentExpand(
+export function handleExpandParent(
   nodes: ExpandParentNode<InternalNodeBase>[],
   nodeLookup: NodeLookup,
   parentLookup: ParentLookup
 ): (NodeDimensionChange | NodePositionChange)[] {
   const changes: (NodeDimensionChange | NodePositionChange)[] = [];
-  const chilNodeRects = new Map<string, Rect>();
+  const childNodeRects = new Map<string, { expandedRect: Rect; parent: InternalNodeBase }>();
 
+  // determine the expanded rectangle the child nodes would take for each parent
   for (const node of nodes) {
-    const parentNode = nodeLookup.get(node.parentId);
-    if (!parentNode) {
+    const parent = nodeLookup.get(node.parentId);
+    if (!parent) {
       continue;
     }
 
-    const parentRect = chilNodeRects.get(node.parentId) ?? nodeToRect(parentNode, node.origin);
+    const parentRect = childNodeRects.get(node.parentId)?.expandedRect ?? nodeToRect(parent, node.origin);
     const expandedRect = getBoundsOfRects(parentRect, nodeToRect(node, node.origin));
-    chilNodeRects.set(node.parentId, expandedRect);
+    childNodeRects.set(node.parentId, { expandedRect, parent });
   }
 
-  if (chilNodeRects.size > 0) {
-    chilNodeRects.forEach((rect, id) => {
-      const origParent = nodeLookup.get(id)!;
-      const { position } = getNodePositionWithOrigin(origParent, origParent.origin);
-      const dimensions = getNodeDimensions(origParent);
+  if (childNodeRects.size > 0) {
+    childNodeRects.forEach(({ expandedRect, parent }, parentId) => {
+      // determine the position & dimensions of the parent
+      const { position } = getNodePositionWithOrigin(parent, parent.origin);
+      const dimensions = getNodeDimensions(parent);
 
-      let xChange = rect.x < position.x ? Math.round(Math.abs(position.x - rect.x)) : 0;
-      let yChange = rect.y < position.y ? Math.round(Math.abs(position.y - rect.y)) : 0;
+      // determine how much the parent expands by moving the position
+      let xChange = expandedRect.x < position.x ? Math.round(Math.abs(position.x - expandedRect.x)) : 0;
+      let yChange = expandedRect.y < position.y ? Math.round(Math.abs(position.y - expandedRect.y)) : 0;
       if (xChange > 0 || yChange > 0) {
         changes.push({
-          id,
+          id: parentId,
           type: 'position',
           position: {
             x: position.x - xChange,
@@ -196,7 +198,9 @@ export function handleParentExpand(
           },
         });
 
-        const childNodes = parentLookup.get(id);
+        // We move all child nodes in the oppsite direction
+        // so the x,y changes of the parent do not move the children
+        const childNodes = parentLookup.get(parentId);
         childNodes?.forEach((childNode) => {
           if (!nodes.some((n) => n.id === childNode.id)) {
             changes.push({
@@ -211,14 +215,14 @@ export function handleParentExpand(
         });
       }
 
-      if (dimensions.width < rect.width || dimensions.height < rect.height) {
+      if (dimensions.width < expandedRect.width || dimensions.height < expandedRect.height) {
         changes.push({
-          id,
+          id: parentId,
           type: 'dimensions',
           resizing: true,
           dimensions: {
-            width: Math.max(dimensions.width, Math.round(rect.width)),
-            height: Math.max(dimensions.height, Math.round(rect.height)),
+            width: Math.max(dimensions.width, Math.round(expandedRect.width)),
+            height: Math.max(dimensions.height, Math.round(expandedRect.height)),
           },
         });
       }
@@ -301,7 +305,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   });
 
   if (parentExpandNodes.length > 0) {
-    const parentExpandChanges = handleParentExpand(parentExpandNodes, nodeLookup, parentLookup);
+    const parentExpandChanges = handleExpandParent(parentExpandNodes, nodeLookup, parentLookup);
     changes.push(...parentExpandChanges);
   }
 

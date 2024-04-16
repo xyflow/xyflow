@@ -9,7 +9,7 @@ import {
   type NodeChange,
   type NodeDimensionChange,
   type NodePositionChange,
-  handleParentExpand,
+  handleExpandParent,
   evaluateNodePosition,
 } from '@xyflow/system';
 
@@ -74,20 +74,32 @@ function ResizeControl({
 
           const node = nodeLookup.get(id);
           if (node && node.expandParent && node.parentId) {
-            const nodeWithChange: Node = {
-              ...node,
+            // We create a new node that will be used to handleExpandParent ...
+            const nodeWithChange = {
+              ...(node as InternalNodeWithParentExpand),
               position: {
                 x: change.x ?? node.position.x,
                 y: change.y ?? node.position.y,
+              },
+              measured: {
+                width: change.width,
+                height: change.height,
               },
               width: change.width,
               height: change.height,
             };
 
-            const nodeWith = evaluateNodePosition(nodeWithChange, nodeLookup) as InternalNodeWithParentExpand;
+            // ...determine its new absolute position...
+            nodeWithChange.internals = {
+              ...nodeWithChange.internals,
+              positionAbsolute: evaluateNodePosition(nodeWithChange, nodeLookup),
+            };
 
-            const parentExpandChanges = handleParentExpand([nodeWith], nodeLookup, parentLookup);
+            // ... and use it to expand the parent
+            const parentExpandChanges = handleExpandParent([nodeWithChange], nodeLookup, parentLookup);
             changes.push(...parentExpandChanges);
+
+            // when the parent was expanded by the child node, its position will be clamped at 0,0
             newPosition.x = change.x ? Math.max(0, change.x) : undefined;
             newPosition.y = change.y ? Math.max(0, change.y) : undefined;
           }

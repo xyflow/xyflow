@@ -7,7 +7,7 @@ import {
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
   updateConnectionLookup,
-  handleParentExpand,
+  handleExpandParent,
   NodeChange,
   EdgeSelectionChange,
   NodeSelectionChange,
@@ -155,7 +155,7 @@ const createRFStore = ({
         });
 
         if (expandParentNodes.length > 0) {
-          const parentExpandChanges = handleParentExpand(expandParentNodes, nodeLookup, parentLookup);
+          const parentExpandChanges = handleExpandParent(expandParentNodes, nodeLookup, parentLookup);
           changes.push(...parentExpandChanges);
         }
 
