@@ -29,13 +29,14 @@ const getInitialState = ({
   fitView?: boolean;
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map();
+  const parentLookup = new Map();
   const connectionLookup = new Map();
   const edgeLookup = new Map();
   const storeEdges = defaultEdges ?? edges ?? [];
   const storeNodes = defaultNodes ?? nodes ?? [];
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
-  adoptUserNodes(storeNodes, nodeLookup, {
+  adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false,
   });
@@ -59,6 +60,7 @@ const getInitialState = ({
     transform,
     nodes: storeNodes,
     nodeLookup,
+    parentLookup,
     edges: storeEdges,
     edgeLookup,
     connectionLookup,
