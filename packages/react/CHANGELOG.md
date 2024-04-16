@@ -5,6 +5,7 @@
 ## Patch changes
 
 - use correct positions for intersection helpers
+- fix minimap interaction for touch devices
 
 ## 12.0.0-next.14
 

@@ -16,7 +16,7 @@ import {
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import getInitialState from './initialState';
-import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions, InternalNode } from '../types';
+import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
 
 const createRFStore = ({
   nodes,
@@ -124,27 +124,26 @@ const createRFStore = ({
         }
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
-        const { nodeLookup, parentLookup } = get();
         const parentExpandChildren: ParentExpandChild[] = [];
+        const changes = [];
 
-        const changes: NodeChange[] = nodeDragItems.map((node) => {
+        for (const [id, dragItem] of nodeDragItems) {
           // @todo add expandParent to drag item so that we can get rid of the look up here
-          const internalNode = nodeLookup.get(node.id);
           const change: NodeChange = {
-            id: node.id,
+            id,
             type: 'position',
-            position: node.position,
+            position: dragItem.position,
             dragging,
           };
 
-          if (internalNode?.expandParent && internalNode?.parentId && change.position) {
+          if (dragItem?.expandParent && dragItem?.parentId && change.position) {
             parentExpandChildren.push({
-              id: internalNode.id,
-              parentId: internalNode.parentId,
+              id,
+              parentId: dragItem.parentId,
               rect: {
-                ...node.internals.positionAbsolute,
-                width: internalNode.measured.width!,
-                height: internalNode.measured.height!,
+                ...dragItem.internals.positionAbsolute,
+                width: dragItem.measured.width!,
+                height: dragItem.measured.height!,
               },
             });
 
@@ -152,10 +151,11 @@ const createRFStore = ({
             change.position.y = Math.max(0, change.position.y);
           }
 
-          return change;
-        });
+          changes.push(change);
+        }
 
         if (parentExpandChildren.length > 0) {
+          const { nodeLookup, parentLookup } = get();
           const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup);
           changes.push(...parentExpandChanges);
         }

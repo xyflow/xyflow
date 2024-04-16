@@ -205,9 +205,13 @@ export function isCoordinateExtent(extent?: CoordinateExtent | 'parent'): extent
   return extent !== undefined && extent !== 'parent';
 }
 
-export function getNodeDimensions<NodeType extends NodeBase = NodeBase>(
-  node: NodeType
-): { width: number; height: number } {
+export function getNodeDimensions(node: {
+  measured?: { width?: number; height?: number };
+  width?: number;
+  height?: number;
+  initialWidth?: number;
+  initialHeight?: number;
+}): { width: number; height: number } {
   return {
     width: node.measured?.width ?? node.width ?? node.initialWidth ?? 0,
     height: node.measured?.height ?? node.height ?? node.initialHeight ?? 0,

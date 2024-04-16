@@ -19,7 +19,7 @@ export function useMoveSelectedNodes() {
   const moveSelectedNodes = useCallback((params: { direction: XYPosition; factor: number }) => {
     const { nodeExtent, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions, nodeLookup, nodeOrigin } =
       store.getState();
-    const nodeUpdates = [];
+    const nodeUpdates = new Map();
     const isSelected = selectedAndDraggable(nodesDraggable);
 
     // by default a node moves 5px on each key press
@@ -56,7 +56,7 @@ export function useMoveSelectedNodes() {
       node.position = position;
       node.internals.positionAbsolute = positionAbsolute;
 
-      nodeUpdates.push(node);
+      nodeUpdates.set(node.id, node);
     }
 
     updateNodePositions(nodeUpdates);
