@@ -54,17 +54,34 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
       panZoom.scaleTo(nextZoom);
     };
 
+    let panStart = [0, 0];
+    const panStartHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
+      if (event.sourceEvent.type === 'mousedown' || event.sourceEvent.type === 'touchstart') {
+        panStart = [
+          event.sourceEvent.clientX ?? event.sourceEvent.touches[0].clientX,
+          event.sourceEvent.clientY ?? event.sourceEvent.touches[0].clientY,
+        ];
+      }
+    };
+
     const panHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
       const transform = getTransform();
 
-      if (event.sourceEvent.type !== 'mousemove' || !panZoom) {
+      if ((event.sourceEvent.type !== 'mousemove' && event.sourceEvent.type !== 'touchmove') || !panZoom) {
         return;
       }
 
+      const panCurrent = [
+        event.sourceEvent.clientX ?? event.sourceEvent.touches[0].clientX,
+        event.sourceEvent.clientY ?? event.sourceEvent.touches[0].clientY,
+      ];
+      const panDelta = [panCurrent[0] - panStart[0], panCurrent[1] - panStart[1]];
+      panStart = panCurrent;
+
       const moveScale = getViewScale() * Math.max(transform[2], Math.log(transform[2])) * (inversePan ? -1 : 1);
       const position = {
-        x: transform[0] - event.sourceEvent.movementX * moveScale,
-        y: transform[1] - event.sourceEvent.movementY * moveScale,
+        x: transform[0] - panDelta[0] * moveScale,
+        y: transform[1] - panDelta[1] * moveScale,
       };
       const extent: CoordinateExtent = [
         [0, 0],
@@ -83,6 +100,7 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
     };
 
     const zoomAndPanHandler = zoom()
+      .on('start', panStartHandler)
       // @ts-ignore
       .on('zoom', pannable ? panHandler : null)
       // @ts-ignore
