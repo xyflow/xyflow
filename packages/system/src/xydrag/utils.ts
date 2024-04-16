@@ -40,8 +40,8 @@ export function getDragItems<NodeType extends NodeBase>(
   nodesDraggable: boolean,
   mousePos: XYPosition,
   nodeId?: string
-): NodeDragItem[] {
-  const dragItems: NodeDragItem[] = [];
+): Map<string, NodeDragItem> {
+  const dragItems = new Map<string, NodeDragItem>();
 
   for (const [id, node] of nodeLookup) {
     if (
@@ -49,29 +49,32 @@ export function getDragItems<NodeType extends NodeBase>(
       (!node.parentId || !isParentSelected(node, nodeLookup)) &&
       (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'))
     ) {
-      const internalNode = nodeLookup.get(id)!;
+      const internalNode = nodeLookup.get(id);
 
-      dragItems.push({
-        id: internalNode.id,
-        position: internalNode.position || { x: 0, y: 0 },
-        distance: {
-          x: mousePos.x - internalNode.internals.positionAbsolute.x,
-          y: mousePos.y - internalNode.internals.positionAbsolute.y,
-        },
-        extent: internalNode.extent,
-        parentId: internalNode.parentId,
-        origin: internalNode.origin,
-        expandParent: internalNode.expandParent,
-        internals: {
-          positionAbsolute: internalNode.internals.positionAbsolute || { x: 0, y: 0 },
-        },
-        measured: {
-          width: internalNode.measured.width || 0,
-          height: internalNode.measured.height || 0,
-        },
-      });
+      if (internalNode) {
+        dragItems.set(id, {
+          id,
+          position: internalNode.position || { x: 0, y: 0 },
+          distance: {
+            x: mousePos.x - internalNode.internals.positionAbsolute.x,
+            y: mousePos.y - internalNode.internals.positionAbsolute.y,
+          },
+          extent: internalNode.extent,
+          parentId: internalNode.parentId,
+          origin: internalNode.origin,
+          expandParent: internalNode.expandParent,
+          internals: {
+            positionAbsolute: internalNode.internals.positionAbsolute || { x: 0, y: 0 },
+          },
+          measured: {
+            width: internalNode.measured.width || 0,
+            height: internalNode.measured.height || 0,
+          },
+        });
+      }
     }
   }
+
   return dragItems;
 }
 
@@ -84,20 +87,32 @@ export function getEventHandlerParams<NodeType extends NodeBase>({
   nodeLookup,
 }: {
   nodeId?: string;
-  dragItems: NodeDragItem[];
+  dragItems: Map<string, NodeDragItem>;
   nodeLookup: Map<string, NodeType>;
 }): [NodeType, NodeType[]] {
-  const nodesFromDragItems: NodeType[] = dragItems.map((n) => {
-    const node = nodeLookup.get(n.id)!;
+  const nodesFromDragItems: NodeType[] = [];
 
-    return {
+  for (const [id, dragItem] of dragItems) {
+    const node = nodeLookup.get(id);
+
+    if (node) {
+      nodesFromDragItems.push({
+        ...node,
+        position: dragItem.position,
+      });
+    }
+  }
+
+  if (!nodeId) {
+    return [nodesFromDragItems[0], nodesFromDragItems];
+  }
+
+  const node = nodeLookup.get(nodeId)!;
+  return [
+    {
       ...node,
-      position: n.position,
-      measured: {
-        ...n.measured,
-      },
-    };
-  });
-
-  return [nodeId ? nodesFromDragItems.find((n) => n.id === nodeId)! : nodesFromDragItems[0], nodesFromDragItems];
+      position: dragItems.get(nodeId)?.position || node.position,
+    },
+    nodesFromDragItems,
+  ];
 }

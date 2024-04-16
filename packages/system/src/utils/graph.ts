@@ -10,6 +10,7 @@ import {
   getViewportForBounds,
   isCoordinateExtent,
   getNodeDimensions,
+  getPositionWithOrigin,
 } from './general';
 import {
   type Transform,
@@ -25,6 +26,7 @@ import {
   OnBeforeDeleteBase,
   NodeLookup,
   InternalNodeBase,
+  NodeDragItem,
 } from '../types';
 import { errorMessages } from '../constants';
 
@@ -186,7 +188,7 @@ export const getNodesBounds = (
 export type GetInternalNodesBoundsParams = {
   nodeOrigin?: NodeOrigin;
   useRelativePosition?: boolean;
-  filter?: (node: NodeBase) => boolean;
+  filter?: (node: NodeBase | NodeDragItem) => boolean;
 };
 
 /**
@@ -194,10 +196,9 @@ export type GetInternalNodesBoundsParams = {
  * @internal
  */
 export const getInternalNodesBounds = (
-  nodeLookup: NodeLookup,
+  nodeLookup: NodeLookup | Map<string, NodeDragItem>,
   params: GetInternalNodesBoundsParams = {
     nodeOrigin: [0, 0],
-    useRelativePosition: false,
   }
 ): Rect => {
   if (nodeLookup.size === 0) {
@@ -208,12 +209,22 @@ export const getInternalNodesBounds = (
 
   nodeLookup.forEach((node) => {
     if (params.filter == undefined || params.filter(node)) {
-      const nodePos = getNodePositionWithOrigin(node, node.origin || params.nodeOrigin);
+      const { width, height } = getNodeDimensions(node);
+      const { x, y } = getPositionWithOrigin({
+        x: node.internals.positionAbsolute.x,
+        y: node.internals.positionAbsolute.x,
+        width,
+        height,
+        origin: node.origin || params.nodeOrigin,
+      });
+
       box = getBoundsOfBoxes(
         box,
         rectToBox({
-          ...nodePos[params.useRelativePosition ? 'position' : 'positionAbsolute'],
-          ...getNodeDimensions(node),
+          x,
+          y,
+          width,
+          height,
         })
       );
     }
