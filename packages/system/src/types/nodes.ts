@@ -120,8 +120,8 @@ export type NodeDragItem = {
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
   measured: {
-    width?: number;
-    height?: number;
+    width: number;
+    height: number;
   };
   internals: {
     positionAbsolute: XYPosition;

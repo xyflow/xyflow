@@ -63,8 +63,8 @@ export function getDragItems<NodeType extends NodeBase>(
             positionAbsolute: internalNode.internals.positionAbsolute || { x: 0, y: 0 },
           },
           measured: {
-            width: internalNode.measured.width || 0,
-            height: internalNode.measured.height || 0,
+            width: internalNode.measured.width ?? 0,
+            height: internalNode.measured.height ?? 0,
           },
         });
       }
