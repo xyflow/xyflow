@@ -90,7 +90,6 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   parentLookup.clear();
 
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
-  // const parentNodeIds = new Set<string>();
 
   nodes.forEach((userNode) => {
     const currentStoreNode = tmpLookup.get(userNode.id);

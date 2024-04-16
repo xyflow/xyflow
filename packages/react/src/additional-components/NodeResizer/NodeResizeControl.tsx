@@ -12,14 +12,12 @@ import {
   handleExpandParent,
   evaluateAbsolutePosition,
   ParentExpandChild,
+  XYPosition,
 } from '@xyflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
-import { InternalNode, Node } from '../../types';
-
-type InternalNodeWithParentExpand = InternalNode & { expandParent: true; parentId: string };
 
 function ResizeControl({
   nodeId,
@@ -71,7 +69,7 @@ function ResizeControl({
           const { triggerNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
 
           const changes: NodeChange[] = [];
-          const newPosition = { x: change.x, y: change.y };
+          const nextPosition = { x: change.x, y: change.y };
 
           const node = nodeLookup.get(id);
           if (node && node.expandParent && node.parentId) {
@@ -97,15 +95,15 @@ function ResizeControl({
             changes.push(...parentExpandChanges);
 
             // when the parent was expanded by the child node, its position will be clamped at 0,0
-            newPosition.x = change.x ? Math.max(0, change.x) : undefined;
-            newPosition.y = change.y ? Math.max(0, change.y) : undefined;
+            nextPosition.x = change.x ? Math.max(0, change.x) : undefined;
+            nextPosition.y = change.y ? Math.max(0, change.y) : undefined;
           }
 
-          if (change.x !== undefined && change.y !== undefined) {
+          if (nextPosition.x !== undefined && nextPosition.y !== undefined) {
             const positionChange: NodePositionChange = {
               id,
               type: 'position',
-              position: { ...newPosition } as { x: number; y: number },
+              position: { ...(nextPosition as XYPosition) },
             };
             changes.push(positionChange);
           }
