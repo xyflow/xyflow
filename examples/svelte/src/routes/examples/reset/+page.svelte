@@ -1,14 +1,6 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
-	import {
-		SvelteFlow,
-		Controls,
-		Background,
-		MiniMap,
-		type Node,
-		type Edge,
-		type NodeTypes
-	} from '@xyflow/svelte';
+	import { SvelteFlow, Controls, Background, MiniMap, type Node, type Edge } from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
 

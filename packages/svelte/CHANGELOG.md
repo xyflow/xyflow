@@ -1,5 +1,9 @@
 # @xyflow/svelte
 
+## 0.0.41
+
+- fix: re-observe nodes when not initialized
+
 ## 0.0.40
 
 - add `orientation` ('horizontal' or 'vertical'), `style` and `class` prop for `Controls` component
