@@ -69,7 +69,6 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
 
 type UpdateNodesOptions<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
-  nodeExtent?: CoordinateExtent;
   elevateNodesOnSelect?: boolean;
   defaults?: Partial<NodeType>;
   checkEquality?: boolean;
