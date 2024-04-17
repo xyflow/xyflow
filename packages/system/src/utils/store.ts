@@ -183,8 +183,9 @@ export function handleExpandParent(
       const dimensions = getNodeDimensions(parent);
 
       // determine how much the parent expands by moving the position
-      let xChange = expandedRect.x < position.x ? Math.round(Math.abs(position.x - expandedRect.x)) : 0;
-      let yChange = expandedRect.y < position.y ? Math.round(Math.abs(position.y - expandedRect.y)) : 0;
+      const xChange = expandedRect.x < position.x ? Math.round(Math.abs(position.x - expandedRect.x)) : 0;
+      const yChange = expandedRect.y < position.y ? Math.round(Math.abs(position.y - expandedRect.y)) : 0;
+
       if (xChange > 0 || yChange > 0) {
         changes.push({
           id: parentId,
