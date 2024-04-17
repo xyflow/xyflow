@@ -84,14 +84,14 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   onClick: MiniMapNodesProps['onClick'];
   shapeRendering: string;
 }) {
-  const { node } = useStore((s) => {
+  const { node, x, y } = useStore((s) => {
     const node = s.nodeLookup.get(id) as InternalNode<NodeType>;
+    const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
     return {
       node,
-      // we need to do an equality check for the internals,
-      // because we mutate it for adjusting sub flow positions
-      internals: node.internals,
+      x,
+      y,
     };
   }, shallow);
 
@@ -100,7 +100,6 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   }
 
   const { width, height } = getNodeDimensions(node);
-  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
   return (
     <NodeComponent
