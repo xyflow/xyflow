@@ -184,8 +184,8 @@ export function getSelectionChanges(
 ): NodeSelectionChange[] | EdgeSelectionChange[] {
   const changes: NodeSelectionChange[] | EdgeSelectionChange[] = [];
 
-  for (const [, item] of items) {
-    const willBeSelected = selectedIds.has(item.id);
+  for (const [id, item] of items) {
+    const willBeSelected = selectedIds.has(id);
 
     // we don't want to set all items to selected=false on the first selection
     if (!(item.selected === undefined && !willBeSelected) && item.selected !== willBeSelected) {

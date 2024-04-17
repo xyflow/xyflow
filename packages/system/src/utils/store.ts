@@ -92,11 +92,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
   nodes.forEach((userNode) => {
-    const currentStoreNode = tmpLookup.get(userNode.id);
+    let internalNode = tmpLookup.get(userNode.id);
 
-    let internalNode = currentStoreNode!;
-    if (options.checkEquality && userNode === currentStoreNode?.internals.userNode) {
-      nodeLookup.set(userNode.id, currentStoreNode);
+    if (options.checkEquality && userNode === internalNode?.internals.userNode) {
+      nodeLookup.set(userNode.id, internalNode);
     } else {
       internalNode = {
         ...options.defaults,
@@ -107,7 +106,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         },
         internals: {
           positionAbsolute: userNode.position,
-          handleBounds: currentStoreNode?.internals.handleBounds,
+          handleBounds: internalNode?.internals.handleBounds,
           z: (isNumeric(userNode.zIndex) ? userNode.zIndex : 0) + (userNode.selected ? selectedNodeZ : 0),
           userNode,
         },

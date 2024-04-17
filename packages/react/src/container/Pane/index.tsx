@@ -69,6 +69,8 @@ export function Pane({
   const prevSelectedNodesCount = useRef<number>(0);
   const prevSelectedEdgesCount = useRef<number>(0);
   const containerBounds = useRef<DOMRect>();
+  const edgeIdLookup = useRef<Map<string, Set<string>>>(new Map());
+
   const { userSelectionActive, elementsSelectable, dragging } = useStore(selector, shallow);
 
   const resetUserSelection = () => {
@@ -96,7 +98,7 @@ export function Pane({
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
   const onMouseDown = (event: ReactMouseEvent): void => {
-    const { resetSelectedElements, domNode } = store.getState();
+    const { resetSelectedElements, domNode, edgeLookup } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
 
     if (
@@ -107,6 +109,13 @@ export function Pane({
       !containerBounds.current
     ) {
       return;
+    }
+
+    edgeIdLookup.current = new Map();
+
+    for (const [id, edge] of edgeLookup) {
+      edgeIdLookup.current.set(edge.source, edgeIdLookup.current.get(edge.source)?.add(id) || new Set([id]));
+      edgeIdLookup.current.set(edge.target, edgeIdLookup.current.get(edge.target)?.add(id) || new Set([id]));
     }
 
     const { x, y } = getEventPosition(event.nativeEvent, containerBounds.current);
@@ -130,22 +139,21 @@ export function Pane({
   const onMouseMove = (event: ReactMouseEvent): void => {
     const { userSelectionRect, edgeLookup, transform, nodeOrigin, nodeLookup, triggerNodeChanges, triggerEdgeChanges } =
       store.getState();
+
     if (!isSelecting || !containerBounds.current || !userSelectionRect) {
       return;
     }
 
-    store.setState({ userSelectionActive: true, nodesSelectionActive: false });
-
-    const mousePos = getEventPosition(event.nativeEvent, containerBounds.current);
-    const startX = userSelectionRect.startX ?? 0;
-    const startY = userSelectionRect.startY ?? 0;
+    const { x: mouseX, y: mouseY } = getEventPosition(event.nativeEvent, containerBounds.current);
+    const { startX, startY } = userSelectionRect;
 
     const nextUserSelectRect = {
-      ...userSelectionRect,
-      x: mousePos.x < startX ? mousePos.x : startX,
-      y: mousePos.y < startY ? mousePos.y : startY,
-      width: Math.abs(mousePos.x - startX),
-      height: Math.abs(mousePos.y - startY),
+      startX,
+      startY,
+      x: mouseX < startX ? mouseX : startX,
+      y: mouseY < startY ? mouseY : startY,
+      width: Math.abs(mouseX - startX),
+      height: Math.abs(mouseY - startY),
     };
 
     const selectedNodes = getNodesInside(
@@ -163,8 +171,10 @@ export function Pane({
     for (const selectedNode of selectedNodes) {
       selectedNodeIds.add(selectedNode.id);
 
-      for (const [edgeId, edge] of edgeLookup) {
-        if (edge.source === selectedNode.id || edge.target === selectedNode.id) {
+      const edgeIds = edgeIdLookup.current.get(selectedNode.id);
+
+      if (edgeIds) {
+        for (const edgeId of edgeIds) {
           selectedEdgeIds.add(edgeId);
         }
       }
@@ -184,6 +194,8 @@ export function Pane({
 
     store.setState({
       userSelectionRect: nextUserSelectRect,
+      userSelectionActive: true,
+      nodesSelectionActive: false,
     });
   };
 
