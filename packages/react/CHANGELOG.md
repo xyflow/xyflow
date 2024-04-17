@@ -6,6 +6,7 @@
 
 - use correct positions for intersection helpers
 - fix minimap interaction for touch devices
+- pass user nodes to `onSelectionChange` instead of internal ones
 
 ## 12.0.0-next.14
 

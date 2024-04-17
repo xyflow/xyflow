@@ -51,6 +51,7 @@ import UseNodesData from '../examples/UseNodesData';
 import UseHandleConnections from '../examples/UseHandleConnections';
 import AddNodeOnEdgeDrop from '../examples/AddNodeOnEdgeDrop';
 import DevTools from '../examples/DevTools';
+import Redux from '../examples/Redux';
 
 export interface IRoute {
   name: string;
@@ -313,6 +314,11 @@ const routes: IRoute[] = [
     name: 'useUpdateNodeInternals',
     path: 'useupdatenodeinternals',
     component: UseUpdateNodeInternals,
+  },
+  {
+    name: 'redux',
+    path: 'redux',
+    component: Redux,
   },
   {
     name: 'Validation',

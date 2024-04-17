@@ -47,10 +47,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     return edges.map((e) => ({ ...e })) as EdgeType[];
   }, []);
 
-  const getEdge = useCallback<Instance.GetEdge<EdgeType>>((id) => {
-    const { edges = [] } = store.getState();
-    return edges.find((e) => e.id === id) as EdgeType;
-  }, []);
+  const getEdge = useCallback<Instance.GetEdge<EdgeType>>((id) => store.getState().edgeLookup.get(id) as EdgeType, []);
 
   type SetElementsQueue = {
     nodes: (NodeType[] | ((nodes: NodeType[]) => NodeType[]))[];

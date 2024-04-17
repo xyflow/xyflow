@@ -14,10 +14,24 @@ type SelectionListenerProps = {
   onSelectionChange?: OnSelectionChangeFunc;
 };
 
-const selector = (s: ReactFlowState) => ({
-  selectedNodes: Array.from(s.nodeLookup.values()).filter((n) => n.selected),
-  selectedEdges: s.edges.filter((e) => e.selected),
-});
+const selector = (s: ReactFlowState) => {
+  const selectedNodes = [];
+  const selectedEdges = [];
+
+  for (const [, node] of s.nodeLookup) {
+    if (node.selected) {
+      selectedNodes.push(node.internals.userNode);
+    }
+  }
+
+  for (const [, edge] of s.edgeLookup) {
+    if (edge.selected) {
+      selectedEdges.push(edge);
+    }
+  }
+
+  return { selectedNodes, selectedEdges };
+};
 
 type SelectorSlice = ReturnType<typeof selector>;
 
