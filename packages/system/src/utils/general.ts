@@ -10,8 +10,8 @@ import type {
   Transform,
   InternalNodeBase,
   NodeLookup,
+  Viewport,
 } from '../types';
-import { type Viewport } from '../types';
 import { getNodePositionWithOrigin } from './graph';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
@@ -68,22 +68,24 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
 });
 
 export const nodeToRect = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
-  const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
+  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
   return {
-    ...positionAbsolute,
+    x,
+    y,
     width: node.measured?.width ?? node.width ?? 0,
     height: node.measured?.height ?? node.height ?? 0,
   };
 };
 
 export const nodeToBox = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box => {
-  const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
+  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
   return {
-    ...positionAbsolute,
-    x2: positionAbsolute.x + (node.measured?.width ?? node.width ?? 0),
-    y2: positionAbsolute.y + (node.measured?.height ?? node.height ?? 0),
+    x,
+    y,
+    x2: x + (node.measured?.width ?? node.width ?? 0),
+    y2: y + (node.measured?.height ?? node.height ?? 0),
   };
 };
 
@@ -110,29 +112,6 @@ export const devWarn = (id: string, message: string) => {
   if (process.env.NODE_ENV === 'development') {
     console.warn(`[React Flow]: ${message} Help: https://reactflow.dev/error#${id}`);
   }
-};
-
-export const getPositionWithOrigin = ({
-  x,
-  y,
-  width,
-  height,
-  origin = [0, 0],
-}: {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  origin?: NodeOrigin;
-}): XYPosition => {
-  if (!width || !height || origin[0] < 0 || origin[1] < 0 || origin[0] > 1 || origin[1] > 1) {
-    return { x, y };
-  }
-
-  return {
-    x: x - width * origin[0],
-    y: y - height * origin[1],
-  };
 };
 
 export const snapPosition = (position: XYPosition, snapGrid: SnapGrid = [1, 1]): XYPosition => {

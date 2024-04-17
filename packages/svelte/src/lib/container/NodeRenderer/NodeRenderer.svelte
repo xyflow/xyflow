@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { getPositionWithOrigin, getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
+  import { nodeHasDimensions, getNodePositionWithOrigin } from '@xyflow/system';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
@@ -40,13 +40,7 @@
 
 <div class="svelte-flow__nodes">
   {#each $visibleNodes as node (node.id)}
-    {@const nodeDimesions = getNodeDimensions(node)}
-    {@const posOrigin = getPositionWithOrigin({
-      x: node.internals.positionAbsolute.x,
-      y: node.internals.positionAbsolute.y,
-      ...nodeDimesions,
-      origin: node.origin
-    })}
+    {@const posOrigin = getNodePositionWithOrigin(node)}
     <NodeWrapper
       {node}
       id={node.id}

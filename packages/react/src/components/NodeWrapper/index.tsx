@@ -2,11 +2,10 @@ import { useEffect, useRef, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
-  clampPosition,
   elementSelectionKeys,
   errorMessages,
   getNodeDimensions,
-  getPositionWithOrigin,
+  getNodePositionWithOrigin,
   isInputDOMNode,
   nodeHasDimensions,
 } from '@xyflow/system';
@@ -38,7 +37,6 @@ export function NodeWrapper<NodeType extends Node>({
   disableKeyboardA11y,
   rfId,
   nodeTypes,
-  nodeExtent,
   nodeOrigin,
   onError,
 }: NodeWrapperProps<NodeType>) {
@@ -76,7 +74,7 @@ export function NodeWrapper<NodeType extends Node>({
   const nodeDimensions = getNodeDimensions(node);
   const inlineDimensions = getNodeInlineStyleDimensions(node);
   const initialized = nodeHasDimensions(node);
-  const hasHandleBounds = !!node.internals.handleBounds;
+  const hasHandleBounds = !!internals.handleBounds;
 
   const moveSelectedNodes = useMoveSelectedNodes();
 
@@ -92,10 +90,9 @@ export function NodeWrapper<NodeType extends Node>({
 
   useEffect(() => {
     if (nodeRef.current && !node.hidden) {
-      const currNode = nodeRef.current;
       if (!initialized || !hasHandleBounds) {
-        resizeObserver?.unobserve(currNode);
-        resizeObserver?.observe(currNode);
+        resizeObserver?.unobserve(nodeRef.current);
+        resizeObserver?.observe(nodeRef.current);
       }
     }
   }, [node.hidden, initialized, hasHandleBounds]);
@@ -133,17 +130,7 @@ export function NodeWrapper<NodeType extends Node>({
     return null;
   }
 
-  const positionAbsolute = nodeExtent
-    ? clampPosition(node.internals.positionAbsolute, nodeExtent)
-    : node.internals.positionAbsolute || { x: 0, y: 0 };
-
-  const positionWithOrigin = getPositionWithOrigin({
-    x: positionAbsolute.x,
-    y: positionAbsolute.y,
-    width: nodeDimensions.width,
-    height: nodeDimensions.height,
-    origin: node.origin || nodeOrigin,
-  });
+  const positionWithOrigin = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
 
   const onMouseEnterHandler = onMouseEnter ? (event: MouseEvent) => onMouseEnter(event, { ...node }) : undefined;
@@ -188,7 +175,7 @@ export function NodeWrapper<NodeType extends Node>({
       store.setState({
         ariaLiveMessage: `Moved selected node ${event.key
           .replace('Arrow', '')
-          .toLowerCase()}. New position, x: ${~~positionAbsolute.x}, y: ${~~positionAbsolute.y}`,
+          .toLowerCase()}. New position, x: ${~~internals.positionAbsolute.x}, y: ${~~internals.positionAbsolute.y}`,
       });
 
       moveSelectedNodes({
@@ -204,7 +191,6 @@ export function NodeWrapper<NodeType extends Node>({
         'react-flow__node',
         `react-flow__node-${nodeType}`,
         {
-          // this is overwritable by passing `nopan` as a class name
           [noPanClassName]: isDraggable,
         },
         node.className,
@@ -244,8 +230,8 @@ export function NodeWrapper<NodeType extends Node>({
           id={id}
           data={node.data}
           type={nodeType}
-          positionAbsoluteX={positionAbsolute.x}
-          positionAbsoluteY={positionAbsolute.y}
+          positionAbsoluteX={internals.positionAbsolute.x}
+          positionAbsoluteY={internals.positionAbsolute.y}
           selected={node.selected}
           isConnectable={isConnectable}
           sourcePosition={node.sourcePosition}

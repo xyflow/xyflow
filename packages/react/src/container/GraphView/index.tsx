@@ -97,7 +97,6 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   noPanClassName,
   disableKeyboardA11y,
   nodeOrigin,
-  nodeExtent,
   rfId,
   viewport,
   onViewportChange,
@@ -185,7 +184,6 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
           noDragClassName={noDragClassName}
           disableKeyboardA11y={disableKeyboardA11y}
           nodeOrigin={nodeOrigin}
-          nodeExtent={nodeExtent}
           rfId={rfId}
         />
         <div className="react-flow__viewport-portal" />

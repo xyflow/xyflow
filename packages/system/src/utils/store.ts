@@ -69,6 +69,7 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
 
 type UpdateNodesOptions<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
   elevateNodesOnSelect?: boolean;
   defaults?: Partial<NodeType>;
   checkEquality?: boolean;
@@ -140,14 +141,14 @@ function calculateXYZPosition<NodeType extends NodeBase>(
   }
 
   const parentNode = nodeLookup.get(node.parentId)!;
-  const { position: parentNodePosition } = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin);
+  const parentPosition = getNodePositionWithOrigin(parentNode, nodeOrigin).position;
 
   return calculateXYZPosition(
     parentNode,
     nodeLookup,
     {
-      x: (result.x ?? 0) + parentNodePosition.x,
-      y: (result.y ?? 0) + parentNodePosition.y,
+      x: (result.x ?? 0) + parentPosition.x,
+      y: (result.y ?? 0) + parentPosition.y,
       z: (parentNode.internals.z ?? 0) > (result.z ?? 0) ? parentNode.internals.z ?? 0 : result.z ?? 0,
     },
     parentNode.origin || nodeOrigin

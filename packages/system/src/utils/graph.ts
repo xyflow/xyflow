@@ -4,13 +4,12 @@ import {
   clampPosition,
   getBoundsOfBoxes,
   getOverlappingArea,
-  rectToBox,
   nodeToRect,
   pointToRendererPoint,
   getViewportForBounds,
   isCoordinateExtent,
   getNodeDimensions,
-  getPositionWithOrigin,
+  nodeToBox,
 } from './general';
 import {
   type Transform,
@@ -108,40 +107,24 @@ export const getIncomers = <NodeType extends NodeBase = NodeBase, EdgeType exten
 };
 
 export const getNodePositionWithOrigin = (
-  node: InternalNodeBase | NodeBase | undefined,
-  nodeOrigin: NodeOrigin = [0, 0]
+  node: InternalNodeBase | NodeBase,
+  origin: NodeOrigin = [0, 0]
 ): { position: XYPosition; positionAbsolute: XYPosition } => {
-  if (!node) {
-    return {
-      position: {
-        x: 0,
-        y: 0,
-      },
-      positionAbsolute: {
-        x: 0,
-        y: 0,
-      },
-    };
-  }
-
   const { width, height } = getNodeDimensions(node);
+  const nodeOrigin = node.origin || origin;
+  const positionAbsolute = 'internals' in node ? node.internals.positionAbsolute : node.position;
   const offsetX = width * nodeOrigin[0];
   const offsetY = height * nodeOrigin[1];
 
-  const position: XYPosition = {
-    x: node.position.x - offsetX,
-    y: node.position.y - offsetY,
-  };
-
   return {
-    position,
-    positionAbsolute:
-      'internals' in node
-        ? {
-            x: node.internals.positionAbsolute.x - offsetX,
-            y: node.internals.positionAbsolute.y - offsetY,
-          }
-        : position,
+    position: {
+      x: node.position.x - offsetX,
+      y: node.position.y - offsetY,
+    },
+    positionAbsolute: {
+      x: positionAbsolute.x - offsetX,
+      y: positionAbsolute.y - offsetY,
+    },
   };
 };
 
@@ -159,7 +142,6 @@ export type GetNodesBoundsParams = {
  * @param params.useRelativePosition - Whether to use the relative or absolute node positions
  * @returns Bounding box enclosing all nodes
  */
-// @todo how to handle this if users do not have absolute positions?
 export const getNodesBounds = (
   nodes: NodeBase[],
   params: GetNodesBoundsParams = { nodeOrigin: [0, 0], useRelativePosition: false }
@@ -168,19 +150,12 @@ export const getNodesBounds = (
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
-  const box = nodes.reduce(
-    (currBox, node) => {
-      const nodePos = getNodePositionWithOrigin(node, node.origin || params.nodeOrigin);
-      return getBoundsOfBoxes(
-        currBox,
-        rectToBox({
-          ...nodePos[params.useRelativePosition ? 'position' : 'positionAbsolute'],
-          ...getNodeDimensions(node),
-        })
-      );
-    },
-    { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
-  );
+  const box = nodes.reduce((currBox, node) => getBoundsOfBoxes(currBox, nodeToBox(node, params.nodeOrigin)), {
+    x: Infinity,
+    y: Infinity,
+    x2: -Infinity,
+    y2: -Infinity,
+  });
 
   return boxToRect(box);
 };
@@ -196,37 +171,21 @@ export type GetInternalNodesBoundsParams = {
  * @internal
  */
 export const getInternalNodesBounds = (
-  nodeLookup: NodeLookup | Map<string, NodeDragItem>,
+  nodes: NodeLookup | Map<string, NodeDragItem>,
   params: GetInternalNodesBoundsParams = {
     nodeOrigin: [0, 0],
   }
 ): Rect => {
-  if (nodeLookup.size === 0) {
+  if (nodes.size === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
   let box = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity };
+  const hasFilter = params.filter !== undefined;
 
-  nodeLookup.forEach((node) => {
-    if (params.filter == undefined || params.filter(node)) {
-      const { width, height } = getNodeDimensions(node);
-      const { x, y } = getPositionWithOrigin({
-        x: node.internals.positionAbsolute.x,
-        y: node.internals.positionAbsolute.x,
-        width,
-        height,
-        origin: node.origin || params.nodeOrigin,
-      });
-
-      box = getBoundsOfBoxes(
-        box,
-        rectToBox({
-          x,
-          y,
-          width,
-          height,
-        })
-      );
+  nodes.forEach((node) => {
+    if (!hasFilter || params.filter?.(node)) {
+      box = getBoundsOfBoxes(box, nodeToBox(node as InternalNodeBase, params.nodeOrigin));
     }
   });
 
@@ -338,14 +297,14 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
  * @param extent
  * @returns
  */
-function clampNodeExtent<NodeType extends NodeBase>(
+function clampNodeExtent<NodeType extends InternalNodeBase>(
   node: NodeType,
   extent?: CoordinateExtent | 'parent'
 ): CoordinateExtent | 'parent' | undefined {
   if (!extent || extent === 'parent') {
     return extent;
   }
-  return [extent[0], [extent[1][0] - (node.measured?.width ?? 0), extent[1][1] - (node.measured?.height ?? 0)]];
+  return [extent[0], [extent[1][0] - (node.measured.width ?? 0), extent[1][1] - (node.measured.height ?? 0)]];
 }
 
 /**
@@ -372,7 +331,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
   const node = nodeLookup.get(nodeId)!;
   const parentNode = node.parentId ? nodeLookup.get(node.parentId) : undefined;
   const { x: parentX, y: parentY } = parentNode
-    ? getNodePositionWithOrigin(parentNode, parentNode.origin || nodeOrigin).positionAbsolute
+    ? getNodePositionWithOrigin(parentNode, nodeOrigin).positionAbsolute
     : { x: 0, y: 0 };
 
   let currentExtent = clampNodeExtent(node, node.extent || nodeExtent);

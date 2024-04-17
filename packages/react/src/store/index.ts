@@ -39,14 +39,19 @@ const createRFStore = ({
     (set, get) => ({
       ...getInitialState({ nodes, edges, width, height, fitView, defaultNodes, defaultEdges }),
       setNodes: (nodes: Node[]) => {
-        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
+        const { nodeLookup, parentLookup, nodeOrigin, nodeExtent, elevateNodesOnSelect } = get();
         // setNodes() is called exclusively in response to user actions:
         // - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
         // - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
         //
         // When this happens, we take the note objects passed by the user and extend them with fields
         // relevant for internal React Flow operations.
-        adoptUserNodes(nodes, nodeLookup, parentLookup, { nodeOrigin, elevateNodesOnSelect, checkEquality: true });
+        adoptUserNodes(nodes, nodeLookup, parentLookup, {
+          nodeOrigin,
+          nodeExtent,
+          elevateNodesOnSelect,
+          checkEquality: true,
+        });
 
         set({ nodes });
       },
@@ -265,23 +270,23 @@ const createRFStore = ({
         triggerEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nodeExtent) => {
-        const { nodeLookup } = get();
+        const { nodeLookup, nodeOrigin } = get();
 
         for (const [, node] of nodeLookup) {
-          const positionAbsolute = clampPosition(node.position, nodeExtent);
-
+          const clampedPosition = clampPosition(node.position, nodeExtent);
           nodeLookup.set(node.id, {
             ...node,
+            position: clampedPosition,
             internals: {
               ...node.internals,
-              positionAbsolute,
+              positionAbsolute: clampedPosition,
             },
           });
         }
 
-        set({
-          nodeExtent,
-        });
+        updateAbsolutePositions(nodeLookup, { nodeOrigin });
+
+        set({ nodeExtent });
       },
       panBy: (delta): boolean => {
         const { transform, width, height, panZoom, translateExtent } = get();

@@ -218,7 +218,6 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           rfId={rfId}
           disableKeyboardA11y={disableKeyboardA11y}
           nodeOrigin={nodeOrigin}
-          nodeExtent={nodeExtent}
           viewport={viewport}
           onViewportChange={onViewportChange}
         />
