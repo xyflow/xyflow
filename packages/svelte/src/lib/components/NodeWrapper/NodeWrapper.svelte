@@ -1,5 +1,3 @@
-<svelte:options immutable />
-
 <script lang="ts">
   import { setContext, onDestroy } from 'svelte';
   import { get, writable } from 'svelte/store';
@@ -119,6 +117,16 @@
 
   setContext('svelteflow__node_id', id);
   setContext('svelteflow__node_connectable', connectableStore);
+
+  // This is not run when nodeRef is updated
+  $: {
+    console.log('div ref and a prop:', nodeRef, initialized);
+  }
+
+  // This is run when nodeRef is updated
+  $: {
+    console.log('only div ref', nodeRef);
+  }
 
   $: {
     if (resizeObserver && (nodeRef !== prevNodeRef || !initialized)) {

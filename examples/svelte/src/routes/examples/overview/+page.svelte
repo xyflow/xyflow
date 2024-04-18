@@ -129,9 +129,9 @@
 		$edges = $edges;
 	}
 
-	$: {
-		console.log('nodes changed', $nodes);
-	}
+	// $: {
+	// 	console.log('nodes changed', $nodes);
+	// }
 </script>
 
 <SvelteFlow
@@ -211,7 +211,7 @@
 		>
 	</Panel>
 
-	<InitTracker />
+	<!-- <InitTracker /> -->
 </SvelteFlow>
 
 <style>
