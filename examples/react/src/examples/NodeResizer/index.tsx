@@ -185,6 +185,7 @@ const CustomNodeFlow = () => {
       maxZoom={5}
       snapToGrid={snapToGrid}
       fitView
+      onlyRenderVisibleElements
     >
       <Controls />
       <Panel position="bottom-right">
