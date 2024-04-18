@@ -12,41 +12,37 @@ import { useStoreApi } from '../../hooks/useStore';
 export function useNodeObserver({
   node,
   nodeType,
-  initialized,
+  hasDimensions,
   resizeObserver,
 }: {
   node: InternalNode;
   nodeType: string;
-  initialized: boolean;
+  hasDimensions: boolean;
   resizeObserver: ResizeObserver | null;
 }) {
   const store = useStoreApi();
   const nodeRef = useRef<HTMLDivElement | null>(null);
-  const observedNodeRef = useRef<HTMLDivElement | null>(null);
+  const observedNode = useRef<HTMLDivElement | null>(null);
   const prevSourcePosition = useRef(node.sourcePosition);
   const prevTargetPosition = useRef(node.targetPosition);
   const prevType = useRef(nodeType);
-  const hasHandleBounds = !!node.internals.handleBounds;
+  const isInitialized = hasDimensions && !!node.internals.handleBounds && !node.hidden;
 
   useEffect(() => {
-    if (
-      nodeRef.current &&
-      !node.hidden &&
-      (!initialized || !hasHandleBounds || observedNodeRef.current !== nodeRef.current)
-    ) {
-      if (observedNodeRef.current) {
-        resizeObserver?.unobserve(observedNodeRef.current);
+    if (nodeRef.current && (!isInitialized || observedNode.current !== nodeRef.current)) {
+      if (observedNode.current) {
+        resizeObserver?.unobserve(observedNode.current);
       }
       resizeObserver?.observe(nodeRef.current);
-      observedNodeRef.current = nodeRef.current;
+      observedNode.current = nodeRef.current;
     }
-  }, [node.hidden, initialized, hasHandleBounds]);
+  }, [isInitialized]);
 
   useEffect(() => {
     return () => {
-      if (observedNodeRef.current) {
-        resizeObserver?.unobserve(observedNodeRef.current);
-        observedNodeRef.current = null;
+      if (observedNode.current) {
+        resizeObserver?.unobserve(observedNode.current);
+        observedNode.current = null;
       }
     };
   }, []);

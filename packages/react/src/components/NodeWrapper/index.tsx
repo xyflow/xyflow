@@ -69,8 +69,8 @@ export function NodeWrapper<NodeType extends Node>({
   const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
 
   const store = useStoreApi();
-  const initialized = nodeHasDimensions(node);
-  const nodeRef = useNodeObserver({ node, nodeType, initialized, resizeObserver });
+  const hasDimensions = nodeHasDimensions(node);
+  const nodeRef = useNodeObserver({ node, nodeType, hasDimensions, resizeObserver });
   const dragging = useDrag({
     nodeRef,
     disabled: node.hidden || !isDraggable,
@@ -173,7 +173,7 @@ export function NodeWrapper<NodeType extends Node>({
         zIndex: internals.z,
         transform: `translate(${positionWithOrigin.x}px,${positionWithOrigin.y}px)`,
         pointerEvents: hasPointerEvents ? 'all' : 'none',
-        visibility: initialized ? 'visible' : 'hidden',
+        visibility: hasDimensions ? 'visible' : 'hidden',
         ...node.style,
         ...inlineDimensions,
       }}
