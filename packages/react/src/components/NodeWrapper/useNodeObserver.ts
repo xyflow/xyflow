@@ -52,20 +52,22 @@ export function useNodeObserver({
   }, []);
 
   useEffect(() => {
-    // when the user programmatically changes the source or handle position, we need to update the internals
-    // to make sure the edges are updated correctly
-    const typeChanged = prevType.current !== nodeType;
-    const sourcePosChanged = prevSourcePosition.current !== node.sourcePosition;
-    const targetPosChanged = prevTargetPosition.current !== node.targetPosition;
+    if (nodeRef.current) {
+      // when the user programmatically changes the source or handle position, we need to update the internals
+      // to make sure the edges are updated correctly
+      const typeChanged = prevType.current !== nodeType;
+      const sourcePosChanged = prevSourcePosition.current !== node.sourcePosition;
+      const targetPosChanged = prevTargetPosition.current !== node.targetPosition;
 
-    if (nodeRef.current && (typeChanged || sourcePosChanged || targetPosChanged)) {
-      prevType.current = nodeType;
-      prevSourcePosition.current = node.sourcePosition;
-      prevTargetPosition.current = node.targetPosition;
+      if (typeChanged || sourcePosChanged || targetPosChanged) {
+        prevType.current = nodeType;
+        prevSourcePosition.current = node.sourcePosition;
+        prevTargetPosition.current = node.targetPosition;
 
-      store
-        .getState()
-        .updateNodeInternals(new Map([[node.id, { id: node.id, nodeElement: nodeRef.current, force: true }]]));
+        store
+          .getState()
+          .updateNodeInternals(new Map([[node.id, { id: node.id, nodeElement: nodeRef.current, force: true }]]));
+      }
     }
   }, [node.id, nodeType, node.sourcePosition, node.targetPosition]);
 
