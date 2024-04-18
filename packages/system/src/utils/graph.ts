@@ -4,13 +4,12 @@ import {
   clampPosition,
   getBoundsOfBoxes,
   getOverlappingArea,
-  rectToBox,
   nodeToRect,
   pointToRendererPoint,
   getViewportForBounds,
   isCoordinateExtent,
   getNodeDimensions,
-  getPositionWithOrigin,
+  nodeToBox,
 } from './general';
 import {
   type Transform,
@@ -131,7 +130,6 @@ export const getNodePositionWithOrigin = (
 
 export type GetNodesBoundsParams = {
   nodeOrigin?: NodeOrigin;
-  useRelativePosition?: boolean;
 };
 
 /**
@@ -140,28 +138,17 @@ export type GetNodesBoundsParams = {
  * @remarks Useful when combined with {@link getViewportForBounds} to calculate the correct transform to fit the given nodes in a viewport.
  * @param nodes - Nodes to calculate the bounds for
  * @param params.nodeOrigin - Origin of the nodes: [0, 0] - top left, [0.5, 0.5] - center
- * @param params.useRelativePosition - Whether to use the relative or absolute node positions
  * @returns Bounding box enclosing all nodes
  */
-// @todo how to handle this if users do not have absolute positions?
-export const getNodesBounds = (
-  nodes: NodeBase[],
-  params: GetNodesBoundsParams = { nodeOrigin: [0, 0], useRelativePosition: false }
-): Rect => {
+export const getNodesBounds = (nodes: NodeBase[], params: GetNodesBoundsParams = { nodeOrigin: [0, 0] }): Rect => {
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
   const box = nodes.reduce(
     (currBox, node) => {
-      const nodePos = getNodePositionWithOrigin(node, params.nodeOrigin);
-      return getBoundsOfBoxes(
-        currBox,
-        rectToBox({
-          ...nodePos[params.useRelativePosition ? 'position' : 'positionAbsolute'],
-          ...getNodeDimensions(node),
-        })
-      );
+      const nodeBox = nodeToBox(node, params.nodeOrigin);
+      return getBoundsOfBoxes(currBox, nodeBox);
     },
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
@@ -169,19 +156,19 @@ export const getNodesBounds = (
   return boxToRect(box);
 };
 
-export type GetInternalNodesBoundsParams = {
+export type GetInternalNodesBoundsParams<NodeType> = {
   nodeOrigin?: NodeOrigin;
   useRelativePosition?: boolean;
-  filter?: (node: NodeBase | NodeDragItem) => boolean;
+  filter?: (node: NodeType) => boolean;
 };
 
 /**
  * Determines a bounding box that contains all given nodes in an array
  * @internal
  */
-export const getInternalNodesBounds = (
-  nodeLookup: NodeLookup | Map<string, NodeDragItem>,
-  params: GetInternalNodesBoundsParams = {
+export const getInternalNodesBounds = <NodeType extends InternalNodeBase | NodeDragItem>(
+  nodeLookup: Map<string, NodeType>,
+  params: GetInternalNodesBoundsParams<NodeType> = {
     nodeOrigin: [0, 0],
   }
 ): Rect => {
@@ -193,24 +180,8 @@ export const getInternalNodesBounds = (
 
   nodeLookup.forEach((node) => {
     if (params.filter == undefined || params.filter(node)) {
-      const { width, height } = getNodeDimensions(node);
-      const { x, y } = getPositionWithOrigin({
-        x: node.internals.positionAbsolute.x,
-        y: node.internals.positionAbsolute.x,
-        width,
-        height,
-        origin: node.origin || params.nodeOrigin,
-      });
-
-      box = getBoundsOfBoxes(
-        box,
-        rectToBox({
-          x,
-          y,
-          width,
-          height,
-        })
-      );
+      const nodeBox = nodeToBox(node as InternalNodeBase, params.nodeOrigin);
+      box = getBoundsOfBoxes(box, nodeBox);
     }
   });
 
@@ -218,7 +189,7 @@ export const getInternalNodesBounds = (
 };
 
 export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
-  nodeLookup: Map<string, InternalNodeBase<NodeType>>,
+  nodes: Map<string, InternalNodeBase<NodeType>>,
   rect: Rect,
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially = false,
@@ -234,7 +205,7 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
 
   const visibleNodes: InternalNodeBase<NodeType>[] = [];
 
-  for (const [, node] of nodeLookup) {
+  for (const [, node] of nodes) {
     const { measured, selectable = true, hidden = false } = node;
     const width = measured.width ?? node.width ?? node.initialWidth ?? null;
     const height = measured.height ?? node.height ?? node.initialHeight ?? null;
@@ -281,15 +252,12 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
   options?: Options
 ) {
   const filteredNodes: InternalNodeBase[] = [];
+  const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
 
   nodeLookup.forEach((n) => {
     const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
 
-    // TODO: this remove options.nodes.some with a Set
-    if (
-      isVisible &&
-      (!options?.nodes || (options?.nodes.length && options?.nodes.some((optionNode) => optionNode.id === n.id)))
-    ) {
+    if (isVisible && (!optionNodeIds || optionNodeIds.has(n.id))) {
       filteredNodes.push(n);
     }
   });
