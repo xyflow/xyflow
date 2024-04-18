@@ -68,22 +68,24 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
 });
 
 export const nodeToRect = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
-  const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
+  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
   return {
-    ...positionAbsolute,
+    x,
+    y,
     width: node.measured?.width ?? node.width ?? 0,
     height: node.measured?.height ?? node.height ?? 0,
   };
 };
 
 export const nodeToBox = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box => {
-  const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
+  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
   return {
-    ...positionAbsolute,
-    x2: positionAbsolute.x + (node.measured?.width ?? node.width ?? 0),
-    y2: positionAbsolute.y + (node.measured?.height ?? node.height ?? 0),
+    x,
+    y,
+    x2: x + (node.measured?.width ?? node.width ?? 0),
+    y2: y + (node.measured?.height ?? node.height ?? 0),
   };
 };
 

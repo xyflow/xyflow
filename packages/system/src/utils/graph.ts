@@ -108,40 +108,24 @@ export const getIncomers = <NodeType extends NodeBase = NodeBase, EdgeType exten
 };
 
 export const getNodePositionWithOrigin = (
-  node: InternalNodeBase | NodeBase | undefined,
+  node: InternalNodeBase | NodeBase,
   nodeOrigin: NodeOrigin = [0, 0]
 ): { position: XYPosition; positionAbsolute: XYPosition } => {
-  if (!node) {
-    return {
-      position: {
-        x: 0,
-        y: 0,
-      },
-      positionAbsolute: {
-        x: 0,
-        y: 0,
-      },
-    };
-  }
-
   const { width, height } = getNodeDimensions(node);
-  const offsetX = width * nodeOrigin[0];
-  const offsetY = height * nodeOrigin[1];
-
-  const position: XYPosition = {
-    x: node.position.x - offsetX,
-    y: node.position.y - offsetY,
-  };
+  const positionAbsolute = 'internals' in node ? node.internals.positionAbsolute : node.position;
+  const origin = node.origin || nodeOrigin;
+  const offsetX = width * origin[0];
+  const offsetY = height * origin[1];
 
   return {
-    position,
-    positionAbsolute:
-      'internals' in node
-        ? {
-            x: node.internals.positionAbsolute.x - offsetX,
-            y: node.internals.positionAbsolute.y - offsetY,
-          }
-        : position,
+    position: {
+      x: node.position.x - offsetX,
+      y: node.position.y - offsetY,
+    },
+    positionAbsolute: {
+      x: positionAbsolute.x - offsetX,
+      y: positionAbsolute.y - offsetY,
+    },
   };
 };
 
@@ -170,7 +154,7 @@ export const getNodesBounds = (
 
   const box = nodes.reduce(
     (currBox, node) => {
-      const nodePos = getNodePositionWithOrigin(node, node.origin || params.nodeOrigin);
+      const nodePos = getNodePositionWithOrigin(node, params.nodeOrigin);
       return getBoundsOfBoxes(
         currBox,
         rectToBox({

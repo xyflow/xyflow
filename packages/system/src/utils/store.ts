@@ -139,18 +139,18 @@ function calculateXYZPosition<NodeType extends NodeBase>(
     return result;
   }
 
-  const parentNode = nodeLookup.get(node.parentId)!;
-  const { position: parentNodePosition } = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin);
+  const parent = nodeLookup.get(node.parentId)!;
+  const parentPosition = getNodePositionWithOrigin(parent, nodeOrigin).position;
 
   return calculateXYZPosition(
-    parentNode,
+    parent,
     nodeLookup,
     {
-      x: (result.x ?? 0) + parentNodePosition.x,
-      y: (result.y ?? 0) + parentNodePosition.y,
-      z: (parentNode.internals.z ?? 0) > (result.z ?? 0) ? parentNode.internals.z ?? 0 : result.z ?? 0,
+      x: (result.x ?? 0) + parentPosition.x,
+      y: (result.y ?? 0) + parentPosition.y,
+      z: (parent.internals.z ?? 0) > (result.z ?? 0) ? parent.internals.z ?? 0 : result.z ?? 0,
     },
-    parentNode.origin || nodeOrigin
+    parent.origin || nodeOrigin
   );
 }
 
