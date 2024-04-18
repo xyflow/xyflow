@@ -83,7 +83,7 @@ function nodeToChildExtent(child: NodeBase, parent: NodeBase, nodeOrigin: NodeOr
   ];
 }
 
-export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResizerParams): XYResizerInstance {
+export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: XYResizerParams): XYResizerInstance {
   const selection = select(domNode);
 
   function update({
@@ -265,6 +265,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
       })
       .on('end', (event: ResizeDragEvent) => {
         onResizeEnd?.(event, { ...prevValues });
+        onEnd?.();
       });
     selection.call(dragHandler);
   }
