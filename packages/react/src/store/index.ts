@@ -18,7 +18,7 @@ import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelection
 import getInitialState from './initialState';
 import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
 
-const createRFStore = ({
+const createStore = ({
   nodes,
   edges,
   defaultNodes,
@@ -329,4 +329,4 @@ const createRFStore = ({
     Object.is
   );
 
-export { createRFStore };
+export { createStore };
