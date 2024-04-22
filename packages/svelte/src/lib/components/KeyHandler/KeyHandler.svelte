@@ -10,13 +10,13 @@
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
 
-  type $$Props = KeyHandlerProps;
-
-  export let selectionKey: $$Props['selectionKey'] = 'Shift';
-  export let multiSelectionKey: $$Props['multiSelectionKey'] = isMacOs() ? 'Meta' : 'Control';
-  export let deleteKey: $$Props['deleteKey'] = 'Backspace';
-  export let panActivationKey: $$Props['panActivationKey'] = ' ';
-  export let zoomActivationKey: $$Props['zoomActivationKey'] = isMacOs() ? 'Meta' : 'Control';
+  let {
+    selectionKey = 'Shift',
+    multiSelectionKey = isMacOs() ? 'Meta' : 'Control',
+    deleteKey = 'Backspace',
+    panActivationKey = ' ',
+    zoomActivationKey = isMacOs() ? 'Meta' : 'Control'
+  }: KeyHandlerProps = $props();
 
   const {
     selectionKeyPressed,

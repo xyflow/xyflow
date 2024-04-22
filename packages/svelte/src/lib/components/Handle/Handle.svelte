@@ -14,29 +14,43 @@
 
   import { useStore } from '$lib/store';
   import type { HandleComponentProps } from '$lib/types';
-
-  type $$Props = HandleComponentProps;
-
-  export let id: $$Props['id'] = undefined;
-  export let type: $$Props['type'] = 'source';
-  export let position: $$Props['position'] = Position.Top;
-  export let style: $$Props['style'] = undefined;
-  export let isConnectable: $$Props['isConnectable'] = undefined;
-  export let onconnect: $$Props['onconnect'] = undefined;
-  export let ondisconnect: $$Props['ondisconnect'] = undefined;
   // @todo implement connectablestart, connectableend
-  // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
-  // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
+  // type $$Props = HandleComponentProps;
 
-  let className: $$Props['class'] = undefined;
-  export { className as class };
+  // export let id: $$Props['id'] = undefined;
+  // export let type: $$Props['type'] = 'source';
+  // export let position: $$Props['position'] = Position.Top;
+  // export let style: $$Props['style'] = undefined;
+  // export let isConnectable: $$Props['isConnectable'] = undefined;
+  // export let onconnect: $$Props['onconnect'] = undefined;
+  // export let ondisconnect: $$Props['ondisconnect'] = undefined;
 
-  const isTarget = type === 'target';
+  // // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
+  // // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
+
+  // let className: $$Props['class'] = undefined;
+  // export { className as class };
+
+  let {
+    id,
+    type = 'source',
+    position = Position.Top,
+    style,
+    class: className,
+    isConnectable: isConnectableProp,
+    onconnect,
+    ondisconnect
+  }: HandleComponentProps = $props();
+
   const nodeId = getContext<string>('svelteflow__node_id');
-  const connectable = getContext<Writable<boolean>>('svelteflow__node_connectable');
-  $: isConnectable = isConnectable !== undefined ? isConnectable : $connectable;
+  const isConnectableContext = getContext<Writable<boolean>>('svelteflow__node_connectable');
 
   const handleId = id || null;
+
+  let isConnectable = $derived(
+    isConnectableProp !== undefined ? isConnectableProp : $isConnectableContext
+  );
+  let isTarget = $derived(type === 'target');
 
   const store = useStore();
   const {
@@ -110,13 +124,16 @@
   let prevConnections: Map<string, HandleConnection> | null = null;
   let connections: Map<string, HandleConnection> | undefined;
 
-  $: if (onconnect || ondisconnect) {
-    // connectionLookup is not reactive, so we use edges to get notified about updates
-    $edges;
-    connections = $connectionLookup.get(`${nodeId}-${type}-${id || null}`);
-  }
+  // TODO: this should be rewritten
+  $effect.pre(() => {
+    if (onconnect || ondisconnect) {
+      // connectionLookup is not reactive, so we use edges to get notified about updates
+      $edges;
+      connections = $connectionLookup.get(`${nodeId}-${type}-${id || null}`);
+    }
+  });
 
-  $: {
+  $effect.pre(() => {
     if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
       const _connections = connections ?? new Map();
 
@@ -125,23 +142,25 @@
     }
 
     prevConnections = connections ?? new Map();
-  }
+  });
 
-  $: connectionInProcess = !!$connection.startHandle;
-  $: connectingFrom =
+  let connectionInProcess = $derived(!!$connection.startHandle);
+  let connectingFrom = $derived(
     $connection.startHandle?.nodeId === nodeId &&
-    $connection.startHandle?.type === type &&
-    $connection.startHandle?.handleId === handleId;
-  $: connectingTo =
+      $connection.startHandle?.type === type &&
+      $connection.startHandle?.handleId === handleId
+  );
+  let connectingTo = $derived(
     $connection.endHandle?.nodeId === nodeId &&
-    $connection.endHandle?.type === type &&
-    $connection.endHandle?.handleId === handleId;
-  $: isPossibleEndHandle =
+      $connection.endHandle?.type === type &&
+      $connection.endHandle?.handleId === handleId
+  );
+  let isPossibleEndHandle = $derived(
     $connectionMode === ConnectionMode.Strict
       ? $connection.startHandle?.type !== type
-      : nodeId !== $connection.startHandle?.nodeId ||
-        handleId !== $connection.startHandle?.handleId;
-  $: valid = connectingTo && $connection.status === 'valid';
+      : nodeId !== $connection.startHandle?.nodeId || handleId !== $connection.startHandle?.handleId
+  );
+  let valid = $derived(connectingTo && $connection.status === 'valid');
 </script>
 
 <!--
@@ -152,7 +171,7 @@ The Handle component is the part of a node that can be used to connect nodes.
   data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}
-  data-id="{$flowId}-{nodeId}-{id || null}-{type}"
+  data-id="{$flowId}-{nodeId}-{handleId}-{type}"
   class={cc([
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,

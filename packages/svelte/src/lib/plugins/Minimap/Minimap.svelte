@@ -21,32 +21,28 @@
   import interactive from './interactive';
   import type { GetMiniMapNodeAttribute, MiniMapProps } from './types';
 
-  type $$Props = MiniMapProps;
+  let {
+    position = 'bottom-right',
+    ariaLabel = 'Mini map',
+    nodeStrokeColor = 'transparent',
+    nodeColor,
+    nodeClass = '',
+    nodeBorderRadius = 5,
+    nodeStrokeWidth = 2,
+    bgColor,
+    maskColor,
+    maskStrokeColor,
+    maskStrokeWidth,
+    width = 200,
+    height = 150,
+    pannable = true,
+    zoomable = true,
+    inversePan,
+    zoomStep,
+    style = '',
+    class: className
+  }: MiniMapProps = $props();
 
-  export let position: $$Props['position'] = 'bottom-right';
-  export let ariaLabel: $$Props['ariaLabel'] = 'Mini map';
-  export let nodeStrokeColor: $$Props['nodeStrokeColor'] = 'transparent';
-  export let nodeColor: $$Props['nodeColor'] = undefined;
-  export let nodeClass: $$Props['nodeClass'] = '';
-  export let nodeBorderRadius: $$Props['nodeBorderRadius'] = 5;
-  export let nodeStrokeWidth: $$Props['nodeStrokeWidth'] = 2;
-  export let bgColor: $$Props['bgColor'] = undefined;
-  export let maskColor: $$Props['maskColor'] = undefined;
-  export let maskStrokeColor: $$Props['maskStrokeColor'] = undefined;
-  export let maskStrokeWidth: $$Props['maskStrokeWidth'] = undefined;
-  export let width: $$Props['width'] = undefined;
-  export let height: $$Props['height'] = undefined;
-  export let pannable: $$Props['pannable'] = true;
-  export let zoomable: $$Props['zoomable'] = true;
-  export let inversePan: $$Props['inversePan'] = undefined;
-  export let zoomStep: $$Props['zoomStep'] = undefined;
-  export let style: $$Props['style'] = '';
-
-  let className: $$Props['class'] = '';
-  export { className as class };
-
-  const defaultWidth = 200;
-  const defaultHeight = 150;
   const {
     nodes,
     viewport,
@@ -65,25 +61,26 @@
     typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
   const labelledBy = `svelte-flow__minimap-desc-${$flowId}`;
 
-  $: viewBB = {
+  // TODO: simplify this
+  let viewBB = $derived({
     x: -$viewport.x / $viewport.zoom,
     y: -$viewport.y / $viewport.zoom,
     width: $containerWidth / $viewport.zoom,
     height: $containerHeight / $viewport.zoom
-  };
-  $: boundingRect = $nodes.length > 0 ? getBoundsOfRects(getNodesBounds($nodes), viewBB) : viewBB;
-  $: elementWidth = width ?? defaultWidth;
-  $: elementHeight = height ?? defaultHeight;
-  $: scaledWidth = boundingRect.width / elementWidth;
-  $: scaledHeight = boundingRect.height / elementHeight;
-  $: viewScale = Math.max(scaledWidth, scaledHeight);
-  $: viewWidth = viewScale * elementWidth;
-  $: viewHeight = viewScale * elementHeight;
-  $: offset = 5 * viewScale;
-  $: x = boundingRect.x - (viewWidth - boundingRect.width) / 2 - offset;
-  $: y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
-  $: viewboxWidth = viewWidth + offset * 2;
-  $: viewboxHeight = viewHeight + offset * 2;
+  });
+  let boundingRect = $derived(
+    $nodes.length > 0 ? getBoundsOfRects(getNodesBounds($nodes), viewBB) : viewBB
+  );
+  let scaledWidth = $derived(boundingRect.width / width);
+  let scaledHeight = $derived(boundingRect.height / height);
+  let viewScale = $derived(Math.max(scaledWidth, scaledHeight));
+  let viewWidth = $derived(viewScale * width);
+  let viewHeight = $derived(viewScale * height);
+  let offset = $derived(5 * viewScale);
+  let x = $derived(boundingRect.x - (viewWidth - boundingRect.width) / 2 - offset);
+  let y = $derived(boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset);
+  let viewboxWidth = $derived(viewWidth + offset * 2);
+  let viewboxHeight = $derived(viewHeight + offset * 2);
 
   const getViewScale = () => viewScale;
 </script>
@@ -96,8 +93,8 @@
 >
   {#if $panZoom}
     <svg
-      width={elementWidth}
-      height={elementHeight}
+      {width}
+      {height}
       viewBox="{x} {y} {viewboxWidth} {viewboxHeight}"
       class="svelte-flow__minimap-svg"
       role="img"
@@ -123,7 +120,7 @@
       {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
 
       {#each $nodes as node (node.id)}
-        {#if nodeHasDimensions(node)}
+        {#if nodeHasDimensions(node) && !node.hidden}
           {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
           {@const nodeDimesions = getNodeDimensions(node)}
           <MinimapNode

@@ -12,23 +12,21 @@
 
   import type { ControlsProps } from './types';
 
-  type $$Props = ControlsProps;
-
-  export let position: $$Props['position'] = 'bottom-left';
-  export let showZoom: $$Props['showZoom'] = true;
-  export let showFitView: $$Props['showFitView'] = true;
-  export let showLock: $$Props['showLock'] = true;
-  export let buttonBgColor: $$Props['buttonBgColor'] = undefined;
-  export let buttonBgColorHover: $$Props['buttonBgColorHover'] = undefined;
-  export let buttonColor: $$Props['buttonColor'] = undefined;
-  export let buttonColorHover: $$Props['buttonColorHover'] = undefined;
-  export let buttonBorderColor: $$Props['buttonColorHover'] = undefined;
-  export let ariaLabel: $$Props['aria-label'] = undefined;
-  export let style: $$Props['style'] = undefined;
-  export let orientation: $$Props['orientation'] = 'vertical';
-
-  let className: $$Props['class'] = '';
-  export { className as class };
+  let {
+    position = 'bottom-left',
+    showZoom = true,
+    showFitView = true,
+    showLock = true,
+    buttonBgColor,
+    buttonBgColorHover,
+    buttonColor,
+    buttonColorHover,
+    buttonBorderColor,
+    'aria-label': ariaLabel,
+    style,
+    orientation = 'vertical',
+    class: className
+  }: ControlsProps = $props();
 
   const {
     zoomIn,
@@ -50,9 +48,10 @@
     borderColor: buttonBorderColor
   };
 
-  $: isInteractive = $nodesDraggable || $nodesConnectable || $elementsSelectable;
-  $: minZoomReached = $viewport.zoom <= $minZoom;
-  $: maxZoomReached = $viewport.zoom >= $maxZoom;
+  let isInteractive = $state($nodesDraggable || $nodesConnectable || $elementsSelectable);
+  let minZoomReached = $derived($viewport.zoom <= $minZoom);
+  let maxZoomReached = $derived($viewport.zoom >= $maxZoom);
+  let orientationClass = $derived(orientation === 'horizontal' ? 'horizontal' : 'vertical');
 
   const onZoomInHandler = () => {
     zoomIn();
@@ -73,8 +72,6 @@
     nodesConnectable.set(isInteractive);
     elementsSelectable.set(isInteractive);
   };
-
-  $: orientationClass = orientation === 'horizontal' ? 'horizontal' : 'vertical';
 </script>
 
 <Panel

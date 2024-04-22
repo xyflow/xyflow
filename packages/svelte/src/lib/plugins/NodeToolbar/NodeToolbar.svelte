@@ -1,36 +1,32 @@
 <script lang="ts">
   import { getContext } from 'svelte';
   import { getNodesBounds, Position, type Rect, getNodeToolbarTransform } from '@xyflow/system';
+
   import portal from '$lib/actions/portal';
-  import type { InternalNode } from '$lib/types';
   import { useStore } from '$lib/store';
 
+  import type { InternalNode } from '$lib/types';
   import type { NodeToolbarProps } from './types';
 
-  type $$Props = NodeToolbarProps;
-
-  export let nodeId: $$Props['nodeId'] = undefined;
-  export let position: $$Props['position'] = undefined;
-  export let align: $$Props['align'] = undefined;
-  export let offset: $$Props['offset'] = undefined;
-  export let isVisible: $$Props['isVisible'] = undefined;
+  let {
+    nodeId,
+    position = Position.Top,
+    align = 'center',
+    offset = 10,
+    isVisible
+  }: NodeToolbarProps = $props();
 
   const { domNode, viewport, nodeLookup, nodes, nodeOrigin } = useStore();
+
   const contextNodeId = getContext<string>('svelteflow__node_id');
 
-  let transform: string;
-  let toolbarNodes: InternalNode[] = [];
-  let _offset = offset !== undefined ? offset : 10;
-  let _position = position !== undefined ? position : Position.Top;
-  let _align = align !== undefined ? align : 'center';
-
-  $: {
-    // nly needed to trigger updates, $nodeLookup is just a helper that does not trigger any updates
+  let toolbarNodes: InternalNode[] = $derived.by(() => {
+    // only needed to trigger updates, $nodeLookup is just a helper that does not trigger any updates
     $nodes;
 
     const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId];
 
-    toolbarNodes = nodeIds.reduce<InternalNode[]>((res, nodeId) => {
+    return nodeIds.reduce<InternalNode[]>((res, nodeId) => {
       const node = $nodeLookup.get(nodeId);
 
       if (node) {
@@ -39,9 +35,9 @@
 
       return res;
     }, []);
-  }
+  });
 
-  $: {
+  let transform: string = $derived.by(() => {
     let nodeRect: Rect | undefined = undefined;
 
     if (toolbarNodes.length === 1) {
@@ -56,23 +52,27 @@
     }
 
     if (nodeRect) {
-      transform = getNodeToolbarTransform(nodeRect, $viewport, _position, _offset, _align);
+      return getNodeToolbarTransform(nodeRect, $viewport, position, offset, align);
     }
-  }
 
-  $: zIndex =
+    return '';
+  });
+
+  let zIndex = $derived(
     toolbarNodes.length === 0
       ? 1
-      : Math.max(...toolbarNodes.map((node) => (node.internals.z || 5) + 1));
+      : Math.max(...toolbarNodes.map((node) => (node.internals.z || 5) + 1))
+  );
 
   //FIXME: Possible performance bottleneck
-  $: selectedNodesCount = $nodes.filter((node) => node.selected).length;
+  let selectedNodesCount = $derived($nodes.filter((node) => node.selected).length);
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
-  $: isActive =
+  let isActive = $derived(
     typeof isVisible === 'boolean'
       ? isVisible
-      : toolbarNodes.length === 1 && toolbarNodes[0].selected && selectedNodesCount === 1;
+      : toolbarNodes.length === 1 && toolbarNodes[0].selected && selectedNodesCount === 1
+  );
 </script>
 
 {#if $domNode && isActive && toolbarNodes}

@@ -3,22 +3,19 @@
   import type { BaseEdgeProps } from './types';
   import EdgeLabel from '../EdgeLabel/EdgeLabel.svelte';
 
-  type $$Props = BaseEdgeProps;
-
-  export let id: $$Props['id'] = undefined;
-  export let path: $$Props['path'];
-  export let label: $$Props['label'] = undefined;
-  export let labelX: $$Props['labelX'] = undefined;
-  export let labelY: $$Props['labelY'] = undefined;
-  export let labelStyle: $$Props['labelStyle'] = undefined;
-  export let markerStart: $$Props['markerStart'] = undefined;
-  export let markerEnd: $$Props['markerEnd'] = undefined;
-  export let style: $$Props['style'] = undefined;
-  export let interactionWidth: $$Props['interactionWidth'] = 20;
-  let className: $$Props['class'] = undefined;
-  export { className as class };
-
-  let interactionWidthValue = interactionWidth === undefined ? 20 : interactionWidth;
+  let {
+    id,
+    path,
+    label,
+    labelX,
+    labelY,
+    labelStyle,
+    markerStart,
+    markerEnd,
+    style,
+    interactionWidth = 20,
+    class: className
+  }: BaseEdgeProps = $props();
 </script>
 
 <path
@@ -31,11 +28,11 @@
   {style}
 />
 
-{#if interactionWidthValue}
+{#if interactionWidth > 0}
   <path
     d={path}
     stroke-opacity={0}
-    stroke-width={interactionWidthValue}
+    stroke-width={interactionWidth}
     fill="none"
     class="svelte-flow__edge-interaction"
   />

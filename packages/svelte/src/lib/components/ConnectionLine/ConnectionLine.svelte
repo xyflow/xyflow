@@ -1,11 +1,16 @@
 <script lang="ts">
   import cc from 'classcat';
-
   import { useStore } from '$lib/store';
 
-  export let containerStyle: string = '';
-  export let style: string = '';
-  export let isCustomComponent: boolean = false;
+  let {
+    containerStyle = '',
+    style = '',
+    isCustomComponent = false
+  }: {
+    containerStyle: string;
+    style: string;
+    isCustomComponent: boolean;
+  } = $props();
 
   const { width, height, connection } = useStore();
 </script>

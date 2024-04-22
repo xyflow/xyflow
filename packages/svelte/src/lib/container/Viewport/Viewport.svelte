@@ -1,5 +1,8 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import { useStore } from '$lib/store';
+
+  let { children }: { children: Snippet } = $props();
 
   const { viewport } = useStore();
 </script>
@@ -8,7 +11,7 @@
   class="svelte-flow__viewport xyflow__viewport"
   style="transform: translate({$viewport.x}px, {$viewport.y}px) scale({$viewport.zoom})"
 >
-  <slot />
+  {@render children()}
 </div>
 
 <style>

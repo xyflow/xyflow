@@ -4,13 +4,14 @@
   import { createStore, key } from '$lib/store';
   import type { SvelteFlowProviderProps } from './types';
 
-  type $$Props = SvelteFlowProviderProps;
-
-  export let initialNodes: $$Props['initialNodes'] = undefined;
-  export let initialEdges: $$Props['initialEdges'] = undefined;
-  export let initialWidth: $$Props['initialWidth'] = undefined;
-  export let initialHeight: $$Props['initialHeight'] = undefined;
-  export let fitView: $$Props['fitView'] = undefined;
+  let {
+    initialNodes,
+    initialEdges,
+    initialWidth,
+    initialHeight,
+    fitView,
+    children
+  }: SvelteFlowProviderProps = $props();
 
   const store = createStore({
     nodes: initialNodes,
@@ -29,4 +30,6 @@
   });
 </script>
 
-<slot />
+{#if children}
+  {@render children()}
+{/if}

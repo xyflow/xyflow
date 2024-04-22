@@ -1,13 +1,20 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
+  import { getContext, type Snippet } from 'svelte';
 
   import { EdgeLabelRenderer } from '$lib/components/EdgeLabelRenderer';
   import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
-  import type { BaseEdgeProps } from '$lib/components/BaseEdge/types';
 
-  export let style: BaseEdgeProps['labelStyle'] = undefined;
-  export let x: BaseEdgeProps['labelX'] = undefined;
-  export let y: BaseEdgeProps['labelY'] = undefined;
+  let {
+    style,
+    x,
+    y,
+    children
+  }: {
+    style?: string;
+    x?: number;
+    y?: number;
+    children?: Snippet;
+  } = $props();
 
   const handleEdgeSelect = useHandleEdgeSelect();
 
@@ -26,6 +33,8 @@
       if (id) handleEdgeSelect(id);
     }}
   >
-    <slot />
+    {#if children}
+      {@render children()}
+    {/if}
   </div>
 </EdgeLabelRenderer>

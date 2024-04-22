@@ -6,42 +6,39 @@
   import { getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
-  import { BezierEdgeInternal } from '$lib/components/edges';
-  import type { EdgeLayouted, Edge } from '$lib/types';
   import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
+  import { BezierEdgeInternal } from '$lib/components/edges';
 
-  type $$Props = EdgeLayouted;
+  import type { EdgeLayouted, Edge } from '$lib/types';
 
-  export let id: $$Props['id'];
-  export let type: $$Props['type'] = 'default';
-  export let source: $$Props['source'] = '';
-  export let target: $$Props['target'] = '';
-  export let data: $$Props['data'] = {};
-  export let style: $$Props['style'] = undefined;
-  export let zIndex: $$Props['zIndex'] = undefined;
-
-  export let animated: $$Props['animated'] = false;
-  export let selected: $$Props['selected'] = false;
-  export let selectable: $$Props['selectable'] = undefined;
-  export let hidden: $$Props['hidden'] = false;
-  export let label: $$Props['label'] = undefined;
-  export let labelStyle: $$Props['labelStyle'] = undefined;
-  export let markerStart: $$Props['markerStart'] = undefined;
-  export let markerEnd: $$Props['markerEnd'] = undefined;
-  export let sourceHandle: $$Props['sourceHandle'] = undefined;
-  export let targetHandle: $$Props['targetHandle'] = undefined;
-  export let sourceX: $$Props['sourceX'];
-  export let sourceY: $$Props['sourceY'];
-  export let targetX: $$Props['targetX'];
-  export let targetY: $$Props['targetY'];
-  export let sourcePosition: $$Props['sourcePosition'];
-  export let targetPosition: $$Props['targetPosition'];
-  export let ariaLabel: $$Props['ariaLabel'] = undefined;
-  export let interactionWidth: $$Props['interactionWidth'] = undefined;
-
-  // @ todo: support edge updates
-  let className: string = '';
-  export { className as class };
+  const {
+    id,
+    type = 'default',
+    source,
+    target,
+    data = {},
+    style,
+    zIndex,
+    animated = false,
+    selected = false,
+    selectable,
+    hidden,
+    label,
+    labelStyle,
+    markerStart,
+    markerEnd,
+    sourceHandle,
+    targetHandle,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    ariaLabel,
+    interactionWidth,
+    class: className
+  }: EdgeLayouted = $props();
 
   setContext('svelteflow__edge_id', id);
 
@@ -51,11 +48,15 @@
     edgecontextmenu: { edge: Edge; event: MouseEvent };
   }>();
 
-  $: edgeType = type || 'default';
-  $: edgeComponent = $edgeTypes[edgeType] || BezierEdgeInternal;
-  $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
-  $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
-  $: isSelectable = selectable || ($elementsSelectable && typeof selectable === 'undefined');
+  let edgeType = $derived(type || 'default');
+  let edgeComponent = $derived($edgeTypes[edgeType] || BezierEdgeInternal);
+  let markerStartUrl = $derived(
+    markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined
+  );
+  let markerEndUrl = $derived(markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined);
+  let isSelectable = $derived(
+    selectable || ($elementsSelectable && typeof selectable === 'undefined')
+  );
 
   const handleEdgeSelect = useHandleEdgeSelect();
 

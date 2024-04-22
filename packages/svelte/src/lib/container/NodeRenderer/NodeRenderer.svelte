@@ -40,11 +40,10 @@
 
 <div class="svelte-flow__nodes">
   {#each $visibleNodes as node (node.id)}
-    {@const nodeDimesions = getNodeDimensions(node)}
     {@const posOrigin = getPositionWithOrigin({
       x: node.internals.positionAbsolute.x,
       y: node.internals.positionAbsolute.y,
-      ...nodeDimesions,
+      ...getNodeDimensions(node),
       origin: node.origin
     })}
     <NodeWrapper
@@ -69,7 +68,7 @@
       isParent={$parentLookup.has(node.id)}
       style={node.style}
       class={node.class}
-      type={node.type ?? 'default'}
+      type={node.type}
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       dragging={node.dragging}

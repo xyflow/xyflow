@@ -23,7 +23,7 @@ export type NodeWrapperProps = Pick<
 > & {
   measuredWidth?: number;
   measuredHeight?: number;
-  type: string;
+  type?: string;
   positionX: number;
   positionY: number;
   positionOriginX: number;

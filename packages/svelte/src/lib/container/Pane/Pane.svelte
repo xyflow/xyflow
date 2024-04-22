@@ -38,19 +38,8 @@
   import type { Node, Edge } from '$lib/types';
   import type { PaneProps } from './types';
 
-  type $$Props = PaneProps;
+  let { panOnDrag, selectionOnDrag, children }: PaneProps = $props();
 
-  export let panOnDrag: $$Props['panOnDrag'] = undefined;
-  export let selectionOnDrag: $$Props['selectionOnDrag'] = undefined;
-
-  const dispatch = createEventDispatcher<{
-    paneclick: {
-      event: MouseEvent | TouchEvent;
-    };
-    panecontextmenu: {
-      event: MouseEvent;
-    };
-  }>();
   const {
     nodes,
     nodeLookup,
@@ -66,14 +55,26 @@
     unselectNodesAndEdges
   } = useStore();
 
-  let container: HTMLDivElement;
-  let containerBounds: DOMRect | null = null;
-  let selectedNodes: Node[] = [];
+  const dispatch = createEventDispatcher<{
+    paneclick: {
+      event: MouseEvent | TouchEvent;
+    };
+    panecontextmenu: {
+      event: MouseEvent;
+    };
+  }>();
 
-  $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
-  $: isSelecting =
-    $selectionKeyPressed || $selectionRect || (selectionOnDrag && _panOnDrag !== true);
-  $: hasActiveSelection = $elementsSelectable && (isSelecting || $selectionRectMode === 'user');
+  let container: HTMLDivElement | null = $state(null);
+  let containerBounds: DOMRect | null = $state(null);
+  let selectedNodes: Node[] = $state([]);
+
+  let panOnDragActive = $derived($panActivationKeyPressed || panOnDrag);
+  let isSelecting = $derived(
+    $selectionKeyPressed || $selectionRect || (selectionOnDrag && panOnDragActive !== true)
+  );
+  let hasActiveSelection = $derived(
+    $elementsSelectable && (isSelecting || $selectionRectMode === 'user')
+  );
 
   function onClick(event: MouseEvent | TouchEvent) {
     dispatch('paneclick', { event });
@@ -83,7 +84,7 @@
   }
 
   function onMouseDown(event: MouseEvent) {
-    containerBounds = container.getBoundingClientRect();
+    containerBounds = container!.getBoundingClientRect();
 
     if (
       !elementsSelectable ||
@@ -186,7 +187,9 @@
   };
 
   const onContextMenu = (event: MouseEvent) => {
-    if (Array.isArray(_panOnDrag) && _panOnDrag?.includes(2)) {
+    // panOnDrag might be an array of numbers that define the mouse buttons
+    // that should trigger panning on drag
+    if (Array.isArray(panOnDragActive) && panOnDragActive?.includes(2)) {
       event.preventDefault();
       return;
     }
@@ -203,14 +206,14 @@
   class:draggable={panOnDrag}
   class:dragging={$dragging}
   class:selection={isSelecting}
-  on:click={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
+  on:click={hasActiveSelection ? undefined : wrapHandler(onClick, container!)}
   on:mousedown={hasActiveSelection ? onMouseDown : undefined}
   on:mousemove={hasActiveSelection ? onMouseMove : undefined}
   on:mouseup={hasActiveSelection ? onMouseUp : undefined}
   on:mouseleave={hasActiveSelection ? onMouseLeave : undefined}
-  on:contextmenu={wrapHandler(onContextMenu, container)}
+  on:contextmenu={wrapHandler(onContextMenu, container!)}
 >
-  <slot />
+  {@render children()}
 </div>
 
 <style>

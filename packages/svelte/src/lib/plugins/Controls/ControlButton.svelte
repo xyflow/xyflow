@@ -3,16 +3,15 @@
 
   import type { ControlButtonProps } from './types';
 
-  type $$Props = ControlButtonProps;
-
-  let className: $$Props['class'] = undefined;
-  let bgColor: $$Props['bgColor'] = undefined;
-  let bgColorHover: $$Props['bgColorHover'] = undefined;
-  let color: $$Props['color'] = undefined;
-  let colorHover: $$Props['colorHover'] = undefined;
-  let borderColor: $$Props['borderColor'] = undefined;
-
-  export { className as class };
+  let {
+    class: className,
+    bgColor,
+    bgColorHover,
+    color,
+    colorHover,
+    borderColor,
+    ...restProps
+  }: ControlButtonProps = $props();
 </script>
 
 <button
@@ -24,7 +23,7 @@
   style:--xy-controls-button-color-props={color}
   style:--xy-controls-button-color-hover-props={colorHover}
   style:--xy-controls-button-border-color-props={borderColor}
-  {...$$restProps}
+  {...restProps}
 >
   <slot class="button-svg" />
 </button>

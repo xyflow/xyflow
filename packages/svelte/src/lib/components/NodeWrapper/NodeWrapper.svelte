@@ -1,5 +1,3 @@
-<svelte:options immutable />
-
 <script lang="ts">
   import { setContext, onDestroy } from 'svelte';
   import { get, writable } from 'svelte/store';
@@ -9,42 +7,42 @@
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
-  import type { NodeWrapperProps } from './types';
   import { getNodeInlineStyleDimensions } from './utils';
   import { createNodeEventDispatcher } from '$lib';
 
-  interface $$Props extends NodeWrapperProps {}
+  import type { NodeWrapperProps } from './types';
 
-  export let node: $$Props['node'];
-  export let id: $$Props['id'];
-  export let data: $$Props['data'] = {};
-  export let selected: $$Props['selected'] = false;
-  export let draggable: $$Props['draggable'] = undefined;
-  export let selectable: $$Props['selectable'] = undefined;
-  export let connectable: $$Props['connectable'] = true;
-  export let hidden: $$Props['hidden'] = false;
-  export let dragging: boolean = false;
-  export let resizeObserver: $$Props['resizeObserver'] = null;
-  export let style: $$Props['style'] = undefined;
-  export let type: $$Props['type'] = 'default';
-  export let isParent: $$Props['isParent'] = false;
-  export let positionX: $$Props['positionX'];
-  export let positionY: $$Props['positionY'];
-  export let positionOriginX: $$Props['positionOriginX'];
-  export let positionOriginY: $$Props['positionOriginY'];
-  export let sourcePosition: $$Props['sourcePosition'] = undefined;
-  export let targetPosition: $$Props['targetPosition'] = undefined;
-  export let zIndex: $$Props['zIndex'];
-  export let measuredWidth: $$Props['measuredWidth'] = undefined;
-  export let measuredHeight: $$Props['measuredHeight'] = undefined;
-  export let initialWidth: $$Props['initialWidth'] = undefined;
-  export let initialHeight: $$Props['initialHeight'] = undefined;
-  export let width: $$Props['width'] = undefined;
-  export let height: $$Props['height'] = undefined;
-  export let dragHandle: $$Props['dragHandle'] = undefined;
-  export let initialized: $$Props['initialized'] = false;
-  let className: string = '';
-  export { className as class };
+  let {
+    node,
+    id,
+    data = {},
+    selected = false,
+    draggable,
+    selectable,
+    connectable = true,
+    hidden = false,
+    dragging = false,
+    resizeObserver = null,
+    style,
+    type = 'default',
+    isParent = false,
+    positionX,
+    positionY,
+    positionOriginX,
+    positionOriginY,
+    sourcePosition,
+    targetPosition,
+    zIndex,
+    measuredWidth,
+    measuredHeight,
+    initialWidth,
+    initialHeight,
+    width,
+    height,
+    dragHandle,
+    initialized = false,
+    class: className
+  }: NodeWrapperProps = $props();
 
   const store = useStore();
   const {
@@ -55,47 +53,63 @@
     updateNodeInternals
   } = store;
 
-  let nodeRef: HTMLDivElement;
+  let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
 
   const dispatchNodeEvent = createNodeEventDispatcher();
+
+  let prevType: string | undefined;
+  let prevSourcePosition: Position | undefined;
+  let prevTargetPosition: Position | undefined;
+
+  let nodeTypeValid = $derived(!!$nodeTypes[type]);
+  let nodeComponent = $derived($nodeTypes[type] || DefaultNode);
+
   const connectableStore = writable(connectable);
-  let prevType: string | undefined = undefined;
-  let prevSourcePosition: Position | undefined = undefined;
-  let prevTargetPosition: Position | undefined = undefined;
 
-  $: nodeType = type || 'default';
-  $: nodeTypeValid = !!$nodeTypes[nodeType];
-  $: nodeComponent = $nodeTypes[nodeType] || DefaultNode;
-
-  $: {
+  $effect(() => {
     if (!nodeTypeValid) {
       console.warn('003', errorMessages['error003'](type!));
     }
-  }
-
-  $: inlineStyleDimensions = getNodeInlineStyleDimensions({
-    width,
-    height,
-    initialWidth,
-    initialHeight,
-    measuredWidth,
-    measuredHeight
   });
 
-  $: {
-    connectableStore.set(!!connectable);
-  }
+  let inlineStyleDimensions = $derived(
+    getNodeInlineStyleDimensions({
+      width,
+      height,
+      initialWidth,
+      initialHeight,
+      measuredWidth,
+      measuredHeight
+    })
+  );
 
-  $: {
+  $effect.pre(() => {
+    connectableStore.set(connectable);
+  });
+
+  setContext('svelteflow__node_id', id);
+  setContext('svelteflow__node_connectable', connectableStore);
+
+  // TODO: extract this part out!
+  $effect(() => {
+    if (resizeObserver && (nodeRef !== prevNodeRef || !initialized)) {
+      prevNodeRef && resizeObserver.unobserve(prevNodeRef);
+      nodeRef && resizeObserver.observe(nodeRef);
+      prevNodeRef = nodeRef;
+    }
+  });
+
+  $effect(() => {
     // if type, sourcePosition or targetPosition changes,
     // we need to re-calculate the handle positions
-    const doUpdate =
-      (prevType && nodeType !== prevType) ||
-      (prevSourcePosition && sourcePosition !== prevSourcePosition) ||
-      (prevTargetPosition && targetPosition !== prevTargetPosition);
+    if (!nodeRef) return;
 
-    if (doUpdate) {
+    if (
+      (prevType && type !== prevType) ||
+      (prevSourcePosition && sourcePosition !== prevSourcePosition) ||
+      (prevTargetPosition && targetPosition !== prevTargetPosition)
+    ) {
       requestAnimationFrame(() =>
         updateNodeInternals(
           new Map([
@@ -103,7 +117,7 @@
               id,
               {
                 id,
-                nodeElement: nodeRef,
+                nodeElement: nodeRef!,
                 forceUpdate: true
               }
             ]
@@ -112,21 +126,10 @@
       );
     }
 
-    prevType = nodeType;
+    prevType = type;
     prevSourcePosition = sourcePosition;
     prevTargetPosition = targetPosition;
-  }
-
-  setContext('svelteflow__node_id', id);
-  setContext('svelteflow__node_connectable', connectableStore);
-
-  $: {
-    if (resizeObserver && (nodeRef !== prevNodeRef || !initialized)) {
-      prevNodeRef && resizeObserver.unobserve(prevNodeRef);
-      nodeRef && resizeObserver.observe(nodeRef);
-      prevNodeRef = nodeRef;
-    }
-  }
+  });
 
   onDestroy(() => {
     if (prevNodeRef) {
@@ -169,7 +172,7 @@
     }}
     bind:this={nodeRef}
     data-id={id}
-    class={cc(['svelte-flow__node', `svelte-flow__node-${nodeType}`, className])}
+    class={cc(['svelte-flow__node', `svelte-flow__node-${type}`, className])}
     class:dragging
     class:selected
     class:draggable
@@ -197,8 +200,8 @@
       {zIndex}
       {dragging}
       {dragHandle}
-      type={nodeType}
-      isConnectable={$connectableStore}
+      {type}
+      isConnectable={connectable}
       positionAbsoluteX={positionX}
       positionAbsoluteY={positionY}
       {width}

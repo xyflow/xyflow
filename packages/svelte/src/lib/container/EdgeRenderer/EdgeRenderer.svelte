@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { EdgeWrapper } from '$lib/components/EdgeWrapper';
   import { CallOnMount } from '$lib/components/CallOnMount';
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
   import type { DefaultEdgeOptions } from '$lib/types';
 
-  export let defaultEdgeOptions: DefaultEdgeOptions | undefined;
+  let { defaultEdgeOptions }: { defaultEdgeOptions: DefaultEdgeOptions | undefined } = $props();
 
   const {
     visibleEdges,
@@ -14,7 +13,9 @@
     edges: { setDefaultOptions }
   } = useStore();
 
-  onMount(() => {
+  // TODO: Double check this
+  if (defaultEdgeOptions) setDefaultOptions(defaultEdgeOptions);
+  $effect.pre(() => {
     if (defaultEdgeOptions) setDefaultOptions(defaultEdgeOptions);
   });
 </script>

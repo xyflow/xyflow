@@ -17,8 +17,8 @@
   }>();
   const dispatchNodeEvent = createNodeEventDispatcher();
 
-  $: selectedNodes = $nodes.filter((n) => n.selected);
-  $: bounds = getNodesBounds(selectedNodes);
+  let selectedNodes = $derived($nodes.filter((n) => n.selected));
+  let bounds = $derived(getNodesBounds(selectedNodes));
 
   function onContextMenu(event: MouseEvent | TouchEvent) {
     dispatch('selectioncontextmenu', { nodes: selectedNodes, event });
