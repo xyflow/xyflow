@@ -128,6 +128,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
       return () => {
         if (prevNodeRef.current) {
           resizeObserver?.unobserve(prevNodeRef.current);
+          prevNodeRef.current = null;
         }
       };
     }, []);
@@ -135,8 +136,7 @@ export default (NodeComponent: ComponentType<NodeProps>) => {
     useEffect(() => {
       if (nodeRef.current && !hidden) {
         const currNode = nodeRef.current;
-
-        if (!initialized || !hasHandleBounds) {
+        if (!initialized || !hasHandleBounds || prevNodeRef.current !== currNode) {
           // At this point we always want to make sure that the node gets re-measured / re-initialized.
           // We need to unobserve it first in case it is still observed
           if (prevNodeRef.current) {

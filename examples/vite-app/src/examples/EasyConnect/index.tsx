@@ -78,6 +78,7 @@ const EasyConnectExample = () => {
       defaultEdgeOptions={defaultEdgeOptions}
       connectionLineComponent={CustomConnectionLine}
       connectionLineStyle={connectionLineStyle}
+      className="easy-connect"
     />
   );
 };
