@@ -1,7 +1,7 @@
 <svelte:options immutable />
 
 <script lang="ts">
-  import { setContext, onDestroy } from 'svelte';
+  import { setContext, onDestroy, createEventDispatcher } from 'svelte';
   import { get, writable } from 'svelte/store';
   import cc from 'classcat';
   import { errorMessages, Position } from '@xyflow/system';
@@ -11,7 +11,7 @@
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import type { NodeWrapperProps } from './types';
   import { getNodeInlineStyleDimensions } from './utils';
-  import { createNodeEventDispatcher } from '$lib';
+  import type { NodeEventMap } from '$lib/types';
 
   interface $$Props extends NodeWrapperProps {}
 
@@ -58,7 +58,7 @@
   let nodeRef: HTMLDivElement;
   let prevNodeRef: HTMLDivElement | null = null;
 
-  const dispatchNodeEvent = createNodeEventDispatcher();
+  const dispatchNodeEvent = createEventDispatcher<NodeEventMap>();
   const connectableStore = writable(connectable);
   let prevType: string | undefined = undefined;
   let prevSourcePosition: Position | undefined = undefined;
