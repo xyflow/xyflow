@@ -1,5 +1,12 @@
 # @reactflow/core
 
+## 11.11.2
+
+### Patch Changes
+
+- [#4189](https://github.com/xyflow/xyflow/pull/4189) [`b0b2d001`](https://github.com/xyflow/xyflow/commit/b0b2d00139850d6d29c0b8a595c46ad2c888f34e) - re-observe when ref changes
+- [#4192](https://github.com/xyflow/xyflow/pull/4192) [`f452cf0c`](https://github.com/xyflow/xyflow/commit/f452cf0c758a61279caf8d408f32d2001d6f587b) - fix redux readonly error
+
 ## 11.11.1
 
 ### Patch Changes

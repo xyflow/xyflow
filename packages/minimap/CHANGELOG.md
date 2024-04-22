@@ -1,5 +1,14 @@
 # @reactflow/minimap
 
+## 11.7.12
+
+### Patch Changes
+
+- [#4188](https://github.com/xyflow/xyflow/pull/4188) [`ac2e11d1`](https://github.com/xyflow/xyflow/commit/ac2e11d1892c943cc2abc486dd0b8c677a647896) - cover entire area
+
+- Updated dependencies [[`b0b2d001`](https://github.com/xyflow/xyflow/commit/b0b2d00139850d6d29c0b8a595c46ad2c888f34e), [`f452cf0c`](https://github.com/xyflow/xyflow/commit/f452cf0c758a61279caf8d408f32d2001d6f587b)]:
+  - @reactflow/core@11.11.2
+
 ## 11.7.11
 
 ### Patch Changes
