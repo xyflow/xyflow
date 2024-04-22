@@ -64,14 +64,14 @@ export function createStore({
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     const nodeLookup = get(store.nodeLookup);
 
-    for (const nodeDragItem of nodeDragItems) {
-      const node = nodeLookup.get(nodeDragItem.id)?.internals.userNode;
+    for (const [id, dragItem] of nodeDragItems) {
+      const node = nodeLookup.get(id)?.internals.userNode;
 
       if (!node) {
         continue;
       }
 
-      node.position = nodeDragItem.position;
+      node.position = dragItem.position;
       node.dragging = dragging;
     }
 
@@ -83,6 +83,7 @@ export function createStore({
     const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,
       nodeLookup,
+      get(store.parentLookup),
       get(store.domNode),
       get(store.nodeOrigin)
     );

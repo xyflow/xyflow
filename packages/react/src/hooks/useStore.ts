@@ -1,10 +1,10 @@
 import { useContext, useMemo } from 'react';
 import { UseBoundStoreWithEqualityFn, useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
+import { StoreApi } from 'zustand';
 import { errorMessages } from '@xyflow/system';
 
-import StoreContext from '../contexts/RFStoreContext';
+import StoreContext from '../contexts/StoreContext';
 import type { Edge, Node, ReactFlowState } from '../types';
-import { StoreApi } from 'zustand';
 
 const zustandErrorMessage = errorMessages['error001']();
 
@@ -47,7 +47,6 @@ function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>
       getState: store.getState,
       setState: store.setState,
       subscribe: store.subscribe,
-      destroy: store.destroy,
     }),
     [store]
   );

@@ -7,17 +7,18 @@ import {
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
   updateConnectionLookup,
-  handleParentExpand,
+  handleExpandParent,
   NodeChange,
   EdgeSelectionChange,
   NodeSelectionChange,
+  ParentExpandChild,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import getInitialState from './initialState';
-import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions, InternalNode } from '../types';
+import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
 
-const createRFStore = ({
+const createStore = ({
   nodes,
   edges,
   defaultNodes,
@@ -38,14 +39,14 @@ const createRFStore = ({
     (set, get) => ({
       ...getInitialState({ nodes, edges, width, height, fitView, defaultNodes, defaultEdges }),
       setNodes: (nodes: Node[]) => {
-        const { nodeLookup, nodeOrigin, elevateNodesOnSelect } = get();
+        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
         // setNodes() is called exclusively in response to user actions:
         // - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
         // - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
         //
         // When this happens, we take the note objects passed by the user and extend them with fields
         // relevant for internal React Flow operations.
-        adoptUserNodes(nodes, nodeLookup, { nodeOrigin, elevateNodesOnSelect });
+        adoptUserNodes(nodes, nodeLookup, parentLookup, { nodeOrigin, elevateNodesOnSelect, checkEquality: true });
 
         set({ nodes });
       },
@@ -76,6 +77,7 @@ const createRFStore = ({
           onNodesChange,
           fitView,
           nodeLookup,
+          parentLookup,
           fitViewOnInit,
           fitViewDone,
           fitViewOnInitOptions,
@@ -84,7 +86,13 @@ const createRFStore = ({
           debug,
         } = get();
 
-        const { changes, updatedInternals } = updateNodeInternalsSystem(updates, nodeLookup, domNode, nodeOrigin);
+        const { changes, updatedInternals } = updateNodeInternalsSystem(
+          updates,
+          nodeLookup,
+          parentLookup,
+          domNode,
+          nodeOrigin
+        );
 
         if (!updatedInternals) {
           return;
@@ -116,26 +124,26 @@ const createRFStore = ({
         }
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
-        const { nodeLookup } = get();
-        const triggerChangeNodes: InternalNode[] = [];
+        const parentExpandChildren: ParentExpandChild[] = [];
+        const changes = [];
 
-        const changes: NodeChange[] = nodeDragItems.map((node) => {
+        for (const [id, dragItem] of nodeDragItems) {
           // @todo add expandParent to drag item so that we can get rid of the look up here
-          const internalNode = nodeLookup.get(node.id);
           const change: NodeChange = {
-            id: node.id,
+            id,
             type: 'position',
-            position: node.position,
+            position: dragItem.position,
             dragging,
           };
 
-          if (internalNode?.expandParent && change.position) {
-            triggerChangeNodes.push({
-              ...internalNode,
-              position: change.position,
-              internals: {
-                ...internalNode.internals,
-                positionAbsolute: node.internals.positionAbsolute,
+          if (dragItem?.expandParent && dragItem?.parentId && change.position) {
+            parentExpandChildren.push({
+              id,
+              parentId: dragItem.parentId,
+              rect: {
+                ...dragItem.internals.positionAbsolute,
+                width: dragItem.measured.width!,
+                height: dragItem.measured.height!,
               },
             });
 
@@ -143,11 +151,12 @@ const createRFStore = ({
             change.position.y = Math.max(0, change.position.y);
           }
 
-          return change;
-        });
+          changes.push(change);
+        }
 
-        if (triggerChangeNodes.length > 0) {
-          const parentExpandChanges = handleParentExpand(triggerChangeNodes, nodeLookup);
+        if (parentExpandChildren.length > 0) {
+          const { nodeLookup, parentLookup } = get();
+          const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup);
           changes.push(...parentExpandChanges);
         }
 
@@ -320,4 +329,4 @@ const createRFStore = ({
     Object.is
   );
 
-export { createRFStore };
+export { createStore };

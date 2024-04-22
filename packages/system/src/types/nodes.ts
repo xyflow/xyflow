@@ -73,8 +73,6 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & 
   internals: {
     positionAbsolute: XYPosition;
     z: number;
-    // @todo should we rename this to "handles" and use same type as node.handles?
-    isParent: boolean;
     /** Holds a reference to the original node object provided by the user.
      * Used as an optimization to avoid certain operations. */
     userNode: NodeType;
@@ -122,8 +120,8 @@ export type NodeDragItem = {
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
   measured: {
-    width: number | null;
-    height: number | null;
+    width: number;
+    height: number;
   };
   internals: {
     positionAbsolute: XYPosition;
@@ -144,3 +142,4 @@ export type NodeHandle = Optional<HandleElement, 'width' | 'height'>;
 export type Align = 'center' | 'start' | 'end';
 
 export type NodeLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType>;
+export type ParentLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType[]>;

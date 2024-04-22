@@ -2,14 +2,14 @@ import {
   infiniteExtent,
   ConnectionMode,
   adoptUserNodes,
-  getNodesBounds,
   getViewportForBounds,
   Transform,
   updateConnectionLookup,
   devWarn,
+  getInternalNodesBounds,
 } from '@xyflow/system';
 
-import type { Edge, Node, ReactFlowStore } from '../types';
+import type { Edge, InternalNode, Node, ReactFlowStore } from '../types';
 
 const getInitialState = ({
   nodes,
@@ -28,14 +28,15 @@ const getInitialState = ({
   height?: number;
   fitView?: boolean;
 } = {}): ReactFlowStore => {
-  const nodeLookup = new Map();
+  const nodeLookup = new Map<string, InternalNode>();
+  const parentLookup = new Map();
   const connectionLookup = new Map();
   const edgeLookup = new Map();
   const storeEdges = defaultEdges ?? edges ?? [];
   const storeNodes = defaultNodes ?? nodes ?? [];
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
-  adoptUserNodes(storeNodes, nodeLookup, {
+  adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false,
   });
@@ -43,11 +44,11 @@ const getInitialState = ({
   let transform: Transform = [0, 0, 1];
 
   if (fitView && width && height) {
-    const nodesWithDimensions = storeNodes.filter(
-      (node) => (node.width || node.initialWidth) && (node.height || node.initialHeight)
-    );
     // @todo users nodeOrigin should be used here
-    const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
+    const bounds = getInternalNodesBounds(nodeLookup, {
+      nodeOrigin: [0, 0],
+      filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight)),
+    });
     const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
     transform = [x, y, zoom];
   }
@@ -59,6 +60,7 @@ const getInitialState = ({
     transform,
     nodes: storeNodes,
     nodeLookup,
+    parentLookup,
     edges: storeEdges,
     edgeLookup,
     connectionLookup,

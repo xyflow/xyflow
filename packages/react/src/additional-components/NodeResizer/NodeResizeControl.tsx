@@ -9,6 +9,10 @@ import {
   type NodeChange,
   type NodeDimensionChange,
   type NodePositionChange,
+  handleExpandParent,
+  evaluateAbsolutePosition,
+  ParentExpandChild,
+  XYPosition,
 } from '@xyflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
@@ -62,28 +66,54 @@ function ResizeControl({
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const { triggerNodeChanges } = store.getState();
+          const { triggerNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
 
           const changes: NodeChange[] = [];
+          const nextPosition = { x: change.x, y: change.y };
 
-          if (change.isXPosChange || change.isYPosChange) {
-            const positionChange: NodePositionChange = {
-              id,
-              type: 'position',
-              position: {
-                x: change.x,
-                y: change.y,
+          const node = nodeLookup.get(id);
+          if (node && node.expandParent && node.parentId) {
+            const child: ParentExpandChild = {
+              id: node.id,
+              parentId: node.parentId,
+              rect: {
+                width: change.width ?? node.measured.width!,
+                height: change.height ?? node.measured.height!,
+                ...evaluateAbsolutePosition(
+                  {
+                    x: change.x ?? node.position.x,
+                    y: change.y ?? node.position.y,
+                  },
+                  node.parentId,
+                  nodeLookup,
+                  node.origin ?? nodeOrigin
+                ),
               },
             };
 
+            const parentExpandChanges = handleExpandParent([child], nodeLookup, parentLookup, nodeOrigin);
+            changes.push(...parentExpandChanges);
+
+            // when the parent was expanded by the child node, its position will be clamped at 0,0
+            nextPosition.x = change.x ? Math.max(0, change.x) : undefined;
+            nextPosition.y = change.y ? Math.max(0, change.y) : undefined;
+          }
+
+          if (nextPosition.x !== undefined && nextPosition.y !== undefined) {
+            const positionChange: NodePositionChange = {
+              id,
+              type: 'position',
+              position: { ...(nextPosition as XYPosition) },
+            };
             changes.push(positionChange);
           }
 
-          if (change.isWidthChange || change.isHeightChange) {
+          if (change.width !== undefined && change.height !== undefined) {
             const dimensionChange: NodeDimensionChange = {
               id,
               type: 'dimensions',
               resizing: true,
+              setAttributes: true,
               dimensions: {
                 width: change.width,
                 height: change.height,

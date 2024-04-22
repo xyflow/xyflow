@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ReactFlowState } from '../../types';
 import { useStore } from '../../hooks/useStore';
@@ -8,16 +8,13 @@ const selector = (s: ReactFlowState) => s.updateNodeInternals;
 
 export function useResizeObserver() {
   const updateNodeInternals = useStore(selector);
-  const resizeObserverRef = useRef<ResizeObserver>();
-
-  const resizeObserver = useMemo(() => {
+  const [resizeObserver] = useState(() => {
     if (typeof ResizeObserver === 'undefined') {
       return null;
     }
 
-    const observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+    return new ResizeObserver((entries: ResizeObserverEntry[]) => {
       const updates = new Map<string, InternalNodeUpdate>();
-
       entries.forEach((entry: ResizeObserverEntry) => {
         const id = entry.target.getAttribute('data-id') as string;
         updates.set(id, {
@@ -28,17 +25,13 @@ export function useResizeObserver() {
 
       updateNodeInternals(updates);
     });
-
-    resizeObserverRef.current = observer;
-
-    return observer;
-  }, []);
+  });
 
   useEffect(() => {
     return () => {
-      resizeObserverRef?.current?.disconnect();
+      resizeObserver?.disconnect();
     };
-  }, []);
+  }, [resizeObserver]);
 
   return resizeObserver;
 }

@@ -4,7 +4,10 @@ export type NodeDimensionChange = {
   id: string;
   type: 'dimensions';
   dimensions?: Dimensions;
+  /* if this is true, the node is currently being resized via the NodeResizer */
   resizing?: boolean;
+  /* if this is true, we will set width and height of the node and not just the measured dimensions */
+  setAttributes?: boolean;
 };
 
 export type NodePositionChange = {

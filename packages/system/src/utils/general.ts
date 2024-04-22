@@ -9,6 +9,7 @@ import type {
   SnapGrid,
   Transform,
   InternalNodeBase,
+  NodeLookup,
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin } from './graph';
@@ -67,22 +68,24 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
 });
 
 export const nodeToRect = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
-  const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
+  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
   return {
-    ...positionAbsolute,
+    x,
+    y,
     width: node.measured?.width ?? node.width ?? 0,
     height: node.measured?.height ?? node.height ?? 0,
   };
 };
 
 export const nodeToBox = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box => {
-  const { positionAbsolute } = getNodePositionWithOrigin(node, node.origin || nodeOrigin);
+  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
 
   return {
-    ...positionAbsolute,
-    x2: positionAbsolute.x + (node.measured?.width ?? node.width ?? 0),
-    y2: positionAbsolute.y + (node.measured?.height ?? node.height ?? 0),
+    x,
+    y,
+    x2: x + (node.measured?.width ?? node.width ?? 0),
+    y2: y + (node.measured?.height ?? node.height ?? 0),
   };
 };
 
@@ -204,9 +207,13 @@ export function isCoordinateExtent(extent?: CoordinateExtent | 'parent'): extent
   return extent !== undefined && extent !== 'parent';
 }
 
-export function getNodeDimensions<NodeType extends NodeBase = NodeBase>(
-  node: NodeType
-): { width: number; height: number } {
+export function getNodeDimensions(node: {
+  measured?: { width?: number; height?: number };
+  width?: number;
+  height?: number;
+  initialWidth?: number;
+  initialHeight?: number;
+}): { width: number; height: number } {
   return {
     width: node.measured?.width ?? node.width ?? node.initialWidth ?? 0,
     height: node.measured?.height ?? node.height ?? node.initialHeight ?? 0,
@@ -218,4 +225,39 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
     (node.measured?.width ?? node.width ?? node.initialWidth) !== undefined &&
     (node.measured?.height ?? node.height ?? node.initialHeight) !== undefined
   );
+}
+
+/**
+ * Convert child position to aboslute position
+ *
+ * @internal
+ * @param position
+ * @param parentId
+ * @param nodeLookup
+ * @param nodeOrigin
+ * @returns an internal node with an absolute position
+ */
+export function evaluateAbsolutePosition(
+  position: XYPosition,
+  parentId: string,
+  nodeLookup: NodeLookup,
+  nodeOrigin: NodeOrigin = [0, 0]
+): XYPosition {
+  let nextParentId: string | undefined = parentId;
+  const positionAbsolute = { ...position };
+
+  while (nextParentId) {
+    const parent = nodeLookup.get(parentId);
+    nextParentId = parent?.parentId;
+
+    if (parent) {
+      const origin = parent.origin || nodeOrigin;
+      const xOffset = (parent.measured.width ?? 0) * origin[0];
+      const yOffset = (parent.measured.height ?? 0) * origin[1];
+      positionAbsolute.x += parent.position.x - xOffset;
+      positionAbsolute.y += parent.position.y - yOffset;
+    }
+  }
+
+  return positionAbsolute;
 }

@@ -1,6 +1,6 @@
 import { useContext, type ReactNode } from 'react';
 
-import StoreContext from '../../contexts/RFStoreContext';
+import StoreContext from '../../contexts/StoreContext';
 import { ReactFlowProvider } from '../../components/ReactFlowProvider';
 import type { Node, Edge } from '../../types';
 

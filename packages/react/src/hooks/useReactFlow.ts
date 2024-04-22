@@ -1,5 +1,12 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { getElementsToRemove, getOverlappingArea, isRectObject, nodeToRect, type Rect } from '@xyflow/system';
+import {
+  evaluateAbsolutePosition,
+  getElementsToRemove,
+  getOverlappingArea,
+  isRectObject,
+  nodeToRect,
+  type Rect,
+} from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
@@ -40,10 +47,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     return edges.map((e) => ({ ...e })) as EdgeType[];
   }, []);
 
-  const getEdge = useCallback<Instance.GetEdge<EdgeType>>((id) => {
-    const { edges = [] } = store.getState();
-    return edges.find((e) => e.id === id) as EdgeType;
-  }, []);
+  const getEdge = useCallback<Instance.GetEdge<EdgeType>>((id) => store.getState().edgeLookup.get(id) as EdgeType, []);
 
   type SetElementsQueue = {
     nodes: (NodeType[] | ((nodes: NodeType[]) => NodeType[]))[];
@@ -223,15 +227,30 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     []
   );
 
-  const getNodeRect = useCallback(({ id }: { id: string }): Rect | null => {
-    const internalNode = store.getState().nodeLookup.get(id);
-    return internalNode ? nodeToRect(internalNode) : null;
+  const getNodeRect = useCallback((node: NodeType | { id: string }): Rect | null => {
+    const { nodeLookup, nodeOrigin } = store.getState();
+
+    const nodeToUse = isNode<NodeType>(node) ? node : nodeLookup.get(node.id)!;
+    const position = nodeToUse.parentId
+      ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.parentId, nodeLookup, nodeOrigin)
+      : nodeToUse.position;
+
+    const nodeWithPosition = {
+      id: nodeToUse.id,
+      position,
+      width: nodeToUse.measured?.width ?? nodeToUse.width,
+      height: nodeToUse.measured?.height ?? nodeToUse.height,
+      data: nodeToUse.data,
+    };
+
+    return nodeToRect(nodeWithPosition);
   }, []);
 
   const getIntersectingNodes = useCallback<Instance.GetIntersectingNodes<NodeType>>(
     (nodeOrRect, partially = true, nodes) => {
       const isRect = isRectObject(nodeOrRect);
       const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
+      const hasNodesOption = nodes !== undefined;
 
       if (!nodeRect) {
         return [];
@@ -244,7 +263,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           return false;
         }
 
-        const currNodeRect = nodeToRect(n);
+        const currNodeRect = nodeToRect(hasNodesOption ? n : internalNode!);
         const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
         const partiallyVisible = partially && overlappingArea > 0;
 
@@ -272,7 +291,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   );
 
   const updateNode = useCallback<Instance.UpdateNode<NodeType>>(
-    (id, nodeUpdate, options = { replace: true }) => {
+    (id, nodeUpdate, options = { replace: false }) => {
       setNodes((prevNodes) =>
         prevNodes.map((node) => {
           if (node.id === id) {

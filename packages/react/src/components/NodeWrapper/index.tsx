@@ -1,4 +1,4 @@
-import { useEffect, useRef, type MouseEvent, type KeyboardEvent } from 'react';
+import { type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -18,6 +18,7 @@ import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
+import { useNodeObserver } from './useNodeObserver';
 import type { InternalNode, Node, NodeWrapperProps } from '../../types';
 
 export function NodeWrapper<NodeType extends Node>({
@@ -42,21 +43,14 @@ export function NodeWrapper<NodeType extends Node>({
   nodeOrigin,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const { node, positionAbsoluteX, positionAbsoluteY, zIndex, isParent } = useStore((s) => {
+  const { node, internals, isParent } = useStore((s) => {
     const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
-
-    const positionAbsolute = nodeExtent
-      ? clampPosition(node.internals.positionAbsolute, nodeExtent)
-      : node.internals.positionAbsolute || { x: 0, y: 0 };
+    const isParent = s.parentLookup.has(id);
 
     return {
       node,
-      // we are mutating positionAbsolute, z and isParent attributes for sub flows
-      // so we we need to force a re-render when some change
-      positionAbsoluteX: positionAbsolute.x,
-      positionAbsoluteY: positionAbsolute.y,
-      zIndex: node.internals.z,
-      isParent: node.internals.isParent,
+      internals: node.internals,
+      isParent,
     };
   }, shallow);
 
@@ -75,58 +69,8 @@ export function NodeWrapper<NodeType extends Node>({
   const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
 
   const store = useStoreApi();
-  const nodeRef = useRef<HTMLDivElement>(null);
-  const prevSourcePosition = useRef(node.sourcePosition);
-  const prevTargetPosition = useRef(node.targetPosition);
-  const prevType = useRef(nodeType);
-
-  const nodeDimensions = getNodeDimensions(node);
-  const inlineDimensions = getNodeInlineStyleDimensions(node);
-  const initialized = nodeHasDimensions(node);
-  const hasHandleBounds = !!node.internals.handleBounds;
-
-  const moveSelectedNodes = useMoveSelectedNodes();
-
-  useEffect(() => {
-    const currNode = nodeRef.current;
-
-    return () => {
-      if (currNode) {
-        resizeObserver?.unobserve(currNode);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (nodeRef.current && !node.hidden) {
-      const currNode = nodeRef.current;
-      if (!initialized || !hasHandleBounds) {
-        resizeObserver?.unobserve(currNode);
-        resizeObserver?.observe(currNode);
-      }
-    }
-  }, [node.hidden, initialized, hasHandleBounds]);
-
-  useEffect(() => {
-    // when the user programmatically changes the source or handle position, we re-initialize the node
-    const typeChanged = prevType.current !== nodeType;
-    const sourcePosChanged = prevSourcePosition.current !== node.sourcePosition;
-    const targetPosChanged = prevTargetPosition.current !== node.targetPosition;
-
-    if (nodeRef.current && (typeChanged || sourcePosChanged || targetPosChanged)) {
-      if (typeChanged) {
-        prevType.current = nodeType;
-      }
-      if (sourcePosChanged) {
-        prevSourcePosition.current = node.sourcePosition;
-      }
-      if (targetPosChanged) {
-        prevTargetPosition.current = node.targetPosition;
-      }
-      store.getState().updateNodeInternals(new Map([[id, { id, nodeElement: nodeRef.current, force: true }]]));
-    }
-  }, [id, nodeType, node.sourcePosition, node.targetPosition]);
-
+  const hasDimensions = nodeHasDimensions(node);
+  const nodeRef = useNodeObserver({ node, nodeType, hasDimensions, resizeObserver });
   const dragging = useDrag({
     nodeRef,
     disabled: node.hidden || !isDraggable,
@@ -135,14 +79,20 @@ export function NodeWrapper<NodeType extends Node>({
     nodeId: id,
     isSelectable,
   });
+  const moveSelectedNodes = useMoveSelectedNodes();
 
   if (node.hidden) {
     return null;
   }
 
-  const positionAbsoluteOrigin = getPositionWithOrigin({
-    x: positionAbsoluteX,
-    y: positionAbsoluteY,
+  const nodeDimensions = getNodeDimensions(node);
+  const inlineDimensions = getNodeInlineStyleDimensions(node);
+  const clampedPosition = nodeExtent
+    ? clampPosition(internals.positionAbsolute, nodeExtent)
+    : internals.positionAbsolute;
+
+  const positionWithOrigin = getPositionWithOrigin({
+    ...clampedPosition,
     ...nodeDimensions,
     origin: node.origin || nodeOrigin,
   });
@@ -190,7 +140,7 @@ export function NodeWrapper<NodeType extends Node>({
       store.setState({
         ariaLiveMessage: `Moved selected node ${event.key
           .replace('Arrow', '')
-          .toLowerCase()}. New position, x: ${~~positionAbsoluteX}, y: ${~~positionAbsoluteY}`,
+          .toLowerCase()}. New position, x: ${~~clampedPosition.x}, y: ${~~clampedPosition.y}`,
       });
 
       moveSelectedNodes({
@@ -220,10 +170,10 @@ export function NodeWrapper<NodeType extends Node>({
       ])}
       ref={nodeRef}
       style={{
-        zIndex,
-        transform: `translate(${positionAbsoluteOrigin.x}px,${positionAbsoluteOrigin.y}px)`,
+        zIndex: internals.z,
+        transform: `translate(${positionWithOrigin.x}px,${positionWithOrigin.y}px)`,
         pointerEvents: hasPointerEvents ? 'all' : 'none',
-        visibility: initialized ? 'visible' : 'hidden',
+        visibility: hasDimensions ? 'visible' : 'hidden',
         ...node.style,
         ...inlineDimensions,
       }}
@@ -246,15 +196,15 @@ export function NodeWrapper<NodeType extends Node>({
           id={id}
           data={node.data}
           type={nodeType}
-          positionAbsoluteX={positionAbsoluteX}
-          positionAbsoluteY={positionAbsoluteY}
+          positionAbsoluteX={clampedPosition.x}
+          positionAbsoluteY={clampedPosition.y}
           selected={node.selected}
           isConnectable={isConnectable}
           sourcePosition={node.sourcePosition}
           targetPosition={node.targetPosition}
           dragging={dragging}
           dragHandle={node.dragHandle}
-          zIndex={zIndex}
+          zIndex={internals.z}
           {...nodeDimensions}
         />
       </Provider>

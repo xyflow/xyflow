@@ -15,18 +15,12 @@ const initStartValues = {
   aspectRatio: 1,
 };
 
-const initChange = {
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0,
-  isXPosChange: false,
-  isYPosChange: false,
-  isWidthChange: false,
-  isHeightChange: false,
+export type XYResizerChange = {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
 };
-
-export type XYResizerChange = typeof initChange;
 
 export type XYResizerChildChange = {
   id: string;
@@ -89,7 +83,7 @@ function nodeToChildExtent(child: NodeBase, parent: NodeBase, nodeOrigin: NodeOr
   ];
 }
 
-export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResizerParams): XYResizerInstance {
+export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: XYResizerParams): XYResizerInstance {
   const selection = select(domNode);
 
   function update({
@@ -117,161 +111,161 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange }: XYResize
         const { nodeLookup, transform, snapGrid, snapToGrid, nodeOrigin } = getStoreItems();
         node = nodeLookup.get(nodeId);
 
-        if (node) {
-          const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+        if (!node) {
+          return;
+        }
 
-          prevValues = {
-            width: node.measured?.width ?? 0,
-            height: node.measured?.height ?? 0,
-            x: node.position.x ?? 0,
-            y: node.position.y ?? 0,
-          };
+        const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
 
-          startValues = {
-            ...prevValues,
-            pointerX: xSnapped,
-            pointerY: ySnapped,
-            aspectRatio: prevValues.width / prevValues.height,
-          };
+        prevValues = {
+          width: node.measured?.width ?? 0,
+          height: node.measured?.height ?? 0,
+          x: node.position.x ?? 0,
+          y: node.position.y ?? 0,
+        };
 
-          parentNode = undefined;
-          if (node.extent === 'parent' || node.expandParent) {
-            parentNode = nodeLookup.get(node.parentId!);
-            if (parentNode && node.extent === 'parent') {
-              parentExtent = nodeToParentExtent(parentNode);
-            }
+        startValues = {
+          ...prevValues,
+          pointerX: xSnapped,
+          pointerY: ySnapped,
+          aspectRatio: prevValues.width / prevValues.height,
+        };
+
+        parentNode = undefined;
+        if (node.extent === 'parent' || node.expandParent) {
+          parentNode = nodeLookup.get(node.parentId!);
+          if (parentNode && node.extent === 'parent') {
+            parentExtent = nodeToParentExtent(parentNode);
           }
+        }
 
-          // Collect all child nodes to correct their relative positions when top/left changes
-          // Determine largest minimal extent the parent node is allowed to resize to
-          childNodes = [];
-          childExtent = undefined;
+        // Collect all child nodes to correct their relative positions when top/left changes
+        // Determine largest minimal extent the parent node is allowed to resize to
+        childNodes = [];
+        childExtent = undefined;
 
-          for (const [childId, child] of nodeLookup) {
-            if (child.parentId === nodeId) {
-              childNodes.push({
-                id: childId,
-                position: { ...child.position },
-                extent: child.extent,
-              });
+        for (const [childId, child] of nodeLookup) {
+          if (child.parentId === nodeId) {
+            childNodes.push({
+              id: childId,
+              position: { ...child.position },
+              extent: child.extent,
+            });
 
-              if (child.extent === 'parent' || child.expandParent) {
-                const extent = nodeToChildExtent(child, node!, child.origin ?? nodeOrigin);
+            if (child.extent === 'parent' || child.expandParent) {
+              const extent = nodeToChildExtent(child, node!, child.origin ?? nodeOrigin);
 
-                if (childExtent) {
-                  childExtent = [
-                    [Math.min(extent[0][0], childExtent[0][0]), Math.min(extent[0][1], childExtent[0][1])],
-                    [Math.max(extent[1][0], childExtent[1][0]), Math.max(extent[1][1], childExtent[1][1])],
-                  ];
-                } else {
-                  childExtent = extent;
-                }
+              if (childExtent) {
+                childExtent = [
+                  [Math.min(extent[0][0], childExtent[0][0]), Math.min(extent[0][1], childExtent[0][1])],
+                  [Math.max(extent[1][0], childExtent[1][0]), Math.max(extent[1][1], childExtent[1][1])],
+                ];
+              } else {
+                childExtent = extent;
               }
             }
           }
-
-          onResizeStart?.(event, { ...prevValues });
         }
+
+        onResizeStart?.(event, { ...prevValues });
       })
       .on('drag', (event: ResizeDragEvent) => {
         const { transform, snapGrid, snapToGrid, nodeOrigin: storeNodeOrigin } = getStoreItems();
         const pointerPosition = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
         const childChanges: XYResizerChildChange[] = [];
 
-        if (node) {
-          const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
-          const change = { ...initChange };
-          const nodeOrigin = node.origin ?? storeNodeOrigin;
-
-          const { width, height, x, y } = getDimensionsAfterResize(
-            startValues,
-            controlDirection,
-            pointerPosition,
-            boundaries,
-            keepAspectRatio,
-            nodeOrigin,
-            parentExtent,
-            childExtent
-          );
-
-          const isWidthChange = width !== prevWidth;
-          const isHeightChange = height !== prevHeight;
-
-          const isXPosChange = x !== prevX && isWidthChange;
-          const isYPosChange = y !== prevY && isHeightChange;
-
-          if (isXPosChange || isYPosChange || nodeOrigin[0] === 1 || nodeOrigin[1] == 1) {
-            change.isXPosChange = isXPosChange;
-            change.isYPosChange = isYPosChange;
-            change.x = isXPosChange ? x : prevX;
-            change.y = isYPosChange ? y : prevY;
-
-            prevValues.x = change.x;
-            prevValues.y = change.y;
-
-            // Fix expandParent when resizing from top/left
-            if (parentNode && node.expandParent) {
-              if (change.x < 0) {
-                prevValues.x = 0;
-                startValues.x = startValues.x - change.x;
-              }
-
-              if (change.y < 0) {
-                prevValues.y = 0;
-                startValues.y = startValues.y - change.y;
-              }
-            }
-
-            if (childNodes.length > 0) {
-              const xChange = x - prevX;
-              const yChange = y - prevY;
-
-              for (const childNode of childNodes) {
-                childNode.position = {
-                  x: childNode.position.x - xChange + nodeOrigin[0] * (width - prevWidth),
-                  y: childNode.position.y - yChange + nodeOrigin[1] * (height - prevHeight),
-                };
-                childChanges.push(childNode);
-              }
-            }
-          }
-
-          if (isWidthChange || isHeightChange) {
-            change.isWidthChange = isWidthChange;
-            change.isHeightChange = isHeightChange;
-            change.width = width;
-            change.height = height;
-            prevValues.width = change.width;
-            prevValues.height = change.height;
-          }
-
-          if (!change.isXPosChange && !change.isYPosChange && !isWidthChange && !isHeightChange) {
-            return;
-          }
-
-          const direction = getResizeDirection({
-            width: prevValues.width,
-            prevWidth,
-            height: prevValues.height,
-            prevHeight,
-            affectsX: controlDirection.affectsX,
-            affectsY: controlDirection.affectsY,
-          });
-
-          const nextValues = { ...prevValues, direction };
-
-          const callResize = shouldResize?.(event, nextValues);
-
-          if (callResize === false) {
-            return;
-          }
-
-          onResize?.(event, nextValues);
-          onChange(change, childChanges);
+        if (!node) {
+          return;
         }
+        const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
+        const change: XYResizerChange = {};
+        const nodeOrigin = node.origin ?? storeNodeOrigin;
+
+        const { width, height, x, y } = getDimensionsAfterResize(
+          startValues,
+          controlDirection,
+          pointerPosition,
+          boundaries,
+          keepAspectRatio,
+          nodeOrigin,
+          parentExtent,
+          childExtent
+        );
+
+        const isWidthChange = width !== prevWidth;
+        const isHeightChange = height !== prevHeight;
+
+        const isXPosChange = x !== prevX && isWidthChange;
+        const isYPosChange = y !== prevY && isHeightChange;
+
+        if (!isXPosChange && !isYPosChange && !isWidthChange && !isHeightChange) {
+          return;
+        }
+
+        if (isXPosChange || isYPosChange || nodeOrigin[0] === 1 || nodeOrigin[1] == 1) {
+          change.x = isXPosChange ? x : prevValues.x;
+          change.y = isYPosChange ? y : prevValues.y;
+
+          prevValues.x = change.x;
+          prevValues.y = change.y;
+
+          // Fix expandParent when resizing from top/left
+          if (parentNode && node.expandParent) {
+            if (change.x && change.x < 0) {
+              prevValues.x = 0;
+              startValues.x = startValues.x - change.x;
+            }
+
+            if (change.y && change.y < 0) {
+              prevValues.y = 0;
+              startValues.y = startValues.y - change.y;
+            }
+          }
+
+          if (childNodes.length > 0) {
+            const xChange = x - prevX;
+            const yChange = y - prevY;
+
+            for (const childNode of childNodes) {
+              childNode.position = {
+                x: childNode.position.x - xChange + nodeOrigin[0] * (width - prevWidth),
+                y: childNode.position.y - yChange + nodeOrigin[1] * (height - prevHeight),
+              };
+              childChanges.push(childNode);
+            }
+          }
+        }
+
+        if (isWidthChange || isHeightChange) {
+          change.width = isWidthChange ? width : prevValues.width;
+          change.height = isHeightChange ? height : prevValues.height;
+          prevValues.width = change.width;
+          prevValues.height = change.height;
+        }
+
+        const direction = getResizeDirection({
+          width: prevValues.width,
+          prevWidth,
+          height: prevValues.height,
+          prevHeight,
+          affectsX: controlDirection.affectsX,
+          affectsY: controlDirection.affectsY,
+        });
+
+        const nextValues = { ...prevValues, direction };
+
+        const callResize = shouldResize?.(event, nextValues);
+
+        if (callResize === false) {
+          return;
+        }
+
+        onResize?.(event, nextValues);
+        onChange(change, childChanges);
       })
       .on('end', (event: ResizeDragEvent) => {
         onResizeEnd?.(event, { ...prevValues });
+        onEnd?.();
       });
     selection.call(dragHandler);
   }

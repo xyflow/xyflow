@@ -70,23 +70,27 @@
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
           const node = $nodeLookup.get(id)?.internals.userNode;
-          if (node) {
-            node.height = change.isHeightChange ? change.height : node.height;
-            node.width = change.isWidthChange ? change.width : node.width;
-            node.position =
-              change.isXPosChange || change.isYPosChange
-                ? { x: change.x, y: change.y }
-                : node.position;
-
-            for (const childChange of childChanges) {
-              const childNode = $nodeLookup.get(childChange.id)?.internals.userNode;
-              if (childNode) {
-                childNode.position = childChange.position;
-              }
-            }
-
-            $nodes = $nodes;
+          if (!node) {
+            return;
           }
+
+          if (change.x !== undefined && change.y !== undefined) {
+            node.position = { x: change.x, y: change.y };
+          }
+
+          if (change.width !== undefined && change.height !== undefined) {
+            node.width = change.width;
+            node.height = change.height;
+          }
+
+          for (const childChange of childChanges) {
+            const childNode = $nodeLookup.get(childChange.id)?.internals.userNode;
+            if (childNode) {
+              childNode.position = childChange.position;
+            }
+          }
+
+          $nodes = $nodes;
         }
       });
     }
