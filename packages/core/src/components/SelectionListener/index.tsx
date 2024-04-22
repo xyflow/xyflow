@@ -10,7 +10,7 @@ type SelectionListenerProps = {
 
 const selector = (s: ReactFlowState) => ({
   selectedNodes: s.getNodes().filter((n) => n.selected),
-  selectedEdges: s.edges.filter((e) => e.selected),
+  selectedEdges: s.edges.filter((e) => e.selected).map((e) => ({ ...e })),
 });
 
 type SelectorSlice = ReturnType<typeof selector>;

@@ -1,5 +1,21 @@
 # reactflow
 
+## 11.11.2
+
+### Patch Changes
+
+- [#4189](https://github.com/xyflow/xyflow/pull/4189) [`b0b2d001`](https://github.com/xyflow/xyflow/commit/b0b2d00139850d6d29c0b8a595c46ad2c888f34e) - re-observe when ref changes
+- [#4192](https://github.com/xyflow/xyflow/pull/4192) [`f452cf0c`](https://github.com/xyflow/xyflow/commit/f452cf0c758a61279caf8d408f32d2001d6f587b) - fix redux readonly error
+- [#4188](https://github.com/xyflow/xyflow/pull/4188) [`ac2e11d1`](https://github.com/xyflow/xyflow/commit/ac2e11d1892c943cc2abc486dd0b8c677a647896) - cover entire area
+
+- Updated dependencies [[`ac2e11d1`](https://github.com/xyflow/xyflow/commit/ac2e11d1892c943cc2abc486dd0b8c677a647896), [`b0b2d001`](https://github.com/xyflow/xyflow/commit/b0b2d00139850d6d29c0b8a595c46ad2c888f34e), [`f452cf0c`](https://github.com/xyflow/xyflow/commit/f452cf0c758a61279caf8d408f32d2001d6f587b)]:
+  - @reactflow/minimap@11.7.12
+  - @reactflow/core@11.11.2
+  - @reactflow/background@11.3.12
+  - @reactflow/controls@11.2.12
+  - @reactflow/node-resizer@2.2.12
+  - @reactflow/node-toolbar@1.3.12
+
 ## 11.11.1
 
 ### Patch Changes

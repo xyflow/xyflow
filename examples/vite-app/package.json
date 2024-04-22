@@ -15,13 +15,16 @@
   },
   "dependencies": {
     "@reactflow/node-resizer": "workspace:*",
+    "@reduxjs/toolkit": "^2.2.3",
     "classcat": "^5.0.3",
     "dagre": "^0.8.5",
     "localforage": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^9.1.1",
     "react-router-dom": "^6.3.0",
     "reactflow": "workspace:*",
+    "redux": "^5.0.1",
     "zustand": "^4.4.1"
   },
   "devDependencies": {
