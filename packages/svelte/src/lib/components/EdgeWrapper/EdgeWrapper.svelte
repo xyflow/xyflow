@@ -1,5 +1,3 @@
-<svelte:options immutable />
-
 <script lang="ts">
   import { createEventDispatcher, setContext } from 'svelte';
   import cc from 'classcat';
