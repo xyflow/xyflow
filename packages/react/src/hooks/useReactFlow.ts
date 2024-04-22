@@ -291,7 +291,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   );
 
   const updateNode = useCallback<Instance.UpdateNode<NodeType>>(
-    (id, nodeUpdate, options = { replace: true }) => {
+    (id, nodeUpdate, options = { replace: false }) => {
       setNodes((prevNodes) =>
         prevNodes.map((node) => {
           if (node.id === id) {

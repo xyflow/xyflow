@@ -11,6 +11,7 @@
 - call `onEnd` in XYResizer thanks @tonyf
 - cleanup `getPositionWithOrigin` usage
 - use `setAttributes` flag for dimension change when `width`/`height` should be set
+- use `replace: false` as the default for `updateNode` function
 
 ## 12.0.0-next.14
 
