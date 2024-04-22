@@ -113,6 +113,7 @@ function ResizeControl({
               id,
               type: 'dimensions',
               resizing: true,
+              setAttributes: true,
               dimensions: {
                 width: change.width,
                 height: change.height,

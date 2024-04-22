@@ -100,7 +100,7 @@ function applyChange(change: any, element: any): any {
         element.measured.width = change.dimensions.width;
         element.measured.height = change.dimensions.height;
 
-        if (change.resizing) {
+        if (change.setAttributes) {
           element.width = change.dimensions.width;
           element.height = change.dimensions.height;
         }

@@ -217,7 +217,7 @@ export function handleExpandParent(
         changes.push({
           id: parentId,
           type: 'dimensions',
-          resizing: true,
+          setAttributes: true,
           dimensions: {
             width: Math.max(dimensions.width, Math.round(expandedRect.width)),
             height: Math.max(dimensions.height, Math.round(expandedRect.height)),
