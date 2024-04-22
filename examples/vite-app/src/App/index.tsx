@@ -47,6 +47,7 @@ import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
 import useNodesInitialized from '../examples/UseNodesInit';
+import Redux from '../examples/Redux';
 
 interface IRoute {
   name: string;
@@ -214,6 +215,11 @@ const routes: IRoute[] = [
     name: 'Provider',
     path: '/provider',
     component: Provider,
+  },
+  {
+    name: 'Redux',
+    path: '/redux',
+    component: Redux,
   },
   {
     name: 'Save/Restore',
