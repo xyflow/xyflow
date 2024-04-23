@@ -2,7 +2,9 @@
   import { onMount, hasContext } from 'svelte';
   import { get } from 'svelte/store';
   import cc from 'classcat';
-  import { ConnectionMode, PanOnScrollMode, type Viewport } from '@xyflow/system';
+  import { ConnectionMode, PanOnScrollMode } from '@xyflow/system';
+
+  import { key, useStore, createStoreContext } from '$lib/store';
 
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
@@ -14,10 +16,11 @@
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
   import { Attribution } from '$lib/components/Attribution';
-  import { key, useStore, createStoreContext } from '$lib/store';
-  import type { SvelteFlowProps } from './types';
-  import { updateStore, updateStoreByKeys, type UpdatableStoreProps } from './utils';
+
   import { useColorModeClass } from '$lib/hooks/useColorModeClass';
+
+  import type { SvelteFlowProps } from './types';
+  import { updateStore, updateStoreByKeys } from './utils';
 
   let {
     id = '1',
