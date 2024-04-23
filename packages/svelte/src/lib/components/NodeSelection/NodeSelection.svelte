@@ -20,11 +20,11 @@
   let selectedNodes = $derived($nodes.filter((n) => n.selected));
   let bounds = $derived(getNodesBounds(selectedNodes));
 
-  function onContextMenu(event: MouseEvent | TouchEvent) {
+  function oncontextmenu(event: MouseEvent | TouchEvent) {
     dispatch('selectioncontextmenu', { nodes: selectedNodes, event });
   }
 
-  function onClick(event: MouseEvent | TouchEvent) {
+  function onclick(event: MouseEvent | TouchEvent) {
     dispatch('selectionclick', { nodes: selectedNodes, event });
   }
 </script>
@@ -46,11 +46,11 @@
         dispatchNodeEvent('nodedragstop', { event, targetNode: null, nodes });
       }
     }}
-    on:contextmenu={onContextMenu}
-    on:click={onClick}
+    {oncontextmenu}
+    {onclick}
     role="button"
     tabindex="-1"
-    on:keyup={() => {}}
+    onkeyup={() => {}}
   >
     <Selection width="100%" height="100%" x={0} y={0} />
   </div>

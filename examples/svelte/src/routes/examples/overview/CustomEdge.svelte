@@ -31,7 +31,7 @@
 	<button
 		style:transform={`translate(-50%,-50%) translate(${labelX}px,${labelY}px)`}
 		class="edge-button"
-		on:click={onClick}
+		onclick={onClick}
 	>
 		✕
 	</button>

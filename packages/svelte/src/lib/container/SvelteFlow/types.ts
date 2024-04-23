@@ -34,6 +34,7 @@ import type {
   IsValidConnection
 } from '$lib/types';
 import type { Writable } from 'svelte/store';
+import type { Snippet } from 'svelte';
 
 export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
   /** The id of the flow
@@ -164,6 +165,8 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
    * @default 'strict'
    */
   connectionMode?: ConnectionMode;
+  /** Provide a custom snippet to be used insted of the default connection line */
+  connectionLine?: Snippet;
   /** Styles to be applied to the connection line */
   connectionLineStyle?: string;
   /** Styles to be applied to the container of the connection line */

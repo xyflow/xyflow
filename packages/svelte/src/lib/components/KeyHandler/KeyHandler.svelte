@@ -72,8 +72,8 @@
 </script>
 
 <svelte:window
-  on:blur={resetKeysAndSelection}
-  on:contextmenu={resetKeysAndSelection}
+  onblur={resetKeysAndSelection}
+  oncontextmenu={resetKeysAndSelection}
   use:shortcut={{
     trigger: getShortcutTrigger(selectionKey, () => selectionKeyPressed.set(true)),
     type: 'keydown'

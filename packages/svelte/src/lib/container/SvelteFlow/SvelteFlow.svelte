@@ -45,8 +45,9 @@
     snapGrid,
     deleteKey,
     connectionRadius,
-    connectionLineType,
     connectionMode = ConnectionMode.Strict,
+    connectionLine,
+    connectionLineType,
     connectionLineStyle = '',
     connectionLineContainerStyle = '',
     onMoveStart,
@@ -80,6 +81,7 @@
     onbeforedelete,
     oninit,
     defaultMarkerColor = '#b1b1b7',
+    children,
     ...restProps
   }: SvelteFlowProps = $props();
 
@@ -191,8 +193,6 @@
   {style}
   class={cc(['svelte-flow', className, $colorModeClass])}
   data-testid="svelte-flow__wrapper"
-  on:dragover
-  on:drop
   {...restProps}
   role="application"
 >
@@ -227,12 +227,10 @@
         <ConnectionLine
           containerStyle={connectionLineContainerStyle}
           style={connectionLineStyle}
-          isCustomComponent={$$slots.connectionLine}
-        >
-          <slot name="connectionLine" slot="connectionLine" />
-        </ConnectionLine>
-        <div class="svelte-flow__edgelabel-renderer" />
-        <div class="svelte-flow__viewport-portal" />
+          {connectionLine}
+        />
+        <div class="svelte-flow__edgelabel-renderer"></div>
+        <div class="svelte-flow__viewport-portal"></div>
         <NodeRenderer
           on:nodeclick
           on:nodemouseenter
@@ -255,7 +253,9 @@
     </Pane>
   </Zoom>
   <Attribution {proOptions} position={attributionPosition} />
-  <slot />
+  {#if children}
+    {@render children()}
+  {/if}
 </div>
 
 <style>

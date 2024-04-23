@@ -193,17 +193,16 @@
 >
 	<Controls orientation="horizontal">
 		<ControlButton slot="before">xy</ControlButton>
-		<ControlButton aria-label="log" on:click={() => console.log('control button')}
-			>log</ControlButton
+		<ControlButton aria-label="log" onclick={() => console.log('control button')}>log</ControlButton
 		>
 	</Controls>
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
 	<Panel position="top-right">
-		<button on:click={updateNode}>update node pos</button>
-		<button on:click={updateEdge}>update edge type</button>
+		<button onclick={updateNode}>update node pos</button>
+		<button onclick={updateEdge}>update edge type</button>
 		<button
-			on:click={() => {
+			onclick={() => {
 				console.log($nodes, $nodes.length);
 				$nodes[$nodes.length - 1].hidden = !$nodes[$nodes.length - 1].hidden;
 				$nodes = $nodes;

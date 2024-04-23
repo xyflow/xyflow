@@ -143,7 +143,7 @@
 	<Controls />
 	<Panel position="bottom-right">
 		<button
-			on:click={() => {
+			onclick={() => {
 				snapToGrid = !snapToGrid;
 			}}
 		>

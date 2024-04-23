@@ -56,7 +56,7 @@
 	>
 		<button
 			class="edgeButton"
-			on:click={(event) => {
+			onclick={(event) => {
 				event.stopPropagation();
 				alert(`remove ${id}`);
 			}}

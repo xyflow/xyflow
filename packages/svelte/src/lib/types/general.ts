@@ -1,3 +1,4 @@
+import type { Snippet } from 'svelte';
 import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
 import type {
   FitViewOptionsBase,
@@ -47,6 +48,7 @@ export type HandleComponentProps = {
   isConnectableEnd?: boolean;
   onconnect?: (connections: Connection[]) => void;
   ondisconnect?: (connections: Connection[]) => void;
+  children?: Snippet;
 };
 
 export type FitViewOptions = FitViewOptionsBase<Node>;

@@ -184,11 +184,11 @@
     style:transform="translate({positionOriginX}px, {positionOriginY}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
     style="{style ?? ''};{inlineStyleDimensions.width}{inlineStyleDimensions.height}"
-    on:click={onSelectNodeHandler}
-    on:mouseenter={(event) => dispatchNodeEvent('nodemouseenter', { node, event })}
-    on:mouseleave={(event) => dispatchNodeEvent('nodemouseleave', { node, event })}
-    on:mousemove={(event) => dispatchNodeEvent('nodemousemove', { node, event })}
-    on:contextmenu={(event) => dispatchNodeEvent('nodecontextmenu', { node, event })}
+    onclick={onSelectNodeHandler}
+    onmouseenter={(event) => dispatchNodeEvent('nodemouseenter', { node, event })}
+    onmouseleave={(event) => dispatchNodeEvent('nodemouseleave', { node, event })}
+    onmousemove={(event) => dispatchNodeEvent('nodemousemove', { node, event })}
+    oncontextmenu={(event) => dispatchNodeEvent('nodecontextmenu', { node, event })}
   >
     <svelte:component
       this={nodeComponent}

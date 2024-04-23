@@ -2,17 +2,19 @@
   import cc from 'classcat';
   import type { PanelProps } from './types';
 
-  type $$Props = PanelProps;
+  let {
+    position = 'top-right',
+    style,
+    class: className,
+    children,
+    ...restProps
+  }: PanelProps = $props();
 
-  export let position: $$Props['position'] = 'top-right';
-  export let style: $$Props['style'] = undefined;
-
-  let className: $$Props['class'] = undefined;
-  export { className as class };
-
-  $: positionClasses = `${position}`.split('-');
+  let positionClasses = $derived(`${position}`.split('-'));
 </script>
 
-<div class={cc(['svelte-flow__panel', className, ...positionClasses])} {style} {...$$restProps}>
-  <slot />
+<div class={cc(['svelte-flow__panel', className, ...positionClasses])} {style} {...restProps}>
+  {#if children}
+    {@render children()}
+  {/if}
 </div>

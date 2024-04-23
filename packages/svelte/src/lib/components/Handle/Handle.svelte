@@ -14,22 +14,6 @@
 
   import { useStore } from '$lib/store';
   import type { HandleComponentProps } from '$lib/types';
-  // @todo implement connectablestart, connectableend
-  // type $$Props = HandleComponentProps;
-
-  // export let id: $$Props['id'] = undefined;
-  // export let type: $$Props['type'] = 'source';
-  // export let position: $$Props['position'] = Position.Top;
-  // export let style: $$Props['style'] = undefined;
-  // export let isConnectable: $$Props['isConnectable'] = undefined;
-  // export let onconnect: $$Props['onconnect'] = undefined;
-  // export let ondisconnect: $$Props['ondisconnect'] = undefined;
-
-  // // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
-  // // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
-
-  // let className: $$Props['class'] = undefined;
-  // export { className as class };
 
   let {
     id,
@@ -39,7 +23,8 @@
     class: className,
     isConnectable: isConnectableProp,
     onconnect,
-    ondisconnect
+    ondisconnect,
+    children
   }: HandleComponentProps = $props();
 
   const nodeId = getContext<string>('svelteflow__node_id');
@@ -189,11 +174,13 @@ The Handle component is the part of a node that can be used to connect nodes.
   class:connectableend={isConnectable}
   class:connectable={isConnectable}
   class:connectionindicator={isConnectable && (!connectionInProcess || isPossibleEndHandle)}
-  on:mousedown={onPointerDown}
-  on:touchstart={onPointerDown}
+  onmousedown={onPointerDown}
+  ontouchstart={onPointerDown}
   {style}
   role="button"
   tabindex="-1"
 >
-  <slot />
+  {#if children}
+    {@render children()}
+  {/if}
 </div>

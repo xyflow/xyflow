@@ -14,18 +14,21 @@
 
   let {
     position = 'bottom-left',
+    orientation = 'vertical',
     showZoom = true,
     showFitView = true,
     showLock = true,
+    style,
+    class: className,
     buttonBgColor,
     buttonBgColorHover,
     buttonColor,
     buttonColorHover,
     buttonBorderColor,
     'aria-label': ariaLabel,
-    style,
-    orientation = 'vertical',
-    class: className
+    children,
+    before,
+    after
   }: ControlsProps = $props();
 
   const {
@@ -81,10 +84,12 @@
   aria-label={ariaLabel ?? 'Svelte Flow controls'}
   {style}
 >
-  <slot name="before" />
+  {#if before}
+    {@render before()}
+  {/if}
   {#if showZoom}
     <ControlButton
-      on:click={onZoomInHandler}
+      onclick={onZoomInHandler}
       class="svelte-flow__controls-zoomin"
       title="zoom in"
       aria-label="zoom in"
@@ -94,7 +99,7 @@
       <PlusIcon />
     </ControlButton>
     <ControlButton
-      on:click={onZoomOutHandler}
+      onclick={onZoomOutHandler}
       class="svelte-flow__controls-zoomout"
       title="zoom out"
       aria-label="zoom out"
@@ -107,7 +112,7 @@
   {#if showFitView}
     <ControlButton
       class="svelte-flow__controls-fitview"
-      on:click={onFitViewHandler}
+      onclick={onFitViewHandler}
       title="fit view"
       aria-label="fit view"
       {...buttonProps}
@@ -118,7 +123,7 @@
   {#if showLock}
     <ControlButton
       class="svelte-flow__controls-interactive"
-      on:click={onToggleInteractivity}
+      onclick={onToggleInteractivity}
       title="toggle interactivity"
       aria-label="toggle interactivity"
       {...buttonProps}
@@ -126,6 +131,10 @@
       {#if isInteractive}<UnlockIcon />{:else}<LockIcon />{/if}
     </ControlButton>
   {/if}
-  <slot />
-  <slot name="after" />
+  {#if children}
+    {@render children()}
+  {/if}
+  {#if after}
+    {@render after()}
+  {/if}
 </Panel>

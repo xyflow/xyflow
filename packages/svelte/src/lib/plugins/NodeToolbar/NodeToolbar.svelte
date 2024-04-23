@@ -13,7 +13,8 @@
     position = Position.Top,
     align = 'center',
     offset = 10,
-    isVisible
+    isVisible,
+    children
   }: NodeToolbarProps = $props();
 
   const { domNode, viewport, nodeLookup, nodes, nodeOrigin } = useStore();
@@ -84,6 +85,8 @@
     style:transform
     style:z-index={zIndex}
   >
-    <slot />
+    {#if children}
+      {@render children()}
+    {/if}
   </div>
 {/if}

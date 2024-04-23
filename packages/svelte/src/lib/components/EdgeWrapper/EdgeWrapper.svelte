@@ -58,7 +58,7 @@
 
   const handleEdgeSelect = useHandleEdgeSelect();
 
-  function onClick(event: MouseEvent | TouchEvent) {
+  function onclick(event: MouseEvent | TouchEvent) {
     const edge = $edgeLookup.get(id);
 
     if (edge) {
@@ -67,7 +67,7 @@
     }
   }
 
-  function onContextMenu(event: MouseEvent) {
+  function oncontextmenu(event: MouseEvent) {
     const edge = $edgeLookup.get(id);
 
     if (edge) {
@@ -86,8 +86,8 @@
       class:selected
       class:selectable={isSelectable}
       data-id={id}
-      on:click={onClick}
-      on:contextmenu={onContextMenu}
+      {onclick}
+      {oncontextmenu}
       aria-label={ariaLabel === null
         ? undefined
         : ariaLabel

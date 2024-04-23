@@ -206,12 +206,12 @@
   class:draggable={panOnDrag}
   class:dragging={$dragging}
   class:selection={isSelecting}
-  on:click={hasActiveSelection ? undefined : wrapHandler(onClick, container!)}
-  on:mousedown={hasActiveSelection ? onMouseDown : undefined}
-  on:mousemove={hasActiveSelection ? onMouseMove : undefined}
-  on:mouseup={hasActiveSelection ? onMouseUp : undefined}
-  on:mouseleave={hasActiveSelection ? onMouseLeave : undefined}
-  on:contextmenu={wrapHandler(onContextMenu, container!)}
+  onclick={hasActiveSelection ? undefined : wrapHandler(onClick, container!)}
+  onmousedown={hasActiveSelection ? onMouseDown : undefined}
+  onmousemove={hasActiveSelection ? onMouseMove : undefined}
+  onmouseup={hasActiveSelection ? onMouseUp : undefined}
+  onmouseleave={hasActiveSelection ? onMouseLeave : undefined}
+  oncontextmenu={wrapHandler(onContextMenu, container!)}
 >
   {@render children()}
 </div>

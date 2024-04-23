@@ -1,5 +1,6 @@
 import type { HTMLButtonAttributes } from 'svelte/elements';
 import type { PanelPosition } from '@xyflow/system';
+import type { Snippet } from 'svelte';
 
 export type ControlsProps = {
   /** Position of the controls on the pane
@@ -22,6 +23,9 @@ export type ControlsProps = {
   style?: string;
   class?: string;
   orientation?: 'horizontal' | 'vertical';
+  children?: Snippet;
+  before?: Snippet;
+  after?: Snippet;
 };
 
 export type ControlButtonProps = HTMLButtonAttributes & {
@@ -31,4 +35,5 @@ export type ControlButtonProps = HTMLButtonAttributes & {
   color?: string;
   colorHover?: string;
   borderColor?: string;
+  children?: Snippet;
 };

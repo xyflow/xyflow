@@ -10,13 +10,15 @@
     color,
     colorHover,
     borderColor,
+    onclick,
+    children,
     ...restProps
   }: ControlButtonProps = $props();
 </script>
 
 <button
   type="button"
-  on:click
+  {onclick}
   class={cc(['svelte-flow__controls-button', className])}
   style:--xy-controls-button-background-color-props={bgColor}
   style:--xy-controls-button-background-color-hover-props={bgColorHover}
@@ -25,5 +27,7 @@
   style:--xy-controls-button-border-color-props={borderColor}
   {...restProps}
 >
-  <slot class="button-svg" />
+  {#if children}
+    {@render children()}
+  {/if}
 </button>

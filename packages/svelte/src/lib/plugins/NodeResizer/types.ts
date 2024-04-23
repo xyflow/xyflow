@@ -1,3 +1,4 @@
+import type { Snippet } from 'svelte';
 import type {
   ControlPosition,
   ResizeControlVariant,

@@ -28,8 +28,8 @@
     style={'pointer-events: all;' + style}
     role="button"
     tabindex="-1"
-    on:keyup={() => {}}
-    on:click={() => {
+    onkeyup={() => {}}
+    onclick={() => {
       if (id) handleEdgeSelect(id);
     }}
   >
