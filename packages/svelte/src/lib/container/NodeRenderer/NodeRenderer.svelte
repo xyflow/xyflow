@@ -4,6 +4,18 @@
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
+  import type { NodeEvents } from '$lib/types/events';
+
+  let {
+    onnodeclick,
+    onnodemouseenter,
+    onnodemousemove,
+    onnodemouseleave,
+    onnodedrag,
+    onnodedragstart,
+    onnodedragstop,
+    onnodecontextmenu
+  }: NodeEvents = $props();
 
   const {
     visibleNodes,
@@ -82,14 +94,14 @@
       measuredWidth={node.measured.width}
       measuredHeight={node.measured.height}
       {resizeObserver}
-      on:nodeclick
-      on:nodemouseenter
-      on:nodemousemove
-      on:nodemouseleave
-      on:nodedrag
-      on:nodedragstart
-      on:nodedragstop
-      on:nodecontextmenu
+      {onnodeclick}
+      {onnodemouseenter}
+      {onnodemousemove}
+      {onnodemouseleave}
+      {onnodedrag}
+      {onnodedragstart}
+      {onnodedragstop}
+      {onnodecontextmenu}
     />
   {/each}
 </div>

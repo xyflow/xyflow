@@ -3,9 +3,9 @@
   import { CallOnMount } from '$lib/components/CallOnMount';
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
-  import type { DefaultEdgeOptions } from '$lib/types';
+  import type { EdgeRendererProps } from './types';
 
-  let { defaultEdgeOptions }: { defaultEdgeOptions: DefaultEdgeOptions | undefined } = $props();
+  let { defaultEdgeOptions, onedgeclick, onedgecontextmenu }: EdgeRendererProps = $props();
 
   const {
     visibleEdges,
@@ -53,8 +53,8 @@
       class={edge.class}
       type={edge.type || 'default'}
       zIndex={edge.zIndex}
-      on:edgeclick
-      on:edgecontextmenu
+      {onedgeclick}
+      {onedgecontextmenu}
     />
   {/each}
 

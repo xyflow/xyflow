@@ -13,7 +13,6 @@
 		type Node,
 		type Edge,
 		ConnectionMode,
-		useSvelteFlow,
 		ControlButton
 	} from '@xyflow/svelte';
 
@@ -150,36 +149,36 @@
 	initialViewport={{ x: 100, y: 100, zoom: 2 }}
 	snapGrid={[25, 25]}
 	oninit={() => console.log('on init')}
-	on:nodeclick={(event) => console.log('on node click', event)}
-	on:nodemouseenter={(event) => console.log('on node enter', event)}
-	on:nodemouseleave={(event) => console.log('on node leave', event)}
-	on:edgeclick={(event) => console.log('edge click', event)}
+	onnodeclick={(event) => console.log('on node click', event)}
+	onnodemouseenter={(event) => console.log('on node enter', event)}
+	onnodemouseleave={(event) => console.log('on node leave', event)}
+	onedgeclick={(event) => console.log('edge click', event)}
 	onconnectstart={(event) => console.log('on connect start', event)}
 	onconnect={(event) => console.log('on connect', event)}
 	onconnectend={(event) => console.log('on connect end', event)}
-	on:paneclick={(event) => console.log('on pane click', event)}
-	on:panecontextmenu={(event) => {
+	onpaneclick={(event) => console.log('on pane click', event)}
+	onpanecontextmenu={({ event }) => {
 		console.log('on pane contextmenu', event);
 	}}
-	on:nodedrag={(event) => {
+	onnodedrag={({ event }) => {
 		console.log('on node drag', event);
 	}}
-	on:nodedragstart={(event) => {
+	onnodedragstart={({ event }) => {
 		console.log('on node drag start', event);
 	}}
-	on:nodedragstop={(event) => {
+	onnodedragstop={(event) => {
 		console.log('on node drag stop', event);
 	}}
-	on:nodecontextmenu={(event) => {
-		event.detail.event.preventDefault();
+	onnodecontextmenu={({ event }) => {
+		event.preventDefault();
 		console.log('on node contextmenu', event);
 	}}
-	on:edgecontextmenu={({ detail: { event, edge } }) => {
+	onedgecontextmenu={({ event, edge }) => {
 		event.preventDefault();
 		console.log('on edge contextmenu', edge);
 	}}
-	on:selectionclick={(event) => console.log('on selection click', event)}
-	on:selectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
+	onselectionclick={(event) => console.log('on selection click', event)}
+	onselectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
 	onbeforedelete={async ({ nodes, edges }) => {
 		console.log('on before delete', nodes, edges);
 		const deleteElements = confirm('Are you sure you want to delete the selected elements?');
@@ -192,7 +191,9 @@
 	deleteKey={['Backspace', 'd']}
 >
 	<Controls orientation="horizontal">
-		<ControlButton slot="before">xy</ControlButton>
+		{#snippet before()}
+			<ControlButton>xy</ControlButton>
+		{/snippet}
 		<ControlButton aria-label="log" onclick={() => console.log('control button')}>log</ControlButton
 		>
 	</Controls>

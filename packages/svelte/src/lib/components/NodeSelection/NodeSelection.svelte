@@ -1,31 +1,32 @@
 <script lang="ts">
   import { getNodesBounds } from '@xyflow/system';
-  import { createEventDispatcher } from 'svelte';
 
+  import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
   import { Selection } from '$lib/components/Selection';
-  import drag from '$lib/actions/drag';
-  import type { Node } from '$lib/types';
-  import { createNodeEventDispatcher } from '$lib';
+
+  import type { NodeSelectionProps } from './types';
+
+  let {
+    onnodedrag,
+    onnodedragstart,
+    onnodedragstop,
+    onselectionclick,
+    onselectioncontextmenu
+  }: NodeSelectionProps = $props();
 
   const store = useStore();
   const { selectionRectMode, nodes } = store;
-
-  const dispatch = createEventDispatcher<{
-    selectioncontextmenu: { nodes: Node[]; event: MouseEvent | TouchEvent };
-    selectionclick: { nodes: Node[]; event: MouseEvent | TouchEvent };
-  }>();
-  const dispatchNodeEvent = createNodeEventDispatcher();
 
   let selectedNodes = $derived($nodes.filter((n) => n.selected));
   let bounds = $derived(getNodesBounds(selectedNodes));
 
   function oncontextmenu(event: MouseEvent | TouchEvent) {
-    dispatch('selectioncontextmenu', { nodes: selectedNodes, event });
+    onselectioncontextmenu?.({ nodes: selectedNodes, event });
   }
 
   function onclick(event: MouseEvent | TouchEvent) {
-    dispatch('selectionclick', { nodes: selectedNodes, event });
+    onselectionclick?.({ nodes: selectedNodes, event });
   }
 </script>
 
@@ -37,13 +38,13 @@
       disabled: false,
       store,
       onDrag: (event, _, __, nodes) => {
-        dispatchNodeEvent('nodedrag', { event, targetNode: null, nodes });
+        onnodedrag?.({ event, targetNode: null, nodes });
       },
       onDragStart: (event, _, __, nodes) => {
-        dispatchNodeEvent('nodedragstart', { event, targetNode: null, nodes });
+        onnodedragstart?.({ event, targetNode: null, nodes });
       },
       onDragStop: (event, _, __, nodes) => {
-        dispatchNodeEvent('nodedragstop', { event, targetNode: null, nodes });
+        onnodedragstop?.({ event, targetNode: null, nodes });
       }
     }}
     {oncontextmenu}

@@ -81,6 +81,20 @@
     onbeforedelete,
     oninit,
     defaultMarkerColor = '#b1b1b7',
+    onnodeclick,
+    onnodemouseenter,
+    onnodemousemove,
+    onnodemouseleave,
+    onnodecontextmenu,
+    onnodedrag,
+    onnodedragstart,
+    onnodedragstop,
+    onselectionclick,
+    onselectioncontextmenu,
+    onedgeclick,
+    onedgecontextmenu,
+    onpaneclick,
+    onpanecontextmenu,
     children,
     ...restProps
   }: SvelteFlowProps = $props();
@@ -218,13 +232,13 @@
     panOnDrag={panOnDrag === undefined ? true : panOnDrag}
   >
     <Pane
-      on:paneclick
-      on:panecontextmenu
       panOnDrag={panOnDrag === undefined ? true : panOnDrag}
       {selectionOnDrag}
+      {onpaneclick}
+      {onpanecontextmenu}
     >
       <ViewportComponent>
-        <EdgeRenderer on:edgeclick on:edgecontextmenu {defaultEdgeOptions} />
+        <EdgeRenderer {onedgeclick} {onedgecontextmenu} {defaultEdgeOptions} />
         <ConnectionLine
           {connectionLine}
           containerStyle={connectionLineContainerStyle}
@@ -233,21 +247,21 @@
         <div class="svelte-flow__edgelabel-renderer"></div>
         <div class="svelte-flow__viewport-portal"></div>
         <NodeRenderer
-          on:nodeclick
-          on:nodemouseenter
-          on:nodemousemove
-          on:nodemouseleave
-          on:nodedragstart
-          on:nodedrag
-          on:nodedragstop
-          on:nodecontextmenu
+          {onnodeclick}
+          {onnodecontextmenu}
+          {onnodemouseenter}
+          {onnodemousemove}
+          {onnodemouseleave}
+          {onnodedrag}
+          {onnodedragstart}
+          {onnodedragstop}
         />
         <NodeSelection
-          on:selectionclick
-          on:selectioncontextmenu
-          on:nodedragstart
-          on:nodedrag
-          on:nodedragstop
+          {onselectionclick}
+          {onselectioncontextmenu}
+          {onnodedrag}
+          {onnodedragstart}
+          {onnodedragstop}
         />
       </ViewportComponent>
       <UserSelection />

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, setContext } from 'svelte';
+  import { setContext } from 'svelte';
   import cc from 'classcat';
   import { getMarkerId } from '@xyflow/system';
 
@@ -7,7 +7,7 @@
   import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
   import { BezierEdgeInternal } from '$lib/components/edges';
 
-  import type { EdgeLayouted, Edge } from '$lib/types';
+  import type { EdgeLayouted, EdgeEvents } from '$lib/types';
 
   const {
     id,
@@ -35,16 +35,14 @@
     targetPosition,
     ariaLabel,
     interactionWidth,
-    class: className
-  }: EdgeLayouted = $props();
+    class: className,
+    onedgeclick,
+    onedgecontextmenu
+  }: EdgeLayouted & EdgeEvents = $props();
 
   setContext('svelteflow__edge_id', id);
 
   const { edgeLookup, edgeTypes, flowId, elementsSelectable } = useStore();
-  const dispatch = createEventDispatcher<{
-    edgeclick: { edge: Edge; event: MouseEvent | TouchEvent };
-    edgecontextmenu: { edge: Edge; event: MouseEvent };
-  }>();
 
   let edgeType = $derived(type || 'default');
   let edgeComponent = $derived($edgeTypes[edgeType] || BezierEdgeInternal);
@@ -63,7 +61,7 @@
 
     if (edge) {
       handleEdgeSelect(id);
-      dispatch('edgeclick', { event, edge });
+      onedgeclick?.({ event, edge });
     }
   }
 
@@ -71,7 +69,7 @@
     const edge = $edgeLookup.get(id);
 
     if (edge) {
-      dispatch('edgecontextmenu', { event, edge });
+      onedgecontextmenu?.({ event, edge });
     }
   }
 </script>

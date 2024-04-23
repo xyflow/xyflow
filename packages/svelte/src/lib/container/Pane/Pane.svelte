@@ -26,7 +26,6 @@
 </script>
 
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import {
     SelectionMode,
     getEventPosition,
@@ -38,7 +37,8 @@
   import type { Node, Edge } from '$lib/types';
   import type { PaneProps } from './types';
 
-  let { panOnDrag, selectionOnDrag, children }: PaneProps = $props();
+  let { panOnDrag, selectionOnDrag, onpaneclick, onpanecontextmenu, children }: PaneProps =
+    $props();
 
   const {
     nodes,
@@ -55,15 +55,6 @@
     unselectNodesAndEdges
   } = useStore();
 
-  const dispatch = createEventDispatcher<{
-    paneclick: {
-      event: MouseEvent | TouchEvent;
-    };
-    panecontextmenu: {
-      event: MouseEvent;
-    };
-  }>();
-
   let container: HTMLDivElement | null = $state(null);
   let containerBounds: DOMRect | null = $state(null);
   let selectedNodes: Node[] = $state([]);
@@ -77,7 +68,7 @@
   );
 
   function onClick(event: MouseEvent | TouchEvent) {
-    dispatch('paneclick', { event });
+    onpaneclick?.({ event });
 
     unselectNodesAndEdges();
     selectionRectMode.set(null);
@@ -194,7 +185,7 @@
       return;
     }
 
-    dispatch('panecontextmenu', { event });
+    onpanecontextmenu?.({ event });
   };
 </script>
 

@@ -8,7 +8,6 @@
   import { useStore } from '$lib/store';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import { getNodeInlineStyleDimensions } from './utils';
-  import { createNodeEventDispatcher } from '$lib';
 
   import type { NodeWrapperProps } from './types';
 
@@ -24,6 +23,7 @@
     dragging = false,
     resizeObserver = null,
     style,
+    class: className,
     type = 'default',
     isParent = false,
     positionX,
@@ -41,7 +41,14 @@
     height,
     dragHandle,
     initialized = false,
-    class: className
+    onnodeclick,
+    onnodedrag,
+    onnodedragstart,
+    onnodedragstop,
+    onnodemouseenter,
+    onnodemouseleave,
+    onnodemousemove,
+    onnodecontextmenu
   }: NodeWrapperProps = $props();
 
   const store = useStore();
@@ -55,8 +62,6 @@
 
   let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
-
-  const dispatchNodeEvent = createNodeEventDispatcher();
 
   let prevType: string | undefined;
   let prevSourcePosition: Position | undefined;
@@ -91,7 +96,7 @@
   setContext('svelteflow__node_id', id);
   setContext('svelteflow__node_connectable', connectableStore);
 
-  // TODO: extract this part out!
+  // TODO: extract this part!
   $effect(() => {
     if (resizeObserver && (nodeRef !== prevNodeRef || !initialized)) {
       prevNodeRef && resizeObserver.unobserve(prevNodeRef);
@@ -144,7 +149,7 @@
       handleNodeSelection(id);
     }
 
-    dispatchNodeEvent('nodeclick', { node, event });
+    onnodeclick?.({ node, event });
   }
 </script>
 
@@ -160,13 +165,13 @@
       noDragClass: 'nodrag',
       onNodeMouseDown: handleNodeSelection,
       onDrag: (event, _, targetNode, nodes) => {
-        dispatchNodeEvent('nodedrag', { event, targetNode, nodes });
+        onnodedrag?.({ event, targetNode, nodes });
       },
       onDragStart: (event, _, targetNode, nodes) => {
-        dispatchNodeEvent('nodedragstart', { event, targetNode, nodes });
+        onnodedragstart?.({ event, targetNode, nodes });
       },
       onDragStop: (event, _, targetNode, nodes) => {
-        dispatchNodeEvent('nodedragstop', { event, targetNode, nodes });
+        onnodedragstop?.({ event, targetNode, nodes });
       },
       store
     }}
@@ -185,10 +190,18 @@
     style:visibility={initialized ? 'visible' : 'hidden'}
     style="{style ?? ''};{inlineStyleDimensions.width}{inlineStyleDimensions.height}"
     onclick={onSelectNodeHandler}
-    onmouseenter={(event) => dispatchNodeEvent('nodemouseenter', { node, event })}
-    onmouseleave={(event) => dispatchNodeEvent('nodemouseleave', { node, event })}
-    onmousemove={(event) => dispatchNodeEvent('nodemousemove', { node, event })}
-    oncontextmenu={(event) => dispatchNodeEvent('nodecontextmenu', { node, event })}
+    onmouseenter={(event) => {
+      onnodemouseenter?.({ node, event });
+    }}
+    onmouseleave={(event) => {
+      onnodemouseleave?.({ node, event });
+    }}
+    onmousemove={(event) => {
+      onnodemousemove?.({ node, event });
+    }}
+    oncontextmenu={(event) => {
+      onnodecontextmenu?.({ node, event });
+    }}
   >
     <svelte:component
       this={nodeComponent}
