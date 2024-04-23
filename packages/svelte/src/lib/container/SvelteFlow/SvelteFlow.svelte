@@ -139,11 +139,26 @@
     }
   });
 
-  // TODO: this is hacky use of derived.by
-  // this updates the store for simple changes
-  // where the prop names equals the store name
-  let storeKeyUpdater = $derived.by(() => {
-    const updatableProps: UpdatableStoreProps = {
+  // TODO: this gets called twice on client
+  updateStore(store, {
+    nodeTypes,
+    edgeTypes,
+    minZoom,
+    maxZoom,
+    translateExtent
+  });
+  $effect.pre(() => {
+    updateStore(store, {
+      nodeTypes,
+      edgeTypes,
+      minZoom,
+      maxZoom,
+      translateExtent
+    });
+  });
+
+  $effect.pre(() => {
+    updateStoreByKeys(store, {
       flowId: id,
       connectionLineType,
       connectionRadius,
@@ -166,22 +181,8 @@
       onconnectstart,
       onconnectend,
       onbeforedelete
-    };
-
-    updateStoreByKeys(store, updatableProps);
-  });
-  storeKeyUpdater;
-
-  let storeUpdater = $derived.by(() => {
-    updateStore(store, {
-      nodeTypes,
-      edgeTypes,
-      minZoom,
-      maxZoom,
-      translateExtent
     });
   });
-  storeUpdater;
 
   let colorModeClass = useColorModeClass(colorMode);
 </script>
@@ -225,10 +226,10 @@
       <ViewportComponent>
         <EdgeRenderer on:edgeclick on:edgecontextmenu {defaultEdgeOptions} />
         <ConnectionLine
+          {connectionLine}
           containerStyle={connectionLineContainerStyle}
           style={connectionLineStyle}
-          {connectionLine}
-        />
+        ></ConnectionLine>
         <div class="svelte-flow__edgelabel-renderer"></div>
         <div class="svelte-flow__viewport-portal"></div>
         <NodeRenderer
