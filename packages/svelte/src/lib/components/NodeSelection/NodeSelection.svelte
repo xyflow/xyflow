@@ -16,7 +16,7 @@
   }: NodeSelectionProps = $props();
 
   const store = useStore();
-  const { selectionRectMode, nodes } = store;
+  const { nodes } = store;
 
   let selectedNodes = $derived($nodes.filter((n) => n.selected));
   let bounds = $derived(getNodesBounds(selectedNodes));
@@ -30,7 +30,7 @@
   }
 </script>
 
-{#if selectedNodes && $selectionRectMode === 'nodes'}
+{#if selectedNodes && store.selectionRectMode === 'nodes'}
   <div
     class="selection-wrapper nopan"
     style="width: {bounds.width}px; height: {bounds.height}px; transform: translate({bounds.x}px, {bounds.y}px)"

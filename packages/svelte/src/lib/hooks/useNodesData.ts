@@ -19,17 +19,17 @@ export function useNodesData<NodeType extends Node = Node>(
 ): Readable<Pick<NodeType, 'id' | 'data' | 'type'>[]>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: any): any {
-  const { nodes, nodeLookup } = useStore();
+  const store = useStore();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let prevNodesData: any[] = [];
 
-  return derived([nodes, nodeLookup], ([, nodeLookup], set) => {
+  return derived([store.nodes], ([_], set) => {
     const nextNodesData = [];
     const isArrayOfIds = Array.isArray(nodeIds);
     const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
 
     for (const nodeId of _nodeIds) {
-      const node = nodeLookup.get(nodeId)?.internals.userNode;
+      const node = store.nodeLookup.get(nodeId)?.internals.userNode;
       if (node) {
         nextNodesData.push({
           id: node.id,

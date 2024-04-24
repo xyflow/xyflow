@@ -1,7 +1,9 @@
-import type { Readable } from 'svelte/store';
+import { readable, type Readable } from 'svelte/store';
 
 import { useStore } from '$lib/store';
-import type { ConnectionProps } from '$lib/store/derived-connection-props';
+// import type { ConnectionProps } from '$lib/store/derived-connection-props';
+
+// TODO: this does not work
 
 /**
  * Hook for receiving the current connection.
@@ -9,8 +11,10 @@ import type { ConnectionProps } from '$lib/store/derived-connection-props';
  * @public
  * @returns current connection as a readable store
  */
-export function useConnection(): Readable<ConnectionProps> {
-  const { connection } = useStore();
+export function useConnection(): Readable<any> {
+  const store = useStore();
 
-  return connection;
+  const readConnection = readable(store.connection);
+
+  return readConnection;
 }

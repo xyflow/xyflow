@@ -4,18 +4,10 @@ import { errorMessages } from '@xyflow/system';
 import { useStore } from '$lib/store';
 
 export function useHandleEdgeSelect() {
-  const {
-    edgeLookup,
-    selectionRect,
-    selectionRectMode,
-    multiselectionKeyPressed,
-    addSelectedEdges,
-    unselectNodesAndEdges,
-    elementsSelectable
-  } = useStore();
+  const store = useStore();
 
   return (id: string) => {
-    const edge = get(edgeLookup).get(id);
+    const edge = store.edgeLookup.get(id);
 
     if (!edge) {
       console.warn('012', errorMessages['error012'](id));
@@ -23,16 +15,16 @@ export function useHandleEdgeSelect() {
     }
 
     const selectable =
-      edge.selectable || (get(elementsSelectable) && typeof edge.selectable === 'undefined');
+      edge.selectable || (store.elementsSelectable && typeof edge.selectable === 'undefined');
 
     if (selectable) {
-      selectionRect.set(null);
-      selectionRectMode.set(null);
+      store.selectionRect = null;
+      store.selectionRectMode = null;
 
       if (!edge.selected) {
-        addSelectedEdges([id]);
-      } else if (edge.selected && get(multiselectionKeyPressed)) {
-        unselectNodesAndEdges({ nodes: [], edges: [edge] });
+        store.addSelectedEdges([id]);
+      } else if (edge.selected && store.multiselectionKeyPressed) {
+        store.unselectNodesAndEdges({ nodes: [], edges: [edge] });
       }
     }
   };

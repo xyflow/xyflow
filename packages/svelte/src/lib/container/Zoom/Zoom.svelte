@@ -22,37 +22,24 @@
     children
   }: ZoomProps = $props();
 
-  const {
-    viewport,
-    panZoom,
-    selectionKeyPressed,
-    minZoom,
-    maxZoom,
-    dragging,
-    translateExtent,
-    lib,
-    panActivationKeyPressed,
-    zoomActivationKeyPressed,
-    viewportInitialized
-  } = useStore();
+  const store = useStore();
 
-  let panOnDragActive = $derived($panActivationKeyPressed || panOnDrag);
-  let panOnScrollActive = $derived($panActivationKeyPressed || panOnScroll);
+  let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
+  let panOnScrollActive = $derived(store.panActivationKeyPressed || panOnScroll);
 
   onMount(() => {
-    $viewportInitialized = true;
+    store.viewportInitialized = true;
   });
 </script>
 
 <div
   class="svelte-flow__zoom"
   use:zoom={{
-    viewport,
-    minZoom: $minZoom,
-    maxZoom: $maxZoom,
+    store,
+    viewport: store.viewport,
+    minZoom: store.minZoom,
+    maxZoom: store.maxZoom,
     initialViewport,
-    dragging,
-    panZoom,
     onPanZoomStart: onMoveStart,
     onPanZoom: onMove,
     onPanZoomEnd: onMoveEnd,
@@ -63,13 +50,13 @@
     panOnDrag: panOnDragActive,
     panOnScrollSpeed: 0.5,
     panOnScrollMode: panOnScrollMode || PanOnScrollMode.Free,
-    zoomActivationKeyPressed: $zoomActivationKeyPressed,
+    zoomActivationKeyPressed: store.zoomActivationKeyPressed,
     preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
     noPanClassName: 'nopan',
     noWheelClassName: 'nowheel',
-    userSelectionActive: $selectionKeyPressed,
-    translateExtent: $translateExtent,
-    lib: $lib
+    userSelectionActive: store.selectionKeyPressed,
+    translateExtent: store.translateExtent,
+    lib: 'svelte'
   }}
 >
   {@render children()}

@@ -20,14 +20,15 @@
     class: className
   }: BackgroundProps = $props();
 
-  const { viewport, flowId } = useStore();
+  const store = useStore();
+  const { viewport } = store;
 
   let patternSize = $derived(size || defaultSize[variant!]);
   let isDots = $derived(variant === BackgroundVariant.Dots);
   let isCross = $derived(variant === BackgroundVariant.Cross);
   let gapXY: number[] = $derived(Array.isArray(gap!) ? gap! : [gap!, gap!]);
 
-  let patternId = $derived(`background-pattern-${$flowId}-${id ? id : ''}`);
+  let patternId = $derived(`background-pattern-${store.flowId}-${id ? id : ''}`);
   let scaledGap = $derived([gapXY[0] * $viewport.zoom || 1, gapXY[1] * $viewport.zoom || 1]);
   let scaledSize = $derived(patternSize * $viewport.zoom);
   let patternDimensions = $derived(

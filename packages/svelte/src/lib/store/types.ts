@@ -7,37 +7,133 @@ import type {
   UpdateNodePositions,
   CoordinateExtent,
   UpdateConnection,
-  Viewport
+  Viewport,
+  PanZoomInstance,
+  SnapGrid,
+  SelectionRect,
+  ConnectionMode,
+  ConnectionLineType,
+  IsValidConnection,
+  MarkerProps,
+  OnError,
+  OnConnect,
+  OnConnectStart,
+  OnConnectEnd,
+  NodeOrigin,
+  ConnectionLookup,
+  SelectionMode
 } from '@xyflow/system';
 
-import type { getInitialStore } from './initial-store';
-import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
+import type {
+  Node,
+  Edge,
+  NodeTypes,
+  EdgeTypes,
+  FitViewOptions,
+  InternalNode,
+  OnDelete,
+  OnEdgeCreate,
+  OnBeforeDelete,
+  EdgeLayouted
+} from '$lib/types';
+
+import type { ConnectionProps } from '../../../quarantine/derived-connection-props';
+import type { createEdgesStore, createNodesStore } from './utils';
 
 export type SvelteFlowStoreActions = {
-  syncNodeStores: (nodesStore: Writable<Node[]>) => void;
-  syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
-  syncViewport: (viewportStore?: Writable<Viewport>) => void;
-  setNodeTypes: (nodeTypes: NodeTypes) => void;
-  setEdgeTypes: (edgeTypes: EdgeTypes) => void;
   addEdge: (edge: Edge | Connection) => void;
-  zoomIn: (options?: ViewportHelperFunctionOptions) => void;
-  zoomOut: (options?: ViewportHelperFunctionOptions) => void;
-  setMinZoom: (minZoom: number) => void;
-  setMaxZoom: (maxZoom: number) => void;
-  setTranslateExtent: (extent: CoordinateExtent) => void;
-  fitView: (options?: FitViewOptions) => boolean;
-  updateNodePositions: UpdateNodePositions;
-  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
-  unselectNodesAndEdges: (params?: { nodes?: Node[]; edges?: Edge[] }) => void;
-  addSelectedNodes: (ids: string[]) => void;
   addSelectedEdges: (ids: string[]) => void;
+  addSelectedNodes: (ids: string[]) => void;
+  cancelConnection: () => void;
+  fitView: (options?: FitViewOptions) => boolean;
   handleNodeSelection: (id: string) => void;
   panBy: (delta: XYPosition) => boolean;
-  updateConnection: UpdateConnection;
-  cancelConnection: () => void;
   reset(): void;
+  setEdgeTypes: (edgeTypes: EdgeTypes) => void;
+  setMaxZoom: (maxZoom: number) => void;
+  setMinZoom: (minZoom: number) => void;
+  setNodeTypes: (nodeTypes: NodeTypes) => void;
+  setTranslateExtent: (extent: CoordinateExtent) => void;
+  syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
+  syncNodeStores: (nodesStore: Writable<Node[]>) => void;
+  syncViewport: (viewportStore?: Writable<Viewport>) => void;
+  unselectNodesAndEdges: (params?: { nodes?: Node[]; edges?: Edge[] }) => void;
+  updateConnection: UpdateConnection;
+  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
+  updateNodePositions: UpdateNodePositions;
+  zoomIn: (options?: ViewportHelperFunctionOptions) => void;
+  zoomOut: (options?: ViewportHelperFunctionOptions) => void;
 };
 
-export type SvelteFlowStoreState = ReturnType<typeof getInitialStore>;
+export type SvelteFlowStoreState = {
+  nodes: ReturnType<typeof createNodesStore>;
+  edges: ReturnType<typeof createEdgesStore>;
+  viewport: Writable<Viewport>;
+  autoPanOnConnect: boolean;
+  autoPanOnNodeDrag: boolean;
+  connection: ConnectionProps;
+  connectionLineType: ConnectionLineType;
+  connectionLookup: ConnectionLookup;
+  connectionMode: ConnectionMode;
+  connectionRadius: number;
+  defaultMarkerColor: string;
+  deleteKeyPressed: boolean;
+  domNode: HTMLDivElement | null;
+  dragging: boolean;
+  edgeLookup: Map<string, Edge>;
+  edgesInitialized: boolean;
+  edgeTypes: EdgeTypes;
+  elementsSelectable: boolean;
+  fitViewOnInit: boolean;
+  fitViewOnInitDone: boolean;
+  fitViewOptions: FitViewOptions;
+  flowId: string | null;
+  height: number;
+  initialized: boolean;
+  isValidConnection: IsValidConnection;
+  markers: MarkerProps[];
+  maxZoom: number;
+  minZoom: number;
+  multiselectionKeyPressed: boolean;
+  nodeDragThreshold: number;
+  nodeExtent: CoordinateExtent;
+  nodeLookup: Map<string, InternalNode>;
+  nodeOrigin: NodeOrigin;
+  nodesConnectable: boolean;
+  nodesDraggable: boolean;
+  nodesInitialized: boolean;
+  nodeTypes: NodeTypes;
+  onbeforedelete?: OnBeforeDelete;
+  onconnect?: OnConnect;
+  onconnectend?: OnConnectEnd;
+  onconnectstart?: OnConnectStart;
+  ondelete?: OnDelete;
+  onedgecreate?: OnEdgeCreate;
+  onerror: OnError;
+  onlyRenderVisibleElements: boolean;
+  panActivationKeyPressed: boolean;
+  panZoom: PanZoomInstance | null;
+  parentLookup: Map<string, InternalNode[]>;
+  selectionKeyPressed: boolean;
+  selectionMode: SelectionMode;
+  selectionRect: SelectionRect | null;
+  selectionRectMode: string | null;
+  selectNodesOnDrag: boolean;
+  snapGrid: SnapGrid | null;
+  translateExtent: CoordinateExtent;
+  viewportInitialized: boolean;
+  visibleEdges: EdgeLayouted[];
+  visibleNodes: InternalNode[];
+  width: number;
+  zoomActivationKeyPressed: boolean;
+};
+
+type StoreToPropertyDefinitions<T> = {
+  [K in keyof T]: { get: () => T[K]; set: (newValue: T[K]) => void };
+};
+
+export type SvelteFlowStoreProperties = StoreToPropertyDefinitions<
+  Omit<SvelteFlowStoreState, 'nodes' | 'edges' | 'viewport' | 'visibleEdges'>
+>;
 
 export type SvelteFlowStore = SvelteFlowStoreState & SvelteFlowStoreActions;

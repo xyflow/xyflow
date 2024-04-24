@@ -5,6 +5,7 @@
   let { children }: { children: Snippet } = $props();
 
   const { viewport } = useStore();
+  console.log(viewport);
 </script>
 
 <div

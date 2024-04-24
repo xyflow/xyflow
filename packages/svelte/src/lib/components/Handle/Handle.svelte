@@ -38,28 +38,7 @@
   let isTarget = $derived(type === 'target');
 
   const store = useStore();
-  const {
-    connectionMode,
-    domNode,
-    nodeLookup,
-    connectionRadius,
-    viewport,
-    isValidConnection,
-    lib,
-    addEdge,
-    onedgecreate,
-    panBy,
-    cancelConnection,
-    updateConnection,
-    autoPanOnConnect,
-    edges,
-    connectionLookup,
-    onconnect: onConnectAction,
-    onconnectstart: onConnectStartAction,
-    onconnectend: onConnectEndAction,
-    flowId,
-    connection
-  } = store;
+  const { viewport } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
@@ -69,39 +48,39 @@
         handleId,
         nodeId,
         isTarget,
-        connectionRadius: $connectionRadius,
-        domNode: $domNode,
-        nodeLookup: $nodeLookup,
-        connectionMode: $connectionMode,
-        lib: $lib,
-        autoPanOnConnect: $autoPanOnConnect,
-        flowId: $flowId,
-        isValidConnection: $isValidConnection,
-        updateConnection,
-        cancelConnection,
-        panBy,
+        connectionRadius: store.connectionRadius,
+        domNode: store.domNode,
+        nodeLookup: store.nodeLookup,
+        connectionMode: store.connectionMode,
+        lib: 'svelte',
+        autoPanOnConnect: store.autoPanOnConnect,
+        flowId: store.flowId,
+        isValidConnection: store.isValidConnection,
+        updateConnection: store.updateConnection,
+        cancelConnection: store.cancelConnection,
+        panBy: store.panBy,
         onConnect: (connection) => {
-          const edge = $onedgecreate ? $onedgecreate(connection) : connection;
+          const edge = store.onedgecreate ? store.onedgecreate(connection) : connection;
 
           if (!edge) {
             return;
           }
 
-          addEdge(edge);
-          $onConnectAction?.(connection);
+          store.addEdge(edge);
+          store.onconnect?.(connection);
         },
         onConnectStart: (event, startParams) => {
-          $onConnectStartAction?.(event, {
+          store.onconnectstart?.(event, {
             nodeId: startParams.nodeId,
             handleId: startParams.handleId,
             handleType: startParams.handleType
           });
         },
         onConnectEnd: (event) => {
-          $onConnectEndAction?.(event);
+          store.onconnectend?.(event);
         },
         getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom],
-        getConnectionStartHandle: () => $connection.startHandle
+        getConnectionStartHandle: () => store.connection.startHandle
       });
     }
   }
@@ -113,8 +92,8 @@
   $effect.pre(() => {
     if (onconnect || ondisconnect) {
       // connectionLookup is not reactive, so we use edges to get notified about updates
-      $edges;
-      connections = $connectionLookup.get(`${nodeId}-${type}-${id || null}`);
+      store.edges;
+      connections = store.connectionLookup.get(`${nodeId}-${type}-${id || null}`);
     }
   });
 
@@ -129,23 +108,24 @@
     prevConnections = connections ?? new Map();
   });
 
-  let connectionInProcess = $derived(!!$connection.startHandle);
+  let connectionInProcess = $derived(!!store.connection.startHandle);
   let connectingFrom = $derived(
-    $connection.startHandle?.nodeId === nodeId &&
-      $connection.startHandle?.type === type &&
-      $connection.startHandle?.handleId === handleId
+    store.connection.startHandle?.nodeId === nodeId &&
+      store.connection.startHandle?.type === type &&
+      store.connection.startHandle?.handleId === handleId
   );
   let connectingTo = $derived(
-    $connection.endHandle?.nodeId === nodeId &&
-      $connection.endHandle?.type === type &&
-      $connection.endHandle?.handleId === handleId
+    store.connection.endHandle?.nodeId === nodeId &&
+      store.connection.endHandle?.type === type &&
+      store.connection.endHandle?.handleId === handleId
   );
   let isPossibleEndHandle = $derived(
-    $connectionMode === ConnectionMode.Strict
-      ? $connection.startHandle?.type !== type
-      : nodeId !== $connection.startHandle?.nodeId || handleId !== $connection.startHandle?.handleId
+    store.connectionMode === ConnectionMode.Strict
+      ? store.connection.startHandle?.type !== type
+      : nodeId !== store.connection.startHandle?.nodeId ||
+          handleId !== store.connection.startHandle?.handleId
   );
-  let valid = $derived(connectingTo && $connection.status === 'valid');
+  let valid = $derived(connectingTo && store.connection.status === 'valid');
 </script>
 
 <!--
@@ -156,7 +136,7 @@ The Handle component is the part of a node that can be used to connect nodes.
   data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}
-  data-id="{$flowId}-{nodeId}-{handleId}-{type}"
+  data-id="{store.flowId}-{nodeId}-{handleId}-{type}"
   class={cc([
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,

@@ -7,16 +7,11 @@
 
   let { defaultEdgeOptions, onedgeclick, onedgecontextmenu }: EdgeRendererProps = $props();
 
-  const {
-    visibleEdges,
-    edgesInitialized,
-    edges: { setDefaultOptions }
-  } = useStore();
-
+  const store = useStore();
   // TODO: Double check this
-  if (defaultEdgeOptions) setDefaultOptions(defaultEdgeOptions);
+  if (defaultEdgeOptions) store.edges.setDefaultOptions(defaultEdgeOptions);
   $effect.pre(() => {
-    if (defaultEdgeOptions) setDefaultOptions(defaultEdgeOptions);
+    if (defaultEdgeOptions) store.edges.setDefaultOptions(defaultEdgeOptions);
   });
 </script>
 
@@ -25,7 +20,7 @@
     <MarkerDefinition />
   </svg>
 
-  {#each $visibleEdges as edge (edge.id)}
+  {#each store.visibleEdges as edge (edge.id)}
     <EdgeWrapper
       id={edge.id}
       source={edge.source}
@@ -58,13 +53,13 @@
     />
   {/each}
 
-  {#if $visibleEdges.length > 0}
+  {#if store.visibleEdges.length > 0}
     <CallOnMount
       onMount={() => {
-        $edgesInitialized = true;
+        store.edgesInitialized = true;
       }}
       onDestroy={() => {
-        $edgesInitialized = false;
+        store.edgesInitialized = false;
       }}
     />
   {/if}

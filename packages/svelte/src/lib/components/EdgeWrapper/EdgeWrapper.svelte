@@ -42,22 +42,24 @@
 
   setContext('svelteflow__edge_id', id);
 
-  const { edgeLookup, edgeTypes, flowId, elementsSelectable } = useStore();
+  const store = useStore();
 
   let edgeType = $derived(type || 'default');
-  let edgeComponent = $derived($edgeTypes[edgeType] || BezierEdgeInternal);
+  let edgeComponent = $derived(store.edgeTypes[edgeType] || BezierEdgeInternal);
   let markerStartUrl = $derived(
-    markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined
+    markerStart ? `url(#${getMarkerId(markerStart, store.flowId)})` : undefined
   );
-  let markerEndUrl = $derived(markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined);
+  let markerEndUrl = $derived(
+    markerEnd ? `url(#${getMarkerId(markerEnd, store.flowId)})` : undefined
+  );
   let isSelectable = $derived(
-    selectable || ($elementsSelectable && typeof selectable === 'undefined')
+    selectable || (store.elementsSelectable && typeof selectable === 'undefined')
   );
 
   const handleEdgeSelect = useHandleEdgeSelect();
 
   function onclick(event: MouseEvent | TouchEvent) {
-    const edge = $edgeLookup.get(id);
+    const edge = store.edgeLookup.get(id);
 
     if (edge) {
       handleEdgeSelect(id);
@@ -66,7 +68,7 @@
   }
 
   function oncontextmenu(event: MouseEvent) {
-    const edge = $edgeLookup.get(id);
+    const edge = store.edgeLookup.get(id);
 
     if (edge) {
       onedgecontextmenu?.({ event, edge });

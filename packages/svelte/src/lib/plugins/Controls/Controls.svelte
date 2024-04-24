@@ -31,17 +31,8 @@
     after
   }: ControlsProps = $props();
 
-  const {
-    zoomIn,
-    zoomOut,
-    fitView,
-    viewport,
-    minZoom,
-    maxZoom,
-    nodesDraggable,
-    nodesConnectable,
-    elementsSelectable
-  } = useStore();
+  const store = useStore();
+  const { viewport } = store;
 
   const buttonProps = {
     bgColor: buttonBgColor,
@@ -51,29 +42,31 @@
     borderColor: buttonBorderColor
   };
 
-  let isInteractive = $state($nodesDraggable || $nodesConnectable || $elementsSelectable);
-  let minZoomReached = $derived($viewport.zoom <= $minZoom);
-  let maxZoomReached = $derived($viewport.zoom >= $maxZoom);
+  let isInteractive = $state(
+    store.nodesDraggable || store.nodesConnectable || store.elementsSelectable
+  );
+  let minZoomReached = $derived($viewport.zoom <= store.minZoom);
+  let maxZoomReached = $derived($viewport.zoom >= store.maxZoom);
   let orientationClass = $derived(orientation === 'horizontal' ? 'horizontal' : 'vertical');
 
   const onZoomInHandler = () => {
-    zoomIn();
+    store.zoomIn();
   };
 
   const onZoomOutHandler = () => {
-    zoomOut();
+    store.zoomOut();
   };
 
   const onFitViewHandler = () => {
-    fitView();
+    store.fitView();
   };
 
   const onToggleInteractivity = () => {
     isInteractive = !isInteractive;
 
-    nodesDraggable.set(isInteractive);
-    nodesConnectable.set(isInteractive);
-    elementsSelectable.set(isInteractive);
+    store.nodesDraggable = isInteractive;
+    store.nodesConnectable = isInteractive;
+    store.elementsSelectable = isInteractive;
   };
 </script>
 

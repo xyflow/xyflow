@@ -22,7 +22,7 @@ const initialConnections: HandleConnection[] = [];
  * @returns an array with connections
  */
 export function useHandleConnections({ type, nodeId, id = null }: useHandleConnectionsParams) {
-  const { edges, connectionLookup } = useStore();
+  const store = useStore();
 
   const _nodeId = getContext<string>('svelteflow__node_id');
   const currentNodeId = nodeId ?? _nodeId;
@@ -30,9 +30,9 @@ export function useHandleConnections({ type, nodeId, id = null }: useHandleConne
   let prevConnections: Map<string, HandleConnection> | undefined = undefined;
 
   return derived(
-    [edges, connectionLookup],
-    ([, connectionLookup], set) => {
-      const nextConnections = connectionLookup.get(`${currentNodeId}-${type}-${id || null}`);
+    [store.edges],
+    ([_], set) => {
+      const nextConnections = store.connectionLookup.get(`${currentNodeId}-${type}-${id || null}`);
 
       if (!areConnectionMapsEqual(nextConnections, prevConnections)) {
         prevConnections = nextConnections;

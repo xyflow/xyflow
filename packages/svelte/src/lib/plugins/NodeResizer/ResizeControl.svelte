@@ -30,7 +30,8 @@
     class: className
   }: ResizeControlProps = $props();
 
-  const { nodeLookup, snapGrid, viewport, nodes, nodeOrigin } = useStore();
+  const store = useStore();
+  const { viewport, nodes } = store;
 
   let id = $derived(
     typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
@@ -78,15 +79,15 @@
         nodeId: id,
         getStoreItems: () => {
           return {
-            nodeLookup: $nodeLookup,
+            nodeLookup: store.nodeLookup,
             transform: [$viewport.x, $viewport.y, $viewport.zoom],
-            snapGrid: $snapGrid ?? undefined,
-            snapToGrid: !!$snapGrid,
-            nodeOrigin: $nodeOrigin
+            snapGrid: store.snapGrid ?? undefined,
+            snapToGrid: !!store.snapGrid,
+            nodeOrigin: store.nodeOrigin
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const node = $nodeLookup.get(id)?.internals.userNode;
+          const node = store.nodeLookup.get(id)?.internals.userNode;
           if (!node) {
             return;
           }
@@ -101,7 +102,7 @@
           }
 
           for (const childChange of childChanges) {
-            const childNode = $nodeLookup.get(childChange.id)?.internals.userNode;
+            const childNode = store.nodeLookup.get(childChange.id)?.internals.userNode;
             if (childNode) {
               childNode.position = childChange.position;
             }

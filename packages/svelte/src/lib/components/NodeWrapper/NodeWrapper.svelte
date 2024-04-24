@@ -52,13 +52,6 @@
   }: NodeWrapperProps = $props();
 
   const store = useStore();
-  const {
-    nodeTypes,
-    nodeDragThreshold,
-    selectNodesOnDrag,
-    handleNodeSelection,
-    updateNodeInternals
-  } = store;
 
   let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
@@ -67,8 +60,8 @@
   let prevSourcePosition: Position | undefined;
   let prevTargetPosition: Position | undefined;
 
-  let nodeTypeValid = $derived(!!$nodeTypes[type]);
-  let nodeComponent = $derived($nodeTypes[type] || DefaultNode);
+  let nodeTypeValid = $derived(!!store.nodeTypes[type]);
+  let nodeComponent = $derived(store.nodeTypes[type] || DefaultNode);
 
   const connectableStore = writable(connectable);
 
@@ -116,7 +109,7 @@
       (prevTargetPosition && targetPosition !== prevTargetPosition)
     ) {
       requestAnimationFrame(() =>
-        updateNodeInternals(
+        store.updateNodeInternals(
           new Map([
             [
               id,
@@ -143,10 +136,10 @@
   });
 
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
-    if (selectable && (!get(selectNodesOnDrag) || !draggable || get(nodeDragThreshold) > 0)) {
+    if (selectable && (!store.selectNodesOnDrag || !draggable || store.nodeDragThreshold > 0)) {
       // this handler gets called by XYDrag on drag start when selectNodesOnDrag=true
       // here we only need to call it when selectNodesOnDrag=false
-      handleNodeSelection(id);
+      store.handleNodeSelection(id);
     }
 
     onnodeclick?.({ node, event });
@@ -163,7 +156,7 @@
       disabled: false,
       handleSelector: dragHandle,
       noDragClass: 'nodrag',
-      onNodeMouseDown: handleNodeSelection,
+      onNodeMouseDown: store.handleNodeSelection,
       onDrag: (event, _, targetNode, nodes) => {
         onnodedrag?.({ event, targetNode, nodes });
       },

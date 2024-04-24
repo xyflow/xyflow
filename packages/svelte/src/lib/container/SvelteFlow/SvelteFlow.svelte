@@ -111,18 +111,18 @@
     : createStoreContext({ nodes: get(nodes), edges: get(edges), width, height, fitView });
 
   onMount(() => {
-    store.domNode.set(domNode!);
+    store.domNode = domNode!;
 
     store.syncNodeStores(nodes);
     store.syncEdgeStores(edges);
     store.syncViewport(viewport);
 
     if (fitView !== undefined) {
-      store.fitViewOnInit.set(fitView);
+      store.fitViewOnInit = fitView;
     }
 
     if (fitViewOptions) {
-      store.fitViewOptions.set(fitViewOptions);
+      store.fitViewOptions = fitViewOptions;
     }
 
     updateStore(store, {
@@ -141,16 +141,15 @@
   // Update width & height on resize
   $effect.pre(() => {
     if (clientWidth !== undefined && clientHeight !== undefined) {
-      store.width.set(clientWidth);
-      store.height.set(clientHeight);
+      store.width = clientWidth;
+      store.height = clientHeight;
     }
   });
 
   // Call oninit once when flow is intialized
-  const { initialized } = store;
   let onInitCalled = false;
   $effect(() => {
-    if (!onInitCalled && $initialized) {
+    if (!onInitCalled && store.initialized) {
       oninit?.();
       onInitCalled = true;
     }

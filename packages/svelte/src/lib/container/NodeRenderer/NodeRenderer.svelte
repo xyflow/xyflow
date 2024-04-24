@@ -17,14 +17,9 @@
     onnodecontextmenu
   }: NodeEvents = $props();
 
-  const {
-    visibleNodes,
-    nodesDraggable,
-    nodesConnectable,
-    elementsSelectable,
-    updateNodeInternals,
-    parentLookup
-  } = useStore();
+  const store = useStore();
+
+  const { nodes } = store;
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
@@ -42,7 +37,7 @@
             });
           });
 
-          updateNodeInternals(updates);
+          store.updateNodeInternals(updates);
         });
 
   onDestroy(() => {
@@ -50,8 +45,10 @@
   });
 </script>
 
+<!-- TODO: render visibleNodes -->
 <div class="svelte-flow__nodes">
-  {#each $visibleNodes as node (node.id)}
+  {#each $nodes as user_node (user_node.id)}
+    {@const node = store.nodeLookup.get(user_node.id)!}
     {@const posOrigin = getPositionWithOrigin({
       x: node.internals.positionAbsolute.x,
       y: node.internals.positionAbsolute.y,
@@ -64,20 +61,23 @@
       data={node.data}
       selected={!!node.selected}
       hidden={!!node.hidden}
-      draggable={!!(node.draggable || ($nodesDraggable && typeof node.draggable === 'undefined'))}
+      draggable={!!(
+        node.draggable ||
+        (store.nodesDraggable && typeof node.draggable === 'undefined')
+      )}
       selectable={!!(
         node.selectable ||
-        ($elementsSelectable && typeof node.selectable === 'undefined')
+        (store.elementsSelectable && typeof node.selectable === 'undefined')
       )}
       connectable={!!(
         node.connectable ||
-        ($nodesConnectable && typeof node.connectable === 'undefined')
+        (store.nodesConnectable && typeof node.connectable === 'undefined')
       )}
       positionX={node.internals.positionAbsolute.x}
       positionY={node.internals.positionAbsolute.y}
       positionOriginX={posOrigin.x ?? 0}
       positionOriginY={posOrigin.y ?? 0}
-      isParent={$parentLookup.has(node.id)}
+      isParent={store.parentLookup.has(node.id)}
       style={node.style}
       class={node.class}
       type={node.type}

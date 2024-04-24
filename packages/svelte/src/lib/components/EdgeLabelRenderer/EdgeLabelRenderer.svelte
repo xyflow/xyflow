@@ -3,12 +3,12 @@
   import { useStore } from '$lib/store';
   import type { Snippet } from 'svelte';
 
-  const { domNode } = useStore();
+  const store = useStore();
 
   let { children }: { children?: Snippet } = $props();
 </script>
 
-<div use:portal={{ target: '.svelte-flow__edgelabel-renderer', domNode: $domNode }}>
+<div use:portal={{ target: '.svelte-flow__edgelabel-renderer', domNode: store.domNode }}>
   {#if children}
     {@render children()}
   {/if}

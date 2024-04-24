@@ -22,7 +22,9 @@ import {
   type OnConnectStart,
   type OnConnectEnd,
   type NodeLookup,
-  type EdgeLookup
+  type EdgeLookup,
+  getEdgePosition,
+  getElevatedEdgeZIndex
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -51,7 +53,13 @@ import type {
   InternalNode
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
-import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
+import {
+  initConnectionProps,
+  type ConnectionProps
+} from '../../../quarantine/derived-connection-props';
+import { derivedSignal, derivedSignalWritable, signal } from './signals.svelte';
+import type { SvelteFlowStoreProperties, SvelteFlowStoreState } from './types';
+import { get, writable } from 'svelte/store';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -66,18 +74,6 @@ export const initialEdgeTypes = {
   default: BezierEdgeInternal,
   step: StepEdgeInternal
 };
-
-function createSignal<T, N extends string>(name: N, value: T): { [K in N]: T } {
-  let variable = $state(value);
-  return {
-    get [name]() {
-      return variable;
-    },
-    set [name](newValue: T) {
-      variable = newValue;
-    }
-  } as { [K in N]: T };
-}
 
 export const getInitialStore = ({
   nodes = [],
@@ -110,75 +106,129 @@ export const getInitialStore = ({
       (node) => (node.width && node.height) || (node.initialWidth && node.initialHeight)
     );
 
-    // @todo users nodeOrigin should be used here
+    // TODO: users nodeOrigin should be used here
     const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
 
-  return {
+  const store = Object.defineProperties<SvelteFlowStoreState>(
+    //@ts-expect-error {} does not match Store, which is fine
+    {},
+    {
+      autoPanOnConnect: signal<SvelteFlowStoreState['autoPanOnConnect']>(true),
+      autoPanOnNodeDrag: signal<SvelteFlowStoreState['autoPanOnNodeDrag']>(true),
+      connection: signal<SvelteFlowStoreState['connection']>(initConnectionProps),
+      connectionLineType: signal<SvelteFlowStoreState['connectionLineType']>(
+        ConnectionLineType.Bezier
+      ),
+      connectionLookup: signal<SvelteFlowStoreState['connectionLookup']>(connectionLookup),
+      connectionMode: signal<SvelteFlowStoreState['connectionMode']>(ConnectionMode.Strict),
+      connectionRadius: signal<SvelteFlowStoreState['connectionRadius']>(20),
+      defaultMarkerColor: signal<SvelteFlowStoreState['defaultMarkerColor']>('#b1b1b7'),
+      deleteKeyPressed: signal<SvelteFlowStoreState['deleteKeyPressed']>(false),
+      domNode: signal<SvelteFlowStoreState['domNode']>(null),
+      dragging: signal<SvelteFlowStoreState['dragging']>(false),
+      edgeLookup: signal<SvelteFlowStoreState['edgeLookup']>(edgeLookup),
+      edgesInitialized: signal<SvelteFlowStoreState['edgesInitialized']>(true),
+      edgeTypes: signal<SvelteFlowStoreState['edgeTypes']>(initialEdgeTypes),
+      elementsSelectable: signal<SvelteFlowStoreState['elementsSelectable']>(true),
+      fitViewOnInit: signal<SvelteFlowStoreState['fitViewOnInit']>(false),
+      fitViewOnInitDone: signal<SvelteFlowStoreState['fitViewOnInitDone']>(false),
+      fitViewOptions: signal<SvelteFlowStoreState['fitViewOptions']>({}),
+      flowId: signal<SvelteFlowStoreState['flowId']>(null),
+      height: signal<SvelteFlowStoreState['height']>(500),
+      initialized: signal<SvelteFlowStoreState['initialized']>(true),
+      isValidConnection: signal<SvelteFlowStoreState['isValidConnection']>(() => true),
+      markers: signal<SvelteFlowStoreState['markers']>([]),
+      maxZoom: signal<SvelteFlowStoreState['maxZoom']>(2),
+      minZoom: signal<SvelteFlowStoreState['minZoom']>(0.5),
+      multiselectionKeyPressed: signal<SvelteFlowStoreState['multiselectionKeyPressed']>(false),
+      nodeDragThreshold: signal<SvelteFlowStoreState['nodeDragThreshold']>(1),
+      nodeExtent: signal<SvelteFlowStoreState['nodeExtent']>(infiniteExtent),
+      nodeLookup: signal<SvelteFlowStoreState['nodeLookup']>(nodeLookup),
+      nodeOrigin: signal<SvelteFlowStoreState['nodeOrigin']>([0, 0]),
+      nodesConnectable: signal<SvelteFlowStoreState['nodesConnectable']>(true),
+      nodesDraggable: signal<SvelteFlowStoreState['nodesDraggable']>(true),
+      nodesInitialized: signal<SvelteFlowStoreState['nodesInitialized']>(true),
+      nodeTypes: signal<SvelteFlowStoreState['nodeTypes']>(initialNodeTypes),
+      onbeforedelete: signal<SvelteFlowStoreState['onbeforedelete']>(undefined),
+      onconnect: signal<SvelteFlowStoreState['onconnect']>(undefined),
+      onconnectend: signal<SvelteFlowStoreState['onconnectend']>(undefined),
+      onconnectstart: signal<SvelteFlowStoreState['onconnectstart']>(undefined),
+      ondelete: signal<SvelteFlowStoreState['ondelete']>(undefined),
+      onedgecreate: signal<SvelteFlowStoreState['onedgecreate']>(undefined),
+      onerror: signal<SvelteFlowStoreState['onerror']>(devWarn),
+      onlyRenderVisibleElements: signal<SvelteFlowStoreState['onlyRenderVisibleElements']>(false),
+      panActivationKeyPressed: signal<SvelteFlowStoreState['panActivationKeyPressed']>(false),
+      panZoom: signal<SvelteFlowStoreState['panZoom']>(null),
+      parentLookup: signal<SvelteFlowStoreState['parentLookup']>(parentLookup),
+      selectionKeyPressed: signal<SvelteFlowStoreState['selectionKeyPressed']>(false),
+      selectionMode: signal<SvelteFlowStoreState['selectionMode']>(SelectionMode.Partial),
+      selectionRect: signal<SvelteFlowStoreState['selectionRect']>(null),
+      selectionRectMode: signal<SvelteFlowStoreState['selectionRectMode']>(null),
+      selectNodesOnDrag: signal<SvelteFlowStoreState['selectNodesOnDrag']>(true),
+      snapGrid: signal<SvelteFlowStoreState['snapGrid']>(null),
+      translateExtent: signal<SvelteFlowStoreState['translateExtent']>(infiniteExtent),
+      // viewport: signal<SvelteFlowStoreState['viewport']>(viewport),
+      viewportInitialized: signal<SvelteFlowStoreState['viewportInitialized']>(false),
+      // visibleEdges: signal<SvelteFlowStoreState['visibleEdges']>([]),
+      visibleNodes: signal<SvelteFlowStoreState['visibleNodes']>([]),
+      width: signal<SvelteFlowStoreState['width']>(500),
+      zoomActivationKeyPressed: signal<SvelteFlowStoreState['zoomActivationKeyPressed']>(false)
+    } satisfies SvelteFlowStoreProperties
+  );
+
+  // TODO: just temporary
+  Object.assign(store, {
     nodes: createNodesStore(nodes, nodeLookup, parentLookup),
     edges: createEdgesStore(edges, connectionLookup, edgeLookup),
-    ...createSignal<string | null, 'flowId'>('flowId', null),
-    ...createSignal<NodeLookup<InternalNode>, 'nodeLookup'>('nodeLookup', nodeLookup),
-    ...createSignal<Map<string, InternalNode[]>, 'parentLookup'>('parentLookup', parentLookup),
-    ...createSignal<EdgeLookup<Edge>, 'edgeLookup'>('edgeLookup', edgeLookup),
-    ...createSignal<InternalNode[], 'visibleNodes'>('visibleNodes', []),
-    ...createSignal<EdgeLayouted[], 'visibleEdges'>('visibleEdges', []),
-    ...createSignal<ConnectionLookup, 'connectionLookup'>('connectionLookup', connectionLookup),
-    ...createSignal<number, 'height'>('height', 500),
-    ...createSignal<number, 'width'>('width', 500),
-    ...createSignal<number, 'minZoom'>('minZoom', 0.5),
-    ...createSignal<number, 'maxZoom'>('maxZoom', 2),
-    ...createSignal<NodeOrigin, 'nodeOrigin'>('nodeOrigin', [0, 0]),
-    ...createSignal<number, 'nodeDragThreshold'>('nodeDragThreshold', 1),
-    ...createSignal<CoordinateExtent, 'nodeExtent'>('nodeExtent', infiniteExtent),
-    ...createSignal<CoordinateExtent, 'translateExtent'>('translateExtent', infiniteExtent),
-    ...createSignal<boolean, 'autoPanOnNodeDrag'>('autoPanOnNodeDrag', true),
-    ...createSignal<boolean, 'autoPanOnConnect'>('autoPanOnConnect', true),
-    ...createSignal<boolean, 'fitViewOnInit'>('fitViewOnInit', false),
-    ...createSignal<boolean, 'fitViewOnInitDone'>('fitViewOnInitDone', false),
-    ...createSignal<FitViewOptions, 'fitViewOptions'>('fitViewOptions', {}),
-    ...createSignal<Viewport, 'viewport'>('viewport', viewport),
-    ...createSignal<PanZoomInstance | null, 'panZoom'>('panZoom', null),
-    ...createSignal<SnapGrid | null, 'snapGrid'>('snapGrid', null),
-    ...createSignal<boolean, 'dragging'>('dragging', false),
-    ...createSignal<SelectionRect | null, 'selectionRect'>('selectionRect', null),
-    ...createSignal<boolean, 'selectionKeyPressed'>('selectionKeyPressed', false),
-    ...createSignal<boolean, 'multiselectionKeyPressed'>('multiselectionKeyPressed', false),
-    ...createSignal<boolean, 'deleteKeyPressed'>('deleteKeyPressed', false),
-    ...createSignal<boolean, 'panActivationKeyPressed'>('panActivationKeyPressed', false),
-    ...createSignal<boolean, 'zoomActivationKeyPressed'>('zoomActivationKeyPressed', false),
-    ...createSignal<string | null, 'selectionRectMode'>('selectionRectMode', null),
-    ...createSignal<SelectionMode, 'selectionMode'>('selectionMode', SelectionMode.Partial),
-    ...createSignal<NodeTypes, 'nodeTypes'>('nodeTypes', initialNodeTypes),
-    ...createSignal<EdgeTypes, 'edgeTypes'>('edgeTypes', initialEdgeTypes),
-    ...createSignal<ConnectionMode, 'connectionMode'>('connectionMode', ConnectionMode.Strict),
-    ...createSignal<HTMLDivElement | null, 'domNode'>('domNode', null),
-    ...createSignal<ConnectionProps, 'connection'>('connection', initConnectionProps),
-    ...createSignal<ConnectionLineType, 'connectionLineType'>(
-      'connectionLineType',
-      ConnectionLineType.Bezier
-    ),
-    ...createSignal<number, 'connectionRadius'>('connectionRadius', 20),
-    ...createSignal<IsValidConnection, 'isValidConnection'>('isValidConnection', () => true),
-    ...createSignal<boolean, 'nodesDraggable'>('nodesDraggable', true),
-    ...createSignal<boolean, 'nodesConnectable'>('nodesConnectable', true),
-    ...createSignal<boolean, 'elementsSelectable'>('elementsSelectable', true),
-    ...createSignal<boolean, 'selectNodesOnDrag'>('selectNodesOnDrag', true),
-    ...createSignal<MarkerProps[], 'markers'>('markers', []),
-    ...createSignal<string, 'defaultMarkerColor'>('defaultMarkerColor', '#b1b1b7'),
-    ...createSignal<string, 'lib'>('lib', 'svelte'),
-    ...createSignal<boolean, 'onlyRenderVisibleElements'>('onlyRenderVisibleElements', false),
-    ...createSignal<OnError, 'onerror'>('onerror', devWarn),
-    ...createSignal<OnDelete | undefined, 'ondelete'>('ondelete', undefined),
-    ...createSignal<OnEdgeCreate | undefined, 'onedgecreate'>('onedgecreate', undefined),
-    ...createSignal<OnConnect | undefined, 'onconnect'>('onconnect', undefined),
-    ...createSignal<OnConnectStart | undefined, 'onconnectstart'>('onconnectstart', undefined),
-    ...createSignal<OnConnectEnd | undefined, 'onconnectend'>('onconnectend', undefined),
-    ...createSignal<OnBeforeDelete | undefined, 'onbeforedelete'>('onbeforedelete', undefined),
-    ...createSignal<boolean, 'nodesInitialized'>('nodesInitialized', false),
-    ...createSignal<boolean, 'edgesInitialized'>('edgesInitialized', false),
-    ...createSignal<boolean, 'viewportInitialized'>('viewportInitialized', false),
-    ...createSignal<boolean, 'initialized'>('initialized', false)
-  };
+    viewport: writable<Viewport>(viewport)
+  });
+
+  Object.defineProperties(store, {
+    visibleEdges: derivedSignalWritable<SvelteFlowStoreState['visibleEdges'], Edge[]>(
+      (edges) => {
+        const layoutedEdges = edges.reduce<EdgeLayouted[]>((res, edge) => {
+          const sourceNode = nodeLookup.get(edge.source);
+          const targetNode = nodeLookup.get(edge.target);
+
+          if (!sourceNode || !targetNode) {
+            return res;
+          }
+
+          const edgePosition = getEdgePosition({
+            id: edge.id,
+            sourceNode,
+            targetNode,
+            sourceHandle: edge.sourceHandle || null,
+            targetHandle: edge.targetHandle || null,
+            connectionMode: store.connectionMode,
+            onError: store.onerror
+          });
+
+          if (edgePosition) {
+            res.push({
+              ...edge,
+              zIndex: getElevatedEdgeZIndex({
+                selected: edge.selected,
+                zIndex: edge.zIndex,
+                sourceNode,
+                targetNode,
+                elevateOnSelect: false
+              }),
+              ...edgePosition
+            });
+          }
+
+          return res;
+        }, []);
+
+        return layoutedEdges;
+      },
+      store.edges,
+      store.nodes
+    )
+  });
+
+  return store;
 };
