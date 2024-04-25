@@ -8,10 +8,18 @@ import type { Edge, Node } from '../../types';
 import { useQueue } from './useQueue';
 
 const BatchContext = createContext<{
-  nodeQueue: Queue<Node>;
-  edgeQueue: Queue<Edge>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  nodeQueue: Queue<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  edgeQueue: Queue<any>;
 } | null>(null);
 
+/**
+ * This is a context provider that holds and processes the node and edge update queues
+ * that are needed to handle setNodes, addNodes, setEdges and addEdges.
+ *
+ * @internal
+ */
 export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   children,
 }: {

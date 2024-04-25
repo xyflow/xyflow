@@ -1,8 +1,16 @@
 import { useState } from 'react';
-import { createQueue } from './utils';
-import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
-import { QueueItem } from './types';
 
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
+import { Queue, QueueItem } from './types';
+
+/**
+ * This hook returns a queue that can be used to batch updates.
+ *
+ * @param runQueue - a function that gets called when the queue is flushed
+ * @internal
+ *
+ * @returns a Queue object
+ */
 export function useQueue<T>(runQueue: (items: QueueItem<T>[]) => void) {
   // Because we're using a ref above, we need some way to let React know when to
   // actually process the queue. We flip this bit of state to `true` any time we
@@ -10,8 +18,8 @@ export function useQueue<T>(runQueue: (items: QueueItem<T>[]) => void) {
   const [shouldFlush, setShouldFlush] = useState(false);
 
   // A reference of all the batched updates to process before the next render. We
-  // want a mutable reference here so multiple synchronous calls to `setNodes` etc
-  // can be batched together.
+  // want a reference here so multiple synchronous calls to `setNodes` etc can be
+  // batched together.
   const [queue] = useState(() => createQueue<T>(() => setShouldFlush(true)));
 
   // Layout effects are guaranteed to run before the next render which means we
@@ -30,7 +38,7 @@ export function useQueue<T>(runQueue: (items: QueueItem<T>[]) => void) {
     const queueItems = queue.get();
 
     if (queueItems.length) {
-      runQueue?.(queueItems);
+      runQueue(queueItems);
 
       queue.reset();
     }
@@ -41,4 +49,19 @@ export function useQueue<T>(runQueue: (items: QueueItem<T>[]) => void) {
   }, [shouldFlush]);
 
   return queue;
+}
+
+function createQueue<T>(cb: () => void): Queue<T> {
+  let queue: QueueItem<T>[] = [];
+
+  return {
+    get: () => queue,
+    reset: () => {
+      queue = [];
+    },
+    push: (item) => {
+      queue.push(item);
+      cb();
+    },
+  };
 }

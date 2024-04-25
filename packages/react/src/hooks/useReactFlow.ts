@@ -50,39 +50,23 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
   const getEdge = useCallback<Instance.GetEdge<EdgeType>>((id) => store.getState().edgeLookup.get(id) as EdgeType, []);
 
-  const setNodes = useCallback<Instance.SetNodes<NodeType>>(
-    (payload) => {
-      batchContext?.nodeQueue.push(payload as NodeType[]);
-    },
-    [batchContext]
-  );
+  const setNodes = useCallback<Instance.SetNodes<NodeType>>((payload) => {
+    batchContext.nodeQueue.push(payload as NodeType[]);
+  }, []);
 
-  const setEdges = useCallback<Instance.SetEdges<EdgeType>>(
-    (payload) => {
-      batchContext?.edgeQueue.push(payload as EdgeType[]);
-    },
-    [batchContext]
-  );
+  const setEdges = useCallback<Instance.SetEdges<EdgeType>>((payload) => {
+    batchContext.edgeQueue.push(payload as EdgeType[]);
+  }, []);
 
-  const addNodes = useCallback<Instance.AddNodes<NodeType>>(
-    (payload) => {
-      const newNodes = Array.isArray(payload) ? payload : [payload];
+  const addNodes = useCallback<Instance.AddNodes<NodeType>>((payload) => {
+    const newNodes = Array.isArray(payload) ? payload : [payload];
+    batchContext.nodeQueue.push((nodes) => [...nodes, ...newNodes]);
+  }, []);
 
-      // Queueing a functional update means that we won't worry about other calls
-      // to `setNodes` that might happen elsewhere.
-      batchContext?.nodeQueue.push((nodes) => [...nodes, ...newNodes]);
-    },
-    [batchContext]
-  );
-
-  const addEdges = useCallback<Instance.AddEdges<EdgeType>>(
-    (payload) => {
-      const newEdges = Array.isArray(payload) ? payload : [payload];
-
-      batchContext?.edgeQueue.push((edges) => [...edges, ...newEdges]);
-    },
-    [batchContext]
-  );
+  const addEdges = useCallback<Instance.AddEdges<EdgeType>>((payload) => {
+    const newEdges = Array.isArray(payload) ? payload : [payload];
+    batchContext.edgeQueue.push((edges) => [...edges, ...newEdges]);
+  }, []);
 
   const toObject = useCallback<Instance.ToObject<NodeType, EdgeType>>(() => {
     const { nodes = [], edges = [], transform } = store.getState();
