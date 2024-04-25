@@ -5,6 +5,7 @@
 ## Patch changes
 
 - fix batching for `setNodes`, `updateNode`, `updateNodeData` etc.
+- fix `useNodesInitialized`
 
 ## 12.0.0-next.15
 
