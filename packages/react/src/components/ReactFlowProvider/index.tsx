@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 
 import { Provider } from '../../contexts/StoreContext';
 import { createStore } from '../../store';
+import { BatchProvider } from '../BatchProvider';
 import type { Node, Edge } from '../../types';
 
 export type ReactFlowProviderProps = {
@@ -37,5 +38,9 @@ export function ReactFlowProvider({
     })
   );
 
-  return <Provider value={store}>{children}</Provider>;
+  return (
+    <Provider value={store}>
+      <BatchProvider>{children}</BatchProvider>
+    </Provider>
+  );
 }
