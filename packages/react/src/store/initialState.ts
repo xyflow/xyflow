@@ -9,7 +9,21 @@ import {
   getInternalNodesBounds,
 } from '@xyflow/system';
 
-import type { Edge, InternalNode, Node, ReactFlowStore } from '../types';
+import type { Edge, InternalNode, Node, Queue, QueueItem, ReactFlowStore } from '../types';
+
+function createQueue<T>(): Queue<T> {
+  let queue: QueueItem<T>[] = [];
+
+  return {
+    get: () => queue,
+    reset: () => {
+      queue = [];
+    },
+    push: (item) => {
+      queue.push(item);
+    },
+  };
+}
 
 const getInitialState = ({
   nodes,
@@ -118,6 +132,16 @@ const getInitialState = ({
 
     lib: 'react',
     debug: false,
+
+    // A reference of all the batched updates to process before the next render. We
+    // want a mutable reference here so multiple synchronous calls to `setNodes` etc
+    // can be batched together
+    setNodesQueue: createQueue<Node>(),
+    setEdgesQueue: createQueue<Edge>(),
+    // Because we're using a ref above, we need some way to let React know when to
+    // actually process the queue. We flip this bit of state to `true` any time we
+    // mutate the queue and then flip it back to `false` after flushing the queue.
+    shouldFlushQueue: false,
   };
 };
 

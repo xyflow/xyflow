@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   evaluateAbsolutePosition,
   getElementsToRemove,
@@ -10,10 +10,8 @@ import {
 
 import useViewportHelper from './useViewportHelper';
 import { useStoreApi } from './useStore';
-import type { ReactFlowInstance, Instance, Node, Edge, InternalNode } from '../types';
-import { getElementsDiffChanges, isNode } from '../utils';
-import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
-
+import type { ReactFlowInstance, Instance, Node, Edge, InternalNode, QueueItem } from '../types';
+import { isNode } from '../utils';
 /**
  * Hook for accessing the ReactFlow instance.
  *
@@ -49,93 +47,14 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
   const getEdge = useCallback<Instance.GetEdge<EdgeType>>((id) => store.getState().edgeLookup.get(id) as EdgeType, []);
 
-  type SetElementsQueue = {
-    nodes: (NodeType[] | ((nodes: NodeType[]) => NodeType[]))[];
-    edges: (EdgeType[] | ((edges: EdgeType[]) => EdgeType[]))[];
-  };
-
-  // A reference of all the batched updates to process before the next render. We
-  // want a mutable reference here so multiple synchronous calls to `setNodes` etc
-  // can be batched together.
-  const setElementsQueue = useRef<SetElementsQueue>({ nodes: [], edges: [] });
-  // Because we're using a ref above, we need some way to let React know when to
-  // actually process the queue. We flip this bit of state to `true` any time we
-  // mutate the queue and then flip it back to `false` after flushing the queue.
-  const [shouldFlushQueue, setShouldFlushQueue] = useState(false);
-
-  // Layout effects are guaranteed to run before the next render which means we
-  // shouldn't run into any issues with stale state or weird issues that come from
-  // rendering things one frame later than expected (we used to use `setTimeout`).
-  useIsomorphicLayoutEffect(() => {
-    // Because we need to flip the state back to false after flushing, this should
-    // trigger the hook again (!). If the hook is being run again we know that any
-    // updates should have been processed by now and we can safely clear the queue
-    // and bail early.
-    if (!shouldFlushQueue) {
-      setElementsQueue.current = { nodes: [], edges: [] };
-      return;
-    }
-
-    if (setElementsQueue.current.nodes.length) {
-      const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup } = store.getState();
-
-      // This is essentially an `Array.reduce` in imperative clothing. Processing
-      // this queue is a relatively hot path so we'd like to avoid the overhead of
-      // array methods where we can.
-      let next = nodes as NodeType[];
-      for (const payload of setElementsQueue.current.nodes) {
-        next = typeof payload === 'function' ? payload(next) : payload;
-      }
-
-      if (hasDefaultNodes) {
-        setNodes(next);
-      } else if (onNodesChange) {
-        onNodesChange(
-          getElementsDiffChanges({
-            items: next,
-            lookup: nodeLookup,
-          })
-        );
-      }
-
-      setElementsQueue.current.nodes = [];
-    }
-
-    if (setElementsQueue.current.edges.length) {
-      const { edges = [], setEdges, hasDefaultEdges, onEdgesChange, edgeLookup } = store.getState();
-
-      let next = edges as EdgeType[];
-      for (const payload of setElementsQueue.current.edges) {
-        next = typeof payload === 'function' ? payload(next) : payload;
-      }
-
-      if (hasDefaultEdges) {
-        setEdges(next);
-      } else if (onEdgesChange) {
-        onEdgesChange(
-          getElementsDiffChanges({
-            items: next,
-            lookup: edgeLookup,
-          })
-        );
-      }
-
-      setElementsQueue.current.edges = [];
-    }
-
-    // Beacuse we're using reactive state to trigger this effect, we need to flip
-    // it back to false.
-    setShouldFlushQueue(false);
-  }, [shouldFlushQueue]);
-
   const setNodes = useCallback<Instance.SetNodes<NodeType>>((payload) => {
-    setElementsQueue.current.nodes.push(payload);
-    setShouldFlushQueue(true);
+    store.getState().setNodesQueue.push(payload as QueueItem<Node>);
+    store.setState({ shouldFlushQueue: true });
   }, []);
 
   const setEdges = useCallback<Instance.SetEdges<EdgeType>>((payload) => {
-    setElementsQueue.current.edges.push(payload);
-    setShouldFlushQueue(true);
+    store.getState().setEdgesQueue.push(payload as QueueItem<Edge>);
+    store.setState({ shouldFlushQueue: true });
   }, []);
 
   const addNodes = useCallback<Instance.AddNodes<NodeType>>((payload) => {
@@ -143,15 +62,15 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
     // Queueing a functional update means that we won't worry about other calls
     // to `setNodes` that might happen elsewhere.
-    setElementsQueue.current.nodes.push((nodes) => [...nodes, ...newNodes]);
-    setShouldFlushQueue(true);
+    store.getState().setNodesQueue.push((nodes) => [...nodes, ...newNodes]);
+    store.setState({ shouldFlushQueue: true });
   }, []);
 
   const addEdges = useCallback<Instance.AddEdges<EdgeType>>((payload) => {
     const newEdges = Array.isArray(payload) ? payload : [payload];
 
-    setElementsQueue.current.edges.push((edges) => [...edges, ...newEdges]);
-    setShouldFlushQueue(true);
+    store.getState().setEdgesQueue.push((edges) => [...edges, ...newEdges]);
+    store.setState({ shouldFlushQueue: true });
   }, []);
 
   const toObject = useCallback<Instance.ToObject<NodeType, EdgeType>>(() => {

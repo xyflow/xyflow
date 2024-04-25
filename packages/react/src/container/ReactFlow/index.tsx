@@ -12,6 +12,7 @@ import { Wrapper } from './Wrapper';
 import type { Edge, Node, ReactFlowProps } from '../../types';
 import { defaultViewport as initViewport, defaultNodeOrigin } from './init-values';
 import { fixedForwardRef } from '../../utils/general';
+import { ElementBatcher } from '../../components/ElementBatcher';
 
 const wrapperStyle: CSSProperties = {
   width: '100%',
@@ -282,6 +283,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
         {children}
         <Attribution proOptions={proOptions} position={attributionPosition} />
         <A11yDescriptions rfId={rfId} disableKeyboardA11y={disableKeyboardA11y} />
+        <ElementBatcher />
       </Wrapper>
     </div>
   );

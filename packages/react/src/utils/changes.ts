@@ -236,7 +236,8 @@ export function getElementsDiffChanges({
   const itemsLookup = new Map<string, any>(items.map((item) => [item.id, item]));
 
   for (const item of items) {
-    const storeItem = lookup.get(item.id);
+    const lookupItem = lookup.get(item.id);
+    const storeItem = lookupItem?.internals.userNode ?? lookupItem;
 
     if (storeItem !== undefined && storeItem !== item) {
       changes.push({ id: item.id, item: item, type: 'replace' });

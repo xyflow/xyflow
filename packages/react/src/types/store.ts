@@ -47,6 +47,14 @@ import type {
   InternalNode,
 } from '.';
 
+export type QueueItem<T> = T[] | ((items: T[]) => T[]);
+
+export type Queue<T> = {
+  get: () => QueueItem<T>[];
+  reset: () => void;
+  push: (item: QueueItem<T>) => void;
+};
+
 export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   rfId: string;
   width: number;
@@ -149,6 +157,10 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   lib: string;
   debug: boolean;
+
+  setNodesQueue: Queue<NodeType>;
+  setEdgesQueue: Queue<EdgeType>;
+  shouldFlushQueue: boolean;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {

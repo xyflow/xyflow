@@ -27,6 +27,7 @@ export function useNodesData(nodeIds: any): any {
 
         for (const nodeId of _nodeIds) {
           const node = s.nodeLookup.get(nodeId);
+
           if (node) {
             data.push({
               id: node.id,
