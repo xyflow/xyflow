@@ -166,28 +166,22 @@ export function createStore({
   }
 
   function setMinZoom(minZoom: number) {
-    const panZoom = store.panZoom;
-
-    if (panZoom) {
-      panZoom.setScaleExtent([minZoom, store.maxZoom]);
+    if (store.panZoom) {
+      store.panZoom.setScaleExtent([minZoom, store.maxZoom]);
       store.minZoom = minZoom;
     }
   }
 
   function setMaxZoom(maxZoom: number) {
-    const panZoom = store.panZoom;
-
-    if (panZoom) {
-      panZoom.setScaleExtent([store.minZoom, maxZoom]);
+    if (store.panZoom) {
+      store.panZoom.setScaleExtent([store.minZoom, maxZoom]);
       store.maxZoom = maxZoom;
     }
   }
 
   function setTranslateExtent(extent: CoordinateExtent) {
-    const panZoom = store.panZoom;
-
-    if (panZoom) {
-      panZoom.setTranslateExtent(extent);
+    if (store.panZoom) {
+      store.panZoom.setTranslateExtent(extent);
       store.translateExtent = extent;
     }
   }

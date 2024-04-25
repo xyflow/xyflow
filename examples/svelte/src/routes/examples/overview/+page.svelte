@@ -13,7 +13,9 @@
 		type Node,
 		type Edge,
 		ConnectionMode,
-		ControlButton
+		ControlButton,
+		useSvelteFlow,
+		useStore
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -22,6 +24,14 @@
 
 	import '@xyflow/svelte/dist/style.css';
 	import InitTracker from './InitTracker.svelte';
+
+	const { viewport } = useStore();
+
+	let snap = true;
+
+	$: {
+		console.log($viewport);
+	}
 
 	const nodeTypes: NodeTypes = {
 		custom: CustomNode,
@@ -131,6 +141,10 @@
 	$: {
 		console.log('nodes changed', $nodes);
 	}
+
+	$: {
+		console.log(snap);
+	}
 </script>
 
 <SvelteFlow
@@ -147,7 +161,7 @@
 	maxZoom={Infinity}
 	selectionMode={SelectionMode.Full}
 	initialViewport={{ x: 100, y: 100, zoom: 2 }}
-	snapGrid={[25, 25]}
+	snapGrid={snap ? [25, 25] : undefined}
 	oninit={() => console.log('on init')}
 	onnodeclick={(event) => console.log('on node click', event)}
 	onnodemouseenter={(event) => console.log('on node enter', event)}
@@ -208,6 +222,11 @@
 				$nodes[$nodes.length - 1].hidden = !$nodes[$nodes.length - 1].hidden;
 				$nodes = $nodes;
 			}}>hide/unhide</button
+		>
+		<button
+			onclick={() => {
+				snap = !snap;
+			}}>toggle snapgrid</button
 		>
 	</Panel>
 

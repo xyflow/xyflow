@@ -23,6 +23,17 @@ import { get, type Writable } from 'svelte/store';
 
 export function signal<T>(value: T): { get: () => T; set: (newValue: T) => void } {
   let variable = $state(value);
+
+  if (value !== undefined) {
+    return {
+      get() {
+        return variable;
+      },
+      set(newValue: T | undefined) {
+        variable = newValue ?? value;
+      }
+    };
+  }
   return {
     get() {
       return variable;

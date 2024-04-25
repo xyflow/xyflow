@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { onMount, hasContext } from 'svelte';
+  import { onMount, hasContext, untrack } from 'svelte';
   import { get } from 'svelte/store';
   import cc from 'classcat';
-  import { ConnectionMode, PanOnScrollMode } from '@xyflow/system';
+  import { ConnectionMode, PanOnScrollMode, infiniteExtent } from '@xyflow/system';
 
   import { key, useStore, createStoreContext } from '$lib/store';
 
@@ -20,85 +20,85 @@
   import { useColorModeClass } from '$lib/hooks/useColorModeClass';
 
   import type { SvelteFlowProps } from './types';
-  import { updateStore, updateStoreByKeys } from './utils';
+  import { StoreUpdater } from '$lib/components/StoreUpdater';
 
   let {
-    id = '1',
-    style,
-    class: className,
-    nodes,
-    edges,
-    nodeTypes,
-    edgeTypes,
-    fitView,
-    fitViewOptions,
-    minZoom,
-    maxZoom,
-    initialViewport = { x: 0, y: 0, zoom: 1 },
-    viewport,
-    selectionKey,
-    selectionMode,
-    panActivationKey,
-    multiSelectionKey,
-    zoomActivationKey,
-    nodesDraggable,
-    nodesConnectable,
-    nodeDragThreshold,
-    elementsSelectable,
-    snapGrid,
-    deleteKey,
-    connectionRadius,
-    connectionMode = ConnectionMode.Strict,
-    connectionLine,
-    connectionLineType,
-    connectionLineStyle = '',
-    connectionLineContainerStyle = '',
-    onMoveStart,
-    onMove,
-    onMoveEnd,
-    isValidConnection,
-    translateExtent,
-    onlyRenderVisibleElements,
-    panOnScrollMode = PanOnScrollMode.Free,
-    preventScrolling = true,
-    zoomOnScroll = true,
-    zoomOnDoubleClick = true,
-    zoomOnPinch = true,
-    panOnScroll = false,
-    panOnDrag = true,
-    selectionOnDrag,
+    attributionPosition,
     autoPanOnConnect = true,
     autoPanOnNodeDrag = true,
-    onerror,
-    ondelete,
-    onedgecreate,
-    attributionPosition,
-    proOptions,
-    defaultEdgeOptions,
-    width,
-    height,
+    children,
+    class: className,
     colorMode = 'light',
-    onconnect,
-    onconnectstart,
-    onconnectend,
-    onbeforedelete,
-    oninit,
+    connectionLine,
+    connectionLineContainerStyle = '',
+    connectionLineStyle = '',
+    connectionLineType,
+    connectionMode = ConnectionMode.Strict,
+    connectionRadius,
+    defaultEdgeOptions,
     defaultMarkerColor = '#b1b1b7',
+    deleteKey,
+    edges,
+    edgeTypes,
+    elementsSelectable,
+    fitView,
+    fitViewOptions,
+    height,
+    id = '1',
+    initialViewport = { x: 0, y: 0, zoom: 1 },
+    isValidConnection,
+    maxZoom,
+    minZoom,
+    multiSelectionKey,
+    nodeDragThreshold,
+    nodes,
+    nodesConnectable,
+    nodesDraggable,
+    nodeTypes,
+    onbeforedelete,
+    onconnect,
+    onconnectend,
+    onconnectstart,
+    ondelete,
+    onedgeclick,
+    onedgecontextmenu,
+    onedgecreate,
+    onerror,
+    oninit,
+    onlyRenderVisibleElements,
+    onMove,
+    onMoveEnd,
+    onMoveStart,
     onnodeclick,
-    onnodemouseenter,
-    onnodemousemove,
-    onnodemouseleave,
     onnodecontextmenu,
     onnodedrag,
     onnodedragstart,
     onnodedragstop,
-    onselectionclick,
-    onselectioncontextmenu,
-    onedgeclick,
-    onedgecontextmenu,
+    onnodemouseenter,
+    onnodemouseleave,
+    onnodemousemove,
     onpaneclick,
     onpanecontextmenu,
-    children,
+    onselectionclick,
+    onselectioncontextmenu,
+    panActivationKey,
+    panOnDrag = true,
+    panOnScroll = false,
+    panOnScrollMode = PanOnScrollMode.Free,
+    preventScrolling = true,
+    proOptions,
+    selectionKey,
+    selectionMode,
+    selectionOnDrag,
+    snapGrid,
+    style,
+    translateExtent,
+    viewport,
+    width,
+    zoomActivationKey,
+    zoomOnDoubleClick = true,
+    zoomOnPinch = true,
+    zoomOnScroll = true,
     ...restProps
   }: SvelteFlowProps = $props();
 
@@ -125,14 +125,6 @@
       store.fitViewOptions = fitViewOptions;
     }
 
-    updateStore(store, {
-      nodeTypes,
-      edgeTypes,
-      minZoom,
-      maxZoom,
-      translateExtent
-    });
-
     return () => {
       store.reset();
     };
@@ -155,51 +147,6 @@
     }
   });
 
-  // TODO: this gets called twice on client
-  updateStore(store, {
-    nodeTypes,
-    edgeTypes,
-    minZoom,
-    maxZoom,
-    translateExtent
-  });
-  $effect.pre(() => {
-    updateStore(store, {
-      nodeTypes,
-      edgeTypes,
-      minZoom,
-      maxZoom,
-      translateExtent
-    });
-  });
-
-  $effect.pre(() => {
-    updateStoreByKeys(store, {
-      flowId: id,
-      connectionLineType,
-      connectionRadius,
-      selectionMode,
-      snapGrid,
-      defaultMarkerColor,
-      nodesDraggable,
-      nodesConnectable,
-      elementsSelectable,
-      onlyRenderVisibleElements,
-      isValidConnection,
-      autoPanOnConnect,
-      autoPanOnNodeDrag,
-      onerror,
-      ondelete,
-      onedgecreate,
-      connectionMode,
-      nodeDragThreshold,
-      onconnect,
-      onconnectstart,
-      onconnectend,
-      onbeforedelete
-    });
-  });
-
   let colorModeClass = useColorModeClass(colorMode);
 </script>
 
@@ -213,6 +160,36 @@
   {...restProps}
   role="application"
 >
+  <StoreUpdater
+    {store}
+    {edgeTypes}
+    {nodeTypes}
+    {minZoom}
+    {maxZoom}
+    {translateExtent}
+    {id}
+    {connectionLineType}
+    {connectionRadius}
+    {selectionMode}
+    {snapGrid}
+    {defaultMarkerColor}
+    {nodesDraggable}
+    {nodesConnectable}
+    {elementsSelectable}
+    {onlyRenderVisibleElements}
+    {isValidConnection}
+    {autoPanOnConnect}
+    {autoPanOnNodeDrag}
+    {onerror}
+    {ondelete}
+    {onedgecreate}
+    {connectionMode}
+    {nodeDragThreshold}
+    {onconnect}
+    {onconnectstart}
+    {onconnectend}
+    {onbeforedelete}
+  />
   <KeyHandler
     {selectionKey}
     {deleteKey}

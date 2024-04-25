@@ -37,7 +37,7 @@ import type {
   EdgeLayouted
 } from '$lib/types';
 
-import type { ConnectionProps } from '../../../quarantine/derived-connection-props';
+import type { ConnectionProps } from './derived-connection-props';
 import type { createEdgesStore, createNodesStore } from './utils';
 
 export type SvelteFlowStoreActions = {
@@ -133,7 +133,7 @@ type StoreToPropertyDefinitions<T> = {
 };
 
 export type SvelteFlowStoreProperties = StoreToPropertyDefinitions<
-  Omit<SvelteFlowStoreState, 'nodes' | 'edges' | 'viewport' | 'visibleEdges'>
+  Omit<SvelteFlowStoreState, 'nodes' | 'edges' | 'visibleEdges' | 'viewport'>
 >;
 
 export type SvelteFlowStore = SvelteFlowStoreState & SvelteFlowStoreActions;

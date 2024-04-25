@@ -53,10 +53,7 @@ import type {
   InternalNode
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
-import {
-  initConnectionProps,
-  type ConnectionProps
-} from '../../../quarantine/derived-connection-props';
+import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
 import { derivedSignal, derivedSignalWritable, signal } from './signals.svelte';
 import type { SvelteFlowStoreProperties, SvelteFlowStoreState } from './types';
 import { get, writable } from 'svelte/store';
@@ -74,6 +71,8 @@ export const initialEdgeTypes = {
   default: BezierEdgeInternal,
   step: StepEdgeInternal
 };
+
+export const intialValues = {};
 
 export const getInitialStore = ({
   nodes = [],
