@@ -31,7 +31,6 @@ export function handleNodeClick({
     onError?.('012', errorMessages['error012'](id));
     return;
   }
-
   store.setState({ nodesSelectionActive: false });
 
   if (!node.selected) {

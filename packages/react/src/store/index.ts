@@ -1,4 +1,3 @@
-import { createWithEqualityFn } from 'zustand/traditional';
 import {
   adoptUserNodes,
   updateAbsolutePositions,
@@ -19,6 +18,7 @@ import {
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import getInitialState from './initialState';
 import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
+import { createWithEqualityFn } from 'zustand/traditional';
 
 const createStore = ({
   nodes,

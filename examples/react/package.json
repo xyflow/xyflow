@@ -31,6 +31,7 @@
   "devDependencies": {
     "@cypress/skip-test": "^2.6.1",
     "@types/dagre": "^0.7.52",
+    "@types/node": "^20.12.7",
     "@types/react": "^18.2.36",
     "@types/react-dom": "^18.2.14",
     "@vitejs/plugin-react": "4.1.1",
