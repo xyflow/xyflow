@@ -1,8 +1,7 @@
-import type { RefObject } from 'react';
-import type { StoreApi } from 'zustand';
+// import type { StoreApi } from 'zustand';
 import { errorMessages } from '@xyflow/system';
 
-import type { ReactFlowState } from '../../types';
+import type { SolidFlowState } from '../../types';
 
 // this handler is called by
 // 1. the click handler when node is not draggable or selectNodesOnDrag = false
@@ -15,27 +14,25 @@ export function handleNodeClick({
   nodeRef,
 }: {
   id: string;
-  store: {
-    getState: StoreApi<ReactFlowState>['getState'];
-    setState: StoreApi<ReactFlowState>['setState'];
-  };
+  store: SolidFlowState,
   unselect?: boolean;
-  nodeRef?: RefObject<HTMLDivElement>;
+  nodeRef?: HTMLDivElement;
 }) {
-  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeLookup, onError } = store.getState();
+  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeLookup, onError } = store;
   const node = nodeLookup.get(id);
 
   if (!node) {
-    onError?.('012', errorMessages['error012'](id));
+    onError.get()?.('012', errorMessages['error012'](id));
     return;
   }
-  store.setState({ nodesSelectionActive: false });
+
+  store.nodesSelectionActive.set(false);
 
   if (!node.selected) {
     addSelectedNodes([id]);
   } else if (unselect || (node.selected && multiSelectionActive)) {
     unselectNodesAndEdges({ nodes: [node], edges: [] });
 
-    requestAnimationFrame(() => nodeRef?.current?.blur());
+    requestAnimationFrame(() => nodeRef?.blur());
   }
 }

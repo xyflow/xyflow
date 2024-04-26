@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "turbo run dev --parallel --concurrency 12",
+    "dev": "turbo run dev --parallel --concurrency 15",
     "dev:svelte": "turbo run dev --filter=svelte-examples...",
     "dev:react": "turbo run dev --filter=react-examples...",
     "test:svelte": "pnpm --filter=playwright run test:svelte",
