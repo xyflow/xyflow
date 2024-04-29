@@ -11,6 +11,8 @@ import {
   useEdgesState,
   OnConnect,
   useNodesInitialized,
+  Panel,
+  useReactFlow,
 } from '@xyflow/react';
 
 const initialNodes: Node[] = [
@@ -49,6 +51,7 @@ const initialEdges: Edge[] = [
 ];
 
 const UseZoomPanHelperFlow = () => {
+  const { addNodes } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -58,6 +61,13 @@ const UseZoomPanHelperFlow = () => {
   useEffect(() => {
     console.log('initialized', initialized);
   }, [initialized]);
+
+  const addNode = () =>
+    addNodes({
+      id: `${Math.random()}`,
+      data: { label: 'new node' },
+      position: { x: Math.random() * 400, y: Math.random() * 400 },
+    });
 
   return (
     <ReactFlow
@@ -71,6 +81,9 @@ const UseZoomPanHelperFlow = () => {
     >
       <Background />
       <MiniMap />
+      <Panel>
+        <button onClick={addNode}>add node</button>
+      </Panel>
     </ReactFlow>
   );
 };

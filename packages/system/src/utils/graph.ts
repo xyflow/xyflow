@@ -395,7 +395,7 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
   nodes: NodeType[];
   edges: EdgeType[];
 }> {
-  const nodeIds = nodesToRemove.map((node) => node.id);
+  const nodeIds = new Set(nodesToRemove.map((node) => node.id));
   const matchingNodes: NodeType[] = [];
 
   for (const node of nodes) {
@@ -403,7 +403,7 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
       continue;
     }
 
-    const isIncluded = nodeIds.includes(node.id);
+    const isIncluded = nodeIds.has(node.id);
     const parentHit = !isIncluded && node.parentId && matchingNodes.find((n) => n.id === node.parentId);
 
     if (isIncluded || parentHit) {
@@ -411,13 +411,13 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
     }
   }
 
-  const edgeIds = edgesToRemove.map((edge) => edge.id);
+  const edgeIds = new Set(edgesToRemove.map((edge) => edge.id));
   const deletableEdges = edges.filter((edge) => edge.deletable !== false);
   const connectedEdges = getConnectedEdges(matchingNodes, deletableEdges);
   const matchingEdges: EdgeType[] = connectedEdges;
 
   for (const edge of deletableEdges) {
-    const isIncluded = edgeIds.includes(edge.id);
+    const isIncluded = edgeIds.has(edge.id);
 
     if (isIncluded && !matchingEdges.find((e) => e.id === edge.id)) {
       matchingEdges.push(edge);
