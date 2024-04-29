@@ -13,115 +13,70 @@ export type DeleteElementsOptions = {
   edges?: (Edge | { id: Edge['id'] })[];
 };
 
-export namespace Instance {
-  export type GetNodes<NodeType extends Node = Node> = () => NodeType[];
-  export type SetNodes<NodeType extends Node = Node> = (
-    payload: NodeType[] | ((nodes: NodeType[]) => NodeType[])
-  ) => void;
-  export type AddNodes<NodeType extends Node = Node> = (payload: NodeType[] | NodeType) => void;
-  export type GetNode<NodeType extends Node = Node> = (id: string) => NodeType | undefined;
-  export type GetInternalNode<NodeType extends Node = Node> = (id: string) => InternalNode<NodeType> | undefined;
-  export type GetEdges<EdgeType extends Edge = Edge> = () => EdgeType[];
-  export type SetEdges<EdgeType extends Edge = Edge> = (
-    payload: EdgeType[] | ((edges: EdgeType[]) => EdgeType[])
-  ) => void;
-  export type GetEdge<EdgeType extends Edge = Edge> = (id: string) => EdgeType | undefined;
-  export type AddEdges<EdgeType extends Edge = Edge> = (payload: EdgeType[] | EdgeType) => void;
-  export type ToObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = () => ReactFlowJsonObject<
-    NodeType,
-    EdgeType
-  >;
-  export type DeleteElements = (params: DeleteElementsOptions) => Promise<{
-    deletedNodes: Node[];
-    deletedEdges: Edge[];
-  }>;
-  export type GetIntersectingNodes<NodeType extends Node = Node> = (
-    node: NodeType | { id: Node['id'] } | Rect,
-    partially?: boolean,
-    nodes?: NodeType[]
-  ) => NodeType[];
-  export type IsNodeIntersecting<NodeType extends Node = Node> = (
-    node: NodeType | { id: Node['id'] } | Rect,
-    area: Rect,
-    partially?: boolean
-  ) => boolean;
-
-  export type UpdateNode<NodeType extends Node = Node> = (
-    id: string,
-    nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
-    options?: { replace: boolean }
-  ) => void;
-  export type UpdateNodeData<NodeType extends Node = Node> = (
-    id: string,
-    dataUpdate: object | ((node: NodeType) => object),
-    options?: { replace: boolean }
-  ) => void;
-}
-
-export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   /**
    * Returns nodes.
    *
    * @returns nodes array
    */
-  getNodes: Instance.GetNodes<NodeType>;
+  getNodes: () => NodeType[];
   /**
    * Sets nodes.
    *
    * @param payload - the nodes to set or a function that receives the current nodes and returns the new nodes
    */
-  setNodes: Instance.SetNodes<NodeType>;
+  setNodes: (payload: NodeType[] | ((nodes: NodeType[]) => NodeType[])) => void;
   /**
    * Adds nodes.
    *
    * @param payload - the nodes to add
    */
-  addNodes: Instance.AddNodes<NodeType>;
+  addNodes: (payload: NodeType[] | NodeType) => void;
   /**
    * Returns a node by id.
    *
    * @param id - the node id
    * @returns the node or undefined if no node was found
    */
-  getNode: Instance.GetNode<NodeType>;
+  getNode: (id: string) => NodeType | undefined;
   /**
    * Returns an internal node by id.
    *
    * @param id - the node id
    * @returns the internal node or undefined if no node was found
    */
-  getInternalNode: Instance.GetInternalNode<NodeType>;
+  getInternalNode: (id: string) => InternalNode<NodeType> | undefined;
   /**
    * Returns edges.
    *
    * @returns edges array
    */
-  getEdges: Instance.GetEdges<EdgeType>;
+  getEdges: () => EdgeType[];
   /**
    * Sets edges.
    *
    * @param payload - the edges to set or a function that receives the current edges and returns the new edges
    */
-  setEdges: Instance.SetEdges<EdgeType>;
+  setEdges: (payload: EdgeType[] | ((edges: EdgeType[]) => EdgeType[])) => void;
   /**
    * Adds edges.
    *
    * @param payload - the edges to add
    */
-  addEdges: Instance.AddEdges<EdgeType>;
+  addEdges: (payload: EdgeType[] | EdgeType) => void;
   /**
    * Returns an edge by id.
    *
    * @param id - the edge id
    * @returns the edge or undefined if no edge was found
    */
-  getEdge: Instance.GetEdge<EdgeType>;
+  getEdge: (id: string) => EdgeType | undefined;
   /**
    * Returns the nodes, edges and the viewport as a JSON object.
    *
    * @returns the nodes, edges and the viewport as a JSON object
    */
-  toObject: Instance.ToObject<NodeType, EdgeType>;
+  toObject: () => ReactFlowJsonObject<NodeType, EdgeType>;
   /**
    * Deletes nodes and edges.
    *
@@ -130,7 +85,10 @@ export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edg
    *
    * @returns a promise that resolves with the deleted nodes and edges
    */
-  deleteElements: Instance.DeleteElements;
+  deleteElements: (params: DeleteElementsOptions) => Promise<{
+    deletedNodes: Node[];
+    deletedEdges: Edge[];
+  }>;
   /**
    * Returns all nodes that intersect with the given node or rect.
    *
@@ -140,7 +98,11 @@ export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edg
    *
    * @returns an array of intersecting nodes
    */
-  getIntersectingNodes: Instance.GetIntersectingNodes<NodeType>;
+  getIntersectingNodes: (
+    node: NodeType | { id: Node['id'] } | Rect,
+    partially?: boolean,
+    nodes?: NodeType[]
+  ) => NodeType[];
   /**
    * Checks if the given node or rect intersects with the passed rect.
    *
@@ -150,7 +112,7 @@ export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edg
    *
    * @returns true if the node or rect intersects with the given area
    */
-  isNodeIntersecting: Instance.IsNodeIntersecting<NodeType>;
+  isNodeIntersecting: (node: NodeType | { id: Node['id'] } | Rect, area: Rect, partially?: boolean) => boolean;
   /**
    * Updates a node.
    *
@@ -161,7 +123,11 @@ export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edg
    * @example
    * updateNode('node-1', (node) => ({ position: { x: node.position.x + 10, y: node.position.y } }));
    */
-  updateNode: Instance.UpdateNode<NodeType>;
+  updateNode: (
+    id: string,
+    nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
+    options?: { replace: boolean }
+  ) => void;
   /**
    * Updates the data attribute of a node.
    *
@@ -172,6 +138,17 @@ export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edg
    * @example
    * updateNodeData('node-1', { label: 'A new label' });
    */
-  updateNodeData: Instance.UpdateNodeData<NodeType>;
-  viewportInitialized: boolean;
-} & Omit<ViewportHelperFunctions, 'initialized'>;
+  updateNodeData: (
+    id: string,
+    dataUpdate: object | ((node: NodeType) => object),
+    options?: { replace: boolean }
+  ) => void;
+};
+
+export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = GeneralHelpers<
+  NodeType,
+  EdgeType
+> &
+  Omit<ViewportHelperFunctions, 'initialized'> & {
+    viewportInitialized: boolean;
+  };

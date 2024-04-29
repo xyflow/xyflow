@@ -7,10 +7,8 @@ import {
   rendererPointToPoint,
 } from '@xyflow/system';
 
-import { useStoreApi, useStore } from '../hooks/useStore';
-import type { ViewportHelperFunctions, ReactFlowState } from '../types';
-
-const selector = (s: ReactFlowState) => !!s.panZoom;
+import { useStoreApi } from '../hooks/useStore';
+import type { ViewportHelperFunctions } from '../types';
 
 /**
  * Hook for getting viewport helper functions.
@@ -20,9 +18,8 @@ const selector = (s: ReactFlowState) => !!s.panZoom;
  */
 const useViewportHelper = (): ViewportHelperFunctions => {
   const store = useStoreApi();
-  const panZoomInitialized = useStore(selector);
 
-  const viewportHelperFunctions = useMemo<ViewportHelperFunctions>(() => {
+  return useMemo<ViewportHelperFunctions>(() => {
     return {
       zoomIn: (options) => store.getState().panZoom?.scaleBy(1.2, { duration: options?.duration }),
       zoomOut: (options) => store.getState().panZoom?.scaleBy(1 / 1.2, { duration: options?.duration }),
@@ -117,11 +114,8 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           y: rendererPosition.y + domY,
         };
       },
-      viewportInitialized: panZoomInitialized,
     };
-  }, [panZoomInitialized]);
-
-  return viewportHelperFunctions;
+  }, []);
 };
 
 export default useViewportHelper;
