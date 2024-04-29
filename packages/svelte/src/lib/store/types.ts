@@ -34,10 +34,11 @@ import type {
   OnDelete,
   OnEdgeCreate,
   OnBeforeDelete,
-  EdgeLayouted
+  EdgeLayouted,
+  ConnectionData
 } from '$lib/types';
 
-import type { ConnectionProps } from './derived-connection-props';
+import type { ConnectionProps } from './derived-connection';
 import type { createEdgesStore, createNodesStore } from './utils';
 
 export type SvelteFlowStoreActions = {
@@ -72,6 +73,7 @@ export type SvelteFlowStoreState = {
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;
   connection: ConnectionProps;
+  connectionData: ConnectionData;
   connectionLineType: ConnectionLineType;
   connectionLookup: ConnectionLookup;
   connectionMode: ConnectionMode;
@@ -133,7 +135,7 @@ type StoreToPropertyDefinitions<T> = {
 };
 
 export type SvelteFlowStoreProperties = StoreToPropertyDefinitions<
-  Omit<SvelteFlowStoreState, 'nodes' | 'edges' | 'visibleEdges'>
+  Omit<SvelteFlowStoreState, 'nodes' | 'edges' | 'visibleEdges' | 'connection'>
 >;
 
 export type SvelteFlowStore = SvelteFlowStoreState & SvelteFlowStoreActions;

@@ -21,6 +21,8 @@ import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData }
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import type { SvelteFlowStore, SvelteFlowStoreActions, SvelteFlowStoreState } from './types';
 import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
+import { derivedSignal } from './signals.svelte';
+import { getConnection } from './derived-connection';
 // import { getVisibleEdges } from './visible-edges';
 // import { getVisibleNodes } from './visible-nodes';
 // import { getDerivedConnectionProps } from './derived-connection-props';
@@ -205,38 +207,6 @@ export function createStore({
     if (resetEdges) store.edges.update((nds) => nds);
   }
 
-  //TODO: find a good solutio, maybe this shouldnt even be here
-  // store.deleteKeyPressed.subscribe(async (deleteKeyPressed) => {
-  //   if (deleteKeyPressed) {
-  //     const nodes = get(store.nodes);
-  //     const edges = get(store.edges);
-  //     const selectedNodes = nodes.filter((node) => node.selected);
-  //     const selectedEdges = edges.filter((edge) => edge.selected);
-
-  //     const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
-  //       nodesToRemove: selectedNodes,
-  //       edgesToRemove: selectedEdges,
-  //       nodes,
-  //       edges,
-  //       onBeforeDelete: store.onbeforedelete
-  //     });
-
-  //     if (matchingNodes.length || matchingEdges.length) {
-  //       store.nodes.update((nds) =>
-  //         nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id))
-  //       );
-  //       store.edges.update((eds) =>
-  //         eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
-  //       );
-
-  //       store.ondelete?.({
-  //         nodes: matchingNodes,
-  //         edges: matchingEdges
-  //       });
-  //     }
-  //   }
-  // });
-
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
@@ -327,11 +297,8 @@ export function createStore({
     connectionStatus: null
   };
 
-  // by creating an internal, unexposed store and using a derived store
-  // we prevent using slow get() calls
-  const currentConnection = writable<ConnectionData>(initConnectionUpdateData);
   const updateConnection: UpdateConnection = (newConnection: ConnectionData) => {
-    currentConnection.set(newConnection);
+    store.connectionData = newConnection;
   };
 
   function cancelConnection() {
@@ -350,7 +317,6 @@ export function createStore({
   }
 
   const storeWithAction = Object.assign<SvelteFlowStoreState, SvelteFlowStoreActions>(store, {
-    // // connection: getDerivedConnectionProps(store, currentConnection),
     // visibleEdges: derivedSignal(() => get(store.edges)),
     // // visibleNodes: getVisibleNodes(store),
     // visibleNodes: derivedSignal(() => {

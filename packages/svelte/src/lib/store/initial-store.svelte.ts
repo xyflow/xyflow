@@ -57,6 +57,7 @@ import { initConnectionProps, type ConnectionProps } from './derived-connection-
 import { derivedSignal, derivedSignalWritable, signal } from './signals.svelte';
 import type { SvelteFlowStoreProperties, SvelteFlowStoreState } from './types';
 import { get, writable } from 'svelte/store';
+import { getConnection, initConnectionUpdateData } from './derived-connection';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -116,7 +117,7 @@ export const getInitialStore = ({
     {
       autoPanOnConnect: signal<SvelteFlowStoreState['autoPanOnConnect']>(true),
       autoPanOnNodeDrag: signal<SvelteFlowStoreState['autoPanOnNodeDrag']>(true),
-      connection: signal<SvelteFlowStoreState['connection']>(initConnectionProps),
+      connectionData: signal<SvelteFlowStoreState['connectionData']>(initConnectionUpdateData),
       connectionLineType: signal<SvelteFlowStoreState['connectionLineType']>(
         ConnectionLineType.Bezier
       ),
@@ -185,6 +186,15 @@ export const getInitialStore = ({
   });
 
   Object.defineProperties(store, {
+    connection: derivedSignal(() =>
+      getConnection(
+        store.connectionData,
+        store.connectionLineType,
+        store.connectionMode,
+        store.nodeLookup,
+        store.viewport
+      )
+    ),
     visibleEdges: derivedSignalWritable<SvelteFlowStoreState['visibleEdges'], Edge[]>(
       (edges) => {
         const layoutedEdges = edges.reduce<EdgeLayouted[]>((res, edge) => {

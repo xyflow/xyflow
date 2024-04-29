@@ -4,11 +4,12 @@
     type ShortcutEventDetail,
     type ShortcutModifierDefinition
   } from '@svelte-put/shortcut';
-  import { isInputDOMNode, isMacOs } from '@xyflow/system';
+  import { getElementsToRemove, isInputDOMNode, isMacOs } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
+  import { get } from 'svelte/store';
 
   let {
     selectionKey = 'Shift',
@@ -62,6 +63,41 @@
     store.panActivationKeyPressed = false;
     store.zoomActivationKeyPressed = false;
   }
+
+  async function handleDelete() {
+    const nodes = get(store.nodes);
+    const edges = get(store.edges);
+    const selectedNodes = nodes.filter((node) => node.selected);
+    const selectedEdges = edges.filter((edge) => edge.selected);
+
+    const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
+      nodesToRemove: selectedNodes,
+      edgesToRemove: selectedEdges,
+      nodes,
+      edges,
+      onBeforeDelete: store.onbeforedelete
+    });
+
+    if (matchingNodes.length || matchingEdges.length) {
+      store.nodes.update((nds) =>
+        nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id))
+      );
+      store.edges.update((eds) =>
+        eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
+      );
+
+      store.ondelete?.({
+        nodes: matchingNodes,
+        edges: matchingEdges
+      });
+    }
+  }
+
+  $effect.pre(() => {
+    if (store.deleteKeyPressed) {
+      handleDelete();
+    }
+  });
 </script>
 
 <svelte:window
