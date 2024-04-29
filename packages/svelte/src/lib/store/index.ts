@@ -21,8 +21,6 @@ import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData }
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import type { SvelteFlowStore, SvelteFlowStoreActions, SvelteFlowStoreState } from './types';
 import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
-import { derivedSignal } from './signals.svelte';
-import { getConnection } from './derived-connection';
 // import { getVisibleEdges } from './visible-edges';
 // import { getVisibleNodes } from './visible-nodes';
 // import { getDerivedConnectionProps } from './derived-connection-props';
