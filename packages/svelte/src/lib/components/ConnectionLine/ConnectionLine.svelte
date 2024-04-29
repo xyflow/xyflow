@@ -8,7 +8,7 @@
     getSmoothStepPath,
     getStraightPath
   } from '@xyflow/system';
-  import type { ConnectionProps } from '$lib/store/derived-connection-props';
+  import type { ConnectionProps } from '$lib/store/derived-connection';
 
   let {
     containerStyle = '',

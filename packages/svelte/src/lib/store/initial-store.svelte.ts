@@ -9,20 +9,8 @@ import {
   getNodesBounds,
   getViewportForBounds,
   updateConnectionLookup,
-  type SelectionRect,
-  type SnapGrid,
-  type MarkerProps,
-  type PanZoomInstance,
-  type CoordinateExtent,
-  type NodeOrigin,
-  type OnError,
   type Viewport,
-  type ConnectionLookup,
-  type OnConnect,
-  type OnConnectStart,
-  type OnConnectEnd,
   type NodeLookup,
-  type EdgeLookup,
   getEdgePosition,
   getElevatedEdgeZIndex
 } from '@xyflow/system';
@@ -39,25 +27,11 @@ import {
   StepEdgeInternal
 } from '$lib/components/edges';
 
-import type {
-  NodeTypes,
-  EdgeTypes,
-  EdgeLayouted,
-  Node,
-  Edge,
-  FitViewOptions,
-  OnDelete,
-  OnEdgeCreate,
-  OnBeforeDelete,
-  IsValidConnection,
-  InternalNode
-} from '$lib/types';
+import type { EdgeLayouted, Node, Edge } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
-import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
 import { derivedSignal, derivedSignalWritable, signal } from './signals.svelte';
 import type { SvelteFlowStoreProperties, SvelteFlowStoreState } from './types';
-import { get, writable } from 'svelte/store';
-import { getConnection, initConnectionUpdateData } from './derived-connection';
+import { getDerivedConnection, initConnectionUpdateData } from './derived-connection';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -187,9 +161,8 @@ export const getInitialStore = ({
 
   Object.defineProperties(store, {
     connection: derivedSignal(() =>
-      getConnection(
+      getDerivedConnection(
         store.connectionData,
-        store.connectionLineType,
         store.connectionMode,
         store.nodeLookup,
         store.viewport

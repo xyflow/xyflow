@@ -1,11 +1,7 @@
 import type { ConnectionData } from '$lib/types';
 import {
-  ConnectionLineType,
   ConnectionMode,
   Position,
-  getBezierPath,
-  getSmoothStepPath,
-  getStraightPath,
   type HandleElement,
   type NodeLookup,
   type Viewport
@@ -51,9 +47,8 @@ const oppositePosition = {
   [Position.Bottom]: Position.Top
 };
 
-export function getConnection(
+export function getDerivedConnection(
   connection: ConnectionData,
-  connectionLineType: ConnectionLineType,
   connectionMode: ConnectionMode,
   nodeLookup: NodeLookup,
   viewport: Viewport
@@ -99,22 +94,6 @@ export function getConnection(
     targetY: ((connection.connectionPosition?.y ?? 0) - viewport.y) / viewport.zoom,
     targetPosition: toPosition
   };
-
-  //   let path = '';
-
-  //   if (connectionLineType === ConnectionLineType.Bezier) {
-  //     // we assume the destination position is opposite to the source position
-  //     [path] = getBezierPath(pathParams);
-  //   } else if (connectionLineType === ConnectionLineType.Step) {
-  //     [path] = getSmoothStepPath({
-  //       ...pathParams,
-  //       borderRadius: 0
-  //     });
-  //   } else if (connectionLineType === ConnectionLineType.SmoothStep) {
-  //     [path] = getSmoothStepPath(pathParams);
-  //   } else {
-  //     [path] = getStraightPath(pathParams);
-  //   }
 
   return {
     ...pathParams,
