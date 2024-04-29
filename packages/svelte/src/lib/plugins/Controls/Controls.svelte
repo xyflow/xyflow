@@ -32,7 +32,6 @@
   }: ControlsProps = $props();
 
   const store = useStore();
-  const { viewport } = store;
 
   const buttonProps = {
     bgColor: buttonBgColor,
@@ -45,8 +44,8 @@
   let isInteractive = $state(
     store.nodesDraggable || store.nodesConnectable || store.elementsSelectable
   );
-  let minZoomReached = $derived($viewport.zoom <= store.minZoom);
-  let maxZoomReached = $derived($viewport.zoom >= store.maxZoom);
+  let minZoomReached = $derived(store.viewport.zoom <= store.minZoom);
+  let maxZoomReached = $derived(store.viewport.zoom >= store.maxZoom);
   let orientationClass = $derived(orientation === 'horizontal' ? 'horizontal' : 'vertical');
 
   const onZoomInHandler = () => {

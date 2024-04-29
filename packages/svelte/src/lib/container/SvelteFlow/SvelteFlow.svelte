@@ -115,7 +115,7 @@
 
     store.syncNodeStores(nodes);
     store.syncEdgeStores(edges);
-    store.syncViewport(viewport);
+    // store.syncViewport(viewport);
 
     if (fitView !== undefined) {
       store.fitViewOnInit = fitView;
@@ -162,6 +162,7 @@
 >
   <StoreUpdater
     {store}
+    {viewport}
     {edgeTypes}
     {nodeTypes}
     {minZoom}

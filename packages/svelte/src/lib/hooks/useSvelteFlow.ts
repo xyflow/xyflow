@@ -186,7 +186,7 @@ export function useSvelteFlow(): {
    * const clientPosition = flowToScreenPosition({ x: node.position.x, y: node.position.y })
    */
   flowToScreenPosition: (flowPosition: XYPosition) => XYPosition;
-  viewport: Writable<Viewport>;
+  viewport: Viewport;
   /**
    * Updates a node.
    *
@@ -273,20 +273,18 @@ export function useSvelteFlow(): {
     setZoom: (zoomLevel, options) => {
       store.panZoom?.scaleTo(zoomLevel, { duration: options?.duration });
     },
-    getZoom: () => get(store.viewport).zoom,
+    getZoom: () => store.viewport.zoom,
     setViewport: (vieport, options) => {
-      const currentViewport = get(store.viewport);
-
       store.panZoom?.setViewport(
         {
-          x: vieport.x ?? currentViewport.x,
-          y: vieport.y ?? currentViewport.y,
-          zoom: vieport.zoom ?? currentViewport.zoom
+          x: vieport.x ?? store.viewport.x,
+          y: vieport.y ?? store.viewport.y,
+          zoom: vieport.zoom ?? store.viewport.zoom
         },
         { duration: options?.duration }
       );
     },
-    getViewport: () => get(store.viewport),
+    getViewport: () => store.viewport,
     setCenter: (x, y, options) => {
       const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : store.maxZoom;
 
@@ -389,7 +387,7 @@ export function useSvelteFlow(): {
       }
 
       const _snapGrid = options.snapToGrid ? store.snapGrid : false;
-      const { x, y, zoom } = get(store.viewport);
+      const { x, y, zoom } = store.viewport;
       const { x: domX, y: domY } = store.domNode.getBoundingClientRect();
       const correctedPosition = {
         x: position.x - domX,
@@ -415,7 +413,7 @@ export function useSvelteFlow(): {
         return position;
       }
 
-      const { x, y, zoom } = get(store.viewport);
+      const { x, y, zoom } = store.viewport;
       const { x: domX, y: domY } = _domNode.getBoundingClientRect();
       const rendererPosition = rendererPointToPoint(position, [x, y, zoom]);
 
@@ -435,7 +433,7 @@ export function useSvelteFlow(): {
           data: { ...node.data }
         })),
         edges: get(store.edges).map((edge) => ({ ...edge })),
-        viewport: { ...get(store.viewport) }
+        viewport: { ...store.viewport }
       };
     },
     updateNode,

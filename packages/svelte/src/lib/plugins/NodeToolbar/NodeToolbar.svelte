@@ -18,7 +18,7 @@
   }: NodeToolbarProps = $props();
 
   const store = useStore();
-  const { nodes, viewport } = store;
+  const { nodes } = store;
 
   const contextNodeId = getContext<string>('svelteflow__node_id');
 
@@ -54,7 +54,7 @@
     }
 
     if (nodeRect) {
-      return getNodeToolbarTransform(nodeRect, $viewport, position, offset, align);
+      return getNodeToolbarTransform(nodeRect, store.viewport, position, offset, align);
     }
 
     return '';

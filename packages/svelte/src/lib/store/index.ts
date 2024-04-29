@@ -313,7 +313,7 @@ export function createStore({
     return panBySystem({
       delta,
       panZoom: store.panZoom,
-      transform: [get(viewport).x, get(viewport).y, get(viewport).zoom],
+      transform: [viewport.x, viewport.y, viewport.zoom],
       translateExtent: store.translateExtent,
       width: store.width,
       height: store.height
@@ -397,7 +397,7 @@ export function createStore({
     // actions
     syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
     syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
-    syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
+    // syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
     setNodeTypes,
     setEdgeTypes,
     addEdge,

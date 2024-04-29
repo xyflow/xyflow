@@ -44,7 +44,7 @@
   }: MiniMapProps = $props();
 
   const store = useStore();
-  const { nodes, viewport } = store;
+  const { nodes } = store;
 
   const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
@@ -56,10 +56,10 @@
 
   // TODO: simplify this
   let viewBB = $derived({
-    x: -$viewport.x / $viewport.zoom,
-    y: -$viewport.y / $viewport.zoom,
-    width: store.width / $viewport.zoom,
-    height: store.height / $viewport.zoom
+    x: -store.viewport.x / store.viewport.zoom,
+    y: -store.viewport.y / store.viewport.zoom,
+    width: store.width / store.viewport.zoom,
+    height: store.height / store.viewport.zoom
   });
   let boundingRect = $derived(
     $nodes.length > 0 ? getBoundsOfRects(getNodesBounds($nodes), viewBB) : viewBB
@@ -99,7 +99,7 @@
         : undefined}
       use:interactive={{
         panZoom: store.panZoom,
-        viewport,
+        viewport: store.viewport,
         getViewScale,
         translateExtent: store.translateExtent,
         width: store.width,

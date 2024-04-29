@@ -80,7 +80,7 @@
         getStoreItems: () => {
           return {
             nodeLookup: store.nodeLookup,
-            transform: [$viewport.x, $viewport.y, $viewport.zoom],
+            transform: [store.viewport.x, store.viewport.y, store.viewport.zoom],
             snapGrid: store.snapGrid ?? undefined,
             snapToGrid: !!store.snapGrid,
             nodeOrigin: store.nodeOrigin

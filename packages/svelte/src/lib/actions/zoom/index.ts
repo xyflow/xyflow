@@ -11,7 +11,6 @@ import type { SvelteFlowStore } from '$lib/store/types';
 
 type ZoomParams = {
   store: SvelteFlowStore;
-  viewport: Writable<Viewport>;
   initialViewport: Viewport;
   minZoom: number;
   maxZoom: number;
@@ -38,7 +37,7 @@ type ZoomParams = {
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {
-  const { store, minZoom, maxZoom, initialViewport, viewport, translateExtent } = params;
+  const { store, minZoom, maxZoom, initialViewport, translateExtent } = params;
 
   const panZoomInstance = XYPanZoom({
     domNode,
@@ -47,13 +46,13 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     translateExtent,
     viewport: initialViewport,
     onTransformChange: (transform) =>
-      viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] }),
+      (store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] }),
     onDraggingChange: (newDragging) => {
       store.dragging = newDragging;
     }
   });
   const currentViewport = panZoomInstance.getViewport();
-  viewport.set(currentViewport);
+  store.viewport = currentViewport;
   store.panZoom = panZoomInstance;
 
   panZoomInstance.update(params);

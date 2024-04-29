@@ -36,7 +36,6 @@
   class="svelte-flow__zoom"
   use:zoom={{
     store,
-    viewport: store.viewport,
     minZoom: store.minZoom,
     maxZoom: store.maxZoom,
     initialViewport,

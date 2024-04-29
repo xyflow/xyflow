@@ -8,7 +8,7 @@ import {
 
 export type UseInteractiveParams = {
   panZoom: PanZoomInstance;
-  viewport: Writable<Viewport>;
+  viewport: Viewport;
   getViewScale: () => number;
 } & XYMinimapUpdate;
 
@@ -17,7 +17,7 @@ export default function interactive(domNode: Element, params: UseInteractivePara
     domNode,
     panZoom: params.panZoom,
     getTransform: () => {
-      const viewport = get(params.viewport);
+      const viewport = params.viewport;
       return [viewport.x, viewport.y, viewport.zoom];
     },
     getViewScale: params.getViewScale

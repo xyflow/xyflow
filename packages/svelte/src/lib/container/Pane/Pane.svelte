@@ -41,7 +41,7 @@
     $props();
 
   const store = useStore();
-  const { nodes, edges, viewport } = store;
+  const { nodes, edges } = store;
 
   let container: HTMLDivElement | null = $state(null);
   let containerBounds: DOMRect | null = $state(null);
@@ -113,7 +113,7 @@
     selectedNodes = getNodesInside(
       store.nodeLookup,
       nextUserSelectRect,
-      [$viewport.x, $viewport.y, $viewport.zoom],
+      [store.viewport.x, store.viewport.y, store.viewport.zoom],
       store.selectionMode === SelectionMode.Partial,
       true
     );

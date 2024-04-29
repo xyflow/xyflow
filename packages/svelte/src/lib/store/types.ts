@@ -56,7 +56,7 @@ export type SvelteFlowStoreActions = {
   setTranslateExtent: (extent: CoordinateExtent) => void;
   syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
   syncNodeStores: (nodesStore: Writable<Node[]>) => void;
-  syncViewport: (viewportStore?: Writable<Viewport>) => void;
+  // syncViewport: (viewportStore?: Writable<Viewport>) => void;
   unselectNodesAndEdges: (params?: { nodes?: Node[]; edges?: Edge[] }) => void;
   updateConnection: UpdateConnection;
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
@@ -68,7 +68,7 @@ export type SvelteFlowStoreActions = {
 export type SvelteFlowStoreState = {
   nodes: ReturnType<typeof createNodesStore>;
   edges: ReturnType<typeof createEdgesStore>;
-  viewport: Writable<Viewport>;
+  viewport: Viewport;
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;
   connection: ConnectionProps;
@@ -133,7 +133,7 @@ type StoreToPropertyDefinitions<T> = {
 };
 
 export type SvelteFlowStoreProperties = StoreToPropertyDefinitions<
-  Omit<SvelteFlowStoreState, 'nodes' | 'edges' | 'visibleEdges' | 'viewport'>
+  Omit<SvelteFlowStoreState, 'nodes' | 'edges' | 'visibleEdges'>
 >;
 
 export type SvelteFlowStore = SvelteFlowStoreState & SvelteFlowStoreActions;

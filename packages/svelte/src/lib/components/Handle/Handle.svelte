@@ -38,7 +38,6 @@
   let isTarget = $derived(type === 'target');
 
   const store = useStore();
-  const { viewport } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
@@ -79,7 +78,7 @@
         onConnectEnd: (event) => {
           store.onconnectend?.(event);
         },
-        getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom],
+        getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
         getConnectionStartHandle: () => store.connection.startHandle
       });
     }

@@ -4,13 +4,13 @@
 
   let { children }: { children: Snippet } = $props();
 
-  const { viewport } = useStore();
-  console.log(viewport);
+  const store = useStore();
 </script>
 
 <div
   class="svelte-flow__viewport xyflow__viewport"
-  style="transform: translate({$viewport.x}px, {$viewport.y}px) scale({$viewport.zoom})"
+  style="transform: translate({store.viewport.x}px, {store.viewport.y}px) scale({store.viewport
+    .zoom})"
 >
   {@render children()}
 </div>

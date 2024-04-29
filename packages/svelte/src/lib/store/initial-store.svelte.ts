@@ -168,7 +168,7 @@ export const getInitialStore = ({
       selectNodesOnDrag: signal<SvelteFlowStoreState['selectNodesOnDrag']>(true),
       snapGrid: signal<SvelteFlowStoreState['snapGrid']>(null),
       translateExtent: signal<SvelteFlowStoreState['translateExtent']>(infiniteExtent),
-      // viewport: signal<SvelteFlowStoreState['viewport']>(viewport),
+      viewport: signal<SvelteFlowStoreState['viewport']>(viewport),
       viewportInitialized: signal<SvelteFlowStoreState['viewportInitialized']>(false),
       // visibleEdges: signal<SvelteFlowStoreState['visibleEdges']>([]),
       visibleNodes: signal<SvelteFlowStoreState['visibleNodes']>([]),
@@ -180,8 +180,8 @@ export const getInitialStore = ({
   // TODO: just temporary
   Object.assign(store, {
     nodes: createNodesStore(nodes, nodeLookup, parentLookup),
-    edges: createEdgesStore(edges, connectionLookup, edgeLookup),
-    viewport: writable<Viewport>(viewport)
+    edges: createEdgesStore(edges, connectionLookup, edgeLookup)
+    // viewport: writable<Viewport>(viewport)
   });
 
   Object.defineProperties(store, {
