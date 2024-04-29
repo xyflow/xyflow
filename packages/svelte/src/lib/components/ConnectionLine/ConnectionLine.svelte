@@ -35,20 +35,20 @@
 
     switch (store.connectionLineType) {
       case ConnectionLineType.Bezier: {
-        const [_path] = getBezierPath(pathParams);
-        return _path;
+        const [path] = getBezierPath(pathParams);
+        return path;
       }
       case ConnectionLineType.Straight: {
-        const [_path] = getStraightPath(pathParams);
-        return _path;
+        const [path] = getStraightPath(pathParams);
+        return path;
       }
       case ConnectionLineType.Step:
       case ConnectionLineType.SmoothStep: {
-        const [_path] = getSmoothStepPath({
+        const [path] = getSmoothStepPath({
           ...pathParams,
           borderRadius: store.connectionLineType === ConnectionLineType.Step ? 0 : undefined
         });
-        return _path;
+        return path;
       }
     }
   });
