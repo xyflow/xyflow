@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 import {
+  EdgeRemoveChange,
   evaluateAbsolutePosition,
   getElementsToRemove,
   getOverlappingArea,
   isRectObject,
+  NodeRemoveChange,
   nodeToRect,
   type Rect,
 } from '@xyflow/system';
@@ -11,7 +13,7 @@ import {
 import useViewportHelper from './useViewportHelper';
 import { useStore, useStoreApi } from './useStore';
 import { useBatchContext } from '../components/BatchProvider';
-import { isNode } from '../utils';
+import { elementToRemoveChange, isNode } from '../utils';
 import type { ReactFlowInstance, Node, Edge, InternalNode, ReactFlowState, GeneralHelpers } from '../types';
 
 const selector = (s: ReactFlowState) => !!s.panZoom;
@@ -113,12 +115,10 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         const {
           nodes,
           edges,
-          hasDefaultNodes,
-          hasDefaultEdges,
           onNodesDelete,
           onEdgesDelete,
-          onNodesChange,
-          onEdgesChange,
+          triggerNodeChanges,
+          triggerEdgeChanges,
           onDelete,
           onBeforeDelete,
         } = store.getState();
@@ -134,28 +134,17 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         const hasMatchingNodes = matchingNodes.length > 0;
 
         if (hasMatchingEdges) {
-          if (hasDefaultEdges) {
-            const nextEdges = edges.filter((e) => !matchingEdges.some((mE) => mE.id === e.id));
-            store.getState().setEdges(nextEdges);
-          }
+          const edgeChanges: EdgeRemoveChange[] = matchingEdges.map(elementToRemoveChange);
 
           onEdgesDelete?.(matchingEdges);
-          onEdgesChange?.(
-            matchingEdges.map((edge) => ({
-              id: edge.id,
-              type: 'remove',
-            }))
-          );
+          triggerEdgeChanges(edgeChanges);
         }
 
         if (hasMatchingNodes) {
-          if (hasDefaultNodes) {
-            const nextNodes = nodes.filter((n) => !matchingNodes.some((mN) => mN.id === n.id));
-            store.getState().setNodes(nextNodes);
-          }
+          const nodeChanges: NodeRemoveChange[] = matchingNodes.map(elementToRemoveChange);
 
           onNodesDelete?.(matchingNodes);
-          onNodesChange?.(matchingNodes.map((node) => ({ id: node.id, type: 'remove' })));
+          triggerNodeChanges(nodeChanges);
         }
 
         if (hasMatchingNodes || hasMatchingEdges) {

@@ -97,6 +97,7 @@ export {
   type EdgeRemoveChange,
   type EdgeAddChange,
   type EdgeReplaceChange,
+  type KeyCode,
 } from '@xyflow/system';
 
 // system utils

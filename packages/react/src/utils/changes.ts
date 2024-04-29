@@ -6,6 +6,8 @@ import {
   NodeChange,
   NodeSelectionChange,
   EdgeSelectionChange,
+  NodeRemoveChange,
+  EdgeRemoveChange,
 } from '@xyflow/system';
 import type { Node, Edge, InternalNode } from '../types';
 
@@ -257,4 +259,11 @@ export function getElementsDiffChanges({
   }
 
   return changes;
+}
+
+export function elementToRemoveChange<T extends Node | Edge>(item: T): NodeRemoveChange | EdgeRemoveChange {
+  return {
+    id: item.id,
+    type: 'remove',
+  };
 }
