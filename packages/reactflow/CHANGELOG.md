@@ -1,5 +1,18 @@
 # reactflow
 
+## 11.11.3
+
+### Patch Changes
+
+- [#4230](https://github.com/xyflow/xyflow/pull/4230) [`0dbbe545`](https://github.com/xyflow/xyflow/commit/0dbbe5456a01c6b1cbcac382d3ddd2f744aaac40) - pinch zoom on windows
+- Updated dependencies [[`0dbbe545`](https://github.com/xyflow/xyflow/commit/0dbbe5456a01c6b1cbcac382d3ddd2f744aaac40)]:
+  - @reactflow/core@11.11.3
+  - @reactflow/background@11.3.13
+  - @reactflow/controls@11.2.13
+  - @reactflow/minimap@11.7.13
+  - @reactflow/node-resizer@2.2.13
+  - @reactflow/node-toolbar@1.3.13
+
 ## 11.11.2
 
 ### Patch Changes

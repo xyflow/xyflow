@@ -1,5 +1,11 @@
 # @reactflow/core
 
+## 11.11.3
+
+### Patch Changes
+
+- [#4230](https://github.com/xyflow/xyflow/pull/4230) [`0dbbe545`](https://github.com/xyflow/xyflow/commit/0dbbe5456a01c6b1cbcac382d3ddd2f744aaac40) - pinch zoom on windows
+
 ## 11.11.2
 
 ### Patch Changes

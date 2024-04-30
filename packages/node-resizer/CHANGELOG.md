@@ -1,5 +1,12 @@
 # @reactflow/node-resizer
 
+## 2.2.13
+
+### Patch Changes
+
+- Updated dependencies [[`0dbbe545`](https://github.com/xyflow/xyflow/commit/0dbbe5456a01c6b1cbcac382d3ddd2f744aaac40)]:
+  - @reactflow/core@11.11.3
+
 ## 2.2.12
 
 ### Patch Changes

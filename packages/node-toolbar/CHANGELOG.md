@@ -1,5 +1,12 @@
 # @reactflow/node-toolbar
 
+## 1.3.13
+
+### Patch Changes
+
+- Updated dependencies [[`0dbbe545`](https://github.com/xyflow/xyflow/commit/0dbbe5456a01c6b1cbcac382d3ddd2f744aaac40)]:
+  - @reactflow/core@11.11.3
+
 ## 1.3.12
 
 ### Patch Changes
