@@ -104,7 +104,7 @@ export type D3ZoomInstance = ZoomBehavior<Element, unknown>;
 export type D3SelectionInstance = D3Selection<Element, unknown, null, undefined>;
 export type D3ZoomHandler = (this: Element, event: any, d: unknown) => void;
 
-export type UpdateNodeInternals = (nodeId: string) => void;
+export type UpdateNodeInternals = (nodeId: string | string[]) => void;
 
 export type PanelPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
