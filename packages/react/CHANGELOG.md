@@ -1,5 +1,14 @@
 # @xyflow/react
 
+## 12.0.0-next.17
+
+- refactor(react): cleanup `useReactFlow`
+- fix(types): export `KeyCode`
+- fix(nodes): handle default node updates closes #4202 
+- fix(types): add string array to `UpdateNodeInternals` thanks @DenizUgur
+- fix(pane): pinch zoom on windows
+- fix(pane): drag for touch devices
+
 ## 12.0.0-next.16
 
 ## Patch changes
