@@ -1,11 +1,24 @@
 # @xyflow/react
 
-## 12.0.0-next.xx
+## 12.0.0-next.16
 
 ## Patch changes
 
+- fix batching for `setNodes`, `updateNode`, `updateNodeData` etc.
+- fix `useNodesInitialized`
+
+## 12.0.0-next.15
+
+## Patch changes
+
+- re-observe nodes when using `onlyRenderVisibleElements={true}`
 - use correct positions for intersection helpers
 - fix minimap interaction for touch devices
+- pass user nodes to `onSelectionChange` instead of internal ones to work with Redux
+- call `onEnd` in XYResizer thanks @tonyf
+- cleanup `getPositionWithOrigin` usage
+- use `setAttributes` flag for dimension change when `width`/`height` should be set
+- use `replace: false` as the default for `updateNode` function
 
 ## 12.0.0-next.14
 

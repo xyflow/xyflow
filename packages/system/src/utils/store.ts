@@ -92,11 +92,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
   nodes.forEach((userNode) => {
-    const currentStoreNode = tmpLookup.get(userNode.id);
+    let internalNode = tmpLookup.get(userNode.id);
 
-    let internalNode = currentStoreNode!;
-    if (options.checkEquality && userNode === currentStoreNode?.internals.userNode) {
-      nodeLookup.set(userNode.id, currentStoreNode);
+    if (options.checkEquality && userNode === internalNode?.internals.userNode) {
+      nodeLookup.set(userNode.id, internalNode);
     } else {
       internalNode = {
         ...options.defaults,
@@ -107,7 +106,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         },
         internals: {
           positionAbsolute: userNode.position,
-          handleBounds: currentStoreNode?.internals.handleBounds,
+          handleBounds: internalNode?.internals.handleBounds,
           z: (isNumeric(userNode.zIndex) ? userNode.zIndex : 0) + (userNode.selected ? selectedNodeZ : 0),
           userNode,
         },
@@ -140,18 +139,18 @@ function calculateXYZPosition<NodeType extends NodeBase>(
     return result;
   }
 
-  const parentNode = nodeLookup.get(node.parentId)!;
-  const { position: parentNodePosition } = getNodePositionWithOrigin(parentNode, parentNode?.origin || nodeOrigin);
+  const parent = nodeLookup.get(node.parentId)!;
+  const parentPosition = getNodePositionWithOrigin(parent, nodeOrigin).position;
 
   return calculateXYZPosition(
-    parentNode,
+    parent,
     nodeLookup,
     {
-      x: (result.x ?? 0) + parentNodePosition.x,
-      y: (result.y ?? 0) + parentNodePosition.y,
-      z: (parentNode.internals.z ?? 0) > (result.z ?? 0) ? parentNode.internals.z ?? 0 : result.z ?? 0,
+      x: (result.x ?? 0) + parentPosition.x,
+      y: (result.y ?? 0) + parentPosition.y,
+      z: (parent.internals.z ?? 0) > (result.z ?? 0) ? parent.internals.z ?? 0 : result.z ?? 0,
     },
-    parentNode.origin || nodeOrigin
+    parent.origin || nodeOrigin
   );
 }
 
@@ -184,8 +183,9 @@ export function handleExpandParent(
       const dimensions = getNodeDimensions(parent);
 
       // determine how much the parent expands by moving the position
-      let xChange = expandedRect.x < position.x ? Math.round(Math.abs(position.x - expandedRect.x)) : 0;
-      let yChange = expandedRect.y < position.y ? Math.round(Math.abs(position.y - expandedRect.y)) : 0;
+      const xChange = expandedRect.x < position.x ? Math.round(Math.abs(position.x - expandedRect.x)) : 0;
+      const yChange = expandedRect.y < position.y ? Math.round(Math.abs(position.y - expandedRect.y)) : 0;
+
       if (xChange > 0 || yChange > 0) {
         changes.push({
           id: parentId,
@@ -217,7 +217,7 @@ export function handleExpandParent(
         changes.push({
           id: parentId,
           type: 'dimensions',
-          resizing: true,
+          setAttributes: true,
           dimensions: {
             width: Math.max(dimensions.width, Math.round(expandedRect.width)),
             height: Math.max(dimensions.height, Math.round(expandedRect.height)),

@@ -6,6 +6,8 @@ import {
   NodeChange,
   NodeSelectionChange,
   EdgeSelectionChange,
+  NodeRemoveChange,
+  EdgeRemoveChange,
 } from '@xyflow/system';
 import type { Node, Edge, InternalNode } from '../types';
 
@@ -100,7 +102,7 @@ function applyChange(change: any, element: any): any {
         element.measured.width = change.dimensions.width;
         element.measured.height = change.dimensions.height;
 
-        if (change.resizing) {
+        if (change.setAttributes) {
           element.width = change.dimensions.width;
           element.height = change.dimensions.height;
         }
@@ -184,8 +186,8 @@ export function getSelectionChanges(
 ): NodeSelectionChange[] | EdgeSelectionChange[] {
   const changes: NodeSelectionChange[] | EdgeSelectionChange[] = [];
 
-  for (const [, item] of items) {
-    const willBeSelected = selectedIds.has(item.id);
+  for (const [id, item] of items) {
+    const willBeSelected = selectedIds.has(id);
 
     // we don't want to set all items to selected=false on the first selection
     if (!(item.selected === undefined && !willBeSelected) && item.selected !== willBeSelected) {
@@ -236,7 +238,8 @@ export function getElementsDiffChanges({
   const itemsLookup = new Map<string, any>(items.map((item) => [item.id, item]));
 
   for (const item of items) {
-    const storeItem = lookup.get(item.id);
+    const lookupItem = lookup.get(item.id);
+    const storeItem = lookupItem?.internals?.userNode ?? lookupItem;
 
     if (storeItem !== undefined && storeItem !== item) {
       changes.push({ id: item.id, item: item, type: 'replace' });
@@ -256,4 +259,11 @@ export function getElementsDiffChanges({
   }
 
   return changes;
+}
+
+export function elementToRemoveChange<T extends Node | Edge>(item: T): NodeRemoveChange | EdgeRemoveChange {
+  return {
+    id: item.id,
+    type: 'remove',
+  };
 }

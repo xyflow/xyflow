@@ -18,7 +18,7 @@ import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelection
 import getInitialState from './initialState';
 import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
 
-const createRFStore = ({
+const createStore = ({
   nodes,
   edges,
   defaultNodes,
@@ -74,7 +74,7 @@ const createRFStore = ({
       // new dimensions and update the nodes.
       updateNodeInternals: (updates) => {
         const {
-          onNodesChange,
+          triggerNodeChanges,
           fitView,
           nodeLookup,
           parentLookup,
@@ -120,7 +120,7 @@ const createRFStore = ({
           if (debug) {
             console.log('React Flow: trigger node changes', changes);
           }
-          onNodesChange?.(changes);
+          triggerNodeChanges?.(changes);
         }
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
@@ -329,4 +329,4 @@ const createRFStore = ({
     Object.is
   );
 
-export { createRFStore };
+export { createStore };
