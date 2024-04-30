@@ -128,10 +128,9 @@ const ZoomPane = ({
             event.stopImmediatePropagation();
 
             const currentZoom = d3Selection.property('__zoom').k || 1;
-            const _isMacOs = isMacOs();
 
-            // macos sets ctrlKey=true for pinch gesture on a trackpad
-            if (event.ctrlKey && zoomOnPinch && _isMacOs) {
+            // macos and win set ctrlKey=true for pinch gesture on a trackpad
+            if (event.ctrlKey && zoomOnPinch) {
               const point = pointer(event);
               const pinchDelta = wheelDelta(event);
               const zoom = currentZoom * Math.pow(2, pinchDelta);
@@ -148,7 +147,7 @@ const ZoomPane = ({
             let deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
 
             // this enables vertical scrolling with shift + scroll on windows
-            if (!_isMacOs && event.shiftKey && panOnScrollMode !== PanOnScrollMode.Vertical) {
+            if (!isMacOs() && event.shiftKey && panOnScrollMode !== PanOnScrollMode.Vertical) {
               deltaX = event.deltaY * deltaNormalize;
               deltaY = 0;
             }
@@ -367,11 +366,7 @@ const ZoomPane = ({
         }
 
         // if the pane is only movable using allowed clicks
-        if (
-          Array.isArray(panOnDrag) &&
-          !panOnDrag.includes(event.button) &&
-          (event.type === 'mousedown' || event.type === 'touchstart')
-        ) {
+        if (Array.isArray(panOnDrag) && !panOnDrag.includes(event.button) && event.type === 'mousedown') {
           return false;
         }
 
