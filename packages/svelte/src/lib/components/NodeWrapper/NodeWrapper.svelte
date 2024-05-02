@@ -104,7 +104,7 @@
               {
                 id,
                 nodeElement: nodeRef,
-                forceUpdate: true
+                force: true
               }
             ]
           ])

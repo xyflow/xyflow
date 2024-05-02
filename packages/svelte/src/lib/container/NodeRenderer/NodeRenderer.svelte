@@ -26,7 +26,7 @@
             updates.set(id, {
               id,
               nodeElement: entry.target as HTMLDivElement,
-              forceUpdate: true
+              force: true
             });
           });
 
