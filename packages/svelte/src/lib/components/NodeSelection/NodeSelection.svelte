@@ -5,17 +5,17 @@
   import { useStore } from '$lib/store';
   import { Selection } from '$lib/components/Selection';
   import drag from '$lib/actions/drag';
-  import type { Node } from '$lib/types';
-  import { createNodeEventDispatcher } from '$lib';
+  import type { Node, NodeEventMap } from '$lib/types';
 
   const store = useStore();
   const { selectionRectMode, nodes } = store;
 
-  const dispatch = createEventDispatcher<{
-    selectioncontextmenu: { nodes: Node[]; event: MouseEvent | TouchEvent };
-    selectionclick: { nodes: Node[]; event: MouseEvent | TouchEvent };
-  }>();
-  const dispatchNodeEvent = createNodeEventDispatcher();
+  const dispatch = createEventDispatcher<
+    NodeEventMap & {
+      selectioncontextmenu: { nodes: Node[]; event: MouseEvent | TouchEvent };
+      selectionclick: { nodes: Node[]; event: MouseEvent | TouchEvent };
+    }
+  >();
 
   $: selectedNodes = $nodes.filter((n) => n.selected);
   $: bounds = getNodesBounds(selectedNodes);
@@ -37,13 +37,13 @@
       disabled: false,
       store,
       onDrag: (event, _, __, nodes) => {
-        dispatchNodeEvent('nodedrag', { event, targetNode: null, nodes });
+        dispatch('nodedrag', { event, targetNode: null, nodes });
       },
       onDragStart: (event, _, __, nodes) => {
-        dispatchNodeEvent('nodedragstart', { event, targetNode: null, nodes });
+        dispatch('nodedragstart', { event, targetNode: null, nodes });
       },
       onDragStop: (event, _, __, nodes) => {
-        dispatchNodeEvent('nodedragstop', { event, targetNode: null, nodes });
+        dispatch('nodedragstop', { event, targetNode: null, nodes });
       }
     }}
     on:contextmenu={onContextMenu}

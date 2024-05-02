@@ -1,4 +1,3 @@
-import { createEventDispatcher } from 'svelte';
 import { isNodeBase, isEdgeBase } from '@xyflow/system';
 
 import type { Edge, Node } from '$lib/types';
@@ -22,15 +21,3 @@ export const isNode = <NodeType extends Node = Node>(element: unknown): element 
  */
 export const isEdge = <EdgeType extends Edge = Edge>(element: unknown): element is EdgeType =>
   isEdgeBase<EdgeType>(element);
-
-export const createNodeEventDispatcher = () =>
-  createEventDispatcher<{
-    nodeclick: { node: Node; event: MouseEvent | TouchEvent };
-    nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };
-    nodedrag: { targetNode: Node | null; nodes: Node[]; event: MouseEvent | TouchEvent };
-    nodedragstart: { targetNode: Node | null; nodes: Node[]; event: MouseEvent | TouchEvent };
-    nodedragstop: { targetNode: Node | null; nodes: Node[]; event: MouseEvent | TouchEvent };
-    nodemouseenter: { node: Node; event: MouseEvent | TouchEvent };
-    nodemouseleave: { node: Node; event: MouseEvent | TouchEvent };
-    nodemousemove: { node: Node; event: MouseEvent | TouchEvent };
-  }>();
