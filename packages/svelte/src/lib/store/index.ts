@@ -111,8 +111,12 @@ export function createStore({
       switch (change.type) {
         case 'dimensions': {
           const measured = { ...node.measured, ...change.dimensions };
-          node.width = change.dimensions?.width ?? node.width;
-          node.height = change.dimensions?.height ?? node.height;
+
+          if (change.setAttributes) {
+            node.width = change.dimensions?.width ?? node.width;
+            node.height = change.dimensions?.height ?? node.height;
+          }
+
           node.measured = measured;
           break;
         }
