@@ -141,7 +141,7 @@
       handleNodeSelection(id);
     }
 
-    dispatchNodeEvent('nodeclick', { node, event });
+    dispatchNodeEvent('nodeclick', { node: node.internals.userNode, event });
   }
 </script>
 
