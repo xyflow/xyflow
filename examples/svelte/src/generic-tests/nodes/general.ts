@@ -3,6 +3,7 @@ import DragHandleNode from './components/DragHandleNode.svelte';
 export default {
 	flowProps: {
 		fitView: true,
+		nodeDragThreshold: 0,
 		nodeTypes: {
 			DragHandleNode
 		},
