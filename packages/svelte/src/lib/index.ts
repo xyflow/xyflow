@@ -51,6 +51,7 @@ export type { SvelteFlowStore } from '$lib/store/types';
 
 // system types
 export {
+  type Align,
   type SmoothStepPathOptions,
   type BezierPathOptions,
   ConnectionLineType,

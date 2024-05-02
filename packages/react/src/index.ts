@@ -38,6 +38,7 @@ export * from './types';
 
 // system types
 export {
+  type Align,
   type SmoothStepPathOptions,
   type BezierPathOptions,
   ConnectionLineType,
