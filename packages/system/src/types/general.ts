@@ -61,13 +61,13 @@ export type FitViewParamsBase<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
 };
 
-export type FitViewOptionsBase<NodeType extends NodeBase> = {
+export type FitViewOptionsBase<NodeType extends NodeBase = NodeBase> = {
   padding?: number;
   includeHiddenNodes?: boolean;
   minZoom?: number;
   maxZoom?: number;
   duration?: number;
-  nodes?: (NodeType | { id: NodeType['id'] })[];
+  nodes?: (NodeType | { id: string })[];
 };
 
 export type Viewport = {

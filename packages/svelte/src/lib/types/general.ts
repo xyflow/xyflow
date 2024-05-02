@@ -53,7 +53,7 @@ export type HandleComponentProps = {
   ondisconnect?: (connections: Connection[]) => void;
 };
 
-export type FitViewOptions = FitViewOptionsBase<Node>;
+export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
 
 export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
 export type OnEdgeCreate = (connection: Connection) => Edge | Connection | void;

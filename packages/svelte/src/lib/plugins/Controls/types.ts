@@ -1,6 +1,8 @@
 import type { HTMLButtonAttributes } from 'svelte/elements';
 import type { PanelPosition } from '@xyflow/system';
 
+import type { FitViewOptions } from '$lib/types';
+
 export type ControlsProps = {
   /** Position of the controls on the pane
    * @example PanelPosition.TopLeft, PanelPosition.TopRight,
@@ -21,6 +23,7 @@ export type ControlsProps = {
   style?: string;
   class?: string;
   orientation?: 'horizontal' | 'vertical';
+  fitViewOptions?: FitViewOptions;
 };
 
 export type ControlButtonProps = HTMLButtonAttributes & {

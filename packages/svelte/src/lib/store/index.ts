@@ -2,7 +2,7 @@ import { getContext, setContext } from 'svelte';
 import { derived, get, writable } from 'svelte/store';
 import {
   createMarkerIds,
-  fitView as fitViewUtil,
+  fitView as fitViewSystem,
   getElementsToRemove,
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
@@ -140,7 +140,7 @@ export function createStore({
       return false;
     }
 
-    return fitViewUtil(
+    return fitViewSystem(
       {
         nodeLookup: get(store.nodeLookup),
         width: get(store.width),
