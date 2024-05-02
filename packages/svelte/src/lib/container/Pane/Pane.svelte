@@ -11,18 +11,6 @@
       handler?.(event);
     };
   }
-
-  export function toggleSelected<Item extends Node | Edge>(ids: string[]) {
-    return (item: Item) => {
-      const isSelected = ids.includes(item.id);
-
-      if (item.selected !== isSelected) {
-        item.selected = isSelected;
-      }
-
-      return item;
-    };
-  }
 </script>
 
 <script lang="ts">
@@ -37,11 +25,17 @@
   import type { Node, Edge } from '$lib/types';
   import type { PaneProps } from './types';
 
-  let { panOnDrag, selectionOnDrag, onpaneclick, onpanecontextmenu, children }: PaneProps =
-    $props();
+  let {
+    panOnDrag,
+    selectionOnDrag,
+    onpaneclick,
+    onpanecontextmenu,
+    nodes = $bindable(),
+    edges = $bindable(),
+    children
+  }: PaneProps = $props();
 
   const store = useStore();
-  const { nodes, edges } = store;
 
   let container: HTMLDivElement | null = $state(null);
   let containerBounds: DOMRect | null = $state(null);
@@ -93,6 +87,16 @@
     // onSelectionStart?.(event);
   }
 
+  function toggleSelected(items: Node[] | Edge[], ids: string[]) {
+    for (const item of items) {
+      const isSelected = ids.includes(item.id);
+
+      if (item.selected !== isSelected) {
+        item.selected = isSelected;
+      }
+    }
+  }
+
   function onMouseMove(event: MouseEvent) {
     if (!isSelecting || !containerBounds || !store.selectionRect) {
       return;
@@ -108,7 +112,7 @@
       height: Math.abs(mousePos.y - startY)
     };
     const prevSelectedNodeIds = selectedNodes.map((n) => n.id);
-    const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
+    const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, store.edges).map((e) => e.id);
 
     selectedNodes = getNodesInside(
       store.nodeLookup,
@@ -117,7 +121,7 @@
       store.selectionMode === SelectionMode.Partial,
       true
     );
-    const selectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
+    const selectedEdgeIds = getConnectedEdges(selectedNodes, store.edges).map((e) => e.id);
     const selectedNodeIds = selectedNodes.map((n) => n.id);
 
     // this prevents unnecessary updates while updating the selection rectangle
@@ -125,14 +129,14 @@
       prevSelectedNodeIds.length !== selectedNodeIds.length ||
       selectedNodeIds.some((id) => !prevSelectedNodeIds.includes(id))
     ) {
-      nodes.update((nodes) => nodes.map(toggleSelected(selectedNodeIds)));
+      toggleSelected(nodes, selectedNodeIds);
     }
 
     if (
       prevSelectedEdgeIds.length !== selectedEdgeIds.length ||
       selectedEdgeIds.some((id) => !prevSelectedEdgeIds.includes(id))
     ) {
-      edges.update((edges) => edges.map(toggleSelected(selectedEdgeIds)));
+      toggleSelected(edges, selectedEdgeIds);
     }
 
     store.selectionRectMode = 'user';

@@ -51,7 +51,7 @@ import type {
   InternalNode
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
-import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
+import { initConnectionProps, type ConnectionProps } from './derived-connection';
 
 export const initialNodeTypes = {
   input: InputNode,

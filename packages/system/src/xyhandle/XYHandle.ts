@@ -186,6 +186,8 @@ function onPointerDown(
 
     updateConnection({
       connectionStartHandle,
+      // We determine the connectionPosition in actual screen coordinates to always
+      // have the correct position during auto panning and no onmove is fired
       connectionPosition:
         closestHandle && isValid
           ? rendererPointToPoint(

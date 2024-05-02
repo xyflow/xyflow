@@ -10,6 +10,7 @@
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
   import { get } from 'svelte/store';
+  import { useSvelteFlow } from '$lib/hooks/useSvelteFlow';
 
   let {
     selectionKey = 'Shift',
@@ -20,6 +21,7 @@
   }: KeyHandlerProps = $props();
 
   const store = useStore();
+  const { deleteElements } = useSvelteFlow();
 
   function isKeyObject(key?: KeyDefinition | null): key is KeyDefinitionObject {
     return key !== null && typeof key === 'object';
@@ -65,32 +67,34 @@
   }
 
   async function handleDelete() {
-    const nodes = get(store.nodes);
-    const edges = get(store.edges);
+    const nodes = store.nodes;
+    const edges = store.edges;
     const selectedNodes = nodes.filter((node) => node.selected);
     const selectedEdges = edges.filter((edge) => edge.selected);
 
-    const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
-      nodesToRemove: selectedNodes,
-      edgesToRemove: selectedEdges,
-      nodes,
-      edges,
-      onBeforeDelete: store.onbeforedelete
-    });
+    deleteElements({ nodes: selectedNodes, edges: selectedEdges });
 
-    if (matchingNodes.length || matchingEdges.length) {
-      store.nodes.update((nds) =>
-        nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id))
-      );
-      store.edges.update((eds) =>
-        eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
-      );
+    // const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
+    //   nodesToRemove: selectedNodes,
+    //   edgesToRemove: selectedEdges,
+    //   nodes,
+    //   edges,
+    //   onBeforeDelete: store.onbeforedelete
+    // });
 
-      store.ondelete?.({
-        nodes: matchingNodes,
-        edges: matchingEdges
-      });
-    }
+    // if (matchingNodes.length || matchingEdges.length) {
+    //   store.nodes.update((nds) =>
+    //     nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id))
+    //   );
+    //   store.edges.update((eds) =>
+    //     eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
+    //   );
+
+    //   store.ondelete?.({
+    //     nodes: matchingNodes,
+    //     edges: matchingEdges
+    //   });
+    // }
   }
 
   $effect.pre(() => {

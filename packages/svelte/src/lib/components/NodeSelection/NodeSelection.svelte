@@ -16,9 +16,8 @@
   }: NodeSelectionProps = $props();
 
   const store = useStore();
-  const { nodes } = store;
 
-  let selectedNodes = $derived($nodes.filter((n) => n.selected));
+  let selectedNodes = $derived(Array.from(store.nodeLookup.values()).filter((n) => n.selected));
   let bounds = $derived(getNodesBounds(selectedNodes));
 
   function oncontextmenu(event: MouseEvent | TouchEvent) {

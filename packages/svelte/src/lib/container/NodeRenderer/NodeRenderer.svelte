@@ -5,8 +5,10 @@
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
   import type { NodeEvents } from '$lib/types/events';
+  import type { Node } from '$lib/types';
 
   let {
+    nodes,
     onnodeclick,
     onnodemouseenter,
     onnodemousemove,
@@ -15,11 +17,9 @@
     onnodedragstart,
     onnodedragstop,
     onnodecontextmenu
-  }: NodeEvents = $props();
+  }: NodeEvents & { nodes: Node[] } = $props();
 
   const store = useStore();
-
-  const { nodes } = store;
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
@@ -47,7 +47,7 @@
 
 <!-- TODO: render visibleNodes -->
 <div class="svelte-flow__nodes">
-  {#each $nodes as user_node (user_node.id)}
+  {#each nodes as user_node (user_node.id)}
     {@const node = store.nodeLookup.get(user_node.id)!}
     {@const posOrigin = getPositionWithOrigin({
       x: node.internals.positionAbsolute.x,

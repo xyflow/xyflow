@@ -14,10 +14,19 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  errorMessages
+  errorMessages,
+  isInternalNodeBase
 } from '@xyflow/system';
 
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData } from '$lib/types';
+import type {
+  EdgeTypes,
+  NodeTypes,
+  Node,
+  Edge,
+  FitViewOptions,
+  ConnectionData,
+  InternalNode
+} from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import type { SvelteFlowStore, SvelteFlowStoreActions, SvelteFlowStoreState } from './types';
 import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
@@ -58,15 +67,14 @@ export function createStore({
   }
 
   function addEdge(edgeParams: Edge | Connection) {
-    const edges = get(store.edges);
-    store.edges.set(addEdgeUtil(edgeParams, edges));
+    // TODO: addEdgeUtil creates a new array, which wont work
+    // const edges = get(store.edges);
+    // store.edges.set(addEdgeUtil(edgeParams, edges));
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    const nodeLookup = store.nodeLookup;
-
     for (const [id, dragItem] of nodeDragItems) {
-      const node = nodeLookup.get(id)?.internals.userNode;
+      const node = store.nodeLookup.get(id)?.internals.userNode;
 
       if (!node) {
         continue;
@@ -75,8 +83,6 @@ export function createStore({
       node.position = dragItem.position;
       node.dragging = dragging;
     }
-
-    store.nodes.update((nds) => nds);
   };
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
@@ -104,6 +110,7 @@ export function createStore({
 
     for (const change of changes) {
       const node = nodeLookup.get(change.id)?.internals.userNode;
+      const internalNode = nodeLookup.get(change.id)!;
 
       if (!node) {
         continue;
@@ -114,7 +121,7 @@ export function createStore({
           const measured = { ...node.measured, ...change.dimensions };
           node.width = change.dimensions?.width ?? node.width;
           node.height = change.dimensions?.height ?? node.height;
-          node.measured = measured;
+          internalNode.internals.userNode.measured = measured;
           break;
         }
         case 'position':
@@ -123,7 +130,7 @@ export function createStore({
       }
     }
 
-    store.nodes.update((nds) => nds);
+    // store.nodes.update((nds) => nds);
 
     if (!store.nodesInitialized) {
       store.nodesInitialized = true;
@@ -197,69 +204,62 @@ export function createStore({
     return elementsChanged;
   }
 
-  function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
-    const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
-    if (resetNodes) store.nodes.update((nds) => nds);
+  function resetSelectedNodes(nodes: Node[] | IterableIterator<InternalNode>): void {
+    for (const node of nodes) {
+      if (isInternalNodeBase(node)) {
+        node.internals.userNode.selected = false;
+      } else {
+        node.selected = false;
+      }
+    }
+  }
 
-    const resetEdges = resetSelectedElements(params?.edges || get(store.edges));
-    if (resetEdges) store.edges.update((nds) => nds);
+  function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
+    resetSelectedNodes(params?.nodes ?? store.nodeLookup.values());
+
+    resetSelectedElements(params?.edges ?? store.edges);
   }
 
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.nodes.update((ns) =>
-      ns.map((node) => {
-        const nodeWillBeSelected = ids.includes(node.id);
-        const selected = isMultiSelection
-          ? node.selected || nodeWillBeSelected
-          : nodeWillBeSelected;
+    for (const node of store.nodeLookup.values()) {
+      const nodeWillBeSelected = ids.includes(node.id);
+      const selected = isMultiSelection
+        ? node.internals.userNode.selected || nodeWillBeSelected
+        : nodeWillBeSelected;
 
-        // we need to mutate the node here in order to have the correct selected state in the drag handler
-        node.selected = selected;
-
-        return node;
-      })
-    );
+      // we need to mutate the node here in order to have the correct selected state in the drag handler
+      // node.selected = selected;
+      node.internals.userNode.selected = selected;
+    }
 
     if (!isMultiSelection) {
-      store.edges.update((es) =>
-        es.map((edge) => {
-          edge.selected = false;
-          return edge;
-        })
-      );
+      for (const edge of store.edges) {
+        edge.selected = false;
+      }
     }
   }
 
   function addSelectedEdges(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.edges.update((edges) =>
-      edges.map((edge) => {
-        const edgeWillBeSelected = ids.includes(edge.id);
-        const selected = isMultiSelection
-          ? edge.selected || edgeWillBeSelected
-          : edgeWillBeSelected;
+    for (const edge of store.edges) {
+      const edgeWillBeSelected = ids.includes(edge.id);
+      const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
 
-        edge.selected = selected;
-
-        return edge;
-      })
-    );
+      edge.selected = selected;
+    }
 
     if (!isMultiSelection) {
-      store.nodes.update((ns) =>
-        ns.map((node) => {
-          node.selected = false;
-          return node;
-        })
-      );
+      for (const node of store.nodeLookup.values()) {
+        node.internals.userNode.selected = false;
+      }
     }
   }
 
   function handleNodeSelection(id: string) {
-    const node = get(store.nodes)?.find((n) => n.id === id);
+    const node = store.nodeLookup.get(id)?.internals.userNode;
 
     if (!node) {
       console.warn('012', errorMessages['error012'](id));
@@ -359,8 +359,8 @@ export function createStore({
     //   });
     // })(),
     // actions
-    syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
-    syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
+    // syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
+    // syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
     // syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
     setNodeTypes,
     setEdgeTypes,

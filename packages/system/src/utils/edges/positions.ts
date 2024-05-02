@@ -80,8 +80,9 @@ function toHandleBounds(handles?: NodeHandle[]) {
   const target = [];
 
   for (const handle of handles) {
-    handle.width = handle.width ?? 1;
-    handle.height = handle.height ?? 1;
+    // TODO: not allowed to mutate handle.widht, handle.height
+    // handle.width = handle.width ?? 1;
+    // handle.height = handle.height ?? 1;
 
     if (handle.type === 'source') {
       source.push(handle as HandleElement);

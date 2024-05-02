@@ -46,11 +46,11 @@
 		}
 	}
 
-	const nodes = writable(nodeItems);
-	const edges = writable(edgeItems);
+	let nodes = $state(nodeItems);
+	let edges = $state(edgeItems);
 </script>
 
-<SvelteFlow {nodes} {edges} fitView minZoom={0.2}>
+<SvelteFlow bind:nodes bind:edges minZoom={0}>
 	<Controls />
 	<Background variant={BackgroundVariant.Lines} />
 	<MiniMap />
