@@ -6,6 +6,8 @@
 
 	export let data: $$Props['data'];
 
+	$$restProps;
+
 	const { colorStore } = data;
 </script>
 

@@ -1,4 +1,4 @@
-import type { Node } from '$lib/types';
+import type { InternalNode, Node } from '$lib/types';
 
 export type NodeWrapperProps = Pick<
   Node,
@@ -32,6 +32,6 @@ export type NodeWrapperProps = Pick<
   resizeObserver?: ResizeObserver | null;
   isParent?: boolean;
   zIndex: number;
-  node: Node;
+  node: InternalNode;
   initialized: boolean;
 };

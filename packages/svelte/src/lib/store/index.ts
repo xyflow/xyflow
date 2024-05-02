@@ -2,7 +2,7 @@ import { getContext, setContext } from 'svelte';
 import { derived, get, writable } from 'svelte/store';
 import {
   createMarkerIds,
-  fitView as fitViewUtil,
+  fitView as fitViewSystem,
   getElementsToRemove,
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
@@ -111,8 +111,12 @@ export function createStore({
       switch (change.type) {
         case 'dimensions': {
           const measured = { ...node.measured, ...change.dimensions };
-          node.width = change.dimensions?.width ?? node.width;
-          node.height = change.dimensions?.height ?? node.height;
+
+          if (change.setAttributes) {
+            node.width = change.dimensions?.width ?? node.width;
+            node.height = change.dimensions?.height ?? node.height;
+          }
+
           node.measured = measured;
           break;
         }
@@ -136,7 +140,7 @@ export function createStore({
       return false;
     }
 
-    return fitViewUtil(
+    return fitViewSystem(
       {
         nodeLookup: get(store.nodeLookup),
         width: get(store.width),
@@ -350,8 +354,6 @@ export function createStore({
     store.selectionRectMode.set(null);
     store.snapGrid.set(null);
     store.isValidConnection.set(() => true);
-    store.nodes.set([]);
-    store.edges.set([]);
 
     unselectNodesAndEdges();
     cancelConnection();

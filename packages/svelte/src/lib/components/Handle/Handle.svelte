@@ -22,6 +22,7 @@
   export let position: $$Props['position'] = Position.Top;
   export let style: $$Props['style'] = undefined;
   export let isConnectable: $$Props['isConnectable'] = undefined;
+  export let isValidConnection: $$Props['isValidConnection'] = undefined;
   export let onconnect: $$Props['onconnect'] = undefined;
   export let ondisconnect: $$Props['ondisconnect'] = undefined;
   // @todo implement connectablestart, connectableend
@@ -31,12 +32,12 @@
   let className: $$Props['class'] = undefined;
   export { className as class };
 
-  const isTarget = type === 'target';
+  $: isTarget = type === 'target';
   const nodeId = getContext<string>('svelteflow__node_id');
   const connectable = getContext<Writable<boolean>>('svelteflow__node_connectable');
   $: isConnectable = isConnectable !== undefined ? isConnectable : $connectable;
 
-  const handleId = id || null;
+  $: handleId = id || null;
 
   const store = useStore();
   const {
@@ -45,7 +46,7 @@
     nodeLookup,
     connectionRadius,
     viewport,
-    isValidConnection,
+    isValidConnection: isValidConnectionStore,
     lib,
     addEdge,
     onedgecreate,
@@ -77,7 +78,7 @@
         lib: $lib,
         autoPanOnConnect: $autoPanOnConnect,
         flowId: $flowId,
-        isValidConnection: $isValidConnection,
+        isValidConnection: isValidConnection ?? $isValidConnectionStore,
         updateConnection,
         cancelConnection,
         panBy,
