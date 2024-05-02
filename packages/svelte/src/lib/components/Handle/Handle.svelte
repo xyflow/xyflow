@@ -31,12 +31,12 @@
   let className: $$Props['class'] = undefined;
   export { className as class };
 
-  const isTarget = type === 'target';
+  $: isTarget = type === 'target';
   const nodeId = getContext<string>('svelteflow__node_id');
   const connectable = getContext<Writable<boolean>>('svelteflow__node_connectable');
   $: isConnectable = isConnectable !== undefined ? isConnectable : $connectable;
 
-  const handleId = id || null;
+  $: handleId = id || null;
 
   const store = useStore();
   const {
