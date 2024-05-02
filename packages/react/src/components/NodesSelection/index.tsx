@@ -5,7 +5,7 @@
 import { useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { getInternalNodesBounds } from '@xyflow/system';
+import { getInternalNodesBounds, isNumeric } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useDrag } from '../../hooks/useDrag';
@@ -26,8 +26,8 @@ const selector = (s: ReactFlowState) => {
   });
 
   return {
-    width,
-    height,
+    width: isNumeric(width) ? width : null,
+    height: isNumeric(height) ? height : null,
     userSelectionActive: s.userSelectionActive,
     transformString: `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]}) translate(${x}px,${y}px)`,
   };
