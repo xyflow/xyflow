@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { SvelteFlow, Controls, Panel, type Node, type Edge } from '@xyflow/svelte';
+	import { writable } from 'svelte/store';
+	import { SvelteFlow, Controls, Panel, type Edge } from '@xyflow/svelte';
 
 	import DefaultResizer from './DefaultResizer.svelte';
 	import CustomResizer from './CustomResizer.svelte';
 	import VerticalResizer from './VerticalResizer.svelte';
 	import HorizontalResizer from './HorizontalResizer.svelte';
-	import { writable } from 'svelte/store';
 
 	import '@xyflow/svelte/dist/style.css';
+	import type { ResizeNode } from './types';
 
 	const nodeTypes = {
 		defaultResizer: DefaultResizer,
@@ -20,7 +21,7 @@
 
 	const edges = writable<Edge[]>([]);
 
-	const nodes = writable<Node[]>([
+	const nodes = writable<ResizeNode[]>([
 		{
 			id: '1',
 			type: 'defaultResizer',
