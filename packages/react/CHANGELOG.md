@@ -2,12 +2,13 @@
 
 ## 12.0.0-next.17
 
-- refactor(react): cleanup `useReactFlow`
-- fix(types): export `KeyCode`
-- fix(nodes): handle default node updates closes #4202 
-- fix(types): add string array to `UpdateNodeInternals` thanks @DenizUgur
-- fix(pane): pinch zoom on windows
-- fix(pane): drag for touch devices
+- fix broken `defaultNodes`
+- add string array to `UpdateNodeInternals` thanks @DenizUgur
+- pinch zoom on windows
+- drag for touch devices
+- return user node in node event handlers
+- cleanup `useReactFlow`
+- export `KeyCode` and `Align` type
 
 ## 12.0.0-next.16
 
