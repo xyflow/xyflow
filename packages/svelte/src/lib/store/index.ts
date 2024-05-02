@@ -350,8 +350,6 @@ export function createStore({
     store.selectionRectMode.set(null);
     store.snapGrid.set(null);
     store.isValidConnection.set(() => true);
-    store.nodes.set([]);
-    store.edges.set([]);
 
     unselectNodesAndEdges();
     cancelConnection();
