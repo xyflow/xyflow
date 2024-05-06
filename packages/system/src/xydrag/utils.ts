@@ -35,39 +35,38 @@ export function getDragItems<NodeType extends NodeBase>(
   nodeLookup: Map<string, InternalNodeBase<NodeType>>,
   nodesDraggable: boolean,
   mousePos: XYPosition,
+  // This function is used to determine if a node is selected. The logic differs for Svelte and React
+  // in Svelte the user node is modified, in React the internal node is modified
+  isNodeSelected: (node: InternalNodeBase) => boolean | undefined,
   nodeId?: string
 ): Map<string, NodeDragItem> {
   const dragItems = new Map<string, NodeDragItem>();
 
   for (const [id, node] of nodeLookup) {
     if (
-      (node.selected || node.id === nodeId) &&
+      (isNodeSelected(node) || node.id === nodeId) &&
       (!node.parentId || !isParentSelected(node, nodeLookup)) &&
       (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'))
     ) {
-      const internalNode = nodeLookup.get(id);
-
-      if (internalNode) {
-        dragItems.set(id, {
-          id,
-          position: internalNode.position || { x: 0, y: 0 },
-          distance: {
-            x: mousePos.x - internalNode.internals.positionAbsolute.x,
-            y: mousePos.y - internalNode.internals.positionAbsolute.y,
-          },
-          extent: internalNode.extent,
-          parentId: internalNode.parentId,
-          origin: internalNode.origin,
-          expandParent: internalNode.expandParent,
-          internals: {
-            positionAbsolute: internalNode.internals.positionAbsolute || { x: 0, y: 0 },
-          },
-          measured: {
-            width: internalNode.measured.width ?? 0,
-            height: internalNode.measured.height ?? 0,
-          },
-        });
-      }
+      dragItems.set(id, {
+        id,
+        position: node.position || { x: 0, y: 0 },
+        distance: {
+          x: mousePos.x - node.internals.positionAbsolute.x,
+          y: mousePos.y - node.internals.positionAbsolute.y,
+        },
+        extent: node.extent,
+        parentId: node.parentId,
+        origin: node.origin,
+        expandParent: node.expandParent,
+        internals: {
+          positionAbsolute: node.internals.positionAbsolute || { x: 0, y: 0 },
+        },
+        measured: {
+          width: node.measured.width ?? 0,
+          height: node.measured.height ?? 0,
+        },
+      });
     }
   }
 

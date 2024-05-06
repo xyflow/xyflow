@@ -23,6 +23,7 @@ export default function drag(domNode: Element, params: UseDragParams) {
     onDragStart,
     onDragStop,
     onNodeMouseDown,
+    isNodeSelected: (node) => node.internals.userNode.selected,
     getStoreItems: () => {
       const snapGrid = store.snapGrid;
 
