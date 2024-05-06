@@ -37,20 +37,8 @@ import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
 
 export const key = Symbol();
 
-export function createStore({
-  nodes,
-  edges,
-  width,
-  height,
-  fitView: fitViewOnCreate
-}: {
-  nodes?: Node[];
-  edges?: Edge[];
-  width?: number;
-  height?: number;
-  fitView?: boolean;
-}): SvelteFlowStore {
-  const store = getInitialStore({ nodes, edges, width, height, fitView: fitViewOnCreate });
+export function createStore(): SvelteFlowStore {
+  const store = getInitialStore();
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes = {
@@ -459,20 +447,8 @@ export function useStore(): SvelteFlowStore {
   return store.getStore();
 }
 
-export function createStoreContext({
-  nodes,
-  edges,
-  width,
-  height,
-  fitView
-}: {
-  nodes?: Node[];
-  edges?: Edge[];
-  width?: number;
-  height?: number;
-  fitView?: boolean;
-}) {
-  const store = createStore({ nodes, edges, width, height, fitView });
+export function createStoreContext() {
+  const store = createStore();
 
   setContext(key, {
     getStore: () => store

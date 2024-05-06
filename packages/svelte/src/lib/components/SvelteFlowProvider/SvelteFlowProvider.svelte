@@ -1,29 +1,12 @@
 <script lang="ts">
-  import { onDestroy, setContext } from 'svelte';
+  import { onDestroy } from 'svelte';
 
-  import { createStore, key } from '$lib/store';
+  import { createStoreContext } from '$lib/store';
   import type { SvelteFlowProviderProps } from './types';
 
-  let {
-    initialNodes,
-    initialEdges,
-    initialWidth,
-    initialHeight,
-    fitView,
-    children
-  }: SvelteFlowProviderProps = $props();
+  let { children }: SvelteFlowProviderProps = $props();
 
-  const store = createStore({
-    nodes: initialNodes,
-    edges: initialEdges,
-    width: initialWidth,
-    height: initialHeight,
-    fitView
-  });
-
-  setContext(key, {
-    getStore: () => store
-  });
+  const store = createStoreContext();
 
   onDestroy(() => {
     store.reset();

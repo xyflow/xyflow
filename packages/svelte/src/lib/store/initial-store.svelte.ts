@@ -48,8 +48,6 @@ export const initialEdgeTypes = {
   step: StepEdgeInternal
 };
 
-export const intialValues = {};
-
 class ReactiveMap<K, V> extends SvelteMap<K, V> {
   constructor(entries?: [K, V][]) {
     let e = $state(entries);
@@ -62,45 +60,19 @@ class ReactiveMap<K, V> extends SvelteMap<K, V> {
   }
 }
 
-export const getInitialStore = ({
-  nodes = [],
-  edges = [],
-  width,
-  height,
-  fitView
-}: {
-  nodes?: Node[];
-  edges?: Edge[];
-  width?: number;
-  height?: number;
-  fitView?: boolean;
-}) => {
+export const getInitialStore = () => {
   const nodeLookup: NodeLookup = new ReactiveMap();
   const parentLookup = new Map();
-  // adoptUserNodes(nodes, nodeLookup, parentLookup, {
-  //   nodeOrigin: [0, 0],
-  //   elevateNodesOnSelect: false,
-  //   checkEquality: false
-  // });
+
   const connectionLookup = new Map();
   const edgeLookup = new Map();
+  // TODO:
   // updateConnectionLookup(connectionLookup, edgeLookup, edges);
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
-  // TODO: add back fitView on intial render
-  // if (fitView && width && height) {
-  //   const nodesWithDimensions = nodes.filter(
-  //     (node) => (node.width && node.height) || (node.initialWidth && node.initialHeight)
-  //   );
-
-  //   // TODO: users nodeOrigin should be used here
-  //   const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
-  //   viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
-  // }
-
   const store = Object.defineProperties<SvelteFlowStoreState>(
-    //@ts-expect-error {} does not match Store, which is fine
+    // @ts-expect-error {} does not match Store, which is fine
     {},
     {
       nodes: signal<SvelteFlowStoreState['nodes']>([]),
@@ -167,13 +139,6 @@ export const getInitialStore = ({
       zoomActivationKeyPressed: signal<SvelteFlowStoreState['zoomActivationKeyPressed']>(false)
     } satisfies SvelteFlowStoreProperties
   );
-
-  // TODO: just temporary
-  Object.assign(store, {
-    // nodes: createNodesStore(nodes, nodeLookup, parentLookup),
-    // edges: createEdgesStore(edges, connectionLookup, edgeLookup)
-    // viewport: writable<Viewport>(viewport)
-  });
 
   Object.defineProperties(store, {
     connection: derivedSignal(() =>

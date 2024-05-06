@@ -2,7 +2,13 @@
   import { onMount, hasContext, untrack } from 'svelte';
   import { get } from 'svelte/store';
   import cc from 'classcat';
-  import { ConnectionMode, PanOnScrollMode, infiniteExtent } from '@xyflow/system';
+  import {
+    ConnectionMode,
+    PanOnScrollMode,
+    getNodesBounds,
+    getViewportForBounds,
+    infiniteExtent
+  } from '@xyflow/system';
 
   import { key, useStore, createStoreContext } from '$lib/store';
 
@@ -100,6 +106,7 @@
     zoomOnDoubleClick = true,
     zoomOnPinch = true,
     zoomOnScroll = true,
+    nodeOrigin = [0, 0],
     ...restProps
   }: SvelteFlowProps = $props();
 
@@ -107,16 +114,18 @@
   let clientWidth = $state<number>();
   let clientHeight = $state<number>();
 
-  const store = hasContext(key)
-    ? useStore()
-    : createStoreContext({ edges, width, height, fitView });
+  const store = hasContext(key) ? useStore() : createStoreContext();
+
+  if (fitView && width && height) {
+    const nodesWithDimensions = nodes.filter(
+      (node) => (node.width && node.height) || (node.initialWidth && node.initialHeight)
+    );
+    const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin });
+    store.viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
+  }
 
   onMount(() => {
     store.domNode = domNode!;
-
-    // store.syncNodeStores(nodes);
-    // store.syncEdgeStores(edges);
-    // store.syncViewport(viewport);
 
     if (fitView !== undefined) {
       store.fitViewOnInit = fitView;
