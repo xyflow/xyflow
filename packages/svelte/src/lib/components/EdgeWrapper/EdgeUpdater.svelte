@@ -47,7 +47,7 @@
 
 {#if position !== null && zIndex !== null}
   <EdgeWrapper
-    id={edge.id}
+    {id}
     source={edge.source}
     target={edge.target}
     data={edge.data}
