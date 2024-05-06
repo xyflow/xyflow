@@ -1,5 +1,9 @@
 # @xyflow/svelte
 
+## 0.1.2
+
+- export `InternalNode` type
+
 ## 0.1.1
 
 - export `useInternalNode` hook
