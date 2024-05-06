@@ -1,5 +1,9 @@
 # @xyflow/svelte
 
+## 0.1.3
+
+- fix `NodeToolbar` for subflows
+
 ## 0.1.2
 
 - export `InternalNode` type
