@@ -26,6 +26,7 @@
   export let ariaLabel: $$Props['aria-label'] = undefined;
   export let style: $$Props['style'] = undefined;
   export let orientation: $$Props['orientation'] = 'vertical';
+  export let fitViewOptions: $$Props['fitViewOptions'] = undefined;
 
   let className: $$Props['class'] = '';
   export { className as class };
@@ -63,7 +64,7 @@
   };
 
   const onFitViewHandler = () => {
-    fitView();
+    fitView(fitViewOptions);
   };
 
   const onToggleInteractivity = () => {

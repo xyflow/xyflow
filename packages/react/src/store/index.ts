@@ -74,7 +74,7 @@ const createStore = ({
       // new dimensions and update the nodes.
       updateNodeInternals: (updates) => {
         const {
-          onNodesChange,
+          triggerNodeChanges,
           fitView,
           nodeLookup,
           parentLookup,
@@ -120,7 +120,7 @@ const createStore = ({
           if (debug) {
             console.log('React Flow: trigger node changes', changes);
           }
-          onNodesChange?.(changes);
+          triggerNodeChanges?.(changes);
         }
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {

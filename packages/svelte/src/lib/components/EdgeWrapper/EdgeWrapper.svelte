@@ -53,8 +53,8 @@
 
   $: edgeType = type || 'default';
   $: edgeComponent = $edgeTypes[edgeType] || BezierEdgeInternal;
-  $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
-  $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
+  $: markerStartUrl = markerStart ? `url('#${getMarkerId(markerStart, $flowId)}')` : undefined;
+  $: markerEndUrl = markerEnd ? `url('#${getMarkerId(markerEnd, $flowId)}')` : undefined;
   $: isSelectable = selectable || ($elementsSelectable && typeof selectable === 'undefined');
 
   const handleEdgeSelect = useHandleEdgeSelect();

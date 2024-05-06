@@ -38,6 +38,7 @@ export * from './types';
 
 // system types
 export {
+  type Align,
   type SmoothStepPathOptions,
   type BezierPathOptions,
   ConnectionLineType,
@@ -97,6 +98,7 @@ export {
   type EdgeRemoveChange,
   type EdgeAddChange,
   type EdgeReplaceChange,
+  type KeyCode,
 } from '@xyflow/system';
 
 // system utils

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { Handle, NodeResizer, Position, type NodeProps } from '@xyflow/svelte';
+	import type { ResizeNode } from './types';
 
-	type $$Props = NodeProps;
+	type $$Props = NodeProps<ResizeNode>;
 
-	export let data: $$Props['data'] = undefined;
+	export let data: $$Props['data'];
 	export let selected: $$Props['selected'] = undefined;
 </script>
 

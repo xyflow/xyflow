@@ -33,33 +33,7 @@
 		console.log('connections', id, $connections);
 	}
 
-	export let data: $$Props['data'];
-	export let targetPosition: $$Props['targetPosition'] = Position.Top;
-	export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
-	export let width: $$Props['width'] = undefined;
-	export let height: $$Props['height'] = undefined;
-	export let selected: $$Props['selected'] = undefined;
-	export let type: $$Props['type'] = undefined;
-	export let zIndex: $$Props['zIndex'] = undefined;
-	export let dragging: $$Props['dragging'] = false;
-	export let dragHandle: $$Props['dragHandle'] = undefined;
-	export let positionAbsoluteX: $$Props['positionAbsoluteX'] = 0;
-	export let positionAbsoluteY: $$Props['positionAbsoluteY'] = 0;
-	export let isConnectable: $$Props['isConnectable'] = undefined;
-
-	data;
-	targetPosition;
-	sourcePosition;
-	width;
-	height;
-	selected;
-	type;
-	zIndex;
-	dragging;
-	dragHandle;
-	positionAbsoluteX;
-	positionAbsoluteY;
-	isConnectable;
+	$$restProps;
 </script>
 
 <div class="custom">

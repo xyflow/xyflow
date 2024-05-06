@@ -1,35 +1,41 @@
 <script lang="ts">
-  import { getNodesBounds } from '@xyflow/system';
   import { createEventDispatcher } from 'svelte';
+  import { getInternalNodesBounds, isNumeric, type Rect } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import { Selection } from '$lib/components/Selection';
   import drag from '$lib/actions/drag';
-  import type { Node } from '$lib/types';
-  import { createNodeEventDispatcher } from '$lib';
+  import type { Node, NodeEventMap } from '$lib/types';
 
   const store = useStore();
-  const { selectionRectMode, nodes } = store;
+  const { selectionRectMode, nodes, nodeLookup } = store;
 
-  const dispatch = createEventDispatcher<{
-    selectioncontextmenu: { nodes: Node[]; event: MouseEvent | TouchEvent };
-    selectionclick: { nodes: Node[]; event: MouseEvent | TouchEvent };
-  }>();
-  const dispatchNodeEvent = createNodeEventDispatcher();
+  const dispatch = createEventDispatcher<
+    NodeEventMap & {
+      selectioncontextmenu: { nodes: Node[]; event: MouseEvent | TouchEvent };
+      selectionclick: { nodes: Node[]; event: MouseEvent | TouchEvent };
+    }
+  >();
 
-  $: selectedNodes = $nodes.filter((n) => n.selected);
-  $: bounds = getNodesBounds(selectedNodes);
+  let bounds: Rect | null = null;
+
+  $: if ($selectionRectMode === 'nodes') {
+    bounds = getInternalNodesBounds($nodeLookup, { filter: (node) => !!node.selected });
+    $nodes;
+  }
 
   function onContextMenu(event: MouseEvent | TouchEvent) {
+    const selectedNodes = $nodes.filter((n) => n.selected);
     dispatch('selectioncontextmenu', { nodes: selectedNodes, event });
   }
 
   function onClick(event: MouseEvent | TouchEvent) {
+    const selectedNodes = $nodes.filter((n) => n.selected);
     dispatch('selectionclick', { nodes: selectedNodes, event });
   }
 </script>
 
-{#if selectedNodes && $selectionRectMode === 'nodes'}
+{#if $selectionRectMode === 'nodes' && bounds && isNumeric(bounds.x) && isNumeric(bounds.y)}
   <div
     class="selection-wrapper nopan"
     style="width: {bounds.width}px; height: {bounds.height}px; transform: translate({bounds.x}px, {bounds.y}px)"
@@ -37,13 +43,13 @@
       disabled: false,
       store,
       onDrag: (event, _, __, nodes) => {
-        dispatchNodeEvent('nodedrag', { event, targetNode: null, nodes });
+        dispatch('nodedrag', { event, targetNode: null, nodes });
       },
       onDragStart: (event, _, __, nodes) => {
-        dispatchNodeEvent('nodedragstart', { event, targetNode: null, nodes });
+        dispatch('nodedragstart', { event, targetNode: null, nodes });
       },
       onDragStop: (event, _, __, nodes) => {
-        dispatchNodeEvent('nodedragstop', { event, targetNode: null, nodes });
+        dispatch('nodedragstop', { event, targetNode: null, nodes });
       }
     }}
     on:contextmenu={onContextMenu}

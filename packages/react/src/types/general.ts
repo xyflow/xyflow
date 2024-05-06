@@ -63,8 +63,8 @@ export type OnSelectionChangeParams = {
 
 export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
 
-export type FitViewParams = FitViewParamsBase<Node>;
-export type FitViewOptions = FitViewOptionsBase<Node>;
+export type FitViewParams<NodeType extends Node = Node> = FitViewParamsBase<NodeType>;
+export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
 export type FitView = (fitViewOptions?: FitViewOptions) => boolean;
 export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   reactFlowInstance: ReactFlowInstance<NodeType, EdgeType>
@@ -156,7 +156,6 @@ export type ViewportHelperFunctions = {
    * const clientPosition = flowToScreenPosition({ x: node.position.x, y: node.position.y })
    */
   flowToScreenPosition: (flowPosition: XYPosition) => XYPosition;
-  viewportInitialized: boolean;
 };
 
 export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = OnBeforeDeleteBase<

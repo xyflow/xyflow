@@ -9,10 +9,11 @@
   import cc from 'classcat';
   import {
     getBoundsOfRects,
+    getInternalNodesBounds,
     getNodeDimensions,
     getNodePositionWithOrigin,
-    getNodesBounds,
-    nodeHasDimensions
+    nodeHasDimensions,
+    type Rect
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
@@ -49,6 +50,7 @@
   const defaultHeight = 150;
   const {
     nodes,
+    nodeLookup,
     viewport,
     width: containerWidth,
     height: containerHeight,
@@ -71,7 +73,14 @@
     width: $containerWidth / $viewport.zoom,
     height: $containerHeight / $viewport.zoom
   };
-  $: boundingRect = $nodes.length > 0 ? getBoundsOfRects(getNodesBounds($nodes), viewBB) : viewBB;
+  let boundingRect: Rect = viewBB;
+
+  $: {
+    boundingRect =
+      $nodeLookup.size > 0 ? getBoundsOfRects(getInternalNodesBounds($nodeLookup), viewBB) : viewBB;
+    $nodes;
+  }
+
   $: elementWidth = width ?? defaultWidth;
   $: elementHeight = height ?? defaultHeight;
   $: scaledWidth = boundingRect.width / elementWidth;
@@ -122,8 +131,9 @@
     >
       {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
 
-      {#each $nodes as node (node.id)}
-        {#if nodeHasDimensions(node)}
+      {#each $nodes as userNode (userNode.id)}
+        {@const node = $nodeLookup.get(userNode.id)}
+        {#if node && nodeHasDimensions(node)}
           {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
           {@const nodeDimesions = getNodeDimensions(node)}
           <MinimapNode

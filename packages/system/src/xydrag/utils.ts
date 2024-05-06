@@ -77,7 +77,7 @@ export function getDragItems<NodeType extends NodeBase>(
 // returns two params:
 // 1. the dragged node (or the first of the list, if we are dragging a node selection)
 // 2. array of selected nodes (for multi selections)
-export function getEventHandlerParams<NodeType extends NodeBase>({
+export function getEventHandlerParams<NodeType extends InternalNodeBase>({
   nodeId,
   dragItems,
   nodeLookup,
@@ -85,11 +85,11 @@ export function getEventHandlerParams<NodeType extends NodeBase>({
   nodeId?: string;
   dragItems: Map<string, NodeDragItem>;
   nodeLookup: Map<string, NodeType>;
-}): [NodeType, NodeType[]] {
-  const nodesFromDragItems: NodeType[] = [];
+}): [NodeBase, NodeBase[]] {
+  const nodesFromDragItems: NodeBase[] = [];
 
   for (const [id, dragItem] of dragItems) {
-    const node = nodeLookup.get(id);
+    const node = nodeLookup.get(id)?.internals.userNode;
 
     if (node) {
       nodesFromDragItems.push({
@@ -103,7 +103,8 @@ export function getEventHandlerParams<NodeType extends NodeBase>({
     return [nodesFromDragItems[0], nodesFromDragItems];
   }
 
-  const node = nodeLookup.get(nodeId)!;
+  const node = nodeLookup.get(nodeId)!.internals.userNode;
+
   return [
     {
       ...node,
