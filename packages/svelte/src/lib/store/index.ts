@@ -27,13 +27,8 @@ import type {
   ConnectionData,
   InternalNode
 } from '$lib/types';
-import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
+import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store';
 import type { SvelteFlowStore, SvelteFlowStoreActions, SvelteFlowStoreState } from './types';
-import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
-// import { getVisibleEdges } from './visible-edges';
-// import { getVisibleNodes } from './visible-nodes';
-// import { getDerivedConnectionProps } from './derived-connection-props';
-// import { derivedSignal } from './signals.svelte';
 
 export const key = Symbol();
 
@@ -300,6 +295,7 @@ export function createStore(): SvelteFlowStore {
   }
 
   const storeWithAction = Object.assign<SvelteFlowStoreState, SvelteFlowStoreActions>(store, {
+    // TODO: markers and stuff
     // visibleEdges: derivedSignal(() => get(store.edges)),
     // // visibleNodes: getVisibleNodes(store),
     // visibleNodes: derivedSignal(() => {
@@ -369,67 +365,6 @@ export function createStore(): SvelteFlowStore {
   } satisfies SvelteFlowStoreActions);
 
   return storeWithAction;
-
-  // return {
-  //   // state
-  //   ...store,
-
-  //   // derived state
-  //   connection: getDerivedConnectionProps(store, currentConnection),
-  //   visibleEdges: getVisibleEdges(store),
-  //   visibleNodes: getVisibleNodes(store),
-  //   markers: derived(
-  //     [store.edges, store.defaultMarkerColor, store.flowId],
-  //     ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
-  //   ),
-  //   initialized: (() => {
-  //     let initialized = false;
-  //     const initialNodesLength = get(store.nodes).length;
-  //     const initialEdgesLength = get(store.edges).length;
-  //     return derived(
-  //       [store.nodesInitialized, store.edgesInitialized, store.viewportInitialized],
-  //       ([nodesInitialized, edgesInitialized, viewportInitialized]) => {
-  //         // If it was already initialized, return true from then on
-  //         if (initialized) return initialized;
-
-  //         // if it hasn't been initialised check if it's now
-  //         if (initialNodesLength === 0) {
-  //           initialized = viewportInitialized;
-  //         } else if (initialEdgesLength === 0) {
-  //           initialized = viewportInitialized && nodesInitialized;
-  //         } else {
-  //           initialized = viewportInitialized && nodesInitialized && edgesInitialized;
-  //         }
-
-  //         return initialized;
-  //       }
-  //     );
-  //   })(),
-
-  //   // actions
-  //   syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
-  //   syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
-  //   syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
-  //   setNodeTypes,
-  //   setEdgeTypes,
-  //   addEdge,
-  //   updateNodePositions,
-  //   updateNodeInternals,
-  //   zoomIn,
-  //   zoomOut,
-  //   fitView: (options?: FitViewOptions) => fitView(options),
-  //   setMinZoom,
-  //   setMaxZoom,
-  //   setTranslateExtent,
-  //   unselectNodesAndEdges,
-  //   addSelectedNodes,
-  //   addSelectedEdges,
-  //   handleNodeSelection,
-  //   panBy,
-  //   updateConnection,
-  //   cancelConnection,
-  //   reset
-  // };
 }
 
 export function useStore(): SvelteFlowStore {

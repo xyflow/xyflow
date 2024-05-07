@@ -1,25 +1,4 @@
-// export function createSignal<T, N extends string>(name: N, value: T): { [K in N]: T } {
-//   let variable = $state(value);
-//   return {
-//     get [name]() {
-//       return variable;
-//     },
-//     set [name](newValue: T) {
-//       variable = newValue;
-//     }
-//   } as { [K in N]: T };
-// }
-
-import { get, type Writable } from 'svelte/store';
-
-// export function createDerivedSignal<T, N extends string>(name: N, value: () => T): { [K in N]: T } {
-//   let variable = $state(value);
-//   return {
-//     get [name]() {
-//       return variable;
-//     }
-//   } as { [K in N]: T };
-// }
+import { Map as SvelteMap } from 'svelte/reactivity';
 
 export function signal<T>(value: T): { get: () => T; set: (newValue: T) => void } {
   let variable = $state(value);
@@ -53,32 +32,14 @@ export function derivedSignal<T>(clojure: () => T): { get: () => T } {
   };
 }
 
-export function derivedSignalWritable<T, K>(
-  clojure: (store: K) => T,
-  store: Writable<K>,
-  updater?: Writable<any>
-): { get: () => T } {
-  let storeState = $state(get(store));
-  let forceUpdate = $state(0);
-  let variable = $derived.by(() => {
-    forceUpdate;
-    return clojure(storeState);
-  });
-
-  store.subscribe((newValue) => {
-    storeState = newValue;
-  });
-
-  if (updater) {
-    updater.subscribe(() => {
-      forceUpdate += 1;
-      storeState = get(store);
-    });
+export class ReactiveMap<K, V> extends SvelteMap<K, V> {
+  constructor(entries?: [K, V][]) {
+    let e = $state(entries);
+    super(e);
   }
-
-  return {
-    get() {
-      return variable;
-    }
-  };
+  set(key: K, value: V) {
+    let v = $state(value);
+    super.set(key, v);
+    return this;
+  }
 }
