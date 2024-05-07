@@ -1,4 +1,4 @@
-import type { Position, OnConnect, IsValidConnection } from '.';
+import type { Position, IsValidConnection } from '.';
 
 export type HandleType = 'source' | 'target';
 
@@ -42,8 +42,6 @@ export type HandleProps = {
   isConnectableStart?: boolean;
   /** Should you be able to connect to this handle */
   isConnectableEnd?: boolean;
-  /** Callback called when connection is made */
-  onConnect?: OnConnect;
   /** Callback if connection is valid
    * @remarks connection becomes an edge if isValidConnection returns true
    */

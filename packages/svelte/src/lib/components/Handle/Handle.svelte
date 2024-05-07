@@ -13,9 +13,9 @@
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
-  import type { HandleComponentProps } from '$lib/types';
+  import type { HandleProps } from '$lib/types';
 
-  type $$Props = HandleComponentProps;
+  type $$Props = HandleProps;
 
   export let id: $$Props['id'] = undefined;
   export let type: $$Props['type'] = 'source';

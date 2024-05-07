@@ -46,7 +46,7 @@ export type {
   EdgeTypes,
   DefaultEdgeOptions
 } from '$lib/types/edges';
-export type { HandleComponentProps, FitViewOptions } from '$lib/types/general';
+export type { HandleProps, FitViewOptions } from '$lib/types/general';
 export type {
   Node,
   NodeTypes,
