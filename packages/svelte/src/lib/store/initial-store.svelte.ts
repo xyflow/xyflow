@@ -1,4 +1,3 @@
-// import { readable, writable } from 'svelte/store';
 import { Map as SvelteMap } from 'svelte/reactivity';
 import {
   infiniteExtent,
@@ -6,14 +5,11 @@ import {
   ConnectionMode,
   ConnectionLineType,
   devWarn,
-  adoptUserNodes,
-  getNodesBounds,
-  getViewportForBounds,
-  updateConnectionLookup,
   type Viewport,
   type NodeLookup,
-  getEdgePosition,
-  getElevatedEdgeZIndex
+  type ConnectionLookup,
+  type ParentLookup,
+  type EdgeLookup
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -28,11 +24,10 @@ import {
   StepEdgeInternal
 } from '$lib/components/edges';
 
-import type { EdgeLayouted, Node, Edge } from '$lib/types';
-import { createNodesStore, createEdgesStore } from './utils';
-import { derivedSignal, derivedSignalWritable, signal } from './signals.svelte';
+import { derivedSignal, signal } from './signals.svelte';
 import type { SvelteFlowStoreProperties, SvelteFlowStoreState } from './types';
 import { getDerivedConnection, initConnectionUpdateData } from './derived-connection';
+import type { Edge } from '$lib/types';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -61,13 +56,11 @@ class ReactiveMap<K, V> extends SvelteMap<K, V> {
 }
 
 export const getInitialStore = () => {
+  // TODO: what kind of maps are we talking
   const nodeLookup: NodeLookup = new ReactiveMap();
-  const parentLookup = new Map();
-
-  const connectionLookup = new Map();
-  const edgeLookup = new Map();
-  // TODO:
-  // updateConnectionLookup(connectionLookup, edgeLookup, edges);
+  const edgeLookup: EdgeLookup = new SvelteMap<string, Edge>();
+  const parentLookup: ParentLookup = new SvelteMap();
+  const connectionLookup: ConnectionLookup = new Map();
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 

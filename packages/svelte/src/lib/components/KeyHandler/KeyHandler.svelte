@@ -11,6 +11,7 @@
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
   import { get } from 'svelte/store';
   import { useSvelteFlow } from '$lib/hooks/useSvelteFlow';
+  import { untrack } from 'svelte';
 
   let {
     selectionKey = 'Shift',
@@ -67,39 +68,15 @@
   }
 
   async function handleDelete() {
-    const nodes = store.nodes;
-    const edges = store.edges;
-    const selectedNodes = nodes.filter((node) => node.selected);
-    const selectedEdges = edges.filter((edge) => edge.selected);
+    const selectedNodes = store.nodes.filter((node) => node.selected);
+    const selectedEdges = store.edges.filter((edge) => edge.selected);
 
     deleteElements({ nodes: selectedNodes, edges: selectedEdges });
-
-    // const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
-    //   nodesToRemove: selectedNodes,
-    //   edgesToRemove: selectedEdges,
-    //   nodes,
-    //   edges,
-    //   onBeforeDelete: store.onbeforedelete
-    // });
-
-    // if (matchingNodes.length || matchingEdges.length) {
-    //   store.nodes.update((nds) =>
-    //     nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id))
-    //   );
-    //   store.edges.update((eds) =>
-    //     eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
-    //   );
-
-    //   store.ondelete?.({
-    //     nodes: matchingNodes,
-    //     edges: matchingEdges
-    //   });
-    // }
   }
 
   $effect.pre(() => {
     if (store.deleteKeyPressed) {
-      handleDelete();
+      untrack(() => handleDelete());
     }
   });
 </script>

@@ -1,5 +1,4 @@
-import { derived } from 'svelte/store';
-import { areConnectionMapsEqual, type HandleConnection, type HandleType } from '@xyflow/system';
+import { type HandleConnection, type HandleType } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
 import { getContext } from 'svelte';
@@ -24,21 +23,17 @@ const initialConnections: HandleConnection[] = [];
 export function useHandleConnections({ type, nodeId, id = null }: useHandleConnectionsParams) {
   const store = useStore();
 
-  const _nodeId = getContext<string>('svelteflow__node_id');
-  const currentNodeId = nodeId ?? _nodeId;
+  const currentNodeId = nodeId ?? getContext<string>('svelteflow__node_id');
 
-  let prevConnections: Map<string, HandleConnection> | undefined = undefined;
+  let connections = $derived.by(() => {
+    const nextConnections = store.connectionLookup.get(`${currentNodeId}-${type}-${id}`);
+    return Array.from(nextConnections?.values() ?? []);
+  });
 
-  return derived(
-    [store.edges],
-    ([_], set) => {
-      const nextConnections = store.connectionLookup.get(`${currentNodeId}-${type}-${id || null}`);
-
-      if (!areConnectionMapsEqual(nextConnections, prevConnections)) {
-        prevConnections = nextConnections;
-        set(Array.from(prevConnections?.values() || []));
-      }
-    },
-    initialConnections
-  );
+  return {
+    //TODO: whats the standard here
+    get value() {
+      return connections;
+    }
+  };
 }

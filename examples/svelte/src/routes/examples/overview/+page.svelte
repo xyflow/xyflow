@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -10,12 +9,8 @@
 		SelectionMode,
 		type NodeTypes,
 		type EdgeTypes,
-		type Node,
-		type Edge,
 		ConnectionMode,
-		ControlButton,
-		useSvelteFlow,
-		useStore
+		ControlButton
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -24,8 +19,6 @@
 
 	import '@xyflow/svelte/dist/style.css';
 	import InitTracker from './InitTracker.svelte';
-
-	const store = useStore();
 
 	let snap = $state(true);
 
@@ -126,7 +119,6 @@
 
 	function updateNode() {
 		nodes[0].position.x += 20;
-		// $nodes = $nodes;
 	}
 
 	function updateEdge() {
@@ -205,9 +197,7 @@
 		<button onclick={updateEdge}>update edge type</button>
 		<button
 			onclick={() => {
-				console.log(!nodes[nodes.length - 1].hidden);
 				nodes[nodes.length - 1].hidden = !nodes[nodes.length - 1].hidden;
-				console.log(nodes[nodes.length - 1].hidden);
 			}}>hide/unhide</button
 		>
 		<button

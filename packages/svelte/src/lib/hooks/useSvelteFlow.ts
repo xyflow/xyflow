@@ -350,6 +350,13 @@ export function useSvelteFlow(): {
       return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
     },
     deleteElements: async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [] }) => {
+      if (nodesToRemove.length === 0 && edgesToRemove.length === 0) {
+        return {
+          deletedNodes: [],
+          deletedEdges: []
+        };
+      }
+
       const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
         nodesToRemove,
         edgesToRemove,
@@ -362,7 +369,7 @@ export function useSvelteFlow(): {
         let limit = store.nodes.length;
         for (let i = 0; i < limit; i++) {
           if (matchingNodes.some(({ id }) => id === store.nodes[i].id)) {
-            matchingNodes.splice(i, 1);
+            store.nodes.splice(i, 1);
             limit--;
           }
         }
@@ -372,7 +379,7 @@ export function useSvelteFlow(): {
         let limit = store.edges.length;
         for (let i = 0; i < limit; i++) {
           if (matchingEdges.some(({ id }) => id === store.edges[i].id)) {
-            matchingEdges.splice(i, 1);
+            store.edges.splice(i, 1);
             limit--;
           }
         }
@@ -450,7 +457,11 @@ export function useSvelteFlow(): {
 
       const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
 
-      node.data = options?.replace ? nextData : { ...node.data, ...nextData };
+      if (options?.replace) {
+        node.data = nextData;
+      } else {
+        Object.assign(node.data, nextData);
+      }
     },
     // TODO: This might not be viable
     viewport: store.viewport

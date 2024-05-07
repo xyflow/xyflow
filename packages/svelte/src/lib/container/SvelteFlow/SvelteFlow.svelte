@@ -1,13 +1,11 @@
 <script lang="ts">
-  import { onMount, hasContext, untrack } from 'svelte';
-  import { get } from 'svelte/store';
+  import { onMount, hasContext } from 'svelte';
   import cc from 'classcat';
   import {
     ConnectionMode,
     PanOnScrollMode,
     getNodesBounds,
-    getViewportForBounds,
-    infiniteExtent
+    getViewportForBounds
   } from '@xyflow/system';
 
   import { key, useStore, createStoreContext } from '$lib/store';

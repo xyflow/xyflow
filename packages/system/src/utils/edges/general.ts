@@ -99,7 +99,8 @@ const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
  */
 export const addEdge = <EdgeType extends EdgeBase>(
   edgeParams: EdgeType | Connection,
-  edges: EdgeType[]
+  edges: EdgeType[],
+  mutate?: boolean
 ): EdgeType[] => {
   if (!edgeParams.source || !edgeParams.target) {
     devWarn('006', errorMessages['error006']());
@@ -127,6 +128,11 @@ export const addEdge = <EdgeType extends EdgeBase>(
 
   if (edge.targetHandle === null) {
     delete edge.targetHandle;
+  }
+
+  if (mutate) {
+    edges.push(edge);
+    return edges;
   }
 
   return edges.concat(edge);

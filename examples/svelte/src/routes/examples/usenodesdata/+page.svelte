@@ -5,15 +5,14 @@
 	type UppercaseNodeType = Node<{ text: string }, 'uppercase'>;
 	type ResultNodeType = Node<{}, 'result'>;
 
-	export function isTextNode(node: any): node is TextNodeType | UppercaseNode {
-		return node.type === 'text' || node.type === 'uppercase';
+	export function isTextNode(node: any): node is TextNodeType | UppercaseNodeType {
+		return node?.type === 'text' || node?.type === 'uppercase';
 	}
 
 	export type MyNode = TextNodeType | UppercaseNodeType | ResultNodeType;
 </script>
 
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -35,7 +34,7 @@
 		result: ResultNode
 	};
 
-	const nodes = writable<MyNode[]>([
+	let nodes = $state<MyNode[]>([
 		{
 			id: '1',
 			type: 'text',
@@ -69,7 +68,7 @@
 		}
 	]);
 
-	const edges = writable<Edge[]>([
+	let edges = $state<Edge[]>([
 		{
 			id: 'e1-1a',
 			source: '1',
@@ -88,7 +87,7 @@
 	]);
 </script>
 
-<SvelteFlow {nodes} {edges} {nodeTypes} fitView>
+<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView>
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />

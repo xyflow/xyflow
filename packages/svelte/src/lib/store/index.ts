@@ -55,9 +55,7 @@ export function createStore(): SvelteFlowStore {
   }
 
   function addEdge(edgeParams: Edge | Connection) {
-    // TODO: addEdgeUtil creates a new array, which wont work
-    // const edges = get(store.edges);
-    // store.edges.set(addEdgeUtil(edgeParams, edges));
+    addEdgeUtil(edgeParams, store.edges, true);
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
@@ -181,15 +179,12 @@ export function createStore(): SvelteFlowStore {
     }
   }
 
-  function resetSelectedElements(elements: Node[] | Edge[]) {
-    let elementsChanged = false;
-    elements.forEach((element) => {
-      if (element.selected) {
-        element.selected = false;
-        elementsChanged = true;
+  function resetSelectedEdges(edges: Edge[] | IterableIterator<Edge>) {
+    for (const edge of edges) {
+      if (edge.selected) {
+        edge.selected = false;
       }
-    });
-    return elementsChanged;
+    }
   }
 
   function resetSelectedNodes(nodes: Node[] | IterableIterator<InternalNode>): void {
@@ -205,7 +200,7 @@ export function createStore(): SvelteFlowStore {
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
     resetSelectedNodes(params?.nodes ?? store.nodeLookup.values());
 
-    resetSelectedElements(params?.edges ?? store.edges);
+    resetSelectedEdges(params?.edges ?? store.edgeLookup.values());
   }
 
   function addSelectedNodes(ids: string[]) {

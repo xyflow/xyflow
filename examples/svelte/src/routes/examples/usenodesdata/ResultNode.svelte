@@ -1,25 +1,16 @@
 <script lang="ts">
-	import {
-		Handle,
-		Position,
-		useHandleConnections,
-		useNodesData,
-		type NodeProps
-	} from '@xyflow/svelte';
-	import { isTextNode, type MyNode } from './+page.svelte';
+	import { Handle, Position, useHandleConnections, type NodeProps } from '@xyflow/svelte';
+	import { isTextNode } from './+page.svelte';
 
-	type $$Props = NodeProps;
+	let { id }: NodeProps = $props();
 
-	export let id: $$Props['id'];
-	$$restProps;
-
-	const connections = useHandleConnections({
+	let connections = useHandleConnections({
 		nodeId: id,
 		type: 'target'
 	});
 
-	$: nodeData = useNodesData<MyNode>($connections.map((connection) => connection.source));
-	$: textNodes = $nodeData.filter(isTextNode);
+	let nodes = $derived(connections.value.map((connection) => connection.sourceNode));
+	let textNodes = $derived(nodes ? nodes.filter(isTextNode) : []);
 </script>
 
 <div class="custom">
@@ -27,7 +18,7 @@
 	<div>incoming texts:</div>
 
 	{#each textNodes as textNode}
-		<div>{textNode.data.text}</div>
+		<div>{textNode?.data.text}</div>
 	{/each}
 </div>
 
