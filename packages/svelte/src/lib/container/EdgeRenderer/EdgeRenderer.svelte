@@ -4,15 +4,16 @@
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
   import type { EdgeRendererProps } from './types';
+  import EdgeUpdater from '$lib/components/EdgeWrapper/EdgeUpdater.svelte';
 
-  let { defaultEdgeOptions, onedgeclick, onedgecontextmenu }: EdgeRendererProps = $props();
+  let { defaultEdgeOptions, onedgeclick, onedgecontextmenu, edges }: EdgeRendererProps = $props();
 
   const store = useStore();
   // TODO: Double check this
-  if (defaultEdgeOptions) store.edges.setDefaultOptions(defaultEdgeOptions);
-  $effect.pre(() => {
-    if (defaultEdgeOptions) store.edges.setDefaultOptions(defaultEdgeOptions);
-  });
+  // if (defaultEdgeOptions) store.edges.setDefaultOptions(defaultEdgeOptions);
+  // $effect.pre(() => {
+  //   if (defaultEdgeOptions) store.edges.setDefaultOptions(defaultEdgeOptions);
+  // });
 </script>
 
 <div class="svelte-flow__edges">
@@ -20,7 +21,11 @@
     <MarkerDefinition />
   </svg>
 
-  {#each store.visibleEdges as edge (edge.id)}
+  {#each edges as edge (edge.id)}
+    <EdgeUpdater id={edge.id} {edge} {onedgeclick} {onedgecontextmenu} />
+  {/each}
+
+  <!-- {#each store.visibleEdges as edge (edge.id)}
     <EdgeWrapper
       id={edge.id}
       source={edge.source}
@@ -62,5 +67,5 @@
         store.edgesInitialized = false;
       }}
     />
-  {/if}
+  {/if} -->
 </div>

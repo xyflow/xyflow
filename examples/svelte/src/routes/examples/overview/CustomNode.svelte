@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Handle, Position, type NodeProps } from '@xyflow/svelte';
+	import { Handle, Position, type BuiltInNode, type NodeProps } from '@xyflow/svelte';
 
-	type $$Props = NodeProps;
+	type $$Props = NodeProps<BuiltInNode>;
+	$$restProps;
 
 	export let data: { label: string } = { label: 'Node' };
 	export let positionAbsoluteX: number = 0;

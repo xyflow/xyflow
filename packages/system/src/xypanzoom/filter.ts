@@ -76,11 +76,7 @@ export function createFilter({
     }
 
     // if the pane is only movable using allowed clicks
-    if (
-      Array.isArray(panOnDrag) &&
-      !panOnDrag.includes(event.button) &&
-      (event.type === 'mousedown' || event.type === 'touchstart')
-    ) {
+    if (Array.isArray(panOnDrag) && !panOnDrag.includes(event.button) && event.type === 'mousedown') {
       return false;
     }
 

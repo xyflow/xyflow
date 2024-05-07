@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -10,12 +9,9 @@
 		SelectionMode,
 		type NodeTypes,
 		type EdgeTypes,
-		type Node,
-		type Edge,
 		ConnectionMode,
 		ControlButton,
-		useSvelteFlow,
-		useStore
+		type FitViewOptions
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -25,13 +21,7 @@
 	import '@xyflow/svelte/dist/style.css';
 	import InitTracker from './InitTracker.svelte';
 
-	const { viewport } = useStore();
-
-	let snap = true;
-
-	$: {
-		console.log($viewport);
-	}
+	let snap = $state(true);
 
 	const nodeTypes: NodeTypes = {
 		custom: CustomNode,
@@ -42,7 +32,36 @@
 		custom: CustomEdge
 	};
 
-	const nodes = writable<Node[]>([
+	const fitViewOptions: FitViewOptions = {
+		padding: 0.2,
+		nodes: [{ id: '1' }, { id: '2' }]
+	};
+
+	let edges = $state([
+		{
+			id: '1-2',
+			type: 'default',
+			source: '1',
+			target: '2',
+			label: 'Edge Text'
+		},
+		{
+			id: '1-3',
+			type: 'smoothstep',
+			source: '1',
+			target: '3',
+			selectable: false
+		},
+		{
+			id: '2-4',
+			type: 'custom',
+			source: '2',
+			target: '4',
+			animated: true
+		}
+	]);
+
+	let nodes = $state([
 		{
 			id: '1',
 			type: 'input',
@@ -104,52 +123,18 @@
 		}
 	]);
 
-	const edges = writable<Edge[]>([
-		{
-			id: '1-2',
-			type: 'default',
-			source: '1',
-			target: '2',
-			label: 'Edge Text'
-		},
-		{
-			id: '1-3',
-			type: 'smoothstep',
-			source: '1',
-			target: '3',
-			selectable: false
-		},
-		{
-			id: '2-4',
-			type: 'custom',
-			source: '2',
-			target: '4',
-			animated: true
-		}
-	]);
-
 	function updateNode() {
-		$nodes[0].position.x += 20;
-		$nodes = $nodes;
+		nodes[0].position.x += 20;
 	}
 
 	function updateEdge() {
-		$edges[0].type = $edges[0].type === 'default' ? 'smoothstep' : 'default';
-		$edges = $edges;
-	}
-
-	$: {
-		console.log('nodes changed', $nodes);
-	}
-
-	$: {
-		console.log(snap);
+		edges[0].type = edges[0].type === 'default' ? 'smoothstep' : 'default';
 	}
 </script>
 
 <SvelteFlow
-	{nodes}
-	{edges}
+	bind:nodes
+	bind:edges
 	{nodeTypes}
 	{edgeTypes}
 	fitView
@@ -204,7 +189,7 @@
 	attributionPosition={'top-center'}
 	deleteKey={['Backspace', 'd']}
 >
-	<Controls orientation="horizontal">
+	<Controls orientation="horizontal" {fitViewOptions}>
 		{#snippet before()}
 			<ControlButton>xy</ControlButton>
 		{/snippet}
@@ -218,9 +203,7 @@
 		<button onclick={updateEdge}>update edge type</button>
 		<button
 			onclick={() => {
-				console.log($nodes, $nodes.length);
-				$nodes[$nodes.length - 1].hidden = !$nodes[$nodes.length - 1].hidden;
-				$nodes = $nodes;
+				nodes[nodes.length - 1].hidden = !nodes[nodes.length - 1].hidden;
 			}}>hide/unhide</button
 		>
 		<button

@@ -1,5 +1,15 @@
 # @xyflow/react
 
+## 12.0.0-next.17
+
+- fix broken `defaultNodes`
+- add string array to `UpdateNodeInternals` thanks @DenizUgur
+- pinch zoom on windows
+- drag for touch devices
+- return user node in node event handlers
+- cleanup `useReactFlow`
+- export `KeyCode` and `Align` type
+
 ## 12.0.0-next.16
 
 ## Patch changes

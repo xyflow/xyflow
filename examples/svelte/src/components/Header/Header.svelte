@@ -18,6 +18,7 @@
 		'node-resizer',
 		'overview',
 		'stress',
+		'ssr',
 		'subflows',
 		'two-way-viewport',
 		'usenodesdata',

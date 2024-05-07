@@ -33,6 +33,7 @@ export function useDrag({
   useEffect(() => {
     xyDrag.current = XYDrag({
       getStoreItems: () => store.getState(),
+      isNodeSelected: (node) => node.selected,
       onNodeMouseDown: (id: string) => {
         handleNodeClick({
           id,

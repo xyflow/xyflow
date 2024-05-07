@@ -44,10 +44,10 @@ export default function NodeInspector() {
     <ViewportPortal>
       <div className="react-flow__devtools-nodeinspector">
         {nodes.map((node) => {
-          const x = node.computed?.positionAbsolute?.x || 0;
-          const y = node.computed?.positionAbsolute?.y || 0;
-          const width = node.computed?.width || 0;
-          const height = node.computed?.height || 0;
+          const x = node?.position?.x || 0;
+          const y = node?.position?.y || 0;
+          const width = node.measured?.width || 0;
+          const height = node.measured?.height || 0;
 
           return (
             <NodeInfo

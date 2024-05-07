@@ -30,8 +30,9 @@ export * from '$lib/hooks/useSvelteFlow';
 export * from '$lib/hooks/useUpdateNodeInternals';
 export * from '$lib/hooks/useConnection';
 export * from '$lib/hooks/useNodesEdges';
-export * from '$lib/hooks/useHandleConnections';
+export * from '$lib/hooks/useHandleConnections.svelte';
 export * from '$lib/hooks/useNodesData';
+export * from '$lib/hooks/useInternalNode';
 export { useInitialized, useNodesInitialized } from '$lib/hooks/useInitialized';
 
 // types
@@ -46,11 +47,19 @@ export type {
   DefaultEdgeOptions
 } from '$lib/types/edges';
 export type { HandleComponentProps, FitViewOptions } from '$lib/types/general';
-export type { Node, NodeTypes, DefaultNodeOptions, BuiltInNode, NodeProps } from '$lib/types/nodes';
+export type {
+  Node,
+  NodeTypes,
+  DefaultNodeOptions,
+  BuiltInNode,
+  NodeProps,
+  InternalNode
+} from '$lib/types/nodes';
 export type { SvelteFlowStore } from '$lib/store/types';
 
 // system types
 export {
+  type Align,
   type SmoothStepPathOptions,
   type BezierPathOptions,
   ConnectionLineType,

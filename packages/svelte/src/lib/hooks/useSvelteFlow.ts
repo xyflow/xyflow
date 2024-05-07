@@ -18,7 +18,7 @@ import {
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
-import type { Edge, FitViewOptions, Node } from '$lib/types';
+import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
 import { isNode } from '$lib/utils';
 
 /**
@@ -41,6 +41,13 @@ export function useSvelteFlow(): {
    * @param options.duration - optional duration. If set, a transition will be applied
    */
   zoomOut: ZoomInOut;
+  /**
+   * Returns an internal node by id.
+   *
+   * @param id - the node id
+   * @returns the node or undefined if no node was found
+   */
+  getInternalNode: (id: string) => InternalNode | undefined;
   /**
    * Returns a node by id.
    *
@@ -247,19 +254,16 @@ export function useSvelteFlow(): {
 
     const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
 
+    // TODO: does this acutally work?
     if (options.replace) {
-      store.nodes.update((nds) =>
-        nds.map((node) => {
-          if (node.id === id) {
-            return isNode(nextNode) ? nextNode : { ...node, ...nextNode };
-          }
-
-          return node;
-        })
-      );
+      for (const [i, node] of store.nodes.entries()) {
+        if (node.id === id) {
+          store.nodes[i] = isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+          break;
+        }
+      }
     } else {
       Object.assign(node, nextNode);
-      store.nodes.update((nds) => nds);
     }
   };
 
@@ -267,9 +271,10 @@ export function useSvelteFlow(): {
     zoomIn: store.zoomIn,
     zoomOut: store.zoomOut,
     getNode: (id) => store.nodeLookup.get(id),
-    getNodes: (ids) => (ids === undefined ? get(store.nodes) : getElements(store.nodeLookup, ids)),
+    getNodes: (ids) => (ids === undefined ? store.nodes : getElements(store.nodeLookup, ids)),
     getEdge: (id) => store.edgeLookup.get(id),
-    getEdges: (ids) => (ids === undefined ? get(store.edges) : getElements(store.edgeLookup, ids)),
+    getEdges: (ids) => (ids === undefined ? store.edges : getElements(store.edgeLookup, ids)),
+    getInternalNode: (id: string) => store.nodeLookup.get(id),
     setZoom: (zoomLevel, options) => {
       store.panZoom?.scaleTo(zoomLevel, { duration: options?.duration });
     },
@@ -322,7 +327,7 @@ export function useSvelteFlow(): {
         return [];
       }
 
-      return (nodesToIntersect || get(store.nodes)).filter((n) => {
+      return (nodesToIntersect ?? store.nodes).filter((n) => {
         const internalNode = store.nodeLookup.get(n.id);
         if (!internalNode || (!isRect && n.id === nodeOrRect.id)) {
           return false;
@@ -353,25 +358,45 @@ export function useSvelteFlow(): {
       return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
     },
     deleteElements: async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [] }) => {
+      if (nodesToRemove.length === 0 && edgesToRemove.length === 0) {
+        return {
+          deletedNodes: [],
+          deletedEdges: []
+        };
+      }
+
       const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
         nodesToRemove,
         edgesToRemove,
-        nodes: get(store.nodes),
-        edges: get(store.edges),
+        nodes: store.nodes,
+        edges: store.edges,
         onBeforeDelete: store.onbeforedelete
       });
 
       if (matchingNodes) {
-        store.nodes.update((nds) =>
-          nds.filter((node) => !matchingNodes.some(({ id }) => id === node.id))
-        );
+        let limit = store.nodes.length;
+        for (let i = 0; i < limit; i++) {
+          if (matchingNodes.some(({ id }) => id === store.nodes[i].id)) {
+            store.nodes.splice(i, 1);
+            limit--;
+          }
+        }
       }
 
       if (matchingEdges) {
-        store.edges.update((eds) =>
-          eds.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id))
-        );
+        let limit = store.edges.length;
+        for (let i = 0; i < limit; i++) {
+          if (matchingEdges.some(({ id }) => id === store.edges[i].id)) {
+            store.edges.splice(i, 1);
+            limit--;
+          }
+        }
       }
+
+      store.ondelete?.({
+        nodes: matchingNodes,
+        edges: matchingEdges
+      });
 
       return {
         deletedNodes: matchingNodes,
@@ -425,15 +450,9 @@ export function useSvelteFlow(): {
 
     toObject: () => {
       return {
-        nodes: get(store.nodes).map((node) => ({
-          ...node,
-          // we want to make sure that changes to the nodes object that gets returned by toObject
-          // do not affect the nodes object
-          position: { ...node.position },
-          data: { ...node.data }
-        })),
-        edges: get(store.edges).map((edge) => ({ ...edge })),
-        viewport: { ...store.viewport }
+        nodes: $state.snapshot(store.nodes),
+        edges: $state.snapshot(store.edges),
+        viewport: $state.snapshot(store.viewport)
       };
     },
     updateNode,
@@ -446,22 +465,27 @@ export function useSvelteFlow(): {
 
       const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
 
-      node.data = options?.replace ? nextData : { ...node.data, ...nextData };
-
-      store.nodes.update((nds) => nds);
+      if (options?.replace) {
+        node.data = nextData;
+      } else {
+        Object.assign(node.data, nextData);
+      }
     },
     // TODO: This might not be viable
     viewport: store.viewport
   };
 }
-
-function getElements<EdgeOrNode>(lookup: Map<string, EdgeOrNode>, ids: string[]) {
+function getElements(lookup: Map<string, InternalNode>, ids: string[]): Node[];
+function getElements(lookup: Map<string, Edge>, ids: string[]): Edge[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getElements(lookup: Map<string, any>, ids: string[]): any[] {
   const result = [];
 
   for (const id of ids) {
-    const element = lookup.get(id);
+    const item = lookup.get(id);
 
-    if (element) {
+    if (item) {
+      const element = 'internals' in item ? item.internals?.userNode : item;
       result.push(element);
     }
   }

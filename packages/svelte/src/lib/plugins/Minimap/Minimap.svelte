@@ -9,10 +9,12 @@
   import cc from 'classcat';
   import {
     getBoundsOfRects,
+    getInternalNodesBounds,
     getNodeDimensions,
     getNodePositionWithOrigin,
     getNodesBounds,
-    nodeHasDimensions
+    nodeHasDimensions,
+    type Rect
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
@@ -44,7 +46,6 @@
   }: MiniMapProps = $props();
 
   const store = useStore();
-  const { nodes } = store;
 
   const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
@@ -62,7 +63,9 @@
     height: store.height / store.viewport.zoom
   });
   let boundingRect = $derived(
-    $nodes.length > 0 ? getBoundsOfRects(getNodesBounds($nodes), viewBB) : viewBB
+    store.nodeLookup.size > 0
+      ? getBoundsOfRects(getNodesBounds(Array.from(store.nodeLookup.values())), viewBB)
+      : viewBB
   );
   let scaledWidth = $derived(boundingRect.width / width);
   let scaledHeight = $derived(boundingRect.height / height);
@@ -112,7 +115,7 @@
     >
       {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
 
-      {#each $nodes as node (node.id)}
+      {#each store.nodeLookup.values() as node (node.id)}
         {#if nodeHasDimensions(node) && !node.hidden}
           {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
           {@const nodeDimesions = getNodeDimensions(node)}

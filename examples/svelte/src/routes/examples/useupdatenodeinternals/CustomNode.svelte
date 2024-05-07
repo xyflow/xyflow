@@ -4,6 +4,7 @@
 	type $$Props = NodeProps;
 
 	export let id: $$Props['id'];
+	$$restProps;
 
 	const updateNodeInternals = useUpdateNodeInternals();
 

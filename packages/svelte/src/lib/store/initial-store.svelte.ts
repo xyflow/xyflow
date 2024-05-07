@@ -1,18 +1,15 @@
-// import { readable, writable } from 'svelte/store';
+import { Map as SvelteMap } from 'svelte/reactivity';
 import {
   infiniteExtent,
   SelectionMode,
   ConnectionMode,
   ConnectionLineType,
   devWarn,
-  adoptUserNodes,
-  getNodesBounds,
-  getViewportForBounds,
-  updateConnectionLookup,
   type Viewport,
   type NodeLookup,
-  getEdgePosition,
-  getElevatedEdgeZIndex
+  type ConnectionLookup,
+  type ParentLookup,
+  type EdgeLookup
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -27,11 +24,10 @@ import {
   StepEdgeInternal
 } from '$lib/components/edges';
 
-import type { EdgeLayouted, Node, Edge } from '$lib/types';
-import { createNodesStore, createEdgesStore } from './utils';
-import { derivedSignal, derivedSignalWritable, signal } from './signals.svelte';
+import { derivedSignal, signal } from './signals.svelte';
 import type { SvelteFlowStoreProperties, SvelteFlowStoreState } from './types';
 import { getDerivedConnection, initConnectionUpdateData } from './derived-connection';
+import type { Edge } from '$lib/types';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -47,48 +43,33 @@ export const initialEdgeTypes = {
   step: StepEdgeInternal
 };
 
-export const intialValues = {};
+class ReactiveMap<K, V> extends SvelteMap<K, V> {
+  constructor(entries?: [K, V][]) {
+    let e = $state(entries);
+    super(e);
+  }
+  set(key: K, value: V) {
+    let v = $state(value);
+    super.set(key, v);
+    return this;
+  }
+}
 
-export const getInitialStore = ({
-  nodes = [],
-  edges = [],
-  width,
-  height,
-  fitView
-}: {
-  nodes?: Node[];
-  edges?: Edge[];
-  width?: number;
-  height?: number;
-  fitView?: boolean;
-}) => {
-  const nodeLookup: NodeLookup = new Map();
-  const parentLookup = new Map();
-  adoptUserNodes(nodes, nodeLookup, parentLookup, {
-    nodeOrigin: [0, 0],
-    elevateNodesOnSelect: false,
-    checkEquality: false
-  });
-  const connectionLookup = new Map();
-  const edgeLookup = new Map();
-  updateConnectionLookup(connectionLookup, edgeLookup, edges);
+export const getInitialStore = () => {
+  // TODO: what kind of maps are we talking
+  const nodeLookup: NodeLookup = new ReactiveMap();
+  const edgeLookup: EdgeLookup = new SvelteMap<string, Edge>();
+  const parentLookup: ParentLookup = new SvelteMap();
+  const connectionLookup: ConnectionLookup = new Map();
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
-  if (fitView && width && height) {
-    const nodesWithDimensions = nodes.filter(
-      (node) => (node.width && node.height) || (node.initialWidth && node.initialHeight)
-    );
-
-    // TODO: users nodeOrigin should be used here
-    const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
-    viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
-  }
-
   const store = Object.defineProperties<SvelteFlowStoreState>(
-    //@ts-expect-error {} does not match Store, which is fine
+    // @ts-expect-error {} does not match Store, which is fine
     {},
     {
+      nodes: signal<SvelteFlowStoreState['nodes']>([]),
+      edges: signal<SvelteFlowStoreState['edges']>([]),
       autoPanOnConnect: signal<SvelteFlowStoreState['autoPanOnConnect']>(true),
       autoPanOnNodeDrag: signal<SvelteFlowStoreState['autoPanOnNodeDrag']>(true),
       connectionData: signal<SvelteFlowStoreState['connectionData']>(initConnectionUpdateData),
@@ -152,13 +133,6 @@ export const getInitialStore = ({
     } satisfies SvelteFlowStoreProperties
   );
 
-  // TODO: just temporary
-  Object.assign(store, {
-    nodes: createNodesStore(nodes, nodeLookup, parentLookup),
-    edges: createEdgesStore(edges, connectionLookup, edgeLookup)
-    // viewport: writable<Viewport>(viewport)
-  });
-
   Object.defineProperties(store, {
     connection: derivedSignal(() =>
       getDerivedConnection(
@@ -167,48 +141,6 @@ export const getInitialStore = ({
         store.nodeLookup,
         store.viewport
       )
-    ),
-    visibleEdges: derivedSignalWritable<SvelteFlowStoreState['visibleEdges'], Edge[]>(
-      (edges) => {
-        const layoutedEdges = edges.reduce<EdgeLayouted[]>((res, edge) => {
-          const sourceNode = nodeLookup.get(edge.source);
-          const targetNode = nodeLookup.get(edge.target);
-
-          if (!sourceNode || !targetNode) {
-            return res;
-          }
-
-          const edgePosition = getEdgePosition({
-            id: edge.id,
-            sourceNode,
-            targetNode,
-            sourceHandle: edge.sourceHandle || null,
-            targetHandle: edge.targetHandle || null,
-            connectionMode: store.connectionMode,
-            onError: store.onerror
-          });
-
-          if (edgePosition) {
-            res.push({
-              ...edge,
-              zIndex: getElevatedEdgeZIndex({
-                selected: edge.selected,
-                zIndex: edge.zIndex,
-                sourceNode,
-                targetNode,
-                elevateOnSelect: false
-              }),
-              ...edgePosition
-            });
-          }
-
-          return res;
-        }, []);
-
-        return layoutedEdges;
-      },
-      store.edges,
-      store.nodes
     )
   });
 

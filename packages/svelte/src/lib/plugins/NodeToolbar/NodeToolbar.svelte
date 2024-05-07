@@ -18,14 +18,10 @@
   }: NodeToolbarProps = $props();
 
   const store = useStore();
-  const { nodes } = store;
 
   const contextNodeId = getContext<string>('svelteflow__node_id');
 
   let toolbarNodes: InternalNode[] = $derived.by(() => {
-    // only needed to trigger updates, $nodeLookup is just a helper that does not trigger any updates
-    $nodes;
-
     const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId];
 
     return nodeIds.reduce<InternalNode[]>((res, nodeId) => {
@@ -40,19 +36,7 @@
   });
 
   let transform: string = $derived.by(() => {
-    let nodeRect: Rect | undefined = undefined;
-
-    if (toolbarNodes.length === 1) {
-      const toolbarNode = toolbarNodes[0];
-      nodeRect = {
-        ...toolbarNode.position,
-        width: toolbarNode.measured.width ?? toolbarNode.width ?? 0,
-        height: toolbarNode.measured.height ?? toolbarNode.height ?? 0
-      };
-    } else if (toolbarNodes.length > 1) {
-      nodeRect = getNodesBounds(toolbarNodes, { nodeOrigin: store.nodeOrigin });
-    }
-
+    let nodeRect = getNodesBounds(toolbarNodes, { nodeOrigin: store.nodeOrigin });
     if (nodeRect) {
       return getNodeToolbarTransform(nodeRect, store.viewport, position, offset, align);
     }
@@ -67,7 +51,8 @@
   );
 
   //FIXME: Possible performance bottleneck
-  let selectedNodesCount = $derived($nodes.filter((node) => node.selected).length);
+  // TODO: possibly not workingk
+  let selectedNodesCount = $derived(store.nodes.filter((node) => node.selected).length);
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   let isActive = $derived(

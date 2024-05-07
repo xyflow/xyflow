@@ -31,7 +31,6 @@
   }: ResizeControlProps = $props();
 
   const store = useStore();
-  const { viewport, nodes } = store;
 
   let id = $derived(
     typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
@@ -107,7 +106,6 @@
               childNode.position = childChange.position;
             }
           }
-          $nodes = $nodes;
         }
       });
     }

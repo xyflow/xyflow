@@ -2,7 +2,7 @@ import { getContext, setContext } from 'svelte';
 import { derived, get, writable } from 'svelte/store';
 import {
   createMarkerIds,
-  fitView as fitViewUtil,
+  fitView as fitViewSystem,
   getElementsToRemove,
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
@@ -14,10 +14,19 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  errorMessages
+  errorMessages,
+  isInternalNodeBase
 } from '@xyflow/system';
 
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData } from '$lib/types';
+import type {
+  EdgeTypes,
+  NodeTypes,
+  Node,
+  Edge,
+  FitViewOptions,
+  ConnectionData,
+  InternalNode
+} from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import type { SvelteFlowStore, SvelteFlowStoreActions, SvelteFlowStoreState } from './types';
 import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
@@ -28,20 +37,8 @@ import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
 
 export const key = Symbol();
 
-export function createStore({
-  nodes,
-  edges,
-  width,
-  height,
-  fitView: fitViewOnCreate
-}: {
-  nodes?: Node[];
-  edges?: Edge[];
-  width?: number;
-  height?: number;
-  fitView?: boolean;
-}): SvelteFlowStore {
-  const store = getInitialStore({ nodes, edges, width, height, fitView: fitViewOnCreate });
+export function createStore(): SvelteFlowStore {
+  const store = getInitialStore();
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes = {
@@ -58,15 +55,12 @@ export function createStore({
   }
 
   function addEdge(edgeParams: Edge | Connection) {
-    const edges = get(store.edges);
-    store.edges.set(addEdgeUtil(edgeParams, edges));
+    addEdgeUtil(edgeParams, store.edges, true);
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    const nodeLookup = store.nodeLookup;
-
     for (const [id, dragItem] of nodeDragItems) {
-      const node = nodeLookup.get(id)?.internals.userNode;
+      const node = store.nodeLookup.get(id)?.internals.userNode;
 
       if (!node) {
         continue;
@@ -75,8 +69,6 @@ export function createStore({
       node.position = dragItem.position;
       node.dragging = dragging;
     }
-
-    store.nodes.update((nds) => nds);
   };
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
@@ -104,6 +96,7 @@ export function createStore({
 
     for (const change of changes) {
       const node = nodeLookup.get(change.id)?.internals.userNode;
+      const internalNode = nodeLookup.get(change.id)!;
 
       if (!node) {
         continue;
@@ -112,8 +105,10 @@ export function createStore({
       switch (change.type) {
         case 'dimensions': {
           const measured = { ...node.measured, ...change.dimensions };
-          node.width = change.dimensions?.width ?? node.width;
-          node.height = change.dimensions?.height ?? node.height;
+          if (change.setAttributes) {
+            if (change.dimensions?.width) node.width = change.dimensions.width;
+            if (change.dimensions?.height) node.height = change.dimensions.height;
+          }
           node.measured = measured;
           break;
         }
@@ -123,7 +118,7 @@ export function createStore({
       }
     }
 
-    store.nodes.update((nds) => nds);
+    // store.nodes.update((nds) => nds);
 
     if (!store.nodesInitialized) {
       store.nodesInitialized = true;
@@ -137,7 +132,7 @@ export function createStore({
       return false;
     }
 
-    return fitViewUtil(
+    return fitViewSystem(
       {
         nodeLookup: store.nodeLookup,
         width: store.width,
@@ -186,80 +181,70 @@ export function createStore({
     }
   }
 
-  function resetSelectedElements(elements: Node[] | Edge[]) {
-    let elementsChanged = false;
-    elements.forEach((element) => {
-      if (element.selected) {
-        element.selected = false;
-        elementsChanged = true;
+  function resetSelectedEdges(edges: Edge[] | IterableIterator<Edge>) {
+    for (const edge of edges) {
+      if (edge.selected) {
+        edge.selected = false;
       }
-    });
-    return elementsChanged;
+    }
+  }
+
+  function resetSelectedNodes(nodes: Node[] | IterableIterator<InternalNode>): void {
+    for (const node of nodes) {
+      if (isInternalNodeBase(node)) {
+        node.internals.userNode.selected = false;
+      } else {
+        node.selected = false;
+      }
+    }
   }
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
-    const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
-    if (resetNodes) store.nodes.update((nds) => nds);
+    resetSelectedNodes(params?.nodes ?? store.nodeLookup.values());
 
-    const resetEdges = resetSelectedElements(params?.edges || get(store.edges));
-    if (resetEdges) store.edges.update((nds) => nds);
+    resetSelectedEdges(params?.edges ?? store.edgeLookup.values());
   }
 
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.nodes.update((ns) =>
-      ns.map((node) => {
-        const nodeWillBeSelected = ids.includes(node.id);
-        const selected = isMultiSelection
-          ? node.selected || nodeWillBeSelected
-          : nodeWillBeSelected;
+    for (const node of store.nodeLookup.values()) {
+      const nodeWillBeSelected = ids.includes(node.id);
+      const selected = isMultiSelection
+        ? node.internals.userNode.selected || nodeWillBeSelected
+        : nodeWillBeSelected;
 
-        // we need to mutate the node here in order to have the correct selected state in the drag handler
-        node.selected = selected;
-
-        return node;
-      })
-    );
+      // we need to mutate the node here in order to have the correct selected state in the drag handler
+      // node.selected = selected;
+      node.internals.userNode.selected = selected;
+    }
 
     if (!isMultiSelection) {
-      store.edges.update((es) =>
-        es.map((edge) => {
-          edge.selected = false;
-          return edge;
-        })
-      );
+      for (const edge of store.edges) {
+        edge.selected = false;
+      }
     }
   }
 
   function addSelectedEdges(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.edges.update((edges) =>
-      edges.map((edge) => {
-        const edgeWillBeSelected = ids.includes(edge.id);
-        const selected = isMultiSelection
-          ? edge.selected || edgeWillBeSelected
-          : edgeWillBeSelected;
+    for (const edge of store.edges) {
+      const edgeWillBeSelected = ids.includes(edge.id);
+      const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
 
-        edge.selected = selected;
-
-        return edge;
-      })
-    );
+      edge.selected = selected;
+    }
 
     if (!isMultiSelection) {
-      store.nodes.update((ns) =>
-        ns.map((node) => {
-          node.selected = false;
-          return node;
-        })
-      );
+      for (const node of store.nodeLookup.values()) {
+        node.internals.userNode.selected = false;
+      }
     }
   }
 
   function handleNodeSelection(id: string) {
-    const node = get(store.nodes)?.find((n) => n.id === id);
+    const node = store.nodeLookup.get(id)?.internals.userNode;
 
     if (!node) {
       console.warn('012', errorMessages['error012'](id));
@@ -359,8 +344,8 @@ export function createStore({
     //   });
     // })(),
     // actions
-    syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
-    syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
+    // syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
+    // syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
     // syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
     setNodeTypes,
     setEdgeTypes,
@@ -459,20 +444,8 @@ export function useStore(): SvelteFlowStore {
   return store.getStore();
 }
 
-export function createStoreContext({
-  nodes,
-  edges,
-  width,
-  height,
-  fitView
-}: {
-  nodes?: Node[];
-  edges?: Edge[];
-  width?: number;
-  height?: number;
-  fitView?: boolean;
-}) {
-  const store = createStore({ nodes, edges, width, height, fitView });
+export function createStoreContext() {
+  const store = createStore();
 
   setContext(key, {
     getStore: () => store

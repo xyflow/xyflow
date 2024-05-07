@@ -16,28 +16,28 @@
   import type { HandleComponentProps } from '$lib/types';
 
   let {
-    id,
+    id: handleId = null,
     type = 'source',
     position = Position.Top,
     style,
     class: className,
     isConnectable: isConnectableProp,
+    isValidConnection: isValidConnectionProp,
     onconnect,
     ondisconnect,
     children
   }: HandleComponentProps = $props();
 
-  const nodeId = getContext<string>('svelteflow__node_id');
-  const isConnectableContext = getContext<Writable<boolean>>('svelteflow__node_connectable');
+  const store = useStore();
 
-  const handleId = id || null;
+  const nodeId = getContext<string>('svelteflow__node_id');
+  // TODO: can writables be replaced here?
+  const isConnectableContext = getContext<Writable<boolean>>('svelteflow__node_connectable');
 
   let isConnectable = $derived(
     isConnectableProp !== undefined ? isConnectableProp : $isConnectableContext
   );
   let isTarget = $derived(type === 'target');
-
-  const store = useStore();
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
@@ -54,7 +54,7 @@
         lib: 'svelte',
         autoPanOnConnect: store.autoPanOnConnect,
         flowId: store.flowId,
-        isValidConnection: store.isValidConnection,
+        isValidConnection: isValidConnectionProp ?? store.isValidConnection,
         updateConnection: store.updateConnection,
         cancelConnection: store.cancelConnection,
         panBy: store.panBy,
@@ -92,7 +92,7 @@
     if (onconnect || ondisconnect) {
       // connectionLookup is not reactive, so we use edges to get notified about updates
       store.edges;
-      connections = store.connectionLookup.get(`${nodeId}-${type}-${id || null}`);
+      connections = store.connectionLookup.get(`${nodeId}-${type}-${handleId}`);
     }
   });
 

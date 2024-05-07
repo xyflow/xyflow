@@ -4,6 +4,8 @@
 
   let {
     store,
+    nodes = [],
+    edges = [],
     edgeTypes,
     nodeTypes,
     minZoom,
@@ -32,6 +34,16 @@
     onconnectend,
     onbeforedelete
   }: Partial<SvelteFlowProps> & { store: SvelteFlowStore } = $props();
+
+  store.nodes = nodes;
+  $effect.pre(() => {
+    store.nodes = nodes;
+  });
+
+  store.edges = edges;
+  $effect.pre(() => {
+    store.edges = edges;
+  });
 
   // These are store items with some side effects
   if (edgeTypes) store.setEdgeTypes(edgeTypes);

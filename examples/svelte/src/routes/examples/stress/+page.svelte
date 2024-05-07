@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -12,8 +11,8 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	const yNodes = 25;
-	const xNodes = 25;
+	const yNodes = 50;
+	const xNodes = 50;
 
 	const nodeItems: Node[] = [];
 	const edgeItems: Edge[] = [];
@@ -46,11 +45,11 @@
 		}
 	}
 
-	const nodes = writable(nodeItems);
-	const edges = writable(edgeItems);
+	let nodes = $state(nodeItems);
+	let edges = $state(edgeItems);
 </script>
 
-<SvelteFlow {nodes} {edges} fitView minZoom={0.2}>
+<SvelteFlow bind:nodes bind:edges minZoom={0}>
 	<Controls />
 	<Background variant={BackgroundVariant.Lines} />
 	<MiniMap />

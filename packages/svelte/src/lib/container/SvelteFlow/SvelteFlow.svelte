@@ -1,8 +1,12 @@
 <script lang="ts">
-  import { onMount, hasContext, untrack } from 'svelte';
-  import { get } from 'svelte/store';
+  import { onMount, hasContext } from 'svelte';
   import cc from 'classcat';
-  import { ConnectionMode, PanOnScrollMode, infiniteExtent } from '@xyflow/system';
+  import {
+    ConnectionMode,
+    PanOnScrollMode,
+    getNodesBounds,
+    getViewportForBounds
+  } from '@xyflow/system';
 
   import { key, useStore, createStoreContext } from '$lib/store';
 
@@ -21,8 +25,11 @@
 
   import type { SvelteFlowProps } from './types';
   import { StoreUpdater } from '$lib/components/StoreUpdater';
+  import NodeUpdate from './NodeUpdate.svelte';
 
   let {
+    nodes = $bindable([]),
+    edges = $bindable([]),
     attributionPosition,
     autoPanOnConnect = true,
     autoPanOnNodeDrag = true,
@@ -38,7 +45,6 @@
     defaultEdgeOptions,
     defaultMarkerColor = '#b1b1b7',
     deleteKey,
-    edges,
     edgeTypes,
     elementsSelectable,
     fitView,
@@ -51,7 +57,6 @@
     minZoom,
     multiSelectionKey,
     nodeDragThreshold,
-    nodes,
     nodesConnectable,
     nodesDraggable,
     nodeTypes,
@@ -99,6 +104,7 @@
     zoomOnDoubleClick = true,
     zoomOnPinch = true,
     zoomOnScroll = true,
+    nodeOrigin = [0, 0],
     ...restProps
   }: SvelteFlowProps = $props();
 
@@ -106,16 +112,18 @@
   let clientWidth = $state<number>();
   let clientHeight = $state<number>();
 
-  const store = hasContext(key)
-    ? useStore()
-    : createStoreContext({ nodes: get(nodes), edges: get(edges), width, height, fitView });
+  const store = hasContext(key) ? useStore() : createStoreContext();
+
+  if (fitView && width && height) {
+    const nodesWithDimensions = nodes.filter(
+      (node) => (node.width && node.height) || (node.initialWidth && node.initialHeight)
+    );
+    const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin });
+    store.viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
+  }
 
   onMount(() => {
     store.domNode = domNode!;
-
-    store.syncNodeStores(nodes);
-    store.syncEdgeStores(edges);
-    // store.syncViewport(viewport);
 
     if (fitView !== undefined) {
       store.fitViewOnInit = fitView;
@@ -150,6 +158,44 @@
   let colorModeClass = useColorModeClass(colorMode);
 </script>
 
+<StoreUpdater
+  {nodes}
+  {edges}
+  {store}
+  {viewport}
+  {edgeTypes}
+  {nodeTypes}
+  {minZoom}
+  {maxZoom}
+  {translateExtent}
+  {id}
+  {connectionLineType}
+  {connectionRadius}
+  {selectionMode}
+  {snapGrid}
+  {defaultMarkerColor}
+  {nodesDraggable}
+  {nodesConnectable}
+  {elementsSelectable}
+  {onlyRenderVisibleElements}
+  {isValidConnection}
+  {autoPanOnConnect}
+  {autoPanOnNodeDrag}
+  {onerror}
+  {ondelete}
+  {onedgecreate}
+  {connectionMode}
+  {nodeDragThreshold}
+  {onconnect}
+  {onconnectstart}
+  {onconnectend}
+  {onbeforedelete}
+/>
+
+{#each nodes as node (node.id)}
+  <NodeUpdate id={node.id} userNode={node} />
+{/each}
+
 <div
   bind:this={domNode}
   bind:clientWidth
@@ -160,37 +206,6 @@
   {...restProps}
   role="application"
 >
-  <StoreUpdater
-    {store}
-    {viewport}
-    {edgeTypes}
-    {nodeTypes}
-    {minZoom}
-    {maxZoom}
-    {translateExtent}
-    {id}
-    {connectionLineType}
-    {connectionRadius}
-    {selectionMode}
-    {snapGrid}
-    {defaultMarkerColor}
-    {nodesDraggable}
-    {nodesConnectable}
-    {elementsSelectable}
-    {onlyRenderVisibleElements}
-    {isValidConnection}
-    {autoPanOnConnect}
-    {autoPanOnNodeDrag}
-    {onerror}
-    {ondelete}
-    {onedgecreate}
-    {connectionMode}
-    {nodeDragThreshold}
-    {onconnect}
-    {onconnectstart}
-    {onconnectend}
-    {onbeforedelete}
-  />
   <KeyHandler
     {selectionKey}
     {deleteKey}
@@ -212,13 +227,15 @@
     panOnDrag={panOnDrag === undefined ? true : panOnDrag}
   >
     <Pane
+      bind:nodes
+      bind:edges
       panOnDrag={panOnDrag === undefined ? true : panOnDrag}
       {selectionOnDrag}
       {onpaneclick}
       {onpanecontextmenu}
     >
       <ViewportComponent>
-        <EdgeRenderer {onedgeclick} {onedgecontextmenu} {defaultEdgeOptions} />
+        <EdgeRenderer {edges} {onedgeclick} {onedgecontextmenu} {defaultEdgeOptions} />
         <ConnectionLine
           {connectionLine}
           containerStyle={connectionLineContainerStyle}
@@ -227,6 +244,7 @@
         <div class="svelte-flow__edgelabel-renderer"></div>
         <div class="svelte-flow__viewport-portal"></div>
         <NodeRenderer
+          {nodes}
           {onnodeclick}
           {onnodecontextmenu}
           {onnodemouseenter}

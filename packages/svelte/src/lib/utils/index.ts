@@ -1,4 +1,3 @@
-import { createEventDispatcher } from 'svelte';
 import { isNodeBase, isEdgeBase } from '@xyflow/system';
 
 import type { Edge, Node } from '$lib/types';
