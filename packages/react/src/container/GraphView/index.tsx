@@ -9,6 +9,7 @@ import { useViewportSync } from '../../hooks/useViewportSync';
 import { ConnectionLineWrapper } from '../../components/ConnectionLine';
 import { useNodeOrEdgeTypesWarning } from './useNodeOrEdgeTypesWarning';
 import type { Edge, Node, ReactFlowProps } from '../../types';
+import { useStylesLoadedWarning } from './useStylesLoadedWarning';
 
 export type GraphViewProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Omit<
   ReactFlowProps<NodeType, EdgeType>,
@@ -104,6 +105,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
 }: GraphViewProps<NodeType, EdgeType>) {
   useNodeOrEdgeTypesWarning(nodeTypes);
   useNodeOrEdgeTypesWarning(edgeTypes);
+  useStylesLoadedWarning();
 
   useOnInitHandler(onInit);
   useViewportSync(viewport);

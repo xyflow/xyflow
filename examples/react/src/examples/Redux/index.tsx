@@ -1,5 +1,4 @@
 import { ReactFlow } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
 
 import { useDispatch, useSelector, Provider } from 'react-redux';
 
