@@ -26,6 +26,7 @@
     buttonColorHover,
     buttonBorderColor,
     'aria-label': ariaLabel,
+    fitViewOptions,
     children,
     before,
     after
@@ -57,7 +58,7 @@
   };
 
   const onFitViewHandler = () => {
-    store.fitView();
+    store.fitView(fitViewOptions);
   };
 
   const onToggleInteractivity = () => {
