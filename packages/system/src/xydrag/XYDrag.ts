@@ -119,8 +119,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         updateNodePositions,
       } = getStoreItems();
 
-      console.log(dragItems);
-
       lastPos = { x, y };
 
       let hasChange = false;
@@ -231,8 +229,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         unselectNodesAndEdges,
       } = getStoreItems();
 
-      console.log('drag started');
-
       dragStarted = true;
 
       if ((!selectNodesOnDrag || !isSelectable) && !multiSelectionActive && nodeId) {
@@ -249,8 +245,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
       lastPos = pointerPos;
       dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, isNodeSelected, nodeId);
-
-      console.log(dragItems);
 
       if (dragItems.size > 0 && (onDragStart || onNodeDragStart || (!nodeId && onSelectionDragStart))) {
         const [currentNode, currentNodes] = getEventHandlerParams({
@@ -270,7 +264,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
     const d3DragInstance = drag()
       .on('start', (event: UseDragEvent) => {
-        console.log('starty');
         const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
 
         if (nodeDragThreshold === 0) {
@@ -283,7 +276,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
       })
       .on('drag', (event: UseDragEvent) => {
-        console.log('draggin');
         const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold } = getStoreItems();
         const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
 
@@ -311,7 +303,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         }
       })
       .on('end', (event: UseDragEvent) => {
-        console.log('drag end');
         if (!dragStarted) {
           return;
         }

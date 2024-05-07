@@ -109,6 +109,11 @@
   });
 
   $effect.pre(() => {
+    internalNode.position.x = userNode.position.x;
+    internalNode.position.y = userNode.position.y;
+  });
+
+  $effect.pre(() => {
     internalNode.selected = userNode.selected;
   });
 

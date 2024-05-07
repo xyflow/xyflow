@@ -47,9 +47,6 @@ export function getDragItems<NodeType extends NodeBase>(
   const dragItems = new Map<string, NodeDragItem>();
 
   for (const [id, node] of nodeLookup) {
-    if (isNodeSelected(node)) {
-      console.log(node);
-    }
     if (
       (isNodeSelected(node) || node.id === nodeId) &&
       (!node.parentId || !isParentSelected(node, nodeLookup, isNodeSelected)) &&

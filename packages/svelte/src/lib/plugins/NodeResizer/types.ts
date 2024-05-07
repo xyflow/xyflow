@@ -70,4 +70,5 @@ export type ResizeControlProps = Pick<
   variant?: ResizeControlVariant;
   class?: string;
   style?: string;
+  children?: Snippet;
 };

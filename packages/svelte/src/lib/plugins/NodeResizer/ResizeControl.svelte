@@ -27,7 +27,8 @@
     onResize,
     onResizeEnd,
     style = '',
-    class: className
+    class: className,
+    children
   }: ResizeControlProps = $props();
 
   const store = useStore();
@@ -119,4 +120,8 @@
   class={cc(['svelte-flow__resize-control', 'nodrag', ...positionClassNames, variant, className])}
   bind:this={resizeControlRef}
   style={controlStyle}
-></div>
+>
+  {#if children}
+    {@render children()}
+  {/if}
+</div>

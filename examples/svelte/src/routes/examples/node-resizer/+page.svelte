@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import { SvelteFlow, Controls, Panel, type Edge } from '@xyflow/svelte';
 
 	import DefaultResizer from './DefaultResizer.svelte';
@@ -19,9 +18,9 @@
 
 	const nodeStyle = 'border: 1px solid #222; font-size: 10px; background-color: #ddd;';
 
-	const edges = writable<Edge[]>([]);
+	let edges = $state<Edge[]>([]);
 
-	const nodes = writable<ResizeNode[]>([
+	let nodes = $state<ResizeNode[]>([
 		{
 			id: '1',
 			type: 'defaultResizer',
@@ -128,12 +127,14 @@
 		}
 	]);
 
-	let snapToGrid = false;
+	// $inspect(nodes);
+
+	let snapToGrid = $state(false);
 </script>
 
 <SvelteFlow
-	{nodes}
-	{edges}
+	bind:nodes
+	bind:edges
 	{nodeTypes}
 	minZoom={0.2}
 	maxZoom={5}
