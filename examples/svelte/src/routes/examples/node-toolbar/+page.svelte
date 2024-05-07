@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Background,
@@ -51,12 +50,12 @@
 
 	const initialEdges: Edge[] = [];
 
-	const nodes = writable<Node[]>(initialNodes);
-	const edges = writable<Edge[]>(initialEdges);
+	let nodes = $state<Node[]>(initialNodes);
+	let edges = $state<Edge[]>(initialEdges);
 </script>
 
 <div style="height: 100vh;">
-	<SvelteFlow {nodes} {edges} {nodeTypes} fitView>
+	<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView>
 		<Background />
 		<SelectedNodesToolbar />
 	</SvelteFlow>

@@ -36,19 +36,7 @@
   });
 
   let transform: string = $derived.by(() => {
-    let nodeRect: Rect | undefined = undefined;
-
-    if (toolbarNodes.length === 1) {
-      const toolbarNode = toolbarNodes[0];
-      nodeRect = {
-        ...toolbarNode.position,
-        width: toolbarNode.measured.width ?? toolbarNode.width ?? 0,
-        height: toolbarNode.measured.height ?? toolbarNode.height ?? 0
-      };
-    } else if (toolbarNodes.length > 1) {
-      nodeRect = getNodesBounds(toolbarNodes, { nodeOrigin: store.nodeOrigin });
-    }
-
+    let nodeRect = getNodesBounds(toolbarNodes, { nodeOrigin: store.nodeOrigin });
     if (nodeRect) {
       return getNodeToolbarTransform(nodeRect, store.viewport, position, offset, align);
     }
