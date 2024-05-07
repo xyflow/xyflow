@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, hasContext } from 'svelte';
+  import { onMount, hasContext, untrack } from 'svelte';
   import cc from 'classcat';
   import {
     ConnectionMode,
@@ -26,6 +26,7 @@
   import type { SvelteFlowProps } from './types';
   import { StoreUpdater } from '$lib/components/StoreUpdater';
   import NodeUpdate from './NodeUpdate.svelte';
+  import { isFlowInitialized } from './utils';
 
   let {
     nodes = $bindable([]),
@@ -148,11 +149,32 @@
 
   // Call oninit once when flow is intialized
   let onInitCalled = false;
+  const numInitialNodes = nodes.length;
+  const numIntitialEdges = edges.length;
   $effect(() => {
-    if (!onInitCalled && store.initialized) {
+    if (
+      !onInitCalled &&
+      isFlowInitialized(
+        numInitialNodes,
+        numIntitialEdges,
+        store.nodesInitialized,
+        store.edgesInitialized,
+        store.viewportInitialized
+      )
+    ) {
+      store.initialized = true;
       oninit?.();
       onInitCalled = true;
     }
+  });
+
+  $effect(() => {
+    console.log(
+      store.initialized,
+      store.nodesInitialized,
+      store.edgesInitialized,
+      store.viewportInitialized
+    );
   });
 
   let colorModeClass = useColorModeClass(colorMode);

@@ -1,4 +1,4 @@
-import { type HandleConnection, type HandleType } from '@xyflow/system';
+import { type HandleType } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
 import { getContext } from 'svelte';
@@ -8,8 +8,6 @@ export type useHandleConnectionsParams = {
   nodeId?: string;
   id?: string | null;
 };
-
-const initialConnections: HandleConnection[] = [];
 
 /**
  *  Hook to check if a <Handle /> is connected to another <Handle /> and get the connections.

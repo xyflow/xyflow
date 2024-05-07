@@ -42,7 +42,7 @@
 
 <script lang="ts">
   import { useStore } from '$lib/store';
-  import type { Edge, EdgeEvents, InternalNode, Node } from '$lib/types';
+  import type { Edge, EdgeEvents, InternalNode } from '$lib/types';
   import {
     getEdgePosition,
     getElevatedEdgeZIndex,
@@ -51,6 +51,7 @@
   } from '@xyflow/system';
   import EdgeWrapper from './EdgeWrapper.svelte';
   import { onDestroy } from 'svelte';
+  import CallOnMount from '../CallOnMount/CallOnMount.svelte';
 
   let { id, edge, onedgeclick, onedgecontextmenu }: EdgeEvents & { id: string; edge: Edge } =
     $props();
@@ -130,6 +131,15 @@
 </script>
 
 {#if position !== null && zIndex !== null}
+  <!-- TODO: this does not make sense here but lets see how visible edges pans out -->
+  <CallOnMount
+    onMount={() => {
+      if (!store.edgesInitialized) store.edgesInitialized = true;
+    }}
+    onDestroy={() => {
+      // if (store.edgesInitialized) store.edgesInitialized = false;
+    }}
+  />
   <EdgeWrapper
     {id}
     source={edge.source}

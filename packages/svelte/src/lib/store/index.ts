@@ -91,7 +91,6 @@ export function createStore(): SvelteFlowStore {
 
     for (const change of changes) {
       const node = nodeLookup.get(change.id)?.internals.userNode;
-      const internalNode = nodeLookup.get(change.id)!;
 
       if (!node) {
         continue;
@@ -112,8 +111,6 @@ export function createStore(): SvelteFlowStore {
           break;
       }
     }
-
-    // store.nodes.update((nds) => nds);
 
     if (!store.nodesInitialized) {
       store.nodesInitialized = true;
@@ -318,27 +315,6 @@ export function createStore(): SvelteFlowStore {
     // markers: derivedSignal(() =>
     //   createMarkerIds(get(store.edges), { defaultColor: store.defaultMarkerColor, id: store.flowId })
     // ),
-    // initialized: (() => {
-    //   let initialized = false;
-    //   const initialNodesLength = get(store.nodes).length;
-    //   const initialEdgesLength = get(store.edges).length;
-    //   return derivedSignal(() => {
-    //     // If it was already initialized, return true from then on
-    //     if (initialized) return initialized;
-
-    //     // if it hasn't been initialised check if it's now
-    //     if (initialNodesLength === 0) {
-    //       initialized = store.viewportInitialized;
-    //     } else if (initialEdgesLength === 0) {
-    //       initialized = store.viewportInitialized && store.nodesInitialized;
-    //     } else {
-    //       initialized =
-    //         store.viewportInitialized && store.nodesInitialized && store.edgesInitialized;
-    //     }
-
-    //     return initialized;
-    //   });
-    // })(),
     // actions
     // syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
     // syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
