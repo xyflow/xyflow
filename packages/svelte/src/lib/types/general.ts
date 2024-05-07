@@ -46,6 +46,10 @@ export type HandleComponentProps = {
   isConnectableStart?: boolean;
   /** Should you be able to connect to this handle */
   isConnectableEnd?: boolean;
+  /** Function that is called when checking if connection is valid.
+   * Overrides the isValidConnection on the Flow component.
+   */
+  isValidConnection?: IsValidConnection;
   onconnect?: (connections: Connection[]) => void;
   ondisconnect?: (connections: Connection[]) => void;
   children?: Snippet;

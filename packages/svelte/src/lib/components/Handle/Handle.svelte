@@ -22,12 +22,16 @@
     style,
     class: className,
     isConnectable: isConnectableProp,
+    isValidConnection: isValidConnectionProp,
     onconnect,
     ondisconnect,
     children
   }: HandleComponentProps = $props();
 
+  const store = useStore();
+
   const nodeId = getContext<string>('svelteflow__node_id');
+  // TODO: can writables be replaced here?
   const isConnectableContext = getContext<Writable<boolean>>('svelteflow__node_connectable');
 
   const handleId = id || null;
@@ -36,8 +40,6 @@
     isConnectableProp !== undefined ? isConnectableProp : $isConnectableContext
   );
   let isTarget = $derived(type === 'target');
-
-  const store = useStore();
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
@@ -54,7 +56,7 @@
         lib: 'svelte',
         autoPanOnConnect: store.autoPanOnConnect,
         flowId: store.flowId,
-        isValidConnection: store.isValidConnection,
+        isValidConnection: isValidConnectionProp ?? store.isValidConnection,
         updateConnection: store.updateConnection,
         cancelConnection: store.cancelConnection,
         panBy: store.panBy,
