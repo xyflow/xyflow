@@ -1,4 +1,4 @@
-import type { Node } from '$lib/types';
+import type { InternalNode, Node } from '$lib/types';
 import type { NodeEvents } from '$lib/types/events';
 
 export type NodeWrapperProps = Pick<
@@ -21,19 +21,18 @@ export type NodeWrapperProps = Pick<
   | 'height'
   | 'initialWidth'
   | 'initialHeight'
-> &
-  NodeEvents & {
-    measuredWidth?: number;
-    measuredHeight?: number;
-    type?: string;
-    positionX: number;
-    positionY: number;
-    positionOriginX: number;
-    positionOriginY: number;
-    'on:nodeclick'?: (event: MouseEvent) => void;
-    resizeObserver?: ResizeObserver | null;
-    isParent?: boolean;
-    zIndex: number;
-    node: Node;
-    initialized: boolean;
-  };
+> & {
+  measuredWidth?: number;
+  measuredHeight?: number;
+  type?: string;
+  positionX: number;
+  positionY: number;
+  positionOriginX: number;
+  positionOriginY: number;
+  'on:nodeclick'?: (event: MouseEvent) => void;
+  resizeObserver?: ResizeObserver | null;
+  isParent?: boolean;
+  zIndex: number;
+  node: InternalNode;
+  initialized: boolean;
+};

@@ -102,15 +102,18 @@
   });
 
   $effect.pre(() => {
+    const childZIndex =
+      (isNumeric(userNode.zIndex) ? userNode.zIndex : 0) + (userNode.selected ? selectedNodeZ : 0);
+    const parentZIndex = parentNode ? parentNode.internals.z : 0;
+    internalNode.internals.z = Math.max(parentZIndex, childZIndex);
+  });
+
+  $effect.pre(() => {
     internalNode.selected = userNode.selected;
   });
 
   $effect.pre(() => {
     internalNode.hidden = userNode.hidden;
-  });
-
-  $effect.pre(() => {
-    internalNode.zIndex = userNode.zIndex;
   });
 
   $effect.pre(() => {

@@ -1,6 +1,10 @@
 import { type NodeDragItem, type XYPosition, InternalNodeBase, NodeBase, NodeLookup } from '../types';
 
-export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodeLookup: NodeLookup): boolean {
+export function isParentSelected<NodeType extends NodeBase>(
+  node: NodeType,
+  nodeLookup: NodeLookup,
+  isNodeSelected: (node: InternalNodeBase) => boolean | undefined
+): boolean {
   if (!node.parentId) {
     return false;
   }
@@ -11,11 +15,11 @@ export function isParentSelected<NodeType extends NodeBase>(node: NodeType, node
     return false;
   }
 
-  if (parentNode.selected) {
+  if (isNodeSelected(parentNode)) {
     return true;
   }
 
-  return isParentSelected(parentNode, nodeLookup);
+  return isParentSelected(parentNode, nodeLookup, isNodeSelected);
 }
 
 export function hasSelector(target: Element, selector: string, domNode: Element): boolean {
@@ -43,9 +47,12 @@ export function getDragItems<NodeType extends NodeBase>(
   const dragItems = new Map<string, NodeDragItem>();
 
   for (const [id, node] of nodeLookup) {
+    if (isNodeSelected(node)) {
+      console.log(node);
+    }
     if (
       (isNodeSelected(node) || node.id === nodeId) &&
-      (!node.parentId || !isParentSelected(node, nodeLookup)) &&
+      (!node.parentId || !isParentSelected(node, nodeLookup, isNodeSelected)) &&
       (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'))
     ) {
       dragItems.set(id, {
@@ -76,7 +83,7 @@ export function getDragItems<NodeType extends NodeBase>(
 // returns two params:
 // 1. the dragged node (or the first of the list, if we are dragging a node selection)
 // 2. array of selected nodes (for multi selections)
-export function getEventHandlerParams<NodeType extends NodeBase>({
+export function getEventHandlerParams<NodeType extends InternalNodeBase>({
   nodeId,
   dragItems,
   nodeLookup,
@@ -84,11 +91,11 @@ export function getEventHandlerParams<NodeType extends NodeBase>({
   nodeId?: string;
   dragItems: Map<string, NodeDragItem>;
   nodeLookup: Map<string, NodeType>;
-}): [NodeType, NodeType[]] {
-  const nodesFromDragItems: NodeType[] = [];
+}): [NodeBase, NodeBase[]] {
+  const nodesFromDragItems: NodeBase[] = [];
 
   for (const [id, dragItem] of dragItems) {
-    const node = nodeLookup.get(id);
+    const node = nodeLookup.get(id)?.internals.userNode;
 
     if (node) {
       nodesFromDragItems.push({
@@ -102,7 +109,8 @@ export function getEventHandlerParams<NodeType extends NodeBase>({
     return [nodesFromDragItems[0], nodesFromDragItems];
   }
 
-  const node = nodeLookup.get(nodeId)!;
+  const node = nodeLookup.get(nodeId)!.internals.userNode;
+
   return [
     {
       ...node,

@@ -18,7 +18,7 @@ import {
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
-import type { Edge, FitViewOptions, Node } from '$lib/types';
+import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
 import { isNode } from '$lib/utils';
 
 /**
@@ -41,6 +41,13 @@ export function useSvelteFlow(): {
    * @param options.duration - optional duration. If set, a transition will be applied
    */
   zoomOut: ZoomInOut;
+  /**
+   * Returns an internal node by id.
+   *
+   * @param id - the node id
+   * @returns the node or undefined if no node was found
+   */
+  getInternalNode: (id: string) => InternalNode | undefined;
   /**
    * Returns a node by id.
    *
@@ -267,6 +274,7 @@ export function useSvelteFlow(): {
     getNodes: (ids) => (ids === undefined ? store.nodes : getElements(store.nodeLookup, ids)),
     getEdge: (id) => store.edgeLookup.get(id),
     getEdges: (ids) => (ids === undefined ? store.edges : getElements(store.edgeLookup, ids)),
+    getInternalNode: (id: string) => store.nodeLookup.get(id),
     setZoom: (zoomLevel, options) => {
       store.panZoom?.scaleTo(zoomLevel, { duration: options?.duration });
     },
@@ -467,14 +475,17 @@ export function useSvelteFlow(): {
     viewport: store.viewport
   };
 }
-
-function getElements<EdgeOrNode>(lookup: Map<string, EdgeOrNode>, ids: string[]) {
+function getElements(lookup: Map<string, InternalNode>, ids: string[]): Node[];
+function getElements(lookup: Map<string, Edge>, ids: string[]): Edge[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getElements(lookup: Map<string, any>, ids: string[]): any[] {
   const result = [];
 
   for (const id of ids) {
-    const element = lookup.get(id);
+    const item = lookup.get(id);
 
-    if (element) {
+    if (item) {
+      const element = 'internals' in item ? item.internals?.userNode : item;
       result.push(element);
     }
   }

@@ -23,7 +23,7 @@ export function useUpdateNodeInternals(): UpdateNodeInternals {
       ) as HTMLDivElement;
 
       if (nodeElement) {
-        updates.set(updateId, { id: updateId, nodeElement, forceUpdate: true });
+        updates.set(updateId, { id: updateId, nodeElement, force: true });
       }
     });
 

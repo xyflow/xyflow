@@ -10,7 +10,8 @@
 		type NodeTypes,
 		type EdgeTypes,
 		ConnectionMode,
-		ControlButton
+		ControlButton,
+		type FitViewOptions
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -29,6 +30,11 @@
 
 	const edgeTypes: EdgeTypes = {
 		custom: CustomEdge
+	};
+
+	const fitViewOptions: FitViewOptions = {
+		padding: 0.2,
+		nodes: [{ id: '1' }, { id: '2' }]
 	};
 
 	let edges = $state([
@@ -183,7 +189,7 @@
 	attributionPosition={'top-center'}
 	deleteKey={['Backspace', 'd']}
 >
-	<Controls orientation="horizontal">
+	<Controls orientation="horizontal" {fitViewOptions}>
 		{#snippet before()}
 			<ControlButton>xy</ControlButton>
 		{/snippet}

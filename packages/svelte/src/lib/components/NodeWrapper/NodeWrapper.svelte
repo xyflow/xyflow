@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setContext, onDestroy } from 'svelte';
-  import { get, writable } from 'svelte/store';
+  import { writable } from 'svelte/store';
   import cc from 'classcat';
   import { errorMessages, Position } from '@xyflow/system';
 
@@ -10,6 +10,7 @@
   import { getNodeInlineStyleDimensions } from './utils';
 
   import type { NodeWrapperProps } from './types';
+  import type { NodeEvents } from '$lib/types';
 
   let {
     node,
@@ -49,7 +50,7 @@
     onnodemouseleave,
     onnodemousemove,
     onnodecontextmenu
-  }: NodeWrapperProps = $props();
+  }: NodeWrapperProps & NodeEvents = $props();
 
   const store = useStore();
 

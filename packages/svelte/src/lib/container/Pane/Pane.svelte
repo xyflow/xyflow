@@ -22,7 +22,7 @@
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
-  import type { Node, Edge } from '$lib/types';
+  import type { Node, Edge, InternalNode } from '$lib/types';
   import type { PaneProps } from './types';
 
   let {
@@ -37,9 +37,9 @@
 
   const store = useStore();
 
-  let container: HTMLDivElement | null = $state(null);
-  let containerBounds: DOMRect | null = $state(null);
-  let selectedNodes: Node[] = $state([]);
+  let container: HTMLDivElement;
+  let containerBounds: DOMRect | null = null;
+  let selectedNodes: InternalNode[] = [];
 
   let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
   let isSelecting = $derived(

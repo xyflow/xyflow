@@ -16,7 +16,7 @@
   import type { HandleComponentProps } from '$lib/types';
 
   let {
-    id,
+    id: handleId = null,
     type = 'source',
     position = Position.Top,
     style,
@@ -33,8 +33,6 @@
   const nodeId = getContext<string>('svelteflow__node_id');
   // TODO: can writables be replaced here?
   const isConnectableContext = getContext<Writable<boolean>>('svelteflow__node_connectable');
-
-  const handleId = id || null;
 
   let isConnectable = $derived(
     isConnectableProp !== undefined ? isConnectableProp : $isConnectableContext
@@ -94,7 +92,7 @@
     if (onconnect || ondisconnect) {
       // connectionLookup is not reactive, so we use edges to get notified about updates
       store.edges;
-      connections = store.connectionLookup.get(`${nodeId}-${type}-${id || null}`);
+      connections = store.connectionLookup.get(`${nodeId}-${type}-${handleId}`);
     }
   });
 

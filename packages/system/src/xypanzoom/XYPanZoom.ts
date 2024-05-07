@@ -214,6 +214,7 @@ export function XYPanZoom({
         currentTransform.x !== viewport.x ||
         currentTransform.y !== viewport.y
       ) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         d3ZoomInstance?.transform(d3Selection, nextTransform, null, { sync: true });
       }

@@ -37,7 +37,7 @@ export type HandleComponentProps = {
   /** Id of the handle
    * @remarks optional if there is only one handle of this type
    */
-  id?: string;
+  id?: string | null;
   class?: string;
   style?: string;
   /** Should you be able to connect from/to this handle */
@@ -55,7 +55,7 @@ export type HandleComponentProps = {
   children?: Snippet;
 };
 
-export type FitViewOptions = FitViewOptionsBase<Node>;
+export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
 
 export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
 export type OnEdgeCreate = (connection: Connection) => Edge | Connection | void;

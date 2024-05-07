@@ -2,7 +2,7 @@ import { getContext, setContext } from 'svelte';
 import { derived, get, writable } from 'svelte/store';
 import {
   createMarkerIds,
-  fitView as fitViewUtil,
+  fitView as fitViewSystem,
   getElementsToRemove,
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
@@ -105,9 +105,11 @@ export function createStore(): SvelteFlowStore {
       switch (change.type) {
         case 'dimensions': {
           const measured = { ...node.measured, ...change.dimensions };
-          node.width = change.dimensions?.width ?? node.width;
-          node.height = change.dimensions?.height ?? node.height;
-          internalNode.internals.userNode.measured = measured;
+          if (change.setAttributes) {
+            if (change.dimensions?.width) node.width = change.dimensions.width;
+            if (change.dimensions?.height) node.height = change.dimensions.height;
+          }
+          node.measured = measured;
           break;
         }
         case 'position':
@@ -130,7 +132,7 @@ export function createStore(): SvelteFlowStore {
       return false;
     }
 
-    return fitViewUtil(
+    return fitViewSystem(
       {
         nodeLookup: store.nodeLookup,
         width: store.width,

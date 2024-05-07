@@ -191,6 +191,7 @@
   {onconnectend}
   {onbeforedelete}
 />
+
 {#each nodes as node (node.id)}
   <NodeUpdate id={node.id} userNode={node} />
 {/each}

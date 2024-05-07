@@ -21,34 +21,7 @@
 		console.log('disconnect source', connection);
 	}
 
-	export let data: $$Props['data'];
-	export let targetPosition: $$Props['targetPosition'] = Position.Top;
-	export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
-	export let width: $$Props['width'] = undefined;
-	export let height: $$Props['height'] = undefined;
-	export let selected: $$Props['selected'] = undefined;
-	export let type: $$Props['type'] = undefined;
-	export let zIndex: $$Props['zIndex'] = undefined;
-	export let dragging: $$Props['dragging'] = false;
-	export let dragHandle: $$Props['dragHandle'] = undefined;
-	export let positionAbsolute: $$Props['positionAbsolute'] = {
-		x: 0,
-		y: 0
-	};
-	export let isConnectable: $$Props['isConnectable'] = undefined;
-
-	data;
-	targetPosition;
-	sourcePosition;
-	width;
-	height;
-	selected;
-	type;
-	zIndex;
-	dragging;
-	dragHandle;
-	positionAbsolute;
-	isConnectable;
+	$$restProps;
 </script>
 
 <div class="custom">
