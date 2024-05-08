@@ -254,13 +254,10 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
     const node = nodeLookup.get(update.id);
 
     if (node?.hidden) {
-      nodeLookup.set(node.id, {
-        ...node,
-        internals: {
-          ...node.internals,
-          handleBounds: undefined,
-        },
-      });
+      node.internals = {
+        ...node.internals,
+        handleBounds: undefined,
+      };
       updatedInternals = true;
     } else if (node) {
       const dimensions = getDimensions(update.nodeElement);
@@ -272,33 +269,29 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       );
 
       if (doUpdate) {
-        const newNode = {
-          ...node,
-          measured: dimensions,
-          internals: {
-            ...node.internals,
-            handleBounds: {
-              source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
-              target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
-            },
+        node.measured = dimensions;
+        node.internals = {
+          ...node.internals,
+          handleBounds: {
+            source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
+            target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
           },
         };
 
-        nodeLookup.set(node.id, newNode);
         updatedInternals = true;
 
         if (dimensionChanged) {
           changes.push({
-            id: newNode.id,
+            id: node.id,
             type: 'dimensions',
             dimensions,
           });
 
-          if (newNode.expandParent && newNode.parentId) {
+          if (node.expandParent && node.parentId) {
             parentExpandChildren.push({
-              id: newNode.id,
-              parentId: newNode.parentId,
-              rect: nodeToRect(newNode, newNode.origin || nodeOrigin),
+              id: node.id,
+              parentId: node.parentId,
+              rect: nodeToRect(node, nodeOrigin),
             });
           }
         }

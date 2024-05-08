@@ -1,7 +1,7 @@
 import { memo, FC, useEffect, useCallback } from 'react';
-import { Handle, Position, NodeProps, useHandleConnections, Connection, HandleComponentProps } from '@xyflow/react';
+import { Handle, Position, NodeProps, useHandleConnections, Connection, HandleProps } from '@xyflow/react';
 
-function CustomHandle({ nodeId, ...handleProps }: HandleComponentProps & { nodeId: string }) {
+function CustomHandle({ nodeId, ...handleProps }: HandleProps & { nodeId: string }) {
   const onConnect = useCallback(
     (connections: Connection[]) => {
       console.log('onConnect handler, node id:', nodeId, connections);

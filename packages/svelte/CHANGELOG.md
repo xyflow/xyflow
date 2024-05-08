@@ -1,5 +1,17 @@
 # @xyflow/svelte
 
+## 0.1.3
+
+- fix `NodeToolbar` for subflows
+
+## 0.1.2
+
+- export `InternalNode` type
+
+## 0.1.1
+
+- export `useInternalNode` hook
+
 ## 0.1.0
 
 This is a bigger update for Svelte Flow to keep up with the latest changes we made for React Flow and the Svelte5 rewrite. The biggest change is the separation of user nodes (type `Node`) and internal nodes (type `InternalNode`), which includes a renaming of the `node.computed` attribute to `node.measured`. In the previous versions, we stored internals in `node[internalsSymbol]`. This doesn't exist anymore, but we only add it to our internal nodes in `node.internals.`.

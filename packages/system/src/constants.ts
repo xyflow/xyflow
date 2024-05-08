@@ -1,6 +1,5 @@
 import { CoordinateExtent, HandleType } from './types';
 
-// @todo: update URLs to xyflow
 export const errorMessages = {
   error001: () =>
     '[React Flow]: Seems like you have not used zustand provider as an ancestor. Help: https://reactflow.dev/error#001',
@@ -23,6 +22,8 @@ export const errorMessages = {
   error011: (edgeType: string) => `Edge type "${edgeType}" not found. Using fallback type "default".`,
   error012: (id: string) =>
     `Node with id "${id}" does not exist, it may have been removed. This can happen when a node is deleted before the "onNodeClick" handler is called.`,
+  error013: (lib: string = 'react') =>
+    `It seems that you haven't loaded the styles. Please import '@xyflow/${lib}/dist/style.css' or base.css to make sure everything is working properly.`,
 };
 
 export const infiniteExtent: CoordinateExtent = [

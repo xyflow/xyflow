@@ -1,5 +1,5 @@
 export { default as ReactFlow } from './container/ReactFlow';
-export { Handle, type HandleComponentProps } from './components/Handle';
+export { Handle, type HandleProps } from './components/Handle';
 export { EdgeText } from './components/Edges/EdgeText';
 export { StraightEdge } from './components/Edges/StraightEdge';
 export { StepEdge } from './components/Edges/StepEdge';
