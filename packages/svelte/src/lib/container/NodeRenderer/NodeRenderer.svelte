@@ -59,8 +59,8 @@
       {node}
       id={node.id}
       data={node.data}
-      selected={!!node.selected}
-      hidden={!!node.hidden}
+      hidden={node.hidden}
+      selected={node.selected}
       draggable={!!(
         node.draggable ||
         (store.nodesDraggable && typeof node.draggable === 'undefined')

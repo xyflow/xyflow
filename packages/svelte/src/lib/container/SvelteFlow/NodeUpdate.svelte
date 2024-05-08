@@ -31,6 +31,7 @@
   const _internalNode: InternalNode = {
     // ...options.defaults,
     ...userNode,
+    selected: userNode.selected || false,
     measured: {
       width: userNode.measured?.width,
       height: userNode.measured?.height
@@ -49,10 +50,10 @@
       userNode
     }
   };
+
   store.nodeLookup.set(id, _internalNode);
   let internalNode = $derived(store.nodeLookup.get(id)!);
 
-  // We fill up the parentLookup
   if (userNode.parentId) {
     // TODO: childNodes needs to become a map
     const childNodes = store.parentLookup.get(userNode.parentId);
@@ -80,20 +81,15 @@
   });
 
   $effect.pre(() => {
-    // TODO: Why is this check neccessary to prevent infinite loop?
-    if (
-      internalNode.measured?.width !== userNode.measured?.width ||
-      internalNode.measured?.height !== userNode.measured?.height
-    ) {
-      internalNode.measured = {
-        width: userNode.measured?.width,
-        height: userNode.measured?.height
-      };
-    }
+    internalNode.measured.width = userNode.measured?.width;
+    internalNode.measured.height = userNode.measured?.height;
   });
 
   // Reactively set positionAbsolute of child node
   $effect.pre(() => {
+    internalNode.position.x = userNode.position.x;
+    internalNode.position.y = userNode.position.y;
+
     // TODO: use recursive function
     internalNode.internals.positionAbsolute.x =
       userNode.position.x + (parentNode ? parentNode.internals.positionAbsolute.x : 0);
@@ -106,11 +102,6 @@
       (isNumeric(userNode.zIndex) ? userNode.zIndex : 0) + (userNode.selected ? selectedNodeZ : 0);
     const parentZIndex = parentNode ? parentNode.internals.z : 0;
     internalNode.internals.z = Math.max(parentZIndex, childZIndex);
-  });
-
-  $effect.pre(() => {
-    internalNode.position.x = userNode.position.x;
-    internalNode.position.y = userNode.position.y;
   });
 
   $effect.pre(() => {
