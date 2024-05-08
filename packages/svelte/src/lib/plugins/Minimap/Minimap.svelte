@@ -9,12 +9,10 @@
   import cc from 'classcat';
   import {
     getBoundsOfRects,
-    getInternalNodesBounds,
     getNodeDimensions,
     getNodePositionWithOrigin,
     getNodesBounds,
-    nodeHasDimensions,
-    type Rect
+    nodeHasDimensions
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';

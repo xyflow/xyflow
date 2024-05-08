@@ -184,9 +184,13 @@ export function createStore(): SvelteFlowStore {
   function resetSelectedNodes(nodes: Node[] | IterableIterator<InternalNode>): void {
     for (const node of nodes) {
       if (isInternalNodeBase(node)) {
-        node.internals.userNode.selected = false;
+        if (node.internals.userNode.selected) {
+          node.internals.userNode.selected = false;
+        }
       } else {
-        node.selected = false;
+        if (node.selected) {
+          node.selected = false;
+        }
       }
     }
   }
@@ -208,7 +212,9 @@ export function createStore(): SvelteFlowStore {
 
       // we need to mutate the node here in order to have the correct selected state in the drag handler
       // node.selected = selected;
-      node.internals.userNode.selected = selected;
+      if (!!node.internals.userNode.selected !== selected) {
+        node.internals.userNode.selected = selected;
+      }
     }
 
     if (!isMultiSelection) {

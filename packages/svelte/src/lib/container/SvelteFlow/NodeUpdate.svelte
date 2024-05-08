@@ -105,66 +105,55 @@
   });
 
   $effect.pre(() => {
-    internalNode.selected = userNode.selected;
+    if (internalNode.selected !== userNode.selected) {
+      internalNode.selected = userNode.selected;
+    }
   });
 
   $effect.pre(() => {
-    internalNode.hidden = userNode.hidden;
-  });
-
-  $effect.pre(() => {
-    internalNode.type = userNode.type;
-  });
-
-  $effect.pre(() => {
-    internalNode.data = userNode.data;
-  });
-
-  $effect.pre(() => {
-    internalNode.style = userNode.style;
-  });
-
-  $effect.pre(() => {
-    internalNode.draggable = userNode.draggable;
-  });
-
-  $effect.pre(() => {
-    internalNode.selectable = userNode.selectable;
-  });
-
-  $effect.pre(() => {
-    internalNode.connectable = userNode.connectable;
-  });
-
-  $effect.pre(() => {
-    internalNode.deletable = userNode.deletable;
-  });
-
-  $effect.pre(() => {
-    internalNode.dragHandle = userNode.dragHandle;
+    if (internalNode.hidden !== userNode.hidden) {
+      internalNode.hidden = userNode.hidden;
+    }
+    if (internalNode.type !== userNode.type) {
+      internalNode.type = userNode.type;
+    }
+    if (internalNode.data !== userNode.data) {
+      internalNode.data = userNode.data;
+    }
+    if (internalNode.style !== userNode.style) {
+      internalNode.style = userNode.style;
+    }
+    if (internalNode.draggable !== userNode.draggable) {
+      internalNode.draggable = userNode.draggable;
+    }
+    if (internalNode.selectable !== userNode.selectable) {
+      internalNode.selectable = userNode.selectable;
+    }
+    if (internalNode.connectable !== userNode.connectable) {
+      internalNode.connectable = userNode.connectable;
+    }
+    if (internalNode.deletable !== userNode.deletable) {
+      internalNode.deletable = userNode.deletable;
+    }
+    if (internalNode.dragHandle !== userNode.dragHandle) {
+      internalNode.dragHandle = userNode.dragHandle;
+    }
+    if (internalNode.parentId !== userNode.parentId) {
+      internalNode.parentId = userNode.parentId;
+    }
+    if (internalNode.extent !== userNode.extent) {
+      internalNode.extent = userNode.extent;
+    }
+    if (internalNode.ariaLabel !== userNode.ariaLabel) {
+      internalNode.ariaLabel = userNode.ariaLabel;
+    }
+    if (internalNode.origin !== userNode.origin) {
+      internalNode.origin = userNode.origin;
+    }
   });
 
   $effect.pre(() => {
     internalNode.width = userNode.width;
-  });
-
-  $effect.pre(() => {
     internalNode.height = userNode.height;
-  });
-
-  $effect.pre(() => {
-    internalNode.parentId = userNode.parentId;
-  });
-
-  $effect.pre(() => {
-    internalNode.extent = userNode.extent;
-  });
-
-  $effect.pre(() => {
-    internalNode.ariaLabel = userNode.ariaLabel;
-  });
-
-  $effect.pre(() => {
-    internalNode.origin = userNode.origin;
   });
 </script>

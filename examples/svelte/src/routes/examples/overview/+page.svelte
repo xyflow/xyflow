@@ -130,6 +130,11 @@
 	function updateEdge() {
 		edges[0].type = edges[0].type === 'default' ? 'smoothstep' : 'default';
 	}
+
+	$effect(() => {
+		console.log('nodes', nodes[0].selected);
+		// console.log('edges', edges);
+	});
 </script>
 
 <SvelteFlow
