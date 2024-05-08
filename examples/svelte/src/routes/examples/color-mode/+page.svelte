@@ -18,7 +18,7 @@
 		targetPosition: Position.Left
 	};
 
-	const nodes = writable([
+	let nodes = $state([
 		{
 			id: 'A',
 			position: { x: 0, y: 150 },
@@ -30,16 +30,16 @@
 		{ id: 'D', position: { x: 250, y: 300 }, data: { label: 'D' }, ...nodeDefaults }
 	]);
 
-	const edges = writable([
+	let edges = $state([
 		{ id: 'A-B', source: 'A', target: 'B' },
 		{ id: 'A-C', source: 'A', target: 'C' },
 		{ id: 'A-D', source: 'A', target: 'D' }
 	]);
 
-	let colorMode: ColorMode = 'light';
+	let colorMode: ColorMode = $state('light');
 </script>
 
-<SvelteFlow {nodes} {edges} {colorMode} fitView>
+<SvelteFlow bind:nodes bind:edges {colorMode} fitView>
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
