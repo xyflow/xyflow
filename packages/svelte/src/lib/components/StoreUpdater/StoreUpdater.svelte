@@ -1,6 +1,7 @@
 <script lang="ts">
   import { infiniteExtent } from '@xyflow/system';
   import type { SvelteFlowProps, SvelteFlowStore } from '$lib';
+  import { untrack } from 'svelte';
 
   let {
     store,
@@ -45,15 +46,14 @@
     store.edges = edges;
   });
 
-  // These are store items with some side effects
-  if (edgeTypes) store.setEdgeTypes(edgeTypes);
+  store.setEdgeTypes(edgeTypes ?? {});
   $effect.pre(() => {
-    if (edgeTypes) store.setEdgeTypes(edgeTypes);
+    store.setEdgeTypes(edgeTypes ?? {});
   });
 
-  if (nodeTypes) store.setNodeTypes(nodeTypes);
+  store.setNodeTypes(nodeTypes ?? {});
   $effect.pre(() => {
-    if (nodeTypes) store.setNodeTypes(nodeTypes);
+    store.setNodeTypes(nodeTypes ?? {});
   });
 
   store.setMinZoom(minZoom ?? 0.5);

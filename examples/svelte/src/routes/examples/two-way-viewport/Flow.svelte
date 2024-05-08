@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -12,7 +11,7 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	const nodes = writable([
+	let nodes = $state([
 		{
 			id: 'A',
 			position: { x: 0, y: 0 },
@@ -20,22 +19,29 @@
 		},
 		{ id: 'B', position: { x: 0, y: 100 }, data: { label: 'B' } }
 	]);
-	const edges = writable([{ id: 'ab', source: 'A', target: 'B' }]);
-	const viewport = writable<Viewport>({ x: 0, y: 10, zoom: 1.25 });
+	let edges = $state([{ id: 'ab', source: 'A', target: 'B' }]);
+	let viewport = $state<Viewport>({ x: 0, y: 10, zoom: 1.25 });
+	let facade = {
+		get viewport() {
+			return viewport;
+		},
+		set viewport(val) {
+			viewport = val;
+		}
+	};
 
 	const { fitView } = useSvelteFlow();
 
 	const updateViewport = () => {
-		$viewport.x += 10;
-		$viewport = $viewport;
+		viewport.x += 10;
 	};
 
-	viewport.subscribe((vp) => {
-		console.log('viewport update', vp);
+	$effect.pre(() => {
+		console.log(viewport.x, viewport.y, viewport.zoom);
 	});
 </script>
 
-<SvelteFlow {nodes} {edges} fitView {viewport}>
+<SvelteFlow bind:nodes bind:edges fitView bind:viewport={facade.viewport}>
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 

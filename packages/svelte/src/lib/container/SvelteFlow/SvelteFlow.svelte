@@ -99,7 +99,7 @@
     snapGrid,
     style,
     translateExtent,
-    viewport,
+    viewport = $bindable(),
     width,
     zoomActivationKey,
     zoomOnDoubleClick = true,
@@ -168,15 +168,6 @@
     }
   });
 
-  $effect(() => {
-    console.log(
-      store.initialized,
-      store.nodesInitialized,
-      store.edgesInitialized,
-      store.viewportInitialized
-    );
-  });
-
   let colorModeClass = useColorModeClass(colorMode);
 </script>
 
@@ -184,7 +175,6 @@
   {nodes}
   {edges}
   {store}
-  {viewport}
   {edgeTypes}
   {nodeTypes}
   {minZoom}

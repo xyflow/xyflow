@@ -163,7 +163,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> &
      */
     initialViewport?: Viewport;
     /** Custom viewport writable to be used instead of internal one */
-    viewport?: Writable<Viewport>;
+    viewport?: Viewport;
     /** The radius around a handle where you drop a connection line to create a new edge.
      * @default 20
      */
