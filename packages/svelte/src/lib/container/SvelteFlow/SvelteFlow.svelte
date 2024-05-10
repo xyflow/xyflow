@@ -21,8 +21,6 @@
   import { ConnectionLine } from '$lib/components/ConnectionLine';
   import { Attribution } from '$lib/components/Attribution';
 
-  import { useColorModeClass } from '$lib/hooks/useColorModeClass';
-
   import type { SvelteFlowProps } from './types';
   import { StoreUpdater } from '$lib/components/StoreUpdater';
   import NodeUpdate from './NodeUpdate.svelte';
@@ -167,14 +165,13 @@
       onInitCalled = true;
     }
   });
-
-  let colorModeClass = useColorModeClass(colorMode);
 </script>
 
 <StoreUpdater
   {nodes}
   {edges}
   {store}
+  {colorMode}
   {edgeTypes}
   {nodeTypes}
   {minZoom}
@@ -213,7 +210,7 @@
   bind:clientWidth
   bind:clientHeight
   {style}
-  class={cc(['svelte-flow', className, $colorModeClass])}
+  class={cc(['svelte-flow', className, store.colorModeClass])}
   data-testid="svelte-flow__wrapper"
   {...restProps}
   role="application"

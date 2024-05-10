@@ -1,3 +1,4 @@
+import { useStore } from '$lib/store';
 import type { ColorMode, ColorModeClass } from '@xyflow/system';
 import { readable, type Readable } from 'svelte/store';
 
@@ -9,6 +10,7 @@ function getMediaQuery() {
   return window.matchMedia('(prefers-color-scheme: dark)');
 }
 
+// Todo: this hook is questionable
 /**
  * Hook for receiving the current color mode class 'dark' or 'light'.
  *

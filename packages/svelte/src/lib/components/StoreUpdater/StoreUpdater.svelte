@@ -1,12 +1,14 @@
 <script lang="ts">
   import { infiniteExtent } from '@xyflow/system';
-  import type { SvelteFlowProps, SvelteFlowStore } from '$lib';
-  import { untrack } from 'svelte';
+  import type { ColorModeClass, SvelteFlowProps, SvelteFlowStore } from '$lib';
+  import { onMount } from 'svelte';
+  import { getColorModeMediaQuery } from './utils';
 
   let {
     store,
     nodes = [],
     edges = [],
+    colorMode,
     edgeTypes,
     nodeTypes,
     minZoom,
@@ -71,8 +73,25 @@
     store.setTranslateExtent(translateExtent ?? infiniteExtent);
   });
 
-  // These are store items without side effects
+  const mediaQuery = getColorModeMediaQuery();
+  let systemColorMode = $state<ColorModeClass>(mediaQuery?.matches ? 'dark' : 'light');
+  onMount(() => {
+    const mediaQuery = getColorModeMediaQuery();
+    const updateColorModeClass = () => {
+      systemColorMode = mediaQuery?.matches ? 'dark' : 'light';
+    };
+    mediaQuery?.addEventListener('change', updateColorModeClass);
 
+    return () => {
+      mediaQuery?.removeEventListener('change', updateColorModeClass);
+    };
+  });
+
+  $effect.pre(() => {
+    store.colorModeClass = colorMode && colorMode !== 'system' ? colorMode : systemColorMode;
+  });
+
+  // These are store items without side effects
   // @ts-expect-error
   store.flowId = id;
   $effect.pre(() => {

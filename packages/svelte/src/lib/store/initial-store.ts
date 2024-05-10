@@ -60,6 +60,7 @@ export const getInitialStore = () => {
       edges: signal<SvelteFlowStoreState['edges']>([]),
       autoPanOnConnect: signal<SvelteFlowStoreState['autoPanOnConnect']>(true),
       autoPanOnNodeDrag: signal<SvelteFlowStoreState['autoPanOnNodeDrag']>(true),
+      colorModeClass: signal<SvelteFlowStoreState['colorModeClass']>('light'),
       connectionData: signal<SvelteFlowStoreState['connectionData']>(initConnectionUpdateData),
       connectionLineType: signal<SvelteFlowStoreState['connectionLineType']>(
         ConnectionLineType.Bezier

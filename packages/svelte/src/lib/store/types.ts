@@ -20,7 +20,8 @@ import type {
   OnConnectEnd,
   NodeOrigin,
   ConnectionLookup,
-  SelectionMode
+  SelectionMode,
+  ColorModeClass
 } from '@xyflow/system';
 
 import type {
@@ -33,12 +34,10 @@ import type {
   OnDelete,
   OnEdgeCreate,
   OnBeforeDelete,
-  EdgeLayouted,
   ConnectionData
 } from '$lib/types';
 
 import type { ConnectionProps } from './derived-connection';
-import type { createEdgesStore, createNodesStore } from './utils';
 
 export type SvelteFlowStoreActions = {
   addEdge: (edge: Edge | Connection) => void;
@@ -54,9 +53,6 @@ export type SvelteFlowStoreActions = {
   setMinZoom: (minZoom: number) => void;
   setNodeTypes: (nodeTypes: NodeTypes) => void;
   setTranslateExtent: (extent: CoordinateExtent) => void;
-  // syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
-  // syncNodeStores: (nodesStore: Writable<Node[]>) => void;
-  // syncViewport: (viewportStore?: Writable<Viewport>) => void;
   unselectNodesAndEdges: (params?: { nodes?: Node[]; edges?: Edge[] }) => void;
   updateConnection: UpdateConnection;
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
@@ -71,6 +67,7 @@ export type SvelteFlowStoreState = {
   viewport: Viewport;
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;
+  colorModeClass: ColorModeClass;
   connection: ConnectionProps;
   connectionData: ConnectionData;
   connectionLineType: ConnectionLineType;
