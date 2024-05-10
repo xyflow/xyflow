@@ -67,7 +67,8 @@
     }
 
     targetNode.internals.handleBounds;
-
+    // sourceNode.sourcePosition;
+    // targetNode.targetPosition;
     return getEdgePosition({
       id: edge.id,
       sourceNode,

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { SvelteFlow, Background, Position, ConnectionLineType, Panel } from '@xyflow/svelte';
-	import type { Edge, Node } from '@xyflow/svelte';
+	import type { Edge, Node, useSvelteFlow } from '@xyflow/svelte';
 	import dagre from '@dagrejs/dagre';
 
 	import '@xyflow/svelte/dist/style.css';
@@ -49,23 +49,21 @@
 		initialEdges
 	);
 
-	const nodes = writable<Node[]>(layoutedNodes);
-	const edges = writable<Edge[]>(layoutedEdges);
+	let nodes = $state<Node[]>(layoutedNodes);
+	let edges = $state<Edge[]>(layoutedEdges);
 
 	function onLayout(direction: string) {
-		const layoutedElements = getLayoutedElements($nodes, $edges, direction);
+		const layoutedElements = getLayoutedElements(nodes, edges, direction);
 
-		$nodes = layoutedElements.nodes;
-		$edges = layoutedElements.edges;
-		// nodes.set(layoutedElements.nodes);
-		// edges.set(layoutedElements.edges);
+		nodes = layoutedElements.nodes;
+		edges = layoutedElements.edges;
 	}
 </script>
 
 <div style="height:100vh;">
 	<SvelteFlow
-		{nodes}
-		{edges}
+		bind:nodes
+		bind:edges
 		fitView
 		connectionLineType={ConnectionLineType.SmoothStep}
 		defaultEdgeOptions={{ type: 'smoothstep', animated: true }}

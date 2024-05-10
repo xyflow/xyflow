@@ -3,6 +3,7 @@
   import { useStore } from '$lib/store';
   import type { InternalNode, Node } from '$lib/types';
   import { isNumeric } from '@xyflow/system';
+  import { useUpdateNodeInternals } from '$lib/hooks/useUpdateNodeInternals';
 
   let {
     id,
@@ -110,6 +111,8 @@
     }
   });
 
+  const updateInternals = useUpdateNodeInternals();
+
   $effect.pre(() => {
     if (internalNode.hidden !== userNode.hidden) {
       internalNode.hidden = userNode.hidden;
@@ -149,6 +152,14 @@
     }
     if (internalNode.origin !== userNode.origin) {
       internalNode.origin = userNode.origin;
+    }
+    if (
+      internalNode.sourcePosition !== userNode.sourcePosition ||
+      internalNode.targetPosition !== userNode.targetPosition
+    ) {
+      internalNode.sourcePosition = userNode.sourcePosition;
+      internalNode.targetPosition = userNode.targetPosition;
+      updateInternals(id);
     }
   });
 
