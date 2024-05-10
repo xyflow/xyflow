@@ -48,7 +48,7 @@ export const getInitialStore = () => {
   const nodeLookup: NodeLookup = new ReactiveMap();
   const edgeLookup: EdgeLookup = new SvelteMap<string, Edge>();
   const parentLookup: ParentLookup = new SvelteMap();
-  const connectionLookup: ConnectionLookup = new Map();
+  const connectionLookup: ConnectionLookup = new SvelteMap();
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 

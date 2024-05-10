@@ -295,6 +295,8 @@ export function createStore(): SvelteFlowStore {
 
     unselectNodesAndEdges();
     cancelConnection();
+
+    // TODO: clear all maps in the store
   }
 
   const storeWithAction = Object.assign<SvelteFlowStoreState, SvelteFlowStoreActions>(store, {

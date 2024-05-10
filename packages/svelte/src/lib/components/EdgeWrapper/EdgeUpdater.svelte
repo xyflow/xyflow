@@ -1,7 +1,9 @@
 <script context="module">
+  import { Map } from 'svelte/reactivity';
+
   function updateConnection(
     edgeId: string,
-    connectionLookup: ConnectionLookup,
+    store: SvelteFlowStore,
     source: string,
     target: string,
     sourceHandle: string | null = null,
@@ -13,8 +15,10 @@
     const sourceKey = `${source}-source-${sourceHandle}`;
     const targetKey = `${target}-target-${targetHandle}`;
 
-    const prevSources = connectionLookup.get(sourceKey) ?? new Map<string, HandleConnection>();
-    const prevTargets = connectionLookup.get(targetKey) ?? new Map<string, HandleConnection>();
+    const prevSources =
+      untrack(() => store.connectionLookup.get(sourceKey)) ?? new Map<string, HandleConnection>();
+    const prevTargets =
+      untrack(() => store.connectionLookup.get(targetKey)) ?? new Map<string, HandleConnection>();
 
     const connection = {
       edgeId,
@@ -26,16 +30,15 @@
       targetNode
     };
 
-    connectionLookup.set(sourceKey, prevSources.set(`${target}-${targetHandle}`, connection));
-    connectionLookup.set(targetKey, prevTargets.set(`${source}-${sourceHandle}`, connection));
+    store.connectionLookup.set(sourceKey, prevSources.set(`${target}-${targetHandle}`, connection));
+    store.connectionLookup.set(targetKey, prevTargets.set(`${source}-${sourceHandle}`, connection));
 
     return () => {
       prevSources.delete(`${target}-${targetHandle}`);
       prevTargets.delete(`${source}-${sourceHandle}`);
 
-      // TODO: is this neccessary?
-      if (prevSources.size === 0) connectionLookup.delete(sourceKey);
-      if (prevTargets.size === 0) connectionLookup.delete(targetKey);
+      store.connectionLookup.set(sourceKey, prevSources);
+      store.connectionLookup.set(targetKey, prevTargets);
     };
   }
 </script>
@@ -43,15 +46,11 @@
 <script lang="ts">
   import { useStore } from '$lib/store';
   import type { Edge, EdgeEvents, InternalNode } from '$lib/types';
-  import {
-    getEdgePosition,
-    getElevatedEdgeZIndex,
-    type ConnectionLookup,
-    type HandleConnection
-  } from '@xyflow/system';
+  import { getEdgePosition, getElevatedEdgeZIndex, type HandleConnection } from '@xyflow/system';
   import EdgeWrapper from './EdgeWrapper.svelte';
-  import { onDestroy } from 'svelte';
+  import { onDestroy, untrack } from 'svelte';
   import CallOnMount from '../CallOnMount/CallOnMount.svelte';
+  import type { SvelteFlowStore } from '$lib/store/types';
 
   let { id, edge, onedgeclick, onedgecontextmenu }: EdgeEvents & { id: string; edge: Edge } =
     $props();
@@ -66,9 +65,9 @@
       return null;
     }
 
+    // Listen to updates of handle bounds
     targetNode.internals.handleBounds;
-    // sourceNode.sourcePosition;
-    // targetNode.targetPosition;
+
     return getEdgePosition({
       id: edge.id,
       sourceNode,
@@ -106,20 +105,10 @@
   // Ensure the connection is updated in the connection lookup
   // having the deletion logic in the effect cleanup might lead
   // to additional updates
-  updateConnection(
-    id,
-    store.connectionLookup,
-    edge.source,
-    edge.target,
-    edge.sourceHandle,
-    edge.targetHandle,
-    store.nodeLookup.get(edge.source),
-    store.nodeLookup.get(edge.target)
-  );
   $effect.pre(() => {
     const deleteConnection = updateConnection(
       id,
-      store.connectionLookup,
+      store,
       edge.source,
       edge.target,
       edge.sourceHandle,

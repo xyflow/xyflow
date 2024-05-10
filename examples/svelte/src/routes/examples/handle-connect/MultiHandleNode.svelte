@@ -7,9 +7,7 @@
 		useHandleConnections
 	} from '@xyflow/svelte';
 
-	type $$Props = NodeProps;
-
-	export let id: $$Props['id'];
+	let { id }: NodeProps = $props();
 
 	function onConnectTarget(connection: Connection[]) {
 		console.log('connect target', connection);
@@ -27,13 +25,11 @@
 		console.log('disconnect source', handleId, connection);
 	}
 
-	const connections = useHandleConnections({ nodeId: id, type: 'target' });
+	let connections = useHandleConnections({ nodeId: id, type: 'target' });
 
-	$: {
-		console.log('connections', id, $connections);
-	}
-
-	$$restProps;
+	$effect(() => {
+		console.log('connections', id, connections.value);
+	});
 </script>
 
 <div class="custom">

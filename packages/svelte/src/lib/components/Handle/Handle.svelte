@@ -85,46 +85,78 @@
   }
 
   let prevConnections: Map<string, HandleConnection> | null = null;
-  let connections: Map<string, HandleConnection> | undefined;
 
-  // TODO: this should be rewritten
+  // TODO: why does this not work
+  // let stopTrackingConnection: (() => void) | null = null;
+
+  // $effect.pre(() => {
+  //   if (!stopTrackingConnection && (onconnect || ondisconnect)) {
+  //     stopTrackingConnection = $effect.root(() => {
+  //       connections = store.connectionLookup.get(`${nodeId}-${type}-${handleId}`);
+  //       connections?.size;
+  //       console.log('OJ THIS IS WHAT WE NEED', `${nodeId}-${type}-${handleId}`, connections?.size);
+
+  //       if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
+  //         const _connections = connections ?? new Map();
+
+  //         handleConnectionChange(prevConnections, _connections, ondisconnect);
+  //         handleConnectionChange(_connections, prevConnections, onconnect);
+  //       }
+
+  //       prevConnections = connections ?? new Map();
+  //       return () => {
+  //         console.log('stopped tracking connection');
+  //       };
+  //     });
+  //   } else if (stopTrackingConnection && !onconnect && !ondisconnect) {
+  //     stopTrackingConnection();
+  //     stopTrackingConnection = null;
+  //   }
+  // });
+  // onDestroy(() => {
+  //   if (stopTrackingConnection) stopTrackingConnection();
+  // });
+
   $effect.pre(() => {
     if (onconnect || ondisconnect) {
-      // connectionLookup is not reactive, so we use edges to get notified about updates
-      store.edges;
-      connections = store.connectionLookup.get(`${nodeId}-${type}-${handleId}`);
+      let connections = store.connectionLookup.get(`${nodeId}-${type}-${handleId}`);
+
+      if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
+        const _connections = connections ?? new Map();
+
+        handleConnectionChange(prevConnections, _connections, ondisconnect);
+        handleConnectionChange(_connections, prevConnections, onconnect);
+      }
+
+      prevConnections = new Map(connections);
     }
   });
 
-  $effect.pre(() => {
-    if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
-      const _connections = connections ?? new Map();
+  let [connectionInProcess, connectingFrom, connectingTo, isPossibleEndHandle, valid] = $derived.by(
+    () => {
+      const connectionInProcess = !!store.connection.startHandle;
 
-      handleConnectionChange(prevConnections, _connections, ondisconnect);
-      handleConnectionChange(_connections, prevConnections, onconnect);
+      const connectingFrom =
+        store.connection.startHandle?.nodeId === nodeId &&
+        store.connection.startHandle?.type === type &&
+        store.connection.startHandle?.handleId === handleId;
+
+      const connectingTo =
+        store.connection.endHandle?.nodeId === nodeId &&
+        store.connection.endHandle?.type === type &&
+        store.connection.endHandle?.handleId === handleId;
+
+      const isPossibleEndHandle =
+        store.connectionMode === ConnectionMode.Strict
+          ? store.connection.startHandle?.type !== type
+          : nodeId !== store.connection.startHandle?.nodeId ||
+            handleId !== store.connection.startHandle?.handleId;
+
+      const valid = connectingTo && store.connection.status === 'valid';
+
+      return [connectionInProcess, connectingFrom, connectingTo, isPossibleEndHandle, valid];
     }
-
-    prevConnections = connections ?? new Map();
-  });
-
-  let connectionInProcess = $derived(!!store.connection.startHandle);
-  let connectingFrom = $derived(
-    store.connection.startHandle?.nodeId === nodeId &&
-      store.connection.startHandle?.type === type &&
-      store.connection.startHandle?.handleId === handleId
   );
-  let connectingTo = $derived(
-    store.connection.endHandle?.nodeId === nodeId &&
-      store.connection.endHandle?.type === type &&
-      store.connection.endHandle?.handleId === handleId
-  );
-  let isPossibleEndHandle = $derived(
-    store.connectionMode === ConnectionMode.Strict
-      ? store.connection.startHandle?.type !== type
-      : nodeId !== store.connection.startHandle?.nodeId ||
-          handleId !== store.connection.startHandle?.handleId
-  );
-  let valid = $derived(connectingTo && store.connection.status === 'valid');
 </script>
 
 <!--
