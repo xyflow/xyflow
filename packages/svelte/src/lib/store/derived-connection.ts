@@ -8,19 +8,32 @@ import {
 } from '@xyflow/system';
 
 export type ConnectionProps = {
-  sourceX: number | null;
-  sourceY: number | null;
-  sourcePosition: Position | undefined | null;
-  targetX: number | null;
-  targetY: number | null;
-  targetPosition: Position | undefined | null;
-  pointerPosition: ConnectionData['connectionPosition'] | null;
+  sourceX: number;
+  sourceY: number;
+  sourcePosition: Position | undefined;
+  targetX: number;
+  targetY: number;
+  targetPosition: Position | undefined;
+  pointerPosition: ConnectionData['connectionPosition'];
   startHandle: ConnectionData['connectionStartHandle'] | null;
   endHandle: ConnectionData['connectionEndHandle'] | null;
   status: ConnectionData['connectionStatus'] | null;
 };
 
-export const initConnectionProps = {
+export type NoConnectionProps = {
+  sourceX: null;
+  sourceY: null;
+  sourcePosition: null;
+  targetX: null;
+  targetY: null;
+  targetPosition: null;
+  pointerPosition: null;
+  startHandle: null;
+  endHandle: null;
+  status: null;
+};
+
+export const initConnectionProps: NoConnectionProps = {
   sourceX: null,
   sourceY: null,
   sourcePosition: null,
@@ -52,7 +65,7 @@ export function getDerivedConnection(
   connectionMode: ConnectionMode,
   nodeLookup: NodeLookup,
   viewport: Viewport
-): ConnectionProps {
+): ConnectionProps | NoConnectionProps {
   if (!connection.connectionStartHandle?.nodeId) {
     return initConnectionProps;
   }

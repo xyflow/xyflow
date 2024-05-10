@@ -37,7 +37,7 @@ import type {
   ConnectionData
 } from '$lib/types';
 
-import type { ConnectionProps } from './derived-connection';
+import type { ConnectionProps, NoConnectionProps } from './derived-connection';
 
 export type SvelteFlowStoreActions = {
   addEdge: (edge: Edge | Connection) => void;
@@ -68,7 +68,7 @@ export type SvelteFlowStoreState = {
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;
   colorModeClass: ColorModeClass;
-  connection: ConnectionProps;
+  connection: ConnectionProps | NoConnectionProps;
   connectionData: ConnectionData;
   connectionLineType: ConnectionLineType;
   connectionLookup: ConnectionLookup;
