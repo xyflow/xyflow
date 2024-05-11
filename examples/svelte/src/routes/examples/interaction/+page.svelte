@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -13,7 +12,7 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	const nodes = writable([
+	const nodes = $state([
 		{
 			id: '1',
 			type: 'input',
@@ -25,7 +24,7 @@
 		{ id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 200 } }
 	]);
 
-	const edges = writable([
+	const edges = $state([
 		{ id: 'e1-2', source: '1', target: '2', animated: true },
 		{ id: 'e1-3', source: '1', target: '3' }
 	]);
@@ -39,18 +38,18 @@
 	const onPaneContextMenu = (event: MouseEvent) => console.log('onPaneContextMenu', event);
 	const onMoveEnd: OnMoveEnd = (_, viewport) => console.log('onMoveEnd', viewport);
 
-	let isSelectable = false;
-	let isDraggable = false;
-	let isConnectable = false;
-	let zoomOnScroll = false;
-	let zoomOnPinch = false;
-	let panOnScroll = false;
-	let panOnScrollMode = PanOnScrollMode.Free;
-	let zoomOnDoubleClick = false;
-	let panOnDrag = true;
-	let captureZoomClick = false;
-	let captureZoomScroll = false;
-	let captureElementClick = false;
+	let isSelectable = $state(true);
+	let isDraggable = $state(true);
+	let isConnectable = $state(true);
+	let zoomOnScroll = $state(true);
+	let zoomOnPinch = $state(true);
+	let panOnScroll = $state(false);
+	let panOnScrollMode = $state(PanOnScrollMode.Free);
+	let zoomOnDoubleClick = $state(true);
+	let panOnDrag = $state(true);
+	let captureZoomClick = $state(false);
+	let captureZoomScroll = $state(false);
+	let captureElementClick = $state(false);
 </script>
 
 <SvelteFlow
@@ -142,9 +141,20 @@
 				panOnScrollMode
 				<select
 					id="panonscrollmode"
-					bind:value={panOnScrollMode}
-					on:change={(event) => {
-						panOnScrollMode = PanOnScrollMode.Free;
+					value={panOnScrollMode}
+					onchange={({ currentTarget }) => {
+						switch (currentTarget.value) {
+							case 'free':
+								panOnScrollMode = PanOnScrollMode.Free;
+								break;
+							case 'horizontal':
+								console;
+								panOnScrollMode = PanOnScrollMode.Horizontal;
+								break;
+							case 'vertical':
+								panOnScrollMode = PanOnScrollMode.Vertical;
+								break;
+						}
 					}}
 					class="svelte-flow__panonscrollmode"
 				>
