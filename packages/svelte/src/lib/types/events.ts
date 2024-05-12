@@ -17,7 +17,7 @@ export type NodesEventWithPointer = ({
   event: MouseEvent | TouchEvent;
 }) => void;
 
-type NodeTargetEventWithPointer = ({
+export type NodeTargetEventWithPointer = ({
   targetNode,
   nodes,
   event

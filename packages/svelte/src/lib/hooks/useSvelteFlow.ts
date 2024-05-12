@@ -270,7 +270,7 @@ export function useSvelteFlow(): {
   return {
     zoomIn: store.zoomIn,
     zoomOut: store.zoomOut,
-    getNode: (id) => store.nodeLookup.get(id),
+    getNode: (id) => store.nodeLookup.get(id)?.internals.userNode,
     getNodes: (ids) => (ids === undefined ? store.nodes : getElements(store.nodeLookup, ids)),
     getEdge: (id) => store.edgeLookup.get(id),
     getEdges: (ids) => (ids === undefined ? store.edges : getElements(store.edgeLookup, ids)),

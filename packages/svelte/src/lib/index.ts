@@ -56,6 +56,7 @@ export type {
   InternalNode
 } from '$lib/types/nodes';
 export type { SvelteFlowStore } from '$lib/store/types';
+export type { NodeEventWithPointer, NodeTargetEventWithPointer } from '$lib/types';
 
 // system types
 export {

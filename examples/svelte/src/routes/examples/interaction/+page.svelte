@@ -65,6 +65,7 @@
 	{zoomOnDoubleClick}
 	{panOnDrag}
 	{onMoveEnd}
+	fitView
 >
 	<MiniMap />
 	<Controls />

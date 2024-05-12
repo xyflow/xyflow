@@ -11,7 +11,8 @@
 		type EdgeTypes,
 		ConnectionMode,
 		ControlButton,
-		type FitViewOptions
+		type FitViewOptions,
+		type Node
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -61,7 +62,7 @@
 		}
 	]);
 
-	let nodes = $state([
+	let nodes: Node[] = $state([
 		{
 			id: '1',
 			type: 'input',
@@ -137,97 +138,97 @@
 	});
 </script>
 
-<SvelteFlow
-	bind:nodes
-	bind:edges
-	{nodeTypes}
-	{edgeTypes}
-	fitView
-	fitViewOptions={{
-		padding: 0.1,
-		nodes: [{ id: '1' }, { id: '2' }, { id: '3' }]
-	}}
-	minZoom={0}
-	maxZoom={Infinity}
-	selectionMode={SelectionMode.Full}
-	initialViewport={{ x: 100, y: 100, zoom: 2 }}
-	snapGrid={snap ? [25, 25] : undefined}
-	oninit={() => console.log('on init')}
-	onnodeclick={(event) => console.log('on node click', event)}
-	onnodemouseenter={(event) => console.log('on node enter', event)}
-	onnodemouseleave={(event) => console.log('on node leave', event)}
-	onedgeclick={(event) => console.log('edge click', event)}
-	onconnectstart={(event) => console.log('on connect start', event)}
-	onconnect={(event) => console.log('on connect', event)}
-	onconnectend={(event) => console.log('on connect end', event)}
-	onpaneclick={(event) => console.log('on pane click', event)}
-	onpanecontextmenu={({ event }) => {
-		console.log('on pane contextmenu', event);
-	}}
-	onnodedrag={({ event }) => {
-		console.log('on node drag', event);
-	}}
-	onnodedragstart={({ event }) => {
-		console.log('on node drag start', event);
-	}}
-	onnodedragstop={(event) => {
-		console.log('on node drag stop', event);
-	}}
-	onnodecontextmenu={({ event }) => {
-		event.preventDefault();
-		console.log('on node contextmenu', event);
-	}}
-	onedgecontextmenu={({ event, edge }) => {
-		event.preventDefault();
-		console.log('on edge contextmenu', edge);
-	}}
-	onselectionclick={(event) => console.log('on selection click', event)}
-	onselectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
-	onbeforedelete={async ({ nodes, edges }) => {
-		console.log('on before delete', nodes, edges);
-		const deleteElements = confirm('Are you sure you want to delete the selected elements?');
-		return deleteElements;
-	}}
-	autoPanOnConnect
-	autoPanOnNodeDrag
-	connectionMode={ConnectionMode.Strict}
-	attributionPosition={'top-center'}
-	deleteKey={['Backspace', 'd']}
->
-	<Controls orientation="horizontal" {fitViewOptions}>
-		{#snippet before()}
-			<ControlButton>xy</ControlButton>
-		{/snippet}
-		<ControlButton aria-label="log" onclick={() => console.log('control button')}>log</ControlButton
-		>
-	</Controls>
-	<Background variant={BackgroundVariant.Dots} />
-	<MiniMap />
-	<Panel position="top-right">
-		<button onclick={updateNode}>update node pos</button>
-		<button onclick={updateEdge}>update edge type</button>
-		<button
-			onclick={() => {
-				nodes[nodes.length - 1].hidden = !nodes[nodes.length - 1].hidden;
-			}}>hide/unhide</button
-		>
-		<button
-			onclick={() => {
-				snap = !snap;
-			}}>toggle snapgrid</button
-		>
-	</Panel>
+<div class="svelte-flow">
+	<SvelteFlow
+		bind:nodes
+		bind:edges
+		{nodeTypes}
+		{edgeTypes}
+		class="svelte-flow"
+		fitView
+		fitViewOptions={{
+			padding: 0.1,
+			nodes: [{ id: '1' }, { id: '2' }, { id: '3' }]
+		}}
+		minZoom={0}
+		maxZoom={Infinity}
+		selectionMode={SelectionMode.Full}
+		initialViewport={{ x: 100, y: 100, zoom: 2 }}
+		snapGrid={snap ? [25, 25] : undefined}
+		oninit={() => console.log('on init')}
+		onnodeclick={(event) => console.log('on node click', event)}
+		onnodemouseenter={(event) => console.log('on node enter', event)}
+		onnodemouseleave={(event) => console.log('on node leave', event)}
+		onedgeclick={(event) => console.log('edge click', event)}
+		onconnectstart={(event) => console.log('on connect start', event)}
+		onconnect={(event) => console.log('on connect', event)}
+		onconnectend={(event) => console.log('on connect end', event)}
+		onpaneclick={(event) => console.log('on pane click', event)}
+		onpanecontextmenu={({ event }) => {
+			console.log('on pane contextmenu', event);
+		}}
+		onnodedrag={({ event }) => {
+			console.log('on node drag', event);
+		}}
+		onnodedragstart={({ event }) => {
+			console.log('on node drag start', event);
+		}}
+		onnodedragstop={(event) => {
+			console.log('on node drag stop', event);
+		}}
+		onnodecontextmenu={({ event }) => {
+			event.preventDefault();
+			console.log('on node contextmenu', event);
+		}}
+		onedgecontextmenu={({ event, edge }) => {
+			event.preventDefault();
+			console.log('on edge contextmenu', edge);
+		}}
+		onselectionclick={(event) => console.log('on selection click', event)}
+		onselectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
+		onbeforedelete={async ({ nodes, edges }) => {
+			console.log('on before delete', nodes, edges);
+			const deleteElements = confirm('Are you sure you want to delete the selected elements?');
+			return deleteElements;
+		}}
+		autoPanOnConnect
+		autoPanOnNodeDrag
+		connectionMode={ConnectionMode.Strict}
+		attributionPosition={'top-center'}
+		deleteKey={['Backspace', 'd']}
+	>
+		<Controls orientation="horizontal" {fitViewOptions}>
+			{#snippet before()}
+				<ControlButton>xy</ControlButton>
+			{/snippet}
+			<ControlButton aria-label="log" onclick={() => console.log('control button')}
+				>log</ControlButton
+			>
+		</Controls>
+		<Background variant={BackgroundVariant.Dots} />
+		<MiniMap />
+		<Panel position="top-right">
+			<button onclick={updateNode}>update node pos</button>
+			<button onclick={updateEdge}>update edge type</button>
+			<button
+				onclick={() => {
+					nodes[nodes.length - 1].hidden = !nodes[nodes.length - 1].hidden;
+				}}>hide/unhide</button
+			>
+			<button
+				onclick={() => {
+					snap = !snap;
+				}}>toggle snapgrid</button
+			>
+		</Panel>
 
-	<InitTracker />
-</SvelteFlow>
+		<InitTracker />
+	</SvelteFlow>
+</div>
 
 <style>
-	:global(.svelte-flow .custom-style) {
-		background: #ff5050;
-		color: white;
-	}
-
-	:root {
+	.svelte-flow {
+		display: inline;
 		--background-color: #ffffdd;
 		--background-pattern-color: #5050ff;
 

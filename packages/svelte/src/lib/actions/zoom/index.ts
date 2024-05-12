@@ -1,4 +1,3 @@
-import type { Writable } from 'svelte/store';
 import {
   PanOnScrollMode,
   XYPanZoom,
@@ -45,8 +44,11 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     maxZoom,
     translateExtent,
     viewport: initialViewport,
-    onTransformChange: (transform) =>
-      (store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] }),
+    onTransformChange: (transform) => {
+      store.viewport.x = transform[0];
+      store.viewport.y = transform[1];
+      store.viewport.zoom = transform[2];
+    },
     onDraggingChange: (newDragging) => {
       store.dragging = newDragging;
     }

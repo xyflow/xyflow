@@ -111,6 +111,11 @@
     }
   });
 
+  $effect.pre(() => {
+    internalNode.width = userNode.width;
+    internalNode.height = userNode.height;
+  });
+
   const updateInternals = useUpdateNodeInternals();
 
   $effect.pre(() => {
@@ -153,6 +158,9 @@
     if (internalNode.origin !== userNode.origin) {
       internalNode.origin = userNode.origin;
     }
+    if (internalNode.class !== userNode.class) {
+      internalNode.class = userNode.class;
+    }
     if (
       internalNode.sourcePosition !== userNode.sourcePosition ||
       internalNode.targetPosition !== userNode.targetPosition
@@ -161,10 +169,5 @@
       internalNode.targetPosition = userNode.targetPosition;
       updateInternals(id);
     }
-  });
-
-  $effect.pre(() => {
-    internalNode.width = userNode.width;
-    internalNode.height = userNode.height;
   });
 </script>
