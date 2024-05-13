@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		useSvelteFlow,
@@ -113,7 +112,6 @@
 	}
 
 	.wrapper {
-		height: 100vh;
-		width: 100vw;
+		display: inline;
 	}
 </style>
