@@ -13,10 +13,10 @@
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
-  import type { HandleComponentProps } from '$lib/types';
+  import type { HandleProps } from '$lib/types';
 
   let {
-    id: handleId = null,
+    id: handleId,
     type = 'source',
     position = Position.Top,
     style,
@@ -26,7 +26,7 @@
     onconnect,
     ondisconnect,
     children
-  }: HandleComponentProps = $props();
+  }: HandleProps = $props();
 
   const store = useStore();
 
@@ -44,7 +44,7 @@
 
     if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
       XYHandle.onPointerDown(event, {
-        handleId,
+        handleId: handleId ?? null,
         nodeId,
         isTarget,
         connectionRadius: store.connectionRadius,

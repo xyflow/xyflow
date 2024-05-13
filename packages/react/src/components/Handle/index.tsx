@@ -14,10 +14,11 @@ import {
   getHostForElement,
   isMouseEvent,
   addEdge,
-  type HandleProps,
+  type HandleProps as HandlePropsSystem,
   type Connection,
   type HandleType,
   ConnectionMode,
+  OnConnect,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -25,7 +26,10 @@ import { useNodeId } from '../../contexts/NodeIdContext';
 import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
 
-export interface HandleComponentProps extends HandleProps, Omit<HTMLAttributes<HTMLDivElement>, 'id'> {}
+export interface HandleProps extends HandlePropsSystem, Omit<HTMLAttributes<HTMLDivElement>, 'id'> {
+  /** Callback called when connection is made */
+  onConnect?: OnConnect;
+}
 
 const selector = (s: ReactFlowState) => ({
   connectOnClick: s.connectOnClick,
@@ -75,7 +79,7 @@ function HandleComponent(
     onMouseDown,
     onTouchStart,
     ...rest
-  }: HandleComponentProps,
+  }: HandleProps,
   ref: ForwardedRef<HTMLDivElement>
 ) {
   const handleId = id || null;

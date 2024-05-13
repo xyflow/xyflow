@@ -258,6 +258,10 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
         ...node.internals,
         handleBounds: undefined,
       };
+      node.internals = {
+        ...node.internals,
+        handleBounds: undefined,
+      };
       updatedInternals = true;
     } else if (node) {
       const dimensions = getDimensions(update.nodeElement);
@@ -269,6 +273,12 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       );
 
       if (doUpdate) {
+        node.measured = dimensions;
+        node.internals = {
+          ...node.internals,
+          handleBounds: {
+            source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
+            target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
         node.measured = dimensions;
         node.internals = {
           ...node.internals,

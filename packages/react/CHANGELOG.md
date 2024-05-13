@@ -1,5 +1,12 @@
 # @xyflow/react
 
+## 12.0.0-next.18
+
+- don't show nodeTypes warning if not necessary you've created a new nodeTypes or edgeTypes
+- add node resizer styles to base.css
+- remove `HandleComponentProps` type, only export `HandleProps` type
+- add warning when styles not loaded
+
 ## 12.0.0-next.17
 
 - fix broken `defaultNodes`
@@ -9,6 +16,7 @@
 - return user node in node event handlers
 - cleanup `useReactFlow`
 - export `KeyCode` and `Align` type
+- remove `Instance` in favour of `ReactFlowInstance` type 
 
 ## 12.0.0-next.16
 
