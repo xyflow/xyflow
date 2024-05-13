@@ -51,7 +51,11 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     },
     onDraggingChange: (newDragging) => {
       store.dragging = newDragging;
-    }
+    },
+    // TODO: panZoom is just the mouse event??
+    onPanZoomStart: params.onPanZoomStart,
+    onPanZoom: params.onPanZoom,
+    onPanZoomEnd: params.onPanZoomEnd
   });
   const currentViewport = panZoomInstance.getViewport();
   store.viewport = currentViewport;

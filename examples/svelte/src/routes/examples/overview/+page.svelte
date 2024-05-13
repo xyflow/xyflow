@@ -196,6 +196,9 @@
 		connectionMode={ConnectionMode.Strict}
 		attributionPosition={'top-center'}
 		deleteKey={['Backspace', 'd']}
+		onMove={(_, viewport) => {
+			console.log('on move', viewport);
+		}}
 	>
 		<Controls orientation="horizontal" {fitViewOptions}>
 			{#snippet before()}
