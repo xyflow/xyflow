@@ -374,24 +374,41 @@ export function useSvelteFlow(): {
         onBeforeDelete: store.onbeforedelete
       });
 
-      if (matchingNodes) {
-        let limit = store.nodes.length;
-        for (let i = 0; i < limit; i++) {
-          if (matchingNodes.some(({ id }) => id === store.nodes[i].id)) {
-            store.nodes.splice(i, 1);
-            limit--;
-          }
-        }
+      // For faster lookup we convert the matching nodes and edges to sets
+      let matchingNodeIds = new Set();
+      for (const node of matchingNodes) {
+        matchingNodeIds.add(node.id);
       }
 
-      if (matchingEdges) {
-        let limit = store.edges.length;
-        for (let i = 0; i < limit; i++) {
-          if (matchingEdges.some(({ id }) => id === store.edges[i].id)) {
-            store.edges.splice(i, 1);
-            limit--;
+      let matchingEdgeIds = new Set();
+      for (const edge of matchingEdges) {
+        matchingEdgeIds.add(edge.id);
+      }
+
+      // Because array.splice is very slow. We just want to shorten the array once at the end.
+      // Instead of deleting each elements, we copy them to the front of the array first
+      // then shorten the array
+      let writeTo = 0;
+      if (matchingNodes) {
+        for (let readAt = 0; readAt < store.nodes.length; readAt++) {
+          if (!matchingNodeIds.has(store.nodes[readAt].id)) {
+            store.nodes.copyWithin(writeTo, readAt, readAt + 1);
+            writeTo++;
           }
         }
+        store.nodes.splice(writeTo, matchingNodes.length);
+      }
+
+      writeTo = 0;
+      if (matchingEdges) {
+        let limit = store.edges.length;
+        for (let readAt = 0; readAt < limit; readAt++) {
+          if (!matchingEdgeIds.has(store.edges[readAt].id)) {
+            store.edges.copyWithin(writeTo, readAt, readAt + 1);
+            writeTo++;
+          }
+        }
+        store.edges.splice(writeTo, matchingEdges.length);
       }
 
       store.ondelete?.({

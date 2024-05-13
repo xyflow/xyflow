@@ -68,8 +68,8 @@
   }
 
   async function handleDelete() {
-    const selectedNodes = store.nodes.filter((node) => node.selected);
-    const selectedEdges = store.edges.filter((edge) => edge.selected);
+    const selectedNodes = Array.from(store.selectedNodes.values());
+    const selectedEdges = Array.from(store.selectedEdges.values());
 
     deleteElements({ nodes: selectedNodes, edges: selectedEdges });
   }

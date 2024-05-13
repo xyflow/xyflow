@@ -64,6 +64,8 @@ export type SvelteFlowStoreActions = {
 export type SvelteFlowStoreState = {
   nodes: Node[];
   edges: Edge[];
+  selectedNodes: Map<string, InternalNode>;
+  selectedEdges: Map<string, Edge>;
   viewport: Viewport;
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;

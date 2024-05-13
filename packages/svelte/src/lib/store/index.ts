@@ -196,9 +196,9 @@ export function createStore(): SvelteFlowStore {
   }
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
-    resetSelectedNodes(params?.nodes ?? store.nodeLookup.values());
+    resetSelectedNodes(params?.nodes ?? store.selectedNodes.values());
 
-    resetSelectedEdges(params?.edges ?? store.edgeLookup.values());
+    resetSelectedEdges(params?.edges ?? store.selectedEdges.values());
   }
 
   function addSelectedNodes(ids: string[]) {
@@ -231,7 +231,9 @@ export function createStore(): SvelteFlowStore {
       const edgeWillBeSelected = ids.includes(edge.id);
       const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
 
-      edge.selected = selected;
+      if (!!edge.selected !== selected) {
+        edge.selected = selected;
+      }
     }
 
     if (!isMultiSelection) {

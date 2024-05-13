@@ -27,7 +27,7 @@ import {
 import { ReactiveMap, derivedSignal, signal } from './signals.svelte';
 import type { SvelteFlowStoreProperties, SvelteFlowStoreState } from './types';
 import { getDerivedConnection, initConnectionUpdateData } from './derived-connection';
-import type { Edge } from '$lib/types';
+import type { Edge, InternalNode, Node } from '$lib/types';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -47,6 +47,9 @@ export const getInitialStore = () => {
   // TODO: what kind of maps are we talking
   const nodeLookup: NodeLookup = new ReactiveMap();
   const edgeLookup: EdgeLookup = new SvelteMap<string, Edge>();
+  const selectedNodes: Map<string, InternalNode> = new SvelteMap();
+  const selectedEdges: Map<string, Edge> = new SvelteMap();
+
   const parentLookup: ParentLookup = new SvelteMap();
   const connectionLookup: ConnectionLookup = new SvelteMap();
 
@@ -58,6 +61,8 @@ export const getInitialStore = () => {
     {
       nodes: signal<SvelteFlowStoreState['nodes']>([]),
       edges: signal<SvelteFlowStoreState['edges']>([]),
+      selectedNodes: signal<SvelteFlowStoreState['selectedNodes']>(selectedNodes),
+      selectedEdges: signal<SvelteFlowStoreState['selectedEdges']>(selectedEdges),
       autoPanOnConnect: signal<SvelteFlowStoreState['autoPanOnConnect']>(true),
       autoPanOnNodeDrag: signal<SvelteFlowStoreState['autoPanOnNodeDrag']>(true),
       colorModeClass: signal<SvelteFlowStoreState['colorModeClass']>('light'),

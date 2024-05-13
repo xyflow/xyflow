@@ -69,7 +69,7 @@
     targetNode.internals.handleBounds;
 
     return getEdgePosition({
-      id: edge.id,
+      id,
       sourceNode,
       targetNode,
       sourceHandle: edge.sourceHandle || null,
@@ -93,13 +93,22 @@
     });
   });
 
-  // Ensure the edge lands in the edge lookup
-  store.edgeLookup.set(edge.id, edge);
   $effect.pre(() => {
-    store.edgeLookup.set(edge.id, edge);
+    if (edge.selected) {
+      store.selectedEdges.set(id, edge);
+    } else {
+      store.selectedEdges.delete(id);
+    }
+  });
+
+  // Ensure the edge lands in the edge lookup
+  store.edgeLookup.set(id, edge);
+  $effect.pre(() => {
+    store.edgeLookup.set(id, edge);
   });
   onDestroy(() => {
-    store.edgeLookup.delete(edge.id);
+    store.edgeLookup.delete(id);
+    store.selectedEdges.delete(id);
   });
 
   // Ensure the connection is updated in the connection lookup

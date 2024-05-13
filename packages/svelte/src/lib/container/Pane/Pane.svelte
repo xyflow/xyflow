@@ -111,6 +111,8 @@
       width: Math.abs(mousePos.x - startX),
       height: Math.abs(mousePos.y - startY)
     };
+
+    // TODO: This is super slow
     const prevSelectedNodeIds = selectedNodes.map((n) => n.id);
     const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, store.edges).map((e) => e.id);
 

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { getNodesBounds, Position, type Rect, getNodeToolbarTransform } from '@xyflow/system';
+  import { getNodesBounds, Position, getNodeToolbarTransform } from '@xyflow/system';
 
   import portal from '$lib/actions/portal';
   import { useStore } from '$lib/store';
@@ -22,7 +22,7 @@
   const contextNodeId = getContext<string>('svelteflow__node_id');
 
   let toolbarNodes: InternalNode[] = $derived.by(() => {
-    const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId];
+    const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId ?? contextNodeId];
 
     return nodeIds.reduce<InternalNode[]>((res, nodeId) => {
       const node = store.nodeLookup.get(nodeId);
@@ -52,7 +52,7 @@
 
   //FIXME: Possible performance bottleneck
   // TODO: possibly not workingk
-  let selectedNodesCount = $derived(store.nodes.filter((node) => node.selected).length);
+  let selectedNodesCount = $derived(store.selectedNodes.size);
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   let isActive = $derived(

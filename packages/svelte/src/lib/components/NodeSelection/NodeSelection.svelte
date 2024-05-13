@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getInternalNodesBounds, getNodesBounds, isNumeric, type Rect } from '@xyflow/system';
+  import { getInternalNodesBounds, isNumeric } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
@@ -19,18 +19,18 @@
 
   let bounds = $derived.by(() => {
     if (store.selectionRectMode === 'nodes') {
-      return getInternalNodesBounds(store.nodeLookup, { filter: (n) => !!n.selected });
+      return getInternalNodesBounds(store.selectedNodes);
     }
     return null;
   });
 
   function oncontextmenu(event: MouseEvent | TouchEvent) {
-    const selectedNodes = Array.from(store.nodeLookup.values()).filter((n) => n.selected);
+    const selectedNodes = Array.from(store.selectedNodes.values());
     onselectioncontextmenu?.({ nodes: selectedNodes, event });
   }
 
   function onclick(event: MouseEvent | TouchEvent) {
-    const selectedNodes = Array.from(store.nodeLookup.values()).filter((n) => n.selected);
+    const selectedNodes = Array.from(store.selectedNodes.values());
     onselectionclick?.({ nodes: selectedNodes, event });
   }
 </script>

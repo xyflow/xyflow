@@ -68,6 +68,7 @@
   onDestroy(() => {
     // removes itself from nodeLookup
     store.nodeLookup.delete(id);
+    store.selectedNodes.delete(id);
 
     //removes itself from parentLookup
     if (userNode.parentId) {
@@ -112,8 +113,13 @@
   });
 
   $effect.pre(() => {
-    if (internalNode.selected !== userNode.selected) {
+    if (untrack(() => internalNode.selected) !== userNode.selected) {
       internalNode.selected = userNode.selected;
+      if (userNode.selected) {
+        store.selectedNodes.set(id, internalNode);
+      } else {
+        store.selectedNodes.delete(id);
+      }
     }
   });
 
