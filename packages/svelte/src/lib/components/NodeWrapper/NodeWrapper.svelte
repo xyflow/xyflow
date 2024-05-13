@@ -61,16 +61,18 @@
   let prevSourcePosition: Position | undefined;
   let prevTargetPosition: Position | undefined;
 
-  let nodeTypeValid = $derived(!!store.nodeTypes[type]);
+  if (process.env.NODE_ENV === 'development') {
+    $effect(() => {
+      const valid = !!store.nodeTypes[type];
+      if (!valid) {
+        console.warn('003', errorMessages['error003'](type!));
+      }
+    });
+  }
+
   let nodeComponent = $derived(store.nodeTypes[type] || DefaultNode);
 
   const connectableStore = writable(connectable);
-
-  $effect(() => {
-    if (!nodeTypeValid) {
-      console.warn('003', errorMessages['error003'](type!));
-    }
-  });
 
   let inlineStyleDimensions = $derived(
     getNodeInlineStyleDimensions({
@@ -92,7 +94,9 @@
 
   // TODO: extract this part!
   $effect(() => {
-    if (resizeObserver && (nodeRef !== prevNodeRef || !initialized)) {
+    // console.log(initialized);
+    // TODO: HOLY MOLY! changing the order of the initialized breaks effect subscriptions
+    if (resizeObserver && (!initialized || nodeRef !== prevNodeRef)) {
       prevNodeRef && resizeObserver.unobserve(prevNodeRef);
       nodeRef && resizeObserver.observe(nodeRef);
       prevNodeRef = nodeRef;

@@ -29,14 +29,12 @@
 
           entries.forEach((entry: ResizeObserverEntry) => {
             const id = entry.target.getAttribute('data-id') as string;
-
             updates.set(id, {
               id,
               nodeElement: entry.target as HTMLDivElement,
               force: true
             });
           });
-
           store.updateNodeInternals(updates);
         });
 

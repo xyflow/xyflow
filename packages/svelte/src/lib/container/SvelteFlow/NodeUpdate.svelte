@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import { onDestroy, untrack } from 'svelte';
   import { useStore } from '$lib/store';
   import type { InternalNode, Node } from '$lib/types';
   import { isNumeric } from '@xyflow/system';
@@ -78,6 +78,12 @@
           childNodes.splice(index, 1);
         }
       }
+    }
+  });
+
+  $effect.pre(() => {
+    if (untrack(() => internalNode.internals.userNode) !== userNode) {
+      internalNode.internals.userNode = userNode;
     }
   });
 
