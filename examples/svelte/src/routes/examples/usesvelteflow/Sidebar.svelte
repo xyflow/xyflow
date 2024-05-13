@@ -18,8 +18,7 @@
 	const edges = useEdges();
 
 	const deleteNode = () => {
-		$nodes.shift();
-		$nodes = $nodes;
+		nodes.shift();
 	};
 </script>
 
@@ -33,11 +32,11 @@
 	<button onclick={() => setViewport({ x: 100, y: 100, zoom: 2 })}>setViewport</button>
 	<button onclick={() => console.log(getViewport())}>getViewport</button>
 
-	<button onclick={() => deleteElements({ edges: $edges.map((edge) => ({ id: edge.id })) })}
+	<button onclick={() => deleteElements({ edges: edges.map((edge) => ({ id: edge.id })) })}
 		>delete edges</button
 	>
-	<button onclick={() => deleteElements({ nodes: [{ id: $nodes[0].id }] })}>delete node</button>
-	<button onclick={() => deleteElements({ nodes: $nodes.map((node) => ({ id: node.id })) })}
+	<button onclick={() => deleteElements({ nodes: [{ id: nodes[0].id }] })}>delete node</button>
+	<button onclick={() => deleteElements({ nodes: nodes.map((node) => ({ id: node.id })) })}
 		>deleteElements</button
 	>
 	<button onclick={() => deleteNode()}>delete via store</button>
@@ -49,13 +48,13 @@
 	>
 
 	<div class="label">Nodes:</div>
-	{#each $nodes as node (node.id)}
+	{#each nodes as node (node.id)}
 		<div>id: {node.id} | x: {node.position.x.toFixed(1)} y: {node.position.y.toFixed(1)}</div>
 	{/each}
 
 	<div class="label">Viewport:</div>
 	<div>
-		x: {$viewport.x.toFixed(1)} y: {$viewport.y.toFixed(1)} zoom: {$viewport.zoom.toFixed(1)}
+		x: {viewport.x.toFixed(1)} y: {viewport.y.toFixed(1)} zoom: {viewport.zoom.toFixed(1)}
 	</div>
 </aside>
 

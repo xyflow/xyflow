@@ -66,7 +66,7 @@
     "postcss-rename": "^0.6.1",
     "prettier": "^3.2.5",
     "prettier-plugin-svelte": "^3.2.3",
-    "svelte": "5.0.0-next.123",
+    "svelte": "5.0.0-next.131",
     "svelte-check": "^3.7.0",
     "svelte-eslint-parser": "^0.35.0",
     "tslib": "^2.6.2",

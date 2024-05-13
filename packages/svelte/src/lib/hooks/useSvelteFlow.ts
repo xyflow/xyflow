@@ -20,6 +20,7 @@ import {
 import { useStore } from '$lib/store';
 import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
 import { isNode } from '$lib/utils';
+import { getSnapshot } from '$lib/utils/state.svelte';
 
 /**
  * Hook for accessing the ReactFlow instance.
@@ -450,9 +451,12 @@ export function useSvelteFlow(): {
 
     toObject: () => {
       return {
-        nodes: $state.snapshot(store.nodes),
-        edges: $state.snapshot(store.edges),
-        viewport: $state.snapshot(store.viewport)
+        nodes: getSnapshot(store.nodes).map((node) => {
+          delete node.measured;
+          return node;
+        }),
+        edges: getSnapshot(store.edges),
+        viewport: getSnapshot(store.viewport)
       };
     },
     updateNode,

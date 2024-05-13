@@ -11,7 +11,7 @@
 		custom: CustomNode
 	};
 
-	const nodes = $state<Node[]>([
+	let nodes = $state<Node[]>([
 		{
 			id: 'connectionline-1',
 			type: 'custom',
@@ -20,11 +20,11 @@
 		}
 	]);
 
-	const edges = $state<Edge[]>([]);
+	let edges = $state<Edge[]>([]);
 </script>
 
 <div style="height:100vh;">
-	<SvelteFlow {nodeTypes} {nodes} {edges} fitView>
+	<SvelteFlow {nodeTypes} bind:nodes bind:edges fitView>
 		{#snippet connectionLine()}
 			<ConnectionLine />
 		{/snippet}
