@@ -140,7 +140,7 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
    */
   updateNodeData: (
     id: string,
-    dataUpdate: object | ((node: NodeType) => object),
+    dataUpdate: NodeType['data'] | ((node: NodeType) => NodeType['data']),
     options?: { replace: boolean }
   ) => void;
 };
