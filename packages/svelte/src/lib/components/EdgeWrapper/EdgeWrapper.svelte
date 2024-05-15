@@ -61,7 +61,7 @@
   function onclick(event: MouseEvent | TouchEvent) {
     const edge = store.edgeLookup.get(id);
 
-    if (edge) {
+    if (edge && isSelectable) {
       handleEdgeSelect(id);
       onedgeclick?.({ event, edge });
     }

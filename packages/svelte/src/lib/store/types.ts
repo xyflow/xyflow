@@ -34,7 +34,8 @@ import type {
   OnDelete,
   OnEdgeCreate,
   OnBeforeDelete,
-  ConnectionData
+  ConnectionData,
+  DefaultEdgeOptions
 } from '$lib/types';
 
 import type { ConnectionProps, NoConnectionProps } from './derived-connection';
@@ -125,6 +126,7 @@ export type SvelteFlowStoreState = {
   visibleNodes: InternalNode[];
   width: number;
   zoomActivationKeyPressed: boolean;
+  defaultEdgeOptions: DefaultEdgeOptions;
 };
 
 type StoreToPropertyDefinitions<T> = {

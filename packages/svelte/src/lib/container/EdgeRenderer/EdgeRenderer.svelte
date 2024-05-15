@@ -12,6 +12,6 @@
   </svg>
 
   {#each edges as edge (edge.id)}
-    <EdgeUpdater id={edge.id} {...defaultEdgeOptions} {edge} {onedgeclick} {onedgecontextmenu} />
+    <EdgeUpdater id={edge.id} {defaultEdgeOptions} {edge} {onedgeclick} {onedgecontextmenu} />
   {/each}
 </div>

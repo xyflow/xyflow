@@ -45,15 +45,20 @@
 
 <script lang="ts">
   import { useStore } from '$lib/store';
-  import type { Edge, EdgeEvents, InternalNode } from '$lib/types';
+  import type { DefaultEdgeOptions, Edge, EdgeEvents, InternalNode } from '$lib/types';
   import { getEdgePosition, getElevatedEdgeZIndex, type HandleConnection } from '@xyflow/system';
   import EdgeWrapper from './EdgeWrapper.svelte';
   import { onDestroy, untrack } from 'svelte';
   import CallOnMount from '../CallOnMount/CallOnMount.svelte';
   import type { SvelteFlowStore } from '$lib/store/types';
 
-  let { id, edge, onedgeclick, onedgecontextmenu }: EdgeEvents & { id: string; edge: Edge } =
-    $props();
+  let {
+    id,
+    edge,
+    defaultEdgeOptions = {},
+    onedgeclick,
+    onedgecontextmenu
+  }: EdgeEvents & { id: string; edge: Edge; defaultEdgeOptions?: DefaultEdgeOptions } = $props();
 
   const store = useStore();
 
@@ -143,16 +148,16 @@
     {id}
     source={edge.source}
     target={edge.target}
-    data={edge.data}
-    style={edge.style}
-    animated={edge.animated}
+    data={edge.data ?? defaultEdgeOptions.data}
+    style={edge.style ?? defaultEdgeOptions.style}
+    animated={edge.animated ?? defaultEdgeOptions.animated}
     selected={edge.selected}
-    selectable={edge.selectable}
-    hidden={edge.hidden}
-    label={edge.label}
-    labelStyle={edge.labelStyle}
-    markerStart={edge.markerStart}
-    markerEnd={edge.markerEnd}
+    selectable={edge.selectable ?? defaultEdgeOptions.selectable}
+    hidden={edge.hidden ?? defaultEdgeOptions.hidden}
+    label={edge.label ?? defaultEdgeOptions.label}
+    labelStyle={edge.labelStyle ?? defaultEdgeOptions.labelStyle}
+    markerStart={edge.markerStart ?? defaultEdgeOptions.markerStart}
+    markerEnd={edge.markerEnd ?? defaultEdgeOptions.markerEnd}
     sourceHandle={edge.sourceHandle}
     targetHandle={edge.targetHandle}
     sourceX={position.sourceX}
@@ -161,8 +166,8 @@
     targetY={position.targetY}
     sourcePosition={position.sourcePosition}
     targetPosition={position.targetPosition}
-    ariaLabel={edge.ariaLabel}
-    interactionWidth={edge.interactionWidth}
+    ariaLabel={edge.ariaLabel ?? defaultEdgeOptions.ariaLabel}
+    interactionWidth={edge.interactionWidth ?? defaultEdgeOptions.interactionWidth}
     class={edge.class}
     type={edge.type}
     {zIndex}

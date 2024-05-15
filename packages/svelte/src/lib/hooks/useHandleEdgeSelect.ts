@@ -15,7 +15,7 @@ export function useHandleEdgeSelect() {
     }
 
     const selectable =
-      edge.selectable || (store.elementsSelectable && typeof edge.selectable === 'undefined');
+      edge.selectable ?? store.defaultEdgeOptions.selectable ?? store.elementsSelectable;
 
     if (selectable) {
       store.selectionRect = null;

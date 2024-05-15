@@ -199,6 +199,9 @@
 		onMove={(_, viewport) => {
 			console.log('on move', viewport);
 		}}
+		defaultEdgeOptions={{
+			selectable: false
+		}}
 	>
 		<Controls orientation="horizontal" {fitViewOptions}>
 			{#snippet before()}

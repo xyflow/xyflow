@@ -199,6 +199,7 @@
   {onconnectstart}
   {onconnectend}
   {onbeforedelete}
+  {defaultEdgeOptions}
 />
 
 {#each nodes as node (node.id)}

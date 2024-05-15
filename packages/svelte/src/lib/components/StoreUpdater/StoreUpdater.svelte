@@ -13,6 +13,7 @@
     nodeTypes,
     minZoom,
     maxZoom,
+    defaultEdgeOptions,
     translateExtent,
     id,
     connectionLineType,
@@ -232,5 +233,10 @@
   store.onedgecreate = onedgecreate;
   $effect.pre(() => {
     store.onedgecreate = onedgecreate;
+  });
+
+  store.defaultEdgeOptions = defaultEdgeOptions;
+  $effect.pre(() => {
+    store.defaultEdgeOptions = defaultEdgeOptions;
   });
 </script>

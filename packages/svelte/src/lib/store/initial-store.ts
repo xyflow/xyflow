@@ -123,7 +123,8 @@ export const getInitialStore = () => {
       // visibleEdges: signal<SvelteFlowStoreState['visibleEdges']>([]),
       visibleNodes: signal<SvelteFlowStoreState['visibleNodes']>([]),
       width: signal<SvelteFlowStoreState['width']>(500),
-      zoomActivationKeyPressed: signal<SvelteFlowStoreState['zoomActivationKeyPressed']>(false)
+      zoomActivationKeyPressed: signal<SvelteFlowStoreState['zoomActivationKeyPressed']>(false),
+      defaultEdgeOptions: signal<SvelteFlowStoreState['defaultEdgeOptions']>({})
     } satisfies SvelteFlowStoreProperties
   );
 
