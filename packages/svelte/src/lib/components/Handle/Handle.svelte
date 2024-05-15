@@ -1,6 +1,5 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import type { Writable } from 'svelte/store';
   import cc from 'classcat';
   import {
     Position,
@@ -14,6 +13,7 @@
 
   import { useStore } from '$lib/store';
   import type { HandleProps } from '$lib/types';
+  import type { ConnectableContext } from '../NodeWrapper/types';
 
   let {
     id: handleId,
@@ -32,10 +32,10 @@
 
   const nodeId = getContext<string>('svelteflow__node_id');
   // TODO: can writables be replaced here?
-  const isConnectableContext = getContext<Writable<boolean>>('svelteflow__node_connectable');
+  const isConnectableContext = getContext<ConnectableContext>('svelteflow__node_connectable');
 
   let isConnectable = $derived(
-    isConnectableProp !== undefined ? isConnectableProp : $isConnectableContext
+    isConnectableProp !== undefined ? isConnectableProp : isConnectableContext.value
   );
   let isTarget = $derived(type === 'target');
 

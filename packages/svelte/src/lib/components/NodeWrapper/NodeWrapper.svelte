@@ -1,6 +1,5 @@
 <script lang="ts">
   import { setContext, onDestroy } from 'svelte';
-  import { writable } from 'svelte/store';
   import cc from 'classcat';
   import { errorMessages, Position } from '@xyflow/system';
 
@@ -9,7 +8,7 @@
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import { getNodeInlineStyleDimensions } from './utils';
 
-  import type { NodeWrapperProps } from './types';
+  import type { ConnectableContext, NodeWrapperProps } from './types';
   import type { NodeEvents } from '$lib/types';
 
   let {
@@ -72,7 +71,11 @@
 
   let nodeComponent = $derived(store.nodeTypes[type] || DefaultNode);
 
-  const connectableStore = writable(connectable);
+  let connectableContext: ConnectableContext = {
+    get value() {
+      return connectable;
+    }
+  };
 
   let inlineStyleDimensions = $derived(
     getNodeInlineStyleDimensions({
@@ -85,12 +88,8 @@
     })
   );
 
-  $effect.pre(() => {
-    connectableStore.set(connectable);
-  });
-
   setContext('svelteflow__node_id', id);
-  setContext('svelteflow__node_connectable', connectableStore);
+  setContext('svelteflow__node_connectable', connectableContext);
 
   // TODO: extract this part!
   $effect(() => {

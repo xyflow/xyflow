@@ -1,5 +1,4 @@
 import type { InternalNode, Node } from '$lib/types';
-import type { NodeEvents } from '$lib/types/events';
 
 export type NodeWrapperProps = Pick<
   Node,
@@ -35,4 +34,8 @@ export type NodeWrapperProps = Pick<
   zIndex: number;
   node: InternalNode;
   initialized: boolean;
+};
+
+export type ConnectableContext = {
+  value: boolean;
 };
