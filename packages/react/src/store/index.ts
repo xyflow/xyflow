@@ -98,7 +98,7 @@ const createStore = ({
           return;
         }
 
-        updateAbsolutePositions(nodeLookup, { nodeOrigin });
+        updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin });
 
         // we call fitView once initially after all dimensions are set
         let nextFitViewDone = fitViewDone;
@@ -155,8 +155,8 @@ const createStore = ({
         }
 
         if (parentExpandChildren.length > 0) {
-          const { nodeLookup, parentLookup } = get();
-          const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup);
+          const { nodeLookup, parentLookup, nodeOrigin } = get();
+          const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup, nodeOrigin);
           changes.push(...parentExpandChanges);
         }
 

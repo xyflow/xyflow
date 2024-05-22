@@ -6,7 +6,6 @@ import {
   elementSelectionKeys,
   errorMessages,
   getNodeDimensions,
-  getPositionWithOrigin,
   isInputDOMNode,
   nodeHasDimensions,
 } from '@xyflow/system';
@@ -87,15 +86,9 @@ export function NodeWrapper<NodeType extends Node>({
 
   const nodeDimensions = getNodeDimensions(node);
   const inlineDimensions = getNodeInlineStyleDimensions(node);
-  const clampedPosition = nodeExtent
-    ? clampPosition(internals.positionAbsolute, nodeExtent)
-    : internals.positionAbsolute;
+  // TODO: clamping should happen earlier
+  let clampedPosition = nodeExtent ? clampPosition(internals.positionAbsolute, nodeExtent) : internals.positionAbsolute;
 
-  const positionWithOrigin = getPositionWithOrigin({
-    ...clampedPosition,
-    ...nodeDimensions,
-    origin: node.origin || nodeOrigin,
-  });
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
 
   const onMouseEnterHandler = onMouseEnter
@@ -181,9 +174,9 @@ export function NodeWrapper<NodeType extends Node>({
       ref={nodeRef}
       style={{
         zIndex: internals.z,
-        transform: `translate(${positionWithOrigin.x}px,${positionWithOrigin.y}px)`,
+        transform: `translate(${clampedPosition.x}px,${clampedPosition.y}px)`,
         pointerEvents: hasPointerEvents ? 'all' : 'none',
-        visibility: hasDimensions ? 'visible' : 'hidden',
+        visibility: node.measured.width ? 'visible' : 'hidden',
         ...node.style,
         ...inlineDimensions,
       }}

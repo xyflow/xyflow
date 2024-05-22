@@ -106,25 +106,15 @@ export const getIncomers = <NodeType extends NodeBase = NodeBase, EdgeType exten
   return nodes.filter((n) => incomersIds.has(n.id));
 };
 
-export const getNodePositionWithOrigin = (
-  node: InternalNodeBase | NodeBase,
-  nodeOrigin: NodeOrigin = [0, 0]
-): { position: XYPosition; positionAbsolute: XYPosition } => {
+export const getNodePositionWithOrigin = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): XYPosition => {
   const { width, height } = getNodeDimensions(node);
-  const positionAbsolute = 'internals' in node ? node.internals.positionAbsolute : node.position;
-  const origin = node.origin || nodeOrigin;
+  const origin = node.origin ?? nodeOrigin;
   const offsetX = width * origin[0];
   const offsetY = height * origin[1];
 
   return {
-    position: {
-      x: node.position.x - offsetX,
-      y: node.position.y - offsetY,
-    },
-    positionAbsolute: {
-      x: positionAbsolute.x - offsetX,
-      y: positionAbsolute.y - offsetY,
-    },
+    x: node.position.x - offsetX,
+    y: node.position.y - offsetY,
   };
 };
 
@@ -323,9 +313,8 @@ export function calculateNodePosition<NodeType extends NodeBase>({
 }): { position: XYPosition; positionAbsolute: XYPosition } {
   const node = nodeLookup.get(nodeId)!;
   const parentNode = node.parentId ? nodeLookup.get(node.parentId) : undefined;
-  const { x: parentX, y: parentY } = parentNode
-    ? getNodePositionWithOrigin(parentNode, parentNode.origin || nodeOrigin).positionAbsolute
-    : { x: 0, y: 0 };
+  const { x: parentX, y: parentY } = parentNode ? parentNode.internals.positionAbsolute : { x: 0, y: 0 };
+  const origin = node.origin ?? nodeOrigin;
 
   let currentExtent = clampNodeExtent(node, node.extent || nodeExtent);
 
@@ -339,13 +328,9 @@ export function calculateNodePosition<NodeType extends NodeBase>({
       const parentHeight = parentNode.measured.height;
 
       if (nodeWidth && nodeHeight && parentWidth && parentHeight) {
-        const currNodeOrigin = node.origin || nodeOrigin;
-        const extentX = parentX + nodeWidth * currNodeOrigin[0];
-        const extentY = parentY + nodeHeight * currNodeOrigin[1];
-
         currentExtent = [
-          [extentX, extentY],
-          [extentX + parentWidth - nodeWidth, extentY + parentHeight - nodeHeight],
+          [parentX, parentY],
+          [parentX + parentWidth - nodeWidth, parentY + parentHeight - nodeHeight],
         ];
       }
     }
@@ -362,8 +347,9 @@ export function calculateNodePosition<NodeType extends NodeBase>({
 
   return {
     position: {
-      x: positionAbsolute.x - parentX,
-      y: positionAbsolute.y - parentY,
+      // TODO: is there a better way to do this?
+      x: positionAbsolute.x - parentX + node.measured.width! * origin[0],
+      y: positionAbsolute.y - parentY + node.measured.height! * origin[1],
     },
     positionAbsolute,
   };

@@ -37,6 +37,7 @@ const initialNodes: Node[] = [
     type: 'defaultResizer',
     data: { label: 'default resizer' },
     position: { x: 0, y: 0 },
+    origin: [1, 1],
     style: { ...nodeStyle },
   },
   {
@@ -129,6 +130,7 @@ const initialNodes: Node[] = [
     width: 300,
     height: 400,
     style: { ...nodeStyle },
+    origin: [0, 0],
   },
   {
     id: '5a',
@@ -184,6 +186,7 @@ const CustomNodeFlow = () => {
       minZoom={0.2}
       maxZoom={5}
       snapToGrid={snapToGrid}
+      nodeOrigin={[1, 1]}
       fitView
       onlyRenderVisibleElements
     >

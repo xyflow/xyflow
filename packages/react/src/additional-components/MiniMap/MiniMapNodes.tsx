@@ -86,7 +86,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
 }) {
   const { node, x, y } = useStore((s) => {
     const node = s.nodeLookup.get(id) as InternalNode<NodeType>;
-    const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
+    const { x, y } = node.internals.positionAbsolute;
 
     return {
       node,

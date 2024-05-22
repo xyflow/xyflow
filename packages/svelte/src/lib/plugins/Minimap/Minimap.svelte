@@ -134,7 +134,7 @@
       {#each $nodes as userNode (userNode.id)}
         {@const node = $nodeLookup.get(userNode.id)}
         {#if node && nodeHasDimensions(node)}
-          {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
+          {@const pos = getNodePositionWithOrigin(node)}
           {@const nodeDimesions = getNodeDimensions(node)}
           <MinimapNode
             x={pos.x}

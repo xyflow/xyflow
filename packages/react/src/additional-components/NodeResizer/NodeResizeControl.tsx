@@ -73,20 +73,25 @@ function ResizeControl({
 
           const node = nodeLookup.get(id);
           if (node && node.expandParent && node.parentId) {
+            const origin = node.origin ?? nodeOrigin;
+            const width = change.width ?? node.measured.width!;
+            const height = change.height ?? node.measured.height!;
+
             const child: ParentExpandChild = {
               id: node.id,
               parentId: node.parentId,
               rect: {
-                width: change.width ?? node.measured.width!,
-                height: change.height ?? node.measured.height!,
+                width,
+                height,
                 ...evaluateAbsolutePosition(
                   {
-                    x: change.x ?? node.position.x,
-                    y: change.y ?? node.position.y,
+                    x: change.x ?? node.internals.positionAbsolute.x,
+                    y: change.y ?? node.internals.positionAbsolute.y,
                   },
+                  { width, height },
                   node.parentId,
                   nodeLookup,
-                  node.origin ?? nodeOrigin
+                  origin
                 ),
               },
             };
@@ -94,9 +99,10 @@ function ResizeControl({
             const parentExpandChanges = handleExpandParent([child], nodeLookup, parentLookup, nodeOrigin);
             changes.push(...parentExpandChanges);
 
-            // when the parent was expanded by the child node, its position will be clamped at 0,0
-            nextPosition.x = change.x ? Math.max(0, change.x) : undefined;
-            nextPosition.y = change.y ? Math.max(0, change.y) : undefined;
+            // when the parent was expanded by the child node, its position will be clamped at
+            // 0,0 when node origin is 0,0 and to width, height if it's 1,1
+            nextPosition.x = change.x ? Math.max(origin[0] * width, change.x) : undefined;
+            nextPosition.y = change.y ? Math.max(origin[1] * height, change.y) : undefined;
           }
 
           if (nextPosition.x !== undefined && nextPosition.y !== undefined) {

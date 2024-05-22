@@ -12,7 +12,7 @@ import type {
   NodeLookup,
 } from '../types';
 import { type Viewport } from '../types';
-import { getNodePositionWithOrigin } from './graph';
+import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
 
@@ -68,7 +68,9 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
 });
 
 export const nodeToRect = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
-  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
+  const { x, y } = isInternalNodeBase(node)
+    ? node.internals.positionAbsolute
+    : getNodePositionWithOrigin(node, nodeOrigin);
 
   return {
     x,
@@ -79,7 +81,9 @@ export const nodeToRect = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOr
 };
 
 export const nodeToBox = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box => {
-  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
+  const { x, y } = isInternalNodeBase(node)
+    ? node.internals.positionAbsolute
+    : getNodePositionWithOrigin(node, nodeOrigin);
 
   return {
     x,
@@ -239,24 +243,17 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
  */
 export function evaluateAbsolutePosition(
   position: XYPosition,
+  dimensions: { width: number; height: number },
   parentId: string,
   nodeLookup: NodeLookup,
-  nodeOrigin: NodeOrigin = [0, 0]
+  nodeOrigin: NodeOrigin
 ): XYPosition {
-  let nextParentId: string | undefined = parentId;
   const positionAbsolute = { ...position };
 
-  while (nextParentId) {
-    const parent = nodeLookup.get(parentId);
-    nextParentId = parent?.parentId;
-
-    if (parent) {
-      const origin = parent.origin || nodeOrigin;
-      const xOffset = (parent.measured.width ?? 0) * origin[0];
-      const yOffset = (parent.measured.height ?? 0) * origin[1];
-      positionAbsolute.x += parent.position.x - xOffset;
-      positionAbsolute.y += parent.position.y - yOffset;
-    }
+  const parent = nodeLookup.get(parentId);
+  if (parent) {
+    positionAbsolute.x += parent.internals.positionAbsolute.x - dimensions.width * nodeOrigin[0];
+    positionAbsolute.y += parent.internals.positionAbsolute.y - dimensions.height * nodeOrigin[1];
   }
 
   return positionAbsolute;

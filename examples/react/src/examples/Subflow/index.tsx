@@ -14,6 +14,8 @@ import {
   Background,
   Panel,
   NodeOrigin,
+  useUpdateNodeInternals,
+  ReactFlowProvider,
 } from '@xyflow/react';
 
 import DebugNode from './DebugNode';
@@ -27,7 +29,7 @@ const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 const initialNodes: Node[] = [
   {
     id: '1',
-    type: 'input',
+    // type: 'input',
     data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
     className: 'light',
@@ -88,10 +90,11 @@ const initialNodes: Node[] = [
     id: '5',
     type: 'group',
     data: { label: 'Node 5' },
-    position: { x: 650, y: 250 },
+    position: { x: 900, y: 250 },
     className: 'light',
     style: { width: 100, height: 100 },
     zIndex: 1000,
+    origin: [1, 0],
   },
   {
     id: '5a',
@@ -118,9 +121,9 @@ const initialNodes: Node[] = [
   {
     id: '3',
     data: { label: 'Node 3' },
-    position: { x: 400, y: 100 },
+    position: { x: 250, y: 100 },
     className: 'light',
-    extent: 'parent',
+    // extent: 'parent',
   },
 ];
 
@@ -151,6 +154,7 @@ const nodeTypes = {
 
 const Subflow = () => {
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
+  const updateNodeInternals = useUpdateNodeInternals();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -228,9 +232,14 @@ const Subflow = () => {
         <button onClick={toggleChildNodes}>toggleChildNodes</button>
         <button onClick={logToObject}>toObject</button>
         <button onClick={() => setNodes(initialNodes)}>setNodes</button>
+        <button onClick={() => updateNodeInternals(nodes.map((node) => node.id))}>updateNodeInternals</button>
       </Panel>
     </ReactFlow>
   );
 };
 
-export default Subflow;
+export default () => (
+  <ReactFlowProvider>
+    <Subflow />
+  </ReactFlowProvider>
+);

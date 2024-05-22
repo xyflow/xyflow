@@ -129,7 +129,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
       for (const [id, dragItem] of dragItems) {
         let nextPosition = { x: x - dragItem.distance.x, y: y - dragItem.distance.y };
-
         if (snapToGrid) {
           nextPosition = snapPosition(nextPosition, snapGrid);
         }

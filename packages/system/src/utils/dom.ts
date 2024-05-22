@@ -1,4 +1,13 @@
-import type { Transform, XYPosition, SnapGrid, Dimensions, NodeOrigin, HandleElement, Position } from '../types';
+import type {
+  Transform,
+  XYPosition,
+  SnapGrid,
+  Dimensions,
+  NodeOrigin,
+  HandleElement,
+  Position,
+  InternalNodeBase,
+} from '../types';
 import { snapPosition, pointToRendererPoint } from './general';
 
 export type GetPointerPositionParams = {
@@ -60,6 +69,7 @@ export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRec
 // unnecessary recalculations.
 export const getHandleBounds = (
   selector: string,
+  node: InternalNodeBase,
   nodeElement: HTMLDivElement,
   zoom: number,
   nodeOrigin: NodeOrigin = [0, 0]

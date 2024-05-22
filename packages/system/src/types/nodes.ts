@@ -77,6 +77,7 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & 
      * Used as an optimization to avoid certain operations. */
     userNode: NodeType;
     handleBounds?: NodeHandleBounds;
+    bounds?: NodeBounds;
   };
 };
 
