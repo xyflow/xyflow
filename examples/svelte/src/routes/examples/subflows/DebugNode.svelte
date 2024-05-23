@@ -1,14 +1,7 @@
 <script lang="ts">
 	import { Handle, Position, type NodeProps } from '@xyflow/svelte';
 
-	type $$Props = NodeProps;
-
-	export let id: string;
-	export let positionAbsoluteX: number = 0;
-	export let positionAbsoluteY: number = 0;
-	export let zIndex: number = 0;
-
-	$$restProps;
+	let { id, positionAbsoluteX, positionAbsoluteY, zIndex }: NodeProps = $props();
 </script>
 
 <Handle type="target" position={Position.Top} />

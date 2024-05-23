@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { NodeToolbar, type NodeProps, Handle, Position } from '@xyflow/svelte';
 
-	type $$Props = NodeProps;
-
-	export let data: $$Props['data'];
+	let { data }: NodeProps = $props();
 </script>
 
 <NodeToolbar

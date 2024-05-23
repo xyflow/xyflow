@@ -1,10 +1,7 @@
 <script lang="ts">
 	import type { BuiltInNode, NodeProps } from '@xyflow/svelte';
 
-	type $$Props = NodeProps<BuiltInNode>;
-	$$restProps;
-
-	export let data: { label: string } = { label: 'Node' };
+	let { data = { label: 'Node' } }: NodeProps<BuiltInNode> = $props();
 </script>
 
 <div class="custom">

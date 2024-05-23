@@ -7,25 +7,37 @@
 		getBezierPath
 	} from '@xyflow/svelte';
 
-	type $$Props = EdgeProps;
+	let {
+		id,
+		sourceX,
+		sourceY,
+		targetX,
+		targetY,
+		sourcePosition,
+		targetPosition,
+		...rest
+	}: EdgeProps = $props();
 
-	$: [path, labelX, labelY] = getBezierPath({
-		sourceX: $$props.sourceX,
-		sourceY: $$props.sourceY,
-		targetX: $$props.targetX,
-		targetY: $$props.targetY,
-		sourcePosition: $$props.sourcePosition,
-		targetPosition: $$props.targetPosition
-	});
+	let [path, labelX, labelY] = $derived(
+		getBezierPath({
+			sourceX,
+			sourceY,
+			targetX,
+			targetY,
+			sourcePosition,
+			targetPosition
+		})
+	);
 
-	const edges = useEdges();
+	let edges = useEdges();
 
 	function onClick() {
-		edges.update((eds) => eds.filter((e) => e.id !== $$props.id));
+		edges = edges.filter((e) => e.id !== id);
+		// edges.update((eds) => eds.filter((e) => e.id !== id));
 	}
 </script>
 
-<BaseEdge {path} {labelX} {labelY} {...$$props} />
+<BaseEdge {path} {labelX} {labelY} {...rest} />
 
 <EdgeLabelRenderer>
 	<button
