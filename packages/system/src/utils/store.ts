@@ -279,12 +279,6 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
           handleBounds: {
             source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
             target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
-        node.measured = dimensions;
-        node.internals = {
-          ...node.internals,
-          handleBounds: {
-            source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
-            target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
           },
         };
 

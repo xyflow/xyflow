@@ -61,7 +61,8 @@ export function createStore(): SvelteFlowStore {
         continue;
       }
 
-      node.position = dragItem.position;
+      node.position.x = dragItem.position.x;
+      node.position.y = dragItem.position.y;
       node.dragging = dragging;
     }
   };

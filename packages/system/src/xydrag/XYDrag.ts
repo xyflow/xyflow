@@ -179,20 +179,20 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
       updateNodePositions(dragItems, true);
 
-      if (dragEvent && (onDrag || onNodeDrag || (!nodeId && onSelectionDrag))) {
-        const [currentNode, currentNodes] = getEventHandlerParams({
-          nodeId,
-          dragItems,
-          nodeLookup,
-        });
+      // if (dragEvent && (onDrag || onNodeDrag || (!nodeId && onSelectionDrag))) {
+      //   const [currentNode, currentNodes] = getEventHandlerParams({
+      //     nodeId,
+      //     dragItems,
+      //     nodeLookup,
+      //   });
 
-        onDrag?.(dragEvent, dragItems, currentNode, currentNodes);
-        onNodeDrag?.(dragEvent, currentNode, currentNodes);
+      //   onDrag?.(dragEvent, dragItems, currentNode, currentNodes);
+      //   onNodeDrag?.(dragEvent, currentNode, currentNodes);
 
-        if (!nodeId) {
-          onSelectionDrag?.(dragEvent, currentNodes);
-        }
-      }
+      //   if (!nodeId) {
+      //     onSelectionDrag?.(dragEvent, currentNodes);
+      //   }
+      // }
     }
 
     function autoPan() {
@@ -316,20 +316,20 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
           updateNodePositions(dragItems, false);
 
-          if (onDragStop || onNodeDragStop || (!nodeId && onSelectionDragStop)) {
-            const [currentNode, currentNodes] = getEventHandlerParams({
-              nodeId,
-              dragItems,
-              nodeLookup,
-            });
+          // if (onDragStop || onNodeDragStop || (!nodeId && onSelectionDragStop)) {
+          //   const [currentNode, currentNodes] = getEventHandlerParams({
+          //     nodeId,
+          //     dragItems,
+          //     nodeLookup,
+          //   });
 
-            onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-            onNodeDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+          //   onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
+          //   onNodeDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
 
-            if (!nodeId) {
-              onSelectionDragStop?.(event.sourceEvent as MouseEvent, currentNodes);
-            }
-          }
+          //   if (!nodeId) {
+          //     onSelectionDragStop?.(event.sourceEvent as MouseEvent, currentNodes);
+          //   }
+          // }
         }
       })
       .filter((event: MouseEvent) => {

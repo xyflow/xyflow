@@ -23,7 +23,7 @@
 
   import type { SvelteFlowProps } from './types';
   import { StoreUpdater } from '$lib/components/StoreUpdater';
-  import NodeUpdate from './NodeUpdate.svelte';
+  import NodeUpdate from '../NodeRenderer/NodeUpdate.svelte';
   import { isFlowInitialized } from './utils';
 
   let {
@@ -202,9 +202,9 @@
   {defaultEdgeOptions}
 />
 
-{#each nodes as node (node.id)}
+<!-- {#each nodes as node (node.id)}
   <NodeUpdate id={node.id} userNode={node} />
-{/each}
+{/each} -->
 
 <div
   bind:this={domNode}

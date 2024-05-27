@@ -45,13 +45,13 @@ export const initialEdgeTypes = {
 
 export const getInitialStore = () => {
   // TODO: what kind of maps are we talking
-  const nodeLookup: NodeLookup = new ReactiveMap();
-  const edgeLookup: EdgeLookup = new SvelteMap<string, Edge>();
-  const selectedNodes: Map<string, InternalNode> = new SvelteMap();
-  const selectedEdges: Map<string, Edge> = new SvelteMap();
+  const nodeLookup: NodeLookup = new SvelteMap();
+  const edgeLookup: EdgeLookup = new Map<string, Edge>();
+  const selectedNodes: Map<string, InternalNode> = new Map();
+  const selectedEdges: Map<string, Edge> = new Map();
 
-  const parentLookup: ParentLookup = new SvelteMap();
-  const connectionLookup: ConnectionLookup = new SvelteMap();
+  const parentLookup: ParentLookup = new Map();
+  const connectionLookup: ConnectionLookup = new Map();
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 

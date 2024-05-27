@@ -64,7 +64,7 @@ export function getDragItems<NodeType extends NodeBase>(
         origin: node.origin,
         expandParent: node.expandParent,
         internals: {
-          positionAbsolute: node.internals.positionAbsolute || { x: 0, y: 0 },
+          positionAbsolute: { ...node.internals.positionAbsolute } || { x: 0, y: 0 },
         },
         measured: {
           width: node.measured.width ?? 0,
