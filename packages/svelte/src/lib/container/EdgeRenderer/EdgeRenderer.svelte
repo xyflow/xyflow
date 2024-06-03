@@ -20,7 +20,7 @@
 </script>
 
 <div class="svelte-flow__edges">
-  <svg class="svelte-flow__marker">
+  <svg xmlns="http://www.w3.org/2000/svg" class="svelte-flow__marker">
     <MarkerDefinition />
   </svg>
 
