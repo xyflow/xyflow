@@ -20,6 +20,7 @@ export function useResizeObserver() {
         updates.set(id, {
           id,
           nodeElement: entry.target as HTMLDivElement,
+          force: true,
         });
       });
 
