@@ -11,7 +11,8 @@
   const {
     visibleEdges,
     edgesInitialized,
-    edges: { setDefaultOptions }
+    edges: { setDefaultOptions },
+    elementsSelectable,
   } = useStore();
 
   onMount(() => {
@@ -33,7 +34,8 @@
       style={edge.style}
       animated={edge.animated}
       selected={edge.selected}
-      selectable={edge.selectable}
+      selectable={edge.selectable ?? $elementsSelectable}
+      deletable={edge.deletable}
       hidden={edge.hidden}
       label={edge.label}
       labelStyle={edge.labelStyle}
