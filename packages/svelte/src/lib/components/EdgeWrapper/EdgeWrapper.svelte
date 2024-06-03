@@ -23,6 +23,7 @@
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
   export let selectable: $$Props['selectable'] = undefined;
+  export let deletable: $$Props['deletable'] = undefined;
   export let hidden: $$Props['hidden'] = false;
   export let label: $$Props['label'] = undefined;
   export let labelStyle: $$Props['labelStyle'] = undefined;
@@ -55,7 +56,7 @@
   $: edgeComponent = $edgeTypes[edgeType] || BezierEdgeInternal;
   $: markerStartUrl = markerStart ? `url('#${getMarkerId(markerStart, $flowId)}')` : undefined;
   $: markerEndUrl = markerEnd ? `url('#${getMarkerId(markerEnd, $flowId)}')` : undefined;
-  $: isSelectable = selectable || ($elementsSelectable && typeof selectable === 'undefined');
+  $: isSelectable = selectable ?? $elementsSelectable;
 
   const handleEdgeSelect = useHandleEdgeSelect();
 
@@ -114,6 +115,8 @@
         {data}
         {style}
         {interactionWidth}
+        selectable={isSelectable}
+        deletable={deletable ?? true}
         type={edgeType}
         sourceHandleId={sourceHandle}
         targetHandleId={targetHandle}

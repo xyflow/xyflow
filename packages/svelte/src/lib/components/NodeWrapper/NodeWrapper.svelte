@@ -22,6 +22,7 @@
   export let draggable: $$Props['draggable'] = undefined;
   export let selectable: $$Props['selectable'] = undefined;
   export let connectable: $$Props['connectable'] = true;
+  export let deletable: $$Props['deletable'] = true;
   export let hidden: $$Props['hidden'] = false;
   export let dragging: boolean = false;
   export let resizeObserver: $$Props['resizeObserver'] = null;
@@ -192,10 +193,13 @@
       {data}
       {id}
       {selected}
+      {selectable}
+      {deletable}
       {sourcePosition}
       {targetPosition}
       {zIndex}
       {dragging}
+      {draggable}
       {dragHandle}
       type={nodeType}
       isConnectable={$connectableStore}

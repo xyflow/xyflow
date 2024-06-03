@@ -62,6 +62,7 @@
         node.connectable ||
         ($nodesConnectable && typeof node.connectable === 'undefined')
       )}
+      deletable={node.deletable ?? true}
       positionX={node.internals.positionAbsolute.x}
       positionY={node.internals.positionAbsolute.y}
       positionOriginX={posOrigin.x ?? 0}
