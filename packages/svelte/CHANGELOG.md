@@ -1,5 +1,10 @@
 # @xyflow/svelte
 
+## 0.1.4
+
+- add `selectable`, `deletable` and `draggable` to node and edge props
+- add `parentId` to node props
+
 ## 0.1.3
 
 - fix `NodeToolbar` for subflows

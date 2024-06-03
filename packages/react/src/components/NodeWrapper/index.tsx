@@ -218,6 +218,7 @@ export function NodeWrapper<NodeType extends Node>({
           dragging={dragging}
           dragHandle={node.dragHandle}
           zIndex={internals.z}
+          parentId={node.parentId}
           {...nodeDimensions}
         />
       </Provider>

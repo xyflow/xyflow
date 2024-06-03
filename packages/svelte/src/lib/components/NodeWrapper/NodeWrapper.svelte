@@ -44,6 +44,8 @@
   export let height: $$Props['height'] = undefined;
   export let dragHandle: $$Props['dragHandle'] = undefined;
   export let initialized: $$Props['initialized'] = false;
+  export let parentId: $$Props['parentId'] = undefined;
+
   let className: string = '';
   export { className as class };
 
@@ -201,6 +203,7 @@
       {dragging}
       {draggable}
       {dragHandle}
+      {parentId}
       type={nodeType}
       isConnectable={$connectableStore}
       positionAbsoluteX={positionX}

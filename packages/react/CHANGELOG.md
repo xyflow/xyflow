@@ -4,6 +4,9 @@
 
 - update internals on node resizer updates
 - re-observe node when `node.hidden` is toggled
+- update `updateNodeData` argument type - thanks @ogroppo
+- add `selectable`, `deletable` and `draggable` to node and edge props
+- add `parentId` to node props
 
 ## 12.0.0-next.18
 

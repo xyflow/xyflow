@@ -21,6 +21,7 @@ export type NodeWrapperProps = Pick<
   | 'height'
   | 'initialWidth'
   | 'initialHeight'
+  | 'parentId'
 > & {
   measuredWidth?: number;
   measuredHeight?: number;

@@ -83,6 +83,7 @@
       initialHeight={node.initialHeight}
       measuredWidth={node.measured.width}
       measuredHeight={node.measured.height}
+      parentId={node.parentId}
       {resizeObserver}
       on:nodeclick
       on:nodemouseenter
