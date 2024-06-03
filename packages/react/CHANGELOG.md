@@ -1,5 +1,10 @@
 # @xyflow/react
 
+## 12.0.0-next.19
+
+- update internals on node resizer updates
+- re-observe node when `node.hidden` is toggled
+
 ## 12.0.0-next.18
 
 - don't show nodeTypes warning if not necessary you've created a new nodeTypes or edgeTypes
