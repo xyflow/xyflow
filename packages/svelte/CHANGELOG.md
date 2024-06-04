@@ -4,6 +4,7 @@
 
 - add `selectable`, `deletable` and `draggable` to node and edge props
 - add `parentId` to node props
+- add `on:edgemouseenter` and `on:edgemouseleave` event handler
 
 ## 0.1.3
 
