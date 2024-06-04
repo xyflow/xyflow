@@ -159,6 +159,8 @@
 	on:nodemouseenter={(event) => console.log('on node enter', event)}
 	on:nodemouseleave={(event) => console.log('on node leave', event)}
 	on:edgeclick={(event) => console.log('edge click', event)}
+	on:edgemouseenter={(event) => console.log('edge enter', event)}
+	on:edgemouseleave={(event) => console.log('edge leave', event)}
 	onconnectstart={(event) => console.log('on connect start', event)}
 	onconnect={(event) => console.log('on connect', event)}
 	onconnectend={(event) => console.log('on connect end', event)}
