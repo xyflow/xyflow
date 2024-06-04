@@ -6,6 +6,7 @@
 - add `parentId` to node props
 - add `on:edgemouseenter` and `on:edgemouseleave` event handler
 - fix deselection of edges
+- remove pointer events from panel when user selection is active
 
 ## 0.1.3
 
