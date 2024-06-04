@@ -222,7 +222,13 @@
       {selectionOnDrag}
     >
       <ViewportComponent>
-        <EdgeRenderer on:edgeclick on:edgecontextmenu {defaultEdgeOptions} />
+        <EdgeRenderer
+          on:edgeclick
+          on:edgecontextmenu
+          on:edgemouseenter
+          on:edgemouseleave
+          {defaultEdgeOptions}
+        />
         <ConnectionLine
           containerStyle={connectionLineContainerStyle}
           style={connectionLineStyle}

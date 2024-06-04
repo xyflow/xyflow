@@ -12,7 +12,7 @@
     visibleEdges,
     edgesInitialized,
     edges: { setDefaultOptions },
-    elementsSelectable,
+    elementsSelectable
   } = useStore();
 
   onMount(() => {
@@ -56,6 +56,8 @@
       zIndex={edge.zIndex}
       on:edgeclick
       on:edgecontextmenu
+      on:edgemouseenter
+      on:edgemouseleave
     />
   {/each}
 

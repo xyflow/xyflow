@@ -50,6 +50,8 @@
   const dispatch = createEventDispatcher<{
     edgeclick: { edge: Edge; event: MouseEvent | TouchEvent };
     edgecontextmenu: { edge: Edge; event: MouseEvent };
+    edgemouseenter: { edge: Edge; event: MouseEvent };
+    edgemouseleave: { edge: Edge; event: MouseEvent };
   }>();
 
   $: edgeType = type || 'default';
@@ -69,11 +71,12 @@
     }
   }
 
-  function onContextMenu(event: MouseEvent) {
+  type EdgeMouseEvent = 'edgecontextmenu' | 'edgemouseenter' | 'edgemouseleave';
+  function onMouseEvent(event: MouseEvent, type: EdgeMouseEvent) {
     const edge = $edgeLookup.get(id);
 
     if (edge) {
-      dispatch('edgecontextmenu', { event, edge });
+      dispatch(type, { event, edge });
     }
   }
 </script>
@@ -89,7 +92,15 @@
       class:selectable={isSelectable}
       data-id={id}
       on:click={onClick}
-      on:contextmenu={onContextMenu}
+      on:contextmenu={(e) => {
+        onMouseEvent(e, 'edgecontextmenu');
+      }}
+      on:mouseenter={(e) => {
+        onMouseEvent(e, 'edgemouseenter');
+      }}
+      on:mouseleave={(e) => {
+        onMouseEvent(e, 'edgemouseleave');
+      }}
       aria-label={ariaLabel === null
         ? undefined
         : ariaLabel
