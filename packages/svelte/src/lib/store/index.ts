@@ -202,7 +202,6 @@ export function createStore({
     elements.forEach((element) => {
       if (element.selected) {
         element.selected = false;
-        console.log('reset');
         elementsChanged = true;
       }
     });
