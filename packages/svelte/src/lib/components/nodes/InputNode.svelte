@@ -7,11 +7,11 @@
   interface $$Props extends NodeProps {}
 
   export let data: $$Props['data'] = { label: 'Node' };
-  export let sourcePosition: $$Props['sourcePosition'] = Position.Bottom;
+  export let sourcePosition: $$Props['sourcePosition'] = undefined;
 
   // this is a workaround for suppressing the warning about unused props
   $$restProps;
 </script>
 
 {data?.label}
-<Handle type="source" position={sourcePosition} />
+<Handle type="source" position={sourcePosition ?? Position.Bottom} />
