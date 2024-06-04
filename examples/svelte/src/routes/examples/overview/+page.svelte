@@ -185,6 +185,8 @@
 			event.preventDefault();
 			console.log('on edge contextmenu', edge);
 		}}
+		onedgemouseenter={(event) => console.log('on edge enter', event)}
+		onedgemouseleave={(event) => console.log('on edge leave', event)}
 		onselectionclick={(event) => console.log('on selection click', event)}
 		onselectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
 		onbeforedelete={async ({ nodes, edges }) => {
@@ -199,9 +201,6 @@
 		deleteKey={['Backspace', 'd']}
 		onMove={(_, viewport) => {
 			console.log('on move', viewport);
-		}}
-		defaultEdgeOptions={{
-			selectable: false
 		}}
 	>
 		<Controls orientation="horizontal" {fitViewOptions}>

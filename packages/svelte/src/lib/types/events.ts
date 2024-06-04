@@ -51,4 +51,6 @@ export type PaneEvents = {
 export type EdgeEvents = {
   onedgeclick?: ({ edge, event }: { edge: Edge; event: MouseEvent | TouchEvent }) => void;
   onedgecontextmenu?: ({ edge, event }: { edge: Edge; event: MouseEvent }) => void;
+  onedgemouseenter?: ({ edge, event }: { edge: Edge; event: MouseEvent }) => void;
+  onedgemouseleave?: ({ edge, event }: { edge: Edge; event: MouseEvent }) => void;
 };

@@ -7,7 +7,7 @@
   import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
   import { BezierEdgeInternal } from '$lib/components/edges';
 
-  import type { EdgeLayouted, EdgeEvents } from '$lib/types';
+  import type { EdgeLayouted, EdgeEvents, Edge } from '$lib/types';
 
   const {
     id,
@@ -37,7 +37,9 @@
     interactionWidth,
     class: className,
     onedgeclick,
-    onedgecontextmenu
+    onedgecontextmenu,
+    onedgemouseenter,
+    onedgemouseleave
   }: EdgeLayouted & EdgeEvents = $props();
 
   setContext('svelteflow__edge_id', id);
@@ -67,17 +69,24 @@
     }
   }
 
-  function oncontextmenu(event: MouseEvent) {
-    const edge = store.edgeLookup.get(id);
+  function getEdgeEvent(
+    callback: ((param: { event: MouseEvent; edge: Edge }) => void) | undefined
+  ) {
+    if (callback) {
+      return (event: MouseEvent) => {
+        const edge = store.edgeLookup.get(id);
 
-    if (edge) {
-      onedgecontextmenu?.({ event, edge });
+        if (edge) {
+          callback({ event, edge });
+        }
+      };
     }
+    return undefined;
   }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 {#if !hidden}
   <svg style:z-index={zIndex}>
     <g
@@ -87,7 +96,9 @@
       class:selectable={isSelectable}
       data-id={id}
       {onclick}
-      {oncontextmenu}
+      oncontextmenu={getEdgeEvent(onedgecontextmenu)}
+      onmouseenter={getEdgeEvent(onedgemouseenter)}
+      onmouseleave={getEdgeEvent(onedgemouseleave)}
       aria-label={ariaLabel === null
         ? undefined
         : ariaLabel

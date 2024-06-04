@@ -3,7 +3,14 @@
   import type { EdgeRendererProps } from './types';
   import EdgeUpdater from '$lib/components/EdgeWrapper/EdgeUpdater.svelte';
 
-  let { defaultEdgeOptions, onedgeclick, onedgecontextmenu, edges }: EdgeRendererProps = $props();
+  let {
+    defaultEdgeOptions,
+    onedgeclick,
+    onedgecontextmenu,
+    onedgemouseenter,
+    onedgemouseleave,
+    edges
+  }: EdgeRendererProps = $props();
 </script>
 
 <div class="svelte-flow__edges">
@@ -12,6 +19,14 @@
   </svg>
 
   {#each edges as edge (edge.id)}
-    <EdgeUpdater id={edge.id} {defaultEdgeOptions} {edge} {onedgeclick} {onedgecontextmenu} />
+    <EdgeUpdater
+      id={edge.id}
+      {defaultEdgeOptions}
+      {edge}
+      {onedgeclick}
+      {onedgecontextmenu}
+      {onedgemouseenter}
+      {onedgemouseleave}
+    />
   {/each}
 </div>

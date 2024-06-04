@@ -66,6 +66,8 @@
     ondelete,
     onedgeclick,
     onedgecontextmenu,
+    onedgemouseenter,
+    onedgemouseleave,
     onedgecreate,
     onerror,
     oninit,
@@ -245,7 +247,14 @@
       {onpanecontextmenu}
     >
       <ViewportComponent>
-        <EdgeRenderer {edges} {onedgeclick} {onedgecontextmenu} {defaultEdgeOptions} />
+        <EdgeRenderer
+          {edges}
+          {onedgeclick}
+          {onedgecontextmenu}
+          {onedgemouseenter}
+          {onedgemouseleave}
+          {defaultEdgeOptions}
+        />
         <ConnectionLine
           {connectionLine}
           containerStyle={connectionLineContainerStyle}

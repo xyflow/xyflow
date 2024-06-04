@@ -57,7 +57,9 @@
     edge,
     defaultEdgeOptions = {},
     onedgeclick,
-    onedgecontextmenu
+    onedgecontextmenu,
+    onedgemouseenter,
+    onedgemouseleave
   }: EdgeEvents & { id: string; edge: Edge; defaultEdgeOptions?: DefaultEdgeOptions } = $props();
 
   const store = useStore();
@@ -173,5 +175,7 @@
     {zIndex}
     {onedgeclick}
     {onedgecontextmenu}
+    {onedgemouseenter}
+    {onedgemouseleave}
   />
 {/if}
