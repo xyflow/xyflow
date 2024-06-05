@@ -60,7 +60,9 @@ type StepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>
   pathOptions?: StepPathOptions;
 };
 
-export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge;
+type StraightEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData, 'straight'>;
+
+export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge | StraightEdge;
 
 export type EdgeMouseHandler<EdgeType extends Edge = Edge> = (event: ReactMouseEvent, edge: EdgeType) => void;
 
