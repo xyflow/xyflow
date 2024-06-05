@@ -7,6 +7,7 @@
 - update `updateNodeData` argument type - thanks @ogroppo
 - add `selectable`, `deletable` and `draggable` to node and edge props
 - add `parentId` to node props
+- fix parent node lookup in `evaluateAbsolutePosition`- thanks @lcsfort
 
 ## 12.0.0-next.18
 
