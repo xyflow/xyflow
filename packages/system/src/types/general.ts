@@ -1,5 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
+import type { Selection as D3Selection } from 'd3-selection';
+import type { D3DragEvent, SubjectPosition } from 'd3-drag';
+import type { ZoomBehavior } from 'd3-zoom';
+// this is needed for the Selection type to include the transition function :/
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { Transition } from 'd3-transition';
 
 import type { XYPosition, Rect } from './utils';
 import type { InternalNodeBase, NodeBase, NodeDragItem, NodeOrigin } from './nodes';
