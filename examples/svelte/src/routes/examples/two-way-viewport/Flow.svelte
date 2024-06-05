@@ -21,7 +21,7 @@
 		{ id: 'B', position: { x: 0, y: 100 }, data: { label: 'B' } }
 	]);
 	const edges = writable([{ id: 'ab', source: 'A', target: 'B' }]);
-	const viewport = writable<Viewport>({ x: 0, y: 10, zoom: 1.25 });
+	const viewport = writable<Viewport>({ x: 100, y: 100, zoom: 1.25 });
 
 	const { fitView } = useSvelteFlow();
 
@@ -35,7 +35,7 @@
 	});
 </script>
 
-<SvelteFlow {nodes} {edges} fitView {viewport}>
+<SvelteFlow {nodes} {edges} {viewport}>
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 

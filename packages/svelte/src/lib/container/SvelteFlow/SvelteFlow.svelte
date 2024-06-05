@@ -89,6 +89,8 @@
   let clientWidth: number;
   let clientHeight: number;
 
+  const initViewport = $viewport || initialViewport;
+
   const store = hasContext(key)
     ? useStore()
     : createStoreContext({ nodes: get(nodes), edges: get(edges), width, height, fitView });
@@ -203,7 +205,7 @@
     {zoomActivationKey}
   />
   <Zoom
-    initialViewport={$viewport || initialViewport}
+    initialViewport={initViewport}
     {onMoveStart}
     {onMove}
     {onMoveEnd}
