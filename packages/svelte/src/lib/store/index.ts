@@ -210,10 +210,10 @@ export function createStore({
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
     const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
-    if (resetNodes) store.nodes.update((nds) => nds);
+    if (resetNodes) store.nodes.set(get(store.nodes));
 
     const resetEdges = resetSelectedElements(params?.edges || get(store.edges));
-    if (resetEdges) store.edges.update((nds) => nds);
+    if (resetEdges) store.edges.set(get(store.edges));
   }
 
   store.deleteKeyPressed.subscribe(async (deleteKeyPressed) => {

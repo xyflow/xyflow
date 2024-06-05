@@ -247,7 +247,7 @@ export function evaluateAbsolutePosition(
   const positionAbsolute = { ...position };
 
   while (nextParentId) {
-    const parent = nodeLookup.get(parentId);
+    const parent = nodeLookup.get(nextParentId);
     nextParentId = parent?.parentId;
 
     if (parent) {

@@ -1,5 +1,14 @@
 # @xyflow/svelte
 
+## 0.1.4
+
+- add `selectable`, `deletable` and `draggable` to node and edge props
+- add `parentId` to node props
+- add `on:edgemouseenter` and `on:edgemouseleave` event handler
+- fix deselection of edges
+- remove pointer events from panel when user selection is active
+- fix viewport initialization with user viewport 
+
 ## 0.1.3
 
 - fix `NodeToolbar` for subflows

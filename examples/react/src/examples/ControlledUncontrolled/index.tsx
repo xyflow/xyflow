@@ -60,12 +60,13 @@ const ControlledUncontrolled = () => {
   const updateNodePositions = () => {
     instance.setNodes((nodes) =>
       nodes.map((node) => {
-        node.position = {
-          x: Math.random() * 400,
-          y: Math.random() * 400,
+        return {
+          ...node,
+          position: {
+            x: Math.random() * 400,
+            y: Math.random() * 400,
+          },
         };
-
-        return node;
       })
     );
   };
@@ -73,11 +74,12 @@ const ControlledUncontrolled = () => {
   const updateEdgeColors = () => {
     instance.setEdges((edges) =>
       edges.map((edge) => {
-        edge.style = {
-          stroke: '#ff5050',
+        return {
+          ...edge,
+          style: {
+            stroke: '#ff5050',
+          },
         };
-
-        return edge;
       })
     );
   };

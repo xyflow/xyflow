@@ -209,12 +209,16 @@ export function NodeWrapper<NodeType extends Node>({
           positionAbsoluteX={clampedPosition.x}
           positionAbsoluteY={clampedPosition.y}
           selected={node.selected}
+          selectable={isSelectable}
+          draggable={isDraggable}
+          deletable={node.deletable ?? true}
           isConnectable={isConnectable}
           sourcePosition={node.sourcePosition}
           targetPosition={node.targetPosition}
           dragging={dragging}
           dragHandle={node.dragHandle}
           zIndex={internals.z}
+          parentId={node.parentId}
           {...nodeDimensions}
         />
       </Provider>

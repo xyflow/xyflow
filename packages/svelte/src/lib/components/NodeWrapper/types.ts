@@ -10,6 +10,7 @@ export type NodeWrapperProps = Pick<
   | 'dragging'
   | 'selected'
   | 'selectable'
+  | 'deletable'
   | 'style'
   | 'type'
   | 'sourcePosition'
@@ -20,6 +21,7 @@ export type NodeWrapperProps = Pick<
   | 'height'
   | 'initialWidth'
   | 'initialHeight'
+  | 'parentId'
 > & {
   measuredWidth?: number;
   measuredHeight?: number;

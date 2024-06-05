@@ -100,7 +100,7 @@ export type EdgeTextProps = HTMLAttributes<SVGElement> &
  */
 export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
   EdgeType,
-  'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target'
+  'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target' | 'selectable' | 'deletable'
 > &
   EdgePosition &
   EdgeLabelOptions & {

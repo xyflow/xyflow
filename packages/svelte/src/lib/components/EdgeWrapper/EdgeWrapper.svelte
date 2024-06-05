@@ -23,6 +23,7 @@
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
   export let selectable: $$Props['selectable'] = undefined;
+  export let deletable: $$Props['deletable'] = undefined;
   export let hidden: $$Props['hidden'] = false;
   export let label: $$Props['label'] = undefined;
   export let labelStyle: $$Props['labelStyle'] = undefined;
@@ -49,13 +50,15 @@
   const dispatch = createEventDispatcher<{
     edgeclick: { edge: Edge; event: MouseEvent | TouchEvent };
     edgecontextmenu: { edge: Edge; event: MouseEvent };
+    edgemouseenter: { edge: Edge; event: MouseEvent };
+    edgemouseleave: { edge: Edge; event: MouseEvent };
   }>();
 
   $: edgeType = type || 'default';
   $: edgeComponent = $edgeTypes[edgeType] || BezierEdgeInternal;
   $: markerStartUrl = markerStart ? `url('#${getMarkerId(markerStart, $flowId)}')` : undefined;
   $: markerEndUrl = markerEnd ? `url('#${getMarkerId(markerEnd, $flowId)}')` : undefined;
-  $: isSelectable = selectable || ($elementsSelectable && typeof selectable === 'undefined');
+  $: isSelectable = selectable ?? $elementsSelectable;
 
   const handleEdgeSelect = useHandleEdgeSelect();
 
@@ -68,11 +71,12 @@
     }
   }
 
-  function onContextMenu(event: MouseEvent) {
+  type EdgeMouseEvent = 'edgecontextmenu' | 'edgemouseenter' | 'edgemouseleave';
+  function onMouseEvent(event: MouseEvent, type: EdgeMouseEvent) {
     const edge = $edgeLookup.get(id);
 
     if (edge) {
-      dispatch('edgecontextmenu', { event, edge });
+      dispatch(type, { event, edge });
     }
   }
 </script>
@@ -88,7 +92,15 @@
       class:selectable={isSelectable}
       data-id={id}
       on:click={onClick}
-      on:contextmenu={onContextMenu}
+      on:contextmenu={(e) => {
+        onMouseEvent(e, 'edgecontextmenu');
+      }}
+      on:mouseenter={(e) => {
+        onMouseEvent(e, 'edgemouseenter');
+      }}
+      on:mouseleave={(e) => {
+        onMouseEvent(e, 'edgemouseleave');
+      }}
       aria-label={ariaLabel === null
         ? undefined
         : ariaLabel
@@ -114,6 +126,8 @@
         {data}
         {style}
         {interactionWidth}
+        selectable={isSelectable}
+        deletable={deletable ?? true}
         type={edgeType}
         sourceHandleId={sourceHandle}
         targetHandleId={targetHandle}

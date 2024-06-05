@@ -133,6 +133,7 @@ export type EdgeLayouted = Pick<
   | 'animated'
   | 'selected'
   | 'selectable'
+  | 'deletable'
   | 'label'
   | 'labelStyle'
   | 'interactionWidth'
