@@ -1,5 +1,5 @@
 {
-  "name": "@xyflow/system",
+  "name": "@xyflow-test/system",
   "version": "0.0.27",
   "description": "xyflow core system that powers React Flow and Svelte Flow.",
   "keywords": [
