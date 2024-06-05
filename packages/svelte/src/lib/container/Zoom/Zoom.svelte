@@ -8,7 +8,7 @@
 
   type $$Props = ZoomProps;
 
-  export let initialViewport: $$Props['initialViewport'];
+  export let initialViewport: $$Props['initialViewport'] = undefined;
   export let onMoveStart: $$Props['onMoveStart'] = undefined;
   export let onMove: $$Props['onMove'] = undefined;
   export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
