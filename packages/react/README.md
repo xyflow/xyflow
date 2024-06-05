@@ -16,6 +16,8 @@ A highly customizable React component for building interactive graphs and node-b
 
 ---
 
+something
+
 ## Key Features
 
 - **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
