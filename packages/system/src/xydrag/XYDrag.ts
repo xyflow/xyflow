@@ -100,7 +100,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let containerBounds: DOMRect | null = null;
   let dragStarted = false;
   let d3Selection: Selection<Element, unknown, null, undefined> | null = null;
-  let abortDrag = false; // needed to block multitouch
+  let abortDrag = false; // prevents unintentional dragging on multitouch
 
   // public functions
   function update({ noDragClassName, handleSelector, domNode, isSelectable, nodeId }: DragUpdateParams) {
