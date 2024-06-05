@@ -8,6 +8,7 @@
 - fix deselection of edges
 - remove pointer events from panel when user selection is active
 - fix viewport initialization with user viewport 
+- fix parent node lookup in `evaluateAbsolutePosition`- thanks @lcsfort
 
 ## 0.1.3
 
