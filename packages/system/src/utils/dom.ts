@@ -61,6 +61,7 @@ export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRec
 export const getHandleBounds = (
   selector: string,
   nodeElement: HTMLDivElement,
+  nodeBounds: DOMRect,
   zoom: number,
   nodeOrigin: NodeOrigin = [0, 0]
 ): HandleElement[] | null => {
@@ -72,11 +73,9 @@ export const getHandleBounds = (
 
   const handlesArray = Array.from(handles) as HTMLDivElement[];
 
-  // @todo can't we use the node dimensions here?
-  const nodeBounds = nodeElement.getBoundingClientRect();
   const nodeOffset = {
-    x: nodeBounds.width * nodeOrigin[0],
-    y: nodeBounds.height * nodeOrigin[1],
+    x: nodeBounds.left - nodeBounds.width * nodeOrigin[0],
+    y: nodeBounds.top - nodeBounds.height * nodeOrigin[1],
   };
 
   return handlesArray.map((handle): HandleElement => {
@@ -85,8 +84,8 @@ export const getHandleBounds = (
     return {
       id: handle.getAttribute('data-handleid'),
       position: handle.getAttribute('data-handlepos') as unknown as Position,
-      x: (handleBounds.left - nodeBounds.left - nodeOffset.x) / zoom,
-      y: (handleBounds.top - nodeBounds.top - nodeOffset.y) / zoom,
+      x: (handleBounds.left - nodeOffset.x) / zoom,
+      y: (handleBounds.top - nodeOffset.y) / zoom,
       ...getDimensions(handle),
     };
   });
