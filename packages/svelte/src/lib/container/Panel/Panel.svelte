@@ -19,7 +19,7 @@
 <div
   class={cc(['svelte-flow__panel', className, ...positionClasses])}
   {style}
-  style:pointer-events={$selectionRectMode ? 'none' : undefined}
+  style:pointer-events={$selectionRectMode ? 'none' : ''}
   {...$$restProps}
 >
   <slot />
