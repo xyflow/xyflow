@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react';
+import { memo, useState, useEffect, useRef } from 'react';
 import cc from 'classcat';
 import type { Rect } from '@xyflow/system';
 
@@ -19,19 +19,20 @@ function EdgeTextComponent({
 }: EdgeTextProps) {
   const [edgeTextBbox, setEdgeTextBbox] = useState<Rect>({ x: 1, y: 0, width: 0, height: 0 });
   const edgeTextClasses = cc(['react-flow__edge-textwrapper', className]);
+  const edgeTextRef = useRef<SVGTextElement | null>(null);
 
-  const onEdgeTextRefChange = useCallback((edgeRef: SVGTextElement) => {
-    if (edgeRef === null) return;
+  useEffect(() => {
+    if (edgeTextRef.current) {
+      const textBbox = edgeTextRef.current.getBBox();
 
-    const textBbox = edgeRef.getBBox();
-
-    setEdgeTextBbox({
-      x: textBbox.x,
-      y: textBbox.y,
-      width: textBbox.width,
-      height: textBbox.height,
-    });
-  }, []);
+      setEdgeTextBbox({
+        x: textBbox.x,
+        y: textBbox.y,
+        width: textBbox.width,
+        height: textBbox.height,
+      });
+    }
+  }, [label]);
 
   if (typeof label === 'undefined' || !label) {
     return null;
@@ -60,7 +61,7 @@ function EdgeTextComponent({
         className="react-flow__edge-text"
         y={edgeTextBbox.height / 2}
         dy="0.3em"
-        ref={onEdgeTextRefChange}
+        ref={edgeTextRef}
         style={labelStyle}
       >
         {label}
