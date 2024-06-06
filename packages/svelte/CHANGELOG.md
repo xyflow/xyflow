@@ -1,5 +1,12 @@
 # @xyflow/svelte
 
+## 0.1.5
+
+- prevent zooming on mobile if zoomOnPinch is false
+- add straight edge to path built-in-types
+- abort drag when multiple touches are detected
+- fix merge_styles error
+
 ## 0.1.4
 
 - add `selectable`, `deletable` and `draggable` to node and edge props

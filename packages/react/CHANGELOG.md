@@ -1,5 +1,13 @@
 # @xyflow/react
 
+## 12.0.0-next.20
+
+- add `updateEdge` and `updateEdgeData` helpers to `useReactFlow`
+- enable dynamic edge label updates
+- prevent zooming on mobile if zoomOnPinch is false
+- add straight edge to path built-in-types
+- abort drag when multiple touches are detected
+
 ## 12.0.0-next.19
 
 - update internals on node resizer updates
