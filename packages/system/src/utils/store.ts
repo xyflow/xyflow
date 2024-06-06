@@ -269,12 +269,13 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       );
 
       if (doUpdate) {
+        const nodeBounds = update.nodeElement.getBoundingClientRect();
         node.measured = dimensions;
         node.internals = {
           ...node.internals,
           handleBounds: {
-            source: getHandleBounds('.source', update.nodeElement, zoom, node.origin || nodeOrigin),
-            target: getHandleBounds('.target', update.nodeElement, zoom, node.origin || nodeOrigin),
+            source: getHandleBounds('.source', update.nodeElement, nodeBounds, zoom, node.origin || nodeOrigin),
+            target: getHandleBounds('.target', update.nodeElement, nodeBounds, zoom, node.origin || nodeOrigin),
           },
         };
 
