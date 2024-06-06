@@ -65,6 +65,11 @@ export function createFilter({
       return false;
     }
 
+    if (!zoomOnPinch && event.type === 'touchstart' && event.touches?.length > 1) {
+      event.preventDefault(); // if you manage to start with 2 touches, we prevent native zoom
+      return false;
+    }
+
     // when there is no scroll handling enabled, we prevent all wheel events
     if (!zoomScroll && !panOnScroll && !pinchZoom && event.type === 'wheel') {
       return false;
