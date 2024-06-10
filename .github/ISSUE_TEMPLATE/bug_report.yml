@@ -29,9 +29,15 @@ body:
     attributes:
       label: Live code example
       description: |
-        This is the most important part of the bug report! You can use our React Flow [js](https://new.reactflow.dev/js) or [ts](https://new.reactflow.dev/ts) codesandbox starter, or our Svelte Flow [js](https://new.svelteflow.dev/js) or [ts](https://new.svelteflow.dev/ts) stackblitz starter. Avoid dependencies in your example for easier debugging.
-      placeholder: |
-        e.g. https://stackblitz.com/edit/... or link to public Github Repo
+        This is the most important part of the bug report!
+        React Flow codesandbox starters
+        - js: https://new.reactflow.dev/js
+        - ts: https://new.reactflow.dev/ts
+        Svelte Flow stackblitz starters
+        - js: https://new.svelteflow.dev/js
+        - ts: https://new.svelteflow.dev/ts 
+        Avoid dependencies in your example for easier debugging.
+      placeholder: e.g. https://stackblitz.com/edit/... or link to public Github Repo
     validations:
       required: false
   - type: textarea
@@ -58,8 +64,7 @@ body:
     attributes:
       label: Expected behavior
       description: What would you expect to happen if there was no bug or issue?
-      placeholder: |
-        As a user, I expected ___ behavior, but instead I am seeing ___
+      placeholder: As a user, I expected ___ behavior, but instead I am seeing ___
     validations:
       required: true
   - type: textarea
@@ -68,12 +73,9 @@ body:
       label: Screenshots or Videos
       description: |
         If applicable, add screenshots or a video to help explain your problem.
-    
-       Supported image/file types and file size limits%3B https://docs.github.com/en/github/writing-on-github/working-with-advanced-formatting/attaching-files
-      placeholder: |
-        You can drag your video or image files inside of this editor ↓
+        Supported image/file types and file size limits- https://docs.github.com/en/github/writing-on-github/working-with-advanced-formatting/attaching-files
+      placeholder: Drag your video or image files inside of this editor
   - type: textarea
     id: additional
     attributes:
       label: Additional context
-      description: 
