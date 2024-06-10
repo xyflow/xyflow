@@ -4,47 +4,48 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for reporting an issue :pray:.
+        Hello! You found the place to submit a bug or issue that you discovered in the xyflow library, thank you for helping us out!
 
-        **Please only file issues for v11. Will will no longer fix issues for v10.** 
+        Having trouble making something work in xyflow, but it’s not a bug with the library itself? You’ll get the fastest response by asking in [github discussions](https://github.com/xyflow/xyflow/discussions) or our [discord server](https://discord.gg/RVmnytFmGW).
 
-        This issue tracker is for reporting bugs found in react-flow (https://github.com/wbkd/react-flow)
-        If you have a question about how to achieve something and are struggling, please post a question
-        inside of react-flow's Discussion's tab: https://github.com/wbkd/react-flow/discussions
-        If it's an issue about the docs please go to the react-flow-docs (https://github.com/wbkd/react-flow-docs)
+        **Search our [discussions](https://github.com/xyflow/xyflow/discussions?discussions_q=) and [issues](https://github.com/xyflow/xyflow/issues?q=)** to see if your problem has already been reported and you can add more context, or see if someone else has already solved your issue. And of course, check our [docs](https://reactflow.dev/learn) if you haven’t already.
 
-        Before submitting a new bug/issue, please check the links below to see if there is a solution or question posted there already:
-         - react-flow's Open Issue's tab: https://github.com/wbkd/react-flow/issues?q=is%3Aissue+sort%3Aupdated-desc+position
-         - react-flow's Closed Issues tab: https://github.com/wbkd/react-flow/issues?q=is%3Aissue+sort%3Aupdated-desc+position+is%3Aclosed
-         - react-flow's Discussion's tab: https://github.com/wbkd/react-flow/discussions
+        **Issue with the xyflow Docs?** Submit an issue in our [web repo](https://github.com/xyflow/web/issues) instead.
 
-        The more information you fill in, the better the community can help you.
+        With that out of the way, let’s get started 🐛
   - type: textarea
-    id: description
+    id: platform
     attributes:
-      label: Describe the Bug
-      description: Provide a clear and concise description of the challenge you are running into.
+      label: What platform were you using when you found the bug?
+      description: We only address issues for the most recent xyflow major release or upcoming releases.
+      value: |
+        - React Flow / Svelte Flow version: 
+        - Browser and version: 
+        - OS and version:
     validations:
       required: true
   - type: input
     id: link
     attributes:
-      label: Your Example Website or App
+      label: Live code example
       description: |
-        Which website or app were you using when the bug happened?
-        Note:
-        - Your bug will may get fixed much faster if we can run your code and it doesn't have dependencies other than the `react-flow-renderer` npm package.
-        - To create a shareable code example you can use Codesandbox (https://codesandbox.io/s/react-flow-starter-ou8or) or Stackblitz (https://stackblitz.com/). 
-        - Please read these tips for providing a minimal example: https://stackoverflow.com/help/mcve.
+        This is the most important part of the bug report! You can use our React Flow [js](https://new.reactflow.dev/js) or [ts](https://new.reactflow.dev/ts) codesandbox starter, or our Svelte Flow [js](https://new.svelteflow.dev/js) or [ts](https://new.svelteflow.dev/ts) stackblitz starter. Avoid dependencies in your example for easier debugging.
       placeholder: |
-        e.g. https://stackblitz.com/edit/...... OR Github Repo
+        e.g. https://stackblitz.com/edit/... or link to public Github Repo
     validations:
       required: false
   - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      description: What exactly is happening when you encounter the bug?
+    validations:
+      required: true
+  - type: textarea
     id: steps
     attributes:
-      label: Steps to Reproduce the Bug or Issue
-      description: Describe the steps we have to take to reproduce the behavior.
+      label: Steps to reproduce the bug or issue
+      description: How can we see the reported behavior in the code example you provided? The more detail, the better!
       placeholder: |
         1. Go to '...'
         2. Click on '....'
@@ -56,9 +57,9 @@ body:
     id: expected
     attributes:
       label: Expected behavior
-      description: Provide a clear and concise description of what you expected to happen.
+      description: What would you expect to happen if there was no bug or issue?
       placeholder: |
-        As a user, I expected ___ behavior but i am seeing ___
+        As a user, I expected ___ behavior, but instead I am seeing ___
     validations:
       required: true
   - type: textarea
@@ -67,22 +68,12 @@ body:
       label: Screenshots or Videos
       description: |
         If applicable, add screenshots or a video to help explain your problem.
-        For more information on the supported file image/file types and the file size limits, please refer
-        to the following link: https://docs.github.com/en/github/writing-on-github/working-with-advanced-formatting/attaching-files
+    
+       Supported image/file types and file size limits%3B https://docs.github.com/en/github/writing-on-github/working-with-advanced-formatting/attaching-files
       placeholder: |
         You can drag your video or image files inside of this editor ↓
-  - type: textarea
-    id: platform
-    attributes:
-      label: Platform
-      value: |
-        - OS: [e.g. macOS, Windows, Linux]
-        - Browser: [e.g. Chrome, Safari, Firefox]
-        - Version: [e.g. 91.1]
-    validations:
-      required: true
   - type: textarea
     id: additional
     attributes:
       label: Additional context
-      description: Add any other context about the problem here.
+      description: 
