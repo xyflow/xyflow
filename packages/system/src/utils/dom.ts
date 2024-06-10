@@ -74,8 +74,8 @@ export const getHandleBounds = (
   const handlesArray = Array.from(handles) as HTMLDivElement[];
 
   const nodeOffset = {
-    x: nodeBounds.left - nodeBounds.width * nodeOrigin[0],
-    y: nodeBounds.top - nodeBounds.height * nodeOrigin[1],
+    x: nodeBounds.left + nodeBounds.width * nodeOrigin[0],
+    y: nodeBounds.top + nodeBounds.height * nodeOrigin[1],
   };
 
   return handlesArray.map((handle): HandleElement => {
