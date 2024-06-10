@@ -1,10 +1,10 @@
-name: '🐛 Bug Report'
+name: ':bug: Bug Report'
 description: Create a report to help us improve React Flow
 body:
   - type: markdown
     attributes:
       value: |
-        Hello! You found the place to submit a bug or issue that you discovered in the xyflow library, thank you for helping us out!
+        Hello! :sparkles: You found the place to submit a bug or issue that you discovered in the xyflow library, thank you for helping us out!
 
         Having trouble making something work in xyflow, but it’s not a bug with the library itself? You’ll get the fastest response by asking in [github discussions](https://github.com/xyflow/xyflow/discussions) or our [discord server](https://discord.gg/RVmnytFmGW).
 
@@ -12,7 +12,7 @@ body:
 
         **Issue with the xyflow Docs?** Submit an issue in our [web repo](https://github.com/xyflow/web/issues) instead.
 
-        With that out of the way, let’s get started 🐛
+        With that out of the way, let’s get started :bug:
   - type: textarea
     id: platform
     attributes:
@@ -29,15 +29,18 @@ body:
     attributes:
       label: Live code example
       description: |
-        This is the most important part of the bug report!
+        This is the most important part of the bug report! 
+
         React Flow codesandbox starters
         - js: https://new.reactflow.dev/js
         - ts: https://new.reactflow.dev/ts
+
         Svelte Flow stackblitz starters
         - js: https://new.svelteflow.dev/js
         - ts: https://new.svelteflow.dev/ts 
+
         Avoid dependencies in your example for easier debugging.
-      placeholder: e.g. https://stackblitz.com/edit/... or link to public Github Repo
+      placeholder: https://stackblitz.com/edit/...  or Github Repo
     validations:
       required: false
   - type: textarea
