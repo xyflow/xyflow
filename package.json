@@ -5,6 +5,7 @@
   "repository": "git@github.com:wbkd/react-flow.git",
   "license": "MIT",
   "private": true,
+  "packageManager": "pnpm@9.1.4",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "turbo run dev --parallel --concurrency 12",
