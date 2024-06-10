@@ -1,5 +1,9 @@
 # @xyflow/react
 
+## 12.0.0-next.21
+
+- fix node origin bug
+
 ## 12.0.0-next.20
 
 - add `updateEdge` and `updateEdgeData` helpers to `useReactFlow`
