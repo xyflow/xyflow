@@ -444,10 +444,10 @@ importers:
         specifier: ^8.5.0
         version: 8.8.0(eslint@8.43.0)
       eslint-config-turbo:
-        specifier: latest
-        version: 1.10.15(eslint@8.43.0)
+        specifier: ^2.0.3
+        version: 2.0.3(eslint@8.43.0)
       eslint-plugin-react:
-        specifier: latest
+        specifier: ^7.33.2
         version: 7.33.2(eslint@8.43.0)
 
   tooling/rollup-config:
@@ -2923,8 +2923,8 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-config-turbo@1.10.15:
-    resolution: {integrity: sha512-76mpx2x818JZE26euen14utYcFDxOahZ9NaWA+6Xa4pY2ezVKVschuOxS96EQz3o3ZRSmcgBOapw/gHbN+EKxQ==}
+  eslint-config-turbo@2.0.3:
+    resolution: {integrity: sha512-D1+lNOpTFEuAgPWJfRHXHjzvAfO+0TVmORfftmYQNw+uk2UIBjhelhwERBceYFy2oFJnckHsqt69dp/zIM6/0g==}
     peerDependencies:
       eslint: '>6.6.0'
 
@@ -2965,8 +2965,8 @@ packages:
       svelte:
         optional: true
 
-  eslint-plugin-turbo@1.10.15:
-    resolution: {integrity: sha512-Tv4QSKV/U56qGcTqS/UgOvb9HcKFmWOQcVh3HEaj7of94lfaENgfrtK48E2CckQf7amhKs1i+imhCsNCKjkQyA==}
+  eslint-plugin-turbo@2.0.3:
+    resolution: {integrity: sha512-mplP4nYaRvtTNuwF5QTLYKLu0/8LTRsHPgX4ARhaof+QZI2ttglONe1/iJpKB4pg0KqFp7WHziKoJL+s0+CJ1w==}
     peerDependencies:
       eslint: '>6.6.0'
 
@@ -8980,10 +8980,10 @@ snapshots:
     dependencies:
       eslint: 8.57.0
 
-  eslint-config-turbo@1.10.15(eslint@8.43.0):
+  eslint-config-turbo@2.0.3(eslint@8.43.0):
     dependencies:
       eslint: 8.43.0
-      eslint-plugin-turbo: 1.10.15(eslint@8.43.0)
+      eslint-plugin-turbo: 2.0.3(eslint@8.43.0)
 
   eslint-plugin-prettier@4.2.1(eslint-config-prettier@8.8.0(eslint@8.43.0))(eslint@8.43.0)(prettier@2.8.8):
     dependencies:
@@ -9055,7 +9055,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  eslint-plugin-turbo@1.10.15(eslint@8.43.0):
+  eslint-plugin-turbo@2.0.3(eslint@8.43.0):
     dependencies:
       dotenv: 16.0.3
       eslint: 8.43.0
