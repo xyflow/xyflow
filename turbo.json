@@ -1,12 +1,21 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
+  "globalEnv": [
+    "NODE_ENV"
+  ],
+  "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
     },
     "dev": {
-      "outputs": ["dist/**"],
+      "outputs": [
+        "dist/**"
+      ],
       "cache": false,
       "persistent": true
     },
@@ -17,9 +26,10 @@
       "outputs": []
     },
     "test": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": []
     }
-  },
-  "globalEnv": ["NODE_ENV"]
+  }
 }
