@@ -15,6 +15,7 @@
     "test:react": "pnpm --filter=playwright run test:react",
     "test:react:ui": "pnpm --filter=playwright run test:react:ui",
     "build": "turbo run build",
+    "build:libs": "turbo run build --filter=./packages/**",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
