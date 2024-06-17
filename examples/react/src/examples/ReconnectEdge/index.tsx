@@ -96,9 +96,9 @@ const initialEdges: Edge[] = [
   { id: 'e5-6', source: '5', target: '6', label: 'This edge can be updated from both sides' },
 ];
 
-const onEdgeUpdateStart = (_: ReactMouseEvent, edge: Edge, handleType: HandleType) =>
+const onReconnectStart = (_: ReactMouseEvent, edge: Edge, handleType: HandleType) =>
   console.log(`start update ${handleType} handle`, edge);
-const onEdgeUpdateEnd = (_: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) =>
+const onReconnectEnd = (_: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) =>
   console.log(`end update ${handleType} handle`, edge);
 
 const ReconnectEdge = () => {
@@ -125,8 +125,8 @@ const ReconnectEdge = () => {
       snapToGrid={true}
       onReconnect={onReconnect}
       onConnect={onConnect}
-      onReconnectStart={onEdgeUpdateStart}
-      onReconnectEnd={onEdgeUpdateEnd}
+      onReconnectStart={onReconnectStart}
+      onReconnectEnd={onReconnectEnd}
       fitView
     >
       <Controls />

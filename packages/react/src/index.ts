@@ -116,6 +116,6 @@ export {
   getIncomers,
   getOutgoers,
   addEdge,
-  updateEdge,
+  reconnectEdge,
   getConnectedEdges,
 } from '@xyflow/system';

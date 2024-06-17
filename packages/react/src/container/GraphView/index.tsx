@@ -85,14 +85,14 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   onPaneMouseLeave,
   onPaneScroll,
   onPaneContextMenu,
-  onEdgeUpdate,
   onEdgeContextMenu,
   onEdgeMouseEnter,
   onEdgeMouseMove,
   onEdgeMouseLeave,
-  edgeUpdaterRadius,
-  onEdgeUpdateStart,
-  onEdgeUpdateEnd,
+  reconnectRadius,
+  onReconnect,
+  onReconnectStart,
+  onReconnectEnd,
   noDragClassName,
   noWheelClassName,
   noPanClassName,
@@ -153,15 +153,15 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
           edgeTypes={edgeTypes}
           onEdgeClick={onEdgeClick}
           onEdgeDoubleClick={onEdgeDoubleClick}
-          onEdgeUpdate={onEdgeUpdate}
+          onReconnect={onReconnect}
+          onReconnectStart={onReconnectStart}
+          onReconnectEnd={onReconnectEnd}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           onEdgeContextMenu={onEdgeContextMenu}
           onEdgeMouseEnter={onEdgeMouseEnter}
           onEdgeMouseMove={onEdgeMouseMove}
           onEdgeMouseLeave={onEdgeMouseLeave}
-          onEdgeUpdateStart={onEdgeUpdateStart}
-          onEdgeUpdateEnd={onEdgeUpdateEnd}
-          edgeUpdaterRadius={edgeUpdaterRadius}
+          reconnectRadius={reconnectRadius}
           defaultMarkerColor={defaultMarkerColor}
           noPanClassName={noPanClassName}
           disableKeyboardA11y={disableKeyboardA11y}

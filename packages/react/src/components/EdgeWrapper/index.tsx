@@ -26,10 +26,10 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
   onMouseEnter,
   onMouseMove,
   onMouseLeave,
-  edgeUpdaterRadius,
-  onEdgeUpdate,
-  onEdgeUpdateStart,
-  onEdgeUpdateEnd,
+  reconnectRadius,
+  onReconnect,
+  onReconnectStart,
+  onReconnectEnd,
   rfId,
   edgeTypes,
   noPanClassName,
@@ -51,7 +51,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
 
   const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
   const isReconnectable =
-    typeof onEdgeUpdate !== 'undefined' &&
+    typeof onReconnect !== 'undefined' &&
     (edge.reconnectable || (edgesReconnectable && typeof edge.reconnectable === 'undefined'));
   const isSelectable = !!(edge.selectable || (elementsSelectable && typeof edge.selectable === 'undefined'));
 
@@ -243,10 +243,10 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
           <EdgeUpdateAnchors<EdgeType>
             edge={edge}
             isReconnectable={isReconnectable}
-            edgeUpdaterRadius={edgeUpdaterRadius}
-            onEdgeUpdate={onEdgeUpdate}
-            onEdgeUpdateStart={onEdgeUpdateStart}
-            onEdgeUpdateEnd={onEdgeUpdateEnd}
+            reconnectRadius={reconnectRadius}
+            onReconnect={onReconnect}
+            onReconnectStart={onReconnectStart}
+            onReconnectEnd={onReconnectEnd}
             sourceX={sourceX}
             sourceY={sourceY}
             targetX={targetX}

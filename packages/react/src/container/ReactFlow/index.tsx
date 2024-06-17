@@ -104,15 +104,15 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     onPaneScroll,
     onPaneContextMenu,
     children,
-    onEdgeUpdate,
+    onReconnect,
+    onReconnectStart,
+    onReconnectEnd,
     onEdgeContextMenu,
     onEdgeDoubleClick,
     onEdgeMouseEnter,
     onEdgeMouseMove,
     onEdgeMouseLeave,
-    onEdgeUpdateStart,
-    onEdgeUpdateEnd,
-    edgeUpdaterRadius = 10,
+    reconnectRadius = 10,
     onNodesChange,
     onEdgesChange,
     noDragClassName = 'nodrag',
@@ -202,15 +202,15 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           onSelectionContextMenu={onSelectionContextMenu}
           onSelectionStart={onSelectionStart}
           onSelectionEnd={onSelectionEnd}
-          onEdgeUpdate={onEdgeUpdate}
+          onReconnect={onReconnect}
+          onReconnectStart={onReconnectStart}
+          onReconnectEnd={onReconnectEnd}
           onEdgeContextMenu={onEdgeContextMenu}
           onEdgeDoubleClick={onEdgeDoubleClick}
           onEdgeMouseEnter={onEdgeMouseEnter}
           onEdgeMouseMove={onEdgeMouseMove}
           onEdgeMouseLeave={onEdgeMouseLeave}
-          onEdgeUpdateStart={onEdgeUpdateStart}
-          onEdgeUpdateEnd={onEdgeUpdateEnd}
-          edgeUpdaterRadius={edgeUpdaterRadius}
+          reconnectRadius={reconnectRadius}
           defaultMarkerColor={defaultMarkerColor}
           noDragClassName={noDragClassName}
           noWheelClassName={noWheelClassName}

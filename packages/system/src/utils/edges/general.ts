@@ -132,23 +132,23 @@ export const addEdge = <EdgeType extends EdgeBase>(
   return edges.concat(edge);
 };
 
-export type UpdateEdgeOptions = {
+export type ReconnectEdgeOptions = {
   shouldReplaceId?: boolean;
 };
 
 /**
- * A handy utility to update an existing Edge with new properties
+ * A handy utility to reconnect an existing edge with new properties
  * @param oldEdge - The edge you want to update
  * @param newConnection - The new connection you want to update the edge with
  * @param edges - The array of all current edges
  * @param options.shouldReplaceId - should the id of the old edge be replaced with the new connection id
  * @returns the updated edges array
  */
-export const updateEdge = <EdgeType extends EdgeBase>(
+export const reconnectEdge = <EdgeType extends EdgeBase>(
   oldEdge: EdgeType,
   newConnection: Connection,
   edges: EdgeType[],
-  options: UpdateEdgeOptions = { shouldReplaceId: true }
+  options: ReconnectEdgeOptions = { shouldReplaceId: true }
 ): EdgeType[] => {
   const { id: oldEdgeId, ...rest } = oldEdge;
 

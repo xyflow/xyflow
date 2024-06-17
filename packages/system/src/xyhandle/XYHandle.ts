@@ -36,7 +36,7 @@ export type OnPointerDownParams = {
   onConnect?: OnConnect;
   onConnectEnd?: OnConnectEnd;
   isValidConnection?: IsValidConnection;
-  onEdgeUpdateEnd?: (evt: MouseEvent | TouchEvent) => void;
+  onReconnectEnd?: (evt: MouseEvent | TouchEvent) => void;
   getTransform: () => Transform;
   getConnectionStartHandle: () => ConnectingHandle | null;
 };
@@ -89,7 +89,7 @@ function onPointerDown(
     onConnect,
     onConnectEnd,
     isValidConnection = alwaysValid,
-    onEdgeUpdateEnd,
+    onReconnectEnd,
     updateConnection,
     getTransform,
     getConnectionStartHandle,
@@ -211,7 +211,7 @@ function onPointerDown(
     onConnectEnd?.(event);
 
     if (edgeUpdaterType) {
-      onEdgeUpdateEnd?.(event);
+      onReconnectEnd?.(event);
     }
 
     cancelConnection();
