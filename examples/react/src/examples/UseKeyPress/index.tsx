@@ -1,9 +1,12 @@
 import { useKeyPress } from '@xyflow/react';
+import { useEffect } from 'react';
 
 const UseKeyPressComponent = () => {
   const metaPressed = useKeyPress(['Meta']);
 
-  console.log({ metaPressed });
+  useEffect(() => {
+    console.log({ metaPressed });
+  }, [metaPressed]);
 
   return <div />;
 };

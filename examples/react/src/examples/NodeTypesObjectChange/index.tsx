@@ -28,6 +28,14 @@ const initialNodes: Node[] = [
     data: { label: 'A Node' },
     position: { x: 250, y: 0 },
   },
+  {
+    id: '3',
+    type: 'b',
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+    data: { label: 'B Node' },
+    position: { x: 350, y: 0 },
+  },
 ];
 
 const buttonStyle: CSSProperties = {
@@ -78,6 +86,7 @@ const NodeTypeChangeFlow = () => {
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       nodeTypes={nodeTypesObjects[nodeTypesId]}
+      fitView
     >
       <button onClick={changeType} style={buttonStyle}>
         change type
