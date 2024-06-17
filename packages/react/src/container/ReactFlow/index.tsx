@@ -81,7 +81,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     nodesFocusable,
     nodeOrigin = defaultNodeOrigin,
     edgesFocusable,
-    edgesUpdatable,
+    edgesReconnectable,
     elementsSelectable = true,
     defaultViewport = initViewport,
     minZoom = 0.5,
@@ -236,7 +236,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           nodesConnectable={nodesConnectable}
           nodesFocusable={nodesFocusable}
           edgesFocusable={edgesFocusable}
-          edgesUpdatable={edgesUpdatable}
+          edgesReconnectable={edgesReconnectable}
           elementsSelectable={elementsSelectable}
           elevateNodesOnSelect={elevateNodesOnSelect}
           elevateEdgesOnSelect={elevateEdgesOnSelect}

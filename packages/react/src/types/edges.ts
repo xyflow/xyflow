@@ -28,8 +28,6 @@ export type EdgeLabelOptions = {
   labelBgBorderRadius?: number;
 };
 
-export type EdgeUpdatable = boolean | HandleType;
-
 /**
  * The Edge type is mainly used for the `edges` that get passed to the ReactFlow component
  * @public
@@ -41,7 +39,7 @@ export type Edge<
   EdgeLabelOptions & {
     style?: CSSProperties;
     className?: string;
-    updatable?: EdgeUpdatable;
+    reconnectable?: boolean | HandleType;
     focusable?: boolean;
   };
 
@@ -69,7 +67,7 @@ export type EdgeMouseHandler<EdgeType extends Edge = Edge> = (event: ReactMouseE
 export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   id: string;
   edgesFocusable: boolean;
-  edgesUpdatable: boolean;
+  edgesReconnectable: boolean;
   elementsSelectable: boolean;
   noPanClassName: string;
   onClick?: EdgeMouseHandler<EdgeType>;

@@ -1,4 +1,4 @@
-// Updatable edges have a anchors around their handles to update the edge.
+// Reconnectable edges have a anchors around their handles to reconnect the edge.
 import { XYHandle, type Connection, EdgePosition } from '@xyflow/system';
 
 import { EdgeAnchor } from '../Edges/EdgeAnchor';
@@ -7,7 +7,7 @@ import { useStoreApi } from '../../hooks/useStore';
 
 type EdgeUpdateAnchorsProps<EdgeType extends Edge = Edge> = {
   edge: EdgeType;
-  isUpdatable: boolean | 'source' | 'target';
+  isReconnectable: boolean | 'source' | 'target';
   edgeUpdaterRadius: EdgeWrapperProps['edgeUpdaterRadius'];
   sourceHandleId: Edge['sourceHandle'];
   targetHandleId: Edge['targetHandle'];
@@ -15,11 +15,11 @@ type EdgeUpdateAnchorsProps<EdgeType extends Edge = Edge> = {
   onEdgeUpdateStart: EdgeWrapperProps<EdgeType>['onEdgeUpdateStart'];
   onEdgeUpdateEnd: EdgeWrapperProps<EdgeType>['onEdgeUpdateEnd'];
   setUpdateHover: (hover: boolean) => void;
-  setUpdating: (updating: boolean) => void;
+  setReconnecting: (updating: boolean) => void;
 } & EdgePosition;
 
 export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
-  isUpdatable,
+  isReconnectable,
   edgeUpdaterRadius,
   edge,
   targetHandleId,
@@ -33,7 +33,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
   onEdgeUpdate,
   onEdgeUpdateStart,
   onEdgeUpdateEnd,
-  setUpdating,
+  setReconnecting,
   setUpdateHover,
 }: EdgeUpdateAnchorsProps<EdgeType>) {
   const store = useStoreApi();
@@ -65,11 +65,11 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
 
     const isTarget = isSourceHandle;
 
-    setUpdating(true);
+    setReconnecting(true);
     onEdgeUpdateStart?.(event, edge, handleType);
 
     const _onEdgeUpdateEnd = (evt: MouseEvent | TouchEvent) => {
-      setUpdating(false);
+      setReconnecting(false);
       onEdgeUpdateEnd?.(evt, edge, handleType);
     };
 
@@ -109,7 +109,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
 
   return (
     <>
-      {(isUpdatable === 'source' || isUpdatable === true) && (
+      {(isReconnectable === 'source' || isReconnectable === true) && (
         <EdgeAnchor
           position={sourcePosition}
           centerX={sourceX}
@@ -121,7 +121,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
           type="source"
         />
       )}
-      {(isUpdatable === 'target' || isUpdatable === true) && (
+      {(isReconnectable === 'target' || isReconnectable === true) && (
         <EdgeAnchor
           position={targetPosition}
           centerX={targetX}

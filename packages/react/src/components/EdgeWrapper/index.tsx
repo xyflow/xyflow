@@ -18,7 +18,7 @@ import type { Edge, EdgeWrapperProps } from '../../types';
 export function EdgeWrapper<EdgeType extends Edge = Edge>({
   id,
   edgesFocusable,
-  edgesUpdatable,
+  edgesReconnectable,
   elementsSelectable,
   onClick,
   onDoubleClick,
@@ -50,14 +50,14 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
   }
 
   const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
-  const isUpdatable =
+  const isReconnectable =
     typeof onEdgeUpdate !== 'undefined' &&
-    (edge.updatable || (edgesUpdatable && typeof edge.updatable === 'undefined'));
+    (edge.reconnectable || (edgesReconnectable && typeof edge.reconnectable === 'undefined'));
   const isSelectable = !!(edge.selectable || (elementsSelectable && typeof edge.selectable === 'undefined'));
 
   const edgeRef = useRef<SVGGElement>(null);
   const [updateHover, setUpdateHover] = useState<boolean>(false);
-  const [updating, setUpdating] = useState<boolean>(false);
+  const [reconnecting, setReconnecting] = useState<boolean>(false);
   const store = useStoreApi();
 
   const { zIndex, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = useStore(
@@ -207,7 +207,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
         aria-describedby={isFocusable ? `${ARIA_EDGE_DESC_KEY}-${rfId}` : undefined}
         ref={edgeRef}
       >
-        {!updating && (
+        {!reconnecting && (
           <EdgeComponent
             id={id}
             source={edge.source}
@@ -239,10 +239,10 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
             interactionWidth={edge.interactionWidth}
           />
         )}
-        {isUpdatable && (
+        {isReconnectable && (
           <EdgeUpdateAnchors<EdgeType>
             edge={edge}
-            isUpdatable={isUpdatable}
+            isReconnectable={isReconnectable}
             edgeUpdaterRadius={edgeUpdaterRadius}
             onEdgeUpdate={onEdgeUpdate}
             onEdgeUpdateStart={onEdgeUpdateStart}
@@ -254,7 +254,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
             sourcePosition={sourcePosition}
             targetPosition={targetPosition}
             setUpdateHover={setUpdateHover}
-            setUpdating={setUpdating}
+            setReconnecting={setReconnecting}
             sourceHandleId={edge.sourceHandle}
             targetHandleId={edge.targetHandle}
           />

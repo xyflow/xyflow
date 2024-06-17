@@ -92,7 +92,7 @@ const getInitialState = ({
     nodesConnectable: true,
     nodesFocusable: true,
     edgesFocusable: true,
-    edgesUpdatable: true,
+    edgesReconnectable: true,
     elementsSelectable: true,
     elevateNodesOnSelect: true,
     elevateEdgesOnSelect: false,

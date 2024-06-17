@@ -89,7 +89,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   nodesConnectable: boolean;
   nodesFocusable: boolean;
   edgesFocusable: boolean;
-  edgesUpdatable: boolean;
+  edgesReconnectable: boolean;
   elementsSelectable: boolean;
   elevateNodesOnSelect: boolean;
   elevateEdgesOnSelect: boolean;

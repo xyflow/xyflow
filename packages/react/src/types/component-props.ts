@@ -330,7 +330,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /** Controls if all edges should be updateable
    * @default true
    */
-  edgesUpdatable?: boolean;
+  edgesReconnectable?: boolean;
   /** Controls if all elements should (nodes & edges) be selectable
    * @default true
    */

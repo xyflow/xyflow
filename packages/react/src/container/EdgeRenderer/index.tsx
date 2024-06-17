@@ -34,7 +34,7 @@ const selector = (s: ReactFlowState) => ({
   width: s.width,
   height: s.height,
   edgesFocusable: s.edgesFocusable,
-  edgesUpdatable: s.edgesUpdatable,
+  edgesReconnectable: s.edgesReconnectable,
   elementsSelectable: s.elementsSelectable,
   connectionMode: s.connectionMode,
   onError: s.onError,
@@ -58,7 +58,7 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   onEdgeUpdateEnd,
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
-  const { edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
+  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useStore(selector, shallow);
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
   return (
@@ -71,7 +71,7 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
             key={id}
             id={id}
             edgesFocusable={edgesFocusable}
-            edgesUpdatable={edgesUpdatable}
+            edgesReconnectable={edgesReconnectable}
             elementsSelectable={elementsSelectable}
             noPanClassName={noPanClassName}
             onEdgeUpdate={onEdgeUpdate}

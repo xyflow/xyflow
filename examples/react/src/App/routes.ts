@@ -34,7 +34,7 @@ import Subflow from '../examples/Subflow';
 import SwitchFlow from '../examples/Switch';
 import TouchDevice from '../examples/TouchDevice';
 import Undirectional from '../examples/Undirectional';
-import UpdatableEdge from '../examples/UpdatableEdge';
+import ReconnectEdge from '../examples/ReconnectEdge';
 import UpdateNode from '../examples/UpdateNode';
 import UseUpdateNodeInternals from '../examples/UseUpdateNodeInternals';
 import UseReactFlow from '../examples/UseReactFlow';
@@ -271,9 +271,9 @@ const routes: IRoute[] = [
     component: Undirectional,
   },
   {
-    name: 'Updatable Edge',
-    path: 'updatable-edge',
-    component: UpdatableEdge,
+    name: 'Reconnect Edge',
+    path: 'reconnect-edge',
+    component: ReconnectEdge,
   },
   {
     name: 'Update Node',
