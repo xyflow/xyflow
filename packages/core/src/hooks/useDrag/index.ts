@@ -54,6 +54,7 @@ function useDrag({
   const dragEvent = useRef<MouseEvent | null>(null);
   const autoPanStarted = useRef(false);
   const dragStarted = useRef(false);
+  const abortDrag = useRef(false);
 
   const getPointerPosition = useGetPointerPosition();
 
@@ -208,6 +209,8 @@ function useDrag({
               startDrag(event);
             }
 
+            abortDrag.current = false;
+
             const pointerPos = getPointerPosition(event);
             lastPos.current = pointerPos;
             containerBounds.current = domNode?.getBoundingClientRect() || null;
@@ -216,6 +219,14 @@ function useDrag({
           .on('drag', (event: UseDragEvent) => {
             const pointerPos = getPointerPosition(event);
             const { autoPanOnNodeDrag, nodeDragThreshold } = store.getState();
+
+            if (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) {
+              abortDrag.current = true;
+            }
+
+            if (abortDrag.current) {
+              return;
+            }
 
             if (!autoPanStarted.current && dragStarted.current && autoPanOnNodeDrag) {
               autoPanStarted.current = true;
@@ -244,7 +255,7 @@ function useDrag({
             }
           })
           .on('end', (event: UseDragEvent) => {
-            if (!dragStarted.current) {
+            if (!dragStarted.current || !abortDrag.current) {
               return;
             }
 
