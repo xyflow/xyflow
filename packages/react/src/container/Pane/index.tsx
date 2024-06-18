@@ -97,9 +97,10 @@ export function Pane({
 
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
-  const onMouseDown = (event: ReactMouseEvent): void => {
+  const onMouseDown = (event: React.PointerEvent): void => {
     const { resetSelectedElements, domNode, edgeLookup } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
+    container.current?.setPointerCapture(event.pointerId);
 
     if (
       !elementsSelectable ||
@@ -199,10 +200,11 @@ export function Pane({
     });
   };
 
-  const onMouseUp = (event: ReactMouseEvent) => {
+  const onMouseUp = (event: React.PointerEvent) => {
     if (event.button !== 0) {
       return;
     }
+    container.current?.releasePointerCapture(event.pointerId);
     const { userSelectionRect } = store.getState();
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.
@@ -216,15 +218,6 @@ export function Pane({
     onSelectionEnd?.(event);
   };
 
-  const onMouseLeave = (event: ReactMouseEvent) => {
-    if (userSelectionActive) {
-      store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
-      onSelectionEnd?.(event);
-    }
-
-    resetUserSelection();
-  };
-
   const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
 
   return (
@@ -233,11 +226,11 @@ export function Pane({
       onClick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
-      onMouseEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
-      onMouseDown={hasActiveSelection ? onMouseDown : undefined}
-      onMouseMove={hasActiveSelection ? onMouseMove : onPaneMouseMove}
-      onMouseUp={hasActiveSelection ? onMouseUp : undefined}
-      onMouseLeave={hasActiveSelection ? onMouseLeave : onPaneMouseLeave}
+      onPointerEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
+      onPointerDown={hasActiveSelection ? onMouseDown : undefined}
+      onPointerMove={hasActiveSelection ? onMouseMove : onPaneMouseMove}
+      onPointerUp={hasActiveSelection ? onMouseUp : undefined}
+      onPointerLeave={onPaneMouseLeave}
       ref={container}
       style={containerStyle}
     >
