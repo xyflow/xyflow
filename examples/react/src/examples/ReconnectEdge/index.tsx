@@ -134,4 +134,4 @@ const ReconnectEdge = () => {
   );
 };
 
-ReconnectEdge;
+export default ReconnectEdge;
