@@ -72,6 +72,7 @@ export function Pane({
   const edgeIdLookup = useRef<Map<string, Set<string>>>(new Map());
 
   const { userSelectionActive, elementsSelectable, dragging } = useStore(selector, shallow);
+  const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
 
   const resetUserSelection = () => {
     store.setState({ userSelectionActive: false, userSelectionRect: null });
@@ -98,6 +99,10 @@ export function Pane({
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
   const onMouseDown = (event: React.PointerEvent): void => {
+    if (!hasActiveSelection) {
+      return;
+    }
+
     const { resetSelectedElements, domNode, edgeLookup } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
     container.current?.setPointerCapture(event.pointerId);
@@ -141,7 +146,7 @@ export function Pane({
     const { userSelectionRect, edgeLookup, transform, nodeOrigin, nodeLookup, triggerNodeChanges, triggerEdgeChanges } =
       store.getState();
 
-    if (!isSelecting || !containerBounds.current || !userSelectionRect) {
+    if (!containerBounds.current || !userSelectionRect) {
       return;
     }
 
@@ -218,8 +223,6 @@ export function Pane({
     onSelectionEnd?.(event);
   };
 
-  const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
-
   return (
     <div
       className={cc(['react-flow__pane', { draggable: panOnDrag, dragging, selection: isSelecting }])}
@@ -227,7 +230,7 @@ export function Pane({
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
       onPointerEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
-      onPointerDown={hasActiveSelection ? onMouseDown : undefined}
+      onPointerDown={onMouseDown}
       onPointerMove={hasActiveSelection ? onMouseMove : onPaneMouseMove}
       onPointerUp={hasActiveSelection ? onMouseUp : undefined}
       onPointerLeave={onPaneMouseLeave}
