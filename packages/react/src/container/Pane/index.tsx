@@ -2,7 +2,12 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import { useRef, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
+import {
+  useRef,
+  type MouseEvent as ReactMouseEvent,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 import { getNodesInside, getEventPosition, SelectionMode, type NodeChange, type EdgeChange } from '@xyflow/system';
@@ -109,11 +114,7 @@ export function Pane({
 
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
-  const onPointerDown = (event: React.PointerEvent): void => {
-    if (!hasActiveSelection) {
-      return;
-    }
-
+  const onPointerDown = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode, edgeLookup } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
     container.current?.setPointerCapture(event.pointerId);
@@ -153,7 +154,7 @@ export function Pane({
     onSelectionStart?.(event);
   };
 
-  const onPointerMove = (event: React.PointerEvent): void => {
+  const onPointerMove = (event: ReactPointerEvent): void => {
     const { userSelectionRect, edgeLookup, transform, nodeOrigin, nodeLookup, triggerNodeChanges, triggerEdgeChanges } =
       store.getState();
 
@@ -218,7 +219,7 @@ export function Pane({
     });
   };
 
-  const onPointerUp = (event: React.PointerEvent) => {
+  const onPointerUp = (event: ReactPointerEvent) => {
     if (event.button !== 0) {
       return;
     }
@@ -249,7 +250,7 @@ export function Pane({
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
       onPointerEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
-      onPointerDown={onPointerDown}
+      onPointerDown={hasActiveSelection ? onPointerDown : onPaneMouseMove}
       onPointerMove={hasActiveSelection ? onPointerMove : onPaneMouseMove}
       onPointerUp={hasActiveSelection ? onPointerUp : undefined}
       onPointerLeave={onPaneMouseLeave}

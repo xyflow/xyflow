@@ -196,15 +196,6 @@
     // onSelectionEnd?.(event);
   }
 
-  const onPointerLeave = () => {
-    if ($selectionRectMode === 'user') {
-      selectionRectMode.set(selectedNodes.length > 0 ? 'nodes' : null);
-      //  onSelectionEnd?.(event);
-    }
-
-    selectionRect.set(null);
-  };
-
   const onContextMenu = (event: MouseEvent) => {
     if (Array.isArray(_panOnDrag) && _panOnDrag?.includes(2)) {
       event.preventDefault();
@@ -227,7 +218,6 @@
   on:pointerdown={hasActiveSelection ? onPointerDown : undefined}
   on:pointermove={hasActiveSelection ? onPointerMove : undefined}
   on:pointerup={hasActiveSelection ? onPointerUp : undefined}
-  on:pointerleave={hasActiveSelection ? onPointerLeave : undefined}
   on:contextmenu={wrapHandler(onContextMenu, container)}
 >
   <slot />
