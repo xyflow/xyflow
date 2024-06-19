@@ -149,7 +149,7 @@ export default {
       // 	source: '9',
       // 	target: '11',
       // 	label: 'focusable',
-      // 	updatable: true
+      // 	reconnectable: true
       // },
       // {
       // 	id: 'not-focusable',

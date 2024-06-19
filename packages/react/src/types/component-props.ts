@@ -29,7 +29,7 @@ import type {
   Node,
   Edge,
   ConnectionLineComponent,
-  OnEdgeUpdateFunc,
+  OnReconnect,
   OnInit,
   DefaultEdgeOptions,
   FitViewOptions,
@@ -129,9 +129,9 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   onEdgeMouseLeave?: EdgeMouseHandler<EdgeType>;
   /** This event handler is called when a user double clicks on an edge */
   onEdgeDoubleClick?: EdgeMouseHandler<EdgeType>;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: EdgeType, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
-  onEdgeUpdate?: OnEdgeUpdateFunc<EdgeType>;
+  onReconnect?: OnReconnect<EdgeType>;
+  onReconnectStart?: (event: ReactMouseEvent, edge: EdgeType, handleType: HandleType) => void;
+  onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
   /** This event handler is called when a Node is updated
    * @example // Use NodesState hook to create edges and get onNodesChange handler
    * import ReactFlow, { useNodesState } from '@xyflow/react';
@@ -330,7 +330,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /** Controls if all edges should be updateable
    * @default true
    */
-  edgesUpdatable?: boolean;
+  edgesReconnectable?: boolean;
   /** Controls if all elements should (nodes & edges) be selectable
    * @default true
    */
@@ -413,7 +413,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   panOnScrollMode?: PanOnScrollMode;
   /** Controls if the viewport should zoom by double clicking somewhere on the flow */
   zoomOnDoubleClick?: boolean;
-  edgeUpdaterRadius?: number;
+  reconnectRadius?: number;
   noDragClassName?: string;
   noWheelClassName?: string;
   noPanClassName?: string;

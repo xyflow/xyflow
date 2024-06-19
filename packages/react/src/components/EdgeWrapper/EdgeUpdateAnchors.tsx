@@ -1,4 +1,4 @@
-// Updatable edges have a anchors around their handles to update the edge.
+// Reconnectable edges have a anchors around their handles to reconnect the edge.
 import { XYHandle, type Connection, EdgePosition } from '@xyflow/system';
 
 import { EdgeAnchor } from '../Edges/EdgeAnchor';
@@ -7,20 +7,20 @@ import { useStoreApi } from '../../hooks/useStore';
 
 type EdgeUpdateAnchorsProps<EdgeType extends Edge = Edge> = {
   edge: EdgeType;
-  isUpdatable: boolean | 'source' | 'target';
-  edgeUpdaterRadius: EdgeWrapperProps['edgeUpdaterRadius'];
+  isReconnectable: boolean | 'source' | 'target';
+  reconnectRadius: EdgeWrapperProps['reconnectRadius'];
   sourceHandleId: Edge['sourceHandle'];
   targetHandleId: Edge['targetHandle'];
-  onEdgeUpdate: EdgeWrapperProps<EdgeType>['onEdgeUpdate'];
-  onEdgeUpdateStart: EdgeWrapperProps<EdgeType>['onEdgeUpdateStart'];
-  onEdgeUpdateEnd: EdgeWrapperProps<EdgeType>['onEdgeUpdateEnd'];
+  onReconnect: EdgeWrapperProps<EdgeType>['onReconnect'];
+  onReconnectStart: EdgeWrapperProps<EdgeType>['onReconnectStart'];
+  onReconnectEnd: EdgeWrapperProps<EdgeType>['onReconnectEnd'];
   setUpdateHover: (hover: boolean) => void;
-  setUpdating: (updating: boolean) => void;
+  setReconnecting: (updating: boolean) => void;
 } & EdgePosition;
 
 export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
-  isUpdatable,
-  edgeUpdaterRadius,
+  isReconnectable,
+  reconnectRadius,
   edge,
   targetHandleId,
   sourceHandleId,
@@ -30,10 +30,10 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
   targetY,
   sourcePosition,
   targetPosition,
-  onEdgeUpdate,
-  onEdgeUpdateStart,
-  onEdgeUpdateEnd,
-  setUpdating,
+  onReconnect,
+  onReconnectStart,
+  onReconnectEnd,
+  setReconnecting,
   setUpdateHover,
 }: EdgeUpdateAnchorsProps<EdgeType>) {
   const store = useStoreApi();
@@ -65,15 +65,15 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
 
     const isTarget = isSourceHandle;
 
-    setUpdating(true);
-    onEdgeUpdateStart?.(event, edge, handleType);
+    setReconnecting(true);
+    onReconnectStart?.(event, edge, handleType);
 
-    const _onEdgeUpdateEnd = (evt: MouseEvent | TouchEvent) => {
-      setUpdating(false);
-      onEdgeUpdateEnd?.(evt, edge, handleType);
+    const _onReconnectEnd = (evt: MouseEvent | TouchEvent) => {
+      setReconnecting(false);
+      onReconnectEnd?.(evt, edge, handleType);
     };
 
-    const onConnectEdge = (connection: Connection) => onEdgeUpdate?.(edge, connection);
+    const onConnectEdge = (connection: Connection) => onReconnect?.(edge, connection);
 
     XYHandle.onPointerDown(event.nativeEvent, {
       autoPanOnConnect,
@@ -93,43 +93,43 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       onConnect: onConnectEdge,
       onConnectStart,
       onConnectEnd,
-      onEdgeUpdateEnd: _onEdgeUpdateEnd,
+      onReconnectEnd: _onReconnectEnd,
       updateConnection,
       getTransform: () => store.getState().transform,
       getConnectionStartHandle: () => store.getState().connectionStartHandle,
     });
   };
 
-  const onEdgeUpdaterSourceMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
+  const onReconnectSourceMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
     handleEdgeUpdater(event, true);
-  const onEdgeUpdaterTargetMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
+  const onReconnectTargetMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
     handleEdgeUpdater(event, false);
-  const onEdgeUpdaterMouseEnter = () => setUpdateHover(true);
-  const onEdgeUpdaterMouseOut = () => setUpdateHover(false);
+  const onReconnectMouseEnter = () => setUpdateHover(true);
+  const onReconnectMouseOut = () => setUpdateHover(false);
 
   return (
     <>
-      {(isUpdatable === 'source' || isUpdatable === true) && (
+      {(isReconnectable === 'source' || isReconnectable === true) && (
         <EdgeAnchor
           position={sourcePosition}
           centerX={sourceX}
           centerY={sourceY}
-          radius={edgeUpdaterRadius}
-          onMouseDown={onEdgeUpdaterSourceMouseDown}
-          onMouseEnter={onEdgeUpdaterMouseEnter}
-          onMouseOut={onEdgeUpdaterMouseOut}
+          radius={reconnectRadius}
+          onMouseDown={onReconnectSourceMouseDown}
+          onMouseEnter={onReconnectMouseEnter}
+          onMouseOut={onReconnectMouseOut}
           type="source"
         />
       )}
-      {(isUpdatable === 'target' || isUpdatable === true) && (
+      {(isReconnectable === 'target' || isReconnectable === true) && (
         <EdgeAnchor
           position={targetPosition}
           centerX={targetX}
           centerY={targetY}
-          radius={edgeUpdaterRadius}
-          onMouseDown={onEdgeUpdaterTargetMouseDown}
-          onMouseEnter={onEdgeUpdaterMouseEnter}
-          onMouseOut={onEdgeUpdaterMouseOut}
+          radius={reconnectRadius}
+          onMouseDown={onReconnectTargetMouseDown}
+          onMouseEnter={onReconnectMouseEnter}
+          onMouseOut={onReconnectMouseOut}
           type="target"
         />
       )}
