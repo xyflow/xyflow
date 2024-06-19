@@ -113,6 +113,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
         panOnDrag={panOnDrag}
         isSelecting={!!isSelecting}
         selectionMode={selectionMode}
+        selectionKeyPressed={selectionKeyPressed}
       >
         {children}
         {nodesSelectionActive && (
