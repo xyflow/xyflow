@@ -298,16 +298,14 @@ function isValidHandle(
         ? (isTarget && handleType === 'source') || (!isTarget && handleType === 'target')
         : handleNodeId !== fromNodeId || handleId !== fromHandleId);
 
-    if (isValid) {
-      result.isValid = isValidConnection(connection);
+    result.isValid = isValid && isValidConnection(connection);
 
-      result.endHandle = {
-        nodeId: handleNodeId as string,
-        handleId,
-        type: handleType as HandleType,
-        position: result.isValid ? (handleToCheck.getAttribute('data-handlepos') as Position) : null,
-      };
-    }
+    result.endHandle = {
+      nodeId: handleNodeId as string,
+      handleId,
+      type: handleType as HandleType,
+      position: result.isValid ? (handleToCheck.getAttribute('data-handlepos') as Position) : null,
+    };
   }
 
   return result;
