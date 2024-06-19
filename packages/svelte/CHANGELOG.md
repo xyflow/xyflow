@@ -1,5 +1,9 @@
 # @xyflow/svelte
 
+## 0.1.7
+
+- revise selection usability (capture while dragging out of the flow)
+
 ## 0.1.6
 
 - fix node origin bug
