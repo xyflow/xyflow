@@ -304,7 +304,7 @@ function isValidHandle(
       nodeId: handleNodeId as string,
       handleId,
       type: handleType as HandleType,
-      position: result.isValid ? (handleToCheck.getAttribute('data-handlepos') as Position) : null,
+      position: handleToCheck.getAttribute('data-handlepos') as Position,
     };
   }
 
