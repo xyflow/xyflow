@@ -16,6 +16,7 @@ export type ConnectingHandle = {
   nodeId: string;
   type: HandleType;
   handleId?: string | null;
+  position?: Position | null;
 };
 
 export type ConnectionHandle = {

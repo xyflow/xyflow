@@ -41,7 +41,7 @@ const CustomInput: FC<NodeProps> = () => (
 
 const CustomNode: FC<NodeProps> = ({ id }) => (
   <>
-    <Handle type="target" position={Position.Left} isConnectableStart={false} />
+    <Handle type="target" position={Position.Top} isConnectableStart={false} />
     <div>{id}</div>
     <Handle type="source" position={Position.Right} />
   </>

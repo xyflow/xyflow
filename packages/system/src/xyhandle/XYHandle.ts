@@ -13,6 +13,7 @@ import {
   type IsValidConnection,
   type ConnectionHandle,
   NodeLookup,
+  Position,
 } from '../types';
 
 import { getClosestHandle, getConnectionStatus, getHandleLookup, getHandleType } from './utils';
@@ -138,12 +139,12 @@ function onPointerDown(
     nodeId,
     handleId,
     type: handleType,
+    position: (clickedHandle?.getAttribute('data-handlepos') as Position) || Position.Top,
   };
 
   updateConnection({
     connectionPosition,
     connectionStatus: null,
-    // connectionNodeId etc will be removed in the next major in favor of connectionStartHandle
     connectionStartHandle,
     connectionEndHandle: null,
   });
@@ -298,13 +299,14 @@ function isValidHandle(
         : handleNodeId !== fromNodeId || handleId !== fromHandleId);
 
     if (isValid) {
+      result.isValid = isValidConnection(connection);
+
       result.endHandle = {
         nodeId: handleNodeId as string,
         handleId,
         type: handleType as HandleType,
+        position: result.isValid ? (handleToCheck.getAttribute('data-handlepos') as Position) : null,
       };
-
-      result.isValid = isValidConnection(connection);
     }
   }
 

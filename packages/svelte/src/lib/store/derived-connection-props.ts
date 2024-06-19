@@ -88,7 +88,9 @@ export function getDerivedConnectionProps(
       const fromX = (fromNode?.internals.positionAbsolute.x ?? 0) + fromHandleX;
       const fromY = (fromNode?.internals.positionAbsolute.y ?? 0) + fromHandleY;
       const fromPosition = fromHandle?.position;
-      const toPosition = fromPosition ? oppositePosition[fromPosition] : undefined;
+      const toPosition =
+        connection.connectionEndHandle?.position ??
+        (fromPosition ? oppositePosition[fromPosition] : undefined);
 
       const pathParams = {
         sourceX: fromX,
