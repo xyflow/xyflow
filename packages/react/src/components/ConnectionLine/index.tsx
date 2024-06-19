@@ -55,8 +55,6 @@ const ConnectionLine = ({
     shallow
   );
 
-  console.log(isValid);
-
   const fromHandleBounds = fromNode?.internals.handleBounds;
   let handleBounds = fromHandleBounds?.[handleType];
 
