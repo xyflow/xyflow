@@ -1,5 +1,10 @@
 # @xyflow/react
 
+## 12.0.0-next.22
+
+- ⚠️ rename `updateEdge` to `reconnectEdge` and realted APIs [#4373](https://github.com/xyflow/xyflow/pull/4373)
+
+
 ## 12.0.0-next.21
 
 - fix node origin bug
