@@ -70,8 +70,8 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
   const { nodesSelectionActive, userSelectionActive } = useStore(selector);
-  const selectionKeyPressed = useKeyPress(selectionKeyCode);
-  const panActivationKeyPressed = useKeyPress(panActivationKeyCode);
+  const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: window });
+  const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: window });
 
   const panOnDrag = panActivationKeyPressed || _panOnDrag;
   const panOnScroll = panActivationKeyPressed || _panOnScroll;
