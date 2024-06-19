@@ -3,6 +3,7 @@
 ## 0.1.7
 
 - revise selection usability (capture while dragging out of the flow)
+- only prevent shift scrolling when selection is actually in progress
 
 ## 0.1.6
 
