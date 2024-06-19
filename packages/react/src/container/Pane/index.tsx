@@ -76,7 +76,7 @@ export function Pane({
   const { userSelectionActive, elementsSelectable, dragging } = useStore(selector, shallow);
   const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
 
-  // This is used to prevent click events when the user lets go of the selectionKey during a selection
+  // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
 
   const resetUserSelection = () => {
@@ -88,13 +88,14 @@ export function Pane({
 
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
-    if (!selectionInProgress.current) {
-      onPaneClick?.(event);
-      store.getState().resetSelectedElements();
-      store.setState({ nodesSelectionActive: false });
-    } else {
+    if (selectionInProgress.current) {
       selectionInProgress.current = false;
+      return;
     }
+
+    onPaneClick?.(event);
+    store.getState().resetSelectedElements();
+    store.setState({ nodesSelectionActive: false });
   };
 
   const onContextMenu = (event: ReactMouseEvent) => {
@@ -108,7 +109,7 @@ export function Pane({
 
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
-  const onMouseDown = (event: React.PointerEvent): void => {
+  const onPointerDown = (event: React.PointerEvent): void => {
     if (!hasActiveSelection) {
       return;
     }
@@ -152,7 +153,7 @@ export function Pane({
     onSelectionStart?.(event);
   };
 
-  const onMouseMove = (event: ReactMouseEvent): void => {
+  const onPointerMove = (event: React.PointerEvent): void => {
     const { userSelectionRect, edgeLookup, transform, nodeOrigin, nodeLookup, triggerNodeChanges, triggerEdgeChanges } =
       store.getState();
 
@@ -217,7 +218,7 @@ export function Pane({
     });
   };
 
-  const onMouseUp = (event: React.PointerEvent) => {
+  const onPointerUp = (event: React.PointerEvent) => {
     if (event.button !== 0) {
       return;
     }
@@ -248,9 +249,9 @@ export function Pane({
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
       onPointerEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
-      onPointerDown={onMouseDown}
-      onPointerMove={hasActiveSelection ? onMouseMove : onPaneMouseMove}
-      onPointerUp={hasActiveSelection ? onMouseUp : undefined}
+      onPointerDown={onPointerDown}
+      onPointerMove={hasActiveSelection ? onPointerMove : onPaneMouseMove}
+      onPointerUp={hasActiveSelection ? onPointerUp : undefined}
       onPointerLeave={onPaneMouseLeave}
       ref={container}
       style={containerStyle}
