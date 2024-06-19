@@ -8,6 +8,8 @@ import {
   NodeLookup,
 } from '../types';
 
+import { getHandlePosition } from '../utils';
+
 // this functions collects all handles and adds an absolute position
 // so that we can later find the closest handle to the mouse position
 export function getHandles(
@@ -18,12 +20,13 @@ export function getHandles(
 ): ConnectionHandle[] {
   return (handleBounds[type] || []).reduce<ConnectionHandle[]>((res, h) => {
     if (`${node.id}-${h.id}-${type}` !== currentHandle) {
+      const handlePosition = getHandlePosition(h.position, node, h);
       res.push({
         id: h.id || null,
         type,
         nodeId: node.id,
-        x: node.internals.positionAbsolute.x + h.x + h.width / 2,
-        y: node.internals.positionAbsolute.y + h.y + h.height / 2,
+        x: handlePosition[0],
+        y: handlePosition[1],
       });
     }
     return res;
