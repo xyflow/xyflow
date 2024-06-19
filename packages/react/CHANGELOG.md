@@ -4,6 +4,7 @@
 
 - ⚠️ rename `updateEdge` to `reconnectEdge` and realted APIs [#4373](https://github.com/xyflow/xyflow/pull/4373)
 - revise selection usability (capture while dragging out of the flow)
+- use correct end handle position when drawing a connection lines 
 
 ## 12.0.0-next.21
 

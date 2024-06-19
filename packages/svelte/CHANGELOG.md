@@ -4,6 +4,7 @@
 
 - revise selection usability (capture while dragging out of the flow)
 - only prevent shift scrolling when selection is actually in progress
+- use correct end handle position when drawing a connection lines 
 
 ## 0.1.6
 
