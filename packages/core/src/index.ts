@@ -17,6 +17,7 @@ export {
   getIncomers,
   getConnectedEdges,
   updateEdge,
+  reconnectEdge,
   getTransformForBounds,
   getViewportForBounds,
   getRectOfNodes,

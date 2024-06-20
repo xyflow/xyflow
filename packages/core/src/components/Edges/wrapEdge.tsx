@@ -46,16 +46,16 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     onMouseEnter,
     onMouseMove,
     onMouseLeave,
-    edgeUpdaterRadius,
-    onEdgeUpdate,
-    onEdgeUpdateStart,
-    onEdgeUpdateEnd,
+    reconnectRadius,
+    onReconnect,
+    onReconnectStart,
+    onReconnectEnd,
     markerEnd,
     markerStart,
     rfId,
     ariaLabel,
     isFocusable,
-    isUpdatable,
+    isReconnectable,
     pathOptions,
     interactionWidth,
     disableKeyboardA11y,
@@ -118,14 +118,14 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
       const edge = edges.find((e) => e.id === id)!;
 
       setUpdating(true);
-      onEdgeUpdateStart?.(event, edge, handleType);
+      onReconnectStart?.(event, edge, handleType);
 
-      const _onEdgeUpdateEnd = (evt: MouseEvent | TouchEvent) => {
+      const _onReconnectEnd = (evt: MouseEvent | TouchEvent) => {
         setUpdating(false);
-        onEdgeUpdateEnd?.(evt, edge, handleType);
+        onReconnectEnd?.(evt, edge, handleType);
       };
 
-      const onConnectEdge = (connection: Connection) => onEdgeUpdate?.(edge, connection);
+      const onConnectEdge = (connection: Connection) => onReconnect?.(edge, connection);
 
       handlePointerDown({
         event,
@@ -137,7 +137,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
         setState: store.setState,
         isValidConnection,
         edgeUpdaterType: handleType,
-        onEdgeUpdateEnd: _onEdgeUpdateEnd,
+        onReconnectEnd: _onReconnectEnd,
       });
     };
 
@@ -216,26 +216,26 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             interactionWidth={interactionWidth}
           />
         )}
-        {isUpdatable && (
+        {isReconnectable && (
           <>
-            {(isUpdatable === 'source' || isUpdatable === true) && (
+            {(isReconnectable === 'source' || isReconnectable === true) && (
               <EdgeAnchor
                 position={sourcePosition}
                 centerX={sourceX}
                 centerY={sourceY}
-                radius={edgeUpdaterRadius}
+                radius={reconnectRadius}
                 onMouseDown={onEdgeUpdaterSourceMouseDown}
                 onMouseEnter={onEdgeUpdaterMouseEnter}
                 onMouseOut={onEdgeUpdaterMouseOut}
                 type="source"
               />
             )}
-            {(isUpdatable === 'target' || isUpdatable === true) && (
+            {(isReconnectable === 'target' || isReconnectable === true) && (
               <EdgeAnchor
                 position={targetPosition}
                 centerX={targetX}
                 centerY={targetY}
-                radius={edgeUpdaterRadius}
+                radius={reconnectRadius}
                 onMouseDown={onEdgeUpdaterTargetMouseDown}
                 onMouseEnter={onEdgeUpdaterMouseEnter}
                 onMouseOut={onEdgeUpdaterMouseOut}

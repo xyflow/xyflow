@@ -18,14 +18,14 @@ type EdgeRendererProps = Pick<
   | 'onEdgeDoubleClick'
   | 'defaultMarkerColor'
   | 'onlyRenderVisibleElements'
-  | 'onEdgeUpdate'
   | 'onEdgeContextMenu'
   | 'onEdgeMouseEnter'
   | 'onEdgeMouseMove'
   | 'onEdgeMouseLeave'
-  | 'onEdgeUpdateStart'
-  | 'onEdgeUpdateEnd'
-  | 'edgeUpdaterRadius'
+  | 'onReconnect'
+  | 'onReconnectStart'
+  | 'onReconnectEnd'
+  | 'reconnectRadius'
   | 'noPanClassName'
   | 'elevateEdgesOnSelect'
   | 'rfId'
@@ -55,16 +55,16 @@ const EdgeRenderer = ({
   rfId,
   edgeTypes,
   noPanClassName,
-  onEdgeUpdate,
   onEdgeContextMenu,
   onEdgeMouseEnter,
   onEdgeMouseMove,
   onEdgeMouseLeave,
   onEdgeClick,
-  edgeUpdaterRadius,
   onEdgeDoubleClick,
-  onEdgeUpdateStart,
-  onEdgeUpdateEnd,
+  onReconnect,
+  onReconnectStart,
+  onReconnectEnd,
+  reconnectRadius,
   children,
   disableKeyboardA11y,
 }: EdgeRendererProps) => {
@@ -114,9 +114,10 @@ const EdgeRenderer = ({
               const sourcePosition = sourceHandle?.position || Position.Bottom;
               const targetPosition = targetHandle?.position || Position.Top;
               const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
-              const isUpdatable =
-                typeof onEdgeUpdate !== 'undefined' &&
-                (edge.updatable || (edgesUpdatable && typeof edge.updatable === 'undefined'));
+              const edgeReconnectable = edge.reconnectable || edge.updatable;
+              const isReconnectable =
+                typeof onReconnect !== 'undefined' &&
+                (edgeReconnectable || (edgesUpdatable && typeof edgeReconnectable === 'undefined'));
 
               if (!sourceHandle || !targetHandle) {
                 onError?.('008', errorMessages['error008'](sourceHandle, edge));
@@ -163,20 +164,20 @@ const EdgeRenderer = ({
                   sourcePosition={sourcePosition}
                   targetPosition={targetPosition}
                   elementsSelectable={elementsSelectable}
-                  onEdgeUpdate={onEdgeUpdate}
                   onContextMenu={onEdgeContextMenu}
                   onMouseEnter={onEdgeMouseEnter}
                   onMouseMove={onEdgeMouseMove}
                   onMouseLeave={onEdgeMouseLeave}
                   onClick={onEdgeClick}
-                  edgeUpdaterRadius={edgeUpdaterRadius}
                   onEdgeDoubleClick={onEdgeDoubleClick}
-                  onEdgeUpdateStart={onEdgeUpdateStart}
-                  onEdgeUpdateEnd={onEdgeUpdateEnd}
+                  onReconnect={onReconnect}
+                  onReconnectStart={onReconnectStart}
+                  onReconnectEnd={onReconnectEnd}
+                  reconnectRadius={reconnectRadius}
                   rfId={rfId}
                   ariaLabel={edge.ariaLabel}
                   isFocusable={isFocusable}
-                  isUpdatable={isUpdatable}
+                  isReconnectable={isReconnectable}
                   pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
                   interactionWidth={edge.interactionWidth}
                   disableKeyboardA11y={disableKeyboardA11y}
