@@ -91,8 +91,8 @@ const initialNodes: Node[] = [
 ];
 
 const initialEdges: Edge[] = [
-  { id: 'e1-3', source: '1', target: '3', label: 'This edge can only be updated from source', updatable: 'source' },
-  { id: 'e2-4', source: '2', target: '4', label: 'This edge can only be updated from target', updatable: 'target' },
+  { id: 'e1-3', source: '1', target: '3', label: 'This edge can only be updated from source', reconnectable: 'source' },
+  { id: 'e2-4', source: '2', target: '4', label: 'This edge can only be updated from target', reconnectable: 'target' },
   { id: 'e5-6', source: '5', target: '6', label: 'This edge can be updated from both sides' },
 ];
 
