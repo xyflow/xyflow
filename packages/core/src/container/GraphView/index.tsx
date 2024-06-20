@@ -11,7 +11,18 @@ import { createNodeTypes } from '../NodeRenderer/utils';
 import { createEdgeTypes } from '../EdgeRenderer/utils';
 import type { ReactFlowProps } from '../../types';
 
-export type GraphViewProps = Omit<ReactFlowProps, 'onSelectionChange' | 'nodes' | 'edges' | 'nodeTypes' | 'edgeTypes'> &
+export type GraphViewProps = Omit<
+  ReactFlowProps,
+  | 'onSelectionChange'
+  | 'nodes'
+  | 'edges'
+  | 'nodeTypes'
+  | 'edgeTypes'
+  | 'onEdgeUpdate'
+  | 'onEdgeUpdateStart'
+  | 'onEdgeUpdateEnd'
+  | 'edgeUpdaterRadius'
+> &
   Required<
     Pick<
       ReactFlowProps,
@@ -90,14 +101,14 @@ const GraphView = ({
   onPaneMouseLeave,
   onPaneScroll,
   onPaneContextMenu,
-  onEdgeUpdate,
   onEdgeContextMenu,
   onEdgeMouseEnter,
   onEdgeMouseMove,
   onEdgeMouseLeave,
-  edgeUpdaterRadius,
-  onEdgeUpdateStart,
-  onEdgeUpdateEnd,
+  onReconnect,
+  onReconnectStart,
+  onReconnectEnd,
+  reconnectRadius,
   noDragClassName,
   noWheelClassName,
   noPanClassName,
@@ -156,15 +167,15 @@ const GraphView = ({
           edgeTypes={edgeTypesWrapped}
           onEdgeClick={onEdgeClick}
           onEdgeDoubleClick={onEdgeDoubleClick}
-          onEdgeUpdate={onEdgeUpdate}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           onEdgeContextMenu={onEdgeContextMenu}
           onEdgeMouseEnter={onEdgeMouseEnter}
           onEdgeMouseMove={onEdgeMouseMove}
           onEdgeMouseLeave={onEdgeMouseLeave}
-          onEdgeUpdateStart={onEdgeUpdateStart}
-          onEdgeUpdateEnd={onEdgeUpdateEnd}
-          edgeUpdaterRadius={edgeUpdaterRadius}
+          onReconnect={onReconnect}
+          onReconnectStart={onReconnectStart}
+          onReconnectEnd={onReconnectEnd}
+          reconnectRadius={reconnectRadius}
           defaultMarkerColor={defaultMarkerColor}
           noPanClassName={noPanClassName}
           elevateEdgesOnSelect={!!elevateEdgesOnSelect}

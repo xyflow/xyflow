@@ -290,6 +290,10 @@ export type SelectionRect = Rect & {
 
 export type OnError = (id: string, message: string) => void;
 
-export interface UpdateEdgeOptions {
+export type UpdateEdgeOptions = {
   shouldReplaceId?: boolean;
-}
+};
+
+export type ReconnectEdgeOptions = {
+  shouldReplaceId?: boolean;
+};

@@ -56,14 +56,26 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   onNodeDrag?: NodeDragHandler;
   onNodeDragStop?: NodeDragHandler;
   onEdgeClick?: (event: ReactMouseEvent, node: Edge) => void;
+  /**
+   * @deprecated Use `onReconnect` instead
+   */
   onEdgeUpdate?: OnEdgeUpdateFunc;
+  /**
+   * @deprecated Use `onReconnectStart` instead
+   */
+  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
+  /**
+   * @deprecated Use `onReconnectEnd` instead
+   */
+  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
+  onReconnect?: OnEdgeUpdateFunc;
+  onReconnectStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
+  onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   onEdgeContextMenu?: EdgeMouseHandler;
   onEdgeMouseEnter?: EdgeMouseHandler;
   onEdgeMouseMove?: EdgeMouseHandler;
   onEdgeMouseLeave?: EdgeMouseHandler;
   onEdgeDoubleClick?: EdgeMouseHandler;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   onNodesChange?: OnNodesChange;
   onEdgesChange?: OnEdgesChange;
   onNodesDelete?: OnNodesDelete;
@@ -130,7 +142,11 @@ export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   panOnScrollSpeed?: number;
   panOnScrollMode?: PanOnScrollMode;
   zoomOnDoubleClick?: boolean;
+  /**
+   * @deprecated Use `reconnectRadius` instead
+   */
   edgeUpdaterRadius?: number;
+  reconnectRadius?: number;
   noDragClassName?: string;
   noWheelClassName?: string;
   noPanClassName?: string;

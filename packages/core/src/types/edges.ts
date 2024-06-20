@@ -36,7 +36,11 @@ type DefaultEdge<T = any> = {
   ariaLabel?: string;
   interactionWidth?: number;
   focusable?: boolean;
+  /**
+   * @deprecated Use `reconnectable` instead
+   */
   updatable?: EdgeUpdatable;
+  reconnectable?: boolean | HandleType;
 } & EdgeLabelOptions;
 
 export type EdgeUpdatable = boolean | HandleType;
@@ -81,17 +85,17 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   sourcePosition: Position;
   targetPosition: Position;
   elementsSelectable?: boolean;
-  onEdgeUpdate?: OnEdgeUpdateFunc;
+  onReconnect?: OnEdgeUpdateFunc;
+  onReconnectStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
+  onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
   onContextMenu?: EdgeMouseHandler;
   onMouseEnter?: EdgeMouseHandler;
   onMouseMove?: EdgeMouseHandler;
   onMouseLeave?: EdgeMouseHandler;
-  edgeUpdaterRadius?: number;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
+  reconnectRadius?: number;
   rfId?: string;
   isFocusable: boolean;
-  isUpdatable: EdgeUpdatable;
+  isReconnectable: EdgeUpdatable;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
   disableKeyboardA11y?: boolean;
 };
