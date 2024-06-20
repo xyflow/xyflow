@@ -42,8 +42,6 @@ export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | n
       : (targetHandleBounds?.target ?? []).concat(targetHandleBounds?.source ?? []),
     params.targetHandle
   );
-  const sourcePosition = sourceHandle?.position || Position.Bottom;
-  const targetPosition = targetHandle?.position || Position.Top;
 
   if (!sourceHandle || !targetHandle) {
     params.onError?.(
@@ -58,8 +56,10 @@ export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | n
     return null;
   }
 
-  const [sourceX, sourceY] = getHandlePosition(sourcePosition, sourceNode, sourceHandle);
-  const [targetX, targetY] = getHandlePosition(targetPosition, targetNode, targetHandle);
+  const sourcePosition = sourceHandle?.position || Position.Bottom;
+  const targetPosition = targetHandle?.position || Position.Top;
+  const [sourceX, sourceY] = getHandlePosition(sourceNode, sourceHandle, sourcePosition);
+  const [targetX, targetY] = getHandlePosition(targetNode, targetHandle, targetPosition);
 
   return {
     sourceX,
@@ -96,10 +96,15 @@ function toHandleBounds(handles?: NodeHandle[]) {
   };
 }
 
-function getHandlePosition(position: Position, node: InternalNodeBase, handle: HandleElement | null = null): number[] {
+export function getHandlePosition(
+  node: InternalNodeBase,
+  handle: HandleElement | null,
+  fallbackPosition: Position = Position.Left
+): number[] {
   const x = (handle?.x ?? 0) + node.internals.positionAbsolute.x;
   const y = (handle?.y ?? 0) + node.internals.positionAbsolute.y;
   const { width, height } = handle ?? getNodeDimensions(node);
+  const position = handle?.position ?? fallbackPosition;
 
   switch (position) {
     case Position.Top:
