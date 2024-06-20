@@ -32,14 +32,14 @@ test.describe('Node Toolbar', async () => {
   });
 
   test('all toolbars are positioned correctly', async ({ page }) => {
-    permutations.forEach(async (permutation) => {
+    const tests = permutations.map((permutation) => async () => {
       const toolbar = page
         .locator(`[data-id="${permutation.id}"]`)
         .and(page.locator(`.${FRAMEWORK}-flow__node-toolbar`));
       const node = page.locator(`[data-id="${permutation.id}"]`).and(page.locator(`.${FRAMEWORK}-flow__node`));
 
-      await expect(toolbar).toBeAttached();
-      await expect(node).toBeAttached();
+      await expect(toolbar).toBeAttached({ timeout: 5000 });
+      await expect(node).toBeAttached({ timeout: 5000 });
 
       const toolbarBox = await toolbar.boundingBox();
       const nodeBox = await node.boundingBox();
@@ -78,6 +78,7 @@ test.describe('Node Toolbar', async () => {
           break;
       }
     });
+    await Promise.all(tests.map((t) => t()));
   });
 
   test('toolbar default behaviour', async ({ page }) => {
