@@ -137,7 +137,7 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onReconnect,
       onReconnectStart,
       onReconnectEnd,
-      reconnectRadius,
+      reconnectRadius = 10,
       edgeUpdaterRadius = 10,
       onNodesChange,
       onEdgesChange,
