@@ -28,7 +28,7 @@ export type FlowRendererProps<NodeType extends Node = Node> = Omit<
   children: ReactNode;
 };
 
-const win = typeof window === 'undefined' ? window : undefined;
+const win = typeof window !== 'undefined' ? window : undefined;
 
 const selector = (s: ReactFlowState) => {
   return { nodesSelectionActive: s.nodesSelectionActive, userSelectionActive: s.userSelectionActive };

@@ -9,7 +9,7 @@ import { Edge, Node } from '../types';
 const selected = (item: Node | Edge) => item.selected;
 
 const deleteKeyOptions: UseKeyPressOptions = { actInsideInputWithModifier: false };
-const win = typeof window === 'undefined' ? window : undefined;
+const win = typeof window !== 'undefined' ? window : undefined;
 
 /**
  * Hook for handling global key events.

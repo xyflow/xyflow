@@ -1,5 +1,9 @@
 # @xyflow/react
 
+## 12.0.0-next.24
+
+- fix `window` bug for SSR for real
+
 ## 12.0.0-next.23
 
 - fix `window` bug for SSR
