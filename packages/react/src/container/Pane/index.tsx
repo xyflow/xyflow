@@ -2,7 +2,12 @@
  * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
  */
 
-import { useRef, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react';
+import {
+  useRef,
+  type MouseEvent as ReactMouseEvent,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 import { getNodesInside, getEventPosition, SelectionMode, type NodeChange, type EdgeChange } from '@xyflow/system';
@@ -15,6 +20,7 @@ import type { ReactFlowProps, ReactFlowState } from '../../types';
 
 type PaneProps = {
   isSelecting: boolean;
+  selectionKeyPressed: boolean;
   children: ReactNode;
 } & Partial<
   Pick<
@@ -52,6 +58,7 @@ const selector = (s: ReactFlowState) => ({
 
 export function Pane({
   isSelecting,
+  selectionKeyPressed,
   selectionMode = SelectionMode.Full,
   panOnDrag,
   onSelectionStart,
@@ -72,6 +79,10 @@ export function Pane({
   const edgeIdLookup = useRef<Map<string, Set<string>>>(new Map());
 
   const { userSelectionActive, elementsSelectable, dragging } = useStore(selector, shallow);
+  const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
+
+  // Used to prevent click events when the user lets go of the selectionKey during a selection
+  const selectionInProgress = useRef<boolean>(false);
 
   const resetUserSelection = () => {
     store.setState({ userSelectionActive: false, userSelectionRect: null });
@@ -81,6 +92,12 @@ export function Pane({
   };
 
   const onClick = (event: ReactMouseEvent) => {
+    // We prevent click events when the user let go of the selectionKey during a selection
+    if (selectionInProgress.current) {
+      selectionInProgress.current = false;
+      return;
+    }
+
     onPaneClick?.(event);
     store.getState().resetSelectedElements();
     store.setState({ nodesSelectionActive: false });
@@ -97,9 +114,10 @@ export function Pane({
 
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
-  const onMouseDown = (event: ReactMouseEvent): void => {
+  const onPointerDown = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode, edgeLookup } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
+    container.current?.setPointerCapture(event.pointerId);
 
     if (
       !elementsSelectable ||
@@ -136,13 +154,15 @@ export function Pane({
     onSelectionStart?.(event);
   };
 
-  const onMouseMove = (event: ReactMouseEvent): void => {
+  const onPointerMove = (event: ReactPointerEvent): void => {
     const { userSelectionRect, edgeLookup, transform, nodeOrigin, nodeLookup, triggerNodeChanges, triggerEdgeChanges } =
       store.getState();
 
-    if (!isSelecting || !containerBounds.current || !userSelectionRect) {
+    if (!containerBounds.current || !userSelectionRect) {
       return;
     }
+
+    selectionInProgress.current = true;
 
     const { x: mouseX, y: mouseY } = getEventPosition(event.nativeEvent, containerBounds.current);
     const { startX, startY } = userSelectionRect;
@@ -199,10 +219,11 @@ export function Pane({
     });
   };
 
-  const onMouseUp = (event: ReactMouseEvent) => {
+  const onPointerUp = (event: ReactPointerEvent) => {
     if (event.button !== 0) {
       return;
     }
+    container.current?.releasePointerCapture(event.pointerId);
     const { userSelectionRect } = store.getState();
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.
@@ -214,18 +235,13 @@ export function Pane({
 
     resetUserSelection();
     onSelectionEnd?.(event);
-  };
 
-  const onMouseLeave = (event: ReactMouseEvent) => {
-    if (userSelectionActive) {
-      store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
-      onSelectionEnd?.(event);
+    // If the user kept holding the selectionKey during the selection,
+    // we need to reset the selectionInProgress, so the next click event is not prevented
+    if (selectionKeyPressed) {
+      selectionInProgress.current = false;
     }
-
-    resetUserSelection();
   };
-
-  const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
 
   return (
     <div
@@ -233,11 +249,11 @@ export function Pane({
       onClick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
-      onMouseEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
-      onMouseDown={hasActiveSelection ? onMouseDown : undefined}
-      onMouseMove={hasActiveSelection ? onMouseMove : onPaneMouseMove}
-      onMouseUp={hasActiveSelection ? onMouseUp : undefined}
-      onMouseLeave={hasActiveSelection ? onMouseLeave : onPaneMouseLeave}
+      onPointerEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
+      onPointerDown={hasActiveSelection ? onPointerDown : onPaneMouseMove}
+      onPointerMove={hasActiveSelection ? onPointerMove : onPaneMouseMove}
+      onPointerUp={hasActiveSelection ? onPointerUp : undefined}
+      onPointerLeave={onPaneMouseLeave}
       ref={container}
       style={containerStyle}
     >

@@ -26,7 +26,7 @@ const reactFlowFieldsToTrack = [
   'nodesConnectable',
   'nodesFocusable',
   'edgesFocusable',
-  'edgesUpdatable',
+  'edgesReconnectable',
   'elevateNodesOnSelect',
   'elevateEdgesOnSelect',
   'minZoom',

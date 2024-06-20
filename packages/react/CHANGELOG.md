@@ -1,5 +1,12 @@
 # @xyflow/react
 
+## 12.0.0-next.22
+
+- ⚠️ rename `updateEdge` to `reconnectEdge` and realted APIs [#4373](https://github.com/xyflow/xyflow/pull/4373)
+- revise selection usability (capture while dragging out of the flow)
+- use correct end handle position when drawing a connection lines
+- determine correct end positions for connection lines
+
 ## 12.0.0-next.21
 
 - fix node origin bug

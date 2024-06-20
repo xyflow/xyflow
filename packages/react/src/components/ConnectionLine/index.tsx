@@ -39,7 +39,7 @@ const ConnectionLine = ({
   CustomComponent,
   connectionStatus,
 }: ConnectionLineProps) => {
-  const { fromNode, handleId, toX, toY, connectionMode } = useStore(
+  const { fromNode, handleId, toX, toY, connectionMode, endPosition, isValid } = useStore(
     useCallback(
       (s: ReactFlowStore) => ({
         fromNode: s.nodeLookup.get(nodeId),
@@ -47,11 +47,14 @@ const ConnectionLine = ({
         toX: (s.connectionPosition.x - s.transform[0]) / s.transform[2],
         toY: (s.connectionPosition.y - s.transform[1]) / s.transform[2],
         connectionMode: s.connectionMode,
+        endPosition: s.connectionEndHandle?.position,
+        isValid: s.connectionStatus === 'valid',
       }),
       [nodeId]
     ),
     shallow
   );
+
   const fromHandleBounds = fromNode?.internals.handleBounds;
   let handleBounds = fromHandleBounds?.[handleType];
 
@@ -69,7 +72,7 @@ const ConnectionLine = ({
   const fromX = fromNode.internals.positionAbsolute.x + fromHandleX;
   const fromY = fromNode.internals.positionAbsolute.y + fromHandleY;
   const fromPosition = fromHandle?.position;
-  const toPosition = fromPosition ? oppositePosition[fromPosition] : null;
+  const toPosition = isValid && endPosition ? endPosition : fromPosition ? oppositePosition[fromPosition] : null;
 
   if (!fromPosition || !toPosition) {
     return null;

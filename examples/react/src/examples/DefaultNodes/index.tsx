@@ -25,6 +25,7 @@ const defaultNodes: Node[] = [
   },
   {
     id: '3',
+    type: 'output',
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
     className: 'light',

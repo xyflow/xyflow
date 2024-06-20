@@ -26,7 +26,7 @@ export function useGlobalKeyHandler({
   const { deleteElements } = useReactFlow();
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode, deleteKeyOptions);
-  const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
+  const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode, { target: window });
 
   useEffect(() => {
     if (deleteKeyPressed) {

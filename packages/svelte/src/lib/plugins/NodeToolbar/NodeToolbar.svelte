@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { getNodesBounds, Position, type Rect, getNodeToolbarTransform } from '@xyflow/system';
+  import { getNodesBounds, Position, getNodeToolbarTransform } from '@xyflow/system';
   import portal from '$lib/actions/portal';
   import type { InternalNode } from '$lib/types';
   import { useStore } from '$lib/store';

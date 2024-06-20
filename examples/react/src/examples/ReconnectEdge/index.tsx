@@ -2,7 +2,7 @@ import { useState, useCallback, MouseEvent as ReactMouseEvent } from 'react';
 import {
   ReactFlow,
   Controls,
-  updateEdge,
+  reconnectEdge,
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
@@ -91,21 +91,21 @@ const initialNodes: Node[] = [
 ];
 
 const initialEdges: Edge[] = [
-  { id: 'e1-3', source: '1', target: '3', label: 'This edge can only be updated from source', updatable: 'source' },
-  { id: 'e2-4', source: '2', target: '4', label: 'This edge can only be updated from target', updatable: 'target' },
+  { id: 'e1-3', source: '1', target: '3', label: 'This edge can only be updated from source', reconnectable: 'source' },
+  { id: 'e2-4', source: '2', target: '4', label: 'This edge can only be updated from target', reconnectable: 'target' },
   { id: 'e5-6', source: '5', target: '6', label: 'This edge can be updated from both sides' },
 ];
 
-const onEdgeUpdateStart = (_: ReactMouseEvent, edge: Edge, handleType: HandleType) =>
+const onReconnectStart = (_: ReactMouseEvent, edge: Edge, handleType: HandleType) =>
   console.log(`start update ${handleType} handle`, edge);
-const onEdgeUpdateEnd = (_: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) =>
+const onReconnectEnd = (_: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) =>
   console.log(`end update ${handleType} handle`, edge);
 
-const UpdatableEdge = () => {
+const ReconnectEdge = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
-  const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
-    setEdges((els) => updateEdge(oldEdge, newConnection, els));
+  const onReconnect = (oldEdge: Edge, newConnection: Connection) =>
+    setEdges((els) => reconnectEdge(oldEdge, newConnection, els));
   const onConnect = (connection: Connection) => setEdges((els) => addEdge(connection, els));
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
@@ -123,10 +123,10 @@ const UpdatableEdge = () => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       snapToGrid={true}
-      onEdgeUpdate={onEdgeUpdate}
+      onReconnect={onReconnect}
       onConnect={onConnect}
-      onEdgeUpdateStart={onEdgeUpdateStart}
-      onEdgeUpdateEnd={onEdgeUpdateEnd}
+      onReconnectStart={onReconnectStart}
+      onReconnectEnd={onReconnectEnd}
       fitView
     >
       <Controls />
@@ -134,4 +134,4 @@ const UpdatableEdge = () => {
   );
 };
 
-export default UpdatableEdge;
+export default ReconnectEdge;

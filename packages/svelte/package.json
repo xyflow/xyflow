@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/svelte",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Svelte Flow - A highly customizable Svelte library for building node-based editors, workflow systems, diagrams and more.",
   "keywords": [
     "svelte",
@@ -18,8 +18,8 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config --dir dist",
     "css-watch": "pnpm css --watch",
-    "lint": "prettier --plugin-search-dir . --check . && eslint .",
-    "format": "prettier --plugin-search-dir . --write .",
+    "lint": "prettier --check . && eslint ./src",
+    "format": "prettier --write .",
     "typecheck": "pnpm check"
   },
   "type": "module",
