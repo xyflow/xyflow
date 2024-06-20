@@ -1,3 +1,4 @@
+import { getHandlePosition } from '../utils';
 import {
   ConnectionStatus,
   type HandleType,
@@ -7,8 +8,6 @@ import {
   InternalNodeBase,
   NodeLookup,
 } from '../types';
-
-import { getHandlePosition } from '../utils';
 
 // this functions collects all handles and adds an absolute position
 // so that we can later find the closest handle to the mouse position
