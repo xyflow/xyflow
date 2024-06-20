@@ -1,5 +1,30 @@
 # reactflow
 
+## 11.11.4
+
+This release adds some deprecation warnings and introduces new function and attribute names for "edge update" which is now called "edge reconnect": 
+
+`updateEdge` => `reconnectEdge`
+`onEdgeUpdateStart` => `onReconnectStart`
+`onEdgeUpdate` => `onReconnect`
+`onEdgeUpdateEnd` => `onReconnectEnd`
+`edgeUpdaterRadius` => `reconnectRadius`
+`edge.updatable` => `edge.reconnectable`
+
+We changed the term, because we think it's more clear what it does and is better to distinguish from the new `updateEdge` and `updateEdgeData` helpers in React Flow 12.
+
+### Patch Changes
+
+- [#4389](https://github.com/xyflow/xyflow/pull/4389) [`092b2ecb`](https://github.com/xyflow/xyflow/commit/092b2ecbc45aa829e590acb094c7ef75d752d211) - rename updateEdge to reconectEdge
+- [#4387](https://github.com/xyflow/xyflow/pull/4387) [`280a64ee`](https://github.com/xyflow/xyflow/commit/280a64ee1652e36366ea0e0ad6a56a41c6c5f7b9) - abort drag when multiple touches are detected
+- Updated dependencies [[`092b2ecb`](https://github.com/xyflow/xyflow/commit/092b2ecbc45aa829e590acb094c7ef75d752d211), [`280a64ee`](https://github.com/xyflow/xyflow/commit/280a64ee1652e36366ea0e0ad6a56a41c6c5f7b9)]:
+  - @reactflow/core@11.11.4
+  - @reactflow/background@11.3.14
+  - @reactflow/controls@11.2.14
+  - @reactflow/minimap@11.7.14
+  - @reactflow/node-resizer@2.2.14
+  - @reactflow/node-toolbar@1.3.14
+
 ## 11.11.3
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @reactflow/core
 
+## 11.11.4
+
+### Patch Changes
+
+- [#4389](https://github.com/xyflow/xyflow/pull/4389) [`092b2ecb`](https://github.com/xyflow/xyflow/commit/092b2ecbc45aa829e590acb094c7ef75d752d211) - rename updateEdge to reconectEdge
+- [#4387](https://github.com/xyflow/xyflow/pull/4387) [`280a64ee`](https://github.com/xyflow/xyflow/commit/280a64ee1652e36366ea0e0ad6a56a41c6c5f7b9) - abort drag when multiple touches are detected
+
 ## 11.11.3
 
 ### Patch Changes
