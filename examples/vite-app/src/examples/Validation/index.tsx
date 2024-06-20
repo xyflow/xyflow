@@ -12,7 +12,7 @@ import ReactFlow, {
   OnConnectStart,
   OnConnectEnd,
   OnConnect,
-  updateEdge,
+  reconnectEdge,
   Edge,
 } from 'reactflow';
 
@@ -78,8 +78,8 @@ const ValidationFlow = () => {
     [value]
   );
 
-  const onEdgeUpdate = useCallback(
-    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => updateEdge(oldEdge, newConnection, els)),
+  const onReconnect = useCallback(
+    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => reconnectEdge(oldEdge, newConnection, els)),
     [setEdges]
   );
 
@@ -95,7 +95,7 @@ const ValidationFlow = () => {
       nodeTypes={nodeTypes}
       onConnectStart={onConnectStart}
       onConnectEnd={onConnectEnd}
-      onEdgeUpdate={onEdgeUpdate}
+      onReconnect={onReconnect}
       isValidConnection={isValidConnection}
       fitView
     >

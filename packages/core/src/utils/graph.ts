@@ -14,6 +14,7 @@ import {
   NodeOrigin,
   UpdateEdgeOptions,
   Viewport,
+  ReconnectEdgeOptions,
 } from '../types';
 import { errorMessages } from '../contants';
 
@@ -95,11 +96,11 @@ export const addEdge = (edgeParams: Edge | Connection, edges: Edge[]): Edge[] =>
   return edges.concat(edge);
 };
 
-export const updateEdge = (
+export const reconnectEdge = (
   oldEdge: Edge,
   newConnection: Connection,
   edges: Edge[],
-  options: UpdateEdgeOptions = { shouldReplaceId: true }
+  options: ReconnectEdgeOptions = { shouldReplaceId: true }
 ): Edge[] => {
   const { id: oldEdgeId, ...rest } = oldEdge;
 
@@ -128,6 +129,23 @@ export const updateEdge = (
   } as Edge;
 
   return edges.filter((e) => e.id !== oldEdgeId).concat(edge);
+};
+
+/**
+ *
+ * @deprecated Use `reconnectEdge` instead.
+ */
+export const updateEdge = (
+  oldEdge: Edge,
+  newConnection: Connection,
+  edges: Edge[],
+  options: UpdateEdgeOptions = { shouldReplaceId: true }
+): Edge[] => {
+  console.warn(
+    '[DEPRECATED] `updateEdge` is deprecated. Instead use `reconnectEdge` https://reactflow.dev/api-reference/utils/reconnect-edge'
+  );
+
+  return reconnectEdge(oldEdge, newConnection, edges, options);
 };
 
 export const pointToRendererPoint = (

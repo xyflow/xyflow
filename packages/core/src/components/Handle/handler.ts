@@ -25,7 +25,7 @@ export function handlePointerDown({
   setState,
   isValidConnection,
   edgeUpdaterType,
-  onEdgeUpdateEnd,
+  onReconnectEnd,
 }: {
   event: ReactMouseEvent | ReactTouchEvent;
   handleId: string | null;
@@ -36,7 +36,7 @@ export function handlePointerDown({
   setState: StoreApi<ReactFlowState>['setState'];
   isValidConnection: ValidConnectionFunc;
   edgeUpdaterType?: HandleType;
-  onEdgeUpdateEnd?: (evt: MouseEvent | TouchEvent) => void;
+  onReconnectEnd?: (evt: MouseEvent | TouchEvent) => void;
 }): void {
   // when react-flow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
@@ -169,7 +169,7 @@ export function handlePointerDown({
     getState().onConnectEnd?.(event);
 
     if (edgeUpdaterType) {
-      onEdgeUpdateEnd?.(event);
+      onReconnectEnd?.(event);
     }
 
     resetRecentHandle(prevActiveHandle);

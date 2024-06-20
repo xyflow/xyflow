@@ -9,7 +9,7 @@ import ReactFlow, {
   Edge,
   ConnectionLineType,
   ConnectionMode,
-  updateEdge,
+  reconnectEdge,
   useNodesState,
   useEdgesState,
 } from 'reactflow';
@@ -185,8 +185,8 @@ const UpdateNodeInternalsFlow = () => {
   const { screenToFlowPosition } = useReactFlow();
 
   const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
-  const onEdgeUpdate = useCallback(
-    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => updateEdge(oldEdge, newConnection, els)),
+  const onReconnect = useCallback(
+    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => reconnectEdge(oldEdge, newConnection, els)),
     []
   );
 
@@ -214,7 +214,7 @@ const UpdateNodeInternalsFlow = () => {
       onPaneClick={onPaneClick}
       connectionLineType={ConnectionLineType.Bezier}
       connectionMode={ConnectionMode.Loose}
-      onEdgeUpdate={onEdgeUpdate}
+      onReconnect={onReconnect}
     />
   );
 };

@@ -1,7 +1,7 @@
 import { useState, useCallback, MouseEvent as ReactMouseEvent } from 'react';
 import ReactFlow, {
   Controls,
-  updateEdge,
+  reconnectEdge,
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
@@ -97,16 +97,16 @@ const initialEdges: Edge[] = [
 ];
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => reactFlowInstance.fitView();
-const onEdgeUpdateStart = (_: ReactMouseEvent, edge: Edge, handleType: HandleType) =>
+const onReconnectStart = (_: ReactMouseEvent, edge: Edge, handleType: HandleType) =>
   console.log(`start update ${handleType} handle`, edge);
-const onEdgeUpdateEnd = (_: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) =>
+const onReconnectEnd = (_: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) =>
   console.log(`end update ${handleType} handle`, edge);
 
 const UpdatableEdge = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
-  const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) =>
-    setEdges((els) => updateEdge(oldEdge, newConnection, els));
+  const onReconnect = (oldEdge: Edge, newConnection: Connection) =>
+    setEdges((els) => reconnectEdge(oldEdge, newConnection, els));
   const onConnect = (connection: Connection) => setEdges((els) => addEdge(connection, els));
 
   const onNodesChange = useCallback((changes: NodeChange[]) => {
@@ -125,10 +125,10 @@ const UpdatableEdge = () => {
       onEdgesChange={onEdgesChange}
       onInit={onInit}
       snapToGrid={true}
-      onEdgeUpdate={onEdgeUpdate}
+      onReconnect={onReconnect}
       onConnect={onConnect}
-      onEdgeUpdateStart={onEdgeUpdateStart}
-      onEdgeUpdateEnd={onEdgeUpdateEnd}
+      onReconnectStart={onReconnectStart}
+      onReconnectEnd={onReconnectEnd}
     >
       <Controls />
     </ReactFlow>

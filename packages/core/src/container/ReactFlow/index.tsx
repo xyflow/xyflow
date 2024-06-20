@@ -126,14 +126,18 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
       onPaneScroll,
       onPaneContextMenu,
       children,
-      onEdgeUpdate,
       onEdgeContextMenu,
       onEdgeDoubleClick,
       onEdgeMouseEnter,
       onEdgeMouseMove,
       onEdgeMouseLeave,
+      onEdgeUpdate,
       onEdgeUpdateStart,
       onEdgeUpdateEnd,
+      onReconnect,
+      onReconnectStart,
+      onReconnectEnd,
+      reconnectRadius,
       edgeUpdaterRadius = 10,
       onNodesChange,
       onEdgesChange,
@@ -221,15 +225,15 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
             onSelectionContextMenu={onSelectionContextMenu}
             onSelectionStart={onSelectionStart}
             onSelectionEnd={onSelectionEnd}
-            onEdgeUpdate={onEdgeUpdate}
             onEdgeContextMenu={onEdgeContextMenu}
             onEdgeDoubleClick={onEdgeDoubleClick}
             onEdgeMouseEnter={onEdgeMouseEnter}
             onEdgeMouseMove={onEdgeMouseMove}
             onEdgeMouseLeave={onEdgeMouseLeave}
-            onEdgeUpdateStart={onEdgeUpdateStart}
-            onEdgeUpdateEnd={onEdgeUpdateEnd}
-            edgeUpdaterRadius={edgeUpdaterRadius}
+            onReconnect={onReconnect ?? onEdgeUpdate}
+            onReconnectStart={onReconnectStart ?? onEdgeUpdateStart}
+            onReconnectEnd={onReconnectEnd ?? onEdgeUpdateEnd}
+            reconnectRadius={reconnectRadius ?? edgeUpdaterRadius}
             defaultMarkerColor={defaultMarkerColor}
             noDragClassName={noDragClassName}
             noWheelClassName={noWheelClassName}
