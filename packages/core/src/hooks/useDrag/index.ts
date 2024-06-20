@@ -255,7 +255,7 @@ function useDrag({
             }
           })
           .on('end', (event: UseDragEvent) => {
-            if (!dragStarted.current || !abortDrag.current) {
+            if (!dragStarted.current || abortDrag.current) {
               return;
             }
 
