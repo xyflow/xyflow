@@ -95,7 +95,7 @@ export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandl
   reconnectRadius?: number;
   rfId?: string;
   isFocusable: boolean;
-  isUpdatable: EdgeUpdatable;
+  isReconnectable: EdgeUpdatable;
   pathOptions?: BezierPathOptions | SmoothStepPathOptions;
   disableKeyboardA11y?: boolean;
 };

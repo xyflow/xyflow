@@ -55,7 +55,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
     rfId,
     ariaLabel,
     isFocusable,
-    isUpdatable,
+    isReconnectable,
     pathOptions,
     interactionWidth,
     disableKeyboardA11y,
@@ -216,9 +216,9 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
             interactionWidth={interactionWidth}
           />
         )}
-        {isUpdatable && (
+        {isReconnectable && (
           <>
-            {(isUpdatable === 'source' || isUpdatable === true) && (
+            {(isReconnectable === 'source' || isReconnectable === true) && (
               <EdgeAnchor
                 position={sourcePosition}
                 centerX={sourceX}
@@ -230,7 +230,7 @@ export default (EdgeComponent: ComponentType<EdgeProps>) => {
                 type="source"
               />
             )}
-            {(isUpdatable === 'target' || isUpdatable === true) && (
+            {(isReconnectable === 'target' || isReconnectable === true) && (
               <EdgeAnchor
                 position={targetPosition}
                 centerX={targetX}

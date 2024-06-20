@@ -115,7 +115,7 @@ const EdgeRenderer = ({
               const targetPosition = targetHandle?.position || Position.Top;
               const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
               const edgeReconnectable = edge.reconnectable || edge.updatable;
-              const isUpdatable =
+              const isReconnectable =
                 typeof onReconnect !== 'undefined' &&
                 (edgeReconnectable || (edgesUpdatable && typeof edgeReconnectable === 'undefined'));
 
@@ -177,7 +177,7 @@ const EdgeRenderer = ({
                   rfId={rfId}
                   ariaLabel={edge.ariaLabel}
                   isFocusable={isFocusable}
-                  isUpdatable={isUpdatable}
+                  isReconnectable={isReconnectable}
                   pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
                   interactionWidth={edge.interactionWidth}
                   disableKeyboardA11y={disableKeyboardA11y}
