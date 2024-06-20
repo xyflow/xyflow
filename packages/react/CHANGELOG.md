@@ -1,5 +1,9 @@
 # @xyflow/react
 
+## 12.0.0-next.23
+
+- fix `window` bug for SSR
+
 ## 12.0.0-next.22
 
 - ⚠️ rename `updateEdge` to `reconnectEdge` and realted APIs [#4373](https://github.com/xyflow/xyflow/pull/4373)
