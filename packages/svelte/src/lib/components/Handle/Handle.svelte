@@ -103,7 +103,7 @@
           $onConnectEndAction?.(event);
         },
         getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom],
-        getConnectionStartHandle: () => $connection.startHandle
+        getFromHandle: () => $connection.startHandle
       });
     }
   }
