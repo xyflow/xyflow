@@ -248,6 +248,7 @@ export function evaluateAbsolutePosition(
   nodeLookup: NodeLookup,
   nodeOrigin: NodeOrigin
 ): XYPosition {
+  let nextParentId: string | undefined = parentId;
   const positionAbsolute = { ...position };
 
   while (nextParentId) {

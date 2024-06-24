@@ -283,11 +283,11 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
 
       if (doUpdate) {
         const nodeBounds = update.nodeElement.getBoundingClientRect();
-        
+
         node.measured = dimensions;
         node.internals = {
           ...node.internals,
-          positionAbsolute,
+          positionAbsolute: getNodePositionWithOrigin(node, nodeOrigin),
           handleBounds: {
             source: getHandleBounds('.source', update.nodeElement, nodeBounds, zoom),
             target: getHandleBounds('.target', update.nodeElement, nodeBounds, zoom),
