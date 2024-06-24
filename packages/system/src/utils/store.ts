@@ -282,14 +282,15 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       );
 
       if (doUpdate) {
-        const positionAbsolute = getNodePositionWithOrigin(node, nodeOrigin);
+        const nodeBounds = update.nodeElement.getBoundingClientRect();
+        
         node.measured = dimensions;
         node.internals = {
           ...node.internals,
-          positionAbsolute: getNodePositionWithOrigin(node, nodeOrigin),
+          positionAbsolute,
           handleBounds: {
-            source: getHandleBounds('.source', node, update.nodeElement, zoom),
-            target: getHandleBounds('.target', node, update.nodeElement, zoom),
+            source: getHandleBounds('.source', update.nodeElement, nodeBounds, zoom),
+            target: getHandleBounds('.target', update.nodeElement, nodeBounds, zoom),
           },
         };
         if (node.parentId) {

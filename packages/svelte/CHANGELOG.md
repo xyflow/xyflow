@@ -1,5 +1,33 @@
 # @xyflow/svelte
 
+## 0.1.7
+
+- revise selection usability (capture while dragging out of the flow)
+- only prevent shift scrolling when selection is actually in progress
+- use correct end handle position when drawing a connection lines 
+- determine correct end positions for connection lines
+
+## 0.1.6
+
+- fix node origin bug
+
+## 0.1.5
+
+- prevent zooming on mobile if zoomOnPinch is false
+- add straight edge to path built-in-types
+- abort drag when multiple touches are detected
+- fix merge_styles error
+
+## 0.1.4
+
+- add `selectable`, `deletable` and `draggable` to node and edge props
+- add `parentId` to node props
+- add `on:edgemouseenter` and `on:edgemouseleave` event handler
+- fix deselection of edges
+- remove pointer events from panel when user selection is active
+- fix viewport initialization with user viewport
+- fix parent node lookup in `evaluateAbsolutePosition`- thanks @lcsfort
+
 ## 0.1.3
 
 - fix `NodeToolbar` for subflows
@@ -21,16 +49,16 @@ This is a bigger update for Svelte Flow to keep up with the latest changes we ma
 - rename `node.computed` to `node.measured` - this attribute only includes `width` and `height` and no `positionAbsolute` anymore. For this we added the helpers `getInternalNode` and `useInternalNode`
 - rename `node.parentNode` to `node.parentId`
 
-### More updates: 
+### More updates:
 
 - add `isValidConnection` for `<Handle />` component
 - add `fitViewOptions` for `<Controls />` component
 - add `getInternalNode` to `useSvelteFlow`
 - add `useInternalNode` hook
-- don't reset nodes and edges when svelte flow unmounts - thanks @darabos 
+- don't reset nodes and edges when svelte flow unmounts - thanks @darabos
 - fix node event types - thanks @RedPhoenixQ
 - make handleId and isTarget reactive - thanks @darabos
-- fix MiniMap interaction for touch devices 
+- fix MiniMap interaction for touch devices
 - fix pane: pinch zoom on windows
 - fix nodes: return user node in node event handlers
 

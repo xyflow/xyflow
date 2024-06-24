@@ -24,8 +24,8 @@
 			data: { label: 'only connectable with B' },
 			...nodeDefaults
 		},
-		{ id: 'A', position: { x: 250, y: 0 }, data: { label: 'A' }, ...nodeDefaults },
-		{ id: 'B', position: { x: 250, y: 150 }, data: { label: 'B' }, ...nodeDefaults },
+		{ id: 'A', position: { x: 250, y: 0 }, data: { label: 'A' } },
+		{ id: 'B', position: { x: 250, y: 150 }, data: { label: 'B' } },
 		{ id: 'C', position: { x: 250, y: 300 }, data: { label: 'C' }, ...nodeDefaults }
 	]);
 

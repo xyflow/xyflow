@@ -13,6 +13,7 @@ import {
   type IsValidConnection,
   type ConnectionHandle,
   NodeLookup,
+  Position,
 } from '../types';
 
 import { getClosestHandle, getConnectionStatus, getHandleLookup, getHandleType } from './utils';
@@ -36,7 +37,7 @@ export type OnPointerDownParams = {
   onConnect?: OnConnect;
   onConnectEnd?: OnConnectEnd;
   isValidConnection?: IsValidConnection;
-  onEdgeUpdateEnd?: (evt: MouseEvent | TouchEvent) => void;
+  onReconnectEnd?: (evt: MouseEvent | TouchEvent) => void;
   getTransform: () => Transform;
   getConnectionStartHandle: () => ConnectingHandle | null;
 };
@@ -89,7 +90,7 @@ function onPointerDown(
     onConnect,
     onConnectEnd,
     isValidConnection = alwaysValid,
-    onEdgeUpdateEnd,
+    onReconnectEnd,
     updateConnection,
     getTransform,
     getConnectionStartHandle,
@@ -138,12 +139,12 @@ function onPointerDown(
     nodeId,
     handleId,
     type: handleType,
+    position: (clickedHandle?.getAttribute('data-handlepos') as Position) || Position.Top,
   };
 
   updateConnection({
     connectionPosition,
     connectionStatus: null,
-    // connectionNodeId etc will be removed in the next major in favor of connectionStartHandle
     connectionStartHandle,
     connectionEndHandle: null,
   });
@@ -211,7 +212,7 @@ function onPointerDown(
     onConnectEnd?.(event);
 
     if (edgeUpdaterType) {
-      onEdgeUpdateEnd?.(event);
+      onReconnectEnd?.(event);
     }
 
     cancelConnection();
@@ -297,15 +298,14 @@ function isValidHandle(
         ? (isTarget && handleType === 'source') || (!isTarget && handleType === 'target')
         : handleNodeId !== fromNodeId || handleId !== fromHandleId);
 
-    if (isValid) {
-      result.endHandle = {
-        nodeId: handleNodeId as string,
-        handleId,
-        type: handleType as HandleType,
-      };
+    result.isValid = isValid && isValidConnection(connection);
 
-      result.isValid = isValidConnection(connection);
-    }
+    result.endHandle = {
+      nodeId: handleNodeId as string,
+      handleId,
+      type: handleType as HandleType,
+      position: handleToCheck.getAttribute('data-handlepos') as Position,
+    };
   }
 
   return result;

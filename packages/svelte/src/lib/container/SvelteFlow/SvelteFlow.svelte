@@ -2,7 +2,7 @@
   import { onMount, hasContext } from 'svelte';
   import { get } from 'svelte/store';
   import cc from 'classcat';
-  import { ConnectionMode, PanOnScrollMode, type Viewport } from '@xyflow/system';
+  import { ConnectionMode, PanOnScrollMode } from '@xyflow/system';
 
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
@@ -28,7 +28,7 @@
   export let fitViewOptions: $$Props['fitViewOptions'] = undefined;
   export let minZoom: $$Props['minZoom'] = undefined;
   export let maxZoom: $$Props['maxZoom'] = undefined;
-  export let initialViewport: Viewport = { x: 0, y: 0, zoom: 1 };
+  export let initialViewport: $$Props['initialViewport'] = undefined;
   export let viewport: $$Props['viewport'] = undefined;
   export let nodeTypes: $$Props['nodeTypes'] = undefined;
   export let edgeTypes: $$Props['edgeTypes'] = undefined;
@@ -88,6 +88,8 @@
   let domNode: HTMLDivElement;
   let clientWidth: number;
   let clientHeight: number;
+
+  const initViewport = $viewport || initialViewport;
 
   const store = hasContext(key)
     ? useStore()
@@ -203,7 +205,7 @@
     {zoomActivationKey}
   />
   <Zoom
-    {initialViewport}
+    initialViewport={initViewport}
     {onMoveStart}
     {onMove}
     {onMoveEnd}
@@ -222,7 +224,13 @@
       {selectionOnDrag}
     >
       <ViewportComponent>
-        <EdgeRenderer on:edgeclick on:edgecontextmenu {defaultEdgeOptions} />
+        <EdgeRenderer
+          on:edgeclick
+          on:edgecontextmenu
+          on:edgemouseenter
+          on:edgemouseleave
+          {defaultEdgeOptions}
+        />
         <ConnectionLine
           containerStyle={connectionLineContainerStyle}
           style={connectionLineStyle}

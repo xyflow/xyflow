@@ -77,6 +77,7 @@ const DnDFlow = () => {
             onInit={onInit}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            nodeOrigin={nodeOrigin}
           >
             <Controls />
           </ReactFlow>

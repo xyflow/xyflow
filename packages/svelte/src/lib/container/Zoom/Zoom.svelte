@@ -8,7 +8,7 @@
 
   type $$Props = ZoomProps;
 
-  export let initialViewport: $$Props['initialViewport'];
+  export let initialViewport: $$Props['initialViewport'] = undefined;
   export let onMoveStart: $$Props['onMoveStart'] = undefined;
   export let onMove: $$Props['onMove'] = undefined;
   export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
@@ -23,7 +23,7 @@
   const {
     viewport,
     panZoom,
-    selectionKeyPressed,
+    selectionRect,
     minZoom,
     maxZoom,
     dragging,
@@ -66,7 +66,7 @@
     preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
     noPanClassName: 'nopan',
     noWheelClassName: 'nowheel',
-    userSelectionActive: $selectionKeyPressed,
+    userSelectionActive: !!$selectionRect,
     translateExtent: $translateExtent,
     lib: $lib
   }}

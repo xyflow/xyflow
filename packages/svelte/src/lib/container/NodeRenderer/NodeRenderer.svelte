@@ -62,6 +62,7 @@
         node.connectable ||
         ($nodesConnectable && typeof node.connectable === 'undefined')
       )}
+      deletable={node.deletable ?? true}
       positionX={node.internals.positionAbsolute.x}
       positionY={node.internals.positionAbsolute.y}
       positionOriginX={posOrigin.x ?? 0}
@@ -82,6 +83,7 @@
       initialHeight={node.initialHeight}
       measuredWidth={node.measured.width}
       measuredHeight={node.measured.height}
+      parentId={node.parentId}
       {resizeObserver}
       on:nodeclick
       on:nodemouseenter

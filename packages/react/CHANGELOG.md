@@ -1,5 +1,41 @@
 # @xyflow/react
 
+## 12.0.0-next.24
+
+- fix `window` bug for SSR for real
+
+## 12.0.0-next.23
+
+- fix `window` bug for SSR
+
+## 12.0.0-next.22
+
+- ⚠️ rename `updateEdge` to `reconnectEdge` and realted APIs [#4373](https://github.com/xyflow/xyflow/pull/4373)
+- revise selection usability (capture while dragging out of the flow)
+- use correct end handle position when drawing a connection lines
+- determine correct end positions for connection lines
+
+## 12.0.0-next.21
+
+- fix node origin bug
+
+## 12.0.0-next.20
+
+- add `updateEdge` and `updateEdgeData` helpers to `useReactFlow`
+- enable dynamic edge label updates
+- prevent zooming on mobile if zoomOnPinch is false
+- add straight edge to path built-in-types
+- abort drag when multiple touches are detected
+
+## 12.0.0-next.19
+
+- update internals on node resizer updates
+- re-observe node when `node.hidden` is toggled
+- update `updateNodeData` argument type - thanks @ogroppo
+- add `selectable`, `deletable` and `draggable` to node and edge props
+- add `parentId` to node props
+- fix parent node lookup in `evaluateAbsolutePosition`- thanks @lcsfort
+
 ## 12.0.0-next.18
 
 - don't show nodeTypes warning if not necessary you've created a new nodeTypes or edgeTypes

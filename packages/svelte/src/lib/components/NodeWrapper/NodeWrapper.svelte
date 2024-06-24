@@ -22,6 +22,7 @@
   export let draggable: $$Props['draggable'] = undefined;
   export let selectable: $$Props['selectable'] = undefined;
   export let connectable: $$Props['connectable'] = true;
+  export let deletable: $$Props['deletable'] = true;
   export let hidden: $$Props['hidden'] = false;
   export let dragging: boolean = false;
   export let resizeObserver: $$Props['resizeObserver'] = null;
@@ -43,6 +44,8 @@
   export let height: $$Props['height'] = undefined;
   export let dragHandle: $$Props['dragHandle'] = undefined;
   export let initialized: $$Props['initialized'] = false;
+  export let parentId: $$Props['parentId'] = undefined;
+
   let className: string = '';
   export { className as class };
 
@@ -192,11 +195,15 @@
       {data}
       {id}
       {selected}
+      {selectable}
+      {deletable}
       {sourcePosition}
       {targetPosition}
       {zIndex}
       {dragging}
+      {draggable}
       {dragHandle}
+      {parentId}
       type={nodeType}
       isConnectable={$connectableStore}
       positionAbsoluteX={positionX}

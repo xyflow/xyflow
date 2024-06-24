@@ -38,6 +38,7 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
     zoomable = true,
     inversePan = false,
   }: XYMinimapUpdate) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
       const transform = getTransform();
 
@@ -55,6 +56,7 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
     };
 
     let panStart = [0, 0];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const panStartHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
       if (event.sourceEvent.type === 'mousedown' || event.sourceEvent.type === 'touchstart') {
         panStart = [
@@ -64,6 +66,7 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
       }
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const panHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
       const transform = getTransform();
 
@@ -101,8 +104,10 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
 
     const zoomAndPanHandler = zoom()
       .on('start', panStartHandler)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       .on('zoom', pannable ? panHandler : null)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       .on('zoom.wheel', zoomable ? zoomHandler : null);
 

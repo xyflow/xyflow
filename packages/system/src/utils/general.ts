@@ -250,10 +250,17 @@ export function evaluateAbsolutePosition(
 ): XYPosition {
   const positionAbsolute = { ...position };
 
-  const parent = nodeLookup.get(parentId);
-  if (parent) {
-    positionAbsolute.x += parent.internals.positionAbsolute.x - dimensions.width * nodeOrigin[0];
-    positionAbsolute.y += parent.internals.positionAbsolute.y - dimensions.height * nodeOrigin[1];
+  while (nextParentId) {
+    const parent = nodeLookup.get(nextParentId);
+    nextParentId = parent?.parentId;
+
+    if (parent) {
+      const origin = parent.origin || nodeOrigin;
+      const xOffset = (parent.measured.width ?? 0) * origin[0];
+      const yOffset = (parent.measured.height ?? 0) * origin[1];
+      positionAbsolute.x += parent.internals.positionAbsolute.x - dimensions.width * nodeOrigin[0];
+      positionAbsolute.y += parent.internals.positionAbsolute.y - dimensions.height * nodeOrigin[1];
+    }
   }
 
   return positionAbsolute;

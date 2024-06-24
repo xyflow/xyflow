@@ -26,17 +26,17 @@ export function useNodeObserver({
   const prevSourcePosition = useRef(node.sourcePosition);
   const prevTargetPosition = useRef(node.targetPosition);
   const prevType = useRef(nodeType);
-  const isInitialized = hasDimensions && !!node.internals.handleBounds && !node.hidden;
+  const isInitialized = hasDimensions && !!node.internals.handleBounds;
 
   useEffect(() => {
-    if (nodeRef.current && (!isInitialized || observedNode.current !== nodeRef.current)) {
+    if (nodeRef.current && !node.hidden && (!isInitialized || observedNode.current !== nodeRef.current)) {
       if (observedNode.current) {
         resizeObserver?.unobserve(observedNode.current);
       }
       resizeObserver?.observe(nodeRef.current);
       observedNode.current = nodeRef.current;
     }
-  }, [isInitialized]);
+  }, [isInitialized, node.hidden]);
 
   useEffect(() => {
     return () => {

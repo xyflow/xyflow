@@ -10,7 +10,7 @@ import {
   Edge,
   ConnectionLineType,
   ConnectionMode,
-  updateEdge,
+  reconnectEdge,
   useNodesState,
   useEdgesState,
 } from '@xyflow/react';
@@ -22,55 +22,55 @@ const initialNodes: Node[] = [
     id: '00',
     type: 'custom',
     position: { x: 300, y: 250 },
-    data: null,
+    data: {},
   },
   {
     id: '01',
     type: 'custom',
     position: { x: 100, y: 50 },
-    data: null,
+    data: {},
   },
   {
     id: '02',
     type: 'custom',
     position: { x: 500, y: 50 },
-    data: null,
+    data: {},
   },
   {
     id: '03',
     type: 'custom',
     position: { x: 500, y: 500 },
-    data: null,
+    data: {},
   },
   {
     id: '04',
     type: 'custom',
     position: { x: 100, y: 500 },
-    data: null,
+    data: {},
   },
   {
     id: '10',
     type: 'custom',
     position: { x: 300, y: 5 },
-    data: null,
+    data: {},
   },
   {
     id: '20',
     type: 'custom',
     position: { x: 600, y: 250 },
-    data: null,
+    data: {},
   },
   {
     id: '30',
     type: 'custom',
     position: { x: 300, y: 600 },
-    data: null,
+    data: {},
   },
   {
     id: '40',
     type: 'custom',
     position: { x: 5, y: 250 },
-    data: null,
+    data: {},
   },
 ];
 
@@ -186,8 +186,8 @@ const UpdateNodeInternalsFlow = () => {
   const { screenToFlowPosition } = useReactFlow();
 
   const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
-  const onEdgeUpdate = useCallback(
-    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => updateEdge(oldEdge, newConnection, els)),
+  const onReconnect = useCallback(
+    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => reconnectEdge(oldEdge, newConnection, els)),
     []
   );
 
@@ -215,7 +215,7 @@ const UpdateNodeInternalsFlow = () => {
       onPaneClick={onPaneClick}
       connectionLineType={ConnectionLineType.Bezier}
       connectionMode={ConnectionMode.Loose}
-      onEdgeUpdate={onEdgeUpdate}
+      onReconnect={onReconnect}
     />
   );
 };

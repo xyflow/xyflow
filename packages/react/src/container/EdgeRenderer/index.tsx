@@ -14,14 +14,14 @@ type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
   | 'onEdgeDoubleClick'
   | 'defaultMarkerColor'
   | 'onlyRenderVisibleElements'
-  | 'onEdgeUpdate'
+  | 'onReconnect'
   | 'onEdgeContextMenu'
   | 'onEdgeMouseEnter'
   | 'onEdgeMouseMove'
   | 'onEdgeMouseLeave'
-  | 'onEdgeUpdateStart'
-  | 'onEdgeUpdateEnd'
-  | 'edgeUpdaterRadius'
+  | 'onReconnectStart'
+  | 'onReconnectEnd'
+  | 'reconnectRadius'
   | 'noPanClassName'
   | 'rfId'
   | 'disableKeyboardA11y'
@@ -34,7 +34,7 @@ const selector = (s: ReactFlowState) => ({
   width: s.width,
   height: s.height,
   edgesFocusable: s.edgesFocusable,
-  edgesUpdatable: s.edgesUpdatable,
+  edgesReconnectable: s.edgesReconnectable,
   elementsSelectable: s.elementsSelectable,
   connectionMode: s.connectionMode,
   onError: s.onError,
@@ -46,19 +46,19 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   rfId,
   edgeTypes,
   noPanClassName,
-  onEdgeUpdate,
+  onReconnect,
   onEdgeContextMenu,
   onEdgeMouseEnter,
   onEdgeMouseMove,
   onEdgeMouseLeave,
   onEdgeClick,
-  edgeUpdaterRadius,
+  reconnectRadius,
   onEdgeDoubleClick,
-  onEdgeUpdateStart,
-  onEdgeUpdateEnd,
+  onReconnectStart,
+  onReconnectEnd,
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
-  const { edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
+  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useStore(selector, shallow);
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
   return (
@@ -71,19 +71,19 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
             key={id}
             id={id}
             edgesFocusable={edgesFocusable}
-            edgesUpdatable={edgesUpdatable}
+            edgesReconnectable={edgesReconnectable}
             elementsSelectable={elementsSelectable}
             noPanClassName={noPanClassName}
-            onEdgeUpdate={onEdgeUpdate}
+            onReconnect={onReconnect}
             onContextMenu={onEdgeContextMenu}
             onMouseEnter={onEdgeMouseEnter}
             onMouseMove={onEdgeMouseMove}
             onMouseLeave={onEdgeMouseLeave}
             onClick={onEdgeClick}
-            edgeUpdaterRadius={edgeUpdaterRadius}
+            reconnectRadius={reconnectRadius}
             onDoubleClick={onEdgeDoubleClick}
-            onEdgeUpdateStart={onEdgeUpdateStart}
-            onEdgeUpdateEnd={onEdgeUpdateEnd}
+            onReconnectStart={onReconnectStart}
+            onReconnectEnd={onReconnectEnd}
             rfId={rfId}
             onError={onError}
             edgeTypes={edgeTypes}

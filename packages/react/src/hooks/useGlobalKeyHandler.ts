@@ -9,6 +9,7 @@ import { Edge, Node } from '../types';
 const selected = (item: Node | Edge) => item.selected;
 
 const deleteKeyOptions: UseKeyPressOptions = { actInsideInputWithModifier: false };
+const win = typeof window !== 'undefined' ? window : undefined;
 
 /**
  * Hook for handling global key events.
@@ -26,7 +27,7 @@ export function useGlobalKeyHandler({
   const { deleteElements } = useReactFlow();
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode, deleteKeyOptions);
-  const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode);
+  const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode, { target: win });
 
   useEffect(() => {
     if (deleteKeyPressed) {

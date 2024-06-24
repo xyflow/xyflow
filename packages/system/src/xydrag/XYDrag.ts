@@ -100,6 +100,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let containerBounds: DOMRect | null = null;
   let dragStarted = false;
   let d3Selection: Selection<Element, unknown, null, undefined> | null = null;
+  let abortDrag = false; // prevents unintentional dragging on multitouch
 
   // public functions
   function update({ noDragClassName, handleSelector, domNode, isSelectable, nodeId }: DragUpdateParams) {
@@ -263,6 +264,8 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       .on('start', (event: UseDragEvent) => {
         const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
 
+        abortDrag = false;
+
         if (nodeDragThreshold === 0) {
           startDrag(event);
         }
@@ -275,6 +278,14 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       .on('drag', (event: UseDragEvent) => {
         const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold } = getStoreItems();
         const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+
+        if (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) {
+          abortDrag = true;
+        }
+
+        if (abortDrag) {
+          return;
+        }
 
         if (!autoPanStarted && autoPanOnNodeDrag && dragStarted) {
           autoPanStarted = true;
@@ -300,7 +311,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         }
       })
       .on('end', (event: UseDragEvent) => {
-        if (!dragStarted) {
+        if (!dragStarted || abortDrag) {
           return;
         }
 

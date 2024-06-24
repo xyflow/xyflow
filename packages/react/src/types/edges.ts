@@ -28,8 +28,6 @@ export type EdgeLabelOptions = {
   labelBgBorderRadius?: number;
 };
 
-export type EdgeUpdatable = boolean | HandleType;
-
 /**
  * The Edge type is mainly used for the `edges` that get passed to the ReactFlow component
  * @public
@@ -41,7 +39,7 @@ export type Edge<
   EdgeLabelOptions & {
     style?: CSSProperties;
     className?: string;
-    updatable?: EdgeUpdatable;
+    reconnectable?: boolean | HandleType;
     focusable?: boolean;
   };
 
@@ -60,26 +58,28 @@ type StepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>
   pathOptions?: StepPathOptions;
 };
 
-export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge;
+type StraightEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData, 'straight'>;
+
+export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge | StraightEdge;
 
 export type EdgeMouseHandler<EdgeType extends Edge = Edge> = (event: ReactMouseEvent, edge: EdgeType) => void;
 
 export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   id: string;
   edgesFocusable: boolean;
-  edgesUpdatable: boolean;
+  edgesReconnectable: boolean;
   elementsSelectable: boolean;
   noPanClassName: string;
   onClick?: EdgeMouseHandler<EdgeType>;
   onDoubleClick?: EdgeMouseHandler<EdgeType>;
-  onEdgeUpdate?: OnEdgeUpdateFunc<EdgeType>;
+  onReconnect?: OnReconnect<EdgeType>;
   onContextMenu?: EdgeMouseHandler<EdgeType>;
   onMouseEnter?: EdgeMouseHandler<EdgeType>;
   onMouseMove?: EdgeMouseHandler<EdgeType>;
   onMouseLeave?: EdgeMouseHandler<EdgeType>;
-  edgeUpdaterRadius?: number;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: EdgeType, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
+  reconnectRadius?: number;
+  onReconnectStart?: (event: ReactMouseEvent, edge: EdgeType, handleType: HandleType) => void;
+  onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
   rfId?: string;
   edgeTypes?: EdgeTypes;
   onError?: OnError;
@@ -100,7 +100,7 @@ export type EdgeTextProps = HTMLAttributes<SVGElement> &
  */
 export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
   EdgeType,
-  'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target'
+  'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target' | 'selectable' | 'deletable'
 > &
   EdgePosition &
   EdgeLabelOptions & {
@@ -189,7 +189,7 @@ export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'tar
  */
 export type SimpleBezierEdgeProps = EdgeComponentProps;
 
-export type OnEdgeUpdateFunc<EdgeType extends Edge = Edge> = (oldEdge: EdgeType, newConnection: Connection) => void;
+export type OnReconnect<EdgeType extends Edge = Edge> = (oldEdge: EdgeType, newConnection: Connection) => void;
 
 export type ConnectionLineComponentProps = {
   connectionLineStyle?: CSSProperties;

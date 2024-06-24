@@ -1,3 +1,4 @@
+import { getHandlePosition } from '../utils';
 import {
   ConnectionStatus,
   type HandleType,
@@ -16,14 +17,15 @@ export function getHandles(
   type: HandleType,
   currentHandle: string
 ): ConnectionHandle[] {
-  return (handleBounds[type] || []).reduce<ConnectionHandle[]>((res, h) => {
-    if (`${node.id}-${h.id}-${type}` !== currentHandle) {
+  return (handleBounds[type] || []).reduce<ConnectionHandle[]>((res, handle) => {
+    if (`${node.id}-${handle.id}-${type}` !== currentHandle) {
+      const [x, y] = getHandlePosition(node, handle);
       res.push({
-        id: h.id || null,
+        id: handle.id || null,
         type,
         nodeId: node.id,
-        x: node.internals.positionAbsolute.x + h.x + h.width / 2,
-        y: node.internals.positionAbsolute.y + h.y + h.height / 2,
+        x,
+        y,
       });
     }
     return res;
