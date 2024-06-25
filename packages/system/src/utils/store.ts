@@ -172,6 +172,7 @@ export function handleExpandParent(
       parentExpansions.get(child.parentId)?.expandedRect ?? nodeToRect(parent, parent.origin ?? nodeOrigin);
 
     const expandedRect = getBoundsOfRects(parentRect, child.rect);
+
     parentExpansions.set(child.parentId, { expandedRect, parent });
   }
 

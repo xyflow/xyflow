@@ -67,11 +67,10 @@ function ResizeControl({
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
           const { triggerNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
-
           const changes: NodeChange[] = [];
           const nextPosition = { x: change.x, y: change.y };
-
           const node = nodeLookup.get(id);
+
           if (node && node.expandParent && node.parentId) {
             const origin = node.origin ?? nodeOrigin;
             const width = change.width ?? node.measured.width!;

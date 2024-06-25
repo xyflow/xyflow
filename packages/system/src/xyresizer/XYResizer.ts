@@ -3,7 +3,15 @@ import { select } from 'd3-selection';
 
 import { getControlDirection, getDimensionsAfterResize, getResizeDirection } from './utils';
 import { getPointerPosition } from '../utils';
-import type { CoordinateExtent, NodeBase, NodeLookup, NodeOrigin, Transform, XYPosition } from '../types';
+import type {
+  CoordinateExtent,
+  InternalNodeBase,
+  NodeBase,
+  NodeLookup,
+  NodeOrigin,
+  Transform,
+  XYPosition,
+} from '../types';
 import type { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, ControlPosition } from './types';
 
 const initPrevValues = { width: 0, height: 0, x: 0, y: 0 };
@@ -100,9 +108,9 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
 
     const controlDirection = getControlDirection(controlPosition);
 
-    let node: NodeBase | undefined = undefined;
+    let node: InternalNodeBase | undefined = undefined;
     let childNodes: XYResizerChildChange[] = [];
-    let parentNode: NodeBase | undefined = undefined; // Needed to fix expandParent
+    let parentNode: InternalNodeBase | undefined = undefined; // Needed to fix expandParent
     let parentExtent: CoordinateExtent | undefined = undefined;
     let childExtent: CoordinateExtent | undefined = undefined;
 
@@ -118,8 +126,8 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
 
         prevValues = {
-          width: node.measured?.width ?? 0,
-          height: node.measured?.height ?? 0,
+          width: node.measured.width ?? 0,
+          height: node.measured.height ?? 0,
           x: node.position.x ?? 0,
           y: node.position.y ?? 0,
         };
@@ -132,11 +140,10 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         };
 
         parentNode = undefined;
-        if (node.extent === 'parent' || node.expandParent) {
-          parentNode = nodeLookup.get(node.parentId!);
-          if (parentNode && node.extent === 'parent') {
-            parentExtent = nodeToParentExtent(parentNode);
-          }
+
+        if (node.parentId && (node.extent === 'parent' || node.expandParent)) {
+          parentNode = nodeLookup.get(node.parentId);
+          parentExtent = parentNode && node.extent === 'parent' ? nodeToParentExtent(parentNode) : undefined;
         }
 
         // Collect all child nodes to correct their relative positions when top/left changes
@@ -153,7 +160,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
             });
 
             if (child.extent === 'parent' || child.expandParent) {
-              const extent = nodeToChildExtent(child, node!, child.origin ?? nodeOrigin);
+              const extent = nodeToChildExtent(child, node, child.origin ?? nodeOrigin);
 
               if (childExtent) {
                 childExtent = [
@@ -202,7 +209,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           return;
         }
 
-        if (isXPosChange || isYPosChange || nodeOrigin[0] === 1 || nodeOrigin[1] == 1) {
+        if (isXPosChange || isYPosChange || nodeOrigin[0] === 1 || nodeOrigin[1] === 1) {
           change.x = isXPosChange ? x : prevValues.x;
           change.y = isYPosChange ? y : prevValues.y;
 
@@ -222,6 +229,8 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
             }
           }
 
+          // when top/left changes, correct the relative positions of child nodes
+          // so that they stay in the same position
           if (childNodes.length > 0) {
             const xChange = x - prevX;
             const yChange = y - prevY;
@@ -241,6 +250,12 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           change.height = isHeightChange ? height : prevValues.height;
           prevValues.width = change.width;
           prevValues.height = change.height;
+        }
+
+        if (parentNode && node.expandParent) {
+          if (prevValues.x - (change?.width ?? 0) < 0) {
+            // console.log(1);
+          }
         }
 
         const direction = getResizeDirection({
