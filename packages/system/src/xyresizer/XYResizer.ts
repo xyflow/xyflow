@@ -252,12 +252,6 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           prevValues.height = change.height;
         }
 
-        if (parentNode && node.expandParent) {
-          if (prevValues.x - (change?.width ?? 0) < 0) {
-            // console.log(1);
-          }
-        }
-
         const direction = getResizeDirection({
           width: prevValues.width,
           prevWidth,
