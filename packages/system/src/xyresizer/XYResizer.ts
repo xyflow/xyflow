@@ -216,19 +216,6 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           prevValues.x = change.x;
           prevValues.y = change.y;
 
-          // Fix expandParent when resizing from top/left
-          if (parentNode && node.expandParent) {
-            if (change.x && change.x < 0) {
-              prevValues.x = 0;
-              startValues.x = startValues.x - change.x;
-            }
-
-            if (change.y && change.y < 0) {
-              prevValues.y = 0;
-              startValues.y = startValues.y - change.y;
-            }
-          }
-
           // when top/left changes, correct the relative positions of child nodes
           // so that they stay in the same position
           if (childNodes.length > 0) {
@@ -250,6 +237,21 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           change.height = isHeightChange ? height : prevValues.height;
           prevValues.width = change.width;
           prevValues.height = change.height;
+        }
+
+        // Fix expandParent when resizing from top/left
+        if (parentNode && node.expandParent) {
+          const xLimit = nodeOrigin[0] * (change.width ?? 0);
+          if (change.x && change.x < xLimit) {
+            prevValues.x = xLimit;
+            startValues.x = startValues.x - (change.x - xLimit);
+          }
+
+          const yLimit = nodeOrigin[1] * (change.height ?? 0);
+          if (change.y && change.y < yLimit) {
+            prevValues.y = yLimit;
+            startValues.y = startValues.y - (change.y - yLimit);
+          }
         }
 
         const direction = getResizeDirection({
