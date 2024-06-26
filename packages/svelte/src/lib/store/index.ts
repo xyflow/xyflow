@@ -122,6 +122,7 @@ export function createStore({
         }
         case 'position':
           node.position = change.position ?? node.position;
+
           break;
       }
     }
