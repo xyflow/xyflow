@@ -14,6 +14,7 @@ import {
   NodeLookup,
   Position,
   oppositePosition,
+  ConnectionInProgress,
 } from '../types';
 
 import { getClosestHandle, isConnectionValid, getHandleLookup, getHandleType } from './utils';
@@ -145,7 +146,7 @@ function onPointerDown(
 
   const from = getHandlePosition(fromNodeInternal, fromHandle, Position.Left, true);
 
-  updateConnection({
+  const newConnection: ConnectionInProgress = {
     inProgress: true,
     isValid: null,
 
@@ -158,7 +159,10 @@ function onPointerDown(
     toHandle: null,
     toPosition: oppositePosition[fromHandle.position],
     toNode: null,
-  });
+  };
+
+  updateConnection(newConnection);
+  let previousConnection: ConnectionInProgress = newConnection;
 
   onConnectStart?.(event, { nodeId, handleId, handleType });
 
@@ -198,7 +202,7 @@ function onPointerDown(
     connection = result.connection;
     isValid = isConnectionValid(!!closestHandle, result.isValid);
 
-    updateConnection({
+    const newConnection: ConnectionInProgress = {
       inProgress: true,
       isValid,
 
@@ -214,7 +218,21 @@ function onPointerDown(
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
       toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)!.internals.userNode : null,
-    });
+    };
+
+    // we don't want to trigger an update when the connection
+    // is snapped to the same handle as before
+    if (
+      previousConnection.toHandle &&
+      newConnection.toHandle &&
+      previousConnection.toHandle.nodeId === newConnection.toHandle.nodeId &&
+      previousConnection.toHandle.id === newConnection.toHandle.id
+    ) {
+      return;
+    }
+
+    updateConnection(newConnection);
+    previousConnection = newConnection;
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {

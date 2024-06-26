@@ -314,6 +314,7 @@ const createStore = ({
         });
       },
       updateConnection: (connection) => {
+        console.log('newUpdate');
         set({ connection });
       },
 
