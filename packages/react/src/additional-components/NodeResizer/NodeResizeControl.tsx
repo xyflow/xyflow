@@ -94,7 +94,6 @@ function ResizeControl({
                 ),
               },
             };
-            console.log(child);
 
             const parentExpandChanges = handleExpandParent([child], nodeLookup, parentLookup, nodeOrigin);
             changes.push(...parentExpandChanges);

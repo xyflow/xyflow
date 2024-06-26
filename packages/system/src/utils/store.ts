@@ -159,7 +159,7 @@ export function handleExpandParent(
 ): (NodeDimensionChange | NodePositionChange)[] {
   const changes: (NodeDimensionChange | NodePositionChange)[] = [];
   const parentExpansions = new Map<string, { expandedRect: Rect; parent: InternalNodeBase }>();
-  console.log(children)
+
   // determine the expanded rectangle the child nodes would take for each parent
   for (const child of children) {
     const parent = nodeLookup.get(child.parentId);
