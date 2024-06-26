@@ -84,8 +84,8 @@ function ResizeControl({
                 height,
                 ...evaluateAbsolutePosition(
                   {
-                    x: change.x ?? node.internals.positionAbsolute.x,
-                    y: change.y ?? node.internals.positionAbsolute.y,
+                    x: change.x ?? node.position.x,
+                    y: change.y ?? node.position.y,
                   },
                   { width, height },
                   node.parentId,
@@ -94,6 +94,7 @@ function ResizeControl({
                 ),
               },
             };
+            console.log(child);
 
             const parentExpandChanges = handleExpandParent([child], nodeLookup, parentLookup, nodeOrigin);
             changes.push(...parentExpandChanges);

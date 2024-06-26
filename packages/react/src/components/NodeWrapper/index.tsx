@@ -39,7 +39,6 @@ export function NodeWrapper<NodeType extends Node>({
   rfId,
   nodeTypes,
   nodeExtent,
-  nodeOrigin,
   onError,
 }: NodeWrapperProps<NodeType>) {
   const { node, internals, isParent } = useStore((s) => {
@@ -87,7 +86,9 @@ export function NodeWrapper<NodeType extends Node>({
   const nodeDimensions = getNodeDimensions(node);
   const inlineDimensions = getNodeInlineStyleDimensions(node);
   // TODO: clamping should happen earlier
-  let clampedPosition = nodeExtent ? clampPosition(internals.positionAbsolute, nodeExtent) : internals.positionAbsolute;
+  const clampedPosition = nodeExtent
+    ? clampPosition(internals.positionAbsolute, nodeExtent)
+    : internals.positionAbsolute;
 
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
 

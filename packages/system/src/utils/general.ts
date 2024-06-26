@@ -118,29 +118,6 @@ export const devWarn = (id: string, message: string) => {
   }
 };
 
-export const getPositionWithOrigin = ({
-  x,
-  y,
-  width,
-  height,
-  origin = [0, 0],
-}: {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  origin?: NodeOrigin;
-}): XYPosition => {
-  if (!width || !height || origin[0] < 0 || origin[1] < 0 || origin[0] > 1 || origin[1] > 1) {
-    return { x, y };
-  }
-
-  return {
-    x: x - width * origin[0],
-    y: y - height * origin[1],
-  };
-};
-
 export const snapPosition = (position: XYPosition, snapGrid: SnapGrid = [1, 1]): XYPosition => {
   return {
     x: snapGrid[0] * Math.round(position.x / snapGrid[0]),
@@ -243,7 +220,7 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
  */
 export function evaluateAbsolutePosition(
   position: XYPosition,
-  dimensions: { width: number; height: number },
+  dimensions: { width?: number; height?: number } = { width: 0, height: 0 },
   parentId: string,
   nodeLookup: NodeLookup,
   nodeOrigin: NodeOrigin
@@ -257,10 +234,8 @@ export function evaluateAbsolutePosition(
 
     if (parent) {
       const origin = parent.origin || nodeOrigin;
-      const xOffset = (parent.measured.width ?? 0) * origin[0];
-      const yOffset = (parent.measured.height ?? 0) * origin[1];
-      positionAbsolute.x += parent.internals.positionAbsolute.x - dimensions.width * nodeOrigin[0];
-      positionAbsolute.y += parent.internals.positionAbsolute.y - dimensions.height * nodeOrigin[1];
+      positionAbsolute.x += parent.internals.positionAbsolute.x - (dimensions.width ?? 0) * origin[0];
+      positionAbsolute.y += parent.internals.positionAbsolute.y - (dimensions.height ?? 0) * origin[1];
     }
   }
 

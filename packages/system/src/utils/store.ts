@@ -15,7 +15,6 @@ import {
   NodeDimensionChange,
   NodePositionChange,
   ParentLookup,
-  Dimensions,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
 import { getBoundsOfRects, getNodeDimensions, isNumeric, nodeToRect } from './general';
@@ -23,8 +22,8 @@ import { getNodePositionWithOrigin } from './graph';
 import { ParentExpandChild } from './types';
 
 export function updateAbsolutePositions<NodeType extends NodeBase>(
-  nodeLookup: Map<string, InternalNodeBase<NodeType>>,
-  parentLookup: Map<string, InternalNodeBase<NodeType>[]>,
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
+  parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options: UpdateNodesOptions<NodeType> = {
     nodeOrigin: [0, 0] as NodeOrigin,
     elevateNodesOnSelect: true,
@@ -49,8 +48,8 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
 
 export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
-  nodeLookup: Map<string, InternalNodeBase<NodeType>>,
-  parentLookup: Map<string, InternalNodeBase<NodeType>[]>,
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
+  parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options: UpdateNodesOptions<NodeType> = {
     nodeOrigin: [0, 0] as NodeOrigin,
     elevateNodesOnSelect: true,
@@ -94,8 +93,8 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 
 function updateChildPosition<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
-  nodeLookup: NodeLookup,
-  parentLookup: ParentLookup,
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
+  parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options: UpdateNodesOptions<NodeType> = {
     nodeOrigin: [0, 0] as NodeOrigin,
     elevateNodesOnSelect: true,
@@ -111,9 +110,9 @@ function updateChildPosition<NodeType extends NodeBase>(
   // update the parentLookup
   const childNodes = parentLookup.get(parentId);
   if (childNodes) {
-    childNodes.push(node);
+    childNodes.set(node.id, node);
   } else {
-    parentLookup.set(parentId, [node]);
+    parentLookup.set(parentId, new Map([[node.id, node]]);
   }
 
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
@@ -160,7 +159,7 @@ export function handleExpandParent(
 ): (NodeDimensionChange | NodePositionChange)[] {
   const changes: (NodeDimensionChange | NodePositionChange)[] = [];
   const parentExpansions = new Map<string, { expandedRect: Rect; parent: InternalNodeBase }>();
-
+  console.log(children)
   // determine the expanded rectangle the child nodes would take for each parent
   for (const child of children) {
     const parent = nodeLookup.get(child.parentId);
@@ -168,13 +167,12 @@ export function handleExpandParent(
       continue;
     }
 
-    const parentRect =
-      parentExpansions.get(child.parentId)?.expandedRect ?? nodeToRect(parent, parent.origin ?? nodeOrigin);
-
+    const parentRect = parentExpansions.get(child.parentId)?.expandedRect ?? nodeToRect(parent);
     const expandedRect = getBoundsOfRects(parentRect, child.rect);
 
     parentExpansions.set(child.parentId, { expandedRect, parent });
   }
+
 
   if (parentExpansions.size > 0) {
     parentExpansions.forEach(({ expandedRect, parent }, parentId) => {
@@ -208,8 +206,7 @@ export function handleExpandParent(
 
         // We move all child nodes in the oppsite direction
         // so the x,y changes of the parent do not move the children
-        const childNodes = parentLookup.get(parentId);
-        childNodes?.forEach((childNode) => {
+        parentLookup.get(parentId)?.forEach((childNode) => {
           if (!children.some((child) => child.id === childNode.id)) {
             changes.push({
               id: childNode.id,
@@ -295,7 +292,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
           },
         };
         if (node.parentId) {
-          updateChildPosition(node, nodeLookup, parentLookup, { nodeOrigin });
+           updateChildPosition(node, nodeLookup, parentLookup, { nodeOrigin });
         }
 
         updatedInternals = true;

@@ -13,7 +13,8 @@ import {
   type PanZoomInstance,
   type ConnectionLookup,
   type EdgeLookup,
-  type NodeLookup
+  type NodeLookup,
+  type ParentLookup
 } from '@xyflow/system';
 
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, InternalNode, Node } from '$lib/types';
@@ -128,7 +129,7 @@ export type NodeStoreOptions = {
 export const createNodesStore = (
   nodes: Node[],
   nodeLookup: NodeLookup<InternalNode>,
-  parentLookup: Map<string, InternalNode[]>
+  parentLookup: ParentLookup<InternalNode>
 ): {
   subscribe: (this: void, run: Subscriber<Node[]>) => Unsubscriber;
   update: (this: void, updater: Updater<Node[]>) => void;

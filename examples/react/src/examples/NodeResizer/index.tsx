@@ -128,7 +128,7 @@ const initialNodes: Node[] = [
     data: { label: 'Parent', keepAspectRatio: true },
     position: { x: 700, y: 0 },
     width: 300,
-    height: 400,
+    height: 300,
     style: { ...nodeStyle },
   },
   {
@@ -148,7 +148,9 @@ const initialNodes: Node[] = [
     id: '5b',
     type: 'defaultResizer',
     data: { label: 'Child with expandParent' },
-    position: { x: 150, y: 100 },
+    position: { x: 100, y: 100 },
+    width: 100,
+    height: 100,
     parentId: '5',
     expandParent: true,
     style: { ...nodeStyle },
@@ -187,7 +189,6 @@ const CustomNodeFlow = () => {
       minZoom={0.2}
       maxZoom={5}
       snapToGrid={snapToGrid}
-      nodeOrigin={[1, 1]}
       fitView
       onlyRenderVisibleElements
     >

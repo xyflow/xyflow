@@ -32,7 +32,6 @@ export type GraphViewProps<NodeType extends Node = Node, EdgeType extends Edge =
       | 'noPanClassName'
       | 'defaultViewport'
       | 'disableKeyboardA11y'
-      | 'nodeOrigin'
     >
   > & {
     rfId: string;
@@ -97,7 +96,6 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   noWheelClassName,
   noPanClassName,
   disableKeyboardA11y,
-  nodeOrigin,
   nodeExtent,
   rfId,
   viewport,
@@ -186,7 +184,6 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
           noPanClassName={noPanClassName}
           noDragClassName={noDragClassName}
           disableKeyboardA11y={disableKeyboardA11y}
-          nodeOrigin={nodeOrigin}
           nodeExtent={nodeExtent}
           rfId={rfId}
         />
