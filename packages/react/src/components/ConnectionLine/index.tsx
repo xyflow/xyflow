@@ -154,9 +154,9 @@ const selector = (s: ReactFlowState) => ({
 
 export function ConnectionLineWrapper({ containerStyle, style, type, component }: ConnectionLineWrapperProps) {
   const { nodeId, handleType, nodesConnectable, width, height, isValid } = useStore(selector, shallow);
-  const isIncorrect = !(nodeId && handleType && width && nodesConnectable);
+  const renderConnectionLine = !!(nodeId && handleType && width && nodesConnectable);
 
-  if (isIncorrect) {
+  if (!renderConnectionLine) {
     return null;
   }
 
