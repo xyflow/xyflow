@@ -1,6 +1,5 @@
 import { getHandlePosition } from '../utils';
 import {
-  ConnectionStatus,
   type HandleType,
   type NodeHandleBounds,
   type XYPosition,
@@ -105,14 +104,14 @@ export function getHandleType(
   return null;
 }
 
-export function getConnectionStatus(isInsideConnectionRadius: boolean, isHandleValid: boolean) {
-  let connectionStatus = null;
+export function isConnectionValid(isInsideConnectionRadius: boolean, isHandleValid: boolean) {
+  let isValid: boolean | null = null;
 
   if (isHandleValid) {
-    connectionStatus = 'valid';
+    isValid = true;
   } else if (isInsideConnectionRadius && !isHandleValid) {
-    connectionStatus = 'invalid';
+    isValid = false;
   }
 
-  return connectionStatus as ConnectionStatus;
+  return isValid;
 }

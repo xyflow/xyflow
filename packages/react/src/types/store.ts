@@ -1,6 +1,6 @@
 import {
   ConnectionMode,
-  type ConnectionStatus,
+  type ConnectionState,
   type CoordinateExtent,
   type InternalNodeUpdate,
   type UpdateNodePositions,
@@ -12,7 +12,6 @@ import {
   type SnapGrid,
   type ConnectingHandle,
   type Transform,
-  type XYPosition,
   type PanZoomInstance,
   type PanBy,
   type OnConnectStart,
@@ -25,8 +24,8 @@ import {
   type EdgeLookup,
   type ConnectionLookup,
   type NodeLookup,
-  NodeChange,
-  EdgeChange,
+  type NodeChange,
+  type EdgeChange,
 } from '@xyflow/system';
 
 import type {
@@ -78,9 +77,9 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   userSelectionActive: boolean;
   userSelectionRect: SelectionRect | null;
 
-  connectionPosition: XYPosition;
-  connectionStatus: ConnectionStatus | null;
+  connection: ConnectionState;
   connectionMode: ConnectionMode;
+  connectionClickStartHandle: ConnectingHandle | null;
 
   snapToGrid: boolean;
   snapGrid: SnapGrid;
@@ -96,10 +95,6 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   selectNodesOnDrag: boolean;
 
   multiSelectionActive: boolean;
-
-  connectionStartHandle: ConnectingHandle | null;
-  connectionEndHandle: ConnectingHandle | null;
-  connectionClickStartHandle: ConnectingHandle | null;
 
   onNodeDragStart?: OnNodeDrag<NodeType>;
   onNodeDrag?: OnNodeDrag<NodeType>;

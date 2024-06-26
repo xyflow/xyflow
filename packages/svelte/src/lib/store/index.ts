@@ -14,7 +14,8 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  errorMessages
+  errorMessages,
+  type ConnectionState
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData } from '$lib/types';
@@ -340,12 +341,17 @@ export function createStore({
   // by creating an internal, unexposed store and using a derived store
   // we prevent using slow get() calls
   const currentConnection = writable<ConnectionData>(initConnectionUpdateData);
-  const updateConnection: UpdateConnection = (newConnection: ConnectionData) => {
-    currentConnection.set(newConnection);
+  const updateConnection: UpdateConnection = (newConnection: ConnectionState) => {
+    currentConnection.set({
+      connectionStartHandle: newConnection.fromHandle,
+      connectionEndHandle: newConnection.toHandle,
+      connectionPosition: newConnection.position,
+      connectionStatus: newConnection.isValid ? 'valid' : 'invalid'
+    });
   };
 
   function cancelConnection() {
-    updateConnection(initConnectionUpdateData);
+    currentConnection.set(initConnectionUpdateData);
   }
 
   function reset() {

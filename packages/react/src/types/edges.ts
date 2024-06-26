@@ -11,7 +11,6 @@ import type {
   Connection,
   ConnectionLineType,
   HandleElement,
-  ConnectionStatus,
   EdgePosition,
   StepPathOptions,
   OnError,
@@ -202,7 +201,7 @@ export type ConnectionLineComponentProps = {
   toY: number;
   fromPosition: Position;
   toPosition: Position;
-  connectionStatus: ConnectionStatus | null;
+  connectionStatus: 'valid' | 'invalid' | null;
 };
 
 export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;

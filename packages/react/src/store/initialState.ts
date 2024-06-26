@@ -76,8 +76,6 @@ const getInitialState = ({
     nodesSelectionActive: false,
     userSelectionActive: false,
     userSelectionRect: null,
-    connectionPosition: { x: 0, y: 0 },
-    connectionStatus: null,
     connectionMode: ConnectionMode.Strict,
     domNode: null,
     paneDragging: false,
@@ -103,8 +101,12 @@ const getInitialState = ({
 
     multiSelectionActive: false,
 
-    connectionStartHandle: null,
-    connectionEndHandle: null,
+    connection: {
+      fromHandle: null,
+      toHandle: null,
+      position: { x: 0, y: 0 },
+      isValid: null,
+    },
     connectionClickStartHandle: null,
     connectOnClick: true,
 
