@@ -21,21 +21,28 @@ import { getBoundsOfRects, getNodeDimensions, isNumeric, nodeToRect } from './ge
 import { getNodePositionWithOrigin } from './graph';
 import { ParentExpandChild } from './types';
 
+const defaultOptions = {
+  nodeOrigin: [0, 0] as NodeOrigin,
+  elevateNodesOnSelect: true,
+  defaults: {},
+};
+const adoptUserNodesDefaultOptions = {
+  ...defaultOptions,
+  checkEquality: true,
+};
+
 export function updateAbsolutePositions<NodeType extends NodeBase>(
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options: UpdateNodesOptions<NodeType> = {
-    nodeOrigin: [0, 0] as NodeOrigin,
-    elevateNodesOnSelect: true,
-    defaults: {},
-  }
+  options?: UpdateNodesOptions<NodeType>
 ) {
+  const _options = { ...defaultOptions, ...options };
   for (const node of nodeLookup.values()) {
     if (!node.parentId) {
       continue;
     }
 
-    updateChildPosition(node, nodeLookup, parentLookup, options);
+    updateChildPosition(node, nodeLookup, parentLookup, _options);
   }
 }
 
@@ -50,13 +57,9 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options: UpdateNodesOptions<NodeType> = {
-    nodeOrigin: [0, 0] as NodeOrigin,
-    elevateNodesOnSelect: true,
-    defaults: {},
-    checkEquality: true,
-  }
+  options?: UpdateNodesOptions<NodeType>
 ) {
+  const _options = { ...adoptUserNodesDefaultOptions, ...options };
   const tmpLookup = new Map(nodeLookup);
   nodeLookup.clear();
   parentLookup.clear();
@@ -65,18 +68,18 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 
   for (const userNode of nodes) {
     let internalNode = tmpLookup.get(userNode.id);
-    if (options.checkEquality && userNode === internalNode?.internals.userNode) {
+    if (_options.checkEquality && userNode === internalNode?.internals.userNode) {
       nodeLookup.set(userNode.id, internalNode);
     } else {
       internalNode = {
-        ...options.defaults,
+        ..._options.defaults,
         ...userNode,
         measured: {
           width: userNode.measured?.width,
           height: userNode.measured?.height,
         },
         internals: {
-          positionAbsolute: getNodePositionWithOrigin(userNode, options.nodeOrigin),
+          positionAbsolute: getNodePositionWithOrigin(userNode, _options.nodeOrigin),
           handleBounds: internalNode?.internals.handleBounds,
           z: calculateZ(userNode, selectedNodeZ),
           userNode,
@@ -95,12 +98,10 @@ function updateChildPosition<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options: UpdateNodesOptions<NodeType> = {
-    nodeOrigin: [0, 0] as NodeOrigin,
-    elevateNodesOnSelect: true,
-    defaults: {},
-  }
+  options?: UpdateNodesOptions<NodeType>
 ) {
+  const _options = { ...defaultOptions, ...options };
+
   const parentId = node.parentId!;
   const parentNode = nodeLookup.get(parentId);
   if (!parentNode) {
@@ -112,12 +113,12 @@ function updateChildPosition<NodeType extends NodeBase>(
   if (childNodes) {
     childNodes.set(node.id, node);
   } else {
-    parentLookup.set(parentId, new Map([[node.id, node]]);
+    parentLookup.set(parentId, new Map([[node.id, node]]));
   }
 
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
 
-  const { x, y, z } = calculateChildXYZ(node, parentNode, options.nodeOrigin!, selectedNodeZ);
+  const { x, y, z } = calculateChildXYZ(node, parentNode, _options.nodeOrigin!, selectedNodeZ);
 
   const currPosition = node.internals.positionAbsolute;
   const positionChanged = x !== currPosition.x || y !== currPosition.y;
@@ -144,6 +145,7 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   const position = getNodePositionWithOrigin(childNode, nodeOrigin);
   const childZ = calculateZ(childNode, selectedNodeZ);
   const parentZ = parentNode.internals.z ?? 0;
+
   return {
     x: parentNode.internals.positionAbsolute.x + position.x,
     y: parentNode.internals.positionAbsolute.y + position.y,
@@ -172,7 +174,6 @@ export function handleExpandParent(
 
     parentExpansions.set(child.parentId, { expandedRect, parent });
   }
-
 
   if (parentExpansions.size > 0) {
     parentExpansions.forEach(({ expandedRect, parent }, parentId) => {
@@ -292,7 +293,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
           },
         };
         if (node.parentId) {
-           updateChildPosition(node, nodeLookup, parentLookup, { nodeOrigin });
+          updateChildPosition(node, nodeLookup, parentLookup, { nodeOrigin });
         }
 
         updatedInternals = true;
