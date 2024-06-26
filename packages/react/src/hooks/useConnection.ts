@@ -9,10 +9,10 @@ const selector = (s: ReactFlowStore) => ({
 });
 
 /**
- * Hook for accessing the ongoing connection.
+ * Hook for accessing the connection state.
  *
  * @public
- * @returns ongoing connection
+ * @returns ConnectionState
  */
 export function useConnection(): ConnectionState {
   return useStore(selector, shallow);
