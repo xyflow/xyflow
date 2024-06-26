@@ -10,7 +10,7 @@ import {
   type OnViewportChange,
   type SelectionRect,
   type SnapGrid,
-  type ConnectingHandle,
+  type Handle,
   type Transform,
   type PanZoomInstance,
   type PanBy,
@@ -79,7 +79,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   connection: ConnectionState;
   connectionMode: ConnectionMode;
-  connectionClickStartHandle: ConnectingHandle | null;
+  connectionClickStartHandle: (Pick<Handle, 'nodeId' | 'id'> & Required<Pick<Handle, 'type'>>) | null;
 
   snapToGrid: boolean;
   snapGrid: SnapGrid;

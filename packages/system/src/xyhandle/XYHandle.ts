@@ -1,4 +1,4 @@
-import { pointToRendererPoint, rendererPointToPoint, getHostForElement, calcAutoPan, getEventPosition } from '../utils';
+import { pointToRendererPoint, getHostForElement, calcAutoPan, getEventPosition, getHandlePosition } from '../utils';
 import {
   ConnectionMode,
   type OnConnect,
@@ -7,13 +7,13 @@ import {
   type Connection,
   type PanBy,
   type Transform,
-  type ConnectingHandle,
+  type Handle,
   type OnConnectEnd,
   type UpdateConnection,
   type IsValidConnection,
-  type ConnectionHandle,
   NodeLookup,
   Position,
+  oppositePosition,
 } from '../types';
 
 import { getClosestHandle, isConnectionValid, getHandleLookup, getHandleType } from './utils';
@@ -39,11 +39,11 @@ export type OnPointerDownParams = {
   isValidConnection?: IsValidConnection;
   onReconnectEnd?: (evt: MouseEvent | TouchEvent) => void;
   getTransform: () => Transform;
-  getFromHandle: () => ConnectingHandle | null;
+  getFromHandle: () => Handle | null;
 };
 
 export type IsValidParams = {
-  handle: Pick<ConnectionHandle, 'nodeId' | 'id' | 'type'> | null;
+  handle: Pick<Handle, 'nodeId' | 'id' | 'type'> | null;
   connectionMode: ConnectionMode;
   fromNodeId: string;
   fromHandleId: string | null;
@@ -52,6 +52,7 @@ export type IsValidParams = {
   doc: Document | ShadowRoot;
   lib: string;
   flowId: string | null;
+  handleLookup?: Handle[];
 };
 
 export type XYHandleInstance = {
@@ -63,12 +64,10 @@ type Result = {
   handleDomNode: Element | null;
   isValid: boolean;
   connection: Connection | null;
-  toHandle: ConnectingHandle | null;
+  toHandle: Handle | null;
 };
 
 const alwaysValid = () => true;
-
-let fromHandle: ConnectingHandle | null = null;
 
 function onPointerDown(
   event: MouseEvent | TouchEvent,
@@ -99,7 +98,7 @@ function onPointerDown(
   // when xyflow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target as HTMLElement);
   let autoPanId = 0;
-  let closestHandle: ConnectionHandle | null;
+  let closestHandle: Handle | null;
 
   const { x, y } = getEventPosition(event);
   const clickedHandle = doc?.elementFromPoint(x, y);
@@ -113,10 +112,10 @@ function onPointerDown(
   let position = getEventPosition(event, containerBounds);
   let autoPanStarted = false;
   let connection: Connection | null = null;
-  let isValid = false;
+  let isValid: boolean | null = false;
   let handleDomNode: Element | null = null;
 
-  const handleLookup = getHandleLookup({
+  const [handleLookup, fromHandleInternal] = getHandleLookup({
     nodeLookup,
     nodeId,
     handleId,
@@ -135,18 +134,30 @@ function onPointerDown(
   }
 
   // Stays the same for all consecutive pointermove events
-  fromHandle = {
+  const fromHandle: Handle = {
+    ...fromHandleInternal,
     nodeId,
-    handleId,
     type: handleType,
-    position: (clickedHandle?.getAttribute('data-handlepos') as Position) ?? Position.Top,
+    position: fromHandleInternal.position,
   };
 
+  const fromNodeInternal = nodeLookup.get(nodeId)!;
+
+  const from = getHandlePosition(fromNodeInternal, fromHandle, Position.Left, true);
+
   updateConnection({
-    position,
+    inProgress: true,
     isValid: null,
+
+    from,
     fromHandle,
+    fromPosition: fromHandle.position,
+    fromNode: fromNodeInternal.internals.userNode,
+
+    to: pointToRendererPoint(position, getTransform()),
     toHandle: null,
+    toPosition: oppositePosition[fromHandle.position],
+    toNode: null,
   });
 
   onConnectStart?.(event, { nodeId, handleId, handleType });
@@ -180,26 +191,29 @@ function onPointerDown(
       doc,
       lib,
       flowId,
+      handleLookup,
     });
 
     handleDomNode = result.handleDomNode;
     connection = result.connection;
-    isValid = result.isValid;
+    isValid = isConnectionValid(!!closestHandle, result.isValid);
 
     updateConnection({
+      inProgress: true,
+      isValid,
+
+      from,
       fromHandle,
-      position:
+      fromPosition: fromHandle.position,
+      fromNode: fromNodeInternal.internals.userNode,
+
+      to:
         closestHandle && isValid
-          ? rendererPointToPoint(
-              {
-                x: closestHandle.x,
-                y: closestHandle.y,
-              },
-              transform
-            )
-          : position,
-      isValid: isConnectionValid(!!closestHandle, isValid),
+          ? { x: closestHandle.x, y: closestHandle.y }
+          : pointToRendererPoint(position, transform),
       toHandle: result.toHandle,
+      toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
+      toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)!.internals.userNode : null,
     });
   }
 
@@ -222,7 +236,6 @@ function onPointerDown(
     isValid = false;
     connection = null;
     handleDomNode = null;
-    fromHandle = null;
 
     doc.removeEventListener('mousemove', onPointerMove as EventListener);
     doc.removeEventListener('mouseup', onPointerUp as EventListener);
@@ -251,6 +264,7 @@ function isValidHandle(
     lib,
     flowId,
     isValidConnection = alwaysValid,
+    handleLookup,
   }: IsValidParams
 ) {
   const isTarget = fromType === 'target';
@@ -301,12 +315,17 @@ function isValidHandle(
 
     result.isValid = isValid && isValidConnection(connection);
 
-    result.toHandle = {
-      nodeId: handleNodeId as string,
-      handleId,
-      type: handleType as HandleType,
-      position: handleToCheck.getAttribute('data-handlepos') as Position,
-    };
+    if (handleLookup) {
+      const toHandle = handleLookup.find(
+        (h) => h.id === handleId && h.nodeId === handleNodeId && h.type === handleType
+      );
+
+      if (toHandle) {
+        result.toHandle = {
+          ...toHandle,
+        };
+      }
+    }
   }
 
   return result;

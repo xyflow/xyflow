@@ -2,7 +2,7 @@ import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
 import type {
   FitViewOptionsBase,
   XYPosition,
-  ConnectingHandle,
+  Handle,
   Connection,
   OnBeforeDeleteBase,
   HandleProps as HandlePropsSystem
@@ -17,8 +17,8 @@ export type KeyDefinition = string | KeyDefinitionObject;
 
 export type ConnectionData = {
   connectionPosition: XYPosition | null;
-  connectionStartHandle: ConnectingHandle | null;
-  connectionEndHandle: ConnectingHandle | null;
+  connectionStartHandle: Handle | null;
+  connectionEndHandle: Handle | null;
   connectionStatus: string | null;
 };
 

@@ -6,7 +6,6 @@ import { ConnectionState } from '@xyflow/system';
 
 const selector = (s: ReactFlowStore) => ({
   ...s.connection,
-  inProgress: s.connection.fromHandle !== null,
 });
 
 /**
@@ -15,6 +14,6 @@ const selector = (s: ReactFlowStore) => ({
  * @public
  * @returns ongoing connection
  */
-export function useConnection(): ConnectionState & { inProgress: boolean } {
+export function useConnection(): ConnectionState {
   return useStore(selector, shallow);
 }

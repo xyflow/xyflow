@@ -1,5 +1,5 @@
 import { getContext, setContext } from 'svelte';
-import { derived, get, writable } from 'svelte/store';
+import { derived, get } from 'svelte/store';
 import {
   createMarkerIds,
   fitView as fitViewSystem,
@@ -7,6 +7,8 @@ import {
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
   addEdge as addEdgeUtil,
+  initialConnection,
+  errorMessages,
   type UpdateNodePositions,
   type InternalNodeUpdate,
   type ViewportHelperFunctionOptions,
@@ -14,17 +16,15 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  errorMessages,
   type ConnectionState
 } from '@xyflow/system';
 
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData } from '$lib/types';
+import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store';
 import type { SvelteFlowStore } from './types';
 import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
 import { getVisibleEdges } from './visible-edges';
 import { getVisibleNodes } from './visible-nodes';
-import { getDerivedConnectionProps } from './derived-connection-props';
 
 export const key = Symbol();
 
@@ -331,27 +331,12 @@ export function createStore({
     });
   }
 
-  const initConnectionUpdateData = {
-    connectionStartHandle: null,
-    connectionEndHandle: null,
-    connectionPosition: null,
-    connectionStatus: null
-  };
-
-  // by creating an internal, unexposed store and using a derived store
-  // we prevent using slow get() calls
-  const currentConnection = writable<ConnectionData>(initConnectionUpdateData);
   const updateConnection: UpdateConnection = (newConnection: ConnectionState) => {
-    currentConnection.set({
-      connectionStartHandle: newConnection.fromHandle,
-      connectionEndHandle: newConnection.toHandle,
-      connectionPosition: newConnection.position,
-      connectionStatus: newConnection.isValid ? 'valid' : 'invalid'
-    });
+    store.connection.set({ ...newConnection });
   };
 
   function cancelConnection() {
-    currentConnection.set(initConnectionUpdateData);
+    store.connection.set(initialConnection);
   }
 
   function reset() {
@@ -370,7 +355,6 @@ export function createStore({
     ...store,
 
     // derived state
-    connection: getDerivedConnectionProps(store, currentConnection),
     visibleEdges: getVisibleEdges(store),
     visibleNodes: getVisibleNodes(store),
     markers: derived(

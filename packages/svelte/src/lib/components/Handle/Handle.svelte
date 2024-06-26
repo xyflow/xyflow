@@ -103,7 +103,7 @@
           $onConnectEndAction?.(event);
         },
         getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom],
-        getFromHandle: () => $connection.startHandle
+        getFromHandle: () => $connection.fromHandle
       });
     }
   }
@@ -128,21 +128,20 @@
     prevConnections = connections ?? new Map();
   }
 
-  $: connectionInProcess = !!$connection.startHandle;
+  $: connectionInProcess = !!$connection.fromHandle;
   $: connectingFrom =
-    $connection.startHandle?.nodeId === nodeId &&
-    $connection.startHandle?.type === type &&
-    $connection.startHandle?.handleId === handleId;
+    $connection.fromHandle?.nodeId === nodeId &&
+    $connection.fromHandle?.type === type &&
+    $connection.fromHandle?.id === handleId;
   $: connectingTo =
-    $connection.endHandle?.nodeId === nodeId &&
-    $connection.endHandle?.type === type &&
-    $connection.endHandle?.handleId === handleId;
+    $connection.toHandle?.nodeId === nodeId &&
+    $connection.toHandle?.type === type &&
+    $connection.toHandle?.id === handleId;
   $: isPossibleEndHandle =
     $connectionMode === ConnectionMode.Strict
-      ? $connection.startHandle?.type !== type
-      : nodeId !== $connection.startHandle?.nodeId ||
-        handleId !== $connection.startHandle?.handleId;
-  $: valid = connectingTo && $connection.status === 'valid';
+      ? $connection.fromHandle?.type !== type
+      : nodeId !== $connection.fromHandle?.nodeId || handleId !== $connection.fromHandle?.id;
+  $: valid = connectingTo && $connection.isValid;
 </script>
 
 <!--

@@ -7,6 +7,7 @@ import {
   updateConnectionLookup,
   devWarn,
   getInternalNodesBounds,
+  initialConnection,
 } from '@xyflow/system';
 
 import type { Edge, InternalNode, Node, ReactFlowStore } from '../types';
@@ -101,12 +102,7 @@ const getInitialState = ({
 
     multiSelectionActive: false,
 
-    connection: {
-      fromHandle: null,
-      toHandle: null,
-      position: { x: 0, y: 0 },
-      isValid: null,
-    },
+    connection: { ...initialConnection },
     connectionClickStartHandle: null,
     connectOnClick: true,
 

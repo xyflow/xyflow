@@ -6,9 +6,9 @@ import type { ZoomBehavior } from 'd3-zoom';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Transition } from 'd3-transition';
 
-import type { XYPosition, Rect } from './utils';
+import type { XYPosition, Rect, Position } from './utils';
 import type { InternalNodeBase, NodeBase, NodeDragItem, NodeOrigin } from './nodes';
-import type { ConnectingHandle, HandleType } from './handles';
+import type { Handle, HandleType } from './handles';
 import { PanZoomInstance } from './panzoom';
 import { EdgeBase } from '..';
 
@@ -133,21 +133,50 @@ export type OnError = (id: string, message: string) => void;
 export type UpdateNodePositions = (dragItems: Map<string, NodeDragItem | InternalNodeBase>, dragging?: boolean) => void;
 export type PanBy = (delta: XYPosition) => boolean;
 
-export type NoConnectionInProgress = {
-  position: XYPosition;
+export const initialConnection: NoConnection = {
+  inProgress: false,
+  isValid: null,
+  from: null,
+  fromHandle: null,
+  fromPosition: null,
+  fromNode: null,
+  to: null,
+  toHandle: null,
+  toPosition: null,
+  toNode: null,
+};
+
+export type NoConnection = {
+  inProgress: false;
   isValid: null;
+
+  from: null;
   fromHandle: null;
+  fromPosition: null;
+  fromNode: null;
+
+  to: null;
   toHandle: null;
+  toPosition: null;
+  toNode: null;
 };
 
 export type ConnectionInProgress = {
-  position: XYPosition;
+  inProgress: true;
   isValid: boolean | null;
-  fromHandle: ConnectingHandle;
-  toHandle: ConnectingHandle | null;
+
+  from: XYPosition;
+  fromHandle: Handle;
+  fromPosition: Position;
+  fromNode: NodeBase;
+
+  to: XYPosition;
+  toHandle: Handle | null;
+  toPosition: Position;
+  toNode: NodeBase | null;
 };
 
-export type ConnectionState = ConnectionInProgress | NoConnectionInProgress;
+export type ConnectionState = ConnectionInProgress | NoConnection;
 
 export type UpdateConnection = (params: ConnectionState) => void;
 
