@@ -288,7 +288,7 @@ const createStore = ({
         return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
       },
       fitView: (options?: FitViewOptions): boolean => {
-        const { panZoom, width, height, minZoom, maxZoom, nodeOrigin, nodeLookup } = get();
+        const { panZoom, width, height, minZoom, maxZoom, nodeLookup } = get();
 
         if (!panZoom) {
           return false;
@@ -302,7 +302,6 @@ const createStore = ({
             panZoom,
             minZoom,
             maxZoom,
-            nodeOrigin,
           },
           options
         );

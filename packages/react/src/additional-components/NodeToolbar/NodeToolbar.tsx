@@ -1,7 +1,7 @@
 import { useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { Rect, Position, getNodeToolbarTransform, getNodesBounds } from '@xyflow/system';
+import { Position, getNodeToolbarTransform, getInternalNodesBounds, NodeLookup } from '@xyflow/system';
 
 import { InternalNode, ReactFlowState } from '../../types';
 import { useStore } from '../../hooks/useStore';
@@ -17,21 +17,24 @@ const nodeEqualityFn = (a?: InternalNode, b?: InternalNode) =>
   a?.selected !== b?.selected ||
   a?.internals.z !== b?.internals.z;
 
-const nodesEqualityFn = (a: InternalNode[], b: InternalNode[]) => {
-  if (a.length !== b.length) {
+const nodesEqualityFn = (a: NodeLookup, b: NodeLookup) => {
+  if (a.size !== b.size) {
     return false;
   }
 
-  return !a.some((node, i) => nodeEqualityFn(node, b[i]));
+  for (const [key, node] of a) {
+    if (nodeEqualityFn(node, b.get(key))) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 const storeSelector = (state: ReactFlowState) => ({
-  viewport: {
-    x: state.transform[0],
-    y: state.transform[1],
-    zoom: state.transform[2],
-  },
-  nodeOrigin: state.nodeOrigin,
+  x: state.transform[0],
+  y: state.transform[1],
+  zoom: state.transform[2],
   selectedNodesCount: state.nodes.filter((node) => node.selected).length,
 });
 
@@ -49,36 +52,41 @@ export function NodeToolbar({
   const contextNodeId = useNodeId();
 
   const nodesSelector = useCallback(
-    (state: ReactFlowState): InternalNode[] => {
+    (state: ReactFlowState): NodeLookup => {
       const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
-
-      return nodeIds.reduce<InternalNode[]>((acc, id) => {
+      const internalNodes = nodeIds.reduce<NodeLookup>((res, id) => {
         const node = state.nodeLookup.get(id);
         if (node) {
-          acc.push(node);
+          res.set(node.id, node);
         }
-        return acc;
-      }, []);
+
+        return res;
+      }, new Map());
+
+      return internalNodes;
     },
     [nodeId, contextNodeId]
   );
   const nodes = useStore(nodesSelector, nodesEqualityFn);
-  const { viewport, nodeOrigin, selectedNodesCount } = useStore(storeSelector, shallow);
+  const { x, y, zoom, selectedNodesCount } = useStore(storeSelector, shallow);
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   const isActive =
-    typeof isVisible === 'boolean' ? isVisible : nodes.length === 1 && nodes[0].selected && selectedNodesCount === 1;
+    typeof isVisible === 'boolean'
+      ? isVisible
+      : nodes.size === 1 && nodes.values().next().value.selected && selectedNodesCount === 1;
 
-  if (!isActive || !nodes.length) {
+  if (!isActive || !nodes.size) {
     return null;
   }
 
-  const nodeRect: Rect = getNodesBounds(nodes, { nodeOrigin });
-  const zIndex: number = Math.max(...nodes.map((node) => node.internals.z + 1));
+  const nodeRect = getInternalNodesBounds(nodes);
+  const nodesArray = Array.from(nodes.values());
+  const zIndex = Math.max(...nodesArray.map((node) => node.internals.z + 1));
 
   const wrapperStyle: CSSProperties = {
     position: 'absolute',
-    transform: getNodeToolbarTransform(nodeRect, viewport, position, offset, align),
+    transform: getNodeToolbarTransform(nodeRect, { x, y, zoom }, position, offset, align),
     zIndex,
     ...style,
   };
@@ -89,7 +97,8 @@ export function NodeToolbar({
         style={wrapperStyle}
         className={cc(['react-flow__node-toolbar', className])}
         {...rest}
-        data-id={nodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
+        // @todo: check if we could only do this for non-prod envs
+        data-id={nodesArray.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
       >
         {children}
       </div>

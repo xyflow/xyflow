@@ -147,7 +147,6 @@ export const getNodesBounds = (nodes: NodeBase[], params: GetNodesBoundsParams =
 };
 
 export type GetInternalNodesBoundsParams<NodeType> = {
-  nodeOrigin?: NodeOrigin;
   useRelativePosition?: boolean;
   filter?: (node: NodeType) => boolean;
 };
@@ -158,9 +157,7 @@ export type GetInternalNodesBoundsParams<NodeType> = {
  */
 export const getInternalNodesBounds = <NodeType extends InternalNodeBase | NodeDragItem>(
   nodeLookup: Map<string, NodeType>,
-  params: GetInternalNodesBoundsParams<NodeType> = {
-    nodeOrigin: [0, 0],
-  }
+  params: GetInternalNodesBoundsParams<NodeType> = {}
 ): Rect => {
   if (nodeLookup.size === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
@@ -170,7 +167,7 @@ export const getInternalNodesBounds = <NodeType extends InternalNodeBase | NodeD
 
   nodeLookup.forEach((node) => {
     if (params.filter == undefined || params.filter(node)) {
-      const nodeBox = nodeToBox(node as InternalNodeBase, params.nodeOrigin);
+      const nodeBox = nodeToBox(node as InternalNodeBase);
       box = getBoundsOfBoxes(box, nodeBox);
     }
   });
@@ -184,8 +181,7 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially = false,
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
-  excludeNonSelectableNodes = false,
-  nodeOrigin: NodeOrigin = [0, 0]
+  excludeNonSelectableNodes = false
 ): InternalNodeBase<NodeType>[] => {
   const paneRect = {
     ...pointToRendererPoint(rect, [tx, ty, tScale]),
@@ -204,7 +200,7 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
       continue;
     }
 
-    const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node, nodeOrigin));
+    const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node));
     const notInitialized = width === null || height === null;
 
     const partiallyVisible = partially && overlappingArea > 0;
@@ -238,22 +234,22 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
 };
 
 export function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
-  { nodeLookup, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
+  { nodeLookup, width, height, panZoom, minZoom, maxZoom }: Params,
   options?: Options
 ) {
-  const filteredNodes: InternalNodeBase[] = [];
+  const filteredNodes: Map<string, InternalNodeBase> = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
 
   nodeLookup.forEach((n) => {
     const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
 
     if (isVisible && (!optionNodeIds || optionNodeIds.has(n.id))) {
-      filteredNodes.push(n);
+      filteredNodes.set(n.id, n);
     }
   });
 
-  if (filteredNodes.length > 0) {
-    const bounds = getNodesBounds(filteredNodes, { nodeOrigin });
+  if (filteredNodes.size > 0) {
+    const bounds = getInternalNodesBounds(filteredNodes);
 
     const viewport = getViewportForBounds(
       bounds,

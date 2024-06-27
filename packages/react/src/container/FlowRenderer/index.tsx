@@ -22,7 +22,6 @@ export type FlowRendererProps<NodeType extends Node = Node> = Omit<
   | 'selectNodesOnDrag'
   | 'defaultMarkerColor'
   | 'rfId'
-  | 'nodeOrigin'
 > & {
   isControlledViewport: boolean;
   children: ReactNode;

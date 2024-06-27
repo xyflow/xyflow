@@ -148,8 +148,7 @@ export function createStore({
         height: get(store.height),
         minZoom: get(store.minZoom),
         maxZoom: get(store.maxZoom),
-        panZoom,
-        nodeOrigin: get(store.nodeOrigin)
+        panZoom
       },
       options
     );

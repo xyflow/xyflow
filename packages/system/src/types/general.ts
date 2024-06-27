@@ -7,7 +7,7 @@ import type { ZoomBehavior } from 'd3-zoom';
 import type { Transition } from 'd3-transition';
 
 import type { XYPosition, Rect } from './utils';
-import type { InternalNodeBase, NodeBase, NodeDragItem, NodeOrigin } from './nodes';
+import type { InternalNodeBase, NodeBase, NodeDragItem } from './nodes';
 import type { ConnectingHandle, HandleType } from './handles';
 import { PanZoomInstance } from './panzoom';
 import { EdgeBase } from '..';
@@ -63,7 +63,6 @@ export type FitViewParamsBase<NodeType extends NodeBase> = {
   panZoom: PanZoomInstance;
   minZoom: number;
   maxZoom: number;
-  nodeOrigin?: NodeOrigin;
 };
 
 export type FitViewOptionsBase<NodeType extends NodeBase = NodeBase> = {

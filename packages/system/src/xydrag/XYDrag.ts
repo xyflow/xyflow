@@ -124,7 +124,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       let nodesBox: Box = { x: 0, y: 0, x2: 0, y2: 0 };
 
       if (dragItems.size > 1 && nodeExtent) {
-        const rect = getInternalNodesBounds(dragItems, { nodeOrigin });
+        const rect = getInternalNodesBounds(dragItems);
         nodesBox = rectToBox(rect);
       }
 

@@ -46,7 +46,6 @@ const getInitialState = ({
   if (fitView && width && height) {
     // @todo users nodeOrigin should be used here
     const bounds = getInternalNodesBounds(nodeLookup, {
-      nodeOrigin: [0, 0],
       filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight)),
     });
     const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
