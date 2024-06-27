@@ -14,7 +14,8 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  errorMessages
+  errorMessages,
+  type NodeOrigin
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData } from '$lib/types';
@@ -32,15 +33,24 @@ export function createStore({
   edges,
   width,
   height,
-  fitView: fitViewOnCreate
+  fitView: fitViewOnCreate,
+  nodeOrigin
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }): SvelteFlowStore {
-  const store = getInitialStore({ nodes, edges, width, height, fitView: fitViewOnCreate });
+  const store = getInitialStore({
+    nodes,
+    edges,
+    width,
+    height,
+    fitView: fitViewOnCreate,
+    nodeOrigin
+  });
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes.set({
@@ -438,15 +448,17 @@ export function createStoreContext({
   edges,
   width,
   height,
-  fitView
+  fitView,
+  nodeOrigin
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }) {
-  const store = createStore({ nodes, edges, width, height, fitView });
+  const store = createStore({ nodes, edges, width, height, fitView, nodeOrigin });
 
   setContext(key, {
     getStore: () => store

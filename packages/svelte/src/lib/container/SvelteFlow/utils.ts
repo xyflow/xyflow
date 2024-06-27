@@ -70,6 +70,7 @@ export type UpdatableStoreProps = {
   onconnectstart?: UnwrapWritable<SvelteFlowStore['onconnectstart']>;
   onconnectend?: UnwrapWritable<SvelteFlowStore['onconnectend']>;
   onbeforedelete?: UnwrapWritable<SvelteFlowStore['onbeforedelete']>;
+  nodeOrigin?: UnwrapWritable<SvelteFlowStore['nodeOrigin']>;
 };
 
 export function updateStoreByKeys(store: SvelteFlowStore, keys: UpdatableStoreProps) {

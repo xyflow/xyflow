@@ -14,7 +14,8 @@ import {
   type ConnectionLookup,
   type EdgeLookup,
   type NodeLookup,
-  type ParentLookup
+  type ParentLookup,
+  type NodeOrigin
 } from '@xyflow/system';
 
 import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, InternalNode, Node } from '$lib/types';
@@ -129,7 +130,8 @@ export type NodeStoreOptions = {
 export const createNodesStore = (
   nodes: Node[],
   nodeLookup: NodeLookup<InternalNode>,
-  parentLookup: ParentLookup<InternalNode>
+  parentLookup: ParentLookup<InternalNode>,
+  nodeOrigin: NodeOrigin = [0, 0]
 ): {
   subscribe: (this: void, run: Subscriber<Node[]>) => Unsubscriber;
   update: (this: void, updater: Updater<Node[]>) => void;
@@ -145,6 +147,7 @@ export const createNodesStore = (
   const _set = (nds: Node[]): Node[] => {
     adoptUserNodes(nds, nodeLookup, parentLookup, {
       elevateNodesOnSelect,
+      nodeOrigin,
       defaults,
       checkEquality: false
     });
