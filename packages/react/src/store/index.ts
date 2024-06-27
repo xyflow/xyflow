@@ -12,6 +12,7 @@ import {
   EdgeSelectionChange,
   NodeSelectionChange,
   ParentExpandChild,
+  NodeOrigin,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -26,6 +27,7 @@ const createStore = ({
   width,
   height,
   fitView,
+  nodeOrigin,
 }: {
   nodes?: Node[];
   edges?: Edge[];
@@ -34,10 +36,11 @@ const createStore = ({
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }) =>
   createWithEqualityFn<ReactFlowState>(
     (set, get) => ({
-      ...getInitialState({ nodes, edges, width, height, fitView, defaultNodes, defaultEdges }),
+      ...getInitialState({ nodes, edges, width, height, fitView, nodeOrigin, defaultNodes, defaultEdges }),
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
         // setNodes() is called exclusively in response to user actions:

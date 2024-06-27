@@ -75,8 +75,8 @@ export const nodeToRect = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOr
   return {
     x,
     y,
-    width: node.measured?.width ?? node.width ?? 0,
-    height: node.measured?.height ?? node.height ?? 0,
+    width: node.measured?.width ?? node.width ?? node.initialWidth ?? 0,
+    height: node.measured?.height ?? node.height ?? node.initialHeight ?? 0,
   };
 };
 
@@ -88,8 +88,8 @@ export const nodeToBox = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOri
   return {
     x,
     y,
-    x2: x + (node.measured?.width ?? node.width ?? 0),
-    y2: y + (node.measured?.height ?? node.height ?? 0),
+    x2: x + (node.measured?.width ?? node.width ?? node.initialWidth ?? 0),
+    y2: y + (node.measured?.height ?? node.height ?? node.initialHeight ?? 0),
   };
 };
 

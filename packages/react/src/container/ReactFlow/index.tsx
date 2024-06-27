@@ -157,7 +157,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
       data-testid="rf__wrapper"
       id={id}
     >
-      <Wrapper nodes={nodes} edges={edges} width={width} height={height} fitView={fitView}>
+      <Wrapper nodes={nodes} edges={edges} width={width} height={height} fitView={fitView} nodeOrigin={nodeOrigin}>
         <GraphView<NodeType, EdgeType>
           onInit={onInit}
           onNodeClick={onNodeClick}

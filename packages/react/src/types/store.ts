@@ -27,6 +27,7 @@ import {
   type NodeLookup,
   NodeChange,
   EdgeChange,
+  ParentLookup,
 } from '@xyflow/system';
 
 import type {
@@ -54,7 +55,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   transform: Transform;
   nodes: NodeType[];
   nodeLookup: NodeLookup<InternalNode<NodeType>>;
-  parentLookup: Map<string, Map<string, InternalNode<NodeType>>>;
+  parentLookup: ParentLookup<InternalNode<NodeType>>;
   edges: Edge[];
   edgeLookup: EdgeLookup<EdgeType>;
   connectionLookup: ConnectionLookup;

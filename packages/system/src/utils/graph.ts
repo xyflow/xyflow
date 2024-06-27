@@ -166,7 +166,7 @@ export const getInternalNodesBounds = <NodeType extends InternalNodeBase | NodeD
   let box = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity };
 
   nodeLookup.forEach((node) => {
-    if (params.filter == undefined || params.filter(node)) {
+    if (params.filter === undefined || params.filter(node)) {
       const nodeBox = nodeToBox(node as InternalNodeBase);
       box = getBoundsOfBoxes(box, nodeBox);
     }
