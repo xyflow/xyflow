@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.1.8
+
+- `useConnection` returns `ConnectionState` with `toNode` and `toHandle`
+- node origin is part of position absolute
+- refactor connection handling
+
 ## 0.1.7
 
 - revise selection usability (capture while dragging out of the flow)
