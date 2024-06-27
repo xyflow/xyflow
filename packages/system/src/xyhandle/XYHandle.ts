@@ -161,6 +161,8 @@ function onPointerDown(
     // we don't want to trigger an update when the connection
     // is snapped to the same handle as before
     if (
+      isValid &&
+      closestHandle &&
       previousConnection.toHandle &&
       newConnection.toHandle &&
       previousConnection.toHandle.nodeId === newConnection.toHandle.nodeId &&

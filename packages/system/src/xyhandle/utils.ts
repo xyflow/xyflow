@@ -21,7 +21,7 @@ function getHandles(
     if (node.id === currentHandle.nodeId && type === currentHandle.handleType && handle.id === currentHandle.handleId) {
       excludedHandle = handle;
     } else {
-      const handleXY = getHandlePosition(node, handle);
+      const handleXY = getHandlePosition(node, handle, handle.position, true);
       res.push({ ...handle, ...handleXY });
     }
     return res;
