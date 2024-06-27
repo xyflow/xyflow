@@ -1,5 +1,5 @@
 import { getContext, setContext } from 'svelte';
-import { derived, get } from 'svelte/store';
+import { derived, get, writable } from 'svelte/store';
 import {
   createMarkerIds,
   fitView as fitViewSystem,
@@ -9,6 +9,7 @@ import {
   addEdge as addEdgeUtil,
   initialConnection,
   errorMessages,
+  pointToRendererPoint,
   type UpdateNodePositions,
   type InternalNodeUpdate,
   type ViewportHelperFunctionOptions,
@@ -16,8 +17,8 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  type NodeOrigin,
-  type ConnectionState
+  type ConnectionState,
+  type NodeOrigin
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -341,12 +342,13 @@ export function createStore({
     });
   }
 
+  const _connection = writable<ConnectionState>(initialConnection);
   const updateConnection: UpdateConnection = (newConnection: ConnectionState) => {
-    store.connection.set({ ...newConnection });
+    _connection.set({ ...newConnection });
   };
 
   function cancelConnection() {
-    store.connection.set(initialConnection);
+    _connection.set(initialConnection);
   }
 
   function reset() {
@@ -367,6 +369,14 @@ export function createStore({
     // derived state
     visibleEdges: getVisibleEdges(store),
     visibleNodes: getVisibleNodes(store),
+    connection: derived([_connection, store.viewport], ([connection, viewport]) => {
+      return connection.inProgress
+        ? {
+            ...connection,
+            to: pointToRendererPoint(connection.to, [viewport.x, viewport.y, viewport.zoom])
+          }
+        : { ...connection };
+    }),
     markers: derived(
       [store.edges, store.defaultMarkerColor, store.flowId],
       ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })

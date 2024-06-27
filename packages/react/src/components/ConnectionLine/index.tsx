@@ -12,6 +12,7 @@ import {
 import { useStore } from '../../hooks/useStore';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 import type { ConnectionLineComponent, ReactFlowState } from '../../types';
+import { useConnection } from '../../hooks/useConnection';
 
 type ConnectionLineWrapperProps = {
   type: ConnectionLineType;
@@ -58,10 +59,7 @@ type ConnectionLineProps = {
 };
 
 const ConnectionLine = ({ style, type = ConnectionLineType.Bezier, CustomComponent, isValid }: ConnectionLineProps) => {
-  const { inProgress, from, fromNode, fromHandle, fromPosition, to, toNode, toHandle, toPosition } = useStore(
-    (s: ReactFlowState) => s.connection,
-    shallow
-  );
+  const { inProgress, from, fromNode, fromHandle, fromPosition, to, toNode, toHandle, toPosition } = useConnection();
 
   if (!inProgress) {
     return;
