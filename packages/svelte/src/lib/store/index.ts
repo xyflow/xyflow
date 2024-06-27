@@ -7,6 +7,9 @@ import {
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
   addEdge as addEdgeUtil,
+  initialConnection,
+  errorMessages,
+  pointToRendererPoint,
   type UpdateNodePositions,
   type InternalNodeUpdate,
   type ViewportHelperFunctionOptions,
@@ -14,18 +17,16 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  errorMessages,
-  type NodeOrigin,
-  type ConnectionState
+  type ConnectionState,
+  type NodeOrigin
 } from '@xyflow/system';
 
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData } from '$lib/types';
+import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store';
 import type { SvelteFlowStore } from './types';
 import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
 import { getVisibleEdges } from './visible-edges';
 import { getVisibleNodes } from './visible-nodes';
-import { getDerivedConnectionProps } from './derived-connection-props';
 
 export const key = Symbol();
 
@@ -341,27 +342,13 @@ export function createStore({
     });
   }
 
-  const initConnectionUpdateData = {
-    connectionStartHandle: null,
-    connectionEndHandle: null,
-    connectionPosition: null,
-    connectionStatus: null
-  };
-
-  // by creating an internal, unexposed store and using a derived store
-  // we prevent using slow get() calls
-  const currentConnection = writable<ConnectionData>(initConnectionUpdateData);
+  const _connection = writable<ConnectionState>(initialConnection);
   const updateConnection: UpdateConnection = (newConnection: ConnectionState) => {
-    currentConnection.set({
-      connectionStartHandle: newConnection.fromHandle,
-      connectionEndHandle: newConnection.toHandle,
-      connectionPosition: newConnection.position,
-      connectionStatus: newConnection.isValid ? 'valid' : 'invalid'
-    });
+    _connection.set({ ...newConnection });
   };
 
   function cancelConnection() {
-    currentConnection.set(initConnectionUpdateData);
+    _connection.set(initialConnection);
   }
 
   function reset() {
@@ -380,9 +367,16 @@ export function createStore({
     ...store,
 
     // derived state
-    connection: getDerivedConnectionProps(store, currentConnection),
     visibleEdges: getVisibleEdges(store),
     visibleNodes: getVisibleNodes(store),
+    connection: derived([_connection, store.viewport], ([connection, viewport]) => {
+      return connection.inProgress
+        ? {
+            ...connection,
+            to: pointToRendererPoint(connection.to, [viewport.x, viewport.y, viewport.zoom])
+          }
+        : { ...connection };
+    }),
     markers: derived(
       [store.edges, store.defaultMarkerColor, store.flowId],
       ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })

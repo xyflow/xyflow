@@ -10,7 +10,7 @@ import type {
   HandleType,
   Connection,
   ConnectionLineType,
-  HandleElement,
+  Handle,
   EdgePosition,
   StepPathOptions,
   OnError,
@@ -193,8 +193,8 @@ export type OnReconnect<EdgeType extends Edge = Edge> = (oldEdge: EdgeType, newC
 export type ConnectionLineComponentProps = {
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;
-  fromNode?: Node;
-  fromHandle?: HandleElement;
+  fromNode: Node;
+  fromHandle: Handle;
   fromX: number;
   fromY: number;
   toX: number;
@@ -202,6 +202,8 @@ export type ConnectionLineComponentProps = {
   fromPosition: Position;
   toPosition: Position;
   connectionStatus: 'valid' | 'invalid' | null;
+  toNode: Node | null;
+  toHandle: Handle | null;
 };
 
 export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;

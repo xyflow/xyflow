@@ -12,6 +12,7 @@ import {
   EdgeSelectionChange,
   NodeSelectionChange,
   ParentExpandChild,
+  initialConnection,
   NodeOrigin,
 } from '@xyflow/system';
 
@@ -310,27 +311,12 @@ const createStore = ({
         );
       },
       cancelConnection: () => {
-        const { connection } = get();
         set({
-          connection: {
-            position: connection.position,
-            fromHandle: null,
-            toHandle: null,
-            isValid: null,
-          },
+          connection: { ...initialConnection },
         });
       },
-      updateConnection: (params) => {
-        const { connection } = get();
-
-        const currentConnection = {
-          connection: {
-            ...params,
-            position: params.position ?? connection.position,
-          },
-        };
-
-        set(currentConnection);
+      updateConnection: (connection) => {
+        set({ connection });
       },
 
       reset: () => set({ ...getInitialState() }),

@@ -288,8 +288,8 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
           ...node.internals,
           positionAbsolute: getNodePositionWithOrigin(node, nodeOrigin),
           handleBounds: {
-            source: getHandleBounds('.source', update.nodeElement, nodeBounds, zoom),
-            target: getHandleBounds('.target', update.nodeElement, nodeBounds, zoom),
+            source: getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id),
+            target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
           },
         };
         if (node.parentId) {

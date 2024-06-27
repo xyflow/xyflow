@@ -2,29 +2,15 @@ import type { Position, IsValidConnection } from '.';
 
 export type HandleType = 'source' | 'target';
 
-export type HandleElement = {
+export type Handle = {
   id?: string | null;
+  nodeId: string;
   x: number;
   y: number;
+  position: Position;
+  type: HandleType;
   width: number;
   height: number;
-  position: Position;
-  type?: HandleType;
-};
-
-export type ConnectingHandle = {
-  nodeId: string;
-  type: HandleType;
-  handleId?: string | null;
-  position?: Position | null;
-};
-
-export type ConnectionHandle = {
-  id: string | null;
-  type: HandleType;
-  nodeId: string;
-  x: number;
-  y: number;
 };
 
 export type HandleProps = {

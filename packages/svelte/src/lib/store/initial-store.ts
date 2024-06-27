@@ -8,6 +8,7 @@ import {
   adoptUserNodes,
   getViewportForBounds,
   updateConnectionLookup,
+  initialConnection,
   type SelectionRect,
   type SnapGrid,
   type MarkerProps,
@@ -22,6 +23,7 @@ import {
   type OnConnectEnd,
   type NodeLookup,
   type EdgeLookup,
+  type ConnectionState,
   type ParentLookup,
   getInternalNodesBounds
 } from '@xyflow/system';
@@ -52,7 +54,6 @@ import type {
   InternalNode
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
-import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -143,7 +144,7 @@ export const getInitialStore = ({
     viewport: writable<Viewport>(viewport),
     connectionMode: writable<ConnectionMode>(ConnectionMode.Strict),
     domNode: writable<HTMLDivElement | null>(null),
-    connection: readable<ConnectionProps>(initConnectionProps),
+    connection: readable<ConnectionState>(initialConnection),
     connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier),
     connectionRadius: writable<number>(20),
     isValidConnection: writable<IsValidConnection>(() => true),

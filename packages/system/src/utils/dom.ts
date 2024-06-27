@@ -1,4 +1,4 @@
-import type { Transform, XYPosition, SnapGrid, Dimensions, HandleElement, Position } from '../types';
+import type { Transform, XYPosition, SnapGrid, Dimensions, Position, Handle } from '../types';
 import { snapPosition, pointToRendererPoint } from './general';
 
 export type GetPointerPositionParams = {
@@ -59,22 +59,25 @@ export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRec
 // We store them in the internals object of the node in order to avoid
 // unnecessary recalculations.
 export const getHandleBounds = (
-  selector: string,
+  type: 'source' | 'target',
   nodeElement: HTMLDivElement,
   nodeBounds: DOMRect,
-  zoom: number
-): HandleElement[] | null => {
-  const handles = nodeElement.querySelectorAll(selector);
+  zoom: number,
+  nodeId: string
+): Handle[] | null => {
+  const handles = nodeElement.querySelectorAll(`.${type}`);
 
   if (!handles || !handles.length) {
     return null;
   }
 
-  return Array.from(handles).map((handle): HandleElement => {
+  return Array.from(handles).map((handle): Handle => {
     const handleBounds = handle.getBoundingClientRect();
 
     return {
       id: handle.getAttribute('data-handleid'),
+      type,
+      nodeId,
       position: handle.getAttribute('data-handlepos') as unknown as Position,
       x: (handleBounds.left - nodeBounds.left) / zoom,
       y: (handleBounds.top - nodeBounds.top) / zoom,
