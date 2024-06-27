@@ -177,7 +177,7 @@ export function NodeWrapper<NodeType extends Node>({
         zIndex: internals.z,
         transform: `translate(${clampedPosition.x}px,${clampedPosition.y}px)`,
         pointerEvents: hasPointerEvents ? 'all' : 'none',
-        visibility: node.measured.width ? 'visible' : 'hidden',
+        visibility: hasDimensions ? 'visible' : 'hidden',
         ...node.style,
         ...inlineDimensions,
       }}
