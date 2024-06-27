@@ -37,8 +37,6 @@ export type HandleConnection = Connection & {
   edgeId: string;
 };
 
-export type ConnectionStatus = 'valid' | 'invalid';
-
 export enum ConnectionMode {
   Strict = 'strict',
   Loose = 'loose',
@@ -134,12 +132,23 @@ export type OnError = (id: string, message: string) => void;
 export type UpdateNodePositions = (dragItems: Map<string, NodeDragItem | InternalNodeBase>, dragging?: boolean) => void;
 export type PanBy = (delta: XYPosition) => boolean;
 
-export type UpdateConnection = (params: {
-  connectionPosition: XYPosition | null;
-  connectionStatus: ConnectionStatus | null;
-  connectionStartHandle: ConnectingHandle | null;
-  connectionEndHandle: ConnectingHandle | null;
-}) => void;
+export type NoConnectionInProgress = {
+  position: XYPosition;
+  isValid: null;
+  fromHandle: null;
+  toHandle: null;
+};
+
+export type ConnectionInProgress = {
+  position: XYPosition;
+  isValid: boolean | null;
+  fromHandle: ConnectingHandle;
+  toHandle: ConnectingHandle | null;
+};
+
+export type ConnectionState = ConnectionInProgress | NoConnectionInProgress;
+
+export type UpdateConnection = (params: ConnectionState) => void;
 
 export type ColorModeClass = 'light' | 'dark';
 export type ColorMode = ColorModeClass | 'system';

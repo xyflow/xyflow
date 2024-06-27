@@ -309,18 +309,25 @@ const createStore = ({
           options
         );
       },
-      cancelConnection: () =>
+      cancelConnection: () => {
+        const { connection } = get();
         set({
-          connectionStatus: null,
-          connectionStartHandle: null,
-          connectionEndHandle: null,
-        }),
+          connection: {
+            position: connection.position,
+            fromHandle: null,
+            toHandle: null,
+            isValid: null,
+          },
+        });
+      },
       updateConnection: (params) => {
-        const { connectionPosition } = get();
+        const { connection } = get();
 
         const currentConnection = {
-          ...params,
-          connectionPosition: params.connectionPosition ?? connectionPosition,
+          connection: {
+            ...params,
+            position: params.position ?? connection.position,
+          },
         };
 
         set(currentConnection);

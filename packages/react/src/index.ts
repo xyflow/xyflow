@@ -49,7 +49,6 @@ export {
   type OnMoveStart,
   type OnMoveEnd,
   type Connection,
-  type ConnectionStatus,
   ConnectionMode,
   type OnConnectStartParams,
   type OnConnectStart,
