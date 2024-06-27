@@ -1,4 +1,11 @@
-import { pointToRendererPoint, getHostForElement, calcAutoPan, getEventPosition, getHandlePosition } from '../utils';
+import {
+  pointToRendererPoint,
+  getHostForElement,
+  calcAutoPan,
+  getEventPosition,
+  getHandlePosition,
+  rendererPointToPoint,
+} from '../utils';
 import {
   ConnectionMode,
   Position,
@@ -98,7 +105,7 @@ function onPointerDown(
     fromPosition: fromHandle.position,
     fromNode: fromNodeInternal.internals.userNode,
 
-    to: pointToRendererPoint(position, getTransform()),
+    to: position,
     toHandle: null,
     toPosition: oppositePosition[fromHandle.position],
     toNode: null,
@@ -151,8 +158,8 @@ function onPointerDown(
       isValid,
       to:
         closestHandle && isValid
-          ? { x: closestHandle.x, y: closestHandle.y }
-          : pointToRendererPoint(position, transform),
+          ? rendererPointToPoint({ x: closestHandle.x, y: closestHandle.y }, transform)
+          : position,
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
       toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)!.internals.userNode : null,

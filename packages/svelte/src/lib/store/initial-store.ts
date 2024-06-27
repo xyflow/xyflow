@@ -143,7 +143,7 @@ export const getInitialStore = ({
     viewport: writable<Viewport>(viewport),
     connectionMode: writable<ConnectionMode>(ConnectionMode.Strict),
     domNode: writable<HTMLDivElement | null>(null),
-    connection: writable<ConnectionState>(initialConnection),
+    connection: readable<ConnectionState>(initialConnection),
     connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier),
     connectionRadius: writable<number>(20),
     isValidConnection: writable<IsValidConnection>(() => true),
