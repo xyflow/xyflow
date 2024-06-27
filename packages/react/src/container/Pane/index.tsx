@@ -155,7 +155,7 @@ export function Pane({
   };
 
   const onPointerMove = (event: ReactPointerEvent): void => {
-    const { userSelectionRect, edgeLookup, transform, nodeOrigin, nodeLookup, triggerNodeChanges, triggerEdgeChanges } =
+    const { userSelectionRect, edgeLookup, transform, nodeLookup, triggerNodeChanges, triggerEdgeChanges } =
       store.getState();
 
     if (!containerBounds.current || !userSelectionRect) {
@@ -181,8 +181,7 @@ export function Pane({
       nextUserSelectRect,
       transform,
       selectionMode === SelectionMode.Partial,
-      true,
-      nodeOrigin
+      true
     );
 
     const selectedEdgeIds = new Set<string>();

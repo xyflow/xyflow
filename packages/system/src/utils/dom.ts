@@ -1,4 +1,4 @@
-import type { Transform, XYPosition, SnapGrid, Dimensions, NodeOrigin, HandleElement, Position } from '../types';
+import type { Transform, XYPosition, SnapGrid, Dimensions, HandleElement, Position } from '../types';
 import { snapPosition, pointToRendererPoint } from './general';
 
 export type GetPointerPositionParams = {
@@ -62,8 +62,7 @@ export const getHandleBounds = (
   selector: string,
   nodeElement: HTMLDivElement,
   nodeBounds: DOMRect,
-  zoom: number,
-  nodeOrigin: NodeOrigin = [0, 0]
+  zoom: number
 ): HandleElement[] | null => {
   const handles = nodeElement.querySelectorAll(selector);
 
@@ -71,22 +70,15 @@ export const getHandleBounds = (
     return null;
   }
 
-  const handlesArray = Array.from(handles) as HTMLDivElement[];
-
-  const nodeOffset = {
-    x: nodeBounds.left + nodeBounds.width * nodeOrigin[0],
-    y: nodeBounds.top + nodeBounds.height * nodeOrigin[1],
-  };
-
-  return handlesArray.map((handle): HandleElement => {
+  return Array.from(handles).map((handle): HandleElement => {
     const handleBounds = handle.getBoundingClientRect();
 
     return {
       id: handle.getAttribute('data-handleid'),
       position: handle.getAttribute('data-handlepos') as unknown as Position,
-      x: (handleBounds.left - nodeOffset.x) / zoom,
-      y: (handleBounds.top - nodeOffset.y) / zoom,
-      ...getDimensions(handle),
+      x: (handleBounds.left - nodeBounds.left) / zoom,
+      y: (handleBounds.top - nodeBounds.top) / zoom,
+      ...getDimensions(handle as HTMLDivElement),
     };
   });
 };

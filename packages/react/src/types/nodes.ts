@@ -1,12 +1,5 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
-import type {
-  CoordinateExtent,
-  NodeBase,
-  NodeOrigin,
-  OnError,
-  NodeProps as NodePropsBase,
-  InternalNodeBase,
-} from '@xyflow/system';
+import type { CoordinateExtent, NodeBase, OnError, NodeProps as NodePropsBase, InternalNodeBase } from '@xyflow/system';
 
 import { NodeTypes } from './general';
 
@@ -59,7 +52,6 @@ export type NodeWrapperProps<NodeType extends Node> = {
   disableKeyboardA11y: boolean;
   nodeTypes?: NodeTypes;
   nodeExtent?: CoordinateExtent;
-  nodeOrigin: NodeOrigin;
   onError?: OnError;
 };
 

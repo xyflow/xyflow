@@ -12,7 +12,7 @@ import type {
   NodeLookup,
 } from '../types';
 import { type Viewport } from '../types';
-import { getNodePositionWithOrigin } from './graph';
+import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
 
@@ -68,24 +68,28 @@ export const boxToRect = ({ x, y, x2, y2 }: Box): Rect => ({
 });
 
 export const nodeToRect = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Rect => {
-  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
+  const { x, y } = isInternalNodeBase(node)
+    ? node.internals.positionAbsolute
+    : getNodePositionWithOrigin(node, nodeOrigin);
 
   return {
     x,
     y,
-    width: node.measured?.width ?? node.width ?? 0,
-    height: node.measured?.height ?? node.height ?? 0,
+    width: node.measured?.width ?? node.width ?? node.initialWidth ?? 0,
+    height: node.measured?.height ?? node.height ?? node.initialHeight ?? 0,
   };
 };
 
 export const nodeToBox = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOrigin = [0, 0]): Box => {
-  const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
+  const { x, y } = isInternalNodeBase(node)
+    ? node.internals.positionAbsolute
+    : getNodePositionWithOrigin(node, nodeOrigin);
 
   return {
     x,
     y,
-    x2: x + (node.measured?.width ?? node.width ?? 0),
-    y2: y + (node.measured?.height ?? node.height ?? 0),
+    x2: x + (node.measured?.width ?? node.width ?? node.initialWidth ?? 0),
+    y2: y + (node.measured?.height ?? node.height ?? node.initialHeight ?? 0),
   };
 };
 
@@ -112,29 +116,6 @@ export const devWarn = (id: string, message: string) => {
   if (process.env.NODE_ENV === 'development') {
     console.warn(`[React Flow]: ${message} Help: https://reactflow.dev/error#${id}`);
   }
-};
-
-export const getPositionWithOrigin = ({
-  x,
-  y,
-  width,
-  height,
-  origin = [0, 0],
-}: {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  origin?: NodeOrigin;
-}): XYPosition => {
-  if (!width || !height || origin[0] < 0 || origin[1] < 0 || origin[0] > 1 || origin[1] > 1) {
-    return { x, y };
-  }
-
-  return {
-    x: x - width * origin[0],
-    y: y - height * origin[1],
-  };
 };
 
 export const snapPosition = (position: XYPosition, snapGrid: SnapGrid = [1, 1]): XYPosition => {
@@ -239,9 +220,10 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
  */
 export function evaluateAbsolutePosition(
   position: XYPosition,
+  dimensions: { width?: number; height?: number } = { width: 0, height: 0 },
   parentId: string,
   nodeLookup: NodeLookup,
-  nodeOrigin: NodeOrigin = [0, 0]
+  nodeOrigin: NodeOrigin
 ): XYPosition {
   let nextParentId: string | undefined = parentId;
   const positionAbsolute = { ...position };
@@ -252,10 +234,8 @@ export function evaluateAbsolutePosition(
 
     if (parent) {
       const origin = parent.origin || nodeOrigin;
-      const xOffset = (parent.measured.width ?? 0) * origin[0];
-      const yOffset = (parent.measured.height ?? 0) * origin[1];
-      positionAbsolute.x += parent.position.x - xOffset;
-      positionAbsolute.y += parent.position.y - yOffset;
+      positionAbsolute.x += parent.internals.positionAbsolute.x - (dimensions.width ?? 0) * origin[0];
+      positionAbsolute.y += parent.internals.positionAbsolute.y - (dimensions.height ?? 0) * origin[1];
     }
   }
 

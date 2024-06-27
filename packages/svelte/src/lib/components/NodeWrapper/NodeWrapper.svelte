@@ -31,8 +31,6 @@
   export let isParent: $$Props['isParent'] = false;
   export let positionX: $$Props['positionX'];
   export let positionY: $$Props['positionY'];
-  export let positionOriginX: $$Props['positionOriginX'];
-  export let positionOriginY: $$Props['positionOriginY'];
   export let sourcePosition: $$Props['sourcePosition'] = undefined;
   export let targetPosition: $$Props['targetPosition'] = undefined;
   export let zIndex: $$Props['zIndex'];
@@ -181,7 +179,7 @@
     class:nopan={draggable}
     class:parent={isParent}
     style:z-index={zIndex}
-    style:transform="translate({positionOriginX}px, {positionOriginY}px)"
+    style:transform="translate({positionX}px, {positionY}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
     style="{style ?? ''};{inlineStyleDimensions.width}{inlineStyleDimensions.height}"
     on:click={onSelectNodeHandler}

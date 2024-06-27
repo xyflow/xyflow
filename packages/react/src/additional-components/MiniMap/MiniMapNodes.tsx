@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentType, memo } from 'react';
-import { NodeOrigin, getNodeDimensions, getNodePositionWithOrigin, nodeHasDimensions } from '@xyflow/system';
+import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
@@ -11,7 +11,6 @@ import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMa
 
 declare const window: any;
 
-const selector = (s: ReactFlowState) => s.nodeOrigin;
 const selectorNodeIds = (s: ReactFlowState) => s.nodes.map((node) => node.id);
 const getAttrFunction = <NodeType extends Node>(func: any): GetMiniMapNodeAttribute<NodeType> =>
   func instanceof Function ? func : () => func;
@@ -28,7 +27,6 @@ function MiniMapNodes<NodeType extends Node>({
   onClick,
 }: MiniMapNodesProps<NodeType>) {
   const nodeIds = useStore(selectorNodeIds, shallow);
-  const nodeOrigin = useStore(selector);
   const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
@@ -46,7 +44,6 @@ function MiniMapNodes<NodeType extends Node>({
         <NodeComponentWrapper<NodeType>
           key={nodeId}
           id={nodeId}
-          nodeOrigin={nodeOrigin}
           nodeColorFunc={nodeColorFunc}
           nodeStrokeColorFunc={nodeStrokeColorFunc}
           nodeClassNameFunc={nodeClassNameFunc}
@@ -63,7 +60,6 @@ function MiniMapNodes<NodeType extends Node>({
 
 function NodeComponentWrapperInner<NodeType extends Node>({
   id,
-  nodeOrigin,
   nodeColorFunc,
   nodeStrokeColorFunc,
   nodeClassNameFunc,
@@ -74,7 +70,6 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   onClick,
 }: {
   id: string;
-  nodeOrigin: NodeOrigin;
   nodeColorFunc: GetMiniMapNodeAttribute<NodeType>;
   nodeStrokeColorFunc: GetMiniMapNodeAttribute<NodeType>;
   nodeClassNameFunc: GetMiniMapNodeAttribute<NodeType>;
@@ -86,7 +81,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
 }) {
   const { node, x, y } = useStore((s) => {
     const node = s.nodeLookup.get(id) as InternalNode<NodeType>;
-    const { x, y } = getNodePositionWithOrigin(node, nodeOrigin).positionAbsolute;
+    const { x, y } = node.internals.positionAbsolute;
 
     return {
       node,

@@ -45,22 +45,23 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         return { x, y, zoom };
       },
       fitView: (options) => {
-        const { nodeLookup, width, height, nodeOrigin, minZoom, maxZoom, panZoom } = store.getState();
+        const { nodeLookup, width, height, minZoom, maxZoom, panZoom } = store.getState();
 
-        return panZoom
-          ? fitView(
-              {
-                nodeLookup,
-                width,
-                height,
-                nodeOrigin,
-                minZoom,
-                maxZoom,
-                panZoom,
-              },
-              options
-            )
-          : false;
+        if (!panZoom) {
+          return false;
+        }
+
+        return fitView(
+          {
+            nodeLookup,
+            width,
+            height,
+            minZoom,
+            maxZoom,
+            panZoom,
+          },
+          options
+        );
       },
       setCenter: (x, y, options) => {
         const { width, height, maxZoom, panZoom } = store.getState();

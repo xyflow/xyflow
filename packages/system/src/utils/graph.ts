@@ -106,25 +106,15 @@ export const getIncomers = <NodeType extends NodeBase = NodeBase, EdgeType exten
   return nodes.filter((n) => incomersIds.has(n.id));
 };
 
-export const getNodePositionWithOrigin = (
-  node: InternalNodeBase | NodeBase,
-  nodeOrigin: NodeOrigin = [0, 0]
-): { position: XYPosition; positionAbsolute: XYPosition } => {
+export const getNodePositionWithOrigin = (node: NodeBase, nodeOrigin: NodeOrigin = [0, 0]): XYPosition => {
   const { width, height } = getNodeDimensions(node);
-  const positionAbsolute = 'internals' in node ? node.internals.positionAbsolute : node.position;
-  const origin = node.origin || nodeOrigin;
+  const origin = node.origin ?? nodeOrigin;
   const offsetX = width * origin[0];
   const offsetY = height * origin[1];
 
   return {
-    position: {
-      x: node.position.x - offsetX,
-      y: node.position.y - offsetY,
-    },
-    positionAbsolute: {
-      x: positionAbsolute.x - offsetX,
-      y: positionAbsolute.y - offsetY,
-    },
+    x: node.position.x - offsetX,
+    y: node.position.y - offsetY,
   };
 };
 
@@ -157,7 +147,6 @@ export const getNodesBounds = (nodes: NodeBase[], params: GetNodesBoundsParams =
 };
 
 export type GetInternalNodesBoundsParams<NodeType> = {
-  nodeOrigin?: NodeOrigin;
   useRelativePosition?: boolean;
   filter?: (node: NodeType) => boolean;
 };
@@ -168,9 +157,7 @@ export type GetInternalNodesBoundsParams<NodeType> = {
  */
 export const getInternalNodesBounds = <NodeType extends InternalNodeBase | NodeDragItem>(
   nodeLookup: Map<string, NodeType>,
-  params: GetInternalNodesBoundsParams<NodeType> = {
-    nodeOrigin: [0, 0],
-  }
+  params: GetInternalNodesBoundsParams<NodeType> = {}
 ): Rect => {
   if (nodeLookup.size === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
@@ -179,8 +166,8 @@ export const getInternalNodesBounds = <NodeType extends InternalNodeBase | NodeD
   let box = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity };
 
   nodeLookup.forEach((node) => {
-    if (params.filter == undefined || params.filter(node)) {
-      const nodeBox = nodeToBox(node as InternalNodeBase, params.nodeOrigin);
+    if (params.filter === undefined || params.filter(node)) {
+      const nodeBox = nodeToBox(node as InternalNodeBase);
       box = getBoundsOfBoxes(box, nodeBox);
     }
   });
@@ -194,8 +181,7 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially = false,
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
-  excludeNonSelectableNodes = false,
-  nodeOrigin: NodeOrigin = [0, 0]
+  excludeNonSelectableNodes = false
 ): InternalNodeBase<NodeType>[] => {
   const paneRect = {
     ...pointToRendererPoint(rect, [tx, ty, tScale]),
@@ -214,7 +200,7 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
       continue;
     }
 
-    const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node, nodeOrigin));
+    const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node));
     const notInitialized = width === null || height === null;
 
     const partiallyVisible = partially && overlappingArea > 0;
@@ -248,22 +234,22 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
 };
 
 export function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
-  { nodeLookup, width, height, panZoom, minZoom, maxZoom, nodeOrigin = [0, 0] }: Params,
+  { nodeLookup, width, height, panZoom, minZoom, maxZoom }: Params,
   options?: Options
 ) {
-  const filteredNodes: InternalNodeBase[] = [];
+  const filteredNodes: Map<string, InternalNodeBase> = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
 
   nodeLookup.forEach((n) => {
     const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
 
     if (isVisible && (!optionNodeIds || optionNodeIds.has(n.id))) {
-      filteredNodes.push(n);
+      filteredNodes.set(n.id, n);
     }
   });
 
-  if (filteredNodes.length > 0) {
-    const bounds = getNodesBounds(filteredNodes, { nodeOrigin });
+  if (filteredNodes.size > 0) {
+    const bounds = getInternalNodesBounds(filteredNodes);
 
     const viewport = getViewportForBounds(
       bounds,
@@ -323,9 +309,8 @@ export function calculateNodePosition<NodeType extends NodeBase>({
 }): { position: XYPosition; positionAbsolute: XYPosition } {
   const node = nodeLookup.get(nodeId)!;
   const parentNode = node.parentId ? nodeLookup.get(node.parentId) : undefined;
-  const { x: parentX, y: parentY } = parentNode
-    ? getNodePositionWithOrigin(parentNode, parentNode.origin || nodeOrigin).positionAbsolute
-    : { x: 0, y: 0 };
+  const { x: parentX, y: parentY } = parentNode ? parentNode.internals.positionAbsolute : { x: 0, y: 0 };
+  const origin = node.origin ?? nodeOrigin;
 
   let currentExtent = clampNodeExtent(node, node.extent || nodeExtent);
 
@@ -339,13 +324,9 @@ export function calculateNodePosition<NodeType extends NodeBase>({
       const parentHeight = parentNode.measured.height;
 
       if (nodeWidth && nodeHeight && parentWidth && parentHeight) {
-        const currNodeOrigin = node.origin || nodeOrigin;
-        const extentX = parentX + nodeWidth * currNodeOrigin[0];
-        const extentY = parentY + nodeHeight * currNodeOrigin[1];
-
         currentExtent = [
-          [extentX, extentY],
-          [extentX + parentWidth - nodeWidth, extentY + parentHeight - nodeHeight],
+          [parentX, parentY],
+          [parentX + parentWidth - nodeWidth, parentY + parentHeight - nodeHeight],
         ];
       }
     }
@@ -362,8 +343,9 @@ export function calculateNodePosition<NodeType extends NodeBase>({
 
   return {
     position: {
-      x: positionAbsolute.x - parentX,
-      y: positionAbsolute.y - parentY,
+      // TODO: is there a better way to do this?
+      x: positionAbsolute.x - parentX + node.measured.width! * origin[0],
+      y: positionAbsolute.y - parentY + node.measured.height! * origin[1],
     },
     positionAbsolute,
   };
