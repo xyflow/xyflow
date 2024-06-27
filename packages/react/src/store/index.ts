@@ -13,6 +13,7 @@ import {
   NodeSelectionChange,
   ParentExpandChild,
   initialConnection,
+  NodeOrigin,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -27,6 +28,7 @@ const createStore = ({
   width,
   height,
   fitView,
+  nodeOrigin,
 }: {
   nodes?: Node[];
   edges?: Edge[];
@@ -35,10 +37,11 @@ const createStore = ({
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }) =>
   createWithEqualityFn<ReactFlowState>(
     (set, get) => ({
-      ...getInitialState({ nodes, edges, width, height, fitView, defaultNodes, defaultEdges }),
+      ...getInitialState({ nodes, edges, width, height, fitView, nodeOrigin, defaultNodes, defaultEdges }),
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
         // setNodes() is called exclusively in response to user actions:
@@ -99,7 +102,7 @@ const createStore = ({
           return;
         }
 
-        updateAbsolutePositions(nodeLookup, { nodeOrigin });
+        updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin });
 
         // we call fitView once initially after all dimensions are set
         let nextFitViewDone = fitViewDone;
@@ -156,8 +159,8 @@ const createStore = ({
         }
 
         if (parentExpandChildren.length > 0) {
-          const { nodeLookup, parentLookup } = get();
-          const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup);
+          const { nodeLookup, parentLookup, nodeOrigin } = get();
+          const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup, nodeOrigin);
           changes.push(...parentExpandChanges);
         }
 
@@ -289,7 +292,7 @@ const createStore = ({
         return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
       },
       fitView: (options?: FitViewOptions): boolean => {
-        const { panZoom, width, height, minZoom, maxZoom, nodeOrigin, nodeLookup } = get();
+        const { panZoom, width, height, minZoom, maxZoom, nodeLookup } = get();
 
         if (!panZoom) {
           return false;
@@ -303,7 +306,6 @@ const createStore = ({
             panZoom,
             minZoom,
             maxZoom,
-            nodeOrigin,
           },
           options
         );

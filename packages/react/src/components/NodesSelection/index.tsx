@@ -21,7 +21,6 @@ export type NodesSelectionProps<NodeType> = {
 
 const selector = (s: ReactFlowState) => {
   const { width, height, x, y } = getInternalNodesBounds(s.nodeLookup, {
-    nodeOrigin: s.nodeOrigin,
     filter: (node) => !!node.selected,
   });
 
