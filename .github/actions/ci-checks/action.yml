@@ -11,6 +11,7 @@ runs:
       shell: bash
     - name: Install Playwright browsers
       run: npx playwright install --with-deps
+      shell: bash
     - name: Test React Flow
       run: pnpm test:react
       shell: bash
