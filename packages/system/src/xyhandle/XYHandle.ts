@@ -172,6 +172,7 @@ function onPointerDown(
       closestHandle &&
       previousConnection.toHandle &&
       newConnection.toHandle &&
+      previousConnection.toHandle.type === newConnection.toHandle.type &&
       previousConnection.toHandle.nodeId === newConnection.toHandle.nodeId &&
       previousConnection.toHandle.id === newConnection.toHandle.id
     ) {
@@ -277,6 +278,8 @@ function isValidHandle(
       (connectionMode === ConnectionMode.Strict
         ? (isTarget && handleType === 'source') || (!isTarget && handleType === 'target')
         : handleNodeId !== fromNodeId || handleId !== fromHandleId);
+
+    console.log(isValid);
 
     result.isValid = isValid && isValidConnection(connection);
 
