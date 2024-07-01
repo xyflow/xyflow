@@ -23,7 +23,7 @@
   const {
     viewport,
     panZoom,
-    selectionKeyPressed,
+    selectionRect,
     minZoom,
     maxZoom,
     dragging,
@@ -66,7 +66,7 @@
     preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
     noPanClassName: 'nopan',
     noWheelClassName: 'nowheel',
-    userSelectionActive: $selectionKeyPressed,
+    userSelectionActive: !!$selectionRect,
     translateExtent: $translateExtent,
     lib: $lib
   }}

@@ -78,6 +78,7 @@
   export let onconnectend: $$Props['onconnectend'] = undefined;
   export let onbeforedelete: $$Props['onbeforedelete'] = undefined;
   export let oninit: $$Props['oninit'] = undefined;
+  export let nodeOrigin: $$Props['nodeOrigin'] = undefined;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -93,7 +94,14 @@
 
   const store = hasContext(key)
     ? useStore()
-    : createStoreContext({ nodes: get(nodes), edges: get(edges), width, height, fitView });
+    : createStoreContext({
+        nodes: get(nodes),
+        edges: get(edges),
+        width,
+        height,
+        fitView,
+        nodeOrigin
+      });
 
   onMount(() => {
     store.width.set(clientWidth);
@@ -168,7 +176,8 @@
       onconnect,
       onconnectstart,
       onconnectend,
-      onbeforedelete
+      onbeforedelete,
+      nodeOrigin
     };
 
     updateStoreByKeys(store, updatableProps);

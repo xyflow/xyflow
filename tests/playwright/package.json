@@ -13,15 +13,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.42.1",
-    "@types/node": "^18.7.16"
+    "@playwright/test": "^1.44.1",
+    "@types/node": "^20.14.6"
   },
   "dependencies": {
-    "@playwright/experimental-ct-react": "^1.42.1",
-    "@types/react": "^18.2.31",
-    "@types/react-dom": "^18.2.14",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "typescript": "^5.2.2"
+    "@playwright/experimental-ct-react": "^1.44.1",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.4.5"
   }
 }

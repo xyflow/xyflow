@@ -13,7 +13,7 @@ import {
 import useViewportHelper from './useViewportHelper';
 import { useStore, useStoreApi } from './useStore';
 import { useBatchContext } from '../components/BatchProvider';
-import { elementToRemoveChange, isNode } from '../utils';
+import { elementToRemoveChange, isEdge, isNode } from '../utils';
 import type { ReactFlowInstance, Node, Edge, InternalNode, ReactFlowState, GeneralHelpers } from '../types';
 
 const selector = (s: ReactFlowState) => !!s.panZoom;
@@ -41,12 +41,16 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       batchContext.nodeQueue.push(payload as NodeType[]);
     };
 
+    const setEdges: GeneralHelpers<NodeType, EdgeType>['setEdges'] = (payload) => {
+      batchContext.edgeQueue.push(payload as EdgeType[]);
+    };
+
     const getNodeRect = (node: NodeType | { id: string }): Rect | null => {
       const { nodeLookup, nodeOrigin } = store.getState();
 
       const nodeToUse = isNode<NodeType>(node) ? node : nodeLookup.get(node.id)!;
       const position = nodeToUse.parentId
-        ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.parentId, nodeLookup, nodeOrigin)
+        ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.measured, nodeToUse.parentId, nodeLookup, nodeOrigin)
         : nodeToUse.position;
 
       const nodeWithPosition = {
@@ -77,6 +81,23 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       );
     };
 
+    const updateEdge: GeneralHelpers<NodeType, EdgeType>['updateEdge'] = (
+      id,
+      edgeUpdate,
+      options = { replace: false }
+    ) => {
+      setEdges((prevEdges) =>
+        prevEdges.map((edge) => {
+          if (edge.id === id) {
+            const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge as EdgeType) : edgeUpdate;
+            return options.replace && isEdge(nextEdge) ? (nextEdge as EdgeType) : { ...edge, ...nextEdge };
+          }
+
+          return edge;
+        })
+      );
+    };
+
     return {
       getNodes: () => store.getState().nodes.map((n) => ({ ...n })) as NodeType[],
       getNode: (id) => getInternalNode(id)?.internals.userNode as NodeType,
@@ -87,9 +108,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       },
       getEdge: (id) => store.getState().edgeLookup.get(id) as EdgeType,
       setNodes,
-      setEdges: (payload) => {
-        batchContext.edgeQueue.push(payload as EdgeType[]);
-      },
+      setEdges,
       addNodes: (payload) => {
         const newNodes = Array.isArray(payload) ? payload : [payload];
         batchContext.nodeQueue.push((nodes) => [...nodes, ...newNodes]);
@@ -196,6 +215,17 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           (node) => {
             const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
             return options.replace ? { ...node, data: nextData } : { ...node, data: { ...node.data, ...nextData } };
+          },
+          options
+        );
+      },
+      updateEdge,
+      updateEdgeData: (id, dataUpdate, options = { replace: false }) => {
+        updateEdge(
+          id,
+          (edge) => {
+            const nextData = typeof dataUpdate === 'function' ? dataUpdate(edge) : dataUpdate;
+            return options.replace ? { ...edge, data: nextData } : { ...edge, data: { ...edge.data, ...nextData } };
           },
           options
         );

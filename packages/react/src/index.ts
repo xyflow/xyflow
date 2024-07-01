@@ -49,7 +49,6 @@ export {
   type OnMoveStart,
   type OnMoveEnd,
   type Connection,
-  type ConnectionStatus,
   ConnectionMode,
   type OnConnectStartParams,
   type OnConnectStart,
@@ -116,6 +115,6 @@ export {
   getIncomers,
   getOutgoers,
   addEdge,
-  updateEdge,
+  reconnectEdge,
   getConnectedEdges,
 } from '@xyflow/system';

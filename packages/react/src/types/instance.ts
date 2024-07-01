@@ -143,6 +143,36 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     dataUpdate: Partial<NodeType['data']> | ((node: NodeType) => Partial<NodeType['data']>),
     options?: { replace: boolean }
   ) => void;
+  /**
+   * Updates an edge.
+   *
+   * @param id - id of the edge to update
+   * @param edgeUpdate - the edge update as an object or a function that receives the current edge and returns the edge update
+   * @param options.replace - if true, the edge is replaced with the edge update, otherwise the changes get merged
+   *
+   * @example
+   * updateEdge('edge-1', (edge) => ({ label: 'A new label' }));
+   */
+  updateEdge: (
+    id: string,
+    edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
+    options?: { replace: boolean }
+  ) => void;
+  /**
+   * Updates the data attribute of a edge.
+   *
+   * @param id - id of the edge to update
+   * @param dataUpdate - the data update as an object or a function that receives the current data and returns the data update
+   * @param options.replace - if true, the data is replaced with the data update, otherwise the changes get merged
+   *
+   * @example
+   * updateEdgeData('edge-1', { label: 'A new label' });
+   */
+  updateEdgeData: (
+    id: string,
+    dataUpdate: Partial<EdgeType['data']> | ((edge: EdgeType) => Partial<EdgeType['data']>),
+    options?: { replace: boolean }
+  ) => void;
 };
 
 export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = GeneralHelpers<

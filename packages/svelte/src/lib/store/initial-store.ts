@@ -6,9 +6,9 @@ import {
   ConnectionLineType,
   devWarn,
   adoptUserNodes,
-  getNodesBounds,
   getViewportForBounds,
   updateConnectionLookup,
+  initialConnection,
   type SelectionRect,
   type SnapGrid,
   type MarkerProps,
@@ -22,7 +22,10 @@ import {
   type OnConnectStart,
   type OnConnectEnd,
   type NodeLookup,
-  type EdgeLookup
+  type EdgeLookup,
+  type ConnectionState,
+  type ParentLookup,
+  getInternalNodesBounds
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -51,7 +54,6 @@ import type {
   InternalNode
 } from '$lib/types';
 import { createNodesStore, createEdgesStore } from './utils';
-import { initConnectionProps, type ConnectionProps } from './derived-connection-props';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -72,18 +74,21 @@ export const getInitialStore = ({
   edges = [],
   width,
   height,
-  fitView
+  fitView,
+  nodeOrigin
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }) => {
   const nodeLookup: NodeLookup = new Map();
   const parentLookup = new Map();
+  const storeNodeOrigin = nodeOrigin ?? [0, 0];
   adoptUserNodes(nodes, nodeLookup, parentLookup, {
-    nodeOrigin: [0, 0],
+    nodeOrigin: storeNodeOrigin,
     elevateNodesOnSelect: false,
     checkEquality: false
   });
@@ -94,20 +99,17 @@ export const getInitialStore = ({
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nodes.filter(
-      (node) => (node.width && node.height) || (node.initialWidth && node.initialHeight)
-    );
-
-    // @todo users nodeOrigin should be used here
-    const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin: [0, 0] });
+    const bounds = getInternalNodesBounds(nodeLookup, {
+      filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight))
+    });
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
 
   return {
     flowId: writable<string | null>(null),
-    nodes: createNodesStore(nodes, nodeLookup, parentLookup),
+    nodes: createNodesStore(nodes, nodeLookup, parentLookup, storeNodeOrigin),
     nodeLookup: readable<NodeLookup<InternalNode>>(nodeLookup),
-    parentLookup: readable<Map<string, InternalNode[]>>(parentLookup),
+    parentLookup: readable<ParentLookup<InternalNode>>(parentLookup),
     edgeLookup: readable<EdgeLookup<Edge>>(edgeLookup),
     visibleNodes: readable<InternalNode[]>([]),
     edges: createEdgesStore(edges, connectionLookup, edgeLookup),
@@ -117,7 +119,7 @@ export const getInitialStore = ({
     width: writable<number>(500),
     minZoom: writable<number>(0.5),
     maxZoom: writable<number>(2),
-    nodeOrigin: writable<NodeOrigin>([0, 0]),
+    nodeOrigin: writable<NodeOrigin>(storeNodeOrigin),
     nodeDragThreshold: writable<number>(1),
     nodeExtent: writable<CoordinateExtent>(infiniteExtent),
     translateExtent: writable<CoordinateExtent>(infiniteExtent),
@@ -142,7 +144,7 @@ export const getInitialStore = ({
     viewport: writable<Viewport>(viewport),
     connectionMode: writable<ConnectionMode>(ConnectionMode.Strict),
     domNode: writable<HTMLDivElement | null>(null),
-    connection: readable<ConnectionProps>(initConnectionProps),
+    connection: readable<ConnectionState>(initialConnection),
     connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier),
     connectionRadius: writable<number>(20),
     isValidConnection: writable<IsValidConnection>(() => true),

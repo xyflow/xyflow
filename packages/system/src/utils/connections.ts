@@ -51,3 +51,7 @@ export function handleConnectionChange(
     cb(diff);
   }
 }
+
+export function getConnectionStatus(isValid: boolean | null) {
+  return isValid === null ? null : isValid ? 'valid' : 'invalid';
+}

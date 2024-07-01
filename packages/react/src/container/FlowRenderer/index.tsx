@@ -22,11 +22,12 @@ export type FlowRendererProps<NodeType extends Node = Node> = Omit<
   | 'selectNodesOnDrag'
   | 'defaultMarkerColor'
   | 'rfId'
-  | 'nodeOrigin'
 > & {
   isControlledViewport: boolean;
   children: ReactNode;
 };
+
+const win = typeof window !== 'undefined' ? window : undefined;
 
 const selector = (s: ReactFlowState) => {
   return { nodesSelectionActive: s.nodesSelectionActive, userSelectionActive: s.userSelectionActive };
@@ -70,8 +71,8 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
   const { nodesSelectionActive, userSelectionActive } = useStore(selector);
-  const selectionKeyPressed = useKeyPress(selectionKeyCode);
-  const panActivationKeyPressed = useKeyPress(panActivationKeyCode);
+  const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: win });
+  const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: win });
 
   const panOnDrag = panActivationKeyPressed || _panOnDrag;
   const panOnScroll = panActivationKeyPressed || _panOnScroll;
@@ -113,6 +114,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
         panOnDrag={panOnDrag}
         isSelecting={!!isSelecting}
         selectionMode={selectionMode}
+        selectionKeyPressed={selectionKeyPressed}
       >
         {children}
         {nodesSelectionActive && (

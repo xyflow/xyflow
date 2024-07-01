@@ -1,4 +1,4 @@
-import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
+import type { XYPosition, Position, CoordinateExtent, Handle } from '.';
 import { Optional } from '../utils/types';
 
 /**
@@ -77,6 +77,7 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & 
      * Used as an optimization to avoid certain operations. */
     userNode: NodeType;
     handleBounds?: NodeHandleBounds;
+    bounds?: NodeBounds;
   };
 };
 
@@ -110,8 +111,8 @@ export type NodeProps<NodeType extends NodeBase> = Pick<
   };
 
 export type NodeHandleBounds = {
-  source: HandleElement[] | null;
-  target: HandleElement[] | null;
+  source: Handle[] | null;
+  target: Handle[] | null;
 };
 
 export type InternalNodeUpdate = {
@@ -148,9 +149,9 @@ export type NodeOrigin = [number, number];
 
 export type OnSelectionDrag = (event: MouseEvent, nodes: NodeBase[]) => void;
 
-export type NodeHandle = Optional<HandleElement, 'width' | 'height'>;
+export type NodeHandle = Omit<Optional<Handle, 'width' | 'height'>, 'nodeId'>;
 
 export type Align = 'center' | 'start' | 'end';
 
 export type NodeLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType>;
-export type ParentLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType[]>;
+export type ParentLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, Map<string, NodeType>>;

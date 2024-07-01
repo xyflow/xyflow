@@ -7,6 +7,9 @@ import {
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
   addEdge as addEdgeUtil,
+  initialConnection,
+  errorMessages,
+  pointToRendererPoint,
   type UpdateNodePositions,
   type InternalNodeUpdate,
   type ViewportHelperFunctionOptions,
@@ -14,16 +17,16 @@ import {
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  errorMessages
+  type ConnectionState,
+  type NodeOrigin
 } from '@xyflow/system';
 
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData } from '$lib/types';
+import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store';
 import type { SvelteFlowStore } from './types';
 import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
 import { getVisibleEdges } from './visible-edges';
 import { getVisibleNodes } from './visible-nodes';
-import { getDerivedConnectionProps } from './derived-connection-props';
 
 export const key = Symbol();
 
@@ -32,15 +35,24 @@ export function createStore({
   edges,
   width,
   height,
-  fitView: fitViewOnCreate
+  fitView: fitViewOnCreate,
+  nodeOrigin
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }): SvelteFlowStore {
-  const store = getInitialStore({ nodes, edges, width, height, fitView: fitViewOnCreate });
+  const store = getInitialStore({
+    nodes,
+    edges,
+    width,
+    height,
+    fitView: fitViewOnCreate,
+    nodeOrigin
+  });
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes.set({
@@ -122,6 +134,7 @@ export function createStore({
         }
         case 'position':
           node.position = change.position ?? node.position;
+
           break;
       }
     }
@@ -147,8 +160,7 @@ export function createStore({
         height: get(store.height),
         minZoom: get(store.minZoom),
         maxZoom: get(store.maxZoom),
-        panZoom,
-        nodeOrigin: get(store.nodeOrigin)
+        panZoom
       },
       options
     );
@@ -330,22 +342,13 @@ export function createStore({
     });
   }
 
-  const initConnectionUpdateData = {
-    connectionStartHandle: null,
-    connectionEndHandle: null,
-    connectionPosition: null,
-    connectionStatus: null
-  };
-
-  // by creating an internal, unexposed store and using a derived store
-  // we prevent using slow get() calls
-  const currentConnection = writable<ConnectionData>(initConnectionUpdateData);
-  const updateConnection: UpdateConnection = (newConnection: ConnectionData) => {
-    currentConnection.set(newConnection);
+  const _connection = writable<ConnectionState>(initialConnection);
+  const updateConnection: UpdateConnection = (newConnection: ConnectionState) => {
+    _connection.set({ ...newConnection });
   };
 
   function cancelConnection() {
-    updateConnection(initConnectionUpdateData);
+    _connection.set(initialConnection);
   }
 
   function reset() {
@@ -364,9 +367,16 @@ export function createStore({
     ...store,
 
     // derived state
-    connection: getDerivedConnectionProps(store, currentConnection),
     visibleEdges: getVisibleEdges(store),
     visibleNodes: getVisibleNodes(store),
+    connection: derived([_connection, store.viewport], ([connection, viewport]) => {
+      return connection.inProgress
+        ? {
+            ...connection,
+            to: pointToRendererPoint(connection.to, [viewport.x, viewport.y, viewport.zoom])
+          }
+        : { ...connection };
+    }),
     markers: derived(
       [store.edges, store.defaultMarkerColor, store.flowId],
       ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
@@ -438,15 +448,17 @@ export function createStoreContext({
   edges,
   width,
   height,
-  fitView
+  fitView,
+  nodeOrigin
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }) {
-  const store = createStore({ nodes, edges, width, height, fitView });
+  const store = createStore({ nodes, edges, width, height, fitView, nodeOrigin });
 
   setContext(key, {
     getStore: () => store

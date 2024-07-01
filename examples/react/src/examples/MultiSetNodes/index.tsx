@@ -28,10 +28,15 @@ for (let i = 0; i < 100; i++) {
   });
 }
 
-const initEdges: Edge[] = [];
+const initEdges: Edge[] = initNodes.reduce<Edge[]>((res, node, index) => {
+  if (index > 0) {
+    res.push({ id: `${index - 1}-${index}`, source: (index - 1).toString(), target: index.toString() });
+  }
+  return res;
+}, []);
 
 const CustomNodeFlow = () => {
-  const { setNodes, updateNodeData } = useReactFlow();
+  const { setNodes, updateNodeData, updateEdge } = useReactFlow();
   const [nodes, , onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
 
@@ -55,6 +60,10 @@ const CustomNodeFlow = () => {
     nodes.forEach((node) => updateNodeData(node.id, { label: 'node update' }));
   };
 
+  const multiUpdateEdges = () => {
+    edges.forEach((edge) => updateEdge(edge.id, { label: 'edge update' }));
+  };
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -70,6 +79,7 @@ const CustomNodeFlow = () => {
       <Panel>
         <button onClick={multiSetNodes}>set nodes</button>
         <button onClick={multiUpdateNodes}>update nodes</button>
+        <button onClick={multiUpdateEdges}>update edges</button>
       </Panel>
     </ReactFlow>
   );

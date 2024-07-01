@@ -22,7 +22,6 @@ export type NodeRendererProps<NodeType extends Node> = Pick<
   | 'noDragClassName'
   | 'rfId'
   | 'disableKeyboardA11y'
-  | 'nodeOrigin'
   | 'nodeExtent'
   | 'nodeTypes'
 >;
@@ -72,7 +71,6 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
             id={nodeId}
             nodeTypes={props.nodeTypes}
             nodeExtent={props.nodeExtent}
-            nodeOrigin={props.nodeOrigin}
             onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}
             onMouseMove={props.onNodeMouseMove}

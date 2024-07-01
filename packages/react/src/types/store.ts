@@ -1,6 +1,6 @@
 import {
   ConnectionMode,
-  type ConnectionStatus,
+  type ConnectionState,
   type CoordinateExtent,
   type InternalNodeUpdate,
   type UpdateNodePositions,
@@ -10,9 +10,8 @@ import {
   type OnViewportChange,
   type SelectionRect,
   type SnapGrid,
-  type ConnectingHandle,
+  type Handle,
   type Transform,
-  type XYPosition,
   type PanZoomInstance,
   type PanBy,
   type OnConnectStart,
@@ -25,8 +24,9 @@ import {
   type EdgeLookup,
   type ConnectionLookup,
   type NodeLookup,
-  NodeChange,
-  EdgeChange,
+  type NodeChange,
+  type EdgeChange,
+  type ParentLookup,
 } from '@xyflow/system';
 
 import type {
@@ -54,7 +54,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   transform: Transform;
   nodes: NodeType[];
   nodeLookup: NodeLookup<InternalNode<NodeType>>;
-  parentLookup: Map<string, InternalNode<NodeType>[]>;
+  parentLookup: ParentLookup<InternalNode<NodeType>>;
   edges: Edge[];
   edgeLookup: EdgeLookup<EdgeType>;
   connectionLookup: ConnectionLookup;
@@ -78,9 +78,9 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   userSelectionActive: boolean;
   userSelectionRect: SelectionRect | null;
 
-  connectionPosition: XYPosition;
-  connectionStatus: ConnectionStatus | null;
+  connection: ConnectionState;
   connectionMode: ConnectionMode;
+  connectionClickStartHandle: (Pick<Handle, 'nodeId' | 'id'> & Required<Pick<Handle, 'type'>>) | null;
 
   snapToGrid: boolean;
   snapGrid: SnapGrid;
@@ -89,17 +89,13 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   nodesConnectable: boolean;
   nodesFocusable: boolean;
   edgesFocusable: boolean;
-  edgesUpdatable: boolean;
+  edgesReconnectable: boolean;
   elementsSelectable: boolean;
   elevateNodesOnSelect: boolean;
   elevateEdgesOnSelect: boolean;
   selectNodesOnDrag: boolean;
 
   multiSelectionActive: boolean;
-
-  connectionStartHandle: ConnectingHandle | null;
-  connectionEndHandle: ConnectingHandle | null;
-  connectionClickStartHandle: ConnectingHandle | null;
 
   onNodeDragStart?: OnNodeDrag<NodeType>;
   onNodeDrag?: OnNodeDrag<NodeType>;

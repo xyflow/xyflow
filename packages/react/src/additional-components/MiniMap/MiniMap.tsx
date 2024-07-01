@@ -25,12 +25,8 @@ const selector = (s: ReactFlowState) => {
 
   return {
     viewBB,
-    boundingRect:
-      s.nodeLookup.size > 0
-        ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { nodeOrigin: s.nodeOrigin }), viewBB)
-        : viewBB,
+    boundingRect: s.nodeLookup.size > 0 ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup), viewBB) : viewBB,
     rfId: s.rfId,
-    nodeOrigin: s.nodeOrigin,
     panZoom: s.panZoom,
     translateExtent: s.translateExtent,
     flowWidth: s.width,

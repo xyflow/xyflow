@@ -14,6 +14,8 @@ import {
   Background,
   Panel,
   NodeOrigin,
+  useUpdateNodeInternals,
+  ReactFlowProvider,
 } from '@xyflow/react';
 
 import DebugNode from './DebugNode';
@@ -104,7 +106,7 @@ const initialNodes: Node[] = [
   {
     id: '5b',
     data: { label: 'Node 5b' },
-    position: { x: 225, y: 50 },
+    position: { x: 200, y: 200 },
     className: 'light',
     parentId: '5',
     expandParent: true,
@@ -151,6 +153,7 @@ const nodeTypes = {
 
 const Subflow = () => {
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
+  const updateNodeInternals = useUpdateNodeInternals();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -216,6 +219,7 @@ const Subflow = () => {
       onlyRenderVisibleElements={false}
       nodeTypes={nodeTypes}
       fitView
+      nodeOrigin={[0, 0]}
     >
       <MiniMap />
       <Controls />
@@ -228,9 +232,14 @@ const Subflow = () => {
         <button onClick={toggleChildNodes}>toggleChildNodes</button>
         <button onClick={logToObject}>toObject</button>
         <button onClick={() => setNodes(initialNodes)}>setNodes</button>
+        <button onClick={() => updateNodeInternals(nodes.map((node) => node.id))}>updateNodeInternals</button>
       </Panel>
     </ReactFlow>
   );
 };
 
-export default Subflow;
+export default () => (
+  <ReactFlowProvider>
+    <Subflow />
+  </ReactFlowProvider>
+);
