@@ -10,7 +10,7 @@ runs:
       run: pnpm typecheck
       shell: bash
     - name: Install Playwright browsers
-      run: pnpm dlx playwright install --with-deps
+      run: pnpm exec playwright install --with-deps
       shell: bash
     - name: Test React Flow
       run: pnpm test:react
