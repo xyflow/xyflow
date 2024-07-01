@@ -2,33 +2,19 @@ import { shallow } from 'zustand/shallow';
 
 import { useStore } from './useStore';
 import type { ReactFlowStore } from '../types/store';
+import { ConnectionState, pointToRendererPoint } from '@xyflow/system';
 
-const selector = (s: ReactFlowStore) => ({
-  startHandle: s.connectionStartHandle,
-  endHandle: s.connectionEndHandle,
-  status: s.connectionStatus,
-  position: s.connectionStartHandle ? s.connectionPosition : null,
-});
-
-type UseConnectionResult = {
-  /** The start handle where the user interaction started or null */
-  startHandle: ReactFlowStore['connectionStartHandle'];
-  /** The target handle that's inside the connection radius or null  */
-  endHandle: ReactFlowStore['connectionEndHandle'];
-  /** The current connection status 'valid', 'invalid' or null*/
-  status: ReactFlowStore['connectionStatus'];
-  /** The current connection position or null */
-  position: ReactFlowStore['connectionPosition'] | null;
+const selector = (s: ReactFlowStore): ConnectionState => {
+  return s.connection.inProgress
+    ? { ...s.connection, to: pointToRendererPoint(s.connection.to, s.transform) }
+    : { ...s.connection };
 };
-
 /**
- * Hook for accessing the ongoing connection.
+ * Hook for accessing the connection state.
  *
  * @public
- * @returns ongoing connection
+ * @returns ConnectionState
  */
-export function useConnection(): UseConnectionResult {
-  const ongoingConnection = useStore(selector, shallow);
-
-  return ongoingConnection;
+export function useConnection(): ConnectionState {
+  return useStore(selector, shallow);
 }

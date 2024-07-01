@@ -28,8 +28,6 @@ export type NodeWrapperProps = Pick<
   type: string;
   positionX: number;
   positionY: number;
-  positionOriginX: number;
-  positionOriginY: number;
   'on:nodeclick'?: (event: MouseEvent) => void;
   resizeObserver?: ResizeObserver | null;
   isParent?: boolean;

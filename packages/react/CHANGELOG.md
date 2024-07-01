@@ -1,5 +1,12 @@
 # @xyflow/react
 
+## 12.0.0-next.25
+
+- `useConnection` returns `ConnectionState` with `toNode` and `toHandle`
+- add `toNode` and `toHandle` to custom connection line props
+- node origin is part of position absolute
+- refactor connection handling
+
 ## 12.0.0-next.24
 
 - fix `window` bug for SSR for real

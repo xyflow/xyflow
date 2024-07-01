@@ -39,28 +39,22 @@ const selector = (s: ReactFlowState) => ({
 
 const connectingSelector =
   (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
-    const {
-      connectionStartHandle: startHandle,
-      connectionEndHandle: endHandle,
-      connectionClickStartHandle: clickHandle,
-      connectionMode,
-      connectionStatus,
-    } = state;
+    const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
 
-    const connectingTo = endHandle?.nodeId === nodeId && endHandle?.handleId === handleId && endHandle?.type === type;
+    const { fromHandle, toHandle, isValid } = connection;
+
+    const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
 
     return {
-      connectingFrom:
-        startHandle?.nodeId === nodeId && startHandle?.handleId === handleId && startHandle?.type === type,
+      connectingFrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === type,
       connectingTo,
-      clickConnecting:
-        clickHandle?.nodeId === nodeId && clickHandle?.handleId === handleId && clickHandle?.type === type,
+      clickConnecting: clickHandle?.nodeId === nodeId && clickHandle?.id === handleId && clickHandle?.type === type,
       isPossibleEndHandle:
         connectionMode === ConnectionMode.Strict
-          ? startHandle?.type !== type
-          : nodeId !== startHandle?.nodeId || handleId !== startHandle?.handleId,
-      connectionInProcess: !!startHandle,
-      valid: connectingTo && connectionStatus === 'valid',
+          ? fromHandle?.type !== type
+          : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id,
+      connectionInProcess: !!fromHandle,
+      valid: connectingTo && isValid,
     };
   };
 
@@ -144,7 +138,7 @@ function HandleComponent(
         onConnect: onConnectExtended,
         isValidConnection: isValidConnection || currentStore.isValidConnection,
         getTransform: () => store.getState().transform,
-        getConnectionStartHandle: () => store.getState().connectionStartHandle,
+        getFromHandle: () => store.getState().connection.fromHandle,
       });
     }
 
@@ -172,7 +166,7 @@ function HandleComponent(
 
     if (!connectionClickStartHandle) {
       onClickConnectStart?.(event.nativeEvent, { nodeId, handleId, handleType: type });
-      store.setState({ connectionClickStartHandle: { nodeId, type, handleId } });
+      store.setState({ connectionClickStartHandle: { nodeId, type, id: handleId } });
       return;
     }
 
@@ -186,7 +180,7 @@ function HandleComponent(
       },
       connectionMode,
       fromNodeId: connectionClickStartHandle.nodeId,
-      fromHandleId: connectionClickStartHandle.handleId || null,
+      fromHandleId: connectionClickStartHandle.id || null,
       fromType: connectionClickStartHandle.type,
       isValidConnection: isValidConnectionHandler,
       flowId,

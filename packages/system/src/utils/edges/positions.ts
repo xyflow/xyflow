@@ -1,9 +1,9 @@
 import { EdgePosition } from '../../types/edges';
 import { ConnectionMode, OnError } from '../../types/general';
 import { InternalNodeBase, NodeHandle } from '../../types/nodes';
-import { Position } from '../../types/utils';
+import { Position, XYPosition } from '../../types/utils';
 import { errorMessages } from '../../constants';
-import { HandleElement } from '../../types';
+import { Handle } from '../../types';
 import { getNodeDimensions } from '../general';
 
 export type GetEdgePositionParams = {
@@ -58,14 +58,14 @@ export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | n
 
   const sourcePosition = sourceHandle?.position || Position.Bottom;
   const targetPosition = targetHandle?.position || Position.Top;
-  const [sourceX, sourceY] = getHandlePosition(sourceNode, sourceHandle, sourcePosition);
-  const [targetX, targetY] = getHandlePosition(targetNode, targetHandle, targetPosition);
+  const source = getHandlePosition(sourceNode, sourceHandle, sourcePosition);
+  const target = getHandlePosition(targetNode, targetHandle, targetPosition);
 
   return {
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
+    sourceX: source.x,
+    sourceY: source.y,
+    targetX: target.x,
+    targetY: target.y,
     sourcePosition,
     targetPosition,
   };
@@ -84,9 +84,9 @@ function toHandleBounds(handles?: NodeHandle[]) {
     handle.height = handle.height ?? 1;
 
     if (handle.type === 'source') {
-      source.push(handle as HandleElement);
+      source.push(handle as Handle);
     } else if (handle.type === 'target') {
-      target.push(handle as HandleElement);
+      target.push(handle as Handle);
     }
   }
 
@@ -98,27 +98,33 @@ function toHandleBounds(handles?: NodeHandle[]) {
 
 export function getHandlePosition(
   node: InternalNodeBase,
-  handle: HandleElement | null,
-  fallbackPosition: Position = Position.Left
-): number[] {
+  handle: Handle | null,
+  fallbackPosition: Position = Position.Left,
+  center = false
+): XYPosition {
   const x = (handle?.x ?? 0) + node.internals.positionAbsolute.x;
   const y = (handle?.y ?? 0) + node.internals.positionAbsolute.y;
   const { width, height } = handle ?? getNodeDimensions(node);
+
+  if (center) {
+    return { x: x + width / 2, y: y + height / 2 };
+  }
+
   const position = handle?.position ?? fallbackPosition;
 
   switch (position) {
     case Position.Top:
-      return [x + width / 2, y];
+      return { x: x + width / 2, y };
     case Position.Right:
-      return [x + width, y + height / 2];
+      return { x: x + width, y: y + height / 2 };
     case Position.Bottom:
-      return [x + width / 2, y + height];
+      return { x: x + width / 2, y: y + height };
     case Position.Left:
-      return [x, y + height / 2];
+      return { x, y: y + height / 2 };
   }
 }
 
-function getHandle(bounds: HandleElement[], handleId?: string | null): HandleElement | null {
+function getHandle(bounds: Handle[], handleId?: string | null): Handle | null {
   if (!bounds) {
     return null;
   }

@@ -7,6 +7,8 @@ import {
   updateConnectionLookup,
   devWarn,
   getInternalNodesBounds,
+  NodeOrigin,
+  initialConnection,
 } from '@xyflow/system';
 
 import type { Edge, InternalNode, Node, ReactFlowStore } from '../types';
@@ -19,6 +21,7 @@ const getInitialState = ({
   width,
   height,
   fitView,
+  nodeOrigin,
 }: {
   nodes?: Node[];
   edges?: Edge[];
@@ -27,6 +30,7 @@ const getInitialState = ({
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map<string, InternalNode>();
   const parentLookup = new Map();
@@ -34,21 +38,21 @@ const getInitialState = ({
   const edgeLookup = new Map();
   const storeEdges = defaultEdges ?? edges ?? [];
   const storeNodes = defaultNodes ?? nodes ?? [];
+  const storeNodeOrigin = nodeOrigin ?? [0, 0];
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
   adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
-    nodeOrigin: [0, 0],
+    nodeOrigin: storeNodeOrigin,
     elevateNodesOnSelect: false,
   });
 
   let transform: Transform = [0, 0, 1];
 
   if (fitView && width && height) {
-    // @todo users nodeOrigin should be used here
     const bounds = getInternalNodesBounds(nodeLookup, {
-      nodeOrigin: [0, 0],
       filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight)),
     });
+
     const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
     transform = [x, y, zoom];
   }
@@ -76,13 +80,11 @@ const getInitialState = ({
     nodesSelectionActive: false,
     userSelectionActive: false,
     userSelectionRect: null,
-    connectionPosition: { x: 0, y: 0 },
-    connectionStatus: null,
     connectionMode: ConnectionMode.Strict,
     domNode: null,
     paneDragging: false,
     noPanClassName: 'nopan',
-    nodeOrigin: [0, 0],
+    nodeOrigin: storeNodeOrigin,
     nodeDragThreshold: 1,
 
     snapGrid: [15, 15],
@@ -103,8 +105,7 @@ const getInitialState = ({
 
     multiSelectionActive: false,
 
-    connectionStartHandle: null,
-    connectionEndHandle: null,
+    connection: { ...initialConnection },
     connectionClickStartHandle: null,
     connectOnClick: true,
 

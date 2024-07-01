@@ -11,7 +11,6 @@
     getBoundsOfRects,
     getInternalNodesBounds,
     getNodeDimensions,
-    getNodePositionWithOrigin,
     nodeHasDimensions,
     type Rect
   } from '@xyflow/system';
@@ -134,11 +133,10 @@
       {#each $nodes as userNode (userNode.id)}
         {@const node = $nodeLookup.get(userNode.id)}
         {#if node && nodeHasDimensions(node)}
-          {@const pos = getNodePositionWithOrigin(node).positionAbsolute}
           {@const nodeDimesions = getNodeDimensions(node)}
           <MinimapNode
-            x={pos.x}
-            y={pos.y}
+            x={node.internals.positionAbsolute.x}
+            y={node.internals.positionAbsolute.y}
             {...nodeDimesions}
             selected={node.selected}
             color={nodeColorFunc?.(node)}

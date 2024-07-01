@@ -96,7 +96,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       onReconnectEnd: _onReconnectEnd,
       updateConnection,
       getTransform: () => store.getState().transform,
-      getConnectionStartHandle: () => store.getState().connectionStartHandle,
+      getFromHandle: () => store.getState().connection.fromHandle,
     });
   };
 

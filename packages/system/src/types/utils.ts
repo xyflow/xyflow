@@ -5,6 +5,13 @@ export enum Position {
   Bottom = 'bottom',
 }
 
+export const oppositePosition = {
+  [Position.Left]: Position.Right,
+  [Position.Right]: Position.Left,
+  [Position.Top]: Position.Bottom,
+  [Position.Bottom]: Position.Top,
+};
+
 export type XYPosition = {
   x: number;
   y: number;
