@@ -279,8 +279,6 @@ function isValidHandle(
         ? (isTarget && handleType === 'source') || (!isTarget && handleType === 'target')
         : handleNodeId !== fromNodeId || handleId !== fromHandleId);
 
-    console.log(isValid);
-
     result.isValid = isValid && isValidConnection(connection);
 
     if (handleLookup) {
