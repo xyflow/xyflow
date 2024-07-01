@@ -35,6 +35,9 @@ importers:
       eslint-plugin-react:
         specifier: latest
         version: 7.33.2(eslint@8.43.0)
+      playwright:
+        specifier: ^1.45.0
+        version: 1.45.0
       prettier:
         specifier: ^2.7.1
         version: 2.8.8
@@ -4356,9 +4359,19 @@ packages:
     engines: {node: '>=16'}
     hasBin: true
 
+  playwright-core@1.45.0:
+    resolution: {integrity: sha512-lZmHlFQ0VYSpAs43dRq1/nJ9G/6SiTI7VPqidld9TDefL9tX87bTKExWZZUF5PeRyqtXqd8fQi2qmfIedkwsNQ==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   playwright@1.44.1:
     resolution: {integrity: sha512-qr/0UJ5CFAtloI3avF95Y0L1xQo6r3LQArLIg/z/PoGJ6xa+EwzrwO5lpNr/09STxdHuUoP2mvuELJS+hLdtgg==}
     engines: {node: '>=16'}
+    hasBin: true
+
+  playwright@1.45.0:
+    resolution: {integrity: sha512-4z3ac3plDfYzGB6r0Q3LF8POPR20Z8D0aXcxbJvmfMgSSq1hkcgvFRXJk9rUq5H/MJ0Ktal869hhOdI/zUTeLA==}
+    engines: {node: '>=18'}
     hasBin: true
 
   postcss-calc@9.0.1:
@@ -10763,9 +10776,17 @@ snapshots:
 
   playwright-core@1.44.1: {}
 
+  playwright-core@1.45.0: {}
+
   playwright@1.44.1:
     dependencies:
       playwright-core: 1.44.1
+    optionalDependencies:
+      fsevents: 2.3.2
+
+  playwright@1.45.0:
+    dependencies:
+      playwright-core: 1.45.0
     optionalDependencies:
       fsevents: 2.3.2
 
