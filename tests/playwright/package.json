@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:svelte": "FRAMEWORK=svelte npx playwright test -c playwright.svelte.config.ts",
-    "test:react": "FRAMEWORK=react npx playwright test -c playwright.react.config.ts",
+    "test:svelte": "FRAMEWORK=svelte pnpm exec playwright test -c playwright.svelte.config.ts",
+    "test:react": "FRAMEWORK=react pnpm exec playwright test -c playwright.react.config.ts",
     "test:react:ui": "pnpm run test:react --ui",
     "test:svelte:ui": "pnpm run test:svelte --ui"
   },
