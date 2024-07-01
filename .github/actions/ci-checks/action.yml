@@ -15,6 +15,8 @@ runs:
     - name: Test React Flow
       run: pnpm test:react
       shell: bash
+      env:
+        CI: true
     # - name: Test Svelte Flow
     #   run: pnpm test:svelte
     #   shell: bash
