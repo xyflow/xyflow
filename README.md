@@ -151,6 +151,15 @@ npm install @xyflow/svelte
 ```
 </details>
 
+## Releases 
+
+For releasing packages we are using [changesets](https://github.com/changesets/changesets) in combination with the [changeset Github action](https://github.com/changesets/action). The rough idea is:
+
+1. create PRs for new features, updates and fixes (with a changeset if relevant for changelog)
+2. merge into main 
+3. changset creates a PR that bumps all packages based on the changesets 
+4. merge changeset PR if you want to release to Github and npm
+
 ## The xyflow team
 
 React Flow and Svelte Flow are maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
