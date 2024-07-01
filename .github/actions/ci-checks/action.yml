@@ -1,0 +1,19 @@
+name: 'CI checks'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Build
+      run: pnpm build
+      shell: bash
+    - name: Typecheck
+      run: pnpm typecheck
+      shell: bash
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps
+    - name: Test React Flow
+      run: pnpm test:react
+      shell: bash
+    # - name: Test Svelte Flow
+    #   run: pnpm test:svelte
+    #   shell: bash
