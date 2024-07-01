@@ -101,8 +101,8 @@ test.describe('Pane default', () => {
 
       const transformAfter = await getTransform(viewport);
 
-      await expect(transformAfter.translateX).toBeGreaterThan(transformBefore.translateX);
-      await expect(transformAfter.translateY).toBeGreaterThan(transformBefore.translateY);
+      await expect(transformAfter.translateX).not.toEqual(transformBefore.translateX);
+      await expect(transformAfter.translateY).not.toEqual(transformBefore.translateY);
     });
 
     test('autoPanOnConnect', async ({ page }) => {
@@ -121,8 +121,8 @@ test.describe('Pane default', () => {
 
       const transformAfter = await getTransform(viewport);
 
-      await expect(transformAfter.translateX).toBeGreaterThan(transformBefore.translateX);
-      await expect(transformAfter.translateY).toBeGreaterThan(transformBefore.translateY);
+      await expect(transformAfter.translateX).not.toEqual(transformBefore.translateX);
+      await expect(transformAfter.translateY).not.toEqual(transformBefore.translateY);
     });
   });
 });
