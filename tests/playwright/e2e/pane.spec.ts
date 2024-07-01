@@ -96,7 +96,7 @@ test.describe('Pane default', () => {
       await page.mouse.down();
       await page.mouse.move(0, 0);
       await page.waitForTimeout(500);
-      await page.mouse.move(1000, 100, { steps: 100 });
+      await page.mouse.move(2000, 2000, { steps: 100 });
       await page.mouse.up();
 
       const transformAfter = await getTransform(viewport);
