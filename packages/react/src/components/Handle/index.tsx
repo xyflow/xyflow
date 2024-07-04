@@ -139,6 +139,7 @@ function HandleComponent(
         isValidConnection: isValidConnection || currentStore.isValidConnection,
         getTransform: () => store.getState().transform,
         getFromHandle: () => store.getState().connection.fromHandle,
+        autoPanSpeed: currentStore.autoPanSpeed,
       });
     }
 

@@ -471,6 +471,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default true
    */
   autoPanOnConnect?: boolean;
+  /** The speed at which the viewport pans while dragging a node or a selection box.
+   * @default 15
+   */
+  autoPanSpeed?: number;
   /** You can enable this prop to automatically pan the viewport while making a new connection.
    * @default true
    */
