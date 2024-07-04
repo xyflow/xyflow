@@ -6,14 +6,18 @@ export * from '$lib/container/SvelteFlow/types';
 export * from '$lib/container/Panel';
 export * from '$lib/components/SvelteFlowProvider';
 export * from '$lib/components/EdgeLabelRenderer';
+export * from '$lib/components/ViewportPortal';
 export * from '$lib/components/BaseEdge';
-export * from '$lib/components/edges';
+export { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '$lib/components/edges';
 export * from '$lib/components/Handle';
+export * from '$lib/components/EdgeLabel';
 
 // plugins
 export * from '$lib/plugins/Controls';
 export * from '$lib/plugins/Background';
 export * from '$lib/plugins/Minimap';
+export * from '$lib/plugins/NodeToolbar';
+export * from '$lib/plugins/NodeResizer';
 
 // store
 export { useStore } from '$lib/store';
@@ -26,15 +30,36 @@ export * from '$lib/hooks/useSvelteFlow';
 export * from '$lib/hooks/useUpdateNodeInternals';
 export * from '$lib/hooks/useConnection';
 export * from '$lib/hooks/useNodesEdges';
+export * from '$lib/hooks/useHandleConnections';
+export * from '$lib/hooks/useNodesData';
+export * from '$lib/hooks/useInternalNode';
+export { useInitialized, useNodesInitialized } from '$lib/hooks/useInitialized';
 
 // types
-export type { Edge, EdgeProps, EdgeTypes, DefaultEdgeOptions } from '$lib/types/edges';
-export type { HandleComponentProps, FitViewOptions } from '$lib/types/general';
-export type { Node, NodeTypes, DefaultNodeOptions } from '$lib/types/nodes';
+export type {
+  Edge,
+  EdgeProps,
+  BezierEdgeProps,
+  SmoothStepEdgeProps,
+  StepEdgeProps,
+  StraightEdgeProps,
+  EdgeTypes,
+  DefaultEdgeOptions
+} from '$lib/types/edges';
+export type { HandleProps, FitViewOptions } from '$lib/types/general';
+export type {
+  Node,
+  NodeTypes,
+  DefaultNodeOptions,
+  BuiltInNode,
+  NodeProps,
+  InternalNode
+} from '$lib/types/nodes';
 export type { SvelteFlowStore } from '$lib/store/types';
 
 // system types
 export {
+  type Align,
   type SmoothStepPathOptions,
   type BezierPathOptions,
   ConnectionLineType,
@@ -45,13 +70,11 @@ export {
   type OnMoveStart,
   type OnMoveEnd,
   type Connection,
-  type ConnectionStatus,
   ConnectionMode,
   type OnConnectStartParams,
   type OnConnectStart,
   type OnConnect,
   type OnConnectEnd,
-  type IsValidConnection,
   type Viewport,
   type SnapGrid,
   PanOnScrollMode,
@@ -63,9 +86,7 @@ export {
   SelectionMode,
   type SelectionRect,
   type OnError,
-  type NodeProps,
   type NodeOrigin,
-  type OnNodeDrag,
   type OnSelectionDrag,
   Position,
   type XYPosition,
@@ -74,7 +95,17 @@ export {
   type Rect,
   type Box,
   type Transform,
-  type CoordinateExtent
+  type CoordinateExtent,
+  type ColorMode,
+  type ColorModeClass,
+  type ShouldResize,
+  type OnResizeStart,
+  type OnResize,
+  type OnResizeEnd,
+  type ControlPosition,
+  type ControlLinePosition,
+  type ResizeControlVariant,
+  type IsValidConnection
 } from '@xyflow/system';
 
 // system utils
@@ -87,6 +118,10 @@ export {
   getSmoothStepPath,
   type GetStraightPathParams,
   getStraightPath,
-  getTransformForBounds,
-  getRectOfNodes
+  getViewportForBounds,
+  getNodesBounds,
+  getIncomers,
+  getOutgoers,
+  getConnectedEdges,
+  addEdge
 } from '@xyflow/system';

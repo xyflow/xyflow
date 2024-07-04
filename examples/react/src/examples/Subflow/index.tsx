@@ -13,6 +13,9 @@ import {
   MiniMap,
   Background,
   Panel,
+  NodeOrigin,
+  useUpdateNodeInternals,
+  ReactFlowProvider,
 } from '@xyflow/react';
 
 import DebugNode from './DebugNode';
@@ -49,7 +52,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 4a' },
     position: { x: 15, y: 15 },
     className: 'light',
-    parentNode: '4',
+    parentId: '4',
     origin: [0.5, 0.5],
 
     extent: [
@@ -67,21 +70,21 @@ const initialNodes: Node[] = [
       height: 200,
       width: 300,
     },
-    parentNode: '4',
+    parentId: '4',
   },
   {
     id: '4b1',
     data: { label: 'Node 4b1' },
     position: { x: 40, y: 20 },
     className: 'light',
-    parentNode: '4b',
+    parentId: '4b',
   },
   {
     id: '4b2',
     data: { label: 'Node 4b2' },
     position: { x: 20, y: 100 },
     className: 'light',
-    parentNode: '4b',
+    parentId: '4b',
   },
   {
     id: '5',
@@ -89,7 +92,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 5' },
     position: { x: 650, y: 250 },
     className: 'light',
-    style: { width: 400, height: 150 },
+    style: { width: 100, height: 100 },
     zIndex: 1000,
   },
   {
@@ -97,15 +100,15 @@ const initialNodes: Node[] = [
     data: { label: 'Node 5a' },
     position: { x: 0, y: 0 },
     className: 'light',
-    parentNode: '5',
+    parentId: '5',
     extent: 'parent',
   },
   {
     id: '5b',
     data: { label: 'Node 5b' },
-    position: { x: 225, y: 50 },
+    position: { x: 200, y: 200 },
     className: 'light',
-    parentNode: '5',
+    parentId: '5',
     expandParent: true,
   },
   {
@@ -119,6 +122,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
     className: 'light',
+    extent: 'parent',
   },
 ];
 
@@ -149,6 +153,7 @@ const nodeTypes = {
 
 const Subflow = () => {
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
+  const updateNodeInternals = useUpdateNodeInternals();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -158,10 +163,13 @@ const Subflow = () => {
   const updatePos = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        if (!n.parentNode) {
-          n.position = {
-            x: Math.random() * 400,
-            y: Math.random() * 400,
+        if (!n.parentId) {
+          return {
+            ...n,
+            position: {
+              x: Math.random() * 400,
+              y: Math.random() * 400,
+            },
           };
         }
 
@@ -176,8 +184,10 @@ const Subflow = () => {
   const toggleClassnames = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        n.className = n.className === 'light' ? 'dark' : 'light';
-        return n;
+        return {
+          ...n,
+          className: n.className === 'light' ? 'dark' : 'light',
+        };
       });
     });
   };
@@ -185,8 +195,10 @@ const Subflow = () => {
   const toggleChildNodes = () => {
     setNodes((nds) => {
       return nds.map((n) => {
-        n.hidden = !!n.parentNode && !n.hidden;
-        return n;
+        return {
+          ...n,
+          hidden: !!n.parentId && !n.hidden,
+        };
       });
     });
   };
@@ -207,28 +219,27 @@ const Subflow = () => {
       onlyRenderVisibleElements={false}
       nodeTypes={nodeTypes}
       fitView
+      nodeOrigin={[0, 0]}
     >
       <MiniMap />
       <Controls />
       <Background />
 
       <Panel position="top-right">
-        <button onClick={resetTransform} style={{ marginRight: 5 }}>
-          reset transform
-        </button>
-        <button onClick={updatePos} style={{ marginRight: 5 }}>
-          change pos
-        </button>
-        <button onClick={toggleClassnames} style={{ marginRight: 5 }}>
-          toggle classnames
-        </button>
-        <button style={{ marginRight: 5 }} onClick={toggleChildNodes}>
-          toggleChildNodes
-        </button>
+        <button onClick={resetTransform}>reset transform</button>
+        <button onClick={updatePos}>change pos</button>
+        <button onClick={toggleClassnames}>toggle classnames</button>
+        <button onClick={toggleChildNodes}>toggleChildNodes</button>
         <button onClick={logToObject}>toObject</button>
+        <button onClick={() => setNodes(initialNodes)}>setNodes</button>
+        <button onClick={() => updateNodeInternals(nodes.map((node) => node.id))}>updateNodeInternals</button>
       </Panel>
     </ReactFlow>
   );
 };
 
-export default Subflow;
+export default () => (
+  <ReactFlowProvider>
+    <Subflow />
+  </ReactFlowProvider>
+);

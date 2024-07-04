@@ -7,7 +7,7 @@ const sourceHandleStyleB: CSSProperties = {
   left: 'auto',
 };
 
-const CustomNode: FC<NodeProps> = ({ data, xPos, yPos }) => {
+const CustomNode: FC<NodeProps> = ({ data, positionAbsoluteX, positionAbsoluteY }) => {
   return (
     <>
       <Handle type="target" position={Position.Top} />
@@ -18,7 +18,7 @@ const CustomNode: FC<NodeProps> = ({ data, xPos, yPos }) => {
         <div>
           Position:{' '}
           <strong>
-            {xPos.toFixed(2)},{yPos.toFixed(2)}
+            {positionAbsoluteX.toFixed(2)},{positionAbsoluteY.toFixed(2)}
           </strong>
         </div>
       </div>

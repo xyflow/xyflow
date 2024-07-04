@@ -1,15 +1,11 @@
-import { type NodeDragItem, type XYPosition, NodeBase } from '../types';
+import { type NodeDragItem, type XYPosition, InternalNodeBase, NodeBase, NodeLookup } from '../types';
 
-export function wrapSelectionDragFunc(selectionFunc?: (event: MouseEvent, nodes: NodeBase[]) => void) {
-  return (event: MouseEvent, _: NodeBase, nodes: NodeBase[]) => selectionFunc?.(event, nodes);
-}
-
-export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodes: NodeType[]): boolean {
-  if (!node.parentNode) {
+export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodeLookup: NodeLookup): boolean {
+  if (!node.parentId) {
     return false;
   }
 
-  const parentNode = nodes.find((node) => node.id === node.parentNode);
+  const parentNode = nodeLookup.get(node.parentId);
 
   if (!parentNode) {
     return false;
@@ -19,7 +15,7 @@ export function isParentSelected<NodeType extends NodeBase>(node: NodeType, node
     return true;
   }
 
-  return isParentSelected(parentNode, nodes);
+  return isParentSelected(parentNode, nodeLookup);
 }
 
 export function hasSelector(target: Element, selector: string, domNode: Element): boolean {
@@ -36,60 +32,84 @@ export function hasSelector(target: Element, selector: string, domNode: Element)
 
 // looks for all selected nodes and created a NodeDragItem for each of them
 export function getDragItems<NodeType extends NodeBase>(
-  nodes: NodeType[],
+  nodeLookup: Map<string, InternalNodeBase<NodeType>>,
   nodesDraggable: boolean,
   mousePos: XYPosition,
   nodeId?: string
-): NodeDragItem[] {
-  return nodes
-    .filter(
-      (n) =>
-        (n.selected || n.id === nodeId) &&
-        (!n.parentNode || !isParentSelected(n, nodes)) &&
-        (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'))
-    )
-    .map((n) => ({
-      id: n.id,
-      position: n.position || { x: 0, y: 0 },
-      positionAbsolute: n.positionAbsolute || { x: 0, y: 0 },
-      distance: {
-        x: mousePos.x - (n.positionAbsolute?.x ?? 0),
-        y: mousePos.y - (n.positionAbsolute?.y ?? 0),
-      },
-      delta: {
-        x: 0,
-        y: 0,
-      },
-      extent: n.extent,
-      parentNode: n.parentNode,
-      width: n.width,
-      height: n.height,
-      origin: n.origin,
-      expandParent: n.expandParent,
-    }));
+): Map<string, NodeDragItem> {
+  const dragItems = new Map<string, NodeDragItem>();
+
+  for (const [id, node] of nodeLookup) {
+    if (
+      (node.selected || node.id === nodeId) &&
+      (!node.parentId || !isParentSelected(node, nodeLookup)) &&
+      (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'))
+    ) {
+      const internalNode = nodeLookup.get(id);
+
+      if (internalNode) {
+        dragItems.set(id, {
+          id,
+          position: internalNode.position || { x: 0, y: 0 },
+          distance: {
+            x: mousePos.x - internalNode.internals.positionAbsolute.x,
+            y: mousePos.y - internalNode.internals.positionAbsolute.y,
+          },
+          extent: internalNode.extent,
+          parentId: internalNode.parentId,
+          origin: internalNode.origin,
+          expandParent: internalNode.expandParent,
+          internals: {
+            positionAbsolute: internalNode.internals.positionAbsolute || { x: 0, y: 0 },
+          },
+          measured: {
+            width: internalNode.measured.width ?? 0,
+            height: internalNode.measured.height ?? 0,
+          },
+        });
+      }
+    }
+  }
+
+  return dragItems;
 }
 
 // returns two params:
 // 1. the dragged node (or the first of the list, if we are dragging a node selection)
 // 2. array of selected nodes (for multi selections)
-export function getEventHandlerParams<NodeType extends NodeBase>({
+export function getEventHandlerParams<NodeType extends InternalNodeBase>({
   nodeId,
   dragItems,
-  nodes,
+  nodeLookup,
 }: {
   nodeId?: string;
-  dragItems: NodeDragItem[];
-  nodes: NodeType[];
-}): [NodeType, NodeType[]] {
-  const extentedDragItems: NodeType[] = dragItems.map((n) => {
-    const node = nodes.find((node) => node.id === n.id)!;
+  dragItems: Map<string, NodeDragItem>;
+  nodeLookup: Map<string, NodeType>;
+}): [NodeBase, NodeBase[]] {
+  const nodesFromDragItems: NodeBase[] = [];
 
-    return {
+  for (const [id, dragItem] of dragItems) {
+    const node = nodeLookup.get(id)?.internals.userNode;
+
+    if (node) {
+      nodesFromDragItems.push({
+        ...node,
+        position: dragItem.position,
+      });
+    }
+  }
+
+  if (!nodeId) {
+    return [nodesFromDragItems[0], nodesFromDragItems];
+  }
+
+  const node = nodeLookup.get(nodeId)!.internals.userNode;
+
+  return [
+    {
       ...node,
-      position: n.position,
-      positionAbsolute: n.positionAbsolute,
-    };
-  });
-
-  return [nodeId ? extentedDragItems.find((n) => n.id === nodeId)! : extentedDragItems[0], extentedDragItems];
+      position: dragItems.get(nodeId)?.position || node.position,
+    },
+    nodesFromDragItems,
+  ];
 }

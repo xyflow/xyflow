@@ -1,7 +1,7 @@
 import type { OnMoveStart, OnMove, OnMoveEnd, PanOnScrollMode, Viewport } from '@xyflow/system';
 
 export type ZoomProps = {
-  initialViewport: Viewport;
+  initialViewport?: Viewport;
   panOnScrollMode: PanOnScrollMode;
   onMove?: OnMove;
   onMoveStart?: OnMoveStart;

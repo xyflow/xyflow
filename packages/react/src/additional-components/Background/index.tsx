@@ -1,2 +1,2 @@
-export { default as Background } from './Background';
-export * from './types';
+export { Background } from './Background';
+export { BackgroundVariant, type BackgroundProps } from './types';

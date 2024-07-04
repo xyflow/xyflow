@@ -9,7 +9,7 @@ const DefaultResizerNode: FC<NodeProps> = ({ data, selected }) => {
         maxWidth={data.maxWidth ?? undefined}
         minHeight={data.minHeight ?? undefined}
         maxHeight={data.maxHeight ?? undefined}
-        isVisible={data.isVisible ?? selected}
+        isVisible={data.isVisible ?? !!selected}
         shouldResize={data.shouldResize ?? undefined}
         onResizeStart={data.onResizeStart ?? undefined}
         onResize={data.onResize ?? undefined}

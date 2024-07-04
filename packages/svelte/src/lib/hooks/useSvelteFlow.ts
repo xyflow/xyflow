@@ -1,7 +1,5 @@
 import { get, type Writable } from 'svelte/store';
 import {
-  getIncomersBase,
-  getOutgoersBase,
   getOverlappingArea,
   isRectObject,
   nodeToRect,
@@ -13,50 +11,231 @@ import {
   type XYPosition,
   type ZoomInOut,
   type Rect,
-  getTransformForBounds,
+  getViewportForBounds,
   getElementsToRemove,
-  rendererPointToPoint
+  rendererPointToPoint,
+  nodeHasDimensions
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
-import type { Edge, FitViewOptions, Node } from '$lib/types';
+import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
+import { isNode } from '$lib/utils';
 
+/**
+ * Hook for accessing the ReactFlow instance.
+ *
+ * @public
+ *
+ * @returns helper functions
+ */
 export function useSvelteFlow(): {
+  /**
+   * Zooms viewport in by 1.2.
+   *
+   * @param options.duration - optional duration. If set, a transition will be applied
+   */
   zoomIn: ZoomInOut;
+  /**
+   * Zooms viewport out by 1 / 1.2.
+   *
+   * @param options.duration - optional duration. If set, a transition will be applied
+   */
   zoomOut: ZoomInOut;
+  /**
+   * Returns an internal node by id.
+   *
+   * @param id - the node id
+   * @returns the node or undefined if no node was found
+   */
+  getInternalNode: (id: string) => InternalNode | undefined;
+  /**
+   * Returns a node by id.
+   *
+   * @param id - the node id
+   * @returns the node or undefined if no node was found
+   */
+  getNode: (id: string) => Node | undefined;
+  /**
+   * Returns nodes.
+   *
+   * @returns nodes array
+   */
+  getNodes: (ids?: string[]) => Node[];
+  /**
+   * Returns an edge by id.
+   *
+   * @param id - the edge id
+   * @returns the edge or undefined if no edge was found
+   */
+  getEdge: (id: string) => Edge | undefined;
+  /**
+   * Returns edges.
+   *
+   * @returns edges array
+   */
+  getEdges: (ids?: string[]) => Edge[];
+  /**
+   * Sets the current zoom level.
+   *
+   * @param zoomLevel - the zoom level to set
+   * @param options.duration - optional duration. If set, a transition will be applied
+   */
   setZoom: (zoomLevel: number, options?: ViewportHelperFunctionOptions) => void;
+  /**
+   * Returns the current zoom level.
+   *
+   * @returns current zoom as a number
+   */
   getZoom: () => number;
+  /**
+   * Sets the center of the view to the given position.
+   *
+   * @param x - x position
+   * @param y - y position
+   * @param options.zoom - optional zoom
+   */
   setCenter: (x: number, y: number, options?: SetCenterOptions) => void;
+  /**
+   * Sets the current viewport.
+   *
+   * @param viewport - the viewport to set
+   * @param options.duration - optional duration. If set, a transition will be applied
+   */
   setViewport: (viewport: Viewport, options?: ViewportHelperFunctionOptions) => void;
+  /**
+   * Returns the current viewport.
+   *
+   * @returns Viewport
+   */
   getViewport: () => Viewport;
+  /**
+   * Fits the view.
+   *
+   * @param options.padding - optional padding
+   * @param options.includeHiddenNodes - optional includeHiddenNodes
+   * @param options.minZoom - optional minZoom
+   * @param options.maxZoom - optional maxZoom
+   * @param options.duration - optional duration. If set, a transition will be applied
+   * @param options.nodes - optional nodes to fit the view to
+   */
   fitView: (options?: FitViewOptions) => void;
+  /**
+   * Returns all nodes that intersect with the given node or rect.
+   *
+   * @param node - the node or rect to check for intersections
+   * @param partially - if true, the node is considered to be intersecting if it partially overlaps with the passed node or rect
+   * @param nodes - optional nodes array to check for intersections
+   *
+   * @returns an array of intersecting nodes
+   */
   getIntersectingNodes: (
     nodeOrRect: Node | { id: Node['id'] } | Rect,
     partially?: boolean,
     nodesToIntersect?: Node[]
   ) => Node[];
+  /**
+   * Checks if the given node or rect intersects with the passed rect.
+   *
+   * @param node - the node or rect to check for intersections
+   * @param area - the rect to check for intersections
+   * @param partially - if true, the node is considered to be intersecting if it partially overlaps with the passed react
+   *
+   * @returns true if the node or rect intersects with the given area
+   */
   isNodeIntersecting: (
     nodeOrRect: Node | { id: Node['id'] } | Rect,
     area: Rect,
     partially?: boolean
   ) => boolean;
+  /**
+   * Fits the view to the given bounds .
+   *
+   * @param bounds - the bounds ({ x: number, y: number, width: number, height: number }) to fit the view to
+   * @param options.padding - optional padding
+   */
   fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
-  deleteElements: (
-    nodesToRemove?: (Node | { id: Node['id'] })[],
-    edgesToRemove?: (Edge | { id: Edge['id'] })[]
-  ) => { deletedNodes: Node[]; deletedEdges: Edge[] };
-  screenToFlowCoordinate: (position: XYPosition) => XYPosition;
-  flowToScreenCoordinate: (position: XYPosition) => XYPosition;
+  /**
+   * Deletes nodes and edges.
+   *
+   * @param params.nodes - optional nodes array to delete
+   * @param params.edges - optional edges array to delete
+   *
+   * @returns a promise that resolves with the deleted nodes and edges
+   */
+  deleteElements: ({
+    nodes,
+    edges
+  }: {
+    nodes?: (Node | { id: Node['id'] })[];
+    edges?: (Edge | { id: Edge['id'] })[];
+  }) => Promise<{ deletedNodes: Node[]; deletedEdges: Edge[] }>;
+  /**
+   * Converts a screen / client position to a flow position.
+   *
+   * @param clientPosition - the screen / client position. When you are working with events you can use event.clientX and event.clientY
+   * @param options.snapToGrid - if true, the converted position will be snapped to the grid
+   * @returns position as { x: number, y: number }
+   *
+   * @example
+   * const flowPosition = screenToFlowPosition({ x: event.clientX, y: event.clientY })
+   */
+  screenToFlowPosition: (
+    clientPosition: XYPosition,
+    options?: { snapToGrid: boolean }
+  ) => XYPosition;
+  /**
+   * Converts a flow position to a screen / client position.
+   *
+   * @param flowPosition - the screen / client position. When you are working with events you can use event.clientX and event.clientY
+   * @returns position as { x: number, y: number }
+   *
+   * @example
+   * const clientPosition = flowToScreenPosition({ x: node.position.x, y: node.position.y })
+   */
+  flowToScreenPosition: (flowPosition: XYPosition) => XYPosition;
   viewport: Writable<Viewport>;
-  getConnectedEdges: (id: string | (Node | { id: Node['id'] })[]) => Edge[];
-  getIncomers: (node: string | Node | { id: Node['id'] }) => Node[];
-  getOutgoers: (node: string | Node | { id: Node['id'] }) => Node[];
+  /**
+   * Updates a node.
+   *
+   * @param id - id of the node to update
+   * @param nodeUpdate - the node update as an object or a function that receives the current node and returns the node update
+   * @param options.replace - if true, the node is replaced with the node update, otherwise the changes get merged
+   *
+   * @example
+   * updateNode('node-1', (node) => ({ position: { x: node.position.x + 10, y: node.position.y } }));
+   */
+  updateNode: (
+    id: string,
+    nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+    options?: { replace: boolean }
+  ) => void;
+  /**
+   * Updates the data attribute of a node.
+   *
+   * @param id - id of the node to update
+   * @param dataUpdate - the data update as an object or a function that receives the current data and returns the data update
+   * @param options.replace - if true, the data is replaced with the data update, otherwise the changes get merged
+   *
+   * @example
+   * updateNodeData('node-1', { label: 'A new label' });
+   */
+  updateNodeData: (
+    id: string,
+    dataUpdate: object | ((node: Node) => object),
+    options?: { replace: boolean }
+  ) => void;
+  /**
+   * Returns the nodes, edges and the viewport as a JSON object.
+   *
+   * @returns the nodes, edges and the viewport as a JSON object
+   */
   toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
 } {
   const {
     zoomIn,
     zoomOut,
     fitView,
+    onbeforedelete,
     snapGrid,
     viewport,
     width,
@@ -66,27 +245,58 @@ export function useSvelteFlow(): {
     panZoom,
     nodes,
     edges,
-    domNode
+    domNode,
+    nodeLookup,
+    edgeLookup
   } = useStore();
 
-  const getNodeRect = (
-    nodeOrRect: Node | { id: Node['id'] } | Rect
-  ): [Rect | null, Node | null | undefined, boolean] => {
-    const isRect = isRectObject(nodeOrRect);
-    const node = isRect ? null : get(nodes).find((n) => n.id === nodeOrRect.id);
+  const getNodeRect = (nodeOrRect: Node | { id: Node['id'] }): Rect | null => {
+    const node =
+      isNode(nodeOrRect) && nodeHasDimensions(nodeOrRect)
+        ? nodeOrRect
+        : get(nodeLookup).get(nodeOrRect.id);
+    return node ? nodeToRect(node) : null;
+  };
 
-    if (!isRect && !node) {
-      return [null, null, isRect];
+  const updateNode = (
+    id: string,
+    nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+    options: { replace: boolean } = { replace: false }
+  ) => {
+    const node = get(nodeLookup).get(id)?.internals.userNode;
+
+    if (!node) {
+      return;
     }
 
-    const nodeRect = isRect ? nodeOrRect : nodeToRect(node!);
+    const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
 
-    return [nodeRect, node, isRect];
+    if (options.replace) {
+      nodes.update((nds) =>
+        nds.map((node) => {
+          if (node.id === id) {
+            return isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+          }
+
+          return node;
+        })
+      );
+    } else {
+      Object.assign(node, nextNode);
+      nodes.update((nds) => nds);
+    }
   };
+
+  const getInternalNode = (id: string) => get(nodeLookup).get(id);
 
   return {
     zoomIn,
     zoomOut,
+    getInternalNode,
+    getNode: (id) => getInternalNode(id)?.internals.userNode,
+    getNodes: (ids) => (ids === undefined ? get(nodes) : getElements(get(nodeLookup), ids)),
+    getEdge: (id) => get(edgeLookup).get(id),
+    getEdges: (ids) => (ids === undefined ? get(edges) : getElements(get(edgeLookup), ids)),
     setZoom: (zoomLevel, options) => {
       get(panZoom)?.scaleTo(zoomLevel, { duration: options?.duration });
     },
@@ -118,7 +328,7 @@ export function useSvelteFlow(): {
     },
     fitView,
     fitBounds: (bounds: Rect, options?: FitBoundsOptions) => {
-      const [x, y, zoom] = getTransformForBounds(
+      const viewport = getViewportForBounds(
         bounds,
         get(width),
         get(height),
@@ -127,32 +337,27 @@ export function useSvelteFlow(): {
         options?.padding ?? 0.1
       );
 
-      get(panZoom)?.setViewport(
-        {
-          x,
-          y,
-          zoom
-        },
-        { duration: options?.duration }
-      );
+      get(panZoom)?.setViewport(viewport, { duration: options?.duration });
     },
     getIntersectingNodes: (
       nodeOrRect: Node | { id: Node['id'] } | Rect,
       partially = true,
       nodesToIntersect?: Node[]
     ) => {
-      const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
+      const isRect = isRectObject(nodeOrRect);
+      const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
 
-      if (!nodeRect || !node) {
+      if (!nodeRect) {
         return [];
       }
 
       return (nodesToIntersect || get(nodes)).filter((n) => {
-        if (!isRect && (n.id === node.id || !n.positionAbsolute)) {
+        const internalNode = get(nodeLookup).get(n.id);
+        if (!internalNode || (!isRect && n.id === nodeOrRect.id)) {
           return false;
         }
 
-        const currNodeRect = nodeToRect(n);
+        const currNodeRect = nodeToRect(internalNode);
         const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
         const partiallyVisible = partially && overlappingArea > 0;
 
@@ -164,7 +369,8 @@ export function useSvelteFlow(): {
       area: Rect,
       partially = true
     ) => {
-      const [nodeRect] = getNodeRect(nodeOrRect);
+      const isRect = isRectObject(nodeOrRect);
+      const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
 
       if (!nodeRect) {
         return false;
@@ -175,25 +381,25 @@ export function useSvelteFlow(): {
 
       return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
     },
-    deleteElements: (
-      nodesToRemove: (Node | { id: Node['id'] })[] = [],
-      edgesToRemove: (Edge | { id: Edge['id'] })[] = []
-    ) => {
-      const _nodes = get(nodes);
-      const _edges = get(edges);
-      const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
+    deleteElements: async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [] }) => {
+      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
         nodesToRemove,
         edgesToRemove,
-        nodes: _nodes,
-        edges: _edges
+        nodes: get(nodes),
+        edges: get(edges),
+        onBeforeDelete: get(onbeforedelete)
       });
 
       if (matchingNodes) {
-        nodes.set(_nodes.filter((node) => !matchingNodes.some(({ id }) => id === node.id)));
+        nodes.update((nds) =>
+          nds.filter((node) => !matchingNodes.some(({ id }) => id === node.id))
+        );
       }
 
       if (matchingEdges) {
-        edges.set(_edges.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id)));
+        edges.update((eds) =>
+          eds.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id))
+        );
       }
 
       return {
@@ -201,69 +407,53 @@ export function useSvelteFlow(): {
         deletedEdges: matchingEdges
       };
     },
-    screenToFlowCoordinate: (position: XYPosition) => {
+    screenToFlowPosition: (
+      position: XYPosition,
+      options: { snapToGrid: boolean } = { snapToGrid: true }
+    ) => {
       const _domNode = get(domNode);
 
-      if (_domNode) {
-        const _snapGrid = get(snapGrid);
-        const { x, y, zoom } = get(viewport);
-        const { x: domX, y: domY } = _domNode.getBoundingClientRect();
-
-        const correctedPosition = {
-          x: position.x - domX,
-          y: position.y - domY
-        };
-
-        return pointToRendererPoint(
-          correctedPosition,
-          [x, y, zoom],
-          _snapGrid !== null,
-          _snapGrid || [1, 1]
-        );
+      if (!_domNode) {
+        return position;
       }
 
-      return { x: 0, y: 0 };
+      const _snapGrid = options.snapToGrid ? get(snapGrid) : false;
+      const { x, y, zoom } = get(viewport);
+      const { x: domX, y: domY } = _domNode.getBoundingClientRect();
+      const correctedPosition = {
+        x: position.x - domX,
+        y: position.y - domY
+      };
+
+      return pointToRendererPoint(
+        correctedPosition,
+        [x, y, zoom],
+        _snapGrid !== null,
+        _snapGrid || [1, 1]
+      );
     },
-    flowToScreenCoordinate: (position: XYPosition) => {
+    /**
+     *
+     * @param position
+     * @returns
+     */
+    flowToScreenPosition: (position: XYPosition) => {
       const _domNode = get(domNode);
 
-      if (_domNode) {
-        const { x, y, zoom } = get(viewport);
-        const { x: domX, y: domY } = _domNode.getBoundingClientRect();
-
-        const rendererPosition = rendererPointToPoint(position, [x, y, zoom]);
-
-        return {
-          x: rendererPosition.x + domX,
-          y: rendererPosition.y + domY
-        };
+      if (!_domNode) {
+        return position;
       }
 
-      return { x: 0, y: 0 };
-    },
-    getConnectedEdges: (node) => {
-      const nodeIds = new Set();
+      const { x, y, zoom } = get(viewport);
+      const { x: domX, y: domY } = _domNode.getBoundingClientRect();
+      const rendererPosition = rendererPointToPoint(position, [x, y, zoom]);
 
-      if (typeof node === 'string') {
-        nodeIds.add(node);
-      } else if (node.length >= 1) {
-        node.forEach((n) => {
-          nodeIds.add(n.id);
-        });
-      }
-
-      return get(edges).filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
+      return {
+        x: rendererPosition.x + domX,
+        y: rendererPosition.y + domY
+      };
     },
-    getIncomers: (node) => {
-      const _node = typeof node === 'string' ? { id: node } : node;
 
-      return getIncomersBase(_node, get(nodes), get(edges));
-    },
-    getOutgoers: (node) => {
-      const _node = typeof node === 'string' ? { id: node } : node;
-
-      return getOutgoersBase(_node, get(nodes), get(edges));
-    },
     toObject: () => {
       return {
         nodes: get(nodes).map((node) => ({
@@ -277,6 +467,37 @@ export function useSvelteFlow(): {
         viewport: { ...get(viewport) }
       };
     },
+    updateNode,
+    updateNodeData: (id, dataUpdate, options) => {
+      const node = get(nodeLookup).get(id)?.internals.userNode;
+
+      if (!node) {
+        return;
+      }
+
+      const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
+
+      node.data = options?.replace ? nextData : { ...node.data, ...nextData };
+
+      nodes.update((nds) => nds);
+    },
     viewport
   };
+}
+function getElements(lookup: Map<string, InternalNode>, ids: string[]): Node[];
+function getElements(lookup: Map<string, Edge>, ids: string[]): Edge[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getElements(lookup: Map<string, any>, ids: string[]): any[] {
+  const result = [];
+
+  for (const id of ids) {
+    const item = lookup.get(id);
+
+    if (item) {
+      const element = 'internals' in item ? item.internals?.userNode : item;
+      result.push(element);
+    }
+  }
+
+  return result;
 }

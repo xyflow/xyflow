@@ -62,16 +62,22 @@ export type UpdatableStoreProps = {
   autoPanOnConnect?: UnwrapWritable<SvelteFlowStore['autoPanOnConnect']>;
   autoPanOnNodeDrag?: UnwrapWritable<SvelteFlowStore['autoPanOnNodeDrag']>;
   connectionMode?: UnwrapWritable<SvelteFlowStore['connectionMode']>;
-  onError?: UnwrapWritable<SvelteFlowStore['onError']>;
+  onerror?: UnwrapWritable<SvelteFlowStore['onerror']>;
+  ondelete?: UnwrapWritable<SvelteFlowStore['ondelete']>;
+  onedgecreate?: UnwrapWritable<SvelteFlowStore['onedgecreate']>;
   nodeDragThreshold?: UnwrapWritable<SvelteFlowStore['nodeDragThreshold']>;
+  onconnect?: UnwrapWritable<SvelteFlowStore['onconnect']>;
+  onconnectstart?: UnwrapWritable<SvelteFlowStore['onconnectstart']>;
+  onconnectend?: UnwrapWritable<SvelteFlowStore['onconnectend']>;
+  onbeforedelete?: UnwrapWritable<SvelteFlowStore['onbeforedelete']>;
+  nodeOrigin?: UnwrapWritable<SvelteFlowStore['nodeOrigin']>;
 };
 
 export function updateStoreByKeys(store: SvelteFlowStore, keys: UpdatableStoreProps) {
   getKeys(keys).forEach((prop) => {
     const update = keys[prop];
     if (update !== undefined) {
-      // @todo: how to fix this TS error?
-      // @ts-ignore
+      // @ts-expect-error @todo: how to fix this TS error?
       store[prop].set(update);
     }
   });

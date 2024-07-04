@@ -1,145 +1,100 @@
 import { memo, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
-import cc from 'classcat';
-import { errorMessages } from '@xyflow/system';
 
 import { useStore } from '../../hooks/useStore';
-import useVisibleEdges from '../../hooks/useVisibleEdges';
+import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
-import type { EdgeTypesWrapped, ReactFlowState } from '../../types';
+import { EdgeWrapper } from '../../components/EdgeWrapper';
+import type { Edge, ReactFlowState, Node } from '../../types';
 
-type EdgeRendererProps = Pick<
-  GraphViewProps,
+type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
+  GraphViewProps<Node, EdgeType>,
   | 'onEdgeClick'
   | 'onEdgeDoubleClick'
   | 'defaultMarkerColor'
   | 'onlyRenderVisibleElements'
-  | 'onEdgeUpdate'
+  | 'onReconnect'
   | 'onEdgeContextMenu'
   | 'onEdgeMouseEnter'
   | 'onEdgeMouseMove'
   | 'onEdgeMouseLeave'
-  | 'onEdgeUpdateStart'
-  | 'onEdgeUpdateEnd'
-  | 'edgeUpdaterRadius'
+  | 'onReconnectStart'
+  | 'onReconnectEnd'
+  | 'reconnectRadius'
   | 'noPanClassName'
-  | 'elevateEdgesOnSelect'
   | 'rfId'
   | 'disableKeyboardA11y'
+  | 'edgeTypes'
 > & {
-  edgeTypes: EdgeTypesWrapped;
-  elevateEdgesOnSelect: boolean;
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 const selector = (s: ReactFlowState) => ({
   width: s.width,
   height: s.height,
   edgesFocusable: s.edgesFocusable,
-  edgesUpdatable: s.edgesUpdatable,
+  edgesReconnectable: s.edgesReconnectable,
   elementsSelectable: s.elementsSelectable,
   connectionMode: s.connectionMode,
   onError: s.onError,
 });
 
-const EdgeRenderer = ({
+function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   defaultMarkerColor,
   onlyRenderVisibleElements,
-  elevateEdgesOnSelect,
   rfId,
   edgeTypes,
   noPanClassName,
-  onEdgeUpdate,
+  onReconnect,
   onEdgeContextMenu,
   onEdgeMouseEnter,
   onEdgeMouseMove,
   onEdgeMouseLeave,
   onEdgeClick,
-  edgeUpdaterRadius,
+  reconnectRadius,
   onEdgeDoubleClick,
-  onEdgeUpdateStart,
-  onEdgeUpdateEnd,
-  children,
-}: EdgeRendererProps) => {
-  const { edgesFocusable, edgesUpdatable, elementsSelectable, onError } = useStore(selector, shallow);
-  const edgeTree = useVisibleEdges(onlyRenderVisibleElements, elevateEdgesOnSelect);
+  onReconnectStart,
+  onReconnectEnd,
+  disableKeyboardA11y,
+}: EdgeRendererProps<EdgeType>) {
+  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useStore(selector, shallow);
+  const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
   return (
-    <>
-      {edgeTree.map(({ level, edges, isMaxLevel }) => (
-        <svg key={level} style={{ zIndex: level }} className="react-flow__edges react-flow__container">
-          {isMaxLevel && <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />}
-          <g>
-            {edges.map((edge) => {
-              let edgeType = edge.type || 'default';
+    <div className="react-flow__edges">
+      <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />
 
-              if (!edgeTypes[edgeType]) {
-                onError?.('011', errorMessages['error011'](edgeType));
-                edgeType = 'default';
-              }
-
-              const EdgeComponent = edgeTypes[edgeType];
-              const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
-              const isUpdatable =
-                typeof onEdgeUpdate !== 'undefined' &&
-                (edge.updatable || (edgesUpdatable && typeof edge.updatable === 'undefined'));
-              const isSelectable = !!(
-                edge.selectable ||
-                (elementsSelectable && typeof edge.selectable === 'undefined')
-              );
-
-              return (
-                <EdgeComponent
-                  key={edge.id}
-                  id={edge.id}
-                  className={cc([edge.className, noPanClassName])}
-                  type={edge.type}
-                  data={edge.data}
-                  selected={!!edge.selected}
-                  animated={!!edge.animated}
-                  hidden={!!edge.hidden}
-                  label={edge.label}
-                  labelStyle={edge.labelStyle}
-                  labelShowBg={edge.labelShowBg}
-                  labelBgStyle={edge.labelBgStyle}
-                  labelBgPadding={edge.labelBgPadding}
-                  labelBgBorderRadius={edge.labelBgBorderRadius}
-                  style={edge.style}
-                  source={edge.source}
-                  target={edge.target}
-                  sourceHandleId={edge.sourceHandle}
-                  targetHandleId={edge.targetHandle}
-                  markerEnd={edge.markerEnd}
-                  markerStart={edge.markerStart}
-                  isSelectable={isSelectable}
-                  onEdgeUpdate={onEdgeUpdate}
-                  onContextMenu={onEdgeContextMenu}
-                  onMouseEnter={onEdgeMouseEnter}
-                  onMouseMove={onEdgeMouseMove}
-                  onMouseLeave={onEdgeMouseLeave}
-                  onClick={onEdgeClick}
-                  edgeUpdaterRadius={edgeUpdaterRadius}
-                  onEdgeDoubleClick={onEdgeDoubleClick}
-                  onEdgeUpdateStart={onEdgeUpdateStart}
-                  onEdgeUpdateEnd={onEdgeUpdateEnd}
-                  rfId={rfId}
-                  ariaLabel={edge.ariaLabel}
-                  isFocusable={isFocusable}
-                  isUpdatable={isUpdatable}
-                  pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
-                  interactionWidth={edge.interactionWidth}
-                />
-              );
-            })}
-          </g>
-        </svg>
-      ))}
-      {children}
-    </>
+      {edgeIds.map((id) => {
+        return (
+          <EdgeWrapper<EdgeType>
+            key={id}
+            id={id}
+            edgesFocusable={edgesFocusable}
+            edgesReconnectable={edgesReconnectable}
+            elementsSelectable={elementsSelectable}
+            noPanClassName={noPanClassName}
+            onReconnect={onReconnect}
+            onContextMenu={onEdgeContextMenu}
+            onMouseEnter={onEdgeMouseEnter}
+            onMouseMove={onEdgeMouseMove}
+            onMouseLeave={onEdgeMouseLeave}
+            onClick={onEdgeClick}
+            reconnectRadius={reconnectRadius}
+            onDoubleClick={onEdgeDoubleClick}
+            onReconnectStart={onReconnectStart}
+            onReconnectEnd={onReconnectEnd}
+            rfId={rfId}
+            onError={onError}
+            edgeTypes={edgeTypes}
+            disableKeyboardA11y={disableKeyboardA11y}
+          />
+        );
+      })}
+    </div>
   );
-};
+}
 
-EdgeRenderer.displayName = 'EdgeRenderer';
+EdgeRendererComponent.displayName = 'EdgeRenderer';
 
-export default memo(EdgeRenderer);
+export const EdgeRenderer = memo(EdgeRendererComponent) as typeof EdgeRendererComponent;

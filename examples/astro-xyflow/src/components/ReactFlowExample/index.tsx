@@ -27,7 +27,7 @@ const initialNodes: Node[] = [
     type: 'input',
     data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
-    size: nodeSize,
+    ...nodeSize,
     handles: [
       {
         type: 'source',
@@ -41,23 +41,19 @@ const initialNodes: Node[] = [
     id: '2',
     data: { label: 'Node 2' },
     position: { x: 100, y: 100 },
-    size: nodeSize,
+    ...nodeSize,
     handles: [
       {
         type: 'source',
         position: Position.Bottom,
         x: nodeSize.width * 0.5,
         y: nodeSize.height,
-        width: 1,
-        height: 1,
       },
       {
         type: 'target',
         position: Position.Top,
         x: nodeSize.width * 0.5,
         y: 0,
-        width: 1,
-        height: 1,
       },
     ],
   },
@@ -65,23 +61,19 @@ const initialNodes: Node[] = [
     id: '3',
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
-    size: nodeSize,
+    ...nodeSize,
     handles: [
       {
         type: 'source',
         position: Position.Bottom,
         x: nodeSize.width * 0.5,
         y: nodeSize.height,
-        width: 1,
-        height: 1,
       },
       {
         type: 'target',
         position: Position.Top,
         x: nodeSize.width * 0.5,
         y: 0,
-        width: 1,
-        height: 1,
       },
     ],
   },
@@ -89,6 +81,8 @@ const initialNodes: Node[] = [
     id: '4',
     data: { label: 'Node 4' },
     position: { x: 400, y: 200 },
+    width: 200,
+    height: 50,
     type: 'custom',
   },
 ];

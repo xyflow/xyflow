@@ -1,220 +1,163 @@
-import { useEffect } from 'react';
-import { StoreApi } from 'zustand';
+/*
+ * This component helps us to update the store with the vlues coming from the user.
+ * We distinguish between values we can update directly with `useDirectStoreUpdater` (like `snapGrid`)
+ * and values that have a dedicated setter function in the store (like `setNodes`).
+ */
+import { useEffect, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
-import { devWarn, type CoordinateExtent } from '@xyflow/system';
+import { infiniteExtent, type CoordinateExtent } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import type { Node, Edge, ReactFlowState, ReactFlowProps, ReactFlowStore } from '../../types';
+import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
+import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
-type StoreUpdaterProps = Pick<
-  ReactFlowProps,
-  | 'nodes'
-  | 'edges'
-  | 'defaultNodes'
-  | 'defaultEdges'
-  | 'onConnect'
-  | 'onConnectStart'
-  | 'onConnectEnd'
-  | 'onClickConnectStart'
-  | 'onClickConnectEnd'
-  | 'nodesDraggable'
-  | 'nodesConnectable'
-  | 'nodesFocusable'
-  | 'edgesFocusable'
-  | 'edgesUpdatable'
-  | 'minZoom'
-  | 'maxZoom'
-  | 'nodeExtent'
-  | 'onNodesChange'
-  | 'onEdgesChange'
-  | 'elementsSelectable'
-  | 'connectionMode'
-  | 'snapToGrid'
-  | 'snapGrid'
-  | 'translateExtent'
-  | 'connectOnClick'
-  | 'defaultEdgeOptions'
-  | 'fitView'
-  | 'fitViewOptions'
-  | 'onNodesDelete'
-  | 'onEdgesDelete'
-  | 'onNodeDragStart'
-  | 'onNodeDrag'
-  | 'onNodeDragStop'
-  | 'onSelectionDragStart'
-  | 'onSelectionDrag'
-  | 'onSelectionDragStop'
-  | 'onMove'
-  | 'onMoveStart'
-  | 'onMoveEnd'
-  | 'noPanClassName'
-  | 'nodeOrigin'
-  | 'elevateNodesOnSelect'
-  | 'autoPanOnConnect'
-  | 'autoPanOnNodeDrag'
-  | 'onError'
-  | 'connectionRadius'
-  | 'isValidConnection'
-  | 'selectNodesOnDrag'
-  | 'nodeDragThreshold'
-> & { rfId: string };
+// these fields exist in the global store and we need to keep them up to date
+const reactFlowFieldsToTrack = [
+  'nodes',
+  'edges',
+  'defaultNodes',
+  'defaultEdges',
+  'onConnect',
+  'onConnectStart',
+  'onConnectEnd',
+  'onClickConnectStart',
+  'onClickConnectEnd',
+  'nodesDraggable',
+  'nodesConnectable',
+  'nodesFocusable',
+  'edgesFocusable',
+  'edgesReconnectable',
+  'elevateNodesOnSelect',
+  'elevateEdgesOnSelect',
+  'minZoom',
+  'maxZoom',
+  'nodeExtent',
+  'onNodesChange',
+  'onEdgesChange',
+  'elementsSelectable',
+  'connectionMode',
+  'snapGrid',
+  'snapToGrid',
+  'translateExtent',
+  'connectOnClick',
+  'defaultEdgeOptions',
+  'fitView',
+  'fitViewOptions',
+  'onNodesDelete',
+  'onEdgesDelete',
+  'onDelete',
+  'onNodeDrag',
+  'onNodeDragStart',
+  'onNodeDragStop',
+  'onSelectionDrag',
+  'onSelectionDragStart',
+  'onSelectionDragStop',
+  'onMoveStart',
+  'onMove',
+  'onMoveEnd',
+  'noPanClassName',
+  'nodeOrigin',
+  'autoPanOnConnect',
+  'autoPanOnNodeDrag',
+  'onError',
+  'connectionRadius',
+  'isValidConnection',
+  'selectNodesOnDrag',
+  'nodeDragThreshold',
+  'onBeforeDelete',
+  'debug',
+  'autoPanSpeed',
+] as const;
+
+type ReactFlowFieldsToTrack = (typeof reactFlowFieldsToTrack)[number];
+type StoreUpdaterProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Pick<
+  ReactFlowProps<NodeType, EdgeType>,
+  ReactFlowFieldsToTrack
+> & {
+  rfId: string;
+};
+
+// rfId doesn't exist in ReactFlowProps, but it's one of the fields we want to update
+const fieldsToTrack = [...reactFlowFieldsToTrack, 'rfId'] as const;
 
 const selector = (s: ReactFlowState) => ({
   setNodes: s.setNodes,
   setEdges: s.setEdges,
-  setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
   setMinZoom: s.setMinZoom,
   setMaxZoom: s.setMaxZoom,
   setTranslateExtent: s.setTranslateExtent,
   setNodeExtent: s.setNodeExtent,
   reset: s.reset,
+  setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
 });
 
-function useStoreUpdater<T>(value: T | undefined, setStoreState: (param: T) => void) {
-  useEffect(() => {
-    if (typeof value !== 'undefined') {
-      setStoreState(value);
-    }
-  }, [value]);
-}
+const initPrevValues = {
+  // these are values that are also passed directly to other components
+  // than the StoreUpdater. We can reduce the number of setStore calls
+  // by setting the same values here as prev fields.
+  translateExtent: infiniteExtent,
+  nodeOrigin: defaultNodeOrigin,
+  minZoom: 0.5,
+  maxZoom: 2,
+  elementsSelectable: true,
+  noPanClassName: 'nopan',
+  rfId: '1',
+};
 
-// updates with values in store that don't have a dedicated setter function
-function useDirectStoreUpdater(
-  key: keyof ReactFlowStore,
-  value: unknown,
-  setState: StoreApi<ReactFlowState>['setState']
+export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
+  props: StoreUpdaterProps<NodeType, EdgeType>
 ) {
-  useEffect(() => {
-    if (typeof value !== 'undefined') {
-      setState({ [key]: value });
-    }
-  }, [value]);
-}
-
-const StoreUpdater = ({
-  nodes,
-  edges,
-  defaultNodes,
-  defaultEdges,
-  onConnect,
-  onConnectStart,
-  onConnectEnd,
-  onClickConnectStart,
-  onClickConnectEnd,
-  nodesDraggable,
-  nodesConnectable,
-  nodesFocusable,
-  edgesFocusable,
-  edgesUpdatable,
-  elevateNodesOnSelect,
-  minZoom,
-  maxZoom,
-  nodeExtent,
-  onNodesChange,
-  onEdgesChange,
-  elementsSelectable,
-  connectionMode,
-  snapGrid,
-  snapToGrid,
-  translateExtent,
-  connectOnClick,
-  defaultEdgeOptions,
-  fitView,
-  fitViewOptions,
-  onNodesDelete,
-  onEdgesDelete,
-  onNodeDrag,
-  onNodeDragStart,
-  onNodeDragStop,
-  onSelectionDrag,
-  onSelectionDragStart,
-  onSelectionDragStop,
-  onMoveStart,
-  onMove,
-  onMoveEnd,
-  noPanClassName,
-  nodeOrigin,
-  rfId,
-  autoPanOnConnect,
-  autoPanOnNodeDrag,
-  onError,
-  connectionRadius,
-  isValidConnection,
-  selectNodesOnDrag,
-  nodeDragThreshold,
-}: StoreUpdaterProps) => {
   const {
     setNodes,
     setEdges,
-    setDefaultNodesAndEdges,
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,
     setNodeExtent,
     reset,
+    setDefaultNodesAndEdges,
   } = useStore(selector, shallow);
-  const store = useStoreApi();
+  const store = useStoreApi<NodeType, EdgeType>();
 
   useEffect(() => {
-    const edgesWithDefaults = defaultEdges?.map((e) => ({ ...e, ...defaultEdgeOptions }));
-    setDefaultNodesAndEdges(defaultNodes, edgesWithDefaults);
+    setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
 
     return () => {
+      // when we reset the store we also need to reset the previous fields
+      previousFields.current = initPrevValues;
       reset();
     };
   }, []);
 
-  useDirectStoreUpdater('defaultEdgeOptions', defaultEdgeOptions, store.setState);
-  useDirectStoreUpdater('connectionMode', connectionMode, store.setState);
-  useDirectStoreUpdater('onConnect', onConnect, store.setState);
-  useDirectStoreUpdater('onConnectStart', onConnectStart, store.setState);
-  useDirectStoreUpdater('onConnectEnd', onConnectEnd, store.setState);
-  useDirectStoreUpdater('onClickConnectStart', onClickConnectStart, store.setState);
-  useDirectStoreUpdater('onClickConnectEnd', onClickConnectEnd, store.setState);
-  useDirectStoreUpdater('nodesDraggable', nodesDraggable, store.setState);
-  useDirectStoreUpdater('nodesConnectable', nodesConnectable, store.setState);
-  useDirectStoreUpdater('nodesFocusable', nodesFocusable, store.setState);
-  useDirectStoreUpdater('edgesFocusable', edgesFocusable, store.setState);
-  useDirectStoreUpdater('edgesUpdatable', edgesUpdatable, store.setState);
-  useDirectStoreUpdater('elementsSelectable', elementsSelectable, store.setState);
-  useDirectStoreUpdater('elevateNodesOnSelect', elevateNodesOnSelect, store.setState);
-  useDirectStoreUpdater('snapToGrid', snapToGrid, store.setState);
-  useDirectStoreUpdater('snapGrid', snapGrid, store.setState);
-  useDirectStoreUpdater('onNodesChange', onNodesChange, store.setState);
-  useDirectStoreUpdater('onEdgesChange', onEdgesChange, store.setState);
-  useDirectStoreUpdater('connectOnClick', connectOnClick, store.setState);
-  useDirectStoreUpdater('fitViewOnInit', fitView, store.setState);
-  useDirectStoreUpdater('fitViewOnInitOptions', fitViewOptions, store.setState);
-  useDirectStoreUpdater('onNodesDelete', onNodesDelete, store.setState);
-  useDirectStoreUpdater('onEdgesDelete', onEdgesDelete, store.setState);
-  useDirectStoreUpdater('onNodeDrag', onNodeDrag, store.setState);
-  useDirectStoreUpdater('onNodeDragStart', onNodeDragStart, store.setState);
-  useDirectStoreUpdater('onNodeDragStop', onNodeDragStop, store.setState);
-  useDirectStoreUpdater('onSelectionDrag', onSelectionDrag, store.setState);
-  useDirectStoreUpdater('onSelectionDragStart', onSelectionDragStart, store.setState);
-  useDirectStoreUpdater('onSelectionDragStop', onSelectionDragStop, store.setState);
-  useDirectStoreUpdater('onMove', onMove, store.setState);
-  useDirectStoreUpdater('onMoveStart', onMoveStart, store.setState);
-  useDirectStoreUpdater('onMoveEnd', onMoveEnd, store.setState);
-  useDirectStoreUpdater('noPanClassName', noPanClassName, store.setState);
-  useDirectStoreUpdater('nodeOrigin', nodeOrigin, store.setState);
-  useDirectStoreUpdater('rfId', rfId, store.setState);
-  useDirectStoreUpdater('autoPanOnConnect', autoPanOnConnect, store.setState);
-  useDirectStoreUpdater('autoPanOnNodeDrag', autoPanOnNodeDrag, store.setState);
-  useDirectStoreUpdater('onError', onError || devWarn, store.setState);
-  useDirectStoreUpdater('connectionRadius', connectionRadius, store.setState);
-  useDirectStoreUpdater('isValidConnection', isValidConnection, store.setState);
-  useDirectStoreUpdater('selectNodesOnDrag', selectNodesOnDrag, store.setState);
-  useDirectStoreUpdater('nodeDragThreshold', nodeDragThreshold, store.setState);
+  const previousFields = useRef<Partial<StoreUpdaterProps<NodeType, EdgeType>>>(initPrevValues);
 
-  useStoreUpdater<Node[]>(nodes, setNodes);
-  useStoreUpdater<Edge[]>(edges, setEdges);
-  useStoreUpdater<number>(minZoom, setMinZoom);
-  useStoreUpdater<number>(maxZoom, setMaxZoom);
-  useStoreUpdater<CoordinateExtent>(translateExtent, setTranslateExtent);
-  useStoreUpdater<CoordinateExtent>(nodeExtent, setNodeExtent);
+  useEffect(
+    () => {
+      for (const fieldName of fieldsToTrack) {
+        const fieldValue = props[fieldName];
+        const previousFieldValue = previousFields.current[fieldName];
+
+        if (fieldValue === previousFieldValue) continue;
+        if (typeof props[fieldName] === 'undefined') continue;
+        // Custom handling with dedicated setters for some fields
+        if (fieldName === 'nodes') setNodes(fieldValue as Node[]);
+        else if (fieldName === 'edges') setEdges(fieldValue as Edge[]);
+        else if (fieldName === 'minZoom') setMinZoom(fieldValue as number);
+        else if (fieldName === 'maxZoom') setMaxZoom(fieldValue as number);
+        else if (fieldName === 'translateExtent') setTranslateExtent(fieldValue as CoordinateExtent);
+        else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
+        // Renamed fields
+        else if (fieldName === 'fitView') store.setState({ fitViewOnInit: fieldValue as boolean });
+        else if (fieldName === 'fitViewOptions') store.setState({ fitViewOnInitOptions: fieldValue as FitViewOptions });
+        // General case
+        else store.setState({ [fieldName]: fieldValue });
+      }
+
+      previousFields.current = props;
+    },
+    // Only re-run the effect if one of the fields we track changes
+    fieldsToTrack.map((fieldName) => props[fieldName])
+  );
 
   return null;
-};
-
-export default StoreUpdater;
+}

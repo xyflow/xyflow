@@ -1,2 +1,2 @@
-export { default as NodeToolbar } from './NodeToolbar';
-export * from './types';
+export { NodeToolbar } from './NodeToolbar';
+export type { NodeToolbarProps } from './types';

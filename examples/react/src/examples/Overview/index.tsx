@@ -15,6 +15,8 @@ import {
   Background,
   MiniMap,
   ConnectionMode,
+  OnBeforeDelete,
+  OnDelete,
 } from '@xyflow/react';
 
 const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
@@ -23,7 +25,7 @@ const onNodeDragStop = (_: ReactMouseEvent, node: Node, nodes: Node[]) => consol
 const onNodeDoubleClick = (_: ReactMouseEvent, node: Node) => console.log('node double click', node);
 const onPaneClick = (event: ReactMouseEvent) => console.log('pane click', event);
 const onPaneScroll = (event?: ReactMouseEvent) => console.log('pane scroll', event);
-const onPaneContextMenu = (event: ReactMouseEvent) => console.log('pane context menu', event);
+const onPaneContextMenu = (event: ReactMouseEvent | MouseEvent) => console.log('pane context menu', event);
 const onSelectionDrag = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag', nodes);
 const onSelectionDragStart = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag start', nodes);
 const onSelectionDragStop = (_: ReactMouseEvent, nodes: Node[]) => console.log('selection drag stop', nodes);
@@ -45,8 +47,12 @@ const onEdgeMouseEnter = (_: ReactMouseEvent, edge: Edge) => console.log('edge m
 const onEdgeMouseMove = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse move', edge);
 const onEdgeMouseLeave = (_: ReactMouseEvent, edge: Edge) => console.log('edge mouse leave', edge);
 const onEdgeDoubleClick = (_: ReactMouseEvent, edge: Edge) => console.log('edge double click', edge);
-const onNodesDelete = (nodes: Node[]) => console.log('nodes delete', nodes);
-const onEdgesDelete = (edges: Edge[]) => console.log('edges delete', edges);
+const onBeforeDelete: OnBeforeDelete = async ({ nodes, edges }) => {
+  console.log('on before delete', nodes, edges);
+  const deleteElements = confirm('Do you want to remove the selected elements?');
+  return deleteElements;
+};
+const onDelete: OnDelete = ({ nodes, edges }) => console.log('on delete', nodes, edges);
 const onPaneMouseMove = (e: ReactMouseEvent) => console.log('pane move', e.clientX, e.clientY);
 
 const initialNodes: Node[] = [
@@ -226,13 +232,13 @@ const OverviewFlow = () => {
       fitViewOptions={{ padding: 0.1 /*nodes: [{ id: '1' }]*/ }}
       attributionPosition="top-right"
       maxZoom={Infinity}
-      onNodesDelete={onNodesDelete}
-      onEdgesDelete={onEdgesDelete}
+      onBeforeDelete={onBeforeDelete}
+      onDelete={onDelete}
       onPaneMouseMove={onPaneMouseMove}
     >
-      <MiniMap nodeStrokeColor={nodeStrokeColor} nodeColor={nodeColor} nodeBorderRadius={2} />
-      <Controls />
-      <Background color="#aaa" gap={25} />
+      <MiniMap nodeBorderRadius={2} />
+      <Controls orientation="horizontal" />
+      <Background gap={25} />
     </ReactFlow>
   );
 };

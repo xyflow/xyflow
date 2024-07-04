@@ -5,10 +5,14 @@ import type { Node, ReactFlowState } from '../types';
 
 const nodesSelector = (state: ReactFlowState) => state.nodes;
 
-function useNodes<NodeData>(): Node<NodeData>[] {
-  const nodes = useStore(nodesSelector, shallow);
+/**
+ * Hook for getting the current nodes from the store.
+ *
+ * @public
+ * @returns An array of nodes
+ */
+export function useNodes<NodeType extends Node = Node>(): NodeType[] {
+  const nodes = useStore(nodesSelector, shallow) as NodeType[];
 
   return nodes;
 }
-
-export default useNodes;

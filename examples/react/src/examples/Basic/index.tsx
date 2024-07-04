@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useCallback } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -10,11 +10,15 @@ import {
   Edge,
   useReactFlow,
   Panel,
+  OnNodeDrag,
 } from '@xyflow/react';
 
-const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
+const onNodeDragStart = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
+const onNodeDragStop = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag stop', node, nodes);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
+
+const printSelectionEvent = (name: string) => (_: MouseEvent, nodes: Node[]) => console.log(name, nodes);
 
 const initialNodes: Node[] = [
   {
@@ -52,32 +56,67 @@ const initialEdges: Edge[] = [
 const defaultEdgeOptions = {};
 
 const BasicFlow = () => {
-  const instance = useReactFlow();
+  const { addNodes, setNodes, getNodes, setEdges, getEdges, deleteElements, updateNodeData, toObject, setViewport } =
+    useReactFlow();
 
   const updatePos = () => {
-    instance.setNodes((nodes) =>
+    setNodes((nodes) =>
       nodes.map((node) => {
-        node.position = {
-          x: Math.random() * 400,
-          y: Math.random() * 400,
+        return {
+          ...node,
+          position: {
+            x: Math.random() * 400,
+            y: Math.random() * 400,
+          },
         };
-
-        return node;
       })
     );
   };
 
-  const logToObject = () => console.log(instance.toObject());
-  const resetTransform = () => instance.setViewport({ x: 0, y: 0, zoom: 1 });
+  const logToObject = () => console.log(toObject());
+  const resetTransform = () => setViewport({ x: 0, y: 0, zoom: 1 });
 
   const toggleClassnames = () => {
-    instance.setNodes((nodes) =>
+    setNodes((nodes) =>
       nodes.map((node) => {
-        node.className = node.className === 'light' ? 'dark' : 'light';
-
-        return node;
+        return {
+          ...node,
+          className: node.className === 'light' ? 'dark' : 'light',
+        };
       })
     );
+  };
+
+  const deleteSelectedElements = useCallback(() => {
+    const selectedNodes = getNodes().filter((node) => node.selected);
+    const selectedEdges = getEdges().filter((edge) => edge.selected);
+    deleteElements({ nodes: selectedNodes, edges: selectedEdges });
+  }, [deleteElements]);
+
+  const deleteSomeElements = useCallback(() => {
+    deleteElements({ nodes: [{ id: '2' }], edges: [{ id: 'e1-3' }] });
+  }, []);
+
+  const onSetNodes = () => {
+    setNodes([
+      { id: 'a', position: { x: 0, y: 0 }, data: { label: 'Node a' } },
+      { id: 'b', position: { x: 0, y: 150 }, data: { label: 'Node b' } },
+    ]);
+
+    setEdges([{ id: 'a-b', source: 'a', target: 'b' }]);
+  };
+
+  const onUpdateNode = () => {
+    updateNodeData('1', { label: 'update' });
+    updateNodeData('2', { label: 'update' });
+  };
+  const addNode = () => {
+    addNodes({
+      id: `${Math.random()}`,
+      data: { label: 'Node' },
+      position: { x: Math.random() * 300, y: Math.random() * 300 },
+      className: 'light',
+    });
   };
 
   return (
@@ -86,7 +125,11 @@ const BasicFlow = () => {
       defaultEdges={initialEdges}
       onNodeClick={onNodeClick}
       onNodeDragStop={onNodeDragStop}
+      onNodeDragStart={onNodeDragStart}
       onNodeDrag={onNodeDrag}
+      onSelectionDragStart={printSelectionEvent('selection drag start')}
+      onSelectionDrag={printSelectionEvent('selection drag')}
+      onSelectionDragStop={printSelectionEvent('selection drag stop')}
       className="react-flow-basic-example"
       minZoom={0.2}
       maxZoom={4}
@@ -95,6 +138,7 @@ const BasicFlow = () => {
       selectNodesOnDrag={false}
       elevateEdgesOnSelect
       elevateNodesOnSelect={false}
+      nodeDragThreshold={0}
     >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
@@ -105,6 +149,12 @@ const BasicFlow = () => {
         <button onClick={updatePos}>change pos</button>
         <button onClick={toggleClassnames}>toggle classnames</button>
         <button onClick={logToObject}>toObject</button>
+
+        <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
+        <button onClick={deleteSomeElements}>deleteSomeElements</button>
+        <button onClick={onSetNodes}>setNodes</button>
+        <button onClick={onUpdateNode}>updateNode</button>
+        <button onClick={addNode}>addNode</button>
       </Panel>
     </ReactFlow>
   );

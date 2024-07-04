@@ -13,9 +13,10 @@ import {
   OnConnectStart,
   OnConnectEnd,
   OnConnect,
-  updateEdge,
+  reconnectEdge,
   Edge,
   IsValidConnection,
+  OnBeforeDelete,
 } from '@xyflow/react';
 
 import ConnectionStatus from './ConnectionStatus';
@@ -23,10 +24,10 @@ import ConnectionStatus from './ConnectionStatus';
 import styles from './validation.module.css';
 
 const initialNodes: Node[] = [
-  { id: '0', type: 'custominput', position: { x: 0, y: 150 }, data: null },
-  { id: 'A', type: 'customnode', position: { x: 250, y: 0 }, data: null },
-  { id: 'B', type: 'customnode', position: { x: 250, y: 150 }, data: null },
-  { id: 'C', type: 'customnode', position: { x: 250, y: 300 }, data: null },
+  { id: '0', type: 'custominput', position: { x: 0, y: 150 }, data: {} },
+  { id: 'A', type: 'customnode', position: { x: 250, y: 0 }, data: {} },
+  { id: 'B', type: 'customnode', position: { x: 250, y: 150 }, data: {} },
+  { id: 'C', type: 'customnode', position: { x: 250, y: 300 }, data: {} },
 ];
 
 const isValidConnection: IsValidConnection = (connection) => connection.target === 'B';
@@ -40,7 +41,7 @@ const CustomInput: FC<NodeProps> = () => (
 
 const CustomNode: FC<NodeProps> = ({ id }) => (
   <>
-    <Handle type="target" position={Position.Left} isConnectableStart={false} />
+    <Handle type="target" position={Position.Top} isConnectableStart={false} />
     <div>{id}</div>
     <Handle type="source" position={Position.Right} />
   </>
@@ -54,7 +55,7 @@ const nodeTypes: NodeTypes = {
 const ValidationFlow = () => {
   const [value, setValue] = useState(0);
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const onConnectStart: OnConnectStart = useCallback(
     (event, params) => {
@@ -80,10 +81,14 @@ const ValidationFlow = () => {
     [value]
   );
 
-  const onEdgeUpdate = useCallback(
-    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => updateEdge(oldEdge, newConnection, els)),
+  const onReconnect = useCallback(
+    (oldEdge: Edge, newConnection: Connection) => setEdges((els) => reconnectEdge(oldEdge, newConnection, els)),
     [setEdges]
   );
+
+  const onBeforeDelete: OnBeforeDelete = useCallback(async () => {
+    return true;
+  }, []);
 
   return (
     <ReactFlow
@@ -97,8 +102,9 @@ const ValidationFlow = () => {
       nodeTypes={nodeTypes}
       onConnectStart={onConnectStart}
       onConnectEnd={onConnectEnd}
-      onEdgeUpdate={onEdgeUpdate}
+      onReconnect={onReconnect}
       isValidConnection={isValidConnection}
+      onBeforeDelete={onBeforeDelete}
       fitView
     >
       <ConnectionStatus />

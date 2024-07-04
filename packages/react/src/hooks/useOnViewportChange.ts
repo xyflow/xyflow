@@ -9,7 +9,15 @@ export type UseOnViewportChangeOptions = {
   onEnd?: OnViewportChange;
 };
 
-function useOnViewportChange({ onStart, onChange, onEnd }: UseOnViewportChangeOptions) {
+/**
+ * Hook for registering an onViewportChange handler.
+ *
+ * @public
+ * @param params.onStart - gets called when the viewport starts changing
+ * @param params.onChange - gets called when the viewport changes
+ * @param params.onEnd - gets called when the viewport stops changing
+ */
+export function useOnViewportChange({ onStart, onChange, onEnd }: UseOnViewportChangeOptions) {
   const store = useStoreApi();
 
   useEffect(() => {
@@ -24,5 +32,3 @@ function useOnViewportChange({ onStart, onChange, onEnd }: UseOnViewportChangeOp
     store.setState({ onViewportChangeEnd: onEnd });
   }, [onEnd]);
 }
-
-export default useOnViewportChange;

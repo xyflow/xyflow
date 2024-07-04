@@ -1,4 +1,6 @@
 <script lang="ts">
+  import cc from 'classcat';
+
   import Panel from '$lib/container/Panel/Panel.svelte';
   import { useStore } from '$lib/store';
   import ControlButton from './ControlButton.svelte';
@@ -21,6 +23,13 @@
   export let buttonColor: $$Props['buttonColor'] = undefined;
   export let buttonColorHover: $$Props['buttonColorHover'] = undefined;
   export let buttonBorderColor: $$Props['buttonColorHover'] = undefined;
+  export let ariaLabel: $$Props['aria-label'] = undefined;
+  export let style: $$Props['style'] = undefined;
+  export let orientation: $$Props['orientation'] = 'vertical';
+  export let fitViewOptions: $$Props['fitViewOptions'] = undefined;
+
+  let className: $$Props['class'] = '';
+  export { className as class };
 
   const {
     zoomIn,
@@ -55,7 +64,7 @@
   };
 
   const onFitViewHandler = () => {
-    fitView();
+    fitView(fitViewOptions);
   };
 
   const onToggleInteractivity = () => {
@@ -65,9 +74,18 @@
     nodesConnectable.set(isInteractive);
     elementsSelectable.set(isInteractive);
   };
+
+  $: orientationClass = orientation === 'horizontal' ? 'horizontal' : 'vertical';
 </script>
 
-<Panel class="svelte-flow__controls" {position} data-testid="svelte-flow__controls">
+<Panel
+  class={cc(['svelte-flow__controls', orientationClass, className])}
+  {position}
+  data-testid="svelte-flow__controls"
+  aria-label={ariaLabel ?? 'Svelte Flow controls'}
+  {style}
+>
+  <slot name="before" />
   {#if showZoom}
     <ControlButton
       on:click={onZoomInHandler}
@@ -112,4 +130,6 @@
       {#if isInteractive}<UnlockIcon />{:else}<LockIcon />{/if}
     </ControlButton>
   {/if}
+  <slot />
+  <slot name="after" />
 </Panel>

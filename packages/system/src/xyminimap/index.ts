@@ -38,6 +38,7 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
     zoomable = true,
     inversePan = false,
   }: XYMinimapUpdate) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
       const transform = getTransform();
 
@@ -54,18 +55,36 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
       panZoom.scaleTo(nextZoom);
     };
 
+    let panStart = [0, 0];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const panStartHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
+      if (event.sourceEvent.type === 'mousedown' || event.sourceEvent.type === 'touchstart') {
+        panStart = [
+          event.sourceEvent.clientX ?? event.sourceEvent.touches[0].clientX,
+          event.sourceEvent.clientY ?? event.sourceEvent.touches[0].clientY,
+        ];
+      }
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const panHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
       const transform = getTransform();
 
-      if (event.sourceEvent.type !== 'mousemove' || !panZoom) {
+      if ((event.sourceEvent.type !== 'mousemove' && event.sourceEvent.type !== 'touchmove') || !panZoom) {
         return;
       }
 
-      // @TODO: how to calculate the correct next position? Math.max(1, transform[2]) is a workaround.
-      const moveScale = getViewScale() * Math.max(1, transform[2]) * (inversePan ? -1 : 1);
+      const panCurrent = [
+        event.sourceEvent.clientX ?? event.sourceEvent.touches[0].clientX,
+        event.sourceEvent.clientY ?? event.sourceEvent.touches[0].clientY,
+      ];
+      const panDelta = [panCurrent[0] - panStart[0], panCurrent[1] - panStart[1]];
+      panStart = panCurrent;
+
+      const moveScale = getViewScale() * Math.max(transform[2], Math.log(transform[2])) * (inversePan ? -1 : 1);
       const position = {
-        x: transform[0] - event.sourceEvent.movementX * moveScale,
-        y: transform[1] - event.sourceEvent.movementY * moveScale,
+        x: transform[0] - panDelta[0] * moveScale,
+        y: transform[1] - panDelta[1] * moveScale,
       };
       const extent: CoordinateExtent = [
         [0, 0],
@@ -84,8 +103,11 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
     };
 
     const zoomAndPanHandler = zoom()
+      .on('start', panStartHandler)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       .on('zoom', pannable ? panHandler : null)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       .on('zoom.wheel', zoomable ? zoomHandler : null);
 

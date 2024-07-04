@@ -1,15 +1,16 @@
-import { memo, useMemo, useEffect, useRef, type ComponentType } from 'react';
+import { memo } from 'react';
 import { shallow } from 'zustand/shallow';
-import { internalsSymbol, errorMessages, Position, clampPosition, getPositionWithOrigin } from '@xyflow/system';
 
-import useVisibleNodes from '../../hooks/useVisibleNodes';
+import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
 import { useStore } from '../../hooks/useStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
-import type { NodeTypesWrapped, ReactFlowState, WrapNodeProps } from '../../types';
+import { useResizeObserver } from './useResizeObserver';
+import { NodeWrapper } from '../../components/NodeWrapper';
+import type { Node, ReactFlowState } from '../../types';
 
-type NodeRendererProps = Pick<
-  GraphViewProps,
+export type NodeRendererProps<NodeType extends Node> = Pick<
+  GraphViewProps<NodeType>,
   | 'onNodeClick'
   | 'onNodeDoubleClick'
   | 'onNodeMouseEnter'
@@ -21,130 +22,78 @@ type NodeRendererProps = Pick<
   | 'noDragClassName'
   | 'rfId'
   | 'disableKeyboardA11y'
-  | 'nodeOrigin'
   | 'nodeExtent'
-> & {
-  nodeTypes: NodeTypesWrapped;
-};
+  | 'nodeTypes'
+>;
 
 const selector = (s: ReactFlowState) => ({
   nodesDraggable: s.nodesDraggable,
   nodesConnectable: s.nodesConnectable,
   nodesFocusable: s.nodesFocusable,
   elementsSelectable: s.elementsSelectable,
-  updateNodeDimensions: s.updateNodeDimensions,
   onError: s.onError,
 });
 
-const NodeRenderer = (props: NodeRendererProps) => {
-  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, updateNodeDimensions, onError } =
-    useStore(selector, shallow);
-  const nodes = useVisibleNodes(props.onlyRenderVisibleElements);
-  const resizeObserverRef = useRef<ResizeObserver>();
-
-  const resizeObserver = useMemo(() => {
-    if (typeof ResizeObserver === 'undefined') {
-      return null;
-    }
-
-    const observer = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-      const updates = entries.map((entry: ResizeObserverEntry) => ({
-        id: entry.target.getAttribute('data-id') as string,
-        nodeElement: entry.target as HTMLDivElement,
-        forceUpdate: true,
-      }));
-
-      updateNodeDimensions(updates);
-    });
-
-    resizeObserverRef.current = observer;
-
-    return observer;
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      resizeObserverRef?.current?.disconnect();
-    };
-  }, []);
+function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
+  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, onError } = useStore(selector, shallow);
+  const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
+  const resizeObserver = useResizeObserver();
 
   return (
     <div className="react-flow__nodes" style={containerStyle}>
-      {nodes.map((node) => {
-        let nodeType = node.type || 'default';
-
-        if (!props.nodeTypes[nodeType]) {
-          onError?.('003', errorMessages['error003'](nodeType));
-
-          nodeType = 'default';
-        }
-
-        const NodeComponent = (props.nodeTypes[nodeType] || props.nodeTypes.default) as ComponentType<WrapNodeProps>;
-        const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
-        const isSelectable = !!(node.selectable || (elementsSelectable && typeof node.selectable === 'undefined'));
-        const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
-        const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
-
-        const clampedPosition = props.nodeExtent
-          ? clampPosition(node.positionAbsolute, props.nodeExtent)
-          : node.positionAbsolute;
-
-        const posX = clampedPosition?.x ?? 0;
-        const posY = clampedPosition?.y ?? 0;
-        const posOrigin = getPositionWithOrigin({
-          x: posX,
-          y: posY,
-          width: node.width ?? 0,
-          height: node.height ?? 0,
-          origin: node.origin || props.nodeOrigin,
-        });
-        const initialized = (!!node.width && !!node.height) || (!!node.size?.width && !!node.size?.height);
-
+      {nodeIds.map((nodeId) => {
         return (
-          <NodeComponent
-            key={node.id}
-            id={node.id}
-            className={node.className}
-            style={node.style}
-            sizeWidth={node.size?.width}
-            sizeHeight={node.size?.height}
-            type={nodeType}
-            data={node.data}
-            sourcePosition={node.sourcePosition || Position.Bottom}
-            targetPosition={node.targetPosition || Position.Top}
-            hidden={node.hidden}
-            xPos={posX}
-            yPos={posY}
-            xPosOrigin={posOrigin.x}
-            yPosOrigin={posOrigin.y}
+          // The split of responsibilities between NodeRenderer and
+          // NodeComponentWrapper may appear weird. However, it’s designed to
+          // minimize the cost of updates when individual nodes change.
+          //
+          // For example, when you’re dragging a single node, that node gets
+          // updated multiple times per second. If `NodeRenderer` were to update
+          // every time, it would have to re-run the `nodes.map()` loop every
+          // time. This gets pricey with hundreds of nodes, especially if every
+          // loop cycle does more than just rendering a JSX element!
+          //
+          // As a result of this choice, we took the following implementation
+          // decisions:
+          // - NodeRenderer subscribes *only* to node IDs – and therefore
+          //   rerender *only* when visible nodes are added or removed.
+          // - NodeRenderer performs all operations the result of which can be
+          //   shared between nodes (such as creating the `ResizeObserver`
+          //   instance, or subscribing to `selector`). This means extra prop
+          //   drilling into `NodeComponentWrapper`, but it means we need to run
+          //   these operations only once – instead of once per node.
+          // - Any operations that you’d normally write inside `nodes.map` are
+          //   moved into `NodeComponentWrapper`. This ensures they are
+          //   memorized – so if `NodeRenderer` *has* to rerender, it only
+          //   needs to regenerate the list of nodes, nothing else.
+          <NodeWrapper<NodeType>
+            key={nodeId}
+            id={nodeId}
+            nodeTypes={props.nodeTypes}
+            nodeExtent={props.nodeExtent}
             onClick={props.onNodeClick}
             onMouseEnter={props.onNodeMouseEnter}
             onMouseMove={props.onNodeMouseMove}
             onMouseLeave={props.onNodeMouseLeave}
             onContextMenu={props.onNodeContextMenu}
             onDoubleClick={props.onNodeDoubleClick}
-            selected={!!node.selected}
-            isDraggable={isDraggable}
-            isSelectable={isSelectable}
-            isConnectable={isConnectable}
-            isFocusable={isFocusable}
-            resizeObserver={resizeObserver}
-            dragHandle={node.dragHandle}
-            zIndex={node[internalsSymbol]?.z ?? 0}
-            isParent={!!node[internalsSymbol]?.isParent}
             noDragClassName={props.noDragClassName}
             noPanClassName={props.noPanClassName}
-            initialized={initialized}
             rfId={props.rfId}
             disableKeyboardA11y={props.disableKeyboardA11y}
-            ariaLabel={node.ariaLabel}
+            resizeObserver={resizeObserver}
+            nodesDraggable={nodesDraggable}
+            nodesConnectable={nodesConnectable}
+            nodesFocusable={nodesFocusable}
+            elementsSelectable={elementsSelectable}
+            onError={onError}
           />
         );
       })}
     </div>
   );
-};
+}
 
-NodeRenderer.displayName = 'NodeRenderer';
+NodeRendererComponent.displayName = 'NodeRenderer';
 
-export default memo(NodeRenderer);
+export const NodeRenderer = memo(NodeRendererComponent) as typeof NodeRendererComponent;

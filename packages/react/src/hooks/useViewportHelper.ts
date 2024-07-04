@@ -1,22 +1,25 @@
 import { useMemo } from 'react';
 import {
   pointToRendererPoint,
-  getTransformForBounds,
+  getViewportForBounds,
   fitView,
   type XYPosition,
   rendererPointToPoint,
 } from '@xyflow/system';
 
-import { useStoreApi, useStore } from '../hooks/useStore';
-import type { ViewportHelperFunctions, ReactFlowState } from '../types';
+import { useStoreApi } from '../hooks/useStore';
+import type { ViewportHelperFunctions } from '../types';
 
-const selector = (s: ReactFlowState) => !!s.panZoom;
-
+/**
+ * Hook for getting viewport helper functions.
+ *
+ * @internal
+ * @returns viewport helper functions
+ */
 const useViewportHelper = (): ViewportHelperFunctions => {
   const store = useStoreApi();
-  const panZoomInitialized = useStore(selector);
 
-  const viewportHelperFunctions = useMemo<ViewportHelperFunctions>(() => {
+  return useMemo<ViewportHelperFunctions>(() => {
     return {
       zoomIn: (options) => store.getState().panZoom?.scaleBy(1.2, { duration: options?.duration }),
       zoomOut: (options) => store.getState().panZoom?.scaleBy(1 / 1.2, { duration: options?.duration }),
@@ -42,22 +45,23 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         return { x, y, zoom };
       },
       fitView: (options) => {
-        const { nodes, width, height, nodeOrigin, minZoom, maxZoom, panZoom } = store.getState();
+        const { nodeLookup, width, height, minZoom, maxZoom, panZoom } = store.getState();
 
-        return panZoom
-          ? fitView(
-              {
-                nodes,
-                width,
-                height,
-                nodeOrigin,
-                minZoom,
-                maxZoom,
-                panZoom,
-              },
-              options
-            )
-          : false;
+        if (!panZoom) {
+          return false;
+        }
+
+        return fitView(
+          {
+            nodeLookup,
+            width,
+            height,
+            minZoom,
+            maxZoom,
+            panZoom,
+          },
+          options
+        );
       },
       setCenter: (x, y, options) => {
         const { width, height, maxZoom, panZoom } = store.getState();
@@ -76,56 +80,43 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       },
       fitBounds: (bounds, options) => {
         const { width, height, minZoom, maxZoom, panZoom } = store.getState();
-        const [x, y, zoom] = getTransformForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
+        const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
 
-        panZoom?.setViewport(
-          {
-            x,
-            y,
-            zoom,
-          },
-          { duration: options?.duration }
-        );
+        panZoom?.setViewport(viewport, { duration: options?.duration });
       },
-      project: (position: XYPosition) => {
-        const { transform, snapToGrid, snapGrid } = store.getState();
-        return pointToRendererPoint(position, transform, snapToGrid, snapGrid);
-      },
-      screenToFlowCoordinate: (position: XYPosition) => {
-        const { transform, snapToGrid, snapGrid, domNode } = store.getState();
-        if (domNode) {
-          const { x: domX, y: domY } = domNode.getBoundingClientRect();
+      screenToFlowPosition: (clientPosition: XYPosition, options: { snapToGrid: boolean } = { snapToGrid: true }) => {
+        const { transform, snapGrid, domNode } = store.getState();
 
-          const correctedPosition = {
-            x: position.x - domX,
-            y: position.y - domY,
-          };
-
-          return pointToRendererPoint(correctedPosition, transform, snapToGrid, snapGrid || [1, 1]);
+        if (!domNode) {
+          return clientPosition;
         }
 
-        return { x: 0, y: 0 };
+        const { x: domX, y: domY } = domNode.getBoundingClientRect();
+
+        const correctedPosition = {
+          x: clientPosition.x - domX,
+          y: clientPosition.y - domY,
+        };
+
+        return pointToRendererPoint(correctedPosition, transform, options.snapToGrid, snapGrid);
       },
-      flowToScreenCoordinate: (position: XYPosition) => {
+      flowToScreenPosition: (flowPosition: XYPosition) => {
         const { transform, domNode } = store.getState();
-        if (domNode) {
-          const { x: domX, y: domY } = domNode.getBoundingClientRect();
 
-          const rendererPosition = rendererPointToPoint(position, transform);
-
-          return {
-            x: rendererPosition.x + domX,
-            y: rendererPosition.y + domY,
-          };
+        if (!domNode) {
+          return flowPosition;
         }
 
-        return { x: 0, y: 0 };
-      },
-      viewportInitialized: panZoomInitialized,
-    };
-  }, [panZoomInitialized]);
+        const { x: domX, y: domY } = domNode.getBoundingClientRect();
+        const rendererPosition = rendererPointToPoint(flowPosition, transform);
 
-  return viewportHelperFunctions;
+        return {
+          x: rendererPosition.x + domX,
+          y: rendererPosition.y + domY,
+        };
+      },
+    };
+  }, []);
 };
 
 export default useViewportHelper;

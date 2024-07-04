@@ -5,7 +5,7 @@ import { handleNodeClick } from '../components/Nodes/utils';
 import { useStoreApi } from './useStore';
 
 type UseDragParams = {
-  nodeRef: RefObject<Element>;
+  nodeRef: RefObject<HTMLDivElement>;
   disabled?: boolean;
   noDragClassName?: string;
   handleSelector?: string;
@@ -13,41 +13,50 @@ type UseDragParams = {
   isSelectable?: boolean;
 };
 
-function useDrag({ nodeRef, disabled = false, noDragClassName, handleSelector, nodeId, isSelectable }: UseDragParams) {
+/**
+ * Hook for calling XYDrag helper from @xyflow/system.
+ *
+ * @internal
+ */
+export function useDrag({
+  nodeRef,
+  disabled = false,
+  noDragClassName,
+  handleSelector,
+  nodeId,
+  isSelectable,
+}: UseDragParams) {
   const store = useStoreApi();
   const [dragging, setDragging] = useState<boolean>(false);
   const xyDrag = useRef<XYDragInstance>();
 
   useEffect(() => {
-    if (nodeRef?.current) {
-      xyDrag.current = XYDrag({
-        domNode: nodeRef.current,
-        getStoreItems: () => store.getState(),
-        onNodeMouseDown: (id: string) => {
-          handleNodeClick({
-            id,
-            store,
-            nodeRef: nodeRef as RefObject<HTMLDivElement>,
-          });
-        },
-        onDragStart: () => {
-          setDragging(true);
-        },
-        onDragStop: () => {
-          setDragging(false);
-        },
-      });
-    }
+    xyDrag.current = XYDrag({
+      getStoreItems: () => store.getState(),
+      onNodeMouseDown: (id: string) => {
+        handleNodeClick({
+          id,
+          store,
+          nodeRef,
+        });
+      },
+      onDragStart: () => {
+        setDragging(true);
+      },
+      onDragStop: () => {
+        setDragging(false);
+      },
+    });
   }, []);
 
   useEffect(() => {
     if (disabled) {
       xyDrag.current?.destroy();
-    } else {
+    } else if (nodeRef.current) {
       xyDrag.current?.update({
         noDragClassName,
         handleSelector,
-        domNode: nodeRef.current as Element,
+        domNode: nodeRef.current,
         isSelectable,
         nodeId,
       });
@@ -59,5 +68,3 @@ function useDrag({ nodeRef, disabled = false, noDragClassName, handleSelector, n
 
   return dragging;
 }
-
-export default useDrag;

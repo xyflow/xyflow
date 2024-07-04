@@ -1,73 +1,124 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { internalsSymbol } from '../constants';
-import type { XYPosition, Position, CoordinateExtent, HandleElement } from '.';
+import type { XYPosition, Position, CoordinateExtent, Handle } from '.';
 import { Optional } from '../utils/types';
 
-// this is stuff that all nodes share independent of the framework
-export type NodeBase<T = any, U extends string | undefined = string | undefined> = {
+/**
+ * Framework independent node data structure.
+ *
+ * @typeParam NodeData - type of the node data
+ * @typeParam NodeType - type of the node
+ */
+export type NodeBase<
+  NodeData extends Record<string, unknown> = Record<string, unknown>,
+  NodeType extends string = string
+> = {
+  /** Unique id of a node */
   id: string;
+  /** Position of a node on the pane
+   * @example { x: 0, y: 0 }
+   */
   position: XYPosition;
-  data: T;
-  type?: U;
+  /** Arbitrary data passed to a node */
+  data: NodeData;
+  /** Type of node defined in nodeTypes */
+  type?: NodeType;
+  /** Only relevant for default, source, target nodeType. controls source position
+   * @example 'right', 'left', 'top', 'bottom'
+   */
   sourcePosition?: Position;
+  /** Only relevant for default, source, target nodeType. controls target position
+   * @example 'right', 'left', 'top', 'bottom'
+   */
   targetPosition?: Position;
   hidden?: boolean;
   selected?: boolean;
+  /** True, if node is being dragged */
   dragging?: boolean;
   draggable?: boolean;
   selectable?: boolean;
   connectable?: boolean;
   deletable?: boolean;
   dragHandle?: string;
-  width?: number | null;
-  height?: number | null;
-  parentNode?: string;
+  width?: number;
+  height?: number;
+  initialWidth?: number;
+  initialHeight?: number;
+  /** Parent node id, used for creating sub-flows */
+  parentId?: string;
   zIndex?: number;
+  /** Boundary a node can be moved in
+   * @example 'parent' or [[0, 0], [100, 100]]
+   */
   extent?: 'parent' | CoordinateExtent;
   expandParent?: boolean;
-  positionAbsolute?: XYPosition;
   ariaLabel?: string;
-  focusable?: boolean;
+  /** Origin of the node relative to it's position
+   * @example
+   * [0.5, 0.5] // centers the node
+   * [0, 0] // top left
+   * [1, 1] // bottom right
+   */
   origin?: NodeOrigin;
   handles?: NodeHandle[];
-  size?: {
+  measured?: {
     width?: number;
     height?: number;
   };
+};
 
-  // only used internally
-  [internalsSymbol]?: {
-    z?: number;
+export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & {
+  measured: {
+    width?: number;
+    height?: number;
+  };
+  internals: {
+    positionAbsolute: XYPosition;
+    z: number;
+    /** Holds a reference to the original node object provided by the user.
+     * Used as an optimization to avoid certain operations. */
+    userNode: NodeType;
     handleBounds?: NodeHandleBounds;
-    isParent?: boolean;
+    bounds?: NodeBounds;
   };
 };
 
-// props that get passed to a custom node
-export type NodeProps<T = any> = {
-  id: NodeBase['id'];
-  data: T;
-  dragHandle: NodeBase['dragHandle'];
-  type: NodeBase['type'];
-  selected: NodeBase['selected'];
-  isConnectable: NodeBase['connectable'];
-  zIndex: NodeBase['zIndex'];
-  xPos: number;
-  yPos: number;
-  dragging: boolean;
-  targetPosition?: Position;
-  sourcePosition?: Position;
-};
+/**
+ * The node data structure that gets used for the nodes prop.
+ *
+ * @public
+ */
+export type NodeProps<NodeType extends NodeBase> = Pick<
+  NodeType,
+  | 'id'
+  | 'data'
+  | 'width'
+  | 'height'
+  | 'sourcePosition'
+  | 'targetPosition'
+  | 'selected'
+  | 'dragHandle'
+  | 'selectable'
+  | 'deletable'
+  | 'draggable'
+  | 'parentId'
+> &
+  Required<Pick<NodeType, 'type' | 'dragging' | 'zIndex'>> & {
+    /** whether a node is connectable or not */
+    isConnectable: boolean;
+    /** position absolute x value */
+    positionAbsoluteX: number;
+    /** position absolute x value */
+    positionAbsoluteY: number;
+  };
 
 export type NodeHandleBounds = {
-  source: HandleElement[] | null;
-  target: HandleElement[] | null;
+  source: Handle[] | null;
+  target: Handle[] | null;
 };
 
-export type NodeDimensionUpdate = {
+export type InternalNodeUpdate = {
   id: string;
   nodeElement: HTMLDivElement;
-  forceUpdate?: boolean;
+  force?: boolean;
 };
 
 export type NodeBounds = XYPosition & {
@@ -78,13 +129,17 @@ export type NodeBounds = XYPosition & {
 export type NodeDragItem = {
   id: string;
   position: XYPosition;
-  positionAbsolute: XYPosition;
   // distance from the mouse cursor to the node when start dragging
   distance: XYPosition;
-  width?: number | null;
-  height?: number | null;
+  measured: {
+    width: number;
+    height: number;
+  };
+  internals: {
+    positionAbsolute: XYPosition;
+  };
   extent?: 'parent' | CoordinateExtent;
-  parentNode?: string;
+  parentId?: string;
   dragging?: boolean;
   origin?: NodeOrigin;
   expandParent?: boolean;
@@ -92,8 +147,11 @@ export type NodeDragItem = {
 
 export type NodeOrigin = [number, number];
 
-export type OnNodeDrag = (event: MouseEvent, node: NodeBase, nodes: NodeBase[]) => void;
-
 export type OnSelectionDrag = (event: MouseEvent, nodes: NodeBase[]) => void;
 
-export type NodeHandle = Optional<HandleElement, 'width' | 'height'>;
+export type NodeHandle = Omit<Optional<Handle, 'width' | 'height'>, 'nodeId'>;
+
+export type Align = 'center' | 'start' | 'end';
+
+export type NodeLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType>;
+export type ParentLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, Map<string, NodeType>>;

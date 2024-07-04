@@ -1,4 +1,4 @@
-# Svelte Flow examples 
+# Svelte Flow examples
 
 This Vite app is used internally to test the library.
 
@@ -8,3 +8,13 @@ This Vite app is used internally to test the library.
 pnpm dev
 ```
 
+## Adding new example
+
+Development of the library is done against `src/routes/examples`. Feel free to add new implementations for features that you develop.
+
+1. Create a new folder & flow at `src/routes/examples/`
+2. Register the new route in `src/components/Header/Header.svelte`
+
+## Adding new E2E implementation
+
+E2E testing is done against the flows implemented in `src/generic-tests`. Adding a new configuration file automatically adds a new route under [`http://localhost:5173/tests/generic/$foldername/$filename`](http://localhost:5173/tests/generic/nodes/general). For further documentation visit [`xyflow/tests/playwright`](/tests/playwright).

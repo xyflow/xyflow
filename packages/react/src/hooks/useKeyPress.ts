@@ -12,14 +12,22 @@ export type UseKeyPressOptions = {
 
 const defaultDoc = typeof document !== 'undefined' ? document : null;
 
-// the keycode can be a string 'a' or an array of strings ['a', 'a+d']
-// a string means a single key 'a' or a combination when '+' is used 'a+d'
-// an array means different possibilites. Explainer: ['a', 'd+s'] here the
-// user can use the single key 'a' or the combination 'd' + 's'
-export default (
+/**
+ * Hook for handling key events.
+ *
+ * @public
+ * @param param.keyCode - The key code (string or array of strings) to use
+ * @param param.options - Options
+ * @returns boolean
+ */
+export function useKeyPress(
+  // the keycode can be a string 'a' or an array of strings ['a', 'a+d']
+  // a string means a single key 'a' or a combination when '+' is used 'a+d'
+  // an array means different possibilites. Explainer: ['a', 'd+s'] here the
+  // user can use the single key 'a' or the combination 'd' + 's'
   keyCode: KeyCode | null = null,
   options: UseKeyPressOptions = { target: defaultDoc, actInsideInputWithModifier: true }
-): boolean => {
+): boolean {
   const [keyPressed, setKeyPressed] = useState(false);
 
   // we need to remember if a modifier key is pressed in order to track it
@@ -84,6 +92,12 @@ export default (
         } else {
           pressedKeys.current.delete(event[keyOrCode]);
         }
+
+        // fix for Mac: when cmd key is pressed, keyup is not triggered for any other key, see: https://stackoverflow.com/questions/27380018/when-cmd-key-is-kept-pressed-keyup-is-not-triggered-for-any-other-key
+        if (event.key === 'Meta') {
+          pressedKeys.current.clear();
+        }
+
         modifierPressed.current = false;
       };
 
@@ -95,17 +109,19 @@ export default (
       target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
       target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
       window.addEventListener('blur', resetHandler);
+      window.addEventListener('contextmenu', resetHandler);
 
       return () => {
         target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
         target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
         window.removeEventListener('blur', resetHandler);
+        window.removeEventListener('contextmenu', resetHandler);
       };
     }
   }, [keyCode, setKeyPressed]);
 
   return keyPressed;
-};
+}
 
 // utils
 

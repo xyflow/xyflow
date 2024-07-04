@@ -1,3 +1,3 @@
-export { default as Controls } from './Controls';
-export { default as ControlButton } from './ControlButton';
-export * from './types';
+export { Controls } from './Controls';
+export { ControlButton } from './ControlButton';
+export type { ControlProps, ControlButtonProps } from './types';

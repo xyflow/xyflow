@@ -48,11 +48,6 @@ export function createFilter({
       return false;
     }
 
-    // if zoom on double click is disabled, we prevent the double click event
-    if (!zoomOnDoubleClick && event.type === 'dblclick') {
-      return false;
-    }
-
     // if the target element is inside an element with the nowheel class, we prevent zooming
     if (isWrappedWithClass(event, noWheelClassName) && event.type === 'wheel') {
       return false;
@@ -61,12 +56,17 @@ export function createFilter({
     // if the target element is inside an element with the nopan class, we prevent panning
     if (
       isWrappedWithClass(event, noPanClassName) &&
-      ((!panOnScroll && event.type !== 'wheel') || (panOnScroll && event.type === 'wheel'))
+      (event.type !== 'wheel' || (panOnScroll && event.type === 'wheel' && !zoomActivationKeyPressed))
     ) {
       return false;
     }
 
     if (!zoomOnPinch && event.ctrlKey && event.type === 'wheel') {
+      return false;
+    }
+
+    if (!zoomOnPinch && event.type === 'touchstart' && event.touches?.length > 1) {
+      event.preventDefault(); // if you manage to start with 2 touches, we prevent native zoom
       return false;
     }
 
@@ -81,11 +81,7 @@ export function createFilter({
     }
 
     // if the pane is only movable using allowed clicks
-    if (
-      Array.isArray(panOnDrag) &&
-      !panOnDrag.includes(event.button) &&
-      (event.type === 'mousedown' || event.type === 'touchstart')
-    ) {
+    if (Array.isArray(panOnDrag) && !panOnDrag.includes(event.button) && event.type === 'mousedown') {
       return false;
     }
 

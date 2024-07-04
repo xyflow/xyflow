@@ -10,10 +10,14 @@ const viewportSelector = (state: ReactFlowState) => ({
   zoom: state.transform[2],
 });
 
-function useViewport(): Viewport {
+/**
+ * Hook for getting the current viewport from the store.
+ *
+ * @public
+ * @returns The current viewport
+ */
+export function useViewport(): Viewport {
   const viewport = useStore(viewportSelector, shallow);
 
   return viewport;
 }
-
-export default useViewport;

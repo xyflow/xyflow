@@ -1,0 +1,28 @@
+{
+  "name": "playwright",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:svelte": "FRAMEWORK=svelte pnpm exec playwright test -c playwright.svelte.config.ts",
+    "test:react": "FRAMEWORK=react pnpm exec playwright test -c playwright.react.config.ts",
+    "test:react:ui": "pnpm run test:react --ui",
+    "test:svelte:ui": "pnpm run test:svelte --ui"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "@types/node": "^20.14.6"
+  },
+  "dependencies": {
+    "@playwright/experimental-ct-react": "^1.45.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.4.5"
+  }
+}

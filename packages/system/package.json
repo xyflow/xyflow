@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/system",
-  "version": "0.0.9",
+  "version": "0.0.32",
   "description": "xyflow core system that powers React Flow and Svelte Flow.",
   "keywords": [
     "node-based UI",
@@ -16,7 +16,7 @@
   ],
   "source": "src/index.ts",
   "main": "dist/umd/index.js",
-  "module": "dist/esm/index.mjs",
+  "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "exports": {
     ".": {
@@ -32,7 +32,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wbkd/react-flow.git",
+    "url": "https://github.com/xyflow/xyflow.git",
     "directory": "packages/system"
   },
   "scripts": {
@@ -42,10 +42,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@types/d3": "^7.4.0",
-    "@types/d3-drag": "^3.0.1",
-    "@types/d3-selection": "^3.0.3",
-    "@types/d3-zoom": "^3.0.1",
+    "@types/d3-drag": "^3.0.7",
+    "@types/d3-selection": "^3.0.10",
+    "@types/d3-transition": "^3.0.8",
+    "@types/d3-zoom": "^3.0.8",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0"

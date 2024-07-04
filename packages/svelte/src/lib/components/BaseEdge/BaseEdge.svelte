@@ -1,7 +1,7 @@
 <script lang="ts">
   import cc from 'classcat';
-  import { EdgeLabelRenderer } from '$lib/components/EdgeLabelRenderer';
   import type { BaseEdgeProps } from './types';
+  import EdgeLabel from '../EdgeLabel/EdgeLabel.svelte';
 
   type $$Props = BaseEdgeProps;
 
@@ -18,13 +18,12 @@
   let className: $$Props['class'] = undefined;
   export { className as class };
 
-  // @todo, why is interactionWidth undefined after first re-render?
   let interactionWidthValue = interactionWidth === undefined ? 20 : interactionWidth;
 </script>
 
 <path
-  d={path}
   {id}
+  d={path}
   class={cc(['svelte-flow__edge-path', className])}
   marker-start={markerStart}
   marker-end={markerEnd}
@@ -43,13 +42,7 @@
 {/if}
 
 {#if label}
-  <EdgeLabelRenderer>
-    <div
-      class="svelte-flow__edge-label"
-      style:transform="translate(-50%, -50%) translate({labelX}px,{labelY}px)"
-      style={labelStyle}
-    >
-      {label}
-    </div>
-  </EdgeLabelRenderer>
+  <EdgeLabel x={labelX} y={labelY} style={labelStyle}>
+    {label}
+  </EdgeLabel>
 {/if}

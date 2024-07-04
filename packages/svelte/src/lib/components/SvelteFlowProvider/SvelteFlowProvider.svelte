@@ -11,12 +11,14 @@
   export let initialWidth: $$Props['initialWidth'] = undefined;
   export let initialHeight: $$Props['initialHeight'] = undefined;
   export let fitView: $$Props['fitView'] = undefined;
+  export let nodeOrigin: $$Props['nodeOrigin'] = undefined;
 
   const store = createStore({
     nodes: initialNodes,
     edges: initialEdges,
     width: initialWidth,
     height: initialHeight,
+    nodeOrigin,
     fitView
   });
 

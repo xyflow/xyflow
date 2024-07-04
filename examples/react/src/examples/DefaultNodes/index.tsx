@@ -25,6 +25,7 @@ const defaultNodes: Node[] = [
   },
   {
     id: '3',
+    type: 'output',
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
     className: 'light',
@@ -54,26 +55,24 @@ const DefaultNodes = () => {
 
   const updateNodePositions = () => {
     instance.setNodes((nodes) =>
-      nodes.map((node) => {
-        node.position = {
+      nodes.map((node) => ({
+        ...node,
+        position: {
           x: Math.random() * 400,
           y: Math.random() * 400,
-        };
-
-        return node;
-      })
+        },
+      }))
     );
   };
 
   const updateEdgeColors = () => {
     instance.setEdges((edges) =>
-      edges.map((edge) => {
-        edge.style = {
+      edges.map((edge) => ({
+        ...edge,
+        style: {
           stroke: '#ff5050',
-        };
-
-        return edge;
-      })
+        },
+      }))
     );
   };
 

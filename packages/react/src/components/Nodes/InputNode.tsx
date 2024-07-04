@@ -1,15 +1,13 @@
-import { memo } from 'react';
-import { Position, type NodeProps } from '@xyflow/system';
+import { Position } from '@xyflow/system';
 
-import Handle from '../../components/Handle';
+import { Handle } from '../../components/Handle';
+import type { BuiltInNode, NodeProps } from '../../types/nodes';
 
-const InputNode = ({ data, isConnectable, sourcePosition = Position.Bottom }: NodeProps) => (
-  <>
-    {data?.label}
-    <Handle type="source" position={sourcePosition} isConnectable={isConnectable} />
-  </>
-);
-
-InputNode.displayName = 'InputNode';
-
-export default memo(InputNode);
+export function InputNode({ data, isConnectable, sourcePosition = Position.Bottom }: NodeProps<BuiltInNode>) {
+  return (
+    <>
+      {data?.label}
+      <Handle type="source" position={sourcePosition} isConnectable={isConnectable} />
+    </>
+  );
+}

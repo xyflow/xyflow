@@ -1,6 +1,5 @@
-import { Connection, Transform, errorMessages, internalsSymbol, isEdgeBase } from '../..';
-import { EdgeBase, NodeBase } from '../../types';
-import { isNumeric, getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
+import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase } from '../..';
+import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
 export function getEdgeCenter({
@@ -23,68 +22,34 @@ export function getEdgeCenter({
   return [centerX, centerY, xOffset, yOffset];
 }
 
-const defaultEdgeTree = [{ level: 0, isMaxLevel: true, edges: [] }];
-
-export type GroupedEdges<EdgeType extends EdgeBase> = {
-  edges: EdgeType[];
-  level: number;
-  isMaxLevel: boolean;
+export type GetEdgeZIndexParams = {
+  sourceNode: InternalNodeBase;
+  targetNode: InternalNodeBase;
+  selected?: boolean;
+  zIndex?: number;
+  elevateOnSelect?: boolean;
 };
 
-export function groupEdgesByZLevel<EdgeType extends EdgeBase>(
-  edges: EdgeType[],
-  nodes: NodeBase[],
-  elevateEdgesOnSelect = false
-): GroupedEdges<EdgeType>[] {
-  let maxLevel = -1;
-
-  const levelLookup = edges.reduce<Record<string, EdgeType[]>>((tree, edge) => {
-    const hasZIndex = isNumeric(edge.zIndex);
-    let z = hasZIndex ? edge.zIndex! : 0;
-
-    if (elevateEdgesOnSelect) {
-      const targetNode = nodes.find((n) => n.id === edge.target);
-      const sourceNode = nodes.find((n) => n.id === edge.source);
-      const edgeOrConnectedNodeSelected = edge.selected || targetNode?.selected || sourceNode?.selected;
-      const selectedZIndex = Math.max(
-        sourceNode?.[internalsSymbol]?.z || 0,
-        targetNode?.[internalsSymbol]?.z || 0,
-        1000
-      );
-      z = (hasZIndex ? edge.zIndex! : 0) + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
-    }
-
-    if (tree[z]) {
-      tree[z].push(edge);
-    } else {
-      tree[z] = [edge];
-    }
-
-    maxLevel = z > maxLevel ? z : maxLevel;
-
-    return tree;
-  }, {});
-
-  const edgeTree = Object.entries(levelLookup).map(([key, edges]) => {
-    const level = +key;
-
-    return {
-      edges,
-      level,
-      isMaxLevel: level === maxLevel,
-    };
-  });
-
-  if (edgeTree.length === 0) {
-    return defaultEdgeTree;
+export function getElevatedEdgeZIndex({
+  sourceNode,
+  targetNode,
+  selected = false,
+  zIndex = 0,
+  elevateOnSelect = false,
+}: GetEdgeZIndexParams): number {
+  if (!elevateOnSelect) {
+    return zIndex;
   }
 
-  return edgeTree;
+  const edgeOrConnectedNodeSelected = selected || targetNode.selected || sourceNode.selected;
+  const selectedZIndex = Math.max(sourceNode.internals.z || 0, targetNode.internals.z || 0, 1000);
+
+  return zIndex + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
 }
 
 type IsEdgeVisibleParams = {
-  sourceNode: NodeBase;
-  targetNode: NodeBase;
+  sourceNode: InternalNodeBase;
+  targetNode: InternalNodeBase;
   width: number;
   height: number;
   transform: Transform;
@@ -112,7 +77,7 @@ export function isEdgeVisible({ sourceNode, targetNode, width, height, transform
 }
 
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | EdgeBase): string =>
-  `xyflow__edge-${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
+  `xy-edge__${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
 
 const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
   return edges.some(
@@ -124,7 +89,15 @@ const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
   );
 };
 
-export const addEdgeBase = <EdgeType extends EdgeBase>(
+/**
+ * This util is a convenience function to add a new Edge to an array of edges
+ * @remarks It also performs some validation to make sure you don't add an invalid edge or duplicate an existing one.
+ * @public
+ * @param edgeParams - Either an Edge or a Connection you want to add
+ * @param edges -  The array of all current edges
+ * @returns A new array of edges with the new edge added
+ */
+export const addEdge = <EdgeType extends EdgeBase>(
   edgeParams: EdgeType | Connection,
   edges: EdgeType[]
 ): EdgeType[] => {
@@ -148,18 +121,34 @@ export const addEdgeBase = <EdgeType extends EdgeBase>(
     return edges;
   }
 
+  if (edge.sourceHandle === null) {
+    delete edge.sourceHandle;
+  }
+
+  if (edge.targetHandle === null) {
+    delete edge.targetHandle;
+  }
+
   return edges.concat(edge);
 };
 
-export type UpdateEdgeOptions = {
+export type ReconnectEdgeOptions = {
   shouldReplaceId?: boolean;
 };
 
-export const updateEdgeBase = <EdgeType extends EdgeBase>(
+/**
+ * A handy utility to reconnect an existing edge with new properties
+ * @param oldEdge - The edge you want to update
+ * @param newConnection - The new connection you want to update the edge with
+ * @param edges - The array of all current edges
+ * @param options.shouldReplaceId - should the id of the old edge be replaced with the new connection id
+ * @returns the updated edges array
+ */
+export const reconnectEdge = <EdgeType extends EdgeBase>(
   oldEdge: EdgeType,
   newConnection: Connection,
   edges: EdgeType[],
-  options: UpdateEdgeOptions = { shouldReplaceId: true }
+  options: ReconnectEdgeOptions = { shouldReplaceId: true }
 ): EdgeType[] => {
   const { id: oldEdgeId, ...rest } = oldEdge;
 

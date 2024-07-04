@@ -19,6 +19,7 @@ import {
 import initialItems from './initial-elements';
 
 import styles from './layouting.module.css';
+import ReactFlowDevTools from '../DevTools/DevTools';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -56,16 +57,16 @@ const LayoutFlow = () => {
 
     const layoutedNodes = nodes.map((node) => {
       const nodeWithPosition = dagreGraph.node(node.id);
-      node.targetPosition = isHorizontal ? Position.Left : Position.Top;
-      node.sourcePosition = isHorizontal ? Position.Right : Position.Bottom;
-      // we need to pass a slightly different position in order to notify react flow about the change
-      // @TODO how can we change the position handling so that we dont need this hack?
-      node.position = {
-        x: nodeWithPosition.x + Math.random() / 1000,
-        y: nodeWithPosition.y,
-      };
 
-      return node;
+      return {
+        ...node,
+        targetPosition: isHorizontal ? Position.Left : Position.Top,
+        sourcePosition: isHorizontal ? Position.Right : Position.Bottom,
+        position: {
+          x: nodeWithPosition.x,
+          y: nodeWithPosition.y,
+        },
+      };
     });
 
     setNodes(layoutedNodes);
@@ -98,6 +99,7 @@ const LayoutFlow = () => {
         onEdgesChange={onEdgesChange}
       >
         <Controls />
+        <ReactFlowDevTools />
       </ReactFlow>
       <Panel position="top-right">
         <button onClick={() => onLayout('TB')}>vertical layout</button>

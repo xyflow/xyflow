@@ -1,16 +1,16 @@
 import { drag } from 'd3-drag';
-import { select } from 'd3-selection';
+import { select, type Selection } from 'd3-selection';
 
 import {
   calcAutoPan,
   getEventPosition,
   getPointerPosition,
-  calcNextPosition,
+  calculateNodePosition,
   snapPosition,
-  getRectOfNodes,
+  getInternalNodesBounds,
   rectToBox,
 } from '../utils';
-import { getDragItems, getEventHandlerParams, hasSelector, wrapSelectionDragFunc } from './utils';
+import { getDragItems, getEventHandlerParams, hasSelector } from './utils';
 import type {
   NodeBase,
   NodeDragItem,
@@ -23,16 +23,22 @@ import type {
   SnapGrid,
   Transform,
   PanBy,
-  OnNodeDrag,
   OnSelectionDrag,
   UpdateNodePositions,
   Box,
+  InternalNodeBase,
 } from '../types';
 
-export type OnDrag = (event: MouseEvent, dragItems: NodeDragItem[], node: NodeBase, nodes: NodeBase[]) => void;
+export type OnDrag = (
+  event: MouseEvent,
+  dragItems: Map<string, NodeDragItem>,
+  node: NodeBase,
+  nodes: NodeBase[]
+) => void;
 
-type StoreItems = {
+type StoreItems<OnNodeDrag> = {
   nodes: NodeBase[];
+  nodeLookup: Map<string, InternalNodeBase>;
   edges: EdgeBase[];
   nodeExtent: CoordinateExtent;
   snapGrid: SnapGrid;
@@ -55,15 +61,16 @@ type StoreItems = {
   onSelectionDrag?: OnSelectionDrag;
   onSelectionDragStop?: OnSelectionDrag;
   updateNodePositions: UpdateNodePositions;
+  autoPanSpeed?: number;
 };
 
-export type XYDragParams = {
-  domNode: Element;
-  getStoreItems: () => StoreItems;
+export type XYDragParams<OnNodeDrag> = {
+  getStoreItems: () => StoreItems<OnNodeDrag>;
   onDragStart?: OnDrag;
   onDrag?: OnDrag;
   onDragStop?: OnDrag;
   onNodeMouseDown?: (id: string) => void;
+  autoPanSpeed?: number;
 };
 
 export type XYDragInstance = {
@@ -79,30 +86,30 @@ export type DragUpdateParams = {
   domNode: Element;
 };
 
-export function XYDrag({
-  domNode,
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => void | undefined>({
   onNodeMouseDown,
   getStoreItems,
   onDragStart,
   onDrag,
   onDragStop,
-}: XYDragParams): XYDragInstance {
+}: XYDragParams<OnNodeDrag>): XYDragInstance {
   let lastPos: { x: number | null; y: number | null } = { x: null, y: null };
   let autoPanId = 0;
-  let dragItems: NodeDragItem[] = [];
+  let dragItems = new Map<string, NodeDragItem>();
   let autoPanStarted = false;
   let mousePosition: XYPosition = { x: 0, y: 0 };
-  let dragEvent: MouseEvent | null = null;
   let containerBounds: DOMRect | null = null;
   let dragStarted = false;
-
-  const d3Selection = select(domNode);
+  let d3Selection: Selection<Element, unknown, null, undefined> | null = null;
+  let abortDrag = false; // prevents unintentional dragging on multitouch
 
   // public functions
   function update({ noDragClassName, handleSelector, domNode, isSelectable, nodeId }: DragUpdateParams) {
-    function updateNodes({ x, y }: XYPosition) {
+    d3Selection = select(domNode);
+    function updateNodes({ x, y }: XYPosition, dragEvent: MouseEvent | null) {
       const {
-        nodes,
+        nodeLookup,
         nodeExtent,
         snapGrid,
         snapToGrid,
@@ -118,59 +125,73 @@ export function XYDrag({
       let hasChange = false;
       let nodesBox: Box = { x: 0, y: 0, x2: 0, y2: 0 };
 
-      if (dragItems.length > 1 && nodeExtent) {
-        const rect = getRectOfNodes(dragItems as unknown as NodeBase[], nodeOrigin);
+      if (dragItems.size > 1 && nodeExtent) {
+        const rect = getInternalNodesBounds(dragItems);
         nodesBox = rectToBox(rect);
       }
 
-      dragItems = dragItems.map((n) => {
-        let nextPosition = { x: x - n.distance.x, y: y - n.distance.y };
-
+      for (const [id, dragItem] of dragItems) {
+        let nextPosition = { x: x - dragItem.distance.x, y: y - dragItem.distance.y };
         if (snapToGrid) {
           nextPosition = snapPosition(nextPosition, snapGrid);
         }
 
         // if there is selection with multiple nodes and a node extent is set, we need to adjust the node extent for each node
         // based on its position so that the node stays at it's position relative to the selection.
-        const adjustedNodeExtent: CoordinateExtent = [
+        let adjustedNodeExtent: CoordinateExtent = [
           [nodeExtent[0][0], nodeExtent[0][1]],
           [nodeExtent[1][0], nodeExtent[1][1]],
         ];
 
-        if (dragItems.length > 1 && nodeExtent && !n.extent) {
-          adjustedNodeExtent[0][0] = n.positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
-          adjustedNodeExtent[1][0] = n.positionAbsolute.x + (n.width ?? 0) - nodesBox.x2 + nodeExtent[1][0];
+        if (dragItems.size > 1 && nodeExtent && !dragItem.extent) {
+          const { positionAbsolute } = dragItem.internals;
+          const x1 = positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
+          const x2 = positionAbsolute.x + dragItem.measured.width - nodesBox.x2 + nodeExtent[1][0];
 
-          adjustedNodeExtent[0][1] = n.positionAbsolute.y - nodesBox.y + nodeExtent[0][1];
-          adjustedNodeExtent[1][1] = n.positionAbsolute.y + (n.height ?? 0) - nodesBox.y2 + nodeExtent[1][1];
+          const y1 = positionAbsolute.y - nodesBox.y + nodeExtent[0][1];
+          const y2 = positionAbsolute.y + dragItem.measured.height - nodesBox.y2 + nodeExtent[1][1];
+
+          adjustedNodeExtent = [
+            [x1, y1],
+            [x2, y2],
+          ];
         }
 
-        const updatedPos = calcNextPosition(n, nextPosition, nodes, adjustedNodeExtent, nodeOrigin, onError);
+        const { position, positionAbsolute } = calculateNodePosition({
+          nodeId: id,
+          nextPosition,
+          nodeLookup,
+          nodeExtent: adjustedNodeExtent,
+          nodeOrigin,
+          onError,
+        });
 
         // we want to make sure that we only fire a change event when there is a change
-        hasChange = hasChange || n.position.x !== updatedPos.position.x || n.position.y !== updatedPos.position.y;
+        hasChange = hasChange || dragItem.position.x !== position.x || dragItem.position.y !== position.y;
 
-        n.position = updatedPos.position;
-        n.positionAbsolute = updatedPos.positionAbsolute;
-
-        return n;
-      });
+        dragItem.position = position;
+        dragItem.internals.positionAbsolute = positionAbsolute;
+      }
 
       if (!hasChange) {
         return;
       }
 
-      updateNodePositions(dragItems, true, true);
-      const onNodeOrSelectionDrag = nodeId ? onNodeDrag : wrapSelectionDragFunc(onSelectionDrag);
+      updateNodePositions(dragItems, true);
 
-      if (dragEvent) {
+      if (dragEvent && (onDrag || onNodeDrag || (!nodeId && onSelectionDrag))) {
         const [currentNode, currentNodes] = getEventHandlerParams({
           nodeId,
           dragItems,
-          nodes,
+          nodeLookup,
         });
-        onDrag?.(dragEvent as MouseEvent, dragItems, currentNode, currentNodes);
-        onNodeOrSelectionDrag?.(dragEvent as MouseEvent, currentNode, currentNodes);
+
+        onDrag?.(dragEvent, dragItems, currentNode, currentNodes);
+        onNodeDrag?.(dragEvent, currentNode, currentNodes);
+
+        if (!nodeId) {
+          onSelectionDrag?.(dragEvent, currentNodes);
+        }
       }
     }
 
@@ -179,16 +200,16 @@ export function XYDrag({
         return;
       }
 
-      const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds);
+      const { transform, panBy, autoPanSpeed } = getStoreItems();
+
+      const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds, autoPanSpeed);
 
       if (xMovement !== 0 || yMovement !== 0) {
-        const { transform, panBy } = getStoreItems();
-
         lastPos.x = (lastPos.x ?? 0) - xMovement / transform[2];
         lastPos.y = (lastPos.y ?? 0) - yMovement / transform[2];
 
         if (panBy({ x: xMovement, y: yMovement })) {
-          updateNodes(lastPos as XYPosition);
+          updateNodes(lastPos as XYPosition, null);
         }
       }
       autoPanId = requestAnimationFrame(autoPan);
@@ -196,7 +217,7 @@ export function XYDrag({
 
     function startDrag(event: UseDragEvent) {
       const {
-        nodes,
+        nodeLookup,
         multiSelectionActive,
         nodesDraggable,
         transform,
@@ -211,7 +232,7 @@ export function XYDrag({
       dragStarted = true;
 
       if ((!selectNodesOnDrag || !isSelectable) && !multiSelectionActive && nodeId) {
-        if (!nodes.find((n) => n.id === nodeId)?.selected) {
+        if (!nodeLookup.get(nodeId)?.selected) {
           // we need to reset selected nodes when selectNodesOnDrag=false
           unselectNodesAndEdges();
         }
@@ -223,24 +244,29 @@ export function XYDrag({
 
       const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
       lastPos = pointerPos;
-      dragItems = getDragItems(nodes, nodesDraggable, pointerPos, nodeId);
+      dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, nodeId);
 
-      const onNodeOrSelectionDragStart = nodeId ? onNodeDragStart : wrapSelectionDragFunc(onSelectionDragStart);
-
-      if (dragItems) {
+      if (dragItems.size > 0 && (onDragStart || onNodeDragStart || (!nodeId && onSelectionDragStart))) {
         const [currentNode, currentNodes] = getEventHandlerParams({
           nodeId,
           dragItems,
-          nodes,
+          nodeLookup,
         });
+
         onDragStart?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-        onNodeOrSelectionDragStart?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+        onNodeDragStart?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+
+        if (!nodeId) {
+          onSelectionDragStart?.(event.sourceEvent as MouseEvent, currentNodes);
+        }
       }
     }
 
     const d3DragInstance = drag()
       .on('start', (event: UseDragEvent) => {
         const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
+
+        abortDrag = false;
 
         if (nodeDragThreshold === 0) {
           startDrag(event);
@@ -254,6 +280,14 @@ export function XYDrag({
       .on('drag', (event: UseDragEvent) => {
         const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold } = getStoreItems();
         const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+
+        if (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) {
+          abortDrag = true;
+        }
+
+        if (abortDrag) {
+          return;
+        }
 
         if (!autoPanStarted && autoPanOnNodeDrag && dragStarted) {
           autoPanStarted = true;
@@ -272,14 +306,14 @@ export function XYDrag({
 
         // skip events without movement
         if ((lastPos.x !== pointerPos.xSnapped || lastPos.y !== pointerPos.ySnapped) && dragItems && dragStarted) {
-          dragEvent = event.sourceEvent as MouseEvent;
+          // dragEvent = event.sourceEvent as MouseEvent;
           mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
 
-          updateNodes(pointerPos);
+          updateNodes(pointerPos, event.sourceEvent as MouseEvent);
         }
       })
       .on('end', (event: UseDragEvent) => {
-        if (!dragStarted) {
+        if (!dragStarted || abortDrag) {
           return;
         }
 
@@ -287,19 +321,25 @@ export function XYDrag({
         dragStarted = false;
         cancelAnimationFrame(autoPanId);
 
-        if (dragItems) {
-          const { nodes, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
-          const onNodeOrSelectionDragStop = nodeId ? onNodeDragStop : wrapSelectionDragFunc(onSelectionDragStop);
+        if (dragItems.size > 0) {
+          const { nodeLookup, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
 
-          updateNodePositions(dragItems, false, false);
+          updateNodePositions(dragItems, false);
 
-          const [currentNode, currentNodes] = getEventHandlerParams({
-            nodeId,
-            dragItems,
-            nodes,
-          });
-          onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-          onNodeOrSelectionDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+          if (onDragStop || onNodeDragStop || (!nodeId && onSelectionDragStop)) {
+            const [currentNode, currentNodes] = getEventHandlerParams({
+              nodeId,
+              dragItems,
+              nodeLookup,
+            });
+
+            onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
+            onNodeDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+
+            if (!nodeId) {
+              onSelectionDragStop?.(event.sourceEvent as MouseEvent, currentNodes);
+            }
+          }
         }
       })
       .filter((event: MouseEvent) => {
@@ -316,7 +356,7 @@ export function XYDrag({
   }
 
   function destroy() {
-    d3Selection.on('.drag', null);
+    d3Selection?.on('.drag', null);
   }
 
   return {

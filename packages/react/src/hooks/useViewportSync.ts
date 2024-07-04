@@ -6,7 +6,13 @@ import type { ReactFlowState } from '../types';
 
 const selector = (state: ReactFlowState) => state.panZoom?.syncViewport;
 
-export default function useViewportSync(viewport?: Viewport) {
+/**
+ * Hook for syncing the viewport with the panzoom instance.
+ *
+ * @internal
+ * @param viewport
+ */
+export function useViewportSync(viewport?: Viewport) {
   const syncViewport = useStore(selector);
   const store = useStoreApi();
 

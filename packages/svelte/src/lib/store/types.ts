@@ -1,6 +1,6 @@
 import type { Writable } from 'svelte/store';
 import type {
-  NodeDimensionUpdate,
+  InternalNodeUpdate,
   XYPosition,
   ViewportHelperFunctionOptions,
   Connection,
@@ -27,7 +27,7 @@ export type SvelteFlowStoreActions = {
   setTranslateExtent: (extent: CoordinateExtent) => void;
   fitView: (options?: FitViewOptions) => boolean;
   updateNodePositions: UpdateNodePositions;
-  updateNodeDimensions: (updates: NodeDimensionUpdate[]) => void;
+  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
   unselectNodesAndEdges: (params?: { nodes?: Node[]; edges?: Edge[] }) => void;
   addSelectedNodes: (ids: string[]) => void;
   addSelectedEdges: (ids: string[]) => void;

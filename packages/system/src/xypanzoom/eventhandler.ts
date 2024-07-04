@@ -78,10 +78,9 @@ export function createPanOnScrollHandler({
     event.stopImmediatePropagation();
 
     const currentZoom = d3Selection.property('__zoom').k || 1;
-    const _isMacOs = isMacOs();
 
     // macos sets ctrlKey=true for pinch gesture on a trackpad
-    if (event.ctrlKey && zoomOnPinch && _isMacOs) {
+    if (event.ctrlKey && zoomOnPinch) {
       const point = pointer(event);
       const pinchDelta = wheelDelta(event);
       const zoom = currentZoom * Math.pow(2, pinchDelta);
@@ -98,7 +97,7 @@ export function createPanOnScrollHandler({
     let deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
 
     // this enables vertical scrolling with shift + scroll on windows
-    if (!_isMacOs && event.shiftKey && panOnScrollMode !== PanOnScrollMode.Vertical) {
+    if (!isMacOs() && event.shiftKey && panOnScrollMode !== PanOnScrollMode.Vertical) {
       deltaX = event.deltaY * deltaNormalize;
       deltaY = 0;
     }
@@ -138,7 +137,10 @@ export function createPanOnScrollHandler({
 
 export function createZoomOnScrollHandler({ noWheelClassName, preventScrolling, d3ZoomHandler }: ZoomOnScrollParams) {
   return function (this: Element, event: any, d: unknown) {
-    if (!preventScrolling || isWrappedWithClass(event, noWheelClassName)) {
+    // we still want to enable pinch zooming even if preventScrolling is set to false
+    const preventZoom = !preventScrolling && event.type === 'wheel' && !event.ctrlKey;
+
+    if (preventZoom || isWrappedWithClass(event, noWheelClassName)) {
       return null;
     }
 
@@ -205,6 +207,7 @@ export function createPanZoomEndHandler({
     if (event.sourceEvent?.internal) {
       return;
     }
+
     zoomPanValues.isZoomingOrPanning = false;
 
     if (

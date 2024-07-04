@@ -39,7 +39,7 @@ const nodeOrigin: NodeOrigin = [0.5, 0.5];
 const DnDFlow = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const onConnect = (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds));
   const onInit = (rfi: ReactFlowInstance) => setReactFlowInstance(rfi);
@@ -49,7 +49,7 @@ const DnDFlow = () => {
 
     if (reactFlowInstance) {
       const type = event.dataTransfer.getData('application/reactflow');
-      const position = reactFlowInstance.screenToFlowCoordinate({
+      const position = reactFlowInstance.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
@@ -66,7 +66,7 @@ const DnDFlow = () => {
 
   return (
     <div className={styles.dndflow}>
-      <ReactFlowProvider nodes={initialNodes} edges={[]}>
+      <ReactFlowProvider initialNodes={initialNodes} initialEdges={[]}>
         <div className={styles.wrapper}>
           <ReactFlow
             nodes={nodes}
@@ -77,6 +77,7 @@ const DnDFlow = () => {
             onInit={onInit}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            nodeOrigin={nodeOrigin}
           >
             <Controls />
           </ReactFlow>

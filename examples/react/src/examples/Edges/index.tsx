@@ -175,6 +175,15 @@ const edgeTypes: EdgeTypes = {
   custom2: CustomEdge2,
 };
 
+const defaultEdgeOptions = {
+  markerEnd: {
+    type: MarkerType.ArrowClosed,
+    color: 'red',
+    width: 20,
+    height: 20,
+  },
+};
+
 const EdgesFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -196,6 +205,8 @@ const EdgesFlow = () => {
       onEdgeMouseEnter={onEdgeMouseEnter}
       onEdgeMouseMove={onEdgeMouseMove}
       onEdgeMouseLeave={onEdgeMouseLeave}
+      onDelete={console.log}
+      defaultEdgeOptions={defaultEdgeOptions}
     >
       <MiniMap />
       <Controls />

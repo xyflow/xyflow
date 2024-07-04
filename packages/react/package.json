@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/react",
-  "version": "12.0.0",
+  "version": "12.0.0-next.26",
   "description": "React Flow - A highly customizable React library for building node-based editors and interactive flow charts.",
   "keywords": [
     "react",
@@ -16,7 +16,7 @@
   ],
   "source": "src/index.ts",
   "main": "dist/umd/index.js",
-  "module": "dist/esm/index.mjs",
+  "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "exports": {
     ".": {
@@ -36,8 +36,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wbkd/react-flow.git",
-    "directory": "packages/core"
+    "url": "https://github.com/xyflow/xyflow.git",
+    "directory": "packages/react"
   },
   "scripts": {
     "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\" pnpm:css-watch",
@@ -48,15 +48,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@types/d3": "^7.4.0",
-    "@types/d3-drag": "^3.0.1",
-    "@types/d3-selection": "^3.0.3",
-    "@types/d3-zoom": "^3.0.1",
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.3",
-    "d3-drag": "^3.0.0",
-    "d3-selection": "^3.0.0",
-    "d3-zoom": "^3.0.0",
     "zustand": "^4.4.0"
   },
   "peerDependencies": {
@@ -73,7 +66,7 @@
     "autoprefixer": "^10.4.15",
     "cssnano": "^6.0.1",
     "postcss": "^8.4.21",
-    "postcss-cli": "^10.1.0",
+    "postcss-cli": "^11.0.0",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-import": "^15.1.0",
     "postcss-nested": "^6.0.0",
@@ -84,12 +77,9 @@
   "rollup": {
     "globals": {
       "classcat": "cc",
-      "d3-selection": "d3Selection",
-      "d3-zoom": "d3Zoom",
-      "d3-drag": "d3Drag",
       "zustand": "zustand",
       "zustand/shallow": "zustandShallow"
     },
-    "name": "ReactFlowCore"
+    "name": "ReactFlow"
   }
 }

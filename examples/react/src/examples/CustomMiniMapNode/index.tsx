@@ -27,13 +27,13 @@ const buttonStyle: CSSProperties = {
   zIndex: 4,
 };
 
-const CustomMiniMapNode = ({ x, y, width, height, color }: MiniMapNodeProps) => (
-  <circle cx={x} cy={y} r={Math.max(width, height) / 2} fill={color} />
-);
+const CustomMiniMapNode = ({ x, y, width, height }: MiniMapNodeProps) => {
+  return <circle cx={x} cy={y} r={Math.max(width, height) / 2} fill="#ffcc00" />;
+};
 
 const CustomMiniMapNodeFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const onConnect = useCallback((params: Connection | Edge) => setEdges((els) => addEdge(params, els)), [setEdges]);
   const addRandomNode = () => {
@@ -59,7 +59,7 @@ const CustomMiniMapNodeFlow = () => {
       onNodeClick={onNodeClick}
       onConnect={(p) => onConnect(p)}
       onNodeDragStop={onNodeDragStop}
-      onlyRenderVisibleElements={false}
+      onlyRenderVisibleElements={true}
     >
       <Controls />
       <Background variant={BackgroundVariant.Lines} />

@@ -1,33 +1,9 @@
 <script lang="ts">
-  import type { NodeProps } from '@xyflow/system';
+  import type { NodeProps } from '$lib/types';
 
-  interface $$Props extends NodeProps<{}> {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface $$Props extends NodeProps {}
 
-  // unused props - we need to list them here in order to prevent warnings
-  export let id: $$Props['id'] = '';
-  export let data: $$Props['data'] = {};
-  export let selected: $$Props['selected'] = undefined;
-  export let sourcePosition: $$Props['sourcePosition'] = undefined;
-  export let targetPosition: $$Props['targetPosition'] = undefined;
-  export let type: $$Props['type'] = undefined;
-  export let zIndex: $$Props['zIndex'] = undefined;
-  export let dragging: $$Props['dragging'] = false;
-  export let dragHandle: $$Props['dragHandle'] = undefined;
-  export let xPos: $$Props['xPos'] = 0;
-  export let yPos: $$Props['yPos'] = 0;
-  export let isConnectable: $$Props['isConnectable'] = undefined;
-
-  // @todo: there must be a better way to do this
-  id;
-  data;
-  selected;
-  sourcePosition;
-  targetPosition;
-  type;
-  zIndex;
-  dragging;
-  dragHandle;
-  xPos;
-  yPos;
-  isConnectable;
+  // this is a workaround for suppressing the warning about unused props
+  $$restProps;
 </script>

@@ -1,51 +1,50 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { D3DragEvent, SubjectPosition } from 'd3-drag';
-
-export type ResizeParams = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
-export type ResizeParamsWithDirection = ResizeParams & {
-  direction: number[];
-};
-
-type OnResizeHandler<Params = ResizeParams, Result = void> = (event: ResizeDragEvent, params: Params) => Result;
-
-export type ShouldResize = OnResizeHandler<ResizeParamsWithDirection, boolean>;
-export type OnResizeStart = OnResizeHandler;
-export type OnResize = OnResizeHandler<ResizeParamsWithDirection>;
-export type OnResizeEnd = OnResizeHandler;
+import type {
+  ControlPosition,
+  ControlLinePosition,
+  ResizeControlVariant,
+  ShouldResize,
+  OnResizeStart,
+  OnResize,
+  OnResizeEnd,
+} from '@xyflow/system';
 
 export type NodeResizerProps = {
+  /** Id of the node it is resizing
+   * @remarks optional if used inside custom node
+   */
   nodeId?: string;
+  /** Color of the resize handle */
   color?: string;
+  /** ClassName applied to handle */
   handleClassName?: string;
+  /** Style applied to handle */
   handleStyle?: CSSProperties;
+  /** ClassName applied to line */
   lineClassName?: string;
+  /** Style applied to line */
   lineStyle?: CSSProperties;
+  /** Are the controls visible */
   isVisible?: boolean;
+  /** Minimum width of node */
   minWidth?: number;
+  /** Minimum height of node */
   minHeight?: number;
+  /** Maximum width of node */
   maxWidth?: number;
+  /** Maximum height of node */
   maxHeight?: number;
+  /** Keep aspect ratio when resizing */
   keepAspectRatio?: boolean;
+  /** Callback to determine if node should resize */
   shouldResize?: ShouldResize;
+  /** Callback called when resizing starts */
   onResizeStart?: OnResizeStart;
+  /** Callback called when resizing */
   onResize?: OnResize;
+  /** Callback called when resizing ends */
   onResizeEnd?: OnResizeEnd;
 };
-
-export type ControlLinePosition = 'top' | 'bottom' | 'left' | 'right';
-
-export type ControlPosition = ControlLinePosition | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-
-export enum ResizeControlVariant {
-  Line = 'line',
-  Handle = 'handle',
-}
 
 export type ResizeControlProps = Pick<
   NodeResizerProps,
@@ -61,7 +60,14 @@ export type ResizeControlProps = Pick<
   | 'onResize'
   | 'onResizeEnd'
 > & {
+  /** Position of the control
+   * @example ControlPosition.TopLeft, ControlPosition.TopRight,
+   * ControlPosition.BottomLeft, ControlPosition.BottomRight
+   */
   position?: ControlPosition;
+  /** Variant of the control
+   * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
+   */
   variant?: ResizeControlVariant;
   className?: string;
   style?: CSSProperties;
@@ -71,5 +77,3 @@ export type ResizeControlProps = Pick<
 export type ResizeControlLineProps = ResizeControlProps & {
   position?: ControlLinePosition;
 };
-
-export type ResizeDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;

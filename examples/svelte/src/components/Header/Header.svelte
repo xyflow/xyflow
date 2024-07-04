@@ -4,21 +4,27 @@
 
 	const routes = [
 		'add-node-on-drop',
+		'color-mode',
 		'custom-connection-line',
 		'customnode',
 		'dagre',
 		'drag-n-drop',
 		'edges',
 		'figma',
+		'handle-connect',
 		'interaction',
 		'intersections',
+		'node-toolbar',
+		'node-resizer',
 		'overview',
 		'stress',
 		'subflows',
 		'two-way-viewport',
+		'usenodesdata',
 		'usesvelteflow',
 		'useupdatenodeinternals',
-		'validation'
+		'validation',
+		'reset'
 	];
 
 	const onChange = (event: Event) => {
@@ -31,7 +37,7 @@
 	<div class="logo">Svelte Flow</div>
 	<select on:change={onChange} value={$page.route.id}>
 		{#each routes as route}
-			<option value={`/${route}`}>{route}</option>
+			<option value={`/examples/${route}`}>{route}</option>
 		{/each}
 	</select>
 </header>

@@ -4,10 +4,11 @@
   import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
   import type { ZoomProps } from './types';
+  import { onMount } from 'svelte';
 
   type $$Props = ZoomProps;
 
-  export let initialViewport: $$Props['initialViewport'];
+  export let initialViewport: $$Props['initialViewport'] = undefined;
   export let onMoveStart: $$Props['onMoveStart'] = undefined;
   export let onMove: $$Props['onMove'] = undefined;
   export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
@@ -22,17 +23,24 @@
   const {
     viewport,
     panZoom,
-    selectionKeyPressed,
+    selectionRect,
     minZoom,
     maxZoom,
     dragging,
     translateExtent,
     lib,
-    panActivationKeyPressed
+    panActivationKeyPressed,
+    zoomActivationKeyPressed,
+    viewportInitialized
   } = useStore();
 
   $: viewPort = initialViewport || { x: 0, y: 0, zoom: 1 };
   $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
+  $: _panOnScroll = $panActivationKeyPressed || panOnScroll;
+
+  onMount(() => {
+    $viewportInitialized = true;
+  });
 </script>
 
 <div
@@ -50,15 +58,15 @@
     zoomOnScroll,
     zoomOnDoubleClick,
     zoomOnPinch,
-    panOnScroll,
+    panOnScroll: _panOnScroll,
     panOnDrag: _panOnDrag,
     panOnScrollSpeed: 0.5,
     panOnScrollMode: panOnScrollMode || PanOnScrollMode.Free,
-    zoomActivationKeyPressed: false,
+    zoomActivationKeyPressed: $zoomActivationKeyPressed,
     preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
     noPanClassName: 'nopan',
     noWheelClassName: 'nowheel',
-    userSelectionActive: $selectionKeyPressed,
+    userSelectionActive: !!$selectionRect,
     translateExtent: $translateExtent,
     lib: $lib
   }}

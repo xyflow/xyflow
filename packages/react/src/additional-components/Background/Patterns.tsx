@@ -26,6 +26,6 @@ type DotPatternProps = {
 
 export function DotPattern({ radius, className }: DotPatternProps) {
   return (
-    <circle cx={radius} cy={radius} r={radius} className={cc(['react-flow__background-pattern', 'dot', className])} />
+    <circle cx={radius} cy={radius} r={radius} className={cc(['react-flow__background-pattern', 'dots', className])} />
   );
 }

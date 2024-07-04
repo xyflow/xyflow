@@ -1,6 +1,8 @@
 ---
-import ReactFlowApp from '../components/ReactFlowExample' 
-import SvelteFlowApp from '../components/SvelteFlowExample/index.svelte' 
+import ReactFlowApp from '../components/ReactFlowExample';
+import ReactFlowInitialApp from '../components/ReactFlowInitialExample';
+import SvelteFlowApp from '../components/SvelteFlowExample/index.svelte';
+import SvelteFlowInitialApp from '../components/SvelteFlowInitialExample/index.svelte';
 ---
 
 <html lang="en">
@@ -18,10 +20,24 @@ import SvelteFlowApp from '../components/SvelteFlowExample/index.svelte'
 		</style>
 	</head>
 	<body>
+		<h2>React Flow</h2>
+		<p>no client hydration</p>
+		<ReactFlowApp />
+
+		<p>client hydration on load (client:load)</p>
+		<ReactFlowApp client:load />
+
+		<p>client hydration on load (client:load) and initialWidth / initialHeight</p>
+		<ReactFlowInitialApp client:load />
+
 		<h2>Svelte Flow</h2>
 		<SvelteFlowApp />
 
-		<h2>React Flow</h2>
-		<ReactFlowApp />
+		<p>client hydration on load (client:load)</p>
+		<SvelteFlowApp client:load />
+
+		<p>client hydration on load (client:load) and initialWidth / initialHeight</p>
+		<SvelteFlowInitialApp client:load />
+
 	</body>
 </html>

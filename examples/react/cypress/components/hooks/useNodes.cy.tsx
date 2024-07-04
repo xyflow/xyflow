@@ -15,8 +15,9 @@ const initialNodes: Node[] = nodes.map((n) => ({
 
 const expectedNodes: Node[] = initialNodes.map((n) => ({
   ...n,
-  positionAbsolute: n.position,
-  ...nodeDimensions,
+  measured: {
+    ...nodeDimensions,
+  },
 }));
 
 describe('useNodes.cy.tsx', () => {
@@ -29,7 +30,6 @@ describe('useNodes.cy.tsx', () => {
       </ReactFlow>
     );
 
-    cy.get('@onChangeSpy').should('have.been.calledWith', []);
     cy.get('@onChangeSpy').should('have.been.calledWith', expectedNodes);
   });
 

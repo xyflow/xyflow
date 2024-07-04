@@ -1,4 +1,10 @@
-import { memo, useEffect } from 'react';
+/*
+ * This is a helper component for calling the onSelectionChange listener.
+ * It will only be mounted if the user has passed an onSelectionChange listener
+ * or is using the useOnSelectionChange hook.
+ * @TODO: Now that we have the onNodesChange and on EdgesChange listeners, do we still need this component?
+ */
+import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -8,10 +14,24 @@ type SelectionListenerProps = {
   onSelectionChange?: OnSelectionChangeFunc;
 };
 
-const selector = (s: ReactFlowState) => ({
-  selectedNodes: s.nodes.filter((n) => n.selected),
-  selectedEdges: s.edges.filter((e) => e.selected),
-});
+const selector = (s: ReactFlowState) => {
+  const selectedNodes = [];
+  const selectedEdges = [];
+
+  for (const [, node] of s.nodeLookup) {
+    if (node.selected) {
+      selectedNodes.push(node.internals.userNode);
+    }
+  }
+
+  for (const [, edge] of s.edgeLookup) {
+    if (edge.selected) {
+      selectedEdges.push(edge);
+    }
+  }
+
+  return { selectedNodes, selectedEdges };
+};
 
 type SelectorSlice = ReturnType<typeof selector>;
 
@@ -24,33 +44,28 @@ function areEqual(a: SelectorSlice, b: SelectorSlice) {
   );
 }
 
-// This is just a helper component for calling the onSelectionChange listener.
-// @TODO: Now that we have the onNodesChange and on EdgesChange listeners, do we still need this component?
-const SelectionListener = memo(({ onSelectionChange }: SelectionListenerProps) => {
+function SelectionListenerInner({ onSelectionChange }: SelectionListenerProps) {
   const store = useStoreApi();
   const { selectedNodes, selectedEdges } = useStore(selector, areEqual);
 
   useEffect(() => {
     const params = { nodes: selectedNodes, edges: selectedEdges };
+
     onSelectionChange?.(params);
-    store.getState().onSelectionChange?.(params);
+    store.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));
   }, [selectedNodes, selectedEdges, onSelectionChange]);
-
-  return null;
-});
-
-SelectionListener.displayName = 'SelectionListener';
-
-const changeSelector = (s: ReactFlowState) => !!s.onSelectionChange;
-
-function Wrapper({ onSelectionChange }: SelectionListenerProps) {
-  const storeHasSelectionChange = useStore(changeSelector);
-
-  if (onSelectionChange || storeHasSelectionChange) {
-    return <SelectionListener onSelectionChange={onSelectionChange} />;
-  }
 
   return null;
 }
 
-export default Wrapper;
+const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers;
+
+export function SelectionListener({ onSelectionChange }: SelectionListenerProps) {
+  const storeHasSelectionChangeHandlers = useStore(changeSelector);
+
+  if (onSelectionChange || storeHasSelectionChangeHandlers) {
+    return <SelectionListenerInner onSelectionChange={onSelectionChange} />;
+  }
+
+  return null;
+}

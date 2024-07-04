@@ -11,6 +11,7 @@ import {
   MiniMap,
   Controls,
 } from '@xyflow/react';
+import ReactFlowDevTools from '../DevTools/DevTools';
 
 const initialNodes: Node[] = [
   {
@@ -48,8 +49,10 @@ const initialEdges: Edge[] = [
 
 const setHidden = (hidden: boolean) => (els: any[]) =>
   els.map((e: any) => {
-    e.hidden = hidden;
-    return e;
+    return {
+      ...e,
+      hidden,
+    };
   });
 
 const HiddenFlow = () => {
@@ -70,6 +73,8 @@ const HiddenFlow = () => {
     setEdges(setHidden(isHidden));
   }, [isHidden, setEdges, setNodes]);
 
+  console.log(nodes);
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -80,6 +85,7 @@ const HiddenFlow = () => {
     >
       <MiniMap />
       <Controls />
+      <ReactFlowDevTools position="top-right" />
 
       <div style={{ position: 'absolute', left: 10, top: 10, zIndex: 4 }}>
         <div>

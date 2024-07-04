@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-namespace */
 import type { Rect, Viewport } from '@xyflow/system';
-import type { Node, Edge, ViewportHelperFunctions } from '.';
+import type { Node, Edge, ViewportHelperFunctions, InternalNode } from '.';
 
-export type ReactFlowJsonObject<NodeData = any, EdgeData = any> = {
-  nodes: Node<NodeData>[];
-  edges: Edge<EdgeData>[];
+export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  nodes: NodeType[];
+  edges: EdgeType[];
   viewport: Viewport;
 };
 
@@ -14,51 +13,172 @@ export type DeleteElementsOptions = {
   edges?: (Edge | { id: Edge['id'] })[];
 };
 
-export namespace Instance {
-  export type GetNodes<NodeData> = () => Node<NodeData>[];
-  export type SetNodes<NodeData> = (
-    payload: Node<NodeData>[] | ((nodes: Node<NodeData>[]) => Node<NodeData>[])
-  ) => void;
-  export type AddNodes<NodeData> = (payload: Node<NodeData>[] | Node<NodeData>) => void;
-  export type GetNode<NodeData> = (id: string) => Node<NodeData> | undefined;
-  export type GetEdges<EdgeData> = () => Edge<EdgeData>[];
-  export type SetEdges<EdgeData> = (
-    payload: Edge<EdgeData>[] | ((edges: Edge<EdgeData>[]) => Edge<EdgeData>[])
-  ) => void;
-  export type GetEdge<EdgeData> = (id: string) => Edge<EdgeData> | undefined;
-  export type AddEdges<EdgeData> = (payload: Edge<EdgeData>[] | Edge<EdgeData>) => void;
-  export type ToObject<NodeData = any, EdgeData = any> = () => ReactFlowJsonObject<NodeData, EdgeData>;
-  export type DeleteElements = ({ nodes, edges }: DeleteElementsOptions) => {
+export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  /**
+   * Returns nodes.
+   *
+   * @returns nodes array
+   */
+  getNodes: () => NodeType[];
+  /**
+   * Sets nodes.
+   *
+   * @param payload - the nodes to set or a function that receives the current nodes and returns the new nodes
+   */
+  setNodes: (payload: NodeType[] | ((nodes: NodeType[]) => NodeType[])) => void;
+  /**
+   * Adds nodes.
+   *
+   * @param payload - the nodes to add
+   */
+  addNodes: (payload: NodeType[] | NodeType) => void;
+  /**
+   * Returns a node by id.
+   *
+   * @param id - the node id
+   * @returns the node or undefined if no node was found
+   */
+  getNode: (id: string) => NodeType | undefined;
+  /**
+   * Returns an internal node by id.
+   *
+   * @param id - the node id
+   * @returns the internal node or undefined if no node was found
+   */
+  getInternalNode: (id: string) => InternalNode<NodeType> | undefined;
+  /**
+   * Returns edges.
+   *
+   * @returns edges array
+   */
+  getEdges: () => EdgeType[];
+  /**
+   * Sets edges.
+   *
+   * @param payload - the edges to set or a function that receives the current edges and returns the new edges
+   */
+  setEdges: (payload: EdgeType[] | ((edges: EdgeType[]) => EdgeType[])) => void;
+  /**
+   * Adds edges.
+   *
+   * @param payload - the edges to add
+   */
+  addEdges: (payload: EdgeType[] | EdgeType) => void;
+  /**
+   * Returns an edge by id.
+   *
+   * @param id - the edge id
+   * @returns the edge or undefined if no edge was found
+   */
+  getEdge: (id: string) => EdgeType | undefined;
+  /**
+   * Returns the nodes, edges and the viewport as a JSON object.
+   *
+   * @returns the nodes, edges and the viewport as a JSON object
+   */
+  toObject: () => ReactFlowJsonObject<NodeType, EdgeType>;
+  /**
+   * Deletes nodes and edges.
+   *
+   * @param params.nodes - optional nodes array to delete
+   * @param params.edges - optional edges array to delete
+   *
+   * @returns a promise that resolves with the deleted nodes and edges
+   */
+  deleteElements: (params: DeleteElementsOptions) => Promise<{
     deletedNodes: Node[];
     deletedEdges: Edge[];
-  };
-  export type GetIntersectingNodes<NodeData> = (
-    node: Node<NodeData> | { id: Node['id'] } | Rect,
+  }>;
+  /**
+   * Returns all nodes that intersect with the given node or rect.
+   *
+   * @param node - the node or rect to check for intersections
+   * @param partially - if true, the node is considered to be intersecting if it partially overlaps with the passed node or rect
+   * @param nodes - optional nodes array to check for intersections
+   *
+   * @returns an array of intersecting nodes
+   */
+  getIntersectingNodes: (
+    node: NodeType | { id: Node['id'] } | Rect,
     partially?: boolean,
-    nodes?: Node<NodeData>[]
-  ) => Node<NodeData>[];
-  export type IsNodeIntersecting<NodeData> = (
-    node: Node<NodeData> | { id: Node['id'] } | Rect,
-    area: Rect,
-    partially?: boolean
-  ) => boolean;
-  export type getConnectedEdges = (id: string | (Node | { id: Node['id'] })[]) => Edge[];
-  export type getIncomers = (node: string | Node | { id: Node['id'] }) => Node[];
-  export type getOutgoers = (node: string | Node | { id: Node['id'] }) => Node[];
-}
+    nodes?: NodeType[]
+  ) => NodeType[];
+  /**
+   * Checks if the given node or rect intersects with the passed rect.
+   *
+   * @param node - the node or rect to check for intersections
+   * @param area - the rect to check for intersections
+   * @param partially - if true, the node is considered to be intersecting if it partially overlaps with the passed react
+   *
+   * @returns true if the node or rect intersects with the given area
+   */
+  isNodeIntersecting: (node: NodeType | { id: Node['id'] } | Rect, area: Rect, partially?: boolean) => boolean;
+  /**
+   * Updates a node.
+   *
+   * @param id - id of the node to update
+   * @param nodeUpdate - the node update as an object or a function that receives the current node and returns the node update
+   * @param options.replace - if true, the node is replaced with the node update, otherwise the changes get merged
+   *
+   * @example
+   * updateNode('node-1', (node) => ({ position: { x: node.position.x + 10, y: node.position.y } }));
+   */
+  updateNode: (
+    id: string,
+    nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
+    options?: { replace: boolean }
+  ) => void;
+  /**
+   * Updates the data attribute of a node.
+   *
+   * @param id - id of the node to update
+   * @param dataUpdate - the data update as an object or a function that receives the current data and returns the data update
+   * @param options.replace - if true, the data is replaced with the data update, otherwise the changes get merged
+   *
+   * @example
+   * updateNodeData('node-1', { label: 'A new label' });
+   */
+  updateNodeData: (
+    id: string,
+    dataUpdate: Partial<NodeType['data']> | ((node: NodeType) => Partial<NodeType['data']>),
+    options?: { replace: boolean }
+  ) => void;
+  /**
+   * Updates an edge.
+   *
+   * @param id - id of the edge to update
+   * @param edgeUpdate - the edge update as an object or a function that receives the current edge and returns the edge update
+   * @param options.replace - if true, the edge is replaced with the edge update, otherwise the changes get merged
+   *
+   * @example
+   * updateEdge('edge-1', (edge) => ({ label: 'A new label' }));
+   */
+  updateEdge: (
+    id: string,
+    edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
+    options?: { replace: boolean }
+  ) => void;
+  /**
+   * Updates the data attribute of a edge.
+   *
+   * @param id - id of the edge to update
+   * @param dataUpdate - the data update as an object or a function that receives the current data and returns the data update
+   * @param options.replace - if true, the data is replaced with the data update, otherwise the changes get merged
+   *
+   * @example
+   * updateEdgeData('edge-1', { label: 'A new label' });
+   */
+  updateEdgeData: (
+    id: string,
+    dataUpdate: Partial<EdgeType['data']> | ((edge: EdgeType) => Partial<EdgeType['data']>),
+    options?: { replace: boolean }
+  ) => void;
+};
 
-export type ReactFlowInstance<NodeData = any, EdgeData = any> = {
-  getNodes: Instance.GetNodes<NodeData>;
-  setNodes: Instance.SetNodes<NodeData>;
-  addNodes: Instance.AddNodes<NodeData>;
-  getNode: Instance.GetNode<NodeData>;
-  getEdges: Instance.GetEdges<EdgeData>;
-  setEdges: Instance.SetEdges<EdgeData>;
-  addEdges: Instance.AddEdges<EdgeData>;
-  getEdge: Instance.GetEdge<EdgeData>;
-  toObject: Instance.ToObject<NodeData, EdgeData>;
-  deleteElements: Instance.DeleteElements;
-  getIntersectingNodes: Instance.GetIntersectingNodes<NodeData>;
-  isNodeIntersecting: Instance.IsNodeIntersecting<NodeData>;
-  viewportInitialized: boolean;
-} & Omit<ViewportHelperFunctions, 'initialized'>;
+export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = GeneralHelpers<
+  NodeType,
+  EdgeType
+> &
+  Omit<ViewportHelperFunctions, 'initialized'> & {
+    viewportInitialized: boolean;
+  };

@@ -81,8 +81,8 @@ function getPoints({
 
   // opposite handle positions, default case
   if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
-    centerX = center.x || defaultCenterX;
-    centerY = center.y || defaultCenterY;
+    centerX = center.x ?? defaultCenterX;
+    centerY = center.y ?? defaultCenterY;
     //    --->
     //    |
     // >---
@@ -190,6 +190,28 @@ function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): str
   return `L ${x},${y + bendSize * yDir}Q ${x},${y} ${x + bendSize * xDir},${y}`;
 }
 
+/**
+ * Get a smooth step path from source to target handle
+ * @param params.sourceX - The x position of the source handle
+ * @param params.sourceY - The y position of the source handle
+ * @param params.sourcePosition - The position of the source handle (default: Position.Bottom)
+ * @param params.targetX - The x position of the target handle
+ * @param params.targetY - The y position of the target handle
+ * @param params.targetPosition - The position of the target handle (default: Position.Top)
+ * @returns A path string you can use in an SVG, the labelX and labelY position (center of path) and offsetX, offsetY between source handle and label
+ * @example
+ *  const source = { x: 0, y: 20 };
+    const target = { x: 150, y: 100 };
+    
+    const [path, labelX, labelY, offsetX, offsetY] = getSmoothStepPath({
+      sourceX: source.x,
+      sourceY: source.y,
+      sourcePosition: Position.Right,
+      targetX: target.x,
+      targetY: target.y,
+      targetPosition: Position.Left,
+    });
+ */
 export function getSmoothStepPath({
   sourceX,
   sourceY,

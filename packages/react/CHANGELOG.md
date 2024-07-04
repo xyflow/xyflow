@@ -1,304 +1,317 @@
-# @reactflow/core
+# @xyflow/react
 
-## 11.7.2
+## 12.0.0-next.26
 
-### Patch Changes
+- add `autoPanSpeed` prop
 
-- [#3060](https://github.com/wbkd/react-flow/pull/3060) [`70ec97f7`](https://github.com/wbkd/react-flow/commit/70ec97f7daec6d5401215cae3edac04aea88a3ba) - fix useNodes and useEdges bug with infinite re-renderings
-- [#3064](https://github.com/wbkd/react-flow/pull/3064) [`d2d1aebc`](https://github.com/wbkd/react-flow/commit/d2d1aebc0f7fea4183406e7d1915b7fcd6995f48) - refactor(useUpdateNodeInternals): only call updateNodeDimensions once
-- [#3059](https://github.com/wbkd/react-flow/pull/3059) [`4374459e`](https://github.com/wbkd/react-flow/commit/4374459ef9fec797bbc0407231f09a1acacd245b) - fix useUpdateNodeInternals type
+## 12.0.0-next.25
 
-## 11.7.1
+- `useConnection` returns `ConnectionState` with `toNode` and `toHandle`
+- add `toNode` and `toHandle` to custom connection line props
+- node origin is part of position absolute
+- refactor connection handling
 
-### Patch Changes
+## 12.0.0-next.24
 
-- [#3043](https://github.com/wbkd/react-flow/pull/3043) [`cf7a7d3d`](https://github.com/wbkd/react-flow/commit/cf7a7d3dad1e73215a72a5dc72e21fd50208cdbb) - handles: handles on top of each other, reduce re-renderings
-- [#3046](https://github.com/wbkd/react-flow/pull/3046) [`07b975bb`](https://github.com/wbkd/react-flow/commit/07b975bbee3580249e36a19582213b250f78093c) - base-edge: pass id to base edge path
-- [#3007](https://github.com/wbkd/react-flow/pull/3007) [`c80d269b`](https://github.com/wbkd/react-flow/commit/c80d269b85a0054221f4639c328fc36a3befbe70) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - allow array of ids as updateNodeInternals arg
-- [#3029](https://github.com/wbkd/react-flow/pull/3029) [`a3fa164c`](https://github.com/wbkd/react-flow/commit/a3fa164c34cc820c79bb031c9fd97b72a3546614) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - autopan: only update nodes when transform change happen
+- fix `window` bug for SSR for real
 
-## 11.7.0
+## 12.0.0-next.23
 
-Most notable updates:
+- fix `window` bug for SSR
 
-- Handles: `isConnectableStart` and `isConnectableEnd` props to configure if you can start or end a connection at a certain handle
-- Edges: `updatable` option to enable updates for specific edges
-- useNodesInitialized: options to configure if hidden nodes should be included (false by default)
+## 12.0.0-next.22
 
-### Minor Changes
+- ⚠️ rename `updateEdge` to `reconnectEdge` and realted APIs [#4373](https://github.com/xyflow/xyflow/pull/4373)
+- revise selection usability (capture while dragging out of the flow)
+- use correct end handle position when drawing a connection lines
+- determine correct end positions for connection lines
 
-- [#2960](https://github.com/wbkd/react-flow/pull/2960) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - edges: add `updatable` option
-- [#2958](https://github.com/wbkd/react-flow/pull/2958) [`4d97a0ed`](https://github.com/wbkd/react-flow/commit/4d97a0ed168ce643fc0c99fa6b47cf1296d66065) - handles: add `isConnectableStart` and `isConnectableEnd` props
-- [#2956](https://github.com/wbkd/react-flow/pull/2956) [`923a54c4`](https://github.com/wbkd/react-flow/commit/923a54c481b90954806202817ba844cfa7203a38) - add options for `useNodesInitialized`, ignore hidden nodes by default
+## 12.0.0-next.21
 
-### Patch Changes
+- fix node origin bug
 
-- [#2926](https://github.com/wbkd/react-flow/pull/2926) Thanks [@Elringus](https://github.com/Elringus)! - fix non-passive wheel event listener violation
-- [#2933](https://github.com/wbkd/react-flow/pull/2933) [`fe8cac0a`](https://github.com/wbkd/react-flow/commit/fe8cac0adb359109e0e9eafe8b9261ba354076bb) - prefix error keys with "error"
-- [#2939](https://github.com/wbkd/react-flow/pull/2939) [`4a4ca171`](https://github.com/wbkd/react-flow/commit/4a4ca171955f5c8d58b23e3ad48406f1a21dc402) - add connection result to store
+## 12.0.0-next.20
 
-## 11.6.1
+- add `updateEdge` and `updateEdgeData` helpers to `useReactFlow`
+- enable dynamic edge label updates
+- prevent zooming on mobile if zoomOnPinch is false
+- add straight edge to path built-in-types
+- abort drag when multiple touches are detected
 
-### Patch Changes
+## 12.0.0-next.19
 
-- Always create new edge object (fixes an issue with Redux toolkit and other immutable helper libs)
+- update internals on node resizer updates
+- re-observe node when `node.hidden` is toggled
+- update `updateNodeData` argument type - thanks @ogroppo
+- add `selectable`, `deletable` and `draggable` to node and edge props
+- add `parentId` to node props
+- fix parent node lookup in `evaluateAbsolutePosition`- thanks @lcsfort
 
-## 11.6.0
+## 12.0.0-next.18
 
-### Minor Changes
+- don't show nodeTypes warning if not necessary you've created a new nodeTypes or edgeTypes
+- add node resizer styles to base.css
+- remove `HandleComponentProps` type, only export `HandleProps` type
+- add warning when styles not loaded
 
-- [#2877](https://github.com/wbkd/react-flow/pull/2877) [`b8886514`](https://github.com/wbkd/react-flow/commit/b88865140c72fa7e92a883498768000cb2cc96a7) - add `isValidConnection` prop for ReactFlow component
-- [#2847](https://github.com/wbkd/react-flow/pull/2847) [`16bf89f2`](https://github.com/wbkd/react-flow/commit/16bf89f2b7bbf8449c00d0e2c07c19c3ff6d2533) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Add option to enable/disable replacing edge id when using `updateEdge`
+## 12.0.0-next.17
 
-### Patch Changes
+- fix broken `defaultNodes`
+- add string array to `UpdateNodeInternals` thanks @DenizUgur
+- pinch zoom on windows
+- drag for touch devices
+- return user node in node event handlers
+- cleanup `useReactFlow`
+- export `KeyCode` and `Align` type
+- remove `Instance` in favour of `ReactFlowInstance` type 
 
-- [#2895](https://github.com/wbkd/react-flow/pull/2895) [`3d5764ca`](https://github.com/wbkd/react-flow/commit/3d5764cac6548984a30cbf85899024e62fd69425) - add data-testid for controls, minimap and background
-- [#2894](https://github.com/wbkd/react-flow/pull/2894) [`83fc4675`](https://github.com/wbkd/react-flow/commit/83fc467545527729633e817dbccfe59d0040da4b) - fix(nodes): blur when node gets unselected
-- [#2892](https://github.com/wbkd/react-flow/pull/2892) [`5fabd272`](https://github.com/wbkd/react-flow/commit/5fabd2720f6367f75f79a45822d8f675a3b8e1cf) Thanks [@danielgek](https://github.com/danielgek) - track modifier keys on useKeypress
-- [#2893](https://github.com/wbkd/react-flow/pull/2893) [`8f080bd5`](https://github.com/wbkd/react-flow/commit/8f080bd5e0e7e6c71f51eee9c9f2bc4b25182861) - fix: check if handle is connectable
+## 12.0.0-next.16
 
-## 11.5.5
+## Patch changes
 
-### Patch Changes
+- fix batching for `setNodes`, `updateNode`, `updateNodeData` etc.
+- fix `useNodesInitialized`
 
-- [#2834](https://github.com/wbkd/react-flow/pull/2834) [`23424ea6`](https://github.com/wbkd/react-flow/commit/23424ea6750f092210f83df17a00c89adb910d96) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Add `nodes` to fit view options to allow fitting view only around specified set of nodes
-- [#2836](https://github.com/wbkd/react-flow/pull/2836) [`959b1114`](https://github.com/wbkd/react-flow/commit/959b111448bba4686040473e46988be9e7befbe6) - Fix: connections for handles with bigger handles than connection radius
-- [#2819](https://github.com/wbkd/react-flow/pull/2819) [`0d259b02`](https://github.com/wbkd/react-flow/commit/0d259b028558aab650546f3371a85f3bce45252f) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Avoid triggering edge update if not using left mouse button
-- [#2832](https://github.com/wbkd/react-flow/pull/2832) [`f3de9335`](https://github.com/wbkd/react-flow/commit/f3de9335af6cd96cd77dc77f24a944eef85384e5) - fitView: return type boolean
-- [#2838](https://github.com/wbkd/react-flow/pull/2838) [`021f5a92`](https://github.com/wbkd/react-flow/commit/021f5a9210f47a968e50446cd2f9dae1f97880a4) - refactor: use key press handle modifier keys + input
-- [#2839](https://github.com/wbkd/react-flow/pull/2839) [`72216ff6`](https://github.com/wbkd/react-flow/commit/72216ff62014acd2d73999053c72bd7aeed351f6) - fix PropsWithChildren: pass default generic for v17 types
+## 12.0.0-next.15
 
-## 11.5.4
+## Patch changes
 
-### Patch Changes
+- re-observe nodes when using `onlyRenderVisibleElements={true}`
+- use correct positions for intersection helpers
+- fix minimap interaction for touch devices
+- pass user nodes to `onSelectionChange` instead of internal ones to work with Redux
+- call `onEnd` in XYResizer thanks @tonyf
+- cleanup `getPositionWithOrigin` usage
+- use `setAttributes` flag for dimension change when `width`/`height` should be set
+- use `replace: false` as the default for `updateNode` function
 
-- [`383a074a`](https://github.com/wbkd/react-flow/commit/383a074aeae6dbec8437fa08c7c8d8240838a84e) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Check if prevClosestHandle exists in onPointerUp. Fixes connections getting stuck on last handle and connecting, even when out of connectionRadius
+## 12.0.0-next.14
 
-## 11.5.3
+## Patch changes
 
-This release fixes some issues with the newly introduced connection radius feature. We are now not only checking the radius but the handle itself too (like in the old version). That means that you can connect to a handle that is bigger than the connection radius. We are also not snapping connections anymore when they are not valid and pass a status class to the connection line that says if the current connection is valid or not. More over we fixed a connection issue with iOS.
+- fix hidden nodes
+- use `direction=ltr` for outer wrapper to support rtl sites
+- allow pinch zoom even if `preventScrolling=false`
+- export node and edge change related types
+- only trigger dimensions updates when changes detected
 
-### Patch Changes
+## 12.0.0-next.13
 
-- [#2800](https://github.com/wbkd/react-flow/pull/2800) [`be8097ac`](https://github.com/wbkd/react-flow/commit/be8097acadca3054c3b236ce4296fc516010ef8c) - When node is not draggable, you can't move it with a selection either
-- [#2803](https://github.com/wbkd/react-flow/pull/2803) [`1527795d`](https://github.com/wbkd/react-flow/commit/1527795d18c3af38c8ec7059436ea0fbf6c27bbd) - connection: add status class (valid or invalid) while in connection radius
-- [#2801](https://github.com/wbkd/react-flow/pull/2801) [`3b6348a8`](https://github.com/wbkd/react-flow/commit/3b6348a8d1573afb39576327318bc172e33393c2) - fix(ios): connection error + dont snap invalid connection lines, check handle and connection radius
+## ⚠️ Breaking changes
 
-## 11.5.2
+- rename `node.parentNode` to `node.parentId`
+- rename node.computed to node.measured
+- remove positionAbsolute from `node.computed` 
 
-### Patch Changes
+## Minor Changes
 
-- [#2792](https://github.com/wbkd/react-flow/pull/2792) [`d8c679b4`](https://github.com/wbkd/react-flow/commit/d8c679b4c90c5b57d4b51e4aaa988243d6eaff5a) - Accept React 17 types as dev dependency
+- new helpers: `useInternalNode` hook, `getInternalNode` function
 
-## 11.5.1
+## Patch changes
 
-### Patch Changes
+- remove `internalsSymbol` (now called internals and only available for internal nodes)
+- handle parentExpand on library side instead of applyChanges
+- new type `InternalNode`
 
-- [#2783](https://github.com/wbkd/react-flow/pull/2783) [`71153534`](https://github.com/wbkd/react-flow/commit/7115353418ebc7f7c81ab0e861200972bbf7dbd5) - connections: check handle below mouse before using connection radius
+## 12.0.0-next.12
 
-## 11.5.0
+## Patch changes
 
-Lot's of improvements are coming with this release!
+- fix useNodesData: handle invalid node id thanks @saswatax
+- fix forwardRef: use custom fixForwardRef function
+- refactor intersection helpers to use passed node value
 
-- **Connecting radius**: No need to drop a connection line on top of handle anymore. You only need to be close to the handle. That radius can be configured with the `connectionRadius` prop.
-- **Auto pan**: When you drag a node, a selection or the connection line to the border of the pane, it will pan into that direction. That makes it easier to connect far away nodes for example. If you don't like it you can set `autoPnaOnNodeDrag` and `autoPanOnConnect` to false.
-- **Touch devices**: It's finally possibleto connect nodes with the connection line on touch devices. In combination with the new auto pan and connection radius the overall UX is way better.
-- **Errors**: We added an `onError` prop to get notified when an error like "couldn't find source handle" happens. This is useful if you want to log errors for example.
-- **Node type**: We added a second param to the generic `Node` type. You can not only pass `NodeData` but also the type as a second param:
+## 12.0.0-next.11
 
-```ts
-type MyCustomNode = Node<MyCustomNodeData, 'custom-node-type'>;
-```
+## Patch changes
 
-This makes it easier to work with different custom nodes and data types.
+- fix `ref` prop for `ReactFlow` and `Handle` component
+- unify `Edge` and `Node` type handling
+- fix safari: prevent selection of viewport
+- fix `useNodesData` hook to prevent re-renderings
+- fix edges: allow start at 0,0
 
-### Minor Changes
+## 12.0.0-next.10
 
-- [#2754](https://github.com/wbkd/react-flow/pull/2754) [`e96309b6`](https://github.com/wbkd/react-flow/commit/e96309b6a57b1071faeebf7b0547fef7fd418694) - Add auto pan for connecting and node dragging and `connectionRadius`
-- [#2773](https://github.com/wbkd/react-flow/pull/2773) - Add `onError` prop to get notified when an error happens
+## ⚠️ Breaking changes
 
-### Patch Changes
+- `useNodesData` not only returns data objects but also the type and the id of the node
+- status class names for Handle components are slightly different. It's now "connectingfrom" and "connectingto" instead of "connecting"
 
-- [#2763](https://github.com/wbkd/react-flow/pull/2763) [`85003b01`](https://github.com/wbkd/react-flow/commit/85003b01add71ea852bd5b0d2f1e7496050a6b52) - Connecting nodes: Enable connections on touch devices
-- [#2620](https://github.com/wbkd/react-flow/pull/2620) - Thanks [RichSchulz](https://github.com/RichSchulz)! - Types: improve typing for node type
+## Patch changes
 
-## 11.4.2
+- better cursor defaults for the pane, nodes and edges
+- `disableKeyboardA11y` now also disables Enter and Escape for selecting/deselecting nodes and edges
+- fix bug where users couldn't drag a node after toggle nodes `hidden` attribute
+- add `initialWidth` and `initialHeight` node attributes for specifying initial dimensions for ssr
+- fix `NodeResizer` when used in combination with `nodeOrigin`
 
-### Patch Changes
+## 12.0.0-next.9
 
-- [#2741](https://github.com/wbkd/react-flow/pull/2741) [`e2aff6c1`](https://github.com/wbkd/react-flow/commit/e2aff6c1e4ce54b57b724b2624367ee5fefd1c39) - chore(dependencies): update and cleanup
+### Patch changes
 
-## 11.4.1
+- a better `NodeResizer` that works with subflows. Child nodes do not move when parent node gets resized and parent extent is taken into account
+- refactor `setNodes` batching
+- re-measure nodes when necessary
+- don't trigger drag start / end when node is not draggable
 
-### Patch Changes
+## 12.0.0-next.8
 
-- [#2738](https://github.com/wbkd/react-flow/pull/2738) [`82988485`](https://github.com/wbkd/react-flow/commit/82988485b730a9e32acbdae1ddcc81b33ddccaba) - fix: fitView for subflows, context menu on right mouse pan
-- [#2740](https://github.com/wbkd/react-flow/pull/2740) [`d91e619a`](https://github.com/wbkd/react-flow/commit/d91e619a70a95db99a621ede59bc05b5a7766086) Thanks [@michaelspiss](https://github.com/michaelspiss)! - EdgeRenderer: check all handles for connection mode loose
+### Patch changes
 
-## 11.4.0
+- selection box is not interrupted by selectionKey being let go
+- fix `OnNodeDrag` type
+- do not use fallback handle if a specific id is being used
+- fix `defaultEdgeOptions` markers not being applied
+- fix `getNodesBounds` and add second param for passing options
+- fix `expandParent` for child nodes
 
-## New Features
+## 12.0.0-next.7
 
-New props for the ReactFlow component to customize the controls of the viewport and the selection box better:
+## Minor changes
 
-1. `selectionOnDrag` prop: Selection box without extra button press (need to set `panOnDrag={false}` or `panOnDrag={[1, 2]}`)
-2. `panOnDrag={[0, 1, 2]}` option to configure specific mouse buttons for panning
-3. `panActivationKeyCode="Space"` key code for activating dragging (useful when using `selectionOnDrag`)
-4. `selectionMode={SelectionMode.Full}`: you can chose if the selection box needs to contain a node fully (`SelectionMode.Full`) or partially (`SelectionMode.Partial`) to select it
-5. `onSelectionStart` and `onSelectionEnd` events
-6. `elevateNodesOnSelect`: Defines if z-index should be increased when node is selected
-7. New store function `getNodes`. You can now do `store.getState().getNodes()` instead of `Array.from(store.getNodes().nodeInternals.values())`.
+- add second option param to `screenToFlowPosition` for configuring if `snapToGrid` should be used
 
-Thanks to @jackfishwick who helped a lot with the new panning and selection options.
+### Patch changes
 
-### Minor Changes
+- pass `Node`/ `Edge` types to changes thanks @FelipeEmos
+- use position instead of positionAbsolute for `getNodesBounds`
+- infer types for `getIncomers`, `getOutgoers`, `updateEdge`, `addEdge` and `getConnectedEdges` thanks @joeyballentine
+- refactor handles: prefix with flow id for handling nested flows
+- add comments for types like `ReactFlowProps` or `Node` for a better developer experience
 
-- [#2678](https://github.com/wbkd/react-flow/pull/2678) [`baa8689e`](https://github.com/wbkd/react-flow/commit/baa8689ef629d22da4cbbef955e0c83d21df0493)
-  - Add new props to configure viewport controls (`selectionOnDrag`, `panActivationKeyCode`, ..)
-- [#2661](https://github.com/wbkd/react-flow/pull/2661) [`7ef29108`](https://github.com/wbkd/react-flow/commit/7ef2910808aaaee029894363d52efc0c378a7654)
-  - panOnDrag: Use numbers for prop ([1,2] = drag via middle or right mouse button)
-  - selection: do not include hidden nodes
-  - minimap: fix onNodeClick for nodes outside the viewport
-  - keys: allow multi select when input is focused
+## 12.0.0-next.6
 
-### Patch Changes
+### Patch changes
 
-- [#2695](https://github.com/wbkd/react-flow/pull/2695) [`ab2ff374`](https://github.com/wbkd/react-flow/commit/ab2ff3740618da48bd4350597e816c397f3d78ff) - Add elevateNodesOnSelect prop
-- [#2660](https://github.com/wbkd/react-flow/pull/2660) [`50032c3d`](https://github.com/wbkd/react-flow/commit/50032c3d953bd819d0afe48e4b61f77f987cc8d0) - Add `getNodes` function to the store so that you don't need to do `Array.from(store.getState().nodeInternals.values())` anymore.
-- [#2659](https://github.com/wbkd/react-flow/pull/2659) [`4244bae2`](https://github.com/wbkd/react-flow/commit/4244bae25a36cb4904dc1fbba26e1c4d5d463cb9) - Use translateExtent correctly
-- [#2657](https://github.com/wbkd/react-flow/pull/2657) [`23afb3ab`](https://github.com/wbkd/react-flow/commit/23afb3abebdb42fad284f68bec164afac609563c) - Only trigger drag event when change happened
+- fix `deleteElements`
+- refactor internal `applyChanges`
+- batch `setNodes` and `setEdges` from `useReactFlow`
+- add `aria-label` prop for `<Controls />`
 
-## 11.4.0-next.1
+## 12.0.0-next.5
 
-### Minor Changes
+### Minor changes
 
-- panOnDrag: Use numbers for prop ([1,2] = drag via middle or right mouse button)
-- selection: do not include hidden nodes
-- minimap: fix onNodeClick for nodes outside the viewport
-- keys: allow multi select when input is focused
+- fix applyChanges: handle multi changes for one node, deletions and expandParent
+- use `XYResizer` from @xyflow/system
+- add unit tests for `applyNodeChanges` and `applyEdgeChanges`
 
-## 11.4.0-next.0
+## 12.0.0-next.4
 
-### Minor Changes
+### Minor changes
 
-- [#2678](https://github.com/wbkd/react-flow/pull/2678) [`baa8689e`](https://github.com/wbkd/react-flow/commit/baa8689ef629d22da4cbbef955e0c83d21df0493) Thanks [@moklick](https://github.com/moklick)! - ## New Features
+- fix applyChanges: handle empty flows + addNodes/addEdges closes
+- cleanup exports
 
-  New props for the ReactFlow component to customize the controls of the viewport and the selection box better:
+## 12.0.0-next.3
 
-  1. `selectionOnDrag` prop: Selection box without extra button press (need to set `panOnDrag={false} or `panOnDrag="RightClick"`)
-  2. `panOnDrag="RightClick"` option
-  3. `panActivationKeyCode="Space"` key code for activating dragging (useful when using `selectionOnDrag`)
-  4. `selectionMode={SelectionMode.Full}`: you can chose if the selection box needs to contain a node fully (`SelectionMode.Full`) or partially (`SelectionMode.Partial`) to select it
-  5. `onSelectionStart` and `onSelectionEnd` events
+### Minor changes
 
-### Patch Changes
+- fix edges styles when using base.css
 
-- [#2660](https://github.com/wbkd/react-flow/pull/2660) [`50032c3d`](https://github.com/wbkd/react-flow/commit/50032c3d953bd819d0afe48e4b61f77f987cc8d0) Thanks [@moklick](https://github.com/moklick)! - Add `getNodes` function to the store so that you don't need to do `Array.from(store.getState().nodeInternals.values())` anymore.
+## 12.0.0-next.2
 
-- [#2659](https://github.com/wbkd/react-flow/pull/2659) [`4244bae2`](https://github.com/wbkd/react-flow/commit/4244bae25a36cb4904dc1fbba26e1c4d5d463cb9) Thanks [@moklick](https://github.com/moklick)! - Use translateExtent correctly
+### Minor changes
 
-- [#2657](https://github.com/wbkd/react-flow/pull/2657) [`23afb3ab`](https://github.com/wbkd/react-flow/commit/23afb3abebdb42fad284f68bec164afac609563c) Thanks [@moklick](https://github.com/moklick)! - Only trigger drag event when change happened
+- fix connection line rendering
+- fix multi handle
 
-## 11.3.2
+## 12.0.0-next.1
 
-In this update we did some changes so that we could implement the new [`<NodeResizer />`](https://reactflow.dev/docs/api/nodes/node-resizer/) component more smoothly.
+### Minor changes
 
-### Patch Changes
+- fix edge rendering
 
-- [#2646](https://github.com/wbkd/react-flow/pull/2646) [`e6b5d90f`](https://github.com/wbkd/react-flow/commit/e6b5d90f61c8ee60e817bba232a162cae2ab3e2a) - Fix getRectOfNodes
-- [#2648](https://github.com/wbkd/react-flow/pull/2648) [`6ee44e07`](https://github.com/wbkd/react-flow/commit/6ee44e076eaa6908d07578a757a5187642b732ae) - Allow middle mouse pan over edges
-- [#2647](https://github.com/wbkd/react-flow/pull/2647) [`aa69c207`](https://github.com/wbkd/react-flow/commit/aa69c20765e6978f4f9c8cc63ed7110dbf6d9d9d) Thanks [@neo](https://github.com/neo)! - Invalidate node trying to connect itself with the same handle
-- [#2626](https://github.com/wbkd/react-flow/pull/2626) [`d29c401d`](https://github.com/wbkd/react-flow/commit/d29c401d598dbf2dcd5609b7adb8d029906a6f18) - Export the useNodeId hook, refactor how changes are applied and create a helper function
-- [#2642](https://github.com/wbkd/react-flow/pull/2642) [`0df02f35`](https://github.com/wbkd/react-flow/commit/0df02f35f8d6c54dae36af18278feadc77acb2d6) - Ignore key events for nodes when input is focused
+## 12.0.0-next.0
 
-## 11.3.1
+React Flow v12 is coming soon! We worked hard over the past months and tried to make as few breaking changes as possible (there are some). We are in no rush to release v12, so we’d be happy to hear any early feedback so we can adjust the API or redefine new features before launching stable v12. 🚀 The big topics for this version are:
 
-### Patch Changes
+1. **Support for SSG/ SSR**: you can now render flows on the server
+2. **Reactive flows**: new hooks and helper functions to simplify data flows
+3. **Dark mode**: a new base style and easy way to switch between built in color modes
 
-- [#2595](https://github.com/wbkd/react-flow/pull/2595) [`c828bfda`](https://github.com/wbkd/react-flow/commit/c828bfda0a8c4774bc43588640c7cca0cfdcb3f4) Thanks [@chrtze](https://github.com/chrtze)! - Fix and improve the behaviour when using nodeOrigin in combination with subflows
-- [#2602](https://github.com/wbkd/react-flow/pull/2602) [`b0302ce4`](https://github.com/wbkd/react-flow/commit/b0302ce4261a992bee841bae84af347d03be690f) Thanks [@sdegueldre](https://github.com/sdegueldre)! - Don't use try catch in wrapper for checking if provider is available
-- [#2601](https://github.com/wbkd/react-flow/pull/2601) [`b2c72813`](https://github.com/wbkd/react-flow/commit/b2c728137d1b53e38883f044fa447585c377a6af) Thanks [@hoondeveloper](https://github.com/hoondeveloper)! - fix isRectObject function
+Svelte Flow had a big impact on this release as well. While combing through each line of React Flow, we created framework agnostic helpers, found bugs, and made some under the hood improvements. All of these changes are baked into the v12 release as a welcome side-effect of that launch. 🙌🏻 We also improved the performance for larger flows with the help of Ivan.
 
-## 11.3.0
+### Migrate from 11 to 12
 
-### Minor Changes
+Before you can try out the new features, you need to do some minor updates:
 
-- [#2563](https://github.com/wbkd/react-flow/pull/2563) [`98116d43`](https://github.com/wbkd/react-flow/commit/98116d431f9fcdcc9b23a5b606a94ec0740b64cd) Thanks [@chrtze](https://github.com/chrtze)! - Export a new component "NodeToolbar" that renders a fixed element attached to a node
+- **A new npm package name:** Our name changed from `reactflow` to `@xyflow/react` and the main component is no longer a default, but a named import:
+  - v11: `import ReactFlow from 'reactflow';`
+  - v12: `import { ReactFlow } from '@xyflow/react';`
+- **Node attribute “computed”:** All computed node values are now stored in `node.computed`
+  - v11: `node.width`, `node.height` ,`node.positionAbsolute`
+  - v12: `node.computed.width`, `node.computed.height` and `node.computed.positionAbsolute` . (`node.width`/ `node.height` can now be used for SSG)
+- **Updating nodes:** We are not supporting node updates with object mutations anymore. If you want to update a certain attribute, you need to create a new node.
+  - v11:
+    ```js
+    setNodes((nds) =>
+      nds.map((node) => {
+        node.hidden = true;
+        return node;
+      })
+    );
+    ```
+  - v12:
+    ```js
+    setNodes((nds) =>
+      nds.map((node) => ({
+        ...node,
+        hidden: true,
+      }))
+    );
+    ```
+- **NodeProps:** `posX`/`posY` is now called `positionAbsoluteX`/`positionAbsoluteY`
+- **Typescript only:** We simplified types and fixed issues about functions where users could pass a `NodeData` generic. The new way is to define your own node type for the whole app and then only use that one. The big advantage of this is, that you can have multiple node types with different data structures and always be able to distinguish by checking the `node.type` attribute.
+  - v11: `applyNodeChange<NodeData, NodeType>`
+  - v12: `type MyNodeType = Node<{ value: number }, ‘number’> | Node<{ value: string }, ‘text’>; applyNodeChange<MyNodeType>`
+  - affected functions: `useNodes`, `useNodesState`, `useEdgesState`, `applyNodeChange`, `onInit`, `applyEdgeChanges` , `MiniMapProps`
+- **Removal of deprecated functions:**
+  - `getTransformForBounds` (new name: `getViewportForBounds`),
+  - `getRectOfNodes` (new name: `getNodesBounds`)
+  - `project` (new name: `screenToFlowPosition`)
+  - `getMarkerEndId`
 
-### Patch Changes
+### Main features
 
-- [#2561](https://github.com/wbkd/react-flow/pull/2561) [`92cf497e`](https://github.com/wbkd/react-flow/commit/92cf497eb72f21af592a53f5af9770c9f1e6d940) Thanks [@moklick](https://github.com/moklick)! - Fix multi selection and fitView when nodeOrigin is used
-- [#2560](https://github.com/wbkd/react-flow/pull/2560) [`a39224b3`](https://github.com/wbkd/react-flow/commit/a39224b3a80afbdb83fc4490dd5f4f2be23cd4dd) Thanks [@neo](https://github.com/neo)! - Always elevate zIndex when node is selected
-- [#2573](https://github.com/wbkd/react-flow/pull/2573) [`5e8b67dd`](https://github.com/wbkd/react-flow/commit/5e8b67dd41f9bb60dcd7f5d14cc34b42c970e967) Thanks [@moklick](https://github.com/moklick)! - Fix disappearing connection line for loose flows
-- [#2558](https://github.com/wbkd/react-flow/pull/2558) [`2a1c7db6`](https://github.com/wbkd/react-flow/commit/2a1c7db6b27ac0f4f81dcef2d593f4753c4321c7) Thanks [@moklick](https://github.com/moklick)! - EdgeLabelRenderer: handle multiple instances on a page
+Now that you successfully migrated to v12, you can use all the fancy features. As mentioned above, the biggest updates for v12 are:
 
-## 11.2.0
+- **SSR / SSG**: you can define `width`, `height` and `handles` for the nodes. This makes it possible to render a flow on the server and hydrate on the client: [codesandbox](https://codesandbox.io/p/devbox/reactflow-v12-next-pr66yh)
+  - Details: In v11, `width` and `height` were set by the library as soon as the nodes got measured. This still happens, but we are now using `computed.width` and `computed.height` to store this information. The `positionAbsolute` attribute also gets stored in `computed` . In the previous versions there was always a lot of confusion about `width` and `height`. It’s hard to understand, that you can’t use it for passing an actual width or height. It’s also not obvious that those attributes get added by the library. We think that the new implementation solves both of the problems: `width` and `height` are optional attributes that can be used to define dimensions and everything that is set by the library, is stored in `computed`.
+- **Reactive Flows:** The new hooks `useHandleConnections` and `useNodesData` and the new `updateNode` and `updateNodeData` functions can be used for managing the data flow between your nodes: [codesandbox](https://codesandbox.io/p/sandbox/reactflow-reactive-flow-sy93yx)
+  - Details: Working with reactive flows is super common. You update node A and want to react on those changes in the connected node B. Until now everyone had to come up with a custom solution. With this version we want to change this and give you performant helpers to handle this. If you are excited about this, you can check out this example:
+- **Dark mode and css variables:** React Flow now comes with a built-in dark mode, that can be toggled by using the new `colorMode` prop (”light”, “dark” or “system”): [codesandbox](https://codesandbox.io/p/sandbox/reactflow-dark-mode-256l99)
+  - Details: With this version we want to make it easier to switch between dark and light modes and give you a better starting point for dark flows. If you pass colorMode=”dark”, we add the class name “dark” to the wrapper and use it to adjust the styling. To make the implementation for this new feature easier on our ends, we switched to CSS variables for most of the styles. These variables can also be used in user land to customize a flow.
 
-### Minor Changes
+### More features and updates
 
-- [#2535](https://github.com/wbkd/react-flow/pull/2535) [`7902a3ce`](https://github.com/wbkd/react-flow/commit/7902a3ce3188426d5cd07cf0943a68f679e67948) Thanks [@moklick](https://github.com/moklick)! - Feat: Add edge label renderer
-- [#2536](https://github.com/wbkd/react-flow/pull/2536) [`b25d499e`](https://github.com/wbkd/react-flow/commit/b25d499ec05b5c6f21ac552d03650eb37433552e) Thanks [@pengfu](https://github.com/pengfu)! - Feat: add deleteElements helper function
-- [#2539](https://github.com/wbkd/react-flow/pull/2539) [`4fc1253e`](https://github.com/wbkd/react-flow/commit/4fc1253eadf9b7dd392d8dc2348f44fa8d08f931) Thanks [@moklick](https://github.com/moklick)! - Feat: add intersection helpers
-- [#2530](https://github.com/wbkd/react-flow/pull/2530) [`8ba4dd5d`](https://github.com/wbkd/react-flow/commit/8ba4dd5d1d4b2e6f107c148de62aec0b688d8b21) Thanks [@moklick](https://github.com/moklick)! - Feat: Add pan and zoom to mini map
+There is more! Besides the new main features, we added some minor things that were on our list for a long time. We also started to use TS docs for better docs. We already started to add some docs for some types and hooks which should improve the developer experience.
 
-### Patch Changes
+- **`useConnection` hook:** This hook makes it possible to handle an ongoing connection. For example, you can use it for colorizing handles.
+- **`onDelete` handler**: We added a combined handler for `onDeleteNodes` and `onDeleteEdges` to make it easier to react to deletions.
+- **`isValidConnection` prop:** This makes it possible to implement one validation function for all connections. It also gets called for programatically added edges.
+- **Controlled `viewport`:** This is definitely an advanced feature. Possible use cases are to animate the viewport or round the transform for lower res screens for example. This features brings two new props: `viewport` and `onViewportChange`.
+- **`ViewportPortal` component:** This makes it possible to render elements in the viewport without the need to implement a custom node.
+- **Background component**: add `patternClassName` to be able to style the background pattern by using a class name. This is useful if you want to style the background pattern with Tailwind for example.
+- **`onMove` callback** gets triggered for library-invoked viewport updates (like fitView or zoom-in)
+- **`deleteElements`** now returns deleted nodes and deleted edges
+- add **`origin` attribute** for nodes
+- add **`selectable` attribute** for edges
+- Correct types for `BezierEdge`, `StepEdge`, `SmoothStepEdge` and `StraightEdge` components
+- New edges created by the library only have `sourceHandle` and `targetHandle` attributes when those attributes are set. (We used to pass `sourceHandle: null` and `targetHandle: null`)
+- Edges do not mount/unmount when their z-index change
 
-- [#2538](https://github.com/wbkd/react-flow/pull/2538) [`740659c0`](https://github.com/wbkd/react-flow/commit/740659c0e788c7572d4a1e64e1d33d60712233fc) Thanks [@neo](https://github.com/neo)! - Refactor: put React Flow in isolated stacking context
+### Internal changes
 
-## 11.1.2
+These changes are not really user-facing, but it could be important for folks who are working with the React Flow store:
 
-### Patch Changes
+- The biggest internal change is that we created a new package **@xyflow/system with framework agnostic helpers** that can be used be React Flow and Svelte Flow
+  - **XYDrag** for handling dragging node(s) and selection
+  - **XYPanZoom** for controlling the viewport panning and zooming
+  - **XYHandle** for managing new connections
+- We replaced the `nodeInternals` map with a `nodes` array. We added a new `nodeLookup` map that serves as a lookup, but we are not creating a new map object on any change so it’s really only useful as a lookup.
+- We removed `connectionNodeId`, `connectionHandleId`, `connectionHandleType` from the store and added `connectionStartHandle.nodeId`, `connectionStartHandle.handleId`, …
+- add `data-id` to edges
 
-- make pro options acc type optional
-- cleanup types
-- fix rf id handling
-- always render nodes when dragging=true
-- don't apply animations to helper edge
-
-## 11.1.1
-
-### Patch Changes
-
-- [`c44413d`](https://github.com/wbkd/react-flow/commit/c44413d816604ae2d6ad81ed227c3dfde1a7bd8a) Thanks [@moklick](https://github.com/moklick)! - chore(panel): dont break user selection above panel
-- [`48c402c`](https://github.com/wbkd/react-flow/commit/48c402c4d3bd9e16dc91cd4c549324e57b6d5c57) Thanks [@moklick](https://github.com/moklick)! - refactor(aria-descriptions): render when disableKeyboardA11y is true
-- [`3a1a365`](https://github.com/wbkd/react-flow/commit/3a1a365a63fc4564d9a8d96309908986fcc86f95) Thanks [@moklick](https://github.com/moklick)! - fix(useOnSelectionChange): repair hook closes #2484
-- [`5d35094`](https://github.com/wbkd/react-flow/commit/5d350942d33ded626b3387206f0b0dee368efdfb) Thanks [@neo](https://github.com/neo)! - Add css files as sideEffects
-
-## 11.1.0
-
-### Minor Changes
-
-- [`def11008`](https://github.com/wbkd/react-flow/commit/def11008d88749fec40e6fcba8bc41eea2511bab) Thanks [@moklick](https://github.com/moklick)! - New props: nodesFocusable and edgesFocusable
-
-### Patch Changes
-
-- [`d00faa6b`](https://github.com/wbkd/react-flow/commit/d00faa6b3e77388bfd655d4c02e9a5375bc515e4) Thanks [@moklick](https://github.com/moklick)! - Make nopan class name overwritable with class name option
-
-## 11.0.0
-
-### Major Changes
-
-- **Better [Accessibility](/docs/guides/accessibility)**
-  - Nodes and edges are focusable, selectable, moveable and deleteable with the keyboard.
-  - `aria-` default attributes for all elements and controllable via `ariaLabel` options
-  - Keyboard controls can be disabled with the new `disableKeyboardA11y` prop
-- **Better selectable edges** via new edge option: `interactionWidth` - renders invisible edge that makes it easier to interact
-- **Better routing for smoothstep and step edges**: https://twitter.com/reactflowdev/status/1567535405284614145
-- **Nicer edge updating behaviour**: https://twitter.com/reactflowdev/status/1564966917517021184
-- **Node origin**: The new `nodeOrigin` prop lets you control the origin of a node. Useful for layouting.
-- **New background pattern**: `BackgroundVariant.Cross` variant
-- **[`useOnViewportChange`](/docs/api/hooks/use-on-viewport-change) hook** - handle viewport changes within a component
-- **[`useOnSelectionChange`](/docs/api/hooks/use-on-selection-change) hook** - handle selection changes within a component
-- **[`useNodesInitialized`](/docs/api/hooks/use-nodes-initialized) hook** - returns true if all nodes are initialized and if there is more than one node
-- **Deletable option** for Nodes and edges
-- **New Event handlers**: `onPaneMouseEnter`, `onPaneMouseMove` and `onPaneMouseLeave`
-- **Edge `pathOptions`** for `smoothstep` and `default` edges
-- **Nicer cursor defaults**: Cursor is grabbing, while dragging a node or panning
-- **Pane moveable** with middle mouse button
-- **Pan over nodes** when they are not draggable (`draggable=false` or `nodesDraggable` false)
-- **[`<BaseEdge />`](/docs/api/edges/base-edge) component** that makes it easier to build custom edges
-- **[Separately installable packages](/docs/overview/packages/)**
-  - @reactflow/core
-  - @reactflow/background
-  - @reactflow/controls
-  - @reactflow/minimap
+**With v12 the `reactflow` package was renamed to `@xyflow/react` - you can find the v11 source and the [`reactflow` changelog](https://github.com/xyflow/xyflow/blob/v11/packages/reactflow/CHANGELOG.md) on the v11 branch.**

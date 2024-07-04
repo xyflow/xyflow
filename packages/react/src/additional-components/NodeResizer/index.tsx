@@ -1,4 +1,4 @@
-export { default as NodeResizer } from './NodeResizer';
-export { default as NodeResizeControl } from './ResizeControl';
+export { NodeResizer } from './NodeResizer';
+export { NodeResizeControl } from './NodeResizeControl';
 
 export * from './types';

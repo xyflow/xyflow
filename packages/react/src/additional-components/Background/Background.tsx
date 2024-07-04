@@ -3,10 +3,10 @@ import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
-import { type ReactFlowState } from '../../types';
-import { BackgroundProps, BackgroundVariant } from './types';
 import { DotPattern, LinePattern } from './Patterns';
 import { containerStyle } from '../../styles/utils';
+import { type BackgroundProps, BackgroundVariant } from './types';
+import { type ReactFlowState } from '../../types';
 
 const defaultSize = {
   [BackgroundVariant.Dots]: 1,
@@ -16,7 +16,7 @@ const defaultSize = {
 
 const selector = (s: ReactFlowState) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` });
 
-function Background({
+function BackgroundComponent({
   id,
   variant = BackgroundVariant.Dots,
   // only used for dots and cross
@@ -55,8 +55,8 @@ function Background({
         {
           ...style,
           ...containerStyle,
-          '--background-color-props': bgColor,
-          '--background-pattern-color-props': color,
+          '--xy-background-color-props': bgColor,
+          '--xy-background-pattern-color-props': color,
         } as CSSProperties
       }
       ref={ref}
@@ -87,6 +87,6 @@ function Background({
   );
 }
 
-Background.displayName = 'Background';
+BackgroundComponent.displayName = 'Background';
 
-export default memo(Background);
+export const Background = memo(BackgroundComponent);

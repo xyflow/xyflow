@@ -1,39 +1,60 @@
 import {
   infiniteExtent,
   ConnectionMode,
-  updateNodes,
-  getRectOfNodes,
-  getTransformForBounds,
+  adoptUserNodes,
+  getViewportForBounds,
   Transform,
+  updateConnectionLookup,
+  devWarn,
+  getInternalNodesBounds,
+  NodeOrigin,
+  initialConnection,
 } from '@xyflow/system';
 
-import type { Edge, Node, ReactFlowStore } from '../types';
+import type { Edge, InternalNode, Node, ReactFlowStore } from '../types';
 
 const getInitialState = ({
-  nodes = [],
-  edges = [],
+  nodes,
+  edges,
+  defaultNodes,
+  defaultEdges,
   width,
   height,
   fitView,
+  nodeOrigin,
 }: {
   nodes?: Node[];
   edges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 } = {}): ReactFlowStore => {
-  const nextNodes = updateNodes(nodes, [], { nodeOrigin: [0, 0], elevateNodesOnSelect: false });
+  const nodeLookup = new Map<string, InternalNode>();
+  const parentLookup = new Map();
+  const connectionLookup = new Map();
+  const edgeLookup = new Map();
+  const storeEdges = defaultEdges ?? edges ?? [];
+  const storeNodes = defaultNodes ?? nodes ?? [];
+  const storeNodeOrigin = nodeOrigin ?? [0, 0];
+
+  updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
+  adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
+    nodeOrigin: storeNodeOrigin,
+    elevateNodesOnSelect: false,
+  });
 
   let transform: Transform = [0, 0, 1];
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nextNodes.map((node) => ({
-      ...node,
-      width: node.size?.width,
-      height: node.size?.height,
-    }));
-    const bounds = getRectOfNodes(nodesWithDimensions, [0, 0]);
-    transform = getTransformForBounds(bounds, width, height, 0.5, 2, 0.1);
+    const bounds = getInternalNodesBounds(nodeLookup, {
+      filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight)),
+    });
+
+    const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
+    transform = [x, y, zoom];
   }
 
   return {
@@ -41,12 +62,16 @@ const getInitialState = ({
     width: 0,
     height: 0,
     transform,
-    nodes: nextNodes,
-    edges: edges,
+    nodes: storeNodes,
+    nodeLookup,
+    parentLookup,
+    edges: storeEdges,
+    edgeLookup,
+    connectionLookup,
     onNodesChange: null,
     onEdgesChange: null,
-    hasDefaultNodes: false,
-    hasDefaultEdges: false,
+    hasDefaultNodes: defaultNodes !== undefined,
+    hasDefaultEdges: defaultEdges !== undefined,
     panZoom: null,
     minZoom: 0.5,
     maxZoom: 2,
@@ -55,14 +80,12 @@ const getInitialState = ({
     nodesSelectionActive: false,
     userSelectionActive: false,
     userSelectionRect: null,
-    connectionPosition: { x: 0, y: 0 },
-    connectionStatus: null,
     connectionMode: ConnectionMode.Strict,
     domNode: null,
     paneDragging: false,
     noPanClassName: 'nopan',
-    nodeOrigin: [0, 0],
-    nodeDragThreshold: 0,
+    nodeOrigin: storeNodeOrigin,
+    nodeDragThreshold: 1,
 
     snapGrid: [15, 15],
     snapToGrid: false,
@@ -71,9 +94,10 @@ const getInitialState = ({
     nodesConnectable: true,
     nodesFocusable: true,
     edgesFocusable: true,
-    edgesUpdatable: true,
+    edgesReconnectable: true,
     elementsSelectable: true,
     elevateNodesOnSelect: true,
+    elevateEdgesOnSelect: false,
     fitViewOnInit: false,
     fitViewDone: false,
     fitViewOnInitOptions: undefined,
@@ -81,19 +105,21 @@ const getInitialState = ({
 
     multiSelectionActive: false,
 
-    connectionStartHandle: null,
-    connectionEndHandle: null,
+    connection: { ...initialConnection },
     connectionClickStartHandle: null,
     connectOnClick: true,
 
     ariaLiveMessage: '',
     autoPanOnConnect: true,
     autoPanOnNodeDrag: true,
+    autoPanSpeed: 15,
     connectionRadius: 20,
-    onError: () => null,
+    onError: devWarn,
     isValidConnection: undefined,
+    onSelectionChangeHandlers: [],
 
     lib: 'react',
+    debug: false,
   };
 };
 

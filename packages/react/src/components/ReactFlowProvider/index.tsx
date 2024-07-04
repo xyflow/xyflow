@@ -1,41 +1,50 @@
-import { useRef, type ReactNode } from 'react';
-import { type StoreApi } from 'zustand';
-import { UseBoundStoreWithEqualityFn } from 'zustand/traditional';
+import { useState, type ReactNode } from 'react';
 
-import { Provider } from '../../contexts/RFStoreContext';
-import { createRFStore } from '../../store';
-import type { ReactFlowState, Node, Edge } from '../../types';
+import { Provider } from '../../contexts/StoreContext';
+import { createStore } from '../../store';
+import { BatchProvider } from '../BatchProvider';
+import type { Node, Edge } from '../../types';
+import { NodeOrigin } from '@xyflow/system';
 
-function ReactFlowProvider({
-  children,
-  initialNodes,
-  initialEdges,
-  initialWidth,
-  initialHeight,
-  fitView,
-}: {
-  children: ReactNode;
+export type ReactFlowProviderProps = {
   initialNodes?: Node[];
   initialEdges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
   initialWidth?: number;
   initialHeight?: number;
   fitView?: boolean;
-}) {
-  const storeRef = useRef<UseBoundStoreWithEqualityFn<StoreApi<ReactFlowState>> | null>(null);
+  nodeOrigin?: NodeOrigin;
+  children: ReactNode;
+};
 
-  if (!storeRef.current) {
-    storeRef.current = createRFStore({
-      nodes: initialNodes,
-      edges: initialEdges,
-      width: initialWidth,
-      height: initialHeight,
+export function ReactFlowProvider({
+  initialNodes: nodes,
+  initialEdges: edges,
+  defaultNodes,
+  defaultEdges,
+  initialWidth: width,
+  initialHeight: height,
+  fitView,
+  nodeOrigin,
+  children,
+}: ReactFlowProviderProps) {
+  const [store] = useState(() =>
+    createStore({
+      nodes,
+      edges,
+      defaultNodes,
+      defaultEdges,
+      width,
+      height,
       fitView,
-    });
-  }
+      nodeOrigin,
+    })
+  );
 
-  return <Provider value={storeRef.current}>{children}</Provider>;
+  return (
+    <Provider value={store}>
+      <BatchProvider>{children}</BatchProvider>
+    </Provider>
+  );
 }
-
-ReactFlowProvider.displayName = 'ReactFlowProvider';
-
-export default ReactFlowProvider;

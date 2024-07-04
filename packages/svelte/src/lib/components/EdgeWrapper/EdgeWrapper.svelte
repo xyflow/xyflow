@@ -1,14 +1,14 @@
 <svelte:options immutable />
 
 <script lang="ts">
+  import { createEventDispatcher, setContext } from 'svelte';
   import cc from 'classcat';
-  import { createEventDispatcher } from 'svelte';
-  import { errorMessages, getMarkerId } from '@xyflow/system';
+  import { getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
-  import BezierEdge from '$lib/components/edges/BezierEdge.svelte';
+  import { BezierEdgeInternal } from '$lib/components/edges';
   import type { EdgeLayouted, Edge } from '$lib/types';
-  import { get } from 'svelte/store';
+  import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
 
   type $$Props = EdgeLayouted;
 
@@ -18,10 +18,12 @@
   export let target: $$Props['target'] = '';
   export let data: $$Props['data'] = {};
   export let style: $$Props['style'] = undefined;
+  export let zIndex: $$Props['zIndex'] = undefined;
 
   export let animated: $$Props['animated'] = false;
   export let selected: $$Props['selected'] = false;
-  export let selectable: $$Props['selectable'] = true;
+  export let selectable: $$Props['selectable'] = undefined;
+  export let deletable: $$Props['deletable'] = undefined;
   export let hidden: $$Props['hidden'] = false;
   export let label: $$Props['label'] = undefined;
   export let labelStyle: $$Props['labelStyle'] = undefined;
@@ -42,52 +44,39 @@
   let className: string = '';
   export { className as class };
 
-  const {
-    edges,
-    edgeTypes,
-    flowId,
-    selectionRect,
-    selectionRectMode,
-    multiselectionKeyPressed,
-    addSelectedEdges,
-    unselectNodesAndEdges
-  } = useStore();
+  setContext('svelteflow__edge_id', id);
+
+  const { edgeLookup, edgeTypes, flowId, elementsSelectable } = useStore();
   const dispatch = createEventDispatcher<{
     edgeclick: { edge: Edge; event: MouseEvent | TouchEvent };
     edgecontextmenu: { edge: Edge; event: MouseEvent };
+    edgemouseenter: { edge: Edge; event: MouseEvent };
+    edgemouseleave: { edge: Edge; event: MouseEvent };
   }>();
 
-  $: edgeComponent = $edgeTypes[type!] || BezierEdge;
-  $: markerStartUrl = markerStart ? `url(#${getMarkerId(markerStart, $flowId)})` : undefined;
-  $: markerEndUrl = markerEnd ? `url(#${getMarkerId(markerEnd, $flowId)})` : undefined;
+  $: edgeType = type || 'default';
+  $: edgeComponent = $edgeTypes[edgeType] || BezierEdgeInternal;
+  $: markerStartUrl = markerStart ? `url('#${getMarkerId(markerStart, $flowId)}')` : undefined;
+  $: markerEndUrl = markerEnd ? `url('#${getMarkerId(markerEnd, $flowId)}')` : undefined;
+  $: isSelectable = selectable ?? $elementsSelectable;
+
+  const handleEdgeSelect = useHandleEdgeSelect();
 
   function onClick(event: MouseEvent | TouchEvent) {
-    const edge = $edges.find((e) => e.id === id);
-
-    if (!edge) {
-      console.warn('012', errorMessages['error012'](id));
-      return;
-    }
-
-    if (selectable) {
-      selectionRect.set(null);
-      selectionRectMode.set(null);
-
-      if (!edge.selected) {
-        addSelectedEdges([id]);
-      } else if (edge.selected && get(multiselectionKeyPressed)) {
-        unselectNodesAndEdges({ nodes: [], edges: [edge] });
-      }
-    }
-
-    dispatch('edgeclick', { event, edge });
-  }
-
-  function onContextMenu(event: MouseEvent) {
-    const edge = $edges.find((e) => e.id === id);
+    const edge = $edgeLookup.get(id);
 
     if (edge) {
-      dispatch('edgecontextmenu', { event, edge });
+      handleEdgeSelect(id);
+      dispatch('edgeclick', { event, edge });
+    }
+  }
+
+  type EdgeMouseEvent = 'edgecontextmenu' | 'edgemouseenter' | 'edgemouseleave';
+  function onMouseEvent(event: MouseEvent, type: EdgeMouseEvent) {
+    const edge = $edgeLookup.get(id);
+
+    if (edge) {
+      dispatch(type, { event, edge });
     }
   }
 </script>
@@ -95,42 +84,56 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 {#if !hidden}
-  <g
-    class={cc(['svelte-flow__edge', className])}
-    class:animated
-    class:selected
-    data-id={id}
-    on:click={onClick}
-    on:contextmenu={onContextMenu}
-    aria-label={ariaLabel === null
-      ? undefined
-      : ariaLabel
-      ? ariaLabel
-      : `Edge from ${source} to ${target}`}
-    role="img"
-  >
-    <svelte:component
-      this={edgeComponent}
-      {id}
-      {source}
-      {target}
-      {sourceX}
-      {sourceY}
-      {targetX}
-      {targetY}
-      {sourcePosition}
-      {targetPosition}
-      {animated}
-      {selected}
-      {label}
-      {labelStyle}
-      {data}
-      {style}
-      {interactionWidth}
-      sourceHandleId={sourceHandle}
-      targetHandleId={targetHandle}
-      markerStart={markerStartUrl}
-      markerEnd={markerEndUrl}
-    />
-  </g>
+  <svg style:z-index={zIndex}>
+    <g
+      class={cc(['svelte-flow__edge', className])}
+      class:animated
+      class:selected
+      class:selectable={isSelectable}
+      data-id={id}
+      on:click={onClick}
+      on:contextmenu={(e) => {
+        onMouseEvent(e, 'edgecontextmenu');
+      }}
+      on:mouseenter={(e) => {
+        onMouseEvent(e, 'edgemouseenter');
+      }}
+      on:mouseleave={(e) => {
+        onMouseEvent(e, 'edgemouseleave');
+      }}
+      aria-label={ariaLabel === null
+        ? undefined
+        : ariaLabel
+          ? ariaLabel
+          : `Edge from ${source} to ${target}`}
+      role="img"
+    >
+      <svelte:component
+        this={edgeComponent}
+        {id}
+        {source}
+        {target}
+        {sourceX}
+        {sourceY}
+        {targetX}
+        {targetY}
+        {sourcePosition}
+        {targetPosition}
+        {animated}
+        {selected}
+        {label}
+        {labelStyle}
+        {data}
+        {style}
+        {interactionWidth}
+        selectable={isSelectable}
+        deletable={deletable ?? true}
+        type={edgeType}
+        sourceHandleId={sourceHandle}
+        targetHandleId={targetHandle}
+        markerStart={markerStartUrl}
+        markerEnd={markerEndUrl}
+      />
+    </g>
+  </svg>
 {/if}

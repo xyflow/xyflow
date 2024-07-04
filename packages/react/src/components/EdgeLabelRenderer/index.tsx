@@ -6,7 +6,7 @@ import type { ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__edgelabel-renderer');
 
-function EdgeLabelRenderer({ children }: { children: ReactNode }) {
+export function EdgeLabelRenderer({ children }: { children: ReactNode }) {
   const edgeLabelRenderer = useStore(selector);
 
   if (!edgeLabelRenderer) {
@@ -15,5 +15,3 @@ function EdgeLabelRenderer({ children }: { children: ReactNode }) {
 
   return createPortal(children, edgeLabelRenderer);
 }
-
-export default EdgeLabelRenderer;

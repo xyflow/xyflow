@@ -1,4 +1,4 @@
-import type { FC, MouseEvent as ReactMouseEvent, SVGAttributes } from 'react';
+import type { MouseEvent as ReactMouseEvent, SVGAttributes } from 'react';
 import cc from 'classcat';
 import { Position } from '@xyflow/system';
 
@@ -27,7 +27,7 @@ export interface EdgeAnchorProps extends SVGAttributes<SVGGElement> {
 
 const EdgeUpdaterClassName = 'react-flow__edgeupdater';
 
-export const EdgeAnchor: FC<EdgeAnchorProps> = ({
+export function EdgeAnchor({
   position,
   centerX,
   centerY,
@@ -36,16 +36,18 @@ export const EdgeAnchor: FC<EdgeAnchorProps> = ({
   onMouseEnter,
   onMouseOut,
   type,
-}: EdgeAnchorProps) => (
-  <circle
-    onMouseDown={onMouseDown}
-    onMouseEnter={onMouseEnter}
-    onMouseOut={onMouseOut}
-    className={cc([EdgeUpdaterClassName, `${EdgeUpdaterClassName}-${type}`])}
-    cx={shiftX(centerX, radius, position)}
-    cy={shiftY(centerY, radius, position)}
-    r={radius}
-    stroke="transparent"
-    fill="transparent"
-  />
-);
+}: EdgeAnchorProps) {
+  return (
+    <circle
+      onMouseDown={onMouseDown}
+      onMouseEnter={onMouseEnter}
+      onMouseOut={onMouseOut}
+      className={cc([EdgeUpdaterClassName, `${EdgeUpdaterClassName}-${type}`])}
+      cx={shiftX(centerX, radius, position)}
+      cy={shiftY(centerY, radius, position)}
+      r={radius}
+      stroke="transparent"
+      fill="transparent"
+    />
+  );
+}

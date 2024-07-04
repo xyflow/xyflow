@@ -2,215 +2,239 @@ import { createWithEqualityFn } from 'zustand/traditional';
 import {
   clampPosition,
   fitView as fitViewSystem,
-  updateNodes,
+  adoptUserNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
-  Dimensions,
-  updateNodeDimensions as updateNodeDimensionsSystem,
-} from '@xyflow/system';
-
-import { applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
-import { updateNodesAndEdgesSelections } from './utils';
-import getInitialState from './initialState';
-import type {
-  ReactFlowState,
-  Node,
-  Edge,
-  NodeDimensionChange,
+  updateNodeInternals as updateNodeInternalsSystem,
+  updateConnectionLookup,
+  handleExpandParent,
+  NodeChange,
   EdgeSelectionChange,
   NodeSelectionChange,
-  NodePositionChange,
-  UnselectNodesAndEdgesParams,
-  FitViewOptions,
-} from '../types';
+  ParentExpandChild,
+  initialConnection,
+  NodeOrigin,
+} from '@xyflow/system';
 
-const createRFStore = ({
+import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
+import getInitialState from './initialState';
+import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
+
+const createStore = ({
   nodes,
   edges,
+  defaultNodes,
+  defaultEdges,
   width,
   height,
   fitView,
+  nodeOrigin,
 }: {
   nodes?: Node[];
   edges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }) =>
   createWithEqualityFn<ReactFlowState>(
     (set, get) => ({
-      ...getInitialState({ nodes, edges, width, height, fitView }),
+      ...getInitialState({ nodes, edges, width, height, fitView, nodeOrigin, defaultNodes, defaultEdges }),
       setNodes: (nodes: Node[]) => {
-        const { nodes: storeNodes, nodeOrigin, elevateNodesOnSelect } = get();
-        const nextNodes = updateNodes(nodes, storeNodes, { nodeOrigin, elevateNodesOnSelect });
+        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
+        // setNodes() is called exclusively in response to user actions:
+        // - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
+        // - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
+        //
+        // When this happens, we take the note objects passed by the user and extend them with fields
+        // relevant for internal React Flow operations.
+        adoptUserNodes(nodes, nodeLookup, parentLookup, { nodeOrigin, elevateNodesOnSelect, checkEquality: true });
 
-        set({ nodes: nextNodes });
-      },
-      getNodes: () => {
-        return get().nodes;
+        set({ nodes });
       },
       setEdges: (edges: Edge[]) => {
-        const { defaultEdgeOptions = {} } = get();
-        set({ edges: edges.map((e) => ({ ...defaultEdgeOptions, ...e })) });
+        const { connectionLookup, edgeLookup } = get();
+
+        updateConnectionLookup(connectionLookup, edgeLookup, edges);
+
+        set({ edges });
       },
       setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
-        const hasDefaultNodes = typeof nodes !== 'undefined';
-        const hasDefaultEdges = typeof edges !== 'undefined';
-
-        const nextState: {
-          nodes?: Node[];
-          edges?: Edge[];
-          hasDefaultNodes: boolean;
-          hasDefaultEdges: boolean;
-        } = {
-          hasDefaultNodes,
-          hasDefaultEdges,
-        };
-
-        if (hasDefaultNodes) {
-          nextState.nodes = updateNodes(nodes, [], {
-            nodeOrigin: get().nodeOrigin,
-            elevateNodesOnSelect: get().elevateNodesOnSelect,
-          });
+        if (nodes) {
+          const { setNodes } = get();
+          setNodes(nodes);
+          set({ hasDefaultNodes: true });
         }
-        if (hasDefaultEdges) {
-          nextState.edges = edges;
+        if (edges) {
+          const { setEdges } = get();
+          setEdges(edges);
+          set({ hasDefaultEdges: true });
         }
-
-        set(nextState);
       },
-      updateNodeDimensions: (updates) => {
-        const { onNodesChange, fitView, nodes, fitViewOnInit, fitViewDone, fitViewOnInitOptions, domNode, nodeOrigin } =
-          get();
-        const changes: NodeDimensionChange[] = [];
-
-        const updatedNodes = updateNodeDimensionsSystem(
-          updates,
-          nodes,
+      // Every node gets registerd at a ResizeObserver. Whenever a node
+      // changes its dimensions, this function is called to measure the
+      // new dimensions and update the nodes.
+      updateNodeInternals: (updates) => {
+        const {
+          triggerNodeChanges,
+          fitView,
+          nodeLookup,
+          parentLookup,
+          fitViewOnInit,
+          fitViewDone,
+          fitViewOnInitOptions,
           domNode,
           nodeOrigin,
-          (id: string, dimensions: Dimensions) => {
-            changes.push({
-              id: id,
-              type: 'dimensions',
-              dimensions,
-            });
-          }
+          debug,
+        } = get();
+
+        const { changes, updatedInternals } = updateNodeInternalsSystem(
+          updates,
+          nodeLookup,
+          parentLookup,
+          domNode,
+          nodeOrigin
         );
 
-        if (!updatedNodes) {
+        if (!updatedInternals) {
           return;
         }
 
-        const nextNodes = updateAbsolutePositions(updatedNodes, nodeOrigin);
+        updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin });
 
+        // we call fitView once initially after all dimensions are set
         let nextFitViewDone = fitViewDone;
         if (!fitViewDone && fitViewOnInit) {
-          nextFitViewDone = fitView(nextNodes, {
+          nextFitViewDone = fitView({
             ...fitViewOnInitOptions,
-            nodes: fitViewOnInitOptions?.nodes || nextNodes,
+            nodes: fitViewOnInitOptions?.nodes,
           });
         }
 
-        set({ nodes: nextNodes, fitViewDone: nextFitViewDone });
+        // here we are cirmumventing the onNodesChange handler
+        // in order to be able to display nodes even if the user
+        // has not provided an onNodesChange handler.
+        // Nodes are only rendered if they have a width and height
+        // attribute which they get from this handler.
+        set({ fitViewDone: nextFitViewDone });
 
         if (changes?.length > 0) {
-          onNodesChange?.(changes);
+          if (debug) {
+            console.log('React Flow: trigger node changes', changes);
+          }
+          triggerNodeChanges?.(changes);
         }
       },
-      updateNodePositions: (nodeDragItems, positionChanged = true, dragging = false) => {
-        const changes = nodeDragItems.map((node) => {
-          const change: NodePositionChange = {
-            id: node.id,
+      updateNodePositions: (nodeDragItems, dragging = false) => {
+        const parentExpandChildren: ParentExpandChild[] = [];
+        const changes = [];
+
+        for (const [id, dragItem] of nodeDragItems) {
+          // @todo add expandParent to drag item so that we can get rid of the look up here
+          const change: NodeChange = {
+            id,
             type: 'position',
+            position: dragItem.position,
             dragging,
           };
 
-          if (positionChanged) {
-            change.positionAbsolute = node.positionAbsolute;
-            change.position = node.position;
+          if (dragItem?.expandParent && dragItem?.parentId && change.position) {
+            parentExpandChildren.push({
+              id,
+              parentId: dragItem.parentId,
+              rect: {
+                ...dragItem.internals.positionAbsolute,
+                width: dragItem.measured.width!,
+                height: dragItem.measured.height!,
+              },
+            });
+
+            change.position.x = Math.max(0, change.position.x);
+            change.position.y = Math.max(0, change.position.y);
           }
 
-          return change;
-        });
+          changes.push(change);
+        }
+
+        if (parentExpandChildren.length > 0) {
+          const { nodeLookup, parentLookup, nodeOrigin } = get();
+          const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup, nodeOrigin);
+          changes.push(...parentExpandChanges);
+        }
 
         get().triggerNodeChanges(changes);
       },
-
       triggerNodeChanges: (changes) => {
-        const { onNodesChange, nodes, hasDefaultNodes, nodeOrigin, elevateNodesOnSelect } = get();
+        const { onNodesChange, setNodes, nodes, hasDefaultNodes, debug } = get();
 
         if (changes?.length) {
           if (hasDefaultNodes) {
             const updatedNodes = applyNodeChanges(changes, nodes);
-            const nextNodes = updateNodes(updatedNodes, nodes, {
-              nodeOrigin,
-              elevateNodesOnSelect,
-            });
-            set({ nodes: nextNodes });
+            setNodes(updatedNodes);
+          }
+
+          if (debug) {
+            console.log('React Flow: trigger node changes', changes);
           }
 
           onNodesChange?.(changes);
         }
       },
+      triggerEdgeChanges: (changes) => {
+        const { onEdgesChange, setEdges, edges, hasDefaultEdges, debug } = get();
 
+        if (changes?.length) {
+          if (hasDefaultEdges) {
+            const updatedEdges = applyEdgeChanges(changes, edges);
+            setEdges(updatedEdges);
+          }
+
+          if (debug) {
+            console.log('React Flow: trigger edge changes', changes);
+          }
+
+          onEdgesChange?.(changes);
+        }
+      },
       addSelectedNodes: (selectedNodeIds) => {
-        const { multiSelectionActive, edges, nodes } = get();
-        let changedNodes: NodeSelectionChange[];
-        let changedEdges: EdgeSelectionChange[] | null = null;
+        const { multiSelectionActive, edgeLookup, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
 
         if (multiSelectionActive) {
-          changedNodes = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true)) as NodeSelectionChange[];
-        } else {
-          changedNodes = getSelectionChanges(nodes, selectedNodeIds);
-          changedEdges = getSelectionChanges(edges, []);
+          const nodeChanges = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true));
+          triggerNodeChanges(nodeChanges as NodeSelectionChange[]);
+          return;
         }
 
-        updateNodesAndEdgesSelections({
-          changedNodes,
-          changedEdges,
-          get,
-          set,
-        });
+        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
+        triggerEdgeChanges(getSelectionChanges(edgeLookup));
       },
       addSelectedEdges: (selectedEdgeIds) => {
-        const { multiSelectionActive, edges, nodes } = get();
-        let changedEdges: EdgeSelectionChange[];
-        let changedNodes: NodeSelectionChange[] | null = null;
+        const { multiSelectionActive, edgeLookup, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
 
         if (multiSelectionActive) {
-          changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true)) as EdgeSelectionChange[];
-        } else {
-          changedEdges = getSelectionChanges(edges, selectedEdgeIds);
-          changedNodes = getSelectionChanges(nodes, []);
+          const changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true));
+          triggerEdgeChanges(changedEdges as EdgeSelectionChange[]);
+          return;
         }
 
-        updateNodesAndEdgesSelections({
-          changedNodes,
-          changedEdges,
-          get,
-          set,
-        });
+        triggerEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
+        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
-        const { edges: storeEdges, nodes: storeNodes } = get();
+        const { edges: storeEdges, nodes: storeNodes, triggerNodeChanges, triggerEdgeChanges } = get();
         const nodesToUnselect = nodes ? nodes : storeNodes;
         const edgesToUnselect = edges ? edges : storeEdges;
 
-        const changedNodes = nodesToUnselect.map((n) => {
+        const nodeChanges = nodesToUnselect.map((n) => {
           n.selected = false;
           return createSelectionChange(n.id, false);
-        }) as NodeSelectionChange[];
-        const changedEdges = edgesToUnselect.map((edge) =>
-          createSelectionChange(edge.id, false)
-        ) as EdgeSelectionChange[];
-
-        updateNodesAndEdgesSelections({
-          changedNodes,
-          changedEdges,
-          get,
-          set,
         });
+        const edgeChanges = edgesToUnselect.map((edge) => createSelectionChange(edge.id, false));
+
+        triggerNodeChanges(nodeChanges as NodeSelectionChange[]);
+        triggerEdgeChanges(edgeChanges as EdgeSelectionChange[]);
       },
       setMinZoom: (minZoom) => {
         const { panZoom, maxZoom } = get();
@@ -230,43 +254,45 @@ const createRFStore = ({
         set({ translateExtent });
       },
       resetSelectedElements: () => {
-        const { edges, nodes } = get();
+        const { edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
 
-        const nodesToUnselect = nodes
-          .filter((e) => e.selected)
-          .map((n) => createSelectionChange(n.id, false)) as NodeSelectionChange[];
-        const edgesToUnselect = edges
-          .filter((e) => e.selected)
-          .map((e) => createSelectionChange(e.id, false)) as EdgeSelectionChange[];
+        const nodeChanges = nodes.reduce<NodeSelectionChange[]>(
+          (res, node) => (node.selected ? [...res, createSelectionChange(node.id, false) as NodeSelectionChange] : res),
+          []
+        );
+        const edgeChanges = edges.reduce<EdgeSelectionChange[]>(
+          (res, edge) => (edge.selected ? [...res, createSelectionChange(edge.id, false) as EdgeSelectionChange] : res),
+          []
+        );
 
-        updateNodesAndEdgesSelections({
-          changedNodes: nodesToUnselect,
-          changedEdges: edgesToUnselect,
-          get,
-          set,
-        });
+        triggerNodeChanges(nodeChanges);
+        triggerEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nodeExtent) => {
-        const { nodes } = get();
+        const { nodeLookup } = get();
+
+        for (const [, node] of nodeLookup) {
+          const positionAbsolute = clampPosition(node.position, nodeExtent);
+
+          nodeLookup.set(node.id, {
+            ...node,
+            internals: {
+              ...node.internals,
+              positionAbsolute,
+            },
+          });
+        }
 
         set({
           nodeExtent,
-          nodes: nodes.map((node) => {
-            const positionAbsolute = clampPosition(node.position, nodeExtent);
-
-            return {
-              ...node,
-              positionAbsolute,
-            };
-          }),
         });
       },
       panBy: (delta): boolean => {
         const { transform, width, height, panZoom, translateExtent } = get();
         return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
       },
-      fitView: (nodes: Node[], options?: FitViewOptions): boolean => {
-        const { panZoom, width, height, minZoom, maxZoom, nodeOrigin } = get();
+      fitView: (options?: FitViewOptions): boolean => {
+        const { panZoom, width, height, minZoom, maxZoom, nodeLookup } = get();
 
         if (!panZoom) {
           return false;
@@ -274,44 +300,28 @@ const createRFStore = ({
 
         return fitViewSystem(
           {
-            nodes,
+            nodeLookup,
             width,
             height,
             panZoom,
             minZoom,
             maxZoom,
-            nodeOrigin,
           },
           options
         );
       },
-      cancelConnection: () =>
+      cancelConnection: () => {
         set({
-          connectionStatus: null,
-          connectionStartHandle: null,
-          connectionEndHandle: null,
-        }),
-      updateConnection: (params) => {
-        const { connectionStatus, connectionStartHandle, connectionEndHandle, connectionPosition } = get();
-
-        const currentConnection = {
-          connectionPosition: params.connectionPosition ?? connectionPosition,
-          connectionStatus: params.connectionStatus ?? connectionStatus,
-          connectionStartHandle: params.connectionStartHandle ?? connectionStartHandle,
-          connectionEndHandle: params.connectionEndHandle ?? connectionEndHandle,
-        };
-
-        set(currentConnection);
+          connection: { ...initialConnection },
+        });
       },
-      reset: () => {
-        // @todo: what should we do about this? Do we still need it?
-        // if you are on a SPA with multiple flows, we want to make sure that the store gets resetted
-        // when you switch pages. Does this reset solves this? Currently it always gets called. This
-        // leads to an emtpy nodes array at the beginning.
-        // set({ ...getInitialState() });
+      updateConnection: (connection) => {
+        set({ connection });
       },
+
+      reset: () => set({ ...getInitialState() }),
     }),
     Object.is
   );
 
-export { createRFStore };
+export { createStore };

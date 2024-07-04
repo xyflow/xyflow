@@ -16,8 +16,6 @@ import CustomResizer from './CustomResizer';
 import VerticalResizer from './VerticalResizer';
 import HorizontalResizer from './HorizontalResizer';
 
-import '@xyflow/react/dist/style.css';
-
 const nodeTypes = {
   defaultResizer: DefaultResizer,
   customResizer: CustomResizer,
@@ -39,6 +37,7 @@ const initialNodes: Node[] = [
     type: 'defaultResizer',
     data: { label: 'default resizer' },
     position: { x: 0, y: 0 },
+    origin: [1, 1],
     style: { ...nodeStyle },
   },
   {
@@ -52,7 +51,9 @@ const initialNodes: Node[] = [
       maxHeight: 200,
     },
     position: { x: 0, y: 60 },
-    style: { ...nodeStyle, width: 100, height: 80 },
+    width: 100,
+    height: 80,
+    style: { ...nodeStyle },
   },
   {
     id: '1b',
@@ -66,9 +67,9 @@ const initialNodes: Node[] = [
       maxHeight: 400,
     },
     position: { x: 250, y: 0 },
+    width: 174,
+    height: 123,
     style: {
-      width: 174,
-      height: 123,
       ...nodeStyle,
     },
   },
@@ -77,7 +78,9 @@ const initialNodes: Node[] = [
     type: 'customResizer',
     data: { label: 'custom resize icon' },
     position: { x: 0, y: 200 },
-    style: { width: 100, height: 60, ...nodeStyle },
+    width: 100,
+    height: 60,
+    style: { ...nodeStyle },
   },
   {
     id: '3',
@@ -96,7 +99,8 @@ const initialNodes: Node[] = [
       keepAspectRatio: true,
     },
     position: { x: 400, y: 200 },
-    style: { ...nodeStyle, height: 50 },
+    height: 50,
+    style: { ...nodeStyle },
   },
   {
     id: '4',
@@ -116,6 +120,50 @@ const initialNodes: Node[] = [
     type: 'horizontalResizer',
     data: { label: 'horizontal resizer with maxWidth', maxWidth: 300 },
     position: { x: 250, y: 400 },
+    style: { ...nodeStyle },
+  },
+  {
+    id: '5',
+    type: 'defaultResizer',
+    data: { label: 'Parent', keepAspectRatio: true },
+    position: { x: 700, y: 0 },
+    width: 300,
+    height: 300,
+    style: { ...nodeStyle },
+  },
+  {
+    id: '5a',
+    type: 'defaultResizer',
+    data: {
+      label: 'Child with extent: parent',
+    },
+    position: { x: 50, y: 50 },
+    parentId: '5',
+    extent: 'parent',
+    width: 50,
+    height: 100,
+    style: { ...nodeStyle },
+  },
+  {
+    id: '5b',
+    type: 'defaultResizer',
+    data: { label: 'Child with expandParent' },
+    position: { x: 100, y: 100 },
+    width: 100,
+    height: 100,
+    parentId: '5',
+    expandParent: true,
+    style: { ...nodeStyle },
+  },
+  {
+    id: '5c',
+    type: 'defaultResizer',
+    data: { label: 'Child with expandParent & keepAspectRatio' },
+    position: { x: 250, y: 200 },
+    height: 100,
+    width: 100,
+    parentId: '5',
+    expandParent: true,
     style: { ...nodeStyle },
   },
 ];
@@ -142,6 +190,7 @@ const CustomNodeFlow = () => {
       maxZoom={5}
       snapToGrid={snapToGrid}
       fitView
+      onlyRenderVisibleElements
     >
       <Controls />
       <Panel position="bottom-right">

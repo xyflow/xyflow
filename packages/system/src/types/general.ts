@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
+import type { Selection as D3Selection } from 'd3-selection';
+import type { D3DragEvent, SubjectPosition } from 'd3-drag';
+import type { ZoomBehavior } from 'd3-zoom';
+// this is needed for the Selection type to include the transition function :/
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { Transition } from 'd3-transition';
 
-import type { XYPosition, Rect } from './utils';
-import type { NodeBase, NodeDragItem, NodeOrigin } from './nodes';
-import type { ConnectingHandle, HandleType } from './handles';
+import type { XYPosition, Rect, Position } from './utils';
+import type { InternalNodeBase, NodeBase, NodeDragItem } from './nodes';
+import type { Handle, HandleType } from './handles';
 import { PanZoomInstance } from './panzoom';
 import { EdgeBase } from '..';
 
@@ -22,13 +27,15 @@ export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => vo
 export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => void;
 
 export type Connection = {
-  source: string | null;
-  target: string | null;
+  source: string;
+  target: string;
   sourceHandle: string | null;
   targetHandle: string | null;
 };
 
-export type ConnectionStatus = 'valid' | 'invalid';
+export type HandleConnection = Connection & {
+  edgeId: string;
+};
 
 export enum ConnectionMode {
   Strict = 'strict',
@@ -48,22 +55,21 @@ export type OnConnectEnd = (event: MouseEvent | TouchEvent) => void;
 export type IsValidConnection = (edge: EdgeBase | Connection) => boolean;
 
 export type FitViewParamsBase<NodeType extends NodeBase> = {
-  nodes: NodeType[];
+  nodeLookup: Map<string, InternalNodeBase<NodeType>>;
   width: number;
   height: number;
   panZoom: PanZoomInstance;
   minZoom: number;
   maxZoom: number;
-  nodeOrigin?: NodeOrigin;
 };
 
-export type FitViewOptionsBase<NodeType extends NodeBase> = {
+export type FitViewOptionsBase<NodeType extends NodeBase = NodeBase> = {
   padding?: number;
   includeHiddenNodes?: boolean;
   minZoom?: number;
   maxZoom?: number;
   duration?: number;
-  nodes?: (NodeType | { id: NodeType['id'] })[];
+  nodes?: (NodeType | { id: string })[];
 };
 
 export type Viewport = {
@@ -100,7 +106,7 @@ export type D3ZoomInstance = ZoomBehavior<Element, unknown>;
 export type D3SelectionInstance = D3Selection<Element, unknown, null, undefined>;
 export type D3ZoomHandler = (this: Element, event: any, d: unknown) => void;
 
-export type UpdateNodeInternals = (nodeId: string) => void;
+export type UpdateNodeInternals = (nodeId: string | string[]) => void;
 
 export type PanelPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
@@ -123,16 +129,65 @@ export type SelectionRect = Rect & {
 
 export type OnError = (id: string, message: string) => void;
 
-export type UpdateNodePositions = (
-  dragItems: NodeDragItem[] | NodeBase[],
-  positionChanged?: boolean,
-  dragging?: boolean
-) => void;
+export type UpdateNodePositions = (dragItems: Map<string, NodeDragItem | InternalNodeBase>, dragging?: boolean) => void;
 export type PanBy = (delta: XYPosition) => boolean;
 
-export type UpdateConnection = (params: {
-  connectionPosition: XYPosition | null;
-  connectionStatus: ConnectionStatus | null;
-  connectionStartHandle: ConnectingHandle | null;
-  connectionEndHandle: ConnectingHandle | null;
-}) => void;
+export const initialConnection: NoConnection = {
+  inProgress: false,
+  isValid: null,
+  from: null,
+  fromHandle: null,
+  fromPosition: null,
+  fromNode: null,
+  to: null,
+  toHandle: null,
+  toPosition: null,
+  toNode: null,
+};
+
+export type NoConnection = {
+  inProgress: false;
+  isValid: null;
+
+  from: null;
+  fromHandle: null;
+  fromPosition: null;
+  fromNode: null;
+
+  to: null;
+  toHandle: null;
+  toPosition: null;
+  toNode: null;
+};
+
+export type ConnectionInProgress = {
+  inProgress: true;
+  isValid: boolean | null;
+
+  from: XYPosition;
+  fromHandle: Handle;
+  fromPosition: Position;
+  fromNode: NodeBase;
+
+  to: XYPosition;
+  toHandle: Handle | null;
+  toPosition: Position;
+  toNode: NodeBase | null;
+};
+
+export type ConnectionState = ConnectionInProgress | NoConnection;
+
+export type UpdateConnection = (params: ConnectionState) => void;
+
+export type ColorModeClass = 'light' | 'dark';
+export type ColorMode = ColorModeClass | 'system';
+
+export type ConnectionLookup = Map<string, Map<string, HandleConnection>>;
+
+export type OnBeforeDeleteBase<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = ({
+  nodes,
+  edges,
+}: {
+  nodes: NodeType[];
+  edges: EdgeType[];
+}) => Promise<boolean | { nodes: NodeType[]; edges: EdgeType[] }>;

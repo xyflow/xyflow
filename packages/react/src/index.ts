@@ -1,31 +1,36 @@
 export { default as ReactFlow } from './container/ReactFlow';
-export { default as Handle } from './components/Handle';
-export { default as EdgeText } from './components/Edges/EdgeText';
-export { default as StraightEdge } from './components/Edges/StraightEdge';
-export { default as StepEdge } from './components/Edges/StepEdge';
-export { default as BezierEdge } from './components/Edges/BezierEdge';
-export { default as SimpleBezierEdge, getSimpleBezierPath } from './components/Edges/SimpleBezierEdge';
-export { default as SmoothStepEdge } from './components/Edges/SmoothStepEdge';
-export { default as BaseEdge } from './components/Edges/BaseEdge';
-export { default as ReactFlowProvider } from './components/ReactFlowProvider';
-export { default as Panel } from './components/Panel';
-export { default as EdgeLabelRenderer } from './components/EdgeLabelRenderer';
+export { Handle, type HandleProps } from './components/Handle';
+export { EdgeText } from './components/Edges/EdgeText';
+export { StraightEdge } from './components/Edges/StraightEdge';
+export { StepEdge } from './components/Edges/StepEdge';
+export { BezierEdge } from './components/Edges/BezierEdge';
+export { SimpleBezierEdge, getSimpleBezierPath } from './components/Edges/SimpleBezierEdge';
+export { SmoothStepEdge } from './components/Edges/SmoothStepEdge';
+export { BaseEdge } from './components/Edges/BaseEdge';
+export { ReactFlowProvider } from './components/ReactFlowProvider';
+export { Panel, type PanelProps } from './components/Panel';
+export { EdgeLabelRenderer } from './components/EdgeLabelRenderer';
+export { ViewportPortal } from './components/ViewportPortal';
 
-export { default as useReactFlow } from './hooks/useReactFlow';
-export { default as useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
-export { default as useNodes } from './hooks/useNodes';
-export { default as useEdges } from './hooks/useEdges';
-export { default as useViewport } from './hooks/useViewport';
-export { default as useKeyPress } from './hooks/useKeyPress';
-export * from './hooks/useNodesEdgesState';
+export { useReactFlow } from './hooks/useReactFlow';
+export { useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
+export { useNodes } from './hooks/useNodes';
+export { useEdges } from './hooks/useEdges';
+export { useViewport } from './hooks/useViewport';
+export { useKeyPress } from './hooks/useKeyPress';
+export { useNodesState, useEdgesState } from './hooks/useNodesEdgesState';
 export { useStore, useStoreApi } from './hooks/useStore';
-export { default as useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/useOnViewportChange';
-export { default as useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
-export { default as useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
+export { useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/useOnViewportChange';
+export { useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
+export { useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
+export { useHandleConnections } from './hooks/useHandleConnections';
+export { useNodesData } from './hooks/useNodesData';
+export { useConnection } from './hooks/useConnection';
+export { useInternalNode } from './hooks/useInternalNode';
 export { useNodeId } from './contexts/NodeIdContext';
 
-export { applyNodeChanges, applyEdgeChanges, handleParentExpand } from './utils/changes';
-export { isNode, isEdge, getIncomers, getOutgoers, addEdge, updateEdge, getConnectedEdges } from './utils/general';
+export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
+export { isNode, isEdge } from './utils/general';
 
 export * from './additional-components';
 
@@ -33,6 +38,7 @@ export * from './types';
 
 // system types
 export {
+  type Align,
   type SmoothStepPathOptions,
   type BezierPathOptions,
   ConnectionLineType,
@@ -43,13 +49,11 @@ export {
   type OnMoveStart,
   type OnMoveEnd,
   type Connection,
-  type ConnectionStatus,
   ConnectionMode,
   type OnConnectStartParams,
   type OnConnectStart,
   type OnConnect,
   type OnConnectEnd,
-  type IsValidConnection,
   type Viewport,
   type SnapGrid,
   PanOnScrollMode,
@@ -61,9 +65,7 @@ export {
   SelectionMode,
   type SelectionRect,
   type OnError,
-  type NodeProps,
   type NodeOrigin,
-  type OnNodeDrag,
   type OnSelectionDrag,
   Position,
   type XYPosition,
@@ -73,6 +75,29 @@ export {
   type Box,
   type Transform,
   type CoordinateExtent,
+  type ColorMode,
+  type ColorModeClass,
+  type HandleType,
+  type ShouldResize,
+  type OnResizeStart,
+  type OnResize,
+  type OnResizeEnd,
+  type ControlPosition,
+  type ControlLinePosition,
+  type ResizeControlVariant,
+  type NodeChange,
+  type NodeDimensionChange,
+  type NodePositionChange,
+  type NodeSelectionChange,
+  type NodeRemoveChange,
+  type NodeAddChange,
+  type NodeReplaceChange,
+  type EdgeChange,
+  type EdgeSelectionChange,
+  type EdgeRemoveChange,
+  type EdgeAddChange,
+  type EdgeReplaceChange,
+  type KeyCode,
 } from '@xyflow/system';
 
 // system utils
@@ -85,6 +110,11 @@ export {
   getSmoothStepPath,
   type GetStraightPathParams,
   getStraightPath,
-  getTransformForBounds,
-  getRectOfNodes,
+  getViewportForBounds,
+  getNodesBounds,
+  getIncomers,
+  getOutgoers,
+  addEdge,
+  reconnectEdge,
+  getConnectedEdges,
 } from '@xyflow/system';

@@ -6,7 +6,7 @@ import { useStore } from '../../hooks/useStore';
 
 const selector = (state: ReactFlowState) => state.domNode?.querySelector('.react-flow__renderer');
 
-function NodeToolbarPortal({ children }: { children: ReactNode }) {
+export function NodeToolbarPortal({ children }: { children: ReactNode }) {
   const wrapperRef = useStore(selector);
 
   if (!wrapperRef) {
@@ -15,5 +15,3 @@ function NodeToolbarPortal({ children }: { children: ReactNode }) {
 
   return createPortal(children, wrapperRef);
 }
-
-export default NodeToolbarPortal;

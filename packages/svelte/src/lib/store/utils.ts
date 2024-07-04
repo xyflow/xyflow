@@ -1,14 +1,24 @@
 import {
   writable,
+  get,
   type Unsubscriber,
   type Subscriber,
   type Updater,
-  type Writable,
-  get
+  type Writable
 } from 'svelte/store';
-import { updateNodes, type Viewport, type PanZoomInstance } from '@xyflow/system';
+import {
+  adoptUserNodes,
+  updateConnectionLookup,
+  type Viewport,
+  type PanZoomInstance,
+  type ConnectionLookup,
+  type EdgeLookup,
+  type NodeLookup,
+  type ParentLookup,
+  type NodeOrigin
+} from '@xyflow/system';
 
-import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, Node } from '$lib/types';
+import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, InternalNode, Node } from '$lib/types';
 
 // we need to sync the user nodes and the internal nodes so that the user can receive the updates
 // made by Svelte Flow (like dragging or selecting a node).
@@ -18,8 +28,15 @@ export function syncNodeStores(
 ) {
   const nodesStoreSetter = nodesStore.set;
   const userNodesStoreSetter = userNodesStore.set;
+  const currentNodesStore = get(nodesStore);
+  const currentUserNodesStore = get(userNodesStore);
+  // depending how the user initializes the nodes, we need to decide if we want to use
+  // the user nodes or the internal nodes for initialization. A user can use a SvelteFlowProvider
+  // without providing any nodes, in that case we want to use the nodes passed by the user.
+  // By default we are using the store nodes, because they already have the absolute positions.
+  const initWithUserNodes = currentNodesStore.length === 0 && currentUserNodesStore.length > 0;
 
-  let val = get(userNodesStore);
+  let val = initWithUserNodes ? currentUserNodesStore : currentNodesStore;
   nodesStore.set(val);
 
   const _set = (nds: Node[]) => {
@@ -111,7 +128,10 @@ export type NodeStoreOptions = {
 // we are creating a custom store for the internals nodes in order to update the zIndex and positionAbsolute.
 // The user only passes in relative positions, so we need to calculate the absolute positions based on the parent nodes.
 export const createNodesStore = (
-  nodes: Node[]
+  nodes: Node[],
+  nodeLookup: NodeLookup<InternalNode>,
+  parentLookup: ParentLookup<InternalNode>,
+  nodeOrigin: NodeOrigin = [0, 0]
 ): {
   subscribe: (this: void, run: Subscriber<Node[]>) => Unsubscriber;
   update: (this: void, updater: Updater<Node[]>) => void;
@@ -125,12 +145,14 @@ export const createNodesStore = (
   let elevateNodesOnSelect = true;
 
   const _set = (nds: Node[]): Node[] => {
-    const nextNodes = updateNodes(nds, value, {
+    adoptUserNodes(nds, nodeLookup, parentLookup, {
       elevateNodesOnSelect,
-      defaults
+      nodeOrigin,
+      defaults,
+      checkEquality: false
     });
 
-    value = nextNodes;
+    value = nds;
 
     set(value);
 
@@ -160,6 +182,8 @@ export const createNodesStore = (
 
 export const createEdgesStore = (
   edges: Edge[],
+  connectionLookup: ConnectionLookup,
+  edgeLookup: EdgeLookup<Edge>,
   defaultOptions?: DefaultEdgeOptions
 ): Writable<Edge[]> & { setDefaultOptions: (opts: DefaultEdgeOptions) => void } => {
   const { subscribe, set, update } = writable<Edge[]>([]);
@@ -168,6 +192,9 @@ export const createEdgesStore = (
 
   const _set: typeof set = (eds: Edge[]) => {
     const nextEdges = defaults ? eds.map((edge) => ({ ...defaults, ...edge })) : eds;
+
+    updateConnectionLookup(connectionLookup, edgeLookup, nextEdges);
+
     value = nextEdges;
     set(value);
   };

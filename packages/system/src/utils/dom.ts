@@ -1,4 +1,4 @@
-import type { Transform, XYPosition, SnapGrid, Dimensions, NodeOrigin, HandleElement, Position } from '../types';
+import type { Transform, XYPosition, SnapGrid, Dimensions, Position, Handle } from '../types';
 import { snapPosition, pointToRendererPoint } from './general';
 
 export type GetPointerPositionParams = {
@@ -13,7 +13,6 @@ export function getPointerPosition(
 ): XYPosition & { xSnapped: number; ySnapped: number } {
   const { x, y } = getEventPosition(event);
   const pointerPos = pointToRendererPoint({ x, y }, transform);
-
   const { x: xSnapped, y: ySnapped } = snapToGrid ? snapPosition(pointerPos, snapGrid) : pointerPos;
 
   // we need the snapped position in order to be able to skip unnecessary drag events
@@ -38,11 +37,9 @@ export function isInputDOMNode(event: KeyboardEvent): boolean {
   // using composed path for handling shadow dom
   const target = (event.composedPath?.()?.[0] || event.target) as HTMLElement;
   const isInput = inputTags.includes(target?.nodeName) || target?.hasAttribute('contenteditable');
-  // we want to be able to do a multi selection event if we are in an input field
-  const isModifierKey = event.ctrlKey || event.metaKey || event.shiftKey;
 
   // when an input field is focused we don't want to trigger deletion or movement of nodes
-  return (isInput && !isModifierKey) || !!target?.closest('.nokey');
+  return isInput || !!target?.closest('.nokey');
 }
 
 export const isMouseEvent = (event: MouseEvent | TouchEvent): event is MouseEvent => 'clientX' in event;
@@ -58,34 +55,33 @@ export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRec
   };
 };
 
+// The handle bounds are calculated relative to the node element.
+// We store them in the internals object of the node in order to avoid
+// unnecessary recalculations.
 export const getHandleBounds = (
-  selector: string,
+  type: 'source' | 'target',
   nodeElement: HTMLDivElement,
+  nodeBounds: DOMRect,
   zoom: number,
-  nodeOrigin: NodeOrigin = [0, 0]
-): HandleElement[] | null => {
-  const handles = nodeElement.querySelectorAll(selector);
+  nodeId: string
+): Handle[] | null => {
+  const handles = nodeElement.querySelectorAll(`.${type}`);
 
   if (!handles || !handles.length) {
     return null;
   }
 
-  const handlesArray = Array.from(handles) as HTMLDivElement[];
-  const nodeBounds = nodeElement.getBoundingClientRect();
-  const nodeOffset = {
-    x: nodeBounds.width * nodeOrigin[0],
-    y: nodeBounds.height * nodeOrigin[1],
-  };
-
-  return handlesArray.map((handle): HandleElement => {
+  return Array.from(handles).map((handle): Handle => {
     const handleBounds = handle.getBoundingClientRect();
 
     return {
       id: handle.getAttribute('data-handleid'),
+      type,
+      nodeId,
       position: handle.getAttribute('data-handlepos') as unknown as Position,
-      x: (handleBounds.left - nodeBounds.left - nodeOffset.x) / zoom,
-      y: (handleBounds.top - nodeBounds.top - nodeOffset.y) / zoom,
-      ...getDimensions(handle),
+      x: (handleBounds.left - nodeBounds.left) / zoom,
+      y: (handleBounds.top - nodeBounds.top) / zoom,
+      ...getDimensions(handle as HTMLDivElement),
     };
   });
 };

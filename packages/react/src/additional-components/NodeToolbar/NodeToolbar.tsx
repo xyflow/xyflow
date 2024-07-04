@@ -1,75 +1,44 @@
 import { useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { getRectOfNodes, Transform, Rect, Position, internalsSymbol } from '@xyflow/system';
+import { Position, getNodeToolbarTransform, getInternalNodesBounds, NodeLookup } from '@xyflow/system';
 
-import { Node, ReactFlowState } from '../../types';
+import { InternalNode, ReactFlowState } from '../../types';
 import { useStore } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
-import NodeToolbarPortal from './NodeToolbarPortal';
-import { Align, NodeToolbarProps } from './types';
+import { NodeToolbarPortal } from './NodeToolbarPortal';
+import type { NodeToolbarProps } from './types';
 
-const nodeEqualityFn = (a: Node | undefined, b: Node | undefined) =>
-  a?.positionAbsolute?.x === b?.positionAbsolute?.x &&
-  a?.positionAbsolute?.y === b?.positionAbsolute?.y &&
-  a?.width === b?.width &&
-  a?.height === b?.height &&
-  a?.selected === b?.selected &&
-  a?.[internalsSymbol]?.z === b?.[internalsSymbol]?.z;
+const nodeEqualityFn = (a?: InternalNode, b?: InternalNode) =>
+  a?.internals.positionAbsolute.x !== b?.internals.positionAbsolute.x ||
+  a?.internals.positionAbsolute.y !== b?.internals.positionAbsolute.y ||
+  a?.measured.width !== b?.measured.width ||
+  a?.measured.height !== b?.measured.height ||
+  a?.selected !== b?.selected ||
+  a?.internals.z !== b?.internals.z;
 
-const nodesEqualityFn = (a: Node[], b: Node[]) => {
-  return a.length === b.length && a.every((node, i) => nodeEqualityFn(node, b[i]));
+const nodesEqualityFn = (a: NodeLookup, b: NodeLookup) => {
+  if (a.size !== b.size) {
+    return false;
+  }
+
+  for (const [key, node] of a) {
+    if (nodeEqualityFn(node, b.get(key))) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 const storeSelector = (state: ReactFlowState) => ({
-  transform: state.transform,
-  nodeOrigin: state.nodeOrigin,
+  x: state.transform[0],
+  y: state.transform[1],
+  zoom: state.transform[2],
   selectedNodesCount: state.nodes.filter((node) => node.selected).length,
 });
 
-function getTransform(nodeRect: Rect, transform: Transform, position: Position, offset: number, align: Align): string {
-  let alignmentOffset = 0.5;
-
-  if (align === 'start') {
-    alignmentOffset = 0;
-  } else if (align === 'end') {
-    alignmentOffset = 1;
-  }
-
-  // position === Position.Top
-  // we set the x any y position of the toolbar based on the nodes position
-  let pos = [
-    (nodeRect.x + nodeRect.width * alignmentOffset) * transform[2] + transform[0],
-    nodeRect.y * transform[2] + transform[1] - offset,
-  ];
-  // and than shift it based on the alignment. The shift values are in %.
-  let shift = [-100 * alignmentOffset, -100];
-
-  switch (position) {
-    case Position.Right:
-      pos = [
-        (nodeRect.x + nodeRect.width) * transform[2] + transform[0] + offset,
-        (nodeRect.y + nodeRect.height * alignmentOffset) * transform[2] + transform[1],
-      ];
-      shift = [0, -100 * alignmentOffset];
-      break;
-    case Position.Bottom:
-      pos[1] = (nodeRect.y + nodeRect.height) * transform[2] + transform[1] + offset;
-      shift[1] = 0;
-      break;
-    case Position.Left:
-      pos = [
-        nodeRect.x * transform[2] + transform[0] - offset,
-        (nodeRect.y + nodeRect.height * alignmentOffset) * transform[2] + transform[1],
-      ];
-      shift = [-100, -100 * alignmentOffset];
-      break;
-  }
-
-  return `translate(${pos[0]}px, ${pos[1]}px) translate(${shift[0]}%, ${shift[1]}%)`;
-}
-
-function NodeToolbar({
+export function NodeToolbar({
   nodeId,
   children,
   className,
@@ -83,45 +52,56 @@ function NodeToolbar({
   const contextNodeId = useNodeId();
 
   const nodesSelector = useCallback(
-    (state: ReactFlowState): Node[] => {
+    (state: ReactFlowState): NodeLookup => {
       const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
-
-      return nodeIds.reduce<Node[]>((acc, id) => {
-        const node = state.nodes.find((n) => n.id === id);
+      const internalNodes = nodeIds.reduce<NodeLookup>((res, id) => {
+        const node = state.nodeLookup.get(id);
         if (node) {
-          acc.push(node);
+          res.set(node.id, node);
         }
-        return acc;
-      }, [] as Node[]);
+
+        return res;
+      }, new Map());
+
+      return internalNodes;
     },
     [nodeId, contextNodeId]
   );
   const nodes = useStore(nodesSelector, nodesEqualityFn);
-  const { transform, nodeOrigin, selectedNodesCount } = useStore(storeSelector, shallow);
-  const isActive =
-    typeof isVisible === 'boolean' ? isVisible : nodes.length === 1 && nodes[0].selected && selectedNodesCount === 1;
+  const { x, y, zoom, selectedNodesCount } = useStore(storeSelector, shallow);
 
-  if (!isActive || !nodes.length) {
+  // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
+  const isActive =
+    typeof isVisible === 'boolean'
+      ? isVisible
+      : nodes.size === 1 && nodes.values().next().value.selected && selectedNodesCount === 1;
+
+  if (!isActive || !nodes.size) {
     return null;
   }
 
-  const nodeRect: Rect = getRectOfNodes(nodes, nodeOrigin);
-  const zIndex: number = Math.max(...nodes.map((node) => (node[internalsSymbol]?.z || 1) + 1));
+  const nodeRect = getInternalNodesBounds(nodes);
+  const nodesArray = Array.from(nodes.values());
+  const zIndex = Math.max(...nodesArray.map((node) => node.internals.z + 1));
 
   const wrapperStyle: CSSProperties = {
     position: 'absolute',
-    transform: getTransform(nodeRect, transform, position, offset, align),
+    transform: getNodeToolbarTransform(nodeRect, { x, y, zoom }, position, offset, align),
     zIndex,
     ...style,
   };
 
   return (
     <NodeToolbarPortal>
-      <div style={wrapperStyle} className={cc(['react-flow__node-toolbar', className])} {...rest}>
+      <div
+        style={wrapperStyle}
+        className={cc(['react-flow__node-toolbar', className])}
+        {...rest}
+        // @todo: check if we could only do this for non-prod envs
+        data-id={nodesArray.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
+      >
         {children}
       </div>
     </NodeToolbarPortal>
   );
 }
-
-export default NodeToolbar;

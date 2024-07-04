@@ -1,23 +1,30 @@
 import { useContext, type ReactNode } from 'react';
 
-import StoreContext from '../../contexts/RFStoreContext';
-import ReactFlowProvider from '../../components/ReactFlowProvider';
+import StoreContext from '../../contexts/StoreContext';
+import { ReactFlowProvider } from '../../components/ReactFlowProvider';
 import type { Node, Edge } from '../../types';
+import { NodeOrigin } from '@xyflow/system';
 
-function Wrapper({
+export function Wrapper({
   children,
   nodes,
   edges,
+  defaultNodes,
+  defaultEdges,
   width,
   height,
   fitView,
+  nodeOrigin,
 }: {
   children: ReactNode;
   nodes?: Node[];
   edges?: Edge[];
+  defaultNodes?: Node[];
+  defaultEdges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }) {
   const isWrapped = useContext(StoreContext);
 
@@ -31,15 +38,14 @@ function Wrapper({
     <ReactFlowProvider
       initialNodes={nodes}
       initialEdges={edges}
+      defaultNodes={defaultNodes}
+      defaultEdges={defaultEdges}
       initialWidth={width}
       initialHeight={height}
       fitView={fitView}
+      nodeOrigin={nodeOrigin}
     >
       {children}
     </ReactFlowProvider>
   );
 }
-
-Wrapper.displayName = 'ReactFlowWrapper';
-
-export default Wrapper;

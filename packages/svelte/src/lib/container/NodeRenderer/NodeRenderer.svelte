@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import { internalsSymbol, getPositionWithOrigin } from '@xyflow/system';
+  import { nodeHasDimensions } from '@xyflow/system';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
@@ -10,19 +10,27 @@
     nodesDraggable,
     nodesConnectable,
     elementsSelectable,
-    updateNodeDimensions
+    updateNodeInternals,
+    parentLookup
   } = useStore();
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
       ? null
       : new ResizeObserver((entries: ResizeObserverEntry[]) => {
-          const updates = entries.map((entry: ResizeObserverEntry) => ({
-            id: entry.target.getAttribute('data-id') as string,
-            nodeElement: entry.target as HTMLDivElement,
-            forceUpdate: true
-          }));
-          updateNodeDimensions(updates);
+          const updates = new Map();
+
+          entries.forEach((entry: ResizeObserverEntry) => {
+            const id = entry.target.getAttribute('data-id') as string;
+
+            updates.set(id, {
+              id,
+              nodeElement: entry.target as HTMLDivElement,
+              force: true
+            });
+          });
+
+          updateNodeInternals(updates);
         });
 
   onDestroy(() => {
@@ -32,13 +40,6 @@
 
 <div class="svelte-flow__nodes">
   {#each $visibleNodes as node (node.id)}
-    {@const posOrigin = getPositionWithOrigin({
-      x: node.positionAbsolute?.x ?? 0,
-      y: node.positionAbsolute?.y ?? 0,
-      width: (node.size?.width || node.width) ?? 0,
-      height: (node.size?.height || node.height) ?? 0,
-      origin: node.origin
-    })}
     <NodeWrapper
       {node}
       id={node.id}
@@ -54,26 +55,31 @@
         node.connectable ||
         ($nodesConnectable && typeof node.connectable === 'undefined')
       )}
-      positionAbsolute={node.positionAbsolute}
-      positionOrigin={posOrigin}
-      isParent={!!node[internalsSymbol]?.isParent}
+      deletable={node.deletable ?? true}
+      positionX={node.internals.positionAbsolute.x}
+      positionY={node.internals.positionAbsolute.y}
+      isParent={$parentLookup.has(node.id)}
       style={node.style}
       class={node.class}
-      type={node.type}
+      type={node.type ?? 'default'}
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       dragging={node.dragging}
-      zIndex={node[internalsSymbol]?.z ?? 0}
+      zIndex={node.internals.z ?? 0}
       dragHandle={node.dragHandle}
-      initialized={(!!node.width && !!node.height) || (!!node.size?.width && !!node.size?.height)}
+      initialized={nodeHasDimensions(node)}
+      width={node.width}
+      height={node.height}
+      initialWidth={node.initialWidth}
+      initialHeight={node.initialHeight}
+      measuredWidth={node.measured.width}
+      measuredHeight={node.measured.height}
+      parentId={node.parentId}
       {resizeObserver}
       on:nodeclick
       on:nodemouseenter
       on:nodemousemove
       on:nodemouseleave
-      on:connectstart
-      on:connect
-      on:connectend
       on:nodedrag
       on:nodedragstart
       on:nodedragstop

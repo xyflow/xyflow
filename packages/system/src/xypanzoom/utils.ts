@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ZoomTransform, zoomIdentity } from 'd3-zoom';
 
 import { type D3SelectionInstance, type Viewport } from '../types';

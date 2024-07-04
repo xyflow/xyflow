@@ -1,44 +1,39 @@
+import { getHandlePosition } from '../utils';
 import {
-  ConnectionStatus,
   type HandleType,
   type NodeHandleBounds,
   type XYPosition,
-  type NodeBase,
-  type ConnectionHandle,
+  type Handle,
+  InternalNodeBase,
+  NodeLookup,
 } from '../types';
-import { internalsSymbol } from '../constants';
 
 // this functions collects all handles and adds an absolute position
 // so that we can later find the closest handle to the mouse position
-export function getHandles(
-  node: NodeBase,
+function getHandles(
+  node: InternalNodeBase,
   handleBounds: NodeHandleBounds,
   type: HandleType,
-  currentHandle: string
-): ConnectionHandle[] {
-  return (handleBounds[type] || []).reduce<ConnectionHandle[]>((res, h) => {
-    if (`${node.id}-${h.id}-${type}` !== currentHandle) {
-      res.push({
-        id: h.id || null,
-        type,
-        nodeId: node.id,
-        x: (node.positionAbsolute?.x ?? 0) + h.x + h.width / 2,
-        y: (node.positionAbsolute?.y ?? 0) + h.y + h.height / 2,
-      });
+  currentHandle: { nodeId: string; handleId: string | null; handleType: HandleType }
+): [Handle[], Handle | null] {
+  let excludedHandle = null;
+  const handles = (handleBounds[type] || []).reduce<Handle[]>((res, handle) => {
+    if (node.id === currentHandle.nodeId && type === currentHandle.handleType && handle.id === currentHandle.handleId) {
+      excludedHandle = handle;
+    } else {
+      const handleXY = getHandlePosition(node, handle, handle.position, true);
+      res.push({ ...handle, ...handleXY });
     }
     return res;
   }, []);
+  return [handles, excludedHandle];
 }
 
-export function getClosestHandle(
-  pos: XYPosition,
-  connectionRadius: number,
-  handles: ConnectionHandle[]
-): ConnectionHandle | null {
-  let closestHandles: ConnectionHandle[] = [];
+export function getClosestHandle(pos: XYPosition, connectionRadius: number, handles: Handle[]): Handle | null {
+  let closestHandles: Handle[] = [];
   let minDistance = Infinity;
 
-  handles.forEach((handle) => {
+  for (const handle of handles) {
     const distance = Math.sqrt(Math.pow(handle.x - pos.x, 2) + Math.pow(handle.y - pos.y, 2));
     if (distance <= connectionRadius) {
       if (distance < minDistance) {
@@ -49,7 +44,7 @@ export function getClosestHandle(
       }
       minDistance = distance;
     }
-  });
+  }
 
   if (!closestHandles.length) {
     return null;
@@ -62,28 +57,32 @@ export function getClosestHandle(
 }
 
 type GetHandleLookupParams = {
-  nodes: NodeBase[];
+  nodeLookup: NodeLookup;
   nodeId: string;
   handleId: string | null;
-  handleType: string;
+  handleType: HandleType;
 };
 
-export function getHandleLookup({ nodes, nodeId, handleId, handleType }: GetHandleLookupParams) {
-  return nodes.reduce<ConnectionHandle[]>((res, node) => {
-    if (node[internalsSymbol]) {
-      const { handleBounds } = node[internalsSymbol];
-      let sourceHandles: ConnectionHandle[] = [];
-      let targetHandles: ConnectionHandle[] = [];
+export function getHandleLookup({
+  nodeLookup,
+  nodeId,
+  handleId,
+  handleType,
+}: GetHandleLookupParams): [Handle[], Handle] {
+  const connectionHandles: Handle[] = [];
+  const currentHandle = { nodeId, handleId, handleType };
+  let excludedHandle: Handle | null = null;
 
-      if (handleBounds) {
-        sourceHandles = getHandles(node, handleBounds, 'source', `${nodeId}-${handleId}-${handleType}`);
-        targetHandles = getHandles(node, handleBounds, 'target', `${nodeId}-${handleId}-${handleType}`);
-      }
-
-      res.push(...sourceHandles, ...targetHandles);
+  for (const node of nodeLookup.values()) {
+    if (node.internals.handleBounds) {
+      const [sourceHandles, excludedSource] = getHandles(node, node.internals.handleBounds, 'source', currentHandle);
+      const [targetHandles, excludedTarget] = getHandles(node, node.internals.handleBounds, 'target', currentHandle);
+      excludedHandle = excludedHandle ? excludedHandle : excludedSource ?? excludedTarget;
+      connectionHandles.push(...sourceHandles, ...targetHandles);
     }
-    return res;
-  }, []);
+  }
+
+  return [connectionHandles, excludedHandle!];
 }
 
 export function getHandleType(
@@ -101,18 +100,14 @@ export function getHandleType(
   return null;
 }
 
-export function resetRecentHandle(handleDomNode: Element, lib: string): void {
-  handleDomNode?.classList.remove('valid', 'connecting', `${lib}-flow__handle-valid`, `${lib}-flow__handle-connecting`);
-}
-
-export function getConnectionStatus(isInsideConnectionRadius: boolean, isHandleValid: boolean) {
-  let connectionStatus = null;
+export function isConnectionValid(isInsideConnectionRadius: boolean, isHandleValid: boolean) {
+  let isValid: boolean | null = null;
 
   if (isHandleValid) {
-    connectionStatus = 'valid';
+    isValid = true;
   } else if (isInsideConnectionRadius && !isHandleValid) {
-    connectionStatus = 'invalid';
+    isValid = false;
   }
 
-  return connectionStatus as ConnectionStatus;
+  return isValid;
 }

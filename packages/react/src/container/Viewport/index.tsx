@@ -9,7 +9,7 @@ type ViewportProps = {
   children: ReactNode;
 };
 
-export default function Viewport({ children }: ViewportProps) {
+export function Viewport({ children }: ViewportProps) {
   const transform = useStore(selector);
 
   return (

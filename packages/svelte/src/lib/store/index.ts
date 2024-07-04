@@ -1,32 +1,32 @@
 import { getContext, setContext } from 'svelte';
 import { derived, get, writable } from 'svelte/store';
 import {
-  internalsSymbol,
   createMarkerIds,
-  fitView as fitViewUtil,
+  fitView as fitViewSystem,
   getElementsToRemove,
   panBy as panBySystem,
-  updateNodeDimensions as updateNodeDimensionsSystem,
+  updateNodeInternals as updateNodeInternalsSystem,
+  addEdge as addEdgeUtil,
+  initialConnection,
+  errorMessages,
+  pointToRendererPoint,
   type UpdateNodePositions,
-  type NodeDimensionUpdate,
+  type InternalNodeUpdate,
   type ViewportHelperFunctionOptions,
   type Connection,
   type XYPosition,
   type CoordinateExtent,
   type UpdateConnection,
-  type NodeBase,
-  type NodeDragItem,
-  errorMessages
+  type ConnectionState,
+  type NodeOrigin
 } from '@xyflow/system';
 
-import { addEdge as addEdgeUtil } from '$lib/utils';
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, ConnectionData } from '$lib/types';
+import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store';
 import type { SvelteFlowStore } from './types';
 import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
-import { getEdgeTree } from './edge-tree';
+import { getVisibleEdges } from './visible-edges';
 import { getVisibleNodes } from './visible-nodes';
-import { getDerivedConnectionProps } from './derived-connection-props';
 
 export const key = Symbol();
 
@@ -35,15 +35,24 @@ export function createStore({
   edges,
   width,
   height,
-  fitView: fitViewOnCreate
+  fitView: fitViewOnCreate,
+  nodeOrigin
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }): SvelteFlowStore {
-  const store = getInitialStore({ nodes, edges, width, height, fitView: fitViewOnCreate });
+  const store = getInitialStore({
+    nodes,
+    edges,
+    width,
+    height,
+    fitView: fitViewOnCreate,
+    nodeOrigin
+  });
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes.set({
@@ -65,67 +74,93 @@ export function createStore({
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    store.nodes.update((nds) => {
-      return nds.map((n) => {
-        const nodeDragItem = (nodeDragItems as Array<NodeBase | NodeDragItem>).find(
-          (ndi) => ndi.id === n.id
-        );
+    const nodeLookup = get(store.nodeLookup);
 
-        if (nodeDragItem) {
-          return {
-            ...n,
-            [internalsSymbol]: n[internalsSymbol],
-            dragging,
-            positionAbsolute: nodeDragItem.positionAbsolute,
-            position: nodeDragItem.position
-          };
-        }
+    for (const [id, dragItem] of nodeDragItems) {
+      const node = nodeLookup.get(id)?.internals.userNode;
 
-        return n;
-      });
-    });
+      if (!node) {
+        continue;
+      }
+
+      node.position = dragItem.position;
+      node.dragging = dragging;
+    }
+
+    store.nodes.update((nds) => nds);
   };
 
-  function updateNodeDimensions(updates: NodeDimensionUpdate[]) {
-    const nextNodes = updateNodeDimensionsSystem(
+  function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
+    const nodeLookup = get(store.nodeLookup);
+    const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,
-      get(store.nodes),
+      nodeLookup,
+      get(store.parentLookup),
       get(store.domNode),
       get(store.nodeOrigin)
     );
 
-    if (!nextNodes) {
+    if (!updatedInternals) {
       return;
     }
 
     if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
       const fitViewOptions = get(store.fitViewOptions);
-      const fitViewOnInitDone = fitView(nextNodes, {
+      const fitViewOnInitDone = fitView({
         ...fitViewOptions,
-        nodes: fitViewOptions?.nodes || nextNodes
+        nodes: fitViewOptions?.nodes
       });
       store.fitViewOnInitDone.set(fitViewOnInitDone);
     }
 
-    store.nodes.set(nextNodes);
+    for (const change of changes) {
+      const node = nodeLookup.get(change.id)?.internals.userNode;
+
+      if (!node) {
+        continue;
+      }
+
+      switch (change.type) {
+        case 'dimensions': {
+          const measured = { ...node.measured, ...change.dimensions };
+
+          if (change.setAttributes) {
+            node.width = change.dimensions?.width ?? node.width;
+            node.height = change.dimensions?.height ?? node.height;
+          }
+
+          node.measured = measured;
+          break;
+        }
+        case 'position':
+          node.position = change.position ?? node.position;
+
+          break;
+      }
+    }
+
+    store.nodes.update((nds) => nds);
+
+    if (!get(store.nodesInitialized)) {
+      store.nodesInitialized.set(true);
+    }
   }
 
-  function fitView(nodes: Node[], options?: FitViewOptions) {
+  function fitView(options?: FitViewOptions) {
     const panZoom = get(store.panZoom);
 
     if (!panZoom) {
       return false;
     }
 
-    return fitViewUtil(
+    return fitViewSystem(
       {
-        nodes,
+        nodeLookup: get(store.nodeLookup),
         width: get(store.width),
         height: get(store.height),
         minZoom: get(store.minZoom),
         maxZoom: get(store.maxZoom),
-        panZoom,
-        nodeOrigin: get(store.nodeOrigin)
+        panZoom
       },
       options
     );
@@ -174,43 +209,38 @@ export function createStore({
     }
   }
 
-  function resetSelectedItem<T extends Node | Edge>(ids: string[]) {
-    return (item: T) => {
-      if (item.selected && ids.includes(item.id)) {
-        return {
-          ...item,
-          selected: false
-        };
+  function resetSelectedElements(elements: Node[] | Edge[]) {
+    let elementsChanged = false;
+    elements.forEach((element) => {
+      if (element.selected) {
+        element.selected = false;
+        elementsChanged = true;
       }
-
-      return item;
-    };
+    });
+    return elementsChanged;
   }
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
-    const nodeIdsToUnselect = (params?.nodes ? params.nodes : get(store.nodes)).map(
-      (item) => item.id
-    );
-    const edgeIdsToUnselect = (params?.edges ? params.edges : get(store.edges)).map(
-      (item) => item.id
-    );
+    const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
+    if (resetNodes) store.nodes.set(get(store.nodes));
 
-    store.nodes.update((ns) => ns.map(resetSelectedItem(nodeIdsToUnselect)));
-    store.edges.update((es) => es.map(resetSelectedItem(edgeIdsToUnselect)));
+    const resetEdges = resetSelectedElements(params?.edges || get(store.edges));
+    if (resetEdges) store.edges.set(get(store.edges));
   }
 
-  store.deleteKeyPressed.subscribe((deleteKeyPressed) => {
+  store.deleteKeyPressed.subscribe(async (deleteKeyPressed) => {
     if (deleteKeyPressed) {
       const nodes = get(store.nodes);
       const edges = get(store.edges);
       const selectedNodes = nodes.filter((node) => node.selected);
       const selectedEdges = edges.filter((edge) => edge.selected);
 
-      const { matchingNodes, matchingEdges } = getElementsToRemove<Node, Edge>({
+      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
         nodesToRemove: selectedNodes,
         edgesToRemove: selectedEdges,
         nodes,
-        edges
+        edges,
+        onBeforeDelete: get(store.onbeforedelete)
       });
 
       if (matchingNodes.length || matchingEdges.length) {
@@ -220,6 +250,11 @@ export function createStore({
         store.edges.update((eds) =>
           eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
         );
+
+        get(store.ondelete)?.({
+          nodes: matchingNodes,
+          edges: matchingEdges
+        });
       }
     }
   });
@@ -307,22 +342,13 @@ export function createStore({
     });
   }
 
-  const initConnectionUpdateData = {
-    connectionStartHandle: null,
-    connectionEndHandle: null,
-    connectionPosition: null,
-    connectionStatus: null
-  };
-
-  // by creating an internal, unexposed store and using a derived store
-  // we prevent using slow get() calls
-  const currentConnection = writable<ConnectionData>(initConnectionUpdateData);
-  const updateConnection: UpdateConnection = (newConnection: ConnectionData) => {
-    currentConnection.set(newConnection);
+  const _connection = writable<ConnectionState>(initialConnection);
+  const updateConnection: UpdateConnection = (newConnection: ConnectionState) => {
+    _connection.set({ ...newConnection });
   };
 
   function cancelConnection() {
-    updateConnection(initConnectionUpdateData);
+    _connection.set(initialConnection);
   }
 
   function reset() {
@@ -331,8 +357,6 @@ export function createStore({
     store.selectionRectMode.set(null);
     store.snapGrid.set(null);
     store.isValidConnection.set(() => true);
-    store.nodes.set([]);
-    store.edges.set([]);
 
     unselectNodesAndEdges();
     cancelConnection();
@@ -343,13 +367,43 @@ export function createStore({
     ...store,
 
     // derived state
-    edgeTree: getEdgeTree(store),
-    connection: getDerivedConnectionProps(store, currentConnection),
+    visibleEdges: getVisibleEdges(store),
     visibleNodes: getVisibleNodes(store),
+    connection: derived([_connection, store.viewport], ([connection, viewport]) => {
+      return connection.inProgress
+        ? {
+            ...connection,
+            to: pointToRendererPoint(connection.to, [viewport.x, viewport.y, viewport.zoom])
+          }
+        : { ...connection };
+    }),
     markers: derived(
       [store.edges, store.defaultMarkerColor, store.flowId],
       ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
     ),
+    initialized: (() => {
+      let initialized = false;
+      const initialNodesLength = get(store.nodes).length;
+      const initialEdgesLength = get(store.edges).length;
+      return derived(
+        [store.nodesInitialized, store.edgesInitialized, store.viewportInitialized],
+        ([nodesInitialized, edgesInitialized, viewportInitialized]) => {
+          // If it was already initialized, return true from then on
+          if (initialized) return initialized;
+
+          // if it hasn't been initialised check if it's now
+          if (initialNodesLength === 0) {
+            initialized = viewportInitialized;
+          } else if (initialEdgesLength === 0) {
+            initialized = viewportInitialized && nodesInitialized;
+          } else {
+            initialized = viewportInitialized && nodesInitialized && edgesInitialized;
+          }
+
+          return initialized;
+        }
+      );
+    })(),
 
     // actions
     syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
@@ -359,10 +413,10 @@ export function createStore({
     setEdgeTypes,
     addEdge,
     updateNodePositions,
-    updateNodeDimensions,
+    updateNodeInternals,
     zoomIn,
     zoomOut,
-    fitView: (options?: FitViewOptions) => fitView(get(store.nodes), options),
+    fitView: (options?: FitViewOptions) => fitView(options),
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,
@@ -394,15 +448,17 @@ export function createStoreContext({
   edges,
   width,
   height,
-  fitView
+  fitView,
+  nodeOrigin
 }: {
   nodes?: Node[];
   edges?: Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
+  nodeOrigin?: NodeOrigin;
 }) {
-  const store = createStore({ nodes, edges, width, height, fitView });
+  const store = createStore({ nodes, edges, width, height, fitView, nodeOrigin });
 
   setContext(key, {
     getStore: () => store

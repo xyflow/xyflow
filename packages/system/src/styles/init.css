@@ -1,20 +1,61 @@
 /* these are the necessary styles for React/Svelte Flow, they get used by base.css and style.css */
 
 .xy-flow {
-  --edge-stroke-default: #b1b1b7;
-  --edge-stroke-width-default: 1;
-  --edge-stroke-selected-default: #555;
+  direction: ltr;
 
-  --connectionline-stroke-default: #b1b1b7;
-  --connectionline-stroke-width-default: 1;
+  --xy-edge-stroke-default: #b1b1b7;
+  --xy-edge-stroke-width-default: 1;
+  --xy-edge-stroke-selected-default: #555;
 
-  --attribution-background-color-default: rgba(255, 255, 255, 0.5);
+  --xy-connectionline-stroke-default: #b1b1b7;
+  --xy-connectionline-stroke-width-default: 1;
 
-  --minimap-background-color-default: #fff;
+  --xy-attribution-background-color-default: rgba(255, 255, 255, 0.5);
 
-  --background-pattern-dot-color-default: #91919a;
-  --background-pattern-line-color-default: #eee;
-  --background-pattern-cross-color-default: #e2e2e2;
+  --xy-minimap-background-color-default: #fff;
+  --xy-minimap-mask-background-color-default: rgb(240, 240, 240, 0.6);
+  --xy-minimap-mask-stroke-color-default: transparent;
+  --xy-minimap-mask-stroke-width-default: 1;
+  --xy-minimap-node-background-color-default: #e2e2e2;
+  --xy-minimap-node-stroke-color-default: transparent;
+  --xy-minimap-node-stroke-width-default: 2;
+
+  --xy-background-color-default: transparent;
+  --xy-background-pattern-dots-color-default: #91919a;
+  --xy-background-pattern-lines-color-default: #eee;
+  --xy-background-pattern-cross-color-default: #e2e2e2;
+}
+
+.xy-flow.dark {
+  --xy-edge-stroke-default: #3e3e3e;
+  --xy-edge-stroke-width-default: 1;
+  --xy-edge-stroke-selected-default: #727272;
+
+  --xy-connectionline-stroke-default: #b1b1b7;
+  --xy-connectionline-stroke-width-default: 1;
+
+  --xy-attribution-background-color-default: rgba(150, 150, 150, 0.25);
+
+  --xy-minimap-background-color-default: #141414;
+  --xy-minimap-mask-background-color-default: rgb(60, 60, 60, 0.6);
+  --xy-minimap-mask-stroke-color-default: transparent;
+  --xy-minimap-mask-stroke-width-default: 1;
+  --xy-minimap-node-background-color-default: #2b2b2b;
+  --xy-minimap-node-stroke-color-default: transparent;
+  --xy-minimap-node-stroke-width-default: 2;
+
+  --xy-background-color-default: #141414;
+  --xy-background-pattern-dots-color-default: #777;
+  --xy-background-pattern-lines-color-default: #777;
+  --xy-background-pattern-cross-color-default: #777;
+}
+
+.xy-flow {
+  background-color: var(--xy-background-color, var(--xy-background-color-default));
+}
+
+.xy-flow__background {
+  background-color: var(--xy-background-color, var(--xy-background-color-props, var(--xy-background-color-default)));
 }
 
 .xy-flow__container {
@@ -27,14 +68,17 @@
 
 .xy-flow__pane {
   z-index: 1;
-  cursor: grab;
 
   &.selection {
     cursor: pointer;
   }
 
-  &.dragging {
-    cursor: grabbing;
+  &.draggable {
+    cursor: grab;
+
+    &.dragging {
+      cursor: grabbing;
+    }
   }
 }
 
@@ -57,26 +101,34 @@
   outline: none;
 }
 
-.xy-flow .xy-flow__edges {
-  pointer-events: none;
-  overflow: visible;
-}
-
 .xy-flow__edge-path {
-  stroke: var(--edge-stroke, var(--edge-stroke-default));
-  stroke-width: var(--edge-stroke-width, var(--edge-stroke-width-default));
+  stroke: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
+  stroke-width: var(--xy-edge-stroke-width, var(--xy-edge-stroke-width-default));
   fill: none;
 }
 
 .xy-flow__connection-path {
-  stroke: var(--connectionline-stroke, var(--connectionline-stroke-default));
-  stroke-width: var(--connectionline-stroke-width, var(--connectionline-stroke-width-default));
+  stroke: var(--xy-connectionline-stroke, var(--xy-connectionline-stroke-default));
+  stroke-width: var(--xy-connectionline-stroke-width, var(--xy-connectionline-stroke-width-default));
   fill: none;
+}
+
+.xy-flow__edges {
+  position: absolute;
+
+  svg {
+    overflow: visible;
+    position: absolute;
+    pointer-events: none;
+  }
 }
 
 .xy-flow__edge {
   pointer-events: visibleStroke;
-  cursor: pointer;
+
+  &.selectable {
+    cursor: pointer;
+  }
 
   &.animated path {
     stroke-dasharray: 5;
@@ -99,17 +151,13 @@
   }
 
   &.selected .xy-flow__edge-path,
-  &:focus .xy-flow__edge-path,
-  &:focus-visible .xy-flow__edge-path {
-    stroke: var(--edge-stroke-selected, var(--edge-stroke-selected-default));
+  &.selectable:focus .xy-flow__edge-path,
+  &.selectable:focus-visible .xy-flow__edge-path {
+    stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
   }
 
   &-textwrapper {
     pointer-events: all;
-  }
-
-  &-textbg {
-    fill: white;
   }
 
   .xy-flow__edge-text {
@@ -117,7 +165,6 @@
     user-select: none;
   }
 }
-
 .xy-flow__connection {
   pointer-events: none;
 
@@ -127,7 +174,7 @@
   }
 }
 
-.xy-flow__connectionline {
+svg.xy-flow__connectionline {
   z-index: 1001;
   overflow: visible;
   position: absolute;
@@ -144,16 +191,19 @@
   pointer-events: all;
   transform-origin: 0 0;
   box-sizing: border-box;
-  cursor: grab;
+  cursor: default;
 
-  &.dragging {
-    cursor: grabbing;
+  &.selectable {
+    cursor: pointer;
   }
 
-  /* only used in Svelte Flow, should we remove it here? */
   &.draggable {
     cursor: grab;
     pointer-events: all;
+
+    &.dragging {
+      cursor: grabbing;
+    }
   }
 }
 
@@ -175,6 +225,10 @@
   min-width: 5px;
   min-height: 5px;
 
+  &.connectingfrom {
+    pointer-events: all;
+  }
+
   &.connectionindicator {
     pointer-events: all;
     cursor: crosshair;
@@ -183,26 +237,26 @@
   &-bottom {
     top: auto;
     left: 50%;
-    bottom: -4px;
-    transform: translate(-50%, 0);
+    bottom: 0;
+    transform: translate(-50%, 50%);
   }
 
   &-top {
+    top: 0;
     left: 50%;
-    top: -4px;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, -50%);
   }
 
   &-left {
     top: 50%;
-    left: -4px;
-    transform: translate(0, -50%);
+    left: 0;
+    transform: translate(-50%, -50%);
   }
 
   &-right {
-    right: -4px;
     top: 50%;
-    transform: translate(0, -50%);
+    right: 0;
+    transform: translate(50%, -50%);
   }
 }
 
@@ -240,7 +294,7 @@
 
 .xy-flow__attribution {
   font-size: 10px;
-  background: var(--attribution-background-color, var(--attribution-background-color-default));
+  background: var(--xy-attribution-background-color, var(--xy-attribution-background-color-default));
   padding: 2px 3px;
   margin: 0;
 
@@ -266,40 +320,92 @@
   top: 0;
 }
 
+.xy-flow__viewport-portal {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  user-select: none;
+}
+
 .xy-flow__minimap {
-  background: var(--minimap-background-color, var(--minimap-background-color-default));
+  background: var(
+    --xy-minimap-background-color-props,
+    var(--xy-minimap-background-color, var(--xy-minimap-background-color-default))
+  );
+
+  &-svg {
+    display: block;
+  }
+
+  &-mask {
+    fill: var(
+      --xy-minimap-mask-background-color-props,
+      var(--xy-minimap-mask-background-color, var(--xy-minimap-mask-background-color-default))
+    );
+    stroke: var(
+      --xy-minimap-mask-stroke-color-props,
+      var(--xy-minimap-mask-stroke-color, var(--xy-minimap-mask-stroke-color-default))
+    );
+    stroke-width: var(
+      --xy-minimap-mask-stroke-width-props,
+      var(--xy-minimap-mask-stroke-width, var(--xy-minimap-mask-stroke-width-default))
+    );
+  }
+
+  &-node {
+    fill: var(
+      --xy-minimap-node-background-color-props,
+      var(--xy-minimap-node-background-color, var(--xy-minimap-node-background-color-default))
+    );
+    stroke: var(
+      --xy-minimap-node-stroke-color-props,
+      var(--xy-minimap-node-stroke-color, var(--xy-minimap-node-stroke-color-default))
+    );
+    stroke-width: var(
+      --xy-minimap-node-stroke-width-props,
+      var(--xy-minimap-node-stroke-width, var(--xy-minimap-node-stroke-width-default))
+    );
+  }
 }
 
 .xy-flow__background {
   pointer-events: none;
   z-index: -1;
-  background-color: var(--background-color-props, 'transparent');
 }
 
 .xy-flow__background-pattern {
   &.dots {
     fill: var(
-      --background-pattern-color-props,
-      var(--background-pattern-color, var(--background-pattern-dot-color-default))
+      --xy-background-pattern-color-props,
+      var(--xy-background-pattern-color, var(--xy-background-pattern-dots-color-default))
     );
   }
 
   &.lines {
     stroke: var(
-      --background-pattern-color-props,
-      var(--background-pattern-color, var(--background-pattern-line-color-default))
+      --xy-background-pattern-color-props,
+      var(--xy-background-pattern-color, var(--xy-background-pattern-lines-color-default))
     );
   }
 
   &.cross {
     stroke: var(
-      --background-pattern-color-props,
-      var(--background-pattern-color, var(--background-pattern-cross-color-default))
+      --xy-background-pattern-color-props,
+      var(--xy-background-pattern-color, var(--xy-background-pattern-cross-color-default))
     );
   }
 }
 
 .xy-flow__controls {
+  display: flex;
+  flex-direction: column;
+
+  &.horizontal {
+    flex-direction: row;
+  }
+
   &-button {
     display: flex;
     justify-content: center;
@@ -312,6 +418,7 @@
       width: 100%;
       max-width: 12px;
       max-height: 12px;
+      fill: currentColor;
     }
   }
 }

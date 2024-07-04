@@ -45,8 +45,8 @@
 <svg
   class={cc(['svelte-flow__background', className])}
   data-testid="svelte-flow__background"
-  style:--background-color-props={bgColor}
-  style:--background-pattern-color-props={patternColor}
+  style:--xy-background-color-props={bgColor}
+  style:--xy-background-pattern-color-props={patternColor}
 >
   <pattern
     id={patternId}

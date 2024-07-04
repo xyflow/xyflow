@@ -49,21 +49,16 @@ describe('Basic Flow Rendering', { testIsolation: false }, () => {
 
   it('selects one node with a selection', () => {
     cy.get('body')
-      .type('{shift}', { release: false })
-      .wait(50)
+      .type('{Shift}', { release: false })
       .get('.react-flow__pane')
       .trigger('mousedown', 1, 10, { button: 0, force: true })
-      .trigger('mousemove', 1000, 450, { button: 0 })
-      .wait(50)
-      .trigger('mouseup', 1000, 450, { button: 0, force: true });
+      .trigger('mousemove', 1000, 200, { button: 0 })
+      .trigger('mouseup', 1000, 200, { button: 0 });
 
-    cy.wait(200);
-
-    cy.get('.react-flow__node').eq(1).should('have.class', 'selected');
+    cy.get('.react-flow__node').eq(0).should('have.class', 'selected');
     cy.get('.react-flow__node').eq(3).should('have.not.class', 'selected');
 
     cy.get('.react-flow__nodesselection-rect');
-
     cy.get('body').type('{shift}', { release: true, force: true });
   });
 
@@ -97,19 +92,19 @@ describe('Basic Flow Rendering', { testIsolation: false }, () => {
   it('drags a node', () => {
     const styleBeforeDrag = Cypress.$('.react-flow__node:first').css('transform');
 
-    cy.drag('.react-flow__node:first', { x: 500, y: 25 }).then(($el: any) => {
+    cy.drag('.react-flow__node:first', { x: 10, y: 10 }).then(($el: any) => {
       const styleAfterDrag = $el.css('transform');
       expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
     });
   });
 
-  // @TODO: why does this fail since react18?
-  // it('removes a node', () => {
-  //   cy.get('.react-flow__node').contains('Node 1').click().should('have.class', 'selected');
-  //   cy.get('html').type('{backspace}').wait(100);
-  //   cy.get('.react-flow__node').should('have.length', 3);
-  //   cy.get('.react-flow__edge').should('have.length', 1);
-  // });
+  it('removes a node', () => {
+    cy.get('.react-flow__node').contains('Node 1').click().should('have.class', 'selected');
+    cy.get('html').realPress('Backspace');
+
+    cy.get('.react-flow__node').should('have.length', 3);
+    cy.get('.react-flow__edge').should('have.length', 0);
+  });
 
   it('connects nodes', () => {
     cy.get('.react-flow__node')
@@ -125,16 +120,15 @@ describe('Basic Flow Rendering', { testIsolation: false }, () => {
       .trigger('mouseup', { force: true, button: 0 });
 
     cy.get('.react-flow__edge').as('edge');
-    cy.get('@edge').should('have.length', 3);
+    cy.get('@edge').should('have.length', 1);
   });
 
-  // @TODO: why does this fail since react18?
-  // it('removes an edge', () => {
-  //   cy.get('.react-flow__edge:first').click();
-  //   cy.get('body').type('{backspace}');
+  it('removes an edge', () => {
+    cy.get('.react-flow__edge:first').click();
+    cy.get('html').realPress('Backspace');
 
-  //   cy.get('.react-flow__edge').should('have.length', 1);
-  // });
+    cy.get('.react-flow__edge').should('have.length', 0);
+  });
 
   it('drags the pane', () => {
     const styleBeforeDrag = Cypress.$('.react-flow__viewport').css('transform');

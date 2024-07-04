@@ -59,7 +59,7 @@ function ControlledFlow({
     handlers.onConnect = onConnect;
   }
 
-  return <ReactFlow nodes={nodes} edges={edges} {...handlers} {...rest} />;
+  return <ReactFlow nodes={nodes} edges={edges} {...handlers} {...rest} nodeDragThreshold={0} />;
 }
 
 export default ControlledFlow;

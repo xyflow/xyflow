@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-checks
+
+      - name: Create release PR or publish to npm
+        id: changesets
+        uses: xyflow/changeset-action@v1
+        with:
+          publish: pnpm release
+          title: Release packages
+          commit: 'chore(packages): bump'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

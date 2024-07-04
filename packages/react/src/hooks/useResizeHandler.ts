@@ -3,7 +3,12 @@ import { errorMessages, getDimensions } from '@xyflow/system';
 
 import { useStoreApi } from '../hooks/useStore';
 
-function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): void {
+/**
+ * Hook for handling resize events.
+ *
+ * @internal
+ */
+export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): void {
   const store = useStoreApi();
 
   useEffect(() => {
@@ -37,5 +42,3 @@ function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): voi
     }
   }, []);
 }
-
-export default useResizeHandler;

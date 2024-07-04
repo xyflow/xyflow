@@ -1,0 +1,25 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  playwright:
+    name: 'Playwright Tests'
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.45.0-jammy
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/ci-setup
+      - uses: ./.github/actions/ci-checks
+      - name: Run your tests
+        run: CI=true pnpm test:react
+        env:
+          HOME: /root

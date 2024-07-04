@@ -57,5 +57,3 @@ export function useMarkerSymbol(type: MarkerType) {
 
   return symbol;
 }
-
-export default MarkerSymbols;

@@ -1,21 +1,8 @@
-import type { MouseEvent, RefObject } from 'react';
+import type { RefObject } from 'react';
 import type { StoreApi } from 'zustand';
-
-import type { Node, ReactFlowState } from '../../types';
 import { errorMessages } from '@xyflow/system';
 
-export function getMouseHandler(
-  id: string,
-  getState: StoreApi<ReactFlowState>['getState'],
-  handler?: (event: MouseEvent, node: Node) => void
-) {
-  return handler === undefined
-    ? handler
-    : (event: MouseEvent) => {
-        const node = getState().nodes.find((n) => n.id === id)!;
-        handler(event, { ...node });
-      };
-}
+import type { ReactFlowState } from '../../types';
 
 // this handler is called by
 // 1. the click handler when node is not draggable or selectNodesOnDrag = false
@@ -35,8 +22,8 @@ export function handleNodeClick({
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;
 }) {
-  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodes, onError } = store.getState();
-  const node = nodes.find((n) => n.id === id)!;
+  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeLookup, onError } = store.getState();
+  const node = nodeLookup.get(id);
 
   if (!node) {
     onError?.('012', errorMessages['error012'](id));

@@ -10,12 +10,13 @@ import type {
   HandleType,
   Connection,
   ConnectionLineType,
-  HandleElement,
-  ConnectionStatus,
+  Handle,
   EdgePosition,
+  StepPathOptions,
+  OnError,
 } from '@xyflow/system';
 
-import { Node } from '.';
+import { EdgeTypes, Node } from '.';
 
 export type EdgeLabelOptions = {
   label?: string | ReactNode;
@@ -26,48 +27,62 @@ export type EdgeLabelOptions = {
   labelBgBorderRadius?: number;
 };
 
-export type EdgeUpdatable = boolean | HandleType;
+/**
+ * The Edge type is mainly used for the `edges` that get passed to the ReactFlow component
+ * @public
+ */
+export type Edge<
+  EdgeData extends Record<string, unknown> = Record<string, unknown>,
+  EdgeType extends string | undefined = string | undefined
+> = EdgeBase<EdgeData, EdgeType> &
+  EdgeLabelOptions & {
+    style?: CSSProperties;
+    className?: string;
+    reconnectable?: boolean | HandleType;
+    focusable?: boolean;
+  };
 
-export type DefaultEdge<EdgeData = any> = EdgeBase<EdgeData> & {
-  style?: CSSProperties;
-  className?: string;
-  sourceNode?: Node;
-  targetNode?: Node;
-  updatable?: EdgeUpdatable;
-} & EdgeLabelOptions;
-
-type SmoothStepEdgeType<T> = DefaultEdge<T> & {
-  type: 'smoothstep';
+type SmoothStepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<
+  EdgeData,
+  'smoothstep'
+> & {
   pathOptions?: SmoothStepPathOptions;
 };
 
-type BezierEdgeType<T> = DefaultEdge<T> & {
-  type: 'default';
+type BezierEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData, 'default'> & {
   pathOptions?: BezierPathOptions;
 };
 
-export type Edge<T = any> = DefaultEdge<T> | SmoothStepEdgeType<T> | BezierEdgeType<T>;
+type StepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData, 'step'> & {
+  pathOptions?: StepPathOptions;
+};
 
-export type EdgeMouseHandler = (event: ReactMouseEvent, edge: Edge) => void;
+type StraightEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData, 'straight'>;
 
-export type WrapEdgeProps<T = any> = Omit<Edge<T>, 'sourceHandle' | 'targetHandle'> & {
-  onClick?: EdgeMouseHandler;
-  onEdgeDoubleClick?: EdgeMouseHandler;
-  sourceHandleId?: string | null;
-  targetHandleId?: string | null;
-  onEdgeUpdate?: OnEdgeUpdateFunc;
-  onContextMenu?: EdgeMouseHandler;
-  onMouseEnter?: EdgeMouseHandler;
-  onMouseMove?: EdgeMouseHandler;
-  onMouseLeave?: EdgeMouseHandler;
-  edgeUpdaterRadius?: number;
-  onEdgeUpdateStart?: (event: ReactMouseEvent, edge: Edge, handleType: HandleType) => void;
-  onEdgeUpdateEnd?: (event: MouseEvent | TouchEvent, edge: Edge, handleType: HandleType) => void;
+export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge | StraightEdge;
+
+export type EdgeMouseHandler<EdgeType extends Edge = Edge> = (event: ReactMouseEvent, edge: EdgeType) => void;
+
+export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
+  id: string;
+  edgesFocusable: boolean;
+  edgesReconnectable: boolean;
+  elementsSelectable: boolean;
+  noPanClassName: string;
+  onClick?: EdgeMouseHandler<EdgeType>;
+  onDoubleClick?: EdgeMouseHandler<EdgeType>;
+  onReconnect?: OnReconnect<EdgeType>;
+  onContextMenu?: EdgeMouseHandler<EdgeType>;
+  onMouseEnter?: EdgeMouseHandler<EdgeType>;
+  onMouseMove?: EdgeMouseHandler<EdgeType>;
+  onMouseLeave?: EdgeMouseHandler<EdgeType>;
+  reconnectRadius?: number;
+  onReconnectStart?: (event: ReactMouseEvent, edge: EdgeType, handleType: HandleType) => void;
+  onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
   rfId?: string;
-  isFocusable: boolean;
-  isUpdatable: EdgeUpdatable;
-  isSelectable: boolean;
-  pathOptions?: BezierPathOptions | SmoothStepPathOptions;
+  edgeTypes?: EdgeTypes;
+  onError?: OnError;
+  disableKeyboardA11y?: boolean;
 };
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
@@ -78,50 +93,117 @@ export type EdgeTextProps = HTMLAttributes<SVGElement> &
     y: number;
   };
 
-// props that get passed to a custom edge
-export type EdgeProps<T = any> = Pick<
-  Edge<T>,
-  'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target'
+/**
+ * Custom edge component props
+ * @public
+ */
+export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
+  EdgeType,
+  'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target' | 'selectable' | 'deletable'
 > &
-  Pick<WrapEdgeProps, 'sourceHandleId' | 'targetHandleId' | 'interactionWidth'> &
   EdgePosition &
   EdgeLabelOptions & {
+    sourceHandleId?: string | null;
+    targetHandleId?: string | null;
     markerStart?: string;
     markerEnd?: string;
     // @TODO: how can we get better types for pathOptions?
     pathOptions?: any;
+    interactionWidth?: number;
   };
 
-export type BaseEdgeProps = Pick<EdgeProps, 'style' | 'markerStart' | 'markerEnd' | 'interactionWidth'> &
+/**
+ * BaseEdge component props
+ * @public
+ */
+export type BaseEdgeProps = EdgeLabelOptions & {
+  /** Unique id of edge */
+  id?: string;
+  /** Additional padding where interacting with an edge is still possible */
+  interactionWidth?: number;
+  className?: string;
+  /** The x position of edge label */
+  labelX?: number;
+  /** The y position of edge label */
+  labelY?: number;
+  /** Marker at start of edge
+   * @example 'url(#arrow)'
+   */
+  markerStart?: string;
+  /** Marker at end of edge
+   * @example 'url(#arrow)'
+   */
+  markerEnd?: string;
+  /** SVG path of the edge */
+  path: string;
+  style?: CSSProperties;
+};
+
+/**
+ * Helper type for edge components that get exported by the library
+ * @public
+ */
+export type EdgeComponentProps = EdgePosition &
   EdgeLabelOptions & {
-    id?: string;
-    labelX?: number;
-    labelY?: number;
-    path: string;
+    id?: EdgeProps['id'];
+    markerStart?: EdgeProps['markerStart'];
+    markerEnd?: EdgeProps['markerEnd'];
+    interactionWidth?: EdgeProps['interactionWidth'];
+    style?: EdgeProps['style'];
+    sourceHandleId?: EdgeProps['sourceHandleId'];
+    targetHandleId?: EdgeProps['targetHandleId'];
   };
 
-export type SmoothStepEdgeProps<T = any> = EdgeProps<T> & {
-  pathOptions?: SmoothStepPathOptions;
+export type EdgeComponentWithPathOptions<PathOptions> = EdgeComponentProps & {
+  pathOptions?: PathOptions;
 };
 
-export type BezierEdgeProps<T = any> = EdgeProps<T> & {
-  pathOptions?: BezierPathOptions;
-};
+/**
+ * BezierEdge component props
+ * @public
+ */
+export type BezierEdgeProps = EdgeComponentWithPathOptions<BezierPathOptions>;
 
-export type OnEdgeUpdateFunc<T = any> = (oldEdge: Edge<T>, newConnection: Connection) => void;
+/**
+ * SmoothStepEdge component props
+ * @public
+ */
+export type SmoothStepEdgeProps = EdgeComponentWithPathOptions<SmoothStepPathOptions>;
+
+/**
+ * StepEdge component props
+ * @public
+ */
+export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
+
+/**
+ * StraightEdge component props
+ * @public
+ */
+export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
+
+/**
+ * SimpleBezier component props
+ * @public
+ */
+export type SimpleBezierEdgeProps = EdgeComponentProps;
+
+export type OnReconnect<EdgeType extends Edge = Edge> = (oldEdge: EdgeType, newConnection: Connection) => void;
 
 export type ConnectionLineComponentProps = {
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;
-  fromNode?: Node;
-  fromHandle?: HandleElement;
+  fromNode: Node;
+  fromHandle: Handle;
   fromX: number;
   fromY: number;
   toX: number;
   toY: number;
   fromPosition: Position;
   toPosition: Position;
-  connectionStatus: ConnectionStatus | null;
+  connectionStatus: 'valid' | 'invalid' | null;
+  toNode: Node | null;
+  toHandle: Handle | null;
 };
 
 export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;
