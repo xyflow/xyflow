@@ -21,10 +21,6 @@ export const clampPosition = (position: XYPosition = { x: 0, y: 0 }, extent: Coo
   y: clamp(position.y, extent[0][1], extent[1][1]),
 });
 
-function easeInOutSine(x: number): number {
-  return -(Math.cos(Math.PI * x) - 1) / 2;
-}
-
 /**
  * Calculates the velocity of panning when the mouse is close to the edge of the canvas
  * @internal
@@ -33,8 +29,7 @@ function easeInOutSine(x: number): number {
  * @param max - Maximal position on canvas before panning starts
  * @returns - A number between 0 and 1 that represents the velocity of panning
  */
-const calcAutoPanVelocity = (value: number, min: number, max: number, zoom: number): number => {
-  clamp(zoom, 0, 1);
+const calcAutoPanVelocity = (value: number, min: number, max: number): number => {
   if (value < min) {
     return clamp(Math.abs(value - min), 1, min) / min;
   } else if (value > max) {
@@ -47,13 +42,11 @@ const calcAutoPanVelocity = (value: number, min: number, max: number, zoom: numb
 export const calcAutoPan = (
   pos: XYPosition,
   bounds: Dimensions,
-  transform: Transform,
   speed: number = 15,
-  distance: number = 50
+  distance: number = 40
 ): number[] => {
-  const zoomFactor = clamp(transform[2] * 10, 0.01, 1);
-  const xMovement = calcAutoPanVelocity(pos.x, distance, bounds.width - distance, transform[2]) * speed * zoomFactor;
-  const yMovement = calcAutoPanVelocity(pos.y, distance, bounds.height - distance, transform[2]) * speed * zoomFactor;
+  const xMovement = calcAutoPanVelocity(pos.x, distance, bounds.width - distance) * speed;
+  const yMovement = calcAutoPanVelocity(pos.y, distance, bounds.height - distance) * speed;
 
   return [xMovement, yMovement];
 };

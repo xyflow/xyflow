@@ -79,8 +79,7 @@ function onPointerDown(
     if (!autoPanOnConnect || !containerBounds) {
       return;
     }
-    const transform = getTransform();
-    const [x, y] = calcAutoPan(position, containerBounds, transform, autoPanSpeed);
+    const [x, y] = calcAutoPan(position, containerBounds, autoPanSpeed);
 
     panBy({ x, y });
     autoPanId = requestAnimationFrame(autoPan);

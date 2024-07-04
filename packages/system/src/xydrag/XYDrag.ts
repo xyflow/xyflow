@@ -202,7 +202,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
       const { transform, panBy, autoPanSpeed } = getStoreItems();
 
-      const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds, transform, autoPanSpeed);
+      const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds, autoPanSpeed);
 
       if (xMovement !== 0 || yMovement !== 0) {
         lastPos.x = (lastPos.x ?? 0) - xMovement / transform[2];
