@@ -31,17 +31,22 @@ export const clampPosition = (position: XYPosition = { x: 0, y: 0 }, extent: Coo
  */
 const calcAutoPanVelocity = (value: number, min: number, max: number): number => {
   if (value < min) {
-    return clamp(Math.abs(value - min), 1, 50) / 50;
+    return clamp(Math.abs(value - min), 1, min) / min;
   } else if (value > max) {
-    return -clamp(Math.abs(value - max), 1, 50) / 50;
+    return -clamp(Math.abs(value - max), 1, min) / min;
   }
 
   return 0;
 };
 
-export const calcAutoPan = (pos: XYPosition, bounds: Dimensions): number[] => {
-  const xMovement = calcAutoPanVelocity(pos.x, 35, bounds.width - 35) * 20;
-  const yMovement = calcAutoPanVelocity(pos.y, 35, bounds.height - 35) * 20;
+export const calcAutoPan = (
+  pos: XYPosition,
+  bounds: Dimensions,
+  speed: number = 15,
+  distance: number = 40
+): number[] => {
+  const xMovement = calcAutoPanVelocity(pos.x, distance, bounds.width - distance) * speed;
+  const yMovement = calcAutoPanVelocity(pos.y, distance, bounds.height - distance) * speed;
 
   return [xMovement, yMovement];
 };

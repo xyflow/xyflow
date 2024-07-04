@@ -66,6 +66,7 @@ const reactFlowFieldsToTrack = [
   'nodeDragThreshold',
   'onBeforeDelete',
   'debug',
+  'autoPanSpeed',
 ] as const;
 
 type ReactFlowFieldsToTrack = (typeof reactFlowFieldsToTrack)[number];

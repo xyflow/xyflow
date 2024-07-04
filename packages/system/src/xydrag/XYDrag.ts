@@ -61,6 +61,7 @@ type StoreItems<OnNodeDrag> = {
   onSelectionDrag?: OnSelectionDrag;
   onSelectionDragStop?: OnSelectionDrag;
   updateNodePositions: UpdateNodePositions;
+  autoPanSpeed?: number;
 };
 
 export type XYDragParams<OnNodeDrag> = {
@@ -69,6 +70,7 @@ export type XYDragParams<OnNodeDrag> = {
   onDrag?: OnDrag;
   onDragStop?: OnDrag;
   onNodeMouseDown?: (id: string) => void;
+  autoPanSpeed?: number;
 };
 
 export type XYDragInstance = {
@@ -198,11 +200,11 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         return;
       }
 
-      const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds);
+      const { transform, panBy, autoPanSpeed } = getStoreItems();
+
+      const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds, autoPanSpeed);
 
       if (xMovement !== 0 || yMovement !== 0) {
-        const { transform, panBy } = getStoreItems();
-
         lastPos.x = (lastPos.x ?? 0) - xMovement / transform[2];
         lastPos.y = (lastPos.y ?? 0) - yMovement / transform[2];
 

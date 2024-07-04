@@ -35,6 +35,7 @@ export type OnPointerDownParams = {
   onReconnectEnd?: (evt: MouseEvent | TouchEvent) => void;
   getTransform: () => Transform;
   getFromHandle: () => Handle | null;
+  autoPanSpeed?: number;
 };
 
 export type IsValidParams = {

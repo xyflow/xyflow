@@ -44,6 +44,7 @@ function onPointerDown(
     updateConnection,
     getTransform,
     getFromHandle,
+    autoPanSpeed,
   }: OnPointerDownParams
 ) {
   // when xyflow is used inside a shadow root we can't use document
@@ -78,7 +79,7 @@ function onPointerDown(
     if (!autoPanOnConnect || !containerBounds) {
       return;
     }
-    const [x, y] = calcAutoPan(position, containerBounds);
+    const [x, y] = calcAutoPan(position, containerBounds, autoPanSpeed);
 
     panBy({ x, y });
     autoPanId = requestAnimationFrame(autoPan);

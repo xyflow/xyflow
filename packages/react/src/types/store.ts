@@ -139,6 +139,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   ariaLiveMessage: string;
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;
+  autoPanSpeed: number;
   connectionRadius: number;
 
   isValidConnection?: IsValidConnection<EdgeType>;
