@@ -1,5 +1,9 @@
 # @xyflow/react
 
+## 12.0.0-next.26
+
+- add `autoPanSpeed` prop
+
 ## 12.0.0-next.25
 
 - `useConnection` returns `ConnectionState` with `toNode` and `toHandle`
