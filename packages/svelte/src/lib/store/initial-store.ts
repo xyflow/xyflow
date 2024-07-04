@@ -1,4 +1,4 @@
-import { Map as SvelteMap } from 'svelte/reactivity';
+// import { Map as SvelteMap } from 'svelte/reactivity';
 import {
   infiniteExtent,
   SelectionMode,
@@ -24,7 +24,7 @@ import {
   StepEdgeInternal
 } from '$lib/components/edges';
 
-import { ReactiveMap, derivedSignal, signal } from './signals.svelte';
+import { derivedSignal, signal } from './signals.svelte';
 import type { SvelteFlowStoreProperties, SvelteFlowStoreState } from './types';
 import { getDerivedConnection, initConnectionUpdateData } from './derived-connection';
 import type { Edge, InternalNode, Node } from '$lib/types';
@@ -45,8 +45,8 @@ export const initialEdgeTypes = {
 
 export const getInitialStore = () => {
   // TODO: what kind of maps are we talking
-  const nodeLookup: NodeLookup = new SvelteMap();
-  const edgeLookup: EdgeLookup = new Map<string, Edge>();
+  const nodeLookup: NodeLookup = new Map();
+  const edgeLookup: EdgeLookup = new Map();
   const selectedNodes: Map<string, InternalNode> = new Map();
   const selectedEdges: Map<string, Edge> = new Map();
 
@@ -59,8 +59,6 @@ export const getInitialStore = () => {
     // @ts-expect-error {} does not match Store, which is fine
     {},
     {
-      nodes: signal<SvelteFlowStoreState['nodes']>([]),
-      edges: signal<SvelteFlowStoreState['edges']>([]),
       selectedNodes: signal<SvelteFlowStoreState['selectedNodes']>(selectedNodes),
       selectedEdges: signal<SvelteFlowStoreState['selectedEdges']>(selectedEdges),
       autoPanOnConnect: signal<SvelteFlowStoreState['autoPanOnConnect']>(true),
@@ -138,6 +136,9 @@ export const getInitialStore = () => {
       )
     )
   });
+
+  store.setNodes = () => {};
+  store.setEdges = () => {};
 
   return store;
 };

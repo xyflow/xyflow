@@ -1,6 +1,7 @@
-import type { DefaultEdgeOptions, Edge, EdgeEvents } from '$lib/types';
+import type { DefaultEdgeOptions, Edge, EdgeEvents, Node } from '$lib/types';
 
 export type EdgeRendererProps = {
-  edges: Edge[];
+  edges: readonly Edge[];
+  nodes: readonly Node[];
   defaultEdgeOptions: DefaultEdgeOptions | undefined;
 } & EdgeEvents;

@@ -1,4 +1,4 @@
-import { Map as SvelteMap } from 'svelte/reactivity';
+import { SvelteMap } from 'svelte/reactivity';
 
 export function signal<T>(value: T): { get: () => T; set: (newValue: T) => void } {
   let variable = $state(value);

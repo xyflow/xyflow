@@ -221,6 +221,7 @@ export function getNodeDimensions(node: {
 }
 
 export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: NodeType): boolean {
+  console.log('nodeHasDimensions');
   return (
     (node.measured?.width ?? node.width ?? node.initialWidth) !== undefined &&
     (node.measured?.height ?? node.height ?? node.initialHeight) !== undefined

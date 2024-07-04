@@ -37,6 +37,8 @@
 
   const store = useStore();
 
+  // svelte-ignore non_reactive_update
+  //this is not supposed to be reactive
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
   let selectedNodes: InternalNode[] = [];
@@ -87,7 +89,7 @@
     // onSelectionStart?.(event);
   }
 
-  function toggleSelected(items: Node[] | Edge[], ids: string[]) {
+  function toggleSelected(items: readonly Node[] | readonly Edge[], ids: string[]) {
     for (const item of items) {
       const isSelected = ids.includes(item.id);
 
@@ -114,7 +116,10 @@
 
     // TODO: This is super slow
     const prevSelectedNodeIds = selectedNodes.map((n) => n.id);
-    const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, store.edges).map((e) => e.id);
+    const prevSelectedEdgeIds = getConnectedEdges(
+      selectedNodes,
+      Array.from(store.edgeLookup.values())
+    ).map((e) => e.id);
 
     selectedNodes = getNodesInside(
       store.nodeLookup,
@@ -123,7 +128,10 @@
       store.selectionMode === SelectionMode.Partial,
       true
     );
-    const selectedEdgeIds = getConnectedEdges(selectedNodes, store.edges).map((e) => e.id);
+    const selectedEdgeIds = getConnectedEdges(
+      selectedNodes,
+      Array.from(store.edgeLookup.values())
+    ).map((e) => e.id);
     const selectedNodeIds = selectedNodes.map((n) => n.id);
 
     // this prevents unnecessary updates while updating the selection rectangle
@@ -185,8 +193,8 @@
   };
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   bind:this={container}
   class="svelte-flow__pane"

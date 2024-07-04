@@ -93,7 +93,6 @@
 
   // TODO: extract this part!
   $effect(() => {
-    // console.log(initialized);
     // TODO: HOLY MOLY! changing the order of the initialized breaks effect subscriptions
     if (resizeObserver && (!initialized || nodeRef !== prevNodeRef)) {
       prevNodeRef && resizeObserver.unobserve(prevNodeRef);

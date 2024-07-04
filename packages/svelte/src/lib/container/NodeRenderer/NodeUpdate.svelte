@@ -63,9 +63,7 @@
     const childZIndex =
       (isNumeric(userNode.zIndex) ? userNode.zIndex : 0) + (userNode.selected ? selectedNodeZ : 0);
     const parentZIndex = parentNode ? parentNode.internals.z : 0;
-    if (parentNode) {
-      console.log(id, parentNode, parentZIndex, childZIndex);
-    }
+
     return Math.max(parentZIndex, childZIndex);
   });
 

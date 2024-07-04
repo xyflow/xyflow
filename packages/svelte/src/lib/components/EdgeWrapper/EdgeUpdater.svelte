@@ -1,5 +1,5 @@
 <script context="module">
-  import { Map } from 'svelte/reactivity';
+  // import { Map } from 'svelte/reactivity';
 
   function updateConnection(
     edgeId: string,

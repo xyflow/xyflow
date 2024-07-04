@@ -11,8 +11,8 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	const yNodes = 50;
-	const xNodes = 50;
+	const yNodes = 25;
+	const xNodes = 25;
 
 	const nodeItems: Node[] = [];
 	const edgeItems: Edge[] = [];
@@ -45,11 +45,11 @@
 		}
 	}
 
-	let nodes = $state(nodeItems);
-	let edges = $state(edgeItems);
+	let nodes = $state.frozen(nodeItems);
+	let edges = $state.frozen(edgeItems);
 </script>
 
-<SvelteFlow bind:nodes bind:edges minZoom={0}>
+<SvelteFlow bind:nodes bind:edges minZoom={0} fitView>
 	<Controls />
 	<Background variant={BackgroundVariant.Lines} />
 	<!-- <MiniMap /> -->

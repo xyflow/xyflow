@@ -39,16 +39,6 @@
     onbeforedelete
   }: Partial<SvelteFlowProps> & { store: SvelteFlowStore } = $props();
 
-  store.nodes = nodes;
-  $effect.pre(() => {
-    store.nodes = nodes;
-  });
-
-  store.edges = edges;
-  $effect.pre(() => {
-    store.edges = edges;
-  });
-
   store.setEdgeTypes(edgeTypes ?? {});
   $effect.pre(() => {
     store.setEdgeTypes(edgeTypes ?? {});

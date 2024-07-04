@@ -124,7 +124,6 @@
 		}
 	]);
 
-	console.log(nodes);
 	function updateNode() {
 		nodes[0].position.x += 20;
 	}

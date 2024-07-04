@@ -5,6 +5,6 @@ export type PaneProps = {
   panOnDrag?: boolean | number[];
   selectionOnDrag?: boolean;
   children: Snippet;
-  nodes: Node[];
-  edges: Edge[];
+  nodes: readonly Node[];
+  edges: readonly Edge[];
 } & PaneEvents;

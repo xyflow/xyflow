@@ -3,7 +3,8 @@
   import { useStore } from '$lib/store';
   import type { NodeEvents } from '$lib/types/events';
   import type { Node } from '$lib/types';
-  import NodeUpdate from './NodeUpdate.svelte';
+  import NodeWrapper from '$lib/components/NodeWrapper/NodeWrapper.svelte';
+  import { nodeHasDimensions } from '@xyflow/system';
 
   let {
     nodes,
@@ -15,7 +16,7 @@
     onnodedragstart,
     onnodedragstop,
     onnodecontextmenu
-  }: NodeEvents & { nodes: Node[] } = $props();
+  }: NodeEvents & { nodes: readonly Node[] } = $props();
 
   const store = useStore();
 
@@ -44,9 +45,45 @@
 <!-- TODO: render visibleNodes -->
 <div class="svelte-flow__nodes">
   {#each nodes as userNode (userNode.id)}
-    <NodeUpdate
+    {@const internalNode = store.nodeLookup.get(userNode.id)!}
+    <NodeWrapper
+      node={internalNode}
       id={userNode.id}
-      {userNode}
+      data={userNode.data}
+      hidden={userNode.hidden}
+      selected={userNode.selected}
+      draggable={!!(
+        userNode.draggable ||
+        (store.nodesDraggable && typeof userNode.draggable === 'undefined')
+      )}
+      selectable={!!(
+        userNode.selectable ||
+        (store.elementsSelectable && typeof userNode.selectable === 'undefined')
+      )}
+      connectable={!!(
+        userNode.connectable ||
+        (store.nodesConnectable && typeof userNode.connectable === 'undefined')
+      )}
+      positionX={internalNode.internals.positionAbsolute.x}
+      positionY={internalNode.internals.positionAbsolute.y}
+      positionOriginX={internalNode.internals.positionAbsolute.x}
+      positionOriginY={internalNode.internals.positionAbsolute.y}
+      isParent={store.parentLookup.has(userNode.id)}
+      style={userNode.style}
+      class={userNode.class}
+      type={userNode.type}
+      sourcePosition={userNode.sourcePosition}
+      targetPosition={userNode.targetPosition}
+      dragging={userNode.dragging}
+      zIndex={internalNode.internals.z}
+      dragHandle={userNode.dragHandle}
+      initialized={nodeHasDimensions(userNode)}
+      width={userNode.width}
+      height={userNode.height}
+      initialWidth={userNode.initialWidth}
+      initialHeight={userNode.initialHeight}
+      measuredWidth={userNode.measured?.width}
+      measuredHeight={userNode.measured?.height}
       {resizeObserver}
       {onnodeclick}
       {onnodemouseenter}

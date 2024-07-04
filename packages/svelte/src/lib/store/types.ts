@@ -63,8 +63,8 @@ export type SvelteFlowStoreActions = {
 };
 
 export type SvelteFlowStoreState = {
-  nodes: Node[];
-  edges: Edge[];
+  setNodes: (setter: (nodes: readonly Node[]) => readonly Node[]) => void;
+  setEdges: (setter: (nodes: readonly Node[]) => readonly Node[]) => void;
   selectedNodes: Map<string, InternalNode>;
   selectedEdges: Map<string, Edge>;
   viewport: Viewport;
@@ -134,7 +134,7 @@ type StoreToPropertyDefinitions<T> = {
 };
 
 export type SvelteFlowStoreProperties = StoreToPropertyDefinitions<
-  Omit<SvelteFlowStoreState, 'visibleEdges' | 'connection'>
+  Omit<SvelteFlowStoreState, 'visibleEdges' | 'connection' | 'setNodes' | 'setEdges'>
 >;
 
 export type SvelteFlowStore = SvelteFlowStoreState & SvelteFlowStoreActions;

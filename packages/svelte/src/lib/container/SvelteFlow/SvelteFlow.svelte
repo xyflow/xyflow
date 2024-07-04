@@ -4,11 +4,13 @@
   import {
     ConnectionMode,
     PanOnScrollMode,
+    adoptUserNodes,
     getNodesBounds,
     getViewportForBounds
   } from '@xyflow/system';
 
   import { key, useStore, createStoreContext } from '$lib/store';
+  import { type Node } from '$lib/types';
 
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
@@ -23,12 +25,11 @@
 
   import type { SvelteFlowProps } from './types';
   import { StoreUpdater } from '$lib/components/StoreUpdater';
-  import NodeUpdate from '../NodeRenderer/NodeUpdate.svelte';
   import { isFlowInitialized } from './utils';
 
   let {
-    nodes = $bindable([]),
-    edges = $bindable([]),
+    nodes = $bindable(),
+    edges = $bindable(),
     attributionPosition,
     autoPanOnConnect = true,
     autoPanOnNodeDrag = true,
@@ -121,6 +122,15 @@
     store.viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
 
+  let adoptUserNodesSignal = $derived.by(() => {
+    adoptUserNodes(nodes as Node[], store.nodeLookup, store.parentLookup);
+    return null;
+  });
+
+  store.setNodes = (setter: (nodes: readonly Node[]) => readonly Node[]) => {
+    nodes = setter(nodes);
+  };
+
   onMount(() => {
     store.domNode = domNode!;
 
@@ -167,9 +177,8 @@
   });
 </script>
 
+{#if adoptUserNodesSignal}{/if}
 <StoreUpdater
-  {nodes}
-  {edges}
   {store}
   {colorMode}
   {edgeTypes}
@@ -245,7 +254,7 @@
       {onpanecontextmenu}
     >
       <ViewportComponent>
-        <EdgeRenderer {edges} {onedgeclick} {onedgecontextmenu} {defaultEdgeOptions} />
+        <EdgeRenderer {nodes} {edges} {onedgeclick} {onedgecontextmenu} {defaultEdgeOptions} />
         <ConnectionLine
           {connectionLine}
           containerStyle={connectionLineContainerStyle}

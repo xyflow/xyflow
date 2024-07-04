@@ -54,20 +54,23 @@ export function createStore(): SvelteFlowStore {
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    for (const [id, dragItem] of nodeDragItems) {
-      const node = store.nodeLookup.get(id)?.internals.userNode;
-
-      if (!node) {
-        continue;
-      }
-
-      node.position.x = dragItem.position.x;
-      node.position.y = dragItem.position.y;
-      node.dragging = dragging;
-    }
+    store.setNodes((nodes) =>
+      nodes.map((node) => {
+        const dragItem = nodeDragItems.get(node.id);
+        if (dragItem) {
+          return {
+            ...node,
+            position: { ...dragItem.position },
+            dragging
+          };
+        }
+        return node;
+      })
+    );
   };
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
+    console.log('UPDATE NODE INTERNALS');
     const nodeLookup = store.nodeLookup;
     const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,
@@ -116,6 +119,8 @@ export function createStore(): SvelteFlowStore {
     if (!store.nodesInitialized) {
       store.nodesInitialized = true;
     }
+
+    store.setNodes((nodes) => nodes.map((node) => ({ ...node })));
   }
 
   function fitView(options?: FitViewOptions) {
@@ -205,30 +210,36 @@ export function createStore(): SvelteFlowStore {
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    for (const node of store.nodeLookup.values()) {
-      const nodeWillBeSelected = ids.includes(node.id);
-      const selected = isMultiSelection
-        ? node.internals.userNode.selected || nodeWillBeSelected
-        : nodeWillBeSelected;
+    store.setNodes((nodes) =>
+      nodes.map((node) => {
+        const nodeWillBeSelected = ids.includes(node.id);
+        const selected = isMultiSelection
+          ? node.selected || nodeWillBeSelected
+          : nodeWillBeSelected;
 
-      // we need to mutate the node here in order to have the correct selected state in the drag handler
-      // node.selected = selected;
-      if (!!node.internals.userNode.selected !== selected) {
-        node.internals.userNode.selected = selected;
-      }
-    }
+        // we need to mutate the node here in order to have the correct selected state in the drag handler
+        // node.selected = selected;
+        if (!!node.selected !== selected) {
+          return {
+            ...node,
+            selected: selected
+          };
+        }
+        return node;
 
-    if (!isMultiSelection) {
-      for (const edge of store.edges) {
-        edge.selected = false;
-      }
-    }
+        // if (!isMultiSelection) {
+        //   for (const edge of store.edgeLookup.values()) {
+        //     edge.selected = false;
+        //   }
+        // }
+      })
+    );
   }
 
   function addSelectedEdges(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    for (const edge of store.edges) {
+    for (const edge of store.edgeLookup.values()) {
       const edgeWillBeSelected = ids.includes(edge.id);
       const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
 
