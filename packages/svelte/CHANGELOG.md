@@ -1,5 +1,12 @@
 # @xyflow/svelte
 
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies [[`f18dcfb9`](https://github.com/xyflow/xyflow/commit/f18dcfb901eb8bcf956a2cf8dc07865dd482ff6f)]:
+  - @xyflow/system@0.0.32
+
 ## 0.1.8
 
 - `useConnection` returns `ConnectionState` with `toNode` and `toHandle`
@@ -10,7 +17,7 @@
 
 - revise selection usability (capture while dragging out of the flow)
 - only prevent shift scrolling when selection is actually in progress
-- use correct end handle position when drawing a connection lines 
+- use correct end handle position when drawing a connection lines
 - determine correct end positions for connection lines
 
 ## 0.1.6

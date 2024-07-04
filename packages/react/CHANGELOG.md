@@ -1,5 +1,14 @@
 # @xyflow/react
 
+## 12.0.0
+
+### Patch Changes
+
+- [#4411](https://github.com/xyflow/xyflow/pull/4411) [`f18dcfb9`](https://github.com/xyflow/xyflow/commit/f18dcfb901eb8bcf956a2cf8dc07865dd482ff6f) Thanks [@peterkogo](https://github.com/peterkogo)! - add autoPanSpeed prop/option
+
+- Updated dependencies [[`f18dcfb9`](https://github.com/xyflow/xyflow/commit/f18dcfb901eb8bcf956a2cf8dc07865dd482ff6f)]:
+  - @xyflow/system@0.0.32
+
 ## 12.0.0-next.25
 
 - `useConnection` returns `ConnectionState` with `toNode` and `toHandle`
@@ -59,7 +68,7 @@
 - return user node in node event handlers
 - cleanup `useReactFlow`
 - export `KeyCode` and `Align` type
-- remove `Instance` in favour of `ReactFlowInstance` type 
+- remove `Instance` in favour of `ReactFlowInstance` type
 
 ## 12.0.0-next.16
 
@@ -97,7 +106,7 @@
 
 - rename `node.parentNode` to `node.parentId`
 - rename node.computed to node.measured
-- remove positionAbsolute from `node.computed` 
+- remove positionAbsolute from `node.computed`
 
 ## Minor Changes
 
