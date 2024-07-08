@@ -1,5 +1,9 @@
 # @xyflow/react
 
+## 12.0.0-next.27
+
+- return Promises for `setViewport`, `fitView`, `fitBounds` and `zoomTo` to be able to await viewport update
+
 ## 12.0.0-next.26
 
 - add `autoPanSpeed` prop

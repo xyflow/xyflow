@@ -325,7 +325,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   return { changes, updatedInternals };
 }
 
-export function panBy({
+export async function panBy({
   delta,
   panZoom,
   transform,
@@ -339,12 +339,12 @@ export function panBy({
   translateExtent: CoordinateExtent;
   width: number;
   height: number;
-}) {
+}): Promise<boolean> {
   if (!panZoom || (!delta.x && !delta.y)) {
-    return false;
+    return Promise.resolve(false);
   }
 
-  const nextViewport = panZoom.setViewportConstrained(
+  const nextViewport = await panZoom.setViewportConstrained(
     {
       x: transform[0] + delta.x,
       y: transform[1] + delta.y,
@@ -361,7 +361,7 @@ export function panBy({
     !!nextViewport &&
     (nextViewport.x !== transform[0] || nextViewport.y !== transform[1] || nextViewport.k !== transform[2]);
 
-  return transformChanged;
+  return Promise.resolve(transformChanged);
 }
 
 export function updateConnectionLookup(connectionLookup: ConnectionLookup, edgeLookup: EdgeLookup, edges: EdgeBase[]) {

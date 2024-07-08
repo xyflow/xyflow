@@ -18,13 +18,13 @@ export type OnMove = (event: MouseEvent | TouchEvent | null, viewport: Viewport)
 export type OnMoveStart = OnMove;
 export type OnMoveEnd = OnMove;
 
-export type ZoomInOut = (options?: ViewportHelperFunctionOptions) => void;
-export type ZoomTo = (zoomLevel: number, options?: ViewportHelperFunctionOptions) => void;
+export type ZoomInOut = (options?: ViewportHelperFunctionOptions) => Promise<boolean>;
+export type ZoomTo = (zoomLevel: number, options?: ViewportHelperFunctionOptions) => Promise<boolean>;
 export type GetZoom = () => number;
 export type GetViewport = () => Viewport;
-export type SetViewport = (viewport: Viewport, options?: ViewportHelperFunctionOptions) => void;
-export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => void;
-export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => void;
+export type SetViewport = (viewport: Viewport, options?: ViewportHelperFunctionOptions) => Promise<boolean>;
+export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => Promise<boolean>;
+export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => Promise<boolean>;
 
 export type Connection = {
   source: string;
@@ -55,7 +55,7 @@ export type OnConnectEnd = (event: MouseEvent | TouchEvent) => void;
 export type IsValidConnection = (edge: EdgeBase | Connection) => boolean;
 
 export type FitViewParamsBase<NodeType extends NodeBase> = {
-  nodeLookup: Map<string, InternalNodeBase<NodeType>>;
+  nodes: Map<string, InternalNodeBase<NodeType>>;
   width: number;
   height: number;
   panZoom: PanZoomInstance;
@@ -130,7 +130,7 @@ export type SelectionRect = Rect & {
 export type OnError = (id: string, message: string) => void;
 
 export type UpdateNodePositions = (dragItems: Map<string, NodeDragItem | InternalNodeBase>, dragging?: boolean) => void;
-export type PanBy = (delta: XYPosition) => boolean;
+export type PanBy = (delta: XYPosition) => Promise<boolean>;
 
 export const initialConnection: NoConnection = {
   inProgress: false,

@@ -195,7 +195,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       }
     }
 
-    function autoPan() {
+    async function autoPan() {
       if (!containerBounds) {
         return;
       }
@@ -208,10 +208,11 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         lastPos.x = (lastPos.x ?? 0) - xMovement / transform[2];
         lastPos.y = (lastPos.y ?? 0) - yMovement / transform[2];
 
-        if (panBy({ x: xMovement, y: yMovement })) {
+        if (await panBy({ x: xMovement, y: yMovement })) {
           updateNodes(lastPos as XYPosition, null);
         }
       }
+
       autoPanId = requestAnimationFrame(autoPan);
     }
 

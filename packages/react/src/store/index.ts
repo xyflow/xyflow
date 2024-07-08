@@ -1,6 +1,7 @@
 import { createWithEqualityFn } from 'zustand/traditional';
 import {
   clampPosition,
+  getFitViewNodes,
   fitView as fitViewSystem,
   adoptUserNodes,
   updateAbsolutePositions,
@@ -79,7 +80,6 @@ const createStore = ({
       updateNodeInternals: (updates) => {
         const {
           triggerNodeChanges,
-          fitView,
           nodeLookup,
           parentLookup,
           fitViewOnInit,
@@ -88,6 +88,7 @@ const createStore = ({
           domNode,
           nodeOrigin,
           debug,
+          fitViewSync,
         } = get();
 
         const { changes, updatedInternals } = updateNodeInternalsSystem(
@@ -106,8 +107,9 @@ const createStore = ({
 
         // we call fitView once initially after all dimensions are set
         let nextFitViewDone = fitViewDone;
+
         if (!fitViewDone && fitViewOnInit) {
-          nextFitViewDone = fitView({
+          nextFitViewDone = fitViewSync({
             ...fitViewOnInitOptions,
             nodes: fitViewOnInitOptions?.nodes,
           });
@@ -287,20 +289,23 @@ const createStore = ({
           nodeExtent,
         });
       },
-      panBy: (delta): boolean => {
+      panBy: (delta): Promise<boolean> => {
         const { transform, width, height, panZoom, translateExtent } = get();
+
         return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
       },
-      fitView: (options?: FitViewOptions): boolean => {
+      fitView: (options?: FitViewOptions): Promise<boolean> => {
         const { panZoom, width, height, minZoom, maxZoom, nodeLookup } = get();
 
         if (!panZoom) {
-          return false;
+          return Promise.resolve(false);
         }
+
+        const fitViewNodes = getFitViewNodes(nodeLookup, options);
 
         return fitViewSystem(
           {
-            nodeLookup,
+            nodes: fitViewNodes,
             width,
             height,
             panZoom,
@@ -309,6 +314,31 @@ const createStore = ({
           },
           options
         );
+      },
+      // we can't call an asnychronous function in updateNodeInternals
+      // for that we created this sync version of fitView
+      fitViewSync: (options?: FitViewOptions): boolean => {
+        const { panZoom, width, height, minZoom, maxZoom, nodeLookup } = get();
+
+        if (!panZoom) {
+          return false;
+        }
+
+        const fitViewNodes = getFitViewNodes(nodeLookup, options);
+
+        fitViewSystem(
+          {
+            nodes: fitViewNodes,
+            width,
+            height,
+            panZoom,
+            minZoom,
+            maxZoom,
+          },
+          options
+        );
+
+        return fitViewNodes.size > 0;
       },
       cancelConnection: () => {
         set({
