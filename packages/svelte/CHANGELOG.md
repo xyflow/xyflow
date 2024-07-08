@@ -1,5 +1,9 @@
 # @xyflow/svelte
 
+## 0.1.9
+
+- return Promises for `setViewport`, `fitView`, `fitBounds` and `zoomTo` to be able to await viewport update
+
 ## 0.1.8
 
 - `useConnection` returns `ConnectionState` with `toNode` and `toHandle`
