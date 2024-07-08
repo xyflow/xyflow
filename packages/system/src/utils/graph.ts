@@ -233,10 +233,10 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
   return edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
 };
 
-export function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
+export async function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
   { nodeLookup, width, height, panZoom, minZoom, maxZoom }: Params,
   options?: Options
-) {
+): Promise<boolean> {
   const filteredNodes: Map<string, InternalNodeBase> = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
 
@@ -260,12 +260,12 @@ export function fitView<Params extends FitViewParamsBase<NodeBase>, Options exte
       options?.padding ?? 0.1
     );
 
-    panZoom.setViewport(viewport, { duration: options?.duration });
+    await panZoom.setViewport(viewport, { duration: options?.duration });
 
-    return true;
+    return Promise.resolve(true);
   }
 
-  return false;
+  return Promise.resolve(false);
 }
 
 /**

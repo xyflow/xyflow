@@ -80,7 +80,7 @@ export function useSvelteFlow(): {
    * @param zoomLevel - the zoom level to set
    * @param options.duration - optional duration. If set, a transition will be applied
    */
-  setZoom: (zoomLevel: number, options?: ViewportHelperFunctionOptions) => void;
+  setZoom: (zoomLevel: number, options?: ViewportHelperFunctionOptions) => Promise<boolean>;
   /**
    * Returns the current zoom level.
    *
@@ -94,14 +94,14 @@ export function useSvelteFlow(): {
    * @param y - y position
    * @param options.zoom - optional zoom
    */
-  setCenter: (x: number, y: number, options?: SetCenterOptions) => void;
+  setCenter: (x: number, y: number, options?: SetCenterOptions) => Promise<boolean>;
   /**
    * Sets the current viewport.
    *
    * @param viewport - the viewport to set
    * @param options.duration - optional duration. If set, a transition will be applied
    */
-  setViewport: (viewport: Viewport, options?: ViewportHelperFunctionOptions) => void;
+  setViewport: (viewport: Viewport, options?: ViewportHelperFunctionOptions) => Promise<boolean>;
   /**
    * Returns the current viewport.
    *
@@ -118,7 +118,7 @@ export function useSvelteFlow(): {
    * @param options.duration - optional duration. If set, a transition will be applied
    * @param options.nodes - optional nodes to fit the view to
    */
-  fitView: (options?: FitViewOptions) => void;
+  fitView: (options?: FitViewOptions) => Promise<boolean>;
   /**
    * Returns all nodes that intersect with the given node or rect.
    *
@@ -153,7 +153,7 @@ export function useSvelteFlow(): {
    * @param bounds - the bounds ({ x: number, y: number, width: number, height: number }) to fit the view to
    * @param options.padding - optional padding
    */
-  fitBounds: (bounds: Rect, options?: FitBoundsOptions) => void;
+  fitBounds: (bounds: Rect, options?: FitBoundsOptions) => Promise<boolean>;
   /**
    * Deletes nodes and edges.
    *
@@ -298,26 +298,41 @@ export function useSvelteFlow(): {
     getEdge: (id) => get(edgeLookup).get(id),
     getEdges: (ids) => (ids === undefined ? get(edges) : getElements(get(edgeLookup), ids)),
     setZoom: (zoomLevel, options) => {
-      get(panZoom)?.scaleTo(zoomLevel, { duration: options?.duration });
+      const currentPanZoom = get(panZoom);
+      return currentPanZoom
+        ? currentPanZoom.scaleTo(zoomLevel, { duration: options?.duration })
+        : Promise.resolve(false);
     },
     getZoom: () => get(viewport).zoom,
-    setViewport: (vieport, options) => {
+    setViewport: async (nextViewport, options) => {
       const currentViewport = get(viewport);
+      const currentPanZoom = get(panZoom);
 
-      get(panZoom)?.setViewport(
+      if (!currentPanZoom) {
+        return Promise.resolve(false);
+      }
+
+      await currentPanZoom.setViewport(
         {
-          x: vieport.x ?? currentViewport.x,
-          y: vieport.y ?? currentViewport.y,
-          zoom: vieport.zoom ?? currentViewport.zoom
+          x: nextViewport.x ?? currentViewport.x,
+          y: nextViewport.y ?? currentViewport.y,
+          zoom: nextViewport.zoom ?? currentViewport.zoom
         },
         { duration: options?.duration }
       );
+
+      return Promise.resolve(true);
     },
     getViewport: () => get(viewport),
-    setCenter: (x, y, options) => {
+    setCenter: async (x, y, options) => {
       const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : get(maxZoom);
+      const currentPanZoom = get(panZoom);
 
-      get(panZoom)?.setViewport(
+      if (!currentPanZoom) {
+        return Promise.resolve(false);
+      }
+
+      await currentPanZoom.setViewport(
         {
           x: get(width) / 2 - x * nextZoom,
           y: get(height) / 2 - y * nextZoom,
@@ -325,9 +340,17 @@ export function useSvelteFlow(): {
         },
         { duration: options?.duration }
       );
+
+      return Promise.resolve(true);
     },
     fitView,
-    fitBounds: (bounds: Rect, options?: FitBoundsOptions) => {
+    fitBounds: async (bounds: Rect, options?: FitBoundsOptions) => {
+      const currentPanZoom = get(panZoom);
+
+      if (!currentPanZoom) {
+        return Promise.resolve(false);
+      }
+
       const viewport = getViewportForBounds(
         bounds,
         get(width),
@@ -337,7 +360,9 @@ export function useSvelteFlow(): {
         options?.padding ?? 0.1
       );
 
-      get(panZoom)?.setViewport(viewport, { duration: options?.duration });
+      await currentPanZoom.setViewport(viewport, { duration: options?.duration });
+
+      return Promise.resolve(true);
     },
     getIntersectingNodes: (
       nodeOrRect: Node | { id: Node['id'] } | Rect,

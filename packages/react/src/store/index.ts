@@ -287,15 +287,15 @@ const createStore = ({
           nodeExtent,
         });
       },
-      panBy: (delta): boolean => {
+      panBy: (delta): Promise<boolean> => {
         const { transform, width, height, panZoom, translateExtent } = get();
         return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
       },
-      fitView: (options?: FitViewOptions): boolean => {
+      fitView: (options?: FitViewOptions): Promise<boolean> => {
         const { panZoom, width, height, minZoom, maxZoom, nodeLookup } = get();
 
         if (!panZoom) {
-          return false;
+          return Promise.resolve(false);
         }
 
         return fitViewSystem(

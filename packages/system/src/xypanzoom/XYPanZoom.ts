@@ -188,27 +188,27 @@ export function XYPanZoom({
     d3ZoomInstance.on('zoom', null);
   }
 
-  function setViewportConstrained(
+  async function setViewportConstrained(
     viewport: Viewport,
     extent: CoordinateExtent,
     translateExtent: CoordinateExtent
-  ): ZoomTransform | undefined {
+  ): Promise<ZoomTransform | undefined> {
     const nextTransform = viewportToTransform(viewport);
     const contrainedTransform = d3ZoomInstance?.constrain()(nextTransform, extent, translateExtent);
 
     if (contrainedTransform) {
-      setTransform(contrainedTransform);
+      await setTransform(contrainedTransform);
     }
 
-    return contrainedTransform;
+    return new Promise((resolve) => resolve(contrainedTransform));
   }
 
-  function setViewport(viewport: Viewport, options?: PanZoomTransformOptions) {
+  async function setViewport(viewport: Viewport, options?: PanZoomTransformOptions) {
     const nextTransform = viewportToTransform(viewport);
 
-    setTransform(nextTransform, options);
+    await setTransform(nextTransform, options);
 
-    return nextTransform;
+    return new Promise<ZoomTransform>((resolve) => resolve(nextTransform));
   }
 
   function syncViewport(viewport: Viewport) {

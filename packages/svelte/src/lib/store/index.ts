@@ -90,7 +90,7 @@ export function createStore({
     store.nodes.update((nds) => nds);
   };
 
-  function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
+  async function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
     const nodeLookup = get(store.nodeLookup);
     const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,
@@ -106,7 +106,7 @@ export function createStore({
 
     if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
       const fitViewOptions = get(store.fitViewOptions);
-      const fitViewOnInitDone = fitView({
+      const fitViewOnInitDone = await fitView({
         ...fitViewOptions,
         nodes: fitViewOptions?.nodes
       });
@@ -150,7 +150,7 @@ export function createStore({
     const panZoom = get(store.panZoom);
 
     if (!panZoom) {
-      return false;
+      return Promise.resolve(false);
     }
 
     return fitViewSystem(
@@ -168,18 +168,19 @@ export function createStore({
 
   function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
     const panZoom = get(store.panZoom);
-
-    if (panZoom) {
-      panZoom.scaleBy(factor, options);
+    if (!panZoom) {
+      return Promise.resolve(false);
     }
+
+    return panZoom.scaleBy(factor, options);
   }
 
   function zoomIn(options?: ViewportHelperFunctionOptions) {
-    zoomBy(1.2, options);
+    return zoomBy(1.2, options);
   }
 
   function zoomOut(options?: ViewportHelperFunctionOptions) {
-    zoomBy(1 / 1.2, options);
+    return zoomBy(1 / 1.2, options);
   }
 
   function setMinZoom(minZoom: number) {
