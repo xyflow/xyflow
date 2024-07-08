@@ -74,8 +74,15 @@ export function XYPanZoom({
 
   function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {
-      d3ZoomInstance?.transform(getD3Transition(d3Selection, options?.duration), transform);
+      return new Promise<boolean>((resolve) => {
+        d3ZoomInstance?.transform(
+          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+          transform
+        );
+      });
     }
+
+    return Promise.resolve(false);
   }
 
   // public functions
@@ -181,27 +188,27 @@ export function XYPanZoom({
     d3ZoomInstance.on('zoom', null);
   }
 
-  function setViewportConstrained(
+  async function setViewportConstrained(
     viewport: Viewport,
     extent: CoordinateExtent,
     translateExtent: CoordinateExtent
-  ): ZoomTransform | undefined {
+  ): Promise<ZoomTransform | undefined> {
     const nextTransform = viewportToTransform(viewport);
     const contrainedTransform = d3ZoomInstance?.constrain()(nextTransform, extent, translateExtent);
 
     if (contrainedTransform) {
-      setTransform(contrainedTransform);
+      await setTransform(contrainedTransform);
     }
 
-    return contrainedTransform;
+    return new Promise((resolve) => resolve(contrainedTransform));
   }
 
-  function setViewport(viewport: Viewport, options?: PanZoomTransformOptions) {
+  async function setViewport(viewport: Viewport, options?: PanZoomTransformOptions) {
     const nextTransform = viewportToTransform(viewport);
 
-    setTransform(nextTransform, options);
+    await setTransform(nextTransform, options);
 
-    return nextTransform;
+    return new Promise<ZoomTransform>((resolve) => resolve(nextTransform));
   }
 
   function syncViewport(viewport: Viewport) {
@@ -228,14 +235,28 @@ export function XYPanZoom({
 
   function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
-      d3ZoomInstance?.scaleTo(getD3Transition(d3Selection, options?.duration), zoom);
+      return new Promise<boolean>((resolve) => {
+        d3ZoomInstance?.scaleTo(
+          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+          zoom
+        );
+      });
     }
+
+    return Promise.resolve(false);
   }
 
   function scaleBy(factor: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
-      d3ZoomInstance?.scaleBy(getD3Transition(d3Selection, options?.duration), factor);
+      return new Promise<boolean>((resolve) => {
+        d3ZoomInstance?.scaleBy(
+          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+          factor
+        );
+      });
     }
+
+    return Promise.resolve(false);
   }
 
   function setScaleExtent(scaleExtent: [number, number]) {

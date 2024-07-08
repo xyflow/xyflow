@@ -65,7 +65,7 @@ export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
 
 export type FitViewParams<NodeType extends Node = Node> = FitViewParamsBase<NodeType>;
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
-export type FitView = (fitViewOptions?: FitViewOptions) => boolean;
+export type FitView = (fitViewOptions?: FitViewOptions) => Promise<boolean>;
 export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   reactFlowInstance: ReactFlowInstance<NodeType, EdgeType>
 ) => void;

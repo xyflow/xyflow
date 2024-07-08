@@ -168,7 +168,8 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
-  fitView: (options?: FitViewOptions) => boolean;
+  fitView: (options?: FitViewOptions) => Promise<boolean>;
+  fitViewSync: (options?: FitViewOptions) => boolean;
 };
 
 export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = ReactFlowStore<

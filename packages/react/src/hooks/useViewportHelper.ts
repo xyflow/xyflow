@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
   pointToRendererPoint,
   getViewportForBounds,
+  getFitViewNodes,
   fitView,
   type XYPosition,
   rendererPointToPoint,
@@ -21,17 +22,33 @@ const useViewportHelper = (): ViewportHelperFunctions => {
 
   return useMemo<ViewportHelperFunctions>(() => {
     return {
-      zoomIn: (options) => store.getState().panZoom?.scaleBy(1.2, { duration: options?.duration }),
-      zoomOut: (options) => store.getState().panZoom?.scaleBy(1 / 1.2, { duration: options?.duration }),
-      zoomTo: (zoomLevel, options) => store.getState().panZoom?.scaleTo(zoomLevel, { duration: options?.duration }),
+      zoomIn: (options) => {
+        const { panZoom } = store.getState();
+
+        return panZoom ? panZoom.scaleBy(1.2, { duration: options?.duration }) : Promise.resolve(false);
+      },
+      zoomOut: (options) => {
+        const { panZoom } = store.getState();
+
+        return panZoom ? panZoom.scaleBy(1 / 1.2, { duration: options?.duration }) : Promise.resolve(false);
+      },
+      zoomTo: (zoomLevel, options) => {
+        const { panZoom } = store.getState();
+
+        return panZoom ? panZoom.scaleTo(zoomLevel, { duration: options?.duration }) : Promise.resolve(false);
+      },
       getZoom: () => store.getState().transform[2],
-      setViewport: (viewport, options) => {
+      setViewport: async (viewport, options) => {
         const {
           transform: [tX, tY, tZoom],
           panZoom,
         } = store.getState();
 
-        panZoom?.setViewport(
+        if (!panZoom) {
+          return Promise.resolve(false);
+        }
+
+        await panZoom.setViewport(
           {
             x: viewport.x ?? tX,
             y: viewport.y ?? tY,
@@ -39,6 +56,8 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           },
           { duration: options?.duration }
         );
+
+        return Promise.resolve(true);
       },
       getViewport: () => {
         const [x, y, zoom] = store.getState().transform;
@@ -46,30 +65,33 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       },
       fitView: (options) => {
         const { nodeLookup, width, height, minZoom, maxZoom, panZoom } = store.getState();
+        const fitViewNodes = getFitViewNodes(nodeLookup, options);
 
-        if (!panZoom) {
-          return false;
-        }
-
-        return fitView(
-          {
-            nodeLookup,
-            width,
-            height,
-            minZoom,
-            maxZoom,
-            panZoom,
-          },
-          options
-        );
+        return panZoom
+          ? fitView(
+              {
+                nodes: fitViewNodes,
+                width,
+                height,
+                minZoom,
+                maxZoom,
+                panZoom,
+              },
+              options
+            )
+          : Promise.resolve(false);
       },
-      setCenter: (x, y, options) => {
+      setCenter: async (x, y, options) => {
         const { width, height, maxZoom, panZoom } = store.getState();
         const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : maxZoom;
         const centerX = width / 2 - x * nextZoom;
         const centerY = height / 2 - y * nextZoom;
 
-        panZoom?.setViewport(
+        if (!panZoom) {
+          return Promise.resolve(false);
+        }
+
+        await panZoom.setViewport(
           {
             x: centerX,
             y: centerY,
@@ -77,12 +99,20 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           },
           { duration: options?.duration }
         );
+
+        return Promise.resolve(true);
       },
-      fitBounds: (bounds, options) => {
+      fitBounds: async (bounds, options) => {
         const { width, height, minZoom, maxZoom, panZoom } = store.getState();
         const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
 
-        panZoom?.setViewport(viewport, { duration: options?.duration });
+        if (!panZoom) {
+          return Promise.resolve(false);
+        }
+
+        await panZoom.setViewport(viewport, { duration: options?.duration });
+
+        return Promise.resolve(true);
       },
       screenToFlowPosition: (clientPosition: XYPosition, options: { snapToGrid: boolean } = { snapToGrid: true }) => {
         const { transform, snapGrid, domNode } = store.getState();

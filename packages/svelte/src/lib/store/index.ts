@@ -18,7 +18,8 @@ import {
   type CoordinateExtent,
   type UpdateConnection,
   type ConnectionState,
-  type NodeOrigin
+  type NodeOrigin,
+  getFitViewNodes
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -106,7 +107,7 @@ export function createStore({
 
     if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
       const fitViewOptions = get(store.fitViewOptions);
-      const fitViewOnInitDone = fitView({
+      const fitViewOnInitDone = fitViewSync({
         ...fitViewOptions,
         nodes: fitViewOptions?.nodes
       });
@@ -150,12 +151,14 @@ export function createStore({
     const panZoom = get(store.panZoom);
 
     if (!panZoom) {
-      return false;
+      return Promise.resolve(false);
     }
+
+    const fitViewNodes = getFitViewNodes(get(store.nodeLookup), options);
 
     return fitViewSystem(
       {
-        nodeLookup: get(store.nodeLookup),
+        nodes: fitViewNodes,
         width: get(store.width),
         height: get(store.height),
         minZoom: get(store.minZoom),
@@ -166,20 +169,45 @@ export function createStore({
     );
   }
 
-  function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
+  function fitViewSync(options?: FitViewOptions) {
     const panZoom = get(store.panZoom);
 
-    if (panZoom) {
-      panZoom.scaleBy(factor, options);
+    if (!panZoom) {
+      return false;
     }
+
+    const fitViewNodes = getFitViewNodes(get(store.nodeLookup), options);
+
+    fitViewSystem(
+      {
+        nodes: fitViewNodes,
+        width: get(store.width),
+        height: get(store.height),
+        minZoom: get(store.minZoom),
+        maxZoom: get(store.maxZoom),
+        panZoom
+      },
+      options
+    );
+
+    return fitViewNodes.size > 0;
+  }
+
+  function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
+    const panZoom = get(store.panZoom);
+    if (!panZoom) {
+      return Promise.resolve(false);
+    }
+
+    return panZoom.scaleBy(factor, options);
   }
 
   function zoomIn(options?: ViewportHelperFunctionOptions) {
-    zoomBy(1.2, options);
+    return zoomBy(1.2, options);
   }
 
   function zoomOut(options?: ViewportHelperFunctionOptions) {
-    zoomBy(1 / 1.2, options);
+    return zoomBy(1 / 1.2, options);
   }
 
   function setMinZoom(minZoom: number) {
