@@ -233,39 +233,46 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
   return edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
 };
 
-export async function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
-  { nodeLookup, width, height, panZoom, minZoom, maxZoom }: Params,
-  options?: Options
-): Promise<boolean> {
-  const filteredNodes: Map<string, InternalNodeBase> = new Map();
+export function getFitViewNodes<
+  Params extends NodeLookup<InternalNodeBase<NodeBase>>,
+  Options extends FitViewOptionsBase<NodeBase>
+>(nodeLookup: Params, options?: Pick<Options, 'nodes' | 'includeHiddenNodes'>) {
+  const fitViewNodes: NodeLookup = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
 
   nodeLookup.forEach((n) => {
     const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
 
     if (isVisible && (!optionNodeIds || optionNodeIds.has(n.id))) {
-      filteredNodes.set(n.id, n);
+      fitViewNodes.set(n.id, n);
     }
   });
 
-  if (filteredNodes.size > 0) {
-    const bounds = getInternalNodesBounds(filteredNodes);
+  return fitViewNodes;
+}
 
-    const viewport = getViewportForBounds(
-      bounds,
-      width,
-      height,
-      options?.minZoom ?? minZoom,
-      options?.maxZoom ?? maxZoom,
-      options?.padding ?? 0.1
-    );
-
-    await panZoom.setViewport(viewport, { duration: options?.duration });
-
-    return Promise.resolve(true);
+export async function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
+  { nodes, width, height, panZoom, minZoom, maxZoom }: Params,
+  options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>
+): Promise<boolean> {
+  if (nodes.size === 0) {
+    return Promise.resolve(false);
   }
 
-  return Promise.resolve(false);
+  const bounds = getInternalNodesBounds(nodes);
+
+  const viewport = getViewportForBounds(
+    bounds,
+    width,
+    height,
+    options?.minZoom ?? minZoom,
+    options?.maxZoom ?? maxZoom,
+    options?.padding ?? 0.1
+  );
+
+  await panZoom.setViewport(viewport, { duration: options?.duration });
+
+  return Promise.resolve(true);
 }
 
 /**

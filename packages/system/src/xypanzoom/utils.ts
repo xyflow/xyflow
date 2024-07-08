@@ -21,8 +21,15 @@ export const isWrappedWithClass = (event: any, className: string | undefined) =>
 export const isRightClickPan = (panOnDrag: boolean | number[], usedButton: number) =>
   usedButton === 2 && Array.isArray(panOnDrag) && panOnDrag.includes(2);
 
-export const getD3Transition = (selection: D3SelectionInstance, duration = 0, onEnd = () => {}) =>
-  typeof duration === 'number' && duration > 0 ? selection.transition().duration(duration).on('end', onEnd) : selection;
+export const getD3Transition = (selection: D3SelectionInstance, duration = 0, onEnd = () => {}) => {
+  const hasDuration = typeof duration === 'number' && duration > 0;
+
+  if (!hasDuration) {
+    onEnd();
+  }
+
+  return hasDuration ? selection.transition().duration(duration).on('end', onEnd) : selection;
+};
 
 export const wheelDelta = (event: any) => {
   const factor = event.ctrlKey && isMacOs() ? 10 : 1;

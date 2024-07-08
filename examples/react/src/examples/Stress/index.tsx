@@ -224,7 +224,6 @@ const StressFlow = () => {
       onEdgesChange={onEdgeChange}
       minZoom={0.2}
       fitView
-      panOnDrag={false}
     >
       <Controls />
       <Background />

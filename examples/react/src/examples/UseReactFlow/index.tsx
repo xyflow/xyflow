@@ -96,9 +96,13 @@ const UseZoomPanHelperFlow = () => {
   );
 
   const onNodeClick = useCallback(
-    (_: MouseEvent, node: Node) => {
+    async (_: MouseEvent, node: Node) => {
+      console.log('set center start');
+
       const { x, y } = node.position;
-      setCenter(x, y, { zoom: 1, duration: 1200 });
+      await setCenter(x, y, { zoom: 1, duration: 1200 });
+
+      console.log('set center success');
     },
     [setCenter]
   );
@@ -172,7 +176,15 @@ const UseZoomPanHelperFlow = () => {
       <Panel position="top-right">
         <button onClick={() => zoomIn({ duration: 1200 })}>zoomIn</button>
         <button onClick={() => zoomOut({ duration: 0 })}>zoomOut</button>
-        <button onClick={() => fitView({ duration: 1200, padding: 0.3 })}>fitView</button>
+        <button
+          onClick={async () => {
+            console.log('fit view start');
+            await fitView({ duration: 1200, padding: 0.3 });
+            console.log('fit view success');
+          }}
+        >
+          fitView
+        </button>
         <button onClick={onAddNode}>add node</button>
         <button onClick={onResetNodes}>reset nodes</button>
         <button onClick={logNodes}>useNodes</button>

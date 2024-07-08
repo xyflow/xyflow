@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
   pointToRendererPoint,
   getViewportForBounds,
+  getFitViewNodes,
   fitView,
   type XYPosition,
   rendererPointToPoint,
@@ -64,11 +65,12 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       },
       fitView: (options) => {
         const { nodeLookup, width, height, minZoom, maxZoom, panZoom } = store.getState();
+        const fitViewNodes = getFitViewNodes(nodeLookup, options);
 
         return panZoom
           ? fitView(
               {
-                nodeLookup,
+                nodes: fitViewNodes,
                 width,
                 height,
                 minZoom,

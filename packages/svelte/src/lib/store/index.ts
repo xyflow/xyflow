@@ -18,7 +18,8 @@ import {
   type CoordinateExtent,
   type UpdateConnection,
   type ConnectionState,
-  type NodeOrigin
+  type NodeOrigin,
+  getFitViewNodes
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -90,7 +91,7 @@ export function createStore({
     store.nodes.update((nds) => nds);
   };
 
-  async function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
+  function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
     const nodeLookup = get(store.nodeLookup);
     const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,
@@ -106,7 +107,7 @@ export function createStore({
 
     if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
       const fitViewOptions = get(store.fitViewOptions);
-      const fitViewOnInitDone = await fitView({
+      const fitViewOnInitDone = fitViewSync({
         ...fitViewOptions,
         nodes: fitViewOptions?.nodes
       });
@@ -153,9 +154,11 @@ export function createStore({
       return Promise.resolve(false);
     }
 
+    const fitViewNodes = getFitViewNodes(get(store.nodeLookup), options);
+
     return fitViewSystem(
       {
-        nodeLookup: get(store.nodeLookup),
+        nodes: fitViewNodes,
         width: get(store.width),
         height: get(store.height),
         minZoom: get(store.minZoom),
@@ -164,6 +167,30 @@ export function createStore({
       },
       options
     );
+  }
+
+  function fitViewSync(options?: FitViewOptions) {
+    const panZoom = get(store.panZoom);
+
+    if (!panZoom) {
+      return false;
+    }
+
+    const fitViewNodes = getFitViewNodes(get(store.nodeLookup), options);
+
+    fitViewSystem(
+      {
+        nodes: fitViewNodes,
+        width: get(store.width),
+        height: get(store.height),
+        minZoom: get(store.minZoom),
+        maxZoom: get(store.maxZoom),
+        panZoom
+      },
+      options
+    );
+
+    return fitViewNodes.size > 0;
   }
 
   function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {

@@ -212,6 +212,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           updateNodes(lastPos as XYPosition, null);
         }
       }
+
       autoPanId = requestAnimationFrame(autoPan);
     }
 

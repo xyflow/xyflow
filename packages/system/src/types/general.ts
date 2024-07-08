@@ -55,7 +55,7 @@ export type OnConnectEnd = (event: MouseEvent | TouchEvent) => void;
 export type IsValidConnection = (edge: EdgeBase | Connection) => boolean;
 
 export type FitViewParamsBase<NodeType extends NodeBase> = {
-  nodeLookup: Map<string, InternalNodeBase<NodeType>>;
+  nodes: Map<string, InternalNodeBase<NodeType>>;
   width: number;
   height: number;
   panZoom: PanZoomInstance;
