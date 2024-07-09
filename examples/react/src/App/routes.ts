@@ -1,6 +1,7 @@
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
 import ColorMode from '../examples/ColorMode';
+import ClickDistance from '../examples/ClickDistance';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
 import ControlledViewport from '../examples/ControlledViewport';
 import CustomConnectionLine from '../examples/CustomConnectionLine';
@@ -84,6 +85,11 @@ const routes: IRoute[] = [
     name: 'Cancel Connection',
     path: 'cancel-connection',
     component: CancelConnection,
+  },
+  {
+    name: 'Click Distance',
+    path: 'click-distance',
+    component: ClickDistance,
   },
   {
     name: 'Controlled/Uncontrolled',

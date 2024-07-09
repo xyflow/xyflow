@@ -9,7 +9,7 @@ import {
   PanZoomParams,
   PanZoomInstance,
 } from '../types';
-import { clamp } from '../utils';
+import { clamp, isNumeric } from '../utils';
 import { getD3Transition, viewportToTransform, wheelDelta } from './utils';
 import {
   createPanOnScrollHandler,
@@ -34,6 +34,7 @@ export function XYPanZoom({
   domNode,
   minZoom,
   maxZoom,
+  paneClickDistance,
   translateExtent,
   viewport,
   onPanZoom,
@@ -52,7 +53,10 @@ export function XYPanZoom({
     isPanScrolling: false,
   };
   const bbox = domNode.getBoundingClientRect();
-  const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
+  const d3ZoomInstance = zoom()
+    .clickDistance(!isNumeric(paneClickDistance) || paneClickDistance < 0 ? 0 : paneClickDistance)
+    .scaleExtent([minZoom, maxZoom])
+    .translateExtent(translateExtent);
   const d3Selection = select(domNode).call(d3ZoomInstance);
 
   setViewportConstrained(
@@ -267,6 +271,11 @@ export function XYPanZoom({
     d3ZoomInstance?.translateExtent(translateExtent);
   }
 
+  function setClickDistance(distance: number) {
+    const validDistance = !isNumeric(distance) || distance < 0 ? 0 : distance;
+    d3ZoomInstance?.clickDistance(validDistance);
+  }
+
   return {
     update,
     destroy,
@@ -278,5 +287,6 @@ export function XYPanZoom({
     setScaleExtent,
     setTranslateExtent,
     syncViewport,
+    setClickDistance,
   };
 }

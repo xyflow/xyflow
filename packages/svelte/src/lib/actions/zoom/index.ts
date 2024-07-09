@@ -35,11 +35,20 @@ type ZoomParams = {
   noWheelClassName: string;
   userSelectionActive: boolean;
   lib: string;
+  paneClickDistance: number;
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {
-  const { panZoom, minZoom, maxZoom, initialViewport, viewport, dragging, translateExtent } =
-    params;
+  const {
+    panZoom,
+    minZoom,
+    maxZoom,
+    initialViewport,
+    viewport,
+    dragging,
+    translateExtent,
+    paneClickDistance
+  } = params;
 
   const panZoomInstance = XYPanZoom({
     domNode,
@@ -47,6 +56,7 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     maxZoom,
     translateExtent,
     viewport: initialViewport,
+    paneClickDistance,
     onTransformChange: (transform) =>
       viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] }),
     onDraggingChange: dragging.set

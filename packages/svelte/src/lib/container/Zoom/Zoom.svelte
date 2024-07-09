@@ -19,6 +19,7 @@
   export let zoomOnPinch: $$Props['zoomOnPinch'];
   export let panOnDrag: $$Props['panOnDrag'];
   export let panOnScroll: $$Props['panOnScroll'];
+  export let paneClickDistance: $$Props['paneClickDistance'];
 
   const {
     viewport,
@@ -68,7 +69,8 @@
     noWheelClassName: 'nowheel',
     userSelectionActive: !!$selectionRect,
     translateExtent: $translateExtent,
-    lib: $lib
+    lib: $lib,
+    paneClickDistance
   }}
 >
   <slot />

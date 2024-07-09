@@ -9,6 +9,7 @@ export type PanZoomParams = {
   domNode: Element;
   minZoom: number;
   maxZoom: number;
+  paneClickDistance: number;
   viewport: Viewport;
   translateExtent: CoordinateExtent;
   onTransformChange: OnTransformChange;
@@ -56,4 +57,5 @@ export type PanZoomInstance = {
   scaleTo: (scale: number, options?: PanZoomTransformOptions) => Promise<boolean>;
   scaleBy: (factor: number, options?: PanZoomTransformOptions) => Promise<boolean>;
   syncViewport: (viewport: Viewport) => void;
+  setClickDistance: (distance: number) => void;
 };
