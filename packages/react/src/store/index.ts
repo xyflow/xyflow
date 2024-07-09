@@ -134,7 +134,6 @@ const createStore = ({
         const changes = [];
 
         for (const [id, dragItem] of nodeDragItems) {
-          // @todo add expandParent to drag item so that we can get rid of the look up here
           const change: NodeChange = {
             id,
             type: 'position',
