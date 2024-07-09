@@ -1,5 +1,10 @@
 # @xyflow/react
 
+## 12.0.0-next.28
+
+- add `paneDistanceClick` prop (max distance between mousedown/up that will trigger a click)
+- returned nodes in `onNodeDragStop` are set to `dragging=false` 
+
 ## 12.0.0-next.27
 
 - return Promises for `setViewport`, `fitView`, `fitBounds` and `zoomTo` to be able to await viewport update

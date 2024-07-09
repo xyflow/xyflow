@@ -47,6 +47,7 @@ export function ZoomPane({
   noPanClassName,
   onViewportChange,
   isControlledViewport,
+  paneClickDistance,
 }: ZoomPaneProps) {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
@@ -64,6 +65,7 @@ export function ZoomPane({
         maxZoom,
         translateExtent,
         viewport: defaultViewport,
+        paneClickDistance,
         onTransformChange: (transform: Transform) => {
           onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });
 

@@ -170,6 +170,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   panBy: PanBy;
   fitView: (options?: FitViewOptions) => Promise<boolean>;
   fitViewSync: (options?: FitViewOptions) => boolean;
+  setPaneClickDistance: (distance: number) => void;
 };
 
 export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = ReactFlowStore<

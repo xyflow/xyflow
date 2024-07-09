@@ -1,7 +1,8 @@
+import type { Writable } from 'svelte/store';
+import type { CoordinateExtent } from '@xyflow/system';
+
 import type { SvelteFlowStore } from '$lib/store/types';
 import type { EdgeTypes, NodeTypes } from '$lib/types';
-import type { CoordinateExtent } from '@xyflow/system';
-import type { Writable } from 'svelte/store';
 
 // this is helper function for updating the store
 // for props where we need to call a specific store action
@@ -12,13 +13,15 @@ export function updateStore(
     edgeTypes,
     minZoom,
     maxZoom,
-    translateExtent
+    translateExtent,
+    paneClickDistance
   }: {
     nodeTypes?: NodeTypes;
     edgeTypes?: EdgeTypes;
     minZoom?: number;
     maxZoom?: number;
     translateExtent?: CoordinateExtent;
+    paneClickDistance?: number;
   }
 ) {
   if (nodeTypes !== undefined) {
@@ -39,6 +42,10 @@ export function updateStore(
 
   if (translateExtent !== undefined) {
     store.setTranslateExtent(translateExtent);
+  }
+
+  if (paneClickDistance !== undefined) {
+    store.setPaneClickDistance(paneClickDistance);
   }
 }
 

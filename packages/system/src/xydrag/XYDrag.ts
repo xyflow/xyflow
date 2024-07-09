@@ -332,6 +332,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
               nodeId,
               dragItems,
               nodeLookup,
+              dragging: false,
             });
 
             onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);

@@ -223,6 +223,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   onPaneMouseMove?: (event: ReactMouseEvent) => void;
   /** This event handler gets called when mouse leaves the pane */
   onPaneMouseLeave?: (event: ReactMouseEvent) => void;
+  /** Distance that the mouse can move between mousedown/up that will trigger a click
+   * @default 0
+   */
+  paneClickDistance?: number;
   /** This handler gets called before the user deletes nodes or edges and provides a way to abort the deletion by returning false. */
   onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
   /** Custom node types to be available in a flow.

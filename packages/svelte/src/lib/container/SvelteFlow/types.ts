@@ -134,6 +134,10 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> & {
    * @default 1
    */
   nodeDragThreshold?: number;
+  /** Distance that the mouse can move between mousedown/up that will trigger a click
+   * @default 0
+   */
+  paneClickDistance?: number;
   /** Minimum zoom level
    * @default 0.5
    */

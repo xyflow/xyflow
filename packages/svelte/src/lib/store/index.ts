@@ -248,6 +248,10 @@ export function createStore({
     return elementsChanged;
   }
 
+  function setPaneClickDistance(distance: number) {
+    get(store.panZoom)?.setClickDistance(distance);
+  }
+
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
     const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
     if (resetNodes) store.nodes.set(get(store.nodes));
@@ -448,6 +452,7 @@ export function createStore({
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,
+    setPaneClickDistance,
     unselectNodesAndEdges,
     addSelectedNodes,
     addSelectedEdges,

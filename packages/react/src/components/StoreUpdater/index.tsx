@@ -67,6 +67,7 @@ const reactFlowFieldsToTrack = [
   'onBeforeDelete',
   'debug',
   'autoPanSpeed',
+  'paneClickDistance',
 ] as const;
 
 type ReactFlowFieldsToTrack = (typeof reactFlowFieldsToTrack)[number];
@@ -89,6 +90,7 @@ const selector = (s: ReactFlowState) => ({
   setNodeExtent: s.setNodeExtent,
   reset: s.reset,
   setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
+  setPaneClickDistance: s.setPaneClickDistance,
 });
 
 const initPrevValues = {
@@ -102,6 +104,7 @@ const initPrevValues = {
   elementsSelectable: true,
   noPanClassName: 'nopan',
   rfId: '1',
+  paneClickDistance: 0,
 };
 
 export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
@@ -116,6 +119,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     setNodeExtent,
     reset,
     setDefaultNodesAndEdges,
+    setPaneClickDistance,
   } = useStore(selector, shallow);
   const store = useStoreApi<NodeType, EdgeType>();
 
@@ -146,6 +150,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         else if (fieldName === 'maxZoom') setMaxZoom(fieldValue as number);
         else if (fieldName === 'translateExtent') setTranslateExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
+        else if (fieldName === 'paneClickDistance') setPaneClickDistance(fieldValue as number);
         // Renamed fields
         else if (fieldName === 'fitView') store.setState({ fitViewOnInit: fieldValue as boolean });
         else if (fieldName === 'fitViewOptions') store.setState({ fitViewOnInitOptions: fieldValue as FitViewOptions });

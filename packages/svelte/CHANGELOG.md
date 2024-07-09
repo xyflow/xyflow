@@ -1,5 +1,10 @@
 # @xyflow/svelte
 
+## 0.1.10
+
+- add `paneDistanceClick` prop (max distance between mousedown/up that will trigger a click)
+- returned nodes in `on:nodedragstop` are set to `dragging=false` 
+
 ## 0.1.9
 
 - return Promises for `setViewport`, `fitView`, `fitBounds` and `zoomTo` to be able to await viewport update

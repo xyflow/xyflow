@@ -41,6 +41,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onPaneMouseLeave,
   onPaneContextMenu,
   onPaneScroll,
+  paneClickDistance,
   deleteKeyCode,
   selectionKeyCode,
   selectionOnDrag,
@@ -101,6 +102,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
       noPanClassName={noPanClassName}
       onViewportChange={onViewportChange}
       isControlledViewport={isControlledViewport}
+      paneClickDistance={paneClickDistance}
     >
       <Pane
         onSelectionStart={onSelectionStart}
