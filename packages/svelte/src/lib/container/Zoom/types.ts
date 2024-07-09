@@ -12,4 +12,5 @@ export type ZoomProps = {
   zoomOnPinch: boolean;
   panOnScroll: boolean;
   panOnDrag: boolean | number[];
+  paneClickDistance: number;
 };

@@ -103,6 +103,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     onPaneMouseLeave,
     onPaneScroll,
     onPaneContextMenu,
+    paneClickDistance = 0,
     children,
     onReconnect,
     onReconnectStart,
@@ -200,6 +201,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           onPaneMouseLeave={onPaneMouseLeave}
           onPaneScroll={onPaneScroll}
           onPaneContextMenu={onPaneContextMenu}
+          paneClickDistance={paneClickDistance}
           onSelectionContextMenu={onSelectionContextMenu}
           onSelectionStart={onSelectionStart}
           onSelectionEnd={onSelectionEnd}
@@ -277,6 +279,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           selectNodesOnDrag={selectNodesOnDrag}
           nodeDragThreshold={nodeDragThreshold}
           onBeforeDelete={onBeforeDelete}
+          paneClickDistance={paneClickDistance}
           debug={debug}
         />
         <SelectionListener onSelectionChange={onSelectionChange} />
