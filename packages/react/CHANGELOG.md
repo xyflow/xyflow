@@ -1,9 +1,49 @@
 # @xyflow/react
 
+## 12.0.0
+
+React Flow 12 is finally out! With a new package name `@xyflow/react`! 
+
+### Main features
+
+- **SSR / SSG**: you can define `width`, `height` and `handles` for the nodes. This makes it possible to render a flow on the server and hydrate on the client: [SSR guide](http://reactflow.dev/learn/advanced-use/ssr-ssg-configuration)
+  - Details: In v11, `width` and `height` were set by the library as soon as the nodes got measured. This still happens, but we are now using `measured.width` and `measured.height` to store this information. In the previous versions there was always a lot of confusion about `width` and `height`. It’s hard to understand, that you can’t use it for passing an actual width or height. It’s also not obvious that those attributes get added by the library. We think that the new implementation solves both of the problems: `width` and `height` are optional attributes that can be used to define dimensions and the measured dimensions are stored in `measured`.
+- **Reactive Flows:** The new hooks `useHandleConnections` and `useNodesData` and the new `updateNode` and `updateNodeData` functions can be used for managing the data flow between your nodes: [computing flows guide](http://reactflow.dev/learn/advanced-use/computing-flows)
+  - Details: Working with reactive flows is super common. You update node A and want to react on those changes in the connected node B. Until now everyone had to come up with a custom solution. With this version we want to change this and give you performant helpers to handle this. If you are excited about this, you can check out this example:
+- **Dark mode and css variables:** React Flow now comes with a built-in dark mode, that can be toggled by using the new `colorMode` prop (”light”, “dark” or “system”): [dark mode example](https://reactflow.dev/examples/styling/dark-mode)
+  - Details: With this version we want to make it easier to switch between dark and light modes and give you a better starting point for dark flows. If you pass colorMode=”dark”, we add the class name “dark” to the wrapper and use it to adjust the styling. To make the implementation for this new feature easier on our ends, we switched to CSS variables for most of the styles. These variables can also be used in user land to customize a flow.
+
+### More features and updates
+
+There is more! Besides the new main features, we added some minor things that were on our list for a long time. We also started to use TS docs for better docs. We already started to add some docs for some types and hooks which should improve the developer experience.
+
+- **[`useConnection` hook](https://reactflow.dev/api-reference/hooks/use-connection):** With this hook you can access the ongoing connection. For example, you can use it for colorizing handles styling a custom connection line based on the current start / end handles.
+- **Controlled `viewport`:** This is an advanced feature. Possible use cases are to animate the viewport or round the transform for lower res screens for example. This features brings two new props: [`viewport`](https://reactflow.dev/api-reference/react-flow#viewport) and [`onViewportChange`](https://reactflow.dev/api-reference/react-flow#on-viewport-change).
+- **[`ViewportPortal`](https://reactflow.dev/api-reference/components/viewport-portal) component:** This makes it possible to render elements in the viewport without the need to implement a custom node.
+- **[`onDelete`](https://reactflow.dev/api-reference/react-flow#on-delete) handler**: We added a combined handler for `onDeleteNodes` and `onDeleteEdges` to make it easier to react to deletions.
+- **[`onBeforeDelete`](https://reactflow.dev/api-reference/react-flow#on-before-delete) handler**: With this handler you can prevent/ manage deletions.
+- **[`isValidConnection`](https://reactflow.dev/api-reference/react-flow#is-valid-connection) prop:** This makes it possible to implement one validation function for all connections. It also gets called for programmatically added edges.
+- **[`autoPanSpeed`](https://reactflow.dev/api-reference/react-flow#autoPanSpeed) prop:** For controlling the speed while auto panning.
+- **Background component**: add [`patternClassName`](https://reactflow.dev/api-reference/components/background#pattern-class-name) prop to be able to style the background pattern by using a class name. This is useful if you want to style the background pattern with Tailwind for example.
+- **`onMove` callback** gets triggered for library-invoked viewport updates (like fitView or zoom-in)
+- **`deleteElements`** now returns deleted nodes and deleted edges
+- add **`origin` attribute** for nodes
+- add **`selectable` attribute** for edges
+- Node Resizer: child nodes don't move when the group is resized, extent and expand is recognized correctly
+- Correct types for `BezierEdge`, `StepEdge`, `SmoothStepEdge` and `StraightEdge` components
+- New edges created by the library only have `sourceHandle` and `targetHandle` attributes when those attributes are set. (We used to pass `sourceHandle: null` and `targetHandle: null`)
+- Edges do not mount/unmount when their z-index change
+- connection line knows about the target handle position so that the path is drawn correctly
+- `nodeDragThreshold` is 1 by default instead of 0
+- a better selection box usability (capture while dragging out of the flow)
+- add `selectable`, `deletable`, `draggable` and `parentId` to `NodeProps`
+- add a warning when styles not loaded
+
+
 ## 12.0.0-next.28
 
 - add `paneDistanceClick` prop (max distance between mousedown/up that will trigger a click)
-- returned nodes in `onNodeDragStop` are set to `dragging=false` 
+- returned nodes in `onNodeDragStop` are set to `dragging=false`
 
 ## 12.0.0-next.27
 
@@ -72,7 +112,7 @@
 - return user node in node event handlers
 - cleanup `useReactFlow`
 - export `KeyCode` and `Align` type
-- remove `Instance` in favour of `ReactFlowInstance` type 
+- remove `Instance` in favour of `ReactFlowInstance` type
 
 ## 12.0.0-next.16
 
@@ -110,7 +150,7 @@
 
 - rename `node.parentNode` to `node.parentId`
 - rename node.computed to node.measured
-- remove positionAbsolute from `node.computed` 
+- remove positionAbsolute from `node.computed`
 
 ## Minor Changes
 
