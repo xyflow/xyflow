@@ -1,9 +1,15 @@
 # @xyflow/react
 
+## 12.0.0
+
+### Patch Changes
+
+- [#4428](https://github.com/xyflow/xyflow/pull/4428) [`9cc8d0d8`](https://github.com/xyflow/xyflow/commit/9cc8d0d82562ca8305a15ad2e94de61958610ecf) Thanks [@moklick](https://github.com/moklick)! - release notes
+
 ## 12.0.0-next.28
 
 - add `paneDistanceClick` prop (max distance between mousedown/up that will trigger a click)
-- returned nodes in `onNodeDragStop` are set to `dragging=false` 
+- returned nodes in `onNodeDragStop` are set to `dragging=false`
 
 ## 12.0.0-next.27
 
@@ -72,7 +78,7 @@
 - return user node in node event handlers
 - cleanup `useReactFlow`
 - export `KeyCode` and `Align` type
-- remove `Instance` in favour of `ReactFlowInstance` type 
+- remove `Instance` in favour of `ReactFlowInstance` type
 
 ## 12.0.0-next.16
 
@@ -110,7 +116,7 @@
 
 - rename `node.parentNode` to `node.parentId`
 - rename node.computed to node.measured
-- remove positionAbsolute from `node.computed` 
+- remove positionAbsolute from `node.computed`
 
 ## Minor Changes
 
