@@ -54,7 +54,7 @@ export function XYPanZoom({
   };
   const bbox = domNode.getBoundingClientRect();
   const d3ZoomInstance = zoom()
-    .clickDistance(paneClickDistance)
+    .clickDistance(!isNumeric(paneClickDistance) || paneClickDistance < 0 ? 0 : paneClickDistance)
     .scaleExtent([minZoom, maxZoom])
     .translateExtent(translateExtent);
   const d3Selection = select(domNode).call(d3ZoomInstance);
@@ -272,17 +272,8 @@ export function XYPanZoom({
   }
 
   function setClickDistance(distance: number) {
-    let validNumber = distance;
-
-    if (!isNumeric(distance)) {
-      validNumber = 0;
-    }
-
-    if (validNumber < 0) {
-      validNumber = 0;
-    }
-
-    d3ZoomInstance?.clickDistance(validNumber);
+    const validDistance = !isNumeric(distance) || distance < 0 ? 0 : distance;
+    d3ZoomInstance?.clickDistance(validDistance);
   }
 
   return {
