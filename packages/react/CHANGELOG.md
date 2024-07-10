@@ -1,8 +1,19 @@
 # @xyflow/react
 
+## 12.0.1
+
+### Patch Changes
+
+- [#4434](https://github.com/xyflow/xyflow/pull/4434) [`1bda2451`](https://github.com/xyflow/xyflow/commit/1bda24519658b4aaed6d4abf9e7e9d096e193b5b) Thanks [@moklick](https://github.com/moklick)! - fix(selection): handle pointer capture for selectionOnDrag
+
+- [#4432](https://github.com/xyflow/xyflow/pull/4432) [`d2da5765`](https://github.com/xyflow/xyflow/commit/d2da576591305873f8d6514091ee8db1ad4f79e2) Thanks [@moklick](https://github.com/moklick)! - refactor(useConnection): return internal node, add node generic
+
+- Updated dependencies [[`d2da5765`](https://github.com/xyflow/xyflow/commit/d2da576591305873f8d6514091ee8db1ad4f79e2)]:
+  - @xyflow/system@0.0.35
+
 ## 12.0.0
 
-React Flow 12 is finally out! With a new package name `@xyflow/react`! 
+React Flow 12 is finally out! With a new package name `@xyflow/react`!
 
 ### Main features
 
@@ -38,7 +49,6 @@ There is more! Besides the new main features, we added some minor things that we
 - a better selection box usability (capture while dragging out of the flow)
 - add `selectable`, `deletable`, `draggable` and `parentId` to `NodeProps`
 - add a warning when styles not loaded
-
 
 ## 12.0.0-next.28
 
