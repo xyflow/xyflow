@@ -1,9 +1,18 @@
 # @xyflow/svelte
 
+## 0.1.11
+
+### Patch Changes
+
+- [#4434](https://github.com/xyflow/xyflow/pull/4434) [`1bda2451`](https://github.com/xyflow/xyflow/commit/1bda24519658b4aaed6d4abf9e7e9d096e193b5b) Thanks [@moklick](https://github.com/moklick)! - fix(selection): handle pointer capture for selectionOnDrag
+
+- Updated dependencies [[`d2da5765`](https://github.com/xyflow/xyflow/commit/d2da576591305873f8d6514091ee8db1ad4f79e2)]:
+  - @xyflow/system@0.0.35
+
 ## 0.1.10
 
 - add `paneDistanceClick` prop (max distance between mousedown/up that will trigger a click)
-- returned nodes in `on:nodedragstop` are set to `dragging=false` 
+- returned nodes in `on:nodedragstop` are set to `dragging=false`
 
 ## 0.1.9
 
@@ -19,7 +28,7 @@
 
 - revise selection usability (capture while dragging out of the flow)
 - only prevent shift scrolling when selection is actually in progress
-- use correct end handle position when drawing a connection lines 
+- use correct end handle position when drawing a connection lines
 - determine correct end positions for connection lines
 
 ## 0.1.6
