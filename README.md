@@ -17,12 +17,10 @@ Powerful open source libraries for building node-based UIs with React or Svelte.
 ## The xyflow mono repo
 
 The xyflow repository is the home of four packages:
+* React Flow 12 `@xyflow/react` [packages/react](./packages/react)
 * React Flow 11 `reactflow` [v11 branch](https://github.com/xyflow/xyflow/tree/v11)
-* React Flow 12 (beta) `@xyflow/react` [packages/react](./packages/react)
 * Svelte Flow `@xyflow/svelte` [packages/svelte](./packages/svelte)
 * Shared helper library `@xyflow/system` [packages/system](./packages/system)
-
-**We just moved repositories** from the @wbkd org to this one. React Flow v11 will remain on the [v11 branch](https://github.com/xyflow/xyflow/tree/v11). When we have a stable v12, the package name of React Flow will change from `reactflow` to `@xyflow/react`.
 
 ## Commercial usage
 
@@ -40,22 +38,23 @@ The best way to get started is to check out the [React Flow](https://reactflow.d
   ### Installation
   
   ```sh
-npm install reactflow
+npm install @xyflow/react
   ```
 
   ### Basic usage
   ```jsx
 import { useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   MiniMap,
   Controls,
   Background,
   useNodesState,
   useEdgesState,
   addEdge,
-} from 'reactflow';
+} from '@xyflow/react';
 
-import 'reactflow/dist/style.css';
+import '@xyflow/react/dist/style.css';
 
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },

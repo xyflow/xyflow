@@ -38,7 +38,7 @@ You can find more information in our [React Flow Pro FAQs](https://pro.reactflow
 The easiest way to get the latest version of React Flow is to install it via npm, yarn or pnpm:
 
 ```bash
-npm install reactflow
+npm install @xyflow/react
 ```
 
 ## Quickstart
@@ -47,16 +47,17 @@ This is only a very basic usage example of React Flow. To see everything that is
 
 ```jsx
 import { useCallback } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   MiniMap,
   Controls,
   Background,
   useNodesState,
   useEdgesState,
   addEdge,
-} from 'reactflow';
+} from '@xyflow/react';
 
-import 'reactflow/dist/style.css';
+import '@xyflow/react/dist/style.css';
 
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
