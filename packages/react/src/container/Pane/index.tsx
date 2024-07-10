@@ -117,7 +117,7 @@ export function Pane({
   const onPointerDown = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode, edgeLookup } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
-    container.current?.setPointerCapture(event.pointerId);
+    (event.target as Element)?.setPointerCapture?.(event.pointerId);
 
     if (
       !elementsSelectable ||
@@ -222,7 +222,8 @@ export function Pane({
     if (event.button !== 0) {
       return;
     }
-    container.current?.releasePointerCapture(event.pointerId);
+
+    (event.target as Element)?.releasePointerCapture?.(event.pointerId);
     const { userSelectionRect } = store.getState();
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.
@@ -230,7 +231,9 @@ export function Pane({
       onClick?.(event);
     }
 
-    store.setState({ nodesSelectionActive: prevSelectedNodesCount.current > 0 });
+    if (prevSelectedNodesCount.current > 0) {
+      store.setState({ nodesSelectionActive: true });
+    }
 
     resetUserSelection();
     onSelectionEnd?.(event);
