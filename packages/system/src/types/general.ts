@@ -173,7 +173,9 @@ export type ConnectionState<NodeType extends InternalNodeBase = InternalNodeBase
   | ConnectionInProgress<NodeType>
   | NoConnection;
 
-export type UpdateConnection = (params: ConnectionState) => void;
+export type UpdateConnection<NodeType extends InternalNodeBase = InternalNodeBase> = (
+  params: ConnectionState<NodeType>
+) => void;
 
 export type ColorModeClass = 'light' | 'dark';
 export type ColorMode = ColorModeClass | 'system';
