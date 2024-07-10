@@ -16,7 +16,7 @@ import type {
   OnError,
 } from '@xyflow/system';
 
-import { EdgeTypes, Node } from '.';
+import { EdgeTypes, InternalNode, Node } from '.';
 
 export type EdgeLabelOptions = {
   label?: string | ReactNode;
@@ -190,10 +190,10 @@ export type SimpleBezierEdgeProps = EdgeComponentProps;
 
 export type OnReconnect<EdgeType extends Edge = Edge> = (oldEdge: EdgeType, newConnection: Connection) => void;
 
-export type ConnectionLineComponentProps = {
+export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;
-  fromNode: Node;
+  fromNode: InternalNode<NodeType>;
   fromHandle: Handle;
   fromX: number;
   fromY: number;
@@ -202,8 +202,10 @@ export type ConnectionLineComponentProps = {
   fromPosition: Position;
   toPosition: Position;
   connectionStatus: 'valid' | 'invalid' | null;
-  toNode: Node | null;
+  toNode: InternalNode<NodeType> | null;
   toHandle: Handle | null;
 };
 
-export type ConnectionLineComponent = ComponentType<ConnectionLineComponentProps>;
+export type ConnectionLineComponent<NodeType extends Node = Node> = ComponentType<
+  ConnectionLineComponentProps<NodeType>
+>;

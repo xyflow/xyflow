@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { getBezierPath, ConnectionLineComponentProps, Node } from '@xyflow/react';
+import { getBezierPath, ConnectionLineComponentProps, Node, InternalNode } from '@xyflow/react';
 
 import { getEdgeParams } from './utils';
 
@@ -13,7 +13,7 @@ const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({ toX, toY, fr
     width: 1,
     height: 1,
     position: { x: toX, y: toY },
-  } as Node;
+  } as InternalNode;
 
   const { sx, sy } = getEdgeParams(fromNode, targetNode);
 

@@ -2,21 +2,19 @@ import { Position, XYPosition, Node, Edge, InternalNode } from '@xyflow/react';
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
-function getNodeIntersection(intersectionNode: Node, targetNode: Node): XYPosition {
-  // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
-
-  const { position: intersectionNodePosition } = intersectionNode;
+function getNodeIntersection(intersectionNode: InternalNode, targetNode: InternalNode): XYPosition {
+  const { internals: intersectionInternals } = intersectionNode;
   const { width: intersectionNodeWidth, height: intersectionNodeHeight } = intersectionNode.measured ?? {
     width: 0,
     height: 0,
   };
-  const targetPosition = targetNode.position;
+  const targetPosition = targetNode.internals.positionAbsolute;
 
   const w = (intersectionNodeWidth ?? 0) / 2;
   const h = (intersectionNodeHeight ?? 0) / 2;
 
-  const x2 = intersectionNodePosition.x + w;
-  const y2 = intersectionNodePosition.y + h;
+  const x2 = intersectionInternals.positionAbsolute.x + w;
+  const y2 = intersectionInternals.positionAbsolute.y + h;
   const x1 = targetPosition.x + w;
   const y1 = targetPosition.y + h;
 
@@ -92,7 +90,13 @@ export function createElements(): NodesAndEdges {
     const x = 250 * Math.cos(radians) + center.x;
     const y = 250 * Math.sin(radians) + center.y;
 
-    nodes.push({ id: `${i}`, data: { label: 'Source' }, position: { x, y } });
+    const isChild = i === 1;
+    nodes.push({
+      id: `${i}`,
+      data: { label: 'Source' },
+      position: isChild ? { x: 0, y: 0 } : { x, y },
+      parentId: isChild ? '0' : undefined,
+    });
 
     edges.push({
       id: `edge-${i}`,
