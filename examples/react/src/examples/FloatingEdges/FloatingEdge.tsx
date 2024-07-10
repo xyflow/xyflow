@@ -1,9 +1,9 @@
-import { FC, CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 import { EdgeProps, useStore, getBezierPath } from '@xyflow/react';
 
 import { getEdgeParams } from './utils';
 
-const FloatingEdge: FC<EdgeProps> = ({ id, source, target, style }) => {
+function FloatingEdge({ id, source, target, style }: EdgeProps) {
   const { sourceNode, targetNode } = useStore((s) => {
     const sourceNode = s.nodeLookup.get(source);
     const targetNode = s.nodeLookup.get(target);
@@ -31,6 +31,6 @@ const FloatingEdge: FC<EdgeProps> = ({ id, source, target, style }) => {
       <path id={id} className="react-flow__edge-path" d={path} style={style as CSSProperties} />
     </g>
   );
-};
+}
 
 export default FloatingEdge;

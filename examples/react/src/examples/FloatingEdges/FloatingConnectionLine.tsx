@@ -1,9 +1,8 @@
-import { FC } from 'react';
-import { getBezierPath, ConnectionLineComponentProps, Node, InternalNode } from '@xyflow/react';
+import { getBezierPath, ConnectionLineComponentProps, InternalNode } from '@xyflow/react';
 
 import { getEdgeParams } from './utils';
 
-const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({ toX, toY, fromPosition, toPosition, fromNode }) => {
+function FloatingConnectionLine({ toX, toY, fromPosition, toPosition, fromNode }: ConnectionLineComponentProps) {
   if (!fromNode) {
     return null;
   }
@@ -32,6 +31,6 @@ const FloatingConnectionLine: FC<ConnectionLineComponentProps> = ({ toX, toY, fr
       <circle cx={toX} cy={toY} fill="#fff" r={3} stroke="#222" strokeWidth={1.5} />
     </g>
   );
-};
+}
 
 export default FloatingConnectionLine;

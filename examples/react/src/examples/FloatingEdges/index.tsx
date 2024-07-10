@@ -25,7 +25,7 @@ const edgeTypes: EdgeTypes = {
   floating: FloatingEdge,
 };
 
-const FloatingEdges = () => {
+function FloatingEdges() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -49,6 +49,6 @@ const FloatingEdges = () => {
       </ReactFlow>
     </div>
   );
-};
+}
 
 export default FloatingEdges;
