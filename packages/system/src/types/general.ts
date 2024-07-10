@@ -148,36 +148,34 @@ export const initialConnection: NoConnection = {
 export type NoConnection = {
   inProgress: false;
   isValid: null;
-
   from: null;
   fromHandle: null;
   fromPosition: null;
   fromNode: null;
-
   to: null;
   toHandle: null;
   toPosition: null;
   toNode: null;
 };
-
-export type ConnectionInProgress = {
+export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNodeBase> = {
   inProgress: true;
   isValid: boolean | null;
-
   from: XYPosition;
   fromHandle: Handle;
   fromPosition: Position;
-  fromNode: NodeBase;
-
+  fromNode: NodeType;
   to: XYPosition;
   toHandle: Handle | null;
   toPosition: Position;
-  toNode: NodeBase | null;
+  toNode: NodeType | null;
 };
+export type ConnectionState<NodeType extends InternalNodeBase = InternalNodeBase> =
+  | ConnectionInProgress<NodeType>
+  | NoConnection;
 
-export type ConnectionState = ConnectionInProgress | NoConnection;
-
-export type UpdateConnection = (params: ConnectionState) => void;
+export type UpdateConnection<NodeType extends InternalNodeBase = InternalNodeBase> = (
+  params: ConnectionState<NodeType>
+) => void;
 
 export type ColorModeClass = 'light' | 'dark';
 export type ColorMode = ColorModeClass | 'system';

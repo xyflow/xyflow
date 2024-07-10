@@ -104,7 +104,7 @@ function onPointerDown(
     from,
     fromHandle,
     fromPosition: fromHandle.position,
-    fromNode: fromNodeInternal.internals.userNode,
+    fromNode: fromNodeInternal,
 
     to: position,
     toHandle: null,
@@ -163,7 +163,7 @@ function onPointerDown(
           : position,
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
-      toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)!.internals.userNode : null,
+      toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)! : null,
     };
 
     // we don't want to trigger an update when the connection

@@ -40,7 +40,7 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const UseZoomPanHelperFlow = () => {
+const UseConnectionFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -68,7 +68,7 @@ const UseZoomPanHelperFlow = () => {
 
 const WrappedFlow = () => (
   <ReactFlowProvider>
-    <UseZoomPanHelperFlow />
+    <UseConnectionFlow />
   </ReactFlowProvider>
 );
 
