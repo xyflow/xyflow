@@ -28,7 +28,7 @@ export type BackgroundProps = {
    * @example BackgroundVariant.Lines, BackgroundVariant.Dots, BackgroundVariant.Cross
    * 'lines', 'dots', 'cross'
    */
-  variant?: BackgroundVariant;
+  variant?: 'lines' | 'dots' | 'cross';
   /** Style applied to the container */
   style?: CSSProperties;
 };
