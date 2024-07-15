@@ -105,6 +105,9 @@ export {
   type ControlPosition,
   type ControlLinePosition,
   type ResizeControlVariant,
+  type ResizeParams,
+  type ResizeParamsWithDirection,
+  type ResizeDragEvent,
   type IsValidConnection
 } from '@xyflow/system';
 
