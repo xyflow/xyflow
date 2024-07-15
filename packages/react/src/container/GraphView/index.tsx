@@ -33,6 +33,7 @@ export type GraphViewProps<NodeType extends Node = Node, EdgeType extends Edge =
       | 'defaultViewport'
       | 'disableKeyboardA11y'
       | 'paneClickDistance'
+      | 'nodeClickDistance'
     >
   > & {
     rfId: string;
@@ -86,6 +87,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   onPaneScroll,
   onPaneContextMenu,
   paneClickDistance,
+  nodeClickDistance,
   onEdgeContextMenu,
   onEdgeMouseEnter,
   onEdgeMouseMove,
@@ -183,6 +185,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
           onNodeMouseMove={onNodeMouseMove}
           onNodeMouseLeave={onNodeMouseLeave}
           onNodeContextMenu={onNodeContextMenu}
+          nodeClickDistance={nodeClickDistance}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
           noPanClassName={noPanClassName}
           noDragClassName={noDragClassName}

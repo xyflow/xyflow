@@ -10,6 +10,7 @@ export type UseDragParams = {
   handleSelector?: string;
   nodeId?: string;
   isSelectable?: boolean;
+  nodeClickDistance?: number;
   onDrag?: OnDrag;
   onDragStart?: OnDrag;
   onDragStop?: OnDrag;
@@ -60,7 +61,8 @@ export default function drag(domNode: Element, params: UseDragParams) {
       noDragClassName: params.noDragClass,
       handleSelector: params.handleSelector,
       nodeId: params.nodeId,
-      isSelectable: params.isSelectable
+      isSelectable: params.isSelectable,
+      nodeClickDistance: params.nodeClickDistance
     });
   }
 

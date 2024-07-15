@@ -80,6 +80,7 @@
   export let oninit: $$Props['oninit'] = undefined;
   export let nodeOrigin: $$Props['nodeOrigin'] = undefined;
   export let paneClickDistance: $$Props['paneClickDistance'] = 0;
+  export let nodeClickDistance: $$Props['nodeClickDistance'] = 0;
 
   export let defaultMarkerColor = '#b1b1b7';
 
@@ -254,6 +255,7 @@
         <div class="svelte-flow__edgelabel-renderer" />
         <div class="svelte-flow__viewport-portal" />
         <NodeRenderer
+          {nodeClickDistance}
           on:nodeclick
           on:nodemouseenter
           on:nodemousemove

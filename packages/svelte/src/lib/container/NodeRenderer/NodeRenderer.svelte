@@ -4,6 +4,11 @@
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
+  import type { NodeRendererProps } from './types';
+
+  type $$Props = NodeRendererProps;
+
+  export let nodeClickDistance: $$Props['nodeClickDistance'] = 0;
 
   const {
     visibleNodes,
@@ -76,6 +81,7 @@
       measuredHeight={node.measured.height}
       parentId={node.parentId}
       {resizeObserver}
+      {nodeClickDistance}
       on:nodeclick
       on:nodemouseenter
       on:nodemousemove

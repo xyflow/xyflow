@@ -53,6 +53,7 @@ export type NodeWrapperProps<NodeType extends Node> = {
   nodeTypes?: NodeTypes;
   nodeExtent?: CoordinateExtent;
   onError?: OnError;
+  nodeClickDistance?: number;
 };
 
 export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'>;
