@@ -35,6 +35,7 @@ type PaneProps = {
     | 'onPaneMouseEnter'
     | 'onPaneMouseMove'
     | 'onPaneMouseLeave'
+    | 'selectionOnDrag'
   >
 >;
 
@@ -61,6 +62,7 @@ export function Pane({
   selectionKeyPressed,
   selectionMode = SelectionMode.Full,
   panOnDrag,
+  selectionOnDrag,
   onSelectionStart,
   onSelectionEnd,
   onPaneClick,
@@ -83,6 +85,7 @@ export function Pane({
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
+  const selectionStarted = useRef<boolean>(false);
 
   const resetUserSelection = () => {
     store.setState({ userSelectionActive: false, userSelectionRect: null });
@@ -129,6 +132,8 @@ export function Pane({
       return;
     }
 
+    selectionStarted.current = true;
+    selectionInProgress.current = false;
     edgeIdLookup.current = new Map();
 
     for (const [id, edge] of edgeLookup) {
@@ -219,7 +224,7 @@ export function Pane({
   };
 
   const onPointerUp = (event: ReactPointerEvent) => {
-    if (event.button !== 0) {
+    if (event.button !== 0 || !selectionStarted.current) {
       return;
     }
 
@@ -240,9 +245,11 @@ export function Pane({
 
     // If the user kept holding the selectionKey during the selection,
     // we need to reset the selectionInProgress, so the next click event is not prevented
-    if (selectionKeyPressed) {
+    if (selectionKeyPressed || selectionOnDrag) {
       selectionInProgress.current = false;
     }
+
+    selectionStarted.current = false;
   };
 
   return (
