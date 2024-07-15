@@ -1,5 +1,18 @@
 # @xyflow/react
 
+## 12.0.2
+
+### Patch Changes
+
+- [#4446](https://github.com/xyflow/xyflow/pull/4446) [`80baf53b`](https://github.com/xyflow/xyflow/commit/80baf53bdc7d4fb0715e5eed85efdea77191935a) Thanks [@moklick](https://github.com/moklick)! - fix(resizer): export types
+
+- [#4450](https://github.com/xyflow/xyflow/pull/4450) [`18a12661`](https://github.com/xyflow/xyflow/commit/18a1266131e7c2bdd9a15268dbf871cdf17cad9a) Thanks [@moklick](https://github.com/moklick)! - fix(selection): dont trigger onSelectionEnd on click
+
+- [#4451](https://github.com/xyflow/xyflow/pull/4451) [`4cccd06a`](https://github.com/xyflow/xyflow/commit/4cccd06a671e9ef1c6f16ab0d788081f8d894d0e) Thanks [@moklick](https://github.com/moklick)! - add nodeClickDistance
+
+- Updated dependencies [[`80baf53b`](https://github.com/xyflow/xyflow/commit/80baf53bdc7d4fb0715e5eed85efdea77191935a), [`4cccd06a`](https://github.com/xyflow/xyflow/commit/4cccd06a671e9ef1c6f16ab0d788081f8d894d0e)]:
+  - @xyflow/system@0.0.36
+
 ## 12.0.1
 
 ### Patch Changes
