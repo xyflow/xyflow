@@ -11,6 +11,7 @@ type UseDragParams = {
   handleSelector?: string;
   nodeId?: string;
   isSelectable?: boolean;
+  nodeClickDistance?: number;
 };
 
 /**
@@ -25,6 +26,7 @@ export function useDrag({
   handleSelector,
   nodeId,
   isSelectable,
+  nodeClickDistance,
 }: UseDragParams) {
   const store = useStoreApi();
   const [dragging, setDragging] = useState<boolean>(false);
@@ -59,6 +61,7 @@ export function useDrag({
         domNode: nodeRef.current,
         isSelectable,
         nodeId,
+        nodeClickDistance,
       });
       return () => {
         xyDrag.current?.destroy();

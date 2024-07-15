@@ -84,6 +84,7 @@ export type DragUpdateParams = {
   isSelectable?: boolean;
   nodeId?: string;
   domNode: Element;
+  nodeClickDistance?: number;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,7 +106,14 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let abortDrag = false; // prevents unintentional dragging on multitouch
 
   // public functions
-  function update({ noDragClassName, handleSelector, domNode, isSelectable, nodeId }: DragUpdateParams) {
+  function update({
+    noDragClassName,
+    handleSelector,
+    domNode,
+    isSelectable,
+    nodeId,
+    nodeClickDistance = 0,
+  }: DragUpdateParams) {
     d3Selection = select(domNode);
     function updateNodes({ x, y }: XYPosition, dragEvent: MouseEvent | null) {
       const {
@@ -264,6 +272,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
     }
 
     const d3DragInstance = drag()
+      .clickDistance(nodeClickDistance)
       .on('start', (event: UseDragEvent) => {
         const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
 

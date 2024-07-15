@@ -39,6 +39,7 @@ export function NodeWrapper<NodeType extends Node>({
   rfId,
   nodeTypes,
   nodeExtent,
+  nodeClickDistance,
   onError,
 }: NodeWrapperProps<NodeType>) {
   const { node, internals, isParent } = useStore((s) => {
@@ -76,6 +77,7 @@ export function NodeWrapper<NodeType extends Node>({
     handleSelector: node.dragHandle,
     nodeId: id,
     isSelectable,
+    nodeClickDistance,
   });
   const moveSelectedNodes = useMoveSelectedNodes();
 

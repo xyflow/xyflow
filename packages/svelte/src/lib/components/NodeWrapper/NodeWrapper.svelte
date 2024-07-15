@@ -43,6 +43,7 @@
   export let dragHandle: $$Props['dragHandle'] = undefined;
   export let initialized: $$Props['initialized'] = false;
   export let parentId: $$Props['parentId'] = undefined;
+  export let nodeClickDistance: $$Props['nodeClickDistance'] = undefined;
 
   let className: string = '';
   export { className as class };
@@ -156,6 +157,7 @@
       disabled: false,
       handleSelector: dragHandle,
       noDragClass: 'nodrag',
+      nodeClickDistance,
       onNodeMouseDown: handleNodeSelection,
       onDrag: (event, _, targetNode, nodes) => {
         dispatchNodeEvent('nodedrag', { event, targetNode, nodes });

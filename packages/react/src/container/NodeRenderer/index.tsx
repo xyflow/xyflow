@@ -24,6 +24,7 @@ export type NodeRendererProps<NodeType extends Node> = Pick<
   | 'disableKeyboardA11y'
   | 'nodeExtent'
   | 'nodeTypes'
+  | 'nodeClickDistance'
 >;
 
 const selector = (s: ReactFlowState) => ({
@@ -86,6 +87,7 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
             nodesConnectable={nodesConnectable}
             nodesFocusable={nodesFocusable}
             elementsSelectable={elementsSelectable}
+            nodeClickDistance={props.nodeClickDistance}
             onError={onError}
           />
         );
