@@ -54,7 +54,7 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
 };
 
 export function adoptUserNodes<NodeType extends NodeBase>(
-  nodes: NodeType[],
+  nodes: readonly NodeType[],
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options?: UpdateNodesOptions<NodeType>
@@ -364,7 +364,11 @@ export async function panBy({
   return Promise.resolve(transformChanged);
 }
 
-export function updateConnectionLookup(connectionLookup: ConnectionLookup, edgeLookup: EdgeLookup, edges: EdgeBase[]) {
+export function updateConnectionLookup(
+  connectionLookup: ConnectionLookup,
+  edgeLookup: EdgeLookup,
+  edges: readonly EdgeBase[]
+) {
   connectionLookup.clear();
   edgeLookup.clear();
 

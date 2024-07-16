@@ -24,7 +24,7 @@ import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, InternalNode, Node }
 // made by Svelte Flow (like dragging or selecting a node).
 export function syncNodeStores(
   nodesStore: ReturnType<typeof createNodesStore>,
-  userNodesStore: Writable<Node[]>
+  userNodesStore: Writable<readonly Node[]>
 ) {
   const nodesStoreSetter = nodesStore.set;
   const userNodesStoreSetter = userNodesStore.set;
@@ -39,7 +39,7 @@ export function syncNodeStores(
   let val = initWithUserNodes ? currentUserNodesStore : currentNodesStore;
   nodesStore.set(val);
 
-  const _set = (nds: Node[]) => {
+  const _set = (nds: readonly Node[]) => {
     const updatedNodes = nodesStoreSetter(nds);
     val = updatedNodes;
 
@@ -49,13 +49,14 @@ export function syncNodeStores(
   };
 
   nodesStore.set = userNodesStore.set = _set;
-  nodesStore.update = userNodesStore.update = (fn: (nds: Node[]) => Node[]) => _set(fn(val));
+  nodesStore.update = userNodesStore.update = (fn: (nds: readonly Node[]) => readonly Node[]) =>
+    _set(fn(val));
 }
 
 // same for edges
 export function syncEdgeStores(
   edgesStore: ReturnType<typeof createEdgesStore>,
-  userEdgesStore: Writable<Edge[]>
+  userEdgesStore: Writable<readonly Edge[]>
 ) {
   const nodesStoreSetter = edgesStore.set;
   const userEdgesStoreSetter = userEdgesStore.set;
@@ -63,14 +64,15 @@ export function syncEdgeStores(
   let val = get(userEdgesStore);
   edgesStore.set(val);
 
-  const _set = (eds: Edge[]) => {
+  const _set = (eds: readonly Edge[]) => {
     nodesStoreSetter(eds);
     userEdgesStoreSetter(eds);
     val = eds;
   };
 
   edgesStore.set = userEdgesStore.set = _set;
-  edgesStore.update = userEdgesStore.update = (fn: (nds: Edge[]) => Edge[]) => _set(fn(val));
+  edgesStore.update = userEdgesStore.update = (fn: (nds: readonly Edge[]) => readonly Edge[]) =>
+    _set(fn(val));
 }
 
 // it is possible to pass a viewport store to SvelteFlow for having more control
@@ -128,23 +130,23 @@ export type NodeStoreOptions = {
 // we are creating a custom store for the internals nodes in order to update the zIndex and positionAbsolute.
 // The user only passes in relative positions, so we need to calculate the absolute positions based on the parent nodes.
 export const createNodesStore = (
-  nodes: Node[],
+  nodes: readonly Node[],
   nodeLookup: NodeLookup<InternalNode>,
   parentLookup: ParentLookup<InternalNode>,
   nodeOrigin: NodeOrigin = [0, 0]
 ): {
-  subscribe: (this: void, run: Subscriber<Node[]>) => Unsubscriber;
-  update: (this: void, updater: Updater<Node[]>) => void;
-  set: (this: void, value: Node[]) => Node[];
+  subscribe: (this: void, run: Subscriber<readonly Node[]>) => Unsubscriber;
+  update: (this: void, updater: Updater<readonly Node[]>) => void;
+  set: (this: void, value: readonly Node[]) => readonly Node[];
   setDefaultOptions: (opts: DefaultNodeOptions) => void;
   setOptions: (opts: NodeStoreOptions) => void;
 } => {
-  const { subscribe, set, update } = writable<Node[]>([]);
+  const { subscribe, set, update } = writable<readonly Node[]>([]);
   let value = nodes;
   let defaults = {};
   let elevateNodesOnSelect = true;
 
-  const _set = (nds: Node[]): Node[] => {
+  const _set = (nds: readonly Node[]): readonly Node[] => {
     adoptUserNodes(nds, nodeLookup, parentLookup, {
       elevateNodesOnSelect,
       nodeOrigin,
@@ -159,7 +161,7 @@ export const createNodesStore = (
     return value;
   };
 
-  const _update: typeof update = (fn: (nds: Node[]) => Node[]) => _set(fn(value));
+  const _update: typeof update = (fn: (nds: readonly Node[]) => Node[]) => _set(fn(value));
 
   const setDefaultOptions = (options: DefaultNodeOptions) => {
     defaults = options;
@@ -181,16 +183,16 @@ export const createNodesStore = (
 };
 
 export const createEdgesStore = (
-  edges: Edge[],
+  edges: readonly Edge[],
   connectionLookup: ConnectionLookup,
   edgeLookup: EdgeLookup<Edge>,
   defaultOptions?: DefaultEdgeOptions
-): Writable<Edge[]> & { setDefaultOptions: (opts: DefaultEdgeOptions) => void } => {
-  const { subscribe, set, update } = writable<Edge[]>([]);
+): Writable<readonly Edge[]> & { setDefaultOptions: (opts: DefaultEdgeOptions) => void } => {
+  const { subscribe, set, update } = writable<readonly Edge[]>([]);
   let value = edges;
   let defaults = defaultOptions || {};
 
-  const _set: typeof set = (eds: Edge[]) => {
+  const _set: typeof set = (eds: readonly Edge[]) => {
     const nextEdges = defaults ? eds.map((edge) => ({ ...defaults, ...edge })) : eds;
 
     updateConnectionLookup(connectionLookup, edgeLookup, nextEdges);
@@ -199,7 +201,7 @@ export const createEdgesStore = (
     set(value);
   };
 
-  const _update: typeof update = (fn: (eds: Edge[]) => Edge[]) => _set(fn(value));
+  const _update: typeof update = (fn: (eds: readonly Edge[]) => readonly Edge[]) => _set(fn(value));
 
   const setDefaultOptions = (options: DefaultEdgeOptions) => {
     defaults = options;

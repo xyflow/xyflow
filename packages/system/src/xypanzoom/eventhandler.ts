@@ -43,7 +43,7 @@ export type PanZoomStartParams = {
 
 export type PanZoomParams = {
   zoomPanValues: ZoomPanValues;
-  panOnDrag: boolean | number[];
+  panOnDrag: boolean | readonly number[];
   onPaneContextMenu: boolean;
   onTransformChange: OnTransformChange;
   onPanZoom?: OnPanZoom;
@@ -51,7 +51,7 @@ export type PanZoomParams = {
 
 export type PanZoomEndParams = {
   zoomPanValues: ZoomPanValues;
-  panOnDrag: boolean | number[];
+  panOnDrag: boolean | readonly number[];
   panOnScroll: boolean;
   onDraggingChange: (isDragging: boolean) => void;
   onPanZoomEnd?: OnPanZoom;

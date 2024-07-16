@@ -12,8 +12,8 @@
 
   const dispatch = createEventDispatcher<
     NodeEventMap & {
-      selectioncontextmenu: { nodes: Node[]; event: MouseEvent | TouchEvent };
-      selectionclick: { nodes: Node[]; event: MouseEvent | TouchEvent };
+      selectioncontextmenu: { nodes: readonly Node[]; event: MouseEvent | TouchEvent };
+      selectionclick: { nodes: readonly Node[]; event: MouseEvent | TouchEvent };
     }
   >();
 

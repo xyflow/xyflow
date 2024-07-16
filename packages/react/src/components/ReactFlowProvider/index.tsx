@@ -7,10 +7,10 @@ import type { Node, Edge } from '../../types';
 import { NodeOrigin } from '@xyflow/system';
 
 export type ReactFlowProviderProps = {
-  initialNodes?: Node[];
-  initialEdges?: Edge[];
-  defaultNodes?: Node[];
-  defaultEdges?: Edge[];
+  initialNodes?: readonly Node[];
+  initialEdges?: readonly Edge[];
+  defaultNodes?: readonly Node[];
+  defaultEdges?: readonly Edge[];
   initialWidth?: number;
   initialHeight?: number;
   fitView?: boolean;

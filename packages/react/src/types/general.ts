@@ -52,13 +52,13 @@ export type EdgeTypes = Record<
 >;
 
 export type UnselectNodesAndEdgesParams = {
-  nodes?: Node[];
-  edges?: Edge[];
+  nodes?: readonly Node[];
+  edges?: readonly Edge[];
 };
 
 export type OnSelectionChangeParams = {
-  nodes: Node[];
-  edges: Edge[];
+  nodes: readonly Node[];
+  edges: readonly Edge[];
 };
 
 export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
