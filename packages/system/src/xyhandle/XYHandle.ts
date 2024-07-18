@@ -282,16 +282,12 @@ function isValidHandle(
 
     result.isValid = isValid && isValidConnection(connection);
 
-    if (handleLookup) {
-      const toHandle = handleLookup.find(
-        (h) => h.id === handleId && h.nodeId === handleNodeId && h.type === handleType
-      );
+    const toHandle = handleLookup?.get(`${handleNodeId}-${handleType}-${handleId}`);
 
-      if (toHandle) {
-        result.toHandle = {
-          ...toHandle,
-        };
-      }
+    if (toHandle) {
+      result.toHandle = {
+        ...toHandle,
+      };
     }
   }
 
