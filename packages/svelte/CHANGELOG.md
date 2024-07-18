@@ -1,5 +1,12 @@
 # @xyflow/svelte
 
+## 0.1.13
+
+### Patch Changes
+
+- Updated dependencies [[`543c0939`](https://github.com/xyflow/xyflow/commit/543c09392d53fdd56a8876e65f4ce2d8ab250098), [`89cd677b`](https://github.com/xyflow/xyflow/commit/89cd677b5668b78434e02e7b025c6ac58db91e58), [`c253c7c5`](https://github.com/xyflow/xyflow/commit/c253c7c59a2ccd2cb91ad44ce4acbe481d9d7fe1)]:
+  - @xyflow/system@0.0.37
+
 ## 0.1.12
 
 ### Patch Changes
