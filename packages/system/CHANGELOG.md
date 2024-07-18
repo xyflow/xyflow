@@ -1,5 +1,15 @@
 # @xyflow/system
 
+## 0.0.37
+
+### Patch Changes
+
+- [#4465](https://github.com/xyflow/xyflow/pull/4465) [`543c0939`](https://github.com/xyflow/xyflow/commit/543c09392d53fdd56a8876e65f4ce2d8ab250098) Thanks [@moklick](https://github.com/moklick)! - fix(nodes): re-measure when measured is not set
+
+- [#4464](https://github.com/xyflow/xyflow/pull/4464) [`89cd677b`](https://github.com/xyflow/xyflow/commit/89cd677b5668b78434e02e7b025c6ac58db91e58) Thanks [@moklick](https://github.com/moklick)! - fix(handles): reconnect for connectionMode=loose
+
+- [#4467](https://github.com/xyflow/xyflow/pull/4467) [`c253c7c5`](https://github.com/xyflow/xyflow/commit/c253c7c59a2ccd2cb91ad44ce4acbe481d9d7fe1) Thanks [@moklick](https://github.com/moklick)! - chore(subflows): log warning instead of throwing an error when parent node cant be found
+
 ## 0.0.36
 
 ### Patch Changes
