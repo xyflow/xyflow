@@ -80,7 +80,8 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         },
         internals: {
           positionAbsolute: getNodePositionWithOrigin(userNode, _options.nodeOrigin),
-          handleBounds: internalNode?.internals.handleBounds,
+          // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
+          handleBounds: !userNode.measured ? undefined : internalNode?.internals.handleBounds,
           z: calculateZ(userNode, selectedNodeZ),
           userNode,
         },
