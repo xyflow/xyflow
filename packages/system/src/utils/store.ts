@@ -105,8 +105,12 @@ function updateChildPosition<NodeType extends NodeBase>(
 
   const parentId = node.parentId!;
   const parentNode = nodeLookup.get(parentId);
+
   if (!parentNode) {
-    throw new Error(`Parent node ${parentId} not found`);
+    console.warn(
+      `Parent node ${parentId} not found. Please make sure that parent nodes are in front of their child nodes in the nodes array.`
+    );
+    return;
   }
 
   // update the parentLookup
