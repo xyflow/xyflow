@@ -107,7 +107,7 @@ function updateChildPosition<NodeType extends NodeBase>(
 
   if (!parentNode) {
     console.warn(
-      `[React Flow]: Parent node ${parentId} not found. Please make sure that parent nodes are in front of their child nodes in the nodes array.`
+      `Parent node ${parentId} not found. Please make sure that parent nodes are in front of their child nodes in the nodes array.`
     );
     return;
   }
