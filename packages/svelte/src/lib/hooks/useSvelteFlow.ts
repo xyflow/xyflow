@@ -14,7 +14,10 @@ import {
   getViewportForBounds,
   getElementsToRemove,
   rendererPointToPoint,
-  nodeHasDimensions
+  nodeHasDimensions,
+  nodeToBox,
+  getBoundsOfBoxes,
+  boxToRect
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -230,6 +233,14 @@ export function useSvelteFlow(): {
    * @returns the nodes, edges and the viewport as a JSON object
    */
   toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
+  /**
+   * Returns the bounds of the given nodes or node ids.
+   *
+   * @param nodes - the nodes or node ids to calculate the bounds for
+   *
+   * @returns the bounds of the given nodes
+   */
+  getNodesBounds: (nodes: (Node | string)[]) => Rect;
 } {
   const {
     zoomIn,
@@ -247,6 +258,7 @@ export function useSvelteFlow(): {
     edges,
     domNode,
     nodeLookup,
+    nodeOrigin,
     edgeLookup
   } = useStore();
 
@@ -506,7 +518,34 @@ export function useSvelteFlow(): {
 
       nodes.update((nds) => nds);
     },
-    viewport
+    viewport,
+    getNodesBounds: (nodes) => {
+      if (nodes.length === 0) {
+        return { x: 0, y: 0, width: 0, height: 0 };
+      }
+
+      const _nodeLookup = get(nodeLookup);
+      const _nodeOrigin = get(nodeOrigin);
+
+      const box = nodes.reduce(
+        (currBox, node) => {
+          const internalNode =
+            typeof node === 'string'
+              ? _nodeLookup.get(node)
+              : node.parentId
+                ? _nodeLookup.get(node.id)
+                : node;
+
+          const nodeBox = internalNode
+            ? nodeToBox(internalNode, _nodeOrigin)
+            : { x: 0, y: 0, x2: 0, y2: 0 };
+          return getBoundsOfBoxes(currBox, nodeBox);
+        },
+        { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
+      );
+
+      return boxToRect(box);
+    }
   };
 }
 function getElements(lookup: Map<string, InternalNode>, ids: string[]): Node[];

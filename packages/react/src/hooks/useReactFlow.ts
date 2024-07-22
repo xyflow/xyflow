@@ -1,11 +1,14 @@
 import { useMemo } from 'react';
 import {
+  boxToRect,
   EdgeRemoveChange,
   evaluateAbsolutePosition,
+  getBoundsOfBoxes,
   getElementsToRemove,
   getOverlappingArea,
   isRectObject,
   NodeRemoveChange,
+  nodeToBox,
   nodeToRect,
   type Rect,
 } from '@xyflow/system';
@@ -229,6 +232,26 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           },
           options
         );
+      },
+      getNodesBounds: (nodes: (NodeType | string)[]): Rect => {
+        if (nodes.length === 0) {
+          return { x: 0, y: 0, width: 0, height: 0 };
+        }
+
+        const { nodeLookup, nodeOrigin } = store.getState();
+
+        const box = nodes.reduce(
+          (currBox, node) => {
+            const internalNode =
+              typeof node === 'string' ? nodeLookup.get(node) : node.parentId ? nodeLookup.get(node.id) : node;
+
+            const nodeBox = internalNode ? nodeToBox(internalNode, nodeOrigin) : { x: 0, y: 0, x2: 0, y2: 0 };
+            return getBoundsOfBoxes(currBox, nodeBox);
+          },
+          { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
+        );
+
+        return boxToRect(box);
       },
     };
   }, []);
