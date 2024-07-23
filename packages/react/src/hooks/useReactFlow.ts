@@ -6,6 +6,7 @@ import {
   getBoundsOfBoxes,
   getElementsToRemove,
   getOverlappingArea,
+  isInternalNodeBase,
   isRectObject,
   NodeRemoveChange,
   nodeToBox,
@@ -233,7 +234,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           options
         );
       },
-      getNodesBounds: (nodes: (NodeType | string)[]): Rect => {
+      getNodesBounds: (nodes: (NodeType | InternalNode | string)[]): Rect => {
         if (nodes.length === 0) {
           return { x: 0, y: 0, width: 0, height: 0 };
         }
@@ -243,7 +244,11 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         const box = nodes.reduce(
           (currBox, node) => {
             const internalNode =
-              typeof node === 'string' ? nodeLookup.get(node) : node.parentId ? nodeLookup.get(node.id) : node;
+              typeof node === 'string'
+                ? nodeLookup.get(node)
+                : !isInternalNodeBase(node)
+                ? nodeLookup.get(node.id)
+                : node;
 
             const nodeBox = internalNode ? nodeToBox(internalNode, nodeOrigin) : { x: 0, y: 0, x2: 0, y2: 0 };
             return getBoundsOfBoxes(currBox, nodeBox);

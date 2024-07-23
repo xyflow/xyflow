@@ -17,7 +17,8 @@ import {
   nodeHasDimensions,
   nodeToBox,
   getBoundsOfBoxes,
-  boxToRect
+  boxToRect,
+  isInternalNodeBase
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -240,7 +241,7 @@ export function useSvelteFlow(): {
    *
    * @returns the bounds of the given nodes
    */
-  getNodesBounds: (nodes: (Node | string)[]) => Rect;
+  getNodesBounds: (nodes: (Node | InternalNode | string)[]) => Rect;
 } {
   const {
     zoomIn,
@@ -532,7 +533,7 @@ export function useSvelteFlow(): {
           const internalNode =
             typeof node === 'string'
               ? _nodeLookup.get(node)
-              : node.parentId
+              : !isInternalNodeBase(node)
                 ? _nodeLookup.get(node.id)
                 : node;
 
