@@ -276,7 +276,7 @@ const createStore = ({
         const { nodeLookup } = get();
 
         for (const [, node] of nodeLookup) {
-          const positionAbsolute = clampPosition(node.position, nodeExtent);
+          const positionAbsolute = clampPosition(node.internals.positionAbsolute, nodeExtent);
 
           nodeLookup.set(node.id, {
             ...node,
