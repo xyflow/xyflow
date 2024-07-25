@@ -70,7 +70,6 @@ export function createStore(): SvelteFlowStore {
   };
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
-    console.log('UPDATE NODE INTERNALS');
     const nodeLookup = store.nodeLookup;
     const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,

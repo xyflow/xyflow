@@ -94,7 +94,6 @@
   //     stopTrackingConnection = $effect.root(() => {
   //       connections = store.connectionLookup.get(`${nodeId}-${type}-${handleId}`);
   //       connections?.size;
-  //       console.log('OJ THIS IS WHAT WE NEED', `${nodeId}-${type}-${handleId}`, connections?.size);
 
   //       if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
   //         const _connections = connections ?? new Map();
