@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.1.14
+
+### Patch Changes
+
+- [#4498](https://github.com/xyflow/xyflow/pull/4498) [`7a6e9e30`](https://github.com/xyflow/xyflow/commit/7a6e9e3091c8ee0aedbf8ae6e5c4ee08485417ab) Thanks [@peterkogo](https://github.com/peterkogo)! - fix(pane) only capture pointer after a valid selection has started, fixes #4492
+
 ## 0.1.13
 
 ### Patch Changes
