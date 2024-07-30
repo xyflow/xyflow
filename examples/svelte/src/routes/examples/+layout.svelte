@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { Header } from '$components/Header';
-	import { SvelteFlowProvider } from '@xyflow/svelte';
+	// import { SvelteFlowProvider } from '@xyflow/svelte';
 </script>
 
 <div class="app">
 	<Header />
 	<div class="flow">
-		<SvelteFlowProvider>
-			<slot />
-		</SvelteFlowProvider>
+		<!-- <SvelteFlowProvider> -->
+		<slot />
+		<!-- </SvelteFlowProvider> -->
 	</div>
 </div>
 

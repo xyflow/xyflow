@@ -133,8 +133,8 @@ export const createNodesStore = (
   subscribe: (this: void, run: Subscriber<Node[]>) => Unsubscriber;
   update: (this: void, updater: Updater<Node[]>) => void;
   set: (this: void, value: Node[]) => Node[];
-  setDefaultOptions: (opts: DefaultNodeOptions) => void;
-  setOptions: (opts: NodeStoreOptions) => void;
+  // setDefaultOptions: (opts: DefaultNodeOptions) => void;
+  // setOptions: (opts: NodeStoreOptions) => void;
 } => {
   const { subscribe, set, update } = writable<Node[]>([]);
   let value = nodes;
@@ -145,7 +145,7 @@ export const createNodesStore = (
     adoptUserNodes(nds, nodeLookup, parentLookup, {
       elevateNodesOnSelect,
       defaults,
-      checkEquality: false
+      checkEquality: true
     });
 
     value = nds;
@@ -170,21 +170,21 @@ export const createNodesStore = (
   return {
     subscribe,
     set: _set,
-    update: _update,
-    setDefaultOptions,
-    setOptions
+    update: _update
+    // setDefaultOptions,
+    // setOptions
   };
 };
 
 export const createEdgesStore = (
   edges: Edge[],
   connectionLookup: ConnectionLookup,
-  edgeLookup: EdgeLookup<Edge>,
-  defaultOptions?: DefaultEdgeOptions
-): Writable<Edge[]> & { setDefaultOptions: (opts: DefaultEdgeOptions) => void } => {
+  edgeLookup: EdgeLookup<Edge>
+  // defaultOptions?: DefaultEdgeOptions
+): Writable<Edge[]> => {
   const { subscribe, set, update } = writable<Edge[]>([]);
   let value = edges;
-  let defaults = defaultOptions || {};
+  let defaults = {};
 
   const _set: typeof set = (eds: Edge[]) => {
     const nextEdges = defaults ? eds.map((edge) => ({ ...defaults, ...edge })) : eds;
@@ -206,7 +206,7 @@ export const createEdgesStore = (
   return {
     subscribe,
     set: _set,
-    update: _update,
-    setDefaultOptions
+    update: _update
+    // setDefaultOptions
   };
 };

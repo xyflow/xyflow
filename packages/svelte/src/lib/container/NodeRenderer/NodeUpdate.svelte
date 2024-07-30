@@ -178,7 +178,7 @@
     }
   };
 
-  store.nodeLookup.set(id, internalNode);
+  // store.nodeLookup.set(id, internalNode);
 
   $effect.pre(() => {
     if (userNode.selected) {

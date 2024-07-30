@@ -12,7 +12,8 @@
 		ConnectionMode,
 		ControlButton,
 		type FitViewOptions,
-		type Node
+		type Node,
+		type Edge
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -21,6 +22,7 @@
 
 	import '@xyflow/svelte/dist/style.css';
 	import InitTracker from './InitTracker.svelte';
+	import { writable, type Writable } from 'svelte/store';
 
 	let snap = $state(true);
 
@@ -38,7 +40,7 @@
 		nodes: [{ id: '1' }, { id: '2' }]
 	};
 
-	let edges = $state([
+	const edges = writable<Edge[]>([
 		{
 			id: '1-2',
 			type: 'default',
@@ -62,7 +64,7 @@
 		}
 	]);
 
-	let nodes: Node[] = $state([
+	const nodes = writable<Node[]>([
 		{
 			id: '1',
 			type: 'input',
@@ -125,23 +127,23 @@
 	]);
 
 	function updateNode() {
-		nodes[0].position.x += 20;
+		$nodes[0].position.x += 20;
 	}
 
 	function updateEdge() {
-		edges[0].type = edges[0].type === 'default' ? 'smoothstep' : 'default';
+		$edges[0].type = $edges[0].type === 'default' ? 'smoothstep' : 'default';
 	}
 
 	$effect(() => {
-		console.log('nodes', nodes[0].selected);
+		console.log('nodes', $nodes[0].selected);
 		// console.log('edges', edges);
 	});
 </script>
 
 <div class="svelte-flow">
 	<SvelteFlow
-		bind:nodes
-		bind:edges
+		{nodes}
+		{edges}
 		{nodeTypes}
 		{edgeTypes}
 		class="svelte-flow"
@@ -218,7 +220,7 @@
 			<button onclick={updateEdge}>update edge type</button>
 			<button
 				onclick={() => {
-					nodes[nodes.length - 1].hidden = !nodes[nodes.length - 1].hidden;
+					$nodes[$nodes.length - 1].hidden = !$nodes[$nodes.length - 1].hidden;
 				}}>hide/unhide</button
 			>
 			<button

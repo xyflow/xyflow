@@ -15,7 +15,7 @@
   let _edges = $derived.by(() => {
     nodes;
     let checkArray = [];
-    for (const edge of edges) {
+    for (const edge of $edges) {
       let sourceNode = store.nodeLookup.get(edge.source);
       let targetNode = store.nodeLookup.get(edge.target);
 

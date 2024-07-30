@@ -89,7 +89,7 @@
     // onSelectionStart?.(event);
   }
 
-  function toggleSelected(items: readonly Node[] | readonly Edge[], ids: string[]) {
+  function toggleSelected(items: Node[] | Edge[], ids: string[]) {
     for (const item of items) {
       const isSelected = ids.includes(item.id);
 
@@ -139,14 +139,14 @@
       prevSelectedNodeIds.length !== selectedNodeIds.length ||
       selectedNodeIds.some((id) => !prevSelectedNodeIds.includes(id))
     ) {
-      toggleSelected(nodes, selectedNodeIds);
+      toggleSelected($nodes, selectedNodeIds);
     }
 
     if (
       prevSelectedEdgeIds.length !== selectedEdgeIds.length ||
       selectedEdgeIds.some((id) => !prevSelectedEdgeIds.includes(id))
     ) {
-      toggleSelected(edges, selectedEdgeIds);
+      toggleSelected($edges, selectedEdgeIds);
     }
 
     store.selectionRectMode = 'user';

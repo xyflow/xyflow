@@ -10,6 +10,7 @@
 	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
+	import { writable } from 'svelte/store';
 
 	const yNodes = 25;
 	const xNodes = 25;
@@ -38,18 +39,18 @@
 					source: source.id,
 					target: id
 				};
-				edgeItems.push(edge);
+				// edgeItems.push(edge);
 			}
 
 			source = node;
 		}
 	}
 
-	let nodes = $state.frozen(nodeItems);
-	let edges = $state.frozen(edgeItems);
+	let nodes = writable(nodeItems);
+	let edges = writable(edgeItems);
 </script>
 
-<SvelteFlow bind:nodes bind:edges minZoom={0} fitView>
+<SvelteFlow {nodes} {edges} minZoom={0} fitView>
 	<Controls />
 	<Background variant={BackgroundVariant.Lines} />
 	<!-- <MiniMap /> -->

@@ -5,6 +5,7 @@
   import type { Node } from '$lib/types';
   import NodeWrapper from '$lib/components/NodeWrapper/NodeWrapper.svelte';
   import { nodeHasDimensions } from '@xyflow/system';
+  import type { Writable } from 'svelte/store';
 
   let {
     nodes,
@@ -16,7 +17,7 @@
     onnodedragstart,
     onnodedragstop,
     onnodecontextmenu
-  }: NodeEvents & { nodes: readonly Node[] } = $props();
+  }: NodeEvents & { nodes: Writable<Node[]> } = $props();
 
   const store = useStore();
 
@@ -44,46 +45,46 @@
 
 <!-- TODO: render visibleNodes -->
 <div class="svelte-flow__nodes">
-  {#each nodes as userNode (userNode.id)}
+  {#each $nodes as userNode (userNode.id)}
     {@const internalNode = store.nodeLookup.get(userNode.id)!}
     <NodeWrapper
       node={internalNode}
-      id={userNode.id}
-      data={userNode.data}
-      hidden={userNode.hidden}
-      selected={userNode.selected}
+      id={internalNode.id}
+      data={internalNode.data}
+      hidden={internalNode.hidden}
+      selected={internalNode.selected}
       draggable={!!(
-        userNode.draggable ||
-        (store.nodesDraggable && typeof userNode.draggable === 'undefined')
+        internalNode.draggable ||
+        (store.nodesDraggable && typeof internalNode.draggable === 'undefined')
       )}
       selectable={!!(
-        userNode.selectable ||
-        (store.elementsSelectable && typeof userNode.selectable === 'undefined')
+        internalNode.selectable ||
+        (store.elementsSelectable && typeof internalNode.selectable === 'undefined')
       )}
       connectable={!!(
-        userNode.connectable ||
-        (store.nodesConnectable && typeof userNode.connectable === 'undefined')
+        internalNode.connectable ||
+        (store.nodesConnectable && typeof internalNode.connectable === 'undefined')
       )}
       positionX={internalNode.internals.positionAbsolute.x}
       positionY={internalNode.internals.positionAbsolute.y}
       positionOriginX={internalNode.internals.positionAbsolute.x}
       positionOriginY={internalNode.internals.positionAbsolute.y}
-      isParent={store.parentLookup.has(userNode.id)}
-      style={userNode.style}
-      class={userNode.class}
-      type={userNode.type}
-      sourcePosition={userNode.sourcePosition}
-      targetPosition={userNode.targetPosition}
-      dragging={userNode.dragging}
+      isParent={store.parentLookup.has(internalNode.id)}
+      style={internalNode.style}
+      class={internalNode.class}
+      type={internalNode.type}
+      sourcePosition={internalNode.sourcePosition}
+      targetPosition={internalNode.targetPosition}
+      dragging={internalNode.dragging}
       zIndex={internalNode.internals.z}
-      dragHandle={userNode.dragHandle}
-      initialized={nodeHasDimensions(userNode)}
-      width={userNode.width}
-      height={userNode.height}
-      initialWidth={userNode.initialWidth}
-      initialHeight={userNode.initialHeight}
-      measuredWidth={userNode.measured?.width}
-      measuredHeight={userNode.measured?.height}
+      dragHandle={internalNode.dragHandle}
+      initialized={nodeHasDimensions(internalNode)}
+      width={internalNode.width}
+      height={internalNode.height}
+      initialWidth={internalNode.initialWidth}
+      initialHeight={internalNode.initialHeight}
+      measuredWidth={internalNode.measured?.width}
+      measuredHeight={internalNode.measured?.height}
       {resizeObserver}
       {onnodeclick}
       {onnodemouseenter}

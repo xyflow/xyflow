@@ -50,6 +50,7 @@ export default function drag(domNode: Element, params: UseDragParams) {
   });
 
   function updateDrag(domNode: Element, params: UseDragParams) {
+    // console.log(params.nodeId);
     if (params.disabled) {
       dragInstance.destroy();
       return;

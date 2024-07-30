@@ -36,6 +36,7 @@ const getInitialState = ({
   const storeNodes = defaultNodes ?? nodes ?? [];
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
+  console.log(storeNodes, nodeLookup);
   adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
     nodeOrigin: [0, 0],
     elevateNodesOnSelect: false,

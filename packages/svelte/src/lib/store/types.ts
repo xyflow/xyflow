@@ -39,6 +39,7 @@ import type {
 } from '$lib/types';
 
 import type { ConnectionProps, NoConnectionProps } from './derived-connection';
+import type { Writable } from 'svelte/store';
 
 export type SvelteFlowStoreActions = {
   addEdge: (edge: Edge | Connection) => void;
@@ -60,11 +61,15 @@ export type SvelteFlowStoreActions = {
   updateNodePositions: UpdateNodePositions;
   zoomIn: (options?: ViewportHelperFunctionOptions) => void;
   zoomOut: (options?: ViewportHelperFunctionOptions) => void;
+  syncNodeStores: (nodes: Writable<Node[]>) => void;
+  syncEdgeStores: (edges: Writable<Edge[]>) => void;
 };
 
 export type SvelteFlowStoreState = {
-  setNodes: (setter: (nodes: readonly Node[]) => readonly Node[]) => void;
-  setEdges: (setter: (nodes: readonly Node[]) => readonly Node[]) => void;
+  nodes: Writable<Node[]>;
+  edges: Writable<Edge[]>;
+  // setNodes: (setter: (nodes: readonly Node[]) => readonly Node[]) => void;
+  // setEdges: (setter: (nodes: readonly Node[]) => readonly Node[]) => void;
   selectedNodes: Map<string, InternalNode>;
   selectedEdges: Map<string, Edge>;
   viewport: Viewport;
@@ -134,7 +139,10 @@ type StoreToPropertyDefinitions<T> = {
 };
 
 export type SvelteFlowStoreProperties = StoreToPropertyDefinitions<
-  Omit<SvelteFlowStoreState, 'visibleEdges' | 'connection' | 'setNodes' | 'setEdges'>
+  Omit<
+    SvelteFlowStoreState,
+    'visibleEdges' | 'connection' | 'setNodes' | 'setEdges' | 'nodes' | 'edges'
+  >
 >;
 
 export type SvelteFlowStore = SvelteFlowStoreState & SvelteFlowStoreActions;

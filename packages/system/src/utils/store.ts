@@ -74,6 +74,19 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
   checkEquality?: boolean;
 };
 
+function fastNodeEqual(node1: NodeBase, node2: NodeBase) {
+  // console.log(node1, node2);
+  return (
+    node1.selected === node2.selected &&
+    node1.position.x === node2.position.x &&
+    node1.position.y === node2.position.y &&
+    node1.parentId === node2.parentId &&
+    node1.zIndex === node2.zIndex &&
+    node1.measured?.width === node2.measured?.width &&
+    node1.measured?.height === node2.measured?.height
+  );
+}
+
 export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodeLookup: Map<string, InternalNodeBase<NodeType>>,
@@ -86,7 +99,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   }
 ) {
   const tmpLookup = new Map(nodeLookup);
-  nodeLookup.clear();
+  // nodeLookup.clear();
   parentLookup.clear();
 
   const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
@@ -94,8 +107,14 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   nodes.forEach((userNode) => {
     let internalNode = tmpLookup.get(userNode.id);
 
-    if (options.checkEquality && userNode === internalNode?.internals.userNode) {
-      nodeLookup.set(userNode.id, internalNode);
+    // if (internalNode) {
+    //   console.log(options.checkEquality, !!internalNode, fastNodeEqual(userNode, internalNode));
+    // }
+
+    // if (options.checkEquality && userNode === internalNode?.internals.userNode) {
+    if (options.checkEquality && !!internalNode && fastNodeEqual(internalNode, userNode)) {
+      // nodeLookup.set(userNode.id, internalNode);
+      // console.log('same', internalNode.id);
     } else {
       internalNode = {
         ...options.defaults,
@@ -112,6 +131,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         },
       };
       nodeLookup.set(userNode.id, internalNode);
+      // console.log(internalNode.id);
     }
 
     if (userNode.parentId) {
@@ -273,7 +293,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       );
 
       if (doUpdate) {
-        node.measured = dimensions;
+        // node.measured = dimensions;
         node.internals = {
           ...node.internals,
           handleBounds: {

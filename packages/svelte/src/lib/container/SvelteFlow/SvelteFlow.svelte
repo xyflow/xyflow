@@ -112,24 +112,27 @@
   let clientWidth = $state<number>();
   let clientHeight = $state<number>();
 
-  const store = hasContext(key) ? useStore() : createStoreContext();
+  const store = hasContext(key) ? useStore() : createStoreContext($nodes, $edges);
 
   if (fitView && width && height) {
-    const nodesWithDimensions = nodes.filter(
+    const nodesWithDimensions = $nodes.filter(
       (node) => (node.width && node.height) || (node.initialWidth && node.initialHeight)
     );
     const bounds = getNodesBounds(nodesWithDimensions, { nodeOrigin });
     store.viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
 
-  let adoptUserNodesSignal = $derived.by(() => {
-    adoptUserNodes(nodes as Node[], store.nodeLookup, store.parentLookup);
-    return null;
-  });
+  // let adoptUserNodesSignal = $derived.by(() => {
+  //   adoptUserNodes($nodes as Node[], store.nodeLookup, store.parentLookup, {
+  //     checkEquality: false
+  //   });
+  //   return null;
+  // });
 
-  store.setNodes = (setter: (nodes: readonly Node[]) => readonly Node[]) => {
-    nodes = setter(nodes);
-  };
+  onMount(() => {
+    store.syncNodeStores(nodes);
+    store.syncEdgeStores(edges);
+  });
 
   onMount(() => {
     store.domNode = domNode!;
@@ -157,8 +160,8 @@
 
   // Call oninit once when flow is intialized
   let onInitCalled = false;
-  const numInitialNodes = nodes.length;
-  const numIntitialEdges = edges.length;
+  const numInitialNodes = $nodes.length;
+  const numIntitialEdges = $edges.length;
   $effect(() => {
     if (
       !onInitCalled &&
@@ -177,7 +180,7 @@
   });
 </script>
 
-{#if adoptUserNodesSignal}{/if}
+<!-- {#if adoptUserNodesSignal}{/if} -->
 <StoreUpdater
   {store}
   {colorMode}

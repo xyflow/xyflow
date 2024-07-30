@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "svelte": {
+      "signature": "5a463725a40726cc67a2110baee05628",
+      "file": true,
+      "replaced": "5.0.0-next.201"
+    }
+  }
+}

@@ -63,7 +63,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> &
      *  }
      * ]);
      */
-    nodes: readonly Node[];
+    nodes: Writable<Node[]>;
     /** An array of edges to render in a controlled flow.
      * @example
      * const edges = writable([
@@ -74,7 +74,7 @@ export type SvelteFlowProps = DOMAttributes<HTMLDivElement> &
      *  }
      * ]);
      */
-    edges: readonly Edge[];
+    edges: Writable<Edge[]>;
     /** Custom node types to be available in a flow.
      *
      * Svelte Flow matches a node's type to a component in the nodeTypes object.

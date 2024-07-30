@@ -38,5 +38,8 @@
     "rollup": "^3.23.0",
     "turbo": "^1.10.0",
     "typescript": "5.1.3"
+  },
+  "dependencies": {
+    "svelte": "file:.yalc/svelte"
   }
 }

@@ -1,4 +1,4 @@
-// import { Map as SvelteMap } from 'svelte/reactivity';
+import { SvelteMap } from 'svelte/reactivity';
 import {
   infiniteExtent,
   SelectionMode,
@@ -28,6 +28,7 @@ import { derivedSignal, signal } from './signals.svelte';
 import type { SvelteFlowStoreProperties, SvelteFlowStoreState } from './types';
 import { getDerivedConnection, initConnectionUpdateData } from './derived-connection';
 import type { Edge, InternalNode, Node } from '$lib/types';
+import { createEdgesStore, createNodesStore } from './utils';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -43,9 +44,9 @@ export const initialEdgeTypes = {
   step: StepEdgeInternal
 };
 
-export const getInitialStore = () => {
+export const getInitialStore = (nodes: Node[] = [], edges: Edge[] = []) => {
   // TODO: what kind of maps are we talking
-  const nodeLookup: NodeLookup = new Map();
+  const nodeLookup: NodeLookup = new SvelteMap();
   const edgeLookup: EdgeLookup = new Map();
   const selectedNodes: Map<string, InternalNode> = new Map();
   const selectedEdges: Map<string, Edge> = new Map();
@@ -57,7 +58,10 @@ export const getInitialStore = () => {
 
   const store = Object.defineProperties<SvelteFlowStoreState>(
     // @ts-expect-error {} does not match Store, which is fine
-    {},
+    {
+      nodes: createNodesStore(nodes, nodeLookup, parentLookup),
+      edges: createEdgesStore(edges, connectionLookup, edgeLookup)
+    },
     {
       selectedNodes: signal<SvelteFlowStoreState['selectedNodes']>(selectedNodes),
       selectedEdges: signal<SvelteFlowStoreState['selectedEdges']>(selectedEdges),
@@ -136,9 +140,6 @@ export const getInitialStore = () => {
       )
     )
   });
-
-  store.setNodes = () => {};
-  store.setEdges = () => {};
 
   return store;
 };

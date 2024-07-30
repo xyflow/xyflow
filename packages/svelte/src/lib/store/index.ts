@@ -29,11 +29,12 @@ import type {
 } from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store';
 import type { SvelteFlowStore, SvelteFlowStoreActions, SvelteFlowStoreState } from './types';
+import { syncEdgeStores, syncNodeStores } from './utils';
 
 export const key = Symbol();
 
-export function createStore(): SvelteFlowStore {
-  const store = getInitialStore();
+export function createStore(nodes?: Node[], edges?: Edge[]): SvelteFlowStore {
+  const store = getInitialStore(nodes, edges);
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes = {
@@ -50,23 +51,22 @@ export function createStore(): SvelteFlowStore {
   }
 
   function addEdge(edgeParams: Edge | Connection) {
-    addEdgeUtil(edgeParams, store.edges, true);
+    addEdgeUtil(edgeParams, get(store.edges), true);
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    store.setNodes((nodes) =>
-      nodes.map((node) => {
-        const dragItem = nodeDragItems.get(node.id);
-        if (dragItem) {
-          return {
-            ...node,
-            position: { ...dragItem.position },
-            dragging
-          };
-        }
-        return node;
-      })
-    );
+    for (const [id, dragItem] of nodeDragItems) {
+      const node = store.nodeLookup.get(id)?.internals.userNode;
+
+      if (!node) {
+        continue;
+      }
+
+      node.position = dragItem.position;
+      node.dragging = dragging;
+    }
+
+    store.nodes.update((nds) => nds);
   };
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
@@ -119,7 +119,7 @@ export function createStore(): SvelteFlowStore {
       store.nodesInitialized = true;
     }
 
-    store.setNodes((nodes) => nodes.map((node) => ({ ...node })));
+    store.nodes.update((nds) => nds);
   }
 
   function fitView(options?: FitViewOptions) {
@@ -201,38 +201,25 @@ export function createStore(): SvelteFlowStore {
   }
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
-    resetSelectedNodes(params?.nodes ?? store.selectedNodes.values());
+    resetSelectedNodes(get(store.nodes));
 
-    resetSelectedEdges(params?.edges ?? store.selectedEdges.values());
+    resetSelectedEdges(get(store.edges));
   }
 
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.setNodes((nodes) =>
-      nodes.map((node) => {
-        const nodeWillBeSelected = ids.includes(node.id);
-        const selected = isMultiSelection
-          ? node.selected || nodeWillBeSelected
-          : nodeWillBeSelected;
+    for (const node of store.nodeLookup.values()) {
+      const nodeWillBeSelected = ids.includes(node.id);
+      const selected = isMultiSelection ? node.selected || nodeWillBeSelected : nodeWillBeSelected;
 
-        // we need to mutate the node here in order to have the correct selected state in the drag handler
-        // node.selected = selected;
-        if (!!node.selected !== selected) {
-          return {
-            ...node,
-            selected: selected
-          };
-        }
-        return node;
+      // node.selected = selected;
+      if (!!node.selected !== selected) {
+        node.selected = selected;
+      }
+    }
 
-        // if (!isMultiSelection) {
-        //   for (const edge of store.edgeLookup.values()) {
-        //     edge.selected = false;
-        //   }
-        // }
-      })
-    );
+    store.nodes.update((nds) => nds);
   }
 
   function addSelectedEdges(ids: string[]) {
@@ -337,8 +324,12 @@ export function createStore(): SvelteFlowStore {
     //   createMarkerIds(get(store.edges), { defaultColor: store.defaultMarkerColor, id: store.flowId })
     // ),
     // actions
-    // syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
-    // syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
+    syncNodeStores: (nodes) => {
+      syncNodeStores(store.nodes, nodes);
+    },
+    syncEdgeStores: (edges) => {
+      syncEdgeStores(store.edges, edges);
+    },
     // syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
     setNodeTypes,
     setEdgeTypes,
@@ -376,8 +367,8 @@ export function useStore(): SvelteFlowStore {
   return store.getStore();
 }
 
-export function createStoreContext() {
-  const store = createStore();
+export function createStoreContext(nodes?: Node[], edges?: Edge[]) {
+  const store = createStore(nodes, edges);
 
   setContext(key, {
     getStore: () => store
