@@ -43,7 +43,7 @@ export function useQueue<T>(runQueue: (items: QueueItem<T>[]) => void) {
       queue.reset();
     }
 
-    // Beacuse we're using reactive state to trigger this effect, we need to flip
+    // Because we're using reactive state to trigger this effect, we need to flip
     // it back to false.
     setShouldFlush(false);
   }, [shouldFlush]);
