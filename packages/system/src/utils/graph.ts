@@ -124,6 +124,7 @@ export type GetNodesBoundsParams = {
 
 /**
  * Determines a bounding box that contains all given nodes in an array
+ * @deprecated This function yields erronous results for subflows. Use getNodesBounds from useReactFlow/useSvelteFlow hook instead.
  * @public
  * @remarks Useful when combined with {@link getViewportForBounds} to calculate the correct transform to fit the given nodes in a viewport.
  * @param nodes - Nodes to calculate the bounds for
@@ -131,6 +132,10 @@ export type GetNodesBoundsParams = {
  * @returns Bounding box enclosing all nodes
  */
 export const getNodesBounds = (nodes: NodeBase[], params: GetNodesBoundsParams = { nodeOrigin: [0, 0] }): Rect => {
+  console.warn(
+    'This function yields erronous results for subflows. Use getNodesBounds from useReactFlow/useSvelteFlow hook instead.'
+  );
+
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };
   }
