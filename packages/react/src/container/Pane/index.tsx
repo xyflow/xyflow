@@ -120,7 +120,6 @@ export function Pane({
   const onPointerDown = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode, edgeLookup } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
-    (event.target as Element)?.setPointerCapture?.(event.pointerId);
 
     if (
       !elementsSelectable ||
@@ -131,6 +130,8 @@ export function Pane({
     ) {
       return;
     }
+
+    (event.target as Element)?.setPointerCapture?.(event.pointerId);
 
     selectionStarted.current = true;
     selectionInProgress.current = false;

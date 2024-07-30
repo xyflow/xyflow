@@ -92,7 +92,6 @@
 
   function onPointerDown(event: PointerEvent) {
     containerBounds = container.getBoundingClientRect();
-    (event.target as Element)?.setPointerCapture?.(event.pointerId);
 
     if (
       !elementsSelectable ||
@@ -103,6 +102,8 @@
     ) {
       return;
     }
+
+    (event.target as Element)?.setPointerCapture?.(event.pointerId);
 
     const { x, y } = getEventPosition(event, containerBounds);
 
