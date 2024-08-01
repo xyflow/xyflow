@@ -10,7 +10,9 @@
 
   import type { ConnectableContext, NodeWrapperProps } from './types';
   import type { NodeEvents } from '$lib/types';
+  import { derived } from 'svelte/store';
 
+  let props: NodeWrapperProps & NodeEvents = $props();
   let {
     node,
     id,
@@ -49,7 +51,7 @@
     onnodemouseleave,
     onnodemousemove,
     onnodecontextmenu
-  }: NodeWrapperProps & NodeEvents = $props();
+  } = $derived(props);
 
   const store = useStore();
 
