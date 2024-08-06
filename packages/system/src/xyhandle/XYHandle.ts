@@ -175,7 +175,9 @@ function onPointerDown(
       newConnection.toHandle &&
       previousConnection.toHandle.type === newConnection.toHandle.type &&
       previousConnection.toHandle.nodeId === newConnection.toHandle.nodeId &&
-      previousConnection.toHandle.id === newConnection.toHandle.id
+      previousConnection.toHandle.id === newConnection.toHandle.id &&
+      previousConnection.to.x === newConnection.to.x &&
+      previousConnection.to.y === newConnection.to.y
     ) {
       return;
     }
