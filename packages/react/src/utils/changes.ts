@@ -14,7 +14,7 @@ import type { Node, Edge, InternalNode } from '../types';
 // This function applies changes to nodes or edges that are triggered by React Flow internally.
 // When you drag a node for example, React Flow will send a position change update.
 // This function then applies the changes and returns the updated elements.
-function applyChanges(changes: any[], elements: any[]): any[] {
+function applyChanges(changes: readonly any[], elements: readonly any[]): any[] {
   const updatedElements: any[] = [];
   // By storing a map of changes for each element, we can a quick lookup as we
   // iterate over the elements array!
@@ -139,7 +139,7 @@ function applyChange(change: any, element: any): any {
  */
 export function applyNodeChanges<NodeType extends Node = Node>(
   changes: NodeChange<NodeType>[],
-  nodes: NodeType[]
+  nodes: readonly NodeType[]
 ): NodeType[] {
   return applyChanges(changes, nodes) as NodeType[];
 }
@@ -165,8 +165,8 @@ export function applyNodeChanges<NodeType extends Node = Node>(
     );
  */
 export function applyEdgeChanges<EdgeType extends Edge = Edge>(
-  changes: EdgeChange<EdgeType>[],
-  edges: EdgeType[]
+  changes: readonly EdgeChange<EdgeType>[],
+  edges: readonly EdgeType[]
 ): EdgeType[] {
   return applyChanges(changes, edges) as EdgeType[];
 }

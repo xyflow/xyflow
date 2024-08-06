@@ -60,7 +60,7 @@ export function useSvelteFlow(): {
    *
    * @returns nodes array
    */
-  getNodes: (ids?: string[]) => Node[];
+  getNodes: (ids?: readonly string[]) => readonly Node[];
   /**
    * Returns an edge by id.
    *
@@ -73,7 +73,7 @@ export function useSvelteFlow(): {
    *
    * @returns edges array
    */
-  getEdges: (ids?: string[]) => Edge[];
+  getEdges: (ids?: readonly string[]) => readonly Edge[];
   /**
    * Sets the current zoom level.
    *
@@ -509,10 +509,10 @@ export function useSvelteFlow(): {
     viewport
   };
 }
-function getElements(lookup: Map<string, InternalNode>, ids: string[]): Node[];
-function getElements(lookup: Map<string, Edge>, ids: string[]): Edge[];
+function getElements(lookup: Map<string, InternalNode>, ids: readonly string[]): Node[];
+function getElements(lookup: Map<string, Edge>, ids: readonly string[]): Edge[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getElements(lookup: Map<string, any>, ids: string[]): any[] {
+function getElements(lookup: Map<string, any>, ids: readonly string[]): any[] {
   const result = [];
 
   for (const id of ids) {

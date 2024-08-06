@@ -31,10 +31,10 @@ const createStore = ({
   fitView,
   nodeOrigin,
 }: {
-  nodes?: Node[];
-  edges?: Edge[];
-  defaultNodes?: Node[];
-  defaultEdges?: Edge[];
+  nodes?: readonly Node[];
+  edges?: readonly Edge[];
+  defaultNodes?: readonly Node[];
+  defaultEdges?: readonly Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
@@ -43,7 +43,7 @@ const createStore = ({
   createWithEqualityFn<ReactFlowState>(
     (set, get) => ({
       ...getInitialState({ nodes, edges, width, height, fitView, nodeOrigin, defaultNodes, defaultEdges }),
-      setNodes: (nodes: Node[]) => {
+      setNodes: (nodes: readonly Node[]) => {
         const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
         // setNodes() is called exclusively in response to user actions:
         // - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
@@ -55,14 +55,14 @@ const createStore = ({
 
         set({ nodes });
       },
-      setEdges: (edges: Edge[]) => {
+      setEdges: (edges: readonly Edge[]) => {
         const { connectionLookup, edgeLookup } = get();
 
         updateConnectionLookup(connectionLookup, edgeLookup, edges);
 
         set({ edges });
       },
-      setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
+      setDefaultNodesAndEdges: (nodes?: readonly Node[], edges?: readonly Edge[]) => {
         if (nodes) {
           const { setNodes } = get();
           setNodes(nodes);

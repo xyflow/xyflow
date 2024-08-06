@@ -14,8 +14,8 @@ import type { getInitialStore } from './initial-store';
 import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
 
 export type SvelteFlowStoreActions = {
-  syncNodeStores: (nodesStore: Writable<Node[]>) => void;
-  syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
+  syncNodeStores: (nodesStore: Writable<readonly Node[]>) => void;
+  syncEdgeStores: (edgeStore: Writable<readonly Edge[]>) => void;
   syncViewport: (viewportStore?: Writable<Viewport>) => void;
   setNodeTypes: (nodeTypes: NodeTypes) => void;
   setEdgeTypes: (edgeTypes: EdgeTypes) => void;
@@ -29,7 +29,7 @@ export type SvelteFlowStoreActions = {
   fitView: (options?: FitViewOptions) => Promise<boolean>;
   updateNodePositions: UpdateNodePositions;
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
-  unselectNodesAndEdges: (params?: { nodes?: Node[]; edges?: Edge[] }) => void;
+  unselectNodesAndEdges: (params?: { nodes?: readonly Node[]; edges?: readonly Edge[] }) => void;
   addSelectedNodes: (ids: string[]) => void;
   addSelectedEdges: (ids: string[]) => void;
   handleNodeSelection: (id: string) => void;

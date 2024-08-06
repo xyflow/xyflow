@@ -63,7 +63,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    *  }
    * ];
    */
-  nodes?: NodeType[];
+  nodes?: readonly NodeType[];
   /** An array of edges to render in a controlled flow.
    * @example
    * const edges = [
@@ -74,11 +74,11 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    *  }
    * ];
    */
-  edges?: EdgeType[];
+  edges?: readonly EdgeType[];
   /** The initial nodes to render in an uncontrolled flow. */
-  defaultNodes?: NodeType[];
+  defaultNodes?: readonly NodeType[];
   /** The initial edges to render in an uncontrolled flow. */
-  defaultEdges?: EdgeType[];
+  defaultEdges?: readonly EdgeType[];
   /** Defaults to be applied to all new edges that are added to the flow.
    *
    * Properties on a new edge will override these defaults if they exist.
@@ -180,7 +180,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   onSelectionDragStop?: SelectionDragHandler<NodeType>;
   onSelectionStart?: (event: ReactMouseEvent) => void;
   onSelectionEnd?: (event: ReactMouseEvent) => void;
-  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: NodeType[]) => void;
+  onSelectionContextMenu?: (event: ReactMouseEvent, nodes: readonly NodeType[]) => void;
   /** When a connection line is completed and two nodes are connected by the user, this event fires with the new connection.
    *
    * You can use the addEdge utility to convert the connection to a complete edge.
@@ -353,7 +353,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @example [0, 2] // allows panning with the left and right mouse buttons
    * [0, 1, 2, 3, 4] // allows panning with all mouse buttons
    */
-  panOnDrag?: boolean | number[];
+  panOnDrag?: boolean | readonly number[];
   /** Minimum zoom level
    * @default 0.5
    */

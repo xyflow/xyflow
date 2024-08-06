@@ -77,8 +77,8 @@ export const getInitialStore = ({
   fitView,
   nodeOrigin
 }: {
-  nodes?: Node[];
-  edges?: Edge[];
+  nodes?: readonly Node[];
+  edges?: readonly Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;

@@ -23,10 +23,10 @@ const getInitialState = ({
   fitView,
   nodeOrigin,
 }: {
-  nodes?: Node[];
-  edges?: Edge[];
-  defaultNodes?: Node[];
-  defaultEdges?: Edge[];
+  nodes?: readonly Node[];
+  edges?: readonly Edge[];
+  defaultNodes?: readonly Node[];
+  defaultEdges?: readonly Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;

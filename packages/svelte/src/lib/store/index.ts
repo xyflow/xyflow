@@ -39,8 +39,8 @@ export function createStore({
   fitView: fitViewOnCreate,
   nodeOrigin
 }: {
-  nodes?: Node[];
-  edges?: Edge[];
+  nodes?: readonly Node[];
+  edges?: readonly Edge[];
   width?: number;
   height?: number;
   fitView?: boolean;
@@ -237,7 +237,7 @@ export function createStore({
     }
   }
 
-  function resetSelectedElements(elements: Node[] | Edge[]) {
+  function resetSelectedElements(elements: readonly Node[] | readonly Edge[]) {
     let elementsChanged = false;
     elements.forEach((element) => {
       if (element.selected) {
@@ -252,7 +252,7 @@ export function createStore({
     get(store.panZoom)?.setClickDistance(distance);
   }
 
-  function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
+  function unselectNodesAndEdges(params?: { nodes?: readonly Node[]; edges?: readonly Edge[] }) {
     const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
     if (resetNodes) store.nodes.set(get(store.nodes));
 

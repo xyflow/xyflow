@@ -5,7 +5,7 @@ export type FilterParams = {
   zoomActivationKeyPressed: boolean;
   zoomOnScroll: boolean;
   zoomOnPinch: boolean;
-  panOnDrag: boolean | number[];
+  panOnDrag: boolean | readonly number[];
   panOnScroll: boolean;
   zoomOnDoubleClick: boolean;
   userSelectionActive: boolean;
