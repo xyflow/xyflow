@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/react",
-  "version": "12.0.4",
+  "version": "12.0.5",
   "description": "React Flow - A highly customizable React library for building node-based editors and interactive flow charts.",
   "keywords": [
     "react",

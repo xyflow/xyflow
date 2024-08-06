@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.1.15
+
+### Patch Changes
+
+- [#4510](https://github.com/xyflow/xyflow/pull/4510) [`12313a5b`](https://github.com/xyflow/xyflow/commit/12313a5b01312ef4425d3fa666e578961a151fe2) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Rename `isConnectable` prop locally to `isConnectableProp` to avoid naming collision with derived value of `isConnectable` in `<Handle>` component.
+
 ## 0.1.14
 
 ### Patch Changes

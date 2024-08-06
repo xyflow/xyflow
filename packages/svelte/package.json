@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/svelte",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Svelte Flow - A highly customizable Svelte library for building node-based editors, workflow systems, diagrams and more.",
   "keywords": [
     "svelte",

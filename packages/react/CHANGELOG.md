@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.0.5
+
+### Patch Changes
+
+- [#4501](https://github.com/xyflow/xyflow/pull/4501) [`ec64b572`](https://github.com/xyflow/xyflow/commit/ec64b57240f0c61912d4910b095210f57d8df8ce) Thanks [@moklick](https://github.com/moklick)! - fix(background): use offset prop correctly for dots variant
+
 ## 12.0.4
 
 ### Patch Changes
