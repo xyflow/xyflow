@@ -74,8 +74,6 @@ const EasyConnectExample = () => {
 
   const onConnect: OnConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
-  console.log(edges);
-
   return (
     <ReactFlow
       nodes={nodes}
