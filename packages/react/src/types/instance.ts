@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+import type { Edge, InternalNode, Node, ViewportHelperFunctions } from '.';
 import type { Rect, Viewport } from '@xyflow/system';
-import type { Node, Edge, ViewportHelperFunctions, InternalNode } from '.';
 
 export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   nodes: NodeType[];
@@ -101,7 +101,8 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
   getIntersectingNodes: (
     node: NodeType | { id: Node['id'] } | Rect,
     partially?: boolean,
-    nodes?: NodeType[]
+    nodes?: NodeType[],
+    inputPercentOverlap?: number
   ) => NodeType[];
   /**
    * Checks if the given node or rect intersects with the passed rect.

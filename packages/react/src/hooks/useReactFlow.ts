@@ -172,7 +172,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
         return { deletedNodes: matchingNodes, deletedEdges: matchingEdges };
       },
-      getIntersectingNodes: (nodeOrRect, partially = true, nodes) => {
+      getIntersectingNodes: (nodeOrRect, partially = true, nodes, inputPercentOverlap) => {
         const isRect = isRectObject(nodeOrRect);
         const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
         const hasNodesOption = nodes !== undefined;
@@ -190,8 +190,16 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
           const currNodeRect = nodeToRect(hasNodesOption ? n : internalNode!);
           const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
+          const overlappingPercentage = overlappingArea / (nodeRect.width * nodeRect.height);
           const partiallyVisible = partially && overlappingArea > 0;
 
+          if (inputPercentOverlap) {
+            if (inputPercentOverlap > 100 || inputPercentOverlap < 0) {
+              return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
+            }
+            const inputPercentToFraction = inputPercentOverlap / 100;
+            return overlappingPercentage >= inputPercentToFraction;
+          }
           return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
         }) as NodeType[];
       },
