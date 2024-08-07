@@ -173,6 +173,14 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     dataUpdate: Partial<EdgeType['data']> | ((edge: EdgeType) => Partial<EdgeType['data']>),
     options?: { replace: boolean }
   ) => void;
+  /**
+   * Returns the bounds of the given nodes or node ids.
+   *
+   * @param nodes - the nodes or node ids to calculate the bounds for
+   *
+   * @returns the bounds of the given nodes
+   */
+  getNodesBounds: (nodes: (NodeType | string)[]) => Rect;
 };
 
 export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = GeneralHelpers<
