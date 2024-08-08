@@ -4,7 +4,7 @@
   import { setContext, onDestroy, createEventDispatcher } from 'svelte';
   import { get, writable } from 'svelte/store';
   import cc from 'classcat';
-  import { errorMessages, Position } from '@xyflow/system';
+  import { errorMessages, Position, type Dimensions } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
@@ -106,6 +106,10 @@
               {
                 id,
                 nodeElement: nodeRef,
+                dimensions:
+                  node.measured.width && node.measured.height
+                    ? (node.measured as Dimensions)
+                    : undefined,
                 force: true
               }
             ]

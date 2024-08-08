@@ -31,6 +31,11 @@
             updates.set(id, {
               id,
               nodeElement: entry.target as HTMLDivElement,
+              // This breaks if writing-mode is not horizontal-tb
+              dimensions: {
+                width: entry.borderBoxSize[0].inlineSize,
+                height: entry.borderBoxSize[0].blockSize
+              },
               force: true
             });
           });

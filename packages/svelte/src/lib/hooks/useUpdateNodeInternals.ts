@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import type { UpdateNodeInternals } from '@xyflow/system';
+import type { Dimensions, UpdateNodeInternals } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
 
@@ -10,7 +10,7 @@ import { useStore } from '$lib/store';
  * @returns function for updating node internals
  */
 export function useUpdateNodeInternals(): UpdateNodeInternals {
-  const { domNode, updateNodeInternals } = useStore();
+  const { domNode, updateNodeInternals, nodeLookup } = useStore();
 
   // @todo: do we want to add this to system?
   const updateInternals = (id: string | string[]) => {
@@ -21,9 +21,12 @@ export function useUpdateNodeInternals(): UpdateNodeInternals {
       const nodeElement = get(domNode)?.querySelector(
         `.svelte-flow__node[data-id="${updateId}"]`
       ) as HTMLDivElement;
+      const node = get(nodeLookup).get(updateId);
 
-      if (nodeElement) {
-        updates.set(updateId, { id: updateId, nodeElement, force: true });
+      if (nodeElement && node) {
+        const dimensions =
+          node.measured.width && node.measured.height ? (node.measured as Dimensions) : undefined;
+        updates.set(updateId, { id: updateId, nodeElement, dimensions, force: true });
       }
     });
 
