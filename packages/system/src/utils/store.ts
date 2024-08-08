@@ -178,9 +178,28 @@ export function handleExpandParent(
     const expandedRect = getBoundsOfRects(parentRect, child.rect);
 
     parentExpansions.set(child.parentId, { expandedRect, parent });
+    /*
+    let currentChildRect = child.rect;
+    let currentParent = nodeLookup.get(child.parentId);
+
+    while (currentParent) {
+      const parentRect = parentExpansions.get(currentParent.id)?.expandedRect ?? nodeToRect(currentParent);
+      const expandedRect = getBoundsOfRects(parentRect, currentChildRect);
+      // console.log(parentRect, expandedRect);
+      parentExpansions.set(currentParent.id, { expandedRect, parent: currentParent });
+      if (currentParent.parentId && currentParent.expandParent) {
+        currentChildRect = expandedRect;
+        currentParent = nodeLookup.get(currentParent.parentId);
+      } else {
+        break;
+      }
+    }
+    */
   }
 
   if (parentExpansions.size > 0) {
+    // const changeMap: Map<string, NodePositionChange> = new Map();
+
     parentExpansions.forEach(({ expandedRect, parent }, parentId) => {
       // determine the position & dimensions of the parent
       const positionAbsolute = parent.internals.positionAbsolute;
@@ -210,10 +229,35 @@ export function handleExpandParent(
           },
         });
 
+        // const positionChange: NodePositionChange = {
+        //   id: parentId,
+        //   type: 'position',
+        //   position: {
+        //     x: parent.position.x - xChange + widthChange,
+        //     y: parent.position.y - yChange + heightChange,
+        //   },
+        // };
+        // changes.push(positionChange);
+        // changeMap.set(parentId, positionChange);
+
         // We move all child nodes in the oppsite direction
         // so the x,y changes of the parent do not move the children
         parentLookup.get(parentId)?.forEach((childNode) => {
           if (!children.some((child) => child.id === childNode.id)) {
+            // const previousPositionChange = changeMap.get(childNode.id);
+            // if (previousPositionChange) {
+            //   previousPositionChange.position!.x = previousPositionChange.position!.x + xChange;
+            //   previousPositionChange.position!.y = previousPositionChange.position!.y + yChange;
+            // } else {
+            //   changes.push({
+            //     id: childNode.id,
+            //     type: 'position',
+            //     position: {
+            //       x: childNode.position.x + xChange,
+            //       y: childNode.position.y + yChange,
+            //     },
+            //   });
+            // }
             changes.push({
               id: childNode.id,
               type: 'position',
