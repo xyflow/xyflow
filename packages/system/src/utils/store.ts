@@ -277,7 +277,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       };
       updatedInternals = true;
     } else {
-      const dimensions = getDimensions(update.nodeElement);
+      const dimensions = update.dimensions ?? getDimensions(update.nodeElement);
       const dimensionChanged = node.measured.width !== dimensions.width || node.measured.height !== dimensions.height;
       const doUpdate = !!(
         dimensions.width &&

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import type { InternalNode } from '../../types';
 import { useStoreApi } from '../../hooks/useStore';
+import { Dimensions } from '@xyflow/system';
 
 /**
  * Hook to handle the resize observation + internal updates for the passed node.
@@ -60,9 +61,13 @@ export function useNodeObserver({
         prevSourcePosition.current = node.sourcePosition;
         prevTargetPosition.current = node.targetPosition;
 
+        const dimensions = node.measured.width && node.measured.height ? (node.measured as Dimensions) : undefined;
+
         store
           .getState()
-          .updateNodeInternals(new Map([[node.id, { id: node.id, nodeElement: nodeRef.current, force: true }]]));
+          .updateNodeInternals(
+            new Map([[node.id, { id: node.id, nodeElement: nodeRef.current, dimensions, force: true }]])
+          );
       }
     }
   }, [node.id, nodeType, node.sourcePosition, node.targetPosition]);

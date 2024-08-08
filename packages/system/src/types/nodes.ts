@@ -1,4 +1,4 @@
-import type { XYPosition, Position, CoordinateExtent, Handle } from '.';
+import type { XYPosition, Position, CoordinateExtent, Handle, Dimensions } from '.';
 import { Optional } from '../utils/types';
 
 /**
@@ -118,6 +118,7 @@ export type NodeHandleBounds = {
 export type InternalNodeUpdate = {
   id: string;
   nodeElement: HTMLDivElement;
+  dimensions?: Dimensions;
   force?: boolean;
 };
 
