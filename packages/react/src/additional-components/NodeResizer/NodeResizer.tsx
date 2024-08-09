@@ -20,6 +20,7 @@ export function NodeResizer({
   onResizeStart,
   onResize,
   onResizeEnd,
+  rotation,
 }: NodeResizerProps) {
   if (!isVisible) {
     return null;
@@ -45,6 +46,7 @@ export function NodeResizer({
           shouldResize={shouldResize}
           onResize={onResize}
           onResizeEnd={onResizeEnd}
+          rotation={rotation}
         />
       ))}
       {XY_RESIZER_HANDLE_POSITIONS.map((position) => (
@@ -64,6 +66,7 @@ export function NodeResizer({
           shouldResize={shouldResize}
           onResize={onResize}
           onResizeEnd={onResizeEnd}
+          rotation={rotation}
         />
       ))}
     </>

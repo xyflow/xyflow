@@ -36,6 +36,7 @@ function ResizeControl({
   onResizeStart,
   onResize,
   onResizeEnd,
+  rotation,
 }: ResizeControlProps) {
   const contextNodeId = useNodeId();
   const id = typeof nodeId === 'string' ? nodeId : contextNodeId;
@@ -163,6 +164,7 @@ function ResizeControl({
       onResize,
       onResizeEnd,
       shouldResize,
+      rotation,
     });
 
     return () => {

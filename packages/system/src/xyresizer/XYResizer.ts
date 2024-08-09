@@ -13,6 +13,7 @@ import type {
   XYPosition,
 } from '../types';
 import type { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, ControlPosition } from './types';
+import { rotatePoint } from '../utils/position';
 
 const initPrevValues = { width: 0, height: 0, x: 0, y: 0 };
 
@@ -63,6 +64,11 @@ type XYResizerUpdateParams = {
   onResize: OnResize | undefined;
   onResizeEnd: OnResizeEnd | undefined;
   shouldResize: ShouldResize | undefined;
+  rotation?: {
+    anchorX: number;
+    anchorY: number;
+    angle: number;
+  };
 };
 
 export type XYResizerInstance = {
@@ -102,6 +108,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     onResize,
     onResizeEnd,
     shouldResize,
+    rotation,
   }: XYResizerUpdateParams) {
     let prevValues = { ...initPrevValues };
     let startValues = { ...initStartValues };
@@ -132,10 +139,19 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           y: node.position.y ?? 0,
         };
 
+        let pointerX = xSnapped;
+        let pointerY = ySnapped;
+
+        if (rotation) {
+          const rotatedPoint = rotatePoint(xSnapped, ySnapped, rotation.anchorX, rotation.anchorY, rotation.angle);
+          pointerX = rotatedPoint.x;
+          pointerY = rotatedPoint.y;
+        }
+
         startValues = {
           ...prevValues,
-          pointerX: xSnapped,
-          pointerY: ySnapped,
+          pointerX: pointerX,
+          pointerY: pointerY,
           aspectRatio: prevValues.width / prevValues.height,
         };
 
@@ -185,13 +201,36 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           return;
         }
         const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
+
+        const position = {
+          x: startValues.pointerX,
+          y: startValues.pointerY,
+          xSnapped: pointerPosition.xSnapped,
+          ySnapped: pointerPosition.ySnapped,
+        };
+
+        if (rotation) {
+          const rotatedPoint = rotatePoint(
+            pointerPosition.xSnapped,
+            pointerPosition.ySnapped,
+            rotation.anchorX,
+            rotation.anchorY,
+            rotation.angle
+          );
+
+          position.xSnapped = rotatedPoint.x;
+          position.ySnapped = rotatedPoint.y;
+          position.x = rotatedPoint.x;
+          position.y = rotatedPoint.y;
+        }
+
         const change: XYResizerChange = {};
         const nodeOrigin = node.origin ?? storeNodeOrigin;
 
         const { width, height, x, y } = getDimensionsAfterResize(
           startValues,
           controlDirection,
-          pointerPosition,
+          position,
           boundaries,
           keepAspectRatio,
           nodeOrigin,
