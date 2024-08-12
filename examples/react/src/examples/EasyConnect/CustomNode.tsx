@@ -1,13 +1,10 @@
-import { Handle, NodeProps, Position, ReactFlowState, useStore } from '@xyflow/react';
-
-const connectionNodeIdSelector = (state: ReactFlowState) => state.connectionStartHandle?.nodeId;
+import { Handle, NodeProps, Position, useConnection } from '@xyflow/react';
 
 export default function CustomNode({ id }: NodeProps) {
-  const connectionNodeId = useStore(connectionNodeIdSelector);
-  const isConnecting = !!connectionNodeId;
-  const isTarget = connectionNodeId && connectionNodeId !== id;
+  const connection = useConnection();
 
-  const targetHandleStyle = { zIndex: isTarget ? 3 : 1 };
+  const isTarget = connection.inProgress && connection.fromNode.id !== id;
+
   const label = isTarget ? 'Drop here' : 'Drag to connect';
 
   return (
@@ -19,17 +16,13 @@ export default function CustomNode({ id }: NodeProps) {
           backgroundColor: isTarget ? '#ffcce3' : '#ccd9f6',
         }}
       >
-        {!isConnecting && (
-          <Handle className="customHandle" style={{ zIndex: 2 }} position={Position.Right} type="source" />
-        )}
+        {/* If handles are conditionally rendered and not present initially, you need to update the node internals https://reactflow.dev/docs/api/hooks/use-update-node-internals/ */}
+        {/* In this case we don't need to use useUpdateNodeInternals, since !connection.inProgress is true at the beginning and all handles are rendered initially. */}
+        {!connection.inProgress && <Handle className="customHandle" position={Position.Right} type="source" id="src" />}
 
-        <Handle
-          className="customHandle"
-          style={targetHandleStyle}
-          position={Position.Left}
-          type="target"
-          isConnectableStart={false}
-        />
+        {/* We want to disable the target handle, if the connection was started from this node */}
+        {/* {(!connection.inProgress || isTarget) && ( */}
+        <Handle className="customHandle" position={Position.Left} type="target" isConnectableStart={false} id="trgt" />
         {label}
       </div>
     </div>
