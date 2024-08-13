@@ -159,6 +159,7 @@ function HandleComponent(
       isValidConnection: isValidConnectionStore,
       lib,
       rfId: flowId,
+      nodeLookup,
     } = store.getState();
 
     if (!nodeId || (!connectionClickStartHandle && !isConnectableStart)) {
@@ -187,6 +188,7 @@ function HandleComponent(
       flowId,
       doc,
       lib,
+      nodeLookup,
     });
 
     if (isValid && connection) {

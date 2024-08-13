@@ -48,7 +48,7 @@ export type IsValidParams = {
   doc: Document | ShadowRoot;
   lib: string;
   flowId: string | null;
-  handleLookup?: Map<string, Handle>;
+  nodeLookup: NodeLookup;
 };
 
 export type XYHandleInstance = {
