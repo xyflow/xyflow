@@ -103,6 +103,10 @@ export {
   type KeyCode,
 } from '@xyflow/system';
 
+// we need this workaround to prevent a duplicate identifier error
+import { type Handle as HandleBound } from '@xyflow/system';
+export type Handle = HandleBound;
+
 // system utils
 export {
   type GetBezierPathParams,
