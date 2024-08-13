@@ -33,13 +33,13 @@ export type OnDrag = (
   event: MouseEvent,
   dragItems: Map<string, NodeDragItem>,
   node: NodeBase,
-  nodes: NodeBase[]
+  nodes: readonly NodeBase[]
 ) => void;
 
 type StoreItems<OnNodeDrag> = {
-  nodes: NodeBase[];
+  nodes: readonly NodeBase[];
   nodeLookup: Map<string, InternalNodeBase>;
-  edges: EdgeBase[];
+  edges: readonly EdgeBase[];
   nodeExtent: CoordinateExtent;
   snapGrid: SnapGrid;
   snapToGrid: boolean;
@@ -52,7 +52,7 @@ type StoreItems<OnNodeDrag> = {
   selectNodesOnDrag: boolean;
   nodeDragThreshold: number;
   panBy: PanBy;
-  unselectNodesAndEdges: (params?: { nodes?: NodeBase[]; edges?: EdgeBase[] }) => void;
+  unselectNodesAndEdges: (params?: { nodes?: readonly NodeBase[]; edges?: readonly EdgeBase[] }) => void;
   onError?: OnError;
   onNodeDragStart?: OnNodeDrag;
   onNodeDrag?: OnNodeDrag;

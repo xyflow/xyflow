@@ -223,8 +223,8 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
  * @returns Array of edges that connect any of the given nodes with each other
  */
 export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
-  nodes: NodeType[],
-  edges: EdgeType[]
+  nodes: readonly NodeType[],
+  edges: readonly EdgeType[]
 ): EdgeType[] => {
   const nodeIds = new Set();
   nodes.forEach((node) => {
@@ -376,10 +376,10 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
   edges,
   onBeforeDelete,
 }: {
-  nodesToRemove: Partial<NodeType>[];
-  edgesToRemove: Partial<EdgeType>[];
-  nodes: NodeType[];
-  edges: EdgeType[];
+  nodesToRemove: readonly Partial<NodeType>[];
+  edgesToRemove: readonly Partial<EdgeType>[];
+  nodes: readonly NodeType[];
+  edges: readonly EdgeType[];
   onBeforeDelete?: OnBeforeDeleteBase<NodeType, EdgeType>;
 }): Promise<{
   nodes: NodeType[];

@@ -18,7 +18,7 @@ export function getMarkerId(marker: EdgeMarkerType | undefined, id?: string | nu
 }
 
 export function createMarkerIds(
-  edges: EdgeBase[],
+  edges: readonly EdgeBase[],
   {
     id,
     defaultColor,

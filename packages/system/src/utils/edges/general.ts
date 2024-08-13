@@ -79,7 +79,7 @@ export function isEdgeVisible({ sourceNode, targetNode, width, height, transform
 const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | EdgeBase): string =>
   `xy-edge__${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
 
-const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
+const connectionExists = (edge: EdgeBase, edges: readonly EdgeBase[]) => {
   return edges.some(
     (el) =>
       el.source === edge.source &&
@@ -99,8 +99,8 @@ const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
  */
 export const addEdge = <EdgeType extends EdgeBase>(
   edgeParams: EdgeType | Connection,
-  edges: EdgeType[]
-): EdgeType[] => {
+  edges: readonly EdgeType[]
+): readonly EdgeType[] => {
   if (!edgeParams.source || !edgeParams.target) {
     devWarn('006', errorMessages['error006']());
 

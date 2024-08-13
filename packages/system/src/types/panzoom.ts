@@ -31,7 +31,7 @@ export type PanZoomUpdateOptions = {
   onPaneContextMenu?: (event: MouseEvent) => void;
   preventScrolling: boolean;
   panOnScroll: boolean;
-  panOnDrag: boolean | number[];
+  panOnDrag: boolean | readonly number[];
   panOnScrollMode: PanOnScrollMode;
   panOnScrollSpeed: number;
   userSelectionActive: boolean;
