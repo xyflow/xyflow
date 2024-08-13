@@ -113,7 +113,7 @@
   fill: none;
 }
 
-.xy-flow__edges {
+.xy-flow .xy-flow__edges {
   position: absolute;
 
   svg {
