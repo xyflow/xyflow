@@ -3,18 +3,15 @@ import type { HandleType, XYPosition, Handle, InternalNodeBase, NodeLookup } fro
 
 function getNodesWithinDistance(position: XYPosition, nodeLookup: NodeLookup, distance: number): InternalNodeBase[] {
   const nodes: InternalNodeBase[] = [];
+  const rect = {
+    x: position.x - distance,
+    y: position.y - distance,
+    width: distance * 2,
+    height: distance * 2,
+  };
 
   for (const node of nodeLookup.values()) {
-    const rect = {
-      x: position.x - distance,
-      y: position.y - distance,
-      width: distance * 2,
-      height: distance * 2,
-    };
-
-    const overlappingArea = getOverlappingArea(rect, nodeToRect(node));
-
-    if (overlappingArea > 0) {
+    if (getOverlappingArea(rect, nodeToRect(node)) > 0) {
       nodes.push(node);
     }
   }
@@ -22,7 +19,10 @@ function getNodesWithinDistance(position: XYPosition, nodeLookup: NodeLookup, di
   return nodes;
 }
 
+// this distance is used for the area around the user pointer
+// while doing a connection for finding the closest nodes
 const ADDITIONAL_DISTANCE = 250;
+
 export function getClosestHandle(
   position: XYPosition,
   connectionRadius: number,
@@ -33,6 +33,7 @@ export function getClosestHandle(
   let minDistance = Infinity;
 
   const closeNodes = getNodesWithinDistance(position, nodeLookup, connectionRadius + ADDITIONAL_DISTANCE);
+
   for (const node of closeNodes) {
     const allHandles = [...(node.internals.handleBounds?.source ?? []), ...(node.internals.handleBounds?.target ?? [])];
 
