@@ -15,7 +15,7 @@ import {
   type Connection,
 } from '../types';
 
-import { getClosestHandle, isConnectionValid, getHandleLookup, getHandleType } from './utils';
+import { getClosestHandle, isConnectionValid, getHandleType, getHandle } from './utils';
 import { IsValidParams, OnPointerDownParams, Result, XYHandleInstance } from './types';
 
 const alwaysValid = () => true;
@@ -61,18 +61,16 @@ function onPointerDown(
     return;
   }
 
+  const fromHandleInternal = getHandle(nodeId, handleType, handleId, nodeLookup);
+  if (!fromHandleInternal) {
+    return;
+  }
+
   let position = getEventPosition(event, containerBounds);
   let autoPanStarted = false;
   let connection: Connection | null = null;
   let isValid: boolean | null = false;
   let handleDomNode: Element | null = null;
-
-  const [handleLookup, fromHandleInternal] = getHandleLookup({
-    nodeLookup,
-    nodeId,
-    handleId,
-    handleType,
-  });
 
   // when the user is moving the mouse close to the edge of the canvas while connecting we move the canvas
   function autoPan(): void {
@@ -128,7 +126,8 @@ function onPointerDown(
     closestHandle = getClosestHandle(
       pointToRendererPoint(position, transform, false, [1, 1]),
       connectionRadius,
-      handleLookup
+      nodeLookup,
+      fromHandle
     );
 
     if (!autoPanStarted) {
@@ -146,7 +145,7 @@ function onPointerDown(
       doc,
       lib,
       flowId,
-      handleLookup,
+      nodeLookup,
     });
 
     handleDomNode = result.handleDomNode;
@@ -238,7 +237,7 @@ function isValidHandle(
     lib,
     flowId,
     isValidConnection = alwaysValid,
-    handleLookup,
+    nodeLookup,
   }: IsValidParams
 ) {
   const isTarget = fromType === 'target';
@@ -266,7 +265,7 @@ function isValidHandle(
     const connectable = handleToCheck.classList.contains('connectable');
     const connectableEnd = handleToCheck.classList.contains('connectableend');
 
-    if (!handleNodeId) {
+    if (!handleNodeId || !handleType) {
       return result;
     }
 
@@ -289,13 +288,7 @@ function isValidHandle(
 
     result.isValid = isValid && isValidConnection(connection);
 
-    const toHandle = handleLookup?.get(`${handleNodeId}-${handleType}-${handleId}`);
-
-    if (toHandle) {
-      result.toHandle = {
-        ...toHandle,
-      };
-    }
+    result.toHandle = getHandle(handleNodeId, handleType, handleId, nodeLookup, false);
   }
 
   return result;

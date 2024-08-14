@@ -53,6 +53,7 @@ import UseHandleConnections from '../examples/UseHandleConnections';
 import AddNodeOnEdgeDrop from '../examples/AddNodeOnEdgeDrop';
 import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
+import MovingHandles from '../examples/MovingHandles';
 
 export interface IRoute {
   name: string;
@@ -205,6 +206,11 @@ const routes: IRoute[] = [
     name: 'Multi setNodes',
     path: 'multi-setnodes',
     component: MultiSetNodes,
+  },
+  {
+    name: 'Moving Handles',
+    path: 'moving-handles',
+    component: MovingHandles,
   },
   {
     name: 'Multi Flows',
