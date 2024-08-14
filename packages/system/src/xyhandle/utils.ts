@@ -63,11 +63,13 @@ export function getClosestHandle(
   if (!closestHandles.length) {
     return null;
   }
+  // when multiple handles overlay each other we prefer the opposite handle
+  if (closestHandles.length > 1) {
+    const oppositeHandleType = fromHandle.type === 'source' ? 'target' : 'source';
+    return closestHandles.find((handle) => handle.type === oppositeHandleType) ?? closestHandles[0];
+  }
 
-  return closestHandles.length === 1
-    ? closestHandles[0]
-    : // if multiple handles are layouted on top of each other we take the one with type = target because it's more likely that the user wants to connect to this one
-      closestHandles.find((handle) => handle.type === 'target') || closestHandles[0];
+  return closestHandles[0];
 }
 
 export function getHandle(
