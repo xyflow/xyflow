@@ -77,7 +77,7 @@ const createStore = ({
       // Every node gets registerd at a ResizeObserver. Whenever a node
       // changes its dimensions, this function is called to measure the
       // new dimensions and update the nodes.
-      updateNodeInternals: (updates) => {
+      updateNodeInternals: (updates, params = { triggerFitView: true }) => {
         const {
           triggerNodeChanges,
           nodeLookup,
@@ -105,22 +105,27 @@ const createStore = ({
 
         updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin });
 
-        // we call fitView once initially after all dimensions are set
-        let nextFitViewDone = fitViewDone;
+        if (params.triggerFitView) {
+          // we call fitView once initially after all dimensions are set
+          let nextFitViewDone = fitViewDone;
 
-        if (!fitViewDone && fitViewOnInit) {
-          nextFitViewDone = fitViewSync({
-            ...fitViewOnInitOptions,
-            nodes: fitViewOnInitOptions?.nodes,
-          });
+          if (!fitViewDone && fitViewOnInit) {
+            nextFitViewDone = fitViewSync({
+              ...fitViewOnInitOptions,
+              nodes: fitViewOnInitOptions?.nodes,
+            });
+          }
+
+          // here we are cirmumventing the onNodesChange handler
+          // in order to be able to display nodes even if the user
+          // has not provided an onNodesChange handler.
+          // Nodes are only rendered if they have a width and height
+          // attribute which they get from this handler.
+          set({ fitViewDone: nextFitViewDone });
+        } else {
+          // we always want to trigger useStore calls whenever updateNodeInternals is called
+          set({});
         }
-
-        // here we are cirmumventing the onNodesChange handler
-        // in order to be able to display nodes even if the user
-        // has not provided an onNodesChange handler.
-        // Nodes are only rendered if they have a width and height
-        // attribute which they get from this handler.
-        set({ fitViewDone: nextFitViewDone });
 
         if (changes?.length > 0) {
           if (debug) {

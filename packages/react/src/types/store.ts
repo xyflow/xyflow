@@ -152,7 +152,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodes: (nodes: NodeType[]) => void;
   setEdges: (edges: EdgeType[]) => void;
   setDefaultNodesAndEdges: (nodes?: NodeType[], edges?: EdgeType[]) => void;
-  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
+  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>, params?: { triggerFitView: boolean }) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
