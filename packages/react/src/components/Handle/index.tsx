@@ -19,6 +19,8 @@ import {
   type HandleType,
   ConnectionMode,
   OnConnect,
+  ConnectionState,
+  Optional,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -159,6 +161,7 @@ function HandleComponent(
       isValidConnection: isValidConnectionStore,
       lib,
       rfId: flowId,
+      connection: connectionState,
     } = store.getState();
 
     if (!nodeId || (!connectionClickStartHandle && !isConnectableStart)) {
@@ -193,7 +196,10 @@ function HandleComponent(
       onConnectExtended(connection);
     }
 
-    onClickConnectEnd?.(event as unknown as MouseEvent);
+    const connectionClone = structuredClone(connectionState) as Optional<ConnectionState, 'inProgress'>;
+    delete connectionClone.inProgress;
+    connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
+    onClickConnectEnd?.(event as unknown as MouseEvent, connectionClone);
 
     store.setState({ connectionClickStartHandle: null });
   };

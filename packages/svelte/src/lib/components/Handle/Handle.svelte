@@ -29,7 +29,7 @@
   // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
 
   let isConnectableProp: $$Props['isConnectable'] = undefined;
-  export { isConnectableProp as isConnectable }
+  export { isConnectableProp as isConnectable };
 
   let className: $$Props['class'] = undefined;
   export { className as class };
@@ -101,8 +101,8 @@
             handleType: startParams.handleType
           });
         },
-        onConnectEnd: (event) => {
-          $onConnectEndAction?.(event);
+        onConnectEnd: (event, connectionState) => {
+          $onConnectEndAction?.(event, connectionState);
         },
         getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom],
         getFromHandle: () => $connection.fromHandle
