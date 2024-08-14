@@ -192,7 +192,12 @@ function onPointerDown(
 
     // it's important to get a fresh reference from the store here
     // in order to get the latest state of onConnectEnd
-    onConnectEnd?.(event);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { inProgress, ...connectionState } = previousConnection;
+    onConnectEnd?.(event, {
+      ...connectionState,
+      toPosition: previousConnection.toHandle ? previousConnection.toPosition : null,
+    });
 
     if (edgeUpdaterType) {
       onReconnectEnd?.(event);
