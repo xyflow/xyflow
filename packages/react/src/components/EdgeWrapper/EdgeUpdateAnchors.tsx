@@ -1,5 +1,5 @@
 // Reconnectable edges have a anchors around their handles to reconnect the edge.
-import { XYHandle, type Connection, EdgePosition } from '@xyflow/system';
+import { XYHandle, type Connection, EdgePosition, FinalConnectionState } from '@xyflow/system';
 
 import { EdgeAnchor } from '../Edges/EdgeAnchor';
 import type { EdgeWrapperProps, Edge } from '../../types/edges';
@@ -68,9 +68,9 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
     setReconnecting(true);
     onReconnectStart?.(event, edge, handleType);
 
-    const _onReconnectEnd = (evt: MouseEvent | TouchEvent) => {
+    const _onReconnectEnd = (evt: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => {
       setReconnecting(false);
-      onReconnectEnd?.(evt, edge, handleType);
+      onReconnectEnd?.(evt, edge, handleType, connectionState);
     };
 
     const onConnectEdge = (connection: Connection) => onReconnect?.(edge, connection);
