@@ -1,7 +1,7 @@
 ---
-'@xyflow/react': patch
-'@xyflow/svelte': patch
-'@xyflow/system': patch
+'@xyflow/react': minor
+'@xyflow/svelte': minor
+'@xyflow/system': minor
 ---
 
 feat(onConnectEnd): pass connectionState param
