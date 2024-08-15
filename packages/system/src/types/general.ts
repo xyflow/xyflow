@@ -52,8 +52,6 @@ export type OnConnectStart = (event: MouseEvent | TouchEvent, params: OnConnectS
 export type OnConnect = (connection: Connection) => void;
 export type OnConnectEnd = (event: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => void;
 
-export type FinalConnectionState = Omit<ConnectionState, 'inProgress'>;
-
 export type IsValidConnection = (edge: EdgeBase | Connection) => boolean;
 
 export type FitViewParamsBase<NodeType extends NodeBase> = {
@@ -174,6 +172,11 @@ export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNod
 export type ConnectionState<NodeType extends InternalNodeBase = InternalNodeBase> =
   | ConnectionInProgress<NodeType>
   | NoConnection;
+
+export type FinalConnectionState<NodeType extends InternalNodeBase = InternalNodeBase> = Omit<
+  ConnectionState<NodeType>,
+  'inProgress'
+>;
 
 export type UpdateConnection<NodeType extends InternalNodeBase = InternalNodeBase> = (
   params: ConnectionState<NodeType>
