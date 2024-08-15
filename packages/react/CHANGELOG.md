@@ -14,7 +14,7 @@
 
 - [#4550](https://github.com/xyflow/xyflow/pull/4550) [`41981970`](https://github.com/xyflow/xyflow/commit/41981970e40baae29ec1631ea5f1eec9c27dfb12) Thanks [@moklick](https://github.com/moklick)! - fix(fitView): only trigger for resize observer
 
-- [#4501](https://github.com/xyflow/xyflow/pull/4501) [`ec64b572`](https://github.com/xyflow/xyflow/commit/ec64b57240f0c61912d4910b095210f57d8df8ce) Thanks [@moklick](https://github.com/moklick)! - fix(background): use offset prop correctly for dots variant
+- [#4501](https://github.com/xyflow/xyflow/pull/4501) [`ec64b572`](https://github.com/xyflow/xyflow/commit/ec64b57240f0c61912d4910b095210f57d8df8ce) Thanks [@jeffgord](https://github.com/jeffgord)! - fix(background): use offset prop correctly for dots variant
 
 - [#4548](https://github.com/xyflow/xyflow/pull/4548) [`692e6440`](https://github.com/xyflow/xyflow/commit/692e6440b10e75cb31f3f3172aede9ed4d7f05d2) Thanks [@peterkogo](https://github.com/peterkogo)! - Replaced algorithm used for searching close handles while connecting
 
