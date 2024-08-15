@@ -11,6 +11,8 @@ import {
   type UpdateConnection,
   type IsValidConnection,
   NodeLookup,
+  ConnectionState,
+  FinalConnectionState,
 } from '../types';
 
 export type OnPointerDownParams = {
@@ -32,7 +34,7 @@ export type OnPointerDownParams = {
   onConnect?: OnConnect;
   onConnectEnd?: OnConnectEnd;
   isValidConnection?: IsValidConnection;
-  onReconnectEnd?: (evt: MouseEvent | TouchEvent) => void;
+  onReconnectEnd?: (evt: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => void;
   getTransform: () => Transform;
   getFromHandle: () => Handle | null;
   autoPanSpeed?: number;
