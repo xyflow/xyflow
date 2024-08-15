@@ -1,5 +1,28 @@
 # @xyflow/react
 
+## 12.1.0
+
+### Minor Changes
+
+- [#4555](https://github.com/xyflow/xyflow/pull/4555) [`24e87e39`](https://github.com/xyflow/xyflow/commit/24e87e398419646f671af1085fbfec3e197bc56b) Thanks [@peterkogo](https://github.com/peterkogo)! - Added final connection state as a function parameter to onReconnectEnd
+
+- [#4554](https://github.com/xyflow/xyflow/pull/4554) [`cca11ea1`](https://github.com/xyflow/xyflow/commit/cca11ea1c549f3fae1e52f5c121f607ded9764f3) Thanks [@peterkogo](https://github.com/peterkogo)! - Added optional selector for useConnection hook
+
+- [#4549](https://github.com/xyflow/xyflow/pull/4549) [`99733c01`](https://github.com/xyflow/xyflow/commit/99733c01bc70f9463e7dba0046c5f8d839a1d2ba) Thanks [@moklick](https://github.com/moklick)! - feat(onConnectEnd): pass connectionState param
+
+### Patch Changes
+
+- [#4550](https://github.com/xyflow/xyflow/pull/4550) [`41981970`](https://github.com/xyflow/xyflow/commit/41981970e40baae29ec1631ea5f1eec9c27dfb12) Thanks [@moklick](https://github.com/moklick)! - fix(fitView): only trigger for resize observer
+
+- [#4501](https://github.com/xyflow/xyflow/pull/4501) [`ec64b572`](https://github.com/xyflow/xyflow/commit/ec64b57240f0c61912d4910b095210f57d8df8ce) Thanks [@moklick](https://github.com/moklick)! - fix(background): use offset prop correctly for dots variant
+
+- [#4548](https://github.com/xyflow/xyflow/pull/4548) [`692e6440`](https://github.com/xyflow/xyflow/commit/692e6440b10e75cb31f3f3172aede9ed4d7f05d2) Thanks [@peterkogo](https://github.com/peterkogo)! - Replaced algorithm used for searching close handles while connecting
+
+- [#4547](https://github.com/xyflow/xyflow/pull/4547) [`fdff601d`](https://github.com/xyflow/xyflow/commit/fdff601de418f2ac6a78f04e5a586d67b8d436e6) Thanks [@moklick](https://github.com/moklick)! - chore(react): re-export Handle type
+
+- Updated dependencies [[`b63a3734`](https://github.com/xyflow/xyflow/commit/b63a3734b84b6817603c8e6e48e2836f048acc3b), [`24e87e39`](https://github.com/xyflow/xyflow/commit/24e87e398419646f671af1085fbfec3e197bc56b), [`692e6440`](https://github.com/xyflow/xyflow/commit/692e6440b10e75cb31f3f3172aede9ed4d7f05d2), [`559d4926`](https://github.com/xyflow/xyflow/commit/559d49264b940f93c5e205bf984aa76230b10806), [`4ecfd7e1`](https://github.com/xyflow/xyflow/commit/4ecfd7e19720b70024d0b5dff27d4537dd46b49a), [`e7ef328f`](https://github.com/xyflow/xyflow/commit/e7ef328f8f9286a817b19457d38c491e6c0bcffd), [`99733c01`](https://github.com/xyflow/xyflow/commit/99733c01bc70f9463e7dba0046c5f8d839a1d2ba)]:
+  - @xyflow/system@0.0.38
+
 ## 12.0.4
 
 ### Patch Changes
