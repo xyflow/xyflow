@@ -212,7 +212,7 @@
 <div
   bind:this={container}
   class="svelte-flow__pane"
-  class:draggable={panOnDrag}
+  class:draggable={panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0))}
   class:dragging={$dragging}
   class:selection={isSelecting}
   on:click={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
