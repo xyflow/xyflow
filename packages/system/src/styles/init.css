@@ -69,16 +69,16 @@
 .xy-flow__pane {
   z-index: 1;
 
-  &.selection {
-    cursor: pointer;
-  }
-
   &.draggable {
     cursor: grab;
   }
 
   &.dragging {
     cursor: grabbing;
+  }
+
+  &.selection {
+    cursor: pointer;
   }
 }
 
