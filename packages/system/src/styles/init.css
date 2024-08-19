@@ -75,10 +75,10 @@
 
   &.draggable {
     cursor: grab;
+  }
 
-    &.dragging {
-      cursor: grabbing;
-    }
+  &.dragging {
+    cursor: grabbing;
   }
 }
 
