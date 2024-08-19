@@ -346,7 +346,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
   }
 
   const positionAbsolute = isCoordinateExtent(currentExtent)
-    ? clampPosition(nextPosition, currentExtent)
+    ? clampPosition(nextPosition, currentExtent, node.measured, origin)
     : nextPosition;
 
   return {

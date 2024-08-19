@@ -16,9 +16,14 @@ import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
 
-export const clampPosition = (position: XYPosition = { x: 0, y: 0 }, extent: CoordinateExtent) => ({
-  x: clamp(position.x, extent[0][0], extent[1][0]),
-  y: clamp(position.y, extent[0][1], extent[1][1]),
+export const clampPosition = (
+  position: XYPosition = { x: 0, y: 0 },
+  extent: CoordinateExtent,
+  dimensions: Partial<Dimensions>,
+  origin: NodeOrigin
+) => ({
+  x: clamp(position.x, extent[0][0], extent[1][0] - (dimensions?.width ?? 0) * origin[0]),
+  y: clamp(position.y, extent[0][1], extent[1][1] - (dimensions?.height ?? 0) * origin[1]),
 });
 
 /**
