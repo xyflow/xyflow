@@ -14,7 +14,7 @@ import {
   getViewportForBounds,
   getElementsToRemove,
   rendererPointToPoint,
-  nodeHasDimensions
+  evaluateAbsolutePosition
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -247,15 +247,32 @@ export function useSvelteFlow(): {
     edges,
     domNode,
     nodeLookup,
-    edgeLookup
+    edgeLookup,
+    nodeOrigin
   } = useStore();
 
-  const getNodeRect = (nodeOrRect: Node | { id: Node['id'] }): Rect | null => {
-    const node =
-      isNode(nodeOrRect) && nodeHasDimensions(nodeOrRect)
-        ? nodeOrRect
-        : get(nodeLookup).get(nodeOrRect.id);
-    return node ? nodeToRect(node) : null;
+  const getNodeRect = (node: Node | { id: Node['id'] }): Rect | null => {
+    const $nodeLookup = get(nodeLookup);
+    const nodeToUse = isNode(node) ? node : $nodeLookup.get(node.id)!;
+    const position = nodeToUse.parentId
+      ? evaluateAbsolutePosition(
+          nodeToUse.position,
+          nodeToUse.measured,
+          nodeToUse.parentId,
+          $nodeLookup,
+          get(nodeOrigin)
+        )
+      : nodeToUse.position;
+
+    const nodeWithPosition = {
+      id: nodeToUse.id,
+      position,
+      width: nodeToUse.measured?.width ?? nodeToUse.width,
+      height: nodeToUse.measured?.height ?? nodeToUse.height,
+      data: nodeToUse.data
+    };
+
+    return nodeToRect(nodeWithPosition);
   };
 
   const updateNode = (
