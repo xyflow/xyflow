@@ -1,5 +1,16 @@
 # @xyflow/react
 
+## 12.1.1
+
+### Patch Changes
+
+- [#4568](https://github.com/xyflow/xyflow/pull/4568) [`c3e62782`](https://github.com/xyflow/xyflow/commit/c3e6278222dc13333f75ecdbe634201ddabab87a) Thanks [@peterkogo](https://github.com/peterkogo)! - Only display grab cursor when panOnDrag is on left mouse button
+
+- [#4567](https://github.com/xyflow/xyflow/pull/4567) [`cc75c29f`](https://github.com/xyflow/xyflow/commit/cc75c29f3c7450321c64107f5b2a0f2084a0431c) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix internal type of edges in store
+
+- Updated dependencies [[`c3e62782`](https://github.com/xyflow/xyflow/commit/c3e6278222dc13333f75ecdbe634201ddabab87a)]:
+  - @xyflow/system@0.0.39
+
 ## 12.1.0
 
 ### Minor Changes
