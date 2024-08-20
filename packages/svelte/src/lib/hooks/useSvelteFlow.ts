@@ -236,7 +236,7 @@ export function useSvelteFlow(): {
    * Gets all connections for a given handle belonging to a specific node.
    *
    * @param type - handle type 'source' or 'target'
-   * @param id - the handle id
+   * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
    * @param nodeId - the node id the handle belongs to
    * @returns an array with handle connections
    */
