@@ -28,7 +28,7 @@ export const clampPosition = (
 /**
  * Calculates the velocity of panning when the mouse is close to the edge of the canvas
  * @internal
- * @param value - One dimensional poition of the mouse supi(x or y)
+ * @param value - One dimensional poition of the mouse (x or y)
  * @param min - Minimal position on canvas before panning starts
  * @param max - Maximal position on canvas before panning starts
  * @returns - A number between 0 and 1 that represents the velocity of panning
