@@ -278,15 +278,10 @@ const createStore = ({
         triggerEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nodeExtent) => {
-        const { nodeLookup, nodeOrigin } = get();
+        const { nodeLookup } = get();
 
         for (const [, node] of nodeLookup) {
-          const positionAbsolute = clampPosition(
-            node.internals.positionAbsolute,
-            nodeExtent,
-            node.measured,
-            node.origin ?? nodeOrigin
-          );
+          const positionAbsolute = clampPosition(node.internals.positionAbsolute, nodeExtent, node.measured);
 
           nodeLookup.set(node.id, {
             ...node,

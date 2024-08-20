@@ -90,7 +90,7 @@ export function NodeWrapper<NodeType extends Node>({
   const inlineDimensions = getNodeInlineStyleDimensions(node);
   // TODO: clamping should happen earlier
   const clampedPosition = nodeExtent
-    ? clampPosition(internals.positionAbsolute, nodeExtent, node.measured, origin)
+    ? clampPosition(internals.positionAbsolute, nodeExtent, node.measured)
     : internals.positionAbsolute;
 
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;

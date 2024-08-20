@@ -277,24 +277,6 @@ export async function fitView<Params extends FitViewParamsBase<NodeBase>, Option
 }
 
 /**
- * This function clamps the passed extend by the node's width and height.
- * This is needed to prevent the node from being dragged outside of its extent.
- *
- * @param node
- * @param extent
- * @returns
- */
-function clampNodeExtent<NodeType extends NodeBase>(
-  node: NodeType,
-  extent?: CoordinateExtent | 'parent'
-): CoordinateExtent | 'parent' | undefined {
-  if (!extent || extent === 'parent') {
-    return extent;
-  }
-  return [extent[0], [extent[1][0] - (node.measured?.width ?? 0), extent[1][1] - (node.measured?.height ?? 0)]];
-}
-
-/**
  * This function calculates the next position of a node, taking into account the node's extent, parent node, and origin.
  *
  * @internal
@@ -318,40 +300,37 @@ export function calculateNodePosition<NodeType extends NodeBase>({
   const node = nodeLookup.get(nodeId)!;
   const parentNode = node.parentId ? nodeLookup.get(node.parentId) : undefined;
   const { x: parentX, y: parentY } = parentNode ? parentNode.internals.positionAbsolute : { x: 0, y: 0 };
-  const origin = node.origin ?? nodeOrigin;
 
-  let currentExtent = clampNodeExtent(node, node.extent || nodeExtent);
+  const origin = node.origin ?? nodeOrigin;
+  let extent = nodeExtent;
 
   if (node.extent === 'parent' && !node.expandParent) {
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      const nodeWidth = node.measured.width;
-      const nodeHeight = node.measured.height;
       const parentWidth = parentNode.measured.width;
       const parentHeight = parentNode.measured.height;
 
-      if (nodeWidth && nodeHeight && parentWidth && parentHeight) {
-        currentExtent = [
+      if (parentWidth && parentHeight) {
+        extent = [
           [parentX, parentY],
-          [parentX + parentWidth - nodeWidth, parentY + parentHeight - nodeHeight],
+          [parentX + parentWidth, parentY + parentHeight],
         ];
       }
     }
   } else if (parentNode && isCoordinateExtent(node.extent)) {
-    currentExtent = [
+    extent = [
       [node.extent[0][0] + parentX, node.extent[0][1] + parentY],
       [node.extent[1][0] + parentX, node.extent[1][1] + parentY],
     ];
   }
 
-  const positionAbsolute = isCoordinateExtent(currentExtent)
-    ? clampPosition(nextPosition, currentExtent, node.measured, origin)
+  const positionAbsolute = isCoordinateExtent(extent)
+    ? clampPosition(nextPosition, extent, node.measured)
     : nextPosition;
 
   return {
     position: {
-      // TODO: is there a better way to do this?
       x: positionAbsolute.x - parentX + node.measured.width! * origin[0],
       y: positionAbsolute.y - parentY + node.measured.height! * origin[1],
     },

@@ -19,17 +19,16 @@ export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.ma
 export const clampPosition = (
   position: XYPosition = { x: 0, y: 0 },
   extent: CoordinateExtent,
-  dimensions: Partial<Dimensions>,
-  origin: NodeOrigin
+  dimensions: Partial<Dimensions>
 ) => ({
-  x: clamp(position.x, extent[0][0], extent[1][0] - (dimensions?.width ?? 0) * origin[0]),
-  y: clamp(position.y, extent[0][1], extent[1][1] - (dimensions?.height ?? 0) * origin[1]),
+  x: clamp(position.x, extent[0][0], extent[1][0] - (dimensions?.width ?? 0)),
+  y: clamp(position.y, extent[0][1], extent[1][1] - (dimensions?.height ?? 0)),
 });
 
 /**
  * Calculates the velocity of panning when the mouse is close to the edge of the canvas
  * @internal
- * @param value - One dimensional poition of the mouse (x or y)
+ * @param value - One dimensional poition of the mouse supi(x or y)
  * @param min - Minimal position on canvas before panning starts
  * @param max - Maximal position on canvas before panning starts
  * @returns - A number between 0 and 1 that represents the velocity of panning
