@@ -230,6 +230,13 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           options
         );
       },
+      getHandleConnections: ({ type, id, nodeId }) =>
+        Array.from(
+          store
+            .getState()
+            .connectionLookup.get(`${nodeId}-${type}-${id ?? null}`)
+            ?.values() ?? []
+        ),
     };
   }, []);
 
