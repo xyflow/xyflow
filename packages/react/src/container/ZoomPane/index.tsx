@@ -103,7 +103,7 @@ export function ZoomPane({
         panZoom.current?.destroy();
       };
     }
-  }, []);
+  }, [onViewportChange]);
 
   useEffect(() => {
     panZoom.current?.update({
