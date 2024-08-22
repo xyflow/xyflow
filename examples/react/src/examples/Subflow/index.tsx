@@ -28,10 +28,18 @@ const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 const initialNodes: Node[] = [
   {
+    id: 'extent',
+    position: { x: 0, y: 0 },
+    width: 1000,
+    height: 1000,
+    data: { label: 'Extent' },
+    origin: [0, 0],
+  },
+  {
     id: '1',
     type: 'input',
     data: { label: 'Node 1' },
-    position: { x: 250, y: 5 },
+    position: { x: -200, y: -500 },
     className: 'light',
     origin: [0.5, 0.5],
   },
@@ -40,7 +48,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 4' },
     position: { x: 100, y: 200 },
     className: 'light',
-    origin: [0.5, 0.5],
+    origin: [0, 0],
     style: {
       backgroundColor: 'rgba(255,50, 50, 0.5)',
       width: 500,
@@ -53,11 +61,11 @@ const initialNodes: Node[] = [
     position: { x: 15, y: 15 },
     className: 'light',
     parentId: '4',
-    origin: [0.5, 0.5],
+    origin: [0, 0],
 
     extent: [
       [0, 0],
-      [100, 100],
+      [300, 100],
     ],
   },
   {
@@ -98,9 +106,13 @@ const initialNodes: Node[] = [
   {
     id: '5a',
     data: { label: 'Node 5a' },
-    position: { x: 0, y: 0 },
+    position: { x: -100, y: -100 },
     className: 'light',
     parentId: '5',
+    // extent: [
+    //   [0, 0],
+    //   [300, 300],
+    // ],
     extent: 'parent',
   },
   {
@@ -220,6 +232,10 @@ const Subflow = () => {
       nodeTypes={nodeTypes}
       fitView
       nodeOrigin={[0, 0]}
+      nodeExtent={[
+        [0, 0],
+        [1000, 1000],
+      ]}
     >
       <MiniMap />
       <Controls />
@@ -239,7 +255,12 @@ const Subflow = () => {
 };
 
 export default () => (
-  <ReactFlowProvider>
+  <ReactFlowProvider
+    nodeExtent={[
+      [0, 0],
+      [1000, 1000],
+    ]}
+  >
     <Subflow />
   </ReactFlowProvider>
 );
