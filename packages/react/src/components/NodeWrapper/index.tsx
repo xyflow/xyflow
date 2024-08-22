@@ -41,7 +41,7 @@ export function NodeWrapper<NodeType extends Node>({
   nodeClickDistance,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const { node, internals, isParent, origin } = useStore((s) => {
+  const { node, internals, isParent } = useStore((s) => {
     const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
     const isParent = s.parentLookup.has(id);
 
@@ -49,7 +49,6 @@ export function NodeWrapper<NodeType extends Node>({
       node,
       internals: node.internals,
       isParent,
-      origin: node.origin ?? s.nodeOrigin,
     };
   }, shallow);
 

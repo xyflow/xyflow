@@ -95,6 +95,7 @@ const createStore = ({
           fitViewOnInitOptions,
           domNode,
           nodeOrigin,
+          nodeExtent,
           debug,
           fitViewSync,
         } = get();
@@ -104,7 +105,8 @@ const createStore = ({
           nodeLookup,
           parentLookup,
           domNode,
-          nodeOrigin
+          nodeOrigin,
+          nodeExtent
         );
 
         if (!updatedInternals) {
@@ -286,23 +288,10 @@ const createStore = ({
         triggerEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nodeExtent) => {
-        const { nodeLookup } = get();
-
-        for (const [, node] of nodeLookup) {
-          const positionAbsolute = clampPosition(node.internals.positionAbsolute, nodeExtent, node.measured);
-
-          nodeLookup.set(node.id, {
-            ...node,
-            internals: {
-              ...node.internals,
-              positionAbsolute,
-            },
-          });
-        }
-
         set({
           nodeExtent,
         });
+        get().setNodes(get().nodes);
       },
       panBy: (delta): Promise<boolean> => {
         const { transform, width, height, panZoom, translateExtent } = get();

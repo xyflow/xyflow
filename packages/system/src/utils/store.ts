@@ -1,4 +1,4 @@
-import { infiniteExtent } from '..';
+import { Dimensions, infiniteExtent } from '..';
 import {
   NodeBase,
   CoordinateExtent,
@@ -153,6 +153,24 @@ function updateChildPosition<NodeType extends NodeBase>(
   }
 }
 
+function clampPositionToParent<NodeType extends NodeBase>(
+  childPosition: XYPosition,
+  childDimensions: Dimensions,
+  parent: InternalNodeBase<NodeType>
+) {
+  const parentDimensions = getNodeDimensions(parent);
+  const parentPosition = parent.internals.positionAbsolute;
+
+  return clampPosition(
+    childPosition,
+    [
+      [parentPosition.x, parentPosition.y],
+      [parentPosition.x + parentDimensions.width, parentPosition.y + parentDimensions.height],
+    ],
+    childDimensions
+  );
+}
+
 function calculateZ(node: NodeBase, selectedNodeZ: number) {
   return (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0);
 }
@@ -175,15 +193,7 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   let absolutePosition = { x: parentPosition.x + position.x, y: parentPosition.y + position.y };
 
   if (childNode.extent === 'parent') {
-    const parentDimensions = getNodeDimensions(parentNode);
-    absolutePosition = clampPosition(
-      absolutePosition,
-      [
-        [parentPosition.x, parentPosition.y],
-        [parentPosition.x + parentDimensions.width, parentPosition.y + parentDimensions.height],
-      ],
-      childDimensions
-    );
+    absolutePosition = clampPositionToParent(absolutePosition, childDimensions, parentNode);
   }
 
   const childZ = calculateZ(childNode, selectedNodeZ);
@@ -287,7 +297,8 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   nodeLookup: NodeLookup<NodeType>,
   parentLookup: ParentLookup<NodeType>,
   domNode: HTMLElement | null,
-  nodeOrigin?: NodeOrigin
+  nodeOrigin?: NodeOrigin,
+  nodeExtent?: CoordinateExtent
 ): { changes: (NodeDimensionChange | NodePositionChange)[]; updatedInternals: boolean } {
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
   let updatedInternals = false;
@@ -325,11 +336,22 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
 
       if (doUpdate) {
         const nodeBounds = update.nodeElement.getBoundingClientRect();
+        let extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
+        let positionAbsolute = node.internals.positionAbsolute;
+        if (node.parentId && node.extent === 'parent') {
+          positionAbsolute = clampPositionToParent(
+            positionAbsolute,
+            getNodeDimensions(node),
+            nodeLookup.get(node.parentId)!
+          );
+        } else if (extent) {
+          positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
+        }
 
         node.measured = dimensions;
         node.internals = {
           ...node.internals,
-          positionAbsolute: getNodePositionWithOrigin(node, nodeOrigin),
+          positionAbsolute,
           handleBounds: {
             source: getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id),
             target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
