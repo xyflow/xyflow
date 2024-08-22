@@ -54,7 +54,12 @@ const createStore = ({
         //
         // When this happens, we take the note objects passed by the user and extend them with fields
         // relevant for internal React Flow operations.
-        adoptUserNodes(nodes, nodeLookup, parentLookup, { nodeOrigin, elevateNodesOnSelect, checkEquality: true });
+        adoptUserNodes(nodes, nodeLookup, parentLookup, {
+          nodeOrigin,
+          nodeExtent,
+          elevateNodesOnSelect,
+          checkEquality: true,
+        });
 
         set({ nodes });
       },

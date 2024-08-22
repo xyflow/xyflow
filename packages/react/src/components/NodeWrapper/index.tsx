@@ -2,7 +2,6 @@ import { type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
-  clampPosition,
   elementSelectionKeys,
   errorMessages,
   getNodeDimensions,
@@ -88,10 +87,6 @@ export function NodeWrapper<NodeType extends Node>({
 
   const nodeDimensions = getNodeDimensions(node);
   const inlineDimensions = getNodeInlineStyleDimensions(node);
-  // TODO: clamping should happen earlier
-  const clampedPosition = nodeExtent
-    ? clampPosition(internals.positionAbsolute, nodeExtent, nodeDimensions)
-    : internals.positionAbsolute;
 
   const hasPointerEvents = isSelectable || isDraggable || onClick || onMouseEnter || onMouseMove || onMouseLeave;
 
@@ -147,7 +142,7 @@ export function NodeWrapper<NodeType extends Node>({
       store.setState({
         ariaLiveMessage: `Moved selected node ${event.key
           .replace('Arrow', '')
-          .toLowerCase()}. New position, x: ${~~clampedPosition.x}, y: ${~~clampedPosition.y}`,
+          .toLowerCase()}. New position, x: ${~~internals.positionAbsolute.x}, y: ${~~internals.positionAbsolute.y}`,
       });
 
       moveSelectedNodes({
@@ -178,7 +173,7 @@ export function NodeWrapper<NodeType extends Node>({
       ref={nodeRef}
       style={{
         zIndex: internals.z,
-        transform: `translate(${clampedPosition.x}px,${clampedPosition.y}px)`,
+        transform: `translate(${internals.positionAbsolute.x}px,${internals.positionAbsolute.y}px)`,
         pointerEvents: hasPointerEvents ? 'all' : 'none',
         visibility: hasDimensions ? 'visible' : 'hidden',
         ...node.style,
@@ -203,8 +198,8 @@ export function NodeWrapper<NodeType extends Node>({
           id={id}
           data={node.data}
           type={nodeType}
-          positionAbsoluteX={clampedPosition.x}
-          positionAbsoluteY={clampedPosition.y}
+          positionAbsoluteX={internals.positionAbsolute.x}
+          positionAbsoluteY={internals.positionAbsolute.y}
           selected={node.selected}
           selectable={isSelectable}
           draggable={isDraggable}

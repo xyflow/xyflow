@@ -18,7 +18,14 @@ import {
   ParentLookup,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
-import { getBoundsOfRects, getNodeDimensions, isNumeric, nodeToRect } from './general';
+import {
+  clampPosition,
+  getBoundsOfRects,
+  getNodeDimensions,
+  isCoordinateExtent,
+  isNumeric,
+  nodeToRect,
+} from './general';
 import { getNodePositionWithOrigin } from './graph';
 import { ParentExpandChild } from './types';
 
@@ -28,6 +35,7 @@ const defaultOptions = {
   elevateNodesOnSelect: true,
   defaults: {},
 };
+
 const adoptUserNodesDefaultOptions = {
   ...defaultOptions,
   checkEquality: true,
@@ -63,6 +71,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   options?: UpdateNodesOptions<NodeType>
 ) {
   const _options = { ...adoptUserNodesDefaultOptions, ...options };
+
   const tmpLookup = new Map(nodeLookup);
   nodeLookup.clear();
   parentLookup.clear();
@@ -74,6 +83,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     if (_options.checkEquality && userNode === internalNode?.internals.userNode) {
       nodeLookup.set(userNode.id, internalNode);
     } else {
+      const positionOrigin = getNodePositionWithOrigin(userNode, _options.nodeOrigin);
+      const extent = isCoordinateExtent(userNode.extent) ? userNode.extent : _options.nodeExtent;
+      const positionAbsolute = clampPosition(positionOrigin, extent, getNodeDimensions(userNode));
+
       internalNode = {
         ..._options.defaults,
         ...userNode,
@@ -82,7 +95,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
           height: userNode.measured?.height,
         },
         internals: {
-          positionAbsolute: getNodePositionWithOrigin(userNode, _options.nodeOrigin),
+          positionAbsolute,
           // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
           handleBounds: !userNode.measured ? undefined : internalNode?.internals.handleBounds,
           z: calculateZ(userNode, selectedNodeZ),

@@ -114,7 +114,7 @@ export const getInitialStore = ({
 
   return {
     flowId: writable<string | null>(null),
-    nodes: createNodesStore(nodes, nodeLookup, parentLookup, storeNodeOrigin),
+    nodes: createNodesStore(nodes, nodeLookup, parentLookup, storeNodeOrigin, storeNodeExtent),
     nodeLookup: readable<NodeLookup<InternalNode>>(nodeLookup),
     parentLookup: readable<ParentLookup<InternalNode>>(parentLookup),
     edgeLookup: readable<EdgeLookup<Edge>>(edgeLookup),
