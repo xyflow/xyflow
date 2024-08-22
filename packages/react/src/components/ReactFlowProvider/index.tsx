@@ -4,7 +4,7 @@ import { Provider } from '../../contexts/StoreContext';
 import { createStore } from '../../store';
 import { BatchProvider } from '../BatchProvider';
 import type { Node, Edge } from '../../types';
-import { NodeOrigin } from '@xyflow/system';
+import { CoordinateExtent, NodeOrigin } from '@xyflow/system';
 
 export type ReactFlowProviderProps = {
   initialNodes?: Node[];
@@ -15,6 +15,7 @@ export type ReactFlowProviderProps = {
   initialHeight?: number;
   fitView?: boolean;
   nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
   children: ReactNode;
 };
 
@@ -27,6 +28,7 @@ export function ReactFlowProvider({
   initialHeight: height,
   fitView,
   nodeOrigin,
+  nodeExtent,
   children,
 }: ReactFlowProviderProps) {
   const [store] = useState(() =>
@@ -39,6 +41,7 @@ export function ReactFlowProvider({
       height,
       fitView,
       nodeOrigin,
+      nodeExtent,
     })
   );
 

@@ -1,3 +1,4 @@
+import { infiniteExtent } from '..';
 import {
   NodeBase,
   CoordinateExtent,
@@ -23,6 +24,7 @@ import { ParentExpandChild } from './types';
 
 const defaultOptions = {
   nodeOrigin: [0, 0] as NodeOrigin,
+  nodeExtent: infiniteExtent,
   elevateNodesOnSelect: true,
   defaults: {},
 };
@@ -48,6 +50,7 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
 
 type UpdateNodesOptions<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
   elevateNodesOnSelect?: boolean;
   defaults?: Partial<NodeType>;
   checkEquality?: boolean;

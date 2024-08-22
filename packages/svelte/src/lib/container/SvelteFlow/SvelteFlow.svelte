@@ -53,6 +53,7 @@
   export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
   export let isValidConnection: $$Props['isValidConnection'] = undefined;
   export let translateExtent: $$Props['translateExtent'] = undefined;
+  export let nodeExtent: $$Props['nodeExtent'] = undefined;
   export let onlyRenderVisibleElements: $$Props['onlyRenderVisibleElements'] = undefined;
   export let panOnScrollMode: $$Props['panOnScrollMode'] = PanOnScrollMode.Free;
   export let preventScrolling: $$Props['preventScrolling'] = true;
@@ -102,7 +103,8 @@
         width,
         height,
         fitView,
-        nodeOrigin
+        nodeOrigin,
+        nodeExtent
       });
 
   onMount(() => {

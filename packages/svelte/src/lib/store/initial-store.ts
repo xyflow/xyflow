@@ -75,7 +75,8 @@ export const getInitialStore = ({
   width,
   height,
   fitView,
-  nodeOrigin
+  nodeOrigin,
+  nodeExtent
 }: {
   nodes?: Node[];
   edges?: Edge[];
@@ -83,17 +84,23 @@ export const getInitialStore = ({
   height?: number;
   fitView?: boolean;
   nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
 }) => {
   const nodeLookup: NodeLookup = new Map();
   const parentLookup = new Map();
+  const connectionLookup = new Map();
+  const edgeLookup = new Map();
+
   const storeNodeOrigin = nodeOrigin ?? [0, 0];
+  const storeNodeExtent = nodeExtent ?? infiniteExtent;
+
   adoptUserNodes(nodes, nodeLookup, parentLookup, {
+    nodeExtent: storeNodeExtent,
     nodeOrigin: storeNodeOrigin,
     elevateNodesOnSelect: false,
     checkEquality: false
   });
-  const connectionLookup = new Map();
-  const edgeLookup = new Map();
+
   updateConnectionLookup(connectionLookup, edgeLookup, edges);
 
   let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
@@ -121,7 +128,7 @@ export const getInitialStore = ({
     maxZoom: writable<number>(2),
     nodeOrigin: writable<NodeOrigin>(storeNodeOrigin),
     nodeDragThreshold: writable<number>(1),
-    nodeExtent: writable<CoordinateExtent>(infiniteExtent),
+    nodeExtent: writable<CoordinateExtent>(storeNodeExtent),
     translateExtent: writable<CoordinateExtent>(infiniteExtent),
     autoPanOnNodeDrag: writable<boolean>(true),
     autoPanOnConnect: writable<boolean>(true),

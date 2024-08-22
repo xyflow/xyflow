@@ -37,7 +37,8 @@ export function createStore({
   width,
   height,
   fitView: fitViewOnCreate,
-  nodeOrigin
+  nodeOrigin,
+  nodeExtent
 }: {
   nodes?: Node[];
   edges?: Edge[];
@@ -45,6 +46,7 @@ export function createStore({
   height?: number;
   fitView?: boolean;
   nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
 }): SvelteFlowStore {
   const store = getInitialStore({
     nodes,
@@ -52,7 +54,8 @@ export function createStore({
     width,
     height,
     fitView: fitViewOnCreate,
-    nodeOrigin
+    nodeOrigin,
+    nodeExtent
   });
 
   function setNodeTypes(nodeTypes: NodeTypes) {
@@ -482,7 +485,8 @@ export function createStoreContext({
   width,
   height,
   fitView,
-  nodeOrigin
+  nodeOrigin,
+  nodeExtent
 }: {
   nodes?: Node[];
   edges?: Edge[];
@@ -490,8 +494,9 @@ export function createStoreContext({
   height?: number;
   fitView?: boolean;
   nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
 }) {
-  const store = createStore({ nodes, edges, width, height, fitView, nodeOrigin });
+  const store = createStore({ nodes, edges, width, height, fitView, nodeOrigin, nodeExtent });
 
   setContext(key, {
     getStore: () => store
