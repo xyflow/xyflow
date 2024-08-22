@@ -288,10 +288,20 @@ const createStore = ({
         triggerEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nodeExtent) => {
+        const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
+
         set({
           nodeExtent,
         });
-        get().setNodes(get().nodes);
+
+        adoptUserNodes(nodes, nodeLookup, parentLookup, {
+          nodeOrigin,
+          nodeExtent,
+          elevateNodesOnSelect,
+          checkEquality: false,
+        });
+
+        set({ nodes });
       },
       panBy: (delta): Promise<boolean> => {
         const { transform, width, height, panZoom, translateExtent } = get();
