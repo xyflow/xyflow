@@ -163,13 +163,35 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   nodeOrigin: NodeOrigin,
   selectedNodeZ: number
 ) {
-  const position = getNodePositionWithOrigin(childNode, nodeOrigin);
+  const childDimensions = getNodeDimensions(childNode);
+  const parentPosition = parentNode.internals.positionAbsolute;
+
+  let position = getNodePositionWithOrigin(childNode, nodeOrigin);
+
+  if (isCoordinateExtent(childNode.extent)) {
+    position = clampPosition(position, childNode.extent, childDimensions);
+  }
+
+  let absolutePosition = { x: parentPosition.x + position.x, y: parentPosition.y + position.y };
+
+  if (childNode.extent === 'parent') {
+    const parentDimensions = getNodeDimensions(parentNode);
+    absolutePosition = clampPosition(
+      absolutePosition,
+      [
+        [parentPosition.x, parentPosition.y],
+        [parentPosition.x + parentDimensions.width, parentPosition.y + parentDimensions.height],
+      ],
+      childDimensions
+    );
+  }
+
   const childZ = calculateZ(childNode, selectedNodeZ);
   const parentZ = parentNode.internals.z ?? 0;
 
   return {
-    x: parentNode.internals.positionAbsolute.x + position.x,
-    y: parentNode.internals.positionAbsolute.y + position.y,
+    x: absolutePosition.x,
+    y: absolutePosition.y,
     z: parentZ > childZ ? parentZ : childZ,
   };
 }

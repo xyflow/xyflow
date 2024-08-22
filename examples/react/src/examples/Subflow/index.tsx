@@ -13,7 +13,6 @@ import {
   MiniMap,
   Background,
   Panel,
-  NodeOrigin,
   useUpdateNodeInternals,
   ReactFlowProvider,
 } from '@xyflow/react';
@@ -34,6 +33,7 @@ const initialNodes: Node[] = [
     height: 1000,
     data: { label: 'Extent' },
     origin: [0, 0],
+    zIndex: -1,
   },
   {
     id: '1',
@@ -58,11 +58,10 @@ const initialNodes: Node[] = [
   {
     id: '4a',
     data: { label: 'Node 4a' },
-    position: { x: 15, y: 15 },
+    position: { x: -15, y: -15 },
     className: 'light',
     parentId: '4',
     origin: [0, 0],
-
     extent: [
       [0, 0],
       [300, 100],
