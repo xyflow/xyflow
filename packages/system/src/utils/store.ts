@@ -41,12 +41,23 @@ const adoptUserNodesDefaultOptions = {
   checkEquality: true,
 };
 
+function mergeObjects<T extends Record<string, any>>(base: T, incoming?: Partial<T>): T {
+  const result = { ...base };
+  for (const key in incoming) {
+    if (incoming[key] !== undefined) {
+      result[key] = incoming[key];
+    }
+  }
+
+  return result;
+}
+
 export function updateAbsolutePositions<NodeType extends NodeBase>(
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options?: UpdateNodesOptions<NodeType>
 ) {
-  const _options = { ...defaultOptions, ...options };
+  const _options = mergeObjects(defaultOptions, options);
   for (const node of nodeLookup.values()) {
     if (!node.parentId) {
       continue;
@@ -70,7 +81,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options?: UpdateNodesOptions<NodeType>
 ) {
-  const _options = { ...adoptUserNodesDefaultOptions, ...options };
+  const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
 
   const tmpLookup = new Map(nodeLookup);
   nodeLookup.clear();
@@ -117,7 +128,7 @@ function updateChildPosition<NodeType extends NodeBase>(
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options?: UpdateNodesOptions<NodeType>
 ) {
-  const _options = { ...defaultOptions, ...options };
+  const _options = mergeObjects(defaultOptions, options);
 
   const parentId = node.parentId!;
   const parentNode = nodeLookup.get(parentId);

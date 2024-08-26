@@ -1,6 +1,5 @@
 import { createWithEqualityFn } from 'zustand/traditional';
 import {
-  clampPosition,
   getFitViewNodes,
   fitView as fitViewSystem,
   adoptUserNodes,
