@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import type { Rect, Viewport } from '@xyflow/system';
+import type { HandleConnection, HandleType, Rect, Viewport } from '@xyflow/system';
 import type { Node, Edge, ViewportHelperFunctions, InternalNode } from '.';
 
 export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
@@ -173,6 +173,23 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     dataUpdate: Partial<EdgeType['data']> | ((edge: EdgeType) => Partial<EdgeType['data']>),
     options?: { replace: boolean }
   ) => void;
+  /**
+   * Gets all connections for a given handle belonging to a specific node.
+   *
+   * @param type - handle type 'source' or 'target'
+   * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
+   * @param nodeId - the node id the handle belongs to
+   * @returns an array with handle connections
+   */
+  getHandleConnections: ({
+    type,
+    id,
+    nodeId,
+  }: {
+    type: HandleType;
+    nodeId: string;
+    id?: string | null;
+  }) => HandleConnection[];
 };
 
 export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = GeneralHelpers<

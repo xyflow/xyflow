@@ -14,7 +14,9 @@ import {
   getViewportForBounds,
   getElementsToRemove,
   rendererPointToPoint,
-  evaluateAbsolutePosition
+  evaluateAbsolutePosition,
+  type HandleType,
+  type HandleConnection
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -230,6 +232,23 @@ export function useSvelteFlow(): {
    * @returns the nodes, edges and the viewport as a JSON object
    */
   toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
+  /**
+   * Gets all connections for a given handle belonging to a specific node.
+   *
+   * @param type - handle type 'source' or 'target'
+   * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
+   * @param nodeId - the node id the handle belongs to
+   * @returns an array with handle connections
+   */
+  getHandleConnections: ({
+    type,
+    id,
+    nodeId
+  }: {
+    type: HandleType;
+    nodeId: string;
+    id?: string | null;
+  }) => HandleConnection[];
 } {
   const {
     zoomIn,
@@ -248,6 +267,7 @@ export function useSvelteFlow(): {
     domNode,
     nodeLookup,
     edgeLookup,
+    connectionLookup,
     nodeOrigin
   } = useStore();
 
@@ -523,6 +543,12 @@ export function useSvelteFlow(): {
 
       nodes.update((nds) => nds);
     },
+    getHandleConnections: ({ type, id, nodeId }) =>
+      Array.from(
+        get(connectionLookup)
+          .get(`${nodeId}-${type}-${id ?? null}`)
+          ?.values() ?? []
+      ),
     viewport
   };
 }
