@@ -61,7 +61,7 @@ function onPointerDown(
     return;
   }
 
-  const fromHandleInternal = getHandle(nodeId, handleType, handleId, nodeLookup);
+  const fromHandleInternal = getHandle(nodeId, handleType, handleId, nodeLookup, connectionMode);
   if (!fromHandleInternal) {
     return;
   }
@@ -289,7 +289,7 @@ function isValidHandle(
 
     result.isValid = isValid && isValidConnection(connection);
 
-    result.toHandle = getHandle(handleNodeId, handleType, handleId, nodeLookup, false);
+    result.toHandle = getHandle(handleNodeId, handleType, handleId, nodeLookup, connectionMode, false);
   }
 
   return result;
