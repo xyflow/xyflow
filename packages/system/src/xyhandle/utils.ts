@@ -1,5 +1,5 @@
 import { getHandlePosition, getOverlappingArea, nodeToRect } from '../utils';
-import type { HandleType, XYPosition, Handle, InternalNodeBase, NodeLookup } from '../types';
+import type { HandleType, XYPosition, Handle, InternalNodeBase, NodeLookup, ConnectionMode } from '../types';
 
 function getNodesWithinDistance(position: XYPosition, nodeLookup: NodeLookup, distance: number): InternalNodeBase[] {
   const nodes: InternalNodeBase[] = [];
@@ -78,6 +78,7 @@ export function getHandle(
   handleType: HandleType,
   handleId: string | null,
   nodeLookup: NodeLookup,
+  connectionMode: ConnectionMode,
   withAbsolutePosition = false
 ): Handle | null {
   const node = nodeLookup.get(nodeId);
@@ -85,7 +86,10 @@ export function getHandle(
     return null;
   }
 
-  const handles = node.internals.handleBounds?.[handleType];
+  const handles =
+    connectionMode === 'strict'
+      ? node.internals.handleBounds?.[handleType]
+      : [...(node.internals.handleBounds?.source ?? []), ...(node.internals.handleBounds?.target ?? [])];
   const handle = (handleId ? handles?.find((h) => h.id === handleId) : handles?.[0]) ?? null;
 
   return handle && withAbsolutePosition
