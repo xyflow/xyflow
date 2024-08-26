@@ -45,7 +45,8 @@ function mergeObjects<T extends Record<string, any>>(base: T, incoming?: Partial
   const result = { ...base };
   for (const key in incoming) {
     if (incoming[key] !== undefined) {
-      result[key] = incoming[key];
+      // typecast is safe here, because we check for undefined
+      result[key] = (incoming as T)[key]!;
     }
   }
 
