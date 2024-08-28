@@ -1,5 +1,15 @@
 import { useCallback } from 'react';
-import { ReactFlow, Node, Edge, addEdge, useNodesState, useEdgesState, MarkerType, OnConnect } from '@xyflow/react';
+import {
+  ReactFlow,
+  Node,
+  Edge,
+  addEdge,
+  useNodesState,
+  useEdgesState,
+  MarkerType,
+  OnConnect,
+  ConnectionMode,
+} from '@xyflow/react';
 
 import CustomNode from './CustomNode';
 import FloatingEdge from './FloatingEdge';

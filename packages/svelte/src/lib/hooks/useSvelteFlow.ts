@@ -19,6 +19,9 @@ import {
   getBoundsOfBoxes,
   boxToRect,
   isInternalNodeBase
+  evaluateAbsolutePosition,
+  type HandleType,
+  type HandleConnection
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -242,6 +245,22 @@ export function useSvelteFlow(): {
    * @returns the bounds of the given nodes
    */
   getNodesBounds: (nodes: (Node | InternalNode | string)[]) => Rect;
+   * Gets all connections for a given handle belonging to a specific node.
+   *
+   * @param type - handle type 'source' or 'target'
+   * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
+   * @param nodeId - the node id the handle belongs to
+   * @returns an array with handle connections
+   */
+  getHandleConnections: ({
+    type,
+    id,
+    nodeId
+  }: {
+    type: HandleType;
+    nodeId: string;
+    id?: string | null;
+  }) => HandleConnection[];
 } {
   const {
     zoomIn,
@@ -260,15 +279,32 @@ export function useSvelteFlow(): {
     domNode,
     nodeLookup,
     nodeOrigin,
-    edgeLookup
+    edgeLookup,
+    connectionLookup,
   } = useStore();
 
-  const getNodeRect = (nodeOrRect: Node | { id: Node['id'] }): Rect | null => {
-    const node =
-      isNode(nodeOrRect) && nodeHasDimensions(nodeOrRect)
-        ? nodeOrRect
-        : get(nodeLookup).get(nodeOrRect.id);
-    return node ? nodeToRect(node) : null;
+  const getNodeRect = (node: Node | { id: Node['id'] }): Rect | null => {
+    const $nodeLookup = get(nodeLookup);
+    const nodeToUse = isNode(node) ? node : $nodeLookup.get(node.id)!;
+    const position = nodeToUse.parentId
+      ? evaluateAbsolutePosition(
+          nodeToUse.position,
+          nodeToUse.measured,
+          nodeToUse.parentId,
+          $nodeLookup,
+          get(nodeOrigin)
+        )
+      : nodeToUse.position;
+
+    const nodeWithPosition = {
+      id: nodeToUse.id,
+      position,
+      width: nodeToUse.measured?.width ?? nodeToUse.width,
+      height: nodeToUse.measured?.height ?? nodeToUse.height,
+      data: nodeToUse.data
+    };
+
+    return nodeToRect(nodeWithPosition);
   };
 
   const updateNode = (
@@ -519,7 +555,6 @@ export function useSvelteFlow(): {
 
       nodes.update((nds) => nds);
     },
-    viewport,
     getNodesBounds: (nodes) => {
       if (nodes.length === 0) {
         return { x: 0, y: 0, width: 0, height: 0 };
@@ -547,6 +582,13 @@ export function useSvelteFlow(): {
 
       return boxToRect(box);
     }
+    getHandleConnections: ({ type, id, nodeId }) =>
+      Array.from(
+        get(connectionLookup)
+          .get(`${nodeId}-${type}-${id ?? null}`)
+          ?.values() ?? []
+      ),
+    viewport
   };
 }
 function getElements(lookup: Map<string, InternalNode>, ids: string[]): Node[];

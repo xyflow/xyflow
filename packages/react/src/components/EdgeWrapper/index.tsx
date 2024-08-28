@@ -255,8 +255,6 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
             targetPosition={targetPosition}
             setUpdateHover={setUpdateHover}
             setReconnecting={setReconnecting}
-            sourceHandleId={edge.sourceHandle}
-            targetHandleId={edge.targetHandle}
           />
         )}
       </g>

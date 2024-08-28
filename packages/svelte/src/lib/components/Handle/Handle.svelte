@@ -21,7 +21,6 @@
   export let type: $$Props['type'] = 'source';
   export let position: $$Props['position'] = Position.Top;
   export let style: $$Props['style'] = undefined;
-  export let isConnectable: $$Props['isConnectable'] = undefined;
   export let isValidConnection: $$Props['isValidConnection'] = undefined;
   export let onconnect: $$Props['onconnect'] = undefined;
   export let ondisconnect: $$Props['ondisconnect'] = undefined;
@@ -29,13 +28,16 @@
   // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
   // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
 
+  let isConnectableProp: $$Props['isConnectable'] = undefined;
+  export { isConnectableProp as isConnectable };
+
   let className: $$Props['class'] = undefined;
   export { className as class };
 
   $: isTarget = type === 'target';
   const nodeId = getContext<string>('svelteflow__node_id');
   const connectable = getContext<Writable<boolean>>('svelteflow__node_connectable');
-  $: isConnectable = isConnectable !== undefined ? isConnectable : $connectable;
+  $: isConnectable = isConnectableProp !== undefined ? isConnectableProp : $connectable;
 
   $: handleId = id || null;
 
@@ -99,8 +101,8 @@
             handleType: startParams.handleType
           });
         },
-        onConnectEnd: (event) => {
-          $onConnectEndAction?.(event);
+        onConnectEnd: (event, connectionState) => {
+          $onConnectEndAction?.(event, connectionState);
         },
         getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom],
         getFromHandle: () => $connection.fromHandle

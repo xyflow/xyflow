@@ -21,7 +21,7 @@ export type BackgroundProps = {
   /** Size of a single pattern element */
   size?: number;
   /** Offset of the pattern */
-  offset?: number;
+  offset?: number | [number, number];
   /** Line width of the Line pattern */
   lineWidth?: number;
   /** Variant of the pattern

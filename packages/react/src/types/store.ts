@@ -55,7 +55,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   nodes: NodeType[];
   nodeLookup: NodeLookup<InternalNode<NodeType>>;
   parentLookup: ParentLookup<InternalNode<NodeType>>;
-  edges: Edge[];
+  edges: EdgeType[];
   edgeLookup: EdgeLookup<EdgeType>;
   connectionLookup: ConnectionLookup;
   onNodesChange: OnNodesChange<NodeType> | null;
@@ -152,7 +152,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodes: (nodes: NodeType[]) => void;
   setEdges: (edges: EdgeType[]) => void;
   setDefaultNodesAndEdges: (nodes?: NodeType[], edges?: EdgeType[]) => void;
-  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
+  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>, params?: { triggerFitView: boolean }) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;

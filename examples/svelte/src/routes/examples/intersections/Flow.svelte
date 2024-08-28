@@ -13,12 +13,14 @@
 	const { getIntersectingNodes } = useSvelteFlow();
 
 	function onNodeDrag({ detail: { targetNode } }) {
-		const intersections = getIntersectingNodes(targetNode).map((n) => n.id);
+		if (targetNode) {
+			const intersections = getIntersectingNodes(targetNode).map((n) => n.id);
 
-		$nodes.forEach((n) => {
-			n.class = intersections.includes(n.id) ? 'highlight' : '';
-		});
-		$nodes = $nodes;
+			$nodes.forEach((n) => {
+				n.class = intersections.includes(n.id) ? 'highlight' : '';
+			});
+			$nodes = $nodes;
+		}
 	}
 </script>
 

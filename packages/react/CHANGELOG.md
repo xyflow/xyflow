@@ -1,5 +1,62 @@
 # @xyflow/react
 
+## 12.2.0
+
+### Minor Changes
+
+- [#4574](https://github.com/xyflow/xyflow/pull/4574) [`b65aed19`](https://github.com/xyflow/xyflow/commit/b65aed19840c515949bef236a23d5f0a754cdeb4) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Add `getHandleConnections` helper to `useReactFlow` & `useSvelteFlow`
+
+### Patch Changes
+
+- [#4594](https://github.com/xyflow/xyflow/pull/4594) [`5138d90b`](https://github.com/xyflow/xyflow/commit/5138d90bdb91ff5d8dbeb8c8d29bdfd31c5b59d6) Thanks [@peterkogo](https://github.com/peterkogo)! - Fixed reconnecting edges with loose connectionMode
+
+- [#4603](https://github.com/xyflow/xyflow/pull/4603) [`12dbe125`](https://github.com/xyflow/xyflow/commit/12dbe125755fad7d2f6dff19100872dd823d1012) Thanks [@moklick](https://github.com/moklick)! - use correct index when using setNodes for inserting
+
+- Updated dependencies [[`5138d90b`](https://github.com/xyflow/xyflow/commit/5138d90bdb91ff5d8dbeb8c8d29bdfd31c5b59d6), [`12dbe125`](https://github.com/xyflow/xyflow/commit/12dbe125755fad7d2f6dff19100872dd823d1012)]:
+  - @xyflow/system@0.0.40
+
+## 12.1.1
+
+### Patch Changes
+
+- [#4568](https://github.com/xyflow/xyflow/pull/4568) [`c3e62782`](https://github.com/xyflow/xyflow/commit/c3e6278222dc13333f75ecdbe634201ddabab87a) Thanks [@peterkogo](https://github.com/peterkogo)! - Only display grab cursor when panOnDrag is on left mouse button
+
+- [#4567](https://github.com/xyflow/xyflow/pull/4567) [`cc75c29f`](https://github.com/xyflow/xyflow/commit/cc75c29f3c7450321c64107f5b2a0f2084a0431c) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix internal type of edges in store
+
+- Updated dependencies [[`c3e62782`](https://github.com/xyflow/xyflow/commit/c3e6278222dc13333f75ecdbe634201ddabab87a)]:
+  - @xyflow/system@0.0.39
+
+## 12.1.0
+
+### Minor Changes
+
+- [#4555](https://github.com/xyflow/xyflow/pull/4555) [`24e87e39`](https://github.com/xyflow/xyflow/commit/24e87e398419646f671af1085fbfec3e197bc56b) Thanks [@peterkogo](https://github.com/peterkogo)! - Added final connection state as a function parameter to onReconnectEnd
+
+- [#4554](https://github.com/xyflow/xyflow/pull/4554) [`cca11ea1`](https://github.com/xyflow/xyflow/commit/cca11ea1c549f3fae1e52f5c121f607ded9764f3) Thanks [@peterkogo](https://github.com/peterkogo)! - Added optional selector for useConnection hook
+
+- [#4549](https://github.com/xyflow/xyflow/pull/4549) [`99733c01`](https://github.com/xyflow/xyflow/commit/99733c01bc70f9463e7dba0046c5f8d839a1d2ba) Thanks [@moklick](https://github.com/moklick)! - feat(onConnectEnd): pass connectionState param
+
+### Patch Changes
+
+- [#4550](https://github.com/xyflow/xyflow/pull/4550) [`41981970`](https://github.com/xyflow/xyflow/commit/41981970e40baae29ec1631ea5f1eec9c27dfb12) Thanks [@moklick](https://github.com/moklick)! - fix(fitView): only trigger for resize observer
+
+- [#4501](https://github.com/xyflow/xyflow/pull/4501) [`ec64b572`](https://github.com/xyflow/xyflow/commit/ec64b57240f0c61912d4910b095210f57d8df8ce) Thanks [@jeffgord](https://github.com/jeffgord)! - fix(background): use offset prop correctly for dots variant
+
+- [#4548](https://github.com/xyflow/xyflow/pull/4548) [`692e6440`](https://github.com/xyflow/xyflow/commit/692e6440b10e75cb31f3f3172aede9ed4d7f05d2) Thanks [@peterkogo](https://github.com/peterkogo)! - Replaced algorithm used for searching close handles while connecting
+
+- [#4547](https://github.com/xyflow/xyflow/pull/4547) [`fdff601d`](https://github.com/xyflow/xyflow/commit/fdff601de418f2ac6a78f04e5a586d67b8d436e6) Thanks [@moklick](https://github.com/moklick)! - chore(react): re-export Handle type
+
+- Updated dependencies [[`b63a3734`](https://github.com/xyflow/xyflow/commit/b63a3734b84b6817603c8e6e48e2836f048acc3b), [`24e87e39`](https://github.com/xyflow/xyflow/commit/24e87e398419646f671af1085fbfec3e197bc56b), [`692e6440`](https://github.com/xyflow/xyflow/commit/692e6440b10e75cb31f3f3172aede9ed4d7f05d2), [`559d4926`](https://github.com/xyflow/xyflow/commit/559d49264b940f93c5e205bf984aa76230b10806), [`4ecfd7e1`](https://github.com/xyflow/xyflow/commit/4ecfd7e19720b70024d0b5dff27d4537dd46b49a), [`e7ef328f`](https://github.com/xyflow/xyflow/commit/e7ef328f8f9286a817b19457d38c491e6c0bcffd), [`99733c01`](https://github.com/xyflow/xyflow/commit/99733c01bc70f9463e7dba0046c5f8d839a1d2ba)]:
+  - @xyflow/system@0.0.38
+
+## 12.0.4
+
+### Patch Changes
+
+- [#4480](https://github.com/xyflow/xyflow/pull/4480) [`aae526f4`](https://github.com/xyflow/xyflow/commit/aae526f4ce0818e8ab5ee9f44dd7ce4b70eb4cf9) Thanks [@peterkogo](https://github.com/peterkogo)! - fix(dragging) nodeExtent breaks dragging nodes in subflows
+
+- [#4498](https://github.com/xyflow/xyflow/pull/4498) [`7a6e9e30`](https://github.com/xyflow/xyflow/commit/7a6e9e3091c8ee0aedbf8ae6e5c4ee08485417ab) Thanks [@peterkogo](https://github.com/peterkogo)! - fix(pane) only capture pointer after a valid selection has started, fixes #4492
+
 ## 12.0.3
 
 ### Patch Changes

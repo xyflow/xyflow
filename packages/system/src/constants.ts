@@ -16,7 +16,7 @@ export const errorMessages = {
     { id, sourceHandle, targetHandle }: { id: string; sourceHandle: string | null; targetHandle: string | null }
   ) =>
     `Couldn't create edge for ${handleType} handle id: "${
-      !sourceHandle ? sourceHandle : targetHandle
+      handleType === 'source' ? sourceHandle : targetHandle
     }", edge id: ${id}.`,
   error010: () => 'Handle: No node id found. Make sure to only use a Handle inside a custom Node.',
   error011: (edgeType: string) => `Edge type "${edgeType}" not found. Using fallback type "default".`,

@@ -120,7 +120,6 @@ export function Pane({
   const onPointerDown = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode, edgeLookup } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
-    (event.target as Element)?.setPointerCapture?.(event.pointerId);
 
     if (
       !elementsSelectable ||
@@ -131,6 +130,8 @@ export function Pane({
     ) {
       return;
     }
+
+    (event.target as Element)?.setPointerCapture?.(event.pointerId);
 
     selectionStarted.current = true;
     selectionInProgress.current = false;
@@ -252,9 +253,11 @@ export function Pane({
     selectionStarted.current = false;
   };
 
+  const draggable = panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0));
+
   return (
     <div
-      className={cc(['react-flow__pane', { draggable: panOnDrag, dragging, selection: isSelecting }])}
+      className={cc(['react-flow__pane', { draggable, dragging, selection: isSelecting }])}
       onClick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}

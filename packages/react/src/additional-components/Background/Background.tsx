@@ -24,7 +24,7 @@ function BackgroundComponent({
   // only used for lines and cross
   size,
   lineWidth = 1,
-  offset = 2,
+  offset = 0,
   color,
   bgColor,
   style,
@@ -39,12 +39,10 @@ function BackgroundComponent({
   const gapXY: [number, number] = Array.isArray(gap) ? gap : [gap, gap];
   const scaledGap: [number, number] = [gapXY[0] * transform[2] || 1, gapXY[1] * transform[2] || 1];
   const scaledSize = patternSize * transform[2];
+  const offsetXY: [number, number] = Array.isArray(offset) ? offset : [offset, offset];
+  const scaledOffset: [number, number] = [offsetXY[0] * transform[2] || 1, offsetXY[1] * transform[2] || 1]
 
   const patternDimensions: [number, number] = isCross ? [scaledSize, scaledSize] : scaledGap;
-
-  const patternOffset = isDots
-    ? [scaledSize / offset, scaledSize / offset]
-    : [patternDimensions[0] / offset, patternDimensions[1] / offset];
 
   const _patternId = `${patternId}${id ? id : ''}`;
 
@@ -69,10 +67,10 @@ function BackgroundComponent({
         width={scaledGap[0]}
         height={scaledGap[1]}
         patternUnits="userSpaceOnUse"
-        patternTransform={`translate(-${patternOffset[0]},-${patternOffset[1]})`}
+        patternTransform={`translate(-${scaledOffset[0]},-${scaledOffset[1]})`}
       >
         {isDots ? (
-          <DotPattern radius={scaledSize / offset} className={patternClassName} />
+          <DotPattern radius={scaledSize / 2} className={patternClassName} />
         ) : (
           <LinePattern
             dimensions={patternDimensions}

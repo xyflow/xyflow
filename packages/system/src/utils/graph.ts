@@ -196,21 +196,22 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
 
   const visibleNodes: InternalNodeBase<NodeType>[] = [];
 
-  for (const [, node] of nodes) {
+  for (const node of nodes.values()) {
     const { measured, selectable = true, hidden = false } = node;
-    const width = measured.width ?? node.width ?? node.initialWidth ?? null;
-    const height = measured.height ?? node.height ?? node.initialHeight ?? null;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
       continue;
     }
 
+    const width = measured.width ?? node.width ?? node.initialWidth ?? null;
+    const height = measured.height ?? node.height ?? node.initialHeight ?? null;
+
     const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node));
-    const notInitialized = width === null || height === null;
+    const area = (width ?? 0) * (height ?? 0);
 
     const partiallyVisible = partially && overlappingArea > 0;
-    const area = (width ?? 0) * (height ?? 0);
-    const isVisible = notInitialized || partiallyVisible || overlappingArea >= area;
+    const forceInitialRender = !node.internals.handleBounds;
+    const isVisible = forceInitialRender || partiallyVisible || overlappingArea >= area;
 
     if (isVisible || node.dragging) {
       visibleNodes.push(node);

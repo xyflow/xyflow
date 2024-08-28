@@ -50,7 +50,7 @@ export type OnConnectStartParams = {
 
 export type OnConnectStart = (event: MouseEvent | TouchEvent, params: OnConnectStartParams) => void;
 export type OnConnect = (connection: Connection) => void;
-export type OnConnectEnd = (event: MouseEvent | TouchEvent) => void;
+export type OnConnectEnd = (event: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => void;
 
 export type IsValidConnection = (edge: EdgeBase | Connection) => boolean;
 
@@ -172,6 +172,11 @@ export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNod
 export type ConnectionState<NodeType extends InternalNodeBase = InternalNodeBase> =
   | ConnectionInProgress<NodeType>
   | NoConnection;
+
+export type FinalConnectionState<NodeType extends InternalNodeBase = InternalNodeBase> = Omit<
+  ConnectionState<NodeType>,
+  'inProgress'
+>;
 
 export type UpdateConnection<NodeType extends InternalNodeBase = InternalNodeBase> = (
   params: ConnectionState<NodeType>

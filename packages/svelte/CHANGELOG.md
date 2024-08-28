@@ -1,5 +1,44 @@
 # @xyflow/svelte
 
+## 0.1.17
+
+### Patch Changes
+
+- [#4574](https://github.com/xyflow/xyflow/pull/4574) [`b65aed19`](https://github.com/xyflow/xyflow/commit/b65aed19840c515949bef236a23d5f0a754cdeb4) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Add `getHandleConnections` helper to `useReactFlow` & `useSvelteFlow`
+
+- Updated dependencies [[`5138d90b`](https://github.com/xyflow/xyflow/commit/5138d90bdb91ff5d8dbeb8c8d29bdfd31c5b59d6), [`12dbe125`](https://github.com/xyflow/xyflow/commit/12dbe125755fad7d2f6dff19100872dd823d1012)]:
+  - @xyflow/system@0.0.40
+
+## 0.1.16
+
+### Patch Changes
+
+- [#4568](https://github.com/xyflow/xyflow/pull/4568) [`c3e62782`](https://github.com/xyflow/xyflow/commit/c3e6278222dc13333f75ecdbe634201ddabab87a) Thanks [@peterkogo](https://github.com/peterkogo)! - Only display grab cursor when panOnDrag is on left mouse button
+
+- [#4569](https://github.com/xyflow/xyflow/pull/4569) [`54bfb6d9`](https://github.com/xyflow/xyflow/commit/54bfb6d9383b2c041f243c1ba16ce169c2b90085) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix getIntersectingNodes for subflows
+
+- Updated dependencies [[`c3e62782`](https://github.com/xyflow/xyflow/commit/c3e6278222dc13333f75ecdbe634201ddabab87a)]:
+  - @xyflow/system@0.0.39
+
+## 0.1.15
+
+### Patch Changes
+
+- [#4510](https://github.com/xyflow/xyflow/pull/4510) [`12313a5b`](https://github.com/xyflow/xyflow/commit/12313a5b01312ef4425d3fa666e578961a151fe2) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Rename `isConnectable` prop locally to `isConnectableProp` to avoid naming collision with derived value of `isConnectable` in `<Handle>` component.
+
+- [#4517](https://github.com/xyflow/xyflow/pull/4517) [`085951bc`](https://github.com/xyflow/xyflow/commit/085951bc07f02ac7af143409fe156bade8a63113) Thanks [@ghostdevv](https://github.com/ghostdevv)! - fix: make svelte-preprocess a dev dep
+
+- [#4549](https://github.com/xyflow/xyflow/pull/4549) [`99733c01`](https://github.com/xyflow/xyflow/commit/99733c01bc70f9463e7dba0046c5f8d839a1d2ba) Thanks [@moklick](https://github.com/moklick)! - feat(onConnectEnd): pass connectionState param
+
+- Updated dependencies [[`b63a3734`](https://github.com/xyflow/xyflow/commit/b63a3734b84b6817603c8e6e48e2836f048acc3b), [`24e87e39`](https://github.com/xyflow/xyflow/commit/24e87e398419646f671af1085fbfec3e197bc56b), [`692e6440`](https://github.com/xyflow/xyflow/commit/692e6440b10e75cb31f3f3172aede9ed4d7f05d2), [`559d4926`](https://github.com/xyflow/xyflow/commit/559d49264b940f93c5e205bf984aa76230b10806), [`4ecfd7e1`](https://github.com/xyflow/xyflow/commit/4ecfd7e19720b70024d0b5dff27d4537dd46b49a), [`e7ef328f`](https://github.com/xyflow/xyflow/commit/e7ef328f8f9286a817b19457d38c491e6c0bcffd), [`99733c01`](https://github.com/xyflow/xyflow/commit/99733c01bc70f9463e7dba0046c5f8d839a1d2ba)]:
+  - @xyflow/system@0.0.38
+
+## 0.1.14
+
+### Patch Changes
+
+- [#4498](https://github.com/xyflow/xyflow/pull/4498) [`7a6e9e30`](https://github.com/xyflow/xyflow/commit/7a6e9e3091c8ee0aedbf8ae6e5c4ee08485417ab) Thanks [@peterkogo](https://github.com/peterkogo)! - fix(pane) only capture pointer after a valid selection has started, fixes #4492
+
 ## 0.1.13
 
 ### Patch Changes

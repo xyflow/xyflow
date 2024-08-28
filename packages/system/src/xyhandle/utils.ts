@@ -1,109 +1,100 @@
-import { getHandlePosition } from '../utils';
-import {
-  type HandleType,
-  type NodeHandleBounds,
-  type XYPosition,
-  type Handle,
-  InternalNodeBase,
-  NodeLookup,
-} from '../types';
+import { getHandlePosition, getOverlappingArea, nodeToRect } from '../utils';
+import type { HandleType, XYPosition, Handle, InternalNodeBase, NodeLookup, ConnectionMode } from '../types';
 
-// this functions collects all handles and adds an absolute position
-// so that we can later find the closest handle to the mouse position
-function getHandles(
-  node: InternalNodeBase,
-  handleBounds: NodeHandleBounds,
-  type: HandleType,
-  currentHandle: { nodeId: string; handleId: string | null; handleType: HandleType }
-): [Handle[], Handle | null] {
-  let excludedHandle = null;
-  const handles = (handleBounds[type] || []).reduce<Handle[]>((res, handle) => {
-    if (node.id === currentHandle.nodeId && type === currentHandle.handleType && handle.id === currentHandle.handleId) {
-      excludedHandle = handle;
-    } else {
-      const handleXY = getHandlePosition(node, handle, handle.position, true);
-      res.push({ ...handle, ...handleXY });
+function getNodesWithinDistance(position: XYPosition, nodeLookup: NodeLookup, distance: number): InternalNodeBase[] {
+  const nodes: InternalNodeBase[] = [];
+  const rect = {
+    x: position.x - distance,
+    y: position.y - distance,
+    width: distance * 2,
+    height: distance * 2,
+  };
+
+  for (const node of nodeLookup.values()) {
+    if (getOverlappingArea(rect, nodeToRect(node)) > 0) {
+      nodes.push(node);
     }
-    return res;
-  }, []);
-  return [handles, excludedHandle];
+  }
+
+  return nodes;
 }
 
+// this distance is used for the area around the user pointer
+// while doing a connection for finding the closest nodes
+const ADDITIONAL_DISTANCE = 250;
+
 export function getClosestHandle(
-  pos: XYPosition,
+  position: XYPosition,
   connectionRadius: number,
-  handleLookup: Map<string, Handle>
+  nodeLookup: NodeLookup,
+  fromHandle: { nodeId: string; type: HandleType; id?: string | null }
 ): Handle | null {
   let closestHandles: Handle[] = [];
   let minDistance = Infinity;
 
-  for (const handle of handleLookup.values()) {
-    const distance = Math.sqrt(Math.pow(handle.x - pos.x, 2) + Math.pow(handle.y - pos.y, 2));
-    if (distance <= connectionRadius) {
+  const closeNodes = getNodesWithinDistance(position, nodeLookup, connectionRadius + ADDITIONAL_DISTANCE);
+
+  for (const node of closeNodes) {
+    const allHandles = [...(node.internals.handleBounds?.source ?? []), ...(node.internals.handleBounds?.target ?? [])];
+
+    for (const handle of allHandles) {
+      // if the handle is the same as the fromHandle we skip it
+      if (fromHandle.nodeId === handle.nodeId && fromHandle.type === handle.type && fromHandle.id === handle.id) {
+        continue;
+      }
+
+      // determine absolute position of the handle
+      const { x, y } = getHandlePosition(node, handle, handle.position, true);
+
+      const distance = Math.sqrt(Math.pow(x - position.x, 2) + Math.pow(y - position.y, 2));
+      if (distance > connectionRadius) {
+        continue;
+      }
+
       if (distance < minDistance) {
-        closestHandles = [handle];
+        closestHandles = [{ ...handle, x, y }];
+        minDistance = distance;
       } else if (distance === minDistance) {
         // when multiple handles are on the same distance we collect all of them
-        closestHandles.push(handle);
+        closestHandles.push({ ...handle, x, y });
       }
-      minDistance = distance;
     }
   }
 
   if (!closestHandles.length) {
     return null;
   }
+  // when multiple handles overlay each other we prefer the opposite handle
+  if (closestHandles.length > 1) {
+    const oppositeHandleType = fromHandle.type === 'source' ? 'target' : 'source';
+    return closestHandles.find((handle) => handle.type === oppositeHandleType) ?? closestHandles[0];
+  }
 
-  return closestHandles.length === 1
-    ? closestHandles[0]
-    : // if multiple handles are layouted on top of each other we take the one with type = target because it's more likely that the user wants to connect to this one
-      closestHandles.find((handle) => handle.type === 'target') || closestHandles[0];
+  return closestHandles[0];
 }
 
-type GetHandleLookupParams = {
-  nodeLookup: NodeLookup;
-  nodeId: string;
-  handleId: string | null;
-  handleType: HandleType;
-};
-
-export function getHandleLookup({
-  nodeLookup,
-  nodeId,
-  handleId,
-  handleType,
-}: GetHandleLookupParams): [Map<string, Handle>, Handle] {
-  const connectionHandles: Map<string, Handle> = new Map();
-  const currentHandle = { nodeId, handleId, handleType };
-  let matchingHandle: Handle | null = null;
-
-  for (const node of nodeLookup.values()) {
-    if (node.internals.handleBounds) {
-      const [sourceHandles, excludedSource] = getHandles(node, node.internals.handleBounds, 'source', currentHandle);
-      const [targetHandles, excludedTarget] = getHandles(node, node.internals.handleBounds, 'target', currentHandle);
-
-      matchingHandle = matchingHandle ? matchingHandle : excludedSource ?? excludedTarget;
-
-      [...sourceHandles, ...targetHandles].forEach((handle) =>
-        connectionHandles.set(`${handle.nodeId}-${handle.type}-${handle.id}`, handle)
-      );
-    }
+export function getHandle(
+  nodeId: string,
+  handleType: HandleType,
+  handleId: string | null,
+  nodeLookup: NodeLookup,
+  connectionMode: ConnectionMode,
+  withAbsolutePosition = false
+): Handle | null {
+  const node = nodeLookup.get(nodeId);
+  if (!node) {
+    return null;
   }
 
-  // if the user only works with handles that are type="source" + connectionMode="loose"
-  // it happens that we can't find a matching handle. The reason for this is, that the
-  // edge don't know about the handles and always assumes that there is source and a target.
-  // In this case we need to find the matching handle by switching the handleType
-  if (!matchingHandle) {
-    const node = nodeLookup.get(nodeId);
-    if (node?.internals.handleBounds) {
-      currentHandle.handleType = handleType === 'source' ? 'target' : 'source';
-      const [, excluded] = getHandles(node, node.internals.handleBounds, currentHandle.handleType, currentHandle);
-      matchingHandle = excluded;
-    }
-  }
+  const handles =
+    connectionMode === 'strict'
+      ? node.internals.handleBounds?.[handleType]
+      : [...(node.internals.handleBounds?.source ?? []), ...(node.internals.handleBounds?.target ?? [])];
+  const handle = (handleId ? handles?.find((h) => h.id === handleId) : handles?.[0]) ?? null;
 
-  return [connectionHandles, matchingHandle!];
+  return handle && withAbsolutePosition
+    ? { ...handle, ...getHandlePosition(node, handle, handle.position, true) }
+    : handle;
 }
 
 export function getHandleType(

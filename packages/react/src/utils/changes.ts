@@ -19,10 +19,11 @@ function applyChanges(changes: any[], elements: any[]): any[] {
   // By storing a map of changes for each element, we can a quick lookup as we
   // iterate over the elements array!
   const changesMap = new Map<any, any[]>();
+  const addItemChanges: any[] = [];
 
   for (const change of changes) {
     if (change.type === 'add') {
-      updatedElements.push(change.item);
+      addItemChanges.push(change);
       continue;
     } else if (change.type === 'remove' || change.type === 'replace') {
       // For a 'remove' change we can safely ignore any other changes queued for
@@ -71,6 +72,18 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     }
 
     updatedElements.push(updatedElement);
+  }
+
+  // we need to wait for all changes to be applied before adding new items
+  // to be able to add them at the correct index
+  if (addItemChanges.length) {
+    addItemChanges.forEach((change) => {
+      if (change.index !== undefined) {
+        updatedElements.splice(change.index, 0, { ...change.item });
+      } else {
+        updatedElements.push({ ...change.item });
+      }
+    });
   }
 
   return updatedElements;
@@ -237,7 +250,7 @@ export function getElementsDiffChanges({
   const changes: any[] = [];
   const itemsLookup = new Map<string, any>(items.map((item) => [item.id, item]));
 
-  for (const item of items) {
+  for (const [index, item] of items.entries()) {
     const lookupItem = lookup.get(item.id);
     const storeItem = lookupItem?.internals?.userNode ?? lookupItem;
 
@@ -246,7 +259,7 @@ export function getElementsDiffChanges({
     }
 
     if (storeItem === undefined) {
-      changes.push({ item: item, type: 'add' });
+      changes.push({ item: item, type: 'add', index });
     }
   }
 

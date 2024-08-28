@@ -25,6 +25,6 @@ export function useUpdateNodeInternals(): UpdateNodeInternals {
       }
     });
 
-    requestAnimationFrame(() => updateNodeInternals(updates));
+    requestAnimationFrame(() => updateNodeInternals(updates, { triggerFitView: false }));
   }, []);
 }

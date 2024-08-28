@@ -14,6 +14,8 @@ import type {
   EdgePosition,
   StepPathOptions,
   OnError,
+  ConnectionState,
+  FinalConnectionState,
 } from '@xyflow/system';
 
 import { EdgeTypes, InternalNode, Node } from '.';
@@ -78,7 +80,12 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   onMouseLeave?: EdgeMouseHandler<EdgeType>;
   reconnectRadius?: number;
   onReconnectStart?: (event: ReactMouseEvent, edge: EdgeType, handleType: HandleType) => void;
-  onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
+  onReconnectEnd?: (
+    event: MouseEvent | TouchEvent,
+    edge: EdgeType,
+    handleType: HandleType,
+    connectionState: FinalConnectionState
+  ) => void;
   rfId?: string;
   edgeTypes?: EdgeTypes;
   onError?: OnError;

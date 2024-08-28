@@ -1,5 +1,5 @@
 /*
- * This component helps us to update the store with the vlues coming from the user.
+ * This component helps us to update the store with the values coming from the user.
  * We distinguish between values we can update directly with `useDirectStoreUpdater` (like `snapGrid`)
  * and values that have a dedicated setter function in the store (like `setNodes`).
  */
