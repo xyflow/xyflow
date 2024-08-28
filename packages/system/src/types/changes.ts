@@ -32,6 +32,7 @@ export type NodeRemoveChange = {
 export type NodeAddChange<NodeType extends NodeBase = NodeBase> = {
   item: NodeType;
   type: 'add';
+  index?: number;
 };
 
 export type NodeReplaceChange<NodeType extends NodeBase = NodeBase> = {
@@ -57,6 +58,7 @@ export type EdgeRemoveChange = NodeRemoveChange;
 export type EdgeAddChange<EdgeType extends EdgeBase = EdgeBase> = {
   item: EdgeType;
   type: 'add';
+  index?: number;
 };
 
 export type EdgeReplaceChange<EdgeType extends EdgeBase = EdgeBase> = {
