@@ -11,6 +11,15 @@
     "svelte-flow",
     "xyflow"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xyflow/xyflow.git",
+    "directory": "packages/svelte"
+  },
+  "homepage": "https://svelteflow.dev",
+  "bugs": {
+    "url": "https://github.com/xyflow/xyflow/issues"
+  },
   "scripts": {
     "dev": "concurrently \"svelte-kit sync && svelte-package -o dist/lib -w\" pnpm:css-watch",
     "build": "svelte-kit sync && svelte-package -o dist/lib && pnpm css",
