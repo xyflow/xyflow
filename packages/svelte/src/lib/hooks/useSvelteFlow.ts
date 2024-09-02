@@ -14,11 +14,10 @@ import {
   getViewportForBounds,
   getElementsToRemove,
   rendererPointToPoint,
-  nodeHasDimensions,
   nodeToBox,
   getBoundsOfBoxes,
   boxToRect,
-  isInternalNodeBase
+  isInternalNodeBase,
   evaluateAbsolutePosition,
   type HandleType,
   type HandleConnection
@@ -245,7 +244,7 @@ export function useSvelteFlow(): {
    * @returns the bounds of the given nodes
    */
   getNodesBounds: (nodes: (Node | InternalNode | string)[]) => Rect;
-   * Gets all connections for a given handle belonging to a specific node.
+  /** Gets all connections for a given handle belonging to a specific node.
    *
    * @param type - handle type 'source' or 'target'
    * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
@@ -280,7 +279,7 @@ export function useSvelteFlow(): {
     nodeLookup,
     nodeOrigin,
     edgeLookup,
-    connectionLookup,
+    connectionLookup
   } = useStore();
 
   const getNodeRect = (node: Node | { id: Node['id'] }): Rect | null => {
@@ -581,7 +580,7 @@ export function useSvelteFlow(): {
       );
 
       return boxToRect(box);
-    }
+    },
     getHandleConnections: ({ type, id, nodeId }) =>
       Array.from(
         get(connectionLookup)
