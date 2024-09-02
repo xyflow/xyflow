@@ -40,7 +40,6 @@ export function XYPanZoom({
   onPanZoom,
   onPanZoomStart,
   onPanZoomEnd,
-  onTransformChange,
   onDraggingChange,
 }: PanZoomParams): PanZoomInstance {
   const zoomPanValues: ZoomPanValues = {
@@ -105,6 +104,7 @@ export function XYPanZoom({
     zoomOnDoubleClick,
     zoomActivationKeyPressed,
     lib,
+    onTransformChange,
   }: PanZoomUpdateOptions) {
     if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
       destroy();
