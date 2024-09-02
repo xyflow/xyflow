@@ -193,16 +193,14 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   nodeOrigin: NodeOrigin,
   selectedNodeZ: number
 ) {
-  const childDimensions = getNodeDimensions(childNode);
   const parentPosition = parentNode.internals.positionAbsolute;
+  const childDimensions = getNodeDimensions(childNode);
+  const positionWithOrigin = getNodePositionWithOrigin(childNode, nodeOrigin);
+  const clampedPosition = isCoordinateExtent(childNode.extent)
+    ? clampPosition(positionWithOrigin, childNode.extent, childDimensions)
+    : positionWithOrigin;
 
-  let position = getNodePositionWithOrigin(childNode, nodeOrigin);
-
-  if (isCoordinateExtent(childNode.extent)) {
-    position = clampPosition(position, childNode.extent, childDimensions);
-  }
-
-  let absolutePosition = { x: parentPosition.x + position.x, y: parentPosition.y + position.y };
+  let absolutePosition = { x: parentPosition.x + clampedPosition.x, y: parentPosition.y + clampedPosition.y };
 
   if (childNode.extent === 'parent') {
     absolutePosition = clampPositionToParent(absolutePosition, childDimensions, parentNode);
@@ -348,14 +346,11 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
 
       if (doUpdate) {
         const nodeBounds = update.nodeElement.getBoundingClientRect();
-        let extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
-        let positionAbsolute = node.internals.positionAbsolute;
+        const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
+        let { positionAbsolute } = node.internals;
+
         if (node.parentId && node.extent === 'parent') {
-          positionAbsolute = clampPositionToParent(
-            positionAbsolute,
-            getNodeDimensions(node),
-            nodeLookup.get(node.parentId)!
-          );
+          positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, nodeLookup.get(node.parentId)!);
         } else if (extent) {
           positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
         }

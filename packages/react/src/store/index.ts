@@ -289,10 +289,6 @@ const createStore = ({
       setNodeExtent: (nodeExtent) => {
         const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
 
-        set({
-          nodeExtent,
-        });
-
         adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent,
@@ -300,7 +296,7 @@ const createStore = ({
           checkEquality: false,
         });
 
-        set({ nodes });
+        set({ nodeExtent });
       },
       panBy: (delta): Promise<boolean> => {
         const { transform, width, height, panZoom, translateExtent } = get();
