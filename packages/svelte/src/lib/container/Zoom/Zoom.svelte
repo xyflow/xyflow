@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { PanOnScrollMode } from '@xyflow/system';
+  import { onMount } from 'svelte';
+  import { PanOnScrollMode, type Transform } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
   import type { ZoomProps } from './types';
-  import { onMount } from 'svelte';
 
   type $$Props = ZoomProps;
 
@@ -39,6 +39,9 @@
   $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
   $: _panOnScroll = $panActivationKeyPressed || panOnScroll;
 
+  const onTransformChange = (transform: Transform) =>
+    viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] });
+
   onMount(() => {
     $viewportInitialized = true;
   });
@@ -70,7 +73,8 @@
     userSelectionActive: !!$selectionRect,
     translateExtent: $translateExtent,
     lib: $lib,
-    paneClickDistance
+    paneClickDistance,
+    onTransformChange
   }}
 >
   <slot />

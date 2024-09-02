@@ -5,6 +5,7 @@ import {
   type CoordinateExtent,
   type OnPanZoom,
   type PanZoomInstance,
+  type Transform,
   type Viewport
 } from '@xyflow/system';
 
@@ -36,6 +37,7 @@ type ZoomParams = {
   userSelectionActive: boolean;
   lib: string;
   paneClickDistance: number;
+  onTransformChange: (transform: Transform) => void;
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {
@@ -57,8 +59,6 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     translateExtent,
     viewport: initialViewport,
     paneClickDistance,
-    onTransformChange: (transform) =>
-      viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] }),
     onDraggingChange: dragging.set
   });
   const currentViewport = panZoomInstance.getViewport();

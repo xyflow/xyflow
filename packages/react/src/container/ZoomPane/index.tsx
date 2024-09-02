@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
 import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from '@xyflow/system';
 
@@ -57,6 +57,17 @@ export function ZoomPane({
 
   useResizeHandler(zoomPane);
 
+  const onTransformChange = useCallback(
+    (transform: Transform) => {
+      onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });
+
+      if (!isControlledViewport) {
+        store.setState({ transform });
+      }
+    },
+    [onViewportChange, isControlledViewport]
+  );
+
   useEffect(() => {
     if (zoomPane.current) {
       panZoom.current = XYPanZoom({
@@ -66,13 +77,6 @@ export function ZoomPane({
         translateExtent,
         viewport: defaultViewport,
         paneClickDistance,
-        onTransformChange: (transform: Transform) => {
-          onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });
-
-          if (!isControlledViewport) {
-            store.setState({ transform });
-          }
-        },
         onDraggingChange: (paneDragging: boolean) => store.setState({ paneDragging }),
         onPanZoomStart: (event, vp) => {
           const { onViewportChangeStart, onMoveStart } = store.getState();
@@ -121,6 +125,7 @@ export function ZoomPane({
       userSelectionActive,
       noWheelClassName,
       lib,
+      onTransformChange,
     });
   }, [
     onPaneContextMenu,
@@ -137,6 +142,7 @@ export function ZoomPane({
     userSelectionActive,
     noWheelClassName,
     lib,
+    onTransformChange,
   ]);
 
   return (
