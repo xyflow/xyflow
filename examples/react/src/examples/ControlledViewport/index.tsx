@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   ReactFlow,
   addEdge,
@@ -52,7 +52,7 @@ const initEdges: Edge[] = [
 ];
 
 const Flow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
+  const [nodes, _, onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
   const [viewport, setViewport] = useState<Viewport>({ x: 0, y: 0, zoom: 1 });
   const [viewport2, setViewport2] = useState<Viewport>({ x: 100, y: 100, zoom: 1.5 });
@@ -62,10 +62,6 @@ const Flow = () => {
   const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   const setter = currentViewport === 0 ? setViewport : setViewport2;
-
-  const toggleViewport = () => {
-    setCurrentViewport(currentViewport === 0 ? 1 : 0);
-  };
 
   return (
     <ReactFlow
@@ -80,7 +76,7 @@ const Flow = () => {
       <Panel position="top-left">
         <button onClick={() => setter((vp) => ({ ...vp, y: vp.y + 10 }))}>update viewport</button>
         <button onClick={() => fitView()}>fitView</button>
-        <button onClick={() => toggleViewport()}>toggle viewport</button>
+        <button onClick={() => setCurrentViewport(currentViewport === 0 ? 1 : 0)}>toggle viewport</button>
       </Panel>
 
       <MiniMap />
