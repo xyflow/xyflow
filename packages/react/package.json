@@ -11,6 +11,15 @@
     "react-flow",
     "xyflow"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xyflow/xyflow.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://reactflow.dev",
+  "bugs": {
+    "url": "https://github.com/xyflow/xyflow/issues"
+  },
   "files": [
     "dist"
   ],
@@ -33,11 +42,6 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/xyflow/xyflow.git",
-    "directory": "packages/react"
   },
   "scripts": {
     "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\" pnpm:css-watch",
