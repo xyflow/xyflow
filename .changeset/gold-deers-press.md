@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-start background patterns at 0,0
+align background pattern with snap grid
