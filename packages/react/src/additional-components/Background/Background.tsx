@@ -40,9 +40,12 @@ function BackgroundComponent({
   const scaledGap: [number, number] = [gapXY[0] * transform[2] || 1, gapXY[1] * transform[2] || 1];
   const scaledSize = patternSize * transform[2];
   const offsetXY: [number, number] = Array.isArray(offset) ? offset : [offset, offset];
-  const scaledOffset: [number, number] = [offsetXY[0] * transform[2] || 1, offsetXY[1] * transform[2] || 1]
 
   const patternDimensions: [number, number] = isCross ? [scaledSize, scaledSize] : scaledGap;
+  const scaledOffset: [number, number] = [
+    offsetXY[0] * transform[2] || 1 + patternDimensions[0] / 2,
+    offsetXY[1] * transform[2] || 1 + patternDimensions[1] / 2,
+  ];
 
   const _patternId = `${patternId}${id ? id : ''}`;
 
