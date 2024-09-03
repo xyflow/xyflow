@@ -132,9 +132,11 @@ export type GetNodesBoundsParams = {
  * @returns Bounding box enclosing all nodes
  */
 export const getNodesBounds = (nodes: NodeBase[], params: GetNodesBoundsParams = { nodeOrigin: [0, 0] }): Rect => {
-  console.warn(
-    'This function yields erronous results for subflows. Use getNodesBounds from useReactFlow/useSvelteFlow hook instead.'
-  );
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(
+      '[DEPRECATED] `getNodesBounds` is deprecated because it yields erronous results for subflows. Use `getNodesBounds` from useReactFlow/useSvelteFlow hook instead.'
+    );
+  }
 
   if (nodes.length === 0) {
     return { x: 0, y: 0, width: 0, height: 0 };

@@ -180,7 +180,7 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
    *
    * @returns the bounds of the given nodes
    */
-  getNodesBounds: (nodes: (NodeType | string)[]) => Rect;
+  getNodesBounds: (nodes: (NodeType | InternalNode | string)[]) => Rect;
   /**
    * Gets all connections for a given handle belonging to a specific node.
    *
