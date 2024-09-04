@@ -1,5 +1,16 @@
 # @xyflow/react
 
+## 12.2.1
+
+### Patch Changes
+
+- [#4619](https://github.com/xyflow/xyflow/pull/4619) [`a7eb7c2d`](https://github.com/xyflow/xyflow/commit/a7eb7c2dbbeca85ca2d99917007dee78c8951a06) Thanks [@moklick](https://github.com/moklick)! - align background pattern with snap grid
+
+- [#4611](https://github.com/xyflow/xyflow/pull/4611) [`2aaa709c`](https://github.com/xyflow/xyflow/commit/2aaa709c0014b91ab75a4e40753b71cc7bb04a2c) Thanks [@moklick](https://github.com/moklick)! - make onViewportChange a dynamic prop
+
+- Updated dependencies [[`2aaa709c`](https://github.com/xyflow/xyflow/commit/2aaa709c0014b91ab75a4e40753b71cc7bb04a2c)]:
+  - @xyflow/system@0.0.41
+
 ## 12.2.0
 
 ### Minor Changes

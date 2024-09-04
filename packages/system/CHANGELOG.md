@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.41
+
+### Patch Changes
+
+- [#4611](https://github.com/xyflow/xyflow/pull/4611) [`2aaa709c`](https://github.com/xyflow/xyflow/commit/2aaa709c0014b91ab75a4e40753b71cc7bb04a2c) Thanks [@moklick](https://github.com/moklick)! - make onViewportChange a dynamic prop
+
 ## 0.0.40
 
 ### Patch Changes
