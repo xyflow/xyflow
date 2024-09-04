@@ -118,23 +118,26 @@ export const getNodePositionWithOrigin = (node: NodeBase, nodeOrigin: NodeOrigin
   };
 };
 
-export type GetNodesBoundsParams = {
+export type GetNodesBoundsParams<NodeType extends NodeBase = NodeBase> = {
   nodeOrigin?: NodeOrigin;
+  nodeLookup?: NodeLookup<InternalNodeBase<NodeType>>;
 };
 
 /**
  * Determines a bounding box that contains all given nodes in an array
- * @deprecated This function yields erronous results for subflows. Use getNodesBounds from useReactFlow/useSvelteFlow hook instead.
  * @public
  * @remarks Useful when combined with {@link getViewportForBounds} to calculate the correct transform to fit the given nodes in a viewport.
  * @param nodes - Nodes to calculate the bounds for
  * @param params.nodeOrigin - Origin of the nodes: [0, 0] - top left, [0.5, 0.5] - center
  * @returns Bounding box enclosing all nodes
  */
-export const getNodesBounds = (nodes: NodeBase[], params: GetNodesBoundsParams = { nodeOrigin: [0, 0] }): Rect => {
-  if (process.env.NODE_ENV === 'development') {
+export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
+  nodes: (NodeType | InternalNodeBase<NodeType> | string)[],
+  params: GetNodesBoundsParams<NodeType> = { nodeOrigin: [0, 0], nodeLookup: undefined }
+): Rect => {
+  if (process.env.NODE_ENV === 'development' && !params.nodeLookup) {
     console.warn(
-      '[DEPRECATED] `getNodesBounds` is deprecated because it yields erronous results for subflows. Use `getNodesBounds` from useReactFlow/useSvelteFlow hook instead.'
+      'Please use `getNodesBounds` from useReactFlow/useSvelteFlow hook to ensure correct values for sub flows.'
     );
   }
 
@@ -143,8 +146,19 @@ export const getNodesBounds = (nodes: NodeBase[], params: GetNodesBoundsParams =
   }
 
   const box = nodes.reduce(
-    (currBox, node) => {
-      const nodeBox = nodeToBox(node, params.nodeOrigin);
+    (currBox, nodeOrId) => {
+      const isId = typeof nodeOrId === 'string';
+      let currentNode = !params.nodeLookup && !isId ? nodeOrId : undefined;
+
+      if (params.nodeLookup) {
+        currentNode = isId
+          ? params.nodeLookup.get(nodeOrId)
+          : !isInternalNodeBase(nodeOrId)
+          ? params.nodeLookup.get(nodeOrId.id)
+          : nodeOrId;
+      }
+
+      const nodeBox = currentNode ? nodeToBox(currentNode, params.nodeOrigin) : { x: 0, y: 0, x2: 0, y2: 0 };
       return getBoundsOfBoxes(currBox, nodeBox);
     },
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }

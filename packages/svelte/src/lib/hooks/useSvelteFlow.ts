@@ -14,13 +14,10 @@ import {
   getViewportForBounds,
   getElementsToRemove,
   rendererPointToPoint,
-  nodeToBox,
-  getBoundsOfBoxes,
-  boxToRect,
-  isInternalNodeBase,
   evaluateAbsolutePosition,
   type HandleType,
-  type HandleConnection
+  type HandleConnection,
+  getNodesBounds
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -555,31 +552,10 @@ export function useSvelteFlow(): {
       nodes.update((nds) => nds);
     },
     getNodesBounds: (nodes) => {
-      if (nodes.length === 0) {
-        return { x: 0, y: 0, width: 0, height: 0 };
-      }
-
       const _nodeLookup = get(nodeLookup);
       const _nodeOrigin = get(nodeOrigin);
 
-      const box = nodes.reduce(
-        (currBox, node) => {
-          const internalNode =
-            typeof node === 'string'
-              ? _nodeLookup.get(node)
-              : !isInternalNodeBase(node)
-                ? _nodeLookup.get(node.id)
-                : node;
-
-          const nodeBox = internalNode
-            ? nodeToBox(internalNode, _nodeOrigin)
-            : { x: 0, y: 0, x2: 0, y2: 0 };
-          return getBoundsOfBoxes(currBox, nodeBox);
-        },
-        { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
-      );
-
-      return boxToRect(box);
+      return getNodesBounds(nodes, { nodeLookup: _nodeLookup, nodeOrigin: _nodeOrigin });
     },
     getHandleConnections: ({ type, id, nodeId }) =>
       Array.from(
