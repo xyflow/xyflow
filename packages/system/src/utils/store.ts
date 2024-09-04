@@ -1,4 +1,4 @@
-import { Dimensions, infiniteExtent } from '..';
+import { infiniteExtent } from '..';
 import {
   NodeBase,
   CoordinateExtent,
@@ -20,6 +20,7 @@ import {
 import { getDimensions, getHandleBounds } from './dom';
 import {
   clampPosition,
+  clampPositionToParent,
   getBoundsOfRects,
   getNodeDimensions,
   isCoordinateExtent,
@@ -64,7 +65,7 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
       continue;
     }
 
-    updateChildPosition(node, nodeLookup, parentLookup, _options);
+    updateChildNode(node, nodeLookup, parentLookup, _options);
   }
 }
 
@@ -83,21 +84,21 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   options?: UpdateNodesOptions<NodeType>
 ) {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
-
   const tmpLookup = new Map(nodeLookup);
+  const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
+
   nodeLookup.clear();
   parentLookup.clear();
 
-  const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
-
   for (const userNode of nodes) {
     let internalNode = tmpLookup.get(userNode.id);
+
     if (_options.checkEquality && userNode === internalNode?.internals.userNode) {
       nodeLookup.set(userNode.id, internalNode);
     } else {
-      const positionOrigin = getNodePositionWithOrigin(userNode, _options.nodeOrigin);
+      const positionWithOrigin = getNodePositionWithOrigin(userNode, _options.nodeOrigin);
       const extent = isCoordinateExtent(userNode.extent) ? userNode.extent : _options.nodeExtent;
-      const positionAbsolute = clampPosition(positionOrigin, extent, getNodeDimensions(userNode));
+      const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(userNode));
 
       internalNode = {
         ..._options.defaults,
@@ -107,30 +108,50 @@ export function adoptUserNodes<NodeType extends NodeBase>(
           height: userNode.measured?.height,
         },
         internals: {
-          positionAbsolute,
+          positionAbsolute: clampedPosition,
           // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
           handleBounds: !userNode.measured ? undefined : internalNode?.internals.handleBounds,
           z: calculateZ(userNode, selectedNodeZ),
           userNode,
         },
       };
+
       nodeLookup.set(userNode.id, internalNode);
     }
 
     if (userNode.parentId) {
-      updateChildPosition(internalNode, nodeLookup, parentLookup, options);
+      updateChildNode(internalNode, nodeLookup, parentLookup, options);
     }
   }
 }
 
-function updateChildPosition<NodeType extends NodeBase>(
+function updateParentLookup<NodeType extends NodeBase>(
+  node: InternalNodeBase<NodeType>,
+  parentLookup: ParentLookup<InternalNodeBase<NodeType>>
+) {
+  if (!node.parentId) {
+    return;
+  }
+
+  const childNodes = parentLookup.get(node.parentId);
+
+  if (childNodes) {
+    childNodes.set(node.id, node);
+  } else {
+    parentLookup.set(node.parentId, new Map([[node.id, node]]));
+  }
+}
+
+/**
+ * Updates positionAbsolute and zIndex of a child node and the parentLookup.
+ */
+function updateChildNode<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options?: UpdateNodesOptions<NodeType>
 ) {
-  const _options = mergeObjects(defaultOptions, options);
-
+  const { elevateNodesOnSelect, nodeOrigin } = mergeObjects(defaultOptions, options);
   const parentId = node.parentId!;
   const parentNode = nodeLookup.get(parentId);
 
@@ -141,46 +162,20 @@ function updateChildPosition<NodeType extends NodeBase>(
     return;
   }
 
-  // update the parentLookup
-  const childNodes = parentLookup.get(parentId);
-  if (childNodes) {
-    childNodes.set(node.id, node);
-  } else {
-    parentLookup.set(parentId, new Map([[node.id, node]]));
-  }
+  updateParentLookup(node, parentLookup);
 
-  const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
-
-  const { x, y, z } = calculateChildXYZ(node, parentNode, _options.nodeOrigin!, selectedNodeZ);
-
-  const currPosition = node.internals.positionAbsolute;
-  const positionChanged = x !== currPosition.x || y !== currPosition.y;
+  const selectedNodeZ = elevateNodesOnSelect ? 1000 : 0;
+  const { x, y, z } = calculateChildXYZ(node, parentNode, nodeOrigin, selectedNodeZ);
+  const { positionAbsolute } = node.internals;
+  const positionChanged = x !== positionAbsolute.x || y !== positionAbsolute.y;
 
   if (positionChanged || z !== node.internals.z) {
     node.internals = {
       ...node.internals,
-      positionAbsolute: positionChanged ? { x, y } : currPosition,
+      positionAbsolute: positionChanged ? { x, y } : positionAbsolute,
       z,
     };
   }
-}
-
-function clampPositionToParent<NodeType extends NodeBase>(
-  childPosition: XYPosition,
-  childDimensions: Dimensions,
-  parent: InternalNodeBase<NodeType>
-) {
-  const parentDimensions = getNodeDimensions(parent);
-  const parentPosition = parent.internals.positionAbsolute;
-
-  return clampPosition(
-    childPosition,
-    [
-      [parentPosition.x, parentPosition.y],
-      [parentPosition.x + parentDimensions.width, parentPosition.y + parentDimensions.height],
-    ],
-    childDimensions
-  );
 }
 
 function calculateZ(node: NodeBase, selectedNodeZ: number) {
@@ -193,14 +188,14 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   nodeOrigin: NodeOrigin,
   selectedNodeZ: number
 ) {
-  const parentPosition = parentNode.internals.positionAbsolute;
+  const { x: parentX, y: parentY } = parentNode.internals.positionAbsolute;
   const childDimensions = getNodeDimensions(childNode);
   const positionWithOrigin = getNodePositionWithOrigin(childNode, nodeOrigin);
   const clampedPosition = isCoordinateExtent(childNode.extent)
     ? clampPosition(positionWithOrigin, childNode.extent, childDimensions)
     : positionWithOrigin;
 
-  let absolutePosition = { x: parentPosition.x + clampedPosition.x, y: parentPosition.y + clampedPosition.y };
+  let absolutePosition = { x: parentX + clampedPosition.x, y: parentY + clampedPosition.y };
 
   if (childNode.extent === 'parent') {
     absolutePosition = clampPositionToParent(absolutePosition, childDimensions, parentNode);
@@ -365,7 +360,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
           },
         };
         if (node.parentId) {
-          updateChildPosition(node, nodeLookup, parentLookup, { nodeOrigin });
+          updateChildNode(node, nodeLookup, parentLookup, { nodeOrigin });
         }
 
         updatedInternals = true;

@@ -15,6 +15,7 @@ import {
   Panel,
   useUpdateNodeInternals,
   ReactFlowProvider,
+  CoordinateExtent,
 } from '@xyflow/react';
 
 import DebugNode from './DebugNode';
@@ -162,6 +163,11 @@ const nodeTypes = {
   default: DebugNode,
 };
 
+const nodeExtent: CoordinateExtent = [
+  [0, 0],
+  [1000, 1000],
+];
+
 const Subflow = () => {
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const updateNodeInternals = useUpdateNodeInternals();
@@ -231,10 +237,7 @@ const Subflow = () => {
       nodeTypes={nodeTypes}
       fitView
       nodeOrigin={[0, 0]}
-      nodeExtent={[
-        [0, 0],
-        [1000, 1000],
-      ]}
+      nodeExtent={nodeExtent}
     >
       <MiniMap />
       <Controls />
@@ -254,12 +257,7 @@ const Subflow = () => {
 };
 
 export default () => (
-  <ReactFlowProvider
-    nodeExtent={[
-      [0, 0],
-      [1000, 1000],
-    ]}
-  >
+  <ReactFlowProvider nodeExtent={nodeExtent}>
     <Subflow />
   </ReactFlowProvider>
 );

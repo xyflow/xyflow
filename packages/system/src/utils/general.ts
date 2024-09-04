@@ -25,6 +25,24 @@ export const clampPosition = (
   y: clamp(position.y, extent[0][1], extent[1][1] - (dimensions?.height ?? 0)),
 });
 
+export function clampPositionToParent<NodeType extends NodeBase>(
+  childPosition: XYPosition,
+  childDimensions: Dimensions,
+  parent: InternalNodeBase<NodeType>
+) {
+  const { width: parentWidth, height: parentHeight } = getNodeDimensions(parent);
+  const { x: parentX, y: parentY } = parent.internals.positionAbsolute;
+
+  return clampPosition(
+    childPosition,
+    [
+      [parentX, parentY],
+      [parentX + parentWidth, parentY + parentHeight],
+    ],
+    childDimensions
+  );
+}
+
 /**
  * Calculates the velocity of panning when the mouse is close to the edge of the canvas
  * @internal
