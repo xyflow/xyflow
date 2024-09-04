@@ -286,8 +286,17 @@ const createStore = ({
         triggerNodeChanges(nodeChanges);
         triggerEdgeChanges(edgeChanges);
       },
-      setNodeExtent: (nodeExtent) => {
-        const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
+      setNodeExtent: (nextNodeExtent) => {
+        const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, nodeExtent } = get();
+
+        if (
+          nextNodeExtent[0][0] === nodeExtent[0][0] &&
+          nextNodeExtent[0][1] === nodeExtent[0][1] &&
+          nextNodeExtent[1][0] === nodeExtent[1][0] &&
+          nextNodeExtent[1][1] === nodeExtent[1][1]
+        ) {
+          return;
+        }
 
         adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
