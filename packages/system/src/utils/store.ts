@@ -151,7 +151,7 @@ function updateChildNode<NodeType extends NodeBase>(
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options?: UpdateNodesOptions<NodeType>
 ) {
-  const { elevateNodesOnSelect, nodeOrigin } = mergeObjects(defaultOptions, options);
+  const { elevateNodesOnSelect, nodeOrigin, nodeExtent } = mergeObjects(defaultOptions, options);
   const parentId = node.parentId!;
   const parentNode = nodeLookup.get(parentId);
 
@@ -165,7 +165,7 @@ function updateChildNode<NodeType extends NodeBase>(
   updateParentLookup(node, parentLookup);
 
   const selectedNodeZ = elevateNodesOnSelect ? 1000 : 0;
-  const { x, y, z } = calculateChildXYZ(node, parentNode, nodeOrigin, selectedNodeZ);
+  const { x, y, z } = calculateChildXYZ(node, parentNode, nodeOrigin, nodeExtent, selectedNodeZ);
   const { positionAbsolute } = node.internals;
   const positionChanged = x !== positionAbsolute.x || y !== positionAbsolute.y;
 
@@ -186,6 +186,7 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   childNode: InternalNodeBase<NodeType>,
   parentNode: InternalNodeBase<NodeType>,
   nodeOrigin: NodeOrigin,
+  nodeExtent: CoordinateExtent,
   selectedNodeZ: number
 ) {
   const { x: parentX, y: parentY } = parentNode.internals.positionAbsolute;
@@ -195,7 +196,11 @@ function calculateChildXYZ<NodeType extends NodeBase>(
     ? clampPosition(positionWithOrigin, childNode.extent, childDimensions)
     : positionWithOrigin;
 
-  let absolutePosition = { x: parentX + clampedPosition.x, y: parentY + clampedPosition.y };
+  let absolutePosition = clampPosition(
+    { x: parentX + clampedPosition.x, y: parentY + clampedPosition.y },
+    nodeExtent,
+    childDimensions
+  );
 
   if (childNode.extent === 'parent') {
     absolutePosition = clampPositionToParent(absolutePosition, childDimensions, parentNode);
