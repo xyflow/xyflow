@@ -300,12 +300,12 @@ const createStore = ({
 
         adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
-          nodeExtent,
+          nodeExtent: nextNodeExtent,
           elevateNodesOnSelect,
           checkEquality: false,
         });
 
-        set({ nodeExtent });
+        set({ nodeExtent: nextNodeExtent });
       },
       panBy: (delta): Promise<boolean> => {
         const { transform, width, height, panZoom, translateExtent } = get();
