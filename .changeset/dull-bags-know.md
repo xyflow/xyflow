@@ -1,7 +1,7 @@
 ---
 '@xyflow/react': minor
-'@xyflow/svelte': minor
-'@xyflow/system': minor
+'@xyflow/svelte': patch
+'@xyflow/system': patch
 ---
 
-Deprecate util function getNodesBounds and add alternative to useReactFlow/useSvelteFlow hook
+Add util function getNodesBounds for useReactFlow/useSvelteFlow hook
