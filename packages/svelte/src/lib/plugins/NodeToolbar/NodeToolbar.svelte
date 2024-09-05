@@ -1,11 +1,12 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { getNodesBounds, Position, getNodeToolbarTransform } from '@xyflow/system';
+  import { Position, getNodeToolbarTransform } from '@xyflow/system';
   import portal from '$lib/actions/portal';
   import type { InternalNode } from '$lib/types';
   import { useStore } from '$lib/store';
 
   import type { NodeToolbarProps } from './types';
+  import { useSvelteFlow } from '$lib/hooks/useSvelteFlow';
 
   type $$Props = NodeToolbarProps;
 
@@ -15,7 +16,8 @@
   export let offset: $$Props['offset'] = undefined;
   export let isVisible: $$Props['isVisible'] = undefined;
 
-  const { domNode, viewport, nodeLookup, nodes, nodeOrigin } = useStore();
+  const { domNode, viewport, nodeLookup, nodes } = useStore();
+  const { getNodesBounds } = useSvelteFlow();
   const contextNodeId = getContext<string>('svelteflow__node_id');
 
   let transform: string;
@@ -42,7 +44,7 @@
   }
 
   $: {
-    const nodeRect = getNodesBounds(toolbarNodes, { nodeOrigin: $nodeOrigin });
+    const nodeRect = getNodesBounds(toolbarNodes);
 
     if (nodeRect) {
       transform = getNodeToolbarTransform(nodeRect, $viewport, _position, _offset, _align);

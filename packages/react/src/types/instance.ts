@@ -174,6 +174,14 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     options?: { replace: boolean }
   ) => void;
   /**
+   * Returns the bounds of the given nodes or node ids.
+   *
+   * @param nodes - the nodes or node ids to calculate the bounds for
+   *
+   * @returns the bounds of the given nodes
+   */
+  getNodesBounds: (nodes: (NodeType | InternalNode | string)[]) => Rect;
+  /**
    * Gets all connections for a given handle belonging to a specific node.
    *
    * @param type - handle type 'source' or 'target'

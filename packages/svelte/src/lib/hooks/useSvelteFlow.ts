@@ -16,7 +16,8 @@ import {
   rendererPointToPoint,
   evaluateAbsolutePosition,
   type HandleType,
-  type HandleConnection
+  type HandleConnection,
+  getNodesBounds
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -233,7 +234,14 @@ export function useSvelteFlow(): {
    */
   toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
   /**
-   * Gets all connections for a given handle belonging to a specific node.
+   * Returns the bounds of the given nodes or node ids.
+   *
+   * @param nodes - the nodes or node ids to calculate the bounds for
+   *
+   * @returns the bounds of the given nodes
+   */
+  getNodesBounds: (nodes: (Node | InternalNode | string)[]) => Rect;
+  /** Gets all connections for a given handle belonging to a specific node.
    *
    * @param type - handle type 'source' or 'target'
    * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
@@ -266,9 +274,9 @@ export function useSvelteFlow(): {
     edges,
     domNode,
     nodeLookup,
+    nodeOrigin,
     edgeLookup,
-    connectionLookup,
-    nodeOrigin
+    connectionLookup
   } = useStore();
 
   const getNodeRect = (node: Node | { id: Node['id'] }): Rect | null => {
@@ -542,6 +550,12 @@ export function useSvelteFlow(): {
       node.data = options?.replace ? nextData : { ...node.data, ...nextData };
 
       nodes.update((nds) => nds);
+    },
+    getNodesBounds: (nodes) => {
+      const _nodeLookup = get(nodeLookup);
+      const _nodeOrigin = get(nodeOrigin);
+
+      return getNodesBounds(nodes, { nodeLookup: _nodeLookup, nodeOrigin: _nodeOrigin });
     },
     getHandleConnections: ({ type, id, nodeId }) =>
       Array.from(
