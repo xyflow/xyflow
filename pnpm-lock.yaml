@@ -101,6 +101,9 @@ importers:
       '@xyflow/react':
         specifier: workspace:*
         version: link:../../packages/react
+      '@xyflow/system':
+        specifier: workspace:*
+        version: link:../../packages/system
       classcat:
         specifier: ^5.0.4
         version: 5.0.4
