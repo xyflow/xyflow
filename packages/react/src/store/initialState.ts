@@ -9,6 +9,7 @@ import {
   getInternalNodesBounds,
   NodeOrigin,
   initialConnection,
+  CoordinateExtent,
 } from '@xyflow/system';
 
 import type { Edge, InternalNode, Node, ReactFlowStore } from '../types';
@@ -22,6 +23,7 @@ const getInitialState = ({
   height,
   fitView,
   nodeOrigin,
+  nodeExtent,
 }: {
   nodes?: Node[];
   edges?: Edge[];
@@ -31,18 +33,22 @@ const getInitialState = ({
   height?: number;
   fitView?: boolean;
   nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map<string, InternalNode>();
   const parentLookup = new Map();
   const connectionLookup = new Map();
   const edgeLookup = new Map();
+
   const storeEdges = defaultEdges ?? edges ?? [];
   const storeNodes = defaultNodes ?? nodes ?? [];
   const storeNodeOrigin = nodeOrigin ?? [0, 0];
+  const storeNodeExtent = nodeExtent ?? infiniteExtent;
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
   adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
     nodeOrigin: storeNodeOrigin,
+    nodeExtent: storeNodeExtent,
     elevateNodesOnSelect: false,
   });
 
@@ -76,7 +82,7 @@ const getInitialState = ({
     minZoom: 0.5,
     maxZoom: 2,
     translateExtent: infiniteExtent,
-    nodeExtent: infiniteExtent,
+    nodeExtent: storeNodeExtent,
     nodesSelectionActive: false,
     userSelectionActive: false,
     userSelectionRect: null,

@@ -3,7 +3,7 @@ import { useContext, type ReactNode } from 'react';
 import StoreContext from '../../contexts/StoreContext';
 import { ReactFlowProvider } from '../../components/ReactFlowProvider';
 import type { Node, Edge } from '../../types';
-import { NodeOrigin } from '@xyflow/system';
+import { CoordinateExtent, NodeOrigin } from '@xyflow/system';
 
 export function Wrapper({
   children,
@@ -15,6 +15,7 @@ export function Wrapper({
   height,
   fitView,
   nodeOrigin,
+  nodeExtent,
 }: {
   children: ReactNode;
   nodes?: Node[];
@@ -25,6 +26,7 @@ export function Wrapper({
   height?: number;
   fitView?: boolean;
   nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
 }) {
   const isWrapped = useContext(StoreContext);
 
@@ -44,6 +46,7 @@ export function Wrapper({
       initialHeight={height}
       fitView={fitView}
       nodeOrigin={nodeOrigin}
+      nodeExtent={nodeExtent}
     >
       {children}
     </ReactFlowProvider>

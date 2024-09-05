@@ -16,10 +16,32 @@ import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
 
-export const clampPosition = (position: XYPosition = { x: 0, y: 0 }, extent: CoordinateExtent) => ({
-  x: clamp(position.x, extent[0][0], extent[1][0]),
-  y: clamp(position.y, extent[0][1], extent[1][1]),
+export const clampPosition = (
+  position: XYPosition = { x: 0, y: 0 },
+  extent: CoordinateExtent,
+  dimensions: Partial<Dimensions>
+) => ({
+  x: clamp(position.x, extent[0][0], extent[1][0] - (dimensions?.width ?? 0)),
+  y: clamp(position.y, extent[0][1], extent[1][1] - (dimensions?.height ?? 0)),
 });
+
+export function clampPositionToParent<NodeType extends NodeBase>(
+  childPosition: XYPosition,
+  childDimensions: Dimensions,
+  parent: InternalNodeBase<NodeType>
+) {
+  const { width: parentWidth, height: parentHeight } = getNodeDimensions(parent);
+  const { x: parentX, y: parentY } = parent.internals.positionAbsolute;
+
+  return clampPosition(
+    childPosition,
+    [
+      [parentX, parentY],
+      [parentX + parentWidth, parentY + parentHeight],
+    ],
+    childDimensions
+  );
+}
 
 /**
  * Calculates the velocity of panning when the mouse is close to the edge of the canvas
