@@ -79,22 +79,23 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   onClick: MiniMapNodesProps['onClick'];
   shapeRendering: string;
 }) {
-  const { node, x, y } = useStore((s) => {
+  const { node, x, y, width, height } = useStore((s) => {
     const node = s.nodeLookup.get(id) as InternalNode<NodeType>;
     const { x, y } = node.internals.positionAbsolute;
+    const { width, height } = getNodeDimensions(node);
 
     return {
       node,
       x,
       y,
+      width,
+      height,
     };
   }, shallow);
 
   if (!node || node.hidden || !nodeHasDimensions(node)) {
     return null;
   }
-
-  const { width, height } = getNodeDimensions(node);
 
   return (
     <NodeComponent
