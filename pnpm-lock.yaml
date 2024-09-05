@@ -102,8 +102,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/react
       '@xyflow/system':
-        specifier: ^0.0.41
-        version: 0.0.41
+        specifier: workspace:*
+        version: link:../../packages/system
       classcat:
         specifier: ^5.0.4
         version: 5.0.4
@@ -2213,9 +2213,6 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0
-
-  '@xyflow/system@0.0.41':
-    resolution: {integrity: sha512-XAjs8AUA0YMfYD91cT6pLGALwbsPS64s2WBHyULqL1m0gTqXqaUSLK1P7qA/Q8HecN0RFbqlM2tPO8bmZXP0YQ==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -8429,16 +8426,6 @@ snapshots:
       vite: 5.3.2(@types/node@20.14.6)(terser@5.31.0)
     transitivePeerDependencies:
       - supports-color
-
-  '@xyflow/system@0.0.41':
-    dependencies:
-      '@types/d3-drag': 3.0.7
-      '@types/d3-selection': 3.0.10
-      '@types/d3-transition': 3.0.8
-      '@types/d3-zoom': 3.0.8
-      d3-drag: 3.0.0
-      d3-selection: 3.0.0
-      d3-zoom: 3.0.0
 
   acorn-jsx@5.3.2(acorn@8.10.0):
     dependencies:
