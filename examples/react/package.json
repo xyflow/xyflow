@@ -16,7 +16,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
     "@xyflow/react": "workspace:*",
-    "@xyflow/system": "^0.0.41",
+    "@xyflow/system": "workspace:*",
     "classcat": "^5.0.4",
     "dagre": "^0.8.5",
     "localforage": "^1.10.0",
