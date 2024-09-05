@@ -112,7 +112,7 @@ const createStore = ({
           return;
         }
 
-        updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin });
+        updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent });
 
         if (params.triggerFitView) {
           // we call fitView once initially after all dimensions are set
