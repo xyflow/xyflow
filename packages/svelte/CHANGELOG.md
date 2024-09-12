@@ -1,5 +1,18 @@
 # @xyflow/svelte
 
+## 0.1.19
+
+### Patch Changes
+
+- [#4477](https://github.com/xyflow/xyflow/pull/4477) [`d5592e75`](https://github.com/xyflow/xyflow/commit/d5592e7508bc32d5ffc953844b1d42b9ec59b25b) Thanks [@peterkogo](https://github.com/peterkogo)! - Add `getNodesBounds` to `useReactFlow`/`useSvelteFlow` hook as the new recommended way of determining node bounds.
+
+- [#4572](https://github.com/xyflow/xyflow/pull/4572) [`1445e148`](https://github.com/xyflow/xyflow/commit/1445e1483118c966ff6de3f29c5473c93f6b99f1) Thanks [@peterkogo](https://github.com/peterkogo)! - Add nodeExtent prop to `<SvelteFlow />`. You can now restrict nodes from leaving a specified extent.
+
+- [#4572](https://github.com/xyflow/xyflow/pull/4572) [`d9563505`](https://github.com/xyflow/xyflow/commit/d9563505d8fb01862a3a6bae6e05dcea626c2e26) Thanks [@peterkogo](https://github.com/peterkogo)! - Improve handling of global and individual `nodeExtent`s. Nodes will never render outside of specified extents.
+
+- Updated dependencies [[`d5592e75`](https://github.com/xyflow/xyflow/commit/d5592e7508bc32d5ffc953844b1d42b9ec59b25b), [`d9563505`](https://github.com/xyflow/xyflow/commit/d9563505d8fb01862a3a6bae6e05dcea626c2e26)]:
+  - @xyflow/system@0.0.42
+
 ## 0.1.18
 
 ### Patch Changes
