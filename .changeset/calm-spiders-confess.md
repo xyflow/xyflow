@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-minimap: use latest node dimensions
+Fix Minimap only displaying nodes when providing onNodesChange 

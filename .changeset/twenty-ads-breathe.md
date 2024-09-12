@@ -4,4 +4,4 @@
 '@xyflow/system': patch
 ---
 
-Fix extent on nodes not working properly
+Improve handling of global and individual nodeExtents. Nodes will never render outside of specified extents.

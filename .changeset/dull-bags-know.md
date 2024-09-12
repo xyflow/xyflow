@@ -4,4 +4,4 @@
 '@xyflow/system': patch
 ---
 
-Add util function getNodesBounds for useReactFlow/useSvelteFlow hook
+Add getNodesBounds to useReactFlow/useSvelteFlow hook as the new recommended way of determining node bounds.
