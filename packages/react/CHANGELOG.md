@@ -1,5 +1,20 @@
 # @xyflow/react
 
+## 12.3.0
+
+### Minor Changes
+
+- [#4477](https://github.com/xyflow/xyflow/pull/4477) [`d5592e75`](https://github.com/xyflow/xyflow/commit/d5592e7508bc32d5ffc953844b1d42b9ec59b25b) Thanks [@peterkogo](https://github.com/peterkogo)! - Add `getNodesBounds` to `useReactFlow`/`useSvelteFlow` hook as the new recommended way of determining node bounds.
+
+### Patch Changes
+
+- [#4630](https://github.com/xyflow/xyflow/pull/4630) [`4347269f`](https://github.com/xyflow/xyflow/commit/4347269f02488a24f411d083c409f5741cbf468e) Thanks [@moklick](https://github.com/moklick)! - Fix `<Minimap />` only displaying nodes when providing `onNodesChange`.
+
+- [#4572](https://github.com/xyflow/xyflow/pull/4572) [`d9563505`](https://github.com/xyflow/xyflow/commit/d9563505d8fb01862a3a6bae6e05dcea626c2e26) Thanks [@peterkogo](https://github.com/peterkogo)! - Improve handling of global and individual `nodeExtent`s. Nodes will never render outside of specified extents.
+
+- Updated dependencies [[`d5592e75`](https://github.com/xyflow/xyflow/commit/d5592e7508bc32d5ffc953844b1d42b9ec59b25b), [`d9563505`](https://github.com/xyflow/xyflow/commit/d9563505d8fb01862a3a6bae6e05dcea626c2e26)]:
+  - @xyflow/system@0.0.42
+
 ## 12.2.1
 
 ### Patch Changes
