@@ -1,0 +1,29 @@
+name: Dispatch Website Update
+run-name: Dispatch Website Update for ${{ github.event.release.tag_name }}
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  dispatch_website_update:
+    if: ${{ contains(github.event.release.tag_name, 'svelte') || contains(github.event.release.tag_name, 'react') }}
+    runs-on: ubuntu-latest
+    steps:
+      # Github Actions is not able to escape JSON strings with certain characters in them
+      # which release bodies have plenty of. This step uses jq to extract the body and tag_name
+      # and escape them so they can be used in the next step to create a JSON for the client-payload
+      - name: Strip and escape JSON
+        run: |
+          {
+            echo 'ESCAPED_PAYLOAD<<EOF'
+            echo '${{ toJson(github.event.release) }}' | jq '{"body", "tag_name"}'
+            echo EOF
+          } >> "$GITHUB_ENV"
+      - name: Dispatch Website Update
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          repository: xyflow/web
+          token: ${{ secrets.PAT }}
+          event-type: library-release
+          client-payload: ${{ env.ESCAPED_PAYLOAD }}
