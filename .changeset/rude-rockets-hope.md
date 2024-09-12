@@ -2,4 +2,4 @@
 '@xyflow/svelte': patch
 ---
 
-Added ability to set global nodeExtent
+Add nodeExtent prop to <SvelteFlow />. You can now restrict nodes from leaving a specified extent.
