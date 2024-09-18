@@ -19,8 +19,6 @@ export type NodeBase<
   position: XYPosition;
   /** Arbitrary data passed to a node */
   data: NodeData;
-  /** Type of node defined in nodeTypes */
-  type: NodeType;
   /** Only relevant for default, source, target nodeType. controls source position
    * @example 'right', 'left', 'top', 'bottom'
    */
@@ -63,7 +61,15 @@ export type NodeBase<
     width?: number;
     height?: number;
   };
-};
+} & (undefined extends NodeType
+  ? {
+      /** Type of node defined in nodeTypes */
+      type?: string | undefined;
+    }
+  : {
+      /** Type of node defined in nodeTypes */
+      type: NodeType;
+    });
 
 export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & {
   measured: {
