@@ -19,7 +19,8 @@ import {
   type UpdateConnection,
   type ConnectionState,
   type NodeOrigin,
-  getFitViewNodes
+  getFitViewNodes,
+  updateAbsolutePositions
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -96,6 +97,7 @@ export function createStore({
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
     const nodeLookup = get(store.nodeLookup);
+    const parentLookup = get(store.parentLookup);
     const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,
       nodeLookup,
@@ -107,6 +109,8 @@ export function createStore({
     if (!updatedInternals) {
       return;
     }
+
+    updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent });
 
     if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
       const fitViewOptions = get(store.fitViewOptions);
