@@ -234,14 +234,14 @@ importers:
         version: 18.2.0(react@18.3.1)
       zustand:
         specifier: ^4.5.5
-        version: 4.5.5(@types/react@18.3.3)(immer@10.0.4)(react@18.3.1)
+        version: 4.5.5(@types/react@18.3.7)(immer@10.0.4)(react@18.3.1)
     devDependencies:
       '@types/node':
         specifier: ^22.5.5
         version: 22.5.5
       '@types/react':
         specifier: '>=18'
-        version: 18.3.3
+        version: 18.3.7
       '@types/react-dom':
         specifier: '>=18'
         version: 18.3.0
@@ -11433,14 +11433,6 @@ snapshots:
       zod: 3.23.8
 
   zod@3.23.8: {}
-
-  zustand@4.5.5(@types/react@18.3.3)(immer@10.0.4)(react@18.3.1):
-    dependencies:
-      use-sync-external-store: 1.2.2(react@18.3.1)
-    optionalDependencies:
-      '@types/react': 18.3.3
-      immer: 10.0.4
-      react: 18.3.1
 
   zustand@4.5.5(@types/react@18.3.7)(immer@10.0.4)(react@18.3.1):
     dependencies:

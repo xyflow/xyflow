@@ -1,4 +1,4 @@
-import { type Ref, type RefAttributes, forwardRef } from 'react';
+import { PropsWithoutRef, type Ref, type RefAttributes, forwardRef } from 'react';
 import { isNodeBase, isEdgeBase } from '@xyflow/system';
 
 import type { Edge, Node } from '../types';
@@ -25,8 +25,8 @@ export const isEdge = <EdgeType extends Edge = Edge>(element: unknown): element 
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function fixedForwardRef<T, P = {}>(
-  render: (props: P, ref: Ref<T>) => JSX.Element
+  render: (props: PropsWithoutRef<P>, ref: Ref<T>) => JSX.Element
 ): (props: P & RefAttributes<T>) => JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return forwardRef(render) as any;
+  return forwardRef<T, P>(render) as any;
 }
