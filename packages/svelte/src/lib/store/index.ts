@@ -19,7 +19,8 @@ import {
   type UpdateConnection,
   type ConnectionState,
   type NodeOrigin,
-  getFitViewNodes
+  getFitViewNodes,
+  getDimensions
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -152,18 +153,21 @@ export function createStore({
 
   function fitView(options?: FitViewOptions) {
     const panZoom = get(store.panZoom);
+    const domNode = get(store.domNode);
 
-    if (!panZoom) {
+    if (!panZoom || !domNode) {
       return Promise.resolve(false);
     }
+
+    const { width, height } = getDimensions(domNode);
 
     const fitViewNodes = getFitViewNodes(get(store.nodeLookup), options);
 
     return fitViewSystem(
       {
         nodes: fitViewNodes,
-        width: get(store.width),
-        height: get(store.height),
+        width,
+        height,
         minZoom: get(store.minZoom),
         maxZoom: get(store.maxZoom),
         panZoom

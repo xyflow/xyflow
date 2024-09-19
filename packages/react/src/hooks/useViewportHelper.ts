@@ -6,6 +6,7 @@ import {
   fitView,
   type XYPosition,
   rendererPointToPoint,
+  getDimensions,
 } from '@xyflow/system';
 
 import { useStoreApi } from '../hooks/useStore';
@@ -64,8 +65,10 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         return { x, y, zoom };
       },
       fitView: (options) => {
-        const { nodeLookup, width, height, minZoom, maxZoom, panZoom } = store.getState();
+        const { nodeLookup, minZoom, maxZoom, panZoom, domNode } = store.getState();
         const fitViewNodes = getFitViewNodes(nodeLookup, options);
+
+        const { width, height } = getDimensions(domNode!);
 
         return panZoom
           ? fitView(
