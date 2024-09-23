@@ -4,4 +4,4 @@
 '@xyflow/react': patch
 ---
 
-Fix initial fitView not working correctly for nodeOrigin other than [0,0]
+Fix initial `fitView` not working correctly for `nodeOrigin` other than [0,0]
