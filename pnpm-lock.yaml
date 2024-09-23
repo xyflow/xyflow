@@ -233,7 +233,7 @@ importers:
         specifier: '>=17'
         version: 18.2.0(react@18.3.1)
       zustand:
-        specifier: ^4.5.5
+        specifier: ^4.4.0
         version: 4.5.5(@types/react@18.3.7)(immer@10.0.4)(react@18.3.1)
     devDependencies:
       '@types/node':

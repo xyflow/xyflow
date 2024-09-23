@@ -54,7 +54,7 @@
   "dependencies": {
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.5",
-    "zustand": "^4.5.5"
+    "zustand": "^4.4.0"
   },
   "peerDependencies": {
     "react": ">=17",
