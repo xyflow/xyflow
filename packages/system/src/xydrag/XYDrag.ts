@@ -139,6 +139,12 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       }
 
       for (const [id, dragItem] of dragItems) {
+        if (!nodeLookup.has(id)) {
+          // if the node is not in the nodeLookup anymore, it was probably deleted while dragging
+          // and we don't need to update it anymore
+          continue;
+        }
+
         let nextPosition = { x: x - dragItem.distance.x, y: y - dragItem.distance.y };
         if (snapToGrid) {
           nextPosition = snapPosition(nextPosition, snapGrid);
@@ -288,10 +294,14 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
       })
       .on('drag', (event: UseDragEvent) => {
-        const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold } = getStoreItems();
+        const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold, nodeLookup } = getStoreItems();
         const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
 
-        if (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) {
+        if (
+          (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) ||
+          // if user deletes a node while dragging, we need to abort the drag to prevent errors
+          (nodeId && !nodeLookup.has(nodeId))
+        ) {
           abortDrag = true;
         }
 
