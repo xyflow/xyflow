@@ -1,5 +1,13 @@
 # @xyflow/system
 
+## 0.0.43
+
+### Patch Changes
+
+- [#4681](https://github.com/xyflow/xyflow/pull/4681) [`99ba64ac`](https://github.com/xyflow/xyflow/commit/99ba64ac2e1ce9c5ac3cab85a3d574edc0ecf4cc) Thanks [@moklick](https://github.com/moklick)! - Fix an issue that appeared when user deleted node while dragging.
+
+- [#4670](https://github.com/xyflow/xyflow/pull/4670) [`b056564c`](https://github.com/xyflow/xyflow/commit/b056564c9658bb43b882eebfad5a7e224717ffb5) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix initial `fitView` not working correctly for `nodeOrigin` other than [0,0]
+
 ## 0.0.42
 
 ### Patch Changes
