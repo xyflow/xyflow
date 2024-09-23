@@ -61,11 +61,14 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
 ) {
   const _options = mergeObjects(defaultOptions, options);
   for (const node of nodeLookup.values()) {
-    if (!node.parentId) {
-      continue;
+    if (node.parentId) {
+      updateChildNode(node, nodeLookup, parentLookup, _options);
+    } else {
+      const positionWithOrigin = getNodePositionWithOrigin(node, _options.nodeOrigin);
+      const extent = isCoordinateExtent(node.extent) ? node.extent : _options.nodeExtent;
+      const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(node));
+      node.internals.positionAbsolute = clampedPosition;
     }
-
-    updateChildNode(node, nodeLookup, parentLookup, _options);
   }
 }
 
