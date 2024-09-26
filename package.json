@@ -28,8 +28,8 @@
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "concurrently": "^9.0.1",
-    "eslint": "^9.10.0",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "latest",
     "prettier": "^3.3.3",
@@ -38,7 +38,7 @@
     "rimraf": "^6.0.1",
     "rollup": "^4.22.0",
     "turbo": "^2.1.2",
-    "typescript": "5.6.2"
+    "typescript": "^5.5.0"
   },
   "packageManager": "pnpm@9.2.0"
 }

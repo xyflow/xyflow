@@ -23,7 +23,7 @@ export const isNode = <NodeType extends Node = Node>(element: unknown): element 
 export const isEdge = <EdgeType extends Edge = Edge>(element: unknown): element is EdgeType =>
   isEdgeBase<EdgeType>(element);
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export function fixedForwardRef<T, P = {}>(
   render: (props: PropsWithoutRef<P>, ref: Ref<T>) => JSX.Element
 ): (props: P & RefAttributes<T>) => JSX.Element {
