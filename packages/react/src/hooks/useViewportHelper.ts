@@ -66,23 +66,25 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       },
       fitView: (options) => {
         const { nodeLookup, minZoom, maxZoom, panZoom, domNode } = store.getState();
+
+        if (!panZoom || !domNode) {
+          return Promise.resolve(false);
+        }
+
         const fitViewNodes = getFitViewNodes(nodeLookup, options);
+        const { width, height } = getDimensions(domNode);
 
-        const { width, height } = getDimensions(domNode!);
-
-        return panZoom
-          ? fitView(
-              {
-                nodes: fitViewNodes,
-                width,
-                height,
-                minZoom,
-                maxZoom,
-                panZoom,
-              },
-              options
-            )
-          : Promise.resolve(false);
+        return fitView(
+          {
+            nodes: fitViewNodes,
+            width,
+            height,
+            minZoom,
+            maxZoom,
+            panZoom,
+          },
+          options
+        );
       },
       setCenter: async (x, y, options) => {
         const { width, height, maxZoom, panZoom } = store.getState();
