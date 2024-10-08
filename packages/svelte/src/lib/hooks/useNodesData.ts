@@ -41,7 +41,7 @@ export function useNodesData(nodeIds: any): any {
     }
 
     if (!shallowNodeData(nextNodesData, prevNodesData) || initialRun) {
-      prevNodesData = [...nextNodesData];
+      prevNodesData = nextNodesData;
       set(isArrayOfIds ? nextNodesData : nextNodesData[0] ?? null);
       initialRun = false;
     }
