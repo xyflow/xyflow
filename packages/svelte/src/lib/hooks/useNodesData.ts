@@ -22,6 +22,7 @@ export function useNodesData(nodeIds: any): any {
   const { nodes, nodeLookup } = useStore();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let prevNodesData: any[] = [];
+  let initialRun = true;
 
   return derived([nodes, nodeLookup], ([, nodeLookup], set) => {
     const nextNodesData = [];
@@ -39,9 +40,10 @@ export function useNodesData(nodeIds: any): any {
       }
     }
 
-    if (!shallowNodeData(nextNodesData, prevNodesData)) {
-      prevNodesData = nextNodesData;
+    if (!shallowNodeData(nextNodesData, prevNodesData) || initialRun) {
+      prevNodesData = [...nextNodesData];
       set(isArrayOfIds ? nextNodesData : nextNodesData[0] ?? null);
+      initialRun = false;
     }
   });
 }
