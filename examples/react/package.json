@@ -14,7 +14,7 @@
     "test-e2e": "start-server-and-test 'pnpm serve' http-get://localhost:3000 'pnpm test-e2e-cypress'"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^2.2.7",
+    "@reduxjs/toolkit": "^2.2.8",
     "@xyflow/react": "workspace:*",
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.5",
@@ -30,14 +30,14 @@
   "devDependencies": {
     "@cypress/skip-test": "^2.6.1",
     "@types/dagre": "^0.7.52",
-    "@types/react": "^18.3.7",
+    "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "4.3.1",
-    "@vitejs/plugin-react-swc": "^3.7.0",
-    "cypress": "13.14.2",
+    "@vitejs/plugin-react": "4.3.2",
+    "@vitejs/plugin-react-swc": "^3.7.1",
+    "cypress": "13.15.0",
     "cypress-real-events": "1.13.0",
     "start-server-and-test": "^2.0.8",
     "typescript": "5.5.4",
-    "vite": "5.4.6"
+    "vite": "5.4.8"
   }
 }

@@ -23,8 +23,8 @@
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
-    "@changesets/cli": "^2.27.8",
-    "@playwright/test": "^1.47.1",
+    "@changesets/cli": "^2.27.9",
+    "@playwright/test": "^1.48.0",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "concurrently": "^9.0.1",
@@ -36,8 +36,8 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rimraf": "^6.0.1",
-    "rollup": "^4.22.0",
-    "turbo": "^2.1.2",
+    "rollup": "^4.24.0",
+    "turbo": "^2.1.3",
     "typescript": "^5.5.0"
   },
   "packageManager": "pnpm@9.2.0"

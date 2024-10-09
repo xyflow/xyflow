@@ -43,15 +43,15 @@
   },
   "dependencies": {
     "@types/d3-drag": "^3.0.7",
-    "@types/d3-selection": "^3.0.10",
-    "@types/d3-transition": "^3.0.8",
+    "@types/d3-selection": "^3.0.11",
+    "@types/d3-transition": "^3.0.9",
     "@types/d3-zoom": "^3.0.8",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^22.5.5",
+    "@types/node": "^22.7.5",
     "@xyflow/eslint-config": "workspace:*",
     "@xyflow/rollup-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
