@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.3.2
+
+### Patch Changes
+
+- [#4722](https://github.com/xyflow/xyflow/pull/4722) [`e816bb69`](https://github.com/xyflow/xyflow/commit/e816bb6953486e37dd39d93252aa9b94fe5d4ec1) Thanks [@moklick](https://github.com/moklick)! - Fix internal behaviour that mutated user nodes which led to an issue with Redux and immer
+
 ## 12.3.1
 
 ### Patch Changes
