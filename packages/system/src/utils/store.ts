@@ -1,4 +1,4 @@
-import { infiniteExtent } from '..';
+import { HandleConnection, infiniteExtent } from '..';
 import {
   NodeBase,
   CoordinateExtent,
@@ -42,7 +42,7 @@ const adoptUserNodesDefaultOptions = {
   checkEquality: true,
 };
 
-function mergeObjects<T extends Record<string, any>>(base: T, incoming?: Partial<T>): T {
+function mergeObjects<T extends Record<string, unknown>>(base: T, incoming?: Partial<T>): T {
   const result = { ...base };
   for (const key in incoming) {
     if (incoming[key] !== undefined) {
@@ -439,22 +439,38 @@ export async function panBy({
   return Promise.resolve(transformChanged);
 }
 
+function addConnectionToLookup(
+  type: 'source' | 'target',
+  connection: HandleConnection,
+  connectionKey: string,
+  connectionLookup: ConnectionLookup,
+  nodeId: string,
+  handleId: string | null
+) {
+  const keyFragments = [nodeId, type, handleId];
+  let key = '';
+  for (const keyFragment of keyFragments) {
+    key += keyFragment;
+    const prevMap = connectionLookup.get(key) || new Map();
+    connectionLookup.set(key, prevMap.set(connectionKey, connection));
+    key += '-';
+  }
+}
+
 export function updateConnectionLookup(connectionLookup: ConnectionLookup, edgeLookup: EdgeLookup, edges: EdgeBase[]) {
   connectionLookup.clear();
   edgeLookup.clear();
 
   for (const edge of edges) {
-    const { source, target, sourceHandle = null, targetHandle = null } = edge;
+    const { source: sourceNode, target: targetNode, sourceHandle = null, targetHandle = null } = edge;
 
-    const sourceKey = `${source}-source-${sourceHandle}`;
-    const targetKey = `${target}-target-${targetHandle}`;
+    const connection = { edgeId: edge.id, source: sourceNode, target: targetNode, sourceHandle, targetHandle };
+    const sourceKey = `${sourceNode}-${sourceHandle}`;
+    const targetKey = `${targetNode}-${targetHandle}`;
 
-    const prevSource = connectionLookup.get(sourceKey) || new Map();
-    const prevTarget = connectionLookup.get(targetKey) || new Map();
-    const connection = { edgeId: edge.id, source, target, sourceHandle, targetHandle };
+    addConnectionToLookup('source', connection, targetKey, connectionLookup, sourceNode, sourceHandle);
+    addConnectionToLookup('target', connection, sourceKey, connectionLookup, targetNode, targetHandle);
 
     edgeLookup.set(edge.id, edge);
-    connectionLookup.set(sourceKey, prevSource.set(`${target}-${targetHandle}`, connection));
-    connectionLookup.set(targetKey, prevTarget.set(`${source}-${sourceHandle}`, connection));
   }
 }
