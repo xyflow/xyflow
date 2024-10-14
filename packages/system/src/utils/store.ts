@@ -439,6 +439,16 @@ export async function panBy({
   return Promise.resolve(transformChanged);
 }
 
+/**
+ * this function adds the connection to the connectionLookup
+ * at the following keys: nodeId-type-handleId, nodeId-type and nodeId
+ * @param type type of the connection
+ * @param connection connection that should be added to the lookup
+ * @param connectionKey at which key the connection should be added
+ * @param connectionLookup reference to the connection lookup
+ * @param nodeId nodeId of the connection
+ * @param handleId handleId of the conneciton
+ */
 function addConnectionToLookup(
   type: 'source' | 'target',
   connection: HandleConnection,
@@ -447,12 +457,16 @@ function addConnectionToLookup(
   nodeId: string,
   handleId: string | null
 ) {
+  // create array of key fragments for easier iteration
   const keyFragments = [nodeId, type, handleId];
   let key = '';
   for (const keyFragment of keyFragments) {
+    // values for each iteration: nodeId, nodeId-type, nodeId-type-handleId
     key += keyFragment;
+    // create a new map if the key does not exist and add the connection
     const prevMap = connectionLookup.get(key) || new Map();
     connectionLookup.set(key, prevMap.set(connectionKey, connection));
+    // add - as seperator for next iteration
     key += '-';
   }
 }
