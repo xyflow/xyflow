@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.1.21
+
+### Patch Changes
+
+- [#4718](https://github.com/xyflow/xyflow/pull/4718) [`51f08aac`](https://github.com/xyflow/xyflow/commit/51f08aaca5ddfbaa3259f666005d687d0a83f3db) Thanks [@peterkogo](https://github.com/peterkogo)! - Fixed hook useNodesData unexpectedly returning undefined
+
 ## 0.1.20
 
 ### Patch Changes

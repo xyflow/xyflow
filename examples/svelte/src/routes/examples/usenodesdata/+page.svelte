@@ -6,7 +6,7 @@
 	type ResultNodeType = Node<{}, 'result'>;
 
 	export function isTextNode(node: any): node is TextNodeType | UppercaseNode {
-		return node.type === 'text' || node.type === 'uppercase';
+		return !node || !node.type ? false : node.type === 'text' || node.type === 'uppercase';
 	}
 
 	export type MyNode = TextNodeType | UppercaseNodeType | ResultNodeType;

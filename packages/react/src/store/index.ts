@@ -238,12 +238,17 @@ const createStore = ({
         triggerNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
-        const { edges: storeEdges, nodes: storeNodes, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { edges: storeEdges, nodes: storeNodes, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
         const nodesToUnselect = nodes ? nodes : storeNodes;
         const edgesToUnselect = edges ? edges : storeEdges;
-
         const nodeChanges = nodesToUnselect.map((n) => {
-          n.selected = false;
+          const internalNode = nodeLookup.get(n.id);
+          if (internalNode) {
+            // we need to unselect the internal node that was selected previously before we
+            // send the change to the user to prevent it to be selected while dragging the new node
+            internalNode.selected = false;
+          }
+
           return createSelectionChange(n.id, false);
         });
         const edgeChanges = edgesToUnselect.map((edge) => createSelectionChange(edge.id, false));
