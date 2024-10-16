@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.44
+
+### Patch Changes
+
+- [#4730](https://github.com/xyflow/xyflow/pull/4730) [`2c590b90`](https://github.com/xyflow/xyflow/commit/2c590b90787aabce42de2b4108174bdf31ad6155) Thanks [@peterkogo](https://github.com/peterkogo)! - Fixed rare crash while dragging
+
 ## 0.0.43
 
 ### Patch Changes
