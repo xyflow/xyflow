@@ -106,14 +106,16 @@ export function getEventHandlerParams<NodeType extends InternalNodeBase>({
     return [nodesFromDragItems[0], nodesFromDragItems];
   }
 
-  const node = nodeLookup.get(nodeId)!.internals.userNode;
+  const node = nodeLookup.get(nodeId)?.internals.userNode;
 
   return [
-    {
-      ...node,
-      position: dragItems.get(nodeId)?.position || node.position,
-      dragging,
-    },
+    !node
+      ? nodesFromDragItems[0]
+      : {
+          ...node,
+          position: dragItems.get(nodeId)?.position || node.position,
+          dragging,
+        },
     nodesFromDragItems,
   ];
 }
