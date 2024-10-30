@@ -1,5 +1,16 @@
 # @xyflow/svelte
 
+## 0.1.22
+
+### Patch Changes
+
+- [#4730](https://github.com/xyflow/xyflow/pull/4730) [`2c590b90`](https://github.com/xyflow/xyflow/commit/2c590b90787aabce42de2b4108174bdf31ad6155) Thanks [@peterkogo](https://github.com/peterkogo)! - Fixed rare crash while dragging
+
+- [#4758](https://github.com/xyflow/xyflow/pull/4758) [`e555bd1b`](https://github.com/xyflow/xyflow/commit/e555bd1b1c7fbe801ed46120ac51d3d9cee5a29a) Thanks [@peterkogo](https://github.com/peterkogo)! - Bump Svelte peer dependency to 5.0.0
+
+- Updated dependencies [[`005ae1c0`](https://github.com/xyflow/xyflow/commit/005ae1c05f6a10c1f519cd789f4f3f2fdf293bc6), [`2c590b90`](https://github.com/xyflow/xyflow/commit/2c590b90787aabce42de2b4108174bdf31ad6155)]:
+  - @xyflow/system@0.0.44
+
 ## 0.1.21
 
 ### Patch Changes
