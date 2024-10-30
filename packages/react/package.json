@@ -29,10 +29,17 @@
   "types": "dist/esm/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/esm/index.d.ts",
-      "import": "./dist/esm/index.mjs",
-      "require": "./dist/umd/index.js",
-      "module": "./dist/esm/index.js"
+      "node": {
+        "types": "./dist/esm/index.d.ts",
+        "module": "./dist/esm/index.js",
+        "require": "./dist/umd/index.js",
+        "import": "./dist/esm/index.mjs"
+      },
+      "browser": {
+        "import": "./dist/esm/index.js",
+        "require": "./dist/umd/index.js"
+      },
+      "default": "./dist/esm/index.js"
     },
     "./dist/base.css": "./dist/base.css",
     "./dist/style.css": "./dist/style.css"
