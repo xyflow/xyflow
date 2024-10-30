@@ -22,7 +22,8 @@
     ".": {
       "types": "./dist/esm/index.d.ts",
       "import": "./dist/esm/index.mjs",
-      "require": "./dist/umd/index.js"
+      "require": "./dist/umd/index.js",
+      "module": "./dist/esm/index.js"
     }
   },
   "sideEffects": false,
