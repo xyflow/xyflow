@@ -211,10 +211,14 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       },
       updateNode,
       updateNodeData: (id, dataUpdate, options = { replace: false }) => {
+        console.log('updateNodeData', { id, dataUpdate, options });
         updateNode(
           id,
           (node) => {
             const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
+            if (id === '1') {
+              console.log('~ updateNode()', { 'old data': node.data, 'new data': nextData });
+            }
             return options.replace ? { ...node, data: nextData } : { ...node, data: { ...node.data, ...nextData } };
           },
           options
