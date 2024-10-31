@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.45
+
+### Patch Changes
+
+- [#4772](https://github.com/xyflow/xyflow/pull/4772) [`7f670ab0`](https://github.com/xyflow/xyflow/commit/7f670ab0423b3848a50398027297f6ec11deeaa4) Thanks [@mistic](https://github.com/mistic)! - Splits exports field in package.json to support an explicit resolution for browser, node and default to resolve issues with webpack esm module resolution.
+
 ## 0.0.44
 
 ### Patch Changes
