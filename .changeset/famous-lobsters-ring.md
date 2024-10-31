@@ -1,5 +1,6 @@
 ---
 '@xyflow/system': patch
+'@xyflow/svelte': patch
 '@xyflow/react': patch
 ---
 
