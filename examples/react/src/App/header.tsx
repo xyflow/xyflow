@@ -16,7 +16,7 @@ export default function Header() {
 
   return (
     <>
-      <header>
+      {/* <header>
         <a className="logo" href="https://github.com/xyflow/xyflow">
           React Flow Dev
         </a>
@@ -27,7 +27,7 @@ export default function Header() {
             </option>
           ))}
         </select>
-      </header>
+      </header> */}
       <Outlet />
     </>
   );

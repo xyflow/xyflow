@@ -2,97 +2,83 @@ import { MarkerType, type Node, type Edge } from '@xyflow/react';
 
 export const nodes: Node[] = [
   {
-    id: '1',
+    id: 'Node-1',
+    data: { label: 'Node-1' },
+    position: { x: 0, y: 0 },
     type: 'input',
-    data: {
-      label: 'hey',
-    },
-    position: { x: 250, y: 0 },
+    className: 'playwright-test-class-123',
+    style: { backgroundColor: 'red' },
   },
   {
-    id: '2',
-    data: {
-      label: 'default node',
-    },
+    id: 'Node-2',
+    type: 'output',
+    data: { label: 'Node-2' },
+    position: { x: -100, y: 100 },
+  },
+  {
+    id: 'Node-3',
+    data: { label: 'Node-3' },
     position: { x: 100, y: 100 },
   },
   {
-    id: '3',
-    data: {
-      label: 'custom style',
-    },
-    position: { x: 400, y: 100 },
-    style: {
-      background: '#D6D5E6',
-      color: '#333',
-      border: '1px solid #222138',
-      width: 180,
-    },
-  },
-  {
-    id: '4',
-    position: { x: 250, y: 200 },
-    data: {
-      label: 'Another default node',
-    },
-  },
-  {
-    id: '5',
-    data: {
-      label: 'Node id: 5',
-    },
-    position: { x: 250, y: 325 },
-  },
-  {
-    id: '6',
+    id: 'Node-4',
+    data: { label: 'Node-4' },
+    position: { x: 0, y: 200 },
     type: 'output',
-    data: {
-      label: 'output',
-    },
-    position: { x: 100, y: 480 },
   },
   {
-    id: '7',
+    id: 'drag-handle',
+    data: { label: 'Drag Handle' },
+    position: { x: 200, y: 0 },
+    type: 'DragHandleNode',
+    dragHandle: '.custom-drag-handle',
+  },
+  {
+    id: 'notConnectable',
     type: 'output',
-    data: { label: 'Another output node' },
-    position: { x: 400, y: 450 },
+    data: { label: 'notConnectable' },
+    position: { x: 0, y: 300 },
+    connectable: false,
+  },
+  {
+    id: 'notDraggable',
+    data: { label: 'notDraggable' },
+    position: { x: 0, y: 400 },
+    draggable: false,
+  },
+  {
+    id: 'notSelectable',
+    data: { label: 'notSelectable' },
+    position: { x: 0, y: 500 },
+    selectable: false,
+  },
+  {
+    id: 'notDeletable',
+    data: { label: 'notDeletable' },
+    position: { x: 0, y: 600 },
+    deletable: false,
+  },
+  {
+    id: 'hidden',
+    data: { label: 'hidden' },
+    position: { x: 0, y: 700 },
+    hidden: true,
   },
 ];
 
 export const edges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', label: 'this is an edge label' },
-  { id: 'e1-3', source: '1', target: '3' },
   {
-    id: 'e3-4',
-    source: '3',
-    target: '4',
-    animated: true,
-    label: 'animated edge',
+    id: '1-2',
+    type: 'default',
+    source: 'Node-1',
+    target: 'Node-2',
+    label: 'edge',
   },
   {
-    id: 'e4-5',
-    source: '4',
-    target: '5',
-    label: 'edge with arrow head',
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-    },
-  },
-  {
-    id: 'e5-6',
-    source: '5',
-    target: '6',
-    type: 'smoothstep',
-    label: 'smooth step edge',
-  },
-  {
-    id: 'e5-7',
-    source: '5',
-    target: '7',
-    type: 'step',
-    style: { stroke: '#f6ab6c' },
-    label: 'a step edge',
-    animated: true,
-    labelStyle: { fill: '#f6ab6c', fontWeight: 700 },
+    id: '1-3',
+    type: 'default',
+    source: 'Node-1',
+    target: 'Node-3',
+    label: 'edge',
   },
 ];
