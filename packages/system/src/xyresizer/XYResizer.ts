@@ -45,6 +45,7 @@ type XYResizerParams = {
     snapGrid?: [number, number];
     snapToGrid: boolean;
     nodeOrigin: NodeOrigin;
+    paneDomNode: HTMLDivElement | null;
   };
   onChange: (changes: XYResizerChange, childChanges: XYResizerChildChange[]) => void;
   onEnd?: () => void;
@@ -109,6 +110,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     const controlDirection = getControlDirection(controlPosition);
 
     let node: InternalNodeBase | undefined = undefined;
+    let containerBounds: DOMRect | null = null;
     let childNodes: XYResizerChildChange[] = [];
     let parentNode: InternalNodeBase | undefined = undefined; // Needed to fix expandParent
     let parentExtent: CoordinateExtent | undefined = undefined;
@@ -116,14 +118,20 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
-        const { nodeLookup, transform, snapGrid, snapToGrid, nodeOrigin } = getStoreItems();
+        const { nodeLookup, transform, snapGrid, snapToGrid, nodeOrigin, paneDomNode } = getStoreItems();
         node = nodeLookup.get(nodeId);
 
         if (!node) {
           return;
         }
 
-        const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+        containerBounds = paneDomNode?.getBoundingClientRect() ?? null;
+        const { xSnapped, ySnapped } = getPointerPosition(event.sourceEvent, {
+          transform,
+          snapGrid,
+          snapToGrid,
+          containerBounds,
+        });
 
         prevValues = {
           width: node.measured.width ?? 0,
@@ -178,7 +186,13 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
       })
       .on('drag', (event: ResizeDragEvent) => {
         const { transform, snapGrid, snapToGrid, nodeOrigin: storeNodeOrigin } = getStoreItems();
-        const pointerPosition = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+
+        const pointerPosition = getPointerPosition(event.sourceEvent, {
+          transform,
+          snapGrid,
+          snapToGrid,
+          containerBounds,
+        });
         const childChanges: XYResizerChildChange[] = [];
 
         if (!node) {

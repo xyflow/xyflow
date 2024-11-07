@@ -4,4 +4,4 @@
 '@xyflow/svelte': patch
 ---
 
-Fix node dragging while zooming on flow that does not cover whole browser window.
+Fix node dragging & resizing while zooming on flow that does not cover whole browser window.
