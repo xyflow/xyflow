@@ -5,14 +5,18 @@ export type GetPointerPositionParams = {
   transform: Transform;
   snapGrid?: SnapGrid;
   snapToGrid?: boolean;
+  containerBounds: DOMRect | null;
 };
 
 export function getPointerPosition(
   event: MouseEvent | TouchEvent,
-  { snapGrid = [0, 0], snapToGrid = false, transform }: GetPointerPositionParams
+  { snapGrid = [0, 0], snapToGrid = false, transform, containerBounds }: GetPointerPositionParams
 ): XYPosition & { xSnapped: number; ySnapped: number } {
   const { x, y } = getEventPosition(event);
-  const pointerPos = pointToRendererPoint({ x, y }, transform);
+  const pointerPos = pointToRendererPoint(
+    { x: x - (containerBounds?.left ?? 0), y: y - (containerBounds?.top ?? 0) },
+    transform
+  );
   const { x: xSnapped, y: ySnapped } = snapToGrid ? snapPosition(pointerPos, snapGrid) : pointerPos;
 
   // we need the snapped position in order to be able to skip unnecessary drag events

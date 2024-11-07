@@ -257,7 +257,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         onNodeMouseDown?.(nodeId);
       }
 
-      const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+      const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
       lastPos = pointerPos;
       dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, nodeId);
 
@@ -281,6 +281,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       .clickDistance(nodeClickDistance)
       .on('start', (event: UseDragEvent) => {
         const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
+        containerBounds = domNode?.getBoundingClientRect() || null;
 
         abortDrag = false;
 
@@ -288,14 +289,13 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           startDrag(event);
         }
 
-        const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+        const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
         lastPos = pointerPos;
-        containerBounds = domNode?.getBoundingClientRect() || null;
         mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
       })
       .on('drag', (event: UseDragEvent) => {
         const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold, nodeLookup } = getStoreItems();
-        const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+        const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
 
         if (
           (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) ||
