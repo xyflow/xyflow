@@ -45,7 +45,12 @@ export function useKeyPress(
   const [keyCodes, keysToWatch] = useMemo<[Array<Keys>, Keys]>(() => {
     if (keyCode !== null) {
       const keyCodeArr = Array.isArray(keyCode) ? keyCode : [keyCode];
-      const keys = keyCodeArr.filter((kc) => typeof kc === 'string').map((kc) => kc.split('+'));
+      const keys = keyCodeArr
+        .filter((kc) => typeof kc === 'string')
+        // we first replace all '+' with '\n'  which we will use to split the keys on
+        // then we replace '\n\n' with '\n+', this way we can also support the combination 'key++'
+        // in the end we simply split on '\n' to get the key array
+        .map((kc) => kc.replace('+', '\n').replace('\n\n', '\n+').split('\n'));
       const keysFlat = keys.reduce((res: Keys, item) => res.concat(...item), []);
 
       return [keys, keysFlat];
