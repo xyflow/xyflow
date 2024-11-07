@@ -79,4 +79,4 @@ const umdConfig = defineConfig({
   ],
 });
 
-export default isProd ? [esmMjsConfig, esmJsConfig, umdConfig] : esmMjsConfig;
+export default isProd ? [esmMjsConfig, esmJsConfig, umdConfig] : [esmJsConfig, esmMjsConfig];
