@@ -252,18 +252,13 @@ export function evaluateAbsolutePosition(
   nodeLookup: NodeLookup,
   nodeOrigin: NodeOrigin
 ): XYPosition {
-  let nextParentId: string | undefined = parentId;
   const positionAbsolute = { ...position };
 
-  while (nextParentId) {
-    const parent = nodeLookup.get(nextParentId);
-    nextParentId = parent?.parentId;
-
-    if (parent) {
-      const origin = parent.origin || nodeOrigin;
-      positionAbsolute.x += parent.internals.positionAbsolute.x - (dimensions.width ?? 0) * origin[0];
-      positionAbsolute.y += parent.internals.positionAbsolute.y - (dimensions.height ?? 0) * origin[1];
-    }
+  const parent = nodeLookup.get(parentId);
+  if (parent) {
+    const origin = parent.origin || nodeOrigin;
+    positionAbsolute.x += parent.internals.positionAbsolute.x - (dimensions.width ?? 0) * origin[0];
+    positionAbsolute.y += parent.internals.positionAbsolute.y - (dimensions.height ?? 0) * origin[1];
   }
 
   return positionAbsolute;
