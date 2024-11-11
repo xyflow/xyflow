@@ -1,5 +1,20 @@
 # @xyflow/react
 
+## 12.3.5
+
+### Patch Changes
+
+- [#4789](https://github.com/xyflow/xyflow/pull/4789) [`358eb355`](https://github.com/xyflow/xyflow/commit/358eb355e0b2bea4ffa47b0f04d6edf834343cd7) Thanks [@peterkogo](https://github.com/peterkogo)! - Support key combinations which include '+' (e.g., 'Control++' resolves to the combination 'Control' and '+').
+
+- [#4796](https://github.com/xyflow/xyflow/pull/4796) [`73402779`](https://github.com/xyflow/xyflow/commit/734027798799f4a98212dda115d33b4c54a95a45) Thanks [@Aki-7](https://github.com/Aki-7)! - Fix number of issues connected to batching node & edge updates.
+
+- [#4790](https://github.com/xyflow/xyflow/pull/4790) [`2fa9a920`](https://github.com/xyflow/xyflow/commit/2fa9a92042ba11986abbababb7e8b294e208d6cb) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix node dragging & resizing while zooming on flow that does not cover whole browser window.
+
+- [#4782](https://github.com/xyflow/xyflow/pull/4782) [`323e1b35`](https://github.com/xyflow/xyflow/commit/323e1b35c58bca80deb824bc8b136705593a5257) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix node intersections in nested flow.
+
+- Updated dependencies [[`2fa9a920`](https://github.com/xyflow/xyflow/commit/2fa9a92042ba11986abbababb7e8b294e208d6cb), [`323e1b35`](https://github.com/xyflow/xyflow/commit/323e1b35c58bca80deb824bc8b136705593a5257)]:
+  - @xyflow/system@0.0.46
+
 ## 12.3.4
 
 ### Patch Changes
