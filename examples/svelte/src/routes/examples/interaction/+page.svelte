@@ -39,18 +39,18 @@
 	const onPaneContextMenu = (event: MouseEvent) => console.log('onPaneContextMenu', event);
 	const onMoveEnd: OnMoveEnd = (_, viewport) => console.log('onMoveEnd', viewport);
 
-	let isSelectable = false;
-	let isDraggable = false;
-	let isConnectable = false;
-	let zoomOnScroll = false;
-	let zoomOnPinch = false;
-	let panOnScroll = false;
-	let panOnScrollMode = PanOnScrollMode.Free;
-	let zoomOnDoubleClick = false;
-	let panOnDrag = true;
-	let captureZoomClick = false;
-	let captureZoomScroll = false;
-	let captureElementClick = false;
+	let isSelectable = $state(false);
+	let isDraggable = $state(false);
+	let isConnectable = $state(false);
+	let zoomOnScroll = $state(false);
+	let zoomOnPinch = $state(false);
+	let panOnScroll = $state(false);
+	let panOnScrollMode = $state(PanOnScrollMode.Free);
+	let zoomOnDoubleClick = $state(false);
+	let panOnDrag = $state(true);
+	let captureZoomClick = $state(false);
+	let captureZoomScroll = $state(false);
+	let captureElementClick = $state(false);
 </script>
 
 <SvelteFlow
@@ -143,7 +143,7 @@
 				<select
 					id="panonscrollmode"
 					bind:value={panOnScrollMode}
-					on:change={(event) => {
+					onchange={(event) => {
 						panOnScrollMode = PanOnScrollMode.Free;
 					}}
 					class="svelte-flow__panonscrollmode"

@@ -83,9 +83,7 @@
 		$nodes = $nodes;
 	};
 
-	$: {
-		console.log($nodes);
-	}
+	$inspect($nodes);
 </script>
 
 <main>

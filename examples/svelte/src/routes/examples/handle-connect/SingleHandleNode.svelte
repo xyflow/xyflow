@@ -3,7 +3,12 @@
 
 	type $$Props = NodeProps;
 
-	export let id: $$Props['id'];
+	interface Props {
+		id: $$Props['id'];
+		[key: string]: any
+	}
+
+	let { id, ...rest }: Props = $props();
 
 	function onConnectTarget(connection: Connection[]) {
 		console.log('connect target', connection);
@@ -21,7 +26,7 @@
 		console.log('disconnect source', connection);
 	}
 
-	$$restProps;
+	rest;
 </script>
 
 <div class="custom">

@@ -4,9 +4,14 @@
 
 	type $$Props = NodeProps<Node<{ colorStore: Writable<string> }>>;
 
-	export let data: $$Props['data'];
+	interface Props {
+		data: $$Props['data'];
+		[key: string]: any
+	}
 
-	$$restProps;
+	let { data, ...rest }: Props = $props();
+
+	rest;
 
 	const { colorStore } = data;
 </script>
@@ -19,7 +24,7 @@
 	<input
 		class="nodrag"
 		type="color"
-		on:input={(evt) => colorStore.set(evt.currentTarget.value)}
+		oninput={(evt) => colorStore.set(evt.currentTarget.value)}
 		value={$colorStore}
 	/>
 	<Handle type="source" position={Position.Right} id="a" style="top: 20px;" />

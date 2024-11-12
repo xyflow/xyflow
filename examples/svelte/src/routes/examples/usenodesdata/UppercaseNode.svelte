@@ -5,15 +5,12 @@
 		useHandleConnections,
 		useNodesData,
 		useSvelteFlow,
+		type Node,
 		type NodeProps
 	} from '@xyflow/svelte';
 	import { isTextNode, type MyNode } from './+page.svelte';
 
-	type $$Props = NodeProps;
-
-	export let id: $$Props['id'];
-	export let data: $$Props['data'];
-	$$restProps;
+	let { id, data }: NodeProps<Node<{ text: string }>> = $props();
 
 	const { updateNodeData } = useSvelteFlow();
 	const connections = useHandleConnections({
@@ -21,16 +18,16 @@
 		type: 'target'
 	});
 
-	$: nodeData = useNodesData<MyNode>($connections[0]?.source);
-	$: textNode = isTextNode($nodeData) ? $nodeData : null;
+	let nodeData = $derived(useNodesData<MyNode>($connections[0]?.source));
+	let textNode = $derived(isTextNode($nodeData) ? $nodeData : null);
 
-	$: console.log(textNode?.data, data);
+	$inspect(textNode?.data, data);
 
-	$: {
+	$effect.pre(() => {
 		const input = textNode?.data.text.toUpperCase() ?? '';
 		updateNodeData(id, { text: input });
 		console.log('updatedNodeData with', input);
-	}
+	});
 </script>
 
 <div class="custom">

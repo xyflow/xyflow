@@ -36,7 +36,7 @@
 		{ id: 'A-D', source: 'A', target: 'D' }
 	]);
 
-	let colorMode: ColorMode = 'light';
+	let colorMode: ColorMode = $state('light');
 </script>
 
 <SvelteFlow {nodes} {edges} {colorMode} fitView>

@@ -66,7 +66,7 @@
 		<Background variant={BackgroundVariant.Dots} />
 		<MiniMap />
 
-		<Panel><button on:click={updateNodePosition}>update node</button></Panel>
+		<Panel><button onclick={updateNodePosition}>update node</button></Panel>
 	</SvelteFlow>
 </main>
 

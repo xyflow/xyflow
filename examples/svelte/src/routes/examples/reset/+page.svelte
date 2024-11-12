@@ -24,7 +24,7 @@
 	};
 </script>
 
-<button on:click={resetNodesArray}> Reset </button>
+<button onclick={resetNodesArray}> Reset </button>
 
 <div style:height="100vh">
 	<SvelteFlow {nodes} {edges} fitView>

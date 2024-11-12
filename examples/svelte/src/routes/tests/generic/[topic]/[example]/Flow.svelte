@@ -4,7 +4,11 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	export let flowConfig: FlowConfig;
+	interface Props {
+		flowConfig: FlowConfig;
+	}
+
+	let { flowConfig }: Props = $props();
 
 	// Create writables here so it is easier to create test cases
 	const nodes = writable(flowConfig.flowProps?.nodes);

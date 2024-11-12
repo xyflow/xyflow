@@ -3,8 +3,13 @@
 
 	type $$Props = NodeProps;
 
-	export let isConnectable: $$Props['isConnectable'];
-	$$restProps;
+	interface Props {
+		isConnectable: $$Props['isConnectable'];
+		[key: string]: any
+	}
+
+	let { isConnectable, ...rest }: Props = $props();
+	rest;
 
 	const handleStyle = 'width: 10px; height: 10px; bottom: -5px;';
 </script>

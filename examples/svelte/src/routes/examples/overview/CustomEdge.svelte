@@ -6,32 +6,37 @@
 		type EdgeProps,
 		getBezierPath
 	} from '@xyflow/svelte';
+	interface Props {
+		[key: string]: any
+	}
+
+	let { ...props }: Props = $props();
 
 	type $$Props = EdgeProps;
 
-	$: [path, labelX, labelY] = getBezierPath({
-		sourceX: $$props.sourceX,
-		sourceY: $$props.sourceY,
-		targetX: $$props.targetX,
-		targetY: $$props.targetY,
-		sourcePosition: $$props.sourcePosition,
-		targetPosition: $$props.targetPosition
-	});
+	let [path, labelX, labelY] = $derived(getBezierPath({
+		sourceX: props.sourceX,
+		sourceY: props.sourceY,
+		targetX: props.targetX,
+		targetY: props.targetY,
+		sourcePosition: props.sourcePosition,
+		targetPosition: props.targetPosition
+	}));
 
 	const edges = useEdges();
 
 	function onClick() {
-		edges.update((eds) => eds.filter((e) => e.id !== $$props.id));
+		edges.update((eds) => eds.filter((e) => e.id !== props.id));
 	}
 </script>
 
-<BaseEdge {path} {labelX} {labelY} {...$$props} />
+<BaseEdge {path} {labelX} {labelY} {...props} />
 
 <EdgeLabelRenderer>
 	<button
 		style:transform={`translate(-50%,-50%) translate(${labelX}px,${labelY}px)`}
 		class="edge-button"
-		on:click={onClick}
+		onclick={onClick}
 	>
 		✕
 	</button>

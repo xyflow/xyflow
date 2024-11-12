@@ -2,9 +2,14 @@
 	import { NodeToolbar, type NodeProps, Handle, Position } from '@xyflow/svelte';
 
 	type $$Props = NodeProps;
-	$$restProps;
+	rest;
 
-	export let data: $$Props['data'];
+	interface Props {
+		data: $$Props['data'];
+		[key: string]: any
+	}
+
+	let { data, ...rest }: Props = $props();
 </script>
 
 <NodeToolbar

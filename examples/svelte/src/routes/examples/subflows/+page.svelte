@@ -116,9 +116,7 @@
 		{ id: 'e4b1-4b2', source: '4b1', target: '4b2' }
 	]);
 
-	$: {
-		console.log($nodes);
-	}
+	$inspect($nodes);
 </script>
 
 <SvelteFlow {nodes} {edges} {nodeTypes} fitView minZoom={0.1} maxZoom={2.5}>

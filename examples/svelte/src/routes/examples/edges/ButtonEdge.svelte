@@ -3,28 +3,44 @@
 
 	type $$Props = EdgeProps;
 
-	export let id: $$Props['id'] = '';
-	export let style: $$Props['style'] = undefined;
-	export let markerEnd: $$Props['markerEnd'] = undefined;
 
-	export let sourceX: $$Props['sourceX'];
-	export let sourceY: $$Props['sourceY'];
-	export let sourcePosition: $$Props['sourcePosition'];
 
-	export let targetX: $$Props['targetX'];
-	export let targetY: $$Props['targetY'];
-	export let targetPosition: $$Props['targetPosition'];
+	interface Props {
+		id?: $$Props['id'];
+		style?: $$Props['style'];
+		markerEnd?: $$Props['markerEnd'];
+		sourceX: $$Props['sourceX'];
+		sourceY: $$Props['sourceY'];
+		sourcePosition: $$Props['sourcePosition'];
+		targetX: $$Props['targetX'];
+		targetY: $$Props['targetY'];
+		targetPosition: $$Props['targetPosition'];
+		[key: string]: any
+	}
 
-	$$restProps;
+	let {
+		id = '',
+		style = undefined,
+		markerEnd = undefined,
+		sourceX,
+		sourceY,
+		sourcePosition,
+		targetX,
+		targetY,
+		targetPosition,
+		...rest
+	}: Props = $props();
 
-	$: [edgePath, labelX, labelY] = getBezierPath({
+	rest;
+
+	let [edgePath, labelX, labelY] = $derived(getBezierPath({
 		sourceX,
 		sourceY,
 		sourcePosition,
 		targetX,
 		targetY,
 		targetPosition
-	});
+	}));
 </script>
 
 <BaseEdge path={edgePath} {markerEnd} {style} />
@@ -35,7 +51,7 @@
 	>
 		<button
 			class="edgeButton"
-			on:click={(event) => {
+			onclick={(event) => {
 				event.stopPropagation();
 				alert(`remove ${id}`);
 			}}

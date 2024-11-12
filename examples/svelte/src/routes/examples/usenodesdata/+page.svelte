@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script module lang="ts">
 	import type { Node } from '@xyflow/svelte';
 
 	type TextNodeType = Node<{ text: string }, 'text'>;

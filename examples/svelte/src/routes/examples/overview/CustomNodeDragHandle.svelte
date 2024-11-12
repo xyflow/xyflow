@@ -2,14 +2,19 @@
 	import type { BuiltInNode, NodeProps } from '@xyflow/svelte';
 
 	type $$Props = NodeProps<BuiltInNode>;
-	$$restProps;
+	rest;
 
-	export let data: { label: string } = { label: 'Node' };
+	interface Props {
+		data?: { label: string };
+		[key: string]: any
+	}
+
+	let { data = { label: 'Node' }, ...rest }: Props = $props();
 </script>
 
 <div class="custom">
 	<div>{data.label}</div>
-	<div class="custom-drag-handle" style="width:15px;height:15px;background:#222;" />
+	<div class="custom-drag-handle" style="width:15px;height:15px;background:#222;"></div>
 </div>
 
 <style>

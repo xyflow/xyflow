@@ -134,9 +134,7 @@
 		$edges = $edges;
 	}
 
-	$: {
-		console.log('nodes changed', $nodes);
-	}
+	$inspect($nodes);
 </script>
 
 <SvelteFlow
@@ -199,7 +197,9 @@
 	deleteKey={['Backspace', 'd']}
 >
 	<Controls orientation="horizontal" {fitViewOptions}>
-		<ControlButton slot="before">xy</ControlButton>
+		{#snippet before()}
+			<ControlButton>xy</ControlButton>
+		{/snippet}
 		<ControlButton aria-label="log" on:click={() => console.log('control button')}
 			>log</ControlButton
 		>
@@ -207,10 +207,10 @@
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
 	<Panel position="top-right">
-		<button on:click={updateNode}>update node pos</button>
-		<button on:click={updateEdge}>update edge type</button>
+		<button onclick={updateNode}>update node pos</button>
+		<button onclick={updateEdge}>update edge type</button>
 		<button
-			on:click={() => {
+			onclick={() => {
 				console.log($nodes, $nodes.length);
 				$nodes[$nodes.length - 1].hidden = !$nodes[$nodes.length - 1].hidden;
 				$nodes = $nodes;

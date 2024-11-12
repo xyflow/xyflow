@@ -3,20 +3,22 @@
 
 	const connection = useConnection();
 
-	let path: string | null = null;
-
-	$: if ($connection.inProgress) {
-		const { from, to, fromPosition, toPosition } = $connection;
-		const pathParams = {
-			sourceX: from.x,
-			sourceY: from.y,
-			sourcePosition: fromPosition,
-			targetX: to.x,
-			targetY: to.y,
-			targetPosition: toPosition
-		};
-		[path] = getBezierPath(pathParams);
-	}
+	let path: string | null = $derived.by(() => {
+		if ($connection.inProgress) {
+			const { from, to, fromPosition, toPosition } = $connection;
+			const pathParams = {
+				sourceX: from.x,
+				sourceY: from.y,
+				sourcePosition: fromPosition,
+				targetX: to.x,
+				targetY: to.y,
+				targetPosition: toPosition
+			};
+			const [path] = getBezierPath(pathParams);
+			return path;
+		}
+		return null;
+	});
 </script>
 
 {#if $connection.inProgress}

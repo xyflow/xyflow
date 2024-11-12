@@ -7,7 +7,8 @@
 		BackgroundVariant,
 		MiniMap,
 		MarkerType,
-		type Connection
+		type Connection,
+		type EdgeTypes
 	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
@@ -147,23 +148,23 @@
 			}
 		}
 	]);
-  
-	const edgeTypes = {
+
+	const edgeTypes: EdgeTypes = {
 		button: ButtonEdge,
 		customBezier: CustomBezierEdge
 	};
-  
-  function getEdgeId(connection: Connection) {
+
+	function getEdgeId(connection: Connection) {
 		return `edge-${connection.source}-${connection.target}}`;
 	}
-  
-  $: console.log('edges', $edges);
+
+	$inspect($edges);
 </script>
 
 <SvelteFlow
 	{nodes}
 	{edges}
-  {edgeTypes}
+	{edgeTypes}
 	fitView
 	nodeDragThreshold={2}
 	onedgecreate={(connection) => {

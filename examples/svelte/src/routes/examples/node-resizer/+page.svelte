@@ -128,7 +128,7 @@
 		}
 	]);
 
-	let snapToGrid = false;
+	let snapToGrid = $state(false);
 </script>
 
 <SvelteFlow
@@ -144,7 +144,7 @@
 	<Controls />
 	<Panel position="bottom-right">
 		<button
-			on:click={() => {
+			onclick={() => {
 				snapToGrid = !snapToGrid;
 			}}
 		>

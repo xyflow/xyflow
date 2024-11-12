@@ -22,8 +22,8 @@
 	const nodes = writable<Node[]>(initialNodes);
 	const edges = writable<Edge[]>([]);
 
-	let connectingNodeId: string | null = '0';
-	let rect: DOMRectReadOnly;
+	let connectingNodeId: string | null = $state('0');
+	let rect: DOMRectReadOnly = $state();
 	let id = 1;
 	const getId = () => `${id++}`;
 

@@ -3,11 +3,16 @@
 
 	type $$Props = NodeProps;
 
-	export let id: $$Props['id'];
-	export let data: $$Props['data'];
+	interface Props {
+		id: $$Props['id'];
+		data: $$Props['data'];
+		[key: string]: any
+	}
+
+	let { id, data, ...rest }: Props = $props();
 
 	const { updateNodeData } = useSvelteFlow();
-	$$restProps;
+	rest;
 </script>
 
 <div class="custom">
@@ -15,7 +20,7 @@
 	<div>
 		<input
 			value={data.text}
-			on:input={(evt) => updateNodeData(id, { text: evt.currentTarget.value })}
+			oninput={(evt) => updateNodeData(id, { text: evt.currentTarget.value })}
 		/>
 	</div>
 	<Handle type="source" position={Position.Right} />

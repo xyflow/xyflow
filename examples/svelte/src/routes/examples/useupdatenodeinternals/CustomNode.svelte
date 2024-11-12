@@ -3,12 +3,18 @@
 
 	type $$Props = NodeProps;
 
-	export let id: $$Props['id'];
-	$$restProps;
+	interface Props {
+		id: $$Props['id'];
+		[key: string]: any
+	}
+
+	let { id, ...rest }: Props = $props();
+	rest;
 
 	const updateNodeInternals = useUpdateNodeInternals();
 
-	$: handleCount = 1;
+	let handleCount = $state(1);
+	
 
 	const onClick = () => {
 		handleCount += 1;
@@ -17,7 +23,7 @@
 </script>
 
 <Handle type="target" position={Position.Top} />
-<button on:click={onClick}>add handle</button>
+<button onclick={onClick}>add handle</button>
 
 {#each Array.from({ length: handleCount }) as handle, i}
 	<Handle type="source" position={Position.Bottom} id={`${i}`} style={`left: ${i * 10}px;`} />

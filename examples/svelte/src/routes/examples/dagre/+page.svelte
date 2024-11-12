@@ -71,8 +71,8 @@
     defaultEdgeOptions={{ type: 'smoothstep', animated: true }}
   >
     <Panel position="top-right">
-      <button on:click={() => onLayout('TB')}>vertical layout</button>
-      <button on:click={() => onLayout('LR')}>horizontal layout</button>
+      <button onclick={() => onLayout('TB')}>vertical layout</button>
+      <button onclick={() => onLayout('LR')}>horizontal layout</button>
     </Panel>
     <Background />
   </SvelteFlow>

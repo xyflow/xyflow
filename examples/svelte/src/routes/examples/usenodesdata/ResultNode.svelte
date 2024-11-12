@@ -10,16 +10,21 @@
 
 	type $$Props = NodeProps;
 
-	export let id: $$Props['id'];
-	$$restProps;
+	interface Props {
+		id: $$Props['id'];
+		[key: string]: any
+	}
+
+	let { id, ...rest }: Props = $props();
+	rest;
 
 	const connections = useHandleConnections({
 		nodeId: id,
 		type: 'target'
 	});
 
-	$: nodeData = useNodesData<MyNode>($connections.map((connection) => connection.source));
-	$: textNodes = $nodeData.filter(isTextNode);
+	let nodeData = $derived(useNodesData<MyNode>($connections.map((connection) => connection.source)));
+	let textNodes = $derived($nodeData.filter(isTextNode));
 </script>
 
 <div class="custom">

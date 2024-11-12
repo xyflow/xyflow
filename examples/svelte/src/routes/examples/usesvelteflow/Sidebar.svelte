@@ -25,24 +25,24 @@
 
 <aside>
 	<div class="label">Functions:</div>
-	<button on:click={() => zoomIn()}>zoom in</button>
-	<button on:click={() => zoomOut({ duration: 1000 })}>zoom out transition</button>
-	<button on:click={() => setZoom(2)}>set zoom</button>
-	<button on:click={() => fitView()}>fitView</button>
-	<button on:click={() => setCenter(0, 0)}>setCenter 0, 0</button>
-	<button on:click={() => setViewport({ x: 100, y: 100, zoom: 2 })}>setViewport</button>
-	<button on:click={() => console.log(getViewport())}>getViewport</button>
+	<button onclick={() => zoomIn()}>zoom in</button>
+	<button onclick={() => zoomOut({ duration: 1000 })}>zoom out transition</button>
+	<button onclick={() => setZoom(2)}>set zoom</button>
+	<button onclick={() => fitView()}>fitView</button>
+	<button onclick={() => setCenter(0, 0)}>setCenter 0, 0</button>
+	<button onclick={() => setViewport({ x: 100, y: 100, zoom: 2 })}>setViewport</button>
+	<button onclick={() => console.log(getViewport())}>getViewport</button>
 
-	<button on:click={() => deleteElements({ edges: $edges.map((edge) => ({ id: edge.id })) })}
+	<button onclick={() => deleteElements({ edges: $edges.map((edge) => ({ id: edge.id })) })}
 		>delete edges</button
 	>
-	<button on:click={() => deleteElements({ nodes: [{ id: $nodes[0].id }] })}>delete node</button>
-	<button on:click={() => deleteElements({ nodes: $nodes.map((node) => ({ id: node.id })) })}
+	<button onclick={() => deleteElements({ nodes: [{ id: $nodes[0].id }] })}>delete node</button>
+	<button onclick={() => deleteElements({ nodes: $nodes.map((node) => ({ id: node.id })) })}
 		>deleteElements</button
 	>
-	<button on:click={() => deleteNode()}>delete via store</button>
+	<button onclick={() => deleteNode()}>delete via store</button>
 	<button
-		on:click={() => {
+		onclick={() => {
 			const { nodes, edges, viewport } = toObject();
 			console.log(nodes, edges, viewport);
 		}}>toObject</button

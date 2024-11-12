@@ -26,7 +26,9 @@
 
 <div style="height:100vh;">
 	<SvelteFlow {nodeTypes} {nodes} {edges} fitView>
-		<ConnectionLine slot="connectionLine" />
+		{#snippet connectionLine()}
+				<ConnectionLine  />
+			{/snippet}
 		<Background variant={BackgroundVariant.Lines} />
 	</SvelteFlow>
 </div>
