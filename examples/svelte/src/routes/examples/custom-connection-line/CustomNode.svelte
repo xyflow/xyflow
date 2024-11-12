@@ -1,15 +1,7 @@
 <script lang="ts">
 	import { Handle, Position, type NodeProps } from '@xyflow/svelte';
 
-	type $$Props = NodeProps;
-
-	interface Props {
-		isConnectable: $$Props['isConnectable'];
-		[key: string]: any
-	}
-
-	let { isConnectable, ...rest }: Props = $props();
-	rest;
+	let { isConnectable }: NodeProps = $props();
 
 	const handleStyle = 'width: 10px; height: 10px; bottom: -5px;';
 </script>

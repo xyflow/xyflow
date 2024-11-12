@@ -1,17 +1,11 @@
 <script lang="ts">
 	import { Handle, Position, type BuiltInNode, type NodeProps } from '@xyflow/svelte';
 
-	type $$Props = NodeProps<BuiltInNode>;
-	rest;
-
-	interface Props {
-		data?: { label: string };
-		positionAbsoluteX?: number;
-		positionAbsoluteY?: number;
-		[key: string]: any
-	}
-
-	let { data = { label: 'Node' }, positionAbsoluteX = 0, positionAbsoluteY = 0, ...rest }: Props = $props();
+	let {
+		data = { label: 'Node' },
+		positionAbsoluteX = 0,
+		positionAbsoluteY = 0
+	}: NodeProps = $props();
 </script>
 
 <div class="custom">

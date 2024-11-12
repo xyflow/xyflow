@@ -2,16 +2,7 @@
 	import type { Writable } from 'svelte/store';
 	import { Handle, Position, type NodeProps, type Node } from '@xyflow/svelte';
 
-	type $$Props = NodeProps<Node<{ colorStore: Writable<string> }>>;
-
-	interface Props {
-		data: $$Props['data'];
-		[key: string]: any
-	}
-
-	let { data, ...rest }: Props = $props();
-
-	rest;
+	let { data }: NodeProps<Node<{ colorStore: Writable<string> }>> = $props();
 
 	const { colorStore } = data;
 </script>

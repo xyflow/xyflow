@@ -1,18 +1,9 @@
 <script lang="ts">
 	import { Handle, Position, type NodeProps, useSvelteFlow } from '@xyflow/svelte';
 
-	type $$Props = NodeProps;
-
-	interface Props {
-		id: $$Props['id'];
-		data: $$Props['data'];
-		[key: string]: any
-	}
-
-	let { id, data, ...rest }: Props = $props();
+	let { id, data }: NodeProps = $props();
 
 	const { updateNodeData } = useSvelteFlow();
-	rest;
 </script>
 
 <div class="custom">

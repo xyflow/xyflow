@@ -1,20 +1,11 @@
 <script lang="ts">
 	import { Handle, Position, type NodeProps, useUpdateNodeInternals } from '@xyflow/svelte';
 
-	type $$Props = NodeProps;
-
-	interface Props {
-		id: $$Props['id'];
-		[key: string]: any
-	}
-
-	let { id, ...rest }: Props = $props();
-	rest;
+	let { id }: NodeProps = $props();
 
 	const updateNodeInternals = useUpdateNodeInternals();
 
 	let handleCount = $state(1);
-	
 
 	const onClick = () => {
 		handleCount += 1;
