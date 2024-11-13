@@ -4,9 +4,15 @@
   import { CallOnMount } from '$lib/components/CallOnMount';
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
   import { useStore } from '$lib/store';
-  import type { DefaultEdgeOptions } from '$lib/types';
+  import type { DefaultEdgeOptions, EdgeEvents } from '$lib/types';
 
-  export let defaultEdgeOptions: DefaultEdgeOptions | undefined;
+  let {
+    defaultEdgeOptions,
+    onedgeclick,
+    onedgecontextmenu,
+    onedgemouseenter,
+    onedgemouseleave
+  }: { defaultEdgeOptions?: DefaultEdgeOptions } & EdgeEvents = $props();
 
   const {
     visibleEdges,
@@ -16,6 +22,7 @@
   } = useStore();
 
   onMount(() => {
+    // TODO: Remove this when we have a better way to set default options
     if (defaultEdgeOptions) setDefaultOptions(defaultEdgeOptions);
   });
 </script>
@@ -54,10 +61,10 @@
       class={edge.class}
       type={edge.type || 'default'}
       zIndex={edge.zIndex}
-      on:edgeclick
-      on:edgecontextmenu
-      on:edgemouseenter
-      on:edgemouseleave
+      {onedgeclick}
+      {onedgecontextmenu}
+      {onedgemouseenter}
+      {onedgemouseleave}
     />
   {/each}
 

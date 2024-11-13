@@ -2,7 +2,7 @@
   import { onDestroy } from 'svelte';
   import { nodeHasDimensions } from '@xyflow/system';
 
-  import type { NodeEvents } from '$lib/types/events';
+  import type { NodeEvents } from '$lib/types';
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
 

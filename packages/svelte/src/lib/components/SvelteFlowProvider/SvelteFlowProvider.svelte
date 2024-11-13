@@ -4,14 +4,14 @@
   import { createStore, key } from '$lib/store';
   import type { SvelteFlowProviderProps } from './types';
 
-  type $$Props = SvelteFlowProviderProps;
-
-  export let initialNodes: $$Props['initialNodes'] = undefined;
-  export let initialEdges: $$Props['initialEdges'] = undefined;
-  export let initialWidth: $$Props['initialWidth'] = undefined;
-  export let initialHeight: $$Props['initialHeight'] = undefined;
-  export let fitView: $$Props['fitView'] = undefined;
-  export let nodeOrigin: $$Props['nodeOrigin'] = undefined;
+  let {
+    initialNodes,
+    initialEdges,
+    initialWidth,
+    initialHeight,
+    nodeOrigin,
+    fitView
+  }: SvelteFlowProviderProps = $props();
 
   const store = createStore({
     nodes: initialNodes,
