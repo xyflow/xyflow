@@ -1,5 +1,9 @@
 import type { InternalNode, Node } from '$lib/types';
 
+export type ConnectableContext = {
+  value: boolean;
+};
+
 export type NodeWrapperProps = Pick<
   Node,
   | 'id'

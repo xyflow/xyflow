@@ -1,7 +1,5 @@
 <script lang="ts">
-  //TODO SVELTE5
   import { getContext } from 'svelte';
-  import type { Writable } from 'svelte/store';
   import cc from 'classcat';
   import {
     Position,
@@ -15,34 +13,32 @@
 
   import { useStore } from '$lib/store';
   import type { HandleProps } from '$lib/types';
+  import type { ConnectableContext } from '../NodeWrapper/types';
 
-  type $$Props = HandleProps;
-
-  export let id: $$Props['id'] = undefined;
-  export let type: $$Props['type'] = 'source';
-  export let position: $$Props['position'] = Position.Top;
-  export let style: $$Props['style'] = undefined;
-  export let isValidConnection: $$Props['isValidConnection'] = undefined;
-  export let onconnect: $$Props['onconnect'] = undefined;
-  export let ondisconnect: $$Props['ondisconnect'] = undefined;
+  let {
+    id: handleId = null,
+    type = 'source',
+    position = Position.Top,
+    style,
+    class: className,
+    isConnectable: isConnectableProp,
+    isValidConnection: isValidConnectionProp,
+    onconnect,
+    ondisconnect,
+    children
+  }: HandleProps = $props();
   // @todo implement connectablestart, connectableend
   // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
   // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
 
-  let isConnectableProp: $$Props['isConnectable'] = undefined;
-  export { isConnectableProp as isConnectable };
-
-  let className: $$Props['class'] = undefined;
-  export { className as class };
-
-  $: isTarget = type === 'target';
   const nodeId = getContext<string>('svelteflow__node_id');
-  const connectable = getContext<Writable<boolean>>('svelteflow__node_connectable');
-  $: isConnectable = isConnectableProp !== undefined ? isConnectableProp : $connectable;
+  const isConnectableContext = getContext<ConnectableContext>('svelteflow__node_connectable');
 
-  $: handleId = id || null;
+  let isTarget = $derived(type === 'target');
+  let isConnectable = $derived(
+    isConnectableProp !== undefined ? isConnectableProp : isConnectableContext.value
+  );
 
-  const store = useStore();
   const {
     connectionMode,
     domNode,
@@ -64,7 +60,7 @@
     onconnectend: onConnectEndAction,
     flowId,
     connection
-  } = store;
+  } = useStore();
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
@@ -81,7 +77,7 @@
         lib: $lib,
         autoPanOnConnect: $autoPanOnConnect,
         flowId: $flowId,
-        isValidConnection: isValidConnection ?? $isValidConnectionStore,
+        isValidConnection: isValidConnectionProp ?? $isValidConnectionStore,
         updateConnection,
         cancelConnection,
         panBy,
@@ -112,39 +108,45 @@
   }
 
   let prevConnections: Map<string, HandleConnection> | null = null;
-  let connections: Map<string, HandleConnection> | undefined;
-
-  $: if (onconnect || ondisconnect) {
+  $effect.pre(() => {
     // connectionLookup is not reactive, so we use edges to get notified about updates
     $edges;
-    connections = $connectionLookup.get(`${nodeId}-${type}-${id || null}`);
-  }
+    if (onconnect || ondisconnect) {
+      let connections = $connectionLookup.get(`${nodeId}-${type}-${handleId}`);
 
-  $: {
-    if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
-      const _connections = connections ?? new Map();
+      if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
+        const _connections = connections ?? new Map();
 
-      handleConnectionChange(prevConnections, _connections, ondisconnect);
-      handleConnectionChange(_connections, prevConnections, onconnect);
+        handleConnectionChange(prevConnections, _connections, ondisconnect);
+        handleConnectionChange(_connections, prevConnections, onconnect);
+      }
+
+      prevConnections = new Map(connections);
     }
+  });
 
-    prevConnections = connections ?? new Map();
-  }
+  let [connectionInProcess, connectingFrom, connectingTo, isPossibleEndHandle, valid] = $derived.by(
+    () => {
+      const { fromHandle, toHandle, isValid } = $connection;
 
-  $: connectionInProcess = !!$connection.fromHandle;
-  $: connectingFrom =
-    $connection.fromHandle?.nodeId === nodeId &&
-    $connection.fromHandle?.type === type &&
-    $connection.fromHandle?.id === handleId;
-  $: connectingTo =
-    $connection.toHandle?.nodeId === nodeId &&
-    $connection.toHandle?.type === type &&
-    $connection.toHandle?.id === handleId;
-  $: isPossibleEndHandle =
-    $connectionMode === ConnectionMode.Strict
-      ? $connection.fromHandle?.type !== type
-      : nodeId !== $connection.fromHandle?.nodeId || handleId !== $connection.fromHandle?.id;
-  $: valid = connectingTo && $connection.isValid;
+      const connectionInProcess = !!fromHandle;
+
+      const connectingFrom =
+        fromHandle?.nodeId === nodeId && fromHandle?.type === type && fromHandle?.id === handleId;
+
+      const connectingTo =
+        toHandle?.nodeId === nodeId && toHandle?.type === type && toHandle?.id === handleId;
+
+      const isPossibleEndHandle =
+        $connectionMode === ConnectionMode.Strict
+          ? fromHandle?.type !== type
+          : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
+
+      const valid = connectingTo && isValid;
+
+      return [connectionInProcess, connectingFrom, connectingTo, isPossibleEndHandle, valid];
+    }
+  );
 </script>
 
 <!--
@@ -155,7 +157,7 @@ The Handle component is the part of a node that can be used to connect nodes.
   data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}
-  data-id="{$flowId}-{nodeId}-{id || null}-{type}"
+  data-id="{$flowId}-{nodeId}-{handleId}-{type}"
   class={cc([
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,
@@ -173,11 +175,11 @@ The Handle component is the part of a node that can be used to connect nodes.
   class:connectableend={isConnectable}
   class:connectable={isConnectable}
   class:connectionindicator={isConnectable && (!connectionInProcess || isPossibleEndHandle)}
-  on:mousedown={onPointerDown}
-  on:touchstart={onPointerDown}
+  onmousedown={onPointerDown}
+  ontouchstart={onPointerDown}
   {style}
   role="button"
   tabindex="-1"
 >
-  <slot />
+  {@render children?.()}
 </div>

@@ -1,90 +1,86 @@
-<svelte:options immutable />
-
 <script lang="ts">
-  import { createEventDispatcher, setContext } from 'svelte';
+  import { setContext } from 'svelte';
   import cc from 'classcat';
+
   import { getMarkerId } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import { BezierEdgeInternal } from '$lib/components/edges';
-  import type { EdgeLayouted, Edge } from '$lib/types';
   import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
 
-  type $$Props = EdgeLayouted;
+  import type { EdgeLayouted, Edge, EdgeEvents } from '$lib/types';
 
-  export let id: $$Props['id'];
-  export let type: $$Props['type'] = 'default';
-  export let source: $$Props['source'] = '';
-  export let target: $$Props['target'] = '';
-  export let data: $$Props['data'] = {};
-  export let style: $$Props['style'] = undefined;
-  export let zIndex: $$Props['zIndex'] = undefined;
-
-  export let animated: $$Props['animated'] = false;
-  export let selected: $$Props['selected'] = false;
-  export let selectable: $$Props['selectable'] = undefined;
-  export let deletable: $$Props['deletable'] = undefined;
-  export let hidden: $$Props['hidden'] = false;
-  export let label: $$Props['label'] = undefined;
-  export let labelStyle: $$Props['labelStyle'] = undefined;
-  export let markerStart: $$Props['markerStart'] = undefined;
-  export let markerEnd: $$Props['markerEnd'] = undefined;
-  export let sourceHandle: $$Props['sourceHandle'] = undefined;
-  export let targetHandle: $$Props['targetHandle'] = undefined;
-  export let sourceX: $$Props['sourceX'];
-  export let sourceY: $$Props['sourceY'];
-  export let targetX: $$Props['targetX'];
-  export let targetY: $$Props['targetY'];
-  export let sourcePosition: $$Props['sourcePosition'];
-  export let targetPosition: $$Props['targetPosition'];
-  export let ariaLabel: $$Props['ariaLabel'] = undefined;
-  export let interactionWidth: $$Props['interactionWidth'] = undefined;
-
-  // TODO SVELTE5
-
-  // @ todo: support edge updates
-  let className: string = '';
-  export { className as class };
+  const {
+    id,
+    type = 'default',
+    source,
+    target,
+    data = {},
+    style,
+    zIndex,
+    animated = false,
+    selected = false,
+    selectable,
+    deletable,
+    hidden,
+    label,
+    labelStyle,
+    markerStart,
+    markerEnd,
+    sourceHandle,
+    targetHandle,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    ariaLabel,
+    interactionWidth,
+    class: className,
+    onedgeclick,
+    onedgecontextmenu,
+    onedgemouseenter,
+    onedgemouseleave
+  }: EdgeLayouted & EdgeEvents = $props();
 
   setContext('svelteflow__edge_id', id);
 
   const { edgeLookup, edgeTypes, flowId, elementsSelectable } = useStore();
-  const dispatch = createEventDispatcher<{
-    edgeclick: { edge: Edge; event: MouseEvent | TouchEvent };
-    edgecontextmenu: { edge: Edge; event: MouseEvent };
-    edgemouseenter: { edge: Edge; event: MouseEvent };
-    edgemouseleave: { edge: Edge; event: MouseEvent };
-  }>();
 
-  $: edgeType = type || 'default';
-  $: edgeComponent = $edgeTypes[edgeType] || BezierEdgeInternal;
-  $: markerStartUrl = markerStart ? `url('#${getMarkerId(markerStart, $flowId)}')` : undefined;
-  $: markerEndUrl = markerEnd ? `url('#${getMarkerId(markerEnd, $flowId)}')` : undefined;
-  $: isSelectable = selectable ?? $elementsSelectable;
+  let edgeType = $derived(type ?? 'default');
+  let EdgeComponent = $derived($edgeTypes[edgeType] ?? BezierEdgeInternal);
+  let markerStartUrl = $derived(
+    markerStart ? `url('#${getMarkerId(markerStart, $flowId)}')` : undefined
+  );
+  let markerEndUrl = $derived(markerEnd ? `url('#${getMarkerId(markerEnd, $flowId)}')` : undefined);
+  let isSelectable = $derived(selectable ?? $elementsSelectable);
 
   const handleEdgeSelect = useHandleEdgeSelect();
 
-  function onClick(event: MouseEvent | TouchEvent) {
+  function onclick(event: MouseEvent | TouchEvent) {
     const edge = $edgeLookup.get(id);
 
     if (edge) {
       handleEdgeSelect(id);
-      dispatch('edgeclick', { event, edge });
+      onedgeclick?.({ event, edge });
     }
   }
 
-  type EdgeMouseEvent = 'edgecontextmenu' | 'edgemouseenter' | 'edgemouseleave';
-  function onMouseEvent(event: MouseEvent, type: EdgeMouseEvent) {
+  function onMouseEvent(
+    event: MouseEvent,
+    callback: ({ edge, event }: { edge: Edge; event: MouseEvent }) => void
+  ) {
     const edge = $edgeLookup.get(id);
 
     if (edge) {
-      dispatch(type, { event, edge });
+      callback({ event, edge });
     }
   }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 {#if !hidden}
   <svg style:z-index={zIndex}>
     <g
@@ -93,16 +89,22 @@
       class:selected
       class:selectable={isSelectable}
       data-id={id}
-      on:click={onClick}
-      on:contextmenu={(e) => {
-        onMouseEvent(e, 'edgecontextmenu');
-      }}
-      on:mouseenter={(e) => {
-        onMouseEvent(e, 'edgemouseenter');
-      }}
-      on:mouseleave={(e) => {
-        onMouseEvent(e, 'edgemouseleave');
-      }}
+      {onclick}
+      oncontextmenu={onedgecontextmenu
+        ? (e) => {
+            onMouseEvent(e, onedgecontextmenu);
+          }
+        : undefined}
+      onmouseenter={onedgemouseenter
+        ? (e) => {
+            onMouseEvent(e, onedgemouseenter);
+          }
+        : undefined}
+      onmouseleave={onedgemouseleave
+        ? (e) => {
+            onMouseEvent(e, onedgemouseleave);
+          }
+        : undefined}
       aria-label={ariaLabel === null
         ? undefined
         : ariaLabel
@@ -110,8 +112,7 @@
           : `Edge from ${source} to ${target}`}
       role="img"
     >
-      <svelte:component
-        this={edgeComponent}
+      <EdgeComponent
         {id}
         {source}
         {target}

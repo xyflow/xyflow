@@ -7,7 +7,7 @@
   import drag from '$lib/actions/drag';
   import { useStore } from '$lib/store';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
-  import type { NodeWrapperProps } from './types';
+  import type { ConnectableContext, NodeWrapperProps } from './types';
   import { getNodeInlineStyleDimensions } from './utils';
   import type { NodeEvents } from '$lib/types';
 
@@ -64,13 +64,19 @@
   let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
 
-  const connectableStore = writable(connectable);
-
   let prevType: string | undefined;
   let prevSourcePosition: Position | undefined;
   let prevTargetPosition: Position | undefined;
 
   let NodeComponent = $derived($nodeTypes[type] ?? DefaultNode);
+
+  let connectableContext: ConnectableContext = {
+    get value() {
+      return connectable;
+    }
+  };
+  setContext('svelteflow__node_connectable', connectableContext);
+  setContext('svelteflow__node_id', id);
 
   if (process.env.NODE_ENV === 'development') {
     $effect(() => {
@@ -91,10 +97,6 @@
       measuredHeight
     })
   );
-
-  $effect(() => {
-    connectableStore.set(!!connectable);
-  });
 
   $effect(() => {
     // if type, sourcePosition or targetPosition changes,
@@ -127,9 +129,6 @@
     prevSourcePosition = sourcePosition;
     prevTargetPosition = targetPosition;
   });
-
-  setContext('svelteflow__node_id', id);
-  setContext('svelteflow__node_connectable', connectableStore);
 
   // TODO: extract this part!
   $effect(() => {
@@ -215,7 +214,7 @@
       {dragHandle}
       {parentId}
       {type}
-      isConnectable={$connectableStore}
+      isConnectable={connectable}
       positionAbsoluteX={positionX}
       positionAbsoluteY={positionY}
       {width}
