@@ -12,47 +12,48 @@
   } from '@xyflow/system';
   import type { ResizeControlProps } from './types';
 
-  type $$Props = ResizeControlProps;
-
-  export let nodeId: $$Props['nodeId'] = undefined;
-  export let position: $$Props['position'] = undefined;
-  export let variant: $$Props['variant'] = ResizeControlVariant.Handle;
-  export let color: $$Props['color'] = undefined;
-  export let minWidth: $$Props['minWidth'] = 10;
-  $: _minWidth = minWidth ?? 10;
-  export let minHeight: $$Props['minHeight'] = 10;
-  $: _minHeight = minHeight ?? 10;
-  export let maxWidth: $$Props['maxWidth'] = Number.MAX_VALUE;
-  $: _maxWidth = maxWidth ?? Number.MAX_VALUE;
-  export let maxHeight: $$Props['maxHeight'] = Number.MAX_VALUE;
-  $: _maxHeight = maxHeight ?? Number.MAX_VALUE;
-  export let keepAspectRatio: $$Props['keepAspectRatio'] = false;
-  export let shouldResize: $$Props['shouldResize'] = undefined;
-  export let onResizeStart: $$Props['onResizeStart'] = undefined;
-  export let onResize: $$Props['onResize'] = undefined;
-  export let onResizeEnd: $$Props['onResizeEnd'] = undefined;
-  export let style: $$Props['style'] = '';
-  let className: $$Props['class'] = '';
-  export { className as class };
+  let {
+    nodeId,
+    position,
+    variant = ResizeControlVariant.Handle,
+    color,
+    minWidth = 10,
+    minHeight = 10,
+    maxWidth = Number.MAX_VALUE,
+    maxHeight = Number.MAX_VALUE,
+    keepAspectRatio = false,
+    shouldResize,
+    onResizeStart,
+    onResize,
+    onResizeEnd,
+    style = '',
+    class: className,
+    children
+  }: ResizeControlProps = $props();
 
   const { nodeLookup, snapGrid, viewport, nodes, nodeOrigin, domNode } = useStore();
 
-  const contextNodeId = getContext<string>('svelteflow__node_id');
-  $: id = typeof nodeId === 'string' ? nodeId : contextNodeId;
+  let id = $derived(
+    typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
+  );
 
   let resizeControlRef: HTMLDivElement;
-  let resizer: XYResizerInstance | null = null;
+  let resizer: XYResizerInstance | null = $state(null);
 
-  $: defaultPosition = (
-    variant === ResizeControlVariant.Line ? 'right' : 'bottom-right'
-  ) as ControlPosition;
-  $: controlPosition = position ?? defaultPosition;
+  let controlPosition = $derived.by(() => {
+    let defaultPosition = (
+      variant === ResizeControlVariant.Line ? 'right' : 'bottom-right'
+    ) as ControlPosition;
+    return position ?? defaultPosition;
+  });
 
-  $: positionClassNames = controlPosition.split('-');
+  let positionClassNames = $derived(controlPosition.split('-'));
 
-  $: colorStyleProp = variant === ResizeControlVariant.Line ? 'border-color' : 'background-color';
-  $: _style = style ?? '';
-  $: controlStyle = color ? `${_style} ${colorStyleProp}: ${color};` : _style;
+  let controlStyle = $derived.by(() => {
+    let colorStyleProp =
+      variant === ResizeControlVariant.Line ? 'border-color' : 'background-color';
+    return color ? `${style} ${colorStyleProp}: ${color};` : style;
+  });
 
   onMount(() => {
     if (resizeControlRef) {
@@ -100,14 +101,14 @@
     };
   });
 
-  $: {
+  $effect.pre(() => {
     resizer?.update({
       controlPosition,
       boundaries: {
-        minWidth: _minWidth,
-        minHeight: _minHeight,
-        maxWidth: _maxWidth,
-        maxHeight: _maxHeight
+        minWidth,
+        minHeight,
+        maxWidth,
+        maxHeight
       },
       keepAspectRatio: !!keepAspectRatio,
       onResizeStart,
@@ -115,7 +116,7 @@
       onResizeEnd,
       shouldResize
     });
-  }
+  });
 </script>
 
 <div
@@ -123,5 +124,5 @@
   bind:this={resizeControlRef}
   style={controlStyle}
 >
-  <slot />
+  {@render children?.()}
 </div>
