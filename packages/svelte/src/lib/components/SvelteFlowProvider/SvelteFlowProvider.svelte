@@ -10,7 +10,8 @@
     initialWidth,
     initialHeight,
     nodeOrigin,
-    fitView
+    fitView,
+    children
   }: SvelteFlowProviderProps = $props();
 
   const store = createStore({
@@ -31,4 +32,4 @@
   });
 </script>
 
-<slot />
+{@render children?.()}

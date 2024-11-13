@@ -110,6 +110,7 @@
   let prevConnections: Map<string, HandleConnection> | null = null;
   $effect.pre(() => {
     // connectionLookup is not reactive, so we use edges to get notified about updates
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     $edges;
     if (onconnect || ondisconnect) {
       let connections = $connectionLookup.get(`${nodeId}-${type}-${handleId}`);

@@ -254,7 +254,6 @@
     <Pane {nodes} {edges} {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
       <ViewportComponent>
         <EdgeRenderer
-          on:edgeclick
           {onedgeclick}
           {onedgecontextmenu}
           {onedgemouseenter}

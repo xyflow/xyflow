@@ -3,7 +3,6 @@ import { derived, get, writable } from 'svelte/store';
 import {
   createMarkerIds,
   fitView as fitViewSystem,
-  getElementsToRemove,
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
   addEdge as addEdgeUtil,

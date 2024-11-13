@@ -1,6 +1,6 @@
 <script lang="ts">
   import { setContext, onDestroy } from 'svelte';
-  import { get, writable } from 'svelte/store';
+  import { get } from 'svelte/store';
   import cc from 'classcat';
   import { errorMessages, Position } from '@xyflow/system';
 
@@ -132,12 +132,13 @@
 
   // TODO: extract this part!
   $effect(() => {
-    // TODO: HOLY MOLY! changing the order of the initialized breaks effect subscriptions
+    /* eslint-disable @typescript-eslint/no-unused-expressions */
     if (resizeObserver && (!initialized || nodeRef !== prevNodeRef)) {
       prevNodeRef && resizeObserver.unobserve(prevNodeRef);
       nodeRef && resizeObserver.observe(nodeRef);
       prevNodeRef = nodeRef;
     }
+    /* eslint-enable @typescript-eslint/no-unused-expressions */
   });
 
   onDestroy(() => {

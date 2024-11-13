@@ -20,6 +20,7 @@
 
   let bounds: Rect | null = $derived.by(() => {
     if ($selectionRectMode === 'nodes') {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       $nodes;
       return getInternalNodesBounds($nodeLookup, { filter: (node) => !!node.selected });
     }

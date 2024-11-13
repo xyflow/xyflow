@@ -23,6 +23,7 @@
   const contextNodeId = getContext<string>('svelteflow__node_id');
 
   let toolbarNodes: InternalNode[] = $derived.by(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     $nodes;
     const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId ?? contextNodeId];
 

@@ -11,8 +11,7 @@
     getBoundsOfRects,
     getInternalNodesBounds,
     getNodeDimensions,
-    nodeHasDimensions,
-    type Rect
+    nodeHasDimensions
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
