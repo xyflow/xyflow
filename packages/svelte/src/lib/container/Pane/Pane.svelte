@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
   export function wrapHandler(
     handler: (evt: MouseEvent) => void,
     container: HTMLDivElement
@@ -37,7 +37,7 @@
   import type { Node, Edge, InternalNode } from '$lib/types';
   import type { PaneProps } from './types';
   let {
-    panOnDrag,
+    panOnDrag = true,
     selectionOnDrag,
     onpaneclick,
     onpanecontextmenu,
@@ -59,6 +59,7 @@
     unselectNodesAndEdges
   } = useStore();
 
+  // svelte-ignore non_reactive_update
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
   let selectedNodes: InternalNode[] = [];

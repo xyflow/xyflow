@@ -6,20 +6,21 @@
   import zoom from '$lib/actions/zoom';
   import type { ZoomProps } from './types';
 
-  type $$Props = ZoomProps;
-
-  export let initialViewport: $$Props['initialViewport'] = undefined;
-  export let onMoveStart: $$Props['onMoveStart'] = undefined;
-  export let onMove: $$Props['onMove'] = undefined;
-  export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
-  export let panOnScrollMode: $$Props['panOnScrollMode'];
-  export let preventScrolling: $$Props['preventScrolling'];
-  export let zoomOnScroll: $$Props['zoomOnScroll'];
-  export let zoomOnDoubleClick: $$Props['zoomOnDoubleClick'];
-  export let zoomOnPinch: $$Props['zoomOnPinch'];
-  export let panOnDrag: $$Props['panOnDrag'];
-  export let panOnScroll: $$Props['panOnScroll'];
-  export let paneClickDistance: $$Props['paneClickDistance'];
+  let {
+    initialViewport = { x: 0, y: 0, zoom: 1 },
+    onMoveStart,
+    onMove,
+    onMoveEnd,
+    panOnScrollMode = PanOnScrollMode.Free,
+    preventScrolling = true,
+    zoomOnScroll = true,
+    zoomOnDoubleClick = true,
+    zoomOnPinch = true,
+    panOnDrag = true,
+    panOnScroll = false,
+    paneClickDistance = 1,
+    children
+  }: ZoomProps = $props();
 
   const {
     viewport,
@@ -35,9 +36,8 @@
     viewportInitialized
   } = useStore();
 
-  $: viewPort = initialViewport || { x: 0, y: 0, zoom: 1 };
-  $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
-  $: _panOnScroll = $panActivationKeyPressed || panOnScroll;
+  let panOnDragActive = $derived($panActivationKeyPressed || panOnDrag);
+  let panOnScrollActive = $derived($panActivationKeyPressed || panOnScroll);
 
   const onTransformChange = (transform: Transform) =>
     viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] });
@@ -53,7 +53,7 @@
     viewport,
     minZoom: $minZoom,
     maxZoom: $maxZoom,
-    initialViewport: viewPort,
+    initialViewport,
     dragging,
     panZoom,
     onPanZoomStart: onMoveStart,
@@ -62,8 +62,8 @@
     zoomOnScroll,
     zoomOnDoubleClick,
     zoomOnPinch,
-    panOnScroll: _panOnScroll,
-    panOnDrag: _panOnDrag,
+    panOnScroll: panOnScrollActive,
+    panOnDrag: panOnDragActive,
     panOnScrollSpeed: 0.5,
     panOnScrollMode: panOnScrollMode || PanOnScrollMode.Free,
     zoomActivationKeyPressed: $zoomActivationKeyPressed,
@@ -77,7 +77,7 @@
     onTransformChange
   }}
 >
-  <slot />
+  {@render children()}
 </div>
 
 <style>

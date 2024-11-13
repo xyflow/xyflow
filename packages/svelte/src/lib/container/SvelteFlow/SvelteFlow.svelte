@@ -242,23 +242,16 @@
     {onMoveStart}
     {onMove}
     {onMoveEnd}
-    panOnScrollMode={panOnScrollMode === undefined ? PanOnScrollMode.Free : panOnScrollMode}
-    preventScrolling={preventScrolling === undefined ? true : preventScrolling}
-    zoomOnScroll={zoomOnScroll === undefined ? true : zoomOnScroll}
-    zoomOnDoubleClick={zoomOnDoubleClick === undefined ? true : zoomOnDoubleClick}
-    zoomOnPinch={zoomOnPinch === undefined ? true : zoomOnPinch}
-    panOnScroll={panOnScroll === undefined ? false : panOnScroll}
-    panOnDrag={panOnDrag === undefined ? true : panOnDrag}
-    paneClickDistance={paneClickDistance === undefined ? 0 : paneClickDistance}
+    {panOnScrollMode}
+    {preventScrolling}
+    {zoomOnScroll}
+    {zoomOnDoubleClick}
+    {zoomOnPinch}
+    {panOnScroll}
+    {panOnDrag}
+    {paneClickDistance}
   >
-    <Pane
-      {nodes}
-      {edges}
-      {onpaneclick}
-      {onpanecontextmenu}
-      panOnDrag={panOnDrag === undefined ? true : panOnDrag}
-      {selectionOnDrag}
-    >
+    <Pane {nodes} {edges} {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
       <ViewportComponent>
         <EdgeRenderer
           on:edgeclick
