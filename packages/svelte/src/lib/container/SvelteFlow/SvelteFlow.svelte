@@ -79,8 +79,8 @@
     onbeforedelete,
     oninit,
     nodeOrigin,
-    paneClickDistance = 0,
-    nodeClickDistance = 0,
+    paneClickDistance = 1,
+    nodeClickDistance = 1,
     defaultMarkerColor = '#b1b1b7',
     style,
     class: className,
@@ -108,6 +108,8 @@
   let clientHeight = $state<number>();
 
   const initViewport = $viewport || initialViewport;
+
+  //TODO SVELTE5
 
   const store = hasContext(key)
     ? useStore()
@@ -262,15 +264,11 @@
           {onedgemouseleave}
           {defaultEdgeOptions}
         />
-        <!-- <ConnectionLine
+        <ConnectionLine
           containerStyle={connectionLineContainerStyle}
           style={connectionLineStyle}
-          isCustomComponent={connectionLine}
-        >
-          {#snippet connectionLine()}
-            {@render connectionLine_render?.()}
-          {/snippet}
-        </ConnectionLine> -->
+          {connectionLine}
+        />
         <div class="svelte-flow__edgelabel-renderer"></div>
         <div class="svelte-flow__viewport-portal"></div>
         <NodeRenderer

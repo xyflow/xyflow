@@ -1,37 +1,39 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import { getInternalNodesBounds, isNumeric, type Rect } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import { Selection } from '$lib/components/Selection';
   import drag from '$lib/actions/drag';
-  import type { Node, NodeEventMap } from '$lib/types';
+
+  import type { NodeSelectionProps } from './types';
+
+  let {
+    onnodedrag,
+    onnodedragstart,
+    onnodedragstop,
+    onselectionclick,
+    onselectioncontextmenu
+  }: NodeSelectionProps = $props();
 
   const store = useStore();
   const { selectionRectMode, nodes, nodeLookup } = store;
 
-  const dispatch = createEventDispatcher<
-    NodeEventMap & {
-      selectioncontextmenu: { nodes: Node[]; event: MouseEvent | TouchEvent };
-      selectionclick: { nodes: Node[]; event: MouseEvent | TouchEvent };
+  let bounds: Rect | null = $derived.by(() => {
+    if ($selectionRectMode === 'nodes') {
+      $nodes;
+      return getInternalNodesBounds($nodeLookup, { filter: (node) => !!node.selected });
     }
-  >();
+    return null;
+  });
 
-  let bounds: Rect | null = null;
-
-  $: if ($selectionRectMode === 'nodes') {
-    bounds = getInternalNodesBounds($nodeLookup, { filter: (node) => !!node.selected });
-    $nodes;
+  function oncontextmenu(event: MouseEvent | TouchEvent) {
+    const selectedNodes = $nodes.filter((n) => n.selected);
+    onselectioncontextmenu?.({ nodes: selectedNodes, event });
   }
 
-  function onContextMenu(event: MouseEvent | TouchEvent) {
+  function onclick(event: MouseEvent | TouchEvent) {
     const selectedNodes = $nodes.filter((n) => n.selected);
-    dispatch('selectioncontextmenu', { nodes: selectedNodes, event });
-  }
-
-  function onClick(event: MouseEvent | TouchEvent) {
-    const selectedNodes = $nodes.filter((n) => n.selected);
-    dispatch('selectionclick', { nodes: selectedNodes, event });
+    onselectionclick?.({ nodes: selectedNodes, event });
   }
 </script>
 
@@ -43,20 +45,20 @@
       disabled: false,
       store,
       onDrag: (event, _, __, nodes) => {
-        dispatch('nodedrag', { event, targetNode: null, nodes });
+        onnodedrag?.({ event, targetNode: null, nodes });
       },
       onDragStart: (event, _, __, nodes) => {
-        dispatch('nodedragstart', { event, targetNode: null, nodes });
+        onnodedragstart?.({ event, targetNode: null, nodes });
       },
       onDragStop: (event, _, __, nodes) => {
-        dispatch('nodedragstop', { event, targetNode: null, nodes });
+        onnodedragstop?.({ event, targetNode: null, nodes });
       }
     }}
-    on:contextmenu={onContextMenu}
-    on:click={onClick}
+    {oncontextmenu}
+    {onclick}
     role="button"
     tabindex="-1"
-    on:keyup={() => {}}
+    onkeyup={() => {}}
   >
     <Selection width="100%" height="100%" x={0} y={0} />
   </div>

@@ -40,6 +40,8 @@
   export let ariaLabel: $$Props['ariaLabel'] = undefined;
   export let interactionWidth: $$Props['interactionWidth'] = undefined;
 
+  // TODO SVELTE5
+
   // @ todo: support edge updates
   let className: string = '';
   export { className as class };

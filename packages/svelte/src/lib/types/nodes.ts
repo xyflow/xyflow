@@ -44,6 +44,7 @@ export type DefaultNodeOptions = Partial<Omit<Node, 'id'>>;
 
 export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'>;
 
+// TODO SVELTE5 remove this
 export type NodeEventMap = {
   nodeclick: { node: Node; event: MouseEvent | TouchEvent };
   nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };

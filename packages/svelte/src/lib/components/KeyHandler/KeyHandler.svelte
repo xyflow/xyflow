@@ -1,22 +1,23 @@
 <script lang="ts">
+  import { get } from 'svelte/store';
   import {
     shortcut,
     type ShortcutEventDetail,
     type ShortcutModifierDefinition
   } from '@svelte-put/shortcut';
-  import { isInputDOMNode, isMacOs } from '@xyflow/system';
+  import { getElementsToRemove, isInputDOMNode, isMacOs } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
 
-  type $$Props = KeyHandlerProps;
-
-  export let selectionKey: $$Props['selectionKey'] = 'Shift';
-  export let multiSelectionKey: $$Props['multiSelectionKey'] = isMacOs() ? 'Meta' : 'Control';
-  export let deleteKey: $$Props['deleteKey'] = 'Backspace';
-  export let panActivationKey: $$Props['panActivationKey'] = ' ';
-  export let zoomActivationKey: $$Props['zoomActivationKey'] = isMacOs() ? 'Meta' : 'Control';
+  let {
+    selectionKey = 'Shift',
+    multiSelectionKey = isMacOs() ? 'Meta' : 'Control',
+    deleteKey = 'Backspace',
+    panActivationKey = ' ',
+    zoomActivationKey = isMacOs() ? 'Meta' : 'Control'
+  }: KeyHandlerProps = $props();
 
   const {
     selectionKeyPressed,
@@ -24,7 +25,11 @@
     deleteKeyPressed,
     panActivationKeyPressed,
     zoomActivationKeyPressed,
-    selectionRect
+    selectionRect,
+    onbeforedelete,
+    ondelete,
+    nodes: _nodes,
+    edges: _edges
   } = useStore();
 
   function isKeyObject(key?: KeyDefinition | null): key is KeyDefinitionObject {
@@ -69,6 +74,31 @@
     panActivationKeyPressed.set(false);
     zoomActivationKeyPressed.set(false);
   }
+
+  async function handleDelete() {
+    const nodes = get(_nodes);
+    const edges = get(_edges);
+    const selectedNodes = nodes.filter((node) => node.selected);
+    const selectedEdges = edges.filter((edge) => edge.selected);
+
+    const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
+      nodesToRemove: selectedNodes,
+      edgesToRemove: selectedEdges,
+      nodes,
+      edges,
+      onBeforeDelete: get(onbeforedelete)
+    });
+
+    if (matchingNodes.length || matchingEdges.length) {
+      _nodes.update((nds) => nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id)));
+      _edges.update((eds) => eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id)));
+
+      get(ondelete)?.({
+        nodes: matchingNodes,
+        edges: matchingEdges
+      });
+    }
+  }
 </script>
 
 <svelte:window
@@ -98,6 +128,7 @@
         detail.originalEvent.shiftKey;
       if (!isModifierKey && !isInputDOMNode(detail.originalEvent)) {
         deleteKeyPressed.set(true);
+        handleDelete();
       }
     }),
     type: 'keydown'

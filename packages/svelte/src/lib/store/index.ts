@@ -271,36 +271,36 @@ export function createStore({
     if (resetEdges) store.edges.set(get(store.edges));
   }
 
-  store.deleteKeyPressed.subscribe(async (deleteKeyPressed) => {
-    if (deleteKeyPressed) {
-      const nodes = get(store.nodes);
-      const edges = get(store.edges);
-      const selectedNodes = nodes.filter((node) => node.selected);
-      const selectedEdges = edges.filter((edge) => edge.selected);
+  // store.deleteKeyPressed.subscribe(async (deleteKeyPressed) => {
+  //   if (deleteKeyPressed) {
+  //     const nodes = get(store.nodes);
+  //     const edges = get(store.edges);
+  //     const selectedNodes = nodes.filter((node) => node.selected);
+  //     const selectedEdges = edges.filter((edge) => edge.selected);
 
-      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
-        nodesToRemove: selectedNodes,
-        edgesToRemove: selectedEdges,
-        nodes,
-        edges,
-        onBeforeDelete: get(store.onbeforedelete)
-      });
+  //     const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
+  //       nodesToRemove: selectedNodes,
+  //       edgesToRemove: selectedEdges,
+  //       nodes,
+  //       edges,
+  //       onBeforeDelete: get(store.onbeforedelete)
+  //     });
 
-      if (matchingNodes.length || matchingEdges.length) {
-        store.nodes.update((nds) =>
-          nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id))
-        );
-        store.edges.update((eds) =>
-          eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
-        );
+  //     if (matchingNodes.length || matchingEdges.length) {
+  //       store.nodes.update((nds) =>
+  //         nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id))
+  //       );
+  //       store.edges.update((eds) =>
+  //         eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
+  //       );
 
-        get(store.ondelete)?.({
-          nodes: matchingNodes,
-          edges: matchingEdges
-        });
-      }
-    }
-  });
+  //       get(store.ondelete)?.({
+  //         nodes: matchingNodes,
+  //         edges: matchingEdges
+  //       });
+  //     }
+  //   }
+  // });
 
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = get(store.multiselectionKeyPressed);

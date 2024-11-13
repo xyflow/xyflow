@@ -3,24 +3,24 @@
   import type { PanelProps } from './types';
   import { useStore } from '$lib/store';
 
-  type $$Props = PanelProps;
-
-  export let position: $$Props['position'] = 'top-right';
-  export let style: $$Props['style'] = undefined;
-
-  let className: $$Props['class'] = undefined;
-  export { className as class };
+  let {
+    position = 'top-right',
+    style,
+    class: className,
+    children,
+    ...restProps
+  }: PanelProps = $props();
 
   const { selectionRectMode } = useStore();
 
-  $: positionClasses = `${position}`.split('-');
+  let positionClasses = $derived(`${position}`.split('-'));
 </script>
 
 <div
   class={cc(['svelte-flow__panel', className, ...positionClasses])}
   {style}
   style:pointer-events={$selectionRectMode ? 'none' : ''}
-  {...$$restProps}
+  {...restProps}
 >
-  <slot />
+  {@render children?.()}
 </div>
