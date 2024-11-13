@@ -100,6 +100,8 @@
     onedgecontextmenu,
     onedgemouseenter,
     onedgemouseleave,
+    onpaneclick,
+    onpanecontextmenu,
     ...rest
   }: SvelteFlowProps = $props();
 
@@ -250,8 +252,10 @@
     paneClickDistance={paneClickDistance === undefined ? 0 : paneClickDistance}
   >
     <Pane
-      on:paneclick
-      on:panecontextmenu
+      {nodes}
+      {edges}
+      {onpaneclick}
+      {onpanecontextmenu}
       panOnDrag={panOnDrag === undefined ? true : panOnDrag}
       {selectionOnDrag}
     >

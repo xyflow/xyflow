@@ -26,7 +26,6 @@
 </script>
 
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
   import {
     SelectionMode,
     getEventPosition,
@@ -37,24 +36,18 @@
   import { useStore } from '$lib/store';
   import type { Node, Edge, InternalNode } from '$lib/types';
   import type { PaneProps } from './types';
-
-  type $$Props = PaneProps;
-
-  export let panOnDrag: $$Props['panOnDrag'] = undefined;
-  export let selectionOnDrag: $$Props['selectionOnDrag'] = undefined;
-
-  const dispatch = createEventDispatcher<{
-    paneclick: {
-      event: MouseEvent | TouchEvent;
-    };
-    panecontextmenu: {
-      event: MouseEvent;
-    };
-  }>();
-  const {
+  let {
+    panOnDrag,
+    selectionOnDrag,
+    onpaneclick,
+    onpanecontextmenu,
     nodes,
-    nodeLookup,
     edges,
+    children
+  }: PaneProps = $props();
+
+  const {
+    nodeLookup,
     viewport,
     dragging,
     elementsSelectable,
@@ -70,10 +63,13 @@
   let containerBounds: DOMRect | null = null;
   let selectedNodes: InternalNode[] = [];
 
-  $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
-  $: isSelecting =
-    $selectionKeyPressed || $selectionRect || (selectionOnDrag && _panOnDrag !== true);
-  $: hasActiveSelection = $elementsSelectable && (isSelecting || $selectionRectMode === 'user');
+  let panOnDragActive = $derived($panActivationKeyPressed || panOnDrag);
+  let isSelecting = $derived(
+    $selectionKeyPressed || $selectionRect || (selectionOnDrag && panOnDragActive !== true)
+  );
+  let hasActiveSelection = $derived(
+    $elementsSelectable && (isSelecting || $selectionRectMode === 'user')
+  );
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   let selectionInProgress = false;
@@ -85,7 +81,7 @@
       return;
     }
 
-    dispatch('paneclick', { event });
+    onpaneclick?.({ event });
     unselectNodesAndEdges();
     selectionRectMode.set(null);
   }
@@ -198,30 +194,30 @@
   }
 
   const onContextMenu = (event: MouseEvent) => {
-    if (Array.isArray(_panOnDrag) && _panOnDrag?.includes(2)) {
+    if (Array.isArray(panOnDragActive) && panOnDragActive.includes(2)) {
       event.preventDefault();
       return;
     }
 
-    dispatch('panecontextmenu', { event });
+    onpanecontextmenu?.({ event });
   };
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   bind:this={container}
   class="svelte-flow__pane"
   class:draggable={panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0))}
   class:dragging={$dragging}
   class:selection={isSelecting}
-  on:click={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
-  on:pointerdown={hasActiveSelection ? onPointerDown : undefined}
-  on:pointermove={hasActiveSelection ? onPointerMove : undefined}
-  on:pointerup={hasActiveSelection ? onPointerUp : undefined}
-  on:contextmenu={wrapHandler(onContextMenu, container)}
+  onclick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
+  onpointerdown={hasActiveSelection ? onPointerDown : undefined}
+  onpointermove={hasActiveSelection ? onPointerMove : undefined}
+  onpointerup={hasActiveSelection ? onPointerUp : undefined}
+  oncontextmenu={wrapHandler(onContextMenu, container)}
 >
-  <slot />
+  {@render children()}
 </div>
 
 <style>
