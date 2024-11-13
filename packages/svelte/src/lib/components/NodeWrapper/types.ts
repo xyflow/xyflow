@@ -38,5 +38,5 @@ export type NodeWrapperProps = Pick<
   zIndex: number;
   node: InternalNode;
   initialized: boolean;
-  nodeClickDistance: number;
+  nodeClickDistance?: number;
 };

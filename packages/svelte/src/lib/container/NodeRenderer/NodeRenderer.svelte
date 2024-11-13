@@ -2,13 +2,21 @@
   import { onDestroy } from 'svelte';
   import { nodeHasDimensions } from '@xyflow/system';
 
+  import type { NodeEvents } from '$lib/types/events';
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import { useStore } from '$lib/store';
-  import type { NodeRendererProps } from './types';
 
-  type $$Props = NodeRendererProps;
-
-  export let nodeClickDistance: $$Props['nodeClickDistance'] = 0;
+  let {
+    nodeClickDistance,
+    onnodeclick,
+    onnodecontextmenu,
+    onnodemouseenter,
+    onnodemousemove,
+    onnodemouseleave,
+    onnodedrag,
+    onnodedragstart,
+    onnodedragstop
+  }: { nodeClickDistance?: number } & NodeEvents = $props();
 
   const {
     visibleNodes,
@@ -82,14 +90,14 @@
       parentId={node.parentId}
       {resizeObserver}
       {nodeClickDistance}
-      on:nodeclick
-      on:nodemouseenter
-      on:nodemousemove
-      on:nodemouseleave
-      on:nodedrag
-      on:nodedragstart
-      on:nodedragstop
-      on:nodecontextmenu
+      {onnodeclick}
+      {onnodemouseenter}
+      {onnodemousemove}
+      {onnodemouseleave}
+      {onnodedrag}
+      {onnodedragstart}
+      {onnodedragstop}
+      {onnodecontextmenu}
     />
   {/each}
 </div>
