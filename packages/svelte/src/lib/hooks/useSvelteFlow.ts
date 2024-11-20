@@ -297,7 +297,8 @@ export function useSvelteFlow(): {
       position,
       width: nodeToUse.measured?.width ?? nodeToUse.width,
       height: nodeToUse.measured?.height ?? nodeToUse.height,
-      data: nodeToUse.data
+      data: nodeToUse.data,
+      origin: nodeToUse.origin
     };
 
     return nodeToRect(nodeWithPosition);
