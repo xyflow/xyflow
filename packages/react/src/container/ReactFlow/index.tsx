@@ -153,11 +153,11 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
 
   return (
     <div
+      data-testid="rf__wrapper"
       {...rest}
       style={{ ...style, ...wrapperStyle }}
       ref={ref}
       className={cc(['react-flow', className, colorModeClassName])}
-      data-testid="rf__wrapper"
       id={id}
     >
       <Wrapper
