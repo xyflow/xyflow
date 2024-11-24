@@ -148,26 +148,30 @@ const createStore = ({
         const changes = [];
 
         for (const [id, dragItem] of nodeDragItems) {
+          const expandParent = !!(dragItem?.expandParent && dragItem?.parentId && dragItem?.position);
+
           const change: NodeChange = {
             id,
             type: 'position',
-            position: dragItem.position,
+            position: expandParent
+              ? {
+                  x: Math.max(0, dragItem.position.x),
+                  y: Math.max(0, dragItem.position.y),
+                }
+              : dragItem.position,
             dragging,
           };
 
-          if (dragItem?.expandParent && dragItem?.parentId && change.position) {
+          if (expandParent) {
             parentExpandChildren.push({
               id,
-              parentId: dragItem.parentId,
+              parentId: dragItem.parentId!,
               rect: {
                 ...dragItem.internals.positionAbsolute,
                 width: dragItem.measured.width!,
                 height: dragItem.measured.height!,
               },
             });
-
-            change.position.x = Math.max(0, change.position.x);
-            change.position.y = Math.max(0, change.position.y);
           }
 
           changes.push(change);
