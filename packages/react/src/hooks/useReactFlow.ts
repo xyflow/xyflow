@@ -46,23 +46,16 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       batchContext.edgeQueue.push(payload as EdgeType[]);
     };
 
-    const getNodeRect = (node: NodeType | { id: string }): Rect | null => {
+    const getNodeRect = (nodeOrId: NodeType | { id: string }): Rect | null => {
       const { nodeLookup, nodeOrigin } = store.getState();
 
-      const nodeToUse = isNode<NodeType>(node) ? node : nodeLookup.get(node.id)!;
-      const position = nodeToUse.parentId
-        ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.measured, nodeToUse.parentId, nodeLookup, nodeOrigin)
-        : nodeToUse.position;
+      const node = isNode<NodeType>(nodeOrId) ? nodeOrId : nodeLookup.get(nodeOrId.id);
 
-      const nodeWithPosition = {
-        id: nodeToUse.id,
-        position,
-        width: nodeToUse.measured?.width ?? nodeToUse.width,
-        height: nodeToUse.measured?.height ?? nodeToUse.height,
-        data: nodeToUse.data,
-      };
+      if (!node) {
+        return null;
+      }
 
-      return nodeToRect(nodeWithPosition);
+      return nodeToRect(node, nodeOrigin);
     };
 
     const updateNode: GeneralHelpers<NodeType, EdgeType>['updateNode'] = (
