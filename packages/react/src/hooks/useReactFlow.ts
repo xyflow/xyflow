@@ -47,7 +47,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
     const getNodeRect = (nodeOrId: NodeType | { id: string }): Rect | null => {
       const { nodeLookup, nodeOrigin } = store.getState();
-      const node = isNode<NodeType>(nodeOrId) ? nodeOrId : nodeLookup.get(nodeOrId.id);
+      const node = nodeLookup.get(nodeOrId.id) ?? (isNode<NodeType>(nodeOrId) ? nodeOrId : null);
       return node ? nodeToRect(node, nodeOrigin) : null;
     };
 

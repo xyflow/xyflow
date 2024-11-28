@@ -280,9 +280,9 @@ export function useSvelteFlow(): {
 
   const getNodeRect = (nodeOrId: Node | { id: Node['id'] }): Rect | null => {
     const $nodeLookup = get(nodeLookup);
-    const $nodeOrigin = get(nodeOrigin);
-    const node = isNode(nodeOrId) ? nodeOrId : $nodeLookup.get(nodeOrId.id);
-    return node ? nodeToRect(node, $nodeOrigin) : null;
+    // We always try to get the InternalNode whether you pass a node or a just an id
+    const node = $nodeLookup.get(nodeOrId.id) ?? (isNode(nodeOrId) ? nodeOrId : null);
+    return node ? nodeToRect(node) : null;
   };
 
   const updateNode = (
