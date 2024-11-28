@@ -92,6 +92,8 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   disableKeyboardA11y?: boolean;
 };
 
+type BasePathAttributes = Omit<HTMLAttributes<SVGPathElement>, "d">;
+
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
 export type EdgeTextProps = HTMLAttributes<SVGElement> &
@@ -123,12 +125,9 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
  * BaseEdge component props
  * @public
  */
-export type BaseEdgeProps = EdgeLabelOptions & {
-  /** Unique id of edge */
-  id?: string;
+export type BaseEdgeProps = BasePathAttributes & EdgeLabelOptions & {
   /** Additional padding where interacting with an edge is still possible */
   interactionWidth?: number;
-  className?: string;
   /** The x position of edge label */
   labelX?: number;
   /** The y position of edge label */
@@ -143,14 +142,13 @@ export type BaseEdgeProps = EdgeLabelOptions & {
   markerEnd?: string;
   /** SVG path of the edge */
   path: string;
-  style?: CSSProperties;
 };
 
 /**
  * Helper type for edge components that get exported by the library
  * @public
  */
-export type EdgeComponentProps = EdgePosition &
+export type EdgeComponentProps = BasePathAttributes & EdgePosition &
   EdgeLabelOptions & {
     id?: EdgeProps['id'];
     markerStart?: EdgeProps['markerStart'];
@@ -187,7 +185,7 @@ export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
  * StraightEdge component props
  * @public
  */
-export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
+export type StraightEdgeProps = HTMLAttributes<SVGPathElement> & Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
 /**
  * SimpleBezier component props

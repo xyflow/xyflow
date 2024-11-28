@@ -20,10 +20,12 @@ export function BaseEdge({
   markerStart,
   className,
   interactionWidth = 20,
+  ...props
 }: BaseEdgeProps) {
   return (
     <>
       <path
+        {...props}
         id={id}
         style={style}
         d={path}

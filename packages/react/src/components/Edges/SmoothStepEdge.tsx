@@ -26,6 +26,7 @@ function createSmoothStepEdge(params: { isInternal: boolean }) {
       markerStart,
       pathOptions,
       interactionWidth,
+      ...props
     }: SmoothStepEdgeProps) => {
       const [path, labelX, labelY] = getSmoothStepPath({
         sourceX,
@@ -42,6 +43,7 @@ function createSmoothStepEdge(params: { isInternal: boolean }) {
 
       return (
         <BaseEdge
+          {...props}
           id={_id}
           path={path}
           labelX={labelX}

@@ -26,6 +26,7 @@ function createBezierEdge(params: { isInternal: boolean }) {
       markerStart,
       pathOptions,
       interactionWidth,
+      ...props
     }: BezierEdgeProps) => {
       const [path, labelX, labelY] = getBezierPath({
         sourceX,
@@ -41,6 +42,7 @@ function createBezierEdge(params: { isInternal: boolean }) {
 
       return (
         <BaseEdge
+          {...props}
           id={_id}
           path={path}
           labelX={labelX}

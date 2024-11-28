@@ -23,6 +23,7 @@ function createStraightEdge(params: { isInternal: boolean }) {
       markerEnd,
       markerStart,
       interactionWidth,
+      ...props
     }: StraightEdgeProps) => {
       const [path, labelX, labelY] = getStraightPath({ sourceX, sourceY, targetX, targetY });
 
@@ -30,6 +31,7 @@ function createStraightEdge(params: { isInternal: boolean }) {
 
       return (
         <BaseEdge
+          {...props}
           id={_id}
           path={path}
           labelX={labelX}
@@ -44,6 +46,7 @@ function createStraightEdge(params: { isInternal: boolean }) {
           markerEnd={markerEnd}
           markerStart={markerStart}
           interactionWidth={interactionWidth}
+          {...props}
         />
       );
     }
