@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-forward ref to the inner div of the panel component
+Forward ref of the div inside Panel components.
