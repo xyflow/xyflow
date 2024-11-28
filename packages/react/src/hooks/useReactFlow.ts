@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import {
   EdgeRemoveChange,
-  evaluateAbsolutePosition,
   getElementsToRemove,
   getNodesBounds,
   getOverlappingArea,
@@ -48,14 +47,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
     const getNodeRect = (nodeOrId: NodeType | { id: string }): Rect | null => {
       const { nodeLookup, nodeOrigin } = store.getState();
-
       const node = isNode<NodeType>(nodeOrId) ? nodeOrId : nodeLookup.get(nodeOrId.id);
-
-      if (!node) {
-        return null;
-      }
-
-      return nodeToRect(node, nodeOrigin);
+      return node ? nodeToRect(node, nodeOrigin) : null;
     };
 
     const updateNode: GeneralHelpers<NodeType, EdgeType>['updateNode'] = (

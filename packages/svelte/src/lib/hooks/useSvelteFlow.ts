@@ -14,7 +14,6 @@ import {
   getViewportForBounds,
   getElementsToRemove,
   rendererPointToPoint,
-  evaluateAbsolutePosition,
   type HandleType,
   type HandleConnection,
   getNodesBounds
@@ -279,28 +278,11 @@ export function useSvelteFlow(): {
     connectionLookup
   } = useStore();
 
-  const getNodeRect = (node: Node | { id: Node['id'] }): Rect | null => {
+  const getNodeRect = (nodeOrId: Node | { id: Node['id'] }): Rect | null => {
     const $nodeLookup = get(nodeLookup);
-    const nodeToUse = isNode(node) ? node : $nodeLookup.get(node.id)!;
-    const position = nodeToUse.parentId
-      ? evaluateAbsolutePosition(
-          nodeToUse.position,
-          nodeToUse.measured,
-          nodeToUse.parentId,
-          $nodeLookup,
-          get(nodeOrigin)
-        )
-      : nodeToUse.position;
-
-    const nodeWithPosition = {
-      id: nodeToUse.id,
-      position,
-      width: nodeToUse.measured?.width ?? nodeToUse.width,
-      height: nodeToUse.measured?.height ?? nodeToUse.height,
-      data: nodeToUse.data
-    };
-
-    return nodeToRect(nodeWithPosition);
+    const $nodeOrigin = get(nodeOrigin);
+    const node = isNode(nodeOrId) ? nodeOrId : $nodeLookup.get(nodeOrId.id);
+    return node ? nodeToRect(node, $nodeOrigin) : null;
   };
 
   const updateNode = (
