@@ -56,6 +56,6 @@ export type NodeWrapperProps<NodeType extends Node> = {
   nodeClickDistance?: number;
 };
 
-export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'>;
+export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default' | 'group'>;
 
 export type NodeProps<NodeType extends Node = Node> = NodePropsBase<NodeType>;
