@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Handle, Position, type BuiltInNode, type NodeProps } from '@xyflow/svelte';
+	import { Handle, Position, type LabeledBuiltInNode, type NodeProps } from '@xyflow/svelte';
 
-	type $$Props = NodeProps<BuiltInNode>;
+	type $$Props = NodeProps<LabeledBuiltInNode>;
 	$$restProps;
 
 	export let data: { label: string } = { label: 'Node' };

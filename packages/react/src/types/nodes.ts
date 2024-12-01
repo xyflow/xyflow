@@ -56,6 +56,8 @@ export type NodeWrapperProps<NodeType extends Node> = {
   nodeClickDistance?: number;
 };
 
-export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default' | 'group'>;
+export type LabeledBuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'>;
+export type GroupNode = Node<Record<string, never>, 'group'>;
+export type BuiltInNode = LabeledBuiltInNode | GroupNode;
 
 export type NodeProps<NodeType extends Node = Node> = NodePropsBase<NodeType>;

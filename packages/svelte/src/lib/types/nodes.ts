@@ -44,7 +44,9 @@ export type NodeTypes = Record<
 
 export type DefaultNodeOptions = Partial<Omit<Node, 'id'>>;
 
-export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default' | 'group'>;
+export type LabeledBuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'>;
+export type GroupNode = Node<Record<string, never>, 'group'>;
+export type BuiltInNode = LabeledBuiltInNode | GroupNode;
 
 export type NodeEventMap = {
   nodeclick: { node: Node; event: MouseEvent | TouchEvent };

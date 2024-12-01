@@ -51,6 +51,8 @@ export type {
   Node,
   NodeTypes,
   DefaultNodeOptions,
+  LabeledBuiltInNode,
+  GroupNode,
   BuiltInNode,
   NodeProps,
   InternalNode

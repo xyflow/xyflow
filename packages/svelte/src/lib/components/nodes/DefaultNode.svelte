@@ -2,9 +2,9 @@
   import { Position } from '@xyflow/system';
 
   import { Handle } from '$lib/components/Handle';
-  import type { NodeProps } from '$lib/types';
+  import type { LabeledBuiltInNode, NodeProps } from '$lib/types';
 
-  interface $$Props extends NodeProps {}
+  type $$Props = NodeProps<LabeledBuiltInNode>;
 
   export let data: $$Props['data'] = { label: 'Node' };
   export let targetPosition: $$Props['targetPosition'] = undefined;
