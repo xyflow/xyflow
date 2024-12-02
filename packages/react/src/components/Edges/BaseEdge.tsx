@@ -2,7 +2,7 @@ import { isNumeric } from '@xyflow/system';
 import cc from 'classcat';
 
 import { EdgeText } from './EdgeText';
-import type { BaseEdgeProps } from '../../types';
+import type { BaseEdgeProps, EdgeComponentWithPathOptions, EdgeProps } from '../../types';
 
 export function BaseEdge({
   id,
@@ -15,19 +15,34 @@ export function BaseEdge({
   labelBgStyle,
   labelBgPadding,
   labelBgBorderRadius,
-  style,
   markerEnd,
   markerStart,
   className,
   interactionWidth = 20,
   ...props
 }: BaseEdgeProps) {
+  // We are not allowed to pass these props to the path element otherwise we get a bunch of warnings
+  const {
+    animated,
+    selectable,
+    deletable,
+    data,
+    selected,
+    source,
+    target,
+    targetHandleId,
+    sourceHandleId,
+    targetPosition,
+    sourcePosition,
+    pathOptions,
+    ...restProps
+  } = props as EdgeComponentWithPathOptions<any> & EdgeProps;
+
   return (
     <>
       <path
-        {...props}
+        {...restProps}
         id={id}
-        style={style}
         d={path}
         fill="none"
         className={cc(['react-flow__edge-path', className])}

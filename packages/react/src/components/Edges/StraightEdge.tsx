@@ -6,51 +6,13 @@ import type { StraightEdgeProps } from '../../types';
 
 function createStraightEdge(params: { isInternal: boolean }) {
   // eslint-disable-next-line react/display-name
-  return memo(
-    ({
-      id,
-      sourceX,
-      sourceY,
-      targetX,
-      targetY,
-      label,
-      labelStyle,
-      labelShowBg,
-      labelBgStyle,
-      labelBgPadding,
-      labelBgBorderRadius,
-      style,
-      markerEnd,
-      markerStart,
-      interactionWidth,
-      ...props
-    }: StraightEdgeProps) => {
-      const [path, labelX, labelY] = getStraightPath({ sourceX, sourceY, targetX, targetY });
+  return memo(({ id, sourceX, sourceY, targetX, targetY, ...props }: StraightEdgeProps) => {
+    const [path, labelX, labelY] = getStraightPath({ sourceX, sourceY, targetX, targetY });
 
-      const _id = params.isInternal ? undefined : id;
+    const _id = params.isInternal ? undefined : id;
 
-      return (
-        <BaseEdge
-          {...props}
-          id={_id}
-          path={path}
-          labelX={labelX}
-          labelY={labelY}
-          label={label}
-          labelStyle={labelStyle}
-          labelShowBg={labelShowBg}
-          labelBgStyle={labelBgStyle}
-          labelBgPadding={labelBgPadding}
-          labelBgBorderRadius={labelBgBorderRadius}
-          style={style}
-          markerEnd={markerEnd}
-          markerStart={markerStart}
-          interactionWidth={interactionWidth}
-          {...props}
-        />
-      );
-    }
-  );
+    return <BaseEdge {...props} id={_id} path={path} labelX={labelX} labelY={labelY} />;
+  });
 }
 
 const StraightEdge = createStraightEdge({ isInternal: false });

@@ -13,19 +13,9 @@ function createSmoothStepEdge(params: { isInternal: boolean }) {
       sourceY,
       targetX,
       targetY,
-      label,
-      labelStyle,
-      labelShowBg,
-      labelBgStyle,
-      labelBgPadding,
-      labelBgBorderRadius,
-      style,
       sourcePosition = Position.Bottom,
       targetPosition = Position.Top,
-      markerEnd,
-      markerStart,
       pathOptions,
-      interactionWidth,
       ...props
     }: SmoothStepEdgeProps) => {
       const [path, labelX, labelY] = getSmoothStepPath({
@@ -41,25 +31,7 @@ function createSmoothStepEdge(params: { isInternal: boolean }) {
 
       const _id = params.isInternal ? undefined : id;
 
-      return (
-        <BaseEdge
-          {...props}
-          id={_id}
-          path={path}
-          labelX={labelX}
-          labelY={labelY}
-          label={label}
-          labelStyle={labelStyle}
-          labelShowBg={labelShowBg}
-          labelBgStyle={labelBgStyle}
-          labelBgPadding={labelBgPadding}
-          labelBgBorderRadius={labelBgBorderRadius}
-          style={style}
-          markerEnd={markerEnd}
-          markerStart={markerStart}
-          interactionWidth={interactionWidth}
-        />
-      );
+      return <BaseEdge {...props} id={_id} path={path} labelX={labelX} labelY={labelY} />;
     }
   );
 }

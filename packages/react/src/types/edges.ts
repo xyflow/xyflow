@@ -14,7 +14,6 @@ import type {
   EdgePosition,
   StepPathOptions,
   OnError,
-  ConnectionState,
   FinalConnectionState,
 } from '@xyflow/system';
 
@@ -92,8 +91,6 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   disableKeyboardA11y?: boolean;
 };
 
-type BasePathAttributes = Omit<HTMLAttributes<SVGPathElement>, "d">;
-
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
 export type EdgeTextProps = HTMLAttributes<SVGElement> &
@@ -121,34 +118,38 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
     interactionWidth?: number;
   };
 
+type BasePathAttributes = Omit<HTMLAttributes<SVGPathElement>, 'd'>;
+
 /**
  * BaseEdge component props
  * @public
  */
-export type BaseEdgeProps = BasePathAttributes & EdgeLabelOptions & {
-  /** Additional padding where interacting with an edge is still possible */
-  interactionWidth?: number;
-  /** The x position of edge label */
-  labelX?: number;
-  /** The y position of edge label */
-  labelY?: number;
-  /** Marker at start of edge
-   * @example 'url(#arrow)'
-   */
-  markerStart?: string;
-  /** Marker at end of edge
-   * @example 'url(#arrow)'
-   */
-  markerEnd?: string;
-  /** SVG path of the edge */
-  path: string;
-};
+export type BaseEdgeProps = BasePathAttributes &
+  EdgeLabelOptions & {
+    /** Additional padding where interacting with an edge is still possible */
+    interactionWidth?: number;
+    /** The x position of edge label */
+    labelX?: number;
+    /** The y position of edge label */
+    labelY?: number;
+    /** Marker at start of edge
+     * @example 'url(#arrow)'
+     */
+    markerStart?: string;
+    /** Marker at end of edge
+     * @example 'url(#arrow)'
+     */
+    markerEnd?: string;
+    /** SVG path of the edge */
+    path: string;
+  };
 
 /**
  * Helper type for edge components that get exported by the library
  * @public
  */
-export type EdgeComponentProps = BasePathAttributes & EdgePosition &
+export type EdgeComponentProps = BasePathAttributes &
+  EdgePosition &
   EdgeLabelOptions & {
     id?: EdgeProps['id'];
     markerStart?: EdgeProps['markerStart'];
@@ -185,7 +186,8 @@ export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
  * StraightEdge component props
  * @public
  */
-export type StraightEdgeProps = HTMLAttributes<SVGPathElement> & Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
+export type StraightEdgeProps = HTMLAttributes<SVGPathElement> &
+  Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
 /**
  * SimpleBezier component props
