@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { CSSProperties, HTMLAttributes, ReactNode, MouseEvent as ReactMouseEvent, ComponentType } from 'react';
+import type {
+  CSSProperties,
+  HTMLAttributes,
+  SVGAttributes,
+  ReactNode,
+  MouseEvent as ReactMouseEvent,
+  ComponentType,
+} from 'react';
 import type {
   EdgeBase,
   BezierPathOptions,
@@ -93,7 +100,7 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
-export type EdgeTextProps = HTMLAttributes<SVGElement> &
+export type EdgeTextProps = SVGAttributes<SVGElement> &
   EdgeLabelOptions & {
     x: number;
     y: number;
@@ -118,7 +125,7 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
     interactionWidth?: number;
   };
 
-type BasePathAttributes = Omit<HTMLAttributes<SVGPathElement>, 'd'>;
+type BasePathAttributes = Omit<SVGAttributes<SVGPathElement>, 'd'>;
 
 /**
  * BaseEdge component props
@@ -186,7 +193,7 @@ export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
  * StraightEdge component props
  * @public
  */
-export type StraightEdgeProps = HTMLAttributes<SVGPathElement> &
+export type StraightEdgeProps = SVGAttributes<SVGPathElement> &
   Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
 /**

@@ -16,6 +16,7 @@ import {
 
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';
+import CustomEdge3 from './CustomEdge3';
 
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
@@ -62,6 +63,12 @@ const initialNodes: Node[] = [
     type: 'output',
     data: { label: 'Output 9' },
     position: { x: 675, y: 500 },
+  },
+  {
+    id: '10',
+    type: 'output',
+    data: { label: 'Output 10' },
+    position: { x: 50, y: 400 },
   },
 ];
 
@@ -138,6 +145,13 @@ const initialEdges: Edge[] = [
     data: { text: 'custom edge 2' },
   },
   {
+    id: 'e3a-10',
+    source: '3a',
+    target: '10',
+    type: 'custom3',
+    data: { text: 'custom edge 3' },
+  },
+  {
     id: 'e5-6',
     source: '5',
     target: '6',
@@ -173,6 +187,7 @@ const initialEdges: Edge[] = [
 const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
   custom2: CustomEdge2,
+  custom3: CustomEdge3,
 };
 
 const defaultEdgeOptions = {
