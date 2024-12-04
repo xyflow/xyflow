@@ -1,5 +1,5 @@
 ---
-'@xyflow/react': minor
+'@xyflow/react': patch
 ---
 
-Support passing `path` element attributes to BaseEdge component.
+Support passing `path` element attributes to `BaseEdge` component.
