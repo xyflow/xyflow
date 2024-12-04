@@ -190,8 +190,7 @@ export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
  * StraightEdge component props
  * @public
  */
-export type StraightEdgeProps = SVGAttributes<SVGPathElement> &
-  Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
+export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
 /**
  * SimpleBezier component props
