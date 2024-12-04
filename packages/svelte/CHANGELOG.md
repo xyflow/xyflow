@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.1.25
+
+### Patch Changes
+
+- [#4865](https://github.com/xyflow/xyflow/pull/4865) [`2c4acc2b`](https://github.com/xyflow/xyflow/commit/2c4acc2bd9ec271468bd4c904e19d7fca627d9e1) Thanks [@moklick](https://github.com/moklick)! - Add group node to BuiltInNode type
+
 ## 0.1.24
 
 ### Patch Changes
