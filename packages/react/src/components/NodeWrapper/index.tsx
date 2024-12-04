@@ -138,6 +138,9 @@ export function NodeWrapper<NodeType extends Node>({
         nodeRef,
       });
     } else if (isDraggable && node.selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
+      // prevent default scrolling behavior on arrow key press when node is moved
+      event.preventDefault();
+
       store.setState({
         ariaLiveMessage: `Moved selected node ${event.key
           .replace('Arrow', '')
