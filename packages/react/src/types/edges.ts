@@ -130,14 +130,6 @@ export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
     labelX?: number;
     /** The y position of edge label */
     labelY?: number;
-    /** Marker at start of edge
-     * @example 'url(#arrow)'
-     */
-    markerStart?: string;
-    /** Marker at end of edge
-     * @example 'url(#arrow)'
-     */
-    markerEnd?: string;
     /** SVG path of the edge */
     path: string;
   };
