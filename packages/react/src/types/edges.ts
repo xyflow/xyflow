@@ -125,13 +125,11 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
     interactionWidth?: number;
   };
 
-type BasePathAttributes = Omit<SVGAttributes<SVGPathElement>, 'd'>;
-
 /**
  * BaseEdge component props
  * @public
  */
-export type BaseEdgeProps = BasePathAttributes &
+export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
   EdgeLabelOptions & {
     /** Additional padding where interacting with an edge is still possible */
     interactionWidth?: number;
@@ -155,8 +153,7 @@ export type BaseEdgeProps = BasePathAttributes &
  * Helper type for edge components that get exported by the library
  * @public
  */
-export type EdgeComponentProps = BasePathAttributes &
-  EdgePosition &
+export type EdgeComponentProps = EdgePosition &
   EdgeLabelOptions & {
     id?: EdgeProps['id'];
     markerStart?: EdgeProps['markerStart'];

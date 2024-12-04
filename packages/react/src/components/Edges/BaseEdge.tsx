@@ -21,27 +21,10 @@ export function BaseEdge({
   interactionWidth = 20,
   ...props
 }: BaseEdgeProps) {
-  // We are not allowed to pass these props to the path element otherwise we get a bunch of warnings
-  const {
-    animated,
-    selectable,
-    deletable,
-    data,
-    selected,
-    source,
-    target,
-    targetHandleId,
-    sourceHandleId,
-    targetPosition,
-    sourcePosition,
-    pathOptions,
-    ...restProps
-  } = props as EdgeComponentWithPathOptions<any> & EdgeProps;
-
   return (
     <>
       <path
-        {...restProps}
+        {...props}
         id={id}
         d={path}
         fill="none"

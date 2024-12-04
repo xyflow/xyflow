@@ -82,7 +82,16 @@ function createSimpleBezierEdge(params: { isInternal: boolean }) {
       targetY,
       sourcePosition = Position.Bottom,
       targetPosition = Position.Top,
-      ...props
+      label,
+      labelStyle,
+      labelShowBg,
+      labelBgStyle,
+      labelBgPadding,
+      labelBgBorderRadius,
+      style,
+      markerEnd,
+      markerStart,
+      interactionWidth,
     }: SimpleBezierEdgeProps) => {
       const [path, labelX, labelY] = getSimpleBezierPath({
         sourceX,
@@ -95,7 +104,24 @@ function createSimpleBezierEdge(params: { isInternal: boolean }) {
 
       const _id = params.isInternal ? undefined : id;
 
-      return <BaseEdge {...props} id={_id} path={path} labelX={labelX} labelY={labelY} />;
+      return (
+        <BaseEdge
+          id={_id}
+          path={path}
+          labelX={labelX}
+          labelY={labelY}
+          label={label}
+          labelStyle={labelStyle}
+          labelShowBg={labelShowBg}
+          labelBgStyle={labelBgStyle}
+          labelBgPadding={labelBgPadding}
+          labelBgBorderRadius={labelBgBorderRadius}
+          style={style}
+          markerEnd={markerEnd}
+          markerStart={markerStart}
+          interactionWidth={interactionWidth}
+        />
+      );
     }
   );
 }
