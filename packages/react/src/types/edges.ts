@@ -1,13 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type {
-  CSSProperties,
-  HTMLAttributes,
-  SVGAttributes,
-  ReactNode,
-  MouseEvent as ReactMouseEvent,
-  ComponentType,
-} from 'react';
+import type { CSSProperties, SVGAttributes, ReactNode, MouseEvent as ReactMouseEvent, ComponentType } from 'react';
 import type {
   EdgeBase,
   BezierPathOptions,
