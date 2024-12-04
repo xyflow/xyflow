@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import {
   EdgeRemoveChange,
-  evaluateAbsolutePosition,
   getElementsToRemove,
   getNodesBounds,
   getOverlappingArea,
@@ -46,23 +45,10 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       batchContext.edgeQueue.push(payload as EdgeType[]);
     };
 
-    const getNodeRect = (node: NodeType | { id: string }): Rect | null => {
+    const getNodeRect = (nodeOrId: NodeType | { id: string }): Rect | null => {
       const { nodeLookup, nodeOrigin } = store.getState();
-
-      const nodeToUse = isNode<NodeType>(node) ? node : nodeLookup.get(node.id)!;
-      const position = nodeToUse.parentId
-        ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.measured, nodeToUse.parentId, nodeLookup, nodeOrigin)
-        : nodeToUse.position;
-
-      const nodeWithPosition = {
-        id: nodeToUse.id,
-        position,
-        width: nodeToUse.measured?.width ?? nodeToUse.width,
-        height: nodeToUse.measured?.height ?? nodeToUse.height,
-        data: nodeToUse.data,
-      };
-
-      return nodeToRect(nodeWithPosition);
+      const node = nodeLookup.get(nodeOrId.id) ?? (isNode<NodeType>(nodeOrId) ? nodeOrId : null);
+      return node ? nodeToRect(node, nodeOrigin) : null;
     };
 
     const updateNode: GeneralHelpers<NodeType, EdgeType>['updateNode'] = (
