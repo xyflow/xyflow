@@ -2,7 +2,7 @@ import { memo, ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
-import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
+import { useVisibleEdges } from '../../hooks/useVisibleEdges';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
 import { EdgeWrapper } from '../../components/EdgeWrapper';
@@ -31,8 +31,6 @@ type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
 };
 
 const selector = (s: ReactFlowState) => ({
-  width: s.width,
-  height: s.height,
   edgesFocusable: s.edgesFocusable,
   edgesReconnectable: s.edgesReconnectable,
   elementsSelectable: s.elementsSelectable,
@@ -59,17 +57,18 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
   const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useStore(selector, shallow);
-  const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
+  const edges = useVisibleEdges<EdgeType>(onlyRenderVisibleElements);
 
   return (
     <div className="react-flow__edges">
       <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />
 
-      {edgeIds.map((id) => {
+      {edges.map((edge) => {
         return (
           <EdgeWrapper<EdgeType>
-            key={id}
-            id={id}
+            key={edge.id}
+            id={edge.id}
+            edge={edge}
             edgesFocusable={edgesFocusable}
             edgesReconnectable={edgesReconnectable}
             elementsSelectable={elementsSelectable}

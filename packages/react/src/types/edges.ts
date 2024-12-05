@@ -67,6 +67,7 @@ export type EdgeMouseHandler<EdgeType extends Edge = Edge> = (event: ReactMouseE
 
 export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   id: string;
+  edge: EdgeType;
   edgesFocusable: boolean;
   edgesReconnectable: boolean;
   elementsSelectable: boolean;

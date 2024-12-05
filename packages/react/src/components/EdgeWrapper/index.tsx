@@ -17,6 +17,7 @@ import type { Edge, EdgeWrapperProps } from '../../types';
 
 export function EdgeWrapper<EdgeType extends Edge = Edge>({
   id,
+  edge,
   edgesFocusable,
   edgesReconnectable,
   elementsSelectable,
@@ -36,7 +37,6 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
   onError,
   disableKeyboardA11y,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
-  let edge = useStore((s) => s.edgeLookup.get(id)!) as EdgeType;
   const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
