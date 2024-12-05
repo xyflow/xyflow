@@ -3,7 +3,7 @@ import { shallow } from 'zustand/shallow';
 import { isEdgeVisible } from '@xyflow/system';
 
 import { useStore } from './useStore';
-import { Edge, type ReactFlowState } from '../types';
+import type { Edge, ReactFlowState } from '../types';
 
 /**
  * Hook for getting the visible edge ids from the store.
