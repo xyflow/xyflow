@@ -18,7 +18,8 @@
     children
   }: NodeToolbarProps = $props();
 
-  const { domNode, viewport, nodeLookup, nodes } = useStore();
+  const store = useStore();
+  const { nodes } = store;
   const { getNodesBounds } = useSvelteFlow();
   const contextNodeId = getContext<string>('svelteflow__node_id');
 
@@ -28,7 +29,7 @@
     const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId ?? contextNodeId];
 
     return nodeIds.reduce<InternalNode[]>((res, nodeId) => {
-      const node = $nodeLookup.get(nodeId);
+      const node = store.nodeLookup.get(nodeId);
 
       if (node) {
         res.push(node);
@@ -41,7 +42,7 @@
   let transform: string = $derived.by(() => {
     const nodeRect = getNodesBounds(toolbarNodes);
     if (nodeRect) {
-      return getNodeToolbarTransform(nodeRect, $viewport, position, offset, align);
+      return getNodeToolbarTransform(nodeRect, store.viewport, position, offset, align);
     }
     return '';
   });
@@ -63,11 +64,11 @@
   );
 </script>
 
-{#if $domNode && isActive && toolbarNodes}
+{#if store.domNode && isActive && toolbarNodes}
   <div
     data-id={toolbarNodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
     class="svelte-flow__node-toolbar"
-    use:portal={{ domNode: $domNode }}
+    use:portal={{ domNode: store.domNode }}
     style:position="absolute"
     style:transform
     style:z-index={zIndex}

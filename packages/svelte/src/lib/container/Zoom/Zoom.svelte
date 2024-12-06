@@ -8,7 +8,6 @@
 
   let {
     store,
-    initialViewport = { x: 0, y: 0, zoom: 1 },
     onMoveStart,
     onMove,
     onMoveEnd,
@@ -27,7 +26,10 @@
   let panOnScrollActive = $derived(store.panActivationKeyPressed || panOnScroll);
 
   const onTransformChange = (transform: Transform) =>
-    store.viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] });
+    (store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] });
+
+  // We extract the initial value by destructuring
+  const { viewport: initialViewport } = store;
 
   onMount(() => {
     store.viewportInitialized = true;

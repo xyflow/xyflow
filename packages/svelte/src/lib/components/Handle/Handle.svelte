@@ -40,7 +40,7 @@
   );
 
   let store = useStore();
-  let { viewport, edges } = store;
+  let { edges } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
@@ -81,7 +81,7 @@
         onConnectEnd: (event, connectionState) => {
           store.onconnectend?.(event, connectionState);
         },
-        getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom],
+        getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
         getFromHandle: () => store.connection.fromHandle
       });
     }

@@ -43,7 +43,6 @@
   }: MiniMapProps = $props();
 
   let store = useStore();
-  const { viewport } = store;
 
   let nodes = $derived(store.nodes);
 
@@ -58,10 +57,10 @@
 
   // TODO: simplify this
   let viewBB = $derived({
-    x: -$viewport.x / $viewport.zoom,
-    y: -$viewport.y / $viewport.zoom,
-    width: store.width / $viewport.zoom,
-    height: store.height / $viewport.zoom
+    x: -store.viewport.x / store.viewport.zoom,
+    y: -store.viewport.y / store.viewport.zoom,
+    width: store.width / store.viewport.zoom,
+    height: store.height / store.viewport.zoom
   });
   let boundingRect = $derived(
     store.nodeLookup.size > 0
@@ -102,8 +101,8 @@
         ? maskStrokeWidth * viewScale
         : undefined}
       use:interactive={{
+        store,
         panZoom: store.panZoom,
-        viewport: store.viewport,
         getViewScale,
         translateExtent: store.translateExtent,
         width: store.width,

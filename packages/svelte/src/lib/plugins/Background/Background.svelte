@@ -28,9 +28,6 @@
   }: BackgroundProps = $props();
 
   const store = useStore();
-  const { viewport } = store;
-
-  $inspect($viewport);
 
   const patternSize = size ?? defaultSize[variant!];
   const isDots = variant === BackgroundVariant.Dots;
@@ -38,8 +35,11 @@
   const gapXY: number[] = Array.isArray(gap!) ? gap! : [gap!, gap!];
 
   let patternId = $derived(`background-pattern-${store.flowId}-${id ?? ''}`);
-  let scaledGap = $derived([gapXY[0] * $viewport.zoom || 1, gapXY[1] * $viewport.zoom || 1]);
-  let scaledSize = $derived(patternSize * $viewport.zoom);
+  let scaledGap = $derived([
+    gapXY[0] * store.viewport.zoom || 1,
+    gapXY[1] * store.viewport.zoom || 1
+  ]);
+  let scaledSize = $derived(patternSize * store.viewport.zoom);
   let patternDimensions = $derived(
     (isCross ? [scaledSize, scaledSize] : scaledGap) as [number, number]
   );
@@ -56,8 +56,8 @@
 >
   <pattern
     id={patternId}
-    x={$viewport.x % scaledGap[0]}
-    y={$viewport.y % scaledGap[1]}
+    x={store.viewport.x % scaledGap[0]}
+    y={store.viewport.y % scaledGap[1]}
     width={scaledGap[0]}
     height={scaledGap[1]}
     patternUnits="userSpaceOnUse"

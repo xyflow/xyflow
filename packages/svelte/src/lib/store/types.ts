@@ -17,7 +17,7 @@ import type { SvelteFlowProps } from '$lib/container/SvelteFlow';
 export type SvelteFlowStoreActions = {
   syncNodeStores: (nodesStore: Writable<Node[]>) => void;
   syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
-  syncViewport: (viewportStore?: Writable<Viewport>) => void;
+  // syncViewport: (viewportStore?: Writable<Viewport>) => void;
   setNodeTypes: (nodeTypes: NodeTypes) => void;
   setEdgeTypes: (edgeTypes: EdgeTypes) => void;
   addEdge: (edge: Edge | Connection) => void;

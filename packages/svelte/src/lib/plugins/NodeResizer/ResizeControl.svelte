@@ -11,6 +11,7 @@
     type XYResizerChildChange
   } from '@xyflow/system';
   import type { ResizeControlProps } from './types';
+  import { get } from 'svelte/store';
 
   let {
     nodeId,
@@ -31,7 +32,7 @@
     children
   }: ResizeControlProps = $props();
 
-  const { nodeLookup, snapGrid, viewport, nodes, nodeOrigin, domNode } = useStore();
+  const store = useStore();
 
   let id = $derived(
     typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
@@ -62,16 +63,16 @@
         nodeId: id,
         getStoreItems: () => {
           return {
-            nodeLookup: $nodeLookup,
-            transform: [$viewport.x, $viewport.y, $viewport.zoom],
-            snapGrid: $snapGrid ?? undefined,
-            snapToGrid: !!$snapGrid,
-            nodeOrigin: $nodeOrigin,
-            paneDomNode: $domNode
+            nodeLookup: store.nodeLookup,
+            transform: [store.viewport.x, store.viewport.y, store.viewport.zoom],
+            snapGrid: store.snapGrid ?? undefined,
+            snapToGrid: !!store.snapGrid,
+            nodeOrigin: store.nodeOrigin,
+            paneDomNode: store.domNode
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const node = $nodeLookup.get(id)?.internals.userNode;
+          const node = store.nodeLookup.get(id)?.internals.userNode;
           if (!node) {
             return;
           }
@@ -86,13 +87,13 @@
           }
 
           for (const childChange of childChanges) {
-            const childNode = $nodeLookup.get(childChange.id)?.internals.userNode;
+            const childNode = store.nodeLookup.get(childChange.id)?.internals.userNode;
             if (childNode) {
               childNode.position = childChange.position;
             }
           }
 
-          $nodes = $nodes;
+          store.nodes.set(get(store.nodes));
         }
       });
     }

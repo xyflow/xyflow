@@ -1,4 +1,3 @@
-import type { Writable } from 'svelte/store';
 import {
   PanOnScrollMode,
   XYPanZoom,
@@ -10,7 +9,7 @@ import {
 } from '@xyflow/system';
 
 type ZoomParams = {
-  viewport: Writable<Viewport>;
+  viewport: Viewport;
   initialViewport: Viewport;
   minZoom: number;
   maxZoom: number;
@@ -45,11 +44,11 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     minZoom,
     maxZoom,
     initialViewport,
-    viewport,
     translateExtent,
     paneClickDistance,
     setPanZoomInstance,
-    onDraggingChange
+    onDraggingChange,
+    onTransformChange
   } = params;
 
   const panZoomInstance = XYPanZoom({
@@ -61,8 +60,17 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     paneClickDistance,
     onDraggingChange
   });
-  const currentViewport = panZoomInstance.getViewport();
-  viewport.set(currentViewport);
+
+  //TODO: is this neccessary?
+  const viewport = panZoomInstance.getViewport();
+  if (
+    initialViewport.x !== viewport.x ||
+    initialViewport.y !== viewport.y ||
+    initialViewport.zoom !== viewport.zoom
+  ) {
+    onTransformChange([viewport.x, viewport.y, viewport.zoom]);
+  }
+
   setPanZoomInstance(panZoomInstance);
 
   panZoomInstance.update(params);

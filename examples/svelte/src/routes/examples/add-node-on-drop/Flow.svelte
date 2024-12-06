@@ -27,7 +27,7 @@
 	let id = 1;
 	const getId = () => `${id++}`;
 
-	const { screenToFlowPosition, flowToScreenPosition } = useSvelteFlow();
+	const { screenToFlowPosition, flowToScreenPosition } = $derived(useSvelteFlow());
 
 	const handleConnectEnd: OnConnectEnd = (event) => {
 		if (!connectingNodeId) return;

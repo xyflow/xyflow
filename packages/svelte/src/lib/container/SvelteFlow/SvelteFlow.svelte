@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { get } from 'svelte/store';
   import { onMount, getContext, setContext } from 'svelte';
   import cc from 'classcat';
   import { PanOnScrollMode } from '@xyflow/system';
@@ -79,12 +78,9 @@
     props,
     container
   });
-  const { viewport } = store;
-  const initialViewport = props.initialViewport ?? get(viewport);
 
   store.syncNodeStores(props.nodes);
   store.syncEdgeStores(props.edges);
-  store.syncViewport(props.viewport);
 
   const providerContext = getContext<ProviderContext>(key);
   if (providerContext) {
@@ -128,7 +124,6 @@
   />
   <Zoom
     {store}
-    {initialViewport}
     {onMoveStart}
     {onMove}
     {onMoveEnd}
@@ -142,7 +137,7 @@
     {paneClickDistance}
   >
     <Pane {store} {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
-      <ViewportComponent viewport={$viewport}>
+      <ViewportComponent {store}>
         <EdgeRenderer
           {store}
           {onedgeclick}

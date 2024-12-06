@@ -45,7 +45,7 @@
     children
   }: PaneProps = $props();
 
-  const { viewport, nodes, edges } = store;
+  const { nodes, edges } = store;
 
   // svelte-ignore non_reactive_update
   let container: HTMLDivElement;
@@ -131,7 +131,7 @@
     selectedNodes = getNodesInside(
       store.nodeLookup,
       nextUserSelectRect,
-      [$viewport.x, $viewport.y, $viewport.zoom],
+      [store.viewport.x, store.viewport.y, store.viewport.zoom],
       store.selectionMode === SelectionMode.Partial,
       true
     );

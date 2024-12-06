@@ -118,9 +118,7 @@ export const getInitialStore = (signals: StoreSignals) => {
     nodeTypes: NodeTypes = $derived({ ...initialNodeTypes, ...signals.props.nodeTypes });
     edgeTypes: EdgeTypes = $derived({ ...initialEdgeTypes, ...signals.props.edgeTypes });
 
-    viewport: Writable<Viewport> = writable(
-      signals.props.initialViewport ?? { x: 0, y: 0, zoom: 1 }
-    );
+    viewport: Viewport = $state(signals.props.initialViewport ?? { x: 0, y: 0, zoom: 1 });
 
     connectionMode: ConnectionMode = $derived(
       signals.props.connectionMode ?? ConnectionMode.Strict
@@ -128,10 +126,13 @@ export const getInitialStore = (signals: StoreSignals) => {
     rawConnection: ConnectionState = $state(initialConnection);
     connection: ConnectionState = $derived.by(() => {
       if (this.rawConnection.inProgress) {
-        const viewport = get(this.viewport);
         return {
           ...this.rawConnection,
-          to: pointToRendererPoint(this.rawConnection.to, [viewport.x, viewport.y, viewport.zoom])
+          to: pointToRendererPoint(this.rawConnection.to, [
+            this.viewport.x,
+            this.viewport.y,
+            this.viewport.zoom
+          ])
         };
       } else {
         return { ...this.rawConnection };
@@ -210,12 +211,12 @@ export const getInitialStore = (signals: StoreSignals) => {
       this.edges = createEdgesStore(edges, this.connectionLookup, this.edgeLookup);
       updateConnectionLookup(this.connectionLookup, this.edgeLookup, edges);
 
-      if (signals.props.fitView && this.width && this.height) {
+      if (signals.props.fitView && !signals.props.initialViewport && this.width && this.height) {
         const bounds = getInternalNodesBounds(this.nodeLookup, {
           filter: (node) =>
             !!((node.width || node.initialWidth) && (node.height || node.initialHeight))
         });
-        this.viewport.set(getViewportForBounds(bounds, this.width, this.height, 0.5, 2, 0.1));
+        this.viewport = getViewportForBounds(bounds, this.width, this.height, 0.5, 2, 0.1);
       }
     }
 

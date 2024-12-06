@@ -1,4 +1,4 @@
-import { get, type Writable } from 'svelte/store';
+import { get } from 'svelte/store';
 import {
   getOverlappingArea,
   isRectObject,
@@ -197,7 +197,6 @@ export function useSvelteFlow(): {
    * const clientPosition = flowToScreenPosition({ x: node.position.x, y: node.position.y })
    */
   flowToScreenPosition: (flowPosition: XYPosition) => XYPosition;
-  viewport: Writable<Viewport>;
   /**
    * Updates a node.
    *
@@ -279,7 +278,7 @@ export function useSvelteFlow(): {
   }
 
   const store = useStore();
-  const { viewport, nodes, edges } = store;
+  const { nodes, edges } = store;
 
   const getNodeRect = (node: Node | { id: Node['id'] }): Rect | null => {
     const nodeToUse = isNode(node) ? node : store.nodeLookup.get(node.id)!;
@@ -378,9 +377,9 @@ export function useSvelteFlow(): {
         ? panZoom.scaleTo(zoomLevel, { duration: options?.duration })
         : Promise.resolve(false);
     },
-    getZoom: () => get(viewport).zoom,
+    getZoom: () => store.viewport.zoom,
     setViewport: async (nextViewport, options) => {
-      const currentViewport = get(viewport);
+      const currentViewport = store.viewport;
 
       if (!store.panZoom) {
         return Promise.resolve(false);
@@ -397,7 +396,7 @@ export function useSvelteFlow(): {
 
       return Promise.resolve(true);
     },
-    getViewport: () => get(viewport),
+    getViewport: () => store.viewport,
     setCenter: async (x, y, options) => {
       const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : store.maxZoom;
       const currentPanZoom = store.panZoom;
@@ -513,7 +512,7 @@ export function useSvelteFlow(): {
       }
 
       const _snapGrid = options.snapToGrid ? store.snapGrid : false;
-      const { x, y, zoom } = get(viewport);
+      const { x, y, zoom } = store.viewport;
       const { x: domX, y: domY } = store.domNode.getBoundingClientRect();
       const correctedPosition = {
         x: position.x - domX,
@@ -537,7 +536,7 @@ export function useSvelteFlow(): {
         return position;
       }
 
-      const { x, y, zoom } = get(viewport);
+      const { x, y, zoom } = store.viewport;
       const { x: domX, y: domY } = store.domNode.getBoundingClientRect();
       const rendererPosition = rendererPointToPoint(position, [x, y, zoom]);
 
@@ -557,7 +556,7 @@ export function useSvelteFlow(): {
           data: { ...node.data }
         })),
         edges: get(edges).map((edge) => ({ ...edge })),
-        viewport: { ...get(viewport) }
+        viewport: { ...store.viewport }
       };
     },
     updateNode,
@@ -579,8 +578,7 @@ export function useSvelteFlow(): {
       return getNodesBounds(nodes, { nodeLookup: store.nodeLookup, nodeOrigin: store.nodeOrigin });
     },
     getHandleConnections: ({ type, id, nodeId }) =>
-      Array.from(store.connectionLookup.get(`${nodeId}-${type}-${id ?? null}`)?.values() ?? []),
-    viewport
+      Array.from(store.connectionLookup.get(`${nodeId}-${type}-${id ?? null}`)?.values() ?? [])
   };
 }
 function getElements(lookup: Map<string, InternalNode>, ids: string[]): Node[];

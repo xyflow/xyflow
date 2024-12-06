@@ -22,7 +22,7 @@ import {
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
-import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
+import { syncNodeStores, syncEdgeStores } from './utils';
 // import { getVisibleEdges } from './visible-edges';
 // import { getVisibleNodes } from './visible-nodes';
 
@@ -314,11 +314,10 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   function panBy(delta: XYPosition) {
-    const viewport = get(store.viewport);
     return panBySystem({
       delta,
       panZoom: store.panZoom,
-      transform: [viewport.x, viewport.y, viewport.zoom],
+      transform: [store.viewport.x, store.viewport.y, store.viewport.zoom],
       translateExtent: store.translateExtent,
       width: store.width,
       height: store.height
@@ -346,7 +345,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   const storeWithActions = Object.assign(store, {
     syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
     syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
-    syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
+    // syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
     setNodeTypes,
     setEdgeTypes,
     addEdge,
