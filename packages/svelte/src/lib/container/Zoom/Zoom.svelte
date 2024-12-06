@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { PanOnScrollMode, type Transform } from '@xyflow/system';
+  import { PanOnScrollMode, type PanZoomInstance, type Transform } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
   import type { ZoomProps } from './types';
 
   let {
+    store,
     initialViewport = { x: 0, y: 0, zoom: 1 },
     onMoveStart,
     onMove,
@@ -22,40 +23,30 @@
     children
   }: ZoomProps = $props();
 
-  const {
-    viewport,
-    panZoom,
-    selectionRect,
-    minZoom,
-    maxZoom,
-    dragging,
-    translateExtent,
-    lib,
-    panActivationKeyPressed,
-    zoomActivationKeyPressed,
-    viewportInitialized
-  } = useStore();
-
-  let panOnDragActive = $derived($panActivationKeyPressed || panOnDrag);
-  let panOnScrollActive = $derived($panActivationKeyPressed || panOnScroll);
+  let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
+  let panOnScrollActive = $derived(store.panActivationKeyPressed || panOnScroll);
 
   const onTransformChange = (transform: Transform) =>
-    viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] });
+    store.viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] });
 
   onMount(() => {
-    $viewportInitialized = true;
+    store.viewportInitialized = true;
   });
 </script>
 
 <div
   class="svelte-flow__zoom"
   use:zoom={{
-    viewport,
-    minZoom: $minZoom,
-    maxZoom: $maxZoom,
+    viewport: store.viewport,
+    minZoom: store.minZoom,
+    maxZoom: store.maxZoom,
     initialViewport,
-    dragging,
-    panZoom,
+    onDraggingChange: (dragging: boolean) => {
+      store.dragging = dragging;
+    },
+    setPanZoomInstance: (instance: PanZoomInstance) => {
+      store.panZoom = instance;
+    },
     onPanZoomStart: onMoveStart,
     onPanZoom: onMove,
     onPanZoomEnd: onMoveEnd,
@@ -66,13 +57,13 @@
     panOnDrag: panOnDragActive,
     panOnScrollSpeed: 0.5,
     panOnScrollMode: panOnScrollMode || PanOnScrollMode.Free,
-    zoomActivationKeyPressed: $zoomActivationKeyPressed,
+    zoomActivationKeyPressed: store.zoomActivationKeyPressed,
     preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
     noPanClassName: 'nopan',
     noWheelClassName: 'nowheel',
-    userSelectionActive: !!$selectionRect,
-    translateExtent: $translateExtent,
-    lib: $lib,
+    userSelectionActive: !!store.selectionRect,
+    translateExtent: store.translateExtent,
+    lib: 'svelte',
     paneClickDistance,
     onTransformChange
   }}

@@ -6,9 +6,9 @@
 
   let { children }: { children?: Snippet } = $props();
 
-  const { domNode } = useStore();
+  const store = useStore();
 </script>
 
-<div use:portal={{ target: '.svelte-flow__viewport-portal', domNode: $domNode }}>
+<div use:portal={{ target: '.svelte-flow__viewport-portal', domNode: store.domNode }}>
   {@render children?.()}
 </div>

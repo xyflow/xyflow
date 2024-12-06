@@ -3,29 +3,21 @@
 
   import { createStore, key } from '$lib/store';
   import type { SvelteFlowProviderProps } from './types';
+  import type { ProviderContext, SvelteFlowStore } from '$lib/store/types';
 
-  let {
-    initialNodes,
-    initialEdges,
-    initialWidth,
-    initialHeight,
-    nodeOrigin,
-    fitView,
-    children
-  }: SvelteFlowProviderProps = $props();
+  let { children }: SvelteFlowProviderProps = $props();
 
-  const store = createStore({
-    nodes: initialNodes,
-    edges: initialEdges,
-    width: initialWidth,
-    height: initialHeight,
-    nodeOrigin,
-    fitView
-  });
+  let store = $state.raw(createStore({ props: {} }));
 
   setContext(key, {
-    getStore: () => store
-  });
+    provider: true,
+    getStore() {
+      return store;
+    },
+    setStore: (newStore: SvelteFlowStore) => {
+      store = newStore;
+    }
+  } satisfies ProviderContext);
 
   onDestroy(() => {
     store.reset();

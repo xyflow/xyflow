@@ -1,3 +1,4 @@
+import type { SvelteFlowStore } from '$lib/store/types';
 import type { InternalNode, Node } from '$lib/types';
 
 export type ConnectableContext = {
@@ -39,4 +40,5 @@ export type NodeWrapperProps = Pick<
   node: InternalNode;
   initialized: boolean;
   nodeClickDistance?: number;
+  store: SvelteFlowStore;
 };

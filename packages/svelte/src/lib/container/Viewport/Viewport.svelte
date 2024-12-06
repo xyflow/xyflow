@@ -1,15 +1,13 @@
 <script lang="ts">
-  import { useStore } from '$lib/store';
+  import type { Viewport } from '@xyflow/system';
   import type { Snippet } from 'svelte';
 
-  const { viewport } = useStore();
-
-  let { children }: { children: Snippet } = $props();
+  let { viewport, children }: { viewport: Viewport; children: Snippet } = $props();
 </script>
 
 <div
   class="svelte-flow__viewport xyflow__viewport"
-  style="transform: translate({$viewport.x}px, {$viewport.y}px) scale({$viewport.zoom})"
+  style="transform: translate({viewport.x}px, {viewport.y}px) scale({viewport.zoom})"
 >
   {@render children()}
 </div>

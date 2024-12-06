@@ -1,9 +1,14 @@
 <script lang="ts">
-	import { getBezierPath, BaseEdge, type EdgeProps, EdgeLabelRenderer } from '@xyflow/svelte';
+	import {
+		getBezierPath,
+		BaseEdge,
+		type EdgeProps,
+		EdgeLabelRenderer,
+		useSvelteFlow,
+		MarkerType
+	} from '@xyflow/svelte';
 
 	type $$Props = EdgeProps;
-
-
 
 	interface Props {
 		id?: $$Props['id'];
@@ -15,7 +20,7 @@
 		targetX: $$Props['targetX'];
 		targetY: $$Props['targetY'];
 		targetPosition: $$Props['targetPosition'];
-		[key: string]: any
+		[key: string]: any;
 	}
 
 	let {
@@ -33,14 +38,18 @@
 
 	rest;
 
-	let [edgePath, labelX, labelY] = $derived(getBezierPath({
-		sourceX,
-		sourceY,
-		sourcePosition,
-		targetX,
-		targetY,
-		targetPosition
-	}));
+	let [edgePath, labelX, labelY] = $derived(
+		getBezierPath({
+			sourceX,
+			sourceY,
+			sourcePosition,
+			targetX,
+			targetY,
+			targetPosition
+		})
+	);
+
+	const { updateEdge } = useSvelteFlow();
 </script>
 
 <BaseEdge path={edgePath} {markerEnd} {style} />
@@ -53,7 +62,24 @@
 			class="edgeButton"
 			onclick={(event) => {
 				event.stopPropagation();
-				alert(`remove ${id}`);
+				updateEdge('e5-6', {
+					markerEnd: {
+						type: MarkerType.Arrow,
+						color: '#FFCC00',
+						markerUnits: 'userSpaceOnUse',
+						width: 20,
+						height: 20,
+						strokeWidth: 2
+					},
+					markerStart: {
+						type: MarkerType.ArrowClosed,
+						color: '#FFCC00',
+						orient: 'auto-start-reverse',
+						markerUnits: 'userSpaceOnUse',
+						width: 20,
+						height: 20
+					}
+				});
 			}}
 		>
 			×

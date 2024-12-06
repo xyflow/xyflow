@@ -188,6 +188,10 @@ export type SvelteFlowProps = NodeEvents &
      * @default 'full'
      */
     selectionMode?: SelectionMode;
+    /**
+     * Controls if nodes should be automatically selected when being dragged
+     */
+    selectNodesOnDrag: boolean;
     /** Grid all nodes will snap to
      * @example [20, 20]
      */

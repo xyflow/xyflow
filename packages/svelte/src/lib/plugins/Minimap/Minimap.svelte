@@ -42,16 +42,10 @@
     class: className
   }: MiniMapProps = $props();
 
-  const {
-    nodes,
-    nodeLookup,
-    viewport,
-    width: containerWidth,
-    height: containerHeight,
-    flowId,
-    panZoom,
-    translateExtent
-  } = useStore();
+  let store = useStore();
+  const { viewport } = store;
+
+  let nodes = $derived(store.nodes);
 
   const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
@@ -59,17 +53,20 @@
   const shapeRendering =
     // @ts-expect-error - TS doesn't know about chrome
     typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
-  const labelledBy = `svelte-flow__minimap-desc-${$flowId}`;
+
+  let labelledBy = $derived(`svelte-flow__minimap-desc-${store.flowId}`);
 
   // TODO: simplify this
   let viewBB = $derived({
     x: -$viewport.x / $viewport.zoom,
     y: -$viewport.y / $viewport.zoom,
-    width: $containerWidth / $viewport.zoom,
-    height: $containerHeight / $viewport.zoom
+    width: store.width / $viewport.zoom,
+    height: store.height / $viewport.zoom
   });
   let boundingRect = $derived(
-    $nodeLookup.size > 0 ? getBoundsOfRects(getInternalNodesBounds($nodeLookup), viewBB) : viewBB
+    store.nodeLookup.size > 0
+      ? getBoundsOfRects(getInternalNodesBounds(store.nodeLookup), viewBB)
+      : viewBB
   );
   let scaledWidth = $derived(boundingRect.width / width);
   let scaledHeight = $derived(boundingRect.height / height);
@@ -91,7 +88,7 @@
   class={cc(['svelte-flow__minimap', className])}
   data-testid="svelte-flow__minimap"
 >
-  {#if $panZoom}
+  {#if store.panZoom}
     <svg
       {width}
       {height}
@@ -105,12 +102,12 @@
         ? maskStrokeWidth * viewScale
         : undefined}
       use:interactive={{
-        panZoom: $panZoom,
-        viewport,
+        panZoom: store.panZoom,
+        viewport: store.viewport,
         getViewScale,
-        translateExtent: $translateExtent,
-        width: $containerWidth,
-        height: $containerHeight,
+        translateExtent: store.translateExtent,
+        width: store.width,
+        height: store.height,
         inversePan,
         zoomStep,
         pannable,
@@ -120,7 +117,7 @@
       {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
 
       {#each $nodes as userNode (userNode.id)}
-        {@const node = $nodeLookup.get(userNode.id)}
+        {@const node = store.nodeLookup.get(userNode.id)}
         {#if node && nodeHasDimensions(node)}
           {@const nodeDimesions = getNodeDimensions(node)}
           <MinimapNode

@@ -1,7 +1,9 @@
+import type { SvelteFlowStore } from '$lib/store/types';
 import type { OnMoveStart, OnMove, OnMoveEnd, PanOnScrollMode, Viewport } from '@xyflow/system';
 import type { Snippet } from 'svelte';
 
 export type ZoomProps = {
+  store: SvelteFlowStore;
   initialViewport?: Viewport;
   panOnScrollMode: PanOnScrollMode;
   onMove?: OnMove;

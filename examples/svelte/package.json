@@ -13,24 +13,24 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.3.1",
-		"@sveltejs/kit": "^2.8.0",
-		"@typescript-eslint/eslint-plugin": "^8.14.0",
-		"@typescript-eslint/parser": "^8.14.0",
+		"@sveltejs/kit": "^2.9.0",
+		"@typescript-eslint/eslint-plugin": "^8.17.0",
+		"@typescript-eslint/parser": "^8.17.0",
 		"eslint": "^8.53.0",
 		"eslint-config-prettier": "^9.1.0",
-		"eslint-plugin-svelte": "^2.46.0",
-		"prettier": "^3.3.3",
-		"prettier-plugin-svelte": "^3.2.8",
-		"svelte": "^5.1.16",
-		"svelte-check": "^4.0.7",
+		"eslint-plugin-svelte": "^2.46.1",
+		"prettier": "^3.4.2",
+		"prettier-plugin-svelte": "^3.3.2",
+		"svelte": "^5.7.1",
+		"svelte-check": "^4.1.1",
 		"tslib": "^2.8.1",
 		"typescript": "^5.6.3",
-		"vite": "^5.4.11"
+		"vite": "^6.0.3"
 	},
 	"type": "module",
 	"dependencies": {
 		"@dagrejs/dagre": "^1.1.4",
-		"@sveltejs/vite-plugin-svelte": "^4.0.0",
+		"@sveltejs/vite-plugin-svelte": "^5.0.1",
 		"@xyflow/svelte": "workspace:^"
 	}
 }

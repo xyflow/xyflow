@@ -78,7 +78,7 @@ export function syncEdgeStores(
 // it is possible to pass a viewport store to SvelteFlow for having more control
 // if that's the case we need to sync the internal viewport with the user viewport
 export const syncViewportStores = (
-  panZoomStore: Writable<PanZoomInstance | null>,
+  panZoomStore: PanZoomInstance | null,
   viewportStore: Writable<Viewport>,
   userViewportStore?: Writable<Viewport>
 ) => {
@@ -86,7 +86,7 @@ export const syncViewportStores = (
     return;
   }
 
-  const panZoom = get(panZoomStore);
+  const panZoom = panZoomStore;
 
   const viewportStoreSetter = viewportStore.set;
   const userViewportStoreSetter = userViewportStore.set;

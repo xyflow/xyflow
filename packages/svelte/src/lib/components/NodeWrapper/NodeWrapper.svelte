@@ -1,17 +1,16 @@
 <script lang="ts">
   import { setContext, onDestroy } from 'svelte';
-  import { get } from 'svelte/store';
   import cc from 'classcat';
   import { errorMessages, Position } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
-  import { useStore } from '$lib/store';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import type { ConnectableContext, NodeWrapperProps } from './types';
   import { getNodeInlineStyleDimensions } from './utils';
   import type { NodeEvents } from '$lib/types';
 
   let {
+    store,
     node,
     id,
     data = {},
@@ -52,15 +51,6 @@
     onnodecontextmenu
   }: NodeWrapperProps & NodeEvents = $props();
 
-  const store = useStore();
-  const {
-    nodeTypes,
-    nodeDragThreshold,
-    selectNodesOnDrag,
-    handleNodeSelection,
-    updateNodeInternals
-  } = store;
-
   let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
 
@@ -68,7 +58,7 @@
   let prevSourcePosition: Position | undefined;
   let prevTargetPosition: Position | undefined;
 
-  let NodeComponent = $derived($nodeTypes[type] ?? DefaultNode);
+  let NodeComponent = $derived(store.nodeTypes[type] ?? DefaultNode);
 
   let connectableContext: ConnectableContext = {
     get value() {
@@ -80,7 +70,7 @@
 
   if (process.env.NODE_ENV === 'development') {
     $effect(() => {
-      const valid = !!$nodeTypes[type];
+      const valid = !!store.nodeTypes[type];
       if (!valid) {
         console.warn('003', errorMessages['error003'](type!));
       }
@@ -109,7 +99,7 @@
     if (doUpdate && nodeRef !== null) {
       requestAnimationFrame(() => {
         if (nodeRef !== null) {
-          updateNodeInternals(
+          store.updateNodeInternals(
             new Map([
               [
                 id,
@@ -148,10 +138,10 @@
   });
 
   function onSelectNodeHandler(event: MouseEvent | TouchEvent) {
-    if (selectable && (!get(selectNodesOnDrag) || !draggable || get(nodeDragThreshold) > 0)) {
+    if (selectable && (!store.selectNodesOnDrag || !draggable || store.nodeDragThreshold > 0)) {
       // this handler gets called by XYDrag on drag start when selectNodesOnDrag=true
       // here we only need to call it when selectNodesOnDrag=false
-      handleNodeSelection(id);
+      store.handleNodeSelection(id);
     }
 
     onnodeclick?.({ node: node.internals.userNode, event });
@@ -169,7 +159,7 @@
       handleSelector: dragHandle,
       noDragClass: 'nodrag',
       nodeClickDistance,
-      onNodeMouseDown: handleNodeSelection,
+      onNodeMouseDown: store.handleNodeSelection,
       onDrag: (event, _, targetNode, nodes) => {
         onnodedrag?.({ event, targetNode, nodes });
       },

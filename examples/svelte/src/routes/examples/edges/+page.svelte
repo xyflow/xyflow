@@ -129,23 +129,7 @@
 			target: '6',
 			label: 'hi',
 			labelStyle: 'background: red; font-weight: 700; padding: 5px;',
-			style: 'stroke: #ffcc0',
-			markerEnd: {
-				type: MarkerType.Arrow,
-				color: '#FFCC00',
-				markerUnits: 'userSpaceOnUse',
-				width: 20,
-				height: 20,
-				strokeWidth: 2
-			},
-			markerStart: {
-				type: MarkerType.ArrowClosed,
-				color: '#FFCC00',
-				orient: 'auto-start-reverse',
-				markerUnits: 'userSpaceOnUse',
-				width: 20,
-				height: 20
-			}
+			style: 'stroke: #ffcc0'
 		}
 	]);
 

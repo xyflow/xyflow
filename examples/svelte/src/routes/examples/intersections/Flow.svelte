@@ -10,9 +10,9 @@
 	const nodes = writable<Node[]>(initialNodes);
 	const edges = writable<Edge[]>(initialEdges);
 
-	const { getIntersectingNodes } = useSvelteFlow();
+	const { getIntersectingNodes } = $derived(useSvelteFlow());
 
-	function onNodeDrag({ detail: { targetNode } }) {
+	function onNodeDrag({ targetNode }) {
 		if (targetNode) {
 			const intersections = getIntersectingNodes(targetNode).map((n) => n.id);
 
@@ -25,7 +25,7 @@
 </script>
 
 <div style="height:100vh;">
-	<SvelteFlow {nodes} {edges} fitView class="intersection-flow" on:nodedrag={onNodeDrag}>
+	<SvelteFlow {nodes} {edges} fitView class="intersection-flow" onnodedrag={onNodeDrag}>
 		<Background />
 		<Controls />
 	</SvelteFlow>

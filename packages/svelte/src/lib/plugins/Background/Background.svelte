@@ -27,13 +27,17 @@
     class: className
   }: BackgroundProps = $props();
 
-  const { viewport, flowId } = useStore();
+  const store = useStore();
+  const { viewport } = store;
+
+  $inspect($viewport);
+
   const patternSize = size ?? defaultSize[variant!];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
   const gapXY: number[] = Array.isArray(gap!) ? gap! : [gap!, gap!];
 
-  let patternId = $derived(`background-pattern-${$flowId}-${id ?? ''}`);
+  let patternId = $derived(`background-pattern-${store.flowId}-${id ?? ''}`);
   let scaledGap = $derived([gapXY[0] * $viewport.zoom || 1, gapXY[1] * $viewport.zoom || 1]);
   let scaledSize = $derived(patternSize * $viewport.zoom);
   let patternDimensions = $derived(

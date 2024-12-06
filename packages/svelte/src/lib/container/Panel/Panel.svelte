@@ -11,7 +11,7 @@
     ...restProps
   }: PanelProps = $props();
 
-  const { selectionRectMode } = useStore();
+  const store = useStore();
 
   let positionClasses = $derived(`${position}`.split('-'));
 </script>
@@ -19,7 +19,7 @@
 <div
   class={cc(['svelte-flow__panel', className, ...positionClasses])}
   {style}
-  style:pointer-events={$selectionRectMode ? 'none' : ''}
+  style:pointer-events={store.selectionRectMode ? 'none' : ''}
   {...restProps}
 >
   {@render children?.()}

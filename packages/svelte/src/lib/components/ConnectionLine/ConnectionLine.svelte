@@ -9,35 +9,37 @@
     getStraightPath
   } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
+  import type { SvelteFlowStore } from '$lib/store/types';
 
   let {
+    store,
     containerStyle = '',
     style = '',
     connectionLine
   }: {
+    store: SvelteFlowStore;
     containerStyle: string;
     style: string;
     connectionLine?: Snippet;
   } = $props();
 
-  const { width, height, connection, connectionLineType } = useStore();
+  // $inspect(store.connection);
 
   let path = $derived.by(() => {
-    if (!$connection.inProgress) {
+    if (!store.connection.inProgress) {
       return '';
     }
 
     const pathParams = {
-      sourceX: $connection.from.x,
-      sourceY: $connection.from.y,
-      sourcePosition: $connection.fromPosition,
-      targetX: $connection.to.x,
-      targetY: $connection.to.y,
-      targetPosition: $connection.toPosition
+      sourceX: store.connection.from.x,
+      sourceY: store.connection.from.y,
+      sourcePosition: store.connection.fromPosition,
+      targetX: store.connection.to.x,
+      targetY: store.connection.to.y,
+      targetPosition: store.connection.toPosition
     };
 
-    switch ($connectionLineType) {
+    switch (store.connectionLineType) {
       case ConnectionLineType.Bezier: {
         const [path] = getBezierPath(pathParams);
         return path;
@@ -50,7 +52,7 @@
       case ConnectionLineType.SmoothStep: {
         const [path] = getSmoothStepPath({
           ...pathParams,
-          borderRadius: $connectionLineType === ConnectionLineType.Step ? 0 : undefined
+          borderRadius: store.connectionLineType === ConnectionLineType.Step ? 0 : undefined
         });
         return path;
       }
@@ -58,9 +60,14 @@
   });
 </script>
 
-{#if $connection.inProgress}
-  <svg width={$width} height={$height} class="svelte-flow__connectionline" style={containerStyle}>
-    <g class={cc(['svelte-flow__connection', getConnectionStatus($connection.isValid)])}>
+{#if store.connection.inProgress}
+  <svg
+    width={store.width}
+    height={store.height}
+    class="svelte-flow__connectionline"
+    style={containerStyle}
+  >
+    <g class={cc(['svelte-flow__connection', getConnectionStatus(store.connection.isValid)])}>
       {#if connectionLine}
         {@render connectionLine()}
       {:else}

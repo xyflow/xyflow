@@ -10,8 +10,9 @@ import type {
   Viewport
 } from '@xyflow/system';
 
-import type { getInitialStore } from './initial-store';
+import type { getInitialStore } from './initial-store.svelte';
 import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
+import type { SvelteFlowProps } from '$lib/container/SvelteFlow';
 
 export type SvelteFlowStoreActions = {
   syncNodeStores: (nodesStore: Writable<Node[]>) => void;
@@ -39,6 +40,21 @@ export type SvelteFlowStoreActions = {
   reset(): void;
 };
 
+export type ContainerSignals = { domNode?: HTMLDivElement | null; width?: number; height?: number };
+export type StoreSignals = {
+  props: Partial<SvelteFlowProps> & ContainerSignals;
+  container?: ContainerSignals;
+};
+
 export type SvelteFlowStoreState = ReturnType<typeof getInitialStore>;
 
 export type SvelteFlowStore = SvelteFlowStoreState & SvelteFlowStoreActions;
+
+export type StoreContext = {
+  getStore: () => SvelteFlowStore;
+  provider: boolean;
+};
+
+export type ProviderContext = StoreContext & {
+  setStore: (store: SvelteFlowStore) => void;
+};

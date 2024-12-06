@@ -1,13 +1,13 @@
 <script lang="ts">
   import { getInternalNodesBounds, isNumeric, type Rect } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
   import { Selection } from '$lib/components/Selection';
   import drag from '$lib/actions/drag';
 
   import type { NodeSelectionProps } from './types';
 
   let {
+    store,
     onnodedrag,
     onnodedragstart,
     onnodedragstop,
@@ -15,14 +15,13 @@
     onselectioncontextmenu
   }: NodeSelectionProps = $props();
 
-  const store = useStore();
-  const { selectionRectMode, nodes, nodeLookup } = store;
+  const { nodes } = store;
 
   let bounds: Rect | null = $derived.by(() => {
-    if ($selectionRectMode === 'nodes') {
+    if (store.selectionRectMode === 'nodes') {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       $nodes;
-      return getInternalNodesBounds($nodeLookup, { filter: (node) => !!node.selected });
+      return getInternalNodesBounds(store.nodeLookup, { filter: (node) => !!node.selected });
     }
     return null;
   });
@@ -38,7 +37,7 @@
   }
 </script>
 
-{#if $selectionRectMode === 'nodes' && bounds && isNumeric(bounds.x) && isNumeric(bounds.y)}
+{#if store.selectionRectMode === 'nodes' && bounds && isNumeric(bounds.x) && isNumeric(bounds.y)}
   <div
     class="selection-wrapper nopan"
     style="width: {bounds.width}px; height: {bounds.height}px; transform: translate({bounds.x}px, {bounds.y}px)"

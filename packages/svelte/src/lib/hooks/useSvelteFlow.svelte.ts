@@ -22,7 +22,8 @@ import {
 
 import { useStore } from '$lib/store';
 import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
-import { isNode } from '$lib/utils';
+import { isEdge, isNode } from '$lib/utils';
+import { derivedWarning } from './derivedWarning.svelte';
 
 /**
  * Hook for accessing the ReactFlow instance.
@@ -232,6 +233,21 @@ export function useSvelteFlow(): {
    *
    * @returns the nodes, edges and the viewport as a JSON object
    */
+  /**
+   * Updates an edge.
+   *
+   * @param id - id of the edge to update
+   * @param edgeUpdate - the edge update as an object or a function that receives the current edge and returns the edge update
+   * @param options.replace - if true, the edge is replaced with the edge update, otherwise the changes get merged
+   *
+   * @example
+   * updateNode('node-1', (node) => ({ position: { x: node.position.x + 10, y: node.position.y } }));
+   */
+  updateEdge: (
+    id: string,
+    edgeUpdate: Partial<Edge> | ((edge: Edge) => Partial<Edge>),
+    options?: { replace: boolean }
+  ) => void;
   toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
   /**
    * Returns the bounds of the given nodes or node ids.
@@ -258,37 +274,22 @@ export function useSvelteFlow(): {
     id?: string | null;
   }) => HandleConnection[];
 } {
-  const {
-    zoomIn,
-    zoomOut,
-    fitView,
-    onbeforedelete,
-    snapGrid,
-    viewport,
-    width,
-    height,
-    minZoom,
-    maxZoom,
-    panZoom,
-    nodes,
-    edges,
-    domNode,
-    nodeLookup,
-    nodeOrigin,
-    edgeLookup,
-    connectionLookup
-  } = useStore();
+  if (process.env.NODE_ENV === 'development') {
+    derivedWarning('useSvelteFlow');
+  }
+
+  const store = useStore();
+  const { viewport, nodes, edges } = store;
 
   const getNodeRect = (node: Node | { id: Node['id'] }): Rect | null => {
-    const $nodeLookup = get(nodeLookup);
-    const nodeToUse = isNode(node) ? node : $nodeLookup.get(node.id)!;
+    const nodeToUse = isNode(node) ? node : store.nodeLookup.get(node.id)!;
     const position = nodeToUse.parentId
       ? evaluateAbsolutePosition(
           nodeToUse.position,
           nodeToUse.measured,
           nodeToUse.parentId,
-          $nodeLookup,
-          get(nodeOrigin)
+          store.nodeLookup,
+          store.nodeOrigin
         )
       : nodeToUse.position;
 
@@ -308,7 +309,7 @@ export function useSvelteFlow(): {
     nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
     options: { replace: boolean } = { replace: false }
   ) => {
-    const node = get(nodeLookup).get(id)?.internals.userNode;
+    const node = store.nodeLookup.get(id)?.internals.userNode;
 
     if (!node) {
       return;
@@ -328,36 +329,64 @@ export function useSvelteFlow(): {
       );
     } else {
       Object.assign(node, nextNode);
-      nodes.update((nds) => nds);
+      nodes.set(get(nodes));
     }
   };
 
-  const getInternalNode = (id: string) => get(nodeLookup).get(id);
+  const updateEdge = (
+    id: string,
+    edgeUpdate: Partial<Edge> | ((edge: Edge) => Partial<Edge>),
+    options: { replace: boolean } = { replace: false }
+  ) => {
+    const edge = store.edgeLookup.get(id);
+
+    if (!edge) {
+      return;
+    }
+
+    const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge as Edge) : edgeUpdate;
+
+    if (options.replace) {
+      edges.update((edgs) =>
+        edgs.map((edge) => {
+          if (edge.id === id) {
+            return isEdge(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
+          }
+
+          return edge;
+        })
+      );
+    } else {
+      Object.assign(edge, nextEdge);
+      edges.set(get(edges));
+    }
+  };
+
+  const getInternalNode = (id: string) => store.nodeLookup.get(id);
 
   return {
-    zoomIn,
-    zoomOut,
+    zoomIn: store.zoomIn,
+    zoomOut: store.zoomOut,
     getInternalNode,
     getNode: (id) => getInternalNode(id)?.internals.userNode,
-    getNodes: (ids) => (ids === undefined ? get(nodes) : getElements(get(nodeLookup), ids)),
-    getEdge: (id) => get(edgeLookup).get(id),
-    getEdges: (ids) => (ids === undefined ? get(edges) : getElements(get(edgeLookup), ids)),
+    getNodes: (ids) => (ids === undefined ? get(nodes) : getElements(store.nodeLookup, ids)),
+    getEdge: (id) => store.edgeLookup.get(id),
+    getEdges: (ids) => (ids === undefined ? get(edges) : getElements(store.edgeLookup, ids)),
     setZoom: (zoomLevel, options) => {
-      const currentPanZoom = get(panZoom);
-      return currentPanZoom
-        ? currentPanZoom.scaleTo(zoomLevel, { duration: options?.duration })
+      const panZoom = store.panZoom;
+      return panZoom
+        ? panZoom.scaleTo(zoomLevel, { duration: options?.duration })
         : Promise.resolve(false);
     },
     getZoom: () => get(viewport).zoom,
     setViewport: async (nextViewport, options) => {
       const currentViewport = get(viewport);
-      const currentPanZoom = get(panZoom);
 
-      if (!currentPanZoom) {
+      if (!store.panZoom) {
         return Promise.resolve(false);
       }
 
-      await currentPanZoom.setViewport(
+      await store.panZoom.setViewport(
         {
           x: nextViewport.x ?? currentViewport.x,
           y: nextViewport.y ?? currentViewport.y,
@@ -370,8 +399,8 @@ export function useSvelteFlow(): {
     },
     getViewport: () => get(viewport),
     setCenter: async (x, y, options) => {
-      const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : get(maxZoom);
-      const currentPanZoom = get(panZoom);
+      const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : store.maxZoom;
+      const currentPanZoom = store.panZoom;
 
       if (!currentPanZoom) {
         return Promise.resolve(false);
@@ -379,8 +408,8 @@ export function useSvelteFlow(): {
 
       await currentPanZoom.setViewport(
         {
-          x: get(width) / 2 - x * nextZoom,
-          y: get(height) / 2 - y * nextZoom,
+          x: store.width / 2 - x * nextZoom,
+          y: store.height / 2 - y * nextZoom,
           zoom: nextZoom
         },
         { duration: options?.duration }
@@ -388,24 +417,22 @@ export function useSvelteFlow(): {
 
       return Promise.resolve(true);
     },
-    fitView,
+    fitView: store.fitView,
     fitBounds: async (bounds: Rect, options?: FitBoundsOptions) => {
-      const currentPanZoom = get(panZoom);
-
-      if (!currentPanZoom) {
+      if (!store.panZoom) {
         return Promise.resolve(false);
       }
 
       const viewport = getViewportForBounds(
         bounds,
-        get(width),
-        get(height),
-        get(minZoom),
-        get(maxZoom),
+        store.width,
+        store.height,
+        store.minZoom,
+        store.maxZoom,
         options?.padding ?? 0.1
       );
 
-      await currentPanZoom.setViewport(viewport, { duration: options?.duration });
+      await store.panZoom.setViewport(viewport, { duration: options?.duration });
 
       return Promise.resolve(true);
     },
@@ -422,7 +449,7 @@ export function useSvelteFlow(): {
       }
 
       return (nodesToIntersect || get(nodes)).filter((n) => {
-        const internalNode = get(nodeLookup).get(n.id);
+        const internalNode = store.nodeLookup.get(n.id);
         if (!internalNode || (!isRect && n.id === nodeOrRect.id)) {
           return false;
         }
@@ -457,7 +484,7 @@ export function useSvelteFlow(): {
         edgesToRemove,
         nodes: get(nodes),
         edges: get(edges),
-        onBeforeDelete: get(onbeforedelete)
+        onBeforeDelete: store.onbeforedelete
       });
 
       if (matchingNodes) {
@@ -481,15 +508,13 @@ export function useSvelteFlow(): {
       position: XYPosition,
       options: { snapToGrid: boolean } = { snapToGrid: true }
     ) => {
-      const _domNode = get(domNode);
-
-      if (!_domNode) {
+      if (!store.domNode) {
         return position;
       }
 
-      const _snapGrid = options.snapToGrid ? get(snapGrid) : false;
+      const _snapGrid = options.snapToGrid ? store.snapGrid : false;
       const { x, y, zoom } = get(viewport);
-      const { x: domX, y: domY } = _domNode.getBoundingClientRect();
+      const { x: domX, y: domY } = store.domNode.getBoundingClientRect();
       const correctedPosition = {
         x: position.x - domX,
         y: position.y - domY
@@ -508,14 +533,12 @@ export function useSvelteFlow(): {
      * @returns
      */
     flowToScreenPosition: (position: XYPosition) => {
-      const _domNode = get(domNode);
-
-      if (!_domNode) {
+      if (!store.domNode) {
         return position;
       }
 
       const { x, y, zoom } = get(viewport);
-      const { x: domX, y: domY } = _domNode.getBoundingClientRect();
+      const { x: domX, y: domY } = store.domNode.getBoundingClientRect();
       const rendererPosition = rendererPointToPoint(position, [x, y, zoom]);
 
       return {
@@ -539,7 +562,7 @@ export function useSvelteFlow(): {
     },
     updateNode,
     updateNodeData: (id, dataUpdate, options) => {
-      const node = get(nodeLookup).get(id)?.internals.userNode;
+      const node = store.nodeLookup.get(id)?.internals.userNode;
 
       if (!node) {
         return;
@@ -551,18 +574,12 @@ export function useSvelteFlow(): {
 
       nodes.update((nds) => nds);
     },
+    updateEdge,
     getNodesBounds: (nodes) => {
-      const _nodeLookup = get(nodeLookup);
-      const _nodeOrigin = get(nodeOrigin);
-
-      return getNodesBounds(nodes, { nodeLookup: _nodeLookup, nodeOrigin: _nodeOrigin });
+      return getNodesBounds(nodes, { nodeLookup: store.nodeLookup, nodeOrigin: store.nodeOrigin });
     },
     getHandleConnections: ({ type, id, nodeId }) =>
-      Array.from(
-        get(connectionLookup)
-          .get(`${nodeId}-${type}-${id ?? null}`)
-          ?.values() ?? []
-      ),
+      Array.from(store.connectionLookup.get(`${nodeId}-${type}-${id ?? null}`)?.values() ?? []),
     viewport
   };
 }

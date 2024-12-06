@@ -9,10 +9,12 @@
   import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
 
   import type { EdgeLayouted, Edge, EdgeEvents } from '$lib/types';
+  import type { SvelteFlowStore } from '$lib/store/types';
 
   const {
     id,
     type = 'default',
+    store,
     source,
     target,
     data = {},
@@ -42,24 +44,24 @@
     onedgecontextmenu,
     onedgemouseenter,
     onedgemouseleave
-  }: EdgeLayouted & EdgeEvents = $props();
+  }: { store: SvelteFlowStore } & EdgeLayouted & EdgeEvents = $props();
 
   setContext('svelteflow__edge_id', id);
 
-  const { edgeLookup, edgeTypes, flowId, elementsSelectable } = useStore();
-
   let edgeType = $derived(type ?? 'default');
-  let EdgeComponent = $derived($edgeTypes[edgeType] ?? BezierEdgeInternal);
+  let EdgeComponent = $derived(store.edgeTypes[edgeType] ?? BezierEdgeInternal);
   let markerStartUrl = $derived(
-    markerStart ? `url('#${getMarkerId(markerStart, $flowId)}')` : undefined
+    markerStart ? `url('#${getMarkerId(markerStart, store.flowId)}')` : undefined
   );
-  let markerEndUrl = $derived(markerEnd ? `url('#${getMarkerId(markerEnd, $flowId)}')` : undefined);
-  let isSelectable = $derived(selectable ?? $elementsSelectable);
+  let markerEndUrl = $derived(
+    markerEnd ? `url('#${getMarkerId(markerEnd, store.flowId)}')` : undefined
+  );
+  let isSelectable = $derived(selectable ?? store.elementsSelectable);
 
   const handleEdgeSelect = useHandleEdgeSelect();
 
   function onclick(event: MouseEvent | TouchEvent) {
-    const edge = $edgeLookup.get(id);
+    const edge = store.edgeLookup.get(id);
 
     if (edge) {
       handleEdgeSelect(id);
@@ -71,7 +73,7 @@
     event: MouseEvent,
     callback: ({ edge, event }: { edge: Edge; event: MouseEvent }) => void
   ) {
-    const edge = $edgeLookup.get(id);
+    const edge = store.edgeLookup.get(id);
 
     if (edge) {
       callback({ event, edge });

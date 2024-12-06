@@ -37,39 +37,29 @@
   import type { Node, Edge, InternalNode } from '$lib/types';
   import type { PaneProps } from './types';
   let {
+    store,
     panOnDrag = true,
     selectionOnDrag,
     onpaneclick,
     onpanecontextmenu,
-    nodes,
-    edges,
     children
   }: PaneProps = $props();
 
-  const {
-    nodeLookup,
-    viewport,
-    dragging,
-    elementsSelectable,
-    selectionRect,
-    selectionRectMode,
-    selectionKeyPressed,
-    selectionMode,
-    panActivationKeyPressed,
-    unselectNodesAndEdges
-  } = useStore();
+  const { viewport, nodes, edges } = store;
 
   // svelte-ignore non_reactive_update
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
   let selectedNodes: InternalNode[] = [];
 
-  let panOnDragActive = $derived($panActivationKeyPressed || panOnDrag);
+  let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
   let isSelecting = $derived(
-    $selectionKeyPressed || $selectionRect || (selectionOnDrag && panOnDragActive !== true)
+    store.selectionKeyPressed ||
+      store.selectionRect ||
+      (selectionOnDrag && panOnDragActive !== true)
   );
   let hasActiveSelection = $derived(
-    $elementsSelectable && (isSelecting || $selectionRectMode === 'user')
+    store.elementsSelectable && (isSelecting || store.selectionRectMode === 'user')
   );
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
@@ -83,15 +73,15 @@
     }
 
     onpaneclick?.({ event });
-    unselectNodesAndEdges();
-    selectionRectMode.set(null);
+    store.unselectNodesAndEdges();
+    store.selectionRectMode = null;
   }
 
   function onPointerDown(event: PointerEvent) {
     containerBounds = container.getBoundingClientRect();
 
     if (
-      !elementsSelectable ||
+      !store.elementsSelectable ||
       !isSelecting ||
       event.button !== 0 ||
       event.target !== container ||
@@ -104,32 +94,32 @@
 
     const { x, y } = getEventPosition(event, containerBounds);
 
-    unselectNodesAndEdges();
+    store.unselectNodesAndEdges();
 
-    selectionRect.set({
+    store.selectionRect = {
       width: 0,
       height: 0,
       startX: x,
       startY: y,
       x,
       y
-    });
+    };
 
     // onSelectionStart?.(event);
   }
 
   function onPointerMove(event: PointerEvent) {
-    if (!isSelecting || !containerBounds || !$selectionRect) {
+    if (!isSelecting || !containerBounds || !store.selectionRect) {
       return;
     }
 
     selectionInProgress = true;
 
     const mousePos = getEventPosition(event, containerBounds);
-    const startX = $selectionRect.startX ?? 0;
-    const startY = $selectionRect.startY ?? 0;
+    const startX = store.selectionRect.startX ?? 0;
+    const startY = store.selectionRect.startY ?? 0;
     const nextUserSelectRect = {
-      ...$selectionRect,
+      ...store.selectionRect,
       x: mousePos.x < startX ? mousePos.x : startX,
       y: mousePos.y < startY ? mousePos.y : startY,
       width: Math.abs(mousePos.x - startX),
@@ -139,10 +129,10 @@
     const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
 
     selectedNodes = getNodesInside(
-      $nodeLookup,
+      store.nodeLookup,
       nextUserSelectRect,
       [$viewport.x, $viewport.y, $viewport.zoom],
-      $selectionMode === SelectionMode.Partial,
+      store.selectionMode === SelectionMode.Partial,
       true
     );
     const selectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
@@ -163,8 +153,8 @@
       edges.update((edges) => edges.map(toggleSelected(selectedEdgeIds)));
     }
 
-    selectionRectMode.set('user');
-    selectionRect.set(nextUserSelectRect);
+    store.selectionRectMode = 'user';
+    store.selectionRect = nextUserSelectRect;
   }
 
   function onPointerUp(event: PointerEvent) {
@@ -176,18 +166,18 @@
 
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.
-    if (!isSelecting && $selectionRectMode === 'user' && event.target === container) {
+    if (!isSelecting && store.selectionRectMode === 'user' && event.target === container) {
       onClick?.(event);
     }
-    selectionRect.set(null);
+    store.selectionRect = null;
 
     if (selectedNodes.length > 0) {
-      $selectionRectMode = 'nodes';
+      store.selectionRectMode = 'nodes';
     }
 
     // If the user kept holding the selectionKey during the selection,
     // we need to reset the selectionInProgress, so the next click event is not prevented
-    if ($selectionKeyPressed) {
+    if (store.selectionKeyPressed) {
       selectionInProgress = false;
     }
 
@@ -210,7 +200,7 @@
   bind:this={container}
   class="svelte-flow__pane"
   class:draggable={panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0))}
-  class:dragging={$dragging}
+  class:dragging={store.dragging}
   class:selection={isSelecting}
   onclick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
   onpointerdown={hasActiveSelection ? onPointerDown : undefined}

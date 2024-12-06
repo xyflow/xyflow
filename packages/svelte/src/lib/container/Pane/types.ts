@@ -1,11 +1,10 @@
 import type { Snippet } from 'svelte';
-import type { Writable } from 'svelte/store';
-import type { Edge, Node, PaneEvents } from '$lib/types';
+import type { PaneEvents } from '$lib/types';
+import type { SvelteFlowStore } from '$lib/store/types';
 
 export type PaneProps = {
+  store: SvelteFlowStore;
   panOnDrag?: boolean | number[];
   selectionOnDrag?: boolean;
-  nodes: Writable<Node[]>;
-  edges: Writable<Edge[]>;
   children: Snippet;
 } & PaneEvents;

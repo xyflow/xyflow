@@ -39,28 +39,8 @@
     isConnectableProp !== undefined ? isConnectableProp : isConnectableContext.value
   );
 
-  const {
-    connectionMode,
-    domNode,
-    nodeLookup,
-    connectionRadius,
-    viewport,
-    isValidConnection: isValidConnectionStore,
-    lib,
-    addEdge,
-    onedgecreate,
-    panBy,
-    cancelConnection,
-    updateConnection,
-    autoPanOnConnect,
-    edges,
-    connectionLookup,
-    onconnect: onConnectAction,
-    onconnectstart: onConnectStartAction,
-    onconnectend: onConnectEndAction,
-    flowId,
-    connection
-  } = useStore();
+  let store = useStore();
+  let { viewport, edges } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
@@ -70,39 +50,39 @@
         handleId,
         nodeId,
         isTarget,
-        connectionRadius: $connectionRadius,
-        domNode: $domNode,
-        nodeLookup: $nodeLookup,
-        connectionMode: $connectionMode,
-        lib: $lib,
-        autoPanOnConnect: $autoPanOnConnect,
-        flowId: $flowId,
-        isValidConnection: isValidConnectionProp ?? $isValidConnectionStore,
-        updateConnection,
-        cancelConnection,
-        panBy,
+        connectionRadius: store.connectionRadius,
+        domNode: store.domNode,
+        nodeLookup: store.nodeLookup,
+        connectionMode: store.connectionMode,
+        lib: 'svelte',
+        autoPanOnConnect: store.autoPanOnConnect,
+        flowId: store.flowId,
+        isValidConnection: isValidConnectionProp ?? store.isValidConnection,
+        updateConnection: store.updateConnection,
+        cancelConnection: store.cancelConnection,
+        panBy: store.panBy,
         onConnect: (connection) => {
-          const edge = $onedgecreate ? $onedgecreate(connection) : connection;
+          const edge = store.onedgecreate ? store.onedgecreate(connection) : connection;
 
           if (!edge) {
             return;
           }
 
-          addEdge(edge);
-          $onConnectAction?.(connection);
+          store.addEdge(edge);
+          store.onconnect?.(connection);
         },
         onConnectStart: (event, startParams) => {
-          $onConnectStartAction?.(event, {
+          store.onconnectstart?.(event, {
             nodeId: startParams.nodeId,
             handleId: startParams.handleId,
             handleType: startParams.handleType
           });
         },
         onConnectEnd: (event, connectionState) => {
-          $onConnectEndAction?.(event, connectionState);
+          store.onconnectend?.(event, connectionState);
         },
         getTransform: () => [$viewport.x, $viewport.y, $viewport.zoom],
-        getFromHandle: () => $connection.fromHandle
+        getFromHandle: () => store.connection.fromHandle
       });
     }
   }
@@ -113,7 +93,7 @@
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     $edges;
     if (onconnect || ondisconnect) {
-      let connections = $connectionLookup.get(`${nodeId}-${type}-${handleId}`);
+      let connections = store.connectionLookup.get(`${nodeId}-${type}-${handleId}`);
 
       if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
         const _connections = connections ?? new Map();
@@ -128,7 +108,7 @@
 
   let [connectionInProcess, connectingFrom, connectingTo, isPossibleEndHandle, valid] = $derived.by(
     () => {
-      const { fromHandle, toHandle, isValid } = $connection;
+      const { fromHandle, toHandle, isValid } = store.connection;
 
       const connectionInProcess = !!fromHandle;
 
@@ -139,7 +119,7 @@
         toHandle?.nodeId === nodeId && toHandle?.type === type && toHandle?.id === handleId;
 
       const isPossibleEndHandle =
-        $connectionMode === ConnectionMode.Strict
+        store.connectionMode === ConnectionMode.Strict
           ? fromHandle?.type !== type
           : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
 
@@ -158,7 +138,7 @@ The Handle component is the part of a node that can be used to connect nodes.
   data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}
-  data-id="{$flowId}-{nodeId}-{handleId}-{type}"
+  data-id="{store.flowId}-{nodeId}-{handleId}-{type}"
   class={cc([
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,

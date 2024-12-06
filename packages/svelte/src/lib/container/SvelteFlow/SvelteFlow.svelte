@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { onMount, hasContext } from 'svelte';
   import { get } from 'svelte/store';
+  import { onMount, getContext, setContext } from 'svelte';
   import cc from 'classcat';
-  import { ConnectionMode, PanOnScrollMode } from '@xyflow/system';
+  import { PanOnScrollMode } from '@xyflow/system';
 
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
@@ -14,78 +14,28 @@
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
   import { Attribution } from '$lib/components/Attribution';
-  import { key, useStore, createStoreContext } from '$lib/store';
+  import { key, createStore } from '$lib/store';
   import type { SvelteFlowProps } from './types';
-  import { updateStore, updateStoreByKeys, type UpdatableStoreProps } from './utils';
   import { useColorModeClass } from '$lib/hooks/useColorModeClass';
+  import { type ProviderContext, type ContainerSignals, type StoreContext } from '$lib/store/types';
 
   let {
-    id = '1',
-    nodes,
-    edges,
-    fitView,
-    fitViewOptions,
-    minZoom,
-    maxZoom,
-    initialViewport,
-    viewport,
-    nodeTypes,
-    edgeTypes,
+    style,
+    class: className,
+    width,
+    height,
+    proOptions,
     selectionKey,
-    selectionMode,
+    deleteKey,
     panActivationKey,
     multiSelectionKey,
     zoomActivationKey,
-    nodesDraggable,
-    nodesConnectable,
-    nodeDragThreshold,
-    elementsSelectable,
-    snapGrid,
-    deleteKey,
-    connectionRadius,
-    connectionLineType,
-    connectionMode = ConnectionMode.Strict,
-    connectionLineStyle = '',
-    connectionLineContainerStyle = '',
-    onMoveStart,
-    onMove,
-    onMoveEnd,
-    isValidConnection,
-    translateExtent,
-    nodeExtent,
-    onlyRenderVisibleElements,
-    panOnScrollMode = PanOnScrollMode.Free,
-    preventScrolling = true,
-    zoomOnScroll = true,
-    zoomOnDoubleClick = true,
-    zoomOnPinch = true,
-    panOnScroll = false,
-    panOnDrag = true,
-    selectionOnDrag,
-    autoPanOnConnect = true,
-    autoPanOnNodeDrag = true,
-    onerror,
-    ondelete,
-    onedgecreate,
-    attributionPosition,
-    proOptions,
-    defaultEdgeOptions,
-    width,
-    height,
-    colorMode = 'light',
-    onconnect,
-    onconnectstart,
-    onconnectend,
-    onbeforedelete,
-    oninit,
-    nodeOrigin,
     paneClickDistance = 1,
     nodeClickDistance = 1,
-    defaultMarkerColor = '#b1b1b7',
-    style,
-    class: className,
+    onMoveStart,
+    onMoveEnd,
+    onMove,
     connectionLine,
-    children,
     onnodeclick,
     onnodecontextmenu,
     onnodedrag,
@@ -102,135 +52,74 @@
     onedgemouseleave,
     onpaneclick,
     onpanecontextmenu,
-    ...rest
+    panOnScrollMode = PanOnScrollMode.Free,
+    preventScrolling = true,
+    zoomOnScroll = true,
+    zoomOnDoubleClick = true,
+    zoomOnPinch = true,
+    panOnScroll = false,
+    panOnDrag = true,
+    selectionOnDrag = true,
+    defaultEdgeOptions,
+    connectionLineContainerStyle = '',
+    connectionLineStyle = '',
+    attributionPosition,
+    children,
+    ...props
   }: SvelteFlowProps = $props();
 
-  let domNode = $state<HTMLDivElement>();
-  let clientWidth = $state<number>();
-  let clientHeight = $state<number>();
+  // svelte-ignore perf_avoid_inline_class
+  const container: ContainerSignals = new (class {
+    domNode = $state<HTMLDivElement>();
+    width = $state<number | undefined>(width);
+    height = $state<number | undefined>(height);
+  })();
 
-  const initViewport = $viewport || initialViewport;
+  const store = createStore({
+    props,
+    container
+  });
+  const { viewport } = store;
+  const initialViewport = props.initialViewport ?? get(viewport);
 
-  //TODO SVELTE5
+  store.syncNodeStores(props.nodes);
+  store.syncEdgeStores(props.edges);
+  store.syncViewport(props.viewport);
 
-  const store = hasContext(key)
-    ? useStore()
-    : createStoreContext({
-        nodes: get(nodes),
-        edges: get(edges),
-        width,
-        height,
-        fitView,
-        nodeOrigin,
-        nodeExtent
-      });
+  const providerContext = getContext<ProviderContext>(key);
+  if (providerContext) {
+    providerContext.setStore(store);
+  }
+  setContext(key, {
+    provider: false,
+    getStore() {
+      return store;
+    }
+  } satisfies StoreContext);
 
   onMount(() => {
-    store.width.set(clientWidth!);
-    store.height.set(clientHeight!);
-    store.domNode.set(domNode!);
-
-    store.syncNodeStores(nodes);
-    store.syncEdgeStores(edges);
-    store.syncViewport(viewport);
-
-    if (fitView !== undefined) {
-      store.fitViewOnInit.set(fitView);
-    }
-
-    if (fitViewOptions) {
-      store.fitViewOptions.set(fitViewOptions);
-    }
-
-    updateStore(store, {
-      nodeTypes,
-      edgeTypes,
-      minZoom,
-      maxZoom,
-      translateExtent,
-      paneClickDistance
-    });
-
     return () => {
       store.reset();
     };
   });
 
-  // Update width & height on resize
-  $effect.pre(() => {
-    if (clientWidth !== undefined && clientHeight !== undefined) {
-      store.width.set(clientWidth);
-      store.height.set(clientHeight);
-    }
-  });
-
-  // Call oninit once when flow is intialized
-  const { initialized } = store;
-  let onInitCalled = $state(false);
-  $effect.pre(() => {
-    if (!onInitCalled && $initialized) {
-      oninit?.();
-      onInitCalled = true;
-    }
-  });
-
-  // this updates the store for simple changes
-  // where the prop names equals the store name
-  $effect(() => {
-    const updatableProps: UpdatableStoreProps = {
-      flowId: id,
-      connectionLineType,
-      connectionRadius,
-      selectionMode,
-      snapGrid,
-      defaultMarkerColor,
-      nodesDraggable,
-      nodesConnectable,
-      elementsSelectable,
-      onlyRenderVisibleElements,
-      isValidConnection,
-      autoPanOnConnect,
-      autoPanOnNodeDrag,
-      onerror,
-      ondelete,
-      onedgecreate,
-      connectionMode,
-      nodeDragThreshold,
-      onconnect,
-      onconnectstart,
-      onconnectend,
-      onbeforedelete,
-      nodeOrigin
-    };
-
-    updateStoreByKeys(store, updatableProps);
-  });
-
-  $effect(() => {
-    updateStore(store, {
-      nodeTypes,
-      edgeTypes,
-      minZoom,
-      maxZoom,
-      translateExtent,
-      paneClickDistance
-    });
-  });
-
-  let colorModeClass = $derived(useColorModeClass(colorMode));
+  let colorModeClass = $derived(useColorModeClass(store.colorMode));
 </script>
 
 <div
-  bind:this={domNode}
-  bind:clientWidth
-  bind:clientHeight
+  bind:this={container.domNode}
+  bind:clientWidth={container.width}
+  bind:clientHeight={container.height}
+  style:width
+  style:height
   {style}
   class={cc(['svelte-flow', className, $colorModeClass])}
   data-testid="svelte-flow__wrapper"
-  {...rest}
+  {...props}
   role="application"
 >
   <KeyHandler
+    {store}
     {selectionKey}
     {deleteKey}
     {panActivationKey}
@@ -238,7 +127,8 @@
     {zoomActivationKey}
   />
   <Zoom
-    initialViewport={initViewport}
+    {store}
+    {initialViewport}
     {onMoveStart}
     {onMove}
     {onMoveEnd}
@@ -251,16 +141,17 @@
     {panOnDrag}
     {paneClickDistance}
   >
-    <Pane {nodes} {edges} {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
-      <ViewportComponent>
+    <Pane {store} {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
+      <ViewportComponent viewport={$viewport}>
         <EdgeRenderer
+          {store}
           {onedgeclick}
           {onedgecontextmenu}
           {onedgemouseenter}
           {onedgemouseleave}
-          {defaultEdgeOptions}
         />
         <ConnectionLine
+          {store}
           containerStyle={connectionLineContainerStyle}
           style={connectionLineStyle}
           {connectionLine}
@@ -268,6 +159,7 @@
         <div class="svelte-flow__edgelabel-renderer"></div>
         <div class="svelte-flow__viewport-portal"></div>
         <NodeRenderer
+          {store}
           {nodeClickDistance}
           {onnodeclick}
           {onnodecontextmenu}
@@ -279,6 +171,7 @@
           {onnodedragstop}
         />
         <NodeSelection
+          {store}
           {onselectionclick}
           {onselectioncontextmenu}
           {onnodedrag}
