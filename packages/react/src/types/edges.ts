@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { CSSProperties, HTMLAttributes, ReactNode, MouseEvent as ReactMouseEvent, ComponentType } from 'react';
+import type { CSSProperties, SVGAttributes, ReactNode, MouseEvent as ReactMouseEvent, ComponentType } from 'react';
 import type {
   EdgeBase,
   BezierPathOptions,
@@ -14,7 +14,6 @@ import type {
   EdgePosition,
   StepPathOptions,
   OnError,
-  ConnectionState,
   FinalConnectionState,
 } from '@xyflow/system';
 
@@ -94,7 +93,7 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
-export type EdgeTextProps = HTMLAttributes<SVGElement> &
+export type EdgeTextProps = SVGAttributes<SVGElement> &
   EdgeLabelOptions & {
     x: number;
     y: number;
@@ -123,28 +122,17 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
  * BaseEdge component props
  * @public
  */
-export type BaseEdgeProps = EdgeLabelOptions & {
-  /** Unique id of edge */
-  id?: string;
-  /** Additional padding where interacting with an edge is still possible */
-  interactionWidth?: number;
-  className?: string;
-  /** The x position of edge label */
-  labelX?: number;
-  /** The y position of edge label */
-  labelY?: number;
-  /** Marker at start of edge
-   * @example 'url(#arrow)'
-   */
-  markerStart?: string;
-  /** Marker at end of edge
-   * @example 'url(#arrow)'
-   */
-  markerEnd?: string;
-  /** SVG path of the edge */
-  path: string;
-  style?: CSSProperties;
-};
+export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
+  EdgeLabelOptions & {
+    /** Additional padding where interacting with an edge is still possible */
+    interactionWidth?: number;
+    /** The x position of edge label */
+    labelX?: number;
+    /** The y position of edge label */
+    labelY?: number;
+    /** SVG path of the edge */
+    path: string;
+  };
 
 /**
  * Helper type for edge components that get exported by the library

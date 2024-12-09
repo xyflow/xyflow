@@ -5,7 +5,6 @@ import { EdgeText } from './EdgeText';
 import type { BaseEdgeProps } from '../../types';
 
 export function BaseEdge({
-  id,
   path,
   labelX,
   labelY,
@@ -15,23 +14,12 @@ export function BaseEdge({
   labelBgStyle,
   labelBgPadding,
   labelBgBorderRadius,
-  style,
-  markerEnd,
-  markerStart,
-  className,
   interactionWidth = 20,
+  ...props
 }: BaseEdgeProps) {
   return (
     <>
-      <path
-        id={id}
-        style={style}
-        d={path}
-        fill="none"
-        className={cc(['react-flow__edge-path', className])}
-        markerEnd={markerEnd}
-        markerStart={markerStart}
-      />
+      <path {...props} d={path} fill="none" className={cc(['react-flow__edge-path', props.className])} />
       {interactionWidth && (
         <path
           d={path}

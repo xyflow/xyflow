@@ -499,7 +499,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * If you have custom connection logic its preferred to use this callback over the isValidConnection prop on the handle component for performance reasons.
    * @default (connection: Connection) => true
    */
-  isValidConnection?: IsValidConnection;
+  isValidConnection?: IsValidConnection<EdgeType>;
   /** With a threshold greater than zero you can control the distinction between node drag and click events.
    *
    * If threshold equals 1, you need to drag the node 1 pixel before a drag event is fired.

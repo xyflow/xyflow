@@ -165,7 +165,7 @@ React Flow and Svelte Flow are maintained by the team behind [xyflow](https://xy
 
 - Christopher • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
 - Hayleigh • [Twitter](https://twitter.com/hayleighdotdev) • [Github](https://github.com/hayleigh-dot-dev)
-- John • [Website](https://johnrobbdesign.com/) • [Mastodon](https://mastodon.social/@johnrobbjr)
+- Abbey • [Github](https://github.com/printerscanner)
 - Moritz • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
 - Peter • [Github](https://github.com/peterkogo)
 
