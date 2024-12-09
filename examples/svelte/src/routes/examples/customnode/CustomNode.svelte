@@ -2,11 +2,7 @@
 	import type { Writable } from 'svelte/store';
 	import { Handle, Position, type NodeProps, type Node } from '@xyflow/svelte';
 
-	type $$Props = NodeProps<Node<{ colorStore: Writable<string> }>>;
-
-	export let data: $$Props['data'];
-
-	$$restProps;
+	let { data }: NodeProps<Node<{ colorStore: Writable<string> }>> = $props();
 
 	const { colorStore } = data;
 </script>
@@ -19,7 +15,7 @@
 	<input
 		class="nodrag"
 		type="color"
-		on:input={(evt) => colorStore.set(evt.currentTarget.value)}
+		oninput={(evt) => colorStore.set(evt.currentTarget.value)}
 		value={$colorStore}
 	/>
 	<Handle type="source" position={Position.Right} id="a" style="top: 20px;" />

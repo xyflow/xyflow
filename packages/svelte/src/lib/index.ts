@@ -26,7 +26,7 @@ export { useStore } from '$lib/store';
 export * from '$lib/utils';
 
 //hooks
-export * from '$lib/hooks/useSvelteFlow';
+export * from '$lib/hooks/useSvelteFlow.svelte';
 export * from '$lib/hooks/useUpdateNodeInternals';
 export * from '$lib/hooks/useConnection';
 export * from '$lib/hooks/useNodesEdges';

@@ -8,18 +8,17 @@
 	} from '@xyflow/svelte';
 	import { isTextNode, type MyNode } from './+page.svelte';
 
-	type $$Props = NodeProps;
-
-	export let id: $$Props['id'];
-	$$restProps;
+	let { id }: NodeProps = $props();
 
 	const connections = useHandleConnections({
 		nodeId: id,
 		type: 'target'
 	});
 
-	$: nodeData = useNodesData<MyNode>($connections.map((connection) => connection.source));
-	$: textNodes = $nodeData.filter(isTextNode);
+	let nodeData = $derived(
+		useNodesData<MyNode>($connections.map((connection) => connection.source))
+	);
+	let textNodes = $derived($nodeData.filter(isTextNode));
 </script>
 
 <div class="custom">

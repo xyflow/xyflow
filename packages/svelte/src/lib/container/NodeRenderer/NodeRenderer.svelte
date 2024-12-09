@@ -2,22 +2,24 @@
   import { onDestroy } from 'svelte';
   import { nodeHasDimensions } from '@xyflow/system';
 
+  import type { Node, NodeEvents } from '$lib/types';
   import { NodeWrapper } from '$lib/components/NodeWrapper';
-  import { useStore } from '$lib/store';
-  import type { NodeRendererProps } from './types';
+  import type { SvelteFlowStore } from '$lib/store/types';
 
-  type $$Props = NodeRendererProps;
+  let {
+    store,
+    nodeClickDistance,
+    onnodeclick,
+    onnodecontextmenu,
+    onnodemouseenter,
+    onnodemousemove,
+    onnodemouseleave,
+    onnodedrag,
+    onnodedragstart,
+    onnodedragstop
+  }: { store: SvelteFlowStore; nodeClickDistance?: number } & NodeEvents = $props();
 
-  export let nodeClickDistance: $$Props['nodeClickDistance'] = 0;
-
-  const {
-    visibleNodes,
-    nodesDraggable,
-    nodesConnectable,
-    elementsSelectable,
-    updateNodeInternals,
-    parentLookup
-  } = useStore();
+  // const { nodes } = store;
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
@@ -35,61 +37,75 @@
             });
           });
 
-          updateNodeInternals(updates);
+          store.updateNodeInternals(updates);
         });
 
   onDestroy(() => {
     resizeObserver?.disconnect();
   });
+
+  function give(node: Node) {
+    const internalNode = store.nodeLookup.get(node.id);
+    // console.log('this reruns most definitely', internalNode);
+    console.log(internalNode?.position);
+    return internalNode;
+  }
+
+  // $inspect(store.nodes).with(console.trace);
 </script>
 
 <div class="svelte-flow__nodes">
-  {#each $visibleNodes as node (node.id)}
+  {#each store.nodes as node (node.id)}
+    {@const internalNode = store.nodeLookup.get(node.id)}
     <NodeWrapper
-      {node}
+      {store}
+      node={internalNode!}
       id={node.id}
       data={node.data}
       selected={!!node.selected}
       hidden={!!node.hidden}
-      draggable={!!(node.draggable || ($nodesDraggable && typeof node.draggable === 'undefined'))}
+      draggable={!!(
+        node.draggable ||
+        (store.nodesDraggable && typeof node.draggable === 'undefined')
+      )}
       selectable={!!(
         node.selectable ||
-        ($elementsSelectable && typeof node.selectable === 'undefined')
+        (store.elementsSelectable && typeof node.selectable === 'undefined')
       )}
       connectable={!!(
         node.connectable ||
-        ($nodesConnectable && typeof node.connectable === 'undefined')
+        (store.nodesConnectable && typeof node.connectable === 'undefined')
       )}
       deletable={node.deletable ?? true}
-      positionX={node.internals.positionAbsolute.x}
-      positionY={node.internals.positionAbsolute.y}
-      isParent={$parentLookup.has(node.id)}
+      positionX={internalNode!.internals.positionAbsolute.x}
+      positionY={internalNode!.internals.positionAbsolute.y}
+      isParent={store.parentLookup.has(node.id)}
       style={node.style}
       class={node.class}
       type={node.type ?? 'default'}
       sourcePosition={node.sourcePosition}
       targetPosition={node.targetPosition}
       dragging={node.dragging}
-      zIndex={node.internals.z ?? 0}
+      zIndex={internalNode!.internals.z ?? 0}
       dragHandle={node.dragHandle}
       initialized={nodeHasDimensions(node)}
       width={node.width}
       height={node.height}
       initialWidth={node.initialWidth}
       initialHeight={node.initialHeight}
-      measuredWidth={node.measured.width}
-      measuredHeight={node.measured.height}
+      measuredWidth={node.measured?.width ?? 0}
+      measuredHeight={node.measured?.height ?? 0}
       parentId={node.parentId}
       {resizeObserver}
       {nodeClickDistance}
-      on:nodeclick
-      on:nodemouseenter
-      on:nodemousemove
-      on:nodemouseleave
-      on:nodedrag
-      on:nodedragstart
-      on:nodedragstop
-      on:nodecontextmenu
+      {onnodeclick}
+      {onnodemouseenter}
+      {onnodemousemove}
+      {onnodemouseleave}
+      {onnodedrag}
+      {onnodedragstart}
+      {onnodedragstop}
+      {onnodecontextmenu}
     />
   {/each}
 </div>

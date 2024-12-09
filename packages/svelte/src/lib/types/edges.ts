@@ -1,4 +1,4 @@
-import type { SvelteComponent, ComponentType } from 'svelte';
+import type { Component } from 'svelte';
 import type {
   EdgeBase,
   BezierPathOptions,
@@ -113,15 +113,13 @@ export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'tar
 
 export type EdgeTypes = Record<
   string,
-  ComponentType<
-    SvelteComponent<
-      EdgeProps & {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data?: any;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        type: any;
-      }
-    >
+  Component<
+    EdgeProps & {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data?: any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      type: any;
+    }
   >
 >;
 

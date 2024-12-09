@@ -4,8 +4,12 @@
 
 	type $$Props = NodeProps<ResizeNode>;
 
-	export let data: $$Props['data'];
-	export let selected: $$Props['selected'] = undefined;
+	interface Props {
+		data: $$Props['data'];
+		selected?: $$Props['selected'];
+	}
+
+	let { data, selected = undefined }: Props = $props();
 </script>
 
 <NodeResizer

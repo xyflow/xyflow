@@ -4,7 +4,11 @@
 
 	type $$Props = NodeProps<ResizeNode>;
 
-	export let data: $$Props['data'];
+	interface Props {
+		data: $$Props['data'];
+	}
+
+	let { data }: Props = $props();
 </script>
 
 <NodeResizeControl
