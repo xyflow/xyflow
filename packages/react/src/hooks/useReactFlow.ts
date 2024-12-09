@@ -55,11 +55,10 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         : nodeToUse.position;
 
       const nodeWithPosition = {
-        id: nodeToUse.id,
+        ...nodeToUse,
         position,
         width: nodeToUse.measured?.width ?? nodeToUse.width,
         height: nodeToUse.measured?.height ?? nodeToUse.height,
-        data: nodeToUse.data,
       };
 
       return nodeToRect(nodeWithPosition);
