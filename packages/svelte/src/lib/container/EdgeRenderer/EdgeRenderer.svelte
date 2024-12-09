@@ -14,11 +14,11 @@
     onedgemouseleave
   }: { store: SvelteFlowStore } & EdgeEvents = $props();
 
-  const { edges, nodes } = store;
+  // const { edges, nodes } = store;
 
   let layoutedEdges = $derived.by(() => {
-    $nodes;
-    const layoutedEdges = $edges.reduce<EdgeLayouted[]>((res, edge) => {
+    store.nodes;
+    const layoutedEdges = store.edges.reduce<EdgeLayouted[]>((res, edge) => {
       const sourceNode = store.nodeLookup.get(edge.source);
       const targetNode = store.nodeLookup.get(edge.target);
 

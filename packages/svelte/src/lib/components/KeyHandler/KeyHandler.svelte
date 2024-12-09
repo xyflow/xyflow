@@ -20,7 +20,7 @@
     zoomActivationKey = isMacOs() ? 'Meta' : 'Control'
   }: KeyHandlerProps = $props();
 
-  const { nodes: _nodes, edges: _edges } = store;
+  // const { nodes: _nodes, edges: _edges } = store;
 
   function isKeyObject(key?: KeyDefinition | null): key is KeyDefinitionObject {
     return key !== null && typeof key === 'object';
@@ -66,22 +66,22 @@
   }
 
   async function handleDelete() {
-    const nodes = get(_nodes);
-    const edges = get(_edges);
-    const selectedNodes = nodes.filter((node) => node.selected);
-    const selectedEdges = edges.filter((edge) => edge.selected);
+    // const nodes = get(_nodes);
+    // const edges = get(_edges);
+    const selectedNodes = store.nodes.filter((node) => node.selected);
+    const selectedEdges = store.edges.filter((edge) => edge.selected);
 
     const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
       nodesToRemove: selectedNodes,
       edgesToRemove: selectedEdges,
-      nodes,
-      edges,
+      nodes: store.nodes,
+      edges: store.edges,
       onBeforeDelete: store.onbeforedelete
     });
 
     if (matchingNodes.length || matchingEdges.length) {
-      _nodes.update((nds) => nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id)));
-      _edges.update((eds) => eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id)));
+      // _nodes.update((nds) => nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id)));
+      // _edges.update((eds) => eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id)));
 
       store.ondelete?.({
         nodes: matchingNodes,

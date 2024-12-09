@@ -1,4 +1,3 @@
-import { get, writable, type Writable } from 'svelte/store';
 import {
   infiniteExtent,
   SelectionMode,
@@ -52,7 +51,7 @@ import type {
   OnBeforeDelete,
   IsValidConnection
 } from '$lib/types';
-import { createNodesStore, createEdgesStore } from './utils';
+
 import type { StoreSignals } from './types';
 
 export const initialNodeTypes = {
@@ -71,19 +70,39 @@ export const initialEdgeTypes = {
 
 export const getInitialStore = (signals: StoreSignals) => {
   class SvelteFlowStore {
-    nodes: ReturnType<typeof createNodesStore>;
-    edges: ReturnType<typeof createEdgesStore>;
-
+    get nodes() {
+      return signals.nodes;
+    }
+    set nodes(nodes) {
+      signals.nodes = nodes;
+    }
+    get edges() {
+      return signals.edges;
+    }
+    set edges(edges) {
+      signals.edges = edges;
+    }
     nodeLookup: NodeLookup = new Map();
     parentLookup: ParentLookup = new Map();
     connectionLookup: ConnectionLookup = new Map();
     edgeLookup: EdgeLookup = new Map();
+    adoptNodes: true = $derived.by(() => {
+      adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
+        nodeExtent: this.nodeExtent,
+        nodeOrigin: this.nodeOrigin,
+        elevateNodesOnSelect: false,
+        checkEquality: true
+      });
+      return true;
+    });
+    adoptEdges: true = $derived.by(() => {
+      updateConnectionLookup(this.connectionLookup, this.edgeLookup, signals.edges);
+      return true;
+    });
 
-    domNode: HTMLDivElement | null = $derived(
-      signals.container?.domNode ?? signals.props.domNode ?? null
-    );
-    width: number = $derived(signals.container?.width ?? signals.props.width ?? 0);
-    height: number = $derived(signals.container?.height ?? signals.props.height ?? 0);
+    domNode: HTMLDivElement | null = $derived(signals.domNode ?? signals.props.domNode ?? null);
+    width: number = $derived(signals.width ?? signals.props.width ?? 0);
+    height: number = $derived(signals.height ?? signals.props.height ?? 0);
 
     flowId: string = $derived(signals.props.id ?? '1');
     minZoom: number = $derived(signals.props.minZoom ?? 0.5);
@@ -149,12 +168,10 @@ export const getInitialStore = (signals: StoreSignals) => {
     nodesConnectable: boolean = $derived(signals.props.nodesConnectable ?? true);
     elementsSelectable: boolean = $derived(signals.props.elementsSelectable ?? true);
     selectNodesOnDrag: boolean = $derived(signals.props.selectNodesOnDrag ?? true);
-    //   //   [store.edges, store.defaultMarkerColor, store.flowId],
-    //   //   ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
+
     defaultMarkerColor: string = $derived(signals.props.defaultMarkerColor ?? '#b1b1b7');
     markers: MarkerProps[] = $derived.by(() => {
-      const edges = signals.props.edges ?? writable([]);
-      return createMarkerIds(get(edges), {
+      return createMarkerIds(signals.edges, {
         defaultColor: this.defaultMarkerColor,
         id: this.flowId
       });
@@ -172,8 +189,8 @@ export const getInitialStore = (signals: StoreSignals) => {
     edgesInitialized: boolean = $state(false);
     viewportInitialized: boolean = $state(false);
 
-    initialNodesLength: number = signals.props.nodes ? get(signals.props.nodes)?.length : 0;
-    initialEdgesLength: number = signals.props.edges ? get(signals.props.edges)?.length : 0;
+    initialNodesLength: number = signals.nodes.length;
+    initialEdgesLength: number = signals.edges.length;
     initialized: boolean = $derived.by(() => {
       let initialized = false;
       // if it hasn't been initialised check if it's now
@@ -190,27 +207,6 @@ export const getInitialStore = (signals: StoreSignals) => {
     colorMode: ColorMode = $derived(signals.props.colorMode ?? 'light');
 
     constructor() {
-      const nodes = signals.props.nodes ? get(signals.props.nodes) : [];
-      const edges = signals.props.edges ? get(signals.props.edges) : [];
-
-      this.nodes = createNodesStore(
-        nodes,
-        this.nodeLookup,
-        this.parentLookup,
-        this.nodeOrigin,
-        this.nodeExtent
-      );
-
-      adoptUserNodes(nodes, this.nodeLookup, this.parentLookup, {
-        nodeExtent: this.nodeExtent,
-        nodeOrigin: this.nodeOrigin,
-        elevateNodesOnSelect: false,
-        checkEquality: false
-      });
-
-      this.edges = createEdgesStore(edges, this.connectionLookup, this.edgeLookup);
-      updateConnectionLookup(this.connectionLookup, this.edgeLookup, edges);
-
       if (signals.props.fitView && !signals.props.initialViewport && this.width && this.height) {
         const bounds = getInternalNodesBounds(this.nodeLookup, {
           filter: (node) =>

@@ -93,7 +93,7 @@
             }
           }
 
-          store.nodes.set(get(store.nodes));
+          // store.nodes.set(get(store.nodes));
         }
       });
     }

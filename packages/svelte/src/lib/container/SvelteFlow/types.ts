@@ -59,7 +59,7 @@ export type SvelteFlowProps = NodeEvents &
      *  }
      * ]);
      */
-    nodes: Writable<Node[]>;
+    nodes: Node[];
     /** An array of edges to render in a controlled flow.
      * @example
      * const edges = writable([
@@ -70,7 +70,7 @@ export type SvelteFlowProps = NodeEvents &
      *  }
      * ]);
      */
-    edges: Writable<Edge[]>;
+    edges: Edge[];
     /** Custom node types to be available in a flow.
      *
      * Svelte Flow matches a node's type to a component in the nodeTypes object.
@@ -191,7 +191,7 @@ export type SvelteFlowProps = NodeEvents &
     /**
      * Controls if nodes should be automatically selected when being dragged
      */
-    selectNodesOnDrag: boolean;
+    selectNodesOnDrag?: boolean;
     /** Grid all nodes will snap to
      * @example [20, 20]
      */

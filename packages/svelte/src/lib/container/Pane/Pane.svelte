@@ -45,7 +45,7 @@
     children
   }: PaneProps = $props();
 
-  const { nodes, edges } = store;
+  // const { nodes, edges } = store;
 
   // svelte-ignore non_reactive_update
   let container: HTMLDivElement;
@@ -126,7 +126,7 @@
       height: Math.abs(mousePos.y - startY)
     };
     const prevSelectedNodeIds = selectedNodes.map((n) => n.id);
-    const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
+    const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, store.edges).map((e) => e.id);
 
     selectedNodes = getNodesInside(
       store.nodeLookup,
@@ -135,7 +135,7 @@
       store.selectionMode === SelectionMode.Partial,
       true
     );
-    const selectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
+    const selectedEdgeIds = getConnectedEdges(selectedNodes, store.edges).map((e) => e.id);
     const selectedNodeIds = selectedNodes.map((n) => n.id);
 
     // this prevents unnecessary updates while updating the selection rectangle
@@ -143,14 +143,14 @@
       prevSelectedNodeIds.length !== selectedNodeIds.length ||
       selectedNodeIds.some((id) => !prevSelectedNodeIds.includes(id))
     ) {
-      nodes.update((nodes) => nodes.map(toggleSelected(selectedNodeIds)));
+      // store.nodes.update((nodes) => nodes.map(toggleSelected(selectedNodeIds)));
     }
 
     if (
       prevSelectedEdgeIds.length !== selectedEdgeIds.length ||
       selectedEdgeIds.some((id) => !prevSelectedEdgeIds.includes(id))
     ) {
-      edges.update((edges) => edges.map(toggleSelected(selectedEdgeIds)));
+      // store.edges.update((edges) => edges.map(toggleSelected(selectedEdgeIds)));
     }
 
     store.selectionRectMode = 'user';

@@ -19,13 +19,13 @@
   }: NodeToolbarProps = $props();
 
   const store = useStore();
-  const { nodes } = store;
+  // const { nodes } = store;
   const { getNodesBounds } = useSvelteFlow();
   const contextNodeId = getContext<string>('svelteflow__node_id');
 
   let toolbarNodes: InternalNode[] = $derived.by(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    $nodes;
+    store.nodes;
     const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId ?? contextNodeId];
 
     return nodeIds.reduce<InternalNode[]>((res, nodeId) => {
@@ -54,7 +54,7 @@
   );
 
   //FIXME: Possible performance bottleneck
-  let selectedNodesCount = $derived($nodes.filter((node) => node.selected).length);
+  let selectedNodesCount = $derived(store.nodes.filter((node) => node.selected).length);
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   let isActive = $derived(

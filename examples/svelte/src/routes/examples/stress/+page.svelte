@@ -29,7 +29,8 @@
 				id,
 				data,
 				position,
-				type: 'default'
+				type: 'default',
+				selected: true
 			};
 			nodeItems.push(node);
 
@@ -46,11 +47,11 @@
 		}
 	}
 
-	const nodes = writable(nodeItems);
-	const edges = writable(edgeItems);
+	let nodes = $state.raw(nodeItems);
+	let edges = $state.raw([]);
 </script>
 
-<SvelteFlow {nodes} {edges} fitView minZoom={0.2}>
+<SvelteFlow bind:nodes bind:edges fitView minZoom={0.2}>
 	<Controls />
 	<Background variant={BackgroundVariant.Lines} />
 	<MiniMap />

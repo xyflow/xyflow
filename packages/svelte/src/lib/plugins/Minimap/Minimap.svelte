@@ -44,7 +44,7 @@
 
   let store = useStore();
 
-  let nodes = $derived(store.nodes);
+  // let nodes = $derived(store.nodes);
 
   const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
@@ -115,7 +115,7 @@
     >
       {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
 
-      {#each $nodes as userNode (userNode.id)}
+      {#each store.nodes as userNode (userNode.id)}
         {@const node = store.nodeLookup.get(userNode.id)}
         {#if node && nodeHasDimensions(node)}
           {@const nodeDimesions = getNodeDimensions(node)}

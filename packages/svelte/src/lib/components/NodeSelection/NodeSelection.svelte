@@ -15,24 +15,24 @@
     onselectioncontextmenu
   }: NodeSelectionProps = $props();
 
-  const { nodes } = store;
+  // const { nodes } = store;
 
   let bounds: Rect | null = $derived.by(() => {
     if (store.selectionRectMode === 'nodes') {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      $nodes;
+      store.nodes;
       return getInternalNodesBounds(store.nodeLookup, { filter: (node) => !!node.selected });
     }
     return null;
   });
 
   function oncontextmenu(event: MouseEvent | TouchEvent) {
-    const selectedNodes = $nodes.filter((n) => n.selected);
+    const selectedNodes = store.nodes.filter((n) => n.selected);
     onselectioncontextmenu?.({ nodes: selectedNodes, event });
   }
 
   function onclick(event: MouseEvent | TouchEvent) {
-    const selectedNodes = $nodes.filter((n) => n.selected);
+    const selectedNodes = store.nodes.filter((n) => n.selected);
     onselectionclick?.({ nodes: selectedNodes, event });
   }
 </script>

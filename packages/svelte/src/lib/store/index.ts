@@ -1,4 +1,3 @@
-import { get } from 'svelte/store';
 import {
   fitView as fitViewSystem,
   panBy as panBySystem,
@@ -23,6 +22,7 @@ import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/type
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
 import { syncNodeStores, syncEdgeStores } from './utils';
+import drag from '$lib/actions/drag';
 // import { getVisibleEdges } from './visible-edges';
 // import { getVisibleNodes } from './visible-nodes';
 
@@ -48,23 +48,15 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   function addEdge(edgeParams: Edge | Connection) {
-    const edges = get(store.edges);
-    store.edges.set(addEdgeUtil(edgeParams, edges));
+    // TODO: let's see
+    store.edges = addEdgeUtil(edgeParams, store.edges);
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    for (const [id, dragItem] of nodeDragItems) {
-      const node = store.nodeLookup.get(id)?.internals.userNode;
-
-      if (!node) {
-        continue;
-      }
-
-      node.position = dragItem.position;
-      node.dragging = dragging;
-    }
-
-    store.nodes.update((nds) => nds);
+    store.nodes = store.nodes.map((node) => {
+      const dragItem = nodeDragItems.get(node.id);
+      return dragItem ? { ...node, position: dragItem.position, dragging } : node;
+    });
   };
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
@@ -93,12 +85,15 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
       store.fitViewOnInitDone = fitViewOnInitDone;
     }
 
+    const newNodes = new Map<string, Node>();
     for (const change of changes) {
-      const node = store.nodeLookup.get(change.id)?.internals.userNode;
+      const userNode = store.nodeLookup.get(change.id)?.internals.userNode;
 
-      if (!node) {
+      if (!userNode) {
         continue;
       }
+
+      const node = { ...userNode };
 
       switch (change.type) {
         case 'dimensions': {
@@ -114,12 +109,15 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
         }
         case 'position':
           node.position = change.position ?? node.position;
-
           break;
       }
+
+      newNodes.set(change.id, node);
     }
 
-    store.nodes.update((nds) => nds);
+    // store.nodes.update((nds) => nds);
+    store.nodes = store.nodes.map((node) => newNodes.get(node.id) ?? node);
+    // signals.updateNodes((node) => newNodes.get(node.id) ?? node);
 
     if (!store.nodesInitialized) {
       store.nodesInitialized = true;
@@ -235,68 +233,65 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
-    const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
-    if (resetNodes) store.nodes.set(get(store.nodes));
+    resetSelectedElements(params?.nodes || store.nodes);
+    // if (resetNodes) store.nodes.set(get(store.nodes));
 
-    const resetEdges = resetSelectedElements(params?.edges || get(store.edges));
-    if (resetEdges) store.edges.set(get(store.edges));
+    resetSelectedElements(params?.edges || store.edges);
+    // if (resetEdges) store.edges.set(get(store.edges));
   }
 
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.nodes.update((ns) =>
-      ns.map((node) => {
-        const nodeWillBeSelected = ids.includes(node.id);
-        const selected = isMultiSelection
-          ? node.selected || nodeWillBeSelected
-          : nodeWillBeSelected;
+    // store.nodes.update((ns) =>
+    store.nodes.forEach((node) => {
+      const nodeWillBeSelected = ids.includes(node.id);
+      const selected = isMultiSelection ? node.selected || nodeWillBeSelected : nodeWillBeSelected;
 
-        // we need to mutate the node here in order to have the correct selected state in the drag handler
-        node.selected = selected;
+      // we need to mutate the node here in order to have the correct selected state in the drag handler
+      node.selected = selected;
 
-        return node;
-      })
-    );
+      // return node;
+    });
+    // );
 
     if (!isMultiSelection) {
-      store.edges.update((es) =>
-        es.map((edge) => {
-          edge.selected = false;
-          return edge;
-        })
-      );
+      // store.edges.forEach((es) =>
+      store.edges.forEach((edge) => {
+        edge.selected = false;
+        // return edge;
+      });
+      // );
     }
   }
 
   function addSelectedEdges(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.edges.update((edges) =>
-      edges.map((edge) => {
-        const edgeWillBeSelected = ids.includes(edge.id);
-        const selected = isMultiSelection
-          ? edge.selected || edgeWillBeSelected
-          : edgeWillBeSelected;
+    // store.edges.update((edges) =>
+    store.edges.forEach((edge) => {
+      const edgeWillBeSelected = ids.includes(edge.id);
+      const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
 
-        edge.selected = selected;
+      edge.selected = selected;
 
-        return edge;
-      })
-    );
+      // return edge;
+    });
+    // );
 
     if (!isMultiSelection) {
-      store.nodes.update((ns) =>
-        ns.map((node) => {
-          node.selected = false;
-          return node;
-        })
-      );
+      // store.nodes.update((ns) =>
+      store.nodes.forEach((node) => {
+        node.selected = false;
+        // return node;
+      });
+      // );
     }
   }
 
   function handleNodeSelection(id: string) {
-    const node = get(store.nodes)?.find((n) => n.id === id);
+    const node = store.nodes?.find((n) => n.id === id);
+    // const node = store.nodeLookup.get(id)?.internals.userNode;
 
     if (!node) {
       console.warn('012', errorMessages['error012'](id));
@@ -343,8 +338,8 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   const storeWithActions = Object.assign(store, {
-    syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
-    syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
+    // syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
+    // syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
     // syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
     setNodeTypes,
     setEdgeTypes,

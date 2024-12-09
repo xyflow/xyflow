@@ -2,7 +2,7 @@
   import { onDestroy } from 'svelte';
   import { nodeHasDimensions } from '@xyflow/system';
 
-  import type { NodeEvents } from '$lib/types';
+  import type { Node, NodeEvents } from '$lib/types';
   import { NodeWrapper } from '$lib/components/NodeWrapper';
   import type { SvelteFlowStore } from '$lib/store/types';
 
@@ -19,7 +19,7 @@
     onnodedragstop
   }: { store: SvelteFlowStore; nodeClickDistance?: number } & NodeEvents = $props();
 
-  const { nodes } = store;
+  // const { nodes } = store;
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
@@ -43,10 +43,19 @@
   onDestroy(() => {
     resizeObserver?.disconnect();
   });
+
+  function give(node: Node) {
+    const internalNode = store.nodeLookup.get(node.id);
+    // console.log('this reruns most definitely', internalNode);
+    console.log(internalNode?.position);
+    return internalNode;
+  }
+
+  // $inspect(store.nodes).with(console.trace);
 </script>
 
 <div class="svelte-flow__nodes">
-  {#each $nodes as node (node.id)}
+  {#each store.nodes as node (node.id)}
     {@const internalNode = store.nodeLookup.get(node.id)}
     <NodeWrapper
       {store}

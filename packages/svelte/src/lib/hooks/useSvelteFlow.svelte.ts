@@ -278,7 +278,7 @@ export function useSvelteFlow(): {
   }
 
   const store = useStore();
-  const { nodes, edges } = store;
+  // const { nodes, edges } = store;
 
   const getNodeRect = (node: Node | { id: Node['id'] }): Rect | null => {
     const nodeToUse = isNode(node) ? node : store.nodeLookup.get(node.id)!;
@@ -316,20 +316,20 @@ export function useSvelteFlow(): {
 
     const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
 
-    if (options.replace) {
-      nodes.update((nds) =>
-        nds.map((node) => {
-          if (node.id === id) {
-            return isNode(nextNode) ? nextNode : { ...node, ...nextNode };
-          }
+    // if (options.replace) {
+    //   nodes.update((nds) =>
+    //     nds.map((node) => {
+    //       if (node.id === id) {
+    //         return isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+    //       }
 
-          return node;
-        })
-      );
-    } else {
-      Object.assign(node, nextNode);
-      nodes.set(get(nodes));
-    }
+    //       return node;
+    //     })
+    //   );
+    // } else {
+    //   Object.assign(node, nextNode);
+    //   nodes.set(store.nodes);
+    // }
   };
 
   const updateEdge = (
@@ -345,20 +345,20 @@ export function useSvelteFlow(): {
 
     const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge as Edge) : edgeUpdate;
 
-    if (options.replace) {
-      edges.update((edgs) =>
-        edgs.map((edge) => {
-          if (edge.id === id) {
-            return isEdge(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
-          }
+    // if (options.replace) {
+    //   edges.update((edgs) =>
+    //     edgs.map((edge) => {
+    //       if (edge.id === id) {
+    //         return isEdge(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
+    //       }
 
-          return edge;
-        })
-      );
-    } else {
-      Object.assign(edge, nextEdge);
-      edges.set(get(edges));
-    }
+    //       return edge;
+    //     })
+    //   );
+    // } else {
+    //   Object.assign(edge, nextEdge);
+    //   edges.set(store.edges);
+    // }
   };
 
   const getInternalNode = (id: string) => store.nodeLookup.get(id);
@@ -368,9 +368,9 @@ export function useSvelteFlow(): {
     zoomOut: store.zoomOut,
     getInternalNode,
     getNode: (id) => getInternalNode(id)?.internals.userNode,
-    getNodes: (ids) => (ids === undefined ? get(nodes) : getElements(store.nodeLookup, ids)),
+    getNodes: (ids) => (ids === undefined ? store.nodes : getElements(store.nodeLookup, ids)),
     getEdge: (id) => store.edgeLookup.get(id),
-    getEdges: (ids) => (ids === undefined ? get(edges) : getElements(store.edgeLookup, ids)),
+    getEdges: (ids) => (ids === undefined ? store.edges : getElements(store.edgeLookup, ids)),
     setZoom: (zoomLevel, options) => {
       const panZoom = store.panZoom;
       return panZoom
@@ -447,7 +447,7 @@ export function useSvelteFlow(): {
         return [];
       }
 
-      return (nodesToIntersect || get(nodes)).filter((n) => {
+      return (nodesToIntersect || store.nodes).filter((n) => {
         const internalNode = store.nodeLookup.get(n.id);
         if (!internalNode || (!isRect && n.id === nodeOrRect.id)) {
           return false;
@@ -481,22 +481,22 @@ export function useSvelteFlow(): {
       const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
         nodesToRemove,
         edgesToRemove,
-        nodes: get(nodes),
-        edges: get(edges),
+        nodes: store.nodes,
+        edges: store.edges,
         onBeforeDelete: store.onbeforedelete
       });
 
-      if (matchingNodes) {
-        nodes.update((nds) =>
-          nds.filter((node) => !matchingNodes.some(({ id }) => id === node.id))
-        );
-      }
+      // if (matchingNodes) {
+      //   nodes.update((nds) =>
+      //     nds.filter((node) => !matchingNodes.some(({ id }) => id === node.id))
+      //   );
+      // }
 
-      if (matchingEdges) {
-        edges.update((eds) =>
-          eds.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id))
-        );
-      }
+      // if (matchingEdges) {
+      //   edges.update((eds) =>
+      //     eds.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id))
+      //   );
+      // }
 
       return {
         deletedNodes: matchingNodes,
@@ -548,14 +548,14 @@ export function useSvelteFlow(): {
 
     toObject: () => {
       return {
-        nodes: get(nodes).map((node) => ({
+        nodes: store.nodes.map((node) => ({
           ...node,
           // we want to make sure that changes to the nodes object that gets returned by toObject
           // do not affect the nodes object
           position: { ...node.position },
           data: { ...node.data }
         })),
-        edges: get(edges).map((edge) => ({ ...edge })),
+        edges: store.edges.map((edge) => ({ ...edge })),
         viewport: { ...store.viewport }
       };
     },
@@ -571,7 +571,7 @@ export function useSvelteFlow(): {
 
       node.data = options?.replace ? nextData : { ...node.data, ...nextData };
 
-      nodes.update((nds) => nds);
+      // nodes.update((nds) => nds);
     },
     updateEdge,
     getNodesBounds: (nodes) => {

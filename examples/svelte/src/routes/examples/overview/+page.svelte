@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -38,7 +37,7 @@
 		nodes: [{ id: '1' }, { id: '2' }]
 	};
 
-	const nodes = writable<Node[]>([
+	let nodes = $state.raw<Node[]>([
 		{
 			id: '1',
 			type: 'input',
@@ -100,7 +99,7 @@
 		}
 	]);
 
-	const edges = writable<Edge[]>([
+	let edges = $state.raw<Edge[]>([
 		{
 			id: '1-2',
 			type: 'default',
@@ -125,21 +124,21 @@
 	]);
 
 	function updateNode() {
-		$nodes[0].position.x += 20;
-		$nodes = $nodes;
+		nodes[0].position.x += 20;
+		// nodes = $nodes;
 	}
 
 	function updateEdge() {
-		$edges[0].type = $edges[0].type === 'default' ? 'smoothstep' : 'default';
-		$edges = $edges;
+		edges[0].type = edges[0].type === 'default' ? 'smoothstep' : 'default';
+		// edges = $edges;
 	}
 
-	$inspect($nodes);
+	// $inspect(nodes);
 </script>
 
 <SvelteFlow
-	{nodes}
-	{edges}
+	bind:nodes
+	bind:edges
 	{nodeTypes}
 	{edgeTypes}
 	fitView
@@ -211,7 +210,6 @@
 		<button onclick={updateEdge}>update edge type</button>
 		<button
 			onclick={() => {
-				console.log($nodes, $nodes.length);
 				$nodes[$nodes.length - 1].hidden = !$nodes[$nodes.length - 1].hidden;
 				$nodes = $nodes;
 			}}>hide/unhide</button

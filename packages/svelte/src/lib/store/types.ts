@@ -6,8 +6,7 @@ import type {
   Connection,
   UpdateNodePositions,
   CoordinateExtent,
-  UpdateConnection,
-  Viewport
+  UpdateConnection
 } from '@xyflow/system';
 
 import type { getInitialStore } from './initial-store.svelte';
@@ -15,8 +14,8 @@ import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/type
 import type { SvelteFlowProps } from '$lib/container/SvelteFlow';
 
 export type SvelteFlowStoreActions = {
-  syncNodeStores: (nodesStore: Writable<Node[]>) => void;
-  syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
+  // syncNodeStores: (nodesStore: Writable<Node[]>) => void;
+  // syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
   // syncViewport: (viewportStore?: Writable<Viewport>) => void;
   setNodeTypes: (nodeTypes: NodeTypes) => void;
   setEdgeTypes: (edgeTypes: EdgeTypes) => void;
@@ -43,7 +42,11 @@ export type SvelteFlowStoreActions = {
 export type ContainerSignals = { domNode?: HTMLDivElement | null; width?: number; height?: number };
 export type StoreSignals = {
   props: Partial<SvelteFlowProps> & ContainerSignals;
-  container?: ContainerSignals;
+  domNode?: HTMLDivElement;
+  width?: number;
+  height?: number;
+  nodes: Node[];
+  edges: Edge[];
 };
 
 export type SvelteFlowStoreState = ReturnType<typeof getInitialStore>;
