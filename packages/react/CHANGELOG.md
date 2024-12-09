@@ -1,5 +1,30 @@
 # @xyflow/react
 
+## 12.3.6
+
+### Patch Changes
+
+- [#4846](https://github.com/xyflow/xyflow/pull/4846) [`75017939`](https://github.com/xyflow/xyflow/commit/7501793900fdb125fe906fa3d9d83f1bd11c6e20) Thanks [@moklick](https://github.com/moklick)! - Make it possible to use expandParent with immer and other immutable helpers
+
+- [#4865](https://github.com/xyflow/xyflow/pull/4865) [`2c4acc2b`](https://github.com/xyflow/xyflow/commit/2c4acc2bd9ec271468bd4c904e19d7fca627d9e1) Thanks [@moklick](https://github.com/moklick)! - Add group node to BuiltInNode type. Thanks [@sjdemartini](https://github.com/sjdemartini)!
+
+- [#4877](https://github.com/xyflow/xyflow/pull/4877) [`9a8309da`](https://github.com/xyflow/xyflow/commit/9a8309dab892f047fce10d3c763466cf84f726b0) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix intersections for nodes with origins other than [0,0]. Thanks [@gmvrpw](https://github.com/gmvrpw)!
+
+- [#4844](https://github.com/xyflow/xyflow/pull/4844) [`6f11e552`](https://github.com/xyflow/xyflow/commit/6f11e552c3f51b5931b98d5ff798156cdb8cc2d9) Thanks [@moklick](https://github.com/moklick)! - Allow custom data-testid for ReactFlow component
+
+- [#4816](https://github.com/xyflow/xyflow/pull/4816) [`43aa52a8`](https://github.com/xyflow/xyflow/commit/43aa52a8cd93e6a01c01afa314c7036eb5b77131) Thanks [@moklick](https://github.com/moklick)! - Type isValidConnection prop correctly by passing EdgeType
+
+- [#4855](https://github.com/xyflow/xyflow/pull/4855) [`106c2cf8`](https://github.com/xyflow/xyflow/commit/106c2cf8e5e9a944ea7ea9a2558e26cb75f9ac93) Thanks [@mhuggins](https://github.com/mhuggins)! - Support passing `path` element attributes to `BaseEdge` component.
+
+- [#4862](https://github.com/xyflow/xyflow/pull/4862) [`adf4fb4e`](https://github.com/xyflow/xyflow/commit/adf4fb4e7bb136cce47ef540e9bcc0f82cf17ff4) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Prevent default scrolling behavior when nodes or a selection is moved with an arrow key press.
+
+- [#4875](https://github.com/xyflow/xyflow/pull/4875) [`41d4743a`](https://github.com/xyflow/xyflow/commit/41d4743a690f054f6dc2b9084b5fad8e54ade921) Thanks [@peterkogo](https://github.com/peterkogo)! - Prevent unnecessary rerenders of edges when resizing the flow.
+
+- [#4826](https://github.com/xyflow/xyflow/pull/4826) [`5f90acda`](https://github.com/xyflow/xyflow/commit/5f90acdab1f4748bb04f8b1ec67d569983684058) Thanks [@chrtze](https://github.com/chrtze)! - Forward ref of the div inside Panel components.
+
+- Updated dependencies [[`d60331e6`](https://github.com/xyflow/xyflow/commit/d60331e6baa7931c46af219e35c1bedbd156187c)]:
+  - @xyflow/system@0.0.47
+
 ## 12.3.5
 
 ### Patch Changes

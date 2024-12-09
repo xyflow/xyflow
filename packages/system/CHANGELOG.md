@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.47
+
+### Patch Changes
+
+- [#4874](https://github.com/xyflow/xyflow/pull/4874) [`d60331e6`](https://github.com/xyflow/xyflow/commit/d60331e6baa7931c46af219e35c1bedbd156187c) Thanks [@crimx](https://github.com/crimx)! - Refactor isInputDOMNode so that it handles non-html objects
+
 ## 0.0.46
 
 ### Patch Changes
