@@ -1,5 +1,16 @@
 # @xyflow/svelte
 
+## 0.1.25
+
+### Patch Changes
+
+- [#4865](https://github.com/xyflow/xyflow/pull/4865) [`2c4acc2b`](https://github.com/xyflow/xyflow/commit/2c4acc2bd9ec271468bd4c904e19d7fca627d9e1) Thanks [@moklick](https://github.com/moklick)! - Add group node to BuiltInNode type. Thanks [@sjdemartini](https://github.com/sjdemartini)!
+
+- [#4877](https://github.com/xyflow/xyflow/pull/4877) [`9a8309da`](https://github.com/xyflow/xyflow/commit/9a8309dab892f047fce10d3c763466cf84f726b0) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix intersections for nodes with origins other than [0,0]. Thanks [@gmvrpw](https://github.com/gmvrpw)!
+
+- Updated dependencies [[`d60331e6`](https://github.com/xyflow/xyflow/commit/d60331e6baa7931c46af219e35c1bedbd156187c)]:
+  - @xyflow/system@0.0.47
+
 ## 0.1.24
 
 ### Patch Changes
