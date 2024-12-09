@@ -7,7 +7,6 @@
       if (event.target !== container) {
         return;
       }
-
       handler?.(event);
     };
   }
@@ -17,7 +16,7 @@
       const isSelected = ids.includes(item.id);
 
       if (item.selected !== isSelected) {
-        item.selected = isSelected;
+        return { ...item, selected: isSelected };
       }
 
       return item;
@@ -33,7 +32,6 @@
     getConnectedEdges
   } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
   import type { Node, Edge, InternalNode } from '$lib/types';
   import type { PaneProps } from './types';
   let {
@@ -44,8 +42,6 @@
     onpanecontextmenu,
     children
   }: PaneProps = $props();
-
-  // const { nodes, edges } = store;
 
   // svelte-ignore non_reactive_update
   let container: HTMLDivElement;
@@ -143,14 +139,14 @@
       prevSelectedNodeIds.length !== selectedNodeIds.length ||
       selectedNodeIds.some((id) => !prevSelectedNodeIds.includes(id))
     ) {
-      // store.nodes.update((nodes) => nodes.map(toggleSelected(selectedNodeIds)));
+      store.nodes = store.nodes.map(toggleSelected(selectedNodeIds));
     }
 
     if (
       prevSelectedEdgeIds.length !== selectedEdgeIds.length ||
       selectedEdgeIds.some((id) => !prevSelectedEdgeIds.includes(id))
     ) {
-      // store.edges.update((edges) => edges.map(toggleSelected(selectedEdgeIds)));
+      store.edges = store.edges.map(toggleSelected(selectedEdgeIds));
     }
 
     store.selectionRectMode = 'user';

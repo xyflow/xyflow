@@ -83,13 +83,13 @@
     "typescript": "^5.5.0"
   },
   "peerDependencies": {
-    "svelte": "^3.0.0 || ^4.0.0 || ^5.0.0"
+    "svelte": "^5.0.0"
   },
   "files": [
     "dist"
   ],
   "typesVersions": {
-    ">4.0": {
+    ">5.0": {
       "index": [
         "./dist/lib/index.d.ts"
       ]

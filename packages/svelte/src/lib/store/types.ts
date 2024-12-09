@@ -1,4 +1,3 @@
-import type { Writable } from 'svelte/store';
 import type {
   InternalNodeUpdate,
   XYPosition,
@@ -14,9 +13,6 @@ import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/type
 import type { SvelteFlowProps } from '$lib/container/SvelteFlow';
 
 export type SvelteFlowStoreActions = {
-  // syncNodeStores: (nodesStore: Writable<Node[]>) => void;
-  // syncEdgeStores: (edgeStore: Writable<Edge[]>) => void;
-  // syncViewport: (viewportStore?: Writable<Viewport>) => void;
   setNodeTypes: (nodeTypes: NodeTypes) => void;
   setEdgeTypes: (edgeTypes: EdgeTypes) => void;
   addEdge: (edge: Edge | Connection) => void;
@@ -39,9 +35,8 @@ export type SvelteFlowStoreActions = {
   reset(): void;
 };
 
-export type ContainerSignals = { domNode?: HTMLDivElement | null; width?: number; height?: number };
 export type StoreSignals = {
-  props: Partial<SvelteFlowProps> & ContainerSignals;
+  props: Partial<SvelteFlowProps>;
   domNode?: HTMLDivElement;
   width?: number;
   height?: number;

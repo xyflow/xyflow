@@ -1,6 +1,3 @@
-<!-- TODO: why is this neccessary for types to work?? -->
-<svelte:options runes={true} />
-
 <script lang="ts">
   import { getContext, setContext, onDestroy } from 'svelte';
   import cc from 'classcat';
@@ -19,7 +16,7 @@
   import { key, createStore } from '$lib/store';
   import type { SvelteFlowProps } from './types';
   import { useColorModeClass } from '$lib/hooks/useColorModeClass';
-  import { type ProviderContext, type ContainerSignals, type StoreContext } from '$lib/store/types';
+  import { type ProviderContext, type StoreContext } from '$lib/store/types';
 
   let {
     style,
@@ -62,7 +59,6 @@
     panOnScroll = false,
     panOnDrag = true,
     selectionOnDrag = true,
-    defaultEdgeOptions,
     connectionLineContainerStyle = '',
     connectionLineStyle = '',
     attributionPosition,
@@ -101,11 +97,13 @@
     }
   });
 
+  // Set store for provider context
   const providerContext = getContext<ProviderContext>(key);
   if (providerContext) {
     providerContext.setStore(store);
   }
 
+  // Overwrite store context to give children direct access
   setContext(key, {
     provider: false,
     getStore() {

@@ -21,14 +21,12 @@ import {
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
-import { syncNodeStores, syncEdgeStores } from './utils';
-import drag from '$lib/actions/drag';
 // import { getVisibleEdges } from './visible-edges';
 // import { getVisibleNodes } from './visible-nodes';
 
 export const key = Symbol();
 
-export { useStore } from './hook.svelte';
+export { useStore } from '../hooks/useStore';
 
 export function createStore(signals: StoreSignals): SvelteFlowStore {
   const store = getInitialStore(signals);
@@ -82,7 +80,9 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
         ...store.fitViewOptions,
         nodes: store.fitViewOptions?.nodes
       });
-      store.fitViewOnInitDone = fitViewOnInitDone;
+      if (fitViewOnInitDone) {
+        store.fitViewOnInitDone = fitViewOnInitDone;
+      }
     }
 
     const newNodes = new Map<string, Node>();
@@ -115,9 +115,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
       newNodes.set(change.id, node);
     }
 
-    // store.nodes.update((nds) => nds);
     store.nodes = store.nodes.map((node) => newNodes.get(node.id) ?? node);
-    // signals.updateNodes((node) => newNodes.get(node.id) ?? node);
 
     if (!store.nodesInitialized) {
       store.nodesInitialized = true;
@@ -244,24 +242,23 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     const isMultiSelection = store.multiselectionKeyPressed;
 
     // store.nodes.update((ns) =>
-    store.nodes.forEach((node) => {
+    store.nodes = store.nodes.map((node) => {
       const nodeWillBeSelected = ids.includes(node.id);
       const selected = isMultiSelection ? node.selected || nodeWillBeSelected : nodeWillBeSelected;
 
-      // we need to mutate the node here in order to have the correct selected state in the drag handler
-      node.selected = selected;
+      if (node.selected !== selected) {
+        // we need to mutate the node here in order to have the correct selected state in the drag handler
+        node.selected = selected;
+        return { ...node };
+      }
 
-      // return node;
+      return node;
     });
-    // );
 
     if (!isMultiSelection) {
-      // store.edges.forEach((es) =>
-      store.edges.forEach((edge) => {
-        edge.selected = false;
-        // return edge;
+      store.edges = store.edges.map((edge) => {
+        return edge.selected ? { ...edge, selected: false } : edge;
       });
-      // );
     }
   }
 
@@ -319,7 +316,6 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     });
   }
 
-  // const _connection = writable<ConnectionState>(initialConnection);
   const updateConnection: UpdateConnection = (newConnection: ConnectionState) => {
     store.rawConnection = { ...newConnection };
   };
@@ -338,9 +334,6 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   const storeWithActions = Object.assign(store, {
-    // syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
-    // syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
-    // syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
     setNodeTypes,
     setEdgeTypes,
     addEdge,

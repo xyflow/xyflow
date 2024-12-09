@@ -49,7 +49,9 @@ import type {
   OnDelete,
   OnEdgeCreate,
   OnBeforeDelete,
-  IsValidConnection
+  IsValidConnection,
+  Edge,
+  Node
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
@@ -69,6 +71,8 @@ export const initialEdgeTypes = {
 };
 
 export const getInitialStore = (signals: StoreSignals) => {
+  // We use a class here, because Svelte adds getters & setter for us.
+  // Inline classes have some performance implications but we just call it once.
   class SvelteFlowStore {
     get nodes() {
       return signals.nodes;
@@ -86,6 +90,7 @@ export const getInitialStore = (signals: StoreSignals) => {
     parentLookup: ParentLookup = new Map();
     connectionLookup: ConnectionLookup = new Map();
     edgeLookup: EdgeLookup = new Map();
+
     adoptNodes: true = $derived.by(() => {
       adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
         nodeExtent: this.nodeExtent,
@@ -100,7 +105,7 @@ export const getInitialStore = (signals: StoreSignals) => {
       return true;
     });
 
-    domNode: HTMLDivElement | null = $derived(signals.domNode ?? signals.props.domNode ?? null);
+    domNode: HTMLDivElement | null = $derived(signals.domNode ?? signals.domNode ?? null);
     width: number = $derived(signals.width ?? signals.props.width ?? 0);
     height: number = $derived(signals.height ?? signals.props.height ?? 0);
 
@@ -111,6 +116,9 @@ export const getInitialStore = (signals: StoreSignals) => {
     nodeOrigin: NodeOrigin = $derived(signals.props.nodeOrigin ?? [0, 0]);
     nodeExtent: CoordinateExtent = $derived(signals.props.nodeExtent ?? infiniteExtent);
     translateExtent: CoordinateExtent = $derived(signals.props.translateExtent ?? infiniteExtent);
+
+    defaultEdgeOptions: Partial<Edge> = $derived(signals.props.defaultEdgeOptions ?? {});
+    defaultNodeOptions: Partial<Node> = $derived(signals.props.defaultNodeOptions ?? {});
 
     nodeDragThreshold: number = $derived(signals.props.nodeDragThreshold ?? 1);
     autoPanOnNodeDrag: boolean = $derived(signals.props.autoPanOnNodeDrag ?? true);
@@ -207,6 +215,7 @@ export const getInitialStore = (signals: StoreSignals) => {
     colorMode: ColorMode = $derived(signals.props.colorMode ?? 'light');
 
     constructor() {
+      // Process intial fitView here
       if (signals.props.fitView && !signals.props.initialViewport && this.width && this.height) {
         const bounds = getInternalNodesBounds(this.nodeLookup, {
           filter: (node) =>
@@ -221,95 +230,4 @@ export const getInitialStore = (signals: StoreSignals) => {
     }
   }
   return new SvelteFlowStore();
-
-  // return new Store();
-  // const nodeLookup: NodeLookup = new Map();
-  // const parentLookup = new Map();
-  // const connectionLookup = new Map();
-  // const edgeLookup = new Map();
-
-  // const storeNodeOrigin = nodeOrigin ?? [0, 0];
-  // const storeNodeExtent = nodeExtent ?? infiniteExtent;
-
-  // adoptUserNodes(nodes, nodeLookup, parentLookup, {
-  //   nodeExtent: storeNodeExtent,
-  //   nodeOrigin: storeNodeOrigin,
-  //   elevateNodesOnSelect: false,
-  //   checkEquality: false
-  // });
-
-  // updateConnectionLookup(connectionLookup, edgeLookup, edges);
-
-  // let viewport: Viewport = { x: 0, y: 0, zoom: 1 };
-
-  // if (fitView && width && height) {
-  //   const bounds = getInternalNodesBounds(nodeLookup, {
-  //     filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight))
-  //   });
-  //   viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
-  // }
-
-  // return {
-  //   flowId: writable<string | null>(null),
-  //   nodes: createNodesStore(nodes, nodeLookup, parentLookup, storeNodeOrigin, storeNodeExtent),
-  //   nodeLookup: readable<NodeLookup<InternalNode>>(nodeLookup),
-  //   parentLookup: readable<ParentLookup<InternalNode>>(parentLookup),
-  //   edgeLookup: readable<EdgeLookup<Edge>>(edgeLookup),
-  //   visibleNodes: readable<InternalNode[]>([]),
-  //   edges: createEdgesStore(edges, connectionLookup, edgeLookup),
-  //   visibleEdges: readable<EdgeLayouted[]>([]),
-  //   connectionLookup: readable<ConnectionLookup>(connectionLookup),
-  //   height: writable<number>(500),
-  //   width: writable<number>(500),
-  //   minZoom: writable<number>(0.5),
-  //   maxZoom: writable<number>(2),
-  //   nodeOrigin: writable<NodeOrigin>(storeNodeOrigin),
-  //   nodeDragThreshold: writable<number>(1),
-  //   nodeExtent: writable<CoordinateExtent>(storeNodeExtent),
-  //   translateExtent: writable<CoordinateExtent>(infiniteExtent),
-  //   autoPanOnNodeDrag: writable<boolean>(true),
-  //   autoPanOnConnect: writable<boolean>(true),
-  //   fitViewOnInit: writable<boolean>(false),
-  //   fitViewOnInitDone: writable<boolean>(false),
-  //   fitViewOptions: writable<FitViewOptions>(undefined),
-  //   panZoom: writable<PanZoomInstance | null>(null),
-  //   snapGrid: writable<SnapGrid | null>(null),
-  //   dragging: writable<boolean>(false),
-  //   selectionRect: writable<SelectionRect | null>(null),
-  //   selectionKeyPressed: writable<boolean>(false),
-  //   multiselectionKeyPressed: writable<boolean>(false),
-  //   deleteKeyPressed: writable<boolean>(false),
-  //   panActivationKeyPressed: writable<boolean>(false),
-  //   zoomActivationKeyPressed: writable<boolean>(false),
-  //   selectionRectMode: writable<string | null>(null),
-  //   selectionMode: writable<SelectionMode>(SelectionMode.Partial),
-  //   nodeTypes: writable<NodeTypes>(initialNodeTypes),
-  //   edgeTypes: writable<EdgeTypes>(initialEdgeTypes),
-  //   viewport: writable<Viewport>(viewport),
-  //   connectionMode: writable<ConnectionMode>(ConnectionMode.Strict),
-  //   domNode: writable<HTMLDivElement | null>(null),
-  //   connection: readable<ConnectionState>(initialConnection),
-  //   connectionLineType: writable<ConnectionLineType>(ConnectionLineType.Bezier),
-  //   connectionRadius: writable<number>(20),
-  //   isValidConnection: writable<IsValidConnection>(() => true),
-  //   nodesDraggable: writable<boolean>(true),
-  //   nodesConnectable: writable<boolean>(true),
-  //   elementsSelectable: writable<boolean>(true),
-  //   selectNodesOnDrag: writable<boolean>(true),
-  //   markers: readable<MarkerProps[]>([]),
-  //   defaultMarkerColor: writable<string>('#b1b1b7'),
-  //   lib: readable<string>('svelte'),
-  //   onlyRenderVisibleElements: writable<boolean>(false),
-  //   onerror: writable<OnError>(devWarn),
-  //   ondelete: writable<OnDelete>(undefined),
-  //   onedgecreate: writable<OnEdgeCreate>(undefined),
-  //   onconnect: writable<OnConnect>(undefined),
-  //   onconnectstart: writable<OnConnectStart>(undefined),
-  //   onconnectend: writable<OnConnectEnd>(undefined),
-  //   onbeforedelete: writable<OnBeforeDelete>(undefined),
-  //   nodesInitialized: writable<boolean>(false),
-  //   edgesInitialized: writable<boolean>(false),
-  //   viewportInitialized: writable<boolean>(false),
-  //   initialized: readable<boolean>(false)
-  // };
 };
