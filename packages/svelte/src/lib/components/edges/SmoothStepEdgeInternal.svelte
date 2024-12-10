@@ -1,22 +1,22 @@
 <script lang="ts">
   import { getSmoothStepPath } from '@xyflow/system';
 
+  import BaseEdge from './BaseEdge.svelte';
   import type { EdgeProps } from '$lib/types';
-  import { BaseEdge } from '$lib/components/BaseEdge';
 
   let {
-    sourceX,
-    sourceY,
-    sourcePosition,
-    targetX,
-    targetY,
-    targetPosition,
+    interactionWidth,
     label,
     labelStyle,
-    markerStart,
+    style,
     markerEnd,
-    interactionWidth,
-    style
+    markerStart,
+    sourcePosition,
+    sourceX,
+    sourceY,
+    targetPosition,
+    targetX,
+    targetY
   }: EdgeProps = $props();
 
   let [path, labelX, labelY] = $derived(

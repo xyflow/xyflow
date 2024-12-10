@@ -1,6 +1,6 @@
 <script lang="ts">
   import cc from 'classcat';
-  import type { BaseEdgeProps } from './types';
+  import type { BaseEdgeProps } from '../../types';
   import EdgeLabel from '../EdgeLabel/EdgeLabel.svelte';
 
   let {

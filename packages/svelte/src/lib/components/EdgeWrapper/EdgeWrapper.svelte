@@ -4,7 +4,6 @@
 
   import { getMarkerId } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
   import { BezierEdgeInternal } from '$lib/components/edges';
   import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
 

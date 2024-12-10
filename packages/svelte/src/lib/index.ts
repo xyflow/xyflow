@@ -7,8 +7,13 @@ export * from '$lib/container/Panel';
 export * from '$lib/components/SvelteFlowProvider';
 export * from '$lib/components/EdgeLabelRenderer';
 export * from '$lib/components/ViewportPortal';
-export * from '$lib/components/BaseEdge';
-export { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '$lib/components/edges';
+export {
+  BezierEdge,
+  StepEdge,
+  SmoothStepEdge,
+  StraightEdge,
+  BaseEdge
+} from '$lib/components/edges';
 export * from '$lib/components/Handle';
 export * from '$lib/components/EdgeLabel';
 

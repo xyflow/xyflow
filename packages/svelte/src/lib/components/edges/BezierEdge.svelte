@@ -1,25 +1,24 @@
 <script lang="ts">
   import { getBezierPath } from '@xyflow/system';
 
+  import BaseEdge from './BaseEdge.svelte';
   import type { BezierEdgeProps } from '$lib/types';
-
-  import { BaseEdge } from '$lib/components/BaseEdge';
 
   let {
     id,
+    interactionWidth,
     label,
     labelStyle,
-    style,
-    markerStart,
     markerEnd,
+    markerStart,
     pathOptions,
-    interactionWidth,
+    sourcePosition,
     sourceX,
     sourceY,
-    sourcePosition,
+    style,
+    targetPosition,
     targetX,
-    targetY,
-    targetPosition
+    targetY
   }: BezierEdgeProps = $props();
 
   let [path, labelX, labelY] = $derived(

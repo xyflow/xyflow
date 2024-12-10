@@ -46,7 +46,6 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   function addEdge(edgeParams: Edge | Connection) {
-    // TODO: let's see
     store.edges = addEdgeUtil(edgeParams, store.edges);
   }
 
@@ -215,33 +214,29 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     }
   }
 
-  function resetSelectedElements(elements: Node[] | Edge[]) {
-    let elementsChanged = false;
-    elements.forEach((element) => {
-      if (element.selected) {
-        element.selected = false;
-        elementsChanged = true;
-      }
-    });
-    return elementsChanged;
-  }
-
   function setPaneClickDistance(distance: number) {
     store.panZoom?.setClickDistance(distance);
   }
 
-  function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
-    resetSelectedElements(params?.nodes || store.nodes);
-    // if (resetNodes) store.nodes.set(get(store.nodes));
+  function deselect<T extends Node | Edge>(element: T) {
+    return element.selected ? { ...element, selected: false } : element;
+  }
 
-    resetSelectedElements(params?.edges || store.edges);
-    // if (resetEdges) store.edges.set(get(store.edges));
+  function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
+    const nodesToDeselect = params?.nodes ? new Set(params.nodes.map((node) => node.id)) : null;
+    store.nodes = store.nodes.map((node) =>
+      !nodesToDeselect || nodesToDeselect.has(node.id) ? deselect(node) : node
+    );
+
+    const edgesToDeselect = params?.edges ? new Set(params.edges.map((node) => node.id)) : null;
+    store.edges = store.edges.map((edge) =>
+      !edgesToDeselect || edgesToDeselect.has(edge.id) ? deselect(edge) : edge
+    );
   }
 
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    // store.nodes.update((ns) =>
     store.nodes = store.nodes.map((node) => {
       const nodeWillBeSelected = ids.includes(node.id);
       const selected = isMultiSelection ? node.selected || nodeWillBeSelected : nodeWillBeSelected;
@@ -251,7 +246,6 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
         node.selected = selected;
         return { ...node };
       }
-
       return node;
     });
 
@@ -265,30 +259,23 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   function addSelectedEdges(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    // store.edges.update((edges) =>
-    store.edges.forEach((edge) => {
+    store.edges = store.edges.map((edge) => {
       const edgeWillBeSelected = ids.includes(edge.id);
       const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
 
-      edge.selected = selected;
-
-      // return edge;
+      if (edge.selected !== selected) {
+        return { ...edge, selected };
+      }
+      return edge;
     });
-    // );
 
     if (!isMultiSelection) {
-      // store.nodes.update((ns) =>
-      store.nodes.forEach((node) => {
-        node.selected = false;
-        // return node;
-      });
-      // );
+      store.nodes = store.nodes.map(deselect);
     }
   }
 
   function handleNodeSelection(id: string) {
-    const node = store.nodes?.find((n) => n.id === id);
-    // const node = store.nodeLookup.get(id)?.internals.userNode;
+    const node = store.nodeLookup.get(id);
 
     if (!node) {
       console.warn('012', errorMessages['error012'](id));
@@ -357,73 +344,4 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   } satisfies SvelteFlowStoreActions);
 
   return storeWithActions;
-
-  // return {
-  //   // state
-  //   ...store,
-
-  //   // derived state
-  //   // visibleEdges: getVisibleEdges(store),
-  //   // visibleNodes: getVisibleNodes(store),
-  //   // connection: derived([_connection, store.viewport], ([connection, viewport]) => {
-  //   //   return connection.inProgress
-  //   //     ? {
-  //   //         ...connection,
-  //   //         to: pointToRendererPoint(connection.to, [viewport.x, viewport.y, viewport.zoom])
-  //   //       }
-  //   //     : { ...connection };
-  //   // }),
-  //   // markers: derived(
-  //   //   [store.edges, store.defaultMarkerColor, store.flowId],
-  //   //   ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
-  //   // ),
-  //   // initialized: (() => {
-  //   //   let initialized = false;
-  //   //   const initialNodesLength = get(store.nodes).length;
-  //   //   const initialEdgesLength = get(store.edges).length;
-  //   //   return derived(
-  //   //     [store.nodesInitialized, store.edgesInitialized, store.viewportInitialized],
-  //   //     ([nodesInitialized, edgesInitialized, viewportInitialized]) => {
-  //   //       // If it was already initialized, return true from then on
-  //   //       if (initialized) return initialized;
-
-  //   //       // if it hasn't been initialised check if it's now
-  //   //       if (initialNodesLength === 0) {
-  //   //         initialized = viewportInitialized;
-  //   //       } else if (initialEdgesLength === 0) {
-  //   //         initialized = viewportInitialized && nodesInitialized;
-  //   //       } else {
-  //   //         initialized = viewportInitialized && nodesInitialized && edgesInitialized;
-  //   //       }
-
-  //   //       return initialized;
-  //   //     }
-  //   //   );
-  //   // })(),
-
-  //   // actions
-  //   syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
-  //   syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
-  //   // syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
-  //   setNodeTypes,
-  //   setEdgeTypes,
-  //   addEdge,
-  //   updateNodePositions,
-  //   updateNodeInternals,
-  //   zoomIn,
-  //   zoomOut,
-  //   fitView: (options?: FitViewOptions) => fitView(options),
-  //   setMinZoom,
-  //   setMaxZoom,
-  //   setTranslateExtent,
-  //   setPaneClickDistance,
-  //   unselectNodesAndEdges,
-  //   addSelectedNodes,
-  //   addSelectedEdges,
-  //   handleNodeSelection,
-  //   panBy,
-  //   updateConnection,
-  //   cancelConnection,
-  //   reset
-  // };
 }
