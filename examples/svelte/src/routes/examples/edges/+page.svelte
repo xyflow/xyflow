@@ -7,7 +7,8 @@
 		BackgroundVariant,
 		MiniMap,
 		MarkerType,
-		type Connection
+		type Connection,
+		type EdgeTypes
 	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
@@ -128,42 +129,26 @@
 			target: '6',
 			label: 'hi',
 			labelStyle: 'background: red; font-weight: 700; padding: 5px;',
-			style: 'stroke: #ffcc0',
-			markerEnd: {
-				type: MarkerType.Arrow,
-				color: '#FFCC00',
-				markerUnits: 'userSpaceOnUse',
-				width: 20,
-				height: 20,
-				strokeWidth: 2
-			},
-			markerStart: {
-				type: MarkerType.ArrowClosed,
-				color: '#FFCC00',
-				orient: 'auto-start-reverse',
-				markerUnits: 'userSpaceOnUse',
-				width: 20,
-				height: 20
-			}
+			style: 'stroke: #ffcc0'
 		}
 	]);
-  
-	const edgeTypes = {
+
+	const edgeTypes: EdgeTypes = {
 		button: ButtonEdge,
 		customBezier: CustomBezierEdge
 	};
-  
-  function getEdgeId(connection: Connection) {
+
+	function getEdgeId(connection: Connection) {
 		return `edge-${connection.source}-${connection.target}}`;
 	}
-  
-  $: console.log('edges', $edges);
+
+	$inspect($edges);
 </script>
 
 <SvelteFlow
 	{nodes}
 	{edges}
-  {edgeTypes}
+	{edgeTypes}
 	fitView
 	nodeDragThreshold={2}
 	onedgecreate={(connection) => {

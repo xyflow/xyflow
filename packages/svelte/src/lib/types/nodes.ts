@@ -1,4 +1,4 @@
-import type { ComponentType, SvelteComponent } from 'svelte';
+import type { Component } from 'svelte';
 import type { InternalNodeBase, NodeBase, NodeProps as NodePropsBase } from '@xyflow/system';
 
 /**
@@ -30,15 +30,13 @@ export type NodeProps<NodeType extends Node = Node> = NodePropsBase<NodeType> & 
 
 export type NodeTypes = Record<
   string,
-  ComponentType<
-    SvelteComponent<
-      NodeProps & {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data: any;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        type: any;
-      }
-    >
+  Component<
+    NodeProps & {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      type: any;
+    }
   >
 >;
 
@@ -48,6 +46,7 @@ export type BuiltInNode =
   | Node<{ label: string }, 'input' | 'output' | 'default'>
   | Node<Record<string, never>, 'group'>;
 
+// TODO SVELTE5 remove this
 export type NodeEventMap = {
   nodeclick: { node: Node; event: MouseEvent | TouchEvent };
   nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };

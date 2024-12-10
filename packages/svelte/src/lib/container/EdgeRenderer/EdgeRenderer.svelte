@@ -1,22 +1,59 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { EdgeWrapper } from '$lib/components/EdgeWrapper';
   import { CallOnMount } from '$lib/components/CallOnMount';
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
-  import { useStore } from '$lib/store';
-  import type { DefaultEdgeOptions } from '$lib/types';
+  import type { EdgeEvents, EdgeLayouted } from '$lib/types';
+  import { getEdgePosition, getElevatedEdgeZIndex } from '@xyflow/system';
+  import type { SvelteFlowStore } from '$lib/store/types';
 
-  export let defaultEdgeOptions: DefaultEdgeOptions | undefined;
+  let {
+    store,
+    onedgeclick,
+    onedgecontextmenu,
+    onedgemouseenter,
+    onedgemouseleave
+  }: { store: SvelteFlowStore } & EdgeEvents = $props();
 
-  const {
-    visibleEdges,
-    edgesInitialized,
-    edges: { setDefaultOptions },
-    elementsSelectable
-  } = useStore();
+  // const { edges, nodes } = store;
 
-  onMount(() => {
-    if (defaultEdgeOptions) setDefaultOptions(defaultEdgeOptions);
+  let layoutedEdges = $derived.by(() => {
+    store.nodes;
+    const layoutedEdges = store.edges.reduce<EdgeLayouted[]>((res, edge) => {
+      const sourceNode = store.nodeLookup.get(edge.source);
+      const targetNode = store.nodeLookup.get(edge.target);
+
+      if (!sourceNode || !targetNode) {
+        return res;
+      }
+
+      const edgePosition = getEdgePosition({
+        id: edge.id,
+        sourceNode,
+        targetNode,
+        sourceHandle: edge.sourceHandle || null,
+        targetHandle: edge.targetHandle || null,
+        connectionMode: store.connectionMode,
+        onError: store.onerror
+      });
+
+      if (edgePosition) {
+        res.push({
+          ...edge,
+          zIndex: getElevatedEdgeZIndex({
+            selected: edge.selected,
+            zIndex: edge.zIndex,
+            sourceNode,
+            targetNode,
+            elevateOnSelect: false
+          }),
+          ...edgePosition
+        });
+      }
+
+      return res;
+    }, []);
+
+    return layoutedEdges;
   });
 </script>
 
@@ -25,8 +62,9 @@
     <MarkerDefinition />
   </svg>
 
-  {#each $visibleEdges as edge (edge.id)}
+  {#each layoutedEdges as edge (edge.id)}
     <EdgeWrapper
+      {store}
       id={edge.id}
       source={edge.source}
       target={edge.target}
@@ -34,7 +72,7 @@
       style={edge.style}
       animated={edge.animated}
       selected={edge.selected}
-      selectable={edge.selectable ?? $elementsSelectable}
+      selectable={edge.selectable ?? store.elementsSelectable}
       deletable={edge.deletable}
       hidden={edge.hidden}
       label={edge.label}
@@ -54,20 +92,20 @@
       class={edge.class}
       type={edge.type || 'default'}
       zIndex={edge.zIndex}
-      on:edgeclick
-      on:edgecontextmenu
-      on:edgemouseenter
-      on:edgemouseleave
+      {onedgeclick}
+      {onedgecontextmenu}
+      {onedgemouseenter}
+      {onedgemouseleave}
     />
   {/each}
 
-  {#if $visibleEdges.length > 0}
+  {#if layoutedEdges.length > 0}
     <CallOnMount
       onMount={() => {
-        $edgesInitialized = true;
+        store.edgesInitialized = true;
       }}
       onDestroy={() => {
-        $edgesInitialized = false;
+        store.edgesInitialized = false;
       }}
     />
   {/if}

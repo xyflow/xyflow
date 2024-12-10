@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -38,7 +37,7 @@
 		nodes: [{ id: '1' }, { id: '2' }]
 	};
 
-	const nodes = writable<Node[]>([
+	let nodes = $state.raw<Node[]>([
 		{
 			id: '1',
 			type: 'input',
@@ -100,7 +99,7 @@
 		}
 	]);
 
-	const edges = writable<Edge[]>([
+	let edges = $state.raw<Edge[]>([
 		{
 			id: '1-2',
 			type: 'default',
@@ -125,23 +124,27 @@
 	]);
 
 	function updateNode() {
-		$nodes[0].position.x += 20;
-		$nodes = $nodes;
+		// We might as well just use updateNode() here
+		// this is just to show what is required to update a node
+		const newNode = { ...nodes[0] };
+		newNode.position.x += 20;
+		nodes[0] = newNode;
+		nodes = [...nodes];
 	}
 
 	function updateEdge() {
-		$edges[0].type = $edges[0].type === 'default' ? 'smoothstep' : 'default';
-		$edges = $edges;
-	}
-
-	$: {
-		console.log('nodes changed', $nodes);
+		// We might as well just use updateEdge() here
+		// this is just to show what is required to update an edge
+		const newEdge = { ...edges[0] };
+		newEdge.type = newEdge.type === 'default' ? 'smoothstep' : 'default';
+		edges[0] = newEdge;
+		edges = [...edges];
 	}
 </script>
 
 <SvelteFlow
-	{nodes}
-	{edges}
+	bind:nodes
+	bind:edges
 	{nodeTypes}
 	{edgeTypes}
 	fitView
@@ -155,38 +158,38 @@
 	initialViewport={{ x: 100, y: 100, zoom: 2 }}
 	snapGrid={[25, 25]}
 	oninit={() => console.log('on init')}
-	on:nodeclick={(event) => console.log('on node click', event)}
-	on:nodemouseenter={(event) => console.log('on node enter', event)}
-	on:nodemouseleave={(event) => console.log('on node leave', event)}
-	on:edgeclick={(event) => console.log('edge click', event)}
-	on:edgemouseenter={(event) => console.log('edge enter', event)}
-	on:edgemouseleave={(event) => console.log('edge leave', event)}
+	onnodeclick={(event) => console.log('on node click', event)}
+	onnodemouseenter={(event) => console.log('on node enter', event)}
+	onnodemouseleave={(event) => console.log('on node leave', event)}
+	onedgeclick={(event) => console.log('edge click', event)}
+	onedgemouseenter={(event) => console.log('edge enter', event)}
+	onedgemouseleave={(event) => console.log('edge leave', event)}
 	onconnectstart={(event) => console.log('on connect start', event)}
 	onconnect={(event) => console.log('on connect', event)}
 	onconnectend={(event) => console.log('on connect end', event)}
-	on:paneclick={(event) => console.log('on pane click', event)}
-	on:panecontextmenu={(event) => {
+	onpaneclick={(event) => console.log('on pane click', event)}
+	onpanecontextmenu={(event) => {
 		console.log('on pane contextmenu', event);
 	}}
-	on:nodedrag={(event) => {
+	onnodedrag={(event) => {
 		console.log('on node drag', event);
 	}}
-	on:nodedragstart={(event) => {
+	onnodedragstart={(event) => {
 		console.log('on node drag start', event);
 	}}
-	on:nodedragstop={(event) => {
+	onnodedragstop={({ event }) => {
 		console.log('on node drag stop', event);
 	}}
-	on:nodecontextmenu={(event) => {
-		event.detail.event.preventDefault();
+	onnodecontextmenu={({ event }) => {
+		event.preventDefault();
 		console.log('on node contextmenu', event);
 	}}
-	on:edgecontextmenu={({ detail: { event, edge } }) => {
+	onedgecontextmenu={({ event, edge }) => {
 		event.preventDefault();
 		console.log('on edge contextmenu', edge);
 	}}
-	on:selectionclick={(event) => console.log('on selection click', event)}
-	on:selectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
+	onselectionclick={(event) => console.log('on selection click', event)}
+	onselectioncontextmenu={(event) => console.log('on selection contextmenu', event)}
 	onbeforedelete={async ({ nodes, edges }) => {
 		console.log('on before delete', nodes, edges);
 		const deleteElements = confirm('Are you sure you want to delete the selected elements?');
@@ -199,19 +202,19 @@
 	deleteKey={['Backspace', 'd']}
 >
 	<Controls orientation="horizontal" {fitViewOptions}>
-		<ControlButton slot="before">xy</ControlButton>
-		<ControlButton aria-label="log" on:click={() => console.log('control button')}
-			>log</ControlButton
+		{#snippet before()}
+			<ControlButton>xy</ControlButton>
+		{/snippet}
+		<ControlButton aria-label="log" onclick={() => console.log('control button')}>log</ControlButton
 		>
 	</Controls>
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
 	<Panel position="top-right">
-		<button on:click={updateNode}>update node pos</button>
-		<button on:click={updateEdge}>update edge type</button>
+		<button onclick={updateNode}>update node pos</button>
+		<button onclick={updateEdge}>update edge type</button>
 		<button
-			on:click={() => {
-				console.log($nodes, $nodes.length);
+			onclick={() => {
 				$nodes[$nodes.length - 1].hidden = !$nodes[$nodes.length - 1].hidden;
 				$nodes = $nodes;
 			}}>hide/unhide</button
