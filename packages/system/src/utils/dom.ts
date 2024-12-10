@@ -40,7 +40,7 @@ const inputTags = ['INPUT', 'SELECT', 'TEXTAREA'];
 export function isInputDOMNode(event: KeyboardEvent): boolean {
   // using composed path for handling shadow dom
   const target = (event.composedPath?.()?.[0] || event.target) as HTMLElement;
-  const isInput = inputTags.includes(target?.nodeName) || target?.hasAttribute('contenteditable');
+  const isInput = inputTags.includes(target?.nodeName) || target?.hasAttribute?.('contenteditable');
 
   // when an input field is focused we don't want to trigger deletion or movement of nodes
   return isInput || !!target?.closest('.nokey');
