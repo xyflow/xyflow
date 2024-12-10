@@ -18,13 +18,13 @@ export function isParentSelected<NodeType extends NodeBase>(node: NodeType, node
   return isParentSelected(parentNode, nodeLookup);
 }
 
-export function hasSelector(target: Element, selector: string, domNode: Element): boolean {
-  let current = target;
+export function hasSelector(target: Element | EventTarget | null, selector: string, domNode: Element): boolean {
+  let current = target as Partial<Element> | null | undefined;
 
   do {
-    if (current?.matches(selector)) return true;
+    if (current?.matches?.(selector)) return true;
     if (current === domNode) return false;
-    current = current.parentElement as Element;
+    current = current?.parentElement;
   } while (current);
 
   return false;
