@@ -1,4 +1,3 @@
-import { get } from 'svelte/store';
 import {
   getOverlappingArea,
   isRectObject,
@@ -207,11 +206,18 @@ export function useSvelteFlow(): {
    * @example
    * updateNode('node-1', (node) => ({ position: { x: node.position.x + 10, y: node.position.y } }));
    */
-  updateNode: (
-    id: string,
-    nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
-    options?: { replace: boolean }
-  ) => void;
+  // updateNode: (
+  //   id: string,
+  //   nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+  //   options?: { replace: boolean }
+  // ) => void;
+  updateNode:
+    | ((id: string, nodeUpdate: Node | ((node: Node) => Node), options: { replace: true }) => void)
+    | ((
+        id: string,
+        nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+        options: { replace: false }
+      ) => void);
   /**
    * Updates the data attribute of a node.
    *
@@ -242,11 +248,13 @@ export function useSvelteFlow(): {
    * @example
    * updateNode('node-1', (node) => ({ position: { x: node.position.x + 10, y: node.position.y } }));
    */
-  updateEdge: (
-    id: string,
-    edgeUpdate: Partial<Edge> | ((edge: Edge) => Partial<Edge>),
-    options?: { replace: boolean }
-  ) => void;
+  updateEdge:
+    | ((id: string, edgeUpdate: Edge | ((edge: Edge) => Edge), options: { replace: true }) => void)
+    | ((
+        id: string,
+        edgeUpdate: Partial<Edge> | ((edge: Edge) => Partial<Edge>),
+        options?: { replace: false }
+      ) => void);
   toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
   /**
    * Returns the bounds of the given nodes or node ids.
@@ -278,7 +286,6 @@ export function useSvelteFlow(): {
   }
 
   const store = useStore();
-  // const { nodes, edges } = store;
 
   const getNodeRect = (node: Node | { id: Node['id'] }): Rect | null => {
     const nodeToUse = isNode(node) ? node : store.nodeLookup.get(node.id)!;
@@ -302,63 +309,35 @@ export function useSvelteFlow(): {
     return nodeToRect(nodeWithPosition);
   };
 
-  const updateNode = (
+  function updateNode(
     id: string,
     nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
     options: { replace: boolean } = { replace: false }
-  ) => {
-    const node = store.nodeLookup.get(id)?.internals.userNode;
+  ) {
+    store.nodes = store.nodes.map((node) => {
+      if (node.id === id) {
+        const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
+        return options?.replace && isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+      }
 
-    if (!node) {
-      return;
-    }
+      return node;
+    });
+  }
 
-    const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
-
-    // if (options.replace) {
-    //   nodes.update((nds) =>
-    //     nds.map((node) => {
-    //       if (node.id === id) {
-    //         return isNode(nextNode) ? nextNode : { ...node, ...nextNode };
-    //       }
-
-    //       return node;
-    //     })
-    //   );
-    // } else {
-    //   Object.assign(node, nextNode);
-    //   nodes.set(store.nodes);
-    // }
-  };
-
-  const updateEdge = (
+  function updateEdge(
     id: string,
     edgeUpdate: Partial<Edge> | ((edge: Edge) => Partial<Edge>),
     options: { replace: boolean } = { replace: false }
-  ) => {
-    const edge = store.edgeLookup.get(id);
+  ) {
+    store.edges = store.edges.map((edge) => {
+      if (edge.id === id) {
+        const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
+        return options.replace && isEdge(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
+      }
 
-    if (!edge) {
-      return;
-    }
-
-    const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge as Edge) : edgeUpdate;
-
-    // if (options.replace) {
-    //   edges.update((edgs) =>
-    //     edgs.map((edge) => {
-    //       if (edge.id === id) {
-    //         return isEdge(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
-    //       }
-
-    //       return edge;
-    //     })
-    //   );
-    // } else {
-    //   Object.assign(edge, nextEdge);
-    //   edges.set(store.edges);
-    // }
-  };
+      return edge;
+    });
+  }
 
   const getInternalNode = (id: string) => store.nodeLookup.get(id);
 
@@ -485,17 +464,13 @@ export function useSvelteFlow(): {
         onBeforeDelete: store.onbeforedelete
       });
 
-      // if (matchingNodes) {
-      //   nodes.update((nds) =>
-      //     nds.filter((node) => !matchingNodes.some(({ id }) => id === node.id))
-      //   );
-      // }
+      if (matchingNodes) {
+        store.nodes = store.nodes.filter((node) => !matchingNodes.some(({ id }) => id === node.id));
+      }
 
-      // if (matchingEdges) {
-      //   edges.update((eds) =>
-      //     eds.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id))
-      //   );
-      // }
+      if (matchingEdges) {
+        store.edges = store.edges.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id));
+      }
 
       return {
         deletedNodes: matchingNodes,
@@ -546,17 +521,11 @@ export function useSvelteFlow(): {
     },
 
     toObject: () => {
-      return {
-        nodes: store.nodes.map((node) => ({
-          ...node,
-          // we want to make sure that changes to the nodes object that gets returned by toObject
-          // do not affect the nodes object
-          position: { ...node.position },
-          data: { ...node.data }
-        })),
-        edges: store.edges.map((edge) => ({ ...edge })),
+      return structuredClone({
+        nodes: [...store.nodes],
+        edges: [...store.edges],
         viewport: { ...store.viewport }
-      };
+      });
     },
     updateNode,
     updateNodeData: (id, dataUpdate, options) => {
@@ -568,9 +537,7 @@ export function useSvelteFlow(): {
 
       const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
 
-      node.data = options?.replace ? nextData : { ...node.data, ...nextData };
-
-      // nodes.update((nds) => nds);
+      updateNode(id, { data: options?.replace ? nextData : { ...node.data, ...nextData } });
     },
     updateEdge,
     getNodesBounds: (nodes) => {
@@ -580,6 +547,7 @@ export function useSvelteFlow(): {
       Array.from(store.connectionLookup.get(`${nodeId}-${type}-${id ?? null}`)?.values() ?? [])
   };
 }
+
 function getElements(lookup: Map<string, InternalNode>, ids: string[]): Node[];
 function getElements(lookup: Map<string, Edge>, ids: string[]): Edge[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

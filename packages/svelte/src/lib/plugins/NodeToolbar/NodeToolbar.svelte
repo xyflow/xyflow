@@ -4,7 +4,7 @@
 
   import portal from '$lib/actions/portal';
   import { useStore } from '$lib/store';
-  import { useSvelteFlow } from '$lib/hooks';
+  import { useSvelteFlow } from '$lib/hooks/useSvelteFlow';
 
   import type { InternalNode } from '$lib/types';
   import type { NodeToolbarProps } from './types';
@@ -19,7 +19,7 @@
   }: NodeToolbarProps = $props();
 
   const store = useStore();
-  // const { nodes } = store;
+
   const { getNodesBounds } = useSvelteFlow();
   const contextNodeId = getContext<string>('svelteflow__node_id');
 
