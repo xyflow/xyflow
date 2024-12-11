@@ -4,9 +4,10 @@
   import { errorMessages, nodeHasDimensions, Position } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
-  import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
-  import type { ConnectableContext, NodeWrapperProps } from './types';
   import { getNodeInlineStyleDimensions } from './utils';
+  import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
+
+  import type { ConnectableContext, NodeWrapperProps } from './types';
   import type { Node, NodeEvents } from '$lib/types';
 
   let {
@@ -25,7 +26,6 @@
   }: NodeWrapperProps & NodeEvents = $props();
 
   let {
-    id,
     data = {},
     selected = false,
     draggable: _draggable,
@@ -48,18 +48,16 @@
     dragHandle
   } = $derived(node);
 
+  let { id } = node;
+
   let draggable = $derived(_draggable ?? store.nodesDraggable);
   let selectable = $derived(_selectable ?? store.elementsSelectable);
   let connectable = $derived(_connectable ?? store.nodesConnectable);
   let initialized = $derived(nodeHasDimensions(node));
 
-  // TODO: does this make sense
-  let flipFlop = false;
-  let shouldRerenderSignal = $derived.by(() =>
-    store.adoptNodes.has(id) ? (flipFlop = !flipFlop) : flipFlop
-  );
-
-  function getInternalNode(node: Node, shouldRerender: boolean = false) {
+  // we also pass store.nodes to this function to rerender when a node changes
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function getInternalNode(node: Node, nodes: Node[]) {
     return { ...store.nodeLookup.get(node.id)! };
   }
 
@@ -68,7 +66,7 @@
       z: zIndex = 0,
       positionAbsolute: { x: positionX, y: positionY }
     }
-  } = $derived(getInternalNode(node, shouldRerenderSignal));
+  } = $derived(getInternalNode(node, store.nodes));
 
   function isInParentLookup(id: string) {
     return store.parentLookup.has(id);

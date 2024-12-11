@@ -1,4 +1,3 @@
-import { get } from 'svelte/store';
 import { XYDrag, type OnDrag } from '@xyflow/system';
 
 import type { SvelteFlowStore } from '$lib/store/types';

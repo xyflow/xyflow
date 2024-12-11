@@ -14,16 +14,26 @@
     onedgemouseleave
   }: { store: SvelteFlowStore } & EdgeEvents = $props();
 
-  // const { edges, nodes } = store;
-
+  let previousLayoutedEdges = new Map<string, EdgeLayouted>();
   let layoutedEdges = $derived.by(() => {
     store.nodes;
-    const layoutedEdges = store.edges.reduce<EdgeLayouted[]>((res, edge) => {
+
+    const layoutedEdges = new Map<string, EdgeLayouted>();
+
+    for (let edge of store.edges) {
       const sourceNode = store.nodeLookup.get(edge.source);
       const targetNode = store.nodeLookup.get(edge.target);
 
       if (!sourceNode || !targetNode) {
-        return res;
+        continue;
+      }
+
+      // we reuse the previous edge object if the source and target node are the same as before
+      // references to internalNodes that haven't changed stay the same
+      const previous = previousLayoutedEdges.get(edge.id);
+      if (previous && sourceNode == previous.sourceNode && targetNode == previous.targetNode) {
+        layoutedEdges.set(edge.id, previous);
+        continue;
       }
 
       const edgePosition = getEdgePosition({
@@ -37,7 +47,7 @@
       });
 
       if (edgePosition) {
-        res.push({
+        layoutedEdges.set(edge.id, {
           ...edge,
           zIndex: getElevatedEdgeZIndex({
             selected: edge.selected,
@@ -46,13 +56,14 @@
             targetNode,
             elevateOnSelect: false
           }),
-          ...edgePosition
+          ...edgePosition,
+          sourceNode,
+          targetNode
         });
       }
+    }
 
-      return res;
-    }, []);
-
+    previousLayoutedEdges = layoutedEdges;
     return layoutedEdges;
   });
 </script>
@@ -62,36 +73,10 @@
     <MarkerDefinition />
   </svg>
 
-  {#each layoutedEdges as edge (edge.id)}
+  {#each layoutedEdges.values() as edge (edge.id)}
     <EdgeWrapper
       {store}
-      id={edge.id}
-      source={edge.source}
-      target={edge.target}
-      data={edge.data}
-      style={edge.style}
-      animated={edge.animated}
-      selected={edge.selected}
-      selectable={edge.selectable ?? store.elementsSelectable}
-      deletable={edge.deletable}
-      hidden={edge.hidden}
-      label={edge.label}
-      labelStyle={edge.labelStyle}
-      markerStart={edge.markerStart}
-      markerEnd={edge.markerEnd}
-      sourceHandle={edge.sourceHandle}
-      targetHandle={edge.targetHandle}
-      sourceX={edge.sourceX}
-      sourceY={edge.sourceY}
-      targetX={edge.targetX}
-      targetY={edge.targetY}
-      sourcePosition={edge.sourcePosition}
-      targetPosition={edge.targetPosition}
-      ariaLabel={edge.ariaLabel}
-      interactionWidth={edge.interactionWidth}
-      class={edge.class}
-      type={edge.type || 'default'}
-      zIndex={edge.zIndex}
+      {edge}
       {onedgeclick}
       {onedgecontextmenu}
       {onedgemouseenter}
@@ -99,7 +84,7 @@
     />
   {/each}
 
-  {#if layoutedEdges.length > 0}
+  {#if layoutedEdges.size > 0}
     <CallOnMount
       onMount={() => {
         store.edgesInitialized = true;

@@ -2,6 +2,7 @@
   import { onDestroy } from 'svelte';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
+
   import type { NodeEvents } from '$lib/types';
   import type { SvelteFlowStore } from '$lib/store/types';
 

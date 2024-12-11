@@ -48,7 +48,7 @@
 	}
 
 	let nodes = $state.raw(nodeItems);
-	let edges = $state.raw([]);
+	let edges = $state.raw(edgeItems);
 </script>
 
 <SvelteFlow bind:nodes bind:edges fitView minZoom={0.2}>

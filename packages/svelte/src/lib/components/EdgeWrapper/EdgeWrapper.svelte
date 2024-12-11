@@ -11,51 +11,55 @@
   import type { SvelteFlowStore } from '$lib/store/types';
 
   const {
-    id,
-    type = 'default',
+    edge,
     store,
+    onedgeclick,
+    onedgecontextmenu,
+    onedgemouseenter,
+    onedgemouseleave
+  }: { store: SvelteFlowStore; edge: EdgeLayouted } & EdgeEvents = $props();
+
+  let {
     source,
     target,
-    data = {},
-    style,
-    zIndex,
-    animated = false,
-    selected = false,
-    selectable,
-    deletable,
-    hidden,
-    label,
-    labelStyle,
-    markerStart,
-    markerEnd,
-    sourceHandle,
-    targetHandle,
     sourceX,
     sourceY,
     targetX,
     targetY,
     sourcePosition,
     targetPosition,
-    ariaLabel,
+    animated,
+    selected,
+    label,
+    labelStyle,
+    data = {},
+    style,
     interactionWidth,
+    type = 'default',
+    sourceHandle,
+    targetHandle,
+    markerStart,
+    markerEnd,
+    selectable: edgeSelectable,
+    deletable,
+    hidden,
+    zIndex,
     class: className,
-    onedgeclick,
-    onedgecontextmenu,
-    onedgemouseenter,
-    onedgemouseleave
-  }: { store: SvelteFlowStore } & EdgeLayouted & EdgeEvents = $props();
+    ariaLabel
+  } = $derived(edge);
 
+  const { id } = edge;
   setContext('svelteflow__edge_id', id);
 
-  let edgeType = $derived(type ?? 'default');
-  let EdgeComponent = $derived(store.edgeTypes[edgeType] ?? BezierEdgeInternal);
+  let selectable = $derived(edgeSelectable ?? store.elementsSelectable);
+  let EdgeComponent = $derived(store.edgeTypes[type] ?? BezierEdgeInternal);
+
   let markerStartUrl = $derived(
     markerStart ? `url('#${getMarkerId(markerStart, store.flowId)}')` : undefined
   );
   let markerEndUrl = $derived(
     markerEnd ? `url('#${getMarkerId(markerEnd, store.flowId)}')` : undefined
   );
-  let isSelectable = $derived(selectable ?? store.elementsSelectable);
 
   const handleEdgeSelect = useHandleEdgeSelect();
 
@@ -88,7 +92,7 @@
       class={cc(['svelte-flow__edge', className])}
       class:animated
       class:selected
-      class:selectable={isSelectable}
+      class:selectable
       data-id={id}
       {onclick}
       oncontextmenu={onedgecontextmenu
@@ -130,9 +134,9 @@
         {data}
         {style}
         {interactionWidth}
-        selectable={isSelectable}
+        {selectable}
         deletable={deletable ?? true}
-        type={edgeType}
+        {type}
         sourceHandleId={sourceHandle}
         targetHandleId={targetHandle}
         markerStart={markerStartUrl}
