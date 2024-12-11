@@ -93,6 +93,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   nodeLookup.clear();
   parentLookup.clear();
 
+  const updatedChildNodes = new Set<string>();
   for (const userNode of nodes) {
     let internalNode = tmpLookup.get(userNode.id);
 
@@ -123,9 +124,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     }
 
     if (userNode.parentId) {
-      updateChildNode(internalNode, nodeLookup, parentLookup, options);
+      updateChildNode(internalNode, nodeLookup, parentLookup, options, updatedChildNodes);
     }
   }
+  return updatedChildNodes;
 }
 
 function updateParentLookup<NodeType extends NodeBase>(
@@ -152,7 +154,8 @@ function updateChildNode<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options?: UpdateNodesOptions<NodeType>
+  options?: UpdateNodesOptions<NodeType>,
+  updatedChildNodes?: Set<string>
 ) {
   const { elevateNodesOnSelect, nodeOrigin, nodeExtent } = mergeObjects(defaultOptions, options);
   const parentId = node.parentId!;
@@ -178,6 +181,7 @@ function updateChildNode<NodeType extends NodeBase>(
       positionAbsolute: positionChanged ? { x, y } : positionAbsolute,
       z,
     };
+    updatedChildNodes?.add(node.id);
   }
 }
 

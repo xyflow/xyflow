@@ -91,14 +91,13 @@ export const getInitialStore = (signals: StoreSignals) => {
     connectionLookup: ConnectionLookup = new Map();
     edgeLookup: EdgeLookup = new Map();
 
-    adoptNodes: true = $derived.by(() => {
-      adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
+    adoptNodes: Set<string> = $derived.by(() => {
+      return adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
         nodeExtent: this.nodeExtent,
         nodeOrigin: this.nodeOrigin,
         elevateNodesOnSelect: false,
         checkEquality: true
       });
-      return true;
     });
     adoptEdges: true = $derived.by(() => {
       updateConnectionLookup(this.connectionLookup, this.edgeLookup, signals.edges);
@@ -197,8 +196,8 @@ export const getInitialStore = (signals: StoreSignals) => {
     edgesInitialized: boolean = $state(false);
     viewportInitialized: boolean = $state(false);
 
-    initialNodesLength: number = signals.nodes.length;
-    initialEdgesLength: number = signals.edges.length;
+    initialNodesLength: number = signals.nodes?.length ?? 0;
+    initialEdgesLength: number = signals.edges?.length ?? 0;
     initialized: boolean = $derived.by(() => {
       let initialized = false;
       // if it hasn't been initialised check if it's now

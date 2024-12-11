@@ -243,6 +243,8 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
 
       if (node.selected !== selected) {
         // we need to mutate the node here in order to have the correct selected state in the drag handler
+        const internalNode = store.nodeLookup.get(node.id);
+        if (internalNode) internalNode.selected = selected;
         node.selected = selected;
         return { ...node };
       }

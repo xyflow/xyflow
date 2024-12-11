@@ -1,45 +1,18 @@
 <script lang="ts">
   import { setContext, onDestroy } from 'svelte';
   import cc from 'classcat';
-  import { errorMessages, Position } from '@xyflow/system';
+  import { errorMessages, nodeHasDimensions, Position } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
   import type { ConnectableContext, NodeWrapperProps } from './types';
   import { getNodeInlineStyleDimensions } from './utils';
-  import type { NodeEvents } from '$lib/types';
+  import type { Node, NodeEvents } from '$lib/types';
 
   let {
     store,
     node,
-    id,
-    data = {},
-    selected = false,
-    draggable,
-    selectable,
-    deletable,
-    connectable = true,
-    hidden = false,
-    dragging = false,
-    resizeObserver = null,
-    style,
-    class: className,
-    type = 'default',
-    isParent = false,
-    parentId,
-    positionX,
-    positionY,
-    sourcePosition,
-    targetPosition,
-    zIndex,
-    measuredWidth,
-    measuredHeight,
-    initialWidth,
-    initialHeight,
-    width,
-    height,
-    dragHandle,
-    initialized = false,
+    resizeObserver,
     nodeClickDistance,
     onnodeclick,
     onnodedrag,
@@ -50,6 +23,58 @@
     onnodemousemove,
     onnodecontextmenu
   }: NodeWrapperProps & NodeEvents = $props();
+
+  let {
+    id,
+    data = {},
+    selected = false,
+    draggable: _draggable,
+    selectable: _selectable,
+    deletable = true,
+    connectable: _connectable,
+    hidden = false,
+    dragging = false,
+    style,
+    class: className,
+    type = 'default',
+    parentId,
+    sourcePosition,
+    targetPosition,
+    measured: { width: measuredWidth, height: measuredHeight } = { width: 0, height: 0 },
+    initialWidth,
+    initialHeight,
+    width,
+    height,
+    dragHandle
+  } = $derived(node);
+
+  let draggable = $derived(_draggable ?? store.nodesDraggable);
+  let selectable = $derived(_selectable ?? store.elementsSelectable);
+  let connectable = $derived(_connectable ?? store.nodesConnectable);
+  let initialized = $derived(nodeHasDimensions(node));
+
+  // TODO: does this make sense
+  let flipFlop = false;
+  let shouldRerenderSignal = $derived.by(() =>
+    store.adoptNodes.has(id) ? (flipFlop = !flipFlop) : flipFlop
+  );
+
+  function getInternalNode(node: Node, shouldRerender: boolean = false) {
+    return { ...store.nodeLookup.get(node.id)! };
+  }
+
+  let {
+    internals: {
+      z: zIndex = 0,
+      positionAbsolute: { x: positionX, y: positionY }
+    }
+  } = $derived(getInternalNode(node, shouldRerenderSignal));
+
+  function isInParentLookup(id: string) {
+    return store.parentLookup.has(id);
+  }
+
+  let isParent = $derived(isInParentLookup(id));
 
   let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
@@ -144,7 +169,7 @@
       store.handleNodeSelection(id);
     }
 
-    onnodeclick?.({ node: node.internals.userNode, event });
+    onnodeclick?.({ node, event });
   }
 </script>
 

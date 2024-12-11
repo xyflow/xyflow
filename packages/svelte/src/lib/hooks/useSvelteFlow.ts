@@ -211,13 +211,11 @@ export function useSvelteFlow(): {
   //   nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
   //   options?: { replace: boolean }
   // ) => void;
-  updateNode:
-    | ((id: string, nodeUpdate: Node | ((node: Node) => Node), options: { replace: true }) => void)
-    | ((
-        id: string,
-        nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
-        options: { replace: false }
-      ) => void);
+  updateNode: (
+    id: string,
+    nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+    options?: { replace: boolean }
+  ) => void;
   /**
    * Updates the data attribute of a node.
    *
@@ -248,13 +246,11 @@ export function useSvelteFlow(): {
    * @example
    * updateNode('node-1', (node) => ({ position: { x: node.position.x + 10, y: node.position.y } }));
    */
-  updateEdge:
-    | ((id: string, edgeUpdate: Edge | ((edge: Edge) => Edge), options: { replace: true }) => void)
-    | ((
-        id: string,
-        edgeUpdate: Partial<Edge> | ((edge: Edge) => Partial<Edge>),
-        options?: { replace: false }
-      ) => void);
+  updateEdge: (
+    id: string,
+    edgeUpdate: Partial<Edge> | ((edge: Edge) => Partial<Edge>),
+    options?: { replace: boolean }
+  ) => void;
   toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
   /**
    * Returns the bounds of the given nodes or node ids.
