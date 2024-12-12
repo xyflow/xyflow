@@ -23,8 +23,6 @@
     connectionLine?: Snippet;
   } = $props();
 
-  // $inspect(store.connection);
-
   let path = $derived.by(() => {
     if (!store.connection.inProgress) {
       return '';

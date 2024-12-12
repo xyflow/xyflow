@@ -72,7 +72,7 @@ export const initialEdgeTypes = {
 
 export const getInitialStore = (signals: StoreSignals) => {
   // We use a class here, because Svelte adds getters & setter for us.
-  // Inline classes have some performance implications but we just call it once.
+  // Inline classes have some performance implications but we just call it once (max twice).
   class SvelteFlowStore {
     get nodes() {
       return signals.nodes;
@@ -223,6 +223,11 @@ export const getInitialStore = (signals: StoreSignals) => {
         });
         this.viewport = getViewportForBounds(bounds, this.width, this.height, 0.5, 2, 0.1);
       }
+
+      if (process.env.NODE_ENV === 'development') {
+        warnIfDeeplyReactive(signals.nodes, 'nodes');
+        warnIfDeeplyReactive(signals.edges, 'edges');
+      }
     }
 
     resetStoreValues() {
@@ -231,3 +236,16 @@ export const getInitialStore = (signals: StoreSignals) => {
   }
   return new SvelteFlowStore();
 };
+
+// Only way to check if an object is a proxy
+// is to see if is failes to perform a structured clone
+// TODO: is $state.raw really nessessary?
+function warnIfDeeplyReactive(array: unknown[] | undefined, name: string) {
+  try {
+    if (array && array.length > 0) {
+      structuredClone(array[0]);
+    }
+  } catch {
+    console.warn(`Use $state.raw for ${name} to prevent performance issues.`);
+  }
+}

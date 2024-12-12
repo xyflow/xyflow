@@ -2,7 +2,14 @@ import { key } from '$lib/store';
 import type { StoreContext } from '$lib/store/types';
 import { getContext } from 'svelte';
 
-export function derivedWarning(functionName: string) {
+/**
+ * Warns the user that they should use $derived() when calling a hook.
+ * This is not neccessarry when the hook is called inside a child of <SvelteFlowFlow />,
+ * however exceptions can be made if you don't want to return a closure.
+ * @param functionName - The name of the function that is being called
+ * @param force - If true, the warning will be shown regardless if child of <SvelteFlowFlow />
+ */
+export function derivedWarning(functionName: string, force?: boolean) {
   const storeContext = getContext<StoreContext>(key);
 
   if (!storeContext) {
@@ -11,9 +18,8 @@ export function derivedWarning(functionName: string) {
     );
   }
 
-  if (storeContext.provider && !$effect.tracking()) {
-    console.warn(
-      `Use $derived(${functionName}()), when not calling inside a child of the <SvelteFlow /> component.`
-    );
+  if ((force || storeContext.provider) && !$effect.tracking()) {
+    console.warn(`Use $derived(${functionName}()) to receive updates when values change.`);
+    console.trace(functionName);
   }
 }

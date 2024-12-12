@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		useSvelteFlow,
@@ -19,11 +18,11 @@
 		}
 	];
 
-	const nodes = writable<Node[]>(initialNodes);
-	const edges = writable<Edge[]>([]);
+	let nodes = $state.raw<Node[]>(initialNodes);
+	let edges = $state.raw<Edge[]>([]);
 
 	let connectingNodeId: string | null = $state('0');
-	let rect: DOMRectReadOnly = $state();
+	let rect = $state<DOMRectReadOnly>();
 	let id = 1;
 	const getId = () => `${id++}`;
 
@@ -56,15 +55,12 @@
 				origin: [0.5, 0.0]
 			};
 
-			$nodes.push(newNode);
-			$edges.push({
+			nodes.push(newNode);
+			edges.push({
 				source: connectingNodeId,
 				target: id,
 				id: `${connectingNodeId}--${id}`
 			});
-
-			$nodes = $nodes;
-			$edges = $edges;
 		}
 	};
 </script>
@@ -73,8 +69,8 @@
 
 <div class="wrapper" bind:contentRect={rect}>
 	<SvelteFlow
-		{nodes}
-		{edges}
+		bind:nodes
+		bind:edges
 		fitView
 		fitViewOptions={{ padding: 2 }}
 		onconnectstart={(_, { nodeId }) => {

@@ -99,7 +99,7 @@
 
   // Set store for provider context
   const providerContext = getContext<ProviderContext>(key);
-  if (providerContext) {
+  if (providerContext && providerContext.setStore) {
     providerContext.setStore(store);
   }
 
