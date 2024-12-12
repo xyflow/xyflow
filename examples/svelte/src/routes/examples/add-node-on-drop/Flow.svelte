@@ -56,11 +56,11 @@
 			};
 
 			nodes.push(newNode);
-			edges.push({
-				source: connectingNodeId,
-				target: id,
-				id: `${connectingNodeId}--${id}`
-			});
+			// edges.push({
+			// 	source: connectingNodeId,
+			// 	target: id,
+			// 	id: `${connectingNodeId}--${id}`
+			// });
 		}
 	};
 </script>

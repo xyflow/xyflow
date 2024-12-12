@@ -10,7 +10,7 @@
 		event.dataTransfer.effectAllowed = 'move';
 	};
 
-	const { zoomIn, zoomOut, fitView, viewport, nodes } = useSvelteFlow();
+	// const { zoomIn, zoomOut, fitView, viewport, nodes } = $derived(useSvelteFlow());
 </script>
 
 <aside>

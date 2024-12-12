@@ -13,7 +13,7 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	const nodes = writable<Node[]>([
+	const initialNodes = [
 		{
 			id: '1',
 			type: 'input',
@@ -32,9 +32,11 @@
 			data: { label: 'Output Node' },
 			position: { x: 300, y: 150 }
 		}
-	]);
+	];
 
-	const edges = writable([
+	let nodes = $state.raw<Node[]>(initialNodes);
+
+	let edges = $state.raw([
 		{
 			id: '1-2',
 			type: 'default',
@@ -50,7 +52,7 @@
 		}
 	]);
 
-	const svelteFlow = useSvelteFlow();
+	const { screenToFlowPosition } = $derived(useSvelteFlow());
 
 	const onDragOver = (event: DragEvent) => {
 		event.preventDefault();
@@ -68,7 +70,7 @@
 		}
 
 		const type = event.dataTransfer.getData('application/svelteflow') || 'default';
-		const position = svelteFlow.screenToFlowPosition({
+		const position = screenToFlowPosition({
 			x: event.clientX,
 			y: event.clientY
 		});
@@ -79,15 +81,14 @@
 			data: { label: `${type} node` }
 		};
 
-		$nodes.push(newNode);
-		$nodes = $nodes;
+		nodes = [...nodes, newNode];
 	};
 
-	$inspect($nodes);
+	$inspect(nodes);
 </script>
 
 <main>
-	<SvelteFlow {nodes} {edges} fitView on:dragover={onDragOver} on:drop={onDrop}>
+	<SvelteFlow bind:nodes bind:edges fitView ondragover={onDragOver} ondrop={onDrop}>
 		<Controls />
 		<Background variant={BackgroundVariant.Dots} />
 		<MiniMap />

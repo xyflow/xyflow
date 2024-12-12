@@ -1,4 +1,3 @@
-import { get } from 'svelte/store';
 import { errorMessages } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
