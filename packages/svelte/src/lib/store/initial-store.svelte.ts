@@ -91,13 +91,14 @@ export const getInitialStore = (signals: StoreSignals) => {
     connectionLookup: ConnectionLookup = new Map();
     edgeLookup: EdgeLookup = new Map();
 
-    adoptNodes: Set<string> = $derived.by(() => {
-      return adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
+    adoptNodes: true = $derived.by(() => {
+      adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
         nodeExtent: this.nodeExtent,
         nodeOrigin: this.nodeOrigin,
         elevateNodesOnSelect: false,
         checkEquality: true
       });
+      return true;
     });
     adoptEdges: true = $derived.by(() => {
       updateConnectionLookup(this.connectionLookup, this.edgeLookup, signals.edges);

@@ -1,12 +1,12 @@
 import type { SvelteFlowStore } from '$lib/store/types';
-import type { Node } from '$lib/types';
+import type { InternalNode } from '$lib/types';
 
 export type ConnectableContext = {
   value: boolean;
 };
 
 export type NodeWrapperProps = {
-  node: Node;
+  node: InternalNode;
   store: SvelteFlowStore;
   nodeClickDistance?: number;
   resizeObserver?: ResizeObserver | null;

@@ -45,7 +45,11 @@
     initialHeight,
     width,
     height,
-    dragHandle
+    dragHandle,
+    internals: {
+      z: zIndex = 0,
+      positionAbsolute: { x: positionX, y: positionY }
+    }
   } = $derived(node);
 
   let { id } = node;
@@ -54,19 +58,6 @@
   let selectable = $derived(_selectable ?? store.elementsSelectable);
   let connectable = $derived(_connectable ?? store.nodesConnectable);
   let initialized = $derived(nodeHasDimensions(node));
-
-  // we also pass store.nodes to this function to rerender when a node changes
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function getInternalNode(node: Node, nodes: Node[]) {
-    return { ...store.nodeLookup.get(node.id)! };
-  }
-
-  let {
-    internals: {
-      z: zIndex = 0,
-      positionAbsolute: { x: positionX, y: positionY }
-    }
-  } = $derived(getInternalNode(node, store.nodes));
 
   function isInParentLookup(id: string) {
     return store.parentLookup.has(id);

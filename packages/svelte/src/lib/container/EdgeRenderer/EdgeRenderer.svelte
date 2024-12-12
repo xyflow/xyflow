@@ -28,10 +28,17 @@
         continue;
       }
 
-      // we reuse the previous edge object if the source and target node are the same as before
-      // references to internalNodes that haven't changed stay the same
+      // we reuse the previous edge object if
+      // the current and previous edge are the same
+      // and the source and target node are the same
+      // and references to internalNodes are the same
       const previous = previousLayoutedEdges.get(edge.id);
-      if (previous && sourceNode == previous.sourceNode && targetNode == previous.targetNode) {
+      if (
+        previous &&
+        edge == previous.edge &&
+        sourceNode == previous.sourceNode &&
+        targetNode == previous.targetNode
+      ) {
         layoutedEdges.set(edge.id, previous);
         continue;
       }
@@ -58,7 +65,8 @@
           }),
           ...edgePosition,
           sourceNode,
-          targetNode
+          targetNode,
+          edge
         });
       }
     }

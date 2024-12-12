@@ -176,4 +176,5 @@ export type EdgeLayouted = Pick<
     targetNode?: Node;
     sourceHandleId?: string | null;
     targetHandleId?: string | null;
+    edge: Edge;
   };
