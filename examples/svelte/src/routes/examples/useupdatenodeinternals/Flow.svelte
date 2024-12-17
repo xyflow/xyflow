@@ -18,7 +18,7 @@
 		custom: CustomNode
 	};
 
-	const nodes = $state.raw([
+	let nodes = $state.raw([
 		{
 			id: '1',
 			type: 'custom',
@@ -39,7 +39,7 @@
 		}
 	]);
 
-	const edges = $state.raw([
+	let edges = $state.raw([
 		{
 			id: '1-2',
 			source: '1',
@@ -60,7 +60,7 @@
 </script>
 
 <main>
-	<SvelteFlow {nodes} {edges} {nodeTypes} fitView>
+	<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView>
 		<Controls />
 		<Background variant={BackgroundVariant.Dots} />
 		<MiniMap />
