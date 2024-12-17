@@ -1,6 +1,8 @@
 <script lang="ts">
 	import {
 		SvelteFlow,
+		useConnection,
+		useHandleConnections,
 		useSvelteFlow,
 		type Edge,
 		type Node,
@@ -27,6 +29,10 @@
 	const getId = () => `${id++}`;
 
 	const { screenToFlowPosition, flowToScreenPosition } = $derived(useSvelteFlow());
+
+	const connections = useHandleConnections({ nodeId: '0', type: 'source' });
+
+	$inspect(connections.current);
 
 	const handleConnectEnd: OnConnectEnd = (event) => {
 		if (!connectingNodeId) return;
@@ -55,12 +61,14 @@
 				origin: [0.5, 0.0]
 			};
 
-			nodes.push(newNode);
-			// edges.push({
-			// 	source: connectingNodeId,
-			// 	target: id,
-			// 	id: `${connectingNodeId}--${id}`
-			// });
+			nodes = [...nodes, newNode];
+
+			const newEdge = {
+				source: connectingNodeId,
+				target: id,
+				id: `${connectingNodeId}--${id}`
+			};
+			edges = [...edges, newEdge];
 		}
 	};
 </script>

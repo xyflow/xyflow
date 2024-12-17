@@ -8,7 +8,7 @@
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 
   import type { ConnectableContext, NodeWrapperProps } from './types';
-  import type { Node, NodeEvents } from '$lib/types';
+  import type { NodeEvents } from '$lib/types';
 
   let {
     store,

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { getBezierPath, useConnection } from '@xyflow/svelte';
 
-	const connection = $derived(useConnection());
+	const connection = useConnection();
 
 	let path: string | null = $derived.by(() => {
-		if (connection.inProgress) {
-			const { from, to, fromPosition, toPosition } = connection;
+		if (connection.current.inProgress) {
+			const { from, to, fromPosition, toPosition } = connection.current;
 			const pathParams = {
 				sourceX: from.x,
 				sourceY: from.y,
@@ -21,6 +21,6 @@
 	});
 </script>
 
-{#if connection.inProgress}
-	<path d={path} fill="none" stroke={connection.fromHandle.id} />
+{#if connection.current.inProgress}
+	<path d={path} fill="none" stroke={connection.current.fromHandle.id} />
 {/if}

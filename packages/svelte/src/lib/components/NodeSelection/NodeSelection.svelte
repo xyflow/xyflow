@@ -15,8 +15,6 @@
     onselectioncontextmenu
   }: NodeSelectionProps = $props();
 
-  // const { nodes } = store;
-
   let bounds: Rect | null = $derived.by(() => {
     if (store.selectionRectMode === 'nodes') {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions

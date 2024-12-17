@@ -3,6 +3,7 @@
   import cc from 'classcat';
   import { PanOnScrollMode } from '@xyflow/system';
 
+  import { key, createStore } from '$lib/store';
   import { Zoom } from '$lib/container/Zoom';
   import { Pane } from '$lib/container/Pane';
   import { Viewport as ViewportComponent } from '$lib/container/Viewport';
@@ -13,9 +14,7 @@
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
   import { Attribution } from '$lib/components/Attribution';
-  import { key, createStore } from '$lib/store';
   import type { SvelteFlowProps } from './types';
-  import { useColorModeClass } from '$lib/hooks/useColorModeClass';
   import { type ProviderContext, type StoreContext } from '$lib/store/types';
 
   let {
@@ -114,91 +113,86 @@
   onDestroy(() => {
     store.reset();
   });
-
-  let colorModeClass = $derived(useColorModeClass(store.colorMode));
 </script>
 
-<!-- TODO: this is the only hack in the library so far. Can we get rid of it? -->
-{#if store.adoptNodes && store.adoptEdges}
-  <div
-    bind:this={domNode}
-    bind:clientWidth
-    bind:clientHeight
-    style:width
-    style:height
-    {style}
-    class={cc(['svelte-flow', className, $colorModeClass])}
-    data-testid="svelte-flow__wrapper"
-    {...props}
-    role="application"
+<div
+  bind:this={domNode}
+  bind:clientWidth
+  bind:clientHeight
+  style:width
+  style:height
+  {style}
+  class={cc(['svelte-flow', className, store.colorMode])}
+  data-testid="svelte-flow__wrapper"
+  {...props}
+  role="application"
+>
+  <KeyHandler
+    {store}
+    {selectionKey}
+    {deleteKey}
+    {panActivationKey}
+    {multiSelectionKey}
+    {zoomActivationKey}
+  />
+  <Zoom
+    {store}
+    {onMoveStart}
+    {onMove}
+    {onMoveEnd}
+    {panOnScrollMode}
+    {preventScrolling}
+    {zoomOnScroll}
+    {zoomOnDoubleClick}
+    {zoomOnPinch}
+    {panOnScroll}
+    {panOnDrag}
+    {paneClickDistance}
   >
-    <KeyHandler
-      {store}
-      {selectionKey}
-      {deleteKey}
-      {panActivationKey}
-      {multiSelectionKey}
-      {zoomActivationKey}
-    />
-    <Zoom
-      {store}
-      {onMoveStart}
-      {onMove}
-      {onMoveEnd}
-      {panOnScrollMode}
-      {preventScrolling}
-      {zoomOnScroll}
-      {zoomOnDoubleClick}
-      {zoomOnPinch}
-      {panOnScroll}
-      {panOnDrag}
-      {paneClickDistance}
-    >
-      <Pane {store} {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
-        <ViewportComponent {store}>
-          <EdgeRenderer
-            {store}
-            {onedgeclick}
-            {onedgecontextmenu}
-            {onedgemouseenter}
-            {onedgemouseleave}
-          />
-          <ConnectionLine
-            {store}
-            containerStyle={connectionLineContainerStyle}
-            style={connectionLineStyle}
-            {connectionLine}
-          />
-          <div class="svelte-flow__edgelabel-renderer"></div>
-          <div class="svelte-flow__viewport-portal"></div>
-          <NodeRenderer
-            {store}
-            {nodeClickDistance}
-            {onnodeclick}
-            {onnodecontextmenu}
-            {onnodemouseenter}
-            {onnodemousemove}
-            {onnodemouseleave}
-            {onnodedrag}
-            {onnodedragstart}
-            {onnodedragstop}
-          />
-          <NodeSelection
-            {store}
-            {onselectionclick}
-            {onselectioncontextmenu}
-            {onnodedrag}
-            {onnodedragstart}
-            {onnodedragstop}
-          />
-        </ViewportComponent>
-        <UserSelection />
-      </Pane>
-    </Zoom>
-    <Attribution {proOptions} position={attributionPosition} />
-    {@render children?.()}
-  </div>
-{/if}
+    <Pane {store} {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
+      <ViewportComponent {store}>
+        <EdgeRenderer
+          {store}
+          {onedgeclick}
+          {onedgecontextmenu}
+          {onedgemouseenter}
+          {onedgemouseleave}
+        />
+        <ConnectionLine
+          {store}
+          containerStyle={connectionLineContainerStyle}
+          style={connectionLineStyle}
+          {connectionLine}
+        />
+        <div class="svelte-flow__edgelabel-renderer"></div>
+        <div class="svelte-flow__viewport-portal"></div>
+        <NodeRenderer
+          {store}
+          {nodeClickDistance}
+          {onnodeclick}
+          {onnodecontextmenu}
+          {onnodemouseenter}
+          {onnodemousemove}
+          {onnodemouseleave}
+          {onnodedrag}
+          {onnodedragstart}
+          {onnodedragstop}
+        />
+        <NodeSelection
+          {store}
+          {onselectionclick}
+          {onselectioncontextmenu}
+          {onnodedrag}
+          {onnodedragstart}
+          {onnodedragstop}
+        />
+      </ViewportComponent>
+      <UserSelection />
+    </Pane>
+  </Zoom>
+  <Attribution {proOptions} position={attributionPosition} />
+  {@render children?.()}
+</div>
 
 <style>
   .svelte-flow {

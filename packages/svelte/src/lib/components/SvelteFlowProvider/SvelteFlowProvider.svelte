@@ -7,7 +7,7 @@
 
   let { children }: SvelteFlowProviderProps = $props();
 
-  let store = $state.raw(createStore({ props: {} }));
+  let store = $state.raw(createStore({ props: {}, nodes: [], edges: [] }));
 
   setContext(key, {
     provider: true,

@@ -218,20 +218,37 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     store.panZoom?.setClickDistance(distance);
   }
 
-  function deselect<T extends Node | Edge>(element: T) {
-    return element.selected ? { ...element, selected: false } : element;
+  function deselect<T extends Node | Edge>(
+    elements: T[],
+    elementsToDeselect: Set<string> | null = null
+  ): [boolean, T[]] {
+    let deselected = false;
+
+    const newElements = elements.map((element) => {
+      const shouldDeselect = elementsToDeselect ? elementsToDeselect.has(element.id) : true;
+
+      if (shouldDeselect && element.selected) {
+        deselected = true;
+        return { ...element, selected: false };
+      }
+      return element;
+    });
+
+    return [deselected, newElements];
   }
 
   function unselectNodesAndEdges(params?: { nodes?: Node[]; edges?: Edge[] }) {
     const nodesToDeselect = params?.nodes ? new Set(params.nodes.map((node) => node.id)) : null;
-    store.nodes = store.nodes.map((node) =>
-      !nodesToDeselect || nodesToDeselect.has(node.id) ? deselect(node) : node
-    );
+    const [nodesDeselected, newNodes] = deselect(store.nodes, nodesToDeselect);
+    if (nodesDeselected) {
+      store.nodes = newNodes;
+    }
 
     const edgesToDeselect = params?.edges ? new Set(params.edges.map((node) => node.id)) : null;
-    store.edges = store.edges.map((edge) =>
-      !edgesToDeselect || edgesToDeselect.has(edge.id) ? deselect(edge) : edge
-    );
+    const [edgesDeselected, newEdges] = deselect(store.edges, edgesToDeselect);
+    if (edgesDeselected) {
+      store.edges = newEdges;
+    }
   }
 
   function addSelectedNodes(ids: string[]) {
@@ -252,9 +269,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     });
 
     if (!isMultiSelection) {
-      store.edges = store.edges.map((edge) => {
-        return edge.selected ? { ...edge, selected: false } : edge;
-      });
+      unselectNodesAndEdges({ nodes: [] });
     }
   }
 
@@ -272,7 +287,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     });
 
     if (!isMultiSelection) {
-      store.nodes = store.nodes.map(deselect);
+      unselectNodesAndEdges({ edges: [] });
     }
   }
 

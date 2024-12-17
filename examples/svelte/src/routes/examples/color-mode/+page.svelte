@@ -35,18 +35,18 @@
 		{ id: 'A-D', source: 'A', target: 'D' }
 	]);
 
-	let colorMode: ColorMode = $state('dark');
+	let colorMode: ColorMode = $state('system');
 </script>
 
-<SvelteFlow bind:nodes bind:edges {colorMode} fitView>
+<SvelteFlow bind:nodes bind:edges {colorMode} colorModeSSR={'dark'} fitView>
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
 
 	<Panel>
 		<select bind:value={colorMode} data-testid="colormode-select">
-			<option value="light">light</option>
 			<option value="dark">dark</option>
+			<option value="light">light</option>
 			<option value="system">system</option>
 		</select>
 	</Panel>

@@ -17,7 +17,8 @@ import type {
   ColorMode,
   OnConnect,
   OnConnectStart,
-  OnConnectEnd
+  OnConnectEnd,
+  ColorModeClass
 } from '@xyflow/system';
 
 import type {
@@ -327,6 +328,8 @@ export type SvelteFlowProps = NodeEvents &
      * @example 'system' | 'light' | 'dark'
      */
     colorMode?: ColorMode;
+    /** Fallback color mode for SSR if colorMode is set to 'system' */
+    colorModeSSR?: ColorModeClass;
     /** Class to be applied to the flow container */
     class?: string;
     /** Styles to be applied to the flow container */

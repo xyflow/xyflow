@@ -22,12 +22,12 @@ import {
   type NodeLookup,
   type ConnectionState,
   getInternalNodesBounds,
-  type ColorMode,
   createMarkerIds,
   type EdgeLookup,
   type ConnectionLookup,
   type ParentLookup,
-  pointToRendererPoint
+  pointToRendererPoint,
+  type ColorModeClass
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -55,6 +55,7 @@ import type {
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
+import { MediaQuery } from 'svelte/reactivity';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -74,14 +75,29 @@ export const getInitialStore = (signals: StoreSignals) => {
   // We use a class here, because Svelte adds getters & setter for us.
   // Inline classes have some performance implications but we just call it once (max twice).
   class SvelteFlowStore {
-    get nodes() {
+    _nodes: Node[] = $derived.by(() => {
+      adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
+        nodeExtent: this.nodeExtent,
+        nodeOrigin: this.nodeOrigin,
+        elevateNodesOnSelect: false,
+        checkEquality: true
+      });
       return signals.nodes;
+    });
+
+    _edges: Edge[] = $derived.by(() => {
+      updateConnectionLookup(this.connectionLookup, this.edgeLookup, signals.edges);
+      return signals.edges;
+    });
+
+    get nodes() {
+      return this._nodes;
     }
     set nodes(nodes) {
       signals.nodes = nodes;
     }
     get edges() {
-      return signals.edges;
+      return this._edges;
     }
     set edges(edges) {
       signals.edges = edges;
@@ -90,20 +106,6 @@ export const getInitialStore = (signals: StoreSignals) => {
     parentLookup: ParentLookup = new Map();
     connectionLookup: ConnectionLookup = new Map();
     edgeLookup: EdgeLookup = new Map();
-
-    adoptNodes: true = $derived.by(() => {
-      adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
-        nodeExtent: this.nodeExtent,
-        nodeOrigin: this.nodeOrigin,
-        elevateNodesOnSelect: false,
-        checkEquality: true
-      });
-      return true;
-    });
-    adoptEdges: true = $derived.by(() => {
-      updateConnectionLookup(this.connectionLookup, this.edgeLookup, signals.edges);
-      return true;
-    });
 
     domNode: HTMLDivElement | null = $derived(signals.domNode ?? signals.domNode ?? null);
     width: number = $derived(signals.width ?? signals.props.width ?? 0);
@@ -212,7 +214,17 @@ export const getInitialStore = (signals: StoreSignals) => {
 
       return initialized;
     });
-    colorMode: ColorMode = $derived(signals.props.colorMode ?? 'light');
+    prefersDark = new MediaQuery(
+      '(prefers-color-scheme: dark)',
+      signals.props.colorModeSSR === 'dark'
+    );
+    colorMode: ColorModeClass = $derived(
+      signals.props.colorMode === 'system'
+        ? this.prefersDark.current
+          ? 'dark'
+          : 'light'
+        : (signals.props.colorMode ?? 'light')
+    );
 
     constructor() {
       // Process intial fitView here

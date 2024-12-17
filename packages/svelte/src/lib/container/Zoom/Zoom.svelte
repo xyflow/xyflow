@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import { PanOnScrollMode, type PanZoomInstance, type Transform } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
   import type { ZoomProps } from './types';
 

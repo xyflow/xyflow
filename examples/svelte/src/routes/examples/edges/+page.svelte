@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -15,7 +14,7 @@
 	import ButtonEdge from './ButtonEdge.svelte';
 	import CustomBezierEdge from './CustomBezierEdge.svelte';
 
-	const nodes = writable([
+	let nodes = $state.raw([
 		{
 			id: '1',
 			type: 'input',
@@ -55,7 +54,7 @@
 		}
 	]);
 
-	const edges = writable([
+	let edges = $state.raw([
 		{
 			id: 'e1-2',
 			source: '1',
@@ -142,12 +141,12 @@
 		return `edge-${connection.source}-${connection.target}}`;
 	}
 
-	$inspect($edges);
+	$inspect(edges);
 </script>
 
 <SvelteFlow
-	{nodes}
-	{edges}
+	bind:nodes
+	bind:edges
 	{edgeTypes}
 	fitView
 	nodeDragThreshold={2}

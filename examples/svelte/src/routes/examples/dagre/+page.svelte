@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import { SvelteFlow, Background, Position, ConnectionLineType, Panel } from '@xyflow/svelte';
 	import type { Edge, Node } from '@xyflow/svelte';
 	import dagre from '@dagrejs/dagre';

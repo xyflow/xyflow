@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { get } from 'svelte/store';
   import {
     shortcut,
     type ShortcutEventDetail,
@@ -7,7 +6,6 @@
   } from '@svelte-put/shortcut';
   import { getElementsToRemove, isInputDOMNode, isMacOs } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
 

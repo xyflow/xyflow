@@ -27,7 +27,7 @@
 
 	const connections = useHandleConnections({ nodeId: id, type: 'target' });
 
-	$inspect('connections', $connections);
+	$inspect(connections.current);
 </script>
 
 <div class="custom">

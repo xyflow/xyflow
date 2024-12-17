@@ -34,6 +34,7 @@
 
   import type { Node, Edge, InternalNode } from '$lib/types';
   import type { PaneProps } from './types';
+
   let {
     store,
     panOnDrag = true,
