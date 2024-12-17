@@ -107,7 +107,7 @@ export const getInitialStore = (signals: StoreSignals) => {
     connectionLookup: ConnectionLookup = new Map();
     edgeLookup: EdgeLookup = new Map();
 
-    domNode: HTMLDivElement | null = $derived(signals.domNode ?? signals.domNode ?? null);
+    domNode: HTMLDivElement | null = $derived(signals.domNode ?? null);
     width: number = $derived(signals.width ?? signals.props.width ?? 0);
     height: number = $derived(signals.height ?? signals.props.height ?? 0);
 

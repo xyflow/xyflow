@@ -124,8 +124,8 @@
   {style}
   class={cc(['svelte-flow', className, store.colorMode])}
   data-testid="svelte-flow__wrapper"
-  {...props}
   role="application"
+  {...props}
 >
   <KeyHandler
     {store}

@@ -16,6 +16,7 @@
 
   let previousLayoutedEdges = new Map<string, EdgeLayouted>();
   let layoutedEdges = $derived.by(() => {
+    // here for update reference
     store.nodes;
 
     const layoutedEdges = new Map<string, EdgeLayouted>();
