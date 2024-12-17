@@ -7,8 +7,12 @@ import { useStore } from '$lib/store';
  * @returns store with an array of nodes
  */
 export function useNodes() {
-  const { nodes } = useStore();
-  return nodes;
+  const { nodes } = $derived(useStore());
+  return {
+    get current() {
+      return nodes;
+    }
+  };
 }
 
 /**
@@ -18,6 +22,10 @@ export function useNodes() {
  * @returns store with an array of edges
  */
 export function useEdges() {
-  const { edges } = useStore();
-  return edges;
+  const { edges } = $derived(useStore());
+  return {
+    get current() {
+      return edges;
+    }
+  };
 }

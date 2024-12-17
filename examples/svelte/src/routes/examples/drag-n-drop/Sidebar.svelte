@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { useSvelteFlow } from '@xyflow/svelte';
-
 	const onDragStart = (event: DragEvent, nodeType: string) => {
 		if (!event.dataTransfer) {
 			return null;
@@ -9,8 +7,6 @@
 		event.dataTransfer.setData('application/svelteflow', nodeType);
 		event.dataTransfer.effectAllowed = 'move';
 	};
-
-	// const { zoomIn, zoomOut, fitView, viewport, nodes } = $derived(useSvelteFlow());
 </script>
 
 <aside>

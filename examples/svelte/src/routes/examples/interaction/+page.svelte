@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -13,7 +12,7 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	const nodes = writable([
+	let nodes = $state.raw([
 		{
 			id: '1',
 			type: 'input',
@@ -25,7 +24,7 @@
 		{ id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 200 } }
 	]);
 
-	const edges = writable([
+	let edges = $state.raw([
 		{ id: 'e1-2', source: '1', target: '2', animated: true },
 		{ id: 'e1-3', source: '1', target: '3' }
 	]);
@@ -54,8 +53,8 @@
 </script>
 
 <SvelteFlow
-	{nodes}
-	{edges}
+	bind:nodes
+	bind:edges
 	elementsSelectable={isSelectable}
 	nodesConnectable={isConnectable}
 	nodesDraggable={isDraggable}
@@ -66,6 +65,7 @@
 	{zoomOnDoubleClick}
 	{panOnDrag}
 	{onMoveEnd}
+	fitView
 >
 	<MiniMap />
 	<Controls />

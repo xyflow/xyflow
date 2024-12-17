@@ -2,13 +2,7 @@
 	import { Handle, NodeResizeControl, Position, type NodeProps } from '@xyflow/svelte';
 	import type { ResizeNode } from './types';
 
-	type $$Props = NodeProps<ResizeNode>;
-
-	interface Props {
-		data: $$Props['data'];
-	}
-
-	let { data }: Props = $props();
+	let { data }: NodeProps<ResizeNode> = $props();
 </script>
 
 <NodeResizeControl

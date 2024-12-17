@@ -34,7 +34,7 @@ export * from '$lib/utils';
 export * from '$lib/hooks/useSvelteFlow';
 export * from '$lib/hooks/useUpdateNodeInternals';
 export * from '$lib/hooks/useConnection.svelte';
-export * from '$lib/hooks/useNodesEdges';
+export * from '$lib/hooks/useNodesEdges.svelte';
 export * from '$lib/hooks/useHandleConnections.svelte';
 export * from '$lib/hooks/useNodesData';
 export * from '$lib/hooks/useInternalNode';

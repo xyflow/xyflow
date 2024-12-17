@@ -1,7 +1,18 @@
+<script lang="ts" module>
+	import { type Node } from '@xyflow/svelte';
+
+	export type CustomNodeType = Node<{
+		toolbarVisible?: boolean;
+		toolbarPosition: Position;
+		toolbarAlign?: 'start' | 'center' | 'end';
+		label: string;
+	}>;
+</script>
+
 <script lang="ts">
 	import { NodeToolbar, type NodeProps, Handle, Position } from '@xyflow/svelte';
 
-	let { data }: NodeProps = $props();
+	let { data }: NodeProps<CustomNodeType> = $props();
 </script>
 
 <NodeToolbar
