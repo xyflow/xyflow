@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { NodeToolbar, useNodes } from '@xyflow/svelte';
 
-	const nodes = useNodes();
+	let nodes = useNodes();
 
 	let selectedNodeIds = $derived(
 		nodes.current.filter((node) => node.selected).map((node) => node.id)

@@ -36,7 +36,7 @@
       const previous = previousLayoutedEdges.get(edge.id);
       if (
         previous &&
-        edge == previous.edge &&
+        edge === previous.edge &&
         sourceNode == previous.sourceNode &&
         targetNode == previous.targetNode
       ) {

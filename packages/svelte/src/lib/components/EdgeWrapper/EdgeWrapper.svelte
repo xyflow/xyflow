@@ -19,6 +19,8 @@
     onedgemouseleave
   }: { store: SvelteFlowStore; edge: EdgeLayouted } & EdgeEvents = $props();
 
+  $inspect(edge);
+
   let {
     source,
     target,

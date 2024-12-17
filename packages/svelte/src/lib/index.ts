@@ -31,10 +31,10 @@ export { useStore } from '$lib/store';
 export * from '$lib/utils';
 
 //hooks
-export * from '$lib/hooks/useSvelteFlow';
-export * from '$lib/hooks/useUpdateNodeInternals';
+export * from '$lib/hooks/useSvelteFlow.svelte';
+export * from '$lib/hooks/useUpdateNodeInternals.svelte';
 export * from '$lib/hooks/useConnection.svelte';
-export * from '$lib/hooks/useNodesEdges.svelte';
+export * from '$lib/hooks/useNodesEdgesViewport.svelte';
 export * from '$lib/hooks/useHandleConnections.svelte';
 export * from '$lib/hooks/useNodesData';
 export * from '$lib/hooks/useInternalNode';

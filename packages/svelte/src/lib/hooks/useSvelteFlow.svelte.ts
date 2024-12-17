@@ -370,7 +370,7 @@ export function useSvelteFlow(): {
 
       return Promise.resolve(true);
     },
-    getViewport: () => store.viewport,
+    getViewport: () => $state.snapshot(store.viewport),
     setCenter: async (x, y, options) => {
       const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : store.maxZoom;
       const currentPanZoom = store.panZoom;

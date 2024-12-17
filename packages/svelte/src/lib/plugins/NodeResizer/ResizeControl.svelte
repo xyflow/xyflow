@@ -11,7 +11,7 @@
     type XYResizerChildChange
   } from '@xyflow/system';
   import type { ResizeControlProps } from './types';
-  import { get } from 'svelte/store';
+  import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
 
   let {
     nodeId,
@@ -33,6 +33,8 @@
   }: ResizeControlProps = $props();
 
   const store = useStore();
+
+  const { updateNode } = useSvelteFlow();
 
   let id = $derived(
     typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
@@ -72,28 +74,20 @@
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const node = store.nodeLookup.get(id)?.internals.userNode;
-          if (!node) {
-            return;
-          }
+          updateNode(id, (node) => ({
+            ...node,
+            position: { x: change.x ?? node.position.x, y: change.y ?? node.position.y },
+            width: change.width ?? node.width,
+            height: change.height ?? node.height
+          }));
 
-          if (change.x !== undefined && change.y !== undefined) {
-            node.position = { x: change.x, y: change.y };
-          }
-
-          if (change.width !== undefined && change.height !== undefined) {
-            node.width = change.width;
-            node.height = change.height;
-          }
-
+          // TODO: performance?
           for (const childChange of childChanges) {
-            const childNode = store.nodeLookup.get(childChange.id)?.internals.userNode;
-            if (childNode) {
-              childNode.position = childChange.position;
-            }
+            updateNode(childChange.id, (node) => ({
+              ...node,
+              position: childChange.position
+            }));
           }
-
-          // store.nodes.set(get(store.nodes));
         }
       });
     }

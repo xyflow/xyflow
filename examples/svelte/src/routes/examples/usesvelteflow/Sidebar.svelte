@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { useEdges, useNodes, useSvelteFlow } from '@xyflow/svelte';
+	import { useEdges, useNodes, useSvelteFlow, useViewport } from '@xyflow/svelte';
 
 	const {
 		zoomIn,
@@ -9,17 +9,18 @@
 		setCenter,
 		setViewport,
 		getViewport,
-		viewport,
 		toObject,
 		deleteElements
 	} = useSvelteFlow();
 
-	const nodes = useNodes();
-	const edges = useEdges();
+	let nodes = useNodes();
+	let edges = useEdges();
+	let viewport = useViewport();
 
 	const deleteNode = () => {
-		$nodes.shift();
-		$nodes = $nodes;
+		//TODO: do we really want to allow this?
+		// nodes.shift();
+		// nodes = nodes;
 	};
 </script>
 
@@ -33,11 +34,13 @@
 	<button onclick={() => setViewport({ x: 100, y: 100, zoom: 2 })}>setViewport</button>
 	<button onclick={() => console.log(getViewport())}>getViewport</button>
 
-	<button onclick={() => deleteElements({ edges: $edges.map((edge) => ({ id: edge.id })) })}
+	<button onclick={() => deleteElements({ edges: edges.current.map((edge) => ({ id: edge.id })) })}
 		>delete edges</button
 	>
-	<button onclick={() => deleteElements({ nodes: [{ id: $nodes[0].id }] })}>delete node</button>
-	<button onclick={() => deleteElements({ nodes: $nodes.map((node) => ({ id: node.id })) })}
+	<button onclick={() => deleteElements({ nodes: [{ id: nodes.current[0].id }] })}
+		>delete node</button
+	>
+	<button onclick={() => deleteElements({ nodes: nodes.current.map((node) => ({ id: node.id })) })}
 		>deleteElements</button
 	>
 	<button onclick={() => deleteNode()}>delete via store</button>
@@ -49,13 +52,15 @@
 	>
 
 	<div class="label">Nodes:</div>
-	{#each $nodes as node (node.id)}
+	{#each nodes.current as node (node.id)}
 		<div>id: {node.id} | x: {node.position.x.toFixed(1)} y: {node.position.y.toFixed(1)}</div>
 	{/each}
 
 	<div class="label">Viewport:</div>
 	<div>
-		x: {$viewport.x.toFixed(1)} y: {$viewport.y.toFixed(1)} zoom: {$viewport.zoom.toFixed(1)}
+		x: {viewport.current.x.toFixed(1)} y: {viewport.current.y.toFixed(1)} zoom: {viewport.current.zoom.toFixed(
+			1
+		)}
 	</div>
 </aside>
 
