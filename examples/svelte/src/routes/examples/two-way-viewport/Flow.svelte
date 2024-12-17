@@ -40,7 +40,7 @@
 	<Background variant={BackgroundVariant.Dots} />
 
 	<Panel>
-		<button on:click={updateViewport}>update viewport</button>
-		<button on:click={() => fitView()}>fitView</button>
+		<button onclick={updateViewport}>update viewport</button>
+		<button onclick={() => fitView()}>fitView</button>
 	</Panel>
 </SvelteFlow>

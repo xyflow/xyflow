@@ -7,8 +7,13 @@ export * from '$lib/container/Panel';
 export * from '$lib/components/SvelteFlowProvider';
 export * from '$lib/components/EdgeLabelRenderer';
 export * from '$lib/components/ViewportPortal';
-export * from '$lib/components/BaseEdge';
-export { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '$lib/components/edges';
+export {
+  BezierEdge,
+  StepEdge,
+  SmoothStepEdge,
+  StraightEdge,
+  BaseEdge
+} from '$lib/components/edges';
 export * from '$lib/components/Handle';
 export * from '$lib/components/EdgeLabel';
 
@@ -26,11 +31,11 @@ export { useStore } from '$lib/store';
 export * from '$lib/utils';
 
 //hooks
-export * from '$lib/hooks/useSvelteFlow';
-export * from '$lib/hooks/useUpdateNodeInternals';
-export * from '$lib/hooks/useConnection';
-export * from '$lib/hooks/useNodesEdges';
-export * from '$lib/hooks/useHandleConnections';
+export * from '$lib/hooks/useSvelteFlow.svelte';
+export * from '$lib/hooks/useUpdateNodeInternals.svelte';
+export * from '$lib/hooks/useConnection.svelte';
+export * from '$lib/hooks/useNodesEdgesViewport.svelte';
+export * from '$lib/hooks/useHandleConnections.svelte';
 export * from '$lib/hooks/useNodesData';
 export * from '$lib/hooks/useInternalNode';
 export { useInitialized, useNodesInitialized } from '$lib/hooks/useInitialized';

@@ -173,11 +173,15 @@ function updateChildNode<NodeType extends NodeBase>(
   const positionChanged = x !== positionAbsolute.x || y !== positionAbsolute.y;
 
   if (positionChanged || z !== node.internals.z) {
-    node.internals = {
-      ...node.internals,
-      positionAbsolute: positionChanged ? { x, y } : positionAbsolute,
-      z,
-    };
+    // we create a new object to mark the node as updated
+    nodeLookup.set(node.id, {
+      ...node,
+      internals: {
+        ...node.internals,
+        positionAbsolute: positionChanged ? { x, y } : positionAbsolute,
+        z,
+      },
+    });
   }
 }
 
@@ -333,10 +337,13 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
     }
 
     if (node.hidden) {
-      node.internals = {
-        ...node.internals,
-        handleBounds: undefined,
-      };
+      nodeLookup.set(node.id, {
+        ...node,
+        internals: {
+          ...node.internals,
+          handleBounds: undefined,
+        },
+      });
       updatedInternals = true;
     } else {
       const dimensions = getDimensions(update.nodeElement);
@@ -358,15 +365,19 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
           positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
         }
 
-        node.measured = dimensions;
-        node.internals = {
-          ...node.internals,
-          positionAbsolute,
-          handleBounds: {
-            source: getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id),
-            target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
+        nodeLookup.set(node.id, {
+          ...node,
+          measured: dimensions,
+          internals: {
+            ...node.internals,
+            positionAbsolute,
+            handleBounds: {
+              source: getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id),
+              target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
+            },
           },
-        };
+        });
+
         if (node.parentId) {
           updateChildNode(node, nodeLookup, parentLookup, { nodeOrigin });
         }
