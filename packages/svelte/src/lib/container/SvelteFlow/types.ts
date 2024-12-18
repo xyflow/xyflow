@@ -35,7 +35,7 @@ import type {
   IsValidConnection,
   DefaultNodeOptions
 } from '$lib/types';
-import type { Writable } from 'svelte/store';
+
 import type { Snippet } from 'svelte';
 import type { EdgeEvents, NodeEvents, NodeSelectionEvents, PaneEvents } from '$lib/types/events';
 
@@ -168,8 +168,8 @@ export type SvelteFlowProps = NodeEvents &
      * };
      */
     initialViewport?: Viewport;
-    /** Custom viewport writable to be used instead of internal one */
-    viewport?: Writable<Viewport>;
+    /** Custom viewport to be used instead of internal one */
+    viewport?: Viewport;
     /** The radius around a handle where you drop a connection line to create a new edge.
      * @default 20
      */

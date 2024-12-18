@@ -5,7 +5,8 @@ import type {
   Connection,
   UpdateNodePositions,
   CoordinateExtent,
-  UpdateConnection
+  UpdateConnection,
+  Viewport
 } from '@xyflow/system';
 
 import type { getInitialStore } from './initial-store.svelte';
@@ -42,6 +43,7 @@ export type StoreSignals = {
   height?: number;
   nodes: Node[];
   edges: Edge[];
+  viewport?: Viewport;
 };
 
 export type SvelteFlowStoreState = ReturnType<typeof getInitialStore>;

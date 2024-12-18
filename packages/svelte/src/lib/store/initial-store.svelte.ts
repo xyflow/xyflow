@@ -102,6 +102,7 @@ export const getInitialStore = (signals: StoreSignals) => {
     set edges(edges) {
       signals.edges = edges;
     }
+
     nodeLookup: NodeLookup = new Map();
     parentLookup: ParentLookup = new Map();
     connectionLookup: ConnectionLookup = new Map();
@@ -147,7 +148,17 @@ export const getInitialStore = (signals: StoreSignals) => {
     nodeTypes: NodeTypes = $derived({ ...initialNodeTypes, ...signals.props.nodeTypes });
     edgeTypes: EdgeTypes = $derived({ ...initialEdgeTypes, ...signals.props.edgeTypes });
 
-    viewport: Viewport = $state(signals.props.initialViewport ?? { x: 0, y: 0, zoom: 1 });
+    // _viewport is the internal viewport. We either return signals.viewport or _viewport
+    _viewport: Viewport = $state(signals.props.initialViewport ?? { x: 0, y: 0, zoom: 1 });
+    get viewport() {
+      return signals.viewport ?? this._viewport;
+    }
+    set viewport(viewport: Viewport) {
+      if (signals.viewport) {
+        signals.viewport = viewport;
+      }
+      this._viewport = viewport;
+    }
 
     connectionMode: ConnectionMode = $derived(
       signals.props.connectionMode ?? ConnectionMode.Strict

@@ -64,6 +64,7 @@
     children,
     nodes = $bindable([]),
     edges = $bindable([]),
+    viewport = $bindable(undefined),
     ...props
   }: SvelteFlowProps = $props();
 
@@ -93,6 +94,12 @@
     },
     set edges(newEdges) {
       edges = newEdges;
+    },
+    get viewport() {
+      return viewport;
+    },
+    set viewport(newViewport) {
+      viewport = newViewport;
     }
   });
 
