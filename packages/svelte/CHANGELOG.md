@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.1.26
+
+### Patch Changes
+
+- [#4897](https://github.com/xyflow/xyflow/pull/4897) [`c6890512`](https://github.com/xyflow/xyflow/commit/c6890512a685c8ec87310b3b003e62b0b976eca4) Thanks [@peterkogo](https://github.com/peterkogo)! - Freeze required @svelte-put/shortcut version to 3.1.1 to prevent breaking of key inputs.
+
 ## 0.1.25
 
 ### Patch Changes
