@@ -21,7 +21,7 @@
 	]);
 
 	let edges = $state.raw([{ id: 'ab', source: 'A', target: 'B' }]);
-	let viewport = $state<Viewport>({ x: 100, y: 100, zoom: 1.25 });
+	let viewport = $state<Viewport>({ x: 100, y: 100, zoom: 5 });
 
 	const { fitView } = $derived(useSvelteFlow());
 

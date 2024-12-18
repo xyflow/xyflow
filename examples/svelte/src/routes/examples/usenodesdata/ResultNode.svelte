@@ -16,9 +16,9 @@
 	});
 
 	let nodeData = $derived(
-		useNodesData<MyNode>($connections.map((connection) => connection.source))
+		useNodesData<MyNode>(connections.current.map((connection) => connection.source))
 	);
-	let textNodes = $derived($nodeData.filter(isTextNode));
+	let textNodes = $derived(nodeData.current.filter(isTextNode));
 </script>
 
 <div class="custom">

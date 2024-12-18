@@ -9,6 +9,7 @@
 		type NodeProps
 	} from '@xyflow/svelte';
 	import { isTextNode, type MyNode } from './+page.svelte';
+	import { untrack } from 'svelte';
 
 	let { id, data }: NodeProps<Node<{ text: string }>> = $props();
 
@@ -18,20 +19,27 @@
 		type: 'target'
 	});
 
-	let nodeData = $derived(useNodesData<MyNode>($connections[0]?.source));
-	let textNode = $derived(isTextNode($nodeData) ? $nodeData : null);
+	let nodeData = $derived(useNodesData<MyNode>(connections.current[0]?.source));
+	let textNodeData = $derived(isTextNode(nodeData.current) ? nodeData.current.data : null);
 
-	$inspect(textNode?.data, data);
+	// For some reason adding an inspect here also prevents the inifinte loop!?
+	// $inspect(textNodeData);
 
 	$effect.pre(() => {
-		const input = textNode?.data.text.toUpperCase() ?? '';
+		const nodeData = textNodeData;
+		const input = nodeData?.text.toUpperCase() ?? '';
+
+		// TODO: We need to add this check to prevent infinite loop
+		// I don't understand why?
+		if (input === untrack(() => data.text)) return;
+
 		updateNodeData(id, { text: input });
 		console.log('updatedNodeData with', input);
 	});
 </script>
 
 <div class="custom">
-	<Handle type="target" position={Position.Left} isConnectable={$connections.length === 0} />
+	<Handle type="target" position={Position.Left} isConnectable={connections.current.length === 0} />
 	<div>uppercase transform</div>
 	<Handle type="source" position={Position.Right} />
 </div>

@@ -56,11 +56,11 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.3.1",
-    "@sveltejs/kit": "^2.11.1",
+    "@sveltejs/kit": "^2.12.1",
     "@sveltejs/package": "^2.3.7",
-    "@sveltejs/vite-plugin-svelte": "^5.0.2",
-    "@typescript-eslint/eslint-plugin": "^8.18.0",
-    "@typescript-eslint/parser": "^8.18.0",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
     "autoprefixer": "^10.4.20",
     "cssnano": "^7.0.6",
     "dotenv": "^16.4.7",
@@ -75,12 +75,12 @@
     "postcss-rename": "^0.6.1",
     "prettier": "^3.4.2",
     "prettier-plugin-svelte": "^3.3.2",
-    "svelte": "^5.9.0",
+    "svelte": "^5.14.4",
     "svelte-check": "^4.1.1",
     "svelte-eslint-parser": "^0.43.0",
     "svelte-preprocess": "^6.0.3",
     "tslib": "^2.8.1",
-    "typescript": "^5.5.0"
+    "typescript": "^5.7.2"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"
