@@ -5,7 +5,6 @@
   import { getMarkerId } from '@xyflow/system';
 
   import { BezierEdgeInternal } from '$lib/components/edges';
-  import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
 
   import type { EdgeLayouted, Edge, EdgeEvents } from '$lib/types';
   import type { SvelteFlowStore } from '$lib/store/types';
@@ -61,13 +60,11 @@
     markerEnd ? `url('#${getMarkerId(markerEnd, store.flowId)}')` : undefined
   );
 
-  const handleEdgeSelect = useHandleEdgeSelect();
-
   function onclick(event: MouseEvent | TouchEvent) {
     const edge = store.edgeLookup.get(id);
 
     if (edge) {
-      handleEdgeSelect(id);
+      store.handleEdgeSelection(id);
       onedgeclick?.({ event, edge });
     }
   }

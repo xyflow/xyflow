@@ -2,7 +2,7 @@
   import { getContext, type Snippet } from 'svelte';
 
   import { EdgeLabelRenderer } from '$lib/components/EdgeLabelRenderer';
-  import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
+  import { useStore } from '$lib/store';
 
   let {
     style,
@@ -16,7 +16,7 @@
     children?: Snippet;
   } = $props();
 
-  const handleEdgeSelect = useHandleEdgeSelect();
+  const store = useStore();
 
   const id = getContext<string>('svelteflow__edge_id');
 </script>
@@ -30,7 +30,7 @@
     tabindex="-1"
     onkeyup={() => {}}
     onclick={() => {
-      if (id) handleEdgeSelect(id);
+      if (id) store.handleEdgeSelection(id);
     }}
   >
     {@render children?.()}

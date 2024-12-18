@@ -1,15 +1,16 @@
 import { useStore } from '$lib/store';
-import type { Readable } from 'svelte/store';
 
 /**
  * Hook for seeing if nodes are initialized
  * @returns - nodesInitialized Writable
  */
 export function useNodesInitialized() {
-  const { nodesInitialized } = useStore();
+  const { nodesInitialized } = $derived(useStore());
   return {
-    subscribe: nodesInitialized.subscribe
-  } as Readable<boolean>;
+    get current() {
+      return nodesInitialized;
+    }
+  };
 }
 
 /**
@@ -17,8 +18,10 @@ export function useNodesInitialized() {
  * @returns - initialized Writable
  */
 export function useInitialized() {
-  const { initialized } = useStore();
+  const { initialized } = $derived(useStore());
   return {
-    subscribe: initialized.subscribe
-  } as Readable<boolean>;
+    get current() {
+      return initialized;
+    }
+  };
 }

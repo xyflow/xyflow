@@ -30,6 +30,7 @@ export type SvelteFlowStoreActions = {
   addSelectedNodes: (ids: string[]) => void;
   addSelectedEdges: (ids: string[]) => void;
   handleNodeSelection: (id: string) => void;
+  handleEdgeSelection: (id: string) => void;
   panBy: (delta: XYPosition) => Promise<boolean>;
   updateConnection: UpdateConnection;
   cancelConnection: () => void;

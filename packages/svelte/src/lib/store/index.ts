@@ -309,6 +309,29 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     }
   }
 
+  function handleEdgeSelection(id: string) {
+    const edge = store.edgeLookup.get(id);
+
+    if (!edge) {
+      console.warn('012', errorMessages['error012'](id));
+      return;
+    }
+
+    const selectable =
+      edge.selectable || (store.elementsSelectable && typeof edge.selectable === 'undefined');
+
+    if (selectable) {
+      store.selectionRect = null;
+      store.selectionRectMode = null;
+
+      if (!edge.selected) {
+        addSelectedEdges([id]);
+      } else if (edge.selected && store.multiselectionKeyPressed) {
+        unselectNodesAndEdges({ nodes: [], edges: [edge] });
+      }
+    }
+  }
+
   function panBy(delta: XYPosition) {
     return panBySystem({
       delta,
@@ -354,6 +377,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     addSelectedNodes,
     addSelectedEdges,
     handleNodeSelection,
+    handleEdgeSelection,
     panBy,
     updateConnection,
     cancelConnection,
