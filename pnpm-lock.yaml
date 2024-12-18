@@ -288,8 +288,8 @@ importers:
   packages/svelte:
     dependencies:
       '@svelte-put/shortcut':
-        specifier: ^3.1.0
-        version: 3.1.0
+        specifier: 3.1.1
+        version: 3.1.1(svelte@4.2.12)
       '@xyflow/system':
         specifier: workspace:*
         version: link:../system
@@ -1715,8 +1715,10 @@ packages:
     resolution: {integrity: sha512-rUV5WyJrJLoloD4NDN1V1+LDMDWOa4OTsT4yYJwQNpTU6FWxkxHpL7eu4w+DmiH8x/EAM1otkPE1+LaspIbplw==}
     engines: {node: '>=18'}
 
-  '@svelte-put/shortcut@3.1.0':
-    resolution: {integrity: sha512-EWMEDkZ0+O3yMhb9yrqe5UYisV9CNRKX6Pl/JW3x62t74CiN+3COu1L9NzZUG0omagc2Z3J14PZNYxs77IC9NA==}
+  '@svelte-put/shortcut@3.1.1':
+    resolution: {integrity: sha512-2L5EYTZXiaKvbEelVkg5znxqvfZGZai3m97+cAiUBhLZwXnGtviTDpHxOoZBsqz41szlfRMcamW/8o0+fbW3ZQ==}
+    peerDependencies:
+      svelte: ^3.55.0 || ^4.0.0 || ^5.0.0
 
   '@sveltejs/adapter-auto@3.1.1':
     resolution: {integrity: sha512-6LeZft2Fo/4HfmLBi5CucMYmgRxgcETweQl/yQoZo/895K3S9YWYN4Sfm/IhwlIpbJp3QNvhKmwCHbsqQNYQpw==}
@@ -7775,7 +7777,9 @@ snapshots:
 
   '@sindresorhus/merge-streams@1.0.0': {}
 
-  '@svelte-put/shortcut@3.1.0': {}
+  '@svelte-put/shortcut@3.1.1(svelte@4.2.12)':
+    dependencies:
+      svelte: 4.2.12
 
   '@sveltejs/adapter-auto@3.1.1(@sveltejs/kit@2.5.4(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.12)(vite@5.3.2(@types/node@20.14.6)(terser@5.31.0)))(svelte@4.2.12)(vite@5.3.2(@types/node@20.14.6)(terser@5.31.0)))':
     dependencies:
