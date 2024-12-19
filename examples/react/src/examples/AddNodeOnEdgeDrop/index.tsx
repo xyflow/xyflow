@@ -47,7 +47,7 @@ const AddNodeOnEdgeDrop = () => {
     (event) => {
       if (!connectingNodeId.current) return;
 
-      const targetIsPane = (event.target as HTMLDivElement)?.classList.contains('react-flow__pane');
+      const targetIsPane = (event.target as Partial<Element> | null)?.classList?.contains('react-flow__pane');
 
       if (targetIsPane && 'clientX' in event && 'clientY' in event) {
         // we need to remove the wrapper bounds, in order to get the correct position

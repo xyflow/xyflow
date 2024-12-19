@@ -364,7 +364,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         }
       })
       .filter((event: MouseEvent) => {
-        const target = event.target as HTMLDivElement;
+        const target = event.target;
         const isDraggable =
           !event.button &&
           (!noDragClassName || !hasSelector(target, `.${noDragClassName}`, domNode)) &&
