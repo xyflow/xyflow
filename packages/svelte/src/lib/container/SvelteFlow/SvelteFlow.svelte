@@ -9,8 +9,8 @@
   import { Viewport as ViewportComponent } from '$lib/container/Viewport';
   import { NodeRenderer } from '$lib/container/NodeRenderer';
   import { EdgeRenderer } from '$lib/container/EdgeRenderer';
-  import { UserSelection } from '$lib/components/UserSelection';
   import { NodeSelection } from '$lib/components/NodeSelection';
+  import { Selection } from '$lib/components/Selection';
   import { KeyHandler } from '$lib/components/KeyHandler';
   import { ConnectionLine } from '$lib/components/ConnectionLine';
   import { Attribution } from '$lib/components/Attribution';
@@ -194,7 +194,13 @@
           {onnodedragstop}
         />
       </ViewportComponent>
-      <UserSelection />
+      <Selection
+        isVisible={!!(store.selectionRect && store.selectionRectMode === 'user')}
+        width={store.selectionRect?.width}
+        height={store.selectionRect?.height}
+        x={store.selectionRect?.x}
+        y={store.selectionRect?.y}
+      />
     </Pane>
   </Zoom>
   <Attribution {proOptions} position={attributionPosition} />

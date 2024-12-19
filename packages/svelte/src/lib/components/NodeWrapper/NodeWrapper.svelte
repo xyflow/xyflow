@@ -50,7 +50,7 @@
       z: zIndex = 0,
       positionAbsolute: { x: positionX, y: positionY }
     }
-  } = $derived(node);
+  } = $derived(store.defaultNodeOptions ? { ...store.defaultNodeOptions, ...node } : node);
 
   let { id } = node;
 
@@ -169,7 +169,7 @@
     use:drag={{
       nodeId: id,
       isSelectable: selectable,
-      disabled: false,
+      disabled: !draggable,
       handleSelector: dragHandle,
       noDragClass: 'nodrag',
       nodeClickDistance,

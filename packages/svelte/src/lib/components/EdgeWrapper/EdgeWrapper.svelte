@@ -27,8 +27,8 @@
     targetY,
     sourcePosition,
     targetPosition,
-    animated,
-    selected,
+    animated = false,
+    selected = false,
     label,
     labelStyle,
     data = {},
@@ -40,12 +40,12 @@
     markerStart,
     markerEnd,
     selectable: edgeSelectable,
-    deletable,
+    deletable = true,
     hidden,
     zIndex,
     class: className,
     ariaLabel
-  } = $derived(edge);
+  } = $derived(store.defaultEdgeOptions ? { ...store.defaultEdgeOptions, ...edge } : edge);
 
   const { id } = edge;
   setContext('svelteflow__edge_id', id);
@@ -64,7 +64,7 @@
     const edge = store.edgeLookup.get(id);
 
     if (edge) {
-      store.handleEdgeSelection(id);
+      if (selectable) store.handleEdgeSelection(id);
       onedgeclick?.({ event, edge });
     }
   }
@@ -79,6 +79,8 @@
       callback({ event, edge });
     }
   }
+
+  $inspect(selected);
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -132,7 +134,7 @@
         {style}
         {interactionWidth}
         {selectable}
-        deletable={deletable ?? true}
+        {deletable}
         {type}
         sourceHandleId={sourceHandle}
         targetHandleId={targetHandle}

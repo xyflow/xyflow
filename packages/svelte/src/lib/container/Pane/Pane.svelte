@@ -11,9 +11,9 @@
     };
   }
 
-  export function toggleSelected<Item extends Node | Edge>(ids: string[]) {
+  export function toggleSelected<Item extends Node | Edge>(ids: Set<string>) {
     return (item: Item) => {
-      const isSelected = ids.includes(item.id);
+      const isSelected = ids.has(item.id);
 
       if (item.selected !== isSelected) {
         return { ...item, selected: isSelected };
@@ -22,17 +22,27 @@
       return item;
     };
   }
+
+  // TODO: maybe replace with set.intersection?
+  function setEq(a: Set<string>, b: Set<string>) {
+    if (a.size !== b.size) {
+      return false;
+    }
+
+    for (const item of a) {
+      if (!b.has(item)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 </script>
 
 <script lang="ts">
-  import {
-    SelectionMode,
-    getEventPosition,
-    getNodesInside,
-    getConnectedEdges
-  } from '@xyflow/system';
+  import { SelectionMode, getEventPosition, getNodesInside } from '@xyflow/system';
 
-  import type { Node, Edge, InternalNode } from '$lib/types';
+  import type { Node, Edge } from '$lib/types';
   import type { PaneProps } from './types';
 
   let {
@@ -47,7 +57,10 @@
   // svelte-ignore non_reactive_update
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
-  let selectedNodes: InternalNode[] = [];
+  // let selectedNodes: InternalNode[] = [];
+
+  let selectedNodeIds: Set<string> = new Set();
+  let selectedEdgeIds: Set<string> = new Set();
 
   let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
   let isSelecting = $derived(
@@ -109,7 +122,7 @@
     if (!isSelecting || !containerBounds || !store.selectionRect) {
       return;
     }
-
+    const start = performance.now();
     selectionInProgress = true;
 
     const mousePos = getEventPosition(event, containerBounds);
@@ -122,36 +135,48 @@
       width: Math.abs(mousePos.x - startX),
       height: Math.abs(mousePos.y - startY)
     };
-    const prevSelectedNodeIds = selectedNodes.map((n) => n.id);
-    const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, store.edges).map((e) => e.id);
 
-    selectedNodes = getNodesInside(
-      store.nodeLookup,
-      nextUserSelectRect,
-      [store.viewport.x, store.viewport.y, store.viewport.zoom],
-      store.selectionMode === SelectionMode.Partial,
-      true
+    const prevSelectedNodeIds = selectedNodeIds;
+    const prevSelectedEdgeIds = selectedEdgeIds;
+
+    selectedNodeIds = new Set(
+      getNodesInside(
+        store.nodeLookup,
+        nextUserSelectRect,
+        [store.viewport.x, store.viewport.y, store.viewport.zoom],
+        store.selectionMode === SelectionMode.Partial,
+        true,
+        store.defaultNodeOptions.selectable
+      ).map((n) => n.id)
     );
-    const selectedEdgeIds = getConnectedEdges(selectedNodes, store.edges).map((e) => e.id);
-    const selectedNodeIds = selectedNodes.map((n) => n.id);
+
+    // TODO: replace with extended connectionLookup
+    let edgesSelectable = store.defaultEdgeOptions.selectable ?? true;
+    selectedEdgeIds = new Set();
+    store.edges.forEach((edge) => {
+      if (
+        selectedNodeIds.has(edge.source) &&
+        selectedNodeIds.has(edge.target) &&
+        (edge.selectable ?? edgesSelectable)
+      ) {
+        selectedEdgeIds.add(edge.id);
+      }
+    });
 
     // this prevents unnecessary updates while updating the selection rectangle
-    if (
-      prevSelectedNodeIds.length !== selectedNodeIds.length ||
-      selectedNodeIds.some((id) => !prevSelectedNodeIds.includes(id))
-    ) {
+    if (setEq(prevSelectedNodeIds, selectedNodeIds)) {
       store.nodes = store.nodes.map(toggleSelected(selectedNodeIds));
     }
 
-    if (
-      prevSelectedEdgeIds.length !== selectedEdgeIds.length ||
-      selectedEdgeIds.some((id) => !prevSelectedEdgeIds.includes(id))
-    ) {
+    if (setEq(prevSelectedEdgeIds, selectedEdgeIds)) {
       store.edges = store.edges.map(toggleSelected(selectedEdgeIds));
     }
 
     store.selectionRectMode = 'user';
     store.selectionRect = nextUserSelectRect;
+
+    const end = performance.now();
+    // console.log('onPointerMove', end - start);
   }
 
   function onPointerUp(event: PointerEvent) {
@@ -168,7 +193,7 @@
     }
     store.selectionRect = null;
 
-    if (selectedNodes.length > 0) {
+    if (selectedNodeIds.size > 0) {
       store.selectionRectMode = 'nodes';
     }
 

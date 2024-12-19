@@ -202,7 +202,8 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially = false,
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
-  excludeNonSelectableNodes = false
+  excludeNonSelectableNodes = false,
+  defaultNodeSelectable: boolean = true
 ): InternalNodeBase<NodeType>[] => {
   const paneRect = {
     ...pointToRendererPoint(rect, [tx, ty, tScale]),
@@ -213,7 +214,7 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
   const visibleNodes: InternalNodeBase<NodeType>[] = [];
 
   for (const node of nodes.values()) {
-    const { measured, selectable = true, hidden = false } = node;
+    const { measured, selectable = defaultNodeSelectable, hidden = false } = node;
 
     if ((excludeNonSelectableNodes && !selectable) || hidden) {
       continue;

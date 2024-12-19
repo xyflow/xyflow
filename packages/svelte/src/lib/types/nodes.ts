@@ -40,6 +40,7 @@ export type NodeTypes = Record<
   >
 >;
 
+// TODO: we should be more selective about this but otherwise good to go
 export type DefaultNodeOptions = Partial<Omit<Node, 'id'>>;
 
 export type BuiltInNode =

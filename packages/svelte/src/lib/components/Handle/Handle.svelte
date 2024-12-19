@@ -40,7 +40,6 @@
   );
 
   let store = useStore();
-  // let { edges } = store;
 
   function onPointerDown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
@@ -91,7 +90,6 @@
   $effect.pre(() => {
     // connectionLookup is not reactive, so we use edges to get notified about updates
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    // $edges;
     store.edges;
     if (onconnect || ondisconnect) {
       let connections = store.connectionLookup.get(`${nodeId}-${type}-${handleId}`);
