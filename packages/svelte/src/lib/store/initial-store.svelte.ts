@@ -27,7 +27,8 @@ import {
   type ConnectionLookup,
   type ParentLookup,
   pointToRendererPoint,
-  type ColorModeClass
+  type ColorModeClass,
+  type Transform
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -51,11 +52,13 @@ import type {
   OnBeforeDelete,
   IsValidConnection,
   Edge,
-  Node
+  Node,
+  EdgeLayouted
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
 import { MediaQuery } from 'svelte/reactivity';
+import { gatherLayoutedEdges, getVisibleNodes } from './visibleElements';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -72,6 +75,7 @@ export const initialEdgeTypes = {
 };
 
 export const getInitialStore = (signals: StoreSignals) => {
+  const previousLayoutedEdges = new Map<string, EdgeLayouted>();
   // We use a class here, because Svelte adds getters & setter for us.
   // Inline classes have some performance implications but we just call it once (max twice).
   class SvelteFlowStore {
@@ -107,6 +111,50 @@ export const getInitialStore = (signals: StoreSignals) => {
     parentLookup: ParentLookup = new Map();
     connectionLookup: ConnectionLookup = new Map();
     edgeLookup: EdgeLookup = new Map();
+
+    visible = $derived.by(() => {
+      // We need to access this._nodes to trigger on changes
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      this._nodes;
+
+      // We either add all or only visible nodes to visibleNodes here.
+      let visibleNodes = new Map();
+      let layoutedEdges = new Map<string, EdgeLayouted>();
+      // TODO: is there a more elegant solution??
+      if (this.onlyRenderVisibleElements) {
+        const transform: Transform = [this.viewport.x, this.viewport.y, this.viewport.zoom];
+        getVisibleNodes(this.nodeLookup, transform, this.width, this.height).forEach((node) => {
+          visibleNodes.set(node.id, node);
+        });
+        layoutedEdges = gatherLayoutedEdges(
+          this._edges,
+          this.nodeLookup,
+          previousLayoutedEdges,
+          this.connectionMode,
+          this.onerror,
+          true,
+          transform,
+          this.width,
+          this.height,
+          visibleNodes
+        );
+      } else {
+        visibleNodes = this.nodeLookup;
+        layoutedEdges = gatherLayoutedEdges(
+          this._edges,
+          this.nodeLookup,
+          previousLayoutedEdges,
+          this.connectionMode,
+          this.onerror,
+          false
+        );
+      }
+
+      return {
+        nodes: visibleNodes,
+        edges: layoutedEdges
+      };
+    });
 
     domNode: HTMLDivElement | null = $derived(signals.domNode ?? null);
     width: number = $derived(signals.width ?? signals.props.width ?? 0);

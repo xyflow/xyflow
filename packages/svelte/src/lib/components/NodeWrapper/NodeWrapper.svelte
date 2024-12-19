@@ -25,6 +25,8 @@
     onnodecontextmenu
   }: NodeWrapperProps & NodeEvents = $props();
 
+  // $inspect(node);
+
   let {
     data = {},
     selected = false,

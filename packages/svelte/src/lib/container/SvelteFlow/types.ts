@@ -52,7 +52,7 @@ export type SvelteFlowProps = NodeEvents &
     id?: string;
     /** An array of nodes to render in a controlled flow.
      * @example
-     * const nodes = writable([
+     * const nodes = $state.raw([
      *  {
      *    id: 'node-1',
      *    type: 'input',
@@ -64,7 +64,7 @@ export type SvelteFlowProps = NodeEvents &
     nodes: Node[];
     /** An array of edges to render in a controlled flow.
      * @example
-     * const edges = writable([
+     * const edges = $state.raw([
      *  {
      *    id: 'edge-1-2',
      *    source: 'node-1',

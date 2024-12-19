@@ -3,9 +3,8 @@
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
 
-  import type { Node, NodeEvents } from '$lib/types';
+  import type { NodeEvents } from '$lib/types';
   import type { SvelteFlowStore } from '$lib/store/types';
-  import type { NodeLookup } from '@xyflow/system';
 
   let {
     store,
@@ -42,15 +41,10 @@
   onDestroy(() => {
     resizeObserver?.disconnect();
   });
-
-  // We pass an unused reference to nodes to trigger a re-render
-  function getNodes(nodeLookup: NodeLookup, nodes: Node[]) {
-    return nodeLookup.values();
-  }
 </script>
 
 <div class="svelte-flow__nodes">
-  {#each getNodes(store.nodeLookup, store.nodes) as node (node.id)}
+  {#each store.visible.nodes.values() as node (node.id)}
     <NodeWrapper
       {store}
       {node}

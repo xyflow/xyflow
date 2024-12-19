@@ -2,7 +2,7 @@ import { useStore } from '$lib/store';
 
 /**
  * Hook for seeing if nodes are initialized
- * @returns - nodesInitialized Writable
+ * @returns - reactive nodesInitialized
  */
 export function useNodesInitialized() {
   const { nodesInitialized } = $derived(useStore());
@@ -15,7 +15,7 @@ export function useNodesInitialized() {
 
 /**
  * Hook for seeing if the flow is initialized
- * @returns - initialized Writable
+ * @returns - reactive initialized
  */
 export function useInitialized() {
   const { initialized } = $derived(useStore());

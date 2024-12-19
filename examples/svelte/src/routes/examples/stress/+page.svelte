@@ -50,7 +50,7 @@
 	let edges = $state.raw(edgeItems);
 </script>
 
-<SvelteFlow bind:nodes bind:edges fitView minZoom={0.2}>
+<SvelteFlow bind:nodes bind:edges fitView minZoom={0.2} onlyRenderVisibleElements>
 	<Controls />
 	<Background variant={BackgroundVariant.Lines} />
 	<MiniMap />
