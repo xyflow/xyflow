@@ -53,12 +53,13 @@ import type {
   IsValidConnection,
   Edge,
   Node,
-  EdgeLayouted
+  EdgeLayouted,
+  InternalNode
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
 import { MediaQuery } from 'svelte/reactivity';
-import { gatherLayoutedEdges, getVisibleNodes } from './visibleElements';
+import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -75,7 +76,6 @@ export const initialEdgeTypes = {
 };
 
 export const getInitialStore = (signals: StoreSignals) => {
-  const previousLayoutedEdges = new Map<string, EdgeLayouted>();
   // We use a class here, because Svelte adds getters & setter for us.
   // Inline classes have some performance implications but we just call it once (max twice).
   class SvelteFlowStore {
@@ -112,47 +112,47 @@ export const getInitialStore = (signals: StoreSignals) => {
     connectionLookup: ConnectionLookup = new Map();
     edgeLookup: EdgeLookup = new Map();
 
+    _prevVisibleEdges = new Map<string, EdgeLayouted>();
     visible = $derived.by(() => {
-      // We need to access this._nodes to trigger on changes
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      this._nodes;
+      const {
+        // We need to access this._nodes to trigger on changes
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        _nodes,
+        _edges: edges,
+        _prevVisibleEdges: previousEdges,
+        nodeLookup,
+        connectionMode,
+        onerror,
+        onlyRenderVisibleElements
+      } = this;
 
-      // We either add all or only visible nodes to visibleNodes here.
-      let visibleNodes = new Map();
-      let layoutedEdges = new Map<string, EdgeLayouted>();
-      // TODO: is there a more elegant solution??
-      if (this.onlyRenderVisibleElements) {
-        const transform: Transform = [this.viewport.x, this.viewport.y, this.viewport.zoom];
-        getVisibleNodes(this.nodeLookup, transform, this.width, this.height).forEach((node) => {
-          visibleNodes.set(node.id, node);
-        });
-        layoutedEdges = gatherLayoutedEdges(
-          this._edges,
-          this.nodeLookup,
-          previousLayoutedEdges,
-          this.connectionMode,
-          this.onerror,
-          true,
+      let visibleNodes: Map<string, InternalNode>;
+      let visibleEdges: Map<string, EdgeLayouted>;
+
+      const options = { edges, previousEdges, nodeLookup, connectionMode, onerror };
+
+      if (onlyRenderVisibleElements) {
+        // We only subscribe to viewport, width, height if onlyRenderVisibleElements is true
+        const { viewport, width, height } = this;
+        const transform: Transform = [viewport.x, viewport.y, viewport.zoom];
+
+        visibleNodes = getVisibleNodes(nodeLookup, transform, width, height);
+        visibleEdges = getLayoutedEdges({
+          ...options,
+          onlyRenderVisible: true,
+          visibleNodes,
           transform,
-          this.width,
-          this.height,
-          visibleNodes
-        );
+          width,
+          height
+        });
       } else {
         visibleNodes = this.nodeLookup;
-        layoutedEdges = gatherLayoutedEdges(
-          this._edges,
-          this.nodeLookup,
-          previousLayoutedEdges,
-          this.connectionMode,
-          this.onerror,
-          false
-        );
+        visibleEdges = getLayoutedEdges(options as EdgeLayoutAllOptions);
       }
 
       return {
         nodes: visibleNodes,
-        edges: layoutedEdges
+        edges: visibleEdges
       };
     });
 
@@ -196,7 +196,8 @@ export const getInitialStore = (signals: StoreSignals) => {
     nodeTypes: NodeTypes = $derived({ ...initialNodeTypes, ...signals.props.nodeTypes });
     edgeTypes: EdgeTypes = $derived({ ...initialEdgeTypes, ...signals.props.edgeTypes });
 
-    // _viewport is the internal viewport. We either return signals.viewport or _viewport
+    // _viewport is the internal viewport.
+    // when binding to viewport, we operate on signals.viewport instead
     _viewport: Viewport = $state(signals.props.initialViewport ?? { x: 0, y: 0, zoom: 1 });
     get viewport() {
       return signals.viewport ?? this._viewport;
@@ -208,26 +209,28 @@ export const getInitialStore = (signals: StoreSignals) => {
       this._viewport = viewport;
     }
 
-    connectionMode: ConnectionMode = $derived(
-      signals.props.connectionMode ?? ConnectionMode.Strict
-    );
-    rawConnection: ConnectionState = $state(initialConnection);
+    // _connection is viewport independent and originating from XYHandle
+    _connection: ConnectionState = $state(initialConnection);
+    // We derive a viewport dependent connection here
     connection: ConnectionState = $derived.by(() => {
-      if (this.rawConnection.inProgress) {
+      if (this._connection.inProgress) {
         return {
-          ...this.rawConnection,
-          to: pointToRendererPoint(this.rawConnection.to, [
+          ...this._connection,
+          to: pointToRendererPoint(this._connection.to, [
             this.viewport.x,
             this.viewport.y,
             this.viewport.zoom
           ])
         };
       } else {
-        return { ...this.rawConnection };
+        return this._connection;
       }
     });
     connectionLineType: ConnectionLineType = $derived(
       signals.props.connectionLineType ?? ConnectionLineType.Bezier
+    );
+    connectionMode: ConnectionMode = $derived(
+      signals.props.connectionMode ?? ConnectionMode.Strict
     );
     connectionRadius: number = $derived(signals.props.connectionRadius ?? 20);
     isValidConnection: IsValidConnection = $derived(
@@ -258,14 +261,14 @@ export const getInitialStore = (signals: StoreSignals) => {
     edgesInitialized: boolean = $state(false);
     viewportInitialized: boolean = $state(false);
 
-    initialNodesLength: number = signals.nodes?.length ?? 0;
-    initialEdgesLength: number = signals.edges?.length ?? 0;
+    _initialNodesLength: number = signals.nodes?.length ?? 0;
+    _initialEdgesLength: number = signals.edges?.length ?? 0;
     initialized: boolean = $derived.by(() => {
       let initialized = false;
       // if it hasn't been initialised check if it's now
-      if (this.initialNodesLength === 0) {
+      if (this._initialNodesLength === 0) {
         initialized = this.viewportInitialized;
-      } else if (this.initialEdgesLength === 0) {
+      } else if (this._initialEdgesLength === 0) {
         initialized = this.viewportInitialized && this.nodesInitialized;
       } else {
         initialized = this.viewportInitialized && this.nodesInitialized && this.edgesInitialized;
@@ -273,13 +276,14 @@ export const getInitialStore = (signals: StoreSignals) => {
 
       return initialized;
     });
-    prefersDark = new MediaQuery(
+
+    _prefersDark = new MediaQuery(
       '(prefers-color-scheme: dark)',
       signals.props.colorModeSSR === 'dark'
     );
     colorMode: ColorModeClass = $derived(
       signals.props.colorMode === 'system'
-        ? this.prefersDark.current
+        ? this._prefersDark.current
           ? 'dark'
           : 'light'
         : (signals.props.colorMode ?? 'light')

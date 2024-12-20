@@ -16,42 +16,43 @@ export function getVisibleNodes(
   width: number,
   height: number
 ) {
-  return getNodesInside(nodeLookup, { x: 0, y: 0, width: width, height: height }, transform, true);
+  const visibleNodes = new Map<string, InternalNode>();
+  getNodesInside(nodeLookup, { x: 0, y: 0, width: width, height: height }, transform, true).forEach(
+    (node) => {
+      visibleNodes.set(node.id, node);
+    }
+  );
+  return visibleNodes;
 }
 
-// TODO: is this what we want?
-export function gatherLayoutedEdges(
-  edges: Edge[],
-  nodeLookup: NodeLookup,
-  previousLayoutedEdges: Map<string, EdgeLayouted>,
-  connectionMode: ConnectionMode,
-  onerror: OnError,
-  onlyRenderVisibleElements: true,
-  transform: Transform,
-  width: number,
-  height: number,
-  visibleNodes: Map<string, InternalNode>
-): Map<string, EdgeLayouted>;
-export function gatherLayoutedEdges(
-  edges: Edge[],
-  nodeLookup: NodeLookup,
-  previousLayoutedEdges: Map<string, EdgeLayouted>,
-  connectionMode: ConnectionMode,
-  onerror: OnError,
-  onlyRenderVisibleElements: false
-): Map<string, EdgeLayouted>;
-export function gatherLayoutedEdges(
-  edges: Edge[],
-  nodeLookup: NodeLookup,
-  previousLayoutedEdges: Map<string, EdgeLayouted>,
-  connectionMode: ConnectionMode,
-  onerror: OnError,
-  onlyRenderVisibleElements?: boolean,
-  transform?: Transform,
-  width?: number,
-  height?: number,
-  visibleNodes?: Map<string, InternalNode>
-): Map<string, EdgeLayouted> {
+export interface EdgeLayoutBaseOptions {
+  edges: Edge[];
+  previousEdges: Map<string, EdgeLayouted>;
+  nodeLookup: NodeLookup;
+  connectionMode: ConnectionMode;
+  onerror: OnError;
+}
+
+export interface EdgeLayoutAllOptions extends EdgeLayoutBaseOptions {
+  onlyRenderVisible: never;
+  visibleNodes: never;
+  transform: never;
+  width: never;
+  height: never;
+}
+
+export interface EdgeLayoutOnlyVisibleOptions extends EdgeLayoutBaseOptions {
+  visibleNodes: Map<string, InternalNode>;
+  transform: Transform;
+  width: number;
+  height: number;
+  onlyRenderVisible: true;
+}
+
+export type EdgeLayoutOptions = EdgeLayoutAllOptions | EdgeLayoutOnlyVisibleOptions;
+
+export function getLayoutedEdges(options: EdgeLayoutOptions): Map<string, EdgeLayouted> {
+  const { edges, nodeLookup, previousEdges, connectionMode, onerror, onlyRenderVisible } = options;
   const layoutedEdges = new Map<string, EdgeLayouted>();
   for (const edge of edges) {
     const sourceNode = nodeLookup.get(edge.source);
@@ -61,7 +62,8 @@ export function gatherLayoutedEdges(
       continue;
     }
 
-    if (onlyRenderVisibleElements) {
+    if (onlyRenderVisible) {
+      const { visibleNodes, transform, width, height } = options;
       if (
         isEdgeVisible({
           sourceNode,
@@ -82,7 +84,7 @@ export function gatherLayoutedEdges(
     // the current and previous edge are the same
     // and the source and target node are the same
     // and references to internalNodes are the same
-    const previous = previousLayoutedEdges.get(edge.id);
+    const previous = previousEdges.get(edge.id);
     if (
       previous &&
       edge === previous.edge &&
@@ -99,7 +101,7 @@ export function gatherLayoutedEdges(
       targetNode,
       sourceHandle: edge.sourceHandle || null,
       targetHandle: edge.targetHandle || null,
-      connectionMode: connectionMode,
+      connectionMode,
       onError: onerror
     });
 
@@ -120,8 +122,6 @@ export function gatherLayoutedEdges(
       });
     }
   }
-
-  previousLayoutedEdges = layoutedEdges;
 
   return layoutedEdges;
 }

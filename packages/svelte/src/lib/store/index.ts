@@ -344,11 +344,11 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   const updateConnection: UpdateConnection = (newConnection: ConnectionState) => {
-    store.rawConnection = { ...newConnection };
+    store._connection = { ...newConnection };
   };
 
   function cancelConnection() {
-    store.rawConnection = initialConnection;
+    store._connection = initialConnection;
   }
 
   function reset() {
