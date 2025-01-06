@@ -4,4 +4,4 @@
 '@xyflow/system': patch
 ---
 
-Improved tracking of edges connected to a node. The hook useHandleConnection can now not only return all connections to a specific handleId but also to a handleType or even a nodeId.
+Add useNodeConnections hook to track all connections to a node. Can be filtered by handleType and handleId.
