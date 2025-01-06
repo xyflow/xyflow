@@ -12,7 +12,7 @@ import { useNodeId } from '../contexts/NodeIdContext';
 
 type useHandleConnectionsParams = {
   type: HandleType;
-  id?: string;
+  id?: string | null;
   nodeId?: string;
   onConnect?: (connections: Connection[]) => void;
   onDisconnect?: (connections: Connection[]) => void;
@@ -31,7 +31,7 @@ type useHandleConnectionsParams = {
  */
 export function useHandleConnections({
   type,
-  id,
+  id = null,
   nodeId,
   onConnect,
   onDisconnect,
@@ -42,7 +42,7 @@ export function useHandleConnections({
   const prevConnections = useRef<Map<string, HandleConnection> | null>(null);
 
   const connections = useStore(
-    (state) => state.connectionLookup.get(`${currentNodeId}${type ? (id ? `-${type}-${id}` : `-${type}`) : ''}`),
+    (state) => state.connectionLookup.get(`${currentNodeId}-${type}-${id}`),
     areConnectionMapsEqual
   );
 
