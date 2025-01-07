@@ -38,7 +38,7 @@ export function useNodeConnections({
   nodeId,
   onConnect,
   onDisconnect,
-}: UseNodeConnectionsParams): NodeConnection[] {
+}: UseNodeConnectionsParams = {}): NodeConnection[] {
   const _nodeId = useNodeId();
   const currentNodeId = nodeId ?? _nodeId;
 
