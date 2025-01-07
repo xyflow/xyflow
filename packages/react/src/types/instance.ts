@@ -183,7 +183,7 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
   getNodesBounds: (nodes: (NodeType | InternalNode | string)[]) => Rect;
   /**
    * Gets all connections for a given handle belonging to a specific node.
-   * @de
+   * @deprecated
    * @param type - handle type 'source' or 'target'
    * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
    * @param nodeId - the node id the handle belongs to
