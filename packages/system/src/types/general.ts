@@ -33,7 +33,12 @@ export type Connection = {
   targetHandle: string | null;
 };
 
+// TODO: remove in next version
 export type HandleConnection = Connection & {
+  edgeId: string;
+};
+
+export type NodeConnection = Connection & {
   edgeId: string;
 };
 

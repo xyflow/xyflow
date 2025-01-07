@@ -2,7 +2,7 @@ import { derived } from 'svelte/store';
 import {
   areConnectionMapsEqual,
   errorMessages,
-  type HandleConnection,
+  type NodeConnection,
   type HandleType
 } from '@xyflow/system';
 
@@ -20,7 +20,7 @@ type UseNodeConnectionsParams = {
   //   onDisconnect?: (connections: Connection[]) => void;
 };
 
-const initialConnections: HandleConnection[] = [];
+const initialConnections: NodeConnection[] = [];
 
 /**
  * Hook to retrieve all edges connected to a node. Can be filtered by handle type and id.
@@ -43,7 +43,7 @@ export function useNodeConnections({ type, nodeId, handleId }: UseNodeConnection
     throw new Error(error014);
   }
 
-  let prevConnections: Map<string, HandleConnection> | undefined = undefined;
+  let prevConnections: Map<string, NodeConnection> | undefined = undefined;
 
   return derived(
     [edges, connectionLookup],

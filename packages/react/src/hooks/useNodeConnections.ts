@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import {
   Connection,
-  HandleConnection,
+  NodeConnection,
   HandleType,
   areConnectionMapsEqual,
   handleConnectionChange,
@@ -38,7 +38,7 @@ export function useNodeConnections({
   nodeId,
   onConnect,
   onDisconnect,
-}: UseNodeConnectionsParams): HandleConnection[] {
+}: UseNodeConnectionsParams): NodeConnection[] {
   const _nodeId = useNodeId();
   const currentNodeId = nodeId ?? _nodeId;
 
@@ -46,7 +46,7 @@ export function useNodeConnections({
     throw new Error(error014);
   }
 
-  const prevConnections = useRef<Map<string, HandleConnection> | null>(null);
+  const prevConnections = useRef<Map<string, NodeConnection> | null>(null);
 
   const connections = useStore(
     (state) =>
