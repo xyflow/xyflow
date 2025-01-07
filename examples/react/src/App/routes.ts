@@ -49,7 +49,7 @@ import NodeToolbar from '../examples/NodeToolbar';
 import UseConnection from '../examples/UseConnection';
 import UseNodesInitialized from '../examples/UseNodesInit';
 import UseNodesData from '../examples/UseNodesData';
-import UseHandleConnections from '../examples/UseHandleConnections';
+import UseNodeConnections from '../examples/UseNodeConnections';
 import AddNodeOnEdgeDrop from '../examples/AddNodeOnEdgeDrop';
 import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
@@ -313,9 +313,9 @@ const routes: IRoute[] = [
     component: UseReactFlow,
   },
   {
-    name: 'useHandleConnections',
-    path: 'usehandleconnections',
-    component: UseHandleConnections,
+    name: 'useNodeConnections',
+    path: 'usenodeconnections',
+    component: UseNodeConnections,
   },
   {
     name: 'useNodesData',

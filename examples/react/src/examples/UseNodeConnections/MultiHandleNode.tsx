@@ -1,5 +1,5 @@
 import { memo, FC, useEffect, useCallback } from 'react';
-import { Handle, Position, NodeProps, useHandleConnections, Connection, HandleProps } from '@xyflow/react';
+import { Handle, Position, NodeProps, useNodeConnections, Connection, HandleProps } from '@xyflow/react';
 
 function CustomHandle({ nodeId, ...handleProps }: HandleProps & { nodeId: string }) {
   const onConnect = useCallback(
@@ -11,9 +11,9 @@ function CustomHandle({ nodeId, ...handleProps }: HandleProps & { nodeId: string
     (connections: Connection[]) => console.log('onDisconnect handler, node id:', nodeId, connections),
     [nodeId]
   );
-  const connections = useHandleConnections({
+  const connections = useNodeConnections({
     type: handleProps.type,
-    id: handleProps.id,
+    handleId: handleProps.id,
     onConnect,
     onDisconnect,
   });
