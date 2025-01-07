@@ -468,9 +468,11 @@ function addConnectionToLookup(
   const typeMap = connectionLookup.get(key) || new Map();
   connectionLookup.set(key, typeMap.set(connectionKey, connection));
 
-  key = `${nodeId}-${type}-${handleId}`;
-  const handleMap = connectionLookup.get(key) || new Map();
-  connectionLookup.set(key, handleMap.set(connectionKey, connection));
+  if (handleId) {
+    key = `${nodeId}-${type}-${handleId}`;
+    const handleMap = connectionLookup.get(key) || new Map();
+    connectionLookup.set(key, handleMap.set(connectionKey, connection));
+  }
 }
 
 export function updateConnectionLookup(connectionLookup: ConnectionLookup, edgeLookup: EdgeLookup, edges: EdgeBase[]) {

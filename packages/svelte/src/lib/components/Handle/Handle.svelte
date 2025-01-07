@@ -116,7 +116,7 @@
   $: if (onconnect || ondisconnect) {
     // connectionLookup is not reactive, so we use edges to get notified about updates
     $edges;
-    connections = $connectionLookup.get(`${nodeId}-${type}-${id || null}`);
+    connections = $connectionLookup.get(`${nodeId}-${type}${id ? `-${id}` : ''}`);
   }
 
   $: {

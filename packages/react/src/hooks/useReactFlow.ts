@@ -239,7 +239,14 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         Array.from(
           store
             .getState()
-            .connectionLookup.get(`${nodeId}-${type}-${id ?? null}`)
+            .connectionLookup.get(`${nodeId}-${type}${id ? `-${id}` : ''}`)
+            ?.values() ?? []
+        ),
+      getNodeConnections: ({ type, handleId, nodeId }) =>
+        Array.from(
+          store
+            .getState()
+            .connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
             ?.values() ?? []
         ),
     };

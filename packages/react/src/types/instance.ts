@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import type { HandleConnection, HandleType, Rect, Viewport } from '@xyflow/system';
+import type { HandleConnection, HandleType, NodeConnection, Rect, Viewport } from '@xyflow/system';
 import type { Node, Edge, ViewportHelperFunctions, InternalNode } from '.';
 
 export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
@@ -183,7 +183,7 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
   getNodesBounds: (nodes: (NodeType | InternalNode | string)[]) => Rect;
   /**
    * Gets all connections for a given handle belonging to a specific node.
-   *
+   * @de
    * @param type - handle type 'source' or 'target'
    * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
    * @param nodeId - the node id the handle belongs to
@@ -198,6 +198,23 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     nodeId: string;
     id?: string | null;
   }) => HandleConnection[];
+  /**
+   * Gets all connections to a node. Can be filtered by handle type and id.
+   * @deprecated use `getNodeConnections` instead
+   * @param type - handle type 'source' or 'target'
+   * @param handleId - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
+   * @param nodeId - the node id the handle belongs to
+   * @returns an array with handle connections
+   */
+  getNodeConnections: ({
+    type,
+    handleId,
+    nodeId,
+  }: {
+    type?: HandleType;
+    nodeId: string;
+    handleId?: string | null;
+  }) => NodeConnection[];
 };
 
 export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = GeneralHelpers<

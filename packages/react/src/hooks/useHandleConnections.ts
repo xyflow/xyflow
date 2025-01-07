@@ -32,7 +32,7 @@ type useHandleConnectionsParams = {
  */
 export function useHandleConnections({
   type,
-  id = null,
+  id,
   nodeId,
   onConnect,
   onDisconnect,
@@ -47,7 +47,7 @@ export function useHandleConnections({
   const prevConnections = useRef<Map<string, HandleConnection> | null>(null);
 
   const connections = useStore(
-    (state) => state.connectionLookup.get(`${currentNodeId}-${type}-${id}`),
+    (state) => state.connectionLookup.get(`${currentNodeId}-${type}${id ? `-${id}` : ''}`),
     areConnectionMapsEqual
   );
 
