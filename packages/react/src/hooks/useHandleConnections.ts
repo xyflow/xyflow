@@ -22,6 +22,7 @@ type useHandleConnectionsParams = {
  * Hook to check if a <Handle /> is connected to another <Handle /> and get the connections.
  *
  * @public
+ * @deprecated Use `useNodeConnections` instead.
  * @param param.type - handle type 'source' or 'target'
  * @param param.nodeId - node id - if not provided, the node id from the NodeIdContext is used
  * @param param.id - the handle id (this is only needed if the node has multiple handles of the same type)
@@ -36,6 +37,10 @@ export function useHandleConnections({
   onConnect,
   onDisconnect,
 }: useHandleConnectionsParams): HandleConnection[] {
+  console.warn(
+    '[DEPRECATED] `useHandleConnections` is deprecated. Instead use `useNodeConnections` https://reactflow.dev/api-reference/hooks/useNodeConnections'
+  );
+
   const _nodeId = useNodeId();
   const currentNodeId = nodeId ?? _nodeId;
 
