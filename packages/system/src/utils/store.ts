@@ -457,18 +457,20 @@ function addConnectionToLookup(
   nodeId: string,
   handleId: string | null
 ) {
-  // create array of key fragments for easier iteration
-  const keyFragments = [nodeId, type, handleId];
-  let key = '';
-  for (const keyFragment of keyFragments) {
-    // values for each iteration: nodeId, nodeId-type, nodeId-type-handleId
-    key += keyFragment;
-    // create a new map if the key does not exist and add the connection
-    const prevMap = connectionLookup.get(key) || new Map();
-    connectionLookup.set(key, prevMap.set(connectionKey, connection));
-    // add - as seperator for next iteration
-    key += '-';
-  }
+  // We add the connection to the connectionLookup at the following keys
+  // 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId
+  // If the key already exists, we add the connection to the existing map
+  let key = nodeId;
+  const nodeMap = connectionLookup.get(key) || new Map();
+  connectionLookup.set(key, nodeMap.set(connectionKey, connection));
+
+  key = `${nodeId}-${type}`;
+  const typeMap = connectionLookup.get(key) || new Map();
+  connectionLookup.set(key, typeMap.set(connectionKey, connection));
+
+  key = `${nodeId}-${type}-${handleId}`;
+  const handleMap = connectionLookup.get(key) || new Map();
+  connectionLookup.set(key, handleMap.set(connectionKey, connection));
 }
 
 export function updateConnectionLookup(connectionLookup: ConnectionLookup, edgeLookup: EdgeLookup, edges: EdgeBase[]) {

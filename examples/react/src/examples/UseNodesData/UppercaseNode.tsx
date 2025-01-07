@@ -1,10 +1,10 @@
 import { memo, useEffect } from 'react';
-import { Position, NodeProps, useReactFlow, Handle, useHandleConnections, useNodesData } from '@xyflow/react';
+import { Position, NodeProps, useReactFlow, Handle, useNodeConnections, useNodesData } from '@xyflow/react';
 import { isTextNode, type TextNode, type MyNode } from '.';
 
 function UppercaseNode({ id }: NodeProps) {
   const { updateNodeData } = useReactFlow();
-  const connections = useHandleConnections({
+  const connections = useNodeConnections({
     type: 'target',
   });
   const nodesData = useNodesData<MyNode>(connections[0]?.source);

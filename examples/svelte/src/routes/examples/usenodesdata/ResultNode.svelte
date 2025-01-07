@@ -2,7 +2,7 @@
 	import {
 		Handle,
 		Position,
-		useHandleConnections,
+		useNodeConnections,
 		useNodesData,
 		type NodeProps
 	} from '@xyflow/svelte';
@@ -13,7 +13,7 @@
 	export let id: $$Props['id'];
 	$$restProps;
 
-	const connections = useHandleConnections({
+	const connections = useNodeConnections({
 		nodeId: id,
 		type: 'target'
 	});
