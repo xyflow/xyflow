@@ -33,7 +33,7 @@ const initialConnections: HandleConnection[] = [];
  * @todo @param param.onDisconnect - gets called when a connection is removed
  * @returns an array with connections
  */
-export function useHandleConnections({ type, nodeId, handleId }: UseNodeConnectionsParams) {
+export function useNodeConnections({ type, nodeId, handleId }: UseNodeConnectionsParams) {
   const { edges, connectionLookup } = useStore();
 
   const _nodeId = getContext<string>('svelteflow__node_id');

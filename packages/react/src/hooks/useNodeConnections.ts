@@ -32,7 +32,7 @@ type UseNodeConnectionsParams = {
  * @param param.onDisconnect - gets called when a connection is removed
  * @returns an array with connections
  */
-export function useHandleConnections({
+export function useNodeConnections({
   type,
   handleId,
   nodeId,

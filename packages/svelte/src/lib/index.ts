@@ -31,6 +31,7 @@ export * from '$lib/hooks/useUpdateNodeInternals';
 export * from '$lib/hooks/useConnection';
 export * from '$lib/hooks/useNodesEdges';
 export * from '$lib/hooks/useHandleConnections';
+export * from '$lib/hooks/useNodeConnections';
 export * from '$lib/hooks/useNodesData';
 export * from '$lib/hooks/useInternalNode';
 export { useInitialized, useNodesInitialized } from '$lib/hooks/useInitialized';
