@@ -122,12 +122,12 @@
     if (!isSelecting || !containerBounds || !store.selectionRect) {
       return;
     }
-    const start = performance.now();
+
     selectionInProgress = true;
 
     const mousePos = getEventPosition(event, containerBounds);
-    const startX = store.selectionRect.startX ?? 0;
-    const startY = store.selectionRect.startY ?? 0;
+    const { startX = 0, startY = 0 } = store.selectionRect;
+
     const nextUserSelectRect = {
       ...store.selectionRect,
       x: mousePos.x < startX ? mousePos.x : startX,
@@ -145,8 +145,7 @@
         nextUserSelectRect,
         [store.viewport.x, store.viewport.y, store.viewport.zoom],
         store.selectionMode === SelectionMode.Partial,
-        true,
-        store.defaultNodeOptions.selectable
+        true
       ).map((n) => n.id)
     );
 
@@ -174,9 +173,6 @@
 
     store.selectionRectMode = 'user';
     store.selectionRect = nextUserSelectRect;
-
-    const end = performance.now();
-    // console.log('onPointerMove', end - start);
   }
 
   function onPointerUp(event: PointerEvent) {

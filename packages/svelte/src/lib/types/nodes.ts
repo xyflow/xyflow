@@ -40,21 +40,6 @@ export type NodeTypes = Record<
   >
 >;
 
-// TODO: we should be more selective about this but otherwise good to go
-export type DefaultNodeOptions = Partial<Omit<Node, 'id'>>;
-
 export type BuiltInNode =
   | Node<{ label: string }, 'input' | 'output' | 'default'>
   | Node<Record<string, never>, 'group'>;
-
-// TODO SVELTE5 remove this
-export type NodeEventMap = {
-  nodeclick: { node: Node; event: MouseEvent | TouchEvent };
-  nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };
-  nodedrag: { targetNode: Node | null; nodes: Node[]; event: MouseEvent | TouchEvent };
-  nodedragstart: { targetNode: Node | null; nodes: Node[]; event: MouseEvent | TouchEvent };
-  nodedragstop: { targetNode: Node | null; nodes: Node[]; event: MouseEvent | TouchEvent };
-  nodemouseenter: { node: Node; event: MouseEvent | TouchEvent };
-  nodemouseleave: { node: Node; event: MouseEvent | TouchEvent };
-  nodemousemove: { node: Node; event: MouseEvent | TouchEvent };
-};

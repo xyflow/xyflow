@@ -169,7 +169,6 @@ export const getInitialStore = (signals: StoreSignals) => {
     translateExtent: CoordinateExtent = $derived(signals.props.translateExtent ?? infiniteExtent);
 
     defaultEdgeOptions: Partial<Edge> = $derived(signals.props.defaultEdgeOptions ?? {});
-    defaultNodeOptions: Partial<Node> = $derived(signals.props.defaultNodeOptions ?? {});
 
     nodeDragThreshold: number = $derived(signals.props.nodeDragThreshold ?? 1);
     autoPanOnNodeDrag: boolean = $derived(signals.props.autoPanOnNodeDrag ?? true);

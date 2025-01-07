@@ -32,8 +32,7 @@ import type {
   OnDelete,
   OnEdgeCreate,
   OnBeforeDelete,
-  IsValidConnection,
-  DefaultNodeOptions
+  IsValidConnection
 } from '$lib/types';
 
 import type { Snippet } from 'svelte';
@@ -303,22 +302,6 @@ export type SvelteFlowProps = NodeEvents &
      * }
      */
     defaultEdgeOptions?: DefaultEdgeOptions;
-    /** Defaults to be applied to all new nodes that are added to the flow.
-     *
-     * Properties on a new nodes will override these defaults if they exist.
-     * @example
-     * const defaultNodeOptions = {
-     *  type: 'customNodeType',
-     *  position: {x: 0, y: 0}
-     *  data: { label: 'custom label' },
-     *  hidden: false,
-     *  deletable: true,
-     *  selected: false,
-     *  focusable: true,
-     *  zIndex: 12,
-     * }
-     */
-    defaultNodeOptions?: DefaultNodeOptions;
     /** Sets a fixed width for the flow */
     width?: number;
     /** Sets a fixed height for the flow */

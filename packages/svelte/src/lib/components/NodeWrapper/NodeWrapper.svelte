@@ -52,7 +52,7 @@
       z: zIndex = 0,
       positionAbsolute: { x: positionX, y: positionY }
     }
-  } = $derived(store.defaultNodeOptions ? { ...store.defaultNodeOptions, ...node } : node);
+  } = $derived(node);
 
   let { id } = node;
 
