@@ -193,15 +193,15 @@ export function Pane({
       )
     );
 
-    let edgesSelectable = defaultEdgeOptions?.selectable ?? true;
     selectedEdgeIds.current = new Set();
+    const edgesSelectable = defaultEdgeOptions?.selectable ?? true;
 
     // We look for all edges connected to the selected nodes
-    for (let nodeId of selectedNodeIds.current) {
-      let connections = connectionLookup.get(nodeId);
+    for (const nodeId of selectedNodeIds.current) {
+      const connections = connectionLookup.get(nodeId);
       if (!connections) continue;
-      for (let { edgeId } of connections.values()) {
-        let edge = edgeLookup.get(edgeId);
+      for (const { edgeId } of connections.values()) {
+        const edge = edgeLookup.get(edgeId);
         if (edge && (edge.selectable ?? edgesSelectable)) {
           selectedEdgeIds.current.add(edgeId);
         }
