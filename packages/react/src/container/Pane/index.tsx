@@ -39,6 +39,20 @@ type PaneProps = {
   >
 >;
 
+function areSetsEqual(a: Set<string>, b: Set<string>) {
+  if (a.size !== b.size) {
+    return false;
+  }
+
+  for (const item of a) {
+    if (!b.has(item)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 const wrapHandler = (
   handler: React.MouseEventHandler | undefined,
   containerRef: React.MutableRefObject<HTMLDivElement | null>
@@ -73,26 +87,19 @@ export function Pane({
   onPaneMouseLeave,
   children,
 }: PaneProps) {
-  const container = useRef<HTMLDivElement | null>(null);
   const store = useStoreApi();
-  const prevSelectedNodesCount = useRef<number>(0);
-  const prevSelectedEdgesCount = useRef<number>(0);
-  const containerBounds = useRef<DOMRect>();
-  const edgeIdLookup = useRef<Map<string, Set<string>>>(new Map());
-
   const { userSelectionActive, elementsSelectable, dragging } = useStore(selector, shallow);
   const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
+
+  const container = useRef<HTMLDivElement | null>(null);
+  const containerBounds = useRef<DOMRect>();
+
+  const selectedNodeIds = useRef<Set<string>>(new Set());
+  const selectedEdgeIds = useRef<Set<string>>(new Set());
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
   const selectionStarted = useRef<boolean>(false);
-
-  const resetUserSelection = () => {
-    store.setState({ userSelectionActive: false, userSelectionRect: null });
-
-    prevSelectedNodesCount.current = 0;
-    prevSelectedEdgesCount.current = 0;
-  };
 
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
@@ -135,12 +142,6 @@ export function Pane({
 
     selectionStarted.current = true;
     selectionInProgress.current = false;
-    edgeIdLookup.current = new Map();
-
-    for (const [id, edge] of edgeLookup) {
-      edgeIdLookup.current.set(edge.source, edgeIdLookup.current.get(edge.source)?.add(id) || new Set([id]));
-      edgeIdLookup.current.set(edge.target, edgeIdLookup.current.get(edge.target)?.add(id) || new Set([id]));
-    }
 
     const { x, y } = getEventPosition(event.nativeEvent, containerBounds.current);
 
@@ -161,8 +162,16 @@ export function Pane({
   };
 
   const onPointerMove = (event: ReactPointerEvent): void => {
-    const { userSelectionRect, edgeLookup, transform, nodeLookup, triggerNodeChanges, triggerEdgeChanges } =
-      store.getState();
+    const {
+      userSelectionRect,
+      transform,
+      nodeLookup,
+      edgeLookup,
+      connectionLookup,
+      triggerNodeChanges,
+      triggerEdgeChanges,
+      defaultEdgeOptions,
+    } = store.getState();
 
     if (!containerBounds.current || !userSelectionRect) {
       return;
@@ -182,38 +191,37 @@ export function Pane({
       height: Math.abs(mouseY - startY),
     };
 
-    const selectedNodes = getNodesInside(
-      nodeLookup,
-      nextUserSelectRect,
-      transform,
-      selectionMode === SelectionMode.Partial,
-      true
+    const prevSelectedNodeIds = selectedNodeIds.current;
+    const prevSelectedEdgeIds = selectedEdgeIds.current;
+
+    selectedNodeIds.current = new Set(
+      getNodesInside(nodeLookup, nextUserSelectRect, transform, selectionMode === SelectionMode.Partial, true).map(
+        (node) => node.id
+      )
     );
 
-    const selectedEdgeIds = new Set<string>();
-    const selectedNodeIds = new Set<string>();
+    let edgesSelectable = defaultEdgeOptions?.selectable ?? true;
+    selectedEdgeIds.current = new Set();
 
-    for (const selectedNode of selectedNodes) {
-      selectedNodeIds.add(selectedNode.id);
-
-      const edgeIds = edgeIdLookup.current.get(selectedNode.id);
-
-      if (edgeIds) {
-        for (const edgeId of edgeIds) {
-          selectedEdgeIds.add(edgeId);
+    // We look for all edges connected to the selected nodes
+    for (let nodeId of selectedNodeIds.current) {
+      let connections = connectionLookup.get(nodeId);
+      if (!connections) continue;
+      for (let { edgeId } of connections.values()) {
+        let edge = edgeLookup.get(edgeId);
+        if (edge && (edge.selectable ?? edgesSelectable)) {
+          selectedEdgeIds.current.add(edgeId);
         }
       }
     }
 
-    if (prevSelectedNodesCount.current !== selectedNodeIds.size) {
-      prevSelectedNodesCount.current = selectedNodeIds.size;
-      const changes = getSelectionChanges(nodeLookup, selectedNodeIds, true) as NodeChange[];
+    if (areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
+      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true) as NodeChange[];
       triggerNodeChanges(changes);
     }
 
-    if (prevSelectedEdgesCount.current !== selectedEdgeIds.size) {
-      prevSelectedEdgesCount.current = selectedEdgeIds.size;
-      const changes = getSelectionChanges(edgeLookup, selectedEdgeIds) as EdgeChange[];
+    if (areSetsEqual(prevSelectedEdgeIds, selectedEdgeIds.current)) {
+      const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.current) as EdgeChange[];
       triggerEdgeChanges(changes);
     }
 
@@ -231,17 +239,18 @@ export function Pane({
 
     (event.target as Element)?.releasePointerCapture?.(event.pointerId);
     const { userSelectionRect } = store.getState();
+
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.
     if (!userSelectionActive && userSelectionRect && event.target === container.current) {
       onClick?.(event);
     }
 
-    if (prevSelectedNodesCount.current > 0) {
-      store.setState({ nodesSelectionActive: true });
-    }
-
-    resetUserSelection();
+    store.setState({
+      userSelectionActive: false,
+      userSelectionRect: null,
+      nodesSelectionActive: selectedNodeIds.current.size > 0,
+    });
     onSelectionEnd?.(event);
 
     // If the user kept holding the selectionKey during the selection,
