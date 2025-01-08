@@ -1,53 +1,56 @@
 import { useEffect, useMemo, useRef } from 'react';
 import {
   Connection,
-  HandleConnection,
+  NodeConnection,
   HandleType,
   areConnectionMapsEqual,
   handleConnectionChange,
+  errorMessages,
 } from '@xyflow/system';
 
 import { useStore } from './useStore';
 import { useNodeId } from '../contexts/NodeIdContext';
 
-type useHandleConnectionsParams = {
-  type: HandleType;
-  id?: string | null;
+const error014 = errorMessages['error014']();
+
+type UseNodeConnectionsParams = {
+  type?: HandleType;
+  handleId?: string;
   nodeId?: string;
   onConnect?: (connections: Connection[]) => void;
   onDisconnect?: (connections: Connection[]) => void;
 };
 
 /**
- * Hook to check if a <Handle /> is connected to another <Handle /> and get the connections.
+ * Hook to retrieve all edges connected to a node. Can be filtered by handle type and id.
  *
  * @public
- * @deprecated Use `useNodeConnections` instead.
- * @param param.type - handle type 'source' or 'target'
- * @param param.nodeId - node id - if not provided, the node id from the NodeIdContext is used
- * @param param.id - the handle id (this is only needed if the node has multiple handles of the same type)
+ * @param param.nodeId - node id - optional if called inside a custom node
+ * @param param.type - filter by handle type 'source' or 'target'
+ * @param param.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type)
  * @param param.onConnect - gets called when a connection is established
  * @param param.onDisconnect - gets called when a connection is removed
- * @returns an array with handle connections
+ * @returns an array with connections
  */
-export function useHandleConnections({
+export function useNodeConnections({
   type,
-  id,
+  handleId,
   nodeId,
   onConnect,
   onDisconnect,
-}: useHandleConnectionsParams): HandleConnection[] {
-  console.warn(
-    '[DEPRECATED] `useHandleConnections` is deprecated. Instead use `useNodeConnections` https://reactflow.dev/api-reference/hooks/useNodeConnections'
-  );
-
+}: UseNodeConnectionsParams = {}): NodeConnection[] {
   const _nodeId = useNodeId();
   const currentNodeId = nodeId ?? _nodeId;
 
-  const prevConnections = useRef<Map<string, HandleConnection> | null>(null);
+  if (!currentNodeId) {
+    throw new Error(error014);
+  }
+
+  const prevConnections = useRef<Map<string, NodeConnection> | null>(null);
 
   const connections = useStore(
-    (state) => state.connectionLookup.get(`${currentNodeId}-${type}${id ? `-${id}` : ''}`),
+    (state) =>
+      state.connectionLookup.get(`${currentNodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`),
     areConnectionMapsEqual
   );
 

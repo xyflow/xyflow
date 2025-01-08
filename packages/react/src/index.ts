@@ -24,6 +24,7 @@ export { useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/us
 export { useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
 export { useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
 export { useHandleConnections } from './hooks/useHandleConnections';
+export { useNodeConnections } from './hooks/useNodeConnections';
 export { useNodesData } from './hooks/useNodesData';
 export { useConnection } from './hooks/useConnection';
 export { useInternalNode } from './hooks/useInternalNode';

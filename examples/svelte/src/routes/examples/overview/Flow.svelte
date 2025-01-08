@@ -147,6 +147,12 @@
 	function hideUnhide() {
 		updateNode('hideunhide', (node) => ({ hidden: !node.hidden }));
 	}
+
+	// $inspect(edges);
+	$effect(() => {
+		// console.log(edges.map((edge) => ({ id: edge.id, selected: edge.selected })));
+		edges.forEach((edge) => console.log({ id: edge.id, selected: edge.selected }));
+	});
 </script>
 
 <SvelteFlow

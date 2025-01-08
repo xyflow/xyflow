@@ -9,7 +9,7 @@ import { getContext } from 'svelte';
  * @param functionName - The name of the function that is being called
  * @param force - If true, the warning will be shown regardless if child of <SvelteFlowFlow />
  */
-export function derivedWarning(functionName: string, force?: boolean) {
+export function derivedWarning(functionName: string) {
   const storeContext = getContext<StoreContext>(key);
 
   if (!storeContext) {
@@ -18,7 +18,7 @@ export function derivedWarning(functionName: string, force?: boolean) {
     );
   }
 
-  if ((force || storeContext.provider) && !$effect.tracking()) {
+  if (storeContext.provider && typeof window === 'object' && !$effect.tracking()) {
     console.warn(`Use $derived(${functionName}()) to receive updates when values change.`);
     console.trace(functionName);
   }

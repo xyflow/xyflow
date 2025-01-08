@@ -35,7 +35,7 @@ export * from '$lib/hooks/useSvelteFlow.svelte';
 export * from '$lib/hooks/useUpdateNodeInternals.svelte';
 export * from '$lib/hooks/useConnection.svelte';
 export * from '$lib/hooks/useNodesEdgesViewport.svelte';
-export * from '$lib/hooks/useHandleConnections.svelte';
+export * from '$lib/hooks/useNodeConnections.svelte';
 export * from '$lib/hooks/useNodesData.svelte';
 export * from '$lib/hooks/useInternalNode.svelte';
 export { useInitialized, useNodesInitialized } from '$lib/hooks/useInitialized.svelte';

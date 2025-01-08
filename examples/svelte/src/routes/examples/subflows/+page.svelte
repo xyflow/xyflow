@@ -18,7 +18,7 @@
 		default: DebugNode
 	};
 
-	let nodes = $state<Node[]>([
+	let nodes = $state.raw<Node[]>([
 		{
 			id: '1',
 			type: 'input',
@@ -95,7 +95,7 @@
 		}
 	]);
 
-	let edges = $state<Edge[]>([
+	let edges = $state.raw<Edge[]>([
 		{
 			id: 'e1-2',
 			source: '1',

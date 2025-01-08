@@ -15,7 +15,7 @@
     return (item: Item) => {
       const isSelected = ids.has(item.id);
 
-      if (item.selected !== isSelected) {
+      if (!!item.selected !== isSelected) {
         return { ...item, selected: isSelected };
       }
 
@@ -23,8 +23,7 @@
     };
   }
 
-  // TODO: maybe replace with set.intersection?
-  function setEq(a: Set<string>, b: Set<string>) {
+  function isSetEqual(a: Set<string>, b: Set<string>) {
     if (a.size !== b.size) {
       return false;
     }
@@ -57,7 +56,6 @@
   // svelte-ignore non_reactive_update
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
-  // let selectedNodes: InternalNode[] = [];
 
   let selectedNodeIds: Set<string> = new Set();
   let selectedEdgeIds: Set<string> = new Set();
@@ -149,25 +147,27 @@
       ).map((n) => n.id)
     );
 
-    // TODO: replace with extended connectionLookup
     let edgesSelectable = store.defaultEdgeOptions.selectable ?? true;
     selectedEdgeIds = new Set();
-    store.edges.forEach((edge) => {
-      if (
-        selectedNodeIds.has(edge.source) &&
-        selectedNodeIds.has(edge.target) &&
-        (edge.selectable ?? edgesSelectable)
-      ) {
-        selectedEdgeIds.add(edge.id);
+
+    // We look for all edges connected to the selected nodes
+    for (let nodeId of selectedNodeIds) {
+      let connections = store.connectionLookup.get(nodeId);
+      if (!connections) continue;
+      for (let { edgeId } of connections.values()) {
+        let edge = store.edgeLookup.get(edgeId);
+        if (edge && (edge.selectable ?? edgesSelectable)) {
+          selectedEdgeIds.add(edgeId);
+        }
       }
-    });
+    }
 
     // this prevents unnecessary updates while updating the selection rectangle
-    if (setEq(prevSelectedNodeIds, selectedNodeIds)) {
+    if (isSetEqual(prevSelectedNodeIds, selectedNodeIds)) {
       store.nodes = store.nodes.map(toggleSelected(selectedNodeIds));
     }
 
-    if (setEq(prevSelectedEdgeIds, selectedEdgeIds)) {
+    if (isSetEqual(prevSelectedEdgeIds, selectedEdgeIds)) {
       store.edges = store.edges.map(toggleSelected(selectedEdgeIds));
     }
 

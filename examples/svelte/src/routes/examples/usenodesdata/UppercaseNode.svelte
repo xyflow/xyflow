@@ -2,7 +2,7 @@
 	import {
 		Handle,
 		Position,
-		useHandleConnections,
+		useNodeConnections,
 		useNodesData,
 		useSvelteFlow,
 		type Node,
@@ -14,7 +14,7 @@
 	let { id, data }: NodeProps<Node<{ text: string }>> = $props();
 
 	const { updateNodeData } = useSvelteFlow();
-	const connections = useHandleConnections({
+	const connections = useNodeConnections({
 		nodeId: id,
 		type: 'target'
 	});
