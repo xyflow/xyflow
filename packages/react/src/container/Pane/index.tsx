@@ -10,7 +10,14 @@ import {
 } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
-import { getNodesInside, getEventPosition, SelectionMode, type NodeChange, type EdgeChange } from '@xyflow/system';
+import {
+  getNodesInside,
+  getEventPosition,
+  SelectionMode,
+  areSetsEqual,
+  type NodeChange,
+  type EdgeChange,
+} from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
@@ -38,20 +45,6 @@ type PaneProps = {
     | 'selectionOnDrag'
   >
 >;
-
-function areSetsEqual(a: Set<string>, b: Set<string>) {
-  if (a.size !== b.size) {
-    return false;
-  }
-
-  for (const item of a) {
-    if (!b.has(item)) {
-      return false;
-    }
-  }
-
-  return true;
-}
 
 const wrapHandler = (
   handler: React.MouseEventHandler | undefined,
