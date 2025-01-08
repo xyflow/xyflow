@@ -118,7 +118,7 @@ export function Pane({
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
   const onPointerDown = (event: ReactPointerEvent): void => {
-    const { resetSelectedElements, domNode, edgeLookup } = store.getState();
+    const { resetSelectedElements, domNode } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
 
     if (
@@ -208,12 +208,12 @@ export function Pane({
       }
     }
 
-    if (areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
+    if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
       const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true) as NodeChange[];
       triggerNodeChanges(changes);
     }
 
-    if (areSetsEqual(prevSelectedEdgeIds, selectedEdgeIds.current)) {
+    if (!areSetsEqual(prevSelectedEdgeIds, selectedEdgeIds.current)) {
       const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.current) as EdgeChange[];
       triggerEdgeChanges(changes);
     }
