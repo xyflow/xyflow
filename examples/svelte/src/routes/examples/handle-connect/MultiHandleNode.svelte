@@ -4,7 +4,7 @@
 		Position,
 		type NodeProps,
 		type Connection,
-		useHandleConnections
+		useNodeConnections
 	} from '@xyflow/svelte';
 
 	let { id }: NodeProps = $props();
@@ -25,7 +25,7 @@
 		console.log('disconnect source', handleId, connection);
 	}
 
-	const connections = useHandleConnections({ nodeId: id, type: 'target' });
+	const connections = useNodeConnections({ id: id, handleType: 'target' });
 
 	$inspect(connections.current);
 </script>

@@ -1,8 +1,7 @@
 <script lang="ts">
 	import {
 		SvelteFlow,
-		useConnection,
-		useHandleConnections,
+		useNodeConnections,
 		useSvelteFlow,
 		type Edge,
 		type Node,
@@ -30,7 +29,7 @@
 
 	const { screenToFlowPosition, flowToScreenPosition } = $derived(useSvelteFlow());
 
-	const connections = useHandleConnections({ nodeId: '0', type: 'source' });
+	const connections = useNodeConnections({ id: '0', handleType: 'source' });
 
 	$inspect(connections.current);
 
