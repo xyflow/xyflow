@@ -13,4 +13,3 @@
 <SvelteFlowProvider>
 	<Flow flowConfig={data.flowConfig} />
 </SvelteFlowProvider>
-w
