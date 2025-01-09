@@ -83,7 +83,7 @@
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "svelte": "^5.0.0"
+    "svelte": "^5.7.0"
   },
   "files": [
     "dist"
