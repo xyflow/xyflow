@@ -3,11 +3,11 @@
 
 	import Flow from './Flow.svelte';
 
-	interface Props {
+	let {
+		data
+	}: {
 		data: { flowConfig: FlowConfig };
-	}
-
-	let { data }: Props = $props();
+	} = $props();
 </script>
 
 <SvelteFlowProvider>

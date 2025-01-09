@@ -8,6 +8,7 @@
 
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
+  import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
 
   let {
     store,
@@ -18,7 +19,7 @@
     zoomActivationKey = isMacOs() ? 'Meta' : 'Control'
   }: KeyHandlerProps = $props();
 
-  // const { nodes: _nodes, edges: _edges } = store;
+  let { deleteElements } = useSvelteFlow();
 
   function isKeyObject(key?: KeyDefinition | null): key is KeyDefinitionObject {
     return key !== null && typeof key === 'object';
@@ -64,26 +65,18 @@
   }
 
   async function handleDelete() {
-    // const nodes = get(_nodes);
-    // const edges = get(_edges);
     const selectedNodes = store.nodes.filter((node) => node.selected);
     const selectedEdges = store.edges.filter((edge) => edge.selected);
 
-    const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
-      nodesToRemove: selectedNodes,
-      edgesToRemove: selectedEdges,
-      nodes: store.nodes,
-      edges: store.edges,
-      onBeforeDelete: store.onbeforedelete
+    const { deletedNodes, deletedEdges } = await deleteElements({
+      nodes: selectedNodes,
+      edges: selectedEdges
     });
 
-    if (matchingNodes.length || matchingEdges.length) {
-      // _nodes.update((nds) => nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id)));
-      // _edges.update((eds) => eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id)));
-
+    if (deletedNodes.length > 0 || deletedEdges.length > 0) {
       store.ondelete?.({
-        nodes: matchingNodes,
-        edges: matchingEdges
+        nodes: deletedNodes,
+        edges: deletedEdges
       });
     }
   }
