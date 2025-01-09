@@ -263,3 +263,17 @@ export function evaluateAbsolutePosition(
 
   return positionAbsolute;
 }
+
+export function areSetsEqual(a: Set<string>, b: Set<string>) {
+  if (a.size !== b.size) {
+    return false;
+  }
+
+  for (const item of a) {
+    if (!b.has(item)) {
+      return false;
+    }
+  }
+
+  return true;
+}

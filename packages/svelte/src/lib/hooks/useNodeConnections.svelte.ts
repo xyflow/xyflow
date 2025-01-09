@@ -4,9 +4,9 @@ import { useStore } from '$lib/store';
 import { getContext } from 'svelte';
 
 type UseNodeConnectionsParams = {
-  type?: HandleType;
+  id?: string;
+  handleType?: HandleType;
   handleId?: string;
-  nodeId?: string;
   // TODO: Svelte 5
   //   onConnect?: (connections: Connection[]) => void;
   //   onDisconnect?: (connections: Connection[]) => void;
@@ -18,22 +18,18 @@ const initialConnections: NodeConnection[] = [];
  * Hook to retrieve all edges connected to a node. Can be filtered by handle type and id.
  *
  * @public
- * @param param.nodeId - node id - optional if called inside a custom node
- * @param param.type - filter by handle type 'source' or 'target'
+ * @param param.id - node id - optional if called inside a custom node
+ * @param param.handleType - filter by handle type 'source' or 'target'
  * @param param.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type)
  * @todo @param param.onConnect - gets called when a connection is established
  * @todo @param param.onDisconnect - gets called when a connection is removed
  * @returns an array with connections
  */
-export function useNodeConnections({
-  type,
-  nodeId: _nodeId,
-  handleId
-}: UseNodeConnectionsParams = {}) {
+export function useNodeConnections({ id, handleType, handleId }: UseNodeConnectionsParams = {}) {
   const { edges, connectionLookup } = $derived(useStore());
 
   const contextNodeId = getContext<string>('svelteflow__node_id');
-  const nodeId = _nodeId ?? contextNodeId;
+  const nodeId = id ?? contextNodeId;
 
   let prevConnections: Map<string, NodeConnection> | undefined = new Map();
   let connectionsArray: NodeConnection[] = initialConnections;
@@ -42,7 +38,7 @@ export function useNodeConnections({
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     edges;
     const nextConnections = connectionLookup.get(
-      `${nodeId}-${type}${handleId ? `-${handleId}` : ''}`
+      `${nodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
     );
     if (!areConnectionMapsEqual(nextConnections, prevConnections)) {
       prevConnections = nextConnections;

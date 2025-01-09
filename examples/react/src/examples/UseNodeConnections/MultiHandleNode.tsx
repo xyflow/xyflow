@@ -12,7 +12,7 @@ function CustomHandle({ nodeId, ...handleProps }: HandleProps & { nodeId: string
     [nodeId]
   );
   const connections = useNodeConnections({
-    type: handleProps.type,
+    handleType: handleProps.type,
     handleId: handleProps.id,
     onConnect,
     onDisconnect,

@@ -11,8 +11,8 @@
 	let { id }: NodeProps = $props();
 
 	const connections = useNodeConnections({
-		nodeId: id,
-		type: 'target'
+		id: id,
+		handleType: 'target'
 	});
 
 	let nodeData = $derived(

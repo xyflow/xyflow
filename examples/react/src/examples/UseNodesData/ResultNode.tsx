@@ -4,7 +4,7 @@ import { isTextNode, type MyNode } from '.';
 
 function ResultNode() {
   const connections = useNodeConnections({
-    type: 'target',
+    handleType: 'target',
   });
   const nodesData = useNodesData<MyNode>(connections.map((connection) => connection.source));
   const textNodes = nodesData.filter(isTextNode);
