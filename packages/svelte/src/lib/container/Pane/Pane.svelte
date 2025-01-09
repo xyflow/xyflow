@@ -164,11 +164,11 @@
     }
 
     // this prevents unnecessary updates while updating the selection rectangle
-    if (isSetEqual(prevSelectedNodeIds, selectedNodeIds)) {
+    if (!isSetEqual(prevSelectedNodeIds, selectedNodeIds)) {
       store.nodes = store.nodes.map(toggleSelected(selectedNodeIds));
     }
 
-    if (isSetEqual(prevSelectedEdgeIds, selectedEdgeIds)) {
+    if (!isSetEqual(prevSelectedEdgeIds, selectedEdgeIds)) {
       store.edges = store.edges.map(toggleSelected(selectedEdgeIds));
     }
 
