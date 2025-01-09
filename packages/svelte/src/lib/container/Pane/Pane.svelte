@@ -85,8 +85,9 @@
     store.selectionRectMode = null;
   }
 
+  // We start the selection process when the user clicks down on the pane
   function onPointerDown(event: PointerEvent) {
-    containerBounds = container.getBoundingClientRect();
+    containerBounds = container?.getBoundingClientRect();
 
     if (
       !store.elementsSelectable ||
@@ -147,15 +148,15 @@
       ).map((n) => n.id)
     );
 
-    let edgesSelectable = store.defaultEdgeOptions.selectable ?? true;
+    const edgesSelectable = store.defaultEdgeOptions.selectable ?? true;
     selectedEdgeIds = new Set();
 
     // We look for all edges connected to the selected nodes
-    for (let nodeId of selectedNodeIds) {
-      let connections = store.connectionLookup.get(nodeId);
+    for (const nodeId of selectedNodeIds) {
+      const connections = store.connectionLookup.get(nodeId);
       if (!connections) continue;
-      for (let { edgeId } of connections.values()) {
-        let edge = store.edgeLookup.get(edgeId);
+      for (const { edgeId } of connections.values()) {
+        const edge = store.edgeLookup.get(edgeId);
         if (edge && (edge.selectable ?? edgesSelectable)) {
           selectedEdgeIds.add(edgeId);
         }
