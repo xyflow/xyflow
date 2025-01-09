@@ -4,7 +4,7 @@
     type ShortcutEventDetail,
     type ShortcutModifierDefinition
   } from '@svelte-put/shortcut';
-  import { getElementsToRemove, isInputDOMNode, isMacOs } from '@xyflow/system';
+  import { isInputDOMNode, isMacOs } from '@xyflow/system';
 
   import type { KeyHandlerProps } from './types';
   import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
@@ -94,7 +94,9 @@
     type: 'keyup'
   }}
   use:shortcut={{
-    trigger: getShortcutTrigger(multiSelectionKey, () => (store.multiselectionKeyPressed = true)),
+    trigger: getShortcutTrigger(multiSelectionKey, () => {
+      store.multiselectionKeyPressed = true;
+    }),
     type: 'keydown'
   }}
   use:shortcut={{

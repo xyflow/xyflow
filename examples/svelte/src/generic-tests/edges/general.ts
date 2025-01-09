@@ -3,6 +3,7 @@ import { MarkerType } from '@xyflow/svelte';
 export default {
 	flowProps: {
 		fitView: true,
+		multiSelectionKey: ['Meta', 's'],
 		nodes: [
 			{
 				id: '1',

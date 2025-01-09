@@ -3,11 +3,7 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	interface Props {
-		flowConfig: FlowConfig;
-	}
-
-	let { flowConfig }: Props = $props();
+	let { flowConfig }: { flowConfig: FlowConfig } = $props();
 
 	// Create writables here so it is easier to create test cases
 	let nodes = $state.raw(flowConfig.flowProps?.nodes ?? []);

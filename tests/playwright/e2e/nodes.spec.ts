@@ -176,7 +176,7 @@ test.describe('Nodes', () => {
     });
 
     test('connecting two output handles does not work', async ({ page }) => {
-      const firstOutputHandle = page.locator(`.${FRAMEWORK}-flow__handle`).and(page.locator('[data-nodeid="Node-2"]'));
+      const firstOutputHandle = page.locator('[data-nodeid="Node-2"]').and(page.locator(`.${FRAMEWORK}-flow__handle`));
       const secondOutputHandle = page.locator(`.${FRAMEWORK}-flow__handle`).and(page.locator('[data-nodeid="Node-4"]'));
 
       await expect(firstOutputHandle).toBeInViewport();
