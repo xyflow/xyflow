@@ -92,7 +92,9 @@
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     store.edges;
     if (onconnect || ondisconnect) {
-      let connections = store.connectionLookup.get(`${nodeId}-${type}${id ? `-${id}` : ''}`);
+      let connections = store.connectionLookup.get(
+        `${nodeId}-${type}${handleId ? `-${handleId}` : ''}`
+      );
 
       if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
         const _connections = connections ?? new Map();
