@@ -14,9 +14,9 @@ import { useNodeId } from '../contexts/NodeIdContext';
 const error014 = errorMessages['error014']();
 
 type UseNodeConnectionsParams = {
-  type?: HandleType;
+  id?: string;
+  handleType?: HandleType;
   handleId?: string;
-  nodeId?: string;
   onConnect?: (connections: Connection[]) => void;
   onDisconnect?: (connections: Connection[]) => void;
 };
@@ -25,22 +25,22 @@ type UseNodeConnectionsParams = {
  * Hook to retrieve all edges connected to a node. Can be filtered by handle type and id.
  *
  * @public
- * @param param.nodeId - node id - optional if called inside a custom node
- * @param param.type - filter by handle type 'source' or 'target'
+ * @param param.id - node id - optional if called inside a custom node
+ * @param param.handleType - filter by handle type 'source' or 'target'
  * @param param.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type)
  * @param param.onConnect - gets called when a connection is established
  * @param param.onDisconnect - gets called when a connection is removed
  * @returns an array with connections
  */
 export function useNodeConnections({
-  type,
+  id,
+  handleType,
   handleId,
-  nodeId,
   onConnect,
   onDisconnect,
 }: UseNodeConnectionsParams = {}): NodeConnection[] {
-  const _nodeId = useNodeId();
-  const currentNodeId = nodeId ?? _nodeId;
+  const nodeId = useNodeId();
+  const currentNodeId = id ?? nodeId;
 
   if (!currentNodeId) {
     throw new Error(error014);
@@ -50,7 +50,9 @@ export function useNodeConnections({
 
   const connections = useStore(
     (state) =>
-      state.connectionLookup.get(`${currentNodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`),
+      state.connectionLookup.get(
+        `${currentNodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
+      ),
     areConnectionMapsEqual
   );
 

@@ -1,3 +1,4 @@
+import { getContext } from 'svelte';
 import { derived } from 'svelte/store';
 import {
   areConnectionMapsEqual,
@@ -7,14 +8,13 @@ import {
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
-import { getContext } from 'svelte';
 
 const error014 = errorMessages['error014']();
 
 type UseNodeConnectionsParams = {
-  type?: HandleType;
+  id?: string;
+  handleType?: HandleType;
   handleId?: string;
-  nodeId?: string;
   // TODO: Svelte 5
   //   onConnect?: (connections: Connection[]) => void;
   //   onDisconnect?: (connections: Connection[]) => void;
@@ -26,18 +26,18 @@ const initialConnections: NodeConnection[] = [];
  * Hook to retrieve all edges connected to a node. Can be filtered by handle type and id.
  *
  * @public
- * @param param.nodeId - node id - optional if called inside a custom node
- * @param param.type - filter by handle type 'source' or 'target'
+ * @param param.id - node id - optional if called inside a custom node
+ * @param param.handleType - filter by handle type 'source' or 'target'
  * @param param.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type)
  * @todo @param param.onConnect - gets called when a connection is established
  * @todo @param param.onDisconnect - gets called when a connection is removed
  * @returns an array with connections
  */
-export function useNodeConnections({ type, nodeId, handleId }: UseNodeConnectionsParams = {}) {
+export function useNodeConnections({ id, handleType, handleId }: UseNodeConnectionsParams = {}) {
   const { edges, connectionLookup } = useStore();
 
-  const _nodeId = getContext<string>('svelteflow__node_id');
-  const currentNodeId = nodeId ?? _nodeId;
+  const nodeId = getContext<string>('svelteflow__node_id');
+  const currentNodeId = id ?? nodeId;
 
   if (!currentNodeId) {
     throw new Error(error014);
@@ -49,7 +49,7 @@ export function useNodeConnections({ type, nodeId, handleId }: UseNodeConnection
     [edges, connectionLookup],
     ([, connectionLookup], set) => {
       const nextConnections = connectionLookup.get(
-        `${currentNodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`
+        `${currentNodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
       );
 
       if (!areConnectionMapsEqual(nextConnections, prevConnections)) {

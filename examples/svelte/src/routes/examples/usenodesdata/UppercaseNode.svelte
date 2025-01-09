@@ -17,8 +17,8 @@
 
 	const { updateNodeData } = useSvelteFlow();
 	const connections = useNodeConnections({
-		nodeId: id,
-		type: 'target'
+		id: id,
+		handleType: 'target'
 	});
 
 	$: nodeData = useNodesData<MyNode>($connections[0]?.source);

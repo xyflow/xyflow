@@ -14,8 +14,8 @@
 	$$restProps;
 
 	const connections = useNodeConnections({
-		nodeId: id,
-		type: 'target'
+		id: id,
+		handleType: 'target'
 	});
 
 	$: nodeData = useNodesData<MyNode>($connections.map((connection) => connection.source));

@@ -5,7 +5,7 @@ import { isTextNode, type TextNode, type MyNode } from '.';
 function UppercaseNode({ id }: NodeProps) {
   const { updateNodeData } = useReactFlow();
   const connections = useNodeConnections({
-    type: 'target',
+    handleType: 'target',
   });
   const nodesData = useNodesData<MyNode>(connections[0]?.source);
   const textNode = isTextNode(nodesData) ? nodesData : null;
