@@ -5,7 +5,7 @@
 		data = { label: 'Node' },
 		positionAbsoluteX = 0,
 		positionAbsoluteY = 0
-	}: NodeProps = $props();
+	}: NodeProps<BuiltInNode> = $props();
 </script>
 
 <div class="custom">

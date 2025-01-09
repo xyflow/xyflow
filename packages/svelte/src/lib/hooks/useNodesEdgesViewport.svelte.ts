@@ -7,10 +7,13 @@ import { useStore } from '$lib/store';
  * @returns reactive signal of the current edges
  */
 export function useNodes() {
-  const { nodes } = $derived(useStore());
+  const store = $derived(useStore());
   return {
     get current() {
-      return nodes;
+      return store.nodes;
+    },
+    set current(val) {
+      store.nodes = val;
     }
   };
 }
@@ -22,10 +25,13 @@ export function useNodes() {
  * @returns reactive signal of the current edges
  */
 export function useEdges() {
-  const { edges } = $derived(useStore());
+  const store = $derived(useStore());
   return {
     get current() {
-      return edges;
+      return store.edges;
+    },
+    set current(val) {
+      store.edges = val;
     }
   };
 }
@@ -37,10 +43,13 @@ export function useEdges() {
  * @returns reactive signal of the current viewport
  */
 export function useViewport() {
-  const { viewport } = $derived(useStore());
+  const store = $derived(useStore());
   return {
     get current() {
-      return viewport;
+      return store.viewport;
+    },
+    set current(val) {
+      store.viewport = val;
     }
   };
 }

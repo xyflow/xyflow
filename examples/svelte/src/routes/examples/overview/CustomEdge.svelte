@@ -3,30 +3,27 @@
 		BaseEdge,
 		EdgeLabelRenderer,
 		useEdges,
-		type EdgeProps,
-		getBezierPath
+		getBezierPath,
+		type EdgeProps
 	} from '@xyflow/svelte';
-	interface Props {
-		[key: string]: any
-	}
 
-	let { ...props }: Props = $props();
+	let { ...props }: EdgeProps = $props();
 
-	type $$Props = EdgeProps;
-
-	let [path, labelX, labelY] = $derived(getBezierPath({
-		sourceX: props.sourceX,
-		sourceY: props.sourceY,
-		targetX: props.targetX,
-		targetY: props.targetY,
-		sourcePosition: props.sourcePosition,
-		targetPosition: props.targetPosition
-	}));
+	let [path, labelX, labelY] = $derived(
+		getBezierPath({
+			sourceX: props.sourceX,
+			sourceY: props.sourceY,
+			targetX: props.targetX,
+			targetY: props.targetY,
+			sourcePosition: props.sourcePosition,
+			targetPosition: props.targetPosition
+		})
+	);
 
 	const edges = useEdges();
 
 	function onClick() {
-		edges.update((eds) => eds.filter((e) => e.id !== props.id));
+		edges.current = edges.current.filter((e) => e.id !== props.id);
 	}
 </script>
 
