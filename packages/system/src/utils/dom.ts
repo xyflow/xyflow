@@ -32,18 +32,20 @@ export const getDimensions = (node: HTMLDivElement): Dimensions => ({
   height: node.offsetHeight,
 });
 
-export const getHostForElement = (element: HTMLElement): Document | ShadowRoot =>
-  (element.getRootNode?.() as Document | ShadowRoot) || window?.document;
+export const getHostForElement = (element: HTMLElement | EventTarget | null): Document | ShadowRoot =>
+  ((element as Partial<HTMLElement> | null)?.getRootNode?.() as Document | ShadowRoot) || window?.document;
 
 const inputTags = ['INPUT', 'SELECT', 'TEXTAREA'];
 
 export function isInputDOMNode(event: KeyboardEvent): boolean {
   // using composed path for handling shadow dom
-  const target = (event.composedPath?.()?.[0] || event.target) as HTMLElement;
-  const isInput = inputTags.includes(target?.nodeName) || target?.hasAttribute?.('contenteditable');
+  const target = (event.composedPath?.()?.[0] || event.target) as Element | null;
+  if (target?.nodeType !== 1 /* Node.ELEMENT_NODE */) return false;
+
+  const isInput = inputTags.includes(target.nodeName) || target.hasAttribute('contenteditable');
 
   // when an input field is focused we don't want to trigger deletion or movement of nodes
-  return isInput || !!target?.closest('.nokey');
+  return isInput || !!target.closest('.nokey');
 }
 
 export const isMouseEvent = (event: MouseEvent | TouchEvent): event is MouseEvent => 'clientX' in event;
