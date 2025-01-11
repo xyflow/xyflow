@@ -5,12 +5,12 @@
 
   type $$Props = ControlButtonProps;
 
-  let className: $$Props['class'] = undefined;
-  let bgColor: $$Props['bgColor'] = undefined;
-  let bgColorHover: $$Props['bgColorHover'] = undefined;
-  let color: $$Props['color'] = undefined;
-  let colorHover: $$Props['colorHover'] = undefined;
-  let borderColor: $$Props['borderColor'] = undefined;
+  export let className: $$Props['class'] = undefined;
+  export let bgColor: $$Props['bgColor'] = undefined;
+  export let bgColorHover: $$Props['bgColorHover'] = undefined;
+  export let color: $$Props['color'] = undefined;
+  export let colorHover: $$Props['colorHover'] = undefined;
+  export let borderColor: $$Props['borderColor'] = undefined;
 
   export { className as class };
 </script>
