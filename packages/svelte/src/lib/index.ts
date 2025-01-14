@@ -54,6 +54,7 @@ export type {
 export type { HandleProps, FitViewOptions } from '$lib/types/general';
 export type { Node, NodeTypes, BuiltInNode, NodeProps, InternalNode } from '$lib/types/nodes';
 export type { SvelteFlowStore } from '$lib/store/types';
+export * from '$lib/types/events';
 
 // system types
 export {

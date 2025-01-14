@@ -202,9 +202,9 @@
     style:visibility={initialized ? 'visible' : 'hidden'}
     style="{style ?? ''};{inlineStyleDimensions.width}{inlineStyleDimensions.height}"
     onclick={onSelectNodeHandler}
-    onmouseenter={onnodemouseenter ? (event) => onnodemouseenter({ node, event }) : undefined}
-    onmouseleave={onnodemouseleave ? (event) => onnodemouseleave({ node, event }) : undefined}
-    onmousemove={onnodemousemove ? (event) => onnodemousemove({ node, event }) : undefined}
+    onpointerenter={onnodemouseenter ? (event) => onnodemouseenter({ node, event }) : undefined}
+    onpointerleave={onnodemouseleave ? (event) => onnodemouseleave({ node, event }) : undefined}
+    onpointermove={onnodemousemove ? (event) => onnodemousemove({ node, event }) : undefined}
     oncontextmenu={onnodecontextmenu ? (event) => onnodecontextmenu({ node, event }) : undefined}
   >
     <NodeComponent

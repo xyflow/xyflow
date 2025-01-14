@@ -60,7 +60,7 @@ export type SvelteFlowProps = NodeEvents &
      *  }
      * ]);
      */
-    nodes: Node[];
+    nodes?: Node[];
     /** An array of edges to render in a controlled flow.
      * @example
      * const edges = $state.raw([
@@ -71,7 +71,7 @@ export type SvelteFlowProps = NodeEvents &
      *  }
      * ]);
      */
-    edges: Edge[];
+    edges?: Edge[];
     /** Custom node types to be available in a flow.
      *
      * Svelte Flow matches a node's type to a component in the nodeTypes object.
