@@ -87,6 +87,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   options?: UpdateNodesOptions<NodeType>
 ) {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
+
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
 
@@ -345,59 +346,62 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
         },
       });
       updatedInternals = true;
-    } else {
-      const dimensions = getDimensions(update.nodeElement);
-      const dimensionChanged = node.measured.width !== dimensions.width || node.measured.height !== dimensions.height;
-      const doUpdate = !!(
-        dimensions.width &&
-        dimensions.height &&
-        (dimensionChanged || !node.internals.handleBounds || update.force)
-      );
+      continue;
+    }
 
-      if (doUpdate) {
-        const nodeBounds = update.nodeElement.getBoundingClientRect();
-        const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
-        let { positionAbsolute } = node.internals;
+    const dimensions = getDimensions(update.nodeElement);
+    const dimensionChanged = node.measured.width !== dimensions.width || node.measured.height !== dimensions.height;
+    const doUpdate = !!(
+      dimensions.width &&
+      dimensions.height &&
+      (dimensionChanged || !node.internals.handleBounds || update.force)
+    );
 
-        if (node.parentId && node.extent === 'parent') {
-          positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, nodeLookup.get(node.parentId)!);
-        } else if (extent) {
-          positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
-        }
+    if (doUpdate) {
+      const nodeBounds = update.nodeElement.getBoundingClientRect();
+      const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
+      let { positionAbsolute } = node.internals;
 
-        nodeLookup.set(node.id, {
-          ...node,
-          measured: dimensions,
-          internals: {
-            ...node.internals,
-            positionAbsolute,
-            handleBounds: {
-              source: getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id),
-              target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
-            },
+      if (node.parentId && node.extent === 'parent') {
+        positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, nodeLookup.get(node.parentId)!);
+      } else if (extent) {
+        positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
+      }
+
+      const newNode = {
+        ...node,
+        measured: dimensions,
+        internals: {
+          ...node.internals,
+          positionAbsolute,
+          handleBounds: {
+            source: getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id),
+            target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
           },
+        },
+      };
+
+      nodeLookup.set(node.id, newNode);
+
+      if (node.parentId) {
+        updateChildNode(newNode, nodeLookup, parentLookup, { nodeOrigin });
+      }
+
+      updatedInternals = true;
+
+      if (dimensionChanged) {
+        changes.push({
+          id: node.id,
+          type: 'dimensions',
+          dimensions,
         });
 
-        if (node.parentId) {
-          updateChildNode(node, nodeLookup, parentLookup, { nodeOrigin });
-        }
-
-        updatedInternals = true;
-
-        if (dimensionChanged) {
-          changes.push({
+        if (node.expandParent && node.parentId) {
+          parentExpandChildren.push({
             id: node.id,
-            type: 'dimensions',
-            dimensions,
+            parentId: node.parentId,
+            rect: nodeToRect(newNode, nodeOrigin),
           });
-
-          if (node.expandParent && node.parentId) {
-            parentExpandChildren.push({
-              id: node.id,
-              parentId: node.parentId,
-              rect: nodeToRect(node, nodeOrigin),
-            });
-          }
         }
       }
     }
