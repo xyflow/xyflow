@@ -1,5 +1,14 @@
 # @xyflow/react
 
+## 12.4.1
+
+### Patch Changes
+
+- [#4949](https://github.com/xyflow/xyflow/pull/4949) [`592c7eaf`](https://github.com/xyflow/xyflow/commit/592c7eaf9574fc69df3123837da95f85877b23e8) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix useNodeConnection hook not returning all connected edges.
+
+- Updated dependencies [[`592c7eaf`](https://github.com/xyflow/xyflow/commit/592c7eaf9574fc69df3123837da95f85877b23e8)]:
+  - @xyflow/system@0.0.49
+
 ## 12.4.0
 
 ### Minor Changes
