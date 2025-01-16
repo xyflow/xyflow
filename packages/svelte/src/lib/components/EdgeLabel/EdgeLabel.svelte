@@ -5,14 +5,16 @@
   import { useStore } from '$lib/store';
 
   let {
-    style,
     x,
     y,
+    style,
+    class: className,
     children
   }: {
-    style?: string;
     x?: number;
     y?: number;
+    style?: string;
+    class?: string;
     children?: Snippet;
   } = $props();
 
@@ -23,7 +25,7 @@
 
 <EdgeLabelRenderer>
   <div
-    class="svelte-flow__edge-label"
+    class={['svelte-flow__edge-label', className]}
     style:transform="translate(-50%, -50%) translate({x}px,{y}px)"
     style={'pointer-events: all;' + style}
     role="button"
