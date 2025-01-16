@@ -69,17 +69,16 @@ const initEdges = [
     source: '1',
     target: '3',
   },
-
   {
     id: 'e4a-5',
     source: '4',
-    sourceHandle: 'a',
+    sourceHandle: 's1',
     target: '5',
   },
   {
     id: 'e4b-5',
     source: '4',
-    sourceHandle: 'b',
+    sourceHandle: 's2',
     target: '6',
   },
 ];
@@ -91,6 +90,8 @@ const defaultEdgeOptions = {
 const CustomNodeFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
+
+  console.log(edges);
 
   const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), [setEdges]);
 
