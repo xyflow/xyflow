@@ -9,9 +9,8 @@
 		type NodeProps
 	} from '@xyflow/svelte';
 	import { isTextNode, type MyNode } from './+page.svelte';
-	import { untrack } from 'svelte';
 
-	let { id, data }: NodeProps<Node<{ text: string }>> = $props();
+	let { id }: NodeProps<Node<{ text: string }>> = $props();
 
 	const { updateNodeData } = useSvelteFlow();
 	const connections = useNodeConnections({
@@ -20,21 +19,19 @@
 	});
 
 	let nodeData = $derived(useNodesData<MyNode>(connections.current[0]?.source));
-	let textNodeData = $derived(isTextNode(nodeData.current) ? nodeData.current.data : null);
+	let textNodeData = $derived(isTextNode(nodeData.current) ? nodeData.current.data.text : null);
 
-	// For some reason adding an inspect here also prevents the inifinte loop!?
+	$effect(() => {
+		console.log('textNodeData', textNodeData);
+	});
+
 	// $inspect(textNodeData);
-
-	$effect.pre(() => {
-		const nodeData = textNodeData;
-		const input = nodeData?.text.toUpperCase() ?? '';
-
-		// TODO: We need to add this check to prevent infinite loop
-		// I don't understand why?
-		if (input === untrack(() => data.text)) return;
+	$effect(() => {
+		console.log('running');
+		textNodeData;
+		const input = textNodeData?.toUpperCase() ?? '';
 
 		updateNodeData(id, { text: input });
-		console.log('updatedNodeData with', input);
 	});
 </script>
 

@@ -23,6 +23,7 @@ import { useStore } from '$lib/store';
 import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
 import { isEdge, isNode } from '$lib/utils';
 import { derivedWarning } from './derivedWarning.svelte';
+import { untrack } from 'svelte';
 
 /**
  * Hook for accessing the ReactFlow instance.
@@ -310,7 +311,7 @@ export function useSvelteFlow(): {
     nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
     options: { replace: boolean } = { replace: false }
   ) {
-    store.nodes = store.nodes.map((node) => {
+    store.nodes = untrack(() => store.nodes).map((node) => {
       if (node.id === id) {
         const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
         return options?.replace && isNode(nextNode) ? nextNode : { ...node, ...nextNode };
@@ -325,7 +326,7 @@ export function useSvelteFlow(): {
     edgeUpdate: Partial<Edge> | ((edge: Edge) => Partial<Edge>),
     options: { replace: boolean } = { replace: false }
   ) {
-    store.edges = store.edges.map((edge) => {
+    store.edges = untrack(() => store.edges).map((edge) => {
       if (edge.id === id) {
         const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
         return options.replace && isEdge(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
@@ -461,11 +462,15 @@ export function useSvelteFlow(): {
       });
 
       if (matchingNodes) {
-        store.nodes = store.nodes.filter((node) => !matchingNodes.some(({ id }) => id === node.id));
+        store.nodes = untrack(() => store.nodes).filter(
+          (node) => !matchingNodes.some(({ id }) => id === node.id)
+        );
       }
 
       if (matchingEdges) {
-        store.edges = store.edges.filter((edge) => !matchingEdges.some(({ id }) => id === edge.id));
+        store.edges = untrack(() => store.edges).filter(
+          (edge) => !matchingEdges.some(({ id }) => id === edge.id)
+        );
       }
 
       return {
