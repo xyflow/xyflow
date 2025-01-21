@@ -1,6 +1,6 @@
 <script lang="ts">
   import cc from 'classcat';
-  import type { Snippet } from 'svelte';
+  import type { Component } from 'svelte';
   import {
     ConnectionLineType,
     getBezierPath,
@@ -13,14 +13,16 @@
 
   let {
     store,
+    type,
     containerStyle = '',
     style = '',
-    connectionLine
+    LineComponent
   }: {
     store: SvelteFlowStore;
+    type: ConnectionLineType;
     containerStyle: string;
     style: string;
-    connectionLine?: Snippet;
+    LineComponent?: Component;
   } = $props();
 
   let path = $derived.by(() => {
@@ -37,7 +39,7 @@
       targetPosition: store.connection.toPosition
     };
 
-    switch (store.connectionLineType) {
+    switch (type) {
       case ConnectionLineType.Bezier: {
         const [path] = getBezierPath(pathParams);
         return path;
@@ -50,7 +52,7 @@
       case ConnectionLineType.SmoothStep: {
         const [path] = getSmoothStepPath({
           ...pathParams,
-          borderRadius: store.connectionLineType === ConnectionLineType.Step ? 0 : undefined
+          borderRadius: type === ConnectionLineType.Step ? 0 : undefined
         });
         return path;
       }
@@ -66,8 +68,8 @@
     style={containerStyle}
   >
     <g class={cc(['svelte-flow__connection', getConnectionStatus(store.connection.isValid)])}>
-      {#if connectionLine}
-        {@render connectionLine()}
+      {#if LineComponent}
+        <LineComponent></LineComponent>
       {:else}
         <path d={path} {style} fill="none" class="svelte-flow__connection-path" />
       {/if}

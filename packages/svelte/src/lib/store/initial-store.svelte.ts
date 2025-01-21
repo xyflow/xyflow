@@ -2,7 +2,6 @@ import {
   infiniteExtent,
   SelectionMode,
   ConnectionMode,
-  ConnectionLineType,
   devWarn,
   adoptUserNodes,
   getViewportForBounds,
@@ -225,9 +224,6 @@ export const getInitialStore = (signals: StoreSignals) => {
         return this._connection;
       }
     });
-    connectionLineType: ConnectionLineType = $derived(
-      signals.props.connectionLineType ?? ConnectionLineType.Bezier
-    );
     connectionMode: ConnectionMode = $derived(
       signals.props.connectionMode ?? ConnectionMode.Strict
     );

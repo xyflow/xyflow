@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getContext, setContext, onDestroy } from 'svelte';
   import cc from 'classcat';
-  import { PanOnScrollMode } from '@xyflow/system';
+  import { ConnectionLineType, PanOnScrollMode } from '@xyflow/system';
 
   import { key, createStore } from '$lib/store';
   import { Zoom } from '$lib/container/Zoom';
@@ -33,7 +33,6 @@
     onMoveStart,
     onMoveEnd,
     onMove,
-    connectionLine,
     onnodeclick,
     onnodecontextmenu,
     onnodedrag,
@@ -58,8 +57,10 @@
     panOnScroll = false,
     panOnDrag = true,
     selectionOnDrag = true,
-    connectionLineContainerStyle = '',
+    connectionLineComponent,
     connectionLineStyle = '',
+    connectionLineContainerStyle = '',
+    connectionLineType = ConnectionLineType.Bezier,
     attributionPosition,
     children,
     nodes = $bindable([]),
@@ -167,9 +168,10 @@
         />
         <ConnectionLine
           {store}
+          type={connectionLineType}
+          LineComponent={connectionLineComponent}
           containerStyle={connectionLineContainerStyle}
           style={connectionLineStyle}
-          {connectionLine}
         />
         <div class="svelte-flow__edgelabel-renderer"></div>
         <div class="svelte-flow__viewport-portal"></div>

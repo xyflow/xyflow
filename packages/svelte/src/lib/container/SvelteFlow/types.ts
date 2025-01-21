@@ -35,7 +35,7 @@ import type {
   IsValidConnection
 } from '$lib/types';
 
-import type { Snippet } from 'svelte';
+import type { Component } from 'svelte';
 import type { EdgeEvents, NodeEvents, NodeSelectionEvents, PaneEvents } from '$lib/types/events';
 
 export type SvelteFlowProps = NodeEvents &
@@ -180,7 +180,7 @@ export type SvelteFlowProps = NodeEvents &
      */
     connectionMode?: ConnectionMode;
     /** Provide a custom snippet to be used insted of the default connection line */
-    connectionLine?: Snippet;
+    connectionLineComponent?: Component;
     /** Styles to be applied to the connection line */
     connectionLineStyle?: string;
     /** Styles to be applied to the container of the connection line */
