@@ -33,24 +33,24 @@ export type NodeEvents = {
   onnodedrag?: NodeTargetEventWithPointer<MouseEvent | TouchEvent>;
   onnodedragstart?: NodeTargetEventWithPointer<MouseEvent | TouchEvent>;
   onnodedragstop?: NodeTargetEventWithPointer<MouseEvent | TouchEvent>;
-  onnodemouseenter?: NodeEventWithPointer;
-  onnodemouseleave?: NodeEventWithPointer;
-  onnodemousemove?: NodeEventWithPointer;
+  onnodepointerenter?: NodeEventWithPointer;
+  onnodepointerleave?: NodeEventWithPointer;
+  onnodepointermove?: NodeEventWithPointer;
 };
 
 export type NodeSelectionEvents = {
-  onselectioncontextmenu?: NodesEventWithPointer;
-  onselectionclick?: NodesEventWithPointer;
+  onselectioncontextmenu?: NodesEventWithPointer<MouseEvent>;
+  onselectionclick?: NodesEventWithPointer<MouseEvent>;
 };
 
 export type PaneEvents = {
-  onpaneclick?: ({ event }: { event: PointerEvent }) => void;
+  onpaneclick?: ({ event }: { event: MouseEvent }) => void;
   onpanecontextmenu?: ({ event }: { event: MouseEvent }) => void;
 };
 
 export type EdgeEvents = {
-  onedgeclick?: ({ edge, event }: { edge: Edge; event: PointerEvent }) => void;
-  onedgecontextmenu?: ({ edge, event }: { edge: Edge; event: PointerEvent }) => void;
-  onedgemouseenter?: ({ edge, event }: { edge: Edge; event: PointerEvent }) => void;
-  onedgemouseleave?: ({ edge, event }: { edge: Edge; event: PointerEvent }) => void;
+  onedgeclick?: ({ edge, event }: { edge: Edge; event: MouseEvent }) => void;
+  onedgecontextmenu?: ({ edge, event }: { edge: Edge; event: MouseEvent }) => void;
+  onedgepointerenter?: ({ edge, event }: { edge: Edge; event: PointerEvent }) => void;
+  onedgepointerleave?: ({ edge, event }: { edge: Edge; event: PointerEvent }) => void;
 };

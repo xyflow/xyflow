@@ -9,8 +9,8 @@
     store,
     onedgeclick,
     onedgecontextmenu,
-    onedgemouseenter,
-    onedgemouseleave
+    onedgepointerenter,
+    onedgepointerleave
   }: { store: SvelteFlowStore } & EdgeEvents = $props();
 </script>
 
@@ -25,8 +25,8 @@
       {edge}
       {onedgeclick}
       {onedgecontextmenu}
-      {onedgemouseenter}
-      {onedgemouseleave}
+      {onedgepointerenter}
+      {onedgepointerleave}
     />
   {/each}
 

@@ -14,8 +14,8 @@
     store,
     onedgeclick,
     onedgecontextmenu,
-    onedgemouseenter,
-    onedgemouseleave
+    onedgepointerenter,
+    onedgepointerleave
   }: { store: SvelteFlowStore; edge: EdgeLayouted } & EdgeEvents = $props();
 
   let {
@@ -60,7 +60,7 @@
     markerEnd ? `url('#${getMarkerId(markerEnd, store.flowId)}')` : undefined
   );
 
-  function onclick(event: MouseEvent | TouchEvent) {
+  function onclick(event: MouseEvent) {
     const edge = store.edgeLookup.get(id);
 
     if (edge) {
@@ -69,9 +69,9 @@
     }
   }
 
-  function onMouseEvent(
-    event: MouseEvent,
-    callback: ({ edge, event }: { edge: Edge; event: MouseEvent }) => void
+  function onMouseEvent<T = MouseEvent>(
+    event: T,
+    callback: ({ edge, event }: { edge: Edge; event: T }) => void
   ) {
     const edge = store.edgeLookup.get(id);
 
@@ -97,14 +97,14 @@
             onMouseEvent(e, onedgecontextmenu);
           }
         : undefined}
-      onmouseenter={onedgemouseenter
+      onpointerenter={onedgepointerenter
         ? (e) => {
-            onMouseEvent(e, onedgemouseenter);
+            onMouseEvent(e, onedgepointerenter);
           }
         : undefined}
-      onmouseleave={onedgemouseleave
+      onpointerleave={onedgepointerleave
         ? (e) => {
-            onMouseEvent(e, onedgemouseleave);
+            onMouseEvent(e, onedgepointerleave);
           }
         : undefined}
       aria-label={ariaLabel === null

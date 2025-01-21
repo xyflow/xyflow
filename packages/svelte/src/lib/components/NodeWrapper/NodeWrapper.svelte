@@ -19,9 +19,9 @@
     onnodedrag,
     onnodedragstart,
     onnodedragstop,
-    onnodemouseenter,
-    onnodemouseleave,
-    onnodemousemove,
+    onnodepointerenter,
+    onnodepointerleave,
+    onnodepointermove,
     onnodecontextmenu
   }: NodeWrapperProps & NodeEvents = $props();
 
@@ -200,9 +200,9 @@
     style:visibility={initialized ? 'visible' : 'hidden'}
     style="{style ?? ''};{inlineStyleDimensions.width}{inlineStyleDimensions.height}"
     onclick={onSelectNodeHandler}
-    onpointerenter={onnodemouseenter ? (event) => onnodemouseenter({ node, event }) : undefined}
-    onpointerleave={onnodemouseleave ? (event) => onnodemouseleave({ node, event }) : undefined}
-    onpointermove={onnodemousemove ? (event) => onnodemousemove({ node, event }) : undefined}
+    onpointerenter={onnodepointerenter ? (event) => onnodepointerenter({ node, event }) : undefined}
+    onpointerleave={onnodepointerleave ? (event) => onnodepointerleave({ node, event }) : undefined}
+    onpointermove={onnodepointermove ? (event) => onnodepointermove({ node, event }) : undefined}
     oncontextmenu={onnodecontextmenu ? (event) => onnodecontextmenu({ node, event }) : undefined}
   >
     <NodeComponent

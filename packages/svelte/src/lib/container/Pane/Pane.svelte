@@ -73,7 +73,7 @@
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   let selectionInProgress = false;
 
-  function onClick(event: MouseEvent | TouchEvent) {
+  function onClick(event: MouseEvent) {
     // We prevent click events when the user let go of the selectionKey during a selection
     if (selectionInProgress) {
       selectionInProgress = false;

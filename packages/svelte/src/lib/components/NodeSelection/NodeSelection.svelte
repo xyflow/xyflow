@@ -24,12 +24,12 @@
     return null;
   });
 
-  function oncontextmenu(event: MouseEvent | TouchEvent) {
+  function oncontextmenu(event: MouseEvent) {
     const selectedNodes = store.nodes.filter((n) => n.selected);
     onselectioncontextmenu?.({ nodes: selectedNodes, event });
   }
 
-  function onclick(event: MouseEvent | TouchEvent) {
+  function onclick(event: MouseEvent) {
     const selectedNodes = store.nodes.filter((n) => n.selected);
     onselectionclick?.({ nodes: selectedNodes, event });
   }

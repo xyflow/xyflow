@@ -172,11 +172,11 @@
 	snapGrid={[25, 25]}
 	oninit={() => console.log('on init')}
 	onnodeclick={(event) => console.log('on node click', event)}
-	onnodemouseenter={(event) => console.log('on node enter', event)}
-	onnodemouseleave={(event) => console.log('on node leave', event)}
+	onnodepointerenter={(event) => console.log('on node enter', event)}
+	onnodepointerleave={(event) => console.log('on node leave', event)}
 	onedgeclick={(event) => console.log('edge click', event)}
-	onedgemouseenter={(event) => console.log('edge enter', event)}
-	onedgemouseleave={(event) => console.log('edge leave', event)}
+	onedgepointerenter={(event) => console.log('edge enter', event)}
+	onedgepointerleave={(event) => console.log('edge leave', event)}
 	onconnectstart={(event) => console.log('on connect start', event)}
 	onconnect={(event) => console.log('on connect', event)}
 	onconnectend={(event) => console.log('on connect end', event)}

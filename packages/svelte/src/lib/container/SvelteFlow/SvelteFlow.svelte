@@ -38,15 +38,15 @@
     onnodedrag,
     onnodedragstart,
     onnodedragstop,
-    onnodemouseenter,
-    onnodemousemove,
-    onnodemouseleave,
+    onnodepointerenter,
+    onnodepointermove,
+    onnodepointerleave,
     onselectionclick,
     onselectioncontextmenu,
     onedgeclick,
     onedgecontextmenu,
-    onedgemouseenter,
-    onedgemouseleave,
+    onedgepointerenter,
+    onedgepointerleave,
     onpaneclick,
     onpanecontextmenu,
     panOnScrollMode = PanOnScrollMode.Free,
@@ -163,8 +163,8 @@
           {store}
           {onedgeclick}
           {onedgecontextmenu}
-          {onedgemouseenter}
-          {onedgemouseleave}
+          {onedgepointerenter}
+          {onedgepointerleave}
         />
         <ConnectionLine
           {store}
@@ -180,9 +180,9 @@
           {nodeClickDistance}
           {onnodeclick}
           {onnodecontextmenu}
-          {onnodemouseenter}
-          {onnodemousemove}
-          {onnodemouseleave}
+          {onnodepointerenter}
+          {onnodepointermove}
+          {onnodepointerleave}
           {onnodedrag}
           {onnodedragstart}
           {onnodedragstop}

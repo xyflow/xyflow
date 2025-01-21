@@ -11,9 +11,9 @@
     nodeClickDistance,
     onnodeclick,
     onnodecontextmenu,
-    onnodemouseenter,
-    onnodemousemove,
-    onnodemouseleave,
+    onnodepointerenter,
+    onnodepointermove,
+    onnodepointerleave,
     onnodedrag,
     onnodedragstart,
     onnodedragstop
@@ -51,9 +51,9 @@
       {resizeObserver}
       {nodeClickDistance}
       {onnodeclick}
-      {onnodemouseenter}
-      {onnodemousemove}
-      {onnodemouseleave}
+      {onnodepointerenter}
+      {onnodepointermove}
+      {onnodepointerleave}
       {onnodedrag}
       {onnodedragstart}
       {onnodedragstop}
