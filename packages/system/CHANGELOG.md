@@ -1,5 +1,13 @@
 # @xyflow/system
 
+## 0.0.50
+
+### Patch Changes
+
+- [#4957](https://github.com/xyflow/xyflow/pull/4957) [`fe843982`](https://github.com/xyflow/xyflow/commit/fe843982bfc7d7579d54772b201426b4c3f549c6) Thanks [@peterkogo](https://github.com/peterkogo)! - Narrow properties selected, selectable, deletable, draggable of NodeProps type to be required.
+
+- [#4968](https://github.com/xyflow/xyflow/pull/4968) [`e73ef09f`](https://github.com/xyflow/xyflow/commit/e73ef09fbc8d872b46cf52c9d6a32dbb388c220b) Thanks [@peterkogo](https://github.com/peterkogo)! - Make internal nodes immutable
+
 ## 0.0.49
 
 ### Patch Changes
