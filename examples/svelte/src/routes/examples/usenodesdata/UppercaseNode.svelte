@@ -21,16 +21,8 @@
 	let nodeData = $derived(useNodesData<MyNode>(connections.current[0]?.source));
 	let textNodeData = $derived(isTextNode(nodeData.current) ? nodeData.current.data.text : null);
 
-	$effect(() => {
-		console.log('textNodeData', textNodeData);
-	});
-
-	// $inspect(textNodeData);
-	$effect(() => {
-		console.log('running');
-		textNodeData;
+	$effect.pre(() => {
 		const input = textNodeData?.toUpperCase() ?? '';
-
 		updateNodeData(id, { text: input });
 	});
 </script>
