@@ -244,7 +244,9 @@ export const getInitialStore = (signals: StoreSignals) => {
     markers: MarkerProps[] = $derived.by(() => {
       return createMarkerIds(signals.edges, {
         defaultColor: this.defaultMarkerColor,
-        id: this.flowId
+        id: this.flowId,
+        defaultMarkerStart: this.defaultEdgeOptions.markerStart,
+        defaultMarkerEnd: this.defaultEdgeOptions.markerEnd
       });
     });
     onlyRenderVisibleElements: boolean = $derived(signals.props.onlyRenderVisibleElements ?? false);
