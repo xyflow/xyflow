@@ -208,14 +208,14 @@
     <NodeComponent
       {data}
       {id}
-      selected={selected ?? false}
-      selectable={selectable ?? $elementsSelectable ?? true}
-      deletable={deletable ?? true}
+      {selected}
+      {selectable}
+      {deletable}
       {sourcePosition}
       {targetPosition}
       {zIndex}
       {dragging}
-      draggable={draggable ?? $nodesDraggable ?? true}
+      {draggable}
       {dragHandle}
       {parentId}
       {type}
