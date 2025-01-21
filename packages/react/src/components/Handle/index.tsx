@@ -175,7 +175,7 @@ function HandleComponent(
       return;
     }
 
-    const doc = getHostForElement(event.target as HTMLElement);
+    const doc = getHostForElement(event.target);
     const isValidConnectionHandler = isValidConnection || isValidConnectionStore;
     const { connection, isValid } = XYHandle.isValid(event.nativeEvent, {
       handle: {

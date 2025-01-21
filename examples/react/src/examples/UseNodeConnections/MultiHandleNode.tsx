@@ -28,10 +28,11 @@ function CustomHandle({ nodeId, ...handleProps }: HandleProps & { nodeId: string
 const CustomNode: FC<NodeProps> = ({ id }) => {
   return (
     <div style={{ background: '#333', color: '#fff', padding: 10, fontSize: 12, borderRadius: 10 }}>
-      <CustomHandle nodeId={id} type="target" position={Position.Left} />
+      <CustomHandle nodeId={id} type="target" position={Position.Left} id="t1" style={{ top: 10 }} />
+      <CustomHandle nodeId={id} type="target" position={Position.Left} id="t2" style={{ top: 20 }} />
       <div>node {id}</div>
-      <CustomHandle nodeId={id} type="source" position={Position.Right} id="a" style={{ top: 10 }} />
-      <CustomHandle nodeId={id} type="source" position={Position.Right} id="b" style={{ top: 20 }} />
+      <CustomHandle nodeId={id} type="source" position={Position.Right} id="s1" style={{ top: 10 }} />
+      <CustomHandle nodeId={id} type="source" position={Position.Right} id="s2" style={{ top: 20 }} />
     </div>
   );
 };

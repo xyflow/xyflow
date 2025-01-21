@@ -37,7 +37,7 @@
 		if (!connectingNodeId) return;
 
 		// See of connection landed inside the flow pane
-		const targetIsPane = (event.target as HTMLDivElement)?.classList.contains('svelte-flow__pane');
+		const targetIsPane = (event.target as Partial<Element> | null)?.classList?.contains('svelte-flow__pane');
 		if (targetIsPane && 'clientX' in event && 'clientY' in event) {
 			const id = getId();
 			const position = {

@@ -103,7 +103,7 @@ export {
   type OnResizeEnd,
   type ControlPosition,
   type ControlLinePosition,
-  type ResizeControlVariant,
+  ResizeControlVariant,
   type ResizeParams,
   type ResizeParamsWithDirection,
   type ResizeDragEvent,

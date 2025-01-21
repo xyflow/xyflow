@@ -48,7 +48,7 @@ function onPointerDown(
   }: OnPointerDownParams
 ) {
   // when xyflow is used inside a shadow root we can't use document
-  const doc = getHostForElement(event.target as HTMLElement);
+  const doc = getHostForElement(event.target);
   let autoPanId = 0;
   let closestHandle: Handle | null;
 
