@@ -10,6 +10,8 @@
 		const node1: Node = {
 			id: 'c1',
 			data: { label: '1' },
+			width: 100,
+			height: 100,
 			position: { x: 0, y: 0 }
 		};
 

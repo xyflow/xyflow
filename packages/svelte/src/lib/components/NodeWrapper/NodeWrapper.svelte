@@ -57,7 +57,7 @@
   let draggable = $derived(_draggable ?? store.nodesDraggable);
   let selectable = $derived(_selectable ?? store.elementsSelectable);
   let connectable = $derived(_connectable ?? store.nodesConnectable);
-  let initialized = $derived(nodeHasDimensions(node));
+  let initialized = $derived(nodeHasDimensions(node) && !!node.internals.handleBounds);
 
   function isInParentLookup(id: string) {
     return store.parentLookup.has(id);
