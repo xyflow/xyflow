@@ -1,31 +1,40 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
+  import { getContext, type Snippet } from 'svelte';
 
   import { EdgeLabelRenderer } from '$lib/components/EdgeLabelRenderer';
-  import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
-  import type { BaseEdgeProps } from '$lib/components/BaseEdge/types';
+  import { useStore } from '$lib/store';
 
-  export let style: BaseEdgeProps['labelStyle'] = undefined;
-  export let x: BaseEdgeProps['labelX'] = undefined;
-  export let y: BaseEdgeProps['labelY'] = undefined;
+  let {
+    x,
+    y,
+    style,
+    class: className,
+    children
+  }: {
+    x?: number;
+    y?: number;
+    style?: string;
+    class?: string;
+    children?: Snippet;
+  } = $props();
 
-  const handleEdgeSelect = useHandleEdgeSelect();
+  const store = useStore();
 
   const id = getContext<string>('svelteflow__edge_id');
 </script>
 
 <EdgeLabelRenderer>
   <div
-    class="svelte-flow__edge-label"
+    class={['svelte-flow__edge-label', className]}
     style:transform="translate(-50%, -50%) translate({x}px,{y}px)"
     style={'pointer-events: all;' + style}
     role="button"
     tabindex="-1"
-    on:keyup={() => {}}
-    on:click={() => {
-      if (id) handleEdgeSelect(id);
+    onkeyup={() => {}}
+    onclick={() => {
+      if (id) store.handleEdgeSelection(id);
     }}
   >
-    <slot />
+    {@render children?.()}
   </div>
 </EdgeLabelRenderer>
