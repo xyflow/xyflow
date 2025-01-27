@@ -6,6 +6,9 @@ export enum BackgroundVariant {
   Cross = 'cross',
 }
 
+/**
+ * @inline
+ */
 export type BackgroundProps = {
   id?: string;
   /** Color of the pattern */
@@ -16,15 +19,24 @@ export type BackgroundProps = {
   className?: string;
   /** Class applied to the pattern */
   patternClassName?: string;
-  /** Gap between repetitions of the pattern */
+  /**
+   * Gap between repetitions of the pattern
+   * @default 20
+   */
   gap?: number | [number, number];
   /** Size of a single pattern element */
   size?: number;
-  /** Offset of the pattern */
+  /** Offset of the pattern
+   * @default 0
+   */
   offset?: number | [number, number];
-  /** Line width of the Line pattern */
+  /** Line width of the Line pattern
+   * @default 1
+   */
   lineWidth?: number;
-  /** Variant of the pattern
+  /**
+   * Variant of the pattern
+   * @default BackgroundVariant.Dots
    * @example BackgroundVariant.Lines, BackgroundVariant.Dots, BackgroundVariant.Cross
    * 'lines', 'dots', 'cross'
    */
