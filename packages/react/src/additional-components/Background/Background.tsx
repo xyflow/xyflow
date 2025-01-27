@@ -90,4 +90,22 @@ function BackgroundComponent({
 
 BackgroundComponent.displayName = 'Background';
 
+/**
+ * @title Background
+ * @description The <Background /> component makes it convenient to render different types of backgrounds common in node-based UIs. It comes with three variants: lines, dots and cross.
+ * @example
+ *
+ * ```tsx
+ * import { useState } from 'react';
+ * import { ReactFlow, Background, BackgroundVariant } from '@xyflow/react';
+ *
+ * export default function Flow() {
+ *   return (
+ *     <ReactFlow defaultNodes={[...]} defaultEdges={[...]}>
+ *       <Background color="#ccc" variant={BackgroundVariant.Dots} />
+ *     </ReactFlow>
+ *   );
+ * }
+ * ```
+ */
 export const Background = memo(BackgroundComponent);

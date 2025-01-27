@@ -1,0 +1,19 @@
+{
+  "name": "@xyflow/typedoc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "typedoc": "typedoc"
+  },
+  "author": "xyflow",
+  "license": "MIT",
+  "dependencies": {
+    "typedoc": "^0.27.6",
+    "typedoc-plugin-markdown": "^4.4.1"
+  },
+  "devDependencies": {
+    "typedoc-plugin-frontmatter": "^1.1.2"
+  }
+}
