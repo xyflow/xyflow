@@ -50,9 +50,7 @@ async function parseTypeAliases(typeAlias) {
 }
 
 // functions
-async function parseFunction() {
-  const func = project.functions.find((f) => f.name === 'ReactFlow');
-
+async function parseFunction(func) {
   const name = func.name;
   const source = func.source.url;
   const title = func.comment.blockTags.find((c) => c.name === 'title')?.text;
