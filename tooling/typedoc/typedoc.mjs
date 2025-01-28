@@ -25,7 +25,7 @@ const config = {
   groupReferencesByType: true,
 
   // markdown plugin options
-  flattenOutputFiles: true,
+  // flattenOutputFiles: true,
   fileExtension: '.mdx',
   hidePageHeader: true,
   hideBreadcrumbs: true,
