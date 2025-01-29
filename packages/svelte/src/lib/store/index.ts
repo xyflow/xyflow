@@ -21,8 +21,6 @@ import {
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
-// import { getVisibleEdges } from './visible-edges';
-// import { getVisibleNodes } from './visible-nodes';
 
 export const key = Symbol();
 

@@ -1,4 +1,4 @@
-import type { ClassValue, DOMAttributes } from 'svelte/elements';
+import type { ClassValue } from 'svelte/elements';
 import type {
   ConnectionLineType,
   NodeOrigin,
@@ -41,8 +41,7 @@ import type { EdgeEvents, NodeEvents, NodeSelectionEvents, PaneEvents } from '$l
 export type SvelteFlowProps = NodeEvents &
   NodeSelectionEvents &
   EdgeEvents &
-  PaneEvents &
-  DOMAttributes<HTMLDivElement> & {
+  PaneEvents & {
     /** The id of the flow
      *
      * This is necessary if you want to render multiple flows.

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getContext, setContext, onDestroy } from 'svelte';
+  import type { DOMAttributes } from 'svelte/elements';
   import { ConnectionLineType, PanOnScrollMode } from '@xyflow/system';
 
   import { key, createStore } from '$lib/store';
@@ -15,10 +16,9 @@
   import { Attribution } from '$lib/components/Attribution';
   import type { SvelteFlowProps } from './types';
   import { type ProviderContext, type StoreContext } from '$lib/store/types';
+  import Wrapper from './Wrapper.svelte';
 
   let {
-    style,
-    class: className,
     width,
     height,
     proOptions,
@@ -66,7 +66,7 @@
     edges = $bindable([]),
     viewport = $bindable(undefined),
     ...props
-  }: SvelteFlowProps = $props();
+  }: SvelteFlowProps & DOMAttributes<HTMLDivElement> = $props();
 
   const store = createStore({
     props,
@@ -111,17 +111,14 @@
   });
 </script>
 
-<div
-  bind:this={store.domNode}
+<Wrapper
+  bind:domNode={store.domNode}
   bind:clientWidth={store.width}
   bind:clientHeight={store.height}
-  style:width
-  style:height
-  {style}
-  class={['svelte-flow', className, store.colorMode]}
-  data-testid="svelte-flow__wrapper"
-  role="application"
-  {...props}
+  colorMode={store.colorMode}
+  {width}
+  {height}
+  rest={props}
 >
   <KeyHandler
     {store}
@@ -195,31 +192,4 @@
   </Zoom>
   <Attribution {proOptions} position={attributionPosition} />
   {@render children?.()}
-</div>
-
-<style>
-  .svelte-flow {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-    z-index: 0;
-
-    background-color: var(--background-color, var(--background-color-default));
-  }
-
-  :root {
-    --background-color-default: #fff;
-    --background-pattern-color-default: #ddd;
-
-    --minimap-mask-color-default: rgb(240, 240, 240, 0.6);
-    --minimap-mask-stroke-color-default: none;
-    --minimap-mask-stroke-width-default: 1;
-
-    --controls-button-background-color-default: #fefefe;
-    --controls-button-background-color-hover-default: #f4f4f4;
-    --controls-button-color-default: inherit;
-    --controls-button-color-hover-default: inherit;
-    --controls-button-border-color-default: #eee;
-  }
-</style>
+</Wrapper>

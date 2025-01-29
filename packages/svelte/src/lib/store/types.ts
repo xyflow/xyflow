@@ -37,8 +37,59 @@ export type SvelteFlowStoreActions = {
   reset(): void;
 };
 
+export type SvelteFlowRestProps = Omit<
+  SvelteFlowProps,
+  | 'width'
+  | 'height'
+  | 'class'
+  | 'proOptions'
+  | 'selectionKey'
+  | 'deleteKey'
+  | 'panActivationKey'
+  | 'multiSelectionKey'
+  | 'zoomActivationKey'
+  | 'paneClickDistance'
+  | 'nodeClickDistance'
+  | 'onMoveStart'
+  | 'onMoveEnd'
+  | 'onMove'
+  | 'onnodeclick'
+  | 'onnodecontextmenu'
+  | 'onnodedrag'
+  | 'onnodedragstart'
+  | 'onnodedragstop'
+  | 'onnodepointerenter'
+  | 'onnodepointermove'
+  | 'onnodepointerleave'
+  | 'onselectionclick'
+  | 'onselectioncontextmenu'
+  | 'onedgeclick'
+  | 'onedgecontextmenu'
+  | 'onedgepointerenter'
+  | 'onedgepointerleave'
+  | 'onpaneclick'
+  | 'onpanecontextmenu'
+  | 'panOnScrollMode'
+  | 'preventScrolling'
+  | 'zoomOnScroll'
+  | 'zoomOnDoubleClick'
+  | 'zoomOnPinch'
+  | 'panOnScroll'
+  | 'panOnDrag'
+  | 'selectionOnDrag'
+  | 'connectionLineComponent'
+  | 'connectionLineStyle'
+  | 'connectionLineContainerStyle'
+  | 'connectionLineType'
+  | 'attributionPosition'
+  | 'children'
+  | 'nodes'
+  | 'edges'
+  | 'viewport'
+>;
+
 export type StoreSignals = {
-  props: Partial<SvelteFlowProps>;
+  props: SvelteFlowRestProps;
   width?: number;
   height?: number;
   nodes: Node[];
