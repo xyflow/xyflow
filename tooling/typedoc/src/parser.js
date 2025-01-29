@@ -1,59 +1,120 @@
 import { writeOutputJSON } from './utils.js';
+import { ProjectParser } from 'typedoc-json-parser';
 
-export async function parseType(typeAlias) {
-  const { name, source, title, description, examples } = parseMetaInfo(typeAlias);
-  const properties =
-    typeAlias.type?.properties?.map((p) => ({
-      ...p,
-      typeString: p.type?.toString(),
-    })) ?? null;
+export class Parser {
+  constructor(typedocJSON) {
+    this.project = new ProjectParser({ data: typedocJSON, dependencies: {} });
 
-  const output = {
-    name,
-    source,
-    title,
-    description,
-    examples,
-    properties,
-    type: typeAlias.type,
-    typeString: typeAlias.type?.toString(),
-  };
+    this.initData();
+  }
 
-  await writeOutputJSON(`types/${name}.json`, output);
-}
+  async initData() {
+    this.data = {
+      types: [...this.project.enums, ...this.project.interfaces, ...this.project.typeAliases],
+      components: [],
+      hooks: [],
+      utils: [],
+    };
 
-export async function parseComponent(func) {
-  const { name, source, title, description, examples } = parseMetaInfo(func);
+    this.project.functions.forEach((func) => {
+      if (func.name.startsWith('use')) {
+        this.data.hooks.push(func);
+      } else if (/^[A-Z]/.test(func.name)) {
+        this.data.components.push(func);
+      } else {
+        this.data.utils.push(func);
+      }
+    });
+  }
 
-  const signature = func.signatures[0];
+  start() {
+    this.data.types.forEach((item) => this.parseType(item));
+    this.data.components.forEach((item) => this.parseComponent(item));
+    this.data.hooks.forEach((item) => this.parseHook(item));
+    this.data.utils.forEach((item) => this.parseUtilFunction(item));
+  }
 
-  const output = {
-    name,
-    source,
-    title,
-    description,
-    examples,
-    parameters: signature.parameters.map((p) => ({
-      ...p,
-      type: p.type.toJSON(),
-    })),
-    returnType: signature.returnType.toString(),
-  };
+  async parseType(item) {
+    const { name, source, title, description, examples } = parseMetaInfo(item);
+    const properties =
+      item.type?.properties?.map((p) => ({
+        ...p,
+        typeString: p.type?.toString(),
+      })) ?? null;
 
-  await writeOutputJSON(`components/${name}.json`, output);
-}
+    const output = {
+      name,
+      source,
+      title,
+      description,
+      examples,
+      properties,
+      type: item.type,
+      typeString: item.type?.toString(),
+    };
 
-export async function parseHook(hook) {
-  await writeOutputJSON(`hooks/${hook.name}.json`, hook);
-}
+    await writeOutputJSON(`types/${name}.json`, output);
+  }
 
-export async function parseUtilFunction(utilFunction) {
-  await writeOutputJSON(`utils/${utilFunction.name}.json`, utilFunction);
+  async parseComponent(item) {
+    const { name, source, title, description, examples } = parseMetaInfo(item);
+    const signature = item.signatures[0];
+    const parameters = signature.parameters.map((param) => {
+      let properties = param.type.properties;
+
+      if (param.type.kind === 'reference') {
+        properties = this.project.find(param.type.id)?.type?.properties;
+      }
+
+      const propertiesClean = properties?.map?.((p) => {
+        const { blockTags } = p.comment;
+        const description = blockTags?.find((c) => c.name === 'description')?.text;
+        const example = blockTags?.find((c) => c.name === 'example')?.text;
+        const defaultValue = blockTags?.find((c) => c.name === 'default')?.text;
+
+        delete p.comment;
+
+        return {
+          ...p,
+          description,
+          example,
+          defaultValue,
+          typeString: p.type.toString(),
+        };
+      });
+
+      return {
+        name: param.name,
+        typeString: param.type.toString(),
+        kind: param.type.kind,
+        properties: propertiesClean,
+      };
+    });
+
+    const output = {
+      name,
+      source,
+      title,
+      description,
+      examples,
+      parameters,
+    };
+
+    await writeOutputJSON(`components/${name}.json`, output);
+  }
+
+  async parseHook(item) {
+    await writeOutputJSON(`hooks/${item.name}.json`, item);
+  }
+
+  async parseUtilFunction(item) {
+    await writeOutputJSON(`utils/${item.name}.json`, item);
+  }
 }
 
 export function parseMetaInfo(item) {
   const name = item.name;
-  const description = item.description;
+  const description = item.comment.description;
   const source = item.source.url;
   const title = item.comment.blockTags.find((c) => c.name === 'title')?.text;
   const examples = item.comment.example;
