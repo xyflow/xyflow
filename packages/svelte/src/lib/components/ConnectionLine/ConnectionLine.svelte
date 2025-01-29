@@ -1,5 +1,4 @@
 <script lang="ts">
-  import cc from 'classcat';
   import type { Component } from 'svelte';
   import {
     ConnectionLineType,
@@ -67,7 +66,7 @@
     class="svelte-flow__connectionline"
     style={containerStyle}
   >
-    <g class={cc(['svelte-flow__connection', getConnectionStatus(store.connection.isValid)])}>
+    <g class={['svelte-flow__connection', getConnectionStatus(store.connection.isValid)]}>
       {#if LineComponent}
         <LineComponent></LineComponent>
       {:else}

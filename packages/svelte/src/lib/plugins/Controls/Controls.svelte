@@ -1,8 +1,6 @@
 <script lang="ts">
-  import cc from 'classcat';
-
-  import Panel from '$lib/container/Panel/Panel.svelte';
   import { useStore } from '$lib/store';
+  import Panel from '$lib/container/Panel/Panel.svelte';
   import ControlButton from './ControlButton.svelte';
   import PlusIcon from './Icons/Plus.svelte';
   import MinusIcon from './Icons/Minus.svelte';
@@ -71,7 +69,7 @@
 </script>
 
 <Panel
-  class={cc(['svelte-flow__controls', orientationClass, className])}
+  class={['svelte-flow__controls', orientationClass, className]}
   {position}
   data-testid="svelte-flow__controls"
   aria-label={ariaLabel ?? 'Svelte Flow controls'}

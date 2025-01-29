@@ -7,8 +7,6 @@
 </script>
 
 <script lang="ts">
-  import cc from 'classcat';
-
   import { useStore } from '$lib/store';
   import { BackgroundVariant, type BackgroundProps } from './types';
 
@@ -49,7 +47,7 @@
 </script>
 
 <svg
-  class={cc(['svelte-flow__background', className])}
+  class={['svelte-flow__background', className]}
   data-testid="svelte-flow__background"
   style:--xy-background-color-props={bgColor}
   style:--xy-background-pattern-color-props={patternColor}

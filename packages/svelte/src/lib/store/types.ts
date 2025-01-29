@@ -39,7 +39,6 @@ export type SvelteFlowStoreActions = {
 
 export type StoreSignals = {
   props: Partial<SvelteFlowProps>;
-  domNode?: HTMLDivElement;
   width?: number;
   height?: number;
   nodes: Node[];

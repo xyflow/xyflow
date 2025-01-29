@@ -1,6 +1,4 @@
 <script lang="ts">
-  import cc from 'classcat';
-
   import type { ControlButtonProps } from './types';
 
   let {
@@ -19,7 +17,7 @@
 <button
   type="button"
   {onclick}
-  class={cc(['svelte-flow__controls-button', className])}
+  class={['svelte-flow__controls-button', className]}
   style:--xy-controls-button-background-color-props={bgColor}
   style:--xy-controls-button-background-color-hover-props={bgColorHover}
   style:--xy-controls-button-color-props={color}

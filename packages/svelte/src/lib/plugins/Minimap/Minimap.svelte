@@ -6,7 +6,6 @@
 </script>
 
 <script lang="ts">
-  import cc from 'classcat';
   import {
     getBoundsOfRects,
     getInternalNodesBounds,
@@ -84,7 +83,7 @@
 <Panel
   {position}
   style={style + (bgColor ? `;--xy-minimap-background-color-props:${bgColor}` : '')}
-  class={cc(['svelte-flow__minimap', className])}
+  class={['svelte-flow__minimap', className]}
   data-testid="svelte-flow__minimap"
 >
   {#if store.panZoom}

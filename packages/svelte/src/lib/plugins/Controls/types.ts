@@ -1,5 +1,5 @@
 import type { Snippet } from 'svelte';
-import type { HTMLButtonAttributes } from 'svelte/elements';
+import type { ClassValue, HTMLButtonAttributes } from 'svelte/elements';
 import type { PanelPosition } from '@xyflow/system';
 
 import type { FitViewOptions } from '$lib/types';
@@ -23,7 +23,7 @@ export type ControlsProps = {
   buttonBorderColor?: string;
   'aria-label'?: string;
   style?: string;
-  class?: string;
+  class?: ClassValue;
   orientation?: 'horizontal' | 'vertical';
   children?: Snippet;
   before?: Snippet;
@@ -32,7 +32,7 @@ export type ControlsProps = {
 };
 
 export type ControlButtonProps = HTMLButtonAttributes & {
-  class?: string;
+  class?: ClassValue;
   bgColor?: string;
   bgColorHover?: string;
   color?: string;

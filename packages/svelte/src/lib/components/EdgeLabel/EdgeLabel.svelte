@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getContext, type Snippet } from 'svelte';
+  import type { ClassValue } from 'svelte/elements';
 
   import { EdgeLabelRenderer } from '$lib/components/EdgeLabelRenderer';
   import { useStore } from '$lib/store';
@@ -14,7 +15,7 @@
     x?: number;
     y?: number;
     style?: string;
-    class?: string;
+    class?: ClassValue;
     children?: Snippet;
   } = $props();
 

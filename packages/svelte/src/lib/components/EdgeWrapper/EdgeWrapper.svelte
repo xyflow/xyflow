@@ -1,6 +1,5 @@
 <script lang="ts">
   import { setContext } from 'svelte';
-  import cc from 'classcat';
 
   import { getMarkerId } from '@xyflow/system';
 
@@ -86,7 +85,7 @@
 {#if !hidden}
   <svg style:z-index={zIndex}>
     <g
-      class={cc(['svelte-flow__edge', className])}
+      class={['svelte-flow__edge', className]}
       class:animated
       class:selected
       class:selectable

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { getContext, setContext, onDestroy } from 'svelte';
-  import cc from 'classcat';
   import { ConnectionLineType, PanOnScrollMode } from '@xyflow/system';
 
   import { key, createStore } from '$lib/store';
@@ -69,21 +68,10 @@
     ...props
   }: SvelteFlowProps = $props();
 
-  let domNode = $state<HTMLDivElement>();
-  let clientWidth = $state<number | undefined>(width);
-  let clientHeight = $state<number | undefined>(height);
-
   const store = createStore({
     props,
-    get domNode() {
-      return domNode;
-    },
-    get width() {
-      return clientWidth;
-    },
-    get height() {
-      return clientHeight;
-    },
+    width,
+    height,
     get nodes() {
       return nodes;
     },
@@ -124,13 +112,13 @@
 </script>
 
 <div
-  bind:this={domNode}
-  bind:clientWidth
-  bind:clientHeight
+  bind:this={store.domNode}
+  bind:clientWidth={store.width}
+  bind:clientHeight={store.height}
   style:width
   style:height
   {style}
-  class={cc(['svelte-flow', className, store.colorMode])}
+  class={['svelte-flow', className, store.colorMode]}
   data-testid="svelte-flow__wrapper"
   role="application"
   {...props}

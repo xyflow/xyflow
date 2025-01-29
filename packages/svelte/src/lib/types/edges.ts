@@ -9,6 +9,7 @@ import type {
 } from '@xyflow/system';
 
 import type { Node } from '$lib/types';
+import type { ClassValue } from 'svelte/elements';
 
 /**
  * The Edge type is mainly used for the `edges` that get passed to the SvelteFlow component.
@@ -20,7 +21,7 @@ export type Edge<
   label?: string;
   labelStyle?: string;
   style?: string;
-  class?: string;
+  class?: ClassValue;
 };
 
 export type BaseEdgeProps = Pick<
@@ -42,7 +43,7 @@ export type BaseEdgeProps = Pick<
    * @example 'url(#arrow)'
    */
   markerEnd?: string;
-  class?: string;
+  class?: ClassValue;
 };
 
 type SmoothStepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<

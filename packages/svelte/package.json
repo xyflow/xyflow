@@ -51,8 +51,7 @@
   },
   "dependencies": {
     "@svelte-put/shortcut": "^4.1.0",
-    "@xyflow/system": "workspace:*",
-    "classcat": "^5.0.5"
+    "@xyflow/system": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^4.0.0",
@@ -83,7 +82,7 @@
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "svelte": "^5.7.0"
+    "svelte": "^5.16.0"
   },
   "files": [
     "dist"

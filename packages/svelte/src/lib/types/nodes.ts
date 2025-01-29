@@ -1,4 +1,5 @@
 import type { Component } from 'svelte';
+import type { ClassValue } from 'svelte/elements';
 import type { InternalNodeBase, NodeBase, NodeProps as NodePropsBase } from '@xyflow/system';
 
 /**
@@ -17,7 +18,7 @@ export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
   NodeType extends string = string
 > = NodeBase<NodeData, NodeType> & {
-  class?: string;
+  class?: ClassValue;
   style?: string;
 };
 

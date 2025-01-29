@@ -1,4 +1,4 @@
-import type { DOMAttributes } from 'svelte/elements';
+import type { ClassValue, DOMAttributes } from 'svelte/elements';
 import type {
   ConnectionLineType,
   NodeOrigin,
@@ -314,7 +314,7 @@ export type SvelteFlowProps = NodeEvents &
     /** Fallback color mode for SSR if colorMode is set to 'system' */
     colorModeSSR?: ColorModeClass;
     /** Class to be applied to the flow container */
-    class?: string;
+    class?: ClassValue;
     /** Styles to be applied to the flow container */
     style?: string;
     /** Choose from the built-in edge types to be used for connections

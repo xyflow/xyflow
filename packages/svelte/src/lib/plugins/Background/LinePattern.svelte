@@ -1,5 +1,5 @@
 <script lang="ts">
-  import cc from 'classcat';
+  import type { ClassValue } from 'svelte/elements';
   import type { BackgroundVariant } from './types';
 
   let {
@@ -11,12 +11,12 @@
     lineWidth: number;
     dimensions: [number, number];
     variant: BackgroundVariant;
-    class?: string;
+    class?: ClassValue;
   } = $props();
 </script>
 
 <path
   stroke-width={lineWidth}
   d={`M${dimensions[0] / 2} 0 V${dimensions[1]} M0 ${dimensions[1] / 2} H${dimensions[0]}`}
-  class={cc(['svelte-flow__background-pattern', variant, className])}
+  class={['svelte-flow__background-pattern', variant, className]}
 />

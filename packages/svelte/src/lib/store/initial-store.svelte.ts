@@ -155,9 +155,9 @@ export const getInitialStore = (signals: StoreSignals) => {
       };
     });
 
-    domNode: HTMLDivElement | null = $derived(signals.domNode ?? null);
-    width: number = $derived(signals.width ?? signals.props.width ?? 0);
-    height: number = $derived(signals.height ?? signals.props.height ?? 0);
+    domNode = $state<HTMLDivElement | null>(null);
+    width = $state<number>(signals.width ?? 0);
+    height = $state<number>(signals.height ?? 0);
 
     flowId: string = $derived(signals.props.id ?? '1');
     minZoom: number = $derived(signals.props.minZoom ?? 0.5);

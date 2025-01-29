@@ -1,12 +1,12 @@
 <script lang="ts">
-  import cc from 'classcat';
+  import type { ClassValue } from 'svelte/elements';
 
-  let { radius, class: className }: { radius: number; class?: string } = $props();
+  let { radius, class: className }: { radius: number; class?: ClassValue } = $props();
 </script>
 
 <circle
   cx={radius}
   cy={radius}
   r={radius}
-  class={cc(['svelte-flow__background-pattern', 'dots', className])}
+  class={['svelte-flow__background-pattern', 'dots', className]}
 />

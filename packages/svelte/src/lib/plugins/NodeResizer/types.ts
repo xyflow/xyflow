@@ -1,3 +1,5 @@
+import type { Snippet } from 'svelte';
+import type { ClassValue } from 'svelte/elements';
 import type {
   ControlPosition,
   ResizeControlVariant,
@@ -6,7 +8,6 @@ import type {
   OnResize,
   OnResizeEnd
 } from '@xyflow/system';
-import type { Snippet } from 'svelte';
 
 export type NodeResizerProps = {
   /** Id of the node it is resizing
@@ -68,7 +69,7 @@ export type ResizeControlProps = Pick<
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
-  class?: string;
+  class?: ClassValue;
   style?: string;
   children?: Snippet;
 };

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import cc from 'classcat';
   import {
     Position,
     XYHandle,
@@ -140,14 +139,14 @@ The Handle component is the part of a node that can be used to connect nodes.
   data-nodeid={nodeId}
   data-handlepos={position}
   data-id="{store.flowId}-{nodeId}-{handleId}-{type}"
-  class={cc([
+  class={[
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,
     'nodrag',
     'nopan',
     position,
     className
-  ])}
+  ]}
   class:valid
   class:connectingto={connectingTo}
   class:connectingfrom={connectingFrom}

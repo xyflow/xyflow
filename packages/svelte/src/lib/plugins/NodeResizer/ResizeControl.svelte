@@ -1,6 +1,5 @@
 <script lang="ts">
   import { getContext, onMount } from 'svelte';
-  import cc from 'classcat';
   import { useStore } from '$lib/store';
   import {
     XYResizer,
@@ -115,7 +114,7 @@
 </script>
 
 <div
-  class={cc(['svelte-flow__resize-control', 'nodrag', ...positionClassNames, variant, className])}
+  class={['svelte-flow__resize-control', 'nodrag', ...positionClassNames, variant, className]}
   bind:this={resizeControlRef}
   style={controlStyle}
 >

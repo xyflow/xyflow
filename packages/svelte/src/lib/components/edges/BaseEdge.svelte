@@ -1,5 +1,4 @@
 <script lang="ts">
-  import cc from 'classcat';
   import type { BaseEdgeProps } from '../../types';
   import EdgeLabel from '../EdgeLabel/EdgeLabel.svelte';
 
@@ -21,7 +20,7 @@
 <path
   {id}
   d={path}
-  class={cc(['svelte-flow__edge-path', className])}
+  class={['svelte-flow__edge-path', className]}
   marker-start={markerStart}
   marker-end={markerEnd}
   fill="none"

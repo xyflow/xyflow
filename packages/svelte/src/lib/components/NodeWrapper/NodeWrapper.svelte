@@ -1,6 +1,5 @@
 <script lang="ts">
   import { setContext, onDestroy } from 'svelte';
-  import cc from 'classcat';
   import { errorMessages, nodeHasDimensions, Position } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
@@ -187,7 +186,7 @@
     }}
     bind:this={nodeRef}
     data-id={id}
-    class={cc(['svelte-flow__node', `svelte-flow__node-${type}`, className])}
+    class={['svelte-flow__node', `svelte-flow__node-${type}`, className]}
     class:dragging
     class:selected
     class:draggable

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import cc from 'classcat';
+  import type { ClassValue } from 'svelte/elements';
 
   let {
     x,
@@ -24,12 +24,12 @@
     strokeColor?: string;
     strokeWidth?: number;
     selected?: boolean;
-    class?: string;
+    class?: ClassValue;
   } = $props();
 </script>
 
 <rect
-  class={cc(['svelte-flow__minimap-node', className])}
+  class={['svelte-flow__minimap-node', className]}
   class:selected
   {x}
   {y}
