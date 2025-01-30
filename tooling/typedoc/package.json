@@ -6,14 +6,15 @@
   "type": "module",
   "scripts": {
     "typedoc": "typedoc",
-    "parser": "node src/index.js"
+    "parser": "node --import=tsx src/index.ts"
   },
   "author": "xyflow",
   "license": "MIT",
   "dependencies": {
+    "tsx": "^4.19.2",
     "typedoc": "^0.27.6",
-    "typedoc-plugin-markdown": "^4.4.1",
     "typedoc-json-parser": "^10.2.0",
-    "typedoc-plugin-frontmatter": "^1.1.2"
+    "typedoc-plugin-frontmatter": "^1.1.2",
+    "typedoc-plugin-markdown": "^4.4.1"
   }
 }
