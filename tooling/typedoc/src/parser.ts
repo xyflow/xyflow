@@ -2,7 +2,6 @@ import { parseComponent } from './parsers/components.js';
 import { parseHook } from './parsers/hooks.js';
 import { parseType } from './parsers/types.js';
 import { parseUtilFunction } from './parsers/utilsFunctions.js';
-import { writeOutputJSON } from './utils.js';
 import { EnumParser, FunctionParser, InterfaceParser, ProjectParser, TypeAliasParser } from 'typedoc-json-parser';
 
 export class Parser {

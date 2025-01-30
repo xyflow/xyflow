@@ -8,7 +8,7 @@ const __dirname = dirname(__filename);
 const OUTPUT_FOLDER = resolve(__dirname, '..', 'output/parser');
 
 export async function initFolders() {
-  await rm(OUTPUT_FOLDER, { recursive: true });
+  // await rm(OUTPUT_FOLDER, { recursive: true });
   await mkdir(resolve(OUTPUT_FOLDER, 'types'), { recursive: true });
   await mkdir(resolve(OUTPUT_FOLDER, 'components'), { recursive: true });
   await mkdir(resolve(OUTPUT_FOLDER, 'hooks'), { recursive: true });
