@@ -120,7 +120,7 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
 
 /**
  * BaseEdge component props
- * @public
+ * @expand
  */
 export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
   EdgeLabelOptions & {

@@ -4,6 +4,11 @@ import cc from 'classcat';
 import { EdgeText } from './EdgeText';
 import type { BaseEdgeProps } from '../../types';
 
+/**
+ * The <BaseEdge /> component gets used internally for all the edges. It can be used inside a custom edge and handles the invisible helper edge and the edge label for you.
+ *
+ * @title BaseEdge
+ */
 export function BaseEdge({
   path,
   labelX,

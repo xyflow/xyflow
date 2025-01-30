@@ -7,7 +7,7 @@ export enum BackgroundVariant {
 }
 
 /**
- * @inline
+ * @expand
  */
 export type BackgroundProps = {
   id?: string;
