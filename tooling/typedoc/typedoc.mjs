@@ -14,7 +14,7 @@ const config = {
   outputs: [
     {
       name: 'json',
-      path: './json/docs.json',
+      path: './output/typedoc/docs.json',
     },
   ],
   groupReferencesByType: true,

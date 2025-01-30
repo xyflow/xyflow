@@ -4,6 +4,6 @@ import { Parser } from './parser.js';
 await initFolders();
 
 const typedocJSON = await readTypedocJSON();
-const parser = await new Parser(typedocJSON);
+const parser = new Parser(typedocJSON);
 
 parser.start();

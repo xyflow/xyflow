@@ -1,12 +1,21 @@
+import { parseComponent } from './parsers/components.js';
+import { parseHook } from './parsers/hooks.js';
+import { parseType } from './parsers/types.js';
+import { parseUtilFunction } from './parsers/utilsFunctions.js';
 import { writeOutputJSON } from './utils.js';
-import { ProjectParser } from 'typedoc-json-parser';
+import { EnumParser, FunctionParser, InterfaceParser, ProjectParser, TypeAliasParser } from 'typedoc-json-parser';
 
 export class Parser {
   project: ProjectParser;
+  data: {
+    types: (InterfaceParser | EnumParser | TypeAliasParser)[];
+    components: FunctionParser[];
+    hooks: FunctionParser[];
+    utils: FunctionParser[];
+  };
 
-  constructor(typedocJSON) {
+  constructor(typedocJSON: ProjectParser.Json) {
     this.project = new ProjectParser({ data: typedocJSON, dependencies: {} });
-
     this.initData();
   }
 
@@ -30,126 +39,9 @@ export class Parser {
   }
 
   start() {
-    this.data.types.forEach((item) => this.parseType(item));
-    this.data.components.forEach((item) => this.parseComponent(item));
-    this.data.hooks.forEach((item) => this.parseHook(item));
-    this.data.utils.forEach((item) => this.parseUtilFunction(item));
+    this.data.types.forEach((item) => parseType(this.project, item));
+    this.data.components.forEach((item) => parseComponent(this.project, item));
+    this.data.hooks.forEach((item) => parseHook(this.project, item));
+    this.data.utils.forEach((item) => parseUtilFunction(this.project, item));
   }
-
-  async parseType(item) {
-    const { name, source, title, description, examples } = parseMetaInfo(item);
-    const properties =
-      item.type?.properties?.map((p) => ({
-        ...p,
-        typeString: p.type?.toString(),
-      })) ?? null;
-
-    const output = {
-      name,
-      source,
-      title,
-      description,
-      examples,
-      properties,
-      type: item.type,
-      typeString: item.type?.toString(),
-    };
-
-    await writeOutputJSON(`types/${name}.json`, output);
-  }
-
-  async parseComponent(item) {
-    const { name, source, title, description, examples } = parseMetaInfo(item);
-    const signature = item.signatures[0];
-    const parameters = signature.parameters.map((param) => {
-      let properties = param.type.properties;
-
-      if (param.type.kind === 'reference') {
-        properties = this.project.find(param.type.id)?.type?.properties;
-      }
-
-      const propertiesClean = properties?.map?.((p) => {
-        const { blockTags } = p.comment;
-        const description = blockTags?.find((c) => c.name === 'description')?.text;
-        const example = blockTags?.find((c) => c.name === 'example')?.text;
-        const defaultValue = blockTags?.find((c) => c.name === 'default')?.text;
-
-        delete p.comment;
-
-        return {
-          ...p,
-          description,
-          example,
-          defaultValue,
-          typeString: p.type.toString(),
-        };
-      });
-
-      return {
-        name: param.name,
-        typeString: param.type.toString(),
-        kind: param.type.kind,
-        properties: propertiesClean,
-      };
-    });
-
-    const output = {
-      name,
-      source,
-      title,
-      description,
-      examples,
-      parameters,
-    };
-
-    await writeOutputJSON(`components/${name}.json`, output);
-  }
-
-  async parseHook(item) {
-    const name = item.name;
-    const source = item.source.url;
-
-    if (item.signatures.length > 1) {
-      console.warn(`Multiple signatures found for hook ${name}`);
-      // TODO: Overload Signatures
-    }
-
-    const signature = item.signatures[0];
-
-    const description = signature.comment.description;
-    const examples = signature.comment.example;
-
-    // Parsing the props
-    const hookParameters = [];
-    const parameters = signature.parameters;
-
-    const output = {
-      name,
-      source,
-      description,
-      examples,
-      item,
-    };
-    await writeOutputJSON(`hooks/${item.name}.json`, output);
-  }
-
-  async parseUtilFunction(item) {
-    await writeOutputJSON(`utils/${item.name}.json`, item);
-  }
-}
-
-export function parseMetaInfo(item) {
-  const name = item.name;
-  const description = item.comment.description;
-  const source = item.source.url;
-  const title = item.comment.blockTags.find((c) => c.name === 'title')?.text;
-  const examples = item.comment.example;
-
-  return {
-    name,
-    source,
-    title,
-    description,
-    examples,
-  };
 }
