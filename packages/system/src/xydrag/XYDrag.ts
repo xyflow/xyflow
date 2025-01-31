@@ -214,7 +214,13 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         return;
       }
 
-      const { transform, panBy, autoPanSpeed } = getStoreItems();
+      const { transform, panBy, autoPanSpeed, autoPanOnNodeDrag } = getStoreItems();
+
+      if (!autoPanOnNodeDrag) {
+        autoPanStarted = false;
+        cancelAnimationFrame(autoPanId);
+        return;
+      }
 
       const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds, autoPanSpeed);
 
