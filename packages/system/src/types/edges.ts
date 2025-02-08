@@ -2,12 +2,12 @@ import { Position } from './utils';
 
 export type EdgeBase<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
-  EdgeType extends string | undefined = string | undefined
+  EdgeTypeString extends string | undefined = string | undefined
 > = {
   /** Unique id of an edge */
   id: string;
   /** Type of an edge defined in edgeTypes */
-  type?: EdgeType;
+  type?: EdgeTypeString;
   /** Id of source node */
   source: string;
   /** Id of target node */

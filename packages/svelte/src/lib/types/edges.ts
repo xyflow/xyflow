@@ -15,8 +15,8 @@ import type { Node } from '$lib/types';
  */
 export type Edge<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
-  EdgeType extends string | undefined = string | undefined
-> = EdgeBase<EdgeData, EdgeType> & {
+  EdgeTypeString extends string | undefined = string | undefined
+> = EdgeBase<EdgeData, EdgeTypeString> & {
   label?: string;
   labelStyle?: string;
   style?: string;
