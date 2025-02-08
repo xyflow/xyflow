@@ -9,7 +9,7 @@ import { Optional } from '../utils/types';
  */
 export type NodeBase<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string = string
+  NodeTypeString extends string = string
 > = {
   /** Unique id of a node */
   id: string;
@@ -20,7 +20,7 @@ export type NodeBase<
   /** Arbitrary data passed to a node */
   data: NodeData;
   /** Type of node defined in nodeTypes */
-  type?: NodeType;
+  type?: NodeTypeString;
   /** Only relevant for default, source, target nodeType. controls source position
    * @example 'right', 'left', 'top', 'bottom'
    */
