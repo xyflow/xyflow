@@ -32,3 +32,5 @@ export const Panel = forwardRef<HTMLDivElement, PanelProps>(
     );
   }
 );
+
+Panel.displayName = 'Panel'
