@@ -27,7 +27,8 @@ export type MiniMapProps<NodeType extends Node = Node> = Omit<HTMLAttributes<SVG
   maskStrokeColor?: string;
   /** Stroke width of mask representing viewport */
   maskStrokeWidth?: number;
-  /** Position of minimap on pane
+  /**
+   * Position of minimap on pane
    * @example PanelPosition.TopLeft, PanelPosition.TopRight,
    * PanelPosition.BottomLeft, PanelPosition.BottomRight
    */

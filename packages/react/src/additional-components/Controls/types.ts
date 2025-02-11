@@ -20,7 +20,8 @@ export type ControlProps = {
   onFitView?: () => void;
   /** Callback when interactivity is toggled */
   onInteractiveChange?: (interactiveStatus: boolean) => void;
-  /** Position of the controls on the pane
+  /**
+   * Position of the controls on the pane
    * @example PanelPosition.TopLeft, PanelPosition.TopRight,
    * PanelPosition.BottomLeft, PanelPosition.BottomRight
    */

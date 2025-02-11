@@ -228,8 +228,10 @@ function HandleComponent(
           connectingfrom: connectingFrom,
           connectingto: connectingTo,
           valid,
-          // shows where you can start a connection from
-          // and where you can end it while connecting
+          /*
+           * shows where you can start a connection from
+           * and where you can end it while connecting
+           */
           connectionindicator:
             isConnectable &&
             (!connectionInProcess || isPossibleEndHandle) &&

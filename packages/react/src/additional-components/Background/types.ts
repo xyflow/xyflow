@@ -24,7 +24,8 @@ export type BackgroundProps = {
   offset?: number | [number, number];
   /** Line width of the Line pattern */
   lineWidth?: number;
-  /** Variant of the pattern
+  /**
+   * Variant of the pattern
    * @example BackgroundVariant.Lines, BackgroundVariant.Dots, BackgroundVariant.Cross
    * 'lines', 'dots', 'cross'
    */

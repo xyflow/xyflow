@@ -10,7 +10,8 @@ import type {
 } from '@xyflow/system';
 
 export type NodeResizerProps = {
-  /** Id of the node it is resizing
+  /**
+   * Id of the node it is resizing
    * @remarks optional if used inside custom node
    */
   nodeId?: string;
@@ -60,12 +61,14 @@ export type ResizeControlProps = Pick<
   | 'onResize'
   | 'onResizeEnd'
 > & {
-  /** Position of the control
+  /**
+   * Position of the control
    * @example ControlPosition.TopLeft, ControlPosition.TopRight,
    * ControlPosition.BottomLeft, ControlPosition.BottomRight
    */
   position?: ControlPosition;
-  /** Variant of the control
+  /**
+   * Variant of the control
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;

@@ -9,7 +9,9 @@ import type { Edge, Node, ReactFlowState } from '../types';
 const zustandErrorMessage = errorMessages['error001']();
 
 /**
- * Hook for accessing the internal store. Should only be used in rare cases.
+ * This hook can be used to subscribe to internal state changes of the React Flow
+ *component. The `useStore` hook is re-exported from the [Zustand](https://github.com/pmndrs/zustand)
+ *state management library, so you should check out their docs for more details.
  *
  * @public
  * @param selector
@@ -17,8 +19,13 @@ const zustandErrorMessage = errorMessages['error001']();
  * @returns The selected state slice
  *
  * @example
- * const nodes = useStore((state: ReactFlowState<MyNodeType>) => state.nodes);
+ * ```ts
+ * const nodes = useStore((state) => state.nodes);
+ * ```
  *
+ * @remarks This hook should only be used if there is no other way to access the internal
+ *state. For many of the common use cases, there are dedicated hooks available
+ *such as {@link useReactFlow}, {@link useViewport}, etc.
  */
 function useStore<StateSlice = unknown>(
   selector: (state: ReactFlowState) => StateSlice,
@@ -33,6 +40,20 @@ function useStore<StateSlice = unknown>(
   return useZustandStore(store, selector, equalityFn);
 }
 
+/**
+ * In some cases, you might need to access the store directly. This hook returns the store object which can be used on demand to access the state or dispatch actions.
+ *
+ * @returns The store object
+ *
+ * @example
+ * ```ts
+ * const store = useStoreApi();
+ * ```
+ *
+ * @remarks This hook should only be used if there is no other way to access the internal
+ *state. For many of the common use cases, there are dedicated hooks available
+ *such as {@link useReactFlow}, {@link useViewport}, etc.
+ */
 function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>() {
   const store = useContext(StoreContext) as UseBoundStoreWithEqualityFn<
     StoreApi<ReactFlowState<NodeType, EdgeType>>

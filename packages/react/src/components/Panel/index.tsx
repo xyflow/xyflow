@@ -6,7 +6,8 @@ import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';
 
 export type PanelProps = HTMLAttributes<HTMLDivElement> & {
-  /** Set position of the panel
+  /**
+   * Set position of the panel
    * @example 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
    */
   position?: PanelPosition;

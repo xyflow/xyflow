@@ -94,9 +94,11 @@ const selector = (s: ReactFlowState) => ({
 });
 
 const initPrevValues = {
-  // these are values that are also passed directly to other components
-  // than the StoreUpdater. We can reduce the number of setStore calls
-  // by setting the same values here as prev fields.
+  /*
+   * these are values that are also passed directly to other components
+   * than the StoreUpdater. We can reduce the number of setStore calls
+   * by setting the same values here as prev fields.
+   */
   translateExtent: infiniteExtent,
   nodeOrigin: defaultNodeOrigin,
   minZoom: 0.5,

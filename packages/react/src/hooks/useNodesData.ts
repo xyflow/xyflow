@@ -5,12 +5,24 @@ import { useStore } from '../hooks/useStore';
 import type { Node } from '../types';
 
 /**
- * Hook for receiving data of one or multiple nodes
+ * This hook lets you subscribe to changes of a specific nodes `data` object.
  *
  * @public
  * @param nodeId - The id (or ids) of the node to get the data from
- * @param guard - Optional guard function to narrow down the node type
  * @returns An object (or array of object) with {id, type, data} representing each node
+ *
+ * @example
+ *
+ *```jsx
+ *import { useNodesData } from '@xyflow/react';
+ *
+ *export default function() {
+ *  const nodeData = useNodesData('nodeId-1');
+ *  const nodesData = useNodesData(['nodeId-1', 'nodeId-2']);
+ *
+ *  return null;
+ *}
+ *```
  */
 export function useNodesData<NodeType extends Node = Node>(
   nodeId: string
