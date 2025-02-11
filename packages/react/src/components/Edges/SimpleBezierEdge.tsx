@@ -31,7 +31,7 @@ function getControl({ pos, x1, y1, x2, y2 }: GetControlParams): [number, number]
 
 /**
  * The `getSimpleBezierPath` util returns everything you need to render a simple
-bezier edge between two nodes.
+ *bezier edge between two nodes.
  * @public 
  */
 export function getSimpleBezierPath({
