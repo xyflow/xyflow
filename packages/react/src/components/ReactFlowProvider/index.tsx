@@ -20,11 +20,10 @@ export type ReactFlowProviderProps = {
 };
 
 /**
- * The `<ReactFlowProvider />` component is a
- *[context provider](https://react.dev/learn/passing-data-deeply-with-context#) that
- *makes it possible to access a flow's internal state outside of the
- *[`<ReactFlow />`](/api-reference/react-flow) component. Many of the hooks we
- *provide rely on this component to work.
+ * The `<ReactFlowProvider />` component is a [context provider](https://react.dev/learn/passing-data-deeply-with-context#)
+ * that makes it possible to access a flow's internal state outside of the
+ * [`<ReactFlow />`](/api-reference/react-flow) component. Many of the hooks we
+ * provide rely on this component to work.
  * @public
  *
  * @example
@@ -50,9 +49,9 @@ export type ReactFlowProviderProps = {
  *```
  *
  * @remarks If you're using a router and want your flow's state to persist across routes,
- *it's vital that you place the `<ReactFlowProvider />` component _outside_ of
- *your router. If you have multiple flows on the same page you will need to use a separate
- *`<ReactFlowProvider />` for each flow.
+ * it's vital that you place the `<ReactFlowProvider />` component _outside_ of
+ * your router. If you have multiple flows on the same page you will need to use a separate
+ * `<ReactFlowProvider />` for each flow.
  */
 export function ReactFlowProvider({
   initialNodes: nodes,

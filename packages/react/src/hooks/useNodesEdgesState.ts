@@ -5,8 +5,8 @@ import type { Node, Edge, OnNodesChange, OnEdgesChange } from '../types';
 
 /**
  * This hook makes it easy to prototype a controlled flow where you manage the
- *state of nodes and edges outside the `ReactFlowInstance`. You can think of it
- *like React's `useState` hook with an additional helper callback.
+ * state of nodes and edges outside the `ReactFlowInstance`. You can think of it
+ * like React's `useState` hook with an additional helper callback.
  *
  * @public
  * @param initialNodes
@@ -34,10 +34,10 @@ import type { Node, Edge, OnNodesChange, OnEdgesChange } from '../types';
  *}
  *```
  *
- *@remarks This hook was created to make prototyping easier and our documentation
- *examples clearer. Although it is OK to use this hook in production, in
- *practice you may want to use a more sophisticated state management solution
- *like Zustand {@link https://reactflow.dev/docs/guides/state-management/} instead.
+ * @remarks This hook was created to make prototyping easier and our documentation
+ * examples clearer. Although it is OK to use this hook in production, in
+ * practice you may want to use a more sophisticated state management solution
+ * like Zustand {@link https://reactflow.dev/docs/guides/state-management/} instead.
  *
  */
 export function useNodesState<NodeType extends Node>(
@@ -54,8 +54,8 @@ export function useNodesState<NodeType extends Node>(
 
 /**
  * This hook makes it easy to prototype a controlled flow where you manage the
- *state of nodes and edges outside the `ReactFlowInstance`. You can think of it
- *like React's `useState` hook with an additional helper callback.
+ * state of nodes and edges outside the `ReactFlowInstance`. You can think of it
+ * like React's `useState` hook with an additional helper callback.
  *
  * @public
  * @param initialEdges
@@ -84,9 +84,9 @@ export function useNodesState<NodeType extends Node>(
  *```
  *
  * @remarks This hook was created to make prototyping easier and our documentation
- *examples clearer. Although it is OK to use this hook in production, in
- *practice you may want to use a more sophisticated state management solution
- *like Zustand {@link https://reactflow.dev/docs/guides/state-management/} instead.
+ * examples clearer. Although it is OK to use this hook in production, in
+ * practice you may want to use a more sophisticated state management solution
+ * like Zustand {@link https://reactflow.dev/docs/guides/state-management/} instead.
  *
  */
 export function useEdgesState<EdgeType extends Edge = Edge>(

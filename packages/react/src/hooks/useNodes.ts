@@ -7,8 +7,8 @@ const nodesSelector = (state: ReactFlowState) => state.nodes;
 
 /**
  * This hook returns an array of the current nodes. Components that use this hook
- *will re-render **whenever any node changes**, including when a node is selected
- *or moved.
+ * will re-render **whenever any node changes**, including when a node is selected
+ * or moved.
  *
  * @public
  * @returns An array of nodes

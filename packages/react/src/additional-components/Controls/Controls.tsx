@@ -127,7 +127,7 @@ ControlsComponent.displayName = 'Controls';
 
 /**
  * The `<Controls />` component renders a small panel that contains convenient
- *buttons to zoom in, zoom out, fit the view, and lock the viewport.
+ * buttons to zoom in, zoom out, fit the view, and lock the viewport.
  *
  * @public
  * @example
@@ -143,8 +143,7 @@ ControlsComponent.displayName = 'Controls';
  *}
  *```
  *
- * @remarks To extend or customise the controls, you can use the [`<ControlButton />`](/api-reference/components/control-button)
- *component
+ * @remarks To extend or customise the controls, you can use the [`<ControlButton />`](/api-reference/components/control-button) component
  *
  */
 export const Controls = memo(ControlsComponent);

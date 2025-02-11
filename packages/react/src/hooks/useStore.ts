@@ -10,8 +10,8 @@ const zustandErrorMessage = errorMessages['error001']();
 
 /**
  * This hook can be used to subscribe to internal state changes of the React Flow
- *component. The `useStore` hook is re-exported from the [Zustand](https://github.com/pmndrs/zustand)
- *state management library, so you should check out their docs for more details.
+ * component. The `useStore` hook is re-exported from the [Zustand](https://github.com/pmndrs/zustand)
+ * state management library, so you should check out their docs for more details.
  *
  * @public
  * @param selector
@@ -24,8 +24,8 @@ const zustandErrorMessage = errorMessages['error001']();
  * ```
  *
  * @remarks This hook should only be used if there is no other way to access the internal
- *state. For many of the common use cases, there are dedicated hooks available
- *such as {@link useReactFlow}, {@link useViewport}, etc.
+ * state. For many of the common use cases, there are dedicated hooks available
+ * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
 function useStore<StateSlice = unknown>(
   selector: (state: ReactFlowState) => StateSlice,
@@ -51,8 +51,8 @@ function useStore<StateSlice = unknown>(
  * ```
  *
  * @remarks This hook should only be used if there is no other way to access the internal
- *state. For many of the common use cases, there are dedicated hooks available
- *such as {@link useReactFlow}, {@link useViewport}, etc.
+ * state. For many of the common use cases, there are dedicated hooks available
+ * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
 function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>() {
   const store = useContext(StoreContext) as UseBoundStoreWithEqualityFn<

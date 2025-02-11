@@ -6,8 +6,8 @@ export const Consumer = NodeIdContext.Consumer;
 
 /**
  * You can use this hook to get the id of the node it is used inside. It is useful
- *if you need the node's id deeper in the render tree but don't want to manually
- *drill down the id as a prop.
+ * if you need the node's id deeper in the render tree but don't want to manually
+ * drill down the id as a prop.
  *
  * @public
  * @returns id of the node

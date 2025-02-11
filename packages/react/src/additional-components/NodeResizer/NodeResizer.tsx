@@ -5,7 +5,7 @@ import type { NodeResizerProps } from './types';
 
 /**
  * The `<NodeResizer />` component can be used to add a resize functionality to your
- *nodes. It renders draggable controls around the node to resize in all directions.
+ * nodes. It renders draggable controls around the node to resize in all directions.
  * @public
  *
  * @example

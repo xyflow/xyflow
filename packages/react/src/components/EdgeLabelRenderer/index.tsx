@@ -8,10 +8,9 @@ const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__e
 
 /**
  * Edges are SVG-based. If you want to render more complex labels you can use the
- *`<EdgeLabelRenderer />` component to access a div based renderer. This component
- *is a portal that renders the label in a `<div />` that is positioned on top of
- *the edges. You can see an example usage of the component in the [edge label renderer](/examples/edges/edge-label-renderer)
- *example.
+ * `<EdgeLabelRenderer />` component to access a div based renderer. This component
+ * is a portal that renders the label in a `<div />` that is positioned on top of
+ * the edges. You can see an example usage of the component in the [edge label renderer](/examples/edges/edge-label-renderer) example.
  * @public
  *
  * @example
@@ -43,9 +42,9 @@ const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__e
  *};
  *```
  *
- *@remarks The `<EdgeLabelRenderer />` has no pointer events by default. If you want to
- *add mouse interactions you need to set the style `pointerEvents: all` and add
- *the `nopan` class on the label or the element you want to interact with.
+ * @remarks The `<EdgeLabelRenderer />` has no pointer events by default. If you want to
+ * add mouse interactions you need to set the style `pointerEvents: all` and add
+ * the `nopan` class on the label or the element you want to interact with.
  */
 export function EdgeLabelRenderer({ children }: { children: ReactNode }) {
   const edgeLabelRenderer = useStore(selector);

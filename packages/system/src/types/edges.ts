@@ -103,6 +103,12 @@ export type EdgeMarker = {
 
 export type EdgeMarkerType = string | EdgeMarker;
 
+/**
+ * Edges may optionally have a marker on either end. The MarkerType type enumerates
+ * the options available to you when configuring a given marker.
+ *
+ * @public
+ */
 export enum MarkerType {
   Arrow = 'arrow',
   ArrowClosed = 'arrowclosed',

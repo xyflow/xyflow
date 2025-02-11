@@ -14,7 +14,7 @@ const defaultDoc = typeof document !== 'undefined' ? document : null;
 
 /**
  * This hook lets you listen for specific key codes and tells you whether they are
- *currently pressed or not.
+ * currently pressed or not.
  *
  * @public
  * @param param.keyCode - The key code (string or array of strings) to use

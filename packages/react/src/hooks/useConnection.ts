@@ -25,9 +25,9 @@ function getSelector<NodeType extends Node = Node, SelectorReturn = ConnectionSt
 }
 /**
  * The `useConnection` hook returns the current connection when there is an active
- *connection interaction. If no connection interaction is active, it returns null
- *for every property. A typical use case for this hook is to colorize handles
- *based on a certain condition (e.g. if the connection is valid or not).
+ * connection interaction. If no connection interaction is active, it returns null
+ * for every property. A typical use case for this hook is to colorize handles
+ * based on a certain condition (e.g. if the connection is valid or not).
  *
  * @public
  * @example

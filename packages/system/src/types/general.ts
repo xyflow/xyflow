@@ -28,8 +28,8 @@ export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => Promise<bo
 
 /**
  * The `Connection` type is the basic minimal description of an [`Edge`](/api-reference/types/edge)
- *between two nodes. The [`addEdge`](/api-reference/utils/add-edge) util can be used to upgrade
- *a `Connection` to an [`Edge`](/api-reference/types/edge).
+ * between two nodes. The [`addEdge`](/api-reference/utils/add-edge) util can be used to upgrade
+ * a `Connection` to an [`Edge`](/api-reference/types/edge).
  *
  * @public
  */
@@ -40,15 +40,28 @@ export type Connection = {
   targetHandle: string | null;
 };
 
-// TODO: remove in next version
+/**
+ * The `HandleConnection` type is an extention of a basic [Connection](/api-reference/types/connection) that includes the `edgeId`.
+ */
 export type HandleConnection = Connection & {
   edgeId: string;
 };
 
+/**
+ * The `NodeConnection` type is an extention of a basic [Connection](/api-reference/types/connection) that includes the `edgeId`.
+ *
+ */
 export type NodeConnection = Connection & {
   edgeId: string;
 };
 
+/**
+ * The `ConnectionMode` is used to set the mode of connection between nodes.
+ * The `Strict` mode is the default one and only allows source to target edges.
+ * `Loose` mode allows source to source and target to target edges as well.
+ *
+ * @public
+ */
 export enum ConnectionMode {
   Strict = 'strict',
   Loose = 'loose',
@@ -66,6 +79,9 @@ export type OnConnectEnd = (event: MouseEvent | TouchEvent, connectionState: Fin
 
 export type IsValidConnection = (edge: EdgeBase | Connection) => boolean;
 
+/**
+ * @inline
+ */
 export type FitViewParamsBase<NodeType extends NodeBase> = {
   nodes: Map<string, InternalNodeBase<NodeType>>;
   width: number;
@@ -75,6 +91,9 @@ export type FitViewParamsBase<NodeType extends NodeBase> = {
   maxZoom: number;
 };
 
+/**
+ * @inline
+ */
 export type FitViewOptionsBase<NodeType extends NodeBase = NodeBase> = {
   padding?: number;
   includeHiddenNodes?: boolean;
@@ -84,6 +103,17 @@ export type FitViewOptionsBase<NodeType extends NodeBase = NodeBase> = {
   nodes?: (NodeType | { id: string })[];
 };
 
+/**
+ * Internally, React Flow maintains a coordinate system that is independent of the
+ * rest of the page. The `Viewport` type tells you where in that system your flow
+ * is currently being display at and how zoomed in or out it is.
+ *
+ * @public
+ * @remarks A `Transform` has the same properties as the viewport, but they represent
+ * different things. Make sure you don't get them muddled up or things will start
+ * to look weird!
+ *
+ */
 export type Viewport = {
   x: number;
   y: number;
@@ -94,12 +124,23 @@ export type KeyCode = string | Array<string>;
 
 export type SnapGrid = [number, number];
 
+/**
+ * This enum is used to set the different modes of panning the viewport when the
+ * user scrolls. The `Free` mode allows the user to pan in any direction by scrolling
+ * with a device like a trackpad. The `Vertical` and `Horizontal` modes restrict
+ * scroll panning to only the vertical or horizontal axis, respectively.
+ *
+ * @public
+ */
 export enum PanOnScrollMode {
   Free = 'free',
   Vertical = 'vertical',
   Horizontal = 'horizontal',
 }
 
+/**
+ * @inline
+ */
 export type ViewportHelperFunctionOptions = {
   duration?: number;
 };
@@ -120,6 +161,14 @@ export type D3ZoomHandler = (this: Element, event: any, d: unknown) => void;
 
 export type UpdateNodeInternals = (nodeId: string | string[]) => void;
 
+/**
+ * This type is mostly used to help position things on top of the flow viewport. For
+ * example both the [`<MiniMap />`](/api-reference/components/minimap) and
+ * [`<Controls />`](/api-reference/components/controls) components take a `position`
+ * prop of this type.
+ *
+ * @public
+ */
 export type PanelPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
 export type ProOptions = {
@@ -183,7 +232,8 @@ export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNod
 };
 
 /**
- * The `ConnectionState` type bundles all information about an ongoing connection. It is returned by the [`useConnection`](/api-reference/hooks/use-connection) hook.
+ * The `ConnectionState` type bundles all information about an ongoing connection.
+ * It is returned by the [`useConnection`](/api-reference/hooks/use-connection) hook.
  *
  * @public
  */

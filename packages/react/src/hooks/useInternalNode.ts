@@ -5,9 +5,9 @@ import { useStore } from './useStore';
 import type { InternalNode, Node } from '../types';
 
 /**
- * This hook returns the internal representation of a specific node. Components that use this hook
- *will re-render **whenever the node changes**, including when a node is selected
- *or moved.
+ * This hook returns the internal representation of a specific node.
+ * Components that use this hook will re-render **whenever the node changes**,
+ * including when a node is selected or moved.
  *
  * @public
  * @param id - id of the node

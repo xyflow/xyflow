@@ -251,7 +251,7 @@ function HandleComponent(
 
 /**
  * The `<Handle />` component is used in your [custom nodes](/learn/customization/custom-nodes)
- *to define connection points.
+ * to define connection points.
  *
  *@public
  *

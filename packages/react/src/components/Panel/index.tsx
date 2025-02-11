@@ -6,9 +6,9 @@ import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';
 
 /**
- * The `<Panel />` component helps you position content above the viewport. It is
- *used internally by the [`<MiniMap />`](/api-reference/components/minimap) and [`<Controls />`](/api-reference/components/controls)
- *components.
+ * The `<Panel />` component helps you position content above the viewport.
+ * It is used internally by the [`<MiniMap />`](/api-reference/components/minimap)
+ * and [`<Controls />`](/api-reference/components/controls) components.
  *
  * @public
  *

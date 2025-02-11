@@ -302,8 +302,8 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
 }
 
 /**
- * The `<ReactFlow />` component is the heart of your React Flow application. It
- *renders your nodes and edges and handles user interaction
+ * The `<ReactFlow />` component is the heart of your React Flow application.
+ * It renders your nodes and edges and handles user interaction
  *
  * @public
  *

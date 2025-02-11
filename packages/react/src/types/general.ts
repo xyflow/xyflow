@@ -64,12 +64,23 @@ export type OnSelectionChangeParams = {
 export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
 
 export type FitViewParams<NodeType extends Node = Node> = FitViewParamsBase<NodeType>;
+
+/**
+ * When calling [`fitView`](/api-reference/types/react-flow-instance#fitview) these options
+ * can be used to customize the behaviour. For example, the `duration` option can be used to
+ * transform the viewport smoothly over a given amount of time.
+ *
+ * @public
+ */
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
 export type FitView = (fitViewOptions?: FitViewOptions) => Promise<boolean>;
 export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   reactFlowInstance: ReactFlowInstance<NodeType, EdgeType>
 ) => void;
 
+/**
+ * @inline
+ */
 export type ViewportHelperFunctions = {
   /**
    * Zooms viewport in by 1.2.

@@ -7,7 +7,7 @@ const edgesSelector = (state: ReactFlowState) => state.edges;
 
 /**
  * This hook returns an array of the current edges. Components that use this hook
- *will re-render **whenever any edge changes**.
+ * will re-render **whenever any edge changes**.
  *
  * @public
  * @returns An array of edges

@@ -58,6 +58,11 @@ export type MiniMapNodes<NodeType extends Node = Node> = Pick<
   onClick?: (event: MouseEvent, nodeId: string) => void;
 };
 
+/**
+ * The props that are passed to the MiniMapNode component
+ *
+ * @public
+ */
 export type MiniMapNodeProps = {
   id: string;
   x: number;

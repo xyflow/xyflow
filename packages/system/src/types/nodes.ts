@@ -4,6 +4,7 @@ import { Optional } from '../utils/types';
 /**
  * Framework independent node data structure.
  *
+ * @inline
  * @typeParam NodeData - type of the node data
  * @typeParam NodeType - type of the node
  */
@@ -80,7 +81,7 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & 
     z: number;
     /**
      * Holds a reference to the original node object provided by the user.
-     * Used as an optimization to avoid certain operations. 
+     * Used as an optimization to avoid certain operations.
      */
     userNode: NodeType;
     handleBounds?: NodeHandleBounds;
@@ -89,7 +90,7 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & 
 };
 
 /**
- * The node data structure that gets used for the nodes prop.
+ * The node data structure that gets used for the custom nodes props.
  *
  * @public
  */
@@ -141,10 +142,22 @@ export type NodeDragItem = {
   expandParent?: boolean;
 };
 
+/**
+ * The origin of a Node determines how it is placed relative to its own coordinates.
+ * `[0, 0]` places it at the top left corner, `[0.5, 0.5]` right in the center and
+ * `[1, 1]` at the bottom right of its position.
+ *
+ * @public
+ */
 export type NodeOrigin = [number, number];
 
 export type OnSelectionDrag = (event: MouseEvent, nodes: NodeBase[]) => void;
 
+/**
+ * Type for the handles of a node
+ *
+ * @public
+ */
 export type NodeHandle = Omit<Optional<Handle, 'width' | 'height'>, 'nodeId'>;
 
 export type Align = 'center' | 'start' | 'end';

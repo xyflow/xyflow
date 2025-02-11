@@ -4,7 +4,7 @@ import type { ControlButtonProps } from './types';
 
 /**
  * You can add buttons to the control panel by using the `<ControlButton />` component
- *and pass it as a child to the [`<Controls />`](/api-reference/components/controls) component.
+ * and pass it as a child to the [`<Controls />`](/api-reference/components/controls) component.
  *
  * @public
  * @example
