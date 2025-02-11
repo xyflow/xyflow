@@ -5,10 +5,34 @@ import type { PanelPosition } from '@xyflow/system';
 import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';
 
+/**
+ * The `<Panel />` component helps you position content above the viewport. It is
+ *used internally by the [`<MiniMap />`](/api-reference/components/minimap) and [`<Controls />`](/api-reference/components/controls)
+ *components.
+ *
+ * @public
+ *
+ * @example
+ * ```jsx
+ *import { ReactFlow, Background, Panel } from '@xyflow/react';
+ *
+ *export default function Flow() {
+ *  return (
+ *    <ReactFlow nodes={[]} fitView>
+ *      <Panel position="top-left">top-left</Panel>
+ *      <Panel position="top-center">top-center</Panel>
+ *      <Panel position="top-right">top-right</Panel>
+ *      <Panel position="bottom-left">bottom-left</Panel>
+ *      <Panel position="bottom-center">bottom-center</Panel>
+ *      <Panel position="bottom-right">bottom-right</Panel>
+ *    </ReactFlow>
+ *  );
+ *}
+ *```
+ */
 export type PanelProps = HTMLAttributes<HTMLDivElement> & {
   /**
-   * Set position of the panel
-   * @example 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+   * The position of the panel
    */
   position?: PanelPosition;
   children: ReactNode;
@@ -34,4 +58,4 @@ export const Panel = forwardRef<HTMLDivElement, PanelProps>(
   }
 );
 
-Panel.displayName = 'Panel'
+Panel.displayName = 'Panel';

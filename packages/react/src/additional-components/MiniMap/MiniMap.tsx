@@ -178,4 +178,24 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
 MiniMapComponent.displayName = 'MiniMap';
 
+/**
+ * The `<MiniMap />` component can be used to render an overview of your flow. It
+ *renders each node as an SVG element and visualizes where the current viewport is
+ *in relation to the rest of the flow.
+ *
+ * @public
+ * @example
+ *
+ * ```jsx
+ *import { ReactFlow, MiniMap } from '@xyflow/react';
+ *
+ *export default function Flow() {
+ *  return (
+ *    <ReactFlow nodes={[...]]} edges={[...]]}>
+ *      <MiniMap nodeStrokeWidth={3} />
+ *    </ReactFlow>
+ *  );
+ *}
+ *```
+ */
 export const MiniMap = memo(MiniMapComponent) as typeof MiniMapComponent;

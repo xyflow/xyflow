@@ -203,4 +203,9 @@ export function ResizeControlLine(props: ResizeControlLineProps) {
   return <ResizeControl {...props} variant={ResizeControlVariant.Line} />;
 }
 
+/**
+ * To create your own resizing UI, you can use the `NodeResizeControl` component where you can pass children (such as icons).
+ * @public
+ *
+ */
 export const NodeResizeControl = memo(ResizeControl);

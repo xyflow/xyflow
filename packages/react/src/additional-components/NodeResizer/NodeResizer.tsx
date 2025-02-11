@@ -3,6 +3,30 @@ import { ResizeControlVariant, XY_RESIZER_HANDLE_POSITIONS, XY_RESIZER_LINE_POSI
 import { NodeResizeControl } from './NodeResizeControl';
 import type { NodeResizerProps } from './types';
 
+/**
+ * The `<NodeResizer />` component can be used to add a resize functionality to your
+ *nodes. It renders draggable controls around the node to resize in all directions.
+ * @public
+ *
+ * @example
+ *```jsx
+ *import { memo } from 'react';
+ *import { Handle, Position, NodeResizer } from '@xyflow/react';
+ *
+ *function ResizableNode({ data }) {
+ *  return (
+ *    <>
+ *      <NodeResizer minWidth={100} minHeight={30} />
+ *      <Handle type="target" position={Position.Left} />
+ *      <div style={{ padding: 10 }}>{data.label}</div>
+ *      <Handle type="source" position={Position.Right} />
+ *    </>
+ *  );
+ *};
+ *
+ *export default memo(ResizableNode);
+ *```
+ */
 export function NodeResizer({
   nodeId,
   isVisible = true,
