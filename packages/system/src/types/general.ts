@@ -26,6 +26,13 @@ export type SetViewport = (viewport: Viewport, options?: ViewportHelperFunctionO
 export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => Promise<boolean>;
 export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => Promise<boolean>;
 
+/**
+ * The `Connection` type is the basic minimal description of an [`Edge`](/api-reference/types/edge)
+ *between two nodes. The [`addEdge`](/api-reference/utils/add-edge) util can be used to upgrade
+ *a `Connection` to an [`Edge`](/api-reference/types/edge).
+ *
+ * @public
+ */
 export type Connection = {
   source: string;
   target: string;
@@ -174,6 +181,12 @@ export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNod
   toPosition: Position;
   toNode: NodeType | null;
 };
+
+/**
+ * The `ConnectionState` type bundles all information about an ongoing connection. It is returned by the [`useConnection`](/api-reference/hooks/use-connection) hook.
+ *
+ * @public
+ */
 export type ConnectionState<NodeType extends InternalNodeBase = InternalNodeBase> =
   | ConnectionInProgress<NodeType>
   | NoConnection;

@@ -33,4 +33,14 @@ export type Box = XYPosition & {
 
 export type Transform = [number, number, number];
 
+/**
+ * A coordinate extent represents two points in a coordinate system: one in the top
+ *left corner and one in the bottom right corner. It is used to represent the
+ *bounds of nodes in the flow or the bounds of the viewport.
+ *
+ * @public
+ *
+ * @remarks Props that expect a `CoordinateExtent` usually default to `[[-∞, -∞], [+∞, +∞]]`
+ *to represent an unbounded extent.
+ */
 export type CoordinateExtent = [[number, number], [number, number]];

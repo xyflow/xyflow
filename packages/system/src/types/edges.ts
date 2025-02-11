@@ -58,11 +58,24 @@ export type BezierPathOptions = {
   curvature?: number;
 };
 
+/**
+ * @inline
+ */
 export type DefaultEdgeOptionsBase<EdgeType extends EdgeBase> = Omit<
   EdgeType,
   'id' | 'source' | 'target' | 'sourceHandle' | 'targetHandle' | 'selected'
 >;
 
+/**
+ * If you set the `connectionLineType` prop on your [`<ReactFlow />`](/api-reference/react-flow#connection-connectionLineType)
+ *component, it will dictate the style of connection line rendered when creating
+ *new edges.
+ *
+ * @public
+ *
+ * @remarks If you choose to render a custom connection line component, this value will be
+ *passed to your component as part of its [`ConnectionLineComponentProps`](/api-reference/types/connection-line-component-props).
+ */
 export enum ConnectionLineType {
   Bezier = 'default',
   Straight = 'straight',
@@ -71,6 +84,13 @@ export enum ConnectionLineType {
   SimpleBezier = 'simplebezier',
 }
 
+/**
+ * Edges can optionally have markers at the start and end of an edge. The `EdgeMarker`
+ *type is used to configure those markers! Check the docs for [`MarkerType`](/api-reference/types/marker-type)
+ *for details on what types of edge marker are available.
+ *
+ * @public
+ */
 export type EdgeMarker = {
   type: MarkerType;
   color?: string;

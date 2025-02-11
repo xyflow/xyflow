@@ -144,13 +144,18 @@ export type ReconnectEdgeOptions = {
  * A handy utility to update an existing [`Edge`](/api-reference/types/edge) with new properties.
  *This searches your edge array for an edge with a matching `id` and updates its
  *properties with the connection you provide.
+ * @public
  * @param oldEdge - The edge you want to update
  * @param newConnection - The new connection you want to update the edge with
  * @param edges - The array of all current edges
  * @param options.shouldReplaceId - should the id of the old edge be replaced with the new connection id
  * @returns the updated edges array
- * 
- * @public
+ *
+ * @example
+ * ```js
+ *const onReconnect = useCallback(
+ *  (oldEdge: Edge, newConnection: Connection) => setEdges((els) => reconnectEdge(oldEdge, newConnection, els)),[]);
+ *```
  */
 export const reconnectEdge = <EdgeType extends EdgeBase>(
   oldEdge: EdgeType,
