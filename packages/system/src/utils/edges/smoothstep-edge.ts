@@ -38,8 +38,10 @@ const getDirection = ({
 
 const distance = (a: XYPosition, b: XYPosition) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 
-// ith this function we try to mimic a orthogonal edge routing behaviour
-// It's not as good as a real orthogonal edge routing but it's faster and good enough as a default for step and smooth step edges
+/*
+ * ith this function we try to mimic a orthogonal edge routing behaviour
+ * It's not as good as a real orthogonal edge routing but it's faster and good enough as a default for step and smooth step edges
+ */
 function getPoints({
   source,
   sourcePosition = Position.Bottom,
@@ -83,16 +85,20 @@ function getPoints({
   if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
     centerX = center.x ?? defaultCenterX;
     centerY = center.y ?? defaultCenterY;
-    //    --->
-    //    |
-    // >---
+    /*
+     *    --->
+     *    |
+     * >---
+     */
     const verticalSplit: XYPosition[] = [
       { x: centerX, y: sourceGapped.y },
       { x: centerX, y: targetGapped.y },
     ];
-    //    |
-    //  ---
-    //  |
+    /*
+     *    |
+     *  ---
+     *  |
+     */
     const horizontalSplit: XYPosition[] = [
       { x: sourceGapped.x, y: centerY },
       { x: targetGapped.x, y: centerY },
@@ -191,7 +197,10 @@ function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): str
 }
 
 /**
- * Get a smooth step path from source to target handle
+ * The `getSmoothStepPath` util returns everything you need to render a stepped path
+ *between two nodes. The `borderRadius` property can be used to choose how rounded
+ *the corners of those steps are.
+ * @public
  * @param params.sourceX - The x position of the source handle
  * @param params.sourceY - The y position of the source handle
  * @param params.sourcePosition - The position of the source handle (default: Position.Bottom)
@@ -200,17 +209,20 @@ function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): str
  * @param params.targetPosition - The position of the target handle (default: Position.Top)
  * @returns A path string you can use in an SVG, the labelX and labelY position (center of path) and offsetX, offsetY between source handle and label
  * @example
+ * ```js
  *  const source = { x: 0, y: 20 };
-    const target = { x: 150, y: 100 };
-    
-    const [path, labelX, labelY, offsetX, offsetY] = getSmoothStepPath({
-      sourceX: source.x,
-      sourceY: source.y,
-      sourcePosition: Position.Right,
-      targetX: target.x,
-      targetY: target.y,
-      targetPosition: Position.Left,
-    });
+ *  const target = { x: 150, y: 100 };
+ *
+ *  const [path, labelX, labelY, offsetX, offsetY] = getSmoothStepPath({
+ *    sourceX: source.x,
+ *    sourceY: source.y,
+ *    sourcePosition: Position.Right,
+ *    targetX: target.x,
+ *    targetY: target.y,
+ *    targetPosition: Position.Left,
+ *  });
+ * ```
+ * @remarks This function returns a tuple (aka a fixed-size array) to make it easier to work with multiple edge paths at once.
  */
 export function getSmoothStepPath({
   sourceX,

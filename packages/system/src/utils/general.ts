@@ -186,8 +186,8 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
  * @returns A transforned {@link Viewport} that encloses the given bounds which you can pass to e.g. {@link setViewport}
  * @example
  * const { x, y, zoom } = getViewportForBounds(
-  { x: 0, y: 0, width: 100, height: 100},
-  1200, 800, 0.5, 2);
+ *{ x: 0, y: 0, width: 100, height: 100},
+ *1200, 800, 0.5, 2);
  */
 export const getViewportForBounds = (
   bounds: Rect,

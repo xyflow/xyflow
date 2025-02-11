@@ -12,11 +12,13 @@ export type EdgeBase<
   source: string;
   /** Id of target node */
   target: string;
-  /** Id of source handle
+  /**
+   * Id of source handle
    * only needed if there are multiple handles per node
    */
   sourceHandle?: string | null;
-  /** Id of target handle
+  /**
+   * Id of target handle
    * only needed if there are multiple handles per node
    */
   targetHandle?: string | null;
@@ -27,11 +29,13 @@ export type EdgeBase<
   /** Arbitrary data passed to an edge */
   data?: EdgeData;
   selected?: boolean;
-  /** Set the marker on the beginning of an edge
+  /**
+   * Set the marker on the beginning of an edge
    * @example 'arrow', 'arrowclosed' or custom marker
    */
   markerStart?: EdgeMarkerType;
-  /** Set the marker on the end of an edge
+  /**
+   * Set the marker on the end of an edge
    * @example 'arrow', 'arrowclosed' or custom marker
    */
   markerEnd?: EdgeMarkerType;

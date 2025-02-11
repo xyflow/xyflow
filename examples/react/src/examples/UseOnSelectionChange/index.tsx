@@ -10,7 +10,6 @@ import {
   useEdgesState,
   useOnSelectionChange,
   OnSelectionChangeParams,
-  OnSelectionChangeFunc,
 } from '@xyflow/react';
 
 const initialNodes: Node[] = [

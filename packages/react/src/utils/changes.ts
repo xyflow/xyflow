@@ -153,7 +153,14 @@ function applyChange(change: any, element: any): any {
  * @param nodes - Array of nodes to apply the changes to
  * @returns Array of updated nodes
  * @example
- *  const onNodesChange = useCallback(
+ *```tsx
+ *import { useState, useCallback } from 'react';
+ *import { ReactFlow, applyNodeChanges, type Node, type Edge, type OnNodesChange } from '@xyflow/react';
+ *
+ *export default function Flow() {
+ *  const [nodes, setNodes] = useState<Node[]>([]);
+ *  const [edges, setEdges] = useState<Edge[]>([]);
+ *  const onNodesChange: OnNodesChange = useCallback(
  *    (changes) => {
  *      setNodes((oldNodes) => applyNodeChanges(changes, oldNodes));
  *    },
@@ -161,8 +168,10 @@ function applyChange(change: any, element: any): any {
  *  );
  *
  *  return (
- *    <ReactFLow nodes={nodes} edges={edges} onNodesChange={onNodesChange} />
+ *    <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} />
  *  );
+ *}
+ *```
  */
 export function applyNodeChanges<NodeType extends Node = Node>(
   changes: NodeChange<NodeType>[],
@@ -180,6 +189,14 @@ export function applyNodeChanges<NodeType extends Node = Node>(
  * @param edges - Array of edge to apply the changes to
  * @returns Array of updated edges
  * @example
+ *
+ * ```tsx
+ *import { useState, useCallback } from 'react';
+ *import { ReactFlow, applyEdgeChanges } from '@xyflow/react';
+ *
+ *export default function Flow() {
+ *  const [nodes, setNodes] = useState([]);
+ *  const [edges, setEdges] = useState([]);
  *  const onEdgesChange = useCallback(
  *    (changes) => {
  *      setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
@@ -190,6 +207,8 @@ export function applyNodeChanges<NodeType extends Node = Node>(
  *  return (
  *    <ReactFlow nodes={nodes} edges={edges} onEdgesChange={onEdgesChange} />
  *  );
+ *}
+ *```
  */
 export function applyEdgeChanges<EdgeType extends Edge = Edge>(
   changes: EdgeChange<EdgeType>[],
