@@ -352,8 +352,8 @@ export function calculateNodePosition<NodeType extends NodeBase>({
 
   return {
     position: {
-      x: positionAbsolute.x - parentX + node.measured.width! * origin[0],
-      y: positionAbsolute.y - parentY + node.measured.height! * origin[1],
+      x: positionAbsolute.x - parentX + (node.measured.width ?? 0) * origin[0],
+      y: positionAbsolute.y - parentY + (node.measured.height ?? 0) * origin[1],
     },
     positionAbsolute,
   };

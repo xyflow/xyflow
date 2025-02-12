@@ -74,8 +74,8 @@ function ResizeControl({
 
           if (node && node.expandParent && node.parentId) {
             const origin = node.origin ?? nodeOrigin;
-            const width = change.width ?? node.measured.width!;
-            const height = change.height ?? node.measured.height!;
+            const width = change.width ?? node.measured.width ?? 0;
+            const height = change.height ?? node.measured.height ?? 0;
 
             const child: ParentExpandChild = {
               id: node.id,
