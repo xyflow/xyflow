@@ -1,6 +1,9 @@
 import type { HTMLAttributes } from 'react';
 import type { Position, Align } from '@xyflow/system';
 
+/**
+ * @expand
+ */
 export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
   /** Id of the node, or array of ids the toolbar should be displayed at */
   nodeId?: string | string[];

@@ -9,6 +9,9 @@ import type {
   OnResizeEnd,
 } from '@xyflow/system';
 
+/**
+ * @expand
+ */
 export type NodeResizerProps = {
   /**
    * Id of the node it is resizing
@@ -47,6 +50,9 @@ export type NodeResizerProps = {
   onResizeEnd?: OnResizeEnd;
 };
 
+/**
+ * @expand
+ */
 export type ResizeControlProps = Pick<
   NodeResizerProps,
   | 'nodeId'
@@ -77,6 +83,9 @@ export type ResizeControlProps = Pick<
   children?: ReactNode;
 };
 
+/**
+ * @expand
+ */
 export type ResizeControlLineProps = ResizeControlProps & {
   position?: ControlLinePosition;
 };

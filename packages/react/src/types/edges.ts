@@ -132,6 +132,7 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
 /**
  * BaseEdge component props
  * @public
+ * @expand
  */
 export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
   EdgeLabelOptions & {
@@ -148,6 +149,7 @@ export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
 /**
  * Helper type for edge components that get exported by the library
  * @public
+ * @expand
  */
 export type EdgeComponentProps = EdgePosition &
   EdgeLabelOptions & {
@@ -167,30 +169,35 @@ export type EdgeComponentWithPathOptions<PathOptions> = EdgeComponentProps & {
 /**
  * BezierEdge component props
  * @public
+ * @expand
  */
 export type BezierEdgeProps = EdgeComponentWithPathOptions<BezierPathOptions>;
 
 /**
  * SmoothStepEdge component props
  * @public
+ * @expand
  */
 export type SmoothStepEdgeProps = EdgeComponentWithPathOptions<SmoothStepPathOptions>;
 
 /**
  * StepEdge component props
  * @public
+ * @expand
  */
 export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
 
 /**
  * StraightEdge component props
  * @public
+ * @expand
  */
 export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
 /**
  * SimpleBezier component props
  * @public
+ * @expand
  */
 export type SimpleBezierEdgeProps = EdgeComponentProps;
 

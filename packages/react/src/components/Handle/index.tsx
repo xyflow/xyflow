@@ -28,10 +28,14 @@ import { useNodeId } from '../../contexts/NodeIdContext';
 import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
 
-export interface HandleProps extends HandlePropsSystem, Omit<HTMLAttributes<HTMLDivElement>, 'id'> {
-  /** Callback called when connection is made */
-  onConnect?: OnConnect;
-}
+/**
+ * @expand
+ */
+export type HandleProps = HandlePropsSystem &
+  Omit<HTMLAttributes<HTMLDivElement>, 'id'> & {
+    /** Callback called when connection is made */
+    onConnect?: OnConnect;
+  };
 
 const selector = (s: ReactFlowState) => ({
   connectOnClick: s.connectOnClick,

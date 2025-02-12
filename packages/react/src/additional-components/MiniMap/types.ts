@@ -6,6 +6,9 @@ import type { Node } from '../../types';
 
 export type GetMiniMapNodeAttribute<NodeType extends Node = Node> = (node: NodeType) => string;
 
+/**
+ * @expand
+ */
 export type MiniMapProps<NodeType extends Node = Node> = Omit<HTMLAttributes<SVGSVGElement>, 'onClick'> & {
   /** Color of nodes on minimap */
   nodeColor?: string | GetMiniMapNodeAttribute<NodeType>;
@@ -62,6 +65,7 @@ export type MiniMapNodes<NodeType extends Node = Node> = Pick<
  * The props that are passed to the MiniMapNode component
  *
  * @public
+ * @expand
  */
 export type MiniMapNodeProps = {
   id: string;

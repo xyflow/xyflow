@@ -3,6 +3,9 @@ import type { PanelPosition } from '@xyflow/system';
 
 import type { FitViewOptions } from '../../types';
 
+/**
+ * @expand
+ */
 export type ControlProps = {
   /** Show button for zoom in/out */
   showZoom?: boolean;
@@ -35,4 +38,7 @@ export type ControlProps = {
   orientation?: 'horizontal' | 'vertical';
 };
 
+/**
+ * @expand
+ */
 export type ControlButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;

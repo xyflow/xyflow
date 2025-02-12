@@ -118,6 +118,9 @@ export type MarkerProps = EdgeMarker & {
   id: string;
 };
 
+/**
+ * @inline
+ */
 export type EdgePosition = {
   sourceX: number;
   sourceY: number;

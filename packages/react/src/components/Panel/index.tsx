@@ -6,6 +6,19 @@ import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';
 
 /**
+ * @expand
+ */
+export type PanelProps = HTMLAttributes<HTMLDivElement> & {
+  /**
+   * The position of the panel
+   */
+  position?: PanelPosition;
+  children: ReactNode;
+};
+
+const selector = (s: ReactFlowState) => (s.userSelectionActive ? 'none' : 'all');
+
+/**
  * The `<Panel />` component helps you position content above the viewport.
  * It is used internally by the [`<MiniMap />`](/api-reference/components/minimap)
  * and [`<Controls />`](/api-reference/components/controls) components.
@@ -30,16 +43,6 @@ import type { ReactFlowState } from '../../types';
  *}
  *```
  */
-export type PanelProps = HTMLAttributes<HTMLDivElement> & {
-  /**
-   * The position of the panel
-   */
-  position?: PanelPosition;
-  children: ReactNode;
-};
-
-const selector = (s: ReactFlowState) => (s.userSelectionActive ? 'none' : 'all');
-
 export const Panel = forwardRef<HTMLDivElement, PanelProps>(
   ({ position = 'top-left', children, className, style, ...rest }, ref) => {
     const pointerEvents = useStore(selector);
