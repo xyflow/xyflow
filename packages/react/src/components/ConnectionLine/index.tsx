@@ -29,7 +29,12 @@ const selector = (s: ReactFlowState) => ({
   height: s.height,
 });
 
-export function ConnectionLineWrapper<NodeType extends Node = Node>({ containerStyle, style, type, component }: ConnectionLineWrapperProps<NodeType>) {
+export function ConnectionLineWrapper<NodeType extends Node = Node>({
+  containerStyle,
+  style,
+  type,
+  component,
+}: ConnectionLineWrapperProps<NodeType>) {
   const { nodesConnectable, width, height, isValid, inProgress } = useStore(selector, shallow);
   const renderConnection = !!(width && nodesConnectable && inProgress);
 
@@ -45,7 +50,7 @@ export function ConnectionLineWrapper<NodeType extends Node = Node>({ containerS
       className="react-flow__connectionline react-flow__container"
     >
       <g className={cc(['react-flow__connection', getConnectionStatus(isValid)])}>
-        <ConnectionLine style={style} type={type} CustomComponent={component} isValid={isValid} />
+        <ConnectionLine<NodeType> style={style} type={type} CustomComponent={component} isValid={isValid} />
       </g>
     </svg>
   );
@@ -58,8 +63,14 @@ type ConnectionLineProps<NodeType extends Node = Node> = {
   isValid: boolean | null;
 };
 
-const ConnectionLine = <NodeType extends Node = Node> ({ style, type = ConnectionLineType.Bezier, CustomComponent, isValid }: ConnectionLineProps<NodeType>) => {
-  const { inProgress, from, fromNode, fromHandle, fromPosition, to, toNode, toHandle, toPosition } = useConnection<NodeType>();
+const ConnectionLine = <NodeType extends Node = Node>({
+  style,
+  type = ConnectionLineType.Bezier,
+  CustomComponent,
+  isValid,
+}: ConnectionLineProps<NodeType>) => {
+  const { inProgress, from, fromNode, fromHandle, fromPosition, to, toNode, toHandle, toPosition } =
+    useConnection<NodeType>();
 
   if (!inProgress) {
     return;
