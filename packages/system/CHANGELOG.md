@@ -1,5 +1,15 @@
 # @xyflow/system
 
+## 0.0.51
+
+### Patch Changes
+
+- [#5010](https://github.com/xyflow/xyflow/pull/5010) [`6c121d42`](https://github.com/xyflow/xyflow/commit/6c121d427fea9a11e86a85f95d2c12ba8af34919) Thanks [@moklick](https://github.com/moklick)! - Add more TSDocs to components, hooks, utils funcs and types
+
+- [#4990](https://github.com/xyflow/xyflow/pull/4990) [`4947029c`](https://github.com/xyflow/xyflow/commit/4947029cd6cda0f695e1fb4815e4030adb232234) Thanks [@damianstasik](https://github.com/damianstasik)! - Make it possible to stop autoPanOnDrag by setting it to false
+
+- [#5003](https://github.com/xyflow/xyflow/pull/5003) [`e8e0d684`](https://github.com/xyflow/xyflow/commit/e8e0d684957b95d53a6cc11598c8755ff02117c7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - repair lint command
+
 ## 0.0.50
 
 ### Patch Changes

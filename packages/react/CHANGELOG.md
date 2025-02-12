@@ -1,5 +1,26 @@
 # @xyflow/react
 
+## 12.4.3
+
+### Patch Changes
+
+- [#5010](https://github.com/xyflow/xyflow/pull/5010) [`6c121d42`](https://github.com/xyflow/xyflow/commit/6c121d427fea9a11e86a85f95d2c12ba8af34919) Thanks [@moklick](https://github.com/moklick)! - Add more TSDocs to components, hooks, utils funcs and types
+
+- [#4991](https://github.com/xyflow/xyflow/pull/4991) [`ea54d9bc`](https://github.com/xyflow/xyflow/commit/ea54d9bcb197d02d248ef3e4eaabc033a43d966a) Thanks [@waynetee](https://github.com/waynetee)! - Fix viewport shifting on node focus
+
+- [#5013](https://github.com/xyflow/xyflow/pull/5013) [`cde899c5`](https://github.com/xyflow/xyflow/commit/cde899c5be9715c4ff2cc331ea93821102604c62) Thanks [@moklick](https://github.com/moklick)! - Pass `NodeType` type argument from `ReactFlowProps` to `connectionLineComponent` property.
+
+- [#5008](https://github.com/xyflow/xyflow/pull/5008) [`12d859fe`](https://github.com/xyflow/xyflow/commit/12d859fe297593d44cf8493a4d6bf2c664b9139c) Thanks [@moklick](https://github.com/moklick)! - Add package.json to exports
+
+- [#5012](https://github.com/xyflow/xyflow/pull/5012) [`4d3f19e8`](https://github.com/xyflow/xyflow/commit/4d3f19e88b984ce6743970560d7367d174500f32) Thanks [@moklick](https://github.com/moklick)! - Add snapGrid option to screenToFlowPosition and set snapToGrid to false
+
+- [#5003](https://github.com/xyflow/xyflow/pull/5003) [`e8e0d684`](https://github.com/xyflow/xyflow/commit/e8e0d684957b95d53a6cc11598c8755ff02117c7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - repair lint command
+
+- [#4991](https://github.com/xyflow/xyflow/pull/4991) [`4c62f19b`](https://github.com/xyflow/xyflow/commit/4c62f19b3afac4b3db84b14e2c36f8c9e0a96116) Thanks [@waynetee](https://github.com/waynetee)! - Prevent viewport shift after using Tab
+
+- Updated dependencies [[`6c121d42`](https://github.com/xyflow/xyflow/commit/6c121d427fea9a11e86a85f95d2c12ba8af34919), [`4947029c`](https://github.com/xyflow/xyflow/commit/4947029cd6cda0f695e1fb4815e4030adb232234), [`e8e0d684`](https://github.com/xyflow/xyflow/commit/e8e0d684957b95d53a6cc11598c8755ff02117c7)]:
+  - @xyflow/system@0.0.51
+
 ## 12.4.2
 
 ### Patch Changes
