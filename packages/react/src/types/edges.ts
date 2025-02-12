@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import type { CSSProperties, SVGAttributes, ReactNode, MouseEvent as ReactMouseEvent, ComponentType } from 'react';
 import type {
   EdgeBase,
@@ -34,8 +33,8 @@ export type EdgeLabelOptions = {
  */
 export type Edge<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
-  EdgeType extends string | undefined = string | undefined
-> = EdgeBase<EdgeData, EdgeType> &
+  EdgeTypeString extends string | undefined = string | undefined
+> = EdgeBase<EdgeData, EdgeTypeString> &
   EdgeLabelOptions & {
     style?: CSSProperties;
     className?: string;

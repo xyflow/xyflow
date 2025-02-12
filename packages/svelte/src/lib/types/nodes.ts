@@ -15,8 +15,8 @@ export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeTy
  */
 export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string = string
-> = NodeBase<NodeData, NodeType> & {
+  NodeTypeString extends string = string
+> = NodeBase<NodeData, NodeTypeString> & {
   class?: string;
   style?: string;
 };

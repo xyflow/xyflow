@@ -9,8 +9,8 @@ import { NodeTypes } from './general';
  */
 export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string = string
-> = NodeBase<NodeData, NodeType> & {
+  NodeTypeString extends string = string
+> = NodeBase<NodeData, NodeTypeString> & {
   style?: CSSProperties;
   className?: string;
   resizing?: boolean;
