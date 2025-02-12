@@ -113,16 +113,16 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
   const onSvgClick = onClick
     ? (event: MouseEvent) => {
-        const [x, y] = minimapInstance.current?.pointer(event) || [0, 0];
-        onClick(event, { x, y });
-      }
+      const [x, y] = minimapInstance.current?.pointer(event) || [0, 0];
+      onClick(event, { x, y });
+    }
     : undefined;
 
   const onSvgNodeClick = onNodeClick
     ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node = store.getState().nodeLookup.get(nodeId)!;
-        onNodeClick(event, node);
-      }, [])
+      const node = store.getState().nodeLookup.get(nodeId)!;
+      onNodeClick(event, node);
+    }, [])
     : undefined;
 
   return (

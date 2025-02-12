@@ -33,7 +33,7 @@ export type EdgeLabelOptions = {
 
 /**
  * An `Edge` is the complete description with everything React Flow needs
- *to know in order to render it.
+ * to know in order to render it.
  * @public
  */
 export type Edge<
@@ -97,9 +97,8 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
 
 /**
  * Many properties on an [`Edge`](/api-reference/types/edge) are optional. When a new edge is created,
- *the properties that are not provided will be filled in with the default values
- *passed to the `defaultEdgeOptions` prop of the [`<ReactFlow />`](/api-reference/react-flow#defaultedgeoptions)
- *component.
+ * the properties that are not provided will be filled in with the default values
+ * passed to the `defaultEdgeOptions` prop of the [`<ReactFlow />`](/api-reference/react-flow#defaultedgeoptions) component.
  */
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
@@ -111,7 +110,7 @@ export type EdgeTextProps = SVGAttributes<SVGElement> &
 
 /**
  * When you implement a custom edge it is wrapped in a component that enables some
- *basic functionality. The `EdgeProps` type is the props that are passed to this.
+ * basic functionality. The `EdgeProps` type is the props that are passed to this.
  * @public
  * @expand
  */
@@ -199,8 +198,8 @@ export type OnReconnect<EdgeType extends Edge = Edge> = (oldEdge: EdgeType, newC
 
 /**
  * If you want to render a custom component for connection lines, you can set the
- *`connectionLineComponent` prop on the [`<ReactFlow />`](/api-reference/react-flow#connection-connectionLineComponent)
- *component. The `ConnectionLineComponentProps` are passed to your custom component.
+ * `connectionLineComponent` prop on the [`<ReactFlow />`](/api-reference/react-flow#connection-connectionLineComponent)
+ * component. The `ConnectionLineComponentProps` are passed to your custom component.
  *
  * @public
  */

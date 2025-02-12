@@ -5,8 +5,9 @@ import { NodeTypes } from './general';
 
 /**
  * The `Node` type represents everything React Flow needs to know about a given node.
- * Many of these properties can be manipulated both by React Flow or by you, but
- * some such as `width` and `height` should be considered read-only.
+ * Whenever you want to update a certain attribute of a node, you need to create a new
+ * node object.
+ *
  * @public
  */
 export type Node<
@@ -21,8 +22,8 @@ export type Node<
 
 /**
  * The `InternalNode` type is identical to the base [`Node`](/api-references/types/node)
- * type but is extended with some additional properties used internall by React
- * Flow. Some functions and callbacks that return nodes may return an `InternalNode`.
+ * type but is extended with some additional properties used internally.
+ * Some functions and callbacks that return nodes may return an `InternalNode`.
  *
  * @public
  */
@@ -59,6 +60,17 @@ export type NodeWrapperProps<NodeType extends Node> = {
   nodeClickDistance?: number;
 };
 
+/**
+ * The `BuiltInNode` type represents the built-in node types that are available in React Flow.
+ * You can use this type to extend your custom node type if you still want ot use the built-in ones.
+ *
+ * @public
+ * @example
+ * ```ts
+ * type CustomNode = Node<{ value: number }, 'custom'>;
+ * type MyAppNode = CustomNode | BuiltInNode;
+ * ```
+ */
 export type BuiltInNode =
   | Node<{ label: string }, 'input' | 'output' | 'default'>
   | Node<Record<string, never>, 'group'>;

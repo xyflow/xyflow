@@ -147,8 +147,6 @@ function applyChange(change: any, element: any): any {
 /**
  * Drop in function that applies node changes to an array of nodes.
  * @public
- * @remarks Various events on the <ReactFlow /> component can produce an {@link NodeChange} that describes how to update the edges of your flow in some way.
- *If you don't need any custom behaviour, this util can be used to take an array of these changes and apply them to your edges.
  * @param changes - Array of changes to apply
  * @param nodes - Array of nodes to apply the changes to
  * @returns Array of updated nodes
@@ -172,6 +170,10 @@ function applyChange(change: any, element: any): any {
  *  );
  *}
  *```
+ * @remarks Various events on the <ReactFlow /> component can produce an {@link NodeChange}
+ * that describes how to update the edges of your flow in some way.
+ * If you don't need any custom behaviour, this util can be used to take an array
+ * of these changes and apply them to your edges.
  */
 export function applyNodeChanges<NodeType extends Node = Node>(
   changes: NodeChange<NodeType>[],
@@ -183,13 +185,10 @@ export function applyNodeChanges<NodeType extends Node = Node>(
 /**
  * Drop in function that applies edge changes to an array of edges.
  * @public
- * @remarks Various events on the <ReactFlow /> component can produce an {@link EdgeChange} that describes how to update the edges of your flow in some way.
- *If you don't need any custom behaviour, this util can be used to take an array of these changes and apply them to your edges.
  * @param changes - Array of changes to apply
  * @param edges - Array of edge to apply the changes to
  * @returns Array of updated edges
  * @example
- *
  * ```tsx
  *import { useState, useCallback } from 'react';
  *import { ReactFlow, applyEdgeChanges } from '@xyflow/react';
@@ -209,6 +208,10 @@ export function applyNodeChanges<NodeType extends Node = Node>(
  *  );
  *}
  *```
+ * @remarks Various events on the <ReactFlow /> component can produce an {@link EdgeChange}
+ * that describes how to update the edges of your flow in some way.
+ * If you don't need any custom behaviour, this util can be used to take an array
+ * of these changes and apply them to your edges.
  */
 export function applyEdgeChanges<EdgeType extends Edge = Edge>(
   changes: EdgeChange<EdgeType>[],
