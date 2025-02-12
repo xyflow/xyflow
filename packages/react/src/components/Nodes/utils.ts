@@ -4,10 +4,12 @@ import { errorMessages } from '@xyflow/system';
 
 import type { ReactFlowState } from '../../types';
 
-// this handler is called by
-// 1. the click handler when node is not draggable or selectNodesOnDrag = false
-// or
-// 2. the on drag start handler when node is draggable and selectNodesOnDrag = true
+/*
+ * this handler is called by
+ * 1. the click handler when node is not draggable or selectNodesOnDrag = false
+ * or
+ * 2. the on drag start handler when node is draggable and selectNodesOnDrag = true
+ */
 export function handleNodeClick({
   id,
   store,

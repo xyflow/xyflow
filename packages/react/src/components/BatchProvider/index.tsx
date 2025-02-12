@@ -30,9 +30,11 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
     const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup } = store.getState();
 
-    // This is essentially an `Array.reduce` in imperative clothing. Processing
-    // this queue is a relatively hot path so we'd like to avoid the overhead of
-    // array methods where we can.
+    /*
+     * This is essentially an `Array.reduce` in imperative clothing. Processing
+     * this queue is a relatively hot path so we'd like to avoid the overhead of
+     * array methods where we can.
+     */
     let next = nodes as NodeType[];
     for (const payload of queueItems) {
       next = typeof payload === 'function' ? payload(next) : payload;

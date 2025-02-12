@@ -276,8 +276,10 @@ export function handleExpandParent(
           },
         });
 
-        // We move all child nodes in the oppsite direction
-        // so the x,y changes of the parent do not move the children
+        /*
+         * We move all child nodes in the oppsite direction
+         * so the x,y changes of the parent do not move the children
+         */
         parentLookup.get(parentId)?.forEach((childNode) => {
           if (!children.some((child) => child.id === childNode.id)) {
             changes.push({
@@ -472,9 +474,11 @@ function addConnectionToLookup(
   nodeId: string,
   handleId: string | null
 ) {
-  // We add the connection to the connectionLookup at the following keys
-  // 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId
-  // If the key already exists, we add the connection to the existing map
+  /*
+   * We add the connection to the connectionLookup at the following keys
+   * 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId
+   * If the key already exists, we add the connection to the existing map
+   */
   let key = nodeId;
   const nodeMap = connectionLookup.get(key) || new Map();
   connectionLookup.set(key, nodeMap.set(connectionKey, connection));

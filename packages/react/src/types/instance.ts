@@ -13,6 +13,9 @@ export type DeleteElementsOptions = {
   edges?: (Edge | { id: Edge['id'] })[];
 };
 
+/**
+ * @inline
+ */
 export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   /**
    * Returns nodes.
@@ -217,6 +220,14 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
   }) => NodeConnection[];
 };
 
+/**
+ * The `ReactFlowInstance` provides a collection of methods to query and manipulate
+ * the internal state of your flow. You can get an instance by using the
+ * [`useReactFlow`](/api-reference/hooks/use-react-flow) hook or attaching a listener
+ * to the [`onInit`](/api-reference/react-flow#event-oninit) event.
+ *
+ * @public
+ */
 export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = GeneralHelpers<
   NodeType,
   EdgeType

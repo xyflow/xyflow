@@ -4,11 +4,41 @@ import { applyNodeChanges, applyEdgeChanges } from '../utils/changes';
 import type { Node, Edge, OnNodesChange, OnEdgesChange } from '../types';
 
 /**
- * Hook for managing the state of nodes - should only be used for prototyping / simple use cases.
+ * This hook makes it easy to prototype a controlled flow where you manage the
+ * state of nodes and edges outside the `ReactFlowInstance`. You can think of it
+ * like React's `useState` hook with an additional helper callback.
  *
  * @public
  * @param initialNodes
  * @returns an array [nodes, setNodes, onNodesChange]
+ * @example
+ *
+ *```tsx
+ *import { ReactFlow, useNodesState, useEdgesState } from '@xyflow/react';
+ *
+ *const initialNodes = [];
+ *const initialEdges = [];
+ *
+ *export default function () {
+ *  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+ *  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+ *
+ *  return (
+ *    <ReactFlow
+ *      nodes={nodes}
+ *      edges={edges}
+ *      onNodesChange={onNodesChange}
+ *      onEdgesChange={onEdgesChange}
+ *    />
+ *  );
+ *}
+ *```
+ *
+ * @remarks This hook was created to make prototyping easier and our documentation
+ * examples clearer. Although it is OK to use this hook in production, in
+ * practice you may want to use a more sophisticated state management solution
+ * like Zustand {@link https://reactflow.dev/docs/guides/state-management/} instead.
+ *
  */
 export function useNodesState<NodeType extends Node>(
   initialNodes: NodeType[]
@@ -23,11 +53,41 @@ export function useNodesState<NodeType extends Node>(
 }
 
 /**
- * Hook for managing the state of edges - should only be used for prototyping / simple use cases.
+ * This hook makes it easy to prototype a controlled flow where you manage the
+ * state of nodes and edges outside the `ReactFlowInstance`. You can think of it
+ * like React's `useState` hook with an additional helper callback.
  *
  * @public
  * @param initialEdges
  * @returns an array [edges, setEdges, onEdgesChange]
+ * @example
+ *
+ *```tsx
+ *import { ReactFlow, useNodesState, useEdgesState } from '@xyflow/react';
+ *
+ *const initialNodes = [];
+ *const initialEdges = [];
+ *
+ *export default function () {
+ *  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+ *  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+ *
+ *  return (
+ *    <ReactFlow
+ *      nodes={nodes}
+ *      edges={edges}
+ *      onNodesChange={onNodesChange}
+ *      onEdgesChange={onEdgesChange}
+ *    />
+ *  );
+ *}
+ *```
+ *
+ * @remarks This hook was created to make prototyping easier and our documentation
+ * examples clearer. Although it is OK to use this hook in production, in
+ * practice you may want to use a more sophisticated state management solution
+ * like Zustand {@link https://reactflow.dev/docs/guides/state-management/} instead.
+ *
  */
 export function useEdgesState<EdgeType extends Edge = Edge>(
   initialEdges: EdgeType[]

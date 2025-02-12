@@ -61,9 +61,11 @@ export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRec
   };
 };
 
-// The handle bounds are calculated relative to the node element.
-// We store them in the internals object of the node in order to avoid
-// unnecessary recalculations.
+/*
+ * The handle bounds are calculated relative to the node element.
+ * We store them in the internals object of the node in order to avoid
+ * unnecessary recalculations.
+ */
 export const getHandleBounds = (
   type: 'source' | 'target',
   nodeElement: HTMLDivElement,

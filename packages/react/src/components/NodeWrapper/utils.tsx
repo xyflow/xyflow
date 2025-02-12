@@ -23,9 +23,9 @@ export const builtinNodeTypes: NodeTypes = {
 export function getNodeInlineStyleDimensions<NodeType extends Node = Node>(
   node: InternalNode<NodeType>
 ): {
-  width: number | string | undefined;
-  height: number | string | undefined;
-} {
+    width: number | string | undefined;
+    height: number | string | undefined;
+  } {
   if (node.internals.handleBounds === undefined) {
     return {
       width: node.width ?? node.initialWidth ?? node.style?.width,

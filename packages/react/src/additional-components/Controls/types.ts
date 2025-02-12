@@ -3,6 +3,9 @@ import type { PanelPosition } from '@xyflow/system';
 
 import type { FitViewOptions } from '../../types';
 
+/**
+ * @expand
+ */
 export type ControlProps = {
   /** Show button for zoom in/out */
   showZoom?: boolean;
@@ -20,7 +23,8 @@ export type ControlProps = {
   onFitView?: () => void;
   /** Callback when interactivity is toggled */
   onInteractiveChange?: (interactiveStatus: boolean) => void;
-  /** Position of the controls on the pane
+  /**
+   * Position of the controls on the pane
    * @example PanelPosition.TopLeft, PanelPosition.TopRight,
    * PanelPosition.BottomLeft, PanelPosition.BottomRight
    */
@@ -34,4 +38,7 @@ export type ControlProps = {
   orientation?: 'horizontal' | 'vertical';
 };
 
+/**
+ * @expand
+ */
 export type ControlButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;

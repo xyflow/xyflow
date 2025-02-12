@@ -233,8 +233,10 @@ export function Pane({
     (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
     const { userSelectionRect } = store.getState();
 
-    // We only want to trigger click functions when in selection mode if
-    // the user did not move the mouse.
+    /*
+     * We only want to trigger click functions when in selection mode if
+     * the user did not move the mouse.
+     */
     if (!userSelectionActive && userSelectionRect && event.target === container.current) {
       onClick?.(event);
     }
@@ -246,8 +248,10 @@ export function Pane({
     });
     onSelectionEnd?.(event);
 
-    // If the user kept holding the selectionKey during the selection,
-    // we need to reset the selectionInProgress, so the next click event is not prevented
+    /*
+     * If the user kept holding the selectionKey during the selection,
+     * we need to reset the selectionInProgress, so the next click event is not prevented
+     */
     if (selectionKeyPressed || selectionOnDrag) {
       selectionInProgress.current = false;
     }

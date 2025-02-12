@@ -18,11 +18,44 @@ import {
 
 import type { Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
 
+/**
+ * This type can be used to type the `onNodesChange` function with a custom node type.
+ *
+ * @public
+ *
+ * @example
+ *
+ * ```ts
+ * const onNodesChange: OnNodesChange<MyNodeType> = useCallback((changes) => {
+ *  setNodes((nodes) => applyNodeChanges(nodes, changes));
+ * },[]);
+ * ```
+ */
 export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<NodeType>[]) => void;
+
+/**
+ * This type can be used to type the `onEdgesChange` function with a custom edge type.
+ *
+ * @public
+ *
+ * @example
+ *
+ * ```ts
+ * const onEdgesChange: OnEdgesChange<MyEdgeType> = useCallback((changes) => {
+ *  setEdges((edges) => applyEdgeChanges(edges, changes));
+ * },[]);
+ * ```
+ */
 export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChange<EdgeType>[]) => void;
 
 export type OnNodesDelete<NodeType extends Node = Node> = (nodes: NodeType[]) => void;
 export type OnEdgesDelete<EdgeType extends Edge = Edge> = (edges: EdgeType[]) => void;
+
+/**
+ * This type can be used to type the `onDelete` function with a custom node and edge type.
+ *
+ * @public
+ */
 export type OnDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (params: {
   nodes: NodeType[];
   edges: EdgeType[];
@@ -39,6 +72,7 @@ export type NodeTypes = Record<
     }
   >
 >;
+
 export type EdgeTypes = Record<
   string,
   ComponentType<
@@ -64,12 +98,23 @@ export type OnSelectionChangeParams = {
 export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
 
 export type FitViewParams<NodeType extends Node = Node> = FitViewParamsBase<NodeType>;
+
+/**
+ * When calling [`fitView`](/api-reference/types/react-flow-instance#fitview) these options
+ * can be used to customize the behaviour. For example, the `duration` option can be used to
+ * transform the viewport smoothly over a given amount of time.
+ *
+ * @public
+ */
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
 export type FitView = (fitViewOptions?: FitViewOptions) => Promise<boolean>;
 export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   reactFlowInstance: ReactFlowInstance<NodeType, EdgeType>
 ) => void;
 
+/**
+ * @inline
+ */
 export type ViewportHelperFunctions = {
   /**
    * Zooms viewport in by 1.2.

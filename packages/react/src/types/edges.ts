@@ -19,6 +19,9 @@ import type {
 
 import { EdgeTypes, InternalNode, Node } from '.';
 
+/**
+ * @inline
+ */
 export type EdgeLabelOptions = {
   label?: string | ReactNode;
   labelStyle?: CSSProperties;
@@ -29,7 +32,8 @@ export type EdgeLabelOptions = {
 };
 
 /**
- * The Edge type is mainly used for the `edges` that get passed to the ReactFlow component
+ * An `Edge` is the complete description with everything React Flow needs
+ * to know in order to render it.
  * @public
  */
 export type Edge<
@@ -91,6 +95,11 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   disableKeyboardA11y?: boolean;
 };
 
+/**
+ * Many properties on an [`Edge`](/api-reference/types/edge) are optional. When a new edge is created,
+ * the properties that are not provided will be filled in with the default values
+ * passed to the `defaultEdgeOptions` prop of the [`<ReactFlow />`](/api-reference/react-flow#defaultedgeoptions) component.
+ */
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
 export type EdgeTextProps = SVGAttributes<SVGElement> &
@@ -100,8 +109,10 @@ export type EdgeTextProps = SVGAttributes<SVGElement> &
   };
 
 /**
- * Custom edge component props
+ * When you implement a custom edge it is wrapped in a component that enables some
+ * basic functionality. The `EdgeProps` type is the props that are passed to this.
  * @public
+ * @expand
  */
 export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
   EdgeType,
@@ -121,6 +132,7 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
 /**
  * BaseEdge component props
  * @public
+ * @expand
  */
 export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
   EdgeLabelOptions & {
@@ -137,6 +149,7 @@ export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
 /**
  * Helper type for edge components that get exported by the library
  * @public
+ * @expand
  */
 export type EdgeComponentProps = EdgePosition &
   EdgeLabelOptions & {
@@ -156,35 +169,47 @@ export type EdgeComponentWithPathOptions<PathOptions> = EdgeComponentProps & {
 /**
  * BezierEdge component props
  * @public
+ * @expand
  */
 export type BezierEdgeProps = EdgeComponentWithPathOptions<BezierPathOptions>;
 
 /**
  * SmoothStepEdge component props
  * @public
+ * @expand
  */
 export type SmoothStepEdgeProps = EdgeComponentWithPathOptions<SmoothStepPathOptions>;
 
 /**
  * StepEdge component props
  * @public
+ * @expand
  */
 export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
 
 /**
  * StraightEdge component props
  * @public
+ * @expand
  */
 export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
 /**
  * SimpleBezier component props
  * @public
+ * @expand
  */
 export type SimpleBezierEdgeProps = EdgeComponentProps;
 
 export type OnReconnect<EdgeType extends Edge = Edge> = (oldEdge: EdgeType, newConnection: Connection) => void;
 
+/**
+ * If you want to render a custom component for connection lines, you can set the
+ * `connectionLineComponent` prop on the [`<ReactFlow />`](/api-reference/react-flow#connection-connectionLineComponent)
+ * component. The `ConnectionLineComponentProps` are passed to your custom component.
+ *
+ * @public
+ */
 export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;

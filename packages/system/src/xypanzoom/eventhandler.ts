@@ -90,8 +90,10 @@ export function createPanOnScrollHandler({
       return;
     }
 
-    // increase scroll speed in firefox
-    // firefox: deltaMode === 1; chrome: deltaMode === 0
+    /*
+     * increase scroll speed in firefox
+     * firefox: deltaMode === 1; chrome: deltaMode === 0
+     */
     const deltaNormalize = event.deltaMode === 1 ? 20 : 1;
     let deltaX = panOnScrollMode === PanOnScrollMode.Vertical ? 0 : event.deltaX * deltaNormalize;
     let deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
@@ -114,9 +116,11 @@ export function createPanOnScrollHandler({
 
     clearTimeout(zoomPanValues.panScrollTimeout);
 
-    // for pan on scroll we need to handle the event calls on our own
-    // we can't use the start, zoom and end events from d3-zoom
-    // because start and move gets called on every scroll event and not once at the beginning
+    /*
+     * for pan on scroll we need to handle the event calls on our own
+     * we can't use the start, zoom and end events from d3-zoom
+     * because start and move gets called on every scroll event and not once at the beginning
+     */
     if (!zoomPanValues.isPanScrolling) {
       zoomPanValues.isPanScrolling = true;
 

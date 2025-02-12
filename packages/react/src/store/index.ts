@@ -47,12 +47,14 @@ const createStore = ({
       ...getInitialState({ nodes, edges, width, height, fitView, nodeOrigin, nodeExtent, defaultNodes, defaultEdges }),
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
-        // setNodes() is called exclusively in response to user actions:
-        // - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
-        // - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
-        //
-        // When this happens, we take the note objects passed by the user and extend them with fields
-        // relevant for internal React Flow operations.
+        /*
+         * setNodes() is called exclusively in response to user actions:
+         * - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
+         * - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
+         * 
+         * When this happens, we take the note objects passed by the user and extend them with fields
+         * relevant for internal React Flow operations.
+         */
         adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent,
@@ -81,9 +83,11 @@ const createStore = ({
           set({ hasDefaultEdges: true });
         }
       },
-      // Every node gets registerd at a ResizeObserver. Whenever a node
-      // changes its dimensions, this function is called to measure the
-      // new dimensions and update the nodes.
+      /*
+       * Every node gets registerd at a ResizeObserver. Whenever a node
+       * changes its dimensions, this function is called to measure the
+       * new dimensions and update the nodes.
+       */
       updateNodeInternals: (updates, params = { triggerFitView: true }) => {
         const {
           triggerNodeChanges,
@@ -125,11 +129,13 @@ const createStore = ({
             });
           }
 
-          // here we are cirmumventing the onNodesChange handler
-          // in order to be able to display nodes even if the user
-          // has not provided an onNodesChange handler.
-          // Nodes are only rendered if they have a width and height
-          // attribute which they get from this handler.
+          /*
+           * here we are cirmumventing the onNodesChange handler
+           * in order to be able to display nodes even if the user
+           * has not provided an onNodesChange handler.
+           * Nodes are only rendered if they have a width and height
+           * attribute which they get from this handler.
+           */
           set({ fitViewDone: nextFitViewDone });
         } else {
           // we always want to trigger useStore calls whenever updateNodeInternals is called
@@ -155,9 +161,9 @@ const createStore = ({
             type: 'position',
             position: expandParent
               ? {
-                  x: Math.max(0, dragItem.position.x),
-                  y: Math.max(0, dragItem.position.y),
-                }
+                x: Math.max(0, dragItem.position.x),
+                y: Math.max(0, dragItem.position.y),
+              }
               : dragItem.position,
             dragging,
           };
@@ -248,8 +254,10 @@ const createStore = ({
         const nodeChanges = nodesToUnselect.map((n) => {
           const internalNode = nodeLookup.get(n.id);
           if (internalNode) {
-            // we need to unselect the internal node that was selected previously before we
-            // send the change to the user to prevent it to be selected while dragging the new node
+            /*
+             * we need to unselect the internal node that was selected previously before we
+             * send the change to the user to prevent it to be selected while dragging the new node
+             */
             internalNode.selected = false;
           }
 
@@ -342,8 +350,10 @@ const createStore = ({
           options
         );
       },
-      // we can't call an asnychronous function in updateNodeInternals
-      // for that we created this sync version of fitView
+      /*
+       * we can't call an asnychronous function in updateNodeInternals
+       * for that we created this sync version of fitView
+       */
       fitViewSync: (options?: FitViewOptions): boolean => {
         const { panZoom, width, height, minZoom, maxZoom, nodeLookup } = get();
 

@@ -4,6 +4,7 @@ import { Optional } from '../utils/types';
 /**
  * Framework independent node data structure.
  *
+ * @inline
  * @typeParam NodeData - type of the node data
  * @typeParam NodeType - type of the node
  */
@@ -13,7 +14,8 @@ export type NodeBase<
 > = {
   /** Unique id of a node */
   id: string;
-  /** Position of a node on the pane
+  /**
+   * Position of a node on the pane
    * @example { x: 0, y: 0 }
    */
   position: XYPosition;
@@ -21,11 +23,13 @@ export type NodeBase<
   data: NodeData;
   /** Type of node defined in nodeTypes */
   type?: NodeType;
-  /** Only relevant for default, source, target nodeType. controls source position
+  /**
+   * Only relevant for default, source, target nodeType. controls source position
    * @example 'right', 'left', 'top', 'bottom'
    */
   sourcePosition?: Position;
-  /** Only relevant for default, source, target nodeType. controls target position
+  /**
+   * Only relevant for default, source, target nodeType. controls target position
    * @example 'right', 'left', 'top', 'bottom'
    */
   targetPosition?: Position;
@@ -45,13 +49,15 @@ export type NodeBase<
   /** Parent node id, used for creating sub-flows */
   parentId?: string;
   zIndex?: number;
-  /** Boundary a node can be moved in
+  /**
+   * Boundary a node can be moved in
    * @example 'parent' or [[0, 0], [100, 100]]
    */
   extent?: 'parent' | CoordinateExtent;
   expandParent?: boolean;
   ariaLabel?: string;
-  /** Origin of the node relative to it's position
+  /**
+   * Origin of the node relative to it's position
    * @example
    * [0.5, 0.5] // centers the node
    * [0, 0] // top left
@@ -73,8 +79,10 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & 
   internals: {
     positionAbsolute: XYPosition;
     z: number;
-    /** Holds a reference to the original node object provided by the user.
-     * Used as an optimization to avoid certain operations. */
+    /**
+     * Holds a reference to the original node object provided by the user.
+     * Used as an optimization to avoid certain operations.
+     */
     userNode: NodeType;
     handleBounds?: NodeHandleBounds;
     bounds?: NodeBounds;
@@ -82,7 +90,7 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = NodeType & 
 };
 
 /**
- * The node data structure that gets used for the nodes prop.
+ * The node data structure that gets used for the custom nodes props.
  *
  * @public
  */
@@ -134,10 +142,22 @@ export type NodeDragItem = {
   expandParent?: boolean;
 };
 
+/**
+ * The origin of a Node determines how it is placed relative to its own coordinates.
+ * `[0, 0]` places it at the top left corner, `[0.5, 0.5]` right in the center and
+ * `[1, 1]` at the bottom right of its position.
+ *
+ * @public
+ */
 export type NodeOrigin = [number, number];
 
 export type OnSelectionDrag = (event: MouseEvent, nodes: NodeBase[]) => void;
 
+/**
+ * Type for the handles of a node
+ *
+ * @public
+ */
 export type NodeHandle = Omit<Optional<Handle, 'width' | 'height'>, 'nodeId'>;
 
 export type Align = 'center' | 'start' | 'end';

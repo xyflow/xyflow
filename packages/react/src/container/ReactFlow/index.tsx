@@ -312,4 +312,24 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   );
 }
 
+/**
+ * The `<ReactFlow />` component is the heart of your React Flow application.
+ * It renders your nodes and edges and handles user interaction
+ *
+ * @public
+ *
+ * @example
+ * ```tsx
+ *import { ReactFlow } from '@xyflow/react'
+ *
+ *export default function Flow() {
+ *  return (<ReactFlow
+ *    nodes={...}
+ *    edges={...}
+ *    onNodesChange={...}
+ *    ...
+ *  />);
+ *}
+ *```
+ */
 export default fixedForwardRef(ReactFlow);

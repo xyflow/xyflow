@@ -38,8 +38,10 @@ export function getBezierEdgeCenter({
   targetControlX: number;
   targetControlY: number;
 }): [number, number, number, number] {
-  // cubic bezier t=0.5 mid point, not the actual mid point, but easy to calculate
-  // https://stackoverflow.com/questions/67516101/how-to-find-distance-mid-point-of-bezier-curve
+  /*
+   * cubic bezier t=0.5 mid point, not the actual mid point, but easy to calculate
+   * https://stackoverflow.com/questions/67516101/how-to-find-distance-mid-point-of-bezier-curve
+   */
   const centerX = sourceX * 0.125 + sourceControlX * 0.375 + targetControlX * 0.375 + targetX * 0.125;
   const centerY = sourceY * 0.125 + sourceControlY * 0.375 + targetControlY * 0.375 + targetY * 0.125;
   const offsetX = Math.abs(centerX - sourceX);
@@ -70,7 +72,9 @@ function getControlWithCurvature({ pos, x1, y1, x2, y2, c }: GetControlWithCurva
 }
 
 /**
- * Get a bezier path from source to target handle
+ * The `getBezierPath` util returns everything you need to render a bezier edge
+ *between two nodes.
+ * @public
  * @param params.sourceX - The x position of the source handle
  * @param params.sourceY - The y position of the source handle
  * @param params.sourcePosition - The position of the source handle (default: Position.Bottom)
@@ -80,17 +84,22 @@ function getControlWithCurvature({ pos, x1, y1, x2, y2, c }: GetControlWithCurva
  * @param params.curvature - The curvature of the bezier edge
  * @returns A path string you can use in an SVG, the labelX and labelY position (center of path) and offsetX, offsetY between source handle and label
  * @example
+ * ```js
  *  const source = { x: 0, y: 20 };
-    const target = { x: 150, y: 100 };
-    
-    const [path, labelX, labelY, offsetX, offsetY] = getBezierPath({
-      sourceX: source.x,
-      sourceY: source.y,
-      sourcePosition: Position.Right,
-      targetX: target.x,
-      targetY: target.y,
-      targetPosition: Position.Left,
-});
+ *  const target = { x: 150, y: 100 };
+ *
+ *  const [path, labelX, labelY, offsetX, offsetY] = getBezierPath({
+ *    sourceX: source.x,
+ *    sourceY: source.y,
+ *    sourcePosition: Position.Right,
+ *    targetX: target.x,
+ *    targetY: target.y,
+ *    targetPosition: Position.Left,
+ *});
+ *```
+ *
+ * @remarks This function returns a tuple (aka a fixed-size array) to make it easier to
+ *work with multiple edge paths at once.
  */
 export function getBezierPath({
   sourceX,

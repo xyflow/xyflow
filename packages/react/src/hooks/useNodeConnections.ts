@@ -22,7 +22,7 @@ type UseNodeConnectionsParams = {
 };
 
 /**
- * Hook to retrieve all edges connected to a node. Can be filtered by handle type and id.
+ * This hook returns an array of connections on a specific node, handle type ('source', 'target') or handle ID.
  *
  * @public
  * @param param.id - node id - optional if called inside a custom node
@@ -31,6 +31,22 @@ type UseNodeConnectionsParams = {
  * @param param.onConnect - gets called when a connection is established
  * @param param.onDisconnect - gets called when a connection is removed
  * @returns an array with connections
+ *
+ * @example
+ * ```jsx
+ *import { useNodeConnections } from '@xyflow/react';
+ *
+ *export default function () {
+ *  const connections = useNodeConnections({
+ *    type: 'target',
+ *    handleId: 'my-handle',
+ *  });
+ *
+ *  return (
+ *    <div>There are currently {connections.length} incoming connections!</div>
+ *  );
+ *}
+ *```
  */
 export function useNodeConnections({
   id,

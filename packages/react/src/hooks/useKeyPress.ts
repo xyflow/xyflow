@@ -13,18 +13,38 @@ export type UseKeyPressOptions = {
 const defaultDoc = typeof document !== 'undefined' ? document : null;
 
 /**
- * Hook for handling key events.
+ * This hook lets you listen for specific key codes and tells you whether they are
+ * currently pressed or not.
  *
  * @public
  * @param param.keyCode - The key code (string or array of strings) to use
  * @param param.options - Options
  * @returns boolean
+ *
+ * @example
+ * ```tsx
+ *import { useKeyPress } from '@xyflow/react';
+ *
+ *export default function () {
+ *  const spacePressed = useKeyPress('Space');
+ *  const cmdAndSPressed = useKeyPress(['Meta+s', 'Strg+s']);
+ *
+ *  return (
+ *    <div>
+ *     {spacePressed && <p>Space pressed!</p>}
+ *     {cmdAndSPressed && <p>Cmd + S pressed!</p>}
+ *    </div>
+ *  );
+ *}
+ *```
  */
 export function useKeyPress(
-  // the keycode can be a string 'a' or an array of strings ['a', 'a+d']
-  // a string means a single key 'a' or a combination when '+' is used 'a+d'
-  // an array means different possibilites. Explainer: ['a', 'd+s'] here the
-  // user can use the single key 'a' or the combination 'd' + 's'
+  /*
+   * the keycode can be a string 'a' or an array of strings ['a', 'a+d']
+   * a string means a single key 'a' or a combination when '+' is used 'a+d'
+   * an array means different possibilites. Explainer: ['a', 'd+s'] here the
+   * user can use the single key 'a' or the combination 'd' + 's'
+   */
   keyCode: KeyCode | null = null,
   options: UseKeyPressOptions = { target: defaultDoc, actInsideInputWithModifier: true }
 ): boolean {
@@ -36,20 +56,24 @@ export function useKeyPress(
   // we need to remember the pressed keys in order to support combinations
   const pressedKeys = useRef<PressedKeys>(new Set([]));
 
-  // keyCodes = array with single keys [['a']] or key combinations [['a', 's']]
-  // keysToWatch = array with all keys flattened ['a', 'd', 'ShiftLeft']
-  // used to check if we store event.code or event.key. When the code is in the list of keysToWatch
-  // we use the code otherwise the key. Explainer: When you press the left "command" key, the code is "MetaLeft"
-  // and the key is "Meta". We want users to be able to pass keys and codes so we assume that the key is meant when
-  // we can't find it in the list of keysToWatch.
+  /*
+   * keyCodes = array with single keys [['a']] or key combinations [['a', 's']]
+   * keysToWatch = array with all keys flattened ['a', 'd', 'ShiftLeft']
+   * used to check if we store event.code or event.key. When the code is in the list of keysToWatch
+   * we use the code otherwise the key. Explainer: When you press the left "command" key, the code is "MetaLeft"
+   * and the key is "Meta". We want users to be able to pass keys and codes so we assume that the key is meant when
+   * we can't find it in the list of keysToWatch.
+   */
   const [keyCodes, keysToWatch] = useMemo<[Array<Keys>, Keys]>(() => {
     if (keyCode !== null) {
       const keyCodeArr = Array.isArray(keyCode) ? keyCode : [keyCode];
       const keys = keyCodeArr
         .filter((kc) => typeof kc === 'string')
-        // we first replace all '+' with '\n'  which we will use to split the keys on
-        // then we replace '\n\n' with '\n+', this way we can also support the combination 'key++'
-        // in the end we simply split on '\n' to get the key array
+        /*
+         * we first replace all '+' with '\n'  which we will use to split the keys on
+         * then we replace '\n\n' with '\n+', this way we can also support the combination 'key++'
+         * in the end we simply split on '\n' to get the key array
+         */
         .map((kc) => kc.replace('+', '\n').replace('\n\n', '\n+').split('\n'));
       const keysFlat = keys.reduce((res: Keys, item) => res.concat(...item), []);
 
@@ -133,12 +157,16 @@ export function useKeyPress(
 function isMatchingKey(keyCodes: Array<Keys>, pressedKeys: PressedKeys, isUp: boolean): boolean {
   return (
     keyCodes
-      // we only want to compare same sizes of keyCode definitions
-      // and pressed keys. When the user specified 'Meta' as a key somewhere
-      // this would also be truthy without this filter when user presses 'Meta' + 'r'
+      /*
+       * we only want to compare same sizes of keyCode definitions
+       * and pressed keys. When the user specified 'Meta' as a key somewhere
+       * this would also be truthy without this filter when user presses 'Meta' + 'r'
+       */
       .filter((keys) => isUp || keys.length === pressedKeys.size)
-      // since we want to support multiple possibilities only one of the
-      // combinations need to be part of the pressed keys
+      /*
+       * since we want to support multiple possibilities only one of the
+       * combinations need to be part of the pressed keys
+       */
       .some((keys) => keys.every((k) => pressedKeys.has(k)))
   );
 }
