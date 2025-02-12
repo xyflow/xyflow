@@ -55,7 +55,7 @@ export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalN
 
 /**
  * This util is used to tell you what nodes, if any, are connected to the given node
- *as the _target_ of an edge.
+ * as the _target_ of an edge.
  * @public
  * @param node - The node to get the connected nodes from
  * @param nodes - The array of all nodes
@@ -97,7 +97,7 @@ export const getOutgoers = <NodeType extends NodeBase = NodeBase, EdgeType exten
 
 /**
  * This util is used to tell you what nodes, if any, are connected to the given node
- *as the _source_ of an edge.
+ * as the _source_ of an edge.
  * @public
  * @param node - The node to get the connected nodes from
  * @param nodes - The array of all nodes
@@ -155,8 +155,8 @@ export type GetNodesBoundsParams<NodeType extends NodeBase = NodeBase> = {
 
 /**
  * Returns the bounding box that contains all the given nodes in an array. This can
- *be useful when combined with [`getViewportForBounds`](/api-reference/utils/get-viewport-for-bounds)
- *to calculate the correct transform to fit the given nodes in a viewport.
+ * be useful when combined with [`getViewportForBounds`](/api-reference/utils/get-viewport-for-bounds)
+ * to calculate the correct transform to fit the given nodes in a viewport.
  * @public
  * @remarks Useful when combined with {@link getViewportForBounds} to calculate the correct transform to fit the given nodes in a viewport.
  * @param nodes - Nodes to calculate the bounds for
@@ -212,8 +212,8 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
         currentNode = isId
           ? params.nodeLookup.get(nodeOrId)
           : !isInternalNodeBase(nodeOrId)
-            ? params.nodeLookup.get(nodeOrId.id)
-            : nodeOrId;
+          ? params.nodeLookup.get(nodeOrId.id)
+          : nodeOrId;
       }
 
       const nodeBox = currentNode ? nodeToBox(currentNode, params.nodeOrigin) : { x: 0, y: 0, x2: 0, y2: 0 };
@@ -296,7 +296,8 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
 };
 
 /**
- * This utility filters an array of edges, keeping only those where either the source or target node is present in the given array of nodes.
+ * This utility filters an array of edges, keeping only those where either the source or target
+ * node is present in the given array of nodes.
  * @public
  * @param nodes - Nodes you want to get the connected edges for
  * @param edges - All edges
@@ -459,9 +460,9 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
   edges: EdgeType[];
   onBeforeDelete?: OnBeforeDeleteBase<NodeType, EdgeType>;
 }): Promise<{
-    nodes: NodeType[];
-    edges: EdgeType[];
-  }> {
+  nodes: NodeType[];
+  edges: EdgeType[];
+}> {
   const nodeIds = new Set(nodesToRemove.map((node) => node.id));
   const matchingNodes: NodeType[] = [];
 
