@@ -13,7 +13,7 @@ module.exports = {
     'turbo',
     'prettier',
   ],
-  plugins: ['react', '@typescript-eslint', '@stylistic'],
+  plugins: ['react', '@typescript-eslint'],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -28,7 +28,5 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/no-non-null-assertion': 'off',
-    '@stylistic/indent': ['error', 2],
-    '@stylistic/multiline-comment-style': ['error', 'starred-block'],
   },
 };

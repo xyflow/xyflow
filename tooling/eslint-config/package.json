@@ -5,7 +5,6 @@
   "license": "MIT",
   "main": "src/index.js",
   "devDependencies": {
-    "@stylistic/eslint-plugin": "^3.1.0",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "@typescript-eslint/parser": "^8.23.0",
     "eslint-config-prettier": "^10.0.1",
