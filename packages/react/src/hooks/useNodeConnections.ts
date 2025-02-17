@@ -38,7 +38,7 @@ type UseNodeConnectionsParams = {
  *
  *export default function () {
  *  const connections = useNodeConnections({
- *    type: 'target',
+ *    handleType: 'target',
  *    handleId: 'my-handle',
  *  });
  *
