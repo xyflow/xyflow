@@ -15,7 +15,7 @@
     "@astrojs/svelte": "^4.0.2",
     "@types/react": "^18.2.24",
     "@types/react-dom": "^18.2.8",
-    "@xyflow/react": "workspace:^",
+    "@sweep-io/react": "workspace:^",
     "@xyflow/svelte": "workspace:^",
     "astro": "^3.2.2",
     "react": "^18.2.0",

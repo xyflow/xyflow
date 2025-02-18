@@ -53,15 +53,15 @@ importers:
       '@astrojs/svelte':
         specifier: ^4.0.2
         version: 4.0.2(astro@3.2.2(@types/node@20.14.6)(terser@5.31.0))(svelte@4.2.1)(typescript@5.4.5)(vite@4.5.3(@types/node@20.14.6)(terser@5.31.0))
+      '@sweep-io/react':
+        specifier: workspace:^
+        version: link:../../packages/react
       '@types/react':
         specifier: ^18.2.24
         version: 18.2.24
       '@types/react-dom':
         specifier: ^18.2.8
         version: 18.2.8
-      '@xyflow/react':
-        specifier: workspace:^
-        version: link:../../packages/react
       '@xyflow/svelte':
         specifier: workspace:^
         version: link:../../packages/svelte
@@ -83,10 +83,10 @@ importers:
       '@reduxjs/toolkit':
         specifier: ^2.2.3
         version: 2.2.3(react-redux@9.1.1(@types/react@18.2.36)(react@18.2.0)(redux@5.0.1))(react@18.2.0)
-      '@xyflow/react':
+      '@sweep-io/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@xyflow/system':
+      '@sweep-io/system':
         specifier: workspace:*
         version: link:../../packages/system
       classcat:
@@ -208,7 +208,7 @@ importers:
 
   packages/react:
     dependencies:
-      '@xyflow/system':
+      '@sweep-io/system':
         specifier: workspace:*
         version: link:../system
       classcat:
@@ -275,7 +275,7 @@ importers:
       '@svelte-put/shortcut':
         specifier: 3.1.1
         version: 3.1.1(svelte@4.2.12)
-      '@xyflow/system':
+      '@sweep-io/system':
         specifier: workspace:*
         version: link:../system
       classcat:

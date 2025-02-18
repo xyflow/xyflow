@@ -1,5 +1,5 @@
 {
-  "name": "@xyflow/system",
+  "name": "@sweep-io/system",
   "version": "0.0.51",
   "description": "xyflow core system that powers React Flow and Svelte Flow.",
   "keywords": [
@@ -36,11 +36,11 @@
   "sideEffects": false,
   "license": "MIT",
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/xyflow/xyflow.git",
+    "url": "https://github.com/sweep-io/xyflow.git",
     "directory": "packages/system"
   },
   "scripts": {

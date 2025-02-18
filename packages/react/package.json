@@ -1,5 +1,5 @@
 {
-  "name": "@xyflow/react",
+  "name": "@sweep-io/react",
   "version": "12.4.3",
   "description": "React Flow - A highly customizable React library for building node-based editors and interactive flow charts.",
   "keywords": [
@@ -50,7 +50,7 @@
   ],
   "license": "MIT",
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "scripts": {
     "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\" pnpm:css-watch",
@@ -61,7 +61,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@xyflow/system": "workspace:*",
+    "@sweep-io/system": "workspace:*",
     "classcat": "^5.0.3",
     "zustand": "^4.4.0"
   },
