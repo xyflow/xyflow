@@ -1,6 +1,6 @@
 {
   "name": "@sweep-io/react",
-  "version": "12.4.3",
+  "version": "12.4.4",
   "description": "React Flow - A highly customizable React library for building node-based editors and interactive flow charts.",
   "keywords": [
     "react",
