@@ -1,6 +1,6 @@
 {
   "name": "@sweep-io/system",
-  "version": "0.0.52",
+  "version": "0.0.521",
   "description": "xyflow core system that powers React Flow and Svelte Flow.",
   "keywords": [
     "node-based UI",
@@ -45,7 +45,7 @@
   },
   "scripts": {
     "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\"",
-    "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production",
+    "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production && node ../../replace-imports.js",
     "lint": "eslint --ext .js,.ts src",
     "typecheck": "tsc --noEmit"
   },

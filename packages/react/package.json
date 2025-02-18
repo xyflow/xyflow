@@ -1,6 +1,6 @@
 {
   "name": "@sweep-io/react",
-  "version": "12.4.4",
+  "version": "12.4.41",
   "description": "React Flow - A highly customizable React library for building node-based editors and interactive flow charts.",
   "keywords": [
     "react",
@@ -54,7 +54,7 @@
   },
   "scripts": {
     "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\" pnpm:css-watch",
-    "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production && npm run css",
+    "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production && npm run css && node ../../replace-imports.js",
     "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config/ --dir dist ",
     "css-watch": "pnpm css --watch",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
@@ -85,6 +85,7 @@
     "postcss-nested": "^6.0.0",
     "postcss-rename": "^0.6.1",
     "react": "^18.2.0",
+    "replace-in-file": "^8.3.0",
     "typescript": "5.1.3"
   },
   "rollup": {
