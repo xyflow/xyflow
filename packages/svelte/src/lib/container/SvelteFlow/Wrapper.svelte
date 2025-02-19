@@ -1,12 +1,11 @@
 <script lang="ts">
-  import type { ClassValue, DOMAttributes } from 'svelte/elements';
+  import type { HTMLAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
   import { type SvelteFlowRestProps } from '$lib/store/types';
 
   let {
     width,
     height,
-    class: className,
     colorMode,
     domNode = $bindable(),
     clientWidth = $bindable(),
@@ -16,19 +15,19 @@
   }: {
     width?: number;
     height?: number;
-    class?: ClassValue;
     colorMode?: string;
     domNode: HTMLDivElement | null;
     clientWidth?: number;
     clientHeight?: number;
     children?: Snippet;
-    rest: SvelteFlowRestProps & DOMAttributes<HTMLDivElement>;
+    rest: SvelteFlowRestProps & HTMLAttributes<HTMLDivElement>;
   } = $props();
 
   // Unfortunately we have to destructure the props here this way,
   // so we don't pass all the props as attributes to the div element
   let {
     id,
+    class: className,
     nodeTypes,
     edgeTypes,
     colorMode: _colorMode,
@@ -69,7 +68,7 @@
   } = $derived(rest);
 
   type OnlyDivAttributes<T> = {
-    [K in keyof T]: K extends keyof DOMAttributes<HTMLDivElement> ? T[K] : never;
+    [K in keyof T]: K extends keyof HTMLAttributes<HTMLDivElement> ? T[K] : never;
   };
 </script>
 

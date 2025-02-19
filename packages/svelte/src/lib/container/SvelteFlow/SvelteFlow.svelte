@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getContext, setContext, onDestroy } from 'svelte';
-  import type { DOMAttributes } from 'svelte/elements';
+  import type { HTMLAttributes } from 'svelte/elements';
   import { ConnectionLineType, PanOnScrollMode } from '@xyflow/system';
 
   import { key, createStore } from '$lib/store';
@@ -66,7 +66,7 @@
     edges = $bindable([]),
     viewport = $bindable(undefined),
     ...props
-  }: SvelteFlowProps & DOMAttributes<HTMLDivElement> = $props();
+  }: SvelteFlowProps & HTMLAttributes<HTMLDivElement> = $props();
 
   const store = createStore({
     props,
