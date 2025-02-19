@@ -64,6 +64,7 @@
     colorModeSSR,
     style,
     defaultEdgeOptions,
+    elevateNodesOnSelect,
     ...divAttributes
   } = $derived(rest);
 

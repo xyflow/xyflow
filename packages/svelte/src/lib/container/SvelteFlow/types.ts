@@ -328,6 +328,11 @@ export type SvelteFlowProps = NodeEvents &
      * If you have custom connection logic its preferred to use this callback over the isValidConnection prop on the handle component for performance reasons.
      * @default (connection: Connection) => true
      */
+
+    /** Enabling this option will raise the z-index of nodes when they are selected.
+     * @default true
+     */
+    elevateNodesOnSelect?: boolean;
     isValidConnection?: IsValidConnection;
     /** This event handler is called when the user begins to pan or zoom the viewport */
     onMoveStart?: OnMoveStart;

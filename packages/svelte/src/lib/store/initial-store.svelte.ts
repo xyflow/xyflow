@@ -82,7 +82,7 @@ export const getInitialStore = (signals: StoreSignals) => {
       adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
         nodeExtent: this.nodeExtent,
         nodeOrigin: this.nodeOrigin,
-        elevateNodesOnSelect: false,
+        elevateNodesOnSelect: signals.props.elevateNodesOnSelect ?? true,
         checkEquality: true
       });
       return signals.nodes;
