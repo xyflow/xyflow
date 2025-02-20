@@ -35,7 +35,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
      * this queue is a relatively hot path so we'd like to avoid the overhead of
      * array methods where we can.
      */
-    let next = nodes as NodeType[];
+    let next = nodes;
     for (const payload of queueItems) {
       next = typeof payload === 'function' ? payload(next) : payload;
     }
@@ -56,7 +56,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   const edgeQueueHandler = useCallback((queueItems: QueueItem<EdgeType>[]) => {
     const { edges = [], setEdges, hasDefaultEdges, onEdgesChange, edgeLookup } = store.getState();
 
-    let next = edges as EdgeType[];
+    let next = edges;
     for (const payload of queueItems) {
       next = typeof payload === 'function' ? payload(next) : payload;
     }

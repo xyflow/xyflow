@@ -95,7 +95,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       setNodes((prevNodes) =>
         prevNodes.map((node) => {
           if (node.id === id) {
-            const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as NodeType) : nodeUpdate;
+            const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
             return options.replace && isNode(nextNode) ? (nextNode as NodeType) : { ...node, ...nextNode };
           }
 
@@ -112,7 +112,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       setEdges((prevEdges) =>
         prevEdges.map((edge) => {
           if (edge.id === id) {
-            const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge as EdgeType) : edgeUpdate;
+            const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
             return options.replace && isEdge(nextEdge) ? (nextEdge as EdgeType) : { ...edge, ...nextEdge };
           }
 
@@ -207,7 +207,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         return (nodes || store.getState().nodes).filter((n) => {
           const internalNode = store.getState().nodeLookup.get(n.id);
 
-          if (internalNode && !isRect && (n.id === nodeOrRect!.id || !internalNode.internals.positionAbsolute)) {
+          if (internalNode && !isRect && (n.id === nodeOrRect.id || !internalNode.internals.positionAbsolute)) {
             return false;
           }
 

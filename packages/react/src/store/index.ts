@@ -228,7 +228,7 @@ const createStore = ({
 
         if (multiSelectionActive) {
           const nodeChanges = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true));
-          triggerNodeChanges(nodeChanges as NodeSelectionChange[]);
+          triggerNodeChanges(nodeChanges);
           return;
         }
 
@@ -240,7 +240,7 @@ const createStore = ({
 
         if (multiSelectionActive) {
           const changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true));
-          triggerEdgeChanges(changedEdges as EdgeSelectionChange[]);
+          triggerEdgeChanges(changedEdges);
           return;
         }
 
@@ -265,8 +265,8 @@ const createStore = ({
         });
         const edgeChanges = edgesToUnselect.map((edge) => createSelectionChange(edge.id, false));
 
-        triggerNodeChanges(nodeChanges as NodeSelectionChange[]);
-        triggerEdgeChanges(edgeChanges as EdgeSelectionChange[]);
+        triggerNodeChanges(nodeChanges);
+        triggerEdgeChanges(edgeChanges);
       },
       setMinZoom: (minZoom) => {
         const { panZoom, maxZoom } = get();
@@ -292,11 +292,11 @@ const createStore = ({
         const { edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
 
         const nodeChanges = nodes.reduce<NodeSelectionChange[]>(
-          (res, node) => (node.selected ? [...res, createSelectionChange(node.id, false) as NodeSelectionChange] : res),
+          (res, node) => (node.selected ? [...res, createSelectionChange(node.id, false)] : res),
           []
         );
         const edgeChanges = edges.reduce<EdgeSelectionChange[]>(
-          (res, edge) => (edge.selected ? [...res, createSelectionChange(edge.id, false) as EdgeSelectionChange] : res),
+          (res, edge) => (edge.selected ? [...res, createSelectionChange(edge.id, false)] : res),
           []
         );
 
