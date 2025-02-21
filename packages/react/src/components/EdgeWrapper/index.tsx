@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, type KeyboardEvent, useCallback } from 'react';
+import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {

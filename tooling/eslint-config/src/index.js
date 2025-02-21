@@ -36,6 +36,7 @@ module.exports = {
         projectService: true,
       },
       rules: {
+        '@typescript-eslint/no-deprecated': 'error',
         '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       },
     },

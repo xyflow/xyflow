@@ -1,4 +1,4 @@
-import { type Ref, type RefAttributes, forwardRef } from 'react';
+import { type Ref, type RefAttributes, forwardRef, JSX } from 'react';
 import { isNodeBase, isEdgeBase } from '@xyflow/system';
 
 import type { Edge, Node } from '../types';
