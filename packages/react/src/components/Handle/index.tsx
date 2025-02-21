@@ -46,9 +46,7 @@ const selector = (s: ReactFlowState) => ({
 const connectingSelector =
   (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
     const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
-
     const { fromHandle, toHandle, isValid } = connection;
-
     const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
 
     return {
@@ -60,6 +58,7 @@ const connectingSelector =
           ? fromHandle?.type !== type
           : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id,
       connectionInProcess: !!fromHandle,
+      clickConnectionInProcess: !!clickHandle,
       valid: connectingTo && isValid,
     };
   };
@@ -87,11 +86,15 @@ function HandleComponent(
   const store = useStoreApi();
   const nodeId = useNodeId();
   const { connectOnClick, noPanClassName, rfId } = useStore(selector, shallow);
-  const { connectingFrom, connectingTo, clickConnecting, isPossibleEndHandle, connectionInProcess, valid } = useStore(
-    connectingSelector(nodeId, handleId, type),
-    shallow
-  );
-
+  const {
+    connectingFrom,
+    connectingTo,
+    clickConnecting,
+    isPossibleEndHandle,
+    connectionInProcess,
+    clickConnectionInProcess,
+    valid,
+  } = useStore(connectingSelector(nodeId, handleId, type), shallow);
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }
@@ -239,7 +242,7 @@ function HandleComponent(
           connectionindicator:
             isConnectable &&
             (!connectionInProcess || isPossibleEndHandle) &&
-            (connectionInProcess ? isConnectableEnd : isConnectableStart),
+            (connectionInProcess || clickConnectionInProcess ? isConnectableEnd : isConnectableStart),
         },
       ])}
       onMouseDown={onPointerDown}
