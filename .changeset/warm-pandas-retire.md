@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-lint: remove unnecessary type assertion
+lint: remove unnecessary type assertions
