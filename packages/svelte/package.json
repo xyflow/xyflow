@@ -34,6 +34,7 @@
   "type": "module",
   "module": "./dist/lib/index.js",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "types": "./dist/lib/index.d.ts",
       "svelte": "./dist/lib/index.js",
