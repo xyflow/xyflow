@@ -51,7 +51,7 @@ const createStore = ({
          * setNodes() is called exclusively in response to user actions:
          * - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
          * - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
-         * 
+         *
          * When this happens, we take the note objects passed by the user and extend them with fields
          * relevant for internal React Flow operations.
          */
@@ -154,16 +154,18 @@ const createStore = ({
         const changes = [];
 
         for (const [id, dragItem] of nodeDragItems) {
-          const expandParent = !!(dragItem?.expandParent && dragItem?.parentId && dragItem?.position);
+          // we are using the nodelookup to be sure to use the current expandParent and parentId value
+          const node = get().nodeLookup.get(id);
+          const expandParent = !!(node?.expandParent && node?.parentId && dragItem?.position);
 
           const change: NodeChange = {
             id,
             type: 'position',
             position: expandParent
               ? {
-                x: Math.max(0, dragItem.position.x),
-                y: Math.max(0, dragItem.position.y),
-              }
+                  x: Math.max(0, dragItem.position.x),
+                  y: Math.max(0, dragItem.position.y),
+                }
               : dragItem.position,
             dragging,
           };
@@ -171,7 +173,7 @@ const createStore = ({
           if (expandParent) {
             parentExpandChildren.push({
               id,
-              parentId: dragItem.parentId!,
+              parentId: node.parentId!,
               rect: {
                 ...dragItem.internals.positionAbsolute,
                 width: dragItem.measured.width!,
