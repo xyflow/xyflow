@@ -2,4 +2,4 @@
 "@xyflow/svelte": patch
 ---
 
-add `"./package.json": "./package.json",` in `exports` field in `package.json`
+Add `"./package.json" to the `exports` field so that users can import it
