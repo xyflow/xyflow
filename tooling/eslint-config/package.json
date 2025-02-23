@@ -7,6 +7,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "@typescript-eslint/parser": "^8.23.0",
+    "eslint-plugin-de-morgan": "^1.1.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-config-turbo": "^2.4.0",
     "eslint-plugin-prettier": "^4.2.1",
