@@ -3,13 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.23.0",
-    "@typescript-eslint/parser": "^8.23.0",
+    "@types/node": "^22.13.5",
+    "typescript-eslint": "^8.24.1",
+    "@eslint/js": "^9.21.0",
+    "@eslint/compat": "^1.2.7",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-config-turbo": "^2.4.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-config-turbo": "^2.4.2",
     "eslint-plugin-react": "^7.37.4"
   }
 }
