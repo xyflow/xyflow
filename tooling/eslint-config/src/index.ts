@@ -6,7 +6,7 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginReact from 'eslint-plugin-react';
 import eslintConfigTurbo from 'eslint-config-turbo/flat';
 
-const config: Config = tseslint.config(
+const config = tseslint.config(
   // Ignore files in .gitignore
   includeIgnoreFile(path.resolve('..', '..', '.gitignore')),
   { ignores: ['**/next-env.d.ts', '**/vite-env.d.ts'] },
@@ -26,6 +26,15 @@ const config: Config = tseslint.config(
         version: 'detect',
       },
     },
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_', // allow underscores in destructuring
+        },
+      ],
+    },
   },
   // Rules for TypeScript files
   {
@@ -40,6 +49,6 @@ const config: Config = tseslint.config(
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
     },
   }
-);
+) satisfies Config;
 
 export default config;
