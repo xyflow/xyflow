@@ -216,7 +216,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /** This event handler gets called when a user stops panning or zooming the viewport */
   onMoveEnd?: OnMoveEnd;
   /** This event handler gets called when a user changes group of selected elements in the flow */
-  onSelectionChange?: OnSelectionChangeFunc;
+  onSelectionChange?: OnSelectionChangeFunc<NodeType, EdgeType>;
   /** This event handler gets called when user scroll inside the pane */
   onPaneScroll?: (event?: WheelEvent) => void;
   /** This event handler gets called when user clicks inside the pane */
@@ -316,7 +316,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    *
    * By setting this prop to null you can disable this functionality.
    * @default 'Meta' for macOS, "Ctrl" for other systems
-   * 
+   *
    */
   zoomActivationKeyCode?: KeyCode | null;
   /** Set this prop to make the flow snap to the grid */
