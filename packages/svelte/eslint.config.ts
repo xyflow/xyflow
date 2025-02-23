@@ -1,14 +1,14 @@
-import eslintXyConfig from '@xyflow/eslint-config';
-import { plugin as tsPlugin } from 'typescript-eslint';
+import eslintConfigXy from '@xyflow/eslint-config';
+import { plugin as eslintPluginTs } from 'typescript-eslint';
 import * as eslintPluginSvelte from 'eslint-plugin-svelte';
 
 export default [
-  ...eslintXyConfig,
+  ...eslintConfigXy,
   ...eslintPluginSvelte.configs['flat/recommended'],
   {
     files: ['**/*.svelte'],
     plugins: {
-      '@typescript-eslint': tsPlugin
+      '@typescript-eslint': eslintPluginTs
     },
     languageOptions: {
       parserOptions: {
