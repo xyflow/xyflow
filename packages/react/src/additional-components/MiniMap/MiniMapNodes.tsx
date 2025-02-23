@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentType, memo } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
@@ -42,7 +41,7 @@ function MiniMapNodes<NodeType extends Node>({
          * The split of responsibilities between MiniMapNodes and
          * NodeComponentWrapper may appear weird. However, it’s designed to
          * minimize the cost of updates when individual nodes change.
-         * 
+         *
          * For more details, see a similar commit in `NodeRenderer/index.tsx`.
          */
         <NodeComponentWrapper<NodeType>
