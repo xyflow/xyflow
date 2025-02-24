@@ -134,7 +134,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   onViewportChangeEnd?: OnViewportChange;
   onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
 
-  onSelectionChangeHandlers: OnSelectionChangeFunc[];
+  onSelectionChangeHandlers: OnSelectionChangeFunc<NodeType, EdgeType>[];
 
   ariaLiveMessage: string;
   autoPanOnConnect: boolean;
@@ -155,7 +155,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>, params?: { triggerFitView: boolean }) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
-  unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
+  unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams<NodeType, EdgeType>) => void;
   addSelectedNodes: (nodeIds: string[]) => void;
   addSelectedEdges: (edgeIds: string[]) => void;
   setMinZoom: (minZoom: number) => void;

@@ -85,17 +85,19 @@ export type EdgeTypes = Record<
   >
 >;
 
-export type UnselectNodesAndEdgesParams = {
-  nodes?: Node[];
-  edges?: Edge[];
+export type UnselectNodesAndEdgesParams<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  nodes?: NodeType[];
+  edges?: EdgeType[];
 };
 
-export type OnSelectionChangeParams = {
-  nodes: Node[];
-  edges: Edge[];
+export type OnSelectionChangeParams<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  nodes: NodeType[];
+  edges: EdgeType[];
 };
 
-export type OnSelectionChangeFunc = (params: OnSelectionChangeParams) => void;
+export type OnSelectionChangeFunc<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
+  params: OnSelectionChangeParams<NodeType, EdgeType>
+) => void;
 
 export type FitViewParams<NodeType extends Node = Node> = FitViewParamsBase<NodeType>;
 

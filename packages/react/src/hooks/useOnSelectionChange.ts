@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
 import { useStoreApi } from './useStore';
-import type { OnSelectionChangeFunc } from '../types';
+import type { OnSelectionChangeFunc, Node, Edge } from '../types';
 
-export type UseOnSelectionChangeOptions = {
-  onChange: OnSelectionChangeFunc;
+export type UseOnSelectionChangeOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  onChange: OnSelectionChangeFunc<NodeType, EdgeType>;
 };
 
 /**
@@ -45,8 +45,10 @@ export type UseOnSelectionChangeOptions = {
  *
  * @remarks You need to memoize the passed `onChange` handler, otherwise the hook will not work correctly.
  */
-export function useOnSelectionChange({ onChange }: UseOnSelectionChangeOptions) {
-  const store = useStoreApi();
+export function useOnSelectionChange<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
+  onChange,
+}: UseOnSelectionChangeOptions<NodeType, EdgeType>) {
+  const store = useStoreApi<NodeType, EdgeType>();
 
   useEffect(() => {
     const nextOnSelectionChangeHandlers = [...store.getState().onSelectionChangeHandlers, onChange];
