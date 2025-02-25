@@ -203,7 +203,6 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
   }) => HandleConnection[];
   /**
    * Gets all connections to a node. Can be filtered by handle type and id.
-   * @deprecated use `getNodeConnections` instead
    * @param type - handle type 'source' or 'target'
    * @param handleId - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
    * @param nodeId - the node id the handle belongs to
@@ -219,7 +218,6 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     handleId?: string | null;
   }) => NodeConnection[];
 };
-
 /**
  * The `ReactFlowInstance` provides a collection of methods to query and manipulate
  * the internal state of your flow. You can get an instance by using the
