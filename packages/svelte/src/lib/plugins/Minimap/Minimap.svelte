@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
   declare const window: Window | undefined;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const getAttrFunction = (func: any): GetMiniMapNodeAttribute =>
     func instanceof Function ? func : () => func;
 </script>
