@@ -1,5 +1,14 @@
 # @xyflow/svelte
 
+## 0.1.31
+
+### Patch Changes
+
+- [#5019](https://github.com/xyflow/xyflow/pull/5019) [`3e80317c`](https://github.com/xyflow/xyflow/commit/3e80317cf6da0e9fdc111c3ade88f2a88a10dbd6) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Add `"./package.json" to the `exports` field so that users can import it
+
+- Updated dependencies [[`99dd7d35`](https://github.com/xyflow/xyflow/commit/99dd7d3549e7423e7d103b2c956c8b37f5747b90)]:
+  - @xyflow/system@0.0.52
+
 ## 0.1.30
 
 ### Patch Changes

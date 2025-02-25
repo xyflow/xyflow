@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.52
+
+### Patch Changes
+
+- [#5052](https://github.com/xyflow/xyflow/pull/5052) [`99dd7d35`](https://github.com/xyflow/xyflow/commit/99dd7d3549e7423e7d103b2c956c8b37f5747b90) Thanks [@moklick](https://github.com/moklick)! - Show an error if user drags uninitialized node
+
 ## 0.0.51
 
 ### Patch Changes
