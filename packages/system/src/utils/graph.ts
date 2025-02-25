@@ -428,10 +428,14 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     ? clampPosition(nextPosition, extent, node.measured)
     : nextPosition;
 
+  if (node.measured.width === undefined || node.measured.height === undefined) {
+    onError?.('015', errorMessages['error015']());
+  }
+
   return {
     position: {
-      x: positionAbsolute.x - parentX + node.measured.width! * origin[0],
-      y: positionAbsolute.y - parentY + node.measured.height! * origin[1],
+      x: positionAbsolute.x - parentX + (node.measured.width ?? 0) * origin[0],
+      y: positionAbsolute.y - parentY + (node.measured.height ?? 0) * origin[1],
     },
     positionAbsolute,
   };
