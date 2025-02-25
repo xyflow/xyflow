@@ -152,10 +152,11 @@ const createStore = ({
       updateNodePositions: (nodeDragItems, dragging = false) => {
         const parentExpandChildren: ParentExpandChild[] = [];
         const changes = [];
+        const { nodeLookup, triggerNodeChanges } = get();
 
         for (const [id, dragItem] of nodeDragItems) {
           // we are using the nodelookup to be sure to use the current expandParent and parentId value
-          const node = get().nodeLookup.get(id);
+          const node = nodeLookup.get(id);
           const expandParent = !!(node?.expandParent && node?.parentId && dragItem?.position);
 
           const change: NodeChange = {
@@ -170,10 +171,10 @@ const createStore = ({
             dragging,
           };
 
-          if (expandParent) {
+          if (expandParent && node.parentId) {
             parentExpandChildren.push({
               id,
-              parentId: node.parentId!,
+              parentId: node.parentId,
               rect: {
                 ...dragItem.internals.positionAbsolute,
                 width: dragItem.measured.width!,
@@ -186,12 +187,12 @@ const createStore = ({
         }
 
         if (parentExpandChildren.length > 0) {
-          const { nodeLookup, parentLookup, nodeOrigin } = get();
+          const { parentLookup, nodeOrigin } = get();
           const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup, nodeOrigin);
           changes.push(...parentExpandChanges);
         }
 
-        get().triggerNodeChanges(changes);
+        triggerNodeChanges(changes);
       },
       triggerNodeChanges: (changes) => {
         const { onNodesChange, setNodes, nodes, hasDefaultNodes, debug } = get();
