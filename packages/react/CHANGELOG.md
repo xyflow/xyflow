@@ -1,5 +1,26 @@
 # @xyflow/react
 
+## 12.4.4
+
+### Patch Changes
+
+- [#5052](https://github.com/xyflow/xyflow/pull/5052) [`99dd7d35`](https://github.com/xyflow/xyflow/commit/99dd7d3549e7423e7d103b2c956c8b37f5747b90) Thanks [@moklick](https://github.com/moklick)! - Show an error if user drags uninitialized node
+
+- [#5042](https://github.com/xyflow/xyflow/pull/5042) [`2fe0e850`](https://github.com/xyflow/xyflow/commit/2fe0e850a8c415c6a3113796a2c5c80e7cad2376) Thanks [@moklick](https://github.com/moklick)! - Allow click connections when target sets `isConnectableStart`
+
+- [#5047](https://github.com/xyflow/xyflow/pull/5047) [`b3bf5693`](https://github.com/xyflow/xyflow/commit/b3bf5693c659069cea90bf1cb215ae65d06c5509) Thanks [@moklick](https://github.com/moklick)! - Pass generics to OnSelectionChangeFunc so that users can type it correctly
+
+- [#5053](https://github.com/xyflow/xyflow/pull/5053) [`25fb45b5`](https://github.com/xyflow/xyflow/commit/25fb45b5e9d6da391b9aff652b8e6e34eaf757fc) Thanks [@moklick](https://github.com/moklick)! - Remove incorrect deprecation warning
+
+- [#5033](https://github.com/xyflow/xyflow/pull/5033) [`7b4a81fb`](https://github.com/xyflow/xyflow/commit/7b4a81fb6b3d88f8ee7b4f070aef7ac3b962d5a6) Thanks [@dimaMachina](https://github.com/dimaMachina)! - lint: use `React.JSX` type instead of the deprecated global `JSX` namespace
+
+- [#5043](https://github.com/xyflow/xyflow/pull/5043) [`0292ad20`](https://github.com/xyflow/xyflow/commit/0292ad20109a3b2518dc686a82e100a0a6964fb8) Thanks [@moklick](https://github.com/moklick)! - Use current expandParent value on drag to be able to update it while dragging
+
+- [#5032](https://github.com/xyflow/xyflow/pull/5032) [`5867bba8`](https://github.com/xyflow/xyflow/commit/5867bba8050d07378a45a2026557c4bce7bda239) Thanks [@dimaMachina](https://github.com/dimaMachina)! - lint: remove unnecessary type assertions
+
+- Updated dependencies [[`99dd7d35`](https://github.com/xyflow/xyflow/commit/99dd7d3549e7423e7d103b2c956c8b37f5747b90)]:
+  - @xyflow/system@0.0.52
+
 ## 12.4.3
 
 ### Patch Changes
