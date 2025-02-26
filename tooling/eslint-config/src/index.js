@@ -10,6 +10,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:@typescript-eslint/recommended',
+    'plugin:de-morgan/recommended-legacy',
     'turbo',
     'prettier',
   ],
