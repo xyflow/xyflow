@@ -61,6 +61,7 @@ const wrapHandler = (
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   elementsSelectable: s.elementsSelectable,
+  connectionInProgress: s.connection.inProgress,
   dragging: s.paneDragging,
 });
 
@@ -81,7 +82,7 @@ export function Pane({
   children,
 }: PaneProps) {
   const store = useStoreApi();
-  const { userSelectionActive, elementsSelectable, dragging } = useStore(selector, shallow);
+  const { userSelectionActive, elementsSelectable, dragging, connectionInProgress } = useStore(selector, shallow);
   const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
 
   const container = useRef<HTMLDivElement | null>(null);
@@ -96,7 +97,8 @@ export function Pane({
 
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
-    if (selectionInProgress.current) {
+    // We also prevent click events when a connection is in progress
+    if (selectionInProgress.current || connectionInProgress) {
       selectionInProgress.current = false;
       return;
     }
