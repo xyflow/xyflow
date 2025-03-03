@@ -5,7 +5,7 @@
   let { proOptions, position = 'bottom-right' }: AttributionProps = $props();
 </script>
 
-{#if proOptions?.hideAttribution}
+{#if !proOptions?.hideAttribution}
   <Panel
     {position}
     class="svelte-flow__attribution"
