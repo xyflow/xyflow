@@ -109,7 +109,7 @@ export type FitViewParams<NodeType extends Node = Node> = FitViewParamsBase<Node
  * @public
  */
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
-export type FitView = (fitViewOptions?: FitViewOptions) => Promise<boolean>;
+export type FitView<NodeType extends Node = Node> = (fitViewOptions?: FitViewOptions<NodeType>) => void;
 export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   reactFlowInstance: ReactFlowInstance<NodeType, EdgeType>
 ) => void;
@@ -156,17 +156,6 @@ export type ViewportHelperFunctions = {
    * @returns Viewport
    */
   getViewport: GetViewport;
-  /**
-   * Fits the view.
-   *
-   * @param options.padding - optional padding
-   * @param options.includeHiddenNodes - optional includeHiddenNodes
-   * @param options.minZoom - optional minZoom
-   * @param options.maxZoom - optional maxZoom
-   * @param options.duration - optional duration. If set, a transition will be applied
-   * @param options.nodes - optional nodes to fit the view to
-   */
-  fitView: FitView;
   /**
    * Sets the center of the view to the given position.
    *

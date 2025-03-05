@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import type { HandleConnection, HandleType, NodeConnection, Rect, Viewport } from '@xyflow/system';
-import type { Node, Edge, ViewportHelperFunctions, InternalNode } from '.';
+import type { Node, Edge, ViewportHelperFunctions, InternalNode, FitView } from '.';
 
 export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   nodes: NodeType[];
@@ -217,6 +217,17 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     nodeId: string;
     handleId?: string | null;
   }) => NodeConnection[];
+  // /**
+  //  * Fits the view.
+  //  *
+  //  * @param options.padding - optional padding
+  //  * @param options.includeHiddenNodes - optional includeHiddenNodes
+  //  * @param options.minZoom - optional minZoom
+  //  * @param options.maxZoom - optional maxZoom
+  //  * @param options.duration - optional duration. If set, a transition will be applied
+  //  * @param options.nodes - optional nodes to fit the view to
+  //  */
+  fitView: FitView<NodeType>;
 };
 /**
  * The `ReactFlowInstance` provides a collection of methods to query and manipulate

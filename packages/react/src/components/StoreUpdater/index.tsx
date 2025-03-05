@@ -154,8 +154,8 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'paneClickDistance') setPaneClickDistance(fieldValue as number);
         // Renamed fields
-        else if (fieldName === 'fitView') store.setState({ fitViewOnInit: fieldValue as boolean });
-        else if (fieldName === 'fitViewOptions') store.setState({ fitViewOnInitOptions: fieldValue as FitViewOptions });
+        else if (fieldName === 'fitView') store.setState({ fitViewQueued: fieldValue as boolean });
+        else if (fieldName === 'fitViewOptions') store.setState({ fitViewOptions: fieldValue as FitViewOptions });
         // General case
         else store.setState({ [fieldName]: fieldValue });
       }

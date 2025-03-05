@@ -15,7 +15,15 @@ import useViewportHelper from './useViewportHelper';
 import { useStore, useStoreApi } from './useStore';
 import { useBatchContext } from '../components/BatchProvider';
 import { elementToRemoveChange, isEdge, isNode } from '../utils';
-import type { ReactFlowInstance, Node, Edge, InternalNode, ReactFlowState, GeneralHelpers } from '../types';
+import type {
+  ReactFlowInstance,
+  Node,
+  Edge,
+  InternalNode,
+  ReactFlowState,
+  GeneralHelpers,
+  FitViewOptions,
+} from '../types';
 
 const selector = (s: ReactFlowState) => !!s.panZoom;
 
@@ -271,6 +279,10 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
             .connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
             ?.values() ?? []
         ),
+      fitView: (options: FitViewOptions<NodeType> | undefined) => {
+        store.setState({ fitViewQueued: true, fitViewOptions: options });
+        batchContext.nodeQueue.push((nodes) => [...nodes]);
+      },
     };
   }, []);
 

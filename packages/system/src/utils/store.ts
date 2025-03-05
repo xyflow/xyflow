@@ -85,9 +85,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options?: UpdateNodesOptions<NodeType>
-) {
+): boolean {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
 
+  let nodesInitialized = true;
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
 
@@ -123,10 +124,16 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       nodeLookup.set(userNode.id, internalNode);
     }
 
+    if (!internalNode.measured || !internalNode.measured.width || !internalNode.measured.height) {
+      nodesInitialized = false;
+    }
+
     if (userNode.parentId) {
       updateChildNode(internalNode, nodeLookup, parentLookup, options);
     }
   }
+
+  return nodesInitialized;
 }
 
 function updateParentLookup<NodeType extends NodeBase>(
