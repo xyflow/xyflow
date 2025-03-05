@@ -63,7 +63,7 @@
     "@xyflow/eslint-config": "workspace:*",
     "@xyflow/rollup-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
-    "typescript": "5.1.3"
+    "typescript": "5.4.5"
   },
   "rollup": {
     "globals": {

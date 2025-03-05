@@ -124,7 +124,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       nodeLookup.set(userNode.id, internalNode);
     }
 
-    if (!internalNode.measured || !internalNode.measured.width || !internalNode.measured.height) {
+    if (
+      (!internalNode.measured || !internalNode.measured.width || !internalNode.measured.height) &&
+      !internalNode.hidden
+    ) {
       nodesInitialized = false;
     }
 

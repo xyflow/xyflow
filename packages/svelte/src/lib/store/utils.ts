@@ -17,10 +17,18 @@ import {
   type ParentLookup,
   type NodeOrigin,
   infiniteExtent,
-  type CoordinateExtent
+  type CoordinateExtent,
+  fitViewport
 } from '@xyflow/system';
 
-import type { DefaultEdgeOptions, DefaultNodeOptions, Edge, InternalNode, Node } from '$lib/types';
+import type {
+  DefaultEdgeOptions,
+  DefaultNodeOptions,
+  Edge,
+  FitViewOptions,
+  InternalNode,
+  Node
+} from '$lib/types';
 
 // we need to sync the user nodes and the internal nodes so that the user can receive the updates
 // made by Svelte Flow (like dragging or selecting a node).
@@ -134,7 +142,15 @@ export const createNodesStore = (
   nodeLookup: NodeLookup<InternalNode>,
   parentLookup: ParentLookup<InternalNode>,
   nodeOrigin: NodeOrigin = [0, 0],
-  nodeExtent: CoordinateExtent = infiniteExtent
+  nodeExtent: CoordinateExtent = infiniteExtent,
+  fitViewQueued: Writable<boolean>,
+  fitViewOptions: Writable<FitViewOptions | undefined>,
+  fitViewResolver: Writable<PromiseWithResolvers<boolean> | null>,
+  panZoom: Writable<PanZoomInstance | null>,
+  width: Writable<number>,
+  height: Writable<number>,
+  minZoom: Writable<number>,
+  maxZoom: Writable<number>
 ): {
   subscribe: (this: void, run: Subscriber<Node[]>) => Unsubscriber;
   update: (this: void, updater: Updater<Node[]>) => void;
@@ -148,13 +164,37 @@ export const createNodesStore = (
   let elevateNodesOnSelect = true;
 
   const _set = (nds: Node[]): Node[] => {
-    adoptUserNodes(nds, nodeLookup, parentLookup, {
+    const nodesInitialized = adoptUserNodes(nds, nodeLookup, parentLookup, {
       elevateNodesOnSelect,
       nodeOrigin,
       nodeExtent,
       defaults,
       checkEquality: false
     });
+
+    console.log(nodesInitialized);
+
+    if (get(fitViewQueued) && nodesInitialized && get(panZoom)) {
+      console.log('trying');
+      const fitViewPromise = fitViewport(
+        {
+          nodes: nodeLookup,
+          width: get(width),
+          height: get(height),
+          panZoom: get(panZoom)!,
+          minZoom: get(minZoom),
+          maxZoom: get(maxZoom)
+        },
+        get(fitViewOptions)
+      );
+      fitViewPromise.then((value) => {
+        get(fitViewResolver)?.resolve(value);
+        fitViewResolver.set(null);
+      });
+
+      fitViewQueued.set(false);
+      fitViewOptions.set(undefined);
+    }
 
     value = nds;
 

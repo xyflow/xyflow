@@ -198,7 +198,7 @@
 	attributionPosition={'top-center'}
 	deleteKey={['Backspace', 'd']}
 >
-	<Controls orientation="horizontal" {fitViewOptions}>
+	<Controls orientation="horizontal">
 		<ControlButton slot="before">xy</ControlButton>
 		<ControlButton aria-label="log" on:click={() => console.log('control button')}
 			>log</ControlButton
