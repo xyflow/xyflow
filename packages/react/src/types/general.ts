@@ -109,7 +109,7 @@ export type FitViewParams<NodeType extends Node = Node> = FitViewParamsBase<Node
  * @public
  */
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
-export type FitView<NodeType extends Node = Node> = (fitViewOptions?: FitViewOptions<NodeType>) => void;
+export type FitView<NodeType extends Node = Node> = (fitViewOptions?: FitViewOptions<NodeType>) => Promise<boolean>;
 export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   reactFlowInstance: ReactFlowInstance<NodeType, EdgeType>
 ) => void;

@@ -279,9 +279,11 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
             .connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
             ?.values() ?? []
         ),
-      fitView: (options: FitViewOptions<NodeType> | undefined) => {
-        store.setState({ fitViewQueued: true, fitViewOptions: options });
+      fitView: async (options: FitViewOptions<NodeType> | undefined) => {
+        const fitViewResolver = store.getState().fitViewResolver ?? Promise.withResolvers<boolean>();
+        store.setState({ fitViewQueued: true, fitViewOptions: options, fitViewResolver });
         batchContext.nodeQueue.push((nodes) => [...nodes]);
+        return fitViewResolver.promise;
       },
     };
   }, []);

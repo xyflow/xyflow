@@ -62,10 +62,9 @@ const createStore = ({
           checkEquality: true,
         });
 
-        let viewportFitted = false;
         if (fitViewQueued && nodesInitialized && panZoom) {
-          const { fitViewOptions, width, height, minZoom, maxZoom } = get();
-          viewportFitted = fitViewport(
+          const { fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
+          const fitViewPromise = fitViewport(
             {
               nodes: nodeLookup,
               width,
@@ -76,9 +75,10 @@ const createStore = ({
             },
             fitViewOptions
           );
-        }
-
-        if (viewportFitted) {
+          fitViewPromise.then((value) => {
+            fitViewResolver?.resolve(value);
+            set({ fitViewResolver: null });
+          });
           set({ nodes, fitViewQueued: false, fitViewOptions: undefined });
         } else {
           set({ nodes });

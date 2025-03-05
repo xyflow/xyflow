@@ -121,6 +121,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   fitViewQueued: boolean;
   fitViewOptions: FitViewOptions | undefined;
+  fitViewResolver: PromiseWithResolvers<boolean> | null;
 
   onNodesDelete?: OnNodesDelete<NodeType>;
   onEdgesDelete?: OnEdgesDelete<EdgeType>;

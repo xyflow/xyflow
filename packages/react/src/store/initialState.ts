@@ -110,6 +110,7 @@ const getInitialState = ({
 
     fitViewQueued: false,
     fitViewOptions: undefined,
+    fitViewResolver: null,
 
     connection: { ...initialConnection },
     connectionClickStartHandle: null,

@@ -351,16 +351,15 @@ function getFitViewNodes<
   return fitViewNodes;
 }
 
-export function fitViewport<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
+export async function fitViewport<
+  Params extends FitViewParamsBase<NodeBase>,
+  Options extends FitViewOptionsBase<NodeBase>
+>(
   { nodes, width, height, panZoom, minZoom, maxZoom }: Params,
   options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>
-): boolean {
+): Promise<boolean> {
   if (nodes.size === 0) {
-    return true;
-  }
-
-  if (!panZoom) {
-    return false;
+    return Promise.resolve(true);
   }
 
   const nodesToFit = getFitViewNodes(nodes, options);
@@ -376,9 +375,9 @@ export function fitViewport<Params extends FitViewParamsBase<NodeBase>, Options 
     options?.padding ?? 0.1
   );
 
-  panZoom.setViewport(viewport, { duration: options?.duration });
+  await panZoom.setViewport(viewport, { duration: options?.duration });
 
-  return true;
+  return Promise.resolve(true);
 }
 
 /**
