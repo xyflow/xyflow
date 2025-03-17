@@ -14,6 +14,8 @@ export enum XYErrorCode {
   EDGE_TYPE_NOT_FOUND = '011',
   NODE_NOT_FOUND = '012',
   MISSING_STYLES = '013',
+  USE_NODE_CONNECTIONS_NO_ID = '014',
+  NODE_NOT_INITIALIZED = '015',
 }
 
 export const XYErrorMessages = {
@@ -44,6 +46,8 @@ export const XYErrorMessages = {
     `Node with id "${id}" does not exist, it may have been removed. This can happen when a node is deleted before the "onNodeClick" handler is called.`,
   [XYErrorCode.MISSING_STYLES]: (lib: string = 'react') =>
     `It seems that you haven't loaded the styles. Please import '@xyflow/${lib}/dist/style.css' or base.css to make sure everything is working properly.`,
+  [XYErrorCode.USE_NODE_CONNECTIONS_NO_ID]: () => 'useNodeConnections: No node ID found. Call useNodeConnections inside a custom Node or provide a node ID.',
+  [XYErrorCode.NODE_NOT_INITIALIZED]: () => 'It seems that you are trying to drag a node that is not initialized. Please use onNodesChange as explained in the docs.',
 } as const;
 
 type ErrorArgs<T extends XYErrorCode> = Parameters<(typeof XYErrorMessages)[T]>;

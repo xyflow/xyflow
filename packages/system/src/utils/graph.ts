@@ -430,7 +430,8 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     : nextPosition;
 
   if (node.measured.width === undefined || node.measured.height === undefined) {
-    onError?.('015', errorMessages['error015']());
+    const error = new XYError(XYErrorCode.NODE_NOT_INITIALIZED);
+    onError?.(error.code, error.message, error);
   }
 
   return {

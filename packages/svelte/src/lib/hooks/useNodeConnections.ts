@@ -2,14 +2,13 @@ import { getContext } from 'svelte';
 import { derived } from 'svelte/store';
 import {
   areConnectionMapsEqual,
-  errorMessages,
+  XYError,
+  XYErrorCode,
   type NodeConnection,
   type HandleType
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
-
-const error014 = errorMessages['error014']();
 
 type UseNodeConnectionsParams = {
   id?: string;
@@ -40,7 +39,7 @@ export function useNodeConnections({ id, handleType, handleId }: UseNodeConnecti
   const currentNodeId = id ?? nodeId;
 
   if (!currentNodeId) {
-    throw new Error(error014);
+    throw new XYError(XYErrorCode.USE_NODE_CONNECTIONS_NO_ID);
   }
 
   let prevConnections: Map<string, NodeConnection> | undefined = undefined;
