@@ -19,7 +19,7 @@ export function derivedWarning(functionName: string) {
   }
 
   if (storeContext.provider && typeof window === 'object' && !$effect.tracking()) {
-    console.warn(`Use $derived(${functionName}()) to receive updates when values change.`);
+    console.error(`Use $derived(${functionName}()) to receive updates when values change.`);
     console.trace(functionName);
   }
 }
