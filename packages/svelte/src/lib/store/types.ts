@@ -86,6 +86,9 @@ export type SvelteFlowRestProps = Omit<
   | 'nodes'
   | 'edges'
   | 'viewport'
+  | 'nodesDraggable'
+  | 'nodesConnectable'
+  | 'elementsSelectable'
 >;
 
 export type StoreSignals = {
