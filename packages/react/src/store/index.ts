@@ -109,7 +109,17 @@ const createStore = ({
        * new dimensions and update the nodes.
        */
       updateNodeInternals: (updates) => {
-        const { triggerNodeChanges, nodeLookup, parentLookup, domNode, nodeOrigin, nodeExtent, debug } = get();
+        const {
+          triggerNodeChanges,
+          nodeLookup,
+          parentLookup,
+          domNode,
+          nodeOrigin,
+          nodeExtent,
+          debug,
+          panZoom,
+          fitViewQueued,
+        } = get();
 
         const { changes, updatedInternals } = updateNodeInternalsSystem(
           updates,
@@ -126,8 +136,28 @@ const createStore = ({
 
         updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent });
 
-        // we always want to trigger useStore calls whenever updateNodeInternals is called
-        set({});
+        if (fitViewQueued && panZoom) {
+          const { fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
+          const fitViewPromise = fitViewport(
+            {
+              nodes: nodeLookup,
+              width,
+              height,
+              panZoom,
+              minZoom,
+              maxZoom,
+            },
+            fitViewOptions
+          );
+          fitViewPromise.then((value) => {
+            fitViewResolver?.resolve(value);
+            set({ fitViewResolver: null });
+          });
+          set({ nodes, fitViewQueued: false, fitViewOptions: undefined });
+        } else {
+          // we always want to trigger useStore calls whenever updateNodeInternals is called
+          set({});
+        }
 
         if (changes?.length > 0) {
           if (debug) {
