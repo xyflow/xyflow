@@ -155,6 +155,25 @@ export const getInitialStore = (signals: StoreSignals) => {
       };
     });
 
+    get nodesDraggable() {
+      return signals.nodesDraggable;
+    }
+    set nodesDraggable(value: boolean) {
+      signals.nodesDraggable = value;
+    }
+    get nodesConnectable() {
+      return signals.nodesConnectable;
+    }
+    set nodesConnectable(value: boolean) {
+      signals.nodesConnectable = value;
+    }
+    get elementsSelectable() {
+      return signals.elementsSelectable;
+    }
+    set elementsSelectable(value: boolean) {
+      signals.elementsSelectable = value;
+    }
+
     domNode = $state<HTMLDivElement | null>(null);
     width = $state<number>(signals.width ?? 0);
     height = $state<number>(signals.height ?? 0);
@@ -231,9 +250,7 @@ export const getInitialStore = (signals: StoreSignals) => {
     isValidConnection: IsValidConnection = $derived(
       signals.props.isValidConnection ?? (() => true)
     );
-    nodesDraggable: boolean = $derived(signals.props.nodesDraggable ?? true);
-    nodesConnectable: boolean = $derived(signals.props.nodesConnectable ?? true);
-    elementsSelectable: boolean = $derived(signals.props.elementsSelectable ?? true);
+
     selectNodesOnDrag: boolean = $derived(signals.props.selectNodesOnDrag ?? true);
 
     defaultMarkerColor: string = $derived(signals.props.defaultMarkerColor ?? '#b1b1b7');

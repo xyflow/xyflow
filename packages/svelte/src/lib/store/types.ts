@@ -95,6 +95,9 @@ export type StoreSignals = {
   nodes: Node[];
   edges: Edge[];
   viewport?: Viewport;
+  nodesDraggable: boolean;
+  nodesConnectable: boolean;
+  elementsSelectable: boolean;
 };
 
 export type SvelteFlowStoreState = ReturnType<typeof getInitialStore>;
