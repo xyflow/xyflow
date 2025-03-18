@@ -15,6 +15,8 @@ import type { MiniMapProps } from './types';
 const defaultWidth = 200;
 const defaultHeight = 150;
 
+const filterHidden = (node: Node) => !node.hidden;
+
 const selector = (s: ReactFlowState) => {
   const viewBB: Rect = {
     x: -s.transform[0] / s.transform[2],
@@ -25,7 +27,10 @@ const selector = (s: ReactFlowState) => {
 
   return {
     viewBB,
-    boundingRect: s.nodeLookup.size > 0 ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup), viewBB) : viewBB,
+    boundingRect:
+      s.nodeLookup.size > 0
+        ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
+        : viewBB,
     rfId: s.rfId,
     panZoom: s.panZoom,
     translateExtent: s.translateExtent,
@@ -113,16 +118,16 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
   const onSvgClick = onClick
     ? (event: MouseEvent) => {
-      const [x, y] = minimapInstance.current?.pointer(event) || [0, 0];
-      onClick(event, { x, y });
-    }
+        const [x, y] = minimapInstance.current?.pointer(event) || [0, 0];
+        onClick(event, { x, y });
+      }
     : undefined;
 
   const onSvgNodeClick = onNodeClick
     ? useCallback((event: MouseEvent, nodeId: string) => {
-      const node = store.getState().nodeLookup.get(nodeId)!;
-      onNodeClick(event, node);
-    }, [])
+        const node = store.getState().nodeLookup.get(nodeId)!;
+        onNodeClick(event, node);
+      }, [])
     : undefined;
 
   return (
