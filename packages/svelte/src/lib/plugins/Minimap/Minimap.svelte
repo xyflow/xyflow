@@ -76,7 +76,12 @@
 
   $: {
     boundingRect =
-      $nodeLookup.size > 0 ? getBoundsOfRects(getInternalNodesBounds($nodeLookup), viewBB) : viewBB;
+      $nodeLookup.size > 0
+        ? getBoundsOfRects(
+            getInternalNodesBounds($nodeLookup, { filter: (n) => !n.hidden }),
+            viewBB
+          )
+        : viewBB;
     $nodes;
   }
 
