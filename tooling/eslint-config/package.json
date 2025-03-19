@@ -10,6 +10,7 @@
     "eslint-config-prettier": "^10.0.1",
     "eslint-config-turbo": "^2.4.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.37.4"
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-unicorn": "^56.0.1"
   }
 }

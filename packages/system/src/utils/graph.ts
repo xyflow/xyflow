@@ -356,7 +356,7 @@ export async function fitView<Params extends FitViewParamsBase<NodeBase>, Option
   options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>
 ): Promise<boolean> {
   if (nodes.size === 0) {
-    return Promise.resolve(false);
+    return false;
   }
 
   const bounds = getInternalNodesBounds(nodes);
@@ -372,7 +372,7 @@ export async function fitView<Params extends FitViewParamsBase<NodeBase>, Option
 
   await panZoom.setViewport(viewport, { duration: options?.duration });
 
-  return Promise.resolve(true);
+  return true;
 }
 
 /**

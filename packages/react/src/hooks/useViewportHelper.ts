@@ -47,7 +47,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         } = store.getState();
 
         if (!panZoom) {
-          return Promise.resolve(false);
+          return false;
         }
 
         await panZoom.setViewport(
@@ -59,7 +59,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           { duration: options?.duration }
         );
 
-        return Promise.resolve(true);
+        return true;
       },
       getViewport: () => {
         const [x, y, zoom] = store.getState().transform;
@@ -94,7 +94,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         const centerY = height / 2 - y * nextZoom;
 
         if (!panZoom) {
-          return Promise.resolve(false);
+          return false;
         }
 
         await panZoom.setViewport(
@@ -106,19 +106,19 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           { duration: options?.duration }
         );
 
-        return Promise.resolve(true);
+        return true;
       },
       fitBounds: async (bounds, options) => {
         const { width, height, minZoom, maxZoom, panZoom } = store.getState();
         const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
 
         if (!panZoom) {
-          return Promise.resolve(false);
+          return false;
         }
 
         await panZoom.setViewport(viewport, { duration: options?.duration });
 
-        return Promise.resolve(true);
+        return true;
       },
       screenToFlowPosition: (
         clientPosition: XYPosition,

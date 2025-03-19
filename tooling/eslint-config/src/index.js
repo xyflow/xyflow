@@ -13,7 +13,7 @@ module.exports = {
     'turbo',
     'prettier',
   ],
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['unicorn'],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -27,7 +27,7 @@ module.exports = {
     },
   },
   rules: {
-    '@typescript-eslint/no-non-null-assertion': 'off',
+    'unicorn/no-useless-promise-resolve-reject': 'error'
   },
   overrides: [
     {
