@@ -95,7 +95,8 @@ export type FitViewParamsBase<NodeType extends NodeBase> = {
  * @inline
  */
 export type FitViewOptionsBase<NodeType extends NodeBase = NodeBase> = {
-  padding?: number;
+  padding?: number | [number, number];
+  paddingUnit?: 'px' | '%';
   includeHiddenNodes?: boolean;
   minZoom?: number;
   maxZoom?: number;

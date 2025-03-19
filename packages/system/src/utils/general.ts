@@ -195,10 +195,16 @@ export const getViewportForBounds = (
   height: number,
   minZoom: number,
   maxZoom: number,
-  padding: number
+  padding: number | [number, number],
+  paddingUnit: 'px' | '%'
 ): Viewport => {
-  const xZoom = width / (bounds.width * (1 + padding));
-  const yZoom = height / (bounds.height * (1 + padding));
+  const [paddingX, paddingY] = Array.isArray(padding) ? [padding[0], padding[1]] : [padding, padding];
+
+  const isPixelPadding = paddingUnit === 'px';
+
+  const xZoom = width / (isPixelPadding ? bounds.width + paddingX : bounds.width * (1 + paddingX));
+  const yZoom = height / (isPixelPadding ? bounds.height + paddingY : bounds.height * (1 + paddingY));
+
   const zoom = Math.min(xZoom, yZoom);
   const clampedZoom = clamp(zoom, minZoom, maxZoom);
   const boundsCenterX = bounds.x + bounds.width / 2;
