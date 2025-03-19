@@ -1,4 +1,4 @@
-import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase } from '../..';
+import { Connection, InternalNodeBase, Transform, isEdgeBase, EdgeBase, XYErrorMessages, XYErrorCode } from '../..';
 import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
@@ -106,7 +106,7 @@ export const addEdge = <EdgeType extends EdgeBase>(
   edges: EdgeType[]
 ): EdgeType[] => {
   if (!edgeParams.source || !edgeParams.target) {
-    devWarn('006', errorMessages['error006']());
+    devWarn('006', XYErrorMessages[XYErrorCode.EDGE_INVALID]());
 
     return edges;
   }
@@ -166,7 +166,7 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
   const { id: oldEdgeId, ...rest } = oldEdge;
 
   if (!newConnection.source || !newConnection.target) {
-    devWarn('006', errorMessages['error006']());
+    devWarn('006', XYErrorMessages[XYErrorCode.EDGE_INVALID]());
 
     return edges;
   }
@@ -174,7 +174,7 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as EdgeType;
 
   if (!foundEdge) {
-    devWarn('007', errorMessages['error007'](oldEdgeId));
+    devWarn('007', XYErrorMessages[XYErrorCode.RECONNECT_EDGE](oldEdgeId));
 
     return edges;
   }

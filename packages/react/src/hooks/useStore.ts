@@ -1,12 +1,12 @@
 import { useContext, useMemo } from 'react';
 import { UseBoundStoreWithEqualityFn, useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
 import { StoreApi } from 'zustand';
-import { errorMessages } from '@xyflow/system';
+import { XYErrorCode, XYErrorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/StoreContext';
 import type { Edge, Node, ReactFlowState } from '../types';
 
-const zustandErrorMessage = errorMessages['error001']();
+const zustandErrorMessage = XYErrorMessages[XYErrorCode.ZUSTAND_STORE_NOT_PROVIDED]();
 
 /**
  * This hook can be used to subscribe to internal state changes of the React Flow
