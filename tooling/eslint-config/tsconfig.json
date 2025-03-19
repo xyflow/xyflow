@@ -1,0 +1,10 @@
+{
+  "extends": "@xyflow/tsconfig/base.json",
+  "display": "@xyflow/eslint-config",
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "outDir": "dist",
+    "esModuleInterop": true
+  }
+}
