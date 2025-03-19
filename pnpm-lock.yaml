@@ -440,6 +440,9 @@ importers:
       eslint-config-turbo:
         specifier: ^2.4.0
         version: 2.4.0(eslint@8.57.0)(turbo@2.0.3)
+      eslint-plugin-de-morgan:
+        specifier: ^1.1.0
+        version: 1.1.0(eslint@8.57.0)
       eslint-plugin-prettier:
         specifier: ^4.2.1
         version: 4.2.1(eslint-config-prettier@10.0.1(eslint@8.57.0))(eslint@8.57.0)(prettier@3.2.5)
@@ -3216,6 +3219,12 @@ packages:
     peerDependencies:
       eslint: '>6.6.0'
       turbo: '>2.0.0'
+
+  eslint-plugin-de-morgan@1.1.0:
+    resolution: {integrity: sha512-68nLDXi9EJtD/8q7JrTbzbpBp3CIePTLfLQFkDivj8OHzscQeT7g2RKkNqmy5sgMDZXN6saS6npfBXsnZkvWIA==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      eslint: '>=8.0.0'
 
   eslint-plugin-prettier@4.2.1:
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
@@ -10037,6 +10046,10 @@ snapshots:
       eslint: 8.57.0
       eslint-plugin-turbo: 2.4.0(eslint@8.57.0)(turbo@2.0.3)
       turbo: 2.0.3
+
+  eslint-plugin-de-morgan@1.1.0(eslint@8.57.0):
+    dependencies:
+      eslint: 8.57.0
 
   eslint-plugin-prettier@4.2.1(eslint-config-prettier@10.0.1(eslint@8.57.0))(eslint@8.57.0)(prettier@3.2.5):
     dependencies:
