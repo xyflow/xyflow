@@ -104,12 +104,13 @@ const getInitialState = ({
     elementsSelectable: true,
     elevateNodesOnSelect: true,
     elevateEdgesOnSelect: false,
-    fitViewOnInit: false,
-    fitViewDone: false,
-    fitViewOnInitOptions: undefined,
     selectNodesOnDrag: true,
 
     multiSelectionActive: false,
+
+    fitViewQueued: fitView ?? false,
+    fitViewOptions: undefined,
+    fitViewResolver: null,
 
     connection: { ...initialConnection },
     connectionClickStartHandle: null,

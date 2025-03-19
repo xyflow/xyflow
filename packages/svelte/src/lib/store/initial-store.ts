@@ -112,9 +112,32 @@ export const getInitialStore = ({
     viewport = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
   }
 
+  const fitViewQueued = writable<boolean>(false);
+  const fitViewOptions = writable<FitViewOptions | undefined>(undefined);
+  const fitViewResolver = writable<PromiseWithResolvers<boolean> | null>(null);
+  const panZoom = writable<PanZoomInstance | null>(null);
+  const widthStore = writable<number>(500);
+  const heightStore = writable<number>(500);
+  const minZoom = writable<number>(0.5);
+  const maxZoom = writable<number>(2);
+
   return {
     flowId: writable<string | null>(null),
-    nodes: createNodesStore(nodes, nodeLookup, parentLookup, storeNodeOrigin, storeNodeExtent),
+    nodes: createNodesStore(
+      nodes,
+      nodeLookup,
+      parentLookup,
+      storeNodeOrigin,
+      storeNodeExtent,
+      fitViewQueued,
+      fitViewOptions,
+      fitViewResolver,
+      panZoom,
+      widthStore,
+      heightStore,
+      minZoom,
+      maxZoom
+    ),
     nodeLookup: readable<NodeLookup<InternalNode>>(nodeLookup),
     parentLookup: readable<ParentLookup<InternalNode>>(parentLookup),
     edgeLookup: readable<EdgeLookup<Edge>>(edgeLookup),
@@ -122,20 +145,20 @@ export const getInitialStore = ({
     edges: createEdgesStore(edges, connectionLookup, edgeLookup),
     visibleEdges: readable<EdgeLayouted[]>([]),
     connectionLookup: readable<ConnectionLookup>(connectionLookup),
-    height: writable<number>(500),
-    width: writable<number>(500),
-    minZoom: writable<number>(0.5),
-    maxZoom: writable<number>(2),
+    width: widthStore,
+    height: heightStore,
+    minZoom,
+    maxZoom,
     nodeOrigin: writable<NodeOrigin>(storeNodeOrigin),
     nodeDragThreshold: writable<number>(1),
     nodeExtent: writable<CoordinateExtent>(storeNodeExtent),
     translateExtent: writable<CoordinateExtent>(infiniteExtent),
     autoPanOnNodeDrag: writable<boolean>(true),
     autoPanOnConnect: writable<boolean>(true),
-    fitViewOnInit: writable<boolean>(false),
-    fitViewOnInitDone: writable<boolean>(false),
-    fitViewOptions: writable<FitViewOptions>(undefined),
-    panZoom: writable<PanZoomInstance | null>(null),
+    fitViewQueued,
+    fitViewOptions,
+    fitViewResolver,
+    panZoom,
     snapGrid: writable<SnapGrid | null>(null),
     dragging: writable<boolean>(false),
     selectionRect: writable<SelectionRect | null>(null),

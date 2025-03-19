@@ -2,11 +2,8 @@ import { useMemo } from 'react';
 import {
   pointToRendererPoint,
   getViewportForBounds,
-  getFitViewNodes,
-  fitView,
   type XYPosition,
   rendererPointToPoint,
-  getDimensions,
   SnapGrid,
 } from '@xyflow/system';
 
@@ -64,28 +61,6 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       getViewport: () => {
         const [x, y, zoom] = store.getState().transform;
         return { x, y, zoom };
-      },
-      fitView: (options) => {
-        const { nodeLookup, minZoom, maxZoom, panZoom, domNode } = store.getState();
-
-        if (!panZoom || !domNode) {
-          return Promise.resolve(false);
-        }
-
-        const fitViewNodes = getFitViewNodes(nodeLookup, options);
-        const { width, height } = getDimensions(domNode);
-
-        return fitView(
-          {
-            nodes: fitViewNodes,
-            width,
-            height,
-            minZoom,
-            maxZoom,
-            panZoom,
-          },
-          options
-        );
       },
       setCenter: async (x, y, options) => {
         const { width, height, maxZoom, panZoom } = store.getState();

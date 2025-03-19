@@ -119,9 +119,9 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   connectOnClick: boolean;
   defaultEdgeOptions?: DefaultEdgeOptions;
 
-  fitViewOnInit: boolean;
-  fitViewDone: boolean;
-  fitViewOnInitOptions: FitViewOptions | undefined;
+  fitViewQueued: boolean;
+  fitViewOptions: FitViewOptions | undefined;
+  fitViewResolver: PromiseWithResolvers<boolean> | null;
 
   onNodesDelete?: OnNodesDelete<NodeType>;
   onEdgesDelete?: OnEdgesDelete<EdgeType>;
@@ -168,8 +168,6 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
-  fitView: (options?: FitViewOptions) => Promise<boolean>;
-  fitViewSync: (options?: FitViewOptions) => boolean;
   setPaneClickDistance: (distance: number) => void;
 };
 
