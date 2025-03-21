@@ -13,6 +13,10 @@ import {
   ConnectionInProgress,
   type Handle,
   type Connection,
+  type NodeBase,
+  type EdgeBase,
+  type InternalNodeBase,
+  type FinalConnectionState,
 } from '../types';
 
 import { getClosestHandle, isConnectionValid, getHandleType, getHandle } from './utils';
@@ -20,7 +24,7 @@ import { IsValidParams, OnPointerDownParams, Result, XYHandleInstance } from './
 
 const alwaysValid = () => true;
 
-function onPointerDown(
+function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   event: MouseEvent | TouchEvent,
   {
     connectionMode,
@@ -45,7 +49,7 @@ function onPointerDown(
     getTransform,
     getFromHandle,
     autoPanSpeed,
-  }: OnPointerDownParams
+  }: OnPointerDownParams<NodeType, EdgeType>
 ) {
   // when xyflow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target);
@@ -95,7 +99,7 @@ function onPointerDown(
 
   const from = getHandlePosition(fromNodeInternal, fromHandle, Position.Left, true);
 
-  const newConnection: ConnectionInProgress = {
+  const newConnection = {
     inProgress: true,
     isValid: null,
 
@@ -108,10 +112,10 @@ function onPointerDown(
     toHandle: null,
     toPosition: oppositePosition[fromHandle.position],
     toNode: null,
-  };
+  } satisfies ConnectionInProgress<InternalNodeBase<NodeType>>;
 
   updateConnection(newConnection);
-  let previousConnection: ConnectionInProgress = newConnection;
+  let previousConnection: ConnectionInProgress<InternalNodeBase<NodeType>> = newConnection;
 
   onConnectStart?.(event, { nodeId, handleId, handleType });
 
@@ -152,7 +156,7 @@ function onPointerDown(
     connection = result.connection;
     isValid = isConnectionValid(!!closestHandle, result.isValid);
 
-    const newConnection: ConnectionInProgress = {
+    const newConnection = {
       // from stays the same
       ...previousConnection,
       isValid,
@@ -163,7 +167,7 @@ function onPointerDown(
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
       toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)! : null,
-    };
+    } satisfies ConnectionInProgress<InternalNodeBase<NodeType>>;
 
     /*
      * we don't want to trigger an update when the connection
@@ -201,7 +205,8 @@ function onPointerDown(
     const finalConnectionState = {
       ...connectionState,
       toPosition: previousConnection.toHandle ? previousConnection.toPosition : null,
-    };
+    } satisfies FinalConnectionState<InternalNodeBase<NodeType>>;
+
     onConnectEnd?.(event, finalConnectionState);
 
     if (edgeUpdaterType) {
@@ -230,7 +235,7 @@ function onPointerDown(
 }
 
 // checks if  and returns connection in fom of an object { source: 123, target: 312 }
-function isValidHandle(
+function isValidHandle<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   event: MouseEvent | TouchEvent,
   {
     handle,
@@ -243,7 +248,7 @@ function isValidHandle(
     flowId,
     isValidConnection = alwaysValid,
     nodeLookup,
-  }: IsValidParams
+  }: IsValidParams<NodeType, EdgeType>
 ) {
   const isTarget = fromType === 'target';
   const handleDomNode = handle
