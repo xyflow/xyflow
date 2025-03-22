@@ -1,5 +1,20 @@
 # @xyflow/react
 
+## 12.4.5
+
+### Patch Changes
+
+- [#5059](https://github.com/xyflow/xyflow/pull/5059) [`065ff89d`](https://github.com/xyflow/xyflow/commit/065ff89d10488f9c76c56870511e45eaed299778) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Prevent onPaneClick when connection is in progress. Closes [#5057](https://github.com/xyflow/xyflow/issues/5057)
+
+- [#5107](https://github.com/xyflow/xyflow/pull/5107) [`c5a8c237`](https://github.com/xyflow/xyflow/commit/c5a8c23773e5985be6b37abacdac743911be8c09) Thanks [@moklick](https://github.com/moklick)! - Add TSDoc annotations for exported edges
+
+- [#5093](https://github.com/xyflow/xyflow/pull/5093) [`65825e89`](https://github.com/xyflow/xyflow/commit/65825e89a6e2e7591087eb41ac89da4da7095f8f) Thanks [@moklick](https://github.com/moklick)! - Hidden nodes are not displayed in the mini map anymore
+
+- [#5090](https://github.com/xyflow/xyflow/pull/5090) [`8da1748a`](https://github.com/xyflow/xyflow/commit/8da1748a6ad5cdde9f03737ff786bd29c9c968de) Thanks [@moklick](https://github.com/moklick)! - Release key even when an inout field is focused
+
+- Updated dependencies [[`a79f30b3`](https://github.com/xyflow/xyflow/commit/a79f30b3dd7c8ff6400c8d22214b2c2282e5bac1)]:
+  - @xyflow/system@0.0.53
+
 ## 12.4.4
 
 ### Patch Changes

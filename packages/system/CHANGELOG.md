@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.53
+
+### Patch Changes
+
+- [#5091](https://github.com/xyflow/xyflow/pull/5091) [`a79f30b3`](https://github.com/xyflow/xyflow/commit/a79f30b3dd7c8ff6400c8d22214b2c2282e5bac1) Thanks [@moklick](https://github.com/moklick)! - Add center-left and center-right as a panel position
+
 ## 0.0.52
 
 ### Patch Changes
