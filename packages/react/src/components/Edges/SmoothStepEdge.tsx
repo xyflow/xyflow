@@ -62,7 +62,34 @@ function createSmoothStepEdge(params: { isInternal: boolean }) {
   );
 }
 
+/**
+ * Component that can be used inside a custom edge to render a smooth step edge.
+ *
+ * @public
+ * @example
+ *
+ * ```tsx
+ * import { SmoothStepEdge } from '@xyflow/react';
+ *
+ * function CustomEdge({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition }) {
+ *   return (
+ *     <SmoothStepEdge
+ *       sourceX={sourceX}
+ *       sourceY={sourceY}
+ *       targetX={targetX}
+ *       targetY={targetY}
+ *       sourcePosition={sourcePosition}
+ *       targetPosition={targetPosition}
+ *     />
+ *   );
+ * }
+ * ```
+ */
 const SmoothStepEdge = createSmoothStepEdge({ isInternal: false });
+
+/**
+ * @internal
+ */
 const SmoothStepEdgeInternal = createSmoothStepEdge({ isInternal: true });
 
 SmoothStepEdge.displayName = 'SmoothStepEdge';
