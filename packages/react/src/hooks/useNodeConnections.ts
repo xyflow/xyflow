@@ -5,13 +5,12 @@ import {
   HandleType,
   areConnectionMapsEqual,
   handleConnectionChange,
-  errorMessages,
+  XYError,
+  XYErrorCode,
 } from '@xyflow/system';
 
 import { useStore } from './useStore';
 import { useNodeId } from '../contexts/NodeIdContext';
-
-const error014 = errorMessages['error014']();
 
 type UseNodeConnectionsParams = {
   id?: string;
@@ -59,7 +58,7 @@ export function useNodeConnections({
   const currentNodeId = id ?? nodeId;
 
   if (!currentNodeId) {
-    throw new Error(error014);
+    throw new XYError(XYErrorCode.USE_NODE_CONNECTIONS_NO_ID);
   }
 
   const prevConnections = useRef<Map<string, NodeConnection> | null>(null);
