@@ -142,7 +142,7 @@ export const createNodesStore = (
   setDefaultOptions: (opts: DefaultNodeOptions) => void;
   setOptions: (opts: NodeStoreOptions) => void;
 } => {
-  const { subscribe, set, update } = writable<Node[]>([]);
+  const { subscribe, set, update: _update } = writable<Node[]>([]);
   let value = nodes;
   let defaults = {};
   let elevateNodesOnSelect = true;
@@ -163,7 +163,7 @@ export const createNodesStore = (
     return value;
   };
 
-  const _update: typeof update = (fn: (nds: Node[]) => Node[]) => _set(fn(value));
+  const update: typeof _update = (fn: (nds: Node[]) => Node[]) => _set(fn(value));
 
   const setDefaultOptions = (options: DefaultNodeOptions) => {
     defaults = options;
@@ -178,7 +178,7 @@ export const createNodesStore = (
   return {
     subscribe,
     set: _set,
-    update: _update,
+    update,
     setDefaultOptions,
     setOptions
   };
@@ -190,7 +190,7 @@ export const createEdgesStore = (
   edgeLookup: EdgeLookup<Edge>,
   defaultOptions?: DefaultEdgeOptions
 ): Writable<Edge[]> & { setDefaultOptions: (opts: DefaultEdgeOptions) => void } => {
-  const { subscribe, set, update } = writable<Edge[]>([]);
+  const { subscribe, set, update: _update } = writable<Edge[]>([]);
   let value = edges;
   let defaults = defaultOptions || {};
 
@@ -203,7 +203,7 @@ export const createEdgesStore = (
     set(value);
   };
 
-  const _update: typeof update = (fn: (eds: Edge[]) => Edge[]) => _set(fn(value));
+  const update: typeof _update = (fn: (eds: Edge[]) => Edge[]) => _set(fn(value));
 
   const setDefaultOptions = (options: DefaultEdgeOptions) => {
     defaults = options;
@@ -214,7 +214,7 @@ export const createEdgesStore = (
   return {
     subscribe,
     set: _set,
-    update: _update,
+    update,
     setDefaultOptions
   };
 };

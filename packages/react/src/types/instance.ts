@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
 import type { HandleConnection, HandleType, NodeConnection, Rect, Viewport } from '@xyflow/system';
 import type { Node, Edge, ViewportHelperFunctions, InternalNode } from '.';
 

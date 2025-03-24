@@ -46,7 +46,7 @@
   "scripts": {
     "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\"",
     "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production",
-    "lint": "eslint --ext .js,.ts src",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
