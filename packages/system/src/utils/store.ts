@@ -433,7 +433,7 @@ export async function panBy({
   height: number;
 }): Promise<boolean> {
   if (!panZoom || (!delta.x && !delta.y)) {
-    return Promise.resolve(false);
+    return false;
   }
 
   const nextViewport = await panZoom.setViewportConstrained(
@@ -453,7 +453,7 @@ export async function panBy({
     !!nextViewport &&
     (nextViewport.x !== transform[0] || nextViewport.y !== transform[1] || nextViewport.k !== transform[2]);
 
-  return Promise.resolve(transformChanged);
+  return transformChanged;
 }
 
 /**
