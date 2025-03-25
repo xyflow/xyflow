@@ -91,12 +91,26 @@ export type FitViewParamsBase<NodeType extends NodeBase> = {
   maxZoom: number;
 };
 
+export type PaddingUnit = 'px' | '%';
+export type PaddingWithUnit = `${number}${PaddingUnit}` | number;
+
+export type Padding =
+  | PaddingWithUnit
+  | [padding: PaddingWithUnit]
+  | [paddingY: PaddingWithUnit, paddingX: PaddingWithUnit]
+  | [paddingTop: PaddingWithUnit, paddingX: PaddingWithUnit, paddingBottom: PaddingWithUnit]
+  | [
+      paddingTop: PaddingWithUnit,
+      paddingRight: PaddingWithUnit,
+      paddingBottom: PaddingWithUnit,
+      paddingLeft: PaddingWithUnit
+    ];
+
 /**
  * @inline
  */
 export type FitViewOptionsBase<NodeType extends NodeBase = NodeBase> = {
-  padding?: number | [number, number];
-  paddingUnit?: 'px' | '%';
+  padding?: Padding;
   includeHiddenNodes?: boolean;
   minZoom?: number;
   maxZoom?: number;

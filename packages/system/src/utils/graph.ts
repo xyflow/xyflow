@@ -372,8 +372,7 @@ export async function fitViewport<
     height,
     options?.minZoom ?? minZoom,
     options?.maxZoom ?? maxZoom,
-    options?.padding ?? 0.1,
-    options?.paddingUnit ?? '%'
+    options?.padding ?? 0.1
   );
 
   await panZoom.setViewport(viewport, { duration: options?.duration });

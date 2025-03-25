@@ -10,6 +10,8 @@ import type {
   Transform,
   InternalNodeBase,
   NodeLookup,
+  Padding,
+  PaddingWithUnit,
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
@@ -173,6 +175,71 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
   };
 };
 
+function parsePadding(padding: PaddingWithUnit, viewportDimension: number, bound: number): number {
+  if (typeof padding === 'number') {
+    return bound * padding;
+  }
+
+  if (typeof padding === 'string' && padding.endsWith('px')) {
+    return parseFloat(padding.slice(0, -2));
+  }
+
+  if (typeof padding === 'string' && padding.endsWith('%')) {
+    return viewportDimension * parseFloat(padding.slice(0, -1));
+  }
+
+  return 0;
+}
+
+function parsePaddings(
+  padding: Padding,
+  viewportDiemsions: Dimensions,
+  bounds: Dimensions
+): [number, number, number, number] {
+  if (typeof padding === 'number') {
+    return [padding, padding, padding, padding];
+  }
+
+  if (typeof padding === 'string') {
+    const paddingX = parsePadding(padding, viewportDiemsions.width, bounds.width);
+    const paddingY = parsePadding(padding, viewportDiemsions.height, bounds.height);
+    return [paddingY, paddingX, paddingY, paddingX];
+  }
+
+  if (Array.isArray(padding)) {
+    switch (padding.length) {
+      case 1: {
+        const paddingX = parsePadding(padding[0], viewportDiemsions.width, bounds.width);
+        const paddingY = parsePadding(padding[0], viewportDiemsions.height, bounds.height);
+        return [paddingY, paddingX, paddingY, paddingX];
+      }
+      case 2: {
+        const [pY, pX] = padding;
+        const paddingY = parsePadding(pY, viewportDiemsions.height, bounds.height);
+        const paddingX = parsePadding(pX, viewportDiemsions.width, bounds.width);
+        return [paddingY, paddingX, paddingY, paddingX];
+      }
+      case 3: {
+        const [pTop, pX, pBottom] = padding;
+        const paddingTop = parsePadding(pTop, viewportDiemsions.height, bounds.height);
+        const padddingX = parsePadding(pX, viewportDiemsions.width, bounds.width);
+        const paddingBottom = parsePadding(pBottom, viewportDiemsions.height, bounds.height);
+        return [paddingTop, padddingX, paddingBottom, padddingX];
+      }
+      case 4: {
+        const [pTop, pRight, pBottom, pLeft] = padding;
+        const paddingTop = parsePadding(pTop, viewportDiemsions.height, bounds.height);
+        const paddingRight = parsePadding(pRight, viewportDiemsions.width, bounds.width);
+        const paddingBottom = parsePadding(pBottom, viewportDiemsions.height, bounds.height);
+        const paddingLeft = parsePadding(pLeft, viewportDiemsions.width, bounds.width);
+        return [paddingTop, paddingRight, paddingBottom, paddingLeft];
+      }
+    }
+  }
+
+  return [0, 0, 0, 0];
+}
+
 /**
  * Returns a viewport that encloses the given bounds with optional padding.
  * @public
@@ -195,15 +262,16 @@ export const getViewportForBounds = (
   height: number,
   minZoom: number,
   maxZoom: number,
-  padding: number | [number, number],
-  paddingUnit: 'px' | '%'
+  padding: Padding = 0
 ): Viewport => {
-  const [paddingX, paddingY] = Array.isArray(padding) ? [padding[0], padding[1]] : [padding, padding];
+  // const [paddingX, paddingY] = Array.isArray(padding) ? [padding[0], padding[1]] : [padding, padding];
 
-  const isPixelPadding = paddingUnit === 'px';
+  // const isPixelPadding = paddingUnit === 'px';
 
-  const xZoom = width / (isPixelPadding ? bounds.width + paddingX : bounds.width * (1 + paddingX));
-  const yZoom = height / (isPixelPadding ? bounds.height + paddingY : bounds.height * (1 + paddingY));
+  const [paddingTop, paddingRight, paddingBottom, paddingLeft] = parsePaddings(padding, { width, height }, bounds);
+
+  const xZoom = (width - paddingLeft - paddingRight) / bounds.width;
+  const yZoom = (height - paddingTop - paddingBottom) / bounds.height;
 
   const zoom = Math.min(xZoom, yZoom);
   const clampedZoom = clamp(zoom, minZoom, maxZoom);
