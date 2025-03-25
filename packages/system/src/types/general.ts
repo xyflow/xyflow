@@ -2,8 +2,7 @@
 import type { Selection as D3Selection } from 'd3-selection';
 import type { D3DragEvent, SubjectPosition } from 'd3-drag';
 import type { ZoomBehavior } from 'd3-zoom';
-// this is needed for the Selection type to include the transition function :/
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- this is needed for the Selection type to include the transition function :/
 import type { Transition } from 'd3-transition';
 
 import type { XYPosition, Rect, Position } from './utils';
@@ -41,14 +40,14 @@ export type Connection = {
 };
 
 /**
- * The `HandleConnection` type is an extention of a basic [Connection](/api-reference/types/connection) that includes the `edgeId`.
+ * The `HandleConnection` type is an extension of a basic [Connection](/api-reference/types/connection) that includes the `edgeId`.
  */
 export type HandleConnection = Connection & {
   edgeId: string;
 };
 
 /**
- * The `NodeConnection` type is an extention of a basic [Connection](/api-reference/types/connection) that includes the `edgeId`.
+ * The `NodeConnection` type is an extension of a basic [Connection](/api-reference/types/connection) that includes the `edgeId`.
  *
  */
 export type NodeConnection = Connection & {
