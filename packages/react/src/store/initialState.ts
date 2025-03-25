@@ -108,7 +108,7 @@ const getInitialState = ({
 
     multiSelectionActive: false,
 
-    fitViewQueued: false,
+    fitViewQueued: fitView ?? false,
     fitViewOptions: undefined,
     fitViewResolver: null,
 

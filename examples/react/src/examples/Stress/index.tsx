@@ -12,6 +12,8 @@ import {
   Controls,
   Background,
   Panel,
+  ReactFlowProvider,
+  useReactFlow,
 } from '@xyflow/react';
 
 import { getNodesAndEdges } from './utils';
@@ -22,6 +24,7 @@ const { nodes: initialNodes, edges: initialEdges } = getNodesAndEdges(25, 25);
 const StressFlow = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const { fitView } = useReactFlow();
   const onConnect = useCallback((connection: Connection) => {
     setEdges((eds) => addEdge(connection, eds));
   }, []);
@@ -191,12 +194,13 @@ const StressFlow = () => {
         return {
           ...n,
           position: {
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * window.innerWidth * 4,
+            y: Math.random() * window.innerHeight * 4,
           },
         };
       });
     });
+    fitView();
   };
 
   const updateElements = () => {
@@ -240,4 +244,10 @@ const StressFlow = () => {
   );
 };
 
-export default StressFlow;
+export default function StressFlowProvider() {
+  return (
+    <ReactFlowProvider>
+      <StressFlow />
+    </ReactFlowProvider>
+  );
+}

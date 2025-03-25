@@ -41,11 +41,36 @@ const createStore = ({
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
 }) =>
-  createWithEqualityFn<ReactFlowState>(
-    (set, get) => ({
+  createWithEqualityFn<ReactFlowState>((set, get) => {
+    function resolveFitView() {
+      const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
+
+      if (!panZoom) {
+        return;
+      }
+
+      const fitViewPromise = fitViewport(
+        {
+          nodes: nodeLookup,
+          width,
+          height,
+          panZoom,
+          minZoom,
+          maxZoom,
+        },
+        fitViewOptions
+      );
+      fitViewPromise.then((value) => {
+        fitViewResolver?.resolve(value);
+        set({ fitViewResolver: null });
+      });
+      set({ nodes, fitViewQueued: false, fitViewOptions: undefined });
+    }
+
+    return {
       ...getInitialState({ nodes, edges, width, height, fitView, nodeOrigin, nodeExtent, defaultNodes, defaultEdges }),
       setNodes: (nodes: Node[]) => {
-        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, fitViewQueued, panZoom } = get();
+        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, fitViewQueued } = get();
         /*
          * setNodes() is called exclusively in response to user actions:
          * - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
@@ -62,24 +87,8 @@ const createStore = ({
           checkEquality: true,
         });
 
-        if (fitViewQueued && nodesInitialized && panZoom) {
-          const { fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
-          const fitViewPromise = fitViewport(
-            {
-              nodes: nodeLookup,
-              width,
-              height,
-              panZoom,
-              minZoom,
-              maxZoom,
-            },
-            fitViewOptions
-          );
-          fitViewPromise.then((value) => {
-            fitViewResolver?.resolve(value);
-            set({ fitViewResolver: null });
-          });
-          set({ nodes, fitViewQueued: false, fitViewOptions: undefined });
+        if (fitViewQueued && nodesInitialized) {
+          resolveFitView();
         } else {
           set({ nodes });
         }
@@ -109,7 +118,8 @@ const createStore = ({
        * new dimensions and update the nodes.
        */
       updateNodeInternals: (updates) => {
-        const { triggerNodeChanges, nodeLookup, parentLookup, domNode, nodeOrigin, nodeExtent, debug } = get();
+        const { triggerNodeChanges, nodeLookup, parentLookup, domNode, nodeOrigin, nodeExtent, debug, fitViewQueued } =
+          get();
 
         const { changes, updatedInternals } = updateNodeInternalsSystem(
           updates,
@@ -126,8 +136,12 @@ const createStore = ({
 
         updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent });
 
-        // we always want to trigger useStore calls whenever updateNodeInternals is called
-        set({});
+        if (fitViewQueued) {
+          resolveFitView();
+        } else {
+          // we always want to trigger useStore calls whenever updateNodeInternals is called
+          set({});
+        }
 
         if (changes?.length > 0) {
           if (debug) {
@@ -329,8 +343,7 @@ const createStore = ({
       },
 
       reset: () => set({ ...getInitialState() }),
-    }),
-    Object.is
-  );
+    };
+  }, Object.is);
 
 export { createStore };
