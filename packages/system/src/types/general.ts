@@ -169,7 +169,15 @@ export type UpdateNodeInternals = (nodeId: string | string[]) => void;
  *
  * @public
  */
-export type PanelPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+export type PanelPosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
+  | 'center-left'
+  | 'center-right';
 
 export type ProOptions = {
   account?: string;

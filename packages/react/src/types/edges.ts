@@ -23,7 +23,11 @@ import { EdgeTypes, InternalNode, Node } from '.';
  * @inline
  */
 export type EdgeLabelOptions = {
-  label?: string | ReactNode;
+  /**
+   * The label or custom element to render along the edge. This is commonly a text label or some
+   * custom controls.
+   */
+  label?: ReactNode;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
@@ -136,13 +140,20 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
  */
 export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
   EdgeLabelOptions & {
-    /** Additional padding where interacting with an edge is still possible */
+    /**
+     * The width of the invisible area around the edge that the user can interact with. This is
+     * useful for making the edge easier to click or hover over.
+     */
     interactionWidth?: number;
     /** The x position of edge label */
     labelX?: number;
     /** The y position of edge label */
     labelY?: number;
-    /** SVG path of the edge */
+    /**
+     * The SVG path string that defines the edge. This should look something like
+     * `'M 0 0 L 100 100'` for a simple line. The utility functions like `getSimpleBezierEdge` can
+     * be used to generate this string for you.
+     */
     path: string;
   };
 

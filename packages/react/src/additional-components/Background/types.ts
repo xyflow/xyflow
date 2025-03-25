@@ -16,6 +16,7 @@ export enum BackgroundVariant {
  * @expand
  */
 export type BackgroundProps = {
+  /** When multiple backgrounds are present on the page, each one should have a unique id. */
   id?: string;
   /** Color of the pattern */
   color?: string;
@@ -25,16 +26,31 @@ export type BackgroundProps = {
   className?: string;
   /** Class applied to the pattern */
   patternClassName?: string;
-  /** Gap between repetitions of the pattern */
+  /**
+   * The gap between patterns. Passing in a tuple allows you to control the x and y gap
+   * independently.
+   * @default '28'
+   */
   gap?: number | [number, number];
-  /** Size of a single pattern element */
+  /**
+   * The radius of each dot or the size of each rectangle if `BackgroundVariant.Dots` or
+   * `BackgroundVariant.Cross` is used. This defaults to 1 or 6 respectively, or ignored if
+   * `BackgroundVariant.Lines` is used.
+   */
   size?: number;
-  /** Offset of the pattern */
+  /**
+   * Offset of the pattern
+   * @default 2
+   */
   offset?: number | [number, number];
-  /** Line width of the Line pattern */
+  /**
+   * The stroke thickness used when drawing the pattern.
+   * @default 1
+   */
   lineWidth?: number;
   /**
    * Variant of the pattern
+   * @default BackgroundVariant.Dots
    * @example BackgroundVariant.Lines, BackgroundVariant.Dots, BackgroundVariant.Cross
    * 'lines', 'dots', 'cross'
    */
