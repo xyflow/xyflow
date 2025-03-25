@@ -28,6 +28,9 @@ export type EdgeLabelOptions = {
    * custom controls.
    */
   label?: ReactNode;
+  /**
+   * Custom styles to apply to the label.
+   */
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
@@ -108,7 +111,13 @@ export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
 export type EdgeTextProps = SVGAttributes<SVGElement> &
   EdgeLabelOptions & {
+    /**
+     * The x position where the label should be rendered.
+     */
     x: number;
+    /**
+     * The y position where the label should be rendered.
+     */
     y: number;
   };
 
