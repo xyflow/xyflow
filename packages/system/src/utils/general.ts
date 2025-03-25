@@ -175,63 +175,68 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
   };
 };
 
-function parsePadding(padding: PaddingWithUnit, viewportDimension: number, bound: number): number {
+function paddingError(padding: PaddingWithUnit) {
+  console.error(
+    `[React Flow] The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
+  );
+}
+
+function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   if (typeof padding === 'number') {
-    return bound * padding;
+    return viewport - viewport / (1 + padding * 0.5);
   }
 
   if (typeof padding === 'string' && padding.endsWith('px')) {
-    return parseFloat(padding.slice(0, -2));
+    const paddingValue = parseFloat(padding);
+    if (!Number.isNaN(paddingValue)) {
+      return paddingValue;
+    }
   }
 
   if (typeof padding === 'string' && padding.endsWith('%')) {
-    return viewportDimension * parseFloat(padding.slice(0, -1));
+    const paddingValue = parseFloat(padding);
+    if (!Number.isNaN(paddingValue)) {
+      return viewport * paddingValue * 0.01;
+    }
   }
 
+  paddingError(padding);
   return 0;
 }
 
-function parsePaddings(
-  padding: Padding,
-  viewportDiemsions: Dimensions,
-  bounds: Dimensions
-): [number, number, number, number] {
-  if (typeof padding === 'number') {
-    return [padding, padding, padding, padding];
-  }
-
-  if (typeof padding === 'string') {
-    const paddingX = parsePadding(padding, viewportDiemsions.width, bounds.width);
-    const paddingY = parsePadding(padding, viewportDiemsions.height, bounds.height);
+function parsePaddings(padding: Padding, width: number, height: number): [number, number, number, number] {
+  if (typeof padding === 'string' || typeof padding === 'number') {
+    const paddingY = parsePadding(padding, height);
+    const paddingX = parsePadding(padding, width);
     return [paddingY, paddingX, paddingY, paddingX];
   }
 
   if (Array.isArray(padding)) {
     switch (padding.length) {
       case 1: {
-        const paddingX = parsePadding(padding[0], viewportDiemsions.width, bounds.width);
-        const paddingY = parsePadding(padding[0], viewportDiemsions.height, bounds.height);
+        const paddingY = parsePadding(padding[0], height);
+        const paddingX = parsePadding(padding[0], width);
         return [paddingY, paddingX, paddingY, paddingX];
       }
       case 2: {
         const [pY, pX] = padding;
-        const paddingY = parsePadding(pY, viewportDiemsions.height, bounds.height);
-        const paddingX = parsePadding(pX, viewportDiemsions.width, bounds.width);
+        const paddingY = parsePadding(pY, height);
+        const paddingX = parsePadding(pX, width);
         return [paddingY, paddingX, paddingY, paddingX];
       }
       case 3: {
         const [pTop, pX, pBottom] = padding;
-        const paddingTop = parsePadding(pTop, viewportDiemsions.height, bounds.height);
-        const padddingX = parsePadding(pX, viewportDiemsions.width, bounds.width);
-        const paddingBottom = parsePadding(pBottom, viewportDiemsions.height, bounds.height);
+        const paddingTop = parsePadding(pTop, height);
+        const padddingX = parsePadding(pX, width);
+        const paddingBottom = parsePadding(pBottom, height);
         return [paddingTop, padddingX, paddingBottom, padddingX];
       }
       case 4: {
         const [pTop, pRight, pBottom, pLeft] = padding;
-        const paddingTop = parsePadding(pTop, viewportDiemsions.height, bounds.height);
-        const paddingRight = parsePadding(pRight, viewportDiemsions.width, bounds.width);
-        const paddingBottom = parsePadding(pBottom, viewportDiemsions.height, bounds.height);
-        const paddingLeft = parsePadding(pLeft, viewportDiemsions.width, bounds.width);
+        const paddingTop = parsePadding(pTop, height);
+        const paddingRight = parsePadding(pRight, width);
+        const paddingBottom = parsePadding(pBottom, height);
+        const paddingLeft = parsePadding(pLeft, width);
         return [paddingTop, paddingRight, paddingBottom, paddingLeft];
       }
     }
@@ -262,23 +267,24 @@ export const getViewportForBounds = (
   height: number,
   minZoom: number,
   maxZoom: number,
-  padding: Padding = 0
+  padding: Padding
 ): Viewport => {
-  // const [paddingX, paddingY] = Array.isArray(padding) ? [padding[0], padding[1]] : [padding, padding];
+  const [paddingTop, paddingRight, paddingBottom, paddingLeft] = parsePaddings(padding, width, height);
+  const paddingX = paddingLeft + paddingRight;
+  const paddingY = paddingTop + paddingBottom;
 
-  // const isPixelPadding = paddingUnit === 'px';
+  console.log({ paddingTop, paddingRight, paddingBottom, paddingLeft });
+  console.log(paddingX / paddingLeft);
 
-  const [paddingTop, paddingRight, paddingBottom, paddingLeft] = parsePaddings(padding, { width, height }, bounds);
-
-  const xZoom = (width - paddingLeft - paddingRight) / bounds.width;
-  const yZoom = (height - paddingTop - paddingBottom) / bounds.height;
+  const xZoom = (width - paddingX) / bounds.width;
+  const yZoom = (height - paddingY) / bounds.height;
 
   const zoom = Math.min(xZoom, yZoom);
   const clampedZoom = clamp(zoom, minZoom, maxZoom);
   const boundsCenterX = bounds.x + bounds.width / 2;
   const boundsCenterY = bounds.y + bounds.height / 2;
-  const x = width / 2 - boundsCenterX * clampedZoom;
-  const y = height / 2 - boundsCenterY * clampedZoom;
+  const x = width / 2 - boundsCenterX * clampedZoom - paddingX * 0.5 + paddingLeft;
+  const y = height / 2 - boundsCenterY * clampedZoom - paddingY * 0.5 + paddingTop;
 
   return { x, y, zoom: clampedZoom };
 };
