@@ -273,9 +273,6 @@ export const getViewportForBounds = (
   const paddingX = paddingLeft + paddingRight;
   const paddingY = paddingTop + paddingBottom;
 
-  console.log({ paddingTop, paddingRight, paddingBottom, paddingLeft });
-  console.log(paddingX / paddingLeft);
-
   const xZoom = (width - paddingX) / bounds.width;
   const yZoom = (height - paddingY) / bounds.height;
 
@@ -283,11 +280,37 @@ export const getViewportForBounds = (
   const clampedZoom = clamp(zoom, minZoom, maxZoom);
   const boundsCenterX = bounds.x + bounds.width / 2;
   const boundsCenterY = bounds.y + bounds.height / 2;
-  const x = width / 2 - boundsCenterX * clampedZoom - paddingX * 0.5 + paddingLeft;
-  const y = height / 2 - boundsCenterY * clampedZoom - paddingY * 0.5 + paddingTop;
+  const x = width / 2 - boundsCenterX * clampedZoom;
+  const y = height / 2 - boundsCenterY * clampedZoom;
 
-  return { x, y, zoom: clampedZoom };
+  const realPadding = calculatePadding(bounds, x, y, clampedZoom, width, height);
+
+  const paddingDifferences = {
+    left: Math.min(Math.floor(realPadding.left) - Math.floor(paddingLeft), 0),
+    top: Math.min(Math.floor(realPadding.top) - Math.floor(paddingTop), 0),
+    right: Math.min(Math.floor(realPadding.right) - Math.floor(paddingRight), 0),
+    bottom: Math.min(Math.floor(realPadding.bottom) - Math.floor(paddingBottom), 0),
+  };
+  return {
+    x: x - paddingDifferences.left + paddingDifferences.right,
+    y: y - paddingDifferences.top + paddingDifferences.bottom,
+    zoom: clampedZoom,
+  };
 };
+
+function calculatePadding(bounds: Rect, x: number, y: number, zoom: number, width: number, height: number) {
+  const { x: paddingLeft, y: paddingTop } = rendererPointToPoint(bounds, [x, y, zoom]);
+
+  const { x: boundRight, y: boundBottom } = rendererPointToPoint(
+    { x: bounds.x + bounds.width, y: bounds.y + bounds.height },
+    [x, y, zoom]
+  );
+
+  const paddingRight = width - boundRight;
+  const paddingBottom = height - boundBottom;
+
+  return { left: paddingLeft, top: paddingTop, right: paddingRight, bottom: paddingBottom };
+}
 
 export const isMacOs = () => typeof navigator !== 'undefined' && navigator?.userAgent?.indexOf('Mac') >= 0;
 

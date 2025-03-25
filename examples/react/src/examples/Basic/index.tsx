@@ -147,7 +147,8 @@ const BasicFlow = () => {
       maxZoom={4}
       fitView
       fitViewOptions={{
-        padding: ['30%', '10%', '10%', '20%'],
+        // top, right, bottom, left
+        padding: ['100px', '0%', '0%', '50px'],
       }}
       defaultEdgeOptions={defaultEdgeOptions}
       selectNodesOnDrag={false}
