@@ -63,7 +63,8 @@
     selectionKeyPressed,
     selectionMode,
     panActivationKeyPressed,
-    unselectNodesAndEdges
+    unselectNodesAndEdges,
+    connection,
   } = useStore();
 
   let container: HTMLDivElement;
@@ -80,7 +81,8 @@
 
   function onClick(event: MouseEvent | TouchEvent) {
     // We prevent click events when the user let go of the selectionKey during a selection
-    if (selectionInProgress) {
+    // We also prevent click events when a connection is in progress
+    if (selectionInProgress || $connection.inProgress) {
       selectionInProgress = false;
       return;
     }

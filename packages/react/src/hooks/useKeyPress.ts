@@ -106,13 +106,6 @@ export function useKeyPress(
       };
 
       const upHandler = (event: KeyboardEvent) => {
-        const preventAction =
-          (!modifierPressed.current || (modifierPressed.current && !options.actInsideInputWithModifier)) &&
-          isInputDOMNode(event);
-
-        if (preventAction) {
-          return false;
-        }
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
 
         if (isMatchingKey(keyCodes, pressedKeys.current, true)) {

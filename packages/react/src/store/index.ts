@@ -64,7 +64,6 @@ const createStore = ({
         fitViewResolver?.resolve(value);
         set({ fitViewResolver: null });
       });
-      set({ nodes, fitViewQueued: false, fitViewOptions: undefined });
     }
 
     return {
@@ -89,6 +88,7 @@ const createStore = ({
 
         if (fitViewQueued && nodesInitialized) {
           resolveFitView();
+          set({ nodes, fitViewQueued: false, fitViewOptions: undefined });
         } else {
           set({ nodes });
         }
@@ -138,6 +138,7 @@ const createStore = ({
 
         if (fitViewQueued) {
           resolveFitView();
+          set({ fitViewQueued: false, fitViewOptions: undefined });
         } else {
           // we always want to trigger useStore calls whenever updateNodeInternals is called
           set({});
