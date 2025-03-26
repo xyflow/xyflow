@@ -35,7 +35,7 @@ export const getDimensions = (node: HTMLDivElement): Dimensions => ({
 export const getHostForElement = (element: HTMLElement | EventTarget | null): Document | ShadowRoot =>
   ((element as Partial<HTMLElement> | null)?.getRootNode?.() as Document | ShadowRoot) || window?.document;
 
-const inputTags = ['INPUT', 'SELECT', 'TEXTAREA'];
+const inputTags = ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON'];
 
 export function isInputDOMNode(event: KeyboardEvent): boolean {
   // using composed path for handling shadow dom
