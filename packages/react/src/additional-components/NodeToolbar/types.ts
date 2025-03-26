@@ -5,7 +5,10 @@ import type { Position, Align } from '@xyflow/system';
  * @expand
  */
 export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
-  /** Id of the node, or array of ids the toolbar should be displayed at */
+  /**
+   * By passing in an array of node id's you can render a single tooltip for a group or collection
+   * of nodes.
+   */
   nodeId?: string | string[];
   /** If true, node toolbar is visible even if node is not selected */
   isVisible?: boolean;
@@ -15,7 +18,10 @@ export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
    * Position.BottomLeft, Position.BottomRight
    */
   position?: Position;
-  /** Offset the toolbar from the node */
+  /**
+   * The space between the node and the toolbar, measured in pixels.
+   * @default 10
+   */
   offset?: number;
   /**
    * Align the toolbar relative to the node
