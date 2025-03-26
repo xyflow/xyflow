@@ -175,74 +175,103 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
   };
 };
 
-function paddingError(padding: PaddingWithUnit) {
-  console.error(
-    `[React Flow] The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
-  );
-}
-
+/**
+ * Parses a single padding value to a number
+ * @internal
+ * @param padding - Padding to parse
+ * @param viewport - Width or height of the viewport
+ * @returns The padding in pixels
+ */
 function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   if (typeof padding === 'number') {
-    return viewport - viewport / (1 + padding * 0.5);
+    return Math.floor(viewport - viewport / (1 + padding));
   }
 
   if (typeof padding === 'string' && padding.endsWith('px')) {
     const paddingValue = parseFloat(padding);
     if (!Number.isNaN(paddingValue)) {
-      return paddingValue;
+      return Math.floor(paddingValue);
     }
   }
 
   if (typeof padding === 'string' && padding.endsWith('%')) {
     const paddingValue = parseFloat(padding);
     if (!Number.isNaN(paddingValue)) {
-      return viewport * paddingValue * 0.01;
+      return Math.floor(viewport * paddingValue * 0.01);
     }
   }
 
-  paddingError(padding);
+  console.error(
+    `[React Flow] The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
+  );
   return 0;
 }
 
-function parsePaddings(padding: Padding, width: number, height: number): [number, number, number, number] {
+/**
+ * Parses the paddings to an object with top, right, bottom, left, x and y paddings
+ * @internal
+ * @param padding - Padding to parse
+ * @param width - Width of the viewport
+ * @param height - Height of the viewport
+ * @returns An object with the paddings in pixels
+ */
+function parsePaddings(
+  padding: Padding,
+  width: number,
+  height: number
+): { top: number; bottom: number; left: number; right: number; x: number; y: number } {
   if (typeof padding === 'string' || typeof padding === 'number') {
     const paddingY = parsePadding(padding, height);
     const paddingX = parsePadding(padding, width);
-    return [paddingY, paddingX, paddingY, paddingX];
+    return {
+      top: paddingY,
+      right: paddingX,
+      bottom: paddingY,
+      left: paddingX,
+      x: paddingX * 2,
+      y: paddingY * 2,
+    };
   }
 
-  if (Array.isArray(padding)) {
-    switch (padding.length) {
-      case 1: {
-        const paddingY = parsePadding(padding[0], height);
-        const paddingX = parsePadding(padding[0], width);
-        return [paddingY, paddingX, paddingY, paddingX];
-      }
-      case 2: {
-        const [pY, pX] = padding;
-        const paddingY = parsePadding(pY, height);
-        const paddingX = parsePadding(pX, width);
-        return [paddingY, paddingX, paddingY, paddingX];
-      }
-      case 3: {
-        const [pTop, pX, pBottom] = padding;
-        const paddingTop = parsePadding(pTop, height);
-        const padddingX = parsePadding(pX, width);
-        const paddingBottom = parsePadding(pBottom, height);
-        return [paddingTop, padddingX, paddingBottom, padddingX];
-      }
-      case 4: {
-        const [pTop, pRight, pBottom, pLeft] = padding;
-        const paddingTop = parsePadding(pTop, height);
-        const paddingRight = parsePadding(pRight, width);
-        const paddingBottom = parsePadding(pBottom, height);
-        const paddingLeft = parsePadding(pLeft, width);
-        return [paddingTop, paddingRight, paddingBottom, paddingLeft];
-      }
-    }
+  if (typeof padding === 'object') {
+    const top = parsePadding(padding.top ?? padding.y ?? 0, height);
+    const bottom = parsePadding(padding.bottom ?? padding.y ?? 0, height);
+    const left = parsePadding(padding.left ?? padding.x ?? 0, width);
+    const right = parsePadding(padding.right ?? padding.x ?? 0, width);
+    return { top, right, bottom, left, x: left + right, y: top + bottom };
   }
 
-  return [0, 0, 0, 0];
+  return { top: 0, right: 0, bottom: 0, left: 0, x: 0, y: 0 };
+}
+
+/**
+ * Calculates the resulting paddings if the new viewport is applied
+ * @internal
+ * @param bounds - Bounds to fit inside viewport
+ * @param x - X position of the viewport
+ * @param y - Y position of the viewport
+ * @param zoom - Zoom level of the viewport
+ * @param width - Width of the viewport
+ * @param height - Height of the viewport
+ * @returns An object with the minimum padding required to fit the bounds inside the viewport
+ */
+function calculateAppliedPaddings(bounds: Rect, x: number, y: number, zoom: number, width: number, height: number) {
+  const { x: left, y: top } = rendererPointToPoint(bounds, [x, y, zoom]);
+
+  const { x: boundRight, y: boundBottom } = rendererPointToPoint(
+    { x: bounds.x + bounds.width, y: bounds.y + bounds.height },
+    [x, y, zoom]
+  );
+
+  const right = width - boundRight;
+  const bottom = height - boundBottom;
+
+  return {
+    left: Math.floor(left),
+    top: Math.floor(top),
+    right: Math.floor(right),
+    bottom: Math.floor(bottom),
+  };
 }
 
 /**
@@ -258,8 +287,8 @@ function parsePaddings(padding: Padding, width: number, height: number): [number
  * @returns A transforned {@link Viewport} that encloses the given bounds which you can pass to e.g. {@link setViewport}
  * @example
  * const { x, y, zoom } = getViewportForBounds(
- *{ x: 0, y: 0, width: 100, height: 100},
- *1200, 800, 0.5, 2);
+ * { x: 0, y: 0, width: 100, height: 100},
+ * 1200, 800, 0.5, 2);
  */
 export const getViewportForBounds = (
   bounds: Rect,
@@ -269,48 +298,38 @@ export const getViewportForBounds = (
   maxZoom: number,
   padding: Padding
 ): Viewport => {
-  const [paddingTop, paddingRight, paddingBottom, paddingLeft] = parsePaddings(padding, width, height);
-  const paddingX = paddingLeft + paddingRight;
-  const paddingY = paddingTop + paddingBottom;
+  // First we resolve all the paddings to actual pixel values
+  const p = parsePaddings(padding, width, height);
 
-  const xZoom = (width - paddingX) / bounds.width;
-  const yZoom = (height - paddingY) / bounds.height;
+  const xZoom = (width - p.x) / bounds.width;
+  const yZoom = (height - p.y) / bounds.height;
 
+  // We calculate the new x, y, zoom for a centered view
   const zoom = Math.min(xZoom, yZoom);
   const clampedZoom = clamp(zoom, minZoom, maxZoom);
+
   const boundsCenterX = bounds.x + bounds.width / 2;
   const boundsCenterY = bounds.y + bounds.height / 2;
   const x = width / 2 - boundsCenterX * clampedZoom;
   const y = height / 2 - boundsCenterY * clampedZoom;
 
-  const realPadding = calculatePadding(bounds, x, y, clampedZoom, width, height);
+  // Then we calculate the minimum padding, to respect asymmetric paddings
+  const newPadding = calculateAppliedPaddings(bounds, x, y, clampedZoom, width, height);
 
-  const paddingDifferences = {
-    left: Math.min(Math.floor(realPadding.left) - Math.floor(paddingLeft), 0),
-    top: Math.min(Math.floor(realPadding.top) - Math.floor(paddingTop), 0),
-    right: Math.min(Math.floor(realPadding.right) - Math.floor(paddingRight), 0),
-    bottom: Math.min(Math.floor(realPadding.bottom) - Math.floor(paddingBottom), 0),
+  // We only want to have an offset if the newPadding is smaller than the required padding
+  const offset = {
+    left: Math.min(newPadding.left - p.left, 0),
+    top: Math.min(newPadding.top - p.top, 0),
+    right: Math.min(newPadding.right - p.right, 0),
+    bottom: Math.min(newPadding.bottom - p.bottom, 0),
   };
+
   return {
-    x: x - paddingDifferences.left + paddingDifferences.right,
-    y: y - paddingDifferences.top + paddingDifferences.bottom,
+    x: x - offset.left + offset.right,
+    y: y - offset.top + offset.bottom,
     zoom: clampedZoom,
   };
 };
-
-function calculatePadding(bounds: Rect, x: number, y: number, zoom: number, width: number, height: number) {
-  const { x: paddingLeft, y: paddingTop } = rendererPointToPoint(bounds, [x, y, zoom]);
-
-  const { x: boundRight, y: boundBottom } = rendererPointToPoint(
-    { x: bounds.x + bounds.width, y: bounds.y + bounds.height },
-    [x, y, zoom]
-  );
-
-  const paddingRight = width - boundRight;
-  const paddingBottom = height - boundBottom;
-
-  return { left: paddingLeft, top: paddingTop, right: paddingRight, bottom: paddingBottom };
-}
 
 export const isMacOs = () => typeof navigator !== 'undefined' && navigator?.userAgent?.indexOf('Mac') >= 0;
 

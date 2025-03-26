@@ -96,15 +96,14 @@ export type PaddingWithUnit = `${number}${PaddingUnit}` | number;
 
 export type Padding =
   | PaddingWithUnit
-  | [padding: PaddingWithUnit]
-  | [paddingY: PaddingWithUnit, paddingX: PaddingWithUnit]
-  | [paddingTop: PaddingWithUnit, paddingX: PaddingWithUnit, paddingBottom: PaddingWithUnit]
-  | [
-      paddingTop: PaddingWithUnit,
-      paddingRight: PaddingWithUnit,
-      paddingBottom: PaddingWithUnit,
-      paddingLeft: PaddingWithUnit
-    ];
+  | {
+      top?: PaddingWithUnit;
+      right?: PaddingWithUnit;
+      bottom?: PaddingWithUnit;
+      left?: PaddingWithUnit;
+      x?: PaddingWithUnit;
+      y?: PaddingWithUnit;
+    };
 
 /**
  * @inline
