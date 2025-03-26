@@ -8,9 +8,9 @@ function EdgeTextComponent({
   x,
   y,
   label,
-  labelStyle = {},
+  labelStyle,
   labelShowBg = true,
-  labelBgStyle = {},
+  labelBgStyle,
   labelBgPadding = [2, 4],
   labelBgBorderRadius = 2,
   children,
@@ -34,7 +34,7 @@ function EdgeTextComponent({
     }
   }, [label]);
 
-  if (typeof label === 'undefined' || !label) {
+  if (!label) {
     return null;
   }
 
