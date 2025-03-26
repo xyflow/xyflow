@@ -6,6 +6,10 @@ import type { ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__edgelabel-renderer');
 
+export type EdgeLabelRendererProps = {
+  children: ReactNode
+}
+
 /**
  * Edges are SVG-based. If you want to render more complex labels you can use the
  * `<EdgeLabelRenderer />` component to access a div based renderer. This component
@@ -47,7 +51,7 @@ const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__e
  * add mouse interactions you need to set the style `pointerEvents: all` and add
  * the `nopan` class on the label or the element you want to interact with.
  */
-export function EdgeLabelRenderer({ children }: { children: ReactNode }) {
+export function EdgeLabelRenderer({ children }: EdgeLabelRendererProps) {
   const edgeLabelRenderer = useStore(selector);
 
   if (!edgeLabelRenderer) {
