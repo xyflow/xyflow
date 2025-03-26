@@ -1,7 +1,7 @@
 ---
-'@xyflow/react': minor
+'@xyflow/react': patch
 '@xyflow/svelte': patch
 '@xyflow/system': patch
 ---
 
-Fix fitView not working when adding new nodes
+Fix fitView not working immediately after adding new nodes
