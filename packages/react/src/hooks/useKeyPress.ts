@@ -104,10 +104,7 @@ export function useKeyPress(
           const target = (event.composedPath?.()?.[0] || event.target) as Element | null;
           const isInteractiveElement = target?.nodeName === 'BUTTON' || target?.nodeName === 'A';
 
-          if (
-            (options.preventDefault || typeof options.preventDefault === 'undefined') &&
-            (modifierPressed.current || !isInteractiveElement)
-          ) {
+          if (options.preventDefault !== false && (modifierPressed.current || !isInteractiveElement)) {
             event.preventDefault();
           }
 
