@@ -8,6 +8,7 @@ type KeyOrCode = 'key' | 'code';
 export type UseKeyPressOptions = {
   target?: Window | Document | HTMLElement | ShadowRoot | null;
   actInsideInputWithModifier?: boolean;
+  preventDefault?: boolean;
 };
 
 const defaultDoc = typeof document !== 'undefined' ? document : null;
@@ -88,7 +89,7 @@ export function useKeyPress(
 
     if (keyCode !== null) {
       const downHandler = (event: KeyboardEvent) => {
-        modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey;
+        modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey || event.altKey;
         const preventAction =
           (!modifierPressed.current || (modifierPressed.current && !options.actInsideInputWithModifier)) &&
           isInputDOMNode(event);
@@ -100,7 +101,13 @@ export function useKeyPress(
         pressedKeys.current.add(event[keyOrCode]);
 
         if (isMatchingKey(keyCodes, pressedKeys.current, false)) {
-          event.preventDefault();
+          const target = (event.composedPath?.()?.[0] || event.target) as Element | null;
+          const isInteractiveElement = target?.nodeName === 'BUTTON' || target?.nodeName === 'A';
+
+          if (options.preventDefault !== false && (modifierPressed.current || !isInteractiveElement)) {
+            event.preventDefault();
+          }
+
           setKeyPressed(true);
         }
       };
