@@ -89,7 +89,6 @@ const createStore = ({
           checkEquality: true,
         });
 
-        console.log(fitViewQueued, nodesInitialized);
         if (fitViewQueued && nodesInitialized) {
           resolveFitView();
           set({ nodes, fitViewQueued: false, fitViewOptions: undefined });
