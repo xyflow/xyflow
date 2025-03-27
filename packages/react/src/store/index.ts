@@ -45,7 +45,7 @@ const createStore = ({
     async function resolveFitView() {
       const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
 
-      if (!panZoom || !fitViewResolver) {
+      if (!panZoom) {
         return;
       }
 
@@ -61,7 +61,7 @@ const createStore = ({
         fitViewOptions
       );
 
-      fitViewResolver.resolve(true);
+      fitViewResolver?.resolve(true);
       /**
        * wait for the fitViewport to resolve before deleting the resolver,
        * we want to reuse the old resolver if the user calls fitView again in the mean time
@@ -89,6 +89,7 @@ const createStore = ({
           checkEquality: true,
         });
 
+        console.log(fitViewQueued, nodesInitialized);
         if (fitViewQueued && nodesInitialized) {
           resolveFitView();
           set({ nodes, fitViewQueued: false, fitViewOptions: undefined });
