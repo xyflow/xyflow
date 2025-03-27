@@ -144,7 +144,6 @@ export function createStore({
   }
 
   function fitView(options?: FitViewOptions) {
-    console.log('fitView Store');
     // We either create a new Promise or reuse the existing one
     // Even if fitView is called multiple times in a row, we only end up with a single Promise
     const fitViewResolver = get(store.fitViewResolver) ?? Promise.withResolvers<boolean>();
