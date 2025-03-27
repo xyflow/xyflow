@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.5.1
+
+### Patch Changes
+
+- [#5120](https://github.com/xyflow/xyflow/pull/5120) [`6dfea686`](https://github.com/xyflow/xyflow/commit/6dfea6863a3cbd91f932bf54a6dba549bd248bd5) Thanks [@moklick](https://github.com/moklick)! - Handle fitView for uncontrolled flows
+
 ## 12.5.0
 
 ### Minor Changes
