@@ -1,5 +1,15 @@
 # @xyflow/system
 
+## 0.0.53
+
+### Patch Changes
+
+- [#5118](https://github.com/xyflow/xyflow/pull/5118) [`5d15b01b`](https://github.com/xyflow/xyflow/commit/5d15b01ba8cb349d6397a6ed8162848b4dfec293) Thanks [@moklick](https://github.com/moklick)! - Do not swallow key events when a button is focused
+
+- [#5067](https://github.com/xyflow/xyflow/pull/5067) [`cb685281`](https://github.com/xyflow/xyflow/commit/cb685281d0eaf03e9833271c31f92b1d143af2fe) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix fitView not working immediately after adding new nodes
+
+- [#5091](https://github.com/xyflow/xyflow/pull/5091) [`a79f30b3`](https://github.com/xyflow/xyflow/commit/a79f30b3dd7c8ff6400c8d22214b2c2282e5bac1) Thanks [@moklick](https://github.com/moklick)! - Add center-left and center-right as a panel position
+
 ## 0.0.52
 
 ### Patch Changes
