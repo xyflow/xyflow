@@ -49,7 +49,7 @@ const createStore = ({
         return;
       }
 
-      const viewFitted = await fitViewport(
+      await fitViewport(
         {
           nodes: nodeLookup,
           width,
@@ -61,7 +61,7 @@ const createStore = ({
         fitViewOptions
       );
 
-      fitViewResolver?.resolve(viewFitted);
+      fitViewResolver?.resolve(true);
       set({ fitViewResolver: null });
     }
 
