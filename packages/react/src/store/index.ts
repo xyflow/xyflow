@@ -42,14 +42,14 @@ const createStore = ({
   nodeExtent?: CoordinateExtent;
 }) =>
   createWithEqualityFn<ReactFlowState>((set, get) => {
-    function resolveFitView() {
+    async function resolveFitView() {
       const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
 
       if (!panZoom) {
         return;
       }
 
-      const fitViewPromise = fitViewport(
+      const viewFitted = await fitViewport(
         {
           nodes: nodeLookup,
           width,
@@ -60,10 +60,9 @@ const createStore = ({
         },
         fitViewOptions
       );
-      fitViewPromise.then((value) => {
-        fitViewResolver?.resolve(value);
-        set({ fitViewResolver: null });
-      });
+
+      fitViewResolver?.resolve(viewFitted);
+      set({ fitViewResolver: null });
     }
 
     return {
