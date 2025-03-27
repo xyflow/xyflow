@@ -172,8 +172,6 @@ export const createNodesStore = (
       checkEquality: false
     });
 
-    console.log(nodesInitialized);
-
     if (get(fitViewQueued) && nodesInitialized && get(panZoom)) {
       const fitViewPromise = fitViewport(
         {
