@@ -1,5 +1,18 @@
 # @xyflow/svelte
 
+## 0.1.32
+
+### Patch Changes
+
+- [#5059](https://github.com/xyflow/xyflow/pull/5059) [`065ff89d`](https://github.com/xyflow/xyflow/commit/065ff89d10488f9c76c56870511e45eaed299778) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Prevent onPaneClick when connection is in progress. Closes [#5057](https://github.com/xyflow/xyflow/issues/5057)
+
+- [#5067](https://github.com/xyflow/xyflow/pull/5067) [`cb685281`](https://github.com/xyflow/xyflow/commit/cb685281d0eaf03e9833271c31f92b1d143af2fe) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix fitView not working immediately after adding new nodes
+
+- [#5093](https://github.com/xyflow/xyflow/pull/5093) [`65825e89`](https://github.com/xyflow/xyflow/commit/65825e89a6e2e7591087eb41ac89da4da7095f8f) Thanks [@moklick](https://github.com/moklick)! - Hidden nodes are not displayed in the mini map anymore
+
+- Updated dependencies [[`5d15b01b`](https://github.com/xyflow/xyflow/commit/5d15b01ba8cb349d6397a6ed8162848b4dfec293), [`cb685281`](https://github.com/xyflow/xyflow/commit/cb685281d0eaf03e9833271c31f92b1d143af2fe), [`a79f30b3`](https://github.com/xyflow/xyflow/commit/a79f30b3dd7c8ff6400c8d22214b2c2282e5bac1)]:
+  - @xyflow/system@0.0.53
+
 ## 0.1.31
 
 ### Patch Changes

@@ -1,5 +1,38 @@
 # @xyflow/react
 
+## 12.5.0
+
+### Minor Changes
+
+- [#5067](https://github.com/xyflow/xyflow/pull/5067) [`acba901d`](https://github.com/xyflow/xyflow/commit/acba901d861aa84cb5beba60b24fff4cfde7ada6) Thanks [@peterkogo](https://github.com/peterkogo)! - You can now express paddings in fitViewOptions as pixels ('30px'), as viewport percentages ('20%') and define different paddings for each side.
+
+### Patch Changes
+
+- [#5109](https://github.com/xyflow/xyflow/pull/5109) [`0cdda42c`](https://github.com/xyflow/xyflow/commit/0cdda42cdd1cd43d43d43c44e54b7b9f7a716ca9) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix: improve TSDoc comments for `BackgroundProps`
+
+- [#5059](https://github.com/xyflow/xyflow/pull/5059) [`065ff89d`](https://github.com/xyflow/xyflow/commit/065ff89d10488f9c76c56870511e45eaed299778) Thanks [@bcakmakoglu](https://github.com/bcakmakoglu)! - Prevent onPaneClick when connection is in progress. Closes [#5057](https://github.com/xyflow/xyflow/issues/5057)
+
+- [#5110](https://github.com/xyflow/xyflow/pull/5110) [`7eb6eb07`](https://github.com/xyflow/xyflow/commit/7eb6eb0709e451d7628bfdbc3ced89b3bb57b626) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix: improve TSDoc comments for `EdgeLabelOptions` and `BaseEdgeProps`
+
+- [#5113](https://github.com/xyflow/xyflow/pull/5113) [`bce8542d`](https://github.com/xyflow/xyflow/commit/bce8542df19c33f3cd9225f483435e8a7aa4ed94) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix: improve TSDoc comments for `ControlProps`
+
+- [#5116](https://github.com/xyflow/xyflow/pull/5116) [`58942154`](https://github.com/xyflow/xyflow/commit/589421542386906ec49d8469cac551b8f7ea1c47) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix: improve TSDoc comments for `NodeToolbarProps`
+
+- [#5114](https://github.com/xyflow/xyflow/pull/5114) [`ba2bfbb4`](https://github.com/xyflow/xyflow/commit/ba2bfbb49aafac979f94b0136bb408faea12d5c6) Thanks [@dimaMachina](https://github.com/dimaMachina)! - feat: export `EdgeLabelRendererProps`
+
+- [#5107](https://github.com/xyflow/xyflow/pull/5107) [`c5a8c237`](https://github.com/xyflow/xyflow/commit/c5a8c23773e5985be6b37abacdac743911be8c09) Thanks [@moklick](https://github.com/moklick)! - Add TSDoc annotations for exported edges
+
+- [#5067](https://github.com/xyflow/xyflow/pull/5067) [`cb685281`](https://github.com/xyflow/xyflow/commit/cb685281d0eaf03e9833271c31f92b1d143af2fe) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix fitView not working immediately after adding new nodes
+
+- [#5115](https://github.com/xyflow/xyflow/pull/5115) [`c2154557`](https://github.com/xyflow/xyflow/commit/c215455735385ef5e12e4130164b9d01f9c18aa2) Thanks [@dimaMachina](https://github.com/dimaMachina)! - fix: improve TSDoc comments for `EdgeLabelOptions` and `EdgeTextProps`
+
+- [#5093](https://github.com/xyflow/xyflow/pull/5093) [`65825e89`](https://github.com/xyflow/xyflow/commit/65825e89a6e2e7591087eb41ac89da4da7095f8f) Thanks [@moklick](https://github.com/moklick)! - Hidden nodes are not displayed in the mini map anymore
+
+- [#5090](https://github.com/xyflow/xyflow/pull/5090) [`8da1748a`](https://github.com/xyflow/xyflow/commit/8da1748a6ad5cdde9f03737ff786bd29c9c968de) Thanks [@moklick](https://github.com/moklick)! - Release key even when an inout field is focused
+
+- Updated dependencies [[`5d15b01b`](https://github.com/xyflow/xyflow/commit/5d15b01ba8cb349d6397a6ed8162848b4dfec293), [`cb685281`](https://github.com/xyflow/xyflow/commit/cb685281d0eaf03e9833271c31f92b1d143af2fe), [`a79f30b3`](https://github.com/xyflow/xyflow/commit/a79f30b3dd7c8ff6400c8d22214b2c2282e5bac1)]:
+  - @xyflow/system@0.0.53
+
 ## 12.4.4
 
 ### Patch Changes
