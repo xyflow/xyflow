@@ -333,10 +333,10 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
   return edges.filter((edge) => nodeIds.has(edge.source) || nodeIds.has(edge.target));
 };
 
-export function getFitViewNodes<
+function getFitViewNodes<
   Params extends NodeLookup<InternalNodeBase<NodeBase>>,
   Options extends FitViewOptionsBase<NodeBase>
->(nodeLookup: Params, options?: Pick<Options, 'nodes' | 'includeHiddenNodes'>) {
+>(nodeLookup: Params, options?: Options) {
   const fitViewNodes: NodeLookup = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
 
@@ -351,15 +351,20 @@ export function getFitViewNodes<
   return fitViewNodes;
 }
 
-export async function fitView<Params extends FitViewParamsBase<NodeBase>, Options extends FitViewOptionsBase<NodeBase>>(
+export async function fitViewport<
+  Params extends FitViewParamsBase<NodeBase>,
+  Options extends FitViewOptionsBase<NodeBase>
+>(
   { nodes, width, height, panZoom, minZoom, maxZoom }: Params,
   options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>
 ): Promise<boolean> {
   if (nodes.size === 0) {
-    return Promise.resolve(false);
+    return Promise.resolve(true);
   }
 
-  const bounds = getInternalNodesBounds(nodes);
+  const nodesToFit = getFitViewNodes(nodes, options);
+
+  const bounds = getInternalNodesBounds(nodesToFit);
 
   const viewport = getViewportForBounds(
     bounds,

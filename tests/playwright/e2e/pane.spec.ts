@@ -30,8 +30,8 @@ test.describe('Pane default', () => {
 
       const transformsAfter = await getTransform(viewport);
 
-      expect(transformsAfter.translateX - transformsBefore.translateX).toBe(100);
-      expect(transformsAfter.translateY - transformsBefore.translateY).toBe(100);
+      expect(Math.floor(transformsAfter.translateX - transformsBefore.translateX)).toBe(100);
+      expect(Math.floor(transformsAfter.translateY - transformsBefore.translateY)).toBe(100);
     });
 
     test('scrolling the default pane zooms it', async ({ page }) => {

@@ -15,7 +15,15 @@ import useViewportHelper from './useViewportHelper';
 import { useStore, useStoreApi } from './useStore';
 import { useBatchContext } from '../components/BatchProvider';
 import { elementToRemoveChange, isEdge, isNode } from '../utils';
-import type { ReactFlowInstance, Node, Edge, InternalNode, ReactFlowState, GeneralHelpers } from '../types';
+import type {
+  ReactFlowInstance,
+  Node,
+  Edge,
+  InternalNode,
+  ReactFlowState,
+  GeneralHelpers,
+  FitViewOptions,
+} from '../types';
 
 const selector = (s: ReactFlowState) => !!s.panZoom;
 
@@ -271,6 +279,17 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
             .connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
             ?.values() ?? []
         ),
+      fitView: async (options: FitViewOptions<NodeType> | undefined) => {
+        // We either create a new Promise or reuse the existing one
+        // Even if fitView is called multiple times in a row, we only end up with a single Promise
+        const fitViewResolver = store.getState().fitViewResolver ?? Promise.withResolvers<boolean>();
+
+        // We schedule a fitView by setting fitViewQueued and triggering a setNodes
+        store.setState({ fitViewQueued: true, fitViewOptions: options, fitViewResolver });
+        batchContext.nodeQueue.push((nodes) => [...nodes]);
+
+        return fitViewResolver.promise;
+      },
     };
   }, []);
 

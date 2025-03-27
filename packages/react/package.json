@@ -85,7 +85,7 @@
     "postcss-nested": "^6.0.0",
     "postcss-rename": "^0.6.1",
     "react": "^18.2.0",
-    "typescript": "5.1.3"
+    "typescript": "5.4.5"
   },
   "rollup": {
     "globals": {

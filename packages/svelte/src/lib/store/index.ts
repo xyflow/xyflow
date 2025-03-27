@@ -2,7 +2,6 @@ import { getContext, setContext } from 'svelte';
 import { derived, get, writable } from 'svelte/store';
 import {
   createMarkerIds,
-  fitView as fitViewSystem,
   getElementsToRemove,
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
@@ -19,9 +18,7 @@ import {
   type UpdateConnection,
   type ConnectionState,
   type NodeOrigin,
-  getFitViewNodes,
-  updateAbsolutePositions,
-  getDimensions
+  updateAbsolutePositions
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -113,15 +110,6 @@ export function createStore({
 
     updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent });
 
-    if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
-      const fitViewOptions = get(store.fitViewOptions);
-      const fitViewOnInitDone = fitViewSync({
-        ...fitViewOptions,
-        nodes: fitViewOptions?.nodes
-      });
-      store.fitViewOnInitDone.set(fitViewOnInitDone);
-    }
-
     for (const change of changes) {
       const node = nodeLookup.get(change.id)?.internals.userNode;
 
@@ -156,52 +144,17 @@ export function createStore({
   }
 
   function fitView(options?: FitViewOptions) {
-    const panZoom = get(store.panZoom);
-    const domNode = get(store.domNode);
+    // We either create a new Promise or reuse the existing one
+    // Even if fitView is called multiple times in a row, we only end up with a single Promise
+    const fitViewResolver = get(store.fitViewResolver) ?? Promise.withResolvers<boolean>();
 
-    if (!panZoom || !domNode) {
-      return Promise.resolve(false);
-    }
+    // We schedule a fitView by setting fitViewQueued and triggering a setNodes
+    store.fitViewQueued.set(true);
+    store.fitViewOptions.set(options);
+    store.fitViewResolver.set(fitViewResolver);
+    store.nodes.set(get(store.nodes));
 
-    const { width, height } = getDimensions(domNode);
-
-    const fitViewNodes = getFitViewNodes(get(store.nodeLookup), options);
-
-    return fitViewSystem(
-      {
-        nodes: fitViewNodes,
-        width,
-        height,
-        minZoom: get(store.minZoom),
-        maxZoom: get(store.maxZoom),
-        panZoom
-      },
-      options
-    );
-  }
-
-  function fitViewSync(options?: FitViewOptions) {
-    const panZoom = get(store.panZoom);
-
-    if (!panZoom) {
-      return false;
-    }
-
-    const fitViewNodes = getFitViewNodes(get(store.nodeLookup), options);
-
-    fitViewSystem(
-      {
-        nodes: fitViewNodes,
-        width: get(store.width),
-        height: get(store.height),
-        minZoom: get(store.minZoom),
-        maxZoom: get(store.maxZoom),
-        panZoom
-      },
-      options
-    );
-
-    return fitViewNodes.size > 0;
+    return fitViewResolver.promise;
   }
 
   function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
@@ -395,7 +348,6 @@ export function createStore({
   }
 
   function reset() {
-    store.fitViewOnInitDone.set(false);
     store.selectionRect.set(null);
     store.selectionRectMode.set(null);
     store.snapGrid.set(null);
