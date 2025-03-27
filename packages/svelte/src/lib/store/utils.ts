@@ -175,7 +175,6 @@ export const createNodesStore = (
     console.log(nodesInitialized);
 
     if (get(fitViewQueued) && nodesInitialized && get(panZoom)) {
-      console.log('trying');
       const fitViewPromise = fitViewport(
         {
           nodes: nodeLookup,
