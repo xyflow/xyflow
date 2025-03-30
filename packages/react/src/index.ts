@@ -106,6 +106,7 @@ export {
   type FinalConnectionState,
   type ConnectionInProgress,
   type NoConnection,
+  type NodeConnection,
 } from '@xyflow/system';
 
 // we need this workaround to prevent a duplicate identifier error
