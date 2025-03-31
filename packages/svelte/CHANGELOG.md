@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 0.1.33
+
+### Patch Changes
+
+- [#5124](https://github.com/xyflow/xyflow/pull/5124) [`b76f7f9e`](https://github.com/xyflow/xyflow/commit/b76f7f9eb4841f139b1468b8eda0430ddd19a1ae) Thanks [@bjornosal](https://github.com/bjornosal)! - Export NodeConnection type
+
 ## 0.1.32
 
 ### Patch Changes
