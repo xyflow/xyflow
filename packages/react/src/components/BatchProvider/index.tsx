@@ -28,7 +28,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   const store = useStoreApi<NodeType, EdgeType>();
 
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
-    const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup } = store.getState();
+    const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup, fitViewQueued } = store.getState();
 
     /*
      * This is essentially an `Array.reduce` in imperative clothing. Processing
@@ -43,12 +43,22 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
     if (hasDefaultNodes) {
       setNodes(next);
     } else if (onNodesChange) {
-      onNodesChange(
-        getElementsDiffChanges({
-          items: next,
-          lookup: nodeLookup,
-        }) as NodeChange<NodeType>[]
-      );
+      const changes = getElementsDiffChanges({
+        items: next,
+        lookup: nodeLookup,
+      }) as NodeChange<NodeType>[];
+      if (changes.length > 0) {
+        onNodesChange(changes);
+      } else if (fitViewQueued) {
+        // If there are no changes to the nodes, we still need to call setNodes
+        // to trigger a re-render and fitView.
+        window.requestAnimationFrame(() => {
+          const { fitViewQueued, nodes, setNodes } = store.getState();
+          if (fitViewQueued) {
+            setNodes(nodes);
+          }
+        });
+      }
     }
   }, []);
   const nodeQueue = useQueue<NodeType>(nodeQueueHandler);
