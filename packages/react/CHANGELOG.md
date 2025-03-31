@@ -1,5 +1,13 @@
 # @xyflow/react
 
+## 12.5.2
+
+### Patch Changes
+
+- [#5124](https://github.com/xyflow/xyflow/pull/5124) [`b76f7f9e`](https://github.com/xyflow/xyflow/commit/b76f7f9eb4841f139b1468b8eda0430ddd19a1ae) Thanks [@bjornosal](https://github.com/bjornosal)! - Export NodeConnection type
+
+- [#5127](https://github.com/xyflow/xyflow/pull/5127) [`3079c2c9`](https://github.com/xyflow/xyflow/commit/3079c2c911426f54e8d295083ddbe97ed3aad201) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix `fitView` not working when returning early in `onNodesChange`.
+
 ## 12.5.1
 
 ### Patch Changes
