@@ -52,7 +52,12 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       } else if (fitViewQueued) {
         // If there are no changes to the nodes, we still need to call setNodes
         // to trigger a re-render and fitView.
-        setNodes(next);
+        window.requestAnimationFrame(() => {
+          const { fitViewQueued, nodes, setNodes } = store.getState();
+          if (fitViewQueued) {
+            setNodes(nodes);
+          }
+        });
       }
     }
   }, []);
