@@ -143,7 +143,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
             typeof maskStrokeWidth === 'number' ? maskStrokeWidth * viewScale : undefined,
           '--xy-minimap-node-background-color-props': typeof nodeColor === 'string' ? nodeColor : undefined,
           '--xy-minimap-node-stroke-color-props': typeof nodeStrokeColor === 'string' ? nodeStrokeColor : undefined,
-          '--xy-minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'string' ? nodeStrokeWidth : undefined,
+          '--xy-minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'number' ? nodeStrokeWidth : undefined,
         } as CSSProperties
       }
       className={cc(['react-flow__minimap', className])}
