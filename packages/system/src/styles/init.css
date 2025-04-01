@@ -13,7 +13,7 @@
   --xy-attribution-background-color-default: rgba(255, 255, 255, 0.5);
 
   --xy-minimap-background-color-default: #fff;
-  --xy-minimap-mask-background-color-default: rgb(240, 240, 240, 0.6);
+  --xy-minimap-mask-background-color-default: rgba(240, 240, 240, 0.6);
   --xy-minimap-mask-stroke-color-default: transparent;
   --xy-minimap-mask-stroke-width-default: 1;
   --xy-minimap-node-background-color-default: #e2e2e2;
@@ -37,7 +37,7 @@
   --xy-attribution-background-color-default: rgba(150, 150, 150, 0.25);
 
   --xy-minimap-background-color-default: #141414;
-  --xy-minimap-mask-background-color-default: rgb(60, 60, 60, 0.6);
+  --xy-minimap-mask-background-color-default: rgba(60, 60, 60, 0.6);
   --xy-minimap-mask-stroke-color-default: transparent;
   --xy-minimap-mask-stroke-width-default: 1;
   --xy-minimap-node-background-color-default: #2b2b2b;
