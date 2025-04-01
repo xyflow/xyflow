@@ -42,13 +42,16 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
 
     if (hasDefaultNodes) {
       setNodes(next);
-    } else if (onNodesChange) {
+    } else {
+      // When a controlled flow is used we need to collect the changes
       const changes = getElementsDiffChanges({
         items: next,
         lookup: nodeLookup,
       }) as NodeChange<NodeType>[];
+
+      // We only want to fire onNodesChange if there are changes to the nodes
       if (changes.length > 0) {
-        onNodesChange(changes);
+        onNodesChange?.(changes);
       } else if (fitViewQueued) {
         // If there are no changes to the nodes, we still need to call setNodes
         // to trigger a re-render and fitView.
@@ -61,6 +64,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       }
     }
   }, []);
+
   const nodeQueue = useQueue<NodeType>(nodeQueueHandler);
 
   const edgeQueueHandler = useCallback((queueItems: QueueItem<EdgeType>[]) => {
