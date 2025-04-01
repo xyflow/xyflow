@@ -50,6 +50,11 @@ export type Edge<
   EdgeLabelOptions & {
     style?: CSSProperties;
     className?: string;
+    /**
+     * Determines whether the edge can be updated by dragging the source or target to a new node.
+     * This property will override the default set by the `edgesReconnectable` prop on the
+     * `<ReactFlow />` component.
+     */
     reconnectable?: boolean | HandleType;
     focusable?: boolean;
   };
@@ -109,15 +114,11 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
  */
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
-export type EdgeTextProps = SVGAttributes<SVGElement> &
+export type EdgeTextProps = Omit<SVGAttributes<SVGElement>, 'x' | 'y'> &
   EdgeLabelOptions & {
-    /**
-     * The x position where the label should be rendered.
-     */
+    /** The x position where the label should be rendered. */
     x: number;
-    /**
-     * The y position where the label should be rendered.
-     */
+    /** The y position where the label should be rendered. */
     y: number;
   };
 
@@ -147,11 +148,12 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
  * @public
  * @expand
  */
-export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
+export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd' | 'path'> &
   EdgeLabelOptions & {
     /**
      * The width of the invisible area around the edge that the user can interact with. This is
      * useful for making the edge easier to click or hover over.
+     * @default 20
      */
     interactionWidth?: number;
     /** The x position of edge label */
@@ -233,7 +235,9 @@ export type OnReconnect<EdgeType extends Edge = Edge> = (oldEdge: EdgeType, newC
 export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;
+  /** The node the connection line originates from. */
   fromNode: InternalNode<NodeType>;
+  /** The handle on the `fromNode` that the connection line originates from. */
   fromHandle: Handle;
   fromX: number;
   fromY: number;
@@ -241,6 +245,10 @@ export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   toY: number;
   fromPosition: Position;
   toPosition: Position;
+  /**
+   * If there is an `isValidConnection` callback, this prop will be set to `"valid"` or `"invalid"`
+   * based on the return value of that callback. Otherwise, it will be `null`.
+   */
   connectionStatus: 'valid' | 'invalid' | null;
   toNode: InternalNode<NodeType> | null;
   toHandle: Handle | null;
