@@ -131,14 +131,15 @@ export type ViewportHelperFunctions = {
    */
   zoomOut: ZoomInOut;
   /**
-   * Sets the current zoom level.
+   * Zoom the viewport to a given zoom level. Passing in a `duration` will animate the viewport to
+   * the new zoom level.
    *
    * @param zoomLevel - the zoom level to set
    * @param options.duration - optional duration. If set, a transition will be applied
    */
   zoomTo: ZoomTo;
   /**
-   * Returns the current zoom level.
+   * Get the current zoom level of the viewport.
    *
    * @returns current zoom as a number
    */
@@ -157,7 +158,8 @@ export type ViewportHelperFunctions = {
    */
   getViewport: GetViewport;
   /**
-   * Sets the center of the view to the given position.
+   * Center the viewport on a given position. Passing in a `duration` will animate the viewport to
+   * the new position.
    *
    * @param x - x position
    * @param y - y position
@@ -165,14 +167,17 @@ export type ViewportHelperFunctions = {
    */
   setCenter: SetCenter;
   /**
-   * Fits the view to the given bounds .
+   * A low-level utility function to fit the viewport to a given rectangle. By passing in a
+   * `duration`, the viewport will animate from its current position to the new position. The
+   * `padding` option can be used to add space around the bounds.
    *
    * @param bounds - the bounds ({ x: number, y: number, width: number, height: number }) to fit the view to
    * @param options.padding - optional padding
    */
   fitBounds: FitBounds;
   /**
-   * Converts a screen / client position to a flow position.
+   * With this function you can translate a screen pixel position to a flow position. It is useful
+   * for implementing drag and drop from a sidebar for example.
    *
    * @param clientPosition - the screen / client position. When you are working with events you can use event.clientX and event.clientY
    * @param options.snapToGrid - if true, the converted position will be snapped to the grid
@@ -183,7 +188,7 @@ export type ViewportHelperFunctions = {
    */
   screenToFlowPosition: (clientPosition: XYPosition, options?: { snapToGrid: boolean }) => XYPosition;
   /**
-   * Converts a flow position to a screen / client position.
+   * Translate a position inside the flow's canvas to a screen pixel position.
    *
    * @param flowPosition - the screen / client position. When you are working with events you can use event.clientX and event.clientY
    * @returns position as { x: number, y: number }

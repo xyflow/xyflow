@@ -10,12 +10,12 @@ export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
    * of nodes.
    */
   nodeId?: string | string[];
-  /** If true, node toolbar is visible even if node is not selected */
+  /** If `true`, node toolbar is visible even if node is not selected. */
   isVisible?: boolean;
   /**
-   * Position of the toolbar relative to the node
-   * @example Position.TopLeft, Position.TopRight,
-   * Position.BottomLeft, Position.BottomRight
+   * Position of the toolbar relative to the node.
+   * @default Position.Top
+   * @example Position.TopLeft, Position.TopRight, Position.BottomLeft, Position.BottomRight
    */
   position?: Position;
   /**
@@ -24,7 +24,8 @@ export type NodeToolbarProps = HTMLAttributes<HTMLDivElement> & {
    */
   offset?: number;
   /**
-   * Align the toolbar relative to the node
+   * Align the toolbar relative to the node.
+   * @default "center"
    * @example Align.Start, Align.Center, Align.End
    */
   align?: Align;
