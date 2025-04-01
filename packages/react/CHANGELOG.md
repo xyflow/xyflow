@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.5.3
+
+### Patch Changes
+
+- [#5132](https://github.com/xyflow/xyflow/pull/5132) [`75ab8942`](https://github.com/xyflow/xyflow/commit/75ab89420e3cd0fdc34baf06eabdc50113d4de7c) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix fitView not working when onNodesChange is not defined.
+
 ## 12.5.2
 
 ### Patch Changes
