@@ -33,9 +33,13 @@ export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => Promise<bo
  * @public
  */
 export type Connection = {
+  /** The id of the node this connection originates from. */
   source: string;
+  /** The id of the node this connection terminates at. */
   target: string;
+  /** When not `null`, the id of the handle on the source node that this connection originates from. */
   sourceHandle: string | null;
+  /** When not `null`, the id of the handle on the target node that this connection terminates at. */
   targetHandle: string | null;
 };
 
@@ -240,15 +244,28 @@ export type NoConnection = {
   toNode: null;
 };
 export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNodeBase> = {
+  /** Indicates whether a connection is currently in progress. */
   inProgress: true;
+  /**
+   * If an ongoing connection is above a handle or inside the connection radius, this will be `true`
+   * or `false`, otherwise `null`.
+   */
   isValid: boolean | null;
+  /** Returns the xy start position or `null` if no connection is in progress. */
   from: XYPosition;
+  /** Returns the start handle or `null` if no connection is in progress. */
   fromHandle: Handle;
+  /** Returns the side (called position) of the start handle or `null` if no connection is in progress. */
   fromPosition: Position;
+  /** Returns the start node or `null` if no connection is in progress. */
   fromNode: NodeType;
+  /** Returns the xy end position or `null` if no connection is in progress. */
   to: XYPosition;
+  /** Returns the end handle or `null` if no connection is in progress. */
   toHandle: Handle | null;
+  /** Returns the side (called position) of the end handle or `null` if no connection is in progress. */
   toPosition: Position;
+  /** Returns the end node or `null` if no connection is in progress. */
   toNode: NodeType | null;
 };
 
