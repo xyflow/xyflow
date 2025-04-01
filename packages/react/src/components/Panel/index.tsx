@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
+import { HTMLAttributes, forwardRef } from 'react';
 import cc from 'classcat';
 import type { PanelPosition } from '@xyflow/system';
 
@@ -10,10 +10,10 @@ import type { ReactFlowState } from '../../types';
  */
 export type PanelProps = HTMLAttributes<HTMLDivElement> & {
   /**
-   * The position of the panel
+   * The position of the panel.
+   * @default "top-left"
    */
   position?: PanelPosition;
-  children: ReactNode;
 };
 
 const selector = (s: ReactFlowState) => (s.userSelectionActive ? 'none' : 'all');
