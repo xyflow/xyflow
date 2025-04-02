@@ -6,7 +6,7 @@ import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
 import { MiniMapNode } from './MiniMapNode';
-import type { ReactFlowState, Node, InternalNode } from '../../types';
+import type { ReactFlowState, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
 
 declare const window: any;
@@ -42,7 +42,7 @@ function MiniMapNodes<NodeType extends Node>({
          * The split of responsibilities between MiniMapNodes and
          * NodeComponentWrapper may appear weird. However, it’s designed to
          * minimize the cost of updates when individual nodes change.
-         * 
+         *
          * For more details, see a similar commit in `NodeRenderer/index.tsx`.
          */
         <NodeComponentWrapper<NodeType>
@@ -84,8 +84,9 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   shapeRendering: string;
 }) {
   const { node, x, y, width, height } = useStore((s) => {
-    const node = s.nodeLookup.get(id) as InternalNode<NodeType>;
-    const { x, y } = node.internals.positionAbsolute;
+    const { internals } = s.nodeLookup.get(id)!;
+    const node = internals.userNode as NodeType;
+    const { x, y } = internals.positionAbsolute;
     const { width, height } = getNodeDimensions(node);
 
     return {
