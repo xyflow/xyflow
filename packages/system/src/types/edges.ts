@@ -4,44 +4,41 @@ export type EdgeBase<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
   EdgeType extends string | undefined = string | undefined
 > = {
-  /** Unique id of an edge */
+  /** Unique id of an edge. */
   id: string;
-  /** Type of an edge defined in edgeTypes */
+  /** Type of edge defined in `edgeTypes`. */
   type?: EdgeType;
-  /** Id of source node */
+  /** Id of source node. */
   source: string;
-  /** Id of target node */
+  /** Id of target node. */
   target: string;
-  /**
-   * Id of source handle
-   * only needed if there are multiple handles per node
-   */
+  /** Id of source handle, only needed if there are multiple handles per node. */
   sourceHandle?: string | null;
-  /**
-   * Id of target handle
-   * only needed if there are multiple handles per node
-   */
+  /** Id of target handle, only needed if there are multiple handles per node. */
   targetHandle?: string | null;
   animated?: boolean;
   hidden?: boolean;
   deletable?: boolean;
   selectable?: boolean;
-  /** Arbitrary data passed to an edge */
+  /** Arbitrary data passed to an edge. */
   data?: EdgeData;
   selected?: boolean;
   /**
-   * Set the marker on the beginning of an edge
+   * Set the marker on the beginning of an edge.
    * @example 'arrow', 'arrowclosed' or custom marker
    */
   markerStart?: EdgeMarkerType;
   /**
-   * Set the marker on the end of an edge
+   * Set the marker on the end of an edge.
    * @example 'arrow', 'arrowclosed' or custom marker
    */
   markerEnd?: EdgeMarkerType;
   zIndex?: number;
   ariaLabel?: string;
-  /** Padding around the edge where interaction is still possible */
+  /**
+   * ReactFlow renders an invisible path around each edge to make them easier to click or tap on.
+   * This property sets the width of that invisible path.
+   */
   interactionWidth?: number;
 };
 
