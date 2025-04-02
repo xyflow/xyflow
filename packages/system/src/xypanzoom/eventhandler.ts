@@ -141,20 +141,18 @@ export function createPanOnScrollHandler({
 
 export function createZoomOnScrollHandler({ noWheelClassName, preventScrolling, d3ZoomHandler }: ZoomOnScrollParams) {
   return function (this: Element, event: any, d: unknown) {
-    if (event.type === 'wheel') {
-      const isPinch = event.ctrlKey;
-      // we still want to enable pinch zooming even if preventScrolling is set to false
-      const preventZoom = !preventScrolling && !isPinch;
-      const isNoWheel = isWrappedWithClass(event, noWheelClassName);
+    const isWheel = event.type === 'wheel';
+    // we still want to enable pinch zooming even if preventScrolling is set to false
+    const preventZoom = !preventScrolling && isWheel && !event.ctrlKey;
+    const hasNoWheelClass = isWrappedWithClass(event, noWheelClassName);
 
-      // if user is pinch zooming above a nowheel element, we don't want the browser to zoom
-      if (isPinch && isNoWheel) {
-        event.preventDefault();
-      }
+    // if user is pinch zooming above a nowheel element, we don't want the browser to zoom
+    if (event.ctrlKey && isWheel && hasNoWheelClass) {
+      event.preventDefault();
+    }
 
-      if (preventZoom || isNoWheel) {
-        return null;
-      }
+    if (preventZoom || hasNoWheelClass) {
+      return null;
     }
 
     event.preventDefault();
