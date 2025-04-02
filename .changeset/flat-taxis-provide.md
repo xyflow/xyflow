@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-fix: improve TSDoc comments for `NodeResizerProps` and `ResizeControlProps`
+Improve TSDoc comments for `NodeResizerProps` and `ResizeControlProps`

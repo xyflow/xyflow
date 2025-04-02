@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-fix: improve TSDoc comments for `Edge`, `BaseEdgeProps` and `ConnectionLineComponentProps`
+Improve TSDoc comments for `Edge`, `BaseEdgeProps` and `ConnectionLineComponentProps`

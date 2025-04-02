@@ -3,4 +3,4 @@
 '@xyflow/system': patch
 ---
 
-fix: use `rgba` for colors with opacity instead of `rgb`
+Use `rgba` for colors with opacity instead of `rgb` for `MiniMap` mask color

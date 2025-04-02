@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-fix: compare `nodeStrokeWidth` with `number`, not with `string`
+Compare `nodeStrokeWidth` with `number`, not with `string` within `MiniMap`
