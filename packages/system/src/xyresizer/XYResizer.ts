@@ -48,7 +48,7 @@ type XYResizerParams = {
     paneDomNode: HTMLDivElement | null;
   };
   onChange: (changes: XYResizerChange, childChanges: XYResizerChildChange[]) => void;
-  onEnd?: () => void;
+  onEnd?: (change: Required<XYResizerChange>) => void;
 };
 
 type XYResizerUpdateParams = {
@@ -188,13 +188,13 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
       })
       .on('drag', (event: ResizeDragEvent) => {
         const { transform, snapGrid, snapToGrid, nodeOrigin: storeNodeOrigin } = getStoreItems();
-
         const pointerPosition = getPointerPosition(event.sourceEvent, {
           transform,
           snapGrid,
           snapToGrid,
           containerBounds,
         });
+
         const childChanges: XYResizerChildChange[] = [];
 
         if (!node) {
@@ -294,7 +294,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
       })
       .on('end', (event: ResizeDragEvent) => {
         onResizeEnd?.(event, { ...prevValues });
-        onEnd?.();
+        onEnd?.({ ...prevValues });
       });
     selection.call(dragHandler);
   }
