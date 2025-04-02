@@ -1,5 +1,28 @@
 # @xyflow/react
 
+## 12.5.4
+
+### Patch Changes
+
+- [#5134](https://github.com/xyflow/xyflow/pull/5134) [`7acab1e1`](https://github.com/xyflow/xyflow/commit/7acab1e123944c296180fbf826a3fd488963608f) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Adjust `@default` TSDoc tags for `BackgroundProps`
+
+- [#5135](https://github.com/xyflow/xyflow/pull/5135) [`754a1671`](https://github.com/xyflow/xyflow/commit/754a167134f22fa00a139de4c7e10aaaa1953ac8) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `NodeResizerProps` and `ResizeControlProps`
+
+- [#5140](https://github.com/xyflow/xyflow/pull/5140) [`82e6860e`](https://github.com/xyflow/xyflow/commit/82e6860e1354b8bb8047399b7773fd090be206d7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `MiniMapProps` and `PanelProps`
+
+- [#5147](https://github.com/xyflow/xyflow/pull/5147) [`f819005b`](https://github.com/xyflow/xyflow/commit/f819005be362d044b16ce4c0b85432f3f300a13a) Thanks [@moklick](https://github.com/moklick)! - Pass dimensions to final resize change event
+
+- [#5143](https://github.com/xyflow/xyflow/pull/5143) [`b1e1cc11`](https://github.com/xyflow/xyflow/commit/b1e1cc1125d106cf1521a1524286404483e38f30) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `ReactFlowInstance` and `GeneralHelpers`
+
+- [#5138](https://github.com/xyflow/xyflow/pull/5138) [`d4eb8d52`](https://github.com/xyflow/xyflow/commit/d4eb8d52d0e26e9534ec5fc347211ce91d1ddd32) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `ViewportHelperFunctions` and `NodeToolbarProps`
+
+- [#5144](https://github.com/xyflow/xyflow/pull/5144) [`5a1ce56e`](https://github.com/xyflow/xyflow/commit/5a1ce56e8ce83f01e01ef531d90c52181c3e3a1a) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Compare `nodeStrokeWidth` with `number`, not with `string` within `MiniMap`
+
+- [#5141](https://github.com/xyflow/xyflow/pull/5141) [`06cf4c10`](https://github.com/xyflow/xyflow/commit/06cf4c10f5d8a43f57ee0fde19d9a3fe1044cf48) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `Edge`, `BaseEdgeProps` and `ConnectionLineComponentProps`
+
+- Updated dependencies [[`f819005b`](https://github.com/xyflow/xyflow/commit/f819005be362d044b16ce4c0b85432f3f300a13a), [`24a1bc89`](https://github.com/xyflow/xyflow/commit/24a1bc89348817ed9b5c87f74bf2519c705143be), [`36657cd6`](https://github.com/xyflow/xyflow/commit/36657cd66322c911e87eb37275c584a80025adfe), [`89de9ca8`](https://github.com/xyflow/xyflow/commit/89de9ca83fbf9263a687a0f5f915efb2beb31654), [`2ac6e155`](https://github.com/xyflow/xyflow/commit/2ac6e155e35256ca436281df16344366e7d05761), [`f0f378e5`](https://github.com/xyflow/xyflow/commit/f0f378e5b6918c2c30d9dc1e32587063cb942d4e)]:
+  - @xyflow/system@0.0.54
+
 ## 12.5.3
 
 ### Patch Changes
