@@ -1,5 +1,21 @@
 # @xyflow/system
 
+## 0.0.54
+
+### Patch Changes
+
+- [#5147](https://github.com/xyflow/xyflow/pull/5147) [`f819005b`](https://github.com/xyflow/xyflow/commit/f819005be362d044b16ce4c0b85432f3f300a13a) Thanks [@moklick](https://github.com/moklick)! - Pass dimensions to final resize change event
+
+- [#5142](https://github.com/xyflow/xyflow/pull/5142) [`24a1bc89`](https://github.com/xyflow/xyflow/commit/24a1bc89348817ed9b5c87f74bf2519c705143be) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `HandleProps`, `NodeBase` and `InternalNodeBase`
+
+- [#5136](https://github.com/xyflow/xyflow/pull/5136) [`36657cd6`](https://github.com/xyflow/xyflow/commit/36657cd66322c911e87eb37275c584a80025adfe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `EdgeBase`
+
+- [#5139](https://github.com/xyflow/xyflow/pull/5139) [`89de9ca8`](https://github.com/xyflow/xyflow/commit/89de9ca83fbf9263a687a0f5f915efb2beb31654) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Use `rgba` for colors with opacity instead of `rgb` for `MiniMap` mask color
+
+- [#5148](https://github.com/xyflow/xyflow/pull/5148) [`2ac6e155`](https://github.com/xyflow/xyflow/commit/2ac6e155e35256ca436281df16344366e7d05761) Thanks [@moklick](https://github.com/moklick)! - Prevent browser zoom for pinch zoom gestures on nowheel elements
+
+- [#5137](https://github.com/xyflow/xyflow/pull/5137) [`f0f378e5`](https://github.com/xyflow/xyflow/commit/f0f378e5b6918c2c30d9dc1e32587063cb942d4e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `Connection` and `ConnectionInProgress`
+
 ## 0.0.53
 
 ### Patch Changes

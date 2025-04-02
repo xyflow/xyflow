@@ -1,5 +1,14 @@
 # @xyflow/svelte
 
+## 0.1.34
+
+### Patch Changes
+
+- [#5139](https://github.com/xyflow/xyflow/pull/5139) [`89de9ca8`](https://github.com/xyflow/xyflow/commit/89de9ca83fbf9263a687a0f5f915efb2beb31654) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Use `rgba` for colors with opacity instead of `rgb` for `MiniMap` mask color
+
+- Updated dependencies [[`f819005b`](https://github.com/xyflow/xyflow/commit/f819005be362d044b16ce4c0b85432f3f300a13a), [`24a1bc89`](https://github.com/xyflow/xyflow/commit/24a1bc89348817ed9b5c87f74bf2519c705143be), [`36657cd6`](https://github.com/xyflow/xyflow/commit/36657cd66322c911e87eb37275c584a80025adfe), [`89de9ca8`](https://github.com/xyflow/xyflow/commit/89de9ca83fbf9263a687a0f5f915efb2beb31654), [`2ac6e155`](https://github.com/xyflow/xyflow/commit/2ac6e155e35256ca436281df16344366e7d05761), [`f0f378e5`](https://github.com/xyflow/xyflow/commit/f0f378e5b6918c2c30d9dc1e32587063cb942d4e)]:
+  - @xyflow/system@0.0.54
+
 ## 0.1.33
 
 ### Patch Changes
