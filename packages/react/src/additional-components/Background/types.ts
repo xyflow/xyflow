@@ -18,18 +18,18 @@ export enum BackgroundVariant {
 export type BackgroundProps = {
   /** When multiple backgrounds are present on the page, each one should have a unique id. */
   id?: string;
-  /** Color of the pattern */
+  /** Color of the pattern. */
   color?: string;
-  /** Color of the background */
+  /** Color of the background. */
   bgColor?: string;
-  /** Class applied to the container */
+  /** Class applied to the container. */
   className?: string;
-  /** Class applied to the pattern */
+  /** Class applied to the pattern. */
   patternClassName?: string;
   /**
    * The gap between patterns. Passing in a tuple allows you to control the x and y gap
    * independently.
-   * @default '28'
+   * @default 20
    */
   gap?: number | [number, number];
   /**
@@ -39,8 +39,8 @@ export type BackgroundProps = {
    */
   size?: number;
   /**
-   * Offset of the pattern
-   * @default 2
+   * Offset of the pattern.
+   * @default 0
    */
   offset?: number | [number, number];
   /**
@@ -49,12 +49,12 @@ export type BackgroundProps = {
    */
   lineWidth?: number;
   /**
-   * Variant of the pattern
+   * Variant of the pattern.
    * @default BackgroundVariant.Dots
    * @example BackgroundVariant.Lines, BackgroundVariant.Dots, BackgroundVariant.Cross
    * 'lines', 'dots', 'cross'
    */
   variant?: BackgroundVariant;
-  /** Style applied to the container */
+  /** Style applied to the container. */
   style?: CSSProperties;
 };
