@@ -142,11 +142,15 @@ function ResizeControl({
 
           triggerNodeChanges(changes);
         },
-        onEnd: () => {
+        onEnd: ({ width, height }) => {
           const dimensionChange: NodeDimensionChange = {
             id: id,
             type: 'dimensions',
             resizing: false,
+            dimensions: {
+              width,
+              height,
+            },
           };
           store.getState().triggerNodeChanges([dimensionChange]);
         },
