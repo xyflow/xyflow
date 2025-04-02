@@ -125,7 +125,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
   const onSvgNodeClick = onNodeClick
     ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node = store.getState().nodeLookup.get(nodeId)!;
+        const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
         onNodeClick(event, node);
       }, [])
     : undefined;
