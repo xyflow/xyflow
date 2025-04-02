@@ -297,7 +297,7 @@
     --background-color-default: #fff;
     --background-pattern-color-default: #ddd;
 
-    --minimap-mask-color-default: rgb(240, 240, 240, 0.6);
+    --minimap-mask-color-default: rgba(240, 240, 240, 0.6);
     --minimap-mask-stroke-color-default: none;
     --minimap-mask-stroke-width-default: 1;
 
