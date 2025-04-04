@@ -158,4 +158,8 @@
   &-button:last-child {
     border-bottom: none;
   }
+
+  &.horizontal &-button {
+    border-bottom: none;
+  }
 }
