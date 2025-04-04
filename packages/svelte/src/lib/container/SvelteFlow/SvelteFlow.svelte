@@ -46,8 +46,8 @@
   export let connectionRadius: $$Props['connectionRadius'] = undefined;
   export let connectionLineType: $$Props['connectionLineType'] = undefined;
   export let connectionMode: $$Props['connectionMode'] = ConnectionMode.Strict;
-  export let connectionLineStyle: $$Props['connectionLineStyle'] = '';
-  export let connectionLineContainerStyle: $$Props['connectionLineContainerStyle'] = '';
+  export let connectionLineStyle: $$Props['connectionLineStyle'] = undefined;
+  export let connectionLineContainerStyle: $$Props['connectionLineContainerStyle'] = undefined;
   export let onMoveStart: $$Props['onMoveStart'] = undefined;
   export let onMove: $$Props['onMove'] = undefined;
   export let onMoveEnd: $$Props['onMoveEnd'] = undefined;

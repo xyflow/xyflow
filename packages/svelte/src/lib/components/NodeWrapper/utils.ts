@@ -13,21 +13,21 @@ export function getNodeInlineStyleDimensions({
   measuredWidth?: number;
   measuredHeight?: number;
 }): {
-  width: string | undefined;
-  height: string | undefined;
+  width: number | undefined;
+  height: number | undefined;
 } {
   if (measuredWidth === undefined && measuredHeight === undefined) {
     const styleWidth = width ?? initialWidth;
     const styleHeight = height ?? initialHeight;
 
     return {
-      width: styleWidth ? `width:${styleWidth}px;` : '',
-      height: styleHeight ? `height:${styleHeight}px;` : ''
+      width: styleWidth,
+      height: styleHeight
     };
   }
 
   return {
-    width: width ? `width:${width}px;` : '',
-    height: height ? `height:${height}px;` : ''
+    width: width,
+    height: height
   };
 }

@@ -24,8 +24,8 @@
   ry={borderRadius}
   {width}
   {height}
-  style={`${color ? `fill: ${color};` : ''}${strokeColor ? `stroke: ${strokeColor};` : ''}${
-    strokeWidth ? `stroke-width: ${strokeWidth};` : ''
-  }`}
+  style:fill={color ? color : ''}
+  style:stroke={strokeColor ? strokeColor : ''}
+  style:stroke-width={strokeWidth ? strokeWidth : ''}
   shape-rendering={shapeRendering}
 />

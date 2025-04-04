@@ -6,7 +6,7 @@
 
 <div
   class="svelte-flow__viewport xyflow__viewport"
-  style="transform: translate({$viewport.x}px, {$viewport.y}px) scale({$viewport.zoom})"
+  style:transform="translate({$viewport.x}px, {$viewport.y}px) scale({$viewport.zoom})"
 >
   <slot />
 </div>

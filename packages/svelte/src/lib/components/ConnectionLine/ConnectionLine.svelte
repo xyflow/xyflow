@@ -10,8 +10,8 @@
     getStraightPath
   } from '@xyflow/system';
 
-  export let containerStyle: string = '';
-  export let style: string = '';
+  export let containerStyle: string | undefined = undefined;
+  export let style: string | undefined = undefined;
   export let isCustomComponent: boolean = false;
 
   const { width, height, connection, connectionLineType } = useStore();

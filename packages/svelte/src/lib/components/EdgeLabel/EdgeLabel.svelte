@@ -18,7 +18,8 @@
   <div
     class="svelte-flow__edge-label"
     style:transform="translate(-50%, -50%) translate({x}px,{y}px)"
-    style={'pointer-events: all;' + style}
+    style:pointer-events="all"
+    {style}
     role="button"
     tabindex="-1"
     on:keyup={() => {}}
