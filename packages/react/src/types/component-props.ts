@@ -137,16 +137,16 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
   /**
    * This event handler is called when a Node is updated
-   * @example // Use NodesState hook to create edges and get onNodesChange handler
+   * @example // Use NodesState hook to create nodes and get onNodesChange handler
    * import ReactFlow, { useNodesState } from '@xyflow/react';
-   * const [edges, setNodes, onNodesChange] = useNodesState(initialNodes);
+   * const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
    *
    * return (<ReactFlow onNodeChange={onNodeChange} {...rest} />)
-   * @example // Use helper function to update edge
+   * @example // Use helper function to update node
    * import ReactFlow, { applyNodeChanges } from '@xyflow/react';
    *
    * const onNodeChange = useCallback(
-   *  (changes) => setNode((eds) => applyNodeChanges(changes, eds)),
+   *  (changes) => setNode((nds) => applyNodeChanges(changes, nds)),
    *  [],
    * );
    *
