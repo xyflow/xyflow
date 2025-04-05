@@ -11,7 +11,7 @@ const nodesSelector = (state: ReactFlowState) => state.nodes;
  * or moved.
  *
  * @public
- * @returns An array of nodes
+ * @returns An array of all nodes currently in the flow.
  *
  * @example
  * ```jsx

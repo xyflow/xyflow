@@ -10,7 +10,7 @@ const edgesSelector = (state: ReactFlowState) => state.edges;
  * will re-render **whenever any edge changes**.
  *
  * @public
- * @returns An array of edges
+ * @returns An array of all edges currently in the flow.
  *
  * @example
  * ```tsx
