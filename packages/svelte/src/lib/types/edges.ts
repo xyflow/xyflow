@@ -11,8 +11,8 @@ import type {
 import type { Node } from '$lib/types';
 
 /**
- * An `Edge` is the complete description with everything React Flow needs
- *to know in order to render it.
+ * An `Edge` is the complete description with everything Svelte Flow needs to know in order to
+ * render it.
  * @public
  */
 export type Edge<
