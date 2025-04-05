@@ -215,7 +215,16 @@ function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): str
  * between two nodes. The `borderRadius` property can be used to choose how rounded
  * the corners of those steps are.
  * @public
- * @returns A path string you can use in an SVG, the labelX and labelY position (center of path) and offsetX, offsetY between source handle and label
+ * @returns A path string you can use in an SVG, the `labelX` and `labelY` position (center of path)
+ * and `offsetX`, `offsetY` between source handle and label.
+ *
+ * - `path`: the path to use in an SVG `<path>` element.
+ * - `labelX`: the `x` position you can use to render a label for this edge.
+ * - `labelY`: the `y` position you can use to render a label for this edge.
+ * - `offsetX`: the absolute difference between the source `x` position and the `x` position of the
+ * middle of this path.
+ * - `offsetY`: the absolute difference between the source `y` position and the `y` position of the
+ * middle of this path.
  * @example
  * ```js
  *  const source = { x: 0, y: 20 };
@@ -231,14 +240,6 @@ function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): str
  *  });
  * ```
  * @remarks This function returns a tuple (aka a fixed-size array) to make it easier to work with multiple edge paths at once.
- * @returns
- * - `path`: the path to use in an SVG `<path>` element.
- * - `labelX`: the `x` position you can use to render a label for this edge.
- * - `labelY`: the `y` position you can use to render a label for this edge.
- * - `offsetX`: the absolute difference between the source `x` position and the `x` position of the
- * middle of this path.
- * - `offsetY`: the absolute difference between the source `y` position and the `y` position of the
- * middle of this path.
  */
 export function getSmoothStepPath({
   sourceX,
