@@ -14,10 +14,15 @@ import { useNodeId } from '../contexts/NodeIdContext';
 const error014 = errorMessages['error014']();
 
 type UseNodeConnectionsParams = {
+  /** ID of the node, filled in automatically if used inside custom node. */
   id?: string;
+  /** What type of handle connections do you want to observe? */
   handleType?: HandleType;
+  /** Filter by handle id (this is only needed if the node has multiple handles of the same type). */
   handleId?: string;
+  /** Gets called when a connection is established. */
   onConnect?: (connections: Connection[]) => void;
+  /** Gets called when a connection is removed. */
   onDisconnect?: (connections: Connection[]) => void;
 };
 
@@ -25,12 +30,7 @@ type UseNodeConnectionsParams = {
  * This hook returns an array of connections on a specific node, handle type ('source', 'target') or handle ID.
  *
  * @public
- * @param param.id - node id - optional if called inside a custom node
- * @param param.handleType - filter by handle type 'source' or 'target'
- * @param param.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type)
- * @param param.onConnect - gets called when a connection is established
- * @param param.onDisconnect - gets called when a connection is removed
- * @returns an array with connections
+ * @returns An array with connections.
  *
  * @example
  * ```jsx
@@ -73,7 +73,7 @@ export function useNodeConnections({
   );
 
   useEffect(() => {
-    // @todo dicuss if onConnect/onDisconnect should be called when the component mounts/unmounts
+    // @todo discuss if onConnect/onDisconnect should be called when the component mounts/unmounts
     if (prevConnections.current && prevConnections.current !== connections) {
       const _connections = connections ?? new Map();
       handleConnectionChange(prevConnections.current, _connections, onDisconnect);
