@@ -2,15 +2,29 @@ import { getEdgeCenter } from './general';
 import { Position, type XYPosition } from '../../types';
 
 export interface GetSmoothStepPathParams {
+  /** The `x` position of the source handle. */
   sourceX: number;
+  /** The `y` position of the source handle. */
   sourceY: number;
+  /**
+   * The position of the source handle.
+   * @default Position.Bottom
+   */
   sourcePosition?: Position;
+  /** The `x` position of the target handle. */
   targetX: number;
+  /** The `y` position of the target handle. */
   targetY: number;
+  /**
+   * The position of the target handle.
+   * @default Position.Top
+   */
   targetPosition?: Position;
+  /** @default 5 */
   borderRadius?: number;
   centerX?: number;
   centerY?: number;
+  /** @default 20 */
   offset?: number;
 }
 
@@ -39,8 +53,8 @@ const getDirection = ({
 const distance = (a: XYPosition, b: XYPosition) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 
 /*
- * ith this function we try to mimic a orthogonal edge routing behaviour
- * It's not as good as a real orthogonal edge routing but it's faster and good enough as a default for step and smooth step edges
+ * With this function we try to mimic an orthogonal edge routing behaviour
+ * It's not as good as a real orthogonal edge routing, but it's faster and good enough as a default for step and smooth step edges
  */
 function getPoints({
   source,
@@ -198,15 +212,9 @@ function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): str
 
 /**
  * The `getSmoothStepPath` util returns everything you need to render a stepped path
- *between two nodes. The `borderRadius` property can be used to choose how rounded
- *the corners of those steps are.
+ * between two nodes. The `borderRadius` property can be used to choose how rounded
+ * the corners of those steps are.
  * @public
- * @param params.sourceX - The x position of the source handle
- * @param params.sourceY - The y position of the source handle
- * @param params.sourcePosition - The position of the source handle (default: Position.Bottom)
- * @param params.targetX - The x position of the target handle
- * @param params.targetY - The y position of the target handle
- * @param params.targetPosition - The position of the target handle (default: Position.Top)
  * @returns A path string you can use in an SVG, the labelX and labelY position (center of path) and offsetX, offsetY between source handle and label
  * @example
  * ```js
@@ -223,6 +231,14 @@ function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): str
  *  });
  * ```
  * @remarks This function returns a tuple (aka a fixed-size array) to make it easier to work with multiple edge paths at once.
+ * @returns
+ * - `path`: the path to use in an SVG `<path>` element.
+ * - `labelX`: the `x` position you can use to render a label for this edge.
+ * - `labelY`: the `y` position you can use to render a label for this edge.
+ * - `offsetX`: the absolute difference between the source `x` position and the `x` position of the
+ * middle of this path.
+ * - `offsetY`: the absolute difference between the source `y` position and the `y` position of the
+ * middle of this path.
  */
 export function getSmoothStepPath({
   sourceX,
