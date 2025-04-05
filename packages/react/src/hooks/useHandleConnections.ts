@@ -10,11 +10,16 @@ import {
 import { useStore } from './useStore';
 import { useNodeId } from '../contexts/NodeIdContext';
 
-type useHandleConnectionsParams = {
+type UseHandleConnectionsParams = {
+  /** What type of handle connections do you want to observe? */
   type: HandleType;
+  /** The handle id (this is only needed if the node has multiple handles of the same type). */
   id?: string | null;
+  /** If node id is not provided, the node id from the `NodeIdContext` is used. */
   nodeId?: string;
+  /** Gets called when a connection is established. */
   onConnect?: (connections: Connection[]) => void;
+  /** Gets called when a connection is removed. */
   onDisconnect?: (connections: Connection[]) => void;
 };
 
@@ -23,12 +28,7 @@ type useHandleConnectionsParams = {
  *
  * @public
  * @deprecated Use `useNodeConnections` instead.
- * @param param.type - handle type 'source' or 'target'
- * @param param.nodeId - node id - if not provided, the node id from the NodeIdContext is used
- * @param param.id - the handle id (this is only needed if the node has multiple handles of the same type)
- * @param param.onConnect - gets called when a connection is established
- * @param param.onDisconnect - gets called when a connection is removed
- * @returns an array with handle connections
+ * @returns An array with handle connections.
  */
 export function useHandleConnections({
   type,
@@ -36,7 +36,7 @@ export function useHandleConnections({
   nodeId,
   onConnect,
   onDisconnect,
-}: useHandleConnectionsParams): HandleConnection[] {
+}: UseHandleConnectionsParams): HandleConnection[] {
   console.warn(
     '[DEPRECATED] `useHandleConnections` is deprecated. Instead use `useNodeConnections` https://reactflow.dev/api-reference/hooks/useNodeConnections'
   );
