@@ -10,7 +10,7 @@ export const Consumer = NodeIdContext.Consumer;
  * drill down the id as a prop.
  *
  * @public
- * @returns id of the node
+ * @returns The id for a node in the flow.
  *
  * @example
  *```jsx
