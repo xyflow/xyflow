@@ -4,6 +4,7 @@ import { useStore } from './useStore';
 import type { ReactFlowState } from '../types';
 
 export type UseNodesInitializedOptions = {
+  /** @default false */
   includeHiddenNodes?: boolean;
 };
 
@@ -29,8 +30,8 @@ const selector = (options: UseNodesInitializedOptions) => (s: ReactFlowState) =>
  *`false` and then `true` again once the node has been measured.
  *
  * @public
- * @param options.includeHiddenNodes - defaults to false
- * @returns boolean indicating whether all nodes are initialized
+ * @returns Whether or not the nodes have been initialized by the `<ReactFlow />` component and
+ * given a width and height.
  *
  * @example
  * ```jsx
