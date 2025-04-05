@@ -30,6 +30,10 @@ function getSelector<NodeType extends Node = Node, SelectorReturn = ConnectionSt
  * based on a certain condition (e.g. if the connection is valid or not).
  *
  * @public
+ * @param connectionSelector - An optional selector function used to extract a slice of the
+ * `ConnectionState` data. Using a selector can prevent component re-renders where data you don't
+ * otherwise care about might change. If a selector is not provided, the entire `ConnectionState`
+ * object is returned unchanged.
  * @example
  *
  * ```tsx
