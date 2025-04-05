@@ -5,12 +5,13 @@ import { useStoreApi } from '../hooks/useStore';
 
 /**
  * When you programmatically add or remove handles to a node or update a node's
- *handle position, you need to let React Flow know about it using this hook. This
- *will update the internal dimensions of the node and properly reposition handles
- *on the canvas if necessary.
+ * handle position, you need to let React Flow know about it using this hook. This
+ * will update the internal dimensions of the node and properly reposition handles
+ * on the canvas if necessary.
  *
  * @public
- * @returns function for updating node internals
+ * @returns Use this function to tell React Flow to update the internal state of one or more nodes
+ * that you have changed programmatically.
  *
  * @example
  * ```jsx
