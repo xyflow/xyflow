@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-Improve TSDoc comments for type `useStore` hook
+Improve TSDoc comments for `useStore` hook
