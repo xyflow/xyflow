@@ -3,7 +3,7 @@ import { isNodeBase, isEdgeBase } from '@xyflow/system';
 import type { Edge, Node } from '$lib/types';
 
 /**
- * Test whether an object is useable as a Node
+ * Test whether an object is usable as a Node
  * @public
  * @remarks In TypeScript this is a type guard that will narrow the type of whatever you pass in to Node if it returns true
  * @param element - The element to test
@@ -13,7 +13,7 @@ export const isNode = <NodeType extends Node = Node>(element: unknown): element 
   isNodeBase<NodeType>(element);
 
 /**
- * Test whether an object is useable as an Edge
+ * Test whether an object is usable as an Edge
  * @public
  * @remarks In TypeScript this is a type guard that will narrow the type of whatever you pass in to Edge if it returns true
  * @param element - The element to test
