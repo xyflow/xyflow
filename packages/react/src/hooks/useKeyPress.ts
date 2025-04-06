@@ -7,8 +7,7 @@ type KeyOrCode = 'key' | 'code';
 
 export type UseKeyPressOptions = {
   /**
-   * You may want to listen to key presses on a specific element. This field lets you configure
-   * that!
+   * Listen to key presses on a specific element.
    * @default document
    */
   target?: Window | Document | HTMLElement | ShadowRoot | null;
