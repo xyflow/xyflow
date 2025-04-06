@@ -11,7 +11,7 @@ import { useStore, useStoreApi } from '../../hooks/useStore';
 import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
-// these fields exist in the global store and we need to keep them up to date
+// These fields exist in the global store, and we need to keep them up to date
 const reactFlowFieldsToTrack = [
   'nodes',
   'edges',

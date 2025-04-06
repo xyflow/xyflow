@@ -147,9 +147,9 @@ function applyChange(change: any, element: any): any {
 /**
  * Drop in function that applies node changes to an array of nodes.
  * @public
- * @param changes - Array of changes to apply
- * @param nodes - Array of nodes to apply the changes to
- * @returns Array of updated nodes
+ * @param changes - Array of changes to apply.
+ * @param nodes - Array of nodes to apply the changes to.
+ * @returns Array of updated nodes.
  * @example
  *```tsx
  *import { useState, useCallback } from 'react';
@@ -185,9 +185,9 @@ export function applyNodeChanges<NodeType extends Node = Node>(
 /**
  * Drop in function that applies edge changes to an array of edges.
  * @public
- * @param changes - Array of changes to apply
- * @param edges - Array of edge to apply the changes to
- * @returns Array of updated edges
+ * @param changes - Array of changes to apply.
+ * @param edges - Array of edge to apply the changes to.
+ * @returns Array of updated edges.
  * @example
  * ```tsx
  *import { useState, useCallback } from 'react';
