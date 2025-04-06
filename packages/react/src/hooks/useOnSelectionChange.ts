@@ -4,6 +4,7 @@ import { useStoreApi } from './useStore';
 import type { OnSelectionChangeFunc, Node, Edge } from '../types';
 
 export type UseOnSelectionChangeOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  /** The handler to register. */
   onChange: OnSelectionChangeFunc<NodeType, EdgeType>;
 };
 
@@ -13,8 +14,6 @@ export type UseOnSelectionChangeOptions<NodeType extends Node = Node, EdgeType e
  *_either_ nodes or edges changes.
  *
  * @public
- * @param params.onChange - The handler to register
- *
  * @example
  * ```jsx
  *import { useState } from 'react';
