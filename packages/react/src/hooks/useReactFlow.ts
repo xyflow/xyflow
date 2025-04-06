@@ -31,8 +31,6 @@ const selector = (s: ReactFlowState) => !!s.panZoom;
  * This hook returns a ReactFlowInstance that can be used to update nodes and edges, manipulate the viewport, or query the current state of the flow.
  *
  * @public
- * @returns ReactFlowInstance
- *
  * @example
  * ```jsx
  *import { useCallback, useState } from 'react';
