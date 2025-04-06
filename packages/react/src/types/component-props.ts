@@ -149,10 +149,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * This event fires when the user releases the source or target of an editable edge. It is called
    * even if an edge update does not occur.
    *
-   * You can use the fourth `connectionState` parameter to have different behavior when a
-   * reconnection was unsuccessful.
    */
-  // @TODO: connectionState outdated info?
   onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
   /**
    * Use this event handler to add interactivity to a controlled flow.
