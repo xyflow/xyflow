@@ -10,8 +10,8 @@ import type { InternalNode, Node } from '../types';
  * including when a node is selected or moved.
  *
  * @public
- * @param id - id of the node
- * @returns array with visible node ids
+ * @param id - The ID of a node you want to observe.
+ * @returns The `InternalNode` object for the node with the given ID.
  *
  * @example
  * ```tsx
