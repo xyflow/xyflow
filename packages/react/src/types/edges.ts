@@ -148,7 +148,7 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
  * @public
  * @expand
  */
-export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd' | 'path'> &
+export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd' | 'path' | 'markerStart' | 'markerEnd'> &
   EdgeLabelOptions & {
     /**
      * The width of the invisible area around the edge that the user can interact with. This is
@@ -166,6 +166,16 @@ export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd' | 'path'> &
      * be used to generate this string for you.
      */
     path: string;
+    /**
+     * The id of the SVG marker to use at the start of the edge. This should be defined in a
+     * `<defs>` element in a separate SVG document or element.
+     */
+    markerStart?: string;
+    /**
+     * The id of the SVG marker to use at the end of the edge. This should be defined in a `<defs>`
+     * element in a separate SVG document or element.
+     */
+    markerEnd?: string;
   };
 
 /**
