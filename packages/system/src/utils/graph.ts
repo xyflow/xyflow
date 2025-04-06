@@ -30,7 +30,7 @@ import {
 import { errorMessages } from '../constants';
 
 /**
- * Test whether an object is useable as an Edge
+ * Test whether an object is usable as an Edge
  * @public
  * @remarks In TypeScript this is a type guard that will narrow the type of whatever you pass in to Edge if it returns true
  * @param element - The element to test
@@ -40,7 +40,7 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): 
   'id' in element && 'source' in element && 'target' in element;
 
 /**
- * Test whether an object is useable as a Node
+ * Test whether an object is usable as a Node
  * @public
  * @remarks In TypeScript this is a type guard that will narrow the type of whatever you pass in to Node if it returns true
  * @param element - The element to test
@@ -57,10 +57,10 @@ export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalN
  * This util is used to tell you what nodes, if any, are connected to the given node
  * as the _target_ of an edge.
  * @public
- * @param node - The node to get the connected nodes from
- * @param nodes - The array of all nodes
- * @param edges - The array of all edges
- * @returns An array of nodes that are connected over eges where the source is the given node
+ * @param node - The node to get the connected nodes from.
+ * @param nodes - The array of all nodes.
+ * @param edges - The array of all edges.
+ * @returns An array of nodes that are connected over edges where the source is the given node.
  *
  * @example
  * ```ts
@@ -99,10 +99,10 @@ export const getOutgoers = <NodeType extends NodeBase = NodeBase, EdgeType exten
  * This util is used to tell you what nodes, if any, are connected to the given node
  * as the _source_ of an edge.
  * @public
- * @param node - The node to get the connected nodes from
- * @param nodes - The array of all nodes
- * @param edges - The array of all edges
- * @returns An array of nodes that are connected over eges where the target is the given node
+ * @param node - The node to get the connected nodes from.
+ * @param nodes - The array of all nodes.
+ * @param edges - The array of all edges.
+ * @returns An array of nodes that are connected over edges where the target is the given node.
  *
  * @example
  * ```ts
@@ -149,6 +149,10 @@ export const getNodePositionWithOrigin = (node: NodeBase, nodeOrigin: NodeOrigin
 };
 
 export type GetNodesBoundsParams<NodeType extends NodeBase = NodeBase> = {
+  /**
+   * Origin of the nodes: `[0, 0]` for top-left, `[0.5, 0.5]` for center.
+   * @default [0, 0]
+   */
   nodeOrigin?: NodeOrigin;
   nodeLookup?: NodeLookup<InternalNodeBase<NodeType>>;
 };
@@ -159,9 +163,8 @@ export type GetNodesBoundsParams<NodeType extends NodeBase = NodeBase> = {
  * to calculate the correct transform to fit the given nodes in a viewport.
  * @public
  * @remarks Useful when combined with {@link getViewportForBounds} to calculate the correct transform to fit the given nodes in a viewport.
- * @param nodes - Nodes to calculate the bounds for
- * @param params.nodeOrigin - Origin of the nodes: [0, 0] - top left, [0.5, 0.5] - center
- * @returns Bounding box enclosing all nodes
+ * @param nodes - Nodes to calculate the bounds for.
+ * @returns Bounding box enclosing all nodes.
  *
  * @remarks This function was previously called `getRectOfNodes`
  *
@@ -191,7 +194,7 @@ export type GetNodesBoundsParams<NodeType extends NodeBase = NodeBase> = {
  */
 export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
   nodes: (NodeType | InternalNodeBase<NodeType> | string)[],
-  params: GetNodesBoundsParams<NodeType> = { nodeOrigin: [0, 0], nodeLookup: undefined }
+  params: GetNodesBoundsParams<NodeType> = { nodeOrigin: [0, 0] }
 ): Rect => {
   if (process.env.NODE_ENV === 'development' && !params.nodeLookup) {
     console.warn(
@@ -299,9 +302,9 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
  * This utility filters an array of edges, keeping only those where either the source or target
  * node is present in the given array of nodes.
  * @public
- * @param nodes - Nodes you want to get the connected edges for
- * @param edges - All edges
- * @returns Array of edges that connect any of the given nodes with each other
+ * @param nodes - Nodes you want to get the connected edges for.
+ * @param edges - All edges.
+ * @returns Array of edges that connect any of the given nodes with each other.
  *
  * @example
  * ```js
