@@ -1,5 +1,40 @@
 # @xyflow/react
 
+## 12.5.5
+
+### Patch Changes
+
+- [#5172](https://github.com/xyflow/xyflow/pull/5172) [`e6139a00`](https://github.com/xyflow/xyflow/commit/e6139a00d4414ba2c1d3e500cdfa67d7e66e655a) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `useNodesData`, `useReactFlow`, `isNode` and `isEdge`
+
+- [#5165](https://github.com/xyflow/xyflow/pull/5165) [`d536abea`](https://github.com/xyflow/xyflow/commit/d536abea9240bad7f5c1064efc0a4713ebef87d1) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `useViewport`, `useUpdateNodeInternals`, `useOnSelectionChange`, `useNodesInitialized` hooks and `UseOnSelectionChangeOptions`, `UseNodesInitializedOptions` types
+
+- [#5171](https://github.com/xyflow/xyflow/pull/5171) [`62d87409`](https://github.com/xyflow/xyflow/commit/62d874097337a022bebe54b559834c0d582f435e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `ReactFlowProps`
+
+- [#5154](https://github.com/xyflow/xyflow/pull/5154) [`d0237166`](https://github.com/xyflow/xyflow/commit/d02371662669aab91cd2ac7c45b412491c3377bd) Thanks [@ibagov](https://github.com/ibagov)! - Improve TSDoc comments for `onNodesChange`
+
+- [#5174](https://github.com/xyflow/xyflow/pull/5174) [`ae585d13`](https://github.com/xyflow/xyflow/commit/ae585d136e34c9e9ad9d45f75c059bc5367e73ae) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `BaseEdgeProps`
+
+- [#5159](https://github.com/xyflow/xyflow/pull/5159) [`0c1436d6`](https://github.com/xyflow/xyflow/commit/0c1436d6a371240cfa0adecea573c44fd42df7b3) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `useConnection` hook
+
+- [#5167](https://github.com/xyflow/xyflow/pull/5167) [`934ea42d`](https://github.com/xyflow/xyflow/commit/934ea42d9af6027a3164e1196a78140bdd05d347) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `useEdges`, `useInternalNode`, `useNodes` and `useNodeId` hooks
+
+- [#5163](https://github.com/xyflow/xyflow/pull/5163) [`ab800054`](https://github.com/xyflow/xyflow/commit/ab800054a50c68f9c27dfad2b0d3833b782f4797) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `useNodesState` and `useEdgesState` hook
+
+- [#5160](https://github.com/xyflow/xyflow/pull/5160) [`b357f43d`](https://github.com/xyflow/xyflow/commit/b357f43dfa262205059ac9714198196b4aaf8870) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `type UseHandleConnectionsParams` and `useHandleConnections` hook
+
+- [#5162](https://github.com/xyflow/xyflow/pull/5162) [`29f4aeb2`](https://github.com/xyflow/xyflow/commit/29f4aeb260df0a5d83e775c7c2ed788f997006a7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `type UseNodeConnectionsParams` and `useNodeConnections` hook
+
+- [#5164](https://github.com/xyflow/xyflow/pull/5164) [`09021550`](https://github.com/xyflow/xyflow/commit/09021550dc72ac240fcbb6adb3cf530d91575f79) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `type UseOnViewportChangeOptions` and `useOnViewportChange` hook
+
+- [#5166](https://github.com/xyflow/xyflow/pull/5166) [`701ad17e`](https://github.com/xyflow/xyflow/commit/701ad17ed3f523389e7d0bf9a006bef249645c3d) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `useStore` hook
+
+- [#5170](https://github.com/xyflow/xyflow/pull/5170) [`eb2a33c6`](https://github.com/xyflow/xyflow/commit/eb2a33c6dfb0629e851ab3a0f2cd70eca92efc42) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `interface GetSimpleBezierPathParams` and `getSimpleBezierPath`
+
+- [#5161](https://github.com/xyflow/xyflow/pull/5161) [`c4efe749`](https://github.com/xyflow/xyflow/commit/c4efe749208e854dc9ced5bdd00933269d5b4382) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `type UseKeyPressOptions` and `useKeyPress` hook
+
+- Updated dependencies [[`02a3b746`](https://github.com/xyflow/xyflow/commit/02a3b74645799a3f0ce670b69365fa86ecb0616e), [`cbe305e1`](https://github.com/xyflow/xyflow/commit/cbe305e15a5c5d3b92583e0ec12364b2509f49bd), [`1f671bd4`](https://github.com/xyflow/xyflow/commit/1f671bd48f06230da841fdd1d7a312413ef16d03), [`aaebc462`](https://github.com/xyflow/xyflow/commit/aaebc462951ded8e91374c3e084d77af5ed7380a), [`6ec942fc`](https://github.com/xyflow/xyflow/commit/6ec942fc6501f81009c278cc995764bef3e8d03b)]:
+  - @xyflow/system@0.0.55
+
 ## 12.5.4
 
 ### Patch Changes

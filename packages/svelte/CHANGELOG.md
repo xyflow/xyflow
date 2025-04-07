@@ -1,5 +1,14 @@
 # @xyflow/svelte
 
+## 0.1.35
+
+### Patch Changes
+
+- [#5158](https://github.com/xyflow/xyflow/pull/5158) [`06696060`](https://github.com/xyflow/xyflow/commit/0669606050bb2138a44a1591176ac8e16afeb0f1) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Fix typo in TSDoc comments `React Flow` -> `Svelte Flow`
+
+- Updated dependencies [[`02a3b746`](https://github.com/xyflow/xyflow/commit/02a3b74645799a3f0ce670b69365fa86ecb0616e), [`cbe305e1`](https://github.com/xyflow/xyflow/commit/cbe305e15a5c5d3b92583e0ec12364b2509f49bd), [`1f671bd4`](https://github.com/xyflow/xyflow/commit/1f671bd48f06230da841fdd1d7a312413ef16d03), [`aaebc462`](https://github.com/xyflow/xyflow/commit/aaebc462951ded8e91374c3e084d77af5ed7380a), [`6ec942fc`](https://github.com/xyflow/xyflow/commit/6ec942fc6501f81009c278cc995764bef3e8d03b)]:
+  - @xyflow/system@0.0.55
+
 ## 0.1.34
 
 ### Patch Changes
