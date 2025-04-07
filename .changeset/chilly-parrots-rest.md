@@ -2,4 +2,4 @@
 '@xyflow/svelte': patch
 ---
 
-Fix typo `React Flow` -> `Svelte Flow`
+Fix typo in TSDoc comments `React Flow` -> `Svelte Flow`

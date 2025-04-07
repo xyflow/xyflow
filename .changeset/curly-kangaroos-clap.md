@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-Improve `onNodesChange` docs
+Improve TSDoc comments for `onNodesChange`
