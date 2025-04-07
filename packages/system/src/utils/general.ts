@@ -275,16 +275,16 @@ function calculateAppliedPaddings(bounds: Rect, x: number, y: number, zoom: numb
 }
 
 /**
- * Returns a viewport that encloses the given bounds with optional padding.
+ * Returns a viewport that encloses the given bounds with padding.
  * @public
  * @remarks You can determine bounds of nodes with {@link getNodesBounds} and {@link getBoundsOfRects}
- * @param bounds - Bounds to fit inside viewport
- * @param width - Width of the viewport
- * @param height  - Height of the viewport
- * @param minZoom - Minimum zoom level of the resulting viewport
- * @param maxZoom - Maximum zoom level of the resulting viewport
- * @param padding - Optional padding around the bounds
- * @returns A transforned {@link Viewport} that encloses the given bounds which you can pass to e.g. {@link setViewport}
+ * @param bounds - Bounds to fit inside viewport.
+ * @param width - Width of the viewport.
+ * @param height  - Height of the viewport.
+ * @param minZoom - Minimum zoom level of the resulting viewport.
+ * @param maxZoom - Maximum zoom level of the resulting viewport.
+ * @param padding - Padding around the bounds.
+ * @returns A transformed {@link Viewport} that encloses the given bounds which you can pass to e.g. {@link setViewport}.
  * @example
  * const { x, y, zoom } = getViewportForBounds(
  * { x: 0, y: 0, width: 100, height: 100},
