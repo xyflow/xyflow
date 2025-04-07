@@ -12,11 +12,11 @@ const viewportSelector = (state: ReactFlowState) => ({
 
 /**
  * The `useViewport` hook is a convenient way to read the current state of the
- *{@link Viewport} in a component. Components that use this hook
- *will re-render **whenever the viewport changes**.
+ * {@link Viewport} in a component. Components that use this hook
+ * will re-render **whenever the viewport changes**.
  *
  * @public
- * @returns The current viewport
+ * @returns The current viewport.
  *
  * @example
  *

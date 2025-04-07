@@ -14,9 +14,13 @@ const zustandErrorMessage = errorMessages['error001']();
  * state management library, so you should check out their docs for more details.
  *
  * @public
- * @param selector
- * @param equalityFn
- * @returns The selected state slice
+ * @param selector - A selector function that returns a slice of the flow's internal state.
+ * Extracting or transforming just the state you need is a good practice to avoid unnecessary
+ * re-renders.
+ * @param equalityFn - A function to compare the previous and next value. This is incredibly useful
+ * for preventing unnecessary re-renders. Good sensible defaults are using `Object.is` or importing
+ * `zustand/shallow`, but you can be as granular as you like.
+ * @returns The selected state slice.
  *
  * @example
  * ```ts
@@ -43,8 +47,7 @@ function useStore<StateSlice = unknown>(
 /**
  * In some cases, you might need to access the store directly. This hook returns the store object which can be used on demand to access the state or dispatch actions.
  *
- * @returns The store object
- *
+ * @returns The store object.
  * @example
  * ```ts
  * const store = useStoreApi();

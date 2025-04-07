@@ -6,7 +6,15 @@ type PressedKeys = Set<string>;
 type KeyOrCode = 'key' | 'code';
 
 export type UseKeyPressOptions = {
+  /**
+   * Listen to key presses on a specific element.
+   * @default document
+   */
   target?: Window | Document | HTMLElement | ShadowRoot | null;
+  /**
+   * You can use this flag to prevent triggering the key press hook when an input field is focused.
+   * @default true
+   */
   actInsideInputWithModifier?: boolean;
   preventDefault?: boolean;
 };
@@ -18,9 +26,7 @@ const defaultDoc = typeof document !== 'undefined' ? document : null;
  * currently pressed or not.
  *
  * @public
- * @param param.keyCode - The key code (string or array of strings) to use
- * @param param.options - Options
- * @returns boolean
+ * @param options - Options
  *
  * @example
  * ```tsx
@@ -40,11 +46,17 @@ const defaultDoc = typeof document !== 'undefined' ? document : null;
  *```
  */
 export function useKeyPress(
-  /*
-   * the keycode can be a string 'a' or an array of strings ['a', 'a+d']
-   * a string means a single key 'a' or a combination when '+' is used 'a+d'
-   * an array means different possibilites. Explainer: ['a', 'd+s'] here the
-   * user can use the single key 'a' or the combination 'd' + 's'
+  /**
+   * The key code (string or array of strings) specifies which key(s) should trigger
+   * an action.
+   *
+   * A **string** can represent:
+   * - A **single key**, e.g. `'a'`
+   * - A **key combination**, using `'+'` to separate keys, e.g. `'a+d'`
+   *
+   * An  **array of strings** represents **multiple possible key inputs**. For example, `['a', 'd+s']`
+   * means the user can press either the single key `'a'` or the combination of `'d'` and `'s'`.
+   * @default null
    */
   keyCode: KeyCode | null = null,
   options: UseKeyPressOptions = { target: defaultDoc, actInsideInputWithModifier: true }

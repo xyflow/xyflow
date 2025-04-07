@@ -1,20 +1,29 @@
 import { getEdgeCenter } from './general';
 
 export type GetStraightPathParams = {
+  /** The `x` position of the source handle. */
   sourceX: number;
+  /** The `y` position of the source handle. */
   sourceY: number;
+  /** The `x` position of the target handle. */
   targetX: number;
+  /** The `y` position of the target handle. */
   targetY: number;
 };
 
 /**
  * Calculates the straight line path between two points.
  * @public
- * @param params.sourceX - The x position of the source handle
- * @param params.sourceY - The y position of the source handle
- * @param params.targetX - The x position of the target handle
- * @param params.targetY - The y position of the target handle
- * @returns A path string you can use in an SVG, the labelX and labelY position (center of path) and offsetX, offsetY between source handle and label
+ * @returns A path string you can use in an SVG, the `labelX` and `labelY` position (center of path)
+ * and `offsetX`, `offsetY` between source handle and label.
+ *
+ * - `path`: the path to use in an SVG `<path>` element.
+ * - `labelX`: the `x` position you can use to render a label for this edge.
+ * - `labelY`: the `y` position you can use to render a label for this edge.
+ * - `offsetX`: the absolute difference between the source `x` position and the `x` position of the
+ * middle of this path.
+ * - `offsetY`: the absolute difference between the source `y` position and the `y` position of the
+ * middle of this path.
  * @example
  * ```js
  *  const source = { x: 0, y: 20 };
