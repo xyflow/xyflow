@@ -30,7 +30,7 @@ import type {
   DefaultEdgeOptions,
   FitViewOptions,
   OnDelete,
-  OnEdgeCreate,
+  OnBeforeConnect,
   OnBeforeDelete,
   IsValidConnection
 } from '$lib/types';
@@ -358,7 +358,7 @@ export type SvelteFlowProps = NodeEvents &
     onbeforedelete?: OnBeforeDelete;
 
     /** This handler gets called when a new edge is created. You can use it to modify the newly created edge. */
-    onedgecreate?: OnEdgeCreate;
+    onbeforeconnect?: OnBeforeConnect;
 
     /** This event gets fired when a connection successfully completes and an edge is created. */
     onconnect?: OnConnect;

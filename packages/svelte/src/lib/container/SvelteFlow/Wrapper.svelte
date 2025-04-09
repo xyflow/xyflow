@@ -35,7 +35,7 @@
     onerror,
     ondelete,
     onbeforedelete,
-    onedgecreate,
+    onbeforeconnect,
     onconnect,
     onconnectstart,
     onconnectend,

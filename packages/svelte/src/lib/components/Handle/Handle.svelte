@@ -60,7 +60,7 @@
         cancelConnection: store.cancelConnection,
         panBy: store.panBy,
         onConnect: (connection) => {
-          const edge = store.onedgecreate ? store.onedgecreate(connection) : connection;
+          const edge = store.onbeforeconnect?.(connection) ?? connection;
 
           if (!edge) {
             return;

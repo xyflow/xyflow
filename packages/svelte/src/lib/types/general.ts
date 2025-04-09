@@ -35,7 +35,7 @@ export type HandleProps = HandlePropsSystem & {
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
 
 export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
-export type OnEdgeCreate = (connection: Connection) => Edge | Connection | void;
+export type OnBeforeConnect = (connection: Connection) => Edge | Connection | void;
 export type OnBeforeDelete<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge

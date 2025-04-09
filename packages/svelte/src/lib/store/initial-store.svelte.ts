@@ -48,7 +48,7 @@ import type {
   EdgeTypes,
   FitViewOptions,
   OnDelete,
-  OnEdgeCreate,
+  OnBeforeConnect,
   OnBeforeDelete,
   IsValidConnection,
   Edge,
@@ -284,7 +284,7 @@ export const getInitialStore = (signals: StoreSignals) => {
     onlyRenderVisibleElements: boolean = $derived(signals.props.onlyRenderVisibleElements ?? false);
     onerror: OnError = $derived(signals.props.onerror ?? devWarn);
     ondelete?: OnDelete = $derived(signals.props.ondelete ?? undefined);
-    onedgecreate?: OnEdgeCreate = $derived(signals.props.onedgecreate);
+    onbeforeconnect?: OnBeforeConnect = $derived(signals.props.onbeforeconnect);
     onconnect?: OnConnect = $derived(signals.props.onconnect);
     onconnectstart?: OnConnectStart = $derived(signals.props.onconnectstart);
     onconnectend?: OnConnectEnd = $derived(signals.props.onconnectend);
