@@ -91,9 +91,9 @@ const createStore = ({
 
         if (fitViewQueued && nodesInitialized) {
           resolveFitView();
-          set({ nodes, fitViewQueued: false, fitViewOptions: undefined });
+          set({ nodes, nodesInitialized, fitViewQueued: false, fitViewOptions: undefined });
         } else {
-          set({ nodes });
+          set({ nodes, nodesInitialized });
         }
       },
       setEdges: (edges: Edge[]) => {
