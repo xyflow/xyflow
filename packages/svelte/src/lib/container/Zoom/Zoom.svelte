@@ -59,7 +59,6 @@
     lib: 'svelte',
     paneClickDistance,
     onTransformChange: (transform: Transform) => {
-      performance.mark('svelte-flow-zoom-transform-change');
       store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
     }
   }}
