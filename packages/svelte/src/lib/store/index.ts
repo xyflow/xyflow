@@ -111,28 +111,6 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   function fitView(options?: FitViewOptions) {
-    // const panZoom = store.panZoom;
-    // const domNode = store.domNode;
-
-    // if (!panZoom || !domNode) {
-    //   return Promise.resolve(false);
-    // }
-
-    // const { width, height } = getDimensions(domNode);
-
-    // const fitViewNodes = getFitViewNodes(store.nodeLookup, options);
-
-    // return fitViewSystem(
-    //   {
-    //     nodes: fitViewNodes,
-    //     width,
-    //     height,
-    //     minZoom: store.minZoom,
-    //     maxZoom: store.maxZoom,
-    //     panZoom
-    //   },
-    //   options
-    // );e3
     // We either create a new Promise or reuse the existing one
     // Even if fitView is called multiple times in a row, we only end up with a single Promise
     const fitViewResolver = store.fitViewResolver ?? Promise.withResolvers<boolean>();
