@@ -165,8 +165,10 @@ function onPointerDown(
       toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)! : null,
     };
 
-    // we don't want to trigger an update when the connection
-    // is snapped to the same handle as before
+    /*
+     * we don't want to trigger an update when the connection
+     * is snapped to the same handle as before
+     */
     if (
       isValid &&
       closestHandle &&
@@ -190,8 +192,10 @@ function onPointerDown(
       onConnect?.(connection);
     }
 
-    // it's important to get a fresh reference from the store here
-    // in order to get the latest state of onConnectEnd
+    /*
+     * it's important to get a fresh reference from the store here
+     * in order to get the latest state of onConnectEnd
+     */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { inProgress, ...connectionState } = previousConnection;
     const finalConnectionState = {
@@ -248,8 +252,10 @@ function isValidHandle(
 
   const { x, y } = getEventPosition(event);
   const handleBelow = doc.elementFromPoint(x, y);
-  // we always want to prioritize the handle below the mouse cursor over the closest distance handle,
-  // because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
+  /*
+   * we always want to prioritize the handle below the mouse cursor over the closest distance handle,
+   * because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
+   */
   const handleToCheck = handleBelow?.classList.contains(`${lib}-flow__handle`) ? handleBelow : handleDomNode;
 
   const result: Result = {

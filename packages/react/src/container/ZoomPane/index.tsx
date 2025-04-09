@@ -95,7 +95,7 @@ export function ZoomPane({
         },
       });
 
-      const { x, y, zoom } = panZoom.current!.getViewport();
+      const { x, y, zoom } = panZoom.current.getViewport();
 
       store.setState({
         panZoom: panZoom.current,

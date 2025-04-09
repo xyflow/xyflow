@@ -49,8 +49,10 @@ export function useNodeObserver({
 
   useEffect(() => {
     if (nodeRef.current) {
-      // when the user programmatically changes the source or handle position, we need to update the internals
-      // to make sure the edges are updated correctly
+      /*
+       * when the user programmatically changes the source or handle position, we need to update the internals
+       * to make sure the edges are updated correctly
+       */
       const typeChanged = prevType.current !== nodeType;
       const sourcePosChanged = prevSourcePosition.current !== node.sourcePosition;
       const targetPosChanged = prevTargetPosition.current !== node.targetPosition;

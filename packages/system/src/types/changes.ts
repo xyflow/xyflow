@@ -42,7 +42,10 @@ export type NodeReplaceChange<NodeType extends NodeBase = NodeBase> = {
 };
 
 /**
- * Union type of all possible node changes.
+ * The [`onNodesChange`](/api-reference/react-flow#on-nodes-change) callback takes
+ *an array of `NodeChange` objects that you should use to update your flow's state.
+ *The `NodeChange` type is a union of six different object types that represent that
+ *various ways an node can change in a flow.
  * @public
  */
 export type NodeChange<NodeType extends NodeBase = NodeBase> =
@@ -67,6 +70,14 @@ export type EdgeReplaceChange<EdgeType extends EdgeBase = EdgeBase> = {
   type: 'replace';
 };
 
+/**
+ * The [`onEdgesChange`](/api-reference/react-flow#on-edges-change) callback takes
+ *an array of `EdgeChange` objects that you should use to update your flow's state.
+ *The `EdgeChange` type is a union of four different object types that represent that
+ *various ways an edge can change in a flow.
+ *
+ * @public
+ */
 export type EdgeChange<EdgeType extends EdgeBase = EdgeBase> =
   | EdgeSelectionChange
   | EdgeRemoveChange

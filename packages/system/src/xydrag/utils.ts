@@ -74,9 +74,11 @@ export function getDragItems<NodeType extends NodeBase>(
   return dragItems;
 }
 
-// returns two params:
-// 1. the dragged node (or the first of the list, if we are dragging a node selection)
-// 2. array of selected nodes (for multi selections)
+/*
+ * returns two params:
+ * 1. the dragged node (or the first of the list, if we are dragging a node selection)
+ * 2. array of selected nodes (for multi selections)
+ */
 export function getEventHandlerParams<NodeType extends InternalNodeBase>({
   nodeId,
   dragItems,
@@ -112,10 +114,10 @@ export function getEventHandlerParams<NodeType extends InternalNodeBase>({
     !node
       ? nodesFromDragItems[0]
       : {
-          ...node,
-          position: dragItems.get(nodeId)?.position || node.position,
-          dragging,
-        },
+        ...node,
+        position: dragItems.get(nodeId)?.position || node.position,
+        dragging,
+      },
     nodesFromDragItems,
   ];
 }

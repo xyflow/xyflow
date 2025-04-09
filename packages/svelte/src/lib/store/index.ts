@@ -1,5 +1,4 @@
 import {
-  fitView as fitViewSystem,
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
   addEdge as addEdgeUtil,
@@ -13,9 +12,7 @@ import {
   type CoordinateExtent,
   type UpdateConnection,
   type ConnectionState,
-  getFitViewNodes,
-  updateAbsolutePositions,
-  getDimensions
+  updateAbsolutePositions
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -72,14 +69,8 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
       nodeExtent: store.nodeExtent
     });
 
-    if (!store.fitViewOnInitDone && store.fitViewOnInit) {
-      const fitViewOnInitDone = fitViewSync({
-        ...store.fitViewOptions,
-        nodes: store.fitViewOptions?.nodes
-      });
-      if (fitViewOnInitDone) {
-        store.fitViewOnInitDone = fitViewOnInitDone;
-      }
+    if (store.fitViewQueued) {
+      store.resolveFitView();
     }
 
     const newNodes = new Map<string, Node>();
@@ -120,52 +111,41 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   function fitView(options?: FitViewOptions) {
-    const panZoom = store.panZoom;
-    const domNode = store.domNode;
+    // const panZoom = store.panZoom;
+    // const domNode = store.domNode;
 
-    if (!panZoom || !domNode) {
-      return Promise.resolve(false);
-    }
+    // if (!panZoom || !domNode) {
+    //   return Promise.resolve(false);
+    // }
 
-    const { width, height } = getDimensions(domNode);
+    // const { width, height } = getDimensions(domNode);
 
-    const fitViewNodes = getFitViewNodes(store.nodeLookup, options);
+    // const fitViewNodes = getFitViewNodes(store.nodeLookup, options);
 
-    return fitViewSystem(
-      {
-        nodes: fitViewNodes,
-        width,
-        height,
-        minZoom: store.minZoom,
-        maxZoom: store.maxZoom,
-        panZoom
-      },
-      options
-    );
-  }
+    // return fitViewSystem(
+    //   {
+    //     nodes: fitViewNodes,
+    //     width,
+    //     height,
+    //     minZoom: store.minZoom,
+    //     maxZoom: store.maxZoom,
+    //     panZoom
+    //   },
+    //   options
+    // );e3
+    // We either create a new Promise or reuse the existing one
+    // Even if fitView is called multiple times in a row, we only end up with a single Promise
+    const fitViewResolver = store.fitViewResolver ?? Promise.withResolvers<boolean>();
 
-  function fitViewSync(options?: FitViewOptions) {
-    const panZoom = store.panZoom;
+    // We schedule a fitView by setting fitViewQueued and triggering a setNodes
+    store.fitViewQueued = true;
+    store.fitViewOptions = options;
+    store.fitViewResolver = fitViewResolver;
 
-    if (!panZoom) {
-      return false;
-    }
+    // We need to update the nodes so that adoptUserNodes is triggered
+    store.nodes = [...store.nodes];
 
-    const fitViewNodes = getFitViewNodes(store.nodeLookup, options);
-
-    fitViewSystem(
-      {
-        nodes: fitViewNodes,
-        width: store.width,
-        height: store.height,
-        minZoom: store.minZoom,
-        maxZoom: store.maxZoom,
-        panZoom
-      },
-      options
-    );
-
-    return fitViewNodes.size > 0;
+    return fitViewResolver.promise;
   }
 
   function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
@@ -350,9 +330,10 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   function reset() {
-    store.fitViewOnInitDone = false;
     store.selectionRect = null;
     store.selectionRectMode = null;
+
+    store.resetStoreValues();
 
     unselectNodesAndEdges();
     cancelConnection();
@@ -366,7 +347,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     updateNodeInternals,
     zoomIn,
     zoomOut,
-    fitView: (options?: FitViewOptions) => fitView(options),
+    fitView,
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,

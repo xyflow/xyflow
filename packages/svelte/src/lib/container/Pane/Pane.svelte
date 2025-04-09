@@ -75,7 +75,8 @@
 
   function onClick(event: MouseEvent) {
     // We prevent click events when the user let go of the selectionKey during a selection
-    if (selectionInProgress) {
+    // We also prevent click events when a connection is in progress
+    if (selectionInProgress || store.connection.inProgress) {
       selectionInProgress = false;
       return;
     }

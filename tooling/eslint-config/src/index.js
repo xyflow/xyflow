@@ -29,4 +29,16 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-non-null-assertion': 'off',
   },
+  overrides: [
+    {
+      files: ['**/*.{ts,tsx,cts,mts}'],
+      parserOptions: {
+        projectService: true,
+      },
+      rules: {
+        '@typescript-eslint/no-deprecated': 'error',
+        '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      },
+    },
+  ],
 };

@@ -28,33 +28,49 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   const store = useStoreApi<NodeType, EdgeType>();
 
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
-    const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup } = store.getState();
+    const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup, fitViewQueued } = store.getState();
 
-    // This is essentially an `Array.reduce` in imperative clothing. Processing
-    // this queue is a relatively hot path so we'd like to avoid the overhead of
-    // array methods where we can.
-    let next = nodes as NodeType[];
+    /*
+     * This is essentially an `Array.reduce` in imperative clothing. Processing
+     * this queue is a relatively hot path so we'd like to avoid the overhead of
+     * array methods where we can.
+     */
+    let next = nodes;
     for (const payload of queueItems) {
       next = typeof payload === 'function' ? payload(next) : payload;
     }
 
     if (hasDefaultNodes) {
       setNodes(next);
-    } else if (onNodesChange) {
-      onNodesChange(
-        getElementsDiffChanges({
-          items: next,
-          lookup: nodeLookup,
-        }) as NodeChange<NodeType>[]
-      );
+    } else {
+      // When a controlled flow is used we need to collect the changes
+      const changes = getElementsDiffChanges({
+        items: next,
+        lookup: nodeLookup,
+      }) as NodeChange<NodeType>[];
+
+      // We only want to fire onNodesChange if there are changes to the nodes
+      if (changes.length > 0) {
+        onNodesChange?.(changes);
+      } else if (fitViewQueued) {
+        // If there are no changes to the nodes, we still need to call setNodes
+        // to trigger a re-render and fitView.
+        window.requestAnimationFrame(() => {
+          const { fitViewQueued, nodes, setNodes } = store.getState();
+          if (fitViewQueued) {
+            setNodes(nodes);
+          }
+        });
+      }
     }
   }, []);
+
   const nodeQueue = useQueue<NodeType>(nodeQueueHandler);
 
   const edgeQueueHandler = useCallback((queueItems: QueueItem<EdgeType>[]) => {
     const { edges = [], setEdges, hasDefaultEdges, onEdgesChange, edgeLookup } = store.getState();
 
-    let next = edges as EdgeType[];
+    let next = edges;
     for (const payload of queueItems) {
       next = typeof payload === 'function' ? payload(next) : payload;
     }

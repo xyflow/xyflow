@@ -19,8 +19,18 @@ import type {
 
 import { EdgeTypes, InternalNode, Node } from '.';
 
+/**
+ * @inline
+ */
 export type EdgeLabelOptions = {
-  label?: string | ReactNode;
+  /**
+   * The label or custom element to render along the edge. This is commonly a text label or some
+   * custom controls.
+   */
+  label?: ReactNode;
+  /**
+   * Custom styles to apply to the label.
+   */
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;
@@ -29,7 +39,8 @@ export type EdgeLabelOptions = {
 };
 
 /**
- * The Edge type is mainly used for the `edges` that get passed to the ReactFlow component
+ * An `Edge` is the complete description with everything React Flow needs
+ * to know in order to render it.
  * @public
  */
 export type Edge<
@@ -39,6 +50,11 @@ export type Edge<
   EdgeLabelOptions & {
     style?: CSSProperties;
     className?: string;
+    /**
+     * Determines whether the edge can be updated by dragging the source or target to a new node.
+     * This property will override the default set by the `edgesReconnectable` prop on the
+     * `<ReactFlow />` component.
+     */
     reconnectable?: boolean | HandleType;
     focusable?: boolean;
   };
@@ -91,17 +107,26 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   disableKeyboardA11y?: boolean;
 };
 
+/**
+ * Many properties on an [`Edge`](/api-reference/types/edge) are optional. When a new edge is created,
+ * the properties that are not provided will be filled in with the default values
+ * passed to the `defaultEdgeOptions` prop of the [`<ReactFlow />`](/api-reference/react-flow#defaultedgeoptions) component.
+ */
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
-export type EdgeTextProps = SVGAttributes<SVGElement> &
+export type EdgeTextProps = Omit<SVGAttributes<SVGElement>, 'x' | 'y'> &
   EdgeLabelOptions & {
+    /** The x position where the label should be rendered. */
     x: number;
+    /** The y position where the label should be rendered. */
     y: number;
   };
 
 /**
- * Custom edge component props
+ * When you implement a custom edge it is wrapped in a component that enables some
+ * basic functionality. The `EdgeProps` type is the props that are passed to this.
  * @public
+ * @expand
  */
 export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
   EdgeType,
@@ -121,22 +146,42 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
 /**
  * BaseEdge component props
  * @public
+ * @expand
  */
-export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd'> &
+export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd' | 'path' | 'markerStart' | 'markerEnd'> &
   EdgeLabelOptions & {
-    /** Additional padding where interacting with an edge is still possible */
+    /**
+     * The width of the invisible area around the edge that the user can interact with. This is
+     * useful for making the edge easier to click or hover over.
+     * @default 20
+     */
     interactionWidth?: number;
     /** The x position of edge label */
     labelX?: number;
     /** The y position of edge label */
     labelY?: number;
-    /** SVG path of the edge */
+    /**
+     * The SVG path string that defines the edge. This should look something like
+     * `'M 0 0 L 100 100'` for a simple line. The utility functions like `getSimpleBezierEdge` can
+     * be used to generate this string for you.
+     */
     path: string;
+    /**
+     * The id of the SVG marker to use at the start of the edge. This should be defined in a
+     * `<defs>` element in a separate SVG document or element.
+     */
+    markerStart?: string;
+    /**
+     * The id of the SVG marker to use at the end of the edge. This should be defined in a `<defs>`
+     * element in a separate SVG document or element.
+     */
+    markerEnd?: string;
   };
 
 /**
  * Helper type for edge components that get exported by the library
  * @public
+ * @expand
  */
 export type EdgeComponentProps = EdgePosition &
   EdgeLabelOptions & {
@@ -156,39 +201,53 @@ export type EdgeComponentWithPathOptions<PathOptions> = EdgeComponentProps & {
 /**
  * BezierEdge component props
  * @public
+ * @expand
  */
 export type BezierEdgeProps = EdgeComponentWithPathOptions<BezierPathOptions>;
 
 /**
  * SmoothStepEdge component props
  * @public
+ * @expand
  */
 export type SmoothStepEdgeProps = EdgeComponentWithPathOptions<SmoothStepPathOptions>;
 
 /**
  * StepEdge component props
  * @public
+ * @expand
  */
 export type StepEdgeProps = EdgeComponentWithPathOptions<StepPathOptions>;
 
 /**
  * StraightEdge component props
  * @public
+ * @expand
  */
 export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'targetPosition'>;
 
 /**
  * SimpleBezier component props
  * @public
+ * @expand
  */
 export type SimpleBezierEdgeProps = EdgeComponentProps;
 
 export type OnReconnect<EdgeType extends Edge = Edge> = (oldEdge: EdgeType, newConnection: Connection) => void;
 
+/**
+ * If you want to render a custom component for connection lines, you can set the
+ * `connectionLineComponent` prop on the [`<ReactFlow />`](/api-reference/react-flow#connection-connectionLineComponent)
+ * component. The `ConnectionLineComponentProps` are passed to your custom component.
+ *
+ * @public
+ */
 export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;
+  /** The node the connection line originates from. */
   fromNode: InternalNode<NodeType>;
+  /** The handle on the `fromNode` that the connection line originates from. */
   fromHandle: Handle;
   fromX: number;
   fromY: number;
@@ -196,6 +255,10 @@ export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   toY: number;
   fromPosition: Position;
   toPosition: Position;
+  /**
+   * If there is an `isValidConnection` callback, this prop will be set to `"valid"` or `"invalid"`
+   * based on the return value of that callback. Otherwise, it will be `null`.
+   */
   connectionStatus: 'valid' | 'invalid' | null;
   toNode: InternalNode<NodeType> | null;
   toHandle: Handle | null;

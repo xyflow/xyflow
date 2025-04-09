@@ -31,8 +31,10 @@ export function Wrapper({
   const isWrapped = useContext(StoreContext);
 
   if (isWrapped) {
-    // we need to wrap it with a fragment because it's not allowed for children to be a ReactNode
-    // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18051
+    /*
+     * we need to wrap it with a fragment because it's not allowed for children to be a ReactNode
+     * https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18051
+     */
     return <>{children}</>;
   }
 

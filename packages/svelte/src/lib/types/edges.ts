@@ -12,7 +12,9 @@ import type { Node } from '$lib/types';
 import type { ClassValue } from 'svelte/elements';
 
 /**
- * The Edge type is mainly used for the `edges` that get passed to the SvelteFlow component.
+ * An `Edge` is the complete description with everything Svelte Flow needs to know in order to
+ * render it.
+ * @public
  */
 export type Edge<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,

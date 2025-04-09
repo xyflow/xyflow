@@ -3,12 +3,13 @@
   import type { Snippet } from 'svelte';
 
   let { store, children }: { store: SvelteFlowStore; children: Snippet } = $props();
+
+  let { x, y, zoom } = $derived(store._viewport);
 </script>
 
 <div
   class="svelte-flow__viewport xyflow__viewport"
-  style="transform: translate({store.viewport.x}px, {store.viewport.y}px) scale({store.viewport
-    .zoom})"
+  style="transform: translate({x}px, {y}px) scale({zoom})"
 >
   {@render children()}
 </div>

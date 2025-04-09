@@ -10,8 +10,8 @@ import { shallow } from 'zustand/shallow';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import type { ReactFlowState, OnSelectionChangeFunc, Node, Edge } from '../../types';
 
-type SelectionListenerProps = {
-  onSelectionChange?: OnSelectionChangeFunc;
+type SelectionListenerProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  onSelectionChange?: OnSelectionChangeFunc<NodeType, EdgeType>;
 };
 
 const selector = (s: ReactFlowState) => {
@@ -44,12 +44,14 @@ function areEqual(a: SelectorSlice, b: SelectorSlice) {
   );
 }
 
-function SelectionListenerInner({ onSelectionChange }: SelectionListenerProps) {
-  const store = useStoreApi();
+function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
+  onSelectionChange,
+}: SelectionListenerProps<NodeType, EdgeType>) {
+  const store = useStoreApi<NodeType, EdgeType>();
   const { selectedNodes, selectedEdges } = useStore(selector, areEqual);
 
   useEffect(() => {
-    const params = { nodes: selectedNodes, edges: selectedEdges };
+    const params = { nodes: selectedNodes as NodeType[], edges: selectedEdges as EdgeType[] };
 
     onSelectionChange?.(params);
     store.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));
@@ -60,11 +62,13 @@ function SelectionListenerInner({ onSelectionChange }: SelectionListenerProps) {
 
 const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers;
 
-export function SelectionListener({ onSelectionChange }: SelectionListenerProps) {
+export function SelectionListener<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
+  onSelectionChange,
+}: SelectionListenerProps<NodeType, EdgeType>) {
   const storeHasSelectionChangeHandlers = useStore(changeSelector);
 
   if (onSelectionChange || storeHasSelectionChangeHandlers) {
-    return <SelectionListenerInner onSelectionChange={onSelectionChange} />;
+    return <SelectionListenerInner<NodeType, EdgeType> onSelectionChange={onSelectionChange} />;
   }
 
   return null;

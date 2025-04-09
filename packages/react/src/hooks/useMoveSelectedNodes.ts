@@ -22,8 +22,10 @@ export function useMoveSelectedNodes() {
     const nodeUpdates = new Map();
     const isSelected = selectedAndDraggable(nodesDraggable);
 
-    // by default a node moves 5px on each key press
-    // if snap grid is enabled, we use that for the velocity
+    /*
+     * by default a node moves 5px on each key press
+     * if snap grid is enabled, we use that for the velocity
+     */
     const xVelo = snapToGrid ? snapGrid[0] : 5;
     const yVelo = snapToGrid ? snapGrid[1] : 5;
 

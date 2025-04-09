@@ -107,7 +107,8 @@ export {
   type ResizeParams,
   type ResizeParamsWithDirection,
   type ResizeDragEvent,
-  type IsValidConnection
+  type IsValidConnection,
+  type NodeConnection
 } from '@xyflow/system';
 
 // system utils

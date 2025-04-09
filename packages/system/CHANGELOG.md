@@ -1,5 +1,61 @@
 # @xyflow/system
 
+## 0.0.55
+
+### Patch Changes
+
+- [#5156](https://github.com/xyflow/xyflow/pull/5156) [`02a3b746`](https://github.com/xyflow/xyflow/commit/02a3b74645799a3f0ce670b69365fa86ecb0616e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `type GetSmoothStepPathParams` and `getSmoothStepPath` function
+
+- [#5168](https://github.com/xyflow/xyflow/pull/5168) [`cbe305e1`](https://github.com/xyflow/xyflow/commit/cbe305e15a5c5d3b92583e0ec12364b2509f49bd) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `getOutgoers`, `getIncomers` and `type GetNodesBoundsParams`
+
+- [#5169](https://github.com/xyflow/xyflow/pull/5169) [`1f671bd4`](https://github.com/xyflow/xyflow/commit/1f671bd48f06230da841fdd1d7a312413ef16d03) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `type ReconnectEdgeOptions` and `getViewportForBounds`
+
+- [#5155](https://github.com/xyflow/xyflow/pull/5155) [`aaebc462`](https://github.com/xyflow/xyflow/commit/aaebc462951ded8e91374c3e084d77af5ed7380a) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `type GetStraightPathParams` and `getStraightPath` function
+
+- [#5157](https://github.com/xyflow/xyflow/pull/5157) [`6ec942fc`](https://github.com/xyflow/xyflow/commit/6ec942fc6501f81009c278cc995764bef3e8d03b) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `type GetBezierPathParams` and `getBezierPath` function
+
+## 0.0.54
+
+### Patch Changes
+
+- [#5147](https://github.com/xyflow/xyflow/pull/5147) [`f819005b`](https://github.com/xyflow/xyflow/commit/f819005be362d044b16ce4c0b85432f3f300a13a) Thanks [@moklick](https://github.com/moklick)! - Pass dimensions to final resize change event
+
+- [#5142](https://github.com/xyflow/xyflow/pull/5142) [`24a1bc89`](https://github.com/xyflow/xyflow/commit/24a1bc89348817ed9b5c87f74bf2519c705143be) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `HandleProps`, `NodeBase` and `InternalNodeBase`
+
+- [#5136](https://github.com/xyflow/xyflow/pull/5136) [`36657cd6`](https://github.com/xyflow/xyflow/commit/36657cd66322c911e87eb37275c584a80025adfe) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `EdgeBase`
+
+- [#5139](https://github.com/xyflow/xyflow/pull/5139) [`89de9ca8`](https://github.com/xyflow/xyflow/commit/89de9ca83fbf9263a687a0f5f915efb2beb31654) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Use `rgba` for colors with opacity instead of `rgb` for `MiniMap` mask color
+
+- [#5148](https://github.com/xyflow/xyflow/pull/5148) [`2ac6e155`](https://github.com/xyflow/xyflow/commit/2ac6e155e35256ca436281df16344366e7d05761) Thanks [@moklick](https://github.com/moklick)! - Prevent browser zoom for pinch zoom gestures on nowheel elements
+
+- [#5137](https://github.com/xyflow/xyflow/pull/5137) [`f0f378e5`](https://github.com/xyflow/xyflow/commit/f0f378e5b6918c2c30d9dc1e32587063cb942d4e) Thanks [@dimaMachina](https://github.com/dimaMachina)! - Improve TSDoc comments for `Connection` and `ConnectionInProgress`
+
+## 0.0.53
+
+### Patch Changes
+
+- [#5118](https://github.com/xyflow/xyflow/pull/5118) [`5d15b01b`](https://github.com/xyflow/xyflow/commit/5d15b01ba8cb349d6397a6ed8162848b4dfec293) Thanks [@moklick](https://github.com/moklick)! - Do not swallow key events when a button is focused
+
+- [#5067](https://github.com/xyflow/xyflow/pull/5067) [`cb685281`](https://github.com/xyflow/xyflow/commit/cb685281d0eaf03e9833271c31f92b1d143af2fe) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix fitView not working immediately after adding new nodes
+
+- [#5091](https://github.com/xyflow/xyflow/pull/5091) [`a79f30b3`](https://github.com/xyflow/xyflow/commit/a79f30b3dd7c8ff6400c8d22214b2c2282e5bac1) Thanks [@moklick](https://github.com/moklick)! - Add center-left and center-right as a panel position
+
+## 0.0.52
+
+### Patch Changes
+
+- [#5052](https://github.com/xyflow/xyflow/pull/5052) [`99dd7d35`](https://github.com/xyflow/xyflow/commit/99dd7d3549e7423e7d103b2c956c8b37f5747b90) Thanks [@moklick](https://github.com/moklick)! - Show an error if user drags uninitialized node
+
+## 0.0.51
+
+### Patch Changes
+
+- [#5010](https://github.com/xyflow/xyflow/pull/5010) [`6c121d42`](https://github.com/xyflow/xyflow/commit/6c121d427fea9a11e86a85f95d2c12ba8af34919) Thanks [@moklick](https://github.com/moklick)! - Add more TSDocs to components, hooks, utils funcs and types
+
+- [#4990](https://github.com/xyflow/xyflow/pull/4990) [`4947029c`](https://github.com/xyflow/xyflow/commit/4947029cd6cda0f695e1fb4815e4030adb232234) Thanks [@damianstasik](https://github.com/damianstasik)! - Make it possible to stop autoPanOnDrag by setting it to false
+
+- [#5003](https://github.com/xyflow/xyflow/pull/5003) [`e8e0d684`](https://github.com/xyflow/xyflow/commit/e8e0d684957b95d53a6cc11598c8755ff02117c7) Thanks [@dimaMachina](https://github.com/dimaMachina)! - repair lint command
+
 ## 0.0.50
 
 ### Patch Changes

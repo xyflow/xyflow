@@ -63,7 +63,10 @@
   });
   let boundingRect = $derived(
     store.nodeLookup.size > 0
-      ? getBoundsOfRects(getInternalNodesBounds(store.nodeLookup), viewBB)
+      ? getBoundsOfRects(
+          getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }),
+          viewBB
+        )
       : viewBB
   );
   let scaledWidth = $derived(boundingRect.width / width);

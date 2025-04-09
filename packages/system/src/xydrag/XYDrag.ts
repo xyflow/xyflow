@@ -140,8 +140,10 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
       for (const [id, dragItem] of dragItems) {
         if (!nodeLookup.has(id)) {
-          // if the node is not in the nodeLookup anymore, it was probably deleted while dragging
-          // and we don't need to update it anymore
+          /*
+           * if the node is not in the nodeLookup anymore, it was probably deleted while dragging
+           * and we don't need to update it anymore
+           */
           continue;
         }
 
@@ -150,8 +152,10 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           nextPosition = snapPosition(nextPosition, snapGrid);
         }
 
-        // if there is selection with multiple nodes and a node extent is set, we need to adjust the node extent for each node
-        // based on its position so that the node stays at it's position relative to the selection.
+        /*
+         * if there is selection with multiple nodes and a node extent is set, we need to adjust the node extent for each node
+         * based on its position so that the node stays at it's position relative to the selection.
+         */
         let adjustedNodeExtent: CoordinateExtent = [
           [nodeExtent[0][0], nodeExtent[0][1]],
           [nodeExtent[1][0], nodeExtent[1][1]],
@@ -214,7 +218,13 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         return;
       }
 
-      const { transform, panBy, autoPanSpeed } = getStoreItems();
+      const { transform, panBy, autoPanSpeed, autoPanOnNodeDrag } = getStoreItems();
+
+      if (!autoPanOnNodeDrag) {
+        autoPanStarted = false;
+        cancelAnimationFrame(autoPanId);
+        return;
+      }
 
       const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds, autoPanSpeed);
 

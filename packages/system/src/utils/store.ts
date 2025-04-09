@@ -85,9 +85,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options?: UpdateNodesOptions<NodeType>
-) {
+): boolean {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
 
+  let nodesInitialized = true;
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
 
@@ -123,10 +124,19 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       nodeLookup.set(userNode.id, internalNode);
     }
 
+    if (
+      (!internalNode.measured || !internalNode.measured.width || !internalNode.measured.height) &&
+      !internalNode.hidden
+    ) {
+      nodesInitialized = false;
+    }
+
     if (userNode.parentId) {
       updateChildNode(internalNode, nodeLookup, parentLookup, options);
     }
   }
+
+  return nodesInitialized;
 }
 
 function updateParentLookup<NodeType extends NodeBase>(
@@ -276,8 +286,10 @@ export function handleExpandParent(
           },
         });
 
-        // We move all child nodes in the oppsite direction
-        // so the x,y changes of the parent do not move the children
+        /*
+         * We move all child nodes in the oppsite direction
+         * so the x,y changes of the parent do not move the children
+         */
         parentLookup.get(parentId)?.forEach((childNode) => {
           if (!children.some((child) => child.id === childNode.id)) {
             changes.push({
@@ -472,9 +484,11 @@ function addConnectionToLookup(
   nodeId: string,
   handleId: string | null
 ) {
-  // We add the connection to the connectionLookup at the following keys
-  // 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId
-  // If the key already exists, we add the connection to the existing map
+  /*
+   * We add the connection to the connectionLookup at the following keys
+   * 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId
+   * If the key already exists, we add the connection to the existing map
+   */
   let key = nodeId;
   const nodeMap = connectionLookup.get(key) || new Map();
   connectionLookup.set(key, nodeMap.set(connectionKey, connection));

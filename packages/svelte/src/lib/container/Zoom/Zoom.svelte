@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { PanOnScrollMode, type PanZoomInstance, type Transform } from '@xyflow/system';
 
   import zoom from '$lib/actions/zoom';
@@ -24,15 +23,8 @@
   let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
   let panOnScrollActive = $derived(store.panActivationKeyPressed || panOnScroll);
 
-  const onTransformChange = (transform: Transform) =>
-    (store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] });
-
   // We extract the initial value by destructuring
   const { viewport: initialViewport } = store;
-
-  onMount(() => {
-    store.viewportInitialized = true;
-  });
 </script>
 
 <div
@@ -66,7 +58,10 @@
     translateExtent: store.translateExtent,
     lib: 'svelte',
     paneClickDistance,
-    onTransformChange
+    onTransformChange: (transform: Transform) => {
+      performance.mark('svelte-flow-zoom-transform-change');
+      store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
+    }
   }}
 >
   {@render children()}
