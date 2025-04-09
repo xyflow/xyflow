@@ -108,25 +108,7 @@ export const getInitialStore = (signals: StoreSignals) => {
 
       return nodesInitialized;
     });
-    edgesInitialized: boolean = $state(false);
     viewportInitialized: boolean = $derived(this.panZoom !== null);
-
-    // TODO: Figure out initialized
-    _initialNodesLength: number = signals.nodes?.length ?? 0;
-    _initialEdgesLength: number = signals.edges?.length ?? 0;
-    initialized: boolean = $derived.by(() => {
-      let initialized = false;
-      // if it hasn't been initialised check if it's now
-      if (this._initialNodesLength === 0) {
-        initialized = this.viewportInitialized;
-      } else if (this._initialEdgesLength === 0) {
-        initialized = this.viewportInitialized && this.nodesInitialized;
-      } else {
-        initialized = this.viewportInitialized && this.nodesInitialized && this.edgesInitialized;
-      }
-
-      return initialized;
-    });
 
     _edges: Edge[] = $derived.by(() => {
       updateConnectionLookup(this.connectionLookup, this.edgeLookup, signals.edges);

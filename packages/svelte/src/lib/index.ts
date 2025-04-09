@@ -38,7 +38,7 @@ export * from '$lib/hooks/useNodesEdgesViewport.svelte';
 export * from '$lib/hooks/useNodeConnections.svelte';
 export * from '$lib/hooks/useNodesData.svelte';
 export * from '$lib/hooks/useInternalNode.svelte';
-export { useInitialized, useNodesInitialized } from '$lib/hooks/useInitialized.svelte';
+export * from '$lib/hooks/useInitialized.svelte';
 
 // types
 export type {

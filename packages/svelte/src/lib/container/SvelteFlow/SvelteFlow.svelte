@@ -32,6 +32,7 @@
     onMoveStart,
     onMoveEnd,
     onMove,
+    oninit,
     onnodeclick,
     onnodecontextmenu,
     onnodedrag,
@@ -162,6 +163,7 @@
     {panOnScroll}
     {panOnDrag}
     {paneClickDistance}
+    {oninit}
   >
     <Pane {store} {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
       <ViewportComponent {store}>

@@ -14,14 +14,14 @@ export function useNodesInitialized() {
 }
 
 /**
- * Hook for seeing if the flow is initialized
- * @returns - reactive initialized
+ * Hook for seeing if the viewport is initialized
+ * @returns - reactive viewportInitialized
  */
-export function useInitialized() {
-  const { initialized } = $derived(useStore());
+export function useViewportInitialized() {
+  const { viewportInitialized } = $derived(useStore());
   return {
     get current() {
-      return initialized;
+      return viewportInitialized;
     }
   };
 }

@@ -16,4 +16,5 @@ export type ZoomProps = {
   panOnDrag: boolean | number[];
   paneClickDistance: number;
   children: Snippet;
+  oninit?: () => void;
 };

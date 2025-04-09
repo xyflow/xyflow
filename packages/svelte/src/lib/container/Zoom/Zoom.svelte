@@ -17,6 +17,7 @@
     panOnDrag = true,
     panOnScroll = false,
     paneClickDistance = 1,
+    oninit,
     children
   }: ZoomProps = $props();
 
@@ -25,6 +26,14 @@
 
   // We extract the initial value by destructuring
   const { viewport: initialViewport } = store;
+
+  let onInitCalled = false;
+  $effect(() => {
+    if (!onInitCalled && store.viewportInitialized) {
+      oninit?.();
+      onInitCalled = true;
+    }
+  });
 </script>
 
 <div
