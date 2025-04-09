@@ -37,7 +37,6 @@ export function NodeWrapper<NodeType extends Node>({
   disableKeyboardA11y,
   rfId,
   nodeTypes,
-  nodeExtent,
   nodeClickDistance,
   onError,
 }: NodeWrapperProps<NodeType>) {
@@ -109,8 +108,10 @@ export function NodeWrapper<NodeType extends Node>({
     const { selectNodesOnDrag, nodeDragThreshold } = store.getState();
 
     if (isSelectable && (!selectNodesOnDrag || !isDraggable || nodeDragThreshold > 0)) {
-      // this handler gets called by XYDrag on drag start when selectNodesOnDrag=true
-      // here we only need to call it when selectNodesOnDrag=false
+      /*
+       * this handler gets called by XYDrag on drag start when selectNodesOnDrag=true
+       * here we only need to call it when selectNodesOnDrag=false
+       */
       handleNodeClick({
         id,
         store,

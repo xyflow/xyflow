@@ -56,8 +56,18 @@ const initialEdges: Edge[] = [
 const defaultEdgeOptions = {};
 
 const BasicFlow = () => {
-  const { addNodes, setNodes, getNodes, setEdges, getEdges, deleteElements, updateNodeData, toObject, setViewport } =
-    useReactFlow();
+  const {
+    addNodes,
+    setNodes,
+    getNodes,
+    setEdges,
+    getEdges,
+    deleteElements,
+    updateNodeData,
+    toObject,
+    setViewport,
+    fitView,
+  } = useReactFlow();
 
   const updatePos = () => {
     setNodes((nodes) =>
@@ -104,6 +114,7 @@ const BasicFlow = () => {
     ]);
 
     setEdges([{ id: 'a-b', source: 'a', target: 'b' }]);
+    fitView();
   };
 
   const onUpdateNode = () => {
@@ -117,6 +128,7 @@ const BasicFlow = () => {
       position: { x: Math.random() * 300, y: Math.random() * 300 },
       className: 'light',
     });
+    fitView();
   };
 
   return (
@@ -134,6 +146,9 @@ const BasicFlow = () => {
       minZoom={0.2}
       maxZoom={4}
       fitView
+      fitViewOptions={{
+        padding: { top: '100px', left: '0%', right: '10%', bottom: 0.1 },
+      }}
       defaultEdgeOptions={defaultEdgeOptions}
       selectNodesOnDrag={false}
       elevateEdgesOnSelect

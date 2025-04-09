@@ -28,10 +28,14 @@ import { useNodeId } from '../../contexts/NodeIdContext';
 import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
 
-export interface HandleProps extends HandlePropsSystem, Omit<HTMLAttributes<HTMLDivElement>, 'id'> {
-  /** Callback called when connection is made */
-  onConnect?: OnConnect;
-}
+/**
+ * @expand
+ */
+export type HandleProps = HandlePropsSystem &
+  Omit<HTMLAttributes<HTMLDivElement>, 'id'> & {
+    /** Callback called when connection is made */
+    onConnect?: OnConnect;
+  };
 
 const selector = (s: ReactFlowState) => ({
   connectOnClick: s.connectOnClick,
@@ -42,9 +46,7 @@ const selector = (s: ReactFlowState) => ({
 const connectingSelector =
   (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
     const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
-
     const { fromHandle, toHandle, isValid } = connection;
-
     const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
 
     return {
@@ -56,6 +58,7 @@ const connectingSelector =
           ? fromHandle?.type !== type
           : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id,
       connectionInProcess: !!fromHandle,
+      clickConnectionInProcess: !!clickHandle,
       valid: connectingTo && isValid,
     };
   };
@@ -83,11 +86,15 @@ function HandleComponent(
   const store = useStoreApi();
   const nodeId = useNodeId();
   const { connectOnClick, noPanClassName, rfId } = useStore(selector, shallow);
-  const { connectingFrom, connectingTo, clickConnecting, isPossibleEndHandle, connectionInProcess, valid } = useStore(
-    connectingSelector(nodeId, handleId, type),
-    shallow
-  );
-
+  const {
+    connectingFrom,
+    connectingTo,
+    clickConnecting,
+    isPossibleEndHandle,
+    connectionInProcess,
+    clickConnectionInProcess,
+    valid,
+  } = useStore(connectingSelector(nodeId, handleId, type), shallow);
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }
@@ -228,12 +235,14 @@ function HandleComponent(
           connectingfrom: connectingFrom,
           connectingto: connectingTo,
           valid,
-          // shows where you can start a connection from
-          // and where you can end it while connecting
+          /*
+           * shows where you can start a connection from
+           * and where you can end it while connecting
+           */
           connectionindicator:
             isConnectable &&
             (!connectionInProcess || isPossibleEndHandle) &&
-            (connectionInProcess ? isConnectableEnd : isConnectableStart),
+            (connectionInProcess || clickConnectionInProcess ? isConnectableEnd : isConnectableStart),
         },
       ])}
       onMouseDown={onPointerDown}
@@ -248,6 +257,28 @@ function HandleComponent(
 }
 
 /**
- * The Handle component is a UI element that is used to connect nodes.
+ * The `<Handle />` component is used in your [custom nodes](/learn/customization/custom-nodes)
+ * to define connection points.
+ *
+ *@public
+ *
+ *@example
+ *
+ *```jsx
+ *import { Handle, Position } from '@xyflow/react';
+ *
+ *export function CustomNode({ data }) {
+ *  return (
+ *    <>
+ *      <div style={{ padding: '10px 20px' }}>
+ *        {data.label}
+ *      </div>
+ *
+ *      <Handle type="target" position={Position.Left} />
+ *      <Handle type="source" position={Position.Right} />
+ *    </>
+ *  );
+ *};
+ *```
  */
 export const Handle = memo(fixedForwardRef(HandleComponent));

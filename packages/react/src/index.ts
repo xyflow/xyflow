@@ -9,7 +9,7 @@ export { SmoothStepEdge } from './components/Edges/SmoothStepEdge';
 export { BaseEdge } from './components/Edges/BaseEdge';
 export { ReactFlowProvider } from './components/ReactFlowProvider';
 export { Panel, type PanelProps } from './components/Panel';
-export { EdgeLabelRenderer } from './components/EdgeLabelRenderer';
+export { EdgeLabelRenderer, type EdgeLabelRendererProps } from './components/EdgeLabelRenderer';
 export { ViewportPortal } from './components/ViewportPortal';
 
 export { useReactFlow } from './hooks/useReactFlow';
@@ -106,6 +106,7 @@ export {
   type FinalConnectionState,
   type ConnectionInProgress,
   type NoConnection,
+  type NodeConnection,
 } from '@xyflow/system';
 
 // we need this workaround to prevent a duplicate identifier error

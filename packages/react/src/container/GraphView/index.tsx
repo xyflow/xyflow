@@ -170,7 +170,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
           disableKeyboardA11y={disableKeyboardA11y}
           rfId={rfId}
         />
-        <ConnectionLineWrapper
+        <ConnectionLineWrapper<NodeType>
           style={connectionLineStyle}
           type={connectionLineType}
           component={connectionLineComponent}

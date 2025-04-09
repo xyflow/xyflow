@@ -15,15 +15,44 @@ import useViewportHelper from './useViewportHelper';
 import { useStore, useStoreApi } from './useStore';
 import { useBatchContext } from '../components/BatchProvider';
 import { elementToRemoveChange, isEdge, isNode } from '../utils';
-import type { ReactFlowInstance, Node, Edge, InternalNode, ReactFlowState, GeneralHelpers } from '../types';
+import type {
+  ReactFlowInstance,
+  Node,
+  Edge,
+  InternalNode,
+  ReactFlowState,
+  GeneralHelpers,
+  FitViewOptions,
+} from '../types';
 
 const selector = (s: ReactFlowState) => !!s.panZoom;
 
 /**
- * Hook for accessing the ReactFlow instance.
+ * This hook returns a ReactFlowInstance that can be used to update nodes and edges, manipulate the viewport, or query the current state of the flow.
  *
  * @public
- * @returns ReactFlowInstance
+ * @example
+ * ```jsx
+ *import { useCallback, useState } from 'react';
+ *import { useReactFlow } from '@xyflow/react';
+ *
+ *export function NodeCounter() {
+ *  const reactFlow = useReactFlow();
+ *  const [count, setCount] = useState(0);
+ *  const countNodes = useCallback(() => {
+ *    setCount(reactFlow.getNodes().length);
+ *    // you need to pass it as a dependency if you are using it with useEffect or useCallback
+ *    // because at the first render, it's not initialized yet and some functions might not work.
+ *  }, [reactFlow]);
+ *
+ *  return (
+ *    <div>
+ *      <button onClick={countNodes}>Update count</button>
+ *      <p>There are {count} nodes in the flow.</p>
+ *    </div>
+ *  );
+ *}
+ *```
  */
 export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): ReactFlowInstance<
   NodeType,
@@ -72,7 +101,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       setNodes((prevNodes) =>
         prevNodes.map((node) => {
           if (node.id === id) {
-            const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as NodeType) : nodeUpdate;
+            const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
             return options.replace && isNode(nextNode) ? (nextNode as NodeType) : { ...node, ...nextNode };
           }
 
@@ -89,7 +118,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       setEdges((prevEdges) =>
         prevEdges.map((edge) => {
           if (edge.id === id) {
-            const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge as EdgeType) : edgeUpdate;
+            const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
             return options.replace && isEdge(nextEdge) ? (nextEdge as EdgeType) : { ...edge, ...nextEdge };
           }
 
@@ -184,7 +213,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         return (nodes || store.getState().nodes).filter((n) => {
           const internalNode = store.getState().nodeLookup.get(n.id);
 
-          if (internalNode && !isRect && (n.id === nodeOrRect!.id || !internalNode.internals.positionAbsolute)) {
+          if (internalNode && !isRect && (n.id === nodeOrRect.id || !internalNode.internals.positionAbsolute)) {
             return false;
           }
 
@@ -248,6 +277,17 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
             .connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
             ?.values() ?? []
         ),
+      fitView: async (options: FitViewOptions<NodeType> | undefined) => {
+        // We either create a new Promise or reuse the existing one
+        // Even if fitView is called multiple times in a row, we only end up with a single Promise
+        const fitViewResolver = store.getState().fitViewResolver ?? Promise.withResolvers<boolean>();
+
+        // We schedule a fitView by setting fitViewQueued and triggering a setNodes
+        store.setState({ fitViewQueued: true, fitViewOptions: options, fitViewResolver });
+        batchContext.nodeQueue.push((nodes) => [...nodes]);
+
+        return fitViewResolver.promise;
+      },
     };
   }, []);
 

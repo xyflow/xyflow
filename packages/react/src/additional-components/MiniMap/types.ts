@@ -6,47 +6,97 @@ import type { Node } from '../../types';
 
 export type GetMiniMapNodeAttribute<NodeType extends Node = Node> = (node: NodeType) => string;
 
+/**
+ * @expand
+ */
 export type MiniMapProps<NodeType extends Node = Node> = Omit<HTMLAttributes<SVGSVGElement>, 'onClick'> & {
-  /** Color of nodes on minimap */
+  /**
+   * Color of nodes on minimap.
+   * @default "#e2e2e2"
+   */
   nodeColor?: string | GetMiniMapNodeAttribute<NodeType>;
-  /** Stroke color of nodes on minimap */
+  /**
+   * Stroke color of nodes on minimap.
+   * @default "transparent"
+   */
   nodeStrokeColor?: string | GetMiniMapNodeAttribute<NodeType>;
-  /** ClassName applied to nodes on minimap */
+  /**
+   * Class name applied to nodes on minimap.
+   * @default ""
+   */
   nodeClassName?: string | GetMiniMapNodeAttribute<NodeType>;
-  /** Border radius of nodes on minimap */
+  /**
+   * Border radius of nodes on minimap.
+   * @default 5
+   */
   nodeBorderRadius?: number;
-  /** Stroke width of nodes on minimap */
+  /**
+   * Stroke width of nodes on minimap.
+   * @default 2
+   */
   nodeStrokeWidth?: number;
-  /** Component used to render nodes on minimap */
+  /**
+   * A custom component to render the nodes in the minimap. This component must render an SVG
+   * element!
+   */
   nodeComponent?: ComponentType<MiniMapNodeProps>;
-  /** Background color of minimap */
+  /** Background color of minimap. */
   bgColor?: string;
-  /** Color of mask representing viewport */
+  /**
+   * The color of the mask that covers the portion of the minimap not currently visible in the
+   * viewport.
+   * @default "rgba(240, 240, 240, 0.6)"
+   */
   maskColor?: string;
-  /** Stroke color of mask representing viewport */
+  /**
+   * Stroke color of mask representing viewport.
+   * @default transparent
+   */
   maskStrokeColor?: string;
-  /** Stroke width of mask representing viewport */
+  /**
+   * Stroke width of mask representing viewport.
+   * @default 1
+   */
   maskStrokeWidth?: number;
-  /** Position of minimap on pane
+  /**
+   * Position of minimap on pane.
+   * @default PanelPosition.BottomRight
    * @example PanelPosition.TopLeft, PanelPosition.TopRight,
    * PanelPosition.BottomLeft, PanelPosition.BottomRight
    */
   position?: PanelPosition;
-  /** Callback caled when minimap is clicked*/
+  /** Callback called when minimap is clicked. */
   onClick?: (event: MouseEvent, position: XYPosition) => void;
-  /** Callback called when node on minimap is clicked */
+  /** Callback called when node on minimap is clicked. */
   onNodeClick?: (event: MouseEvent, node: NodeType) => void;
-  /** If true, viewport is pannable via mini map component */
+  /**
+   * Determines whether you can pan the viewport by dragging inside the minimap.
+   * @default false
+   */
   pannable?: boolean;
-  /** If true, viewport is zoomable via mini map component */
+  /**
+   * Determines whether you can zoom the viewport by scrolling inside the minimap.
+   * @default false
+   */
   zoomable?: boolean;
-  /** The aria-label attribute */
+  /**
+   * There is no text inside the minimap for a screen reader to use as an accessible name, so it's
+   * important we provide one to make the minimap accessible. The default is sufficient, but you may
+   * want to replace it with something more relevant to your app or product.
+   * @default "React Flow mini map"
+   */
   ariaLabel?: string | null;
-  /** Invert direction when panning the minimap viewport */
+  /** Invert direction when panning the minimap viewport. */
   inversePan?: boolean;
-  /** Step size for zooming in/out on minimap */
+  /**
+   * Step size for zooming in/out on minimap.
+   * @default 10
+   */
   zoomStep?: number;
-  /** Offset the viewport on the minmap, acts like a padding */
+  /**
+   * Offset the viewport on the minimap, acts like a padding.
+   * @default 5
+   */
   offsetScale?: number;
 };
 
@@ -57,6 +107,12 @@ export type MiniMapNodes<NodeType extends Node = Node> = Pick<
   onClick?: (event: MouseEvent, nodeId: string) => void;
 };
 
+/**
+ * The props that are passed to the MiniMapNode component
+ *
+ * @public
+ * @expand
+ */
 export type MiniMapNodeProps = {
   id: string;
   x: number;

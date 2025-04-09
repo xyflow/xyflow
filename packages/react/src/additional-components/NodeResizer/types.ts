@@ -9,43 +9,68 @@ import type {
   OnResizeEnd,
 } from '@xyflow/system';
 
+/**
+ * @expand
+ */
 export type NodeResizerProps = {
-  /** Id of the node it is resizing
+  /**
+   * Id of the node it is resizing.
    * @remarks optional if used inside custom node
    */
   nodeId?: string;
-  /** Color of the resize handle */
+  /** Color of the resize handle. */
   color?: string;
-  /** ClassName applied to handle */
+  /** Class name applied to handle. */
   handleClassName?: string;
-  /** Style applied to handle */
+  /** Style applied to handle. */
   handleStyle?: CSSProperties;
-  /** ClassName applied to line */
+  /** Class name applied to line. */
   lineClassName?: string;
-  /** Style applied to line */
+  /** Style applied to line. */
   lineStyle?: CSSProperties;
-  /** Are the controls visible */
+  /**
+   * Are the controls visible.
+   * @default true
+   */
   isVisible?: boolean;
-  /** Minimum width of node */
+  /**
+   * Minimum width of node.
+   * @default 10
+   */
   minWidth?: number;
-  /** Minimum height of node */
+  /**
+   * Minimum height of node.
+   * @default 10
+   */
   minHeight?: number;
-  /** Maximum width of node */
+  /**
+   * Maximum width of node.
+   * @default Number.MAX_VALUE
+   */
   maxWidth?: number;
-  /** Maximum height of node */
+  /**
+   * Maximum height of node.
+   * @default Number.MAX_VALUE
+   */
   maxHeight?: number;
-  /** Keep aspect ratio when resizing */
+  /**
+   * Keep aspect ratio when resizing.
+   * @default false
+   */
   keepAspectRatio?: boolean;
-  /** Callback to determine if node should resize */
+  /** Callback to determine if node should resize. */
   shouldResize?: ShouldResize;
-  /** Callback called when resizing starts */
+  /** Callback called when resizing starts. */
   onResizeStart?: OnResizeStart;
-  /** Callback called when resizing */
+  /** Callback called when resizing. */
   onResize?: OnResize;
-  /** Callback called when resizing ends */
+  /** Callback called when resizing ends. */
   onResizeEnd?: OnResizeEnd;
 };
 
+/**
+ * @expand
+ */
 export type ResizeControlProps = Pick<
   NodeResizerProps,
   | 'nodeId'
@@ -60,12 +85,15 @@ export type ResizeControlProps = Pick<
   | 'onResize'
   | 'onResizeEnd'
 > & {
-  /** Position of the control
+  /**
+   * Position of the control.
    * @example ControlPosition.TopLeft, ControlPosition.TopRight,
    * ControlPosition.BottomLeft, ControlPosition.BottomRight
    */
   position?: ControlPosition;
-  /** Variant of the control
+  /**
+   * Variant of the control.
+   * @default "handle"
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
@@ -74,6 +102,9 @@ export type ResizeControlProps = Pick<
   children?: ReactNode;
 };
 
+/**
+ * @expand
+ */
 export type ResizeControlLineProps = ResizeControlProps & {
   position?: ControlLinePosition;
 };

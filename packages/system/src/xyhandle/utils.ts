@@ -19,8 +19,10 @@ function getNodesWithinDistance(position: XYPosition, nodeLookup: NodeLookup, di
   return nodes;
 }
 
-// this distance is used for the area around the user pointer
-// while doing a connection for finding the closest nodes
+/*
+ * this distance is used for the area around the user pointer
+ * while doing a connection for finding the closest nodes
+ */
 const ADDITIONAL_DISTANCE = 250;
 
 export function getClosestHandle(

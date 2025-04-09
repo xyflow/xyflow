@@ -61,6 +61,7 @@ const wrapHandler = (
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   elementsSelectable: s.elementsSelectable,
+  connectionInProgress: s.connection.inProgress,
   dragging: s.paneDragging,
 });
 
@@ -81,7 +82,7 @@ export function Pane({
   children,
 }: PaneProps) {
   const store = useStoreApi();
-  const { userSelectionActive, elementsSelectable, dragging } = useStore(selector, shallow);
+  const { userSelectionActive, elementsSelectable, dragging, connectionInProgress } = useStore(selector, shallow);
   const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
 
   const container = useRef<HTMLDivElement | null>(null);
@@ -96,7 +97,8 @@ export function Pane({
 
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
-    if (selectionInProgress.current) {
+    // We also prevent click events when a connection is in progress
+    if (selectionInProgress.current || connectionInProgress) {
       selectionInProgress.current = false;
       return;
     }
@@ -233,8 +235,10 @@ export function Pane({
     (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
     const { userSelectionRect } = store.getState();
 
-    // We only want to trigger click functions when in selection mode if
-    // the user did not move the mouse.
+    /*
+     * We only want to trigger click functions when in selection mode if
+     * the user did not move the mouse.
+     */
     if (!userSelectionActive && userSelectionRect && event.target === container.current) {
       onClick?.(event);
     }
@@ -246,8 +250,10 @@ export function Pane({
     });
     onSelectionEnd?.(event);
 
-    // If the user kept holding the selectionKey during the selection,
-    // we need to reset the selectionInProgress, so the next click event is not prevented
+    /*
+     * If the user kept holding the selectionKey during the selection,
+     * we need to reset the selectionInProgress, so the next click event is not prevented
+     */
     if (selectionKeyPressed || selectionOnDrag) {
       selectionInProgress.current = false;
     }

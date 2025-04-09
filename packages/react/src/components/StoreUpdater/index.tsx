@@ -11,7 +11,7 @@ import { useStore, useStoreApi } from '../../hooks/useStore';
 import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
-// these fields exist in the global store and we need to keep them up to date
+// These fields exist in the global store, and we need to keep them up to date
 const reactFlowFieldsToTrack = [
   'nodes',
   'edges',
@@ -94,9 +94,11 @@ const selector = (s: ReactFlowState) => ({
 });
 
 const initPrevValues = {
-  // these are values that are also passed directly to other components
-  // than the StoreUpdater. We can reduce the number of setStore calls
-  // by setting the same values here as prev fields.
+  /*
+   * these are values that are also passed directly to other components
+   * than the StoreUpdater. We can reduce the number of setStore calls
+   * by setting the same values here as prev fields.
+   */
   translateExtent: infiniteExtent,
   nodeOrigin: defaultNodeOrigin,
   minZoom: 0.5,
@@ -152,8 +154,8 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'paneClickDistance') setPaneClickDistance(fieldValue as number);
         // Renamed fields
-        else if (fieldName === 'fitView') store.setState({ fitViewOnInit: fieldValue as boolean });
-        else if (fieldName === 'fitViewOptions') store.setState({ fitViewOnInitOptions: fieldValue as FitViewOptions });
+        else if (fieldName === 'fitView') store.setState({ fitViewQueued: fieldValue as boolean });
+        else if (fieldName === 'fitViewOptions') store.setState({ fitViewOptions: fieldValue as FitViewOptions });
         // General case
         else store.setState({ [fieldName]: fieldValue });
       }

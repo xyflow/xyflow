@@ -90,8 +90,10 @@ export function createPanOnScrollHandler({
       return;
     }
 
-    // increase scroll speed in firefox
-    // firefox: deltaMode === 1; chrome: deltaMode === 0
+    /*
+     * increase scroll speed in firefox
+     * firefox: deltaMode === 1; chrome: deltaMode === 0
+     */
     const deltaNormalize = event.deltaMode === 1 ? 20 : 1;
     let deltaX = panOnScrollMode === PanOnScrollMode.Vertical ? 0 : event.deltaX * deltaNormalize;
     let deltaY = panOnScrollMode === PanOnScrollMode.Horizontal ? 0 : event.deltaY * deltaNormalize;
@@ -114,9 +116,11 @@ export function createPanOnScrollHandler({
 
     clearTimeout(zoomPanValues.panScrollTimeout);
 
-    // for pan on scroll we need to handle the event calls on our own
-    // we can't use the start, zoom and end events from d3-zoom
-    // because start and move gets called on every scroll event and not once at the beginning
+    /*
+     * for pan on scroll we need to handle the event calls on our own
+     * we can't use the start, zoom and end events from d3-zoom
+     * because start and move gets called on every scroll event and not once at the beginning
+     */
     if (!zoomPanValues.isPanScrolling) {
       zoomPanValues.isPanScrolling = true;
 
@@ -137,10 +141,17 @@ export function createPanOnScrollHandler({
 
 export function createZoomOnScrollHandler({ noWheelClassName, preventScrolling, d3ZoomHandler }: ZoomOnScrollParams) {
   return function (this: Element, event: any, d: unknown) {
+    const isWheel = event.type === 'wheel';
     // we still want to enable pinch zooming even if preventScrolling is set to false
-    const preventZoom = !preventScrolling && event.type === 'wheel' && !event.ctrlKey;
+    const preventZoom = !preventScrolling && isWheel && !event.ctrlKey;
+    const hasNoWheelClass = isWrappedWithClass(event, noWheelClassName);
 
-    if (preventZoom || isWrappedWithClass(event, noWheelClassName)) {
+    // if user is pinch zooming above a nowheel element, we don't want the browser to zoom
+    if (event.ctrlKey && isWheel && hasNoWheelClass) {
+      event.preventDefault();
+    }
+
+    if (preventZoom || hasNoWheelClass) {
       return null;
     }
 

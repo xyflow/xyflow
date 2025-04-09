@@ -1,5 +1,6 @@
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
+import BrokenNodes from '../examples/BrokenNodes';
 import ColorMode from '../examples/ColorMode';
 import ClickDistance from '../examples/ClickDistance';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
@@ -76,6 +77,11 @@ const routes: IRoute[] = [
     name: 'Backgrounds',
     path: 'backgrounds',
     component: Backgrounds,
+  },
+  {
+    name: 'Broken Nodes',
+    path: 'broken-nodes',
+    component: BrokenNodes,
   },
   {
     name: 'Color Mode',

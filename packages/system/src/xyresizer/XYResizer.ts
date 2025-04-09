@@ -48,7 +48,7 @@ type XYResizerParams = {
     paneDomNode: HTMLDivElement | null;
   };
   onChange: (changes: XYResizerChange, childChanges: XYResizerChildChange[]) => void;
-  onEnd?: () => void;
+  onEnd?: (change: Required<XYResizerChange>) => void;
 };
 
 type XYResizerUpdateParams = {
@@ -154,8 +154,10 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           parentExtent = parentNode && node.extent === 'parent' ? nodeToParentExtent(parentNode) : undefined;
         }
 
-        // Collect all child nodes to correct their relative positions when top/left changes
-        // Determine largest minimal extent the parent node is allowed to resize to
+        /*
+         * Collect all child nodes to correct their relative positions when top/left changes
+         * Determine largest minimal extent the parent node is allowed to resize to
+         */
         childNodes = [];
         childExtent = undefined;
 
@@ -186,13 +188,13 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
       })
       .on('drag', (event: ResizeDragEvent) => {
         const { transform, snapGrid, snapToGrid, nodeOrigin: storeNodeOrigin } = getStoreItems();
-
         const pointerPosition = getPointerPosition(event.sourceEvent, {
           transform,
           snapGrid,
           snapToGrid,
           containerBounds,
         });
+
         const childChanges: XYResizerChildChange[] = [];
 
         if (!node) {
@@ -230,8 +232,10 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           prevValues.x = change.x;
           prevValues.y = change.y;
 
-          // when top/left changes, correct the relative positions of child nodes
-          // so that they stay in the same position
+          /*
+           * when top/left changes, correct the relative positions of child nodes
+           * so that they stay in the same position
+           */
           if (childNodes.length > 0) {
             const xChange = x - prevX;
             const yChange = y - prevY;
@@ -290,7 +294,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
       })
       .on('end', (event: ResizeDragEvent) => {
         onResizeEnd?.(event, { ...prevValues });
-        onEnd?.();
+        onEnd?.({ ...prevValues });
       });
     selection.call(dragHandler);
   }

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import type { HandleConnection, HandleType, NodeConnection, Rect, Viewport } from '@xyflow/system';
-import type { Node, Edge, ViewportHelperFunctions, InternalNode } from '.';
+import type { Node, Edge, ViewportHelperFunctions, InternalNode, FitView } from '.';
 
 export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   nodes: NodeType[];
@@ -13,6 +13,9 @@ export type DeleteElementsOptions = {
   edges?: (Edge | { id: Edge['id'] })[];
 };
 
+/**
+ * @inline
+ */
 export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   /**
    * Returns nodes.
@@ -21,13 +24,17 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
    */
   getNodes: () => NodeType[];
   /**
-   * Sets nodes.
+   * Set your nodes array to something else by either overwriting it with a new array or by passing
+   * in a function to update the existing array. If using a function, it is important to make sure a
+   * new array is returned instead of mutating the existing array. Calling this function will
+   * trigger the `onNodesChange` handler in a controlled flow.
    *
    * @param payload - the nodes to set or a function that receives the current nodes and returns the new nodes
    */
   setNodes: (payload: NodeType[] | ((nodes: NodeType[]) => NodeType[])) => void;
   /**
-   * Adds nodes.
+   * Add one or many nodes to your existing nodes array. Calling this function will trigger the
+   * `onNodesChange` handler in a controlled flow.
    *
    * @param payload - the nodes to add
    */
@@ -53,13 +60,17 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
    */
   getEdges: () => EdgeType[];
   /**
-   * Sets edges.
+   * Set your edges array to something else by either overwriting it with a new array or by passing
+   * in a function to update the existing array. If using a function, it is important to make sure a
+   * new array is returned instead of mutating the existing array. Calling this function will
+   * trigger the `onEdgesChange` handler in a controlled flow.
    *
    * @param payload - the edges to set or a function that receives the current edges and returns the new edges
    */
   setEdges: (payload: EdgeType[] | ((edges: EdgeType[]) => EdgeType[])) => void;
   /**
-   * Adds edges.
+   * Add one or many edges to your existing edges array. Calling this function will trigger the
+   * `onEdgesChange` handler in a controlled flow.
    *
    * @param payload - the edges to add
    */
@@ -90,7 +101,8 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     deletedEdges: Edge[];
   }>;
   /**
-   * Returns all nodes that intersect with the given node or rect.
+   * Find all the nodes currently intersecting with a given node or rectangle. The `partially`
+   * parameter can be set to `true` to include nodes that are only partially intersecting.
    *
    * @param node - the node or rect to check for intersections
    * @param partially - if true, the node is considered to be intersecting if it partially overlaps with the passed node or rect
@@ -104,7 +116,8 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     nodes?: NodeType[]
   ) => NodeType[];
   /**
-   * Checks if the given node or rect intersects with the passed rect.
+   * Determine if a given node or rectangle is intersecting with another rectangle. The `partially`
+   * parameter can be set to true return `true` even if the node is only partially intersecting.
    *
    * @param node - the node or rect to check for intersections
    * @param area - the rect to check for intersections
@@ -182,7 +195,8 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
    */
   getNodesBounds: (nodes: (NodeType | InternalNode | string)[]) => Rect;
   /**
-   * Gets all connections for a given handle belonging to a specific node.
+   * Get all the connections of a handle belonging to a specific node. The type parameter be either
+   * `'source'` or `'target'`.
    * @deprecated
    * @param type - handle type 'source' or 'target'
    * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
@@ -200,7 +214,6 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
   }) => HandleConnection[];
   /**
    * Gets all connections to a node. Can be filtered by handle type and id.
-   * @deprecated use `getNodeConnections` instead
    * @param type - handle type 'source' or 'target'
    * @param handleId - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
    * @param nodeId - the node id the handle belongs to
@@ -215,12 +228,34 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     nodeId: string;
     handleId?: string | null;
   }) => NodeConnection[];
+  // /**
+  //  * Fits the view.
+  //  *
+  //  * @param options.padding - optional padding
+  //  * @param options.includeHiddenNodes - optional includeHiddenNodes
+  //  * @param options.minZoom - optional minZoom
+  //  * @param options.maxZoom - optional maxZoom
+  //  * @param options.duration - optional duration. If set, a transition will be applied
+  //  * @param options.nodes - optional nodes to fit the view to
+  //  */
+  fitView: FitView<NodeType>;
 };
-
+/**
+ * The `ReactFlowInstance` provides a collection of methods to query and manipulate
+ * the internal state of your flow. You can get an instance by using the
+ * [`useReactFlow`](/api-reference/hooks/use-react-flow) hook or attaching a listener
+ * to the [`onInit`](/api-reference/react-flow#event-oninit) event.
+ *
+ * @public
+ */
 export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = GeneralHelpers<
   NodeType,
   EdgeType
 > &
-  Omit<ViewportHelperFunctions, 'initialized'> & {
+   ViewportHelperFunctions & {
+  /**
+   * React Flow needs to mount the viewport to the DOM and initialize its zoom and pan behavior.
+   * This property tells you when viewport is initialized.
+   */
     viewportInitialized: boolean;
   };

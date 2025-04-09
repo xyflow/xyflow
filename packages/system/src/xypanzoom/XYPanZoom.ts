@@ -114,22 +114,22 @@ export function XYPanZoom({
 
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
-          zoomPanValues,
-          noWheelClassName,
-          d3Selection,
-          d3Zoom: d3ZoomInstance,
-          panOnScrollMode,
-          panOnScrollSpeed,
-          zoomOnPinch,
-          onPanZoomStart,
-          onPanZoom,
-          onPanZoomEnd,
-        })
+        zoomPanValues,
+        noWheelClassName,
+        d3Selection,
+        d3Zoom: d3ZoomInstance,
+        panOnScrollMode,
+        panOnScrollSpeed,
+        zoomOnPinch,
+        onPanZoomStart,
+        onPanZoom,
+        onPanZoomEnd,
+      })
       : createZoomOnScrollHandler({
-          noWheelClassName,
-          preventScrolling,
-          d3ZoomHandler,
-        });
+        noWheelClassName,
+        preventScrolling,
+        d3ZoomHandler,
+      });
 
     d3Selection.on('wheel.zoom', wheelHandler, { passive: false });
 
@@ -178,9 +178,11 @@ export function XYPanZoom({
     });
     d3ZoomInstance.filter(filter);
 
-    // We cannot add zoomOnDoubleClick to the filter above because
-    // double tapping on touch screens circumvents the filter and
-    // dblclick.zoom is fired on the selection directly
+    /*
+     * We cannot add zoomOnDoubleClick to the filter above because
+     * double tapping on touch screens circumvents the filter and
+     * dblclick.zoom is fired on the selection directly
+     */
     if (zoomOnDoubleClick) {
       d3Selection.on('dblclick.zoom', d3DblClickZoomHandler);
     } else {

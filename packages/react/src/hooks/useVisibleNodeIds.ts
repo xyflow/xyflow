@@ -8,8 +8,8 @@ import type { Node, ReactFlowState } from '../types';
 const selector = (onlyRenderVisible: boolean) => (s: ReactFlowState) => {
   return onlyRenderVisible
     ? getNodesInside<Node>(s.nodeLookup, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true).map(
-        (node) => node.id
-      )
+      (node) => node.id
+    )
     : Array.from(s.nodeLookup.keys());
 };
 

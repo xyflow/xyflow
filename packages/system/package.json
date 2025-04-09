@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/system",
-  "version": "0.0.50",
+  "version": "0.0.55",
   "description": "xyflow core system that powers React Flow and Svelte Flow.",
   "keywords": [
     "node-based UI",
@@ -63,7 +63,7 @@
     "@xyflow/eslint-config": "workspace:*",
     "@xyflow/rollup-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
-    "typescript": "5.1.3"
+    "typescript": "5.4.5"
   },
   "rollup": {
     "globals": {
