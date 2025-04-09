@@ -366,6 +366,12 @@ export type SvelteFlowProps = NodeEvents &
     onconnectstart?: OnConnectStart;
     /** When a user stops dragging a connection line, this event gets fired. */
     onconnectend?: OnConnectEnd;
+    /** A connection is started by clicking on a handle */
+    onclickconnectstart?: OnConnectStart;
+    /** A connection is finished by clicking on a handle */
+    onclickconnectend?: OnConnectEnd;
+    /** Toggles ability to make connections via clicking the handles */
+    clickConnect?: boolean;
     /** This handler gets called when the flow is finished initializing */
     oninit?: () => void;
   };

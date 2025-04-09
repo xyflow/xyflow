@@ -7,7 +7,11 @@
     type HandleConnection,
     areConnectionMapsEqual,
     handleConnectionChange,
-    ConnectionMode
+    ConnectionMode,
+    getHostForElement,
+    type Optional,
+    type ConnectionState,
+    type Connection
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
@@ -20,15 +24,14 @@
     position = Position.Top,
     style,
     class: className,
-    isConnectable: isConnectableProp,
-    isValidConnection: isValidConnectionProp,
+    isConnectable: isConnectableProp = true,
+    isConnectableStart = true,
+    isConnectableEnd = true,
+    isValidConnection,
     onconnect,
     ondisconnect,
     children
   }: HandleProps = $props();
-  // @todo implement connectablestart, connectableend
-  // export let isConnectableStart: $$Props['isConnectableStart'] = undefined;
-  // export let isConnectableEnd: $$Props['isConnectableEnd'] = undefined;
 
   const nodeId = getContext<string>('svelteflow__node_id');
   const isConnectableContext = getContext<ConnectableContext>('svelteflow__node_connectable');
@@ -40,7 +43,69 @@
 
   let store = useStore();
 
-  function onPointerDown(event: MouseEvent | TouchEvent) {
+  let prevConnections: Map<string, HandleConnection> | null = null;
+  $effect.pre(() => {
+    if (onconnect || ondisconnect) {
+      // connectionLookup is not reactive, so we use edges to get notified about updates
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      store.edges;
+      let connections = store.connectionLookup.get(
+        `${nodeId}-${type}${handleId ? `-${handleId}` : ''}`
+      );
+
+      if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
+        const _connections = connections ?? new Map();
+
+        handleConnectionChange(prevConnections, _connections, ondisconnect);
+        handleConnectionChange(_connections, prevConnections, onconnect);
+      }
+
+      prevConnections = new Map(connections);
+    }
+  });
+
+  let [connectionInProgress, connectingFrom, connectingTo, isPossibleTargetHandle, valid] =
+    $derived.by(() => {
+      if (!store.connection.inProgress) {
+        return [false, false, false, false, null];
+      }
+
+      const { fromHandle, toHandle, isValid } = store.connection;
+
+      const connectingFrom =
+        fromHandle &&
+        fromHandle.nodeId === nodeId &&
+        fromHandle.type === type &&
+        fromHandle.id === handleId;
+
+      const connectingTo =
+        toHandle &&
+        toHandle.nodeId === nodeId &&
+        toHandle.type === type &&
+        toHandle.id === handleId;
+
+      const isPossibleTargetHandle =
+        store.connectionMode === ConnectionMode.Strict
+          ? fromHandle?.type !== type
+          : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
+
+      const valid = connectingTo && isValid;
+
+      return [true, connectingFrom, connectingTo, isPossibleTargetHandle, valid];
+    });
+
+  function onConnectExtended(connection: Connection) {
+    const edge = store.onbeforeconnect?.(connection) ?? connection;
+
+    if (!edge) {
+      return;
+    }
+
+    store.addEdge(edge);
+    store.onconnect?.(connection);
+  }
+
+  function onpointerdown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
 
     if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
@@ -55,20 +120,11 @@
         lib: 'svelte',
         autoPanOnConnect: store.autoPanOnConnect,
         flowId: store.flowId,
-        isValidConnection: isValidConnectionProp ?? store.isValidConnection,
+        isValidConnection: isValidConnection ?? store.isValidConnection,
         updateConnection: store.updateConnection,
         cancelConnection: store.cancelConnection,
         panBy: store.panBy,
-        onConnect: (connection) => {
-          const edge = store.onbeforeconnect?.(connection) ?? connection;
-
-          if (!edge) {
-            return;
-          }
-
-          store.addEdge(edge);
-          store.onconnect?.(connection);
-        },
+        onConnect: onConnectExtended,
         onConnectStart: (event, startParams) => {
           store.onconnectstart?.(event, {
             nodeId: startParams.nodeId,
@@ -85,49 +141,54 @@
     }
   }
 
-  let prevConnections: Map<string, HandleConnection> | null = null;
-  $effect.pre(() => {
-    // connectionLookup is not reactive, so we use edges to get notified about updates
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    store.edges;
-    if (onconnect || ondisconnect) {
-      let connections = store.connectionLookup.get(
-        `${nodeId}-${type}${handleId ? `-${handleId}` : ''}`
-      );
-
-      if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
-        const _connections = connections ?? new Map();
-
-        handleConnectionChange(prevConnections, _connections, ondisconnect);
-        handleConnectionChange(_connections, prevConnections, onconnect);
-      }
-
-      prevConnections = new Map(connections);
+  function onclick(event: MouseEvent) {
+    if (!nodeId || (!store.clickConnectStartHandle && !isConnectableStart)) {
+      return;
     }
-  });
 
-  let [connectionInProcess, connectingFrom, connectingTo, isPossibleEndHandle, valid] = $derived.by(
-    () => {
-      const { fromHandle, toHandle, isValid } = store.connection;
-
-      const connectionInProcess = !!fromHandle;
-
-      const connectingFrom =
-        fromHandle?.nodeId === nodeId && fromHandle?.type === type && fromHandle?.id === handleId;
-
-      const connectingTo =
-        toHandle?.nodeId === nodeId && toHandle?.type === type && toHandle?.id === handleId;
-
-      const isPossibleEndHandle =
-        store.connectionMode === ConnectionMode.Strict
-          ? fromHandle?.type !== type
-          : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
-
-      const valid = connectingTo && isValid;
-
-      return [connectionInProcess, connectingFrom, connectingTo, isPossibleEndHandle, valid];
+    if (!store.clickConnectStartHandle) {
+      store.onclickconnectstart?.(event, { nodeId, handleId, handleType: type });
+      store.clickConnectStartHandle = { nodeId, type, id: handleId };
+      return;
     }
-  );
+
+    const doc = getHostForElement(event.target);
+    const isValidConnectionHandler = isValidConnection ?? store.isValidConnection;
+
+    const { connectionMode, clickConnectStartHandle, flowId, nodeLookup } = store;
+    const { connection, isValid } = XYHandle.isValid(event, {
+      handle: {
+        nodeId,
+        id: handleId,
+        type
+      },
+      connectionMode,
+      fromNodeId: clickConnectStartHandle.nodeId,
+      fromHandleId: clickConnectStartHandle.id ?? null,
+      fromType: clickConnectStartHandle.type,
+      isValidConnection: isValidConnectionHandler,
+      flowId,
+      doc,
+      lib: 'svelte',
+      nodeLookup
+    });
+
+    if (isValid && connection) {
+      onConnectExtended(connection);
+    }
+
+    const connectionClone = structuredClone($state.snapshot(store.connection)) as Optional<
+      ConnectionState,
+      'inProgress'
+    >;
+    delete connectionClone.inProgress;
+    connectionClone.toPosition = connectionClone.toHandle
+      ? connectionClone.toHandle.position
+      : null;
+    store.onclickconnectend?.(event, connectionClone);
+
+    store.clickConnectStartHandle = null;
+  }
 </script>
 
 <!--
@@ -152,12 +213,16 @@ The Handle component is the part of a node that can be used to connect nodes.
   class:connectingfrom={connectingFrom}
   class:source={!isTarget}
   class:target={isTarget}
-  class:connectablestart={isConnectable}
-  class:connectableend={isConnectable}
+  class:connectablestart={isConnectableStart}
+  class:connectableend={isConnectableEnd}
   class:connectable={isConnectable}
-  class:connectionindicator={isConnectable && (!connectionInProcess || isPossibleEndHandle)}
-  onmousedown={onPointerDown}
-  ontouchstart={onPointerDown}
+  class:connectionindicator={isConnectable &&
+    (!connectionInProgress || isPossibleTargetHandle) &&
+    (connectionInProgress || store.clickConnectStartHandle ? isConnectableEnd : isConnectableStart)}
+  onmousedown={onpointerdown}
+  ontouchstart={onpointerdown}
+  onclick={store.clickConnect ? onclick : undefined}
+  onkeypress={() => {}}
   {style}
   role="button"
   tabindex="-1"

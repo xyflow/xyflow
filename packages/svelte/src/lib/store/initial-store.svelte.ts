@@ -28,7 +28,8 @@ import {
   pointToRendererPoint,
   type ColorModeClass,
   type Transform,
-  fitViewport
+  fitViewport,
+  type Handle
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -283,12 +284,18 @@ export const getInitialStore = (signals: StoreSignals) => {
     });
     onlyRenderVisibleElements: boolean = $derived(signals.props.onlyRenderVisibleElements ?? false);
     onerror: OnError = $derived(signals.props.onerror ?? devWarn);
+
     ondelete?: OnDelete = $derived(signals.props.ondelete ?? undefined);
+    onbeforedelete?: OnBeforeDelete = $derived(signals.props.onbeforedelete);
+
     onbeforeconnect?: OnBeforeConnect = $derived(signals.props.onbeforeconnect);
     onconnect?: OnConnect = $derived(signals.props.onconnect);
     onconnectstart?: OnConnectStart = $derived(signals.props.onconnectstart);
     onconnectend?: OnConnectEnd = $derived(signals.props.onconnectend);
-    onbeforedelete?: OnBeforeDelete = $derived(signals.props.onbeforedelete);
+    clickConnect?: boolean = $derived(signals.props.clickConnect ?? true);
+    onclickconnectstart?: OnConnectStart = $derived(signals.props.onclickconnectstart ?? undefined);
+    onclickconnectend?: OnConnectEnd = $derived(signals.props.onclickconnectend ?? undefined);
+    clickConnectStartHandle: Pick<Handle, 'id' | 'nodeId' | 'type'> | null = $state(null);
 
     resolveFitView = async () => {
       if (!this.panZoom) {
