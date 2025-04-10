@@ -65,6 +65,9 @@
     style,
     defaultEdgeOptions,
     elevateNodesOnSelect,
+    nodesDraggable,
+    nodesConnectable,
+    elementsSelectable,
     ...divAttributes
   } = $derived(rest);
 

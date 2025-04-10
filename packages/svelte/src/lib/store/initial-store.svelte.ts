@@ -180,24 +180,9 @@ export const getInitialStore = (signals: StoreSignals) => {
       };
     });
 
-    get nodesDraggable() {
-      return signals.nodesDraggable;
-    }
-    set nodesDraggable(value: boolean) {
-      signals.nodesDraggable = value;
-    }
-    get nodesConnectable() {
-      return signals.nodesConnectable;
-    }
-    set nodesConnectable(value: boolean) {
-      signals.nodesConnectable = value;
-    }
-    get elementsSelectable() {
-      return signals.elementsSelectable;
-    }
-    set elementsSelectable(value: boolean) {
-      signals.elementsSelectable = value;
-    }
+    nodesDraggable: boolean = $derived(signals.props.nodesDraggable ?? true);
+    nodesConnectable: boolean = $derived(signals.props.nodesConnectable ?? true);
+    elementsSelectable: boolean = $derived(signals.props.elementsSelectable ?? true);
 
     minZoom: number = $derived(signals.props.minZoom ?? 0.5);
     maxZoom: number = $derived(signals.props.maxZoom ?? 2);

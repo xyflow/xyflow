@@ -93,24 +93,6 @@
     },
     set viewport(newViewport) {
       viewport = newViewport;
-    },
-    get nodesDraggable() {
-      return nodesDraggable;
-    },
-    set nodesDraggable(newNodesDraggable) {
-      nodesDraggable = newNodesDraggable;
-    },
-    get nodesConnectable() {
-      return nodesConnectable;
-    },
-    set nodesConnectable(newNodesConnectable) {
-      nodesConnectable = newNodesConnectable;
-    },
-    get elementsSelectable() {
-      return elementsSelectable;
-    },
-    set elementsSelectable(newElementsSelectable) {
-      elementsSelectable = newElementsSelectable;
     }
   });
 
