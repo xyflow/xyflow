@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.5.6
+
+### Patch Changes
+
+- [#5196](https://github.com/xyflow/xyflow/pull/5196) [`7f902db4`](https://github.com/xyflow/xyflow/commit/7f902db46b6f1ea4adc94390db8d5db47f8c5903) Thanks [@moklick](https://github.com/moklick)! - Hide edge marker and attribution for screenreaders
+
 ## 12.5.5
 
 ### Patch Changes
