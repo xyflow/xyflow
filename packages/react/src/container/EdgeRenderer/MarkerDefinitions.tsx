@@ -67,7 +67,7 @@ const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
   }
 
   return (
-    <svg className="react-flow__marker">
+    <svg className="react-flow__marker" aria-hidden="true">
       <defs>
         {markers.map((marker: MarkerProps) => (
           <Marker
