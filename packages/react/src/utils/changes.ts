@@ -239,7 +239,7 @@ export function getSelectionChanges(
     const willBeSelected = selectedIds.has(id);
 
     // we don't want to set all items to selected=false on the first selection
-    if (!(item.selected === undefined && !willBeSelected) && item.selected !== willBeSelected) {
+    if ((item.selected !== undefined || willBeSelected) && item.selected !== willBeSelected) {
       if (mutateItem) {
         /*
          * this hack is needed for nodes. When the user dragged a node, it's selected.
