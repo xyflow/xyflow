@@ -46,7 +46,7 @@ const getInitialState = ({
   const storeNodeExtent = nodeExtent ?? infiniteExtent;
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
-  adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
+  const nodesInitialized = adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
     nodeOrigin: storeNodeOrigin,
     nodeExtent: storeNodeExtent,
     elevateNodesOnSelect: false,
@@ -69,6 +69,7 @@ const getInitialState = ({
     height: 0,
     transform,
     nodes: storeNodes,
+    nodesInitialized,
     nodeLookup,
     parentLookup,
     edges: storeEdges,
