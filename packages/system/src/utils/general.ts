@@ -184,7 +184,7 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
  */
 function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   if (typeof padding === 'number') {
-    return Math.floor(viewport - viewport / (1 + padding));
+    return Math.floor((viewport - viewport / (1 + padding)) * 0.5);
   }
 
   if (typeof padding === 'string' && padding.endsWith('px')) {
