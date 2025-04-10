@@ -17,7 +17,6 @@ export function Attribution({ proOptions, position = 'bottom-right' }: Attributi
       position={position}
       className="react-flow__attribution"
       data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev"
-      aria-hidden="true"
     >
       <a href="https://reactflow.dev" target="_blank" rel="noopener noreferrer" aria-label="React Flow attribution">
         React Flow
