@@ -38,7 +38,9 @@
 {#if $selectionRectMode === 'nodes' && bounds && isNumeric(bounds.x) && isNumeric(bounds.y)}
   <div
     class="selection-wrapper nopan"
-    style="width: {bounds.width}px; height: {bounds.height}px; transform: translate({bounds.x}px, {bounds.y}px)"
+    style:width="{bounds.width}px"
+    style:height="{bounds.height}px"
+    style:transform="translate({bounds.x}px, {bounds.y}px)"
     use:drag={{
       disabled: false,
       store,
