@@ -29,9 +29,9 @@
     zoomActivationKey,
     paneClickDistance = 1,
     nodeClickDistance = 1,
-    onMoveStart,
-    onMoveEnd,
-    onMove,
+    onmovestart,
+    onmoveend,
+    onmove,
     oninit,
     onnodeclick,
     onnodecontextmenu,
@@ -134,9 +134,6 @@
   />
   <Zoom
     {store}
-    {onMoveStart}
-    {onMove}
-    {onMoveEnd}
     {panOnScrollMode}
     {preventScrolling}
     {zoomOnScroll}
@@ -145,6 +142,9 @@
     {panOnScroll}
     {panOnDrag}
     {paneClickDistance}
+    {onmovestart}
+    {onmove}
+    {onmoveend}
     {oninit}
   >
     <Pane {store} {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>

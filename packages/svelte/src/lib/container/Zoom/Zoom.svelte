@@ -6,9 +6,6 @@
 
   let {
     store,
-    onMoveStart,
-    onMove,
-    onMoveEnd,
     panOnScrollMode = PanOnScrollMode.Free,
     preventScrolling = true,
     zoomOnScroll = true,
@@ -17,6 +14,9 @@
     panOnDrag = true,
     panOnScroll = false,
     paneClickDistance = 1,
+    onmovestart,
+    onmove,
+    onmoveend,
     oninit,
     children
   }: ZoomProps = $props();
@@ -49,9 +49,9 @@
     setPanZoomInstance: (instance: PanZoomInstance) => {
       store.panZoom = instance;
     },
-    onPanZoomStart: onMoveStart,
-    onPanZoom: onMove,
-    onPanZoomEnd: onMoveEnd,
+    onPanZoomStart: onmovestart,
+    onPanZoom: onmove,
+    onPanZoomEnd: onmoveend,
     zoomOnScroll,
     zoomOnDoubleClick,
     zoomOnPinch,

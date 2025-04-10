@@ -335,11 +335,11 @@ export type SvelteFlowProps = NodeEvents &
     elevateNodesOnSelect?: boolean;
     isValidConnection?: IsValidConnection;
     /** This event handler is called when the user begins to pan or zoom the viewport */
-    onMoveStart?: OnMoveStart;
+    onmovestart?: OnMoveStart;
     /** This event handler is called when the user pans or zooms the viewport */
-    onMove?: OnMove;
+    onmove?: OnMove;
     /** This event handler is called when the user stops panning or zooming the viewport */
-    onMoveEnd?: OnMoveEnd;
+    onmoveend?: OnMoveEnd;
     /** Ocassionally something may happen that causes Svelte Flow to throw an error.
      *
      * Instead of exploding your application, we log a message to the console and then call this event handler.
