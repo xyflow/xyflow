@@ -1,3 +1,5 @@
+import type { Snippet } from 'svelte';
+import type { ClassValue } from 'svelte/elements';
 import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
 import type {
   FitViewOptionsBase,
@@ -23,16 +25,21 @@ export type ConnectionData = {
 };
 
 export type HandleProps = HandlePropsSystem & {
-  class?: string;
+  class?: ClassValue;
   style?: string;
   onconnect?: (connections: Connection[]) => void;
   ondisconnect?: (connections: Connection[]) => void;
+  children?: Snippet;
 };
 
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
 
 export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
-export type OnEdgeCreate = (connection: Connection) => Edge | Connection | void;
+export type OnBeforeConnect = (connection: Connection) => Edge | Connection | void;
+export type OnBeforeReconnect<EdgeType extends Edge = Edge> = (
+  newEdge: EdgeType,
+  oldEdge: EdgeType
+) => EdgeType | void;
 export type OnBeforeDelete<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge

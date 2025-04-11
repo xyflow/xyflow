@@ -1,3 +1,5 @@
+import type { ClassValue } from 'svelte/elements';
+
 export enum BackgroundVariant {
   Lines = 'lines',
   Dots = 'dots',
@@ -13,7 +15,7 @@ export type BackgroundProps = {
   /** Class applied to the pattern */
   patternClass?: string;
   /** Class applied to the container */
-  class?: string;
+  class?: ClassValue;
   /** Gap between repetitions of the pattern */
   gap?: number | [number, number];
   /** Size of a single pattern element */
