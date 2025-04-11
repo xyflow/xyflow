@@ -18,7 +18,10 @@ import type {
   OnConnect,
   OnConnectStart,
   OnConnectEnd,
-  ColorModeClass
+  ColorModeClass,
+  OnReconnect,
+  OnRecoonnectStart,
+  OnReconnectEnd
 } from '@xyflow/system';
 
 import type {
@@ -32,7 +35,8 @@ import type {
   OnDelete,
   OnBeforeConnect,
   OnBeforeDelete,
-  IsValidConnection
+  IsValidConnection,
+  OnBeforeReconnect
 } from '$lib/types';
 
 import type { Component } from 'svelte';
@@ -356,16 +360,22 @@ export type SvelteFlowProps = NodeEvents &
     ondelete?: OnDelete;
     /** This handler gets called before the user deletes nodes or edges and provides a way to abort the deletion by returning false. */
     onbeforedelete?: OnBeforeDelete;
-
     /** This handler gets called when a new edge is created. You can use it to modify the newly created edge. */
     onbeforeconnect?: OnBeforeConnect;
-
     /** This event gets fired when a connection successfully completes and an edge is created. */
     onconnect?: OnConnect;
     /** When a user starts to drag a connection line, this event gets fired. */
     onconnectstart?: OnConnectStart;
     /** When a user stops dragging a connection line, this event gets fired. */
     onconnectend?: OnConnectEnd;
+    /** This event gets fired when after an edge was reconnected*/
+    onreconnect?: OnReconnect;
+    /** This event gets fired when a user starts to reconnect an edge */
+    onreconnectstart?: OnRecoonnectStart;
+    /** This event gets fired when a user stops reconnecting an edge */
+    onreconnectend?: OnReconnectEnd;
+    /** This handler gets called when an edge is reconnected. You can use it to modify the edge before the update is applied. */
+    onbeforereconnect?: OnBeforeReconnect;
     /** A connection is started by clicking on a handle */
     onclickconnectstart?: OnConnectStart;
     /** A connection is finished by clicking on a handle */

@@ -29,7 +29,10 @@ import {
   type ColorModeClass,
   type Transform,
   fitViewport,
-  type Handle
+  type Handle,
+  type OnReconnect,
+  type OnRecoonnectStart,
+  type OnReconnectEnd
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -54,7 +57,8 @@ import type {
   IsValidConnection,
   Edge,
   EdgeLayouted,
-  InternalNode
+  InternalNode,
+  OnBeforeReconnect
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
@@ -270,16 +274,22 @@ export const getInitialStore = (signals: StoreSignals) => {
     onlyRenderVisibleElements: boolean = $derived(signals.props.onlyRenderVisibleElements ?? false);
     onerror: OnError = $derived(signals.props.onerror ?? devWarn);
 
-    ondelete?: OnDelete = $derived(signals.props.ondelete ?? undefined);
+    ondelete?: OnDelete = $derived(signals.props.ondelete);
     onbeforedelete?: OnBeforeDelete = $derived(signals.props.onbeforedelete);
 
     onbeforeconnect?: OnBeforeConnect = $derived(signals.props.onbeforeconnect);
     onconnect?: OnConnect = $derived(signals.props.onconnect);
     onconnectstart?: OnConnectStart = $derived(signals.props.onconnectstart);
     onconnectend?: OnConnectEnd = $derived(signals.props.onconnectend);
+
+    onbeforereconnect?: OnBeforeReconnect = $derived(signals.props.onbeforereconnect);
+    onreconnect?: OnReconnect = $derived(signals.props.onreconnect);
+    onreconnectstart?: OnRecoonnectStart = $derived(signals.props.onreconnectstart);
+    onreconnectend?: OnReconnectEnd = $derived(signals.props.onreconnectend);
+
     clickConnect?: boolean = $derived(signals.props.clickConnect ?? true);
-    onclickconnectstart?: OnConnectStart = $derived(signals.props.onclickconnectstart ?? undefined);
-    onclickconnectend?: OnConnectEnd = $derived(signals.props.onclickconnectend ?? undefined);
+    onclickconnectstart?: OnConnectStart = $derived(signals.props.onclickconnectstart);
+    onclickconnectend?: OnConnectEnd = $derived(signals.props.onclickconnectend);
     clickConnectStartHandle: Pick<Handle, 'id' | 'nodeId' | 'type'> | null = $state(null);
 
     resolveFitView = async () => {

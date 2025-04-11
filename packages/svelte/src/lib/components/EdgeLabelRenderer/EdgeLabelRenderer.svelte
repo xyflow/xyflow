@@ -1,13 +1,10 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import portal from '$lib/actions/portal';
-  import { useStore } from '$lib/store';
-
-  const store = useStore();
+  import { portal } from '$lib/actions/portal';
 
   let { children }: { children?: Snippet } = $props();
 </script>
 
-<div use:portal={{ target: '.svelte-flow__edgelabel-renderer', domNode: store.domNode }}>
+<div use:portal={'edgelabel'}>
   {@render children?.()}
 </div>

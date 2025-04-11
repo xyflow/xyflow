@@ -196,10 +196,10 @@
 The Handle component is the part of a node that can be used to connect nodes.
 -->
 <div
-  data-handleid={handleId}
+  data-handleid={handleId ?? 'null'}
   data-nodeid={nodeId}
   data-handlepos={position}
-  data-id="{store.flowId}-{nodeId}-{handleId}-{type}"
+  data-id="{store.flowId}-{nodeId}-{handleId ?? 'null'}-{type}"
   class={[
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,

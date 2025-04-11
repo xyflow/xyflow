@@ -2,7 +2,7 @@
   import { getContext } from 'svelte';
   import { Position, getNodeToolbarTransform } from '@xyflow/system';
 
-  import portal from '$lib/actions/portal';
+  import { portal } from '$lib/actions/portal';
   import { useStore } from '$lib/store';
   import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
 
@@ -68,7 +68,7 @@
   <div
     data-id={toolbarNodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
     class="svelte-flow__node-toolbar"
-    use:portal={{ domNode: store.domNode }}
+    use:portal={'root'}
     style:position="absolute"
     style:transform
     style:z-index={zIndex}

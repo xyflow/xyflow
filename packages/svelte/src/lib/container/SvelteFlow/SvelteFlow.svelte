@@ -66,9 +66,6 @@
     nodes = $bindable([]),
     edges = $bindable([]),
     viewport = $bindable(undefined),
-    nodesDraggable = $bindable(true),
-    nodesConnectable = $bindable(true),
-    elementsSelectable = $bindable(true),
     ...props
   }: SvelteFlowProps & HTMLAttributes<HTMLDivElement> = $props();
 

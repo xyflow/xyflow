@@ -16,6 +16,7 @@ export {
 } from '$lib/components/edges';
 export * from '$lib/components/Handle';
 export * from '$lib/components/EdgeLabel';
+export * from '$lib/components/EdgeReconnectAnchor';
 
 // plugins
 export * from '$lib/plugins/Controls';
@@ -39,6 +40,9 @@ export * from '$lib/hooks/useNodeConnections.svelte';
 export * from '$lib/hooks/useNodesData.svelte';
 export * from '$lib/hooks/useInternalNode.svelte';
 export * from '$lib/hooks/useInitialized.svelte';
+
+//actions
+export * from '$lib/actions/portal';
 
 // types
 export type {
