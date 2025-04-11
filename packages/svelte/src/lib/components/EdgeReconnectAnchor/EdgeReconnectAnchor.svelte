@@ -13,15 +13,13 @@
     class: className,
     size = 25,
     style,
-    children,
-    asDomNode = false
+    children
   }: {
     type: HandleType;
     reconnecting?: boolean;
     style?: string;
     class?: ClassValue;
     position?: XYPosition;
-    asDomNode?: boolean;
     size?: number;
     children?: Snippet;
   } = $props();
@@ -110,36 +108,19 @@
       getFromHandle: () => store.connection.fromHandle
     });
   };
-
-  let offset = $derived(asDomNode ? '-50%' : `-${size * 0.5}px`);
 </script>
 
-<svelte:element
-  this={asDomNode ? 'div' : 'g'}
-  use:portal={asDomNode ? 'edgelabel' : undefined}
-  xmlns={asDomNode ? undefined : 'http://www.w3.org/2000/svg'}
+<div
+  use:portal={'edgelabel'}
   class={['svelte-flow__edgeupdater nopan', `svelte-flow__edgeupdater-${type}`, className]}
   style:position="absolute"
   style:width={`${size}px`}
   style:height={`${size}px`}
-  style:transform={position
-    ? `translate(calc(${offset} + ${position.x}px), calc(${offset} + ${position.y}px))`
-    : `translate(${offset}, ${offset})`}
+  style:transform={`translate(-50%, -50%) ${position ? `translate(${position.x}px, ${position.y}px` : ''}`}
   {style}
   onpointerdown={onPointerDown}
 >
-  {#if !reconnecting}
-    {#if children}
-      {@render children()}
-    {:else if !asDomNode}
-      <rect
-        width={size}
-        height={size}
-        x={0}
-        fill="transparent"
-        stroke="transparent"
-        pointer-events="all"
-      />
-    {/if}
+  {#if !reconnecting && children}
+    {@render children()}
   {/if}
-</svelte:element>
+</div>

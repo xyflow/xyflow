@@ -75,18 +75,8 @@
 {/if}
 
 {#if selected}
-	<EdgeReconnectAnchor
-		bind:reconnecting
-		type="source"
-		position={{ x: sourceX, y: sourceY }}
-		asDomNode
-	/>
-	<EdgeReconnectAnchor
-		bind:reconnecting
-		type="target"
-		position={{ x: targetX, y: targetY }}
-		asDomNode
-	/>
+	<EdgeReconnectAnchor bind:reconnecting type="source" position={{ x: sourceX, y: sourceY }} />
+	<EdgeReconnectAnchor bind:reconnecting type="target" position={{ x: targetX, y: targetY }} />
 {/if}
 
 <style>
