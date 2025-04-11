@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { HTMLAttributes } from 'svelte/elements';
   import type { BaseEdgeProps } from '../../types';
   import EdgeLabel from '../EdgeLabel/EdgeLabel.svelte';
 
@@ -13,8 +14,9 @@
     markerEnd,
     style,
     interactionWidth = 20,
-    class: className
-  }: BaseEdgeProps = $props();
+    class: className,
+    ...rest
+  }: BaseEdgeProps & HTMLAttributes<SVGPathElement> = $props();
 </script>
 
 <path
@@ -34,6 +36,7 @@
     stroke-width={interactionWidth}
     fill="none"
     class="svelte-flow__edge-interaction"
+    {...rest}
   />
 {/if}
 
