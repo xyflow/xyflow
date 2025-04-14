@@ -160,6 +160,14 @@
   }
 
   &.horizontal &-button {
-    border-bottom: none;
+    border-right: 1px solid
+      var(
+        --xy-controls-button-border-color-props,
+        var(--xy-controls-button-border-color, var(--xy-controls-button-border-color-default))
+      );
+  }
+
+  &.horizontal &-button:last-child {
+    border-right: none;
   }
 }
