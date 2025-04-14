@@ -11,7 +11,7 @@
 		getViewport,
 		toObject,
 		deleteElements
-	} = useSvelteFlow();
+	} = $derived(useSvelteFlow());
 
 	let nodes = useNodes();
 	let edges = useEdges();
@@ -20,7 +20,8 @@
 	const deleteNode = () => {
 		//TODO: do we really want to allow this?
 		// nodes.shift();
-		// nodes = nodes;
+		nodes.current.shift();
+		nodes.current = [...nodes.current];
 	};
 </script>
 

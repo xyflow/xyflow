@@ -11,10 +11,7 @@
     createStore({
       props: {},
       nodes: [],
-      edges: [],
-      nodesDraggable: true,
-      nodesConnectable: true,
-      elementsSelectable: true
+      edges: []
     })
   );
 
