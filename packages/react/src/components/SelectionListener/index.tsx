@@ -19,13 +19,13 @@ const selector = (s: ReactFlowState) => {
   const selectedEdges = [];
 
   for (const [, node] of s.nodeLookup) {
-    if (node.selected) {
+    if (node.selected && (s.elementsSelectable || node.selectable)) {
       selectedNodes.push(node.internals.userNode);
     }
   }
 
   for (const [, edge] of s.edgeLookup) {
-    if (edge.selected) {
+    if (edge.selected && (s.elementsSelectable || edge.selectable)) {
       selectedEdges.push(edge);
     }
   }
@@ -60,7 +60,7 @@ function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends E
   return null;
 }
 
-const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers && !!s.elementsSelectable;
+const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers;
 
 export function SelectionListener<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onSelectionChange,
