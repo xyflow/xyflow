@@ -18,7 +18,8 @@ import {
   type UpdateConnection,
   type ConnectionState,
   type NodeOrigin,
-  updateAbsolutePositions
+  updateAbsolutePositions,
+  withResolvers
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -146,7 +147,7 @@ export function createStore({
   function fitView(options?: FitViewOptions) {
     // We either create a new Promise or reuse the existing one
     // Even if fitView is called multiple times in a row, we only end up with a single Promise
-    const fitViewResolver = get(store.fitViewResolver) ?? Promise.withResolvers<boolean>();
+    const fitViewResolver = get(store.fitViewResolver) ?? withResolvers<boolean>();
 
     // We schedule a fitView by setting fitViewQueued and triggering a setNodes
     store.fitViewQueued.set(true);

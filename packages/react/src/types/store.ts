@@ -1,5 +1,6 @@
 import {
   ConnectionMode,
+  withResolvers,
   type ConnectionState,
   type CoordinateExtent,
   type InternalNodeUpdate,
@@ -121,7 +122,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   fitViewQueued: boolean;
   fitViewOptions: FitViewOptions | undefined;
-  fitViewResolver: PromiseWithResolvers<boolean> | null;
+  fitViewResolver: ReturnType<typeof withResolvers<boolean>> | null;
 
   onNodesDelete?: OnNodesDelete<NodeType>;
   onEdgesDelete?: OnEdgesDelete<EdgeType>;

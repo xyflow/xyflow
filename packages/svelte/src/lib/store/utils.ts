@@ -18,7 +18,8 @@ import {
   type NodeOrigin,
   infiniteExtent,
   type CoordinateExtent,
-  fitViewport
+  fitViewport,
+  withResolvers
 } from '@xyflow/system';
 
 import type {
@@ -145,7 +146,7 @@ export const createNodesStore = (
   nodeExtent: CoordinateExtent = infiniteExtent,
   fitViewQueued: Writable<boolean>,
   fitViewOptions: Writable<FitViewOptions | undefined>,
-  fitViewResolver: Writable<PromiseWithResolvers<boolean> | null>,
+  fitViewResolver: Writable<ReturnType<typeof withResolvers<boolean>> | null>,
   panZoom: Writable<PanZoomInstance | null>,
   width: Writable<number>,
   height: Writable<number>,
