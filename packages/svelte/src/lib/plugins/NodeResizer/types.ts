@@ -1,3 +1,5 @@
+import type { Snippet } from 'svelte';
+import type { ClassValue } from 'svelte/elements';
 import type {
   ControlPosition,
   ResizeControlVariant,
@@ -67,6 +69,7 @@ export type ResizeControlProps = Pick<
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
-  class?: string;
+  class?: ClassValue;
   style?: string;
+  children?: Snippet;
 };
