@@ -25,7 +25,8 @@ import {
   type EdgeLookup,
   type ConnectionState,
   type ParentLookup,
-  getInternalNodesBounds
+  getInternalNodesBounds,
+  withResolvers
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -114,7 +115,7 @@ export const getInitialStore = ({
 
   const fitViewQueued = writable<boolean>(false);
   const fitViewOptions = writable<FitViewOptions | undefined>(undefined);
-  const fitViewResolver = writable<PromiseWithResolvers<boolean> | null>(null);
+  const fitViewResolver = writable<ReturnType<typeof withResolvers<boolean>> | null>(null);
   const panZoom = writable<PanZoomInstance | null>(null);
   const widthStore = writable<number>(500);
   const heightStore = writable<number>(500);
