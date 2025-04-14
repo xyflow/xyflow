@@ -1,5 +1,6 @@
 import type { Position, Align } from '@xyflow/system';
 import type { Snippet } from 'svelte';
+import type { HTMLAttributes } from 'svelte/elements';
 
 export type NodeToolbarProps = {
   /** The id of the node, or array of ids the toolbar should be displayed at */
@@ -18,4 +19,4 @@ export type NodeToolbarProps = {
   /** If true, node toolbar is visible even if node is not selected */
   isVisible?: boolean;
   children?: Snippet;
-};
+} & HTMLAttributes<HTMLDivElement>;

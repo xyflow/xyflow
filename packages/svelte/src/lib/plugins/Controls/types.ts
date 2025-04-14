@@ -1,5 +1,5 @@
 import type { Snippet } from 'svelte';
-import type { ClassValue, HTMLButtonAttributes } from 'svelte/elements';
+import type { ClassValue, HTMLAttributes, HTMLButtonAttributes } from 'svelte/elements';
 import type { PanelPosition } from '@xyflow/system';
 
 import type { FitViewOptions } from '$lib/types';
@@ -29,7 +29,7 @@ export type ControlsProps = {
   before?: Snippet;
   after?: Snippet;
   fitViewOptions?: FitViewOptions;
-};
+} & HTMLAttributes<HTMLDivElement>;
 
 export type ControlButtonProps = HTMLButtonAttributes & {
   class?: ClassValue;

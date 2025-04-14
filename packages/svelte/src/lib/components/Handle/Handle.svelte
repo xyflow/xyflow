@@ -4,19 +4,20 @@
     Position,
     XYHandle,
     isMouseEvent,
-    type HandleConnection,
     areConnectionMapsEqual,
     handleConnectionChange,
     ConnectionMode,
     getHostForElement,
+    type HandleConnection,
     type Optional,
     type ConnectionState,
     type Connection
   } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
-  import type { HandleProps } from '$lib/types';
+
   import type { ConnectableContext } from '../NodeWrapper/types';
+  import type { HandleProps } from './types';
 
   let {
     id: handleId = null,
@@ -30,7 +31,8 @@
     isValidConnection,
     onconnect,
     ondisconnect,
-    children
+    children,
+    ...rest
   }: HandleProps = $props();
 
   const nodeId = getContext<string>('svelteflow__node_id');
@@ -226,6 +228,7 @@ The Handle component is the part of a node that can be used to connect nodes.
   {style}
   role="button"
   tabindex="-1"
+  {...rest}
 >
   {@render children?.()}
 </div>

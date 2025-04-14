@@ -37,7 +37,7 @@
 </script>
 
 <div
-  class="svelte-flow__zoom"
+  class="svelte-flow__zoom svelte-flow__container"
   use:zoom={{
     viewport: store.viewport,
     minZoom: store.minZoom,
@@ -74,14 +74,3 @@
 >
   {@render children()}
 </div>
-
-<style>
-  .svelte-flow__zoom {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 4;
-  }
-</style>

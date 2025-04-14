@@ -9,7 +9,7 @@ import type {
 } from '@xyflow/system';
 
 import type { Node } from '$lib/types';
-import type { ClassValue } from 'svelte/elements';
+import type { ClassValue, HTMLAttributes } from 'svelte/elements';
 
 /**
  * An `Edge` is the complete description with everything Svelte Flow needs to know in order to
@@ -46,7 +46,7 @@ export type BaseEdgeProps = Pick<
    */
   markerEnd?: string;
   class?: ClassValue;
-};
+} & HTMLAttributes<SVGPathElement>;
 
 type SmoothStepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<
   EdgeData,

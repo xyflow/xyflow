@@ -43,8 +43,6 @@
 
   let store = useStore();
 
-  // let nodes = $derived(store.nodes);
-
   const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
   const nodeClassFunc = getAttrFunction(nodeClass);

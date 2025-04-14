@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { HTMLAttributes } from 'svelte/elements';
   import type { BaseEdgeProps } from '../../types';
   import EdgeLabel from '../EdgeLabel/EdgeLabel.svelte';
 
@@ -16,7 +15,7 @@
     interactionWidth = 20,
     class: className,
     ...rest
-  }: BaseEdgeProps & HTMLAttributes<SVGPathElement> = $props();
+  }: BaseEdgeProps = $props();
 </script>
 
 <path
@@ -41,7 +40,7 @@
 {/if}
 
 {#if label}
-  <EdgeLabel x={labelX} y={labelY} style={labelStyle}>
+  <EdgeLabel x={labelX} y={labelY} style={labelStyle} selectEdgeOnClick>
     {label}
   </EdgeLabel>
 {/if}

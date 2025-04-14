@@ -27,7 +27,8 @@
     fitViewOptions,
     children,
     before,
-    after
+    after,
+    ...rest
   }: ControlsProps = $props();
 
   const store = useStore();
@@ -74,6 +75,7 @@
   data-testid="svelte-flow__controls"
   aria-label={ariaLabel ?? 'Svelte Flow controls'}
   {style}
+  {...rest}
 >
   {#if before}
     {@render before()}

@@ -1,11 +1,10 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte';
-
   import { portal } from '$lib/actions/portal';
+  import type { ViewportPortalProps } from './types';
 
-  let { children }: { children?: Snippet } = $props();
+  let { children, ...rest }: ViewportPortalProps = $props();
 </script>
 
-<div use:portal={'viewport'}>
+<div use:portal={'viewport'} {...rest}>
   {@render children?.()}
 </div>

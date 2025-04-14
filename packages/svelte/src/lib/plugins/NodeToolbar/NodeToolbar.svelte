@@ -15,7 +15,8 @@
     align = 'center',
     offset = 10,
     isVisible,
-    children
+    children,
+    ...rest
   }: NodeToolbarProps = $props();
 
   const store = useStore();
@@ -66,12 +67,13 @@
 
 {#if store.domNode && isActive && toolbarNodes}
   <div
-    data-id={toolbarNodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
-    class="svelte-flow__node-toolbar"
     use:portal={'root'}
+    class="svelte-flow__node-toolbar"
+    data-id={toolbarNodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
     style:position="absolute"
     style:transform
     style:z-index={zIndex}
+    {...rest}
   >
     {@render children?.()}
   </div>

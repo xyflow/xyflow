@@ -47,7 +47,7 @@
 </script>
 
 <svg
-  class={['svelte-flow__background', className]}
+  class={['svelte-flow__background', 'svelte-flow__container', className]}
   data-testid="svelte-flow__background"
   style:--xy-background-color-props={bgColor}
   style:--xy-background-pattern-color-props={patternColor}
@@ -69,13 +69,3 @@
   </pattern>
   <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId})`} />
 </svg>
-
-<style>
-  .svelte-flow__background {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-  }
-</style>

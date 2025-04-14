@@ -218,7 +218,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   bind:this={container}
-  class="svelte-flow__pane"
+  class="svelte-flow__pane svelte-flow__container"
   class:draggable={panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0))}
   class:dragging={store.dragging}
   class:selection={isSelecting}
@@ -230,13 +230,3 @@
 >
   {@render children()}
 </div>
-
-<style>
-  .svelte-flow__pane {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

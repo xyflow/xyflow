@@ -4,7 +4,8 @@
   import { XYHandle, type HandleType, type XYPosition } from '@xyflow/system';
   import { getContext, type Snippet } from 'svelte';
   import type { ClassValue } from 'svelte/elements';
-  import { portal } from '$lib/actions/portal';
+  import EdgeLabel from '../EdgeLabel/EdgeLabel.svelte';
+  import type { EdgeReconnectAnchorProps } from './types';
 
   let {
     type,
@@ -13,16 +14,9 @@
     class: className,
     size = 25,
     style,
-    children
-  }: {
-    type: HandleType;
-    reconnecting?: boolean;
-    style?: string;
-    class?: ClassValue;
-    position?: XYPosition;
-    size?: number;
-    children?: Snippet;
-  } = $props();
+    children,
+    ...rest
+  }: EdgeReconnectAnchorProps = $props();
 
   const store = useStore();
 
@@ -110,17 +104,16 @@
   };
 </script>
 
-<div
-  use:portal={'edgelabel'}
+<EdgeLabel
+  x={position?.x}
+  y={position?.y}
   class={['svelte-flow__edgeupdater nopan', `svelte-flow__edgeupdater-${type}`, className]}
-  style:position="absolute"
-  style:width={`${size}px`}
-  style:height={`${size}px`}
-  style:transform={`translate(-50%, -50%) ${position ? `translate(${position.x}px, ${position.y}px` : ''}`}
-  {style}
+  style={`width:${size}px; height:${size}px;` + style}
   onpointerdown={onPointerDown}
+  transparent
+  {...rest}
 >
   {#if !reconnecting && children}
     {@render children()}
   {/if}
-</div>
+</EdgeLabel>

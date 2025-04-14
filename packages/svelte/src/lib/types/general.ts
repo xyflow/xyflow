@@ -1,13 +1,10 @@
-import type { Snippet } from 'svelte';
-import type { ClassValue } from 'svelte/elements';
 import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
 import type {
   FitViewOptionsBase,
   XYPosition,
   Handle,
   Connection,
-  OnBeforeDeleteBase,
-  HandleProps as HandlePropsSystem
+  OnBeforeDeleteBase
 } from '@xyflow/system';
 
 import type { Node } from './nodes';
@@ -22,14 +19,6 @@ export type ConnectionData = {
   connectionStartHandle: Handle | null;
   connectionEndHandle: Handle | null;
   connectionStatus: string | null;
-};
-
-export type HandleProps = HandlePropsSystem & {
-  class?: ClassValue;
-  style?: string;
-  onconnect?: (connections: Connection[]) => void;
-  ondisconnect?: (connections: Connection[]) => void;
-  children?: Snippet;
 };
 
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;

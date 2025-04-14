@@ -2,13 +2,7 @@
   import type { PanelProps } from './types';
   import { useStore } from '$lib/store';
 
-  let {
-    position = 'top-right',
-    style,
-    class: className,
-    children,
-    ...restProps
-  }: PanelProps = $props();
+  let { position = 'top-right', style, class: className, children, ...rest }: PanelProps = $props();
 
   const store = useStore();
 
@@ -19,7 +13,7 @@
   class={['svelte-flow__panel', className, ...positionClasses]}
   {style}
   style:pointer-events={store.selectionRectMode ? 'none' : ''}
-  {...restProps}
+  {...rest}
 >
   {@render children?.()}
 </div>

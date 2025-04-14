@@ -1,11 +1,5 @@
 <script lang="ts">
-	import {
-		BaseEdge,
-		EdgeLabelRenderer,
-		useEdges,
-		getBezierPath,
-		type EdgeProps
-	} from '@xyflow/svelte';
+	import { BaseEdge, useEdges, getBezierPath, type EdgeProps, EdgeLabel } from '@xyflow/svelte';
 
 	let { ...props }: EdgeProps = $props();
 
@@ -29,20 +23,13 @@
 
 <BaseEdge {path} {labelX} {labelY} {...props} />
 
-<EdgeLabelRenderer>
-	<button
-		style:transform={`translate(-50%,-50%) translate(${labelX}px,${labelY}px)`}
-		class="edge-button"
-		onclick={onClick}
-	>
-		✕
-	</button>
-</EdgeLabelRenderer>
+<EdgeLabel x={labelX} y={labelY} selectEdgeOnClick>
+	<button class="edge-button" onclick={onClick}> ✕ </button>
+</EdgeLabel>
 
 <style>
 	.edge-button {
 		border-radius: 50%;
-		position: absolute;
 		border: none;
 		width: 1rem;
 		height: 1rem;
@@ -50,7 +37,6 @@
 		justify-content: center;
 		align-items: center;
 		font-size: 8px;
-		pointer-events: all;
 		cursor: pointer;
 		background-color: #eee;
 	}
