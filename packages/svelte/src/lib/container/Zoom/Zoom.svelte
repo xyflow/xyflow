@@ -5,7 +5,7 @@
   import type { ZoomProps } from './types';
 
   let {
-    store,
+    store = $bindable(),
     panOnScrollMode = PanOnScrollMode.Free,
     preventScrolling = true,
     zoomOnScroll = true,

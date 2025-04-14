@@ -5,7 +5,7 @@
   import type { SvelteFlowStore } from '$lib/store/types';
 
   let {
-    store,
+    store = $bindable(),
     onedgeclick,
     onedgecontextmenu,
     onedgepointerenter,
@@ -20,7 +20,7 @@
 
   {#each store.visible.edges.values() as edge (edge.id)}
     <EdgeWrapper
-      {store}
+      bind:store
       {edge}
       {onedgeclick}
       {onedgecontextmenu}

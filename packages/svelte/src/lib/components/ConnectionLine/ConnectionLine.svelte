@@ -11,7 +11,7 @@
   import type { SvelteFlowStore } from '$lib/store/types';
 
   let {
-    store,
+    store = $bindable(),
     type,
     containerStyle = '',
     style = '',

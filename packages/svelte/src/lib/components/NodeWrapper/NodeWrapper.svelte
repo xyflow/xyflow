@@ -10,7 +10,7 @@
   import type { NodeEvents } from '$lib/types';
 
   let {
-    store,
+    store = $bindable(),
     node,
     resizeObserver,
     nodeClickDistance,

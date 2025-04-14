@@ -11,7 +11,7 @@
   import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
 
   let {
-    store,
+    store = $bindable(),
     selectionKey = 'Shift',
     multiSelectionKey = isMacOs() ? 'Meta' : 'Control',
     deleteKey = 'Backspace',

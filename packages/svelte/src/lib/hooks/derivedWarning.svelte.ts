@@ -19,7 +19,6 @@ export function derivedWarning(functionName: string) {
   }
 
   if (storeContext.provider && typeof window === 'object' && !$effect.tracking()) {
-    console.error(`Use $derived(${functionName}()) to receive updates when values change.`);
-    console.trace(functionName);
+    throw new Error(`Use $derived(${functionName}()) to receive updates when values change.`);
   }
 }

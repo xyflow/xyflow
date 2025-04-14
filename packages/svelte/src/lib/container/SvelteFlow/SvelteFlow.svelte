@@ -69,7 +69,8 @@
     ...props
   }: SvelteFlowProps & HTMLAttributes<HTMLDivElement> = $props();
 
-  const store = createStore({
+  // svelte-ignore non_reactive_update
+  let store = createStore({
     props,
     width,
     height,
@@ -122,7 +123,7 @@
   rest={props}
 >
   <KeyHandler
-    {store}
+    bind:store
     {selectionKey}
     {deleteKey}
     {panActivationKey}
@@ -130,7 +131,7 @@
     {zoomActivationKey}
   />
   <Zoom
-    {store}
+    bind:store
     {panOnScrollMode}
     {preventScrolling}
     {zoomOnScroll}
@@ -144,17 +145,17 @@
     {onmoveend}
     {oninit}
   >
-    <Pane {store} {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
-      <ViewportComponent {store}>
+    <Pane bind:store {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
+      <ViewportComponent bind:store>
         <EdgeRenderer
-          {store}
+          bind:store
           {onedgeclick}
           {onedgecontextmenu}
           {onedgepointerenter}
           {onedgepointerleave}
         />
         <ConnectionLine
-          {store}
+          bind:store
           type={connectionLineType}
           LineComponent={connectionLineComponent}
           containerStyle={connectionLineContainerStyle}
@@ -163,7 +164,7 @@
         <div class="svelte-flow__edgelabel-renderer"></div>
         <div class="svelte-flow__viewport-portal"></div>
         <NodeRenderer
-          {store}
+          bind:store
           {nodeClickDistance}
           {onnodeclick}
           {onnodecontextmenu}
@@ -175,7 +176,7 @@
           {onnodedragstop}
         />
         <NodeSelection
-          {store}
+          bind:store
           {onselectionclick}
           {onselectioncontextmenu}
           {onnodedrag}

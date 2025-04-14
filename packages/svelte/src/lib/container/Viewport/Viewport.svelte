@@ -2,7 +2,7 @@
   import type { SvelteFlowStore } from '$lib/store/types';
   import type { Snippet } from 'svelte';
 
-  let { store, children }: { store: SvelteFlowStore; children: Snippet } = $props();
+  let { store = $bindable(), children }: { store: SvelteFlowStore; children: Snippet } = $props();
 </script>
 
 <div

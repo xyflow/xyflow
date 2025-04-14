@@ -7,7 +7,7 @@
   import type { SvelteFlowStore } from '$lib/store/types';
 
   let {
-    store,
+    store = $bindable(),
     nodeClickDistance,
     onnodeclick,
     onnodecontextmenu,
@@ -46,7 +46,7 @@
 <div class="svelte-flow__nodes">
   {#each store.visible.nodes.values() as node (node.id)}
     <NodeWrapper
-      {store}
+      bind:store
       {node}
       {resizeObserver}
       {nodeClickDistance}

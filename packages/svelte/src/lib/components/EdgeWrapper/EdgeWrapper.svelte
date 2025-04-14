@@ -10,7 +10,7 @@
 
   const {
     edge,
-    store,
+    store = $bindable(),
     onedgeclick,
     onedgecontextmenu,
     onedgepointerenter,

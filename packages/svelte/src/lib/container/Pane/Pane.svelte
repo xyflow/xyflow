@@ -45,7 +45,7 @@
   import type { PaneProps } from './types';
 
   let {
-    store,
+    store = $bindable(),
     panOnDrag = true,
     selectionOnDrag,
     onpaneclick,

@@ -7,7 +7,7 @@
   import type { NodeSelectionProps } from './types';
 
   let {
-    store,
+    store = $bindable(),
     onnodedrag,
     onnodedragstart,
     onnodedragstop,
