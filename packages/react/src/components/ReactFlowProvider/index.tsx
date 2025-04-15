@@ -22,9 +22,9 @@ export type ReactFlowProviderProps = {
   /** When `true`, the flow will be zoomed and panned to fit all the nodes initially provided. */
   fitView?: boolean;
   /**
-   * You can provide an object of options to customize the fitView behavior.
+   * You can provide an object of options to customize the initial fitView behavior.
    */
-  fitViewOptions?: FitViewOptions;
+  initialFitViewOptions?: FitViewOptions;
   /** Initial minimum zoom level */
   initialMinZoom?: number;
   /** Initial maximum zoom level */
@@ -93,7 +93,7 @@ export function ReactFlowProvider({
   initialHeight: height,
   initialMinZoom: minZoom,
   initialMaxZoom: maxZoom,
-  fitViewOptions,
+  initialFitViewOptions: fitViewOptions,
   fitView,
   nodeOrigin,
   nodeExtent,

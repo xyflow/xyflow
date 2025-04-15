@@ -53,7 +53,7 @@ export function Wrapper({
       initialWidth={width}
       initialHeight={height}
       fitView={fitView}
-      fitViewOptions={fitViewOptions}
+      initialFitViewOptions={fitViewOptions}
       initialMinZoom={minZoom}
       initialMaxZoom={maxZoom}
       nodeOrigin={nodeOrigin}
