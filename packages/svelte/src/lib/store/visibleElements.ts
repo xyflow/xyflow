@@ -1,4 +1,4 @@
-import type { Edge, EdgeLayouted, InternalNode } from '$lib/types';
+import type { DefaultEdgeOptions, Edge, EdgeLayouted, InternalNode } from '$lib/types';
 import {
   ConnectionMode,
   getEdgePosition,
@@ -27,6 +27,8 @@ export function getVisibleNodes(
 
 export interface EdgeLayoutBaseOptions {
   edges: Edge[];
+  defaultEdgeOptions: DefaultEdgeOptions;
+  elevateEdgesOnSelect: boolean;
   previousEdges: Map<string, EdgeLayouted>;
   nodeLookup: NodeLookup;
   connectionMode: ConnectionMode;
@@ -52,7 +54,16 @@ export interface EdgeLayoutOnlyVisibleOptions extends EdgeLayoutBaseOptions {
 export type EdgeLayoutOptions = EdgeLayoutAllOptions | EdgeLayoutOnlyVisibleOptions;
 
 export function getLayoutedEdges(options: EdgeLayoutOptions): Map<string, EdgeLayouted> {
-  const { edges, nodeLookup, previousEdges, connectionMode, onerror, onlyRenderVisible } = options;
+  const {
+    edges,
+    defaultEdgeOptions,
+    nodeLookup,
+    previousEdges,
+    connectionMode,
+    onerror,
+    onlyRenderVisible,
+    elevateEdgesOnSelect
+  } = options;
   const layoutedEdges = new Map<string, EdgeLayouted>();
   for (const edge of edges) {
     const sourceNode = nodeLookup.get(edge.source);
@@ -107,15 +118,16 @@ export function getLayoutedEdges(options: EdgeLayoutOptions): Map<string, EdgeLa
 
     if (edgePosition) {
       layoutedEdges.set(edge.id, {
+        ...defaultEdgeOptions,
         ...edge,
+        ...edgePosition,
         zIndex: getElevatedEdgeZIndex({
           selected: edge.selected,
-          zIndex: edge.zIndex,
+          zIndex: edge.zIndex ?? defaultEdgeOptions.zIndex,
           sourceNode,
           targetNode,
-          elevateOnSelect: false
+          elevateOnSelect: elevateEdgesOnSelect
         }),
-        ...edgePosition,
         sourceNode,
         targetNode,
         edge

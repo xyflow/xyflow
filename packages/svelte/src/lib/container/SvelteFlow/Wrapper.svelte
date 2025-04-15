@@ -73,6 +73,7 @@
     style,
     defaultEdgeOptions,
     elevateNodesOnSelect,
+    elevateEdgesOnSelect,
     nodesDraggable,
     nodesConnectable,
     elementsSelectable,

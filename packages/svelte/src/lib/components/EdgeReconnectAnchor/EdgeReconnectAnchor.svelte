@@ -2,9 +2,8 @@
   import { useStore } from '$lib/store';
   import type { Edge } from '$lib/types';
   import { XYHandle, type HandleType, type XYPosition } from '@xyflow/system';
-  import { getContext, type Snippet } from 'svelte';
-  import type { ClassValue } from 'svelte/elements';
-  import EdgeLabel from '../EdgeLabel/EdgeLabel.svelte';
+  import { getContext } from 'svelte';
+  import { EdgeLabel } from '../EdgeLabel';
   import type { EdgeReconnectAnchorProps } from './types';
 
   let {

@@ -337,6 +337,19 @@ export type SvelteFlowProps = NodeEvents &
      * @default true
      */
     elevateNodesOnSelect?: boolean;
+    /**
+     * Enabling this option will raise the z-index of edges when they are selected,
+     * or when the connected nodes are selected.
+     * @default true
+     */
+    elevateEdgesOnSelect?: boolean;
+    /**
+     * This callback can be used to validate a new connection
+     *
+     * If you return `false`, the edge will not be added to your flow.
+     * If you have custom connection logic its preferred to use this callback over the
+     * `isValidConnection` prop on the handle component for performance reasons.
+     */
     isValidConnection?: IsValidConnection;
     /** This event handler is called when the user begins to pan or zoom the viewport */
     onmovestart?: OnMoveStart;

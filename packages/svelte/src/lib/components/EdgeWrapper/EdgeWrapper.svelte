@@ -44,7 +44,9 @@
     zIndex,
     class: className,
     ariaLabel
-  } = $derived(store.defaultEdgeOptions ? { ...store.defaultEdgeOptions, ...edge } : edge);
+  } = $derived(edge);
+
+  $inspect(edge);
 
   const { id } = edge;
   setContext('svelteflow__edge_id', id);

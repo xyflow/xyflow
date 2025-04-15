@@ -151,13 +151,22 @@ export const getInitialStore = (signals: StoreSignals) => {
         nodeLookup,
         connectionMode,
         onerror,
-        onlyRenderVisibleElements
+        onlyRenderVisibleElements,
+        defaultEdgeOptions
       } = this;
 
       let visibleNodes: Map<string, InternalNode>;
       let visibleEdges: Map<string, EdgeLayouted>;
 
-      const options = { edges, previousEdges, nodeLookup, connectionMode, onerror };
+      const options = {
+        edges,
+        defaultEdgeOptions,
+        previousEdges,
+        nodeLookup,
+        connectionMode,
+        elevateEdgesOnSelect: signals.props.elevateEdgesOnSelect ?? true,
+        onerror
+      };
 
       if (onlyRenderVisibleElements) {
         // We only subscribe to viewport, width, height if onlyRenderVisibleElements is true
