@@ -19,13 +19,13 @@ const selector = (s: ReactFlowState) => {
   const selectedEdges = [];
 
   for (const [, node] of s.nodeLookup) {
-    if (node.selected && (s.elementsSelectable || node.selectable)) {
+    if (node.selected) {
       selectedNodes.push(node.internals.userNode);
     }
   }
 
   for (const [, edge] of s.edgeLookup) {
-    if (edge.selected && (s.elementsSelectable || edge.selectable)) {
+    if (edge.selected) {
       selectedEdges.push(edge);
     }
   }
