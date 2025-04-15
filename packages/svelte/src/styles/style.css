@@ -23,3 +23,8 @@
 .svelte-flow__zoom {
   z-index: 4;
 }
+
+.svelte-flow__edges {
+  -webkit-user-select: none;
+  user-select: none;
+}
