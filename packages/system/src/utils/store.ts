@@ -125,7 +125,9 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     }
 
     if (
-      (!internalNode.measured || !internalNode.measured.width || !internalNode.measured.height) &&
+      (internalNode.measured === undefined ||
+        internalNode.measured.width === undefined ||
+        internalNode.measured.height === undefined) &&
       !internalNode.hidden
     ) {
       nodesInitialized = false;
