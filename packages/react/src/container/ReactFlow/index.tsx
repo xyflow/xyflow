@@ -177,6 +177,9 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
         width={width}
         height={height}
         fitView={fitView}
+        fitViewOptions={fitViewOptions}
+        minZoom={minZoom}
+        maxZoom={maxZoom}
         nodeOrigin={nodeOrigin}
         nodeExtent={nodeExtent}
       >

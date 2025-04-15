@@ -2,7 +2,7 @@ import { useContext, type ReactNode } from 'react';
 
 import StoreContext from '../../contexts/StoreContext';
 import { ReactFlowProvider } from '../../components/ReactFlowProvider';
-import type { Node, Edge } from '../../types';
+import type { Node, Edge, FitViewOptions } from '../../types';
 import { CoordinateExtent, NodeOrigin } from '@xyflow/system';
 
 export function Wrapper({
@@ -14,6 +14,9 @@ export function Wrapper({
   width,
   height,
   fitView,
+  fitViewOptions,
+  minZoom,
+  maxZoom,
   nodeOrigin,
   nodeExtent,
 }: {
@@ -25,6 +28,9 @@ export function Wrapper({
   width?: number;
   height?: number;
   fitView?: boolean;
+  fitViewOptions?: FitViewOptions;
+  minZoom?: number;
+  maxZoom?: number;
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
 }) {
@@ -47,6 +53,9 @@ export function Wrapper({
       initialWidth={width}
       initialHeight={height}
       fitView={fitView}
+      initialFitViewOptions={fitViewOptions}
+      initialMinZoom={minZoom}
+      initialMaxZoom={maxZoom}
       nodeOrigin={nodeOrigin}
       nodeExtent={nodeExtent}
     >
