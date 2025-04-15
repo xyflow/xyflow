@@ -4,10 +4,13 @@
 
   import { useStore } from '$lib/store';
   import type { EdgeLabelProps } from './types';
+  import { toPxString } from '$lib/utils';
 
   let {
-    x,
-    y,
+    x = 0,
+    y = 0,
+    width,
+    height,
     selectEdgeOnClick = false,
     transparent = false,
     style,
@@ -27,7 +30,8 @@
   style:cursor={selectEdgeOnClick ? 'pointer' : undefined}
   style:transform="translate(-50%, -50%) translate({x}px,{y}px)"
   style:pointer-events="all"
-  {style}
+  style:width={toPxString(width)}
+  style:height={toPxString(height)}
   role="button"
   tabindex="-1"
   onclick={() => {

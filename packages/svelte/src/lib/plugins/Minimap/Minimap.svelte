@@ -37,8 +37,8 @@
     zoomable = true,
     inversePan,
     zoomStep,
-    style = '',
-    class: className
+    class: className,
+    ...rest
   }: MiniMapProps = $props();
 
   let store = useStore();
@@ -83,9 +83,10 @@
 
 <Panel
   {position}
-  style={style + (bgColor ? `;--xy-minimap-background-color-props:${bgColor}` : '')}
   class={['svelte-flow__minimap', className]}
   data-testid="svelte-flow__minimap"
+  --xy-minimap-background-color-props={bgColor}
+  {...rest}
 >
   {#if store.panZoom}
     <svg

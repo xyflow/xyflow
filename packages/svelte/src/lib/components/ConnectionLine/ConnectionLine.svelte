@@ -13,14 +13,14 @@
   let {
     store = $bindable(),
     type,
-    containerStyle = '',
-    style = '',
+    containerStyle,
+    style,
     LineComponent
   }: {
     store: SvelteFlowStore;
     type: ConnectionLineType;
-    containerStyle: string;
-    style: string;
+    containerStyle?: string;
+    style?: string;
     LineComponent?: Component;
   } = $props();
 

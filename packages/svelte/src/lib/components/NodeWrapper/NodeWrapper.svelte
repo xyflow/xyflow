@@ -3,11 +3,11 @@
   import { errorMessages, nodeHasDimensions, Position } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
-  import { getNodeInlineStyleDimensions } from './utils';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 
   import type { ConnectableContext, NodeWrapperProps } from './types';
   import type { NodeEvents } from '$lib/types';
+  import { toPxString } from '$lib/utils';
 
   let {
     store = $bindable(),
@@ -33,7 +33,7 @@
     connectable: _connectable,
     hidden = false,
     dragging = false,
-    style,
+    style = '',
     class: className,
     type = 'default',
     parentId,
@@ -90,16 +90,12 @@
     });
   }
 
-  let inlineStyleDimensions = $derived(
-    getNodeInlineStyleDimensions({
-      width,
-      height,
-      initialWidth,
-      initialHeight,
-      measuredWidth,
-      measuredHeight
-    })
-  );
+  // We need to pass width and height into the style attribute because
+  // style:width/height={undefined} overwrites what is defined in style string
+  let inlineDimensions = $derived({
+    width: toPxString(measuredWidth === undefined ? (width ?? initialWidth) : width),
+    height: toPxString(measuredHeight === undefined ? (height ?? initialHeight) : height)
+  });
 
   $effect(() => {
     // if type, sourcePosition or targetPosition changes,
@@ -197,7 +193,7 @@
     style:z-index={zIndex}
     style:transform="translate({positionX}px, {positionY}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
-    style="{style ?? ''};{inlineStyleDimensions.width}{inlineStyleDimensions.height}"
+    style="{style};width:{inlineDimensions.width};height:{inlineDimensions.height}"
     onclick={onSelectNodeHandler}
     onpointerenter={onnodepointerenter ? (event) => onnodepointerenter({ node, event }) : undefined}
     onpointerleave={onnodepointerleave ? (event) => onnodepointerleave({ node, event }) : undefined}

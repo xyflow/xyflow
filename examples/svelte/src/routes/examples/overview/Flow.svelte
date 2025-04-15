@@ -222,7 +222,7 @@
 		>
 	</Controls>
 	<Background variant={BackgroundVariant.Dots} />
-	<MiniMap />
+	<MiniMap bgColor={'red'} />
 	<Panel position="top-right">
 		<button onclick={moveNode}>update node pos</button>
 		<button onclick={changeEdgeType}>update edge type</button>

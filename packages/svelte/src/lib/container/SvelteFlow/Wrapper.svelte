@@ -2,6 +2,7 @@
   import type { HTMLAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
   import { type SvelteFlowRestProps } from '$lib/store/types';
+  import { toPxString } from '$lib/utils';
 
   let {
     width,
@@ -87,8 +88,8 @@
   bind:this={domNode}
   bind:clientHeight
   bind:clientWidth
-  style:width
-  style:height
+  style:width={toPxString(width)}
+  style:height={toPxString(height)}
   class={['svelte-flow', 'svelte-flow-container', className, colorMode]}
   data-testid="svelte-flow__wrapper"
   role="application"

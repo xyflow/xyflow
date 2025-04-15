@@ -107,8 +107,9 @@
 <EdgeLabel
   x={position?.x}
   y={position?.y}
+  width={size}
+  height={size}
   class={['svelte-flow__edgeupdater nopan', `svelte-flow__edgeupdater-${type}`, className]}
-  style={`width:${size}px; height:${size}px;` + style}
   onpointerdown={onPointerDown}
   transparent
   {...rest}

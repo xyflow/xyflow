@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { toPxString } from '$lib/utils';
+
   let {
     x = 0,
     y = 0,
@@ -6,10 +8,10 @@
     height = 0,
     isVisible = true
   }: {
-    x?: number | null;
-    y?: number | null;
-    width?: number | string | null;
-    height?: number | string | null;
+    x?: number;
+    y?: number;
+    width?: number | string;
+    height?: number | string;
     isVisible?: boolean;
   } = $props();
 </script>
@@ -17,8 +19,8 @@
 {#if isVisible}
   <div
     class="svelte-flow__selection"
-    style:width={typeof width === 'string' ? width : `${width}px`}
-    style:height={typeof height === 'string' ? height : `${height}px`}
+    style:width={typeof width === 'string' ? width : toPxString(width)}
+    style:height={typeof height === 'string' ? height : toPxString(height)}
     style:transform={`translate(${x}px, ${y}px)`}
   ></div>
 {/if}

@@ -21,3 +21,7 @@ export const isNode = <NodeType extends Node = Node>(element: unknown): element 
  */
 export const isEdge = <EdgeType extends Edge = Edge>(element: unknown): element is EdgeType =>
   isEdgeBase<EdgeType>(element);
+
+export function toPxString(value: number | undefined): string | undefined {
+  return value === undefined ? undefined : `${value}px`;
+}

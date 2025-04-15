@@ -26,9 +26,9 @@
     onResizeStart,
     onResize,
     onResizeEnd,
-    style = '',
     class: className,
-    children
+    children,
+    ...rest
   }: ResizeControlProps = $props();
 
   const store = useStore();
@@ -50,12 +50,6 @@
   });
 
   let positionClassNames = $derived(controlPosition.split('-'));
-
-  let controlStyle = $derived.by(() => {
-    let colorStyleProp =
-      variant === ResizeControlVariant.Line ? 'border-color' : 'background-color';
-    return color ? `${style} ${colorStyleProp}: ${color};` : style;
-  });
 
   onMount(() => {
     if (resizeControlRef) {
@@ -116,7 +110,9 @@
 <div
   class={['svelte-flow__resize-control', 'nodrag', ...positionClassNames, variant, className]}
   bind:this={resizeControlRef}
-  style={controlStyle}
+  style:border-color={variant === ResizeControlVariant.Line ? color : undefined}
+  style:background-color={variant === ResizeControlVariant.Line ? undefined : color}
+  {...rest}
 >
   {@render children?.()}
 </div>
