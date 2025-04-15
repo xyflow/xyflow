@@ -297,7 +297,11 @@ const createStore = ({
         get().panZoom?.setClickDistance(clickDistance);
       },
       resetSelectedElements: () => {
-        const { edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { edges, nodes, triggerNodeChanges, triggerEdgeChanges, elementsSelectable } = get();
+
+        if (!elementsSelectable) {
+          return;
+        }
 
         const nodeChanges = nodes.reduce<NodeSelectionChange[]>(
           (res, node) => (node.selected ? [...res, createSelectionChange(node.id, false)] : res),
