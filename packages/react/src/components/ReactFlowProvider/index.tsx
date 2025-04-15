@@ -3,18 +3,49 @@ import { useState, type ReactNode } from 'react';
 import { Provider } from '../../contexts/StoreContext';
 import { createStore } from '../../store';
 import { BatchProvider } from '../BatchProvider';
-import type { Node, Edge } from '../../types';
+import type { Node, Edge, FitViewOptions } from '../../types';
 import { CoordinateExtent, NodeOrigin } from '@xyflow/system';
 
 export type ReactFlowProviderProps = {
+  /** These nodes are used to initialize the flow. They are not dynamic. */
   initialNodes?: Node[];
+  /** These edges are used to initialize the flow. They are not dynamic. */
   initialEdges?: Edge[];
+  /** These nodes are used to initialize the flow. They are not dynamic. */
   defaultNodes?: Node[];
+  /** These edges are used to initialize the flow. They are not dynamic. */
   defaultEdges?: Edge[];
+  /** The initial width is necessary to be able to use fitView on the server */
   initialWidth?: number;
+  /** The initial height is necessary to be able to use fitView on the server */
   initialHeight?: number;
+  /** When `true`, the flow will be zoomed and panned to fit all the nodes initially provided. */
   fitView?: boolean;
+  /**
+   * You can provide an object of options to customize the fitView behavior.
+   */
+  fitViewOptions?: FitViewOptions;
+  /** Initial minimum zoom level */
+  initialMinZoom?: number;
+  /** Initial maximum zoom level */
+  initialMaxZoom?: number;
+  /**
+   * The origin of the node to use when placing it in the flow or looking up its `x` and `y`
+   * position. An origin of `[0, 0]` means that a node's top left corner will be placed at the `x`
+   * and `y` position.
+   * @default [0, 0]
+   * @example
+   * [0, 0] // default, top left
+   * [0.5, 0.5] // center
+   * [1, 1] // bottom right
+   */
   nodeOrigin?: NodeOrigin;
+  /**
+   * By default, nodes can be placed on an infinite flow. You can use this prop to set a boundary.
+   *
+   * The first pair of coordinates is the top left boundary and the second pair is the bottom right.
+   * @example [[-1000, -10000], [1000, 1000]]
+   */
   nodeExtent?: CoordinateExtent;
   children: ReactNode;
 };
@@ -60,6 +91,9 @@ export function ReactFlowProvider({
   defaultEdges,
   initialWidth: width,
   initialHeight: height,
+  initialMinZoom: minZoom,
+  initialMaxZoom: maxZoom,
+  fitViewOptions,
   fitView,
   nodeOrigin,
   nodeExtent,
@@ -74,6 +108,9 @@ export function ReactFlowProvider({
       width,
       height,
       fitView,
+      minZoom,
+      maxZoom,
+      fitViewOptions,
       nodeOrigin,
       nodeExtent,
     })
