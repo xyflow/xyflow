@@ -155,22 +155,7 @@
 	});
 </script>
 
-<SvelteFlow
-	bind:nodes
-	bind:edges
-	{nodeTypes}
-	{edgeTypes}
-	fitView
-	fitViewOptions={{
-		padding: 0.1,
-		nodes: [{ id: '1' }, { id: '2' }, { id: '3' }]
-	}}
-	minZoom={0}
-	maxZoom={Infinity}
-	selectionMode={SelectionMode.Full}
-	initialViewport={{ x: 100, y: 100, zoom: 2 }}
-	snapGrid={[25, 25]}
-	oninit={() => console.log('on init')}
+<!-- oninit={() => console.log('on init')}
 	onnodeclick={(event) => console.log('on node click', event)}
 	onnodepointerenter={(event) => console.log('on node enter', event)}
 	onnodepointerleave={(event) => console.log('on node leave', event)}
@@ -207,7 +192,23 @@
 		console.log('on before delete', nodes, edges);
 		const deleteElements = confirm('Are you sure you want to delete the selected elements?');
 		return deleteElements;
+	}} -->
+
+<SvelteFlow
+	bind:nodes
+	bind:edges
+	{nodeTypes}
+	{edgeTypes}
+	fitView
+	fitViewOptions={{
+		padding: 0.1,
+		nodes: [{ id: '1' }, { id: '2' }, { id: '3' }]
 	}}
+	minZoom={0}
+	maxZoom={Infinity}
+	selectionMode={SelectionMode.Full}
+	initialViewport={{ x: 100, y: 100, zoom: 2 }}
+	snapGrid={[25, 25]}
 	autoPanOnConnect
 	autoPanOnNodeDrag
 	connectionMode={ConnectionMode.Strict}
@@ -222,7 +223,7 @@
 		>
 	</Controls>
 	<Background variant={BackgroundVariant.Dots} />
-	<MiniMap bgColor={'red'} />
+	<MiniMap />
 	<Panel position="top-right">
 		<button onclick={moveNode}>update node pos</button>
 		<button onclick={changeEdgeType}>update edge type</button>
@@ -239,11 +240,11 @@
 	}
 
 	:root {
-		--background-color: #ffffdd;
+		/* --background-color: #ffffdd; */
 		--background-pattern-color: #5050ff;
 
-		--minimap-background-color: #f5f6f7;
-		--minimap-mask-color: rgb(255, 255, 240, 0.6);
+		--xy-minimap-background-color: red;
+		--xy-minimap-mask-color: rgb(255, 255, 240, 0.6);
 
 		--controls-button-background-color: #ddd;
 		--controls-button-background-color-hover: #ccc;

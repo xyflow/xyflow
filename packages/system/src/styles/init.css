@@ -123,6 +123,11 @@
   }
 }
 
+.xy-flow__edge-wrapper {
+  position: absolute;
+  overflow: visible;
+}
+
 .xy-flow__edge {
   pointer-events: visibleStroke;
 
@@ -142,10 +147,6 @@
 
   &.inactive {
     pointer-events: none;
-  }
-
-  &:focus {
-    outline: 1px solid red !important;
   }
 
   &.selected,
@@ -436,4 +437,8 @@ svg.xy-flow__connectionline {
       fill: currentColor;
     }
   }
+}
+
+.xy-flow__marker {
+  position: absolute;
 }

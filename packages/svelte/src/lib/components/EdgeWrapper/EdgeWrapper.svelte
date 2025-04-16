@@ -95,7 +95,6 @@
         edgeRef?.blur();
         unselectNodesAndEdges({ edges: [edge] });
       } else {
-        console.log(id);
         addSelectedEdges([id]);
       }
     }
@@ -103,8 +102,9 @@
 </script>
 
 <!-- TODO: aria-label, describedby -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 {#if !hidden}
-  <svg style:z-index={zIndex}>
+  <svg style:z-index={zIndex} class="svelte-flow__edge-wrapper">
     <g
       bind:this={edgeRef}
       class={['svelte-flow__edge', className]}
@@ -135,7 +135,7 @@
           : `Edge from ${source} to ${target}`}
       role={focusable ? 'button' : 'img'}
       onkeydown={focusable ? onkeydown : undefined}
-      tabIndex={focusable ? 0 : undefined}
+      tabindex={focusable ? 0 : undefined}
     >
       <EdgeComponent
         {id}

@@ -7,20 +7,3 @@
   text-align: center;
   position: absolute;
 }
-
-.svelte-flow__nodes {
-  z-index: 0;
-}
-
-.svelte-flow__edgelabel-renderer {
-  z-index: 0;
-}
-
-.svelte-flow__zoom {
-  z-index: 4;
-}
-
-.svelte-flow__edges {
-  -webkit-user-select: none;
-  user-select: none;
-}

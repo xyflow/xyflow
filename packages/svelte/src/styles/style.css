@@ -11,20 +11,3 @@
   color: var(--xy-edge-label-color, var(--xy-edge-label-color-default));
   background: var(--xy-edge-label-background-color, var(--xy-edge-label-background-color-default));
 }
-
-.svelte-flow__nodes {
-  z-index: 0;
-}
-
-.svelte-flow__edgelabel-renderer {
-  z-index: 0;
-}
-
-.svelte-flow__zoom {
-  z-index: 4;
-}
-
-.svelte-flow__edges {
-  -webkit-user-select: none;
-  user-select: none;
-}

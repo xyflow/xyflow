@@ -12,7 +12,7 @@ function tryToMount(node: Element, domNode: Element | null, target: Portal | und
     return;
   }
 
-  const targetEl = target === 'root' ? domNode : domNode.querySelector(selector[target]);
+  const targetEl = target === 'root' ? domNode : domNode.querySelector('.svelte-flow__viewport');
 
   if (targetEl) {
     targetEl.appendChild(node);

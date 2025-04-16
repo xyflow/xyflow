@@ -13,19 +13,17 @@
   }: { store: SvelteFlowStore } & EdgeEvents = $props();
 </script>
 
-<div class="svelte-flow__edges">
-  <svg class="svelte-flow__marker">
-    <MarkerDefinition />
-  </svg>
+<svg class="svelte-flow__marker">
+  <MarkerDefinition />
+</svg>
 
-  {#each store.visible.edges.values() as edge (edge.id)}
-    <EdgeWrapper
-      bind:store
-      {edge}
-      {onedgeclick}
-      {onedgecontextmenu}
-      {onedgepointerenter}
-      {onedgepointerleave}
-    />
-  {/each}
-</div>
+{#each store.visible.edges.values() as edge (edge.id)}
+  <EdgeWrapper
+    bind:store
+    {edge}
+    {onedgeclick}
+    {onedgecontextmenu}
+    {onedgepointerenter}
+    {onedgepointerleave}
+  />
+{/each}

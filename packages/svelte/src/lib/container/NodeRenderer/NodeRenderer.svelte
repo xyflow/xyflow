@@ -43,31 +43,19 @@
   });
 </script>
 
-<div class="svelte-flow__nodes">
-  {#each store.visible.nodes.values() as node (node.id)}
-    <NodeWrapper
-      bind:store
-      {node}
-      {resizeObserver}
-      {nodeClickDistance}
-      {onnodeclick}
-      {onnodepointerenter}
-      {onnodepointermove}
-      {onnodepointerleave}
-      {onnodedrag}
-      {onnodedragstart}
-      {onnodedragstop}
-      {onnodecontextmenu}
-    />
-  {/each}
-</div>
-
-<style>
-  .svelte-flow__nodes {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-</style>
+{#each store.visible.nodes.values() as node (node.id)}
+  <NodeWrapper
+    bind:store
+    {node}
+    {resizeObserver}
+    {nodeClickDistance}
+    {onnodeclick}
+    {onnodepointerenter}
+    {onnodepointermove}
+    {onnodepointerleave}
+    {onnodedrag}
+    {onnodedragstart}
+    {onnodedragstop}
+    {onnodecontextmenu}
+  />
+{/each}

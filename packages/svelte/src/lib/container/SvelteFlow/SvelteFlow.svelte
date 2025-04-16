@@ -161,8 +161,6 @@
           containerStyle={connectionLineContainerStyle}
           style={connectionLineStyle}
         />
-        <div class="svelte-flow__edgelabel-renderer"></div>
-        <div class="svelte-flow__viewport-portal"></div>
         <NodeRenderer
           bind:store
           {nodeClickDistance}

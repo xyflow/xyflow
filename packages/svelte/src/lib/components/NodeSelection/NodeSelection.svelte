@@ -46,7 +46,6 @@
   }
 
   function onkeydown(event: KeyboardEvent) {
-    console.log('yas');
     if (Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
       event.preventDefault();
       store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);

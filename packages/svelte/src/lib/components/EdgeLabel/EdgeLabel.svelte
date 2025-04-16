@@ -22,6 +22,10 @@
   const store = useStore();
 
   const id = getContext<string>('svelteflow__edge_id');
+
+  let z = $derived.by(() => {
+    return store.visible.edges.get(id)?.zIndex;
+  });
 </script>
 
 <div
@@ -32,6 +36,7 @@
   style:pointer-events="all"
   style:width={toPxString(width)}
   style:height={toPxString(height)}
+  style:z-index={z}
   role="button"
   tabindex="-1"
   onclick={() => {
