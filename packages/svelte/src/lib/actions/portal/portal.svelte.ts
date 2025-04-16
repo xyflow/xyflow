@@ -1,11 +1,6 @@
 import { useStore } from '$lib/store';
 
-type Portal = 'viewport' | 'edgelabel' | 'root';
-
-const selector: Record<Exclude<Portal, 'root'>, string> = {
-  viewport: '.svelte-flow__viewport-portal',
-  edgelabel: '.svelte-flow__edgelabel-renderer'
-};
+type Portal = 'viewport' | 'root';
 
 function tryToMount(node: Element, domNode: Element | null, target: Portal | undefined) {
   if (!target || !domNode) {
