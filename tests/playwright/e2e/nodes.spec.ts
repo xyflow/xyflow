@@ -47,7 +47,7 @@ test.describe('Nodes', () => {
 
     test('selectable=false prevents selection', async ({ page }) => {
       const locator = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="notSelectable"]'));
-      await expect(page.locator(`.${FRAMEWORK}-flow__nodes`).first()).toHaveCSS('visibility', 'visible');
+      await expect(page.locator(`.${FRAMEWORK}-flow__node`).first()).toHaveCSS('visibility', 'visible');
       await locator.click();
 
       await expect(locator).not.toHaveClass(/selected/);
@@ -165,7 +165,7 @@ test.describe('Nodes', () => {
       const outputSourceHandle = page.locator(`.${FRAMEWORK}-flow__handle`).and(page.locator('[data-nodeid="Node-1"]'));
       const inputSourceHandle = page.locator(`.${FRAMEWORK}-flow__handle`).and(page.locator('[data-nodeid="Node-4"]'));
 
-      await expect(page.locator(`.${FRAMEWORK}-flow__nodes`).first()).toHaveCSS('visibility', 'visible');
+      await expect(page.locator(`.${FRAMEWORK}-flow__node`).first()).toHaveCSS('visibility', 'visible');
       await expect(outputSourceHandle).toBeInViewport();
       await expect(inputSourceHandle).toBeInViewport();
 
@@ -189,7 +189,7 @@ test.describe('Nodes', () => {
       const firstOutputHandle = page.locator(`.${FRAMEWORK}-flow__handle`).and(page.locator('[data-nodeid="Node-2"]'));
       const secondOutputHandle = page.locator(`.${FRAMEWORK}-flow__handle`).and(page.locator('[data-nodeid="Node-4"]'));
 
-      await expect(page.locator(`.${FRAMEWORK}-flow__nodes`).first()).toHaveCSS('visibility', 'visible');
+      await expect(page.locator(`.${FRAMEWORK}-flow__node`).first()).toHaveCSS('visibility', 'visible');
       await expect(firstOutputHandle).toBeInViewport();
       await expect(secondOutputHandle).toBeInViewport();
 
@@ -220,7 +220,7 @@ test.describe('Nodes', () => {
         .and(page.locator('[data-nodeid="Node-3"]'))
         .and(page.locator('.source'));
 
-      await expect(page.locator(`.${FRAMEWORK}-flow__nodes`).first()).toHaveCSS('visibility', 'visible');
+      await expect(page.locator(`.${FRAMEWORK}-flow__node`).first()).toHaveCSS('visibility', 'visible');
       await expect(firstInputHandle).toBeInViewport();
       await expect(secondInputHandle).toBeInViewport();
 
@@ -251,7 +251,7 @@ test.describe('Nodes', () => {
 
       const notConnectableBox = await notConnectableHandle.boundingBox();
 
-      await expect(page.locator(`.${FRAMEWORK}-flow__nodes`).first()).toHaveCSS('visibility', 'visible');
+      await expect(page.locator(`.${FRAMEWORK}-flow__node`).first()).toHaveCSS('visibility', 'visible');
       await expect(outputHandle).toBeInViewport();
       await expect(notConnectableHandle).toBeInViewport();
 

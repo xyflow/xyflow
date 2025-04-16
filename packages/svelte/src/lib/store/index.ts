@@ -43,6 +43,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   function addEdge(edgeParams: Edge | Connection) {
+    console.log(edgeParams);
     store.edges = addEdgeUtil(edgeParams, store.edges);
   }
 

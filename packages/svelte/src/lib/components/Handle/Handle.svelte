@@ -25,7 +25,7 @@
     position = Position.Top,
     style,
     class: className,
-    isConnectable: isConnectableProp = true,
+    isConnectable: isConnectableProp,
     isConnectableStart = true,
     isConnectableEnd = true,
     isValidConnection,
@@ -198,7 +198,7 @@
 The Handle component is the part of a node that can be used to connect nodes.
 -->
 <div
-  data-handleid={handleId ?? 'null'}
+  data-handleid={handleId}
   data-nodeid={nodeId}
   data-handlepos={position}
   data-id="{store.flowId}-{nodeId}-{handleId ?? 'null'}-{type}"
