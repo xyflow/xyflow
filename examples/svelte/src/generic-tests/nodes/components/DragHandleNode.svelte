@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { NodeProps } from '@xyflow/svelte';
 
-	type $$Props = NodeProps;
+	let {}: NodeProps = $props();
 </script>
 
 <div class="container">

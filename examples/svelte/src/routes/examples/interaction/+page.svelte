@@ -29,14 +29,14 @@
 		{ id: 'e1-3', source: '1', target: '3' }
 	]);
 
-	const onNodeDragStart = (_: MouseEvent, node: Node) => console.log('drag start', node);
-	const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-	const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
-	const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
-	const onPaneClick = (event: MouseEvent) => console.log('onPaneClick', event);
-	const onPaneScroll = (event?: WheelEvent) => console.log('onPaneScroll', event);
-	const onPaneContextMenu = (event: MouseEvent) => console.log('onPaneContextMenu', event);
-	const onMoveEnd: OnMoveEnd = (_, viewport) => console.log('onMoveEnd', viewport);
+	const onnodedragstart = (_: MouseEvent, node: Node) => console.log('drag start', node);
+	const onnodedragstop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+	const onnodeclick = (_: MouseEvent, node: Node) => console.log('click', node);
+	const onedgeclick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
+	const onpaneclick = (event: MouseEvent) => console.log('onPaneClick', event);
+	const onpanescroll = (event?: WheelEvent) => console.log('onPaneScroll', event);
+	const onpanecontextmenu = (event: MouseEvent) => console.log('onPaneContextMenu', event);
+	const onmoveend: OnMoveEnd = (_, viewport) => console.log('onMoveEnd', viewport);
 
 	let isSelectable = $state(false);
 	let isDraggable = $state(false);
@@ -64,7 +64,7 @@
 	{panOnScrollMode}
 	{zoomOnDoubleClick}
 	{panOnDrag}
-	{onMoveEnd}
+	{onmoveend}
 	fitView
 >
 	<MiniMap />

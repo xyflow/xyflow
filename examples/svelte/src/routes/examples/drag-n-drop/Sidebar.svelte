@@ -9,6 +9,7 @@
 	};
 </script>
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <aside>
 	<div class="label">You can drag these nodes to the pane on the left.</div>
 	<div

@@ -150,7 +150,7 @@
 	{edgeTypes}
 	fitView
 	nodeDragThreshold={2}
-	onedgecreate={(connection) => {
+	onbeforeconnect={(connection) => {
 		console.log('on edge create', connection);
 
 		return {

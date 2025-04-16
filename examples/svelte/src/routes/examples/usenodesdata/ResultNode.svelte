@@ -4,7 +4,8 @@
 		Position,
 		useNodeConnections,
 		useNodesData,
-		type NodeProps
+		type NodeProps,
+		type Node
 	} from '@xyflow/svelte';
 	import { isTextNode, type MyNode } from './+page.svelte';
 

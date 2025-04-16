@@ -5,7 +5,6 @@ export * from '$lib/container/SvelteFlow/types';
 // components
 export * from '$lib/container/Panel';
 export * from '$lib/components/SvelteFlowProvider';
-export * from '$lib/components/EdgeLabelRenderer';
 export * from '$lib/components/ViewportPortal';
 export {
   BezierEdge,

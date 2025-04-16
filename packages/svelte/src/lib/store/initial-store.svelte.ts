@@ -285,7 +285,7 @@ export const getInitialStore = (signals: StoreSignals) => {
       });
     });
     onlyRenderVisibleElements: boolean = $derived(signals.props.onlyRenderVisibleElements ?? false);
-    onerror: OnError = $derived(signals.props.onerror ?? devWarn);
+    onerror: OnError = $derived(signals.props.onflowerror ?? devWarn);
 
     ondelete?: OnDelete = $derived(signals.props.ondelete);
     onbeforedelete?: OnBeforeDelete = $derived(signals.props.onbeforedelete);

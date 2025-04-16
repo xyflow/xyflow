@@ -16,9 +16,9 @@
 
 	const panOnDrag = [1, 2];
 
-	const onMoveStart = (e: any) => console.log('move start', e);
-	const onMove = (e: any) => console.log('move', e);
-	const onMoveEnd = (e: any) => console.log('move end', e);
+	const onmovestart = (e: any) => console.log('move start', e);
+	const onmove = (e: any) => console.log('move', e);
+	const onmoveend = (e: any) => console.log('move end', e);
 
 	let nodes = $state.raw([
 		{
@@ -47,9 +47,9 @@
 	selectionOnDrag
 	panOnScroll
 	{panOnDrag}
-	{onMoveStart}
-	{onMove}
-	{onMoveEnd}
+	{onmovestart}
+	{onmove}
+	{onmoveend}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

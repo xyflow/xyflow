@@ -379,7 +379,7 @@ export type SvelteFlowProps = NodeEvents &
      * Instead of exploding your application, we log a message to the console and then call this event handler.
      * You might use it for additional logging or to show a message to the user.
      */
-    onerror?: OnError;
+    onflowerror?: OnError;
     /** This handler gets called when the user deletes nodes or edges.
      * @example
      * onDelete={({nodes, edges}) => {

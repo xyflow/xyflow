@@ -1,5 +1,12 @@
 <script lang="ts">
-	import { Background, Controls, MiniMap, Panel, SvelteFlow } from '@xyflow/svelte';
+	import {
+		Background,
+		Controls,
+		MiniMap,
+		Panel,
+		SvelteFlow,
+		type SvelteFlowProps
+	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
 
@@ -9,10 +16,10 @@
 	let nodes = $state.raw(flowConfig.flowProps?.nodes ?? []);
 	let edges = $state.raw(flowConfig.flowProps?.edges ?? []);
 
-	const flowProps = { ...flowConfig.flowProps };
+	const flowProps: SvelteFlowProps = { ...flowConfig.flowProps };
 </script>
 
-<SvelteFlow bind:nodes bind:edges {...flowProps}>
+<SvelteFlow {...flowProps} bind:nodes bind:edges>
 	{#if flowConfig.panelProps}
 		<Panel {...flowConfig.panelProps} />
 	{/if}

@@ -10,21 +10,25 @@
 	let edges = $state.raw<Edge[]>(initialEdges);
 
 	const { getIntersectingNodes } = $derived(useSvelteFlow());
-
-	const onNodeDrag = ({ targetNode }) => {
-		if (targetNode) {
-			const intersections = getIntersectingNodes(targetNode).map((n) => n.id);
-
-			nodes = nodes.map((node) => ({
-				...node,
-				class: intersections.includes(node.id) ? 'highlight' : ''
-			}));
-		}
-	};
 </script>
 
 <div style="height:100vh;">
-	<SvelteFlow bind:nodes bind:edges fitView class="intersection-flow" onnodedrag={onNodeDrag}>
+	<SvelteFlow
+		bind:nodes
+		bind:edges
+		fitView
+		class="intersection-flow"
+		onnodedrag={({ targetNode }) => {
+			if (targetNode) {
+				const intersections = getIntersectingNodes(targetNode).map((n) => n.id);
+
+				nodes = nodes.map((node) => ({
+					...node,
+					class: intersections.includes(node.id) ? 'highlight' : ''
+				}));
+			}
+		}}
+	>
 		<Background />
 		<Controls />
 	</SvelteFlow>
