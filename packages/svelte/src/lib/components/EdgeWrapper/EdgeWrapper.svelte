@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from 'svelte';
 
-  import { getMarkerId } from '@xyflow/system';
+  import { elementSelectionKeys, getMarkerId } from '@xyflow/system';
 
   import { BezierEdgeInternal } from '$lib/components/edges';
 
@@ -38,7 +38,8 @@
     targetHandle,
     markerStart,
     markerEnd,
-    selectable: edgeSelectable,
+    selectable: _selectable,
+    focusable: _focusable,
     deletable = true,
     hidden,
     zIndex,
@@ -46,12 +47,15 @@
     ariaLabel
   } = $derived(edge);
 
-  $inspect(edge);
+  // svelte-ignore non_reactive_update
+  let edgeRef: SVGGElement | null = null;
 
   const { id } = edge;
   setContext('svelteflow__edge_id', id);
 
-  let selectable = $derived(edgeSelectable ?? store.elementsSelectable);
+  let selectable = $derived(_selectable ?? store.elementsSelectable);
+  let focusable = $derived(_focusable ?? store.edgesFocusable);
+
   let EdgeComponent = $derived(store.edgeTypes[type] ?? BezierEdgeInternal);
 
   let markerStartUrl = $derived(
@@ -70,7 +74,7 @@
     }
   }
 
-  function onMouseEvent<T = MouseEvent>(
+  function onmouseevent<T = MouseEvent>(
     event: T,
     callback: ({ edge, event }: { edge: Edge; event: T }) => void
   ) {
@@ -80,13 +84,29 @@
       callback({ event, edge });
     }
   }
+
+  onkeydown = (event: KeyboardEvent) => {
+    // TODO: Possible Svelte Bug? onkeydown is always firing for the last edge
+    if (!store.disableKeyboardA11y && elementSelectionKeys.includes(event.key) && selectable) {
+      const { unselectNodesAndEdges, addSelectedEdges } = store;
+      const unselect = event.key === 'Escape';
+
+      if (unselect) {
+        edgeRef?.blur();
+        unselectNodesAndEdges({ edges: [edge] });
+      } else {
+        console.log(id);
+        addSelectedEdges([id]);
+      }
+    }
+  };
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<!-- TODO: aria-label, describedby -->
 {#if !hidden}
   <svg style:z-index={zIndex}>
     <g
+      bind:this={edgeRef}
       class={['svelte-flow__edge', className]}
       class:animated
       class:selected
@@ -95,17 +115,17 @@
       {onclick}
       oncontextmenu={onedgecontextmenu
         ? (e) => {
-            onMouseEvent(e, onedgecontextmenu);
+            onmouseevent(e, onedgecontextmenu);
           }
         : undefined}
       onpointerenter={onedgepointerenter
         ? (e) => {
-            onMouseEvent(e, onedgepointerenter);
+            onmouseevent(e, onedgepointerenter);
           }
         : undefined}
       onpointerleave={onedgepointerleave
         ? (e) => {
-            onMouseEvent(e, onedgepointerleave);
+            onmouseevent(e, onedgepointerleave);
           }
         : undefined}
       aria-label={ariaLabel === null
@@ -113,7 +133,9 @@
         : ariaLabel
           ? ariaLabel
           : `Edge from ${source} to ${target}`}
-      role="img"
+      role={focusable ? 'button' : 'img'}
+      onkeydown={focusable ? onkeydown : undefined}
+      tabIndex={focusable ? 0 : undefined}
     >
       <EdgeComponent
         {id}

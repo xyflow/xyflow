@@ -1,6 +1,13 @@
 <script lang="ts">
   import { setContext, onDestroy } from 'svelte';
-  import { errorMessages, nodeHasDimensions, Position } from '@xyflow/system';
+  import {
+    arrowKeyDiffs,
+    elementSelectionKeys,
+    errorMessages,
+    isInputDOMNode,
+    nodeHasDimensions,
+    Position
+  } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -31,6 +38,7 @@
     selectable: _selectable,
     deletable = true,
     connectable: _connectable,
+    focusable: _focusable,
     hidden = false,
     dragging = false,
     style = '',
@@ -57,6 +65,7 @@
   let selectable = $derived(_selectable ?? store.elementsSelectable);
   let connectable = $derived(_connectable ?? store.nodesConnectable);
   let initialized = $derived(nodeHasDimensions(node) && !!node.internals.handleBounds);
+  let focusable = $derived(_focusable ?? store.nodesFocusable);
 
   function isInParentLookup(id: string) {
     return store.parentLookup.has(id);
@@ -155,10 +164,36 @@
 
     onnodeclick?.({ node, event });
   }
+
+  function onKeyDown(event: KeyboardEvent) {
+    if (isInputDOMNode(event) || store.disableKeyboardA11y) {
+      return;
+    }
+
+    if (elementSelectionKeys.includes(event.key) && selectable) {
+      const unselect = event.key === 'Escape';
+
+      store.handleNodeSelection(id, unselect, nodeRef);
+    } else if (
+      draggable &&
+      node.selected &&
+      Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)
+    ) {
+      // prevent default scrolling behavior on arrow key press when node is moved
+      event.preventDefault();
+
+      // TODO: aria live message
+      // store.setState({
+      //   ariaLiveMessage: `Moved selected node ${event.key
+      //     .replace('Arrow', '')
+      //     .toLowerCase()}. New position, x: ${~~internals.positionAbsolute.x}, y: ${~~internals.positionAbsolute.y}`,
+      // });
+
+      store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
+    }
+  }
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 {#if !hidden}
   <div
     use:drag={{
@@ -199,6 +234,9 @@
     onpointerleave={onnodepointerleave ? (event) => onnodepointerleave({ node, event }) : undefined}
     onpointermove={onnodepointermove ? (event) => onnodepointermove({ node, event }) : undefined}
     oncontextmenu={onnodecontextmenu ? (event) => onnodecontextmenu({ node, event }) : undefined}
+    onkeydown={focusable ? onKeyDown : undefined}
+    tabIndex={focusable ? 0 : undefined}
+    role={focusable ? 'button' : undefined}
   >
     <NodeComponent
       {data}

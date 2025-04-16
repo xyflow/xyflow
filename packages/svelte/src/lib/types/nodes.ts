@@ -20,6 +20,7 @@ export type Node<
 > = NodeBase<NodeData, NodeType> & {
   class?: ClassValue;
   style?: string;
+  focusable?: boolean;
 };
 
 // @todo: currently generics for nodes are not really supported

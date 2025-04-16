@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getInternalNodesBounds, isNumeric, type Rect } from '@xyflow/system';
+  import { arrowKeyDiffs, getInternalNodesBounds, isNumeric, type Rect } from '@xyflow/system';
 
   import { Selection } from '$lib/components/Selection';
   import drag from '$lib/actions/drag';
@@ -15,6 +15,16 @@
     onselectionclick,
     onselectioncontextmenu
   }: NodeSelectionProps = $props();
+
+  let ref = $state<HTMLDivElement>();
+
+  $effect(() => {
+    if (!store.disableKeyboardA11y) {
+      ref?.focus({
+        preventScroll: true
+      });
+    }
+  });
 
   let bounds: Rect | null = $derived.by(() => {
     if (store.selectionRectMode === 'nodes') {
@@ -33,6 +43,14 @@
   function onclick(event: MouseEvent) {
     const selectedNodes = store.nodes.filter((n) => n.selected);
     onselectionclick?.({ nodes: selectedNodes, event });
+  }
+
+  function onkeydown(event: KeyboardEvent) {
+    console.log('yas');
+    if (Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
+      event.preventDefault();
+      store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
+    }
   }
 </script>
 
@@ -57,9 +75,10 @@
     }}
     {oncontextmenu}
     {onclick}
-    role="button"
-    tabindex="-1"
-    onkeyup={() => {}}
+    role={store.disableKeyboardA11y ? undefined : 'button'}
+    tabIndex={store.disableKeyboardA11y ? undefined : -1}
+    onkeydown={store.disableKeyboardA11y ? undefined : onkeydown}
+    bind:this={ref}
   >
     <Selection width="100%" height="100%" x={0} y={0} />
   </div>

@@ -12,7 +12,9 @@ import {
   type CoordinateExtent,
   type UpdateConnection,
   type ConnectionState,
-  updateAbsolutePositions
+  updateAbsolutePositions,
+  snapPosition,
+  calculateNodePosition
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -247,7 +249,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     }
   }
 
-  function handleNodeSelection(id: string) {
+  function handleNodeSelection(id: string, unselect?: boolean, nodeRef?: HTMLDivElement | null) {
     const node = store.nodeLookup.get(id);
 
     if (!node) {
@@ -260,8 +262,10 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
 
     if (!node.selected) {
       addSelectedNodes([id]);
-    } else if (node.selected && store.multiselectionKeyPressed) {
+    } else if (unselect || (node.selected && store.multiselectionKeyPressed)) {
       unselectNodesAndEdges({ nodes: [node], edges: [] });
+
+      requestAnimationFrame(() => nodeRef?.blur());
     }
   }
 
@@ -286,6 +290,55 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
         unselectNodesAndEdges({ nodes: [], edges: [edge] });
       }
     }
+  }
+
+  function moveSelectedNodes(direction: XYPosition, factor: number) {
+    const { nodeExtent, snapGrid, nodeOrigin, nodeLookup, nodesDraggable, onerror } = store;
+
+    const nodeUpdates = new Map();
+    /*
+     * by default a node moves 5px on each key press
+     * if snap grid is enabled, we use that for the velocity
+     */
+    const xVelo = snapGrid?.[0] ?? 5;
+    const yVelo = snapGrid?.[1] ?? 5;
+
+    const xDiff = direction.x * xVelo * factor;
+    const yDiff = direction.y * yVelo * factor;
+
+    for (const node of nodeLookup.values()) {
+      const isSelected =
+        node.selected &&
+        (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
+
+      if (!isSelected) {
+        continue;
+      }
+
+      let nextPosition = {
+        x: node.internals.positionAbsolute.x + xDiff,
+        y: node.internals.positionAbsolute.y + yDiff
+      };
+
+      if (snapGrid) {
+        nextPosition = snapPosition(nextPosition, snapGrid);
+      }
+
+      const { position, positionAbsolute } = calculateNodePosition({
+        nodeId: node.id,
+        nextPosition,
+        nodeLookup,
+        nodeExtent,
+        nodeOrigin,
+        onError: onerror
+      });
+
+      node.position = position;
+      node.internals.positionAbsolute = positionAbsolute;
+
+      nodeUpdates.set(node.id, node);
+    }
+    updateNodePositions(nodeUpdates);
   }
 
   function panBy(delta: XYPosition) {
@@ -335,6 +388,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     addSelectedEdges,
     handleNodeSelection,
     handleEdgeSelection,
+    moveSelectedNodes,
     panBy,
     updateConnection,
     cancelConnection,

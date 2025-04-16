@@ -216,6 +216,18 @@ export type SvelteFlowProps = NodeEvents &
      * @default true
      */
     elementsSelectable?: boolean;
+    /**
+     * When `true`, focus between nodes can be cycled with the `Tab` key and selected with the `Enter`
+     * key. This option can be overridden by individual nodes by setting their `focusable` prop.
+     * @default true
+     */
+    nodesFocusable?: boolean;
+    /**
+     * When `true`, focus between edges can be cycled with the `Tab` key and selected with the `Enter`
+     * key. This option can be overridden by individual edges by setting their `focusable` prop.
+     * @default true
+     */
+    edgesFocusable?: boolean;
     /** By default the viewport extends infinitely. You can use this prop to set a boundary.
      *
      * The first pair of coordinates is the top left boundary and the second pair is the bottom right.
@@ -297,7 +309,6 @@ export type SvelteFlowProps = NodeEvents &
      *  hidden: false,
      *  deletable: true,
      *  selected: false,
-     *  focusable: true,
      *  markerStart: EdgeMarker.ArrowClosed,
      *  markerEnd: EdgeMarker.ArrowClosed,
      *  zIndex: 12,
@@ -343,6 +354,12 @@ export type SvelteFlowProps = NodeEvents &
      * @default true
      */
     elevateEdgesOnSelect?: boolean;
+    /**
+     * You can use this prop to disable keyboard accessibility features such as selecting nodes or
+     * moving selected nodes with the arrow keys.
+     * @default false
+     */
+    disableKeyboardA11y?: boolean;
     /**
      * This callback can be used to validate a new connection
      *

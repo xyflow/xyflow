@@ -196,6 +196,10 @@ export const getInitialStore = (signals: StoreSignals) => {
     nodesDraggable: boolean = $derived(signals.props.nodesDraggable ?? true);
     nodesConnectable: boolean = $derived(signals.props.nodesConnectable ?? true);
     elementsSelectable: boolean = $derived(signals.props.elementsSelectable ?? true);
+    nodesFocusable: boolean = $derived(signals.props.nodesFocusable ?? true);
+    edgesFocusable: boolean = $derived(signals.props.edgesFocusable ?? true);
+
+    disableKeyboardA11y: boolean = $derived(signals.props.disableKeyboardA11y ?? false);
 
     minZoom: number = $derived(signals.props.minZoom ?? 0.5);
     maxZoom: number = $derived(signals.props.maxZoom ?? 2);

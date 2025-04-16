@@ -1,4 +1,4 @@
-import { CoordinateExtent, HandleType } from './types';
+import { CoordinateExtent, HandleType, XYPosition } from './types';
 
 export const errorMessages = {
   error001: () =>
@@ -36,3 +36,9 @@ export const infiniteExtent: CoordinateExtent = [
 ];
 
 export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
+export const arrowKeyDiffs: Record<string, XYPosition> = {
+  ArrowUp: { x: 0, y: -1 },
+  ArrowDown: { x: 0, y: 1 },
+  ArrowLeft: { x: -1, y: 0 },
+  ArrowRight: { x: 1, y: 0 },
+};

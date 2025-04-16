@@ -144,6 +144,10 @@
     pointer-events: none;
   }
 
+  &:focus {
+    outline: 1px solid red !important;
+  }
+
   &.selected,
   &:focus,
   &:focus-visible {

@@ -24,6 +24,7 @@ export type Edge<
   labelStyle?: string;
   style?: string;
   class?: ClassValue;
+  focusable?: boolean;
 };
 
 export type BaseEdgeProps = Pick<
@@ -150,30 +151,7 @@ export type EdgeTypes = Record<
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
-export type EdgeLayouted = Pick<
-  Edge,
-  | 'type'
-  | 'id'
-  | 'data'
-  | 'style'
-  | 'source'
-  | 'target'
-  | 'animated'
-  | 'selected'
-  | 'selectable'
-  | 'deletable'
-  | 'label'
-  | 'labelStyle'
-  | 'interactionWidth'
-  | 'markerStart'
-  | 'markerEnd'
-  | 'sourceHandle'
-  | 'targetHandle'
-  | 'ariaLabel'
-  | 'hidden'
-  | 'class'
-  | 'zIndex'
-> &
+export type EdgeLayouted = Edge &
   EdgePosition & {
     sourceNode?: Node;
     targetNode?: Node;

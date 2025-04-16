@@ -77,6 +77,9 @@
     nodesDraggable,
     nodesConnectable,
     elementsSelectable,
+    nodesFocusable,
+    edgesFocusable,
+    disableKeyboardA11y,
     ...divAttributes
   } = $derived(rest);
 
