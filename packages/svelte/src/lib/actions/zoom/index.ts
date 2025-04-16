@@ -61,7 +61,6 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     onDraggingChange
   });
 
-  //TODO: is this neccessary?
   const viewport = panZoomInstance.getViewport();
   if (
     initialViewport.x !== viewport.x ||

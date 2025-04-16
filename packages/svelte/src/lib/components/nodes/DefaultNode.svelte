@@ -5,8 +5,7 @@
   import type { NodeProps } from '$lib/types';
 
   let {
-    // TODO: do we really want this!?
-    data = { label: 'Node' },
+    data,
     targetPosition = Position.Top,
     sourcePosition = Position.Bottom
   }: NodeProps = $props();

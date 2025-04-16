@@ -112,7 +112,6 @@ test.describe('Edges', () => {
       await page.mouse.down();
       await page.mouse.up();
 
-      // TODO: times out on webkit
       await expect(edge).toHaveClass(/selected/);
 
       await page.keyboard.press('d');
@@ -139,12 +138,10 @@ test.describe('Edges', () => {
 
       const edgeBox = await edge.boundingBox();
 
-      //FIXME: Negative values are not working. Investigate further
       await page.mouse.move(edgeBox!.x + edgeBox!.width * 0.5 + 21, edgeBox!.y + edgeBox!.height * 0.5);
       await page.mouse.down();
       await page.mouse.up();
 
-      // TODO: times out on webkit
       await expect(edge).toHaveClass(/selected/);
     });
 

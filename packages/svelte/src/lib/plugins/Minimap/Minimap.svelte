@@ -52,7 +52,6 @@
 
   let labelledBy = $derived(`svelte-flow__minimap-desc-${store.flowId}`);
 
-  // TODO: simplify this
   let viewBB = $derived({
     x: -store.viewport.x / store.viewport.zoom,
     y: -store.viewport.y / store.viewport.zoom,

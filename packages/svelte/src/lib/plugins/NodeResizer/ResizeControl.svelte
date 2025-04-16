@@ -11,6 +11,7 @@
   } from '@xyflow/system';
   import type { ResizeControlProps } from './types';
   import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
+  import type { Node } from '$lib/types';
 
   let {
     nodeId,
@@ -67,20 +68,31 @@
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          updateNode(id, (node) => ({
-            ...node,
-            position: { x: change.x ?? node.position.x, y: change.y ?? node.position.y },
-            width: change.width ?? node.width,
-            height: change.height ?? node.height
-          }));
+          const changes = new Map<string, Partial<Node>>();
+          let position = change.x && change.y ? { x: change.x, y: change.y } : undefined;
+          changes.set(id, { ...change, position });
 
-          // TODO: performance?
           for (const childChange of childChanges) {
-            updateNode(childChange.id, (node) => ({
-              ...node,
+            changes.set(childChange.id, {
               position: childChange.position
-            }));
+            });
           }
+
+          store.nodes = store.nodes.map((node) => {
+            const change = changes.get(node.id);
+            if (change) {
+              return {
+                ...node,
+                position: {
+                  x: change.position?.x ?? node.position.x,
+                  y: change.position?.y ?? node.position.y
+                },
+                width: change.width ?? node.width,
+                height: change.height ?? node.height
+              };
+            }
+            return node;
+          });
         }
       });
     }

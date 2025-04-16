@@ -145,7 +145,6 @@ test.describe('Nodes', () => {
       expect(edges).toHaveLength(0);
     });
 
-    // TODO: pressing backspace creates problems on webkit
     test('deletable=false prevents deletion', async ({ page }) => {
       const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="notDeletable"]'));
       await expect(node).toHaveCSS('visibility', 'visible');
@@ -153,6 +152,7 @@ test.describe('Nodes', () => {
       await expect(node).toBeAttached();
 
       await node.click();
+      // pressing backspace breaks webkit
       await page.keyboard.press('d');
 
       await expect(node).toBeAttached();
@@ -198,8 +198,8 @@ test.describe('Nodes', () => {
       await firstOutputHandle.hover();
       await page.mouse.down();
 
-      // TODO: Does not work in SvelteFlow for whatever reason!?
       // await secondOutputHandle.hover();
+      // Does not work in SvelteFlow for whatever reason!?
       // but the following works...
       const box = await secondOutputHandle.boundingBox();
       await page.mouse.move(box!.x + 2, box!.y + 2);
@@ -229,8 +229,8 @@ test.describe('Nodes', () => {
       await firstInputHandle.hover();
       await page.mouse.down();
 
-      // TODO: Does not work in SvelteFlow for whatever reason!?
       // await secondInputHandle.hover();
+      // Does not work in SvelteFlow for whatever reason!?
       // but the following works...
       const box = await secondInputHandle.boundingBox();
       await page.mouse.move(box!.x + 2, box!.y + 2);
