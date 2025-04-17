@@ -89,7 +89,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 7;
+    z-index: 2000;
     pointer-events: all;
   }
 </style>
