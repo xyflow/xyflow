@@ -56,7 +56,6 @@
 
 	const updateNodePosition = () => {
 		updateNode('1', (node) => ({
-			...node,
 			position: { x: node.position.x + 10, y: node.position.y }
 		}));
 	};

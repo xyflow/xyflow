@@ -214,7 +214,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
   // ) => void;
   updateNode: (
     id: string,
-    nodeUpdate: Partial<NodeType> | ((node: NodeType) => NodeType),
+    nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
     options?: { replace: boolean }
   ) => void;
   /**
@@ -249,7 +249,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    */
   updateEdge: (
     id: string,
-    edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => EdgeType),
+    edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options?: { replace: boolean }
   ) => void;
   toObject: () => { nodes: NodeType[]; edges: EdgeType[]; viewport: Viewport };
@@ -308,7 +308,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
 
   function updateNode(
     id: string,
-    nodeUpdate: Partial<NodeType> | ((node: NodeType) => NodeType),
+    nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
     options: { replace: boolean } = { replace: false }
   ) {
     store.nodes = untrack(() => store.nodes).map((node) => {
@@ -323,7 +323,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
 
   function updateEdge(
     id: string,
-    edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => EdgeType),
+    edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options: { replace: boolean } = { replace: false }
   ) {
     store.edges = untrack(() => store.edges).map((edge) => {
