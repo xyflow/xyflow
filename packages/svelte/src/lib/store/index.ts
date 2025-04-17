@@ -362,13 +362,8 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
   }
 
   function reset() {
-    store.selectionRect = null;
-    store.selectionRectMode = null;
-
     store.resetStoreValues();
-
     unselectNodesAndEdges();
-    cancelConnection();
   }
 
   const storeWithActions = Object.assign(store, {

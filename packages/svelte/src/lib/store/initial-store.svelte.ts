@@ -236,7 +236,6 @@ export const getInitialStore = (signals: StoreSignals) => {
 
     // _viewport is the internal viewport.
     // when binding to viewport, we operate on signals.viewport instead
-    initial: boolean = true;
     _viewport: Viewport = $state(signals.props.initialViewport ?? { x: 0, y: 0, zoom: 1 });
     get viewport() {
       return signals.viewport ?? this._viewport;
@@ -361,7 +360,17 @@ export const getInitialStore = (signals: StoreSignals) => {
     }
 
     resetStoreValues() {
-      // TODO: reset all store values here
+      this.dragging = false;
+      this.selectionRect = null;
+      this.selectionRectMode = null;
+      this.selectionKeyPressed = false;
+      this.multiselectionKeyPressed = false;
+      this.deleteKeyPressed = false;
+      this.panActivationKeyPressed = false;
+      this.zoomActivationKeyPressed = false;
+      this._connection = initialConnection;
+      this.clickConnectStartHandle = null;
+      this.viewport = signals.props.initialViewport ?? { x: 0, y: 0, zoom: 1 };
     }
   }
   return new SvelteFlowStore();
