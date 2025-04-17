@@ -3,6 +3,7 @@ import type {
   ControlPosition,
   ControlLinePosition,
   ResizeControlVariant,
+  ResizeControlDirection,
   ShouldResize,
   OnResizeStart,
   OnResize,
@@ -97,6 +98,11 @@ export type ResizeControlProps = Pick<
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
+  /**
+   * The direction the user can resize the node.
+   * If not provided, the user can resize in any direction.
+   */
+  resizeDirection?: ResizeControlDirection;
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;

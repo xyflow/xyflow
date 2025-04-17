@@ -35,6 +35,12 @@ export enum ResizeControlVariant {
   Handle = 'handle',
 }
 
+/**
+ * The direction the user can resize the node.
+ * @public
+ */
+export type ResizeControlDirection = 'horizontal' | 'vertical';
+
 export const XY_RESIZER_HANDLE_POSITIONS: ControlPosition[] = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
 export const XY_RESIZER_LINE_POSITIONS: ControlLinePosition[] = ['top', 'right', 'bottom', 'left'];
 

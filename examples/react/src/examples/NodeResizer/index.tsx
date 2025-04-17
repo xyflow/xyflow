@@ -15,12 +15,14 @@ import DefaultResizer from './DefaultResizer';
 import CustomResizer from './CustomResizer';
 import VerticalResizer from './VerticalResizer';
 import HorizontalResizer from './HorizontalResizer';
+import BottomRightResizer from './BottomRightResizer';
 
 const nodeTypes = {
   defaultResizer: DefaultResizer,
   customResizer: CustomResizer,
   verticalResizer: VerticalResizer,
   horizontalResizer: HorizontalResizer,
+  bottomRightResizer: BottomRightResizer,
 };
 
 const nodeStyle = {
@@ -164,6 +166,13 @@ const initialNodes: Node[] = [
     width: 100,
     parentId: '5',
     expandParent: true,
+    style: { ...nodeStyle },
+  },
+  {
+    id: '6',
+    type: 'bottomRightResizer',
+    data: { label: 'Bottom Right with horizontal direction' },
+    position: { x: 500, y: 500 },
     style: { ...nodeStyle },
   },
 ];

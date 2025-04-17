@@ -12,7 +12,15 @@ import type {
   Transform,
   XYPosition,
 } from '../types';
-import type { OnResize, OnResizeEnd, OnResizeStart, ResizeDragEvent, ShouldResize, ControlPosition } from './types';
+import type {
+  OnResize,
+  OnResizeEnd,
+  OnResizeStart,
+  ResizeDragEvent,
+  ShouldResize,
+  ControlPosition,
+  ResizeControlDirection,
+} from './types';
 
 const initPrevValues = { width: 0, height: 0, x: 0, y: 0 };
 
@@ -60,6 +68,7 @@ type XYResizerUpdateParams = {
     maxHeight: number;
   };
   keepAspectRatio: boolean;
+  resizeDirection?: ResizeControlDirection;
   onResizeStart: OnResizeStart | undefined;
   onResize: OnResize | undefined;
   onResizeEnd: OnResizeEnd | undefined;
@@ -99,6 +108,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     controlPosition,
     boundaries,
     keepAspectRatio,
+    resizeDirection,
     onResizeStart,
     onResize,
     onResizeEnd,
@@ -251,8 +261,10 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         }
 
         if (isWidthChange || isHeightChange) {
-          change.width = isWidthChange ? width : prevValues.width;
-          change.height = isHeightChange ? height : prevValues.height;
+          change.width =
+            isWidthChange && (!resizeDirection || resizeDirection === 'horizontal') ? width : prevValues.width;
+          change.height =
+            isHeightChange && (!resizeDirection || resizeDirection === 'vertical') ? height : prevValues.height;
           prevValues.width = change.width;
           prevValues.height = change.height;
         }
