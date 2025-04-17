@@ -118,11 +118,12 @@ function ResizeControl({
           }
 
           if (change.width !== undefined && change.height !== undefined) {
+            const setAttributes = !resizeDirection ? true : resizeDirection === 'horizontal' ? 'width' : 'height';
             const dimensionChange: NodeDimensionChange = {
               id,
               type: 'dimensions',
               resizing: true,
-              setAttributes: true,
+              setAttributes,
               dimensions: {
                 width: change.width,
                 height: change.height,

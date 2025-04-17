@@ -130,8 +130,12 @@ function applyChange(change: any, element: any): any {
         element.measured.height = change.dimensions.height;
 
         if (change.setAttributes) {
-          element.width = change.dimensions.width;
-          element.height = change.dimensions.height;
+          if (change.setAttributes === true || change.setAttributes === 'width') {
+            element.width = change.dimensions.width;
+          }
+          if (change.setAttributes === true || change.setAttributes === 'height') {
+            element.height = change.dimensions.height;
+          }
         }
       }
 
