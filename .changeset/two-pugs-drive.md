@@ -1,5 +1,5 @@
 ---
-'@xyflow/react': patch
+'@xyflow/react': minor
 ---
 
-Add resizeDirection prop for the NodeResizeControl component
+Add `resizeDirection` prop for the `NodeResizeControl` component
