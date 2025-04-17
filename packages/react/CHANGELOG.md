@@ -1,5 +1,20 @@
 # @xyflow/react
 
+## 12.6.0
+
+### Minor Changes
+
+- [#5219](https://github.com/xyflow/xyflow/pull/5219) [`4236adbc`](https://github.com/xyflow/xyflow/commit/4236adbc462b3f65ee41869ef426491ed3fa8ba0) Thanks [@moklick](https://github.com/moklick)! - Add initialMinZoom, initialMaxZoom and initialFitViewOptions to ReactFlowProvider
+
+- [#5227](https://github.com/xyflow/xyflow/pull/5227) [`a7d10ffc`](https://github.com/xyflow/xyflow/commit/a7d10ffce5a0195471681980f97b1b5f6c448f35) Thanks [@moklick](https://github.com/moklick)! - Add `resizeDirection` prop for the `NodeResizeControl` component
+
+### Patch Changes
+
+- [#5217](https://github.com/xyflow/xyflow/pull/5217) [`bce74e88`](https://github.com/xyflow/xyflow/commit/bce74e8811a98c967b5bd06c3e5aecde24c8b679) Thanks [@moklick](https://github.com/moklick)! - Keep node seleciton on pane click if elementsSelectable=false
+
+- Updated dependencies [[`a7d10ffc`](https://github.com/xyflow/xyflow/commit/a7d10ffce5a0195471681980f97b1b5f6c448f35), [`4e681f9c`](https://github.com/xyflow/xyflow/commit/4e681f9c529c3f4f8b2ac5d25b4db7878c197e14)]:
+  - @xyflow/system@0.0.57
+
 ## 12.5.6
 
 ### Patch Changes

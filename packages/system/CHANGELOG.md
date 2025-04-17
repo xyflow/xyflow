@@ -1,5 +1,13 @@
 # @xyflow/system
 
+## 0.0.57
+
+### Patch Changes
+
+- [#5227](https://github.com/xyflow/xyflow/pull/5227) [`a7d10ffc`](https://github.com/xyflow/xyflow/commit/a7d10ffce5a0195471681980f97b1b5f6c448f35) Thanks [@moklick](https://github.com/moklick)! - add resizeDirection for XYResizer
+
+- [#5221](https://github.com/xyflow/xyflow/pull/5221) [`4e681f9c`](https://github.com/xyflow/xyflow/commit/4e681f9c529c3f4f8b2ac5d25b4db7878c197e14) Thanks [@moklick](https://github.com/moklick)! - Allow zero as a valid node width/height value
+
 ## 0.0.56
 
 ### Patch Changes
