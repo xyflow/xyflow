@@ -32,6 +32,7 @@ function ResizeControl({
   maxWidth = Number.MAX_VALUE,
   maxHeight = Number.MAX_VALUE,
   keepAspectRatio = false,
+  resizeDirection,
   shouldResize,
   onResizeStart,
   onResize,
@@ -117,11 +118,12 @@ function ResizeControl({
           }
 
           if (change.width !== undefined && change.height !== undefined) {
+            const setAttributes = !resizeDirection ? true : resizeDirection === 'horizontal' ? 'width' : 'height';
             const dimensionChange: NodeDimensionChange = {
               id,
               type: 'dimensions',
               resizing: true,
-              setAttributes: true,
+              setAttributes,
               dimensions: {
                 width: change.width,
                 height: change.height,
@@ -166,6 +168,7 @@ function ResizeControl({
         maxHeight,
       },
       keepAspectRatio,
+      resizeDirection,
       onResizeStart,
       onResize,
       onResizeEnd,
