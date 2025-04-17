@@ -13,7 +13,6 @@
     height,
     selectEdgeOnClick = false,
     transparent = false,
-    style,
     class: className,
     children,
     ...rest

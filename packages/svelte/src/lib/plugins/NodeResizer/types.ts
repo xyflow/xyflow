@@ -1,5 +1,5 @@
 import type { Snippet } from 'svelte';
-import type { ClassValue, HTMLAttributes } from 'svelte/elements';
+import type { HTMLAttributes } from 'svelte/elements';
 import type {
   ControlPosition,
   ResizeControlVariant,

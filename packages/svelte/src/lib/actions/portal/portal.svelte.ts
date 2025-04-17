@@ -25,6 +25,7 @@ export default function (node: Element, target: Portal | undefined) {
     async update(target: Portal) {
       if (target !== previousTarget) {
         node.parentNode?.removeChild(node);
+        previousTarget = target;
       }
       tryToMount(node, domNode, target);
     },

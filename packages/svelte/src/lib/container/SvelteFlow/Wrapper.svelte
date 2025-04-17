@@ -26,7 +26,7 @@
 
   // Unfortunately we have to destructure the props here this way,
   // so we don't pass all the props as attributes to the div element
-
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   let {
     id,
     class: className,
@@ -83,6 +83,7 @@
     disableKeyboardA11y,
     ...divAttributes
   } = $derived(rest);
+  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   type OnlyDivAttributes<T> = {
     [K in keyof T]: K extends keyof HTMLAttributes<HTMLDivElement> ? T[K] : never;

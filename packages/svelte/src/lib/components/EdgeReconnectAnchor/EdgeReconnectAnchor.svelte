@@ -1,7 +1,7 @@
 <script lang="ts">
   import { useStore } from '$lib/store';
   import type { Edge } from '$lib/types';
-  import { XYHandle, type HandleType, type XYPosition } from '@xyflow/system';
+  import { XYHandle, type HandleType } from '@xyflow/system';
   import { getContext } from 'svelte';
   import { EdgeLabel } from '../EdgeLabel';
   import type { EdgeReconnectAnchorProps } from './types';
@@ -12,7 +12,6 @@
     position,
     class: className,
     size = 25,
-    style,
     children,
     ...rest
   }: EdgeReconnectAnchorProps = $props();

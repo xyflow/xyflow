@@ -10,7 +10,6 @@
     type XYResizerChildChange
   } from '@xyflow/system';
   import type { ResizeControlProps } from './types';
-  import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
   import type { Node } from '$lib/types';
 
   let {
@@ -33,8 +32,6 @@
   }: ResizeControlProps = $props();
 
   const store = useStore();
-
-  const { updateNode } = useSvelteFlow();
 
   let id = $derived(
     typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
