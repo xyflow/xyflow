@@ -1,4 +1,4 @@
-import type { DefaultEdgeOptions, Edge, EdgeLayouted, InternalNode } from '$lib/types';
+import type { DefaultEdgeOptions, Node, Edge, EdgeLayouted, InternalNode } from '$lib/types';
 import {
   ConnectionMode,
   getEdgePosition,
@@ -25,17 +25,18 @@ export function getVisibleNodes(
   return visibleNodes;
 }
 
-export interface EdgeLayoutBaseOptions {
-  edges: Edge[];
+export interface EdgeLayoutBaseOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+  edges: EdgeType[];
   defaultEdgeOptions: DefaultEdgeOptions;
   elevateEdgesOnSelect: boolean;
   previousEdges: Map<string, EdgeLayouted>;
-  nodeLookup: NodeLookup;
+  nodeLookup: NodeLookup<InternalNode<NodeType>>;
   connectionMode: ConnectionMode;
   onerror: OnError;
 }
 
-export interface EdgeLayoutAllOptions extends EdgeLayoutBaseOptions {
+export interface EdgeLayoutAllOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
+  extends EdgeLayoutBaseOptions<NodeType, EdgeType> {
   onlyRenderVisible: never;
   visibleNodes: never;
   transform: never;
@@ -51,7 +52,9 @@ export interface EdgeLayoutOnlyVisibleOptions extends EdgeLayoutBaseOptions {
   onlyRenderVisible: true;
 }
 
-export type EdgeLayoutOptions = EdgeLayoutAllOptions | EdgeLayoutOnlyVisibleOptions;
+export type EdgeLayoutOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> =
+  | EdgeLayoutAllOptions<NodeType, EdgeType>
+  | EdgeLayoutOnlyVisibleOptions;
 
 export function getLayoutedEdges(options: EdgeLayoutOptions): Map<string, EdgeLayouted> {
   const {

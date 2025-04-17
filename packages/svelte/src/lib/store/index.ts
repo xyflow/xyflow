@@ -25,8 +25,10 @@ export const key = Symbol();
 
 export { useStore } from '../hooks/useStore';
 
-export function createStore(signals: StoreSignals): SvelteFlowStore {
-  const store = getInitialStore(signals);
+export function createStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
+  signals: StoreSignals<NodeType, EdgeType>
+): SvelteFlowStore<NodeType, EdgeType> {
+  const store = getInitialStore<NodeType, EdgeType>(signals);
 
   function setNodeTypes(nodeTypes: NodeTypes) {
     store.nodeTypes = {
@@ -42,9 +44,8 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     };
   }
 
-  function addEdge(edgeParams: Edge | Connection) {
-    console.log(edgeParams);
-    store.edges = addEdgeUtil(edgeParams, store.edges);
+  function addEdge(edgeParams: EdgeType | Connection) {
+    store.edges = addEdgeUtil<EdgeType>(edgeParams, store.edges);
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
@@ -76,7 +77,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
       store.resolveFitView();
     }
 
-    const newNodes = new Map<string, Node>();
+    const newNodes = new Map<string, NodeType>();
     for (const change of changes) {
       const userNode = store.nodeLookup.get(change.id)?.internals.userNode;
 
@@ -389,7 +390,7 @@ export function createStore(signals: StoreSignals): SvelteFlowStore {
     updateConnection,
     cancelConnection,
     reset
-  } satisfies SvelteFlowStoreActions);
+  } satisfies SvelteFlowStoreActions<NodeType, EdgeType>);
 
   return storeWithActions;
 }

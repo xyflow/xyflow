@@ -56,6 +56,7 @@ import type {
   OnBeforeDelete,
   IsValidConnection,
   Edge,
+  Node,
   EdgeLayouted,
   InternalNode,
   OnBeforeReconnect
@@ -79,7 +80,9 @@ export const initialEdgeTypes = {
   step: StepEdgeInternal
 };
 
-export const getInitialStore = (signals: StoreSignals) => {
+export function getInitialStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
+  signals: StoreSignals<NodeType, EdgeType>
+) {
   // We use a class here, because Svelte adds getters & setter for us.
   // Inline classes have some performance implications but we just call it once (max twice).
   class SvelteFlowStore {
@@ -115,7 +118,7 @@ export const getInitialStore = (signals: StoreSignals) => {
     });
     viewportInitialized: boolean = $derived(this.panZoom !== null);
 
-    _edges: Edge[] = $derived.by(() => {
+    _edges: EdgeType[] = $derived.by(() => {
       updateConnectionLookup(this.connectionLookup, this.edgeLookup, signals.edges);
       return signals.edges;
     });
@@ -135,10 +138,10 @@ export const getInitialStore = (signals: StoreSignals) => {
       signals.edges = edges;
     }
 
-    nodeLookup: NodeLookup = new Map();
-    parentLookup: ParentLookup = new Map();
+    nodeLookup: NodeLookup<InternalNode<NodeType>> = new Map();
+    parentLookup: ParentLookup<InternalNode<NodeType>> = new Map();
     connectionLookup: ConnectionLookup = new Map();
-    edgeLookup: EdgeLookup = new Map();
+    edgeLookup: EdgeLookup<EdgeType> = new Map();
 
     _prevVisibleEdges = new Map<string, EdgeLayouted>();
     visible = $derived.by(() => {
@@ -184,7 +187,7 @@ export const getInitialStore = (signals: StoreSignals) => {
         });
       } else {
         visibleNodes = this.nodeLookup;
-        visibleEdges = getLayoutedEdges(options as EdgeLayoutAllOptions);
+        visibleEdges = getLayoutedEdges(options as EdgeLayoutAllOptions<NodeType, EdgeType>);
       }
 
       return {
@@ -286,18 +289,18 @@ export const getInitialStore = (signals: StoreSignals) => {
     onlyRenderVisibleElements: boolean = $derived(signals.props.onlyRenderVisibleElements ?? false);
     onerror: OnError = $derived(signals.props.onflowerror ?? devWarn);
 
-    ondelete?: OnDelete = $derived(signals.props.ondelete);
-    onbeforedelete?: OnBeforeDelete = $derived(signals.props.onbeforedelete);
+    ondelete?: OnDelete<NodeType, EdgeType> = $derived(signals.props.ondelete);
+    onbeforedelete?: OnBeforeDelete<NodeType, EdgeType> = $derived(signals.props.onbeforedelete);
 
     onbeforeconnect?: OnBeforeConnect = $derived(signals.props.onbeforeconnect);
     onconnect?: OnConnect = $derived(signals.props.onconnect);
     onconnectstart?: OnConnectStart = $derived(signals.props.onconnectstart);
     onconnectend?: OnConnectEnd = $derived(signals.props.onconnectend);
 
-    onbeforereconnect?: OnBeforeReconnect = $derived(signals.props.onbeforereconnect);
-    onreconnect?: OnReconnect = $derived(signals.props.onreconnect);
-    onreconnectstart?: OnRecoonnectStart = $derived(signals.props.onreconnectstart);
-    onreconnectend?: OnReconnectEnd = $derived(signals.props.onreconnectend);
+    onbeforereconnect?: OnBeforeReconnect<EdgeType> = $derived(signals.props.onbeforereconnect);
+    onreconnect?: OnReconnect<EdgeType> = $derived(signals.props.onreconnect);
+    onreconnectstart?: OnRecoonnectStart<EdgeType> = $derived(signals.props.onreconnectstart);
+    onreconnectend?: OnReconnectEnd<EdgeType> = $derived(signals.props.onreconnectend);
 
     clickConnect?: boolean = $derived(signals.props.clickConnect ?? true);
     onclickconnectstart?: OnConnectStart = $derived(signals.props.onclickconnectstart);
@@ -374,7 +377,7 @@ export const getInitialStore = (signals: StoreSignals) => {
     }
   }
   return new SvelteFlowStore();
-};
+}
 
 // Only way to check if an object is a proxy
 // is to see if is failes to perform a structured clone

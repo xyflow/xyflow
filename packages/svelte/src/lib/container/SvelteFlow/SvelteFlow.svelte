@@ -1,4 +1,5 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
+  import type { Edge, Node } from '$lib/types';
   import { getContext, setContext, onDestroy } from 'svelte';
   import type { HTMLAttributes } from 'svelte/elements';
   import { ConnectionLineType, PanOnScrollMode } from '@xyflow/system';
@@ -67,10 +68,10 @@
     edges = $bindable([]),
     viewport = $bindable(undefined),
     ...props
-  }: SvelteFlowProps & HTMLAttributes<HTMLDivElement> = $props();
+  }: SvelteFlowProps<NodeType, EdgeType> & HTMLAttributes<HTMLDivElement> = $props();
 
   // svelte-ignore non_reactive_update
-  let store = createStore({
+  let store = createStore<NodeType, EdgeType>({
     props,
     width,
     height,
@@ -95,7 +96,7 @@
   });
 
   // Set store for provider context
-  const providerContext = getContext<ProviderContext>(key);
+  const providerContext = getContext<ProviderContext<NodeType, EdgeType>>(key);
   if (providerContext && providerContext.setStore) {
     providerContext.setStore(store);
   }
@@ -106,7 +107,7 @@
     getStore() {
       return store;
     }
-  } satisfies StoreContext);
+  } satisfies StoreContext<NodeType, EdgeType>);
 
   onDestroy(() => {
     store.reset();

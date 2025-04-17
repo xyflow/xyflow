@@ -42,7 +42,10 @@ import type {
 import type { Component } from 'svelte';
 import type { EdgeEvents, NodeEvents, NodeSelectionEvents, PaneEvents } from '$lib/types/events';
 
-export type SvelteFlowProps = NodeEvents &
+export type SvelteFlowProps<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> = NodeEvents &
   NodeSelectionEvents &
   EdgeEvents &
   PaneEvents & {
@@ -63,7 +66,7 @@ export type SvelteFlowProps = NodeEvents &
      *  }
      * ]);
      */
-    nodes?: Node[];
+    nodes?: NodeType[];
     /** An array of edges to render in a controlled flow.
      * @example
      * const edges = $state.raw([
@@ -74,7 +77,7 @@ export type SvelteFlowProps = NodeEvents &
      *  }
      * ]);
      */
-    edges?: Edge[];
+    edges?: EdgeType[];
     /** Custom node types to be available in a flow.
      *
      * Svelte Flow matches a node's type to a component in the nodeTypes object.
@@ -130,7 +133,7 @@ export type SvelteFlowProps = NodeEvents &
      *  nodes: [{id: 'node-1'}, {id: 'node-2'}], // nodes to fit
      * };
      */
-    fitViewOptions?: FitViewOptions;
+    fitViewOptions?: FitViewOptions<NodeType>;
     /** Defines nodes relative position to its coordinates
      * @example
      * [0, 0] // default, top left
@@ -387,11 +390,11 @@ export type SvelteFlowProps = NodeEvents &
      *  console.log('deleted edges:', edges);
      * }}
      */
-    ondelete?: OnDelete;
+    ondelete?: OnDelete<NodeType, EdgeType>;
     /** This handler gets called before the user deletes nodes or edges and provides a way to abort the deletion by returning false. */
-    onbeforedelete?: OnBeforeDelete;
+    onbeforedelete?: OnBeforeDelete<NodeType, EdgeType>;
     /** This handler gets called when a new edge is created. You can use it to modify the newly created edge. */
-    onbeforeconnect?: OnBeforeConnect;
+    onbeforeconnect?: OnBeforeConnect<EdgeType>;
     /** This event gets fired when a connection successfully completes and an edge is created. */
     onconnect?: OnConnect;
     /** When a user starts to drag a connection line, this event gets fired. */
@@ -399,13 +402,13 @@ export type SvelteFlowProps = NodeEvents &
     /** When a user stops dragging a connection line, this event gets fired. */
     onconnectend?: OnConnectEnd;
     /** This event gets fired when after an edge was reconnected*/
-    onreconnect?: OnReconnect;
+    onreconnect?: OnReconnect<EdgeType>;
     /** This event gets fired when a user starts to reconnect an edge */
-    onreconnectstart?: OnRecoonnectStart;
+    onreconnectstart?: OnRecoonnectStart<EdgeType>;
     /** This event gets fired when a user stops reconnecting an edge */
-    onreconnectend?: OnReconnectEnd;
+    onreconnectend?: OnReconnectEnd<EdgeType>;
     /** This handler gets called when an edge is reconnected. You can use it to modify the edge before the update is applied. */
-    onbeforereconnect?: OnBeforeReconnect;
+    onbeforereconnect?: OnBeforeReconnect<EdgeType>;
     /** A connection is started by clicking on a handle */
     onclickconnectstart?: OnConnectStart;
     /** A connection is finished by clicking on a handle */

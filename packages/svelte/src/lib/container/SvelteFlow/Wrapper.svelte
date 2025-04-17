@@ -1,8 +1,9 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import type { HTMLAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
   import { type SvelteFlowRestProps } from '$lib/store/types';
   import { toPxString } from '$lib/utils';
+  import type { Node, Edge, NodeTypes } from '$lib/types';
 
   let {
     width,
@@ -21,7 +22,7 @@
     clientWidth?: number;
     clientHeight?: number;
     children?: Snippet;
-    rest: SvelteFlowRestProps & HTMLAttributes<HTMLDivElement>;
+    rest: SvelteFlowRestProps<NodeType, EdgeType> & HTMLAttributes<HTMLDivElement>;
   } = $props();
 
   // Unfortunately we have to destructure the props here this way,

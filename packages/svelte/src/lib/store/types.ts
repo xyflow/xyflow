@@ -13,10 +13,10 @@ import type { getInitialStore } from './initial-store.svelte';
 import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
 import type { SvelteFlowProps } from '$lib/container/SvelteFlow';
 
-export type SvelteFlowStoreActions = {
+export type SvelteFlowStoreActions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   setNodeTypes: (nodeTypes: NodeTypes) => void;
   setEdgeTypes: (edgeTypes: EdgeTypes) => void;
-  addEdge: (edge: Edge | Connection) => void;
+  addEdge: (edge: EdgeType | Connection) => void;
   zoomIn: (options?: ViewportHelperFunctionOptions) => Promise<boolean>;
   zoomOut: (options?: ViewportHelperFunctionOptions) => Promise<boolean>;
   setMinZoom: (minZoom: number) => void;
@@ -26,7 +26,7 @@ export type SvelteFlowStoreActions = {
   fitView: (options?: FitViewOptions) => Promise<boolean>;
   updateNodePositions: UpdateNodePositions;
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
-  unselectNodesAndEdges: (params?: { nodes?: Node[]; edges?: Edge[] }) => void;
+  unselectNodesAndEdges: (params?: { nodes?: NodeType[]; edges?: EdgeType[] }) => void;
   addSelectedNodes: (ids: string[]) => void;
   addSelectedEdges: (ids: string[]) => void;
   handleNodeSelection: (id: string, unselect?: boolean, nodeRef?: HTMLDivElement | null) => void;
@@ -38,8 +38,8 @@ export type SvelteFlowStoreActions = {
   reset(): void;
 };
 
-export type SvelteFlowRestProps = Omit<
-  SvelteFlowProps,
+export type SvelteFlowRestProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Omit<
+  SvelteFlowProps<NodeType, EdgeType>,
   | 'width'
   | 'height'
   | 'class'
@@ -89,24 +89,33 @@ export type SvelteFlowRestProps = Omit<
   | 'viewport'
 >;
 
-export type StoreSignals = {
-  props: SvelteFlowRestProps;
+export type StoreSignals<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  props: SvelteFlowRestProps<NodeType, EdgeType>;
   width?: number;
   height?: number;
-  nodes: Node[];
-  edges: Edge[];
+  nodes: NodeType[];
+  edges: EdgeType[];
   viewport?: Viewport;
 };
 
-export type SvelteFlowStoreState = ReturnType<typeof getInitialStore>;
+export type SvelteFlowStoreState<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> = ReturnType<typeof getInitialStore<NodeType, EdgeType>>;
 
-export type SvelteFlowStore = SvelteFlowStoreState & SvelteFlowStoreActions;
+export type SvelteFlowStore<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> = SvelteFlowStoreState<NodeType, EdgeType> & SvelteFlowStoreActions<NodeType, EdgeType>;
 
-export type StoreContext = {
-  getStore: () => SvelteFlowStore;
+export type StoreContext<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  getStore: () => SvelteFlowStore<NodeType, EdgeType>;
   provider: boolean;
 };
 
-export type ProviderContext = StoreContext & {
-  setStore: (store: SvelteFlowStore) => void;
+export type ProviderContext<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> = StoreContext & {
+  setStore: (store: SvelteFlowStore<NodeType, EdgeType>) => void;
 };
