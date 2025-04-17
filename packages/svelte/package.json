@@ -55,6 +55,7 @@
     "@xyflow/system": "workspace:*"
   },
   "devDependencies": {
+    "@eslint/js": "^9.24.0",
     "@sveltejs/adapter-auto": "^6.0.0",
     "@sveltejs/kit": "^2.20.7",
     "@sveltejs/package": "^2.3.11",
@@ -67,6 +68,7 @@
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-svelte": "^3.5.1",
+    "globals": "^16.0.0",
     "postcss": "^8.5.3",
     "postcss-cli": "^11.0.1",
     "postcss-combine-duplicated-selectors": "^10.0.3",
@@ -80,10 +82,11 @@
     "svelte-eslint-parser": "^1.1.2",
     "svelte-preprocess": "^6.0.3",
     "tslib": "^2.8.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.30.1"
   },
   "peerDependencies": {
-    "svelte": "^5.16.0"
+    "svelte": "^5.25.0"
   },
   "files": [
     "dist"

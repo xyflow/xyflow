@@ -26,6 +26,7 @@
 
   // Unfortunately we have to destructure the props here this way,
   // so we don't pass all the props as attributes to the div element
+
   let {
     id,
     class: className,

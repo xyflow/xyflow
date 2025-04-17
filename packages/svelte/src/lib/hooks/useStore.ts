@@ -9,7 +9,7 @@ export function useStore(): SvelteFlowStore {
 
   if (!storeContext) {
     throw new Error(
-      'In order to use useStore you need to wrap your component in a <SvelteFlowProvider />'
+      'To call useStore outside of <SvelteFlow /> you need to wrap your component in a <SvelteFlowProvider />'
     );
   }
 
