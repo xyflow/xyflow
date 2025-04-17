@@ -32,7 +32,7 @@ import { untrack } from 'svelte';
  *
  * @returns helper functions
  */
-export function useSvelteFlow(): {
+export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): {
   /**
    * Zooms viewport in by 1.2.
    *
@@ -51,33 +51,33 @@ export function useSvelteFlow(): {
    * @param id - the node id
    * @returns the node or undefined if no node was found
    */
-  getInternalNode: (id: string) => InternalNode | undefined;
+  getInternalNode: (id: string) => InternalNode<NodeType> | undefined;
   /**
    * Returns a node by id.
    *
    * @param id - the node id
    * @returns the node or undefined if no node was found
    */
-  getNode: (id: string) => Node | undefined;
+  getNode: (id: string) => NodeType | undefined;
   /**
    * Returns nodes.
    *
    * @returns nodes array
    */
-  getNodes: (ids?: string[]) => Node[];
+  getNodes: (ids?: string[]) => NodeType[];
   /**
    * Returns an edge by id.
    *
    * @param id - the edge id
    * @returns the edge or undefined if no edge was found
    */
-  getEdge: (id: string) => Edge | undefined;
+  getEdge: (id: string) => EdgeType | undefined;
   /**
    * Returns edges.
    *
    * @returns edges array
    */
-  getEdges: (ids?: string[]) => Edge[];
+  getEdges: (ids?: string[]) => EdgeType[];
   /**
    * Sets the current zoom level.
    *
@@ -133,10 +133,10 @@ export function useSvelteFlow(): {
    * @returns an array of intersecting nodes
    */
   getIntersectingNodes: (
-    nodeOrRect: Node | { id: Node['id'] } | Rect,
+    nodeOrRect: NodeType | { id: NodeType['id'] } | Rect,
     partially?: boolean,
-    nodesToIntersect?: Node[]
-  ) => Node[];
+    nodesToIntersect?: NodeType[]
+  ) => NodeType[];
   /**
    * Checks if the given node or rect intersects with the passed rect.
    *
@@ -147,7 +147,7 @@ export function useSvelteFlow(): {
    * @returns true if the node or rect intersects with the given area
    */
   isNodeIntersecting: (
-    nodeOrRect: Node | { id: Node['id'] } | Rect,
+    nodeOrRect: NodeType | { id: NodeType['id'] } | Rect,
     area: Rect,
     partially?: boolean
   ) => boolean;
@@ -170,9 +170,9 @@ export function useSvelteFlow(): {
     nodes,
     edges
   }: {
-    nodes?: (Node | { id: Node['id'] })[];
-    edges?: (Edge | { id: Edge['id'] })[];
-  }) => Promise<{ deletedNodes: Node[]; deletedEdges: Edge[] }>;
+    nodes?: (Partial<NodeType> & { id: string })[];
+    edges?: (Partial<EdgeType> & { id: string })[];
+  }) => Promise<{ deletedNodes: NodeType[]; deletedEdges: EdgeType[] }>;
   /**
    * Converts a screen / client position to a flow position.
    *
@@ -209,12 +209,12 @@ export function useSvelteFlow(): {
    */
   // updateNode: (
   //   id: string,
-  //   nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+  //   nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeTyp>),
   //   options?: { replace: boolean }
   // ) => void;
   updateNode: (
     id: string,
-    nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+    nodeUpdate: Partial<NodeType> | ((node: NodeType) => NodeType),
     options?: { replace: boolean }
   ) => void;
   /**
@@ -229,7 +229,7 @@ export function useSvelteFlow(): {
    */
   updateNodeData: (
     id: string,
-    dataUpdate: object | ((node: Node) => object),
+    dataUpdate: Partial<NodeType['data']> | ((node: NodeType) => Partial<NodeType['data']>),
     options?: { replace: boolean }
   ) => void;
   /**
@@ -249,10 +249,10 @@ export function useSvelteFlow(): {
    */
   updateEdge: (
     id: string,
-    edgeUpdate: Partial<Edge> | ((edge: Edge) => Partial<Edge>),
+    edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => EdgeType),
     options?: { replace: boolean }
   ) => void;
-  toObject: () => { nodes: Node[]; edges: Edge[]; viewport: Viewport };
+  toObject: () => { nodes: NodeType[]; edges: EdgeType[]; viewport: Viewport };
   /**
    * Returns the bounds of the given nodes or node ids.
    *
@@ -260,7 +260,7 @@ export function useSvelteFlow(): {
    *
    * @returns the bounds of the given nodes
    */
-  getNodesBounds: (nodes: (Node | InternalNode | string)[]) => Rect;
+  getNodesBounds: (nodes: (NodeType | InternalNode<NodeType> | string)[]) => Rect;
   /** Gets all connections for a given handle belonging to a specific node.
    *
    * @param type - handle type 'source' or 'target'
@@ -282,9 +282,9 @@ export function useSvelteFlow(): {
     derivedWarning('useSvelteFlow');
   }
 
-  const store = useStore();
+  const store = useStore<NodeType, EdgeType>();
 
-  const getNodeRect = (node: Node | { id: Node['id'] }): Rect | null => {
+  const getNodeRect = (node: NodeType | { id: NodeType['id'] }): Rect | null => {
     const nodeToUse = isNode(node) ? node : store.nodeLookup.get(node.id)!;
     const position = nodeToUse.parentId
       ? evaluateAbsolutePosition(
@@ -308,13 +308,13 @@ export function useSvelteFlow(): {
 
   function updateNode(
     id: string,
-    nodeUpdate: Partial<Node> | ((node: Node) => Partial<Node>),
+    nodeUpdate: Partial<NodeType> | ((node: NodeType) => NodeType),
     options: { replace: boolean } = { replace: false }
   ) {
     store.nodes = untrack(() => store.nodes).map((node) => {
       if (node.id === id) {
-        const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node as Node) : nodeUpdate;
-        return options?.replace && isNode(nextNode) ? nextNode : { ...node, ...nextNode };
+        const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
+        return options?.replace && isNode<NodeType>(nextNode) ? nextNode : { ...node, ...nextNode };
       }
 
       return node;
@@ -323,13 +323,13 @@ export function useSvelteFlow(): {
 
   function updateEdge(
     id: string,
-    edgeUpdate: Partial<Edge> | ((edge: Edge) => Partial<Edge>),
+    edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => EdgeType),
     options: { replace: boolean } = { replace: false }
   ) {
     store.edges = untrack(() => store.edges).map((edge) => {
       if (edge.id === id) {
         const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
-        return options.replace && isEdge(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
+        return options.replace && isEdge<EdgeType>(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
       }
 
       return edge;
@@ -411,9 +411,9 @@ export function useSvelteFlow(): {
       return Promise.resolve(true);
     },
     getIntersectingNodes: (
-      nodeOrRect: Node | { id: Node['id'] } | Rect,
+      nodeOrRect: NodeType | { id: NodeType['id'] } | Rect,
       partially = true,
-      nodesToIntersect?: Node[]
+      nodesToIntersect?: NodeType[]
     ) => {
       const isRect = isRectObject(nodeOrRect);
       const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
@@ -436,7 +436,7 @@ export function useSvelteFlow(): {
       });
     },
     isNodeIntersecting: (
-      nodeOrRect: Node | { id: Node['id'] } | Rect,
+      nodeOrRect: NodeType | { id: NodeType['id'] } | Rect,
       area: Rect,
       partially = true
     ) => {
@@ -453,7 +453,10 @@ export function useSvelteFlow(): {
       return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
     },
     deleteElements: async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [] }) => {
-      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
+      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove<
+        NodeType,
+        EdgeType
+      >({
         nodesToRemove,
         edgesToRemove,
         nodes: store.nodes,
@@ -537,8 +540,10 @@ export function useSvelteFlow(): {
       }
 
       const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
-
-      updateNode(id, { data: options?.replace ? nextData : { ...node.data, ...nextData } });
+      updateNode(id, (node) => ({
+        ...node,
+        data: options?.replace ? nextData : { ...node.data, ...nextData }
+      }));
     },
     updateEdge,
     getNodesBounds: (nodes) => {
@@ -549,8 +554,14 @@ export function useSvelteFlow(): {
   };
 }
 
-function getElements(lookup: Map<string, InternalNode>, ids: string[]): Node[];
-function getElements(lookup: Map<string, Edge>, ids: string[]): Edge[];
+function getElements<NodeType extends Node = Node>(
+  lookup: Map<string, InternalNode<NodeType>>,
+  ids: string[]
+): NodeType[];
+function getElements<EdgeType extends Edge = Edge>(
+  lookup: Map<string, EdgeType>,
+  ids: string[]
+): EdgeType[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getElements(lookup: Map<string, any>, ids: string[]): any[] {
   const result = [];

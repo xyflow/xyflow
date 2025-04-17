@@ -1,7 +1,7 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { EdgeWrapper } from '$lib/components/EdgeWrapper';
   import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
-  import type { EdgeEvents } from '$lib/types';
+  import type { Node, Edge, EdgeEvents } from '$lib/types';
   import type { SvelteFlowStore } from '$lib/store/types';
 
   let {
@@ -10,7 +10,7 @@
     onedgecontextmenu,
     onedgepointerenter,
     onedgepointerleave
-  }: { store: SvelteFlowStore } & EdgeEvents = $props();
+  }: { store: SvelteFlowStore<NodeType, EdgeType> } & EdgeEvents<EdgeType> = $props();
 </script>
 
 <svg class="svelte-flow__marker">

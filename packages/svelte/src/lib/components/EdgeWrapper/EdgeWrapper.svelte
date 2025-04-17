@@ -1,11 +1,11 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { setContext } from 'svelte';
 
   import { elementSelectionKeys, getMarkerId } from '@xyflow/system';
 
   import { BezierEdgeInternal } from '$lib/components/edges';
 
-  import type { EdgeLayouted, Edge, EdgeEvents } from '$lib/types';
+  import type { Node, EdgeLayouted, Edge, EdgeEvents } from '$lib/types';
   import type { SvelteFlowStore } from '$lib/store/types';
 
   const {
@@ -15,7 +15,10 @@
     onedgecontextmenu,
     onedgepointerenter,
     onedgepointerleave
-  }: { store: SvelteFlowStore; edge: EdgeLayouted } & EdgeEvents = $props();
+  }: {
+    store: SvelteFlowStore<NodeType, EdgeType>;
+    edge: EdgeLayouted<EdgeType>;
+  } & EdgeEvents<EdgeType> = $props();
 
   let {
     source,
@@ -76,7 +79,7 @@
 
   function onmouseevent<T = MouseEvent>(
     event: T,
-    callback: ({ edge, event }: { edge: Edge; event: T }) => void
+    callback: ({ edge, event }: { edge: EdgeType; event: T }) => void
   ) {
     const edge = store.edgeLookup.get(id);
 

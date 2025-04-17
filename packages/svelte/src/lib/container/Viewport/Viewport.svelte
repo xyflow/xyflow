@@ -1,8 +1,12 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import type { SvelteFlowStore } from '$lib/store/types';
+  import type { Node, Edge } from '$lib/types';
   import type { Snippet } from 'svelte';
 
-  let { store = $bindable(), children }: { store: SvelteFlowStore; children: Snippet } = $props();
+  let {
+    store = $bindable(),
+    children
+  }: { store: SvelteFlowStore<NodeType, EdgeType>; children: Snippet } = $props();
 </script>
 
 <div

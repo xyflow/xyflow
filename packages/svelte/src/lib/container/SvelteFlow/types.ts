@@ -45,9 +45,9 @@ import type { EdgeEvents, NodeEvents, NodeSelectionEvents, PaneEvents } from '$l
 export type SvelteFlowProps<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
-> = NodeEvents &
-  NodeSelectionEvents &
-  EdgeEvents &
+> = NodeEvents<NodeType> &
+  NodeSelectionEvents<NodeType> &
+  EdgeEvents<EdgeType> &
   PaneEvents & {
     /** The id of the flow
      *

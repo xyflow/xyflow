@@ -3,7 +3,7 @@
   import type { Snippet } from 'svelte';
   import { type SvelteFlowRestProps } from '$lib/store/types';
   import { toPxString } from '$lib/utils';
-  import type { Node, Edge, NodeTypes } from '$lib/types';
+  import type { Node, Edge } from '$lib/types';
 
   let {
     width,

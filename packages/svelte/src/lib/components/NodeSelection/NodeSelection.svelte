@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { arrowKeyDiffs, getInternalNodesBounds, isNumeric, type Rect } from '@xyflow/system';
 
   import { Selection } from '$lib/components/Selection';
@@ -6,6 +6,7 @@
 
   import type { NodeSelectionProps } from './types';
   import { toPxString } from '$lib/utils';
+  import type { Node, Edge } from '$lib/types';
 
   let {
     store = $bindable(),
@@ -14,7 +15,7 @@
     onnodedragstop,
     onselectionclick,
     onselectioncontextmenu
-  }: NodeSelectionProps = $props();
+  }: NodeSelectionProps<NodeType, EdgeType> = $props();
 
   let ref = $state<HTMLDivElement>();
 
@@ -63,13 +64,13 @@
       disabled: false,
       store,
       onDrag: (event, _, __, nodes) => {
-        onnodedrag?.({ event, targetNode: null, nodes });
+        onnodedrag?.({ event, targetNode: null, nodes: nodes as NodeType[] });
       },
       onDragStart: (event, _, __, nodes) => {
-        onnodedragstart?.({ event, targetNode: null, nodes });
+        onnodedragstart?.({ event, targetNode: null, nodes: nodes as NodeType[] });
       },
       onDragStop: (event, _, __, nodes) => {
-        onnodedragstop?.({ event, targetNode: null, nodes });
+        onnodedragstop?.({ event, targetNode: null, nodes: nodes as NodeType[] });
       }
     }}
     {oncontextmenu}

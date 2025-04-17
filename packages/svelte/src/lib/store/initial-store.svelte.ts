@@ -143,7 +143,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     connectionLookup: ConnectionLookup = new Map();
     edgeLookup: EdgeLookup<EdgeType> = new Map();
 
-    _prevVisibleEdges = new Map<string, EdgeLayouted>();
+    _prevVisibleEdges = new Map<string, EdgeLayouted<EdgeType>>();
     visible = $derived.by(() => {
       const {
         // We need to access this._nodes to trigger on changes
@@ -158,8 +158,8 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         defaultEdgeOptions
       } = this;
 
-      let visibleNodes: Map<string, InternalNode>;
-      let visibleEdges: Map<string, EdgeLayouted>;
+      let visibleNodes: Map<string, InternalNode<NodeType>>;
+      let visibleEdges: Map<string, EdgeLayouted<EdgeType>>;
 
       const options = {
         edges,

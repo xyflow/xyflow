@@ -116,6 +116,6 @@ export type StoreContext<NodeType extends Node = Node, EdgeType extends Edge = E
 export type ProviderContext<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
-> = StoreContext & {
+> = StoreContext<NodeType, EdgeType> & {
   setStore: (store: SvelteFlowStore<NodeType, EdgeType>) => void;
 };

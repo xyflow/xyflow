@@ -10,13 +10,13 @@ import {
   type Transform
 } from '@xyflow/system';
 
-export function getVisibleNodes(
-  nodeLookup: NodeLookup,
+export function getVisibleNodes<NodeType extends Node = Node>(
+  nodeLookup: NodeLookup<InternalNode<NodeType>>,
   transform: Transform,
   width: number,
   height: number
 ) {
-  const visibleNodes = new Map<string, InternalNode>();
+  const visibleNodes = new Map<string, InternalNode<NodeType>>();
   getNodesInside(nodeLookup, { x: 0, y: 0, width: width, height: height }, transform, true).forEach(
     (node) => {
       visibleNodes.set(node.id, node);
@@ -29,7 +29,7 @@ export interface EdgeLayoutBaseOptions<NodeType extends Node = Node, EdgeType ex
   edges: EdgeType[];
   defaultEdgeOptions: DefaultEdgeOptions;
   elevateEdgesOnSelect: boolean;
-  previousEdges: Map<string, EdgeLayouted>;
+  previousEdges: Map<string, EdgeLayouted<EdgeType>>;
   nodeLookup: NodeLookup<InternalNode<NodeType>>;
   connectionMode: ConnectionMode;
   onerror: OnError;
@@ -44,7 +44,10 @@ export interface EdgeLayoutAllOptions<NodeType extends Node = Node, EdgeType ext
   height: never;
 }
 
-export interface EdgeLayoutOnlyVisibleOptions extends EdgeLayoutBaseOptions {
+export interface EdgeLayoutOnlyVisibleOptions<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> extends EdgeLayoutBaseOptions<NodeType, EdgeType> {
   visibleNodes: Map<string, InternalNode>;
   transform: Transform;
   width: number;
@@ -54,9 +57,11 @@ export interface EdgeLayoutOnlyVisibleOptions extends EdgeLayoutBaseOptions {
 
 export type EdgeLayoutOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> =
   | EdgeLayoutAllOptions<NodeType, EdgeType>
-  | EdgeLayoutOnlyVisibleOptions;
+  | EdgeLayoutOnlyVisibleOptions<NodeType, EdgeType>;
 
-export function getLayoutedEdges(options: EdgeLayoutOptions): Map<string, EdgeLayouted> {
+export function getLayoutedEdges<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
+  options: EdgeLayoutOptions<NodeType, EdgeType>
+): Map<string, EdgeLayouted<EdgeType>> {
   const {
     edges,
     defaultEdgeOptions,
@@ -67,7 +72,7 @@ export function getLayoutedEdges(options: EdgeLayoutOptions): Map<string, EdgeLa
     onlyRenderVisible,
     elevateEdgesOnSelect
   } = options;
-  const layoutedEdges = new Map<string, EdgeLayouted>();
+  const layoutedEdges = new Map<string, EdgeLayouted<EdgeType>>();
   for (const edge of edges) {
     const sourceNode = nodeLookup.get(edge.source);
     const targetNode = nodeLookup.get(edge.target);

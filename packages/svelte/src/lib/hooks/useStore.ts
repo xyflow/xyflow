@@ -3,9 +3,13 @@ import type { StoreContext, SvelteFlowStore } from '../store/types';
 
 import { key } from '../store';
 import { derivedWarning } from './derivedWarning.svelte';
+import type { Node, Edge } from '$lib/types';
 
-export function useStore(): SvelteFlowStore {
-  const storeContext = getContext<StoreContext>(key);
+export function useStore<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+>(): SvelteFlowStore<NodeType, EdgeType> {
+  const storeContext = getContext<StoreContext<NodeType, EdgeType>>(key);
 
   if (!storeContext) {
     throw new Error(

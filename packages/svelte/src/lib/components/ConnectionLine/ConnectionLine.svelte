@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import type { Component } from 'svelte';
   import {
     ConnectionLineType,
@@ -9,6 +9,7 @@
   } from '@xyflow/system';
 
   import type { SvelteFlowStore } from '$lib/store/types';
+  import type { Node, Edge } from '$lib/types';
 
   let {
     store = $bindable(),
@@ -17,7 +18,7 @@
     style,
     LineComponent
   }: {
-    store: SvelteFlowStore;
+    store: SvelteFlowStore<NodeType, EdgeType>;
     type: ConnectionLineType;
     containerStyle?: string;
     style?: string;

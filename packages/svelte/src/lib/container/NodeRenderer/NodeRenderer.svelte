@@ -1,9 +1,9 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { onDestroy } from 'svelte';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
 
-  import type { NodeEvents } from '$lib/types';
+  import type { Node, Edge, NodeEvents } from '$lib/types';
   import type { SvelteFlowStore } from '$lib/store/types';
 
   let {
@@ -17,7 +17,10 @@
     onnodedrag,
     onnodedragstart,
     onnodedragstop
-  }: { store: SvelteFlowStore; nodeClickDistance?: number } & NodeEvents = $props();
+  }: {
+    store: SvelteFlowStore<NodeType, EdgeType>;
+    nodeClickDistance?: number;
+  } & NodeEvents<NodeType> = $props();
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'

@@ -1,8 +1,9 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { PanOnScrollMode, type PanZoomInstance, type Transform } from '@xyflow/system';
 
   import zoom from '$lib/actions/zoom';
   import type { ZoomProps } from './types';
+  import type { Node, Edge } from '$lib/types';
 
   let {
     store = $bindable(),
@@ -19,7 +20,7 @@
     onmoveend,
     oninit,
     children
-  }: ZoomProps = $props();
+  }: ZoomProps<NodeType, EdgeType> = $props();
 
   let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
   let panOnScrollActive = $derived(store.panActivationKeyPressed || panOnScroll);

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { setContext, onDestroy } from 'svelte';
   import {
     arrowKeyDiffs,
@@ -13,7 +13,7 @@
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 
   import type { ConnectableContext, NodeWrapperProps } from './types';
-  import type { NodeEvents } from '$lib/types';
+  import type { Node, Edge, NodeEvents } from '$lib/types';
   import { toPxString } from '$lib/utils';
 
   let {
@@ -29,7 +29,7 @@
     onnodepointerleave,
     onnodepointermove,
     onnodecontextmenu
-  }: NodeWrapperProps & NodeEvents = $props();
+  }: NodeWrapperProps<NodeType, EdgeType> & NodeEvents<NodeType> = $props();
 
   let {
     data = {},
@@ -55,7 +55,8 @@
     dragHandle,
     internals: {
       z: zIndex = 0,
-      positionAbsolute: { x: positionX, y: positionY }
+      positionAbsolute: { x: positionX, y: positionY },
+      userNode
     }
   } = $derived(node);
 
@@ -162,7 +163,7 @@
       store.handleNodeSelection(id);
     }
 
-    onnodeclick?.({ node, event });
+    onnodeclick?.({ node: userNode, event });
   }
 
   function onKeyDown(event: KeyboardEvent) {
@@ -205,13 +206,17 @@
       nodeClickDistance,
       onNodeMouseDown: store.handleNodeSelection,
       onDrag: (event, _, targetNode, nodes) => {
-        onnodedrag?.({ event, targetNode, nodes });
+        onnodedrag?.({ event, targetNode: targetNode as NodeType, nodes: nodes as NodeType[] });
       },
       onDragStart: (event, _, targetNode, nodes) => {
-        onnodedragstart?.({ event, targetNode, nodes });
+        onnodedragstart?.({
+          event,
+          targetNode: targetNode as NodeType,
+          nodes: nodes as NodeType[]
+        });
       },
       onDragStop: (event, _, targetNode, nodes) => {
-        onnodedragstop?.({ event, targetNode, nodes });
+        onnodedragstop?.({ event, targetNode: targetNode as NodeType, nodes: nodes as NodeType[] });
       },
       store
     }}
@@ -230,10 +235,18 @@
     style:visibility={initialized ? 'visible' : 'hidden'}
     style="{style};width:{inlineDimensions.width};height:{inlineDimensions.height}"
     onclick={onSelectNodeHandler}
-    onpointerenter={onnodepointerenter ? (event) => onnodepointerenter({ node, event }) : undefined}
-    onpointerleave={onnodepointerleave ? (event) => onnodepointerleave({ node, event }) : undefined}
-    onpointermove={onnodepointermove ? (event) => onnodepointermove({ node, event }) : undefined}
-    oncontextmenu={onnodecontextmenu ? (event) => onnodecontextmenu({ node, event }) : undefined}
+    onpointerenter={onnodepointerenter
+      ? (event) => onnodepointerenter({ node: userNode, event })
+      : undefined}
+    onpointerleave={onnodepointerleave
+      ? (event) => onnodepointerleave({ node: userNode, event })
+      : undefined}
+    onpointermove={onnodepointermove
+      ? (event) => onnodepointermove({ node: userNode, event })
+      : undefined}
+    oncontextmenu={onnodecontextmenu
+      ? (event) => onnodecontextmenu({ node: userNode, event })
+      : undefined}
     onkeydown={focusable ? onKeyDown : undefined}
     tabIndex={focusable ? 0 : undefined}
     role={focusable ? 'button' : undefined}

@@ -151,11 +151,11 @@ export type EdgeTypes = Record<
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
-export type EdgeLayouted = Edge &
+export type EdgeLayouted<EdgeType extends Edge = Edge> = EdgeType &
   EdgePosition & {
     sourceNode?: Node;
     targetNode?: Node;
     sourceHandleId?: string | null;
     targetHandleId?: string | null;
-    edge: Edge;
+    edge: EdgeType;
   };

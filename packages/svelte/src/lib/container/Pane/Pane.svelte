@@ -38,7 +38,7 @@
   }
 </script>
 
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { SelectionMode, getEventPosition, getNodesInside } from '@xyflow/system';
 
   import type { Node, Edge } from '$lib/types';
@@ -51,7 +51,7 @@
     onpaneclick,
     onpanecontextmenu,
     children
-  }: PaneProps = $props();
+  }: PaneProps<NodeType, EdgeType> = $props();
 
   // svelte-ignore non_reactive_update
   let container: HTMLDivElement;

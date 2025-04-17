@@ -1,9 +1,10 @@
 import type { SvelteFlowStore } from '$lib/store/types';
+import type { Edge, Node } from '$lib/types';
 import type { OnMoveStart, OnMove, OnMoveEnd, PanOnScrollMode } from '@xyflow/system';
 import type { Snippet } from 'svelte';
 
-export type ZoomProps = {
-  store: SvelteFlowStore;
+export type ZoomProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  store: SvelteFlowStore<NodeType, EdgeType>;
   panOnScrollMode: PanOnScrollMode;
   preventScrolling: boolean;
   zoomOnScroll: boolean;

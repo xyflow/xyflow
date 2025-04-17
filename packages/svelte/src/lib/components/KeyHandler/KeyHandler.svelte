@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import {
     shortcut,
     type ShortcutEventDetail,
@@ -7,7 +7,7 @@
   import { isInputDOMNode, isMacOs } from '@xyflow/system';
 
   import type { KeyHandlerProps } from './types';
-  import type { KeyDefinition, KeyDefinitionObject } from '$lib/types';
+  import type { Node, Edge, KeyDefinition, KeyDefinitionObject } from '$lib/types';
   import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
 
   let {
@@ -17,9 +17,9 @@
     deleteKey = 'Backspace',
     panActivationKey = ' ',
     zoomActivationKey = isMacOs() ? 'Meta' : 'Control'
-  }: KeyHandlerProps = $props();
+  }: KeyHandlerProps<NodeType, EdgeType> = $props();
 
-  let { deleteElements } = useSvelteFlow();
+  let { deleteElements } = useSvelteFlow<NodeType, EdgeType>();
 
   function isKeyObject(key?: KeyDefinition | null): key is KeyDefinitionObject {
     return key !== null && typeof key === 'object';
