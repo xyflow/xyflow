@@ -7,6 +7,7 @@
 
   import type { Node, EdgeLayouted, Edge, EdgeEvents } from '$lib/types';
   import type { SvelteFlowStore } from '$lib/store/types';
+  import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 
   const {
     edge,
@@ -104,7 +105,6 @@
   };
 </script>
 
-<!-- TODO: aria-label, describedby -->
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 {#if !hidden}
   <svg style:z-index={zIndex} class="svelte-flow__edge-wrapper">
@@ -136,6 +136,7 @@
         : ariaLabel
           ? ariaLabel
           : `Edge from ${source} to ${target}`}
+      aria-describedby={focusable ? `${ARIA_EDGE_DESC_KEY}-${store.flowId}` : undefined}
       role={focusable ? 'button' : 'img'}
       onkeydown={focusable ? onkeydown : undefined}
       tabindex={focusable ? 0 : undefined}

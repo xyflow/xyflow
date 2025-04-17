@@ -232,6 +232,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     panActivationKeyPressed: boolean = $state(false);
     zoomActivationKeyPressed: boolean = $state(false);
     selectionRectMode: string | null = $state(null);
+    ariaLiveMessage = $state<string>('');
     selectionMode: SelectionMode = $derived(signals.props.selectionMode ?? SelectionMode.Partial);
 
     nodeTypes: NodeTypes = $derived({ ...initialNodeTypes, ...signals.props.nodeTypes });
@@ -374,6 +375,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       this._connection = initialConnection;
       this.clickConnectStartHandle = null;
       this.viewport = signals.props.initialViewport ?? { x: 0, y: 0, zoom: 1 };
+      this.ariaLiveMessage = '';
     }
   }
   return new SvelteFlowStore();

@@ -18,6 +18,7 @@
   import type { SvelteFlowProps } from './types';
   import { type ProviderContext, type StoreContext } from '$lib/store/types';
   import Wrapper from './Wrapper.svelte';
+  import { A11yDescriptions } from '$lib/components/A11yDescriptions';
 
   let {
     width,
@@ -193,5 +194,6 @@
     </Pane>
   </Zoom>
   <Attribution {proOptions} position={attributionPosition} />
+  <A11yDescriptions {store} />
   {@render children?.()}
 </Wrapper>

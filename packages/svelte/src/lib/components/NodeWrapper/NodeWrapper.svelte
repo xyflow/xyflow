@@ -15,6 +15,7 @@
   import type { ConnectableContext, NodeWrapperProps } from './types';
   import type { Node, Edge, NodeEvents } from '$lib/types';
   import { toPxString } from '$lib/utils';
+  import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 
   let {
     store = $bindable(),
@@ -183,12 +184,9 @@
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
 
-      // TODO: aria live message
-      // store.setState({
-      //   ariaLiveMessage: `Moved selected node ${event.key
-      //     .replace('Arrow', '')
-      //     .toLowerCase()}. New position, x: ${~~internals.positionAbsolute.x}, y: ${~~internals.positionAbsolute.y}`,
-      // });
+      store.ariaLiveMessage = `Moved selected node ${event.key
+        .replace('Arrow', '')
+        .toLowerCase()}. New position, x: ${node.internals.positionAbsolute.x}, y: ${node.internals.positionAbsolute.y}`;
 
       store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
     }
@@ -250,6 +248,9 @@
     onkeydown={focusable ? onKeyDown : undefined}
     tabIndex={focusable ? 0 : undefined}
     role={focusable ? 'button' : undefined}
+    aria-describedby={store.disableKeyboardA11y
+      ? undefined
+      : `${ARIA_NODE_DESC_KEY}-${store.flowId}`}
   >
     <NodeComponent
       {data}
