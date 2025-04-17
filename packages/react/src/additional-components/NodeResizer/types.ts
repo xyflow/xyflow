@@ -111,6 +111,6 @@ export type ResizeControlProps = Pick<
 /**
  * @expand
  */
-export type ResizeControlLineProps = ResizeControlProps & {
+export type ResizeControlLineProps = Omit<ResizeControlProps, 'resizeDirection'> & {
   position?: ControlLinePosition;
 };
