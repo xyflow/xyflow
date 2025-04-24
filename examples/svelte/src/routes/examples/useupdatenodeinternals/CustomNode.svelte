@@ -9,7 +9,7 @@
 
 	const onClick = () => {
 		handleCount += 1;
-		updateNodeInternals(id);
+		updateNodeInternals();
 	};
 </script>
 
