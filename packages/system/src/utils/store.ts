@@ -195,10 +195,9 @@ function updateChildNode<NodeType extends NodeBase>(
     });
   }
 }
-
-const DEFAULT_NODE_Z = 1;
+``;
 function calculateZ(node: NodeBase, selectedNodeZ: number) {
-  return (isNumeric(node.zIndex) ? node.zIndex : DEFAULT_NODE_Z) + (node.selected ? selectedNodeZ : DEFAULT_NODE_Z);
+  return (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0);
 }
 
 function calculateChildXYZ<NodeType extends NodeBase>(

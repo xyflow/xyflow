@@ -1,13 +1,13 @@
 import { useStore } from '$lib/store';
 
-type Portal = 'viewport' | 'root';
+type Portal = 'viewport-back' | 'viewport-front' | 'root' | 'edge-labels';
 
 function tryToMount(node: Element, domNode: Element | null, target: Portal | undefined) {
   if (!target || !domNode) {
     return;
   }
 
-  const targetEl = target === 'root' ? domNode : domNode.querySelector('.svelte-flow__viewport');
+  const targetEl = target === 'root' ? domNode : domNode.querySelector(`.svelte-flow__${target}`);
 
   if (targetEl) {
     targetEl.appendChild(node);

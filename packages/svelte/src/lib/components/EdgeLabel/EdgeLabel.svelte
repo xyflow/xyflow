@@ -28,7 +28,7 @@
 </script>
 
 <div
-  use:portal={'viewport'}
+  use:portal={'edge-labels'}
   class={['svelte-flow__edge-label', { transparent }, className]}
   style:cursor={selectEdgeOnClick ? 'pointer' : undefined}
   style:transform="translate(-50%, -50%) translate({x}px,{y}px)"

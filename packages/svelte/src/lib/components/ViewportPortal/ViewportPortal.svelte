@@ -2,9 +2,9 @@
   import { portal } from '$lib/actions/portal';
   import type { ViewportPortalProps } from './types';
 
-  let { children, ...rest }: ViewportPortalProps = $props();
+  let { moveTo = 'front', children, ...rest }: ViewportPortalProps = $props();
 </script>
 
-<div use:portal={'viewport'} {...rest}>
+<div use:portal={`viewport-${moveTo}`} {...rest}>
   {@render children?.()}
 </div>

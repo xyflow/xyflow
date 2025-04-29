@@ -46,19 +46,21 @@
   });
 </script>
 
-{#each store.visible.nodes.values() as node (node.id)}
-  <NodeWrapper
-    bind:store
-    {node}
-    {resizeObserver}
-    {nodeClickDistance}
-    {onnodeclick}
-    {onnodepointerenter}
-    {onnodepointermove}
-    {onnodepointerleave}
-    {onnodedrag}
-    {onnodedragstart}
-    {onnodedragstop}
-    {onnodecontextmenu}
-  />
-{/each}
+<div class="svelte-flow__nodes">
+  {#each store.visible.nodes.values() as node (node.id)}
+    <NodeWrapper
+      bind:store
+      {node}
+      {resizeObserver}
+      {nodeClickDistance}
+      {onnodeclick}
+      {onnodepointerenter}
+      {onnodepointermove}
+      {onnodepointerleave}
+      {onnodedrag}
+      {onnodedragstart}
+      {onnodedragstop}
+      {onnodecontextmenu}
+    />
+  {/each}
+</div>

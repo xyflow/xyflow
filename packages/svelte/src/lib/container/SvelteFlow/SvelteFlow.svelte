@@ -149,6 +149,7 @@
   >
     <Pane bind:store {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
       <ViewportComponent bind:store>
+        <div class="svelte-flow__viewport-back svelte-flow__container"></div>
         <EdgeRenderer
           bind:store
           {onedgeclick}
@@ -156,6 +157,7 @@
           {onedgepointerenter}
           {onedgepointerleave}
         />
+        <div class="svelte-flow__edge-labels svelte-flow__container"></div>
         <ConnectionLine
           bind:store
           type={connectionLineType}
@@ -183,6 +185,7 @@
           {onnodedragstart}
           {onnodedragstop}
         />
+        <div class="svelte-flow__viewport-front svelte-flow__container"></div>
       </ViewportComponent>
       <Selection
         isVisible={!!(store.selectionRect && store.selectionRectMode === 'user')}
