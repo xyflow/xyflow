@@ -18,6 +18,16 @@ export default function interactive(domNode: Element, params: UseInteractivePara
     getViewScale: params.getViewScale
   });
 
+  minimap.update({
+    translateExtent: params.translateExtent,
+    width: params.width,
+    height: params.height,
+    inversePan: params.inversePan,
+    zoomStep: params.zoomStep,
+    pannable: params.pannable,
+    zoomable: params.zoomable
+  });
+
   function update(params: UseInteractiveParams) {
     minimap.update({
       translateExtent: params.translateExtent,
