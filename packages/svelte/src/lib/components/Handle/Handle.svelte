@@ -205,8 +205,8 @@ The Handle component is the part of a node that can be used to connect nodes.
   class={[
     'svelte-flow__handle',
     `svelte-flow__handle-${position}`,
-    'nodrag',
-    'nopan',
+    store.noDragClass,
+    store.noPanClass,
     position,
     className
   ]}

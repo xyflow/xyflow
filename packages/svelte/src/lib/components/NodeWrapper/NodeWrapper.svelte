@@ -206,7 +206,7 @@
       isSelectable: selectable,
       disabled: !draggable,
       handleSelector: dragHandle,
-      noDragClass: 'nodrag',
+      noDragClass: store.noDragClass,
       nodeClickDistance,
       onNodeMouseDown: store.handleNodeSelection,
       onDrag: (event, _, targetNode, nodes) => {

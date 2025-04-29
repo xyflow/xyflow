@@ -107,7 +107,12 @@
   y={position?.y}
   width={size}
   height={size}
-  class={['svelte-flow__edgeupdater nopan', `svelte-flow__edgeupdater-${type}`, className]}
+  class={[
+    'svelte-flow__edgeupdater',
+    `svelte-flow__edgeupdater-${type}`,
+    store.noPanClass,
+    className
+  ]}
   onpointerdown={onPointerDown}
   transparent
   {...rest}

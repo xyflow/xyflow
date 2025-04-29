@@ -364,6 +364,27 @@ export type SvelteFlowProps<
      */
     disableKeyboardA11y?: boolean;
     /**
+     * If a node is draggable, clicking and dragging that node will move it around the canvas. Adding
+     * the `"nodrag"` class prevents this behavior and this prop allows you to change the name of that
+     * class.
+     * @default "nodrag"
+     */
+    noDragClass?: string;
+    /**
+     * Typically, scrolling the mouse wheel when the mouse is over the canvas will zoom the viewport.
+     * Adding the `"nowheel"` class to an element n the canvas will prevent this behavior and this prop
+     * allows you to change the name of that class.
+     * @default "nowheel"
+     */
+    noWheelClass?: string;
+    /**
+     * If an element in the canvas does not stop mouse events from propagating, clicking and dragging
+     * that element will pan the viewport. Adding the `"nopan"` class prevents this behavior and this
+     * prop allows you to change the name of that class.
+     * @default "nopan"
+     */
+    noPanClass?: string;
+    /**
      * This callback can be used to validate a new connection
      *
      * If you return `false`, the edge will not be added to your flow.

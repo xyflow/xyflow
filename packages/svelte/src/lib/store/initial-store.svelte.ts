@@ -238,6 +238,10 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     nodeTypes: NodeTypes = $derived({ ...initialNodeTypes, ...signals.props.nodeTypes });
     edgeTypes: EdgeTypes = $derived({ ...initialEdgeTypes, ...signals.props.edgeTypes });
 
+    noPanClass: string = $derived(signals.props.noPanClass ?? 'nopan');
+    noDragClass: string = $derived(signals.props.noDragClass ?? 'nodrag');
+    noWheelClass: string = $derived(signals.props.noWheelClass ?? 'nowheel');
+
     // _viewport is the internal viewport.
     // when binding to viewport, we operate on signals.viewport instead
     _viewport: Viewport = $state(signals.props.initialViewport ?? { x: 0, y: 0, zoom: 1 });

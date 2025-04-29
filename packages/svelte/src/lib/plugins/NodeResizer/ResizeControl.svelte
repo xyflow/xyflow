@@ -47,7 +47,7 @@
     return position ?? defaultPosition;
   });
 
-  let positionClassNames = $derived(controlPosition.split('-'));
+  let positionClasses = $derived(controlPosition.split('-'));
 
   onMount(() => {
     if (resizeControlRef) {
@@ -117,7 +117,7 @@
 </script>
 
 <div
-  class={['svelte-flow__resize-control', 'nodrag', ...positionClassNames, variant, className]}
+  class={['svelte-flow__resize-control', store.noDragClass, ...positionClasses, variant, className]}
   bind:this={resizeControlRef}
   style:border-color={variant === ResizeControlVariant.Line ? color : undefined}
   style:background-color={variant === ResizeControlVariant.Line ? undefined : color}

@@ -56,7 +56,7 @@
 
 {#if store.selectionRectMode === 'nodes' && bounds && isNumeric(bounds.x) && isNumeric(bounds.y)}
   <div
-    class="svelte-flow__selection-wrapper nopan"
+    class={['svelte-flow__selection-wrapper', store.noPanClass]}
     style:width={toPxString(bounds.width)}
     style:height={toPxString(bounds.height)}
     style:transform="translate({bounds.x}px, {bounds.y}px)"
