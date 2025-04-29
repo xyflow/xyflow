@@ -17,7 +17,7 @@
     id,
     variant = BackgroundVariant.Dots,
     gap = 20,
-    size = 1,
+    size,
     lineWidth = 1,
     bgColor,
     patternColor,
@@ -27,17 +27,17 @@
 
   const store = useStore();
 
-  const patternSize = size ?? defaultSize[variant!];
-  const isDots = variant === BackgroundVariant.Dots;
-  const isCross = variant === BackgroundVariant.Cross;
-  const gapXY: number[] = Array.isArray(gap!) ? gap! : [gap!, gap!];
+  const isDots = $derived(variant === BackgroundVariant.Dots);
+  const isCross = $derived(variant === BackgroundVariant.Cross);
+  const gapXY: number[] = $derived(Array.isArray(gap) ? gap : [gap, gap]);
 
   let patternId = $derived(`background-pattern-${store.flowId}-${id ?? ''}`);
   let scaledGap = $derived([
     gapXY[0] * store.viewport.zoom || 1,
     gapXY[1] * store.viewport.zoom || 1
   ]);
-  let scaledSize = $derived(patternSize * store.viewport.zoom);
+  let scaledSize = $derived((size ?? defaultSize[variant]) * store.viewport.zoom);
+
   let patternDimensions = $derived(
     (isCross ? [scaledSize, scaledSize] : scaledGap) as [number, number]
   );
