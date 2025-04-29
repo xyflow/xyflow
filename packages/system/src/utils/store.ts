@@ -195,7 +195,7 @@ function updateChildNode<NodeType extends NodeBase>(
     });
   }
 }
-``;
+
 function calculateZ(node: NodeBase, selectedNodeZ: number) {
   return (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0);
 }
