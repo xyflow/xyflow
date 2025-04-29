@@ -14,7 +14,8 @@
 		ConnectionMode,
 		ControlButton,
 		type FitViewOptions,
-		useSvelteFlow
+		useSvelteFlow,
+		Position
 	} from '@xyflow/svelte';
 
 	import CustomNode from './CustomNode.svelte';
@@ -229,6 +230,15 @@
 		<button onclick={moveNode}>update node pos</button>
 		<button onclick={changeEdgeType}>update edge type</button>
 		<button onclick={hideUnhide}>hide/unhide</button>
+		<button
+			onclick={() => {
+				nodes = nodes.map((node) => ({
+					...node,
+					sourcePosition: Position.Right,
+					targetPosition: Position.Left
+				}));
+			}}>left-right</button
+		>
 	</Panel>
 
 	<InitTracker />

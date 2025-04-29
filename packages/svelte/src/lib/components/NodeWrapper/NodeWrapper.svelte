@@ -78,9 +78,12 @@
   let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
 
-  let prevType: string | undefined;
-  let prevSourcePosition: Position | undefined;
-  let prevTargetPosition: Position | undefined;
+  // svelte-ignore state_referenced_locally
+  let prevType: string | undefined = type;
+  // svelte-ignore state_referenced_locally
+  let prevSourcePosition: Position | undefined = sourcePosition;
+  // svelte-ignore state_referenced_locally
+  let prevTargetPosition: Position | undefined = targetPosition;
 
   let NodeComponent = $derived(store.nodeTypes[type] ?? DefaultNode);
 
@@ -116,9 +119,9 @@
     // if type, sourcePosition or targetPosition changes,
     // we need to re-calculate the handle positions
     const doUpdate =
-      (prevType && type !== prevType) ||
-      (prevSourcePosition && sourcePosition !== prevSourcePosition) ||
-      (prevTargetPosition && targetPosition !== prevTargetPosition);
+      type !== prevType ||
+      sourcePosition !== prevSourcePosition ||
+      targetPosition !== prevTargetPosition;
 
     if (doUpdate && nodeRef !== null) {
       requestAnimationFrame(() => {
@@ -144,7 +147,6 @@
     prevTargetPosition = targetPosition;
   });
 
-  // TODO: extract this part!
   $effect(() => {
     /* eslint-disable @typescript-eslint/no-unused-expressions */
     if (resizeObserver && (!initialized || nodeRef !== prevNodeRef)) {
