@@ -77,6 +77,7 @@
 			type: 'default',
 			data: { label: 'Styled with style' },
 			style: 'border: 2px solid #ff5050;',
+			height: 55,
 			position: { x: 450, y: 150 }
 		},
 		{
@@ -234,11 +235,6 @@
 </SvelteFlow>
 
 <style>
-	:global(.svelte-flow .custom-style) {
-		background: #ff5050;
-		color: white;
-	}
-
 	:root {
 		/* --background-color: #ffffdd; */
 		--background-pattern-color: #5050ff;

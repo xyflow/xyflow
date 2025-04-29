@@ -101,11 +101,15 @@
     });
   }
 
-  // We need to pass width and height into the style attribute because
-  // style:width/height={undefined} overwrites what is defined in style string
-  let inlineDimensions = $derived({
-    width: toPxString(measuredWidth === undefined ? (width ?? initialWidth) : width),
-    height: toPxString(measuredHeight === undefined ? (height ?? initialHeight) : height)
+  let nodeStyle = $derived.by(() => {
+    const w = measuredWidth === undefined ? (width ?? initialWidth) : width;
+    const h = measuredHeight === undefined ? (height ?? initialHeight) : height;
+
+    if (w === undefined && h === undefined && style === undefined) {
+      return undefined;
+    }
+
+    return `${style};${w ? `width:${toPxString(w)};` : ''}${h ? `height:${toPxString(h)};` : ''}`;
   });
 
   $effect(() => {
@@ -231,7 +235,7 @@
     style:z-index={zIndex}
     style:transform="translate({positionX}px, {positionY}px)"
     style:visibility={initialized ? 'visible' : 'hidden'}
-    style="{style};width:{inlineDimensions.width};height:{inlineDimensions.height}"
+    style={nodeStyle}
     onclick={onSelectNodeHandler}
     onpointerenter={onnodepointerenter
       ? (event) => onnodepointerenter({ node: userNode, event })
