@@ -11,3 +11,7 @@
   color: var(--xy-edge-label-color, var(--xy-edge-label-color-default));
   background: var(--xy-edge-label-background-color, var(--xy-edge-label-background-color-default));
 }
+
+.svelte-flow__container {
+  user-select: none;
+}

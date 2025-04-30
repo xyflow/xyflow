@@ -82,6 +82,9 @@
     nodesFocusable,
     edgesFocusable,
     disableKeyboardA11y,
+    noDragClass,
+    noPanClass,
+    noWheelClass,
     ...divAttributes
   } = $derived(rest);
   /* eslint-enable @typescript-eslint/no-unused-vars */
@@ -97,7 +100,7 @@
   bind:clientWidth
   style:width={toPxString(width)}
   style:height={toPxString(height)}
-  class={['svelte-flow', 'svelte-flow-container', className, colorMode]}
+  class={['svelte-flow', 'svelte-flow__container', className, colorMode]}
   data-testid="svelte-flow__wrapper"
   role="application"
   {...divAttributes satisfies OnlyDivAttributes<typeof divAttributes>}
