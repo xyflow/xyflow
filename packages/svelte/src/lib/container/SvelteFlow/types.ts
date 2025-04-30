@@ -36,7 +36,8 @@ import type {
   OnBeforeConnect,
   OnBeforeDelete,
   IsValidConnection,
-  OnBeforeReconnect
+  OnBeforeReconnect,
+  OnSelectionChanged
 } from '$lib/types';
 
 import type { Component } from 'svelte';
@@ -391,6 +392,8 @@ export type SvelteFlowProps<
      * If you have custom connection logic its preferred to use this callback over the
      * `isValidConnection` prop on the handle component for performance reasons.
      */
+    /** Toggles ability to make connections via clicking the handles */
+    clickConnect?: boolean;
     isValidConnection?: IsValidConnection;
     /** This event handler is called when the user begins to pan or zoom the viewport */
     onmovestart?: OnMoveStart;
@@ -434,8 +437,8 @@ export type SvelteFlowProps<
     onclickconnectstart?: OnConnectStart;
     /** A connection is finished by clicking on a handle */
     onclickconnectend?: OnConnectEnd;
-    /** Toggles ability to make connections via clicking the handles */
-    clickConnect?: boolean;
     /** This handler gets called when the flow is finished initializing */
     oninit?: () => void;
+    /** This event handler gets called when the selected nodes & edges change */
+    onselectionchanged?: OnSelectionChanged<NodeType, EdgeType>;
   };

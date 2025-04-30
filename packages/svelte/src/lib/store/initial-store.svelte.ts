@@ -59,7 +59,8 @@ import type {
   Node,
   EdgeLayouted,
   InternalNode,
-  OnBeforeReconnect
+  OnBeforeReconnect,
+  OnSelectionChanged
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
@@ -137,6 +138,52 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     set edges(edges) {
       signals.edges = edges;
     }
+
+    _prevSelectedNodes: NodeType[] = [];
+    _prevSelectedNodeIds = new Set<string>();
+    selectedNodes = $derived.by(() => {
+      const selectedNodesCount = this._prevSelectedNodeIds.size;
+      const selectedNodeIds = new Set<string>();
+      const selectedNodes = this.nodes.filter((node) => {
+        if (node.selected) {
+          selectedNodeIds.add(node.id);
+          this._prevSelectedNodeIds.delete(node.id);
+        }
+        return node.selected;
+      });
+
+      // Either the number of selected nodes has changed or two nodes changed their selection state
+      // at the same time. However then the previously selected node will be inside _prevSelectedNodeIds
+      if (selectedNodesCount !== selectedNodeIds.size || this._prevSelectedNodeIds.size > 0) {
+        this._prevSelectedNodes = selectedNodes;
+      }
+
+      this._prevSelectedNodeIds = selectedNodeIds;
+      return this._prevSelectedNodes;
+    });
+
+    _prevSelectedEdges: EdgeType[] = [];
+    _prevSelectedEdgeIds = new Set<string>();
+    selectedEdges = $derived.by(() => {
+      const selectedEdgesCount = this._prevSelectedEdgeIds.size;
+      const selectedEdgeIds = new Set<string>();
+      const selectedEdges = this.edges.filter((edge) => {
+        if (edge.selected) {
+          selectedEdgeIds.add(edge.id);
+          this._prevSelectedEdgeIds.delete(edge.id);
+        }
+        return edge.selected;
+      });
+      // Either the number of selected edges has changed or two edges changed their selection state
+      // at the same time. However then the previously selected edge will be inside _prevSelectedEdgeIds
+      if (selectedEdgesCount !== selectedEdgeIds.size || this._prevSelectedEdgeIds.size > 0) {
+        this._prevSelectedEdges = selectedEdges;
+      }
+      this._prevSelectedEdgeIds = selectedEdgeIds;
+      return this._prevSelectedEdges;
+    });
+
+    selectionChangedHandlers = new Map<symbol, OnSelectionChanged<NodeType, EdgeType>>();
 
     nodeLookup: NodeLookup<InternalNode<NodeType>> = new Map();
     parentLookup: ParentLookup<InternalNode<NodeType>> = new Map();

@@ -39,6 +39,7 @@ export * from '$lib/hooks/useNodeConnections.svelte';
 export * from '$lib/hooks/useNodesData.svelte';
 export * from '$lib/hooks/useInternalNode.svelte';
 export * from '$lib/hooks/useInitialized.svelte';
+export * from '$lib/hooks/useSelectionChanged.svelte';
 
 //actions
 export * from '$lib/actions/portal';

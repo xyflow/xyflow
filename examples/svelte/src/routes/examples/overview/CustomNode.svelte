@@ -1,11 +1,21 @@
 <script lang="ts">
-	import { Handle, Position, type BuiltInNode, type NodeProps } from '@xyflow/svelte';
+	import {
+		Handle,
+		Position,
+		useSelectionChanged,
+		type BuiltInNode,
+		type NodeProps
+	} from '@xyflow/svelte';
 
 	let {
 		data = { label: 'Node' },
 		positionAbsoluteX = 0,
 		positionAbsoluteY = 0
 	}: NodeProps<BuiltInNode> = $props();
+
+	useSelectionChanged(({ nodes, edges }) => {
+		console.log('on selection changed via hook', { nodes, edges });
+	});
 </script>
 
 <div class="custom">

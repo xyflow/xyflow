@@ -43,3 +43,8 @@ export type OnBeforeDelete<
 export type IsValidConnection<EdgeType extends Edge = Edge> = (
   edge: EdgeType | Connection
 ) => boolean;
+
+export type OnSelectionChanged<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> = (params: { nodes: NodeType[]; edges: EdgeType[] }) => void;

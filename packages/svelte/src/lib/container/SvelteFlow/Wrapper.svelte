@@ -52,6 +52,7 @@
     onclickconnectstart,
     onclickconnectend,
     oninit,
+    onselectionchanged,
     clickConnect,
     fitView,
     fitViewOptions,

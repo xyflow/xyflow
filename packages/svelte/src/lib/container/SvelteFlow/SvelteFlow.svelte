@@ -1,6 +1,6 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import type { Edge, Node } from '$lib/types';
-  import { getContext, setContext, onDestroy } from 'svelte';
+  import { getContext, setContext, onDestroy, untrack } from 'svelte';
   import type { HTMLAttributes } from 'svelte/elements';
   import { ConnectionLineType, PanOnScrollMode } from '@xyflow/system';
 
@@ -109,6 +109,15 @@
       return store;
     }
   } satisfies StoreContext<NodeType, EdgeType>);
+
+  // handle selection change
+  $effect(() => {
+    const params = { nodes: store.selectedNodes, edges: store.selectedEdges };
+    untrack(() => props.onselectionchanged)?.(params);
+    for (const handler of store.selectionChangedHandlers.values()) {
+      handler(params);
+    }
+  });
 
   onDestroy(() => {
     store.reset();
