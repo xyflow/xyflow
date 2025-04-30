@@ -14,12 +14,12 @@ function tryToMount(node: Element, domNode: Element | null, target: Portal | und
   }
 }
 
-export default function (node: Element, target: Portal | undefined) {
-  const { domNode } = $derived(useStore());
+export function portal(node: Element, target: Portal | undefined) {
+  const store = useStore();
 
   let previousTarget: Portal | undefined = target;
 
-  tryToMount(node, domNode, target);
+  tryToMount(node, store.domNode, target);
 
   return {
     async update(target: Portal) {
@@ -27,7 +27,7 @@ export default function (node: Element, target: Portal | undefined) {
         node.parentNode?.removeChild(node);
         previousTarget = target;
       }
-      tryToMount(node, domNode, target);
+      tryToMount(node, store.domNode, target);
     },
     destroy() {
       if (node.parentNode) {

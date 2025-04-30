@@ -1,11 +1,11 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
-  import { arrowKeyDiffs, getInternalNodesBounds, isNumeric, type Rect } from '@xyflow/system';
+  import { getInternalNodesBounds, isNumeric, type Rect } from '@xyflow/system';
 
   import { Selection } from '$lib/components/Selection';
   import drag from '$lib/actions/drag';
 
   import type { NodeSelectionProps } from './types';
-  import { toPxString } from '$lib/utils';
+  import { arrowKeyDiffs, toPxString } from '$lib/utils';
   import type { Node, Edge } from '$lib/types';
 
   let {

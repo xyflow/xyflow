@@ -1,7 +1,6 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { setContext, onDestroy } from 'svelte';
   import {
-    arrowKeyDiffs,
     elementSelectionKeys,
     errorMessages,
     isInputDOMNode,
@@ -14,7 +13,7 @@
 
   import type { ConnectableContext, NodeWrapperProps } from './types';
   import type { Node, Edge, NodeEvents } from '$lib/types';
-  import { toPxString } from '$lib/utils';
+  import { arrowKeyDiffs, toPxString } from '$lib/utils';
   import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 
   let {

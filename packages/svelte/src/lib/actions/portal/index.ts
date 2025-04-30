@@ -1,1 +1,1 @@
-export { default as portal } from './portal.svelte';
+export { portal } from './portal.svelte';

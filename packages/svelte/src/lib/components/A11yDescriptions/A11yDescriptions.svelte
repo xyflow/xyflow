@@ -11,7 +11,7 @@
   {#if !store.disableKeyboardA11y}
     You can then use the arrow keys to move the node around.
   {/if}
-  Press delete to remove it and escape to cancel.{' '}
+  Press delete to remove it and escape to cancel.
 </div>
 <div id={`${ARIA_EDGE_DESC_KEY}-${store.flowId}`} style="display: none;">
   Press enter or space to select an edge. You can then press delete to remove it or escape to
