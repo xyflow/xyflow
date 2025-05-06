@@ -6,7 +6,7 @@ import type { InternalNode } from '$lib/types';
  *
  * @public
  * @param id - the node id
- * @returns a readable with an internal node or undefined
+ * @returns An internal node or undefined
  */
 export function useInternalNode(id: string): { current: InternalNode | undefined } {
   const { nodeLookup, nodes } = $derived(useStore());

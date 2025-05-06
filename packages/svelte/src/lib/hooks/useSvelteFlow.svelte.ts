@@ -26,11 +26,10 @@ import { derivedWarning } from './derivedWarning.svelte';
 import { untrack } from 'svelte';
 
 /**
- * Hook for accessing the ReactFlow instance.
+ * Hook for accessing the SvelteFlow instance.
  *
  * @public
- *
- * @returns helper functions
+ * @returns A set of helper functions
  */
 export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): {
   /**

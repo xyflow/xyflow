@@ -2,7 +2,8 @@ import { useStore } from '$lib/store';
 
 /**
  * Hook for seeing if nodes are initialized
- * @returns - reactive nodesInitialized
+ * @returns A boolean that indicates if nodes are initialized
+ * @public
  */
 export function useNodesInitialized() {
   const { nodesInitialized } = $derived(useStore());

@@ -6,7 +6,7 @@ import type { Viewport } from '@xyflow/system';
  * Hook for getting the current nodes from the store.
  *
  * @public
- * @returns reactive signal of the current edges
+ * @returns A reactive signal of the current nodes
  */
 export function useNodes() {
   const store = $derived(useStore());
@@ -30,7 +30,7 @@ export function useNodes() {
  * Hook for getting the current edges from the store.
  *
  * @public
- * @returns reactive signal of the current edges
+ * @returns A reactive signal of the current edges
  */
 export function useEdges() {
   const store = $derived(useStore());
@@ -54,7 +54,7 @@ export function useEdges() {
  * Hook for getting the current viewport from the store.
  *
  * @public
- * @returns reactive signal of the current viewport
+ * @returns A reactive signal of the current viewport
  */
 export function useViewport() {
   const store = $derived(useStore());

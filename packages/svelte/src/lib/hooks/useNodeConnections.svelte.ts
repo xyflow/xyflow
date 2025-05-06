@@ -28,7 +28,7 @@ const initialConnections: NodeConnection[] = [];
  * @param param.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type)
  * @param param.onConnect - gets called when a connection is established
  * @param param.onDisconnect - gets called when a connection is removed
- * @returns an array with connections
+ * @returns An array with connections
  */
 export function useNodeConnections({
   id,

@@ -50,13 +50,12 @@ export type SvelteFlowProps<
   NodeSelectionEvents<NodeType> &
   EdgeEvents<EdgeType> &
   PaneEvents & {
-    /** The id of the flow
-     *
-     * This is necessary if you want to render multiple flows.
-     * @optional
+    /**
+     * The id of the flow. This is necessary if you want to render multiple flows.
      */
     id?: string;
-    /** An array of nodes to render in a controlled flow.
+    /**
+     * An array of nodes to render in a flow.
      * @example
      * const nodes = $state.raw([
      *  {
@@ -68,7 +67,8 @@ export type SvelteFlowProps<
      * ]);
      */
     nodes?: NodeType[];
-    /** An array of edges to render in a controlled flow.
+    /**
+     * An array of edges to render in a flow.
      * @example
      * const edges = $state.raw([
      *  {
@@ -79,8 +79,8 @@ export type SvelteFlowProps<
      * ]);
      */
     edges?: EdgeType[];
-    /** Custom node types to be available in a flow.
-     *
+    /**
+     * Custom node types to be available in a flow.
      * Svelte Flow matches a node's type to a component in the nodeTypes object.
      * @example
      * import CustomNode from './CustomNode.svelte';
@@ -88,8 +88,8 @@ export type SvelteFlowProps<
      * const nodeTypes = { nameOfNodeType: CustomNode };
      */
     nodeTypes?: NodeTypes;
-    /** Custom edge types to be available in a flow.
-     *
+    /**
+     * Custom edge types to be available in a flow.
      * Svelte Flow matches an edge's type to a component in the edgeTypes object.
      * @example
      * import CustomEdge from './CustomEdge.svelte';
@@ -123,7 +123,8 @@ export type SvelteFlowProps<
     zoomActivationKey?: KeyDefinition | KeyDefinition[] | null;
     /** If set, initial viewport will show all nodes & edges */
     fitView?: boolean;
-    /** Options to be used in combination with fitView
+    /**
+     * Options to be used in combination with fitView
      * @example
      * const fitViewOptions = {
      *  padding: 0.1,
@@ -135,20 +136,23 @@ export type SvelteFlowProps<
      * };
      */
     fitViewOptions?: FitViewOptions<NodeType>;
-    /** Defines nodes relative position to its coordinates
+    /**
+     * Defines nodes relative position to its coordinates
+     * @default [0, 0]
      * @example
      * [0, 0] // default, top left
      * [0.5, 0.5] // center
      * [1, 1] // bottom right
      */
     nodeOrigin?: NodeOrigin;
-    /** With a threshold greater than zero you can control the distinction between node drag and click events.
-     *
+    /**
+     * With a threshold greater than zero you can control the distinction between node drag and click events.
      * If threshold equals 1, you need to drag the node 1 pixel before a drag event is fired.
      * @default 1
      */
     nodeDragThreshold?: number;
-    /** Distance that the mouse can move between mousedown/up that will trigger a click
+    /**
+     * Distance that the mouse can move between mousedown/up that will trigger a click
      * @default 0
      */
     paneClickDistance?: number;
@@ -164,9 +168,10 @@ export type SvelteFlowProps<
      * @default 2
      */
     maxZoom?: number;
-    /** Sets the initial position and zoom of the viewport.
-     *
+    /**
+     * Sets the initial position and zoom of the viewport.
      * If a default viewport is provided but fitView is enabled, the default viewport will be ignored.
+     * @default { zoom: 1, position: { x: 0, y: 0 } }
      * @example
      * const initialViewport = {
      *  zoom: 0.5,
@@ -176,12 +181,13 @@ export type SvelteFlowProps<
     initialViewport?: Viewport;
     /** Custom viewport to be used instead of internal one */
     viewport?: Viewport;
-    /** The radius around a handle where you drop a connection line to create a new edge.
+    /**
+     * The radius around a handle where you drop a connection line to create a new edge.
      * @default 20
      */
     connectionRadius?: number;
-    /** 'strict' connection mode will only allow you to connect source handles to target handles.
-     *
+    /**
+     * 'strict' connection mode will only allow you to connect source handles to target handles.
      * 'loose' connection mode will allow you to connect handles of any type to one another.
      * @default 'strict'
      */
@@ -192,7 +198,9 @@ export type SvelteFlowProps<
     connectionLineStyle?: string;
     /** Styles to be applied to the container of the connection line */
     connectionLineContainerStyle?: string;
-    /** When set to "partial", when the user creates a selection box by click and dragging nodes that are only partially in the box are still selected.
+    /**
+     * When set to "partial", when the user creates a selection box by click and dragging
+     * nodes that are only partially in the box are still selected.
      * @default 'full'
      */
     selectionMode?: SelectionMode;
@@ -200,7 +208,8 @@ export type SvelteFlowProps<
      * Controls if nodes should be automatically selected when being dragged
      */
     selectNodesOnDrag?: boolean;
-    /** Grid all nodes will snap to
+    /**
+     * Grid all nodes will snap to
      * @example [20, 20]
      */
     snapGrid?: SnapGrid;
@@ -208,11 +217,13 @@ export type SvelteFlowProps<
      * @example "#b1b1b7"
      */
     defaultMarkerColor?: string;
-    /** Controls if all nodes should be draggable
+    /**
+     * Controls if all nodes should be draggable
      * @default true
      */
     nodesDraggable?: boolean;
-    /** Controls if all nodes should be connectable to each other
+    /**
+     * Controls if all nodes should be connectable to each other
      * @default true
      */
     nodesConnectable?: boolean;
@@ -232,91 +243,102 @@ export type SvelteFlowProps<
      * @default true
      */
     edgesFocusable?: boolean;
-    /** By default the viewport extends infinitely. You can use this prop to set a boundary.
-     *
+    /**
+     * By default the viewport extends infinitely. You can use this prop to set a boundary.
      * The first pair of coordinates is the top left boundary and the second pair is the bottom right.
+     * @default @default [[-∞, -∞], [+∞, +∞]]
      * @example [[-1000, -10000], [1000, 1000]]
      */
     translateExtent?: CoordinateExtent;
-    /** By default the nodes can be placed anywhere. You can use this prop to set a boundary.
-     *
+    /**
+     * By default the nodes can be placed anywhere. You can use this prop to set a boundary.
      * The first pair of coordinates is the top left boundary and the second pair is the bottom right.
+     * @default [[-∞, -∞], [+∞, +∞]]
      * @example [[-1000, -10000], [1000, 1000]]
      */
     nodeExtent?: CoordinateExtent;
-    /** Disabling this prop will allow the user to scroll the page even when their pointer is over the flow.
+    /**
+     * Disabling this prop will allow the user to scroll the page even when their pointer is over the flow.
      * @default true
      */
     preventScrolling?: boolean;
-    /** Controls if the viewport should zoom by scrolling inside the container */
+    /**
+     * Controls if the viewport should zoom by scrolling inside the container.
+     * @default true
+     */
     zoomOnScroll?: boolean;
-    /** Controls if the viewport should zoom by double clicking somewhere on the flow */
+    /**
+     * Controls if the viewport should zoom by double clicking somewhere on the flow
+     * @default true
+     */
     zoomOnDoubleClick?: boolean;
-    /** Controls if the viewport should zoom by pinching on a touch screen */
+    /**
+     * Controls if the viewport should zoom by pinching on a touch screen
+     * @default true
+     */
     zoomOnPinch?: boolean;
-    /** Controls if the viewport should pan by scrolling inside the container
-     *
+    /**
+     * Controls if the viewport should pan by scrolling inside the container
      * Can be limited to a specific direction with panOnScrollMode
+     * @default false
      */
     panOnScroll?: boolean;
-    /** This prop is used to limit the direction of panning when panOnScroll is enabled.
-     *
+    /**
+     * This prop is used to limit the direction of panning when panOnScroll is enabled.
      * The "free" option allows panning in any direction.
      * @default "free"
      * @example "horizontal" | "vertical"
      */
     panOnScrollMode?: PanOnScrollMode;
-    /** Enableing this prop allows users to pan the viewport by clicking and dragging.
-     *
+    /**
+     * Enableing this prop allows users to pan the viewport by clicking and dragging.
      * You can also set this prop to an array of numbers to limit which mouse buttons can activate panning.
+     * @default true
      * @example [0, 2] // allows panning with the left and right mouse buttons
      * [0, 1, 2, 3, 4] // allows panning with all mouse buttons
      */
     panOnDrag?: boolean | number[];
-    /** Select multiple elements with a selection box, without pressing down selectionKey */
+    /**
+     * Select multiple elements with a selection box, without pressing down selectionKey.
+     * @default false
+     */
     selectionOnDrag?: boolean;
-    /** You can enable this optimisation to instruct Svelte Flow to only render nodes and edges that would be visible in the viewport.
-     *
+    /**
+     * You can enable this optimisation to instruct Svelte Flow to only render nodes and edges that would be visible in the viewport.
      * This might improve performance when you have a large number of nodes and edges but also adds an overhead.
      * @default false
      */
     onlyRenderVisibleElements?: boolean;
-    /** You can enable this prop to automatically pan the viewport while making a new connection.
+    /**
+     * You can enable this prop to automatically pan the viewport while making a new connection.
      * @default true
      */
     autoPanOnConnect?: boolean;
-    /** You can enable this prop to automatically pan the viewport while dragging a node.
+    /**
+     * You can enable this prop to automatically pan the viewport while dragging a node.
      * @default true
      */
     autoPanOnNodeDrag?: boolean;
-    /** Set position of the attribution
+    /**
+     * Set position of the attribution
      * @default 'bottom-right'
      * @example 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
      */
     attributionPosition?: PanelPosition;
-    /** By default, we render a small attribution in the corner of your flows that links back to the project.
-     *
+    /**
+     * By default, we render a small attribution in the corner of your flows that links back to the project.
      * Anyone is free to remove this attribution whether they're a Pro subscriber or not
      * but we ask that you take a quick look at our {@link https://reactflow.dev/learn/troubleshooting/remove-attribution | removing attribution guide}
      * before doing so.
      */
     proOptions?: ProOptions;
-    /** Defaults to be applied to all new edges that are added to the flow.
-     *
+    /**
+     * Defaults to be applied to all new edges that are added to the flow.
      * Properties on a new edge will override these defaults if they exist.
      * @example
      * const defaultEdgeOptions = {
      *  type: 'customEdgeType',
-     *  animated: true,
-     *  interactionWidth: 10,
-     *  data: { label: 'custom label' },
-     *  hidden: false,
-     *  deletable: true,
-     *  selected: false,
-     *  markerStart: EdgeMarker.ArrowClosed,
-     *  markerEnd: EdgeMarker.ArrowClosed,
-     *  zIndex: 12,
-     *  ariaLabel: 'custom aria label'
+     *  animated: true
      * }
      */
     defaultEdgeOptions?: DefaultEdgeOptions;
@@ -324,7 +346,8 @@ export type SvelteFlowProps<
     width?: number;
     /** Sets a fixed height for the flow */
     height?: number;
-    /** Controls color scheme used for styling the flow
+    /**
+     * Controls color scheme used for styling the flow
      * @default 'system'
      * @example 'system' | 'light' | 'dark'
      */
@@ -341,13 +364,6 @@ export type SvelteFlowProps<
      * @example ConnectionLineType.Straight | ConnectionLineType.Default | ConnectionLineType.Step | ConnectionLineType.SmoothStep | ConnectionLineType.Bezier
      */
     connectionLineType?: ConnectionLineType;
-    /** This callback can be used to validate a new connection
-     *
-     * If you return false, the edge will not be added to your flow.
-     * If you have custom connection logic its preferred to use this callback over the isValidConnection prop on the handle component for performance reasons.
-     * @default (connection: Connection) => true
-     */
-
     /** Enabling this option will raise the z-index of nodes when they are selected.
      * @default true
      */
@@ -385,15 +401,14 @@ export type SvelteFlowProps<
      * @default "nopan"
      */
     noPanClass?: string;
+    /** Toggles ability to make connections via clicking the handles */
+    clickConnect?: boolean;
     /**
-     * This callback can be used to validate a new connection
-     *
+     * This callback can be used to validate a new connection.
      * If you return `false`, the edge will not be added to your flow.
      * If you have custom connection logic its preferred to use this callback over the
      * `isValidConnection` prop on the handle component for performance reasons.
      */
-    /** Toggles ability to make connections via clicking the handles */
-    clickConnect?: boolean;
     isValidConnection?: IsValidConnection;
     /** This event handler is called when the user begins to pan or zoom the viewport */
     onmovestart?: OnMoveStart;
@@ -401,8 +416,8 @@ export type SvelteFlowProps<
     onmove?: OnMove;
     /** This event handler is called when the user stops panning or zooming the viewport */
     onmoveend?: OnMoveEnd;
-    /** Ocassionally something may happen that causes Svelte Flow to throw an error.
-     *
+    /**
+     * Ocassionally something may happen that causes Svelte Flow to throw an error.
      * Instead of exploding your application, we log a message to the console and then call this event handler.
      * You might use it for additional logging or to show a message to the user.
      */

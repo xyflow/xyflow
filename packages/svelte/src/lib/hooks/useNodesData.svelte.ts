@@ -8,7 +8,7 @@ import { useStore } from '$lib/store';
  *
  * @public
  * @param nodeId - The id (or ids) of the node to get the data from
- * @returns A readable store with an array of data objects
+ * @returns An array of data objects
  */
 export function useNodesData<NodeType extends Node = Node>(
   nodeId: string

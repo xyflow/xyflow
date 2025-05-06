@@ -6,7 +6,7 @@ import type { ConnectionState } from '@xyflow/system';
  * Hook for receiving the current connection.
  *
  * @public
- * @returns current connection as a readable store
+ * @returns Current connection as a signal
  */
 export function useConnection(): { current: ConnectionState } {
   const { connection } = $derived(useStore());
