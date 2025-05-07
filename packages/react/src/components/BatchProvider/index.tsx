@@ -40,28 +40,27 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       next = typeof payload === 'function' ? payload(next) : payload;
     }
 
+    const changes = getElementsDiffChanges({
+      items: next,
+      lookup: nodeLookup,
+    }) as NodeChange<NodeType>[];
+
     if (hasDefaultNodes) {
       setNodes(next);
-    } else {
-      // When a controlled flow is used we need to collect the changes
-      const changes = getElementsDiffChanges({
-        items: next,
-        lookup: nodeLookup,
-      }) as NodeChange<NodeType>[];
+    }
 
-      // We only want to fire onNodesChange if there are changes to the nodes
-      if (changes.length > 0) {
-        onNodesChange?.(changes);
-      } else if (fitViewQueued) {
-        // If there are no changes to the nodes, we still need to call setNodes
-        // to trigger a re-render and fitView.
-        window.requestAnimationFrame(() => {
-          const { fitViewQueued, nodes, setNodes } = store.getState();
-          if (fitViewQueued) {
-            setNodes(nodes);
-          }
-        });
-      }
+    // We only want to fire onNodesChange if there are changes to the nodes
+    if (changes.length > 0) {
+      onNodesChange?.(changes);
+    } else if (fitViewQueued) {
+      // If there are no changes to the nodes, we still need to call setNodes
+      // to trigger a re-render and fitView.
+      window.requestAnimationFrame(() => {
+        const { fitViewQueued, nodes, setNodes } = store.getState();
+        if (fitViewQueued) {
+          setNodes(nodes);
+        }
+      });
     }
   }, []);
 
