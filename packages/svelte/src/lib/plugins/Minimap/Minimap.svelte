@@ -103,7 +103,8 @@
 
 <Panel
   {position}
-  style={style + (bgColor ? `;--xy-minimap-background-color-props:${bgColor}` : '')}
+  {style}
+  --xy-minimap-background-color-props={bgColor ? bgColor : ''}
   class={cc(['svelte-flow__minimap', className])}
   data-testid="svelte-flow__minimap"
 >
