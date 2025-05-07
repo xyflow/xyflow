@@ -40,7 +40,6 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       next = typeof payload === 'function' ? payload(next) : payload;
     }
 
-    // When a controlled flow is used we need to collect the changes
     const changes = getElementsDiffChanges({
       items: next,
       lookup: nodeLookup,
