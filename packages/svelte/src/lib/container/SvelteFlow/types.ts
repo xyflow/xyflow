@@ -18,7 +18,6 @@ import type {
   OnConnect,
   OnConnectStart,
   OnConnectEnd,
-  ColorModeClass,
   OnReconnect,
   OnRecoonnectStart,
   OnReconnectEnd
@@ -353,7 +352,7 @@ export type SvelteFlowProps<
      */
     colorMode?: ColorMode;
     /** Fallback color mode for SSR if colorMode is set to 'system' */
-    colorModeSSR?: ColorModeClass;
+    colorModeSSR?: Omit<ColorMode, 'system'>;
     /** Class to be applied to the flow container */
     class?: ClassValue;
     /** Styles to be applied to the flow container */
