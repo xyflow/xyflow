@@ -268,14 +268,13 @@ svg.xy-flow__connectionline {
 .xy-flow__panel {
   position: absolute;
   z-index: 5;
-  margin: 15px;
 
   &.top {
-    top: 0;
+    top: 15px;
   }
 
   &.bottom {
-    bottom: 0;
+    bottom: 15px;
   }
 
   &.top,
@@ -287,11 +286,11 @@ svg.xy-flow__connectionline {
   }
 
   &.left {
-    left: 0;
+    left: 15px;
   }
 
   &.right {
-    right: 0;
+    right: 15px;
   }
 
   &.left,
