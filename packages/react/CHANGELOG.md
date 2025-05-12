@@ -1,5 +1,16 @@
 # @xyflow/react
 
+## 12.6.1
+
+### Patch Changes
+
+- [#5249](https://github.com/xyflow/xyflow/pull/5249) [`895b5d81`](https://github.com/xyflow/xyflow/commit/895b5d81c8ee5236009820ecd0ed6806c6e59e29) Thanks [@moklick](https://github.com/moklick)! - Call `onNodesChange` for uncontrolled flows that use `updateNode`
+
+- [#5247](https://github.com/xyflow/xyflow/pull/5247) [`67e1cb68`](https://github.com/xyflow/xyflow/commit/67e1cb6891078dbcb9e1d06b9f9fdbfc79860ab6) Thanks [@moklick](https://github.com/moklick)! - Cleanup TSDoc annotations for ReactFlow
+
+- Updated dependencies [[`2a03213b`](https://github.com/xyflow/xyflow/commit/2a03213b0695d504f831579ec9df3f9de2d3e0bd)]:
+  - @xyflow/system@0.0.58
+
 ## 12.6.0
 
 ### Minor Changes

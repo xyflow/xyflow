@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.58
+
+### Patch Changes
+
+- [#5252](https://github.com/xyflow/xyflow/pull/5252) [`2a03213b`](https://github.com/xyflow/xyflow/commit/2a03213b0695d504f831579ec9df3f9de2d3e0bd) Thanks [@moklick](https://github.com/moklick)! - Center panel correctly when bottom-center or top-center position is used
+
 ## 0.0.57
 
 ### Patch Changes
