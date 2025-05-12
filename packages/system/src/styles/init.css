@@ -282,7 +282,7 @@ svg.xy-flow__connectionline {
   &.bottom {
     &.center {
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-15px) translateX(-50%);
     }
   }
 
@@ -298,7 +298,7 @@ svg.xy-flow__connectionline {
   &.right {
     &.center {
       top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-15px) translateY(-50%);
     }
   }
 }
