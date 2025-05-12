@@ -53,6 +53,10 @@ export type SvelteFlowProps<
      * The id of the flow. This is necessary if you want to render multiple flows.
      */
     id?: string;
+    /** Sets a fixed width for the flow */
+    width?: number;
+    /** Sets a fixed height for the flow */
+    height?: number;
     /**
      * An array of nodes to render in a flow.
      * @example
@@ -319,19 +323,6 @@ export type SvelteFlowProps<
      */
     autoPanOnNodeDrag?: boolean;
     /**
-     * Set position of the attribution
-     * @default 'bottom-right'
-     * @example 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
-     */
-    attributionPosition?: PanelPosition;
-    /**
-     * By default, we render a small attribution in the corner of your flows that links back to the project.
-     * Anyone is free to remove this attribution whether they're a Pro subscriber or not
-     * but we ask that you take a quick look at our {@link https://reactflow.dev/learn/troubleshooting/remove-attribution | removing attribution guide}
-     * before doing so.
-     */
-    proOptions?: ProOptions;
-    /**
      * Defaults to be applied to all new edges that are added to the flow.
      * Properties on a new edge will override these defaults if they exist.
      * @example
@@ -341,10 +332,6 @@ export type SvelteFlowProps<
      * }
      */
     defaultEdgeOptions?: DefaultEdgeOptions;
-    /** Sets a fixed width for the flow */
-    width?: number;
-    /** Sets a fixed height for the flow */
-    height?: number;
     /**
      * Controls color scheme used for styling the flow
      * @default 'system'
@@ -408,6 +395,19 @@ export type SvelteFlowProps<
      * If you have custom connection logic its preferred to use this callback over the
      * `isValidConnection` prop on the handle component for performance reasons.
      */
+    /**
+     * Set position of the attribution
+     * @default 'bottom-right'
+     * @example 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+     */
+    attributionPosition?: PanelPosition;
+    /**
+     * By default, we render a small attribution in the corner of your flows that links back to the project.
+     * You are free to remove this attribution but we ask that you take a quick look at our
+     * {@link https://svelteflow.dev/learn/troubleshooting/remove-attribution | removing attribution guide}
+     * before doing so.
+     */
+    proOptions?: ProOptions;
     isValidConnection?: IsValidConnection;
     /** This event handler is called when the user begins to pan or zoom the viewport */
     onmovestart?: OnMoveStart;
