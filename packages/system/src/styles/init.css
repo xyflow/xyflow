@@ -268,36 +268,37 @@ svg.xy-flow__connectionline {
 .xy-flow__panel {
   position: absolute;
   z-index: 5;
+  margin: 15px;
 
   &.top {
-    top: 15px;
+    top: 0;
   }
 
   &.bottom {
-    bottom: 15px;
+    bottom: 0;
   }
 
   &.top,
   &.bottom {
     &.center {
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-15px) translateX(-50%);
     }
   }
 
   &.left {
-    left: 15px;
+    left: 0;
   }
 
   &.right {
-    right: 15px;
+    right: 0;
   }
 
   &.left,
   &.right {
     &.center {
       top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-15px) translateY(-50%);
     }
   }
 }
