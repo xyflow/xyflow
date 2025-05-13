@@ -60,7 +60,8 @@ import type {
   EdgeLayouted,
   InternalNode,
   OnBeforeReconnect,
-  OnSelectionChange
+  OnSelectionChange,
+  OnSelectionDrag
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
@@ -358,6 +359,10 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     onclickconnectstart?: OnConnectStart = $derived(signals.props.onclickconnectstart);
     onclickconnectend?: OnConnectEnd = $derived(signals.props.onclickconnectend);
     clickConnectStartHandle: Pick<Handle, 'id' | 'nodeId' | 'type'> | null = $state(null);
+
+    onselectiondrag?: OnSelectionDrag<NodeType> = $derived(signals.props.onselectiondrag);
+    onselectiondragstart?: OnSelectionDrag<NodeType> = $derived(signals.props.onselectiondragstart);
+    onselectiondragstop?: OnSelectionDrag<NodeType> = $derived(signals.props.onselectiondragstop);
 
     resolveFitView = async () => {
       if (!this.panZoom) {

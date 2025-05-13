@@ -47,6 +47,9 @@ export default function drag<NodeType extends Node = Node, EdgeType extends Edge
         nodeDragThreshold: store.nodeDragThreshold,
         unselectNodesAndEdges: store.unselectNodesAndEdges,
         updateNodePositions: store.updateNodePositions,
+        onSelectionDrag: store.onselectiondrag,
+        onSelectionDragStart: store.onselectiondragstart,
+        onSelectionDragStop: store.onselectiondragstop,
         panBy: store.panBy
       };
     }

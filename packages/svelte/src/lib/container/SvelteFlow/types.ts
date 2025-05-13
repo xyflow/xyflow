@@ -40,7 +40,13 @@ import type {
 } from '$lib/types';
 
 import type { Component } from 'svelte';
-import type { EdgeEvents, NodeEvents, NodeSelectionEvents, PaneEvents } from '$lib/types/events';
+import type {
+  EdgeEvents,
+  NodeEvents,
+  NodeSelectionEvents,
+  OnSelectionDrag,
+  PaneEvents
+} from '$lib/types/events';
 
 export type SvelteFlowProps<
   NodeType extends Node = Node,
@@ -455,4 +461,10 @@ export type SvelteFlowProps<
     oninit?: () => void;
     /** This event handler gets called when the selected nodes & edges change */
     onselectionchange?: OnSelectionChange<NodeType, EdgeType>;
+    /** This event handler gets called when a user starts to drag a selection box. */
+    onselectiondragstart?: OnSelectionDrag<NodeType>;
+    /** This event handler gets called when a user drags a selection box. */
+    onselectiondrag?: OnSelectionDrag<NodeType>;
+    /** This event handler gets called when a user stops dragging a selection box. */
+    onselectiondragstop?: OnSelectionDrag<NodeType>;
   };

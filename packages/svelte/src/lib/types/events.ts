@@ -70,3 +70,8 @@ export type EdgeEvents<EdgeType extends Edge = Edge> = {
   /** This event handler is called when the pointer of a user enters an edge. */
   onedgepointerleave?: ({ edge, event }: { edge: EdgeType; event: PointerEvent }) => void;
 };
+
+export type OnSelectionDrag<NodeType extends Node = Node> = (
+  event: MouseEvent,
+  nodes: NodeType[]
+) => void;
