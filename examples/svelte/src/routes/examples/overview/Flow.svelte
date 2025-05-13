@@ -216,7 +216,7 @@
 	connectionMode={ConnectionMode.Strict}
 	attributionPosition={'top-center'}
 	deleteKey={['Backspace', 'd']}
-	onselectionchanged={({ nodes, edges }) => {
+	onselectionchange={({ nodes, edges }) => {
 		console.log('on selection changed via prop', { nodes, edges });
 	}}
 	selectNodesOnDrag

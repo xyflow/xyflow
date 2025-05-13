@@ -36,7 +36,7 @@ import type {
   OnBeforeDelete,
   IsValidConnection,
   OnBeforeReconnect,
-  OnSelectionChanged
+  OnSelectionChange
 } from '$lib/types';
 
 import type { Component } from 'svelte';
@@ -454,5 +454,5 @@ export type SvelteFlowProps<
     /** This handler gets called when the flow is finished initializing */
     oninit?: () => void;
     /** This event handler gets called when the selected nodes & edges change */
-    onselectionchanged?: OnSelectionChanged<NodeType, EdgeType>;
+    onselectionchange?: OnSelectionChange<NodeType, EdgeType>;
   };

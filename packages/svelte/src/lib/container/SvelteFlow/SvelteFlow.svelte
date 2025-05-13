@@ -69,7 +69,8 @@
     edges = $bindable([]),
     viewport = $bindable(undefined),
     ...props
-  }: SvelteFlowProps<NodeType, EdgeType> & HTMLAttributes<HTMLDivElement> = $props();
+  }: SvelteFlowProps<NodeType, EdgeType> &
+    Omit<HTMLAttributes<HTMLDivElement>, 'onselectionchange'> = $props();
 
   // svelte-ignore non_reactive_update
   let store = createStore<NodeType, EdgeType>({
@@ -113,8 +114,8 @@
   // handle selection change
   $effect(() => {
     const params = { nodes: store.selectedNodes, edges: store.selectedEdges };
-    untrack(() => props.onselectionchanged)?.(params);
-    for (const handler of store.selectionChangedHandlers.values()) {
+    untrack(() => props.onselectionchange)?.(params);
+    for (const handler of store.selectionChangeHandlers.values()) {
       handler(params);
     }
   });

@@ -60,7 +60,7 @@ import type {
   EdgeLayouted,
   InternalNode,
   OnBeforeReconnect,
-  OnSelectionChanged
+  OnSelectionChange
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
@@ -183,7 +183,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       return this._prevSelectedEdges;
     });
 
-    selectionChangedHandlers = new Map<symbol, OnSelectionChanged<NodeType, EdgeType>>();
+    selectionChangeHandlers = new Map<symbol, OnSelectionChange<NodeType, EdgeType>>();
 
     nodeLookup: NodeLookup<InternalNode<NodeType>> = new Map();
     parentLookup: ParentLookup<InternalNode<NodeType>> = new Map();

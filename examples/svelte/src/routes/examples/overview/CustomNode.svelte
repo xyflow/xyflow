@@ -2,7 +2,7 @@
 	import {
 		Handle,
 		Position,
-		useSelectionChanged,
+		useOnSelectionChange,
 		type BuiltInNode,
 		type NodeProps
 	} from '@xyflow/svelte';
@@ -13,7 +13,7 @@
 		positionAbsoluteY = 0
 	}: NodeProps<BuiltInNode> = $props();
 
-	useSelectionChanged(({ nodes, edges }) => {
+	useOnSelectionChange(({ nodes, edges }) => {
 		console.log('on selection changed via hook', { nodes, edges });
 	});
 </script>

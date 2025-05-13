@@ -44,7 +44,7 @@ export type IsValidConnection<EdgeType extends Edge = Edge> = (
   edge: EdgeType | Connection
 ) => boolean;
 
-export type OnSelectionChanged<
+export type OnSelectionChange<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
 > = (params: { nodes: NodeType[]; edges: EdgeType[] }) => void;

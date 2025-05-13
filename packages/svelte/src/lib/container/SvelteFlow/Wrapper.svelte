@@ -22,7 +22,8 @@
     clientWidth?: number;
     clientHeight?: number;
     children?: Snippet;
-    rest: SvelteFlowRestProps<NodeType, EdgeType> & HTMLAttributes<HTMLDivElement>;
+    rest: SvelteFlowRestProps<NodeType, EdgeType> &
+      Omit<HTMLAttributes<HTMLDivElement>, 'onselectionchange'>;
   } = $props();
 
   // Unfortunately we have to destructure the props here this way,
@@ -52,7 +53,7 @@
     onclickconnectstart,
     onclickconnectend,
     oninit,
-    onselectionchanged,
+    onselectionchange,
     clickConnect,
     fitView,
     fitViewOptions,
