@@ -467,4 +467,8 @@ export type SvelteFlowProps<
     onselectiondrag?: OnSelectionDrag<NodeType>;
     /** This event handler gets called when a user stops dragging a selection box. */
     onselectiondragstop?: OnSelectionDrag<NodeType>;
+    /** This event handler gets called when the user starts to drag a selection box */
+    onselectionstart?: (event: PointerEvent) => void;
+    /** This event handler gets called when the user finishes dragging a selection box */
+    onselectionend?: (event: PointerEvent) => void;
   };

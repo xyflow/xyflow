@@ -45,6 +45,8 @@
     onnodepointerleave,
     onselectionclick,
     onselectioncontextmenu,
+    onselectionstart,
+    onselectionend,
     onedgeclick,
     onedgecontextmenu,
     onedgepointerenter,
@@ -157,7 +159,15 @@
     {onmoveend}
     {oninit}
   >
-    <Pane bind:store {onpaneclick} {onpanecontextmenu} {panOnDrag} {selectionOnDrag}>
+    <Pane
+      bind:store
+      {onpaneclick}
+      {onpanecontextmenu}
+      {onselectionstart}
+      {onselectionend}
+      {panOnDrag}
+      {selectionOnDrag}
+    >
       <ViewportComponent bind:store>
         <div class="svelte-flow__viewport-back svelte-flow__container"></div>
         <EdgeRenderer

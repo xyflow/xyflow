@@ -50,6 +50,8 @@
     selectionOnDrag,
     onpaneclick,
     onpanecontextmenu,
+    onselectionstart,
+    onselectionend,
     children
   }: PaneProps<NodeType, EdgeType> = $props();
 
@@ -115,7 +117,7 @@
       y
     };
 
-    // onSelectionStart?.(event);
+    onselectionstart?.(event);
   }
 
   function onPointerMove(event: PointerEvent) {
@@ -201,7 +203,7 @@
       selectionInProgress = false;
     }
 
-    // onSelectionEnd?.(event);
+    onselectionend?.(event);
   }
 
   const onContextMenu = (event: MouseEvent) => {
