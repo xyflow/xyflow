@@ -31,7 +31,7 @@ import {
   fitViewport,
   type Handle,
   type OnReconnect,
-  type OnRecoonnectStart,
+  type OnReconnectStart,
   type OnReconnectEnd
 } from '@xyflow/system';
 
@@ -352,7 +352,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
 
     onbeforereconnect?: OnBeforeReconnect<EdgeType> = $derived(signals.props.onbeforereconnect);
     onreconnect?: OnReconnect<EdgeType> = $derived(signals.props.onreconnect);
-    onreconnectstart?: OnRecoonnectStart<EdgeType> = $derived(signals.props.onreconnectstart);
+    onreconnectstart?: OnReconnectStart<EdgeType> = $derived(signals.props.onreconnectstart);
     onreconnectend?: OnReconnectEnd<EdgeType> = $derived(signals.props.onreconnectend);
 
     clickConnect?: boolean = $derived(signals.props.clickConnect ?? true);

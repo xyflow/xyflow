@@ -19,7 +19,7 @@ import type {
   OnConnectStart,
   OnConnectEnd,
   OnReconnect,
-  OnRecoonnectStart,
+  OnReconnectStart,
   OnReconnectEnd
 } from '@xyflow/system';
 
@@ -448,7 +448,7 @@ export type SvelteFlowProps<
     /** This event gets fired when after an edge was reconnected*/
     onreconnect?: OnReconnect<EdgeType>;
     /** This event gets fired when a user starts to reconnect an edge */
-    onreconnectstart?: OnRecoonnectStart<EdgeType>;
+    onreconnectstart?: OnReconnectStart<EdgeType>;
     /** This event gets fired when a user stops reconnecting an edge */
     onreconnectend?: OnReconnectEnd<EdgeType>;
     /** This handler gets called when an edge is reconnected. You can use it to modify the edge before the update is applied. */
