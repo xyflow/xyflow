@@ -107,6 +107,7 @@ export {
   type ConnectionInProgress,
   type NoConnection,
   type NodeConnection,
+  type OnReconnect,
 } from '@xyflow/system';
 
 // we need this workaround to prevent a duplicate identifier error
