@@ -10,6 +10,7 @@ import {
   useEdgesState,
   useOnSelectionChange,
   OnSelectionChangeParams,
+  Panel,
 } from '@xyflow/react';
 
 const initialNodes: Node[] = [
@@ -51,6 +52,12 @@ const Flow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
+  const [elementsSelectable, setElementsSelectable] = useState<boolean>(true);
+  const [secondLoggerActive, setSecondLoggerActive] = useState<boolean>(true);
+
+  const toggleSecondLogger = () => {
+    setSecondLoggerActive(!secondLoggerActive);
+  };
 
   return (
     <ReactFlow
@@ -59,27 +66,17 @@ const Flow = () => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-    />
-  );
-};
+      elementsSelectable={elementsSelectable}
+    >
+      <Panel>
+        <button onClick={toggleSecondLogger}>{secondLoggerActive ? 'Disable' : 'Enable'} Logger 2</button>
+        <button onClick={() => setElementsSelectable((s) => !s)}>toggle selectable</button>
+      </Panel>
 
-const WrappedFlow = () => {
-  const [secondLoggerActive, setSecondLoggerActive] = useState<boolean>(true);
-
-  const toggleSecondLogger = () => {
-    setSecondLoggerActive(!secondLoggerActive);
-  };
-
-  return (
-    <ReactFlowProvider>
-      <Flow />
       <SelectionLogger id="Logger 1" />
       {secondLoggerActive && <SelectionLogger id="Logger 2" />}
-      <div style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}>
-        <button onClick={toggleSecondLogger}>{secondLoggerActive ? 'Disable' : 'Enable'} Logger 2</button>
-      </div>
-    </ReactFlowProvider>
+    </ReactFlow>
   );
 };
 
-export default WrappedFlow;
+export default Flow;

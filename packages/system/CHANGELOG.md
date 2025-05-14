@@ -1,5 +1,31 @@
 # @xyflow/system
 
+## 0.0.58
+
+### Patch Changes
+
+- [#5252](https://github.com/xyflow/xyflow/pull/5252) [`2a03213b`](https://github.com/xyflow/xyflow/commit/2a03213b0695d504f831579ec9df3f9de2d3e0bd) Thanks [@moklick](https://github.com/moklick)! - Center panel correctly when bottom-center or top-center position is used
+
+## 0.0.57
+
+### Patch Changes
+
+- [#5227](https://github.com/xyflow/xyflow/pull/5227) [`a7d10ffc`](https://github.com/xyflow/xyflow/commit/a7d10ffce5a0195471681980f97b1b5f6c448f35) Thanks [@moklick](https://github.com/moklick)! - add resizeDirection for XYResizer
+
+- [#5221](https://github.com/xyflow/xyflow/pull/5221) [`4e681f9c`](https://github.com/xyflow/xyflow/commit/4e681f9c529c3f4f8b2ac5d25b4db7878c197e14) Thanks [@moklick](https://github.com/moklick)! - Allow zero as a valid node width/height value
+
+## 0.0.56
+
+### Patch Changes
+
+- [#5212](https://github.com/xyflow/xyflow/pull/5212) [`0f43b8ea`](https://github.com/xyflow/xyflow/commit/0f43b8ea45bd293e50e4a86d83868074bb323f13) Thanks [@moklick](https://github.com/moklick)! - Add polyfill for `Promise.withResolvers`
+
+- [#5192](https://github.com/xyflow/xyflow/pull/5192) [`fc241253`](https://github.com/xyflow/xyflow/commit/fc241253d5dba35f5febf411e77dbc5acb91d5d7) Thanks [@peterkogo](https://github.com/peterkogo)! - Optimize performance of nodesInitialized
+
+- [#5153](https://github.com/xyflow/xyflow/pull/5153) [`98fe23c7`](https://github.com/xyflow/xyflow/commit/98fe23c7c2b12972f1b7def866215ce82a86e2c0) Thanks [@nick-lawrence-ctm](https://github.com/nick-lawrence-ctm)! - Add separators to horizontal control buttons
+
+- [#5191](https://github.com/xyflow/xyflow/pull/5191) [`e5735b51`](https://github.com/xyflow/xyflow/commit/e5735b514a54d86ba0ca7bd725e8bfead89fc08e) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix legacy padding being slightly larger than before
+
 ## 0.0.55
 
 ### Patch Changes

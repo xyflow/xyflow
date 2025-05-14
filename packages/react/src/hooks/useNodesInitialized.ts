@@ -9,15 +9,17 @@ export type UseNodesInitializedOptions = {
 };
 
 const selector = (options: UseNodesInitializedOptions) => (s: ReactFlowState) => {
+  if (!options.includeHiddenNodes) {
+    return s.nodesInitialized;
+  }
+
   if (s.nodeLookup.size === 0) {
     return false;
   }
 
-  for (const [, { hidden, internals }] of s.nodeLookup) {
-    if (options.includeHiddenNodes || !hidden) {
-      if (internals.handleBounds === undefined || !nodeHasDimensions(internals.userNode)) {
-        return false;
-      }
+  for (const [, { internals }] of s.nodeLookup) {
+    if (internals.handleBounds === undefined || !nodeHasDimensions(internals.userNode)) {
+      return false;
     }
   }
 

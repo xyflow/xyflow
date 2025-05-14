@@ -88,7 +88,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 ): boolean {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
 
-  let nodesInitialized = true;
+  let nodesInitialized = nodes.length > 0;
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
 
@@ -125,7 +125,9 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     }
 
     if (
-      (!internalNode.measured || !internalNode.measured.width || !internalNode.measured.height) &&
+      (internalNode.measured === undefined ||
+        internalNode.measured.width === undefined ||
+        internalNode.measured.height === undefined) &&
       !internalNode.hidden
     ) {
       nodesInitialized = false;

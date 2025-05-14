@@ -85,22 +85,11 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   defaultEdges?: EdgeType[];
   /**
    * Defaults to be applied to all new edges that are added to the flow.
-   *
    * Properties on a new edge will override these defaults if they exist.
    * @example
    * const defaultEdgeOptions = {
    *  type: 'customEdgeType',
-   *  animated: true,
-   *  interactionWidth: 10,
-   *  data: { label: 'custom label' },
-   *  hidden: false,
-   *  deletable: true,
-   *  selected: false,
-   *  focusable: true,
-   *  markerStart: EdgeMarker.ArrowClosed,
-   *  markerEnd: EdgeMarker.ArrowClosed,
-   *  zIndex: 12,
-   *  ariaLabel: 'custom aria label'
+   *  animated: true
    * }
    */
   defaultEdgeOptions?: DefaultEdgeOptions;
@@ -137,7 +126,6 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /**
    * This handler is called when the source or target of a reconnectable edge is dragged from the
    * current node. It will fire even if the edge's source or target do not end up changing.
-   *
    * You can use the `reconnectEdge` utility to convert the connection to a new edge.
    */
   onReconnect?: OnReconnect<EdgeType>;
@@ -148,7 +136,6 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /**
    * This event fires when the user releases the source or target of an editable edge. It is called
    * even if an edge update does not occur.
-   *
    */
   onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
   /**
@@ -209,7 +196,6 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   onSelectionContextMenu?: (event: ReactMouseEvent, nodes: NodeType[]) => void;
   /**
    * When a connection line is completed and two nodes are connected by the user, this event fires with the new connection.
-   *
    * You can use the `addEdge` utility to convert the connection to a complete edge.
    * @example // Use helper function to update edges onConnect
    * import ReactFlow, { addEdge } from '@xyflow/react';
@@ -277,9 +263,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
   /**
    * Custom node types to be available in a flow.
-   *
    * React Flow matches a node's type to a component in the `nodeTypes` object.
-   * @TODO check if @default is correct
    * @default {
    *   input: InputNode,
    *   default: DefaultNode,
@@ -294,9 +278,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   nodeTypes?: NodeTypes;
   /**
    * Custom edge types to be available in a flow.
-   *
    * React Flow matches an edge's type to a component in the `edgeTypes` object.
-   * @TODO check if @default is correct
    * @default {
    *   default: BezierEdge,
    *   straight: StraightEdge,
@@ -312,7 +294,6 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   edgeTypes?: EdgeTypes;
   /**
    * The type of edge path to use for connection lines.
-   *
    * Although created edges can be of any type, React Flow needs to know what type of path to render for the connection line before the edge is created!
    * @default ConnectionLineType.Bezier
    */
@@ -333,7 +314,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /**
    * If set, pressing the key or chord will delete any selected nodes and edges. Passing an array
    * represents multiple keys that can be pressed.
-   *
+
    * For example, `["Delete", "Backspace"]` will delete selected elements when either key is pressed.
    * @default 'Backspace'
    */
@@ -450,7 +431,6 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   selectNodesOnDrag?: boolean;
   /**
    * Enabling this prop allows users to pan the viewport by clicking and dragging.
-   *
    * You can also set this prop to an array of numbers to limit which mouse buttons can activate panning.
    * @default true
    * @example [0, 2] // allows panning with the left and right mouse buttons
@@ -489,7 +469,6 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   onViewportChange?: (viewport: Viewport) => void;
   /**
    * By default, the viewport extends infinitely. You can use this prop to set a boundary.
-   *
    * The first pair of coordinates is the top left boundary and the second pair is the bottom right.
    * @default [[-∞, -∞], [+∞, +∞]]
    * @example [[-1000, -10000], [1000, 1000]]
@@ -502,7 +481,6 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   preventScrolling?: boolean;
   /**
    * By default, nodes can be placed on an infinite flow. You can use this prop to set a boundary.
-   *
    * The first pair of coordinates is the top left boundary and the second pair is the bottom right.
    * @example [[-1000, -10000], [1000, 1000]]
    */
@@ -524,21 +502,18 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   zoomOnPinch?: boolean;
   /**
    * Controls if the viewport should pan by scrolling inside the container.
-   *
    * Can be limited to a specific direction with `panOnScrollMode`.
    * @default false
    */
   panOnScroll?: boolean;
   /**
    * Controls how fast viewport should be panned on scroll.
-   *
    * Use together with `panOnScroll` prop.
    * @default 0.5
    */
   panOnScrollSpeed?: number;
   /**
    * This prop is used to limit the direction of panning when `panOnScroll` is enabled.
-   *
    * The `"free"` option allows panning in any direction.
    * @default "free"
    * @example "horizontal" | "vertical"
@@ -671,10 +646,8 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   isValidConnection?: IsValidConnection<EdgeType>;
   /**
    * With a threshold greater than zero you can delay node drag events.
-   *
    * If threshold equals 1, you need to drag the node 1 pixel before a drag event is fired.
-   *
-   * 1 is the default value, so clicks don't trigger drag events.
+   * 1 is the default value, so that clicks don't trigger drag events.
    * @default 1
    */
   nodeDragThreshold?: number;

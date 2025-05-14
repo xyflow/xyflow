@@ -12,7 +12,7 @@ import {
   CoordinateExtent,
 } from '@xyflow/system';
 
-import type { Edge, InternalNode, Node, ReactFlowStore } from '../types';
+import type { Edge, FitViewOptions, InternalNode, Node, ReactFlowStore } from '../types';
 
 const getInitialState = ({
   nodes,
@@ -22,6 +22,9 @@ const getInitialState = ({
   width,
   height,
   fitView,
+  fitViewOptions,
+  minZoom = 0.5,
+  maxZoom = 2,
   nodeOrigin,
   nodeExtent,
 }: {
@@ -32,6 +35,9 @@ const getInitialState = ({
   width?: number;
   height?: number;
   fitView?: boolean;
+  fitViewOptions?: FitViewOptions;
+  minZoom?: number;
+  maxZoom?: number;
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
 } = {}): ReactFlowStore => {
@@ -46,7 +52,7 @@ const getInitialState = ({
   const storeNodeExtent = nodeExtent ?? infiniteExtent;
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
-  adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
+  const nodesInitialized = adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
     nodeOrigin: storeNodeOrigin,
     nodeExtent: storeNodeExtent,
     elevateNodesOnSelect: false,
@@ -59,7 +65,14 @@ const getInitialState = ({
       filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight)),
     });
 
-    const { x, y, zoom } = getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
+    const { x, y, zoom } = getViewportForBounds(
+      bounds,
+      width,
+      height,
+      minZoom,
+      maxZoom,
+      fitViewOptions?.padding ?? 0.1
+    );
     transform = [x, y, zoom];
   }
 
@@ -69,6 +82,7 @@ const getInitialState = ({
     height: 0,
     transform,
     nodes: storeNodes,
+    nodesInitialized,
     nodeLookup,
     parentLookup,
     edges: storeEdges,
@@ -79,8 +93,8 @@ const getInitialState = ({
     hasDefaultNodes: defaultNodes !== undefined,
     hasDefaultEdges: defaultEdges !== undefined,
     panZoom: null,
-    minZoom: 0.5,
-    maxZoom: 2,
+    minZoom,
+    maxZoom,
     translateExtent: infiniteExtent,
     nodeExtent: storeNodeExtent,
     nodesSelectionActive: false,
@@ -109,7 +123,7 @@ const getInitialState = ({
     multiSelectionActive: false,
 
     fitViewQueued: fitView ?? false,
-    fitViewOptions: undefined,
+    fitViewOptions,
     fitViewResolver: null,
 
     connection: { ...initialConnection },

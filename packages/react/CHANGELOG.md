@@ -1,5 +1,48 @@
 # @xyflow/react
 
+## 12.6.1
+
+### Patch Changes
+
+- [#5249](https://github.com/xyflow/xyflow/pull/5249) [`895b5d81`](https://github.com/xyflow/xyflow/commit/895b5d81c8ee5236009820ecd0ed6806c6e59e29) Thanks [@moklick](https://github.com/moklick)! - Call `onNodesChange` for uncontrolled flows that use `updateNode`
+
+- [#5247](https://github.com/xyflow/xyflow/pull/5247) [`67e1cb68`](https://github.com/xyflow/xyflow/commit/67e1cb6891078dbcb9e1d06b9f9fdbfc79860ab6) Thanks [@moklick](https://github.com/moklick)! - Cleanup TSDoc annotations for ReactFlow
+
+- Updated dependencies [[`2a03213b`](https://github.com/xyflow/xyflow/commit/2a03213b0695d504f831579ec9df3f9de2d3e0bd)]:
+  - @xyflow/system@0.0.58
+
+## 12.6.0
+
+### Minor Changes
+
+- [#5219](https://github.com/xyflow/xyflow/pull/5219) [`4236adbc`](https://github.com/xyflow/xyflow/commit/4236adbc462b3f65ee41869ef426491ed3fa8ba0) Thanks [@moklick](https://github.com/moklick)! - Add initialMinZoom, initialMaxZoom and initialFitViewOptions to ReactFlowProvider
+
+- [#5227](https://github.com/xyflow/xyflow/pull/5227) [`a7d10ffc`](https://github.com/xyflow/xyflow/commit/a7d10ffce5a0195471681980f97b1b5f6c448f35) Thanks [@moklick](https://github.com/moklick)! - Add `resizeDirection` prop for the `NodeResizeControl` component
+
+### Patch Changes
+
+- [#5217](https://github.com/xyflow/xyflow/pull/5217) [`bce74e88`](https://github.com/xyflow/xyflow/commit/bce74e8811a98c967b5bd06c3e5aecde24c8b679) Thanks [@moklick](https://github.com/moklick)! - Keep node seleciton on pane click if elementsSelectable=false
+
+- Updated dependencies [[`a7d10ffc`](https://github.com/xyflow/xyflow/commit/a7d10ffce5a0195471681980f97b1b5f6c448f35), [`4e681f9c`](https://github.com/xyflow/xyflow/commit/4e681f9c529c3f4f8b2ac5d25b4db7878c197e14)]:
+  - @xyflow/system@0.0.57
+
+## 12.5.6
+
+### Patch Changes
+
+- [#5212](https://github.com/xyflow/xyflow/pull/5212) [`0f43b8ea`](https://github.com/xyflow/xyflow/commit/0f43b8ea45bd293e50e4a86d83868074bb323f13) Thanks [@moklick](https://github.com/moklick)! - Add polyfill for `Promise.withResolvers`
+
+- [#5192](https://github.com/xyflow/xyflow/pull/5192) [`fc241253`](https://github.com/xyflow/xyflow/commit/fc241253d5dba35f5febf411e77dbc5acb91d5d7) Thanks [@peterkogo](https://github.com/peterkogo)! - Optimize performance of nodesInitialized
+
+- [#5196](https://github.com/xyflow/xyflow/pull/5196) [`7f902db4`](https://github.com/xyflow/xyflow/commit/7f902db46b6f1ea4adc94390db8d5db47f8c5903) Thanks [@moklick](https://github.com/moklick)! - Hide edge marker and attribution for screenreaders
+
+- [#5213](https://github.com/xyflow/xyflow/pull/5213) [`78782c16`](https://github.com/xyflow/xyflow/commit/78782c1696323ee9be0d38bbd807bd3fde5f549d) Thanks [@moklick](https://github.com/moklick)! - Do not trigger selection events if elementsSelectable=false
+
+- [#5191](https://github.com/xyflow/xyflow/pull/5191) [`e5735b51`](https://github.com/xyflow/xyflow/commit/e5735b514a54d86ba0ca7bd725e8bfead89fc08e) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix legacy padding being slightly larger than before
+
+- Updated dependencies [[`0f43b8ea`](https://github.com/xyflow/xyflow/commit/0f43b8ea45bd293e50e4a86d83868074bb323f13), [`fc241253`](https://github.com/xyflow/xyflow/commit/fc241253d5dba35f5febf411e77dbc5acb91d5d7), [`98fe23c7`](https://github.com/xyflow/xyflow/commit/98fe23c7c2b12972f1b7def866215ce82a86e2c0), [`e5735b51`](https://github.com/xyflow/xyflow/commit/e5735b514a54d86ba0ca7bd725e8bfead89fc08e)]:
+  - @xyflow/system@0.0.56
+
 ## 12.5.5
 
 ### Patch Changes

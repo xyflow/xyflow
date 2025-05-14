@@ -18,7 +18,7 @@ import {
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import getInitialState from './initialState';
-import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams } from '../types';
+import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
 
 const createStore = ({
   nodes,
@@ -28,6 +28,9 @@ const createStore = ({
   width,
   height,
   fitView,
+  fitViewOptions,
+  minZoom,
+  maxZoom,
   nodeOrigin,
   nodeExtent,
 }: {
@@ -38,6 +41,9 @@ const createStore = ({
   width?: number;
   height?: number;
   fitView?: boolean;
+  fitViewOptions?: FitViewOptions;
+  minZoom?: number;
+  maxZoom?: number;
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
 }) =>
@@ -70,7 +76,20 @@ const createStore = ({
     }
 
     return {
-      ...getInitialState({ nodes, edges, width, height, fitView, nodeOrigin, nodeExtent, defaultNodes, defaultEdges }),
+      ...getInitialState({
+        nodes,
+        edges,
+        width,
+        height,
+        fitView,
+        fitViewOptions,
+        minZoom,
+        maxZoom,
+        nodeOrigin,
+        nodeExtent,
+        defaultNodes,
+        defaultEdges,
+      }),
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, fitViewQueued } = get();
         /*
@@ -91,9 +110,9 @@ const createStore = ({
 
         if (fitViewQueued && nodesInitialized) {
           resolveFitView();
-          set({ nodes, fitViewQueued: false, fitViewOptions: undefined });
+          set({ nodes, nodesInitialized, fitViewQueued: false, fitViewOptions: undefined });
         } else {
-          set({ nodes });
+          set({ nodes, nodesInitialized });
         }
       },
       setEdges: (edges: Edge[]) => {
@@ -297,7 +316,11 @@ const createStore = ({
         get().panZoom?.setClickDistance(clickDistance);
       },
       resetSelectedElements: () => {
-        const { edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { edges, nodes, triggerNodeChanges, triggerEdgeChanges, elementsSelectable } = get();
+
+        if (!elementsSelectable) {
+          return;
+        }
 
         const nodeChanges = nodes.reduce<NodeSelectionChange[]>(
           (res, node) => (node.selected ? [...res, createSelectionChange(node.id, false)] : res),
