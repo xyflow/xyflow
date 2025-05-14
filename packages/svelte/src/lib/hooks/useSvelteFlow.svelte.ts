@@ -385,7 +385,9 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
 
       return Promise.resolve(true);
     },
-    fitView: store.fitView,
+    fitView: (options?: FitViewOptions) => {
+      return store.fitView(options);
+    },
     fitBounds: async (bounds: Rect, options?: FitBoundsOptions) => {
       if (!store.panZoom) {
         return Promise.resolve(false);
