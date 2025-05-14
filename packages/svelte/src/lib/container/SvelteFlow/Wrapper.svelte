@@ -57,6 +57,8 @@
     onselectiondragstart,
     onselectiondrag,
     onselectiondragstop,
+    onselectionstart,
+    onselectionend,
     clickConnect,
     fitView,
     fitViewOptions,
