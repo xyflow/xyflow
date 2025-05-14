@@ -1,5 +1,22 @@
 # @xyflow/svelte
 
+## 1.0.0
+
+Yeah! Svelte Flow 1.0. is here 🚀 It is based on Svelte 5 and introduces a lot of new features and improvements. Please refer to the [migration guide](https://svelteflow.dev/learn/troubleshooting/migrate-to-v1) to see how to upgrade.
+
+
+### New features 
+
+- **[Reconnect edges](https://svelteflow.dev/examples/edges/reconnect-edge)**: You can reconnect your edges by using the new `<EdgeReconnectAnchor />` component. It can be used to add custom reconnection points on custom edges.
+- **Keyboard navigation & A11y**: We added support for keyboard navigation and improved accessibility for screen readers. You can now tab through nodes and edges and move nodes with the arrow keys. Can be disabled via [**disableKeyboardA11y**](https://svelteflow.dev/api-reference/svelte-flow#disablekeyboarda11y)
+- **[Click connect](https://svelteflow.dev/examples/edges/click-connect)**: You can now create a new connection by clicking on a handle one by one.
+- **[Enhanced ViewportPortal](https://svelteflow.dev/api-reference/components/viewport-portal)**: We added a new `<ViewportPortal />` component that allows you to render content in the viewport of the flow. This is useful for rendering custom overlays or tooltips.
+- **Improved [fitView](https://svelteflow.dev/api-reference/hooks/use-svelte-flow#fitview)**: We finetuned the `fitView` function to better work with dynamically added nodes.
+- **colorModeSSR** prop: You can pass a fallback color mode for server side rendering when colorMode is set to 'system'.
+- [**elevateNodesOnSelect**](https://svelteflow.dev/api-reference/svelte-flow#elevateNodesOnSelect) & [**elevateEdgesOnSelect**](https://svelteflow.dev/api-reference/svelte-flow#elevateEdgesOnSelect): Control if nodes & edges should be elevated via z-index when selected.
+- [**noDragClass, noWheelClass, noPanClass**](https://svelteflow.dev/api-reference/svelte-flow#style-props): You can now modify the class name used to disable dragging, panning and zooming.
+- [**onselectionchange**](https://svelteflow.dev/api-reference/svelte-flow#onselectionchange) & [**useOnSelectionChange**](https://svelteflow.dev/api-reference/hooks/use-on-selection-change): You can now listen to selection changes via a callback
+
 ## 0.1.39
 
 ### Patch Changes
