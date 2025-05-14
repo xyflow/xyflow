@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.59
+
+### Patch Changes
+
+- [#5255](https://github.com/xyflow/xyflow/pull/5255) [`a95f0e2f`](https://github.com/xyflow/xyflow/commit/a95f0e2fbfc2d070d9bd70b753d1606a87332e3f) Thanks [@peterkogo](https://github.com/peterkogo)! - Added OnReconnect types
+
 ## 0.0.58
 
 ### Patch Changes
