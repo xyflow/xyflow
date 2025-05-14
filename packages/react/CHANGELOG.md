@@ -1,5 +1,14 @@
 # @xyflow/react
 
+## 12.6.2
+
+### Patch Changes
+
+- [#5257](https://github.com/xyflow/xyflow/pull/5257) [`b1314be0`](https://github.com/xyflow/xyflow/commit/b1314be04dee07e7589a8c99c9c953006788a152) Thanks [@moklick](https://github.com/moklick)! - Use OnReconnect from system
+
+- Updated dependencies [[`a95f0e2f`](https://github.com/xyflow/xyflow/commit/a95f0e2fbfc2d070d9bd70b753d1606a87332e3f)]:
+  - @xyflow/system@0.0.59
+
 ## 12.6.1
 
 ### Patch Changes
