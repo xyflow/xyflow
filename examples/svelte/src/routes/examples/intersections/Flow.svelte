@@ -9,7 +9,7 @@
 	let nodes = $state.raw<Node[]>(initialNodes);
 	let edges = $state.raw<Edge[]>(initialEdges);
 
-	const { getIntersectingNodes } = $derived(useSvelteFlow());
+	const { getIntersectingNodes } = useSvelteFlow();
 </script>
 
 <div style="height:100vh;">

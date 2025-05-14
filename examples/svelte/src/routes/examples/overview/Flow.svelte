@@ -144,7 +144,7 @@
 		edges = [...edges];
 	}
 
-	let { updateNode } = $derived(useSvelteFlow());
+	let { updateNode } = useSvelteFlow();
 
 	function hideUnhide() {
 		updateNode('hideunhide', (node) => ({ hidden: !node.hidden }));

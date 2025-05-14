@@ -52,7 +52,7 @@
 		}
 	]);
 
-	const { updateNode } = $derived(useSvelteFlow());
+	const { updateNode } = useSvelteFlow();
 
 	const updateNodePosition = () => {
 		updateNode('1', (node) => ({

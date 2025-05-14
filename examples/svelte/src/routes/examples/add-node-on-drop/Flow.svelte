@@ -27,7 +27,7 @@
 	let id = 1;
 	const getId = () => `${id++}`;
 
-	const { screenToFlowPosition, flowToScreenPosition } = $derived(useSvelteFlow());
+	const { screenToFlowPosition, flowToScreenPosition } = useSvelteFlow();
 
 	const connections = useNodeConnections({ id: '0', handleType: 'source' });
 
@@ -37,7 +37,9 @@
 		if (!connectingNodeId) return;
 
 		// See of connection landed inside the flow pane
-		const targetIsPane = (event.target as Partial<Element> | null)?.classList?.contains('svelte-flow__pane');
+		const targetIsPane = (event.target as Partial<Element> | null)?.classList?.contains(
+			'svelte-flow__pane'
+		);
 		if (targetIsPane && 'clientX' in event && 'clientY' in event) {
 			const id = getId();
 			const position = {

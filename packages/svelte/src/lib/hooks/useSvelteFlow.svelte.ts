@@ -22,7 +22,6 @@ import {
 import { useStore } from '$lib/store';
 import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
 import { isEdge, isNode } from '$lib/utils';
-import { derivedWarning } from './derivedWarning.svelte';
 import { untrack } from 'svelte';
 
 /**
@@ -277,11 +276,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     id?: string | null;
   }) => HandleConnection[];
 } {
-  if (process.env.NODE_ENV === 'development') {
-    derivedWarning('useSvelteFlow');
-  }
-
-  const store = useStore<NodeType, EdgeType>();
+  const store = $derived(useStore<NodeType, EdgeType>());
 
   const getNodeRect = (node: NodeType | { id: NodeType['id'] }): Rect | null => {
     const nodeToUse = isNode(node) ? node : store.nodeLookup.get(node.id)!;

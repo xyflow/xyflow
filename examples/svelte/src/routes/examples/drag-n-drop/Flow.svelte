@@ -51,7 +51,7 @@
 		}
 	]);
 
-	const { screenToFlowPosition } = $derived(useSvelteFlow());
+	const { screenToFlowPosition } = useSvelteFlow();
 
 	const onDragOver = (event: DragEvent) => {
 		event.preventDefault();

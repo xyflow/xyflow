@@ -11,7 +11,7 @@
 		getViewport,
 		toObject,
 		deleteElements
-	} = $derived(useSvelteFlow());
+	} = useSvelteFlow();
 
 	let nodes = useNodes();
 	let edges = useEdges();
