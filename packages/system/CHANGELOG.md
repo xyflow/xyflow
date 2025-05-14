@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.60
+
+### Patch Changes
+
+- [#5259](https://github.com/xyflow/xyflow/pull/5259) [`77bf79c4`](https://github.com/xyflow/xyflow/commit/77bf79c40e71e3da449ace3b1a1ed5bceff46b51) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix background-color css variable fallback.
+
 ## 0.0.59
 
 ### Patch Changes
