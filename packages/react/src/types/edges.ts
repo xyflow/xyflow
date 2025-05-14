@@ -8,12 +8,12 @@ import type {
   SmoothStepPathOptions,
   DefaultEdgeOptionsBase,
   HandleType,
-  Connection,
   ConnectionLineType,
   Handle,
   EdgePosition,
   StepPathOptions,
   OnError,
+  OnReconnect,
   FinalConnectionState,
 } from '@xyflow/system';
 
@@ -232,8 +232,6 @@ export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'tar
  * @expand
  */
 export type SimpleBezierEdgeProps = EdgeComponentProps;
-
-export type OnReconnect<EdgeType extends Edge = Edge> = (oldEdge: EdgeType, newConnection: Connection) => void;
 
 /**
  * If you want to render a custom component for connection lines, you can set the
