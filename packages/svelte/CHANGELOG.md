@@ -1,10 +1,21 @@
 # @xyflow/svelte
 
+## 1.0.1
+
+### Patch Changes
+
+- [#5258](https://github.com/xyflow/xyflow/pull/5258) [`47f7a0b6`](https://github.com/xyflow/xyflow/commit/47f7a0b6f2c347aa87d470ab53c9fdc6e02dc067) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix fitView not working when accessed through the SvelteFlowProvider
+
+- [#5259](https://github.com/xyflow/xyflow/pull/5259) [`77bf79c4`](https://github.com/xyflow/xyflow/commit/77bf79c40e71e3da449ace3b1a1ed5bceff46b51) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix background-color css variable fallback.
+
+- Updated dependencies [[`77bf79c4`](https://github.com/xyflow/xyflow/commit/77bf79c40e71e3da449ace3b1a1ed5bceff46b51)]:
+  - @xyflow/system@0.0.60
+
 ## 1.0.0
 
 Yeah! Svelte Flow 1.0. is here 🚀 It is based on Svelte 5 and introduces a lot of new features and improvements. Please refer to the [migration guide](https://svelteflow.dev/learn/troubleshooting/migrate-to-v1) to see how to upgrade.
 
-### New features 
+### New features
 
 - **[Reconnect edges](https://svelteflow.dev/examples/edges/reconnect-edge)**: You can reconnect your edges by using the new `<EdgeReconnectAnchor />` component. It can be used to add custom reconnection points on custom edges.
 - **Keyboard navigation & A11y**: We added support for keyboard navigation and improved accessibility for screen readers. You can now tab through nodes and edges and move nodes with the arrow keys. Can be disabled via [**disableKeyboardA11y**](https://svelteflow.dev/api-reference/svelte-flow#disablekeyboarda11y)
