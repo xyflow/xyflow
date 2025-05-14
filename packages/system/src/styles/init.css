@@ -55,7 +55,7 @@
 }
 
 .xy-flow__background {
-  background-color: var(--xy-background-color, var(--xy-background-color-props, var(--xy-background-color-default)));
+  background-color: var(--xy-background-color-props, var(--xy-background-color, var(--xy-background-color-default)));
 }
 
 .xy-flow__container {
