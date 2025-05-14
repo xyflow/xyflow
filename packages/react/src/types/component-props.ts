@@ -20,6 +20,7 @@ import type {
   OnError,
   ColorMode,
   SnapGrid,
+  OnReconnect,
 } from '@xyflow/system';
 
 import type {
@@ -29,7 +30,6 @@ import type {
   Node,
   Edge,
   ConnectionLineComponent,
-  OnReconnect,
   OnInit,
   DefaultEdgeOptions,
   FitViewOptions,

@@ -81,7 +81,7 @@ export type OnConnect = (connection: Connection) => void;
 export type OnConnectEnd = (event: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => void;
 
 export type OnReconnect<EdgeType extends EdgeBase = EdgeBase> = (oldEdge: EdgeType, newConnection: Connection) => void;
-export type OnRecoonnectStart<EdgeType extends EdgeBase = EdgeBase> = (
+export type OnReconnectStart<EdgeType extends EdgeBase = EdgeBase> = (
   event: MouseEvent | TouchEvent,
   edge: EdgeType,
   handleType: HandleType
