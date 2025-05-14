@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import { SvelteFlow, Controls, Background, MiniMap, type Node, type Edge } from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
 
-	const nodes = writable<Node[]>([]);
-	const edges = writable<Edge[]>([]);
+	let nodes = $state.raw<Node[]>([]);
+	let edges = $state.raw<Edge[]>([]);
 
 	const resetNodesArray = () => {
 		const node1: Node = {
 			id: 'c1',
 			data: { label: '1' },
+			width: 100,
+			height: 100,
 			position: { x: 0, y: 0 }
 		};
 
@@ -20,14 +21,14 @@
 			position: { x: 100, y: 0 }
 		};
 
-		$nodes = [node1, node2];
+		nodes = [node1, node2];
 	};
 </script>
 
-<button on:click={resetNodesArray}> Reset </button>
+<button onclick={resetNodesArray}> Reset </button>
 
 <div style:height="100vh">
-	<SvelteFlow {nodes} {edges} fitView>
+	<SvelteFlow bind:nodes bind:edges fitView>
 		<Controls />
 		<Background />
 		<MiniMap />

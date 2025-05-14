@@ -1,26 +1,19 @@
 <script lang="ts">
-  import cc from 'classcat';
   import type { PanelProps } from './types';
   import { useStore } from '$lib/store';
 
-  type $$Props = PanelProps;
+  let { position = 'top-right', style, class: className, children, ...rest }: PanelProps = $props();
 
-  export let position: $$Props['position'] = 'top-right';
-  export let style: $$Props['style'] = undefined;
+  const store = useStore();
 
-  let className: $$Props['class'] = undefined;
-  export { className as class };
-
-  const { selectionRectMode } = useStore();
-
-  $: positionClasses = `${position}`.split('-');
+  let positionClasses = $derived(`${position}`.split('-'));
 </script>
 
 <div
-  class={cc(['svelte-flow__panel', className, ...positionClasses])}
+  class={['svelte-flow__panel', className, ...positionClasses]}
   {style}
-  style:pointer-events={$selectionRectMode ? 'none' : ''}
-  {...$$restProps}
+  style:pointer-events={store.selectionRectMode ? 'none' : ''}
+  {...rest}
 >
-  <slot />
+  {@render children?.()}
 </div>

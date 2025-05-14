@@ -7,3 +7,7 @@
   text-align: center;
   position: absolute;
 }
+
+.svelte-flow__container {
+  user-select: none;
+}

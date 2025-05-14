@@ -172,13 +172,12 @@ test.describe('Pane non-default', () => {
   });
 });
 
-test.describe('Pane activation keys', () => {
-  test.beforeEach(async ({ page }) => {
-    // Go to the starting url before each test.
-    await page.goto('/tests/generic/pane/activation-keys');
+// test.describe('Pane activation keys', () => {
+//   test.beforeEach(async ({ page }) => {
+//     // Go to the starting url before each test.
+//     await page.goto('/tests/generic/pane/activation-keys');
 
-    // Wait till the edges are rendered
-    await page.waitForSelector('[data-id="first-edge"]', { timeout: 5000 });
-  });
-  // TODO
-});
+//     // Wait till the edges are rendered
+//     await page.waitForSelector('[data-id="first-edge"]', { timeout: 5000 });
+//   });
+// });

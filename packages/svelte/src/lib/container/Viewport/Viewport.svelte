@@ -1,22 +1,18 @@
-<script lang="ts">
-  import { useStore } from '$lib/store';
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
+  import type { SvelteFlowStore } from '$lib/store/types';
+  import type { Node, Edge } from '$lib/types';
+  import type { Snippet } from 'svelte';
 
-  const { viewport } = useStore();
+  let {
+    store = $bindable(),
+    children
+  }: { store: SvelteFlowStore<NodeType, EdgeType>; children: Snippet } = $props();
 </script>
 
 <div
-  class="svelte-flow__viewport xyflow__viewport"
-  style="transform: translate({$viewport.x}px, {$viewport.y}px) scale({$viewport.zoom})"
+  class="svelte-flow__viewport xyflow__viewport svelte-flow__container"
+  style:transform="translate({store.viewport.x}px, {store.viewport.y}px) scale({store.viewport
+    .zoom})"
 >
-  <slot />
+  {@render children()}
 </div>
-
-<style>
-  .svelte-flow__viewport {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-</style>

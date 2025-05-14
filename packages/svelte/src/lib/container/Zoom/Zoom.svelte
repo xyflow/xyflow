@@ -1,92 +1,77 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import { PanOnScrollMode, type Transform } from '@xyflow/system';
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
+  import { PanOnScrollMode, type PanZoomInstance, type Transform } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
   import zoom from '$lib/actions/zoom';
   import type { ZoomProps } from './types';
+  import type { Node, Edge } from '$lib/types';
 
-  type $$Props = ZoomProps;
+  let {
+    store = $bindable(),
+    panOnScrollMode = PanOnScrollMode.Free,
+    preventScrolling = true,
+    zoomOnScroll = true,
+    zoomOnDoubleClick = true,
+    zoomOnPinch = true,
+    panOnDrag = true,
+    panOnScroll = false,
+    paneClickDistance = 1,
+    onmovestart,
+    onmove,
+    onmoveend,
+    oninit,
+    children
+  }: ZoomProps<NodeType, EdgeType> = $props();
 
-  export let initialViewport: $$Props['initialViewport'] = undefined;
-  export let onMoveStart: $$Props['onMoveStart'] = undefined;
-  export let onMove: $$Props['onMove'] = undefined;
-  export let onMoveEnd: $$Props['onMoveEnd'] = undefined;
-  export let panOnScrollMode: $$Props['panOnScrollMode'];
-  export let preventScrolling: $$Props['preventScrolling'];
-  export let zoomOnScroll: $$Props['zoomOnScroll'];
-  export let zoomOnDoubleClick: $$Props['zoomOnDoubleClick'];
-  export let zoomOnPinch: $$Props['zoomOnPinch'];
-  export let panOnDrag: $$Props['panOnDrag'];
-  export let panOnScroll: $$Props['panOnScroll'];
-  export let paneClickDistance: $$Props['paneClickDistance'];
+  let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
+  let panOnScrollActive = $derived(store.panActivationKeyPressed || panOnScroll);
 
-  const {
-    viewport,
-    panZoom,
-    selectionRect,
-    minZoom,
-    maxZoom,
-    dragging,
-    translateExtent,
-    lib,
-    panActivationKeyPressed,
-    zoomActivationKeyPressed,
-    viewportInitialized
-  } = useStore();
+  // We extract the initial value by destructuring
+  const { viewport: initialViewport } = store;
 
-  $: viewPort = initialViewport || { x: 0, y: 0, zoom: 1 };
-  $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
-  $: _panOnScroll = $panActivationKeyPressed || panOnScroll;
-
-  const onTransformChange = (transform: Transform) =>
-    viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] });
-
-  onMount(() => {
-    $viewportInitialized = true;
+  let onInitCalled = false;
+  $effect(() => {
+    if (!onInitCalled && store.viewportInitialized) {
+      oninit?.();
+      onInitCalled = true;
+    }
   });
 </script>
 
 <div
-  class="svelte-flow__zoom"
+  class="svelte-flow__zoom svelte-flow__container"
   use:zoom={{
-    viewport,
-    minZoom: $minZoom,
-    maxZoom: $maxZoom,
-    initialViewport: viewPort,
-    dragging,
-    panZoom,
-    onPanZoomStart: onMoveStart,
-    onPanZoom: onMove,
-    onPanZoomEnd: onMoveEnd,
+    viewport: store.viewport,
+    minZoom: store.minZoom,
+    maxZoom: store.maxZoom,
+    initialViewport,
+    onDraggingChange: (dragging: boolean) => {
+      store.dragging = dragging;
+    },
+    setPanZoomInstance: (instance: PanZoomInstance) => {
+      store.panZoom = instance;
+    },
+    onPanZoomStart: onmovestart,
+    onPanZoom: onmove,
+    onPanZoomEnd: onmoveend,
     zoomOnScroll,
     zoomOnDoubleClick,
     zoomOnPinch,
-    panOnScroll: _panOnScroll,
-    panOnDrag: _panOnDrag,
+    panOnScroll: panOnScrollActive,
+    panOnDrag: panOnDragActive,
     panOnScrollSpeed: 0.5,
     panOnScrollMode: panOnScrollMode || PanOnScrollMode.Free,
-    zoomActivationKeyPressed: $zoomActivationKeyPressed,
+    zoomActivationKeyPressed: store.zoomActivationKeyPressed,
     preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
-    noPanClassName: 'nopan',
-    noWheelClassName: 'nowheel',
-    userSelectionActive: !!$selectionRect,
-    translateExtent: $translateExtent,
-    lib: $lib,
+    noPanClassName: store.noPanClass,
+    noWheelClassName: store.noWheelClass,
+    userSelectionActive: !!store.selectionRect,
+    translateExtent: store.translateExtent,
+    lib: 'svelte',
     paneClickDistance,
-    onTransformChange
+    onTransformChange: (transform: Transform) => {
+      store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
+    }
   }}
 >
-  <slot />
+  {@render children()}
 </div>
-
-<style>
-  .svelte-flow__zoom {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 4;
-  }
-</style>

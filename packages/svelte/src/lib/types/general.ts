@@ -4,8 +4,7 @@ import type {
   XYPosition,
   Handle,
   Connection,
-  OnBeforeDeleteBase,
-  HandleProps as HandlePropsSystem
+  OnBeforeDeleteBase
 } from '@xyflow/system';
 
 import type { Node } from './nodes';
@@ -22,17 +21,20 @@ export type ConnectionData = {
   connectionStatus: string | null;
 };
 
-export type HandleProps = HandlePropsSystem & {
-  class?: string;
-  style?: string;
-  onconnect?: (connections: Connection[]) => void;
-  ondisconnect?: (connections: Connection[]) => void;
-};
-
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
 
-export type OnDelete = (params: { nodes: Node[]; edges: Edge[] }) => void;
-export type OnEdgeCreate = (connection: Connection) => Edge | Connection | void;
+export type OnDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (params: {
+  nodes: NodeType[];
+  edges: EdgeType[];
+}) => void;
+
+export type OnBeforeConnect<EdgeType extends Edge = Edge> = (
+  connection: Connection
+) => EdgeType | Connection | void;
+export type OnBeforeReconnect<EdgeType extends Edge = Edge> = (
+  newEdge: EdgeType,
+  oldEdge: EdgeType
+) => EdgeType | void;
 export type OnBeforeDelete<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
@@ -41,3 +43,8 @@ export type OnBeforeDelete<
 export type IsValidConnection<EdgeType extends Edge = Edge> = (
   edge: EdgeType | Connection
 ) => boolean;
+
+export type OnSelectionChange<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> = (params: { nodes: NodeType[]; edges: EdgeType[] }) => void;

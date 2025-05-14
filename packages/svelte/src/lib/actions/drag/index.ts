@@ -1,10 +1,10 @@
-import { get } from 'svelte/store';
-import { XYDrag, type OnDrag } from '@xyflow/system';
+import { XYDrag, type NodeBase, type OnDrag, type XYDragParams } from '@xyflow/system';
 
 import type { SvelteFlowStore } from '$lib/store/types';
+import type { Node, Edge, NodeTargetEventWithPointer } from '$lib/types';
 
-export type UseDragParams = {
-  store: SvelteFlowStore;
+export type UseDragParams<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  store: SvelteFlowStore<NodeType, EdgeType>;
   disabled?: boolean;
   noDragClass?: string;
   handleSelector?: string;
@@ -17,7 +17,10 @@ export type UseDragParams = {
   onNodeMouseDown?: (id: string) => void;
 };
 
-export default function drag(domNode: Element, params: UseDragParams) {
+export default function drag<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
+  domNode: Element,
+  params: UseDragParams<NodeType, EdgeType>
+) {
   const { store, onDrag, onDragStart, onDragStop, onNodeMouseDown } = params;
   const dragInstance = XYDrag({
     onDrag,
@@ -25,32 +28,34 @@ export default function drag(domNode: Element, params: UseDragParams) {
     onDragStop,
     onNodeMouseDown,
     getStoreItems: () => {
-      const snapGrid = get(store.snapGrid);
-      const vp = get(store.viewport);
+      const { snapGrid, viewport } = store;
 
       return {
-        nodes: get(store.nodes),
-        nodeLookup: get(store.nodeLookup),
-        edges: get(store.edges),
-        nodeExtent: get(store.nodeExtent),
+        nodes: store.nodes satisfies NodeBase[],
+        nodeLookup: store.nodeLookup,
+        edges: store.edges,
+        nodeExtent: store.nodeExtent,
         snapGrid: snapGrid ? snapGrid : [0, 0],
         snapToGrid: !!snapGrid,
-        nodeOrigin: get(store.nodeOrigin),
-        multiSelectionActive: get(store.multiselectionKeyPressed),
-        domNode: get(store.domNode),
-        transform: [vp.x, vp.y, vp.zoom],
-        autoPanOnNodeDrag: get(store.autoPanOnNodeDrag),
-        nodesDraggable: get(store.nodesDraggable),
-        selectNodesOnDrag: get(store.selectNodesOnDrag),
-        nodeDragThreshold: get(store.nodeDragThreshold),
+        nodeOrigin: store.nodeOrigin,
+        multiSelectionActive: store.multiselectionKeyPressed,
+        domNode: store.domNode,
+        transform: [viewport.x, viewport.y, viewport.zoom],
+        autoPanOnNodeDrag: store.autoPanOnNodeDrag,
+        nodesDraggable: store.nodesDraggable,
+        selectNodesOnDrag: store.selectNodesOnDrag,
+        nodeDragThreshold: store.nodeDragThreshold,
         unselectNodesAndEdges: store.unselectNodesAndEdges,
         updateNodePositions: store.updateNodePositions,
+        onSelectionDrag: store.onselectiondrag,
+        onSelectionDragStart: store.onselectiondragstart,
+        onSelectionDragStop: store.onselectiondragstop,
         panBy: store.panBy
       };
     }
-  });
+  } as XYDragParams<NodeTargetEventWithPointer<MouseEvent | TouchEvent, NodeType>>);
 
-  function updateDrag(domNode: Element, params: UseDragParams) {
+  function updateDrag(domNode: Element, params: UseDragParams<NodeType, EdgeType>) {
     if (params.disabled) {
       dragInstance.destroy();
       return;
@@ -69,7 +74,7 @@ export default function drag(domNode: Element, params: UseDragParams) {
   updateDrag(domNode, params);
 
   return {
-    update(params: UseDragParams) {
+    update(params: UseDragParams<NodeType, EdgeType>) {
       updateDrag(domNode, params);
     },
     destroy() {

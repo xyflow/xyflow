@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { NodeProps } from '@xyflow/svelte';
 
-	type $$Props = NodeProps;
+	let {}: NodeProps = $props();
 </script>
 
 <div class="container">
-	<div class="drag-handle custom-drag-handle" />
+	<div class="drag-handle custom-drag-handle"></div>
 </div>
 
 <style>

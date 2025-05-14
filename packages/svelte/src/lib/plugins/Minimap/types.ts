@@ -1,5 +1,5 @@
 import type { PanelPosition } from '@xyflow/system';
-
+import type { ClassValue, HTMLAttributes } from 'svelte/elements';
 import type { Node } from '$lib/types';
 
 export type GetMiniMapNodeAttribute = (node: Node) => string;
@@ -29,7 +29,7 @@ export type MiniMapProps = {
    */
   position?: PanelPosition;
   /** Class applied to container */
-  class?: string;
+  class?: ClassValue;
   /** Style applied to container */
   style?: string;
   /** The aria-label applied to container */
@@ -46,4 +46,4 @@ export type MiniMapProps = {
   inversePan?: boolean;
   /** Step size for zooming in/out */
   zoomStep?: number;
-};
+} & HTMLAttributes<HTMLDivElement>;

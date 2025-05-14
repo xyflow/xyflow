@@ -5,15 +5,12 @@
 		useNodeConnections,
 		useNodesData,
 		useSvelteFlow,
+		type Node,
 		type NodeProps
 	} from '@xyflow/svelte';
 	import { isTextNode, type MyNode } from './+page.svelte';
 
-	type $$Props = NodeProps;
-
-	export let id: $$Props['id'];
-	export let data: $$Props['data'];
-	$$restProps;
+	let { id }: NodeProps<Node<{ text: string }>> = $props();
 
 	const { updateNodeData } = useSvelteFlow();
 	const connections = useNodeConnections({
@@ -21,20 +18,17 @@
 		handleType: 'target'
 	});
 
-	$: nodeData = useNodesData<MyNode>($connections[0]?.source);
-	$: textNode = isTextNode($nodeData) ? $nodeData : null;
+	let nodeData = $derived(useNodesData<MyNode>(connections.current[0]?.source));
+	let textNodeData = $derived(isTextNode(nodeData.current) ? nodeData.current.data.text : null);
 
-	$: console.log(textNode?.data, data);
-
-	$: {
-		const input = textNode?.data.text.toUpperCase() ?? '';
+	$effect.pre(() => {
+		const input = textNodeData?.toUpperCase() ?? '';
 		updateNodeData(id, { text: input });
-		console.log('updatedNodeData with', input);
-	}
+	});
 </script>
 
 <div class="custom">
-	<Handle type="target" position={Position.Left} isConnectable={$connections.length === 0} />
+	<Handle type="target" position={Position.Left} isConnectable={connections.current.length === 0} />
 	<div>uppercase transform</div>
 	<Handle type="source" position={Position.Right} />
 </div>

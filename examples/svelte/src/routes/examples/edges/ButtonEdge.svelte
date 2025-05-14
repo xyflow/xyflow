@@ -1,59 +1,80 @@
 <script lang="ts">
-	import { getBezierPath, BaseEdge, type EdgeProps, EdgeLabelRenderer } from '@xyflow/svelte';
+	import {
+		getBezierPath,
+		BaseEdge,
+		type EdgeProps,
+		useSvelteFlow,
+		MarkerType,
+		EdgeReconnectAnchor,
+		EdgeLabel
+	} from '@xyflow/svelte';
 
-	type $$Props = EdgeProps;
-
-	export let id: $$Props['id'] = '';
-	export let style: $$Props['style'] = undefined;
-	export let markerEnd: $$Props['markerEnd'] = undefined;
-
-	export let sourceX: $$Props['sourceX'];
-	export let sourceY: $$Props['sourceY'];
-	export let sourcePosition: $$Props['sourcePosition'];
-
-	export let targetX: $$Props['targetX'];
-	export let targetY: $$Props['targetY'];
-	export let targetPosition: $$Props['targetPosition'];
-
-	$$restProps;
-
-	$: [edgePath, labelX, labelY] = getBezierPath({
+	let {
+		style,
+		markerEnd,
 		sourceX,
 		sourceY,
 		sourcePosition,
 		targetX,
 		targetY,
-		targetPosition
-	});
+		targetPosition,
+		selected
+	}: EdgeProps = $props();
+
+	let [edgePath, labelX, labelY] = $derived(
+		getBezierPath({
+			sourceX,
+			sourceY,
+			sourcePosition,
+			targetX,
+			targetY,
+			targetPosition
+		})
+	);
+
+	const { updateEdge } = useSvelteFlow();
+
+	let reconnecting = $state(false);
 </script>
 
-<BaseEdge path={edgePath} {markerEnd} {style} />
-<EdgeLabelRenderer>
-	<div
-		class="edgeButtonContainer nodrag nopan"
-		style:transform="translate(-50%, -50%) translate({labelX}px,{labelY}px)"
-	>
+{#if !reconnecting}
+	<BaseEdge path={edgePath} {markerEnd} {style} />
+	<EdgeLabel x={labelX} y={labelY}>
 		<button
 			class="edgeButton"
-			on:click={(event) => {
+			onclick={(event) => {
 				event.stopPropagation();
-				alert(`remove ${id}`);
+				updateEdge('e5-6', {
+					markerEnd: {
+						type: MarkerType.Arrow,
+						color: '#FFCC00',
+						markerUnits: 'userSpaceOnUse',
+						width: 20,
+						height: 20,
+						strokeWidth: 2
+					},
+					markerStart: {
+						type: MarkerType.ArrowClosed,
+						color: '#FFCC00',
+						orient: 'auto-start-reverse',
+						markerUnits: 'userSpaceOnUse',
+						width: 20,
+						height: 20
+					}
+				});
 			}}
 		>
 			×
 		</button>
-	</div>
-</EdgeLabelRenderer>
+	</EdgeLabel>
+{/if}
+
+{#if selected}
+	<EdgeReconnectAnchor bind:reconnecting type="source" position={{ x: sourceX, y: sourceY }} />
+	<EdgeReconnectAnchor bind:reconnecting type="target" position={{ x: targetX, y: targetY }} />
+{/if}
 
 <style>
-	.edgeButtonContainer {
-		position: absolute;
-		font-size: 12pt;
-		/* everything inside EdgeLabelRenderer has no pointer events by default */
-		/* if you have an interactive element, set pointer-events: all */
-		pointer-events: all;
-	}
-
 	.edgeButton {
 		width: 20px;
 		height: 20px;
@@ -61,8 +82,7 @@
 		border: 1px solid #fff;
 		cursor: pointer;
 		border-radius: 50%;
-		font-size: 12px;
-		line-height: 1;
+		font-size: 10px;
 	}
 
 	.edgeButton:hover {
