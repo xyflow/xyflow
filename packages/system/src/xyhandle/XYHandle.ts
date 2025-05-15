@@ -157,8 +157,8 @@ function onPointerDown(
       ...previousConnection,
       isValid,
       to:
-        closestHandle && isValid
-          ? rendererPointToPoint({ x: closestHandle.x, y: closestHandle.y }, transform)
+        result.toHandle && isValid
+          ? rendererPointToPoint({ x: result.toHandle.x, y: result.toHandle.y }, transform)
           : position,
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
@@ -295,7 +295,7 @@ function isValidHandle(
 
     result.isValid = isValid && isValidConnection(connection);
 
-    result.toHandle = getHandle(handleNodeId, handleType, handleId, nodeLookup, connectionMode, false);
+    result.toHandle = getHandle(handleNodeId, handleType, handleId, nodeLookup, connectionMode, true);
   }
 
   return result;
