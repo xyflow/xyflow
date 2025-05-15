@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.61
+
+### Patch Changes
+
+- [#5266](https://github.com/xyflow/xyflow/pull/5266) [`77107453`](https://github.com/xyflow/xyflow/commit/77107453fa6f34cb08ef91640b8b02d58e31275e) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix connection snapping for handles larger than connectionRadius
+
 ## 0.0.60
 
 ### Patch Changes

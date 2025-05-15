@@ -1,5 +1,16 @@
 # @xyflow/react
 
+## 12.6.4
+
+### Patch Changes
+
+- [#5263](https://github.com/xyflow/xyflow/pull/5263) [`e4a8d4b4`](https://github.com/xyflow/xyflow/commit/e4a8d4b43fdd3a9f493db758bdf02e1a10c6e640) Thanks [@moklick](https://github.com/moklick)! - Multi select key works when input is focused
+
+- [#5266](https://github.com/xyflow/xyflow/pull/5266) [`77107453`](https://github.com/xyflow/xyflow/commit/77107453fa6f34cb08ef91640b8b02d58e31275e) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix connection snapping for handles larger than connectionRadius
+
+- Updated dependencies [[`77107453`](https://github.com/xyflow/xyflow/commit/77107453fa6f34cb08ef91640b8b02d58e31275e)]:
+  - @xyflow/system@0.0.61
+
 ## 12.6.3
 
 ### Patch Changes
