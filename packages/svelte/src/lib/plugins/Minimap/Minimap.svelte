@@ -41,7 +41,7 @@
     ...rest
   }: MiniMapProps = $props();
 
-  let store = useStore();
+  let store = $derived(useStore());
 
   const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);

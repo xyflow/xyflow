@@ -15,6 +15,7 @@ function tryToMount(node: Element, domNode: Element | null, target: Portal | und
 }
 
 export function portal(node: Element, target: Portal | undefined) {
+  // TODO: does this work if called outside of SvelteFlow
   const store = useStore();
 
   let previousTarget: Portal | undefined = target;
