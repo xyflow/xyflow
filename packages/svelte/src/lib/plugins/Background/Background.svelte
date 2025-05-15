@@ -25,11 +25,11 @@
     class: className
   }: BackgroundProps = $props();
 
-  const store = useStore();
+  let store = $derived(useStore());
 
-  const isDots = $derived(variant === BackgroundVariant.Dots);
-  const isCross = $derived(variant === BackgroundVariant.Cross);
-  const gapXY: number[] = $derived(Array.isArray(gap) ? gap : [gap, gap]);
+  let isDots = $derived(variant === BackgroundVariant.Dots);
+  let isCross = $derived(variant === BackgroundVariant.Cross);
+  let gapXY: number[] = $derived(Array.isArray(gap) ? gap : [gap, gap]);
 
   let patternId = $derived(`background-pattern-${store.flowId}-${id ?? ''}`);
   let scaledGap = $derived([

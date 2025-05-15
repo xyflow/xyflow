@@ -4,7 +4,7 @@
 
   let { position = 'top-right', style, class: className, children, ...rest }: PanelProps = $props();
 
-  const store = useStore();
+  let store = $derived(useStore());
 
   let positionClasses = $derived(`${position}`.split('-'));
 </script>

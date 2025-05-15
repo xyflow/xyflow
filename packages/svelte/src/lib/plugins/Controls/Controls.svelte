@@ -31,7 +31,7 @@
     ...rest
   }: ControlsProps = $props();
 
-  const store = useStore();
+  let store = $derived(useStore());
 
   const buttonProps = {
     bgColor: buttonBgColor,
@@ -41,7 +41,7 @@
     borderColor: buttonBorderColor
   };
 
-  let isInteractive = $state(
+  let isInteractive = $derived(
     store.nodesDraggable || store.nodesConnectable || store.elementsSelectable
   );
   let minZoomReached = $derived(store.viewport.zoom <= store.minZoom);
@@ -61,11 +61,10 @@
   };
 
   const onToggleInteractivity = () => {
-    isInteractive = !isInteractive;
-
-    store.nodesDraggable = isInteractive;
-    store.nodesConnectable = isInteractive;
-    store.elementsSelectable = isInteractive;
+    let interactive = !isInteractive;
+    store.nodesDraggable = interactive;
+    store.nodesConnectable = interactive;
+    store.elementsSelectable = interactive;
   };
 </script>
 
