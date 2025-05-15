@@ -2,13 +2,12 @@ import { useEffect } from 'react';
 import type { KeyCode } from '@xyflow/system';
 
 import { useStoreApi } from '../hooks/useStore';
-import { useKeyPress, UseKeyPressOptions } from './useKeyPress';
+import { useKeyPress } from './useKeyPress';
 import { useReactFlow } from './useReactFlow';
 import { Edge, Node } from '../types';
 
 const selected = (item: Node | Edge) => item.selected;
 
-const deleteKeyOptions: UseKeyPressOptions = { actInsideInputWithModifier: false };
 const win = typeof window !== 'undefined' ? window : undefined;
 
 /**
@@ -26,7 +25,7 @@ export function useGlobalKeyHandler({
   const store = useStoreApi();
   const { deleteElements } = useReactFlow();
 
-  const deleteKeyPressed = useKeyPress(deleteKeyCode, deleteKeyOptions);
+  const deleteKeyPressed = useKeyPress(deleteKeyCode, { actInsideInputWithModifier: false });
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode, { target: win });
 
   useEffect(() => {

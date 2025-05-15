@@ -97,13 +97,14 @@ export function useKeyPress(
   }, [keyCode]);
 
   useEffect(() => {
-    const target = options?.target || defaultDoc;
+    const target = options?.target ?? defaultDoc;
+    const actInsideInputWithModifier = options?.actInsideInputWithModifier ?? true;
 
     if (keyCode !== null) {
       const downHandler = (event: KeyboardEvent) => {
         modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey || event.altKey;
         const preventAction =
-          (!modifierPressed.current || (modifierPressed.current && !options.actInsideInputWithModifier)) &&
+          (!modifierPressed.current || (modifierPressed.current && !actInsideInputWithModifier)) &&
           isInputDOMNode(event);
 
         if (preventAction) {
