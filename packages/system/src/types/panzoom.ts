@@ -21,6 +21,7 @@ export type PanZoomParams = {
 export type PanZoomTransformOptions = {
   duration?: number;
   ease?: (t: number) => number;
+  interpolate?: 'smooth' | 'linear';
 };
 
 export type OnPanZoom = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;

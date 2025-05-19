@@ -51,10 +51,12 @@
   },
   "dependencies": {
     "@types/d3-drag": "^3.0.7",
+    "@types/d3-interpolate": "^3.0.4",
     "@types/d3-selection": "^3.0.10",
     "@types/d3-transition": "^3.0.8",
     "@types/d3-zoom": "^3.0.8",
     "d3-drag": "^3.0.0",
+    "d3-interpolate": "^3.0.1",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0"
   },

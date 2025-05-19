@@ -32,8 +32,6 @@ export const getD3Transition = (selection: D3SelectionInstance, duration = 0, ea
     onEnd();
   }
 
-  console.log(ease);
-
   return hasDuration ? selection.transition().duration(duration).ease(ease).on('end', onEnd) : selection;
 };
 
