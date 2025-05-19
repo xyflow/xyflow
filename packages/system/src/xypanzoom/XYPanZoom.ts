@@ -1,5 +1,6 @@
 import { type ZoomTransform, zoom, zoomTransform } from 'd3-zoom';
 import { select } from 'd3-selection';
+import { interpolateZoom, interpolate } from 'd3-interpolate';
 
 import {
   type CoordinateExtent,
@@ -19,6 +20,7 @@ import {
   createZoomOnScrollHandler,
 } from './eventhandler';
 import { createFilter } from './filter';
+import { transition } from 'd3-transition';
 
 export type ZoomPanValues = {
   isZoomingOrPanning: boolean;
@@ -78,8 +80,8 @@ export function XYPanZoom({
   function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.transform(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).transform(
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           transform
         );
       });
@@ -114,22 +116,22 @@ export function XYPanZoom({
 
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
-        zoomPanValues,
-        noWheelClassName,
-        d3Selection,
-        d3Zoom: d3ZoomInstance,
-        panOnScrollMode,
-        panOnScrollSpeed,
-        zoomOnPinch,
-        onPanZoomStart,
-        onPanZoom,
-        onPanZoomEnd,
-      })
+          zoomPanValues,
+          noWheelClassName,
+          d3Selection,
+          d3Zoom: d3ZoomInstance,
+          panOnScrollMode,
+          panOnScrollSpeed,
+          zoomOnPinch,
+          onPanZoomStart,
+          onPanZoom,
+          onPanZoomEnd,
+        })
       : createZoomOnScrollHandler({
-        noWheelClassName,
-        preventScrolling,
-        d3ZoomHandler,
-      });
+          noWheelClassName,
+          preventScrolling,
+          d3ZoomHandler,
+        });
 
     d3Selection.on('wheel.zoom', wheelHandler, { passive: false });
 
@@ -242,8 +244,8 @@ export function XYPanZoom({
   function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.scaleTo(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleTo(
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           zoom
         );
       });
@@ -255,8 +257,8 @@ export function XYPanZoom({
   function scaleBy(factor: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.scaleBy(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleBy(
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           factor
         );
       });
