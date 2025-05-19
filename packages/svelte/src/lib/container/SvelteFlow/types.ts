@@ -20,7 +20,8 @@ import type {
   OnConnectEnd,
   OnReconnect,
   OnReconnectStart,
-  OnReconnectEnd
+  OnReconnectEnd,
+  a11yMessages
 } from '@xyflow/system';
 
 import type {
@@ -471,4 +472,9 @@ export type SvelteFlowProps<
     onselectionstart?: (event: PointerEvent) => void;
     /** This event handler gets called when the user finishes dragging a selection box */
     onselectionend?: (event: PointerEvent) => void;
+    /**
+     * Custom accessibility messages for screen readers and a11y features.
+     * Allows localization and customization of ARIA descriptions.
+     */
+    a11yMessages?: a11yMessages;
   };
