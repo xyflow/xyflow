@@ -4,4 +4,4 @@
 '@xyflow/system': minor
 ---
 
-Add an ease option to all function that alter the viewport
+Add an `ease` and `interpolate` option to all function that alter the viewport
