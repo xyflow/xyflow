@@ -108,10 +108,6 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     }
 
     store.nodes = store.nodes.map((node) => newNodes.get(node.id) ?? node);
-
-    if (!store.nodesInitialized) {
-      store.nodesInitialized = true;
-    }
   }
 
   function fitView(options?: FitViewOptions) {
