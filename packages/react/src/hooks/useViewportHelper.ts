@@ -53,7 +53,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
             y: viewport.y ?? tY,
             zoom: viewport.zoom ?? tZoom,
           },
-          { duration: options?.duration }
+          options
         );
 
         return Promise.resolve(true);
@@ -78,7 +78,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
             y: centerY,
             zoom: nextZoom,
           },
-          { duration: options?.duration }
+          { duration: options?.duration, ease: options?.ease }
         );
 
         return Promise.resolve(true);
@@ -91,7 +91,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           return Promise.resolve(false);
         }
 
-        await panZoom.setViewport(viewport, { duration: options?.duration });
+        await panZoom.setViewport(viewport, { duration: options?.duration, ease: options?.ease });
 
         return Promise.resolve(true);
       },

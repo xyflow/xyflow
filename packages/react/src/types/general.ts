@@ -149,6 +149,7 @@ export type ViewportHelperFunctions = {
    *
    * @param viewport - the viewport to set
    * @param options.duration - optional duration. If set, a transition will be applied
+   * @param options.ease - optional ease function.
    */
   setViewport: SetViewport;
   /**
@@ -164,6 +165,8 @@ export type ViewportHelperFunctions = {
    * @param x - x position
    * @param y - y position
    * @param options.zoom - optional zoom
+   * @param options.duration - optional duration. If set, a transition will be applied
+   * @param options.ease - optional ease function.
    */
   setCenter: SetCenter;
   /**
@@ -173,6 +176,8 @@ export type ViewportHelperFunctions = {
    *
    * @param bounds - the bounds ({ x: number, y: number, width: number, height: number }) to fit the view to
    * @param options.padding - optional padding
+   * @param options.duration - optional duration. If set, a transition will be applied
+   * @param options.ease - optional ease function.
    */
   fitBounds: FitBounds;
   /**

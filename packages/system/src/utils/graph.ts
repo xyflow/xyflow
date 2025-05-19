@@ -378,7 +378,7 @@ export async function fitViewport<
     options?.padding ?? 0.1
   );
 
-  await panZoom.setViewport(viewport, { duration: options?.duration });
+  await panZoom.setViewport(viewport, { duration: options?.duration, ease: options?.ease });
 
   return Promise.resolve(true);
 }

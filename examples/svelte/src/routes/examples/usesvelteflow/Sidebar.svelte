@@ -30,7 +30,8 @@
 	<button onclick={() => zoomIn()}>zoom in</button>
 	<button onclick={() => zoomOut({ duration: 1000 })}>zoom out transition</button>
 	<button onclick={() => setZoom(2)}>set zoom</button>
-	<button onclick={() => fitView()}>fitView</button>
+	<button onclick={() => fitView({ duration: 600 })}>fitView</button>
+	<button onclick={() => fitView({ duration: 600, ease: (t) => +t })}>fitView linear</button>
 	<button onclick={() => setCenter(0, 0)}>setCenter 0, 0</button>
 	<button onclick={() => setViewport({ x: 100, y: 100, zoom: 2 })}>setViewport</button>
 	<button onclick={() => console.log(getViewport())}>getViewport</button>

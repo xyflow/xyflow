@@ -19,6 +19,7 @@ import {
   createZoomOnScrollHandler,
 } from './eventhandler';
 import { createFilter } from './filter';
+import { transition } from 'd3-transition';
 
 export type ZoomPanValues = {
   isZoomingOrPanning: boolean;
@@ -79,7 +80,7 @@ export function XYPanZoom({
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
         d3ZoomInstance?.transform(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           transform
         );
       });
@@ -114,22 +115,22 @@ export function XYPanZoom({
 
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
-        zoomPanValues,
-        noWheelClassName,
-        d3Selection,
-        d3Zoom: d3ZoomInstance,
-        panOnScrollMode,
-        panOnScrollSpeed,
-        zoomOnPinch,
-        onPanZoomStart,
-        onPanZoom,
-        onPanZoomEnd,
-      })
+          zoomPanValues,
+          noWheelClassName,
+          d3Selection,
+          d3Zoom: d3ZoomInstance,
+          panOnScrollMode,
+          panOnScrollSpeed,
+          zoomOnPinch,
+          onPanZoomStart,
+          onPanZoom,
+          onPanZoomEnd,
+        })
       : createZoomOnScrollHandler({
-        noWheelClassName,
-        preventScrolling,
-        d3ZoomHandler,
-      });
+          noWheelClassName,
+          preventScrolling,
+          d3ZoomHandler,
+        });
 
     d3Selection.on('wheel.zoom', wheelHandler, { passive: false });
 
@@ -243,7 +244,7 @@ export function XYPanZoom({
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
         d3ZoomInstance?.scaleTo(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           zoom
         );
       });
@@ -256,7 +257,7 @@ export function XYPanZoom({
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
         d3ZoomInstance?.scaleBy(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           factor
         );
       });

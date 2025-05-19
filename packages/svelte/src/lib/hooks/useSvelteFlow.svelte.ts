@@ -360,7 +360,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
           y: nextViewport.y ?? currentViewport.y,
           zoom: nextViewport.zoom ?? currentViewport.zoom
         },
-        { duration: options?.duration }
+        options
       );
 
       return Promise.resolve(true);
@@ -380,7 +380,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
           y: store.height / 2 - y * nextZoom,
           zoom: nextZoom
         },
-        { duration: options?.duration }
+        { duration: options?.duration, ease: options?.ease }
       );
 
       return Promise.resolve(true);
@@ -402,7 +402,10 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         options?.padding ?? 0.1
       );
 
-      await store.panZoom.setViewport(viewport, { duration: options?.duration });
+      await store.panZoom.setViewport(viewport, {
+        duration: options?.duration,
+        ease: options?.ease
+      });
 
       return Promise.resolve(true);
     },

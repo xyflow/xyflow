@@ -20,6 +20,7 @@ export type PanZoomParams = {
 
 export type PanZoomTransformOptions = {
   duration?: number;
+  ease?: (t: number) => number;
 };
 
 export type OnPanZoom = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
