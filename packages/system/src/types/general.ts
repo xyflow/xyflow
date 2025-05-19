@@ -313,3 +313,9 @@ export type OnBeforeDeleteBase<NodeType extends NodeBase = NodeBase, EdgeType ex
   nodes: NodeType[];
   edges: EdgeType[];
 }) => Promise<boolean | { nodes: NodeType[]; edges: EdgeType[] }>;
+
+export type a11yMessages = {
+  'a11yDescription.node.default'?: string;
+  'a11yDescription.node.keyboardDisabled'?: string;
+  'a11yDescription.edge.default'?: string;
+};

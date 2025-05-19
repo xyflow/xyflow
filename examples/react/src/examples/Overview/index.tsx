@@ -235,6 +235,11 @@ const OverviewFlow = () => {
       onBeforeDelete={onBeforeDelete}
       onDelete={onDelete}
       onPaneMouseMove={onPaneMouseMove}
+      a11yMessages={{
+        'a11yDescription.node.default': 'Custom Node Desc.',
+        'a11yDescription.node.keyboardDisabled': 'Custom Keyboard Desc.',
+        'a11yDescription.edge.default': 'Custom Edge Desc.',
+      }}
     >
       <MiniMap nodeBorderRadius={2} />
       <Controls orientation="horizontal" />
