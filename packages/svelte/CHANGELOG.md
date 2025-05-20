@@ -1,5 +1,20 @@
 # @xyflow/svelte
 
+## 1.1.0
+
+### Minor Changes
+
+- [#5280](https://github.com/xyflow/xyflow/pull/5280) [`dba6faf2`](https://github.com/xyflow/xyflow/commit/dba6faf20e7ec2524d5270d177331d3bd260f3ac) Thanks [@moklick](https://github.com/moklick)! - Improve typing for Nodes
+
+- [#5276](https://github.com/xyflow/xyflow/pull/5276) [`6ce44a05`](https://github.com/xyflow/xyflow/commit/6ce44a05c829068ff5a8416ce3fa4ee6e0eced48) Thanks [@moklick](https://github.com/moklick)! - Add an `ease` and `interpolate` option to all function that alter the viewport
+
+### Patch Changes
+
+- [#5275](https://github.com/xyflow/xyflow/pull/5275) [`a67bfc09`](https://github.com/xyflow/xyflow/commit/a67bfc09d5b352b5ff3b896c9a9e7138f2c4b20c) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix setting nodesInitialized multiple times
+
+- Updated dependencies [[`dba6faf2`](https://github.com/xyflow/xyflow/commit/dba6faf20e7ec2524d5270d177331d3bd260f3ac), [`6ce44a05`](https://github.com/xyflow/xyflow/commit/6ce44a05c829068ff5a8416ce3fa4ee6e0eced48)]:
+  - @xyflow/system@0.1.0
+
 ## 1.0.2
 
 ### Patch Changes
