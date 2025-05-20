@@ -2,7 +2,7 @@ import { CSSProperties } from 'react';
 
 import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';
-import type { a11yMessages } from '@xyflow/system';
+import type { descriptions } from '@xyflow/system';
 
 const style: CSSProperties = { display: 'none' };
 const ariaLiveStyle: CSSProperties = {
@@ -21,7 +21,7 @@ export const ARIA_NODE_DESC_KEY = 'react-flow__node-desc';
 export const ARIA_EDGE_DESC_KEY = 'react-flow__edge-desc';
 export const ARIA_LIVE_MESSAGE = 'react-flow__aria-live';
 
-const defaultA11yMessages: Required<a11yMessages> = {
+const defaultDescriptions: Required<descriptions> = {
   'a11yDescription.node.default':
     'Press enter or space to select a node. Press delete to remove it and escape to cancel.',
   'a11yDescription.node.keyboardDisabled':
@@ -45,17 +45,17 @@ function AriaLiveMessage({ rfId }: { rfId: string }) {
 export function A11yDescriptions({
   rfId,
   disableKeyboardA11y,
-  a11yMessages = {},
+  descriptions = {},
 }: {
   rfId: string;
   disableKeyboardA11y: boolean;
-  a11yMessages?: a11yMessages;
+  descriptions?: descriptions;
 }) {
   const nodeDesc = disableKeyboardA11y
-    ? a11yMessages['a11yDescription.node.default'] || defaultA11yMessages['a11yDescription.node.default']
-    : a11yMessages['a11yDescription.node.keyboardDisabled'] ||
-      defaultA11yMessages['a11yDescription.node.keyboardDisabled'];
-  const edgeDesc = a11yMessages['a11yDescription.edge.default'] || defaultA11yMessages['a11yDescription.edge.default'];
+    ? descriptions['a11yDescription.node.default'] || defaultDescriptions['a11yDescription.node.default']
+    : descriptions['a11yDescription.node.keyboardDisabled'] ||
+      defaultDescriptions['a11yDescription.node.keyboardDisabled'];
+  const edgeDesc = descriptions['a11yDescription.edge.default'] || defaultDescriptions['a11yDescription.edge.default'];
 
   return (
     <>

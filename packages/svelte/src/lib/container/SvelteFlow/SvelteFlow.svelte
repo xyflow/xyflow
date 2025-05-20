@@ -70,7 +70,7 @@
     nodes = $bindable([]),
     edges = $bindable([]),
     viewport = $bindable(undefined),
-    a11yMessages,
+    descriptions,
     ...props
   }: SvelteFlowProps<NodeType, EdgeType> &
     Omit<HTMLAttributes<HTMLDivElement>, 'onselectionchange'> = $props();
@@ -218,6 +218,6 @@
     </Pane>
   </Zoom>
   <Attribution {proOptions} position={attributionPosition} />
-  <A11yDescriptions {store} a11yMessages={a11yMessages} />
+  <A11yDescriptions {store} descriptions={descriptions} />
   {@render children?.()}
 </Wrapper>

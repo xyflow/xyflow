@@ -21,7 +21,7 @@ import type {
   ColorMode,
   SnapGrid,
   OnReconnect,
-  a11yMessages,
+  descriptions,
 } from '@xyflow/system';
 
 import type {
@@ -671,5 +671,5 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * Custom accessibility messages for screen readers and a11y features.
    * Allows localization and customization of ARIA descriptions.
    */
-  a11yMessages?: a11yMessages;
+  descriptions?: descriptions;
 }

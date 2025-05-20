@@ -21,7 +21,7 @@ import type {
   OnReconnect,
   OnReconnectStart,
   OnReconnectEnd,
-  a11yMessages
+  descriptions
 } from '@xyflow/system';
 
 import type {
@@ -476,5 +476,5 @@ export type SvelteFlowProps<
      * Custom accessibility messages for screen readers and a11y features.
      * Allows localization and customization of ARIA descriptions.
      */
-    a11yMessages?: a11yMessages;
+    descriptions?: descriptions;
   };

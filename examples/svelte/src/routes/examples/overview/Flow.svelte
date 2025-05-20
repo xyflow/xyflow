@@ -220,7 +220,7 @@
 		console.log('on selection changed via prop', { nodes, edges });
 	}}
 	selectNodesOnDrag
-	a11yMessages={{
+	descriptions={{
         'a11yDescription.node.default': 'Svelte Custom Node Description.',
         'a11yDescription.node.keyboardDisabled': 'Svelte Custom Keyboard Description',
         'a11yDescription.edge.default': 'Svelte Custom Edge Desc.',
