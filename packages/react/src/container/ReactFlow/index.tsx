@@ -145,7 +145,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     colorMode = 'light',
     debug,
     onScroll,
-    descriptions,
+    labelConfig,
     ...rest
   }: ReactFlowProps<NodeType, EdgeType>,
   ref: ForwardedRef<HTMLDivElement>
@@ -310,7 +310,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
         <SelectionListener<NodeType, EdgeType> onSelectionChange={onSelectionChange} />
         {children}
         <Attribution proOptions={proOptions} position={attributionPosition} />
-        <A11yDescriptions rfId={rfId} disableKeyboardA11y={disableKeyboardA11y} descriptions={descriptions} />
+        <A11yDescriptions rfId={rfId} disableKeyboardA11y={disableKeyboardA11y} />
       </Wrapper>
     </div>
   );

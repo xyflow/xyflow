@@ -2,7 +2,6 @@ import { CSSProperties } from 'react';
 
 import { useStore } from '../../hooks/useStore';
 import type { ReactFlowState } from '../../types';
-import type { descriptions } from '@xyflow/system';
 
 const style: CSSProperties = { display: 'none' };
 const ariaLiveStyle: CSSProperties = {
@@ -21,19 +20,11 @@ export const ARIA_NODE_DESC_KEY = 'react-flow__node-desc';
 export const ARIA_EDGE_DESC_KEY = 'react-flow__edge-desc';
 export const ARIA_LIVE_MESSAGE = 'react-flow__aria-live';
 
-const defaultDescriptions: Required<descriptions> = {
-  'a11yDescription.node.default':
-    'Press enter or space to select a node. Press delete to remove it and escape to cancel.',
-  'a11yDescription.node.keyboardDisabled':
-    'Press enter or space to select a node. You can then use the arrow keys to move the node around. Press delete to remove it and escape to cancel.',
-  'a11yDescription.edge.default':
-    'Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.',
-};
-
-const selector = (s: ReactFlowState) => s.ariaLiveMessage;
+const ariaLiveSelector = (s: ReactFlowState) => s.ariaLiveMessage;
+const labelConfigSelector = (s: ReactFlowState) => s.labelConfig;
 
 function AriaLiveMessage({ rfId }: { rfId: string }) {
-  const ariaLiveMessage = useStore(selector);
+  const ariaLiveMessage = useStore(ariaLiveSelector);
 
   return (
     <div id={`${ARIA_LIVE_MESSAGE}-${rfId}`} aria-live="assertive" aria-atomic="true" style={ariaLiveStyle}>
@@ -42,20 +33,13 @@ function AriaLiveMessage({ rfId }: { rfId: string }) {
   );
 }
 
-export function A11yDescriptions({
-  rfId,
-  disableKeyboardA11y,
-  descriptions = {},
-}: {
-  rfId: string;
-  disableKeyboardA11y: boolean;
-  descriptions?: descriptions;
-}) {
+export function A11yDescriptions({ rfId, disableKeyboardA11y }: { rfId: string; disableKeyboardA11y: boolean }) {
+  const labelConfig = useStore(labelConfigSelector);
+
   const nodeDesc = disableKeyboardA11y
-    ? descriptions['a11yDescription.node.default'] || defaultDescriptions['a11yDescription.node.default']
-    : descriptions['a11yDescription.node.keyboardDisabled'] ||
-      defaultDescriptions['a11yDescription.node.keyboardDisabled'];
-  const edgeDesc = descriptions['a11yDescription.edge.default'] || defaultDescriptions['a11yDescription.edge.default'];
+    ? labelConfig['a11yDescription.node.default']
+    : labelConfig['a11yDescription.node.keyboardDisabled'];
+  const edgeDesc = labelConfig['a11yDescription.edge.default'];
 
   return (
     <>

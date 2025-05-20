@@ -36,3 +36,12 @@ export const infiniteExtent: CoordinateExtent = [
 ];
 
 export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
+
+export const defaultLabelConfig = {
+  'a11yDescription.node.default':
+    'Press enter or space to select a node. Press delete to remove it and escape to cancel.',
+  'a11yDescription.node.keyboardDisabled':
+    'Press enter or space to select a node. You can then use the arrow keys to move the node around. Press delete to remove it and escape to cancel.',
+  'a11yDescription.edge.default':
+    'Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.',
+};

@@ -14,6 +14,7 @@ import {
   NodeOrigin,
   CoordinateExtent,
   fitViewport,
+  LabelConfig,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -370,6 +371,11 @@ const createStore = ({
       },
 
       reset: () => set({ ...getInitialState() }),
+      updateLabelConfig: (newLabelConfig: Partial<LabelConfig>) => {
+        set((state) => ({
+          labelConfig: { ...state.labelConfig, ...newLabelConfig },
+        }));
+      },
     };
   }, Object.is);
 
