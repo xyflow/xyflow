@@ -11,6 +11,7 @@ import {
   useReactFlow,
   Panel,
   OnNodeDrag,
+  FitViewOptions,
 } from '@xyflow/react';
 
 const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
@@ -54,10 +55,23 @@ const initialEdges: Edge[] = [
 ];
 
 const defaultEdgeOptions = {};
+const fitViewOptions: FitViewOptions = {
+  padding: { top: '100px', left: '0%', right: '10%', bottom: 0.1 },
+};
 
 const BasicFlow = () => {
-  const { addNodes, setNodes, getNodes, setEdges, getEdges, deleteElements, updateNodeData, toObject, setViewport } =
-    useReactFlow();
+  const {
+    addNodes,
+    setNodes,
+    getNodes,
+    setEdges,
+    getEdges,
+    deleteElements,
+    updateNodeData,
+    toObject,
+    setViewport,
+    fitView,
+  } = useReactFlow();
 
   const updatePos = () => {
     setNodes((nodes) =>
@@ -104,6 +118,7 @@ const BasicFlow = () => {
     ]);
 
     setEdges([{ id: 'a-b', source: 'a', target: 'b' }]);
+    fitView();
   };
 
   const onUpdateNode = () => {
@@ -117,12 +132,14 @@ const BasicFlow = () => {
       position: { x: Math.random() * 300, y: Math.random() * 300 },
       className: 'light',
     });
+    fitView();
   };
 
   return (
     <ReactFlow
       defaultNodes={initialNodes}
       defaultEdges={initialEdges}
+      onNodesChange={console.log}
       onNodeClick={onNodeClick}
       onNodeDragStop={onNodeDragStop}
       onNodeDragStart={onNodeDragStart}
@@ -134,6 +151,7 @@ const BasicFlow = () => {
       minZoom={0.2}
       maxZoom={4}
       fitView
+      fitViewOptions={fitViewOptions}
       defaultEdgeOptions={defaultEdgeOptions}
       selectNodesOnDrag={false}
       elevateEdgesOnSelect

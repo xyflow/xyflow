@@ -68,6 +68,8 @@ export function NodesSelection<NodeType extends Node>({
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
+      event.preventDefault();
+
       moveSelectedNodes({
         direction: arrowKeyDiffs[event.key],
         factor: event.shiftKey ? 4 : 1,

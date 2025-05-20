@@ -11,13 +11,17 @@ import {
 } from '@xyflow/system';
 import type { Node, Edge, InternalNode } from '../types';
 
-// This function applies changes to nodes or edges that are triggered by React Flow internally.
-// When you drag a node for example, React Flow will send a position change update.
-// This function then applies the changes and returns the updated elements.
+/*
+ * This function applies changes to nodes or edges that are triggered by React Flow internally.
+ * When you drag a node for example, React Flow will send a position change update.
+ * This function then applies the changes and returns the updated elements.
+ */
 function applyChanges(changes: any[], elements: any[]): any[] {
   const updatedElements: any[] = [];
-  // By storing a map of changes for each element, we can a quick lookup as we
-  // iterate over the elements array!
+  /*
+   * By storing a map of changes for each element, we can a quick lookup as we
+   * iterate over the elements array!
+   */
   const changesMap = new Map<any, any[]>();
   const addItemChanges: any[] = [];
 
@@ -26,15 +30,19 @@ function applyChanges(changes: any[], elements: any[]): any[] {
       addItemChanges.push(change);
       continue;
     } else if (change.type === 'remove' || change.type === 'replace') {
-      // For a 'remove' change we can safely ignore any other changes queued for
-      // the same element, it's going to be removed anyway!
+      /*
+       * For a 'remove' change we can safely ignore any other changes queued for
+       * the same element, it's going to be removed anyway!
+       */
       changesMap.set(change.id, [change]);
     } else {
       const elementChanges = changesMap.get(change.id);
 
       if (elementChanges) {
-        // If we have some changes queued already, we can do a mutable update of
-        // that array and save ourselves some copying.
+        /*
+         * If we have some changes queued already, we can do a mutable update of
+         * that array and save ourselves some copying.
+         */
         elementChanges.push(change);
       } else {
         changesMap.set(change.id, [change]);
@@ -45,8 +53,10 @@ function applyChanges(changes: any[], elements: any[]): any[] {
   for (const element of elements) {
     const changes = changesMap.get(element.id);
 
-    // When there are no changes for an element we can just push it unmodified,
-    // no need to copy it.
+    /*
+     * When there are no changes for an element we can just push it unmodified,
+     * no need to copy it.
+     */
     if (!changes) {
       updatedElements.push(element);
       continue;
@@ -62,9 +72,11 @@ function applyChanges(changes: any[], elements: any[]): any[] {
       continue;
     }
 
-    // For other types of changes, we want to start with a shallow copy of the
-    // object so React knows this element has changed. Sequential changes will
-    /// each _mutate_ this object, so there's only ever one copy.
+    /**
+     * For other types of changes, we want to start with a shallow copy of the
+     * object so React knows this element has changed. Sequential changes will
+     * each _mutate_ this object, so there's only ever one copy.
+     */
     const updatedElement = { ...element };
 
     for (const change of changes) {
@@ -74,8 +86,10 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     updatedElements.push(updatedElement);
   }
 
-  // we need to wait for all changes to be applied before adding new items
-  // to be able to add them at the correct index
+  /*
+   * we need to wait for all changes to be applied before adding new items
+   * to be able to add them at the correct index
+   */
   if (addItemChanges.length) {
     addItemChanges.forEach((change) => {
       if (change.index !== undefined) {
@@ -116,8 +130,12 @@ function applyChange(change: any, element: any): any {
         element.measured.height = change.dimensions.height;
 
         if (change.setAttributes) {
-          element.width = change.dimensions.width;
-          element.height = change.dimensions.height;
+          if (change.setAttributes === true || change.setAttributes === 'width') {
+            element.width = change.dimensions.width;
+          }
+          if (change.setAttributes === true || change.setAttributes === 'height') {
+            element.height = change.dimensions.height;
+          }
         }
       }
 
@@ -133,22 +151,33 @@ function applyChange(change: any, element: any): any {
 /**
  * Drop in function that applies node changes to an array of nodes.
  * @public
- * @remarks Various events on the <ReactFlow /> component can produce an {@link NodeChange} that describes how to update the edges of your flow in some way.
- If you don't need any custom behaviour, this util can be used to take an array of these changes and apply them to your edges.
- * @param changes - Array of changes to apply
- * @param nodes - Array of nodes to apply the changes to
- * @returns Array of updated nodes
+ * @param changes - Array of changes to apply.
+ * @param nodes - Array of nodes to apply the changes to.
+ * @returns Array of updated nodes.
  * @example
- *  const onNodesChange = useCallback(
-      (changes) => {
-        setNodes((oldNodes) => applyNodeChanges(changes, oldNodes));
-      },
-      [setNodes],
-    );
-  
-    return (
-      <ReactFLow nodes={nodes} edges={edges} onNodesChange={onNodesChange} />
-    );
+ *```tsx
+ *import { useState, useCallback } from 'react';
+ *import { ReactFlow, applyNodeChanges, type Node, type Edge, type OnNodesChange } from '@xyflow/react';
+ *
+ *export default function Flow() {
+ *  const [nodes, setNodes] = useState<Node[]>([]);
+ *  const [edges, setEdges] = useState<Edge[]>([]);
+ *  const onNodesChange: OnNodesChange = useCallback(
+ *    (changes) => {
+ *      setNodes((oldNodes) => applyNodeChanges(changes, oldNodes));
+ *    },
+ *    [setNodes],
+ *  );
+ *
+ *  return (
+ *    <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} />
+ *  );
+ *}
+ *```
+ * @remarks Various events on the <ReactFlow /> component can produce an {@link NodeChange}
+ * that describes how to update the edges of your flow in some way.
+ * If you don't need any custom behaviour, this util can be used to take an array
+ * of these changes and apply them to your edges.
  */
 export function applyNodeChanges<NodeType extends Node = Node>(
   changes: NodeChange<NodeType>[],
@@ -160,22 +189,33 @@ export function applyNodeChanges<NodeType extends Node = Node>(
 /**
  * Drop in function that applies edge changes to an array of edges.
  * @public
- * @remarks Various events on the <ReactFlow /> component can produce an {@link EdgeChange} that describes how to update the edges of your flow in some way.
- If you don't need any custom behaviour, this util can be used to take an array of these changes and apply them to your edges.
- * @param changes - Array of changes to apply
- * @param edges - Array of edge to apply the changes to
- * @returns Array of updated edges
+ * @param changes - Array of changes to apply.
+ * @param edges - Array of edge to apply the changes to.
+ * @returns Array of updated edges.
  * @example
+ * ```tsx
+ *import { useState, useCallback } from 'react';
+ *import { ReactFlow, applyEdgeChanges } from '@xyflow/react';
+ *
+ *export default function Flow() {
+ *  const [nodes, setNodes] = useState([]);
+ *  const [edges, setEdges] = useState([]);
  *  const onEdgesChange = useCallback(
-      (changes) => {
-        setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
-      },
-      [setEdges],
-    );
-  
-    return (
-      <ReactFlow nodes={nodes} edges={edges} onEdgesChange={onEdgesChange} />
-    );
+ *    (changes) => {
+ *      setEdges((oldEdges) => applyEdgeChanges(changes, oldEdges));
+ *    },
+ *    [setEdges],
+ *  );
+ *
+ *  return (
+ *    <ReactFlow nodes={nodes} edges={edges} onEdgesChange={onEdgesChange} />
+ *  );
+ *}
+ *```
+ * @remarks Various events on the <ReactFlow /> component can produce an {@link EdgeChange}
+ * that describes how to update the edges of your flow in some way.
+ * If you don't need any custom behaviour, this util can be used to take an array
+ * of these changes and apply them to your edges.
  */
 export function applyEdgeChanges<EdgeType extends Edge = Edge>(
   changes: EdgeChange<EdgeType>[],
@@ -205,9 +245,11 @@ export function getSelectionChanges(
     // we don't want to set all items to selected=false on the first selection
     if (!(item.selected === undefined && !willBeSelected) && item.selected !== willBeSelected) {
       if (mutateItem) {
-        // this hack is needed for nodes. When the user dragged a node, it's selected.
-        // When another node gets dragged, we need to deselect the previous one,
-        // in order to have only one selected node at a time - the onNodesChange callback comes too late here :/
+        /*
+         * this hack is needed for nodes. When the user dragged a node, it's selected.
+         * When another node gets dragged, we need to deselect the previous one,
+         * in order to have only one selected node at a time - the onNodesChange callback comes too late here :/
+         */
         item.selected = willBeSelected;
       }
       changes.push(createSelectionChange(item.id, willBeSelected));

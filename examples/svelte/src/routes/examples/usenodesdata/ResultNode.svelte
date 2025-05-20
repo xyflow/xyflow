@@ -2,24 +2,24 @@
 	import {
 		Handle,
 		Position,
-		useHandleConnections,
+		useNodeConnections,
 		useNodesData,
-		type NodeProps
+		type NodeProps,
+		type Node
 	} from '@xyflow/svelte';
 	import { isTextNode, type MyNode } from './+page.svelte';
 
-	type $$Props = NodeProps;
+	let { id }: NodeProps = $props();
 
-	export let id: $$Props['id'];
-	$$restProps;
-
-	const connections = useHandleConnections({
-		nodeId: id,
-		type: 'target'
+	const connections = useNodeConnections({
+		id: id,
+		handleType: 'target'
 	});
 
-	$: nodeData = useNodesData<MyNode>($connections.map((connection) => connection.source));
-	$: textNodes = $nodeData.filter(isTextNode);
+	let nodeData = $derived(
+		useNodesData<MyNode>(connections.current.map((connection) => connection.source))
+	);
+	let textNodes = $derived(nodeData.current.filter(isTextNode));
 </script>
 
 <div class="custom">

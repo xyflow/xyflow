@@ -12,29 +12,28 @@ import { Queue, QueueItem } from './types';
  * @returns a Queue object
  */
 export function useQueue<T>(runQueue: (items: QueueItem<T>[]) => void) {
-  // Because we're using a ref above, we need some way to let React know when to
-  // actually process the queue. We flip this bit of state to `true` any time we
-  // mutate the queue and then flip it back to `false` after flushing the queue.
-  const [shouldFlush, setShouldFlush] = useState(false);
+  /*
+   * Because we're using a ref above, we need some way to let React know when to
+   * actually process the queue. We increment this number any time we mutate the
+   * queue, creating a new state to trigger the layout effect below.
+   * Using a boolean dirty flag here instead would lead to issues related to
+   * automatic batching. (https://github.com/xyflow/xyflow/issues/4779)
+   */
+  const [serial, setSerial] = useState(BigInt(0));
 
-  // A reference of all the batched updates to process before the next render. We
-  // want a reference here so multiple synchronous calls to `setNodes` etc can be
-  // batched together.
-  const [queue] = useState(() => createQueue<T>(() => setShouldFlush(true)));
+  /*
+   * A reference of all the batched updates to process before the next render. We
+   * want a reference here so multiple synchronous calls to `setNodes` etc can be
+   * batched together.
+   */
+  const [queue] = useState(() => createQueue<T>(() => setSerial(n => n + BigInt(1))));
 
-  // Layout effects are guaranteed to run before the next render which means we
-  // shouldn't run into any issues with stale state or weird issues that come from
-  // rendering things one frame later than expected (we used to use `setTimeout`).
+  /*
+   * Layout effects are guaranteed to run before the next render which means we
+   * shouldn't run into any issues with stale state or weird issues that come from
+   * rendering things one frame later than expected (we used to use `setTimeout`).
+   */
   useIsomorphicLayoutEffect(() => {
-    // Because we need to flip the state back to false after flushing, this should
-    // trigger the hook again (!). If the hook is being run again we know that any
-    // updates should have been processed by now and we can safely clear the queue
-    // and bail early.
-    if (!shouldFlush) {
-      queue.reset();
-      return;
-    }
-
     const queueItems = queue.get();
 
     if (queueItems.length) {
@@ -42,11 +41,7 @@ export function useQueue<T>(runQueue: (items: QueueItem<T>[]) => void) {
 
       queue.reset();
     }
-
-    // Because we're using reactive state to trigger this effect, we need to flip
-    // it back to false.
-    setShouldFlush(false);
-  }, [shouldFlush]);
+  }, [serial]);
 
   return queue;
 }

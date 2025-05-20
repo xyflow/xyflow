@@ -1,3 +1,5 @@
+import type { Snippet } from 'svelte';
+import type { HTMLAttributes } from 'svelte/elements';
 import type {
   ControlPosition,
   ResizeControlVariant,
@@ -42,7 +44,7 @@ export type NodeResizerProps = {
   onResize?: OnResize;
   /** Callback called when resizing ends */
   onResizeEnd?: OnResizeEnd;
-};
+} & HTMLAttributes<HTMLDivElement>;
 
 export type ResizeControlProps = Pick<
   NodeResizerProps,
@@ -67,6 +69,5 @@ export type ResizeControlProps = Pick<
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
-  class?: string;
-  style?: string;
-};
+  children?: Snippet;
+} & HTMLAttributes<HTMLDivElement>;

@@ -2,10 +2,9 @@ import { useMemo } from 'react';
 import {
   pointToRendererPoint,
   getViewportForBounds,
-  getFitViewNodes,
-  fitView,
   type XYPosition,
   rendererPointToPoint,
+  SnapGrid,
 } from '@xyflow/system';
 
 import { useStoreApi } from '../hooks/useStore';
@@ -54,7 +53,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
             y: viewport.y ?? tY,
             zoom: viewport.zoom ?? tZoom,
           },
-          { duration: options?.duration }
+          options
         );
 
         return Promise.resolve(true);
@@ -62,24 +61,6 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       getViewport: () => {
         const [x, y, zoom] = store.getState().transform;
         return { x, y, zoom };
-      },
-      fitView: (options) => {
-        const { nodeLookup, width, height, minZoom, maxZoom, panZoom } = store.getState();
-        const fitViewNodes = getFitViewNodes(nodeLookup, options);
-
-        return panZoom
-          ? fitView(
-              {
-                nodes: fitViewNodes,
-                width,
-                height,
-                minZoom,
-                maxZoom,
-                panZoom,
-              },
-              options
-            )
-          : Promise.resolve(false);
       },
       setCenter: async (x, y, options) => {
         const { width, height, maxZoom, panZoom } = store.getState();
@@ -97,7 +78,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
             y: centerY,
             zoom: nextZoom,
           },
-          { duration: options?.duration }
+          { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
         );
 
         return Promise.resolve(true);
@@ -110,25 +91,33 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           return Promise.resolve(false);
         }
 
-        await panZoom.setViewport(viewport, { duration: options?.duration });
+        await panZoom.setViewport(viewport, {
+          duration: options?.duration,
+          ease: options?.ease,
+          interpolate: options?.interpolate,
+        });
 
         return Promise.resolve(true);
       },
-      screenToFlowPosition: (clientPosition: XYPosition, options: { snapToGrid: boolean } = { snapToGrid: true }) => {
-        const { transform, snapGrid, domNode } = store.getState();
+      screenToFlowPosition: (
+        clientPosition: XYPosition,
+        options: { snapToGrid?: boolean; snapGrid?: SnapGrid } = {}
+      ) => {
+        const { transform, snapGrid, snapToGrid, domNode } = store.getState();
 
         if (!domNode) {
           return clientPosition;
         }
 
         const { x: domX, y: domY } = domNode.getBoundingClientRect();
-
         const correctedPosition = {
           x: clientPosition.x - domX,
           y: clientPosition.y - domY,
         };
+        const _snapGrid = options.snapGrid ?? snapGrid;
+        const _snapToGrid = options.snapToGrid ?? snapToGrid;
 
-        return pointToRendererPoint(correctedPosition, transform, options.snapToGrid, snapGrid);
+        return pointToRendererPoint(correctedPosition, transform, _snapToGrid, _snapGrid);
       },
       flowToScreenPosition: (flowPosition: XYPosition) => {
         const { transform, domNode } = store.getState();

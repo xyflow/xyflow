@@ -61,7 +61,34 @@ function createBezierEdge(params: { isInternal: boolean }) {
   );
 }
 
+/**
+ * Component that can be used inside a custom edge to render a bezier curve.
+ *
+ * @public
+ * @example
+ *
+ * ```tsx
+ * import { BezierEdge } from '@xyflow/react';
+ *
+ * function CustomEdge({ sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition }) {
+ *   return (
+ *     <BezierEdge
+ *       sourceX={sourceX}
+ *       sourceY={sourceY}
+ *       targetX={targetX}
+ *       targetY={targetY}
+ *       sourcePosition={sourcePosition}
+ *       targetPosition={targetPosition}
+ *     />
+ *   );
+ * }
+ * ```
+ */
 const BezierEdge = createBezierEdge({ isInternal: false });
+
+/**
+ * @internal
+ */
 const BezierEdgeInternal = createBezierEdge({ isInternal: true });
 
 BezierEdge.displayName = 'BezierEdge';

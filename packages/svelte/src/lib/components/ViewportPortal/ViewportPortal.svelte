@@ -1,10 +1,10 @@
 <script lang="ts">
-  import portal from '$lib/actions/portal';
-  import { useStore } from '$lib/store';
+  import { portal } from '$lib/actions/portal';
+  import type { ViewportPortalProps } from './types';
 
-  const { domNode } = useStore();
+  let { target = 'front', children, ...rest }: ViewportPortalProps = $props();
 </script>
 
-<div use:portal={{ target: '.svelte-flow__viewport-portal', domNode: $domNode }}>
-  <slot />
+<div use:portal={`viewport-${target}`} {...rest}>
+  {@render children?.()}
 </div>

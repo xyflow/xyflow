@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/react",
-  "version": "12.3.0",
+  "version": "12.6.4",
   "description": "React Flow - A highly customizable React library for building node-based editors and interactive flow charts.",
   "keywords": [
     "react",
@@ -28,10 +28,19 @@
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "types": "./dist/esm/index.d.ts",
-      "import": "./dist/esm/index.mjs",
-      "require": "./dist/umd/index.js"
+      "node": {
+        "types": "./dist/esm/index.d.ts",
+        "module": "./dist/esm/index.js",
+        "require": "./dist/umd/index.js",
+        "import": "./dist/esm/index.mjs"
+      },
+      "browser": {
+        "import": "./dist/esm/index.js",
+        "require": "./dist/umd/index.js"
+      },
+      "default": "./dist/esm/index.js"
     },
     "./dist/base.css": "./dist/base.css",
     "./dist/style.css": "./dist/style.css"
@@ -76,7 +85,7 @@
     "postcss-nested": "^6.0.0",
     "postcss-rename": "^0.6.1",
     "react": "^18.2.0",
-    "typescript": "5.1.3"
+    "typescript": "5.4.5"
   },
   "rollup": {
     "globals": {

@@ -24,6 +24,10 @@ export const errorMessages = {
     `Node with id "${id}" does not exist, it may have been removed. This can happen when a node is deleted before the "onNodeClick" handler is called.`,
   error013: (lib: string = 'react') =>
     `It seems that you haven't loaded the styles. Please import '@xyflow/${lib}/dist/style.css' or base.css to make sure everything is working properly.`,
+  error014: () =>
+    'useNodeConnections: No node ID found. Call useNodeConnections inside a custom Node or provide a node ID.',
+  error015: () =>
+    'It seems that you are trying to drag a node that is not initialized. Please use onNodesChange as explained in the docs.',
 };
 
 export const infiniteExtent: CoordinateExtent = [

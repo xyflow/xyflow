@@ -139,13 +139,23 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       }
 
       for (const [id, dragItem] of dragItems) {
+        if (!nodeLookup.has(id)) {
+          /*
+           * if the node is not in the nodeLookup anymore, it was probably deleted while dragging
+           * and we don't need to update it anymore
+           */
+          continue;
+        }
+
         let nextPosition = { x: x - dragItem.distance.x, y: y - dragItem.distance.y };
         if (snapToGrid) {
           nextPosition = snapPosition(nextPosition, snapGrid);
         }
 
-        // if there is selection with multiple nodes and a node extent is set, we need to adjust the node extent for each node
-        // based on its position so that the node stays at it's position relative to the selection.
+        /*
+         * if there is selection with multiple nodes and a node extent is set, we need to adjust the node extent for each node
+         * based on its position so that the node stays at it's position relative to the selection.
+         */
         let adjustedNodeExtent: CoordinateExtent = [
           [nodeExtent[0][0], nodeExtent[0][1]],
           [nodeExtent[1][0], nodeExtent[1][1]],
@@ -208,7 +218,13 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         return;
       }
 
-      const { transform, panBy, autoPanSpeed } = getStoreItems();
+      const { transform, panBy, autoPanSpeed, autoPanOnNodeDrag } = getStoreItems();
+
+      if (!autoPanOnNodeDrag) {
+        autoPanStarted = false;
+        cancelAnimationFrame(autoPanId);
+        return;
+      }
 
       const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds, autoPanSpeed);
 
@@ -251,7 +267,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         onNodeMouseDown?.(nodeId);
       }
 
-      const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+      const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
       lastPos = pointerPos;
       dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, nodeId);
 
@@ -275,6 +291,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       .clickDistance(nodeClickDistance)
       .on('start', (event: UseDragEvent) => {
         const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
+        containerBounds = domNode?.getBoundingClientRect() || null;
 
         abortDrag = false;
 
@@ -282,16 +299,19 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           startDrag(event);
         }
 
-        const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+        const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
         lastPos = pointerPos;
-        containerBounds = domNode?.getBoundingClientRect() || null;
         mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
       })
       .on('drag', (event: UseDragEvent) => {
-        const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold } = getStoreItems();
-        const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid });
+        const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold, nodeLookup } = getStoreItems();
+        const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
 
-        if (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) {
+        if (
+          (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) ||
+          // if user deletes a node while dragging, we need to abort the drag to prevent errors
+          (nodeId && !nodeLookup.has(nodeId))
+        ) {
           abortDrag = true;
         }
 
@@ -354,7 +374,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         }
       })
       .filter((event: MouseEvent) => {
-        const target = event.target as HTMLDivElement;
+        const target = event.target;
         const isDraggable =
           !event.button &&
           (!noDragClassName || !hasSelector(target, `.${noDragClassName}`, domNode)) &&

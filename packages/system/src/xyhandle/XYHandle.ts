@@ -48,7 +48,7 @@ function onPointerDown(
   }: OnPointerDownParams
 ) {
   // when xyflow is used inside a shadow root we can't use document
-  const doc = getHostForElement(event.target as HTMLElement);
+  const doc = getHostForElement(event.target);
   let autoPanId = 0;
   let closestHandle: Handle | null;
 
@@ -157,16 +157,18 @@ function onPointerDown(
       ...previousConnection,
       isValid,
       to:
-        closestHandle && isValid
-          ? rendererPointToPoint({ x: closestHandle.x, y: closestHandle.y }, transform)
+        result.toHandle && isValid
+          ? rendererPointToPoint({ x: result.toHandle.x, y: result.toHandle.y }, transform)
           : position,
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
       toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)! : null,
     };
 
-    // we don't want to trigger an update when the connection
-    // is snapped to the same handle as before
+    /*
+     * we don't want to trigger an update when the connection
+     * is snapped to the same handle as before
+     */
     if (
       isValid &&
       closestHandle &&
@@ -190,8 +192,10 @@ function onPointerDown(
       onConnect?.(connection);
     }
 
-    // it's important to get a fresh reference from the store here
-    // in order to get the latest state of onConnectEnd
+    /*
+     * it's important to get a fresh reference from the store here
+     * in order to get the latest state of onConnectEnd
+     */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { inProgress, ...connectionState } = previousConnection;
     const finalConnectionState = {
@@ -248,8 +252,10 @@ function isValidHandle(
 
   const { x, y } = getEventPosition(event);
   const handleBelow = doc.elementFromPoint(x, y);
-  // we always want to prioritize the handle below the mouse cursor over the closest distance handle,
-  // because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
+  /*
+   * we always want to prioritize the handle below the mouse cursor over the closest distance handle,
+   * because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
+   */
   const handleToCheck = handleBelow?.classList.contains(`${lib}-flow__handle`) ? handleBelow : handleDomNode;
 
   const result: Result = {
@@ -289,7 +295,7 @@ function isValidHandle(
 
     result.isValid = isValid && isValidConnection(connection);
 
-    result.toHandle = getHandle(handleNodeId, handleType, handleId, nodeLookup, connectionMode, false);
+    result.toHandle = getHandle(handleNodeId, handleType, handleId, nodeLookup, connectionMode, true);
   }
 
   return result;

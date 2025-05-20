@@ -1,38 +1,13 @@
-import type { InternalNode, Node } from '$lib/types';
+import type { SvelteFlowStore } from '$lib/store/types';
+import type { Node, Edge, InternalNode } from '$lib/types';
 
-export type NodeWrapperProps = Pick<
-  Node,
-  | 'id'
-  | 'class'
-  | 'connectable'
-  | 'data'
-  | 'draggable'
-  | 'dragging'
-  | 'selected'
-  | 'selectable'
-  | 'deletable'
-  | 'style'
-  | 'type'
-  | 'sourcePosition'
-  | 'targetPosition'
-  | 'dragHandle'
-  | 'hidden'
-  | 'width'
-  | 'height'
-  | 'initialWidth'
-  | 'initialHeight'
-  | 'parentId'
-> & {
-  measuredWidth?: number;
-  measuredHeight?: number;
-  type: string;
-  positionX: number;
-  positionY: number;
-  'on:nodeclick'?: (event: MouseEvent) => void;
-  resizeObserver?: ResizeObserver | null;
-  isParent?: boolean;
-  zIndex: number;
-  node: InternalNode;
-  initialized: boolean;
+export type ConnectableContext = {
+  value: boolean;
+};
+
+export type NodeWrapperProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  node: InternalNode<NodeType>;
+  store: SvelteFlowStore<NodeType, EdgeType>;
   nodeClickDistance?: number;
+  resizeObserver?: ResizeObserver | null;
 };

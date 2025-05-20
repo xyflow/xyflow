@@ -1,5 +1,6 @@
 import {
   ConnectionMode,
+  withResolvers,
   type ConnectionState,
   type CoordinateExtent,
   type InternalNodeUpdate,
@@ -53,6 +54,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   height: number;
   transform: Transform;
   nodes: NodeType[];
+  nodesInitialized: boolean;
   nodeLookup: NodeLookup<InternalNode<NodeType>>;
   parentLookup: ParentLookup<InternalNode<NodeType>>;
   edges: EdgeType[];
@@ -119,9 +121,9 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   connectOnClick: boolean;
   defaultEdgeOptions?: DefaultEdgeOptions;
 
-  fitViewOnInit: boolean;
-  fitViewDone: boolean;
-  fitViewOnInitOptions: FitViewOptions | undefined;
+  fitViewQueued: boolean;
+  fitViewOptions: FitViewOptions | undefined;
+  fitViewResolver: ReturnType<typeof withResolvers<boolean>> | null;
 
   onNodesDelete?: OnNodesDelete<NodeType>;
   onEdgesDelete?: OnEdgesDelete<EdgeType>;
@@ -134,7 +136,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   onViewportChangeEnd?: OnViewportChange;
   onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
 
-  onSelectionChangeHandlers: OnSelectionChangeFunc[];
+  onSelectionChangeHandlers: OnSelectionChangeFunc<NodeType, EdgeType>[];
 
   ariaLiveMessage: string;
   autoPanOnConnect: boolean;
@@ -155,7 +157,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>, params?: { triggerFitView: boolean }) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
-  unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
+  unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams<NodeType, EdgeType>) => void;
   addSelectedNodes: (nodeIds: string[]) => void;
   addSelectedEdges: (edgeIds: string[]) => void;
   setMinZoom: (minZoom: number) => void;
@@ -168,8 +170,6 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
-  fitView: (options?: FitViewOptions) => Promise<boolean>;
-  fitViewSync: (options?: FitViewOptions) => boolean;
   setPaneClickDistance: (distance: number) => void;
 };
 

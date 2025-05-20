@@ -42,9 +42,11 @@ const Marker = ({
   );
 };
 
-// when you have multiple flows on a page and you hide the first one, the other ones have no markers anymore
-// when they do have markers with the same ids. To prevent this the user can pass a unique id to the react flow wrapper
-// that we can then use for creating our unique marker ids
+/*
+ * when you have multiple flows on a page and you hide the first one, the other ones have no markers anymore
+ * when they do have markers with the same ids. To prevent this the user can pass a unique id to the react flow wrapper
+ * that we can then use for creating our unique marker ids
+ */
 const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
   const edges = useStore((s) => s.edges);
   const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
@@ -65,7 +67,7 @@ const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
   }
 
   return (
-    <svg className="react-flow__marker">
+    <svg className="react-flow__marker" aria-hidden="true">
       <defs>
         {markers.map((marker: MarkerProps) => (
           <Marker

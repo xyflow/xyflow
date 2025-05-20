@@ -1,7 +1,5 @@
-<script lang="ts">
-  import cc from 'classcat';
-
-  import { useStore } from '$lib/store';
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
+  import type { Component } from 'svelte';
   import {
     ConnectionLineType,
     getBezierPath,
@@ -10,50 +8,69 @@
     getStraightPath
   } from '@xyflow/system';
 
-  export let containerStyle: string = '';
-  export let style: string = '';
-  export let isCustomComponent: boolean = false;
+  import type { SvelteFlowStore } from '$lib/store/types';
+  import type { Node, Edge } from '$lib/types';
 
-  const { width, height, connection, connectionLineType } = useStore();
+  let {
+    store = $bindable(),
+    type,
+    containerStyle,
+    style,
+    LineComponent
+  }: {
+    store: SvelteFlowStore<NodeType, EdgeType>;
+    type: ConnectionLineType;
+    containerStyle?: string;
+    style?: string;
+    LineComponent?: Component;
+  } = $props();
 
-  let path: string | null = null;
+  let path = $derived.by(() => {
+    if (!store.connection.inProgress) {
+      return '';
+    }
 
-  $: if ($connection.inProgress && !isCustomComponent) {
-    const { from, to, fromPosition, toPosition } = $connection;
     const pathParams = {
-      sourceX: from.x,
-      sourceY: from.y,
-      sourcePosition: fromPosition,
-      targetX: to.x,
-      targetY: to.y,
-      targetPosition: toPosition
+      sourceX: store.connection.from.x,
+      sourceY: store.connection.from.y,
+      sourcePosition: store.connection.fromPosition,
+      targetX: store.connection.to.x,
+      targetY: store.connection.to.y,
+      targetPosition: store.connection.toPosition
     };
 
-    switch ($connectionLineType) {
-      case ConnectionLineType.Bezier:
-        [path] = getBezierPath(pathParams);
-        break;
+    switch (type) {
+      case ConnectionLineType.Bezier: {
+        const [path] = getBezierPath(pathParams);
+        return path;
+      }
+      case ConnectionLineType.Straight: {
+        const [path] = getStraightPath(pathParams);
+        return path;
+      }
       case ConnectionLineType.Step:
-        [path] = getSmoothStepPath({
+      case ConnectionLineType.SmoothStep: {
+        const [path] = getSmoothStepPath({
           ...pathParams,
-          borderRadius: 0
+          borderRadius: type === ConnectionLineType.Step ? 0 : undefined
         });
-        break;
-      case ConnectionLineType.SmoothStep:
-        [path] = getSmoothStepPath(pathParams);
-        break;
-      default:
-        [path] = getStraightPath(pathParams);
+        return path;
+      }
     }
-  }
+  });
 </script>
 
-{#if $connection.inProgress}
-  <svg width={$width} height={$height} class="svelte-flow__connectionline" style={containerStyle}>
-    <g class={cc(['svelte-flow__connection', getConnectionStatus($connection.isValid)])}>
-      <slot name="connectionLine" />
-      <!-- slot fallbacks do not work if slots are forwarded in parent -->
-      {#if !isCustomComponent}
+{#if store.connection.inProgress}
+  <svg
+    width={store.width}
+    height={store.height}
+    class="svelte-flow__connectionline"
+    style={containerStyle}
+  >
+    <g class={['svelte-flow__connection', getConnectionStatus(store.connection.isValid)]}>
+      {#if LineComponent}
+        <LineComponent></LineComponent>
+      {:else}
         <path d={path} {style} fill="none" class="svelte-flow__connection-path" />
       {/if}
     </g>

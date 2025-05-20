@@ -1,4 +1,4 @@
-import { infiniteExtent } from '..';
+import { HandleConnection, infiniteExtent } from '..';
 import {
   NodeBase,
   CoordinateExtent,
@@ -42,7 +42,7 @@ const adoptUserNodesDefaultOptions = {
   checkEquality: true,
 };
 
-function mergeObjects<T extends Record<string, any>>(base: T, incoming?: Partial<T>): T {
+function mergeObjects<T extends Record<string, unknown>>(base: T, incoming?: Partial<T>): T {
   const result = { ...base };
   for (const key in incoming) {
     if (incoming[key] !== undefined) {
@@ -61,11 +61,14 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
 ) {
   const _options = mergeObjects(defaultOptions, options);
   for (const node of nodeLookup.values()) {
-    if (!node.parentId) {
-      continue;
+    if (node.parentId) {
+      updateChildNode(node, nodeLookup, parentLookup, _options);
+    } else {
+      const positionWithOrigin = getNodePositionWithOrigin(node, _options.nodeOrigin);
+      const extent = isCoordinateExtent(node.extent) ? node.extent : _options.nodeExtent;
+      const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(node));
+      node.internals.positionAbsolute = clampedPosition;
     }
-
-    updateChildNode(node, nodeLookup, parentLookup, _options);
   }
 }
 
@@ -82,8 +85,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options?: UpdateNodesOptions<NodeType>
-) {
+): boolean {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
+
+  let nodesInitialized = nodes.length > 0;
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
 
@@ -119,10 +124,21 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       nodeLookup.set(userNode.id, internalNode);
     }
 
+    if (
+      (internalNode.measured === undefined ||
+        internalNode.measured.width === undefined ||
+        internalNode.measured.height === undefined) &&
+      !internalNode.hidden
+    ) {
+      nodesInitialized = false;
+    }
+
     if (userNode.parentId) {
       updateChildNode(internalNode, nodeLookup, parentLookup, options);
     }
   }
+
+  return nodesInitialized;
 }
 
 function updateParentLookup<NodeType extends NodeBase>(
@@ -170,11 +186,15 @@ function updateChildNode<NodeType extends NodeBase>(
   const positionChanged = x !== positionAbsolute.x || y !== positionAbsolute.y;
 
   if (positionChanged || z !== node.internals.z) {
-    node.internals = {
-      ...node.internals,
-      positionAbsolute: positionChanged ? { x, y } : positionAbsolute,
-      z,
-    };
+    // we create a new object to mark the node as updated
+    nodeLookup.set(node.id, {
+      ...node,
+      internals: {
+        ...node.internals,
+        positionAbsolute: positionChanged ? { x, y } : positionAbsolute,
+        z,
+      },
+    });
   }
 }
 
@@ -268,8 +288,10 @@ export function handleExpandParent(
           },
         });
 
-        // We move all child nodes in the oppsite direction
-        // so the x,y changes of the parent do not move the children
+        /*
+         * We move all child nodes in the oppsite direction
+         * so the x,y changes of the parent do not move the children
+         */
         parentLookup.get(parentId)?.forEach((childNode) => {
           if (!children.some((child) => child.id === childNode.id)) {
             changes.push({
@@ -330,60 +352,70 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
     }
 
     if (node.hidden) {
-      node.internals = {
-        ...node.internals,
-        handleBounds: undefined,
-      };
+      nodeLookup.set(node.id, {
+        ...node,
+        internals: {
+          ...node.internals,
+          handleBounds: undefined,
+        },
+      });
       updatedInternals = true;
-    } else {
-      const dimensions = getDimensions(update.nodeElement);
-      const dimensionChanged = node.measured.width !== dimensions.width || node.measured.height !== dimensions.height;
-      const doUpdate = !!(
-        dimensions.width &&
-        dimensions.height &&
-        (dimensionChanged || !node.internals.handleBounds || update.force)
-      );
+      continue;
+    }
 
-      if (doUpdate) {
-        const nodeBounds = update.nodeElement.getBoundingClientRect();
-        const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
-        let { positionAbsolute } = node.internals;
+    const dimensions = getDimensions(update.nodeElement);
+    const dimensionChanged = node.measured.width !== dimensions.width || node.measured.height !== dimensions.height;
+    const doUpdate = !!(
+      dimensions.width &&
+      dimensions.height &&
+      (dimensionChanged || !node.internals.handleBounds || update.force)
+    );
 
-        if (node.parentId && node.extent === 'parent') {
-          positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, nodeLookup.get(node.parentId)!);
-        } else if (extent) {
-          positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
-        }
+    if (doUpdate) {
+      const nodeBounds = update.nodeElement.getBoundingClientRect();
+      const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
+      let { positionAbsolute } = node.internals;
 
-        node.measured = dimensions;
-        node.internals = {
+      if (node.parentId && node.extent === 'parent') {
+        positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, nodeLookup.get(node.parentId)!);
+      } else if (extent) {
+        positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
+      }
+
+      const newNode = {
+        ...node,
+        measured: dimensions,
+        internals: {
           ...node.internals,
           positionAbsolute,
           handleBounds: {
             source: getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id),
             target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
           },
-        };
-        if (node.parentId) {
-          updateChildNode(node, nodeLookup, parentLookup, { nodeOrigin });
-        }
+        },
+      };
 
-        updatedInternals = true;
+      nodeLookup.set(node.id, newNode);
 
-        if (dimensionChanged) {
-          changes.push({
+      if (node.parentId) {
+        updateChildNode(newNode, nodeLookup, parentLookup, { nodeOrigin });
+      }
+
+      updatedInternals = true;
+
+      if (dimensionChanged) {
+        changes.push({
+          id: node.id,
+          type: 'dimensions',
+          dimensions,
+        });
+
+        if (node.expandParent && node.parentId) {
+          parentExpandChildren.push({
             id: node.id,
-            type: 'dimensions',
-            dimensions,
+            parentId: node.parentId,
+            rect: nodeToRect(newNode, nodeOrigin),
           });
-
-          if (node.expandParent && node.parentId) {
-            parentExpandChildren.push({
-              id: node.id,
-              parentId: node.parentId,
-              rect: nodeToRect(node, nodeOrigin),
-            });
-          }
         }
       }
     }
@@ -436,22 +468,58 @@ export async function panBy({
   return Promise.resolve(transformChanged);
 }
 
+/**
+ * this function adds the connection to the connectionLookup
+ * at the following keys: nodeId-type-handleId, nodeId-type and nodeId
+ * @param type type of the connection
+ * @param connection connection that should be added to the lookup
+ * @param connectionKey at which key the connection should be added
+ * @param connectionLookup reference to the connection lookup
+ * @param nodeId nodeId of the connection
+ * @param handleId handleId of the conneciton
+ */
+function addConnectionToLookup(
+  type: 'source' | 'target',
+  connection: HandleConnection,
+  connectionKey: string,
+  connectionLookup: ConnectionLookup,
+  nodeId: string,
+  handleId: string | null
+) {
+  /*
+   * We add the connection to the connectionLookup at the following keys
+   * 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId
+   * If the key already exists, we add the connection to the existing map
+   */
+  let key = nodeId;
+  const nodeMap = connectionLookup.get(key) || new Map();
+  connectionLookup.set(key, nodeMap.set(connectionKey, connection));
+
+  key = `${nodeId}-${type}`;
+  const typeMap = connectionLookup.get(key) || new Map();
+  connectionLookup.set(key, typeMap.set(connectionKey, connection));
+
+  if (handleId) {
+    key = `${nodeId}-${type}-${handleId}`;
+    const handleMap = connectionLookup.get(key) || new Map();
+    connectionLookup.set(key, handleMap.set(connectionKey, connection));
+  }
+}
+
 export function updateConnectionLookup(connectionLookup: ConnectionLookup, edgeLookup: EdgeLookup, edges: EdgeBase[]) {
   connectionLookup.clear();
   edgeLookup.clear();
 
   for (const edge of edges) {
-    const { source, target, sourceHandle = null, targetHandle = null } = edge;
+    const { source: sourceNode, target: targetNode, sourceHandle = null, targetHandle = null } = edge;
 
-    const sourceKey = `${source}-source-${sourceHandle}`;
-    const targetKey = `${target}-target-${targetHandle}`;
+    const connection = { edgeId: edge.id, source: sourceNode, target: targetNode, sourceHandle, targetHandle };
+    const sourceKey = `${sourceNode}-${sourceHandle}--${targetNode}-${targetHandle}`;
+    const targetKey = `${targetNode}-${targetHandle}--${sourceNode}-${sourceHandle}`;
 
-    const prevSource = connectionLookup.get(sourceKey) || new Map();
-    const prevTarget = connectionLookup.get(targetKey) || new Map();
-    const connection = { edgeId: edge.id, source, target, sourceHandle, targetHandle };
+    addConnectionToLookup('source', connection, targetKey, connectionLookup, sourceNode, sourceHandle);
+    addConnectionToLookup('target', connection, sourceKey, connectionLookup, targetNode, targetHandle);
 
     edgeLookup.set(edge.id, edge);
-    connectionLookup.set(sourceKey, prevSource.set(`${target}-${targetHandle}`, connection));
-    connectionLookup.set(targetKey, prevTarget.set(`${source}-${sourceHandle}`, connection));
   }
 }

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { getContext, onMount } from 'svelte';
-  import cc from 'classcat';
   import { useStore } from '$lib/store';
   import {
     XYResizer,
@@ -11,48 +10,44 @@
     type XYResizerChildChange
   } from '@xyflow/system';
   import type { ResizeControlProps } from './types';
+  import type { Node } from '$lib/types';
 
-  type $$Props = ResizeControlProps;
+  let {
+    nodeId,
+    position,
+    variant = ResizeControlVariant.Handle,
+    color,
+    minWidth = 10,
+    minHeight = 10,
+    maxWidth = Number.MAX_VALUE,
+    maxHeight = Number.MAX_VALUE,
+    keepAspectRatio = false,
+    shouldResize,
+    onResizeStart,
+    onResize,
+    onResizeEnd,
+    class: className,
+    children,
+    ...rest
+  }: ResizeControlProps = $props();
 
-  export let nodeId: $$Props['nodeId'] = undefined;
-  export let position: $$Props['position'] = undefined;
-  export let variant: $$Props['variant'] = ResizeControlVariant.Handle;
-  export let color: $$Props['color'] = undefined;
-  export let minWidth: $$Props['minWidth'] = 10;
-  $: _minWidth = minWidth ?? 10;
-  export let minHeight: $$Props['minHeight'] = 10;
-  $: _minHeight = minHeight ?? 10;
-  export let maxWidth: $$Props['maxWidth'] = Number.MAX_VALUE;
-  $: _maxWidth = maxWidth ?? Number.MAX_VALUE;
-  export let maxHeight: $$Props['maxHeight'] = Number.MAX_VALUE;
-  $: _maxHeight = maxHeight ?? Number.MAX_VALUE;
-  export let keepAspectRatio: $$Props['keepAspectRatio'] = false;
-  export let shouldResize: $$Props['shouldResize'] = undefined;
-  export let onResizeStart: $$Props['onResizeStart'] = undefined;
-  export let onResize: $$Props['onResize'] = undefined;
-  export let onResizeEnd: $$Props['onResizeEnd'] = undefined;
-  export let style: $$Props['style'] = '';
-  let className: $$Props['class'] = '';
-  export { className as class };
+  const store = useStore();
 
-  const { nodeLookup, snapGrid, viewport, nodes, nodeOrigin } = useStore();
-
-  const contextNodeId = getContext<string>('svelteflow__node_id');
-  $: id = typeof nodeId === 'string' ? nodeId : contextNodeId;
+  let id = $derived(
+    typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
+  );
 
   let resizeControlRef: HTMLDivElement;
-  let resizer: XYResizerInstance | null = null;
+  let resizer: XYResizerInstance | null = $state(null);
 
-  $: defaultPosition = (
-    variant === ResizeControlVariant.Line ? 'right' : 'bottom-right'
-  ) as ControlPosition;
-  $: controlPosition = position ?? defaultPosition;
+  let controlPosition = $derived.by(() => {
+    let defaultPosition = (
+      variant === ResizeControlVariant.Line ? 'right' : 'bottom-right'
+    ) as ControlPosition;
+    return position ?? defaultPosition;
+  });
 
-  $: positionClassNames = controlPosition.split('-');
-
-  $: colorStyleProp = variant === ResizeControlVariant.Line ? 'border-color' : 'background-color';
-  $: _style = style ?? '';
-  $: controlStyle = color ? `${_style} ${colorStyleProp}: ${color};` : _style;
+  let positionClasses = $derived(controlPosition.split('-'));
 
   onMount(() => {
     if (resizeControlRef) {
@@ -61,36 +56,40 @@
         nodeId: id,
         getStoreItems: () => {
           return {
-            nodeLookup: $nodeLookup,
-            transform: [$viewport.x, $viewport.y, $viewport.zoom],
-            snapGrid: $snapGrid ?? undefined,
-            snapToGrid: !!$snapGrid,
-            nodeOrigin: $nodeOrigin
+            nodeLookup: store.nodeLookup,
+            transform: [store.viewport.x, store.viewport.y, store.viewport.zoom],
+            snapGrid: store.snapGrid ?? undefined,
+            snapToGrid: !!store.snapGrid,
+            nodeOrigin: store.nodeOrigin,
+            paneDomNode: store.domNode
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const node = $nodeLookup.get(id)?.internals.userNode;
-          if (!node) {
-            return;
-          }
-
-          if (change.x !== undefined && change.y !== undefined) {
-            node.position = { x: change.x, y: change.y };
-          }
-
-          if (change.width !== undefined && change.height !== undefined) {
-            node.width = change.width;
-            node.height = change.height;
-          }
+          const changes = new Map<string, Partial<Node>>();
+          let position = change.x && change.y ? { x: change.x, y: change.y } : undefined;
+          changes.set(id, { ...change, position });
 
           for (const childChange of childChanges) {
-            const childNode = $nodeLookup.get(childChange.id)?.internals.userNode;
-            if (childNode) {
-              childNode.position = childChange.position;
-            }
+            changes.set(childChange.id, {
+              position: childChange.position
+            });
           }
 
-          $nodes = $nodes;
+          store.nodes = store.nodes.map((node) => {
+            const change = changes.get(node.id);
+            if (change) {
+              return {
+                ...node,
+                position: {
+                  x: change.position?.x ?? node.position.x,
+                  y: change.position?.y ?? node.position.y
+                },
+                width: change.width ?? node.width,
+                height: change.height ?? node.height
+              };
+            }
+            return node;
+          });
         }
       });
     }
@@ -99,14 +98,14 @@
     };
   });
 
-  $: {
+  $effect.pre(() => {
     resizer?.update({
       controlPosition,
       boundaries: {
-        minWidth: _minWidth,
-        minHeight: _minHeight,
-        maxWidth: _maxWidth,
-        maxHeight: _maxHeight
+        minWidth,
+        minHeight,
+        maxWidth,
+        maxHeight
       },
       keepAspectRatio: !!keepAspectRatio,
       onResizeStart,
@@ -114,13 +113,15 @@
       onResizeEnd,
       shouldResize
     });
-  }
+  });
 </script>
 
 <div
-  class={cc(['svelte-flow__resize-control', 'nodrag', ...positionClassNames, variant, className])}
+  class={['svelte-flow__resize-control', store.noDragClass, ...positionClasses, variant, className]}
   bind:this={resizeControlRef}
-  style={controlStyle}
+  style:border-color={variant === ResizeControlVariant.Line ? color : undefined}
+  style:background-color={variant === ResizeControlVariant.Line ? undefined : color}
+  {...rest}
 >
-  <slot />
+  {@render children?.()}
 </div>

@@ -32,6 +32,7 @@ function ResizeControl({
   maxWidth = Number.MAX_VALUE,
   maxHeight = Number.MAX_VALUE,
   keepAspectRatio = false,
+  resizeDirection,
   shouldResize,
   onResizeStart,
   onResize,
@@ -56,13 +57,14 @@ function ResizeControl({
         domNode: resizeControlRef.current,
         nodeId: id,
         getStoreItems: () => {
-          const { nodeLookup, transform, snapGrid, snapToGrid, nodeOrigin } = store.getState();
+          const { nodeLookup, transform, snapGrid, snapToGrid, nodeOrigin, domNode } = store.getState();
           return {
             nodeLookup,
             transform,
             snapGrid,
             snapToGrid,
             nodeOrigin,
+            paneDomNode: domNode,
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
@@ -73,8 +75,8 @@ function ResizeControl({
 
           if (node && node.expandParent && node.parentId) {
             const origin = node.origin ?? nodeOrigin;
-            const width = change.width ?? node.measured.width!;
-            const height = change.height ?? node.measured.height!;
+            const width = change.width ?? node.measured.width ?? 0;
+            const height = change.height ?? node.measured.height ?? 0;
 
             const child: ParentExpandChild = {
               id: node.id,
@@ -98,8 +100,10 @@ function ResizeControl({
             const parentExpandChanges = handleExpandParent([child], nodeLookup, parentLookup, nodeOrigin);
             changes.push(...parentExpandChanges);
 
-            // when the parent was expanded by the child node, its position will be clamped at
-            // 0,0 when node origin is 0,0 and to width, height if it's 1,1
+            /*
+             * when the parent was expanded by the child node, its position will be clamped at
+             * 0,0 when node origin is 0,0 and to width, height if it's 1,1
+             */
             nextPosition.x = change.x ? Math.max(origin[0] * width, change.x) : undefined;
             nextPosition.y = change.y ? Math.max(origin[1] * height, change.y) : undefined;
           }
@@ -114,11 +118,12 @@ function ResizeControl({
           }
 
           if (change.width !== undefined && change.height !== undefined) {
+            const setAttributes = !resizeDirection ? true : resizeDirection === 'horizontal' ? 'width' : 'height';
             const dimensionChange: NodeDimensionChange = {
               id,
               type: 'dimensions',
               resizing: true,
-              setAttributes: true,
+              setAttributes,
               dimensions: {
                 width: change.width,
                 height: change.height,
@@ -139,11 +144,15 @@ function ResizeControl({
 
           triggerNodeChanges(changes);
         },
-        onEnd: () => {
+        onEnd: ({ width, height }) => {
           const dimensionChange: NodeDimensionChange = {
             id: id,
             type: 'dimensions',
             resizing: false,
+            dimensions: {
+              width,
+              height,
+            },
           };
           store.getState().triggerNodeChanges([dimensionChange]);
         },
@@ -159,6 +168,7 @@ function ResizeControl({
         maxHeight,
       },
       keepAspectRatio,
+      resizeDirection,
       onResizeStart,
       onResize,
       onResizeEnd,
@@ -200,4 +210,9 @@ export function ResizeControlLine(props: ResizeControlLineProps) {
   return <ResizeControl {...props} variant={ResizeControlVariant.Line} />;
 }
 
+/**
+ * To create your own resizing UI, you can use the `NodeResizeControl` component where you can pass children (such as icons).
+ * @public
+ *
+ */
 export const NodeResizeControl = memo(ResizeControl);

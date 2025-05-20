@@ -1,23 +1,26 @@
-<script lang="ts">
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { onDestroy } from 'svelte';
-  import { nodeHasDimensions } from '@xyflow/system';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper';
-  import { useStore } from '$lib/store';
-  import type { NodeRendererProps } from './types';
 
-  type $$Props = NodeRendererProps;
+  import type { Node, Edge, NodeEvents } from '$lib/types';
+  import type { SvelteFlowStore } from '$lib/store/types';
 
-  export let nodeClickDistance: $$Props['nodeClickDistance'] = 0;
-
-  const {
-    visibleNodes,
-    nodesDraggable,
-    nodesConnectable,
-    elementsSelectable,
-    updateNodeInternals,
-    parentLookup
-  } = useStore();
+  let {
+    store = $bindable(),
+    nodeClickDistance,
+    onnodeclick,
+    onnodecontextmenu,
+    onnodepointerenter,
+    onnodepointermove,
+    onnodepointerleave,
+    onnodedrag,
+    onnodedragstart,
+    onnodedragstop
+  }: {
+    store: SvelteFlowStore<NodeType, EdgeType>;
+    nodeClickDistance?: number;
+  } & NodeEvents<NodeType> = $props();
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'
@@ -35,7 +38,7 @@
             });
           });
 
-          updateNodeInternals(updates);
+          store.updateNodeInternals(updates);
         });
 
   onDestroy(() => {
@@ -44,62 +47,20 @@
 </script>
 
 <div class="svelte-flow__nodes">
-  {#each $visibleNodes as node (node.id)}
+  {#each store.visible.nodes.values() as node (node.id)}
     <NodeWrapper
+      bind:store
       {node}
-      id={node.id}
-      data={node.data}
-      selected={!!node.selected}
-      hidden={!!node.hidden}
-      draggable={!!(node.draggable || ($nodesDraggable && typeof node.draggable === 'undefined'))}
-      selectable={!!(
-        node.selectable ||
-        ($elementsSelectable && typeof node.selectable === 'undefined')
-      )}
-      connectable={!!(
-        node.connectable ||
-        ($nodesConnectable && typeof node.connectable === 'undefined')
-      )}
-      deletable={node.deletable ?? true}
-      positionX={node.internals.positionAbsolute.x}
-      positionY={node.internals.positionAbsolute.y}
-      isParent={$parentLookup.has(node.id)}
-      style={node.style}
-      class={node.class}
-      type={node.type ?? 'default'}
-      sourcePosition={node.sourcePosition}
-      targetPosition={node.targetPosition}
-      dragging={node.dragging}
-      zIndex={node.internals.z ?? 0}
-      dragHandle={node.dragHandle}
-      initialized={nodeHasDimensions(node)}
-      width={node.width}
-      height={node.height}
-      initialWidth={node.initialWidth}
-      initialHeight={node.initialHeight}
-      measuredWidth={node.measured.width}
-      measuredHeight={node.measured.height}
-      parentId={node.parentId}
       {resizeObserver}
       {nodeClickDistance}
-      on:nodeclick
-      on:nodemouseenter
-      on:nodemousemove
-      on:nodemouseleave
-      on:nodedrag
-      on:nodedragstart
-      on:nodedragstop
-      on:nodecontextmenu
+      {onnodeclick}
+      {onnodepointerenter}
+      {onnodepointermove}
+      {onnodepointerleave}
+      {onnodedrag}
+      {onnodedragstart}
+      {onnodedragstop}
+      {onnodecontextmenu}
     />
   {/each}
 </div>
-
-<style>
-  .svelte-flow__nodes {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-</style>

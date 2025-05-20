@@ -1,18 +1,18 @@
 <script lang="ts">
-	import { useNodesInitialized, useInitialized } from '@xyflow/svelte';
+	import { useNodesInitialized, useViewportInitialized } from '@xyflow/svelte';
 
 	const nodesInitialized = useNodesInitialized();
-	const initialized = useInitialized();
+	const viewportInitialized = useViewportInitialized();
 
-	$: {
-		if (nodesInitialized) {
+	$effect(() => {
+		if (viewportInitialized.current) {
+			console.log('viewportInitialized');
+		}
+	});
+
+	$effect(() => {
+		if (nodesInitialized.current) {
 			console.log('nodes initialized');
 		}
-	}
-
-	$: {
-		if (initialized) {
-			console.log('initialized');
-		}
-	}
+	});
 </script>

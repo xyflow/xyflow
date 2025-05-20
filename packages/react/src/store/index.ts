@@ -1,7 +1,5 @@
 import { createWithEqualityFn } from 'zustand/traditional';
 import {
-  getFitViewNodes,
-  fitView as fitViewSystem,
   adoptUserNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
@@ -15,6 +13,7 @@ import {
   initialConnection,
   NodeOrigin,
   CoordinateExtent,
+  fitViewport,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -29,6 +28,9 @@ const createStore = ({
   width,
   height,
   fitView,
+  fitViewOptions,
+  minZoom,
+  maxZoom,
   nodeOrigin,
   nodeExtent,
 }: {
@@ -39,28 +41,79 @@ const createStore = ({
   width?: number;
   height?: number;
   fitView?: boolean;
+  fitViewOptions?: FitViewOptions;
+  minZoom?: number;
+  maxZoom?: number;
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
 }) =>
-  createWithEqualityFn<ReactFlowState>(
-    (set, get) => ({
-      ...getInitialState({ nodes, edges, width, height, fitView, nodeOrigin, nodeExtent, defaultNodes, defaultEdges }),
+  createWithEqualityFn<ReactFlowState>((set, get) => {
+    async function resolveFitView() {
+      const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
+
+      if (!panZoom) {
+        return;
+      }
+
+      await fitViewport(
+        {
+          nodes: nodeLookup,
+          width,
+          height,
+          panZoom,
+          minZoom,
+          maxZoom,
+        },
+        fitViewOptions
+      );
+
+      fitViewResolver?.resolve(true);
+      /**
+       * wait for the fitViewport to resolve before deleting the resolver,
+       * we want to reuse the old resolver if the user calls fitView again in the mean time
+       */
+      set({ fitViewResolver: null });
+    }
+
+    return {
+      ...getInitialState({
+        nodes,
+        edges,
+        width,
+        height,
+        fitView,
+        fitViewOptions,
+        minZoom,
+        maxZoom,
+        nodeOrigin,
+        nodeExtent,
+        defaultNodes,
+        defaultEdges,
+      }),
       setNodes: (nodes: Node[]) => {
-        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect } = get();
-        // setNodes() is called exclusively in response to user actions:
-        // - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
-        // - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
-        //
-        // When this happens, we take the note objects passed by the user and extend them with fields
-        // relevant for internal React Flow operations.
-        adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, fitViewQueued } = get();
+        /*
+         * setNodes() is called exclusively in response to user actions:
+         * - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
+         * - or when the user calls something like `reactFlowInstance.setNodes()` in an uncontrolled ReactFlow setup.
+         *
+         * When this happens, we take the note objects passed by the user and extend them with fields
+         * relevant for internal React Flow operations.
+         */
+
+        const nodesInitialized = adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent,
           elevateNodesOnSelect,
           checkEquality: true,
         });
 
-        set({ nodes });
+        if (fitViewQueued && nodesInitialized) {
+          resolveFitView();
+          set({ nodes, nodesInitialized, fitViewQueued: false, fitViewOptions: undefined });
+        } else {
+          set({ nodes, nodesInitialized });
+        }
       },
       setEdges: (edges: Edge[]) => {
         const { connectionLookup, edgeLookup } = get();
@@ -81,23 +134,14 @@ const createStore = ({
           set({ hasDefaultEdges: true });
         }
       },
-      // Every node gets registerd at a ResizeObserver. Whenever a node
-      // changes its dimensions, this function is called to measure the
-      // new dimensions and update the nodes.
-      updateNodeInternals: (updates, params = { triggerFitView: true }) => {
-        const {
-          triggerNodeChanges,
-          nodeLookup,
-          parentLookup,
-          fitViewOnInit,
-          fitViewDone,
-          fitViewOnInitOptions,
-          domNode,
-          nodeOrigin,
-          nodeExtent,
-          debug,
-          fitViewSync,
-        } = get();
+      /*
+       * Every node gets registerd at a ResizeObserver. Whenever a node
+       * changes its dimensions, this function is called to measure the
+       * new dimensions and update the nodes.
+       */
+      updateNodeInternals: (updates) => {
+        const { triggerNodeChanges, nodeLookup, parentLookup, domNode, nodeOrigin, nodeExtent, debug, fitViewQueued } =
+          get();
 
         const { changes, updatedInternals } = updateNodeInternalsSystem(
           updates,
@@ -114,23 +158,9 @@ const createStore = ({
 
         updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent });
 
-        if (params.triggerFitView) {
-          // we call fitView once initially after all dimensions are set
-          let nextFitViewDone = fitViewDone;
-
-          if (!fitViewDone && fitViewOnInit) {
-            nextFitViewDone = fitViewSync({
-              ...fitViewOnInitOptions,
-              nodes: fitViewOnInitOptions?.nodes,
-            });
-          }
-
-          // here we are cirmumventing the onNodesChange handler
-          // in order to be able to display nodes even if the user
-          // has not provided an onNodesChange handler.
-          // Nodes are only rendered if they have a width and height
-          // attribute which they get from this handler.
-          set({ fitViewDone: nextFitViewDone });
+        if (fitViewQueued) {
+          resolveFitView();
+          set({ fitViewQueued: false, fitViewOptions: undefined });
         } else {
           // we always want to trigger useStore calls whenever updateNodeInternals is called
           set({});
@@ -146,40 +176,47 @@ const createStore = ({
       updateNodePositions: (nodeDragItems, dragging = false) => {
         const parentExpandChildren: ParentExpandChild[] = [];
         const changes = [];
+        const { nodeLookup, triggerNodeChanges } = get();
 
         for (const [id, dragItem] of nodeDragItems) {
+          // we are using the nodelookup to be sure to use the current expandParent and parentId value
+          const node = nodeLookup.get(id);
+          const expandParent = !!(node?.expandParent && node?.parentId && dragItem?.position);
+
           const change: NodeChange = {
             id,
             type: 'position',
-            position: dragItem.position,
+            position: expandParent
+              ? {
+                  x: Math.max(0, dragItem.position.x),
+                  y: Math.max(0, dragItem.position.y),
+                }
+              : dragItem.position,
             dragging,
           };
 
-          if (dragItem?.expandParent && dragItem?.parentId && change.position) {
+          if (expandParent && node.parentId) {
             parentExpandChildren.push({
               id,
-              parentId: dragItem.parentId,
+              parentId: node.parentId,
               rect: {
                 ...dragItem.internals.positionAbsolute,
-                width: dragItem.measured.width!,
-                height: dragItem.measured.height!,
+                width: dragItem.measured.width ?? 0,
+                height: dragItem.measured.height ?? 0,
               },
             });
-
-            change.position.x = Math.max(0, change.position.x);
-            change.position.y = Math.max(0, change.position.y);
           }
 
           changes.push(change);
         }
 
         if (parentExpandChildren.length > 0) {
-          const { nodeLookup, parentLookup, nodeOrigin } = get();
+          const { parentLookup, nodeOrigin } = get();
           const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup, nodeOrigin);
           changes.push(...parentExpandChanges);
         }
 
-        get().triggerNodeChanges(changes);
+        triggerNodeChanges(changes);
       },
       triggerNodeChanges: (changes) => {
         const { onNodesChange, setNodes, nodes, hasDefaultNodes, debug } = get();
@@ -218,7 +255,7 @@ const createStore = ({
 
         if (multiSelectionActive) {
           const nodeChanges = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true));
-          triggerNodeChanges(nodeChanges as NodeSelectionChange[]);
+          triggerNodeChanges(nodeChanges);
           return;
         }
 
@@ -230,7 +267,7 @@ const createStore = ({
 
         if (multiSelectionActive) {
           const changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true));
-          triggerEdgeChanges(changedEdges as EdgeSelectionChange[]);
+          triggerEdgeChanges(changedEdges);
           return;
         }
 
@@ -238,18 +275,25 @@ const createStore = ({
         triggerNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
-        const { edges: storeEdges, nodes: storeNodes, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { edges: storeEdges, nodes: storeNodes, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
         const nodesToUnselect = nodes ? nodes : storeNodes;
         const edgesToUnselect = edges ? edges : storeEdges;
-
         const nodeChanges = nodesToUnselect.map((n) => {
-          n.selected = false;
+          const internalNode = nodeLookup.get(n.id);
+          if (internalNode) {
+            /*
+             * we need to unselect the internal node that was selected previously before we
+             * send the change to the user to prevent it to be selected while dragging the new node
+             */
+            internalNode.selected = false;
+          }
+
           return createSelectionChange(n.id, false);
         });
         const edgeChanges = edgesToUnselect.map((edge) => createSelectionChange(edge.id, false));
 
-        triggerNodeChanges(nodeChanges as NodeSelectionChange[]);
-        triggerEdgeChanges(edgeChanges as EdgeSelectionChange[]);
+        triggerNodeChanges(nodeChanges);
+        triggerEdgeChanges(edgeChanges);
       },
       setMinZoom: (minZoom) => {
         const { panZoom, maxZoom } = get();
@@ -272,14 +316,18 @@ const createStore = ({
         get().panZoom?.setClickDistance(clickDistance);
       },
       resetSelectedElements: () => {
-        const { edges, nodes, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { edges, nodes, triggerNodeChanges, triggerEdgeChanges, elementsSelectable } = get();
+
+        if (!elementsSelectable) {
+          return;
+        }
 
         const nodeChanges = nodes.reduce<NodeSelectionChange[]>(
-          (res, node) => (node.selected ? [...res, createSelectionChange(node.id, false) as NodeSelectionChange] : res),
+          (res, node) => (node.selected ? [...res, createSelectionChange(node.id, false)] : res),
           []
         );
         const edgeChanges = edges.reduce<EdgeSelectionChange[]>(
-          (res, edge) => (edge.selected ? [...res, createSelectionChange(edge.id, false) as EdgeSelectionChange] : res),
+          (res, edge) => (edge.selected ? [...res, createSelectionChange(edge.id, false)] : res),
           []
         );
 
@@ -312,52 +360,6 @@ const createStore = ({
 
         return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
       },
-      fitView: (options?: FitViewOptions): Promise<boolean> => {
-        const { panZoom, width, height, minZoom, maxZoom, nodeLookup } = get();
-
-        if (!panZoom) {
-          return Promise.resolve(false);
-        }
-
-        const fitViewNodes = getFitViewNodes(nodeLookup, options);
-
-        return fitViewSystem(
-          {
-            nodes: fitViewNodes,
-            width,
-            height,
-            panZoom,
-            minZoom,
-            maxZoom,
-          },
-          options
-        );
-      },
-      // we can't call an asnychronous function in updateNodeInternals
-      // for that we created this sync version of fitView
-      fitViewSync: (options?: FitViewOptions): boolean => {
-        const { panZoom, width, height, minZoom, maxZoom, nodeLookup } = get();
-
-        if (!panZoom) {
-          return false;
-        }
-
-        const fitViewNodes = getFitViewNodes(nodeLookup, options);
-
-        fitViewSystem(
-          {
-            nodes: fitViewNodes,
-            width,
-            height,
-            panZoom,
-            minZoom,
-            maxZoom,
-          },
-          options
-        );
-
-        return fitViewNodes.size > 0;
-      },
       cancelConnection: () => {
         set({
           connection: { ...initialConnection },
@@ -368,8 +370,7 @@ const createStore = ({
       },
 
       reset: () => set({ ...getInitialState() }),
-    }),
-    Object.is
-  );
+    };
+  }, Object.is);
 
 export { createStore };

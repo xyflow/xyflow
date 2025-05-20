@@ -5,12 +5,17 @@ export * from '$lib/container/SvelteFlow/types';
 // components
 export * from '$lib/container/Panel';
 export * from '$lib/components/SvelteFlowProvider';
-export * from '$lib/components/EdgeLabelRenderer';
 export * from '$lib/components/ViewportPortal';
-export * from '$lib/components/BaseEdge';
-export { BezierEdge, StepEdge, SmoothStepEdge, StraightEdge } from '$lib/components/edges';
+export {
+  BezierEdge,
+  StepEdge,
+  SmoothStepEdge,
+  StraightEdge,
+  BaseEdge
+} from '$lib/components/edges';
 export * from '$lib/components/Handle';
 export * from '$lib/components/EdgeLabel';
+export * from '$lib/components/EdgeReconnectAnchor';
 
 // plugins
 export * from '$lib/plugins/Controls';
@@ -26,14 +31,18 @@ export { useStore } from '$lib/store';
 export * from '$lib/utils';
 
 //hooks
-export * from '$lib/hooks/useSvelteFlow';
-export * from '$lib/hooks/useUpdateNodeInternals';
-export * from '$lib/hooks/useConnection';
-export * from '$lib/hooks/useNodesEdges';
-export * from '$lib/hooks/useHandleConnections';
-export * from '$lib/hooks/useNodesData';
-export * from '$lib/hooks/useInternalNode';
-export { useInitialized, useNodesInitialized } from '$lib/hooks/useInitialized';
+export * from '$lib/hooks/useSvelteFlow.svelte';
+export * from '$lib/hooks/useUpdateNodeInternals.svelte';
+export * from '$lib/hooks/useConnection.svelte';
+export * from '$lib/hooks/useNodesEdgesViewport.svelte';
+export * from '$lib/hooks/useNodeConnections.svelte';
+export * from '$lib/hooks/useNodesData.svelte';
+export * from '$lib/hooks/useInternalNode.svelte';
+export * from '$lib/hooks/useInitialized.svelte';
+export * from '$lib/hooks/useOnSelectionChange.svelte';
+
+//actions
+export * from '$lib/actions/portal';
 
 // types
 export type {
@@ -46,16 +55,10 @@ export type {
   EdgeTypes,
   DefaultEdgeOptions
 } from '$lib/types/edges';
-export type { HandleProps, FitViewOptions } from '$lib/types/general';
-export type {
-  Node,
-  NodeTypes,
-  DefaultNodeOptions,
-  BuiltInNode,
-  NodeProps,
-  InternalNode
-} from '$lib/types/nodes';
+export type { FitViewOptions, OnBeforeDelete } from '$lib/types/general';
+export type { Node, NodeTypes, BuiltInNode, NodeProps, InternalNode } from '$lib/types/nodes';
 export type { SvelteFlowStore } from '$lib/store/types';
+export * from '$lib/types/events';
 
 // system types
 export {
@@ -104,11 +107,12 @@ export {
   type OnResizeEnd,
   type ControlPosition,
   type ControlLinePosition,
-  type ResizeControlVariant,
+  ResizeControlVariant,
   type ResizeParams,
   type ResizeParamsWithDirection,
   type ResizeDragEvent,
-  type IsValidConnection
+  type IsValidConnection,
+  type NodeConnection
 } from '@xyflow/system';
 
 // system utils

@@ -1,5 +1,6 @@
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
+import BrokenNodes from '../examples/BrokenNodes';
 import ColorMode from '../examples/ColorMode';
 import ClickDistance from '../examples/ClickDistance';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
@@ -49,7 +50,7 @@ import NodeToolbar from '../examples/NodeToolbar';
 import UseConnection from '../examples/UseConnection';
 import UseNodesInitialized from '../examples/UseNodesInit';
 import UseNodesData from '../examples/UseNodesData';
-import UseHandleConnections from '../examples/UseHandleConnections';
+import UseNodeConnections from '../examples/UseNodeConnections';
 import AddNodeOnEdgeDrop from '../examples/AddNodeOnEdgeDrop';
 import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
@@ -76,6 +77,11 @@ const routes: IRoute[] = [
     name: 'Backgrounds',
     path: 'backgrounds',
     component: Backgrounds,
+  },
+  {
+    name: 'Broken Nodes',
+    path: 'broken-nodes',
+    component: BrokenNodes,
   },
   {
     name: 'Color Mode',
@@ -313,9 +319,9 @@ const routes: IRoute[] = [
     component: UseReactFlow,
   },
   {
-    name: 'useHandleConnections',
-    path: 'usehandleconnections',
-    component: UseHandleConnections,
+    name: 'useNodeConnections',
+    path: 'usenodeconnections',
+    component: UseNodeConnections,
   },
   {
     name: 'useNodesData',

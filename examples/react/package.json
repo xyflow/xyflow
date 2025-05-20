@@ -7,6 +7,7 @@
     "dev": "vite --port 3000 --open --host",
     "serve": "vite serve --port 3000",
     "build": "vite build",
+    "preview": "vite preview",
     "test:dev": "cypress open",
     "test": "pnpm test-component && pnpm test-e2e",
     "test-component": "cypress run --component",
@@ -37,7 +38,7 @@
     "cypress": "13.6.6",
     "cypress-real-events": "1.12.0",
     "start-server-and-test": "^2.0.2",
-    "typescript": "5.2.2",
+    "typescript": "5.4.5",
     "vite": "4.5.0"
   }
 }

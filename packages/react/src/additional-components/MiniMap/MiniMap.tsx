@@ -15,6 +15,8 @@ import type { MiniMapProps } from './types';
 const defaultWidth = 200;
 const defaultHeight = 150;
 
+const filterHidden = (node: Node) => !node.hidden;
+
 const selector = (s: ReactFlowState) => {
   const viewBB: Rect = {
     x: -s.transform[0] / s.transform[2],
@@ -25,7 +27,10 @@ const selector = (s: ReactFlowState) => {
 
   return {
     viewBB,
-    boundingRect: s.nodeLookup.size > 0 ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup), viewBB) : viewBB,
+    boundingRect:
+      s.nodeLookup.size > 0
+        ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
+        : viewBB,
     rfId: s.rfId,
     panZoom: s.panZoom,
     translateExtent: s.translateExtent,
@@ -44,8 +49,10 @@ function MiniMapComponent<NodeType extends Node = Node>({
   nodeClassName = '',
   nodeBorderRadius = 5,
   nodeStrokeWidth,
-  // We need to rename the prop to be `CapitalCase` so that JSX will render it as
-  // a component properly.
+  /*
+   * We need to rename the prop to be `CapitalCase` so that JSX will render it as
+   * a component properly.
+   */
   nodeComponent,
   bgColor,
   maskColor,
@@ -118,7 +125,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
   const onSvgNodeClick = onNodeClick
     ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node = store.getState().nodeLookup.get(nodeId)!;
+        const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
         onNodeClick(event, node);
       }, [])
     : undefined;
@@ -136,7 +143,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
             typeof maskStrokeWidth === 'number' ? maskStrokeWidth * viewScale : undefined,
           '--xy-minimap-node-background-color-props': typeof nodeColor === 'string' ? nodeColor : undefined,
           '--xy-minimap-node-stroke-color-props': typeof nodeStrokeColor === 'string' ? nodeStrokeColor : undefined,
-          '--xy-minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'string' ? nodeStrokeWidth : undefined,
+          '--xy-minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'number' ? nodeStrokeWidth : undefined,
         } as CSSProperties
       }
       className={cc(['react-flow__minimap', className])}
@@ -176,4 +183,24 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
 MiniMapComponent.displayName = 'MiniMap';
 
+/**
+ * The `<MiniMap />` component can be used to render an overview of your flow. It
+ * renders each node as an SVG element and visualizes where the current viewport is
+ * in relation to the rest of the flow.
+ *
+ * @public
+ * @example
+ *
+ * ```jsx
+ *import { ReactFlow, MiniMap } from '@xyflow/react';
+ *
+ *export default function Flow() {
+ *  return (
+ *    <ReactFlow nodes={[...]]} edges={[...]]}>
+ *      <MiniMap nodeStrokeWidth={3} />
+ *    </ReactFlow>
+ *  );
+ *}
+ *```
+ */
 export const MiniMap = memo(MiniMapComponent) as typeof MiniMapComponent;

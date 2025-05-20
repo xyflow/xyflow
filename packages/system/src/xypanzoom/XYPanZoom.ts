@@ -1,5 +1,6 @@
 import { type ZoomTransform, zoom, zoomTransform } from 'd3-zoom';
 import { select } from 'd3-selection';
+import { interpolateZoom, interpolate } from 'd3-interpolate';
 
 import {
   type CoordinateExtent,
@@ -19,6 +20,7 @@ import {
   createZoomOnScrollHandler,
 } from './eventhandler';
 import { createFilter } from './filter';
+import { transition } from 'd3-transition';
 
 export type ZoomPanValues = {
   isZoomingOrPanning: boolean;
@@ -78,8 +80,8 @@ export function XYPanZoom({
   function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.transform(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).transform(
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           transform
         );
       });
@@ -178,9 +180,11 @@ export function XYPanZoom({
     });
     d3ZoomInstance.filter(filter);
 
-    // We cannot add zoomOnDoubleClick to the filter above because
-    // double tapping on touch screens circumvents the filter and
-    // dblclick.zoom is fired on the selection directly
+    /*
+     * We cannot add zoomOnDoubleClick to the filter above because
+     * double tapping on touch screens circumvents the filter and
+     * dblclick.zoom is fired on the selection directly
+     */
     if (zoomOnDoubleClick) {
       d3Selection.on('dblclick.zoom', d3DblClickZoomHandler);
     } else {
@@ -240,8 +244,8 @@ export function XYPanZoom({
   function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.scaleTo(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleTo(
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           zoom
         );
       });
@@ -253,8 +257,8 @@ export function XYPanZoom({
   function scaleBy(factor: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.scaleBy(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleBy(
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           factor
         );
       });

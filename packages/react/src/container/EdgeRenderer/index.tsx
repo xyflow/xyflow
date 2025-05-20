@@ -31,8 +31,6 @@ type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
 };
 
 const selector = (s: ReactFlowState) => ({
-  width: s.width,
-  height: s.height,
   edgesFocusable: s.edgesFocusable,
   edgesReconnectable: s.edgesReconnectable,
   elementsSelectable: s.elementsSelectable,
