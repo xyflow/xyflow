@@ -46,6 +46,7 @@
   );
   let minZoomReached = $derived(store.viewport.zoom <= store.minZoom);
   let maxZoomReached = $derived(store.viewport.zoom >= store.maxZoom);
+  let labelConfig = $derived(store.labelConfig);
   let orientationClass = $derived(orientation === 'horizontal' ? 'horizontal' : 'vertical');
 
   const onZoomInHandler = () => {
@@ -83,8 +84,8 @@
     <ControlButton
       onclick={onZoomInHandler}
       class="svelte-flow__controls-zoomin"
-      title="zoom in"
-      aria-label="zoom in"
+      title={labelConfig['controls.zoomin.title']}
+      aria-label={labelConfig['controls.zoomin.title']}
       disabled={maxZoomReached}
       {...buttonProps}
     >
@@ -93,8 +94,8 @@
     <ControlButton
       onclick={onZoomOutHandler}
       class="svelte-flow__controls-zoomout"
-      title="zoom out"
-      aria-label="zoom out"
+      title={labelConfig['controls.zoomout.title']}
+      aria-label={labelConfig['controls.zoomout.title']}
       disabled={minZoomReached}
       {...buttonProps}
     >
@@ -105,8 +106,8 @@
     <ControlButton
       class="svelte-flow__controls-fitview"
       onclick={onFitViewHandler}
-      title="fit view"
-      aria-label="fit view"
+      title={labelConfig['controls.fitview.title']}
+      aria-label={labelConfig['controls.fitview.title']}
       {...buttonProps}
     >
       <FitViewIcon />
@@ -116,8 +117,8 @@
     <ControlButton
       class="svelte-flow__controls-interactive"
       onclick={onToggleInteractivity}
-      title="toggle interactivity"
-      aria-label="toggle interactivity"
+      title={labelConfig['controls.interactive.title']}
+      aria-label={labelConfig['controls.interactive.title']}
       {...buttonProps}
     >
       {#if isInteractive}<UnlockIcon />{:else}<LockIcon />{/if}

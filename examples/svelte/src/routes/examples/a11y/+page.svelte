@@ -29,11 +29,20 @@
 
 </script>
 
-<SvelteFlow bind:nodes bind:edges fitView   labelConfig={{
-    'a11yDescription.node.default': 'Svelte Custom node description',
-    'a11yDescription.node.keyboardDisabled': 'Svelte Custom keyboard-disabled node description',
-    'a11yDescription.edge.default': 'Svelte Custom edge description',
-  }}>
+<SvelteFlow 
+	bind:nodes 
+	bind:edges 
+	fitView   
+	labelConfig={{
+        'a11yDescription.node.default': 'Svelte Custom Node Desc.',
+        'a11yDescription.node.keyboardDisabled': 'Svelte Custom Keyboard Desc.',
+        'a11yDescription.edge.default': 'Svelte Custom Edge Desc.',
+        'controls.zoomin.title': 'Svelte Custom Zoom in',
+        'controls.zoomout.title': 'Svelte Custom Zoom Out',
+        'controls.fitview.title': 'Svelte Custom Fit View',
+        'controls.interactive.title': 'Svelte Custom Toggle Interactivity',
+	}}
+>
 	<Controls />
 	<Background />
 	<MiniMap />
