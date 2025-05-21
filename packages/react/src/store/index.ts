@@ -14,7 +14,6 @@ import {
   NodeOrigin,
   CoordinateExtent,
   fitViewport,
-  LabelConfig,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';

@@ -7,6 +7,7 @@ import {
   getViewportForBounds,
   updateConnectionLookup,
   initialConnection,
+  defaultLabelConfig,
   type SelectionRect,
   type SnapGrid,
   type MarkerProps,
@@ -32,7 +33,8 @@ import {
   type Handle,
   type OnReconnect,
   type OnReconnectStart,
-  type OnReconnectEnd
+  type OnReconnectEnd,
+  type LabelConfig
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -289,6 +291,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     noPanClass: string = $derived(signals.props.noPanClass ?? 'nopan');
     noDragClass: string = $derived(signals.props.noDragClass ?? 'nodrag');
     noWheelClass: string = $derived(signals.props.noWheelClass ?? 'nowheel');
+    labelConfig: LabelConfig = $derived(signals.props.labelConfig ?? defaultLabelConfig);
 
     // _viewport is the internal viewport.
     // when binding to viewport, we operate on signals.viewport instead
