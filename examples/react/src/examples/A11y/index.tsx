@@ -1,4 +1,4 @@
-import { MouseEvent, useMemo, useEffect } from 'react';
+import { MouseEvent } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -9,8 +9,6 @@ import {
   Node,
   Edge,
   OnNodeDrag,
-  FitViewOptions,
-  useStore,
 } from '@xyflow/react';
 
 const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
@@ -46,22 +44,6 @@ const initialEdges: Edge[] = [
 ];
 
 const A11y = () => {
-  const labelConfig = useStore((state) => state.labelConfig);
-  const updateLabelConfig = useStore((state) => state.updateLabelConfig);
-
-  useEffect(() => {
-    console.log('Label Config:', labelConfig);
-  }, [labelConfig]);
-
-  useEffect(() => {
-    console.log('Updating labelConfig...');
-    updateLabelConfig({
-      'a11yDescription.node.default': 'Updated Node Desc.',
-      'a11yDescription.node.keyboardDisabled': 'Updated Keyboard Desc.',
-      'a11yDescription.edge.default': 'Updated Edge Desc.',
-    });
-  }, [updateLabelConfig]);
-
   return (
     <ReactFlow
       defaultNodes={initialNodes}

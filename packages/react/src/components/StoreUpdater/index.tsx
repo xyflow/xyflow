@@ -68,6 +68,7 @@ const reactFlowFieldsToTrack = [
   'debug',
   'autoPanSpeed',
   'paneClickDistance',
+  'labelConfig',
 ] as const;
 
 type ReactFlowFieldsToTrack = (typeof reactFlowFieldsToTrack)[number];

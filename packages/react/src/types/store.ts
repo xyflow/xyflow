@@ -148,7 +148,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   lib: string;
   debug: boolean;
-  labelConfig: Required<LabelConfig>;
+  labelConfig: LabelConfig;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
@@ -172,7 +172,6 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
   setPaneClickDistance: (distance: number) => void;
-  updateLabelConfig: (newLabelConfig: Partial<LabelConfig>) => void;
 };
 
 export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = ReactFlowStore<

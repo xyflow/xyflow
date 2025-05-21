@@ -306,6 +306,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           onBeforeDelete={onBeforeDelete}
           paneClickDistance={paneClickDistance}
           debug={debug}
+          labelConfig={labelConfig}
         />
         <SelectionListener<NodeType, EdgeType> onSelectionChange={onSelectionChange} />
         {children}

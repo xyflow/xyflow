@@ -45,3 +45,5 @@ export const defaultLabelConfig = {
   'a11yDescription.edge.default':
     'Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.',
 };
+
+export type LabelConfig = Partial<typeof defaultLabelConfig>;

@@ -371,11 +371,6 @@ const createStore = ({
       },
 
       reset: () => set({ ...getInitialState() }),
-      updateLabelConfig: (newLabelConfig: Partial<LabelConfig>) => {
-        set((state) => ({
-          labelConfig: { ...state.labelConfig, ...newLabelConfig },
-        }));
-      },
     };
   }, Object.is);
 
