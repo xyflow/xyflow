@@ -92,6 +92,7 @@
     noDragClass,
     noPanClass,
     noWheelClass,
+    labelConfig,
     ...divAttributes
   } = $derived(rest);
   /* eslint-enable @typescript-eslint/no-unused-vars */

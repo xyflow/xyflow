@@ -21,6 +21,7 @@ import type {
   ColorMode,
   SnapGrid,
   OnReconnect,
+  LabelConfig,
 } from '@xyflow/system';
 
 import type {
@@ -666,4 +667,9 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default false
    */
   debug?: boolean;
+  /**
+   * Custom accessibility messages for screen readers and a11y features.
+   * Allows localization and customization of ARIA descriptions.
+   */
+  labelConfig?: LabelConfig;
 }

@@ -20,10 +20,11 @@ export const ARIA_NODE_DESC_KEY = 'react-flow__node-desc';
 export const ARIA_EDGE_DESC_KEY = 'react-flow__edge-desc';
 export const ARIA_LIVE_MESSAGE = 'react-flow__aria-live';
 
-const selector = (s: ReactFlowState) => s.ariaLiveMessage;
+const ariaLiveSelector = (s: ReactFlowState) => s.ariaLiveMessage;
+const labelConfigSelector = (s: ReactFlowState) => s.labelConfig;
 
 function AriaLiveMessage({ rfId }: { rfId: string }) {
-  const ariaLiveMessage = useStore(selector);
+  const ariaLiveMessage = useStore(ariaLiveSelector);
 
   return (
     <div id={`${ARIA_LIVE_MESSAGE}-${rfId}`} aria-live="assertive" aria-atomic="true" style={ariaLiveStyle}>
@@ -33,15 +34,20 @@ function AriaLiveMessage({ rfId }: { rfId: string }) {
 }
 
 export function A11yDescriptions({ rfId, disableKeyboardA11y }: { rfId: string; disableKeyboardA11y: boolean }) {
+  const labelConfig = useStore(labelConfigSelector);
+
+  const nodeDesc = disableKeyboardA11y
+    ? labelConfig['a11yDescription.node.default']
+    : labelConfig['a11yDescription.node.keyboardDisabled'];
+  const edgeDesc = labelConfig['a11yDescription.edge.default'];
+
   return (
     <>
       <div id={`${ARIA_NODE_DESC_KEY}-${rfId}`} style={style}>
-        Press enter or space to select a node.
-        {!disableKeyboardA11y && 'You can then use the arrow keys to move the node around.'} Press delete to remove it
-        and escape to cancel.{' '}
+        {nodeDesc}
       </div>
       <div id={`${ARIA_EDGE_DESC_KEY}-${rfId}`} style={style}>
-        Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.
+        {edgeDesc}
       </div>
       {!disableKeyboardA11y && <AriaLiveMessage rfId={rfId} />}
     </>

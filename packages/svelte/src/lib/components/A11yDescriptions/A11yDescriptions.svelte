@@ -1,21 +1,22 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
+  import { derived } from 'svelte/store';
   import type { SvelteFlowStore } from '$lib/store/types';
-  import type { Node, Edge } from '$lib/types';
+    import type { Node, Edge } from '$lib/types';
   import { ARIA_EDGE_DESC_KEY, ARIA_LIVE_MESSAGE, ARIA_NODE_DESC_KEY } from '.';
 
   let { store }: { store: SvelteFlowStore<NodeType, EdgeType> } = $props();
+
+
+
 </script>
 
 <div id={`${ARIA_NODE_DESC_KEY}-${store.flowId}`} style="display: none;">
-  Press enter or space to select a node.
-  {#if !store.disableKeyboardA11y}
-    You can then use the arrow keys to move the node around.
-  {/if}
-  Press delete to remove it and escape to cancel.
+    {store.disableKeyboardA11y
+      ? store.labelConfig['a11yDescription.node.default']
+      : store.labelConfig['a11yDescription.node.keyboardDisabled']}
 </div>
 <div id={`${ARIA_EDGE_DESC_KEY}-${store.flowId}`} style="display: none;">
-  Press enter or space to select an edge. You can then press delete to remove it or escape to
-  cancel.
+    {store.labelConfig['a11yDescription.edge.default']}
 </div>
 
 {#if !store.disableKeyboardA11y}
