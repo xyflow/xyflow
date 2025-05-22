@@ -69,6 +69,7 @@ const A11y = () => {
         'controls.zoomout.title': 'Custom Zoom Out',
         // 'controls.fitview.title': 'Custom Fit View',
         'controls.interactive.title': 'Custom Toggle Interactivity',
+        'minimap.ariaLabel': 'Custom Aria Label',
       }}
     >
       <Background variant={BackgroundVariant.Dots} />

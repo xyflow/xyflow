@@ -41,6 +41,7 @@
         'controls.zoomout.title': 'Svelte Custom Zoom Out',
         // 'controls.fitview.title': 'Svelte Custom Fit View',
         'controls.interactive.title': 'Svelte Custom Toggle Interactivity',
+        'minimap.ariaLabel': 'Svelte Custom Minimap',
 	}}
 >
 	<Controls />

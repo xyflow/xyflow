@@ -50,6 +50,9 @@ export const defaultLabelConfig = {
   'controls.zoomout.title': 'Zoom Out',
   'controls.fitview.title': 'Fit View',
   'controls.interactive.title': 'Toggle Interactivity',
+
+  // Mini map
+  'minimap.ariaLabel': 'React Flow mini map',
 };
 
 export type LabelConfig = Partial<typeof defaultLabelConfig>;
