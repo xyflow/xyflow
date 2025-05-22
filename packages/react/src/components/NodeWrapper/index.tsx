@@ -40,7 +40,7 @@ export function NodeWrapper<NodeType extends Node>({
   nodeClickDistance,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const { node, internals, isParent } = useStore((s) => {
+  const { node, internals, isParent, labelConfig } = useStore((s) => {
     const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
     const isParent = s.parentLookup.has(id);
 
@@ -48,6 +48,7 @@ export function NodeWrapper<NodeType extends Node>({
       node,
       internals: node.internals,
       isParent,
+      labelConfig: s.labelConfig,
     };
   }, shallow);
 
@@ -151,9 +152,12 @@ export function NodeWrapper<NodeType extends Node>({
       event.preventDefault();
 
       store.setState({
-        ariaLiveMessage: `Moved selected node ${event.key
-          .replace('Arrow', '')
-          .toLowerCase()}. New position, x: ${~~internals.positionAbsolute.x}, y: ${~~internals.positionAbsolute.y}`,
+        ariaLiveMessage:
+          labelConfig['a11yDescription.ariaLiveMessage']?.(
+            event.key.replace('Arrow', '').toLowerCase(),
+            ~~internals.positionAbsolute.x,
+            ~~internals.positionAbsolute.y
+          ) || '',
       });
 
       moveSelectedNodes({

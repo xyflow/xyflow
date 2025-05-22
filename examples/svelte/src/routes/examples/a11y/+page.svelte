@@ -15,7 +15,8 @@
 			position: { x: 0, y: 0 },
 			data: { label: 'A' },	
 		},
-		{ id: 'B', position: { x: -100, y: 150 }, data: { label: '<ul> Node' }, as: 'ul' },
+		// You need to explicitly pass the as type
+		{ id: 'B', position: { x: -100, y: 150 }, data: { label: '<ul> Node' }, as: "ul" as "ul" },
 		{ id: 'C', position: { x: 100, y: 150 }, data: { label: 'C' }  },
 		{ id: 'D', position: { x: 0, y: 260 }, data: { label: 'D' }  }
 	]);
@@ -36,6 +37,8 @@
         'a11yDescription.node.default': 'Svelte Custom Node Desc.',
         'a11yDescription.node.keyboardDisabled': 'Svelte Custom Keyboard Desc.',
         'a11yDescription.edge.default': 'Svelte Custom Edge Desc.',
+		'a11yDescription.ariaLiveMessage': (node: string, x: number, y: number) =>
+          `Custom Moved selected node ${node}. New position, x: ${x}, y: ${y}`,
         'controls.ariaLabel': 'Svelte Custom Control Aria Label',
         'controls.zoomin.title': 'Svelte Custom Zoom in',
         'controls.zoomout.title': 'Svelte Custom Zoom Out',

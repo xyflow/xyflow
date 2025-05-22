@@ -89,6 +89,7 @@
   let prevTargetPosition: Position | undefined = targetPosition;
 
   let NodeComponent = $derived(store.nodeTypes[type] ?? DefaultNode);
+  let labelConfig = $derived(store.labelConfig);
 
   let connectableContext: ConnectableContext = {
     get value() {
@@ -192,10 +193,11 @@
     ) {
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
-
-      store.ariaLiveMessage = `Moved selected node ${event.key
-        .replace('Arrow', '')
-        .toLowerCase()}. New position, x: ${node.internals.positionAbsolute.x}, y: ${node.internals.positionAbsolute.y}`;
+      store.ariaLiveMessage = labelConfig['a11yDescription.ariaLiveMessage'](
+        event.key.replace('Arrow', '').toLowerCase(),
+        ~~node.internals.positionAbsolute.x,
+        ~~node.internals.positionAbsolute.y
+      ) || '';
 
       store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
     }
