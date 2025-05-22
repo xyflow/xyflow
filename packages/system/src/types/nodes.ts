@@ -25,6 +25,10 @@ export type NodeBase<
    * Only relevant for default, source, target nodeType. Controls source position.
    * @example 'right', 'left', 'top', 'bottom'
    */
+  /** Custom element type for rendering the node (e.g., 'div', 'li', etc.).
+   * @default 'div'
+   */
+  as?: Extract<keyof HTMLElementTagNameMap, 'div' | 'li' | 'ul' | 'ol'>;
   sourcePosition?: Position;
   /**
    * Only relevant for default, source, target nodeType. Controls target position.
