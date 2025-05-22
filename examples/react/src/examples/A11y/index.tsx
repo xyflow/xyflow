@@ -67,7 +67,7 @@ const A11y = () => {
         'a11yDescription.edge.default': 'Custom Edge Desc.',
         'controls.zoomin.title': 'Custom Zoom in',
         'controls.zoomout.title': 'Custom Zoom Out',
-        'controls.fitview.title': 'Custom Fit View',
+        // 'controls.fitview.title': 'Custom Fit View',
         'controls.interactive.title': 'Custom Toggle Interactivity',
       }}
     >

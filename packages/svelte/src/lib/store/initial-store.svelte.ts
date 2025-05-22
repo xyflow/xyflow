@@ -7,7 +7,7 @@ import {
   getViewportForBounds,
   updateConnectionLookup,
   initialConnection,
-  defaultLabelConfig,
+  mergeLabelConfig,
   type SelectionRect,
   type SnapGrid,
   type MarkerProps,
@@ -291,7 +291,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     noPanClass: string = $derived(signals.props.noPanClass ?? 'nopan');
     noDragClass: string = $derived(signals.props.noDragClass ?? 'nodrag');
     noWheelClass: string = $derived(signals.props.noWheelClass ?? 'nowheel');
-    labelConfig: LabelConfig = $derived(signals.props.labelConfig ?? defaultLabelConfig);
+    labelConfig: LabelConfig = $derived(mergeLabelConfig(signals.props.labelConfig));
 
     // _viewport is the internal viewport.
     // when binding to viewport, we operate on signals.viewport instead
