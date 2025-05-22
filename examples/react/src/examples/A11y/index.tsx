@@ -22,17 +22,19 @@ const initialNodes: Node[] = [
     type: 'input',
     data: { label: 'A11y Node 1' },
     position: { x: 250, y: 5 },
+    className: 'light',
   },
   {
     id: '2',
-    data: { label: '<ul> Node' },
+    data: { label: 'Node 2' },
     position: { x: 100, y: 100 },
-    as: 'ul',
+    className: 'light',
   },
   {
     id: '3',
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
+    className: 'light',
   },
 ];
 

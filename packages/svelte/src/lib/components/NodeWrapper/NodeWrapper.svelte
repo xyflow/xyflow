@@ -53,18 +53,14 @@
     width,
     height,
     dragHandle,
-    as = 'div',
     internals: {
       z: zIndex = 0,
       positionAbsolute: { x: positionX, y: positionY },
-      userNode,
-      
+      userNode
     }
   } = $derived(node);
 
   let { id } = node;
-
-  let Tag = $derived(typeof as === 'string' ? as : 'div');
 
   let draggable = $derived(_draggable ?? store.nodesDraggable);
   let selectable = $derived(_selectable ?? store.elementsSelectable);
@@ -78,7 +74,7 @@
 
   let isParent = $derived(isInParentLookup(id));
 
-  let nodeRef: HTMLElement | null = $state(null);
+  let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
 
   // svelte-ignore state_referenced_locally
@@ -136,7 +132,7 @@
                 id,
                 {
                   id,
-                  nodeElement: nodeRef as HTMLDivElement,
+                  nodeElement: nodeRef,
                   force: true
                 }
               ]
@@ -156,7 +152,7 @@
     if (resizeObserver && (!initialized || nodeRef !== prevNodeRef)) {
       prevNodeRef && resizeObserver.unobserve(prevNodeRef);
       nodeRef && resizeObserver.observe(nodeRef);
-      prevNodeRef = nodeRef as HTMLDivElement | null;
+      prevNodeRef = nodeRef;
     }
     /* eslint-enable @typescript-eslint/no-unused-expressions */
   });
@@ -185,7 +181,7 @@
     if (elementSelectionKeys.includes(event.key) && selectable) {
       const unselect = event.key === 'Escape';
 
-      store.handleNodeSelection(id, unselect, nodeRef as HTMLDivElement | null);
+      store.handleNodeSelection(id, unselect, nodeRef);
     } else if (
       draggable &&
       node.selected &&
@@ -205,8 +201,7 @@
 </script>
 
 {#if !hidden}
-  <svelte:element
-    this={Tag}
+  <div
     use:drag={{
       nodeId: id,
       isSelectable: selectable,
@@ -246,16 +241,16 @@
     style={nodeStyle}
     onclick={onSelectNodeHandler}
     onpointerenter={onnodepointerenter
-      ? (event: PointerEvent) => onnodepointerenter({ node: userNode, event })
+      ? (event) => onnodepointerenter({ node: userNode, event })
       : undefined}
     onpointerleave={onnodepointerleave
-      ? (event: PointerEvent) => onnodepointerleave({ node: userNode, event })
+      ? (event) => onnodepointerleave({ node: userNode, event })
       : undefined}
     onpointermove={onnodepointermove
-      ? (event: PointerEvent) => onnodepointermove({ node: userNode, event })
+      ? (event) => onnodepointermove({ node: userNode, event })
       : undefined}
     oncontextmenu={onnodecontextmenu
-      ? (event: MouseEvent) => onnodecontextmenu({ node: userNode, event })
+      ? (event) => onnodecontextmenu({ node: userNode, event })
       : undefined}
     onkeydown={focusable ? onKeyDown : undefined}
     tabIndex={focusable ? 0 : undefined}
@@ -284,5 +279,5 @@
       {width}
       {height}
     />
-    </svelte:element>
+  </div>
 {/if}

@@ -13,10 +13,10 @@
 		{
 			id: 'A',
 			position: { x: 0, y: 0 },
-			data: { label: 'A' },	
+			data: { label: 'A' },
+			
 		},
-		// You need to explicitly pass the as type
-		{ id: 'B', position: { x: -100, y: 150 }, data: { label: '<ul> Node' }, as: "ul" as "ul" },
+		{ id: 'B', position: { x: -100, y: 150 }, data: { label: 'B' } },
 		{ id: 'C', position: { x: 100, y: 150 }, data: { label: 'C' }  },
 		{ id: 'D', position: { x: 0, y: 260 }, data: { label: 'D' }  }
 	]);

@@ -68,15 +68,7 @@ export function NodeWrapper<NodeType extends Node>({
 
   const store = useStoreApi();
   const hasDimensions = nodeHasDimensions(node);
-  const Tag: keyof JSX.IntrinsicElements = node.as || 'div';
-
-  const nodeRef = useNodeObserver({
-    node,
-    nodeType,
-    hasDimensions,
-    resizeObserver,
-  });
-
+  const nodeRef = useNodeObserver({ node, nodeType, hasDimensions, resizeObserver });
   const dragging = useDrag({
     nodeRef,
     disabled: node.hidden || !isDraggable,
@@ -168,7 +160,7 @@ export function NodeWrapper<NodeType extends Node>({
   };
 
   return (
-    <Tag
+    <div
       className={cc([
         'react-flow__node',
         `react-flow__node-${nodeType}`,
@@ -185,11 +177,7 @@ export function NodeWrapper<NodeType extends Node>({
           dragging,
         },
       ])}
-      ref={(instance: HTMLElement | null) => {
-        if (nodeRef && 'current' in nodeRef) {
-          (nodeRef as React.MutableRefObject<HTMLElement | null>).current = instance;
-        }
-      }}
+      ref={nodeRef}
       style={{
         zIndex: internals.z,
         transform: `translate(${internals.positionAbsolute.x}px,${internals.positionAbsolute.y}px)`,
@@ -200,13 +188,13 @@ export function NodeWrapper<NodeType extends Node>({
       }}
       data-id={id}
       data-testid={`rf__node-${id}`}
-      onMouseEnter={onMouseEnterHandler as React.MouseEventHandler<HTMLElement>}
-      onMouseMove={onMouseMoveHandler as React.MouseEventHandler<HTMLElement>}
-      onMouseLeave={onMouseLeaveHandler as React.MouseEventHandler<HTMLElement>}
-      onContextMenu={onContextMenuHandler as React.MouseEventHandler<HTMLElement>}
-      onClick={onSelectNodeHandler as React.MouseEventHandler<HTMLElement>}
-      onDoubleClick={onDoubleClickHandler as React.MouseEventHandler<HTMLElement>}
-      onKeyDown={isFocusable ? (onKeyDown as React.KeyboardEventHandler<HTMLElement>) : undefined}
+      onMouseEnter={onMouseEnterHandler}
+      onMouseMove={onMouseMoveHandler}
+      onMouseLeave={onMouseLeaveHandler}
+      onContextMenu={onContextMenuHandler}
+      onClick={onSelectNodeHandler}
+      onDoubleClick={onDoubleClickHandler}
+      onKeyDown={isFocusable ? onKeyDown : undefined}
       tabIndex={isFocusable ? 0 : undefined}
       role={isFocusable ? 'button' : undefined}
       aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}
@@ -233,6 +221,6 @@ export function NodeWrapper<NodeType extends Node>({
           {...nodeDimensions}
         />
       </Provider>
-    </Tag>
+    </div>
   );
 }
