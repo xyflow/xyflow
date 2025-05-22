@@ -13,10 +13,9 @@
 		{
 			id: 'A',
 			position: { x: 0, y: 0 },
-			data: { label: 'A' },
-			
+			data: { label: 'A' },	
 		},
-		{ id: 'B', position: { x: -100, y: 150 }, data: { label: 'B' } },
+		{ id: 'B', position: { x: -100, y: 150 }, data: { label: '<ul> Node' }, as: 'ul' },
 		{ id: 'C', position: { x: 100, y: 150 }, data: { label: 'C' }  },
 		{ id: 'D', position: { x: 0, y: 260 }, data: { label: 'D' }  }
 	]);
