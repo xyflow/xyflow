@@ -83,7 +83,7 @@ export type MiniMapProps<NodeType extends Node = Node> = Omit<HTMLAttributes<SVG
    * There is no text inside the minimap for a screen reader to use as an accessible name, so it's
    * important we provide one to make the minimap accessible. The default is sufficient, but you may
    * want to replace it with something more relevant to your app or product.
-   * @default "React Flow mini map"
+   * @default "Mini Map"
    */
   ariaLabel?: string | null;
   /** Invert direction when panning the minimap viewport. */

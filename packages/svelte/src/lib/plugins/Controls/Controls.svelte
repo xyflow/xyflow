@@ -73,7 +73,7 @@
   class={['svelte-flow__controls', orientationClass, className]}
   {position}
   data-testid="svelte-flow__controls"
-  aria-label={ariaLabel ?? 'Svelte Flow controls'}
+  aria-label={labelConfig['controls.ariaLabel']}
   {style}
   {...rest}
 >

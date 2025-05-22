@@ -65,6 +65,7 @@ const A11y = () => {
         'a11yDescription.node.default': 'Custom Node Desc.',
         'a11yDescription.node.keyboardDisabled': 'Custom Keyboard Desc.',
         'a11yDescription.edge.default': 'Custom Edge Desc.',
+        'controls.ariaLabel': 'Custom Controls Aria Label',
         'controls.zoomin.title': 'Custom Zoom in',
         'controls.zoomout.title': 'Custom Zoom Out',
         // 'controls.fitview.title': 'Custom Fit View',

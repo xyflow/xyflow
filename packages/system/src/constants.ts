@@ -46,13 +46,14 @@ export const defaultLabelConfig = {
     'Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.',
 
   // Control elements
+  'controls.ariaLabel': 'Control Panel',
   'controls.zoomin.title': 'Zoom In',
   'controls.zoomout.title': 'Zoom Out',
   'controls.fitview.title': 'Fit View',
   'controls.interactive.title': 'Toggle Interactivity',
 
   // Mini map
-  'minimap.ariaLabel': 'React Flow mini map',
+  'minimap.ariaLabel': 'Mini Map',
 };
 
 export type LabelConfig = Partial<typeof defaultLabelConfig>;

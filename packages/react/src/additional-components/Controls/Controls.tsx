@@ -36,11 +36,12 @@ function ControlsComponent({
   children,
   position = 'bottom-left',
   orientation = 'vertical',
-  'aria-label': ariaLabel = 'React Flow controls',
+  'aria-label': ariaLabel,
 }: ControlProps) {
   const store = useStoreApi();
   const { isInteractive, minZoomReached, maxZoomReached, labelConfig } = useStore(selector, shallow);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
+  const effectiveAriaLabel = ariaLabel ?? labelConfig['controls.ariaLabel'];
 
   const onZoomInHandler = () => {
     zoomIn();
@@ -74,7 +75,7 @@ function ControlsComponent({
       position={position}
       style={style}
       data-testid="rf__controls"
-      aria-label={ariaLabel}
+      aria-label={effectiveAriaLabel}
     >
       {showZoom && (
         <>

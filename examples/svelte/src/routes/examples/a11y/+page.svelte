@@ -37,6 +37,7 @@
         'a11yDescription.node.default': 'Svelte Custom Node Desc.',
         'a11yDescription.node.keyboardDisabled': 'Svelte Custom Keyboard Desc.',
         'a11yDescription.edge.default': 'Svelte Custom Edge Desc.',
+        'controls.ariaLabel': 'Svelte Custom Control Aria Label',
         'controls.zoomin.title': 'Svelte Custom Zoom in',
         'controls.zoomout.title': 'Svelte Custom Zoom Out',
         // 'controls.fitview.title': 'Svelte Custom Fit View',
