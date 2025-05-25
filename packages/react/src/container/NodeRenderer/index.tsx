@@ -8,6 +8,7 @@ import { GraphViewProps } from '../GraphView';
 import { useResizeObserver } from './useResizeObserver';
 import { NodeWrapper } from '../../components/NodeWrapper';
 import type { Node, ReactFlowState } from '../../types';
+import { usePageVisiblityCheck } from './usePageVisiblityCheck';
 
 export type NodeRendererProps<NodeType extends Node> = Pick<
   GraphViewProps<NodeType>,
@@ -39,6 +40,7 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
   const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, onError } = useStore(selector, shallow);
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
+  usePageVisiblityCheck();
 
   return (
     <div className="react-flow__nodes" style={containerStyle}>
@@ -48,13 +50,13 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
            * The split of responsibilities between NodeRenderer and
            * NodeComponentWrapper may appear weird. However, it’s designed to
            * minimize the cost of updates when individual nodes change.
-           * 
+           *
            * For example, when you’re dragging a single node, that node gets
            * updated multiple times per second. If `NodeRenderer` were to update
            * every time, it would have to re-run the `nodes.map()` loop every
            * time. This gets pricey with hundreds of nodes, especially if every
            * loop cycle does more than just rendering a JSX element!
-           * 
+           *
            * As a result of this choice, we took the following implementation
            * decisions:
            * - NodeRenderer subscribes *only* to node IDs – and therefore
