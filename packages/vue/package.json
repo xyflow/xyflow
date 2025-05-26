@@ -1,0 +1,99 @@
+{
+  "name": "@xyflow/vue",
+  "version": "1.44.0",
+  "private": false,
+  "description": "Vue Flow - A highly customizable Vue library for building node-based editors, workflow systems, diagrams and more.",
+  "author": "Burak Cakmakoglu<78412429+bcakmakoglu@users.noreply.github.com>",
+  "license": "MIT",
+  "homepage": "https://vueflow.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xyflow/xyflow.git",
+    "directory": "packages/vue"
+  },
+  "bugs": {
+    "url": "https://github.com/xyflow/xyflow/issues"
+  },
+  "keywords": [
+    "vue",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "vue-flow",
+    "xyflow"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/vue-flow-core.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/vue-flow-core.js"
+      },
+      "default": "./dist/vue-flow-core.mjs"
+    },
+    "./dist/style.css": "./dist/style.css",
+    "./dist/base.css": "./dist/base.css",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/vue-flow-core.js",
+  "module": "./dist/vue-flow-core.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "dev": "pnpm types:watch & pnpm build:watch",
+    "build": "vite build",
+    "build:watch": "vite build --watch",
+    "types": "vue-tsc --declaration --emitDeclarationOnly && tsc -p ./tsconfig.build.json && shx rm -rf tmp && rolldown -c rolldown.dts.config.mjs && shx rm -rf dist/components dist/composables dist/container dist/context dist/store dist/types dist/utils dist/index.d.ts && shx mv dts-tmp/index.d.ts dist/index.d.ts && shx rm -rf dts-tmp && shx cp dist/index.d.ts dist/index.d.mts && shx cp dist/index.d.ts dist/index.d.cts && pnpm lint:dist",
+    "types:watch": "vue-tsc --declaration --emitDeclarationOnly --watch & tsc -p ./tsconfig.build.json --watch",
+    "theme": "postcss src/styles/style.css -o dist/style.css && postcss src/styles/base.css -o dist/base.css",
+    "lint": "eslint .",
+    "lint:dist": "eslint --no-ignore --fix \"dist/**/*.d.ts\"",
+    "prepublishOnly": "shx cp ../../README.md .",
+    "postpublish": "shx rm README.md",
+    "test": "exit 0"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@vueuse/core": "^14.3.0",
+    "@xyflow/system": "workspace:*",
+    "d3-interpolate": "^3.0.1"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "8.2.0",
+    "@rollup/plugin-replace": "^6.0.3",
+    "@types/d3-interpolate": "^3.0.4",
+    "@types/d3-transition": "^3.0.9",
+    "@types/d3-zoom": "^3.0.8",
+    "@vitejs/plugin-vue": "^6.0.7",
+    "autoprefixer": "^10.5.0",
+    "eslint": "catalog:",
+    "jiti": "^2.7.0",
+    "postcss": "^8.5.15",
+    "postcss-cli": "^11.0.1",
+    "postcss-import": "^16.1.0",
+    "postcss-nested": "^7.0.2",
+    "rolldown": "^1",
+    "rolldown-plugin-dts": "^0.25.2",
+    "shx": "^0.4.0",
+    "typescript": "^5.6.0",
+    "vite": "catalog:",
+    "vite-svg-loader": "^5.1.1",
+    "vue": "^3.5.0",
+    "vue-tsc": "^3.3.4"
+  }
+}
