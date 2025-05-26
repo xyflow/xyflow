@@ -208,7 +208,6 @@ export function NodeWrapper<NodeType extends Node>(p: NodeWrapperProps<NodeType>
       class={cc([
         'react-flow__node',
         `react-flow__node-${nodeType()}`,
-        'blah',
         {
           // this is overwritable by passing `nopan` as a class name
           [p.noPanClassName]: isDraggable(),
