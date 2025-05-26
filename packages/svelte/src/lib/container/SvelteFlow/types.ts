@@ -473,8 +473,8 @@ export type SvelteFlowProps<
     /** This event handler gets called when the user finishes dragging a selection box */
     onselectionend?: (event: PointerEvent) => void;
     /**
-     * Custom accessibility messages for screen readers and a11y features.
-     * Allows localization and customization of ARIA descriptions.
+     * Configuration for customizable labels, descriptions, and UI text. Provided keys will override the corresponding defaults.
+     * Allows localization, customization of ARIA descriptions, control labels, minimap labels, and other UI strings.
      */
     labelConfig?: LabelConfig;
   };

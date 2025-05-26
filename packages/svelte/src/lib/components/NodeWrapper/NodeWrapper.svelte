@@ -189,11 +189,11 @@
     ) {
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
-      store.ariaLiveMessage = labelConfig['a11yDescription.ariaLiveMessage']?.(
+      store.ariaLiveMessage = labelConfig['a11yDescription.ariaLiveMessage'](
         event.key.replace('Arrow', '').toLowerCase(),
         ~~node.internals.positionAbsolute.x,
         ~~node.internals.positionAbsolute.y
-      ) || '';
+      ),
 
       store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
     }

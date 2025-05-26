@@ -144,12 +144,11 @@ export function NodeWrapper<NodeType extends Node>({
       event.preventDefault();
 
       store.setState({
-        ariaLiveMessage:
-          labelConfig['a11yDescription.ariaLiveMessage']?.(
-            event.key.replace('Arrow', '').toLowerCase(),
-            ~~internals.positionAbsolute.x,
-            ~~internals.positionAbsolute.y
-          ) || '',
+        ariaLiveMessage: labelConfig['a11yDescription.ariaLiveMessage'](
+          event.key.replace('Arrow', '').toLowerCase(),
+          ~~internals.positionAbsolute.x,
+          ~~internals.positionAbsolute.y
+        ),
       });
 
       moveSelectedNodes({

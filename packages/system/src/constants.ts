@@ -58,4 +58,4 @@ export const defaultLabelConfig = {
   'minimap.ariaLabel': 'Mini Map',
 };
 
-export type LabelConfig = Partial<typeof defaultLabelConfig>;
+export type LabelConfig = Required<typeof defaultLabelConfig>;
