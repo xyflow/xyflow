@@ -244,16 +244,16 @@
     style={nodeStyle}
     onclick={onSelectNodeHandler}
     onpointerenter={onnodepointerenter
-      ? (event) => onnodepointerenter({ node: userNode, event })
+      ? (event: PointerEvent) => onnodepointerenter({ node: userNode, event })
       : undefined}
     onpointerleave={onnodepointerleave
-      ? (event) => onnodepointerleave({ node: userNode, event })
+      ? (event: PointerEvent) => onnodepointerleave({ node: userNode, event })
       : undefined}
     onpointermove={onnodepointermove
-      ? (event) => onnodepointermove({ node: userNode, event })
+      ? (event: PointerEvent) => onnodepointermove({ node: userNode, event })
       : undefined}
     oncontextmenu={onnodecontextmenu
-      ? (event) => onnodecontextmenu({ node: userNode, event })
+      ? (event: MouseEvent) => onnodecontextmenu({ node: userNode, event })
       : undefined}
     onkeydown={focusable ? onKeyDown : undefined}
     tabIndex={focusable ? 0 : undefined}
