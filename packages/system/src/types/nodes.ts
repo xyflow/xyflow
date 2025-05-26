@@ -73,6 +73,13 @@ export type NodeBase<
    */
   origin?: NodeOrigin;
   handles?: NodeHandle[];
+  /**
+   * The ARIA role attribute for the node element, used for accessibility.
+   * Common values for nodes might be 'button', 'group', 'listitem', etc.
+   * When not specified, focusable nodes default to 'button' role.
+   * @default "button" (for focusable nodes)
+   */
+  role?: NodeRole;
   measured?: {
     width?: number;
     height?: number;
@@ -180,3 +187,4 @@ export type Align = 'center' | 'start' | 'end';
 
 export type NodeLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType>;
 export type ParentLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, Map<string, NodeType>>;
+export type NodeRole = 'button' | 'group' | 'listitem' | 'application' | 'region' | 'none' | null;
