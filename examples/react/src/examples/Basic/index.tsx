@@ -28,6 +28,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
     className: 'light',
+    as: 'ul',
   },
   {
     id: '2',

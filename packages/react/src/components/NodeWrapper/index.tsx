@@ -67,7 +67,7 @@ export function NodeWrapper<NodeType extends Node>({
 
   const store = useStoreApi();
   const hasDimensions = nodeHasDimensions(node);
-  const Tag: keyof JSX.IntrinsicElements = node.as || 'div';
+  const Tag = (node.as || 'div') as React.ElementType;
 
   const nodeRef = useNodeObserver({
     node,
@@ -181,11 +181,7 @@ export function NodeWrapper<NodeType extends Node>({
           dragging,
         },
       ])}
-      ref={(instance: HTMLElement | null) => {
-        if (nodeRef && 'current' in nodeRef) {
-          (nodeRef as React.MutableRefObject<HTMLElement | null>).current = instance;
-        }
-      }}
+      ref={nodeRef}
       style={{
         zIndex: internals.z,
         transform: `translate(${internals.positionAbsolute.x}px,${internals.positionAbsolute.y}px)`,
@@ -196,12 +192,12 @@ export function NodeWrapper<NodeType extends Node>({
       }}
       data-id={id}
       data-testid={`rf__node-${id}`}
-      onMouseEnter={onMouseEnterHandler as React.MouseEventHandler<HTMLElement>}
-      onMouseMove={onMouseMoveHandler as React.MouseEventHandler<HTMLElement>}
-      onMouseLeave={onMouseLeaveHandler as React.MouseEventHandler<HTMLElement>}
-      onContextMenu={onContextMenuHandler as React.MouseEventHandler<HTMLElement>}
-      onClick={onSelectNodeHandler as React.MouseEventHandler<HTMLElement>}
-      onDoubleClick={onDoubleClickHandler as React.MouseEventHandler<HTMLElement>}
+      onMouseEnter={onMouseEnterHandler}
+      onMouseMove={onMouseMoveHandler}
+      onMouseLeave={onMouseLeaveHandler}
+      onContextMenu={onContextMenuHandler}
+      onClick={onSelectNodeHandler}
+      onDoubleClick={onDoubleClickHandler}
       onKeyDown={isFocusable ? (onKeyDown as React.KeyboardEventHandler<HTMLElement>) : undefined}
       tabIndex={isFocusable ? 0 : undefined}
       role={isFocusable ? 'button' : undefined}

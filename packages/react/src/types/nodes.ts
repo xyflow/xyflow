@@ -58,6 +58,7 @@ export type NodeWrapperProps<NodeType extends Node> = {
   nodeExtent?: CoordinateExtent;
   onError?: OnError;
   nodeClickDistance?: number;
+  as?: keyof HTMLElementTagNameMap;
 };
 
 /**
