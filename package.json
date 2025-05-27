@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "turbo run dev --parallel --concurrency 12",
+    "dev": "turbo run dev --parallel --concurrency 15",
     "dev:svelte": "turbo run dev --filter=svelte-examples...",
     "dev:react": "turbo run dev --filter=react-examples...",
     "test:svelte": "pnpm --filter=playwright run test:svelte",
@@ -25,6 +25,7 @@
     "@changesets/changelog-github": "^0.4.7",
     "@changesets/cli": "^2.25.0",
     "@playwright/test": "^1.44.1",
+    "@types/node": "^20.11.24",
     "concurrently": "^7.6.0",
     "eslint": "^8.22.0",
     "prettier": "^2.7.1",
