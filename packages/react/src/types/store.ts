@@ -28,6 +28,7 @@ import {
   type NodeChange,
   type EdgeChange,
   type ParentLookup,
+  type LabelConfig,
 } from '@xyflow/system';
 
 import type {
@@ -67,7 +68,6 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   domNode: HTMLDivElement | null;
   paneDragging: boolean;
   noPanClassName: string;
-
   panZoom: PanZoomInstance | null;
   minZoom: number;
   maxZoom: number;
@@ -148,6 +148,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   lib: string;
   debug: boolean;
+  labelConfig: LabelConfig;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
