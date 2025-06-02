@@ -56,6 +56,9 @@ export const defaultLabelConfig = {
 
   // Mini map
   'minimap.ariaLabel': 'Mini Map',
+
+  // Handle
+  'handle.ariaLabel': 'Handle',
 };
 
 export type LabelConfig = Required<typeof defaultLabelConfig>;
