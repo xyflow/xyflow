@@ -36,7 +36,8 @@
   style:width={toPxString(width)}
   style:height={toPxString(height)}
   style:z-index={z}
-  role="button"
+  role="group"
+  aria-roledescription="edge label"
   tabindex="-1"
   onclick={() => {
     if (selectEdgeOnClick && id) store.handleEdgeSelection(id);
