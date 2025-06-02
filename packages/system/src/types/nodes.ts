@@ -75,12 +75,15 @@ export type NodeBase<
   handles?: NodeHandle[];
   /**
    * The ARIA role attribute for the node element, used for accessibility.
-   * Common values for nodes might be 'button', 'group', 'listitem', etc.
-   * When not specified, focusable nodes default to 'button' role.
-   * @default "button" (for focusable nodes)
+   * @default "group"
    */
 
   ariaRole?: AriaRole;
+  /**
+   * A description of the node's role, used for accessibility.
+   * @default "node"
+   */
+  ariaRoleDescription?: string;
   measured?: {
     width?: number;
     height?: number;
