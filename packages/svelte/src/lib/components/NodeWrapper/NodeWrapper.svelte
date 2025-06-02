@@ -196,6 +196,27 @@
       store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
     }
   }
+
+  function onFocus() {
+    if (store.disableKeyboardA11y) {
+      return;
+    }
+    
+    const zoom = store.panZoom?.getViewport().zoom ?? 1;
+    
+    // Get node dimensions 
+    const nodeWidth = nodeRef?.offsetWidth || 0;
+    const nodeHeight = nodeRef?.offsetHeight || 0;
+    
+    store.panZoom?.setViewport(
+      {
+        x: -(positionX + nodeWidth / 2) * zoom + window.innerWidth / 2,
+        y: -(positionY + nodeHeight / 2) * zoom + window.innerHeight / 2,
+        zoom: zoom,
+      },
+      { duration: 100 }
+    );
+  }
 </script>
 
 {#if !hidden}
@@ -251,6 +272,7 @@
       ? (event) => onnodecontextmenu({ node: userNode, event })
       : undefined}
     onkeydown={focusable ? onKeyDown : undefined}
+    onfocus={focusable ? onFocus : undefined}
     tabIndex={focusable ? 0 : undefined}
     role={focusable ? 'button' : undefined}
     aria-describedby={store.disableKeyboardA11y

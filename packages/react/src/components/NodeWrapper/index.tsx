@@ -155,6 +155,19 @@ export function NodeWrapper<NodeType extends Node>({
     }
   };
 
+  const onFocus = () => {
+    const { panZoom } = store.getState();
+    const zoom = panZoom?.getViewport().zoom ?? 1;
+    panZoom?.setViewport(
+      {
+        x: -(internals.positionAbsolute.x + nodeDimensions.width / 2) * zoom + window.innerWidth / 2,
+        y: -(internals.positionAbsolute.y + nodeDimensions.height / 2) * zoom + window.innerHeight / 2,
+        zoom: zoom,
+      },
+      { duration: 100 }
+    );
+  };
+
   return (
     <div
       className={cc([
@@ -192,6 +205,7 @@ export function NodeWrapper<NodeType extends Node>({
       onDoubleClick={onDoubleClickHandler}
       onKeyDown={isFocusable ? onKeyDown : undefined}
       tabIndex={isFocusable ? 0 : undefined}
+      onFocus={isFocusable ? onFocus : undefined}
       role={isFocusable ? 'button' : undefined}
       aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}
       aria-label={node.ariaLabel}
