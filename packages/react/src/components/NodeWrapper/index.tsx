@@ -156,6 +156,10 @@ export function NodeWrapper<NodeType extends Node>({
   };
 
   const onFocus = () => {
+    if (disableKeyboardA11y) {
+      return;
+    }
+
     const { panZoom } = store.getState();
     const zoom = panZoom?.getViewport().zoom ?? 1;
     panZoom?.setViewport(
