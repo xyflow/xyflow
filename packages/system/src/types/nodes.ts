@@ -79,7 +79,8 @@ export type NodeBase<
    * When not specified, focusable nodes default to 'button' role.
    * @default "button" (for focusable nodes)
    */
-  role?: NodeRole;
+
+  ariaRole?: AriaRole;
   measured?: {
     width?: number;
     height?: number;
@@ -187,4 +188,4 @@ export type Align = 'center' | 'start' | 'end';
 
 export type NodeLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType>;
 export type ParentLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, Map<string, NodeType>>;
-export type NodeRole = 'button' | 'group' | 'listitem' | 'application' | 'region' | 'none' | null;
+export type AriaRole = 'button' | 'group' | 'listitem' | 'application' | 'region' | 'none' | null;

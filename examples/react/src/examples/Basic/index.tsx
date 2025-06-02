@@ -25,10 +25,9 @@ const initialNodes: Node[] = [
   {
     id: '1',
     type: 'input',
-    data: { label: 'Focusable Node' },
+    data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
     className: 'light',
-    role: null,
   },
   {
     id: '2',
