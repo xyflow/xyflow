@@ -198,7 +198,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
         onMouseLeave={onEdgeMouseLeave}
         onKeyDown={isFocusable ? onKeyDown : undefined}
         tabIndex={isFocusable ? 0 : undefined}
-        role={edge.ariaRole === null ? undefined : edge.ariaRole || (isFocusable ? 'group' : 'img')}
+        role={edge.ariaRole ?? (isFocusable ? 'group' : 'img')}
         aria-roledescription={edge.ariaRoleDescription || 'edge'}
         data-id={id}
         data-testid={`rf__edge-${id}`}

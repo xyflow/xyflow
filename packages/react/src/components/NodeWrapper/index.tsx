@@ -191,7 +191,7 @@ export function NodeWrapper<NodeType extends Node>({
       onDoubleClick={onDoubleClickHandler}
       onKeyDown={isFocusable ? onKeyDown : undefined}
       tabIndex={isFocusable ? 0 : undefined}
-      role={node.ariaRole === null ? undefined : node.ariaRole || (isFocusable ? 'group' : undefined)}
+      role={node.ariaRole ?? (isFocusable ? 'group' : undefined)}
       aria-roledescription={node.ariaRoleDescription || 'node'}
       aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}
       aria-label={node.ariaLabel}
