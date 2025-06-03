@@ -159,16 +159,9 @@ For releasing packages we are using [changesets](https://github.com/changesets/c
 3. changset creates a PR that bumps all packages based on the changesets 
 4. merge changeset PR if you want to release to Github and npm
 
-## The xyflow team
+## Built by [xyflow](https://xyflow.com)
 
-React Flow and Svelte Flow are maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
-
-- Christopher • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
-- Hayleigh • [Twitter](https://twitter.com/hayleighdotdev) • [Github](https://github.com/hayleigh-dot-dev)
-- Abbey • [Github](https://github.com/printerscanner)
-- Moritz • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
-- Peter • [Github](https://github.com/peterkogo)
-
+React Flow and Svelte Flow are maintained by the [xyflow team](https://xyflow.com/about). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
 ## License
 
