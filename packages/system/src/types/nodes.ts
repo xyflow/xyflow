@@ -1,5 +1,6 @@
 import type { XYPosition, Position, CoordinateExtent, Handle } from '.';
 import { Optional } from '../utils/types';
+import { AriaRole } from './utils';
 
 /**
  * Framework independent node data structure.
@@ -191,4 +192,3 @@ export type Align = 'center' | 'start' | 'end';
 
 export type NodeLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, NodeType>;
 export type ParentLookup<NodeType extends InternalNodeBase = InternalNodeBase> = Map<string, Map<string, NodeType>>;
-export type AriaRole = 'button' | 'group' | 'listitem' | 'application' | 'region' | 'none' | null;
