@@ -9,7 +9,7 @@
 
 Powerful open source libraries for building node-based UIs with React or Svelte. Ready out-of-the-box and infinitely customizable.
 
-[React Flow](https://reactflow.dev/) · [Svelte Flow](https://svelteflow.dev/) · [React Flow Pro](https://reactflow.dev/pro) · [Discord](https://discord.gg/Bqt6xrs)
+[React Flow](https://reactflow.dev/) · [Svelte Flow](https://svelteflow.dev/) · [React Flow Pro](https://reactflow.dev/pro) · [xyflow](https://xyflow.com) · [Discord](https://discord.gg/Bqt6xrs)
 </div>
 
 ---
@@ -164,10 +164,11 @@ For releasing packages we are using [changesets](https://github.com/changesets/c
 React Flow and Svelte Flow are maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
 - Christopher • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
-- Hayleigh • [Twitter](https://twitter.com/hayleighdotdev) • [Github](https://github.com/hayleigh-dot-dev)
-- Abbey • [Github](https://github.com/printerscanner)
 - Moritz • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
+- Abbey • [Github](https://github.com/printerscanner)
 - Peter • [Github](https://github.com/peterkogo)
+- Ale • [Github](https://github.com/0x0f0f0f)
+- Omes • [Github](https://github.com/omesome)
 
 
 ## License
