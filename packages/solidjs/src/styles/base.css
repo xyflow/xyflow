@@ -1,0 +1,3 @@
+/* this will be exported as base.css and can be used for a basic styling */
+@import '../../../system/src/styles/init.css';
+@import '../../../system/src/styles/base.css';
