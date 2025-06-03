@@ -18,6 +18,7 @@ import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
 import { useNodeObserver } from './useNodeObserver';
 import type { InternalNode, Node, NodeWrapperProps } from '../../types';
+import { useReactFlow } from '../../hooks/useReactFlow';
 
 export function NodeWrapper<NodeType extends Node>({
   id,
@@ -78,6 +79,8 @@ export function NodeWrapper<NodeType extends Node>({
     nodeClickDistance,
   });
   const moveSelectedNodes = useMoveSelectedNodes();
+  const { fitView } = useReactFlow();
+  const { getViewport } = useReactFlow();
 
   if (node.hidden) {
     return null;
@@ -160,16 +163,26 @@ export function NodeWrapper<NodeType extends Node>({
       return;
     }
 
-    const { panZoom } = store.getState();
-    const zoom = panZoom?.getViewport().zoom ?? 1;
-    panZoom?.setViewport(
-      {
-        x: -(internals.positionAbsolute.x + nodeDimensions.width / 2) * zoom + window.innerWidth / 2,
-        y: -(internals.positionAbsolute.y + nodeDimensions.height / 2) * zoom + window.innerHeight / 2,
-        zoom: zoom,
-      },
-      { duration: 100 }
-    );
+    // Return early if focus is not from keyboard navigation (i.e., was clicked)
+    if (!nodeRef.current?.matches(':focus-visible')) {
+      return;
+    }
+    const { x, y, zoom } = getViewport();
+
+    const isNodeVisible =
+      node.position.x >= x &&
+      node.position.x <= x + window.innerWidth &&
+      node.position.y >= y &&
+      node.position.y <= y + window.innerHeight;
+
+    if (!isNodeVisible) {
+      fitView({
+        nodes: [{ id }],
+        duration: 100,
+        minZoom: zoom,
+        maxZoom: zoom,
+      });
+    }
   };
 
   return (
