@@ -1,8 +1,8 @@
 ---
 "@xyflow/react": minor
 "@xyflow/svelte": minor
-"@xyflow/system": minor
+"@xyflow/system": patch
 ---
 
-feat(a11y): add generalized labelConfig for customizable UI text and localization & ARIA descriptions
+Add `labelConfig` prop for customizing UI text like aria labels and descriptions.
 
