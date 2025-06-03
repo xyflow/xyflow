@@ -1,7 +1,7 @@
 ---
 "@xyflow/react": minor
 "@xyflow/svelte": minor
-"@xyflow/system": minor
+"@xyflow/system": patch
 ---
 
-feat: add `ariaRole` prop to nodes
+Add `ariaRole` prop to nodes and edges
