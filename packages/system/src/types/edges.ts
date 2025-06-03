@@ -1,4 +1,4 @@
-import { Position, AriaRole } from './utils';
+import { Position } from './utils';
 
 export type EdgeBase<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
@@ -40,12 +40,6 @@ export type EdgeBase<
    * This property sets the width of that invisible path.
    */
   interactionWidth?: number;
-  /**
-   * The ARIA role attribute for the edge, used for accessibility.
-   * @default "group"
-   */
-
-  ariaRole?: AriaRole;
   /**
    * A description of the edge's, used for accessibility.
    * @default "edge"

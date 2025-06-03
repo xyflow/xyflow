@@ -46,6 +46,7 @@ export type BaseEdgeProps = Pick<
    * @example 'url(#arrow)'
    */
   markerEnd?: string;
+  ariaRole?: HTMLAttributes<HTMLElement>['role'];
   class?: ClassValue;
 } & HTMLAttributes<SVGPathElement>;
 

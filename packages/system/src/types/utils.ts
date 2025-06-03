@@ -56,8 +56,3 @@ export type Transform = [number, number, number];
  * to represent an unbounded extent.
  */
 export type CoordinateExtent = [[number, number], [number, number]];
-
-/**
- * The `AriaRole` type is used to define the role of an element in the accessibility tree.
- */
-export type AriaRole = 'button' | 'group' | 'listitem' | 'application' | 'region' | 'none' | null;

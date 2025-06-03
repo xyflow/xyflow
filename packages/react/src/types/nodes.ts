@@ -1,4 +1,4 @@
-import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent, AriaRole } from 'react';
 import type { CoordinateExtent, NodeBase, OnError, NodeProps as NodePropsBase, InternalNodeBase } from '@xyflow/system';
 
 import { NodeTypes } from './general';
@@ -18,6 +18,12 @@ export type Node<
   className?: string;
   resizing?: boolean;
   focusable?: boolean;
+  /**
+   * The ARIA role attribute for the node element, used for accessibility.
+   * @default "group"
+   */
+
+  ariaRole?: AriaRole;
 };
 
 /**

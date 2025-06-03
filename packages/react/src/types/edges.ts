@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { CSSProperties, SVGAttributes, ReactNode, MouseEvent as ReactMouseEvent, ComponentType } from 'react';
+import type {
+  CSSProperties,
+  SVGAttributes,
+  ReactNode,
+  MouseEvent as ReactMouseEvent,
+  ComponentType,
+  AriaRole,
+} from 'react';
 import type {
   EdgeBase,
   BezierPathOptions,
@@ -176,6 +183,11 @@ export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd' | 'path' | '
      * element in a separate SVG document or element.
      */
     markerEnd?: string;
+    /**
+     * The ARIA role attribute for the edge, used for accessibility.
+     * @default "group"
+     */
+    ariaRole?: AriaRole;
   };
 
 /**

@@ -1,6 +1,5 @@
 import type { XYPosition, Position, CoordinateExtent, Handle } from '.';
 import { Optional } from '../utils/types';
-import { AriaRole } from './utils';
 
 /**
  * Framework independent node data structure.
@@ -74,12 +73,6 @@ export type NodeBase<
    */
   origin?: NodeOrigin;
   handles?: NodeHandle[];
-  /**
-   * The ARIA role attribute for the node element, used for accessibility.
-   * @default "group"
-   */
-
-  ariaRole?: AriaRole;
   /**
    * A description of the node's role, used for accessibility.
    * @default "node"
