@@ -154,7 +154,6 @@ export function NodeWrapper<NodeType extends Node>({
       });
     }
   };
-
   return (
     <div
       className={cc([
@@ -192,7 +191,8 @@ export function NodeWrapper<NodeType extends Node>({
       onDoubleClick={onDoubleClickHandler}
       onKeyDown={isFocusable ? onKeyDown : undefined}
       tabIndex={isFocusable ? 0 : undefined}
-      role={isFocusable ? 'button' : undefined}
+      role={node.ariaRole ?? (isFocusable ? 'group' : undefined)}
+      aria-roledescription={node.ariaRoleDescription || 'node'}
       aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}
       aria-label={node.ariaLabel}
     >

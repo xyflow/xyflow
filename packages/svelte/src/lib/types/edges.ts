@@ -25,6 +25,11 @@ export type Edge<
   style?: string;
   class?: ClassValue;
   focusable?: boolean;
+  /**
+   * The ARIA role attribute for the edge, used for accessibility.
+   * @default "group"
+   */
+  ariaRole?: HTMLAttributes<HTMLElement>['role'];
 };
 
 export type BaseEdgeProps = Pick<
