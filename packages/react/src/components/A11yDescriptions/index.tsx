@@ -36,18 +36,15 @@ function AriaLiveMessage({ rfId }: { rfId: string }) {
 export function A11yDescriptions({ rfId, disableKeyboardA11y }: { rfId: string; disableKeyboardA11y: boolean }) {
   const labelConfig = useStore(labelConfigSelector);
 
-  const nodeDesc = disableKeyboardA11y
-    ? labelConfig['a11yDescription.node.default']
-    : labelConfig['a11yDescription.node.keyboardDisabled'];
-  const edgeDesc = labelConfig['a11yDescription.edge.default'];
-
   return (
     <>
       <div id={`${ARIA_NODE_DESC_KEY}-${rfId}`} style={style}>
-        {nodeDesc}
+        {disableKeyboardA11y
+          ? labelConfig['a11yDescription.node.default']
+          : labelConfig['a11yDescription.node.keyboardDisabled']}
       </div>
       <div id={`${ARIA_EDGE_DESC_KEY}-${rfId}`} style={style}>
-        {edgeDesc}
+        {labelConfig['a11yDescription.edge.default']}
       </div>
       {!disableKeyboardA11y && <AriaLiveMessage rfId={rfId} />}
     </>

@@ -40,7 +40,7 @@ export function NodeWrapper<NodeType extends Node>({
   nodeClickDistance,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const { node, internals, isParent, labelConfig } = useStore((s) => {
+  const { node, internals, isParent } = useStore((s) => {
     const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
     const isParent = s.parentLookup.has(id);
 
@@ -48,7 +48,6 @@ export function NodeWrapper<NodeType extends Node>({
       node,
       internals: node.internals,
       isParent,
-      labelConfig: s.labelConfig,
     };
   }, shallow);
 
@@ -142,6 +141,8 @@ export function NodeWrapper<NodeType extends Node>({
     } else if (isDraggable && node.selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
+
+      const { labelConfig } = store.getState();
 
       store.setState({
         ariaLiveMessage: labelConfig['a11yDescription.ariaLiveMessage']({
