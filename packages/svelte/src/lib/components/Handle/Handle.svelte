@@ -44,6 +44,8 @@
   );
 
   let store = useStore();
+  let ariaLabelConfig = $derived(store.ariaLabelConfig);
+
 
   let prevConnections: Map<string, HandleConnection> | null = null;
   $effect.pre(() => {
@@ -227,6 +229,7 @@ The Handle component is the part of a node that can be used to connect nodes.
   onkeypress={() => {}}
   {style}
   role="button"
+  aria-label={ariaLabelConfig[`handle.ariaLabel`]}
   tabindex="-1"
   {...rest}
 >

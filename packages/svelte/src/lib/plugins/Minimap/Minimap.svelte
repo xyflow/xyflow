@@ -21,7 +21,7 @@
 
   let {
     position = 'bottom-right',
-    ariaLabel = 'Mini map',
+    ariaLabel,
     nodeStrokeColor = 'transparent',
     nodeColor,
     nodeClass = '',
@@ -42,6 +42,7 @@
   }: MiniMapProps = $props();
 
   let store = $derived(useStore());
+  let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
   const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
@@ -113,7 +114,9 @@
         zoomable
       }}
     >
-      {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
+      {#if ariaLabel ?? ariaLabelConfig['minimap.ariaLabel']}
+        <title id={labelledBy}>{ariaLabel ?? ariaLabelConfig['minimap.ariaLabel']}</title>
+      {/if}
 
       {#each store.nodes as userNode (userNode.id)}
         {@const node = store.nodeLookup.get(userNode.id)}

@@ -142,10 +142,14 @@ export function NodeWrapper<NodeType extends Node>({
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
 
+      const { ariaLabelConfig } = store.getState();
+
       store.setState({
-        ariaLiveMessage: `Moved selected node ${event.key
-          .replace('Arrow', '')
-          .toLowerCase()}. New position, x: ${~~internals.positionAbsolute.x}, y: ${~~internals.positionAbsolute.y}`,
+        ariaLiveMessage: ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
+          direction: event.key.replace('Arrow', '').toLowerCase(),
+          x: ~~internals.positionAbsolute.x,
+          y: ~~internals.positionAbsolute.y,
+        }),
       });
 
       moveSelectedNodes({

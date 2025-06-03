@@ -20,7 +20,8 @@ import type {
   OnConnectEnd,
   OnReconnect,
   OnReconnectStart,
-  OnReconnectEnd
+  OnReconnectEnd,
+  AriaLabelConfig
 } from '@xyflow/system';
 
 import type {
@@ -471,4 +472,9 @@ export type SvelteFlowProps<
     onselectionstart?: (event: PointerEvent) => void;
     /** This event handler gets called when the user finishes dragging a selection box */
     onselectionend?: (event: PointerEvent) => void;
+    /**
+     * Configuration for customizable labels, descriptions, and UI text. Provided keys will override the corresponding defaults.
+     * Allows localization, customization of ARIA descriptions, control labels, minimap labels, and other UI strings.
+     */
+    ariaLabelConfig?: Partial<AriaLabelConfig>;
   };

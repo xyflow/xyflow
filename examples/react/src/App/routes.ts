@@ -1,3 +1,4 @@
+import A11y from '../examples/A11y';
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
 import BrokenNodes from '../examples/BrokenNodes';
@@ -67,6 +68,11 @@ const routes: IRoute[] = [
     name: 'Add Node on edge Drop',
     path: 'add-node-edge-drop',
     component: AddNodeOnEdgeDrop,
+  },
+  {
+    name: 'A11y',
+    path: 'a11y',
+    component: A11y,
   },
   {
     name: 'Basic',

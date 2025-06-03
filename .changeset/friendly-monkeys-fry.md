@@ -2,4 +2,4 @@
 '@xyflow/svelte': patch
 ---
 
-Fix data in EdgeProps not typed correctly
+Fix data in `EdgeProps` that was not typed correctly
