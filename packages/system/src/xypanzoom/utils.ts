@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ZoomTransform, zoomIdentity } from 'd3-zoom';
+import { transition } from 'd3-transition';
 
 import { type D3SelectionInstance, type Viewport } from '../types';
 import { isMacOs } from '../utils';
@@ -21,14 +22,17 @@ export const isWrappedWithClass = (event: any, className: string | undefined) =>
 export const isRightClickPan = (panOnDrag: boolean | number[], usedButton: number) =>
   usedButton === 2 && Array.isArray(panOnDrag) && panOnDrag.includes(2);
 
-export const getD3Transition = (selection: D3SelectionInstance, duration = 0, onEnd = () => {}) => {
+// taken from d3-ease: https://github.com/d3/d3-ease/blob/main/src/cubic.js
+const defaultEase = (t: number) => ((t *= 2) <= 1 ? t * t * t : (t -= 2) * t * t + 2) / 2;
+
+export const getD3Transition = (selection: D3SelectionInstance, duration = 0, ease = defaultEase, onEnd = () => {}) => {
   const hasDuration = typeof duration === 'number' && duration > 0;
 
   if (!hasDuration) {
     onEnd();
   }
 
-  return hasDuration ? selection.transition().duration(duration).on('end', onEnd) : selection;
+  return hasDuration ? selection.transition().duration(duration).ease(ease).on('end', onEnd) : selection;
 };
 
 export const wheelDelta = (event: any) => {

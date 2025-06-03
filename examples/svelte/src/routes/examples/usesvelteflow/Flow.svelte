@@ -44,7 +44,7 @@
 </script>
 
 <main>
-	<SvelteFlow bind:nodes bind:edges fitView>
+	<SvelteFlow bind:nodes bind:edges fitView maxZoom={4}>
 		<Controls />
 		<Background variant={BackgroundVariant.Dots} />
 		<MiniMap />

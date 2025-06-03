@@ -130,6 +130,8 @@ export type FitViewOptionsBase<NodeType extends NodeBase = NodeBase> = {
   minZoom?: number;
   maxZoom?: number;
   duration?: number;
+  ease?: (t: number) => number;
+  interpolate?: 'smooth' | 'linear';
   nodes?: (NodeType | { id: string })[];
 };
 
@@ -173,6 +175,8 @@ export enum PanOnScrollMode {
  */
 export type ViewportHelperFunctionOptions = {
   duration?: number;
+  ease?: (t: number) => number;
+  interpolate?: 'smooth' | 'linear';
 };
 
 export type SetCenterOptions = ViewportHelperFunctionOptions & {
