@@ -42,7 +42,7 @@
   }: MiniMapProps = $props();
 
   let store = $derived(useStore());
-  let labelConfig = $derived(store.labelConfig);
+  let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
   const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
@@ -114,8 +114,8 @@
         zoomable
       }}
     >
-      {#if ariaLabel ?? labelConfig['minimap.ariaLabel']}
-        <title id={labelledBy}>{ariaLabel ?? labelConfig['minimap.ariaLabel']}</title>
+      {#if ariaLabel ?? ariaLabelConfig['minimap.ariaLabel']}
+        <title id={labelledBy}>{ariaLabel ?? ariaLabelConfig['minimap.ariaLabel']}</title>
       {/if}
 
       {#each store.nodes as userNode (userNode.id)}

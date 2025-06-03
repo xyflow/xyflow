@@ -21,7 +21,7 @@ import type {
   ColorMode,
   SnapGrid,
   OnReconnect,
-  LabelConfig,
+  AriaLabelConfig,
 } from '@xyflow/system';
 
 import type {
@@ -671,5 +671,5 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * Configuration for customizable labels, descriptions, and UI text. Provided keys will override the corresponding defaults.
    * Allows localization, customization of ARIA descriptions, control labels, minimap labels, and other UI strings.
    */
-  labelConfig?: Partial<LabelConfig>;
+  ariaLabelConfig?: Partial<AriaLabelConfig>;
 }

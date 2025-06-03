@@ -8,11 +8,11 @@
 
 <div id={`${ARIA_NODE_DESC_KEY}-${store.flowId}`} class="a11y-hidden">
   {store.disableKeyboardA11y
-    ? store.labelConfig['a11yDescription.node.default']
-    : store.labelConfig['a11yDescription.node.keyboardDisabled']}
+    ? store.ariaLabelConfig['node.a11yDescription.default']
+    : store.ariaLabelConfig['node.a11yDescription.keyboardDisabled']}
 </div>
 <div id={`${ARIA_EDGE_DESC_KEY}-${store.flowId}`} class="a11y-hidden">
-  {store.labelConfig['a11yDescription.edge.default']}
+  {store.ariaLabelConfig['edge.a11yDescription.default']}
 </div>
 
 {#if !store.disableKeyboardA11y}

@@ -25,17 +25,17 @@
 	bind:nodes
 	bind:edges
 	fitView
-	labelConfig={{
-		'a11yDescription.node.default': 'Svelte Custom Node Desc.',
-		'a11yDescription.node.keyboardDisabled': 'Svelte Custom Keyboard Desc.',
-		'a11yDescription.edge.default': 'Svelte Custom Edge Desc.',
+	ariaLabelConfig={{
+		'node.a11yDescription.default': 'Svelte Custom Node Desc.',
+		'node.a11yDescription.keyboardDisabled': 'Svelte Custom Keyboard Desc.',
+		'edge.a11yDescription.default': 'Svelte Custom Edge Desc.',
 		'a11yDescription.ariaLiveMessage': ({ direction, x, y }) =>
 			`Custom Moved selected node ${direction}. New position, x: ${x}, y: ${y}`,
 		'controls.ariaLabel': 'Svelte Custom Control Aria Label',
-		'controls.zoomin.title': 'Svelte Custom Zoom in',
-		'controls.zoomout.title': 'Svelte Custom Zoom Out',
-		// 'controls.fitview.title': 'Svelte Custom Fit View',
-		'controls.interactive.title': 'Svelte Custom Toggle Interactivity',
+		'controls.zoomin.ariaLabel': 'Svelte Custom Zoom in',
+		'controls.zoomout.ariaLabel': 'Svelte Custom Zoom Out',
+		// 'controls.fitview.ariaLabel': 'Svelte Custom Fit View',
+		'controls.interactive.ariaLabel': 'Svelte Custom Toggle Interactivity',
 		'minimap.ariaLabel': 'Svelte Custom Minimap'
 	}}
 >

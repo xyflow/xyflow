@@ -21,7 +21,7 @@ export const ARIA_EDGE_DESC_KEY = 'react-flow__edge-desc';
 export const ARIA_LIVE_MESSAGE = 'react-flow__aria-live';
 
 const ariaLiveSelector = (s: ReactFlowState) => s.ariaLiveMessage;
-const labelConfigSelector = (s: ReactFlowState) => s.labelConfig;
+const ariaLabelConfigSelector = (s: ReactFlowState) => s.ariaLabelConfig;
 
 function AriaLiveMessage({ rfId }: { rfId: string }) {
   const ariaLiveMessage = useStore(ariaLiveSelector);
@@ -34,17 +34,17 @@ function AriaLiveMessage({ rfId }: { rfId: string }) {
 }
 
 export function A11yDescriptions({ rfId, disableKeyboardA11y }: { rfId: string; disableKeyboardA11y: boolean }) {
-  const labelConfig = useStore(labelConfigSelector);
+  const ariaLabelConfig = useStore(ariaLabelConfigSelector);
 
   return (
     <>
       <div id={`${ARIA_NODE_DESC_KEY}-${rfId}`} style={style}>
         {disableKeyboardA11y
-          ? labelConfig['a11yDescription.node.default']
-          : labelConfig['a11yDescription.node.keyboardDisabled']}
+          ? ariaLabelConfig['node.a11yDescription.default']
+          : ariaLabelConfig['node.a11yDescription.keyboardDisabled']}
       </div>
       <div id={`${ARIA_EDGE_DESC_KEY}-${rfId}`} style={style}>
-        {labelConfig['a11yDescription.edge.default']}
+        {ariaLabelConfig['edge.a11yDescription.default']}
       </div>
       {!disableKeyboardA11y && <AriaLiveMessage rfId={rfId} />}
     </>

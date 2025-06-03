@@ -4,5 +4,5 @@
 "@xyflow/system": patch
 ---
 
-Add `labelConfig` prop for customizing UI text like aria labels and descriptions.
+Add `ariaLabelConfig` prop for customizing UI text like aria labels and descriptions.
 

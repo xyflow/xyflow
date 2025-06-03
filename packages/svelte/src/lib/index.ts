@@ -113,7 +113,7 @@ export {
   type ResizeDragEvent,
   type IsValidConnection,
   type NodeConnection,
-  type LabelConfig
+  type AriaLabelConfig
 } from '@xyflow/system';
 
 // system utils

@@ -145,7 +145,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     colorMode = 'light',
     debug,
     onScroll,
-    labelConfig,
+    ariaLabelConfig,
     ...rest
   }: ReactFlowProps<NodeType, EdgeType>,
   ref: ForwardedRef<HTMLDivElement>
@@ -306,7 +306,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           onBeforeDelete={onBeforeDelete}
           paneClickDistance={paneClickDistance}
           debug={debug}
-          labelConfig={labelConfig}
+          ariaLabelConfig={ariaLabelConfig}
         />
         <SelectionListener<NodeType, EdgeType> onSelectionChange={onSelectionChange} />
         {children}

@@ -16,7 +16,7 @@ import type {
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
 
-import { defaultLabelConfig, type LabelConfig } from '../constants';
+import { defaultAriaLabelConfig, type AriaLabelConfig } from '../constants';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
 
@@ -421,6 +421,6 @@ export function withResolvers<T>(): {
   return { promise, resolve, reject };
 }
 
-export function mergeLabelConfig(partial?: Partial<LabelConfig>): LabelConfig {
-  return { ...defaultLabelConfig, ...(partial || {}) };
+export function mergeAriaLabelConfig(partial?: Partial<AriaLabelConfig>): AriaLabelConfig {
+  return { ...defaultAriaLabelConfig, ...(partial || {}) };
 }

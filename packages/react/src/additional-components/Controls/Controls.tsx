@@ -19,7 +19,7 @@ const selector = (s: ReactFlowState) => ({
   isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
   minZoomReached: s.transform[2] <= s.minZoom,
   maxZoomReached: s.transform[2] >= s.maxZoom,
-  labelConfig: s.labelConfig,
+  ariaLabelConfig: s.ariaLabelConfig,
 });
 
 function ControlsComponent({
@@ -39,7 +39,7 @@ function ControlsComponent({
   'aria-label': ariaLabel,
 }: ControlProps) {
   const store = useStoreApi();
-  const { isInteractive, minZoomReached, maxZoomReached, labelConfig } = useStore(selector, shallow);
+  const { isInteractive, minZoomReached, maxZoomReached, ariaLabelConfig } = useStore(selector, shallow);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const onZoomInHandler = () => {
@@ -74,15 +74,15 @@ function ControlsComponent({
       position={position}
       style={style}
       data-testid="rf__controls"
-      aria-label={ariaLabel ?? labelConfig['controls.ariaLabel']}
+      aria-label={ariaLabel ?? ariaLabelConfig['controls.ariaLabel']}
     >
       {showZoom && (
         <>
           <ControlButton
             onClick={onZoomInHandler}
             className="react-flow__controls-zoomin"
-            title={labelConfig['controls.zoomin.title']}
-            aria-label={labelConfig['controls.zoomin.title']}
+            title={ariaLabelConfig['controls.zoomin.ariaLabel']}
+            aria-label={ariaLabelConfig['controls.zoomin.ariaLabel']}
             disabled={maxZoomReached}
           >
             <PlusIcon />
@@ -90,8 +90,8 @@ function ControlsComponent({
           <ControlButton
             onClick={onZoomOutHandler}
             className="react-flow__controls-zoomout"
-            title={labelConfig['controls.zoomout.title']}
-            aria-label={labelConfig['controls.zoomout.title']}
+            title={ariaLabelConfig['controls.zoomout.ariaLabel']}
+            aria-label={ariaLabelConfig['controls.zoomout.ariaLabel']}
             disabled={minZoomReached}
           >
             <MinusIcon />
@@ -102,8 +102,8 @@ function ControlsComponent({
         <ControlButton
           className="react-flow__controls-fitview"
           onClick={onFitViewHandler}
-          title={labelConfig['controls.fitview.title']}
-          aria-label={labelConfig['controls.fitview.title']}
+          title={ariaLabelConfig['controls.fitview.ariaLabel']}
+          aria-label={ariaLabelConfig['controls.fitview.ariaLabel']}
         >
           <FitViewIcon />
         </ControlButton>
@@ -112,8 +112,8 @@ function ControlsComponent({
         <ControlButton
           className="react-flow__controls-interactive"
           onClick={onToggleInteractivity}
-          title={labelConfig['controls.interactive.title']}
-          aria-label={labelConfig['controls.interactive.title']}
+          title={ariaLabelConfig['controls.interactive.ariaLabel']}
+          aria-label={ariaLabelConfig['controls.interactive.ariaLabel']}
         >
           {isInteractive ? <UnlockIcon /> : <LockIcon />}
         </ControlButton>

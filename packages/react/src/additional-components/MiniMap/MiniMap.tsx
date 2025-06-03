@@ -36,7 +36,7 @@ const selector = (s: ReactFlowState) => {
     translateExtent: s.translateExtent,
     flowWidth: s.width,
     flowHeight: s.height,
-    labelConfig: s.labelConfig,
+    ariaLabelConfig: s.ariaLabelConfig,
   };
 };
 
@@ -70,7 +70,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
 }: MiniMapProps<NodeType>) {
   const store = useStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight, labelConfig } = useStore(
+  const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useStore(
     selector,
     shallow
   );
@@ -133,7 +133,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
       }, [])
     : undefined;
 
-  const _ariaLabel = ariaLabel ?? labelConfig['minimap.ariaLabel'];
+  const _ariaLabel = ariaLabel ?? ariaLabelConfig['minimap.ariaLabel'];
 
   return (
     <Panel

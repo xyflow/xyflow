@@ -28,7 +28,7 @@ import {
   type NodeChange,
   type EdgeChange,
   type ParentLookup,
-  type LabelConfig,
+  type AriaLabelConfig,
 } from '@xyflow/system';
 
 import type {
@@ -148,7 +148,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   lib: string;
   debug: boolean;
-  labelConfig: LabelConfig;
+  ariaLabelConfig: AriaLabelConfig;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {

@@ -85,7 +85,7 @@
   let prevTargetPosition: Position | undefined = targetPosition;
 
   let NodeComponent = $derived(store.nodeTypes[type] ?? DefaultNode);
-  let labelConfig = $derived(store.labelConfig);
+  let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
   let connectableContext: ConnectableContext = {
     get value() {
@@ -189,7 +189,7 @@
     ) {
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
-      store.ariaLiveMessage = labelConfig['a11yDescription.ariaLiveMessage']({
+      store.ariaLiveMessage = ariaLabelConfig['a11yDescription.ariaLiveMessage']({
         direction: event.key.replace('Arrow', '').toLowerCase(),
         x: ~~node.internals.positionAbsolute.x,
         y: ~~node.internals.positionAbsolute.y

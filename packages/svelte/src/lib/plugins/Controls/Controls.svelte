@@ -46,7 +46,7 @@
   );
   let minZoomReached = $derived(store.viewport.zoom <= store.minZoom);
   let maxZoomReached = $derived(store.viewport.zoom >= store.maxZoom);
-  let labelConfig = $derived(store.labelConfig);
+  let ariaLabelConfig = $derived(store.ariaLabelConfig);
   let orientationClass = $derived(orientation === 'horizontal' ? 'horizontal' : 'vertical');
 
   const onZoomInHandler = () => {
@@ -73,7 +73,7 @@
   class={['svelte-flow__controls', orientationClass, className]}
   {position}
   data-testid="svelte-flow__controls"
-  aria-label={labelConfig['controls.ariaLabel']}
+  aria-label={ariaLabelConfig['controls.ariaLabel']}
   {style}
   {...rest}
 >
@@ -84,8 +84,8 @@
     <ControlButton
       onclick={onZoomInHandler}
       class="svelte-flow__controls-zoomin"
-      title={labelConfig['controls.zoomin.title']}
-      aria-label={labelConfig['controls.zoomin.title']}
+      title={ariaLabelConfig['controls.zoomin.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.zoomin.ariaLabel']}
       disabled={maxZoomReached}
       {...buttonProps}
     >
@@ -94,8 +94,8 @@
     <ControlButton
       onclick={onZoomOutHandler}
       class="svelte-flow__controls-zoomout"
-      title={labelConfig['controls.zoomout.title']}
-      aria-label={labelConfig['controls.zoomout.title']}
+      title={ariaLabelConfig['controls.zoomout.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.zoomout.ariaLabel']}
       disabled={minZoomReached}
       {...buttonProps}
     >
@@ -106,8 +106,8 @@
     <ControlButton
       class="svelte-flow__controls-fitview"
       onclick={onFitViewHandler}
-      title={labelConfig['controls.fitview.title']}
-      aria-label={labelConfig['controls.fitview.title']}
+      title={ariaLabelConfig['controls.fitview.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.fitview.ariaLabel']}
       {...buttonProps}
     >
       <FitViewIcon />
@@ -117,8 +117,8 @@
     <ControlButton
       class="svelte-flow__controls-interactive"
       onclick={onToggleInteractivity}
-      title={labelConfig['controls.interactive.title']}
-      aria-label={labelConfig['controls.interactive.title']}
+      title={ariaLabelConfig['controls.interactive.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.interactive.ariaLabel']}
       {...buttonProps}
     >
       {#if isInteractive}<UnlockIcon />{:else}<LockIcon />{/if}

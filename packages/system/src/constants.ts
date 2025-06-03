@@ -37,22 +37,22 @@ export const infiniteExtent: CoordinateExtent = [
 
 export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
 
-export const defaultLabelConfig = {
-  'a11yDescription.node.default':
+export const defaultAriaLabelConfig = {
+  'node.a11yDescription.default':
     'Press enter or space to select a node. Press delete to remove it and escape to cancel.',
-  'a11yDescription.node.keyboardDisabled':
+  'node.a11yDescription.keyboardDisabled':
     'Press enter or space to select a node. You can then use the arrow keys to move the node around. Press delete to remove it and escape to cancel.',
-  'a11yDescription.edge.default':
+  'edge.a11yDescription.default':
     'Press enter or space to select an edge. You can then press delete to remove it or escape to cancel.',
   'a11yDescription.ariaLiveMessage': ({ direction, x, y }: { direction: string; x: number; y: number }) =>
     `Moved selected node ${direction}. New position, x: ${x}, y: ${y}`,
 
   // Control elements
   'controls.ariaLabel': 'Control Panel',
-  'controls.zoomin.title': 'Zoom In',
-  'controls.zoomout.title': 'Zoom Out',
-  'controls.fitview.title': 'Fit View',
-  'controls.interactive.title': 'Toggle Interactivity',
+  'controls.zoomin.ariaLabel': 'Zoom In',
+  'controls.zoomout.ariaLabel': 'Zoom Out',
+  'controls.fitview.ariaLabel': 'Fit View',
+  'controls.interactive.ariaLabel': 'Toggle Interactivity',
 
   // Mini map
   'minimap.ariaLabel': 'Mini Map',
@@ -61,4 +61,4 @@ export const defaultLabelConfig = {
   'handle.ariaLabel': 'Handle',
 };
 
-export type LabelConfig = typeof defaultLabelConfig;
+export type AriaLabelConfig = typeof defaultAriaLabelConfig;
