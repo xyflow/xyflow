@@ -47,13 +47,13 @@ const initialEdges: Edge[] = [
 const ariaLabelConfig: Partial<AriaLabelConfig> = {
   'node.a11yDescription.default': 'Custom Node Desc.',
   'node.a11yDescription.keyboardDisabled': 'Custom Keyboard Desc.',
-  'edge.a11yDescription.default': 'Custom Edge Desc.',
-  'a11yDescription.ariaLiveMessage': ({ direction, x, y }) =>
+  'node.a11yDescription.ariaLiveMessage': ({ direction, x, y }) =>
     `Custom Moved selected node ${direction}. New position, x: ${x}, y: ${y}`,
+  'edge.a11yDescription.default': 'Custom Edge Desc.',
   'controls.ariaLabel': 'Custom Controls Aria Label',
-  'controls.zoomin.ariaLabel': 'Custom Zoom in',
-  'controls.zoomout.ariaLabel': 'Custom Zoom Out',
-  // 'controls.fitview.ariaLabel': 'Custom Fit View',
+  'controls.zoomIn.ariaLabel': 'Custom Zoom in',
+  'controls.zoomOut.ariaLabel': 'Custom Zoom Out',
+  'controls.fitView.ariaLabel': 'Custom Fit View',
   'controls.interactive.ariaLabel': 'Custom Toggle Interactivity',
   'minimap.ariaLabel': 'Custom Aria Label',
 };

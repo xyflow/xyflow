@@ -81,8 +81,8 @@ function ControlsComponent({
           <ControlButton
             onClick={onZoomInHandler}
             className="react-flow__controls-zoomin"
-            title={ariaLabelConfig['controls.zoomin.ariaLabel']}
-            aria-label={ariaLabelConfig['controls.zoomin.ariaLabel']}
+            title={ariaLabelConfig['controls.zoomIn.ariaLabel']}
+            aria-label={ariaLabelConfig['controls.zoomIn.ariaLabel']}
             disabled={maxZoomReached}
           >
             <PlusIcon />
@@ -90,8 +90,8 @@ function ControlsComponent({
           <ControlButton
             onClick={onZoomOutHandler}
             className="react-flow__controls-zoomout"
-            title={ariaLabelConfig['controls.zoomout.ariaLabel']}
-            aria-label={ariaLabelConfig['controls.zoomout.ariaLabel']}
+            title={ariaLabelConfig['controls.zoomOut.ariaLabel']}
+            aria-label={ariaLabelConfig['controls.zoomOut.ariaLabel']}
             disabled={minZoomReached}
           >
             <MinusIcon />
@@ -102,8 +102,8 @@ function ControlsComponent({
         <ControlButton
           className="react-flow__controls-fitview"
           onClick={onFitViewHandler}
-          title={ariaLabelConfig['controls.fitview.ariaLabel']}
-          aria-label={ariaLabelConfig['controls.fitview.ariaLabel']}
+          title={ariaLabelConfig['controls.fitView.ariaLabel']}
+          aria-label={ariaLabelConfig['controls.fitView.ariaLabel']}
         >
           <FitViewIcon />
         </ControlButton>

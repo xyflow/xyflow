@@ -28,13 +28,13 @@
 	ariaLabelConfig={{
 		'node.a11yDescription.default': 'Svelte Custom Node Desc.',
 		'node.a11yDescription.keyboardDisabled': 'Svelte Custom Keyboard Desc.',
-		'edge.a11yDescription.default': 'Svelte Custom Edge Desc.',
-		'a11yDescription.ariaLiveMessage': ({ direction, x, y }) =>
+		'node.a11yDescription.ariaLiveMessage': ({ direction, x, y }) =>
 			`Custom Moved selected node ${direction}. New position, x: ${x}, y: ${y}`,
+		'edge.a11yDescription.default': 'Svelte Custom Edge Desc.',
 		'controls.ariaLabel': 'Svelte Custom Control Aria Label',
-		'controls.zoomin.ariaLabel': 'Svelte Custom Zoom in',
-		'controls.zoomout.ariaLabel': 'Svelte Custom Zoom Out',
-		// 'controls.fitview.ariaLabel': 'Svelte Custom Fit View',
+		'controls.zoomIn.ariaLabel': 'Svelte Custom Zoom in',
+		'controls.zoomOut.ariaLabel': 'Svelte Custom Zoom Out',
+		// 'controls.fitView.ariaLabel': 'Svelte Custom Fit View',
 		'controls.interactive.ariaLabel': 'Svelte Custom Toggle Interactivity',
 		'minimap.ariaLabel': 'Svelte Custom Minimap'
 	}}

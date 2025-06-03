@@ -145,7 +145,7 @@ export function NodeWrapper<NodeType extends Node>({
       const { ariaLabelConfig } = store.getState();
 
       store.setState({
-        ariaLiveMessage: ariaLabelConfig['a11yDescription.ariaLiveMessage']({
+        ariaLiveMessage: ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
           direction: event.key.replace('Arrow', '').toLowerCase(),
           x: ~~internals.positionAbsolute.x,
           y: ~~internals.positionAbsolute.y,

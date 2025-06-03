@@ -84,8 +84,8 @@
     <ControlButton
       onclick={onZoomInHandler}
       class="svelte-flow__controls-zoomin"
-      title={ariaLabelConfig['controls.zoomin.ariaLabel']}
-      aria-label={ariaLabelConfig['controls.zoomin.ariaLabel']}
+      title={ariaLabelConfig['controls.zoomIn.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.zoomIn.ariaLabel']}
       disabled={maxZoomReached}
       {...buttonProps}
     >
@@ -94,8 +94,8 @@
     <ControlButton
       onclick={onZoomOutHandler}
       class="svelte-flow__controls-zoomout"
-      title={ariaLabelConfig['controls.zoomout.ariaLabel']}
-      aria-label={ariaLabelConfig['controls.zoomout.ariaLabel']}
+      title={ariaLabelConfig['controls.zoomOut.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.zoomOut.ariaLabel']}
       disabled={minZoomReached}
       {...buttonProps}
     >
@@ -106,8 +106,8 @@
     <ControlButton
       class="svelte-flow__controls-fitview"
       onclick={onFitViewHandler}
-      title={ariaLabelConfig['controls.fitview.ariaLabel']}
-      aria-label={ariaLabelConfig['controls.fitview.ariaLabel']}
+      title={ariaLabelConfig['controls.fitView.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.fitView.ariaLabel']}
       {...buttonProps}
     >
       <FitViewIcon />
