@@ -9,6 +9,7 @@ import {
   Node,
   Edge,
   OnNodeDrag,
+  LabelConfig,
 } from '@xyflow/react';
 
 const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
@@ -43,6 +44,20 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
+const labelConfig: Partial<LabelConfig> = {
+  'a11yDescription.node.default': 'Custom Node Desc.',
+  'a11yDescription.node.keyboardDisabled': 'Custom Keyboard Desc.',
+  'a11yDescription.edge.default': 'Custom Edge Desc.',
+  'a11yDescription.ariaLiveMessage': ({ direction, x, y }) =>
+    `Custom Moved selected node ${direction}. New position, x: ${x}, y: ${y}`,
+  'controls.ariaLabel': 'Custom Controls Aria Label',
+  'controls.zoomin.title': 'Custom Zoom in',
+  'controls.zoomout.title': 'Custom Zoom Out',
+  // 'controls.fitview.title': 'Custom Fit View',
+  'controls.interactive.title': 'Custom Toggle Interactivity',
+  'minimap.ariaLabel': 'Custom Aria Label',
+};
+
 const A11y = () => {
   return (
     <ReactFlow
@@ -61,19 +76,7 @@ const A11y = () => {
       elevateEdgesOnSelect
       elevateNodesOnSelect={false}
       nodeDragThreshold={0}
-      labelConfig={{
-        'a11yDescription.node.default': 'Custom Node Desc.',
-        'a11yDescription.node.keyboardDisabled': 'Custom Keyboard Desc.',
-        'a11yDescription.edge.default': 'Custom Edge Desc.',
-        'a11yDescription.ariaLiveMessage': (node: string, x: number, y: number) =>
-          `Custom Moved selected node ${node}. New position, x: ${x}, y: ${y}`,
-        'controls.ariaLabel': 'Custom Controls Aria Label',
-        'controls.zoomin.title': 'Custom Zoom in',
-        'controls.zoomout.title': 'Custom Zoom Out',
-        // 'controls.fitview.title': 'Custom Fit View',
-        'controls.interactive.title': 'Custom Toggle Interactivity',
-        'minimap.ariaLabel': 'Custom Aria Label',
-      }}
+      labelConfig={labelConfig}
     >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />

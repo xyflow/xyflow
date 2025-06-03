@@ -1,5 +1,4 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
-  import { derived } from 'svelte/store';
   import type { SvelteFlowStore } from '$lib/store/types';
   import type { Node, Edge } from '$lib/types';
   import { ARIA_EDGE_DESC_KEY, ARIA_LIVE_MESSAGE, ARIA_NODE_DESC_KEY } from '.';
@@ -8,12 +7,12 @@
 </script>
 
 <div id={`${ARIA_NODE_DESC_KEY}-${store.flowId}`} class="a11y-hidden">
-    {store.disableKeyboardA11y
-      ? store.labelConfig['a11yDescription.node.default']
-      : store.labelConfig['a11yDescription.node.keyboardDisabled']}
+  {store.disableKeyboardA11y
+    ? store.labelConfig['a11yDescription.node.default']
+    : store.labelConfig['a11yDescription.node.keyboardDisabled']}
 </div>
 <div id={`${ARIA_EDGE_DESC_KEY}-${store.flowId}`} class="a11y-hidden">
-    {store.labelConfig['a11yDescription.edge.default']}
+  {store.labelConfig['a11yDescription.edge.default']}
 </div>
 
 {#if !store.disableKeyboardA11y}

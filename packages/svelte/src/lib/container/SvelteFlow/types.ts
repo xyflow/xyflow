@@ -476,5 +476,5 @@ export type SvelteFlowProps<
      * Configuration for customizable labels, descriptions, and UI text. Provided keys will override the corresponding defaults.
      * Allows localization, customization of ARIA descriptions, control labels, minimap labels, and other UI strings.
      */
-    labelConfig?: LabelConfig;
+    labelConfig?: Partial<LabelConfig>;
   };

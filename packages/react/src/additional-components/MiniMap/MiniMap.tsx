@@ -133,7 +133,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
       }, [])
     : undefined;
 
-  const effectiveAriaLabel = ariaLabel ?? labelConfig['minimap.ariaLabel'];
+  const _ariaLabel = ariaLabel ?? labelConfig['minimap.ariaLabel'];
 
   return (
     <Panel
@@ -164,7 +164,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         ref={svg}
         onClick={onSvgClick}
       >
-        {effectiveAriaLabel && <title id={labelledBy}>{effectiveAriaLabel}</title>}
+        {_ariaLabel && <title id={labelledBy}>{_ariaLabel}</title>}
 
         <MiniMapNodes<NodeType>
           onClick={onSvgNodeClick}
