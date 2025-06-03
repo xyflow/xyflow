@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { CSSProperties, SVGAttributes, ReactNode, MouseEvent as ReactMouseEvent, ComponentType } from 'react';
+import type {
+  CSSProperties,
+  SVGAttributes,
+  ReactNode,
+  MouseEvent as ReactMouseEvent,
+  ComponentType,
+  AriaRole,
+} from 'react';
 import type {
   EdgeBase,
   BezierPathOptions,
@@ -57,6 +64,11 @@ export type Edge<
      */
     reconnectable?: boolean | HandleType;
     focusable?: boolean;
+    /**
+     * The ARIA role attribute for the edge, used for accessibility.
+     * @default "group"
+     */
+    ariaRole?: AriaRole;
   };
 
 type SmoothStepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<

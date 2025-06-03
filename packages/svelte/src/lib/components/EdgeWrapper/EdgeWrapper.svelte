@@ -137,7 +137,8 @@
           ? ariaLabel
           : `Edge from ${source} to ${target}`}
       aria-describedby={focusable ? `${ARIA_EDGE_DESC_KEY}-${store.flowId}` : undefined}
-      role={focusable ? 'button' : 'img'}
+      role={edge.ariaRole ?? (focusable ? 'group' : 'img')}
+      aria-roledescription={edge.ariaRoleDescription || 'edge'}
       onkeydown={focusable ? onkeydown : undefined}
       tabindex={focusable ? 0 : undefined}
     >

@@ -36,7 +36,6 @@
   style:width={toPxString(width)}
   style:height={toPxString(height)}
   style:z-index={z}
-  role="button"
   tabindex="-1"
   onclick={() => {
     if (selectEdgeOnClick && id) store.handleEdgeSelection(id);

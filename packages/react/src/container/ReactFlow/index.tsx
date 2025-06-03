@@ -171,6 +171,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
       ref={ref}
       className={cc(['react-flow', className, colorModeClassName])}
       id={id}
+      role="application"
     >
       <Wrapper
         nodes={nodes}
