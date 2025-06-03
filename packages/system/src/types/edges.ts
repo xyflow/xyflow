@@ -48,7 +48,7 @@ export type EdgeBase<
   ariaRole?: AriaRole;
   /**
    * A description of the edge's, used for accessibility.
-   * @default "node"
+   * @default "edge"
    */
   ariaRoleDescription?: string;
 };
