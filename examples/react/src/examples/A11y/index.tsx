@@ -23,25 +23,34 @@ const initialNodes: Node[] = [
     type: 'input',
     data: { label: 'A11y Node 1' },
     position: { x: 250, y: 5 },
-    className: 'light',
   },
   {
     id: '2',
     data: { label: 'Node 2' },
-    position: { x: 100, y: 100 },
-    className: 'light',
+    position: { x: 1000, y: 100 },
   },
   {
     id: '3',
     data: { label: 'Node 3' },
-    position: { x: 400, y: 100 },
+    position: { x: 100, y: 100 },
     className: 'light',
+    ariaRoleDescription: 'custom node role',
+    ariaRole: 'button',
+  },
+  {
+    id: '4',
+    data: { label: 'Node 4' },
+    position: { x: 300, y: 100 },
+    className: 'light',
+    ariaRoleDescription: 'custom node role',
+    ariaRole: 'button',
   },
 ];
 
 const initialEdges: Edge[] = [
   { id: 'e1-2', source: '1', target: '2', animated: true },
   { id: 'e1-3', source: '1', target: '3' },
+  { id: 'e1-4', source: '1', target: '4' },
 ];
 
 const ariaLabelConfig: Partial<AriaLabelConfig> = {
@@ -69,9 +78,9 @@ const A11y = () => {
       onNodeDragStart={onNodeDragStart}
       onNodeDrag={onNodeDrag}
       className="react-flow-basic-example"
-      minZoom={0.2}
+      minZoom={2}
       maxZoom={4}
-      fitView
+      // fitView
       selectNodesOnDrag={false}
       elevateEdgesOnSelect
       elevateNodesOnSelect={false}
