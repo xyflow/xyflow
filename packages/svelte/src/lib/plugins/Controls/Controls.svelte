@@ -46,6 +46,7 @@
   );
   let minZoomReached = $derived(store.viewport.zoom <= store.minZoom);
   let maxZoomReached = $derived(store.viewport.zoom >= store.maxZoom);
+  let ariaLabelConfig = $derived(store.ariaLabelConfig);
   let orientationClass = $derived(orientation === 'horizontal' ? 'horizontal' : 'vertical');
 
   const onZoomInHandler = () => {
@@ -72,7 +73,7 @@
   class={['svelte-flow__controls', orientationClass, className]}
   {position}
   data-testid="svelte-flow__controls"
-  aria-label={ariaLabel ?? 'Svelte Flow controls'}
+  aria-label={ariaLabelConfig['controls.ariaLabel']}
   {style}
   {...rest}
 >
@@ -83,8 +84,8 @@
     <ControlButton
       onclick={onZoomInHandler}
       class="svelte-flow__controls-zoomin"
-      title="zoom in"
-      aria-label="zoom in"
+      title={ariaLabelConfig['controls.zoomIn.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.zoomIn.ariaLabel']}
       disabled={maxZoomReached}
       {...buttonProps}
     >
@@ -93,8 +94,8 @@
     <ControlButton
       onclick={onZoomOutHandler}
       class="svelte-flow__controls-zoomout"
-      title="zoom out"
-      aria-label="zoom out"
+      title={ariaLabelConfig['controls.zoomOut.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.zoomOut.ariaLabel']}
       disabled={minZoomReached}
       {...buttonProps}
     >
@@ -105,8 +106,8 @@
     <ControlButton
       class="svelte-flow__controls-fitview"
       onclick={onFitViewHandler}
-      title="fit view"
-      aria-label="fit view"
+      title={ariaLabelConfig['controls.fitView.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.fitView.ariaLabel']}
       {...buttonProps}
     >
       <FitViewIcon />
@@ -116,8 +117,8 @@
     <ControlButton
       class="svelte-flow__controls-interactive"
       onclick={onToggleInteractivity}
-      title="toggle interactivity"
-      aria-label="toggle interactivity"
+      title={ariaLabelConfig['controls.interactive.ariaLabel']}
+      aria-label={ariaLabelConfig['controls.interactive.ariaLabel']}
       {...buttonProps}
     >
       {#if isInteractive}<UnlockIcon />{:else}<LockIcon />{/if}

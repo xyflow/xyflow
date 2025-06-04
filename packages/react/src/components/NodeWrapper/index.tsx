@@ -145,10 +145,14 @@ export function NodeWrapper<NodeType extends Node>({
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
 
+      const { ariaLabelConfig } = store.getState();
+
       store.setState({
-        ariaLiveMessage: `Moved selected node ${event.key
-          .replace('Arrow', '')
-          .toLowerCase()}. New position, x: ${~~internals.positionAbsolute.x}, y: ${~~internals.positionAbsolute.y}`,
+        ariaLiveMessage: ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
+          direction: event.key.replace('Arrow', '').toLowerCase(),
+          x: ~~internals.positionAbsolute.x,
+          y: ~~internals.positionAbsolute.y,
+        }),
       });
 
       moveSelectedNodes({
@@ -223,7 +227,8 @@ export function NodeWrapper<NodeType extends Node>({
       onKeyDown={isFocusable ? onKeyDown : undefined}
       tabIndex={isFocusable ? 0 : undefined}
       onFocus={isFocusable ? onFocus : undefined}
-      role={isFocusable ? 'button' : undefined}
+      role={node.ariaRole ?? (isFocusable ? 'group' : undefined)}
+      aria-roledescription={node.ariaRoleDescription || 'node'}
       aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}
       aria-label={node.ariaLabel}
     >

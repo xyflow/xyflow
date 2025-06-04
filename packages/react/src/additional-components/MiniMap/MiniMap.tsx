@@ -36,11 +36,11 @@ const selector = (s: ReactFlowState) => {
     translateExtent: s.translateExtent,
     flowWidth: s.width,
     flowHeight: s.height,
+    ariaLabelConfig: s.ariaLabelConfig,
   };
 };
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
-
 function MiniMapComponent<NodeType extends Node = Node>({
   style,
   className,
@@ -63,14 +63,17 @@ function MiniMapComponent<NodeType extends Node = Node>({
   onNodeClick,
   pannable = false,
   zoomable = false,
-  ariaLabel = 'React Flow mini map',
+  ariaLabel,
   inversePan,
   zoomStep = 10,
   offsetScale = 5,
 }: MiniMapProps<NodeType>) {
   const store = useStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight } = useStore(selector, shallow);
+  const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useStore(
+    selector,
+    shallow
+  );
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const scaledWidth = boundingRect.width / elementWidth;
@@ -130,6 +133,8 @@ function MiniMapComponent<NodeType extends Node = Node>({
       }, [])
     : undefined;
 
+  const _ariaLabel = ariaLabel ?? ariaLabelConfig['minimap.ariaLabel'];
+
   return (
     <Panel
       position={position}
@@ -159,7 +164,8 @@ function MiniMapComponent<NodeType extends Node = Node>({
         ref={svg}
         onClick={onSvgClick}
       >
-        {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
+        {_ariaLabel && <title id={labelledBy}>{_ariaLabel}</title>}
+
         <MiniMapNodes<NodeType>
           onClick={onSvgNodeClick}
           nodeColor={nodeColor}

@@ -1,7 +1,7 @@
 ---
 '@xyflow/react': minor
 '@xyflow/svelte': minor
-'@xyflow/system': minor
+'@xyflow/system': patch
 ---
 
 Improve typing for Nodes

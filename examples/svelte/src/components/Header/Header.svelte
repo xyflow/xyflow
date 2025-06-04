@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 
 	const routes = [
+		'a11y',
 		'add-node-on-drop',
 		'color-mode',
 		'custom-connection-line',

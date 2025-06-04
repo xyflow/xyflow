@@ -85,6 +85,7 @@
   let prevTargetPosition: Position | undefined = targetPosition;
 
   let NodeComponent = $derived(store.nodeTypes[type] ?? DefaultNode);
+  let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
   let connectableContext: ConnectableContext = {
     get value() {
@@ -188,11 +189,11 @@
     ) {
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
-
-      store.ariaLiveMessage = `Moved selected node ${event.key
-        .replace('Arrow', '')
-        .toLowerCase()}. New position, x: ${node.internals.positionAbsolute.x}, y: ${node.internals.positionAbsolute.y}`;
-
+      store.ariaLiveMessage = ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
+        direction: event.key.replace('Arrow', '').toLowerCase(),
+        x: ~~node.internals.positionAbsolute.x,
+        y: ~~node.internals.positionAbsolute.y
+      });
       store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
     }
   }
@@ -274,7 +275,8 @@
     onkeydown={focusable ? onKeyDown : undefined}
     onfocus={focusable ? onFocus : undefined}
     tabIndex={focusable ? 0 : undefined}
-    role={focusable ? 'button' : undefined}
+    role={node.ariaRole ?? (focusable ? 'group' : undefined)}
+    aria-roledescription={node.ariaRoleDescription || 'node'}
     aria-describedby={store.disableKeyboardA11y
       ? undefined
       : `${ARIA_NODE_DESC_KEY}-${store.flowId}`}

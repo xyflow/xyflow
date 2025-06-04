@@ -108,6 +108,7 @@ export {
   type NoConnection,
   type NodeConnection,
   type OnReconnect,
+  type AriaLabelConfig,
 } from '@xyflow/system';
 
 // we need this workaround to prevent a duplicate identifier error

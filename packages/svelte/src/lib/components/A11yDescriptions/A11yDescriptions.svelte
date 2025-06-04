@@ -7,15 +7,12 @@
 </script>
 
 <div id={`${ARIA_NODE_DESC_KEY}-${store.flowId}`} class="a11y-hidden">
-  Press enter or space to select a node.
-  {#if !store.disableKeyboardA11y}
-    You can then use the arrow keys to move the node around.
-  {/if}
-  Press delete to remove it and escape to cancel.
+  {store.disableKeyboardA11y
+    ? store.ariaLabelConfig['node.a11yDescription.default']
+    : store.ariaLabelConfig['node.a11yDescription.keyboardDisabled']}
 </div>
 <div id={`${ARIA_EDGE_DESC_KEY}-${store.flowId}`} class="a11y-hidden">
-  Press enter or space to select an edge. You can then press delete to remove it or escape to
-  cancel.
+  {store.ariaLabelConfig['edge.a11yDescription.default']}
 </div>
 
 {#if !store.disableKeyboardA11y}

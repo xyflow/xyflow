@@ -19,6 +19,7 @@ const selector = (s: ReactFlowState) => ({
   isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
   minZoomReached: s.transform[2] <= s.minZoom,
   maxZoomReached: s.transform[2] >= s.maxZoom,
+  ariaLabelConfig: s.ariaLabelConfig,
 });
 
 function ControlsComponent({
@@ -35,10 +36,10 @@ function ControlsComponent({
   children,
   position = 'bottom-left',
   orientation = 'vertical',
-  'aria-label': ariaLabel = 'React Flow controls',
+  'aria-label': ariaLabel,
 }: ControlProps) {
   const store = useStoreApi();
-  const { isInteractive, minZoomReached, maxZoomReached } = useStore(selector, shallow);
+  const { isInteractive, minZoomReached, maxZoomReached, ariaLabelConfig } = useStore(selector, shallow);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const onZoomInHandler = () => {
@@ -67,22 +68,21 @@ function ControlsComponent({
   };
 
   const orientationClass = orientation === 'horizontal' ? 'horizontal' : 'vertical';
-
   return (
     <Panel
       className={cc(['react-flow__controls', orientationClass, className])}
       position={position}
       style={style}
       data-testid="rf__controls"
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? ariaLabelConfig['controls.ariaLabel']}
     >
       {showZoom && (
         <>
           <ControlButton
             onClick={onZoomInHandler}
             className="react-flow__controls-zoomin"
-            title="zoom in"
-            aria-label="zoom in"
+            title={ariaLabelConfig['controls.zoomIn.ariaLabel']}
+            aria-label={ariaLabelConfig['controls.zoomIn.ariaLabel']}
             disabled={maxZoomReached}
           >
             <PlusIcon />
@@ -90,8 +90,8 @@ function ControlsComponent({
           <ControlButton
             onClick={onZoomOutHandler}
             className="react-flow__controls-zoomout"
-            title="zoom out"
-            aria-label="zoom out"
+            title={ariaLabelConfig['controls.zoomOut.ariaLabel']}
+            aria-label={ariaLabelConfig['controls.zoomOut.ariaLabel']}
             disabled={minZoomReached}
           >
             <MinusIcon />
@@ -102,8 +102,8 @@ function ControlsComponent({
         <ControlButton
           className="react-flow__controls-fitview"
           onClick={onFitViewHandler}
-          title="fit view"
-          aria-label="fit view"
+          title={ariaLabelConfig['controls.fitView.ariaLabel']}
+          aria-label={ariaLabelConfig['controls.fitView.ariaLabel']}
         >
           <FitViewIcon />
         </ControlButton>
@@ -112,8 +112,8 @@ function ControlsComponent({
         <ControlButton
           className="react-flow__controls-interactive"
           onClick={onToggleInteractivity}
-          title="toggle interactivity"
-          aria-label="toggle interactivity"
+          title={ariaLabelConfig['controls.interactive.ariaLabel']}
+          aria-label={ariaLabelConfig['controls.interactive.ariaLabel']}
         >
           {isInteractive ? <UnlockIcon /> : <LockIcon />}
         </ControlButton>

@@ -10,6 +10,7 @@ import {
   NodeOrigin,
   initialConnection,
   CoordinateExtent,
+  defaultAriaLabelConfig,
 } from '@xyflow/system';
 
 import type { Edge, FitViewOptions, InternalNode, Node, ReactFlowStore } from '../types';
@@ -141,6 +142,7 @@ const getInitialState = ({
 
     lib: 'react',
     debug: false,
+    ariaLabelConfig: defaultAriaLabelConfig,
   };
 };
 
