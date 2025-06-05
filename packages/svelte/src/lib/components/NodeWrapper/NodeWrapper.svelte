@@ -6,7 +6,7 @@
     isInputDOMNode,
     nodeHasDimensions,
     Position,
-    getNodesInside,
+    getNodesInside
   } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
@@ -200,26 +200,30 @@
   }
 
   const onFocus = () => {
-    if (store.disableKeyboardA11y || !store.enablePanOnFocus || !nodeRef?.matches(':focus-visible')) {
+    if (
+      store.disableKeyboardA11y ||
+      !store.enablePanOnFocus ||
+      !nodeRef?.matches(':focus-visible')
+    ) {
       return;
     }
 
-    const width = store.width;
-    const height = store.height;
-    const viewport: [number, number, number] = [store.viewport.x, store.viewport.y, store.viewport.zoom];
-    const zoom = store.viewport.zoom;
-  
-    const visibleNodes = getNodesInside(new Map([[id, node]]), { x: 0, y: 0, width, height }, viewport, true);
+    const { width, height, viewport } = store;
 
-    const isNodeVisible = visibleNodes.length > 0;
+    const withinViewport =
+      getNodesInside(
+        new Map([[id, node]]),
+        { x: 0, y: 0, width, height },
+        [viewport.x, viewport.y, viewport.zoom],
+        true
+      ).length > 0;
 
-    if (!isNodeVisible) {
-      store.fitView({
-        nodes: [{ id }],
-        duration: 100,
-        minZoom: zoom,
-        maxZoom: zoom,
-      });
+    if (!withinViewport) {
+      store.setCenter(
+        node.position.x + (node.measured.width ?? 0) / 2,
+        node.position.y + (node.measured.height ?? 0) / 2,
+        { zoom: viewport.zoom }
+      );
     }
   };
 </script>
