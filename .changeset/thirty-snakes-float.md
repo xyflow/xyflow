@@ -3,4 +3,4 @@
 "@xyflow/svelte": minor
 ---
 
-feat(NodeWrapper): focus nodes in the viewport on tab
+Focus nodes on tab if not within the viewport and add a new prop `enablePanOnFocus`
