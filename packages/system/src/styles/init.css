@@ -84,6 +84,7 @@
 
 .xy-flow__viewport {
   transform-origin: 0 0;
+  transform: translate(var(--xy-view-x, 0px), var(--xy-view-y, 0px)) scale(var(--xy-view-zoom, 1));
   z-index: 2;
   pointer-events: none;
 }

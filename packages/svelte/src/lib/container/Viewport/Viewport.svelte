@@ -11,8 +11,9 @@
 
 <div
   class="svelte-flow__viewport xyflow__viewport svelte-flow__container"
-  style:transform="translate({store.viewport.x}px, {store.viewport.y}px) scale({store.viewport
-    .zoom})"
+  style:--xy-view-x={`${store.viewport.x}px`}
+  style:--xy-view-y={`${store.viewport.y}px`}
+  style:--xy-view-zoom={store.viewport.zoom}
 >
   {@render children()}
 </div>
