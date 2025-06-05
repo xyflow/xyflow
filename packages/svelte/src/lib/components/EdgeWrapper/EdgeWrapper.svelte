@@ -138,9 +138,10 @@
           : `Edge from ${source} to ${target}`}
       aria-describedby={focusable ? `${ARIA_EDGE_DESC_KEY}-${store.flowId}` : undefined}
       role={edge.ariaRole ?? (focusable ? 'group' : 'img')}
-      aria-roledescription={edge.ariaRoleDescription || 'edge'}
+      aria-roledescription="edge"
       onkeydown={focusable ? onkeydown : undefined}
       tabindex={focusable ? 0 : undefined}
+      {...edge.domAttributes}
     >
       <EdgeComponent
         {id}
