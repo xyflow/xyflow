@@ -78,8 +78,6 @@ const A11y = () => {
     <ReactFlow
       defaultNodes={initialNodes}
       defaultEdges={initialEdges}
-      minZoom={2}
-      maxZoom={4}
       enablePanOnFocus={isFocusPannable}
       selectNodesOnDrag={false}
       elevateEdgesOnSelect

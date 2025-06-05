@@ -29,6 +29,7 @@ import {
   type EdgeChange,
   type ParentLookup,
   type AriaLabelConfig,
+  SetCenter,
 } from '@xyflow/system';
 
 import type {
@@ -172,6 +173,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
+  setCenter: SetCenter;
   setPaneClickDistance: (distance: number) => void;
 };
 

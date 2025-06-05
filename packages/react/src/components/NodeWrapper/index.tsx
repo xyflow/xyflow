@@ -19,7 +19,6 @@ import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
 import { useNodeObserver } from './useNodeObserver';
 import type { InternalNode, Node, NodeWrapperProps } from '../../types';
-import { useReactFlow } from '../../hooks/useReactFlow';
 
 export function NodeWrapper<NodeType extends Node>({
   id,
@@ -81,8 +80,6 @@ export function NodeWrapper<NodeType extends Node>({
     nodeClickDistance,
   });
   const moveSelectedNodes = useMoveSelectedNodes();
-  const { fitView } = useReactFlow();
-  const { getViewport } = useReactFlow();
 
   if (node.hidden) {
     return null;
@@ -165,26 +162,17 @@ export function NodeWrapper<NodeType extends Node>({
   };
 
   const onFocus = () => {
-    if (disableKeyboardA11y || !enablePanOnFocus) {
+    if (disableKeyboardA11y || !enablePanOnFocus || !nodeRef.current?.matches(':focus-visible')) {
       return;
     }
 
-    if (!nodeRef.current?.matches(':focus-visible')) {
-      return;
-    }
+    const { transform, width, height, setCenter } = store.getState();
+    const withinViewport =
+      getNodesInside(new Map([[id, node]]), { x: 0, y: 0, width, height }, transform, true).length > 0;
 
-    const { transform, width, height } = store.getState();
-    const visibleNodes = getNodesInside(new Map([[id, node]]), { x: 0, y: 0, width, height }, transform, true);
-
-    const isNodeVisible = visibleNodes.length > 0;
-
-    if (!isNodeVisible) {
-      const zoomLevel = transform[2];
-      fitView({
-        nodes: [{ id }],
-        duration: 100,
-        minZoom: zoomLevel,
-        maxZoom: zoomLevel,
+    if (!withinViewport) {
+      setCenter(node.position.x + nodeDimensions.width / 2, node.position.y + nodeDimensions.height / 2, {
+        zoom: transform[2],
       });
     }
   };

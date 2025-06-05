@@ -360,6 +360,26 @@ const createStore = ({
 
         return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
       },
+      setCenter: async (x, y, options) => {
+        const { width, height, maxZoom, panZoom } = get();
+
+        if (!panZoom) {
+          return Promise.resolve(false);
+        }
+
+        const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : maxZoom;
+
+        await panZoom.setViewport(
+          {
+            x: width / 2 - x * nextZoom,
+            y: height / 2 - y * nextZoom,
+            zoom: nextZoom,
+          },
+          { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
+        );
+
+        return Promise.resolve(true);
+      },
       cancelConnection: () => {
         set({
           connection: { ...initialConnection },
