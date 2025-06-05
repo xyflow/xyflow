@@ -14,7 +14,8 @@ import {
   type ConnectionState,
   updateAbsolutePositions,
   snapPosition,
-  calculateNodePosition
+  calculateNodePosition,
+  type SetCenterOptions
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -124,6 +125,26 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     store.nodes = [...store.nodes];
 
     return fitViewResolver.promise;
+  }
+
+  async function setCenter(x: number, y: number, options?: SetCenterOptions) {
+    const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : store.maxZoom;
+    const currentPanZoom = store.panZoom;
+
+    if (!currentPanZoom) {
+      return Promise.resolve(false);
+    }
+
+    await currentPanZoom.setViewport(
+      {
+        x: store.width / 2 - x * nextZoom,
+        y: store.height / 2 - y * nextZoom,
+        zoom: nextZoom
+      },
+      { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
+    );
+
+    return Promise.resolve(true);
   }
 
   function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
@@ -372,6 +393,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     zoomIn,
     zoomOut,
     fitView,
+    setCenter,
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,

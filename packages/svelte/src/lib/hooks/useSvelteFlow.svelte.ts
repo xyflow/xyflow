@@ -366,28 +366,8 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       return Promise.resolve(true);
     },
     getViewport: () => $state.snapshot(store.viewport),
-    setCenter: async (x, y, options) => {
-      const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : store.maxZoom;
-      const currentPanZoom = store.panZoom;
-
-      if (!currentPanZoom) {
-        return Promise.resolve(false);
-      }
-
-      await currentPanZoom.setViewport(
-        {
-          x: store.width / 2 - x * nextZoom,
-          y: store.height / 2 - y * nextZoom,
-          zoom: nextZoom
-        },
-        { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
-      );
-
-      return Promise.resolve(true);
-    },
-    fitView: (options?: FitViewOptions) => {
-      return store.fitView(options);
-    },
+    setCenter: async (x, y, options) => store.setCenter(x, y, options),
+    fitView: (options?: FitViewOptions) => store.fitView(options),
     fitBounds: async (bounds: Rect, options?: FitBoundsOptions) => {
       if (!store.panZoom) {
         return Promise.resolve(false);
