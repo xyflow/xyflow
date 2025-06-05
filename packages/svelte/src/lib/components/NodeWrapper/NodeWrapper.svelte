@@ -200,15 +200,10 @@
   }
 
   const onFocus = () => {
-    console.log('before', store.enablePanOnFocus);
-    if (store.disableKeyboardA11y || !store.enablePanOnFocus) {
-      console.log("should return early", store.enablePanOnFocus);
+    if (store.disableKeyboardA11y || !store.enablePanOnFocus || !nodeRef?.matches(':focus-visible')) {
       return;
     }
 
-    if (!nodeRef?.matches(':focus-visible')) {
-      return;
-    }
     const width = store.width;
     const height = store.height;
     const viewport: [number, number, number] = [store.viewport.x, store.viewport.y, store.viewport.zoom];
@@ -219,9 +214,6 @@
     const isNodeVisible = visibleNodes.length > 0;
 
     if (!isNodeVisible) {
-      console.log('About to call fitView - this should NOT happen when enablePanOnFocus is false');
-
-      console.log('after', store.enablePanOnFocus);
       store.fitView({
         nodes: [{ id }],
         duration: 100,
