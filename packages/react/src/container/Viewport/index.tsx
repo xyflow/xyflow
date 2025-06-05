@@ -20,6 +20,7 @@ export function Viewport({ children }: ViewportProps) {
           '--xy-view-x': `${transform[0]}px`,
           '--xy-view-y': `${transform[1]}px`,
           '--xy-view-zoom': transform[2],
+          '--xy-view-zoom-inverse': 1 / transform[2],
         } as React.CSSProperties
       }
     >
