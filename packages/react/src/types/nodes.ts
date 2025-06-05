@@ -48,6 +48,7 @@ export type NodeWrapperProps<NodeType extends Node> = {
   nodesConnectable: boolean;
   elementsSelectable: boolean;
   nodesDraggable: boolean;
+  enablePanOnFocus: boolean;
   nodesFocusable: boolean;
   onClick?: NodeMouseHandler<NodeType>;
   onDoubleClick?: NodeMouseHandler<NodeType>;

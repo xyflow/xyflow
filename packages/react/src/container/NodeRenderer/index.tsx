@@ -29,6 +29,7 @@ export type NodeRendererProps<NodeType extends Node> = Pick<
 
 const selector = (s: ReactFlowState) => ({
   nodesDraggable: s.nodesDraggable,
+  enablePanOnFocus: s.enablePanOnFocus,
   nodesConnectable: s.nodesConnectable,
   nodesFocusable: s.nodesFocusable,
   elementsSelectable: s.elementsSelectable,
@@ -36,7 +37,10 @@ const selector = (s: ReactFlowState) => ({
 });
 
 function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
-  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, onError } = useStore(selector, shallow);
+  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, enablePanOnFocus, onError } = useStore(
+    selector,
+    shallow
+  );
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
 
@@ -48,13 +52,13 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
            * The split of responsibilities between NodeRenderer and
            * NodeComponentWrapper may appear weird. However, it’s designed to
            * minimize the cost of updates when individual nodes change.
-           * 
+           *
            * For example, when you’re dragging a single node, that node gets
            * updated multiple times per second. If `NodeRenderer` were to update
            * every time, it would have to re-run the `nodes.map()` loop every
            * time. This gets pricey with hundreds of nodes, especially if every
            * loop cycle does more than just rendering a JSX element!
-           * 
+           *
            * As a result of this choice, we took the following implementation
            * decisions:
            * - NodeRenderer subscribes *only* to node IDs – and therefore
@@ -86,6 +90,7 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
             disableKeyboardA11y={props.disableKeyboardA11y}
             resizeObserver={resizeObserver}
             nodesDraggable={nodesDraggable}
+            enablePanOnFocus={enablePanOnFocus}
             nodesConnectable={nodesConnectable}
             nodesFocusable={nodesFocusable}
             elementsSelectable={elementsSelectable}

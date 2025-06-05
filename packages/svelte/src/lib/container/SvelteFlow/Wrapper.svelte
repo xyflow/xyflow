@@ -84,6 +84,7 @@
     elevateNodesOnSelect,
     elevateEdgesOnSelect,
     nodesDraggable,
+    enablePanOnFocus,
     nodesConnectable,
     elementsSelectable,
     nodesFocusable,

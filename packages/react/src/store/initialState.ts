@@ -112,6 +112,7 @@ const getInitialState = ({
     snapToGrid: false,
 
     nodesDraggable: true,
+    enablePanOnFocus: false,
     nodesConnectable: true,
     nodesFocusable: true,
     edgesFocusable: true,

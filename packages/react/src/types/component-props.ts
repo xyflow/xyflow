@@ -384,6 +384,11 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    */
   nodesDraggable?: boolean;
   /**
+   * When `true`, the viewport will pan when a node is focused.
+   * @default false
+   */
+  enablePanOnFocus?: boolean;
+  /**
    * Controls whether all nodes should be connectable or not. Individual nodes can override this
    * setting by setting their `connectable` prop.
    * @default true

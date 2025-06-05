@@ -23,6 +23,7 @@ const reactFlowFieldsToTrack = [
   'onClickConnectStart',
   'onClickConnectEnd',
   'nodesDraggable',
+  'enablePanOnFocus',
   'nodesConnectable',
   'nodesFocusable',
   'edgesFocusable',

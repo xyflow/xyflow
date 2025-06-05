@@ -5,7 +5,8 @@
     errorMessages,
     isInputDOMNode,
     nodeHasDimensions,
-    Position
+    Position,
+    getNodesInside,
   } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
@@ -198,26 +199,37 @@
     }
   }
 
-  function onFocus() {
-    if (store.disableKeyboardA11y) {
+  const onFocus = () => {
+    console.log('before', store.enablePanOnFocus);
+    if (store.disableKeyboardA11y || !store.enablePanOnFocus) {
+      console.log("should return early", store.enablePanOnFocus);
       return;
     }
-    
-    const zoom = store.panZoom?.getViewport().zoom ?? 1;
-    
-    // Get node dimensions 
-    const nodeWidth = nodeRef?.offsetWidth || 0;
-    const nodeHeight = nodeRef?.offsetHeight || 0;
-    
-    store.panZoom?.setViewport(
-      {
-        x: -(positionX + nodeWidth / 2) * zoom + window.innerWidth / 2,
-        y: -(positionY + nodeHeight / 2) * zoom + window.innerHeight / 2,
-        zoom: zoom,
-      },
-      { duration: 100 }
-    );
-  }
+
+    if (!nodeRef?.matches(':focus-visible')) {
+      return;
+    }
+    const width = store.width;
+    const height = store.height;
+    const viewport: [number, number, number] = [store.viewport.x, store.viewport.y, store.viewport.zoom];
+    const zoom = store.viewport.zoom;
+  
+    const visibleNodes = getNodesInside(new Map([[id, node]]), { x: 0, y: 0, width, height }, viewport, true);
+
+    const isNodeVisible = visibleNodes.length > 0;
+
+    if (!isNodeVisible) {
+      console.log('About to call fitView - this should NOT happen when enablePanOnFocus is false');
+
+      console.log('after', store.enablePanOnFocus);
+      store.fitView({
+        nodes: [{ id }],
+        duration: 100,
+        minZoom: zoom,
+        maxZoom: zoom,
+      });
+    }
+  };
 </script>
 
 {#if !hidden}

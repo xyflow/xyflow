@@ -247,6 +247,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     });
 
     nodesDraggable: boolean = $derived(signals.props.nodesDraggable ?? true);
+    enablePanOnFocus: boolean = $derived(signals.props.enablePanOnFocus ?? true);
     nodesConnectable: boolean = $derived(signals.props.nodesConnectable ?? true);
     elementsSelectable: boolean = $derived(signals.props.elementsSelectable ?? true);
     nodesFocusable: boolean = $derived(signals.props.nodesFocusable ?? true);

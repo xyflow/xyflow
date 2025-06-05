@@ -7,6 +7,7 @@ import {
   getNodeDimensions,
   isInputDOMNode,
   nodeHasDimensions,
+  getNodesInside,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -29,6 +30,7 @@ export function NodeWrapper<NodeType extends Node>({
   onContextMenu,
   onDoubleClick,
   nodesDraggable,
+  enablePanOnFocus,
   elementsSelectable,
   nodesConnectable,
   nodesFocusable,
@@ -163,28 +165,26 @@ export function NodeWrapper<NodeType extends Node>({
   };
 
   const onFocus = () => {
-    if (disableKeyboardA11y) {
+    if (disableKeyboardA11y || !enablePanOnFocus) {
       return;
     }
 
-    // Return early if focus is not from keyboard navigation (i.e., was clicked)
     if (!nodeRef.current?.matches(':focus-visible')) {
       return;
     }
-    const { x, y, zoom } = getViewport();
 
-    const isNodeVisible =
-      node.position.x >= x &&
-      node.position.x <= x + window.innerWidth &&
-      node.position.y >= y &&
-      node.position.y <= y + window.innerHeight;
+    const { transform, width, height } = store.getState();
+    const visibleNodes = getNodesInside(new Map([[id, node]]), { x: 0, y: 0, width, height }, transform, true);
+
+    const isNodeVisible = visibleNodes.length > 0;
 
     if (!isNodeVisible) {
+      const zoomLevel = transform[2];
       fitView({
         nodes: [{ id }],
         duration: 100,
-        minZoom: zoom,
-        maxZoom: zoom,
+        minZoom: zoomLevel,
+        maxZoom: zoomLevel,
       });
     }
   };
