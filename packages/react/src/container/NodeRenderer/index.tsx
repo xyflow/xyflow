@@ -29,7 +29,7 @@ export type NodeRendererProps<NodeType extends Node> = Pick<
 
 const selector = (s: ReactFlowState) => ({
   nodesDraggable: s.nodesDraggable,
-  enablePanOnFocus: s.enablePanOnFocus,
+  autoPanOnNodeFocus: s.autoPanOnNodeFocus,
   nodesConnectable: s.nodesConnectable,
   nodesFocusable: s.nodesFocusable,
   elementsSelectable: s.elementsSelectable,
@@ -37,10 +37,8 @@ const selector = (s: ReactFlowState) => ({
 });
 
 function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
-  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, enablePanOnFocus, onError } = useStore(
-    selector,
-    shallow
-  );
+  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, autoPanOnNodeFocus, onError } =
+    useStore(selector, shallow);
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
 
@@ -90,7 +88,7 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
             disableKeyboardA11y={props.disableKeyboardA11y}
             resizeObserver={resizeObserver}
             nodesDraggable={nodesDraggable}
-            enablePanOnFocus={enablePanOnFocus}
+            autoPanOnNodeFocus={autoPanOnNodeFocus}
             nodesConnectable={nodesConnectable}
             nodesFocusable={nodesFocusable}
             elementsSelectable={elementsSelectable}

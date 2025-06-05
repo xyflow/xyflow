@@ -84,7 +84,7 @@
     elevateNodesOnSelect,
     elevateEdgesOnSelect,
     nodesDraggable,
-    enablePanOnFocus,
+    autoPanOnNodeFocus,
     nodesConnectable,
     elementsSelectable,
     nodesFocusable,
@@ -105,7 +105,7 @@
   // Undo scroll events, preventing viewport from shifting when nodes outside of it are focused
   function wrapperOnScroll(e: UIEvent & { currentTarget: EventTarget & HTMLDivElement }) {
     e.currentTarget.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    
+
     // Forward the event to any existing onscroll handler if needed
     if (rest.onscroll) {
       rest.onscroll(e);

@@ -112,7 +112,6 @@ const getInitialState = ({
     snapToGrid: false,
 
     nodesDraggable: true,
-    enablePanOnFocus: false,
     nodesConnectable: true,
     nodesFocusable: true,
     edgesFocusable: true,
@@ -135,7 +134,9 @@ const getInitialState = ({
     ariaLiveMessage: '',
     autoPanOnConnect: true,
     autoPanOnNodeDrag: true,
+    autoPanOnNodeFocus: true,
     autoPanSpeed: 15,
+
     connectionRadius: 20,
     onError: devWarn,
     isValidConnection: undefined,

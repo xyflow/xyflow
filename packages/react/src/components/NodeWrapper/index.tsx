@@ -29,7 +29,7 @@ export function NodeWrapper<NodeType extends Node>({
   onContextMenu,
   onDoubleClick,
   nodesDraggable,
-  enablePanOnFocus,
+  autoPanOnNodeFocus,
   elementsSelectable,
   nodesConnectable,
   nodesFocusable,
@@ -162,7 +162,7 @@ export function NodeWrapper<NodeType extends Node>({
   };
 
   const onFocus = () => {
-    if (disableKeyboardA11y || !enablePanOnFocus || !nodeRef.current?.matches(':focus-visible')) {
+    if (disableKeyboardA11y || !autoPanOnNodeFocus || !nodeRef.current?.matches(':focus-visible')) {
       return;
     }
 

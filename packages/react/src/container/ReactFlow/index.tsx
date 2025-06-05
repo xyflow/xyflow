@@ -77,7 +77,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     onlyRenderVisibleElements = false,
     selectNodesOnDrag,
     nodesDraggable,
-    enablePanOnFocus,
+    autoPanOnNodeFocus,
     nodesConnectable,
     nodesFocusable,
     nodeOrigin = defaultNodeOrigin,
@@ -262,7 +262,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           onClickConnectStart={onClickConnectStart}
           onClickConnectEnd={onClickConnectEnd}
           nodesDraggable={nodesDraggable}
-          enablePanOnFocus={enablePanOnFocus}
+          autoPanOnNodeFocus={autoPanOnNodeFocus}
           nodesConnectable={nodesConnectable}
           nodesFocusable={nodesFocusable}
           edgesFocusable={edgesFocusable}

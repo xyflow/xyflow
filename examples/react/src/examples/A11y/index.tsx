@@ -8,7 +8,6 @@ import {
   ReactFlowProvider,
   Node,
   Edge,
-  OnNodeDrag,
   AriaLabelConfig,
   Panel,
 } from '@xyflow/react';
@@ -73,12 +72,13 @@ const ariaLabelConfig: Partial<AriaLabelConfig> = {
 };
 
 const A11y = () => {
-  const [isFocusPannable, setEnablePanOnFocus] = useState(true);
+  const [autoPanOnNodeFocus, setAutoPanOnNodeFocus] = useState(true);
+
   return (
     <ReactFlow
       defaultNodes={initialNodes}
       defaultEdges={initialEdges}
-      enablePanOnFocus={isFocusPannable}
+      autoPanOnNodeFocus={autoPanOnNodeFocus}
       selectNodesOnDrag={false}
       elevateEdgesOnSelect
       elevateNodesOnSelect={false}
@@ -94,11 +94,11 @@ const A11y = () => {
             <input
               id="focusPannable"
               type="checkbox"
-              checked={isFocusPannable}
-              onChange={(event) => setEnablePanOnFocus(event.target.checked)}
+              checked={autoPanOnNodeFocus}
+              onChange={(event) => setAutoPanOnNodeFocus(event.target.checked)}
               className="xy-theme__checkbox"
             />
-            enablePanOnFocus
+            autoPanOnNodeFocus
           </label>
         </div>
       </Panel>

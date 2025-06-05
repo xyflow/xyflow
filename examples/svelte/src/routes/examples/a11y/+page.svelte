@@ -19,13 +19,19 @@
 		{ id: 'A-C', source: 'A', target: 'C' },
 		{ id: 'A-D', source: 'A', target: 'D' }
 	]);
-	let isFocusPannable = $state(true);
-	const ariaLabelConfig = $state(
-		{
+	let autoPanOnNodeFocus = $state(true);
+	const ariaLabelConfig = $state({
 		'node.a11yDescription.default': 'Svelte Custom Node Desc.',
 		'node.a11yDescription.keyboardDisabled': 'Svelte Custom Keyboard Desc.',
-		'node.a11yDescription.ariaLiveMessage': ({ direction, x, y }: { direction: string; x: number; y: number }) =>
-			`Custom Moved selected node ${direction}. New position, x: ${x}, y: ${y}`,
+		'node.a11yDescription.ariaLiveMessage': ({
+			direction,
+			x,
+			y
+		}: {
+			direction: string;
+			x: number;
+			y: number;
+		}) => `Custom Moved selected node ${direction}. New position, x: ${x}, y: ${y}`,
 		'edge.a11yDescription.default': 'Svelte Custom Edge Desc.',
 		'controls.ariaLabel': 'Svelte Custom Control Aria Label',
 		'controls.zoomIn.ariaLabel': 'Svelte Custom Zoom in',
@@ -33,30 +39,24 @@
 		// 'controls.fitView.ariaLabel': 'Svelte Custom Fit View',
 		'controls.interactive.ariaLabel': 'Svelte Custom Toggle Interactivity',
 		'minimap.ariaLabel': 'Svelte Custom Minimap'
-	}
-	);
+	});
 </script>
 
-<SvelteFlow
-	bind:nodes
-	bind:edges
-	enablePanOnFocus={isFocusPannable}
-	ariaLabelConfig={ariaLabelConfig}
->
+<SvelteFlow bind:nodes bind:edges {autoPanOnNodeFocus} {ariaLabelConfig}>
 	<Controls />
 	<Background />
 	<MiniMap />
-	  <Panel class="panel top-right">
+	<Panel class="panel top-right">
 		<div>
 			<label for="focusPannable">
 				Enable Pan on Focus
 				<input
 					id="focusPannable"
 					type="checkbox"
-					bind:checked={isFocusPannable}
+					bind:checked={autoPanOnNodeFocus}
 					class="svelte-flow__zoomonscroll"
 				/>
 			</label>
 		</div>
-  </Panel>
+	</Panel>
 </SvelteFlow>

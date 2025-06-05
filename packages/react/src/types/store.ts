@@ -89,7 +89,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   snapGrid: SnapGrid;
 
   nodesDraggable: boolean;
-  enablePanOnFocus: boolean;
+  autoPanOnNodeFocus: boolean;
   nodesConnectable: boolean;
   nodesFocusable: boolean;
   edgesFocusable: boolean;

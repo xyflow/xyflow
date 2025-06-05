@@ -202,7 +202,7 @@
   const onFocus = () => {
     if (
       store.disableKeyboardA11y ||
-      !store.enablePanOnFocus ||
+      !store.autoPanOnNodeFocus ||
       !nodeRef?.matches(':focus-visible')
     ) {
       return;

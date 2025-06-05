@@ -247,7 +247,6 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     });
 
     nodesDraggable: boolean = $derived(signals.props.nodesDraggable ?? true);
-    enablePanOnFocus: boolean = $derived(signals.props.enablePanOnFocus ?? true);
     nodesConnectable: boolean = $derived(signals.props.nodesConnectable ?? true);
     elementsSelectable: boolean = $derived(signals.props.elementsSelectable ?? true);
     nodesFocusable: boolean = $derived(signals.props.nodesFocusable ?? true);
@@ -267,6 +266,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     nodeDragThreshold: number = $derived(signals.props.nodeDragThreshold ?? 1);
     autoPanOnNodeDrag: boolean = $derived(signals.props.autoPanOnNodeDrag ?? true);
     autoPanOnConnect: boolean = $derived(signals.props.autoPanOnConnect ?? true);
+    autoPanOnNodeFocus: boolean = $derived(signals.props.autoPanOnNodeFocus ?? true);
 
     fitViewQueued: boolean = signals.props.fitView ?? false;
     fitViewOptions: FitViewOptions | undefined = signals.props.fitViewOptions;
