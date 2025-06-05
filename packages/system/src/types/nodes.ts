@@ -73,11 +73,6 @@ export type NodeBase<
    */
   origin?: NodeOrigin;
   handles?: NodeHandle[];
-  /**
-   * A description of the node's role, used for accessibility.
-   * @default "node"
-   */
-  ariaRoleDescription?: string;
   measured?: {
     width?: number;
     height?: number;
