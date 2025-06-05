@@ -254,7 +254,7 @@
     onkeydown={focusable ? onKeyDown : undefined}
     tabIndex={focusable ? 0 : undefined}
     role={node.ariaRole ?? (focusable ? 'group' : undefined)}
-    aria-roledescription={node.domAttributes?.['aria-roledescription'] || 'node'}
+    aria-roledescription="node"
     aria-describedby={store.disableKeyboardA11y
       ? undefined
       : `${ARIA_NODE_DESC_KEY}-${store.flowId}`}

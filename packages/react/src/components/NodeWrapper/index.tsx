@@ -196,7 +196,7 @@ export function NodeWrapper<NodeType extends Node>({
       onKeyDown={isFocusable ? onKeyDown : undefined}
       tabIndex={isFocusable ? 0 : undefined}
       role={node.ariaRole ?? (isFocusable ? 'group' : undefined)}
-      aria-roledescription={node.domAttributes?.['aria-roledescription'] || 'node'}
+      aria-roledescription="node"
       aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}
       aria-label={node.ariaLabel}
       {...node.domAttributes}
