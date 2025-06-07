@@ -413,7 +413,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
   const { x: parentX, y: parentY } = parentNode ? parentNode.internals.positionAbsolute : { x: 0, y: 0 };
 
   const origin = node.origin ?? nodeOrigin;
-  let extent = nodeExtent;
+  let extent = node.extent || nodeExtent;
 
   if (node.extent === 'parent' && !node.expandParent) {
     if (!parentNode) {
