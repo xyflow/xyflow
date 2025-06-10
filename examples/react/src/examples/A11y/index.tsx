@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react';
+import { useState } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -34,7 +34,6 @@ const initialNodes: Node[] = [
     data: { label: 'Node 3' },
     position: { x: 100, y: 100 },
     className: 'light',
-    ariaRoleDescription: 'custom node role',
     ariaRole: 'button',
   },
   {
