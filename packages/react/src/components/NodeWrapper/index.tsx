@@ -29,7 +29,6 @@ export function NodeWrapper<NodeType extends Node>({
   onContextMenu,
   onDoubleClick,
   nodesDraggable,
-  autoPanOnNodeFocus,
   elementsSelectable,
   nodesConnectable,
   nodesFocusable,
@@ -162,11 +161,16 @@ export function NodeWrapper<NodeType extends Node>({
   };
 
   const onFocus = () => {
-    if (disableKeyboardA11y || !autoPanOnNodeFocus || !nodeRef.current?.matches(':focus-visible')) {
+    if (disableKeyboardA11y || !nodeRef.current?.matches(':focus-visible')) {
       return;
     }
 
-    const { transform, width, height, setCenter } = store.getState();
+    const { transform, width, height, autoPanOnNodeFocus, setCenter } = store.getState();
+
+    if (!autoPanOnNodeFocus) {
+      return;
+    }
+
     const withinViewport =
       getNodesInside(new Map([[id, node]]), { x: 0, y: 0, width, height }, transform, true).length > 0;
 

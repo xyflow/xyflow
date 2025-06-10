@@ -234,7 +234,7 @@ export type SvelteFlowProps<
     nodesDraggable?: boolean;
     /**
      * When `true`, the viewport will pan when a node is focused.
-     * @default false
+     * @default true
      */
     autoPanOnNodeFocus?: boolean;
     /**
