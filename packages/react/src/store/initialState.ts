@@ -134,7 +134,9 @@ const getInitialState = ({
     ariaLiveMessage: '',
     autoPanOnConnect: true,
     autoPanOnNodeDrag: true,
+    autoPanOnNodeFocus: true,
     autoPanSpeed: 15,
+
     connectionRadius: 20,
     onError: devWarn,
     isValidConnection: undefined,

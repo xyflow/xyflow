@@ -5,7 +5,8 @@
     errorMessages,
     isInputDOMNode,
     nodeHasDimensions,
-    Position
+    Position,
+    getNodesInside
   } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
@@ -197,6 +198,34 @@
       store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
     }
   }
+
+  const onFocus = () => {
+    if (
+      store.disableKeyboardA11y ||
+      !store.autoPanOnNodeFocus ||
+      !nodeRef?.matches(':focus-visible')
+    ) {
+      return;
+    }
+
+    const { width, height, viewport } = store;
+
+    const withinViewport =
+      getNodesInside(
+        new Map([[id, node]]),
+        { x: 0, y: 0, width, height },
+        [viewport.x, viewport.y, viewport.zoom],
+        true
+      ).length > 0;
+
+    if (!withinViewport) {
+      store.setCenter(
+        node.position.x + (node.measured.width ?? 0) / 2,
+        node.position.y + (node.measured.height ?? 0) / 2,
+        { zoom: viewport.zoom }
+      );
+    }
+  };
 </script>
 
 {#if !hidden}
@@ -252,6 +281,7 @@
       ? (event) => onnodecontextmenu({ node: userNode, event })
       : undefined}
     onkeydown={focusable ? onKeyDown : undefined}
+    onfocus={focusable ? onFocus : undefined}
     tabIndex={focusable ? 0 : undefined}
     role={node.ariaRole ?? (focusable ? 'group' : undefined)}
     aria-roledescription={node.ariaRoleDescription || 'node'}
