@@ -1,4 +1,4 @@
-import type { CSSProperties, MouseEvent as ReactMouseEvent, AriaRole } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent, AriaRole, HTMLAttributes, DOMAttributes } from 'react';
 import type { CoordinateExtent, NodeBase, OnError, NodeProps as NodePropsBase, InternalNodeBase } from '@xyflow/system';
 
 import { NodeTypes } from './general';
@@ -22,8 +22,15 @@ export type Node<
    * The ARIA role attribute for the node element, used for accessibility.
    * @default "group"
    */
-
   ariaRole?: AriaRole;
+
+  /**
+   * General escape hatch for adding custom attributes to the node's DOM element.
+   */
+  domAttributes?: Omit<
+    HTMLAttributes<HTMLDivElement>,
+    'id' | 'style' | 'className' | 'draggable' | 'role' | 'aria-label' | keyof DOMAttributes<HTMLDivElement>
+  >;
 };
 
 /**

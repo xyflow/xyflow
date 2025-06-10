@@ -18,6 +18,11 @@ const initialNodes: Node[] = [
     type: 'input',
     data: { label: 'A11y Node 1' },
     position: { x: 250, y: 5 },
+    className: 'light',
+    domAttributes: {
+      tabIndex: 10,
+      'aria-roledescription': 'A11y Node',
+    },
   },
   {
     id: '2',
