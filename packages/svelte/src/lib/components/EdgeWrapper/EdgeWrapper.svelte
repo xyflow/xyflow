@@ -89,7 +89,7 @@
     }
   }
 
-  onkeydown = (event: KeyboardEvent) => {
+  function onkeydown(event: KeyboardEvent) {
     // TODO: Possible Svelte Bug? onkeydown is always firing for the last edge
     if (!store.disableKeyboardA11y && elementSelectionKeys.includes(event.key) && selectable) {
       const { unselectNodesAndEdges, addSelectedEdges } = store;
@@ -102,7 +102,7 @@
         addSelectedEdges([id]);
       }
     }
-  };
+  }
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->

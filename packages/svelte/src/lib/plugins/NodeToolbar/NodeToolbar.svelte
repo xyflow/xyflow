@@ -2,7 +2,7 @@
   import { getContext } from 'svelte';
   import { Position, getNodeToolbarTransform } from '@xyflow/system';
 
-  import { portal } from '$lib/actions/portal';
+  import { hideDuringSSR, portal } from '$lib/actions/portal';
   import { useStore } from '$lib/store';
   import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
 
@@ -68,6 +68,7 @@
 {#if store.domNode && isActive && toolbarNodes}
   <div
     use:portal={'root'}
+    style:display={hideDuringSSR().display}
     class="svelte-flow__node-toolbar"
     data-id={toolbarNodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
     style:position="absolute"
