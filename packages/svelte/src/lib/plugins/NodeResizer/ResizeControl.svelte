@@ -40,10 +40,10 @@
   let resizeControlRef: HTMLDivElement;
   let resizer: XYResizerInstance | null = $state(null);
 
+  let isLineVariant = $derived(variant === ResizeControlVariant.Line);
+
   let controlPosition = $derived.by(() => {
-    let defaultPosition = (
-      variant === ResizeControlVariant.Line ? 'right' : 'bottom-right'
-    ) as ControlPosition;
+    let defaultPosition = (isLineVariant ? 'right' : 'bottom-right') as ControlPosition;
     return position ?? defaultPosition;
   });
 
@@ -119,9 +119,9 @@
 <div
   class={['svelte-flow__resize-control', store.noDragClass, ...positionClasses, variant, className]}
   bind:this={resizeControlRef}
-  style:border-color={variant === ResizeControlVariant.Line ? color : undefined}
-  style:background-color={variant === ResizeControlVariant.Line ? undefined : color}
-  style:--xy-view-zoom-inverse={1 / store.viewport.zoom}
+  style:border-color={isLineVariant ? color : undefined}
+  style:background-color={isLineVariant ? undefined : color}
+  style:scale={isLineVariant ? undefined : Math.max(1 / store.viewport.zoom, 1)}
   {...rest}
 >
   {@render children?.()}

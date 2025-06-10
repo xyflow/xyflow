@@ -46,7 +46,8 @@ function ResizeControl({
   const id = typeof nodeId === 'string' ? nodeId : contextNodeId;
   const store = useStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
-  const defaultPosition = variant === ResizeControlVariant.Line ? 'right' : 'bottom-right';
+  const isLineVariant = variant === ResizeControlVariant.Line;
+  const defaultPosition = isLineVariant ? 'right' : 'bottom-right';
   const controlPosition = position ?? defaultPosition;
 
   const resizer = useRef<XYResizerInstance | null>(null);
@@ -198,9 +199,9 @@ function ResizeControl({
   ]);
 
   const positionClassNames = controlPosition.split('-');
-  const colorStyleProp = variant === ResizeControlVariant.Line ? 'borderColor' : 'backgroundColor';
+  const colorStyleProp = isLineVariant ? 'borderColor' : 'backgroundColor';
 
-  const styleWithTransform = { ...style, '--xy-view-zoom-inverse': 1 / zoom };
+  const styleWithTransform = { ...style, scale: isLineVariant ? undefined : `${Math.max(1 / zoom, 1)}` };
   const controlStyle = color ? { ...styleWithTransform, [colorStyleProp]: color } : styleWithTransform;
 
   return (
