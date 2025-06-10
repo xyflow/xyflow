@@ -1,5 +1,6 @@
 import { useRef, useEffect, memo } from 'react';
 import cc from 'classcat';
+import { shallow } from 'zustand/shallow';
 import {
   XYResizer,
   ResizeControlVariant,
@@ -15,9 +16,12 @@ import {
   XYPosition,
 } from '@xyflow/system';
 
-import { useStoreApi } from '../../hooks/useStore';
+import { useStoreApi, useStore } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
+import { ReactFlowState } from '../../types';
+
+const selector = (store: ReactFlowState) => store.transform[2];
 
 function ResizeControl({
   nodeId,
@@ -46,6 +50,8 @@ function ResizeControl({
   const controlPosition = position ?? defaultPosition;
 
   const resizer = useRef<XYResizerInstance | null>(null);
+
+  const zoom = useStore(selector, shallow);
 
   useEffect(() => {
     if (!resizeControlRef.current || !id) {
@@ -193,7 +199,9 @@ function ResizeControl({
 
   const positionClassNames = controlPosition.split('-');
   const colorStyleProp = variant === ResizeControlVariant.Line ? 'borderColor' : 'backgroundColor';
-  const controlStyle = color ? { ...style, [colorStyleProp]: color } : style;
+
+  const styleWithTransform = { ...style, '--xy-view-zoom-inverse': 1 / zoom };
+  const controlStyle = color ? { ...styleWithTransform, [colorStyleProp]: color } : styleWithTransform;
 
   return (
     <div

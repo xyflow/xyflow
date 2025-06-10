@@ -121,6 +121,7 @@
   bind:this={resizeControlRef}
   style:border-color={variant === ResizeControlVariant.Line ? color : undefined}
   style:background-color={variant === ResizeControlVariant.Line ? undefined : color}
+  style:--xy-view-zoom-inverse={1 / store.viewport.zoom}
   {...rest}
 >
   {@render children?.()}
