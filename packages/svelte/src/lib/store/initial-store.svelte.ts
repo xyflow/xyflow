@@ -266,6 +266,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     nodeDragThreshold: number = $derived(signals.props.nodeDragThreshold ?? 1);
     autoPanOnNodeDrag: boolean = $derived(signals.props.autoPanOnNodeDrag ?? true);
     autoPanOnConnect: boolean = $derived(signals.props.autoPanOnConnect ?? true);
+    autoPanOnNodeFocus: boolean = $derived(signals.props.autoPanOnNodeFocus ?? true);
 
     fitViewQueued: boolean = signals.props.fitView ?? false;
     fitViewOptions: FitViewOptions | undefined = signals.props.fitViewOptions;

@@ -6,7 +6,8 @@ import type {
   UpdateNodePositions,
   CoordinateExtent,
   UpdateConnection,
-  Viewport
+  Viewport,
+  SetCenter
 } from '@xyflow/system';
 
 import type { getInitialStore } from './initial-store.svelte';
@@ -24,6 +25,7 @@ export type SvelteFlowStoreActions<NodeType extends Node = Node, EdgeType extend
   setTranslateExtent: (extent: CoordinateExtent) => void;
   setPaneClickDistance: (distance: number) => void;
   fitView: (options?: FitViewOptions) => Promise<boolean>;
+  setCenter: SetCenter;
   updateNodePositions: UpdateNodePositions;
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
   unselectNodesAndEdges: (params?: { nodes?: NodeType[]; edges?: EdgeType[] }) => void;

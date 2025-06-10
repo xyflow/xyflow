@@ -7,6 +7,7 @@ import {
   getNodeDimensions,
   isInputDOMNode,
   nodeHasDimensions,
+  getNodesInside,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -158,6 +159,28 @@ export function NodeWrapper<NodeType extends Node>({
       });
     }
   };
+
+  const onFocus = () => {
+    if (disableKeyboardA11y || !nodeRef.current?.matches(':focus-visible')) {
+      return;
+    }
+
+    const { transform, width, height, autoPanOnNodeFocus, setCenter } = store.getState();
+
+    if (!autoPanOnNodeFocus) {
+      return;
+    }
+
+    const withinViewport =
+      getNodesInside(new Map([[id, node]]), { x: 0, y: 0, width, height }, transform, true).length > 0;
+
+    if (!withinViewport) {
+      setCenter(node.position.x + nodeDimensions.width / 2, node.position.y + nodeDimensions.height / 2, {
+        zoom: transform[2],
+      });
+    }
+  };
+
   return (
     <div
       className={cc([
@@ -195,6 +218,7 @@ export function NodeWrapper<NodeType extends Node>({
       onDoubleClick={onDoubleClickHandler}
       onKeyDown={isFocusable ? onKeyDown : undefined}
       tabIndex={isFocusable ? 0 : undefined}
+      onFocus={isFocusable ? onFocus : undefined}
       role={node.ariaRole ?? (isFocusable ? 'group' : undefined)}
       aria-roledescription="node"
       aria-describedby={disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${rfId}`}

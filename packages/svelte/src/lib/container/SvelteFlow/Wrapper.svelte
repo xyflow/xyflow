@@ -84,6 +84,7 @@
     elevateNodesOnSelect,
     elevateEdgesOnSelect,
     nodesDraggable,
+    autoPanOnNodeFocus,
     nodesConnectable,
     elementsSelectable,
     nodesFocusable,
@@ -100,6 +101,16 @@
   type OnlyDivAttributes<T> = {
     [K in keyof T]: K extends keyof HTMLAttributes<HTMLDivElement> ? T[K] : never;
   };
+
+  // Undo scroll events, preventing viewport from shifting when nodes outside of it are focused
+  function wrapperOnScroll(e: UIEvent & { currentTarget: EventTarget & HTMLDivElement }) {
+    e.currentTarget.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+    // Forward the event to any existing onscroll handler if needed
+    if (rest.onscroll) {
+      rest.onscroll(e);
+    }
+  }
 </script>
 
 <div
@@ -111,6 +122,7 @@
   class={['svelte-flow', 'svelte-flow__container', className, colorMode]}
   data-testid="svelte-flow__wrapper"
   role="application"
+  onscroll={wrapperOnScroll}
   {...divAttributes satisfies OnlyDivAttributes<typeof divAttributes>}
 >
   {@render children?.()}
