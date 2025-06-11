@@ -36,6 +36,8 @@ export type NodeResizerProps = {
   maxHeight?: number;
   /** Keep aspect ratio when resizing */
   keepAspectRatio?: boolean;
+  /** Automatically scale the node when resizing */
+  autoScale?: boolean;
   /** Callback to determine if node should resize */
   shouldResize?: ShouldResize;
   /** Callback called when resizing starts */
@@ -55,6 +57,7 @@ export type ResizeControlProps = Pick<
   | 'maxWidth'
   | 'maxHeight'
   | 'keepAspectRatio'
+  | 'autoScale'
   | 'shouldResize'
   | 'onResizeStart'
   | 'onResize'

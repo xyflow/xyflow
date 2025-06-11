@@ -11,7 +11,7 @@ const CustomResizerNode: FC<NodeProps> = ({ data }) => {
         minWidth={100}
         maxWidth={500}
         color="orange"
-        scaleControls
+        autoScale={false}
       />
       <Handle type="target" position={Position.Left} />
       <div>{data.label}</div>

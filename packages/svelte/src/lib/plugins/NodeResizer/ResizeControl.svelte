@@ -22,6 +22,7 @@
     maxWidth = Number.MAX_VALUE,
     maxHeight = Number.MAX_VALUE,
     keepAspectRatio = false,
+    autoScale = true,
     shouldResize,
     onResizeStart,
     onResize,
@@ -121,7 +122,7 @@
   bind:this={resizeControlRef}
   style:border-color={isLineVariant ? color : undefined}
   style:background-color={isLineVariant ? undefined : color}
-  style:scale={isLineVariant ? undefined : Math.max(1 / store.viewport.zoom, 1)}
+  style:scale={isLineVariant || !autoScale ? undefined : Math.max(1 / store.viewport.zoom, 1)}
   {...rest}
 >
   {@render children?.()}
