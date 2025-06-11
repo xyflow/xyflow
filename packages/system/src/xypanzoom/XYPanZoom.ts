@@ -20,6 +20,7 @@ import {
   createZoomOnScrollHandler,
 } from './eventhandler';
 import { createFilter } from './filter';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { transition } from 'd3-transition';
 
 export type ZoomPanValues = {
