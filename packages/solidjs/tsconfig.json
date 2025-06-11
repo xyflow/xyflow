@@ -1,0 +1,16 @@
+{
+
+  "extends": "@xyflow/tsconfig/base.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "outDir": "dist",
+    "noErrorTruncation": true,
+    "lib": ["ESNext", "DOM"],
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    // "types": ["vite/client"],
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "dist"],
+}
