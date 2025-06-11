@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { hideDuringSSR, portal } from '$lib/actions/portal';
+  import { hideOnSSR, portal } from '$lib/actions/portal';
 
   import { useStore } from '$lib/store';
   import type { EdgeLabelProps } from './types';
@@ -29,7 +29,7 @@
 
 <div
   use:portal={'edge-labels'}
-  style:display={hideDuringSSR().display}
+  style:display={hideOnSSR().value ? 'none' : undefined}
   class={['svelte-flow__edge-label', { transparent }, className]}
   style:cursor={selectEdgeOnClick ? 'pointer' : undefined}
   style:transform="translate(-50%, -50%) translate({x}px,{y}px)"
