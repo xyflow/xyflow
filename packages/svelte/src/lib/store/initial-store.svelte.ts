@@ -84,6 +84,25 @@ export const initialEdgeTypes = {
   step: StepEdgeInternal
 };
 
+function getInitialViewport(
+  // This is just used to make sure adoptUserNodes is called before we calculate the viewport
+  _nodesInitialized: boolean,
+  fitView: boolean | undefined,
+  initialViewport: Viewport | undefined,
+  width: number,
+  height: number,
+  nodeLookup: NodeLookup
+) {
+  if (fitView && !initialViewport && width && height) {
+    const bounds = getInternalNodesBounds(nodeLookup, {
+      filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight))
+    });
+    return getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
+  } else {
+    return initialViewport ?? { x: 0, y: 0, zoom: 1 };
+  }
+}
+
 export function getInitialStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   signals: StoreSignals<NodeType, EdgeType>
 ) {
@@ -298,7 +317,16 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
 
     // _viewport is the internal viewport.
     // when binding to viewport, we operate on signals.viewport instead
-    _viewport: Viewport = $state(signals.props.initialViewport ?? { x: 0, y: 0, zoom: 1 });
+    _viewport: Viewport = $state(
+      getInitialViewport(
+        this.nodesInitialized,
+        signals.props.fitView,
+        signals.props.initialViewport,
+        this.width,
+        this.height,
+        this.nodeLookup
+      )
+    );
     get viewport() {
       return signals.viewport ?? this._viewport;
     }
@@ -410,15 +438,6 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     );
 
     constructor() {
-      // Process intial fitView here
-      if (signals.props.fitView && !signals.props.initialViewport && this.width && this.height) {
-        const bounds = getInternalNodesBounds(this.nodeLookup, {
-          filter: (node) =>
-            !!((node.width || node.initialWidth) && (node.height || node.initialHeight))
-        });
-        this.viewport = getViewportForBounds(bounds, this.width, this.height, 0.5, 2, 0.1);
-      }
-
       if (process.env.NODE_ENV === 'development') {
         warnIfDeeplyReactive(signals.nodes, 'nodes');
         warnIfDeeplyReactive(signals.edges, 'edges');

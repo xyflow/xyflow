@@ -66,7 +66,9 @@
   let draggable = $derived(_draggable ?? store.nodesDraggable);
   let selectable = $derived(_selectable ?? store.elementsSelectable);
   let connectable = $derived(_connectable ?? store.nodesConnectable);
-  let initialized = $derived(nodeHasDimensions(node) && !!node.internals.handleBounds);
+  let hasDimensions = $derived(nodeHasDimensions(node));
+  let hasHandleBounds = $derived(!!node.internals.handleBounds);
+  let isInitialized = $derived(hasDimensions && hasHandleBounds);
   let focusable = $derived(_focusable ?? store.nodesFocusable);
 
   function isInParentLookup(id: string) {
@@ -150,7 +152,7 @@
 
   $effect(() => {
     /* eslint-disable @typescript-eslint/no-unused-expressions */
-    if (resizeObserver && (!initialized || nodeRef !== prevNodeRef)) {
+    if (resizeObserver && (!isInitialized || nodeRef !== prevNodeRef)) {
       prevNodeRef && resizeObserver.unobserve(prevNodeRef);
       nodeRef && resizeObserver.observe(nodeRef);
       prevNodeRef = nodeRef;
@@ -265,7 +267,7 @@
     class:parent={isParent}
     style:z-index={zIndex}
     style:transform="translate({positionX}px, {positionY}px)"
-    style:visibility={initialized ? 'visible' : 'hidden'}
+    style:visibility={hasDimensions ? 'visible' : 'hidden'}
     style={nodeStyle}
     onclick={onSelectNodeHandler}
     onpointerenter={onnodepointerenter

@@ -15,25 +15,32 @@ function tryToMount(node: Element, domNode: Element | null, target: Portal | und
 }
 
 export function portal(node: Element, target: Portal | undefined) {
-  // TODO: does this work if called outside of SvelteFlow
-  const store = useStore();
+  const { domNode } = $derived(useStore());
 
-  let previousTarget: Portal | undefined = target;
-
-  tryToMount(node, store.domNode, target);
+  let destroyEffect: (() => void) | undefined;
+  // svelte-ignore state_referenced_locally
+  if (domNode) {
+    // if the domNode is already mounted, we can directly try to mount the node
+    tryToMount(node, domNode, target);
+  } else {
+    // if the domNode is not mounted yet, we need to wait for it to be ready
+    destroyEffect = $effect.root(() => {
+      $effect(() => {
+        tryToMount(node, domNode, target);
+        destroyEffect?.();
+      });
+    });
+  }
 
   return {
-    async update(target: Portal) {
-      if (target !== previousTarget) {
-        node.parentNode?.removeChild(node);
-        previousTarget = target;
-      }
-      tryToMount(node, store.domNode, target);
+    async update(target: Portal | undefined) {
+      tryToMount(node, domNode, target);
     },
     destroy() {
       if (node.parentNode) {
         node.parentNode.removeChild(node);
       }
+      destroyEffect?.();
     }
   };
 }

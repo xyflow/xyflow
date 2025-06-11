@@ -46,7 +46,6 @@
   let store = useStore();
   let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
-
   let prevConnections: Map<string, HandleConnection> | null = null;
   $effect.pre(() => {
     if (onconnect || ondisconnect) {
