@@ -1,4 +1,4 @@
-import { useRef, useEffect, memo } from 'react';
+import { useRef, useEffect, memo, useCallback } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -14,6 +14,7 @@ import {
   evaluateAbsolutePosition,
   ParentExpandChild,
   XYPosition,
+  ControlPosition,
 } from '@xyflow/system';
 
 import { useStoreApi, useStore } from '../../hooks/useStore';
@@ -21,14 +22,20 @@ import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
 import { ReactFlowState } from '../../types';
 
-const selector = (store: ReactFlowState) => store.transform[2];
+const scaleSelector = (calculateScale: boolean) => (store: ReactFlowState) =>
+  calculateScale ? `${Math.max(1 / store.transform[2], 1)}` : undefined;
+
+const defaultPositions: Record<ResizeControlVariant, ControlPosition> = {
+  [ResizeControlVariant.Line]: 'right',
+  [ResizeControlVariant.Handle]: 'bottom-right',
+};
 
 function ResizeControl({
   nodeId,
   position,
   variant = ResizeControlVariant.Handle,
   className,
-  style = {},
+  style = undefined,
   children,
   color,
   minWidth = 10,
@@ -37,6 +44,7 @@ function ResizeControl({
   maxHeight = Number.MAX_VALUE,
   keepAspectRatio = false,
   resizeDirection,
+  scaleControls = false,
   shouldResize,
   onResizeStart,
   onResize,
@@ -46,13 +54,10 @@ function ResizeControl({
   const id = typeof nodeId === 'string' ? nodeId : contextNodeId;
   const store = useStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
-  const isLineVariant = variant === ResizeControlVariant.Line;
-  const defaultPosition = isLineVariant ? 'right' : 'bottom-right';
-  const controlPosition = position ?? defaultPosition;
-
+  const isHandleControl = variant === ResizeControlVariant.Handle;
+  const scale = useStore(useCallback(scaleSelector(isHandleControl && !scaleControls), [isHandleControl]), shallow);
   const resizer = useRef<XYResizerInstance | null>(null);
-
-  const zoom = useStore(selector, shallow);
+  const controlPosition = position ?? defaultPositions[variant];
 
   useEffect(() => {
     if (!resizeControlRef.current || !id) {
@@ -199,16 +204,16 @@ function ResizeControl({
   ]);
 
   const positionClassNames = controlPosition.split('-');
-  const colorStyleProp = isLineVariant ? 'borderColor' : 'backgroundColor';
-
-  const styleWithTransform = { ...style, scale: isLineVariant ? undefined : `${Math.max(1 / zoom, 1)}` };
-  const controlStyle = color ? { ...styleWithTransform, [colorStyleProp]: color } : styleWithTransform;
 
   return (
     <div
       className={cc(['react-flow__resize-control', 'nodrag', ...positionClassNames, variant, className])}
       ref={resizeControlRef}
-      style={controlStyle}
+      style={{
+        ...style,
+        scale,
+        ...(color && { [isHandleControl ? 'backgroundColor' : 'borderColor']: color }),
+      }}
     >
       {children}
     </div>
