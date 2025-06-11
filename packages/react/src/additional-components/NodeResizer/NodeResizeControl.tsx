@@ -44,7 +44,7 @@ function ResizeControl({
   maxHeight = Number.MAX_VALUE,
   keepAspectRatio = false,
   resizeDirection,
-  scaleControls = false,
+  autoScale = true,
   shouldResize,
   onResizeStart,
   onResize,
@@ -55,7 +55,10 @@ function ResizeControl({
   const store = useStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const isHandleControl = variant === ResizeControlVariant.Handle;
-  const scale = useStore(useCallback(scaleSelector(isHandleControl && !scaleControls), [isHandleControl]), shallow);
+  const scale = useStore(
+    useCallback(scaleSelector(isHandleControl && autoScale), [isHandleControl, autoScale]),
+    shallow
+  );
   const resizer = useRef<XYResizerInstance | null>(null);
   const controlPosition = position ?? defaultPositions[variant];
 

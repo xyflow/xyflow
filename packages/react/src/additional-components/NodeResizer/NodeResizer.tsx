@@ -40,7 +40,7 @@ export function NodeResizer({
   maxWidth = Number.MAX_VALUE,
   maxHeight = Number.MAX_VALUE,
   keepAspectRatio = false,
-  scaleControls = false,
+  autoScale = true,
   shouldResize,
   onResizeStart,
   onResize,
@@ -67,7 +67,7 @@ export function NodeResizer({
           maxHeight={maxHeight}
           onResizeStart={onResizeStart}
           keepAspectRatio={keepAspectRatio}
-          scaleControls={scaleControls}
+          autoScale={autoScale}
           shouldResize={shouldResize}
           onResize={onResize}
           onResizeEnd={onResizeEnd}
@@ -87,7 +87,7 @@ export function NodeResizer({
           maxHeight={maxHeight}
           onResizeStart={onResizeStart}
           keepAspectRatio={keepAspectRatio}
-          scaleControls={scaleControls}
+          autoScale={autoScale}
           shouldResize={shouldResize}
           onResize={onResize}
           onResizeEnd={onResizeEnd}
