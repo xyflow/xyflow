@@ -59,6 +59,11 @@ export type NodeResizerProps = {
    * @default false
    */
   keepAspectRatio?: boolean;
+  /**
+   * Scale the controls with the zoom level.
+   * @default true
+   */
+  autoScale?: boolean;
   /** Callback to determine if node should resize. */
   shouldResize?: ShouldResize;
   /** Callback called when resizing starts. */
@@ -82,6 +87,7 @@ export type ResizeControlProps = Pick<
   | 'maxHeight'
   | 'keepAspectRatio'
   | 'shouldResize'
+  | 'autoScale'
   | 'onResizeStart'
   | 'onResize'
   | 'onResizeEnd'
