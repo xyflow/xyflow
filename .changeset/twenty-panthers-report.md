@@ -2,4 +2,4 @@
 '@xyflow/svelte': patch
 ---
 
-Fix nodes being hidden in SSR output
+Display nodes correctly in SSR output

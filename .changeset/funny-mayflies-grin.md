@@ -2,4 +2,4 @@
 '@xyflow/svelte': patch
 ---
 
-Fix initial fitView when server side rendering
+Fix initial fitView for SSR
