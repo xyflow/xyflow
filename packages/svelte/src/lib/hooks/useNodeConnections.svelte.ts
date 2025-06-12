@@ -17,6 +17,8 @@ type UseNodeConnectionsParams = {
   onDisconnect?: (connections: Connection[]) => void;
 };
 
+type ConnectionMap = Map<string, NodeConnection>;
+
 const initialConnections: NodeConnection[] = [];
 
 /**
@@ -42,24 +44,44 @@ export function useNodeConnections({
   const contextNodeId = getContext<string>('svelteflow__node_id');
   const nodeId = id ?? contextNodeId;
 
-  let prevConnections: Map<string, NodeConnection> = new Map();
+  let connectionMaps: { previous: ConnectionMap; next: ConnectionMap } = {
+    previous: new Map(),
+    next: new Map()
+  };
   let connectionsArray: NodeConnection[] = initialConnections;
 
   const connections = $derived.by(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     edges;
+
+    const prevConnections = connectionMaps.next;
     const nextConnections =
       connectionLookup.get(
         `${nodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
       ) ?? new Map();
     if (!areConnectionMapsEqual(nextConnections, prevConnections)) {
-      if (onConnect) handleConnectionChange(nextConnections, prevConnections, onConnect);
-      if (onDisconnect) handleConnectionChange(prevConnections, nextConnections, onDisconnect);
-
-      prevConnections = nextConnections;
+      connectionMaps = {
+        previous: prevConnections,
+        next: nextConnections
+      };
       connectionsArray = Array.from(nextConnections.values() || initialConnections);
     }
     return connectionsArray;
+  });
+
+  $effect(() => {
+    // We subscribe to changes to the connections only when onConnect/onDisconnect are provided
+    if (onConnect) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      connections;
+      handleConnectionChange(connectionMaps.next, connectionMaps.previous, onConnect);
+    }
+
+    if (onDisconnect) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      connections;
+      handleConnectionChange(connectionMaps.previous, connectionMaps.next, onDisconnect);
+    }
   });
 
   return {
