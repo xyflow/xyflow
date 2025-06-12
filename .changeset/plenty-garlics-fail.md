@@ -2,4 +2,4 @@
 '@xyflow/svelte': patch
 ---
 
-Fix useNodeConnections callbacks not firing when returned signal not used
+Fix useNodeConnections callbacks firing only when returned signal is used
