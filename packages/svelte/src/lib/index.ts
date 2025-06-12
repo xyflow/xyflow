@@ -116,7 +116,10 @@ export {
   type ResizeDragEvent,
   type IsValidConnection,
   type NodeConnection,
-  type AriaLabelConfig
+  type AriaLabelConfig,
+  type SetCenter,
+  type SetViewport,
+  type FitBounds
 } from '@xyflow/system';
 
 // system utils
