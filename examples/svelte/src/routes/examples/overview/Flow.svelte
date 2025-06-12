@@ -24,6 +24,7 @@
 
 	import '@xyflow/svelte/dist/style.css';
 	import InitTracker from './InitTracker.svelte';
+	import TriggerConnection from './TriggerConnection.svelte';
 
 	const nodeTypes: NodeTypes = {
 		custom: CustomNode,
@@ -243,6 +244,7 @@
 				}));
 			}}>left-right</button
 		>
+		<TriggerConnection />
 	</Panel>
 	<InitTracker />
 </SvelteFlow>
