@@ -41,7 +41,7 @@ Talking to us first about the enhancement you want to build will be the most lik
 To ask about a possible enhancement, email us at info@reactflow.dev
 
 
-### 💫 Pull Requests
+## 💫 Pull Requests
 
 If you want to contribute improvements or new features we are happy to review your PR :)  
 Please use a meaningful commit message and add a little description of your changes.
@@ -50,3 +50,39 @@ Please use a meaningful commit message and add a little description of your chan
 2. Start dev server `pnpm dev` 
 3. Test your changes with the existing examples or add a new one if it's needed for your changes
 4. Run tests `pnpm test` and add new new tests if you are introducing a new feature
+
+## Changeset Style Guide
+
+*Inspired and taken from [Common Changelogs](https://github.com/vweevers/common-changelog?tab=readme-ov-file) and [Warp by Broad Institute](https://broadinstitute.github.io/warp/docs/contribution/contribute_to_warp/changelog_style/)*
+
+If you are writing a changeset for a PR, here are some helpful tips:
+
+## TLDR
+
+- Changelogs are for humans
+- Communicate the impact of changes
+- Use active voice *and* presence tense *(”Fix …” instead of “… was fixed”)*
+- Omit redundant verbs
+    - *“Document” instead of “Add documentation”*
+- Omit personal pronouns
+- Use backticks for function or component names (`getNodesBounds`, `<ReactFlow />`, etc) for a better syntax highlighting
+
+## Examples
+
+**🛑 Bad:**
+“minimap: use latest node dimensions”
+
+**✅ Good:**
+“Display minimap nodes even if onNodesChange is not implemented”
+
+**🛑 Bad:**
+“fix(handles): reconnect for connectionMode=loose”
+
+**✅ Good:**
+“Fix reconnections when connectionMode is set to loose” 
+
+**🛑 Bad:**
+“use correct index when using setNodes for inserting”
+
+**✅ Good:**
+“Fix incorrect order of nodes added with setNodes from useReactFlow”
