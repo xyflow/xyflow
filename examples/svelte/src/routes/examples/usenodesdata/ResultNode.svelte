@@ -16,6 +16,15 @@
 		handleType: 'target'
 	});
 
+	useNodeConnections({
+		onConnect: (connection) => {
+			console.log('Connection made:', connection);
+		},
+		onDisconnect: (connection) => {
+			console.log('Connection disconnected:', connection);
+		}
+	});
+
 	let nodeData = $derived(
 		useNodesData<MyNode>(connections.current.map((connection) => connection.source))
 	);
