@@ -110,10 +110,10 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
   // Inline classes have some performance implications but we just call it once (max twice).
   class SvelteFlowStore {
     flowId: string = $derived(signals.props.id ?? '1');
-    domNode = $state<HTMLDivElement | null>(null);
-    panZoom: PanZoomInstance | null = $state(null);
-    width = $state<number>(signals.width ?? 0);
-    height = $state<number>(signals.height ?? 0);
+    domNode = $state.raw<HTMLDivElement | null>(null);
+    panZoom: PanZoomInstance | null = $state.raw(null);
+    width = $state.raw<number>(signals.width ?? 0);
+    height = $state.raw<number>(signals.height ?? 0);
 
     nodesInitialized: boolean = $derived.by(() => {
       const nodesInitialized = adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
@@ -293,16 +293,16 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
 
     snapGrid: SnapGrid | null = $derived(signals.props.snapGrid ?? null);
 
-    dragging: boolean = $state(false);
-    selectionRect: SelectionRect | null = $state(null);
+    dragging: boolean = $state.raw(false);
+    selectionRect: SelectionRect | null = $state.raw(null);
 
-    selectionKeyPressed: boolean = $state(false);
-    multiselectionKeyPressed: boolean = $state(false);
-    deleteKeyPressed: boolean = $state(false);
-    panActivationKeyPressed: boolean = $state(false);
-    zoomActivationKeyPressed: boolean = $state(false);
-    selectionRectMode: string | null = $state(null);
-    ariaLiveMessage = $state<string>('');
+    selectionKeyPressed: boolean = $state.raw(false);
+    multiselectionKeyPressed: boolean = $state.raw(false);
+    deleteKeyPressed: boolean = $state.raw(false);
+    panActivationKeyPressed: boolean = $state.raw(false);
+    zoomActivationKeyPressed: boolean = $state.raw(false);
+    selectionRectMode: string | null = $state.raw(null);
+    ariaLiveMessage = $state.raw<string>('');
     selectionMode: SelectionMode = $derived(signals.props.selectionMode ?? SelectionMode.Partial);
 
     nodeTypes: NodeTypes = $derived({ ...initialNodeTypes, ...signals.props.nodeTypes });
@@ -317,7 +317,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
 
     // _viewport is the internal viewport.
     // when binding to viewport, we operate on signals.viewport instead
-    _viewport: Viewport = $state(
+    _viewport: Viewport = $state.raw(
       getInitialViewport(
         this.nodesInitialized,
         signals.props.fitView,
@@ -338,7 +338,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     }
 
     // _connection is viewport independent and originating from XYHandle
-    _connection: ConnectionState = $state(initialConnection);
+    _connection: ConnectionState = $state.raw(initialConnection);
     // We derive a viewport dependent connection here
     connection: ConnectionState = $derived.by(() => {
       if (this._connection.inProgress) {
@@ -392,7 +392,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     clickConnect?: boolean = $derived(signals.props.clickConnect ?? true);
     onclickconnectstart?: OnConnectStart = $derived(signals.props.onclickconnectstart);
     onclickconnectend?: OnConnectEnd = $derived(signals.props.onclickconnectend);
-    clickConnectStartHandle: Pick<Handle, 'id' | 'nodeId' | 'type'> | null = $state(null);
+    clickConnectStartHandle: Pick<Handle, 'id' | 'nodeId' | 'type'> | null = $state.raw(null);
 
     onselectiondrag?: OnSelectionDrag<NodeType> = $derived(signals.props.onselectiondrag);
     onselectiondragstart?: OnSelectionDrag<NodeType> = $derived(signals.props.onselectiondragstart);
