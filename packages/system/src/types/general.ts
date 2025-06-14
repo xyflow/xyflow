@@ -232,7 +232,7 @@ export type SelectionRect = Rect & {
 
 export type OnError = (id: string, message: string) => void;
 
-export type UpdateNodePositions = (dragItems: Map<string, NodeDragItem | InternalNodeBase>, dragging?: boolean) => void;
+export type UpdateNodePositions<NodeType extends InternalNodeBase = InternalNodeBase> = (dragItems: Map<string, NodeDragItem | NodeType>, dragging?: boolean) => void;
 export type PanBy = (delta: XYPosition) => Promise<boolean>;
 
 export const initialConnection: NoConnection = {
