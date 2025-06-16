@@ -341,18 +341,18 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     _connection: ConnectionState = $state.raw(initialConnection);
     // We derive a viewport dependent connection here
     connection: ConnectionState = $derived.by(() => {
-      if (this._connection.inProgress) {
-        return {
-          ...this._connection,
-          to: pointToRendererPoint(this._connection.to, [
-            this.viewport.x,
-            this.viewport.y,
-            this.viewport.zoom
-          ])
-        };
-      } else {
+      if (!this._connection.inProgress) {
         return this._connection;
       }
+
+      return {
+        ...this._connection,
+        to: pointToRendererPoint(this._connection.to, [
+          this.viewport.x,
+          this.viewport.y,
+          this.viewport.zoom
+        ])
+      };
     });
     connectionMode: ConnectionMode = $derived(
       signals.props.connectionMode ?? ConnectionMode.Strict
