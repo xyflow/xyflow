@@ -37,6 +37,7 @@ export type OnPointerDownParams = {
   getTransform: () => Transform;
   getFromHandle: () => Handle | null;
   autoPanSpeed?: number;
+  dragThreshold?: number;
 };
 
 export type IsValidParams = {
