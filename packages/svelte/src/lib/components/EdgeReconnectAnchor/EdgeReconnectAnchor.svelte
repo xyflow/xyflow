@@ -5,6 +5,7 @@
   import { getContext } from 'svelte';
   import { EdgeLabel } from '../EdgeLabel';
   import type { EdgeReconnectAnchorProps } from './types';
+  import drag from '$lib/actions/drag';
 
   let {
     type,
@@ -97,7 +98,8 @@
       },
       updateConnection,
       getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
-      getFromHandle: () => store.connection.fromHandle
+      getFromHandle: () => store.connection.fromHandle,
+      dragThreshold: store.connectionDragThreshold
     });
   };
 </script>

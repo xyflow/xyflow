@@ -76,6 +76,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   nodeExtent: CoordinateExtent;
   nodeOrigin: NodeOrigin;
   nodeDragThreshold: number;
+  connectionDragThreshold: number;
 
   nodesSelectionActive: boolean;
   userSelectionActive: boolean;

@@ -657,6 +657,12 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default 1
    */
   nodeDragThreshold?: number;
+  /**
+   * The threshold in pixels that the mouse must move before a connection line starts to drag.
+   * This is useful to prevent accidental connections when clicking on a handle.
+   * @default 1
+   */
+  connectionDragThreshold?: number;
   /** Sets a fixed width for the flow. */
   width?: number;
   /** Sets a fixed height for the flow. */
