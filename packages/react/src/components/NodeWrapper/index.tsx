@@ -184,6 +184,7 @@ export function NodeWrapper<NodeType extends Node>({
   return (
     <div
       className={cc([
+        'group/react-flow__node',
         'react-flow__node',
         `react-flow__node-${nodeType}`,
         {
