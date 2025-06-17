@@ -5,7 +5,6 @@
   import { getContext } from 'svelte';
   import { EdgeLabel } from '../EdgeLabel';
   import type { EdgeReconnectAnchorProps } from './types';
-  import drag from '$lib/actions/drag';
 
   let {
     type,
