@@ -221,7 +221,7 @@ const StressFlow = () => {
   return (
     <ReactFlow
       key={key}
-      defaultNodes={nodes}
+      nodes={nodes}
       edges={edges}
       onConnect={onConnect}
       onNodesChange={onNodesChange}
