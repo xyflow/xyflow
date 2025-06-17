@@ -1,7 +1,7 @@
 <script lang="ts">
   import { useStore } from '$lib/store';
   import type { Edge } from '$lib/types';
-  import { XYHandle, type HandleType } from '@xyflow/system';
+  import { XYHandle, type HandleType, type OnConnectStart } from '@xyflow/system';
   import { getContext } from 'svelte';
   import { EdgeLabel } from '../EdgeLabel';
   import type { EdgeReconnectAnchorProps } from './types';
@@ -12,6 +12,7 @@
     position,
     class: className,
     size = 25,
+    dragThreshold = 1,
     children,
     ...rest
   }: EdgeReconnectAnchorProps = $props();
@@ -52,8 +53,11 @@
     let newEdge: Edge | undefined;
     let edge = edgeLookup.get(edgeId)!;
 
-    reconnecting = true;
-    onreconnectstart?.(event, edge, type);
+    const _onConnectStart: OnConnectStart = (evt, params) => {
+      reconnecting = true;
+      onreconnectstart?.(event, edge, type);
+      onconnectstart?.(evt, params);
+    };
 
     const opposite =
       type === 'target'
@@ -79,7 +83,7 @@
       cancelConnection,
       panBy,
       isValidConnection,
-      onConnectStart: onconnectstart,
+      onConnectStart: _onConnectStart,
       onConnectEnd: onconnectend,
       onConnect: (connection) => {
         newEdge = { ...edge, ...connection };
@@ -98,7 +102,7 @@
       updateConnection,
       getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
       getFromHandle: () => store.connection.fromHandle,
-      dragThreshold: store.connectionDragThreshold
+      dragThreshold: dragThreshold ?? store.connectionDragThreshold
     });
   };
 </script>
