@@ -221,10 +221,10 @@ const StressFlow = () => {
   return (
     <ReactFlow
       key={key}
-      defaultNodes={initialNodes}
+      defaultNodes={nodes}
       edges={edges}
       onConnect={onConnect}
-      // onNodesChange={onNodesChange}
+      onNodesChange={onNodesChange}
       onEdgesChange={onEdgeChange}
       minZoom={0.2}
       fitView
