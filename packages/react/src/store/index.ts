@@ -19,6 +19,7 @@ import {
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import getInitialState from './initialState';
 import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
+import { Queue } from '../components/BatchProvider/types';
 
 const createStore = ({
   nodes,
@@ -219,16 +220,21 @@ const createStore = ({
         triggerNodeChanges(changes);
       },
       triggerNodeChanges: (changes) => {
-        const { onNodesChange, setNodes, nodes, hasDefaultNodes, debug } = get();
+        const { onNodesChange, nodes, hasDefaultNodes, debug, nodeQueue } = get();
 
         if (changes?.length) {
-          if (hasDefaultNodes) {
-            const updatedNodes = applyNodeChanges(changes, nodes);
-            setNodes(updatedNodes);
-          }
-
           if (debug) {
             console.log('React Flow: trigger node changes', changes);
+          }
+
+          if (hasDefaultNodes) {
+            const updatedNodes = applyNodeChanges(changes, nodes);
+            nodeQueue?.push(updatedNodes);
+
+            // TODO: why is this needed? This should be done by the queue?!
+            onNodesChange?.(changes);
+
+            return;
           }
 
           onNodesChange?.(changes);
@@ -387,6 +393,9 @@ const createStore = ({
       },
       updateConnection: (connection) => {
         set({ connection });
+      },
+      setNodeQueue: (nodeQueue: Queue<Node>) => {
+        set({ nodeQueue });
       },
 
       reset: () => set({ ...getInitialState() }),
