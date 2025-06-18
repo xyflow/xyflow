@@ -104,6 +104,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let dragStarted = false;
   let d3Selection: Selection<Element, unknown, null, undefined> | null = null;
   let abortDrag = false; // prevents unintentional dragging on multitouch
+  let nodePositionsChanged = false;
 
   // public functions
   function update({
@@ -190,6 +191,8 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         dragItem.position = position;
         dragItem.internals.positionAbsolute = positionAbsolute;
       }
+
+      nodePositionsChanged = nodePositionsChanged || hasChange;
 
       if (!hasChange) {
         return;
@@ -294,6 +297,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         containerBounds = domNode?.getBoundingClientRect() || null;
 
         abortDrag = false;
+        nodePositionsChanged = false;
 
         if (nodeDragThreshold === 0) {
           startDrag(event);
@@ -354,7 +358,10 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         if (dragItems.size > 0) {
           const { nodeLookup, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
 
-          updateNodePositions(dragItems, false);
+          if (nodePositionsChanged) {
+            updateNodePositions(dragItems, false);
+            nodePositionsChanged = false;
+          }
 
           if (onDragStop || onNodeDragStop || (!nodeId && onSelectionDragStop)) {
             const [currentNode, currentNodes] = getEventHandlerParams({
