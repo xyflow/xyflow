@@ -64,6 +64,7 @@
     fitViewOptions,
     nodeOrigin,
     nodeDragThreshold,
+    connectionDragThreshold,
     minZoom,
     maxZoom,
     initialViewport,
