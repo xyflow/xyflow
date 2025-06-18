@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import type { UpdateNodeInternals, InternalNodeUpdate } from '@xyflow/system';
 
 import { useStoreApi } from '../hooks/useStore';
+import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 /**
  * When you programmatically add or remove handles to a node or update a node's
@@ -64,6 +65,6 @@ export function useUpdateNodeInternals(): UpdateNodeInternals {
       }
     });
 
-    requestAnimationFrame(() => updateNodeInternals(updates, { triggerFitView: false }));
+  useIsomorphicLayoutEffect(() => updateNodeInternals(updates, { triggerFitView: false }));
   }, []);
 }
