@@ -49,6 +49,7 @@ import type {
   IsValidConnection,
   InternalNode,
 } from '.';
+import { Queue } from '../components/BatchProvider/types';
 
 export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   rfId: string;
@@ -147,6 +148,8 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   connectionRadius: number;
 
   isValidConnection?: IsValidConnection<EdgeType>;
+
+  nodeQueue?: Queue<NodeType>;
 
   lib: string;
   debug: boolean;
