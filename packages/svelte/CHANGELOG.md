@@ -1,5 +1,22 @@
 # @xyflow/svelte
 
+## 1.1.1
+
+### Patch Changes
+
+- [#5339](https://github.com/xyflow/xyflow/pull/5339) [`56ebde81`](https://github.com/xyflow/xyflow/commit/56ebde811555775a0a9e2b2f88d35d9511f90c95) Thanks [@jrmajor](https://github.com/jrmajor)! - Fix `onmove`, `onmovestart` and `onmoveend` events not firing
+
+- [#5354](https://github.com/xyflow/xyflow/pull/5354) [`c4312d89`](https://github.com/xyflow/xyflow/commit/c4312d8997ecdc7ef12cfa4efc1fde7131a2b950) Thanks [@moklick](https://github.com/moklick)! - Add TSDoc annotations
+
+- [#5335](https://github.com/xyflow/xyflow/pull/5335) [`8474ba49`](https://github.com/xyflow/xyflow/commit/8474ba49cc1f48b6758a728fe4371f38260952e5) Thanks [@peterkogo](https://github.com/peterkogo)! - Prevent proxying objects in the store
+
+- [#5336](https://github.com/xyflow/xyflow/pull/5336) [`d6db97c5`](https://github.com/xyflow/xyflow/commit/d6db97c53597db0eee8edd19beaf20b83f89fabf) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix `useNodeConnections` callbacks firing only when returned signal is used
+
+- [#5333](https://github.com/xyflow/xyflow/pull/5333) [`3d7e8b6b`](https://github.com/xyflow/xyflow/commit/3d7e8b6bb10001ee84d79ca4f6a9fd0053c4a276) Thanks [@peterkogo](https://github.com/peterkogo)! - Add missing type exports
+
+- Updated dependencies [[`c4312d89`](https://github.com/xyflow/xyflow/commit/c4312d8997ecdc7ef12cfa4efc1fde7131a2b950), [`3d7e8b6b`](https://github.com/xyflow/xyflow/commit/3d7e8b6bb10001ee84d79ca4f6a9fd0053c4a276), [`9c61000c`](https://github.com/xyflow/xyflow/commit/9c61000cac6277ce97274cc626fa7266f82dec27)]:
+  - @xyflow/system@0.0.63
+
 ## 1.1.0
 
 ### Minor Changes
