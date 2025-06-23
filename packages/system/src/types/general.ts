@@ -13,6 +13,9 @@ import { EdgeBase } from '..';
 
 export type Project = (position: XYPosition) => XYPosition;
 
+/**
+ * This type is used to define the `onMove` handler.
+ */
 export type OnMove = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
 export type OnMoveStart = OnMove;
 export type OnMoveEnd = OnMove;
