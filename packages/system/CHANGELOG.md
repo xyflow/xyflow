@@ -1,5 +1,15 @@
 # @xyflow/system
 
+## 0.0.63
+
+### Patch Changes
+
+- [#5354](https://github.com/xyflow/xyflow/pull/5354) [`c4312d89`](https://github.com/xyflow/xyflow/commit/c4312d8997ecdc7ef12cfa4efc1fde7131a2b950) Thanks [@moklick](https://github.com/moklick)! - Add TSDoc annotations
+
+- [#5333](https://github.com/xyflow/xyflow/pull/5333) [`3d7e8b6b`](https://github.com/xyflow/xyflow/commit/3d7e8b6bb10001ee84d79ca4f6a9fd0053c4a276) Thanks [@peterkogo](https://github.com/peterkogo)! - Add missing type exports
+
+- [#5350](https://github.com/xyflow/xyflow/pull/5350) [`9c61000c`](https://github.com/xyflow/xyflow/commit/9c61000cac6277ce97274cc626fa7266f82dec27) Thanks [@moklick](https://github.com/moklick)! - Only send node position updates if positions changed
+
 ## 0.0.62
 
 ### Patch Changes
