@@ -17,9 +17,21 @@ export type OnMove = (event: MouseEvent | TouchEvent | null, viewport: Viewport)
 export type OnMoveStart = OnMove;
 export type OnMoveEnd = OnMove;
 
+/**
+ * @inline
+ */
 export type ZoomInOut = (options?: ViewportHelperFunctionOptions) => Promise<boolean>;
+/**
+ * @inline
+ */
 export type ZoomTo = (zoomLevel: number, options?: ViewportHelperFunctionOptions) => Promise<boolean>;
+/**
+ * @inline
+ */
 export type GetZoom = () => number;
+/**
+ * @inline
+ */
 export type GetViewport = () => Viewport;
 
 /**
