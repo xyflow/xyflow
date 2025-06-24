@@ -4,4 +4,4 @@
 '@xyflow/system': patch
 ---
 
-Remove pointer events from Panel via CSS
+Remove pointer events from Panel via CSS while a selection gets dragged
