@@ -35,5 +35,15 @@
     "turbo": "^2.0.3",
     "typescript": "5.4.5"
   },
-  "packageManager": "pnpm@9.2.0"
+  "packageManager": "pnpm@9.2.0",
+    "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.0.0"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": ">=10.0.0"
+    }
+  }
 }
