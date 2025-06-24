@@ -37,14 +37,9 @@ export function getElevatedEdgeZIndex({
   zIndex = 0,
   elevateOnSelect = false,
 }: GetEdgeZIndexParams): number {
-  if (!elevateOnSelect) {
-    return zIndex;
-  }
+  const elevatedZ = Math.max(sourceNode.internals.z, targetNode.internals.z, elevateOnSelect && selected ? 1000 : 0);
 
-  const edgeOrConnectedNodeSelected = selected || targetNode.selected || sourceNode.selected;
-  const selectedZIndex = Math.max(sourceNode.internals.z || 0, targetNode.internals.z || 0, 1000);
-
-  return zIndex + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
+  return zIndex + elevatedZ;
 }
 
 type IsEdgeVisibleParams = {
