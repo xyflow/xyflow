@@ -88,7 +88,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 ): boolean {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
 
-  let nodesInitialized = nodes.length > 0;
+  let nodesInitialized = true;
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
 

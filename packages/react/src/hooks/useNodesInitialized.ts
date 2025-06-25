@@ -9,12 +9,12 @@ export type UseNodesInitializedOptions = {
 };
 
 const selector = (options: UseNodesInitializedOptions) => (s: ReactFlowState) => {
-  if (!options.includeHiddenNodes) {
-    return s.nodesInitialized;
-  }
-
   if (s.nodeLookup.size === 0) {
     return false;
+  }
+
+  if (!options.includeHiddenNodes) {
+    return s.nodesInitialized;
   }
 
   for (const [, { internals }] of s.nodeLookup) {
