@@ -8,7 +8,7 @@ import { shallow } from 'zustand/shallow';
 import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelConfig } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
+import type { Node, Edge, ReactFlowState, ReactFlowProps } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
 // These fields exist in the global store, and we need to keep them up to date
@@ -139,6 +139,17 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
 
   const previousFields = useRef<Partial<StoreUpdaterProps<NodeType, EdgeType>>>(initPrevValues);
 
+  useEffect(() => {
+    // If the nodesInitialized is true at this point it means the user did not pass any nodes
+    // or the nodes were already server side rendered
+    if (!store.getState().nodesInitialized) {
+      store.setState({
+        fitViewQueued: props.fitView ?? false,
+        fitViewOptions: props.fitViewOptions ?? undefined,
+      });
+    }
+  }, []);
+
   useEffect(
     () => {
       for (const fieldName of fieldsToTrack) {
@@ -155,11 +166,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         else if (fieldName === 'translateExtent') setTranslateExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'paneClickDistance') setPaneClickDistance(fieldValue as number);
-        // Renamed fields
-        else if (fieldName === 'fitView') store.setState({ fitViewQueued: fieldValue as boolean });
-        else if (fieldName === 'fitViewOptions') store.setState({ fitViewOptions: fieldValue as FitViewOptions });
-
-        if (fieldName === 'ariaLabelConfig') {
+        else if (fieldName === 'ariaLabelConfig') {
           store.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
         }
         // General case
