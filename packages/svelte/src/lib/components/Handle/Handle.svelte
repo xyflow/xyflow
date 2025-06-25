@@ -139,7 +139,8 @@
           store.onconnectend?.(event, connectionState);
         },
         getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
-        getFromHandle: () => store.connection.fromHandle
+        getFromHandle: () => store.connection.fromHandle,
+        dragThreshold: store.connectionDragThreshold
       });
     }
   }

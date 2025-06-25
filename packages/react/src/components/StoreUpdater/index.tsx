@@ -65,6 +65,7 @@ const reactFlowFieldsToTrack = [
   'isValidConnection',
   'selectNodesOnDrag',
   'nodeDragThreshold',
+  'connectionDragThreshold',
   'onBeforeDelete',
   'debug',
   'autoPanSpeed',

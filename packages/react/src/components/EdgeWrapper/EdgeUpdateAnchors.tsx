@@ -1,5 +1,12 @@
 // Reconnectable edges have a anchors around their handles to reconnect the edge.
-import { XYHandle, type Connection, EdgePosition, FinalConnectionState, HandleType } from '@xyflow/system';
+import {
+  XYHandle,
+  type Connection,
+  EdgePosition,
+  FinalConnectionState,
+  HandleType,
+  OnConnectStart,
+} from '@xyflow/system';
 
 import { EdgeAnchor } from '../Edges/EdgeAnchor';
 import type { EdgeWrapperProps, Edge } from '../../types/edges';
@@ -60,15 +67,17 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
     } = store.getState();
     const isTarget = oppositeHandle.type === 'target';
 
-    setReconnecting(true);
-    onReconnectStart?.(event, edge, oppositeHandle.type);
-
     const _onReconnectEnd = (evt: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => {
       setReconnecting(false);
       onReconnectEnd?.(evt, edge, oppositeHandle.type, connectionState);
     };
 
     const onConnectEdge = (connection: Connection) => onReconnect?.(edge, connection);
+    const _onConnectStart: OnConnectStart = (_event, params) => {
+      setReconnecting(true);
+      onReconnectStart?.(event, edge, oppositeHandle.type);
+      onConnectStart?.(_event, params);
+    };
 
     XYHandle.onPointerDown(event.nativeEvent, {
       autoPanOnConnect,
@@ -86,12 +95,13 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       panBy,
       isValidConnection,
       onConnect: onConnectEdge,
-      onConnectStart,
+      onConnectStart: _onConnectStart,
       onConnectEnd,
       onReconnectEnd: _onReconnectEnd,
       updateConnection,
       getTransform: () => store.getState().transform,
       getFromHandle: () => store.getState().connection.fromHandle,
+      dragThreshold: store.getState().connectionDragThreshold,
     });
   };
 
