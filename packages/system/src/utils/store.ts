@@ -232,7 +232,7 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   return {
     x: absolutePosition.x,
     y: absolutePosition.y,
-    z: parentZ > childZ ? parentZ : childZ,
+    z: parentZ >= childZ ? parentZ + 1 : childZ,
   };
 }
 
