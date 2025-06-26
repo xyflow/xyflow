@@ -30,6 +30,11 @@ export type GetEdgeZIndexParams = {
   elevateOnSelect?: boolean;
 };
 
+/**
+ * Returns the z-index for an edge based on the node it connects and whether it is selected.
+ * By default, edges are rendered below nodes. This behaviour is different for edges that are
+ * connected to nodes with a parent, as they are rendered above the parent node.
+ */
 export function getElevatedEdgeZIndex({
   sourceNode,
   targetNode,
