@@ -8,7 +8,7 @@ import { shallow } from 'zustand/shallow';
 import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelConfig } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import type { Node, Edge, ReactFlowState, ReactFlowProps } from '../../types';
+import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
 // These fields exist in the global store, and we need to keep them up to date
@@ -42,8 +42,6 @@ const reactFlowFieldsToTrack = [
   'translateExtent',
   'connectOnClick',
   'defaultEdgeOptions',
-  'fitView',
-  'fitViewOptions',
   'onNodesDelete',
   'onEdgesDelete',
   'onDelete',
@@ -78,6 +76,8 @@ type StoreUpdaterProps<NodeType extends Node = Node, EdgeType extends Edge = Edg
   ReactFlowFieldsToTrack
 > & {
   rfId: string;
+  fitView?: boolean;
+  fitViewOptions?: FitViewOptions;
 };
 
 // rfId doesn't exist in ReactFlowProps, but it's one of the fields we want to update
@@ -139,17 +139,6 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
 
   const previousFields = useRef<Partial<StoreUpdaterProps<NodeType, EdgeType>>>(initPrevValues);
 
-  useEffect(() => {
-    // If the nodesInitialized is true at this point it means the user did not pass any nodes
-    // or the nodes were already server side rendered
-    if (!store.getState().nodesInitialized) {
-      store.setState({
-        fitViewQueued: props.fitView ?? false,
-        fitViewOptions: props.fitViewOptions ?? undefined,
-      });
-    }
-  }, []);
-
   useEffect(
     () => {
       for (const fieldName of fieldsToTrack) {
@@ -158,19 +147,37 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
 
         if (fieldValue === previousFieldValue) continue;
         if (typeof props[fieldName] === 'undefined') continue;
+
         // Custom handling with dedicated setters for some fields
-        if (fieldName === 'nodes') setNodes(fieldValue as Node[]);
-        else if (fieldName === 'edges') setEdges(fieldValue as Edge[]);
-        else if (fieldName === 'minZoom') setMinZoom(fieldValue as number);
-        else if (fieldName === 'maxZoom') setMaxZoom(fieldValue as number);
-        else if (fieldName === 'translateExtent') setTranslateExtent(fieldValue as CoordinateExtent);
-        else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
-        else if (fieldName === 'paneClickDistance') setPaneClickDistance(fieldValue as number);
-        else if (fieldName === 'ariaLabelConfig') {
-          store.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
+        switch (fieldName) {
+          case 'nodes':
+            setNodes(fieldValue as Node[]);
+            break;
+          case 'edges':
+            setEdges(fieldValue as Edge[]);
+            break;
+          case 'minZoom':
+            setMinZoom(fieldValue as number);
+            break;
+          case 'maxZoom':
+            setMaxZoom(fieldValue as number);
+            break;
+          case 'translateExtent':
+            setTranslateExtent(fieldValue as CoordinateExtent);
+            break;
+          case 'nodeExtent':
+            setNodeExtent(fieldValue as CoordinateExtent);
+            break;
+          case 'paneClickDistance':
+            setPaneClickDistance(fieldValue as number);
+            break;
+          case 'ariaLabelConfig':
+            store.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
+            break;
+          default:
+            store.setState({ [fieldName]: fieldValue });
+            break;
         }
-        // General case
-        else store.setState({ [fieldName]: fieldValue });
       }
 
       previousFields.current = props;
@@ -178,6 +185,16 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     // Only re-run the effect if one of the fields we track changes
     fieldsToTrack.map((fieldName) => props[fieldName])
   );
+
+  useEffect(() => {
+    // We want to skip setting fitViewQueued if there are no nodes
+    if (props.nodes?.length ?? 0 > 0) {
+      store.setState({
+        fitViewQueued: props.fitView ?? false,
+        fitViewOptions: props.fitViewOptions ?? undefined,
+      });
+    }
+  }, []);
 
   return null;
 }
