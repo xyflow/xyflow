@@ -1,5 +1,15 @@
 # @xyflow/system
 
+## 0.0.64
+
+### Patch Changes
+
+- [#5362](https://github.com/xyflow/xyflow/pull/5362) [`72dc1d60`](https://github.com/xyflow/xyflow/commit/72dc1d602110947e3db83c37b9a9125ee85cf4bc) Thanks [@moklick](https://github.com/moklick)! - Remove pointer events from Panel via CSS while a selection gets dragged
+
+- [#5361](https://github.com/xyflow/xyflow/pull/5361) [`90e9247a`](https://github.com/xyflow/xyflow/commit/90e9247adbdfa9d06db97e1d0d895e35c960551c) Thanks [@peterkogo](https://github.com/peterkogo)! - Render edges above nodes when they are within a subflow
+
+- [#5344](https://github.com/xyflow/xyflow/pull/5344) [`2441bf8d`](https://github.com/xyflow/xyflow/commit/2441bf8d97a6b72494f216915d52d5acbeefefde) Thanks [@moklick](https://github.com/moklick)! - Add connectionDragThreshold prop
+
 ## 0.0.63
 
 ### Patch Changes
