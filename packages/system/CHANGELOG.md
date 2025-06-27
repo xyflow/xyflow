@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.65
+
+### Patch Changes
+
+- [#5370](https://github.com/xyflow/xyflow/pull/5370) [`26f2cdd7`](https://github.com/xyflow/xyflow/commit/26f2cdd720fc2c8fb337d3af13b82dab6a90fb60) Thanks [@moklick](https://github.com/moklick)! - Only fire connection end events if connection was started
+
 ## 0.0.64
 
 ### Patch Changes

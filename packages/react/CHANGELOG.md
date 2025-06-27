@@ -1,5 +1,12 @@
 # @xyflow/react
 
+## 12.8.1
+
+### Patch Changes
+
+- Updated dependencies [[`26f2cdd7`](https://github.com/xyflow/xyflow/commit/26f2cdd720fc2c8fb337d3af13b82dab6a90fb60)]:
+  - @xyflow/system@0.0.65
+
 ## 12.8.0
 
 ### Minor Changes
