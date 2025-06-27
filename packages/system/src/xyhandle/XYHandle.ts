@@ -112,6 +112,7 @@ function onPointerDown(
   };
 
   function startConnection() {
+    connectionStarted = true;
     updateConnection(previousConnection);
     onConnectStart?.(event, { nodeId, handleId, handleType });
   }
@@ -132,8 +133,6 @@ function onPointerDown(
       }
 
       startConnection();
-
-      connectionStarted = nextConnectionStarted;
     }
 
     if (!getFromHandle() || !fromHandle) {
@@ -208,24 +207,27 @@ function onPointerDown(
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    if ((closestHandle || handleDomNode) && connection && isValid) {
-      onConnect?.(connection);
-    }
+    if (connectionStarted) {
+      if ((closestHandle || handleDomNode) && connection && isValid) {
+        onConnect?.(connection);
+      }
 
-    /*
-     * it's important to get a fresh reference from the store here
-     * in order to get the latest state of onConnectEnd
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { inProgress, ...connectionState } = previousConnection;
-    const finalConnectionState = {
-      ...connectionState,
-      toPosition: previousConnection.toHandle ? previousConnection.toPosition : null,
-    };
-    onConnectEnd?.(event, finalConnectionState);
+      /*
+       * it's important to get a fresh reference from the store here
+       * in order to get the latest state of onConnectEnd
+       */
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { inProgress, ...connectionState } = previousConnection;
+      const finalConnectionState = {
+        ...connectionState,
+        toPosition: previousConnection.toHandle ? previousConnection.toPosition : null,
+      };
 
-    if (edgeUpdaterType) {
-      onReconnectEnd?.(event, finalConnectionState);
+      onConnectEnd?.(event, finalConnectionState);
+
+      if (edgeUpdaterType) {
+        onReconnectEnd?.(event, finalConnectionState);
+      }
     }
 
     cancelConnection();
