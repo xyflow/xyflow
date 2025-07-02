@@ -36,6 +36,7 @@ function createSmoothStepEdge(params: { isInternal: boolean }) {
         targetPosition,
         borderRadius: pathOptions?.borderRadius,
         offset: pathOptions?.offset,
+        bendPosition: pathOptions?.bendPosition,
       });
 
       const _id = params.isInternal ? undefined : id;

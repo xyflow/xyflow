@@ -26,6 +26,12 @@ export interface GetSmoothStepPathParams {
   centerY?: number;
   /** @default 20 */
   offset?: number;
+  /**
+   * Controls where the bend occurs along the path.
+   * 0 = at source, 1 = at target, 0.5 = midpoint
+   * @default 0.5
+   */
+  bendPosition?: number;
 }
 
 const handleDirections = {
@@ -63,6 +69,7 @@ function getPoints({
   targetPosition = Position.Top,
   center,
   offset,
+  bendPosition,
 }: {
   source: XYPosition;
   sourcePosition: Position;
@@ -70,6 +77,7 @@ function getPoints({
   targetPosition: Position;
   center: Partial<XYPosition>;
   offset: number;
+  bendPosition: number;
 }): [XYPosition[], number, number, number, number] {
   const sourceDir = handleDirections[sourcePosition];
   const targetDir = handleDirections[targetPosition];
@@ -88,17 +96,22 @@ function getPoints({
   const sourceGapOffset = { x: 0, y: 0 };
   const targetGapOffset = { x: 0, y: 0 };
 
-  const [defaultCenterX, defaultCenterY, defaultOffsetX, defaultOffsetY] = getEdgeCenter({
+  const [, , defaultOffsetX, defaultOffsetY] = getEdgeCenter({
     sourceX: source.x,
     sourceY: source.y,
     targetX: target.x,
     targetY: target.y,
   });
 
+  // Calculate bend position based on the bendPosition parameter
+  const bendX = sourceGapped.x + (targetGapped.x - sourceGapped.x) * bendPosition;
+  const bendY = sourceGapped.y + (targetGapped.y - sourceGapped.y) * bendPosition;
+
   // opposite handle positions, default case
   if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
-    centerX = center.x ?? defaultCenterX;
-    centerY = center.y ?? defaultCenterY;
+    centerX = center.x ?? bendX;
+    centerY = center.y ?? bendY;
+
     /*
      *    --->
      *    |
@@ -252,7 +265,8 @@ export function getSmoothStepPath({
   centerX,
   centerY,
   offset = 20,
-}: GetSmoothStepPathParams): [path: string, labelX: number, labelY: number, offsetX: number, offsetY: number] {
+  bendPosition = 0.5,
+}: GetSmoothStepPathParams): [path: string, labelX: number, labelY: number, offsetX: number,  offsetY: number] {
   const [points, labelX, labelY, offsetX, offsetY] = getPoints({
     source: { x: sourceX, y: sourceY },
     sourcePosition,
@@ -260,6 +274,7 @@ export function getSmoothStepPath({
     targetPosition,
     center: { x: centerX, y: centerY },
     offset,
+    bendPosition,
   });
 
   const path = points.reduce<string>((res, p, i) => {

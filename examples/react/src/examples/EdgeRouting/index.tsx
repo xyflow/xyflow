@@ -69,6 +69,55 @@ const nodes: Node[] = [
     targetPosition: Position.Bottom,
     style: { background: 'rgba(255,255,255,0.5)' },
   },
+  // Bend Position Examples
+  {
+    id: '9',
+    position: { x: 300, y: 0 },
+    data: { label: 'Source' },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Right,
+    style: { background: 'rgba(255,255,255,0.5)' },
+  },
+  {
+    id: '10',
+    position: { x: 600, y: 150 },
+    data: { label: 'Target' },
+    sourcePosition: Position.Left,
+    targetPosition: Position.Left,
+    style: { background: 'rgba(255,255,255,0.5)' },
+  },
+  {
+    id: '11',
+    position: { x: 300, y: 300 },
+    data: { label: 'Source' },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Right,
+    style: { background: 'rgba(255,255,255,0.5)' },
+  },
+  {
+    id: '12',
+    position: { x: 600, y: 450 },
+    data: { label: 'Target' },
+    sourcePosition: Position.Left,
+    targetPosition: Position.Left,
+    style: { background: 'rgba(255,255,255,0.5)' },
+  },
+  {
+    id: '13',
+    position: { x: 300, y: 600 },
+    data: { label: 'Source' },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Right,
+    style: { background: 'rgba(255,255,255,0.5)' },
+  },
+  {
+    id: '14',
+    position: { x: 600, y: 750 },
+    data: { label: 'Target' },
+    sourcePosition: Position.Left,
+    targetPosition: Position.Left,
+    style: { background: 'rgba(255,255,255,0.5)' },
+  },
 ];
 
 const edges: Edge[] = [
@@ -101,6 +150,38 @@ const edges: Edge[] = [
     id: 'e7-8',
     source: '7',
     target: '8',
+  },
+  
+  // Bend Position Examples
+  {
+    id: 'e9-10',
+    source: '9',
+    target: '10',
+    label: 'bendPosition: 0.2',
+    pathOptions: {
+      bendPosition: 0.2,
+    },
+    interactionWidth: 0,
+  },
+  {
+    id: 'e11-12',
+    source: '11',
+    target: '12',
+    label: 'bendPosition: 0.5 (default)',
+    pathOptions: {
+      bendPosition: 0.5,
+    },
+    interactionWidth: 0,
+  },
+  {
+    id: 'e13-14',
+    source: '13',
+    target: '14',
+    label: 'bendPosition: 0.8',
+    pathOptions: {
+      bendPosition: 0.8,
+    },
+    interactionWidth: 0,
   },
 ];
 
