@@ -58,7 +58,7 @@ export function NodeWrapper<NodeType extends Node>({
   if (NodeComponent === undefined) {
     onError?.('003', errorMessages['error003'](nodeType));
     nodeType = 'default';
-    NodeComponent = builtinNodeTypes.default;
+    NodeComponent = nodeTypes?.['default'] || builtinNodeTypes.default;
   }
 
   const isDraggable = !!(node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));

@@ -9,6 +9,7 @@ import ControlledViewport from '../examples/ControlledViewport';
 import CustomConnectionLine from '../examples/CustomConnectionLine';
 import CustomMiniMapNode from '../examples/CustomMiniMapNode';
 import CustomNode from '../examples/CustomNode';
+import DefaultNodeOverwrite from '../examples/DefaultNodeOverwrite';
 import DefaultNodes from '../examples/DefaultNodes';
 import DragHandle from '../examples/DragHandle';
 import DragNDrop from '../examples/DragNDrop';
@@ -128,6 +129,11 @@ const routes: IRoute[] = [
     name: 'Custom Node',
     path: 'custom-node',
     component: CustomNode,
+  },
+  {
+    name: 'Default Node Overwrite',
+    path: 'default-node-overwrite',
+    component: DefaultNodeOverwrite,
   },
   {
     name: 'Default Nodes',
