@@ -24,7 +24,7 @@ const nodeTypes = {
   default: CustomNode,
 };
 
-const DefaultNodes = () => {
+const DefaultNodeOverwrite = () => {
   return (
     <ReactFlow defaultNodes={initialNodes} nodeTypes={nodeTypes} fitView>
       <Background variant={BackgroundVariant.Lines} />
@@ -35,7 +35,7 @@ const DefaultNodes = () => {
 export default function App() {
   return (
     <ReactFlowProvider>
-      <DefaultNodes />
+      <DefaultNodeOverwrite />
     </ReactFlowProvider>
   );
 }
