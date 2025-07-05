@@ -46,7 +46,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
   if (EdgeComponent === undefined) {
     onError?.('011', errorMessages['error011'](edgeType));
     edgeType = 'default';
-    EdgeComponent = builtinEdgeTypes.default;
+    EdgeComponent = edgeTypes?.['default'] || builtinEdgeTypes.default;
   }
 
   const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
