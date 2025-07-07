@@ -394,7 +394,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   }
 
   function destroy() {
-    d3Selection?.on('.drag', null);
+    d3Selection?.on('drag', null);
   }
 
   return {
