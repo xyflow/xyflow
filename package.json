@@ -35,15 +35,15 @@
     "turbo": "^2.0.3",
     "typescript": "5.4.5"
   },
-  "packageManager": "pnpm@9.2.0",
-    "devEngines": {
+  "packageManager": "pnpm@10.12.4",
+  "devEngines": {
     "runtime": {
       "name": "node",
-      "version": ">=22.0.0"
+      "version": ">=22"
     },
     "packageManager": {
       "name": "pnpm",
-      "version": ">=10.0.0"
+      "version": ">=10"
     }
   }
 }
