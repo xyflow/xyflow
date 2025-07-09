@@ -50,11 +50,15 @@ export type BaseEdgeProps = Pick<
   labelX?: number;
   /** The y coordinate of the label */
   labelY?: number;
-  /** Marker at start of edge
+  /**
+   * The id of the SVG marker to use at the start of the edge. This should be defined in a
+   * `<defs>` element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
    * @example 'url(#arrow)'
    */
   markerStart?: string;
-  /** Marker at end of edge
+  /**
+   * The id of the SVG marker to use at the end of the edge. This should be defined in a `<defs>`
+   * element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
    * @example 'url(#arrow)'
    */
   markerEnd?: string;
