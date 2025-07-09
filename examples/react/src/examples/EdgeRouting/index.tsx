@@ -151,15 +151,15 @@ const edges: Edge[] = [
     source: '7',
     target: '8',
   },
-  
+
   // Bend Position Examples
   {
     id: 'e9-10',
     source: '9',
     target: '10',
-    label: 'bendPosition: 0.2',
+    label: 'stepPosition: 0.2',
     pathOptions: {
-      bendPosition: 0.2,
+      stepPosition: 0.2,
     },
     interactionWidth: 0,
   },
@@ -167,9 +167,9 @@ const edges: Edge[] = [
     id: 'e11-12',
     source: '11',
     target: '12',
-    label: 'bendPosition: 0.5 (default)',
+    label: 'stepPosition: 0.5 (default)',
     pathOptions: {
-      bendPosition: 0.5,
+      stepPosition: 0.5,
     },
     interactionWidth: 0,
   },
@@ -177,9 +177,9 @@ const edges: Edge[] = [
     id: 'e13-14',
     source: '13',
     target: '14',
-    label: 'bendPosition: 0.8',
+    label: 'stepPosition: 0.8',
     pathOptions: {
-      bendPosition: 0.8,
+      stepPosition: 0.8,
     },
     interactionWidth: 0,
   },

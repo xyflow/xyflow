@@ -45,7 +45,7 @@ export type EdgeBase<
 export type SmoothStepPathOptions = {
   offset?: number;
   borderRadius?: number;
-  bendPosition?: number;
+  stepPosition?: number;
 };
 
 export type StepPathOptions = {

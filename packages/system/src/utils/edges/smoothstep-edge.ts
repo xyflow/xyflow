@@ -31,7 +31,7 @@ export interface GetSmoothStepPathParams {
    * 0 = at source, 1 = at target, 0.5 = midpoint
    * @default 0.5
    */
-  bendPosition?: number;
+  stepPosition?: number;
 }
 
 const handleDirections = {
@@ -69,7 +69,7 @@ function getPoints({
   targetPosition = Position.Top,
   center,
   offset,
-  bendPosition,
+  stepPosition,
 }: {
   source: XYPosition;
   sourcePosition: Position;
@@ -77,7 +77,7 @@ function getPoints({
   targetPosition: Position;
   center: Partial<XYPosition>;
   offset: number;
-  bendPosition: number;
+  stepPosition: number;
 }): [XYPosition[], number, number, number, number] {
   const sourceDir = handleDirections[sourcePosition];
   const targetDir = handleDirections[targetPosition];
@@ -103,9 +103,9 @@ function getPoints({
     targetY: target.y,
   });
 
-  // Calculate bend position based on the bendPosition parameter
-  const bendX = sourceGapped.x + (targetGapped.x - sourceGapped.x) * bendPosition;
-  const bendY = sourceGapped.y + (targetGapped.y - sourceGapped.y) * bendPosition;
+  // Calculate bend position based on the stepPosition parameter
+  const bendX = sourceGapped.x + (targetGapped.x - sourceGapped.x) * stepPosition;
+  const bendY = sourceGapped.y + (targetGapped.y - sourceGapped.y) * stepPosition;
 
   // opposite handle positions, default case
   if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
@@ -265,8 +265,8 @@ export function getSmoothStepPath({
   centerX,
   centerY,
   offset = 20,
-  bendPosition = 0.5,
-}: GetSmoothStepPathParams): [path: string, labelX: number, labelY: number, offsetX: number,  offsetY: number] {
+  stepPosition = 0.5,
+}: GetSmoothStepPathParams): [path: string, labelX: number, labelY: number, offsetX: number, offsetY: number] {
   const [points, labelX, labelY, offsetX, offsetY] = getPoints({
     source: { x: sourceX, y: sourceY },
     sourcePosition,
@@ -274,7 +274,7 @@ export function getSmoothStepPath({
     targetPosition,
     center: { x: centerX, y: centerY },
     offset,
-    bendPosition,
+    stepPosition,
   });
 
   const path = points.reduce<string>((res, p, i) => {
