@@ -1,5 +1,65 @@
 # @xyflow/react
 
+## 12.8.1
+
+### Patch Changes
+
+- Updated dependencies [[`26f2cdd7`](https://github.com/xyflow/xyflow/commit/26f2cdd720fc2c8fb337d3af13b82dab6a90fb60)]:
+  - @xyflow/system@0.0.65
+
+## 12.8.0
+
+### Minor Changes
+
+- [#5361](https://github.com/xyflow/xyflow/pull/5361) [`90e9247a`](https://github.com/xyflow/xyflow/commit/90e9247adbdfa9d06db97e1d0d895e35c960551c) Thanks [@peterkogo](https://github.com/peterkogo)! - Render edges above nodes when they are within a subflow
+
+- [#5344](https://github.com/xyflow/xyflow/pull/5344) [`2441bf8d`](https://github.com/xyflow/xyflow/commit/2441bf8d97a6b72494f216915d52d5acbeefefde) Thanks [@moklick](https://github.com/moklick)! - Add connectionDragThreshold prop
+
+### Patch Changes
+
+- [#5368](https://github.com/xyflow/xyflow/pull/5368) [`445017ed`](https://github.com/xyflow/xyflow/commit/445017ed6fdedee4b39a0eaeb1cbbe0155f9a037) Thanks [@moklick](https://github.com/moklick)! - Cleanup store updater
+
+- [#5362](https://github.com/xyflow/xyflow/pull/5362) [`72dc1d60`](https://github.com/xyflow/xyflow/commit/72dc1d602110947e3db83c37b9a9125ee85cf4bc) Thanks [@moklick](https://github.com/moklick)! - Remove pointer events from Panel via CSS while a selection gets dragged
+
+- Updated dependencies [[`72dc1d60`](https://github.com/xyflow/xyflow/commit/72dc1d602110947e3db83c37b9a9125ee85cf4bc), [`90e9247a`](https://github.com/xyflow/xyflow/commit/90e9247adbdfa9d06db97e1d0d895e35c960551c), [`2441bf8d`](https://github.com/xyflow/xyflow/commit/2441bf8d97a6b72494f216915d52d5acbeefefde)]:
+  - @xyflow/system@0.0.64
+
+## 12.7.1
+
+### Patch Changes
+
+- [#5354](https://github.com/xyflow/xyflow/pull/5354) [`c4312d89`](https://github.com/xyflow/xyflow/commit/c4312d8997ecdc7ef12cfa4efc1fde7131a2b950) Thanks [@moklick](https://github.com/moklick)! - Add TSDoc annotations
+
+- [#5333](https://github.com/xyflow/xyflow/pull/5333) [`3d7e8b6b`](https://github.com/xyflow/xyflow/commit/3d7e8b6bb10001ee84d79ca4f6a9fd0053c4a276) Thanks [@peterkogo](https://github.com/peterkogo)! - Add missing type exports
+
+- [#5353](https://github.com/xyflow/xyflow/pull/5353) [`4dd3ae66`](https://github.com/xyflow/xyflow/commit/4dd3ae6684fa3c62ee8cabd64e7631a52173c8f4) Thanks [@aidanbarrett](https://github.com/aidanbarrett)! - Add missing `FinalConnectionState` parameter to `onReconnectEnd` prop types
+
+- Updated dependencies [[`c4312d89`](https://github.com/xyflow/xyflow/commit/c4312d8997ecdc7ef12cfa4efc1fde7131a2b950), [`3d7e8b6b`](https://github.com/xyflow/xyflow/commit/3d7e8b6bb10001ee84d79ca4f6a9fd0053c4a276), [`9c61000c`](https://github.com/xyflow/xyflow/commit/9c61000cac6277ce97274cc626fa7266f82dec27)]:
+  - @xyflow/system@0.0.63
+
+## 12.7.0
+
+### Minor Changes
+
+- [#5299](https://github.com/xyflow/xyflow/pull/5299) [`848b486b`](https://github.com/xyflow/xyflow/commit/848b486b2201b650ecb3317f367a723edb2458e1) Thanks [@printerscanner](https://github.com/printerscanner)! - Add `ariaRole` prop to nodes and edges
+
+- [#5280](https://github.com/xyflow/xyflow/pull/5280) [`dba6faf2`](https://github.com/xyflow/xyflow/commit/dba6faf20e7ec2524d5270d177331d3bd260f3ac) Thanks [@moklick](https://github.com/moklick)! - Improve typing for Nodes
+
+- [#5276](https://github.com/xyflow/xyflow/pull/5276) [`6ce44a05`](https://github.com/xyflow/xyflow/commit/6ce44a05c829068ff5a8416ce3fa4ee6e0eced48) Thanks [@moklick](https://github.com/moklick)! - Add an `ease` and `interpolate` option to all function that alter the viewport
+
+- [#5277](https://github.com/xyflow/xyflow/pull/5277) [`f59730ce`](https://github.com/xyflow/xyflow/commit/f59730ce3530a91f579f6bbd2ea9335680f552ef) Thanks [@printerscanner](https://github.com/printerscanner)! - Add `ariaLabelConfig` prop for customizing UI text like aria labels and descriptions.
+
+- [#5317](https://github.com/xyflow/xyflow/pull/5317) [`09458f52`](https://github.com/xyflow/xyflow/commit/09458f52ff57356e03404c58e9bfdbfd50579850) Thanks [@moklick](https://github.com/moklick)! - Add `domAttributes` option for nodes and edges
+
+- [#5326](https://github.com/xyflow/xyflow/pull/5326) [`050b511c`](https://github.com/xyflow/xyflow/commit/050b511cd6966ba526299f7ca11f9ca4791fd2cf) Thanks [@peterkogo](https://github.com/peterkogo)! - Prevent NodeResizer controls to become too small when zooming out
+
+- [#5308](https://github.com/xyflow/xyflow/pull/5308) [`09fab679`](https://github.com/xyflow/xyflow/commit/09fab6794031410c9e9465281d038c3520afe783) Thanks [@printerscanner](https://github.com/printerscanner)! - Focus nodes on tab if not within the viewport and add a new prop `autoPanOnNodeFocus`
+
+### Patch Changes
+
+- Updated dependencies [[`848b486b`](https://github.com/xyflow/xyflow/commit/848b486b2201b650ecb3317f367a723edb2458e1), [`dba6faf2`](https://github.com/xyflow/xyflow/commit/dba6faf20e7ec2524d5270d177331d3bd260f3ac), [`6ce44a05`](https://github.com/xyflow/xyflow/commit/6ce44a05c829068ff5a8416ce3fa4ee6e0eced48), [`f59730ce`](https://github.com/xyflow/xyflow/commit/f59730ce3530a91f579f6bbd2ea9335680f552ef), [`09458f52`](https://github.com/xyflow/xyflow/commit/09458f52ff57356e03404c58e9bfdbfd50579850), [`050b511c`](https://github.com/xyflow/xyflow/commit/050b511cd6966ba526299f7ca11f9ca4791fd2cf)]:
+  - @xyflow/system@0.0.62
+
 ## 12.6.4
 
 ### Patch Changes

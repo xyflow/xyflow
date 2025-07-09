@@ -1,4 +1,5 @@
 import type { Component } from 'svelte';
+import type { ClassValue, HTMLAttributes, SVGAttributes } from 'svelte/elements';
 import type {
   EdgeBase,
   BezierPathOptions,
@@ -9,7 +10,6 @@ import type {
 } from '@xyflow/system';
 
 import type { Node } from '$lib/types';
-import type { ClassValue, HTMLAttributes } from 'svelte/elements';
 
 /**
  * An `Edge` is the complete description with everything Svelte Flow needs to know in order to
@@ -30,6 +30,13 @@ export type Edge<
    * @default "group"
    */
   ariaRole?: HTMLAttributes<HTMLElement>['role'];
+  /**
+   * General escape hatch for adding custom attributes to the edge's DOM element.
+   */
+  domAttributes?: Omit<
+    SVGAttributes<SVGGElement>,
+    'id' | 'style' | 'class' | 'role' | 'aria-label'
+  >;
 };
 
 export type BaseEdgeProps = Pick<
@@ -43,11 +50,15 @@ export type BaseEdgeProps = Pick<
   labelX?: number;
   /** The y coordinate of the label */
   labelY?: number;
-  /** Marker at start of edge
+  /**
+   * The id of the SVG marker to use at the start of the edge. This should be defined in a
+   * `<defs>` element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
    * @example 'url(#arrow)'
    */
   markerStart?: string;
-  /** Marker at end of edge
+  /**
+   * The id of the SVG marker to use at the end of the edge. This should be defined in a `<defs>`
+   * element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
    * @example 'url(#arrow)'
    */
   markerEnd?: string;

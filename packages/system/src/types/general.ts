@@ -13,16 +13,56 @@ import { EdgeBase } from '..';
 
 export type Project = (position: XYPosition) => XYPosition;
 
+/**
+ * This type is used to define the `onMove` handler.
+ */
 export type OnMove = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
 export type OnMoveStart = OnMove;
 export type OnMoveEnd = OnMove;
 
+/**
+ * @inline
+ */
 export type ZoomInOut = (options?: ViewportHelperFunctionOptions) => Promise<boolean>;
+/**
+ * @inline
+ */
 export type ZoomTo = (zoomLevel: number, options?: ViewportHelperFunctionOptions) => Promise<boolean>;
+/**
+ * @inline
+ */
 export type GetZoom = () => number;
+/**
+ * @inline
+ */
 export type GetViewport = () => Viewport;
+
+/**
+ * The `SetViewport` function is used to set the viewport of the flow.
+ *
+ * @inline
+ * @param viewport - The viewport to set.
+ * @param options - Optional parameters to control the animation and easing of the viewport change.
+ */
 export type SetViewport = (viewport: Viewport, options?: ViewportHelperFunctionOptions) => Promise<boolean>;
+
+/**
+ * The `SetCenter` function is used to set the center of the flow viewport to a specific position
+ *
+ * @inline
+ * @param x - x coordinate
+ * @param y - y coordinate
+ * @param options - Optional parameters to control the animation and easing of the viewport change.
+ */
 export type SetCenter = (x: number, y: number, options?: SetCenterOptions) => Promise<boolean>;
+
+/**
+ * The `FitBounds` function is used to fit the flow viewport to the bounds of the nodes.
+ *
+ * @inline
+ * @param bounds - The bounds to fit the viewport to.
+ * @param options - Optional parameters to control the animation and easing of the viewport change.
+ */
 export type FitBounds = (bounds: Rect, options?: FitBoundsOptions) => Promise<boolean>;
 
 /**
@@ -179,10 +219,16 @@ export type ViewportHelperFunctionOptions = {
   interpolate?: 'smooth' | 'linear';
 };
 
+/**
+ * @inline
+ */
 export type SetCenterOptions = ViewportHelperFunctionOptions & {
   zoom?: number;
 };
 
+/**
+ * @inline
+ */
 export type FitBoundsOptions = ViewportHelperFunctionOptions & {
   padding?: number;
 };

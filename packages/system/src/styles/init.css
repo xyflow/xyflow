@@ -265,6 +265,10 @@ svg.xy-flow__connectionline {
   pointer-events: all;
 }
 
+.xy-flow__pane.selection .xy-flow__panel {
+  pointer-events: none;
+}
+
 .xy-flow__panel {
   position: absolute;
   z-index: 5;

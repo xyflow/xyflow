@@ -89,8 +89,7 @@
     }
   }
 
-  onkeydown = (event: KeyboardEvent) => {
-    // TODO: Possible Svelte Bug? onkeydown is always firing for the last edge
+  function onkeydown(event: KeyboardEvent) {
     if (!store.disableKeyboardA11y && elementSelectionKeys.includes(event.key) && selectable) {
       const { unselectNodesAndEdges, addSelectedEdges } = store;
       const unselect = event.key === 'Escape';
@@ -102,7 +101,7 @@
         addSelectedEdges([id]);
       }
     }
-  };
+  }
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -138,9 +137,10 @@
           : `Edge from ${source} to ${target}`}
       aria-describedby={focusable ? `${ARIA_EDGE_DESC_KEY}-${store.flowId}` : undefined}
       role={edge.ariaRole ?? (focusable ? 'group' : 'img')}
-      aria-roledescription={edge.ariaRoleDescription || 'edge'}
+      aria-roledescription="edge"
       onkeydown={focusable ? onkeydown : undefined}
       tabindex={focusable ? 0 : undefined}
+      {...edge.domAttributes}
     >
       <EdgeComponent
         {id}

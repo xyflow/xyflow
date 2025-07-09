@@ -105,6 +105,9 @@ export {
   type OnResizeStart,
   type OnResize,
   type OnResizeEnd,
+  type OnReconnect,
+  type OnReconnectStart,
+  type OnReconnectEnd,
   type ControlPosition,
   type ControlLinePosition,
   ResizeControlVariant,
@@ -113,7 +116,10 @@ export {
   type ResizeDragEvent,
   type IsValidConnection,
   type NodeConnection,
-  type AriaLabelConfig
+  type AriaLabelConfig,
+  type SetCenter,
+  type SetViewport,
+  type FitBounds
 } from '@xyflow/system';
 
 // system utils

@@ -5,7 +5,8 @@
     errorMessages,
     isInputDOMNode,
     nodeHasDimensions,
-    Position
+    Position,
+    getNodesInside
   } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
@@ -65,7 +66,9 @@
   let draggable = $derived(_draggable ?? store.nodesDraggable);
   let selectable = $derived(_selectable ?? store.elementsSelectable);
   let connectable = $derived(_connectable ?? store.nodesConnectable);
-  let initialized = $derived(nodeHasDimensions(node) && !!node.internals.handleBounds);
+  let hasDimensions = $derived(nodeHasDimensions(node));
+  let hasHandleBounds = $derived(!!node.internals.handleBounds);
+  let isInitialized = $derived(hasDimensions && hasHandleBounds);
   let focusable = $derived(_focusable ?? store.nodesFocusable);
 
   function isInParentLookup(id: string) {
@@ -149,7 +152,7 @@
 
   $effect(() => {
     /* eslint-disable @typescript-eslint/no-unused-expressions */
-    if (resizeObserver && (!initialized || nodeRef !== prevNodeRef)) {
+    if (resizeObserver && (!isInitialized || nodeRef !== prevNodeRef)) {
       prevNodeRef && resizeObserver.unobserve(prevNodeRef);
       nodeRef && resizeObserver.observe(nodeRef);
       prevNodeRef = nodeRef;
@@ -197,6 +200,34 @@
       store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
     }
   }
+
+  const onFocus = () => {
+    if (
+      store.disableKeyboardA11y ||
+      !store.autoPanOnNodeFocus ||
+      !nodeRef?.matches(':focus-visible')
+    ) {
+      return;
+    }
+
+    const { width, height, viewport } = store;
+
+    const withinViewport =
+      getNodesInside(
+        new Map([[id, node]]),
+        { x: 0, y: 0, width, height },
+        [viewport.x, viewport.y, viewport.zoom],
+        true
+      ).length > 0;
+
+    if (!withinViewport) {
+      store.setCenter(
+        node.position.x + (node.measured.width ?? 0) / 2,
+        node.position.y + (node.measured.height ?? 0) / 2,
+        { zoom: viewport.zoom }
+      );
+    }
+  };
 </script>
 
 {#if !hidden}
@@ -236,7 +267,7 @@
     class:parent={isParent}
     style:z-index={zIndex}
     style:transform="translate({positionX}px, {positionY}px)"
-    style:visibility={initialized ? 'visible' : 'hidden'}
+    style:visibility={hasDimensions ? 'visible' : 'hidden'}
     style={nodeStyle}
     onclick={onSelectNodeHandler}
     onpointerenter={onnodepointerenter
@@ -252,12 +283,14 @@
       ? (event) => onnodecontextmenu({ node: userNode, event })
       : undefined}
     onkeydown={focusable ? onKeyDown : undefined}
+    onfocus={focusable ? onFocus : undefined}
     tabIndex={focusable ? 0 : undefined}
     role={node.ariaRole ?? (focusable ? 'group' : undefined)}
-    aria-roledescription={node.ariaRoleDescription || 'node'}
+    aria-roledescription="node"
     aria-describedby={store.disableKeyboardA11y
       ? undefined
       : `${ARIA_NODE_DESC_KEY}-${store.flowId}`}
+    {...node.domAttributes}
   >
     <NodeComponent
       {data}

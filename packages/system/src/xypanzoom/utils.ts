@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ZoomTransform, zoomIdentity } from 'd3-zoom';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { transition } from 'd3-transition';
 
 import { type D3SelectionInstance, type Viewport } from '../types';

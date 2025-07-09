@@ -125,7 +125,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * Returns all nodes that intersect with the given node or rect.
    *
    * @param node - the node or rect to check for intersections
-   * @param partially - if true, the node is considered to be intersecting if it partially overlaps with the passed node or rect
+   * @param partially - true by default, if set to false, only nodes that are fully intersecting will be returned
    * @param nodes - optional nodes array to check for intersections
    *
    * @returns an array of intersecting nodes
@@ -366,28 +366,8 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       return Promise.resolve(true);
     },
     getViewport: () => $state.snapshot(store.viewport),
-    setCenter: async (x, y, options) => {
-      const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : store.maxZoom;
-      const currentPanZoom = store.panZoom;
-
-      if (!currentPanZoom) {
-        return Promise.resolve(false);
-      }
-
-      await currentPanZoom.setViewport(
-        {
-          x: store.width / 2 - x * nextZoom,
-          y: store.height / 2 - y * nextZoom,
-          zoom: nextZoom
-        },
-        { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
-      );
-
-      return Promise.resolve(true);
-    },
-    fitView: (options?: FitViewOptions) => {
-      return store.fitView(options);
-    },
+    setCenter: async (x, y, options) => store.setCenter(x, y, options),
+    fitView: (options?: FitViewOptions) => store.fitView(options),
     fitBounds: async (bounds: Rect, options?: FitBoundsOptions) => {
       if (!store.panZoom) {
         return Promise.resolve(false);
@@ -432,7 +412,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
         const partiallyVisible = partially && overlappingArea > 0;
 
-        return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
+        return (
+          partiallyVisible ||
+          overlappingArea >= currNodeRect.width * currNodeRect.height ||
+          overlappingArea >= nodeRect.width * nodeRect.height
+        );
       });
     },
     isNodeIntersecting: (

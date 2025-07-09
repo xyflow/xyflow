@@ -2,9 +2,6 @@ import { HTMLAttributes, forwardRef } from 'react';
 import cc from 'classcat';
 import type { PanelPosition } from '@xyflow/system';
 
-import { useStore } from '../../hooks/useStore';
-import type { ReactFlowState } from '../../types';
-
 /**
  * @expand
  */
@@ -15,8 +12,6 @@ export type PanelProps = HTMLAttributes<HTMLDivElement> & {
    */
   position?: PanelPosition;
 };
-
-const selector = (s: ReactFlowState) => (s.userSelectionActive ? 'none' : 'all');
 
 /**
  * The `<Panel />` component helps you position content above the viewport.
@@ -45,16 +40,10 @@ const selector = (s: ReactFlowState) => (s.userSelectionActive ? 'none' : 'all')
  */
 export const Panel = forwardRef<HTMLDivElement, PanelProps>(
   ({ position = 'top-left', children, className, style, ...rest }, ref) => {
-    const pointerEvents = useStore(selector);
     const positionClasses = `${position}`.split('-');
 
     return (
-      <div
-        className={cc(['react-flow__panel', className, ...positionClasses])}
-        style={{ ...style, pointerEvents }}
-        ref={ref}
-        {...rest}
-      >
+      <div className={cc(['react-flow__panel', className, ...positionClasses])} style={style} ref={ref} {...rest}>
         {children}
       </div>
     );

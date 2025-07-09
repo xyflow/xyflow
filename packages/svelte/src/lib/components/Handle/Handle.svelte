@@ -46,7 +46,6 @@
   let store = useStore();
   let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
-
   let prevConnections: Map<string, HandleConnection> | null = null;
   $effect.pre(() => {
     if (onconnect || ondisconnect) {
@@ -140,7 +139,8 @@
           store.onconnectend?.(event, connectionState);
         },
         getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
-        getFromHandle: () => store.connection.fromHandle
+        getFromHandle: () => store.connection.fromHandle,
+        dragThreshold: store.connectionDragThreshold
       });
     }
   }

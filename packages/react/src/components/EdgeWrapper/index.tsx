@@ -46,7 +46,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
   if (EdgeComponent === undefined) {
     onError?.('011', errorMessages['error011'](edgeType));
     edgeType = 'default';
-    EdgeComponent = builtinEdgeTypes.default;
+    EdgeComponent = edgeTypes?.['default'] || builtinEdgeTypes.default;
   }
 
   const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
@@ -199,7 +199,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
         onKeyDown={isFocusable ? onKeyDown : undefined}
         tabIndex={isFocusable ? 0 : undefined}
         role={edge.ariaRole ?? (isFocusable ? 'group' : 'img')}
-        aria-roledescription={edge.ariaRoleDescription || 'edge'}
+        aria-roledescription="edge"
         data-id={id}
         data-testid={`rf__edge-${id}`}
         aria-label={
@@ -207,6 +207,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
         }
         aria-describedby={isFocusable ? `${ARIA_EDGE_DESC_KEY}-${rfId}` : undefined}
         ref={edgeRef}
+        {...edge.domAttributes}
       >
         {!reconnecting && (
           <EdgeComponent

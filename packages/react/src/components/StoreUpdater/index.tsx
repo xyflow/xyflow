@@ -23,6 +23,7 @@ const reactFlowFieldsToTrack = [
   'onClickConnectStart',
   'onClickConnectEnd',
   'nodesDraggable',
+  'autoPanOnNodeFocus',
   'nodesConnectable',
   'nodesFocusable',
   'edgesFocusable',
@@ -64,6 +65,7 @@ const reactFlowFieldsToTrack = [
   'isValidConnection',
   'selectNodesOnDrag',
   'nodeDragThreshold',
+  'connectionDragThreshold',
   'onBeforeDelete',
   'debug',
   'autoPanSpeed',
@@ -154,13 +156,11 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         else if (fieldName === 'translateExtent') setTranslateExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'paneClickDistance') setPaneClickDistance(fieldValue as number);
+        else if (fieldName === 'ariaLabelConfig')
+          store.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
         // Renamed fields
         else if (fieldName === 'fitView') store.setState({ fitViewQueued: fieldValue as boolean });
         else if (fieldName === 'fitViewOptions') store.setState({ fitViewOptions: fieldValue as FitViewOptions });
-
-        if (fieldName === 'ariaLabelConfig') {
-          store.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
-        }
         // General case
         else store.setState({ [fieldName]: fieldValue });
       }

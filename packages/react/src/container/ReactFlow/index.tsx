@@ -77,6 +77,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     onlyRenderVisibleElements = false,
     selectNodesOnDrag,
     nodesDraggable,
+    autoPanOnNodeFocus,
     nodesConnectable,
     nodesFocusable,
     nodeOrigin = defaultNodeOrigin,
@@ -138,6 +139,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     style,
     id,
     nodeDragThreshold,
+    connectionDragThreshold,
     viewport,
     onViewportChange,
     width,
@@ -261,6 +263,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           onClickConnectStart={onClickConnectStart}
           onClickConnectEnd={onClickConnectEnd}
           nodesDraggable={nodesDraggable}
+          autoPanOnNodeFocus={autoPanOnNodeFocus}
           nodesConnectable={nodesConnectable}
           nodesFocusable={nodesFocusable}
           edgesFocusable={edgesFocusable}
@@ -304,6 +307,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           isValidConnection={isValidConnection}
           selectNodesOnDrag={selectNodesOnDrag}
           nodeDragThreshold={nodeDragThreshold}
+          connectionDragThreshold={connectionDragThreshold}
           onBeforeDelete={onBeforeDelete}
           paneClickDistance={paneClickDistance}
           debug={debug}

@@ -23,7 +23,6 @@
     buttonColor,
     buttonColorHover,
     buttonBorderColor,
-    'aria-label': ariaLabel,
     fitViewOptions,
     children,
     before,

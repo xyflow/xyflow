@@ -170,6 +170,12 @@ export type SvelteFlowProps<
      * @default 0
      */
     nodeClickDistance?: number;
+    /**
+     * The threshold in pixels that the mouse must move before a connection line starts to drag.
+     * This is useful to prevent accidental connections when clicking on a handle.
+     * @default 1
+     */
+    connectionDragThreshold?: number;
     /** Minimum zoom level
      * @default 0.5
      */
@@ -232,6 +238,11 @@ export type SvelteFlowProps<
      * @default true
      */
     nodesDraggable?: boolean;
+    /**
+     * When `true`, the viewport will pan when a node is focused.
+     * @default true
+     */
+    autoPanOnNodeFocus?: boolean;
     /**
      * Controls if all nodes should be connectable to each other
      * @default true

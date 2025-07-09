@@ -1,5 +1,5 @@
 import type { Component } from 'svelte';
-import type { ClassValue, HTMLAttributes } from 'svelte/elements';
+import type { ClassValue, HTMLAttributes, DOMAttributes } from 'svelte/elements';
 import type { InternalNodeBase, NodeBase, NodeProps as NodePropsBase } from '@xyflow/system';
 
 /**
@@ -25,7 +25,21 @@ export type Node<
    * The ARIA role attribute for the node element, used for accessibility.
    * @default "group"
    */
-  ariaRole?: HTMLAttributes<HTMLElement>['role'];
+  ariaRole?: HTMLAttributes<HTMLDivElement>['role'];
+
+  /**
+   * General escape hatch for adding custom attributes to the node's DOM element.
+   */
+  domAttributes?: Omit<
+    HTMLAttributes<HTMLDivElement>,
+    | 'id'
+    | 'style'
+    | 'class'
+    | 'draggable'
+    | 'role'
+    | 'aria-label'
+    | keyof DOMAttributes<HTMLDivElement>
+  >;
 };
 
 // @todo: currently generics for nodes are not really supported

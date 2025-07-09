@@ -44,6 +44,9 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     minZoom,
     maxZoom,
     initialViewport,
+    onPanZoomStart,
+    onPanZoom,
+    onPanZoomEnd,
     translateExtent,
     paneClickDistance,
     setPanZoomInstance,
@@ -58,6 +61,9 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     translateExtent,
     viewport: initialViewport,
     paneClickDistance,
+    onPanZoom,
+    onPanZoomStart,
+    onPanZoomEnd,
     onDraggingChange
   });
 

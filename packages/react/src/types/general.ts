@@ -99,6 +99,9 @@ export type OnSelectionChangeFunc<NodeType extends Node = Node, EdgeType extends
   params: OnSelectionChangeParams<NodeType, EdgeType>
 ) => void;
 
+/**
+ * @inline
+ */
 export type FitViewParams<NodeType extends Node = Node> = FitViewParamsBase<NodeType>;
 
 /**
@@ -107,9 +110,18 @@ export type FitViewParams<NodeType extends Node = Node> = FitViewParamsBase<Node
  * transform the viewport smoothly over a given amount of time.
  *
  * @public
+ * @inline
  */
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
+
+/**
+ * @inline
+ */
 export type FitView<NodeType extends Node = Node> = (fitViewOptions?: FitViewOptions<NodeType>) => Promise<boolean>;
+
+/**
+ * @inline
+ */
 export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   reactFlowInstance: ReactFlowInstance<NodeType, EdgeType>
 ) => void;
@@ -209,4 +221,8 @@ export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge =
   EdgeType
 >;
 
+/**
+ *  This type can be used to type the `isValidConnection` function.
+ *  If the function returns `true`, the connection is valid and can be created.
+ */
 export type IsValidConnection<EdgeType extends Edge = Edge> = (edge: EdgeType | Connection) => boolean;

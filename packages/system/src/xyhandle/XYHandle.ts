@@ -45,6 +45,7 @@ function onPointerDown(
     getTransform,
     getFromHandle,
     autoPanSpeed,
+    dragThreshold = 1,
   }: OnPointerDownParams
 ) {
   // when xyflow is used inside a shadow root we can't use document
@@ -56,6 +57,7 @@ function onPointerDown(
   const clickedHandle = doc?.elementFromPoint(x, y);
   const handleType = getHandleType(edgeUpdaterType, clickedHandle);
   const containerBounds = domNode?.getBoundingClientRect();
+  let connectionStarted = false;
 
   if (!containerBounds || !handleType) {
     return;
@@ -92,10 +94,9 @@ function onPointerDown(
   };
 
   const fromNodeInternal = nodeLookup.get(nodeId)!;
-
   const from = getHandlePosition(fromNodeInternal, fromHandle, Position.Left, true);
 
-  const newConnection: ConnectionInProgress = {
+  let previousConnection: ConnectionInProgress = {
     inProgress: true,
     isValid: null,
 
@@ -110,12 +111,30 @@ function onPointerDown(
     toNode: null,
   };
 
-  updateConnection(newConnection);
-  let previousConnection: ConnectionInProgress = newConnection;
+  function startConnection() {
+    connectionStarted = true;
+    updateConnection(previousConnection);
+    onConnectStart?.(event, { nodeId, handleId, handleType });
+  }
 
-  onConnectStart?.(event, { nodeId, handleId, handleType });
+  if (dragThreshold === 0) {
+    startConnection();
+  }
 
   function onPointerMove(event: MouseEvent | TouchEvent) {
+    if (!connectionStarted) {
+      const { x: evtX, y: evtY } = getEventPosition(event);
+      const dx = evtX - x;
+      const dy = evtY - y;
+      const nextConnectionStarted = dx * dx + dy * dy > dragThreshold * dragThreshold;
+
+      if (!nextConnectionStarted) {
+        return;
+      }
+
+      startConnection();
+    }
+
     if (!getFromHandle() || !fromHandle) {
       onPointerUp(event);
       return;
@@ -188,24 +207,27 @@ function onPointerDown(
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    if ((closestHandle || handleDomNode) && connection && isValid) {
-      onConnect?.(connection);
-    }
+    if (connectionStarted) {
+      if ((closestHandle || handleDomNode) && connection && isValid) {
+        onConnect?.(connection);
+      }
 
-    /*
-     * it's important to get a fresh reference from the store here
-     * in order to get the latest state of onConnectEnd
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { inProgress, ...connectionState } = previousConnection;
-    const finalConnectionState = {
-      ...connectionState,
-      toPosition: previousConnection.toHandle ? previousConnection.toPosition : null,
-    };
-    onConnectEnd?.(event, finalConnectionState);
+      /*
+       * it's important to get a fresh reference from the store here
+       * in order to get the latest state of onConnectEnd
+       */
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { inProgress, ...connectionState } = previousConnection;
+      const finalConnectionState = {
+        ...connectionState,
+        toPosition: previousConnection.toHandle ? previousConnection.toPosition : null,
+      };
 
-    if (edgeUpdaterType) {
-      onReconnectEnd?.(event, finalConnectionState);
+      onConnectEnd?.(event, finalConnectionState);
+
+      if (edgeUpdaterType) {
+        onReconnectEnd?.(event, finalConnectionState);
+      }
     }
 
     cancelConnection();

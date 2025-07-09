@@ -14,6 +14,7 @@
     handleStyle,
     lineClass,
     lineStyle,
+    autoScale = true,
     ...rest
   }: NodeResizerProps = $props();
 </script>
@@ -25,11 +26,19 @@
       style={lineStyle}
       {nodeId}
       {position}
+      {autoScale}
       variant={ResizeControlVariant.Line}
       {...rest}
     />
   {/each}
   {#each XY_RESIZER_HANDLE_POSITIONS as position (position)}
-    <ResizeControl class={handleClass} style={handleStyle} {nodeId} {position} {...rest} />
+    <ResizeControl
+      class={handleClass}
+      style={handleStyle}
+      {nodeId}
+      {position}
+      {autoScale}
+      {...rest}
+    />
   {/each}
 {/if}

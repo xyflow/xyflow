@@ -40,11 +40,6 @@ export type EdgeBase<
    * This property sets the width of that invisible path.
    */
   interactionWidth?: number;
-  /**
-   * A description of the edge's, used for accessibility.
-   * @default "edge"
-   */
-  ariaRoleDescription?: string;
 };
 
 export type SmoothStepPathOptions = {

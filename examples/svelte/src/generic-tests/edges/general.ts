@@ -61,6 +61,29 @@ export default {
 				id: '11',
 				data: { label: '11' },
 				position: { x: 100, y: 500 }
+			},
+			{
+				id: '12',
+				data: { label: '12' },
+				position: { x: 100, y: 600 },
+				width: 200,
+				height: 100
+			},
+			{
+				id: '12-a',
+				parentId: '12',
+				data: { label: '12-a' },
+				position: { x: 10, y: 20 },
+				width: 50,
+				height: 50
+			},
+			{
+				id: '12-b',
+				parentId: '12',
+				data: { label: '12-b' },
+				position: { x: 140, y: 20 },
+				width: 50,
+				height: 50
 			}
 			// {
 			// 	id: '12',
@@ -142,6 +165,16 @@ export default {
 				label: 'markers',
 				markerEnd: { type: MarkerType.Arrow },
 				markerStart: { type: MarkerType.ArrowClosed }
+			},
+			{
+				id: 'subflow-edge',
+				source: '11',
+				target: '12-a'
+			},
+			{
+				id: 'subflow-edge-2',
+				source: '12-a',
+				target: '12-b'
 			}
 			// {
 			// 	id: 'updatable',

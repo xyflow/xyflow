@@ -10,6 +10,8 @@ const CustomResizerNode: FC<NodeProps> = ({ data }) => {
         resizeDirection="horizontal"
         minWidth={100}
         maxWidth={500}
+        color="orange"
+        autoScale={false}
       />
       <Handle type="target" position={Position.Left} />
       <div>{data.label}</div>

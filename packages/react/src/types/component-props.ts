@@ -22,6 +22,7 @@ import type {
   SnapGrid,
   OnReconnect,
   AriaLabelConfig,
+  FinalConnectionState,
 } from '@xyflow/system';
 
 import type {
@@ -138,7 +139,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * This event fires when the user releases the source or target of an editable edge. It is called
    * even if an edge update does not occur.
    */
-  onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
+  onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType, connectionState: FinalConnectionState) => void;
   /**
    * Use this event handler to add interactivity to a controlled flow.
    * It is called on node drag, select, and move.
@@ -383,6 +384,11 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default true
    */
   nodesDraggable?: boolean;
+  /**
+   * When `true`, the viewport will pan when a node is focused.
+   * @default true
+   */
+  autoPanOnNodeFocus?: boolean;
   /**
    * Controls whether all nodes should be connectable or not. Individual nodes can override this
    * setting by setting their `connectable` prop.
@@ -652,6 +658,12 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default 1
    */
   nodeDragThreshold?: number;
+  /**
+   * The threshold in pixels that the mouse must move before a connection line starts to drag.
+   * This is useful to prevent accidental connections when clicking on a handle.
+   * @default 1
+   */
+  connectionDragThreshold?: number;
   /** Sets a fixed width for the flow. */
   width?: number;
   /** Sets a fixed height for the flow. */

@@ -222,7 +222,11 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
           const partiallyVisible = partially && overlappingArea > 0;
 
-          return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
+          return (
+            partiallyVisible ||
+            overlappingArea >= currNodeRect.width * currNodeRect.height ||
+            overlappingArea >= nodeRect.width * nodeRect.height
+          );
         }) as NodeType[];
       },
       isNodeIntersecting: (nodeOrRect, area, partially = true) => {
