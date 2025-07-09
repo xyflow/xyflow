@@ -125,7 +125,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * Returns all nodes that intersect with the given node or rect.
    *
    * @param node - the node or rect to check for intersections
-   * @param partially - if true, the node is considered to be intersecting if it partially overlaps with the passed node or rect
+   * @param partially - true by default, if set to false, only nodes that are fully intersecting will be returned
    * @param nodes - optional nodes array to check for intersections
    *
    * @returns an array of intersecting nodes
@@ -412,7 +412,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
         const partiallyVisible = partially && overlappingArea > 0;
 
-        return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
+        return (
+          partiallyVisible ||
+          overlappingArea >= currNodeRect.width * currNodeRect.height ||
+          overlappingArea >= nodeRect.width * nodeRect.height
+        );
       });
     },
     isNodeIntersecting: (
