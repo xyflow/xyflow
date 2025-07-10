@@ -1,4 +1,4 @@
-import { ReactFlow, Node, Edge, Position, MarkerType } from '@xyflow/react';
+import { ReactFlow, Node, Position, MarkerType, BuiltInEdge } from '@xyflow/react';
 
 const nodes: Node[] = [
   // LTR
@@ -169,7 +169,7 @@ const nodes: Node[] = [
   },
 ];
 
-const edges: Edge[] = [
+const edges: BuiltInEdge[] = [
   {
     id: 'e1-2',
     source: '1',
@@ -276,8 +276,8 @@ const defaultEdgeOptions = {
   },
 };
 
-const SimpleEdge = () => {
+function EdgeRouting() {
   return <ReactFlow defaultNodes={nodes} defaultEdges={edges} fitView defaultEdgeOptions={defaultEdgeOptions} />;
-};
+}
 
-export default SimpleEdge;
+export default EdgeRouting;
