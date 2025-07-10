@@ -103,14 +103,17 @@ function getPoints({
     targetY: target.y,
   });
 
-  // Calculate bend position based on the stepPosition parameter
-  const bendX = sourceGapped.x + (targetGapped.x - sourceGapped.x) * stepPosition;
-  const bendY = sourceGapped.y + (targetGapped.y - sourceGapped.y) * stepPosition;
-
   // opposite handle positions, default case
   if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
-    centerX = center.x ?? bendX;
-    centerY = center.y ?? bendY;
+    if (dirAccessor === 'x') {
+      // Primary direction is horizontal, so stepPosition affects X coordinate
+      centerX = center.x ?? (sourceGapped.x + (targetGapped.x - sourceGapped.x) * stepPosition);
+      centerY = center.y ?? (sourceGapped.y + targetGapped.y) / 2;
+    } else {
+      // Primary direction is vertical, so stepPosition affects Y coordinate  
+      centerX = center.x ?? (sourceGapped.x + targetGapped.x) / 2;
+      centerY = center.y ?? (sourceGapped.y + (targetGapped.y - sourceGapped.y) * stepPosition);
+    }
 
     /*
      *    --->
