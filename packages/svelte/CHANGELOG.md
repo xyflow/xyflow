@@ -1,5 +1,16 @@
 # @xyflow/svelte
 
+## 1.2.2
+
+### Patch Changes
+
+- [#5394](https://github.com/xyflow/xyflow/pull/5394) [`21db22d4`](https://github.com/xyflow/xyflow/commit/21db22d46a253dc4fd17d65dab201aca53a4a6f4) Thanks [@moklick](https://github.com/moklick)! - Return intersections correctly of passed node is bigger than intersecting nodes
+
+- [#5376](https://github.com/xyflow/xyflow/pull/5376) [`f0ce2c87`](https://github.com/xyflow/xyflow/commit/f0ce2c876d8688e13632bc86286cf857f86dead6) Thanks [@kennyjwilli](https://github.com/kennyjwilli)! - Add stepPosition param to step edge
+
+- Updated dependencies [[`864d4188`](https://github.com/xyflow/xyflow/commit/864d4188089b3e7f45b18f8a63e02758ee183f7f), [`f0ce2c87`](https://github.com/xyflow/xyflow/commit/f0ce2c876d8688e13632bc86286cf857f86dead6)]:
+  - @xyflow/system@0.0.66
+
 ## 1.2.1
 
 ### Patch Changes
