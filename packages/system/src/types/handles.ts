@@ -1,5 +1,8 @@
 import type { Position, IsValidConnection } from '.';
 
+/**
+ * @inline
+ */
 export type HandleType = 'source' | 'target';
 
 export type Handle = {
@@ -17,14 +20,13 @@ export type HandleProps = {
   /**
    * Type of the handle.
    * @default "source"
-   * @example HandleType.Source, HandleType.Target
    */
   type: HandleType;
   /**
    * The position of the handle relative to the node. In a horizontal flow source handles are
    * typically `Position.Right` and in a vertical flow they are typically `Position.Top`.
    * @default Position.Top
-   * @example Position.TopLeft, Position.TopRight, Position.BottomLeft, Position.BottomRight
+   * @example Position.Top, Position.Right, Position.Bottom, Position.Left
    */
   position: Position;
   /**
