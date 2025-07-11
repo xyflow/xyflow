@@ -1,5 +1,13 @@
 # @xyflow/system
 
+## 0.0.66
+
+### Patch Changes
+
+- [#5321](https://github.com/xyflow/xyflow/pull/5321) [`864d4188`](https://github.com/xyflow/xyflow/commit/864d4188089b3e7f45b18f8a63e02758ee183f7f) Thanks [@dylanmiddendorf](https://github.com/dylanmiddendorf)! - Fix incorrect node position clamping for non-child nodes
+
+- [#5376](https://github.com/xyflow/xyflow/pull/5376) [`f0ce2c87`](https://github.com/xyflow/xyflow/commit/f0ce2c876d8688e13632bc86286cf857f86dead6) Thanks [@kennyjwilli](https://github.com/kennyjwilli)! - Add stepPosition param to step edge
+
 ## 0.0.65
 
 ### Patch Changes

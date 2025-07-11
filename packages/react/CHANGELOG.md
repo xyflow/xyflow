@@ -1,5 +1,20 @@
 # @xyflow/react
 
+## 12.8.2
+
+### Patch Changes
+
+- [#5384](https://github.com/xyflow/xyflow/pull/5384) [`18514e11`](https://github.com/xyflow/xyflow/commit/18514e118fc9a43e2bc80e55639db8beb1d9707a) Thanks [@Sec-ant](https://github.com/Sec-ant)! - Fix node fallback to respect custom default node type when unknown node type is encountered
+
+- [#5394](https://github.com/xyflow/xyflow/pull/5394) [`21db22d4`](https://github.com/xyflow/xyflow/commit/21db22d46a253dc4fd17d65dab201aca53a4a6f4) Thanks [@moklick](https://github.com/moklick)! - Return intersections correctly of passed node is bigger than intersecting nodes
+
+- [#5384](https://github.com/xyflow/xyflow/pull/5384) [`ab05d008`](https://github.com/xyflow/xyflow/commit/ab05d008d949c98124578e99e6a6e4c86a16f629) Thanks [@Sec-ant](https://github.com/Sec-ant)! - Fix edge fallback to respect custom default edge type when unknown edge type is encountered.
+
+- [#5376](https://github.com/xyflow/xyflow/pull/5376) [`f0ce2c87`](https://github.com/xyflow/xyflow/commit/f0ce2c876d8688e13632bc86286cf857f86dead6) Thanks [@kennyjwilli](https://github.com/kennyjwilli)! - Add stepPosition param to step edge
+
+- Updated dependencies [[`864d4188`](https://github.com/xyflow/xyflow/commit/864d4188089b3e7f45b18f8a63e02758ee183f7f), [`f0ce2c87`](https://github.com/xyflow/xyflow/commit/f0ce2c876d8688e13632bc86286cf857f86dead6)]:
+  - @xyflow/system@0.0.66
+
 ## 12.8.1
 
 ### Patch Changes
