@@ -40,7 +40,7 @@ export const MarkerSymbols = {
   [MarkerType.ArrowClosed]: ArrowClosedSymbol,
 };
 
-export function useMarkerSymbol(type: MarkerType) {
+export function useMarkerSymbol(type: MarkerType | `${MarkerType}`) {
   const store = useStoreApi();
 
   const symbol = useMemo(() => {
