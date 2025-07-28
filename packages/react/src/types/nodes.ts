@@ -29,7 +29,14 @@ export type Node<
    */
   domAttributes?: Omit<
     HTMLAttributes<HTMLDivElement>,
-    'id' | 'style' | 'className' | 'draggable' | 'role' | 'aria-label' | keyof DOMAttributes<HTMLDivElement>
+    | 'id'
+    | 'style'
+    | 'className'
+    | 'draggable'
+    | 'role'
+    | 'aria-label'
+    | 'defaultValue'
+    | keyof DOMAttributes<HTMLDivElement>
   >;
 };
 
