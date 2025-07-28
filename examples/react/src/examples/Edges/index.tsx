@@ -203,6 +203,8 @@ const initialEdges: Edge[] = [
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: '#0000ff',
+      width: 40,
+      height: 40,
     },
   },
   {
@@ -214,6 +216,8 @@ const initialEdges: Edge[] = [
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: undefined,
+      width: 40,
+      height: 40,
     },
   },
 ];
@@ -239,7 +243,7 @@ const EdgesFlow = () => {
   const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
-    <div style={{ height: '100vh' }}>
+    <>
       <style>
         {`
           /* Test CSS variables on specific edges */
@@ -272,7 +276,7 @@ const EdgesFlow = () => {
         <Controls />
         <Background />
       </ReactFlow>
-    </div>
+    </>
   );
 };
 
