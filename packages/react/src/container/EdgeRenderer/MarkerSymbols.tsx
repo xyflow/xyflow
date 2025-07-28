@@ -6,33 +6,21 @@ import { useStoreApi } from '../../hooks/useStore';
 type SymbolProps = Omit<EdgeMarker, 'type'>;
 
 const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
-  return (
-    <polyline
-      style={{
-        stroke: color,
-        strokeWidth,
-      }}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-      points="-5,-4 0,0 -5,4"
-    />
-  );
+  const style = {
+    strokeWidth,
+    ...(color !== 'none' && { stroke: color, fill: color }),
+  };
+
+  return <polyline style={style} strokeLinecap="round" strokeLinejoin="round" fill="none" points="-5,-4 0,0 -5,4" />;
 };
 
 const ArrowClosedSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
-  return (
-    <polyline
-      style={{
-        stroke: color,
-        fill: color,
-        strokeWidth,
-      }}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      points="-5,-4 0,0 -5,4 -5,-4"
-    />
-  );
+  const style = {
+    strokeWidth,
+    ...(color !== 'none' && { stroke: color, fill: color }),
+  };
+
+  return <polyline style={style} strokeLinecap="round" strokeLinejoin="round" points="-5,-4 0,0 -5,4 -5,-4" />;
 };
 
 export const MarkerSymbols = {

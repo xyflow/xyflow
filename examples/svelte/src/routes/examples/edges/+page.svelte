@@ -51,6 +51,18 @@
 			type: 'output',
 			data: { label: 'Output 9' },
 			position: { x: 675, y: 500 }
+		},
+		{
+			id: '10',
+			type: 'output',
+			data: { label: 'Output 10' },
+			position: { x: 825, y: 400 }
+		},
+		{
+			id: '11',
+			type: 'output',
+			data: { label: 'Output 11' },
+			position: { x: 825, y: 300 }
 		}
 	]);
 
@@ -129,6 +141,27 @@
 			label: 'hi',
 			labelStyle: 'background: red; font-weight: 700; padding: 5px;',
 			style: 'stroke: #ffcc0'
+		},
+		{
+			id: 'e4-10',
+			source: '4',
+			target: '10',
+			label: 'Explicit Red Color (should override CSS)',
+			markerEnd: {
+				type: MarkerType.ArrowClosed,
+				color: '#ff0000'
+			}
+		},
+		{
+			id: 'e4-11',
+			source: '4',
+			target: '11',
+			label: 'No Explicit Color (should use CSS variable)',
+			markerEnd: {
+				type: MarkerType.ArrowClosed,
+				// To use CSS variable, set color to null
+				color: null
+			}
 		}
 	]);
 
@@ -163,3 +196,10 @@
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
 </SvelteFlow>
+
+<style>
+	:global(.svelte-flow) {
+		--xy-edge-stroke-width: 4;
+		--xy-edge-stroke: #00ff00;
+	}
+</style>
