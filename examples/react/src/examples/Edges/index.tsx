@@ -198,20 +198,22 @@ const initialEdges: Edge[] = [
     id: 'e4-11',
     source: '4',
     target: '11',
-    label: 'Explicit Red Color (should override CSS)',
+    label: 'Explicit Blue Prop Color (should override CSS)',
+    className: 'css-variable-edge',
     markerEnd: {
       type: MarkerType.ArrowClosed,
-      color: '#ff0000',
+      color: '#0000ff',
     },
   },
   {
     id: 'e4-12',
     source: '4',
     target: '12',
-    label: 'No Explicit Color (should use CSS variable)',
+    label: 'Marker No Prop Color (should use CSS variable)',
+    className: 'css-variable-edge',
     markerEnd: {
       type: MarkerType.ArrowClosed,
-      color: null,
+      color: undefined,
     },
   },
 ];
@@ -240,10 +242,12 @@ const EdgesFlow = () => {
     <div style={{ height: '100vh' }}>
       <style>
         {`
+          /* Test CSS variables on specific edges */
           .react-flow {
-            --xy-edge-stroke-width: 4;
+            --xy-edge-stroke-width: 1;
             --xy-edge-stroke: #00ff00;
           }
+
         `}
       </style>
       <ReactFlow

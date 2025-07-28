@@ -146,20 +146,19 @@
 			id: 'e4-10',
 			source: '4',
 			target: '10',
-			label: 'Explicit Red Color (should override CSS)',
+			label: 'Explicit Prop Blue Color (should override CSS)',
 			markerEnd: {
 				type: MarkerType.ArrowClosed,
-				color: '#ff0000'
+				color: '#0000ff'
 			}
 		},
 		{
 			id: 'e4-11',
 			source: '4',
 			target: '11',
-			label: 'No Explicit Color (should use CSS variable)',
+			label: 'Marker No Prop Color (should use CSS variable)',
 			markerEnd: {
 				type: MarkerType.ArrowClosed,
-				// To use CSS variable, set color to null
 				color: null
 			}
 		}
@@ -174,6 +173,15 @@
 		return `edge-${connection.source}-${connection.target}}`;
 	}
 
+	const defaultEdgeOptions = {
+		markerEnd: {
+			type: MarkerType.ArrowClosed,
+			color: 'red',
+			width: 20,
+			height: 20
+		}
+	};
+
 	$inspect(edges);
 </script>
 
@@ -182,6 +190,7 @@
 	bind:edges
 	{edgeTypes}
 	fitView
+	{defaultEdgeOptions}
 	nodeDragThreshold={2}
 	onbeforeconnect={(connection) => {
 		console.log('on edge create', connection);
@@ -198,8 +207,9 @@
 </SvelteFlow>
 
 <style>
+	/* Test CSS variables on the marker SVG container */
 	:global(.svelte-flow) {
-		--xy-edge-stroke-width: 4;
+		--xy-edge-stroke-width: 1;
 		--xy-edge-stroke: #00ff00;
 	}
 </style>
