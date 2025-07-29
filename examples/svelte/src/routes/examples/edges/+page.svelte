@@ -149,7 +149,9 @@
 			label: 'Explicit Prop Blue Color (should override CSS)',
 			markerEnd: {
 				type: MarkerType.ArrowClosed,
-				color: '#0000ff'
+				color: '#0000ff',
+				width: 40,
+				height: 40
 			}
 		},
 		{
@@ -159,7 +161,9 @@
 			label: 'Marker No Prop Color (should use CSS variable)',
 			markerEnd: {
 				type: MarkerType.ArrowClosed,
-				color: null
+				color: undefined,
+				width: 40,
+				height: 40
 			}
 		}
 	]);
