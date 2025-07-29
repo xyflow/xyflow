@@ -165,6 +165,13 @@
     user-select: none;
   }
 }
+
+/* Arrowhead marker styles - use CSS custom properties as default */
+.xy-flow__arrowhead polyline {
+  fill: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
+  stroke: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
+}
+
 .xy-flow__connection {
   pointer-events: none;
 

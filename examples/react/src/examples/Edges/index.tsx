@@ -70,6 +70,18 @@ const initialNodes: Node[] = [
     data: { label: 'Output 10' },
     position: { x: 50, y: 400 },
   },
+  {
+    id: '11',
+    type: 'output',
+    data: { label: 'Output 11' },
+    position: { x: 825, y: 400 },
+  },
+  {
+    id: '12',
+    type: 'output',
+    data: { label: 'Output 12' },
+    position: { x: 825, y: 300 },
+  },
 ];
 
 const initialEdges: Edge[] = [
@@ -182,6 +194,32 @@ const initialEdges: Edge[] = [
       height: 20,
     },
   },
+  {
+    id: 'e4-11',
+    source: '4',
+    target: '11',
+    label: 'Explicit Blue Prop Color (should override CSS)',
+    className: 'css-variable-edge',
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      color: '#0000ff',
+      width: 40,
+      height: 40,
+    },
+  },
+  {
+    id: 'e4-12',
+    source: '4',
+    target: '12',
+    label: 'Marker No Prop Color (should use CSS variable)',
+    className: 'css-variable-edge',
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      color: undefined,
+      width: 40,
+      height: 40,
+    },
+  },
 ];
 
 const edgeTypes: EdgeTypes = {
@@ -205,28 +243,40 @@ const EdgesFlow = () => {
   const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onNodeClick={onNodeClick}
-      onConnect={onConnect}
-      onNodeDragStop={onNodeDragStop}
-      snapToGrid={true}
-      edgeTypes={edgeTypes}
-      onEdgeClick={onEdgeClick}
-      onEdgeDoubleClick={onEdgeDoubleClick}
-      onEdgeMouseEnter={onEdgeMouseEnter}
-      onEdgeMouseMove={onEdgeMouseMove}
-      onEdgeMouseLeave={onEdgeMouseLeave}
-      onDelete={console.log}
-      defaultEdgeOptions={defaultEdgeOptions}
-    >
-      <MiniMap />
-      <Controls />
-      <Background />
-    </ReactFlow>
+    <>
+      <style>
+        {`
+          /* Test CSS variables on specific edges */
+          .react-flow {
+            --xy-edge-stroke-width: 1;
+            --xy-edge-stroke: #00ff00;
+          }
+
+        `}
+      </style>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onNodeClick={onNodeClick}
+        onConnect={onConnect}
+        onNodeDragStop={onNodeDragStop}
+        snapToGrid={true}
+        edgeTypes={edgeTypes}
+        onEdgeClick={onEdgeClick}
+        onEdgeDoubleClick={onEdgeDoubleClick}
+        onEdgeMouseEnter={onEdgeMouseEnter}
+        onEdgeMouseMove={onEdgeMouseMove}
+        onEdgeMouseLeave={onEdgeMouseLeave}
+        onDelete={console.log}
+        defaultEdgeOptions={defaultEdgeOptions}
+      >
+        <MiniMap />
+        <Controls />
+        <Background />
+      </ReactFlow>
+    </>
   );
 };
 
