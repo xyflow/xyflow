@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.67
+
+### Patch Changes
+
+- [#5415](https://github.com/xyflow/xyflow/pull/5415) [`6838df9d`](https://github.com/xyflow/xyflow/commit/6838df9d67a1f093464e911e949f1360a005832d) Thanks [@moklick](https://github.com/moklick)! - Allow strings and enums for existing marker types
+
 ## 0.0.66
 
 ### Patch Changes

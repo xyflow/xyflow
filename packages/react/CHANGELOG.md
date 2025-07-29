@@ -1,5 +1,16 @@
 # @xyflow/react
 
+## 12.8.3
+
+### Patch Changes
+
+- [#5420](https://github.com/xyflow/xyflow/pull/5420) [`c453ee3f`](https://github.com/xyflow/xyflow/commit/c453ee3f74512bf92f33a7afa3f7104aa82172f6) Thanks [@ShlomoGalle](https://github.com/ShlomoGalle)! - Omit `defaultValue` from `Node`'s and `Edge`'s `domAttributes` to fix type incompatibility when using `WritableDraft`
+
+- [#5415](https://github.com/xyflow/xyflow/pull/5415) [`6838df9d`](https://github.com/xyflow/xyflow/commit/6838df9d67a1f093464e911e949f1360a005832d) Thanks [@moklick](https://github.com/moklick)! - Allow strings and enums for existing marker types
+
+- Updated dependencies [[`6838df9d`](https://github.com/xyflow/xyflow/commit/6838df9d67a1f093464e911e949f1360a005832d)]:
+  - @xyflow/system@0.0.67
+
 ## 12.8.2
 
 ### Patch Changes
