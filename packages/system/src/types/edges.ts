@@ -90,7 +90,7 @@ export enum ConnectionLineType {
  * @public
  */
 export type EdgeMarker = {
-  type: MarkerType;
+  type: MarkerType | `${MarkerType}`;
   color?: string;
   width?: number;
   height?: number;
