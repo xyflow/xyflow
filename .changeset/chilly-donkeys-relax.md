@@ -1,5 +1,6 @@
 ---
 '@xyflow/react': patch
+'@xyflow/svelte': patch
 ---
 
-Omit `defaultValue` from `Node`'s `domAttributes` to fix type incompatibility with `WritableDraft<Node>`
+Omit `defaultValue` from `Node`'s and `Edge`'s `domAttributes` to fix type incompatibility when using `WritableDraft`
