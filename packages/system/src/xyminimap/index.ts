@@ -89,7 +89,7 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
-      if (!panZoom) {
+      if (event.sourceEvent.type !== 'wheel' || !panZoom) {
         return;
       }
 
@@ -104,6 +104,7 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
     };
 
     // Create D3 zoom behavior with wheelDelta for consistent zooming
+    // Fixes https://github.com/xyflow/xyflow/issues/5392
     const zoomAndPanHandler = zoom()
       .wheelDelta(wheelDelta)
       .on('start', panStartHandler)
