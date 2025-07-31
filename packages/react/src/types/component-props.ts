@@ -545,7 +545,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   noDragClassName?: string;
   /**
    * Typically, scrolling the mouse wheel when the mouse is over the canvas will zoom the viewport.
-   * Adding the `"nowheel"` class to an element n the canvas will prevent this behavior and this prop
+   * Adding the `"nowheel"` class to an element in the canvas will prevent this behavior and this prop
    * allows you to change the name of that class.
    * @default "nowheel"
    */
