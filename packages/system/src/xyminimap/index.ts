@@ -2,6 +2,7 @@ import { type D3ZoomEvent, zoom } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 
 import type { CoordinateExtent, PanZoomInstance, Transform } from '../types';
+import { wheelDelta } from '../xypanzoom/utils';
 
 export type XYMinimapInstance = {
   update: (params: XYMinimapUpdate) => void;
@@ -38,24 +39,8 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
     zoomable = true,
     inversePan = false,
   }: XYMinimapUpdate) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
-      const transform = getTransform();
-
-      if (event.sourceEvent.type !== 'wheel' || !panZoom) {
-        return;
-      }
-
-      const pinchDelta =
-        -event.sourceEvent.deltaY *
-        (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
-        zoomStep;
-      const nextZoom = transform[2] * Math.pow(2, pinchDelta);
-
-      panZoom.scaleTo(nextZoom);
-    };
-
     let panStart = [0, 0];
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const panStartHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
       if (event.sourceEvent.type === 'mousedown' || event.sourceEvent.type === 'touchstart') {
@@ -102,7 +87,25 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
       );
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
+      if (!panZoom) {
+        return;
+      }
+
+      // Let D3 handle the zoom calculation and apply it to the panZoom instance
+      const currentTransform = getTransform();
+      const newZoom = event.transform.k;
+
+      // Only update if zoom actually changed
+      if (Math.abs(newZoom - currentTransform[2]) > 0.001) {
+        panZoom.scaleTo(newZoom);
+      }
+    };
+
+    // Create D3 zoom behavior with wheelDelta for consistent zooming
     const zoomAndPanHandler = zoom()
+      .wheelDelta(wheelDelta)
       .on('start', panStartHandler)
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
