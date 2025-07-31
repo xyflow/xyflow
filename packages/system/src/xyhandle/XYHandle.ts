@@ -22,6 +22,7 @@ const alwaysValid = () => true;
 
 function onPointerDown(
   event: MouseEvent | TouchEvent,
+  handleElement: Element,
   {
     connectionMode,
     connectionRadius,
@@ -54,8 +55,7 @@ function onPointerDown(
   let closestHandle: Handle | null;
 
   const { x, y } = getEventPosition(event);
-  const clickedHandle = doc?.elementFromPoint(x, y);
-  const handleType = getHandleType(edgeUpdaterType, clickedHandle);
+  const handleType = getHandleType(edgeUpdaterType, handleElement);
   const containerBounds = domNode?.getBoundingClientRect();
   let connectionStarted = false;
 
