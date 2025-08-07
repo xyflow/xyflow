@@ -58,6 +58,7 @@ import AddNodeOnEdgeDrop from '../examples/AddNodeOnEdgeDrop';
 import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
 import MovingHandles from '../examples/MovingHandles';
+import DetachedHandle from '../examples/DetachedHandle';
 
 export interface IRoute {
   name: string;
@@ -145,6 +146,11 @@ const routes: IRoute[] = [
     name: 'Default Nodes',
     path: 'default-nodes',
     component: DefaultNodes,
+  },
+  {
+    name: 'DetachedHandle',
+    path: 'detached-handle',
+    component: DetachedHandle,
   },
   {
     name: 'DevTools',

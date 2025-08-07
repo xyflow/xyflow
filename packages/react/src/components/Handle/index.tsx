@@ -120,6 +120,7 @@ function HandleComponent(
       return;
     }
 
+    const handleElement = event.currentTarget
     const isMouseTriggered = isMouseEvent(event.nativeEvent);
 
     if (
@@ -128,7 +129,7 @@ function HandleComponent(
     ) {
       const currentStore = store.getState();
 
-      XYHandle.onPointerDown(event.nativeEvent, {
+      XYHandle.onPointerDown(event.nativeEvent, handleElement, {
         autoPanOnConnect: currentStore.autoPanOnConnect,
         connectionMode: currentStore.connectionMode,
         connectionRadius: currentStore.connectionRadius,

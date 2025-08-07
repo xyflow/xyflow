@@ -54,7 +54,7 @@ export type IsValidParams = {
 };
 
 export type XYHandleInstance = {
-  onPointerDown: (event: MouseEvent | TouchEvent, params: OnPointerDownParams) => void;
+  onPointerDown: (event: MouseEvent | TouchEvent, handleElement: Element, params: OnPointerDownParams) => void;
   isValid: (event: MouseEvent | TouchEvent, params: IsValidParams) => Result;
 };
 

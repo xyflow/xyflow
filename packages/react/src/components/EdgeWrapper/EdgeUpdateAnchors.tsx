@@ -79,7 +79,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       onConnectStart?.(_event, params);
     };
 
-    XYHandle.onPointerDown(event.nativeEvent, {
+    XYHandle.onPointerDown(event.nativeEvent, event.currentTarget, {
       autoPanOnConnect,
       connectionMode,
       connectionRadius,
