@@ -53,7 +53,8 @@ export type {
   StepEdgeProps,
   StraightEdgeProps,
   EdgeTypes,
-  DefaultEdgeOptions
+  DefaultEdgeOptions,
+  BuiltInEdge,
 } from '$lib/types/edges';
 export type * from '$lib/types/general';
 export type { Node, NodeTypes, BuiltInNode, NodeProps, InternalNode } from '$lib/types/nodes';
