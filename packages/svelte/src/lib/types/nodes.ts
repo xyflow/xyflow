@@ -38,7 +38,6 @@ export type Node<
     | 'draggable'
     | 'role'
     | 'aria-label'
-    | 'defaultValue'
     | keyof DOMAttributes<HTMLDivElement>
   >;
 };
