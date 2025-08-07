@@ -1,5 +1,14 @@
 # @xyflow/svelte
 
+## 1.2.3
+
+### Patch Changes
+
+- [#5424](https://github.com/xyflow/xyflow/pull/5424) [`daa40a73`](https://github.com/xyflow/xyflow/commit/daa40a73196750add271e9959634b2be1f8c24d4) Thanks [@4t145](https://github.com/4t145)! - Export `BuiltInEdge` type
+
+- Updated dependencies [[`6838df9d`](https://github.com/xyflow/xyflow/commit/6838df9d67a1f093464e911e949f1360a005832d)]:
+  - @xyflow/system@0.0.67
+
 ## 1.2.2
 
 ### Patch Changes
