@@ -365,7 +365,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
 
     selectNodesOnDrag: boolean = $derived(signals.props.selectNodesOnDrag ?? true);
 
-    defaultMarkerColor: string = $derived(signals.props.defaultMarkerColor ?? '#b1b1b7');
+    defaultMarkerColor: string | null = $derived(
+      signals.props.defaultMarkerColor === undefined ? '#b1b1b7' : signals.props.defaultMarkerColor
+    );
     markers: MarkerProps[] = $derived.by(() => {
       return createMarkerIds(signals.edges, {
         defaultColor: this.defaultMarkerColor,
