@@ -5,7 +5,7 @@ import { useStore } from '../../hooks/useStore';
 import { useMarkerSymbol } from './MarkerSymbols';
 
 type MarkerDefinitionsProps = {
-  defaultColor: string;
+  defaultColor: string | null;
   rfId?: string;
 };
 

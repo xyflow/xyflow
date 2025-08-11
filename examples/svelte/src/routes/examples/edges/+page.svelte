@@ -63,6 +63,18 @@
 			type: 'output',
 			data: { label: 'Output 11' },
 			position: { x: 825, y: 300 }
+		},
+		{
+			id: '12',
+			type: 'output',
+			data: { label: 'Output 12' },
+			position: { x: 900, y: 200 }
+		},
+		{
+			id: '13',
+			type: 'output',
+			data: { label: 'Output 13' },
+			position: { x: 825, y: 100 }
 		}
 	]);
 
@@ -158,10 +170,35 @@
 			id: 'e4-11',
 			source: '4',
 			target: '11',
-			label: 'Marker No Prop Color (should use CSS variable)',
+			label: 'Marker explicitly undefined Color (defaults to none)',
+			className: 'css-variable-edge',
 			markerEnd: {
 				type: MarkerType.ArrowClosed,
 				color: undefined,
+				width: 40,
+				height: 40
+			}
+		},
+		{
+			id: 'e4-12',
+			source: '4',
+			target: '12',
+			label: 'Marker null Color (should use `--xy-edge-stroke` CSS variable)',
+			markerEnd: {
+				type: MarkerType.ArrowClosed,
+				color: null,
+				width: 40,
+				height: 40
+			}
+		},
+		{
+			id: 'e4-13',
+			source: '4',
+			target: '13',
+			label: 'Marker implicitly undefined Color (defaults to defaultMarkerColor)',
+			className: 'css-variable-edge',
+			markerEnd: {
+				type: MarkerType.ArrowClosed,
 				width: 40,
 				height: 40
 			}
@@ -204,6 +241,7 @@
 			id: getEdgeId(connection)
 		};
 	}}
+	defaultMarkerColor={'purple'}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

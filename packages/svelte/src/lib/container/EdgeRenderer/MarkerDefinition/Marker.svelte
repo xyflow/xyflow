@@ -8,7 +8,7 @@
     height = 12.5,
     markerUnits = 'strokeWidth',
     orient = 'auto-start-reverse',
-    color,
+    color = 'none',
     strokeWidth
   }: MarkerProps = $props();
 
