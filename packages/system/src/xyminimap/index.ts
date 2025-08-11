@@ -38,18 +38,19 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
     zoomable = true,
     inversePan = false,
   }: XYMinimapUpdate) {
+    const _zoomStep = zoomStep / 10;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
-      const transform = getTransform();
-
       if (event.sourceEvent.type !== 'wheel' || !panZoom) {
         return;
       }
 
+      const transform = getTransform();
       const pinchDelta =
         -event.sourceEvent.deltaY *
         (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
-        zoomStep;
+        _zoomStep;
       const nextZoom = transform[2] * Math.pow(2, pinchDelta);
 
       panZoom.scaleTo(nextZoom);
