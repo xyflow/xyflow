@@ -139,7 +139,12 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * This event fires when the user releases the source or target of an editable edge. It is called
    * even if an edge update does not occur.
    */
-  onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType, connectionState: FinalConnectionState) => void;
+  onReconnectEnd?: (
+    event: MouseEvent | TouchEvent,
+    edge: EdgeType,
+    handleType: HandleType,
+    connectionState: FinalConnectionState
+  ) => void;
   /**
    * Use this event handler to add interactivity to a controlled flow.
    * It is called on node drag, select, and move.
@@ -494,9 +499,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   nodeExtent?: CoordinateExtent;
   /**
    * Color of edge markers.
+   * You can pass `null` to use the CSS variable `--xy-edge-stroke` for the marker color.
    * @default '#b1b1b7'
    */
-  defaultMarkerColor?: string;
+  defaultMarkerColor?: string | null;
   /**
    * Controls if the viewport should zoom by scrolling inside the container.
    * @default true

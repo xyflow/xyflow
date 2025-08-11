@@ -230,9 +230,10 @@ export type SvelteFlowProps<
      */
     snapGrid?: SnapGrid;
     /** Color of edge markers
+     * You can pass `null` to use the CSS variable `--xy-edge-stroke` for the marker color.
      * @example "#b1b1b7"
      */
-    defaultMarkerColor?: string;
+    defaultMarkerColor?: string | null;
     /**
      * Controls if all nodes should be draggable
      * @default true

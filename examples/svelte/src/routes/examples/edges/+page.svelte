@@ -51,6 +51,30 @@
 			type: 'output',
 			data: { label: 'Output 9' },
 			position: { x: 675, y: 500 }
+		},
+		{
+			id: '10',
+			type: 'output',
+			data: { label: 'Output 10' },
+			position: { x: 825, y: 400 }
+		},
+		{
+			id: '11',
+			type: 'output',
+			data: { label: 'Output 11' },
+			position: { x: 825, y: 300 }
+		},
+		{
+			id: '12',
+			type: 'output',
+			data: { label: 'Output 12' },
+			position: { x: 900, y: 200 }
+		},
+		{
+			id: '13',
+			type: 'output',
+			data: { label: 'Output 13' },
+			position: { x: 825, y: 100 }
 		}
 	]);
 
@@ -129,6 +153,55 @@
 			label: 'hi',
 			labelStyle: 'background: red; font-weight: 700; padding: 5px;',
 			style: 'stroke: #ffcc0'
+		},
+		{
+			id: 'e4-10',
+			source: '4',
+			target: '10',
+			label: 'Explicit Prop Blue Color (should override CSS)',
+			markerEnd: {
+				type: MarkerType.ArrowClosed,
+				color: '#0000ff',
+				width: 40,
+				height: 40
+			}
+		},
+		{
+			id: 'e4-11',
+			source: '4',
+			target: '11',
+			label: 'Marker explicitly undefined Color (defaults to none)',
+			className: 'css-variable-edge',
+			markerEnd: {
+				type: MarkerType.ArrowClosed,
+				color: undefined,
+				width: 40,
+				height: 40
+			}
+		},
+		{
+			id: 'e4-12',
+			source: '4',
+			target: '12',
+			label: 'Marker null Color (should use `--xy-edge-stroke` CSS variable)',
+			markerEnd: {
+				type: MarkerType.ArrowClosed,
+				color: null,
+				width: 40,
+				height: 40
+			}
+		},
+		{
+			id: 'e4-13',
+			source: '4',
+			target: '13',
+			label: 'Marker implicitly undefined Color (defaults to defaultMarkerColor)',
+			className: 'css-variable-edge',
+			markerEnd: {
+				type: MarkerType.ArrowClosed,
+				width: 40,
+				height: 40
+			}
 		}
 	]);
 
@@ -141,6 +214,15 @@
 		return `edge-${connection.source}-${connection.target}}`;
 	}
 
+	const defaultEdgeOptions = {
+		markerEnd: {
+			type: MarkerType.ArrowClosed,
+			color: 'red',
+			width: 20,
+			height: 20
+		}
+	};
+
 	$inspect(edges);
 </script>
 
@@ -149,6 +231,7 @@
 	bind:edges
 	{edgeTypes}
 	fitView
+	{defaultEdgeOptions}
 	nodeDragThreshold={2}
 	onbeforeconnect={(connection) => {
 		console.log('on edge create', connection);
@@ -158,8 +241,17 @@
 			id: getEdgeId(connection)
 		};
 	}}
+	defaultMarkerColor={'purple'}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
 </SvelteFlow>
+
+<style>
+	/* Test CSS variables on the marker SVG container */
+	:global(.svelte-flow) {
+		--xy-edge-stroke-width: 1;
+		--xy-edge-stroke: #00ff00;
+	}
+</style>
