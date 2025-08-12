@@ -102,7 +102,8 @@
       updateConnection,
       getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
       getFromHandle: () => store.connection.fromHandle,
-      dragThreshold: dragThreshold ?? store.connectionDragThreshold
+      dragThreshold: dragThreshold ?? store.connectionDragThreshold,
+      handleDomNode: event.currentTarget as HTMLElement
     });
   };
 </script>

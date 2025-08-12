@@ -1,4 +1,13 @@
-import { ReactFlow, Node, ReactFlowProvider, Background, BackgroundVariant, NodeProps, Handle, Position } from '@xyflow/react';
+import {
+  ReactFlow,
+  Node,
+  ReactFlowProvider,
+  Background,
+  BackgroundVariant,
+  NodeProps,
+  Handle,
+  Position,
+} from '@xyflow/react';
 
 import './style.css';
 
@@ -38,7 +47,7 @@ const nodeTypes = {
 
 const DetachedHandle = () => {
   return (
-    <ReactFlow defaultNodes={initialNodes} nodeTypes={nodeTypes} fitView>
+    <ReactFlow defaultNodes={initialNodes} defaultEdges={[]} connectionRadius={10} nodeTypes={nodeTypes} fitView>
       <Background variant={BackgroundVariant.Lines} />
     </ReactFlow>
   );

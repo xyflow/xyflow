@@ -22,7 +22,6 @@ const alwaysValid = () => true;
 
 function onPointerDown(
   event: MouseEvent | TouchEvent,
-  handleElement: Element,
   {
     connectionMode,
     connectionRadius,
@@ -47,6 +46,7 @@ function onPointerDown(
     getFromHandle,
     autoPanSpeed,
     dragThreshold = 1,
+    handleDomNode,
   }: OnPointerDownParams
 ) {
   // when xyflow is used inside a shadow root we can't use document
@@ -55,7 +55,7 @@ function onPointerDown(
   let closestHandle: Handle | null;
 
   const { x, y } = getEventPosition(event);
-  const handleType = getHandleType(edgeUpdaterType, handleElement);
+  const handleType = getHandleType(edgeUpdaterType, handleDomNode);
   const containerBounds = domNode?.getBoundingClientRect();
   let connectionStarted = false;
 
@@ -72,7 +72,7 @@ function onPointerDown(
   let autoPanStarted = false;
   let connection: Connection | null = null;
   let isValid: boolean | null = false;
-  let handleDomNode: Element | null = null;
+  let resultHandleDomNode: Element | null = null;
 
   // when the user is moving the mouse close to the edge of the canvas while connecting we move the canvas
   function autoPan(): void {
@@ -167,7 +167,7 @@ function onPointerDown(
       nodeLookup,
     });
 
-    handleDomNode = result.handleDomNode;
+    resultHandleDomNode = result.handleDomNode;
     connection = result.connection;
     isValid = isConnectionValid(!!closestHandle, result.isValid);
 
@@ -208,7 +208,7 @@ function onPointerDown(
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
     if (connectionStarted) {
-      if ((closestHandle || handleDomNode) && connection && isValid) {
+      if ((closestHandle || resultHandleDomNode) && connection && isValid) {
         onConnect?.(connection);
       }
 
@@ -235,7 +235,7 @@ function onPointerDown(
     autoPanStarted = false;
     isValid = false;
     connection = null;
-    handleDomNode = null;
+    resultHandleDomNode = null;
 
     doc.removeEventListener('mousemove', onPointerMove as EventListener);
     doc.removeEventListener('mouseup', onPointerUp as EventListener);
