@@ -1,5 +1,7 @@
 ---
 '@xyflow/system': patch
+'@xyflow/react': patch
+'@xyflow/svelte': patch
 ---
 
-Fix minimap zoom for windows users
+Use 1 as the default for interactive Minimap zoom step
