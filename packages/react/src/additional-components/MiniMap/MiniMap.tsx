@@ -65,7 +65,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
   zoomable = false,
   ariaLabel,
   inversePan,
-  zoomStep = 10,
+  zoomStep = 1,
   offsetScale = 5,
 }: MiniMapProps<NodeType>) {
   const store = useStoreApi<NodeType>();
