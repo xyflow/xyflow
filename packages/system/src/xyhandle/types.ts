@@ -38,6 +38,7 @@ export type OnPointerDownParams = {
   getFromHandle: () => Handle | null;
   autoPanSpeed?: number;
   dragThreshold?: number;
+  handleDomNode: Element;
 };
 
 export type IsValidParams = {

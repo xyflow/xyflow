@@ -1,11 +1,11 @@
 // Reconnectable edges have a anchors around their handles to reconnect the edge.
 import {
   XYHandle,
+  type EdgePosition,
+  type FinalConnectionState,
+  type HandleType,
+  type OnConnectStart,
   type Connection,
-  EdgePosition,
-  FinalConnectionState,
-  HandleType,
-  OnConnectStart,
 } from '@xyflow/system';
 
 import { EdgeAnchor } from '../Edges/EdgeAnchor';
@@ -102,6 +102,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       getTransform: () => store.getState().transform,
       getFromHandle: () => store.getState().connection.fromHandle,
       dragThreshold: store.getState().connectionDragThreshold,
+      handleDomNode: event.currentTarget,
     });
   };
 

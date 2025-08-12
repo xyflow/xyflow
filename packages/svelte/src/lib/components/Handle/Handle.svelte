@@ -111,7 +111,7 @@
   function onpointerdown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
 
-    if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
+    if (event.currentTarget && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
       XYHandle.onPointerDown(event, {
         handleId,
         nodeId,
@@ -140,7 +140,8 @@
         },
         getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
         getFromHandle: () => store.connection.fromHandle,
-        dragThreshold: store.connectionDragThreshold
+        dragThreshold: store.connectionDragThreshold,
+        handleDomNode: event.currentTarget as HTMLElement
       });
     }
   }

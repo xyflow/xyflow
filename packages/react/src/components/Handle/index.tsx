@@ -114,7 +114,6 @@ function HandleComponent(
     onConnectAction?.(edgeParams);
     onConnect?.(edgeParams);
   };
-
   const onPointerDown = (event: ReactMouseEvent<HTMLDivElement> | ReactTouchEvent<HTMLDivElement>) => {
     if (!nodeId) {
       return;
@@ -129,6 +128,7 @@ function HandleComponent(
       const currentStore = store.getState();
 
       XYHandle.onPointerDown(event.nativeEvent, {
+        handleDomNode: event.currentTarget,
         autoPanOnConnect: currentStore.autoPanOnConnect,
         connectionMode: currentStore.connectionMode,
         connectionRadius: currentStore.connectionRadius,
