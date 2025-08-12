@@ -54,7 +54,7 @@ export type {
   StraightEdgeProps,
   EdgeTypes,
   DefaultEdgeOptions,
-  BuiltInEdge,
+  BuiltInEdge
 } from '$lib/types/edges';
 export type * from '$lib/types/general';
 export type { Node, NodeTypes, BuiltInNode, NodeProps, InternalNode } from '$lib/types/nodes';
@@ -120,7 +120,8 @@ export {
   type AriaLabelConfig,
   type SetCenter,
   type SetViewport,
-  type FitBounds
+  type FitBounds,
+  type HandleConnection
 } from '@xyflow/system';
 
 // system utils

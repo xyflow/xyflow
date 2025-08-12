@@ -112,6 +112,7 @@ export {
   type SetCenter,
   type SetViewport,
   type FitBounds,
+  type HandleConnection,
 } from '@xyflow/system';
 
 // we need this workaround to prevent a duplicate identifier error

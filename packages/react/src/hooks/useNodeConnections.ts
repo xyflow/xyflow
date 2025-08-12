@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
 import {
-  Connection,
-  NodeConnection,
-  HandleType,
   areConnectionMapsEqual,
-  handleConnectionChange,
   errorMessages,
+  handleConnectionChange,
+  type NodeConnection,
+  type HandleType,
+  type HandleConnection,
 } from '@xyflow/system';
 
 import { useStore } from './useStore';
@@ -21,9 +21,9 @@ type UseNodeConnectionsParams = {
   /** Filter by handle id (this is only needed if the node has multiple handles of the same type). */
   handleId?: string;
   /** Gets called when a connection is established. */
-  onConnect?: (connections: Connection[]) => void;
+  onConnect?: (connections: HandleConnection[]) => void;
   /** Gets called when a connection is removed. */
-  onDisconnect?: (connections: Connection[]) => void;
+  onDisconnect?: (connections: HandleConnection[]) => void;
 };
 
 /**

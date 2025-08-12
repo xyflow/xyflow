@@ -209,6 +209,7 @@ function onPointerDown(
   function onPointerUp(event: MouseEvent | TouchEvent) {
     if (connectionStarted) {
       if ((closestHandle || resultHandleDomNode) && connection && isValid) {
+        console.log(connection);
         onConnect?.(connection);
       }
 
