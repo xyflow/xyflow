@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	const routes = [
 		'a11y',
@@ -9,6 +9,7 @@
 		'custom-connection-line',
 		'customnode',
 		'dagre',
+		'detached-handle',
 		'drag-n-drop',
 		'edges',
 		'figma',
@@ -36,7 +37,7 @@
 
 <header>
 	<div class="logo">Svelte Flow</div>
-	<select onchange={onChange} value={$page.route.id}>
+	<select onchange={onChange} value={page.route.id}>
 		{#each routes as route}
 			<option value={`/examples/${route}`}>{route}</option>
 		{/each}
