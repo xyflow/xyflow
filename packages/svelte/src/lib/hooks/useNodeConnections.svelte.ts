@@ -1,9 +1,9 @@
 import {
   areConnectionMapsEqual,
+  handleConnectionChange,
   type NodeConnection,
   type HandleType,
-  type Connection,
-  handleConnectionChange
+  type HandleConnection
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -13,8 +13,8 @@ type UseNodeConnectionsParams = {
   id?: string;
   handleType?: HandleType;
   handleId?: string;
-  onConnect?: (connections: Connection[]) => void;
-  onDisconnect?: (connections: Connection[]) => void;
+  onConnect?: (connections: HandleConnection[]) => void;
+  onDisconnect?: (connections: HandleConnection[]) => void;
 };
 
 type ConnectionMap = Map<string, NodeConnection>;
