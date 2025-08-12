@@ -2,6 +2,7 @@ import { type D3ZoomEvent, zoom } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 
 import type { CoordinateExtent, PanZoomInstance, Transform } from '../types';
+import { isMacOs } from '../utils';
 
 export type XYMinimapInstance = {
   update: (params: XYMinimapUpdate) => void;
@@ -33,24 +34,23 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
     translateExtent,
     width,
     height,
-    zoomStep = 10,
+    zoomStep = 1,
     pannable = true,
     zoomable = true,
     inversePan = false,
   }: XYMinimapUpdate) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
-      const transform = getTransform();
-
       if (event.sourceEvent.type !== 'wheel' || !panZoom) {
         return;
       }
-
+      const transform = getTransform();
+      const factor = event.sourceEvent.ctrlKey && isMacOs() ? 10 : 1;
       const pinchDelta =
         -event.sourceEvent.deltaY *
         (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
         zoomStep;
-      const nextZoom = transform[2] * Math.pow(2, pinchDelta);
+      const nextZoom = transform[2] * Math.pow(2, pinchDelta * factor);
 
       panZoom.scaleTo(nextZoom);
     };
