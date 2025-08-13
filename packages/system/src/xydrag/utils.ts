@@ -128,38 +128,30 @@ export function getEventHandlerParams<NodeType extends InternalNodeBase>({
  * This function calculates the snap offset based on the first node in the selection.
  */
 export function calculateSnapOffset({
-  isMultiDrag,
   dragItems,
-  snapToGrid,
   snapGrid,
   x,
   y,
 }: {
-  isMultiDrag: boolean;
   dragItems: Map<string, NodeDragItem>;
-  snapToGrid: boolean;
   snapGrid: SnapGrid;
   x: number;
   y: number;
 }) {
-  let snapOffset: XYPosition = { x: 0, y: 0 };
+  const refDragItem = dragItems.values().next().value;
 
-  if (snapToGrid && isMultiDrag) {
-    const refDragItem = dragItems.values().next().value;
-
-    if (refDragItem) {
-      const refPos = {
-        x: x - refDragItem.distance.x,
-        y: y - refDragItem.distance.y,
-      };
-      const refPosSnapped = snapPosition(refPos, snapGrid);
-
-      snapOffset = {
-        x: refPosSnapped.x - refPos.x,
-        y: refPosSnapped.y - refPos.y,
-      };
-    }
+  if (!refDragItem) {
+    return null;
   }
 
-  return snapOffset;
+  const refPos = {
+    x: x - refDragItem.distance.x,
+    y: y - refDragItem.distance.y,
+  };
+  const refPosSnapped = snapPosition(refPos, snapGrid);
+
+  return {
+    x: refPosSnapped.x - refPos.x,
+    y: refPosSnapped.y - refPos.y,
+  };
 }

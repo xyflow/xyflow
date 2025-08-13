@@ -134,16 +134,16 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       let hasChange = false;
 
       const isMultiDrag = dragItems.size > 1;
-      const nodesBox =
-        isMultiDrag && nodeExtent ? rectToBox(getInternalNodesBounds(dragItems)) : { x: 0, y: 0, x2: 0, y2: 0 };
-      const snapOffset = calculateSnapOffset({
-        isMultiDrag,
-        dragItems,
-        snapToGrid,
-        snapGrid,
-        x,
-        y,
-      });
+      const nodesBox = isMultiDrag && nodeExtent ? rectToBox(getInternalNodesBounds(dragItems)) : null;
+      const multiDragSnapOffset =
+        isMultiDrag && snapToGrid
+          ? calculateSnapOffset({
+              dragItems,
+              snapGrid,
+              x,
+              y,
+            })
+          : null;
 
       for (const [id, dragItem] of dragItems) {
         /*
@@ -156,17 +156,17 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         let nextPosition = { x: x - dragItem.distance.x, y: y - dragItem.distance.y };
 
         if (snapToGrid) {
-          nextPosition = isMultiDrag
+          nextPosition = multiDragSnapOffset
             ? {
-                x: nextPosition.x + snapOffset.x,
-                y: nextPosition.y + snapOffset.y,
+                x: nextPosition.x + multiDragSnapOffset.x,
+                y: nextPosition.y + multiDragSnapOffset.y,
               }
             : snapPosition(nextPosition, snapGrid);
         }
 
         let adjustedNodeExtent: CoordinateExtent | null = null;
 
-        if (isMultiDrag && nodeExtent && !dragItem.extent) {
+        if (isMultiDrag && nodeExtent && !dragItem.extent && nodesBox) {
           const { positionAbsolute } = dragItem.internals;
           const x1 = positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
           const x2 = positionAbsolute.x + dragItem.measured.width - nodesBox.x2 + nodeExtent[1][0];
