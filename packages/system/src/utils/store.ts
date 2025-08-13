@@ -514,8 +514,8 @@ export function updateConnectionLookup(connectionLookup: ConnectionLookup, edgeL
     const { source: sourceNode, target: targetNode, sourceHandle = null, targetHandle = null } = edge;
 
     const connection = { edgeId: edge.id, source: sourceNode, target: targetNode, sourceHandle, targetHandle };
-    const sourceKey = `${sourceNode}-${sourceHandle}--${targetNode}-${targetHandle}`;
-    const targetKey = `${targetNode}-${targetHandle}--${sourceNode}-${sourceHandle}`;
+    const sourceKey = `${sourceNode}-${sourceHandle}--${targetNode}-${targetHandle}--${edge.id}`;
+    const targetKey = `${targetNode}-${targetHandle}--${sourceNode}-${sourceHandle}--${edge.id}`;
 
     addConnectionToLookup('source', connection, targetKey, connectionLookup, sourceNode, sourceHandle);
     addConnectionToLookup('target', connection, sourceKey, connectionLookup, targetNode, targetHandle);

@@ -38,6 +38,32 @@ test.describe('Edges', () => {
       await expect(edge2).toHaveClass(/selected/);
       await expect(edge1).toHaveClass(/selected/);
     });
+
+    test('selecting multiple edges between two nodes by drag selection', async ({ page }) => {
+      const edge1 = page.locator('[data-id="multi-edge-1"]');
+      const edge2 = page.locator('[data-id="multi-edge-2"]');
+
+      await expect(edge1).toBeAttached();
+      await expect(edge2).toBeAttached();
+
+      const edge1Box = await edge1.boundingBox();
+      const edge2Box = await edge2.boundingBox();
+
+      const startX = Math.min(edge1Box!.x, edge2Box!.x) - 250;
+      const startY = Math.min(edge1Box!.y, edge2Box!.y) - 50;
+      const endX = Math.max(edge1Box!.x + edge1Box!.width, edge2Box!.x + edge2Box!.width) + 250;
+      const endY = Math.max(edge1Box!.y + edge1Box!.height, edge2Box!.y + edge2Box!.height) + 50;
+
+      await page.keyboard.down('s');
+      await page.mouse.move(startX, startY);
+      await page.mouse.down();
+      await page.mouse.move(endX, endY);
+      await page.mouse.up();
+      await page.keyboard.up('s');
+
+      await expect(edge1).toHaveClass(/selected/);
+      await expect(edge2).toHaveClass(/selected/);
+    });
   });
 
   test.describe('properties', () => {
