@@ -105,6 +105,8 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let d3Selection: Selection<Element, unknown, null, undefined> | null = null;
   let abortDrag = false; // prevents unintentional dragging on multitouch
   let nodePositionsChanged = false;
+  // we store the last drag event to be able to use it in the update function
+  let dragEvent: MouseEvent | null = null;
 
   // public functions
   function update({
@@ -116,7 +118,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
     nodeClickDistance = 0,
   }: DragUpdateParams) {
     d3Selection = select(domNode);
-    function updateNodes({ x, y }: XYPosition, dragEvent: MouseEvent | null) {
+    function updateNodes({ x, y }: XYPosition) {
       const {
         nodeLookup,
         nodeExtent,
@@ -236,7 +238,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         lastPos.y = (lastPos.y ?? 0) - yMovement / transform[2];
 
         if (await panBy({ x: xMovement, y: yMovement })) {
-          updateNodes(lastPos as XYPosition, null);
+          updateNodes(lastPos as XYPosition);
         }
       }
 
@@ -298,6 +300,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
         abortDrag = false;
         nodePositionsChanged = false;
+        dragEvent = event.sourceEvent;
 
         if (nodeDragThreshold === 0) {
           startDrag(event);
@@ -310,6 +313,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       .on('drag', (event: UseDragEvent) => {
         const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold, nodeLookup } = getStoreItems();
         const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
+        dragEvent = event.sourceEvent;
 
         if (
           (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) ||
@@ -340,10 +344,8 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
         // skip events without movement
         if ((lastPos.x !== pointerPos.xSnapped || lastPos.y !== pointerPos.ySnapped) && dragItems && dragStarted) {
-          // dragEvent = event.sourceEvent as MouseEvent;
           mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
-
-          updateNodes(pointerPos, event.sourceEvent as MouseEvent);
+          updateNodes(pointerPos);
         }
       })
       .on('end', (event: UseDragEvent) => {
