@@ -75,23 +75,31 @@ export function getClosestHandle(
   return closestHandles[0];
 }
 
-export function getHandle(
-  nodeId: string,
-  handleType: HandleType,
-  handleId: string | null,
-  nodeLookup: NodeLookup,
-  connectionMode: ConnectionMode,
-  withAbsolutePosition = false
-): Handle | null {
-  const node = nodeLookup.get(nodeId);
+export function getHandle({
+  node,
+  handleType,
+  handleId,
+  connectionMode,
+  withAbsolutePosition = false,
+}: {
+  node?: InternalNodeBase;
+  handleType: HandleType;
+  handleId: string | null;
+  connectionMode: ConnectionMode;
+  withAbsolutePosition?: boolean;
+}): Handle | null {
   if (!node) {
     return null;
   }
 
+  const isTarget = handleType === 'target';
   const handles =
     connectionMode === 'strict'
       ? node.internals.handleBounds?.[handleType]
-      : [...(node.internals.handleBounds?.source ?? []), ...(node.internals.handleBounds?.target ?? [])];
+      : [
+          ...(node.internals.handleBounds?.[isTarget ? 'target' : 'source'] ?? []),
+          ...(node.internals.handleBounds?.[isTarget ? 'source' : 'target'] ?? []),
+        ];
   const handle = (handleId ? handles?.find((h) => h.id === handleId) : handles?.[0]) ?? null;
 
   return handle && withAbsolutePosition

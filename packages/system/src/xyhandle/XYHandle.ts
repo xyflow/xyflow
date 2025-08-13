@@ -63,7 +63,7 @@ function onPointerDown(
     return;
   }
 
-  const fromHandleInternal = getHandle(nodeId, handleType, handleId, nodeLookup, connectionMode);
+  const fromHandleInternal = getHandle({ node: nodeLookup.get(nodeId), handleType, handleId, connectionMode });
   if (!fromHandleInternal) {
     return;
   }
@@ -251,7 +251,7 @@ function onPointerDown(
   doc.addEventListener('touchend', onPointerUp as EventListener);
 }
 
-// checks if  and returns connection in fom of an object { source: 123, target: 312 }
+// checks if handle is valid and returns connection in form of an object { source: 123, target: 312 }
 function isValidHandle(
   event: MouseEvent | TouchEvent,
   {
@@ -317,7 +317,13 @@ function isValidHandle(
 
     result.isValid = isValid && isValidConnection(connection);
 
-    result.toHandle = getHandle(handleNodeId, handleType, handleId, nodeLookup, connectionMode, true);
+    result.toHandle = getHandle({
+      node: nodeLookup.get(handleNodeId),
+      handleType,
+      handleId,
+      connectionMode,
+      withAbsolutePosition: true,
+    });
   }
 
   return result;
