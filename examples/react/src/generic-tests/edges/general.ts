@@ -3,6 +3,7 @@ import { MarkerType } from '@xyflow/react';
 export default {
   flowProps: {
     fitView: true,
+    selectionKeyCode: 's',
     multiSelectionKeyCode: 's',
     deleteKeyCode: 'd',
     nodes: [
@@ -177,6 +178,19 @@ export default {
         id: 'subflow-edge-2',
         source: '12-a',
         target: '12-b',
+      },
+      {
+        id: 'multi-edge-1',
+        source: '10',
+        target: '11',
+        label: 'first edge',
+      },
+      {
+        id: 'multi-edge-2',
+        source: '10',
+        target: '11',
+        label: 'second edge',
+        type: 'step',
       },
       // {
       // 	id: 'updatable',
