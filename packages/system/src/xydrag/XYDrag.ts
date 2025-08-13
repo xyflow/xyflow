@@ -10,7 +10,7 @@ import {
   getInternalNodesBounds,
   rectToBox,
 } from '../utils';
-import { getDragItems, getEventHandlerParams, hasSelector } from './utils';
+import { calculateSnapOffset, getDragItems, getEventHandlerParams, hasSelector } from './utils';
 import type {
   NodeBase,
   NodeDragItem,
@@ -25,7 +25,6 @@ import type {
   PanBy,
   OnSelectionDrag,
   UpdateNodePositions,
-  Box,
   InternalNodeBase,
 } from '../types';
 
@@ -132,39 +131,42 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       } = getStoreItems();
 
       lastPos = { x, y };
-
       let hasChange = false;
-      let nodesBox: Box = { x: 0, y: 0, x2: 0, y2: 0 };
 
-      if (dragItems.size > 1 && nodeExtent) {
-        const rect = getInternalNodesBounds(dragItems);
-        nodesBox = rectToBox(rect);
-      }
+      const isMultiDrag = dragItems.size > 1;
+      const nodesBox =
+        isMultiDrag && nodeExtent ? rectToBox(getInternalNodesBounds(dragItems)) : { x: 0, y: 0, x2: 0, y2: 0 };
+      const snapOffset = calculateSnapOffset({
+        isMultiDrag,
+        dragItems,
+        snapToGrid,
+        snapGrid,
+        x,
+        y,
+      });
 
       for (const [id, dragItem] of dragItems) {
+        /*
+         * if the node is not in the nodeLookup anymore, it was probably deleted while dragging
+         */
         if (!nodeLookup.has(id)) {
-          /*
-           * if the node is not in the nodeLookup anymore, it was probably deleted while dragging
-           * and we don't need to update it anymore
-           */
           continue;
         }
 
         let nextPosition = { x: x - dragItem.distance.x, y: y - dragItem.distance.y };
+
         if (snapToGrid) {
-          nextPosition = snapPosition(nextPosition, snapGrid);
+          nextPosition = isMultiDrag
+            ? {
+                x: nextPosition.x + snapOffset.x,
+                y: nextPosition.y + snapOffset.y,
+              }
+            : snapPosition(nextPosition, snapGrid);
         }
 
-        /*
-         * if there is selection with multiple nodes and a node extent is set, we need to adjust the node extent for each node
-         * based on its position so that the node stays at it's position relative to the selection.
-         */
-        let adjustedNodeExtent: CoordinateExtent = [
-          [nodeExtent[0][0], nodeExtent[0][1]],
-          [nodeExtent[1][0], nodeExtent[1][1]],
-        ];
+        let adjustedNodeExtent: CoordinateExtent | null = null;
 
-        if (dragItems.size > 1 && nodeExtent && !dragItem.extent) {
+        if (isMultiDrag && nodeExtent && !dragItem.extent) {
           const { positionAbsolute } = dragItem.internals;
           const x1 = positionAbsolute.x - nodesBox.x + nodeExtent[0][0];
           const x2 = positionAbsolute.x + dragItem.measured.width - nodesBox.x2 + nodeExtent[1][0];
@@ -182,7 +184,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           nodeId: id,
           nextPosition,
           nodeLookup,
-          nodeExtent: adjustedNodeExtent,
+          nodeExtent: adjustedNodeExtent ? adjustedNodeExtent : nodeExtent,
           nodeOrigin,
           onError,
         });
