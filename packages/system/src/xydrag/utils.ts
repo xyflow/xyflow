@@ -1,4 +1,5 @@
-import { type NodeDragItem, type XYPosition, InternalNodeBase, NodeBase, NodeLookup } from '../types';
+import { type NodeDragItem, type XYPosition, InternalNodeBase, NodeBase, NodeLookup, SnapGrid } from '../types';
+import { snapPosition } from '../utils';
 
 export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodeLookup: NodeLookup): boolean {
   if (!node.parentId) {
@@ -114,10 +115,43 @@ export function getEventHandlerParams<NodeType extends InternalNodeBase>({
     !node
       ? nodesFromDragItems[0]
       : {
-        ...node,
-        position: dragItems.get(nodeId)?.position || node.position,
-        dragging,
-      },
+          ...node,
+          position: dragItems.get(nodeId)?.position || node.position,
+          dragging,
+        },
     nodesFromDragItems,
   ];
+}
+
+/**
+ * If a selection is being dragged we want to apply the same snap offset to all nodes in the selection.
+ * This function calculates the snap offset based on the first node in the selection.
+ */
+export function calculateSnapOffset({
+  dragItems,
+  snapGrid,
+  x,
+  y,
+}: {
+  dragItems: Map<string, NodeDragItem>;
+  snapGrid: SnapGrid;
+  x: number;
+  y: number;
+}) {
+  const refDragItem = dragItems.values().next().value;
+
+  if (!refDragItem) {
+    return null;
+  }
+
+  const refPos = {
+    x: x - refDragItem.distance.x,
+    y: y - refDragItem.distance.y,
+  };
+  const refPosSnapped = snapPosition(refPos, snapGrid);
+
+  return {
+    x: refPosSnapped.x - refPos.x,
+    y: refPosSnapped.y - refPos.y,
+  };
 }
