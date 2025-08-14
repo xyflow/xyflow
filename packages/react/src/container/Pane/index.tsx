@@ -265,7 +265,7 @@ export function Pane({
 
   return (
     <div
-      className={cc(['react-flow__pane', { draggable, dragging, selection: isSelecting }])}
+      className={cc(['react-flow__pane', { selection: isSelecting }])}
       onClick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
@@ -278,6 +278,7 @@ export function Pane({
       style={containerStyle}
     >
       {children}
+      {draggable && <div className={cc(['react-flow__drag', 'react-flow__container', { dragging }])}></div>}
       <UserSelection />
     </div>
   );

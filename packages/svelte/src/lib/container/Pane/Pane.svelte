@@ -221,8 +221,6 @@
 <div
   bind:this={container}
   class="svelte-flow__pane svelte-flow__container"
-  class:draggable={panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0))}
-  class:dragging={store.dragging}
   class:selection={isSelecting}
   onclick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
   onpointerdown={hasActiveSelection ? onPointerDown : undefined}
@@ -231,4 +229,7 @@
   oncontextmenu={wrapHandler(onContextMenu, container)}
 >
   {@render children()}
+  {#if panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0))}
+    <div class="svelte-flow__drag svelte-flow__container" class:dragging={store.dragging}></div>
+  {/if}
 </div>
