@@ -26,16 +26,17 @@
 >
   {#if type === MarkerType.Arrow}
     <polyline
+      class="arrow"
       style:stroke={color}
-      style:fill={'none'}
+      fill="none"
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width={strokeWidth}
-      fill="none"
       points="-5,-4 0,0 -5,4"
     />
   {:else if type === MarkerType.ArrowClosed}
     <polyline
+      class="arrowclosed"
       style:stroke={color}
       style:fill={color}
       stroke-linecap="round"
