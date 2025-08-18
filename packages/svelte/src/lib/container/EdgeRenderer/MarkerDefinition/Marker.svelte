@@ -11,9 +11,6 @@
     color = 'none',
     strokeWidth
   }: MarkerProps = $props();
-
-  // Create inline styles when explicit color is provided
-  const polylineStyle = color ? `stroke: ${color}; fill: ${color};` : '';
 </script>
 
 <marker
@@ -29,16 +26,19 @@
 >
   {#if type === MarkerType.Arrow}
     <polyline
-      style={polylineStyle}
+      class="arrow"
+      style:stroke={color}
+      fill="none"
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width={strokeWidth}
-      fill="none"
       points="-5,-4 0,0 -5,4"
     />
   {:else if type === MarkerType.ArrowClosed}
     <polyline
-      style={polylineStyle}
+      class="arrowclosed"
+      style:stroke={color}
+      style:fill={color}
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width={strokeWidth}
