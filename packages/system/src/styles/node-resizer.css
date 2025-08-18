@@ -33,7 +33,7 @@
   border: 1px solid #fff;
   border-radius: 1px;
   background-color: var(--xy-resize-background-color, var(--xy-resize-background-color-default));
-  translate: -50% -50%;
+  transform: translate(-50%, -50%);
 }
 
 .xy-flow__resize-control.handle.left {
