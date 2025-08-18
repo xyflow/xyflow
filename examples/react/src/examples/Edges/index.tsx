@@ -267,7 +267,7 @@ const edgeTypes: EdgeTypes = {
 
 const defaultEdgeOptions = {
   markerEnd: {
-    type: MarkerType.ArrowClosed,
+    type: MarkerType.Arrow,
     color: 'red',
     width: 20,
     height: 20,

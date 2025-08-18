@@ -8,7 +8,7 @@ type SymbolProps = Omit<EdgeMarker, 'type'>;
 const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
   const style = {
     strokeWidth,
-    ...(color && { stroke: color }),
+    ...(color && { stroke: color, fill: 'none' }),
   };
 
   return <polyline style={style} strokeLinecap="round" strokeLinejoin="round" fill="none" points="-5,-4 0,0 -5,4" />;
