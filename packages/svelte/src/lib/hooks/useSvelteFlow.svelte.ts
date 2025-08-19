@@ -460,6 +460,13 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         );
       }
 
+      if (matchingNodes.length > 0 || matchingEdges.length > 0) {
+        store.ondelete?.({
+          nodes: matchingNodes,
+          edges: matchingEdges
+        });
+      }
+
       return {
         deletedNodes: matchingNodes,
         deletedEdges: matchingEdges
