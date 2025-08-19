@@ -98,7 +98,7 @@
     });
 
   function onConnectExtended(connection: Connection) {
-    const edge = store.onbeforeconnect?.(connection) ?? connection;
+    const edge = store.onbeforeconnect ? store.onbeforeconnect(connection) : connection;
 
     if (!edge) {
       return;
