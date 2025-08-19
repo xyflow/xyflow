@@ -41,7 +41,7 @@ export type XYResizerChange = {
 export type XYResizerChildChange = {
   id: string;
   position: XYPosition;
-  extent?: 'parent' | CoordinateExtent;
+  extent?: NodeBase['extent'];
 };
 
 type XYResizerParams = {

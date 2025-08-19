@@ -57,7 +57,7 @@ export type NodeBase<
    * Boundary a node can be moved in.
    * @example 'parent' or [[0, 0], [100, 100]]
    */
-  extent?: 'parent' | CoordinateExtent;
+  extent?: 'parent' | CoordinateExtent | null;
   /**
    * When `true`, the parent node will automatically expand if this node is dragged to the edge of
    * the parent node's bounds.
@@ -151,12 +151,7 @@ export type NodeDragItem = {
   internals: {
     positionAbsolute: XYPosition;
   };
-  extent?: 'parent' | CoordinateExtent;
-  parentId?: string;
-  dragging?: boolean;
-  origin?: NodeOrigin;
-  expandParent?: boolean;
-};
+} & Pick<InternalNodeBase, 'extent' | 'parentId' | 'origin' | 'expandParent' | 'dragging'>;
 
 /**
  * The origin of a Node determines how it is placed relative to its own coordinates.
