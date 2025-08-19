@@ -154,12 +154,11 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         }
 
         let nextPosition = { x: x - dragItem.distance.x, y: y - dragItem.distance.y };
-
         if (snapToGrid) {
           nextPosition = multiDragSnapOffset
             ? {
-                x: nextPosition.x + multiDragSnapOffset.x,
-                y: nextPosition.y + multiDragSnapOffset.y,
+                x: Math.round(nextPosition.x + multiDragSnapOffset.x),
+                y: Math.round(nextPosition.y + multiDragSnapOffset.y),
               }
             : snapPosition(nextPosition, snapGrid);
         }
