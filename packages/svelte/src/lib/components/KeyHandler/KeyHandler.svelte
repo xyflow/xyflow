@@ -64,21 +64,14 @@
     store.zoomActivationKeyPressed = false;
   }
 
-  async function handleDelete() {
+  function handleDelete() {
     const selectedNodes = store.nodes.filter((node) => node.selected);
     const selectedEdges = store.edges.filter((edge) => edge.selected);
 
-    const { deletedNodes, deletedEdges } = await deleteElements({
+    deleteElements({
       nodes: selectedNodes,
       edges: selectedEdges
     });
-
-    if (deletedNodes.length > 0 || deletedEdges.length > 0) {
-      store.ondelete?.({
-        nodes: deletedNodes,
-        edges: deletedEdges
-      });
-    }
   }
 </script>
 
