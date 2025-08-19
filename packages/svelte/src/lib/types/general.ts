@@ -38,11 +38,11 @@ export type OnDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge>
 
 export type OnBeforeConnect<EdgeType extends Edge = Edge> = (
   connection: Connection
-) => EdgeType | Connection | void;
+) => EdgeType | Connection | void | false | null;
 export type OnBeforeReconnect<EdgeType extends Edge = Edge> = (
   newEdge: EdgeType,
   oldEdge: EdgeType
-) => EdgeType | void;
+) => EdgeType | void | false | null;
 export type OnBeforeDelete<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
