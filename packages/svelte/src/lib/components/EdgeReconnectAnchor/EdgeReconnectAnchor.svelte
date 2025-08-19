@@ -50,7 +50,6 @@
       edgeLookup
     } = store;
 
-    let newEdge: Edge | undefined;
     let edge = edgeLookup.get(edgeId)!;
 
     const _onConnectStart: OnConnectStart = (evt, params) => {
@@ -86,13 +85,16 @@
       onConnectStart: _onConnectStart,
       onConnectEnd: onconnectend,
       onConnect: (connection) => {
-        newEdge = { ...edge, ...connection };
-        newEdge = onbeforereconnect ? (onbeforereconnect(newEdge, edge) ?? undefined) : newEdge;
+        const reconnectedEdge = { ...edge, ...connection };
+        const newEdge = onbeforereconnect
+          ? onbeforereconnect(reconnectedEdge, edge)
+          : reconnectedEdge;
 
-        if (newEdge) {
-          store.edges = store.edges.map((e) => (e.id === edge.id ? (newEdge as Edge) : e));
+        if (!newEdge) {
+          return;
         }
 
+        store.edges = store.edges.map((e) => (e.id === edge.id ? (newEdge as Edge) : e));
         onreconnect?.(edge, connection);
       },
       onReconnectEnd: (event, connectionState) => {
