@@ -1,5 +1,16 @@
 # @xyflow/react
 
+## 12.8.4
+
+### Patch Changes
+
+- [#5472](https://github.com/xyflow/xyflow/pull/5472) [`372c493a`](https://github.com/xyflow/xyflow/commit/372c493a2f2008fd9eca7b00cece642d4335ed60) Thanks [@moklick](https://github.com/moklick)! - Remove dangerouslySetInnerHTML from domAttributes
+
+- [#5459](https://github.com/xyflow/xyflow/pull/5459) [`2e7c89c6`](https://github.com/xyflow/xyflow/commit/2e7c89c6c3379030391b842263b06ef36f7e8945) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Fix open arrow marker using fill color from edge instead of none
+
+- Updated dependencies [[`5ece6b36`](https://github.com/xyflow/xyflow/commit/5ece6b36da44d0dbbf6daf132eb9280e3c294bd2), [`53da1193`](https://github.com/xyflow/xyflow/commit/53da119313f2ad9f1f6512a5ed1f6048bb4b0bec)]:
+  - @xyflow/system@0.0.68
+
 ## 12.8.3
 
 ### Patch Changes

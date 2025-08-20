@@ -1,5 +1,13 @@
 # @xyflow/system
 
+## 0.0.68
+
+### Patch Changes
+
+- [#5469](https://github.com/xyflow/xyflow/pull/5469) [`5ece6b36`](https://github.com/xyflow/xyflow/commit/5ece6b36da44d0dbbf6daf132eb9280e3c294bd2) Thanks [@moklick](https://github.com/moklick)! - Allow null for extent
+
+- [`53da1193`](https://github.com/xyflow/xyflow/commit/53da119313f2ad9f1f6512a5ed1f6048bb4b0bec) Thanks [@moklick](https://github.com/moklick)! - Round floating numbers for node positions when dragging a multi selection
+
 ## 0.0.67
 
 ### Patch Changes
