@@ -38,6 +38,7 @@ export type Node<
     | 'draggable'
     | 'role'
     | 'aria-label'
+    | 'dangerouslySetInnerHTML'
     | keyof DOMAttributes<HTMLDivElement>
   >;
 };
