@@ -1,5 +1,20 @@
 # @xyflow/svelte
 
+## 1.2.4
+
+### Patch Changes
+
+- [#5472](https://github.com/xyflow/xyflow/pull/5472) [`372c493a`](https://github.com/xyflow/xyflow/commit/372c493a2f2008fd9eca7b00cece642d4335ed60) Thanks [@moklick](https://github.com/moklick)! - Remove dangerouslySetInnerHTML from domAttributes
+
+- [#5459](https://github.com/xyflow/xyflow/pull/5459) [`2e7c89c6`](https://github.com/xyflow/xyflow/commit/2e7c89c6c3379030391b842263b06ef36f7e8945) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Fix open arrow marker using fill color from edge instead of none
+
+- [#5468](https://github.com/xyflow/xyflow/pull/5468) [`100c95fd`](https://github.com/xyflow/xyflow/commit/100c95fd5ab40191bfce1251bf321f770080679b) Thanks [@peterkogo](https://github.com/peterkogo)! - Allow returning void, false and null from onbeforeconnect
+
+- [#5467](https://github.com/xyflow/xyflow/pull/5467) [`be45c9fb`](https://github.com/xyflow/xyflow/commit/be45c9fbd5b2e421f243e862e7a485969ee3f5f8) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix ondelete not getting called when using deleteElements
+
+- Updated dependencies [[`5ece6b36`](https://github.com/xyflow/xyflow/commit/5ece6b36da44d0dbbf6daf132eb9280e3c294bd2), [`53da1193`](https://github.com/xyflow/xyflow/commit/53da119313f2ad9f1f6512a5ed1f6048bb4b0bec)]:
+  - @xyflow/system@0.0.68
+
 ## 1.2.3
 
 ### Patch Changes
