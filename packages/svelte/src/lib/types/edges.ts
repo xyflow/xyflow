@@ -35,7 +35,7 @@ export type Edge<
    */
   domAttributes?: Omit<
     SVGAttributes<SVGGElement>,
-    'id' | 'style' | 'class' | 'role' | 'aria-label'
+    'id' | 'style' | 'class' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
   >;
 };
 

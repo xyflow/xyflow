@@ -72,7 +72,10 @@ export type Edge<
     /**
      * General escape hatch for adding custom attributes to the edge's DOM element.
      */
-    domAttributes?: Omit<SVGAttributes<SVGGElement>, 'id' | 'style' | 'className' | 'role' | 'aria-label'>;
+    domAttributes?: Omit<
+      SVGAttributes<SVGGElement>,
+      'id' | 'style' | 'className' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
+    >;
   };
 
 type SmoothStepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<

@@ -36,6 +36,7 @@ export type Node<
     | 'role'
     | 'aria-label'
     | 'defaultValue'
+    | 'dangerouslySetInnerHTML'
     | keyof DOMAttributes<HTMLDivElement>
   >;
 };
