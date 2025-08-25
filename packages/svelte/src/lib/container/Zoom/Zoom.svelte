@@ -70,7 +70,8 @@
     paneClickDistance,
     onTransformChange: (transform: Transform) => {
       store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
-    }
+    },
+    connectionInProgress: store.connection.inProgress
   }}
 >
   {@render children()}

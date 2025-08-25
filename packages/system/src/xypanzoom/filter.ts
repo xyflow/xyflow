@@ -12,6 +12,7 @@ export type FilterParams = {
   noWheelClassName: string;
   noPanClassName: string;
   lib: string;
+  connectionInProgress: boolean;
 };
 
 export function createFilter({
@@ -25,6 +26,7 @@ export function createFilter({
   noWheelClassName,
   noPanClassName,
   lib,
+  connectionInProgress,
 }: FilterParams) {
   return (event: any): boolean => {
     const zoomScroll = zoomActivationKeyPressed || zoomOnScroll;
@@ -45,6 +47,11 @@ export function createFilter({
 
     // during a selection we prevent all other interactions
     if (userSelectionActive) {
+      return false;
+    }
+
+    // we want to disable pinch-zooming while making a connection
+    if (connectionInProgress) {
       return false;
     }
 

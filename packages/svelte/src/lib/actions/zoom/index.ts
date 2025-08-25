@@ -37,6 +37,7 @@ type ZoomParams = {
   paneClickDistance: number;
   onTransformChange: (transform: Transform) => void;
   onDraggingChange: (dragging: boolean) => void;
+  connectionInProgress: boolean;
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {
