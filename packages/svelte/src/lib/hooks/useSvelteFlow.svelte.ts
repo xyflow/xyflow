@@ -390,6 +390,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
 
       return Promise.resolve(true);
     },
+    /**
+     * Partial is defined as "the 2 nodes/areas are intersecting partially".
+     * If a is contained in b or b is contained in a, they are both
+     * considered fully intersecting.
+     */
     getIntersectingNodes: (
       nodeOrRect: NodeType | { id: NodeType['id'] } | Rect,
       partially = true,
@@ -434,7 +439,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       const overlappingArea = getOverlappingArea(nodeRect, area);
       const partiallyVisible = partially && overlappingArea > 0;
 
-      return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
+      return (
+        partiallyVisible ||
+        overlappingArea >= area.width * area.height ||
+        overlappingArea >= nodeRect.width * nodeRect.height
+      );
     },
     deleteElements: async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [] }) => {
       const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove<
