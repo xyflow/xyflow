@@ -51,7 +51,7 @@ export function createFilter({
     }
 
     // we want to disable pinch-zooming while making a connection
-    if (connectionInProgress) {
+    if (connectionInProgress && !(event.type === 'wheel')) {
       return false;
     }
 
