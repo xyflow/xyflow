@@ -207,6 +207,11 @@ function onPointerDown(
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
+    // Prevent multi-touch aborting connection
+    if ('touches' in event && event.touches.length > 0) {
+      return;
+    }
+
     if (connectionStarted) {
       if ((closestHandle || resultHandleDomNode) && connection && isValid) {
         onConnect?.(connection);
