@@ -25,6 +25,7 @@ type ZoomPaneProps = Omit<
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   lib: s.lib,
+  connectionInProgress: s.connection.inProgress,
 });
 
 export function ZoomPane({
@@ -51,7 +52,7 @@ export function ZoomPane({
 }: ZoomPaneProps) {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const { userSelectionActive, lib } = useStore(selector, shallow);
+  const { userSelectionActive, lib, connectionInProgress } = useStore(selector, shallow);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
   const panZoom = useRef<PanZoomInstance>();
 
@@ -126,6 +127,7 @@ export function ZoomPane({
       noWheelClassName,
       lib,
       onTransformChange,
+      connectionInProgress,
     });
   }, [
     onPaneContextMenu,
@@ -143,6 +145,7 @@ export function ZoomPane({
     noWheelClassName,
     lib,
     onTransformChange,
+    connectionInProgress,
   ]);
 
   return (

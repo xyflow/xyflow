@@ -108,6 +108,7 @@ export function XYPanZoom({
     zoomActivationKeyPressed,
     lib,
     onTransformChange,
+    connectionInProgress,
   }: PanZoomUpdateOptions) {
     if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
       destroy();
@@ -178,6 +179,7 @@ export function XYPanZoom({
       noPanClassName,
       noWheelClassName,
       lib,
+      connectionInProgress,
     });
     d3ZoomInstance.filter(filter);
 
