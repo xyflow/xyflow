@@ -202,6 +202,11 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
         return { deletedNodes: matchingNodes, deletedEdges: matchingEdges };
       },
+      /**
+       * Partial is defined as "the 2 nodes/areas are intersecting partially".
+       * If a is contained in b or b is contained in a, they are both
+       * considered fully intersecting.
+       */
       getIntersectingNodes: (nodeOrRect, partially = true, nodes) => {
         const isRect = isRectObject(nodeOrRect);
         const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
@@ -240,7 +245,11 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         const overlappingArea = getOverlappingArea(nodeRect, area);
         const partiallyVisible = partially && overlappingArea > 0;
 
-        return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
+        return (
+          partiallyVisible ||
+          overlappingArea >= area.width * area.height ||
+          overlappingArea >= nodeRect.width * nodeRect.height
+        );
       },
       updateNode,
       updateNodeData: (id, dataUpdate, options = { replace: false }) => {
