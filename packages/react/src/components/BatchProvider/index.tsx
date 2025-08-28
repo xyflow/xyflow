@@ -53,8 +53,6 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       lookup: nodeLookup,
     }) as NodeChange<NodeType>[];
 
-    console.log('this workds');
-
     for (const middleware of nodeChangeMiddleware.values()) {
       changes = middleware(changes);
     }
