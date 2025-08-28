@@ -17,8 +17,6 @@ import {
   ConnectionMode,
   OnBeforeDelete,
   OnDelete,
-  useNodeChangeMiddleware,
-  NodeChange,
 } from '@xyflow/react';
 
 const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
