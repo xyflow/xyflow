@@ -28,7 +28,15 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   const store = useStoreApi<NodeType, EdgeType>();
 
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
-    const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup, fitViewQueued } = store.getState();
+    const {
+      nodes = [],
+      setNodes,
+      hasDefaultNodes,
+      onNodesChange,
+      nodeLookup,
+      fitViewQueued,
+      nodeChangeMiddleware,
+    } = store.getState();
 
     /*
      * This is essentially an `Array.reduce` in imperative clothing. Processing
@@ -40,10 +48,22 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       next = typeof payload === 'function' ? payload(next) : payload;
     }
 
-    const changes = getElementsDiffChanges({
+    let changes = getElementsDiffChanges({
       items: next,
       lookup: nodeLookup,
     }) as NodeChange<NodeType>[];
+
+    console.log('this workds');
+
+    for (const middleware of nodeChangeMiddleware.values()) {
+      changes = middleware(changes);
+    }
+
+    // for (const middleware of nodeSyncMiddleware.values()) {
+    //   changes = middleware(changes);
+    // }
+
+    // Do we always want to setNodes(next) or only when there are changes?
 
     if (hasDefaultNodes) {
       setNodes(next);

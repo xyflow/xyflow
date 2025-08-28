@@ -17,6 +17,8 @@ import {
   ConnectionMode,
   OnBeforeDelete,
   OnDelete,
+  useNodeChangeMiddleware,
+  NodeChange,
 } from '@xyflow/react';
 
 const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
@@ -191,6 +193,37 @@ const nodeColor = (n: Node): string => {
   return '#fff';
 };
 
+function RestrictExtent({
+  minX = -Infinity,
+  minY = -Infinity,
+  maxX = Infinity,
+  maxY = Infinity,
+}: {
+  minX?: number;
+  minY?: number;
+  maxX?: number;
+  maxY?: number;
+}) {
+  useNodeChangeMiddleware(
+    useCallback(
+      (changes: NodeChange[]) => {
+        return changes.map((change) => {
+          if (change.type === 'position' && change.position) {
+            const { position } = change;
+            position.x = Math.min(Math.max(position.x, minX), maxX);
+            position.y = Math.min(Math.max(position.y, minY), maxY);
+            change.position = position;
+          }
+          return change;
+        });
+      },
+      [minX, minY, maxX, maxY]
+    )
+  );
+
+  return null;
+}
+
 const OverviewFlow = () => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -234,8 +267,9 @@ const OverviewFlow = () => {
       maxZoom={Infinity}
       onBeforeDelete={onBeforeDelete}
       onDelete={onDelete}
-      onPaneMouseMove={onPaneMouseMove}
+      // onPaneMouseMove={onPaneMouseMove}
     >
+      <RestrictExtent minX={-100} maxX={500} />
       <MiniMap nodeBorderRadius={2} />
       <Controls orientation="horizontal" />
       <Background gap={25} />
