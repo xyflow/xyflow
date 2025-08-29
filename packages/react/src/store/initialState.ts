@@ -146,6 +146,11 @@ const getInitialState = ({
     lib: 'react',
     debug: false,
     ariaLabelConfig: defaultAriaLabelConfig,
+
+    nodeChangeMiddleware: new Map(),
+    edgeChangeMiddleware: new Map(),
+    nodeSyncMiddleware: new Map(),
+    edgeSyncMiddleware: new Map(),
   };
 };
 
