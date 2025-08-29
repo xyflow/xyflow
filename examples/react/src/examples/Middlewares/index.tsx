@@ -6,7 +6,6 @@ import {
   BackgroundVariant,
   Controls,
   ReactFlowProvider,
-  Node,
   Edge,
   useReactFlow,
   Panel,
@@ -14,56 +13,13 @@ import {
   useEdgesState,
   addEdge,
   Connection,
-  useNodeChangeMiddleware,
-  NodeChange,
 } from '@xyflow/react';
 import { initialNodes, initialEdges } from '../CancelConnection/data';
+import { RestrictExtent } from './RestrictExtent';
 
 const a = { id: 'a', data: { label: 'A' }, position: { x: 250, y: 5 } };
 const b = { id: 'b', data: { label: 'B' }, position: { x: 100, y: 100 } };
 const c = { id: 'c', data: { label: 'C' }, position: { x: 400, y: 100 } };
-
-function RestrictExtent({
-  minX = -Infinity,
-  minY = -Infinity,
-  maxX = Infinity,
-  maxY = Infinity,
-}: {
-  minX?: number;
-  minY?: number;
-  maxX?: number;
-  maxY?: number;
-}) {
-  useNodeChangeMiddleware(
-    useCallback(
-      (changes: NodeChange[]) => {
-        return changes.map((change) => {
-          const { type } = change;
-          if (type === 'position') {
-            const { position } = change;
-            if (position) {
-              position.x = Math.min(Math.max(position.x, minX), maxX);
-              position.y = Math.min(Math.max(position.y, minY), maxY);
-              change.position = position;
-            }
-          } else if (type === 'add' || type === 'replace') {
-            const { item } = change;
-            if (item) {
-              item.position.x = Math.min(Math.max(item.position.x, minX), maxX);
-              item.position.y = Math.min(Math.max(item.position.y, minY), maxY);
-              change.item = item;
-            }
-          }
-
-          return change;
-        });
-      },
-      [minX, minY, maxX, maxY]
-    )
-  );
-
-  return null;
-}
 
 const SetNotesBatchingFlow = () => {
   const { setNodes, updateNode } = useReactFlow();
@@ -99,15 +55,19 @@ const SetNotesBatchingFlow = () => {
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
       className="react-flow-basic-example"
       minZoom={0.2}
       maxZoom={4}
       fitView
     >
+      <Panel position="top-left">
+        <RestrictExtent minX={0} maxX={500} label="Restrict X" />
+        <RestrictExtent minY={-100} maxY={500} label="Restrict Y" />
+      </Panel>
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
       <Controls />
-      <RestrictExtent minX={0} maxX={500} />
       <Panel position="top-right">
         <button onClick={triggerMultipleSetNodes}>queue multiple setNodes calls</button>
         <button onClick={triggerMultipleUpdateNodes}>queue multiple updateNode calls</button>
