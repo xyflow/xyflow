@@ -334,8 +334,10 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         }
 
         if (!dragStarted) {
-          const x = pointerPos.xSnapped - (lastPos.x ?? 0);
-          const y = pointerPos.ySnapped - (lastPos.y ?? 0);
+          // Calculate distance in client coordinates for consistent drag threshold behavior across zoom levels
+          const currentMousePosition = getEventPosition(event.sourceEvent, containerBounds!);
+          const x = currentMousePosition.x - (mousePosition.x ?? 0);
+          const y = currentMousePosition.y - (mousePosition.y ?? 0);
           const distance = Math.sqrt(x * x + y * y);
 
           if (distance > nodeDragThreshold) {
