@@ -80,7 +80,6 @@
     autoPanOnConnect,
     autoPanOnNodeDrag,
     colorModeSSR,
-    style,
     defaultEdgeOptions,
     elevateNodesOnSelect,
     elevateEdgesOnSelect,
