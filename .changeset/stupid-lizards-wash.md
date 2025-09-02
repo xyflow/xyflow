@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-Skip resize handler updates when DOM node is not visible
+Fix warning when display is set to none on the wrapper div
