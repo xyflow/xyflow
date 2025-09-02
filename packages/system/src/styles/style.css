@@ -113,7 +113,7 @@
   width: 6px;
   height: 6px;
   background-color: var(--xy-handle-background-color, var(--xy-handle-background-color-default));
-  border: 1px solid var(--xy-handle-border-color, var(--xy-handle-border-color-default));
+  outline: 1px solid var(--xy-handle-border-color, var(--xy-handle-border-color-default));
   border-radius: 100%;
 }
 
