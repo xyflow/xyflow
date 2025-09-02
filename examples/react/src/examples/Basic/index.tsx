@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback } from 'react';
+import { MouseEvent, useCallback, useState } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -134,47 +134,57 @@ const BasicFlow = () => {
     });
     fitView();
   };
+  const [isHidden, setIsHidden] = useState(false);
 
+  const toggleVisibility = () => {
+    setIsHidden(!isHidden);
+  };
   return (
-    <ReactFlow
-      defaultNodes={initialNodes}
-      defaultEdges={initialEdges}
-      onNodesChange={console.log}
-      onNodeClick={onNodeClick}
-      onNodeDragStop={onNodeDragStop}
-      onNodeDragStart={onNodeDragStart}
-      onNodeDrag={onNodeDrag}
-      onSelectionDragStart={printSelectionEvent('selection drag start')}
-      onSelectionDrag={printSelectionEvent('selection drag')}
-      onSelectionDragStop={printSelectionEvent('selection drag stop')}
-      className="react-flow-basic-example"
-      minZoom={0.2}
-      maxZoom={4}
-      fitView
-      fitViewOptions={fitViewOptions}
-      defaultEdgeOptions={defaultEdgeOptions}
-      selectNodesOnDrag={false}
-      elevateEdgesOnSelect
-      elevateNodesOnSelect={false}
-      nodeDragThreshold={0}
-    >
-      <Background variant={BackgroundVariant.Dots} />
-      <MiniMap />
-      <Controls />
+    <>
+      <ReactFlow
+        defaultNodes={initialNodes}
+        defaultEdges={initialEdges}
+        onNodesChange={console.log}
+        onNodeClick={onNodeClick}
+        onNodeDragStop={onNodeDragStop}
+        onNodeDragStart={onNodeDragStart}
+        onNodeDrag={onNodeDrag}
+        onSelectionDragStart={printSelectionEvent('selection drag start')}
+        onSelectionDrag={printSelectionEvent('selection drag')}
+        onSelectionDragStop={printSelectionEvent('selection drag stop')}
+        className="react-flow-basic-example"
+        style={{ display: isHidden ? 'none' : 'block' }}
+        minZoom={0.2}
+        maxZoom={4}
+        fitView
+        fitViewOptions={fitViewOptions}
+        defaultEdgeOptions={defaultEdgeOptions}
+        selectNodesOnDrag={false}
+        elevateEdgesOnSelect
+        elevateNodesOnSelect={false}
+        nodeDragThreshold={0}
+      >
+        <Background variant={BackgroundVariant.Dots} />
+        <MiniMap />
+        <Controls />
 
-      <Panel position="top-right">
-        <button onClick={resetTransform}>reset transform</button>
-        <button onClick={updatePos}>change pos</button>
-        <button onClick={toggleClassnames}>toggle classnames</button>
-        <button onClick={logToObject}>toObject</button>
+        <Panel position="top-right">
+          <button onClick={resetTransform}>reset transform</button>
+          <button onClick={updatePos}>change pos</button>
+          <button onClick={toggleClassnames}>toggle classnames</button>
+          <button onClick={logToObject}>toObject</button>
 
-        <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
-        <button onClick={deleteSomeElements}>deleteSomeElements</button>
-        <button onClick={onSetNodes}>setNodes</button>
-        <button onClick={onUpdateNode}>updateNode</button>
-        <button onClick={addNode}>addNode</button>
-      </Panel>
-    </ReactFlow>
+          <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
+          <button onClick={deleteSomeElements}>deleteSomeElements</button>
+          <button onClick={onSetNodes}>setNodes</button>
+          <button onClick={onUpdateNode}>updateNode</button>
+          <button onClick={addNode}>addNode</button>
+        </Panel>
+      </ReactFlow>
+      <button onClick={toggleVisibility} style={{ position: 'absolute', zIndex: 10, right: 10, top: 100 }}>
+        {isHidden ? 'Show' : 'Hide'} Flow
+      </button>
+    </>
   );
 };
 
