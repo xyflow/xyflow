@@ -11,23 +11,9 @@
   cursor: ew-resize;
 }
 
-.xy-flow__pane:has(.xy-flow__resize-control.left.resizing),
-.xy-flow__pane:has(.xy-flow__resize-control.right.resizing),
-.xy-flow__node:has(.xy-flow__resize-control.left.resizing),
-.xy-flow__node:has(.xy-flow__resize-control.right.resizing) {
-  cursor: ew-resize !important;
-}
-
 .xy-flow__resize-control.top,
 .xy-flow__resize-control.bottom {
   cursor: ns-resize;
-}
-
-.xy-flow__pane:has(.xy-flow__resize-control.top.resizing),
-.xy-flow__pane:has(.xy-flow__resize-control.bottom.resizing),
-.xy-flow__node:has(.xy-flow__resize-control.top.resizing),
-.xy-flow__node:has(.xy-flow__resize-control.bottom.resizing) {
-  cursor: ns-resize !important;
 }
 
 .xy-flow__resize-control.top.left,
@@ -35,23 +21,25 @@
   cursor: nwse-resize;
 }
 
-.xy-flow__pane:has(.xy-flow__resize-control.top.left.resizing),
-.xy-flow__pane:has(.xy-flow__resize-control.bottom.right.resizing),
-.xy-flow__node:has(.xy-flow__resize-control.top.left.resizing),
-.xy-flow__node:has(.xy-flow__resize-control.bottom.right.resizing) {
-  cursor: nwse-resize !important;
-}
-
 .xy-flow__resize-control.bottom.left,
 .xy-flow__resize-control.top.right {
   cursor: nesw-resize;
 }
 
-.xy-flow__pane:has(.xy-flow__resize-control.bottom.left.resizing),
-.xy-flow__pane:has(.xy-flow__resize-control.top.right.resizing),
-.xy-flow__node:has(.xy-flow__resize-control.bottom.left.resizing),
-.xy-flow__node:has(.xy-flow__resize-control.top.right.resizing) {
+body:has(.xy-flow__resize-control:is(.left, .right).resizing) * {
+  cursor: ew-resize !important;
+}
+
+body:has(.xy-flow__resize-control:is(.top, .bottom).resizing) * {
+  cursor: ns-resize !important;
+}
+
+body:has(.xy-flow__resize-control:is(.bottom.left, .top.right).resizing) * {
   cursor: nesw-resize !important;
+}
+
+body:has(.xy-flow__resize-control:is(.top.left, .bottom.right).resizing) * {
+  cursor: nwse-resize !important;
 }
 
 /* handle styles */
