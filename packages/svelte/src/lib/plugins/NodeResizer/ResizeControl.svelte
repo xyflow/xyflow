@@ -40,6 +40,7 @@
 
   let resizeControlRef: HTMLDivElement;
   let resizer: XYResizerInstance | null = $state(null);
+  let resizing = $state(false);
 
   let isLineVariant = $derived(variant === ResizeControlVariant.Line);
 
@@ -76,6 +77,8 @@
             });
           }
 
+          resizing = true;
+
           store.nodes = store.nodes.map((node) => {
             const change = changes.get(node.id);
             if (change) {
@@ -91,6 +94,9 @@
             }
             return node;
           });
+        },
+        onEnd: () => {
+          resizing = false;
         }
       });
     }
@@ -118,7 +124,14 @@
 </script>
 
 <div
-  class={['svelte-flow__resize-control', store.noDragClass, ...positionClasses, variant, className]}
+  class={[
+    'svelte-flow__resize-control',
+    store.noDragClass,
+    ...positionClasses,
+    variant,
+    className,
+    resizing && 'resizing'
+  ]}
   bind:this={resizeControlRef}
   style:border-color={isLineVariant ? color : undefined}
   style:background-color={isLineVariant ? undefined : color}
