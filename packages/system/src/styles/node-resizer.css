@@ -7,22 +7,38 @@
 }
 
 .xy-flow__resize-control.left,
-.xy-flow__resize-control.right {
+.xy-flow__resize-control.right,
+.xy-flow__pane:has(.xy-flow__resize-control.left.resizing),
+.xy-flow__pane:has(.xy-flow__resize-control.right.resizing),
+.xy-flow__node:has(.xy-flow__resize-control.left.resizing),
+.xy-flow__node:has(.xy-flow__resize-control.right.resizing) {
   cursor: ew-resize;
 }
 
 .xy-flow__resize-control.top,
-.xy-flow__resize-control.bottom {
+.xy-flow__resize-control.bottom,
+.xy-flow__pane:has(.xy-flow__resize-control.top.resizing),
+.xy-flow__pane:has(.xy-flow__resize-control.bottom.resizing),
+.xy-flow__node:has(.xy-flow__resize-control.top.resizing),
+.xy-flow__node:has(.xy-flow__resize-control.bottom.resizing) {
   cursor: ns-resize;
 }
 
 .xy-flow__resize-control.top.left,
-.xy-flow__resize-control.bottom.right {
+.xy-flow__resize-control.bottom.right,
+.xy-flow__pane:has(.xy-flow__resize-control.top.left.resizing),
+.xy-flow__pane:has(.xy-flow__resize-control.bottom.right.resizing),
+.xy-flow__node:has(.xy-flow__resize-control.top.left.resizing),
+.xy-flow__node:has(.xy-flow__resize-control.bottom.right.resizing) {
   cursor: nwse-resize;
 }
 
 .xy-flow__resize-control.bottom.left,
-.xy-flow__resize-control.top.right {
+.xy-flow__resize-control.top.right,
+.xy-flow__pane:has(.xy-flow__resize-control.bottom.left.resizing),
+.xy-flow__pane:has(.xy-flow__resize-control.top.right.resizing),
+.xy-flow__node:has(.xy-flow__resize-control.bottom.left.resizing),
+.xy-flow__node:has(.xy-flow__resize-control.top.right.resizing) {
   cursor: nesw-resize;
 }
 

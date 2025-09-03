@@ -1,4 +1,4 @@
-import { useRef, useEffect, memo, useCallback } from 'react';
+import { useRef, useEffect, memo, useCallback, useState } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -61,6 +61,8 @@ function ResizeControl({
   );
   const resizer = useRef<XYResizerInstance | null>(null);
   const controlPosition = position ?? defaultPositions[variant];
+
+  const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
     if (!resizeControlRef.current || !id) {
@@ -145,6 +147,8 @@ function ResizeControl({
               },
             };
 
+            setIsResizing(true);
+
             changes.push(dimensionChange);
           }
 
@@ -160,6 +164,8 @@ function ResizeControl({
           triggerNodeChanges(changes);
         },
         onEnd: ({ width, height }) => {
+          setIsResizing(false);
+
           const dimensionChange: NodeDimensionChange = {
             id: id,
             type: 'dimensions',
@@ -210,7 +216,14 @@ function ResizeControl({
 
   return (
     <div
-      className={cc(['react-flow__resize-control', 'nodrag', ...positionClassNames, variant, className])}
+      className={cc([
+        'react-flow__resize-control',
+        'nodrag',
+        isResizing && 'resizing',
+        ...positionClassNames,
+        variant,
+        className,
+      ])}
       ref={resizeControlRef}
       style={{
         ...style,
