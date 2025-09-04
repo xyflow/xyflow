@@ -1,6 +1,5 @@
 ---
-"@xyflow/svelte": patch
-"svelte-examples": patch
+"@xyflow/svelte": minor
 ---
 
-Adds `nodeComponent` prop to Svelteflow's Minimap
+Pass a custom `nodeComponent` to Svelteflow's Minimap
