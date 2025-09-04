@@ -27,6 +27,7 @@
     nodeClass = '',
     nodeBorderRadius = 5,
     nodeStrokeWidth = 2,
+    nodeComponent,
     bgColor,
     maskColor,
     maskStrokeColor,
@@ -127,6 +128,7 @@
             y={node.internals.positionAbsolute.y}
             {...nodeDimesions}
             selected={node.selected}
+            nodeComponent={nodeComponent}
             color={nodeColorFunc?.(node)}
             borderRadius={nodeBorderRadius}
             strokeColor={nodeStrokeColorFunc(node)}

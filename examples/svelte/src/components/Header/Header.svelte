@@ -7,6 +7,7 @@
 		'add-node-on-drop',
 		'color-mode',
 		'custom-connection-line',
+		'custom-minimap',
 		'customnode',
 		'dagre',
 		'detached-handle',

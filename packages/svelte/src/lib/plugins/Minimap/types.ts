@@ -1,8 +1,28 @@
 import type { PanelPosition } from '@xyflow/system';
 import type { ClassValue, HTMLAttributes } from 'svelte/elements';
+import type { Component } from 'svelte';
 import type { Node } from '$lib/types';
 
 export type GetMiniMapNodeAttribute = (node: Node) => string;
+
+/**
+ * The props that are passed to the MiniMapNode component
+ *
+ * @public
+ */
+export type MiniMapNodeProps = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  borderRadius?: number;
+  class?: ClassValue;
+  color?: string;
+  shapeRendering?: string;
+  strokeColor?: string;
+  strokeWidth?: number;
+  selected?: boolean;
+};
 
 export type MiniMapProps = {
   /** Background color of minimap */
@@ -17,6 +37,8 @@ export type MiniMapProps = {
   nodeBorderRadius?: number;
   /** Stroke width of nodes on the minimap */
   nodeStrokeWidth?: number;
+  /** A custom component to render the nodes in the minimap. This component must render an SVG element! */
+  nodeComponent?: Component<MiniMapNodeProps>;
   /** Color of the mask representing viewport */
   maskColor?: string;
   /** Stroke color of the mask representing viewport */
