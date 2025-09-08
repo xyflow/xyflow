@@ -1,4 +1,4 @@
-import { HandleConnection, infiniteExtent } from '..';
+import { Handle, HandleConnection, infiniteExtent, NodeHandle, NodeHandleBounds } from '..';
 import {
   NodeBase,
   CoordinateExtent,
@@ -72,6 +72,37 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
   }
 }
 
+function parseHandles(nodeId: string, handles?: NodeHandle[]): NodeHandleBounds | null {
+  if (!handles) {
+    return null;
+  }
+
+  const source: Handle[] = [];
+  const target: Handle[] = [];
+
+  for (const handle of handles) {
+    const handleBounds = {
+      width: handle.width ?? 1,
+      height: handle.height ?? 1,
+      nodeId: nodeId,
+      x: handle.x,
+      y: handle.y,
+      position: handle.position,
+      type: handle.type,
+    };
+    if (handle.type === 'source') {
+      source.push(handleBounds);
+    } else if (handle.type === 'target') {
+      target.push(handleBounds);
+    }
+  }
+
+  return {
+    source,
+    target,
+  };
+}
+
 type UpdateNodesOptions<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
@@ -109,13 +140,15 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         ..._options.defaults,
         ...userNode,
         measured: {
-          width: userNode.measured?.width,
-          height: userNode.measured?.height,
+          width: userNode.width ?? userNode.measured?.width,
+          height: userNode.height ?? userNode.measured?.height,
         },
         internals: {
           positionAbsolute: clampedPosition,
           // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
-          handleBounds: !userNode.measured ? undefined : internalNode?.internals.handleBounds,
+          handleBounds:
+            parseHandles(userNode.id, userNode.handles) ??
+            (!userNode.measured ? undefined : internalNode?.internals.handleBounds),
           z: calculateZ(userNode, selectedNodeZ),
           userNode,
         },
