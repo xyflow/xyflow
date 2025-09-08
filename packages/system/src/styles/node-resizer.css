@@ -26,20 +26,24 @@
   cursor: nesw-resize;
 }
 
-body:has(.xy-flow__resize-control:is(.left, .right).resizing) * {
-  cursor: ew-resize !important;
+body:has(.xy-flow__resize-control:is(.left, .right).resizing)
+  :is(.xy-flow__node, .xy-flow__resize-control, .xy-flow__pane, .xy-flow__handle) {
+  cursor: ew-resize;
 }
 
-body:has(.xy-flow__resize-control:is(.top, .bottom).resizing) * {
-  cursor: ns-resize !important;
+body:has(.xy-flow__resize-control:is(.top, .bottom).resizing)
+  :is(.xy-flow__node, .xy-flow__resize-control, .xy-flow__pane, .xy-flow__handle) {
+  cursor: ns-resize;
 }
 
-body:has(.xy-flow__resize-control:is(.bottom.left, .top.right).resizing) * {
-  cursor: nesw-resize !important;
+body:has(.xy-flow__resize-control:is(.bottom.left, .top.right).resizing)
+  :is(.xy-flow__node, .xy-flow__resize-control, .xy-flow__pane, .xy-flow__handle) {
+  cursor: nesw-resize;
 }
 
-body:has(.xy-flow__resize-control:is(.top.left, .bottom.right).resizing) * {
-  cursor: nwse-resize !important;
+body:has(.xy-flow__resize-control:is(.top.left, .bottom.right).resizing)
+  :is(.xy-flow__node, .xy-flow__resize-control, .xy-flow__pane, .xy-flow__handle) {
+  cursor: nwse-resize;
 }
 
 /* handle styles */
