@@ -171,8 +171,17 @@
   stroke: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
 }
 
+/* Arrowhead marker styles - use CSS custom properties as default */
+.xy-flow__arrowhead polyline.selected {
+  stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
+}
+
 .xy-flow__arrowhead polyline.arrowclosed {
   fill: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
+}
+
+.xy-flow__arrowhead polyline.arrowclosed.selected {
+  fill: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
 }
 
 .xy-flow__connection {

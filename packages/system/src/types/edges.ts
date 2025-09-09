@@ -97,6 +97,7 @@ export type EdgeMarker = {
   markerUnits?: string;
   orient?: string;
   strokeWidth?: number;
+  selected?: boolean;
 };
 
 export type EdgeMarkerType = string | EdgeMarker;

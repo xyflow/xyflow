@@ -1,6 +1,6 @@
 import type { EdgeBase, EdgeMarker, EdgeMarkerType, MarkerProps } from '../types';
 
-export function getMarkerId(marker: EdgeMarkerType | undefined, id?: string | null): string {
+export function getMarkerId(marker: EdgeMarkerType | undefined, id?: string | null, selected?: boolean): string {
   if (!marker) {
     return '';
   }
@@ -9,7 +9,7 @@ export function getMarkerId(marker: EdgeMarkerType | undefined, id?: string | nu
     return marker;
   }
 
-  const idPrefix = id ? `${id}__` : '';
+  const idPrefix = id ? `${id}__${selected ? 'selected__' : ''}` : '';
 
   return `${idPrefix}${Object.keys(marker)
     .sort()
@@ -37,10 +37,15 @@ export function createMarkerIds(
     .reduce<MarkerProps[]>((markers, edge) => {
       [edge.markerStart || defaultMarkerStart, edge.markerEnd || defaultMarkerEnd].forEach((marker) => {
         if (marker && typeof marker === 'object') {
-          const markerId = getMarkerId(marker, id);
-          if (!ids.has(markerId)) {
-            markers.push({ id: markerId, color: marker.color || defaultColor, ...marker });
-            ids.add(markerId);
+          // Generate both selected and unselected marker ids
+          for (const selected of [true, false]) {
+            const markerId = getMarkerId(marker, id, selected);
+
+            console.log(selected, markerId);
+            if (!ids.has(markerId)) {
+              markers.push({ id: markerId, color: marker.color || defaultColor, selected, ...marker });
+              ids.add(markerId);
+            }
           }
         }
       });

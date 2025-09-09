@@ -102,14 +102,19 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
   );
 
   const markerStartUrl = useMemo(
-    () => (edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId)}')` : undefined),
-    [edge.markerStart, rfId]
+    () => (edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId, edge.selected)}')` : undefined),
+    [edge.markerStart, rfId, edge.selected]
   );
 
   const markerEndUrl = useMemo(
-    () => (edge.markerEnd ? `url('#${getMarkerId(edge.markerEnd, rfId)}')` : undefined),
-    [edge.markerEnd, rfId]
+    () => (edge.markerEnd ? `url('#${getMarkerId(edge.markerEnd, rfId, edge.selected)}')` : undefined),
+    [edge.markerEnd, rfId, edge.selected]
   );
+
+  if (edge.selected) {
+    console.log('markerStartUrl', markerStartUrl);
+    console.log('markerEndUrl', markerEndUrl);
+  }
 
   if (edge.hidden || sourceX === null || sourceY === null || targetX === null || targetY === null) {
     return null;

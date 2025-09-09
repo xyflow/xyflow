@@ -15,6 +15,7 @@ const Marker = ({
   color,
   width = 12.5,
   height = 12.5,
+  selected,
   markerUnits = 'strokeWidth',
   strokeWidth,
   orient = 'auto-start-reverse',
@@ -37,7 +38,7 @@ const Marker = ({
       refX="0"
       refY="0"
     >
-      <Symbol color={color} strokeWidth={strokeWidth} />
+      <Symbol color={color} strokeWidth={strokeWidth} selected={selected} />
     </marker>
   );
 };
@@ -66,6 +67,8 @@ const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
     return null;
   }
 
+  console.log('markers', markers);
+
   return (
     <svg className="react-flow__marker" aria-hidden="true">
       <defs>
@@ -77,6 +80,7 @@ const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
             color={marker.color}
             width={marker.width}
             height={marker.height}
+            selected={marker.selected}
             markerUnits={marker.markerUnits}
             strokeWidth={marker.strokeWidth}
             orient={marker.orient}

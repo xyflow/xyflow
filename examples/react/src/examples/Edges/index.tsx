@@ -18,13 +18,21 @@ import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';
 import CustomEdge3 from './CustomEdge3';
 
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
-const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
-const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) => console.log('dblclick', edge);
-const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => console.log('enter', edge);
-const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => console.log('move', edge);
-const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) => console.log('leave', edge);
+// const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+// const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
+// const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
+// const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) => console.log('dblclick', edge);
+// const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => console.log('enter', edge);
+// const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => console.log('move', edge);
+// const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) => console.log('leave', edge);
+
+const onNodeDragStop = (_: MouseEvent, node: Node) => {};
+const onNodeClick = (_: MouseEvent, node: Node) => {};
+const onEdgeClick = (_: MouseEvent, edge: Edge) => {};
+const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) => {};
+const onEdgeMouseEnter = (_: MouseEvent, edge: Edge) => {};
+const onEdgeMouseMove = (_: MouseEvent, edge: Edge) => {};
+const onEdgeMouseLeave = (_: MouseEvent, edge: Edge) => {};
 
 const initialNodes: Node[] = [
   {

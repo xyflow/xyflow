@@ -5,7 +5,7 @@ import { useStoreApi } from '../../hooks/useStore';
 
 type SymbolProps = Omit<EdgeMarker, 'type'>;
 
-const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
+const ArrowSymbol = ({ color = 'none', strokeWidth = 1, selected = false }: SymbolProps) => {
   const style = {
     strokeWidth,
     ...(color && { stroke: color }),
@@ -13,7 +13,7 @@ const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
 
   return (
     <polyline
-      className="arrow"
+      className={`arrow ${selected ? 'selected' : ''}`}
       style={style}
       strokeLinecap="round"
       fill="none"
@@ -23,15 +23,17 @@ const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
   );
 };
 
-const ArrowClosedSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
+const ArrowClosedSymbol = ({ color = 'none', strokeWidth = 1, selected = false }: SymbolProps) => {
   const style = {
     strokeWidth,
     ...(color && { stroke: color, fill: color }),
   };
 
+  console.log('ArrowClosedSymbol', selected);
+
   return (
     <polyline
-      className="arrowclosed"
+      className={`arrowclosed ${selected ? 'selected' : ''}`}
       style={style}
       strokeLinecap="round"
       strokeLinejoin="round"
