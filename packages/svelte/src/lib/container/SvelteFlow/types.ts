@@ -306,6 +306,12 @@ export type SvelteFlowProps<
      */
     panOnScroll?: boolean;
     /**
+     * Controls how fast viewport should be panned on scroll.
+     * Use together with `panOnScroll` prop.
+     * @default 0.5
+     */
+    panOnScrollSpeed?: number;
+    /**
      * This prop is used to limit the direction of panning when panOnScroll is enabled.
      * The "free" option allows panning in any direction.
      * @default "free"

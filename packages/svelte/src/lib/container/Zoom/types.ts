@@ -6,6 +6,7 @@ import type { Snippet } from 'svelte';
 export type ZoomProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   store: SvelteFlowStore<NodeType, EdgeType>;
   panOnScrollMode: PanOnScrollMode;
+  panOnScrollSpeed: number;
   preventScrolling: boolean;
   zoomOnScroll: boolean;
   zoomOnDoubleClick: boolean;
