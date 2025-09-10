@@ -137,3 +137,5 @@ export {
   reconnectEdge,
   getConnectedEdges,
 } from '@xyflow/system';
+
+export { ReactFlowStatic } from './static';

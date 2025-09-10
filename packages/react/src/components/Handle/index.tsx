@@ -46,7 +46,7 @@ const selector = (s: ReactFlowState) => ({
 const connectingSelector =
   (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
     const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
-    const { fromHandle, toHandle, isValid } = connection;
+    const { fromHandle, toHandle, isValid } = connection ?? {};
     const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
 
     return {

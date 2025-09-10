@@ -59,6 +59,7 @@ import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
 import MovingHandles from '../examples/MovingHandles';
 import DetachedHandle from '../examples/DetachedHandle';
+import Static from '../examples/Static';
 
 export interface IRoute {
   name: string;
@@ -361,6 +362,11 @@ const routes: IRoute[] = [
     name: 'redux',
     path: 'redux',
     component: Redux,
+  },
+  {
+    name: 'Static',
+    path: 'static',
+    component: Static,
   },
   {
     name: 'Validation',
