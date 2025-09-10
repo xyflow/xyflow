@@ -1,5 +1,4 @@
 import cc from 'classcat';
-import { NodeLookup } from '@xyflow/system';
 
 import { Provider } from '../../contexts/NodeIdContext';
 import { ReactFlowStaticProps } from '..';
@@ -7,20 +6,12 @@ import { InternalNode, Node } from '../../types';
 import { builtinNodeTypes } from '../../components/NodeWrapper/utils';
 
 export function NodeWrapper<NodeType extends Node = Node>({
-  id,
-  nodeLookup,
+  node,
   nodeTypes,
 }: {
-  id: string;
-  nodeLookup: NodeLookup<InternalNode<NodeType>>;
+  node: InternalNode<NodeType>;
   nodeTypes: ReactFlowStaticProps['nodeTypes'];
 }) {
-  const node = nodeLookup.get(id);
-
-  if (!node) {
-    throw new Error(`Node with id "${id}" not found.`);
-  }
-
   const nodeType = node.type || 'default';
   const NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
 

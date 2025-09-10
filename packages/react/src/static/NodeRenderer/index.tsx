@@ -5,13 +5,11 @@ import { NodeWrapper } from './NodeWrapper';
 import { InternalNode, Node } from '../../types';
 
 export function NodeRenderer<NodeType extends Node = Node>({
-  nodes,
   nodeLookup,
   nodeTypes,
 }: {
-  nodes: ReactFlowStaticProps<NodeType>['nodes'];
   nodeLookup: NodeLookup<InternalNode<NodeType>>;
   nodeTypes: ReactFlowStaticProps<NodeType>['nodeTypes'];
 }) {
-  return nodes?.map((node) => <NodeWrapper key={node.id} id={node.id} nodeTypes={nodeTypes} nodeLookup={nodeLookup} />);
+  return Array.from(nodeLookup).map(([id, node]) => <NodeWrapper key={id} node={node} nodeTypes={nodeTypes} />);
 }

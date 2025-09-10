@@ -55,17 +55,17 @@ function ReactFlowStaticComponent<NodeType extends Node = Node, EdgeType extends
   }: ReactFlowStaticProps<NodeType, EdgeType>,
   ref: ForwardedRef<HTMLDivElement>
 ) {
-  const nodesWithDimensions = nodes.filter((node) => {
-    const hasDimensions = node.width !== undefined && node.height !== undefined;
-
-    if (!hasDimensions) {
-      console.warn(`Node with id "${node.id}" is missing width and/or height.`);
-    }
-
-    return hasDimensions;
-  });
-
   const nodeLookup = useMemo(() => {
+    const nodesWithDimensions = nodes.filter((node) => {
+      const hasDimensions = node.width !== undefined && node.height !== undefined;
+
+      if (!hasDimensions) {
+        console.warn(`Node with id "${node.id}" is missing width and/or height.`);
+      }
+
+      return hasDimensions;
+    });
+
     const nodeLookup = new Map();
 
     adoptUserNodes(nodesWithDimensions, nodeLookup, new Map(), {
@@ -74,7 +74,7 @@ function ReactFlowStaticComponent<NodeType extends Node = Node, EdgeType extends
     });
 
     return nodeLookup;
-  }, [nodesWithDimensions]);
+  }, [nodes]);
 
   const viewport = useViewport({ nodeLookup, width, height, fitViewOptions, minZoom, maxZoom });
 
@@ -87,7 +87,7 @@ function ReactFlowStaticComponent<NodeType extends Node = Node, EdgeType extends
         id={id}
       >
         <Viewport viewport={viewport}>
-          <NodeRenderer<NodeType> nodes={nodesWithDimensions} nodeLookup={nodeLookup} nodeTypes={nodeTypes} />
+          <NodeRenderer<NodeType> nodeLookup={nodeLookup} nodeTypes={nodeTypes} />
           <EdgeRenderer<NodeType, EdgeType> edges={edges} edgeTypes={edgeTypes} nodeLookup={nodeLookup} />
         </Viewport>
         {children}
