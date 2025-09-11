@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "@xyflow/react": "workspace:*"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.1",
