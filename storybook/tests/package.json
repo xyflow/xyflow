@@ -1,0 +1,12 @@
+{
+  "name": "xyflow-storybook-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@storybook/react-vite": "^9.1.5",
+    "vitest": "^3.2.4",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7"
+  }
+}

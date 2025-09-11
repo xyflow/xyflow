@@ -37,6 +37,16 @@ export default defineConfig({
           setupFiles: ['.storybook/vitest.setup.ts'],
         },
       },
+      {
+        // Regular component tests - using node environment for now
+        test: {
+          name: 'component',
+          environment: 'node',
+          setupFiles: ['../tests/setup.ts'],
+          include: ['../tests/components/**/*.test.{ts,tsx}', '../tests/utils/**/*.test.{ts,tsx}'],
+          exclude: ['**/node_modules/**', '**/dist/**'],
+        },
+      },
     ],
   },
 });
