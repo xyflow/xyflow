@@ -1,12 +1,14 @@
 {
-  "name": "xyflow-storybook-tests",
+  "name": "xyflow-storybook-shared-tests",
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:ui": "vitest --ui"
+  },
   "devDependencies": {
-    "@storybook/react-vite": "^9.1.5",
-    "vitest": "^3.2.4",
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7"
+    "vitest": "^3.2.4"
   }
 }

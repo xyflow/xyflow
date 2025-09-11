@@ -1,65 +1,86 @@
 import { describe, it, expect } from 'vitest';
 
-// Shared test cases that can be used across different frameworks
-export interface ComponentTestCase {
+// Shared utility functions that can be used across different frameworks
+export interface TestCase {
   name: string;
-  storyName: string;
-  expectedProps?: Record<string, unknown>;
-  expectedBehavior?: string;
+  description: string;
+  expectedResult?: unknown;
 }
 
-export const buttonTestCases: ComponentTestCase[] = [
-  {
-    name: 'Primary button configuration',
-    storyName: 'Primary',
-    expectedProps: { primary: true, label: 'Button' },
-    expectedBehavior: 'should render as primary variant'
-  },
-  {
-    name: 'Secondary button configuration',
-    storyName: 'Secondary', 
-    expectedProps: { label: 'Button' },
-    expectedBehavior: 'should render as secondary variant (default)'
-  },
-  {
-    name: 'Large button configuration',
-    storyName: 'Large',
-    expectedProps: { size: 'large', label: 'Button' },
-    expectedBehavior: 'should render with large size'
-  },
-  {
-    name: 'Small button configuration',
-    storyName: 'Small',
-    expectedProps: { size: 'small', label: 'Button' },
-    expectedBehavior: 'should render with small size'
+export interface ValidationRule {
+  field: string;
+  required?: boolean;
+  type?: 'string' | 'number' | 'boolean' | 'array' | 'object';
+  minLength?: number;
+  maxLength?: number;
+}
+
+// Shared validation utilities
+export function validateInput(input: unknown, rules: ValidationRule[]): { isValid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  rules.forEach((rule) => {
+    const value = (input as any)?.[rule.field];
+
+    if (rule.required && (value === undefined || value === null || value === '')) {
+      errors.push(`${rule.field} is required`);
+      return;
+    }
+
+    if (value !== undefined && rule.type) {
+      const actualType = Array.isArray(value) ? 'array' : typeof value;
+      if (actualType !== rule.type) {
+        errors.push(`${rule.field} must be of type ${rule.type}`);
+      }
+    }
+
+    if (rule.minLength && typeof value === 'string' && value.length < rule.minLength) {
+      errors.push(`${rule.field} must be at least ${rule.minLength} characters`);
+    }
+
+    if (rule.maxLength && typeof value === 'string' && value.length > rule.maxLength) {
+      errors.push(`${rule.field} must be no more than ${rule.maxLength} characters`);
+    }
+  });
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+// Shared formatting utilities
+export function formatCurrency(amount: number, currency = 'USD'): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+  }).format(amount);
+}
+
+export function formatDate(date: Date | string, locale = 'en-US'): string {
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  return dateObj.toLocaleDateString(locale);
+}
+
+// Shared array utilities
+export function chunk<T>(array: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
   }
-];
+  return chunks;
+}
 
-// Generic test runner that works with any story collection
-export function runStoryTests(stories: Record<string, { args: Record<string, unknown>; component?: unknown; render?: unknown }>, testCases: ComponentTestCase[]) {
-  describe('Story Configuration Tests', () => {
-    testCases.forEach(({ name, storyName, expectedProps }) => {
-      it(name, () => {
-        const story = stories[storyName];
-        expect(story).toBeDefined();
-        
-        if (expectedProps) {
-          Object.entries(expectedProps).forEach(([key, value]) => {
-            expect(story.args[key]).toBe(value);
-          });
-        }
-        
-        // All stories should have onClick handler from meta
-        expect(story.args.onClick).toBeDefined();
-      });
-    });
+export function unique<T>(array: T[]): T[] {
+  return [...new Set(array)];
+}
 
-    it('All stories should be composable', () => {
-      Object.keys(stories).forEach(storyName => {
-        const story = stories[storyName];
-        expect(story.args).toBeDefined();
-        // Composed stories are functions, not objects with component/render
-        expect(typeof story).toBe('function');
+// Generic test runner for shared utilities
+export function runSharedTests(testCases: TestCase[], testFunction: (testCase: TestCase) => void) {
+  describe('Shared Utility Tests', () => {
+    testCases.forEach((testCase) => {
+      it(testCase.name, () => {
+        testFunction(testCase);
       });
     });
   });

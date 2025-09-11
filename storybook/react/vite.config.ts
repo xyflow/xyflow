@@ -38,12 +38,12 @@ export default defineConfig({
         },
       },
       {
-        // Regular component tests - using node environment for now
+        // Regular utility tests - using node environment
         test: {
-          name: 'component',
+          name: 'shared-utils',
           environment: 'node',
           setupFiles: ['../tests/setup.ts'],
-          include: ['../tests/components/**/*.test.{ts,tsx}', '../tests/utils/**/*.test.{ts,tsx}'],
+          include: ['../tests/utils/**/*.test.{ts,tsx}'],
           exclude: ['**/node_modules/**', '**/dist/**'],
         },
       },

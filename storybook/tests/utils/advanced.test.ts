@@ -24,7 +24,7 @@ class Counter {
 // Simple async function to test
 async function fetchUserData(id: number): Promise<{ id: number; name: string }> {
   // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 10));
+  await new Promise((resolve) => setTimeout(resolve, 10));
   return { id, name: `User ${id}` };
 }
 
@@ -47,7 +47,7 @@ describe('Counter Class', () => {
   it('should increment count', () => {
     counter.increment();
     expect(counter.getCount()).toBe(1);
-    
+
     counter.increment();
     expect(counter.getCount()).toBe(2);
   });
@@ -72,15 +72,12 @@ describe('Async Functions', () => {
     const userData = await fetchUserData(123);
     expect(userData).toEqual({
       id: 123,
-      name: 'User 123'
+      name: 'User 123',
     });
   });
 
   it('should handle multiple async calls', async () => {
-    const [user1, user2] = await Promise.all([
-      fetchUserData(1),
-      fetchUserData(2)
-    ]);
+    const [user1, user2] = await Promise.all([fetchUserData(1), fetchUserData(2)]);
 
     expect(user1.name).toBe('User 1');
     expect(user2.name).toBe('User 2');
