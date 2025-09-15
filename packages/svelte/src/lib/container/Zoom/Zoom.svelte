@@ -1,5 +1,5 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
-  import { PanOnScrollMode, type PanZoomInstance, type Transform } from '@xyflow/system';
+  import { type PanZoomInstance, type Transform } from '@xyflow/system';
 
   import zoom from '$lib/actions/zoom';
   import type { ZoomProps } from './types';
@@ -7,15 +7,15 @@
 
   let {
     store = $bindable(),
-    panOnScrollMode = PanOnScrollMode.Free,
-    preventScrolling = true,
-    zoomOnScroll = true,
-    zoomOnDoubleClick = true,
-    zoomOnPinch = true,
-    panOnDrag = true,
-    panOnScroll = false,
-    panOnScrollSpeed = 0.5,
-    paneClickDistance = 1,
+    panOnScrollMode,
+    preventScrolling,
+    zoomOnScroll,
+    zoomOnDoubleClick,
+    zoomOnPinch,
+    panOnDrag,
+    panOnScroll,
+    panOnScrollSpeed,
+    paneClickDistance,
     onmovestart,
     onmove,
     onmoveend,
@@ -60,7 +60,7 @@
     panOnScroll: panOnScrollActive,
     panOnDrag: panOnDragActive,
     panOnScrollSpeed,
-    panOnScrollMode: panOnScrollMode || PanOnScrollMode.Free,
+    panOnScrollMode: panOnScrollMode,
     zoomActivationKeyPressed: store.zoomActivationKeyPressed,
     preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
     noPanClassName: store.noPanClass,
