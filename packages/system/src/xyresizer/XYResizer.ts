@@ -125,6 +125,8 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     let parentNode: InternalNodeBase | undefined = undefined; // Needed to fix expandParent
     let parentExtent: CoordinateExtent | undefined = undefined;
     let childExtent: CoordinateExtent | undefined = undefined;
+    // we only want to trigger onResizeEnd if onResize was actually called
+    let resizeDetected = false;
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
@@ -300,13 +302,20 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         if (callResize === false) {
           return;
         }
+        resizeDetected = true;
 
         onResize?.(event, nextValues);
         onChange(change, childChanges);
       })
       .on('end', (event: ResizeDragEvent) => {
+        if (!resizeDetected) {
+          return;
+        }
+
         onResizeEnd?.(event, { ...prevValues });
         onEnd?.({ ...prevValues });
+
+        resizeDetected = false;
       });
     selection.call(dragHandler);
   }
