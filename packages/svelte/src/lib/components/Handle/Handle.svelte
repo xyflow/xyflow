@@ -122,6 +122,7 @@
         connectionMode: store.connectionMode,
         lib: 'svelte',
         autoPanOnConnect: store.autoPanOnConnect,
+        autoPanSpeed: store.autoPanSpeed,
         flowId: store.flowId,
         isValidConnection: isValidConnection ?? store.isValidConnection,
         updateConnection: store.updateConnection,
