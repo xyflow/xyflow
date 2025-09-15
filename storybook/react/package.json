@@ -16,9 +16,9 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@xyflow/react": "workspace:*",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@xyflow/react": "workspace:*"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
@@ -26,21 +26,25 @@
     "@storybook/addon-docs": "^9.1.5",
     "@storybook/addon-vitest": "^9.1.5",
     "@storybook/react-vite": "^9.1.5",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/browser": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "eslint-plugin-storybook": "^9.1.5",
     "globals": "^16.3.0",
+    "jsdom": "^25.0.0",
+    "playwright": "^1.55.0",
     "storybook": "^9.1.5",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2",
-    "vitest": "^3.2.4",
-    "@vitest/browser": "^3.2.4",
-    "playwright": "^1.55.0",
-    "@vitest/coverage-v8": "^3.2.4"
+    "vitest": "^3.2.4"
   }
 }
