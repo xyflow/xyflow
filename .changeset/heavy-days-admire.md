@@ -1,5 +1,7 @@
 ---
 '@xyflow/system': patch
+'@xyflow/svelte': patch
+'@xyflow/react': patch
 ---
 
-Only call resize end if node was resized
+Prevent calling onResizeEnd if node was not resized
