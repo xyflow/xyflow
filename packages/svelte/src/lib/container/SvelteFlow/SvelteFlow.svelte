@@ -59,6 +59,7 @@
     zoomOnDoubleClick = true,
     zoomOnPinch = true,
     panOnScroll = false,
+    panOnScrollSpeed = 0.5,
     panOnDrag = true,
     selectionOnDrag = true,
     connectionLineComponent,
@@ -152,6 +153,7 @@
     {zoomOnDoubleClick}
     {zoomOnPinch}
     {panOnScroll}
+    {panOnScrollSpeed}
     {panOnDrag}
     {paneClickDistance}
     {onmovestart}
