@@ -60,7 +60,7 @@
     panOnScroll: panOnScrollActive,
     panOnDrag: panOnDragActive,
     panOnScrollSpeed,
-    panOnScrollMode: panOnScrollMode,
+    panOnScrollMode,
     zoomActivationKeyPressed: store.zoomActivationKeyPressed,
     preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
     noPanClassName: store.noPanClass,
