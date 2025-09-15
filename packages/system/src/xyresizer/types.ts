@@ -19,6 +19,7 @@ export type ResizeParamsWithDirection = ResizeParams & {
  * Used to determine the control line position of the NodeResizer
  *
  * @public
+ * @inline
  */
 export type ControlLinePosition = 'top' | 'bottom' | 'left' | 'right';
 
@@ -26,6 +27,7 @@ export type ControlLinePosition = 'top' | 'bottom' | 'left' | 'right';
  * Used to determine the control position of the NodeResizer
  *
  * @public
+ * @inline
  */
 export type ControlPosition = ControlLinePosition | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
@@ -42,6 +44,7 @@ export enum ResizeControlVariant {
 /**
  * The direction the user can resize the node.
  * @public
+ * @inline
  */
 export type ResizeControlDirection = 'horizontal' | 'vertical';
 
