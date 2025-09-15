@@ -46,7 +46,6 @@ export function getElevatedEdgeZIndex({
     return zIndex;
   }
   const edgeZ = elevateOnSelect && selected ? 1000 : 0;
-  // const edgeZ = elevateOnSelect && (sourceNode.selected || targetNode.selected || selected) ? 1000 : 0;
 
   const nodeZ = Math.max(
     sourceNode.parentId || (elevateOnSelect && sourceNode.selected) ? sourceNode.internals.z : 0,
