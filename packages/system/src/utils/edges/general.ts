@@ -45,12 +45,12 @@ export function getElevatedEdgeZIndex({
   if (zIndex !== undefined) {
     return zIndex;
   }
-
   const edgeZ = elevateOnSelect && selected ? 1000 : 0;
+  // const edgeZ = elevateOnSelect && (sourceNode.selected || targetNode.selected || selected) ? 1000 : 0;
 
   const nodeZ = Math.max(
-    sourceNode.parentId ? sourceNode.internals.z : 0,
-    targetNode.parentId ? targetNode.internals.z : 0
+    sourceNode.parentId || (elevateOnSelect && sourceNode.selected) ? sourceNode.internals.z : 0,
+    targetNode.parentId || (elevateOnSelect && targetNode.selected) ? targetNode.internals.z : 0
   );
 
   return edgeZ + nodeZ;
