@@ -16,9 +16,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@xyflow/react": "workspace:*",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@xyflow/react": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
@@ -28,8 +26,8 @@
     "@storybook/react-vite": "^9.1.5",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^5.0.0",
     "@vitest/browser": "^3.2.4",
     "@vitest/coverage-v8": "^3.2.4",
@@ -46,5 +44,15 @@
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2",
     "vitest": "^3.2.4"
+  },
+  "resolutions": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "react": "18.2.0",
+      "react-dom": "18.2.0"
+    }
   }
 }
