@@ -140,8 +140,8 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         ..._options.defaults,
         ...userNode,
         measured: {
-          width: userNode.width ?? userNode.measured?.width,
-          height: userNode.height ?? userNode.measured?.height,
+          width: userNode.measured?.width,
+          height: userNode.measured?.height,
         },
         internals: {
           positionAbsolute: clampedPosition,
