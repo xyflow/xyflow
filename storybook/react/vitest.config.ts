@@ -1,42 +1,42 @@
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
+import { defineConfig, defineProject, mergeConfig } from 'vitest/config';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = path.resolve(__dirname, '../../'); // monorepo root
+const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    dedupe: ['react', 'react-dom'],
-    alias: {
-      react: path.resolve(root, 'node_modules/react'),
-      'react/jsx-runtime': path.resolve(root, 'node_modules/react/jsx-runtime'),
-      'react-dom': path.resolve(root, 'node_modules/react-dom'),
-      'react-dom/client': path.resolve(root, 'node_modules/react-dom/client'),
+import viteConfig from './vite.config';
+
+export default mergeConfig(
+  viteConfig,
+  defineConfig({
+    test: {
+      // Use `workspace` field in Vitest < 3.2
+      projects: [
+        defineProject({
+          plugins: [
+            storybookTest({
+              // The location of your Storybook config, main.js|ts
+              configDir: path.join(dirname, '.storybook'),
+              // This should match your package.json script to run Storybook
+              // The --ci flag will skip prompts and not open a browser
+              storybookScript: 'yarn storybook --ci',
+            }),
+          ],
+          test: {
+            name: 'storybook',
+            // Enable browser mode
+            browser: {
+              enabled: true,
+              // Make sure to install Playwright
+              provider: 'playwright',
+              headless: true,
+              instances: [{ browser: 'chromium' }],
+            },
+            setupFiles: ['./.storybook/vitest.setup.ts'],
+          },
+        }),
+      ],
     },
-  },
-  test: {
-    projects: [
-      {
-        extends: true,
-        plugins: [storybookTest({ configDir: '.storybook' })],
-        test: {
-          name: 'storybook',
-          browser: { enabled: true, provider: 'playwright', instances: [{ browser: 'chromium' }] },
-          setupFiles: ['.storybook/vitest.setup.ts'],
-        },
-      },
-      {
-        test: {
-          name: 'unit',
-          globals: true,
-          environment: 'jsdom',
-          include: ['src/**/*.test.{ts,tsx}'],
-          exclude: ['**/node_modules/**', '**/dist/**'],
-          setupFiles: ['.storybook/vitest.setup.ts'],
-        },
-      },
-    ],
-  },
-});
+  })
+);
