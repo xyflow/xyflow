@@ -72,19 +72,19 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
   }
 }
 
-function parseHandles(nodeId: string, handles?: NodeHandle[]): NodeHandleBounds | null {
-  if (!handles) {
-    return null;
+function parseHandles(userNode: NodeBase, internalNode?: InternalNodeBase): NodeHandleBounds | undefined {
+  if (!userNode.handles) {
+    return !userNode.measured ? undefined : internalNode?.internals.handleBounds;
   }
 
   const source: Handle[] = [];
   const target: Handle[] = [];
 
-  for (const handle of handles) {
+  for (const handle of userNode.handles) {
     const handleBounds = {
       width: handle.width ?? 1,
       height: handle.height ?? 1,
-      nodeId: nodeId,
+      nodeId: userNode.id,
       x: handle.x,
       y: handle.y,
       position: handle.position,
@@ -146,9 +146,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         internals: {
           positionAbsolute: clampedPosition,
           // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
-          handleBounds:
-            parseHandles(userNode.id, userNode.handles) ??
-            (!userNode.measured ? undefined : internalNode?.internals.handleBounds),
+          handleBounds: parseHandles(userNode, internalNode),
           z: calculateZ(userNode, selectedNodeZ),
           userNode,
         },
