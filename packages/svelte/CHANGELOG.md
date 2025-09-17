@@ -1,5 +1,30 @@
 # @xyflow/svelte
 
+## 1.3.0
+
+### Minor Changes
+
+- [#5496](https://github.com/xyflow/xyflow/pull/5496) [`d23c3dfc5`](https://github.com/xyflow/xyflow/commit/d23c3dfc551216ea52183a24e9a9f24ca35cc447) Thanks [@printerscanner](https://github.com/printerscanner)! - Pass a custom `nodeComponent` to Svelteflow's Minimap
+
+### Patch Changes
+
+- [#5480](https://github.com/xyflow/xyflow/pull/5480) [`f869808e3`](https://github.com/xyflow/xyflow/commit/f869808e3dfd3d289db034d21d505d62f84cdde3) Thanks [@peterkogo](https://github.com/peterkogo)! - Prevent multi-touch events while making a new connection
+
+- [#5510](https://github.com/xyflow/xyflow/pull/5510) [`cdd671699`](https://github.com/xyflow/xyflow/commit/cdd671699bfe21e0aa69bc5e8585a4d0ce189974) Thanks [@peterkogo](https://github.com/peterkogo)! - Add missing props autoPanSpeed and panOnScrollSpeed
+
+- [#5482](https://github.com/xyflow/xyflow/pull/5482) [`56381ae54`](https://github.com/xyflow/xyflow/commit/56381ae546f392b13e7c1390df60e48c9072f128) Thanks [@peterkogo](https://github.com/peterkogo)! - Make isNodeIntersecting behave the same as getIntersectingNodes
+
+- [#5509](https://github.com/xyflow/xyflow/pull/5509) [`b6ae4cc11`](https://github.com/xyflow/xyflow/commit/b6ae4cc11f1456f843ace7e7f3de41c9196179e0) Thanks [@moklick](https://github.com/moklick)! - Prevent calling onResizeEnd if node was not resized
+
+- [#5511](https://github.com/xyflow/xyflow/pull/5511) [`d891e5ff1`](https://github.com/xyflow/xyflow/commit/d891e5ff106c6202f69a9b14d261294cc29bbec7) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix regression: elevate edges if connected nodes are selected
+
+- [#5497](https://github.com/xyflow/xyflow/pull/5497) [`eba087e8b`](https://github.com/xyflow/xyflow/commit/eba087e8bec74e6591e04ebf0e1e61799b94ecd8) Thanks [@peterkogo](https://github.com/peterkogo)! - Skip eagerly rendering nodes when node dimensions and handles are predefined
+
+- [#5455](https://github.com/xyflow/xyflow/pull/5455) [`86e8b4913`](https://github.com/xyflow/xyflow/commit/86e8b49133370b97deeed5269d040b01dc2d3097) Thanks [@Sec-ant](https://github.com/Sec-ant)! - Fix style attribute not being propagated to wrapper
+
+- Updated dependencies [[`f869808e3`](https://github.com/xyflow/xyflow/commit/f869808e3dfd3d289db034d21d505d62f84cdde3), [`2a35c65a0`](https://github.com/xyflow/xyflow/commit/2a35c65a02c6c8aec6b005ac3e72988f996669c4), [`b6ae4cc11`](https://github.com/xyflow/xyflow/commit/b6ae4cc11f1456f843ace7e7f3de41c9196179e0), [`d891e5ff1`](https://github.com/xyflow/xyflow/commit/d891e5ff106c6202f69a9b14d261294cc29bbec7), [`eba087e8b`](https://github.com/xyflow/xyflow/commit/eba087e8bec74e6591e04ebf0e1e61799b94ecd8)]:
+  - @xyflow/system@0.0.69
+
 ## 1.2.4
 
 ### Patch Changes
