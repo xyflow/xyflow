@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@storybook/addon-docs": "^9.1.5",
+    "@storybook/addon-a11y": "^9.1.5",
     "@storybook/addon-svelte-csf": "^5.0.8",
     "@storybook/addon-vitest": "^9.1.5",
     "@storybook/svelte-vite": "^9.1.5",
