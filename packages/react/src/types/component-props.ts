@@ -612,6 +612,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   elevateNodesOnSelect?: boolean;
   /**
    * Enabling this option will raise the z-index of edges when they are selected.
+   * @default false
    */
   elevateEdgesOnSelect?: boolean;
   /**
