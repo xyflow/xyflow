@@ -1,5 +1,19 @@
 # @xyflow/system
 
+## 0.0.69
+
+### Patch Changes
+
+- [#5480](https://github.com/xyflow/xyflow/pull/5480) [`f869808e3`](https://github.com/xyflow/xyflow/commit/f869808e3dfd3d289db034d21d505d62f84cdde3) Thanks [@peterkogo](https://github.com/peterkogo)! - Prevent multi-touch events while making a new connection
+
+- [#5489](https://github.com/xyflow/xyflow/pull/5489) [`2a35c65a0`](https://github.com/xyflow/xyflow/commit/2a35c65a02c6c8aec6b005ac3e72988f996669c4) Thanks [@Sec-ant](https://github.com/Sec-ant)! - Fix nodeDragThreshold changing with zoom level
+
+- [#5509](https://github.com/xyflow/xyflow/pull/5509) [`b6ae4cc11`](https://github.com/xyflow/xyflow/commit/b6ae4cc11f1456f843ace7e7f3de41c9196179e0) Thanks [@moklick](https://github.com/moklick)! - Prevent calling onResizeEnd if node was not resized
+
+- [#5511](https://github.com/xyflow/xyflow/pull/5511) [`d891e5ff1`](https://github.com/xyflow/xyflow/commit/d891e5ff106c6202f69a9b14d261294cc29bbec7) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix regression: elevate edges if connected nodes are selected
+
+- [#5497](https://github.com/xyflow/xyflow/pull/5497) [`eba087e8b`](https://github.com/xyflow/xyflow/commit/eba087e8bec74e6591e04ebf0e1e61799b94ecd8) Thanks [@peterkogo](https://github.com/peterkogo)! - Skip eagerly rendering nodes when node dimensions and handles are predefined
+
 ## 0.0.68
 
 ### Patch Changes
