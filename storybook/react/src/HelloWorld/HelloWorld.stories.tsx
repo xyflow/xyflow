@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { HelloWorld, AnimatedHelloWorld } from './HelloWorld';
 import { within, waitFor } from '@storybook/test';
-import { waitForDragging } from './waitForDragging';
+import { waitForDragging } from '../../../shared/waitForDragging';
 
 const meta: Meta<typeof HelloWorld> = {
   title: 'React Flow/Hello World',
