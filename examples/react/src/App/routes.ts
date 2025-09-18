@@ -35,6 +35,7 @@ import Provider from '../examples/Provider';
 import SaveRestore from '../examples/SaveRestore';
 import SetNodesBatching from '../examples/SetNodesBatching';
 import Stress from '../examples/Stress';
+import StressMarkers from '../examples/StressMarkers';
 import Subflow from '../examples/Subflow';
 import SwitchFlow from '../examples/Switch';
 import TouchDevice from '../examples/TouchDevice';
