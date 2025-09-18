@@ -94,6 +94,8 @@
     noPanClass,
     noWheelClass,
     ariaLabelConfig,
+    autoPanSpeed,
+    panOnScrollSpeed,
     ...divAttributes
   } = $derived(rest);
   /* eslint-enable @typescript-eslint/no-unused-vars */

@@ -72,6 +72,9 @@ export function createPanOnScrollHandler({
 }: PanOnScrollParams) {
   return (event: any) => {
     if (isWrappedWithClass(event, noWheelClassName)) {
+      if (event.ctrlKey) {
+        event.preventDefault(); // stop native page zoom for pinch zooming
+      }
       return false;
     }
     event.preventDefault();

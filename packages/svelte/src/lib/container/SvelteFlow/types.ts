@@ -240,6 +240,11 @@ export type SvelteFlowProps<
      */
     nodesDraggable?: boolean;
     /**
+     * The speed at which the viewport pans while dragging a node or a selection box.
+     * @default 15
+     */
+    autoPanSpeed?: number;
+    /**
      * When `true`, the viewport will pan when a node is focused.
      * @default true
      */
@@ -305,6 +310,12 @@ export type SvelteFlowProps<
      * @default false
      */
     panOnScroll?: boolean;
+    /**
+     * Controls how fast viewport should be panned on scroll.
+     * Use together with `panOnScroll` prop.
+     * @default 0.5
+     */
+    panOnScrollSpeed?: number;
     /**
      * This prop is used to limit the direction of panning when panOnScroll is enabled.
      * The "free" option allows panning in any direction.
