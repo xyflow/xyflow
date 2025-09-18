@@ -1,0 +1,361 @@
+Building Angular Package
+
+------------------------------------------------------------------------------
+Building entry point '@xyflow/angular'
+------------------------------------------------------------------------------
+- Compiling with Angular sources in partial compilation mode.
+[96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m145[0m:[93m25[0m - [91merror[0m[90m TS7009: [0m'new' expression, whose target lacks a construct signature, implicitly has an 'any' type.
+
+[7m145[0m     const dragHandler = new XYDrag({
+[7m   [0m [91m                        ~~~~~~~~~~~~[0m
+[7m146[0m       getStoreItems: () => this.getDragItems() as any,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m149[0m       onDragStop: this.onDragStop.bind(this),
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m150[0m     });
+[7m   [0m [91m~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m147[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType '(event: MouseEvent | TouchEvent, nodes: NodeDragItem[]) => void' is not assignable to type 'OnDrag'.
+  Types of parameters 'nodes' and 'dragItems' are incompatible.
+    Type 'Map<string, NodeDragItem>' is missing the following properties from type 'NodeDragItem[]': length, pop, push, concat, and 24 more.
+
+[7m147[0m       onDragStart: this.onDragStart.bind(this),
+[7m   [0m [91m      ~~~~~~~~~~~[0m
+
+  [96m../../node_modules/.pnpm/@xyflow+system@0.0.69/node_modules/@xyflow/system/dist/esm/xydrag/XYDrag.d.ts[0m:[93m35[0m:[93m5[0m
+    [7m35[0m     onDragStart?: OnDrag;
+    [7m  [0m [96m    ~~~~~~~~~~~[0m
+    The expected type comes from property 'onDragStart' which is declared here on type 'XYDragParams<(e: any, nodes: any, node: any) => void | undefined>'
+[96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m149[0m:[93m24[0m - [91merror[0m[90m TS2551: [0mProperty 'onDragStop' does not exist on type 'NodeWrapperComponent'. Did you mean 'nodeDragStop'?
+
+[7m149[0m       onDragStop: this.onDragStop.bind(this),
+[7m   [0m [91m                       ~~~~~~~~~~[0m
+
+  [96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m92[0m:[93m13[0m
+    [7m92[0m   @Output() nodeDragStop = new EventEmitter<{ event: MouseEvent | TouchEvent; node: AngularFlowNode }>();
+    [7m  [0m [96m            ~~~~~~~~~~~~[0m
+    'nodeDragStop' is declared here.
+[96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m40[0m:[93m30[0m - [91merror[0m[90m TS2339: [0mProperty 'className' does not exist on type 'AngularFlowNode'.
+
+[7m40[0m       [class]="(node as any).className || ''"
+[7m  [0m [91m                             ~~~~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m40[0m:[93m16[0m - [91merror[0m[90m NG5002: [0mParser Error: Missing closing parentheses at column 7 in [(node as any).className || ''] in /Users/vasukivardhan/workspace/xyflow/packages/angular/projects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts@39:15
+
+[7m40[0m       [class]="(node as any).className || ''"
+[7m  [0m [91m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/edge-wrapper/edge-wrapper.component.ts[0m:[93m272[0m:[93m67[0m - [91merror[0m[90m TS2769: [0mNo overload matches this call.
+  Overload 1 of 2, '(componentType: Type<unknown>, options?: { index?: number | undefined; injector?: Injector | undefined; ngModuleRef?: NgModuleRef<unknown> | undefined; environmentInjector?: EnvironmentInjector | ... 1 more ... | undefined; projectableNodes?: Node[][] | undefined; directives?: (Type<...> | DirectiveWithBindings<...>)[] | undefined; bindings?: Binding[] | undefined; } | undefined): ComponentRef<...>', gave the following error.
+    Argument of type 'Type<unknown> | TemplateRef<unknown>' is not assignable to parameter of type 'Type<unknown>'.
+      Type 'TemplateRef<unknown>' is missing the following properties from type 'Type<unknown>': apply, call, bind, prototype, and 5 more.
+  Overload 2 of 2, '(componentFactory: ComponentFactory<any>, index?: number | undefined, injector?: Injector | undefined, projectableNodes?: any[][] | undefined, environmentInjector?: EnvironmentInjector | ... 1 more ... | undefined, directives?: (Type<...> | DirectiveWithBindings<...>)[] | undefined, bindings?: Binding[] | undefined): ComponentRef<...>', gave the following error.
+    Argument of type 'Type<unknown> | TemplateRef<unknown>' is not assignable to parameter of type 'ComponentFactory<any>'.
+      Type 'Type<unknown>' is missing the following properties from type 'ComponentFactory<any>': selector, componentType, ngContentSelectors, inputs, and 2 more.
+
+[7m272[0m     this.labelComponentRef = this.edgeLabelOutlet.createComponent(ComponentType, {
+[7m   [0m [91m                                                                  ~~~~~~~~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/connection-line/connection-line.component.ts[0m:[93m75[0m:[93m12[0m - [91merror[0m[90m TS2322: [0mType '"bezier"' is not assignable to type 'ConnectionLineType'.
+
+[7m75[0m   @Input() type: ConnectionLineType = 'bezier';
+[7m  [0m [91m           ~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/connection-line/connection-line.component.ts[0m:[93m177[0m:[93m16[0m - [91merror[0m[90m TS2552: [0mCannot find name 'getSimpleBezierPath'. Did you mean 'getBezierPath'?
+
+[7m177[0m         return getSimpleBezierPath;
+[7m   [0m [91m               ~~~~~~~~~~~~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/connection-line/connection-line.component.ts[0m:[93m178[0m:[93m12[0m - [91merror[0m[90m TS2678: [0mType '"bezier"' is not comparable to type 'ConnectionLineType'.
+
+[7m178[0m       case 'bezier':
+[7m   [0m [91m           ~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m277[0m:[93m36[0m - [91merror[0m[90m TS2345: [0mArgument of type 'NodeType[]' is not assignable to parameter of type 'AngularFlowNode[]'.
+  Type 'NodeType' is not assignable to type 'AngularFlowNode'.
+    Types of property 'extent' are incompatible.
+      Type 'CoordinateExtent | "parent" | null | undefined' is not assignable to type 'CoordinateExtent | "parent" | undefined'.
+        Type 'null' is not assignable to type 'CoordinateExtent | "parent" | undefined'.
+
+[7m277[0m     this.flowStateService.setNodes(this.nodes);
+[7m   [0m [91m                                   ~~~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m278[0m:[93m36[0m - [91merror[0m[90m TS2345: [0mArgument of type 'EdgeType[]' is not assignable to parameter of type 'AngularFlowEdge[]'.
+  Type 'EdgeType' is not assignable to type 'AngularFlowEdge'.
+    Types of property 'markerStart' are incompatible.
+      Type 'EdgeMarkerType | undefined' is not assignable to type 'string | undefined'.
+        Type 'EdgeMarker' is not assignable to type 'string'.
+
+[7m278[0m     this.flowStateService.setEdges(this.edges);
+[7m   [0m [91m                                   ~~~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m337[0m:[93m22[0m - [91merror[0m[90m TS7009: [0m'new' expression, whose target lacks a construct signature, implicitly has an 'any' type.
+
+[7m337[0m       this.panZoom = new XYPanZoom({
+[7m   [0m [91m                     ~~~~~~~~~~~~~~~[0m
+[7m338[0m         domNode: this.flowContainer.nativeElement,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m343[0m         nodeExtent: this.nodeExtent,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m344[0m       });
+[7m   [0m [91m~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m343[0m:[93m9[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'nodeExtent' does not exist in type 'PanZoomParams'.
+
+[7m343[0m         nodeExtent: this.nodeExtent,
+[7m   [0m [91m        ~~~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m385[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType 'Type<unknown> | TemplateRef<unknown>' is not assignable to type 'Type<any> | null'.
+  Type 'TemplateRef<unknown>' is missing the following properties from type 'Type<any>': apply, call, bind, prototype, and 5 more.
+
+[7m385[0m     return this.nodeTypes[nodeType] || null;
+[7m   [0m [91m    ~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m98[0m:[93m40[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Event' is not assignable to parameter of type 'NodeChange'.
+  Type 'Event' is missing the following properties from type 'NodeReplaceChange<NodeBase>': id, item
+
+[7m98[0m             (nodeChange)="onNodeChange($event)"
+[7m  [0m [91m                                       ~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m99[0m:[93m38[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Event' is not assignable to parameter of type 'MouseEvent'.
+  Type 'Event' is missing the following properties from type 'MouseEvent': altKey, button, buttons, clientX, and 23 more.
+
+[7m99[0m             (nodeClick)="onNodeClick($event, node)"
+[7m  [0m [91m                                     ~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m100[0m:[93m46[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Event' is not assignable to parameter of type 'MouseEvent'.
+  Type 'Event' is missing the following properties from type 'MouseEvent': altKey, button, buttons, clientX, and 23 more.
+
+[7m100[0m             (nodeMouseDown)="onNodeMouseDown($event, node)"
+[7m   [0m [91m                                             ~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m112[0m:[93m40[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Event' is not assignable to parameter of type 'EdgeChange'.
+  Type 'Event' is missing the following properties from type 'EdgeReplaceChange<EdgeBase>': id, item
+
+[7m112[0m             (edgeChange)="onEdgeChange($event)"
+[7m   [0m [91m                                       ~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m113[0m:[93m38[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Event' is not assignable to parameter of type 'MouseEvent'.
+  Type 'Event' is missing the following properties from type 'MouseEvent': altKey, button, buttons, clientX, and 23 more.
+
+[7m113[0m             (edgeClick)="onEdgeClick($event, edge)"
+[7m   [0m [91m                                     ~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/minimap/minimap.component.ts[0m:[93m46[0m:[93m8[0m - [91merror[0m[90m TS2322: [0mType '{ [key: string]: string | number; }' is not assignable to type 'Partial<CSSStyleDeclaration>'.
+  'string' and 'number' index signatures are incompatible.
+    Type 'string | number' is not assignable to type 'string | undefined'.
+      Type 'number' is not assignable to type 'string'.
+
+[7m46[0m       [style]="getContainerStyle()"
+[7m  [0m [91m       ~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/directives/xy-handle.directive.ts[0m:[93m205[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType 'string | null | undefined' is not assignable to type 'string | null'.
+  Type 'undefined' is not assignable to type 'string | null'.
+
+[7m205[0m       handleId: this.id,
+[7m   [0m [91m      ~~~~~~~~[0m
+
+  [96m../../node_modules/.pnpm/@xyflow+system@0.0.69/node_modules/@xyflow/system/dist/esm/xyhandle/types.d.ts[0m:[93m7[0m:[93m5[0m
+    [7m7[0m     handleId: string | null;
+    [7m [0m [96m    ~~~~~~~~[0m
+    The expected type comes from property 'handleId' which is declared here on type 'OnPointerDownParams'
+[96mprojects/xyflow-angular/src/lib/directives/xy-handle.directive.ts[0m:[93m283[0m:[93m36[0m - [91merror[0m[90m TS2554: [0mExpected 2 arguments, but got 1.
+
+[7m283[0m     const edge = onBeforeConnect ? onBeforeConnect(connection) : connection;
+[7m   [0m [91m                                   ~~~~~~~~~~~~~~~[0m
+
+  [96m../../node_modules/.pnpm/@xyflow+system@0.0.69/node_modules/@xyflow/system/dist/esm/types/general.d.ts[0m:[93m106[0m:[93m85[0m
+    [7m106[0m export type OnReconnect<EdgeType extends EdgeBase = EdgeBase> = (oldEdge: EdgeType, newConnection: Connection) => void;
+    [7m   [0m [96m                                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    An argument for 'newConnection' was not provided.
+[96mprojects/xyflow-angular/src/lib/directives/xy-handle.directive.ts[0m:[93m290[0m:[93m30[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Connection' is not assignable to parameter of type 'AngularFlowEdge'.
+  Property 'id' is missing in type 'Connection' but required in type 'AngularFlowEdge'.
+
+[7m290[0m     this.flowState.addEdge?.(edge);
+[7m   [0m [91m                             ~~~~[0m
+
+  [96mprojects/xyflow-angular/src/lib/types/general.ts[0m:[93m75[0m:[93m3[0m
+    [7m75[0m   id: string;
+    [7m  [0m [96m  ~~[0m
+    'id' is declared here.
+[96mprojects/xyflow-angular/src/lib/directives/xy-handle.directive.ts[0m:[93m319[0m:[93m7[0m - [91merror[0m[90m TS1117: [0mAn object literal cannot have multiple properties with the same name.
+
+[7m319[0m       nodeLookup: this.flowState.nodeLookup,
+[7m   [0m [91m      ~~~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/directives/xy-handle.directive.ts[0m:[93m49[0m:[93m28[0m - [91merror[0m[90m TS2341: [0mProperty 'nodeId' is private and only accessible within class 'XYHandleDirective'.
+
+[7m49[0m     '[attr.data-nodeid]': 'nodeId',
+[7m  [0m [91m                           ~~~~~~[0m
+
+
+✖ Compiling with Angular sources in partial compilation mode.
+[96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m145[0m:[93m25[0m - [91merror[0m[90m TS7009: [0m'new' expression, whose target lacks a construct signature, implicitly has an 'any' type.
+
+[7m145[0m     const dragHandler = new XYDrag({
+[7m   [0m [91m                        ~~~~~~~~~~~~[0m
+[7m146[0m       getStoreItems: () => this.getDragItems() as any,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m149[0m       onDragStop: this.onDragStop.bind(this),
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m150[0m     });
+[7m   [0m [91m~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m147[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType '(event: MouseEvent | TouchEvent, nodes: NodeDragItem[]) => void' is not assignable to type 'OnDrag'.
+  Types of parameters 'nodes' and 'dragItems' are incompatible.
+    Type 'Map<string, NodeDragItem>' is missing the following properties from type 'NodeDragItem[]': length, pop, push, concat, and 24 more.
+
+[7m147[0m       onDragStart: this.onDragStart.bind(this),
+[7m   [0m [91m      ~~~~~~~~~~~[0m
+
+  [96m../../node_modules/.pnpm/@xyflow+system@0.0.69/node_modules/@xyflow/system/dist/esm/xydrag/XYDrag.d.ts[0m:[93m35[0m:[93m5[0m
+    [7m35[0m     onDragStart?: OnDrag;
+    [7m  [0m [96m    ~~~~~~~~~~~[0m
+    The expected type comes from property 'onDragStart' which is declared here on type 'XYDragParams<(e: any, nodes: any, node: any) => void | undefined>'
+[96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m149[0m:[93m24[0m - [91merror[0m[90m TS2551: [0mProperty 'onDragStop' does not exist on type 'NodeWrapperComponent'. Did you mean 'nodeDragStop'?
+
+[7m149[0m       onDragStop: this.onDragStop.bind(this),
+[7m   [0m [91m                       ~~~~~~~~~~[0m
+
+  [96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m92[0m:[93m13[0m
+    [7m92[0m   @Output() nodeDragStop = new EventEmitter<{ event: MouseEvent | TouchEvent; node: AngularFlowNode }>();
+    [7m  [0m [96m            ~~~~~~~~~~~~[0m
+    'nodeDragStop' is declared here.
+[96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m40[0m:[93m30[0m - [91merror[0m[90m TS2339: [0mProperty 'className' does not exist on type 'AngularFlowNode'.
+
+[7m40[0m       [class]="(node as any).className || ''"
+[7m  [0m [91m                             ~~~~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts[0m:[93m40[0m:[93m16[0m - [91merror[0m[90m NG5002: [0mParser Error: Missing closing parentheses at column 7 in [(node as any).className || ''] in /Users/vasukivardhan/workspace/xyflow/packages/angular/projects/xyflow-angular/src/lib/components/node-wrapper/node-wrapper.component.ts@39:15
+
+[7m40[0m       [class]="(node as any).className || ''"
+[7m  [0m [91m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/edge-wrapper/edge-wrapper.component.ts[0m:[93m272[0m:[93m67[0m - [91merror[0m[90m TS2769: [0mNo overload matches this call.
+  Overload 1 of 2, '(componentType: Type<unknown>, options?: { index?: number | undefined; injector?: Injector | undefined; ngModuleRef?: NgModuleRef<unknown> | undefined; environmentInjector?: EnvironmentInjector | ... 1 more ... | undefined; projectableNodes?: Node[][] | undefined; directives?: (Type<...> | DirectiveWithBindings<...>)[] | undefined; bindings?: Binding[] | undefined; } | undefined): ComponentRef<...>', gave the following error.
+    Argument of type 'Type<unknown> | TemplateRef<unknown>' is not assignable to parameter of type 'Type<unknown>'.
+      Type 'TemplateRef<unknown>' is missing the following properties from type 'Type<unknown>': apply, call, bind, prototype, and 5 more.
+  Overload 2 of 2, '(componentFactory: ComponentFactory<any>, index?: number | undefined, injector?: Injector | undefined, projectableNodes?: any[][] | undefined, environmentInjector?: EnvironmentInjector | ... 1 more ... | undefined, directives?: (Type<...> | DirectiveWithBindings<...>)[] | undefined, bindings?: Binding[] | undefined): ComponentRef<...>', gave the following error.
+    Argument of type 'Type<unknown> | TemplateRef<unknown>' is not assignable to parameter of type 'ComponentFactory<any>'.
+      Type 'Type<unknown>' is missing the following properties from type 'ComponentFactory<any>': selector, componentType, ngContentSelectors, inputs, and 2 more.
+
+[7m272[0m     this.labelComponentRef = this.edgeLabelOutlet.createComponent(ComponentType, {
+[7m   [0m [91m                                                                  ~~~~~~~~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/connection-line/connection-line.component.ts[0m:[93m75[0m:[93m12[0m - [91merror[0m[90m TS2322: [0mType '"bezier"' is not assignable to type 'ConnectionLineType'.
+
+[7m75[0m   @Input() type: ConnectionLineType = 'bezier';
+[7m  [0m [91m           ~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/connection-line/connection-line.component.ts[0m:[93m177[0m:[93m16[0m - [91merror[0m[90m TS2552: [0mCannot find name 'getSimpleBezierPath'. Did you mean 'getBezierPath'?
+
+[7m177[0m         return getSimpleBezierPath;
+[7m   [0m [91m               ~~~~~~~~~~~~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/connection-line/connection-line.component.ts[0m:[93m178[0m:[93m12[0m - [91merror[0m[90m TS2678: [0mType '"bezier"' is not comparable to type 'ConnectionLineType'.
+
+[7m178[0m       case 'bezier':
+[7m   [0m [91m           ~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m277[0m:[93m36[0m - [91merror[0m[90m TS2345: [0mArgument of type 'NodeType[]' is not assignable to parameter of type 'AngularFlowNode[]'.
+  Type 'NodeType' is not assignable to type 'AngularFlowNode'.
+    Types of property 'extent' are incompatible.
+      Type 'CoordinateExtent | "parent" | null | undefined' is not assignable to type 'CoordinateExtent | "parent" | undefined'.
+        Type 'null' is not assignable to type 'CoordinateExtent | "parent" | undefined'.
+
+[7m277[0m     this.flowStateService.setNodes(this.nodes);
+[7m   [0m [91m                                   ~~~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m278[0m:[93m36[0m - [91merror[0m[90m TS2345: [0mArgument of type 'EdgeType[]' is not assignable to parameter of type 'AngularFlowEdge[]'.
+  Type 'EdgeType' is not assignable to type 'AngularFlowEdge'.
+    Types of property 'markerStart' are incompatible.
+      Type 'EdgeMarkerType | undefined' is not assignable to type 'string | undefined'.
+        Type 'EdgeMarker' is not assignable to type 'string'.
+
+[7m278[0m     this.flowStateService.setEdges(this.edges);
+[7m   [0m [91m                                   ~~~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m337[0m:[93m22[0m - [91merror[0m[90m TS7009: [0m'new' expression, whose target lacks a construct signature, implicitly has an 'any' type.
+
+[7m337[0m       this.panZoom = new XYPanZoom({
+[7m   [0m [91m                     ~~~~~~~~~~~~~~~[0m
+[7m338[0m         domNode: this.flowContainer.nativeElement,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m343[0m         nodeExtent: this.nodeExtent,
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m344[0m       });
+[7m   [0m [91m~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m343[0m:[93m9[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'nodeExtent' does not exist in type 'PanZoomParams'.
+
+[7m343[0m         nodeExtent: this.nodeExtent,
+[7m   [0m [91m        ~~~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m385[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType 'Type<unknown> | TemplateRef<unknown>' is not assignable to type 'Type<any> | null'.
+  Type 'TemplateRef<unknown>' is missing the following properties from type 'Type<any>': apply, call, bind, prototype, and 5 more.
+
+[7m385[0m     return this.nodeTypes[nodeType] || null;
+[7m   [0m [91m    ~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m98[0m:[93m40[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Event' is not assignable to parameter of type 'NodeChange'.
+  Type 'Event' is missing the following properties from type 'NodeReplaceChange<NodeBase>': id, item
+
+[7m98[0m             (nodeChange)="onNodeChange($event)"
+[7m  [0m [91m                                       ~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m99[0m:[93m38[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Event' is not assignable to parameter of type 'MouseEvent'.
+  Type 'Event' is missing the following properties from type 'MouseEvent': altKey, button, buttons, clientX, and 23 more.
+
+[7m99[0m             (nodeClick)="onNodeClick($event, node)"
+[7m  [0m [91m                                     ~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m100[0m:[93m46[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Event' is not assignable to parameter of type 'MouseEvent'.
+  Type 'Event' is missing the following properties from type 'MouseEvent': altKey, button, buttons, clientX, and 23 more.
+
+[7m100[0m             (nodeMouseDown)="onNodeMouseDown($event, node)"
+[7m   [0m [91m                                             ~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m112[0m:[93m40[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Event' is not assignable to parameter of type 'EdgeChange'.
+  Type 'Event' is missing the following properties from type 'EdgeReplaceChange<EdgeBase>': id, item
+
+[7m112[0m             (edgeChange)="onEdgeChange($event)"
+[7m   [0m [91m                                       ~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/angular-flow/angular-flow.component.ts[0m:[93m113[0m:[93m38[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Event' is not assignable to parameter of type 'MouseEvent'.
+  Type 'Event' is missing the following properties from type 'MouseEvent': altKey, button, buttons, clientX, and 23 more.
+
+[7m113[0m             (edgeClick)="onEdgeClick($event, edge)"
+[7m   [0m [91m                                     ~~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/components/minimap/minimap.component.ts[0m:[93m46[0m:[93m8[0m - [91merror[0m[90m TS2322: [0mType '{ [key: string]: string | number; }' is not assignable to type 'Partial<CSSStyleDeclaration>'.
+  'string' and 'number' index signatures are incompatible.
+    Type 'string | number' is not assignable to type 'string | undefined'.
+      Type 'number' is not assignable to type 'string'.
+
+[7m46[0m       [style]="getContainerStyle()"
+[7m  [0m [91m       ~~~~~[0m
+
+[96mprojects/xyflow-angular/src/lib/directives/xy-handle.directive.ts[0m:[93m205[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType 'string | null | undefined' is not assignable to type 'string | null'.
+  Type 'undefined' is not assignable to type 'string | null'.
+
+[7m205[0m       handleId: this.id,
+[7m   [0m [91m      ~~~~~~~~[0m
+
+  [96m../../node_modules/.pnpm/@xyflow+system@0.0.69/node_modules/@xyflow/system/dist/esm/xyhandle/types.d.ts[0m:[93m7[0m:[93m5[0m
+    [7m7[0m     handleId: string | null;
+    [7m [0m [96m    ~~~~~~~~[0m
+    The expected type comes from property 'handleId' which is declared here on type 'OnPointerDownParams'
+[96mprojects/xyflow-angular/src/lib/directives/xy-handle.directive.ts[0m:[93m283[0m:[93m36[0m - [91merror[0m[90m TS2554: [0mExpected 2 arguments, but got 1.
+
+[7m283[0m     const edge = onBeforeConnect ? onBeforeConnect(connection) : connection;
+[7m   [0m [91m                                   ~~~~~~~~~~~~~~~[0m
+
+  [96m../../node_modules/.pnpm/@xyflow+system@0.0.69/node_modules/@xyflow/system/dist/esm/types/general.d.ts[0m:[93m106[0m:[93m85[0m
+    [7m106[0m export type OnReconnect<EdgeType extends EdgeBase = EdgeBase> = (oldEdge: EdgeType, newConnection: Connection) => void;
+    [7m   [0m [96m                                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    An argument for 'newConnection' was not provided.
+[96mprojects/xyflow-angular/src/lib/directives/xy-handle.directive.ts[0m:[93m290[0m:[93m30[0m - [91merror[0m[90m TS2345: [0mArgument of type 'Connection' is not assignable to parameter of type 'AngularFlowEdge'.
+  Property 'id' is missing in type 'Connection' but required in type 'AngularFlowEdge'.
+
+[7m290[0m     this.flowState.addEdge?.(edge);
+[7m   [0m [91m                             ~~~~[0m
+
+  [96mprojects/xyflow-angular/src/lib/types/general.ts[0m:[93m75[0m:[93m3[0m
+    [7m75[0m   id: string;
+    [7m  [0m [96m  ~~[0m
+    'id' is declared here.
+[96mprojects/xyflow-angular/src/lib/directives/xy-handle.directive.ts[0m:[93m319[0m:[93m7[0m - [91merror[0m[90m TS1117: [0mAn object literal cannot have multiple properties with the same name.
+
+[7m319[0m       nodeLookup: this.flowState.nodeLookup,
+[7m   [0m [91m      ~~~~~~~~~~[0m
+[96mprojects/xyflow-angular/src/lib/directives/xy-handle.directive.ts[0m:[93m49[0m:[93m28[0m - [91merror[0m[90m TS2341: [0mProperty 'nodeId' is private and only accessible within class 'XYHandleDirective'.
+
+[7m49[0m     '[attr.data-nodeid]': 'nodeId',
+[7m  [0m [91m                           ~~~~~~[0m
+
+
