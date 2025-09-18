@@ -1,6 +1,6 @@
 import type { RefObject } from 'react';
 import type { StoreApi } from 'zustand';
-import { errorMessages } from '@xyflow/system';
+import { errorMessages, SelectionMethod } from '@xyflow/system';
 
 import type { ReactFlowState } from '../../types';
 
@@ -15,6 +15,7 @@ export function handleNodeClick({
   store,
   unselect = false,
   nodeRef,
+  selectionMethod,
 }: {
   id: string;
   store: {
@@ -23,6 +24,7 @@ export function handleNodeClick({
   };
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;
+  selectionMethod?: SelectionMethod;
 }) {
   const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeLookup, onError } = store.getState();
   const node = nodeLookup.get(id);
@@ -35,7 +37,7 @@ export function handleNodeClick({
   store.setState({ nodesSelectionActive: false });
 
   if (!node.selected) {
-    addSelectedNodes([id]);
+    addSelectedNodes([id], selectionMethod);
   } else if (unselect || (node.selected && multiSelectionActive)) {
     unselectNodesAndEdges({ nodes: [node], edges: [] });
 
