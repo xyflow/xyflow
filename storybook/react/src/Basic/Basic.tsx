@@ -1,4 +1,4 @@
-import { type MouseEvent, useCallback, forwardRef, useImperativeHandle } from 'react';
+import { type MouseEvent, useCallback, useState } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -9,9 +9,12 @@ import {
   type Node,
   type Edge,
   useReactFlow,
+  Panel,
   type OnNodeDrag,
   type FitViewOptions,
 } from '@xyflow/react';
+
+import '@xyflow/react/dist/style.css';
 
 const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
 const onNodeDragStart = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
@@ -19,7 +22,6 @@ const onNodeDragStop = (_: MouseEvent, node: Node, nodes: Node[]) => console.log
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const printSelectionEvent = (name: string) => (_: MouseEvent, nodes: Node[]) => console.log(name, nodes);
-import '@xyflow/react/dist/style.css';
 
 const initialNodes: Node[] = [
   {
@@ -59,19 +61,11 @@ const fitViewOptions: FitViewOptions = {
   padding: { top: '100px', left: '0%', right: '10%', bottom: 0.1 },
 };
 
-export type BasicHandle = {
-  resetTransform: () => void;
-  updatePos: () => void;
-  toggleClassnames: () => void;
-  toObject: () => void;
-  deleteSelectedElements: () => void;
-  deleteSomeElements: () => void;
-  setNodes: () => void;
-  updateNode: () => void;
-  addNode: () => void;
-};
+interface BasicProps {
+  nodeDragThreshold?: number;
+}
 
-const Basic = forwardRef<BasicHandle, {}>(function Basic(_props, ref) {
+const BasicFlow = (props: BasicProps) => {
   const {
     addNodes,
     setNodes,
@@ -146,19 +140,11 @@ const Basic = forwardRef<BasicHandle, {}>(function Basic(_props, ref) {
     });
     fitView();
   };
+  const [isHidden, setIsHidden] = useState(false);
 
-  useImperativeHandle(ref, () => ({
-    resetTransform,
-    updatePos,
-    toggleClassnames,
-    toObject: logToObject,
-    deleteSelectedElements,
-    deleteSomeElements,
-    setNodes: onSetNodes,
-    updateNode: onUpdateNode,
-    addNode,
-  }));
-
+  const toggleVisibility = () => {
+    setIsHidden(!isHidden);
+  };
   return (
     <>
       <ReactFlow
@@ -173,6 +159,7 @@ const Basic = forwardRef<BasicHandle, {}>(function Basic(_props, ref) {
         onSelectionDrag={printSelectionEvent('selection drag')}
         onSelectionDragStop={printSelectionEvent('selection drag stop')}
         className="react-flow-basic-example"
+        style={{ display: isHidden ? 'none' : 'block' }}
         minZoom={0.2}
         maxZoom={4}
         fitView
@@ -181,24 +168,38 @@ const Basic = forwardRef<BasicHandle, {}>(function Basic(_props, ref) {
         selectNodesOnDrag={false}
         elevateEdgesOnSelect
         elevateNodesOnSelect={false}
-        nodeDragThreshold={0}
+        nodeDragThreshold={props.nodeDragThreshold}
       >
         <Background variant={BackgroundVariant.Dots} />
         <MiniMap />
         <Controls />
+
+        <Panel position="top-right">
+          <button onClick={resetTransform}>reset transform</button>
+          <button onClick={updatePos}>change pos</button>
+          <button onClick={toggleClassnames}>toggle classnames</button>
+          <button onClick={logToObject}>toObject</button>
+
+          <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
+          <button onClick={deleteSomeElements}>deleteSomeElements</button>
+          <button onClick={onSetNodes}>setNodes</button>
+          <button onClick={onUpdateNode}>updateNode</button>
+          <button onClick={addNode}>addNode</button>
+        </Panel>
       </ReactFlow>
+      <button onClick={toggleVisibility} style={{ position: 'absolute', zIndex: 10, right: 10, top: 100 }}>
+        {isHidden ? 'Show' : 'Hide'} Flow
+      </button>
     </>
   );
-});
+};
 
-function App() {
+export default function App(props: BasicProps) {
   return (
     <div style={{ width: '100%', height: '95vh' }}>
       <ReactFlowProvider>
-        <Basic />
+        <BasicFlow {...props} />
       </ReactFlowProvider>
     </div>
   );
 }
-
-export default App;
