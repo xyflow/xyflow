@@ -82,6 +82,7 @@ function parseHandles(userNode: NodeBase, internalNode?: InternalNodeBase): Node
 
   for (const handle of userNode.handles) {
     const handleBounds = {
+      id: handle.id,
       width: handle.width ?? 1,
       height: handle.height ?? 1,
       nodeId: userNode.id,
