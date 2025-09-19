@@ -136,11 +136,6 @@ const BasicFlow = (props: BasicProps) => {
     });
     fitView();
   };
-  const [isHidden, setIsHidden] = useState(false);
-
-  const toggleVisibility = () => {
-    setIsHidden(!isHidden);
-  };
 
   return (
     <>
