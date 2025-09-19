@@ -7,22 +7,22 @@ import viteConfig from './vite.config';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 export default mergeConfig(
-  viteConfig, // has svelte() plugin
+  viteConfig,
   defineConfig({
     plugins: [storybookTest({ configDir: path.join(dirname, '.storybook') })],
     server: {
-      fs: { allow: [dirname] }, // allow serving files from this dir
+      fs: { allow: [dirname] },
     },
     test: {
       name: 'storybook',
-      root: dirname, // make relative paths resolvable by Vite in browser mode
+      root: dirname,
       browser: {
         enabled: true,
         provider: 'playwright',
         headless: true,
         instances: [{ browser: 'chromium' }],
       },
-      setupFiles: ['.storybook/vitest.setup.ts'], // keep relative (no absolute path)
+      setupFiles: ['.storybook/vitest.setup.ts'],
     },
   })
 );

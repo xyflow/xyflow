@@ -25,11 +25,7 @@ pnpm storybook
 ### Run Both Concurrently
 
 ```bash
-# From svelte/ directory - runs both React and Svelte together
-cd svelte/
+# From svelte/ or react/ directory - runs both React and Svelte together
+cd svelte/ or cd react/
 pnpm run dev:compose
 ```
-
-This will start:
-- React Storybook on port 6006
-- Svelte Storybook on port 6007
