@@ -1,0 +1,27 @@
+// storybook/react/src/Basic/Basic.stories.tsx
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import Basic from './Basic';
+import { sharedArgTypes, defaultStoryArgs, runBasicRenderingTests } from '../../../shared/basic/basic-stories';
+
+const meta: Meta<typeof Basic> = {
+  title: 'React Flow/Basic',
+  component: Basic,
+  argTypes: sharedArgTypes,
+} satisfies Meta<typeof Basic>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const BasicStory: Story = {
+  args: defaultStoryArgs,
+};
+
+export const BasicRendering: Story = {
+  args: defaultStoryArgs,
+  play: async ({ canvasElement, step }: { canvasElement: any; step: any }) => {
+    const { expect } = await import('@storybook/test');
+
+    // Run all basic rendering tests for React
+    await runBasicRenderingTests('React', { canvasElement, step, expect });
+  },
+};

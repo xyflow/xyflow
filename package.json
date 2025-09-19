@@ -19,7 +19,8 @@
     "lint": "turbo run lint --filter=./packages/**",
     "typecheck": "turbo run typecheck --filter=./packages/**",
     "release": "changeset publish",
-    "clean": "pnpm -r --parallel exec rimraf dist .turbo node_modules"
+    "clean": "pnpm -r --parallel exec rimraf dist .turbo node_modules",
+    "test:shared": "concurrently -k \"pnpm -C storybook/react exec vitest run -c vitest.config.ts\" \"pnpm -C storybook/svelte exec vitest run -c vitest.config.ts\""
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.7",
