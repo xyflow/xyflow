@@ -15,6 +15,7 @@
     "@storybook/addon-svelte-csf": "^5.0.8",
     "@storybook/addon-vitest": "^9.1.5",
     "@storybook/svelte-vite": "^9.1.5",
+    "@storybook/test": "^8.6.14",
     "@sveltejs/vite-plugin-svelte": "^6.1.1",
     "@testing-library/svelte": "^5.2.8",
     "@tsconfig/svelte": "^5.0.4",

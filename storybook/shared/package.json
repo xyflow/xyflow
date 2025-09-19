@@ -1,0 +1,13 @@
+{
+  "name": "@xyflow/storybook-shared",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./basic-stories.ts",
+  "exports": {
+    ".": "./basic-stories.ts"
+  },
+  "dependencies": {
+    "@xyflow/system": "workspace:*"
+  }
+}

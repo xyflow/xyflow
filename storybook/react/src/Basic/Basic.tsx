@@ -1,4 +1,4 @@
-import { type MouseEvent, useCallback, useState } from 'react';
+import { type MouseEvent, useCallback } from 'react';
 import {
   ReactFlow,
   MiniMap,
