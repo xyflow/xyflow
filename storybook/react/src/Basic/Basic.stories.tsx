@@ -7,13 +7,13 @@ const meta: Meta<typeof Basic> = {
   component: Basic,
   argTypes: {
     classNames: {
-      description: 'CSS class name to apply to all nodes (light or dark theme)',
+      description: 'CSS class name to apply to flow',
       options: ['light', 'dark'],
       control: { type: 'radio' },
     },
     nodeDragThreshold: {
-      description: 'Distance in pixels that a node must be dragged before drag starts (0-20)',
-      control: { type: 'number', min: 0, max: 20, step: 1 },
+      description: 'Distance in pixels that a node must be dragged before drag starts',
+      control: { type: 'number', min: 0, max: 2000, step: 1 },
     },
     onNodeDrag: {
       description: 'Callback fired while dragging a node',
