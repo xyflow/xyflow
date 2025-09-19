@@ -11,10 +11,8 @@
     useSvelteFlow
   } from '@xyflow/svelte';
   
-  // Import shared types only
-  import type { BasicFlowProps } from '../../shared/basic-stories';
+  import type { BasicFlowProps } from '../../../shared/basic/basic-stories';
 
-  // Props
   interface Props extends BasicFlowProps {}
   
   let {
@@ -27,7 +25,6 @@
     onNodeClick = () => {},
   }: Props = $props();
 
-  // Initial data directly in the component
   const initialNodes: Node[] = [
     {
       id: '1',
@@ -70,7 +67,6 @@
   let nodes = $state.raw<Node[]>([...initialNodes]);
   let edges = $state.raw<Edge[]>([...initialEdges]);
 
-  // Get Svelte Flow instance - this will work because this component is inside SvelteFlowProvider
   const { 
     getNodes, 
     getEdges,
@@ -81,7 +77,6 @@
     fitView,
   } = useSvelteFlow();
 
-  // Utility functions
   const updatePos = () => {
     nodes = nodes.map((node) => ({
       ...node,
@@ -129,7 +124,6 @@
     fitView();
   };
 
-  // Event handlers
   const printSelectionEvent = (name: string) => (event: MouseEvent, nodes: Node[]) => 
     console.log(name, nodes);
 </script>

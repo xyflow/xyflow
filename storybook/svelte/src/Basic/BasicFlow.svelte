@@ -3,10 +3,8 @@
   import '@xyflow/svelte/dist/style.css';
   import BasicFlowInner from './BasicFlowInner.svelte';
   
-  // Import shared types
-  import type { BasicFlowProps } from '../../shared/basic-stories';
+  import type { BasicFlowProps } from '../../../shared/basic/basic-stories';
 
-  // Props for the main component
   let {
     nodeDragThreshold = 0,
     classNames = 'light',
