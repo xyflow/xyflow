@@ -1,19 +1,42 @@
 // storybook/react/src/Basic/Basic.stories.tsx
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import Basic from './Basic';
-// import { DragNode } from './waitForDragging';
 
 const meta: Meta<typeof Basic> = {
   title: 'React Flow/Basic',
   component: Basic,
   argTypes: {
-    reset: { control: { type: 'boolean' } },
     classNames: {
+      description: 'CSS class name to apply to all nodes (light or dark theme)',
       options: ['light', 'dark'],
       control: { type: 'radio' },
     },
-    nodeDragThreshold: { control: { type: 'number', min: 0, max: 20, step: 1 } } as any,
-  } as any,
+    nodeDragThreshold: {
+      description: 'Distance in pixels that a node must be dragged before drag starts (0-20)',
+      control: { type: 'number', min: 0, max: 20, step: 1 },
+    },
+    onNodeDrag: {
+      description: 'Callback fired while dragging a node',
+      table: { disable: true },
+    },
+    onNodeDragStart: {
+      description: 'Callback fired when node drag starts',
+      table: { disable: true },
+    },
+    onNodeDragStop: {
+      description: 'Callback fired when node drag ends',
+      table: { disable: true },
+    },
+    onNodeClick: {
+      description: 'Callback fired when a node is clicked',
+      table: { disable: true },
+    },
+    isHidden: {
+      description: 'Controls the visibility of the React Flow component',
+      control: { type: 'radio' },
+      options: ['visible', 'hidden'],
+    },
+  },
 };
 export default meta;
 
@@ -23,10 +46,8 @@ export const BasicStory: Story = {
   args: {
     nodeDragThreshold: 0,
     classNames: 'dark',
+    isHidden: 'visible',
   },
-  argTypes: {
-    resetTransform: { control: { type: 'button' } } as any,
-  } as any,
 };
 
 export const DragNode: Story = {

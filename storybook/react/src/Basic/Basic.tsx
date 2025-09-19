@@ -16,10 +16,15 @@ import {
 
 import '@xyflow/react/dist/style.css';
 
-const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
-const onNodeDragStart = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
-const onNodeDragStop = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag stop', node, nodes);
-const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
+interface BasicProps {
+  nodeDragThreshold?: number;
+  classNames?: string;
+  isHidden?: string;
+  onNodeDrag?: OnNodeDrag;
+  onNodeDragStart?: (event: MouseEvent, node: Node, nodes: Node[]) => void;
+  onNodeDragStop?: (event: MouseEvent, node: Node, nodes: Node[]) => void;
+  onNodeClick?: (event: MouseEvent, node: Node) => void;
+}
 
 const printSelectionEvent = (name: string) => (_: MouseEvent, nodes: Node[]) => console.log(name, nodes);
 
@@ -61,12 +66,13 @@ const fitViewOptions: FitViewOptions = {
   padding: { top: '100px', left: '0%', right: '10%', bottom: 0.1 },
 };
 
-interface BasicProps {
-  nodeDragThreshold?: number;
-  classNames?: string;
-}
-
 const BasicFlow = (props: BasicProps) => {
+  // Default handlers that do nothing if no props are provided
+  const onNodeDrag: OnNodeDrag = props.onNodeDrag || (() => {});
+  const onNodeDragStart = props.onNodeDragStart || (() => {});
+  const onNodeDragStop = props.onNodeDragStop || (() => {});
+  const onNodeClick = props.onNodeClick || (() => {});
+
   const {
     addNodes,
     setNodes,
@@ -150,7 +156,7 @@ const BasicFlow = (props: BasicProps) => {
         onSelectionDrag={printSelectionEvent('selection drag')}
         onSelectionDragStop={printSelectionEvent('selection drag stop')}
         className={props.classNames}
-        style={{ display: isHidden ? 'none' : 'block' }}
+        style={{ display: props.isHidden === 'hidden' ? 'none' : 'block' }}
         minZoom={0.2}
         maxZoom={4}
         fitView
@@ -177,9 +183,6 @@ const BasicFlow = (props: BasicProps) => {
           <button onClick={addNode}>addNode</button>
         </Panel>
       </ReactFlow>
-      <button onClick={toggleVisibility} style={{ position: 'absolute', zIndex: 10, right: 10, top: 100 }}>
-        {isHidden ? 'Show' : 'Hide'} Flow
-      </button>
     </>
   );
 };
