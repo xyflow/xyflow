@@ -106,7 +106,7 @@ export function NodeWrapper<NodeType extends Node>({
     : undefined;
 
   const onSelectNodeHandler = (event: MouseEvent) => {
-    const { selectNodesOnDrag, nodeDragThreshold } = store.getState();
+    const { selectNodesOnDrag, nodeDragThreshold, multiSelectionActive } = store.getState();
 
     if (isSelectable && (!selectNodesOnDrag || !isDraggable || nodeDragThreshold > 0)) {
       /*
@@ -117,6 +117,7 @@ export function NodeWrapper<NodeType extends Node>({
         id,
         store,
         nodeRef,
+        selectionMethod: multiSelectionActive ? 'multi-select' : 'click',
       });
     }
 
@@ -138,6 +139,7 @@ export function NodeWrapper<NodeType extends Node>({
         store,
         unselect,
         nodeRef,
+        selectionMethod: 'keyboard',
       });
     } else if (isDraggable && node.selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
       // prevent default scrolling behavior on arrow key press when node is moved

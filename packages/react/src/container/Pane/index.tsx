@@ -211,12 +211,12 @@ export function Pane({
     }
 
     if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
-      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true) as NodeChange[];
+      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true, 'rectangle') as NodeChange[];
       triggerNodeChanges(changes);
     }
 
     if (!areSetsEqual(prevSelectedEdgeIds, selectedEdgeIds.current)) {
-      const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.current) as EdgeChange[];
+      const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.current, false, 'rectangle') as EdgeChange[];
       triggerEdgeChanges(changes);
     }
 
