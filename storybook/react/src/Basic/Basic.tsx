@@ -63,6 +63,7 @@ const fitViewOptions: FitViewOptions = {
 
 interface BasicProps {
   nodeDragThreshold?: number;
+  classNames?: string;
 }
 
 const BasicFlow = (props: BasicProps) => {
@@ -95,17 +96,6 @@ const BasicFlow = (props: BasicProps) => {
 
   const logToObject = () => console.log(toObject());
   const resetTransform = () => setViewport({ x: 0, y: 0, zoom: 1 });
-
-  const toggleClassnames = () => {
-    setNodes((nodes) =>
-      nodes.map((node) => {
-        return {
-          ...node,
-          className: node.className === 'light' ? 'dark' : 'light',
-        };
-      })
-    );
-  };
 
   const deleteSelectedElements = useCallback(() => {
     const selectedNodes = getNodes().filter((node) => node.selected);
@@ -145,6 +135,7 @@ const BasicFlow = (props: BasicProps) => {
   const toggleVisibility = () => {
     setIsHidden(!isHidden);
   };
+
   return (
     <>
       <ReactFlow
@@ -158,7 +149,7 @@ const BasicFlow = (props: BasicProps) => {
         onSelectionDragStart={printSelectionEvent('selection drag start')}
         onSelectionDrag={printSelectionEvent('selection drag')}
         onSelectionDragStop={printSelectionEvent('selection drag stop')}
-        className="react-flow-basic-example"
+        className={props.classNames}
         style={{ display: isHidden ? 'none' : 'block' }}
         minZoom={0.2}
         maxZoom={4}
@@ -177,7 +168,6 @@ const BasicFlow = (props: BasicProps) => {
         <Panel position="top-right">
           <button onClick={resetTransform}>reset transform</button>
           <button onClick={updatePos}>change pos</button>
-          <button onClick={toggleClassnames}>toggle classnames</button>
           <button onClick={logToObject}>toObject</button>
 
           <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
