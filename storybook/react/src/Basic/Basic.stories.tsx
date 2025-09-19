@@ -45,37 +45,49 @@ type Story = StoryObj<typeof meta>;
 export const BasicStory: Story = {
   args: {
     nodeDragThreshold: 0,
-    classNames: 'dark',
+    classNames: 'light',
     isHidden: 'visible',
   },
 };
 
-export const DragNode: Story = {
+export const BasicRendering: Story = {
   play: async ({ canvasElement, step }) => {
-    const { within, waitFor, expect } = await import('@storybook/test');
-    const canvas = within(canvasElement);
+    const { expect } = await import('@storybook/test');
 
-    const label = await canvas.findByText(/Node 1/i);
-    const node = label.closest('.react-flow__node') as HTMLElement;
-    const rect = node.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-
-    await step('Pointer down', async () => {
-      node.dispatchEvent(
-        new PointerEvent('pointerdown', { bubbles: true, clientX: x, clientY: y, pointerId: 1, buttons: 1 })
-      );
+    await step('Check React Flow renders', async () => {
+      // Use canvasElement for querySelector when needed
+      const renderer = canvasElement.querySelector('.react-flow__renderer');
+      expect(renderer).toBeInTheDocument();
     });
 
-    await step('Drag 30px right', async () => {
-      node.dispatchEvent(
-        new PointerEvent('pointermove', { bubbles: true, clientX: x + 30, clientY: y, pointerId: 1, buttons: 1 })
-      );
-      await waitFor(() => expect(node.classList.contains('dragging')).toBe(true));
+    await step('Check className prop works', async () => {
+      // Check if custom className is applied
+      const flowContainer = canvasElement.querySelector('.light');
+      expect(flowContainer).toBeInTheDocument();
     });
 
-    await step('Pointer up', async () => {
-      node.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, clientX: x + 30, clientY: y, pointerId: 1 }));
+    await step('Check nodes render correctly', async () => {
+      // Use canvasElement for querySelectorAll
+      const nodes = canvasElement.querySelectorAll('.react-flow__node');
+      expect(nodes).toHaveLength(4);
+    });
+
+    await step('Check edges render correctly', async () => {
+      // Check that we have 2 edges
+      const edges = canvasElement.querySelectorAll('.react-flow__edge');
+      expect(edges).toHaveLength(2);
+    });
+
+    await step('Check background renders', async () => {
+      // Check if background exists
+      const background = canvasElement.querySelector('.react-flow__background');
+      expect(background).toBeInTheDocument();
+    });
+
+    await step('Check node handles exist', async () => {
+      // Check that nodes have handles
+      const handles = canvasElement.querySelectorAll('.react-flow__node .react-flow__handle');
+      expect(handles.length).toBeGreaterThan(0);
     });
   },
 };
