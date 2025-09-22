@@ -1,12 +1,12 @@
 import type { Preview } from '@storybook/svelte-vite';
-import DecoratorWrapper from './DecoratorWrapper.svelte';
+import Wrapper from './Wrapper.svelte';
 import '@xyflow/svelte/dist/style.css';
 
 const preview: Preview = {
   decorators: [
     (Story) => {
       const story = Story();
-      return { Component: DecoratorWrapper, props: { story } };
+      return { Component: Wrapper, props: { story } };
     },
   ],
   parameters: {
