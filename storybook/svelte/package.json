@@ -9,6 +9,9 @@
     "build-storybook": "storybook build",
     "dev:compose": "concurrently -k \"pnpm -C ../react storybook -p 6007 --ci\" \"pnpm storybook\""
   },
+  "dependencies": {
+    "storybook-shared": "workspace:*"
+  },
   "devDependencies": {
     "@storybook/addon-docs": "^9.1.5",
     "@storybook/addon-a11y": "^9.1.5",

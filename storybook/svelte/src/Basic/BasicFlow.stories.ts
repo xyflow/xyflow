@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import BasicFlow from './BasicFlow.svelte';
-import { sharedArgTypes, defaultStoryArgs, runBasicRenderingTests } from '../../../shared/basic/basic-stories';
+import { sharedArgTypes, defaultStoryArgs, runBasicRenderingTests } from 'storybook-shared';
 
 const meta: Meta<BasicFlow> = {
   title: 'Svelte Flow/Basic',
@@ -18,9 +18,6 @@ export const BasicStory: Story = {
 export const BasicRendering: Story = {
   args: defaultStoryArgs,
   play: async ({ canvasElement, step }: { canvasElement: any; step: any }) => {
-    const { expect } = await import('@storybook/test');
-
-    // Run all basic rendering tests for Svelte
-    await runBasicRenderingTests('Svelte', { canvasElement, step, expect });
+    await runBasicRenderingTests('Svelte', { canvasElement, step });
   },
 };

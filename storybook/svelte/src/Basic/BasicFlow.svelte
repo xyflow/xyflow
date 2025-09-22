@@ -3,7 +3,7 @@
   import '@xyflow/svelte/dist/style.css';
   import BasicFlowInner from './BasicFlowInner.svelte';
   
-  import type { BasicFlowProps } from '../../../shared/basic/basic-stories';
+  import type { BasicFlowProps } from 'storybook-shared';
 
   let {
     nodeDragThreshold = 0,
