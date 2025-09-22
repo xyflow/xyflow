@@ -7,6 +7,9 @@ const meta: Meta<typeof Basic> = {
   title: 'React Flow/Basic',
   component: Basic,
   argTypes: sharedArgTypes,
+  parameters: {
+    renderer: 'react',
+  },
 } satisfies Meta<typeof Basic>;
 
 export default meta;
@@ -18,8 +21,5 @@ export const BasicStory: Story = {
 
 export const BasicRendering: Story = {
   args: defaultStoryArgs,
-  play: async ({ canvasElement, step }: { canvasElement: any; step: any }) => {
-    // Run all basic rendering tests for React
-    await runBasicRenderingTests('React', { canvasElement, step });
-  },
+  play: runBasicRenderingTests,
 };

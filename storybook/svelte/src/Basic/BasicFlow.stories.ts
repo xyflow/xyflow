@@ -6,6 +6,9 @@ const meta: Meta<BasicFlow> = {
   title: 'Svelte Flow/Basic',
   component: BasicFlow,
   argTypes: sharedArgTypes,
+  parameters: {
+    renderer: 'svelte',
+  },
 } satisfies Meta<BasicFlow>;
 
 export default meta;
@@ -17,7 +20,5 @@ export const BasicStory: Story = {
 
 export const BasicRendering: Story = {
   args: defaultStoryArgs,
-  play: async ({ canvasElement, step }: { canvasElement: any; step: any }) => {
-    await runBasicRenderingTests('Svelte', { canvasElement, step });
-  },
+  play: runBasicRenderingTests,
 };

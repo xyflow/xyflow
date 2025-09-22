@@ -54,14 +54,13 @@ export const defaultStoryArgs = {
 };
 
 // Single function that runs all basic rendering tests for a framework
-export const runBasicRenderingTests = async (
-  frameworkName: 'React' | 'Svelte',
-  { canvasElement, step }: { canvasElement: any; step: any }
-) => {
-  const prefix = frameworkName.toLowerCase();
-  if (frameworkName === 'React') {
-    await step(`Check ${frameworkName} Flow renders`, async () => {
-      const renderer = canvasElement.querySelector(`.${prefix}-flow__renderer`);
+export const runBasicRenderingTests = async ({ context }: { context: any }) => {
+  const { canvasElement, step } = context;
+  const framework = context.parameters.renderer;
+
+  if (framework === 'react') {
+    await step(`Check ${framework} Flow renders`, async () => {
+      const renderer = canvasElement.querySelector(`.${framework}-flow__renderer`);
       expect(renderer).toBeInTheDocument();
     });
   }
@@ -72,23 +71,26 @@ export const runBasicRenderingTests = async (
   });
 
   await step('Check nodes render correctly', async () => {
-    const nodes = canvasElement.querySelectorAll(`.${prefix}-flow__node`);
+    const nodes = canvasElement.querySelectorAll(`.${framework}-flow__node`);
     await expect(nodes).toHaveLength(4);
   });
 
   await step('Check edges render correctly', async () => {
-    const edges = canvasElement.querySelectorAll(`.${prefix}-flow__edge`);
+    // const edges = canvasElement.querySelectorAll(`.${framework}-flow__edge`);
     // TODO: Fix problematic test
     // await expect(edges).toHaveLength(2);
   });
 
   await step('Check background renders', async () => {
-    const background = canvasElement.querySelector(`.${prefix}-flow__background`);
+    const background = canvasElement.querySelector(`.${framework}-flow__background`);
     await expect(background).toBeInTheDocument();
   });
 
   await step('Check node handles exist', async () => {
-    const handles = canvasElement.querySelectorAll(`.${prefix}-flow__node .${prefix}-flow__handle`);
+    const handles = canvasElement.querySelectorAll(`.${framework}-flow__node .${framework}-flow__handle`);
     await expect(handles.length).toBeGreaterThan(0);
   });
 };
+
+// Backwards compatibility export
+export const runBasicRenderingTestsAuto = runBasicRenderingTests;
