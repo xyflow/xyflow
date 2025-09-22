@@ -13,7 +13,10 @@
     "dev:compose": "concurrently -k \"pnpm -C ../svelte storybook -p 6008 --ci\" \"pnpm storybook\""
   },
   "dependencies": {
-    "@xyflow/react": "workspace:*"
+    "@xyflow/react": "workspace:*",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "storybook-shared": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
@@ -30,6 +33,7 @@
     "@vitest/browser": "^3.2.4",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
+    "concurrently": "^9.0.0",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
@@ -41,7 +45,6 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2",
-    "vitest": "^3.2.4",
-    "concurrently": "^9.0.0"
+    "vitest": "^3.2.4"
   }
 }
