@@ -25,16 +25,12 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.7",
     "@changesets/cli": "^2.25.0",
-    "@playwright/test": "^1.44.1",
     "concurrently": "^7.6.0",
     "eslint": "^8.57.0",
     "prettier": "^2.7.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "rimraf": "^3.0.2",
     "rollup": "^4.18.0",
-    "turbo": "^2.0.3",
-    "typescript": "5.4.5"
+    "turbo": "^2.0.3"
   },
   "packageManager": "pnpm@9.2.0"
 }
