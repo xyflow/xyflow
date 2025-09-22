@@ -142,7 +142,7 @@ const BasicFlow = (props: BasicProps) => {
       <ReactFlow
         defaultNodes={initialNodes}
         defaultEdges={initialEdges}
-        onNodesChange={console.log}
+        // onNodesChange={console.log}
         onNodeClick={onNodeClick}
         onNodeDragStop={onNodeDragStop}
         onNodeDragStart={onNodeDragStart}
