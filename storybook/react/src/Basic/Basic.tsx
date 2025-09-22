@@ -66,7 +66,7 @@ const fitViewOptions: FitViewOptions = {
   padding: { top: '100px', left: '0%', right: '10%', bottom: 0.1 },
 };
 
-const BasicFlow = (props: BasicProps) => {
+export default function BasicFlow(props: BasicProps) {
   // Default handlers that do nothing if no props are provided
   const onNodeDrag: OnNodeDrag = props.onNodeDrag || (() => {});
   const onNodeDragStart = props.onNodeDragStart || (() => {});
@@ -179,15 +179,5 @@ const BasicFlow = (props: BasicProps) => {
         </Panel>
       </ReactFlow>
     </>
-  );
-};
-
-export default function App(props: BasicProps) {
-  return (
-    <div style={{ width: '100%', height: '95vh' }}>
-      <ReactFlowProvider>
-        <BasicFlow {...props} />
-      </ReactFlowProvider>
-    </div>
   );
 }
