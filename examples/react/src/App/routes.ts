@@ -60,6 +60,7 @@ import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
 import MovingHandles from '../examples/MovingHandles';
 import DetachedHandle from '../examples/DetachedHandle';
+import StressMarkersCustom from '../examples/StressMarkersCustom';
 
 export interface IRoute {
   name: string;
@@ -292,6 +293,16 @@ const routes: IRoute[] = [
     name: 'Stress',
     path: 'stress',
     component: Stress,
+  },
+  {
+    name: 'StressMarkers',
+    path: 'stress-markers',
+    component: StressMarkers,
+  },
+  {
+    name: 'StressMarkersCustom',
+    path: 'stress-markers-custom',
+    component: StressMarkersCustom,
   },
   {
     name: 'Subflow',
