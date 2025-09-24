@@ -3,7 +3,7 @@ import CommonProps from './CommonProps';
 import { ConnectionLineType } from '@xyflow/react';
 
 const meta: Meta<typeof CommonProps> = {
-  title: 'React Flow/CommonProps',
+  title: 'React Flow/ReactFlow/CommonProps',
   component: CommonProps,
   parameters: { renderer: 'react' },
   args: {
