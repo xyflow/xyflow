@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "exports": {
-    ".": "./basic/basic-stories.ts"
+    ".": "./basic/basic-stories.ts",
+    "./common": "./common/index.ts"
   },
   "dependencies": {
     "@storybook/test": "^8.6.14",

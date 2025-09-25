@@ -403,6 +403,9 @@ importers:
 
   storybook/react:
     dependencies:
+      '@storybook/blocks':
+        specifier: ^8.6.14
+        version: 8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@9.1.7(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.7(@types/node@20.19.17)(terser@5.44.0)(yaml@2.8.1)))
       '@xyflow/react':
         specifier: workspace:*
         version: link:../../packages/react
@@ -1755,6 +1758,18 @@ packages:
       '@vitest/runner':
         optional: true
       vitest:
+        optional: true
+
+  '@storybook/blocks@8.6.14':
+    resolution: {integrity: sha512-rBMHAfA39AGHgkrDze4RmsnQTMw1ND5fGWobr9pDcJdnDKWQWNRD7Nrlxj0gFlN3n4D9lEZhWGdFrCbku7FVAQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      storybook: ^8.6.14
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
         optional: true
 
   '@storybook/builder-vite@9.1.7':
@@ -7705,6 +7720,15 @@ snapshots:
     transitivePeerDependencies:
       - react
       - react-dom
+
+  '@storybook/blocks@8.6.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@9.1.7(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.7(@types/node@20.19.17)(terser@5.44.0)(yaml@2.8.1)))':
+    dependencies:
+      '@storybook/icons': 1.6.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      storybook: 9.1.7(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.7(@types/node@20.19.17))
+      ts-dedent: 2.2.0
+    optionalDependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   '@storybook/builder-vite@9.1.7(storybook@9.1.7(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.7(@types/node@20.19.17)(terser@5.44.0)(yaml@2.8.1)))(vite@7.1.7(@types/node@20.19.17)(terser@5.44.0)(yaml@2.8.1))':
     dependencies:
