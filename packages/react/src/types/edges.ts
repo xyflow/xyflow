@@ -149,7 +149,7 @@ export type EdgeTextProps = Omit<SVGAttributes<SVGElement>, 'x' | 'y'> &
  */
 export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
   EdgeType,
-  'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target' | 'selectable' | 'deletable'
+  'id' | 'type' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target' | 'selectable' | 'deletable'
 > &
   EdgePosition &
   EdgeLabelOptions & {
