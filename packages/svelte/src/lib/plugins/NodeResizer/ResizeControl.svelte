@@ -22,6 +22,7 @@
     maxWidth = Number.MAX_VALUE,
     maxHeight = Number.MAX_VALUE,
     keepAspectRatio = false,
+    resizeDirection,
     autoScale = true,
     shouldResize,
     onResizeStart,
@@ -78,15 +79,18 @@
 
           store.nodes = store.nodes.map((node) => {
             const change = changes.get(node.id);
+            const horizontal = !resizeDirection || resizeDirection === 'horizontal';
+            const vertical = !resizeDirection || resizeDirection === 'vertical';
+
             if (change) {
               return {
                 ...node,
                 position: {
-                  x: change.position?.x ?? node.position.x,
-                  y: change.position?.y ?? node.position.y
+                  x: horizontal ? (change.position?.x ?? node.position.x) : node.position.x,
+                  y: vertical ? (change.position?.y ?? node.position.y) : node.position.y
                 },
-                width: change.width ?? node.width,
-                height: change.height ?? node.height
+                width: horizontal ? (change.width ?? node.width) : node.width,
+                height: vertical ? (change.height ?? node.height) : node.height
               };
             }
             return node;
@@ -109,6 +113,7 @@
         maxHeight
       },
       keepAspectRatio: !!keepAspectRatio,
+      resizeDirection,
       onResizeStart,
       onResize,
       onResizeEnd,
