@@ -229,21 +229,39 @@
   width: 100%;
   height: 100%;
   position: relative;
-}/* Custom Nodes */
+}
+
+.workflow-canvas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Node Container */
+.workflow-node-container {
+  position: absolute;
+  cursor: pointer;
+  user-select: none;
+}
+
+.workflow-node-container:hover .workflow-node {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.workflow-node-container:hover app-resizable-node {
+  transform: translateY(-2px);
+}
+
+/* Workflow Nodes */
 .workflow-node {
+  position: relative;
   background: white;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
-  position: relative;
-  cursor: pointer;
   min-width: 200px;
-}
-
-.workflow-node:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .workflow-node.selected {
@@ -446,19 +464,6 @@
 .empty-content p {
   margin: 0 0 2rem 0;
   font-size: 1rem;
-}
-
-/* Workflow Nodes */
-.workflow-node {
-  position: absolute;
-  background: white;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
-  cursor: pointer;
-  min-width: 200px;
-  user-select: none;
 }
 
 .workflow-node:hover {

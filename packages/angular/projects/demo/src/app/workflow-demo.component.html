@@ -103,49 +103,65 @@
               <!-- Render workflow nodes -->
               <div
                 *ngFor="let node of workflowNodes(); trackBy: trackNode"
-                class="workflow-node"
-                [class.selected]="node.selected"
-                [class.running]="node.data.status === 'running'"
-                [class.success]="node.data.status === 'success'"
-                [class.error]="node.data.status === 'error'"
+                class="workflow-node-container"
                 [style.left.px]="node.position.x"
                 [style.top.px]="node.position.y"
                 [attr.data-node-id]="node.id"
                 (click)="selectNode(node)"
                 (mousedown)="startDrag(node, $event)"
               >
-                <div class="node-header">
-                  <span class="node-icon">{{ node.data.icon }}</span>
-                  <span class="node-title">{{ node.data.label }}</span>
-                  <button class="node-delete" (click)="deleteNode(node.id)" title="Delete node">×</button>
-                </div>
+                <!-- Resizable node type -->
+                <app-resizable-node
+                  *ngIf="node.type === 'resizable'"
+                  [data]="node.data"
+                  [class.selected]="node.selected"
+                  [class.running]="node.data.status === 'running'"
+                  [class.success]="node.data.status === 'success'"
+                  [class.error]="node.data.status === 'error'"
+                ></app-resizable-node>
 
-                <!-- Node handles for connections -->
-                <div class="node-handles">
-                  <div
-                    class="handle handle-input"
-                    *ngIf="canHaveInput(node)"
-                    [attr.data-node-id]="node.id"
-                    [attr.data-handle-type]="'input'"
-                    (mousedown)="startConnection(node, 'input', $event)"
-                    (mouseup)="endConnection(node, 'input', $event)"
-                  ></div>
-                  <div
-                    class="handle handle-output"
-                    *ngIf="canHaveOutput(node)"
-                    [attr.data-node-id]="node.id"
-                    [attr.data-handle-type]="'output'"
-                    (mousedown)="startConnection(node, 'output', $event)"
-                    (mouseup)="endConnection(node, 'output', $event)"
-                  ></div>
-                </div>
+                <!-- Default node types -->
+                <div
+                  *ngIf="node.type !== 'resizable'"
+                  class="workflow-node"
+                  [class.selected]="node.selected"
+                  [class.running]="node.data.status === 'running'"
+                  [class.success]="node.data.status === 'success'"
+                  [class.error]="node.data.status === 'error'"
+                >
+                  <div class="node-header">
+                    <span class="node-icon">{{ node.data.icon }}</span>
+                    <span class="node-title">{{ node.data.label }}</span>
+                    <button class="node-delete" (click)="deleteNode(node.id)" title="Delete node">×</button>
+                  </div>
 
-                <!-- Status indicator -->
-                <div class="node-status" *ngIf="node.data.status && node.data.status !== 'idle'">
-                  <div class="status-indicator" [attr.data-status]="node.data.status">
-                    <span *ngIf="node.data.status === 'running'">⏳</span>
-                    <span *ngIf="node.data.status === 'success'">✅</span>
-                    <span *ngIf="node.data.status === 'error'">❌</span>
+                  <!-- Node handles for connections -->
+                  <div class="node-handles">
+                    <div
+                      class="handle handle-input"
+                      *ngIf="canHaveInput(node)"
+                      [attr.data-node-id]="node.id"
+                      [attr.data-handle-type]="'input'"
+                      (mousedown)="startConnection(node, 'input', $event)"
+                      (mouseup)="endConnection(node, 'input', $event)"
+                    ></div>
+                    <div
+                      class="handle handle-output"
+                      *ngIf="canHaveOutput(node)"
+                      [attr.data-node-id]="node.id"
+                      [attr.data-handle-type]="'output'"
+                      (mousedown)="startConnection(node, 'output', $event)"
+                      (mouseup)="endConnection(node, 'output', $event)"
+                    ></div>
+                  </div>
+
+                  <!-- Status indicator -->
+                  <div class="node-status" *ngIf="node.data.status && node.data.status !== 'idle'">
+                    <div class="status-indicator" [attr.data-status]="node.data.status">
+                      <span *ngIf="node.data.status === 'running'">⏳</span>
+                      <span *ngIf="node.data.status === 'success'">✅</span>
+                      <span *ngIf="node.data.status === 'error'">❌</span>
+                    </div>
                   </div>
                 </div>
               </div>

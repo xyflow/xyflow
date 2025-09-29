@@ -45,7 +45,6 @@ import { NodeWrapperComponent } from '../node-wrapper/node-wrapper.component';
 import { EdgeWrapperComponent } from '../edge-wrapper/edge-wrapper.component';
 import { ConnectionLineComponent } from '../connection-line/connection-line.component';
 import { SelectionBoxComponent } from '../selection-box/selection-box.component';
-import { BackgroundComponent } from '../background/background.component';
 import type {
   Node,
   Edge,
@@ -67,7 +66,6 @@ export type EdgeType = Edge;
     EdgeWrapperComponent,
     ConnectionLineComponent,
     SelectionBoxComponent,
-    BackgroundComponent,
   ],
   providers: [FlowStateService],
   template: `
@@ -91,9 +89,9 @@ export type EdgeType = Edge;
       <!-- Node Layer -->
       <div class="angular-flow__nodes" #nodesContainer>
         <ng-container *ngFor="let node of internalNodes; trackBy: trackByNodeId">
-          <node-wrapper
-            [node]="node"
-            [nodeTypes]="nodeTypes"
+          <xy-node-wrapper
+            [node]="$any(node)"
+            [nodeTypes]="$any(nodeTypes)"
             [selected]="node.selected"
             (nodeChange)="onNodeChange($any($event))"
             (nodeClick)="onNodeClick($any($event), node)"
@@ -105,8 +103,8 @@ export type EdgeType = Edge;
       <!-- Edge Layer -->
       <svg class="angular-flow__edges">
         <ng-container *ngFor="let edge of internalEdges; trackBy: trackByEdgeId">
-          <edge-wrapper
-            [edge]="edge"
+          <xy-edge-wrapper
+            [edge]="$any(edge)"
             [edgeTypes]="edgeTypes"
             [selected]="edge.selected"
             (edgeChange)="onEdgeChange($any($event))"
@@ -115,11 +113,11 @@ export type EdgeType = Edge;
         </ng-container>
 
         <!-- Connection Line -->
-        <connection-line />
+        <xy-connection-line />
       </svg>
 
       <!-- Selection Box -->
-      <selection-box />
+      <xy-selection-box />
 
       <!-- Overlays -->
       <div class="angular-flow__overlays">

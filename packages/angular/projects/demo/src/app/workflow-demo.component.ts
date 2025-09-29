@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, signal, computed, PLATFORM_ID, Inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ResizableNodeComponent } from './resizable-node.component';
 
 // Define workflow node types
 interface WorkflowNodeType {
@@ -30,6 +31,7 @@ interface WorkflowEdge {
   id: string;
   source: string;
   target: string;
+  type?: string;
   animated?: boolean;
   style?: any;
   label?: string;
@@ -38,7 +40,7 @@ interface WorkflowEdge {
 @Component({
   selector: 'app-workflow-demo',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ResizableNodeComponent],
   templateUrl: './workflow-demo.component.html',
   styleUrls: ['./workflow-demo.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -127,6 +129,14 @@ export class WorkflowDemoComponent implements OnInit, OnDestroy {
       color: 'linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)',
       category: 'action',
       description: 'Transform and process data'
+    },
+    {
+      id: 'resizable',
+      name: 'Resizable Node',
+      icon: '↔️',
+      color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      category: 'action',
+      description: 'A resizable node that can be stretched and resized'
     }
   ];
 
@@ -608,6 +618,14 @@ export class WorkflowDemoComponent implements OnInit, OnDestroy {
         target: 'database-1',
         animated: false,
         label: 'No'
+      },
+      {
+        id: 'e5',
+        source: 'email-1',
+        target: 'database-1',
+        animated: true,
+        label: 'Simple Bezier',
+        type: 'simplebezier'
       }
     ];
 
