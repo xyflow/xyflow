@@ -259,7 +259,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       const edgeWillBeSelected = ids.includes(edge.id);
       const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
 
-      if (edge.selected !== selected) {
+      if (!!edge.selected !== selected) {
         return { ...edge, selected };
       }
       return edge;
