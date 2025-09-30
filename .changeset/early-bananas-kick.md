@@ -2,4 +2,4 @@
 '@xyflow/svelte': patch
 ---
 
-Fix selected=false being set on all nodes eagerly
+Fix selected set to false on every node and edge eagerly
