@@ -241,8 +241,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
         // we need to mutate the node here in order to have the correct selected state in the drag handler
         const internalNode = store.nodeLookup.get(node.id);
         if (internalNode) internalNode.selected = selected;
-        node.selected = selected;
-        return { ...node };
+        return { ...node, selected };
       }
       return node;
     });
