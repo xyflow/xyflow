@@ -5,6 +5,7 @@
 	import CustomResizer from './CustomResizer.svelte';
 	import VerticalResizer from './VerticalResizer.svelte';
 	import HorizontalResizer from './HorizontalResizer.svelte';
+	import BottomRightResizer from './BottomRightResizer.svelte';
 
 	import '@xyflow/svelte/dist/style.css';
 	import type { ResizeNode } from './types';
@@ -13,7 +14,8 @@
 		defaultResizer: DefaultResizer,
 		customResizer: CustomResizer,
 		verticalResizer: VerticalResizer,
-		horizontalResizer: HorizontalResizer
+		horizontalResizer: HorizontalResizer,
+		bottomRightResizer: BottomRightResizer
 	};
 
 	const nodeStyle = 'border: 1px solid #222; font-size: 10px; background-color: #ddd;';
@@ -123,6 +125,13 @@
 			data: { label: 'Child' },
 			position: { x: 100, y: 100 },
 			parentId: '5',
+			style: nodeStyle
+		},
+		{
+			id: '6',
+			type: 'bottomRightResizer',
+			data: { label: 'bottom-right horizontal resizer' },
+			position: { x: 500, y: 0 },
 			style: nodeStyle
 		}
 	]);
