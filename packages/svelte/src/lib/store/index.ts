@@ -236,8 +236,8 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       const selected = isMultiSelection ? node.selected || nodeWillBeSelected : nodeWillBeSelected;
 
       if (!!node.selected !== selected) {
-        // we need to mutate the node here in order to have the correct selected state in the drag handler
         const internalNode = store.nodeLookup.get(node.id);
+        // we need to mutate the internalNode in order to have the correct selected state in the drag handler
         if (internalNode) internalNode.selected = selected;
         return { ...node, selected };
       }
