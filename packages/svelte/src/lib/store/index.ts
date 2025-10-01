@@ -235,12 +235,8 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       const nodeWillBeSelected = ids.includes(node.id);
       const selected = isMultiSelection ? node.selected || nodeWillBeSelected : nodeWillBeSelected;
 
-      if (node.selected !== selected) {
-        // we need to mutate the node here in order to have the correct selected state in the drag handler
-        const internalNode = store.nodeLookup.get(node.id);
-        if (internalNode) internalNode.selected = selected;
-        node.selected = selected;
-        return { ...node };
+      if (!!node.selected !== selected) {
+        return { ...node, selected };
       }
       return node;
     });
@@ -257,7 +253,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       const edgeWillBeSelected = ids.includes(edge.id);
       const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
 
-      if (edge.selected !== selected) {
+      if (!!edge.selected !== selected) {
         return { ...edge, selected };
       }
       return edge;
