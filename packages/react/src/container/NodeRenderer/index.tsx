@@ -6,7 +6,7 @@ import { useStore } from '../../hooks/useStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import { useResizeObserver } from './useResizeObserver';
-import { NodeWrapper } from '../../components/NodeWrapper';
+import NodeWrapper from '../../components/NodeWrapper';
 import type { Node, ReactFlowState } from '../../types';
 
 export type NodeRendererProps<NodeType extends Node> = Pick<
