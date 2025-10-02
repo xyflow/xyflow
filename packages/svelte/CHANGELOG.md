@@ -1,5 +1,20 @@
 # @xyflow/svelte
 
+## 1.4.0
+
+### Minor Changes
+
+- [#5526](https://github.com/xyflow/xyflow/pull/5526) [`1b0bd9794`](https://github.com/xyflow/xyflow/commit/1b0bd9794f8d610468983a579e53b4633047b465) Thanks [@peterkogo](https://github.com/peterkogo)! - Add resizeDirection prop to ResizeControls
+
+### Patch Changes
+
+- [#5529](https://github.com/xyflow/xyflow/pull/5529) [`da77772de`](https://github.com/xyflow/xyflow/commit/da77772debe6a0e730feacadf53210210178e7e2) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix selected set to false on every node and edge eagerly
+
+- [#5528](https://github.com/xyflow/xyflow/pull/5528) [`d50a963cd`](https://github.com/xyflow/xyflow/commit/d50a963cd0f00cd31236d760dcd7995218d80553) Thanks [@peterkogo](https://github.com/peterkogo)! - Let NodeResizer props change during ongoing resize
+
+- Updated dependencies [[`d50a963cd`](https://github.com/xyflow/xyflow/commit/d50a963cd0f00cd31236d760dcd7995218d80553)]:
+  - @xyflow/system@0.0.71
+
 ## 1.3.1
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @xyflow/react
 
+## 12.8.7
+
+### Patch Changes
+
+- [#5531](https://github.com/xyflow/xyflow/pull/5531) [`fe2a45ed2`](https://github.com/xyflow/xyflow/commit/fe2a45ed2aa0d96db8e1be0354038be7ce6f824d) Thanks [@Sec-ant](https://github.com/Sec-ant)! - Add `type` property to `EdgeProps` to match `NodeProps` behavior
+
+- [#5528](https://github.com/xyflow/xyflow/pull/5528) [`d50a963cd`](https://github.com/xyflow/xyflow/commit/d50a963cd0f00cd31236d760dcd7995218d80553) Thanks [@peterkogo](https://github.com/peterkogo)! - Let NodeResizer props change during ongoing resize
+
+- [#5530](https://github.com/xyflow/xyflow/pull/5530) [`3b9951e42`](https://github.com/xyflow/xyflow/commit/3b9951e42f2041276ac8957154598a7af41f81e9) Thanks [@peterkogo](https://github.com/peterkogo)! - Improve performance of adding nodes & edges
+
+- Updated dependencies [[`d50a963cd`](https://github.com/xyflow/xyflow/commit/d50a963cd0f00cd31236d760dcd7995218d80553)]:
+  - @xyflow/system@0.0.71
+
 ## 12.8.6
 
 ### Patch Changes
