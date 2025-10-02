@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.71
+
+### Patch Changes
+
+- [#5528](https://github.com/xyflow/xyflow/pull/5528) [`d50a963cd`](https://github.com/xyflow/xyflow/commit/d50a963cd0f00cd31236d760dcd7995218d80553) Thanks [@peterkogo](https://github.com/peterkogo)! - Let NodeResizer props change during ongoing resize
+
 ## 0.0.70
 
 ### Patch Changes
