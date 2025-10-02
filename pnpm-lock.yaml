@@ -418,6 +418,9 @@ importers:
       storybook-shared:
         specifier: workspace:*
         version: link:../shared
+      storybook-shared-tests:
+        specifier: workspace:*
+        version: link:../shared-tests
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
@@ -510,11 +513,84 @@ importers:
         specifier: workspace:*
         version: link:../../packages/system
 
+  storybook/shared-tests:
+    dependencies:
+      '@storybook/test':
+        specifier: ^8.6.14
+        version: 8.6.14(storybook@9.1.7(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.7(@types/node@20.19.17)))
+      '@xyflow/react':
+        specifier: workspace:*
+        version: link:../../packages/react
+      '@xyflow/svelte':
+        specifier: workspace:*
+        version: link:../../packages/svelte
+      '@xyflow/system':
+        specifier: workspace:*
+        version: link:../../packages/system
+      react:
+        specifier: 18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: 18.3.1
+        version: 18.3.1(react@18.3.1)
+      svelte:
+        specifier: ^5.38.1
+        version: 5.39.4
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.33.0
+        version: 9.36.0
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.1.1
+        version: 6.2.0(svelte@5.39.4)(vite@7.1.7(@types/node@20.19.17)(terser@5.44.0)(yaml@2.8.1))
+      '@tsconfig/svelte':
+        specifier: ^5.0.4
+        version: 5.0.5
+      '@types/react':
+        specifier: ^18.3.1
+        version: 18.3.24
+      '@types/react-dom':
+        specifier: ^18.3.1
+        version: 18.3.7(@types/react@18.3.24)
+      '@vitejs/plugin-react':
+        specifier: ^5.0.0
+        version: 5.0.3(vite@7.1.7(@types/node@20.19.17)(terser@5.44.0)(yaml@2.8.1))
+      eslint:
+        specifier: ^9.33.0
+        version: 9.36.0
+      eslint-plugin-react-hooks:
+        specifier: ^5.2.0
+        version: 5.2.0(eslint@9.36.0)
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.20
+        version: 0.4.20(eslint@9.36.0)
+      eslint-plugin-svelte:
+        specifier: ^3.12.4
+        version: 3.12.4(eslint@9.36.0)(svelte@5.39.4)
+      globals:
+        specifier: ^16.3.0
+        version: 16.4.0
+      svelte-check:
+        specifier: ^4.3.1
+        version: 4.3.1(picomatch@4.0.3)(svelte@5.39.4)(typescript@5.8.3)
+      typescript:
+        specifier: ~5.8.3
+        version: 5.8.3
+      typescript-eslint:
+        specifier: ^8.39.1
+        version: 8.44.0(eslint@9.36.0)(typescript@5.8.3)
+      vite:
+        specifier: ^7.1.2
+        version: 7.1.7(@types/node@20.19.17)(terser@5.44.0)(yaml@2.8.1)
+
   storybook/svelte:
     dependencies:
       storybook-shared:
         specifier: workspace:*
         version: link:../shared
+      storybook-shared-tests:
+        specifier: workspace:*
+        version: link:../shared-tests
     devDependencies:
       '@storybook/addon-a11y':
         specifier: ^9.1.5

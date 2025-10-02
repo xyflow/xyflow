@@ -7,5 +7,21 @@ const config: StorybookConfig = {
   refs: {
     svelte: { title: 'Svelte', url: 'http://localhost:6008' },
   },
+  viteFinal: async (config) => {
+    if (config.server) {
+      config.server.cors = {
+        origin: 'http://localhost:6008',
+        credentials: true,
+      };
+    } else {
+      config.server = {
+        cors: {
+          origin: 'http://localhost:6008',
+          credentials: true,
+        },
+      };
+    }
+    return config;
+  },
 };
 export default config;

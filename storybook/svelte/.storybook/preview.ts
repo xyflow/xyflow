@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/svelte-vite';
+import 'storybook-shared-tests/base.css';
 import Wrapper from './Wrapper.svelte';
-import '@xyflow/svelte/dist/style.css';
 
 const preview: Preview = {
   decorators: [
@@ -10,6 +10,7 @@ const preview: Preview = {
     },
   ],
   parameters: {
+    layout: 'fullscreen',
     actions: { argTypesRegex: '^on.*' },
     controls: {
       expanded: true,

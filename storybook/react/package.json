@@ -17,7 +17,8 @@
     "@xyflow/react": "workspace:*",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "storybook-shared": "workspace:*"
+    "storybook-shared": "workspace:*",
+    "storybook-shared-tests": "workspace:*"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
