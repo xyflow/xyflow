@@ -44,6 +44,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onPaneScroll,
   paneClickDistance,
   deleteKeyCode,
+  selecting,
   selectionKeyCode,
   selectionOnDrag,
   selectionMode,
@@ -79,7 +80,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   const panOnDrag = panActivationKeyPressed || _panOnDrag;
   const panOnScroll = panActivationKeyPressed || _panOnScroll;
   const _selectionOnDrag = selectionOnDrag && panOnDrag !== true;
-  const isSelecting = selectionKeyPressed || userSelectionActive || _selectionOnDrag;
+  const isSelecting = selectionKeyPressed || userSelectionActive || _selectionOnDrag || selecting;
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
 
@@ -93,7 +94,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
-      panOnDrag={!selectionKeyPressed && panOnDrag}
+      panOnDrag={!selectionKeyPressed && !selecting && panOnDrag}
       defaultViewport={defaultViewport}
       translateExtent={translateExtent}
       minZoom={minZoom}
@@ -118,7 +119,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
         panOnDrag={panOnDrag}
         isSelecting={!!isSelecting}
         selectionMode={selectionMode}
-        selectionKeyPressed={selectionKeyPressed}
+        selectionKeyPressed={selectionKeyPressed || !!selecting}
         selectionOnDrag={_selectionOnDrag}
       >
         {children}

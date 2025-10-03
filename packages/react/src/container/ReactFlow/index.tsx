@@ -66,6 +66,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     connectionLineComponent,
     connectionLineContainerStyle,
     deleteKeyCode = 'Backspace',
+    selecting,
     selectionKeyCode = 'Shift',
     selectionOnDrag = false,
     selectionMode = SelectionMode.Full,
@@ -202,6 +203,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           connectionLineStyle={connectionLineStyle}
           connectionLineComponent={connectionLineComponent}
           connectionLineContainerStyle={connectionLineContainerStyle}
+          selecting={selecting}
           selectionKeyCode={selectionKeyCode}
           selectionOnDrag={selectionOnDrag}
           selectionMode={selectionMode}

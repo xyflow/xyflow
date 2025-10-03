@@ -326,6 +326,8 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default 'Backspace'
    */
   deleteKeyCode?: KeyCode | null;
+  /** This flag indicates if the user is currently selecting elements. */
+  selecting?: boolean;
   /**
    * If set, holding this key will let you click and drag to draw a selection box around multiple
    * nodes and edges. Passing an array represents multiple keys that can be pressed.
