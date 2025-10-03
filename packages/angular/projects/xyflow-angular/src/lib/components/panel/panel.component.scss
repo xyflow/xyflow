@@ -1,0 +1,75 @@
+/* Panel Component Styles */
+.angular-flow__panel {
+  position: absolute;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px);
+  font-size: 12px;
+}
+
+/* Position variants */
+.angular-flow__panel.top-left {
+  top: 10px;
+  left: 10px;
+}
+
+.angular-flow__panel.top-center {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.angular-flow__panel.top-right {
+  top: 10px;
+  right: 10px;
+}
+
+.angular-flow__panel.bottom-left {
+  bottom: 10px;
+  left: 10px;
+}
+
+.angular-flow__panel.bottom-center {
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.angular-flow__panel.bottom-right {
+  bottom: 10px;
+  right: 10px;
+}
+
+.angular-flow__panel.center-left {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+}
+
+.angular-flow__panel.center-right {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+/* Dark mode styles */
+.angular-flow--dark .angular-flow__panel {
+  background: rgba(45, 45, 45, 0.9);
+  border-color: #555;
+  color: #e0e0e0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .angular-flow__panel {
+    backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.95);
+  }
+  
+  .angular-flow--dark .angular-flow__panel {
+    background: rgba(45, 45, 45, 0.95);
+  }
+}

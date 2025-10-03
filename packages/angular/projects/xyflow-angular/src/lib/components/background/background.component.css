@@ -1,0 +1,63 @@
+/* Angular Flow Background Styles */
+.angular-flow__background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  background-color: var(--xy-background-color-props, var(--xy-background-color, transparent));
+}
+
+/* Background Pattern Styles */
+.angular-flow__background-pattern {
+  fill: none;
+  stroke: var(--xy-background-pattern-color-props, var(--xy-background-pattern-color, #81818a));
+}
+
+.angular-flow__background-pattern.dots {
+  fill: var(--xy-background-pattern-color-props, var(--xy-background-pattern-color, #81818a));
+  stroke: none;
+}
+
+.angular-flow__background-pattern.lines {
+  stroke: var(--xy-background-pattern-color-props, var(--xy-background-pattern-color, #81818a));
+}
+
+.angular-flow__background-pattern.cross {
+  stroke: var(--xy-background-pattern-color-props, var(--xy-background-pattern-color, #81818a));
+}
+
+/* Theme Integration */
+.angular-flow.dark .angular-flow__background-pattern {
+  stroke: var(--xy-background-pattern-color-props, var(--xy-background-pattern-color, #434343));
+}
+
+.angular-flow.dark .angular-flow__background-pattern.dots {
+  fill: var(--xy-background-pattern-color-props, var(--xy-background-pattern-color, #434343));
+}
+
+/* Responsive and Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .angular-flow__background {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .angular-flow__background-pattern {
+    stroke: ButtonText;
+  }
+  
+  .angular-flow__background-pattern.dots {
+    fill: ButtonText;
+  }
+}
+
+/* Print styles */
+@media print {
+  .angular-flow__background {
+    display: none;
+  }
+}
