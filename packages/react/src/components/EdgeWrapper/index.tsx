@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX } from 'react';
+import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX, memo } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -15,7 +15,7 @@ import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
 import type { Edge, EdgeWrapperProps } from '../../types';
 
-export function EdgeWrapper<EdgeType extends Edge = Edge>({
+function EdgeWrapper<EdgeType extends Edge = Edge>({
   id,
   edgesFocusable,
   edgesReconnectable,
@@ -263,3 +263,5 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
     </svg>
   );
 }
+
+export default memo(EdgeWrapper) as typeof EdgeWrapper;
