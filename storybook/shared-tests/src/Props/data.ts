@@ -2,7 +2,7 @@ import type { EdgeBase, NodeBase } from '@xyflow/system';
 
 export interface Props {
   nodeDragThreshold?: number;
-  classNames?: string;
+  className?: string;
   minZoom?: number;
   maxZoom?: number;
   panOnDrag?: boolean;

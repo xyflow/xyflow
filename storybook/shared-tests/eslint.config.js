@@ -10,7 +10,7 @@ export default tseslint.config(
   // Shared TypeScript files (no project reference needed)
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['src/react.ts', 'src/svelte.ts', 'src/stories.ts'],
+    files: ['src/react.ts', 'src/svelte.ts', 'src/stories.ts', 'src/argTypes.ts'],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,
@@ -23,12 +23,21 @@ export default tseslint.config(
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
-    ignores: ['**/*.svelte', 'vite.config.ts', 'svelte.config.js', 'src/react.ts', 'src/svelte.ts', 'src/stories.ts'],
+    ignores: [
+      '**/*.svelte',
+      'vite.config.ts',
+      'svelte.config.js',
+      'src/react.ts',
+      'src/svelte.ts',
+      'src/stories.ts',
+      'src/argTypes.ts',
+    ],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,
       parserOptions: {
         project: './tsconfig.react.json',
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     plugins: {
@@ -55,6 +64,7 @@ export default tseslint.config(
       parserOptions: {
         parser: tseslint.parser,
         project: './tsconfig.svelte.json',
+        tsconfigRootDir: import.meta.dirname,
         extraFileExtensions: ['.svelte'],
       },
     },
@@ -75,6 +85,7 @@ export default tseslint.config(
       globals: globals.node,
       parserOptions: {
         project: './tsconfig.node.json',
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     rules: {

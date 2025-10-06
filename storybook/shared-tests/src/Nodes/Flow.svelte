@@ -3,16 +3,23 @@
 
   import '@xyflow/svelte/dist/style.css';
   import { initialNodes, initialEdges, type Props } from './data';
-  let { nodeDragThreshold, className, minZoom, maxZoom, panOnDrag, zoomOnScroll, panOnScroll }: Props = $props();
+
+  let { nodeDragThreshold, classNames, minZoom, maxZoom, panOnDrag, zoomOnScroll, panOnScroll }: Props = $props();
 
   let nodes = $state.raw<Node[]>([...initialNodes]);
   let edges = $state.raw<Edge[]>([...initialEdges]);
+
+  let x = 5;
+
+  $effect(() => {
+    x += 1;
+  });
 </script>
 
 <SvelteFlow
   bind:nodes
   bind:edges
-  class={className}
+  class={classNames}
   {nodeDragThreshold}
   {minZoom}
   {maxZoom}

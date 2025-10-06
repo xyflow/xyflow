@@ -14,20 +14,20 @@ type Story = StoryObj<typeof meta>;
 export const BasicStory: Story = { args: defaultStoryArgs };
 export const BasicRendering: Story = { args: defaultStoryArgs, play: runBasicRenderingTests };
 
-export const storyVariants = {
-  Default: {
-    args: defaultStoryArgs,
-  },
-  DarkMode: {
-    args: {
-      ...defaultStoryArgs,
-      classNames: 'dark',
-    },
-  },
-  HighDragThreshold: {
-    args: {
-      ...defaultStoryArgs,
-      nodeDragThreshold: 100,
-    },
-  },
-};
+// export const storyVariants = {
+//   Default: {
+//     args: defaultStoryArgs,
+//   },
+//   DarkMode: {
+//     args: {
+//       ...defaultStoryArgs,
+//       classNames: 'dark',
+//     },
+//   },
+//   HighDragThreshold: {
+//     args: {
+//       ...defaultStoryArgs,
+//       nodeDragThreshold: 100,
+//     },
+//   },
+// };

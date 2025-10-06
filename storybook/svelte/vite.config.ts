@@ -7,13 +7,24 @@ import { resolve } from 'node:path';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+import { generateStoriesPlugin } from '../shared-tests/src/vite-plugin-generate-stories.js';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
-  plugins: [svelte()],
+  plugins: [
+    svelte(),
+    generateStoriesPlugin({
+      framework: 'svelte',
+      sharedTestsPath: path.join(dirname, '../shared-tests/src'),
+      outputPath: path.join(dirname, 'src/shared'),
+    }),
+  ],
   resolve: {
     alias: [{ find: '@', replacement: resolve(__dirname, './src') }],
+  },
+  server: {
+    cors: true,
   },
   test: {
     projects: [

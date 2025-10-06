@@ -16,7 +16,20 @@ export default function BasicFlow(props: Props) {
   const [edges, , onEdgesChange] = useEdgesState(initialEdges);
 
   return (
-    <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} {...props}>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      className={props.classNames}
+      nodeDragThreshold={props.nodeDragThreshold}
+      minZoom={props.minZoom}
+      maxZoom={props.maxZoom}
+      panOnDrag={props.panOnDrag}
+      panOnScroll={props.panOnScroll}
+      zoomOnScroll={props.zoomOnScroll}
+      fitView
+    >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
       <Controls />

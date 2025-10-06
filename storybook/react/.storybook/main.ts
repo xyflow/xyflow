@@ -1,4 +1,7 @@
+import { createRequire } from 'node:module';
 import type { StorybookConfig } from '@storybook/react-vite';
+
+const require = createRequire(import.meta.url);
 
 const config: StorybookConfig = {
   framework: { name: '@storybook/react-vite', options: {} },
@@ -9,16 +12,10 @@ const config: StorybookConfig = {
   },
   viteFinal: async (config) => {
     if (config.server) {
-      config.server.cors = {
-        origin: 'http://localhost:6008',
-        credentials: true,
-      };
+      config.server.cors = true;
     } else {
       config.server = {
-        cors: {
-          origin: 'http://localhost:6008',
-          credentials: true,
-        },
+        cors: true,
       };
     }
     return config;

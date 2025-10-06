@@ -7,6 +7,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "allowArbitraryExtensions": true,
     "resolveJsonModule": true,
     /**
      * Typecheck JS in `.svelte` and `.js` files by default.

@@ -4,12 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "exports": {
-    "./shared": "./src/shared/index.ts",
-    "./Props/Flow": "./src/Props/Flow.tsx",
-    "./Props/Flow/svelte": "./src/Props/Flow.svelte",
-    "./Props/Props.stories": "./src/Props/Props.stories.ts",
-    "./Props/data": "./src/Props/data.ts",
-    "./base.css": "./src/base.css"
+    "./*": "./src/*"
   },
   "scripts": {
     "check": "svelte-check --tsconfig ./tsconfig.svelte.json && tsc -p tsconfig.react.json",
