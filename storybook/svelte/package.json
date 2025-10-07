@@ -9,26 +9,26 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "common-storybook": "workspace:*"
+    "common-storybook": "workspace:*",
+    "@xyflow/svelte": "workspace:*"
   },
   "devDependencies": {
-    "@storybook/addon-docs": "^9.1.10",
-    "@storybook/addon-a11y": "^9.1.10",
-    "@storybook/addon-svelte-csf": "^5.0.10",
-    "@storybook/addon-vitest": "^9.1.10",
-    "@storybook/svelte-vite": "^9.1.10",
-    "@sveltejs/vite-plugin-svelte": "^6.2.1",
-    "@testing-library/svelte": "^5.2.8",
-    "@tsconfig/svelte": "^5.0.5",
-    "@vitest/browser": "^3.2.4",
-    "@vitest/coverage-v8": "^3.2.4",
-    "@xyflow/svelte": "workspace:*",
-    "playwright": "^1.55.1",
-    "storybook": "^9.1.10",
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "playwright": "catalog:",
+    "storybook": "catalog:",
+    "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-a11y": "catalog:",
+    "@storybook/addon-svelte-csf": "catalog:",
+    "@storybook/addon-vitest": "catalog:",
+    "@storybook/svelte-vite": "catalog:",
+    "@testing-library/svelte": "catalog:",
+    "@vitest/browser": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "svelte": "^5.39.9",
     "svelte-check": "^4.3.2",
-    "typescript": "~5.9.3",
-    "vite": "^7.1.9",
-    "vitest": "^3.2.4"
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@tsconfig/svelte": "^5.0.5",
+    "typescript": "~5.9.3"
   }
 }
