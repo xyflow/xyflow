@@ -128,7 +128,7 @@
             y={node.internals.positionAbsolute.y}
             {...nodeDimesions}
             selected={node.selected}
-            nodeComponent={nodeComponent}
+            {nodeComponent}
             color={nodeColorFunc?.(node)}
             borderRadius={nodeBorderRadius}
             strokeColor={nodeStrokeColorFunc(node)}

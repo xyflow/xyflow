@@ -67,6 +67,7 @@
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
+          // eslint-disable-next-line svelte/prefer-svelte-reactivity
           const changes = new Map<string, Partial<Node>>();
           let position = change.x && change.y ? { x: change.x, y: change.y } : undefined;
           changes.set(id, { ...change, position });

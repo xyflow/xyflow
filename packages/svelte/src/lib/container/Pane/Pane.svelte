@@ -59,8 +59,10 @@
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
 
+  /* eslint-disable svelte/prefer-svelte-reactivity */
   let selectedNodeIds: Set<string> = new Set();
   let selectedEdgeIds: Set<string> = new Set();
+  /* eslint-enable svelte/prefer-svelte-reactivity */
 
   let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
   let isSelecting = $derived(
