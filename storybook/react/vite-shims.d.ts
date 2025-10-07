@@ -1,2 +1,2 @@
-/// <reference types="@vitest/browser/providers/playwright" />
+declare module '../common/src/vite-plugin-generate-stories.js';
 declare module 'common-storybook/vite-plugin-generate-stories.js';

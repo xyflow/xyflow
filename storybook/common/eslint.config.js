@@ -26,6 +26,7 @@ export default tseslint.config(
     ignores: [
       '**/*.svelte',
       'vite.config.ts',
+      'src/vite-plugin-generate-stories.ts',
       'svelte.config.js',
       'src/react.ts',
       'src/svelte.ts',
@@ -79,7 +80,7 @@ export default tseslint.config(
   // Node config files
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['vite.config.ts'],
+    files: ['vite.config.ts', 'src/vite-plugin-generate-stories.ts'],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.node,
@@ -90,14 +91,6 @@ export default tseslint.config(
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-  // Svelte config (JavaScript)
-  {
-    files: ['svelte.config.js'],
-    languageOptions: {
-      ecmaVersion: 2022,
-      globals: globals.node,
     },
   }
 );

@@ -33,7 +33,7 @@
     "src/stories.ts",
     "src/tests/**/*.svelte",
     "src/tests/**/*.stories.ts",
-    "src/shared/**/*.ts",
+    "src/common/**/*.ts",
     "src/vite-env.d.ts",
     "vitest.shims.d.ts"
   ]

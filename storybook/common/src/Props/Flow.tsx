@@ -16,7 +16,14 @@ export default function BasicFlow(props: Props) {
   const [edges, , onEdgesChange] = useEdgesState(initialEdges);
 
   return (
-    <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} {...props}>
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      fitView
+      {...props}
+    >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
       <Controls />

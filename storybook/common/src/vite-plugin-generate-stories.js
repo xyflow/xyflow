@@ -1,8 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Vite plugin to generate framework-specific story files from shared tests
@@ -13,7 +10,7 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
  *
  * @param {Object} options - Plugin options
  * @param {'react' | 'svelte'} options.framework - Target framework
- * @param {string} options.sharedTestsPath - Path to shared-tests/src directory
+ * @param {string} options.sharedTestsPath - Path to common/src directory
  * @param {string} options.outputPath - Path to output directory (shared folder)
  */
 export function generateStoriesPlugin(options) {
@@ -44,9 +41,9 @@ export function generateStoriesPlugin(options) {
    * Generate React story file content
    */
   function generateReactStory(storyPath, storyDir, exports) {
-    const title = `React Flow/${storyDir}`;
-    const flowImport = `storybook-shared-tests/${storyDir}/Flow.tsx`;
-    const storiesImport = `storybook-shared-tests/${storyDir}/${path.basename(storyPath)}`;
+    const title = `Common/${storyDir}`;
+    const flowImport = `common-storybook/${storyDir}/Flow.tsx`;
+    const storiesImport = `common-storybook/${storyDir}/${path.basename(storyPath)}`;
 
     const exportStatements = exports.map((name) => `export const ${name} = stories.${name};`).join('\n');
 
@@ -68,9 +65,9 @@ ${exportStatements}
    * Generate Svelte story file content
    */
   function generateSvelteStory(storyPath, storyDir, exports) {
-    const title = `Svelte Flow/${storyDir}`;
-    const flowImport = `storybook-shared-tests/${storyDir}/Flow.svelte`;
-    const storiesImport = `storybook-shared-tests/${storyDir}/${path.basename(storyPath)}`;
+    const title = `Common/${storyDir}`;
+    const flowImport = `common-storybook/${storyDir}/Flow.svelte`;
+    const storiesImport = `common-storybook/${storyDir}/${path.basename(storyPath)}`;
 
     const exportStatements = exports.map((name) => `export const ${name} = stories.${name};`).join('\n');
 
@@ -160,14 +157,14 @@ ${exportStatements}
   }
 
   /**
-   * Scan shared-tests directory and generate all story files
+   * Scan common directory and generate all story files
    */
   function generateAllStories() {
     try {
       // Clean up old generated files first
       cleanupOldStories();
 
-      // Read all subdirectories in shared-tests/src
+      // Read all subdirectories in common/src
       const entries = fs.readdirSync(sharedTestsPath, { withFileTypes: true });
 
       for (const entry of entries) {
@@ -201,7 +198,7 @@ ${exportStatements}
       generateAllStories();
     },
 
-    // Watch for changes in shared-tests directory
+    // Watch for changes in common directory
     configureServer(server) {
       isServing = true;
 
@@ -212,8 +209,8 @@ ${exportStatements}
       const watcher = server.watcher;
 
       watcher.on('change', (filePath) => {
-        // Check if the changed file is a stories file in shared-tests
-        if (filePath.includes('shared-tests/src') && filePath.endsWith('.stories.ts')) {
+        // Check if the changed file is a stories file in common
+        if (filePath.includes('common/src') && filePath.endsWith('.stories.ts')) {
           const relativePath = path.relative(sharedTestsPath, filePath);
           const dirName = path.dirname(relativePath);
 
@@ -222,7 +219,7 @@ ${exportStatements}
           }
         }
         // Also watch for Flow component changes to trigger regeneration of all stories in that directory
-        else if (filePath.includes('shared-tests/src') && (filePath.endsWith('.tsx') || filePath.endsWith('.svelte'))) {
+        else if (filePath.includes('common/src') && (filePath.endsWith('.tsx') || filePath.endsWith('.svelte'))) {
           const relativePath = path.relative(sharedTestsPath, filePath);
           const dirName = path.dirname(relativePath);
 
@@ -247,7 +244,7 @@ ${exportStatements}
 
       watcher.on('add', (filePath) => {
         // Handle new stories files
-        if (filePath.includes('shared-tests/src') && filePath.endsWith('.stories.ts')) {
+        if (filePath.includes('common/src') && filePath.endsWith('.stories.ts')) {
           const relativePath = path.relative(sharedTestsPath, filePath);
           const dirName = path.dirname(relativePath);
 
@@ -256,7 +253,7 @@ ${exportStatements}
           }
         }
         // Handle new directories
-        else if (filePath.includes('shared-tests/src')) {
+        else if (filePath.includes('common/src')) {
           const relativePath = path.relative(sharedTestsPath, filePath);
           const dirName = path.dirname(relativePath);
 

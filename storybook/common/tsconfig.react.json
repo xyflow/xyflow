@@ -32,7 +32,7 @@
     "src/Props/**/*.ts",
     "src/Nodes/**/*.tsx",
     "src/Nodes/**/*.ts",
-    "src/shared/**/*.ts",
+    "src/common/**/*.ts",
     "src/vite-env.d.ts",
     "vitest.shims.d.ts"
   ]

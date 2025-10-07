@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Preview } from '@storybook/react-vite';
-import 'storybook-shared-tests/base.css';
+import 'common-storybook/base.css';
 
 const preview: Preview = {
   decorators: [

@@ -1,9 +1,9 @@
-import Flow from 'storybook-shared-tests/Props/Flow.svelte';
-import * as stories from 'storybook-shared-tests/Props/Props.stories.ts';
+import Flow from 'common-storybook/Props/Flow.tsx';
+import * as stories from 'common-storybook/Props/Props.stories.ts';
 
 const meta = {
   ...stories.meta,
-  title: 'Svelte Flow/Props',
+  title: 'Common/Props',
   component: Flow,
 };
 export default meta;

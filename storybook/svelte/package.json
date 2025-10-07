@@ -5,13 +5,11 @@
   "type": "module",
   "scripts": {
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
-    "storybook": "storybook index && storybook dev -p 6008 --ci",
-    "build-storybook": "storybook build",
-    "dev:compose": "concurrently -k \"pnpm -C ../react storybook -p 6007 --ci\" \"pnpm storybook\""
+    "storybook": "storybook dev -p 6008 --ci",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
-    "storybook-shared": "workspace:*",
-    "storybook-shared-tests": "workspace:*"
+    "common-storybook": "workspace:*"
   },
   "devDependencies": {
     "@storybook/addon-docs": "^9.1.10",
@@ -19,18 +17,18 @@
     "@storybook/addon-svelte-csf": "^5.0.10",
     "@storybook/addon-vitest": "^9.1.10",
     "@storybook/svelte-vite": "^9.1.10",
-    "@sveltejs/vite-plugin-svelte": "^6.1.1",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@testing-library/svelte": "^5.2.8",
-    "@tsconfig/svelte": "^5.0.4",
+    "@tsconfig/svelte": "^5.0.5",
     "@vitest/browser": "^3.2.4",
     "@vitest/coverage-v8": "^3.2.4",
     "@xyflow/svelte": "workspace:*",
-    "playwright": "^1.55.0",
+    "playwright": "^1.55.1",
     "storybook": "^9.1.10",
-    "svelte": "^5.38.1",
-    "svelte-check": "^4.3.1",
-    "typescript": "~5.8.3",
-    "vite": "^7.1.2",
+    "svelte": "^5.39.9",
+    "svelte-check": "^4.3.2",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.9",
     "vitest": "^3.2.4"
   }
 }

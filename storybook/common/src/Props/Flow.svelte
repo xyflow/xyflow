@@ -3,24 +3,13 @@
 
   import '@xyflow/svelte/dist/style.css';
   import { initialNodes, initialEdges, type Props } from './data';
-  let { nodeDragThreshold, className, minZoom, maxZoom, panOnDrag, zoomOnScroll, panOnScroll }: Props = $props();
+  let { className, ...props }: Props = $props();
 
   let nodes = $state.raw<Node[]>([...initialNodes]);
   let edges = $state.raw<Edge[]>([...initialEdges]);
 </script>
 
-<SvelteFlow
-  bind:nodes
-  bind:edges
-  class={className}
-  {nodeDragThreshold}
-  {minZoom}
-  {maxZoom}
-  {panOnDrag}
-  {zoomOnScroll}
-  {panOnScroll}
-  fitView
->
+<SvelteFlow bind:nodes bind:edges class={className} fitView {...props}>
   <Background variant={BackgroundVariant.Dots} />
   <MiniMap />
   <Controls />

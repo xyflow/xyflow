@@ -1,5 +1,5 @@
 {
-  "name": "storybook-shared-tests",
+  "name": "common-storybook",
   "private": true,
   "version": "0.0.0",
   "type": "module",

@@ -5,7 +5,7 @@ This package provides shared components, stories, and utilities for both React a
 ## Structure
 
 ```
-storybook-shared-tests/
+common-storybook/
 ├── src/
 │   ├── examples/              # Example components
 │   │   └── BasicFlow/
@@ -57,8 +57,8 @@ Then export them in:
 ### In React Storybook
 
 ```typescript
-import { BasicFlow } from 'storybook-shared-tests/react';
-import { meta, defaultArgs, playFunction } from 'storybook-shared-tests/stories';
+import { BasicFlow } from 'common-storybook/react';
+import { meta, defaultArgs, playFunction } from 'common-storybook/stories';
 
 export default {
   ...meta,
@@ -74,8 +74,8 @@ export const Default = {
 ### In Svelte Storybook
 
 ```typescript
-import BasicFlow from 'storybook-shared-tests/svelte';
-import { meta, defaultArgs, playFunction } from 'storybook-shared-tests/stories';
+import BasicFlow from 'common-storybook/svelte';
+import { meta, defaultArgs, playFunction } from 'common-storybook/stories';
 
 export default {
   ...meta,
@@ -90,16 +90,16 @@ export const Default = {
 
 ## Package Exports
 
-### `storybook-shared-tests/react`
+### `common-storybook/react`
 - React Flow components (`.tsx` files)
 
-### `storybook-shared-tests/svelte`
+### `common-storybook/svelte`
 - Svelte Flow components (`.svelte` files)
 
-### `storybook-shared-tests/stories`
+### `common-storybook/stories`
 - Shared story configurations and metadata
 
-### `storybook-shared-tests/shared`
+### `common-storybook/shared`
 - `BasicFlowProps` - Shared props interface
 - `FlowNode` - Node type
 - `FlowEdge` - Edge type

@@ -6,6 +6,7 @@
     "lib": ["ES2023"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "noEmit": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -21,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "vite-shims.d.ts"]
 }

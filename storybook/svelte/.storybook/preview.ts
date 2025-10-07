@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/svelte-vite';
-import 'storybook-shared-tests/base.css';
+import 'common-storybook/base.css';
 import Wrapper from './Wrapper.svelte';
 
 const preview: Preview = {
