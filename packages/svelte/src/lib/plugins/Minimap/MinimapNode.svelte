@@ -34,8 +34,8 @@
 
 {#if nodeComponent}
   {@const CustomComponent = nodeComponent}
-  
-  <CustomComponent 
+
+  <CustomComponent
     {x}
     {y}
     {width}
