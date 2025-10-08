@@ -11,6 +11,8 @@ catalog:
   'vitest': ^3.2.4
   'playwright': ^1.55.1
   'storybook': ^9.1.10
+  '@storybook/react': ^9.1.10
+  '@storybook/svelte': ^9.1.10
   '@storybook/addon-a11y': ^9.1.10
   '@storybook/addon-docs': ^9.1.10
   '@storybook/addon-vitest': ^9.1.10

@@ -17,6 +17,7 @@
     "vitest": "catalog:",
     "playwright": "catalog:",
     "storybook": "catalog:",
+    "@storybook/svelte": "catalog:",
     "@storybook/addon-docs": "catalog:",
     "@storybook/addon-a11y": "catalog:",
     "@storybook/addon-svelte-csf": "catalog:",

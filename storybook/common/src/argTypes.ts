@@ -331,4 +331,4 @@ export const argTypes = {
     description: 'Enable debug logging to console (React only)',
     control: { type: 'boolean' },
   },
-};
+} as const;

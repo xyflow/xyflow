@@ -1,5 +1,6 @@
-import type { Props } from './data';
+import type { Meta } from '@storybook/react';
 
+import type { Props } from './data';
 import { argTypes as baseArgTypes } from '../argTypes';
 import { expect } from '@storybook/test';
 
@@ -7,9 +8,12 @@ const argTypes = {
   ...baseArgTypes,
 } satisfies Record<keyof Props, any>;
 
-export const meta = {
+export const meta: Meta = {
   title: 'Props',
   argTypes,
+  parameters: {
+    framework: 'react',
+  },
 };
 
 export const HighNodeDragThreshold = {

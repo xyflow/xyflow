@@ -47,13 +47,17 @@ export function generateStoriesPlugin(options) {
 
     const exportStatements = exports.map((name) => `export const ${name} = stories.${name};`).join('\n');
 
-    return `import Flow from '${flowImport}';
+    return `import type { Meta } from '@storybook/react';
+import Flow from '${flowImport}';
 import * as stories from '${storiesImport}';
 
-const meta = {
+const meta: Meta = {
   ...stories.meta,
   title: '${title}',
   component: Flow,
+  parameters: {
+    framework: 'react',
+  },
 };
 export default meta;
 
@@ -71,13 +75,17 @@ ${exportStatements}
 
     const exportStatements = exports.map((name) => `export const ${name} = stories.${name};`).join('\n');
 
-    return `import Flow from '${flowImport}';
+    return `import type { Meta } from '@storybook/svelte';
+import Flow from '${flowImport}';
 import * as stories from '${storiesImport}';
 
-const meta = {
+const meta: Meta = {
   ...stories.meta,
   title: '${title}',
   component: Flow,
+  parameters: {
+    framework: 'svelte',
+  },
 };
 export default meta;
 
@@ -168,7 +176,7 @@ ${exportStatements}
       const entries = fs.readdirSync(sharedTestsPath, { withFileTypes: true });
 
       for (const entry of entries) {
-        if (entry.isDirectory()) {
+        if (entry.isDirectory() && entry.name[0] === entry.name[0].toUpperCase()) {
           const dirPath = path.join(sharedTestsPath, entry.name);
 
           // Find all .stories.ts files in this directory
@@ -269,6 +277,7 @@ ${exportStatements}
               for (const storiesFile of storyFiles) {
                 generateStoryFile(storiesFile, dirName);
               }
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error) {
               // Directory might not exist yet, ignore
             }

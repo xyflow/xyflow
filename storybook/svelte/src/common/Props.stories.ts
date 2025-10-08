@@ -1,10 +1,14 @@
+import type { Meta } from '@storybook/svelte';
 import Flow from 'common-storybook/Props/Flow.svelte';
 import * as stories from 'common-storybook/Props/Props.stories.ts';
 
-const meta = {
+const meta: Meta = {
   ...stories.meta,
   title: 'Common/Props',
   component: Flow,
+  parameters: {
+    framework: 'svelte',
+  },
 };
 export default meta;
 

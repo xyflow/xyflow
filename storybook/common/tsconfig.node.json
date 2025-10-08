@@ -21,5 +21,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts", "src/vite-plugin-generate-stories.js"]
+  "include": ["vite.config.ts", "src/**/*.ts"]
 }

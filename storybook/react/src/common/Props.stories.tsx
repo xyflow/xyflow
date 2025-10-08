@@ -1,10 +1,14 @@
+import type { Meta } from '@storybook/react';
 import Flow from 'common-storybook/Props/Flow.tsx';
 import * as stories from 'common-storybook/Props/Props.stories.ts';
 
-const meta = {
+const meta: Meta = {
   ...stories.meta,
   title: 'Common/Props',
   component: Flow,
+  parameters: {
+    framework: 'react',
+  },
 };
 export default meta;
 

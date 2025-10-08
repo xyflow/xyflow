@@ -23,17 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": [
-    "src/react.ts",
-    "src/stories.ts",
-    "src/tests/**/*.tsx",
-    "src/tests/**/*.stories.ts",
-    "src/Props/**/*.tsx",
-    "src/Props/**/*.ts",
-    "src/Nodes/**/*.tsx",
-    "src/Nodes/**/*.ts",
-    "src/common/**/*.ts",
-    "src/vite-env.d.ts",
-    "vitest.shims.d.ts"
-  ]
+  "include": ["src/**/*.tsx", "src/**/*.ts"]
 }

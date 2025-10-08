@@ -9,9 +9,14 @@ import {
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
-import { initialNodes, initialEdges, type Props } from './data';
+import { initialNodes, initialEdges } from './data';
+import DragHandleNode from './DragHandleNode';
 
-export default function BasicFlow(props: Props) {
+const nodeTypes = {
+  DragHandleNode,
+};
+
+export default function BasicFlow() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, , onEdgesChange] = useEdgesState(initialEdges);
 
@@ -21,13 +26,7 @@ export default function BasicFlow(props: Props) {
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
-      className={props.classNames}
-      nodeDragThreshold={props.nodeDragThreshold}
-      minZoom={props.minZoom}
-      maxZoom={props.maxZoom}
-      panOnDrag={props.panOnDrag}
-      panOnScroll={props.panOnScroll}
-      zoomOnScroll={props.zoomOnScroll}
+      nodeTypes={nodeTypes}
       fitView
     >
       <Background variant={BackgroundVariant.Dots} />

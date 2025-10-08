@@ -5,34 +5,29 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import sveltePlugin from 'eslint-plugin-svelte';
 
-export default tseslint.config(
+export default [
   { ignores: ['dist', 'node_modules', '.svelte-kit'] },
-  // Shared TypeScript files (no project reference needed)
+
+  // Base TypeScript configuration for .ts and .js files
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['src/react.ts', 'src/svelte.ts', 'src/stories.ts', 'src/argTypes.ts'],
+    files: ['**/*.{ts,js}'],
+    ignores: ['**/*.tsx', '**/*.svelte'],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,
     },
     rules: {
+      ...js.configs.recommended.rules,
+      ...tseslint.configs.recommended[0].rules,
+      ...tseslint.configs.recommended[1].rules,
       '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
-  // React/TypeScript files configuration
+
+  // React/TypeScript configuration for .tsx files
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    ignores: [
-      '**/*.svelte',
-      'vite.config.ts',
-      'src/vite-plugin-generate-stories.ts',
-      'svelte.config.js',
-      'src/react.ts',
-      'src/svelte.ts',
-      'src/stories.ts',
-      'src/argTypes.ts',
-    ],
+    files: ['**/*.tsx'],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,
@@ -46,13 +41,17 @@ export default tseslint.config(
       'react-refresh': reactRefresh,
     },
     rules: {
+      ...js.configs.recommended.rules,
+      ...tseslint.configs.recommended[0].rules,
+      ...tseslint.configs.recommended[1].rules,
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
-  // Svelte files configuration
+
+  // Svelte configuration for .svelte files
   ...sveltePlugin.configs['flat/recommended'],
   {
     files: ['**/*.svelte'],
@@ -77,20 +76,4 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
-  // Node config files
-  {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['vite.config.ts', 'src/vite-plugin-generate-stories.ts'],
-    languageOptions: {
-      ecmaVersion: 2022,
-      globals: globals.node,
-      parserOptions: {
-        project: './tsconfig.node.json',
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  }
-);
+];

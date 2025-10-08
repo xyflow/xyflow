@@ -28,13 +28,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "src/svelte.ts",
-    "src/stories.ts",
-    "src/tests/**/*.svelte",
-    "src/tests/**/*.stories.ts",
-    "src/common/**/*.ts",
-    "src/vite-env.d.ts",
-    "vitest.shims.d.ts"
-  ]
+  "include": ["src/**/*.svelte", "src/**/*.ts"]
 }

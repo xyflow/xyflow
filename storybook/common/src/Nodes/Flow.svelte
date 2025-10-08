@@ -2,32 +2,22 @@
   import { SvelteFlow, Controls, Background, BackgroundVariant, MiniMap, type Node, type Edge } from '@xyflow/svelte';
 
   import '@xyflow/svelte/dist/style.css';
+
   import { initialNodes, initialEdges, type Props } from './data';
+  import { reactToSvelteEdges, reactToSvelteNodes } from '../utils';
 
-  let { nodeDragThreshold, classNames, minZoom, maxZoom, panOnDrag, zoomOnScroll, panOnScroll }: Props = $props();
+  import DragHandleNode from './DragHandleNode.svelte';
 
-  let nodes = $state.raw<Node[]>([...initialNodes]);
-  let edges = $state.raw<Edge[]>([...initialEdges]);
+  let {}: Props = $props();
 
-  let x = 5;
-
-  $effect(() => {
-    x += 1;
-  });
+  let nodes = $state.raw<Node[]>(reactToSvelteNodes(initialNodes));
+  let edges = $state.raw<Edge[]>(reactToSvelteEdges(initialEdges));
+  const nodeTypes = {
+    DragHandleNode,
+  };
 </script>
 
-<SvelteFlow
-  bind:nodes
-  bind:edges
-  class={classNames}
-  {nodeDragThreshold}
-  {minZoom}
-  {maxZoom}
-  {panOnDrag}
-  {zoomOnScroll}
-  {panOnScroll}
-  fitView
->
+<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView>
   <Background variant={BackgroundVariant.Dots} />
   <MiniMap />
   <Controls />
