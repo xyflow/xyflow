@@ -147,10 +147,8 @@ const getInitialState = ({
     debug: false,
     ariaLabelConfig: defaultAriaLabelConfig,
 
-    nodeChangeMiddleware: new Map(),
-    edgeChangeMiddleware: new Map(),
-    nodeSyncMiddleware: new Map(),
-    edgeSyncMiddleware: new Map(),
+    onNodesChangeMiddlewareMap: new Map(),
+    onEdgesChangeMiddlewareMap: new Map(),
   };
 };
 

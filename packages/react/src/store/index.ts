@@ -176,7 +176,7 @@ const createStore = ({
       updateNodePositions: (nodeDragItems, dragging = false) => {
         const parentExpandChildren: ParentExpandChild[] = [];
         let changes = [];
-        const { nodeLookup, triggerNodeChanges, nodeChangeMiddleware } = get();
+        const { nodeLookup, triggerNodeChanges, onNodesChangeMiddlewareMap } = get();
 
         for (const [id, dragItem] of nodeDragItems) {
           // we are using the nodelookup to be sure to use the current expandParent and parentId value
@@ -216,7 +216,7 @@ const createStore = ({
           changes.push(...parentExpandChanges);
         }
 
-        for (const middleware of nodeChangeMiddleware.values()) {
+        for (const middleware of onNodesChangeMiddlewareMap.values()) {
           changes = middleware(changes);
         }
 

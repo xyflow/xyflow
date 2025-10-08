@@ -35,7 +35,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       onNodesChange,
       nodeLookup,
       fitViewQueued,
-      nodeChangeMiddleware,
+      onNodesChangeMiddlewareMap,
     } = store.getState();
 
     /*
@@ -53,15 +53,9 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       lookup: nodeLookup,
     }) as NodeChange<NodeType>[];
 
-    for (const middleware of nodeChangeMiddleware.values()) {
+    for (const middleware of onNodesChangeMiddlewareMap.values()) {
       changes = middleware(changes);
     }
-
-    // for (const middleware of nodeSyncMiddleware.values()) {
-    //   changes = middleware(changes);
-    // }
-
-    // Do we always want to setNodes(next) or only when there are changes?
 
     if (hasDefaultNodes) {
       setNodes(next);

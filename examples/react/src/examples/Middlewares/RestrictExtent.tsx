@@ -1,4 +1,4 @@
-import { NodeChange, Panel, useNodeChangeMiddleware } from '@xyflow/react';
+import { NodeChange, experimental_useOnNodesChangeMiddleware } from '@xyflow/react';
 import { useCallback, useState } from 'react';
 
 export function RestrictExtent({
@@ -15,7 +15,7 @@ export function RestrictExtent({
   maxY?: number;
 }) {
   const [isEnabled, setIsEnabled] = useState(false);
-  useNodeChangeMiddleware(
+  experimental_useOnNodesChangeMiddleware(
     useCallback(
       (changes: NodeChange[]) => {
         if (!isEnabled) return changes;
@@ -36,7 +36,6 @@ export function RestrictExtent({
               change.item = item;
             }
           }
-
           return change;
         });
       },
