@@ -1,0 +1,48 @@
+{
+  "name": "react-storybook",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "storybook": "sleep 1 && storybook dev -p 6007",
+    "build-storybook": "storybook build",
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
+  "dependencies": {
+    "@xyflow/react": "workspace:*",
+    "common-storybook": "workspace:*",
+    "react": "catalog:dev",
+    "react-dom": "catalog:dev"
+  },
+  "devDependencies": {
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "playwright": "catalog:",
+    "storybook": "catalog:",
+    "@storybook/addon-a11y": "catalog:",
+    "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-vitest": "catalog:",
+    "@storybook/react-vite": "catalog:",
+    "@storybook/react": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@vitest/browser": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "@vitest/ui": "catalog:",
+    "eslint": "^9.37.0",
+    "@eslint/js": "^9.37.0",
+    "eslint-plugin-react-hooks": "^6.1.1",
+    "eslint-plugin-react-refresh": "^0.4.23",
+    "eslint-plugin-storybook": "^9.1.10",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "globals": "^16.4.0",
+    "jsdom": "^27.0.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.45.0"
+  }
+}
