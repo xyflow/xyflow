@@ -46,17 +46,22 @@ export const SelectMultipleNodesWithShiftDrag: StoryObj<typeof meta> = {
 
     // Simulate shift+drag selection
     await userEvent.keyboard('{Shift>}');
-    await userEvent.pointer({
-      keys: '[MouseLeft>]',
-      target: pane,
-      coords: { x: startX, y: startY },
-    });
-    await userEvent.pointer({
-      keys: '[MouseLeft]',
-      target: pane,
-      coords: { x: endX, y: endY },
-    });
-    await userEvent.pointer({ keys: '[/MouseLeft]' });
+    await userEvent.pointer([
+      {
+        keys: '[MouseLeft>]',
+        target: pane,
+      },
+      {
+        coords: { x: startX, y: startY },
+      },
+      {
+        coords: { x: endX, y: endY },
+      },
+      {
+        keys: '[/MouseLeft]',
+        target: pane,
+      },
+    ]);
     await userEvent.keyboard('{/Shift}');
 
     // Wait for selection to be processed
