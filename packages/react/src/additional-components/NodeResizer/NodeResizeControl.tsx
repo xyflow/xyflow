@@ -143,6 +143,8 @@ function ResizeControl({
                 width: change.width,
                 height: change.height,
               },
+              resizerPosition: controlPosition,
+              resizerVariant: variant,
             };
 
             changes.push(dimensionChange);
