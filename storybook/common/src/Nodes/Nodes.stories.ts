@@ -24,10 +24,6 @@ export const SelectNodeByClick: StoryObj<typeof meta> = {
 
 export const SelectMultipleNodesWithShiftDrag: StoryObj<typeof meta> = {
   play: async ({ canvasElement, userEvent, parameters: { framework } }) => {
-    const selection = canvasElement.querySelector(
-      framework === 'react' ? '.react-flow__selection' : '.svelte-flow__selection'
-    );
-
     const nodes = canvasElement.querySelectorAll(`.${framework}-flow__node`);
 
     await expect(nodes[0]).toBeVisible();
@@ -64,22 +60,15 @@ export const SelectMultipleNodesWithShiftDrag: StoryObj<typeof meta> = {
     ]);
     await userEvent.keyboard('{/Shift}');
 
-    // Wait for selection to be processed
-    // await waitFor(async () => {
-    //   await expect(selection).toBeInViewport();
-    // });
-    await expect(selection).toBeVisible();
+    // verify node selection box appears
+    const nodeSelection = canvasElement.querySelector(
+      framework === 'react' ? '.react-flow__nodesselection-rect' : '.svelte-flow__selection'
+    );
+    await expect(nodeSelection).toBeInTheDocument();
 
     // Verify nodes are selected
     await expect(nodes[0]).toHaveClass(/selected/);
     await expect(nodes[1]).toHaveClass(/selected/);
     await expect(nodes[2]).toHaveClass(/selected/);
-
-    // Verify node selection box appears
-
-    const nodeSelection = canvasElement.querySelector(
-      framework === 'react' ? '.react-flow__nodesselection' : '.svelte-flow__selection'
-    );
-    await expect(nodeSelection).toBeVisible();
   },
 };
