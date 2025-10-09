@@ -12,4 +12,5 @@ const meta: Meta = {
 };
 export default meta;
 
-export const Default = stories.Default;
+export const SelectNodeByClick = stories.SelectNodeByClick;
+export const SelectMultipleNodesWithShiftDrag = stories.SelectMultipleNodesWithShiftDrag;

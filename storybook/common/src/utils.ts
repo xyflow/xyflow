@@ -39,3 +39,12 @@ export function reactToSvelteEdges(edges: Edge[]): SvelteEdge[] {
     };
   });
 }
+
+export function getFrameworkParams(framework: 'react' | 'svelte') {
+  switch (framework) {
+    case 'react':
+      return { framework: 'react', nodePrefix: 'rf__node-' };
+    case 'svelte':
+      return { framework: 'svelte', nodePrefix: 'sf__node-' };
+  }
+}

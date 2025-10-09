@@ -22,8 +22,8 @@ export function generateStoriesPlugin(options) {
    * Parse a stories file to extract exported story names
    */
   function parseStoryExports(content) {
-    // Match all export statements (export const ...)
-    const exportMatches = content.matchAll(/export\s+const\s+(\w+)\s*=/g);
+    // Match all export statements (export const ... = or export const ...: Type =)
+    const exportMatches = content.matchAll(/export\s+const\s+(\w+)\s*[:=]/g);
     const exports = [];
 
     for (const match of exportMatches) {
@@ -176,7 +176,7 @@ ${exportStatements}
       const entries = fs.readdirSync(sharedTestsPath, { withFileTypes: true });
 
       for (const entry of entries) {
-        if (entry.isDirectory() && entry.name[0] === entry.name[0].toUpperCase()) {
+        if (entry.isDirectory()) {
           const dirPath = path.join(sharedTestsPath, entry.name);
 
           // Find all .stories.ts files in this directory

@@ -14,8 +14,8 @@
   "dependencies": {
     "@xyflow/react": "workspace:*",
     "common-storybook": "workspace:*",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react": "catalog:dev",
+    "react-dom": "catalog:dev"
   },
   "devDependencies": {
     "vite": "catalog:",

@@ -2,11 +2,6 @@ import type { EdgeBase, NodeBase } from '@xyflow/system';
 
 export interface Props {
   className?: string;
-  nodeDragThreshold?: number;
-  zoomOnScroll?: boolean;
-  panOnDrag?: boolean;
-  panOnScroll?: boolean;
-  maxZoom?: number;
 }
 
 export const initialNodes: NodeBase[] = [

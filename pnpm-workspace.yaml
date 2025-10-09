@@ -1,27 +1,34 @@
 packages:
-  - 'packages/*'
-  - 'examples/*'
-  - 'tooling/*'
-  - 'tests/*'
-  - 'storybook/*'
+  - packages/*
+  - examples/*
+  - tooling/*
+  - tests/*
+  - storybook/*
 
-# Define a catalog of version ranges.
 catalog:
-  'vite': ^7.1.9
-  'vitest': ^3.2.4
-  'playwright': ^1.55.1
-  'storybook': ^9.1.10
-  '@storybook/react': ^9.1.10
-  '@storybook/svelte': ^9.1.10
   '@storybook/addon-a11y': ^9.1.10
   '@storybook/addon-docs': ^9.1.10
-  '@storybook/addon-vitest': ^9.1.10
-  '@storybook/react-vite': ^9.1.10
-  '@storybook/svelte-vite': ^9.1.10
   '@storybook/addon-svelte-csf': ^5.0.10
-  '@testing-library/svelte': ^5.2.8
-  '@testing-library/react': ^16.3.0
+  '@storybook/addon-vitest': ^9.1.10
+  '@storybook/react': ^9.1.10
+  '@storybook/react-vite': ^9.1.10
+  '@storybook/svelte': ^9.1.10
+  '@storybook/svelte-vite': ^9.1.10
   '@testing-library/jest-dom': ^6.9.1
+  '@testing-library/react': ^16.3.0
+  '@testing-library/svelte': ^5.2.8
   '@vitest/browser': ^3.2.4
   '@vitest/coverage-v8': ^3.2.4
   '@vitest/ui': ^3.2.4
+  playwright: ^1.55.1
+  storybook: ^9.1.10
+  vite: ^7.1.9
+  vitest: ^3.2.4
+
+catalogs:
+  dev:
+    react: 18.3.1
+    react-dom: 18.3.1
+
+patchedDependencies:
+  d3-drag: patches/d3-drag.patch
