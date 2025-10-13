@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Position, getEdgeToolbarTransform, getNodeToolbarTransform } from '@xyflow/system';
+  import { Position, getEdgeToolbarTransform } from '@xyflow/system';
   import { getContext } from 'svelte';
 
   import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
