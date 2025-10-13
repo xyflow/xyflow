@@ -13,7 +13,6 @@ import {
 } from '@xyflow/react';
 
 import { CustomEdge } from './CustomEdge';
-import SelectedNodesToolbar from './SelectedNodesToolbar';
 
 const edgeTypes: EdgeTypes = {
   custom: CustomEdge,
@@ -80,7 +79,6 @@ export default function EdgeToolbarExample() {
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
       <Controls />
-      <SelectedNodesToolbar />
     </ReactFlow>
   );
 }

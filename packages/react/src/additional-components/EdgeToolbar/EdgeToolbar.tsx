@@ -16,14 +16,15 @@ const storeSelector = (state: ReactFlowState) => ({
 
 export function EdgeToolbar({
   edgeId,
-  labelX,
-  labelY,
+  x,
+  y,
   children,
   className,
   style,
   isVisible,
   position = Position.Top,
-  offset = 10,
+  offsetX = 0,
+  offsetY = 0,
   align = 'center',
   ...rest
 }: EdgeToolbarProps) {
@@ -56,12 +57,11 @@ export function EdgeToolbar({
   // TODO: how to get the z-index of an edge?
   const zIndex = edge.zIndex ?? 0 + 1;
 
-  const transform = getEdgeToolbarTransform(labelX, labelY, { x, y, zoom });
+  const transform = getEdgeToolbarTransform(x, y, { x, y, zoom }, 120, offsetY);
   console.log('transform', transform);
   const wrapperStyle: CSSProperties = {
     position: 'absolute',
     // TODO: offset
-    // transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
     transform,
     zIndex,
     ...style,
@@ -72,13 +72,12 @@ export function EdgeToolbar({
   return (
     <EdgeLabelRenderer>
       <div
-        style={wrapperStyle}
+        style={{ ...wrapperStyle, pointerEvents: 'all' }}
         className={cc(['react-flow__edge-toolbar', className])}
         {...rest}
         // @todo: check if we could only do this for non-prod envs
         data-id={`${edge.id} `}
       >
-        aaa
         {children}
       </div>
     </EdgeLabelRenderer>

@@ -33,9 +33,17 @@ export type EdgeToolbarProps = HTMLAttributes<HTMLDivElement> & {
   /**
    * The `x` position of the edge label.
    */
-  labelX: number;
+  x: number;
   /**
    * The `y` position of the edge label.
    */
-  labelY: number;
+  y: number;
+  /**
+   * The `offsetX` position of the edge label relative to the edge in pixels.
+   */
+  offsetX: number;
+  /**
+   * The `offsetY` position of the edge label relative to the edge in pixels.
+   */
+  offsetY: number;
 };
