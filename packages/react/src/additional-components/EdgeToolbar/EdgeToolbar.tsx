@@ -93,7 +93,7 @@ export function EdgeToolbar({
         className={cc(['react-flow__edge-toolbar', className])}
         {...rest}
         // @todo: check if we could only do this for non-prod envs
-        data-id={`${edge.id} `}
+        data-id={edge.id}
       >
         {children}
       </div>
