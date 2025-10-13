@@ -6,7 +6,6 @@
   import { useStore } from '$lib/store';
 
   import { EdgeLabel } from '$lib/components/EdgeLabel';
-  import type { InternalNode } from '$lib/types';
   import type { EdgeToolbarProps } from './types';
 
   let {
