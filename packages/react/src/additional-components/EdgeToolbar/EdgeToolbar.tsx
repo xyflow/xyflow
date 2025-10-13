@@ -84,7 +84,6 @@ export function EdgeToolbar({
     ...style,
   };
 
-  console.log('wrapperStyle', wrapperStyle);
 
   return (
     <EdgeLabelRenderer>
