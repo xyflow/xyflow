@@ -70,7 +70,7 @@ export function EdgeToolbar({
     return null;
   }
 
-  const zIndex = edge.zIndex ?? 0 + 1;
+  const zIndex = (edge.zIndex ?? 0) + 1;
 
   const { zoom } = useStore(storeSelector, shallow);
 
