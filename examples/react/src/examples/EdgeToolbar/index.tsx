@@ -1,15 +1,14 @@
 import {
-  ReactFlow,
-  MiniMap,
   Background,
   BackgroundVariant,
   Controls,
-  Node,
   Edge,
-  NodeTypes,
-  Position,
-  NodeOrigin,
   EdgeTypes,
+  MiniMap,
+  Node,
+  NodeOrigin,
+  Position,
+  ReactFlow,
 } from '@xyflow/react';
 
 import { CustomEdge } from './CustomEdge';
@@ -28,13 +27,13 @@ const initialNodes: Node[] = [
   {
     id: '2',
     data: { label: 'Node 2', toolbarPosition: Position.Top },
-    position: { x: 200, y: 0 },
+    position: { x: 100, y: 150 },
     className: 'react-flow__node-default',
   },
   {
     id: '3',
     data: { label: 'Node 3', toolbarPosition: Position.Top },
-    position: { x: 100, y: 150 },
+    position: { x: 200, y: 0 },
     className: 'react-flow__node-default',
   },
 ];
@@ -47,20 +46,20 @@ const initialEdges: Edge[] = [
     type: 'custom',
   },
   {
-    id: 'e2-3',
-    source: '2',
-    target: '3',
+    id: 'e3-2',
+    source: '3',
+    target: '2',
     type: 'custom',
   },
   {
-    id: 'e3-1',
-    source: '3',
-    target: '1',
+    id: 'e1-3',
+    source: '1',
+    target: '3',
     type: 'custom',
   },
 ];
 
-const defaultEdgeOptions = { zIndex: 0 };
+// const defaultEdgeOptions = { zIndex: 0 };
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
 export default function EdgeToolbarExample() {
@@ -72,7 +71,7 @@ export default function EdgeToolbarExample() {
       minZoom={0.2}
       maxZoom={4}
       fitView
-      defaultEdgeOptions={defaultEdgeOptions}
+      // defaultEdgeOptions={defaultEdgeOptions}
       edgeTypes={edgeTypes}
       nodeOrigin={nodeOrigin}
     >

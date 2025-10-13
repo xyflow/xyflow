@@ -9,11 +9,32 @@ import { Edge, ReactFlowState } from '../../types';
 import type { EdgeToolbarProps } from './types';
 
 const storeSelector = (state: ReactFlowState) => ({
-  x: state.transform[0],
-  y: state.transform[1],
   zoom: state.transform[2],
 });
 
+/**
+ * This component can render a toolbar or tooltip to one side of a custom edge. This
+ * toolbar doesn't scale with the viewport so that the content is always visible.
+ *
+ * @public
+ * @example
+ * ```jsx
+ * import { EdgeToolbar } from "@xyflow/react";
+ *
+ * export function CustomEdge({ id, data, ...props }: EdgeProps) {
+ *   const [edgePath, labelX, labelY] = getBezierPath(props);
+ *
+ *   return (
+ *     <>
+ *       <BaseEdge id={id} path={edgePath} />
+ *       <EdgeToolbar edgeId={id} x={labelX} y={labelY} isVisible>
+ *         <button onClick={() => {}}>Click me</button>
+ *       </EdgeToolbar>
+ *     </>
+ *   );
+ * }
+ * ```
+ */
 export function EdgeToolbar({
   edgeId,
   x,
@@ -41,9 +62,6 @@ export function EdgeToolbar({
   );
 
   const edge = useStore(edgeSelector);
-  console.log('edge', edge, edgeId);
-
-  const { x, y, zoom } = useStore(storeSelector, shallow);
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   const isActive = typeof isVisible === 'boolean' ? isVisible : edge?.selected;
@@ -52,12 +70,11 @@ export function EdgeToolbar({
     return null;
   }
 
-  // TODO: how to get the bounds of an edge?
-  // const edgeRect = getInternalEdgesBounds(edge.source, edge.target);
-  // TODO: how to get the z-index of an edge?
   const zIndex = edge.zIndex ?? 0 + 1;
 
-  const transform = getEdgeToolbarTransform(x, y, { x, y, zoom }, 120, offsetY);
+  const { zoom } = useStore(storeSelector, shallow);
+
+  const transform = getEdgeToolbarTransform(x, y, zoom, offsetX, offsetY);
   console.log('transform', transform);
   const wrapperStyle: CSSProperties = {
     position: 'absolute',

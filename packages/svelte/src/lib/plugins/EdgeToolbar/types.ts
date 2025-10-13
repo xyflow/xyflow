@@ -1,10 +1,8 @@
-import type { HTMLAttributes } from 'react';
 import type { Position, Align } from '@xyflow/system';
+import type { Snippet } from 'svelte';
+import type { HTMLAttributes } from 'svelte/elements';
 
-/**
- * @expand
- */
-export type EdgeToolbarProps = HTMLAttributes<HTMLDivElement> & {
+export type EdgeToolbarProps = {
   /**
    * An edge toolbar must be attached to an edge.
    */
@@ -18,11 +16,6 @@ export type EdgeToolbarProps = HTMLAttributes<HTMLDivElement> & {
    * @example Position.TopLeft, Position.TopRight, Position.BottomLeft, Position.BottomRight
    */
   position?: Position;
-  /**
-   * The space between the edge and the toolbar, measured in pixels.
-   * @default 10
-   */
-  offset?: number;
   /**
    * Align the toolbar relative to the edge.
    * @default "center"
@@ -45,4 +38,5 @@ export type EdgeToolbarProps = HTMLAttributes<HTMLDivElement> & {
    * The `offsetY` position of the edge label relative to the edge in pixels.
    */
   offsetY?: number;
-};
+  children?: Snippet;
+} & HTMLAttributes<HTMLDivElement>;

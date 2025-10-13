@@ -1,5 +1,4 @@
 import { getBezierPath, BaseEdge, EdgeProps, useReactFlow } from '@xyflow/react';
-
 import { EdgeToolbar } from '@xyflow/react';
 
 export function CustomEdge({ id, data, ...props }: EdgeProps) {
@@ -13,7 +12,7 @@ export function CustomEdge({ id, data, ...props }: EdgeProps) {
   return (
     <>
       <BaseEdge id={id} path={edgePath} />
-      <EdgeToolbar edgeId={id} labelX={labelX} labelY={labelY} isVisible>
+      <EdgeToolbar edgeId={id} x={labelX} y={labelY} isVisible>
         <button onClick={deleteEdge}>Delete</button>
       </EdgeToolbar>
     </>

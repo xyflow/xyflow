@@ -13,6 +13,7 @@
 		'detached-handle',
 		'drag-n-drop',
 		'edges',
+		'edge-toolbar',
 		'figma',
 		'handle-connect',
 		'interaction',
