@@ -17,6 +17,7 @@
 		'handle-connect',
 		'interaction',
 		'intersections',
+		'minimap-bug',
 		'node-toolbar',
 		'node-resizer',
 		'overview',

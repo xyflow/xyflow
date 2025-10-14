@@ -241,20 +241,25 @@ export const getInternalNodesBounds = <NodeType extends InternalNodeBase | NodeD
   nodeLookup: Map<string, NodeType>,
   params: GetInternalNodesBoundsParams<NodeType> = {}
 ): Rect => {
+  const emptyRect = { x: 0, y: 0, width: 0, height: 0 };
+
   if (nodeLookup.size === 0) {
-    return { x: 0, y: 0, width: 0, height: 0 };
+    return emptyRect;
   }
 
   let box = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity };
 
+  let hasVisibleNodes = false;
+
   nodeLookup.forEach((node) => {
     if (params.filter === undefined || params.filter(node)) {
+      hasVisibleNodes = true;
       const nodeBox = nodeToBox(node as InternalNodeBase);
       box = getBoundsOfBoxes(box, nodeBox);
     }
   });
 
-  return boxToRect(box);
+  return hasVisibleNodes ? boxToRect(box) : emptyRect;
 };
 
 export const getNodesInside = <NodeType extends NodeBase = NodeBase>(

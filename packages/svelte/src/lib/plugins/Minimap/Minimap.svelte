@@ -61,16 +61,19 @@
     height: store.height / store.viewport.zoom
   });
 
-  const hasVisibleNodes = $derived(store.nodeLookup.size > 0 && store.nodes.some((n) => !n.hidden));
+  // let boundingRect = $derived(
+  //   store.nodeLookup.size > 0 && store.nodes.some((n) => !n.hidden)
+  //     ? getBoundsOfRects(
+  //         getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }),
+  //         viewBB
+  //       )
+  //     : viewBB
+  // );
 
   let boundingRect = $derived(
-    hasVisibleNodes
-      ? getBoundsOfRects(
-          getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }),
-          viewBB
-        )
-      : viewBB
+    getBoundsOfRects(getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }), viewBB)
   );
+
   let scaledWidth = $derived(boundingRect.width / width);
   let scaledHeight = $derived(boundingRect.height / height);
   let viewScale = $derived(Math.max(scaledWidth, scaledHeight));
@@ -124,7 +127,7 @@
 
       {#each store.nodes as userNode (userNode.id)}
         {@const node = store.nodeLookup.get(userNode.id)}
-        {#if node && nodeHasDimensions(node)}
+        {#if node && nodeHasDimensions(node) && !node.hidden}
           {@const nodeDimesions = getNodeDimensions(node)}
           <MinimapNode
             x={node.internals.positionAbsolute.x}
