@@ -60,8 +60,11 @@
     width: store.width / store.viewport.zoom,
     height: store.height / store.viewport.zoom
   });
+
+  const hasVisibleNodes = $derived(store.nodeLookup.size > 0 && store.nodes.some((n) => !n.hidden));
+
   let boundingRect = $derived(
-    store.nodeLookup.size > 0
+    hasVisibleNodes
       ? getBoundsOfRects(
           getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }),
           viewBB
