@@ -12,7 +12,7 @@ import {
   type OnDraggingChange,
   type OnTransformChange,
 } from '../types';
-import { isRightClickPan, isWrappedWithClass, transformToViewport, viewChanged, wheelDelta } from './utils';
+import { isRightClickPan, isWrappedWithClass, transformToViewport, wheelDelta } from './utils';
 import { isMacOs } from '../utils';
 import { ZoomPanValues } from './XYPanZoom';
 
@@ -128,9 +128,7 @@ export function createPanOnScrollHandler({
       zoomPanValues.isPanScrolling = true;
 
       onPanZoomStart?.(event, nextViewport);
-    }
-
-    if (zoomPanValues.isPanScrolling) {
+    } else {
       onPanZoom?.(event, nextViewport);
 
       zoomPanValues.panScrollTimeout = setTimeout(() => {
@@ -236,7 +234,7 @@ export function createPanZoomEndHandler({
 
     onDraggingChange(false);
 
-    if (onPanZoomEnd && viewChanged(zoomPanValues.prevViewport, event.transform)) {
+    if (onPanZoomEnd) {
       const viewport = transformToViewport(event.transform);
       zoomPanValues.prevViewport = viewport;
 
