@@ -61,15 +61,6 @@
     height: store.height / store.viewport.zoom
   });
 
-  // let boundingRect = $derived(
-  //   store.nodeLookup.size > 0 && store.nodes.some((n) => !n.hidden)
-  //     ? getBoundsOfRects(
-  //         getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }),
-  //         viewBB
-  //       )
-  //     : viewBB
-  // );
-
   let boundingRect = $derived(
     getBoundsOfRects(getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }), viewBB)
   );
