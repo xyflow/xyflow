@@ -1,4 +1,4 @@
-import { MouseEvent, CSSProperties, useCallback } from 'react';
+import { MouseEvent, CSSProperties, useCallback, useState } from 'react';
 
 import {
   ReactFlow,
@@ -14,18 +14,12 @@ import {
   ReactFlowInstance,
   useEdgesState,
   useNodesState,
+  Panel,
 } from '@xyflow/react';
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
-
-const buttonStyle: CSSProperties = {
-  position: 'absolute',
-  left: 10,
-  top: 10,
-  zIndex: 4,
-};
 
 const CustomMiniMapNode = ({ x, y, width, height }: MiniMapNodeProps) => {
   return <circle cx={x} cy={y} r={Math.max(width, height) / 2} fill="#ffcc00" />;
@@ -34,6 +28,7 @@ const CustomMiniMapNode = ({ x, y, width, height }: MiniMapNodeProps) => {
 const CustomMiniMapNodeFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  const [hideAllNodes, setHideAllNodes] = useState(false);
 
   const onConnect = useCallback((params: Connection | Edge) => setEdges((els) => addEdge(params, els)), [setEdges]);
   const addRandomNode = () => {
@@ -45,8 +40,18 @@ const CustomMiniMapNodeFlow = () => {
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
       },
+      hidden: hideAllNodes,
     };
     setNodes((nds) => nds.concat(newNode));
+  };
+
+  const toggleHideAllNodes = () => {
+    setHideAllNodes(prev => {
+      const next = !prev;
+      setNodes(nds => nds.map(n => ({ ...n, hidden: next })));
+      setEdges(eds => eds.map(e => ({ ...e, hidden: next })));
+      return next;
+    });
   };
 
   return (
@@ -65,9 +70,14 @@ const CustomMiniMapNodeFlow = () => {
       <Background variant={BackgroundVariant.Lines} />
       <MiniMap nodeComponent={CustomMiniMapNode} />
 
-      <button type="button" onClick={addRandomNode} style={buttonStyle}>
-        add node
-      </button>
+      <Panel position="top-left">
+        <button type="button" onClick={addRandomNode}>
+          add node
+        </button>
+        <button type="button" onClick={toggleHideAllNodes}>
+          {hideAllNodes ? 'show all nodes' : 'hide all nodes'}
+        </button>
+      </Panel>
     </ReactFlow>
   );
 };
