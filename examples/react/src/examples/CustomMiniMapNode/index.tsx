@@ -46,9 +46,12 @@ const CustomMiniMapNodeFlow = () => {
   };
 
   const toggleHideAllNodes = () => {
-    setHideAllNodes(!hideAllNodes);
-    setNodes((nds) => nds.map((n) => ({ ...n, hidden: hideAllNodes })));
-    setEdges((eds) => eds.map((e) => ({ ...e, hidden: hideAllNodes })));
+    setHideAllNodes(prev => {
+      const next = !prev;
+      setNodes(nds => nds.map(n => ({ ...n, hidden: next })));
+      setEdges(eds => eds.map(e => ({ ...e, hidden: next })));
+      return next;
+    });
   };
 
   return (
