@@ -121,39 +121,21 @@ export function Pane({
 
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
-  const onMouseDownCapture = (event: ReactMouseEvent) => {
-    isNoKeyEvent.current =
-      isNoKeyEvent.current === null ? !!(event.target as HTMLElement).closest('.nokey') : isNoKeyEvent.current;
-
-    if (isNoKeyEvent.current) {
-      return;
-    }
-
-    event.stopPropagation();
-  };
-
   const onClickCapture = (event: ReactMouseEvent) => {
-    if (isNoKeyEvent.current) {
-      isNoKeyEvent.current = null;
-      return;
-    }
-
-    isNoKeyEvent.current = null;
-
     event.stopPropagation();
   };
 
   const onPointerDown = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
-    isNoKeyEvent.current =
-      isNoKeyEvent.current === null ? !!(event.target as HTMLElement).closest('.nokey') : isNoKeyEvent.current;
+    const isNoKeyEvent = event.target !== container.current && !!(event.target as HTMLElement).closest('.nokey');
 
-    if (!elementsSelectable || !isSelecting || event.button !== 0 || !containerBounds.current || isNoKeyEvent.current) {
+    if (!elementsSelectable || !isSelecting || event.button !== 0 || !containerBounds.current || isNoKeyEvent) {
       return;
     }
 
     event.stopPropagation();
+    event.preventDefault();
 
     (event.target as Partial<Element> | null)?.setPointerCapture?.(event.pointerId);
 
@@ -250,6 +232,7 @@ export function Pane({
   };
 
   const onPointerUp = (event: ReactPointerEvent) => {
+    console.log('onPointerUp');
     if (event.button !== 0 || !selectionStarted.current) {
       return;
     }
@@ -296,7 +279,6 @@ export function Pane({
       onPointerMove={hasActiveSelection ? onPointerMove : onPaneMouseMove}
       onPointerUp={hasActiveSelection ? onPointerUp : undefined}
       onPointerDownCapture={hasActiveSelection ? onPointerDown : undefined}
-      onMouseDownCapture={hasActiveSelection ? onMouseDownCapture : undefined}
       onClickCapture={hasActiveSelection ? onClickCapture : undefined}
       onPointerLeave={onPaneMouseLeave}
       ref={container}
