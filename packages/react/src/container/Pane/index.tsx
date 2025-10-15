@@ -95,8 +95,6 @@ export function Pane({
   const selectionInProgress = useRef<boolean>(false);
   const selectionStarted = useRef<boolean>(false);
 
-  const isNoKeyEvent = useRef<boolean | null>(null);
-
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
     // We also prevent click events when a connection is in progress
@@ -121,13 +119,12 @@ export function Pane({
 
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
-  const onClickCapture = (event: ReactMouseEvent) => {
-    event.stopPropagation();
-  };
+  const onClickCapture = (event: ReactMouseEvent) => event.stopPropagation();
 
   const onPointerDown = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
+
     const isNoKeyEvent = event.target !== container.current && !!(event.target as HTMLElement).closest('.nokey');
 
     if (!elementsSelectable || !isSelecting || event.button !== 0 || !containerBounds.current || isNoKeyEvent) {
@@ -232,14 +229,12 @@ export function Pane({
   };
 
   const onPointerUp = (event: ReactPointerEvent) => {
-    console.log('onPointerUp');
     if (event.button !== 0 || !selectionStarted.current) {
       return;
     }
 
     (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
     const { userSelectionRect } = store.getState();
-    isNoKeyEvent.current = null;
     /*
      * We only want to trigger click functions when in selection mode if
      * the user did not move the mouse.
@@ -275,7 +270,6 @@ export function Pane({
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
       onPointerEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
-      onPointerDown={hasActiveSelection ? undefined : onPaneMouseMove}
       onPointerMove={hasActiveSelection ? onPointerMove : onPaneMouseMove}
       onPointerUp={hasActiveSelection ? onPointerUp : undefined}
       onPointerDownCapture={hasActiveSelection ? onPointerDown : undefined}
