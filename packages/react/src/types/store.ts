@@ -152,6 +152,9 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   lib: string;
   debug: boolean;
   ariaLabelConfig: AriaLabelConfig;
+
+  onNodesChangeMiddlewareMap: Map<symbol, (changes: NodeChange<NodeType>[]) => NodeChange<NodeType>[]>;
+  onEdgesChangeMiddlewareMap: Map<symbol, (changes: EdgeChange<EdgeType>[]) => EdgeChange<EdgeType>[]>;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
