@@ -120,6 +120,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 ): boolean {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
 
+  let rootParentIndex = { i: -1 };
   let nodesInitialized = nodes.length > 0;
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
@@ -166,7 +167,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     }
 
     if (userNode.parentId) {
-      updateChildNode(internalNode, nodeLookup, parentLookup, options);
+      updateChildNode(internalNode, nodeLookup, parentLookup, options, rootParentIndex);
     }
   }
 
@@ -197,7 +198,8 @@ function updateChildNode<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options?: UpdateNodesOptions<NodeType>
+  options?: UpdateNodesOptions<NodeType>,
+  rootParentIndex?: { i: number }
 ) {
   const { elevateNodesOnSelect, nodeOrigin, nodeExtent } = mergeObjects(defaultOptions, options);
   const parentId = node.parentId!;
@@ -211,6 +213,17 @@ function updateChildNode<NodeType extends NodeBase>(
   }
 
   updateParentLookup(node, parentLookup);
+
+  // We just want to set the rootParentIndex for the first child
+  if (rootParentIndex && !parentNode.parentId && parentNode.internals.rootParentIndex === undefined) {
+    parentNode.internals.rootParentIndex = ++rootParentIndex.i;
+    parentNode.internals.z = parentNode.internals.z + rootParentIndex.i * 10;
+  }
+
+  // But we need to update rootParentIndex.i also when parent has not been updated
+  if (rootParentIndex && parentNode.internals.rootParentIndex !== undefined) {
+    rootParentIndex.i = parentNode.internals.rootParentIndex;
+  }
 
   const selectedNodeZ = elevateNodesOnSelect ? 1000 : 0;
   const { x, y, z } = calculateChildXYZ(node, parentNode, nodeOrigin, nodeExtent, selectedNodeZ);
@@ -260,6 +273,8 @@ function calculateChildXYZ<NodeType extends NodeBase>(
 
   const childZ = calculateZ(childNode, selectedNodeZ);
   const parentZ = parentNode.internals.z ?? 0;
+
+  console.log(parentNode.id, parentZ, childZ);
 
   return {
     x: absolutePosition.x,

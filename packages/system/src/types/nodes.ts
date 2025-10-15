@@ -95,6 +95,7 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = Omit<NodeTy
   internals: {
     positionAbsolute: XYPosition;
     z: number;
+    rootParentIndex?: number;
     /**
      * Holds a reference to the original node object provided by the user.
      * Used as an optimization to avoid certain operations.
