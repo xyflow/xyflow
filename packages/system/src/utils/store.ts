@@ -274,8 +274,6 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   const childZ = calculateZ(childNode, selectedNodeZ);
   const parentZ = parentNode.internals.z ?? 0;
 
-  console.log(parentNode.id, parentZ, childZ);
-
   return {
     x: absolutePosition.x,
     y: absolutePosition.y,
