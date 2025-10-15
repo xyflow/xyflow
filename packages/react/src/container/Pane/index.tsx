@@ -95,6 +95,8 @@ export function Pane({
   const selectionInProgress = useRef<boolean>(false);
   const selectionStarted = useRef<boolean>(false);
 
+  const isNoKeyEvent = useRef<boolean | null>(null);
+
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
     // We also prevent click events when a connection is in progress
@@ -119,19 +121,39 @@ export function Pane({
 
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
+  const onMouseDownCapture = (event: ReactMouseEvent) => {
+    isNoKeyEvent.current =
+      isNoKeyEvent.current === null ? !!(event.target as HTMLElement).closest('.nokey') : isNoKeyEvent.current;
+
+    if (isNoKeyEvent.current) {
+      return;
+    }
+
+    event.stopPropagation();
+  };
+
+  const onClickCapture = (event: ReactMouseEvent) => {
+    if (isNoKeyEvent.current) {
+      isNoKeyEvent.current = null;
+      return;
+    }
+
+    isNoKeyEvent.current = null;
+
+    event.stopPropagation();
+  };
+
   const onPointerDown = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
+    isNoKeyEvent.current =
+      isNoKeyEvent.current === null ? !!(event.target as HTMLElement).closest('.nokey') : isNoKeyEvent.current;
 
-    if (
-      !elementsSelectable ||
-      !isSelecting ||
-      event.button !== 0 ||
-      event.target !== container.current ||
-      !containerBounds.current
-    ) {
+    if (!elementsSelectable || !isSelecting || event.button !== 0 || !containerBounds.current || isNoKeyEvent.current) {
       return;
     }
+
+    event.stopPropagation();
 
     (event.target as Partial<Element> | null)?.setPointerCapture?.(event.pointerId);
 
@@ -234,7 +256,7 @@ export function Pane({
 
     (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
     const { userSelectionRect } = store.getState();
-
+    isNoKeyEvent.current = null;
     /*
      * We only want to trigger click functions when in selection mode if
      * the user did not move the mouse.
@@ -270,9 +292,12 @@ export function Pane({
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
       onPointerEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
-      onPointerDown={hasActiveSelection ? onPointerDown : onPaneMouseMove}
+      onPointerDown={hasActiveSelection ? undefined : onPaneMouseMove}
       onPointerMove={hasActiveSelection ? onPointerMove : onPaneMouseMove}
       onPointerUp={hasActiveSelection ? onPointerUp : undefined}
+      onPointerDownCapture={hasActiveSelection ? onPointerDown : undefined}
+      onMouseDownCapture={hasActiveSelection ? onMouseDownCapture : undefined}
+      onClickCapture={hasActiveSelection ? onClickCapture : undefined}
       onPointerLeave={onPaneMouseLeave}
       ref={container}
       style={containerStyle}
