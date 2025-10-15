@@ -94,15 +94,21 @@
   function onPointerDown(event: PointerEvent) {
     containerBounds = container?.getBoundingClientRect();
 
+    const isNoKeyEvent =
+      event.target !== container && !!(event.target as HTMLElement).closest('.nokey');
+
     if (
       !store.elementsSelectable ||
       !isSelecting ||
       event.button !== 0 ||
-      event.target !== container ||
-      !containerBounds
+      !containerBounds ||
+      isNoKeyEvent
     ) {
       return;
     }
+
+    event.stopPropagation();
+    event.preventDefault();
 
     (event.target as Partial<Element> | null)?.setPointerCapture?.(event.pointerId);
 
@@ -216,6 +222,8 @@
 
     onpanecontextmenu?.({ event });
   };
+
+  const onClickCapture = (event: MouseEvent) => event.stopPropagation();
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -227,10 +235,11 @@
   class:dragging={store.dragging}
   class:selection={isSelecting}
   onclick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
-  onpointerdown={hasActiveSelection ? onPointerDown : undefined}
+  onpointerdowncapture={hasActiveSelection ? onPointerDown : undefined}
   onpointermove={hasActiveSelection ? onPointerMove : undefined}
   onpointerup={hasActiveSelection ? onPointerUp : undefined}
   oncontextmenu={wrapHandler(onContextMenu, container)}
+  onclickcapture={hasActiveSelection ? onClickCapture : undefined}
 >
   {@render children()}
 </div>
