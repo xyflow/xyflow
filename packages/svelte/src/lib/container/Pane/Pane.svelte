@@ -91,7 +91,7 @@
   }
 
   // We start the selection process when the user clicks down on the pane
-  function onPointerDown(event: PointerEvent) {
+  function onPointerDownCapture(event: PointerEvent) {
     containerBounds = container?.getBoundingClientRect();
 
     const isNoKeyEvent =
@@ -235,7 +235,7 @@
   class:dragging={store.dragging}
   class:selection={isSelecting}
   onclick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
-  onpointerdowncapture={hasActiveSelection ? onPointerDown : undefined}
+  onpointerdowncapture={hasActiveSelection ? onPointerDownCapture : undefined}
   onpointermove={hasActiveSelection ? onPointerMove : undefined}
   onpointerup={hasActiveSelection ? onPointerUp : undefined}
   oncontextmenu={wrapHandler(onContextMenu, container)}

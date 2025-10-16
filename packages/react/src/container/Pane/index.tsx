@@ -1,7 +1,3 @@
-/**
- * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
- */
-
 import {
   useRef,
   type MouseEvent as ReactMouseEvent,
@@ -121,7 +117,9 @@ export function Pane({
 
   const onClickCapture = (event: ReactMouseEvent) => event.stopPropagation();
 
-  const onPointerDown = (event: ReactPointerEvent): void => {
+  // We are using capture here in order to prevent other pointer events
+  // to be able to create a selection above a node or an edge
+  const onPointerDownCapture = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
 
@@ -272,7 +270,7 @@ export function Pane({
       onPointerEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
       onPointerMove={hasActiveSelection ? onPointerMove : onPaneMouseMove}
       onPointerUp={hasActiveSelection ? onPointerUp : undefined}
-      onPointerDownCapture={hasActiveSelection ? onPointerDown : undefined}
+      onPointerDownCapture={hasActiveSelection ? onPointerDownCapture : undefined}
       onClickCapture={hasActiveSelection ? onClickCapture : undefined}
       onPointerLeave={onPaneMouseLeave}
       ref={container}
