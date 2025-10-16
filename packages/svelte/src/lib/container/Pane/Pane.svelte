@@ -230,7 +230,18 @@
     onpanecontextmenu?.({ event });
   };
 
-  const onClickCapture = (event: MouseEvent) => event.stopPropagation();
+  const onClickCapture = (event: MouseEvent) => {
+    const isSelectionActive =
+      (selectionOnDrag && container === event.target) ||
+      !selectionOnDrag ||
+      store.selectionKeyPressed;
+
+    if (!isSelectionActive) {
+      return;
+    }
+
+    event.stopPropagation();
+  };
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->

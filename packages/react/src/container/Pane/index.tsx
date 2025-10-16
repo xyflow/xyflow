@@ -116,7 +116,8 @@ export function Pane({
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
   const onClickCapture = (event: ReactMouseEvent) => {
-    const isSelectionOnDragActive = (selectionOnDrag && container.current === event.target) || !selectionOnDrag;
+    const isSelectionOnDragActive =
+      (selectionOnDrag && container.current === event.target) || !selectionOnDrag || selectionKeyPressed;
 
     if (!isSelectionOnDragActive) {
       return;
