@@ -102,7 +102,8 @@
       !isSelecting ||
       event.button !== 0 ||
       !containerBounds ||
-      isNoKeyEvent
+      isNoKeyEvent ||
+      !event.isPrimary
     ) {
       return;
     }
@@ -110,7 +111,7 @@
     event.stopPropagation();
     event.preventDefault();
 
-    (event.target as Partial<Element> | null)?.setPointerCapture?.(event.pointerId);
+    (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
 
     const { x, y } = getEventPosition(event, containerBounds);
 
@@ -192,7 +193,7 @@
       return;
     }
 
-    (event.target as Partial<Element> | null)?.releasePointerCapture?.(event.pointerId);
+    (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
 
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.

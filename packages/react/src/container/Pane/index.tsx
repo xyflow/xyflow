@@ -115,7 +115,15 @@ export function Pane({
 
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
-  const onClickCapture = (event: ReactMouseEvent) => event.stopPropagation();
+  const onClickCapture = (event: ReactMouseEvent) => {
+    const isSelectionOnDragActive = (selectionOnDrag && container.current === event.target) || !selectionOnDrag;
+
+    if (!isSelectionOnDragActive) {
+      return;
+    }
+
+    event.stopPropagation();
+  };
 
   // We are using capture here in order to prevent other pointer events
   // to be able to create a selection above a node or an edge
@@ -124,15 +132,25 @@ export function Pane({
     containerBounds.current = domNode?.getBoundingClientRect();
 
     const isNoKeyEvent = event.target !== container.current && !!(event.target as HTMLElement).closest('.nokey');
+    const isSelectionActive =
+      (selectionOnDrag && container.current === event.target) || !selectionOnDrag || selectionKeyPressed;
 
-    if (!elementsSelectable || !isSelecting || event.button !== 0 || !containerBounds.current || isNoKeyEvent) {
+    if (
+      !elementsSelectable ||
+      !isSelecting ||
+      event.button !== 0 ||
+      !containerBounds.current ||
+      isNoKeyEvent ||
+      !isSelectionActive ||
+      !event.isPrimary
+    ) {
       return;
     }
 
     event.stopPropagation();
     event.preventDefault();
 
-    (event.target as Partial<Element> | null)?.setPointerCapture?.(event.pointerId);
+    (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
 
     selectionStarted.current = true;
     selectionInProgress.current = false;
@@ -232,6 +250,7 @@ export function Pane({
     }
 
     (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
+
     const { userSelectionRect } = store.getState();
     /*
      * We only want to trigger click functions when in selection mode if
