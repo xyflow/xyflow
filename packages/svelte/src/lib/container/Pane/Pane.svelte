@@ -97,12 +97,18 @@
     const isNoKeyEvent =
       event.target !== container && !!(event.target as HTMLElement).closest('.nokey');
 
+    const isSelectionActive =
+      (selectionOnDrag && container === event.target) ||
+      !selectionOnDrag ||
+      store.selectionKeyPressed;
+
     if (
       !store.elementsSelectable ||
       !isSelecting ||
       event.button !== 0 ||
       !containerBounds ||
       isNoKeyEvent ||
+      !isSelectionActive ||
       !event.isPrimary
     ) {
       return;
