@@ -1,7 +1,3 @@
-/**
- * The user selection rectangle gets displayed when a user drags the mouse while pressing shift
- */
-
 import {
   useRef,
   type MouseEvent as ReactMouseEvent,
@@ -119,21 +115,43 @@ export function Pane({
 
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
-  const onPointerDown = (event: ReactPointerEvent): void => {
+  const onClickCapture = (event: ReactMouseEvent) => {
+    const isSelectionOnDragActive =
+      (selectionOnDrag && container.current === event.target) || !selectionOnDrag || selectionKeyPressed;
+
+    if (!isSelectionOnDragActive) {
+      return;
+    }
+
+    event.stopPropagation();
+  };
+
+  // We are using capture here in order to prevent other pointer events
+  // to be able to create a selection above a node or an edge
+  const onPointerDownCapture = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
+
+    const isNoKeyEvent = event.target !== container.current && !!(event.target as HTMLElement).closest('.nokey');
+    const isSelectionActive =
+      (selectionOnDrag && container.current === event.target) || !selectionOnDrag || selectionKeyPressed;
 
     if (
       !elementsSelectable ||
       !isSelecting ||
       event.button !== 0 ||
-      event.target !== container.current ||
-      !containerBounds.current
+      !containerBounds.current ||
+      isNoKeyEvent ||
+      !isSelectionActive ||
+      !event.isPrimary
     ) {
       return;
     }
 
-    (event.target as Partial<Element> | null)?.setPointerCapture?.(event.pointerId);
+    event.stopPropagation();
+    event.preventDefault();
+
+    (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
 
     selectionStarted.current = true;
     selectionInProgress.current = false;
@@ -233,8 +251,8 @@ export function Pane({
     }
 
     (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
-    const { userSelectionRect } = store.getState();
 
+    const { userSelectionRect } = store.getState();
     /*
      * We only want to trigger click functions when in selection mode if
      * the user did not move the mouse.
@@ -270,9 +288,10 @@ export function Pane({
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
       onPointerEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
-      onPointerDown={hasActiveSelection ? onPointerDown : onPaneMouseMove}
       onPointerMove={hasActiveSelection ? onPointerMove : onPaneMouseMove}
       onPointerUp={hasActiveSelection ? onPointerUp : undefined}
+      onPointerDownCapture={hasActiveSelection ? onPointerDownCapture : undefined}
+      onClickCapture={hasActiveSelection ? onClickCapture : undefined}
       onPointerLeave={onPaneMouseLeave}
       ref={container}
       style={containerStyle}

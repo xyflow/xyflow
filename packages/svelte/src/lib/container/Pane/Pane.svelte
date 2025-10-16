@@ -91,20 +91,33 @@
   }
 
   // We start the selection process when the user clicks down on the pane
-  function onPointerDown(event: PointerEvent) {
+  function onPointerDownCapture(event: PointerEvent) {
     containerBounds = container?.getBoundingClientRect();
+
+    const isNoKeyEvent =
+      event.target !== container && !!(event.target as HTMLElement).closest('.nokey');
+
+    const isSelectionActive =
+      (selectionOnDrag && container === event.target) ||
+      !selectionOnDrag ||
+      store.selectionKeyPressed;
 
     if (
       !store.elementsSelectable ||
       !isSelecting ||
       event.button !== 0 ||
-      event.target !== container ||
-      !containerBounds
+      !containerBounds ||
+      isNoKeyEvent ||
+      !isSelectionActive ||
+      !event.isPrimary
     ) {
       return;
     }
 
-    (event.target as Partial<Element> | null)?.setPointerCapture?.(event.pointerId);
+    event.stopPropagation();
+    event.preventDefault();
+
+    (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
 
     const { x, y } = getEventPosition(event, containerBounds);
 
@@ -186,7 +199,7 @@
       return;
     }
 
-    (event.target as Partial<Element> | null)?.releasePointerCapture?.(event.pointerId);
+    (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
 
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.
@@ -216,6 +229,19 @@
 
     onpanecontextmenu?.({ event });
   };
+
+  const onClickCapture = (event: MouseEvent) => {
+    const isSelectionActive =
+      (selectionOnDrag && container === event.target) ||
+      !selectionOnDrag ||
+      store.selectionKeyPressed;
+
+    if (!isSelectionActive) {
+      return;
+    }
+
+    event.stopPropagation();
+  };
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -227,10 +253,11 @@
   class:dragging={store.dragging}
   class:selection={isSelecting}
   onclick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
-  onpointerdown={hasActiveSelection ? onPointerDown : undefined}
+  onpointerdowncapture={hasActiveSelection ? onPointerDownCapture : undefined}
   onpointermove={hasActiveSelection ? onPointerMove : undefined}
   onpointerup={hasActiveSelection ? onPointerUp : undefined}
   oncontextmenu={wrapHandler(onContextMenu, container)}
+  onclickcapture={hasActiveSelection ? onClickCapture : undefined}
 >
   {@render children()}
 </div>
