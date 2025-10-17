@@ -5,6 +5,7 @@ export * from './graph';
 export * from './general';
 export * from './marker';
 export * from './node-toolbar';
+export * from './edge-toolbar';
 export * from './store';
 export * from './types';
 export * from './shallow-node-data';

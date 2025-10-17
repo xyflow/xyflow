@@ -22,6 +22,7 @@ export * from '$lib/plugins/Controls';
 export * from '$lib/plugins/Background';
 export * from '$lib/plugins/Minimap';
 export * from '$lib/plugins/NodeToolbar';
+export * from '$lib/plugins/EdgeToolbar';
 export * from '$lib/plugins/NodeResizer';
 
 // store
