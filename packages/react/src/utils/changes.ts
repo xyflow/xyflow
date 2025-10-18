@@ -8,6 +8,7 @@ import {
   EdgeSelectionChange,
   NodeRemoveChange,
   EdgeRemoveChange,
+  SelectionMethod,
 } from '@xyflow/system';
 import type { Node, Edge, InternalNode } from '../types';
 
@@ -224,18 +225,24 @@ export function applyEdgeChanges<EdgeType extends Edge = Edge>(
   return applyChanges(changes, edges) as EdgeType[];
 }
 
-export function createSelectionChange(id: string, selected: boolean): NodeSelectionChange | EdgeSelectionChange {
+export function createSelectionChange(
+  id: string,
+  selected: boolean,
+  selectionMethod?: SelectionMethod
+): NodeSelectionChange | EdgeSelectionChange {
   return {
     id,
     type: 'select',
     selected,
+    selectionMethod,
   };
 }
 
 export function getSelectionChanges(
   items: Map<string, any>,
   selectedIds: Set<string> = new Set(),
-  mutateItem = false
+  mutateItem = false,
+  selectionMethod?: SelectionMethod
 ): NodeSelectionChange[] | EdgeSelectionChange[] {
   const changes: NodeSelectionChange[] | EdgeSelectionChange[] = [];
 
@@ -252,7 +259,7 @@ export function getSelectionChanges(
          */
         item.selected = willBeSelected;
       }
-      changes.push(createSelectionChange(item.id, willBeSelected));
+      changes.push(createSelectionChange(item.id, willBeSelected, selectionMethod));
     }
   }
 

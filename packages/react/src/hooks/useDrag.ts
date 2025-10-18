@@ -40,6 +40,7 @@ export function useDrag({
           id,
           store,
           nodeRef,
+          selectionMethod: 'drag',
         });
       },
       onDragStart: () => {

@@ -59,6 +59,7 @@ import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
 import MovingHandles from '../examples/MovingHandles';
 import DetachedHandle from '../examples/DetachedHandle';
+import SelectionMethod from '../examples/SelectionMethod';
 
 export interface IRoute {
   name: string;
@@ -288,6 +289,11 @@ const routes: IRoute[] = [
     component: SetNodesBatching,
   },
   {
+    name: 'Selection Method',
+    path: 'selection-method',
+    component: SelectionMethod,
+  },
+  {
     name: 'Stress',
     path: 'stress',
     component: Stress,
@@ -371,7 +377,7 @@ const routes: IRoute[] = [
     name: 'useKeyPress',
     path: 'use-key-press',
     component: UseKeyPress,
-  },
+  }
 ];
 
 export default routes;
