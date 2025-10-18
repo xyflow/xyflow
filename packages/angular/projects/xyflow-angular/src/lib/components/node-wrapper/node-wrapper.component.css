@@ -1,0 +1,81 @@
+/* Node wrapper base styles */
+.xy-node {
+  position: absolute;
+  cursor: grab;
+  box-sizing: border-box;
+}
+
+.xy-node.xy-dragging {
+  cursor: grabbing;
+}
+
+.xy-node.xy-selected {
+  outline: 2px solid var(--xy-node-selection-color, #1a192b);
+  outline-offset: 2px;
+}
+
+.xy-node.xy-draggable {
+  cursor: grab;
+}
+
+.xy-node.xy-draggable.xy-dragging {
+  cursor: grabbing;
+}
+
+.xy-node.xy-selectable:hover {
+  box-shadow: 0 0 0 2px var(--xy-node-hover-color, rgba(26, 25, 43, 0.3));
+}
+
+/* Selection indicator */
+.xy-node-selection-indicator {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid var(--xy-node-selection-color, #1a192b);
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Default node styles */
+.xy-default-node {
+  background: var(--xy-node-background, #ffffff);
+  border: 1px solid var(--xy-node-border, #ddd);
+  border-radius: 6px;
+  padding: 12px;
+  min-width: 120px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.xy-node-header {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--xy-node-header-color, #374151);
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--xy-node-border, #ddd);
+  padding-bottom: 4px;
+}
+
+.xy-node-content {
+  font-size: 12px;
+  color: var(--xy-node-content-color, #6b7280);
+}
+
+/* Accessibility */
+.xy-node:focus {
+  outline: 2px solid var(--xy-focus-color, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* CSS Variables for theming */
+:root {
+  --xy-node-background: #ffffff;
+  --xy-node-border: #ddd;
+  --xy-node-selection-color: #1a192b;
+  --xy-node-hover-color: rgba(26, 25, 43, 0.3);
+  --xy-node-header-color: #374151;
+  --xy-node-content-color: #6b7280;
+  --xy-focus-color: #3b82f6;
+}

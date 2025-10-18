@@ -1,0 +1,334 @@
+/* Essential XY Flow styles - inlined from @xyflow/system */
+:host {
+  --xy-node-border-default: 1px solid #bbb;
+  --xy-node-border-selected-default: 1px solid #555;
+  --xy-handle-background-color-default: #333;
+  --xy-selection-background-color-default: rgba(150, 150, 180, 0.1);
+  --xy-selection-border-default: 1px dotted rgba(155, 155, 155, 0.8);
+}
+
+/* Angular Flow Component Styles */
+.angular-flow {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Open Sans', 'Helvetica Neue', sans-serif;
+  box-sizing: border-box;
+}
+
+.angular-flow * {
+  box-sizing: border-box;
+}
+
+/* Viewport */
+.angular-flow__viewport {
+  transform-origin: 0 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Container layers */
+.angular-flow__container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Background layer */
+.angular-flow__viewport-back {
+  z-index: 1;
+}
+
+/* Edges layer */
+.angular-flow__edges {
+  z-index: 2;
+}
+
+.angular-flow__edges-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Edge labels layer */
+.angular-flow__edge-labels {
+  z-index: 3;
+}
+
+/* Connection line */
+.angular-flow__connection-line {
+  z-index: 4;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+/* Nodes layer */
+.angular-flow__nodes {
+  z-index: 5;
+  pointer-events: none;
+}
+
+.angular-flow__node {
+  position: absolute;
+  pointer-events: all;
+  transform-origin: 0 0;
+  cursor: grab;
+  user-select: none;
+  border-radius: 3px;
+}
+
+.angular-flow__node.selected {
+  outline: 1px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+.angular-flow__node-default {
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 12px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.angular-flow__node:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.angular-flow__node.dragging {
+  cursor: grabbing;
+}
+
+/* Selection rectangle */
+.angular-flow__selection {
+  position: absolute;
+  background: rgba(26, 115, 232, 0.1);
+  border: 1px solid #1a73e8;
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* Front layer */
+.angular-flow__viewport-front {
+  z-index: 7;
+}
+
+/* Attribution */
+.angular-flow__attribution {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 4px 8px;
+  font-size: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border-top-left-radius: 3px;
+  z-index: 999;
+}
+
+.angular-flow__attribution a {
+  color: #666;
+  text-decoration: none;
+}
+
+.angular-flow__attribution a:hover {
+  text-decoration: underline;
+}
+
+/* Color mode variations */
+.angular-flow--light {
+  background: #fafafa;
+  color: #333;
+}
+
+.angular-flow--light .angular-flow__node-default {
+  background: #fff;
+  border-color: #ddd;
+  color: #333;
+}
+
+.angular-flow--dark {
+  background: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.angular-flow--dark .angular-flow__node-default {
+  background: #2d2d2d;
+  border-color: #555;
+  color: #e0e0e0;
+}
+
+.angular-flow--dark .angular-flow__attribution {
+  background: rgba(30, 30, 30, 0.8);
+}
+
+.angular-flow--dark .angular-flow__attribution a {
+  color: #ccc;
+}
+
+/* Handle styles */
+.angular-flow__handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #1a73e8;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  cursor: crosshair;
+  pointer-events: all;
+  z-index: 10;
+}
+
+.angular-flow__handle.source {
+  bottom: -4px;
+}
+
+.angular-flow__handle.target {
+  top: -4px;
+}
+
+.angular-flow__handle.left {
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.angular-flow__handle.right {
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.angular-flow__handle.top {
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.angular-flow__handle.bottom {
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.angular-flow__handle:hover {
+  background: #0066cc;
+  transform: scale(1.2);
+}
+
+.angular-flow__handle.connecting {
+  background: #ff6b6b;
+}
+
+.angular-flow__handle.valid {
+  background: #00c851;
+}
+
+/* Panel styles */
+.angular-flow__panel {
+  position: absolute;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px);
+}
+
+.angular-flow__panel.top-left {
+  top: 10px;
+  left: 10px;
+}
+
+.angular-flow__panel.top-center {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.angular-flow__panel.top-right {
+  top: 10px;
+  right: 10px;
+}
+
+.angular-flow__panel.bottom-left {
+  bottom: 10px;
+  left: 10px;
+}
+
+.angular-flow__panel.bottom-center {
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.angular-flow__panel.bottom-right {
+  bottom: 10px;
+  right: 10px;
+}
+
+.angular-flow__panel.center-left {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+}
+
+.angular-flow__panel.center-right {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+/* Dark mode panel styles */
+.angular-flow--dark .angular-flow__panel {
+  background: rgba(45, 45, 45, 0.9);
+  border-color: #555;
+}
+
+/* Accessibility */
+.angular-flow:focus {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+/* No drag class */
+.nodrag {
+  cursor: default;
+}
+
+/* No wheel class - prevents wheel events */
+.nowheel {
+  pointer-events: none;
+}
+
+/* No pan class - prevents pan gestures */
+.nopan {
+  touch-action: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .angular-flow__node {
+    touch-action: none;
+  }
+
+  .angular-flow__handle {
+    width: 12px;
+    height: 12px;
+  }
+}
