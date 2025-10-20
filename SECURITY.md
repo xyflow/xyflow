@@ -24,7 +24,7 @@ We aim to provide a remediation plan or decision within 4 weeks. Actual fix time
 In scope:
 
 - Vulnerabilities introduced by code in this repository
-- Supply-chain risks caused by how this repository consumes or distributes its own code (e.g. insecure Github Actions)
+- Supply-chain risks caused by how this repository consumes or distributes its own code (e.g. insecure GitHub Actions)
 
 Out of scope:
 
