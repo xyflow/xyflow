@@ -17,10 +17,10 @@
   }: EdgeToolbarProps = $props();
 
   const store = useStore();
-  const edge = store.edgeLookup.get(edgeId);
+  const edge = $derived(store.edgeLookup.get(edgeId));
   const isActive = $derived(typeof isVisible === 'boolean' ? isVisible : edge?.selected);
   const transform = $derived(getEdgeToolbarTransform(x, y, store.viewport.zoom, alignX, alignY));
-  const zIndex = (edge?.zIndex ?? 0) + 1;
+  const zIndex = $derived((edge?.zIndex ?? 0) + 1);
 </script>
 
 {#if store.domNode && isActive}
