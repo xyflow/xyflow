@@ -2,4 +2,4 @@
 '@xyflow/svelte': patch
 ---
 
-Surpress svelte/prefer-svelte-reactivity warnings
+Suppress svelte/prefer-svelte-reactivity warnings
