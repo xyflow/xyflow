@@ -99,6 +99,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let dragItems = new Map<string, NodeDragItem>();
   let autoPanStarted = false;
   let mousePosition: XYPosition = { x: 0, y: 0 };
+  let initialMousePosition: XYPosition = { x: 0, y: 0 };
   let containerBounds: DOMRect | null = null;
   let dragStarted = false;
   let d3Selection: Selection<Element, unknown, null, undefined> | null = null;
@@ -294,11 +295,12 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
     }
 
     const d3DragInstance = drag()
-      .clickDistance(nodeClickDistance)
+      .clickDistance(Infinity)
       .on('start', (event: UseDragEvent) => {
         const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
         containerBounds = domNode?.getBoundingClientRect() || null;
-
+        dragStarted = false;
+        autoPanStarted = false;
         abortDrag = false;
         nodePositionsChanged = false;
         dragEvent = event.sourceEvent;
@@ -310,6 +312,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
         lastPos = pointerPos;
         mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
+        initialMousePosition = mousePosition;
       })
       .on('drag', (event: UseDragEvent) => {
         const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold, nodeLookup } = getStoreItems();
@@ -356,7 +359,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           return;
         }
 
-        autoPanStarted = false;
         dragStarted = false;
         cancelAnimationFrame(autoPanId);
 
@@ -364,6 +366,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           const { nodeLookup, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
 
           if (nodePositionsChanged) {
+            dragStarted = true;
             updateNodePositions(dragItems, false);
             nodePositionsChanged = false;
           }
@@ -396,10 +399,26 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       });
 
     d3Selection.call(d3DragInstance);
+    d3Selection.on(
+      'click',
+      (event: MouseEvent) => {
+        const currentMousePosition = getEventPosition(event, containerBounds!);
+        const x = currentMousePosition.x - initialMousePosition.x;
+        const y = currentMousePosition.y - initialMousePosition.y;
+        const distance = Math.sqrt(x * x + y * y);
+
+        if (dragStarted || distance > nodeClickDistance) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      },
+      { capture: true }
+    );
   }
 
   function destroy() {
     d3Selection?.on('.drag', null);
+    d3Selection?.on('click', null);
   }
 
   return {
