@@ -148,13 +148,13 @@ export type EdgeToolbarBaseProps = {
    */
   isVisible?: boolean;
   /**
-   * Align the toolbar x relative to the edge.
+   * Align the vertical toolbar position relative to the passed x position.
    * @default "center"
    * @example 'left', 'center', 'right'
    */
   alignX?: 'left' | 'center' | 'right';
   /**
-   * Align the toolbar x relative to the edge.
+   * Align the horizontal toolbar position relative to the passed y position.
    * @default "center"
    * @example 'top', 'center', 'bottom'
    */
