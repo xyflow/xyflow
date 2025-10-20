@@ -20,10 +20,13 @@
 
   const store = useStore();
 
-  const id = getContext<string>('svelteflow__edge_id');
+  const edgeId = getContext<string>('svelteflow__edge_id');
+  if (!edgeId) {
+    throw new Error('EdgeLabel must be used within an edge');
+  }
 
   let z = $derived.by(() => {
-    return store.visible.edges.get(id)?.zIndex;
+    return store.visible.edges.get(edgeId)?.zIndex;
   });
 </script>
 
@@ -39,7 +42,7 @@
   style:z-index={z}
   tabindex="-1"
   onclick={() => {
-    if (selectEdgeOnClick && id) store.handleEdgeSelection(id);
+    if (selectEdgeOnClick) store.handleEdgeSelection(edgeId);
   }}
   {...rest}
 >
