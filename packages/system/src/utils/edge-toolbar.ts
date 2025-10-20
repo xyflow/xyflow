@@ -17,7 +17,6 @@ export function getEdgeToolbarTransform(
   alignX: 'left' | 'center' | 'right' = 'center',
   alignY: 'top' | 'center' | 'bottom' = 'center'
 ): string {
-  // Position the toolbar at the edge label center (scaling is handled by EdgeLabelRenderer)
   return `translate(${x}px, ${y}px) scale(${1 / zoom}) translate(${-(alignXToPercent[alignX] ?? 50)}%, ${-(
     alignYToPercent[alignY] ?? 50
   )}%)`;
