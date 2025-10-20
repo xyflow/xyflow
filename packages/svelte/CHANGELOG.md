@@ -1,5 +1,32 @@
 # @xyflow/svelte
 
+## 1.4.0
+
+### Minor Changes
+
+- [#5544](https://github.com/xyflow/xyflow/pull/5544) [`c17b49f4c`](https://github.com/xyflow/xyflow/commit/c17b49f4c16167da3f791430163edd592159d27d) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Add `EdgeToolbar` component
+
+- [#5550](https://github.com/xyflow/xyflow/pull/5550) [`6ffb9f790`](https://github.com/xyflow/xyflow/commit/6ffb9f7901c32f5b335aee2517f41bf87f274f32) Thanks [@peterkogo](https://github.com/peterkogo)! - Prevent child nodes of different parents from overlapping
+
+- [#5551](https://github.com/xyflow/xyflow/pull/5551) [`6bb64b3ed`](https://github.com/xyflow/xyflow/commit/6bb64b3ed60f26c9ea8bc01c8d62fb9bf74cd634) Thanks [@moklick](https://github.com/moklick)! - Allow to start a selection above a node
+
+- [#5526](https://github.com/xyflow/xyflow/pull/5526) [`1b0bd9794`](https://github.com/xyflow/xyflow/commit/1b0bd9794f8d610468983a579e53b4633047b465) Thanks [@peterkogo](https://github.com/peterkogo)! - Add `resizeDirection` prop to `ResizeControls`
+
+### Patch Changes
+
+- [#5538](https://github.com/xyflow/xyflow/pull/5538) [`87a868958`](https://github.com/xyflow/xyflow/commit/87a8689584d9b29570d186628829324f3bec3b2e) Thanks [@peterkogo](https://github.com/peterkogo)! - Suppress `svelte/prefer-svelte-reactivity` warnings
+
+- [#5529](https://github.com/xyflow/xyflow/pull/5529) [`da77772de`](https://github.com/xyflow/xyflow/commit/da77772debe6a0e730feacadf53210210178e7e2) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix selected set to false on every node and edge eagerly
+
+- [#5528](https://github.com/xyflow/xyflow/pull/5528) [`d50a963cd`](https://github.com/xyflow/xyflow/commit/d50a963cd0f00cd31236d760dcd7995218d80553) Thanks [@peterkogo](https://github.com/peterkogo)! - Let `NodeResizer` props change during ongoing resize
+
+- [#5546](https://github.com/xyflow/xyflow/pull/5546) [`8a9ee2d83`](https://github.com/xyflow/xyflow/commit/8a9ee2d836776da42b867c6ba90d302fbbc79b37) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Do not crash mini map if all nodes are hidden
+
+- [#5547](https://github.com/xyflow/xyflow/pull/5547) [`1c8961207`](https://github.com/xyflow/xyflow/commit/1c8961207e8ac326098af18489465b36cdd2d831) Thanks [@moklick](https://github.com/moklick)! - Always call `onMoveEnd` when `onMoveStart` was called
+
+- Updated dependencies [[`c17b49f4c`](https://github.com/xyflow/xyflow/commit/c17b49f4c16167da3f791430163edd592159d27d), [`6ffb9f790`](https://github.com/xyflow/xyflow/commit/6ffb9f7901c32f5b335aee2517f41bf87f274f32), [`d50a963cd`](https://github.com/xyflow/xyflow/commit/d50a963cd0f00cd31236d760dcd7995218d80553), [`6bb64b3ed`](https://github.com/xyflow/xyflow/commit/6bb64b3ed60f26c9ea8bc01c8d62fb9bf74cd634), [`8a9ee2d83`](https://github.com/xyflow/xyflow/commit/8a9ee2d836776da42b867c6ba90d302fbbc79b37), [`1c8961207`](https://github.com/xyflow/xyflow/commit/1c8961207e8ac326098af18489465b36cdd2d831)]:
+  - @xyflow/system@0.0.71
+
 ## 1.3.1
 
 ### Patch Changes
