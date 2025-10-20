@@ -3,4 +3,4 @@
 '@xyflow/system': patch
 ---
 
-Do not crash minimap if all nodes are hidden
+Do not crash mini map if all nodes are hidden

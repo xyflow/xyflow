@@ -4,4 +4,4 @@
 '@xyflow/system': patch
 ---
 
-Add EdgeToolbar component
+Add `EdgeToolbar` component
