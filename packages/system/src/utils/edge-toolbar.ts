@@ -1,10 +1,24 @@
+const alignXToPercent: Record<'left' | 'center' | 'right', number> = {
+  left: 0,
+  center: 50,
+  right: 100,
+};
+
+const alignYToPercent: Record<'top' | 'center' | 'bottom', number> = {
+  top: 0,
+  center: 50,
+  bottom: 100,
+};
+
 export function getEdgeToolbarTransform(
   x: number,
   y: number,
   zoom: number,
-  offsetX: number = 0,
-  offsetY: number = 0
+  alignX: 'left' | 'center' | 'right' = 'center',
+  alignY: 'top' | 'center' | 'bottom' = 'center'
 ): string {
   // Position the toolbar at the edge label center (scaling is handled by EdgeLabelRenderer)
-  return `translate(${x + offsetX}px, ${y + offsetY}px) translate(-50%, -50%) scale(${1 / zoom})`;
+  return `translate(${x}px, ${y}px) scale(${1 / zoom}) translate(${-(alignXToPercent[alignX] ?? 50)}%, ${-(
+    alignYToPercent[alignY] ?? 50
+  )}%)`;
 }

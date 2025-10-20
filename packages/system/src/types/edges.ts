@@ -129,3 +129,34 @@ export type EdgePosition = {
 };
 
 export type EdgeLookup<EdgeType extends EdgeBase = EdgeBase> = Map<string, EdgeType>;
+
+export type EdgeToolbarBaseProps = {
+  /**
+   * An edge toolbar must be attached to an edge.
+   */
+  edgeId: string;
+  /**
+   * The `x` position of the edge label.
+   */
+  x: number;
+  /**
+   * The `y` position of the edge label.
+   */
+  y: number;
+  /** If `true`, edge toolbar is visible even if edge is not selected.
+   * @default false
+   */
+  isVisible?: boolean;
+  /**
+   * Align the toolbar x relative to the edge.
+   * @default "center"
+   * @example 'left', 'center', 'right'
+   */
+  alignX?: 'left' | 'center' | 'right';
+  /**
+   * Align the toolbar x relative to the edge.
+   * @default "center"
+   * @example 'top', 'center', 'bottom'
+   */
+  alignY?: 'top' | 'center' | 'bottom';
+};

@@ -6,7 +6,6 @@ import {
   EdgeTypes,
   MiniMap,
   Node,
-  NodeOrigin,
   Position,
   ReactFlow,
 } from '@xyflow/react';
@@ -44,23 +43,23 @@ const initialEdges: Edge[] = [
     source: '1',
     target: '2',
     type: 'custom',
+    data: { type: 'smoothstep', align: ['left', 'bottom'] },
   },
   {
     id: 'e3-2',
     source: '3',
     target: '2',
     type: 'custom',
+    data: { type: 'bezier', align: ['right', 'bottom'] },
   },
   {
     id: 'e1-3',
     source: '1',
     target: '3',
     type: 'custom',
+    data: { type: 'straight', align: ['center', 'center'] },
   },
 ];
-
-// const defaultEdgeOptions = { zIndex: 0 };
-const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
 export default function EdgeToolbarExample() {
   return (
@@ -71,9 +70,7 @@ export default function EdgeToolbarExample() {
       minZoom={0.2}
       maxZoom={4}
       fitView
-      // defaultEdgeOptions={defaultEdgeOptions}
       edgeTypes={edgeTypes}
-      nodeOrigin={nodeOrigin}
     >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />
