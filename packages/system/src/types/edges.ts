@@ -132,10 +132,6 @@ export type EdgeLookup<EdgeType extends EdgeBase = EdgeBase> = Map<string, EdgeT
 
 export type EdgeToolbarBaseProps = {
   /**
-   * An edge toolbar must be attached to an edge.
-   */
-  edgeId: string;
-  /**
    * The `x` position of the edge toolbar.
    */
   x: number;
