@@ -1,6 +1,5 @@
 import type { ConnectableContext } from '$lib/components/NodeWrapper/types';
 import { setContext, getContext, hasContext } from 'svelte';
-import type { StoreContext } from './types';
 
 /**
  * Creates a type-safe context getter and setter pair.
