@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { getContext, onMount } from 'svelte';
+  import { onMount } from 'svelte';
+
   import { useStore } from '$lib/store';
+  import { getNodeIdContext } from '$lib/store/context';
   import {
     XYResizer,
     ResizeControlVariant,
@@ -9,6 +11,7 @@
     type XYResizerChange,
     type XYResizerChildChange
   } from '@xyflow/system';
+
   import type { ResizeControlProps } from './types';
   import type { Node } from '$lib/types';
 
@@ -34,10 +37,14 @@
   }: ResizeControlProps = $props();
 
   const store = useStore();
+  const contextNodeId = getNodeIdContext();
 
-  let id = $derived(
-    typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
-  );
+  let id = $derived(typeof nodeId === 'string' ? nodeId : contextNodeId);
+
+  // svelte-ignore state_referenced_locally
+  if (!id) {
+    throw new Error('Either pass a nodeId or use within a Custom Node component');
+  }
 
   let resizeControlRef: HTMLDivElement;
   let resizer: XYResizerInstance | null = $state(null);
