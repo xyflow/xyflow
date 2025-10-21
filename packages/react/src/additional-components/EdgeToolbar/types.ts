@@ -6,5 +6,9 @@ import type { EdgeToolbarBaseProps } from '@xyflow/system';
  */
 export type EdgeToolbarProps = EdgeToolbarBaseProps &
   HTMLAttributes<HTMLDivElement> & {
+    /**
+     * An edge toolbar must be attached to an edge.
+     */
+    edgeId: string;
     children?: ReactNode;
   };

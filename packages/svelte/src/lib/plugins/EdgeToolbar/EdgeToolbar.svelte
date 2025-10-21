@@ -19,14 +19,15 @@
   }: EdgeToolbarProps = $props();
 
   const store = useStore();
-
   const edgeId = getContext<string>('svelteflow__edge_id');
+
   if (!edgeId) {
     throw new Error('EdgeToolbar must be used within an edge');
   }
 
-  const edge = $derived(store.edgeLookup.get(edgeId));
-  const isActive = $derived(typeof isVisible === 'boolean' ? isVisible : edge?.selected);
+  const isActive = $derived(
+    typeof isVisible === 'boolean' ? isVisible : store.edgeLookup.get(edgeId)?.selected
+  );
   const transform = $derived(getEdgeToolbarTransform(x, y, store.viewport.zoom, alignX, alignY));
 </script>
 
