@@ -86,7 +86,7 @@
     "typescript-eslint": "^8.46.2"
   },
   "peerDependencies": {
-    "svelte": "^5.25.0"
+    "svelte": "^5.40.0"
   },
   "files": [
     "dist"
