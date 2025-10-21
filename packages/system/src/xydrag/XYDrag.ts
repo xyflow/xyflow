@@ -100,6 +100,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let autoPanStarted = false;
   let mousePosition: XYPosition = { x: 0, y: 0 };
   let initialMousePosition: XYPosition = { x: 0, y: 0 };
+  let preventClick = false;
   let containerBounds: DOMRect | null = null;
   let dragStarted = false;
   let d3Selection: Selection<Element, unknown, null, undefined> | null = null;
@@ -303,6 +304,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         autoPanStarted = false;
         abortDrag = false;
         nodePositionsChanged = false;
+        preventClick = false;
         dragEvent = event.sourceEvent;
 
         if (nodeDragThreshold === 0) {
@@ -359,16 +361,15 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           return;
         }
 
-        dragStarted = false;
         cancelAnimationFrame(autoPanId);
 
         if (dragItems.size > 0) {
           const { nodeLookup, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
 
           if (nodePositionsChanged) {
-            dragStarted = true;
             updateNodePositions(dragItems, false);
             nodePositionsChanged = false;
+            preventClick = true;
           }
 
           if (onDragStop || onNodeDragStop || (!nodeId && onSelectionDragStop)) {
@@ -407,7 +408,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         const y = currentMousePosition.y - initialMousePosition.y;
         const distance = Math.sqrt(x * x + y * y);
 
-        if (dragStarted || distance > nodeClickDistance) {
+        if (preventClick || distance > nodeClickDistance) {
           event.preventDefault();
           event.stopPropagation();
         }
