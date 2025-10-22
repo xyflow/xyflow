@@ -132,15 +132,11 @@ export type EdgeLookup<EdgeType extends EdgeBase = EdgeBase> = Map<string, EdgeT
 
 export type EdgeToolbarBaseProps = {
   /**
-   * An edge toolbar must be attached to an edge.
-   */
-  edgeId: string;
-  /**
-   * The `x` position of the edge label.
+   * The `x` position of the edge toolbar.
    */
   x: number;
   /**
-   * The `y` position of the edge label.
+   * The `y` position of the edge toolbar.
    */
   y: number;
   /** If `true`, edge toolbar is visible even if edge is not selected.

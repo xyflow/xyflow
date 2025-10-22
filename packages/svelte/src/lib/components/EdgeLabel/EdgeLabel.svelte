@@ -20,12 +20,8 @@
   }: EdgeLabelProps = $props();
 
   const store = useStore();
-
   const edgeId = getEdgeIdContext('EdgeLabel must be used within a Custom Edge component');
-
-  let z = $derived.by(() => {
-    return store.visible.edges.get(edgeId)?.zIndex;
-  });
+  let z = $derived(store.visible.edges.get(edgeId)?.zIndex);
 </script>
 
 <div
@@ -40,7 +36,7 @@
   style:z-index={z}
   tabindex="-1"
   onclick={() => {
-    if (selectEdgeOnClick && edgeId) store.handleEdgeSelection(edgeId);
+    if (selectEdgeOnClick) store.handleEdgeSelection(edgeId);
   }}
   {...rest}
 >
