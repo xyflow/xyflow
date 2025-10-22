@@ -341,9 +341,9 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         if (!dragStarted) {
           // Calculate distance in client coordinates for consistent drag threshold behavior across zoom levels
           const currentMousePosition = getEventPosition(event.sourceEvent, containerBounds!);
-          const x = currentMousePosition.x - initialMousePosition.x;
-          const y = currentMousePosition.y - initialMousePosition.y;
-          const distance = Math.sqrt(x * x + y * y);
+          const dx = currentMousePosition.x - initialMousePosition.x;
+          const dy = currentMousePosition.y - initialMousePosition.y;
+          const distance = Math.hypot(dx, dy);
 
           if (distance > nodeDragThreshold) {
             startDrag(event);

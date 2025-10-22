@@ -162,7 +162,8 @@ const BasicFlow = () => {
         selectNodesOnDrag={false}
         elevateEdgesOnSelect
         elevateNodesOnSelect={false}
-        nodeDragThreshold={0}
+        nodeDragThreshold={5}
+        nodeClickDistance={Infinity}
       >
         <Background variant={BackgroundVariant.Dots} />
         <MiniMap />
