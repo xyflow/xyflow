@@ -52,7 +52,8 @@
     ariaLabel
   } = $derived(edge);
 
-  setEdgeIdContext(edge.id);
+  // svelte-ignore state_referenced_locally
+  setEdgeIdContext(id);
 
   // svelte-ignore non_reactive_update
   let edgeRef: SVGGElement | null = null;
