@@ -75,7 +75,7 @@ export type ResizeControlProps = Pick<
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
-  /** Required nodeId if used outside of a custom node */
+  /** nodeId must be provided when used outside a custom node */
   nodeId?: string;
   children?: Snippet;
 } & HTMLAttributes<HTMLDivElement>;
