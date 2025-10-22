@@ -341,8 +341,8 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         if (!dragStarted) {
           // Calculate distance in client coordinates for consistent drag threshold behavior across zoom levels
           const currentMousePosition = getEventPosition(event.sourceEvent, containerBounds!);
-          const x = currentMousePosition.x - mousePosition.x;
-          const y = currentMousePosition.y - mousePosition.y;
+          const x = currentMousePosition.x - initialMousePosition.x;
+          const y = currentMousePosition.y - initialMousePosition.y;
           const distance = Math.sqrt(x * x + y * y);
 
           if (distance > nodeDragThreshold) {
@@ -401,7 +401,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
     d3Selection.call(d3DragInstance);
     d3Selection.on(
-      'click',
+      'click.xydrag',
       (event: MouseEvent) => {
         const currentMousePosition = getEventPosition(event, containerBounds!);
         const x = currentMousePosition.x - initialMousePosition.x;
@@ -409,6 +409,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         const distance = Math.sqrt(x * x + y * y);
 
         if (preventClick || distance > nodeClickDistance) {
+          preventClick = false;
           event.preventDefault();
           event.stopPropagation();
         }
@@ -419,7 +420,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
   function destroy() {
     d3Selection?.on('.drag', null);
-    d3Selection?.on('click', null);
+    d3Selection?.on('click.xydrag', null);
   }
 
   return {
