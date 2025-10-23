@@ -118,6 +118,7 @@
     event.preventDefault();
 
     (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
+    (document.activeElement as HTMLElement)?.blur();
 
     const { x, y } = getEventPosition(event, containerBounds);
 
