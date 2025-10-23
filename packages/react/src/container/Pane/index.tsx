@@ -152,6 +152,7 @@ export function Pane({
     event.preventDefault();
 
     (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
+    (document.activeElement as HTMLElement)?.blur();
 
     selectionStarted.current = true;
     selectionInProgress.current = false;
