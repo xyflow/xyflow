@@ -1,0 +1,104 @@
+/* Controls Component Styles */
+.angular-flow__controls {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+}
+
+.angular-flow__controls.vertical {
+  flex-direction: column;
+}
+
+.angular-flow__controls.horizontal {
+  flex-direction: row;
+}
+
+.angular-flow__controls-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0;
+}
+
+.angular-flow__controls-button:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #ccc;
+  color: #333;
+}
+
+.angular-flow__controls-button:active:not(:disabled) {
+  background: #eee;
+}
+
+.angular-flow__controls-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.angular-flow__controls-button svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+/* Dark mode styles */
+.angular-flow--dark .angular-flow__controls-button {
+  background: #2d2d2d;
+  border-color: #555;
+  color: #ccc;
+}
+
+.angular-flow--dark .angular-flow__controls-button:hover:not(:disabled) {
+  background: #3d3d3d;
+  border-color: #666;
+  color: #fff;
+}
+
+.angular-flow--dark .angular-flow__controls-button:active:not(:disabled) {
+  background: #4d4d4d;
+}
+
+/* Specific button styles */
+.angular-flow__controls-zoomin svg {
+  /* Plus icon styling */
+}
+
+.angular-flow__controls-zoomout svg {
+  /* Minus icon styling */
+}
+
+.angular-flow__controls-fitview svg {
+  /* Fit view icon styling */
+}
+
+.angular-flow__controls-interactive svg {
+  /* Lock/unlock icon styling */
+}
+
+/* Focus styles for accessibility */
+.angular-flow__controls-button:focus {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .angular-flow__controls-button {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .angular-flow__controls-button svg {
+    width: 20px;
+    height: 20px;
+  }
+}

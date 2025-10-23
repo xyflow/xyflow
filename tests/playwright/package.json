@@ -7,8 +7,10 @@
   "scripts": {
     "test:svelte": "FRAMEWORK=svelte pnpm exec playwright test -c playwright.svelte.config.ts",
     "test:react": "FRAMEWORK=react pnpm exec playwright test -c playwright.react.config.ts",
+    "test:angular": "FRAMEWORK=angular pnpm exec playwright test -c playwright.angular.config.ts",
     "test:react:ui": "pnpm run test:react --ui",
-    "test:svelte:ui": "pnpm run test:svelte --ui"
+    "test:svelte:ui": "pnpm run test:svelte --ui",
+    "test:angular:ui": "pnpm run test:angular --ui"
   },
   "keywords": [],
   "author": "",
