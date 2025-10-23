@@ -1,5 +1,13 @@
 # @xyflow/svelte
 
+## 1.4.1
+
+### Patch Changes
+
+- [#5558](https://github.com/xyflow/xyflow/pull/5558) [`dca0a30f2`](https://github.com/xyflow/xyflow/commit/dca0a30f273a05d592d8b89b3f0f30d829f5bbd0) Thanks [@peterkogo](https://github.com/peterkogo)! - Remove `edgeId` from `EdgeToolbar` props
+
+- [#5565](https://github.com/xyflow/xyflow/pull/5565) [`cbab3d8be`](https://github.com/xyflow/xyflow/commit/cbab3d8be72b4935ccaaa7a1f89011923b66c57b) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Pass nodeId to MiniMapNode
+
 ## 1.4.0
 
 ### Minor Changes
