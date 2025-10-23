@@ -250,29 +250,29 @@ const createStore = ({
           onEdgesChange?.(changes);
         }
       },
-      addSelectedNodes: (selectedNodeIds) => {
+      addSelectedNodes: (selectedNodeIds, selectionMethod) => {
         const { multiSelectionActive, edgeLookup, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
 
         if (multiSelectionActive) {
-          const nodeChanges = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true));
+          const nodeChanges = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true, selectionMethod));
           triggerNodeChanges(nodeChanges);
           return;
         }
 
-        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
-        triggerEdgeChanges(getSelectionChanges(edgeLookup));
+        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true, selectionMethod));
+        triggerEdgeChanges(getSelectionChanges(edgeLookup, new Set(), false, selectionMethod));
       },
-      addSelectedEdges: (selectedEdgeIds) => {
+      addSelectedEdges: (selectedEdgeIds, selectionMethod) => {
         const { multiSelectionActive, edgeLookup, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
 
         if (multiSelectionActive) {
-          const changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true));
+          const changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true, selectionMethod));
           triggerEdgeChanges(changedEdges);
           return;
         }
 
-        triggerEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
-        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
+        triggerEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds]), false, selectionMethod));
+        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set(), true, selectionMethod));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
         const { edges: storeEdges, nodes: storeNodes, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
@@ -288,9 +288,9 @@ const createStore = ({
             internalNode.selected = false;
           }
 
-          return createSelectionChange(n.id, false);
+          return createSelectionChange(n.id, false, 'programmatic');
         });
-        const edgeChanges = edgesToUnselect.map((edge) => createSelectionChange(edge.id, false));
+        const edgeChanges = edgesToUnselect.map((edge) => createSelectionChange(edge.id, false, 'programmatic'));
 
         triggerNodeChanges(nodeChanges);
         triggerEdgeChanges(edgeChanges);

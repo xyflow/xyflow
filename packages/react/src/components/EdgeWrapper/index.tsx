@@ -125,7 +125,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
         unselectNodesAndEdges({ nodes: [], edges: [edge] });
         edgeRef.current?.blur();
       } else {
-        addSelectedEdges([id]);
+        addSelectedEdges([id], multiSelectionActive ? 'multi-select' : 'click');
       }
     }
 
@@ -169,7 +169,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
         edgeRef.current?.blur();
         unselectNodesAndEdges({ edges: [edge] });
       } else {
-        addSelectedEdges([id]);
+        addSelectedEdges([id], 'keyboard');
       }
     }
   };
