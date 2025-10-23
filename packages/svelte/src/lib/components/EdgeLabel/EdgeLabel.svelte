@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
-
+  import { getEdgeIdContext } from '$lib/store/context';
   import { hideOnSSR, portal } from '$lib/actions/portal';
+
   import { useStore } from '$lib/store';
-  import type { EdgeLabelProps } from './types';
   import { toPxString } from '$lib/utils';
+
+  import type { EdgeLabelProps } from './types';
 
   let {
     x = 0,
@@ -19,12 +20,7 @@
   }: EdgeLabelProps = $props();
 
   const store = useStore();
-  const edgeId = getContext<string>('svelteflow__edge_id');
-
-  if (!edgeId) {
-    throw new Error('EdgeLabel must be used within an edge');
-  }
-
+  const edgeId = getEdgeIdContext('EdgeLabel must be used within a Custom Edge component');
   let z = $derived(store.visible.edges.get(edgeId)?.zIndex);
 </script>
 

@@ -2,9 +2,10 @@
   import { getEdgeToolbarTransform } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
+  import { getEdgeIdContext } from '$lib/store/context';
+
   import { EdgeLabel } from '$lib/components/EdgeLabel';
   import type { EdgeToolbarProps } from './types';
-  import { getContext } from 'svelte';
 
   let {
     x,
@@ -19,11 +20,8 @@
   }: EdgeToolbarProps = $props();
 
   const store = useStore();
-  const edgeId = getContext<string>('svelteflow__edge_id');
 
-  if (!edgeId) {
-    throw new Error('EdgeToolbar must be used within an edge');
-  }
+  const edgeId = getEdgeIdContext('EdgeToolbar must be used within an edge');
 
   const isActive = $derived(
     typeof isVisible === 'boolean' ? isVisible : store.edgeLookup.get(edgeId)?.selected
