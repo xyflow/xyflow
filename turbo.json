@@ -1,5 +1,6 @@
 {
   "$schema": "https://turborepo.org/schema.json",
+  "ui": "tui",
   "globalEnv": ["NODE_ENV"],
   "tasks": {
     "build": {
@@ -8,6 +9,10 @@
     },
     "dev": {
       "outputs": ["dist/**"],
+      "cache": false,
+      "persistent": true
+    },
+    "storybook": {
       "cache": false,
       "persistent": true
     },
