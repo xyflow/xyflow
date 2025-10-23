@@ -121,6 +121,7 @@
         {#if node && nodeHasDimensions(node) && !node.hidden}
           {@const nodeDimesions = getNodeDimensions(node)}
           <MinimapNode
+            id={node.id}
             x={node.internals.positionAbsolute.x}
             y={node.internals.positionAbsolute.y}
             {...nodeDimesions}

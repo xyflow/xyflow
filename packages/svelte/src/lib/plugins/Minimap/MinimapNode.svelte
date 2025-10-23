@@ -4,6 +4,7 @@
   import type { MiniMapNodeProps } from './types';
 
   let {
+    id,
     x,
     y,
     width,
@@ -17,6 +18,7 @@
     class: className,
     nodeComponent
   }: {
+    id: string;
     x: number;
     y: number;
     width: number;
@@ -36,6 +38,7 @@
   {@const CustomComponent = nodeComponent}
 
   <CustomComponent
+    {id}
     {x}
     {y}
     {width}

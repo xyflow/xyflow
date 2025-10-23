@@ -11,6 +11,7 @@ export type GetMiniMapNodeAttribute = (node: Node) => string;
  * @public
  */
 export type MiniMapNodeProps = {
+  id: string;
   x: number;
   y: number;
   width: number;
