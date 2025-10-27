@@ -47,6 +47,8 @@
 	{onmove}
 	{onmoveend}
 	onpaneclick={(e) => console.log('on pane click', e)}
+	onselectionend={(e) => console.log('on selection end', e)}
+	onselectionstart={(e) => console.log('on selection start', e)}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

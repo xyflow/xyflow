@@ -45,6 +45,8 @@ const BasicFlow = () => {
       onMove={onMove}
       onMoveEnd={onMoveEnd}
       onPaneClick={(e) => console.log('pane click', e)}
+      onSelectionStart={(e) => console.log('on selection start', e)}
+      onSelectionEnd={(e) => console.log('on selection end', e)}
     >
       <Background variant={BackgroundVariant.Cross} />
       <Controls />

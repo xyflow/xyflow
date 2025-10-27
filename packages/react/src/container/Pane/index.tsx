@@ -120,6 +120,7 @@ export function Pane({
   const onClickCapture = (event: ReactMouseEvent) => {
     if (selectionInProgress.current) {
       event.stopPropagation();
+      selectionInProgress.current = false;
     }
   };
 
@@ -202,6 +203,7 @@ export function Pane({
       if (distance <= paneClickDistance) {
         return;
       }
+      onSelectionStart?.(event);
     }
 
     selectionInProgress.current = true;
@@ -277,14 +279,9 @@ export function Pane({
       userSelectionRect: null,
       nodesSelectionActive: selectedNodeIds.current.size > 0,
     });
-    onSelectionEnd?.(event);
 
-    /*
-     * If the user kept holding the selectionKey during the selection,
-     * we need to reset the selectionInProgress, so the next click event is not prevented
-     */
-    if (selectionKeyPressed || selectionOnDrag) {
-      selectionInProgress.current = false;
+    if (selectionInProgress.current) {
+      onSelectionEnd?.(event);
     }
 
     selectionStarted.current = false;

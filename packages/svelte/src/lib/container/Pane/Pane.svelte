@@ -147,6 +147,7 @@
       if (distance <= paneClickDistance) {
         return;
       }
+      onselectionstart?.(event);
     }
 
     selectionInProgress = true;
@@ -220,7 +221,9 @@
       store.selectionRectMode = 'nodes';
     }
 
-    onselectionend?.(event);
+    if (selectionInProgress) {
+      onselectionend?.(event);
+    }
 
     selectionStarted = false;
   }
