@@ -39,6 +39,7 @@ type PaneProps = {
     | 'onPaneMouseMove'
     | 'onPaneMouseLeave'
     | 'selectionOnDrag'
+    | 'paneClickDistance'
   >
 >;
 

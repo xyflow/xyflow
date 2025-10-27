@@ -156,6 +156,7 @@
     {panOnScrollSpeed}
     {panOnDrag}
     {paneClickDistance}
+    {selectionOnDrag}
     {onmovestart}
     {onmove}
     {onmoveend}
@@ -168,6 +169,7 @@
       {onselectionstart}
       {onselectionend}
       {panOnDrag}
+      {paneClickDistance}
       {selectionOnDrag}
     >
       <ViewportComponent bind:store>

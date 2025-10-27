@@ -191,10 +191,6 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     }
   }
 
-  function setPaneClickDistance(distance: number) {
-    store.panZoom?.setClickDistance(distance);
-  }
-
   function deselect<T extends Node | Edge>(
     elements: T[],
     elementsToDeselect: Set<string> | null = null
@@ -393,7 +389,6 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,
-    setPaneClickDistance,
     unselectNodesAndEdges,
     addSelectedNodes,
     addSelectedEdges,
