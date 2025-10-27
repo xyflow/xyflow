@@ -34,7 +34,7 @@ const BasicFlow = () => {
       selectionMode={SelectionMode.Partial}
       panOnDrag={panOnDrag}
       panOnScroll
-      paneClickDistance={2}
+      paneClickDistance={100}
       zoomActivationKeyCode="Meta"
       multiSelectionKeyCode={MULTI_SELECT_KEY}
       onPaneContextMenu={onPaneContextMenu}
@@ -44,6 +44,7 @@ const BasicFlow = () => {
       onMoveStart={onMoveStart}
       onMove={onMove}
       onMoveEnd={onMoveEnd}
+      onPaneClick={(e) => console.log('pane click', e)}
     >
       <Background variant={BackgroundVariant.Cross} />
       <Controls />

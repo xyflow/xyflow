@@ -67,6 +67,7 @@ export function Pane({
   selectionKeyPressed,
   selectionMode = SelectionMode.Full,
   panOnDrag,
+  paneClickDistance = 0,
   selectionOnDrag,
   onSelectionStart,
   onSelectionEnd,
@@ -117,14 +118,9 @@ export function Pane({
   const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
 
   const onClickCapture = (event: ReactMouseEvent) => {
-    const isSelectionOnDragActive =
-      (selectionOnDrag && container.current === event.target) || !selectionOnDrag || selectionKeyPressed;
-
-    if (!isSelectionOnDragActive) {
-      return;
+    if (selectionInProgress.current) {
+      event.stopPropagation();
     }
-
-    event.stopPropagation();
   };
 
   // We are using capture here in order to prevent other pointer events
@@ -149,17 +145,12 @@ export function Pane({
       return;
     }
 
-    event.stopPropagation();
-    event.preventDefault();
-
     (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
 
     selectionStarted.current = true;
     selectionInProgress.current = false;
 
     const { x, y } = getEventPosition(event.nativeEvent, containerBounds.current);
-
-    resetSelectedElements();
 
     store.setState({
       userSelectionRect: {
@@ -172,7 +163,14 @@ export function Pane({
       },
     });
 
-    onSelectionStart?.(event);
+    if (event.target !== container.current || paneClickDistance === 0) {
+      event.stopPropagation();
+      event.preventDefault();
+
+      resetSelectedElements();
+
+      onSelectionStart?.(event);
+    }
   };
 
   const onPointerMove = (event: ReactPointerEvent): void => {
@@ -191,10 +189,22 @@ export function Pane({
       return;
     }
 
-    selectionInProgress.current = true;
-
     const { x: mouseX, y: mouseY } = getEventPosition(event.nativeEvent, containerBounds.current);
     const { startX, startY } = userSelectionRect;
+
+    if (
+      !selectionInProgress.current &&
+      event.target === container.current &&
+      !selectionKeyPressed &&
+      paneClickDistance > 0
+    ) {
+      const distance = Math.hypot(mouseX - startX, mouseY - startY);
+      if (distance <= paneClickDistance) {
+        return;
+      }
+    }
+
+    selectionInProgress.current = true;
 
     const nextUserSelectRect = {
       startX,
