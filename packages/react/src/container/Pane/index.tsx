@@ -1,19 +1,15 @@
 import {
   useRef,
+  type MouseEventHandler,
+  type MutableRefObject,
   type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
+  type WheelEvent as ReactWheelEvent,
   type ReactNode,
 } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
-import {
-  getNodesInside,
-  getEventPosition,
-  SelectionMode,
-  areSetsEqual,
-  type NodeChange,
-  type EdgeChange,
-} from '@xyflow/system';
+import { getNodesInside, getEventPosition, SelectionMode, areSetsEqual } from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
@@ -44,9 +40,9 @@ type PaneProps = {
 >;
 
 const wrapHandler = (
-  handler: React.MouseEventHandler | undefined,
-  containerRef: React.MutableRefObject<HTMLDivElement | null>
-): React.MouseEventHandler => {
+  handler: MouseEventHandler | undefined,
+  containerRef: MutableRefObject<HTMLDivElement | null>
+): MouseEventHandler => {
   return (event: ReactMouseEvent) => {
     if (event.target !== containerRef.current) {
       return;
@@ -85,7 +81,6 @@ export function Pane({
 
   const container = useRef<HTMLDivElement | null>(null);
   const containerBounds = useRef<DOMRect>();
-
   const selectedNodeIds = useRef<Set<string>>(new Set());
   const selectedEdgeIds = useRef<Set<string>>(new Set());
 
@@ -115,7 +110,7 @@ export function Pane({
     onPaneContextMenu?.(event);
   };
 
-  const onWheel = onPaneScroll ? (event: React.WheelEvent) => onPaneScroll(event) : undefined;
+  const onWheel = onPaneScroll ? (event: ReactWheelEvent) => onPaneScroll(event) : undefined;
 
   const onClickCapture = (event: ReactMouseEvent) => {
     if (selectionInProgress.current) {
@@ -130,19 +125,16 @@ export function Pane({
     const { resetSelectedElements, domNode } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
 
-    const isNoKeyEvent = event.target !== container.current && !!(event.target as HTMLElement).closest('.nokey');
-    const isSelectionActive =
-      (selectionOnDrag && container.current === event.target) || !selectionOnDrag || selectionKeyPressed;
+    if (!containerBounds.current) {
+      return;
+    }
 
-    if (
-      !elementsSelectable ||
-      !isSelecting ||
-      event.button !== 0 ||
-      !containerBounds.current ||
-      isNoKeyEvent ||
-      !isSelectionActive ||
-      !event.isPrimary
-    ) {
+    const eventTargetIsContainer = event.target === container.current;
+    // if a child element has the 'nokey' class, we don't want to swallow the event and don't start a selection
+    const isNoKeyEvent = !eventTargetIsContainer && !!(event.target as HTMLElement).closest('.nokey');
+    const isSelectionActive = (selectionOnDrag && eventTargetIsContainer) || !selectionOnDrag || selectionKeyPressed;
+
+    if (isNoKeyEvent || !isSelecting || !isSelectionActive || event.button !== 0 || !event.isPrimary) {
       return;
     }
 
@@ -164,7 +156,7 @@ export function Pane({
       },
     });
 
-    if (event.target !== container.current || paneClickDistance === 0) {
+    if (!eventTargetIsContainer || paneClickDistance === 0) {
       event.stopPropagation();
       event.preventDefault();
 
@@ -242,12 +234,12 @@ export function Pane({
     }
 
     if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
-      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true) as NodeChange[];
+      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true);
       triggerNodeChanges(changes);
     }
 
     if (!areSetsEqual(prevSelectedEdgeIds, selectedEdgeIds.current)) {
-      const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.current) as EdgeChange[];
+      const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.current);
       triggerEdgeChanges(changes);
     }
 
@@ -265,12 +257,11 @@ export function Pane({
 
     (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
 
-    const { userSelectionRect } = store.getState();
     /*
      * We only want to trigger click functions when in selection mode if
      * the user did not move the mouse.
      */
-    if (!userSelectionActive && userSelectionRect && event.target === container.current) {
+    if (!userSelectionActive && event.target === container.current && store.getState().userSelectionRect) {
       onClick?.(event);
     }
 
