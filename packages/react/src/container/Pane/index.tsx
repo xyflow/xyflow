@@ -123,15 +123,12 @@ export function Pane({
   const onPointerDownCapture = (event: ReactPointerEvent): void => {
     const { resetSelectedElements, domNode } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
-
-    if (!containerBounds.current) {
-      return;
-    }
+    if (!containerBounds.current) return;
 
     const eventTargetIsContainer = event.target === container.current;
     // if a child element has the 'nokey' class, we don't want to swallow the event and don't start a selection
     const isNoKeyEvent = !eventTargetIsContainer && !!(event.target as HTMLElement).closest('.nokey');
-    const isSelectionActive = (selectionOnDrag && eventTargetIsContainer) || !selectionOnDrag || selectionKeyPressed;
+    const isSelectionActive = (selectionOnDrag && eventTargetIsContainer) || selectionKeyPressed;
 
     if (isNoKeyEvent || !isSelecting || !isSelectionActive || event.button !== 0 || !event.isPrimary) {
       return;
@@ -159,7 +156,7 @@ export function Pane({
       event.preventDefault();
     }
 
-    if (!eventTargetIsContainer || paneClickDistance === 0 || !selectionOnDrag) {
+    if (paneClickDistance === 0 || selectionKeyPressed) {
       resetSelectedElements();
 
       onSelectionStart?.(event);

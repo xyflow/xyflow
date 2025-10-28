@@ -81,6 +81,7 @@
   // We start the selection process when the user clicks down on the pane
   function onPointerDownCapture(event: PointerEvent) {
     containerBounds = container?.getBoundingClientRect();
+    if (!containerBounds) return;
 
     const eventTargetIsContainer = event.target === container;
 
@@ -88,15 +89,13 @@
       !eventTargetIsContainer && !!(event.target as HTMLElement).closest('.nokey');
 
     const isSelectionActive =
-      (selectionOnDrag && eventTargetIsContainer) || !selectionOnDrag || store.selectionKeyPressed;
+      (selectionOnDrag && eventTargetIsContainer) || store.selectionKeyPressed;
 
     if (
-      !store.elementsSelectable ||
-      !isSelecting ||
-      event.button !== 0 ||
-      !containerBounds ||
       isNoKeyEvent ||
+      !isSelecting ||
       !isSelectionActive ||
+      event.button !== 0 ||
       !event.isPrimary
     ) {
       return;
@@ -122,7 +121,7 @@
       event.preventDefault();
     }
 
-    if (paneClickDistance === 0 || !selectionOnDrag) {
+    if (paneClickDistance === 0 || store.selectionKeyPressed) {
       store.unselectNodesAndEdges();
 
       onselectionstart?.(event);
@@ -219,8 +218,8 @@
 
     store.selectionRect = null;
 
-    if (selectionInProgress && selectedNodeIds.size > 0) {
-      store.selectionRectMode = 'nodes';
+    if (selectionInProgress) {
+      store.selectionRectMode = selectedNodeIds.size > 0 ? 'nodes' : null;
     }
 
     if (selectionInProgress) {
