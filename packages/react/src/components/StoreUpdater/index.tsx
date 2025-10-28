@@ -107,7 +107,6 @@ const initPrevValues = {
   elementsSelectable: true,
   noPanClassName: 'nopan',
   rfId: '1',
-  paneClickDistance: 0,
 };
 
 export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge = Edge>(

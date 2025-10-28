@@ -21,6 +21,7 @@ type PaneProps = {
   isSelecting: boolean;
   selectionKeyPressed: boolean;
   children: ReactNode;
+  paneClickDistance: number;
 } & Partial<
   Pick<
     ReactFlowProps,
@@ -35,7 +36,6 @@ type PaneProps = {
     | 'onPaneMouseMove'
     | 'onPaneMouseLeave'
     | 'selectionOnDrag'
-    | 'paneClickDistance'
   >
 >;
 
@@ -63,7 +63,7 @@ export function Pane({
   selectionKeyPressed,
   selectionMode = SelectionMode.Full,
   panOnDrag,
-  paneClickDistance = 0,
+  paneClickDistance,
   selectionOnDrag,
   onSelectionStart,
   onSelectionEnd,
