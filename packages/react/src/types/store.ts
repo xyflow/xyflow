@@ -18,6 +18,7 @@ import {
   type OnConnectStart,
   type OnConnectEnd,
   type OnSelectionDrag,
+  type SelectionMethod,
   type OnMoveStart,
   type OnMove,
   type OnMoveEnd,
@@ -162,8 +163,8 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
   unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams<NodeType, EdgeType>) => void;
-  addSelectedNodes: (nodeIds: string[]) => void;
-  addSelectedEdges: (edgeIds: string[]) => void;
+  addSelectedNodes: (nodeIds: string[], selectionMethod?: SelectionMethod) => void;
+  addSelectedEdges: (edgeIds: string[], selectionMethod?: SelectionMethod) => void;
   setMinZoom: (minZoom: number) => void;
   setMaxZoom: (maxZoom: number) => void;
   setTranslateExtent: (translateExtent: CoordinateExtent) => void;

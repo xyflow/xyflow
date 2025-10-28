@@ -1,5 +1,7 @@
 import type { XYPosition, Dimensions, NodeBase, EdgeBase } from '.';
 
+export type SelectionMethod = 'click' | 'drag' | 'rectangle' | 'programmatic' | 'keyboard' | 'multi-select' | undefined;
+
 export type NodeDimensionChange = {
   id: string;
   type: 'dimensions';
@@ -22,6 +24,7 @@ export type NodeSelectionChange = {
   id: string;
   type: 'select';
   selected: boolean;
+  selectionMethod?: SelectionMethod;
 };
 
 export type NodeRemoveChange = {
