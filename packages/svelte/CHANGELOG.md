@@ -1,5 +1,22 @@
 # @xyflow/svelte
 
+## 1.4.1
+
+### Patch Changes
+
+- [#5572](https://github.com/xyflow/xyflow/pull/5572) [`2a401ed67`](https://github.com/xyflow/xyflow/commit/2a401ed675b85417da46fbca68832c58d0f9bf02) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix showing selection box when no nodes are selected
+
+- [#5558](https://github.com/xyflow/xyflow/pull/5558) [`dca0a30f2`](https://github.com/xyflow/xyflow/commit/dca0a30f273a05d592d8b89b3f0f30d829f5bbd0) Thanks [@peterkogo](https://github.com/peterkogo)! - Remove `edgeId` from `EdgeToolbar` props
+
+- [#5565](https://github.com/xyflow/xyflow/pull/5565) [`cbab3d8be`](https://github.com/xyflow/xyflow/commit/cbab3d8be72b4935ccaaa7a1f89011923b66c57b) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Pass nodeId to MiniMapNode
+
+- [#5572](https://github.com/xyflow/xyflow/pull/5572) [`5ec0cac7f`](https://github.com/xyflow/xyflow/commit/5ec0cac7fad21109b74839969c0818f88ddc87d9) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix onPaneClick events being suppressed when selectionOnDrag=true
+
+- [#5572](https://github.com/xyflow/xyflow/pull/5572) [`9dccac89f`](https://github.com/xyflow/xyflow/commit/9dccac89fb85e51f34f96dc3c18f2f9c7ae5a86a) Thanks [@peterkogo](https://github.com/peterkogo)! - Remove focus outline from selection box
+
+- Updated dependencies [[`5ec0cac7f`](https://github.com/xyflow/xyflow/commit/5ec0cac7fad21109b74839969c0818f88ddc87d9)]:
+  - @xyflow/system@0.0.72
+
 ## 1.4.0
 
 ### Minor Changes
