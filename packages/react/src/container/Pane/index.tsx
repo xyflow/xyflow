@@ -86,7 +86,6 @@ export function Pane({
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
-  const selectionStarted = useRef<boolean>(false);
 
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
@@ -140,7 +139,6 @@ export function Pane({
 
     (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
 
-    selectionStarted.current = true;
     selectionInProgress.current = false;
 
     const { x, y } = getEventPosition(event.nativeEvent, containerBounds.current);
@@ -156,10 +154,12 @@ export function Pane({
       },
     });
 
-    if (!eventTargetIsContainer || paneClickDistance === 0) {
+    if (!eventTargetIsContainer) {
       event.stopPropagation();
       event.preventDefault();
+    }
 
+    if (!eventTargetIsContainer || paneClickDistance === 0 || !selectionOnDrag) {
       resetSelectedElements();
 
       onSelectionStart?.(event);
@@ -252,7 +252,7 @@ export function Pane({
   };
 
   const onPointerUp = (event: ReactPointerEvent) => {
-    if (event.button !== 0 || !selectionStarted.current) {
+    if (event.button !== 0) {
       return;
     }
 
@@ -275,8 +275,6 @@ export function Pane({
     if (selectionInProgress.current) {
       onSelectionEnd?.(event);
     }
-
-    selectionStarted.current = false;
   };
 
   const draggable = panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0));

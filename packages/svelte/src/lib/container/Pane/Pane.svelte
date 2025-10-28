@@ -77,19 +77,18 @@
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   let selectionInProgress = false;
-  let selectionStarted = false;
 
   // We start the selection process when the user clicks down on the pane
   function onPointerDownCapture(event: PointerEvent) {
     containerBounds = container?.getBoundingClientRect();
 
+    const eventTargetIsContainer = event.target === container;
+
     const isNoKeyEvent =
-      event.target !== container && !!(event.target as HTMLElement).closest('.nokey');
+      !eventTargetIsContainer && !!(event.target as HTMLElement).closest('.nokey');
 
     const isSelectionActive =
-      (selectionOnDrag && container === event.target) ||
-      !selectionOnDrag ||
-      store.selectionKeyPressed;
+      (selectionOnDrag && eventTargetIsContainer) || !selectionOnDrag || store.selectionKeyPressed;
 
     if (
       !store.elementsSelectable ||
@@ -105,7 +104,6 @@
 
     (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
 
-    selectionStarted = true;
     selectionInProgress = false;
 
     const { x, y } = getEventPosition(event, containerBounds);
@@ -119,10 +117,12 @@
       y
     };
 
-    if (event.target !== container || paneClickDistance === 0) {
+    if (!eventTargetIsContainer) {
       event.stopPropagation();
       event.preventDefault();
+    }
 
+    if (paneClickDistance === 0 || !selectionOnDrag) {
       store.unselectNodesAndEdges();
 
       onselectionstart?.(event);
@@ -203,7 +203,7 @@
   }
 
   function onPointerUp(event: PointerEvent) {
-    if (event.button !== 0 || !selectionStarted) {
+    if (event.button !== 0) {
       return;
     }
 
@@ -225,8 +225,6 @@
     if (selectionInProgress) {
       onselectionend?.(event);
     }
-
-    selectionStarted = false;
   }
 
   const onContextMenu = (event: MouseEvent) => {
