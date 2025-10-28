@@ -85,7 +85,7 @@
     onkeydown={store.disableKeyboardA11y ? undefined : onkeydown}
     bind:this={ref}
   >
-    <Selection width="100%" height="100%" x={0} y={0} />
+    <Selection width="100%" height="100%" x={0} y={0} class="svelte-flow__nodesselection-rect" />
   </div>
 {/if}
 
@@ -96,5 +96,10 @@
     left: 0;
     z-index: 2000;
     pointer-events: all;
+  }
+
+  .svelte-flow__selection-wrapper:focus,
+  .svelte-flow__selection-wrapper:focus-visible {
+    outline: none;
   }
 </style>
