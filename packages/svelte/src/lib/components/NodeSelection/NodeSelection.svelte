@@ -97,4 +97,9 @@
     z-index: 2000;
     pointer-events: all;
   }
+
+  .svelte-flow__selection-wrapper:focus,
+  .svelte-flow__selection-wrapper:focus-visible {
+    outline: none;
+  }
 </style>
