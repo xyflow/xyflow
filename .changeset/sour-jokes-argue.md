@@ -4,4 +4,4 @@
 '@xyflow/system': patch
 ---
 
-Fix onPaneClick events being surpressed when selectionOnDrag=true
+Fix onPaneClick events being suppressed when selectionOnDrag=true
