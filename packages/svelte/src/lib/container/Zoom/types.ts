@@ -14,6 +14,7 @@ export type ZoomProps<NodeType extends Node = Node, EdgeType extends Edge = Edge
   panOnScroll: boolean;
   panOnDrag: boolean | number[];
   paneClickDistance: number;
+  selectionOnDrag?: boolean;
   onmove?: OnMove;
   onmovestart?: OnMoveStart;
   onmoveend?: OnMoveEnd;

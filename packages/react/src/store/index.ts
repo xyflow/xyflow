@@ -312,9 +312,6 @@ const createStore = ({
 
         set({ translateExtent });
       },
-      setPaneClickDistance: (clickDistance) => {
-        get().panZoom?.setClickDistance(clickDistance);
-      },
       resetSelectedElements: () => {
         const { edges, nodes, triggerNodeChanges, triggerEdgeChanges, elementsSelectable } = get();
 

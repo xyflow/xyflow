@@ -16,6 +16,7 @@
     panOnScroll,
     panOnScrollSpeed,
     paneClickDistance,
+    selectionOnDrag,
     onmovestart,
     onmove,
     onmoveend,
@@ -69,6 +70,7 @@
     translateExtent: store.translateExtent,
     lib: 'svelte',
     paneClickDistance,
+    selectionOnDrag,
     onTransformChange: (transform: Transform) => {
       store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
     },

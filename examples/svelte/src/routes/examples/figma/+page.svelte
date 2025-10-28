@@ -9,11 +9,6 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	const onPaneContextMenu = (e: any) => {
-		e.preventDefault();
-		console.log('context menu');
-	};
-
 	const panOnDrag = [1, 2];
 
 	const onmovestart = (e: any) => console.log('move start', e);
@@ -46,10 +41,14 @@
 	selectionMode={SelectionMode.Partial}
 	selectionOnDrag
 	panOnScroll
+	paneClickDistance={100}
 	{panOnDrag}
 	{onmovestart}
 	{onmove}
 	{onmoveend}
+	onpaneclick={(e) => console.log('on pane click', e)}
+	onselectionend={(e) => console.log('on selection end', e)}
+	onselectionstart={(e) => console.log('on selection start', e)}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
