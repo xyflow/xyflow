@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { ClassValue } from 'svelte/elements';
   import { toPxString } from '$lib/utils';
 
   let {
@@ -7,21 +6,19 @@
     y = 0,
     width = 0,
     height = 0,
-    isVisible = true,
-    ...props
+    isVisible = true
   }: {
     x?: number;
     y?: number;
     width?: number | string;
     height?: number | string;
     isVisible?: boolean;
-    class?: ClassValue;
   } = $props();
 </script>
 
 {#if isVisible}
   <div
-    class={['svelte-flow__selection', props.class]}
+    class="svelte-flow__selection"
     style:width={typeof width === 'string' ? width : toPxString(width)}
     style:height={typeof height === 'string' ? height : toPxString(height)}
     style:transform={`translate(${x}px, ${y}px)`}
