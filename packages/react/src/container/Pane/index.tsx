@@ -77,7 +77,7 @@ export function Pane({
 }: PaneProps) {
   const store = useStoreApi();
   const { userSelectionActive, elementsSelectable, dragging, connectionInProgress } = useStore(selector, shallow);
-  const hasActiveSelection = elementsSelectable && (isSelecting || userSelectionActive);
+  const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);
 
   const container = useRef<HTMLDivElement | null>(null);
   const containerBounds = useRef<DOMRect>();
@@ -284,14 +284,14 @@ export function Pane({
   return (
     <div
       className={cc(['react-flow__pane', { draggable, dragging, selection: isSelecting }])}
-      onClick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
+      onClick={isSelectionEnabled ? undefined : wrapHandler(onClick, container)}
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
-      onPointerEnter={hasActiveSelection ? undefined : onPaneMouseEnter}
-      onPointerMove={hasActiveSelection ? onPointerMove : onPaneMouseMove}
-      onPointerUp={hasActiveSelection ? onPointerUp : undefined}
-      onPointerDownCapture={hasActiveSelection ? onPointerDownCapture : undefined}
-      onClickCapture={hasActiveSelection ? onClickCapture : undefined}
+      onPointerEnter={isSelectionEnabled ? undefined : onPaneMouseEnter}
+      onPointerMove={isSelectionEnabled ? onPointerMove : onPaneMouseMove}
+      onPointerUp={isSelectionEnabled ? onPointerUp : undefined}
+      onPointerDownCapture={isSelectionEnabled ? onPointerDownCapture : undefined}
+      onClickCapture={isSelectionEnabled ? onClickCapture : undefined}
       onPointerLeave={onPaneMouseLeave}
       ref={container}
       style={containerStyle}

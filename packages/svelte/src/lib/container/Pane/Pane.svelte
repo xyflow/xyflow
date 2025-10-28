@@ -71,7 +71,7 @@
       !!store.selectionRect ||
       (selectionOnDrag && panOnDragActive !== true)
   );
-  let hasActiveSelection = $derived(
+  let isSelectionEnabled = $derived(
     store.elementsSelectable && (isSelecting || store.selectionRectMode === 'user')
   );
 
@@ -267,12 +267,12 @@
   class:draggable={panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0))}
   class:dragging={store.dragging}
   class:selection={isSelecting}
-  onclick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
-  onpointerdowncapture={hasActiveSelection ? onPointerDownCapture : undefined}
-  onpointermove={hasActiveSelection ? onPointerMove : undefined}
-  onpointerup={hasActiveSelection ? onPointerUp : undefined}
+  onclick={isSelectionEnabled ? undefined : wrapHandler(onClick, container)}
+  onpointerdowncapture={isSelectionEnabled ? onPointerDownCapture : undefined}
+  onpointermove={isSelectionEnabled ? onPointerMove : undefined}
+  onpointerup={isSelectionEnabled ? onPointerUp : undefined}
   oncontextmenu={wrapHandler(onContextMenu, container)}
-  onclickcapture={hasActiveSelection ? onClickCapture : undefined}
+  onclickcapture={isSelectionEnabled ? onClickCapture : undefined}
 >
   {@render children()}
 </div>
