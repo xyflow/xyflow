@@ -2,4 +2,4 @@
 '@xyflow/svelte': patch
 ---
 
-Fix showin selection box when no nodes are selected
+Fix showing selection box when no nodes are selected
