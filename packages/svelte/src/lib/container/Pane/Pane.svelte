@@ -126,6 +126,7 @@
       store.unselectNodesAndEdges();
 
       onselectionstart?.(event);
+      selectionInProgress = true;
     }
   }
 

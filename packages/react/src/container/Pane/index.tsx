@@ -163,6 +163,7 @@ export function Pane({
       resetSelectedElements();
 
       onSelectionStart?.(event);
+      selectionInProgress.current = true;
     }
   };
 
