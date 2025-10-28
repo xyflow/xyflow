@@ -177,6 +177,7 @@ export function Pane({
       triggerNodeChanges,
       triggerEdgeChanges,
       defaultEdgeOptions,
+      resetSelectedElements,
     } = store.getState();
 
     if (!containerBounds.current || !userSelectionRect) {
@@ -196,6 +197,7 @@ export function Pane({
       if (distance <= paneClickDistance) {
         return;
       }
+      resetSelectedElements();
       onSelectionStart?.(event);
     }
 

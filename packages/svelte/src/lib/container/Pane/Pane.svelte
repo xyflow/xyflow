@@ -148,6 +148,7 @@
       if (distance <= paneClickDistance) {
         return;
       }
+      store.unselectNodesAndEdges();
       onselectionstart?.(event);
     }
 
