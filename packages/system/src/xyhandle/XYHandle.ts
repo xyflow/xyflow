@@ -109,6 +109,7 @@ function onPointerDown(
     toHandle: null,
     toPosition: oppositePosition[fromHandle.position],
     toNode: null,
+    pointer: position,
   };
 
   function startConnection() {
@@ -182,25 +183,8 @@ function onPointerDown(
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
       toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)! : null,
+      pointer: position,
     };
-
-    /*
-     * we don't want to trigger an update when the connection
-     * is snapped to the same handle as before
-     */
-    if (
-      isValid &&
-      closestHandle &&
-      previousConnection.toHandle &&
-      newConnection.toHandle &&
-      previousConnection.toHandle.type === newConnection.toHandle.type &&
-      previousConnection.toHandle.nodeId === newConnection.toHandle.nodeId &&
-      previousConnection.toHandle.id === newConnection.toHandle.id &&
-      previousConnection.to.x === newConnection.to.x &&
-      previousConnection.to.y === newConnection.to.y
-    ) {
-      return;
-    }
 
     updateConnection(newConnection);
     previousConnection = newConnection;
