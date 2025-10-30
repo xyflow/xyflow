@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.9.2
+
+### Patch Changes
+
+- [#5593](https://github.com/xyflow/xyflow/pull/5593) [`a8ee089d7`](https://github.com/xyflow/xyflow/commit/a8ee089d7689d9a58113690c8e90e1c1e109602a) Thanks [@moklick](https://github.com/moklick)! - Reset selection box when user selects a node
+
 ## 12.9.1
 
 ### Patch Changes
