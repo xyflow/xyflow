@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
   import {
     Position,
     XYHandle,
@@ -16,8 +15,8 @@
 
   import { useStore } from '$lib/store';
 
-  import type { ConnectableContext } from '../NodeWrapper/types';
   import type { HandleProps } from './types';
+  import { getNodeConnectableContext, getNodeIdContext } from '$lib/store/context';
 
   let {
     id: handleId = null,
@@ -35,8 +34,10 @@
     ...rest
   }: HandleProps = $props();
 
-  const nodeId = getContext<string>('svelteflow__node_id');
-  const isConnectableContext = getContext<ConnectableContext>('svelteflow__node_connectable');
+  const nodeId = getNodeIdContext('Handle must be used within a Custom Node component');
+  const isConnectableContext = getNodeConnectableContext(
+    'Handle must be used within a Custom Node component'
+  );
 
   let isTarget = $derived(type === 'target');
   let isConnectable = $derived(
