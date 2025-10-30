@@ -39,6 +39,7 @@
 	bind:edges
 	fitView
 	selectionMode={SelectionMode.Partial}
+	multiSelectionKey={['Meta', 'Shift']}
 	selectionOnDrag
 	panOnScroll
 	paneClickDistance={100}

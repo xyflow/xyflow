@@ -121,7 +121,7 @@ export function Pane({
   // We are using capture here in order to prevent other pointer events
   // to be able to create a selection above a node or an edge
   const onPointerDownCapture = (event: ReactPointerEvent): void => {
-    const { resetSelectedElements, domNode } = store.getState();
+    const { domNode } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
     if (!containerBounds.current) return;
 
@@ -155,13 +155,6 @@ export function Pane({
       event.stopPropagation();
       event.preventDefault();
     }
-
-    if (paneClickDistance === 0 || selectionKeyPressed) {
-      resetSelectedElements();
-
-      onSelectionStart?.(event);
-      selectionInProgress.current = true;
-    }
   };
 
   const onPointerMove = (event: ReactPointerEvent): void => {
@@ -184,14 +177,10 @@ export function Pane({
     const { x: mouseX, y: mouseY } = getEventPosition(event.nativeEvent, containerBounds.current);
     const { startX, startY } = userSelectionRect;
 
-    if (
-      !selectionInProgress.current &&
-      event.target === container.current &&
-      !selectionKeyPressed &&
-      paneClickDistance > 0
-    ) {
+    if (!selectionInProgress.current) {
+      const requiredDistance = selectionKeyPressed ? 0 : paneClickDistance;
       const distance = Math.hypot(mouseX - startX, mouseY - startY);
-      if (distance <= paneClickDistance) {
+      if (distance <= requiredDistance) {
         return;
       }
       resetSelectedElements();
@@ -268,11 +257,14 @@ export function Pane({
     store.setState({
       userSelectionActive: false,
       userSelectionRect: null,
-      nodesSelectionActive: selectedNodeIds.current.size > 0,
     });
 
     if (selectionInProgress.current) {
       onSelectionEnd?.(event);
+
+      store.setState({
+        nodesSelectionActive: selectedNodeIds.current.size > 0,
+      });
     }
   };
 

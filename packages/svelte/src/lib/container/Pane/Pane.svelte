@@ -120,13 +120,6 @@
       event.stopPropagation();
       event.preventDefault();
     }
-
-    if (paneClickDistance === 0 || store.selectionKeyPressed) {
-      store.unselectNodesAndEdges();
-
-      onselectionstart?.(event);
-      selectionInProgress = true;
-    }
   }
 
   function onPointerMove(event: PointerEvent) {
@@ -137,14 +130,10 @@
     const mousePos = getEventPosition(event, containerBounds);
     const { startX = 0, startY = 0 } = store.selectionRect;
 
-    if (
-      !selectionInProgress &&
-      event.target === container &&
-      !store.selectionKeyPressed &&
-      paneClickDistance > 0
-    ) {
+    if (!selectionInProgress) {
+      const requiredDistance = store.selectionKeyPressed ? 0 : paneClickDistance;
       const distance = Math.hypot(mousePos.x - startX, mousePos.y - startY);
-      if (distance <= paneClickDistance) {
+      if (distance <= requiredDistance) {
         return;
       }
       store.unselectNodesAndEdges();
