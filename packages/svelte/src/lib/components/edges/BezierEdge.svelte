@@ -2,7 +2,7 @@
   import { getBezierPath } from '@xyflow/system';
 
   import BaseEdge from './BaseEdge.svelte';
-  import type { BezierEdgeProps } from '$lib/types';
+  import type { BezierEdgeProps, EdgeProps } from '$lib/types';
 
   let {
     id,
@@ -19,7 +19,7 @@
     targetPosition,
     targetX,
     targetY
-  }: BezierEdgeProps = $props();
+  }: BezierEdgeProps | EdgeProps = $props();
 
   let [path, labelX, labelY] = $derived(
     getBezierPath({

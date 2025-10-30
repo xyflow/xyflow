@@ -2,7 +2,7 @@
   import { getStraightPath } from '@xyflow/system';
 
   import BaseEdge from './BaseEdge.svelte';
-  import type { StraightEdgeProps } from '$lib/types';
+  import type { StraightEdgeProps, EdgeProps } from '$lib/types';
 
   let {
     id,
@@ -16,7 +16,7 @@
     sourceY,
     targetX,
     targetY
-  }: StraightEdgeProps = $props();
+  }: StraightEdgeProps | EdgeProps = $props();
 
   let [path, labelX, labelY] = $derived(
     getStraightPath({
