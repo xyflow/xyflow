@@ -137,7 +137,6 @@ export function Pane({
     (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
 
     selectionInProgress.current = false;
-
     const { x, y } = getEventPosition(event.nativeEvent, containerBounds.current);
 
     store.setState({
@@ -251,7 +250,7 @@ export function Pane({
   };
 
   const onPointerUp = (event: ReactPointerEvent) => {
-    if (event.button !== 0) {
+    if (event.button !== 0 || !selectionInProgress.current) {
       return;
     }
 
