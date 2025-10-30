@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.73
+
+### Patch Changes
+
+- [#5578](https://github.com/xyflow/xyflow/pull/5578) [`00bcb9f5f`](https://github.com/xyflow/xyflow/commit/00bcb9f5f45f49814b9ac19b3f55cfe069ee3773) Thanks [@peterkogo](https://github.com/peterkogo)! - Pass current pointer position to connection
+
 ## 0.0.72
 
 ### Patch Changes
