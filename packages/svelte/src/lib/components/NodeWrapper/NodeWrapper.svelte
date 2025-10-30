@@ -1,5 +1,5 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
-  import { setContext, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import {
     elementSelectionKeys,
     errorMessages,
@@ -10,12 +10,14 @@
   } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
-  import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
-
-  import type { ConnectableContext, NodeWrapperProps } from './types';
-  import type { Node, Edge, NodeEvents } from '$lib/types';
+  import { setNodeConnectableContext, setNodeIdContext } from '$lib/store/context';
   import { arrowKeyDiffs, toPxString } from '$lib/utils';
   import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
+
+  import type { Node, Edge, NodeEvents } from '$lib/types';
+  import type { ConnectableContext, NodeWrapperProps } from './types';
+
+  import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 
   let {
     store = $bindable(),
@@ -95,8 +97,9 @@
       return connectable;
     }
   };
-  setContext('svelteflow__node_connectable', connectableContext);
-  setContext('svelteflow__node_id', id);
+
+  setNodeIdContext(id);
+  setNodeConnectableContext(connectableContext);
 
   if (process.env.NODE_ENV === 'development') {
     $effect(() => {
