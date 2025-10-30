@@ -125,7 +125,7 @@ function applyChange(change: any, element: any): any {
 
     case 'dimensions': {
       if (typeof change.dimensions !== 'undefined') {
-        element.measured ??= {};
+        element.measured = {};
         element.measured.width = change.dimensions.width;
         element.measured.height = change.dimensions.height;
 
