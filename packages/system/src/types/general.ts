@@ -292,6 +292,7 @@ export const initialConnection: NoConnection = {
   toHandle: null,
   toPosition: null,
   toNode: null,
+  pointer: null,
 };
 
 export type NoConnection = {
@@ -305,6 +306,7 @@ export type NoConnection = {
   toHandle: null;
   toPosition: null;
   toNode: null;
+  pointer: null;
 };
 export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNodeBase> = {
   /** Indicates whether a connection is currently in progress. */
@@ -330,6 +332,8 @@ export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNod
   toPosition: Position;
   /** Returns the end node or `null` if no connection is in progress. */
   toNode: NodeType | null;
+  /** Returns the pointer position or `null` if no connection is in progress. */
+  pointer: XYPosition;
 };
 
 /**
