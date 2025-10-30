@@ -257,11 +257,14 @@ export function Pane({
     store.setState({
       userSelectionActive: false,
       userSelectionRect: null,
-      nodesSelectionActive: selectedNodeIds.current.size > 0,
     });
 
     if (selectionInProgress.current) {
       onSelectionEnd?.(event);
+
+      store.setState({
+        nodesSelectionActive: selectedNodeIds.current.size > 0,
+      });
     }
   };
 
