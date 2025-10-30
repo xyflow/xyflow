@@ -1,0 +1,40 @@
+{
+  "name": "common-storybook",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*"
+  },
+  "scripts": {
+    "check": "svelte-check --tsconfig ./tsconfig.svelte.json && tsc -p tsconfig.react.json",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@xyflow/react": "workspace:*",
+    "@xyflow/svelte": "workspace:*",
+    "@xyflow/system": "workspace:*",
+    "@storybook/test": "^8.6.14",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "svelte": "^5.38.1"
+  },
+  "devDependencies": {
+    "@storybook/react": "catalog:",
+    "vite": "catalog:",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^5.0.0",
+    "@sveltejs/vite-plugin-svelte": "^6.1.1",
+    "eslint": "^9.33.0",
+    "@eslint/js": "^9.33.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-svelte": "^3.12.4",
+    "globals": "^16.3.0",
+    "svelte-check": "^4.3.1",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.39.1",
+    "@tsconfig/svelte": "^5.0.4"
+  }
+}

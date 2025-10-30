@@ -84,7 +84,7 @@
     "postcss-import": "^15.1.0",
     "postcss-nested": "^6.0.0",
     "postcss-rename": "^0.6.1",
-    "react": "^18.2.0",
+    "react": "catalog:dev",
     "typescript": "5.4.5"
   },
   "rollup": {
