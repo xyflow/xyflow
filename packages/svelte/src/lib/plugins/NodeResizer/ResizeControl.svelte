@@ -68,14 +68,11 @@
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
           // eslint-disable-next-line svelte/prefer-svelte-reactivity
-          const changes = new Map<string, Partial<Node>>();
-          let position = change.x && change.y ? { x: change.x, y: change.y } : undefined;
-          changes.set(id, { ...change, position });
+          const changes = new Map<string, XYResizerChange>();
+          changes.set(id, change);
 
           for (const childChange of childChanges) {
-            changes.set(childChange.id, {
-              position: childChange.position
-            });
+            changes.set(childChange.id, {x: childChange.position.x, y: childChange.position.y });
           }
 
           store.nodes = store.nodes.map((node) => {
@@ -84,11 +81,11 @@
             const vertical = !resizeDirection || resizeDirection === 'vertical';
 
             if (change) {
-              return {
+               return {
                 ...node,
                 position: {
-                  x: horizontal ? (change.position?.x ?? node.position.x) : node.position.x,
-                  y: vertical ? (change.position?.y ?? node.position.y) : node.position.y
+                  x: horizontal ? (change.x ?? node.position.x) : node.position.x,
+                  y: vertical ? (change.y ?? node.position.y) : node.position.y
                 },
                 width: horizontal ? (change.width ?? node.width) : node.width,
                 height: vertical ? (change.height ?? node.height) : node.height
