@@ -1,0 +1,71 @@
+{
+  "name": "@xyflow/angular",
+  "version": "1.0.0",
+  "description": "Angular Flow - A highly customizable Angular library for building node-based editors, workflow systems, diagrams and more.",
+  "keywords": [
+    "angular",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "angular-flow",
+    "xyflow"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xyflow/xyflow.git",
+    "directory": "packages/angular"
+  },
+  "bugs": {
+    "url": "https://github.com/xyflow/xyflow/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/fesm2022/xyflow-angular.mjs",
+  "module": "dist/fesm2022/xyflow-angular.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "esm2022": "./dist/esm2022/xyflow-angular.mjs",
+      "esm": "./dist/esm2022/xyflow-angular.mjs",
+      "default": "./dist/fesm2022/xyflow-angular.mjs"
+    },
+    "./styles/base.css": "./dist/styles/base.css",
+    "./styles/style.css": "./dist/styles/style.css"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc && pnpm css",
+    "css": "mkdir -p dist/styles && cp src/styles/*.css dist/styles/",
+    "lint": "eslint --ext .ts src",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@xyflow/system": "workspace:*",
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@angular/common": ">=18.0.0",
+    "@angular/core": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@angular/common": "^18.0.0",
+    "@angular/core": "^18.0.0",
+    "@angular/compiler": "^18.0.0",
+    "@angular/compiler-cli": "^18.0.0",
+    "@xyflow/tsconfig": "workspace:*",
+    "ng-packagr": "^18.0.0",
+    "postcss": "^8.4.21",
+    "postcss-cli": "^11.0.0",
+    "typescript": "~5.4.0"
+  }
+}

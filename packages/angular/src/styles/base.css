@@ -1,0 +1,38 @@
+.xy-flow {
+  --xy-node-border-default: 1px solid #bbb;
+  --xy-node-border-selected-default: 1px solid #555;
+
+  --xy-handle-background-color-default: #333;
+
+  --xy-selection-background-color-default: rgba(150, 150, 180, 0.1);
+  --xy-selection-border-default: 1px dotted rgba(155, 155, 155, 0.8);
+}
+
+.xy-flow.dark {
+  --xy-node-color-default: #f8f8f8;
+}
+
+.xy-flow__handle {
+  background-color: var(--xy-handle-background-color, var(--xy-handle-background-color-default));
+}
+
+.xy-flow__node-input,
+.xy-flow__node-default,
+.xy-flow__node-output,
+.xy-flow__node-group {
+  border: var(--xy-node-border, var(--xy-node-border-default));
+  color: var(--xy-node-color, var(--xy-node-color-default));
+
+  &.selected,
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border: var(--xy-node-border-selected, var(--xy-node-border-selected-default));
+  }
+}
+
+.xy-flow__nodesselection-rect,
+.xy-flow__selection {
+  background: var(--xy-selection-background-color, var(--xy-selection-background-color-default));
+  border: var(--xy-selection-border, var(--xy-selection-border-default));
+}
