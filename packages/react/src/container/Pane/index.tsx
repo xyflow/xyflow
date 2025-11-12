@@ -58,6 +58,8 @@ const selector = (s: ReactFlowState) => ({
   dragging: s.paneDragging,
 });
 
+const inputTags = ['INPUT', 'SELECT', 'TEXTAREA'];
+
 export function Pane({
   isSelecting,
   selectionKeyPressed,
@@ -127,7 +129,9 @@ export function Pane({
 
     const eventTargetIsContainer = event.target === container.current;
     // if a child element has the 'nokey' class, we don't want to swallow the event and don't start a selection
-    const isNoKeyEvent = !eventTargetIsContainer && !!(event.target as HTMLElement).closest('.nokey');
+    const isNoKeyEvent =
+      !eventTargetIsContainer &&
+      (inputTags.includes((event.target as HTMLElement).nodeName) || !!(event.target as HTMLElement).closest('.nokey'));
     const isSelectionActive = (selectionOnDrag && eventTargetIsContainer) || selectionKeyPressed;
 
     if (isNoKeyEvent || !isSelecting || !isSelectionActive || event.button !== 0 || !event.isPrimary) {
