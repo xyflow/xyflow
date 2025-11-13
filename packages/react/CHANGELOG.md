@@ -1,5 +1,16 @@
 # @xyflow/react
 
+## 12.9.3
+
+### Patch Changes
+
+- [#5621](https://github.com/xyflow/xyflow/pull/5621) [`c1304dba7`](https://github.com/xyflow/xyflow/commit/c1304dba7a20bb8d74c7aceb23cd80b56e4c0482) Thanks [@moklick](https://github.com/moklick)! - Set `paneClickDistance` default value to `1`.
+
+- [#5578](https://github.com/xyflow/xyflow/pull/5578) [`00bcb9f5f`](https://github.com/xyflow/xyflow/commit/00bcb9f5f45f49814b9ac19b3f55cfe069ee3773) Thanks [@peterkogo](https://github.com/peterkogo)! - Pass current pointer position to connection
+
+- Updated dependencies [[`00bcb9f5f`](https://github.com/xyflow/xyflow/commit/00bcb9f5f45f49814b9ac19b3f55cfe069ee3773)]:
+  - @xyflow/system@0.0.73
+
 ## 12.9.2
 
 ### Patch Changes
