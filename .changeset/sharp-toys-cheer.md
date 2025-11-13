@@ -1,6 +1,6 @@
 ---
-'@xyflow/react': minor
-'@xyflow/svelte': minor
+'@xyflow/react': patch
+'@xyflow/svelte': patch
 '@xyflow/system': patch
 ---
 
