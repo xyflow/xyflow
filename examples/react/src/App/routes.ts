@@ -60,6 +60,7 @@ import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
 import MovingHandles from '../examples/MovingHandles';
 import DetachedHandle from '../examples/DetachedHandle';
+import Middlewares from '../examples/Middlewares';
 
 export interface IRoute {
   name: string;
@@ -237,6 +238,11 @@ const routes: IRoute[] = [
     name: 'Layouting',
     path: 'layouting',
     component: Layouting,
+  },
+  {
+    name: 'Middlewares',
+    path: 'middlewares',
+    component: Middlewares,
   },
   {
     name: 'Multi setNodes',

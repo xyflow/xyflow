@@ -146,6 +146,9 @@ const getInitialState = ({
     lib: 'react',
     debug: false,
     ariaLabelConfig: defaultAriaLabelConfig,
+
+    onNodesChangeMiddlewareMap: new Map(),
+    onEdgesChangeMiddlewareMap: new Map(),
   };
 };
 
