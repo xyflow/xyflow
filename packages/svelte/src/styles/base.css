@@ -1,4 +1,4 @@
-/* this gets exported as style.css and can be used for the default theming */
+/* this will be exported as base.css and can be used for a basic styling */
 @import '../../../system/src/styles/init.css';
 @import '../../../system/src/styles/base.css';
 @import '../../../system/src/styles/node-resizer.css';
