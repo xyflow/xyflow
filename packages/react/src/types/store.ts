@@ -30,6 +30,7 @@ import {
   type ParentLookup,
   type AriaLabelConfig,
   SetCenter,
+  ZIndexMode,
 } from '@xyflow/system';
 
 import type {
@@ -152,6 +153,8 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   lib: string;
   debug: boolean;
   ariaLabelConfig: AriaLabelConfig;
+
+  zIndexMode: ZIndexMode;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {

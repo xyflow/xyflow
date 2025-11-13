@@ -23,6 +23,7 @@ import type {
   OnReconnect,
   AriaLabelConfig,
   FinalConnectionState,
+  ZIndexMode,
 } from '@xyflow/system';
 
 import type {
@@ -691,4 +692,5 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * Allows localization, customization of ARIA descriptions, control labels, minimap labels, and other UI strings.
    */
   ariaLabelConfig?: Partial<AriaLabelConfig>;
+  zIndexMode?: ZIndexMode;
 }
