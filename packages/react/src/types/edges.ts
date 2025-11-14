@@ -22,6 +22,7 @@ import type {
   OnError,
   OnReconnect,
   FinalConnectionState,
+  XYPosition,
 } from '@xyflow/system';
 
 import { EdgeTypes, InternalNode, Node } from '.';
@@ -279,6 +280,7 @@ export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   connectionStatus: 'valid' | 'invalid' | null;
   toNode: InternalNode<NodeType> | null;
   toHandle: Handle | null;
+  pointer: XYPosition;
 };
 
 export type ConnectionLineComponent<NodeType extends Node = Node> = ComponentType<

@@ -6,9 +6,6 @@ import { transition } from 'd3-transition';
 import { type D3SelectionInstance, type Viewport } from '../types';
 import { isMacOs } from '../utils';
 
-export const viewChanged = (prevViewport: Viewport, eventViewport: any): boolean =>
-  prevViewport.x !== eventViewport.x || prevViewport.y !== eventViewport.y || prevViewport.zoom !== eventViewport.k;
-
 export const transformToViewport = (transform: ZoomTransform): Viewport => ({
   x: transform.x,
   y: transform.y,

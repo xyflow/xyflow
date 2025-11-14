@@ -175,7 +175,6 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
   setCenter: SetCenter;
-  setPaneClickDistance: (distance: number) => void;
 };
 
 export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = ReactFlowStore<

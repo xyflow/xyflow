@@ -30,6 +30,9 @@ import {
 import { getNodePositionWithOrigin } from './graph';
 import { ParentExpandChild } from './types';
 
+const SELECTED_NODE_Z = 1000;
+const ROOT_PARENT_Z_INCREMENT = 10;
+
 const defaultOptions = {
   nodeOrigin: [0, 0] as NodeOrigin,
   nodeExtent: infiniteExtent,
@@ -120,9 +123,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 ): boolean {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
 
+  let rootParentIndex = { i: -1 };
   let nodesInitialized = nodes.length > 0;
   const tmpLookup = new Map(nodeLookup);
-  const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
+  const selectedNodeZ: number = _options?.elevateNodesOnSelect ? SELECTED_NODE_Z : 0;
 
   nodeLookup.clear();
   parentLookup.clear();
@@ -166,7 +170,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     }
 
     if (userNode.parentId) {
-      updateChildNode(internalNode, nodeLookup, parentLookup, options);
+      updateChildNode(internalNode, nodeLookup, parentLookup, options, rootParentIndex);
     }
   }
 
@@ -197,7 +201,8 @@ function updateChildNode<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options?: UpdateNodesOptions<NodeType>
+  options?: UpdateNodesOptions<NodeType>,
+  rootParentIndex?: { i: number }
 ) {
   const { elevateNodesOnSelect, nodeOrigin, nodeExtent } = mergeObjects(defaultOptions, options);
   const parentId = node.parentId!;
@@ -212,7 +217,18 @@ function updateChildNode<NodeType extends NodeBase>(
 
   updateParentLookup(node, parentLookup);
 
-  const selectedNodeZ = elevateNodesOnSelect ? 1000 : 0;
+  // We just want to set the rootParentIndex for the first child
+  if (rootParentIndex && !parentNode.parentId && parentNode.internals.rootParentIndex === undefined) {
+    parentNode.internals.rootParentIndex = ++rootParentIndex.i;
+    parentNode.internals.z = parentNode.internals.z + rootParentIndex.i * ROOT_PARENT_Z_INCREMENT;
+  }
+
+  // But we need to update rootParentIndex.i also when parent has not been updated
+  if (rootParentIndex && parentNode.internals.rootParentIndex !== undefined) {
+    rootParentIndex.i = parentNode.internals.rootParentIndex;
+  }
+
+  const selectedNodeZ = elevateNodesOnSelect ? SELECTED_NODE_Z : 0;
   const { x, y, z } = calculateChildXYZ(node, parentNode, nodeOrigin, nodeExtent, selectedNodeZ);
   const { positionAbsolute } = node.internals;
   const positionChanged = x !== positionAbsolute.x || y !== positionAbsolute.y;

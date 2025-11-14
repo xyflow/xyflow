@@ -105,6 +105,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
       onViewportChange={onViewportChange}
       isControlledViewport={isControlledViewport}
       paneClickDistance={paneClickDistance}
+      selectionOnDrag={_selectionOnDrag}
     >
       <Pane
         onSelectionStart={onSelectionStart}
@@ -119,6 +120,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
         isSelecting={!!isSelecting}
         selectionMode={selectionMode}
         selectionKeyPressed={selectionKeyPressed}
+        paneClickDistance={paneClickDistance}
         selectionOnDrag={_selectionOnDrag}
       >
         {children}

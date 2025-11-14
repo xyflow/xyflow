@@ -1,3 +1,5 @@
+/* eslint-disable svelte/prefer-svelte-reactivity */
+
 import {
   infiniteExtent,
   SelectionMode,
@@ -477,3 +479,5 @@ function warnIfDeeplyReactive(array: unknown[] | undefined, name: string) {
     console.warn(`Use $state.raw for ${name} to prevent performance issues.`);
   }
 }
+
+/* eslint-enable svelte/prefer-svelte-reactivity */

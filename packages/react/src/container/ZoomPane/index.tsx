@@ -12,12 +12,7 @@ import type { ReactFlowState } from '../../types';
 
 type ZoomPaneProps = Omit<
   FlowRendererProps,
-  | 'deleteKeyCode'
-  | 'selectionKeyCode'
-  | 'multiSelectionKeyCode'
-  | 'noDragClassName'
-  | 'disableKeyboardA11y'
-  | 'selectionOnDrag'
+  'deleteKeyCode' | 'selectionKeyCode' | 'multiSelectionKeyCode' | 'noDragClassName' | 'disableKeyboardA11y'
 > & {
   isControlledViewport: boolean;
 };
@@ -49,6 +44,7 @@ export function ZoomPane({
   onViewportChange,
   isControlledViewport,
   paneClickDistance,
+  selectionOnDrag,
 }: ZoomPaneProps) {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
@@ -77,7 +73,6 @@ export function ZoomPane({
         maxZoom,
         translateExtent,
         viewport: defaultViewport,
-        paneClickDistance,
         onDraggingChange: (paneDragging: boolean) => store.setState({ paneDragging }),
         onPanZoomStart: (event, vp) => {
           const { onViewportChangeStart, onMoveStart } = store.getState();
@@ -128,6 +123,8 @@ export function ZoomPane({
       lib,
       onTransformChange,
       connectionInProgress,
+      selectionOnDrag,
+      paneClickDistance,
     });
   }, [
     onPaneContextMenu,
@@ -146,6 +143,8 @@ export function ZoomPane({
     lib,
     onTransformChange,
     connectionInProgress,
+    selectionOnDrag,
+    paneClickDistance,
   ]);
 
   return (
