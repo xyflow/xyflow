@@ -1,0 +1,107 @@
+/* Edge wrapper base styles */
+.xy-edge {
+  pointer-events: all;
+}
+
+.xy-edge.xy-selected .xy-edge-path {
+  stroke: var(--xy-edge-selection-color, #1a192b) !important;
+  stroke-width: 2;
+}
+
+.xy-edge.xy-animated .xy-edge-path {
+  stroke-dasharray: 5, 5;
+  animation: xy-edge-dash 0.5s linear infinite;
+}
+
+.xy-edge.xy-updating {
+  opacity: 0.5;
+}
+
+/* Edge paths */
+.xy-edge-path {
+  cursor: pointer;
+  stroke: var(--xy-edge-stroke, #b1b1b7);
+  stroke-width: var(--xy-edge-stroke-width, 1);
+  fill: none;
+}
+
+.xy-edge-path:hover {
+  stroke: var(--xy-edge-hover-color, #6b7280);
+  stroke-width: 2;
+}
+
+.xy-edge-interaction {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 20;
+  cursor: pointer;
+}
+
+/* Edge labels */
+.xy-edge-label {
+  pointer-events: all;
+  user-select: none;
+}
+
+.xy-edge-label-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--xy-edge-label-color, #374151);
+  background: var(--xy-edge-label-background, #ffffff);
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--xy-edge-label-border, #d1d5db);
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.xy-edge-label-text:hover {
+  background: var(--xy-edge-label-hover-background, #f9fafb);
+}
+
+/* Animation keyframes */
+@keyframes xy-edge-dash {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+/* Edge markers */
+.xy-edge marker {
+  fill: var(--xy-edge-marker-color, #b1b1b7);
+}
+
+.xy-edge.xy-selected marker {
+  fill: var(--xy-edge-selection-color, #1a192b);
+}
+
+/* CSS Variables for theming */
+:root {
+  --xy-edge-stroke: #b1b1b7;
+  --xy-edge-stroke-width: 1;
+  --xy-edge-selection-color: #1a192b;
+  --xy-edge-hover-color: #6b7280;
+  --xy-edge-label-color: #374151;
+  --xy-edge-label-background: #ffffff;
+  --xy-edge-label-border: #d1d5db;
+  --xy-edge-label-hover-background: #f9fafb;
+  --xy-edge-marker-color: #b1b1b7;
+}
+
+/* Edge types */
+.xy-edge[data-edgetype="straight"] .xy-edge-path {
+  stroke-linecap: round;
+}
+
+.xy-edge[data-edgetype="step"] .xy-edge-path,
+.xy-edge[data-edgetype="smoothstep"] .xy-edge-path {
+  stroke-linecap: round;
+}
+
+.xy-edge[data-edgetype="bezier"] .xy-edge-path,
+.xy-edge[data-edgetype="simplebezier"] .xy-edge-path {
+  stroke-linecap: round;
+}

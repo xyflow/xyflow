@@ -1,0 +1,23 @@
+{
+  "name": "@xyflow/angular",
+  "version": "0.0.1",
+  "description": "Angular components for building node-based UIs with XYFlow",
+  "keywords": ["angular", "flow", "diagram", "nodes", "graph", "xyflow"],
+  "author": "xyflow team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xyflow/xyflow.git",
+    "directory": "packages/angular"
+  },
+  "peerDependencies": {
+    "@angular/common": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@xyflow/system": "workspace:*",
+    "rxjs": "~7.8.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
