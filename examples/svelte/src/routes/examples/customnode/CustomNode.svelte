@@ -13,7 +13,7 @@
 		Custom Color Picker Node: <strong>{bg.color}</strong>
 	</div>
 	<input
-		class="nodrag"
+		class="nodrag nokey"
 		type="color"
 		oninput={(evt) => (bg.color = evt.currentTarget.value)}
 		value={bg.color}

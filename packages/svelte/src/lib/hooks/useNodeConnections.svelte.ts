@@ -1,3 +1,4 @@
+/* eslint-disable svelte/prefer-svelte-reactivity */
 import {
   areConnectionMapsEqual,
   handleConnectionChange,
@@ -90,3 +91,5 @@ export function useNodeConnections({
     }
   };
 }
+
+/* eslint-enable svelte/prefer-svelte-reactivity */

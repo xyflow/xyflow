@@ -47,6 +47,7 @@
   let {
     store = $bindable(),
     panOnDrag = true,
+    paneClickDistance = 1,
     selectionOnDrag,
     onpaneclick,
     onpanecontextmenu,
@@ -59,54 +60,52 @@
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
 
+  /* eslint-disable svelte/prefer-svelte-reactivity */
   let selectedNodeIds: Set<string> = new Set();
   let selectedEdgeIds: Set<string> = new Set();
+  /* eslint-enable svelte/prefer-svelte-reactivity */
 
   let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
   let isSelecting = $derived(
     store.selectionKeyPressed ||
-      store.selectionRect ||
+      !!store.selectionRect ||
       (selectionOnDrag && panOnDragActive !== true)
   );
-  let hasActiveSelection = $derived(
+  let isSelectionEnabled = $derived(
     store.elementsSelectable && (isSelecting || store.selectionRectMode === 'user')
   );
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   let selectionInProgress = false;
 
-  function onClick(event: MouseEvent) {
-    // We prevent click events when the user let go of the selectionKey during a selection
-    // We also prevent click events when a connection is in progress
-    if (selectionInProgress || store.connection.inProgress) {
-      selectionInProgress = false;
-      return;
-    }
-
-    onpaneclick?.({ event });
-    store.unselectNodesAndEdges();
-    store.selectionRectMode = null;
-  }
-
   // We start the selection process when the user clicks down on the pane
-  function onPointerDown(event: PointerEvent) {
+  function onPointerDownCapture(event: PointerEvent) {
     containerBounds = container?.getBoundingClientRect();
+    if (!containerBounds) return;
+
+    const eventTargetIsContainer = event.target === container;
+
+    const isNoKeyEvent =
+      !eventTargetIsContainer && !!(event.target as HTMLElement).closest('.nokey');
+
+    const isSelectionActive =
+      (selectionOnDrag && eventTargetIsContainer) || store.selectionKeyPressed;
 
     if (
-      !store.elementsSelectable ||
+      isNoKeyEvent ||
       !isSelecting ||
+      !isSelectionActive ||
       event.button !== 0 ||
-      event.target !== container ||
-      !containerBounds
+      !event.isPrimary
     ) {
       return;
     }
 
-    (event.target as Partial<Element> | null)?.setPointerCapture?.(event.pointerId);
+    (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
+
+    selectionInProgress = false;
 
     const { x, y } = getEventPosition(event, containerBounds);
-
-    store.unselectNodesAndEdges();
 
     store.selectionRect = {
       width: 0,
@@ -117,7 +116,10 @@
       y
     };
 
-    onselectionstart?.(event);
+    if (!eventTargetIsContainer) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
   }
 
   function onPointerMove(event: PointerEvent) {
@@ -125,10 +127,20 @@
       return;
     }
 
-    selectionInProgress = true;
-
     const mousePos = getEventPosition(event, containerBounds);
     const { startX = 0, startY = 0 } = store.selectionRect;
+
+    if (!selectionInProgress) {
+      const requiredDistance = store.selectionKeyPressed ? 0 : paneClickDistance;
+      const distance = Math.hypot(mousePos.x - startX, mousePos.y - startY);
+      if (distance <= requiredDistance) {
+        return;
+      }
+      store.unselectNodesAndEdges();
+      onselectionstart?.(event);
+    }
+
+    selectionInProgress = true;
 
     const nextUserSelectRect = {
       ...store.selectionRect,
@@ -184,26 +196,24 @@
       return;
     }
 
-    (event.target as Partial<Element> | null)?.releasePointerCapture?.(event.pointerId);
+    (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
 
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.
-    if (!isSelecting && store.selectionRectMode === 'user' && event.target === container) {
+
+    if (!selectionInProgress && event.target === container) {
       onClick?.(event);
     }
+
     store.selectionRect = null;
 
-    if (selectedNodeIds.size > 0) {
-      store.selectionRectMode = 'nodes';
+    if (selectionInProgress) {
+      store.selectionRectMode = selectedNodeIds.size > 0 ? 'nodes' : null;
     }
 
-    // If the user kept holding the selectionKey during the selection,
-    // we need to reset the selectionInProgress, so the next click event is not prevented
-    if (store.selectionKeyPressed) {
-      selectionInProgress = false;
+    if (selectionInProgress) {
+      onselectionend?.(event);
     }
-
-    onselectionend?.(event);
   }
 
   const onContextMenu = (event: MouseEvent) => {
@@ -214,6 +224,27 @@
 
     onpanecontextmenu?.({ event });
   };
+
+  const onClickCapture = (event: MouseEvent) => {
+    if (selectionInProgress) {
+      event.stopPropagation();
+      selectionInProgress = false;
+    }
+  };
+
+  function onClick(event: MouseEvent) {
+    // We prevent click events when the user let go of the selectionKey during a selection
+    // We also prevent click events when a connection is in progress
+    if (selectionInProgress || store.connection.inProgress) {
+      selectionInProgress = false;
+      return;
+    }
+
+    onpaneclick?.({ event });
+    store.unselectNodesAndEdges();
+    store.selectionRectMode = null;
+    store.selectionRect = null;
+  }
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -224,11 +255,12 @@
   class:draggable={panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0))}
   class:dragging={store.dragging}
   class:selection={isSelecting}
-  onclick={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
-  onpointerdown={hasActiveSelection ? onPointerDown : undefined}
-  onpointermove={hasActiveSelection ? onPointerMove : undefined}
-  onpointerup={hasActiveSelection ? onPointerUp : undefined}
+  onclick={isSelectionEnabled ? undefined : wrapHandler(onClick, container)}
+  onpointerdowncapture={isSelectionEnabled ? onPointerDownCapture : undefined}
+  onpointermove={isSelectionEnabled ? onPointerMove : undefined}
+  onpointerup={isSelectionEnabled ? onPointerUp : undefined}
   oncontextmenu={wrapHandler(onContextMenu, container)}
+  onclickcapture={isSelectionEnabled ? onClickCapture : undefined}
 >
   {@render children()}
 </div>

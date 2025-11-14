@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { hideOnSSR, portal } from '$lib/actions/portal';
 
+  import { hideOnSSR, portal } from '$lib/actions/portal';
   import { useStore } from '$lib/store';
   import type { EdgeLabelProps } from './types';
   import { toPxString } from '$lib/utils';
@@ -19,12 +19,13 @@
   }: EdgeLabelProps = $props();
 
   const store = useStore();
+  const edgeId = getContext<string>('svelteflow__edge_id');
 
-  const id = getContext<string>('svelteflow__edge_id');
+  if (!edgeId) {
+    throw new Error('EdgeLabel must be used within an edge');
+  }
 
-  let z = $derived.by(() => {
-    return store.visible.edges.get(id)?.zIndex;
-  });
+  let z = $derived(store.visible.edges.get(edgeId)?.zIndex);
 </script>
 
 <div
@@ -39,7 +40,7 @@
   style:z-index={z}
   tabindex="-1"
   onclick={() => {
-    if (selectEdgeOnClick && id) store.handleEdgeSelection(id);
+    if (selectEdgeOnClick) store.handleEdgeSelection(edgeId);
   }}
   {...rest}
 >

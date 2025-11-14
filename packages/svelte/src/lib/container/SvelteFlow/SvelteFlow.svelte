@@ -61,7 +61,7 @@
     panOnScroll = false,
     panOnScrollSpeed = 0.5,
     panOnDrag = true,
-    selectionOnDrag = true,
+    selectionOnDrag = false,
     connectionLineComponent,
     connectionLineStyle,
     connectionLineContainerStyle,
@@ -156,6 +156,7 @@
     {panOnScrollSpeed}
     {panOnDrag}
     {paneClickDistance}
+    {selectionOnDrag}
     {onmovestart}
     {onmove}
     {onmoveend}
@@ -168,6 +169,7 @@
       {onselectionstart}
       {onselectionend}
       {panOnDrag}
+      {paneClickDistance}
       {selectionOnDrag}
     >
       <ViewportComponent bind:store>

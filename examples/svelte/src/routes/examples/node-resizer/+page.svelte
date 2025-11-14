@@ -9,6 +9,7 @@
 
 	import '@xyflow/svelte/dist/style.css';
 	import type { ResizeNode } from './types';
+	import { store } from './store.svelte';
 
 	const nodeTypes = {
 		defaultResizer: DefaultResizer,
@@ -138,6 +139,15 @@
 
 	let snapToGrid = $state(false);
 </script>
+
+<svelte:window
+	on:keydown={(e) => {
+		if (e.key === 'k') store.keepAspectRatio = true;
+	}}
+	on:keyup={(e) => {
+		if (e.key === 'k') store.keepAspectRatio = false;
+	}}
+/>
 
 <SvelteFlow
 	bind:nodes

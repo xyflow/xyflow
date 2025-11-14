@@ -37,7 +37,6 @@ export function XYPanZoom({
   domNode,
   minZoom,
   maxZoom,
-  paneClickDistance,
   translateExtent,
   viewport,
   onPanZoom,
@@ -55,10 +54,7 @@ export function XYPanZoom({
     isPanScrolling: false,
   };
   const bbox = domNode.getBoundingClientRect();
-  const d3ZoomInstance = zoom()
-    .clickDistance(!isNumeric(paneClickDistance) || paneClickDistance < 0 ? 0 : paneClickDistance)
-    .scaleExtent([minZoom, maxZoom])
-    .translateExtent(translateExtent);
+  const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
   const d3Selection = select(domNode).call(d3ZoomInstance);
 
   setViewportConstrained(
@@ -109,12 +105,18 @@ export function XYPanZoom({
     lib,
     onTransformChange,
     connectionInProgress,
+    paneClickDistance,
+    selectionOnDrag,
   }: PanZoomUpdateOptions) {
     if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
       destroy();
     }
 
     const isPanOnScroll = panOnScroll && !zoomActivationKeyPressed && !userSelectionActive;
+
+    d3ZoomInstance.clickDistance(
+      selectionOnDrag ? Infinity : !isNumeric(paneClickDistance) || paneClickDistance < 0 ? 0 : paneClickDistance
+    );
 
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
