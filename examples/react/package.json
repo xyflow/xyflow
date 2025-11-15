@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
+    "@tisoap/react-flow-smart-edge": "^4.0.1",
     "@xyflow/react": "workspace:*",
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.4",

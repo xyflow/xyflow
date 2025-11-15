@@ -17,11 +17,14 @@ import {
   useNodesState,
   useEdgesState,
   NodeTypes,
+  EdgeTypes,
 } from '@xyflow/react';
 import SevenSegmentNode from './SevenSegmentNode';
 import AnalogJoystickNode from './AnalogJoystickNode';
 import ArduinoMegaNode from './ArduinoMegaNode';
 import ArduinoNanoNode from './ArduinoNanoNode';
+import WireEdge from './WireEdge';
+import WireConnectionLine from './WireConnectionLine';
 
 const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
 const onNodeDragStart = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
@@ -76,6 +79,10 @@ const nodeTypes: NodeTypes = {
   arduinoNano: ArduinoNanoNode,
 };
 
+const edgeTypes: EdgeTypes = {
+  wire: WireEdge,
+};
+
 const componentLibrary = [
   { type: 'sevenSegment', label: '7-Segment Display', color: '#ff6b6b' },
   { type: 'analogJoystick', label: 'Analog Joystick', color: '#4ecdc4' },
@@ -83,10 +90,23 @@ const componentLibrary = [
   { type: 'arduinoNano', label: 'Arduino Nano', color: '#96ceb4' },
 ];
 
+const wireColors = [
+  { name: 'Red', value: '#ef4444' },
+  { name: 'Green', value: '#22c55e' },
+  { name: 'Blue', value: '#3b82f6' },
+  { name: 'Yellow', value: '#eab308' },
+  { name: 'Orange', value: '#f97316' },
+  { name: 'Purple', value: '#a855f7' },
+  { name: 'Black', value: '#1f2937' },
+  { name: 'White', value: '#f3f4f6' },
+  { name: 'Gray', value: '#6b7280' },
+];
+
 const BasicFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const [selectedWireColor, setSelectedWireColor] = useState(wireColors[0].value);
 
   const {
     addNodes,
@@ -101,8 +121,19 @@ const BasicFlow = () => {
   } = useReactFlow();
 
   const onConnect = useCallback(
-    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges]
+    (connection: Connection) =>
+      setEdges((eds) =>
+        addEdge(
+          {
+            ...connection,
+            type: 'wire',
+            data: { color: selectedWireColor, animated: false },
+            zIndex: 1000, // Render wires on top of components
+          },
+          eds
+        )
+      ),
+    [setEdges, selectedWireColor]
   );
 
   const updatePos = () => {
@@ -249,6 +280,45 @@ const BasicFlow = () => {
           <div style={{ marginTop: '20px', fontSize: '11px', color: '#6c757d' }}>
             Drag components onto the canvas to add them
           </div>
+
+          {/* Wire Color Picker */}
+          <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #dee2e6' }}>
+            <h3 style={{ marginTop: 0, fontSize: '14px', fontWeight: 'bold', color: '#495057' }}>
+              Wire Color
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+              {wireColors.map((wire) => (
+                <div
+                  key={wire.value}
+                  onClick={() => setSelectedWireColor(wire.value)}
+                  style={{
+                    width: '100%',
+                    height: '40px',
+                    background: wire.value,
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    border:
+                      selectedWireColor === wire.value
+                        ? '3px solid #0066cc'
+                        : '2px solid #dee2e6',
+                    boxSizing: 'border-box',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '10px',
+                    color: wire.value === '#f3f4f6' ? '#000' : '#fff',
+                    fontWeight: selectedWireColor === wire.value ? 'bold' : 'normal',
+                  }}
+                  title={wire.name}
+                >
+                  {selectedWireColor === wire.value && '✓'}
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: '10px', fontSize: '11px', color: '#6c757d' }}>
+              Click a color to select wire color for new connections
+            </div>
+          </div>
         </div>
 
         {/* React Flow Canvas */}
@@ -280,6 +350,8 @@ const BasicFlow = () => {
             elevateNodesOnSelect={false}
             nodeDragThreshold={0}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            connectionLineComponent={WireConnectionLine}
           >
             <Background variant={BackgroundVariant.Dots} />
             <MiniMap />

@@ -83,6 +83,9 @@ importers:
       '@reduxjs/toolkit':
         specifier: ^2.2.3
         version: 2.2.3(react-redux@9.1.1(@types/react@18.2.36)(react@18.2.0)(redux@5.0.1))(react@18.2.0)
+      '@tisoap/react-flow-smart-edge':
+        specifier: ^4.0.1
+        version: 4.0.1(@xyflow/react@packages+react)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.4.5)
       '@xyflow/react':
         specifier: workspace:*
         version: link:../../packages/react
@@ -1961,6 +1964,14 @@ packages:
 
   '@swc/types@0.1.5':
     resolution: {integrity: sha512-myfUej5naTBWnqOCc/MdVOLVjXUXtIA+NpDrDBKJtLLg2shUjBu3cZmB/85RyitKc55+lUUyl7oRfLOvkr2hsw==}
+
+  '@tisoap/react-flow-smart-edge@4.0.1':
+    resolution: {integrity: sha512-tqyQyaQFDc4QIL3Kw9UL9QVWId4cSuVNqKsDRzdPH1Mf8YMrwB8/dq/BMFEbuGaln9B3wlgeyhQx3vn6E9lpJA==}
+    peerDependencies:
+      '@xyflow/react': '>=12'
+      react: '>=18'
+      react-dom: '>=18'
+      typescript: '>=5'
 
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
@@ -8333,6 +8344,13 @@ snapshots:
       tslib: 2.8.1
 
   '@swc/types@0.1.5': {}
+
+  '@tisoap/react-flow-smart-edge@4.0.1(@xyflow/react@packages+react)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.4.5)':
+    dependencies:
+      '@xyflow/react': link:packages/react
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      typescript: 5.4.5
 
   '@trysound/sax@0.2.0': {}
 
