@@ -10,36 +10,36 @@ export default function ArduinoNanoNode({ data, isConnectable }: NodeProps<Built
   const resetButtonRef = useRef<SVGCircleElement>(null);
 
   const pinInfo = [
-    { name: '12', x: 19.7, y: 4.8, isPower: false },
-    { name: '11', x: 29.3, y: 4.8, isPower: false },
-    { name: '10', x: 38.9, y: 4.8, isPower: false },
-    { name: '9', x: 48.5, y: 4.8, isPower: false },
-    { name: '8', x: 58.1, y: 4.8, isPower: false },
-    { name: '7', x: 67.7, y: 4.8, isPower: false },
-    { name: '6', x: 77.3, y: 4.8, isPower: false },
-    { name: '5', x: 86.9, y: 4.8, isPower: false },
-    { name: '4', x: 96.5, y: 4.8, isPower: false },
-    { name: '3', x: 106.1, y: 4.8, isPower: false },
-    { name: '2', x: 115.7, y: 4.8, isPower: false },
-    { name: 'GND.2', x: 125.3, y: 4.8, isPower: true },
-    { name: 'RESET.2', x: 134.9, y: 4.8, isPower: false },
-    { name: '0', x: 144.5, y: 4.8, isPower: false },
-    { name: '1', x: 154.1, y: 4.8, isPower: false },
-    { name: '13', x: 19.7, y: 62.4, isPower: false },
-    { name: '3.3V', x: 29.3, y: 62.4, isPower: true },
-    { name: 'AREF', x: 38.9, y: 62.4, isPower: false },
-    { name: 'A0', x: 48.5, y: 62.4, isPower: false },
-    { name: 'A1', x: 58.1, y: 62.4, isPower: false },
-    { name: 'A2', x: 67.7, y: 62.4, isPower: false },
-    { name: 'A3', x: 77.3, y: 62.4, isPower: false },
-    { name: 'A4', x: 86.9, y: 62.4, isPower: false },
-    { name: 'A5', x: 96.5, y: 62.4, isPower: false },
-    { name: 'A6', x: 106.1, y: 62.4, isPower: false },
-    { name: 'A7', x: 115.7, y: 62.4, isPower: false },
-    { name: '5V', x: 125.3, y: 62.4, isPower: true },
-    { name: 'RESET', x: 134.9, y: 62.4, isPower: false },
-    { name: 'GND.1', x: 144.5, y: 62.4, isPower: true },
-    { name: 'VIN', x: 154.1, y: 62.4, isPower: true },
+    { name: '12', x: 19.7, y: 4.8, isPower: false, position: Position.Top },
+    { name: '11', x: 29.3, y: 4.8, isPower: false, position: Position.Top },
+    { name: '10', x: 38.9, y: 4.8, isPower: false, position: Position.Top },
+    { name: '9', x: 48.5, y: 4.8, isPower: false, position: Position.Top },
+    { name: '8', x: 58.1, y: 4.8, isPower: false, position: Position.Top },
+    { name: '7', x: 67.7, y: 4.8, isPower: false, position: Position.Top },
+    { name: '6', x: 77.3, y: 4.8, isPower: false, position: Position.Top },
+    { name: '5', x: 86.9, y: 4.8, isPower: false, position: Position.Top },
+    { name: '4', x: 96.5, y: 4.8, isPower: false, position: Position.Top },
+    { name: '3', x: 106.1, y: 4.8, isPower: false, position: Position.Top },
+    { name: '2', x: 115.7, y: 4.8, isPower: false, position: Position.Top },
+    { name: 'GND.2', x: 125.3, y: 4.8, isPower: true, position: Position.Top },
+    { name: 'RESET.2', x: 134.9, y: 4.8, isPower: false, position: Position.Top },
+    { name: '0', x: 144.5, y: 4.8, isPower: false, position: Position.Top },
+    { name: '1', x: 154.1, y: 4.8, isPower: false, position: Position.Top },
+    { name: '13', x: 19.7, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: '3.3V', x: 29.3, y: 62.4, isPower: true, position: Position.Bottom },
+    { name: 'AREF', x: 38.9, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: 'A0', x: 48.5, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: 'A1', x: 58.1, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: 'A2', x: 67.7, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: 'A3', x: 77.3, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: 'A4', x: 86.9, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: 'A5', x: 96.5, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: 'A6', x: 106.1, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: 'A7', x: 115.7, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: '5V', x: 125.3, y: 62.4, isPower: true, position: Position.Bottom },
+    { name: 'RESET', x: 134.9, y: 62.4, isPower: false, position: Position.Bottom },
+    { name: 'GND.1', x: 144.5, y: 62.4, isPower: true, position: Position.Bottom },
+    { name: 'VIN', x: 154.1, y: 62.4, isPower: true, position: Position.Bottom },
   ];
 
   const handleResetDown = () => {
@@ -93,14 +93,14 @@ export default function ArduinoNanoNode({ data, isConnectable }: NodeProps<Built
           <div key={pin.name}>
             <Handle
               type="source"
-              position={Position.Right}
+              position={pin.position}
               id={`${pin.name}-source`}
               isConnectable={isConnectable}
               style={handleStyle}
             />
             <Handle
               type="target"
-              position={Position.Right}
+              position={pin.position}
               id={`${pin.name}-target`}
               isConnectable={isConnectable}
               style={handleStyle}
