@@ -20,7 +20,6 @@
 .xy-flow__node-default,
 .xy-flow__node-output,
 .xy-flow__node-group {
-  border: var(--xy-node-border, var(--xy-node-border-default));
   color: var(--xy-node-color, var(--xy-node-color-default));
 
   &.selected,

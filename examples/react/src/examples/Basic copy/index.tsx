@@ -12,10 +12,6 @@ import {
   Panel,
   OnNodeDrag,
   FitViewOptions,
-  addEdge,
-  Connection,
-  useNodesState,
-  useEdgesState,
 } from '@xyflow/react';
 
 const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
@@ -28,6 +24,7 @@ const printSelectionEvent = (name: string) => (_: MouseEvent, nodes: Node[]) => 
 const initialNodes: Node[] = [
   {
     id: '1',
+    type: 'input',
     data: { label: 'Node 1' },
     position: { x: 250, y: 5 },
     className: 'light',
@@ -57,20 +54,17 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const defaultEdgeOptions = {
-  type: 'smoothstep',
-};
+const defaultEdgeOptions = {};
 const fitViewOptions: FitViewOptions = {
   padding: { top: '100px', left: '0%', right: '10%', bottom: 0.1 },
 };
 
 const BasicFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
   const {
     addNodes,
+    setNodes,
     getNodes,
+    setEdges,
     getEdges,
     deleteElements,
     updateNodeData,
@@ -78,11 +72,6 @@ const BasicFlow = () => {
     setViewport,
     fitView,
   } = useReactFlow();
-
-  const onConnect = useCallback(
-    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges]
-  );
 
   const updatePos = () => {
     setNodes((nodes) =>
@@ -153,11 +142,9 @@ const BasicFlow = () => {
   return (
     <>
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        defaultNodes={initialNodes}
+        defaultEdges={initialEdges}
+        onNodesChange={console.log}
         onNodeClick={onNodeClick}
         onNodeDragStop={onNodeDragStop}
         onNodeDragStart={onNodeDragStart}

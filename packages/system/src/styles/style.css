@@ -72,18 +72,16 @@
 .xy-flow__node-default,
 .xy-flow__node-output,
 .xy-flow__node-group {
-  padding: 10px;
+  padding: 1px;
   border-radius: var(--xy-node-border-radius, var(--xy-node-border-radius-default));
-  width: 150px;
+  width: auto;
   font-size: 12px;
   color: var(--xy-node-color, var(--xy-node-color-default));
   text-align: center;
-  border: var(--xy-node-border, var(--xy-node-border-default));
-  background-color: var(--xy-node-background-color, var(--xy-node-background-color-default));
 
   &.selectable {
     &:hover {
-      box-shadow: var(--xy-node-boxshadow-hover, var(--xy-node-boxshadow-hover-default));
+      /* box-shadow: var(--xy-node-boxshadow-hover, var(--xy-node-boxshadow-hover-default)); */
     }
 
     &.selected,
