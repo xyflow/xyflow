@@ -1,12 +1,19 @@
 import { memo } from 'react';
 import { Handle, Position, NodeProps, BuiltInNode } from '@xyflow/react';
 
-const LEDNode = ({ data }: NodeProps<BuiltInNode>) => {
+const LEDNode = ({ data, id }: NodeProps<BuiltInNode>) => {
   const value = (data.value as boolean) || false;
   const brightness = (data.brightness as number) ?? 1.0;
   const color = (data.color as string) || 'red';
   const label = (data.label as string) || '';
   const flip = (data.flip as boolean) || false;
+
+  console.log('💡 LEDNode render:', {
+    id,
+    value,
+    brightness,
+    data,
+  });
 
   const lightColors: { [key: string]: string } = {
     red: '#ff8080',
@@ -22,6 +29,8 @@ const LEDNode = ({ data }: NodeProps<BuiltInNode>) => {
   const opacity = brightness ? 0.3 + brightness * 0.7 : 0;
   const lightOn = value && brightness > Number.EPSILON;
   const xScale = flip ? -1 : 1;
+
+  console.log('💡 LEDNode computed:', { lightOn, opacity, lightColorActual });
 
   const anodeX = flip ? 15 : 25;
   const cathodeX = flip ? 25 : 15;

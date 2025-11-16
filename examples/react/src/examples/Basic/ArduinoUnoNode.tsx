@@ -78,11 +78,18 @@ export default function ArduinoUnoNode({ data, isConnectable }: NodeProps<BuiltI
 
   return (
     <div style={{ position: 'relative' }}>
+      <style>{`
+        text {
+          font-size: 2px;
+          font-family: monospace;
+          user-select: none;
+        }
+      `}</style>
       {pinInfo.map((pin) => {
         const handleStyle = {
           position: 'absolute' as const,
-          left: `${pin.x - 7}px`,
-          top: `${pin.y}px`,
+          left: pin.position === Position.Top ? `${pin.x}px` : `${pin.x}px`,
+          top: pin.position === Position.Top ? `${pin.y}px` : `${pin.y}px`,
           width: '4px',
           height: '4px',
           background: pin.isPower ? '#ff0072' : '#1a192b',
@@ -95,14 +102,14 @@ export default function ArduinoUnoNode({ data, isConnectable }: NodeProps<BuiltI
             <Handle
               type="source"
               position={pin.position}
-              id={`${pin.name}-source`}
+              id={pin.name}
               isConnectable={isConnectable}
               style={handleStyle}
             />
             <Handle
               type="target"
               position={pin.position}
-              id={`${pin.name}-target`}
+              id={pin.name}
               isConnectable={isConnectable}
               style={handleStyle}
             />
@@ -115,7 +122,6 @@ export default function ArduinoUnoNode({ data, isConnectable }: NodeProps<BuiltI
         height="53.34mm"
         version="1.1"
         viewBox="-4 0 72.58 53.34"
-        fontWeight="bold"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
       >

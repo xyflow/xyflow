@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback, useState, DragEvent, useRef } from 'react';
+import { MouseEvent, useCallback, useState, DragEvent, useRef, useEffect } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -79,8 +79,65 @@ const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const printSelectionEvent = (name: string) => (_: MouseEvent, nodes: Node[]) => console.log(name, nodes);
 
-const initialNodes: Node[] = [];
-const initialEdges: Edge[] = [];
+const initialNodes: Node[] = [
+  {
+    id: 'arduino-1',
+    type: 'arduinoUno',
+    position: { x: 300, y: 150 },
+    data: { label: 'Arduino Uno' },
+  },
+  {
+    id: 'led-1',
+    type: 'led',
+    position: { x: 650, y: 100 },
+    data: { label: 'LED' },
+  },
+  {
+    id: 'pushbutton-1',
+    type: 'pushbutton',
+    position: { x: 650, y: 300 },
+    data: { label: 'Pushbutton' },
+  },
+];
+
+const initialEdges: Edge[] = [
+  {
+    id: 'e1',
+    source: 'arduino-1',
+    sourceHandle: '13',
+    target: 'led-1',
+    targetHandle: 'A-target',
+    type: 'wire',
+    data: { color: '#ef4444', animated: false },
+  },
+  {
+    id: 'e2',
+    source: 'led-1',
+    sourceHandle: 'C-source',
+    target: 'arduino-1',
+    targetHandle: 'GND.3',
+    type: 'wire',
+    data: { color: '#1f2937', animated: false },
+  },
+  {
+    id: 'e3',
+    source: 'pushbutton-1',
+    sourceHandle: '1.l-source',
+    target: 'arduino-1',
+    targetHandle: '2',
+    type: 'wire',
+    data: { color: '#3b82f6', animated: false },
+  },
+  {
+    id: 'e4',
+    source: 'arduino-1',
+    sourceHandle: 'GND.2',
+    target: 'pushbutton-1',
+    targetHandle: '2.r-target',
+    type: 'wire',
+    data: { color: '#1f2937', animated: false },
+  },
+];
 
 const defaultEdgeOptions = {
   type: 'smoothstep',
@@ -214,6 +271,141 @@ const BasicFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [selectedWireColor, setSelectedWireColor] = useState(wireColors[0].value);
+  const [isSimulating, setIsSimulating] = useState(false);
+
+  // Circuit simulation: trace wires to find connected components
+  const findConnectedLEDs = useCallback((buttonNodeId: string) => {
+    console.log('🔍 Finding LEDs connected to button:', buttonNodeId);
+    console.log('📊 Current edges:', edges.map(e => `${e.source}[${e.sourceHandle}] → ${e.target}[${e.targetHandle}]`));
+
+    // Find Arduino node (assuming there's one Arduino)
+    const arduinoNode = nodes.find(n => n.type?.includes('arduino'));
+    if (!arduinoNode) {
+      console.log('❌ No Arduino found');
+      return [];
+    }
+    console.log('🎛️ Arduino found:', arduinoNode.id);
+
+    // Find which Arduino pin the button is connected to
+    const buttonToArduino = edges.find(e =>
+      (e.source === buttonNodeId && e.target === arduinoNode.id) ||
+      (e.target === buttonNodeId && e.source === arduinoNode.id)
+    );
+
+    if (!buttonToArduino) {
+      console.log('❌ Button not connected to Arduino');
+      return [];
+    }
+    console.log('🔌 Button connected to Arduino pin:', buttonToArduino.targetHandle);
+
+    // Find all LEDs that have at least one connection to the Arduino
+    const connectedLEDs: string[] = [];
+    const ledNodes = nodes.filter(n => n.type === 'led');
+
+    console.log('🔦 Checking', ledNodes.length, 'LED(s) for connections');
+
+    ledNodes.forEach(ledNode => {
+      // Check if LED has any connection to Arduino (in either direction)
+      const hasArduinoConnection = edges.some(edge =>
+        (edge.source === arduinoNode.id && edge.target === ledNode.id) ||
+        (edge.source === ledNode.id && edge.target === arduinoNode.id)
+      );
+
+      if (hasArduinoConnection) {
+        console.log('💡 LED', ledNode.id, 'is connected to Arduino');
+        connectedLEDs.push(ledNode.id);
+      } else {
+        console.log('❌ LED', ledNode.id, 'is NOT connected to Arduino');
+      }
+    });
+
+    console.log('📊 Total LEDs found:', connectedLEDs);
+    return connectedLEDs;
+  }, [nodes, edges]);
+
+  // Simple simulation: when button is pressed, turn on connected LEDs
+  const handleButtonPress = useCallback(() => {
+    console.log('🔴 Button pressed! isSimulating:', isSimulating);
+    if (!isSimulating) {
+      console.log('⚠️ Simulation not active, ignoring button press');
+      return;
+    }
+
+    const connectedLEDs = findConnectedLEDs('pushbutton-1');
+
+    if (connectedLEDs.length === 0) {
+      console.log('⚠️ No LEDs connected to circuit');
+      return;
+    }
+
+    console.log('✅ Turning on', connectedLEDs.length, 'LED(s)');
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (connectedLEDs.includes(node.id)) {
+          console.log('💡 Updating LED node:', node.id, { value: true, brightness: 1.0 });
+          return {
+            ...node,
+            data: { ...node.data, value: true, brightness: 1.0 },
+          };
+        }
+        return node;
+      })
+    );
+  }, [isSimulating, setNodes, findConnectedLEDs]);
+
+  const handleButtonRelease = useCallback(() => {
+    console.log('🔵 Button released! isSimulating:', isSimulating);
+    if (!isSimulating) {
+      console.log('⚠️ Simulation not active, ignoring button release');
+      return;
+    }
+
+    const connectedLEDs = findConnectedLEDs('pushbutton-1');
+
+    console.log('🔌 Turning off', connectedLEDs.length, 'LED(s)');
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (connectedLEDs.includes(node.id)) {
+          console.log('💡 Updating LED node:', node.id, { value: false, brightness: 0 });
+          return {
+            ...node,
+            data: { ...node.data, value: false, brightness: 0 },
+          };
+        }
+        return node;
+      })
+    );
+  }, [isSimulating, setNodes, findConnectedLEDs]);
+
+  // Listen to button events
+  useEffect(() => {
+    const handleCustomEvent = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      console.log('📡 Custom event received:', customEvent.type, customEvent.detail);
+      if (customEvent.detail?.nodeId === 'pushbutton-1') {
+        console.log('✓ Event is from pushbutton-1');
+        if (customEvent.type === 'button-press') {
+          console.log('→ Calling handleButtonPress');
+          handleButtonPress();
+        } else if (customEvent.type === 'button-release') {
+          console.log('→ Calling handleButtonRelease');
+          handleButtonRelease();
+        }
+      } else {
+        console.log('✗ Event not from pushbutton-1:', customEvent.detail?.nodeId);
+      }
+    };
+
+    console.log('🎧 Setting up event listeners');
+    window.addEventListener('button-press', handleCustomEvent);
+    window.addEventListener('button-release', handleCustomEvent);
+
+    return () => {
+      console.log('🔇 Removing event listeners');
+      window.removeEventListener('button-press', handleCustomEvent);
+      window.removeEventListener('button-release', handleCustomEvent);
+    };
+  }, [handleButtonPress, handleButtonRelease]);
 
   const {
     addNodes,
@@ -235,7 +427,6 @@ const BasicFlow = () => {
             ...connection,
             type: 'wire',
             data: { color: selectedWireColor, animated: false },
-            zIndex: 1000, // Render wires on top of components
           },
           eds
         )
@@ -379,7 +570,29 @@ const BasicFlow = () => {
         <Controls />
         <ComponentPanel components={componentLibrary} position="top-left" />
 
-        <Panel position="bottom-left">
+        <Panel position="bottom-left" style={{ display: 'flex', gap: '12px' }}>
+          <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
+            <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Simulation</h4>
+            <button
+              onClick={() => {
+                const newState = !isSimulating;
+                console.log('🎮 Simulate button clicked! New state:', newState);
+                setIsSimulating(newState);
+              }}
+              style={{
+                padding: '8px 16px',
+                background: isSimulating ? '#ef4444' : '#22c55e',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                fontSize: '14px',
+              }}
+            >
+              {isSimulating ? '⏸ Stop' : '▶ Simulate'}
+            </button>
+          </div>
           <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
             <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Wire Color</h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>

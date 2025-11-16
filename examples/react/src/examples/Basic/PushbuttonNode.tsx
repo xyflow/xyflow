@@ -1,7 +1,7 @@
 import { memo, useState, useId } from 'react';
 import { Handle, Position, NodeProps, BuiltInNode } from '@xyflow/react';
 
-const PushbuttonNode = memo(({ data }: NodeProps<BuiltInNode>) => {
+const PushbuttonNode = memo(({ data, id }: NodeProps<BuiltInNode>) => {
   const [pressed, setPressed] = useState(false);
   const [sticky, setSticky] = useState(false);
   const color = (data.color as string) || 'red';
@@ -19,8 +19,18 @@ const PushbuttonNode = memo(({ data }: NodeProps<BuiltInNode>) => {
   const buttonFill = pressed ? `url(#grad-down-${uniqueId})` : `url(#grad-up-${uniqueId})`;
 
   const handleMouseDown = () => {
+    console.log('🖱️ PushbuttonNode: handleMouseDown called! pressed:', pressed, 'id:', id);
     if (!pressed) {
       setPressed(true);
+      // Dispatch button press event
+      console.log('🎯 PushbuttonNode: Dispatching button-press event for node:', id);
+      window.dispatchEvent(
+        new CustomEvent('button-press', {
+          detail: { nodeId: id },
+        })
+      );
+    } else {
+      console.log('⚠️ Button already pressed, ignoring');
     }
   };
 
@@ -33,6 +43,13 @@ const PushbuttonNode = memo(({ data }: NodeProps<BuiltInNode>) => {
     } else {
       setSticky(false);
       setPressed(false);
+      // Dispatch button release event
+      console.log('🎯 PushbuttonNode: Dispatching button-release event for node:', id);
+      window.dispatchEvent(
+        new CustomEvent('button-release', {
+          detail: { nodeId: id },
+        })
+      );
     }
   };
 
@@ -54,15 +71,25 @@ const PushbuttonNode = memo(({ data }: NodeProps<BuiltInNode>) => {
       }}
     >
       <button
+        className="nodrag nopan"
         style={{
           border: 'none',
           background: 'none',
           padding: 0,
           margin: 0,
           cursor: 'pointer',
+          pointerEvents: 'auto',
         }}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
+        onMouseDown={(e) => {
+          console.log('🖱️ Button element clicked!');
+          e.stopPropagation();
+          handleMouseDown();
+        }}
+        onMouseUp={(e) => {
+          console.log('🖱️ Button element released!');
+          e.stopPropagation();
+          handleMouseUp(e);
+        }}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleMouseDown}
         onTouchEnd={handleMouseUp}
