@@ -1,0 +1,78 @@
+/* ComponentPanel styles */
+.react-flow__component-panel {
+  width: 200px;
+  background: var(--xy-background-color, #f8f9fa);
+  border: 1px solid var(--xy-controls-border-color, #dee2e6);
+  border-radius: var(--xy-controls-border-radius, 4px);
+  box-shadow: var(--xy-controls-box-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+  font-family: var(--xy-font-family, sans-serif);
+  font-size: 12px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.react-flow__component-panel-header {
+  padding: 12px;
+  border-bottom: 1px solid var(--xy-controls-border-color, #dee2e6);
+}
+
+.react-flow__component-panel-title {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--xy-node-color, #495057);
+}
+
+.react-flow__component-panel-search {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--xy-controls-border-color, #dee2e6);
+  border-radius: 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+  outline: none;
+  font-family: inherit;
+}
+
+.react-flow__component-panel-search:focus {
+  border-color: var(--xy-edge-selected-color-default, #0066cc);
+  box-shadow: 0 0 0 1px var(--xy-edge-selected-color-default, #0066cc);
+}
+
+.react-flow__component-panel-content {
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.react-flow__component-panel-item {
+  padding: 10px;
+  margin: 8px 0;
+  background: #666;
+  color: white;
+  border-radius: 4px;
+  cursor: grab;
+  font-weight: 500;
+  text-align: center;
+  user-select: none;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.react-flow__component-panel-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.react-flow__component-panel-item:active {
+  cursor: grabbing;
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.react-flow__component-panel-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--xy-node-color, #6c757d);
+  font-style: italic;
+}

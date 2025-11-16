@@ -5,6 +5,7 @@ import {
   Background,
   BackgroundVariant,
   Controls,
+  ComponentPanel,
   ReactFlowProvider,
   Node,
   Edge,
@@ -213,7 +214,6 @@ const BasicFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [selectedWireColor, setSelectedWireColor] = useState(wireColors[0].value);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const {
     addNodes,
@@ -310,11 +310,6 @@ const BasicFlow = () => {
     setIsHidden(!isHidden);
   };
 
-  const onDragStart = (event: DragEvent, nodeType: string) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.effectAllowed = 'move';
-  };
-
   const onDrop = useCallback(
     (event: DragEvent) => {
       event.preventDefault();
@@ -347,84 +342,59 @@ const BasicFlow = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const filteredComponents = componentLibrary.filter((component) =>
-    component.label.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
-    <>
-      <div style={{ display: 'flex', height: '100%', width: '100%' }}>
-        {/* Sidebar */}
-        <div
-          style={{
-            width: '200px',
-            padding: '20px',
-            background: '#f8f9fa',
-            borderRight: '1px solid #dee2e6',
-            overflowY: 'auto',
-          }}
-        >
-          <h3 style={{ marginTop: 0, fontSize: '14px', fontWeight: 'bold', color: '#495057' }}>
-            Components
-          </h3>
-          <input
-            type="text"
-            placeholder="Search components..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px',
-              marginBottom: '15px',
-              border: '1px solid #dee2e6',
-              borderRadius: '4px',
-              fontSize: '12px',
-              boxSizing: 'border-box',
-            }}
-          />
-          {filteredComponents.map((component) => (
-            <div
-              key={component.type}
-              draggable
-              onDragStart={(event) => onDragStart(event, component.type)}
-              style={{
-                padding: '10px',
-                margin: '10px 0',
-                borderRadius: '4px',
-                cursor: 'grab',
-                fontSize: '12px',
-                fontWeight: '500',
-                textAlign: 'center',
-                userSelect: 'none',
-              }}
-            >
-              {component.label}
-            </div>
-          ))}
-          <div style={{ marginTop: '20px', fontSize: '11px', color: '#6c757d' }}>
-            Drag components onto the canvas to add them
-          </div>
+    <div ref={reactFlowWrapper} style={{ width: '100%', height: '100%' }}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        onNodeClick={onNodeClick}
+        onNodeDragStop={onNodeDragStop}
+        onNodeDragStart={onNodeDragStart}
+        onNodeDrag={onNodeDrag}
+        onSelectionDragStart={printSelectionEvent('selection drag start')}
+        onSelectionDrag={printSelectionEvent('selection drag')}
+        onSelectionDragStop={printSelectionEvent('selection drag stop')}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        className="react-flow-basic-example"
+        style={{ display: isHidden ? 'none' : 'block' }}
+        minZoom={0.2}
+        maxZoom={4}
+        fitView
+        fitViewOptions={fitViewOptions}
+        defaultEdgeOptions={defaultEdgeOptions}
+        selectNodesOnDrag={false}
+        elevateEdgesOnSelect
+        elevateNodesOnSelect={false}
+        nodeDragThreshold={0}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        connectionLineComponent={WireConnectionLine}
+      >
+        <Background variant={BackgroundVariant.Dots} />
+        <MiniMap />
+        <Controls />
+        <ComponentPanel components={componentLibrary} position="top-left" />
 
-          {/* Wire Color Picker */}
-          <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #dee2e6' }}>
-            <h3 style={{ marginTop: 0, fontSize: '14px', fontWeight: 'bold', color: '#495057' }}>
-              Wire Color
-            </h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+        <Panel position="bottom-left">
+          <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
+            <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Wire Color</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
               {wireColors.map((wire) => (
                 <div
                   key={wire.value}
                   onClick={() => setSelectedWireColor(wire.value)}
                   style={{
-                    width: '100%',
-                    height: '40px',
+                    width: '30px',
+                    height: '30px',
                     background: wire.value,
                     borderRadius: '4px',
                     cursor: 'pointer',
                     border:
-                      selectedWireColor === wire.value
-                        ? '3px solid #0066cc'
-                        : '2px solid #dee2e6',
+                      selectedWireColor === wire.value ? '3px solid #0066cc' : '2px solid #dee2e6',
                     boxSizing: 'border-box',
                     display: 'flex',
                     alignItems: 'center',
@@ -439,70 +409,29 @@ const BasicFlow = () => {
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: '10px', fontSize: '11px', color: '#6c757d' }}>
-              Click a color to select wire color for new connections
-            </div>
           </div>
-        </div>
+        </Panel>
 
-        {/* React Flow Canvas */}
-        <div ref={reactFlowWrapper} style={{ flexGrow: 1, height: '100%' }}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onNodeClick={onNodeClick}
-            onNodeDragStop={onNodeDragStop}
-            onNodeDragStart={onNodeDragStart}
-            onNodeDrag={onNodeDrag}
-            onSelectionDragStart={printSelectionEvent('selection drag start')}
-            onSelectionDrag={printSelectionEvent('selection drag')}
-            onSelectionDragStop={printSelectionEvent('selection drag stop')}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            className="react-flow-basic-example"
-            style={{ display: isHidden ? 'none' : 'block' }}
-            minZoom={0.2}
-            maxZoom={4}
-            fitView
-            fitViewOptions={fitViewOptions}
-            defaultEdgeOptions={defaultEdgeOptions}
-            selectNodesOnDrag={false}
-            elevateEdgesOnSelect
-            elevateNodesOnSelect={false}
-            nodeDragThreshold={0}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            connectionLineComponent={WireConnectionLine}
-          >
-            <Background variant={BackgroundVariant.Dots} />
-            <MiniMap />
-            <Controls />
+        <Panel position="top-right">
+          <button onClick={resetTransform}>reset transform</button>
+          <button onClick={updatePos}>change pos</button>
+          <button onClick={toggleClassnames}>toggle classnames</button>
+          <button onClick={logToObject}>toObject</button>
 
-            <Panel position="top-right">
-              <button onClick={resetTransform}>reset transform</button>
-              <button onClick={updatePos}>change pos</button>
-              <button onClick={toggleClassnames}>toggle classnames</button>
-              <button onClick={logToObject}>toObject</button>
-
-              <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
-              <button onClick={deleteSomeElements}>deleteSomeElements</button>
-              <button onClick={onSetNodes}>setNodes</button>
-              <button onClick={onUpdateNode}>updateNode</button>
-              <button onClick={addNode}>addNode</button>
-            </Panel>
-          </ReactFlow>
-          <button
-            onClick={toggleVisibility}
-            style={{ position: 'absolute', zIndex: 10, right: 10, top: 100 }}
-          >
-            {isHidden ? 'Show' : 'Hide'} Flow
-          </button>
-        </div>
-      </div>
-    </>
+          <button onClick={deleteSelectedElements}>deleteSelectedElements</button>
+          <button onClick={deleteSomeElements}>deleteSomeElements</button>
+          <button onClick={onSetNodes}>setNodes</button>
+          <button onClick={onUpdateNode}>updateNode</button>
+          <button onClick={addNode}>addNode</button>
+        </Panel>
+      </ReactFlow>
+      <button
+        onClick={toggleVisibility}
+        style={{ position: 'absolute', zIndex: 10, right: 10, top: 100 }}
+      >
+        {isHidden ? 'Show' : 'Hide'} Flow
+      </button>
+    </div>
   );
 };
 

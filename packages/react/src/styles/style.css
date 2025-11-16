@@ -2,6 +2,7 @@
 @import '../../../system/src/styles/init.css';
 @import '../../../system/src/styles/style.css';
 @import '../../../system/src/styles/node-resizer.css';
+@import '../../../system/src/styles/component-panel.css';
 
 .react-flow__edge-textbg {
   fill: var(--xy-edge-label-background-color, var(--xy-edge-label-background-color-default));
