@@ -8,6 +8,7 @@ import { ZoomPane } from '../ZoomPane';
 import { Pane } from '../Pane';
 import { NodesSelection } from '../../components/NodesSelection';
 import type { ReactFlowState, Node } from '../../types';
+import { shallow } from 'zustand/shallow';
 
 export type FlowRendererProps<NodeType extends Node = Node> = Omit<
   GraphViewProps<NodeType>,
@@ -72,7 +73,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onViewportChange,
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
-  const { nodesSelectionActive, userSelectionActive } = useStore(selector);
+  const { nodesSelectionActive, userSelectionActive } = useStore(selector, shallow);
   const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: win });
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: win });
 
