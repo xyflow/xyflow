@@ -59,6 +59,15 @@ import PotentiometerNode from './PotentiometerNode';
 import Pushbutton6mmNode from './Pushbutton6mmNode';
 import PushbuttonNode from './PushbuttonNode';
 import ResistorNode from './ResistorNode';
+import RGBLedNode from './RGBLedNode';
+import RotaryDialerNode from './RotaryDialerNode';
+import ServoNode from './ServoNode';
+import SlidePotentiometerNode from './SlidePotentiometerNode';
+import SlideSwitchNode from './SlideSwitchNode';
+import SmallSoundSensorNode from './SmallSoundSensorNode';
+import SSD1306Node from './SSD1306Node';
+import StepperMotorNode from './StepperMotorNode';
+import TiltSwitchNode from './TiltSwitchNode';
 import WireEdge from './WireEdge';
 import WireConnectionLine from './WireConnectionLine';
 
@@ -69,37 +78,8 @@ const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const printSelectionEvent = (name: string) => (_: MouseEvent, nodes: Node[]) => console.log(name, nodes);
 
-const initialNodes: Node[] = [
-  {
-    id: '1',
-    data: { label: 'Node 1' },
-    position: { x: 250, y: 5 },
-    className: 'light',
-  },
-  {
-    id: '2',
-    data: { label: 'Node 2' },
-    position: { x: 100, y: 100 },
-    className: 'light',
-  },
-  {
-    id: '3',
-    data: { label: 'Node 3' },
-    position: { x: 400, y: 100 },
-    className: 'light',
-  },
-  {
-    id: '4',
-    data: { label: 'Node 4' },
-    position: { x: 400, y: 200 },
-    className: 'light',
-  },
-];
-
-const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-  { id: 'e1-3', source: '1', target: '3' },
-];
+const initialNodes: Node[] = [];
+const initialEdges: Edge[] = [];
 
 const defaultEdgeOptions = {
   type: 'smoothstep',
@@ -149,6 +129,15 @@ const nodeTypes: NodeTypes = {
   pushbutton6mm: Pushbutton6mmNode,
   pushbutton: PushbuttonNode,
   resistor: ResistorNode,
+  rgbLed: RGBLedNode,
+  rotaryDialer: RotaryDialerNode,
+  servo: ServoNode,
+  slidePotentiometer: SlidePotentiometerNode,
+  slideSwitch: SlideSwitchNode,
+  smallSoundSensor: SmallSoundSensorNode,
+  ssd1306: SSD1306Node,
+  stepperMotor: StepperMotorNode,
+  tiltSwitch: TiltSwitchNode,
 };
 
 const edgeTypes: EdgeTypes = {
@@ -196,6 +185,15 @@ const componentLibrary = [
   { type: 'pushbutton6mm', label: 'Pushbutton 6mm', color: '#ff0000' },
   { type: 'pushbutton', label: 'Pushbutton', color: '#ff0000' },
   { type: 'resistor', label: 'Resistor', color: '#d5b597' },
+  { type: 'rgbLed', label: 'RGB LED', color: '#e6e6e6' },
+  { type: 'rotaryDialer', label: 'Rotary Dialer', color: '#1F1F1F' },
+  { type: 'servo', label: 'Servo Motor', color: '#666666' },
+  { type: 'slidePotentiometer', label: 'Slide Potentiometer', color: '#7a7a7a' },
+  { type: 'slideSwitch', label: 'Slide Switch', color: '#808080' },
+  { type: 'smallSoundSensor', label: 'Small Sound Sensor', color: '#931917' },
+  { type: 'ssd1306', label: 'SSD1306 OLED Display', color: '#025CAF' },
+  { type: 'stepperMotor', label: 'Stepper Motor', color: '#666666' },
+  { type: 'tiltSwitch', label: 'Tilt Switch', color: '#19365e' },
 ];
 
 const wireColors = [
@@ -215,6 +213,7 @@ const BasicFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [selectedWireColor, setSelectedWireColor] = useState(wireColors[0].value);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const {
     addNodes,
@@ -348,6 +347,10 @@ const BasicFlow = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  const filteredComponents = componentLibrary.filter((component) =>
+    component.label.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <div style={{ display: 'flex', height: '100%', width: '100%' }}>
@@ -364,7 +367,22 @@ const BasicFlow = () => {
           <h3 style={{ marginTop: 0, fontSize: '14px', fontWeight: 'bold', color: '#495057' }}>
             Components
           </h3>
-          {componentLibrary.map((component) => (
+          <input
+            type="text"
+            placeholder="Search components..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '8px',
+              marginBottom: '15px',
+              border: '1px solid #dee2e6',
+              borderRadius: '4px',
+              fontSize: '12px',
+              boxSizing: 'border-box',
+            }}
+          />
+          {filteredComponents.map((component) => (
             <div
               key={component.type}
               draggable
@@ -372,8 +390,6 @@ const BasicFlow = () => {
               style={{
                 padding: '10px',
                 margin: '10px 0',
-                background: component.color,
-                color: 'white',
                 borderRadius: '4px',
                 cursor: 'grab',
                 fontSize: '12px',
