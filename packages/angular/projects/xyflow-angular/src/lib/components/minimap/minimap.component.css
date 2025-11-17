@@ -1,0 +1,115 @@
+/* Angular Flow MiniMap Styles */
+.angular-flow__minimap {
+  background: var(--xy-minimap-background-color-props, var(--xy-minimap-background-color, #fff));
+  border: 1px solid var(--xy-minimap-border-color, #ddd);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.angular-flow__minimap-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: transparent;
+}
+
+/* Minimap Nodes */
+.angular-flow__minimap-node {
+  fill: var(--xy-minimap-node-background-color-props, var(--xy-minimap-node-background-color, #e2e8f0));
+  stroke: var(--xy-minimap-node-stroke-color-props, var(--xy-minimap-node-stroke-color, #94a3b8));
+  stroke-width: var(--xy-minimap-node-stroke-width-props, var(--xy-minimap-node-stroke-width, 1));
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.angular-flow__minimap-node:hover {
+  fill: var(--xy-minimap-node-background-color-hover, #cbd5e1);
+  stroke: var(--xy-minimap-node-stroke-color-hover, #64748b);
+}
+
+.angular-flow__minimap-node.selected {
+  fill: var(--xy-minimap-node-background-color-selected, #3b82f6);
+  stroke: var(--xy-minimap-node-stroke-color-selected, #1d4ed8);
+  stroke-width: var(--xy-minimap-node-stroke-width-selected, 2);
+}
+
+/* Viewport Mask */
+.angular-flow__minimap-mask {
+  fill: var(--xy-minimap-mask-background-color-props, var(--xy-minimap-mask-background-color, rgba(0, 0, 0, 0.2)));
+  stroke: var(--xy-minimap-mask-stroke-color-props, var(--xy-minimap-mask-stroke-color, transparent));
+  stroke-width: var(--xy-minimap-mask-stroke-width-props, var(--xy-minimap-mask-stroke-width, 1));
+}
+
+/* Interactive Elements */
+.angular-flow__minimap-svg[role="img"] {
+  cursor: grab;
+}
+
+.angular-flow__minimap-svg[role="img"]:active {
+  cursor: grabbing;
+}
+
+/* Theme Integration */
+.angular-flow.dark .angular-flow__minimap {
+  background: var(--xy-minimap-background-color-props, var(--xy-minimap-background-color, #1f2937));
+  border-color: var(--xy-minimap-border-color, #374151);
+}
+
+.angular-flow.dark .angular-flow__minimap-node {
+  fill: var(--xy-minimap-node-background-color-props, var(--xy-minimap-node-background-color, #374151));
+  stroke: var(--xy-minimap-node-stroke-color-props, var(--xy-minimap-node-stroke-color, #6b7280));
+}
+
+.angular-flow.dark .angular-flow__minimap-node:hover {
+  fill: var(--xy-minimap-node-background-color-hover, #4b5563);
+  stroke: var(--xy-minimap-node-stroke-color-hover, #9ca3af);
+}
+
+.angular-flow.dark .angular-flow__minimap-mask {
+  fill: var(--xy-minimap-mask-background-color-props, var(--xy-minimap-mask-background-color, rgba(255, 255, 255, 0.1)));
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .angular-flow__minimap-node {
+    transition: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .angular-flow__minimap {
+    border: 2px solid ButtonText;
+  }
+  
+  .angular-flow__minimap-node {
+    fill: ButtonFace;
+    stroke: ButtonText;
+    stroke-width: 2;
+  }
+  
+  .angular-flow__minimap-mask {
+    fill: transparent;
+    stroke: ButtonText;
+    stroke-width: 2;
+  }
+}
+
+/* Print styles */
+@media print {
+  .angular-flow__minimap {
+    background: white;
+    border: 1px solid black;
+  }
+  
+  .angular-flow__minimap-node {
+    fill: white;
+    stroke: black;
+  }
+  
+  .angular-flow__minimap-mask {
+    fill: rgba(0, 0, 0, 0.1);
+    stroke: black;
+  }
+}
