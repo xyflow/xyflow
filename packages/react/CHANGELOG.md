@@ -1,5 +1,11 @@
 # @xyflow/react
 
+## 12.9.4
+
+### Patch Changes
+
+- [#5629](https://github.com/xyflow/xyflow/pull/5629) [`9030fab2d`](https://github.com/xyflow/xyflow/commit/9030fab2df8285fdfb649bda6e1e885dfd228d45) Thanks [@AlaricBaraou](https://github.com/AlaricBaraou)! - Prevent unnecessary re-render in `FlowRenderer`
+
 ## 12.9.3
 
 ### Patch Changes
