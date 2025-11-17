@@ -193,7 +193,7 @@ export type ViewportHelperFunctions = {
    */
   fitBounds: FitBounds;
   /**
-   * With this function you can translate a screen pixel position to a flow position. It is useful
+   * With this function you can translate a screen (relative to the viewport) pixel position to a flow position. It is useful
    * for implementing drag and drop from a sidebar for example.
    *
    * @param clientPosition - the screen / client position. When you are working with events you can use event.clientX and event.clientY
@@ -205,7 +205,7 @@ export type ViewportHelperFunctions = {
    */
   screenToFlowPosition: (clientPosition: XYPosition, options?: { snapToGrid: boolean }) => XYPosition;
   /**
-   * Translate a position inside the flow's canvas to a screen pixel position.
+   * Translate a position inside the flow's canvas to a screen (relative to the viewport) pixel position.
    *
    * @param flowPosition - the screen / client position. When you are working with events you can use event.clientX and event.clientY
    * @returns position as { x: number, y: number }
