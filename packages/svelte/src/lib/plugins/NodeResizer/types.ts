@@ -53,7 +53,6 @@ export type NodeResizerProps = {
 
 export type ResizeControlProps = Pick<
   NodeResizerProps,
-  | 'nodeId'
   | 'color'
   | 'minWidth'
   | 'minHeight'
@@ -76,5 +75,7 @@ export type ResizeControlProps = Pick<
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
+  /** nodeId must be provided when used outside a custom node */
+  nodeId?: string;
   children?: Snippet;
 } & HTMLAttributes<HTMLDivElement>;
