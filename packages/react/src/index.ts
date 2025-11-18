@@ -30,6 +30,9 @@ export { useConnection } from './hooks/useConnection';
 export { useInternalNode } from './hooks/useInternalNode';
 export { useNodeId } from './contexts/NodeIdContext';
 
+export { experimental_useOnNodesChangeMiddleware } from './hooks/useOnNodesChangeMiddleware';
+export { experimental_useOnEdgesChangeMiddleware } from './hooks/useOnEdgesChangeMiddleware';
+
 export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { isNode, isEdge } from './utils/general';
 
