@@ -15,7 +15,9 @@ import {
   updateAbsolutePositions,
   snapPosition,
   calculateNodePosition,
-  type SetCenterOptions
+  type SetCenterOptions,
+  getHandlePosition,
+  Position
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -50,7 +52,14 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    store.nodes = store.nodes.map((node) => {
+    store.nodes = store.nodes.map((node) => { 
+      if (store.connection.inProgress && store.connection.fromNode.id === node.id) {
+        
+        store.connection = {
+          ...store.connection,
+          from: getHandlePosition(store.nodeLookup.get(node.id), store.connection.fromHandle, Position.Left, true)
+        };
+      }
       const dragItem = nodeDragItems.get(node.id);
       return dragItem ? { ...node, position: dragItem.position, dragging } : node;
     });
