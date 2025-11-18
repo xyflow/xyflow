@@ -171,10 +171,13 @@ function onPointerDown(
     resultHandleDomNode = result.handleDomNode;
     connection = result.connection;
     isValid = isConnectionValid(!!closestHandle, result.isValid);
+   
+    const fromNodeInternal = nodeLookup.get(nodeId)!;
+    const from = getHandlePosition(fromNodeInternal, fromHandle, Position.Left, true); 
 
-    const newConnection: ConnectionInProgress = {
-      // from stays the same
+    const newConnection: ConnectionInProgress = { 
       ...previousConnection,
+      from,
       isValid,
       to:
         result.toHandle && isValid
