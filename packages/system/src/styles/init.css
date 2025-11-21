@@ -447,3 +447,7 @@ svg.xy-flow__connectionline {
     }
   }
 }
+
+.react-flow__pane {
+  touch-action: none;
+}
