@@ -11,6 +11,7 @@ import {
   initialConnection,
   CoordinateExtent,
   defaultAriaLabelConfig,
+  ZIndexMode,
 } from '@xyflow/system';
 
 import type { Edge, FitViewOptions, InternalNode, Node, ReactFlowStore } from '../types';
@@ -28,6 +29,7 @@ const getInitialState = ({
   maxZoom = 2,
   nodeOrigin,
   nodeExtent,
+  zIndexMode = 'auto',
 }: {
   nodes?: Node[];
   edges?: Edge[];
@@ -41,6 +43,7 @@ const getInitialState = ({
   maxZoom?: number;
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
+  zIndexMode?: ZIndexMode;
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map<string, InternalNode>();
   const parentLookup = new Map();
@@ -146,6 +149,7 @@ const getInitialState = ({
     lib: 'react',
     debug: false,
     ariaLabelConfig: defaultAriaLabelConfig,
+    zIndexMode,
   };
 };
 

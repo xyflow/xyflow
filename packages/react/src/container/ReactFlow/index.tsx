@@ -148,6 +148,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     debug,
     onScroll,
     ariaLabelConfig,
+    zIndexMode,
     ...rest
   }: ReactFlowProps<NodeType, EdgeType>,
   ref: ForwardedRef<HTMLDivElement>
@@ -186,6 +187,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
         maxZoom={maxZoom}
         nodeOrigin={nodeOrigin}
         nodeExtent={nodeExtent}
+        zIndexMode={zIndexMode}
       >
         <GraphView<NodeType, EdgeType>
           onInit={onInit}
@@ -311,6 +313,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           onBeforeDelete={onBeforeDelete}
           debug={debug}
           ariaLabelConfig={ariaLabelConfig}
+          zIndexMode={zIndexMode}
         />
         <SelectionListener<NodeType, EdgeType> onSelectionChange={onSelectionChange} />
         {children}

@@ -70,6 +70,7 @@ const reactFlowFieldsToTrack = [
   'debug',
   'autoPanSpeed',
   'ariaLabelConfig',
+  'zIndexMode',
 ] as const;
 
 type ReactFlowFieldsToTrack = (typeof reactFlowFieldsToTrack)[number];

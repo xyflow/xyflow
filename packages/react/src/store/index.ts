@@ -14,6 +14,7 @@ import {
   NodeOrigin,
   CoordinateExtent,
   fitViewport,
+  ZIndexMode,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -33,6 +34,7 @@ const createStore = ({
   maxZoom,
   nodeOrigin,
   nodeExtent,
+  zIndexMode,
 }: {
   nodes?: Node[];
   edges?: Edge[];
@@ -46,6 +48,7 @@ const createStore = ({
   maxZoom?: number;
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
+  zIndexMode?: ZIndexMode;
 }) =>
   createWithEqualityFn<ReactFlowState>((set, get) => {
     async function resolveFitView() {
@@ -89,9 +92,10 @@ const createStore = ({
         nodeExtent,
         defaultNodes,
         defaultEdges,
+        zIndexMode,
       }),
       setNodes: (nodes: Node[]) => {
-        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, fitViewQueued } = get();
+        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, fitViewQueued, zIndexMode } = get();
         /*
          * setNodes() is called exclusively in response to user actions:
          * - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
@@ -106,6 +110,7 @@ const createStore = ({
           nodeExtent,
           elevateNodesOnSelect,
           checkEquality: true,
+          zIndexMode,
         });
 
         if (fitViewQueued && nodesInitialized) {
@@ -140,8 +145,17 @@ const createStore = ({
        * new dimensions and update the nodes.
        */
       updateNodeInternals: (updates) => {
-        const { triggerNodeChanges, nodeLookup, parentLookup, domNode, nodeOrigin, nodeExtent, debug, fitViewQueued } =
-          get();
+        const {
+          triggerNodeChanges,
+          nodeLookup,
+          parentLookup,
+          domNode,
+          nodeOrigin,
+          nodeExtent,
+          debug,
+          fitViewQueued,
+          zIndexMode,
+        } = get();
 
         const { changes, updatedInternals } = updateNodeInternalsSystem(
           updates,
@@ -149,14 +163,15 @@ const createStore = ({
           parentLookup,
           domNode,
           nodeOrigin,
-          nodeExtent
+          nodeExtent,
+          zIndexMode
         );
 
         if (!updatedInternals) {
           return;
         }
 
-        updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent });
+        updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent, zIndexMode });
 
         if (fitViewQueued) {
           resolveFitView();
@@ -332,7 +347,7 @@ const createStore = ({
         triggerEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nextNodeExtent) => {
-        const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, nodeExtent } = get();
+        const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode } = get();
 
         if (
           nextNodeExtent[0][0] === nodeExtent[0][0] &&
@@ -348,6 +363,7 @@ const createStore = ({
           nodeExtent: nextNodeExtent,
           elevateNodesOnSelect,
           checkEquality: false,
+          zIndexMode,
         });
 
         set({ nodeExtent: nextNodeExtent });
