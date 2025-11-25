@@ -190,16 +190,16 @@ const createStore = ({
             type: 'position',
             position: expandParent
               ? {
-                x: Math.max(0, dragItem.position.x),
-                y: Math.max(0, dragItem.position.y),
-              }
+                  x: Math.max(0, dragItem.position.x),
+                  y: Math.max(0, dragItem.position.y),
+                }
               : dragItem.position,
             dragging,
           };
 
-          if (node && connection.inProgress && connection.fromNode.id == node.id) {
+          if (node && connection.inProgress && connection.fromNode.id === node.id) {
             const updatedFrom = getHandlePosition(node, connection.fromHandle, Position.Left, true);
-            updateConnection({...connection,from: updatedFrom})
+            updateConnection({ ...connection, from: updatedFrom });
           }
 
           if (expandParent && node.parentId) {

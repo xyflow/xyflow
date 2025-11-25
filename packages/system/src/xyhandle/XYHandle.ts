@@ -93,8 +93,8 @@ function onPointerDown(
     position: fromHandleInternal.position,
   };
 
-  const fromNodeInternal = nodeLookup.get(nodeId)!;
-  const from = getHandlePosition(fromNodeInternal, fromHandle, Position.Left, true);
+  const fromInternalNode = nodeLookup.get(nodeId)!;
+  const from = getHandlePosition(fromInternalNode, fromHandle, Position.Left, true);
 
   let previousConnection: ConnectionInProgress = {
     inProgress: true,
@@ -103,7 +103,7 @@ function onPointerDown(
     from,
     fromHandle,
     fromPosition: fromHandle.position,
-    fromNode: fromNodeInternal,
+    fromNode: fromInternalNode,
 
     to: position,
     toHandle: null,
@@ -171,11 +171,13 @@ function onPointerDown(
     resultHandleDomNode = result.handleDomNode;
     connection = result.connection;
     isValid = isConnectionValid(!!closestHandle, result.isValid);
-   
-    const fromNodeInternal = nodeLookup.get(nodeId)!;
-    const from = getHandlePosition(fromNodeInternal, fromHandle, Position.Left, true); 
 
-    const newConnection: ConnectionInProgress = { 
+    const fromInternalNode = nodeLookup.get(nodeId);
+    const from = fromInternalNode
+      ? getHandlePosition(fromInternalNode, fromHandle, Position.Left, true)
+      : previousConnection.from;
+
+    const newConnection: ConnectionInProgress = {
       ...previousConnection,
       from,
       isValid,
