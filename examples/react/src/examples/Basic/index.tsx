@@ -20,6 +20,8 @@ import {
   NodeTypes,
   EdgeTypes,
 } from '@xyflow/react';
+import { useSimulation } from '@xyflow/react';
+
 import SevenSegmentNode from './SevenSegmentNode';
 import AnalogJoystickNode from './AnalogJoystickNode';
 import ArduinoMegaNode from './ArduinoMegaNode';
@@ -71,6 +73,7 @@ import StepperMotorNode from './StepperMotorNode';
 import TiltSwitchNode from './TiltSwitchNode';
 import WireEdge from './WireEdge';
 import WireConnectionLine from './WireConnectionLine';
+import BatteryNode from './BatteryNode';
 
 const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
 const onNodeDragStart = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
@@ -81,59 +84,65 @@ const printSelectionEvent = (name: string) => (_: MouseEvent, nodes: Node[]) => 
 
 const initialNodes: Node[] = [
   {
-    id: 'arduino-1',
-    type: 'arduinoUno',
-    position: { x: 300, y: 150 },
-    data: { label: 'Arduino Uno' },
-  },
-  {
-    id: 'led-1',
-    type: 'led',
-    position: { x: 650, y: 100 },
-    data: { label: 'LED' },
+    id: 'battery-1',
+    type: 'battery',
+    position: { x: 100, y: 200 },
+    data: { label: 'Battery', voltage: 9 },
   },
   {
     id: 'pushbutton-1',
     type: 'pushbutton',
-    position: { x: 650, y: 300 },
+    position: { x: 300, y: 200 },
     data: { label: 'Pushbutton' },
+  },
+  {
+    id: 'resistor-1',
+    type: 'resistor',
+    position: { x: 500, y: 200 },
+    data: { label: 'Resistor', resistance: 1000 },
+  },
+  {
+    id: 'led-1',
+    type: 'led',
+    position: { x: 700, y: 200 },
+    data: { label: 'LED', color: 'red' },
   },
 ];
 
 const initialEdges: Edge[] = [
   {
     id: 'e1',
-    source: 'arduino-1',
-    sourceHandle: '13',
+    source: 'battery-1',
+    sourceHandle: 'pos',
+    target: 'pushbutton-1',
+    targetHandle: '1.l-target',
+    type: 'wire',
+    data: { color: '#ef4444', animated: false },
+  },
+  {
+    id: 'e2',
+    source: 'pushbutton-1',
+    sourceHandle: '2.l-source',
+    target: 'resistor-1',
+    targetHandle: '1-target',
+    type: 'wire',
+    data: { color: '#ef4444', animated: false },
+  },
+  {
+    id: 'e3',
+    source: 'resistor-1',
+    sourceHandle: '2-source',
     target: 'led-1',
     targetHandle: 'A-target',
     type: 'wire',
     data: { color: '#ef4444', animated: false },
   },
   {
-    id: 'e2',
+    id: 'e4',
     source: 'led-1',
     sourceHandle: 'C-source',
-    target: 'arduino-1',
-    targetHandle: 'GND.3',
-    type: 'wire',
-    data: { color: '#1f2937', animated: false },
-  },
-  {
-    id: 'e3',
-    source: 'pushbutton-1',
-    sourceHandle: '1.l-source',
-    target: 'arduino-1',
-    targetHandle: '2',
-    type: 'wire',
-    data: { color: '#3b82f6', animated: false },
-  },
-  {
-    id: 'e4',
-    source: 'arduino-1',
-    sourceHandle: 'GND.2',
-    target: 'pushbutton-1',
-    targetHandle: '2.r-target',
+    target: 'battery-1',
+    targetHandle: 'neg',
     type: 'wire',
     data: { color: '#1f2937', animated: false },
   },
@@ -147,6 +156,7 @@ const fitViewOptions: FitViewOptions = {
 };
 
 const nodeTypes: NodeTypes = {
+  battery: BatteryNode,
   sevenSegment: SevenSegmentNode,
   analogJoystick: AnalogJoystickNode,
   arduinoMega: ArduinoMegaNode,
@@ -199,10 +209,11 @@ const nodeTypes: NodeTypes = {
 };
 
 const edgeTypes: EdgeTypes = {
-  wire: WireEdge,
+  wire: WireEdge as any,
 };
 
 const componentLibrary = [
+  { type: 'battery', label: 'Battery', color: '#4CAF50' },
   { type: 'sevenSegment', label: '7-Segment Display', color: '#ff6b6b' },
   { type: 'analogJoystick', label: 'Analog Joystick', color: '#4ecdc4' },
   { type: 'arduinoMega', label: 'Arduino Mega', color: '#45b7d1' },
@@ -271,137 +282,92 @@ const BasicFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [selectedWireColor, setSelectedWireColor] = useState(wireColors[0].value);
-  const [isSimulating, setIsSimulating] = useState(false);
 
-  // Circuit simulation: trace wires to find connected components
-  const findConnectedLEDs = useCallback((buttonNodeId: string) => {
-    console.log('🔍 Finding LEDs connected to button:', buttonNodeId);
-    console.log('📊 Current edges:', edges.map(e => `${e.source}[${e.sourceHandle}] → ${e.target}[${e.targetHandle}]`));
+  // Use the real simulation engine
+  const {
+    start,
+    stop,
+    toggle,
+    isRunning,
+    updateComponentInput,
+    getVisualStates,
+  } = useSimulation({
+    autoStart: false,
+    debug: true,
+    timeStep: 50,
+  });
 
-    // Find Arduino node (assuming there's one Arduino)
-    const arduinoNode = nodes.find(n => n.type?.includes('arduino'));
-    if (!arduinoNode) {
-      console.log('❌ No Arduino found');
-      return [];
-    }
-    console.log('🎛️ Arduino found:', arduinoNode.id);
+  // Sync simulation visuals to nodes
+  useEffect(() => {
+    if (!isRunning) return;
 
-    // Find which Arduino pin the button is connected to
-    const buttonToArduino = edges.find(e =>
-      (e.source === buttonNodeId && e.target === arduinoNode.id) ||
-      (e.target === buttonNodeId && e.source === arduinoNode.id)
-    );
+    const interval = setInterval(() => {
+      const visualStates = getVisualStates();
 
-    if (!buttonToArduino) {
-      console.log('❌ Button not connected to Arduino');
-      return [];
-    }
-    console.log('🔌 Button connected to Arduino pin:', buttonToArduino.targetHandle);
+      setNodes((nds) =>
+        nds.map((node) => {
+          const state = visualStates.get(node.id);
+          if (state) {
+            // Get voltage info for debugging
+            const component = state as any;
+            const voltageInfo: Record<string, number> = {};
 
-    // Find all LEDs that have at least one connection to the Arduino
-    const connectedLEDs: string[] = [];
-    const ledNodes = nodes.filter(n => n.type === 'led');
+            // Extract pin voltages if available
+            if (component.pins) {
+              for (const [pinName, pinState] of Object.entries(component.pins)) {
+                voltageInfo[pinName] = (pinState as any).voltage || 0;
+              }
+            }
 
-    console.log('🔦 Checking', ledNodes.length, 'LED(s) for connections');
-
-    ledNodes.forEach(ledNode => {
-      // Check if LED has any connection to Arduino (in either direction)
-      const hasArduinoConnection = edges.some(edge =>
-        (edge.source === arduinoNode.id && edge.target === ledNode.id) ||
-        (edge.source === ledNode.id && edge.target === arduinoNode.id)
+            // Only update if changed to avoid unnecessary re-renders
+            if (JSON.stringify(node.data.simulation) !== JSON.stringify(state)) {
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  ...state, // Spread visual state (brightness, blown, etc) directly into data
+                  simulation: state, // Keep a copy for diffing
+                  voltages: voltageInfo, // Add voltage info for debugging
+                },
+              };
+            }
+          }
+          return node;
+        })
       );
+    }, 50); // 20fps update for UI
 
-      if (hasArduinoConnection) {
-        console.log('💡 LED', ledNode.id, 'is connected to Arduino');
-        connectedLEDs.push(ledNode.id);
-      } else {
-        console.log('❌ LED', ledNode.id, 'is NOT connected to Arduino');
-      }
-    });
+    return () => clearInterval(interval);
+  }, [isRunning, getVisualStates, setNodes]);
 
-    console.log('📊 Total LEDs found:', connectedLEDs);
-    return connectedLEDs;
-  }, [nodes, edges]);
-
-  // Simple simulation: when button is pressed, turn on connected LEDs
+  // Handle button events (update simulation input)
   const handleButtonPress = useCallback(() => {
-    console.log('🔴 Button pressed! isSimulating:', isSimulating);
-    if (!isSimulating) {
-      console.log('⚠️ Simulation not active, ignoring button press');
-      return;
-    }
-
-    const connectedLEDs = findConnectedLEDs('pushbutton-1');
-
-    if (connectedLEDs.length === 0) {
-      console.log('⚠️ No LEDs connected to circuit');
-      return;
-    }
-
-    console.log('✅ Turning on', connectedLEDs.length, 'LED(s)');
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (connectedLEDs.includes(node.id)) {
-          console.log('💡 Updating LED node:', node.id, { value: true, brightness: 1.0 });
-          return {
-            ...node,
-            data: { ...node.data, value: true, brightness: 1.0 },
-          };
-        }
-        return node;
-      })
-    );
-  }, [isSimulating, setNodes, findConnectedLEDs]);
+    console.log('🔴 Button pressed!');
+    updateComponentInput('pushbutton-1', 'pressed', true);
+  }, [updateComponentInput]);
 
   const handleButtonRelease = useCallback(() => {
-    console.log('🔵 Button released! isSimulating:', isSimulating);
-    if (!isSimulating) {
-      console.log('⚠️ Simulation not active, ignoring button release');
-      return;
-    }
-
-    const connectedLEDs = findConnectedLEDs('pushbutton-1');
-
-    console.log('🔌 Turning off', connectedLEDs.length, 'LED(s)');
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (connectedLEDs.includes(node.id)) {
-          console.log('💡 Updating LED node:', node.id, { value: false, brightness: 0 });
-          return {
-            ...node,
-            data: { ...node.data, value: false, brightness: 0 },
-          };
-        }
-        return node;
-      })
-    );
-  }, [isSimulating, setNodes, findConnectedLEDs]);
+    console.log('🔵 Button released!');
+    updateComponentInput('pushbutton-1', 'pressed', false);
+  }, [updateComponentInput]);
 
   // Listen to button events
   useEffect(() => {
     const handleCustomEvent = (e: Event) => {
       const customEvent = e as CustomEvent;
-      console.log('📡 Custom event received:', customEvent.type, customEvent.detail);
       if (customEvent.detail?.nodeId === 'pushbutton-1') {
-        console.log('✓ Event is from pushbutton-1');
         if (customEvent.type === 'button-press') {
-          console.log('→ Calling handleButtonPress');
           handleButtonPress();
         } else if (customEvent.type === 'button-release') {
-          console.log('→ Calling handleButtonRelease');
           handleButtonRelease();
         }
-      } else {
-        console.log('✗ Event not from pushbutton-1:', customEvent.detail?.nodeId);
       }
     };
 
-    console.log('🎧 Setting up event listeners');
     window.addEventListener('button-press', handleCustomEvent);
     window.addEventListener('button-release', handleCustomEvent);
 
     return () => {
-      console.log('🔇 Removing event listeners');
       window.removeEventListener('button-press', handleCustomEvent);
       window.removeEventListener('button-release', handleCustomEvent);
     };
@@ -574,14 +540,10 @@ const BasicFlow = () => {
           <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
             <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Simulation</h4>
             <button
-              onClick={() => {
-                const newState = !isSimulating;
-                console.log('🎮 Simulate button clicked! New state:', newState);
-                setIsSimulating(newState);
-              }}
+              onClick={toggle}
               style={{
                 padding: '8px 16px',
-                background: isSimulating ? '#ef4444' : '#22c55e',
+                background: isRunning ? '#ef4444' : '#22c55e',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
@@ -590,9 +552,32 @@ const BasicFlow = () => {
                 fontSize: '14px',
               }}
             >
-              {isSimulating ? '⏸ Stop' : '▶ Simulate'}
+              {isRunning ? '⏸ Stop' : '▶ Simulate'}
             </button>
           </div>
+
+          {isRunning && (
+            <div style={{ background: 'white', padding: '12px', borderRadius: '4px', maxWidth: '300px' }}>
+              <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Voltages</h4>
+              <div style={{ fontSize: '10px', fontFamily: 'monospace' }}>
+                {nodes.map((node) => {
+                  const voltages = (node.data as any).voltages;
+                  if (!voltages || Object.keys(voltages).length === 0) return null;
+                  return (
+                    <div key={node.id} style={{ marginBottom: '4px' }}>
+                      <strong>{node.id}:</strong>
+                      {Object.entries(voltages).map(([pin, voltage]) => (
+                        <div key={pin} style={{ marginLeft: '8px' }}>
+                          {pin}: {(voltage as number).toFixed(2)}V
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
             <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Wire Color</h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>

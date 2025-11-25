@@ -1,9 +1,18 @@
 import { memo } from 'react';
-import { Handle, Position, NodeProps, BuiltInNode } from '@xyflow/react';
+import { Handle, Position, NodeProps, Node } from '@xyflow/react';
 
-const LEDNode = ({ data, id }: NodeProps<BuiltInNode>) => {
+export type LEDNode = Node<{
+  value?: boolean;
+  brightness?: number;
+  color?: string;
+  label?: string;
+  flip?: boolean;
+  health?: string;
+}, 'led'>;
+
+const LEDNodeComponent = ({ data, id }: NodeProps<LEDNode>) => {
   const value = (data.value as boolean) || false;
-  const brightness = (data.brightness as number) ?? 1.0;
+  const brightness = (data.brightness as number) ?? 0;
   const color = (data.color as string) || 'red';
   const label = (data.label as string) || '';
   const flip = (data.flip as boolean) || false;
@@ -16,7 +25,7 @@ const LEDNode = ({ data, id }: NodeProps<BuiltInNode>) => {
   });
 
   const lightColors: { [key: string]: string } = {
-    red: '#ff8080',
+    red: '#000000ff',
     green: '#80ff80',
     blue: '#8080ff',
     yellow: '#ffff80',
@@ -26,8 +35,9 @@ const LEDNode = ({ data, id }: NodeProps<BuiltInNode>) => {
   };
 
   const lightColorActual = lightColors[color?.toLowerCase()] || color;
-  const opacity = brightness ? 0.3 + brightness * 0.7 : 0;
-  const lightOn = value && brightness > Number.EPSILON;
+  const isBlown = data.health === 'BLOWN';
+  const opacity = isBlown ? 0 : (brightness ? 0.3 + brightness * 0.7 : 0);
+  const lightOn = !isBlown && brightness > 0.01; // Light on if brightness > 1%
   const xScale = flip ? -1 : 1;
 
   console.log('💡 LEDNode computed:', { lightOn, opacity, lightColorActual });
@@ -187,6 +197,6 @@ const LEDNode = ({ data, id }: NodeProps<BuiltInNode>) => {
   );
 };
 
-LEDNode.displayName = 'LEDNode';
+LEDNodeComponent.displayName = 'LEDNode';
+export default memo(LEDNodeComponent);
 
-export default memo(LEDNode);

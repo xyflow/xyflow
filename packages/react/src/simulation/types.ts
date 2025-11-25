@@ -10,30 +10,7 @@ import type { Node, Edge } from '@xyflow/react';
 /**
  * Signal types that can flow through wires
  */
-export type SignalType = 'digital' | 'analog' | 'power' | 'pwm' | 'i2c' | 'spi' | 'uart';
-
-/**
- * Digital signal values
- */
-export type DigitalValue = 'HIGH' | 'LOW' | 'Z'; // Z = high impedance
-
-/**
- * Analog signal (0-5V typically)
- */
-export type AnalogValue = number;
-
-/**
- * PWM signal
- */
-export type PWMValue = {
-  frequency: number; // Hz
-  dutyCycle: number; // 0-1
-};
-
-/**
- * Generic signal value
- */
-export type SignalValue = DigitalValue | AnalogValue | PWMValue;
+export type SignalType = 'digital' | 'analog' | 'power' | 'ground';
 
 /**
  * Pin state during simulation
@@ -41,9 +18,31 @@ export type SignalValue = DigitalValue | AnalogValue | PWMValue;
 export interface PinState {
   pinName: string;
   signalType: SignalType;
-  value: SignalValue;
-  voltage?: number;
-  current?: number;
+  voltage: number; // Volts
+  current: number; // Milliamps (mA)
+  impedance?: number; // Ohms (for solver)
+}
+
+/**
+ * Component health status
+ */
+export type ComponentHealth = 'OK' | 'BLOWN' | 'OVERHEATING' | 'UNSTABLE';
+
+/**
+ * Component specifications (static data)
+ */
+export interface ComponentSpecs {
+  // Resistor
+  resistance?: number; // Ohms
+  powerRating?: number; // Watts
+
+  // Diode / LED
+  forwardVoltage?: number; // Volts
+  maxCurrent?: number; // mA
+  breakdownVoltage?: number; // Volts
+
+  // Source
+  voltage?: number; // Volts
 }
 
 /**
@@ -53,6 +52,8 @@ export interface ComponentState {
   nodeId: string;
   nodeType: string;
   pins: Map<string, PinState>;
+  health: ComponentHealth;
+  specs: ComponentSpecs;
   internalState: Record<string, any>; // Component-specific state (e.g., LED brightness, servo angle)
 }
 
@@ -65,8 +66,8 @@ export interface WireState {
   sourceHandle: string;
   targetNodeId: string;
   targetHandle: string;
-  signalType: SignalType;
-  value: SignalValue;
+  voltage: number;
+  current: number;
 }
 
 /**
@@ -78,6 +79,19 @@ export interface SimulationState {
   components: Map<string, ComponentState>;
   wires: Map<string, WireState>;
   events: SimulationEvent[];
+  // Solver state
+  nets: Map<string, NetState>; // Map netId to NetState
+}
+
+/**
+ * A "Net" is a group of connected wires and pins that share the same voltage
+ */
+export interface NetState {
+  id: string;
+  voltage: number;
+  isGround: boolean;
+  isSource: boolean;
+  connectedPins: { nodeId: string; pinName: string }[];
 }
 
 /**
@@ -85,9 +99,10 @@ export interface SimulationState {
  */
 export interface SimulationEvent {
   time: number;
-  type: 'signal-change' | 'component-update' | 'error';
+  type: 'signal-change' | 'component-update' | 'error' | 'component-failure';
   nodeId?: string;
   edgeId?: string;
+  message?: string;
   data: any;
 }
 
@@ -107,14 +122,19 @@ export interface ComponentSimulator {
   initialize(node: Node, state: SimulationState): ComponentState;
 
   /**
-   * Update component when input pins change
-   * Returns true if output pins changed (triggers propagation)
+   * Calculate currents/voltages for the solver
+   * This is called iteratively by the solver
+   */
+  solve?(componentState: ComponentState, state: SimulationState): void;
+
+  /**
+   * Update component internal state after solver converges
+   * (e.g. check for blown components, update brightness)
    */
   update(
     componentState: ComponentState,
-    changedPins: string[],
     state: SimulationState
-  ): boolean;
+  ): void;
 
   /**
    * Get visual state for rendering (LED brightness, servo angle, etc.)
@@ -134,8 +154,8 @@ export interface SimulationConfig {
   /** Simulation time step in ms (for time-based simulation) */
   timeStep?: number;
 
-  /** Maximum iterations for signal propagation (prevents infinite loops) */
-  maxPropagationDepth?: number;
+  /** Maximum iterations for solver */
+  maxIterations?: number;
 
   /** Enable debug logging */
   debug?: boolean;

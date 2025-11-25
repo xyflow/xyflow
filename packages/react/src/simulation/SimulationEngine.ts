@@ -3,6 +3,11 @@
  *
  * This engine converts a React Flow graph into a circuit simulation,
  * propagates signals between components, and updates component states.
+ *
+ * It uses a Simplified Nodal Analysis approach:
+ * 1. Identifies "Nets" (connected wires and pins).
+ * 2. Iteratively solves for voltages and currents.
+ * 3. Updates component states based on calculated values.
  */
 
 import type { Node, Edge } from '@xyflow/react';
@@ -12,9 +17,10 @@ import type {
   WireState,
   ComponentSimulator,
   SimulationConfig,
-  SimulationEvent,
+  NetState,
   PinState,
 } from './types';
+import { MatrixSolver } from './MatrixSolver';
 
 export class SimulationEngine {
   private config: Required<SimulationConfig>;
@@ -22,8 +28,8 @@ export class SimulationEngine {
 
   constructor(config: SimulationConfig = {}) {
     this.config = {
-      timeStep: config.timeStep ?? 10,
-      maxPropagationDepth: config.maxPropagationDepth ?? 100,
+      timeStep: config.timeStep ?? 100,
+      maxIterations: config.maxIterations ?? 20,
       debug: config.debug ?? false,
       componentSimulators: config.componentSimulators ?? new Map(),
     };
@@ -47,6 +53,7 @@ export class SimulationEngine {
       components: new Map(),
       wires: new Map(),
       events: [],
+      nets: new Map(),
     };
 
     // Initialize all components
@@ -68,13 +75,108 @@ export class SimulationEngine {
         sourceHandle: edge.sourceHandle || '',
         targetNodeId: edge.target,
         targetHandle: edge.targetHandle || '',
-        signalType: 'digital',
-        value: 'LOW',
+        voltage: 0,
+        current: 0,
       };
       state.wires.set(edge.id, wireState);
     }
 
+    // Build Nets
+    this.buildNets(state);
+
     return state;
+  }
+
+  /**
+   * Build Nets (groups of connected pins and wires)
+   */
+  private buildNets(state: SimulationState): void {
+    state.nets.clear();
+    const visitedWires = new Set<string>();
+
+    // Helper to extract pin info
+    const getPinInfo = (nodeId: string, handleId: string) => {
+      // Check if the component has a handleToPin mapping in its data
+      const component = state.components.get(nodeId);
+      if (component?.internalState?.handleToPin) {
+        const pinName = component.internalState.handleToPin[handleId];
+        if (pinName) {
+          if (this.config.debug) {
+            console.log(`📍 Mapped handle '${handleId}' -> pin '${pinName}' for ${nodeId}`);
+          }
+          return { nodeId, pinName };
+        }
+      }
+
+      // Fallback: try to extract pin name from handle ID
+      // This handles simple cases and provides backward compatibility
+      let pinName = handleId;
+
+      // Remove -source or -target suffix if present
+      if (pinName.endsWith('-source')) {
+        pinName = pinName.slice(0, -7);
+      } else if (pinName.endsWith('-target')) {
+        pinName = pinName.slice(0, -7);
+      }
+
+      // For pins like '1.l' or '2.r', extract just the number
+      if (pinName.includes('.')) {
+        pinName = pinName.split('.')[0];
+      }
+
+      if (this.config.debug) {
+        console.log(`📍 Fallback: handle '${handleId}' -> pin '${pinName}' for ${nodeId}`);
+      }
+
+      return { nodeId, pinName };
+    };
+
+    let netCounter = 0;
+
+    for (const [wireId, wire] of state.wires) {
+      if (visitedWires.has(wireId)) continue;
+
+      const netId = `net-${netCounter++}`;
+      const net: NetState = {
+        id: netId,
+        voltage: 0,
+        isGround: false,
+        isSource: false,
+        connectedPins: [],
+      };
+
+      // BFS to find all connected wires
+      const queue = [wire];
+      visitedWires.add(wireId);
+
+      while (queue.length > 0) {
+        const currentWire = queue.shift()!;
+
+        // Add pins to net
+        net.connectedPins.push(getPinInfo(currentWire.sourceNodeId, currentWire.sourceHandle));
+        net.connectedPins.push(getPinInfo(currentWire.targetNodeId, currentWire.targetHandle));
+
+        // Find connected wires (sharing the same pin)
+        // This is O(N^2) in worst case, can be optimized with a map
+        for (const [otherId, otherWire] of state.wires) {
+          if (visitedWires.has(otherId)) continue;
+
+          // Check connectivity
+          const isConnected =
+            (currentWire.sourceNodeId === otherWire.sourceNodeId && currentWire.sourceHandle === otherWire.sourceHandle) ||
+            (currentWire.sourceNodeId === otherWire.targetNodeId && currentWire.sourceHandle === otherWire.targetHandle) ||
+            (currentWire.targetNodeId === otherWire.sourceNodeId && currentWire.targetHandle === otherWire.sourceHandle) ||
+            (currentWire.targetNodeId === otherWire.targetNodeId && currentWire.targetHandle === otherWire.targetHandle);
+
+          if (isConnected) {
+            visitedWires.add(otherId);
+            queue.push(otherWire);
+          }
+        }
+      }
+
+      state.nets.set(netId, net);
+    }
   }
 
   /**
@@ -95,111 +197,295 @@ export class SimulationEngine {
   }
 
   /**
-   * Single simulation step (propagate all signals once)
+   * Single simulation step
    */
   step(state: SimulationState): void {
     if (!state.running) return;
 
-    // Time-based updates for components that need it
-    for (const [nodeId, componentState] of state.components) {
-      const simulator = this.simulators.get(componentState.nodeType);
+    // 1. Time-based updates (e.g. signal generators)
+    for (const [_, component] of state.components) {
+      const simulator = this.simulators.get(component.nodeType);
       if (simulator?.tick) {
-        simulator.tick(componentState, this.config.timeStep, state);
+        simulator.tick(component, this.config.timeStep, state);
       }
     }
 
-    // Propagate signals through the circuit
-    this.propagateSignals(state);
+    // 2. Solve Circuit (Iterative approach)
+    this.solveCircuit(state);
+
+    // 3. Update Component States (check limits, etc.)
+    for (const [_, component] of state.components) {
+      const simulator = this.simulators.get(component.nodeType);
+      if (simulator) {
+        simulator.update(component, state);
+      }
+    }
 
     state.time += this.config.timeStep;
   }
 
   /**
-   * Propagate signals from outputs to inputs
+   * Modified Nodal Analysis Circuit Solver
    */
-  private propagateSignals(state: SimulationState): void {
-    const changedComponents = new Set<string>();
-    let depth = 0;
-
-    // Initial pass: find all components with changed outputs
-    for (const [nodeId, componentState] of state.components) {
-      changedComponents.add(nodeId);
+  private solveCircuit(state: SimulationState): void {
+    if (this.config.debug) {
+      console.log('🔧 === SOLVING CIRCUIT (MNA) ===');
     }
 
-    // Propagate changes until no more changes occur
-    while (changedComponents.size > 0 && depth < this.config.maxPropagationDepth) {
-      const currentBatch = Array.from(changedComponents);
-      changedComponents.clear();
+    // Step 1: Build node-to-index mapping (exclude ground)
+    const nodeToIndex = new Map<string, number>();
+    let nodeIndex = 0;
 
-      for (const sourceNodeId of currentBatch) {
-        // Find all wires connected to this component's outputs
-        const outputWires = Array.from(state.wires.values()).filter(
-          (wire) => wire.sourceNodeId === sourceNodeId
-        );
+    // Collect all unique nodes (nets)
+    for (const net of state.nets.values()) {
+      if (!net.isGround && !nodeToIndex.has(net.id)) {
+        nodeToIndex.set(net.id, nodeIndex++);
+      }
+    }
 
-        for (const wire of outputWires) {
-          // Get the source pin value
-          const sourceComponent = state.components.get(wire.sourceNodeId);
-          if (!sourceComponent) continue;
+    const numNodes = nodeIndex;
 
-          const sourcePinName = this.extractPinName(wire.sourceHandle);
-          const sourcePin = sourceComponent.pins.get(sourcePinName);
-          if (!sourcePin) continue;
+    // Step 2: Count voltage sources for matrix sizing
+    let numVoltageSources = 0;
+    for (const component of state.components.values()) {
+      if (component.nodeType === 'battery' || component.nodeType === 'source') {
+        numVoltageSources++;
+      }
+    }
 
-          // Update wire value
-          wire.value = sourcePin.value;
-          wire.signalType = sourcePin.signalType;
+    const matrixSize = numNodes + numVoltageSources;
 
-          // Update target component's input pin
-          const targetComponent = state.components.get(wire.targetNodeId);
-          if (!targetComponent) continue;
+    if (matrixSize === 0) {
+      if (this.config.debug) {
+        console.log('⚠️ No nodes to solve');
+      }
+      return;
+    }
 
-          const targetPinName = this.extractPinName(wire.targetHandle);
-          const targetPin = targetComponent.pins.get(targetPinName);
-          if (!targetPin) continue;
+    // Step 3: Initialize MNA matrices
+    const G = MatrixSolver.zeros(matrixSize, matrixSize); // Conductance matrix
+    const b = MatrixSolver.zeroVector(matrixSize); // RHS vector
 
-          // Only update if value changed
-          if (targetPin.value !== wire.value) {
-            targetPin.value = wire.value;
-            targetPin.signalType = wire.signalType;
+    let vsIndex = numNodes; // Index for voltage source currents
 
-            // Update the component with the new input
-            const simulator = this.simulators.get(targetComponent.nodeType);
-            if (simulator) {
-              const hasChanges = simulator.update(
-                targetComponent,
-                [targetPinName],
-                state
-              );
+    if (this.config.debug) {
+      console.log(`📐 Matrix size: ${matrixSize}x${matrixSize} (${numNodes} nodes, ${numVoltageSources} voltage sources)`);
+    }
 
-              if (hasChanges) {
-                changedComponents.add(wire.targetNodeId);
-              }
+    // Step 4: Stamp components into matrices
+    for (const component of state.components.values()) {
+      const simulator = this.simulators.get(component.nodeType);
+
+      if (component.nodeType === 'battery' || component.nodeType === 'source') {
+        // Voltage source stamping
+        const posPin = component.pins.get('pos');
+        const negPin = component.pins.get('neg');
+        const voltage = component.specs.voltage || 0;
+
+        if (posPin && negPin) {
+          const posNet = this.findNet(state, component.nodeId, posPin.pinName);
+          const negNet = this.findNet(state, component.nodeId, negPin.pinName);
+
+          const posIdx = posNet && !posNet.isGround ? nodeToIndex.get(posNet.id) : -1;
+          const negIdx = negNet && !negNet.isGround ? nodeToIndex.get(negNet.id) : -1;
+
+          // Stamp: V_pos - V_neg = voltage
+          if (posIdx !== undefined && posIdx >= 0) {
+            G[posIdx][vsIndex] = 1;
+            G[vsIndex][posIdx] = 1;
+          }
+          if (negIdx !== undefined && negIdx >= 0) {
+            G[negIdx][vsIndex] = -1;
+            G[vsIndex][negIdx] = -1;
+          }
+
+          b[vsIndex] = voltage;
+          vsIndex++;
+        }
+      } else if (component.nodeType === 'resistor') {
+        // Resistor stamping
+        const p1 = component.pins.get('1');
+        const p2 = component.pins.get('2');
+        const resistance = component.specs.resistance || 1000;
+        const conductance = 1 / resistance;
+
+        if (p1 && p2) {
+          const net1 = this.findNet(state, component.nodeId, p1.pinName);
+          const net2 = this.findNet(state, component.nodeId, p2.pinName);
+
+          const idx1 = net1 && !net1.isGround ? nodeToIndex.get(net1.id) : -1;
+          const idx2 = net2 && !net2.isGround ? nodeToIndex.get(net2.id) : -1;
+
+          // Stamp conductance
+          if (idx1 !== undefined && idx1 >= 0) {
+            G[idx1][idx1] += conductance;
+            if (idx2 !== undefined && idx2 >= 0) {
+              G[idx1][idx2] -= conductance;
+            }
+          }
+          if (idx2 !== undefined && idx2 >= 0) {
+            G[idx2][idx2] += conductance;
+            if (idx1 !== undefined && idx1 >= 0) {
+              G[idx2][idx1] -= conductance;
+            }
+          }
+        }
+      } else if (component.nodeType === 'pushbutton') {
+        // Pushbutton as variable resistor
+        const pressed = component.internalState.pressed || false;
+        const resistance = pressed ? 0.1 : 1000000;
+        const conductance = 1 / resistance;
+
+        const p1 = component.pins.get('1');
+        const p2 = component.pins.get('2');
+
+        if (p1 && p2) {
+          const net1 = this.findNet(state, component.nodeId, p1.pinName);
+          const net2 = this.findNet(state, component.nodeId, p2.pinName);
+
+          const idx1 = net1 && !net1.isGround ? nodeToIndex.get(net1.id) : -1;
+          const idx2 = net2 && !net2.isGround ? nodeToIndex.get(net2.id) : -1;
+
+          if (idx1 !== undefined && idx1 >= 0) {
+            G[idx1][idx1] += conductance;
+            if (idx2 !== undefined && idx2 >= 0) {
+              G[idx1][idx2] -= conductance;
+            }
+          }
+          if (idx2 !== undefined && idx2 >= 0) {
+            G[idx2][idx2] += conductance;
+            if (idx1 !== undefined && idx1 >= 0) {
+              G[idx2][idx1] -= conductance;
+            }
+          }
+        }
+      } else if (component.nodeType === 'led') {
+        // LED as diode with forward voltage drop
+        // Simplified: treat as resistor when forward biased
+        const anode = component.pins.get('anode');
+        const cathode = component.pins.get('cathode');
+
+        if (anode && cathode) {
+          const anodeNet = this.findNet(state, component.nodeId, anode.pinName);
+          const cathodeNet = this.findNet(state, component.nodeId, cathode.pinName);
+
+          // For first pass, treat as high resistance (will iterate)
+          const resistance = 1000; // Simplified
+          const conductance = 1 / resistance;
+
+          const idx1 = anodeNet && !anodeNet.isGround ? nodeToIndex.get(anodeNet.id) : -1;
+          const idx2 = cathodeNet && !cathodeNet.isGround ? nodeToIndex.get(cathodeNet.id) : -1;
+
+          if (idx1 !== undefined && idx1 >= 0) {
+            G[idx1][idx1] += conductance;
+            if (idx2 !== undefined && idx2 >= 0) {
+              G[idx1][idx2] -= conductance;
+            }
+          }
+          if (idx2 !== undefined && idx2 >= 0) {
+            G[idx2][idx2] += conductance;
+            if (idx1 !== undefined && idx1 >= 0) {
+              G[idx2][idx1] -= conductance;
             }
           }
         }
       }
-
-      depth++;
     }
 
-    if (depth >= this.config.maxPropagationDepth) {
-      console.error('Maximum propagation depth reached - possible infinite loop');
+    // Step 5: Solve the system
+    try {
+      const x = MatrixSolver.solve(G, b);
+
+      // Step 6: Extract node voltages
+      for (const [netId, idx] of nodeToIndex) {
+        const net = state.nets.get(netId);
+        if (net) {
+          net.voltage = x[idx];
+        }
+      }
+
+      // Step 7: Update component pin voltages
+      for (const component of state.components.values()) {
+        for (const [pinName, pin] of component.pins) {
+          const net = this.findNet(state, component.nodeId, pinName);
+          if (net) {
+            pin.voltage = net.voltage;
+          }
+        }
+      }
+
+      // Step 8: Calculate currents and update component states
+      for (const component of state.components.values()) {
+        const simulator = this.simulators.get(component.nodeType);
+        if (simulator?.update) {
+          simulator.update(component, state);
+        }
+      }
+
+      if (this.config.debug) {
+        console.log('✅ Circuit solved successfully');
+        console.log('📊 Node voltages:');
+        for (const [netId, idx] of nodeToIndex) {
+          console.log(`  ${netId}: ${x[idx].toFixed(3)}V`);
+        }
+      }
+    } catch (error) {
+      console.error('❌ Failed to solve circuit:', error);
+    }
+  }
+
+  /**
+   * Helper to find net for a pin
+   */
+  findNet(state: SimulationState, nodeId: string, pinName: string): NetState | undefined {
+    for (const net of state.nets.values()) {
+      if (net.connectedPins.some(p => p.nodeId === nodeId && p.pinName === pinName)) {
+        return net;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Helper to set net voltage (used by sources)
+   */
+  setNetVoltage(state: SimulationState, nodeId: string, pinName: string, voltage: number, isSource: boolean = false): void {
+    const net = this.findNet(state, nodeId, pinName);
+    if (net) {
+      net.voltage = voltage;
+      if (isSource) net.isSource = true;
+
+      // Update all pins on this net
+      for (const pinRef of net.connectedPins) {
+        const comp = state.components.get(pinRef.nodeId);
+        const pin = comp?.pins.get(pinRef.pinName);
+        if (pin) {
+          pin.voltage = voltage;
+        }
+
+        // Update wires connected to this net
+        // (Optimization: Map wires to nets directly)
+        for (const wire of state.wires.values()) {
+          if ((wire.sourceNodeId === pinRef.nodeId && this.extractPinName(wire.sourceHandle) === pinRef.pinName) ||
+            (wire.targetNodeId === pinRef.nodeId && this.extractPinName(wire.targetHandle) === pinRef.pinName)) {
+            wire.voltage = voltage;
+          }
+        }
+      }
     }
   }
 
   /**
    * Extract pin name from handle ID
-   * Handle format: "nodeId-pinName-source" or "nodeId-pinName-target"
    */
   private extractPinName(handleId: string): string {
     const parts = handleId.split('-');
-    // Remove nodeId from start and source/target from end
+    if (parts.length < 3) return handleId;
     return parts.slice(1, -1).join('-');
   }
 
   /**
-   * Update a component's input (e.g., button pressed, potentiometer rotated)
+   * Update a component's input
    */
   updateComponentInput(
     state: SimulationState,
@@ -210,17 +496,11 @@ export class SimulationEngine {
     const component = state.components.get(nodeId);
     if (!component) return;
 
-    // Update internal state
     component.internalState[inputName] = value;
 
-    // Update the component
-    const simulator = this.simulators.get(component.nodeType);
-    if (simulator) {
-      simulator.update(component, [], state);
-    }
-
-    // Trigger propagation
-    this.propagateSignals(state);
+    // Trigger a step immediately? Or wait for next tick?
+    // Let's trigger a solve
+    this.solveCircuit(state);
   }
 
   /**
@@ -229,10 +509,15 @@ export class SimulationEngine {
   getVisualStates(state: SimulationState): Map<string, Record<string, any>> {
     const visualStates = new Map<string, Record<string, any>>();
 
-    for (const [nodeId, componentState] of state.components) {
-      const simulator = this.simulators.get(componentState.nodeType);
-      if (simulator) {
-        visualStates.set(nodeId, simulator.getVisualState(componentState));
+    for (const component of state.components.values()) {
+      const simulator = this.simulators.get(component.nodeType);
+      if (simulator?.getVisualState) {
+        const visualState = simulator.getVisualState(component);
+        visualStates.set(component.nodeId, visualState);
+
+        if (this.config.debug && component.nodeType === 'led') {
+          console.log(`🎨 getVisualState for ${component.nodeId}:`, visualState);
+        }
       }
     }
 

@@ -36,6 +36,8 @@ export { isNode, isEdge } from './utils/general';
 export * from './additional-components';
 
 export * from './types';
+export * from './simulation/useSimulation';
+export * from './simulation/types';
 
 // system types
 export {

@@ -5,17 +5,19 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useNodes, useEdges } from '../hooks/useStore';
+import { useNodes } from '../hooks/useNodes';
+import { useEdges } from '../hooks/useEdges';
 import { SimulationEngine } from './SimulationEngine';
 import type { SimulationState, SimulationConfig, ComponentSimulator } from './types';
 
-export interface UseSimulationOptions extends SimulationConfig {
-  /** Auto-start simulation on mount */
-  autoStart?: boolean;
 
-  /** Simulation update interval in ms */
+import { BatterySimulator, ResistorSimulator, LEDSimulator, PushbuttonSimulator } from './simulators';
+
+export interface UseSimulationOptions extends SimulationConfig {
+  autoStart?: boolean;
   updateInterval?: number;
 }
+
 
 export interface UseSimulationReturn {
   /** Current simulation state */
@@ -62,9 +64,19 @@ export function useSimulation(options: UseSimulationOptions = {}): UseSimulation
   const engineRef = useRef<SimulationEngine | null>(null);
   const intervalRef = useRef<number | null>(null);
 
+
+
+  // ...
+
   // Initialize engine
   useEffect(() => {
     engineRef.current = new SimulationEngine(options);
+
+    // Register default simulators
+    engineRef.current.registerSimulator(BatterySimulator);
+    engineRef.current.registerSimulator(ResistorSimulator);
+    engineRef.current.registerSimulator(LEDSimulator);
+    engineRef.current.registerSimulator(PushbuttonSimulator);
   }, []);
 
   // Initialize simulation when nodes/edges change
@@ -76,11 +88,9 @@ export function useSimulation(options: UseSimulationOptions = {}): UseSimulation
     return newState;
   }, [nodes, edges]);
 
-  // Auto-initialize on mount or when graph changes
   useEffect(() => {
     const newState = initialize();
     if (options.autoStart && newState) {
-      start();
     }
   }, [nodes.length, edges.length]);
 
@@ -163,7 +173,6 @@ export function useSimulation(options: UseSimulationOptions = {}): UseSimulation
     }
   }, []);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (intervalRef.current !== null) {
