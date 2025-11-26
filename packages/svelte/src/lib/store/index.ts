@@ -119,7 +119,12 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       newNodes.set(change.id, node);
     }
 
-    store.nodes = store.nodes.map((node) => newNodes.get(node.id) ?? node);
+    for (const [id, updatedNode] of newNodes.entries()) {
+      const index = store.nodes.findIndex((node) => node.id === id);
+      if (index !== -1) {
+        store.nodes[index] = updatedNode;
+      }
+    }
   }
 
   function fitView(options?: FitViewOptions) {
@@ -414,3 +419,4 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
 
   return storeWithActions;
 }
+
