@@ -137,7 +137,6 @@ export const ResistorSimulator: ComponentSimulator = {
  */
 export const LEDSimulator: ComponentSimulator = {
     nodeType: 'led',
-
     initialize(node: Node, state: SimulationState): ComponentState {
         const pins = new Map<string, PinState>();
         pins.set('anode', { pinName: 'anode', signalType: 'analog', voltage: 0, current: 0 });
@@ -177,6 +176,12 @@ export const LEDSimulator: ComponentSimulator = {
         const maxCurrent = component.specs.maxCurrent || 20; // mA
 
         if (anode && cathode) {
+            // Check if pins are connected (not NaN)
+            if (isNaN(anode.voltage) || isNaN(cathode.voltage)) {
+                component.internalState.brightness = 0;
+                return;
+            }
+
             const vDiff = anode.voltage - cathode.voltage;
 
             console.log(`💡 LED Update: anode=${anode.voltage.toFixed(3)}V, cathode=${cathode.voltage.toFixed(3)}V, vDiff=${vDiff.toFixed(3)}V`);

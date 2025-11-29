@@ -20,60 +20,70 @@ import {
   NodeTypes,
   EdgeTypes,
 } from '@xyflow/react';
-import { useSimulation } from '@xyflow/react';
 
-import SevenSegmentNode from './SevenSegmentNode';
-import AnalogJoystickNode from './AnalogJoystickNode';
-import ArduinoMegaNode from './ArduinoMegaNode';
-import ArduinoNanoNode from './ArduinoNanoNode';
-import ArduinoUnoNode from './ArduinoUnoNode';
-import BiaxialStepperNode from './BiaxialStepperNode';
-import BigSoundSensorNode from './BigSoundSensorNode';
-import ESP32DevkitV1Node from './ESP32DevkitV1Node';
-import BuzzerNode from './BuzzerNode';
-import DHT22Node from './DHT22Node';
-import DipSwitch8Node from './DipSwitch8Node';
-import DS1307Node from './DS1307Node';
-import FlameSensorNode from './FlameSensorNode';
-import FranzininhoNode from './FranzininhoNode';
-import GasSensorNode from './GasSensorNode';
-import HCSR04Node from './HCSR04Node';
-import HeartBeatSensorNode from './HeartBeatSensorNode';
-import HX711Node from './HX711Node';
-import ILI9341Node from './ILI9341Node';
-import IRReceiverNode from './IRReceiverNode';
-import IRRemoteNode from './IRRemoteNode';
-import KS2EMDC5Node from './KS2EMDC5Node';
-import KY040Node from './KY040Node';
-import LCD1602Node from './LCD1602Node';
-import LedBarGraphNode from './LedBarGraphNode';
-import LEDNode from './LEDNode';
-import LEDRingNode from './LEDRingNode';
-import MembraneKeypadNode from './MembraneKeypadNode';
-import MicroSDCardNode from './MicroSDCardNode';
-import MPU6050Node from './MPU6050Node';
-import NanoRP2040ConnectNode from './NanoRP2040ConnectNode';
-import NeoPixelNode from './NeoPixelNode';
-import NeoPixelMatrixNode from './NeoPixelMatrixNode';
-import NTCTemperatureSensorNode from './NTCTemperatureSensorNode';
-import PhotoresistorSensorNode from './PhotoresistorSensorNode';
-import PIRMotionSensorNode from './PIRMotionSensorNode';
-import PotentiometerNode from './PotentiometerNode';
-import Pushbutton6mmNode from './Pushbutton6mmNode';
-import PushbuttonNode from './PushbuttonNode';
-import ResistorNode from './ResistorNode';
-import RGBLedNode from './RGBLedNode';
-import RotaryDialerNode from './RotaryDialerNode';
-import ServoNode from './ServoNode';
-import SlidePotentiometerNode from './SlidePotentiometerNode';
-import SlideSwitchNode from './SlideSwitchNode';
-import SmallSoundSensorNode from './SmallSoundSensorNode';
-import SSD1306Node from './SSD1306Node';
-import StepperMotorNode from './StepperMotorNode';
-import TiltSwitchNode from './TiltSwitchNode';
+import {
+  useSimulation,
+  // Power
+  BatteryNode,
+  // Passive
+  ResistorNode,
+  PotentiometerNode,
+  // Output
+  LEDNode,
+  RGBLedNode,
+  LEDRingNode,
+  LedBarGraphNode,
+  NeoPixelNode,
+  NeoPixelMatrixNode,
+  ServoNode,
+  BuzzerNode,
+  StepperMotorNode,
+  BiaxialStepperNode,
+  KS2EMDC5Node,
+  // Displays
+  LCD1602Node,
+  SSD1306Node,
+  ILI9341Node,
+  SevenSegmentNode,
+  // Input
+  PushbuttonNode,
+  Pushbutton6mmNode,
+  AnalogJoystickNode,
+  KY040Node,
+  MembraneKeypadNode,
+  DipSwitch8Node,
+  SlideSwitchNode,
+  SlidePotentiometerNode,
+  RotaryDialerNode,
+  IRRemoteNode,
+  IRReceiverNode,
+  // Sensors
+  DHT22Node,
+  HCSR04Node,
+  PIRMotionSensorNode,
+  PhotoresistorSensorNode,
+  NTCTemperatureSensorNode,
+  FlameSensorNode,
+  GasSensorNode,
+  HeartBeatSensorNode,
+  BigSoundSensorNode,
+  SmallSoundSensorNode,
+  MPU6050Node,
+  HX711Node,
+  TiltSwitchNode,
+  // Microcontrollers
+  ArduinoUnoNode,
+  ArduinoMegaNode,
+  ArduinoNanoNode,
+  ESP32DevkitV1Node,
+  FranzininhoNode,
+  NanoRP2040ConnectNode,
+  // Modules
+  DS1307Node,
+  MicroSDCardNode,
+} from '@xyflow/react/electrical';
 import WireEdge from './WireEdge';
 import WireConnectionLine from './WireConnectionLine';
-import BatteryNode from './BatteryNode';
 
 const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
 const onNodeDragStart = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
@@ -277,13 +287,15 @@ const wireColors = [
   { name: 'Gray', value: '#6b7280' },
 ];
 
-const BasicFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const [selectedWireColor, setSelectedWireColor] = useState(wireColors[0].value);
-
-  // Use the real simulation engine
+// Simulation wrapper component that uses React Flow hooks
+const SimulationManager = ({
+  nodes,
+  setNodes
+}: {
+  nodes: Node[];
+  setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
+}) => {
+  // Use the real simulation engine - this hook uses useNodes/useEdges internally
   const {
     start,
     stop,
@@ -372,6 +384,58 @@ const BasicFlow = () => {
       window.removeEventListener('button-release', handleCustomEvent);
     };
   }, [handleButtonPress, handleButtonRelease]);
+
+  return (
+    <Panel position="bottom-left" style={{ display: 'flex', gap: '12px' }}>
+      <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
+        <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Simulation</h4>
+        <button
+          onClick={toggle}
+          style={{
+            padding: '8px 16px',
+            background: isRunning ? '#ef4444' : '#22c55e',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '14px',
+          }}
+        >
+          {isRunning ? '⏸ Stop' : '▶ Simulate'}
+        </button>
+      </div>
+
+      {isRunning && (
+        <div style={{ background: 'white', padding: '12px', borderRadius: '4px', maxWidth: '300px' }}>
+          <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Voltages</h4>
+          <div style={{ fontSize: '10px', fontFamily: 'monospace' }}>
+            {nodes.map((node) => {
+              const voltages = (node.data as any).voltages;
+              if (!voltages || Object.keys(voltages).length === 0) return null;
+              return (
+                <div key={node.id} style={{ marginBottom: '4px' }}>
+                  <strong>{node.id}:</strong>
+                  {Object.entries(voltages).map(([pin, voltage]) => (
+                    <div key={pin} style={{ marginLeft: '8px' }}>
+                      {pin}: {(voltage as number).toFixed(2)}V
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </Panel>
+  );
+};
+
+const BasicFlow = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const [selectedWireColor, setSelectedWireColor] = useState(wireColors[0].value);
 
   const {
     addNodes,
@@ -536,48 +600,9 @@ const BasicFlow = () => {
         <Controls />
         <ComponentPanel components={componentLibrary} position="top-left" />
 
-        <Panel position="bottom-left" style={{ display: 'flex', gap: '12px' }}>
-          <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
-            <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Simulation</h4>
-            <button
-              onClick={toggle}
-              style={{
-                padding: '8px 16px',
-                background: isRunning ? '#ef4444' : '#22c55e',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                fontSize: '14px',
-              }}
-            >
-              {isRunning ? '⏸ Stop' : '▶ Simulate'}
-            </button>
-          </div>
+        <SimulationManager nodes={nodes} setNodes={setNodes} />
 
-          {isRunning && (
-            <div style={{ background: 'white', padding: '12px', borderRadius: '4px', maxWidth: '300px' }}>
-              <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Voltages</h4>
-              <div style={{ fontSize: '10px', fontFamily: 'monospace' }}>
-                {nodes.map((node) => {
-                  const voltages = (node.data as any).voltages;
-                  if (!voltages || Object.keys(voltages).length === 0) return null;
-                  return (
-                    <div key={node.id} style={{ marginBottom: '4px' }}>
-                      <strong>{node.id}:</strong>
-                      {Object.entries(voltages).map(([pin, voltage]) => (
-                        <div key={pin} style={{ marginLeft: '8px' }}>
-                          {pin}: {(voltage as number).toFixed(2)}V
-                        </div>
-                      ))}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
+        <Panel position="bottom-right" style={{ display: 'flex', gap: '12px' }}>
           <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
             <h4 style={{ margin: '0 0 8px 0', fontSize: '12px', fontWeight: 'bold' }}>Wire Color</h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>

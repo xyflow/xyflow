@@ -20,8 +20,8 @@ const ResistorNode = memo(({ data }: NodeProps<BuiltInNode>) => {
   const value = (data.value as string) || '1000';
 
   const pinInfo = [
-    { name: '1', x: 0, y: 5.65 },
-    { name: '2', x: 58.8, y: 5.65 },
+    { name: '1', x: 0, y: 8.95 },
+    { name: '2', x: 58.8, y: 8.95 },
   ];
 
   const breakValue = (val: number): [number, number] => {
@@ -124,10 +124,10 @@ const ResistorNode = memo(({ data }: NodeProps<BuiltInNode>) => {
           style={{
             left: index === 0 ? `${pin.x}px` : `${pin.x - 7}px`,
             top: `${pin.y}px`,
-            width: '8px',
-            height: '8px',
+            width: '4px',
+            height: '4px',
             background: '#1a192b',
-            border: '2px solid #fff',
+            border: '1px solid #fff',
           }}
         />
       ))}
@@ -140,10 +140,10 @@ const ResistorNode = memo(({ data }: NodeProps<BuiltInNode>) => {
           style={{
             left: index === 0 ? `${pin.x}px` : `${pin.x - 7}px`,
             top: `${pin.y}px`,
-            width: '8px',
-            height: '8px',
+            width: '4px',
+            height: '4px',
             background: '#1a192b',
-            border: '2px solid #fff',
+            border: '1px solid #fff',
           }}
         />
       ))}

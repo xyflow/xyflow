@@ -79,4 +79,57 @@ const umdConfig = defineConfig({
   ],
 });
 
-export default isProd ? [esmMjsConfig, esmJsConfig, umdConfig] : [esmJsConfig, esmMjsConfig];
+// Electrical components config (if electrical-components exist)
+const electricalEntries = pkg.rollup?.additionalEntries || [];
+const electricalConfigs = electricalEntries.flatMap((entry) => {
+  const esmElectricalConfig = defineConfig({
+    input: entry.input,
+    output: {
+      file: entry.esm,
+      format: 'esm',
+      banner: pkg.rollup?.vanilla ? undefined : '"use client"',
+    },
+    external: ['@xyflow/react', '@xyflow/system', 'react', 'react-dom', 'react/jsx-runtime'],
+    onwarn,
+    plugins: [
+      peerDepsExternal({
+        includeDependencies: true,
+      }),
+      ...defaultPlugins,
+      typescript(),
+    ],
+  });
+
+  const umdElectricalConfig = defineConfig({
+    input: entry.input,
+    output: {
+      file: entry.umd,
+      format: 'umd',
+      exports: 'named',
+      name: entry.name || 'ReactFlowElectrical',
+      globals: {
+        ...globals,
+        '@xyflow/react': 'ReactFlow',
+        '@xyflow/system': 'XYFlowSystem',
+      },
+    },
+    external: ['@xyflow/react', '@xyflow/system', 'react', 'react-dom', 'react/jsx-runtime'],
+    onwarn,
+    plugins: [
+      peerDepsExternal(),
+      ...defaultPlugins,
+      typescript(),
+      replace({
+        preventAssignment: true,
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      }),
+      terser(),
+    ],
+  });
+
+  return isProd ? [esmElectricalConfig, umdElectricalConfig] : [esmElectricalConfig];
+});
+
+export default isProd
+  ? [esmMjsConfig, esmJsConfig, umdConfig, ...electricalConfigs]
+  : [esmJsConfig, esmMjsConfig, ...electricalConfigs];

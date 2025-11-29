@@ -410,6 +410,9 @@ export class SimulationEngine {
           const net = this.findNet(state, component.nodeId, pinName);
           if (net) {
             pin.voltage = net.voltage;
+          } else {
+            // Pin is unconnected / floating
+            pin.voltage = NaN;
           }
         }
       }

@@ -25,7 +25,7 @@ const LEDNodeComponent = ({ data, id }: NodeProps<LEDNode>) => {
   });
 
   const lightColors: { [key: string]: string } = {
-    red: '#000000ff',
+    red: '#ff0000',
     green: '#80ff80',
     blue: '#8080ff',
     yellow: '#ffff80',

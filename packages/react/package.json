@@ -42,6 +42,11 @@
       },
       "default": "./dist/esm/index.js"
     },
+    "./electrical": {
+      "types": "./dist/esm/electrical-components/electrical-components/index.d.ts",
+      "import": "./dist/esm/electrical-components/index.js",
+      "require": "./dist/umd/electrical-components/index.js"
+    },
     "./dist/base.css": "./dist/base.css",
     "./dist/style.css": "./dist/style.css"
   },
@@ -93,6 +98,14 @@
       "zustand": "zustand",
       "zustand/shallow": "zustandShallow"
     },
-    "name": "ReactFlow"
+    "name": "ReactFlow",
+    "additionalEntries": [
+      {
+        "input": "src/electrical-components/index.ts",
+        "esm": "dist/esm/electrical-components/index.js",
+        "umd": "dist/umd/electrical-components/index.js",
+        "name": "ReactFlowElectrical"
+      }
+    ]
   }
 }
