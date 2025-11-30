@@ -1,4 +1,5 @@
 import { MouseEvent, useCallback, useState, DragEvent, useRef, useEffect } from 'react';
+import Editor from '@monaco-editor/react';
 import {
   ReactFlow,
   MiniMap,
@@ -20,6 +21,7 @@ import {
   NodeTypes,
   EdgeTypes,
 } from '@xyflow/react';
+import { generateArduinoCode, parseArduinoCode } from './codeGenerator';
 
 import {
   useSimulation,
@@ -96,63 +98,119 @@ const initialNodes: Node[] = [
   {
     id: 'battery-1',
     type: 'battery',
-    position: { x: 100, y: 200 },
-    data: { label: 'Battery', voltage: 9 },
+    position: { x: 100, y: 100 },
+    data: { label: '5V', voltage: 5 },
+  },
+  {
+    id: 'esp32-1',
+    type: 'esp32DevkitV1',
+    position: { x: 300, y: 150 },
+    data: {
+      label: 'ESP32',
+      code: `
+const int buttonPin = 4;
+const int ledPin = 2;
+
+void setup() {
+  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  int buttonState = digitalRead(buttonPin);
+  digitalWrite(ledPin, !buttonState);  // Invert because pull-up makes unpressed = HIGH
+}
+      `
+    },
   },
   {
     id: 'pushbutton-1',
     type: 'pushbutton',
-    position: { x: 300, y: 200 },
-    data: { label: 'Pushbutton' },
-  },
-  {
-    id: 'resistor-1',
-    type: 'resistor',
-    position: { x: 500, y: 200 },
-    data: { label: 'Resistor', resistance: 1000 },
+    position: { x: 100, y: 200 },
+    data: { label: 'Button' },
   },
   {
     id: 'led-1',
     type: 'led',
-    position: { x: 700, y: 200 },
+    position: { x: 600, y: 250 },
     data: { label: 'LED', color: 'red' },
+  },
+  {
+    id: 'resistor-1',
+    type: 'resistor',
+    position: { x: 600, y: 350 },
+    data: { label: '220Ω', resistance: 220 },
   },
 ];
 
 const initialEdges: Edge[] = [
+  // Battery + to ESP32 VIN (power)
   {
-    id: 'e1',
+    id: 'e0a',
     source: 'battery-1',
     sourceHandle: 'pos',
-    target: 'pushbutton-1',
-    targetHandle: '1.l-target',
+    target: 'esp32-1',
+    targetHandle: 'VIN-target',
     type: 'wire',
     data: { color: '#ef4444', animated: false },
   },
+  // Battery - to ESP32 GND (ground)
+  {
+    id: 'e0b',
+    source: 'battery-1',
+    sourceHandle: 'neg',
+    target: 'esp32-1',
+    targetHandle: 'GND.2-target',
+    type: 'wire',
+    data: { color: '#1f2937', animated: false },
+  },
+  // Button to ESP32 D4 (input)
+  {
+    id: 'e1',
+    source: 'pushbutton-1',
+    sourceHandle: '1.l-source',
+    target: 'esp32-1',
+    targetHandle: 'D4-target',
+    type: 'wire',
+    data: { color: '#eab308', animated: false },
+  },
+  // ESP32 GND to other button pin (pull to ground when pressed)
   {
     id: 'e2',
-    source: 'pushbutton-1',
-    sourceHandle: '2.l-source',
-    target: 'resistor-1',
-    targetHandle: '1-target',
+    source: 'esp32-1',
+    sourceHandle: 'GND.1-source',
+    target: 'pushbutton-1',
+    targetHandle: '2.l-target',
     type: 'wire',
-    data: { color: '#ef4444', animated: false },
+    data: { color: '#1f2937', animated: false },
   },
+  // ESP32 D2 to LED anode (output)
   {
     id: 'e3',
-    source: 'resistor-1',
-    sourceHandle: '2-source',
+    source: 'esp32-1',
+    sourceHandle: 'D2-source',
     target: 'led-1',
     targetHandle: 'A-target',
     type: 'wire',
-    data: { color: '#ef4444', animated: false },
+    data: { color: '#22c55e', animated: false },
   },
+  // LED cathode to resistor
   {
     id: 'e4',
     source: 'led-1',
     sourceHandle: 'C-source',
-    target: 'battery-1',
-    targetHandle: 'neg',
+    target: 'resistor-1',
+    targetHandle: '1-target',
+    type: 'wire',
+    data: { color: '#6b7280', animated: false },
+  },
+  // Resistor to ESP32 GND
+  {
+    id: 'e5',
+    source: 'resistor-1',
+    sourceHandle: '2-source',
+    target: 'esp32-1',
+    targetHandle: 'GND.1-target',
     type: 'wire',
     data: { color: '#1f2937', animated: false },
   },
@@ -223,7 +281,11 @@ const edgeTypes: EdgeTypes = {
 };
 
 const componentLibrary = [
+  { type: 'esp32DevkitV1', label: 'ESP32 DevKit V1', color: '#00d4aa' },
   { type: 'battery', label: 'Battery', color: '#4CAF50' },
+  { type: 'led', label: 'LED', color: '#ff8080' },
+  { type: 'pushbutton', label: 'Pushbutton', color: '#ff0000' },
+  { type: 'resistor', label: 'Resistor', color: '#d5b597' },
   { type: 'sevenSegment', label: '7-Segment Display', color: '#ff6b6b' },
   { type: 'analogJoystick', label: 'Analog Joystick', color: '#4ecdc4' },
   { type: 'arduinoMega', label: 'Arduino Mega', color: '#45b7d1' },
@@ -287,13 +349,48 @@ const wireColors = [
   { name: 'Gray', value: '#6b7280' },
 ];
 
+const defaultArduinoCode = `// ESP32 Button-Controlled LED
+// Pin Definitions
+#define LED_PIN 2      // ESP32 D2 -> LED
+#define BUTTON_PIN 4   // ESP32 D4 -> Button
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(115200);
+
+  // Configure pins
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT);
+
+  Serial.println("ESP32 Ready!");
+  Serial.println("Press button to turn on LED");
+}
+
+void loop() {
+  // Read button state (HIGH when pressed due to pull-up)
+  int buttonState = digitalRead(BUTTON_PIN);
+
+  // Control LED based on button state
+  if (buttonState == HIGH) {
+    digitalWrite(LED_PIN, HIGH);  // Turn LED ON
+    Serial.println("💡 LED ON - Button Pressed!");
+  } else {
+    digitalWrite(LED_PIN, LOW);   // Turn LED OFF
+    Serial.println("💡 LED OFF - Button Released");
+  }
+
+  delay(50);  // Small delay for debouncing
+}`;
+
 // Simulation wrapper component that uses React Flow hooks
 const SimulationManager = ({
   nodes,
-  setNodes
+  setNodes,
+  code,
 }: {
   nodes: Node[];
   setNodes: React.Dispatch<React.SetStateAction<Node[]>>;
+  code: string;
 }) => {
   // Use the real simulation engine - this hook uses useNodes/useEdges internally
   const {
@@ -307,7 +404,8 @@ const SimulationManager = ({
     autoStart: false,
     debug: true,
     timeStep: 50,
-  });
+    arduinoCode: code, // Pass Arduino code to simulation
+  } as any);
 
   // Sync simulation visuals to nodes
   useEffect(() => {
@@ -436,6 +534,17 @@ const BasicFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [selectedWireColor, setSelectedWireColor] = useState(wireColors[0].value);
+  const [activeTab, setActiveTab] = useState<'canvas' | 'code' | 'data'>('canvas');
+  const [code, setCode] = useState(defaultArduinoCode);
+  const [autoGenerateCode, setAutoGenerateCode] = useState(true);
+
+  // Auto-generate code when circuit changes
+  useEffect(() => {
+    if (autoGenerateCode) {
+      const generatedCode = generateArduinoCode(nodes, edges);
+      setCode(generatedCode);
+    }
+  }, [nodes, edges, autoGenerateCode]);
 
   const {
     addNodes,
@@ -563,9 +672,75 @@ const BasicFlow = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  const tabs = [
+    { id: 'canvas' as const, label: 'Canvas', icon: '🎨' },
+    { id: 'code' as const, label: 'Code', icon: '💻' },
+    { id: 'data' as const, label: 'Data', icon: '📊' },
+  ];
+
   return (
-    <div ref={reactFlowWrapper} style={{ width: '100%', height: '100%' }}>
-      <ReactFlow
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* VSCode-like Tab Bar */}
+      <div
+        style={{
+          display: 'flex',
+          background: '#2d2d2d',
+          borderBottom: '1px solid #1e1e1e',
+          height: '35px',
+        }}
+      >
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              padding: '0 16px',
+              background: activeTab === tab.id ? '#1e1e1e' : 'transparent',
+              color: activeTab === tab.id ? '#ffffff' : '#969696',
+              border: 'none',
+              borderRight: '1px solid #1e1e1e',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: 'all 0.2s',
+              position: 'relative',
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== tab.id) {
+                e.currentTarget.style.background = '#2a2a2a';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== tab.id) {
+                e.currentTarget.style.background = 'transparent';
+              }
+            }}
+          >
+            <span>{tab.icon}</span>
+            <span>{tab.label}</span>
+            {activeTab === tab.id && (
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: '2px',
+                  background: '#007acc',
+                }}
+              />
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Canvas Tab */}
+      {activeTab === 'canvas' && (
+        <div ref={reactFlowWrapper} style={{ width: '100%', height: '100%' }}>
+          <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
@@ -600,7 +775,7 @@ const BasicFlow = () => {
         <Controls />
         <ComponentPanel components={componentLibrary} position="top-left" />
 
-        <SimulationManager nodes={nodes} setNodes={setNodes} />
+        <SimulationManager nodes={nodes} setNodes={setNodes} code={code} />
 
         <Panel position="bottom-right" style={{ display: 'flex', gap: '12px' }}>
           <div style={{ background: 'white', padding: '12px', borderRadius: '4px' }}>
@@ -648,12 +823,152 @@ const BasicFlow = () => {
           <button onClick={addNode}>addNode</button>
         </Panel>
       </ReactFlow>
-      <button
-        onClick={toggleVisibility}
-        style={{ position: 'absolute', zIndex: 10, right: 10, top: 100 }}
-      >
-        {isHidden ? 'Show' : 'Hide'} Flow
-      </button>
+        </div>
+      )}
+
+      {/* Code Tab */}
+      {activeTab === 'code' && (
+        <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+          {/* Editor Toolbar */}
+          <div
+            style={{
+              background: '#2d2d2d',
+              padding: '8px 16px',
+              borderBottom: '1px solid #1e1e1e',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              fontSize: '12px',
+              color: '#cccccc',
+            }}
+          >
+            <span style={{ color: '#858585' }}>📄</span>
+            <span>circuit.ino</span>
+
+            {/* Auto-generate toggle */}
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                marginLeft: '16px',
+                cursor: 'pointer',
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={autoGenerateCode}
+                onChange={(e) => setAutoGenerateCode(e.target.checked)}
+                style={{ cursor: 'pointer' }}
+              />
+              <span style={{ fontSize: '11px', color: autoGenerateCode ? '#4ec9b0' : '#858585' }}>
+                {autoGenerateCode ? '🔄 Auto-sync' : '✋ Manual'}
+              </span>
+            </label>
+
+            {/* Regenerate button */}
+            {!autoGenerateCode && (
+              <button
+                onClick={() => {
+                  const generatedCode = generateArduinoCode(nodes, edges);
+                  setCode(generatedCode);
+                }}
+                style={{
+                  background: '#007acc',
+                  color: 'white',
+                  border: 'none',
+                  padding: '4px 12px',
+                  borderRadius: '3px',
+                  fontSize: '11px',
+                  cursor: 'pointer',
+                }}
+              >
+                ⚡ Regenerate
+              </button>
+            )}
+
+            <span style={{ color: '#858585', marginLeft: 'auto' }}>Arduino (C++)</span>
+          </div>
+
+          {/* Monaco Editor */}
+          <Editor
+            height="100%"
+            defaultLanguage="cpp"
+            theme="vs-dark"
+            value={code}
+            onChange={(value) => setCode(value || '')}
+            options={{
+              fontSize: 14,
+              fontFamily: 'Consolas, "Courier New", monospace',
+              minimap: { enabled: true },
+              scrollBeyondLastLine: false,
+              lineNumbers: 'on',
+              renderLineHighlight: 'all',
+              automaticLayout: true,
+              tabSize: 2,
+              insertSpaces: true,
+              wordWrap: 'on',
+              padding: { top: 16 },
+            }}
+          />
+        </div>
+      )}
+
+      {/* Data Tab */}
+      {activeTab === 'data' && (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            background: '#1e1e1e',
+            color: '#d4d4d4',
+            padding: '20px',
+            fontFamily: 'Consolas, "Courier New", monospace',
+            fontSize: '13px',
+            overflow: 'auto',
+          }}
+        >
+          <div style={{ marginBottom: '20px' }}>
+            <h3 style={{ color: '#4ec9b0', marginBottom: '12px', fontSize: '16px' }}>
+              📊 Circuit Diagram Data
+            </h3>
+          </div>
+
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{ color: '#858585', marginBottom: '8px', fontSize: '12px' }}>
+              NODES ({nodes.length})
+            </div>
+            <pre
+              style={{
+                background: '#252526',
+                padding: '16px',
+                borderRadius: '4px',
+                overflow: 'auto',
+                margin: 0,
+              }}
+            >
+              {JSON.stringify(nodes, null, 2)}
+            </pre>
+          </div>
+
+          <div>
+            <div style={{ color: '#858585', marginBottom: '8px', fontSize: '12px' }}>
+              EDGES ({edges.length})
+            </div>
+            <pre
+              style={{
+                background: '#252526',
+                padding: '16px',
+                borderRadius: '4px',
+                overflow: 'auto',
+                margin: 0,
+              }}
+            >
+              {JSON.stringify(edges, null, 2)}
+            </pre>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

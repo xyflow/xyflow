@@ -11,7 +11,7 @@ import { SimulationEngine } from './SimulationEngine';
 import type { SimulationState, SimulationConfig, ComponentSimulator } from './types';
 
 
-import { BatterySimulator, ResistorSimulator, LEDSimulator, PushbuttonSimulator } from './simulators';
+import { BatterySimulator, ResistorSimulator, LEDSimulator, PushbuttonSimulator, ESP32Simulator } from './simulators';
 
 export interface UseSimulationOptions extends SimulationConfig {
   autoStart?: boolean;
@@ -77,6 +77,7 @@ export function useSimulation(options: UseSimulationOptions = {}): UseSimulation
     engineRef.current.registerSimulator(ResistorSimulator);
     engineRef.current.registerSimulator(LEDSimulator);
     engineRef.current.registerSimulator(PushbuttonSimulator);
+    engineRef.current.registerSimulator(ESP32Simulator);
   }, []);
 
   // Initialize simulation when nodes/edges change

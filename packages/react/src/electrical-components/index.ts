@@ -95,4 +95,5 @@ export {
     ResistorSimulator,
     LEDSimulator,
     PushbuttonSimulator,
+    ESP32Simulator,
 } from '../simulation/simulators';

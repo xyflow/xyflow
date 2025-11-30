@@ -175,6 +175,19 @@ export class SimulationEngine {
         }
       }
 
+      // Check if this net is connected to a GND pin
+      for (const pin of net.connectedPins) {
+        const pinName = pin.pinName.toUpperCase();
+        if (pinName.startsWith('GND') || pinName === 'GROUND' || pinName === 'VSS') {
+          net.isGround = true;
+          net.voltage = 0; // Ground is always 0V
+          if (this.config.debug) {
+            console.log(`⏚ Net ${netId} marked as GROUND (connected to ${pin.pinName})`);
+          }
+          break;
+        }
+      }
+
       state.nets.set(netId, net);
     }
   }
@@ -386,6 +399,61 @@ export class SimulationEngine {
             G[idx2][idx2] += conductance;
             if (idx1 !== undefined && idx1 >= 0) {
               G[idx2][idx1] -= conductance;
+            }
+          }
+        }
+      } else if (component.nodeType === 'esp32DevkitV1') {
+        // ESP32 microcontroller
+        // Power pins act as voltage sources
+        const vm = component.internalState.vm;
+
+        // 3V3 pin as 3.3V source
+        const v3v3Pin = component.pins.get('3V3');
+        if (v3v3Pin) {
+          const net = this.findNet(state, component.nodeId, '3V3');
+          if (net && !net.isGround) {
+            const idx = nodeToIndex.get(net.id);
+            if (idx !== undefined && idx >= 0) {
+              // Set this node to 3.3V (strong voltage source)
+              b[idx] += 3.3 * 1000; // High conductance to enforce voltage
+              G[idx][idx] += 1000;
+            }
+          }
+        }
+
+        // OUTPUT pins act as voltage sources (driven by Arduino code)
+        if (vm) {
+          for (const [pinName, pin] of component.pins) {
+            if (pinName.startsWith('D')) {
+              const pinNumber = parseInt(pinName.substring(1));
+              const pinMode = vm.getPinMode(pinNumber);
+
+              if (pinMode === 'OUTPUT') {
+                // This pin is an output - it should drive voltage
+                const net = this.findNet(state, component.nodeId, pinName);
+                if (net && !net.isGround) {
+                  const idx = nodeToIndex.get(net.id);
+                  if (idx !== undefined && idx >= 0) {
+                    // Use the pin's current voltage as the source
+                    const targetVoltage = pin.voltage;
+                    b[idx] += targetVoltage * 100; // Medium strength driver
+                    G[idx][idx] += 100;
+                  }
+                }
+              } else if (pinMode === 'INPUT_PULLUP') {
+                // INPUT_PULLUP pins have a weak pull-up resistor to 3.3V
+                const net = this.findNet(state, component.nodeId, pinName);
+                if (net && !net.isGround) {
+                  const idx = nodeToIndex.get(net.id);
+                  if (idx !== undefined && idx >= 0) {
+                    // Weak pull-up to 3.3V (low conductance = high resistance ~50k ohm)
+                    const pullupConductance = 0.02; // ~50k ohm
+                    b[idx] += 3.3 * pullupConductance;
+                    G[idx][idx] += pullupConductance;
+                  }
+                }
+              }
+              // INPUT pins don't drive - they just read, so no matrix entries needed
             }
           }
         }

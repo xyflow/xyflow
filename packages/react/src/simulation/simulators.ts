@@ -6,6 +6,8 @@ import type {
     PinState,
 } from './types';
 
+export { ESP32Simulator } from './ESP32Simulator';
+
 /**
  * Battery Simulator
  * Provides a constant voltage source.
