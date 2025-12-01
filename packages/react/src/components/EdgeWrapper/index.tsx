@@ -89,6 +89,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
           sourceNode,
           targetNode,
           elevateOnSelect: store.elevateEdgesOnSelect,
+          zIndexMode: store.zIndexMode,
         });
 
         return {

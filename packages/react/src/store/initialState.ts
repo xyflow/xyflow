@@ -122,7 +122,7 @@ const getInitialState = ({
     edgesReconnectable: true,
     elementsSelectable: true,
     elevateNodesOnSelect: true,
-    elevateEdgesOnSelect: false,
+    elevateEdgesOnSelect: true,
     selectNodesOnDrag: true,
 
     multiSelectionActive: false,

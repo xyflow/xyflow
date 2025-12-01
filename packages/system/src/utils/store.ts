@@ -117,7 +117,7 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
   checkEquality?: boolean;
 };
 
-function isManualZIndexMode(zIndexMode?: ZIndexMode): boolean {
+export function isManualZIndexMode(zIndexMode?: ZIndexMode): boolean {
   return zIndexMode === 'manual';
 }
 
@@ -129,7 +129,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 ): boolean {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
 
-  let rootParentIndex = { i: -1 };
+  const rootParentIndex = { i: -1 };
   let nodesInitialized = nodes.length > 0;
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number =
@@ -229,7 +229,7 @@ function updateChildNode<NodeType extends NodeBase>(
     rootParentIndex &&
     !parentNode.parentId &&
     parentNode.internals.rootParentIndex === undefined &&
-    !isManualZIndexMode(zIndexMode)
+    zIndexMode === 'auto'
   ) {
     parentNode.internals.rootParentIndex = ++rootParentIndex.i;
     parentNode.internals.z = parentNode.internals.z + rootParentIndex.i * ROOT_PARENT_Z_INCREMENT;
