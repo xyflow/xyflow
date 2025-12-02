@@ -1,4 +1,5 @@
 import { memo, type ReactNode } from 'react';
+import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
 import { useGlobalKeyHandler } from '../../hooks/useGlobalKeyHandler';
@@ -72,7 +73,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onViewportChange,
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
-  const { nodesSelectionActive, userSelectionActive } = useStore(selector);
+  const { nodesSelectionActive, userSelectionActive } = useStore(selector, shallow);
   const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: win });
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: win });
 
