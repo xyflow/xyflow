@@ -1,0 +1,12 @@
+diff --git a/src/nodrag.js b/src/nodrag.js
+index 6076694e7816426bb6db686aac68a5dd462873d2..707ff88dfc3fc61bf685b64e3fe7f86c7dbaf887 100644
+--- a/src/nodrag.js
++++ b/src/nodrag.js
+@@ -2,6 +2,7 @@ import {select} from "d3-selection";
+ import noevent, {nonpassivecapture} from "./noevent.js";
+ 
+ export default function(view) {
++  if (!view) return;
+   var root = view.document.documentElement,
+       selection = select(view).on("dragstart.drag", noevent, nonpassivecapture);
+   if ("onselectstart" in root) {

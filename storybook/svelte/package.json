@@ -1,0 +1,35 @@
+{
+  "name": "svelte-storybook",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
+    "storybook": "storybook dev -p 6008 --ci",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "common-storybook": "workspace:*",
+    "@xyflow/svelte": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "playwright": "catalog:",
+    "storybook": "catalog:",
+    "@storybook/svelte": "catalog:",
+    "@storybook/addon-docs": "catalog:",
+    "@storybook/addon-a11y": "catalog:",
+    "@storybook/addon-svelte-csf": "catalog:",
+    "@storybook/addon-vitest": "catalog:",
+    "@storybook/svelte-vite": "catalog:",
+    "@testing-library/svelte": "catalog:",
+    "@vitest/browser": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "svelte": "^5.39.9",
+    "svelte-check": "^4.3.2",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@tsconfig/svelte": "^5.0.5",
+    "typescript": "~5.9.3"
+  }
+}
