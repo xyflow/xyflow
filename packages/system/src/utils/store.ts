@@ -128,12 +128,11 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   options: UpdateNodesOptions<NodeType> = {}
 ): boolean {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
-
-  const rootParentIndex = { i: -1 };
-  let nodesInitialized = nodes.length > 0;
+  const rootParentIndex = { i: 0 };
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number =
     _options?.elevateNodesOnSelect && !isManualZIndexMode(_options.zIndexMode) ? SELECTED_NODE_Z : 0;
+  let nodesInitialized = nodes.length > 0;
 
   nodeLookup.clear();
   parentLookup.clear();
