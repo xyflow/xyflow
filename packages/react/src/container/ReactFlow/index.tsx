@@ -104,7 +104,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     onPaneMouseLeave,
     onPaneScroll,
     onPaneContextMenu,
-    paneClickDistance = 0,
+    paneClickDistance = 1,
     nodeClickDistance = 0,
     children,
     onReconnect,

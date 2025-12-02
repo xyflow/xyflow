@@ -1,5 +1,18 @@
 # @xyflow/svelte
 
+## 1.4.2
+
+### Patch Changes
+
+- [#5603](https://github.com/xyflow/xyflow/pull/5603) [`17a175791`](https://github.com/xyflow/xyflow/commit/17a175791b2420b32d55a8fcbbb35649862b85cf) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix onPaneClick always firing when moving the viewport
+
+- [#5615](https://github.com/xyflow/xyflow/pull/5615) [`8b35c77eb`](https://github.com/xyflow/xyflow/commit/8b35c77ebe5a4f6cba33c597d94eba1ead64fdfc) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix wrong positions when resizing nodes with a non-default node-origin
+
+- [#5578](https://github.com/xyflow/xyflow/pull/5578) [`00bcb9f5f`](https://github.com/xyflow/xyflow/commit/00bcb9f5f45f49814b9ac19b3f55cfe069ee3773) Thanks [@peterkogo](https://github.com/peterkogo)! - Pass current pointer position to connection
+
+- Updated dependencies [[`00bcb9f5f`](https://github.com/xyflow/xyflow/commit/00bcb9f5f45f49814b9ac19b3f55cfe069ee3773)]:
+  - @xyflow/system@0.0.73
+
 ## 1.4.1
 
 ### Patch Changes
