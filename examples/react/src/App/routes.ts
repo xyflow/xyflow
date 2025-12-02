@@ -60,6 +60,7 @@ import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
 import MovingHandles from '../examples/MovingHandles';
 import DetachedHandle from '../examples/DetachedHandle';
+import ZIndexMode from '../examples/ZIndexMode';
 
 export interface IRoute {
   name: string;
@@ -377,6 +378,11 @@ const routes: IRoute[] = [
     name: 'useKeyPress',
     path: 'use-key-press',
     component: UseKeyPress,
+  },
+  {
+    name: 'zIndexMode',
+    path: 'z-index-mode',
+    component: ZIndexMode,
   },
 ];
 

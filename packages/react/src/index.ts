@@ -113,6 +113,7 @@ export {
   type SetViewport,
   type FitBounds,
   type HandleConnection,
+  type ZIndexMode,
 } from '@xyflow/system';
 
 // we need this workaround to prevent a duplicate identifier error
