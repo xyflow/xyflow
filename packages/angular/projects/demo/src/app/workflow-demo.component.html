@@ -1,0 +1,303 @@
+<div class="n8n-workflow-builder">
+  <!-- Header with title and controls -->
+  <header class="workflow-header">
+    <div class="header-left">
+      <h1>⚡ Angular Workflow Builder</h1>
+      <span class="subtitle">Build powerful automation workflows</span>
+    </div>
+    <div class="header-controls">
+      <button class="btn btn-secondary" (click)="clearWorkflow()">
+        🗑️ Clear
+      </button>
+      <button class="btn btn-secondary" (click)="saveWorkflow()">
+        💾 Save
+      </button>
+      <button class="btn btn-primary" (click)="executeWorkflow()" [disabled]="isExecuting()">
+        {{ isExecuting() ? '⏳ Running...' : '▶️ Execute' }}
+      </button>
+    </div>
+  </header>
+
+  <div class="workflow-content">
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle" (click)="toggleSidebar()" [title]="sidebarCollapsed() ? 'Show Sidebar' : 'Hide Sidebar'">
+      {{ sidebarCollapsed() ? '→' : '←' }}
+    </button>
+
+    <!-- Node Palette Sidebar -->
+    <aside class="node-palette" [class.collapsed]="sidebarCollapsed()">
+      <h3>🧩 Workflow Nodes</h3>
+
+      <div class="node-category">
+        <h4>🚀 Triggers</h4>
+        <div class="node-list">
+          <div
+            *ngFor="let nodeType of triggerNodes"
+            class="palette-node"
+            [style.background]="nodeType.color"
+            (click)="addNodeToCanvas(nodeType)"
+            [title]="nodeType.description"
+          >
+            <span class="node-icon">{{ nodeType.icon }}</span>
+            <span class="node-name">{{ nodeType.name }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="node-category">
+        <h4>⚙️ Actions</h4>
+        <div class="node-list">
+          <div
+            *ngFor="let nodeType of actionNodes"
+            class="palette-node"
+            [style.background]="nodeType.color"
+            (click)="addNodeToCanvas(nodeType)"
+            [title]="nodeType.description"
+          >
+            <span class="node-icon">{{ nodeType.icon }}</span>
+            <span class="node-name">{{ nodeType.name }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="node-category">
+        <h4>🔀 Logic</h4>
+        <div class="node-list">
+          <div
+            *ngFor="let nodeType of conditionNodes"
+            class="palette-node"
+            [style.background]="nodeType.color"
+            (click)="addNodeToCanvas(nodeType)"
+            [title]="nodeType.description"
+          >
+            <span class="node-icon">{{ nodeType.icon }}</span>
+            <span class="node-name">{{ nodeType.name }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="node-category">
+        <h4>📤 Outputs</h4>
+        <div class="node-list">
+          <div
+            *ngFor="let nodeType of outputNodes"
+            class="palette-node"
+            [style.background]="nodeType.color"
+            (click)="addNodeToCanvas(nodeType)"
+            [title]="nodeType.description"
+          >
+            <span class="node-icon">{{ nodeType.icon }}</span>
+            <span class="node-name">{{ nodeType.name }}</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Canvas Area -->
+    <main class="canvas-area">
+      <div class="canvas-container">
+        <!-- Angular Flow Canvas would go here -->
+        <div class="flow-placeholder" [class.executing]="isExecuting()">
+          <div class="placeholder-content">
+            <div class="workflow-canvas">
+              <!-- Render workflow nodes -->
+              <div
+                *ngFor="let node of workflowNodes(); trackBy: trackNode"
+                class="workflow-node-container"
+                [style.left.px]="node.position.x"
+                [style.top.px]="node.position.y"
+                [attr.data-node-id]="node.id"
+                (click)="selectNode(node)"
+                (mousedown)="startDrag(node, $event)"
+              >
+                <!-- Resizable node type -->
+                <app-resizable-node
+                  *ngIf="node.type === 'resizable'"
+                  [data]="node.data"
+                  [class.selected]="node.selected"
+                  [class.running]="node.data.status === 'running'"
+                  [class.success]="node.data.status === 'success'"
+                  [class.error]="node.data.status === 'error'"
+                ></app-resizable-node>
+
+                <!-- Default node types -->
+                <div
+                  *ngIf="node.type !== 'resizable'"
+                  class="workflow-node"
+                  [class.selected]="node.selected"
+                  [class.running]="node.data.status === 'running'"
+                  [class.success]="node.data.status === 'success'"
+                  [class.error]="node.data.status === 'error'"
+                >
+                  <div class="node-header">
+                    <span class="node-icon">{{ node.data.icon }}</span>
+                    <span class="node-title">{{ node.data.label }}</span>
+                    <button class="node-delete" (click)="deleteNode(node.id)" title="Delete node">×</button>
+                  </div>
+
+                  <!-- Node handles for connections -->
+                  <div class="node-handles">
+                    <div
+                      class="handle handle-input"
+                      *ngIf="canHaveInput(node)"
+                      [attr.data-node-id]="node.id"
+                      [attr.data-handle-type]="'input'"
+                      (mousedown)="startConnection(node, 'input', $event)"
+                      (mouseup)="endConnection(node, 'input', $event)"
+                    ></div>
+                    <div
+                      class="handle handle-output"
+                      *ngIf="canHaveOutput(node)"
+                      [attr.data-node-id]="node.id"
+                      [attr.data-handle-type]="'output'"
+                      (mousedown)="startConnection(node, 'output', $event)"
+                      (mouseup)="endConnection(node, 'output', $event)"
+                    ></div>
+                  </div>
+
+                  <!-- Status indicator -->
+                  <div class="node-status" *ngIf="node.data.status && node.data.status !== 'idle'">
+                    <div class="status-indicator" [attr.data-status]="node.data.status">
+                      <span *ngIf="node.data.status === 'running'">⏳</span>
+                      <span *ngIf="node.data.status === 'success'">✅</span>
+                      <span *ngIf="node.data.status === 'error'">❌</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Render connections/edges -->
+              <svg class="workflow-edges" [attr.width]="canvasWidth" [attr.height]="canvasHeight"
+                   style="position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5;">
+                <!-- Debug markers for handle positions -->
+                <g *ngFor="let node of workflowNodes()">
+                  <!-- Input handle marker -->
+                  <circle *ngIf="canHaveInput(node)"
+                    [attr.cx]="getHandlePosition(node, 'input').x"
+                    [attr.cy]="getHandlePosition(node, 'input').y"
+                    r="3"
+                    fill="red"
+                    opacity="0.8"
+                  />
+                  <!-- Output handle marker -->
+                  <circle *ngIf="canHaveOutput(node)"
+                    [attr.cx]="getHandlePosition(node, 'output').x"
+                    [attr.cy]="getHandlePosition(node, 'output').y"
+                    r="3"
+                    fill="green"
+                    opacity="0.8"
+                  />
+                </g>
+
+                <!-- Dynamic edges -->
+                <g *ngFor="let edge of edgesWithPaths(); trackBy: trackEdge">
+                  <path
+                    [attr.d]="edge.path"
+                    [attr.stroke]="edge.animated ? '#3b82f6' : '#64748b'"
+                    [attr.stroke-width]="edge.animated ? '3' : '2'"
+                    fill="none"
+                    [class.animated-edge]="edge.animated"
+                  />
+                </g>
+
+                <!-- Temporary connection line while dragging -->
+                <path
+                  *ngIf="tempConnection()"
+                  [attr.d]="getTempConnectionPath()"
+                  stroke="#3b82f6"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-dasharray="5,5"
+                />
+              </svg>
+
+              <!-- Empty state -->
+              <div class="empty-state" *ngIf="workflowNodes().length === 0">
+                <div class="empty-content">
+                  <h3>🚀 Start Building Your Workflow</h3>
+                  <p>Drag nodes from the sidebar to create your automation workflow</p>
+                  <div class="quick-start">
+                    <button class="btn btn-primary" (click)="loadSampleWorkflow()">
+                      📋 Load Sample Workflow
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Properties Panel -->
+    <aside class="properties-panel" *ngIf="selectedNode()" [class.collapsed]="sidebarCollapsed()">
+      <h3>⚙️ Node Settings</h3>
+      <div class="node-properties">
+        <div class="property-group">
+          <label>Node Name:</label>
+          <input
+            type="text"
+            [(ngModel)]="selectedNode()!.data.label"
+            class="property-input"
+          >
+        </div>
+
+        <div class="property-group">
+          <label>Description:</label>
+          <textarea
+            class="property-textarea"
+            placeholder="Describe what this node does..."
+          ></textarea>
+        </div>
+
+        <div class="property-group" *ngIf="selectedNode()?.type === 'webhook'">
+          <label>Webhook URL:</label>
+          <input
+            type="url"
+            placeholder="https://api.example.com/webhook"
+            class="property-input"
+          >
+        </div>
+
+        <div class="property-group" *ngIf="selectedNode()?.type === 'email'">
+          <label>Email Template:</label>
+          <select class="property-select">
+            <option>Welcome Email</option>
+            <option>Notification</option>
+            <option>Custom Template</option>
+          </select>
+        </div>
+
+        <div class="property-group" *ngIf="selectedNode()?.type === 'condition'">
+          <label>Condition Type:</label>
+          <select class="property-select">
+            <option>If/Then/Else</option>
+            <option>Switch</option>
+            <option>Filter</option>
+          </select>
+        </div>
+
+        <div class="property-actions">
+          <button class="btn btn-secondary" (click)="duplicateNode()">
+            📋 Duplicate
+          </button>
+          <button class="btn btn-danger" (click)="deleteSelectedNode()">
+            🗑️ Delete
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Status Bar -->
+  <footer class="status-bar">
+    <div class="status-left">
+      <span>Nodes: {{ workflowNodes().length }}</span>
+      <span>Connections: {{ workflowEdges().length }}</span>
+      <span>Status: {{ workflowStatus() }}</span>
+    </div>
+    <div class="status-right">
+      <span>⚡ Angular Flow v1.0.0</span>
+    </div>
+  </footer>
+</div>

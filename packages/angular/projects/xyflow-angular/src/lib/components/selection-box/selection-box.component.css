@@ -1,0 +1,23 @@
+/* Selection box styles */
+.xy-selection-box {
+  position: absolute;
+  background: var(--xy-selection-background, rgba(59, 130, 246, 0.1));
+  border: var(--xy-selection-border, 1px solid rgba(59, 130, 246, 0.6));
+  border-radius: var(--xy-selection-border-radius, 2px);
+  pointer-events: none;
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+/* CSS Variables for theming */
+:root {
+  --xy-selection-background: rgba(59, 130, 246, 0.1);
+  --xy-selection-border: 1px solid rgba(59, 130, 246, 0.6);
+  --xy-selection-border-radius: 2px;
+}
+
+/* Dark mode support */
+[data-theme="dark"] {
+  --xy-selection-background: rgba(96, 165, 250, 0.15);
+  --xy-selection-border: 1px solid rgba(96, 165, 250, 0.8);
+}

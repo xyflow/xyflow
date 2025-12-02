@@ -1,0 +1,135 @@
+:host {
+  display: contents;
+}
+
+.xy-flow__resize-control {
+  position: absolute;
+  user-select: none;
+  pointer-events: all;
+  z-index: 1000;
+}
+
+/* Handle controls */
+.xy-flow__resize-control.handle {
+  width: 7px;
+  height: 7px;
+  border: 1px solid #3367d9;
+  border-radius: 1px;
+  background-color: #3367d9;
+  cursor: nw-resize;
+}
+
+.xy-flow__resize-control.handle:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Line controls */
+.xy-flow__resize-control.line {
+  border-color: #3367d9;
+  border-width: 0;
+  background: transparent;
+}
+
+/* Position-based cursors for handles */
+.xy-flow__resize-control.handle.top-left,
+.xy-flow__resize-control.handle.bottom-right {
+  cursor: nw-resize;
+}
+
+.xy-flow__resize-control.handle.top-right,
+.xy-flow__resize-control.handle.bottom-left {
+  cursor: ne-resize;
+}
+
+.xy-flow__resize-control.handle.top,
+.xy-flow__resize-control.handle.bottom {
+  cursor: ns-resize;
+}
+
+.xy-flow__resize-control.handle.left,
+.xy-flow__resize-control.handle.right {
+  cursor: ew-resize;
+}
+
+/* Line positions */
+.xy-flow__resize-control.line.top {
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-top-width: 1px;
+  cursor: ns-resize;
+}
+
+.xy-flow__resize-control.line.bottom {
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-bottom-width: 1px;
+  cursor: ns-resize;
+}
+
+.xy-flow__resize-control.line.left {
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  border-left-width: 1px;
+  cursor: ew-resize;
+}
+
+.xy-flow__resize-control.line.right {
+  top: 0;
+  bottom: 0;
+  right: -1px;
+  width: 2px;
+  border-right-width: 1px;
+  cursor: ew-resize;
+}
+
+/* Handle positions */
+.xy-flow__resize-control.handle.top-left {
+  top: -4px;
+  left: -4px;
+}
+
+.xy-flow__resize-control.handle.top-right {
+  top: -4px;
+  right: -4px;
+}
+
+.xy-flow__resize-control.handle.bottom-left {
+  bottom: -4px;
+  left: -4px;
+}
+
+.xy-flow__resize-control.handle.bottom-right {
+  bottom: -4px;
+  right: -4px;
+}
+
+.xy-flow__resize-control.handle.top {
+  top: -4px;
+  left: 50%;
+  margin-left: -3px;
+}
+
+.xy-flow__resize-control.handle.bottom {
+  bottom: -4px;
+  left: 50%;
+  margin-left: -3px;
+}
+
+.xy-flow__resize-control.handle.left {
+  left: -4px;
+  top: 50%;
+  margin-top: -3px;
+}
+
+.xy-flow__resize-control.handle.right {
+  right: -4px;
+  top: 50%;
+  margin-top: -3px;
+}

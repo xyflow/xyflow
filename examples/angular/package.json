@@ -1,0 +1,33 @@
+{
+  "name": "angular-examples",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "dev": "ng serve --host 0.0.0.0",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint"
+  },
+  "dependencies": {
+    "@angular/animations": "^20.3.0",
+    "@angular/common": "^20.3.0",
+    "@angular/compiler": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/platform-browser": "^20.3.0",
+    "@angular/platform-browser-dynamic": "^20.3.0",
+    "@angular/router": "^20.3.0",
+    "@xyflow/angular": "file:../../packages/angular/dist/xyflow-angular",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.14.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^20.3.0",
+    "@angular/cli": "^20.3.0",
+    "@angular/compiler-cli": "^20.3.0",
+    "@types/node": "^18.18.0",
+    "typescript": "~5.6.0"
+  }
+}
