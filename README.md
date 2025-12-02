@@ -156,7 +156,7 @@ For releasing packages we are using [changesets](https://github.com/changesets/c
 
 1. create PRs for new features, updates and fixes (with a changeset if relevant for changelog)
 2. merge into main 
-3. changset creates a PR that bumps all packages based on the changesets 
+3. changeset creates a PR that bumps all packages based on the changesets 
 4. merge changeset PR if you want to release to Github and npm
 
 ## Built by [xyflow](https://xyflow.com)

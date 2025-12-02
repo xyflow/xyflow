@@ -14,6 +14,8 @@ import {
   NodeOrigin,
   CoordinateExtent,
   fitViewport,
+  getHandlePosition,
+  Position,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -176,7 +178,7 @@ const createStore = ({
       updateNodePositions: (nodeDragItems, dragging = false) => {
         const parentExpandChildren: ParentExpandChild[] = [];
         let changes = [];
-        const { nodeLookup, triggerNodeChanges, onNodesChangeMiddlewareMap } = get();
+        const { nodeLookup, triggerNodeChanges, connection, updateConnection, onNodesChangeMiddlewareMap } = get();
 
         for (const [id, dragItem] of nodeDragItems) {
           // we are using the nodelookup to be sure to use the current expandParent and parentId value
@@ -194,6 +196,11 @@ const createStore = ({
               : dragItem.position,
             dragging,
           };
+
+          if (node && connection.inProgress && connection.fromNode.id === node.id) {
+            const updatedFrom = getHandlePosition(node, connection.fromHandle, Position.Left, true);
+            updateConnection({ ...connection, from: updatedFrom });
+          }
 
           if (expandParent && node.parentId) {
             parentExpandChildren.push({
@@ -315,9 +322,6 @@ const createStore = ({
         get().panZoom?.setTranslateExtent(translateExtent);
 
         set({ translateExtent });
-      },
-      setPaneClickDistance: (clickDistance) => {
-        get().panZoom?.setClickDistance(clickDistance);
       },
       resetSelectedElements: () => {
         const { edges, nodes, triggerNodeChanges, triggerEdgeChanges, elementsSelectable } = get();

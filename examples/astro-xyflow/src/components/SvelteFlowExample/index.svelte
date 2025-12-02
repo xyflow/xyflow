@@ -54,7 +54,7 @@
     },
     {
       id: 'C',
-      position: { x: 250, y: 300 },
+      position: { x: 950, y: 300 },
       data: { label: 'C' },
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
@@ -79,7 +79,7 @@
 </script>
 
 <div style="height: 400px; width: 700px;">
-  <SvelteFlow bind:nodes bind:edges fitView {defaultEdgeOptions} width={700} height={400}>
+  <SvelteFlow bind:nodes bind:edges onlyRenderVisibleElements {defaultEdgeOptions} width={700} height={400}>
     <Controls />
     <Background variant={BackgroundVariant.Dots} />
     <ViewportPortal target="front">

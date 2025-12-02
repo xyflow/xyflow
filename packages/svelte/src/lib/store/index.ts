@@ -15,7 +15,9 @@ import {
   updateAbsolutePositions,
   snapPosition,
   calculateNodePosition,
-  type SetCenterOptions
+  type SetCenterOptions,
+  getHandlePosition,
+  Position
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
@@ -51,6 +53,15 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
     store.nodes = store.nodes.map((node) => {
+      if (store.connection.inProgress && store.connection.fromNode.id === node.id) {
+        const internalNode = store.nodeLookup.get(node.id);
+        if (internalNode) {
+          store.connection = {
+            ...store.connection,
+            from: getHandlePosition(internalNode, store.connection.fromHandle, Position.Left, true)
+          };
+        }
+      }
       const dragItem = nodeDragItems.get(node.id);
       return dragItem ? { ...node, position: dragItem.position, dragging } : node;
     });
@@ -191,10 +202,6 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     }
   }
 
-  function setPaneClickDistance(distance: number) {
-    store.panZoom?.setClickDistance(distance);
-  }
-
   function deselect<T extends Node | Edge>(
     elements: T[],
     elementsToDeselect: Set<string> | null = null
@@ -235,12 +242,8 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       const nodeWillBeSelected = ids.includes(node.id);
       const selected = isMultiSelection ? node.selected || nodeWillBeSelected : nodeWillBeSelected;
 
-      if (node.selected !== selected) {
-        // we need to mutate the node here in order to have the correct selected state in the drag handler
-        const internalNode = store.nodeLookup.get(node.id);
-        if (internalNode) internalNode.selected = selected;
-        node.selected = selected;
-        return { ...node };
+      if (!!node.selected !== selected) {
+        return { ...node, selected };
       }
       return node;
     });
@@ -257,7 +260,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       const edgeWillBeSelected = ids.includes(edge.id);
       const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
 
-      if (edge.selected !== selected) {
+      if (!!edge.selected !== selected) {
         return { ...edge, selected };
       }
       return edge;
@@ -397,7 +400,6 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,
-    setPaneClickDistance,
     unselectNodesAndEdges,
     addSelectedNodes,
     addSelectedEdges,

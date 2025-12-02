@@ -1,3 +1,5 @@
+/* eslint-disable svelte/prefer-svelte-reactivity */
+
 import {
   infiniteExtent,
   SelectionMode,
@@ -286,6 +288,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     autoPanOnNodeDrag: boolean = $derived(signals.props.autoPanOnNodeDrag ?? true);
     autoPanOnConnect: boolean = $derived(signals.props.autoPanOnConnect ?? true);
     autoPanOnNodeFocus: boolean = $derived(signals.props.autoPanOnNodeFocus ?? true);
+    autoPanSpeed: number = $derived(signals.props.autoPanSpeed ?? 15);
     connectionDragThreshold: number = $derived(signals.props.connectionDragThreshold ?? 1);
 
     fitViewQueued: boolean = signals.props.fitView ?? false;
@@ -476,3 +479,5 @@ function warnIfDeeplyReactive(array: unknown[] | undefined, name: string) {
     console.warn(`Use $state.raw for ${name} to prevent performance issues.`);
   }
 }
+
+/* eslint-enable svelte/prefer-svelte-reactivity */

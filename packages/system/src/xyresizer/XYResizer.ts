@@ -104,6 +104,18 @@ function nodeToChildExtent(child: NodeBase, parent: NodeBase, nodeOrigin: NodeOr
 export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: XYResizerParams): XYResizerInstance {
   const selection = select(domNode);
 
+  let params = {
+    controlDirection: getControlDirection('bottom-right'),
+    boundaries: {
+      minWidth: 0,
+      minHeight: 0,
+      maxWidth: Number.MAX_VALUE,
+      maxHeight: Number.MAX_VALUE,
+    },
+    resizeDirection: undefined as ResizeControlDirection | undefined,
+    keepAspectRatio: false,
+  };
+
   function update({
     controlPosition,
     boundaries,
@@ -117,7 +129,12 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     let prevValues = { ...initPrevValues };
     let startValues = { ...initStartValues };
 
-    const controlDirection = getControlDirection(controlPosition);
+    params = {
+      boundaries,
+      resizeDirection,
+      keepAspectRatio,
+      controlDirection: getControlDirection(controlPosition),
+    };
 
     let node: InternalNodeBase | undefined = undefined;
     let containerBounds: DOMRect | null = null;
@@ -125,6 +142,8 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     let parentNode: InternalNodeBase | undefined = undefined; // Needed to fix expandParent
     let parentExtent: CoordinateExtent | undefined = undefined;
     let childExtent: CoordinateExtent | undefined = undefined;
+    // we only want to trigger onResizeEnd if onResize was actually called
+    let resizeDetected = false;
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
@@ -210,16 +229,17 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         if (!node) {
           return;
         }
+
         const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
         const change: XYResizerChange = {};
         const nodeOrigin = node.origin ?? storeNodeOrigin;
 
         const { width, height, x, y } = getDimensionsAfterResize(
           startValues,
-          controlDirection,
+          params.controlDirection,
           pointerPosition,
-          boundaries,
-          keepAspectRatio,
+          params.boundaries,
+          params.keepAspectRatio,
           nodeOrigin,
           parentExtent,
           childExtent
@@ -262,9 +282,13 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
 
         if (isWidthChange || isHeightChange) {
           change.width =
-            isWidthChange && (!resizeDirection || resizeDirection === 'horizontal') ? width : prevValues.width;
+            isWidthChange && (!params.resizeDirection || params.resizeDirection === 'horizontal')
+              ? width
+              : prevValues.width;
           change.height =
-            isHeightChange && (!resizeDirection || resizeDirection === 'vertical') ? height : prevValues.height;
+            isHeightChange && (!params.resizeDirection || params.resizeDirection === 'vertical')
+              ? height
+              : prevValues.height;
           prevValues.width = change.width;
           prevValues.height = change.height;
         }
@@ -289,8 +313,8 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           prevWidth,
           height: prevValues.height,
           prevHeight,
-          affectsX: controlDirection.affectsX,
-          affectsY: controlDirection.affectsY,
+          affectsX: params.controlDirection.affectsX,
+          affectsY: params.controlDirection.affectsY,
         });
 
         const nextValues = { ...prevValues, direction };
@@ -300,13 +324,20 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         if (callResize === false) {
           return;
         }
+        resizeDetected = true;
 
         onResize?.(event, nextValues);
         onChange(change, childChanges);
       })
       .on('end', (event: ResizeDragEvent) => {
+        if (!resizeDetected) {
+          return;
+        }
+
         onResizeEnd?.(event, { ...prevValues });
         onEnd?.({ ...prevValues });
+
+        resizeDetected = false;
       });
     selection.call(dragHandler);
   }

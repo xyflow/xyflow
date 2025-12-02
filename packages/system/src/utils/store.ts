@@ -1,4 +1,4 @@
-import { HandleConnection, infiniteExtent } from '..';
+import { Handle, HandleConnection, infiniteExtent, NodeHandle, NodeHandleBounds } from '..';
 import {
   NodeBase,
   CoordinateExtent,
@@ -29,6 +29,9 @@ import {
 } from './general';
 import { getNodePositionWithOrigin } from './graph';
 import { ParentExpandChild } from './types';
+
+const SELECTED_NODE_Z = 1000;
+const ROOT_PARENT_Z_INCREMENT = 10;
 
 const defaultOptions = {
   nodeOrigin: [0, 0] as NodeOrigin,
@@ -72,6 +75,38 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
   }
 }
 
+function parseHandles(userNode: NodeBase, internalNode?: InternalNodeBase): NodeHandleBounds | undefined {
+  if (!userNode.handles) {
+    return !userNode.measured ? undefined : internalNode?.internals.handleBounds;
+  }
+
+  const source: Handle[] = [];
+  const target: Handle[] = [];
+
+  for (const handle of userNode.handles) {
+    const handleBounds = {
+      id: handle.id,
+      width: handle.width ?? 1,
+      height: handle.height ?? 1,
+      nodeId: userNode.id,
+      x: handle.x,
+      y: handle.y,
+      position: handle.position,
+      type: handle.type,
+    };
+    if (handle.type === 'source') {
+      source.push(handleBounds);
+    } else if (handle.type === 'target') {
+      target.push(handleBounds);
+    }
+  }
+
+  return {
+    source,
+    target,
+  };
+}
+
 type UpdateNodesOptions<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
@@ -88,9 +123,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 ): boolean {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
 
+  let rootParentIndex = { i: -1 };
   let nodesInitialized = nodes.length > 0;
   const tmpLookup = new Map(nodeLookup);
-  const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
+  const selectedNodeZ: number = _options?.elevateNodesOnSelect ? SELECTED_NODE_Z : 0;
 
   nodeLookup.clear();
   parentLookup.clear();
@@ -115,7 +151,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         internals: {
           positionAbsolute: clampedPosition,
           // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
-          handleBounds: !userNode.measured ? undefined : internalNode?.internals.handleBounds,
+          handleBounds: parseHandles(userNode, internalNode),
           z: calculateZ(userNode, selectedNodeZ),
           userNode,
         },
@@ -134,7 +170,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     }
 
     if (userNode.parentId) {
-      updateChildNode(internalNode, nodeLookup, parentLookup, options);
+      updateChildNode(internalNode, nodeLookup, parentLookup, options, rootParentIndex);
     }
   }
 
@@ -165,7 +201,8 @@ function updateChildNode<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options?: UpdateNodesOptions<NodeType>
+  options?: UpdateNodesOptions<NodeType>,
+  rootParentIndex?: { i: number }
 ) {
   const { elevateNodesOnSelect, nodeOrigin, nodeExtent } = mergeObjects(defaultOptions, options);
   const parentId = node.parentId!;
@@ -180,7 +217,18 @@ function updateChildNode<NodeType extends NodeBase>(
 
   updateParentLookup(node, parentLookup);
 
-  const selectedNodeZ = elevateNodesOnSelect ? 1000 : 0;
+  // We just want to set the rootParentIndex for the first child
+  if (rootParentIndex && !parentNode.parentId && parentNode.internals.rootParentIndex === undefined) {
+    parentNode.internals.rootParentIndex = ++rootParentIndex.i;
+    parentNode.internals.z = parentNode.internals.z + rootParentIndex.i * ROOT_PARENT_Z_INCREMENT;
+  }
+
+  // But we need to update rootParentIndex.i also when parent has not been updated
+  if (rootParentIndex && parentNode.internals.rootParentIndex !== undefined) {
+    rootParentIndex.i = parentNode.internals.rootParentIndex;
+  }
+
+  const selectedNodeZ = elevateNodesOnSelect ? SELECTED_NODE_Z : 0;
   const { x, y, z } = calculateChildXYZ(node, parentNode, nodeOrigin, nodeExtent, selectedNodeZ);
   const { positionAbsolute } = node.internals;
   const positionChanged = x !== positionAbsolute.x || y !== positionAbsolute.y;

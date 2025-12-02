@@ -50,6 +50,7 @@ import CancelConnection from '../examples/CancelConnection';
 import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
+import EdgeToolbar from '../examples/EdgeToolbar';
 import UseConnection from '../examples/UseConnection';
 import UseNodesInitialized from '../examples/UseNodesInit';
 import UseNodesData from '../examples/UseNodesData';
@@ -192,6 +193,11 @@ const routes: IRoute[] = [
     name: 'Edge Routing',
     path: 'edge-routing',
     component: EdgeRouting,
+  },
+  {
+    name: 'Edge Toolbar',
+    path: 'edge-toolbar',
+    component: EdgeToolbar,
   },
   {
     name: 'Empty',

@@ -27,15 +27,15 @@ const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 const initialNodes: Node[] = [
-  {
-    id: 'extent',
-    position: { x: 0, y: 0 },
-    width: 1000,
-    height: 1000,
-    data: { label: 'Extent' },
-    origin: [0, 0],
-    zIndex: -1,
-  },
+  // {
+  //   id: 'extent',
+  //   position: { x: 0, y: 0 },
+  //   width: 1000,
+  //   height: 1000,
+  //   data: { label: 'Extent' },
+  //   origin: [0, 0],
+  //   zIndex: -1,
+  // },
   {
     id: '1',
     type: 'input',
@@ -96,12 +96,12 @@ const initialNodes: Node[] = [
   },
   {
     id: '5',
-    type: 'group',
+    // type: 'group',
     data: { label: 'Node 5' },
     position: { x: 650, y: 250 },
     className: 'light',
     style: { width: 100, height: 100 },
-    zIndex: 1000,
+    // zIndex: 1000,
   },
   {
     id: '5a',

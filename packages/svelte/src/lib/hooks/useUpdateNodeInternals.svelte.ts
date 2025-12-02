@@ -1,3 +1,4 @@
+/* eslint-disable svelte/prefer-svelte-reactivity */
 import { useStore } from '$lib/store';
 import { getContext } from 'svelte';
 
@@ -38,3 +39,5 @@ export function useUpdateNodeInternals(): (nodeId?: string | string[]) => void {
 
   return updateInternals;
 }
+
+/* eslint-enable svelte/prefer-svelte-reactivity */

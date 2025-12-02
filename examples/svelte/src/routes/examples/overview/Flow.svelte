@@ -155,6 +155,8 @@
 		// console.log(edges.map((edge) => ({ id: edge.id, selected: edge.selected })));
 		edges.forEach((edge) => console.log({ id: edge.id, selected: edge.selected }));
 	});
+
+	let hidden = $state(false);
 </script>
 
 <!-- oninit={() => console.log('on init')}
@@ -197,6 +199,7 @@
 	}} -->
 
 <SvelteFlow
+	style="display:{hidden ? 'none' : 'block'}"
 	bind:nodes
 	bind:edges
 	{nodeTypes}
@@ -247,7 +250,20 @@
 	<InitTracker />
 </SvelteFlow>
 
+<button
+	class="hide"
+	onclick={() => {
+		hidden = !hidden;
+	}}>Hide/Unhide</button
+>
+
 <style>
+	.hide {
+		position: absolute;
+		top: 80px;
+		right: 15px;
+	}
+
 	:root {
 		/* --background-color: #ffffdd; */
 		--background-pattern-color: #5050ff;

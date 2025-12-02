@@ -79,8 +79,8 @@ const getInitialState = ({
 
   return {
     rfId: '1',
-    width: 0,
-    height: 0,
+    width: width ?? 0,
+    height: height ?? 0,
     transform,
     nodes: storeNodes,
     nodesInitialized,

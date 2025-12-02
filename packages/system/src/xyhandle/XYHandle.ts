@@ -93,8 +93,8 @@ function onPointerDown(
     position: fromHandleInternal.position,
   };
 
-  const fromNodeInternal = nodeLookup.get(nodeId)!;
-  const from = getHandlePosition(fromNodeInternal, fromHandle, Position.Left, true);
+  const fromInternalNode = nodeLookup.get(nodeId)!;
+  const from = getHandlePosition(fromInternalNode, fromHandle, Position.Left, true);
 
   let previousConnection: ConnectionInProgress = {
     inProgress: true,
@@ -103,12 +103,13 @@ function onPointerDown(
     from,
     fromHandle,
     fromPosition: fromHandle.position,
-    fromNode: fromNodeInternal,
+    fromNode: fromInternalNode,
 
     to: position,
     toHandle: null,
     toPosition: oppositePosition[fromHandle.position],
     toNode: null,
+    pointer: position,
   };
 
   function startConnection() {
@@ -171,9 +172,14 @@ function onPointerDown(
     connection = result.connection;
     isValid = isConnectionValid(!!closestHandle, result.isValid);
 
+    const fromInternalNode = nodeLookup.get(nodeId);
+    const from = fromInternalNode
+      ? getHandlePosition(fromInternalNode, fromHandle, Position.Left, true)
+      : previousConnection.from;
+
     const newConnection: ConnectionInProgress = {
-      // from stays the same
       ...previousConnection,
+      from,
       isValid,
       to:
         result.toHandle && isValid
@@ -182,31 +188,19 @@ function onPointerDown(
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
       toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)! : null,
+      pointer: position,
     };
-
-    /*
-     * we don't want to trigger an update when the connection
-     * is snapped to the same handle as before
-     */
-    if (
-      isValid &&
-      closestHandle &&
-      previousConnection.toHandle &&
-      newConnection.toHandle &&
-      previousConnection.toHandle.type === newConnection.toHandle.type &&
-      previousConnection.toHandle.nodeId === newConnection.toHandle.nodeId &&
-      previousConnection.toHandle.id === newConnection.toHandle.id &&
-      previousConnection.to.x === newConnection.to.x &&
-      previousConnection.to.y === newConnection.to.y
-    ) {
-      return;
-    }
 
     updateConnection(newConnection);
     previousConnection = newConnection;
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
+    // Prevent multi-touch aborting connection
+    if ('touches' in event && event.touches.length > 0) {
+      return;
+    }
+
     if (connectionStarted) {
       if ((closestHandle || resultHandleDomNode) && connection && isValid) {
         onConnect?.(connection);
