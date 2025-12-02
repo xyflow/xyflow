@@ -150,6 +150,9 @@ const getInitialState = ({
     debug: false,
     ariaLabelConfig: defaultAriaLabelConfig,
     zIndexMode,
+
+    onNodesChangeMiddlewareMap: new Map(),
+    onEdgesChangeMiddlewareMap: new Map(),
   };
 };
 
