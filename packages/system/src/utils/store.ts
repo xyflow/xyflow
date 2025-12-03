@@ -37,7 +37,7 @@ const defaultOptions = {
   nodeOrigin: [0, 0] as NodeOrigin,
   nodeExtent: infiniteExtent,
   elevateNodesOnSelect: true,
-  zIndexMode: 'auto' as ZIndexMode,
+  zIndexMode: 'basic' as ZIndexMode,
   defaults: {},
 };
 

@@ -29,7 +29,7 @@ const getInitialState = ({
   maxZoom = 2,
   nodeOrigin,
   nodeExtent,
-  zIndexMode = 'auto',
+  zIndexMode = 'basic',
 }: {
   nodes?: Node[];
   edges?: Edge[];

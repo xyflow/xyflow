@@ -117,7 +117,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     panZoom: PanZoomInstance | null = $state.raw(null);
     width = $state.raw<number>(signals.width ?? 0);
     height = $state.raw<number>(signals.height ?? 0);
-    zIndexMode = $state.raw<ZIndexMode>(signals.props.zIndexMode ?? 'auto');
+    zIndexMode = $state.raw<ZIndexMode>(signals.props.zIndexMode ?? 'basic');
 
     nodesInitialized: boolean = $derived.by(() => {
       const nodesInitialized = adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {

@@ -375,6 +375,5 @@ export type OnBeforeDeleteBase<NodeType extends NodeBase = NodeBase, EdgeType ex
  * `manual` mode does not apply any automatic z-indexing.
  *
  * @public
- * @default 'auto'
  */
 export type ZIndexMode = 'auto' | 'basic' | 'manual';

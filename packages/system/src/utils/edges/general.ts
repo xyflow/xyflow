@@ -51,7 +51,7 @@ export function getElevatedEdgeZIndex({
   selected = false,
   zIndex,
   elevateOnSelect = false,
-  zIndexMode = 'auto',
+  zIndexMode = 'basic',
 }: GetEdgeZIndexParams): number {
   const manualZIndexMode = isManualZIndexMode(zIndexMode);
 

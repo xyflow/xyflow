@@ -696,7 +696,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * Used to define how z-indexing is calculated for nodes and edges.
    * 'auto' is for selections and sub flows, 'basic' for selections only, and 'manual' for no auto z-indexing.
    *
-   * @default 'auto'
+   * @default 'basic'
    */
   zIndexMode?: ZIndexMode;
 }
