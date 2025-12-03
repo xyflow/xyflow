@@ -127,8 +127,8 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     attributionPosition,
     proOptions,
     defaultEdgeOptions,
-    elevateNodesOnSelect,
-    elevateEdgesOnSelect,
+    elevateNodesOnSelect = true,
+    elevateEdgesOnSelect = false,
     disableKeyboardA11y = false,
     autoPanOnConnect,
     autoPanOnNodeDrag,
@@ -148,7 +148,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     debug,
     onScroll,
     ariaLabelConfig,
-    zIndexMode,
+    zIndexMode = 'basic',
     ...rest
   }: ReactFlowProps<NodeType, EdgeType>,
   ref: ForwardedRef<HTMLDivElement>

@@ -59,7 +59,7 @@ const getInitialState = ({
   const nodesInitialized = adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
     nodeOrigin: storeNodeOrigin,
     nodeExtent: storeNodeExtent,
-    elevateNodesOnSelect: false,
+    zIndexMode,
   });
 
   let transform: Transform = [0, 0, 1];
