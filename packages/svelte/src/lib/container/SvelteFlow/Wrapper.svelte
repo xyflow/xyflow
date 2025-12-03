@@ -96,6 +96,7 @@
     ariaLabelConfig,
     autoPanSpeed,
     panOnScrollSpeed,
+    zIndexMode,
     ...divAttributes
   } = $derived(rest);
   /* eslint-enable @typescript-eslint/no-unused-vars */

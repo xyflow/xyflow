@@ -21,7 +21,8 @@ import type {
   OnReconnect,
   OnReconnectStart,
   OnReconnectEnd,
-  AriaLabelConfig
+  AriaLabelConfig,
+  ZIndexMode
 } from '@xyflow/system';
 
 import type {
@@ -500,4 +501,11 @@ export type SvelteFlowProps<
      * Allows localization, customization of ARIA descriptions, control labels, minimap labels, and other UI strings.
      */
     ariaLabelConfig?: Partial<AriaLabelConfig>;
+    /**
+     * Used to define how z-indexing is calculated for nodes and edges.
+     * 'auto' is for selections and sub flows, 'basic' for selections only, and 'manual' for no auto z-indexing.
+     *
+     * @default 'basic'
+     */
+    zIndexMode?: ZIndexMode;
   };

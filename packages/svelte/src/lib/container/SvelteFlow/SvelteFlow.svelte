@@ -75,7 +75,7 @@
   }: SvelteFlowProps<NodeType, EdgeType> &
     Omit<HTMLAttributes<HTMLDivElement>, 'onselectionchange'> = $props();
 
-  // svelte-ignore non_reactive_update
+  // svelte-ignore non_reactive_update, state_referenced_locally
   let store = createStore<NodeType, EdgeType>({
     props,
     width,

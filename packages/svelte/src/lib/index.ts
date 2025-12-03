@@ -122,7 +122,8 @@ export {
   type SetCenter,
   type SetViewport,
   type FitBounds,
-  type HandleConnection
+  type HandleConnection,
+  type ZIndexMode
 } from '@xyflow/system';
 
 // system utils

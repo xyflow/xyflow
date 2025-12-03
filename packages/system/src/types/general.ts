@@ -367,3 +367,13 @@ export type OnBeforeDeleteBase<NodeType extends NodeBase = NodeBase, EdgeType ex
   nodes: NodeType[];
   edges: EdgeType[];
 }) => Promise<boolean | { nodes: NodeType[]; edges: EdgeType[] }>;
+
+/**
+ * The `ZIndexMode` type is used to define how z-indexing is calculated for nodes and edges.
+ * `auto` mode will automatically manage z-indexing for selections and sub flows.
+ * `basic` mode will only manage z-indexing for selections.
+ * `manual` mode does not apply any automatic z-indexing.
+ *
+ * @public
+ */
+export type ZIndexMode = 'auto' | 'basic' | 'manual';

@@ -36,7 +36,8 @@ import {
   type OnReconnect,
   type OnReconnectStart,
   type OnReconnectEnd,
-  type AriaLabelConfig
+  type AriaLabelConfig,
+  type ZIndexMode
 } from '@xyflow/system';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
@@ -116,13 +117,15 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     panZoom: PanZoomInstance | null = $state.raw(null);
     width = $state.raw<number>(signals.width ?? 0);
     height = $state.raw<number>(signals.height ?? 0);
+    zIndexMode = $state.raw<ZIndexMode>(signals.props.zIndexMode ?? 'basic');
 
     nodesInitialized: boolean = $derived.by(() => {
       const nodesInitialized = adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
         nodeExtent: this.nodeExtent,
         nodeOrigin: this.nodeOrigin,
         elevateNodesOnSelect: signals.props.elevateNodesOnSelect ?? true,
-        checkEquality: true
+        checkEquality: true,
+        zIndexMode: this.zIndexMode
       });
 
       if (this.fitViewQueued && nodesInitialized) {
@@ -226,7 +229,8 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         connectionMode,
         onerror,
         onlyRenderVisibleElements,
-        defaultEdgeOptions
+        defaultEdgeOptions,
+        zIndexMode
       } = this;
 
       let visibleNodes: Map<string, InternalNode<NodeType>>;
@@ -239,6 +243,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         nodeLookup,
         connectionMode,
         elevateEdgesOnSelect: signals.props.elevateEdgesOnSelect ?? true,
+        zIndexMode,
         onerror
       };
 

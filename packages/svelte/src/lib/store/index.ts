@@ -73,7 +73,9 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       store.nodeLookup,
       store.parentLookup,
       store.domNode,
-      store.nodeOrigin
+      store.nodeOrigin,
+      store.nodeExtent,
+      store.zIndexMode
     );
 
     if (!updatedInternals) {
@@ -82,7 +84,8 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
 
     updateAbsolutePositions(store.nodeLookup, store.parentLookup, {
       nodeOrigin: store.nodeOrigin,
-      nodeExtent: store.nodeExtent
+      nodeExtent: store.nodeExtent,
+      zIndexMode: store.zIndexMode
     });
 
     if (store.fitViewQueued) {
