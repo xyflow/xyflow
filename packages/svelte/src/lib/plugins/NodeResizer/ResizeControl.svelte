@@ -13,7 +13,6 @@
   } from '@xyflow/system';
 
   import type { ResizeControlProps } from './types';
-  import type { Node } from '$lib/types';
 
   let {
     nodeId,
@@ -79,7 +78,7 @@
           changes.set(id, change);
 
           for (const childChange of childChanges) {
-            changes.set(childChange.id, {x: childChange.position.x, y: childChange.position.y });
+            changes.set(childChange.id, { x: childChange.position.x, y: childChange.position.y });
           }
 
           store.nodes = store.nodes.map((node) => {
@@ -88,7 +87,7 @@
             const vertical = !resizeDirection || resizeDirection === 'vertical';
 
             if (change) {
-               return {
+              return {
                 ...node,
                 position: {
                   x: horizontal ? (change.x ?? node.position.x) : node.position.x,

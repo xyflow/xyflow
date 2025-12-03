@@ -2,10 +2,10 @@
   import { getEdgeToolbarTransform } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
+  import { getEdgeIdContext } from '$lib/store/context';
+
   import { EdgeLabel } from '$lib/components/EdgeLabel';
   import type { EdgeToolbarProps } from './types';
-  import { getContext } from 'svelte';
-    import { getEdgeIdContext } from '$lib/store/context';
 
   let {
     x,
