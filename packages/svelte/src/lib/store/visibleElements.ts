@@ -36,8 +36,10 @@ export interface EdgeLayoutBaseOptions<NodeType extends Node = Node, EdgeType ex
   onerror: OnError;
 }
 
-export interface EdgeLayoutAllOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
-  extends EdgeLayoutBaseOptions<NodeType, EdgeType> {
+export interface EdgeLayoutAllOptions<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> extends EdgeLayoutBaseOptions<NodeType, EdgeType> {
   onlyRenderVisible: never;
   visibleNodes: never;
   transform: never;

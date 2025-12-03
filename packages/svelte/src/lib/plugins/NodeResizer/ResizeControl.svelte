@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { getContext, onMount } from 'svelte';
+  import { onMount } from 'svelte';
+
   import { useStore } from '$lib/store';
+  import { getNodeIdContext } from '$lib/store/context';
   import {
     XYResizer,
     ResizeControlVariant,
@@ -9,8 +11,8 @@
     type XYResizerChange,
     type XYResizerChildChange
   } from '@xyflow/system';
+
   import type { ResizeControlProps } from './types';
-  import type { Node } from '$lib/types';
 
   let {
     nodeId,
@@ -34,10 +36,14 @@
   }: ResizeControlProps = $props();
 
   const store = useStore();
+  const contextNodeId = getNodeIdContext();
 
-  let id = $derived(
-    typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
-  );
+  let id = $derived(typeof nodeId === 'string' ? nodeId : contextNodeId);
+
+  // svelte-ignore state_referenced_locally
+  if (!id) {
+    throw new Error('Either pass a nodeId or use within a Custom Node component');
+  }
 
   let resizeControlRef: HTMLDivElement;
   let resizer: XYResizerInstance | null = $state(null);
@@ -72,7 +78,7 @@
           changes.set(id, change);
 
           for (const childChange of childChanges) {
-            changes.set(childChange.id, {x: childChange.position.x, y: childChange.position.y });
+            changes.set(childChange.id, { x: childChange.position.x, y: childChange.position.y });
           }
 
           store.nodes = store.nodes.map((node) => {
@@ -81,7 +87,7 @@
             const vertical = !resizeDirection || resizeDirection === 'vertical';
 
             if (change) {
-               return {
+              return {
                 ...node,
                 position: {
                   x: horizontal ? (change.x ?? node.position.x) : node.position.x,

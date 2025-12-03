@@ -21,6 +21,6 @@
 </script>
 
 <BaseEdge {id} path={edgePath} />
-<EdgeToolbar edgeId={id} x={labelX} y={labelY} isVisible>
+<EdgeToolbar x={labelX} y={labelY} isVisible>
 	<button onclick={deleteEdge}>Delete</button>
 </EdgeToolbar>
