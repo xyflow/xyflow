@@ -49,21 +49,17 @@ export function getElevatedEdgeZIndex({
   sourceNode,
   targetNode,
   selected = false,
-  zIndex,
+  zIndex = 0,
   elevateOnSelect = false,
   zIndexMode = 'basic',
 }: GetEdgeZIndexParams): number {
   const manualZIndexMode = isManualZIndexMode(zIndexMode);
 
-  if (zIndex !== undefined) {
+  if (manualZIndexMode) {
     return zIndex;
   }
 
-  if (manualZIndexMode) {
-    return 0;
-  }
-
-  const edgeZ = elevateOnSelect && selected ? 1000 : 0;
+  const edgeZ = elevateOnSelect && selected ? zIndex + 1000 : zIndex;
   const nodeZ = Math.max(
     sourceNode.parentId || (elevateOnSelect && sourceNode.selected) ? sourceNode.internals.z : 0,
     targetNode.parentId || (elevateOnSelect && targetNode.selected) ? targetNode.internals.z : 0
