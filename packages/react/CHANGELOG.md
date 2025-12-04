@@ -1,5 +1,24 @@
 # @xyflow/react
 
+## 12.10.0
+
+### Minor Changes
+
+- [#5637](https://github.com/xyflow/xyflow/pull/5637) [`0c7261a6d`](https://github.com/xyflow/xyflow/commit/0c7261a6dc94f1aa58333a6aebcaca8ced9b5ad2) Thanks [@moklick](https://github.com/moklick)! - Add `zIndexMode` to control how z-index is calculated for nodes and edges
+
+- [#5484](https://github.com/xyflow/xyflow/pull/5484) [`a523919d6`](https://github.com/xyflow/xyflow/commit/a523919d6789995e9d0f3dd29b0b47fc3b8d8439) Thanks [@peterkogo](https://github.com/peterkogo)! - Add `experimental_useOnNodesChangeMiddleware` hook
+
+### Patch Changes
+
+- [#5629](https://github.com/xyflow/xyflow/pull/5629) [`9030fab2d`](https://github.com/xyflow/xyflow/commit/9030fab2df8285fdfb649bda6e1e885dfd228d45) Thanks [@AlaricBaraou](https://github.com/AlaricBaraou)! - Prevent unnecessary re-render in `FlowRenderer`
+
+- [#5592](https://github.com/xyflow/xyflow/pull/5592) [`38dbf41c4`](https://github.com/xyflow/xyflow/commit/38dbf41c464550cc803b946a4ad1f46982385a03) Thanks [@svilen-ivanov-kubit](https://github.com/svilen-ivanov-kubit)! - Always create a new measured object in apply changes.
+
+- [#5635](https://github.com/xyflow/xyflow/pull/5635) [`2d7fa40e2`](https://github.com/xyflow/xyflow/commit/2d7fa40e2684a0fcdd4eca7800ccf2c34338e549) Thanks [@tornado-softwares](https://github.com/tornado-softwares)! - Update an ongoing connection when user moves node with keyboard.
+
+- Updated dependencies [[`0c7261a6d`](https://github.com/xyflow/xyflow/commit/0c7261a6dc94f1aa58333a6aebcaca8ced9b5ad2), [`8598b6bc2`](https://github.com/xyflow/xyflow/commit/8598b6bc2a9d052b12d5215706382da0aa84827b), [`2d7fa40e2`](https://github.com/xyflow/xyflow/commit/2d7fa40e2684a0fcdd4eca7800ccf2c34338e549)]:
+  - @xyflow/system@0.0.74
+
 ## 12.9.3
 
 ### Patch Changes
