@@ -1,5 +1,15 @@
 # @xyflow/system
 
+## 0.0.74
+
+### Patch Changes
+
+- [#5637](https://github.com/xyflow/xyflow/pull/5637) [`0c7261a6d`](https://github.com/xyflow/xyflow/commit/0c7261a6dc94f1aa58333a6aebcaca8ced9b5ad2) Thanks [@moklick](https://github.com/moklick)! - Add `zIndexMode` to control how z-index is calculated for nodes and edges
+
+- [#5617](https://github.com/xyflow/xyflow/pull/5617) [`8598b6bc2`](https://github.com/xyflow/xyflow/commit/8598b6bc2a9d052b12d5215706382da0aa84827b) Thanks [@akre54](https://github.com/akre54)! - Allow custom `getEdgeId` function in `addEdge` and `reconnectEdge` options to enable custom edge ID schemes.
+
+- [#5635](https://github.com/xyflow/xyflow/pull/5635) [`2d7fa40e2`](https://github.com/xyflow/xyflow/commit/2d7fa40e2684a0fcdd4eca7800ccf2c34338e549) Thanks [@tornado-softwares](https://github.com/tornado-softwares)! - Update an ongoing connection when user moves node with keyboard.
+
 ## 0.0.73
 
 ### Patch Changes
