@@ -1,13 +1,4 @@
-import {
-  Connection,
-  InternalNodeBase,
-  Transform,
-  errorMessages,
-  isEdgeBase,
-  EdgeBase,
-  ZIndexMode,
-  isManualZIndexMode,
-} from '../..';
+import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase, ZIndexMode } from '../..';
 import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
@@ -53,9 +44,7 @@ export function getElevatedEdgeZIndex({
   elevateOnSelect = false,
   zIndexMode = 'basic',
 }: GetEdgeZIndexParams): number {
-  const manualZIndexMode = isManualZIndexMode(zIndexMode);
-
-  if (manualZIndexMode) {
+  if (zIndexMode === 'manual') {
     return zIndex;
   }
 
