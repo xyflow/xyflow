@@ -24,3 +24,12 @@ jobs:
         run: CI=true pnpm test:react
         env:
           HOME: /root
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: |
+            packages/react/test-results/
+            packages/react/playwright-report/
+          retention-days: 30
