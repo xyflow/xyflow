@@ -1,0 +1,53 @@
+# Principal View Configuration Lint Rules
+# See: https://github.com/principal-ai/principal-view
+
+# File patterns to include
+include:
+  - ".principal-views/**/*.yaml"
+  - ".principal-views/**/*.yml"
+  - ".principal-views/**/*.json"
+
+# File patterns to exclude
+exclude:
+  - "**/node_modules/**"
+  - ".principal-views/library.yaml"
+
+# Path to component library (optional)
+library: ".principal-views/library.yaml"
+
+# Rule configuration
+# Severity: "off" | "warn" | "error" (or 0 | 1 | 2)
+rules:
+  # Schema rules - validate structure
+  no-unknown-fields: error
+  required-metadata: error
+  valid-node-types: error
+  valid-edge-types: error
+  valid-color-format: error
+
+  # Reference rules - check cross-references
+  connection-type-references: error
+  state-transition-references: error
+
+  # Structure rules - ensure completeness
+  minimum-node-sources:
+    severity: error
+    options:
+      minimum: 1
+      excludeNodeTypes: []
+  orphaned-node-types: error
+  orphaned-edge-types: error
+  unreachable-states: error
+  dead-end-states: error
+
+  # Pattern rules - validate regex patterns
+  valid-action-patterns:
+    severity: error
+    options:
+      strictMode: false
+
+  # Library rules - check against component library
+  library-node-type-match:
+    severity: error
+    options:
+      allowExtra: true

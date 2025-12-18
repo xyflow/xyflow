@@ -1,0 +1,72 @@
+version: '1.0.0'
+name: 'XYFlow Component Library'
+description: 'Component library for XYFlow monorepo architecture'
+
+nodeComponents:
+  - description: 'Core system package with D3.js interactions'
+    defaultLabel: '@xyflow/system'
+    shape: 'rectangle'
+    color: '#FF6B6B'
+    tags: ['core', 'system']
+
+  - description: 'React Flow library package'
+    defaultLabel: '@xyflow/react'
+    shape: 'rectangle'
+    color: '#4ECDC4'
+    tags: ['frontend', 'react']
+
+  - description: 'Svelte Flow library package'
+    defaultLabel: '@xyflow/svelte'
+    shape: 'rectangle'
+    color: '#45B7D1'
+    tags: ['frontend', 'svelte']
+
+  - description: 'Monorepo management package'
+    defaultLabel: 'Monorepo Root'
+    shape: 'rectangle'
+    color: '#96CEB4'
+    tags: ['management', 'root']
+
+  - description: 'Shared tooling and configuration'
+    defaultLabel: 'Tooling'
+    shape: 'rectangle'
+    color: '#FFEAA7'
+    tags: ['tooling', 'config']
+
+  - description: 'Example applications'
+    defaultLabel: 'Examples'
+    shape: 'rectangle'
+    color: '#DDA0DD'
+    tags: ['examples', 'demo']
+
+  - description: 'Testing infrastructure'
+    defaultLabel: 'Testing'
+    shape: 'rectangle'
+    color: '#98D8C8'
+    tags: ['testing', 'e2e']
+
+edgeComponents:
+  - description: 'Management relationship'
+    label: 'manages'
+    directed: true
+    color: '#FF6B6B'
+
+  - description: 'Power/dependency relationship'
+    label: 'powers'
+    directed: true
+    color: '#4ECDC4'
+
+  - description: 'Configuration relationship'
+    label: 'configures'
+    directed: true
+    color: '#FFEAA7'
+
+  - description: 'Demonstration relationship'
+    label: 'demonstrates'
+    directed: true
+    color: '#DDA0DD'
+
+  - description: 'Testing relationship'
+    label: 'tests'
+    directed: true
+    color: '#98D8C8'

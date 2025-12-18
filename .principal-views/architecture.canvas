@@ -1,0 +1,266 @@
+{
+  "pv": {
+    "name": "XYFlow Architecture",
+    "version": "1.0.0"
+  },
+  "nodes": [
+    {
+      "id": "monorepo-root",
+      "type": "text",
+      "x": 620,
+      "y": 60,
+      "width": 160,
+      "height": 80,
+      "text": "**Monorepo Root**\nManages entire XYFlow monorepo with pnpm, Turbo, and Changesets",
+      "color": "#96CEB4"
+    },
+    {
+      "id": "system-package",
+      "type": "text",
+      "x": 720,
+      "y": 260,
+      "width": 160,
+      "height": 80,
+      "text": "**@xyflow/system**\nCore system with D3.js interactions",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "react-package",
+      "type": "text",
+      "x": 720,
+      "y": 460,
+      "width": 160,
+      "height": 80,
+      "text": "**@xyflow/react**\nReact Flow library",
+      "color": "#4ECDC4"
+    },
+    {
+      "id": "svelte-package",
+      "type": "text",
+      "x": 520,
+      "y": 460,
+      "width": 160,
+      "height": 80,
+      "text": "**@xyflow/svelte**\nSvelte Flow library",
+      "color": "#45B7D1"
+    },
+    {
+      "id": "eslint-config",
+      "type": "text",
+      "x": 1030,
+      "y": 270,
+      "width": 140,
+      "height": 60,
+      "text": "**ESLint Config**\nShared linting rules",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": "rollup-config",
+      "type": "text",
+      "x": 330,
+      "y": 270,
+      "width": 140,
+      "height": 60,
+      "text": "**Rollup Config**\nShared bundling",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": "tsconfig",
+      "type": "text",
+      "x": 130,
+      "y": 270,
+      "width": 140,
+      "height": 60,
+      "text": "**TS Config**\nShared types",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": "postcss-config",
+      "type": "text",
+      "x": 1230,
+      "y": 270,
+      "width": 140,
+      "height": 60,
+      "text": "**PostCSS Config**\nShared styling",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": "react-examples",
+      "type": "text",
+      "x": 830,
+      "y": 670,
+      "width": 140,
+      "height": 60,
+      "text": "**React Examples**\nDemos and docs",
+      "color": "#DDA0DD"
+    },
+    {
+      "id": "svelte-examples",
+      "type": "text",
+      "x": 430,
+      "y": 670,
+      "width": 140,
+      "height": 60,
+      "text": "**Svelte Examples**\nDemos and docs",
+      "color": "#DDA0DD"
+    },
+    {
+      "id": "astro-examples",
+      "type": "text",
+      "x": 630,
+      "y": 670,
+      "width": 140,
+      "height": 60,
+      "text": "**Astro Examples**\nFramework integration",
+      "color": "#DDA0DD"
+    },
+    {
+      "id": "playwright-tests",
+      "type": "text",
+      "x": 520,
+      "y": 270,
+      "width": 160,
+      "height": 60,
+      "text": "**Playwright Tests**\nE2E testing",
+      "color": "#98D8C8"
+    }
+  ],
+  "edges": [
+    {
+      "id": "monorepo-system",
+      "fromNode": "monorepo-root",
+      "toNode": "system-package",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "monorepo-react",
+      "fromNode": "monorepo-root",
+      "toNode": "react-package",
+      "fromSide": "left",
+      "toSide": "top",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "monorepo-svelte",
+      "fromNode": "monorepo-root",
+      "toNode": "svelte-package",
+      "fromSide": "right",
+      "toSide": "top",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": "system-react",
+      "fromNode": "system-package",
+      "toNode": "react-package",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "color": "#4ECDC4"
+    },
+    {
+      "id": "system-svelte",
+      "fromNode": "system-package",
+      "toNode": "svelte-package",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "color": "#4ECDC4"
+    },
+    {
+      "id": "tsconfig-react",
+      "fromNode": "tsconfig",
+      "toNode": "react-package",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": "tsconfig-svelte",
+      "fromNode": "tsconfig",
+      "toNode": "svelte-package",
+      "fromSide": "bottom",
+      "toSide": "right",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": "eslint-react",
+      "fromNode": "eslint-config",
+      "toNode": "react-package",
+      "fromSide": "right",
+      "toSide": "left",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": "rollup-react",
+      "fromNode": "rollup-config",
+      "toNode": "react-package",
+      "fromSide": "bottom",
+      "toSide": "right",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": "rollup-svelte",
+      "fromNode": "rollup-config",
+      "toNode": "svelte-package",
+      "fromSide": "left",
+      "toSide": "right",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": "postcss-react",
+      "fromNode": "postcss-config",
+      "toNode": "react-package",
+      "fromSide": "bottom",
+      "toSide": "right",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": "react-examples-edge",
+      "fromNode": "react-package",
+      "toNode": "react-examples",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "color": "#DDA0DD"
+    },
+    {
+      "id": "svelte-examples-edge",
+      "fromNode": "svelte-package",
+      "toNode": "svelte-examples",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "color": "#DDA0DD"
+    },
+    {
+      "id": "astro-react-edge",
+      "fromNode": "react-package",
+      "toNode": "astro-examples",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "color": "#DDA0DD"
+    },
+    {
+      "id": "astro-svelte-edge",
+      "fromNode": "svelte-package",
+      "toNode": "astro-examples",
+      "fromSide": "bottom",
+      "toSide": "right",
+      "color": "#DDA0DD"
+    },
+    {
+      "id": "tests-react",
+      "fromNode": "playwright-tests",
+      "toNode": "react-package",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "color": "#98D8C8"
+    },
+    {
+      "id": "tests-svelte",
+      "fromNode": "playwright-tests",
+      "toNode": "svelte-package",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "color": "#98D8C8"
+    }
+  ]
+}
