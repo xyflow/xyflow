@@ -25,6 +25,9 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
   List<String> _executionPath = [];
   int _currentPathIndex = 0;
 
+  // Edit mode state
+  String? _editingNodeId;
+
   @override
   void initState() {
     super.initState();
@@ -115,6 +118,213 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
     });
   }
 
+  /// Opens edit dialog for a node on double tap
+  void _onNodeDoubleTap(String nodeId) {
+    final nodeIndex = _nodes.indexWhere((n) => n.id == nodeId);
+    if (nodeIndex == -1) return;
+
+    final node = _nodes[nodeIndex];
+    _showEditDialog(node, nodeIndex);
+  }
+
+  void _showEditDialog(Node<StoryNodeData> node, int nodeIndex) {
+    final titleController = TextEditingController(text: node.data.title);
+    final descController = TextEditingController(text: node.data.description ?? '');
+    final imageController = TextEditingController(text: node.data.imageUrl ?? '');
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF2D2D2D),
+        title: Row(
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              decoration: BoxDecoration(
+                color: _getNodeColor(node.data.nodeType),
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Edit ${_getNodeTypeName(node.data.nodeType)}',
+              style: const TextStyle(
+                color: Color(0xFFE0E0E0),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildEditField('Title', titleController),
+              const SizedBox(height: 16),
+              if (node.data.nodeType == StoryNodeType.story ||
+                  node.data.nodeType == StoryNodeType.branch ||
+                  node.data.nodeType == StoryNodeType.endGood ||
+                  node.data.nodeType == StoryNodeType.endBad)
+                _buildEditField('Description', descController, maxLines: 3),
+              if (node.data.nodeType == StoryNodeType.story ||
+                  node.data.nodeType == StoryNodeType.image) ...[
+                const SizedBox(height: 16),
+                _buildEditField('Image URL', imageController, hint: 'https://... or asset name'),
+                const SizedBox(height: 8),
+                // Image preview
+                if (imageController.text.isNotEmpty)
+                  Container(
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E1E1E),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: _buildImagePreviewForUrl(imageController.text),
+                  ),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel', style: TextStyle(color: Color(0xFF9E9E9E))),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF4CAF50),
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              setState(() {
+                _nodes[nodeIndex] = Node<StoryNodeData>(
+                  id: node.id,
+                  type: node.type,
+                  position: node.position,
+                  data: node.data.copyWith(
+                    title: titleController.text,
+                    description: descController.text.isEmpty ? null : descController.text,
+                    imageUrl: imageController.text.isEmpty ? null : imageController.text,
+                  ),
+                  sourcePosition: node.sourcePosition,
+                  targetPosition: node.targetPosition,
+                  width: node.width,
+                  height: node.height,
+                );
+              });
+              Navigator.pop(ctx);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEditField(String label, TextEditingController controller, {int maxLines = 1, String? hint}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: Color(0xFF9E9E9E),
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 4),
+        TextField(
+          controller: controller,
+          maxLines: maxLines,
+          style: const TextStyle(color: Color(0xFFE0E0E0), fontSize: 13),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: Color(0xFF666666)),
+            filled: true,
+            fillColor: const Color(0xFF1E1E1E),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+              borderSide: const BorderSide(color: Color(0xFF3D3D3D)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+              borderSide: const BorderSide(color: Color(0xFF3D3D3D)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+              borderSide: const BorderSide(color: Color(0xFF5B9BD5)),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImagePreviewForUrl(String url) {
+    if (url.startsWith('http')) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: Image.network(
+          url,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          errorBuilder: (_, __, ___) => const Center(
+            child: Icon(Icons.broken_image, color: Color(0xFF666666)),
+          ),
+        ),
+      );
+    }
+    // Fallback gradient for asset names
+    return _buildGradientPreview(url);
+  }
+
+  Widget _buildGradientPreview(String imageKey) {
+    final gradients = {
+      'forest': [const Color(0xFF1B4332), const Color(0xFF2D6A4F)],
+      'meadow': [const Color(0xFF3A5A40), const Color(0xFF588157)],
+      'cave': [const Color(0xFF212529), const Color(0xFF343A40)],
+      'tree': [const Color(0xFF2D6A4F), const Color(0xFF40916C)],
+      'mood': [const Color(0xFF2C2C54), const Color(0xFF474787)],
+    };
+    final colors = gradients[imageKey] ?? [const Color(0xFF333333), const Color(0xFF444444)];
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: colors, begin: Alignment.topLeft, end: Alignment.bottomRight),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Center(
+        child: Icon(Icons.landscape, color: Colors.white.withValues(alpha: 0.3), size: 24),
+      ),
+    );
+  }
+
+  Color _getNodeColor(StoryNodeType type) {
+    switch (type) {
+      case StoryNodeType.start: return _ComfyStyle.startColor;
+      case StoryNodeType.story: return _ComfyStyle.storyColor;
+      case StoryNodeType.branch: return _ComfyStyle.branchColor;
+      case StoryNodeType.image: return _ComfyStyle.imageColor;
+      case StoryNodeType.endGood: return _ComfyStyle.endGoodColor;
+      case StoryNodeType.endBad: return _ComfyStyle.endBadColor;
+    }
+  }
+
+  String _getNodeTypeName(StoryNodeType type) {
+    switch (type) {
+      case StoryNodeType.start: return 'Start Node';
+      case StoryNodeType.story: return 'Story Node';
+      case StoryNodeType.branch: return 'Branch Node';
+      case StoryNodeType.image: return 'Image Node';
+      case StoryNodeType.endGood: return 'Good Ending';
+      case StoryNodeType.endBad: return 'Bad Ending';
+    }
+  }
+
   void _initializeStory() {
     _nodes = [
       // Start node
@@ -137,7 +347,7 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
         data: StoryNodeData(
           title: 'The Mysterious Forest',
           description: 'You wake up in a dark forest. The moon casts eerie shadows through the twisted branches above.',
-          imageUrl: 'forest',
+          imageUrl: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=400&h=200&fit=crop',
           nodeType: StoryNodeType.story,
         ),
         sourcePosition: Position.right,
@@ -167,7 +377,7 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
         data: StoryNodeData(
           title: 'The Glowing Meadow',
           description: 'You follow the ethereal light to a peaceful meadow filled with fireflies.',
-          imageUrl: 'meadow',
+          imageUrl: 'https://images.unsplash.com/photo-1499002238440-d264edd596ec?w=400&h=200&fit=crop',
           nodeType: StoryNodeType.story,
         ),
         sourcePosition: Position.right,
@@ -182,7 +392,7 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
         data: StoryNodeData(
           title: 'The Dark Cave',
           description: 'The cave entrance looms before you. Strange sounds echo from within.',
-          imageUrl: 'cave',
+          imageUrl: 'https://images.unsplash.com/photo-1504699439244-a7e34274ca3b?w=400&h=200&fit=crop',
           nodeType: StoryNodeType.story,
         ),
         sourcePosition: Position.right,
@@ -197,7 +407,7 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
         data: StoryNodeData(
           title: 'The Ancient Tree',
           description: 'From the treetop, you spot a hidden village in the distance.',
-          imageUrl: 'tree',
+          imageUrl: 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=400&h=200&fit=crop',
           nodeType: StoryNodeType.story,
         ),
         sourcePosition: Position.right,
@@ -358,11 +568,11 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
         onNodesChange: _onNodesChange,
         onEdgesChange: _onEdgesChange,
         nodeTypes: {
-          'start': (props) => _StartNode(props: props, isActive: _activeNodeId == props.id),
-          'story': (props) => _StoryNode(props: props, isActive: _activeNodeId == props.id),
-          'branch': (props) => _BranchNode(props: props, isActive: _activeNodeId == props.id),
-          'image': (props) => _ImageNode(props: props, isActive: _activeNodeId == props.id),
-          'end': (props) => _EndNode(props: props, isActive: _activeNodeId == props.id),
+          'start': (props) => _StartNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
+          'story': (props) => _StoryNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
+          'branch': (props) => _BranchNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
+          'image': (props) => _ImageNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
+          'end': (props) => _EndNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
         },
         fitView: true,
         fitViewOnResize: true, // Auto-refit on device rotation
@@ -423,6 +633,22 @@ class StoryNodeData {
     this.choices,
     required this.nodeType,
   });
+
+  StoryNodeData copyWith({
+    String? title,
+    String? description,
+    String? imageUrl,
+    List<String>? choices,
+    StoryNodeType? nodeType,
+  }) {
+    return StoryNodeData(
+      title: title ?? this.title,
+      description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      choices: choices ?? this.choices,
+      nodeType: nodeType ?? this.nodeType,
+    );
+  }
 }
 
 // ============================================================================
@@ -466,18 +692,21 @@ class _ComfyStyle {
 
 /// Start node - entry point
 class _StartNode extends StatelessWidget {
-  const _StartNode({required this.props, this.isActive = false});
+  const _StartNode({required this.props, this.isActive = false, this.onDoubleTap});
   final NodeProps<StoryNodeData> props;
   final bool isActive;
+  final VoidCallback? onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
-    return _ComfyNodeWrapper(
-      props: props,
-      headerColor: _ComfyStyle.startColor,
-      width: 140,
-      isActive: isActive,
-      child: Padding(
+    return GestureDetector(
+      onDoubleTap: onDoubleTap,
+      child: _ComfyNodeWrapper(
+        props: props,
+        headerColor: _ComfyStyle.startColor,
+        width: 140,
+        isActive: isActive,
+        child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
@@ -501,24 +730,28 @@ class _StartNode extends StatelessWidget {
           ],
         ),
       ),
+      ),
     );
   }
 }
 
 /// Story node - main narrative content
 class _StoryNode extends StatelessWidget {
-  const _StoryNode({required this.props, this.isActive = false});
+  const _StoryNode({required this.props, this.isActive = false, this.onDoubleTap});
   final NodeProps<StoryNodeData> props;
   final bool isActive;
+  final VoidCallback? onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
-    return _ComfyNodeWrapper(
-      props: props,
-      headerColor: _ComfyStyle.storyColor,
-      width: 240,
-      isActive: isActive,
-      child: Column(
+    return GestureDetector(
+      onDoubleTap: onDoubleTap,
+      child: _ComfyNodeWrapper(
+        props: props,
+        headerColor: _ComfyStyle.storyColor,
+        width: 240,
+        isActive: isActive,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Image preview area
@@ -548,11 +781,41 @@ class _StoryNode extends StatelessWidget {
             ),
         ],
       ),
+      ),
     );
   }
 
   Widget _buildImagePreview(String imageKey) {
-    // Simulated image previews with gradients
+    // Check if it's a URL - show actual image
+    if (imageKey.startsWith('http')) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: Image.network(
+          imageKey,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+          errorBuilder: (_, __, ___) => _buildGradientFallback(imageKey),
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                    : null,
+                strokeWidth: 2,
+                color: _ComfyStyle.storyColor,
+              ),
+            );
+          },
+        ),
+      );
+    }
+    // Fallback to gradient for asset names
+    return _buildGradientFallback(imageKey);
+  }
+
+  Widget _buildGradientFallback(String imageKey) {
     final gradients = {
       'forest': [const Color(0xFF1B4332), const Color(0xFF2D6A4F)],
       'meadow': [const Color(0xFF3A5A40), const Color(0xFF588157)],
@@ -585,18 +848,21 @@ class _StoryNode extends StatelessWidget {
 
 /// Branch node - decision points
 class _BranchNode extends StatelessWidget {
-  const _BranchNode({required this.props, this.isActive = false});
+  const _BranchNode({required this.props, this.isActive = false, this.onDoubleTap});
   final NodeProps<StoryNodeData> props;
   final bool isActive;
+  final VoidCallback? onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
-    return _ComfyNodeWrapper(
-      props: props,
-      headerColor: _ComfyStyle.branchColor,
-      width: 200,
-      isActive: isActive,
-      child: Column(
+    return GestureDetector(
+      onDoubleTap: onDoubleTap,
+      child: _ComfyNodeWrapper(
+        props: props,
+        headerColor: _ComfyStyle.branchColor,
+        width: 200,
+        isActive: isActive,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (props.data.description != null)
@@ -652,55 +918,88 @@ class _BranchNode extends StatelessWidget {
             }),
         ],
       ),
+      ),
     );
   }
 }
 
 /// Image node - visual content
 class _ImageNode extends StatelessWidget {
-  const _ImageNode({required this.props, this.isActive = false});
+  const _ImageNode({required this.props, this.isActive = false, this.onDoubleTap});
   final NodeProps<StoryNodeData> props;
   final bool isActive;
+  final VoidCallback? onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
-    return _ComfyNodeWrapper(
-      props: props,
-      headerColor: _ComfyStyle.imageColor,
-      width: 160,
-      isActive: isActive,
-      child: Container(
+    return GestureDetector(
+      onDoubleTap: onDoubleTap,
+      child: _ComfyNodeWrapper(
+        props: props,
+        headerColor: _ComfyStyle.imageColor,
+        width: 160,
+        isActive: isActive,
+        child: _buildContent(),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    // Show actual image if URL is provided
+    if (props.data.imageUrl != null && props.data.imageUrl!.startsWith('http')) {
+      return Container(
         height: 100,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              _ComfyStyle.imageColor.withValues(alpha: 0.3),
-              _ComfyStyle.imageColor.withValues(alpha: 0.1),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: const Color(0xFF1E1E1E),
           borderRadius: BorderRadius.circular(4),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.image,
-                color: _ComfyStyle.imageColor.withValues(alpha: 0.6),
-                size: 32,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Click to upload',
-                style: TextStyle(
-                  color: _ComfyStyle.textSecondary.withValues(alpha: 0.6),
-                  fontSize: 10,
-                ),
-              ),
-            ],
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Image.network(
+            props.data.imageUrl!,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+            errorBuilder: (_, __, ___) => _buildPlaceholder(),
           ),
+        ),
+      );
+    }
+    return _buildPlaceholder();
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      height: 100,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            _ComfyStyle.imageColor.withValues(alpha: 0.3),
+            _ComfyStyle.imageColor.withValues(alpha: 0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.image,
+              color: _ComfyStyle.imageColor.withValues(alpha: 0.6),
+              size: 32,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Click to upload',
+              style: TextStyle(
+                color: _ComfyStyle.textSecondary.withValues(alpha: 0.6),
+                fontSize: 10,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -709,22 +1008,25 @@ class _ImageNode extends StatelessWidget {
 
 /// End node - story conclusions
 class _EndNode extends StatelessWidget {
-  const _EndNode({required this.props, this.isActive = false});
+  const _EndNode({required this.props, this.isActive = false, this.onDoubleTap});
   final NodeProps<StoryNodeData> props;
   final bool isActive;
+  final VoidCallback? onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
     final isGood = props.data.nodeType == StoryNodeType.endGood;
     final color = isGood ? _ComfyStyle.endGoodColor : _ComfyStyle.endBadColor;
 
-    return _ComfyNodeWrapper(
-      props: props,
-      headerColor: color,
-      width: 200,
-      showSourceHandle: false,
-      isActive: isActive,
-      child: Column(
+    return GestureDetector(
+      onDoubleTap: onDoubleTap,
+      child: _ComfyNodeWrapper(
+        props: props,
+        headerColor: color,
+        width: 200,
+        showSourceHandle: false,
+        isActive: isActive,
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -765,6 +1067,7 @@ class _EndNode extends StatelessWidget {
             ),
           ],
         ],
+      ),
       ),
     );
   }
