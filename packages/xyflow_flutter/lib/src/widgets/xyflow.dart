@@ -687,6 +687,41 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
       return KeyEventResult.handled;
     }
 
+    // Ctrl+C to copy
+    if (isCtrlPressed && event.logicalKey == LogicalKeyboardKey.keyC) {
+      _controller.copy();
+      return KeyEventResult.handled;
+    }
+
+    // Ctrl+X to cut
+    if (isCtrlPressed && event.logicalKey == LogicalKeyboardKey.keyX) {
+      _controller.cut();
+      return KeyEventResult.handled;
+    }
+
+    // Ctrl+V to paste
+    if (isCtrlPressed && event.logicalKey == LogicalKeyboardKey.keyV) {
+      _controller.paste();
+      return KeyEventResult.handled;
+    }
+
+    // Ctrl+Z to undo
+    if (isCtrlPressed &&
+        !isShiftPressed &&
+        event.logicalKey == LogicalKeyboardKey.keyZ) {
+      _controller.undo();
+      return KeyEventResult.handled;
+    }
+
+    // Ctrl+Shift+Z or Ctrl+Y to redo
+    if ((isCtrlPressed &&
+            isShiftPressed &&
+            event.logicalKey == LogicalKeyboardKey.keyZ) ||
+        (isCtrlPressed && event.logicalKey == LogicalKeyboardKey.keyY)) {
+      _controller.redo();
+      return KeyEventResult.handled;
+    }
+
     // Arrow keys to move selected nodes
     if (_state.selectedNodeIds.isNotEmpty) {
       final moveAmount = isShiftPressed ? 10.0 : 1.0;

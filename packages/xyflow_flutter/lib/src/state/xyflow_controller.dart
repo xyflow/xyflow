@@ -6,8 +6,11 @@ import 'package:flutter/widgets.dart' show EdgeInsets;
 
 import '../core/types/edge.dart';
 import '../core/types/node.dart';
+import '../core/types/position.dart';
 import '../core/types/rect.dart';
 import '../core/types/viewport.dart';
+import 'clipboard.dart';
+import 'history.dart';
 import 'xyflow_state.dart';
 
 /// Controller for interacting with XYFlow.
@@ -19,15 +22,26 @@ class XYFlowController<NodeData, EdgeData> {
   XYFlowController({
     required XYFlowState<NodeData, EdgeData> state,
     TickerProvider? vsync,
+    int maxHistory = 100,
   })  : _state = state,
-        _vsync = vsync;
+        _vsync = vsync,
+        _clipboard = XYFlowClipboard<NodeData, EdgeData>(),
+        _history = FlowHistory<NodeData, EdgeData>(maxHistory: maxHistory);
 
   final XYFlowState<NodeData, EdgeData> _state;
   final TickerProvider? _vsync;
   AnimationController? _animationController;
+  final XYFlowClipboard<NodeData, EdgeData> _clipboard;
+  final FlowHistory<NodeData, EdgeData> _history;
 
   /// The underlying state.
   XYFlowState<NodeData, EdgeData> get state => _state;
+
+  /// The clipboard for copy/paste operations.
+  XYFlowClipboard<NodeData, EdgeData> get clipboard => _clipboard;
+
+  /// The history manager for undo/redo operations.
+  FlowHistory<NodeData, EdgeData> get history => _history;
 
   // ═══════════════════════════════════════════════════════════════════════════
   // NODE OPERATIONS
@@ -326,6 +340,135 @@ class XYFlowController<NodeData, EdgeData> {
     _state.selectNodes(_state.nodes.map((n) => n.id).toList());
     _state.selectEdges(_state.edges.map((e) => e.id).toList(), additive: true);
   }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CLIPBOARD OPERATIONS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /// Copies selected nodes and edges to the clipboard.
+  void copy() {
+    final selectedNodes = _state.nodes
+        .where((n) => _state.selectedNodeIds.contains(n.id))
+        .toList();
+    final selectedEdges = _state.edges
+        .where((e) => _state.selectedEdgeIds.contains(e.id))
+        .toList();
+
+    _clipboard.copy(nodes: selectedNodes, edges: selectedEdges);
+  }
+
+  /// Cuts selected nodes and edges (copy + delete).
+  void cut() {
+    copy();
+    deleteElements(
+      nodeIds: _state.selectedNodeIds.toList(),
+      edgeIds: _state.selectedEdgeIds.toList(),
+    );
+  }
+
+  /// Pastes clipboard content.
+  ///
+  /// Returns the pasted nodes and edges, or null if clipboard is empty.
+  ClipboardPasteResult<NodeData, EdgeData>? paste({
+    XYPosition offset = const XYPosition(x: 20, y: 20),
+  }) {
+    final result = _clipboard.paste(offset: offset);
+    if (result == null) return null;
+
+    // Record state for undo before pasting
+    _recordState();
+
+    // Clear current selection
+    _state.clearSelection();
+
+    // Add pasted elements
+    _state.addNodes(result.nodes);
+    _state.addEdges(result.edges);
+
+    // Select pasted elements
+    _state.selectNodes(result.nodes.map((n) => n.id).toList());
+    _state.selectEdges(result.edges.map((e) => e.id).toList(), additive: true);
+
+    return result;
+  }
+
+  /// Whether the clipboard has content.
+  bool get hasClipboardContent => _clipboard.hasContent;
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UNDO/REDO OPERATIONS
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /// Records the current state for undo.
+  ///
+  /// Call this before making changes that should be undoable.
+  void _recordState() {
+    _history.record(FlowSnapshot(
+      nodes: _state.nodes.map((n) => n.copyWith()).toList(),
+      edges: _state.edges.map((e) => e.copyWith()).toList(),
+      viewport: _state.viewport.copyWith(),
+      timestamp: DateTime.now(),
+    ));
+  }
+
+  /// Records state before an action (public API for custom operations).
+  void recordStateForUndo() => _recordState();
+
+  /// Undoes the last change.
+  ///
+  /// Returns true if undo was successful.
+  bool undo() {
+    if (!_history.canUndo) return false;
+
+    final currentSnapshot = FlowSnapshot<NodeData, EdgeData>(
+      nodes: _state.nodes.map((n) => n.copyWith()).toList(),
+      edges: _state.edges.map((e) => e.copyWith()).toList(),
+      viewport: _state.viewport.copyWith(),
+      timestamp: DateTime.now(),
+    );
+
+    final previousSnapshot = _history.undo(currentSnapshot);
+    if (previousSnapshot == null) return false;
+
+    _applySnapshot(previousSnapshot);
+    return true;
+  }
+
+  /// Redoes the last undone change.
+  ///
+  /// Returns true if redo was successful.
+  bool redo() {
+    if (!_history.canRedo) return false;
+
+    final currentSnapshot = FlowSnapshot<NodeData, EdgeData>(
+      nodes: _state.nodes.map((n) => n.copyWith()).toList(),
+      edges: _state.edges.map((e) => e.copyWith()).toList(),
+      viewport: _state.viewport.copyWith(),
+      timestamp: DateTime.now(),
+    );
+
+    final nextSnapshot = _history.redo(currentSnapshot);
+    if (nextSnapshot == null) return false;
+
+    _applySnapshot(nextSnapshot);
+    return true;
+  }
+
+  /// Applies a snapshot to the current state.
+  void _applySnapshot(FlowSnapshot<NodeData, EdgeData> snapshot) {
+    _state.setNodes(snapshot.nodes);
+    _state.setEdges(snapshot.edges);
+    _state.setViewport(snapshot.viewport);
+  }
+
+  /// Whether undo is available.
+  bool get canUndo => _history.canUndo;
+
+  /// Whether redo is available.
+  bool get canRedo => _history.canRedo;
+
+  /// Clears all history.
+  void clearHistory() => _history.clear();
 
   // ═══════════════════════════════════════════════════════════════════════════
   // SERIALIZATION

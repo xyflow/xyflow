@@ -27,6 +27,8 @@ export 'src/core/utils/edges/edge_path.dart';
 export 'src/state/xyflow_state.dart';
 export 'src/state/xyflow_controller.dart';
 export 'src/state/xyflow_provider.dart';
+export 'src/state/clipboard.dart';
+export 'src/state/history.dart';
 
 // Widgets
 export 'src/widgets/xyflow.dart';
