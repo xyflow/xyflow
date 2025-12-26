@@ -3,6 +3,7 @@ import 'examples/drag_and_drop.dart';
 import 'examples/basic_flow.dart';
 import 'examples/custom_nodes.dart';
 import 'examples/edge_types.dart';
+import 'examples/story_flow.dart';
 
 void main() {
   runApp(const MyApp());
@@ -77,6 +78,16 @@ class ExampleSelector extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const EdgeTypesExample()),
+            ),
+          ),
+          _ExampleCard(
+            title: 'Story Flow',
+            description: 'ComfyUI-style dark theme for branching narratives with images.',
+            icon: Icons.auto_stories,
+            color: Colors.teal,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const StoryFlowExample()),
             ),
           ),
         ],
