@@ -321,6 +321,12 @@ class XYFlowController<NodeData, EdgeData> {
   /// Clears all selection.
   void clearSelection() => _state.clearSelection();
 
+  /// Selects all nodes and edges.
+  void selectAll() {
+    _state.selectNodes(_state.nodes.map((n) => n.id).toList());
+    _state.selectEdges(_state.edges.map((e) => e.id).toList(), additive: true);
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // SERIALIZATION
   // ═══════════════════════════════════════════════════════════════════════════

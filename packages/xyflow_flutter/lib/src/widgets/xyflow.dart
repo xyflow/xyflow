@@ -623,9 +623,24 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
     if (event is! KeyDownEvent) return KeyEventResult.ignored;
 
-    // Delete selected elements
+    final isCtrlPressed = HardwareKeyboard.instance.logicalKeysPressed
+            .contains(LogicalKeyboardKey.controlLeft) ||
+        HardwareKeyboard.instance.logicalKeysPressed
+            .contains(LogicalKeyboardKey.controlRight) ||
+        HardwareKeyboard.instance.logicalKeysPressed
+            .contains(LogicalKeyboardKey.metaLeft) ||
+        HardwareKeyboard.instance.logicalKeysPressed
+            .contains(LogicalKeyboardKey.metaRight);
+
+    final isShiftPressed = HardwareKeyboard.instance.logicalKeysPressed
+            .contains(LogicalKeyboardKey.shiftLeft) ||
+        HardwareKeyboard.instance.logicalKeysPressed
+            .contains(LogicalKeyboardKey.shiftRight);
+
+    // Delete selected elements (Delete or Backspace)
     if (widget.deleteKeyCode != null &&
-        event.logicalKey == widget.deleteKeyCode) {
+        (event.logicalKey == widget.deleteKeyCode ||
+            event.logicalKey == LogicalKeyboardKey.backspace)) {
       final selectedNodes = _state.selectedNodeIds.toList();
       final selectedEdges = _state.selectedEdgeIds.toList();
 
@@ -644,7 +659,76 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
       return KeyEventResult.handled;
     }
 
+    // Ctrl+A to select all
+    if (isCtrlPressed && event.logicalKey == LogicalKeyboardKey.keyA) {
+      _controller.selectAll();
+      return KeyEventResult.handled;
+    }
+
+    // Ctrl+0 to reset zoom
+    if (isCtrlPressed && event.logicalKey == LogicalKeyboardKey.digit0) {
+      _controller.zoomTo(1.0, duration: const Duration(milliseconds: 200));
+      return KeyEventResult.handled;
+    }
+
+    // Ctrl+= or Ctrl++ to zoom in
+    if (isCtrlPressed &&
+        (event.logicalKey == LogicalKeyboardKey.equal ||
+            event.logicalKey == LogicalKeyboardKey.numpadAdd)) {
+      _controller.zoomIn(duration: const Duration(milliseconds: 200));
+      return KeyEventResult.handled;
+    }
+
+    // Ctrl+- to zoom out
+    if (isCtrlPressed &&
+        (event.logicalKey == LogicalKeyboardKey.minus ||
+            event.logicalKey == LogicalKeyboardKey.numpadSubtract)) {
+      _controller.zoomOut(duration: const Duration(milliseconds: 200));
+      return KeyEventResult.handled;
+    }
+
+    // Arrow keys to move selected nodes
+    if (_state.selectedNodeIds.isNotEmpty) {
+      final moveAmount = isShiftPressed ? 10.0 : 1.0;
+      XYPosition? delta;
+
+      switch (event.logicalKey) {
+        case LogicalKeyboardKey.arrowUp:
+          delta = XYPosition(x: 0, y: -moveAmount);
+        case LogicalKeyboardKey.arrowDown:
+          delta = XYPosition(x: 0, y: moveAmount);
+        case LogicalKeyboardKey.arrowLeft:
+          delta = XYPosition(x: -moveAmount, y: 0);
+        case LogicalKeyboardKey.arrowRight:
+          delta = XYPosition(x: moveAmount, y: 0);
+      }
+
+      if (delta != null) {
+        _moveSelectedNodes(delta);
+        return KeyEventResult.handled;
+      }
+    }
+
     return KeyEventResult.ignored;
+  }
+
+  void _moveSelectedNodes(XYPosition delta) {
+    final changes = <NodeChange>[];
+    for (final nodeId in _state.selectedNodeIds) {
+      final node = _state.nodeLookup[nodeId];
+      if (node != null) {
+        changes.add(NodePositionChange(
+          id: nodeId,
+          position: XYPosition(
+            x: node.node.position.x + delta.x,
+            y: node.node.position.y + delta.y,
+          ),
+        ));
+      }
+    }
+    if (changes.isNotEmpty) {
+      widget.onNodesChange?.call(changes);
+    }
   }
 }
 
