@@ -1,0 +1,24 @@
+name: xyflow_flutter
+description: A highly customizable Flutter library for building node-based editors, interactive diagrams, and workflow visualizations. Dart port of xyflow.
+version: 0.1.0
+homepage: https://github.com/xyflow/xyflow
+repository: https://github.com/xyflow/xyflow/tree/main/packages/xyflow_flutter
+issue_tracker: https://github.com/xyflow/xyflow/issues
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.10.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  vector_math: ^2.1.4
+  collection: ^1.18.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  golden_toolkit: ^0.15.0
+
+flutter:
