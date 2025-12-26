@@ -83,6 +83,9 @@ class NodeProps<T> {
 /// This is the Flutter equivalent of the ReactFlow component.
 class XYFlow<NodeData, EdgeData> extends StatefulWidget {
   /// Creates an XYFlow widget.
+  ///
+  /// Use either [fitView] or [fitViewOnInit] (they are aliases) to fit
+  /// all nodes in view on initial render.
   const XYFlow({
     super.key,
     this.nodes = const [],
@@ -107,6 +110,7 @@ class XYFlow<NodeData, EdgeData> extends StatefulWidget {
     this.snapToGrid = false,
     this.snapGrid = const (15, 15),
     this.fitView = false,
+    this.fitViewOnInit = false,
     this.fitViewOptions,
     this.minZoom = 0.5,
     this.maxZoom = 2.0,
@@ -218,6 +222,15 @@ class XYFlow<NodeData, EdgeData> extends StatefulWidget {
 
   /// Whether to fit all nodes in view on initial render.
   final bool fitView;
+
+  /// Whether to fit all nodes in view on initial render.
+  ///
+  /// This is an alias for [fitView] to match React xyflow API naming.
+  /// If both are specified, either one being true will enable fit view.
+  final bool fitViewOnInit;
+
+  /// Returns true if fit view should be enabled (either fitView or fitViewOnInit is true).
+  bool get shouldFitView => fitView || fitViewOnInit;
 
   /// Options for fitView.
   final FitViewOptions? fitViewOptions;
@@ -333,7 +346,7 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.onInit?.call(_controller);
 
-      if (widget.fitView) {
+      if (widget.shouldFitView) {
         _controller.fitView(
           padding: widget.fitViewOptions?.padding ?? const EdgeInsets.all(10),
           includeHiddenNodes: widget.fitViewOptions?.includeHiddenNodes ?? false,

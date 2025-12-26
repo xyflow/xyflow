@@ -134,12 +134,6 @@ class _EdgeTypesExampleState extends State<EdgeTypesExample> {
           'source': (props) => _SourceNode(props: props),
           'default': (props) => _TargetNode(props: props),
         },
-        edgeTypes: {
-          EdgeType.bezier: (props) => _LabeledBezierEdge(props: props),
-          EdgeType.straight: (props) => _LabeledStraightEdge(props: props),
-          EdgeType.step: (props) => _LabeledStepEdge(props: props),
-          EdgeType.smoothStep: (props) => _LabeledSmoothStepEdge(props: props),
-        },
         fitViewOnInit: true,
         children: [
           const Background(variant: BackgroundVariant.dots),
@@ -190,7 +184,7 @@ class _EdgeTypeSelector extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
           ),
           const SizedBox(height: 8),
-          ...EdgeType.values.map((type) => _EdgeTypeOption(
+          ...EdgeType.values.where((t) => t != EdgeType.simpleBezier).map((type) => _EdgeTypeOption(
                 type: type,
                 isSelected: selectedType == type,
                 onTap: () => onTypeChanged(type),
@@ -356,130 +350,6 @@ class _TargetNode extends StatelessWidget {
             style: const TextStyle(fontSize: 12),
           ),
         ],
-      ),
-    );
-  }
-}
-
-/// Bezier edge with label.
-class _LabeledBezierEdge extends StatelessWidget {
-  const _LabeledBezierEdge({required this.props});
-
-  final EdgeProps<Map<String, dynamic>> props;
-
-  @override
-  Widget build(BuildContext context) {
-    return BezierEdge(
-      id: props.id,
-      sourceX: props.sourceX,
-      sourceY: props.sourceY,
-      targetX: props.targetX,
-      targetY: props.targetY,
-      sourcePosition: props.sourcePosition,
-      targetPosition: props.targetPosition,
-      selected: props.selected,
-      style: EdgeStyle(
-        strokeColor: props.selected ? Colors.blue : Colors.indigo,
-        strokeWidth: props.selected ? 2.5 : 2.0,
-      ),
-      label: props.data?['label'],
-      labelStyle: TextStyle(
-        fontSize: 10,
-        color: Colors.indigo[700],
-        backgroundColor: Colors.white,
-      ),
-    );
-  }
-}
-
-/// Straight edge with label.
-class _LabeledStraightEdge extends StatelessWidget {
-  const _LabeledStraightEdge({required this.props});
-
-  final EdgeProps<Map<String, dynamic>> props;
-
-  @override
-  Widget build(BuildContext context) {
-    return StraightEdge(
-      id: props.id,
-      sourceX: props.sourceX,
-      sourceY: props.sourceY,
-      targetX: props.targetX,
-      targetY: props.targetY,
-      sourcePosition: props.sourcePosition,
-      targetPosition: props.targetPosition,
-      selected: props.selected,
-      style: EdgeStyle(
-        strokeColor: props.selected ? Colors.blue : Colors.teal,
-        strokeWidth: props.selected ? 2.5 : 2.0,
-      ),
-      label: props.data?['label'],
-      labelStyle: TextStyle(
-        fontSize: 10,
-        color: Colors.teal[700],
-        backgroundColor: Colors.white,
-      ),
-    );
-  }
-}
-
-/// Step edge with label.
-class _LabeledStepEdge extends StatelessWidget {
-  const _LabeledStepEdge({required this.props});
-
-  final EdgeProps<Map<String, dynamic>> props;
-
-  @override
-  Widget build(BuildContext context) {
-    return StepEdge(
-      id: props.id,
-      sourceX: props.sourceX,
-      sourceY: props.sourceY,
-      targetX: props.targetX,
-      targetY: props.targetY,
-      sourcePosition: props.sourcePosition,
-      targetPosition: props.targetPosition,
-      selected: props.selected,
-      style: EdgeStyle(
-        strokeColor: props.selected ? Colors.blue : Colors.orange,
-        strokeWidth: props.selected ? 2.5 : 2.0,
-      ),
-      label: props.data?['label'],
-      labelStyle: TextStyle(
-        fontSize: 10,
-        color: Colors.orange[700],
-        backgroundColor: Colors.white,
-      ),
-    );
-  }
-}
-
-/// Smooth step edge with label.
-class _LabeledSmoothStepEdge extends StatelessWidget {
-  const _LabeledSmoothStepEdge({required this.props});
-
-  final EdgeProps<Map<String, dynamic>> props;
-
-  @override
-  Widget build(BuildContext context) {
-    return SmoothStepEdge(
-      id: props.id,
-      sourceX: props.sourceX,
-      sourceY: props.sourceY,
-      targetX: props.targetX,
-      targetY: props.targetY,
-      sourcePosition: props.sourcePosition,
-      targetPosition: props.targetPosition,
-      selected: props.selected,
-      style: EdgeStyle(
-        strokeColor: props.selected ? Colors.blue : Colors.purple,
-        strokeWidth: props.selected ? 2.5 : 2.0,
-      ),
-      label: props.data?['label'],
-      labelStyle: TextStyle(
-        fontSize: 10,
-        color: Colors.purple[700],
-        backgroundColor: Colors.white,
       ),
     );
   }

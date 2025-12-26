@@ -1,7 +1,93 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show Color, Colors, TextStyle, immutable;
 
 import 'marker.dart';
 import 'position.dart';
+
+/// Built-in edge type enum for type-safe edge type specification.
+///
+/// Use this enum with [Edge.type] for type-safe edge type specification,
+/// or use string values directly via [EdgeTypes] constants.
+enum EdgeType {
+  /// Default bezier edge with curved path.
+  bezier,
+
+  /// Straight line edge.
+  straight,
+
+  /// Step edge with right-angle corners.
+  step,
+
+  /// Smooth step edge with rounded corners.
+  smoothStep,
+
+  /// Simple bezier with basic curve.
+  simpleBezier;
+
+  /// Returns the string name used by the edge system.
+  String get name {
+    switch (this) {
+      case EdgeType.bezier:
+        return EdgeTypes.defaultEdge;
+      case EdgeType.straight:
+        return EdgeTypes.straight;
+      case EdgeType.step:
+        return EdgeTypes.step;
+      case EdgeType.smoothStep:
+        return EdgeTypes.smoothStep;
+      case EdgeType.simpleBezier:
+        return EdgeTypes.simpleBezier;
+    }
+  }
+}
+
+/// Style configuration for edges.
+@immutable
+class EdgeStyle {
+  /// Creates an edge style.
+  const EdgeStyle({
+    this.strokeColor,
+    this.strokeWidth = 2.0,
+    this.curvature,
+    this.animated = false,
+    this.dashArray,
+  });
+
+  /// The color of the edge stroke.
+  final Color? strokeColor;
+
+  /// The width of the edge stroke.
+  final double strokeWidth;
+
+  /// The curvature of bezier edges (0-1).
+  final double? curvature;
+
+  /// Whether the edge should be animated.
+  final bool animated;
+
+  /// Dash pattern for dashed lines (e.g., [5, 5] for dashed).
+  final List<double>? dashArray;
+
+  /// Default style.
+  static const EdgeStyle defaultStyle = EdgeStyle();
+
+  /// Creates a copy with the given fields replaced.
+  EdgeStyle copyWith({
+    Color? strokeColor,
+    double? strokeWidth,
+    double? curvature,
+    bool? animated,
+    List<double>? dashArray,
+  }) {
+    return EdgeStyle(
+      strokeColor: strokeColor ?? this.strokeColor,
+      strokeWidth: strokeWidth ?? this.strokeWidth,
+      curvature: curvature ?? this.curvature,
+      animated: animated ?? this.animated,
+      dashArray: dashArray ?? this.dashArray,
+    );
+  }
+}
 
 /// Represents an edge (connection) between two nodes.
 ///
@@ -9,13 +95,16 @@ import 'position.dart';
 @immutable
 class Edge<T> {
   /// Creates an edge with the given properties.
-  const Edge({
+  ///
+  /// The [type] parameter accepts either an [EdgeType] enum value or a String.
+  /// If [EdgeType] is provided, it will be converted to the corresponding string.
+  Edge({
     required this.id,
     required this.source,
     required this.target,
     this.sourceHandle,
     this.targetHandle,
-    this.type,
+    dynamic type,
     this.data,
     this.animated = false,
     this.selected = false,
@@ -37,7 +126,7 @@ class Edge<T> {
     this.interactionWidth,
     this.className,
     this.style,
-  });
+  }) : type = type is EdgeType ? type.name : type as String?;
 
   /// Unique identifier for this edge.
   final String id;
@@ -55,6 +144,8 @@ class Edge<T> {
   final String? targetHandle;
 
   /// The type of edge, used to look up the widget builder.
+  ///
+  /// Can be set using [EdgeType] enum values or string constants from [EdgeTypes].
   final String? type;
 
   /// The data payload for this edge.

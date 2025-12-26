@@ -107,7 +107,7 @@ class _BasicFlowExampleState extends State<BasicFlowExample> {
           'default': (props) => _DefaultNode(props: props),
           'output': (props) => _OutputNode(props: props),
         },
-        fitViewOnInit: true,
+        fitView: true,
         children: const [
           Background(variant: BackgroundVariant.dots),
           Controls(),

@@ -125,7 +125,7 @@ class _CustomNodesExampleState extends State<CustomNodesExample> {
           'gradient': (props) => _GradientNode(props: props),
           'icon': (props) => _IconNode(props: props),
         },
-        fitViewOnInit: true,
+        fitView: true,
         children: const [
           Background(
             variant: BackgroundVariant.lines,

@@ -198,8 +198,8 @@ void main() {
 
   group('applyEdgeChanges', () {
     test('applies selection change', () {
-      final edges = [
-        const Edge<void>(
+      final edges = <Edge<void>>[
+        Edge<void>(
           id: 'e1',
           source: 'a',
           target: 'b',
@@ -217,9 +217,9 @@ void main() {
     });
 
     test('applies remove change', () {
-      final edges = [
-        const Edge<void>(id: 'e1', source: 'a', target: 'b'),
-        const Edge<void>(id: 'e2', source: 'b', target: 'c'),
+      final edges = <Edge<void>>[
+        Edge<void>(id: 'e1', source: 'a', target: 'b'),
+        Edge<void>(id: 'e2', source: 'b', target: 'c'),
       ];
 
       final changes = [
@@ -234,12 +234,12 @@ void main() {
 
     test('applies add change', () {
       final edges = <Edge<void>>[
-        const Edge<void>(id: 'e1', source: 'a', target: 'b'),
+        Edge<void>(id: 'e1', source: 'a', target: 'b'),
       ];
 
       final changes = [
         EdgeAddChange<void>(
-          edge: const Edge<void>(id: 'e2', source: 'b', target: 'c'),
+          edge: Edge<void>(id: 'e2', source: 'b', target: 'c'),
         ),
       ];
 
@@ -250,8 +250,8 @@ void main() {
     });
 
     test('applies replace change', () {
-      final edges = [
-        const Edge<void>(
+      final edges = <Edge<void>>[
+        Edge<void>(
           id: 'e1',
           source: 'a',
           target: 'b',
@@ -260,7 +260,7 @@ void main() {
       ];
 
       final changes = [
-        const EdgeReplaceChange<void>(
+        EdgeReplaceChange<void>(
           id: 'e1',
           edge: Edge<void>(
             id: 'e1',
