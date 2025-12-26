@@ -132,7 +132,7 @@ class MiniMapPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     try {
-      final state = XYFlowProvider.maybeOf<dynamic, dynamic>(context);
+      final state = XYFlowProvider.maybeOfAny(context);
       if (state == null) return;
 
       final nodes = state.nodes;

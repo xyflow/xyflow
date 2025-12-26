@@ -78,7 +78,7 @@ class BaseEdgeWidget<T> extends StatelessWidget {
             painter: EdgePainter(
               path: edgePath.path,
               color: _getColor(),
-              strokeWidth: edge.selected ? 3 : 2,
+              strokeWidth: _getStrokeWidth(),
               animated: edge.animated,
               selected: edge.selected,
               markerStart: edge.markerStart,
@@ -190,10 +190,28 @@ class BaseEdgeWidget<T> extends StatelessWidget {
   }
 
   Color _getColor() {
+    // Check for custom stroke color in style map
+    final styleStroke = edge.style?['stroke'];
+    if (styleStroke != null) {
+      if (styleStroke is Color) {
+        return styleStroke;
+      } else if (styleStroke is int) {
+        return Color(styleStroke);
+      }
+    }
     if (edge.selected) {
       return Colors.blue;
     }
     return Colors.grey.shade600;
+  }
+
+  double _getStrokeWidth() {
+    // Check for custom stroke width in style map
+    final styleWidth = edge.style?['strokeWidth'];
+    if (styleWidth != null && styleWidth is num) {
+      return styleWidth.toDouble();
+    }
+    return edge.selected ? 3 : 2;
   }
 
   Widget _buildLabel() {

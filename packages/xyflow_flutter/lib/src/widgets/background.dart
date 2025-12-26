@@ -109,7 +109,7 @@ class BackgroundPainter extends CustomPainter {
     double zoom = 1.0;
 
     try {
-      final state = XYFlowProvider.maybeOf<dynamic, dynamic>(context);
+      final state = XYFlowProvider.maybeOfAny(context);
       if (state != null) {
         effectiveOffset = Offset(state.viewport.x, state.viewport.y);
         zoom = state.viewport.zoom;

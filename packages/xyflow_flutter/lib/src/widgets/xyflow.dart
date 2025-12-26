@@ -12,6 +12,7 @@ import '../core/types/viewport.dart' hide Transform;
 import '../state/xyflow_controller.dart';
 import '../state/xyflow_provider.dart';
 import '../state/xyflow_state.dart';
+import 'background.dart';
 import 'connection_line.dart';
 import 'edges/base_edge.dart';
 import 'nodes/default_node.dart';
@@ -111,6 +112,7 @@ class XYFlow<NodeData, EdgeData> extends StatefulWidget {
     this.snapGrid = const (15, 15),
     this.fitView = false,
     this.fitViewOnInit = false,
+    this.fitViewOnResize = false,
     this.fitViewOptions,
     this.minZoom = 0.5,
     this.maxZoom = 2.0,
@@ -229,6 +231,13 @@ class XYFlow<NodeData, EdgeData> extends StatefulWidget {
   /// If both are specified, either one being true will enable fit view.
   final bool fitViewOnInit;
 
+  /// Whether to re-fit the view when the container size changes (e.g., device rotation).
+  ///
+  /// When true, the view will automatically adjust to fit all nodes when the
+  /// device rotates or the container resizes. Default is false to preserve
+  /// the user's current pan/zoom state.
+  final bool fitViewOnResize;
+
   /// Returns true if fit view should be enabled (either fitView or fitViewOnInit is true).
   bool get shouldFitView => fitView || fitViewOnInit;
 
@@ -320,6 +329,8 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
 
   // Track if fitView has been performed
   bool _fitViewPerformed = false;
+  int _fitViewRetryCount = 0;
+  static const int _maxFitViewRetries = 100; // ~1.6 seconds at 60fps
 
   @override
   void initState() {
@@ -366,6 +377,17 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
   void _performFitView() {
     if (_fitViewPerformed || !widget.shouldFitView) return;
 
+    // Prevent infinite loop with retry limit
+    if (_fitViewRetryCount >= _maxFitViewRetries) {
+      // Give up and perform fitView with whatever we have
+      _fitViewPerformed = true;
+      _controller.fitView(
+        padding: widget.fitViewOptions?.padding ?? const EdgeInsets.all(50),
+        includeHiddenNodes: widget.fitViewOptions?.includeHiddenNodes ?? false,
+      );
+      return;
+    }
+
     // Check if we have container size and at least some nodes have been measured
     if (_state.containerSize != null && _state.nodes.isNotEmpty) {
       // Verify at least one node has been measured
@@ -390,6 +412,7 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
     }
 
     // Try again next frame
+    _fitViewRetryCount++;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _performFitView();
     });
@@ -435,12 +458,20 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
           // Update container size when layout changes
           final containerSize = Size(constraints.maxWidth, constraints.maxHeight);
           if (containerSize.isFinite && _state.containerSize != containerSize) {
+            final hadPreviousSize = _state.containerSize != null;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (mounted) {
                 _state.setContainerSize(containerSize);
                 // Trigger fitView if not yet performed and size is now available
                 if (!_fitViewPerformed && widget.shouldFitView) {
                   _performFitView();
+                } else if (hadPreviousSize && widget.fitViewOnResize) {
+                  // Re-fit on resize (e.g., device rotation)
+                  _controller.fitView(
+                    padding: widget.fitViewOptions?.padding ?? const EdgeInsets.all(50),
+                    includeHiddenNodes: widget.fitViewOptions?.includeHiddenNodes ?? false,
+                    duration: const Duration(milliseconds: 200),
+                  );
                 }
               }
             });
@@ -465,6 +496,9 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
                         child: Stack(
                           key: _viewportKey,
                           children: [
+                            // Background children first (behind everything)
+                            if (widget.children != null)
+                              ...widget.children!.where((c) => c is Background),
                             // Viewport with edges and nodes - use Positioned.fill to give it size
                             Positioned.fill(
                               child: Transform(
@@ -497,8 +531,9 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
                                 ),
                               ),
                             ),
-                            // Additional children (Background, Controls, etc.)
-                            if (widget.children != null) ...widget.children!,
+                            // Other children on top (Controls, MiniMap, Panel, etc.)
+                            if (widget.children != null)
+                              ...widget.children!.where((c) => c is! Background),
                           ],
                         ),
                       ),

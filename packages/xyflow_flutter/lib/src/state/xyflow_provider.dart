@@ -40,6 +40,28 @@ class XYFlowProvider<NodeData, EdgeData>
     return provider?.notifier;
   }
 
+  /// Gets the state from the nearest ancestor provider without type constraints.
+  ///
+  /// This is useful for widgets like Controls and Background that need to
+  /// access the state but don't know the specific NodeData/EdgeData types.
+  static XYFlowState<dynamic, dynamic>? maybeOfAny(BuildContext context) {
+    final element = context.getElementForInheritedWidgetOfExactType<XYFlowProvider<dynamic, dynamic>>();
+    if (element != null) {
+      return (element.widget as XYFlowProvider<dynamic, dynamic>).notifier;
+    }
+    // Try to find any XYFlowProvider in the tree
+    XYFlowState<dynamic, dynamic>? result;
+    context.visitAncestorElements((element) {
+      if (element.widget is XYFlowProvider) {
+        final provider = element.widget as XYFlowProvider;
+        result = provider.notifier as XYFlowState<dynamic, dynamic>?;
+        return false; // Stop visiting
+      }
+      return true; // Continue visiting
+    });
+    return result;
+  }
+
   @override
   bool updateShouldNotify(
     covariant XYFlowProvider<NodeData, EdgeData> oldWidget,

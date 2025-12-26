@@ -173,7 +173,7 @@ class Controls extends StatelessWidget {
 
   XYFlowController<dynamic, dynamic>? _getController(BuildContext context) {
     try {
-      final state = XYFlowProvider.maybeOf<dynamic, dynamic>(context);
+      final state = XYFlowProvider.maybeOfAny(context);
       if (state != null) {
         return XYFlowController(state: state);
       }

@@ -498,6 +498,15 @@ class XYFlowState<NodeData, EdgeData> extends ChangeNotifier {
 
   /// Updates node lookup maps.
   void _updateNodeLookups() {
+    // Preserve measured dimensions before clearing lookup
+    final preservedMeasurements = <String, (MeasuredDimensions?, XYRect?)>{};
+    for (final entry in _nodeLookup.entries) {
+      preservedMeasurements[entry.key] = (
+        entry.value.measured,
+        entry.value.bounds,
+      );
+    }
+
     _nodeLookup.clear();
     _parentLookup.clear();
 
@@ -505,11 +514,27 @@ class XYFlowState<NodeData, EdgeData> extends ChangeNotifier {
       final positionAbsolute = _calculateAbsolutePosition(node);
       final zIndex = _calculateZIndex(node);
 
+      // Restore preserved measurements if available
+      final preserved = preservedMeasurements[node.id];
+      final measured = preserved?.$1;
+      // Recalculate bounds with new position but preserved dimensions
+      XYRect? bounds;
+      if (measured != null) {
+        bounds = XYRect(
+          x: positionAbsolute.x,
+          y: positionAbsolute.y,
+          width: measured.width,
+          height: measured.height,
+        );
+      }
+
       final internal = InternalNode<NodeData>(
         node: node,
         internals: NodeInternals(
           positionAbsolute: positionAbsolute,
           z: zIndex,
+          measured: measured,
+          bounds: bounds,
         ),
       );
 

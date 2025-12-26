@@ -12,14 +12,107 @@ class StoryFlowExample extends StatefulWidget {
   State<StoryFlowExample> createState() => _StoryFlowExampleState();
 }
 
-class _StoryFlowExampleState extends State<StoryFlowExample> {
+class _StoryFlowExampleState extends State<StoryFlowExample>
+    with TickerProviderStateMixin {
   late List<Node<StoryNodeData>> _nodes;
   late List<Edge<void>> _edges;
+
+  // Animation state for route visualization
+  AnimationController? _playController;
+  String? _activeNodeId;
+  String? _activeEdgeId;
+  bool _isPlaying = false;
+  List<String> _executionPath = [];
+  int _currentPathIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _initializeStory();
+  }
+
+  @override
+  void dispose() {
+    _playController?.dispose();
+    super.dispose();
+  }
+
+  /// Starts the route visualization animation
+  void _startPlayback() {
+    if (_isPlaying) {
+      _stopPlayback();
+      return;
+    }
+
+    // Define execution path: start -> scene1 -> branch1 -> scene2b (cave) -> branch2 -> end1 (good)
+    _executionPath = [
+      'start',
+      'e-start-scene1',
+      'scene1',
+      'e-scene1-branch1',
+      'branch1',
+      'e-branch1-scene2b', // Taking the cave path
+      'scene2b',
+      'e-scene2b-branch2',
+      'branch2',
+      'e-branch2-end1', // Speaking to the figure
+      'end1',
+    ];
+
+    _currentPathIndex = 0;
+    _isPlaying = true;
+
+    _playController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    _playController!.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _advanceToNextStep();
+      }
+    });
+
+    setState(() {
+      _activeNodeId = _executionPath[0].startsWith('e-') ? null : _executionPath[0];
+      _activeEdgeId = _executionPath[0].startsWith('e-') ? _executionPath[0] : null;
+    });
+    _playController!.forward();
+  }
+
+  void _advanceToNextStep() {
+    if (!_isPlaying) return;
+
+    _currentPathIndex++;
+    if (_currentPathIndex >= _executionPath.length) {
+      _stopPlayback();
+      return;
+    }
+
+    final currentItem = _executionPath[_currentPathIndex];
+    setState(() {
+      if (currentItem.startsWith('e-')) {
+        _activeEdgeId = currentItem;
+        _activeNodeId = null;
+      } else {
+        _activeNodeId = currentItem;
+        _activeEdgeId = null;
+      }
+    });
+
+    _playController!.reset();
+    _playController!.forward();
+  }
+
+  void _stopPlayback() {
+    _isPlaying = false;
+    _playController?.stop();
+    _playController?.dispose();
+    _playController = null;
+    setState(() {
+      _activeNodeId = null;
+      _activeEdgeId = null;
+    });
   }
 
   void _initializeStory() {
@@ -170,14 +263,14 @@ class _StoryFlowExampleState extends State<StoryFlowExample> {
     _edges = [
       Edge<void>(id: 'e-start-scene1', source: 'start', target: 'scene1'),
       Edge<void>(id: 'e-scene1-branch1', source: 'scene1', target: 'branch1'),
-      Edge<void>(id: 'e-branch1-scene2a', source: 'branch1', target: 'scene2a', label: 'Light'),
-      Edge<void>(id: 'e-branch1-scene2b', source: 'branch1', target: 'scene2b', label: 'Cave'),
-      Edge<void>(id: 'e-branch1-scene2c', source: 'branch1', target: 'scene2c', label: 'Tree'),
+      Edge<void>(id: 'e-branch1-scene2a', source: 'branch1', target: 'scene2a', label: 'Light', labelShowBg: false, labelStyle: {'color': 0xFFE0E0E0, 'fontSize': 11.0}),
+      Edge<void>(id: 'e-branch1-scene2b', source: 'branch1', target: 'scene2b', label: 'Cave', labelShowBg: false, labelStyle: {'color': 0xFFE0E0E0, 'fontSize': 11.0}),
+      Edge<void>(id: 'e-branch1-scene2c', source: 'branch1', target: 'scene2c', label: 'Tree', labelShowBg: false, labelStyle: {'color': 0xFFE0E0E0, 'fontSize': 11.0}),
       Edge<void>(id: 'e-scene2a-branch2', source: 'scene2a', target: 'branch2'),
       Edge<void>(id: 'e-scene2b-branch2', source: 'scene2b', target: 'branch2'),
       Edge<void>(id: 'e-scene2c-branch2', source: 'scene2c', target: 'branch2'),
-      Edge<void>(id: 'e-branch2-end1', source: 'branch2', target: 'end1', label: 'Speak'),
-      Edge<void>(id: 'e-branch2-end2', source: 'branch2', target: 'end2', label: 'Run'),
+      Edge<void>(id: 'e-branch2-end1', source: 'branch2', target: 'end1', label: 'Speak', labelShowBg: false, labelStyle: {'color': 0xFFE0E0E0, 'fontSize': 11.0}),
+      Edge<void>(id: 'e-branch2-end2', source: 'branch2', target: 'end2', label: 'Run', labelShowBg: false, labelStyle: {'color': 0xFFE0E0E0, 'fontSize': 11.0}),
     ];
   }
 
@@ -191,6 +284,29 @@ class _StoryFlowExampleState extends State<StoryFlowExample> {
     setState(() {
       _edges = applyEdgeChanges(changes, _edges);
     });
+  }
+
+  /// Returns edges with active highlighting applied
+  List<Edge<void>> _getStyledEdges() {
+    return _edges.map((edge) {
+      final isActive = _activeEdgeId == edge.id;
+      if (isActive) {
+        return Edge<void>(
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          sourceHandle: edge.sourceHandle,
+          targetHandle: edge.targetHandle,
+          label: edge.label,
+          labelShowBg: edge.labelShowBg,
+          labelStyle: edge.labelStyle,
+          type: edge.type,
+          animated: true, // Animate the active edge
+          style: {'stroke': 0xFF4CAF50, 'strokeWidth': 3.0}, // Green highlight
+        );
+      }
+      return edge;
+    }).toList();
   }
 
   @override
@@ -210,6 +326,26 @@ class _StoryFlowExampleState extends State<StoryFlowExample> {
         elevation: 0,
         iconTheme: const IconThemeData(color: Color(0xFFE0E0E0)),
         actions: [
+          // Play/Stop button for route visualization
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: _isPlaying
+                ? const Color(0xFFFF5722).withValues(alpha: 0.2)
+                : const Color(0xFF4CAF50).withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: IconButton(
+              icon: Icon(
+                _isPlaying ? Icons.stop : Icons.play_arrow,
+                size: 22,
+                color: _isPlaying ? const Color(0xFFFF5722) : const Color(0xFF4CAF50),
+              ),
+              onPressed: _startPlayback,
+              tooltip: _isPlaying ? 'Stop' : 'Run Story Flow',
+            ),
+          ),
+          const SizedBox(width: 8),
           _buildToolbarButton(Icons.add_box_outlined, 'Add Story', () {}),
           _buildToolbarButton(Icons.call_split, 'Add Branch', () {}),
           _buildToolbarButton(Icons.image_outlined, 'Add Image', () {}),
@@ -218,17 +354,18 @@ class _StoryFlowExampleState extends State<StoryFlowExample> {
       ),
       body: XYFlow<StoryNodeData, void>(
         nodes: _nodes,
-        edges: _edges,
+        edges: _getStyledEdges(),
         onNodesChange: _onNodesChange,
         onEdgesChange: _onEdgesChange,
         nodeTypes: {
-          'start': (props) => _StartNode(props: props),
-          'story': (props) => _StoryNode(props: props),
-          'branch': (props) => _BranchNode(props: props),
-          'image': (props) => _ImageNode(props: props),
-          'end': (props) => _EndNode(props: props),
+          'start': (props) => _StartNode(props: props, isActive: _activeNodeId == props.id),
+          'story': (props) => _StoryNode(props: props, isActive: _activeNodeId == props.id),
+          'branch': (props) => _BranchNode(props: props, isActive: _activeNodeId == props.id),
+          'image': (props) => _ImageNode(props: props, isActive: _activeNodeId == props.id),
+          'end': (props) => _EndNode(props: props, isActive: _activeNodeId == props.id),
         },
         fitView: true,
+        fitViewOnResize: true, // Auto-refit on device rotation
         fitViewOptions: const FitViewOptions(
           padding: EdgeInsets.all(80),
         ),
@@ -292,42 +429,16 @@ class StoryNodeData {
 // ComfyUI-Style Background
 // ============================================================================
 
-class _ComfyBackground extends StatelessWidget {
-  const _ComfyBackground();
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: CustomPaint(
-        painter: _GridPainter(),
-      ),
-    );
-  }
-}
-
-class _GridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFF2A2A2A)
-      ..strokeWidth = 1;
-
-    const gridSize = 20.0;
-
-    // Draw dots at grid intersections
-    final dotPaint = Paint()
-      ..color = const Color(0xFF3A3A3A)
-      ..style = PaintingStyle.fill;
-
-    for (double x = 0; x < size.width; x += gridSize) {
-      for (double y = 0; y < size.height; y += gridSize) {
-        canvas.drawCircle(Offset(x, y), 1.5, dotPaint);
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// Use the standard Background widget with ComfyUI-style colors
+// This extends Background so z-ordering works correctly
+class _ComfyBackground extends Background {
+  const _ComfyBackground()
+      : super(
+          variant: BackgroundVariant.dots,
+          gap: 20,
+          size: 1.5,
+          color: const Color(0xFF3A3A3A),
+        );
 }
 
 // ============================================================================
@@ -355,8 +466,9 @@ class _ComfyStyle {
 
 /// Start node - entry point
 class _StartNode extends StatelessWidget {
-  const _StartNode({required this.props});
+  const _StartNode({required this.props, this.isActive = false});
   final NodeProps<StoryNodeData> props;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -364,6 +476,7 @@ class _StartNode extends StatelessWidget {
       props: props,
       headerColor: _ComfyStyle.startColor,
       width: 140,
+      isActive: isActive,
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -374,12 +487,15 @@ class _StartNode extends StatelessWidget {
               size: 24,
             ),
             const SizedBox(width: 8),
-            Text(
-              props.data.title,
-              style: const TextStyle(
-                color: _ComfyStyle.textPrimary,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+            Flexible(
+              child: Text(
+                props.data.title,
+                style: const TextStyle(
+                  color: _ComfyStyle.textPrimary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -391,8 +507,9 @@ class _StartNode extends StatelessWidget {
 
 /// Story node - main narrative content
 class _StoryNode extends StatelessWidget {
-  const _StoryNode({required this.props});
+  const _StoryNode({required this.props, this.isActive = false});
   final NodeProps<StoryNodeData> props;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -400,6 +517,7 @@ class _StoryNode extends StatelessWidget {
       props: props,
       headerColor: _ComfyStyle.storyColor,
       width: 240,
+      isActive: isActive,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -467,8 +585,9 @@ class _StoryNode extends StatelessWidget {
 
 /// Branch node - decision points
 class _BranchNode extends StatelessWidget {
-  const _BranchNode({required this.props});
+  const _BranchNode({required this.props, this.isActive = false});
   final NodeProps<StoryNodeData> props;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -476,6 +595,7 @@ class _BranchNode extends StatelessWidget {
       props: props,
       headerColor: _ComfyStyle.branchColor,
       width: 200,
+      isActive: isActive,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -538,8 +658,9 @@ class _BranchNode extends StatelessWidget {
 
 /// Image node - visual content
 class _ImageNode extends StatelessWidget {
-  const _ImageNode({required this.props});
+  const _ImageNode({required this.props, this.isActive = false});
   final NodeProps<StoryNodeData> props;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -547,6 +668,7 @@ class _ImageNode extends StatelessWidget {
       props: props,
       headerColor: _ComfyStyle.imageColor,
       width: 160,
+      isActive: isActive,
       child: Container(
         height: 100,
         decoration: BoxDecoration(
@@ -587,8 +709,9 @@ class _ImageNode extends StatelessWidget {
 
 /// End node - story conclusions
 class _EndNode extends StatelessWidget {
-  const _EndNode({required this.props});
+  const _EndNode({required this.props, this.isActive = false});
   final NodeProps<StoryNodeData> props;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -600,6 +723,7 @@ class _EndNode extends StatelessWidget {
       headerColor: color,
       width: 200,
       showSourceHandle: false,
+      isActive: isActive,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -658,6 +782,7 @@ class _ComfyNodeWrapper extends StatelessWidget {
     this.width = 200,
     this.showSourceHandle = true,
     this.showTargetHandle = true,
+    this.isActive = false,
   });
 
   final NodeProps<StoryNodeData> props;
@@ -666,17 +791,30 @@ class _ComfyNodeWrapper extends StatelessWidget {
   final double width;
   final bool showSourceHandle;
   final bool showTargetHandle;
+  final bool isActive;
+
+  // Active execution color (ComfyUI-style green glow)
+  static const _activeColor = Color(0xFF4CAF50);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    // Border color priority: active > selected > default
+    final borderColor = isActive
+        ? _activeColor
+        : props.selected
+            ? _ComfyStyle.nodeSelectedBorder
+            : _ComfyStyle.nodeBorder;
+    final borderWidth = (isActive || props.selected) ? 2.0 : 1.0;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
       width: width,
       decoration: BoxDecoration(
         color: _ComfyStyle.nodeBackground,
         borderRadius: BorderRadius.circular(_ComfyStyle.borderRadius),
         border: Border.all(
-          color: props.selected ? _ComfyStyle.nodeSelectedBorder : _ComfyStyle.nodeBorder,
-          width: props.selected ? 2 : 1,
+          color: borderColor,
+          width: borderWidth,
         ),
         boxShadow: [
           BoxShadow(
@@ -684,7 +822,13 @@ class _ComfyNodeWrapper extends StatelessWidget {
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
-          if (props.selected)
+          if (isActive)
+            BoxShadow(
+              color: _activeColor.withValues(alpha: 0.6),
+              blurRadius: 20,
+              spreadRadius: 3,
+            ),
+          if (props.selected && !isActive)
             BoxShadow(
               color: headerColor.withValues(alpha: 0.3),
               blurRadius: 12,
