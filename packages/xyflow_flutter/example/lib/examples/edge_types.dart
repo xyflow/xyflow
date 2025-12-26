@@ -8,8 +8,6 @@ import 'package:xyflow_flutter/xyflow_flutter.dart';
 /// - Straight edges
 /// - Step edges (right angles)
 /// - Smooth step edges (rounded right angles)
-/// - Animated edges
-/// - Edge labels
 class EdgeTypesExample extends StatefulWidget {
   const EdgeTypesExample({super.key});
 
@@ -20,7 +18,7 @@ class EdgeTypesExample extends StatefulWidget {
 class _EdgeTypesExampleState extends State<EdgeTypesExample> {
   late List<Node<Map<String, dynamic>>> _nodes;
   late List<Edge<Map<String, dynamic>>> _edges;
-  EdgeType _selectedEdgeType = EdgeType.bezier;
+  String _selectedEdgeType = EdgeTypes.defaultEdge;
 
   @override
   void initState() {
@@ -63,29 +61,29 @@ class _EdgeTypesExampleState extends State<EdgeTypesExample> {
         id: 'e-bezier',
         source: 'source',
         target: 'bezier',
-        type: EdgeType.bezier,
-        data: {'label': 'Bezier'},
+        type: EdgeTypes.defaultEdge,
+        label: 'Bezier',
       ),
       Edge<Map<String, dynamic>>(
         id: 'e-straight',
         source: 'source',
         target: 'straight',
-        type: EdgeType.straight,
-        data: {'label': 'Straight'},
+        type: EdgeTypes.straight,
+        label: 'Straight',
       ),
       Edge<Map<String, dynamic>>(
         id: 'e-step',
         source: 'source',
         target: 'step',
-        type: EdgeType.step,
-        data: {'label': 'Step'},
+        type: EdgeTypes.step,
+        label: 'Step',
       ),
       Edge<Map<String, dynamic>>(
         id: 'e-smoothstep',
         source: 'source',
         target: 'smoothstep',
-        type: EdgeType.smoothStep,
-        data: {'label': 'Smooth'},
+        type: EdgeTypes.smoothStep,
+        label: 'Smooth',
       ),
     ];
   }
@@ -111,10 +109,25 @@ class _EdgeTypesExampleState extends State<EdgeTypesExample> {
           source: connection.source,
           target: connection.target,
           type: _selectedEdgeType,
-          data: {'label': _selectedEdgeType.name},
+          label: _getTypeName(_selectedEdgeType),
         ),
       ];
     });
+  }
+
+  String _getTypeName(String type) {
+    switch (type) {
+      case EdgeTypes.defaultEdge:
+        return 'Bezier';
+      case EdgeTypes.straight:
+        return 'Straight';
+      case EdgeTypes.step:
+        return 'Step';
+      case EdgeTypes.smoothStep:
+        return 'Smooth Step';
+      default:
+        return 'Default';
+    }
   }
 
   @override
@@ -134,7 +147,7 @@ class _EdgeTypesExampleState extends State<EdgeTypesExample> {
           'source': (props) => _SourceNode(props: props),
           'default': (props) => _TargetNode(props: props),
         },
-        fitViewOnInit: true,
+        fitView: true,
         children: [
           const Background(variant: BackgroundVariant.dots),
           const Controls(),
@@ -158,11 +171,18 @@ class _EdgeTypeSelector extends StatelessWidget {
     required this.onTypeChanged,
   });
 
-  final EdgeType selectedType;
-  final ValueChanged<EdgeType> onTypeChanged;
+  final String selectedType;
+  final ValueChanged<String> onTypeChanged;
 
   @override
   Widget build(BuildContext context) {
+    final types = [
+      (EdgeTypes.defaultEdge, 'Bezier'),
+      (EdgeTypes.straight, 'Straight'),
+      (EdgeTypes.step, 'Step'),
+      (EdgeTypes.smoothStep, 'Smooth Step'),
+    ];
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -184,10 +204,11 @@ class _EdgeTypeSelector extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
           ),
           const SizedBox(height: 8),
-          ...EdgeType.values.where((t) => t != EdgeType.simpleBezier).map((type) => _EdgeTypeOption(
-                type: type,
-                isSelected: selectedType == type,
-                onTap: () => onTypeChanged(type),
+          ...types.map((entry) => _EdgeTypeOption(
+                type: entry.$1,
+                label: entry.$2,
+                isSelected: selectedType == entry.$1,
+                onTap: () => onTypeChanged(entry.$1),
               )),
         ],
       ),
@@ -198,28 +219,15 @@ class _EdgeTypeSelector extends StatelessWidget {
 class _EdgeTypeOption extends StatelessWidget {
   const _EdgeTypeOption({
     required this.type,
+    required this.label,
     required this.isSelected,
     required this.onTap,
   });
 
-  final EdgeType type;
+  final String type;
+  final String label;
   final bool isSelected;
   final VoidCallback onTap;
-
-  String _getTypeName() {
-    switch (type) {
-      case EdgeType.bezier:
-        return 'Bezier';
-      case EdgeType.straight:
-        return 'Straight';
-      case EdgeType.step:
-        return 'Step';
-      case EdgeType.smoothStep:
-        return 'Smooth Step';
-      case EdgeType.simpleBezier:
-        return 'Simple Bezier';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +251,7 @@ class _EdgeTypeOption extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              _getTypeName(),
+              label,
               style: TextStyle(
                 fontSize: 12,
                 color: isSelected ? Colors.blue : Colors.grey[700],

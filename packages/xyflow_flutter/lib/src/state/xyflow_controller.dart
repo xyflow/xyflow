@@ -220,26 +220,48 @@ class XYFlowController<NodeData, EdgeData> {
     double? maxZoom,
     Duration? duration,
   }) {
-    // This would need the actual viewport size to calculate properly
-    // For now, we'll use a simplified version
+    final containerSize = _state.containerSize;
+    if (containerSize == null || containerSize.isEmpty) {
+      // No container size available, use a sensible default
+      // Just center the content with zoom 1.0
+      final centerX = bounds.x + bounds.width / 2;
+      final centerY = bounds.y + bounds.height / 2;
+      setViewport(
+        Viewport(x: -centerX + 200, y: -centerY + 200, zoom: 1.0),
+        duration: duration,
+      );
+      return;
+    }
+
     final effectivePadding = padding ?? const EdgeInsets.all(10);
     final effectiveMinZoom = minZoom ?? _state.minZoom;
     final effectiveMaxZoom = maxZoom ?? _state.maxZoom;
 
+    // Calculate available space after padding
+    final availableWidth = containerSize.width - effectivePadding.left - effectivePadding.right;
+    final availableHeight = containerSize.height - effectivePadding.top - effectivePadding.bottom;
+
+    // Handle edge case of zero-size bounds
+    if (bounds.width <= 0 || bounds.height <= 0) {
+      setViewport(const Viewport.initial(), duration: duration);
+      return;
+    }
+
     // Calculate zoom to fit bounds
-    // This is a simplified calculation - full implementation would need viewport dimensions
-    final zoom = effectiveMaxZoom.clamp(effectiveMinZoom, effectiveMaxZoom);
+    final zoomX = availableWidth / bounds.width;
+    final zoomY = availableHeight / bounds.height;
+    var zoom = (zoomX < zoomY ? zoomX : zoomY).clamp(effectiveMinZoom, effectiveMaxZoom);
 
     // Center on bounds
     final centerX = bounds.x + bounds.width / 2;
     final centerY = bounds.y + bounds.height / 2;
 
+    // Calculate viewport offset to center the content
+    final viewportX = (containerSize.width / 2) - (centerX * zoom);
+    final viewportY = (containerSize.height / 2) - (centerY * zoom);
+
     setViewport(
-      Viewport(
-        x: -centerX * zoom + effectivePadding.left,
-        y: -centerY * zoom + effectivePadding.top,
-        zoom: zoom,
-      ),
+      Viewport(x: viewportX, y: viewportY, zoom: zoom),
       duration: duration,
     );
   }

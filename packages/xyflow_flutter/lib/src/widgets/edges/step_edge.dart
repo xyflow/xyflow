@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/types/edge.dart';
 import '../../core/types/position.dart';
 import '../../core/utils/edges/bezier.dart';
+import '../../core/utils/edges/edge_path.dart';
 import '../../core/utils/edges/step.dart';
 
 /// A step edge widget with right-angle corners.
@@ -104,39 +105,42 @@ class StepEdge extends StatelessWidget {
       targetY: targetY,
       sourcePosition: _toEdgePosition(sourcePosition),
       targetPosition: _toEdgePosition(targetPosition),
-      offset: offset,
+      offset: offset ?? StepEdgePath.defaultOffset,
     );
 
-    return CustomPaint(
-      painter: _EdgePainter(
-        path: edgePath.path,
-        color: effectiveStyle.strokeColor ?? (selected ? Colors.blue : Colors.grey.shade600),
-        strokeWidth: effectiveStyle.strokeWidth,
-        animated: animated || effectiveStyle.animated,
-        dashArray: effectiveStyle.dashArray,
-      ),
-      child: label != null
-          ? _buildLabel(edgePath.labelX, edgePath.labelY)
-          : null,
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        CustomPaint(
+          painter: _EdgePainter(
+            path: edgePath.path,
+            color: effectiveStyle.strokeColor ?? (selected ? Colors.blue : Colors.grey.shade600),
+            strokeWidth: effectiveStyle.strokeWidth,
+            animated: animated || effectiveStyle.animated,
+            dashArray: effectiveStyle.dashArray,
+          ),
+        ),
+        if (label != null)
+          Transform.translate(
+            offset: Offset(edgePath.labelX, edgePath.labelY),
+            child: _buildLabel(),
+          ),
+      ],
     );
   }
 
-  Widget _buildLabel(double x, double y) {
-    return Positioned(
-      left: x,
-      top: y,
-      child: Container(
-        padding: labelBgPadding ?? const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: labelShowBg
-            ? BoxDecoration(
-                color: labelBgColor ?? Colors.white,
-                borderRadius: BorderRadius.circular(labelBgBorderRadius ?? 4),
-              )
-            : null,
-        child: Text(
-          label!,
-          style: labelStyle ?? const TextStyle(fontSize: 10),
-        ),
+  Widget _buildLabel() {
+    return Container(
+      padding: labelBgPadding ?? const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: labelShowBg
+          ? BoxDecoration(
+              color: labelBgColor ?? Colors.white,
+              borderRadius: BorderRadius.circular(labelBgBorderRadius ?? 4),
+            )
+          : null,
+      child: Text(
+        label!,
+        style: labelStyle ?? const TextStyle(fontSize: 10),
       ),
     );
   }

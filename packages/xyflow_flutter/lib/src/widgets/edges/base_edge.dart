@@ -71,23 +71,26 @@ class BaseEdgeWidget<T> extends StatelessWidget {
     return GestureDetector(
       onTap: selectable ? () => onEdgeClick?.call(edge) : null,
       behavior: HitTestBehavior.translucent,
-      child: CustomPaint(
-        painter: EdgePainter(
-          path: edgePath.path,
-          color: _getColor(),
-          strokeWidth: edge.selected ? 3 : 2,
-          animated: edge.animated,
-          selected: edge.selected,
-          markerStart: edge.markerStart,
-          markerEnd: edge.markerEnd,
-        ),
-        child: edge.label != null
-            ? Positioned(
-                left: edgePath.labelX,
-                top: edgePath.labelY,
-                child: _buildLabel(),
-              )
-            : null,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          CustomPaint(
+            painter: EdgePainter(
+              path: edgePath.path,
+              color: _getColor(),
+              strokeWidth: edge.selected ? 3 : 2,
+              animated: edge.animated,
+              selected: edge.selected,
+              markerStart: edge.markerStart,
+              markerEnd: edge.markerEnd,
+            ),
+          ),
+          if (edge.label != null)
+            Transform.translate(
+              offset: Offset(edgePath.labelX, edgePath.labelY),
+              child: _buildLabel(),
+            ),
+        ],
       ),
     );
   }

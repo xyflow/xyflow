@@ -30,14 +30,14 @@ class DefaultNode<T> extends StatelessWidget {
         boxShadow: props.selected
             ? [
                 BoxShadow(
-                  color: Colors.blue.withOpacity(0.3),
+                  color: Colors.blue.withValues(alpha: 0.3),
                   blurRadius: 8,
                   spreadRadius: 1,
                 ),
               ]
             : [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -243,7 +243,7 @@ class GroupNode<T> extends StatelessWidget {
       width: props.width ?? 200,
       height: props.height ?? 150,
       decoration: BoxDecoration(
-        color: Colors.grey.shade100.withOpacity(0.5),
+        color: Colors.grey.shade100.withValues(alpha: 0.5),
         border: Border.all(
           color: props.selected ? Colors.blue : Colors.grey.shade400,
           width: props.selected ? 2 : 1,

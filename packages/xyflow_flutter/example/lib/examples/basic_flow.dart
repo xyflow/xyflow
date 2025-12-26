@@ -29,27 +29,35 @@ class _BasicFlowExampleState extends State<BasicFlowExample> {
         type: 'input',
         position: XYPosition(x: 250, y: 0),
         data: {'label': 'Start'},
+        sourcePosition: Position.bottom, // Handle is at bottom
       ),
       Node<Map<String, dynamic>>(
         id: '2',
         position: XYPosition(x: 100, y: 100),
         data: {'label': 'Process A'},
+        sourcePosition: Position.bottom,
+        targetPosition: Position.top,
       ),
       Node<Map<String, dynamic>>(
         id: '3',
         position: XYPosition(x: 400, y: 100),
         data: {'label': 'Process B'},
+        sourcePosition: Position.bottom,
+        targetPosition: Position.top,
       ),
       Node<Map<String, dynamic>>(
         id: '4',
         position: XYPosition(x: 250, y: 200),
         data: {'label': 'Merge'},
+        sourcePosition: Position.bottom,
+        targetPosition: Position.top,
       ),
       Node<Map<String, dynamic>>(
         id: '5',
         type: 'output',
         position: XYPosition(x: 250, y: 300),
         data: {'label': 'End'},
+        targetPosition: Position.top, // Handle is at top
       ),
     ];
 

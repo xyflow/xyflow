@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/foundation.dart';
 
 /// Represents a 2D position with x and y coordinates.
@@ -55,13 +57,13 @@ class XYPosition {
   }
 
   /// Returns the distance from the origin to this position.
-  double get magnitude => (x * x + y * y).abs();
+  double get magnitude => math.sqrt(x * x + y * y);
 
   /// Returns the distance between this position and another.
   double distanceTo(XYPosition other) {
     final dx = x - other.x;
     final dy = y - other.y;
-    return (dx * dx + dy * dy).abs();
+    return math.sqrt(dx * dx + dy * dy);
   }
 
   /// Converts this position to a JSON map.

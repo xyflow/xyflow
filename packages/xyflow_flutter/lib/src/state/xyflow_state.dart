@@ -1,3 +1,5 @@
+import 'dart:ui' show Size;
+
 import 'package:flutter/foundation.dart';
 
 import '../core/types/changes.dart' as changes;
@@ -84,6 +86,7 @@ class XYFlowState<NodeData, EdgeData> extends ChangeNotifier {
   double _minZoom;
   double _maxZoom;
   CoordinateExtent? _translateExtent;
+  Size? _containerSize;
 
   /// The current viewport (pan/zoom).
   Viewport get viewport => _viewport;
@@ -96,6 +99,9 @@ class XYFlowState<NodeData, EdgeData> extends ChangeNotifier {
 
   /// Optional bounds for panning.
   CoordinateExtent? get translateExtent => _translateExtent;
+
+  /// The container size (for fitView calculations).
+  Size? get containerSize => _containerSize;
 
   // ═══════════════════════════════════════════════════════════════════════════
   // Interaction State
@@ -322,6 +328,14 @@ class XYFlowState<NodeData, EdgeData> extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Sets the container size.
+  void setContainerSize(Size size) {
+    if (_containerSize != size) {
+      _containerSize = size;
+      notifyListeners();
+    }
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════
   // Connection Operations
   // ═══════════════════════════════════════════════════════════════════════════
@@ -435,8 +449,9 @@ class XYFlowState<NodeData, EdgeData> extends ChangeNotifier {
       if (internal == null) continue;
 
       final pos = internal.positionAbsolute;
-      final width = internal.measured?.width ?? node.width ?? 0;
-      final height = internal.measured?.height ?? node.height ?? 0;
+      // Use reasonable defaults (150x40) if node hasn't been measured
+      final width = internal.measured?.width ?? node.width ?? 150;
+      final height = internal.measured?.height ?? node.height ?? 40;
 
       minX = minX < pos.x ? minX : pos.x;
       minY = minY < pos.y ? minY : pos.y;

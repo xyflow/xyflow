@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -123,13 +124,9 @@ abstract class EdgePathUtils {
     required double targetX,
     required double targetY,
   }) {
-    final xOffset = ((targetX - sourceX) / 2).abs();
-    final centerX = targetX < sourceX ? targetX + xOffset : targetX - xOffset;
-
-    final yOffset = ((targetY - sourceY) / 2).abs();
-    final centerY = targetY < sourceY ? targetY + yOffset : targetY - yOffset;
-
-    return centerX + centerY; // Not used typically, return sum for now
+    final dx = targetX - sourceX;
+    final dy = targetY - sourceY;
+    return math.sqrt(dx * dx + dy * dy);
   }
 
   /// Returns the center coordinates between source and target.

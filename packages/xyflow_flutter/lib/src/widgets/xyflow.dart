@@ -318,6 +318,9 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
   // Scale state
   double? _initialScale;
 
+  // Track if fitView has been performed
+  bool _fitViewPerformed = false;
+
   @override
   void initState() {
     super.initState();
@@ -345,13 +348,50 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
     // Call onInit after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.onInit?.call(_controller);
+      // Schedule fitView after a short delay to ensure nodes are measured
+      _scheduleFitView();
+    });
+  }
 
-      if (widget.shouldFitView) {
+  void _scheduleFitView() {
+    if (!widget.shouldFitView || _fitViewPerformed) return;
+
+    // Wait for next frame to ensure nodes have been measured
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _performFitView();
+    });
+  }
+
+  void _performFitView() {
+    if (_fitViewPerformed || !widget.shouldFitView) return;
+
+    // Check if we have container size and at least some nodes have been measured
+    if (_state.containerSize != null && _state.nodes.isNotEmpty) {
+      // Verify at least one node has been measured
+      bool hasAnyMeasuredNode = false;
+      for (final node in _state.nodes) {
+        if (node.hidden) continue;
+        final internal = _state.nodeLookup[node.id];
+        if (internal?.measured != null) {
+          hasAnyMeasuredNode = true;
+          break;
+        }
+      }
+
+      if (hasAnyMeasuredNode) {
+        _fitViewPerformed = true;
         _controller.fitView(
-          padding: widget.fitViewOptions?.padding ?? const EdgeInsets.all(10),
+          padding: widget.fitViewOptions?.padding ?? const EdgeInsets.all(50),
           includeHiddenNodes: widget.fitViewOptions?.includeHiddenNodes ?? false,
         );
+        return;
       }
+    }
+
+    // Try again next frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _performFitView();
     });
   }
 
@@ -390,61 +430,83 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
   Widget build(BuildContext context) {
     return XYFlowProvider<NodeData, EdgeData>(
       state: _state,
-      child: ListenableBuilder(
-        listenable: _state,
-        builder: (context, child) {
-          return Focus(
-            autofocus: true,
-            onKeyEvent: _handleKeyEvent,
-            child: ClipRect(
-              child: GestureDetector(
-                onScaleStart: _handleScaleStart,
-                onScaleUpdate: _handleScaleUpdate,
-                onScaleEnd: _handleScaleEnd,
-                onDoubleTap: widget.zoomOnDoubleClick ? _handleDoubleTap : null,
-                child: Listener(
-                  onPointerSignal: _handlePointerSignal,
-                  child: Container(
-                    color: Colors.transparent, // Ensure hit testing works
-                    child: Stack(
-                      key: _viewportKey,
-                      children: [
-                        // Viewport with edges and nodes
-                        Transform(
-                          transform: _state.viewport.toMatrix4(),
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              // Edges layer
-                              ..._buildEdges(),
-                              // Nodes layer
-                              ..._buildNodes(),
-                              // Connection line during drag
-                              if (_state.connectionState.isConnecting &&
-                                  _state.connectionState.startPosition != null &&
-                                  _state.connectionState.endPosition != null)
-                                ConnectionLine(
-                                  fromX: _state.connectionState.startPosition!.x,
-                                  fromY: _state.connectionState.startPosition!.y,
-                                  toX: _state.connectionState.endPosition!.x,
-                                  toY: _state.connectionState.endPosition!.y,
-                                  fromPosition: _getPositionFromHandleType(
-                                    _state.connectionState.startHandleType,
-                                  ),
-                                  connectionLineType: widget.connectionLineType,
-                                  isValid: _state.connectionState.isValid ?? true,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // Update container size when layout changes
+          final containerSize = Size(constraints.maxWidth, constraints.maxHeight);
+          if (containerSize.isFinite && _state.containerSize != containerSize) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                _state.setContainerSize(containerSize);
+                // Trigger fitView if not yet performed and size is now available
+                if (!_fitViewPerformed && widget.shouldFitView) {
+                  _performFitView();
+                }
+              }
+            });
+          }
+
+          return ListenableBuilder(
+            listenable: _state,
+            builder: (context, child) {
+              return Focus(
+                autofocus: true,
+                onKeyEvent: _handleKeyEvent,
+                child: ClipRect(
+                  child: GestureDetector(
+                    onScaleStart: _handleScaleStart,
+                    onScaleUpdate: _handleScaleUpdate,
+                    onScaleEnd: _handleScaleEnd,
+                    onDoubleTap: widget.zoomOnDoubleClick ? _handleDoubleTap : null,
+                    child: Listener(
+                      onPointerSignal: _handlePointerSignal,
+                      child: Container(
+                        color: Colors.transparent, // Ensure hit testing works
+                        child: Stack(
+                          key: _viewportKey,
+                          children: [
+                            // Viewport with edges and nodes - use Positioned.fill to give it size
+                            Positioned.fill(
+                              child: Transform(
+                                transform: _state.viewport.toMatrix4(),
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    // Placeholder to give Stack size (required since all other children are Positioned)
+                                    const SizedBox.expand(),
+                                    // Edges layer
+                                    ..._buildEdges(),
+                                    // Nodes layer
+                                    ..._buildNodes(),
+                                    // Connection line during drag
+                                    if (_state.connectionState.isConnecting &&
+                                        _state.connectionState.startPosition != null &&
+                                        _state.connectionState.endPosition != null)
+                                      ConnectionLine(
+                                        fromX: _state.connectionState.startPosition!.x,
+                                        fromY: _state.connectionState.startPosition!.y,
+                                        toX: _state.connectionState.endPosition!.x,
+                                        toY: _state.connectionState.endPosition!.y,
+                                        fromPosition: _getPositionFromHandleType(
+                                          _state.connectionState.startHandleType,
+                                        ),
+                                        connectionLineType: widget.connectionLineType,
+                                        isValid: _state.connectionState.isValid ?? true,
+                                      ),
+                                  ],
                                 ),
-                            ],
-                          ),
+                              ),
+                            ),
+                            // Additional children (Background, Controls, etc.)
+                            if (widget.children != null) ...widget.children!,
+                          ],
                         ),
-                        // Additional children (Background, Controls, etc.)
-                        if (widget.children != null) ...widget.children!,
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
