@@ -105,7 +105,12 @@ class XYRect {
   }
 
   /// Returns true if this rectangle contains the given point.
-  bool containsPoint(XYPosition point) {
+  bool containsPoint(double px, double py) {
+    return px >= x && px <= right && py >= y && py <= bottom;
+  }
+
+  /// Returns true if this rectangle contains the given XYPosition.
+  bool containsPosition(XYPosition point) {
     return point.x >= x &&
         point.x <= right &&
         point.y >= y &&

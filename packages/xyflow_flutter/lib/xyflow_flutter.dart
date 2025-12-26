@@ -38,6 +38,7 @@ export 'src/widgets/panel.dart';
 export 'src/widgets/node_toolbar.dart';
 export 'src/widgets/node_resizer.dart';
 export 'src/widgets/connection_line.dart';
+export 'src/widgets/selection_rect.dart';
 
 // Node widgets
 export 'src/widgets/nodes/default_node.dart';
