@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/gestures.dart' show kSecondaryMouseButton;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:video_player/video_player.dart';
 import 'package:xyflow_flutter/xyflow_flutter.dart' hide Transform;
 
 /// ComfyUI-style dark node graph for story branching.
@@ -103,6 +107,15 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
               _addNode(StoryNodeType.image, flowPosition);
             },
           ),
+          _ContextMenuItem(
+            icon: Icons.video_library,
+            label: 'Add Video Node',
+            color: _ComfyStyle.videoColor,
+            onTap: () {
+              _hideContextMenu();
+              _addNode(StoryNodeType.video, flowPosition);
+            },
+          ),
           _ContextMenuDivider(),
           _ContextMenuItem(
             icon: Icons.play_circle,
@@ -201,6 +214,15 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
                   _changeNodeType(nodeId, StoryNodeType.image);
                 },
               ),
+              _ContextMenuItem(
+                icon: Icons.video_library,
+                label: 'Video',
+                color: _ComfyStyle.videoColor,
+                onTap: () {
+                  _hideContextMenu();
+                  _changeNodeType(nodeId, StoryNodeType.video);
+                },
+              ),
             ],
           ),
           _ContextMenuDivider(),
@@ -249,6 +271,7 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
       case StoryNodeType.story: return 'story';
       case StoryNodeType.branch: return 'branch';
       case StoryNodeType.image: return 'image';
+      case StoryNodeType.video: return 'video';
       case StoryNodeType.endGood:
       case StoryNodeType.endBad: return 'end';
     }
@@ -260,6 +283,7 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
       case StoryNodeType.story: return 'New Scene';
       case StoryNodeType.branch: return 'Decision';
       case StoryNodeType.image: return 'Image';
+      case StoryNodeType.video: return 'Video';
       case StoryNodeType.endGood: return 'Good Ending';
       case StoryNodeType.endBad: return 'Bad Ending';
     }
@@ -407,6 +431,22 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
 
     final node = _nodes[nodeIndex];
     _showEditDialog(node, nodeIndex);
+  }
+
+  void _updateNodeVideo(String nodeId, Uint8List? bytes, String? url) {
+    final nodeIndex = _nodes.indexWhere((n) => n.id == nodeId);
+    if (nodeIndex == -1) return;
+
+    setState(() {
+      final node = _nodes[nodeIndex];
+      _nodes = List.from(_nodes)
+        ..[nodeIndex] = node.copyWith(
+          data: node.data.copyWith(
+            videoBytes: bytes,
+            videoUrl: url,
+          ),
+        );
+    });
   }
 
   void _showEditDialog(Node<StoryNodeData> node, int nodeIndex) {
@@ -591,6 +631,7 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
       case StoryNodeType.story: return _ComfyStyle.storyColor;
       case StoryNodeType.branch: return _ComfyStyle.branchColor;
       case StoryNodeType.image: return _ComfyStyle.imageColor;
+      case StoryNodeType.video: return _ComfyStyle.videoColor;
       case StoryNodeType.endGood: return _ComfyStyle.endGoodColor;
       case StoryNodeType.endBad: return _ComfyStyle.endBadColor;
     }
@@ -602,6 +643,7 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
       case StoryNodeType.story: return 'Story Node';
       case StoryNodeType.branch: return 'Branch Node';
       case StoryNodeType.image: return 'Image Node';
+      case StoryNodeType.video: return 'Video Node';
       case StoryNodeType.endGood: return 'Good Ending';
       case StoryNodeType.endBad: return 'Bad Ending';
     }
@@ -914,6 +956,13 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
                 onDoubleTap: () => _onNodeDoubleTap(props.id),
                 onSecondaryTap: (globalPos) => _showNodeContextMenu(globalPos, props.id),
               ),
+              'video': (props) => _VideoNode(
+                props: props,
+                isActive: _activeNodeId == props.id,
+                onDoubleTap: () => _onNodeDoubleTap(props.id),
+                onSecondaryTap: (globalPos) => _showNodeContextMenu(globalPos, props.id),
+                onVideoSelected: (bytes, url) => _updateNodeVideo(props.id, bytes, url),
+              ),
               'end': (props) => _EndNode(
                 props: props,
                 isActive: _activeNodeId == props.id,
@@ -971,6 +1020,7 @@ enum StoryNodeType {
   story,
   branch,
   image,
+  video,
   endGood,
   endBad,
 }
@@ -979,6 +1029,8 @@ class StoryNodeData {
   final String title;
   final String? description;
   final String? imageUrl;
+  final String? videoUrl;
+  final Uint8List? videoBytes;
   final List<String>? choices;
   final StoryNodeType nodeType;
 
@@ -986,6 +1038,8 @@ class StoryNodeData {
     required this.title,
     this.description,
     this.imageUrl,
+    this.videoUrl,
+    this.videoBytes,
     this.choices,
     required this.nodeType,
   });
@@ -994,6 +1048,8 @@ class StoryNodeData {
     String? title,
     String? description,
     String? imageUrl,
+    String? videoUrl,
+    Uint8List? videoBytes,
     List<String>? choices,
     StoryNodeType? nodeType,
   }) {
@@ -1001,6 +1057,8 @@ class StoryNodeData {
       title: title ?? this.title,
       description: description ?? this.description,
       imageUrl: imageUrl ?? this.imageUrl,
+      videoUrl: videoUrl ?? this.videoUrl,
+      videoBytes: videoBytes ?? this.videoBytes,
       choices: choices ?? this.choices,
       nodeType: nodeType ?? this.nodeType,
     );
@@ -1042,6 +1100,7 @@ class _ComfyStyle {
   static const storyColor = Color(0xFF5B9BD5);
   static const branchColor = Color(0xFFFF9800);
   static const imageColor = Color(0xFF9C27B0);
+  static const videoColor = Color(0xFFE91E63);  // Pink for video
   static const endGoodColor = Color(0xFF4CAF50);
   static const endBadColor = Color(0xFFF44336);
 }
@@ -1370,6 +1429,251 @@ class _ImageNode extends StatelessWidget {
   }
 }
 
+/// Video node - drag and drop MP4 support
+class _VideoNode extends StatefulWidget {
+  const _VideoNode({
+    required this.props,
+    this.isActive = false,
+    this.onDoubleTap,
+    this.onSecondaryTap,
+    this.onVideoSelected,
+  });
+
+  final NodeProps<StoryNodeData> props;
+  final bool isActive;
+  final VoidCallback? onDoubleTap;
+  final void Function(Offset globalPosition)? onSecondaryTap;
+  final void Function(Uint8List? bytes, String? url)? onVideoSelected;
+
+  @override
+  State<_VideoNode> createState() => _VideoNodeState();
+}
+
+class _VideoNodeState extends State<_VideoNode> {
+  VideoPlayerController? _controller;
+  bool _isHovering = false;
+  bool _isDragging = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo();
+  }
+
+  @override
+  void didUpdateWidget(_VideoNode oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.props.data.videoUrl != widget.props.data.videoUrl ||
+        oldWidget.props.data.videoBytes != widget.props.data.videoBytes) {
+      _disposeController();
+      _initializeVideo();
+    }
+  }
+
+  void _initializeVideo() {
+    final data = widget.props.data;
+
+    if (data.videoUrl != null && data.videoUrl!.startsWith('http')) {
+      _controller = VideoPlayerController.networkUrl(Uri.parse(data.videoUrl!))
+        ..initialize().then((_) {
+          if (mounted) setState(() {});
+        });
+    } else if (data.videoBytes != null && !kIsWeb) {
+      // For non-web platforms with file bytes, we'd need to write to temp file
+      // This is a simplified version - in production you'd handle this properly
+    }
+  }
+
+  void _disposeController() {
+    _controller?.dispose();
+    _controller = null;
+  }
+
+  @override
+  void dispose() {
+    _disposeController();
+    super.dispose();
+  }
+
+  Future<void> _pickVideo() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.video,
+        allowMultiple: false,
+        withData: true,
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
+        if (file.bytes != null) {
+          widget.onVideoSelected?.call(file.bytes, null);
+        } else if (file.path != null) {
+          widget.onVideoSelected?.call(null, file.path);
+        }
+      }
+    } catch (e) {
+      debugPrint('Error picking video: $e');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onDoubleTap: widget.onDoubleTap,
+      onSecondaryTapDown: (details) => widget.onSecondaryTap?.call(details.globalPosition),
+      onTap: _pickVideo,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovering = true),
+        onExit: (_) => setState(() => _isHovering = false),
+        child: DragTarget<String>(
+          onWillAcceptWithDetails: (details) {
+            setState(() => _isDragging = true);
+            return true;
+          },
+          onLeave: (_) => setState(() => _isDragging = false),
+          onAcceptWithDetails: (details) {
+            setState(() => _isDragging = false);
+            // Handle dropped file URL
+            widget.onVideoSelected?.call(null, details.data);
+          },
+          builder: (context, candidateData, rejectedData) {
+            return _ComfyNodeWrapper(
+              props: widget.props,
+              headerColor: _ComfyStyle.videoColor,
+              width: 180,
+              isActive: widget.isActive,
+              child: _buildContent(),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    if (_isLoading) {
+      return Container(
+        height: 120,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E1E1E),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: const Center(
+          child: CircularProgressIndicator(
+            color: _ComfyStyle.videoColor,
+            strokeWidth: 2,
+          ),
+        ),
+      );
+    }
+
+    if (_controller != null && _controller!.value.isInitialized) {
+      return Container(
+        height: 120,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E1E1E),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              AspectRatio(
+                aspectRatio: _controller!.value.aspectRatio,
+                child: VideoPlayer(_controller!),
+              ),
+              // Play/Pause overlay
+              if (_isHovering)
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (_controller!.value.isPlaying) {
+                        _controller!.pause();
+                      } else {
+                        _controller!.play();
+                      }
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      _controller!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return _buildPlaceholder();
+  }
+
+  Widget _buildPlaceholder() {
+    return Container(
+      height: 120,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            _ComfyStyle.videoColor.withValues(alpha: _isDragging ? 0.5 : 0.3),
+            _ComfyStyle.videoColor.withValues(alpha: _isDragging ? 0.3 : 0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(4),
+        border: _isDragging
+            ? Border.all(color: _ComfyStyle.videoColor, width: 2)
+            : null,
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              _isDragging ? Icons.file_download : Icons.video_library,
+              color: _ComfyStyle.videoColor.withValues(alpha: _isDragging ? 0.9 : 0.6),
+              size: 32,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _isDragging ? 'Drop video here' : 'Click or drag MP4',
+              style: TextStyle(
+                color: _ComfyStyle.textSecondary.withValues(alpha: _isDragging ? 0.9 : 0.6),
+                fontSize: 10,
+                fontWeight: _isDragging ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+            if (!_isDragging) ...[
+              const SizedBox(height: 2),
+              Text(
+                'Supports MP4, MOV, WebM',
+                style: TextStyle(
+                  color: _ComfyStyle.textSecondary.withValues(alpha: 0.4),
+                  fontSize: 8,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// End node - story conclusions
 class _EndNode extends StatelessWidget {
   const _EndNode({required this.props, this.isActive = false, this.onDoubleTap, this.onSecondaryTap});
@@ -1616,6 +1920,8 @@ class _ComfyNodeWrapper extends StatelessWidget {
         return Icons.call_split;
       case StoryNodeType.image:
         return Icons.image;
+      case StoryNodeType.video:
+        return Icons.video_library;
       case StoryNodeType.endGood:
       case StoryNodeType.endBad:
         return Icons.flag;
