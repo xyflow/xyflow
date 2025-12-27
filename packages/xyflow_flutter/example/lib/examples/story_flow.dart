@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:xyflow_flutter/xyflow_flutter.dart';
+import 'package:flutter/services.dart';
+import 'package:xyflow_flutter/xyflow_flutter.dart' hide Transform;
 
 /// ComfyUI-style dark node graph for story branching.
 ///
@@ -16,6 +18,7 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
     with TickerProviderStateMixin {
   late List<Node<StoryNodeData>> _nodes;
   late List<Edge<void>> _edges;
+  XYFlowController<StoryNodeData, void>? _controller;
 
   // Animation state for route visualization
   AnimationController? _playController;
@@ -28,16 +31,294 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
   // Edit mode state
   String? _editingNodeId;
 
+  // Context menu state
+  OverlayEntry? _contextMenuOverlay;
+  String? _contextMenuNodeId;
+
   @override
   void initState() {
     super.initState();
     _initializeStory();
+    // Disable browser context menu on web
+    if (kIsWeb) {
+      BrowserContextMenu.disableContextMenu();
+    }
   }
 
   @override
   void dispose() {
     _playController?.dispose();
+    _hideContextMenu();
+    // Re-enable browser context menu on web
+    if (kIsWeb) {
+      BrowserContextMenu.enableContextMenu();
+    }
     super.dispose();
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // Context Menu - ComfyUI Style Right-Click Menu
+  // ══════════════════════════════════════════════════════════════════════════
+
+  void _hideContextMenu() {
+    _contextMenuOverlay?.remove();
+    _contextMenuOverlay = null;
+    _contextMenuNodeId = null;
+  }
+
+  /// Shows context menu for canvas (right-click on empty space)
+  void _showCanvasContextMenu(Offset globalPosition, Offset flowPosition) {
+    _hideContextMenu();
+
+    _contextMenuOverlay = OverlayEntry(
+      builder: (context) => _ContextMenuOverlay(
+        position: globalPosition,
+        onDismiss: _hideContextMenu,
+        items: [
+          _ContextMenuItem(
+            icon: Icons.auto_stories,
+            label: 'Add Story Node',
+            color: _ComfyStyle.storyColor,
+            onTap: () {
+              _hideContextMenu();
+              _addNode(StoryNodeType.story, flowPosition);
+            },
+          ),
+          _ContextMenuItem(
+            icon: Icons.call_split,
+            label: 'Add Branch',
+            color: _ComfyStyle.branchColor,
+            onTap: () {
+              _hideContextMenu();
+              _addNode(StoryNodeType.branch, flowPosition);
+            },
+          ),
+          _ContextMenuItem(
+            icon: Icons.image,
+            label: 'Add Image Node',
+            color: _ComfyStyle.imageColor,
+            onTap: () {
+              _hideContextMenu();
+              _addNode(StoryNodeType.image, flowPosition);
+            },
+          ),
+          _ContextMenuDivider(),
+          _ContextMenuItem(
+            icon: Icons.play_circle,
+            label: 'Add Start Node',
+            color: _ComfyStyle.startColor,
+            onTap: () {
+              _hideContextMenu();
+              _addNode(StoryNodeType.start, flowPosition);
+            },
+          ),
+          _ContextMenuItem(
+            icon: Icons.emoji_events,
+            label: 'Add Good Ending',
+            color: _ComfyStyle.endGoodColor,
+            onTap: () {
+              _hideContextMenu();
+              _addNode(StoryNodeType.endGood, flowPosition);
+            },
+          ),
+          _ContextMenuItem(
+            icon: Icons.dangerous,
+            label: 'Add Bad Ending',
+            color: _ComfyStyle.endBadColor,
+            onTap: () {
+              _hideContextMenu();
+              _addNode(StoryNodeType.endBad, flowPosition);
+            },
+          ),
+        ],
+      ),
+    );
+
+    Overlay.of(context).insert(_contextMenuOverlay!);
+  }
+
+  /// Shows context menu for a node (right-click on node)
+  void _showNodeContextMenu(Offset globalPosition, String nodeId) {
+    _hideContextMenu();
+    _contextMenuNodeId = nodeId;
+
+    final node = _nodes.firstWhere((n) => n.id == nodeId);
+
+    _contextMenuOverlay = OverlayEntry(
+      builder: (context) => _ContextMenuOverlay(
+        position: globalPosition,
+        onDismiss: _hideContextMenu,
+        items: [
+          _ContextMenuItem(
+            icon: Icons.edit,
+            label: 'Edit Node',
+            color: const Color(0xFF5B9BD5),
+            onTap: () {
+              _hideContextMenu();
+              _onNodeDoubleTap(nodeId);
+            },
+          ),
+          _ContextMenuItem(
+            icon: Icons.copy,
+            label: 'Duplicate',
+            color: const Color(0xFF9E9E9E),
+            onTap: () {
+              _hideContextMenu();
+              _duplicateNode(nodeId);
+            },
+          ),
+          _ContextMenuDivider(),
+          _ContextMenuSubmenu(
+            icon: Icons.swap_horiz,
+            label: 'Change Type',
+            color: const Color(0xFF9E9E9E),
+            children: [
+              _ContextMenuItem(
+                icon: Icons.auto_stories,
+                label: 'Story',
+                color: _ComfyStyle.storyColor,
+                onTap: () {
+                  _hideContextMenu();
+                  _changeNodeType(nodeId, StoryNodeType.story);
+                },
+              ),
+              _ContextMenuItem(
+                icon: Icons.call_split,
+                label: 'Branch',
+                color: _ComfyStyle.branchColor,
+                onTap: () {
+                  _hideContextMenu();
+                  _changeNodeType(nodeId, StoryNodeType.branch);
+                },
+              ),
+              _ContextMenuItem(
+                icon: Icons.image,
+                label: 'Image',
+                color: _ComfyStyle.imageColor,
+                onTap: () {
+                  _hideContextMenu();
+                  _changeNodeType(nodeId, StoryNodeType.image);
+                },
+              ),
+            ],
+          ),
+          _ContextMenuDivider(),
+          _ContextMenuItem(
+            icon: Icons.delete_outline,
+            label: 'Delete',
+            color: const Color(0xFFF44336),
+            onTap: () {
+              _hideContextMenu();
+              _deleteNode(nodeId);
+            },
+          ),
+        ],
+      ),
+    );
+
+    Overlay.of(context).insert(_contextMenuOverlay!);
+  }
+
+  void _addNode(StoryNodeType type, Offset position) {
+    final id = '${type.name}-${DateTime.now().millisecondsSinceEpoch}';
+    final newNode = Node<StoryNodeData>(
+      id: id,
+      type: _getNodeTypeString(type),
+      position: XYPosition(x: position.dx, y: position.dy),
+      data: StoryNodeData(
+        title: _getDefaultTitle(type),
+        description: type == StoryNodeType.story || type == StoryNodeType.branch
+            ? 'Double-click to edit...'
+            : null,
+        choices: type == StoryNodeType.branch ? ['Option 1', 'Option 2'] : null,
+        nodeType: type,
+      ),
+      sourcePosition: Position.right,
+      targetPosition: Position.left,
+    );
+
+    setState(() {
+      _nodes = [..._nodes, newNode];
+    });
+  }
+
+  String _getNodeTypeString(StoryNodeType type) {
+    switch (type) {
+      case StoryNodeType.start: return 'start';
+      case StoryNodeType.story: return 'story';
+      case StoryNodeType.branch: return 'branch';
+      case StoryNodeType.image: return 'image';
+      case StoryNodeType.endGood:
+      case StoryNodeType.endBad: return 'end';
+    }
+  }
+
+  String _getDefaultTitle(StoryNodeType type) {
+    switch (type) {
+      case StoryNodeType.start: return 'Start';
+      case StoryNodeType.story: return 'New Scene';
+      case StoryNodeType.branch: return 'Decision';
+      case StoryNodeType.image: return 'Image';
+      case StoryNodeType.endGood: return 'Good Ending';
+      case StoryNodeType.endBad: return 'Bad Ending';
+    }
+  }
+
+  void _duplicateNode(String nodeId) {
+    final node = _nodes.firstWhere((n) => n.id == nodeId);
+    final newId = '${node.id}-copy-${DateTime.now().millisecondsSinceEpoch}';
+
+    setState(() {
+      _nodes = [
+        ..._nodes,
+        Node<StoryNodeData>(
+          id: newId,
+          type: node.type,
+          position: XYPosition(
+            x: node.position.x + 50,
+            y: node.position.y + 50,
+          ),
+          data: node.data.copyWith(title: '${node.data.title} (copy)'),
+          sourcePosition: node.sourcePosition,
+          targetPosition: node.targetPosition,
+          width: node.width,
+          height: node.height,
+        ),
+      ];
+    });
+  }
+
+  void _changeNodeType(String nodeId, StoryNodeType newType) {
+    final index = _nodes.indexWhere((n) => n.id == nodeId);
+    if (index == -1) return;
+
+    final node = _nodes[index];
+    setState(() {
+      _nodes[index] = Node<StoryNodeData>(
+        id: node.id,
+        type: _getNodeTypeString(newType),
+        position: node.position,
+        data: node.data.copyWith(nodeType: newType),
+        sourcePosition: node.sourcePosition,
+        targetPosition: node.targetPosition,
+        width: node.width,
+        height: node.height,
+      );
+    });
+  }
+
+  void _deleteNode(String nodeId) {
+    setState(() {
+      _nodes = _nodes.where((n) => n.id != nodeId).toList();
+      _edges = _edges.where((e) => e.source != nodeId && e.target != nodeId).toList();
+    });
+  }
+
+  /// Handle right-click on canvas
+  void _onCanvasSecondaryTap(TapDownDetails details) {
+    // Convert screen position to flow coordinates
+    final flowPos = _controller?.screenToFlow(details.localPosition) ?? details.localPosition;
+    _showCanvasContextMenu(details.globalPosition, flowPos);
   }
 
   /// Starts the route visualization animation
@@ -588,41 +869,78 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
           const SizedBox(width: 8),
         ],
       ),
-      body: XYFlow<StoryNodeData, void>(
-        nodes: _nodes,
-        edges: _getStyledEdges(),
-        onNodesChange: _onNodesChange,
-        onEdgesChange: _onEdgesChange,
-        onConnect: _onConnect,
-        connectionLineType: ConnectionLineType.smoothStep,
-        nodeTypes: {
-          'start': (props) => _StartNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
-          'story': (props) => _StoryNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
-          'branch': (props) => _BranchNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
-          'image': (props) => _ImageNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
-          'end': (props) => _EndNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
+      body: Listener(
+        onPointerDown: (event) {
+          // Hide context menu on any click outside it
+          if (_contextMenuOverlay != null) {
+            _hideContextMenu();
+          }
         },
-        fitView: true,
-        fitViewOnResize: true, // Auto-refit on device rotation
-        fitViewOptions: const FitViewOptions(
-          padding: EdgeInsets.all(80),
+        child: GestureDetector(
+          onSecondaryTapDown: _onCanvasSecondaryTap,
+          child: XYFlow<StoryNodeData, void>(
+            nodes: _nodes,
+            edges: _getStyledEdges(),
+            onNodesChange: _onNodesChange,
+            onEdgesChange: _onEdgesChange,
+            onConnect: _onConnect,
+            onInit: (controller) => _controller = controller,
+            connectionLineType: ConnectionLineType.smoothStep,
+            nodeTypes: {
+              'start': (props) => _StartNode(
+                props: props,
+                isActive: _activeNodeId == props.id,
+                onDoubleTap: () => _onNodeDoubleTap(props.id),
+                onSecondaryTap: (globalPos) => _showNodeContextMenu(globalPos, props.id),
+              ),
+              'story': (props) => _StoryNode(
+                props: props,
+                isActive: _activeNodeId == props.id,
+                onDoubleTap: () => _onNodeDoubleTap(props.id),
+                onSecondaryTap: (globalPos) => _showNodeContextMenu(globalPos, props.id),
+              ),
+              'branch': (props) => _BranchNode(
+                props: props,
+                isActive: _activeNodeId == props.id,
+                onDoubleTap: () => _onNodeDoubleTap(props.id),
+                onSecondaryTap: (globalPos) => _showNodeContextMenu(globalPos, props.id),
+              ),
+              'image': (props) => _ImageNode(
+                props: props,
+                isActive: _activeNodeId == props.id,
+                onDoubleTap: () => _onNodeDoubleTap(props.id),
+                onSecondaryTap: (globalPos) => _showNodeContextMenu(globalPos, props.id),
+              ),
+              'end': (props) => _EndNode(
+                props: props,
+                isActive: _activeNodeId == props.id,
+                onDoubleTap: () => _onNodeDoubleTap(props.id),
+                onSecondaryTap: (globalPos) => _showNodeContextMenu(globalPos, props.id),
+              ),
+            },
+            fitView: true,
+            fitViewOnResize: true, // Auto-refit on device rotation
+            fitViewOptions: const FitViewOptions(
+              padding: EdgeInsets.all(80),
+            ),
+            minZoom: 0.2,
+            maxZoom: 2.0,
+            children: [
+              const _ComfyBackground(),
+              const Controls(
+                backgroundColor: Color(0xFF2D2D2D),
+                iconColor: Color(0xFFAAAAAA),
+                disabledIconColor: Color(0xFF555555),
+                dividerColor: Color(0xFF404040),
+                borderColor: Color(0xFF404040),
+              ),
+              const MiniMap(
+                backgroundColor: Color(0xFF252525),
+                maskColor: Color(0x40FFFFFF),
+              ),
+            ],
+          ),
         ),
-        minZoom: 0.2,
-        maxZoom: 2.0,
-        children: [
-          const _ComfyBackground(),
-          const Controls(
-            backgroundColor: Color(0xFF2D2D2D),
-            iconColor: Color(0xFFAAAAAA),
-            disabledIconColor: Color(0xFF555555),
-            dividerColor: Color(0xFF404040),
-            borderColor: Color(0xFF404040),
-          ),
-          const MiniMap(
-            backgroundColor: Color(0xFF252525),
-            maskColor: Color(0x40FFFFFF),
-          ),
-        ],
       ),
     );
   }
@@ -726,15 +1044,17 @@ class _ComfyStyle {
 
 /// Start node - entry point
 class _StartNode extends StatelessWidget {
-  const _StartNode({required this.props, this.isActive = false, this.onDoubleTap});
+  const _StartNode({required this.props, this.isActive = false, this.onDoubleTap, this.onSecondaryTap});
   final NodeProps<StoryNodeData> props;
   final bool isActive;
   final VoidCallback? onDoubleTap;
+  final void Function(Offset globalPosition)? onSecondaryTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onDoubleTap: onDoubleTap,
+      onSecondaryTapDown: (details) => onSecondaryTap?.call(details.globalPosition),
       child: _ComfyNodeWrapper(
         props: props,
         headerColor: _ComfyStyle.startColor,
@@ -771,15 +1091,17 @@ class _StartNode extends StatelessWidget {
 
 /// Story node - main narrative content
 class _StoryNode extends StatelessWidget {
-  const _StoryNode({required this.props, this.isActive = false, this.onDoubleTap});
+  const _StoryNode({required this.props, this.isActive = false, this.onDoubleTap, this.onSecondaryTap});
   final NodeProps<StoryNodeData> props;
   final bool isActive;
   final VoidCallback? onDoubleTap;
+  final void Function(Offset globalPosition)? onSecondaryTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onDoubleTap: onDoubleTap,
+      onSecondaryTapDown: (details) => onSecondaryTap?.call(details.globalPosition),
       child: _ComfyNodeWrapper(
         props: props,
         headerColor: _ComfyStyle.storyColor,
@@ -882,15 +1204,17 @@ class _StoryNode extends StatelessWidget {
 
 /// Branch node - decision points
 class _BranchNode extends StatelessWidget {
-  const _BranchNode({required this.props, this.isActive = false, this.onDoubleTap});
+  const _BranchNode({required this.props, this.isActive = false, this.onDoubleTap, this.onSecondaryTap});
   final NodeProps<StoryNodeData> props;
   final bool isActive;
   final VoidCallback? onDoubleTap;
+  final void Function(Offset globalPosition)? onSecondaryTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onDoubleTap: onDoubleTap,
+      onSecondaryTapDown: (details) => onSecondaryTap?.call(details.globalPosition),
       child: _ComfyNodeWrapper(
         props: props,
         headerColor: _ComfyStyle.branchColor,
@@ -959,15 +1283,17 @@ class _BranchNode extends StatelessWidget {
 
 /// Image node - visual content
 class _ImageNode extends StatelessWidget {
-  const _ImageNode({required this.props, this.isActive = false, this.onDoubleTap});
+  const _ImageNode({required this.props, this.isActive = false, this.onDoubleTap, this.onSecondaryTap});
   final NodeProps<StoryNodeData> props;
   final bool isActive;
   final VoidCallback? onDoubleTap;
+  final void Function(Offset globalPosition)? onSecondaryTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onDoubleTap: onDoubleTap,
+      onSecondaryTapDown: (details) => onSecondaryTap?.call(details.globalPosition),
       child: _ComfyNodeWrapper(
         props: props,
         headerColor: _ComfyStyle.imageColor,
@@ -1042,10 +1368,11 @@ class _ImageNode extends StatelessWidget {
 
 /// End node - story conclusions
 class _EndNode extends StatelessWidget {
-  const _EndNode({required this.props, this.isActive = false, this.onDoubleTap});
+  const _EndNode({required this.props, this.isActive = false, this.onDoubleTap, this.onSecondaryTap});
   final NodeProps<StoryNodeData> props;
   final bool isActive;
   final VoidCallback? onDoubleTap;
+  final void Function(Offset globalPosition)? onSecondaryTap;
 
   @override
   Widget build(BuildContext context) {
@@ -1054,6 +1381,7 @@ class _EndNode extends StatelessWidget {
 
     return GestureDetector(
       onDoubleTap: onDoubleTap,
+      onSecondaryTapDown: (details) => onSecondaryTap?.call(details.globalPosition),
       child: _ComfyNodeWrapper(
         props: props,
         headerColor: color,
@@ -1347,6 +1675,382 @@ class _HandleIndicator extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+// ============================================================================
+// Context Menu Widgets - ComfyUI Style
+// ============================================================================
+
+/// Base class for context menu items
+abstract class _ContextMenuItemBase {
+  const _ContextMenuItemBase();
+}
+
+/// A clickable menu item
+class _ContextMenuItem extends _ContextMenuItemBase {
+  const _ContextMenuItem({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+}
+
+/// A divider in the menu
+class _ContextMenuDivider extends _ContextMenuItemBase {
+  const _ContextMenuDivider();
+}
+
+/// A submenu with children
+class _ContextMenuSubmenu extends _ContextMenuItemBase {
+  const _ContextMenuSubmenu({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.children,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final List<_ContextMenuItem> children;
+}
+
+/// The overlay that contains the context menu
+class _ContextMenuOverlay extends StatefulWidget {
+  const _ContextMenuOverlay({
+    required this.position,
+    required this.items,
+    required this.onDismiss,
+  });
+
+  final Offset position;
+  final List<_ContextMenuItemBase> items;
+  final VoidCallback onDismiss;
+
+  @override
+  State<_ContextMenuOverlay> createState() => _ContextMenuOverlayState();
+}
+
+class _ContextMenuOverlayState extends State<_ContextMenuOverlay>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animController;
+  late Animation<double> _scaleAnim;
+  late Animation<double> _opacityAnim;
+
+  // For submenu
+  int? _hoveredSubmenuIndex;
+  OverlayEntry? _submenuOverlay;
+
+  @override
+  void initState() {
+    super.initState();
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    );
+    _scaleAnim = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(parent: _animController, curve: Curves.easeOut),
+    );
+    _opacityAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animController, curve: Curves.easeOut),
+    );
+    _animController.forward();
+  }
+
+  @override
+  void dispose() {
+    _submenuOverlay?.remove();
+    _animController.dispose();
+    super.dispose();
+  }
+
+  void _showSubmenu(int index, _ContextMenuSubmenu submenu, Offset itemPosition) {
+    _submenuOverlay?.remove();
+
+    _submenuOverlay = OverlayEntry(
+      builder: (context) => Positioned(
+        left: itemPosition.dx + 180,
+        top: itemPosition.dy,
+        child: _ContextSubmenuPanel(
+          items: submenu.children,
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_submenuOverlay!);
+  }
+
+  void _hideSubmenu() {
+    _submenuOverlay?.remove();
+    _submenuOverlay = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Calculate position to keep menu on screen
+    final screenSize = MediaQuery.of(context).size;
+    const menuWidth = 200.0;
+    const menuMaxHeight = 400.0;
+
+    double left = widget.position.dx;
+    double top = widget.position.dy;
+
+    // Adjust if menu would go off screen
+    if (left + menuWidth > screenSize.width) {
+      left = screenSize.width - menuWidth - 8;
+    }
+    if (top + menuMaxHeight > screenSize.height) {
+      top = screenSize.height - menuMaxHeight - 8;
+    }
+
+    return Stack(
+      children: [
+        // Invisible barrier to catch taps outside
+        Positioned.fill(
+          child: GestureDetector(
+            onTap: widget.onDismiss,
+            behavior: HitTestBehavior.opaque,
+            child: Container(color: Colors.transparent),
+          ),
+        ),
+        // The menu itself
+        Positioned(
+          left: left,
+          top: top,
+          child: AnimatedBuilder(
+            animation: _animController,
+            builder: (context, child) => Opacity(
+              opacity: _opacityAnim.value,
+              child: Transform.scale(
+                scale: _scaleAnim.value,
+                alignment: Alignment.topLeft,
+                child: child,
+              ),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                width: menuWidth,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2D2D2D),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFF404040)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Header
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF252525),
+                          border: Border(
+                            bottom: BorderSide(color: Color(0xFF404040)),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.menu, size: 14, color: Colors.grey[500]),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Context Menu',
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Items
+                      ...widget.items.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final item = entry.value;
+
+                        if (item is _ContextMenuDivider) {
+                          return Container(
+                            height: 1,
+                            color: const Color(0xFF404040),
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                          );
+                        }
+
+                        if (item is _ContextMenuSubmenu) {
+                          return MouseRegion(
+                            onEnter: (_) {
+                              setState(() => _hoveredSubmenuIndex = index);
+                              final RenderBox box = context.findRenderObject() as RenderBox;
+                              final itemY = 40.0 + (index * 36.0); // Approximate
+                              _showSubmenu(index, item, Offset(left, top + itemY));
+                            },
+                            onExit: (_) {
+                              setState(() => _hoveredSubmenuIndex = null);
+                              Future.delayed(const Duration(milliseconds: 100), () {
+                                if (_hoveredSubmenuIndex != index) {
+                                  _hideSubmenu();
+                                }
+                              });
+                            },
+                            child: _ContextMenuItemWidget(
+                              icon: item.icon,
+                              label: item.label,
+                              color: item.color,
+                              hasSubmenu: true,
+                              isHovered: _hoveredSubmenuIndex == index,
+                              onTap: () {},
+                            ),
+                          );
+                        }
+
+                        if (item is _ContextMenuItem) {
+                          return _ContextMenuItemWidget(
+                            icon: item.icon,
+                            label: item.label,
+                            color: item.color,
+                            onTap: item.onTap,
+                          );
+                        }
+
+                        return const SizedBox.shrink();
+                      }),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Individual menu item widget
+class _ContextMenuItemWidget extends StatefulWidget {
+  const _ContextMenuItemWidget({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+    this.hasSubmenu = false,
+    this.isHovered = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+  final bool hasSubmenu;
+  final bool isHovered;
+
+  @override
+  State<_ContextMenuItemWidget> createState() => _ContextMenuItemWidgetState();
+}
+
+class _ContextMenuItemWidgetState extends State<_ContextMenuItemWidget> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final hovered = _isHovered || widget.isHovered;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 100),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          color: hovered ? widget.color.withValues(alpha: 0.15) : Colors.transparent,
+          child: Row(
+            children: [
+              Icon(
+                widget.icon,
+                size: 16,
+                color: hovered ? widget.color : Colors.grey[400],
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  widget.label,
+                  style: TextStyle(
+                    color: hovered ? Colors.white : Colors.grey[300],
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              if (widget.hasSubmenu)
+                Icon(
+                  Icons.chevron_right,
+                  size: 16,
+                  color: Colors.grey[500],
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Submenu panel
+class _ContextSubmenuPanel extends StatelessWidget {
+  const _ContextSubmenuPanel({required this.items});
+
+  final List<_ContextMenuItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        width: 160,
+        decoration: BoxDecoration(
+          color: const Color(0xFF2D2D2D),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: const Color(0xFF404040)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.4),
+              blurRadius: 12,
+              offset: const Offset(4, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: items.map((item) => _ContextMenuItemWidget(
+              icon: item.icon,
+              label: item.label,
+              color: item.color,
+              onTap: item.onTap,
+            )).toList(),
+          ),
+        ),
+      ),
     );
   }
 }
