@@ -877,6 +877,7 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
           }
         },
         child: GestureDetector(
+          behavior: HitTestBehavior.translucent, // Allow gestures to pass through
           onSecondaryTapDown: _onCanvasSecondaryTap,
           child: XYFlow<StoryNodeData, void>(
             nodes: _nodes,
@@ -925,6 +926,8 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
             ),
             minZoom: 0.2,
             maxZoom: 2.0,
+            panOnScroll: true,  // Two-finger scroll = pan (use pinch or Ctrl+scroll to zoom)
+            zoomOnScroll: false, // Disable scroll zoom, use pinch instead
             children: [
               const _ComfyBackground(),
               const Controls(
