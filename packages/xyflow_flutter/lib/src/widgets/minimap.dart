@@ -1,8 +1,17 @@
+import 'dart:math' as math;
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/types/viewport.dart' as xyflow;
 import '../state/xyflow_provider.dart';
 import 'panel.dart';
+
+/// Default width for nodes when not specified.
+const double _kDefaultNodeWidth = 150.0;
+
+/// Default height for nodes when not specified.
+const double _kDefaultNodeHeight = 40.0;
 
 /// MiniMap widget showing an overview of the flow.
 ///
@@ -37,7 +46,8 @@ class MiniMap extends StatefulWidget {
   final Color? nodeColor;
 
   /// Function to get color for individual nodes.
-  final Color Function(dynamic node)? nodeColorGetter;
+  /// The node parameter is the Node object from the flow.
+  final Color Function(Object node)? nodeColorGetter;
 
   /// Color of the viewport mask overlay.
   final Color? maskColor;
@@ -129,16 +139,16 @@ class _MiniMapState extends State<MiniMap> {
     final containerSize = state.containerSize;
     if (containerSize == null) return;
 
-    // Convert minimap position to flow coordinates
+    // Convert minimap pixel position to flow coordinates
     final flowX = (localPosition.dx - bounds.offsetX) / bounds.scale + bounds.minX;
     final flowY = (localPosition.dy - bounds.offsetY) / bounds.scale + bounds.minY;
 
-    // Calculate viewport center offset
-    // We want the clicked point to be in the center of the viewport
+    // Calculate dimensions of the visible viewport in flow coordinate space
     final viewportWidthInFlow = containerSize.width / viewport.zoom;
     final viewportHeightInFlow = containerSize.height / viewport.zoom;
 
-    // Calculate new viewport position (viewport.x/y are the translation, negative of flow position)
+    // Center the viewport on the clicked point by calculating new viewport translation
+    // (viewport.x/y represent the negative of the flow position multiplied by zoom)
     final newX = -(flowX - viewportWidthInFlow / 2) * viewport.zoom;
     final newY = -(flowY - viewportHeightInFlow / 2) * viewport.zoom;
 
@@ -177,10 +187,10 @@ class MiniMapPainter extends CustomPainter {
   MiniMapPainter({
     required this.context,
     required this.nodeColor,
-    this.nodeColorGetter,
     required this.maskColor,
     required this.nodeStrokeWidth,
     required this.nodeBorderRadius,
+    this.nodeColorGetter,
     this.onBoundsCalculated,
   });
 
@@ -191,7 +201,7 @@ class MiniMapPainter extends CustomPainter {
   final Color nodeColor;
 
   /// Function to get color for individual nodes.
-  final Color Function(dynamic node)? nodeColorGetter;
+  final Color Function(Object node)? nodeColorGetter;
 
   /// Viewport mask color.
   final Color maskColor;
@@ -226,13 +236,14 @@ class MiniMapPainter extends CustomPainter {
         if (internal == null) continue;
 
         final pos = internal.positionAbsolute;
-        final nodeWidth = internal.measured?.width ?? node.width ?? 150;
-        final nodeHeight = internal.measured?.height ?? node.height ?? 40;
+        final nodeWidth = internal.measured?.width ?? node.width ?? _kDefaultNodeWidth;
+        final nodeHeight = internal.measured?.height ?? node.height ?? _kDefaultNodeHeight;
 
-        minX = minX.isFinite ? (minX < pos.x ? minX : pos.x) : pos.x;
-        minY = minY.isFinite ? (minY < pos.y ? minY : pos.y) : pos.y;
-        maxX = maxX.isFinite ? (maxX > pos.x + nodeWidth ? maxX : pos.x + nodeWidth) : pos.x + nodeWidth;
-        maxY = maxY.isFinite ? (maxY > pos.y + nodeHeight ? maxY : pos.y + nodeHeight) : pos.y + nodeHeight;
+        // Update bounds using simplified comparisons
+        if (minX.isInfinite || pos.x < minX) minX = pos.x;
+        if (minY.isInfinite || pos.y < minY) minY = pos.y;
+        if (maxX.isInfinite || pos.x + nodeWidth > maxX) maxX = pos.x + nodeWidth;
+        if (maxY.isInfinite || pos.y + nodeHeight > maxY) maxY = pos.y + nodeHeight;
       }
 
       if (!minX.isFinite) return;
@@ -250,7 +261,7 @@ class MiniMapPainter extends CustomPainter {
       // Calculate scale to fit in minimap
       final scaleX = size.width / boundsWidth;
       final scaleY = size.height / boundsHeight;
-      final scale = scaleX < scaleY ? scaleX : scaleY;
+      final scale = math.min(scaleX, scaleY);
 
       // Center offset
       final offsetX = (size.width - boundsWidth * scale) / 2;
@@ -277,8 +288,8 @@ class MiniMapPainter extends CustomPainter {
         if (internal == null) continue;
 
         final pos = internal.positionAbsolute;
-        final nodeWidth = internal.measured?.width ?? node.width ?? 150;
-        final nodeHeight = internal.measured?.height ?? node.height ?? 40;
+        final nodeWidth = internal.measured?.width ?? node.width ?? _kDefaultNodeWidth;
+        final nodeHeight = internal.measured?.height ?? node.height ?? _kDefaultNodeHeight;
 
         final x = (pos.x - minX) * scale + offsetX;
         final y = (pos.y - minY) * scale + offsetY;
@@ -331,11 +342,21 @@ class MiniMapPainter extends CustomPainter {
         Rect.fromLTWH(vpX, vpY, vpW, vpH),
         borderPaint,
       );
-    } catch (_) {
-      // State not available
+    } catch (e, stackTrace) {
+      // Log error in debug mode for easier debugging
+      debugPrint('MiniMap paint error: $e');
+      if (kDebugMode) {
+        debugPrint('Stack trace: $stackTrace');
+      }
     }
   }
 
   @override
-  bool shouldRepaint(covariant MiniMapPainter oldDelegate) => true;
+  bool shouldRepaint(covariant MiniMapPainter oldDelegate) {
+    return nodeColor != oldDelegate.nodeColor ||
+        nodeColorGetter != oldDelegate.nodeColorGetter ||
+        maskColor != oldDelegate.maskColor ||
+        nodeStrokeWidth != oldDelegate.nodeStrokeWidth ||
+        nodeBorderRadius != oldDelegate.nodeBorderRadius;
+  }
 }

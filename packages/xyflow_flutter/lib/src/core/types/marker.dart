@@ -100,8 +100,18 @@ class EdgeMarker {
 
   /// Creates from JSON.
   factory EdgeMarker.fromJson(Map<String, dynamic> json) {
+    // Safely parse enum type with fallback for invalid values
+    EdgeMarkerType parseType(String? typeName) {
+      if (typeName == null) return EdgeMarkerType.arrowClosed;
+      try {
+        return EdgeMarkerType.values.byName(typeName);
+      } catch (_) {
+        return EdgeMarkerType.arrowClosed;
+      }
+    }
+
     return EdgeMarker(
-      type: EdgeMarkerType.values.byName(json['type'] as String? ?? 'arrowClosed'),
+      type: parseType(json['type'] as String?),
       color: json['color'] != null ? Color(json['color'] as int) : null,
       width: (json['width'] as num?)?.toDouble(),
       height: (json['height'] as num?)?.toDouble(),

@@ -87,7 +87,7 @@ class _BasicFlowExampleState extends State<BasicFlowExample> {
       _edges = [
         ..._edges,
         Edge<void>(
-          id: 'e${connection.source}-${connection.target}',
+          id: 'e${connection.source}-${connection.target}-${DateTime.now().millisecondsSinceEpoch}',
           source: connection.source,
           target: connection.target,
           sourceHandle: connection.sourceHandle,
