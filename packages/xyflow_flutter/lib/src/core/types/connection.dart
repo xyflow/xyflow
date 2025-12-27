@@ -231,3 +231,42 @@ class OnConnectEndParams {
   /// Whether the connection was valid.
   final bool isValid;
 }
+
+/// Information about a registered handle for connection detection.
+@immutable
+class HandleInfo {
+  /// Creates handle info.
+  const HandleInfo({
+    required this.nodeId,
+    this.handleId,
+    required this.handleType,
+    required this.position,
+  });
+
+  /// The node ID this handle belongs to.
+  final String nodeId;
+
+  /// The handle ID (null for default handle).
+  final String? handleId;
+
+  /// The handle type (source or target).
+  final HandleType handleType;
+
+  /// The handle position in flow coordinates.
+  final XYPosition position;
+
+  /// Creates a copy with optional overrides.
+  HandleInfo copyWith({
+    String? nodeId,
+    String? handleId,
+    HandleType? handleType,
+    XYPosition? position,
+  }) {
+    return HandleInfo(
+      nodeId: nodeId ?? this.nodeId,
+      handleId: handleId ?? this.handleId,
+      handleType: handleType ?? this.handleType,
+      position: position ?? this.position,
+    );
+  }
+}

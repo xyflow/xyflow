@@ -112,8 +112,14 @@ class XYFlowState<NodeData, EdgeData> extends ChangeNotifier {
   final Set<String> _selectedEdgeIds = {};
   bool _isDragging = false;
 
+  // Handle registry for connection drop detection
+  final Map<String, HandleInfo> _handleRegistry = {};
+
   /// Current connection state (during connection creation).
   ConnectionState get connectionState => _connectionState;
+
+  /// Registered handles for connection detection.
+  Map<String, HandleInfo> get handleRegistry => Map.unmodifiable(_handleRegistry);
 
   /// Set of selected node IDs.
   Set<String> get selectedNodeIds => Set.unmodifiable(_selectedNodeIds);
@@ -140,6 +146,11 @@ class XYFlowState<NodeData, EdgeData> extends ChangeNotifier {
   CoordinateExtent? _nodeExtent;
   (double, double)? _snapGrid;
   ConnectionMode _connectionMode;
+
+  // Connection callbacks (set by XYFlow widget)
+  void Function(Connection connection)? onConnect;
+  void Function(OnConnectStartParams params)? onConnectStart;
+  void Function(OnConnectEndParams params)? onConnectEnd;
 
   /// The origin point for node positioning.
   NodeOrigin get nodeOrigin => _nodeOrigin;
@@ -370,6 +381,85 @@ class XYFlowState<NodeData, EdgeData> extends ChangeNotifier {
   void endConnection() {
     _connectionState = const ConnectionState.empty();
     notifyListeners();
+  }
+
+  /// Ends the current connection with a target.
+  /// Returns the connection if successful, null otherwise.
+  Connection? endConnectionWithTarget(XYPosition endPosition) {
+    if (!_connectionState.isConnecting) return null;
+
+    // Find a target handle at the end position
+    final targetHandle = findHandleAtPosition(endPosition);
+
+    Connection? connection;
+    if (targetHandle != null) {
+      // Check if it's a valid target (must be opposite type)
+      final isValidTarget = _connectionState.startHandleType == HandleType.source
+          ? targetHandle.handleType == HandleType.target
+          : targetHandle.handleType == HandleType.source;
+
+      // Can't connect to same node
+      final isDifferentNode = targetHandle.nodeId != _connectionState.startNodeId;
+
+      if (isValidTarget && isDifferentNode) {
+        if (_connectionState.startHandleType == HandleType.source) {
+          connection = Connection(
+            source: _connectionState.startNodeId!,
+            target: targetHandle.nodeId,
+            sourceHandle: _connectionState.startHandleId,
+            targetHandle: targetHandle.handleId,
+          );
+        } else {
+          connection = Connection(
+            source: targetHandle.nodeId,
+            target: _connectionState.startNodeId!,
+            sourceHandle: targetHandle.handleId,
+            targetHandle: _connectionState.startHandleId,
+          );
+        }
+      }
+    }
+
+    _connectionState = const ConnectionState.empty();
+    notifyListeners();
+    return connection;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Handle Registry
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  /// Registers a handle for connection drop detection.
+  void registerHandle(HandleInfo info) {
+    final key = '${info.nodeId}:${info.handleId ?? 'default'}:${info.handleType.name}';
+    _handleRegistry[key] = info;
+  }
+
+  /// Unregisters a handle.
+  void unregisterHandle(String nodeId, String? handleId, HandleType handleType) {
+    final key = '$nodeId:${handleId ?? 'default'}:${handleType.name}';
+    _handleRegistry.remove(key);
+  }
+
+  /// Updates a handle's position.
+  void updateHandlePosition(String nodeId, String? handleId, HandleType handleType, XYPosition position) {
+    final key = '$nodeId:${handleId ?? 'default'}:${handleType.name}';
+    final existing = _handleRegistry[key];
+    if (existing != null) {
+      _handleRegistry[key] = existing.copyWith(position: position);
+    }
+  }
+
+  /// Finds a handle at the given position.
+  HandleInfo? findHandleAtPosition(XYPosition position, {double tolerance = 20}) {
+    for (final info in _handleRegistry.values) {
+      final dx = (info.position.x - position.x).abs();
+      final dy = (info.position.y - position.y).abs();
+      if (dx <= tolerance && dy <= tolerance) {
+        return info;
+      }
+    }
+    return null;
   }
 
   // ═══════════════════════════════════════════════════════════════════════════

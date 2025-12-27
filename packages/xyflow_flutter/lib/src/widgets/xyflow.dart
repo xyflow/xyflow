@@ -351,6 +351,11 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
       connectionMode: widget.connectionMode,
     );
 
+    // Set connection callbacks
+    _state.onConnect = widget.onConnect;
+    _state.onConnectStart = widget.onConnectStart;
+    _state.onConnectEnd = widget.onConnectEnd;
+
     _controller = XYFlowController<NodeData, EdgeData>(
       state: _state,
       vsync: this,
@@ -440,6 +445,11 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
         maxZoom: widget.maxZoom,
       );
     }
+
+    // Update connection callbacks
+    _state.onConnect = widget.onConnect;
+    _state.onConnectStart = widget.onConnectStart;
+    _state.onConnectEnd = widget.onConnectEnd;
   }
 
   @override
