@@ -496,6 +496,32 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
     });
   }
 
+  void _onConnect(Connection connection) {
+    // Check if connection already exists
+    final exists = _edges.any((e) =>
+        e.source == connection.source &&
+        e.target == connection.target &&
+        e.sourceHandle == connection.sourceHandle &&
+        e.targetHandle == connection.targetHandle);
+    if (exists) return;
+
+    // Prevent self-connections
+    if (connection.source == connection.target) return;
+
+    setState(() {
+      _edges = [
+        ..._edges,
+        Edge<void>(
+          id: 'e-${connection.source}-${connection.target}-${DateTime.now().millisecondsSinceEpoch}',
+          source: connection.source,
+          target: connection.target,
+          sourceHandle: connection.sourceHandle,
+          targetHandle: connection.targetHandle,
+        ),
+      ];
+    });
+  }
+
   /// Returns edges with active highlighting applied
   List<Edge<void>> _getStyledEdges() {
     return _edges.map((edge) {
@@ -567,6 +593,8 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
         edges: _getStyledEdges(),
         onNodesChange: _onNodesChange,
         onEdgesChange: _onEdgesChange,
+        onConnect: _onConnect,
+        connectionLineType: ConnectionLineType.smoothStep,
         nodeTypes: {
           'start': (props) => _StartNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
           'story': (props) => _StoryNode(props: props, isActive: _activeNodeId == props.id, onDoubleTap: () => _onNodeDoubleTap(props.id)),
@@ -1280,13 +1308,16 @@ class _HandleIndicator extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (isInput) ...[
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
+          HandleWidget(
+            type: HandleType.target,
+            position: Position.left,
+            style: HandleStyle(
+              size: 12,
               color: color,
-              shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFF1A1A1A), width: 2),
+              hoverColor: color,
+              activeColor: const Color(0xFF4CAF50),
+              borderColor: const Color(0xFF1A1A1A),
+              borderWidth: 2,
             ),
           ),
           const SizedBox(width: 4),
@@ -1302,13 +1333,16 @@ class _HandleIndicator extends StatelessWidget {
         ),
         if (!isInput) ...[
           const SizedBox(width: 4),
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
+          HandleWidget(
+            type: HandleType.source,
+            position: Position.right,
+            style: HandleStyle(
+              size: 12,
               color: color,
-              shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFF1A1A1A), width: 2),
+              hoverColor: color,
+              activeColor: const Color(0xFF4CAF50),
+              borderColor: const Color(0xFF1A1A1A),
+              borderWidth: 2,
             ),
           ),
         ],
