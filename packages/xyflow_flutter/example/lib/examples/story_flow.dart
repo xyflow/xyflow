@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:xyflow_flutter/xyflow_flutter.dart' hide Transform;
+
+import 'web_drop_zone.dart';
 
 /// ComfyUI-style dark node graph for story branching.
 ///
@@ -1521,38 +1524,47 @@ class _VideoNodeState extends State<_VideoNode> {
     }
   }
 
+  void _handleFileDrop(Uint8List bytes, String name) {
+    // Check if it's a video file
+    final lowerName = name.toLowerCase();
+    if (lowerName.endsWith('.mp4') ||
+        lowerName.endsWith('.mov') ||
+        lowerName.endsWith('.webm') ||
+        lowerName.endsWith('.avi')) {
+      widget.onVideoSelected?.call(bytes, null);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final nodeWidget = GestureDetector(
       onDoubleTap: widget.onDoubleTap,
       onSecondaryTapDown: (details) => widget.onSecondaryTap?.call(details.globalPosition),
       onTap: _pickVideo,
       child: MouseRegion(
         onEnter: (_) => setState(() => _isHovering = true),
         onExit: (_) => setState(() => _isHovering = false),
-        child: DragTarget<String>(
-          onWillAcceptWithDetails: (details) {
-            setState(() => _isDragging = true);
-            return true;
-          },
-          onLeave: (_) => setState(() => _isDragging = false),
-          onAcceptWithDetails: (details) {
-            setState(() => _isDragging = false);
-            // Handle dropped file URL
-            widget.onVideoSelected?.call(null, details.data);
-          },
-          builder: (context, candidateData, rejectedData) {
-            return _ComfyNodeWrapper(
-              props: widget.props,
-              headerColor: _ComfyStyle.videoColor,
-              width: 180,
-              isActive: widget.isActive,
-              child: _buildContent(),
-            );
-          },
+        child: _ComfyNodeWrapper(
+          props: widget.props,
+          headerColor: _ComfyStyle.videoColor,
+          width: 180,
+          isActive: widget.isActive,
+          child: _buildContent(),
         ),
       ),
     );
+
+    // Wrap with WebDropZone for web drag-drop support
+    if (kIsWeb) {
+      return WebDropZone(
+        onDrop: _handleFileDrop,
+        onDragEnter: () => setState(() => _isDragging = true),
+        onDragLeave: () => setState(() => _isDragging = false),
+        child: nodeWidget,
+      );
+    }
+
+    return nodeWidget;
   }
 
   Widget _buildContent() {

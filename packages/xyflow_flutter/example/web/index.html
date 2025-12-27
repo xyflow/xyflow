@@ -62,6 +62,15 @@
         e.preventDefault();
       }
     }, { passive: false });
+
+    // Prevent browser from navigating when files are dropped
+    // Let Flutter handle drag-and-drop instead
+    document.addEventListener('dragover', function(e) {
+      e.preventDefault();
+    });
+    document.addEventListener('drop', function(e) {
+      e.preventDefault();
+    });
   </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
