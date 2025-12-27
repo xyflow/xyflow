@@ -5,6 +5,7 @@ import 'examples/custom_nodes.dart';
 import 'examples/edge_types.dart';
 import 'examples/story_flow.dart';
 import 'examples/node_connector.dart';
+import 'examples/advanced_features.dart';
 
 void main() {
   runApp(const MyApp());
@@ -99,6 +100,16 @@ class ExampleSelector extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const NodeConnectorExample()),
+            ),
+          ),
+          _ExampleCard(
+            title: 'Advanced Features',
+            description: 'Double-tap zoom, auto-resize groups, slot handles, animations.',
+            icon: Icons.auto_awesome,
+            color: Colors.pink,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AdvancedFeaturesExample()),
             ),
           ),
         ],
