@@ -4,6 +4,7 @@ import 'examples/basic_flow.dart';
 import 'examples/custom_nodes.dart';
 import 'examples/edge_types.dart';
 import 'examples/story_flow.dart';
+import 'examples/node_connector.dart';
 
 void main() {
   runApp(const MyApp());
@@ -88,6 +89,16 @@ class ExampleSelector extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const StoryFlowExample()),
+            ),
+          ),
+          _ExampleCard(
+            title: 'Node Connector',
+            description: 'Drag from handles to connect nodes with grid snapping.',
+            icon: Icons.link,
+            color: Colors.cyan,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NodeConnectorExample()),
             ),
           ),
         ],
