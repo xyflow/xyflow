@@ -583,7 +583,13 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
         maxZoom: 2.0,
         children: [
           const _ComfyBackground(),
-          const Controls(),
+          const Controls(
+            backgroundColor: Color(0xFF2D2D2D),
+            iconColor: Color(0xFFAAAAAA),
+            disabledIconColor: Color(0xFF555555),
+            dividerColor: Color(0xFF404040),
+            borderColor: Color(0xFF404040),
+          ),
           const MiniMap(
             backgroundColor: Color(0xFF252525),
             maskColor: Color(0x40FFFFFF),

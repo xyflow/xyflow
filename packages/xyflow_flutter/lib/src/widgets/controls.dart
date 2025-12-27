@@ -13,6 +13,8 @@ class ControlButton extends StatelessWidget {
     required this.onPressed,
     this.tooltip,
     this.disabled = false,
+    this.iconColor,
+    this.disabledIconColor,
   });
 
   /// The button icon.
@@ -27,6 +29,12 @@ class ControlButton extends StatelessWidget {
   /// Whether the button is disabled.
   final bool disabled;
 
+  /// Icon color when enabled.
+  final Color? iconColor;
+
+  /// Icon color when disabled.
+  final Color? disabledIconColor;
+
   @override
   Widget build(BuildContext context) {
     final button = Material(
@@ -39,7 +47,9 @@ class ControlButton extends StatelessWidget {
           child: Icon(
             icon,
             size: 18,
-            color: disabled ? Colors.grey.shade400 : Colors.grey.shade700,
+            color: disabled
+                ? (disabledIconColor ?? Colors.grey.shade400)
+                : (iconColor ?? Colors.grey.shade700),
           ),
         ),
       ),
@@ -70,6 +80,11 @@ class Controls extends StatelessWidget {
     this.onFitView,
     this.onInteractiveChange,
     this.fitViewOptions,
+    this.backgroundColor,
+    this.iconColor,
+    this.disabledIconColor,
+    this.dividerColor,
+    this.borderColor,
   });
 
   /// The position of the controls panel.
@@ -99,14 +114,34 @@ class Controls extends StatelessWidget {
   /// Options for fit view.
   final dynamic fitViewOptions;
 
+  /// Background color of the controls panel.
+  final Color? backgroundColor;
+
+  /// Icon color for enabled buttons.
+  final Color? iconColor;
+
+  /// Icon color for disabled buttons.
+  final Color? disabledIconColor;
+
+  /// Divider color between buttons.
+  final Color? dividerColor;
+
+  /// Border color of the controls panel.
+  final Color? borderColor;
+
   @override
   Widget build(BuildContext context) {
+    final effectiveDividerColor = dividerColor ?? Colors.grey.shade300;
+
     return Panel(
       position: position,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: backgroundColor ?? Colors.white,
           borderRadius: BorderRadius.circular(8),
+          border: borderColor != null
+              ? Border.all(color: borderColor!)
+              : null,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
@@ -122,6 +157,8 @@ class Controls extends StatelessWidget {
               ControlButton(
                 icon: Icons.add,
                 tooltip: 'Zoom in',
+                iconColor: iconColor,
+                disabledIconColor: disabledIconColor,
                 onPressed: () {
                   if (onZoomIn != null) {
                     onZoomIn!();
@@ -130,10 +167,12 @@ class Controls extends StatelessWidget {
                   }
                 },
               ),
-              const Divider(height: 1),
+              Divider(height: 1, color: effectiveDividerColor),
               ControlButton(
                 icon: Icons.remove,
                 tooltip: 'Zoom out',
+                iconColor: iconColor,
+                disabledIconColor: disabledIconColor,
                 onPressed: () {
                   if (onZoomOut != null) {
                     onZoomOut!();
@@ -144,10 +183,12 @@ class Controls extends StatelessWidget {
               ),
             ],
             if (showFitView) ...[
-              if (showZoom) const Divider(height: 1),
+              if (showZoom) Divider(height: 1, color: effectiveDividerColor),
               ControlButton(
                 icon: Icons.fit_screen,
                 tooltip: 'Fit view',
+                iconColor: iconColor,
+                disabledIconColor: disabledIconColor,
                 onPressed: () {
                   if (onFitView != null) {
                     onFitView!();
@@ -158,10 +199,12 @@ class Controls extends StatelessWidget {
               ),
             ],
             if (showInteractive) ...[
-              const Divider(height: 1),
+              Divider(height: 1, color: effectiveDividerColor),
               ControlButton(
                 icon: Icons.lock_open,
                 tooltip: 'Toggle interactive',
+                iconColor: iconColor,
+                disabledIconColor: disabledIconColor,
                 onPressed: () => onInteractiveChange?.call(true),
               ),
             ],
