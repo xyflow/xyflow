@@ -31,8 +31,38 @@
 
   <title>xyflow_flutter_example</title>
   <link rel="manifest" href="manifest.json">
+
+  <style>
+    /* Prevent white space from browser zoom */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
 <body>
+  <script>
+    // Prevent browser zoom with Ctrl+/- and Ctrl+scroll
+    // Let Flutter handle these instead
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) &&
+          (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0' ||
+           e.code === 'Equal' || e.code === 'Minus' || e.code === 'Digit0' ||
+           e.code === 'NumpadAdd' || e.code === 'NumpadSubtract')) {
+        e.preventDefault();
+      }
+    });
+
+    // Prevent Ctrl+scroll wheel zoom
+    document.addEventListener('wheel', function(e) {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
