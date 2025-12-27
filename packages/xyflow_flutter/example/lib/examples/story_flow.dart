@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/gestures.dart' show kSecondaryMouseButton;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:xyflow_flutter/xyflow_flutter.dart' hide Transform;
@@ -875,11 +876,12 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
           if (_contextMenuOverlay != null) {
             _hideContextMenu();
           }
+          // Handle right-click (secondary button) for context menu
+          if (event.buttons == kSecondaryMouseButton) {
+            _onCanvasSecondaryTap(TapDownDetails(globalPosition: event.position));
+          }
         },
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent, // Allow gestures to pass through
-          onSecondaryTapDown: _onCanvasSecondaryTap,
-          child: XYFlow<StoryNodeData, void>(
+        child: XYFlow<StoryNodeData, void>(
             nodes: _nodes,
             edges: _getStyledEdges(),
             onNodesChange: _onNodesChange,
@@ -944,7 +946,6 @@ class _StoryFlowExampleState extends State<StoryFlowExample>
             ],
           ),
         ),
-      ),
     );
   }
 

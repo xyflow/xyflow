@@ -728,15 +728,22 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
   }
 
   void _handlePointerSignal(PointerSignalEvent event) {
-    if (event is PointerScrollEvent && widget.zoomOnScroll) {
-      // Zoom with scroll wheel
-      final delta = event.scrollDelta.dy;
-      final zoomFactor = delta > 0 ? 0.9 : 1.1;
-      _controller.zoomTo(
-        (_state.viewport.zoom * zoomFactor)
-            .clamp(_state.minZoom, _state.maxZoom),
-        center: event.localPosition,
-      );
+    if (event is PointerScrollEvent) {
+      if (widget.panOnScroll) {
+        // Pan with scroll wheel/trackpad two-finger scroll
+        final dx = event.scrollDelta.dx;
+        final dy = event.scrollDelta.dy;
+        _controller.panBy(Offset(-dx, -dy));
+      } else if (widget.zoomOnScroll) {
+        // Zoom with scroll wheel
+        final delta = event.scrollDelta.dy;
+        final zoomFactor = delta > 0 ? 0.9 : 1.1;
+        _controller.zoomTo(
+          (_state.viewport.zoom * zoomFactor)
+              .clamp(_state.minZoom, _state.maxZoom),
+          center: event.localPosition,
+        );
+      }
     }
   }
 

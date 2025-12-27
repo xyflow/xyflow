@@ -282,6 +282,19 @@ class XYFlowController<NodeData, EdgeData> {
     );
   }
 
+  /// Pans the view by a delta offset (in screen coordinates).
+  void panBy(Offset delta, {Duration? duration}) {
+    final viewport = _state.viewport;
+    setViewport(
+      Viewport(
+        x: viewport.x + delta.dx,
+        y: viewport.y + delta.dy,
+        zoom: viewport.zoom,
+      ),
+      duration: duration,
+    );
+  }
+
   /// Converts screen coordinates to canvas coordinates.
   Offset project(Offset screenPosition) {
     return _state.viewport.screenToCanvas(screenPosition);
