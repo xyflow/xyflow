@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../core/types/viewport.dart' as xyflow;
 import '../state/xyflow_provider.dart';
 import 'panel.dart';
 
 /// MiniMap widget showing an overview of the flow.
-class MiniMap extends StatelessWidget {
+///
+/// Supports interactive panning - drag on the minimap to pan the main view.
+class MiniMap extends StatefulWidget {
   /// Creates a minimap widget.
   const MiniMap({
     super.key,
@@ -55,14 +58,22 @@ class MiniMap extends StatelessWidget {
   final double nodeBorderRadius;
 
   @override
+  State<MiniMap> createState() => _MiniMapState();
+}
+
+class _MiniMapState extends State<MiniMap> {
+  // Cached bounds for coordinate conversion
+  _MiniMapBounds? _bounds;
+
+  @override
   Widget build(BuildContext context) {
     return Panel(
-      position: position,
+      position: widget.position,
       child: Container(
-        width: width,
-        height: height,
+        width: widget.width,
+        height: widget.height,
         decoration: BoxDecoration(
-          color: backgroundColor ?? Colors.grey.shade100,
+          color: widget.backgroundColor ?? Colors.grey.shade100,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.grey.shade300),
           boxShadow: [
@@ -76,17 +87,20 @@ class MiniMap extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: GestureDetector(
-            onPanUpdate: pannable ? _handlePan : null,
+            onTapDown: widget.pannable ? _handleTap : null,
+            onPanStart: widget.pannable ? _handlePanStart : null,
+            onPanUpdate: widget.pannable ? _handlePanUpdate : null,
             child: CustomPaint(
               painter: MiniMapPainter(
                 context: context,
-                nodeColor: nodeColor ?? Colors.grey.shade500,
-                nodeColorGetter: nodeColorGetter,
-                maskColor: maskColor ?? Colors.blue.withValues(alpha: 0.1),
-                nodeStrokeWidth: nodeStrokeWidth,
-                nodeBorderRadius: nodeBorderRadius,
+                nodeColor: widget.nodeColor ?? Colors.grey.shade500,
+                nodeColorGetter: widget.nodeColorGetter,
+                maskColor: widget.maskColor ?? Colors.blue.withValues(alpha: 0.1),
+                nodeStrokeWidth: widget.nodeStrokeWidth,
+                nodeBorderRadius: widget.nodeBorderRadius,
+                onBoundsCalculated: (bounds) => _bounds = bounds,
               ),
-              size: Size(width, height),
+              size: Size(widget.width, widget.height),
             ),
           ),
         ),
@@ -94,9 +108,67 @@ class MiniMap extends StatelessWidget {
     );
   }
 
-  void _handlePan(DragUpdateDetails details) {
-    // TODO: Implement panning via minimap
+  void _handleTap(TapDownDetails details) {
+    _panToPosition(details.localPosition);
   }
+
+  void _handlePanStart(DragStartDetails details) {
+    _panToPosition(details.localPosition);
+  }
+
+  void _handlePanUpdate(DragUpdateDetails details) {
+    _panToPosition(details.localPosition);
+  }
+
+  void _panToPosition(Offset localPosition) {
+    final state = XYFlowProvider.maybeOfAny(context);
+    if (state == null || _bounds == null) return;
+
+    final bounds = _bounds!;
+    final viewport = state.viewport;
+    final containerSize = state.containerSize;
+    if (containerSize == null) return;
+
+    // Convert minimap position to flow coordinates
+    final flowX = (localPosition.dx - bounds.offsetX) / bounds.scale + bounds.minX;
+    final flowY = (localPosition.dy - bounds.offsetY) / bounds.scale + bounds.minY;
+
+    // Calculate viewport center offset
+    // We want the clicked point to be in the center of the viewport
+    final viewportWidthInFlow = containerSize.width / viewport.zoom;
+    final viewportHeightInFlow = containerSize.height / viewport.zoom;
+
+    // Calculate new viewport position (viewport.x/y are the translation, negative of flow position)
+    final newX = -(flowX - viewportWidthInFlow / 2) * viewport.zoom;
+    final newY = -(flowY - viewportHeightInFlow / 2) * viewport.zoom;
+
+    state.setViewport(xyflow.Viewport(
+      x: newX,
+      y: newY,
+      zoom: viewport.zoom,
+    ));
+  }
+}
+
+/// Cached bounds information for coordinate conversion.
+class _MiniMapBounds {
+  const _MiniMapBounds({
+    required this.minX,
+    required this.minY,
+    required this.maxX,
+    required this.maxY,
+    required this.scale,
+    required this.offsetX,
+    required this.offsetY,
+  });
+
+  final double minX;
+  final double minY;
+  final double maxX;
+  final double maxY;
+  final double scale;
+  final double offsetX;
+  final double offsetY;
 }
 
 /// Custom painter for the minimap.
@@ -109,6 +181,7 @@ class MiniMapPainter extends CustomPainter {
     required this.maskColor,
     required this.nodeStrokeWidth,
     required this.nodeBorderRadius,
+    this.onBoundsCalculated,
   });
 
   /// Build context for accessing state.
@@ -128,6 +201,9 @@ class MiniMapPainter extends CustomPainter {
 
   /// Node border radius.
   final double nodeBorderRadius;
+
+  /// Callback when bounds are calculated.
+  final void Function(_MiniMapBounds bounds)? onBoundsCalculated;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -180,6 +256,17 @@ class MiniMapPainter extends CustomPainter {
       final offsetX = (size.width - boundsWidth * scale) / 2;
       final offsetY = (size.height - boundsHeight * scale) / 2;
 
+      // Report bounds for gesture handling
+      onBoundsCalculated?.call(_MiniMapBounds(
+        minX: minX,
+        minY: minY,
+        maxX: maxX,
+        maxY: maxY,
+        scale: scale,
+        offsetX: offsetX,
+        offsetY: offsetY,
+      ));
+
       // Draw nodes
       final nodePaint = Paint()
         ..style = PaintingStyle.fill;
@@ -210,16 +297,25 @@ class MiniMapPainter extends CustomPainter {
 
       // Draw viewport rectangle
       final viewport = state.viewport;
-      // This is a simplified viewport representation
-      // Full implementation would need actual canvas size
+      final containerSize = state.containerSize;
+      if (containerSize == null) return;
+
+      // Calculate viewport rect in flow coordinates
+      final vpFlowX = -viewport.x / viewport.zoom;
+      final vpFlowY = -viewport.y / viewport.zoom;
+      final vpFlowWidth = containerSize.width / viewport.zoom;
+      final vpFlowHeight = containerSize.height / viewport.zoom;
+
+      // Convert to minimap coordinates
+      final vpX = (vpFlowX - minX) * scale + offsetX;
+      final vpY = (vpFlowY - minY) * scale + offsetY;
+      final vpW = vpFlowWidth * scale;
+      final vpH = vpFlowHeight * scale;
+
+      // Draw viewport fill
       final viewportPaint = Paint()
         ..color = maskColor
         ..style = PaintingStyle.fill;
-
-      final vpX = (-viewport.x / viewport.zoom - minX) * scale + offsetX;
-      final vpY = (-viewport.y / viewport.zoom - minY) * scale + offsetY;
-      final vpW = size.width / viewport.zoom * scale;
-      final vpH = size.height / viewport.zoom * scale;
 
       canvas.drawRect(
         Rect.fromLTWH(vpX, vpY, vpW, vpH),
