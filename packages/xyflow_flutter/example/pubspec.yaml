@@ -1,0 +1,24 @@
+name: xyflow_flutter_example
+description: Example app demonstrating xyflow_flutter usage.
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.10.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  xyflow_flutter:
+    path: ../
+  video_player: ^2.8.1
+  file_picker: ^6.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

@@ -1,0 +1,22 @@
+# Dart/Flutter build artifacts
+.dart_tool/
+build/
+.packages
+.pub/
+pubspec.lock
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Test coverage
+coverage/
+
+# Generated files
+*.g.dart
+*.freezed.dart
+
+# OS
+.DS_Store
+Thumbs.db
