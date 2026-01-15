@@ -108,7 +108,7 @@ export function XYPanZoom({
     paneClickDistance,
     selectionOnDrag,
   }: PanZoomUpdateOptions) {
-    if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
+    if (!zoomPanValues.isZoomingOrPanning) {
       destroy();
     }
 
@@ -139,7 +139,8 @@ export function XYPanZoom({
 
     d3Selection.on('wheel.zoom', wheelHandler, { passive: false });
 
-    if (!userSelectionActive) {
+    // Used to be !userSelectionActive
+    if (true) {
       // pan zoom start
       const startHandler = createPanZoomStartHandler({
         zoomPanValues,
