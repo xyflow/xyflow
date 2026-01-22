@@ -28,6 +28,7 @@ type PaneProps = {
     ReactFlowProps,
     | 'selectionMode'
     | 'panOnDrag'
+    | 'panOnSelection'
     | 'onSelectionStart'
     | 'onSelectionEnd'
     | 'onPaneClick'
@@ -66,6 +67,7 @@ export function Pane({
   selectionKeyPressed,
   selectionMode = SelectionMode.Full,
   panOnDrag,
+  panOnSelection,
   paneClickDistance,
   selectionOnDrag,
   onSelectionStart,
@@ -94,9 +96,7 @@ export function Pane({
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
 
-  // Used for auto pan when approaching the edges of the container
-  // TODO pass as prop
-  const autoPanOnConnect = true;
+  // Used for auto pan when approaching the edges of the container during selection
   const position = useRef<XYPosition>({ x: 0, y: 0 });
   const autoPanStarted = useRef<boolean>(false);
 
@@ -173,13 +173,11 @@ export function Pane({
   };
 
   function autoPan(): void {
-    if (!autoPanOnConnect || !containerBounds.current) {
+    if (!panOnSelection || !containerBounds.current) {
       return;
     }
-    console.log('autoPan');
     const [x, y] = calcAutoPan(position.current, containerBounds.current, autoPanSpeed);
 
-    console.log('x', x, 'y', y);
     panBy({ x, y });
 
     autoPanId.current = requestAnimationFrame(autoPan);

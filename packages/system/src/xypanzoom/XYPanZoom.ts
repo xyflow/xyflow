@@ -108,7 +108,7 @@ export function XYPanZoom({
     paneClickDistance,
     selectionOnDrag,
   }: PanZoomUpdateOptions) {
-    if (!zoomPanValues.isZoomingOrPanning) {
+    if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
       destroy();
     }
 
