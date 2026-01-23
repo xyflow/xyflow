@@ -47,6 +47,7 @@ export type PanZoomParams = {
   onPaneContextMenu: boolean;
   onTransformChange: OnTransformChange;
   onPanZoom?: OnPanZoom;
+  paneClickDistance: number;
 };
 
 export type PanZoomEndParams = {
@@ -175,6 +176,14 @@ export function createPanZoomStartHandler({ zoomPanValues, onDraggingChange, onP
     zoomPanValues.isZoomingOrPanning = true;
     zoomPanValues.prevViewport = viewport;
 
+    // Record starting position for distance calculation (used for right-click context menu)
+    if (event.sourceEvent) {
+      zoomPanValues.startPosition = {
+        x: event.sourceEvent.clientX ?? event.sourceEvent.touches?.[0]?.clientX ?? 0,
+        y: event.sourceEvent.clientY ?? event.sourceEvent.touches?.[0]?.clientY ?? 0,
+      };
+    }
+
     if (event.sourceEvent?.type === 'mousedown') {
       onDraggingChange(true);
     }
@@ -191,10 +200,24 @@ export function createPanZoomHandler({
   onPaneContextMenu,
   onTransformChange,
   onPanZoom,
+  paneClickDistance,
 }: PanZoomParams) {
   return (event: D3ZoomEvent<HTMLDivElement, any>) => {
+    // Calculate distance from start position for right-click context menu threshold
+    let squaredDistance = 0;
+    if (zoomPanValues.startPosition && event.sourceEvent) {
+      const currentX = event.sourceEvent.clientX ?? event.sourceEvent.touches?.[0]?.clientX ?? 0;
+      const currentY = event.sourceEvent.clientY ?? event.sourceEvent.touches?.[0]?.clientY ?? 0;
+      const dx = currentX - zoomPanValues.startPosition.x;
+      const dy = currentY - zoomPanValues.startPosition.y;
+      squaredDistance = dx * dx + dy * dy;
+    }
+
+    // Only mark as used when distance exceeds paneClickDistance threshold
     zoomPanValues.usedRightMouseButton = !!(
-      onPaneContextMenu && isRightClickPan(panOnDrag, zoomPanValues.mouseButton ?? 0)
+      onPaneContextMenu &&
+      isRightClickPan(panOnDrag, zoomPanValues.mouseButton ?? 0) &&
+      squaredDistance > paneClickDistance * paneClickDistance
     );
 
     if (!event.sourceEvent?.sync) {
