@@ -28,7 +28,7 @@ type PaneProps = {
     ReactFlowProps,
     | 'selectionMode'
     | 'panOnDrag'
-    | 'panOnSelection'
+    | 'autopanOnSelection'
     | 'onSelectionStart'
     | 'onSelectionEnd'
     | 'onPaneClick'
@@ -67,7 +67,7 @@ export function Pane({
   selectionKeyPressed,
   selectionMode = SelectionMode.Full,
   panOnDrag,
-  panOnSelection,
+  autopanOnSelection,
   paneClickDistance,
   selectionOnDrag,
   onSelectionStart,
@@ -173,7 +173,7 @@ export function Pane({
   };
 
   function autoPan(): void {
-    if (!panOnSelection || !containerBounds.current) {
+    if (!autopanOnSelection || !containerBounds.current) {
       return;
     }
     const [x, y] = calcAutoPan(position.current, containerBounds.current, autoPanSpeed);

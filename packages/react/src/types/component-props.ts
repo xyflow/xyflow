@@ -639,7 +639,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * viewport while creating a selection box.
    * @default true
    */
-  panOnSelection?: boolean;
+  autopanOnSelection?: boolean;
   /**
    * The speed at which the viewport pans while dragging a node or a selection box.
    * @default 15

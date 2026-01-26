@@ -61,7 +61,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   panOnScrollMode,
   zoomOnDoubleClick,
   panOnDrag: _panOnDrag,
-  panOnSelection,
+  autopanOnSelection,
   defaultViewport,
   translateExtent,
   minZoom,
@@ -119,7 +119,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
         onPaneContextMenu={onPaneContextMenu}
         onPaneScroll={onPaneScroll}
         panOnDrag={panOnDrag}
-        panOnSelection={panOnSelection}
+        autopanOnSelection={autopanOnSelection}
         isSelecting={!!isSelecting}
         selectionMode={selectionMode}
         selectionKeyPressed={selectionKeyPressed}
