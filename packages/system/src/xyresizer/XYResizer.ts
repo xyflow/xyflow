@@ -234,12 +234,17 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         const change: XYResizerChange = {};
         const nodeOrigin = node.origin ?? storeNodeOrigin;
 
+        const isCornerControl = params.controlDirection.isHorizontal && params.controlDirection.isVertical;
+        const shouldKeepAspectRatio = params.keepAspectRatio || (isCornerControl && event.sourceEvent.shiftKey);
+        const shouldSymmetricResize = event.sourceEvent.altKey;
+
         const { width, height, x, y } = getDimensionsAfterResize(
           startValues,
           params.controlDirection,
           pointerPosition,
           params.boundaries,
-          params.keepAspectRatio,
+          shouldKeepAspectRatio,
+          shouldSymmetricResize,
           nodeOrigin,
           parentExtent,
           childExtent

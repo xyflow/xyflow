@@ -117,6 +117,7 @@ export function getDimensionsAfterResize(
   pointerPosition: ReturnType<typeof getPointerPosition>,
   boundaries: { minWidth: number; maxWidth: number; minHeight: number; maxHeight: number },
   keepAspectRatio: boolean,
+  symmetricResize: boolean,
   nodeOrigin: NodeOrigin,
   extent?: CoordinateExtent,
   childExtent?: CoordinateExtent
@@ -131,6 +132,15 @@ export function getDimensionsAfterResize(
   const { x: startX, y: startY, width: startWidth, height: startHeight, aspectRatio } = startValues;
   let distX = Math.floor(isHorizontal ? xSnapped - startValues.pointerX : 0);
   let distY = Math.floor(isVertical ? ySnapped - startValues.pointerY : 0);
+
+  if (symmetricResize) {
+    if (isHorizontal) {
+      distX = distX * 2;
+    }
+    if (isVertical) {
+      distY = distY * 2;
+    }
+  }
 
   const newWidth = startWidth + (affectsX ? -distX : distX);
   const newHeight = startHeight + (affectsY ? -distY : distY);
@@ -271,10 +281,23 @@ export function getDimensionsAfterResize(
   const x = affectsX ? startX + distX : startX;
   const y = affectsY ? startY + distY : startY;
 
-  return {
+  const dimensions = {
     width: startWidth + (affectsX ? -distX : distX),
     height: startHeight + (affectsY ? -distY : distY),
     x: nodeOrigin[0] * distX * (!affectsX ? 1 : -1) + x,
     y: nodeOrigin[1] * distY * (!affectsY ? 1 : -1) + y,
+  };
+
+  if (!symmetricResize) {
+    return dimensions;
+  }
+
+  const centerX = startX + (0.5 - nodeOrigin[0]) * startWidth;
+  const centerY = startY + (0.5 - nodeOrigin[1]) * startHeight;
+
+  return {
+    ...dimensions,
+    x: centerX - (0.5 - nodeOrigin[0]) * dimensions.width,
+    y: centerY - (0.5 - nodeOrigin[1]) * dimensions.height,
   };
 }
