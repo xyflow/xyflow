@@ -80,7 +80,7 @@ export function Pane({
   onPaneMouseLeave,
   children,
 }: PaneProps) {
-  let autoPanId = useRef<number>(0);
+  const autoPanId = useRef<number>(0);
   const store = useStoreApi();
   const { userSelectionActive, elementsSelectable, dragging, connectionInProgress, panBy, autoPanSpeed } = useStore(
     selector,
@@ -99,8 +99,6 @@ export function Pane({
   // Used for auto pan when approaching the edges of the container during selection
   const position = useRef<XYPosition>({ x: 0, y: 0 });
   const autoPanStarted = useRef<boolean>(false);
-
-  const { setViewport, getViewport } = useReactFlow();
 
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
