@@ -59,10 +59,13 @@ class _HandleWidgetState extends State<HandleWidget> {
   bool _isConnecting = false;
   Offset _startGlobalPosition = Offset.zero;
   String? _registeredNodeId;
+  // Cache state reference for safe disposal (avoids deactivated ancestor lookup)
+  dynamic _cachedState;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _cachedState = XYFlowProvider.maybeOfAny(context);
     _registerHandle();
   }
 
@@ -73,7 +76,7 @@ class _HandleWidgetState extends State<HandleWidget> {
   }
 
   void _registerHandle() {
-    final state = XYFlowProvider.maybeOfAny(context);
+    final state = _cachedState;
     final nodeId = NodeIdProvider.maybeOf(context);
 
     if (state == null || nodeId == null) return;
@@ -96,7 +99,8 @@ class _HandleWidgetState extends State<HandleWidget> {
 
   void _unregisterHandle() {
     if (_registeredNodeId == null) return;
-    final state = XYFlowProvider.maybeOfAny(context);
+    // Use cached state reference — safe during dispose (no ancestor lookup needed)
+    final state = _cachedState;
     state?.unregisterHandle(_registeredNodeId!, widget.id, widget.type);
   }
 

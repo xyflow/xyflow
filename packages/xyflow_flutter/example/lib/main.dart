@@ -6,6 +6,7 @@ import 'examples/edge_types.dart';
 import 'examples/story_flow.dart';
 import 'examples/node_connector.dart';
 import 'examples/advanced_features.dart';
+import 'examples/robot_grid.dart';
 
 void main() {
   runApp(const MyApp());
@@ -110,6 +111,16 @@ class ExampleSelector extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => const AdvancedFeaturesExample()),
+            ),
+          ),
+          _ExampleCard(
+            title: 'Robot Grid',
+            description: 'Click-to-spawn panels with momentum physics, bounce, and edge slicing.',
+            icon: Icons.grid_view_rounded,
+            color: const Color(0xFF58A6FF),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const RobotGridExample()),
             ),
           ),
         ],

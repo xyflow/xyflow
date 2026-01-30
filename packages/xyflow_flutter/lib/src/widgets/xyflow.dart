@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Viewport;
 import 'package:flutter/services.dart';
 
-import '../core/types/changes.dart' show NodeChange, EdgeChange, NodePositionChange;
+import '../core/types/changes.dart' show NodeChange, EdgeChange, NodePositionChange, NodeRemoveChange, EdgeRemoveChange;
 import '../core/types/handle.dart' show HandleType;
 import '../core/types/connection.dart';
 import '../core/types/edge.dart';
@@ -772,10 +772,23 @@ class _XYFlowState<NodeData, EdgeData> extends State<XYFlow<NodeData, EdgeData>>
       final selectedEdges = _state.selectedEdgeIds.toList();
 
       if (selectedNodes.isNotEmpty || selectedEdges.isNotEmpty) {
-        _controller.deleteElements(
+        final result = _controller.deleteElements(
           nodeIds: selectedNodes,
           edgeIds: selectedEdges,
         );
+        // Notify parent so external state stays in sync
+        if (result.deletedNodes.isNotEmpty) {
+          widget.onNodesChange?.call([
+            for (final node in result.deletedNodes)
+              NodeRemoveChange(id: node.id),
+          ]);
+        }
+        if (result.deletedEdges.isNotEmpty) {
+          widget.onEdgesChange?.call([
+            for (final edge in result.deletedEdges)
+              EdgeRemoveChange(id: edge.id),
+          ]);
+        }
         return KeyEventResult.handled;
       }
     }
