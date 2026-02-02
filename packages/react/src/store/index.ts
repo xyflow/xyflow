@@ -307,12 +307,12 @@ const createStore = ({
 
         const nodeChanges: NodeSelectionChange[] = [];
 
-        for (const n of nodesToUnselect) {
-          if (!n.selected) {
+        for (const node of nodesToUnselect) {
+          if (!node.selected) {
             continue; // skip changing nodes that are not selected
           }
 
-          const internalNode = nodeLookup.get(n.id);
+          const internalNode = nodeLookup.get(node.id);
 
           if (internalNode) {
             /*
@@ -322,17 +322,17 @@ const createStore = ({
             internalNode.selected = false;
           }
 
-          nodeChanges.push(createSelectionChange(n.id, false));
+          nodeChanges.push(createSelectionChange(node.id, false));
         }
 
         const edgeChanges: EdgeSelectionChange[] = [];
 
-        for (const e of edgesToUnselect) {
-          if (!e.selected) {
+        for (const edge of edgesToUnselect) {
+          if (!edge.selected) {
             continue; // skip changing edges that are not selected
           }
 
-          edgeChanges.push(createSelectionChange(e.id, false));
+          edgeChanges.push(createSelectionChange(edge.id, false));
         }
 
         triggerNodeChanges(nodeChanges);
