@@ -37,6 +37,7 @@ const initEdges: Edge[] = [
 ];
 
 const onPaneClick = () => console.log('pane click');
+const onPaneContextMenu = () => console.log('pane context menu');
 
 const BasicFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
@@ -54,6 +55,8 @@ const BasicFlow = () => {
       onConnect={onConnect}
       paneClickDistance={paneClickDistance}
       onPaneClick={onPaneClick}
+      onPaneContextMenu={onPaneContextMenu}
+      panOnDrag={[0, 2]}
     >
       <Panel position="top-right">
         <input
