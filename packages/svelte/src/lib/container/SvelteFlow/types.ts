@@ -354,6 +354,12 @@ export type SvelteFlowProps<
      */
     autoPanOnNodeDrag?: boolean;
     /**
+     * When `true`, the viewport will pan automatically when the cursor moves to the edge of the
+     * viewport while creating a selection box.
+     * @default true
+     */
+    autopanOnSelection?: boolean;
+    /**
      * Defaults to be applied to all new edges that are added to the flow.
      * Properties on a new edge will override these defaults if they exist.
      * @example
