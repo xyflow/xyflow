@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import App from './App/index';
+import App from './DemoApp';
 
 import '@xyflow/react/dist/style.css';
 import './index.css';
