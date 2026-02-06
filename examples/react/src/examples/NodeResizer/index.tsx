@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ReactFlow,
   Controls,
@@ -9,6 +9,8 @@ import {
   Panel,
   Node,
   Edge,
+  NodeResizerProps,
+  useKeyPress,
 } from '@xyflow/react';
 
 import DefaultResizer from './DefaultResizer';
@@ -31,9 +33,15 @@ const nodeStyle = {
   backgroundColor: '#ddd',
 };
 
+export type ResizerNode = Node<
+  Pick<NodeResizerProps, 'minWidth' | 'maxWidth' | 'minHeight' | 'maxHeight' | 'keepAspectRatio' | 'symmetric'> & {
+    label?: string;
+  }
+>;
+
 const initialEdges: Edge[] = [];
 
-const initialNodes: Node[] = [
+const initialNodes: ResizerNode[] = [
   {
     id: '1',
     type: 'defaultResizer',
@@ -127,7 +135,7 @@ const initialNodes: Node[] = [
   {
     id: '5',
     type: 'defaultResizer',
-    data: { label: 'Parent', keepAspectRatio: true },
+    data: { label: 'Parent', keepAspectRatio: false },
     position: { x: 700, y: 0 },
     width: 300,
     height: 300,
@@ -160,7 +168,7 @@ const initialNodes: Node[] = [
   {
     id: '5c',
     type: 'defaultResizer',
-    data: { label: 'Child with expandParent & keepAspectRatio' },
+    data: { label: 'Child with expandParent & keepAspectRatio', keepAspectRatio: true },
     position: { x: 250, y: 200 },
     height: 100,
     width: 100,
@@ -181,6 +189,35 @@ const CustomNodeFlow = () => {
   const [snapToGrid, setSnapToGrid] = useState(false);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const symmetric = useKeyPress('s');
+  const keepAspectRatio = useKeyPress('k');
+
+  useEffect(() => {
+    if (symmetric) {
+      setNodes((nodes) => nodes.map((node) => ({ ...node, data: { ...node.data, symmetric } })));
+    } else {
+      setNodes((nodes) =>
+        nodes.map((node) => ({
+          ...node,
+          data: { ...node.data, symmetric: initialNodes.find((n) => n.id === node.id)?.data?.symmetric },
+        }))
+      );
+    }
+  }, [symmetric]);
+
+  useEffect(() => {
+    if (keepAspectRatio) {
+      setNodes((nodes) => nodes.map((node) => ({ ...node, data: { ...node.data, keepAspectRatio } })));
+    } else {
+      setNodes((nodes) =>
+        nodes.map((node) => ({
+          ...node,
+          data: { ...node.data, keepAspectRatio: initialNodes.find((n) => n.id === node.id)?.data?.keepAspectRatio },
+        }))
+      );
+    }
+  }, [keepAspectRatio]);
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge({ ...connection }, eds)),
