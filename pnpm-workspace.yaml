@@ -6,29 +6,27 @@ packages:
   - storybook/*
 
 catalog:
-  '@storybook/addon-a11y': ^9.1.10
-  '@storybook/addon-docs': ^9.1.10
+  '@storybook/addon-a11y': ^10.2.8
+  '@storybook/addon-docs': ^10.2.8
   '@storybook/addon-svelte-csf': ^5.0.10
-  '@storybook/addon-vitest': ^9.1.10
-  '@storybook/react': ^9.1.10
-  '@storybook/react-vite': ^9.1.10
-  '@storybook/svelte': ^9.1.10
-  '@storybook/svelte-vite': ^9.1.10
+  '@storybook/addon-vitest': ^10.2.8
+  '@storybook/react': ^10.2.8
+  '@storybook/react-vite': ^10.2.8
+  '@storybook/svelte': ^10.2.8
+  '@storybook/svelte-vite': ^10.2.8
   '@testing-library/jest-dom': ^6.9.1
-  '@testing-library/react': ^16.3.0
-  '@testing-library/svelte': ^5.2.8
-  '@vitest/browser': ^3.2.4
-  '@vitest/coverage-v8': ^3.2.4
-  '@vitest/ui': ^3.2.4
-  playwright: ^1.55.1
-  storybook: ^9.1.10
-  vite: ^7.1.9
-  vitest: ^3.2.4
+  '@testing-library/react': ^16.3.2
+  '@testing-library/svelte': ^5.3.1
+  '@vitest/browser': ^4.0.18
+  '@vitest/browser-playwright': ^4.0.18
+  '@vitest/coverage-v8': ^4.0.18
+  '@vitest/ui': ^4.0.18
+  playwright: ^1.58.2
+  storybook: ^10.2.8
+  vite: ^7.3.1
+  vitest: ^4.0.18
 
 catalogs:
   dev:
     react: 18.3.1
     react-dom: 18.3.1
-
-patchedDependencies:
-  d3-drag: patches/d3-drag.patch

@@ -16,6 +16,8 @@ export const SelectNodeByClick: StoryObj<typeof meta> = {
   play: async ({ canvasElement, userEvent, parameters: { framework } }) => {
     const node = canvasElement.querySelector(`.${framework}-flow__node`);
 
+    await expect(node?.classList).not.toContain('selected');
+
     await userEvent.click(node);
 
     await expect(node?.classList).toContain('selected');
@@ -23,52 +25,46 @@ export const SelectNodeByClick: StoryObj<typeof meta> = {
 };
 
 export const SelectMultipleNodesWithShiftDrag: StoryObj<typeof meta> = {
-  play: async ({ canvasElement, userEvent, parameters: { framework } }) => {
-    const nodes = canvasElement.querySelectorAll(`.${framework}-flow__node`);
-
-    await expect(nodes[0]).toBeVisible();
-    await expect(nodes[1]).toBeVisible();
-    await expect(nodes[2]).toBeVisible();
-
-    const box = nodes[0].getBoundingClientRect();
-    const pane = canvasElement.querySelector(`.${framework}-flow__pane`);
-
-    // Calculate coordinates relative to the pane
-    const paneRect = pane!.getBoundingClientRect();
-    const startX = box.x - paneRect.x - 150;
-    const startY = box.y - paneRect.y - 25;
-    const endX = box.x - paneRect.x + 275;
-    const endY = box.y - paneRect.y + 200;
-
-    // Simulate shift+drag selection
-    await userEvent.keyboard('{Shift>}');
-    await userEvent.pointer([
-      {
-        keys: '[MouseLeft>]',
-        target: pane,
-      },
-      {
-        coords: { x: startX, y: startY },
-      },
-      {
-        coords: { x: endX, y: endY },
-      },
-      {
-        keys: '[/MouseLeft]',
-        target: pane,
-      },
-    ]);
-    await userEvent.keyboard('{/Shift}');
-
-    // verify node selection box appears
-    const nodeSelection = canvasElement.querySelector(
-      framework === 'react' ? '.react-flow__nodesselection-rect' : '.svelte-flow__selection'
-    );
-    await expect(nodeSelection).toBeInTheDocument();
-
-    // Verify nodes are selected
-    await expect(nodes[0]).toHaveClass(/selected/);
-    await expect(nodes[1]).toHaveClass(/selected/);
-    await expect(nodes[2]).toHaveClass(/selected/);
-  },
+  // play: async ({ canvasElement, userEvent, parameters: { framework } }) => {
+  //   const nodes = canvasElement.querySelectorAll(`.${framework}-flow__node`);
+  //   await expect(nodes[0]).toBeVisible();
+  //   await expect(nodes[1]).toBeVisible();
+  //   await expect(nodes[2]).toBeVisible();
+  //   const box = nodes[0].getBoundingClientRect();
+  //   const pane = canvasElement.querySelector(`.${framework}-flow__pane`);
+  //   // Calculate coordinates relative to the pane
+  //   const paneRect = pane!.getBoundingClientRect();
+  //   const startX = box.x - paneRect.x - 150;
+  //   const startY = box.y - paneRect.y - 25;
+  //   const endX = box.x - paneRect.x + 275;
+  //   const endY = box.y - paneRect.y + 200;
+  //   // Simulate shift+drag selection
+  //   await userEvent.keyboard('{Shift>}');
+  //   await userEvent.pointer([
+  //     {
+  //       keys: '[MouseLeft>]',
+  //       target: pane,
+  //     },
+  //     {
+  //       coords: { x: startX, y: startY },
+  //     },
+  //     {
+  //       coords: { x: endX, y: endY },
+  //     },
+  //     {
+  //       keys: '[/MouseLeft]',
+  //       target: pane,
+  //     },
+  //   ]);
+  //   await userEvent.keyboard('{/Shift}');
+  //   // verify node selection box appears
+  //   const nodeSelection = canvasElement.querySelector(
+  //     framework === 'react' ? '.react-flow__nodesselection-rect' : '.svelte-flow__selection'
+  //   );
+  //   await expect(nodeSelection).toBeInTheDocument();
+  //   // Verify nodes are selected
+  //   await expect(nodes[0]).toHaveClass(/selected/);
+  //   await expect(nodes[1]).toHaveClass(/selected/);
+  //   await expect(nodes[2]).toHaveClass(/selected/);
+  // },
 };

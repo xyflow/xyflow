@@ -25,6 +25,7 @@
     "@storybook/svelte-vite": "catalog:",
     "@testing-library/svelte": "catalog:",
     "@vitest/browser": "catalog:",
+    "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "svelte": "^5.39.9",
     "svelte-check": "^4.3.2",
