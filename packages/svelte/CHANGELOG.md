@@ -1,5 +1,11 @@
 # @xyflow/svelte
 
+## 1.5.1
+
+### Patch Changes
+
+- [#5698](https://github.com/xyflow/xyflow/pull/5698) [`7eeebc9c0`](https://github.com/xyflow/xyflow/commit/7eeebc9c04ce88f821363e3ea83e4dae36e04c45) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix child nodes not updating on the Minimap when parent is dragged
+
 ## 1.5.0
 
 ### Minor Changes
