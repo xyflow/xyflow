@@ -68,6 +68,7 @@ type XYResizerUpdateParams = {
     maxHeight: number;
   };
   keepAspectRatio: boolean;
+  symmetric: boolean;
   resizeDirection?: ResizeControlDirection;
   onResizeStart: OnResizeStart | undefined;
   onResize: OnResize | undefined;
@@ -114,12 +115,14 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     },
     resizeDirection: undefined as ResizeControlDirection | undefined,
     keepAspectRatio: false,
+    symmetric: false,
   };
 
   function update({
     controlPosition,
     boundaries,
     keepAspectRatio,
+    symmetric,
     resizeDirection,
     onResizeStart,
     onResize,
@@ -133,6 +136,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
       boundaries,
       resizeDirection,
       keepAspectRatio,
+      symmetric,
       controlDirection: getControlDirection(controlPosition),
     };
 
@@ -240,6 +244,8 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           pointerPosition,
           params.boundaries,
           params.keepAspectRatio,
+          // TODO: Remove keybinding
+          event.sourceEvent.altKey || params.symmetric,
           nodeOrigin,
           parentExtent,
           childExtent
