@@ -3,7 +3,6 @@ import { XYDrag, type XYDragInstance } from '@xyflow/system';
 
 import { handleNodeClick } from '../components/Nodes/utils';
 import { useStoreApi } from './useStore';
-import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 type UseDragParams = {
   nodeRef: RefObject<HTMLDivElement>;
@@ -52,13 +51,8 @@ export function useDrag({
     });
   }, []);
 
-  useIsomorphicLayoutEffect(() => {
-    if (disabled) {
-      xyDrag.current?.destroy();
-      return;
-    }
-
-    if (!nodeRef.current || !xyDrag.current) {
+  useEffect(() => {
+    if (disabled || !nodeRef.current || !xyDrag.current) {
       return;
     }
 
