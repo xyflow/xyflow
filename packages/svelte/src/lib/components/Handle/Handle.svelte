@@ -125,21 +125,14 @@
         autoPanOnConnect: store.autoPanOnConnect,
         autoPanSpeed: store.autoPanSpeed,
         flowId: store.flowId,
-        isValidConnection: isValidConnection ?? store.isValidConnection,
+        isValidConnection:
+          isValidConnection || ((...args) => store.isValidConnection?.(...args) ?? true),
         updateConnection: store.updateConnection,
         cancelConnection: store.cancelConnection,
         panBy: store.panBy,
         onConnect: onConnectExtended,
-        onConnectStart: (event, startParams) => {
-          store.onconnectstart?.(event, {
-            nodeId: startParams.nodeId,
-            handleId: startParams.handleId,
-            handleType: startParams.handleType
-          });
-        },
-        onConnectEnd: (event, connectionState) => {
-          store.onconnectend?.(event, connectionState);
-        },
+        onConnectStart: store.onconnectstart,
+        onConnectEnd: (...args) => store.onconnectend?.(...args),
         getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
         getFromHandle: () => store.connection.fromHandle,
         dragThreshold: store.connectionDragThreshold,
