@@ -97,6 +97,7 @@
     autoPanSpeed,
     panOnScrollSpeed,
     zIndexMode,
+    autopanOnSelection,
     ...divAttributes
   } = $derived(rest);
   /* eslint-enable @typescript-eslint/no-unused-vars */
