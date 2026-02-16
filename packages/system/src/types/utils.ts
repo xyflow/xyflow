@@ -56,3 +56,10 @@ export type Transform = [number, number, number];
  * to represent an unbounded extent.
  */
 export type CoordinateExtent = [[number, number], [number, number]];
+
+/**
+ * Using Pick with a union type (e.g. `NodeType`) will merge every property type along all union members.
+ * See https://github.com/microsoft/TypeScript/issues/28339#issuecomment-463577347
+ * Note: Currently you are able to Pick properties that are not in the type without error.
+ */
+export type DistributivePick<T, K extends string> = T extends unknown ? { [P in Extract<keyof T, K>]: T[P] } : never;
