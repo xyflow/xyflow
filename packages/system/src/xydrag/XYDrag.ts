@@ -197,11 +197,9 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
       nodePositionsChanged = nodePositionsChanged || hasChange;
 
-      if (!hasChange) {
-        return;
+      if (hasChange) {
+        updateNodePositions(dragItems, true);
       }
-
-      updateNodePositions(dragItems, true);
 
       if (dragEvent && (onDrag || onNodeDrag || (!nodeId && onSelectionDrag))) {
         const [currentNode, currentNodes] = getEventHandlerParams({
