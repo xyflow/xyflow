@@ -85,7 +85,7 @@
 .xy-flow__viewport {
   transform-origin: 0 0;
   z-index: 2;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .xy-flow__renderer {
@@ -191,7 +191,7 @@ svg.xy-flow__connectionline {
 }
 
 .xy-flow__nodes {
-  pointer-events: none;
+  pointer-events: auto;
   transform-origin: 0 0;
 }
 
