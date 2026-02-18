@@ -3,4 +3,4 @@
 '@xyflow/svelte': patch
 ---
 
-Fix updating onConnectEnd and isValidConnection after connection started
+Keep `onConnectEnd` and `isValidConnection` up to date in an ongoing connection
