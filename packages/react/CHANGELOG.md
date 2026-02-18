@@ -1,5 +1,24 @@
 # @xyflow/react
 
+## 12.10.1
+
+### Patch Changes
+
+- [#5704](https://github.com/xyflow/xyflow/pull/5704) [`c91d3d022`](https://github.com/xyflow/xyflow/commit/c91d3d022f4517f4403a898cd02ee891b7e1f2d2) Thanks [@peterkogo](https://github.com/peterkogo)! - Keep `onConnectEnd` and `isValidConnection` up to date in an ongoing connection
+
+- [#5687](https://github.com/xyflow/xyflow/pull/5687) [`2624479ad`](https://github.com/xyflow/xyflow/commit/2624479ad3d0b06fcb690242b2372ff2a7e16f54) Thanks [@vkrol](https://github.com/vkrol)! - Optimize zooming performance when panOnScroll mode is enabled
+
+- [#5682](https://github.com/xyflow/xyflow/pull/5682) [`7b6e46ce1`](https://github.com/xyflow/xyflow/commit/7b6e46ce17f49e759f614a8f933f7dc729635b48) Thanks [@artemtam](https://github.com/artemtam)! - Prevent unnecessary updates when selectNodesOnDrag = false
+
+- [#5703](https://github.com/xyflow/xyflow/pull/5703) [`ce6c869df`](https://github.com/xyflow/xyflow/commit/ce6c869df40b2b013484808c742ca508da4a591f) Thanks [@peterkogo](https://github.com/peterkogo)! - Improve return type of useNodesData. Now you can narrow down the data type by checking the node type.
+
+- [#5692](https://github.com/xyflow/xyflow/pull/5692) [`49646858f`](https://github.com/xyflow/xyflow/commit/49646858f951455921aedbb83725b4225dbdef9d) Thanks [@moklick](https://github.com/moklick)! - Handle undefined node in mini map
+
+- [#5684](https://github.com/xyflow/xyflow/pull/5684) [`382c654c3`](https://github.com/xyflow/xyflow/commit/382c654c315accca2005e39d477eed6649f12e40) Thanks [@ysds](https://github.com/ysds)! - Consolidate drag handler effects in useDrag to fix programmatic selection issues
+
+- Updated dependencies [[`ce6c869df`](https://github.com/xyflow/xyflow/commit/ce6c869df40b2b013484808c742ca508da4a591f)]:
+  - @xyflow/system@0.0.75
+
 ## 12.10.0
 
 ### Minor Changes
