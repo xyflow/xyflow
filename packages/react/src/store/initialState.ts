@@ -146,6 +146,8 @@ const getInitialState = ({
     isValidConnection: undefined,
     onSelectionChangeHandlers: [],
 
+    nodeQueue: undefined,
+
     lib: 'react',
     debug: false,
     ariaLabelConfig: defaultAriaLabelConfig,
