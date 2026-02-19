@@ -9,6 +9,8 @@ import {
   Panel,
   Node,
   Edge,
+  NodeChange,
+  applyNodeChanges,
 } from '@xyflow/react';
 
 import DefaultResizer from './DefaultResizer';
@@ -187,11 +189,21 @@ const CustomNodeFlow = () => {
     [setEdges]
   );
 
+  // TODO Remove before merging
+  const onNodesChangeLog = useCallback((changes: NodeChange[]) => {
+    // If any of the changes is a NodeDimensionChange, whose resizing property is true, log the changes
+    const dimensionChange = changes.find((change) => change.type === 'dimensions' && change.resizing);
+    if (dimensionChange) {
+      console.log('dimension change', dimensionChange);
+    }
+    setNodes((nds) => applyNodeChanges(changes, nds));
+  }, []);
+
   return (
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      onNodesChange={onNodesChange}
+      onNodesChange={onNodesChangeLog}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       nodeTypes={nodeTypes}
