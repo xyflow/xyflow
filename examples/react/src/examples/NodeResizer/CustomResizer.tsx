@@ -2,27 +2,17 @@ import { memo, FC } from 'react';
 import { Handle, Position, NodeProps, NodeResizeControl } from '@xyflow/react';
 
 import ResizeIcon from './ResizeIcon';
+import { ResizerNode } from '.';
 
 const controlStyle = {
   background: 'transparent',
   border: 'none',
 };
 
-const CustomResizerNode: FC<NodeProps> = ({ data }) => {
+const CustomResizerNode: FC<NodeProps<ResizerNode>> = ({ data }) => {
   return (
     <>
-      <NodeResizeControl
-        minWidth={data.minWidth ?? undefined}
-        maxWidth={data.maxWidth ?? undefined}
-        minHeight={data.minHeight ?? undefined}
-        maxHeight={data.maxHeight ?? undefined}
-        shouldResize={data.shouldResize ?? undefined}
-        onResizeStart={data.onResizeStart ?? undefined}
-        onResize={data.onResize ?? undefined}
-        onResizeEnd={data.onResizeEnd ?? undefined}
-        keepAspectRatio={data.keepAspectRatio ?? undefined}
-        style={controlStyle}
-      >
+      <NodeResizeControl style={controlStyle} {...data}>
         <ResizeIcon />
       </NodeResizeControl>
 

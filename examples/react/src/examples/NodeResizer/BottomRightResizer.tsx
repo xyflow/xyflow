@@ -1,7 +1,8 @@
 import { memo, FC } from 'react';
 import { Handle, Position, NodeProps, NodeResizeControl, ResizeControlVariant } from '@xyflow/react';
+import { ResizerNode } from '.';
 
-const CustomResizerNode: FC<NodeProps> = ({ data }) => {
+const CustomResizerNode: FC<NodeProps<ResizerNode>> = ({ data }) => {
   return (
     <>
       <NodeResizeControl
