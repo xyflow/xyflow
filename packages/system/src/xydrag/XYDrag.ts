@@ -99,6 +99,8 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let dragItems = new Map<string, NodeDragItem>();
   let autoPanStarted = false;
   let mousePosition: XYPosition = { x: 0, y: 0 };
+  let initialMousePosition: XYPosition = { x: 0, y: 0 };
+  let preventClick = false;
   let containerBounds: DOMRect | null = null;
   let dragStarted = false;
   let d3Selection: Selection<Element, unknown, null, undefined> | null = null;
@@ -294,13 +296,15 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
     }
 
     const d3DragInstance = drag()
-      .clickDistance(nodeClickDistance)
+      .clickDistance(Infinity)
       .on('start', (event: UseDragEvent) => {
         const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
         containerBounds = domNode?.getBoundingClientRect() || null;
-
+        dragStarted = false;
+        autoPanStarted = false;
         abortDrag = false;
         nodePositionsChanged = false;
+        preventClick = false;
         dragEvent = event.sourceEvent;
 
         if (nodeDragThreshold === 0) {
@@ -310,6 +314,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
         lastPos = pointerPos;
         mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
+        initialMousePosition = mousePosition;
       })
       .on('drag', (event: UseDragEvent) => {
         const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold, nodeLookup } = getStoreItems();
@@ -336,9 +341,9 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         if (!dragStarted) {
           // Calculate distance in client coordinates for consistent drag threshold behavior across zoom levels
           const currentMousePosition = getEventPosition(event.sourceEvent, containerBounds!);
-          const x = currentMousePosition.x - mousePosition.x;
-          const y = currentMousePosition.y - mousePosition.y;
-          const distance = Math.sqrt(x * x + y * y);
+          const dx = currentMousePosition.x - initialMousePosition.x;
+          const dy = currentMousePosition.y - initialMousePosition.y;
+          const distance = Math.hypot(dx, dy);
 
           if (distance > nodeDragThreshold) {
             startDrag(event);
@@ -356,8 +361,6 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           return;
         }
 
-        autoPanStarted = false;
-        dragStarted = false;
         cancelAnimationFrame(autoPanId);
 
         if (dragItems.size > 0) {
@@ -366,6 +369,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           if (nodePositionsChanged) {
             updateNodePositions(dragItems, false);
             nodePositionsChanged = false;
+            preventClick = true;
           }
 
           if (onDragStop || onNodeDragStop || (!nodeId && onSelectionDragStop)) {
@@ -396,10 +400,27 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       });
 
     d3Selection.call(d3DragInstance);
+    d3Selection.on(
+      'click.xydrag',
+      (event: MouseEvent) => {
+        const currentMousePosition = getEventPosition(event, containerBounds!);
+        const x = currentMousePosition.x - initialMousePosition.x;
+        const y = currentMousePosition.y - initialMousePosition.y;
+        const distance = Math.sqrt(x * x + y * y);
+
+        if (preventClick || distance > nodeClickDistance) {
+          preventClick = false;
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      },
+      { capture: true }
+    );
   }
 
   function destroy() {
     d3Selection?.on('.drag', null);
+    d3Selection?.on('.xydrag', null);
   }
 
   return {
