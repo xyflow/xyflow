@@ -130,10 +130,9 @@ export function useKeyPress(
 
         if (isMatchingKey(keyCodes, pressedKeys.current, true)) {
           setKeyPressed(false);
-          pressedKeys.current.clear();
-        } else {
-          pressedKeys.current.delete(event[keyOrCode]);
         }
+
+        pressedKeys.current.delete(event[keyOrCode]);
 
         // fix for Mac: when cmd key is pressed, keyup is not triggered for any other key, see: https://stackoverflow.com/questions/27380018/when-cmd-key-is-kept-pressed-keyup-is-not-triggered-for-any-other-key
         if (event.key === 'Meta') {
