@@ -343,7 +343,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     setZoom: (zoomLevel, options) => {
       const panZoom = store.panZoom;
       return panZoom
-        ? panZoom.scaleTo(zoomLevel, { duration: options?.duration })
+        ? panZoom.scaleTo(zoomLevel, { duration: options?.duration, ease: options?.ease })
         : Promise.resolve(false);
     },
     getZoom: () => store.viewport.zoom,
