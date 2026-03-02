@@ -1,6 +1,8 @@
 [codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = .git*,package-lock.json,*-lock.yaml,*.css,.codespellrc
+skip = .git*,package-lock.json,*-lock.yaml,*.css,.codespellrc,.npm,.cache
 check-hidden = true
-# ignore-regex = 
-# ignore-words-list =
+# ned - person name "Ned Batchelder" in .coderabbit.yaml
+# mistic - GitHub username @mistic in CHANGELOGs
+# inout - legitimate "inout field" (input/output) term
+ignore-words-list = ned,mistic,inout
