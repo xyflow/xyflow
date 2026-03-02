@@ -10,4 +10,4 @@ Astro App used for SSR testing at [`examples/astro-xyflow`](./astro-xyflow)
 
 ## E2E
 
-For furhter documentation of E2E tests have a look at [`/tests/playwright`](/tests/playwright).
+For further documentation of E2E tests have a look at [`/tests/playwright`](/tests/playwright).

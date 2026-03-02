@@ -356,7 +356,7 @@
 
 - [#4464](https://github.com/xyflow/xyflow/pull/4464) [`89cd677b`](https://github.com/xyflow/xyflow/commit/89cd677b5668b78434e02e7b025c6ac58db91e58) Thanks [@moklick](https://github.com/moklick)! - fix(handles): reconnect for connectionMode=loose
 
-- [#4467](https://github.com/xyflow/xyflow/pull/4467) [`c253c7c5`](https://github.com/xyflow/xyflow/commit/c253c7c59a2ccd2cb91ad44ce4acbe481d9d7fe1) Thanks [@moklick](https://github.com/moklick)! - chore(subflows): log warning instead of throwing an error when parent node cant be found
+- [#4467](https://github.com/xyflow/xyflow/pull/4467) [`c253c7c5`](https://github.com/xyflow/xyflow/commit/c253c7c59a2ccd2cb91ad44ce4acbe481d9d7fe1) Thanks [@moklick](https://github.com/moklick)! - chore(subflows): log warning instead of throwing an error when parent node can't be found
 
 ## 0.0.36
 
