@@ -83,7 +83,7 @@ export type NodeWrapperProps<NodeType extends Node> = {
 
 /**
  * The `BuiltInNode` type represents the built-in node types that are available in React Flow.
- * You can use this type to extend your custom node type if you still want ot use the built-in ones.
+ * You can use this type to extend your custom node type if you still want to use the built-in ones.
  *
  * @public
  * @example

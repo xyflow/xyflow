@@ -142,7 +142,7 @@ const createStore = ({
         }
       },
       /*
-       * Every node gets registerd at a ResizeObserver. Whenever a node
+       * Every node gets registered at a ResizeObserver. Whenever a node
        * changes its dimensions, this function is called to measure the
        * new dimensions and update the nodes.
        */

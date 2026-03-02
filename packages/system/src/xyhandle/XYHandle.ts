@@ -245,7 +245,7 @@ function onPointerDown(
   doc.addEventListener('touchend', onPointerUp as EventListener);
 }
 
-// checks if  and returns connection in fom of an object { source: 123, target: 312 }
+// checks if  and returns connection in form of an object { source: 123, target: 312 }
 function isValidHandle(
   event: MouseEvent | TouchEvent,
   {
