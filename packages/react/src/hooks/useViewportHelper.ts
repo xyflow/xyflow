@@ -24,17 +24,17 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       zoomIn: (options) => {
         const { panZoom } = store.getState();
 
-        return panZoom ? panZoom.scaleBy(1.2, { duration: options?.duration }) : Promise.resolve(false);
+        return panZoom ? panZoom.scaleBy(1.2, options) : Promise.resolve(false);
       },
       zoomOut: (options) => {
         const { panZoom } = store.getState();
 
-        return panZoom ? panZoom.scaleBy(1 / 1.2, { duration: options?.duration }) : Promise.resolve(false);
+        return panZoom ? panZoom.scaleBy(1 / 1.2, options) : Promise.resolve(false);
       },
       zoomTo: (zoomLevel, options) => {
         const { panZoom } = store.getState();
 
-        return panZoom ? panZoom.scaleTo(zoomLevel, { duration: options?.duration }) : Promise.resolve(false);
+        return panZoom ? panZoom.scaleTo(zoomLevel, options) : Promise.resolve(false);
       },
       getZoom: () => store.getState().transform[2],
       setViewport: async (viewport, options) => {
