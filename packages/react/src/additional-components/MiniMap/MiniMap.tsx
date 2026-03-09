@@ -202,7 +202,7 @@ MiniMapComponent.displayName = 'MiniMap';
  *
  *export default function Flow() {
  *  return (
- *    <ReactFlow nodes={[...]]} edges={[...]]}>
+ *    <ReactFlow nodes={[...]} edges={[...]}>
  *      <MiniMap nodeStrokeWidth={3} />
  *    </ReactFlow>
  *  );

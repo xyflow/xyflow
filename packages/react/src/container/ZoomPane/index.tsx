@@ -73,7 +73,8 @@ export function ZoomPane({
         maxZoom,
         translateExtent,
         viewport: defaultViewport,
-        onDraggingChange: (paneDragging: boolean) => store.setState({ paneDragging }),
+        onDraggingChange: (paneDragging) =>
+          store.setState((prevState) => prevState.paneDragging === paneDragging ? prevState : { paneDragging }),
         onPanZoomStart: (event, vp) => {
           const { onViewportChangeStart, onMoveStart } = store.getState();
           onMoveStart?.(event, vp);

@@ -304,8 +304,16 @@ const createStore = ({
         const { edges: storeEdges, nodes: storeNodes, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
         const nodesToUnselect = nodes ? nodes : storeNodes;
         const edgesToUnselect = edges ? edges : storeEdges;
-        const nodeChanges = nodesToUnselect.map((n) => {
-          const internalNode = nodeLookup.get(n.id);
+
+        const nodeChanges: NodeSelectionChange[] = [];
+
+        for (const node of nodesToUnselect) {
+          if (!node.selected) {
+            continue; // skip changing nodes that are not selected
+          }
+
+          const internalNode = nodeLookup.get(node.id);
+
           if (internalNode) {
             /*
              * we need to unselect the internal node that was selected previously before we
@@ -314,9 +322,18 @@ const createStore = ({
             internalNode.selected = false;
           }
 
-          return createSelectionChange(n.id, false);
-        });
-        const edgeChanges = edgesToUnselect.map((edge) => createSelectionChange(edge.id, false));
+          nodeChanges.push(createSelectionChange(node.id, false));
+        }
+
+        const edgeChanges: EdgeSelectionChange[] = [];
+
+        for (const edge of edgesToUnselect) {
+          if (!edge.selected) {
+            continue; // skip changing edges that are not selected
+          }
+
+          edgeChanges.push(createSelectionChange(edge.id, false));
+        }
 
         triggerNodeChanges(nodeChanges);
         triggerEdgeChanges(edgeChanges);

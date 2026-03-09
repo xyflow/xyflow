@@ -84,13 +84,18 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   shapeRendering: string;
 }) {
   const { node, x, y, width, height } = useStore((s) => {
-    const { internals } = s.nodeLookup.get(id)!;
-    const node = internals.userNode as NodeType;
-    const { x, y } = internals.positionAbsolute;
-    const { width, height } = getNodeDimensions(node);
+    const node = s.nodeLookup.get(id);
+
+    if (!node) {
+      return { node: undefined, x: 0, y: 0, width: 0, height: 0 };
+    }
+
+    const userNode = node.internals.userNode as NodeType;
+    const { x, y } = node.internals.positionAbsolute;
+    const { width, height } = getNodeDimensions(userNode);
 
     return {
-      node,
+      node: userNode,
       x,
       y,
       width,

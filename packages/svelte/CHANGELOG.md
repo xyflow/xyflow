@@ -1,5 +1,18 @@
 # @xyflow/svelte
 
+## 1.5.1
+
+### Patch Changes
+
+- [#5704](https://github.com/xyflow/xyflow/pull/5704) [`c91d3d022`](https://github.com/xyflow/xyflow/commit/c91d3d022f4517f4403a898cd02ee891b7e1f2d2) Thanks [@peterkogo](https://github.com/peterkogo)! - Keep `onConnectEnd` and `isValidConnection` up to date in an ongoing connection
+
+- [#5703](https://github.com/xyflow/xyflow/pull/5703) [`ce6c869df`](https://github.com/xyflow/xyflow/commit/ce6c869df40b2b013484808c742ca508da4a591f) Thanks [@peterkogo](https://github.com/peterkogo)! - Improve return type of useNodesData. Now you can narrow down the data type by checking the node type.
+
+- [#5698](https://github.com/xyflow/xyflow/pull/5698) [`7eeebc9c0`](https://github.com/xyflow/xyflow/commit/7eeebc9c04ce88f821363e3ea83e4dae36e04c45) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix child nodes not updating on the Minimap when parent is dragged
+
+- Updated dependencies [[`ce6c869df`](https://github.com/xyflow/xyflow/commit/ce6c869df40b2b013484808c742ca508da4a591f)]:
+  - @xyflow/system@0.0.75
+
 ## 1.5.0
 
 ### Minor Changes

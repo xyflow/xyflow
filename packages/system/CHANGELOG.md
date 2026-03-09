@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.75
+
+### Patch Changes
+
+- [#5703](https://github.com/xyflow/xyflow/pull/5703) [`ce6c869df`](https://github.com/xyflow/xyflow/commit/ce6c869df40b2b013484808c742ca508da4a591f) Thanks [@peterkogo](https://github.com/peterkogo)! - Improve return type of useNodesData. Now you can narrow down the data type by checking the node type.
+
 ## 0.0.74
 
 ### Patch Changes

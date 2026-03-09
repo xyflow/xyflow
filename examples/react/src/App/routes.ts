@@ -62,6 +62,7 @@ import MovingHandles from '../examples/MovingHandles';
 import DetachedHandle from '../examples/DetachedHandle';
 import ZIndexMode from '../examples/ZIndexMode';
 import Middlewares from '../examples/Middlewares';
+import NodeSelectionBug from '../examples/NodeSelectionBug';
 
 export interface IRoute {
   name: string;
@@ -389,6 +390,11 @@ const routes: IRoute[] = [
     name: 'zIndexMode',
     path: 'z-index-mode',
     component: ZIndexMode,
+  },
+  {
+    name: 'Node Selection Bug',
+    path: 'node-selection-bug',
+    component: NodeSelectionBug,
   },
 ];
 

@@ -1,4 +1,4 @@
-import { shallowNodeData } from '@xyflow/system';
+import { shallowNodeData, type DistributivePick } from '@xyflow/system';
 
 import type { Node } from '$lib/types';
 import { useStore } from '$lib/store';
@@ -12,10 +12,10 @@ import { useStore } from '$lib/store';
  */
 export function useNodesData<NodeType extends Node = Node>(
   nodeId: string
-): { current: Pick<NodeType, 'id' | 'data' | 'type'> | null };
+): { current: DistributivePick<NodeType, 'id' | 'data' | 'type'> | null };
 export function useNodesData<NodeType extends Node = Node>(
   nodeIds: string[]
-): { current: Pick<NodeType, 'id' | 'data' | 'type'>[] };
+): { current: DistributivePick<NodeType, 'id' | 'data' | 'type'>[] };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: any): any {
   const { nodes, nodeLookup } = $derived(useStore());

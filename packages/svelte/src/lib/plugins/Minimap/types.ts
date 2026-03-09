@@ -12,10 +12,10 @@ export type GetMiniMapNodeAttribute = (node: Node) => string;
  */
 export type MiniMapNodeProps = {
   id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
   borderRadius?: number;
   class?: ClassValue;
   color?: string;
