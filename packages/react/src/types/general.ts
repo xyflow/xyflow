@@ -14,6 +14,7 @@ import {
   Connection,
   NodeChange,
   EdgeChange,
+  SnapGrid,
 } from '@xyflow/system';
 
 import type { Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
@@ -203,7 +204,10 @@ export type ViewportHelperFunctions = {
    * @example
    * const flowPosition = screenToFlowPosition({ x: event.clientX, y: event.clientY })
    */
-  screenToFlowPosition: (clientPosition: XYPosition, options?: { snapToGrid: boolean }) => XYPosition;
+  screenToFlowPosition: (
+    clientPosition: XYPosition,
+    options?: { snapToGrid?: boolean; snapGrid?: SnapGrid }
+  ) => XYPosition;
   /**
    * Translate a position inside the flow's canvas to a screen pixel position.
    *
