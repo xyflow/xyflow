@@ -120,27 +120,25 @@ export function XYPanZoom({
 
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
-        zoomPanValues,
-        noWheelClassName,
-        d3Selection,
-        d3Zoom: d3ZoomInstance,
-        panOnScrollMode,
-        panOnScrollSpeed,
-        zoomOnPinch,
-        onPanZoomStart,
-        onPanZoom,
-        onPanZoomEnd,
-      })
+          zoomPanValues,
+          noWheelClassName,
+          d3Selection,
+          d3Zoom: d3ZoomInstance,
+          panOnScrollMode,
+          panOnScrollSpeed,
+          zoomOnPinch,
+          onPanZoomStart,
+          onPanZoom,
+          onPanZoomEnd,
+        })
       : createZoomOnScrollHandler({
-        noWheelClassName,
-        preventScrolling,
-        d3ZoomHandler,
-      });
+          noWheelClassName,
+          preventScrolling,
+          d3ZoomHandler,
+        });
 
     d3Selection.on('wheel.zoom', wheelHandler, { passive: false });
 
-    // Used to be !userSelectionActive
-    // if (!userSelectionActive) {
     // pan zoom start
     const startHandler = createPanZoomStartHandler({
       zoomPanValues,
@@ -169,7 +167,6 @@ export function XYPanZoom({
       onDraggingChange,
     });
     d3ZoomInstance.on('end', panZoomEndHandler);
-    // }
 
     const filter = createFilter({
       zoomActivationKeyPressed,
