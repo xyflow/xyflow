@@ -53,6 +53,10 @@ function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends E
   useEffect(() => {
     const params = { nodes: selectedNodes as NodeType[], edges: selectedEdges as EdgeType[] };
 
+    if (selectedNodes.length === 0 && store.getState().nodesSelectionActive) {
+      store.setState({ nodesSelectionActive: false });
+    }
+
     onSelectionChange?.(params);
     store.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));
   }, [selectedNodes, selectedEdges, onSelectionChange]);
