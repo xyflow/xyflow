@@ -1,22 +1,22 @@
 import { createWithEqualityFn } from 'zustand/traditional';
 import {
-  adoptUserNodes,
-  updateAbsolutePositions,
-  panBy as panBySystem,
-  updateNodeInternals as updateNodeInternalsSystem,
-  updateConnectionLookup,
-  handleExpandParent,
-  NodeChange,
-  EdgeSelectionChange,
-  NodeSelectionChange,
-  ParentExpandChild,
-  initialConnection,
-  NodeOrigin,
-  CoordinateExtent,
-  fitViewport,
-  getHandlePosition,
-  Position,
-  ZIndexMode
+    adoptUserNodes,
+    updateAbsolutePositions,
+    panBy as panBySystem,
+    updateNodeInternals as updateNodeInternalsSystem,
+    updateConnectionLookup,
+    handleExpandParent,
+    NodeChange,
+    EdgeSelectionChange,
+    NodeSelectionChange,
+    ParentExpandChild,
+    initialConnection,
+    NodeOrigin,
+    CoordinateExtent,
+    fitViewport,
+    getHandlePosition,
+    Position,
+    ZIndexMode
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -97,7 +97,16 @@ const createStore = ({
         zIndexMode,
       }),
       setNodes: (nodes: Node[]) => {
-        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, fitViewQueued, zIndexMode } = get();
+        const {
+          nodeLookup,
+          parentLookup,
+          nodeOrigin,
+          elevateNodesOnSelect,
+          fitViewQueued,
+          zIndexMode,
+          nodesSelectionActive
+        } = get();
+
         /*
          * setNodes() is called exclusively in response to user actions:
          * - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
@@ -115,11 +124,19 @@ const createStore = ({
           zIndexMode,
         });
 
+        const nextNodesSelectionActive = nodesSelectionActive && nodes.some((node) => node.selected);
+
         if (fitViewQueued && nodesInitialized) {
           resolveFitView();
-          set({ nodes, nodesInitialized, fitViewQueued: false, fitViewOptions: undefined });
+          set({
+            nodes,
+            nodesInitialized,
+            fitViewQueued: false,
+            fitViewOptions: undefined,
+            nodesSelectionActive: nextNodesSelectionActive
+          });
         } else {
-          set({ nodes, nodesInitialized });
+          set({ nodes, nodesInitialized, nodesSelectionActive: nextNodesSelectionActive });
         }
       },
       setEdges: (edges: Edge[]) => {

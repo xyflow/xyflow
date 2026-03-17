@@ -44,7 +44,7 @@ function areEqual(a: SelectorSlice, b: SelectorSlice) {
   );
 }
 
-export function SelectionListener<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
+function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onSelectionChange,
 }: SelectionListenerProps<NodeType, EdgeType>) {
   const store = useStoreApi<NodeType, EdgeType>();
@@ -53,13 +53,23 @@ export function SelectionListener<NodeType extends Node = Node, EdgeType extends
   useEffect(() => {
     const params = { nodes: selectedNodes as NodeType[], edges: selectedEdges as EdgeType[] };
 
-    if (selectedNodes.length === 0 && store.getState().nodesSelectionActive) {
-      store.setState({ nodesSelectionActive: false });
-    }
-
     onSelectionChange?.(params);
     store.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));
   }, [selectedNodes, selectedEdges, onSelectionChange]);
+
+  return null;
+}
+
+const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers;
+
+export function SelectionListener<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
+  onSelectionChange,
+}: SelectionListenerProps<NodeType, EdgeType>) {
+  const storeHasSelectionChangeHandlers = useStore(changeSelector);
+
+  if (onSelectionChange || storeHasSelectionChangeHandlers) {
+    return <SelectionListenerInner<NodeType, EdgeType> onSelectionChange={onSelectionChange} />;
+  }
 
   return null;
 }
