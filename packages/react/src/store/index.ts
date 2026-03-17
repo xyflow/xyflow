@@ -1,22 +1,22 @@
 import { createWithEqualityFn } from 'zustand/traditional';
 import {
-    adoptUserNodes,
-    updateAbsolutePositions,
-    panBy as panBySystem,
-    updateNodeInternals as updateNodeInternalsSystem,
-    updateConnectionLookup,
-    handleExpandParent,
-    NodeChange,
-    EdgeSelectionChange,
-    NodeSelectionChange,
-    ParentExpandChild,
-    initialConnection,
-    NodeOrigin,
-    CoordinateExtent,
-    fitViewport,
-    getHandlePosition,
-    Position,
-    ZIndexMode
+  adoptUserNodes,
+  updateAbsolutePositions,
+  panBy as panBySystem,
+  updateNodeInternals as updateNodeInternalsSystem,
+  updateConnectionLookup,
+  handleExpandParent,
+  NodeChange,
+  EdgeSelectionChange,
+  NodeSelectionChange,
+  ParentExpandChild,
+  initialConnection,
+  NodeOrigin,
+  CoordinateExtent,
+  fitViewport,
+  getHandlePosition,
+  Position,
+  ZIndexMode
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
