@@ -7,7 +7,7 @@ test.describe('Edges', () => {
     // Go to the starting url before each test.
     await page.goto('/tests/generic/edges/general');
 
-    // Timeout get's ignored and tests timeout after 200ms ???
+    // Timeout gets ignored and tests timeout after 200ms ???
     // page.waitForSelector('[data-id="edge-with-class"]', { timeout: 5000 });
   });
 

@@ -360,7 +360,7 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
 }
 
 /**
- * Convert child position to aboslute position
+ * Convert child position to absolute position
  *
  * @internal
  * @param position

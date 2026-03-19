@@ -243,7 +243,7 @@ export function createPanZoomEndHandler({
         () => {
           onPanZoomEnd?.(event.sourceEvent as MouseEvent | TouchEvent, viewport);
         },
-        // we need a setTimeout for panOnScroll to supress multiple end events fired during scroll
+        // we need a setTimeout for panOnScroll to suppress multiple end events fired during scroll
         panOnScroll ? 150 : 0
       );
     }

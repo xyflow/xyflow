@@ -474,7 +474,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
 }
 
 // Only way to check if an object is a proxy
-// is to see if is failes to perform a structured clone
+// is to see if it fails to perform a structured clone
 function warnIfDeeplyReactive(array: unknown[] | undefined, name: string) {
   try {
     if (array && array.length > 0) {

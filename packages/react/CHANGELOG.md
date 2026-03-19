@@ -752,7 +752,7 @@ There is more! Besides the new main features, we added some minor things that we
 
 ## 12.0.0-next.22
 
-- ⚠️ rename `updateEdge` to `reconnectEdge` and realted APIs [#4373](https://github.com/xyflow/xyflow/pull/4373)
+- ⚠️ rename `updateEdge` to `reconnectEdge` and related APIs [#4373](https://github.com/xyflow/xyflow/pull/4373)
 - revise selection usability (capture while dragging out of the flow)
 - use correct end handle position when drawing a connection lines
 - determine correct end positions for connection lines
@@ -1021,7 +1021,7 @@ There is more! Besides the new main features, we added some minor things that we
 
 - **`useConnection` hook:** This hook makes it possible to handle an ongoing connection. For example, you can use it for colorizing handles.
 - **`onDelete` handler**: We added a combined handler for `onDeleteNodes` and `onDeleteEdges` to make it easier to react to deletions.
-- **`isValidConnection` prop:** This makes it possible to implement one validation function for all connections. It also gets called for programatically added edges.
+- **`isValidConnection` prop:** This makes it possible to implement one validation function for all connections. It also gets called for programmatically added edges.
 - **Controlled `viewport`:** This is definitely an advanced feature. Possible use cases are to animate the viewport or round the transform for lower res screens for example. This features brings two new props: `viewport` and `onViewportChange`.
 - **`ViewportPortal` component:** This makes it possible to render elements in the viewport without the need to implement a custom node.
 - **Background component**: add `patternClassName` to be able to style the background pattern by using a class name. This is useful if you want to style the background pattern with Tailwind for example.

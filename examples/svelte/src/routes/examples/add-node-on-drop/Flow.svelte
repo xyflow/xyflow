@@ -83,7 +83,7 @@
 		fitView
 		fitViewOptions={{ padding: 2 }}
 		onconnectstart={(_, { nodeId }) => {
-			// Memorize the nodeId you start draggin a connection line from a node
+			// Memorize the nodeId you start dragging a connection line from a node
 			connectingNodeId = nodeId;
 		}}
 		onconnectend={handleConnectEnd}

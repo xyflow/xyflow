@@ -209,7 +209,7 @@ export type SvelteFlowProps<
      * @default 'strict'
      */
     connectionMode?: ConnectionMode;
-    /** Provide a custom snippet to be used insted of the default connection line */
+    /** Provide a custom snippet to be used instead of the default connection line */
     connectionLineComponent?: Component;
     /** Styles to be applied to the connection line */
     connectionLineStyle?: string;
@@ -325,7 +325,7 @@ export type SvelteFlowProps<
      */
     panOnScrollMode?: PanOnScrollMode;
     /**
-     * Enableing this prop allows users to pan the viewport by clicking and dragging.
+     * Enabling this prop allows users to pan the viewport by clicking and dragging.
      * You can also set this prop to an array of numbers to limit which mouse buttons can activate panning.
      * @default true
      * @example [0, 2] // allows panning with the left and right mouse buttons
@@ -447,7 +447,7 @@ export type SvelteFlowProps<
     /** This event handler is called when the user stops panning or zooming the viewport */
     onmoveend?: OnMoveEnd;
     /**
-     * Ocassionally something may happen that causes Svelte Flow to throw an error.
+     * Occasionally something may happen that causes Svelte Flow to throw an error.
      * Instead of exploding your application, we log a message to the console and then call this event handler.
      * You might use it for additional logging or to show a message to the user.
      */
