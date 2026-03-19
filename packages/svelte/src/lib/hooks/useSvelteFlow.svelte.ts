@@ -342,9 +342,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     getEdges: (ids) => (ids === undefined ? store.edges : getElements(store.edgeLookup, ids)),
     setZoom: (zoomLevel, options) => {
       const panZoom = store.panZoom;
-      return panZoom
-        ? panZoom.scaleTo(zoomLevel, { duration: options?.duration })
-        : Promise.resolve(false);
+      return panZoom ? panZoom.scaleTo(zoomLevel, options) : Promise.resolve(false);
     },
     getZoom: () => store.viewport.zoom,
     setViewport: async (nextViewport, options) => {
