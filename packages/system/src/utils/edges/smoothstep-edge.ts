@@ -107,12 +107,12 @@ function getPoints({
   if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
     if (dirAccessor === 'x') {
       // Primary direction is horizontal, so stepPosition affects X coordinate
-      centerX = center.x ?? (sourceGapped.x + (targetGapped.x - sourceGapped.x) * stepPosition);
+      centerX = center.x ?? sourceGapped.x + (targetGapped.x - sourceGapped.x) * stepPosition;
       centerY = center.y ?? (sourceGapped.y + targetGapped.y) / 2;
     } else {
-      // Primary direction is vertical, so stepPosition affects Y coordinate  
+      // Primary direction is vertical, so stepPosition affects Y coordinate
       centerX = center.x ?? (sourceGapped.x + targetGapped.x) / 2;
-      centerY = center.y ?? (sourceGapped.y + (targetGapped.y - sourceGapped.y) * stepPosition);
+      centerY = center.y ?? sourceGapped.y + (targetGapped.y - sourceGapped.y) * stepPosition;
     }
 
     /*
@@ -194,11 +194,17 @@ function getPoints({
     }
   }
 
+  const gappedSource = { x: sourceGapped.x + sourceGapOffset.x, y: sourceGapped.y + sourceGapOffset.y };
+  const gappedTarget = { x: targetGapped.x + targetGapOffset.x, y: targetGapped.y + targetGapOffset.y };
+
   const pathPoints = [
     source,
-    { x: sourceGapped.x + sourceGapOffset.x, y: sourceGapped.y + sourceGapOffset.y },
+    // we only want to add the gapped source/target if they are different from the first/last point to avoid duplicates which can cause issues with the bends
+    ...(gappedSource.x !== points[0].x || gappedSource.y !== points[0].y ? [gappedSource] : []),
     ...points,
-    { x: targetGapped.x + targetGapOffset.x, y: targetGapped.y + targetGapOffset.y },
+    ...(gappedTarget.x !== points[points.length - 1].x || gappedTarget.y !== points[points.length - 1].y
+      ? [gappedTarget]
+      : []),
     target,
   ];
 
@@ -280,23 +286,13 @@ export function getSmoothStepPath({
     stepPosition,
   });
 
-  const dedupedPoints = points.filter(
-    (p, i) => i === 0 || p.x !== points[i - 1].x || p.y !== points[i - 1].y
-  );
+  let path = `M${points[0].x} ${points[0].y}`;
 
-  const path = dedupedPoints.reduce<string>((res, p, i) => {
-    let segment = '';
+  for (let i = 1; i < points.length - 1; i++) {
+    path += getBend(points[i - 1], points[i], points[i + 1], borderRadius);
+  }
 
-    if (i > 0 && i < dedupedPoints.length - 1) {
-      segment = getBend(dedupedPoints[i - 1], p, dedupedPoints[i + 1], borderRadius);
-    } else {
-      segment = `${i === 0 ? 'M' : 'L'}${p.x} ${p.y}`;
-    }
-
-    res += segment;
-
-    return res;
-  }, '');
+  path += `L${points[points.length - 1].x} ${points[points.length - 1].y}`;
 
   return [path, labelX, labelY, offsetX, offsetY];
 }
