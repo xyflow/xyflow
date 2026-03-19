@@ -3,4 +3,4 @@
 '@xyflow/svelte': patch
 ---
 
-Pass options to useReactFlow/useSvelteFlow viewport helper functions
+Pass options to useReactFlow/useSvelteFlow viewport helper functions correctly
