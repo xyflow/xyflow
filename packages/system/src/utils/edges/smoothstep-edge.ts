@@ -280,11 +280,15 @@ export function getSmoothStepPath({
     stepPosition,
   });
 
-  const path = points.reduce<string>((res, p, i) => {
+  const dedupedPoints = points.filter(
+    (p, i) => i === 0 || p.x !== points[i - 1].x || p.y !== points[i - 1].y
+  );
+
+  const path = dedupedPoints.reduce<string>((res, p, i) => {
     let segment = '';
 
-    if (i > 0 && i < points.length - 1) {
-      segment = getBend(points[i - 1], p, points[i + 1], borderRadius);
+    if (i > 0 && i < dedupedPoints.length - 1) {
+      segment = getBend(dedupedPoints[i - 1], p, dedupedPoints[i + 1], borderRadius);
     } else {
       segment = `${i === 0 ? 'M' : 'L'}${p.x} ${p.y}`;
     }
