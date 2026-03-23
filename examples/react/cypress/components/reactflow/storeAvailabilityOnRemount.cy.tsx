@@ -49,7 +49,9 @@ describe('<ReactFlow /> remount: store availability', () => {
     );
 
     cy.get('@spy').should('have.been.calledWithMatch', { lookupSize: 2 });
+    cy.then(() => spy.resetHistory());
     cy.get('[data-testid="remount"]').click();
+    cy.get('@spy').should('have.been.called');
     cy.get('@spy').should('always.have.been.calledWithMatch', { lookupSize: 2 });
   });
 
@@ -66,7 +68,9 @@ describe('<ReactFlow /> remount: store availability', () => {
     );
 
     cy.get('@spy').should('have.been.calledWithMatch', { lookupSize: 2 });
+    cy.then(() => spy.resetHistory());
     cy.get('[data-testid="remount"]').click();
+    cy.get('@spy').should('have.been.called');
     cy.get('@spy').should('always.have.been.calledWithMatch', { lookupSize: 2 });
   });
 
@@ -98,7 +102,9 @@ describe('<ReactFlow /> remount: store availability', () => {
     );
 
     cy.get('@spy').should('have.been.calledWithMatch', { lookupSize: 2 });
+    cy.then(() => spy.resetHistory());
     cy.get('[data-testid="remount"]').click();
+    cy.get('@spy').should('have.been.called');
     cy.get('@spy').should('always.have.been.calledWithMatch', { lookupSize: 2 });
   });
 });
