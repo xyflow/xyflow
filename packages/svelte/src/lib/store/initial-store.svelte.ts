@@ -120,7 +120,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     zIndexMode = $state.raw<ZIndexMode>(signals.props.zIndexMode ?? 'basic');
 
     nodesInitialized: boolean = $derived.by(() => {
-      const nodesInitialized = adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
+      const { nodesInitialized } = adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
         nodeExtent: this.nodeExtent,
         nodeOrigin: this.nodeOrigin,
         elevateNodesOnSelect: signals.props.elevateNodesOnSelect ?? true,

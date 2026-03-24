@@ -104,7 +104,7 @@ const createStore = ({
           elevateNodesOnSelect,
           fitViewQueued,
           zIndexMode,
-          nodesSelectionActive
+          nodesSelectionActive,
         } = get();
 
         /*
@@ -116,7 +116,7 @@ const createStore = ({
          * relevant for internal React Flow operations.
          */
 
-        const nodesInitialized = adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        const { nodesInitialized, hasSelectedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent,
           elevateNodesOnSelect,
@@ -124,7 +124,7 @@ const createStore = ({
           zIndexMode,
         });
 
-        const nextNodesSelectionActive = nodesSelectionActive && nodes.some((node) => node.selected);
+        const nextNodesSelectionActive = nodesSelectionActive && hasSelectedNodes;
 
         if (fitViewQueued && nodesInitialized) {
           resolveFitView();
