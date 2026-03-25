@@ -93,7 +93,7 @@ export type NodeWrapperProps<NodeType extends Node> = {
  * ```
  */
 export type BuiltInNode =
-  | Node<{ label: string }, 'input' | 'output' | 'default'>
+  | Node<{ label: string }, 'input' | 'output' | 'default' | undefined>
   | Node<Record<string, never>, 'group'>;
 
 /**
