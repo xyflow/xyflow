@@ -121,18 +121,24 @@ export function isManualZIndexMode(zIndexMode?: ZIndexMode): boolean {
   return zIndexMode === 'manual';
 }
 
+type AdoptUserNodesReturn = {
+  nodesInitialized: boolean;
+  hasSelectedNodes: boolean;
+};
+
 export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options: UpdateNodesOptions<NodeType> = {}
-): boolean {
+): AdoptUserNodesReturn {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
   const rootParentIndex = { i: 0 };
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number =
     _options?.elevateNodesOnSelect && !isManualZIndexMode(_options.zIndexMode) ? SELECTED_NODE_Z : 0;
   let nodesInitialized = nodes.length > 0;
+  let hasSelectedNodes = false;
 
   nodeLookup.clear();
   parentLookup.clear();
@@ -178,9 +184,11 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     if (userNode.parentId) {
       updateChildNode(internalNode, nodeLookup, parentLookup, options, rootParentIndex);
     }
+
+    hasSelectedNodes ||= userNode.selected ?? false;
   }
 
-  return nodesInitialized;
+  return { nodesInitialized, hasSelectedNodes };
 }
 
 function updateParentLookup<NodeType extends NodeBase>(

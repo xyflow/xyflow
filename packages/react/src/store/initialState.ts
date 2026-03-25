@@ -56,7 +56,7 @@ const getInitialState = ({
   const storeNodeExtent = nodeExtent ?? infiniteExtent;
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
-  const nodesInitialized = adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
+  const { nodesInitialized } = adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
     nodeOrigin: storeNodeOrigin,
     nodeExtent: storeNodeExtent,
     zIndexMode,

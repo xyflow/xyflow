@@ -97,7 +97,16 @@ const createStore = ({
         zIndexMode,
       }),
       setNodes: (nodes: Node[]) => {
-        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, fitViewQueued, zIndexMode } = get();
+        const {
+          nodeLookup,
+          parentLookup,
+          nodeOrigin,
+          elevateNodesOnSelect,
+          fitViewQueued,
+          zIndexMode,
+          nodesSelectionActive,
+        } = get();
+
         /*
          * setNodes() is called exclusively in response to user actions:
          * - either when the `<ReactFlow nodes>` prop is updated in the controlled ReactFlow setup,
@@ -107,7 +116,7 @@ const createStore = ({
          * relevant for internal React Flow operations.
          */
 
-        const nodesInitialized = adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        const { nodesInitialized, hasSelectedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent,
           elevateNodesOnSelect,
@@ -115,11 +124,19 @@ const createStore = ({
           zIndexMode,
         });
 
+        const nextNodesSelectionActive = nodesSelectionActive && hasSelectedNodes;
+
         if (fitViewQueued && nodesInitialized) {
           resolveFitView();
-          set({ nodes, nodesInitialized, fitViewQueued: false, fitViewOptions: undefined });
+          set({
+            nodes,
+            nodesInitialized,
+            fitViewQueued: false,
+            fitViewOptions: undefined,
+            nodesSelectionActive: nextNodesSelectionActive
+          });
         } else {
-          set({ nodes, nodesInitialized });
+          set({ nodes, nodesInitialized, nodesSelectionActive: nextNodesSelectionActive });
         }
       },
       setEdges: (edges: Edge[]) => {
