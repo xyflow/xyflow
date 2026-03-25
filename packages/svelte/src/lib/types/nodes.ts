@@ -63,5 +63,5 @@ export type NodeTypes = Record<
 >;
 
 export type BuiltInNode =
-  | Node<{ label: string }, 'input' | 'output' | 'default'>
+  | Node<{ label: string }, 'input' | 'output' | 'default' | undefined>
   | Node<Record<string, never>, 'group'>;
