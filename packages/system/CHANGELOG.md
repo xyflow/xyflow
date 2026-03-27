@@ -1,5 +1,11 @@
 # @xyflow/system
 
+## 0.0.76
+
+### Patch Changes
+
+- [#5730](https://github.com/xyflow/xyflow/pull/5730) [`4a278dbbf`](https://github.com/xyflow/xyflow/commit/4a278dbbf942b2bc964e4159347b70ae6617f3dc) Thanks [@justn-hyeok](https://github.com/justn-hyeok)! - Fix missing border radius on `getSmoothStepPath` edge bends when using `stepPosition`
+
 ## 0.0.75
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @xyflow/react
 
+## 12.10.2
+
+### Patch Changes
+
+- [#5735](https://github.com/xyflow/xyflow/pull/5735) [`a6c938fb2`](https://github.com/xyflow/xyflow/commit/a6c938fb2e5ed030512ef75d665ac80dc3a66bc6) Thanks [@nvie](https://github.com/nvie)! - Allow `type` field to be missing in `BuiltInNode` (no `type` field is the same as `type: "default"`)
+
+- [#5722](https://github.com/xyflow/xyflow/pull/5722) [`8c9b7e726`](https://github.com/xyflow/xyflow/commit/8c9b7e726e0bb79871c85017dace0f1ccf1b478c) Thanks [@dfblhmm](https://github.com/dfblhmm)! - Add `snapGrid` to `screenToFlowPosition` options
+
+- [#5723](https://github.com/xyflow/xyflow/pull/5723) [`82249517a`](https://github.com/xyflow/xyflow/commit/82249517a3338d7bd0d6d499abecfaa6bca8c339) Thanks [@moklick](https://github.com/moklick)! - Pass options to useReactFlow/useSvelteFlow viewport helper functions correctly
+
+- [#5733](https://github.com/xyflow/xyflow/pull/5733) [`64115cd08`](https://github.com/xyflow/xyflow/commit/64115cd086d2c04235f1cae80acb45455fd0de49) Thanks [@AlaricBaraou](https://github.com/AlaricBaraou)! - Fix empty store during ReactFlow remount by reordering StoreUpdater before GraphView and using layout effects
+
+- [#5727](https://github.com/xyflow/xyflow/pull/5727) [`dd54e86b9`](https://github.com/xyflow/xyflow/commit/dd54e86b91da29c1f58f646ad9a99f96f0c4a2e5) Thanks [@solastley](https://github.com/solastley)! - Ensure visual nodes selection state is cleared when zero selected nodes remain in the flow
+
+- Updated dependencies [[`4a278dbbf`](https://github.com/xyflow/xyflow/commit/4a278dbbf942b2bc964e4159347b70ae6617f3dc)]:
+  - @xyflow/system@0.0.76
+
 ## 12.10.1
 
 ### Patch Changes

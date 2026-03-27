@@ -1,5 +1,16 @@
 # @xyflow/svelte
 
+## 1.5.2
+
+### Patch Changes
+
+- [#5735](https://github.com/xyflow/xyflow/pull/5735) [`a6c938fb2`](https://github.com/xyflow/xyflow/commit/a6c938fb2e5ed030512ef75d665ac80dc3a66bc6) Thanks [@nvie](https://github.com/nvie)! - Allow `type` field to be missing in `BuiltInNode` (no `type` field is the same as `type: "default"`)
+
+- [#5723](https://github.com/xyflow/xyflow/pull/5723) [`82249517a`](https://github.com/xyflow/xyflow/commit/82249517a3338d7bd0d6d499abecfaa6bca8c339) Thanks [@moklick](https://github.com/moklick)! - Pass options to useReactFlow/useSvelteFlow viewport helper functions correctly
+
+- Updated dependencies [[`4a278dbbf`](https://github.com/xyflow/xyflow/commit/4a278dbbf942b2bc964e4159347b70ae6617f3dc)]:
+  - @xyflow/system@0.0.76
+
 ## 1.5.1
 
 ### Patch Changes
