@@ -7,6 +7,7 @@ export type PaneProps<NodeType extends Node = Node, EdgeType extends Edge = Edge
   panOnDrag?: boolean | number[];
   paneClickDistance: number;
   selectionOnDrag?: boolean;
+  autopanOnSelection?: boolean;
   onselectionstart?: (event: PointerEvent) => void;
   onselectionend?: (event: PointerEvent) => void;
   children: Snippet;

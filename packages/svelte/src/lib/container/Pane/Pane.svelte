@@ -39,7 +39,7 @@
 </script>
 
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
-  import { SelectionMode, getEventPosition, getNodesInside } from '@xyflow/system';
+  import { SelectionMode, getEventPosition, getNodesInside, calcAutoPan, type XYPosition } from '@xyflow/system';
 
   import type { Node, Edge } from '$lib/types';
   import type { PaneProps } from './types';
@@ -49,6 +49,7 @@
     panOnDrag = true,
     paneClickDistance = 1,
     selectionOnDrag,
+    autopanOnSelection = true,
     onpaneclick,
     onpanecontextmenu,
     onselectionstart,
@@ -78,6 +79,11 @@
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   let selectionInProgress = false;
 
+  // Used for auto pan when approaching the edges of the container during selection
+  let autoPanId: number = 0;
+  let position: XYPosition = { x: 0, y: 0 };
+  let autoPanStarted = false;
+
   // We start the selection process when the user clicks down on the pane
   function onPointerDownCapture(event: PointerEvent) {
     containerBounds = container?.getBoundingClientRect();
@@ -104,6 +110,7 @@
     (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
 
     selectionInProgress = false;
+    autoPanStarted = false;
 
     const { x, y } = getEventPosition(event, containerBounds);
 
@@ -122,12 +129,24 @@
     }
   }
 
+  function autoPan(): void {
+    if (!autopanOnSelection || !containerBounds) {
+      return;
+    }
+    const [x, y] = calcAutoPan(position, containerBounds, store.autoPanSpeed);
+
+    store.panBy({ x, y });
+
+    autoPanId = requestAnimationFrame(autoPan);
+  }
+
   function onPointerMove(event: PointerEvent) {
     if (!isSelecting || !containerBounds || !store.selectionRect) {
       return;
     }
 
     const mousePos = getEventPosition(event, containerBounds);
+    position = { x: mousePos.x, y: mousePos.y };
     const { startX = 0, startY = 0 } = store.selectionRect;
 
     if (!selectionInProgress) {
@@ -141,6 +160,11 @@
     }
 
     selectionInProgress = true;
+
+    if (!autoPanStarted) {
+      autoPan();
+      autoPanStarted = true;
+    }
 
     const nextUserSelectRect = {
       ...store.selectionRect,
@@ -214,6 +238,10 @@
     if (selectionInProgress) {
       onselectionend?.(event);
     }
+
+    cancelAnimationFrame(autoPanId);
+    autoPanId = 0;
+    autoPanStarted = false;
   }
 
   const onContextMenu = (event: MouseEvent) => {

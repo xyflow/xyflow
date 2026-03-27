@@ -139,36 +139,34 @@ export function XYPanZoom({
 
     d3Selection.on('wheel.zoom', wheelHandler, { passive: false });
 
-    if (!userSelectionActive) {
-      // pan zoom start
-      const startHandler = createPanZoomStartHandler({
-        zoomPanValues,
-        onDraggingChange,
-        onPanZoomStart,
-      });
-      d3ZoomInstance.on('start', startHandler);
+    // pan zoom start
+    const startHandler = createPanZoomStartHandler({
+      zoomPanValues,
+      onDraggingChange,
+      onPanZoomStart,
+    });
+    d3ZoomInstance.on('start', startHandler);
 
-      // pan zoom
-      const panZoomHandler = createPanZoomHandler({
-        zoomPanValues,
-        panOnDrag,
-        onPaneContextMenu: !!onPaneContextMenu,
-        onPanZoom,
-        onTransformChange,
-      });
-      d3ZoomInstance.on('zoom', panZoomHandler);
+    // pan zoom
+    const panZoomHandler = createPanZoomHandler({
+      zoomPanValues,
+      panOnDrag,
+      onPaneContextMenu: !!onPaneContextMenu,
+      onPanZoom,
+      onTransformChange,
+    });
+    d3ZoomInstance.on('zoom', panZoomHandler);
 
-      // pan zoom end
-      const panZoomEndHandler = createPanZoomEndHandler({
-        zoomPanValues,
-        panOnDrag,
-        panOnScroll,
-        onPaneContextMenu,
-        onPanZoomEnd,
-        onDraggingChange,
-      });
-      d3ZoomInstance.on('end', panZoomEndHandler);
-    }
+    // pan zoom end
+    const panZoomEndHandler = createPanZoomEndHandler({
+      zoomPanValues,
+      panOnDrag,
+      panOnScroll,
+      onPaneContextMenu,
+      onPanZoomEnd,
+      onDraggingChange,
+    });
+    d3ZoomInstance.on('end', panZoomEndHandler);
 
     const filter = createFilter({
       zoomActivationKeyPressed,

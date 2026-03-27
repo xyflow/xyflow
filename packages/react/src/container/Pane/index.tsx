@@ -9,13 +9,14 @@ import {
 } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
-import { getNodesInside, getEventPosition, SelectionMode, areSetsEqual } from '@xyflow/system';
+import { getNodesInside, getEventPosition, SelectionMode, areSetsEqual, calcAutoPan, XYPosition } from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils';
 import type { ReactFlowProps, ReactFlowState } from '../../types';
+import { useReactFlow } from '../../hooks/useReactFlow';
 
 type PaneProps = {
   isSelecting: boolean;
@@ -27,6 +28,7 @@ type PaneProps = {
     ReactFlowProps,
     | 'selectionMode'
     | 'panOnDrag'
+    | 'autopanOnSelection'
     | 'onSelectionStart'
     | 'onSelectionEnd'
     | 'onPaneClick'
@@ -56,6 +58,8 @@ const selector = (s: ReactFlowState) => ({
   elementsSelectable: s.elementsSelectable,
   connectionInProgress: s.connection.inProgress,
   dragging: s.paneDragging,
+  panBy: s.panBy,
+  autoPanSpeed: s.autoPanSpeed,
 });
 
 export function Pane({
@@ -63,6 +67,7 @@ export function Pane({
   selectionKeyPressed,
   selectionMode = SelectionMode.Full,
   panOnDrag,
+  autopanOnSelection,
   paneClickDistance,
   selectionOnDrag,
   onSelectionStart,
@@ -75,8 +80,12 @@ export function Pane({
   onPaneMouseLeave,
   children,
 }: PaneProps) {
+  const autoPanId = useRef<number>(0);
   const store = useStoreApi();
-  const { userSelectionActive, elementsSelectable, dragging, connectionInProgress } = useStore(selector, shallow);
+  const { userSelectionActive, elementsSelectable, dragging, connectionInProgress, panBy, autoPanSpeed } = useStore(
+    selector,
+    shallow
+  );
   const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);
 
   const container = useRef<HTMLDivElement | null>(null);
@@ -86,6 +95,10 @@ export function Pane({
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
+
+  // Used for auto pan when approaching the edges of the container during selection
+  const position = useRef<XYPosition>({ x: 0, y: 0 });
+  const autoPanStarted = useRef<boolean>(false);
 
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
@@ -157,6 +170,17 @@ export function Pane({
     }
   };
 
+  function autoPan(): void {
+    if (!autopanOnSelection || !containerBounds.current) {
+      return;
+    }
+    const [x, y] = calcAutoPan(position.current, containerBounds.current, autoPanSpeed);
+
+    panBy({ x, y });
+
+    autoPanId.current = requestAnimationFrame(autoPan);
+  }
+
   const onPointerMove = (event: ReactPointerEvent): void => {
     const {
       userSelectionRect,
@@ -175,6 +199,7 @@ export function Pane({
     }
 
     const { x: mouseX, y: mouseY } = getEventPosition(event.nativeEvent, containerBounds.current);
+    position.current = { x: mouseX, y: mouseY };
     const { startX, startY } = userSelectionRect;
 
     if (!selectionInProgress.current) {
@@ -197,6 +222,11 @@ export function Pane({
       width: Math.abs(mouseX - startX),
       height: Math.abs(mouseY - startY),
     };
+
+    if (!autoPanStarted.current) {
+      autoPan();
+      autoPanStarted.current = true;
+    }
 
     const prevSelectedNodeIds = selectedNodeIds.current;
     const prevSelectedEdgeIds = selectedEdgeIds.current;
@@ -266,6 +296,10 @@ export function Pane({
         nodesSelectionActive: selectedNodeIds.current.size > 0,
       });
     }
+
+    cancelAnimationFrame(autoPanId.current);
+    autoPanId.current = 0;
+    autoPanStarted.current = false;
   };
 
   const draggable = panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0));
