@@ -225,6 +225,7 @@ export function Pane({
     selectedEdgeIds.current = new Set();
     const edgesSelectable = defaultEdgeOptions?.selectable ?? true;
 
+    // We look for all edges connected to the selected nodes
     for (const nodeId of selectedNodeIds.current) {
       const connections = connectionLookup.get(nodeId);
       if (!connections) continue;
