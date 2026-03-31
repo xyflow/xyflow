@@ -260,8 +260,8 @@ export function Pane({
     }
     const [x, y] = calcAutoPan(position.current, containerBounds.current, autoPanSpeed);
 
-    void panBy({ x, y }).then(() => {
-      if (!selectionInProgress.current || !userSelectionFlowOrigin.current) {
+    panBy({ x, y }).then((panned) => {
+      if (!selectionInProgress.current || !userSelectionFlowOrigin.current || !panned) {
         return;
       }
       const { x: mx, y: my } = position.current;

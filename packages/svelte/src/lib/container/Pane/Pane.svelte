@@ -214,8 +214,8 @@
     }
     const [x, y] = calcAutoPan(position, containerBounds, store.autoPanSpeed);
 
-    void store.panBy({ x, y }).then(() => {
-      if (!selectionInProgress || !userSelectionFlowOrigin) {
+    store.panBy({ x, y }).then((panned) => {
+      if (!selectionInProgress || !userSelectionFlowOrigin || !panned) {
         return;
       }
       commitUserSelectionRect(position.x, position.y);

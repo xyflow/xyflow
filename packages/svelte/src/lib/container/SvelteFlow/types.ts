@@ -356,7 +356,7 @@ export type SvelteFlowProps<
     /**
      * When `true`, the viewport will pan automatically when the cursor moves to the edge of the
      * viewport while creating a selection box.
-     * @default true
+     * @default false
      */
     autoPanOnSelection?: boolean;
     /**
