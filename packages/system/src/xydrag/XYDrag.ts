@@ -28,17 +28,24 @@ import type {
   InternalNodeBase,
 } from '../types';
 
-export type OnDrag = (
+export type OnDrag<NodeType extends NodeBase = NodeBase> = (
   event: MouseEvent,
   dragItems: Map<string, NodeDragItem>,
-  node: NodeBase,
-  nodes: NodeBase[]
+  node: NodeType,
+  nodes: NodeType[]
 ) => void;
 
-type StoreItems<OnNodeDrag> = {
-  nodes: NodeBase[];
-  nodeLookup: Map<string, InternalNodeBase>;
-  edges: EdgeBase[];
+type OnNodeDrag<NodeType extends NodeBase = NodeBase> = (e: MouseEvent | TouchEvent, node: NodeType, nodes: NodeType[]) => void | undefined;
+
+type FlowGraph<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
+  nodes: NodeType[];
+  edges: EdgeType[];
+}
+
+type StoreItems<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
+  nodes: NodeType[];
+  nodeLookup: Map<string, InternalNodeBase<NodeType>>;
+  edges: EdgeType[];
   nodeExtent: CoordinateExtent;
   snapGrid: SnapGrid;
   snapToGrid: boolean;
@@ -51,23 +58,23 @@ type StoreItems<OnNodeDrag> = {
   selectNodesOnDrag: boolean;
   nodeDragThreshold: number;
   panBy: PanBy;
-  unselectNodesAndEdges: (params?: { nodes?: NodeBase[]; edges?: EdgeBase[] }) => void;
+  unselectNodesAndEdges: (params?: Partial<FlowGraph<NodeType, EdgeType>>) => void;
   onError?: OnError;
-  onNodeDragStart?: OnNodeDrag;
-  onNodeDrag?: OnNodeDrag;
-  onNodeDragStop?: OnNodeDrag;
-  onSelectionDragStart?: OnSelectionDrag;
-  onSelectionDrag?: OnSelectionDrag;
-  onSelectionDragStop?: OnSelectionDrag;
-  updateNodePositions: UpdateNodePositions;
+  onNodeDragStart?: OnNodeDrag<NodeType>;
+  onNodeDrag?: OnNodeDrag<NodeType>;
+  onNodeDragStop?: OnNodeDrag<NodeType>;
+  onSelectionDragStart?: OnSelectionDrag<NodeType>;
+  onSelectionDrag?: OnSelectionDrag<NodeType>;
+  onSelectionDragStop?: OnSelectionDrag<NodeType>;
+  updateNodePositions: UpdateNodePositions<InternalNodeBase<NodeType>>;
   autoPanSpeed?: number;
 };
 
-export type XYDragParams<OnNodeDrag> = {
-  getStoreItems: () => StoreItems<OnNodeDrag>;
-  onDragStart?: OnDrag;
-  onDrag?: OnDrag;
-  onDragStop?: OnDrag;
+export type XYDragParams<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
+  getStoreItems: () => StoreItems<NodeType, EdgeType>;
+  onDragStart?: OnDrag<NodeType>;
+  onDrag?: OnDrag<NodeType>;
+  onDragStop?: OnDrag<NodeType>;
   onNodeMouseDown?: (id: string) => void;
   autoPanSpeed?: number;
 };
@@ -86,14 +93,13 @@ export type DragUpdateParams = {
   nodeClickDistance?: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => void | undefined>({
+export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
   onNodeMouseDown,
   getStoreItems,
   onDragStart,
   onDrag,
   onDragStop,
-}: XYDragParams<OnNodeDrag>): XYDragInstance {
+}: XYDragParams<NodeType, EdgeType>): XYDragInstance {
   let lastPos: { x: number | null; y: number | null } = { x: null, y: null };
   let autoPanId = 0;
   let dragItems = new Map<string, NodeDragItem>();
