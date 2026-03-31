@@ -62,7 +62,7 @@
     panOnScrollSpeed = 0.5,
     panOnDrag = true,
     selectionOnDrag = false,
-    autopanOnSelection = true,
+    autoPanOnSelection = false,
     connectionLineComponent,
     connectionLineStyle,
     connectionLineContainerStyle,
@@ -172,7 +172,7 @@
       {panOnDrag}
       {paneClickDistance}
       {selectionOnDrag}
-      {autopanOnSelection}
+      {autoPanOnSelection}
     >
       <ViewportComponent bind:store>
         <div class="svelte-flow__viewport-back svelte-flow__container"></div>

@@ -39,7 +39,15 @@
 </script>
 
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
-  import { SelectionMode, getEventPosition, getNodesInside, calcAutoPan, type XYPosition } from '@xyflow/system';
+  import {
+    SelectionMode,
+    getEventPosition,
+    getNodesInside,
+    calcAutoPan,
+    pointToRendererPoint,
+    rendererPointToPoint,
+    type XYPosition
+  } from '@xyflow/system';
 
   import type { Node, Edge } from '$lib/types';
   import type { PaneProps } from './types';
@@ -49,7 +57,7 @@
     panOnDrag = true,
     paneClickDistance = 1,
     selectionOnDrag,
-    autopanOnSelection = true,
+    autoPanOnSelection = true,
     onpaneclick,
     onpanecontextmenu,
     onselectionstart,
@@ -78,6 +86,9 @@
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   let selectionInProgress = false;
+
+  // Position of the selection start in the flow so that it stays fixed on the canvas while auto-panning
+  let userSelectionFlowOrigin: XYPosition | null = null;
 
   // Used for auto pan when approaching the edges of the container during selection
   let autoPanId: number = 0;
@@ -114,6 +125,13 @@
 
     const { x, y } = getEventPosition(event, containerBounds);
 
+    // We convert the position to the flow space so that it stays fixed on the canvas while auto-panning
+    userSelectionFlowOrigin = pointToRendererPoint({ x, y }, [
+      store.viewport.x,
+      store.viewport.y,
+      store.viewport.zoom
+    ]);
+
     store.selectionRect = {
       width: 0,
       height: 0,
@@ -129,49 +147,24 @@
     }
   }
 
-  function autoPan(): void {
-    if (!autopanOnSelection || !containerBounds) {
-      return;
-    }
-    const [x, y] = calcAutoPan(position, containerBounds, store.autoPanSpeed);
-
-    store.panBy({ x, y });
-
-    autoPanId = requestAnimationFrame(autoPan);
-  }
-
-  function onPointerMove(event: PointerEvent) {
-    if (!isSelecting || !containerBounds || !store.selectionRect) {
+  // We commit the user selection rectangle to the store on auto-panning or pointer move
+  function commitUserSelectionRect(mouseX: number, mouseY: number): void {
+    if (!userSelectionFlowOrigin) {
       return;
     }
 
-    const mousePos = getEventPosition(event, containerBounds);
-    position = { x: mousePos.x, y: mousePos.y };
-    const { startX = 0, startY = 0 } = store.selectionRect;
-
-    if (!selectionInProgress) {
-      const requiredDistance = store.selectionKeyPressed ? 0 : paneClickDistance;
-      const distance = Math.hypot(mousePos.x - startX, mousePos.y - startY);
-      if (distance <= requiredDistance) {
-        return;
-      }
-      store.unselectNodesAndEdges();
-      onselectionstart?.(event);
-    }
-
-    selectionInProgress = true;
-
-    if (!autoPanStarted) {
-      autoPan();
-      autoPanStarted = true;
-    }
-
+    const screenStart = rendererPointToPoint(userSelectionFlowOrigin, [
+      store.viewport.x,
+      store.viewport.y,
+      store.viewport.zoom
+    ]);
     const nextUserSelectRect = {
-      ...store.selectionRect,
-      x: mousePos.x < startX ? mousePos.x : startX,
-      y: mousePos.y < startY ? mousePos.y : startY,
-      width: Math.abs(mousePos.x - startX),
-      height: Math.abs(mousePos.y - startY)
+      startX: screenStart.x,
+      startY: screenStart.y,
+      x: mouseX < screenStart.x ? mouseX : screenStart.x,
+      y: mouseY < screenStart.y ? mouseY : screenStart.y,
+      width: Math.abs(mouseX - screenStart.x),
+      height: Math.abs(mouseY - screenStart.y)
     };
 
     const prevSelectedNodeIds = selectedNodeIds;
@@ -215,6 +208,56 @@
     store.selectionRect = nextUserSelectRect;
   }
 
+  function autoPan(): void {
+    if (!autoPanOnSelection || !containerBounds) {
+      return;
+    }
+    const [x, y] = calcAutoPan(position, containerBounds, store.autoPanSpeed);
+
+    void store.panBy({ x, y }).then(() => {
+      if (!selectionInProgress || !userSelectionFlowOrigin) {
+        return;
+      }
+      commitUserSelectionRect(position.x, position.y);
+    });
+
+    autoPanId = requestAnimationFrame(autoPan);
+  }
+
+  function onPointerMove(event: PointerEvent) {
+    if (!isSelecting || !containerBounds || !store.selectionRect || !userSelectionFlowOrigin) {
+      return;
+    }
+
+    const mousePos = getEventPosition(event, containerBounds);
+    position = { x: mousePos.x, y: mousePos.y };
+
+    const screenStart = rendererPointToPoint(userSelectionFlowOrigin, [
+      store.viewport.x,
+      store.viewport.y,
+      store.viewport.zoom
+    ]);
+
+    if (!selectionInProgress) {
+      const requiredDistance = store.selectionKeyPressed ? 0 : paneClickDistance;
+      const distance = Math.hypot(mousePos.x - screenStart.x, mousePos.y - screenStart.y);
+      if (distance <= requiredDistance) {
+        return;
+      }
+      store.unselectNodesAndEdges();
+      onselectionstart?.(event);
+    }
+
+    selectionInProgress = true;
+
+    if (!autoPanStarted) {
+      autoPan();
+      autoPanStarted = true;
+    }
+
+    commitUserSelectionRect(mousePos.x, mousePos.y);
+  }
+
   function onPointerUp(event: PointerEvent) {
     if (event.button !== 0) {
       return;
@@ -242,6 +285,7 @@
     cancelAnimationFrame(autoPanId);
     autoPanId = 0;
     autoPanStarted = false;
+    userSelectionFlowOrigin = null;
   }
 
   const onContextMenu = (event: MouseEvent) => {
