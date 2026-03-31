@@ -201,7 +201,7 @@ export function Pane({
     } = store.getState();
 
     const screenStart = rendererPointToPoint(flowOrigin, transform);
-    // This has to be in screen cordinates, not in flow coordinates.
+    // This has to be in screen coordinates, not in flow coordinates.
     // We store the selection rectangle in userSelectionFlowOrigin coordinates to be able to
     // fix the start position of the selection rectangle when we are auto-panning.
     const nextUserSelectRect = {
