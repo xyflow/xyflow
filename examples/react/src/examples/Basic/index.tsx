@@ -162,7 +162,7 @@ const BasicFlow = () => {
         selectNodesOnDrag={false}
         elevateEdgesOnSelect
         elevateNodesOnSelect={false}
-        autopanOnSelection={true}
+        autoPanOnSelection={true}
         nodeDragThreshold={0}
       >
         <Background variant={BackgroundVariant.Dots} />
