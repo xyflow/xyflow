@@ -62,7 +62,7 @@
     panOnScrollSpeed = 0.5,
     panOnDrag = true,
     selectionOnDrag = false,
-    autoPanOnSelection = false,
+    autoPanOnSelection = true,
     connectionLineComponent,
     connectionLineStyle,
     connectionLineContainerStyle,

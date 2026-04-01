@@ -132,7 +132,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     disableKeyboardA11y = false,
     autoPanOnConnect,
     autoPanOnNodeDrag,
-    autoPanOnSelection,
+    autoPanOnSelection = true,
     autoPanSpeed,
     connectionRadius,
     isValidConnection,

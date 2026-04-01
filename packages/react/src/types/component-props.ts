@@ -637,7 +637,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /**
    * When `true`, the viewport will pan automatically when the cursor moves to the edge of the
    * viewport while creating a selection box.
-   * @default false
+   * @default true
    */
   autoPanOnSelection?: boolean;
   /**
