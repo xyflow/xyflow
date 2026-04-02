@@ -216,6 +216,7 @@
 	snapGrid={[25, 25]}
 	autoPanOnConnect
 	autoPanOnNodeDrag
+	autoPanOnSelection={true}
 	connectionMode={ConnectionMode.Strict}
 	attributionPosition={'top-center'}
 	deleteKey={['Backspace', 'd']}
