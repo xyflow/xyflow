@@ -6,8 +6,7 @@ import type { StepEdgeProps } from '../../types';
 
 const createStepEdge = (params: { isInternal: boolean }): FC<StepEdgeProps> =>
   function MyComponent({ id, ...props }) {
-    // Hint for the React Compiler to treat this as a component
-    'use memo';
+    'use memo'; // Hint for the React Compiler to treat this as a component
     return (
       <SmoothStepEdge
         {...props}
