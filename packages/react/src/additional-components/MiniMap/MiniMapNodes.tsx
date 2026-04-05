@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentType, memo } from 'react';
+import type { ComponentType } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 import { shallow } from 'zustand/shallow';
 
@@ -126,6 +126,6 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   );
 }
 
-const NodeComponentWrapper = memo(NodeComponentWrapperInner) as typeof NodeComponentWrapperInner;
+const NodeComponentWrapper = NodeComponentWrapperInner;
 
-export default memo(MiniMapNodes) as typeof MiniMapNodes;
+export default MiniMapNodes;

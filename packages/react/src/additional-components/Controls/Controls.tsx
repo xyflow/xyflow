@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
@@ -31,12 +30,15 @@ function ControlsComponent({
   'aria-label': ariaLabel,
 }: ControlProps) {
   const store = useStoreApi();
-  const { isInteractive, minZoomReached, maxZoomReached, ariaLabelConfig } = useStore((s) => ({
-    isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
-    minZoomReached: s.transform[2] <= s.minZoom,
-    maxZoomReached: s.transform[2] >= s.maxZoom,
-    ariaLabelConfig: s.ariaLabelConfig,
-  }), shallow);
+  const { isInteractive, minZoomReached, maxZoomReached, ariaLabelConfig } = useStore(
+    (s) => ({
+      isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
+      minZoomReached: s.transform[2] <= s.minZoom,
+      maxZoomReached: s.transform[2] >= s.maxZoom,
+      ariaLabelConfig: s.ariaLabelConfig,
+    }),
+    shallow
+  );
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const onZoomInHandler = () => {
@@ -143,4 +145,4 @@ ControlsComponent.displayName = 'Controls';
  * @remarks To extend or customise the controls, you can use the [`<ControlButton />`](/api-reference/components/control-button) component
  *
  */
-export const Controls = memo(ControlsComponent);
+export const Controls = ControlsComponent;

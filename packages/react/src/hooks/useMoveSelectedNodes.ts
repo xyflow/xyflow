@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { calculateNodePosition, snapPosition, type XYPosition } from '@xyflow/system';
 
 import { type Node } from '../types';
