@@ -11,36 +11,37 @@ import { useStore } from './useStore';
  * @returns array with visible edge ids
  */
 export function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
-  const edgeIds = useStore((s) => {
-    if (!onlyRenderVisible) {
-      return s.edges.map((edge) => edge.id);
-    }
+  const edgeIds = useStore(
+    !onlyRenderVisible
+      ? (s) => s.edges.map((edge) => edge.id)
+      : (s) => {
+          const visibleEdgeIds = [];
 
-    const visibleEdgeIds = [];
+          if (s.width && s.height) {
+            for (const edge of s.edges) {
+              const sourceNode = s.nodeLookup.get(edge.source);
+              const targetNode = s.nodeLookup.get(edge.target);
 
-    if (s.width && s.height) {
-      for (const edge of s.edges) {
-        const sourceNode = s.nodeLookup.get(edge.source);
-        const targetNode = s.nodeLookup.get(edge.target);
+              if (
+                sourceNode &&
+                targetNode &&
+                isEdgeVisible({
+                  sourceNode,
+                  targetNode,
+                  width: s.width,
+                  height: s.height,
+                  transform: s.transform,
+                })
+              ) {
+                visibleEdgeIds.push(edge.id);
+              }
+            }
+          }
 
-        if (
-          sourceNode &&
-          targetNode &&
-          isEdgeVisible({
-            sourceNode,
-            targetNode,
-            width: s.width,
-            height: s.height,
-            transform: s.transform,
-          })
-        ) {
-          visibleEdgeIds.push(edge.id);
-        }
-      }
-    }
-
-    return visibleEdgeIds;
-  }, shallow);
+          return visibleEdgeIds;
+        },
+    shallow
+  );
 
   return edgeIds;
 }
