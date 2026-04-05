@@ -3,7 +3,7 @@
  * We distinguish between values we can update directly with `useDirectStoreUpdater` (like `snapGrid`)
  * and values that have a dedicated setter function in the store (like `setNodes`).
  */
-import { useRef } from 'react';
+import { type MutableRefObject, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
 import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelConfig } from '@xyflow/system';
 
@@ -177,6 +177,6 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
   return null;
 }
 
-function setProps(ref: any, props: unknown) {
+function setProps(ref: MutableRefObject<unknown>, props: unknown) {
   ref.current = props;
 }
