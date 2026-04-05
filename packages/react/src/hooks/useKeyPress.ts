@@ -110,7 +110,7 @@ export function useKeyPress(
         if (preventAction) {
           return false;
         }
-        const keyOrCode = useKeyOrCode(event.code, keysToWatch);
+        const keyOrCode = getKeyOrCode(event.code, keysToWatch);
         pressedKeys.current.add(event[keyOrCode]);
 
         if (isMatchingKey(keyCodes, pressedKeys.current, false)) {
@@ -126,7 +126,7 @@ export function useKeyPress(
       };
 
       const upHandler = (event: KeyboardEvent) => {
-        const keyOrCode = useKeyOrCode(event.code, keysToWatch);
+        const keyOrCode = getKeyOrCode(event.code, keysToWatch);
 
         if (isMatchingKey(keyCodes, pressedKeys.current, true)) {
           setKeyPressed(false);
@@ -184,6 +184,6 @@ function isMatchingKey(keyCodes: Array<Keys>, pressedKeys: PressedKeys, isUp: bo
   );
 }
 
-function useKeyOrCode(eventCode: string, keysToWatch: KeyCode): KeyOrCode {
+function getKeyOrCode(eventCode: string, keysToWatch: KeyCode): KeyOrCode {
   return keysToWatch.includes(eventCode) ? 'code' : 'key';
 }
