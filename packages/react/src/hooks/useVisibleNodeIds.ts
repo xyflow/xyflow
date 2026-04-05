@@ -13,12 +13,12 @@ import type { Node } from '../types';
  */
 export function useVisibleNodeIds(onlyRenderVisible: boolean) {
   const nodeIds = useStore(
-    (s) =>
-      onlyRenderVisible
-        ? getNodesInside<Node>(s.nodeLookup, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true).map(
+    onlyRenderVisible
+      ? (s) =>
+          getNodesInside<Node>(s.nodeLookup, { x: 0, y: 0, width: s.width, height: s.height }, s.transform, true).map(
             (node) => node.id
           )
-        : Array.from(s.nodeLookup.keys()),
+      : (s) => Array.from(s.nodeLookup.keys()),
     shallow
   );
 
