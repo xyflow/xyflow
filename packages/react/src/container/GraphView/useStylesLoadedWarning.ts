@@ -4,6 +4,7 @@ import { errorMessages } from '@xyflow/system';
 import { useStoreApi } from '../../hooks/useStore';
 
 export function useStylesLoadedWarning() {
+  'use no memo'
   const store = useStoreApi();
   const checked = useRef(false);
 
