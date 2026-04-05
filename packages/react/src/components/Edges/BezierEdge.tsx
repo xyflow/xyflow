@@ -78,12 +78,14 @@ const createBezierEdge = (params: { isInternal: boolean }) =>
  * }
  * ```
  */
-const BezierEdge = createBezierEdge({ isInternal: false });
-BezierEdge.displayName = 'BezierEdge';
+const BezierEdge = Object.assign(createBezierEdge({ isInternal: false }), {
+  displayName: 'BezierEdge',
+});
 /**
  * @internal
  */
-const BezierEdgeInternal = createBezierEdge({ isInternal: true });
-BezierEdgeInternal.displayName = 'BezierEdgeInternal';
+const BezierEdgeInternal = Object.assign(createBezierEdge({ isInternal: true }), {
+  displayName: 'BezierEdgeInternal',
+});
 
 export { BezierEdge, BezierEdgeInternal };

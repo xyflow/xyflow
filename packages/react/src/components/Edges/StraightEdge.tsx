@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
-import type { FC } from 'react';
 import { getStraightPath } from '@xyflow/system';
 
 import { BaseEdge } from './BaseEdge';
 import type { StraightEdgeProps } from '../../types';
 
-const createStraightEdge = (params: { isInternal: boolean }): FC<StraightEdgeProps> =>
+const createStraightEdge = (params: { isInternal: boolean }) =>
   function MyComponent({
     id,
     sourceX,
@@ -22,7 +21,7 @@ const createStraightEdge = (params: { isInternal: boolean }): FC<StraightEdgePro
     markerEnd,
     markerStart,
     interactionWidth,
-  }) {
+  }: StraightEdgeProps) {
     'use memo'; // Hint for the React Compiler to treat this as a component
     const [path, labelX, labelY] = getStraightPath({ sourceX, sourceY, targetX, targetY });
     return (
@@ -66,13 +65,15 @@ const createStraightEdge = (params: { isInternal: boolean }): FC<StraightEdgePro
  * }
  * ```
  */
-const StraightEdge = createStraightEdge({ isInternal: false });
-StraightEdge.displayName = 'StraightEdge';
+const StraightEdge = Object.assign(createStraightEdge({ isInternal: false }), {
+  displayName: 'StraightEdge',
+});
 
 /**
  * @internal
  */
-const StraightEdgeInternal = createStraightEdge({ isInternal: true });
-StraightEdgeInternal.displayName = 'StraightEdgeInternal';
+const StraightEdgeInternal = Object.assign(createStraightEdge({ isInternal: true }), {
+  displayName: 'StraightEdgeInternal',
+});
 
 export { StraightEdge, StraightEdgeInternal };
