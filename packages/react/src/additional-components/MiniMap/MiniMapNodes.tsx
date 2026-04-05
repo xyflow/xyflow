@@ -34,34 +34,30 @@ function MiniMapNodes<NodeType extends Node>({
 
   const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
 
-  return (
-    <>
-      {nodeIds.map((nodeId) => (
-        /*
-         * The split of responsibilities between MiniMapNodes and
-         * NodeComponentWrapper may appear weird. However, it’s designed to
-         * minimize the cost of updates when individual nodes change.
-         *
-         * For more details, see a similar commit in `NodeRenderer/index.tsx`.
-         */
-        <NodeComponentWrapper<NodeType>
-          key={nodeId}
-          id={nodeId}
-          nodeColorFunc={nodeColorFunc}
-          nodeStrokeColorFunc={nodeStrokeColorFunc}
-          nodeClassNameFunc={nodeClassNameFunc}
-          nodeBorderRadius={nodeBorderRadius}
-          nodeStrokeWidth={nodeStrokeWidth}
-          NodeComponent={NodeComponent}
-          onClick={onClick}
-          shapeRendering={shapeRendering}
-        />
-      ))}
-    </>
-  );
+  return nodeIds.map((nodeId) => (
+    /*
+     * The split of responsibilities between MiniMapNodes and
+     * NodeComponentWrapper may appear weird. However, it’s designed to
+     * minimize the cost of updates when individual nodes change.
+     *
+     * For more details, see a similar commit in `NodeRenderer/index.tsx`.
+     */
+    <NodeComponentWrapper<NodeType>
+      key={nodeId}
+      id={nodeId}
+      nodeColorFunc={nodeColorFunc}
+      nodeStrokeColorFunc={nodeStrokeColorFunc}
+      nodeClassNameFunc={nodeClassNameFunc}
+      nodeBorderRadius={nodeBorderRadius}
+      nodeStrokeWidth={nodeStrokeWidth}
+      NodeComponent={NodeComponent}
+      onClick={onClick}
+      shapeRendering={shapeRendering}
+    />
+  ));
 }
 
-function NodeComponentWrapperInner<NodeType extends Node>({
+function NodeComponentWrapper<NodeType extends Node>({
   id,
   nodeColorFunc,
   nodeStrokeColorFunc,
@@ -125,7 +121,5 @@ function NodeComponentWrapperInner<NodeType extends Node>({
     />
   );
 }
-
-const NodeComponentWrapper = NodeComponentWrapperInner;
 
 export default MiniMapNodes;
