@@ -1,12 +1,4 @@
-import {
-  useRef,
-  type MouseEventHandler,
-  type MutableRefObject,
-  type MouseEvent as ReactMouseEvent,
-  type PointerEvent as ReactPointerEvent,
-  type WheelEvent as ReactWheelEvent,
-  type ReactNode,
-} from 'react';
+import { useRef, type MouseEvent, type PointerEvent, type WheelEvent, type ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 import { getNodesInside, getEventPosition, SelectionMode, areSetsEqual } from '@xyflow/system';
@@ -39,18 +31,6 @@ type PaneProps = {
   >
 >;
 
-const wrapHandler = (
-  handler: MouseEventHandler | undefined,
-  containerRef: MutableRefObject<HTMLDivElement | null>
-): MouseEventHandler => {
-  return (event: ReactMouseEvent) => {
-    if (event.target !== containerRef.current) {
-      return;
-    }
-    handler?.(event);
-  };
-};
-
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   elementsSelectable: s.elementsSelectable,
@@ -81,13 +61,16 @@ export function Pane({
 
   const container = useRef<HTMLDivElement | null>(null);
   const containerBounds = useRef<DOMRect>();
-  const selectedNodeIds = useRef<Set<string>>(new Set());
-  const selectedEdgeIds = useRef<Set<string>>(new Set());
+  const selectedNodeIds = useRef(new Set<string>());
+  const selectedEdgeIds = useRef(new Set<string>());
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
-  const selectionInProgress = useRef<boolean>(false);
+  const selectionInProgress = useRef(false);
 
-  const onClick = (event: ReactMouseEvent) => {
+  const onClick = (event: MouseEvent) => {
+    if (event.target !== container.current) {
+      return;
+    }
     // We prevent click events when the user let go of the selectionKey during a selection
     // We also prevent click events when a connection is in progress
     if (selectionInProgress.current || connectionInProgress) {
@@ -100,7 +83,10 @@ export function Pane({
     store.setState({ nodesSelectionActive: false });
   };
 
-  const onContextMenu = (event: ReactMouseEvent) => {
+  const onContextMenu = (event: MouseEvent) => {
+    if (event.target !== container.current) {
+      return;
+    }
     if (Array.isArray(panOnDrag) && panOnDrag?.includes(2)) {
       event.preventDefault();
       return;
@@ -109,9 +95,16 @@ export function Pane({
     onPaneContextMenu?.(event);
   };
 
-  const onWheel = onPaneScroll ? (event: ReactWheelEvent) => onPaneScroll(event) : undefined;
+  const onWheel = onPaneScroll
+    ? (event: WheelEvent) => {
+        if (event.target !== container.current) {
+          return;
+        }
+        onPaneScroll(event);
+      }
+    : undefined;
 
-  const onClickCapture = (event: ReactMouseEvent) => {
+  const onClickCapture = (event: MouseEvent) => {
     if (selectionInProgress.current) {
       event.stopPropagation();
       selectionInProgress.current = false;
@@ -120,7 +113,7 @@ export function Pane({
 
   // We are using capture here in order to prevent other pointer events
   // to be able to create a selection above a node or an edge
-  const onPointerDownCapture = (event: ReactPointerEvent): void => {
+  const onPointerDownCapture = (event: PointerEvent): void => {
     const { domNode } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
     if (!containerBounds.current) return;
@@ -157,7 +150,7 @@ export function Pane({
     }
   };
 
-  const onPointerMove = (event: ReactPointerEvent): void => {
+  const onPointerMove = (event: PointerEvent): void => {
     const {
       userSelectionRect,
       transform,
@@ -239,7 +232,7 @@ export function Pane({
     });
   };
 
-  const onPointerUp = (event: ReactPointerEvent) => {
+  const onPointerUp = (event: PointerEvent) => {
     if (event.button !== 0) {
       return;
     }
@@ -273,9 +266,9 @@ export function Pane({
   return (
     <div
       className={cc(['react-flow__pane', { draggable, dragging, selection: isSelecting }])}
-      onClick={isSelectionEnabled ? undefined : wrapHandler(onClick, container)}
-      onContextMenu={wrapHandler(onContextMenu, container)}
-      onWheel={wrapHandler(onWheel, container)}
+      onClick={isSelectionEnabled ? undefined : onClick}
+      onContextMenu={onContextMenu}
+      onWheel={onWheel}
       onPointerEnter={isSelectionEnabled ? undefined : onPaneMouseEnter}
       onPointerMove={isSelectionEnabled ? onPointerMove : onPaneMouseMove}
       onPointerUp={isSelectionEnabled ? onPointerUp : undefined}
