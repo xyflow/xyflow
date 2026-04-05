@@ -1,4 +1,4 @@
-import { CSSProperties, memo, useRef } from 'react';
+import { useRef } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 
@@ -6,15 +6,12 @@ import { useStore } from '../../hooks/useStore';
 import { DotPattern, LinePattern } from './Patterns';
 import { containerStyle } from '../../styles/utils';
 import { type BackgroundProps, BackgroundVariant } from './types';
-import { type ReactFlowState } from '../../types';
 
 const defaultSize = {
   [BackgroundVariant.Dots]: 1,
   [BackgroundVariant.Lines]: 1,
   [BackgroundVariant.Cross]: 6,
 };
-
-const selector = (s: ReactFlowState) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` });
 
 function BackgroundComponent({
   id,
@@ -32,7 +29,10 @@ function BackgroundComponent({
   patternClassName,
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const { transform, patternId } = useStore(selector, shallow);
+  const { transform, patternId } = useStore(
+    (s) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` }),
+    shallow
+  );
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
@@ -52,14 +52,12 @@ function BackgroundComponent({
   return (
     <svg
       className={cc(['react-flow__background', className])}
-      style={
-        {
-          ...style,
-          ...containerStyle,
-          '--xy-background-color-props': bgColor,
-          '--xy-background-pattern-color-props': color,
-        } as CSSProperties
-      }
+      style={{
+        ...style,
+        ...containerStyle,
+        ['--xy-background-color-props' as string]: bgColor,
+        ['--xy-background-pattern-color-props' as string]: color,
+      }}
       ref={ref}
       data-testid="rf__background"
     >
@@ -143,4 +141,4 @@ BackgroundComponent.displayName = 'Background';
  * When combining multiple <Background /> components it’s important to give each of them a unique id prop!
  *
  */
-export const Background = memo(BackgroundComponent);
+export const Background = BackgroundComponent;

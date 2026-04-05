@@ -1,4 +1,4 @@
-import { useRef, useEffect, memo, useCallback } from 'react';
+import { useRef, useEffect } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -20,10 +20,6 @@ import {
 import { useStoreApi, useStore } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
-import { ReactFlowState } from '../../types';
-
-const scaleSelector = (calculateScale: boolean) => (store: ReactFlowState) =>
-  calculateScale ? `${Math.max(1 / store.transform[2], 1)}` : undefined;
 
 const defaultPositions: Record<ResizeControlVariant, ControlPosition> = {
   [ResizeControlVariant.Line]: 'right',
@@ -55,8 +51,9 @@ function ResizeControl({
   const store = useStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const isHandleControl = variant === ResizeControlVariant.Handle;
+  const calculateScale = isHandleControl && autoScale;
   const scale = useStore(
-    useCallback(scaleSelector(isHandleControl && autoScale), [isHandleControl, autoScale]),
+    calculateScale ? (store) => `${Math.max(1 / store.transform[2], 1)}` : () => undefined,
     shallow
   );
   const resizer = useRef<XYResizerInstance | null>(null);
@@ -207,7 +204,7 @@ function ResizeControl({
   ]);
 
   const positionClassNames = controlPosition.split('-');
-
+  const styleName = isHandleControl ? 'backgroundColor' : 'borderColor';
   return (
     <div
       className={cc(['react-flow__resize-control', 'nodrag', ...positionClassNames, variant, className])}
@@ -215,7 +212,7 @@ function ResizeControl({
       style={{
         ...style,
         scale,
-        ...(color && { [isHandleControl ? 'backgroundColor' : 'borderColor']: color }),
+        ...(color && { [styleName]: color }),
       }}
     >
       {children}
@@ -232,4 +229,4 @@ export function ResizeControlLine(props: ResizeControlLineProps) {
  * @public
  *
  */
-export const NodeResizeControl = memo(ResizeControl);
+export const NodeResizeControl = ResizeControl;

@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
@@ -7,7 +6,7 @@ import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import { useResizeObserver } from './useResizeObserver';
 import NodeWrapper from '../../components/NodeWrapper';
-import type { Node, ReactFlowState } from '../../types';
+import type { Node } from '../../types';
 
 export type NodeRendererProps<NodeType extends Node> = Pick<
   GraphViewProps<NodeType>,
@@ -27,16 +26,17 @@ export type NodeRendererProps<NodeType extends Node> = Pick<
   | 'nodeClickDistance'
 >;
 
-const selector = (s: ReactFlowState) => ({
-  nodesDraggable: s.nodesDraggable,
-  nodesConnectable: s.nodesConnectable,
-  nodesFocusable: s.nodesFocusable,
-  elementsSelectable: s.elementsSelectable,
-  onError: s.onError,
-});
-
-function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
-  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, onError } = useStore(selector, shallow);
+export function NodeRenderer<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
+  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, onError } = useStore(
+    (s) => ({
+      nodesDraggable: s.nodesDraggable,
+      nodesConnectable: s.nodesConnectable,
+      nodesFocusable: s.nodesFocusable,
+      elementsSelectable: s.elementsSelectable,
+      onError: s.onError,
+    }),
+    shallow
+  );
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
 
@@ -97,7 +97,3 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
     </div>
   );
 }
-
-NodeRendererComponent.displayName = 'NodeRenderer';
-
-export const NodeRenderer = memo(NodeRendererComponent) as typeof NodeRendererComponent;

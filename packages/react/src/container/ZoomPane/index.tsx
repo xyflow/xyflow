@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
 import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from '@xyflow/system';
 
@@ -8,7 +8,6 @@ import { useResizeHandler } from '../../hooks/useResizeHandler';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { containerStyle } from '../../styles/utils';
 import type { FlowRendererProps } from '../FlowRenderer';
-import type { ReactFlowState } from '../../types';
 
 type ZoomPaneProps = Omit<
   FlowRendererProps,
@@ -16,12 +15,6 @@ type ZoomPaneProps = Omit<
 > & {
   isControlledViewport: boolean;
 };
-
-const selector = (s: ReactFlowState) => ({
-  userSelectionActive: s.userSelectionActive,
-  lib: s.lib,
-  connectionInProgress: s.connection.inProgress,
-});
 
 export function ZoomPane({
   onPaneContextMenu,
@@ -48,22 +41,26 @@ export function ZoomPane({
 }: ZoomPaneProps) {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const { userSelectionActive, lib, connectionInProgress } = useStore(selector, shallow);
+  const { userSelectionActive, lib, connectionInProgress } = useStore(
+    (s) => ({
+      userSelectionActive: s.userSelectionActive,
+      lib: s.lib,
+      connectionInProgress: s.connection.inProgress,
+    }),
+    shallow
+  );
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
   const panZoom = useRef<PanZoomInstance>();
 
   useResizeHandler(zoomPane);
 
-  const onTransformChange = useCallback(
-    (transform: Transform) => {
-      onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });
+  function onTransformChange(transform: Transform) {
+    onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });
 
-      if (!isControlledViewport) {
-        store.setState({ transform });
-      }
-    },
-    [onViewportChange, isControlledViewport]
-  );
+    if (!isControlledViewport) {
+      store.setState({ transform });
+    }
+  }
 
   useEffect(() => {
     if (zoomPane.current) {
@@ -74,7 +71,7 @@ export function ZoomPane({
         translateExtent,
         viewport: defaultViewport,
         onDraggingChange: (paneDragging) =>
-          store.setState((prevState) => prevState.paneDragging === paneDragging ? prevState : { paneDragging }),
+          store.setState((prevState) => (prevState.paneDragging === paneDragging ? prevState : { paneDragging })),
         onPanZoomStart: (event, vp) => {
           const { onViewportChangeStart, onMoveStart } = store.getState();
           onMoveStart?.(event, vp);

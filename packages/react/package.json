@@ -42,6 +42,7 @@
       },
       "default": "./dist/esm/index.js"
     },
+    "./dist/esm/index.mjs": "./dist/esm/index.js",
     "./dist/base.css": "./dist/base.css",
     "./dist/style.css": "./dist/style.css"
   },
@@ -57,10 +58,11 @@
     "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production && npm run css",
     "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config/ --dir dist ",
     "css-watch": "pnpm css --watch",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint --ext .js,.jsx,.ts,.tsx src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "react-compiler-runtime": "^1.0.0",
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.3",
     "zustand": "^4.4.0"

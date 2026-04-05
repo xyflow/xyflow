@@ -1,6 +1,5 @@
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
-import { cwd } from 'process';
+import fs from 'fs';
+import path from 'path';
 import { defineConfig } from 'rollup';
 import resolvePlugin from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
@@ -8,16 +7,46 @@ import replace from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import typescript from '@rollup/plugin-typescript';
+import { babel } from '@rollup/plugin-babel';
 
-const pkg = JSON.parse(readFileSync(resolve(cwd(), './package.json')));
-const isProd = process.env.NODE_ENV === 'production';
+const pkg = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), './package.json')));
 
 const defaultPlugins = [
   resolvePlugin(),
   commonjs({
     include: /node_modules/,
   }),
+  typescript({ compilerOptions: { jsx: 'preserve' } }),
 ];
+
+const reactVersion = pkg.peerDependencies?.react;
+if (reactVersion) {
+  const target = reactVersion?.replaceAll(/\W+/g, '');
+
+  defaultPlugins.unshift(
+    babel({
+      babelHelpers: 'bundled',
+      extensions: ['.ts', '.tsx'],
+      include: 'src/**/*',
+      plugins: [
+        [
+          'babel-plugin-react-compiler',
+          {
+            target,
+            // Fail the build on any compiler diagnostic
+            panicThreshold: 'all_errors',
+            environment: {
+              validateNoDerivedComputationsInEffects: true,
+              validateNoImpureFunctionsInRender: true,
+              enableJsxOutlining: true,
+            },
+          },
+        ],
+      ],
+      presets: ['@babel/preset-react'],
+    })
+  );
+}
 
 const onwarn = (warning, rollupWarn) => {
   if (warning.code !== 'CIRCULAR_DEPENDENCY') {
@@ -25,23 +54,21 @@ const onwarn = (warning, rollupWarn) => {
   }
 };
 
-const defineEsmConfig = (format) =>
-  defineConfig({
-    input: pkg.source,
-    output: {
-      file: format === 'js' ? pkg.module : pkg.module.replace('.js', '.mjs'),
-      format: 'esm',
-      banner: pkg.rollup?.vanilla ? undefined : '"use client"',
-    },
-    onwarn,
-    plugins: [
-      peerDepsExternal({
-        includeDependencies: true,
-      }),
-      ...defaultPlugins,
-      typescript(),
-    ],
-  });
+const esmConfig = defineConfig({
+  input: pkg.source,
+  output: {
+    file: pkg.module,
+    format: 'esm',
+    banner: pkg.rollup.vanilla ? undefined : '"use client"',
+  },
+  onwarn,
+  plugins: [
+    peerDepsExternal({
+      includeDependencies: true,
+    }),
+    ...defaultPlugins,
+  ],
+});
 
 const reactGlobals = {
   react: 'React',
@@ -50,12 +77,9 @@ const reactGlobals = {
 };
 
 const globals = {
-  ...(pkg.rollup?.vanilla ? {} : reactGlobals),
-  ...(pkg.rollup?.globals || {}),
+  ...(pkg.rollup.vanilla ? {} : reactGlobals),
+  ...pkg.rollup.globals,
 };
-
-const esmMjsConfig = defineEsmConfig('mjs');
-const esmJsConfig = defineEsmConfig('js');
 
 const umdConfig = defineConfig({
   input: pkg.source,
@@ -70,7 +94,6 @@ const umdConfig = defineConfig({
   plugins: [
     peerDepsExternal(),
     ...defaultPlugins,
-    typescript(),
     replace({
       preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
@@ -79,4 +102,4 @@ const umdConfig = defineConfig({
   ],
 });
 
-export default isProd ? [esmMjsConfig, esmJsConfig, umdConfig] : [esmJsConfig, esmMjsConfig];
+export default process.env.NODE_ENV === 'production' ? [esmConfig, umdConfig] : esmConfig;

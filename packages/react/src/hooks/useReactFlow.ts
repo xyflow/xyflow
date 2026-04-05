@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   EdgeRemoveChange,
   evaluateAbsolutePosition,
@@ -16,17 +15,7 @@ import useViewportHelper from './useViewportHelper';
 import { useStore, useStoreApi } from './useStore';
 import { useBatchContext } from '../components/BatchProvider';
 import { elementToRemoveChange, isEdge, isNode } from '../utils';
-import type {
-  ReactFlowInstance,
-  Node,
-  Edge,
-  InternalNode,
-  ReactFlowState,
-  GeneralHelpers,
-  FitViewOptions,
-} from '../types';
-
-const selector = (s: ReactFlowState) => !!s.panZoom;
+import type { ReactFlowInstance, Node, Edge, InternalNode, GeneralHelpers } from '../types';
 
 /**
  * This hook returns a ReactFlowInstance that can be used to update nodes and edges, manipulate the viewport, or query the current state of the flow.
@@ -61,44 +50,155 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 > {
   const viewportHelper = useViewportHelper();
   const store = useStoreApi();
-  const batchContext = useBatchContext();
-  const viewportInitialized = useStore(selector);
+  const { nodeQueue, edgeQueue } = useBatchContext();
+  const viewportInitialized = useStore((s) => !!s.panZoom);
 
-  const generalHelper = useMemo<GeneralHelpers<NodeType, EdgeType>>(() => {
-    const getInternalNode: GeneralHelpers<NodeType, EdgeType>['getInternalNode'] = (id) =>
-      store.getState().nodeLookup.get(id) as InternalNode<NodeType>;
+  const getNodeRect = (node: NodeType | { id: string }): Rect | null => {
+    const { nodeLookup, nodeOrigin } = store.getState();
 
-    const setNodes: GeneralHelpers<NodeType, EdgeType>['setNodes'] = (payload) => {
-      batchContext.nodeQueue.push(payload as NodeType[]);
+    const nodeToUse = isNode<NodeType>(node) ? node : nodeLookup.get(node.id)!;
+    const position = nodeToUse.parentId
+      ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.measured, nodeToUse.parentId, nodeLookup, nodeOrigin)
+      : nodeToUse.position;
+
+    const nodeWithPosition = {
+      ...nodeToUse,
+      position,
+      width: nodeToUse.measured?.width ?? nodeToUse.width,
+      height: nodeToUse.measured?.height ?? nodeToUse.height,
     };
 
-    const setEdges: GeneralHelpers<NodeType, EdgeType>['setEdges'] = (payload) => {
-      batchContext.edgeQueue.push(payload as EdgeType[]);
-    };
+    return nodeToRect(nodeWithPosition);
+  };
 
-    const getNodeRect = (node: NodeType | { id: string }): Rect | null => {
-      const { nodeLookup, nodeOrigin } = store.getState();
-
-      const nodeToUse = isNode<NodeType>(node) ? node : nodeLookup.get(node.id)!;
-      const position = nodeToUse.parentId
-        ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.measured, nodeToUse.parentId, nodeLookup, nodeOrigin)
-        : nodeToUse.position;
-
-      const nodeWithPosition = {
-        ...nodeToUse,
-        position,
-        width: nodeToUse.measured?.width ?? nodeToUse.width,
-        height: nodeToUse.measured?.height ?? nodeToUse.height,
+  const generalHelper: GeneralHelpers<NodeType, EdgeType> = {
+    getNodes: () => store.getState().nodes.map((n) => ({ ...n })) as NodeType[],
+    getNode: (id) => getInternalNode(id)?.internals.userNode as NodeType,
+    getInternalNode: (id) => store.getState().nodeLookup.get(id) as InternalNode<NodeType>,
+    getEdges: () => {
+      const { edges = [] } = store.getState();
+      return edges.map((e) => ({ ...e })) as EdgeType[];
+    },
+    getEdge: (id) => store.getState().edgeLookup.get(id) as EdgeType,
+    setNodes: (payload) => {
+      nodeQueue.push(payload as NodeType[]);
+    },
+    setEdges: (payload) => {
+      edgeQueue.push(payload as EdgeType[]);
+    },
+    addNodes: (payload) => {
+      const newNodes = Array.isArray(payload) ? payload : [payload];
+      nodeQueue.push((nodes) => [...nodes, ...newNodes]);
+    },
+    addEdges: (payload) => {
+      const newEdges = Array.isArray(payload) ? payload : [payload];
+      edgeQueue.push((edges) => [...edges, ...newEdges]);
+    },
+    toObject: () => {
+      const { nodes = [], edges = [], transform } = store.getState();
+      const [x, y, zoom] = transform;
+      return {
+        nodes: nodes.map((n) => ({ ...n })) as NodeType[],
+        edges: edges.map((e) => ({ ...e })) as EdgeType[],
+        viewport: {
+          x,
+          y,
+          zoom,
+        },
       };
+    },
+    deleteElements: async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [] }) => {
+      const {
+        nodes,
+        edges,
+        onNodesDelete,
+        onEdgesDelete,
+        triggerNodeChanges,
+        triggerEdgeChanges,
+        onDelete,
+        onBeforeDelete,
+      } = store.getState();
+      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
+        nodesToRemove,
+        edgesToRemove,
+        nodes,
+        edges,
+        onBeforeDelete,
+      });
 
-      return nodeToRect(nodeWithPosition);
-    };
+      const hasMatchingEdges = matchingEdges.length > 0;
+      const hasMatchingNodes = matchingNodes.length > 0;
 
-    const updateNode: GeneralHelpers<NodeType, EdgeType>['updateNode'] = (
-      id,
-      nodeUpdate,
-      options = { replace: false }
-    ) => {
+      if (hasMatchingEdges) {
+        const edgeChanges: EdgeRemoveChange[] = matchingEdges.map(elementToRemoveChange);
+
+        onEdgesDelete?.(matchingEdges);
+        triggerEdgeChanges(edgeChanges);
+      }
+
+      if (hasMatchingNodes) {
+        const nodeChanges: NodeRemoveChange[] = matchingNodes.map(elementToRemoveChange);
+
+        onNodesDelete?.(matchingNodes);
+        triggerNodeChanges(nodeChanges);
+      }
+
+      if (hasMatchingNodes || hasMatchingEdges) {
+        onDelete?.({ nodes: matchingNodes, edges: matchingEdges });
+      }
+
+      return { deletedNodes: matchingNodes, deletedEdges: matchingEdges };
+    },
+    /**
+     * Partial is defined as "the 2 nodes/areas are intersecting partially".
+     * If a is contained in b or b is contained in a, they are both
+     * considered fully intersecting.
+     */
+    getIntersectingNodes: (nodeOrRect, partially = true, nodes) => {
+      const isRect = isRectObject(nodeOrRect);
+      const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
+      const hasNodesOption = nodes !== undefined;
+
+      if (!nodeRect) {
+        return [];
+      }
+
+      return (nodes || store.getState().nodes).filter((n) => {
+        const internalNode = store.getState().nodeLookup.get(n.id);
+
+        if (internalNode && !isRect && (n.id === nodeOrRect.id || !internalNode.internals.positionAbsolute)) {
+          return false;
+        }
+
+        const currNodeRect = nodeToRect(hasNodesOption ? n : internalNode!);
+        const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
+        const partiallyVisible = partially && overlappingArea > 0;
+
+        return (
+          partiallyVisible ||
+          overlappingArea >= currNodeRect.width * currNodeRect.height ||
+          overlappingArea >= nodeRect.width * nodeRect.height
+        );
+      }) as NodeType[];
+    },
+    isNodeIntersecting: (nodeOrRect, area, partially = true) => {
+      const isRect = isRectObject(nodeOrRect);
+      const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
+
+      if (!nodeRect) {
+        return false;
+      }
+
+      const overlappingArea = getOverlappingArea(nodeRect, area);
+      const partiallyVisible = partially && overlappingArea > 0;
+
+      return (
+        partiallyVisible ||
+        overlappingArea >= area.width * area.height ||
+        overlappingArea >= nodeRect.width * nodeRect.height
+      );
+    },
+    updateNode: (id, nodeUpdate, options = { replace: false }) => {
       setNodes((prevNodes) =>
         prevNodes.map((node) => {
           if (node.id === id) {
@@ -109,13 +209,18 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           return node;
         })
       );
-    };
-
-    const updateEdge: GeneralHelpers<NodeType, EdgeType>['updateEdge'] = (
-      id,
-      edgeUpdate,
-      options = { replace: false }
-    ) => {
+    },
+    updateNodeData: (id, dataUpdate, options = { replace: false }) => {
+      updateNode(
+        id,
+        (node) => {
+          const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
+          return options.replace ? { ...node, data: nextData } : { ...node, data: { ...node.data, ...nextData } };
+        },
+        options
+      );
+    },
+    updateEdge: (id, edgeUpdate, options = { replace: false }) => {
       setEdges((prevEdges) =>
         prevEdges.map((edge) => {
           if (edge.id === id) {
@@ -126,190 +231,53 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           return edge;
         })
       );
-    };
+    },
+    updateEdgeData: (id, dataUpdate, options = { replace: false }) => {
+      updateEdge(
+        id,
+        (edge) => {
+          const nextData = typeof dataUpdate === 'function' ? dataUpdate(edge) : dataUpdate;
+          return options.replace ? { ...edge, data: nextData } : { ...edge, data: { ...edge.data, ...nextData } };
+        },
+        options
+      );
+    },
+    getNodesBounds: (nodes) => {
+      const { nodeLookup, nodeOrigin } = store.getState();
+      return getNodesBounds(nodes, { nodeLookup, nodeOrigin });
+    },
+    getHandleConnections: ({ type, id, nodeId }) =>
+      Array.from(
+        store
+          .getState()
+          .connectionLookup.get(`${nodeId}-${type}${id ? `-${id}` : ''}`)
+          ?.values() ?? []
+      ),
+    getNodeConnections: ({ type, handleId, nodeId }) =>
+      Array.from(
+        store
+          .getState()
+          .connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
+          ?.values() ?? []
+      ),
+    fitView: async (options) => {
+      // We either create a new Promise or reuse the existing one
+      // Even if fitView is called multiple times in a row, we only end up with a single Promise
+      const fitViewResolver = store.getState().fitViewResolver ?? withResolvers<boolean>();
 
-    return {
-      getNodes: () => store.getState().nodes.map((n) => ({ ...n })) as NodeType[],
-      getNode: (id) => getInternalNode(id)?.internals.userNode as NodeType,
-      getInternalNode,
-      getEdges: () => {
-        const { edges = [] } = store.getState();
-        return edges.map((e) => ({ ...e })) as EdgeType[];
-      },
-      getEdge: (id) => store.getState().edgeLookup.get(id) as EdgeType,
-      setNodes,
-      setEdges,
-      addNodes: (payload) => {
-        const newNodes = Array.isArray(payload) ? payload : [payload];
-        batchContext.nodeQueue.push((nodes) => [...nodes, ...newNodes]);
-      },
-      addEdges: (payload) => {
-        const newEdges = Array.isArray(payload) ? payload : [payload];
-        batchContext.edgeQueue.push((edges) => [...edges, ...newEdges]);
-      },
-      toObject: () => {
-        const { nodes = [], edges = [], transform } = store.getState();
-        const [x, y, zoom] = transform;
-        return {
-          nodes: nodes.map((n) => ({ ...n })) as NodeType[],
-          edges: edges.map((e) => ({ ...e })) as EdgeType[],
-          viewport: {
-            x,
-            y,
-            zoom,
-          },
-        };
-      },
-      deleteElements: async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [] }) => {
-        const {
-          nodes,
-          edges,
-          onNodesDelete,
-          onEdgesDelete,
-          triggerNodeChanges,
-          triggerEdgeChanges,
-          onDelete,
-          onBeforeDelete,
-        } = store.getState();
-        const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
-          nodesToRemove,
-          edgesToRemove,
-          nodes,
-          edges,
-          onBeforeDelete,
-        });
+      // We schedule a fitView by setting fitViewQueued and triggering a setNodes
+      store.setState({ fitViewQueued: true, fitViewOptions: options, fitViewResolver });
+      nodeQueue.push((nodes) => [...nodes]);
 
-        const hasMatchingEdges = matchingEdges.length > 0;
-        const hasMatchingNodes = matchingNodes.length > 0;
+      return fitViewResolver.promise;
+    },
+  };
 
-        if (hasMatchingEdges) {
-          const edgeChanges: EdgeRemoveChange[] = matchingEdges.map(elementToRemoveChange);
+  const { getInternalNode, updateEdge, updateNode, setNodes, setEdges } = generalHelper;
 
-          onEdgesDelete?.(matchingEdges);
-          triggerEdgeChanges(edgeChanges);
-        }
-
-        if (hasMatchingNodes) {
-          const nodeChanges: NodeRemoveChange[] = matchingNodes.map(elementToRemoveChange);
-
-          onNodesDelete?.(matchingNodes);
-          triggerNodeChanges(nodeChanges);
-        }
-
-        if (hasMatchingNodes || hasMatchingEdges) {
-          onDelete?.({ nodes: matchingNodes, edges: matchingEdges });
-        }
-
-        return { deletedNodes: matchingNodes, deletedEdges: matchingEdges };
-      },
-      /**
-       * Partial is defined as "the 2 nodes/areas are intersecting partially".
-       * If a is contained in b or b is contained in a, they are both
-       * considered fully intersecting.
-       */
-      getIntersectingNodes: (nodeOrRect, partially = true, nodes) => {
-        const isRect = isRectObject(nodeOrRect);
-        const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
-        const hasNodesOption = nodes !== undefined;
-
-        if (!nodeRect) {
-          return [];
-        }
-
-        return (nodes || store.getState().nodes).filter((n) => {
-          const internalNode = store.getState().nodeLookup.get(n.id);
-
-          if (internalNode && !isRect && (n.id === nodeOrRect.id || !internalNode.internals.positionAbsolute)) {
-            return false;
-          }
-
-          const currNodeRect = nodeToRect(hasNodesOption ? n : internalNode!);
-          const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
-          const partiallyVisible = partially && overlappingArea > 0;
-
-          return (
-            partiallyVisible ||
-            overlappingArea >= currNodeRect.width * currNodeRect.height ||
-            overlappingArea >= nodeRect.width * nodeRect.height
-          );
-        }) as NodeType[];
-      },
-      isNodeIntersecting: (nodeOrRect, area, partially = true) => {
-        const isRect = isRectObject(nodeOrRect);
-        const nodeRect = isRect ? nodeOrRect : getNodeRect(nodeOrRect);
-
-        if (!nodeRect) {
-          return false;
-        }
-
-        const overlappingArea = getOverlappingArea(nodeRect, area);
-        const partiallyVisible = partially && overlappingArea > 0;
-
-        return (
-          partiallyVisible ||
-          overlappingArea >= area.width * area.height ||
-          overlappingArea >= nodeRect.width * nodeRect.height
-        );
-      },
-      updateNode,
-      updateNodeData: (id, dataUpdate, options = { replace: false }) => {
-        updateNode(
-          id,
-          (node) => {
-            const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
-            return options.replace ? { ...node, data: nextData } : { ...node, data: { ...node.data, ...nextData } };
-          },
-          options
-        );
-      },
-      updateEdge,
-      updateEdgeData: (id, dataUpdate, options = { replace: false }) => {
-        updateEdge(
-          id,
-          (edge) => {
-            const nextData = typeof dataUpdate === 'function' ? dataUpdate(edge) : dataUpdate;
-            return options.replace ? { ...edge, data: nextData } : { ...edge, data: { ...edge.data, ...nextData } };
-          },
-          options
-        );
-      },
-      getNodesBounds: (nodes: (NodeType | InternalNode | string)[]): Rect => {
-        const { nodeLookup, nodeOrigin } = store.getState();
-        return getNodesBounds(nodes, { nodeLookup, nodeOrigin });
-      },
-      getHandleConnections: ({ type, id, nodeId }) =>
-        Array.from(
-          store
-            .getState()
-            .connectionLookup.get(`${nodeId}-${type}${id ? `-${id}` : ''}`)
-            ?.values() ?? []
-        ),
-      getNodeConnections: ({ type, handleId, nodeId }) =>
-        Array.from(
-          store
-            .getState()
-            .connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
-            ?.values() ?? []
-        ),
-      fitView: async (options: FitViewOptions<NodeType> | undefined) => {
-        // We either create a new Promise or reuse the existing one
-        // Even if fitView is called multiple times in a row, we only end up with a single Promise
-        const fitViewResolver = store.getState().fitViewResolver ?? withResolvers<boolean>();
-
-        // We schedule a fitView by setting fitViewQueued and triggering a setNodes
-        store.setState({ fitViewQueued: true, fitViewOptions: options, fitViewResolver });
-        batchContext.nodeQueue.push((nodes) => [...nodes]);
-
-        return fitViewResolver.promise;
-      },
-    };
-  }, []);
-
-  return useMemo(() => {
-    return {
-      ...generalHelper,
-      ...viewportHelper,
-      viewportInitialized,
-    };
-  }, [viewportInitialized]);
+  return {
+    ...generalHelper,
+    ...viewportHelper,
+    viewportInitialized,
+  };
 }

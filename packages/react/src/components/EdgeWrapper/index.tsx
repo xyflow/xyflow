@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX, memo } from 'react';
+import { useState, useRef, type KeyboardEvent, JSX } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -49,68 +49,54 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
     EdgeComponent = edgeTypes?.['default'] || builtinEdgeTypes.default;
   }
 
-  const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
+  const isFocusable = !!(edge.focusable || (edgesFocusable && edge.focusable === undefined));
   const isReconnectable =
-    typeof onReconnect !== 'undefined' &&
-    (edge.reconnectable || (edgesReconnectable && typeof edge.reconnectable === 'undefined'));
-  const isSelectable = !!(edge.selectable || (elementsSelectable && typeof edge.selectable === 'undefined'));
+    onReconnect !== undefined && (edge.reconnectable || (edgesReconnectable && edge.reconnectable === undefined));
+  const isSelectable = !!(edge.selectable || (elementsSelectable && edge.selectable === undefined));
 
   const edgeRef = useRef<SVGGElement>(null);
-  const [updateHover, setUpdateHover] = useState<boolean>(false);
-  const [reconnecting, setReconnecting] = useState<boolean>(false);
+  const [updateHover, setUpdateHover] = useState(false);
+  const [reconnecting, setReconnecting] = useState(false);
   const store = useStoreApi();
 
-  const { zIndex, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = useStore(
-    useCallback(
-      (store) => {
-        const sourceNode = store.nodeLookup.get(edge.source);
-        const targetNode = store.nodeLookup.get(edge.target);
+  const { zIndex, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = useStore((store) => {
+    const sourceNode = store.nodeLookup.get(edge.source);
+    const targetNode = store.nodeLookup.get(edge.target);
 
-        if (!sourceNode || !targetNode) {
-          return {
-            zIndex: edge.zIndex,
-            ...nullPosition,
-          };
-        }
+    if (!sourceNode || !targetNode) {
+      return {
+        zIndex: edge.zIndex,
+        ...nullPosition,
+      };
+    }
 
-        const edgePosition = getEdgePosition({
-          id,
-          sourceNode,
-          targetNode,
-          sourceHandle: edge.sourceHandle || null,
-          targetHandle: edge.targetHandle || null,
-          connectionMode: store.connectionMode,
-          onError,
-        });
+    const edgePosition = getEdgePosition({
+      id,
+      sourceNode,
+      targetNode,
+      sourceHandle: edge.sourceHandle || null,
+      targetHandle: edge.targetHandle || null,
+      connectionMode: store.connectionMode,
+      onError,
+    });
 
-        const zIndex = getElevatedEdgeZIndex({
-          selected: edge.selected,
-          zIndex: edge.zIndex,
-          sourceNode,
-          targetNode,
-          elevateOnSelect: store.elevateEdgesOnSelect,
-          zIndexMode: store.zIndexMode,
-        });
+    const zIndex = getElevatedEdgeZIndex({
+      selected: edge.selected,
+      zIndex: edge.zIndex,
+      sourceNode,
+      targetNode,
+      elevateOnSelect: store.elevateEdgesOnSelect,
+      zIndexMode: store.zIndexMode,
+    });
 
-        return {
-          zIndex,
-          ...(edgePosition || nullPosition),
-        };
-      },
-      [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex]
-    ),
-    shallow
-  );
+    return {
+      zIndex,
+      ...(edgePosition || nullPosition),
+    };
+  }, shallow);
 
-  const markerStartUrl = useMemo(
-    () => (edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId)}')` : undefined),
-    [edge.markerStart, rfId]
-  );
-
-  const markerEndUrl = useMemo(
-    () => (edge.markerEnd ? `url('#${getMarkerId(edge.markerEnd, rfId)}')` : undefined),
-    [edge.markerEnd, rfId]
-  );
+  const markerStartUrl = edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId)}')` : undefined;
+  const markerEndUrl = edge.markerEnd ? `url('#${getMarkerId(edge.markerEnd, rfId)}')` : undefined;
 
   if (edge.hidden || sourceX === null || sourceY === null || targetX === null || targetY === null) {
     return null;
@@ -130,9 +116,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
       }
     }
 
-    if (onClick) {
-      onClick(event, edge);
-    }
+    onClick?.(event, edge);
   };
 
   const onEdgeDoubleClick = onDoubleClick
@@ -265,4 +249,4 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   );
 }
 
-export default memo(EdgeWrapper) as typeof EdgeWrapper;
+export default EdgeWrapper;
