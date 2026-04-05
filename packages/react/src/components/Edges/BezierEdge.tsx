@@ -26,7 +26,7 @@ const createBezierEdge = (params: { isInternal: boolean }): FC<BezierEdgeProps> 
     pathOptions,
     interactionWidth,
   }) {
-    'use memo';
+    'use memo'; // Hint for the React Compiler to treat this as a component
     const [path, labelX, labelY] = getBezierPath({
       sourceX,
       sourceY,
@@ -36,12 +36,9 @@ const createBezierEdge = (params: { isInternal: boolean }): FC<BezierEdgeProps> 
       targetPosition,
       curvature: pathOptions?.curvature,
     });
-
-    const _id = params.isInternal ? undefined : id;
-
     return (
       <BaseEdge
-        id={_id}
+        id={params.isInternal ? undefined : id}
         path={path}
         labelX={labelX}
         labelY={labelY}
