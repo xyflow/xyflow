@@ -45,23 +45,23 @@ export function useNodesInitialized(
     includeHiddenNodes: false,
   }
 ): boolean {
-  const initialized = useStore((s) => {
-    if (!options.includeHiddenNodes) {
-      return s.nodesInitialized;
-    }
+  const initialized = useStore(
+    !options.includeHiddenNodes
+      ? (s) => s.nodesInitialized
+      : (s) => {
+          if (s.nodeLookup.size === 0) {
+            return false;
+          }
 
-    if (s.nodeLookup.size === 0) {
-      return false;
-    }
+          for (const { internals } of s.nodeLookup.values()) {
+            if (internals.handleBounds === undefined || !nodeHasDimensions(internals.userNode)) {
+              return false;
+            }
+          }
 
-    for (const { internals } of s.nodeLookup.values()) {
-      if (internals.handleBounds === undefined || !nodeHasDimensions(internals.userNode)) {
-        return false;
-      }
-    }
-
-    return true;
-  });
+          return true;
+        }
+  );
 
   return initialized;
 }
