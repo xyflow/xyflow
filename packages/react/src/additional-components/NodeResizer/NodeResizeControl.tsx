@@ -51,10 +51,11 @@ function ResizeControl({
   const store = useStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const isHandleControl = variant === ResizeControlVariant.Handle;
-  const scale = useStore((store) => {
-    const calculateScale = isHandleControl && autoScale;
-    return calculateScale ? `${Math.max(1 / store.transform[2], 1)}` : undefined;
-  }, shallow);
+  const calculateScale = isHandleControl && autoScale;
+  const scale = useStore(
+    calculateScale ? (store) => `${Math.max(1 / store.transform[2], 1)}` : () => undefined,
+    shallow
+  );
   const resizer = useRef<XYResizerInstance | null>(null);
   const controlPosition = position ?? defaultPositions[variant];
 

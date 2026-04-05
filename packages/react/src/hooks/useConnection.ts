@@ -10,19 +10,6 @@ function storeSelector(s: ReactFlowStore) {
     : { ...s.connection };
 }
 
-function getSelector<NodeType extends Node = Node, SelectorReturn = ConnectionState<InternalNode<NodeType>>>(
-  connectionSelector?: (connection: ConnectionState<InternalNode<NodeType>>) => SelectorReturn
-): (s: ReactFlowStore) => SelectorReturn | ConnectionState<InternalNode> {
-  if (connectionSelector) {
-    const combinedSelector = (s: ReactFlowStore) => {
-      const connection = storeSelector(s) as ConnectionState<InternalNode<NodeType>>;
-      return connectionSelector(connection);
-    };
-    return combinedSelector;
-  }
-
-  return storeSelector;
-}
 /**
  * The `useConnection` hook returns the current connection when there is an active
  * connection interaction. If no connection interaction is active, it returns null
@@ -55,6 +42,13 @@ function getSelector<NodeType extends Node = Node, SelectorReturn = ConnectionSt
 export function useConnection<NodeType extends Node = Node, SelectorReturn = ConnectionState<InternalNode<NodeType>>>(
   connectionSelector?: (connection: ConnectionState<InternalNode<NodeType>>) => SelectorReturn
 ): SelectorReturn {
-  const combinedSelector = getSelector<NodeType, SelectorReturn>(connectionSelector);
-  return useStore(combinedSelector, shallow) as SelectorReturn;
+  return useStore(
+    connectionSelector
+      ? (s): unknown => {
+          const connection = storeSelector(s) as ConnectionState<InternalNode<NodeType>>;
+          return connectionSelector(connection);
+        }
+      : storeSelector,
+    shallow
+  ) as SelectorReturn;
 }
