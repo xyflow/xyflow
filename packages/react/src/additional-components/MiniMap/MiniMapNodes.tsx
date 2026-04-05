@@ -6,12 +6,11 @@ import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
 import { MiniMapNode } from './MiniMapNode';
-import type { ReactFlowState, Node } from '../../types';
+import type { Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
 
 declare const window: any;
 
-const selectorNodeIds = (s: ReactFlowState) => s.nodes.map((node) => node.id);
 const getAttrFunction = <NodeType extends Node>(func: any): GetMiniMapNodeAttribute<NodeType> =>
   func instanceof Function ? func : () => func;
 
@@ -28,7 +27,7 @@ function MiniMapNodes<NodeType extends Node>({
   nodeComponent: NodeComponent = MiniMapNode,
   onClick,
 }: MiniMapNodesProps<NodeType>) {
-  const nodeIds = useStore(selectorNodeIds, shallow);
+  const nodeIds = useStore((s) => s.nodes.map((node) => node.id), shallow);
   const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);

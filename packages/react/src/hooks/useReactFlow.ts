@@ -21,12 +21,9 @@ import type {
   Node,
   Edge,
   InternalNode,
-  ReactFlowState,
   GeneralHelpers,
   FitViewOptions,
 } from '../types';
-
-const selector = (s: ReactFlowState) => !!s.panZoom;
 
 /**
  * This hook returns a ReactFlowInstance that can be used to update nodes and edges, manipulate the viewport, or query the current state of the flow.
@@ -62,7 +59,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   const viewportHelper = useViewportHelper();
   const store = useStoreApi();
   const batchContext = useBatchContext();
-  const viewportInitialized = useStore(selector);
+  const viewportInitialized = useStore((s) => !!s.panZoom);
 
   const getInternalNode: GeneralHelpers<NodeType, EdgeType>['getInternalNode'] = (id) =>
     store.getState().nodeLookup.get(id) as InternalNode<NodeType>;

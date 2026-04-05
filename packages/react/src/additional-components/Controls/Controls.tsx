@@ -5,7 +5,6 @@ import { shallow } from 'zustand/shallow';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useReactFlow } from '../../hooks/useReactFlow';
 import { Panel } from '../../components/Panel';
-import { type ReactFlowState } from '../../types';
 
 import { PlusIcon } from './Icons/Plus';
 import { MinusIcon } from './Icons/Minus';
@@ -14,13 +13,6 @@ import { LockIcon } from './Icons/Lock';
 import { UnlockIcon } from './Icons/Unlock';
 import { ControlButton } from './ControlButton';
 import type { ControlProps } from './types';
-
-const selector = (s: ReactFlowState) => ({
-  isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
-  minZoomReached: s.transform[2] <= s.minZoom,
-  maxZoomReached: s.transform[2] >= s.maxZoom,
-  ariaLabelConfig: s.ariaLabelConfig,
-});
 
 function ControlsComponent({
   style,
@@ -39,7 +31,12 @@ function ControlsComponent({
   'aria-label': ariaLabel,
 }: ControlProps) {
   const store = useStoreApi();
-  const { isInteractive, minZoomReached, maxZoomReached, ariaLabelConfig } = useStore(selector, shallow);
+  const { isInteractive, minZoomReached, maxZoomReached, ariaLabelConfig } = useStore((s) => ({
+    isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
+    minZoomReached: s.transform[2] <= s.minZoom,
+    maxZoomReached: s.transform[2] >= s.maxZoom,
+    ariaLabelConfig: s.ariaLabelConfig,
+  }), shallow);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const onZoomInHandler = () => {

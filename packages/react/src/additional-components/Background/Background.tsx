@@ -14,8 +14,6 @@ const defaultSize = {
   [BackgroundVariant.Cross]: 6,
 };
 
-const selector = (s: ReactFlowState) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` });
-
 function BackgroundComponent({
   id,
   variant = BackgroundVariant.Dots,
@@ -32,7 +30,7 @@ function BackgroundComponent({
   patternClassName,
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const { transform, patternId } = useStore(selector, shallow);
+  const { transform, patternId } = useStore((s) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` }), shallow);
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;

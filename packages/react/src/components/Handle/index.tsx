@@ -37,12 +37,6 @@ export type HandleProps = HandlePropsSystem &
     onConnect?: OnConnect;
   };
 
-const selector = (s: ReactFlowState) => ({
-  connectOnClick: s.connectOnClick,
-  noPanClassName: s.noPanClassName,
-  rfId: s.rfId,
-});
-
 const connectingSelector =
   (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
     const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
@@ -85,7 +79,11 @@ function HandleComponent(
   const isTarget = type === 'target';
   const store = useStoreApi();
   const nodeId = useNodeId();
-  const { connectOnClick, noPanClassName, rfId } = useStore(selector, shallow);
+  const { connectOnClick, noPanClassName, rfId } = useStore((s) => ({
+    connectOnClick: s.connectOnClick,
+    noPanClassName: s.noPanClassName,
+    rfId: s.rfId,
+  }), shallow);
   const {
     connectingFrom,
     connectingTo,

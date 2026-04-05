@@ -19,8 +19,8 @@ export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: any = emptyTypes): an
   const typesRef = useRef(nodeOrEdgeTypes);
   const store = useStoreApi();
 
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
+    useEffect(() => {
       const usedKeys = new Set([...Object.keys(typesRef.current), ...Object.keys(nodeOrEdgeTypes)]);
 
       for (const key of usedKeys) {
@@ -31,6 +31,6 @@ export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: any = emptyTypes): an
       }
 
       typesRef.current = nodeOrEdgeTypes;
-    }
-  }, [nodeOrEdgeTypes]);
+    }, [nodeOrEdgeTypes]);
+  }
 }

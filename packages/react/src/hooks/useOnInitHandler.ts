@@ -12,7 +12,7 @@ export function useOnInitHandler<NodeType extends Node = Node, EdgeType extends 
   onInit: OnInit<NodeType, EdgeType> | undefined
 ) {
   const rfInstance = useReactFlow<NodeType, EdgeType>();
-  const isInitialized = useRef<boolean>(false);
+  const isInitialized = useRef(false);
 
   useEffect(() => {
     if (!isInitialized.current && rfInstance.viewportInitialized && onInit) {

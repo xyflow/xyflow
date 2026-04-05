@@ -1,9 +1,9 @@
-import { useCallback, CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import { Position, getNodeToolbarTransform, getInternalNodesBounds, NodeLookup } from '@xyflow/system';
 
-import { InternalNode, ReactFlowState } from '../../types';
+import { InternalNode } from '../../types';
 import { useStore } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { NodeToolbarPortal } from './NodeToolbarPortal';
@@ -30,13 +30,6 @@ const nodesEqualityFn = (a: NodeLookup, b: NodeLookup) => {
 
   return true;
 };
-
-const storeSelector = (state: ReactFlowState) => ({
-  x: state.transform[0],
-  y: state.transform[1],
-  zoom: state.transform[2],
-  selectedNodesCount: state.nodes.filter((node) => node.selected).length,
-});
 
 /**
  * This component can render a toolbar or tooltip to one side of a custom node. This
@@ -86,24 +79,25 @@ export function NodeToolbar({
 }: NodeToolbarProps) {
   const contextNodeId = useNodeId();
 
-  const nodesSelector = useCallback(
-    (state: ReactFlowState): NodeLookup => {
-      const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
-      const internalNodes = nodeIds.reduce<NodeLookup>((res, id) => {
-        const node = state.nodeLookup.get(id);
-        if (node) {
-          res.set(node.id, node);
-        }
+  const nodes = useStore((state): NodeLookup => {
+    const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
+    const internalNodes = nodeIds.reduce<NodeLookup>((res, id) => {
+      const node = state.nodeLookup.get(id);
+      if (node) {
+        res.set(node.id, node);
+      }
 
-        return res;
-      }, new Map());
+      return res;
+    }, new Map());
 
-      return internalNodes;
-    },
-    [nodeId, contextNodeId]
-  );
-  const nodes = useStore(nodesSelector, nodesEqualityFn);
-  const { x, y, zoom, selectedNodesCount } = useStore(storeSelector, shallow);
+    return internalNodes;
+  }, nodesEqualityFn);
+  const { x, y, zoom, selectedNodesCount } = useStore((state) => ({
+    x: state.transform[0],
+    y: state.transform[1],
+    zoom: state.transform[2],
+    selectedNodesCount: state.nodes.filter((node) => node.selected).length,
+  }), shallow);
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   const isActive =
