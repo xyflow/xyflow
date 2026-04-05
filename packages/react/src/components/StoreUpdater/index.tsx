@@ -168,11 +168,15 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         else store.setState({ [fieldName]: fieldValue });
       }
 
-      previousFields.current = props;
+      setProps(previousFields, props);
     },
     // Only re-run the effect if one of the fields we track changes
     fieldsToTrack.map((fieldName) => props[fieldName])
   );
 
   return null;
+}
+
+function setProps(ref: any, props: unknown) {
+  ref.current = props;
 }
