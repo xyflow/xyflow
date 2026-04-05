@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import { UseBoundStoreWithEqualityFn, useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
 import { StoreApi } from 'zustand';
 import { errorMessages } from '@xyflow/system';
@@ -66,14 +66,11 @@ function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>
     throw new Error(zustandErrorMessage);
   }
 
-  return useMemo(
-    () => ({
-      getState: store.getState,
-      setState: store.setState,
-      subscribe: store.subscribe,
-    }),
-    [store]
-  );
+  return {
+    getState: store.getState,
+    setState: store.setState,
+    subscribe: store.subscribe,
+  };
 }
 
 export { useStore, useStoreApi };
