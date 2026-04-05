@@ -35,6 +35,13 @@ module.exports = {
         importNames: ['memo', 'useCallback', 'useMemo'],
       },
     ],
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_', // allow underscores in destructuring
+      },
+    ],
   },
   overrides: [
     {
