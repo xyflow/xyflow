@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
-import { FC } from 'react';
 import { Position, getBezierPath } from '@xyflow/system';
 
 import { BaseEdge } from './BaseEdge';
 import type { BezierEdgeProps } from '../../types';
 
-const createBezierEdge = (params: { isInternal: boolean }): FC<BezierEdgeProps> =>
+const createBezierEdge = (params: { isInternal: boolean }) =>
   function MyComponent({
     id,
     sourceX,
@@ -25,7 +24,7 @@ const createBezierEdge = (params: { isInternal: boolean }): FC<BezierEdgeProps> 
     markerStart,
     pathOptions,
     interactionWidth,
-  }) {
+  }: BezierEdgeProps) {
     'use memo'; // Hint for the React Compiler to treat this as a component
     const [path, labelX, labelY] = getBezierPath({
       sourceX,

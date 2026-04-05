@@ -39,7 +39,7 @@ const defaultPlugins = [
   commonjs({
     include: /node_modules/,
   }),
-  typescript(),
+  typescript({ compilerOptions: { jsx: 'preserve' } }),
 ];
 
 const onwarn = (warning, rollupWarn) => {
