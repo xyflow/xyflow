@@ -7,7 +7,7 @@ import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils';
-import type { ReactFlowProps, ReactFlowState } from '../../types';
+import type { ReactFlowProps } from '../../types';
 
 type PaneProps = {
   isSelecting: boolean;
@@ -31,13 +31,6 @@ type PaneProps = {
   >
 >;
 
-const selector = (s: ReactFlowState) => ({
-  userSelectionActive: s.userSelectionActive,
-  elementsSelectable: s.elementsSelectable,
-  connectionInProgress: s.connection.inProgress,
-  dragging: s.paneDragging,
-});
-
 export function Pane({
   isSelecting,
   selectionKeyPressed,
@@ -56,7 +49,12 @@ export function Pane({
   children,
 }: PaneProps) {
   const store = useStoreApi();
-  const { userSelectionActive, elementsSelectable, dragging, connectionInProgress } = useStore(selector, shallow);
+  const { userSelectionActive, elementsSelectable, dragging, connectionInProgress } = useStore((s) => ({
+    userSelectionActive: s.userSelectionActive,
+    elementsSelectable: s.elementsSelectable,
+    connectionInProgress: s.connection.inProgress,
+    dragging: s.paneDragging,
+  }), shallow);
   const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);
 
   const container = useRef<HTMLDivElement | null>(null);
