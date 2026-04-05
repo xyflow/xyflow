@@ -1,10 +1,4 @@
-import {
-  pointToRendererPoint,
-  getViewportForBounds,
-  type XYPosition,
-  rendererPointToPoint,
-  SnapGrid,
-} from '@xyflow/system';
+import { pointToRendererPoint, getViewportForBounds, rendererPointToPoint } from '@xyflow/system';
 
 import { useStoreApi } from '../hooks/useStore';
 import type { ViewportHelperFunctions } from '../types';
@@ -79,7 +73,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
 
       return Promise.resolve(true);
     },
-    screenToFlowPosition: (clientPosition: XYPosition, options: { snapToGrid?: boolean; snapGrid?: SnapGrid } = {}) => {
+    screenToFlowPosition: (clientPosition, options = {}) => {
       const { transform, snapGrid, snapToGrid, domNode } = store.getState();
 
       if (!domNode) {
@@ -96,7 +90,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
 
       return pointToRendererPoint(correctedPosition, transform, _snapToGrid, _snapGrid);
     },
-    flowToScreenPosition: (flowPosition: XYPosition) => {
+    flowToScreenPosition: (flowPosition) => {
       const { transform, domNode } = store.getState();
 
       if (!domNode) {
