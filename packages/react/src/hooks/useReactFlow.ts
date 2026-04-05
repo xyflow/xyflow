@@ -15,7 +15,7 @@ import useViewportHelper from './useViewportHelper';
 import { useStore, useStoreApi } from './useStore';
 import { useBatchContext } from '../components/BatchProvider';
 import { elementToRemoveChange, isEdge, isNode } from '../utils';
-import type { ReactFlowInstance, Node, Edge, InternalNode, GeneralHelpers, FitViewOptions } from '../types';
+import type { ReactFlowInstance, Node, Edge, InternalNode, GeneralHelpers } from '../types';
 
 /**
  * This hook returns a ReactFlowInstance that can be used to update nodes and edges, manipulate the viewport, or query the current state of the flow.
@@ -50,7 +50,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 > {
   const viewportHelper = useViewportHelper();
   const store = useStoreApi();
-  const batchContext = useBatchContext();
+  const { nodeQueue, edgeQueue } = useBatchContext();
   const viewportInitialized = useStore((s) => !!s.panZoom);
 
   const getNodeRect = (node: NodeType | { id: string }): Rect | null => {
@@ -81,18 +81,18 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     },
     getEdge: (id) => store.getState().edgeLookup.get(id) as EdgeType,
     setNodes: (payload) => {
-      batchContext.nodeQueue.push(payload as NodeType[]);
+      nodeQueue.push(payload as NodeType[]);
     },
     setEdges: (payload) => {
-      batchContext.edgeQueue.push(payload as EdgeType[]);
+      edgeQueue.push(payload as EdgeType[]);
     },
     addNodes: (payload) => {
       const newNodes = Array.isArray(payload) ? payload : [payload];
-      batchContext.nodeQueue.push((nodes) => [...nodes, ...newNodes]);
+      nodeQueue.push((nodes) => [...nodes, ...newNodes]);
     },
     addEdges: (payload) => {
       const newEdges = Array.isArray(payload) ? payload : [payload];
-      batchContext.edgeQueue.push((edges) => [...edges, ...newEdges]);
+      edgeQueue.push((edges) => [...edges, ...newEdges]);
     },
     toObject: () => {
       const { nodes = [], edges = [], transform } = store.getState();
@@ -242,7 +242,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         options
       );
     },
-    getNodesBounds: (nodes: (NodeType | InternalNode | string)[]): Rect => {
+    getNodesBounds: (nodes) => {
       const { nodeLookup, nodeOrigin } = store.getState();
       return getNodesBounds(nodes, { nodeLookup, nodeOrigin });
     },
@@ -260,14 +260,14 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           .connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
           ?.values() ?? []
       ),
-    fitView: async (options: FitViewOptions<NodeType> | undefined) => {
+    fitView: async (options) => {
       // We either create a new Promise or reuse the existing one
       // Even if fitView is called multiple times in a row, we only end up with a single Promise
       const fitViewResolver = store.getState().fitViewResolver ?? withResolvers<boolean>();
 
       // We schedule a fitView by setting fitViewQueued and triggering a setNodes
       store.setState({ fitViewQueued: true, fitViewOptions: options, fitViewResolver });
-      batchContext.nodeQueue.push((nodes) => [...nodes]);
+      nodeQueue.push((nodes) => [...nodes]);
 
       return fitViewResolver.promise;
     },
