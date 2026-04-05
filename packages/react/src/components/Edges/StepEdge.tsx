@@ -1,11 +1,9 @@
 /* eslint-disable react/prop-types */
-import type { FC } from 'react';
-
 import { SmoothStepEdge } from './SmoothStepEdge';
 import type { StepEdgeProps } from '../../types';
 
-const createStepEdge = (params: { isInternal: boolean }): FC<StepEdgeProps> =>
-  function MyComponent({ id, ...props }) {
+const createStepEdge = (params: { isInternal: boolean }) =>
+  function MyComponent({ id, ...props }: StepEdgeProps) {
     'use memo'; // Hint for the React Compiler to treat this as a component
     return (
       <SmoothStepEdge
@@ -39,13 +37,15 @@ const createStepEdge = (params: { isInternal: boolean }): FC<StepEdgeProps> =>
  * }
  * ```
  */
-const StepEdge = createStepEdge({ isInternal: false });
-StepEdge.displayName = 'StepEdge';
+const StepEdge = Object.assign(createStepEdge({ isInternal: false }), {
+  displayName: 'StepEdge',
+});
 
 /**
  * @internal
  */
-const StepEdgeInternal = createStepEdge({ isInternal: true });
-StepEdgeInternal.displayName = 'StepEdgeInternal';
+const StepEdgeInternal = Object.assign(createStepEdge({ isInternal: true }), {
+  displayName: 'StepEdgeInternal',
+});
 
 export { StepEdge, StepEdgeInternal };
