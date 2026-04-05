@@ -15,14 +15,7 @@ import useViewportHelper from './useViewportHelper';
 import { useStore, useStoreApi } from './useStore';
 import { useBatchContext } from '../components/BatchProvider';
 import { elementToRemoveChange, isEdge, isNode } from '../utils';
-import type {
-  ReactFlowInstance,
-  Node,
-  Edge,
-  InternalNode,
-  GeneralHelpers,
-  FitViewOptions,
-} from '../types';
+import type { ReactFlowInstance, Node, Edge, InternalNode, GeneralHelpers, FitViewOptions } from '../types';
 
 /**
  * This hook returns a ReactFlowInstance that can be used to update nodes and edges, manipulate the viewport, or query the current state of the flow.
@@ -60,17 +53,6 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   const batchContext = useBatchContext();
   const viewportInitialized = useStore((s) => !!s.panZoom);
 
-  const getInternalNode: GeneralHelpers<NodeType, EdgeType>['getInternalNode'] = (id) =>
-    store.getState().nodeLookup.get(id) as InternalNode<NodeType>;
-
-  const setNodes: GeneralHelpers<NodeType, EdgeType>['setNodes'] = (payload) => {
-    batchContext.nodeQueue.push(payload as NodeType[]);
-  };
-
-  const setEdges: GeneralHelpers<NodeType, EdgeType>['setEdges'] = (payload) => {
-    batchContext.edgeQueue.push(payload as EdgeType[]);
-  };
-
   const getNodeRect = (node: NodeType | { id: string }): Rect | null => {
     const { nodeLookup, nodeOrigin } = store.getState();
 
@@ -89,51 +71,21 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     return nodeToRect(nodeWithPosition);
   };
 
-  const updateNode: GeneralHelpers<NodeType, EdgeType>['updateNode'] = (
-    id,
-    nodeUpdate,
-    options = { replace: false }
-  ) => {
-    setNodes((prevNodes) =>
-      prevNodes.map((node) => {
-        if (node.id === id) {
-          const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
-          return options.replace && isNode(nextNode) ? (nextNode as NodeType) : { ...node, ...nextNode };
-        }
-
-        return node;
-      })
-    );
-  };
-
-  const updateEdge: GeneralHelpers<NodeType, EdgeType>['updateEdge'] = (
-    id,
-    edgeUpdate,
-    options = { replace: false }
-  ) => {
-    setEdges((prevEdges) =>
-      prevEdges.map((edge) => {
-        if (edge.id === id) {
-          const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
-          return options.replace && isEdge(nextEdge) ? (nextEdge as EdgeType) : { ...edge, ...nextEdge };
-        }
-
-        return edge;
-      })
-    );
-  };
-
   const generalHelper: GeneralHelpers<NodeType, EdgeType> = {
     getNodes: () => store.getState().nodes.map((n) => ({ ...n })) as NodeType[],
     getNode: (id) => getInternalNode(id)?.internals.userNode as NodeType,
-    getInternalNode,
+    getInternalNode: (id) => store.getState().nodeLookup.get(id) as InternalNode<NodeType>,
     getEdges: () => {
       const { edges = [] } = store.getState();
       return edges.map((e) => ({ ...e })) as EdgeType[];
     },
     getEdge: (id) => store.getState().edgeLookup.get(id) as EdgeType,
-    setNodes,
-    setEdges,
+    setNodes: (payload) => {
+      batchContext.nodeQueue.push(payload as NodeType[]);
+    },
+    setEdges: (payload) => {
+      batchContext.edgeQueue.push(payload as EdgeType[]);
+    },
     addNodes: (payload) => {
       const newNodes = Array.isArray(payload) ? payload : [payload];
       batchContext.nodeQueue.push((nodes) => [...nodes, ...newNodes]);
@@ -246,7 +198,18 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         overlappingArea >= nodeRect.width * nodeRect.height
       );
     },
-    updateNode,
+    updateNode: (id, nodeUpdate, options = { replace: false }) => {
+      setNodes((prevNodes) =>
+        prevNodes.map((node) => {
+          if (node.id === id) {
+            const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
+            return options.replace && isNode(nextNode) ? (nextNode as NodeType) : { ...node, ...nextNode };
+          }
+
+          return node;
+        })
+      );
+    },
     updateNodeData: (id, dataUpdate, options = { replace: false }) => {
       updateNode(
         id,
@@ -257,7 +220,18 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         options
       );
     },
-    updateEdge,
+    updateEdge: (id, edgeUpdate, options = { replace: false }) => {
+      setEdges((prevEdges) =>
+        prevEdges.map((edge) => {
+          if (edge.id === id) {
+            const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
+            return options.replace && isEdge(nextEdge) ? (nextEdge as EdgeType) : { ...edge, ...nextEdge };
+          }
+
+          return edge;
+        })
+      );
+    },
     updateEdgeData: (id, dataUpdate, options = { replace: false }) => {
       updateEdge(
         id,
@@ -298,6 +272,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       return fitViewResolver.promise;
     },
   };
+
+  const { getInternalNode, updateEdge, updateNode, setNodes, setEdges } = generalHelper;
 
   return {
     ...generalHelper,
