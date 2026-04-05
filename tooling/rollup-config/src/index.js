@@ -20,9 +20,8 @@ const defaultPlugins = [
   }),
   typescript(),
   babel({
-    babelHelpers: 'bundled',
     extensions: ['.ts', '.tsx'],
-    include: ['src/**/*'],
+    include: 'src/**/*',
     plugins: [
       [
         'babel-plugin-react-compiler',
@@ -31,9 +30,9 @@ const defaultPlugins = [
           // Fail the build on any compiler diagnostic
           // panicThreshold: 'all_errors',
           environment: {
-            // validateNoDerivedComputationsInEffects: true,
-            // validateNoImpureFunctionsInRender: true,
-            // enableJsxOutlining: true,
+            validateNoDerivedComputationsInEffects: true,
+            validateNoImpureFunctionsInRender: true,
+            enableJsxOutlining: true,
           },
         },
       ],
