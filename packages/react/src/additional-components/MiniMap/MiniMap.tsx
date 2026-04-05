@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
+import { useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { Panel } from '../../components/Panel';
-import type { ReactFlowState, Node } from '../../types';
+import type { Node } from '../../types';
 
 import MiniMapNodes from './MiniMapNodes';
 import type { MiniMapProps } from './types';
@@ -16,29 +16,6 @@ const defaultWidth = 200;
 const defaultHeight = 150;
 
 const filterHidden = (node: Node) => !node.hidden;
-
-const selector = (s: ReactFlowState) => {
-  const viewBB: Rect = {
-    x: -s.transform[0] / s.transform[2],
-    y: -s.transform[1] / s.transform[2],
-    width: s.width / s.transform[2],
-    height: s.height / s.transform[2],
-  };
-
-  return {
-    viewBB,
-    boundingRect:
-      s.nodeLookup.size > 0
-        ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
-        : viewBB,
-    rfId: s.rfId,
-    panZoom: s.panZoom,
-    translateExtent: s.translateExtent,
-    flowWidth: s.width,
-    flowHeight: s.height,
-    ariaLabelConfig: s.ariaLabelConfig,
-  };
-};
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 function MiniMapComponent<NodeType extends Node = Node>({
@@ -71,7 +48,28 @@ function MiniMapComponent<NodeType extends Node = Node>({
   const store = useStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
   const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useStore(
-    selector,
+    (s) => {
+      const viewBB: Rect = {
+        x: -s.transform[0] / s.transform[2],
+        y: -s.transform[1] / s.transform[2],
+        width: s.width / s.transform[2],
+        height: s.height / s.transform[2],
+      };
+
+      return {
+        viewBB,
+        boundingRect:
+          s.nodeLookup.size > 0
+            ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
+            : viewBB,
+        rfId: s.rfId,
+        panZoom: s.panZoom,
+        translateExtent: s.translateExtent,
+        flowWidth: s.width,
+        flowHeight: s.height,
+        ariaLabelConfig: s.ariaLabelConfig,
+      };
+    },
     shallow
   );
   const elementWidth = (style?.width as number) ?? defaultWidth;
@@ -209,4 +207,4 @@ MiniMapComponent.displayName = 'MiniMap';
  *}
  *```
  */
-export const MiniMap = memo(MiniMapComponent) as typeof MiniMapComponent;
+export const MiniMap = MiniMapComponent;
