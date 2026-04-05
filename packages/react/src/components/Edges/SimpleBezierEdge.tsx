@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import { FC } from 'react';
 import { Position, getBezierEdgeCenter } from '@xyflow/system';
 
 import { BaseEdge } from './BaseEdge';
@@ -87,7 +86,7 @@ export function getSimpleBezierPath({
   ];
 }
 
-const createSimpleBezierEdge = (params: { isInternal: boolean }): FC<SimpleBezierEdgeProps> =>
+const createSimpleBezierEdge = (params: { isInternal: boolean }) =>
   function MyComponent({
     id,
     sourceX,
@@ -106,7 +105,7 @@ const createSimpleBezierEdge = (params: { isInternal: boolean }): FC<SimpleBezie
     markerEnd,
     markerStart,
     interactionWidth,
-  }) {
+  }: SimpleBezierEdgeProps) {
     'use memo'; // Hint for the React Compiler to treat this as a component
     const [path, labelX, labelY] = getSimpleBezierPath({
       sourceX,
@@ -136,10 +135,12 @@ const createSimpleBezierEdge = (params: { isInternal: boolean }): FC<SimpleBezie
     );
   };
 
-const SimpleBezierEdge = createSimpleBezierEdge({ isInternal: false });
-SimpleBezierEdge.displayName = 'SimpleBezierEdge';
+const SimpleBezierEdge = Object.assign(createSimpleBezierEdge({ isInternal: false }), {
+  displayName: 'SimpleBezierEdge',
+});
 
-const SimpleBezierEdgeInternal = createSimpleBezierEdge({ isInternal: true });
-SimpleBezierEdgeInternal.displayName = 'SimpleBezierEdgeInternal';
+const SimpleBezierEdgeInternal = Object.assign(createSimpleBezierEdge({ isInternal: true }), {
+  displayName: 'SimpleBezierEdgeInternal',
+});
 
 export { SimpleBezierEdge, SimpleBezierEdgeInternal };
