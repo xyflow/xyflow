@@ -8,6 +8,7 @@ import replace from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import typescript from '@rollup/plugin-typescript';
+import { babel } from '@rollup/plugin-babel';
 
 const pkg = JSON.parse(readFileSync(resolve(cwd(), './package.json')));
 const isProd = process.env.NODE_ENV === 'production';
@@ -16,6 +17,26 @@ const defaultPlugins = [
   resolvePlugin(),
   commonjs({
     include: /node_modules/,
+  }),
+  typescript(),
+  babel({
+    babelHelpers: 'bundled',
+    extensions: ['.ts', '.tsx'],
+    include: ['src/**/*'],
+    plugins: [
+      [
+        'babel-plugin-react-compiler',
+        {
+          // Fail the build on any compiler diagnostic
+          // panicThreshold: 'all_errors',
+          environment: {
+            // validateNoDerivedComputationsInEffects: true,
+            // validateNoImpureFunctionsInRender: true,
+            // enableJsxOutlining: true,
+          },
+        },
+      ],
+    ],
   }),
 ];
 
@@ -39,7 +60,6 @@ const defineEsmConfig = (format) =>
         includeDependencies: true,
       }),
       ...defaultPlugins,
-      typescript(),
     ],
   });
 
@@ -70,7 +90,6 @@ const umdConfig = defineConfig({
   plugins: [
     peerDepsExternal(),
     ...defaultPlugins,
-    typescript(),
     replace({
       preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

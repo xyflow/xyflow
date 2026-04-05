@@ -12,6 +12,8 @@
     "@rollup/plugin-replace": "^5.0.6",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "11.1.6",
+    "@rollup/plugin-babel": "^7.0.0",
+    "babel-plugin-react-compiler": "^1.0.0",
     "rollup": "^4.18.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "typescript": "^5.4.5"
