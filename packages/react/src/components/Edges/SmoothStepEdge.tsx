@@ -26,7 +26,7 @@ const createSmoothStepEdge = (params: { isInternal: boolean }): FC<SmoothStepEdg
     pathOptions,
     interactionWidth,
   }) {
-    'use memo';
+    'use memo'; // Hint for the React Compiler to treat this as a component
     const [path, labelX, labelY] = getSmoothStepPath({
       sourceX,
       sourceY,
@@ -38,12 +38,9 @@ const createSmoothStepEdge = (params: { isInternal: boolean }): FC<SmoothStepEdg
       offset: pathOptions?.offset,
       stepPosition: pathOptions?.stepPosition,
     });
-
-    const _id = params.isInternal ? undefined : id;
-
     return (
       <BaseEdge
-        id={_id}
+        id={params.isInternal ? undefined : id}
         path={path}
         labelX={labelX}
         labelY={labelY}
