@@ -24,7 +24,7 @@ const defaultPlugins = [
         {
           target: '17',
           // Fail the build on any compiler diagnostic
-          // panicThreshold: 'all_errors',
+          panicThreshold: 'all_errors',
           environment: {
             validateNoDerivedComputationsInEffects: true,
             validateNoImpureFunctionsInRender: true,
