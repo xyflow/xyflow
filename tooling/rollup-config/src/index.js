@@ -14,12 +14,8 @@ const pkg = JSON.parse(readFileSync(resolve(cwd(), './package.json')));
 const isProd = process.env.NODE_ENV === 'production';
 
 const defaultPlugins = [
-  resolvePlugin(),
-  commonjs({
-    include: /node_modules/,
-  }),
-  typescript(),
   babel({
+    babelHelpers: 'bundled',
     extensions: ['.ts', '.tsx'],
     include: 'src/**/*',
     plugins: [
@@ -38,6 +34,11 @@ const defaultPlugins = [
       ],
     ],
   }),
+  resolvePlugin(),
+  commonjs({
+    include: /node_modules/,
+  }),
+  typescript(),
 ];
 
 const onwarn = (warning, rollupWarn) => {
