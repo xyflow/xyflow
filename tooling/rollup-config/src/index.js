@@ -33,7 +33,7 @@ const defaultPlugins = [
         },
       ],
     ],
-    presets: ['@babel/preset-typescript'],
+    presets: ['@babel/preset-react'],
   }),
   resolvePlugin(),
   commonjs({
@@ -52,7 +52,7 @@ const defineEsmConfig = (format) =>
   defineConfig({
     input: pkg.source,
     output: {
-      file: format === 'js' ? pkg.module : pkg.module.replace('.js', '.mjs'),
+      file: pkg.module,
       format: 'esm',
       banner: pkg.rollup?.vanilla ? undefined : '"use client"',
     },
