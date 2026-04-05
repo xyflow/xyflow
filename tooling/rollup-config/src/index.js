@@ -33,6 +33,7 @@ const defaultPlugins = [
         },
       ],
     ],
+    presets: ['@babel/preset-typescript'],
   }),
   resolvePlugin(),
   commonjs({
