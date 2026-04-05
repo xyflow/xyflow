@@ -1,10 +1,4 @@
-import {
-  type HTMLAttributes,
-  type MouseEvent as ReactMouseEvent,
-  type TouchEvent as ReactTouchEvent,
-  type ForwardedRef,
-  memo,
-} from 'react';
+import type { HTMLAttributes, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, ForwardedRef } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -16,7 +10,6 @@ import {
   addEdge,
   type HandleProps as HandlePropsSystem,
   type Connection,
-  type HandleType,
   ConnectionMode,
   OnConnect,
   ConnectionState,
@@ -25,7 +18,6 @@ import {
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
-import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
 
 /**
@@ -35,26 +27,6 @@ export type HandleProps = HandlePropsSystem &
   Omit<HTMLAttributes<HTMLDivElement>, 'id'> & {
     /** Callback called when connection is made */
     onConnect?: OnConnect;
-  };
-
-const connectingSelector =
-  (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
-    const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
-    const { fromHandle, toHandle, isValid } = connection;
-    const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
-
-    return {
-      connectingFrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === type,
-      connectingTo,
-      clickConnecting: clickHandle?.nodeId === nodeId && clickHandle?.id === handleId && clickHandle?.type === type,
-      isPossibleEndHandle:
-        connectionMode === ConnectionMode.Strict
-          ? fromHandle?.type !== type
-          : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id,
-      connectionInProcess: !!fromHandle,
-      clickConnectionInProcess: !!clickHandle,
-      valid: connectingTo && isValid,
-    };
   };
 
 function HandleComponent(
@@ -79,11 +51,14 @@ function HandleComponent(
   const isTarget = type === 'target';
   const store = useStoreApi();
   const nodeId = useNodeId();
-  const { connectOnClick, noPanClassName, rfId } = useStore((s) => ({
-    connectOnClick: s.connectOnClick,
-    noPanClassName: s.noPanClassName,
-    rfId: s.rfId,
-  }), shallow);
+  const { connectOnClick, noPanClassName, rfId } = useStore(
+    (s) => ({
+      connectOnClick: s.connectOnClick,
+      noPanClassName: s.noPanClassName,
+      rfId: s.rfId,
+    }),
+    shallow
+  );
   const {
     connectingFrom,
     connectingTo,
@@ -92,7 +67,24 @@ function HandleComponent(
     connectionInProcess,
     clickConnectionInProcess,
     valid,
-  } = useStore(connectingSelector(nodeId, handleId, type), shallow);
+  } = useStore((state) => {
+    const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
+    const { fromHandle, toHandle, isValid } = connection;
+    const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
+
+    return {
+      connectingFrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === type,
+      connectingTo,
+      clickConnecting: clickHandle?.nodeId === nodeId && clickHandle?.id === handleId && clickHandle?.type === type,
+      isPossibleEndHandle:
+        connectionMode === ConnectionMode.Strict
+          ? fromHandle?.type !== type
+          : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id,
+      connectionInProcess: !!fromHandle,
+      clickConnectionInProcess: !!clickHandle,
+      valid: connectingTo && isValid,
+    };
+  }, shallow);
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }
@@ -280,4 +272,4 @@ function HandleComponent(
  *};
  *```
  */
-export const Handle = memo(fixedForwardRef(HandleComponent));
+export const Handle = fixedForwardRef(HandleComponent);
