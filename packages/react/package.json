@@ -61,6 +61,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "react-compiler-runtime": "^1.0.0",
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.3",
     "zustand": "^4.4.0"

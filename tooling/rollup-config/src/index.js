@@ -27,6 +27,7 @@ const defaultPlugins = [
       [
         'babel-plugin-react-compiler',
         {
+          target: '17',
           // Fail the build on any compiler diagnostic
           // panicThreshold: 'all_errors',
           environment: {
