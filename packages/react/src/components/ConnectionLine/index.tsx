@@ -128,5 +128,3 @@ const ConnectionLine = <NodeType extends Node = Node>({
 
   return <path d={path} fill="none" className="react-flow__connection-path" style={style} />;
 };
-
-ConnectionLine.displayName = 'ConnectionLine';
