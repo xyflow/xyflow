@@ -31,7 +31,8 @@
         "require": "./dist/umd/index.js"
       },
       "default": "./dist/esm/index.js"
-    }
+    },
+    "./dist/esm/index.mjs": "./dist/esm/index.js"
   },
   "sideEffects": false,
   "license": "MIT",

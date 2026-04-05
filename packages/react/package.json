@@ -42,6 +42,7 @@
       },
       "default": "./dist/esm/index.js"
     },
+    "./dist/esm/index.mjs": "./dist/esm/index.js",
     "./dist/base.css": "./dist/base.css",
     "./dist/style.css": "./dist/style.css"
   },
