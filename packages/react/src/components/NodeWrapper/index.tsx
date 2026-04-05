@@ -1,4 +1,4 @@
-import { type MouseEvent, type KeyboardEvent, memo } from 'react';
+import type { MouseEvent, KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -20,7 +20,7 @@ import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from '.
 import { useNodeObserver } from './useNodeObserver';
 import type { InternalNode, Node, NodeWrapperProps } from '../../types';
 
-function NodeWrapper<NodeType extends Node>({
+export default function NodeWrapper<NodeType extends Node>({
   id,
   onClick,
   onMouseEnter,
@@ -249,5 +249,3 @@ function NodeWrapper<NodeType extends Node>({
     </div>
   );
 }
-
-export default memo(NodeWrapper) as typeof NodeWrapper;
