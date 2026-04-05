@@ -1,11 +1,10 @@
 /* eslint-disable react/prop-types */
-import { FC } from 'react';
 import { Position, getSmoothStepPath } from '@xyflow/system';
 
 import { BaseEdge } from './BaseEdge';
 import type { SmoothStepEdgeProps } from '../../types';
 
-const createSmoothStepEdge = (params: { isInternal: boolean }): FC<SmoothStepEdgeProps> =>
+const createSmoothStepEdge = (params: { isInternal: boolean }) =>
   function MyComponent({
     id,
     sourceX,
@@ -25,7 +24,7 @@ const createSmoothStepEdge = (params: { isInternal: boolean }): FC<SmoothStepEdg
     markerStart,
     pathOptions,
     interactionWidth,
-  }) {
+  }: SmoothStepEdgeProps) {
     'use memo'; // Hint for the React Compiler to treat this as a component
     const [path, labelX, labelY] = getSmoothStepPath({
       sourceX,
@@ -81,12 +80,14 @@ const createSmoothStepEdge = (params: { isInternal: boolean }): FC<SmoothStepEdg
  * }
  * ```
  */
-const SmoothStepEdge = createSmoothStepEdge({ isInternal: false });
-SmoothStepEdge.displayName = 'SmoothStepEdge';
+const SmoothStepEdge = Object.assign(createSmoothStepEdge({ isInternal: false }), {
+  displayName: 'SmoothStepEdge',
+});
 /**
  * @internal
  */
-const SmoothStepEdgeInternal = createSmoothStepEdge({ isInternal: true });
-SmoothStepEdgeInternal.displayName = 'SmoothStepEdgeInternal';
+const SmoothStepEdgeInternal = Object.assign(createSmoothStepEdge({ isInternal: true }), {
+  displayName: 'SmoothStepEdgeInternal',
+});
 
 export { SmoothStepEdge, SmoothStepEdgeInternal };
