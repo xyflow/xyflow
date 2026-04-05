@@ -125,10 +125,10 @@ function MiniMapComponent<NodeType extends Node = Node>({
     : undefined;
 
   const onSvgNodeClick = onNodeClick
-    ? useCallback((event: MouseEvent, nodeId: string) => {
+    ? (event: MouseEvent, nodeId: string) => {
         const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
         onNodeClick(event, node);
-      }, [])
+      }
     : undefined;
 
   const _ariaLabel = ariaLabel ?? ariaLabelConfig['minimap.ariaLabel'];
