@@ -1,25 +1,21 @@
-import { memo, useMemo } from 'react';
+/* eslint-disable react/prop-types */
+import type { FC } from 'react';
 
 import { SmoothStepEdge } from './SmoothStepEdge';
 import type { StepEdgeProps } from '../../types';
 
-function createStepEdge(params: { isInternal: boolean }) {
-  // eslint-disable-next-line react/display-name
-  return memo(({ id, ...props }: StepEdgeProps) => {
-    const _id = params.isInternal ? undefined : id;
-
+const createStepEdge = (params: { isInternal: boolean }): FC<StepEdgeProps> =>
+  function MyComponent({ id, ...props }) {
+    // Hint for the React Compiler to treat this as a component
+    'use memo';
     return (
       <SmoothStepEdge
         {...props}
-        id={_id}
-        pathOptions={useMemo(
-          () => ({ borderRadius: 0, offset: props.pathOptions?.offset }),
-          [props.pathOptions?.offset]
-        )}
+        id={params.isInternal ? undefined : id}
+        pathOptions={{ borderRadius: 0, offset: props.pathOptions?.offset }}
       />
     );
-  });
-}
+  };
 
 /**
  * Component that can be used inside a custom edge to render a step edge.
@@ -45,13 +41,12 @@ function createStepEdge(params: { isInternal: boolean }) {
  * ```
  */
 const StepEdge = createStepEdge({ isInternal: false });
+StepEdge.displayName = 'StepEdge';
 
 /**
  * @internal
  */
 const StepEdgeInternal = createStepEdge({ isInternal: true });
-
-StepEdge.displayName = 'StepEdge';
 StepEdgeInternal.displayName = 'StepEdgeInternal';
 
 export { StepEdge, StepEdgeInternal };
