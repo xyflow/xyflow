@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
+import { useEffect, useRef, type MouseEvent, type CSSProperties } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
@@ -88,7 +88,9 @@ function MiniMapComponent<NodeType extends Node = Node>({
   const viewScaleRef = useRef(0);
   const minimapInstance = useRef<XYMinimapInstance>();
 
-  viewScaleRef.current = viewScale;
+  useEffect(() => {
+    viewScaleRef.current = viewScale;
+  }, [viewScale]);
 
   useEffect(() => {
     if (svg.current && panZoom) {
