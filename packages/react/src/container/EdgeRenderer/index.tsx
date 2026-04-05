@@ -1,4 +1,4 @@
-import { memo, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
@@ -6,7 +6,7 @@ import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
 import EdgeWrapper from '../../components/EdgeWrapper';
-import type { Edge, ReactFlowState, Node } from '../../types';
+import type { Edge, Node } from '../../types';
 
 type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
   GraphViewProps<Node, EdgeType>,
@@ -30,15 +30,7 @@ type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
   children?: ReactNode;
 };
 
-const selector = (s: ReactFlowState) => ({
-  edgesFocusable: s.edgesFocusable,
-  edgesReconnectable: s.edgesReconnectable,
-  elementsSelectable: s.elementsSelectable,
-  connectionMode: s.connectionMode,
-  onError: s.onError,
-});
-
-function EdgeRendererComponent<EdgeType extends Edge = Edge>({
+export function EdgeRenderer<EdgeType extends Edge = Edge>({
   defaultMarkerColor,
   onlyRenderVisibleElements,
   rfId,
@@ -56,7 +48,16 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   onReconnectEnd,
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
-  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useStore(selector, shallow);
+  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useStore(
+    (s) => ({
+      edgesFocusable: s.edgesFocusable,
+      edgesReconnectable: s.edgesReconnectable,
+      elementsSelectable: s.elementsSelectable,
+      connectionMode: s.connectionMode,
+      onError: s.onError,
+    }),
+    shallow
+  );
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
   return (
@@ -92,7 +93,3 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
     </div>
   );
 }
-
-EdgeRendererComponent.displayName = 'EdgeRenderer';
-
-export const EdgeRenderer = memo(EdgeRendererComponent) as typeof EdgeRendererComponent;
