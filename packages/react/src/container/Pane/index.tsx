@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useRef,
   type MouseEventHandler,
   type MutableRefObject,
@@ -271,6 +272,17 @@ export function Pane({
     });
   }
 
+  const cleanupAutoPan = (): void => {
+    cancelAnimationFrame(autoPanId.current);
+    autoPanId.current = 0;
+    autoPanStarted.current = false;
+    userSelectionFlowOrigin.current = null;
+  };
+
+  useEffect(() => {
+    return () => cleanupAutoPan();
+  }, []);
+
   const onPointerMove = (event: ReactPointerEvent): void => {
     const { userSelectionRect, transform, resetSelectedElements } = store.getState();
 
@@ -331,10 +343,12 @@ export function Pane({
       });
     }
 
-    cancelAnimationFrame(autoPanId.current);
-    autoPanId.current = 0;
-    autoPanStarted.current = false;
-    userSelectionFlowOrigin.current = null;
+    cleanupAutoPan();
+  };
+
+  const onPointerCancel = (event: ReactPointerEvent) => {
+    (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
+    cleanupAutoPan();
   };
 
   const draggable = panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0));
@@ -348,6 +362,7 @@ export function Pane({
       onPointerEnter={isSelectionEnabled ? undefined : onPaneMouseEnter}
       onPointerMove={isSelectionEnabled ? onPointerMove : onPaneMouseMove}
       onPointerUp={isSelectionEnabled ? onPointerUp : undefined}
+      onPointerCancel={isSelectionEnabled ? onPointerCancel : undefined}
       onPointerDownCapture={isSelectionEnabled ? onPointerDownCapture : undefined}
       onClickCapture={isSelectionEnabled ? onClickCapture : undefined}
       onPointerLeave={onPaneMouseLeave}

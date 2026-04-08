@@ -39,6 +39,7 @@
 </script>
 
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
+  import { onDestroy } from 'svelte';
   import {
     SelectionMode,
     getEventPosition,
@@ -224,6 +225,17 @@
     });
   }
 
+  function cleanupAutoPan(): void {
+    cancelAnimationFrame(autoPanId);
+    autoPanId = 0;
+    autoPanStarted = false;
+    userSelectionFlowOrigin = null;
+  }
+
+  onDestroy(() => {
+    cleanupAutoPan();
+  });
+
   function onPointerMove(event: PointerEvent) {
     if (!isSelecting || !containerBounds || !store.selectionRect || !userSelectionFlowOrigin) {
       return;
@@ -282,10 +294,12 @@
       onselectionend?.(event);
     }
 
-    cancelAnimationFrame(autoPanId);
-    autoPanId = 0;
-    autoPanStarted = false;
-    userSelectionFlowOrigin = null;
+    cleanupAutoPan();
+  }
+
+  function onPointerCancel(event: PointerEvent) {
+    (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
+    cleanupAutoPan();
   }
 
   const onContextMenu = (event: MouseEvent) => {
@@ -331,6 +345,7 @@
   onpointerdowncapture={isSelectionEnabled ? onPointerDownCapture : undefined}
   onpointermove={isSelectionEnabled ? onPointerMove : undefined}
   onpointerup={isSelectionEnabled ? onPointerUp : undefined}
+  onpointercancel={isSelectionEnabled ? onPointerCancel : undefined}
   oncontextmenu={wrapHandler(onContextMenu, container)}
   onclickcapture={isSelectionEnabled ? onClickCapture : undefined}
 >
