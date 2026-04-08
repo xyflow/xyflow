@@ -216,12 +216,12 @@
 
     store.panBy({ x, y }).then((panned) => {
       if (!selectionInProgress || !userSelectionFlowOrigin || !panned) {
+        autoPanId = requestAnimationFrame(autoPan);
         return;
       }
       commitUserSelectionRect(position.x, position.y);
+      autoPanId = requestAnimationFrame(autoPan);
     });
-
-    autoPanId = requestAnimationFrame(autoPan);
   }
 
   function onPointerMove(event: PointerEvent) {

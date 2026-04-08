@@ -262,13 +262,13 @@ export function Pane({
 
     panBy({ x, y }).then((panned) => {
       if (!selectionInProgress.current || !userSelectionFlowOrigin.current || !panned) {
+        autoPanId.current = requestAnimationFrame(autoPan);
         return;
       }
       const { x: mx, y: my } = position.current;
       commitUserSelectionRect(mx, my);
+      autoPanId.current = requestAnimationFrame(autoPan);
     });
-
-    autoPanId.current = requestAnimationFrame(autoPan);
   }
 
   const onPointerMove = (event: ReactPointerEvent): void => {
