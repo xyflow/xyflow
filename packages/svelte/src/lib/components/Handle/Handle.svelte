@@ -68,6 +68,13 @@
     }
   });
 
+  let isClickConnectSource = $derived(
+    store.clickConnectStartHandle !== null &&
+      store.clickConnectStartHandle.nodeId === nodeId &&
+      store.clickConnectStartHandle.type === type &&
+      store.clickConnectStartHandle.id === handleId
+  );
+
   let [connectionInProgress, connectingFrom, connectingTo, isPossibleTargetHandle, valid] =
     $derived.by(() => {
       if (!store.connection.inProgress) {
@@ -112,7 +119,11 @@
   function onpointerdown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
 
-    if (event.currentTarget && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
+    if (
+      isConnectableStart &&
+      event.currentTarget &&
+      ((isMouseTriggered && event.button === 0) || !isMouseTriggered)
+    ) {
       XYHandle.onPointerDown(event, {
         handleId,
         nodeId,
@@ -218,7 +229,9 @@ The Handle component is the part of a node that can be used to connect nodes.
   class:connectable={isConnectable}
   class:connectionindicator={isConnectable &&
     (!connectionInProgress || isPossibleTargetHandle) &&
-    (connectionInProgress || store.clickConnectStartHandle ? isConnectableEnd : isConnectableStart)}
+    (connectionInProgress || store.clickConnectStartHandle
+      ? isConnectableEnd || isClickConnectSource
+      : isConnectableStart)}
   onmousedown={onpointerdown}
   ontouchstart={onpointerdown}
   onclick={store.clickConnect ? onclick : undefined}
