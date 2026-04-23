@@ -278,6 +278,9 @@ importers:
       '@xyflow/system':
         specifier: workspace:*
         version: link:../system
+      lightningcss:
+        specifier: ^1.32.0
+        version: 1.32.0
     devDependencies:
       '@eslint/compat':
         specifier: ^2.0.4
