@@ -1,102 +1,90 @@
 {
-  "name": "@xyflow/svelte",
-  "version": "1.5.2",
-  "description": "Svelte Flow - A highly customizable Svelte library for building node-based editors, workflow systems, diagrams and more.",
-  "keywords": [
-    "svelte",
-    "node-based UI",
-    "graph",
-    "diagram",
-    "workflow",
-    "svelte-flow",
-    "xyflow"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/xyflow/xyflow.git",
-    "directory": "packages/svelte"
-  },
-  "homepage": "https://svelteflow.dev",
-  "bugs": {
-    "url": "https://github.com/xyflow/xyflow/issues"
-  },
-  "scripts": {
-    "dev": "concurrently \"svelte-kit sync && svelte-package -o dist/lib -w\" pnpm:css-watch",
-    "build": "svelte-kit sync && svelte-package -o dist/lib && pnpm css",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config --dir dist",
-    "css-watch": "pnpm css --watch",
-    "lint": "prettier --check . && eslint ./src",
-    "format": "prettier --write .",
-    "typecheck": "pnpm check"
-  },
-  "type": "module",
-  "module": "./dist/lib/index.js",
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "types": "./dist/lib/index.d.ts",
-      "svelte": "./dist/lib/index.js",
-      "default": "./dist/lib/index.js"
-    },
-    "./dist/base.css": "./dist/base.css",
-    "./dist/style.css": "./dist/style.css"
-  },
-  "sideEffects": [
-    "*.css"
-  ],
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "dependencies": {
-    "@svelte-put/shortcut": "^4.1.0",
-    "@xyflow/system": "workspace:*"
-  },
-  "devDependencies": {
-    "@eslint/compat": "^2.0.0",
-    "@eslint/js": "^9.39.1",
-    "@sveltejs/adapter-auto": "^7.0.0",
-    "@sveltejs/kit": "^2.49.1",
-    "@sveltejs/package": "^2.5.7",
-    "@sveltejs/vite-plugin-svelte": "^6.2.1",
-    "@typescript-eslint/eslint-plugin": "^8.48.1",
-    "@typescript-eslint/parser": "^8.48.1",
-    "autoprefixer": "^10.4.22",
-    "cssnano": "^7.1.2",
-    "dotenv": "^17.2.3",
-    "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-svelte": "^3.13.0",
-    "globals": "^16.5.0",
-    "postcss": "^8.5.6",
-    "postcss-cli": "^11.0.1",
-    "postcss-combine-duplicated-selectors": "^10.0.3",
-    "postcss-import": "^16.1.1",
-    "postcss-nested": "^7.0.2",
-    "postcss-rename": "^0.8.0",
-    "prettier": "^3.7.4",
-    "prettier-plugin-svelte": "^3.4.0",
-    "svelte": "^5.45.4",
-    "svelte-check": "^4.3.4",
-    "svelte-eslint-parser": "^1.4.0",
-    "svelte-preprocess": "^6.0.3",
-    "tslib": "^2.8.1",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.48.1"
-  },
-  "peerDependencies": {
-    "svelte": "^5.25.0"
-  },
-  "files": [
-    "dist"
-  ],
-  "typesVersions": {
-    ">5.0": {
-      "index": [
-        "./dist/lib/index.d.ts"
-      ]
-    }
-  }
+	"name": "@xyflow/svelte",
+	"version": "1.5.2",
+	"description": "Svelte Flow - A highly customizable Svelte library for building node-based editors, workflow systems, diagrams and more.",
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
+	"keywords": [
+		"svelte",
+		"node-based UI",
+		"graph",
+		"diagram",
+		"workflow",
+		"svelte-flow",
+		"xyflow"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/xyflow/xyflow.git",
+		"directory": "packages/svelte"
+	},
+	"homepage": "https://svelteflow.dev",
+	"bugs": {
+		"url": "https://github.com/xyflow/xyflow/issues"
+	},
+	"scripts": {
+		"dev": "svelte-kit sync && svelte-package -o dist/lib -w",
+		"build": "svelte-kit sync && svelte-package && publint",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write ."
+	},
+	"svelte": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"type": "module",
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./dist/index.js"
+		},
+		"./dist/base.css": "./dist/base.css",
+		"./dist/style.css": "./dist/style.css"
+	},
+	"sideEffects": [
+		"*.css"
+	],
+	"files": [
+		"dist"
+	],
+	"dependencies": {
+		"@svelte-put/shortcut": "^4.1.0",
+		"@xyflow/system": "workspace:*"
+	},
+	"peerDependencies": {
+		"svelte": "^5.25.0"
+	},
+	"devDependencies": {
+		"postcss": "^8.5.6",
+		"postcss-cli": "^11.0.1",
+		"postcss-combine-duplicated-selectors": "^10.0.3",
+		"postcss-import": "^16.1.1",
+		"postcss-nested": "^7.0.2",
+		"postcss-rename": "^0.8.0",
+		"cssnano": "^7.1.2",
+		"@eslint/compat": "^2.0.4",
+		"@eslint/js": "^10.0.1",
+		"@sveltejs/adapter-auto": "^7.0.1",
+		"@sveltejs/kit": "^2.57.0",
+		"@sveltejs/package": "^2.5.7",
+		"@sveltejs/vite-plugin-svelte": "^7.0.0",
+		"@types/node": "^22",
+		"eslint": "^10.2.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-svelte": "^3.17.0",
+		"globals": "^17.4.0",
+		"prettier": "^3.8.1",
+		"prettier-plugin-svelte": "^3.5.1",
+		"publint": "^0.3.18",
+		"svelte": "^5.55.2",
+		"svelte-check": "^4.4.6",
+		"typescript": "^6.0.2",
+		"typescript-eslint": "^8.58.1",
+		"vite": "^8.0.7"
+	}
 }
