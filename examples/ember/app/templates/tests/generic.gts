@@ -55,9 +55,17 @@ const GenericTestTemplate: TOC<Signature> = <template>
       {{/if}}
       {{#if @model.backgroundProps}}
         <Background
+          @id={{@model.backgroundProps.id}}
           @color={{@model.backgroundProps.color}}
+          @bgColor={{@model.backgroundProps.bgColor}}
+          @patternColor={{@model.backgroundProps.patternColor}}
+          @patternClass={{@model.backgroundProps.patternClass}}
+          @patternClassName={{@model.backgroundProps.patternClassName}}
           @gap={{@model.backgroundProps.gap}}
+          @offset={{@model.backgroundProps.offset}}
+          @lineWidth={{@model.backgroundProps.lineWidth}}
           @size={{@model.backgroundProps.size}}
+          @variant={{@model.backgroundProps.variant}}
         />
       {{/if}}
     </EmberFlow>

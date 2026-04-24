@@ -108,10 +108,24 @@ export interface PanelArgs {
 
 export type PanelProps = PanelArgs;
 
+export enum BackgroundVariant {
+  Lines = 'lines',
+  Dots = 'dots',
+  Cross = 'cross',
+}
+
 export interface BackgroundArgs {
+  id?: string;
   color?: string;
-  gap?: number;
+  bgColor?: string;
+  patternColor?: string;
+  patternClass?: string;
+  patternClassName?: string;
+  gap?: number | [number, number];
+  offset?: number | [number, number];
+  lineWidth?: number;
   size?: number;
+  variant?: BackgroundVariant | 'lines' | 'dots' | 'cross';
 }
 
 export type BackgroundProps = BackgroundArgs;
