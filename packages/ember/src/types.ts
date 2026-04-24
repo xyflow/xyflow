@@ -106,11 +106,15 @@ export interface PanelArgs {
   position?: PanelPosition;
 }
 
+export type PanelProps = PanelArgs;
+
 export interface BackgroundArgs {
   color?: string;
   gap?: number;
   size?: number;
 }
+
+export type BackgroundProps = BackgroundArgs;
 
 export interface ControlsArgs {
   position?: PanelPosition;
@@ -126,6 +130,8 @@ export interface ControlsArgs {
   onInteractiveChange?: (interactive: boolean) => void;
 }
 
+export type ControlsProps = ControlsArgs;
+
 export interface NodeToolbarArgs<NodeType extends Node = Node> {
   node?: NodeType;
   nodeId?: string;
@@ -136,3 +142,5 @@ export interface NodeToolbarArgs<NodeType extends Node = Node> {
   className?: string;
   style?: CssStyle;
 }
+
+export type NodeToolbarProps<NodeType extends Node = Node> = NodeToolbarArgs<NodeType>;
