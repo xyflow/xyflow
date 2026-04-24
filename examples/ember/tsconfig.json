@@ -1,0 +1,18 @@
+{
+  "extends": "@ember/app-tsconfig",
+  "include": ["app", "tests", "types"],
+  "compilerOptions": {
+    "allowJs": true,
+    "paths": {
+      "ember-examples/tests/*": ["./tests/*"],
+      "ember-examples/*": ["./app/*"],
+      "*": ["./types/*"]
+    },
+    "types": [
+      "ember-source/types",
+      "@embroider/core/virtual",
+      "vite/client",
+      "@glint/ember-tsc/types"
+    ]
+  }
+}

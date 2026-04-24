@@ -6,6 +6,15 @@ type ConfigParams = {
 };
 
 export function sharedConfigWithPort({ port, framework }: ConfigParams): PlaywrightTestConfig {
+  let webServer =
+    process.env.PLAYWRIGHT_SKIP_WEBSERVER === '1'
+      ? undefined
+      : {
+          command: `pnpm --filter=${framework}-examples run dev --port ${port}`,
+          url: `http://localhost:${port}/`,
+          reuseExistingServer: !process.env.CI,
+        };
+
   return {
     testDir: './e2e',
     /* Run tests in files in parallel */
@@ -26,11 +35,7 @@ export function sharedConfigWithPort({ port, framework }: ConfigParams): Playwri
       /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
       trace: 'on-first-retry',
     },
-    webServer: {
-      command: `pnpm --filter=${framework}-examples run dev --port ${port}`,
-      port,
-      reuseExistingServer: !process.env.CI,
-    },
+    webServer,
 
     /* Configure projects for major browsers */
     projects: [

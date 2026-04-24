@@ -1,0 +1,144 @@
+/* this gets exported as style.css and can be used for the default theming */
+@import '../../../system/src/styles/init.css';
+@import '../../../system/src/styles/style.css';
+@import '../../../system/src/styles/node-resizer.css';
+
+.ember-flow {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+
+.ember-flow__edge-label {
+  text-align: center;
+  position: absolute;
+  padding: 2px;
+  font-size: 10px;
+  color: var(--xy-edge-label-color, var(--xy-edge-label-color-default));
+  background: var(--xy-edge-label-background-color, var(--xy-edge-label-background-color-default));
+}
+
+.ember-flow__viewport {
+  transform-origin: 0 0;
+  z-index: 2;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.ember-flow__renderer {
+  z-index: 4;
+}
+
+.ember-flow__pane {
+  z-index: 1;
+}
+
+.ember-flow__edges {
+  position: absolute;
+}
+
+.ember-flow__edge-wrapper {
+  overflow: visible;
+  position: absolute;
+  pointer-events: none;
+}
+
+.ember-flow__edge-path {
+  stroke: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
+  stroke-width: var(--xy-edge-stroke-width, var(--xy-edge-stroke-width-default));
+  fill: none;
+}
+
+.ember-flow__edge-interaction {
+  stroke: transparent;
+  fill: none;
+  pointer-events: stroke;
+  vector-effect: non-scaling-stroke;
+}
+
+.ember-flow__edge {
+  pointer-events: visibleStroke;
+}
+
+.ember-flow__edge.selectable {
+  cursor: pointer;
+}
+
+.ember-flow__edge.animated .ember-flow__edge-path {
+  stroke-dasharray: 5;
+  animation: dashdraw 0.5s linear infinite;
+}
+
+.ember-flow__edge.animated .ember-flow__edge-interaction {
+  stroke-dasharray: none;
+  animation: none;
+}
+
+.ember-flow__edge.selected .ember-flow__edge-path {
+  stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
+}
+
+.ember-flow__connectionline {
+  z-index: 1001;
+  overflow: visible;
+  position: absolute;
+  pointer-events: none;
+}
+
+.ember-flow__connection-path {
+  stroke: var(--xy-connectionline-stroke, var(--xy-connectionline-stroke-default));
+  stroke-width: var(--xy-connectionline-stroke-width, var(--xy-connectionline-stroke-width-default));
+  fill: none;
+}
+
+.ember-flow__selection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.ember-flow__nodes {
+  pointer-events: none;
+  transform-origin: 0 0;
+}
+
+.ember-flow__node {
+  position: absolute;
+  user-select: none;
+  pointer-events: all;
+  transform-origin: 0 0;
+  box-sizing: border-box;
+}
+
+.ember-flow__node-toolbar {
+  position: absolute;
+  z-index: 1000;
+  pointer-events: all;
+  display: flex;
+  gap: 4px;
+}
+
+.ember-flow__node-DragHandleNode .container {
+  width: 100px;
+  height: 50px;
+  background: red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ember-flow__node-DragHandleNode .drag-handle {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  background-color: green;
+}
+
+.ember-flow__container {
+  user-select: none;
+}
