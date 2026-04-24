@@ -43,7 +43,15 @@ const GenericTestTemplate: TOC<Signature> = <template>
         <Panel @position={{@model.panelProps.position}} />
       {{/if}}
       {{#if @model.controlsProps}}
-        <Controls @orientation={{@model.controlsProps.orientation}} />
+        <Controls
+          @position={{@model.controlsProps.position}}
+          @orientation={{@model.controlsProps.orientation}}
+          @showZoom={{@model.controlsProps.showZoom}}
+          @showFitView={{@model.controlsProps.showFitView}}
+          @showInteractive={{@model.controlsProps.showInteractive}}
+          @showLock={{@model.controlsProps.showLock}}
+          @fitViewOptions={{@model.controlsProps.fitViewOptions}}
+        />
       {{/if}}
       {{#if @model.backgroundProps}}
         <Background

@@ -8,7 +8,6 @@ import {
   getEdgeId,
   getBezierPath,
   getStraightPath,
-  getViewportForBounds,
   type Transform,
   type Viewport,
 } from '@xyflow/system';
@@ -96,15 +95,15 @@ export default class EmberFlow<
   }
 
   get nodesDraggable() {
-    return this.args.nodesDraggable ?? true;
+    return this.store.nodesDraggable;
   }
 
   get elementsSelectable() {
-    return this.args.elementsSelectable ?? true;
+    return this.store.elementsSelectable;
   }
 
   get nodesConnectable() {
-    return this.args.nodesConnectable ?? true;
+    return this.store.nodesConnectable;
   }
 
   get deleteKey() {
@@ -162,6 +161,13 @@ export default class EmberFlow<
     this.selectionElement = element.querySelector<HTMLDivElement>('.ember-flow__selection');
     this.connectionLineElement = element.querySelector<SVGSVGElement>('.ember-flow__connectionline');
     this.connectionPathElement = element.querySelector<SVGPathElement>('.ember-flow__connection-path');
+    this.store.setViewportDimensions(element.clientWidth, element.clientHeight);
+    this.store.setZoomExtent(this.minZoom, this.maxZoom);
+    this.store.setInteractivity({
+      nodesDraggable: this.args.nodesDraggable ?? true,
+      nodesConnectable: this.args.nodesConnectable ?? true,
+      elementsSelectable: this.args.elementsSelectable ?? true,
+    });
     this.applyViewportTransform(this.store.viewport);
     this.keydownHandler = this.handleKeyDown;
     this.keyupHandler = this.handleKeyUp;
@@ -212,7 +218,10 @@ export default class EmberFlow<
 
     if (this.args.fitView && !this.didFitView) {
       this.didFitView = true;
-      requestAnimationFrame(() => this.fitView(element));
+      requestAnimationFrame(() => {
+        this.store.setViewportDimensions(element.clientWidth, element.clientHeight);
+        void this.store.fitView();
+      });
     }
   }
 
@@ -241,35 +250,6 @@ export default class EmberFlow<
     this.store.setViewport({ x: transform[0], y: transform[1], zoom: transform[2] });
     this.applyViewportTransform(this.store.viewport);
   };
-
-  private fitView(element: HTMLDivElement) {
-    if (!this.store.panZoom || this.nodes.length === 0) {
-      return;
-    }
-
-    let bounds = this.getNodesBounds();
-    let nextViewport = getViewportForBounds(
-      bounds,
-      element.clientWidth,
-      element.clientHeight,
-      this.minZoom,
-      this.maxZoom,
-      0.1,
-    );
-    let normalizedViewport = {
-      ...nextViewport,
-      x: Math.round(nextViewport.x),
-      y: Math.round(nextViewport.y),
-    };
-
-    this.store.setViewport(normalizedViewport);
-    this.applyViewportTransform(this.store.viewport);
-    this.store.panZoom.setViewport(normalizedViewport);
-  }
-
-  private getNodesBounds() {
-    return this.store.getRenderedNodesBounds(this.nodes);
-  }
 
   private toCssSize(value: number | string) {
     return typeof value === 'number' ? `${value}px` : value;

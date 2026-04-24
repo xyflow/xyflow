@@ -4,10 +4,12 @@ import {
   adoptUserNodes,
   getInternalNodesBounds,
   getNodesBounds as getNodesBoundsSystem,
+  getViewportForBounds,
   updateConnectionLookup,
   type CoordinateExtent,
   type ConnectionLookup,
   type EdgeLookup,
+  type SetCenterOptions,
   type InternalNodeBase,
   type NodeLookup,
   type NodeOrigin,
@@ -15,13 +17,14 @@ import {
   type ParentLookup,
   type Rect,
   type Viewport,
+  type ViewportHelperFunctionOptions,
   type XYPosition,
   type ZIndexMode,
   pointToRendererPoint,
   rendererPointToPoint,
 } from '@xyflow/system';
 
-import type { Edge, EdgeChange, Node, NodeChange } from '../types.js';
+import type { Edge, EdgeChange, FitViewOptions, Node, NodeChange } from '../types.js';
 
 interface DeleteElementsOptions<NodeType extends Node, EdgeType extends Edge> {
   nodes: NodeType[];
@@ -45,6 +48,14 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   nodeExtent: CoordinateExtent = infiniteExtent;
   zIndexMode: ZIndexMode = 'basic';
   elevateNodesOnSelect = true;
+  width = 0;
+  height = 0;
+  minZoom = 0.5;
+  maxZoom = 2;
+
+  @tracked nodesDraggable = true;
+  @tracked nodesConnectable = true;
+  @tracked elementsSelectable = true;
 
   readonly nodeLookup: NodeLookup<InternalNodeBase<NodeType>> = new Map();
   readonly parentLookup: ParentLookup<InternalNodeBase<NodeType>> = new Map();
@@ -308,6 +319,10 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   }
 
   getRenderedNodesBounds(nodes: Node[] = this.getNodes()): Rect {
+    if (nodes.length === 0) {
+      return { x: 0, y: 0, width: 1, height: 1 };
+    }
+
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
@@ -384,6 +399,145 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
       zoom: this.viewport.zoom,
     });
     this.syncPanZoomViewport();
+  }
+
+  setViewportDimensions(width: number, height: number) {
+    this.width = width;
+    this.height = height;
+  }
+
+  setZoomExtent(minZoom: number, maxZoom: number) {
+    this.minZoom = minZoom;
+    this.maxZoom = maxZoom;
+    this.panZoom?.setScaleExtent([minZoom, maxZoom]);
+  }
+
+  setInteractivity({
+    nodesDraggable,
+    nodesConnectable,
+    elementsSelectable,
+  }: {
+    nodesDraggable?: boolean;
+    nodesConnectable?: boolean;
+    elementsSelectable?: boolean;
+  }) {
+    let changed = false;
+
+    if (nodesDraggable !== undefined && this.nodesDraggable !== nodesDraggable) {
+      this.nodesDraggable = nodesDraggable;
+      changed = true;
+    }
+
+    if (nodesConnectable !== undefined && this.nodesConnectable !== nodesConnectable) {
+      this.nodesConnectable = nodesConnectable;
+      changed = true;
+    }
+
+    if (elementsSelectable !== undefined && this.elementsSelectable !== elementsSelectable) {
+      this.elementsSelectable = elementsSelectable;
+      changed = true;
+    }
+
+    if (changed) {
+      this.bump();
+    }
+  }
+
+  get isInteractive() {
+    return this.nodesDraggable || this.nodesConnectable || this.elementsSelectable;
+  }
+
+  toggleInteractivity() {
+    let interactive = !this.isInteractive;
+
+    this.setInteractivity({
+      nodesDraggable: interactive,
+      nodesConnectable: interactive,
+      elementsSelectable: interactive,
+    });
+
+    return interactive;
+  }
+
+  zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
+    return this.panZoom?.scaleBy(factor, options) ?? Promise.resolve(false);
+  }
+
+  zoomIn(options?: ViewportHelperFunctionOptions) {
+    return this.zoomBy(1.2, options);
+  }
+
+  zoomOut(options?: ViewportHelperFunctionOptions) {
+    return this.zoomBy(1 / 1.2, options);
+  }
+
+  async setCenter(x: number, y: number, options?: SetCenterOptions) {
+    if (!this.panZoom || this.width === 0 || this.height === 0) {
+      return Promise.resolve(false);
+    }
+
+    let zoom = options?.zoom ?? this.maxZoom;
+
+    await this.panZoom.setViewport(
+      {
+        x: this.width / 2 - x * zoom,
+        y: this.height / 2 - y * zoom,
+        zoom,
+      },
+      {
+        duration: options?.duration,
+        ease: options?.ease,
+        interpolate: options?.interpolate,
+      },
+    );
+
+    return Promise.resolve(true);
+  }
+
+  async fitView(options?: FitViewOptions<NodeType>) {
+    if (!this.panZoom || this.width === 0 || this.height === 0) {
+      return Promise.resolve(false);
+    }
+
+    let nodes = this.getFitViewNodes(options);
+
+    if (nodes.length === 0) {
+      return Promise.resolve(true);
+    }
+
+    let viewport = getViewportForBounds(
+      this.getRenderedNodesBounds(nodes),
+      this.width,
+      this.height,
+      options?.minZoom ?? this.minZoom,
+      options?.maxZoom ?? this.maxZoom,
+      options?.padding ?? 0.1,
+    );
+    let normalizedViewport = this.normalizeViewport({
+      ...viewport,
+      x: Math.round(viewport.x),
+      y: Math.round(viewport.y),
+    });
+
+    await this.panZoom.setViewport(normalizedViewport, {
+      duration: options?.duration,
+      ease: options?.ease,
+      interpolate: options?.interpolate,
+    });
+
+    return Promise.resolve(true);
+  }
+
+  private getFitViewNodes(options?: FitViewOptions<NodeType>) {
+    let optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
+
+    return this.getNodes().filter((node) => {
+      if (!options?.includeHiddenNodes && node.hidden) {
+        return false;
+      }
+
+      return !optionNodeIds || optionNodeIds.has(node.id);
+    });
   }
 
   screenToFlowPosition(clientPosition: XYPosition, domNode: HTMLElement | null) {

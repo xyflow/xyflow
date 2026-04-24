@@ -1,6 +1,7 @@
 import type {
   Align,
   EdgeBase,
+  FitViewOptionsBase,
   NodeBase,
   PanOnScrollMode,
   Position,
@@ -30,6 +31,8 @@ export type Edge<
   className?: string;
   style?: CssStyle;
 };
+
+export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
 
 export type NodeChange<NodeType extends Node = Node> = {
   id: string;
@@ -110,7 +113,17 @@ export interface BackgroundArgs {
 }
 
 export interface ControlsArgs {
+  position?: PanelPosition;
   orientation?: 'horizontal' | 'vertical';
+  showZoom?: boolean;
+  showFitView?: boolean;
+  showInteractive?: boolean;
+  showLock?: boolean;
+  fitViewOptions?: FitViewOptions;
+  onZoomIn?: () => void;
+  onZoomOut?: () => void;
+  onFitView?: () => void;
+  onInteractiveChange?: (interactive: boolean) => void;
 }
 
 export interface NodeToolbarArgs<NodeType extends Node = Node> {
