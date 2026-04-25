@@ -26,7 +26,6 @@ export default {
         transforms: [...templateCompatSupport()],
       },
     ],
-    'ember-concurrency/async-arrow-task-transform',
     [
       'module:decorator-transforms',
       {

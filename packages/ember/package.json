@@ -16,6 +16,10 @@
     "url": "https://github.com/xyflow/xyflow.git",
     "directory": "packages/ember"
   },
+  "homepage": "https://xyflow.com",
+  "bugs": {
+    "url": "https://github.com/xyflow/xyflow/issues"
+  },
   "license": "MIT",
   "scripts": {
     "build": "pnpm build:js && pnpm build:types && pnpm build:css",
@@ -38,14 +42,6 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./components": {
-      "types": "./dist/components.d.ts",
-      "default": "./dist/components.js"
-    },
-    "./types": {
-      "types": "./dist/types.d.ts",
-      "default": "./dist/types.js"
-    },
     "./dist/base.css": "./dist/base.css",
     "./dist/style.css": "./dist/style.css",
     "./addon-main.js": "./addon-main.cjs"
@@ -57,19 +53,11 @@
     "addon-main.cjs",
     "dist"
   ],
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/*"
-      ]
-    }
-  },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.9",
     "@glimmer/component": "^2.0.0",
     "@glimmer/tracking": "^1.1.2",
     "@xyflow/system": "workspace:*",
-    "ember-concurrency": "^5.1.0",
     "ember-modifier": "^4.3.0"
   },
   "devDependencies": {

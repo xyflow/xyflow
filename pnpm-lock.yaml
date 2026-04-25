@@ -180,9 +180,6 @@ importers:
       ember-cli-deprecation-workflow:
         specifier: ^3.4.0
         version: 3.4.0(ember-source@6.11.1(@glimmer/component@2.1.1)(rsvp@4.8.5))
-      ember-concurrency:
-        specifier: ^5.1.0
-        version: 5.2.0(@babel/core@7.29.0)(@glint/template@1.7.7)
       ember-load-initializers:
         specifier: ^3.0.1
         version: 3.0.1(ember-source@6.11.1(@glimmer/component@2.1.1)(rsvp@4.8.5))
@@ -395,9 +392,6 @@ importers:
       '@xyflow/system':
         specifier: workspace:*
         version: link:../system
-      ember-concurrency:
-        specifier: ^5.1.0
-        version: 5.2.0(@babel/core@7.29.0)(@glint/template@1.7.7)
       ember-modifier:
         specifier: ^4.3.0
         version: 4.3.0(@babel/core@7.29.0)
@@ -4974,9 +4968,6 @@ packages:
   decode-named-character-reference@1.0.2:
     resolution: {integrity: sha512-O8x12RzrUF8xyVcY0KJowWsmaJxQbmy0/EtnNtHRpsOcT7dFk5W598coHqBVpmWo1oQQfsCqfCmkZN5DJrZVdg==}
 
-  decorator-transforms@1.2.1:
-    resolution: {integrity: sha512-UUtmyfdlHvYoX3VSG1w5rbvBQ2r5TX1JsE4hmKU9snleFymadA3VACjl6SRfi9YgBCSjBbfQvR1bs9PRW9yBKw==}
-
   decorator-transforms@2.3.1:
     resolution: {integrity: sha512-PDOk74Zqqy0946Lx4ckXxbgG6uhPScOICtrxL/pXmfznxchqNee0TaJISClGJQe6FeT8ohGqsOgdjfahm4FwEw==}
 
@@ -5224,15 +5215,6 @@ packages:
     resolution: {integrity: sha512-f+s7n3PNe0vyN34Hh4O+9IviqVIrkq//NhMmC10KMlQLhCV5j4jdaFZmCgbhTcqHTDRtQZ4D1T1AcFONBLfuhA==}
     engines: {node: '>= 20.19.0'}
     hasBin: true
-
-  ember-concurrency@5.2.0:
-    resolution: {integrity: sha512-NUptPzaxaF2XWqn3VQ5KqiLSRqPFIZhWXH3UkOMhiedmiolxGYjUV96maoHWdd5msxNgQBC0UkZ28m7pV7A0sQ==}
-    engines: {node: 16.* || >= 18}
-    peerDependencies:
-      '@glint/template': '>= 1.0.0'
-    peerDependenciesMeta:
-      '@glint/template':
-        optional: true
 
   ember-eslint-parser@0.5.13:
     resolution: {integrity: sha512-b6ALDaxs9Bb4v0uagWud/5lECb78qpXHFv7M340dUHFW4Y0RuhlsfA4Rb+765X1+6KHp8G7TaAs0UgggWUqD3g==}
@@ -15568,13 +15550,6 @@ snapshots:
     dependencies:
       character-entities: 2.0.2
 
-  decorator-transforms@1.2.1(@babel/core@7.29.0):
-    dependencies:
-      '@babel/plugin-syntax-decorators': 7.28.6(@babel/core@7.29.0)
-      babel-import-util: 2.1.1
-    transitivePeerDependencies:
-      - '@babel/core'
-
   decorator-transforms@2.3.1(@babel/core@7.29.0):
     dependencies:
       '@babel/plugin-syntax-decorators': 7.28.6(@babel/core@7.29.0)
@@ -15958,19 +15933,6 @@ snapshots:
       - velocityjs
       - walrus
       - whiskers
-
-  ember-concurrency@5.2.0(@babel/core@7.29.0)(@glint/template@1.7.7):
-    dependencies:
-      '@babel/helper-module-imports': 7.27.1
-      '@babel/helper-plugin-utils': 7.27.1
-      '@babel/types': 7.27.6
-      '@embroider/addon-shim': 1.10.2
-      decorator-transforms: 1.2.1(@babel/core@7.29.0)
-    optionalDependencies:
-      '@glint/template': 1.7.7
-    transitivePeerDependencies:
-      - '@babel/core'
-      - supports-color
 
   ember-eslint-parser@0.5.13(@babel/core@7.29.0)(@typescript-eslint/parser@8.59.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3):
     dependencies:

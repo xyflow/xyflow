@@ -37,7 +37,7 @@ export default {
 
   plugins: [
     resolveJsSourceImports(),
-    addon.publicEntrypoints(['index.ts', 'components.ts', 'types.ts']),
+    addon.publicEntrypoints(['index.ts']),
     addon.appReexports([]),
     addon.dependencies(),
     addon.hbs(),
