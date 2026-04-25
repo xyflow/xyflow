@@ -49,6 +49,8 @@ const arrowKeyDiffs: Record<string, { x: number; y: number }> = {
   ArrowRight: { x: 1, y: 0 },
 };
 
+const viewportRenderSettleDelay = 80;
+
 interface EdgeRenderItem<EdgeType extends Edge = Edge, NodeType extends Node = Node> {
   edge: EdgeType;
   source: NodeType;
@@ -83,6 +85,8 @@ export default class EmberFlow<
   private connectionPathElement: SVGPathElement | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private viewportDimensionsFrame: number | null = null;
+  private viewportRenderSettleTimeout: ReturnType<typeof setTimeout> | null = null;
+  private viewportRenderSettleFrame: number | null = null;
   private onInitFrame: number | null = null;
   private didFitView = false;
   private didCallOnInit = false;
@@ -414,6 +418,14 @@ export default class EmberFlow<
       cancelAnimationFrame(this.viewportDimensionsFrame);
       this.viewportDimensionsFrame = null;
     }
+    if (this.viewportRenderSettleTimeout !== null) {
+      clearTimeout(this.viewportRenderSettleTimeout);
+      this.viewportRenderSettleTimeout = null;
+    }
+    if (this.viewportRenderSettleFrame !== null) {
+      cancelAnimationFrame(this.viewportRenderSettleFrame);
+      this.viewportRenderSettleFrame = null;
+    }
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
     this.store.panZoom?.destroy();
@@ -441,6 +453,7 @@ export default class EmberFlow<
 
   private handleTransformChange = (transform: Transform) => {
     let viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
+    this.scheduleViewportRenderSettle();
     this.store.setViewportFromPanZoom(viewport);
     this.args.onViewportChange?.(this.store.viewport);
     if (this.args.onlyRenderVisibleElements) {
@@ -449,6 +462,7 @@ export default class EmberFlow<
   };
 
   private handlePanZoomStart = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => {
+    this.markViewportTransforming();
     this.args.onMoveStart?.(event, viewport);
     this.args.onViewportChangeStart?.(viewport);
   };
@@ -458,9 +472,44 @@ export default class EmberFlow<
   };
 
   private handlePanZoomEnd = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => {
+    this.scheduleViewportRenderSettle();
     this.args.onMoveEnd?.(event, viewport);
     this.args.onViewportChangeEnd?.(viewport);
   };
+
+  private markViewportTransforming() {
+    this.viewportElement?.classList.add('is-transforming');
+  }
+
+  private scheduleViewportRenderSettle() {
+    this.markViewportTransforming();
+
+    if (this.viewportRenderSettleTimeout !== null) {
+      clearTimeout(this.viewportRenderSettleTimeout);
+    }
+
+    this.viewportRenderSettleTimeout = setTimeout(() => {
+      this.viewportRenderSettleTimeout = null;
+
+      if (this.viewportRenderSettleFrame !== null) {
+        cancelAnimationFrame(this.viewportRenderSettleFrame);
+      }
+
+      this.viewportRenderSettleFrame = requestAnimationFrame(() => {
+        this.viewportRenderSettleFrame = null;
+        let viewport = this.viewportElement;
+
+        if (!viewport) {
+          return;
+        }
+
+        viewport.classList.remove('is-transforming');
+        // Dropping the temporary compositor hint and forcing a layout read lets the browser
+        // re-rasterize DOM node content at the settled zoom instead of keeping a scaled layer.
+        void viewport.offsetHeight;
+      });
+    }, viewportRenderSettleDelay);
+  }
 
   private updateViewportDimensions() {
     let element = this.rendererElement;

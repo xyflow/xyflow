@@ -17,6 +17,9 @@
   transform-origin: 0 0;
   z-index: 2;
   pointer-events: none;
+}
+
+.ember-flow__viewport.is-transforming {
   will-change: transform;
 }
 
@@ -224,8 +227,11 @@
   user-select: none;
   pointer-events: all;
   transform-origin: 0 0;
-  will-change: transform, width, height;
   box-sizing: border-box;
+}
+
+.ember-flow__node.dragging {
+  will-change: transform;
 }
 
 .ember-flow__handle {

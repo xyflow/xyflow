@@ -92,4 +92,25 @@ test.describe('Controls', () => {
     await page.getByRole('button', { name: 'fitBounds' }).click();
     await expect.poll(async () => (await getTransform(viewport)).scale).toBeGreaterThan(0.75);
   });
+
+  test('viewport drops compositor hint after zoom settles', async ({ page }) => {
+    test.skip(FRAMEWORK !== 'ember', 'The compositor refresh path is Ember-specific.');
+
+    await page.goto('/examples/parity/viewport-controls');
+
+    const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
+    const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
+    const box = await pane.boundingBox();
+    const before = await getTransform(viewport);
+
+    await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
+    await page.mouse.wheel(0, -300);
+
+    await expect.poll(async () => (await getTransform(viewport)).scale).toBeGreaterThan(before.scale);
+
+    await expect
+      .poll(async () => viewport.evaluate((element) => element.classList.contains('is-transforming')))
+      .toBe(false);
+    await expect.poll(async () => viewport.evaluate((element) => getComputedStyle(element).willChange)).toBe('auto');
+  });
 });
