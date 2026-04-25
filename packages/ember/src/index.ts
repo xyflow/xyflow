@@ -8,6 +8,7 @@ export { default as EdgeLabelRenderer } from './components/edge-label-renderer.j
 export { default as EdgeToolbar } from './components/edge-toolbar.js';
 export { default as EdgeText } from './components/edge-text.js';
 export { default as EmberFlow } from './components/ember-flow.js';
+export { default as EmberFlowProvider } from './components/ember-flow-provider.js';
 export { default as Handle } from './components/handle.js';
 export { default as MiniMap } from './components/minimap.js';
 export { default as MiniMapNode } from './components/minimap-node.js';

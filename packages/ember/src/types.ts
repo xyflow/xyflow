@@ -37,6 +37,8 @@ import type {
   Viewport,
 } from '@xyflow/system';
 
+import type EmberFlowStore from './store/index.js';
+
 export type CssStyle = string | Record<string, string | number | undefined>;
 export type NodeComponent = unknown;
 export type NodeTypes = Record<string, NodeComponent>;
@@ -150,6 +152,7 @@ export interface EmberFlowArgs<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge,
 > {
+  store?: EmberFlowStore<NodeType, EdgeType>;
   nodes?: NodeType[];
   edges?: EdgeType[];
   nodeTypes?: NodeTypes;

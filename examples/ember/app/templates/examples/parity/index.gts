@@ -9,7 +9,7 @@ const samples = [
   {
     title: 'Editing + Toolbar',
     href: '/examples/parity/editing',
-    summary: 'Node selection, drag, marquee selection, connection creation, delete, NodeToolbar.',
+    summary: 'Provider-owned store, node selection, drag, marquee selection, connection creation, delete, NodeToolbar.',
   },
   {
     title: 'Edges + Markers',

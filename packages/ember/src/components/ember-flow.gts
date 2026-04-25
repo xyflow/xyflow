@@ -142,7 +142,7 @@ export default class EmberFlow<
 
   constructor(owner: Owner, args: Signature<NodeType, EdgeType>['Args']) {
     super(owner, args);
-    this.store = new EmberFlowStore<NodeType, EdgeType>(args.initialViewport);
+    this.store = args.store ?? new EmberFlowStore<NodeType, EdgeType>(args.initialViewport);
     this.configureStorePlacement();
   }
 
