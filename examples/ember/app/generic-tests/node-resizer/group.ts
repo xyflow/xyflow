@@ -5,32 +5,43 @@ import type { FlowConfig } from '../types';
 export default {
   flowProps: {
     fitView: true,
+    autoPanOnNodeDrag: false,
     nodeTypes: {
       ResizableNode,
     },
     nodes: [
       {
-        id: 'resizable',
+        id: 'group',
         type: 'ResizableNode',
-        data: { label: 'Resizable' },
+        data: { label: 'Group' },
         position: { x: 0, y: 0 },
-        width: 160,
-        height: 80,
+        width: 280,
+        height: 180,
         selected: true,
         className: 'ember-flow__node-default resizable-test-node',
       },
       {
-        id: 'target',
+        id: 'group-child',
+        parentId: 'group',
+        extent: 'parent',
+        data: { label: 'Child' },
+        position: { x: 175, y: 110 },
+        width: 70,
+        height: 46,
+        className: 'ember-flow__node-default',
+      },
+      {
+        id: 'group-target',
         data: { label: 'Target' },
-        position: { x: 300, y: 30 },
+        position: { x: 410, y: 95 },
         targetPosition: Position.Left,
       },
     ],
     edges: [
       {
-        id: 'resizable-target',
-        source: 'resizable',
-        target: 'target',
+        id: 'group-child-target',
+        source: 'group-child',
+        target: 'group-target',
       },
     ],
   },

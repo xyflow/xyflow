@@ -91,6 +91,31 @@ test.describe('Handles', () => {
     await expect(page.locator(`.${FRAMEWORK}-flow__edge`)).toHaveCount(0);
   });
 
+  test('connection line exposes invalid state while hovering an invalid target', async ({ page }) => {
+    test.skip(FRAMEWORK !== 'ember', 'EmberFlow connection validity class parity.');
+
+    const source = page
+      .locator(`.${FRAMEWORK}-flow__handle`)
+      .and(page.locator('[data-nodeid="custom-source"]'))
+      .and(page.locator('[data-handleid="out"]'));
+    const disabledTarget = page
+      .locator(`.${FRAMEWORK}-flow__handle`)
+      .and(page.locator('[data-nodeid="custom-disabled"]'))
+      .and(page.locator('[data-handleid="in"]'));
+    const sourceBox = await source.boundingBox();
+    const targetBox = await disabledTarget.boundingBox();
+
+    await page.mouse.move(sourceBox!.x + sourceBox!.width / 2, sourceBox!.y + sourceBox!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(targetBox!.x + targetBox!.width / 2, targetBox!.y + targetBox!.height / 2, { steps: 8 });
+
+    await expect(page.locator(`.${FRAMEWORK}-flow__connection.invalid`)).toBeVisible();
+    await expect(disabledTarget).toHaveClass(/invalid/);
+
+    await page.mouse.up();
+    await expect(page.locator(`.${FRAMEWORK}-flow__edge`)).toHaveCount(0);
+  });
+
   test('custom handles can reconnect the same generated edge after deletion', async ({ page }) => {
     test.skip(FRAMEWORK !== 'ember', 'The custom handles parity sample is currently implemented for EmberFlow.');
 
@@ -124,5 +149,21 @@ test.describe('Handles', () => {
 
     await expect(edge).toBeInViewport();
     await expect(page.locator(`.${FRAMEWORK}-flow__edge`).and(edge)).toHaveCount(1);
+  });
+
+  test('custom nodes can read their node id from Ember node context', async ({ page }) => {
+    test.skip(FRAMEWORK !== 'ember', 'UseNodeId is an EmberFlow context parity component.');
+
+    await page.goto('/examples/parity/custom-handles');
+
+    await expect(page.getByLabel('Custom node id').filter({ hasText: 'start' })).toBeVisible();
+    await expect(page.getByLabel('Custom node id').filter({ hasText: 'middle' })).toBeVisible();
+    await expect(page.getByLabel('Custom node id').filter({ hasText: 'done' })).toBeVisible();
+    await expect(
+      page
+        .locator(`.${FRAMEWORK}-flow__handle`)
+        .and(page.locator('[data-nodeid="middle"]'))
+        .and(page.locator('[data-handleid="out"]')),
+    ).toBeVisible();
   });
 });

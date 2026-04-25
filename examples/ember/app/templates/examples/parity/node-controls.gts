@@ -15,42 +15,42 @@ import {
 
 import type { Edge, EmberFlowStore, Node, NodeToolbarContext, Viewport } from '@xyflow/ember';
 
-type AdornmentNodeData = {
+type ControlNodeData = {
   label: string;
   detail: string;
 };
 
-export default class NodeAdornmentsSample extends Component {
+export default class NodeControlsSample extends Component {
   @tracked activeNodeId = 'strategy';
-  @tracked adornmentMessage = 'Tile adornments ready';
+  @tracked controlMessage = 'Node controls ready';
 
   initialViewport: Viewport = { x: 290, y: 220, zoom: 0.9 };
 
   groupNodeIds = ['strategy', 'design'];
   artboardLabelNodeIds = ['strategy', 'design', 'ship'];
 
-  nodes: Node<AdornmentNodeData>[] = [
+  nodes: Node<ControlNodeData>[] = [
     {
       id: 'strategy',
-      data: { label: 'Strategy tile', detail: 'App-owned controls' },
+      data: { label: 'Strategy node', detail: 'App-owned controls' },
       position: { x: 120, y: 40 },
       sourcePosition: Position.Right,
-      className: 'parity-node parity-node--blue parity-adornment-node',
+      className: 'parity-node parity-node--blue parity-control-node',
     },
     {
       id: 'design',
-      data: { label: 'Design tile', detail: 'Grouped adornment' },
+      data: { label: 'Design node', detail: 'Grouped control' },
       position: { x: 390, y: 90 },
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
-      className: 'parity-node parity-node--purple parity-adornment-node',
+      className: 'parity-node parity-node--purple parity-control-node',
     },
     {
       id: 'ship',
-      data: { label: 'Ship tile', detail: 'Click to retarget' },
+      data: { label: 'Ship node', detail: 'Click to retarget' },
       position: { x: 320, y: 310 },
       targetPosition: Position.Left,
-      className: 'parity-node parity-node--green parity-adornment-node',
+      className: 'parity-node parity-node--green parity-control-node',
     },
   ];
 
@@ -70,20 +70,20 @@ export default class NodeAdornmentsSample extends Component {
 
   handleNodeClick = (_event: MouseEvent, node: Node) => {
     this.activeNodeId = node.id;
-    this.adornmentMessage = `selected ${node.id}`;
+    this.controlMessage = `selected ${node.id}`;
   };
 
-  selectTile = (flow: EmberFlowStore, nodeId: string, event: MouseEvent) => {
+  selectNode = (flow: EmberFlowStore<Node<ControlNodeData>>, nodeId: string, event: MouseEvent) => {
     event.stopPropagation();
     flow.clearSelection();
     flow.selectNode(nodeId);
     this.activeNodeId = nodeId;
-    this.adornmentMessage = `selected ${nodeId}`;
+    this.controlMessage = `selected ${nodeId}`;
   };
 
-  promoteTile = (
-    flow: EmberFlowStore<Node<AdornmentNodeData>>,
-    toolbar: NodeToolbarContext<Node<AdornmentNodeData>>,
+  promoteNode = (
+    flow: EmberFlowStore,
+    toolbar: NodeToolbarContext,
     event: MouseEvent
   ) => {
     event.stopPropagation();
@@ -93,16 +93,16 @@ export default class NodeAdornmentsSample extends Component {
     }
 
     flow.updateNodeData(node.id, {
-      label: 'Polished tile',
+      label: 'Polished node',
       detail: 'Updated by app UI',
     });
     this.activeNodeId = node.id;
-    this.adornmentMessage = `promoted ${node.id} from NodeToolbar`;
+    this.controlMessage = `promoted ${node.id} from NodeToolbar`;
   };
 
-  fitTile = (
-    flow: EmberFlowStore<Node<AdornmentNodeData>>,
-    toolbar: NodeToolbarContext<Node<AdornmentNodeData>>,
+  fitNode = (
+    flow: EmberFlowStore,
+    toolbar: NodeToolbarContext,
     event: MouseEvent
   ) => {
     event.stopPropagation();
@@ -113,29 +113,30 @@ export default class NodeAdornmentsSample extends Component {
 
     let bounds = flow.getNodesBounds([nodeId]);
     void flow.fitBounds(bounds, { padding: 0.6, duration: 180 });
-    this.adornmentMessage = `fit ${nodeId}`;
+    this.controlMessage = `fit ${nodeId}`;
   };
 
   tagGroup = (
-    flow: EmberFlowStore<Node<AdornmentNodeData>>,
-    toolbar: NodeToolbarContext<Node<AdornmentNodeData>>,
+    flow: EmberFlowStore,
+    toolbar: NodeToolbarContext,
     event: MouseEvent
   ) => {
     event.stopPropagation();
     for (let nodeId of toolbar.nodeIds) {
       flow.updateNodeData(nodeId, (node) => ({
-        detail: `${node.data.detail} / grouped`,
+        detail: `${typeof node.data.detail === 'string' ? node.data.detail : 'node'} / grouped`,
       }));
     }
-    this.adornmentMessage = `tagged ${toolbar.nodeIds.join(', ')}`;
+    this.controlMessage = `tagged ${toolbar.nodeIds.join(', ')}`;
   };
 
-  artboardLabelFor(toolbar: NodeToolbarContext<Node<AdornmentNodeData>>) {
-    return toolbar.nodes[0]?.data.label ?? toolbar.nodeIds[0] ?? 'tile';
+  artboardLabelFor(toolbar: NodeToolbarContext) {
+    let label = toolbar.nodes[0]?.data.label;
+    return typeof label === 'string' ? label : (toolbar.nodeIds[0] ?? 'node');
   }
 
   <template>
-    {{pageTitle "EmberFlow Tile Adornments Sample"}}
+    {{pageTitle "EmberFlow Node Controls Sample"}}
     <main class='parity-sample'>
       <EmberFlow
         @nodes={{this.nodes}}
@@ -165,13 +166,13 @@ export default class NodeAdornmentsSample extends Component {
           @isVisible={{true}}
           @position={{Position.Top}}
           @offset={{34}}
-          @className='parity-adornment-menu parity-adornment-menu--tile'
+          @className='parity-control-menu parity-control-menu--node'
           as |toolbarFlow toolbar|
         >
-          <div class='parity-adornment-menu__surface' role='toolbar' aria-label='Tile adornment actions'>
-            <span class='parity-adornment-menu__title'>{{this.activeNodeId}}</span>
-            <button type='button' {{on 'click' (fn this.promoteTile toolbarFlow toolbar)}}>promote</button>
-            <button type='button' {{on 'click' (fn this.fitTile toolbarFlow toolbar)}}>focus</button>
+          <div class='parity-control-menu__frame' role='toolbar' aria-label='Node control actions'>
+            <span class='parity-control-menu__title'>{{this.activeNodeId}}</span>
+            <button type='button' {{on 'click' (fn this.promoteNode toolbarFlow toolbar)}}>promote</button>
+            <button type='button' {{on 'click' (fn this.fitNode toolbarFlow toolbar)}}>focus</button>
           </div>
         </NodeToolbar>
 
@@ -180,11 +181,11 @@ export default class NodeAdornmentsSample extends Component {
           @isVisible={{true}}
           @position={{Position.Bottom}}
           @offset={{24}}
-          @className='parity-adornment-menu parity-adornment-menu--group'
+          @className='parity-control-menu parity-control-menu--group'
           as |toolbarFlow toolbar|
         >
-          <div class='parity-adornment-menu__surface' role='toolbar' aria-label='Group adornment actions'>
-            <span class='parity-adornment-menu__title'>{{toolbar.nodes.length}} tiles</span>
+          <div class='parity-control-menu__frame' role='toolbar' aria-label='Group control actions'>
+            <span class='parity-control-menu__title'>{{toolbar.nodes.length}} nodes</span>
             <button type='button' {{on 'click' (fn this.tagGroup toolbarFlow toolbar)}}>tag group</button>
           </div>
         </NodeToolbar>
@@ -199,22 +200,22 @@ export default class NodeAdornmentsSample extends Component {
         <Controls />
         <Panel @position='top-left'>
           <div class='parity-note'>
-            <strong>Tile Adornments</strong>
+            <strong>Node Controls</strong>
             <ol>
-              <li>The dark tile menu is app-owned UI positioned by NodeToolbar.</li>
-              <li>Click any tile to retarget the menu without putting controls inside the node component.</li>
-              <li>Drag the active tile; the menu should follow and stay the same screen size.</li>
-              <li>The lower menu is anchored to a two-tile group using an array of node ids.</li>
-              <li>The gray artboard labels are passive adornments that are always visible.</li>
-              <li>Use the note buttons to select tiles from external Ember UI.</li>
+              <li>The dark node menu is app-owned UI positioned by NodeToolbar.</li>
+              <li>Click any node to retarget the menu without putting controls inside the node component.</li>
+              <li>Drag the active node; the menu should follow and stay the same screen size.</li>
+              <li>The lower menu is anchored to a two-node group using an array of node ids.</li>
+              <li>The gray artboard labels are passive controls that are always visible.</li>
+              <li>Use the note buttons to select nodes from external Ember UI.</li>
             </ol>
-            <div class='parity-note-actions' aria-label='Tile selection actions'>
-              <button type='button' {{on 'click' (fn this.selectTile flow 'strategy')}}>select strategy</button>
-              <button type='button' {{on 'click' (fn this.selectTile flow 'design')}}>select design</button>
-              <button type='button' {{on 'click' (fn this.selectTile flow 'ship')}}>select ship</button>
+            <div class='parity-note-actions' aria-label='Node selection actions'>
+              <button type='button' {{on 'click' (fn this.selectNode flow 'strategy')}}>select strategy</button>
+              <button type='button' {{on 'click' (fn this.selectNode flow 'design')}}>select design</button>
+              <button type='button' {{on 'click' (fn this.selectNode flow 'ship')}}>select ship</button>
             </div>
-            <div class='parity-event-log' aria-label='Adornment log'>
-              <span>{{this.adornmentMessage}}</span>
+            <div class='parity-event-log' aria-label='Control log'>
+              <span>{{this.controlMessage}}</span>
             </div>
           </div>
         </Panel>
@@ -223,7 +224,7 @@ export default class NodeAdornmentsSample extends Component {
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>
             <a href='/examples/parity/custom-controls'>Custom UI</a>
-            <a href='/examples/parity/node-adornments'>Tile UI</a>
+            <a href='/examples/parity/node-controls'>Node UI</a>
             <a href='/examples/parity/editing'>Editing</a>
             <a href='/examples/parity/edges'>Edges</a>
             <a href='/examples/parity/minimap'>MiniMap</a>

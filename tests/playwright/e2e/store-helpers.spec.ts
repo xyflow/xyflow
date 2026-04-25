@@ -9,21 +9,43 @@ test.describe('Store helpers', () => {
   test('mutates nodes and edges through the yielded EmberFlowStore', async ({ page }) => {
     await page.goto('/examples/parity/editing');
 
-    await expect(page.locator('[data-id="draft"]')).toContainText('Draft card');
+    const draftNode = page.locator(`.${FRAMEWORK}-flow__node[data-id="draft"]`);
+
+    await expect(draftNode).toContainText('Draft node');
+    await expect(page.getByLabel('Store query readout')).toContainText('nodes 4');
+    await expect(page.getByLabel('Store query readout')).toContainText('edges 2');
+    await expect(page.getByLabel('Store query readout')).toContainText('initialized yes');
+    await expect(page.getByLabel('Store query readout')).toContainText('draft internals ready');
+    await expect(page.getByLabel('Store query readout')).toContainText('draft links 2');
+    await expect(page.getByLabel('Store query readout')).toContainText('draft data Draft node');
+    await expect(page.getByLabel('Store query readout')).toContainText('connection idle');
+    await expect(page.getByLabel('Store query readout')).toContainText('shift up');
+    await expect(page.getByLabel('Store query readout')).toContainText('selected 0');
+
+    await page.keyboard.down('Shift');
+    await expect(page.getByLabel('Store query readout')).toContainText('shift down');
+    await page.keyboard.up('Shift');
+    await expect(page.getByLabel('Store query readout')).toContainText('shift up');
+
+    await draftNode.click();
+    await expect(page.getByLabel('Store query readout')).toContainText('selected 1');
 
     await page.getByRole('button', { name: 'add node' }).click();
     await expect(page.locator('[data-id="api-added"]')).toBeVisible();
     await expect(page.locator(`.${FRAMEWORK}-flow__edge`).and(page.locator('[data-id="review-api-added"]'))).toBeAttached();
     await expect(page.getByLabel('Store helper log')).toContainText('addNodes + addEdges');
+    await expect(page.getByLabel('Store query readout')).toContainText('nodes 5');
+    await expect(page.getByLabel('Store query readout')).toContainText('edges 3');
 
     await page.getByRole('button', { name: 'update data' }).click();
-    await expect(page.locator('[data-id="draft"]')).toContainText('Updated draft');
+    await expect(draftNode).toContainText('Updated draft');
     await expect(page.getByLabel('Store helper log')).toContainText('updateNodeData');
+    await expect(page.getByLabel('Store query readout')).toContainText('draft data Updated draft');
 
     await page.getByRole('button', { name: 'intersections' }).click();
     await expect(page.getByLabel('Store helper log')).toContainText('intersections:');
 
-    await page.getByRole('button', { name: 'api surface' }).click();
+    await page.getByRole('button', { name: 'store API' }).click();
     await expect(page.locator(`.${FRAMEWORK}-flow__edge`).and(page.locator('[data-id="idea-draft"]'))).toContainText(
       'API edge',
     );

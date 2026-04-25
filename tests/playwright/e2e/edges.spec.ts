@@ -222,6 +222,47 @@ test.describe('Edges', () => {
       expect(simpleBezierD).not.toEqual(smoothStepD);
     });
 
+    test('custom Ember edge components render through edgeTypes', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'Ember custom edge component parity sample');
+
+      await page.goto('/examples/parity/edges');
+
+      const customEdge = page.locator('[data-id="animated-marker"]');
+      const customEdgeComponent = page.getByTestId('custom-status-edge');
+
+      await expect(customEdgeComponent).toBeVisible();
+      await expect(customEdgeComponent.locator(`.${FRAMEWORK}-flow__edge-path`)).toHaveCSS(
+        'stroke',
+        'rgb(219, 39, 119)',
+      );
+      await expect(
+        page.locator(`.${FRAMEWORK}-flow__edge-text, .${FRAMEWORK}-flow__edge-label`).filter({ hasText: 'custom edge' }),
+      ).toBeVisible();
+
+      await customEdge.click();
+      await expect(customEdge).toHaveClass(/selected/);
+    });
+
+    test('custom Ember connection line component renders while connecting', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'Ember custom connection-line component parity sample');
+
+      await page.goto('/tests/generic/nodes/custom-connection-line');
+
+      const source = page.locator('[data-nodeid="source"][data-handletype="source"]');
+      const sourceBox = await source.boundingBox();
+
+      await page.mouse.move(sourceBox!.x + sourceBox!.width / 2, sourceBox!.y + sourceBox!.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(sourceBox!.x + 160, sourceBox!.y + 80, { steps: 4 });
+
+      const line = page.getByTestId('custom-connection-line');
+      await expect(line).toBeVisible();
+      await expect(line).toHaveCSS('stroke', 'rgb(15, 118, 110)');
+
+      await page.mouse.up();
+      await expect(line).toBeHidden();
+    });
+
     test('selected edge affordance follows node drag', async ({ page }) => {
       test.skip(FRAMEWORK !== 'ember', 'Ember selection halo is an Ember-specific affordance');
 
@@ -268,6 +309,40 @@ test.describe('Edges', () => {
 
       await expect(svg).toBeAttached();
       await expect(svg).toHaveCSS('z-index', '1');
+    });
+
+    test('sub flow children and edges track parent drag before drop', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'EmberFlow live subflow drag parity.');
+
+      const parent = page.locator(`.${FRAMEWORK}-flow__node[data-id="12"]`);
+      const child = page.locator(`.${FRAMEWORK}-flow__node[data-id="12-a"]`);
+      const edgePath = page.locator('[data-id="subflow-edge-2"]').locator(`.${FRAMEWORK}-flow__edge-path`);
+
+      await expect(parent).toBeVisible();
+      await expect(child).toBeVisible();
+
+      const parentBox = await parent.boundingBox();
+      const childBefore = await child.boundingBox();
+      const edgeBefore = await edgePath.getAttribute('d');
+      const start = {
+        x: parentBox!.x + Math.min(parentBox!.width - 20, 80),
+        y: parentBox!.y + Math.min(parentBox!.height - 20, 20),
+      };
+
+      await page.mouse.move(start.x, start.y);
+      await page.mouse.down();
+      await page.mouse.move(start.x + 90, start.y + 50, {
+        steps: 6,
+      });
+
+      const childDuring = await child.boundingBox();
+      const edgeDuring = await edgePath.getAttribute('d');
+
+      expect(childDuring!.x - childBefore!.x).toBeGreaterThan(70);
+      expect(childDuring!.y - childBefore!.y).toBeGreaterThan(35);
+      expect(edgeDuring).not.toEqual(edgeBefore);
+
+      await page.mouse.up();
     });
   });
 });

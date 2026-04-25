@@ -13,7 +13,7 @@ Router.map(function () {
     this.route('parity', function () {
       this.route('viewport-controls');
       this.route('custom-controls');
-      this.route('node-adornments');
+      this.route('node-controls');
       this.route('editing');
       this.route('edges');
       this.route('minimap');

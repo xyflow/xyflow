@@ -67,7 +67,7 @@ test.describe('EdgeToolbar', () => {
     expect(Math.abs(afterOffset - 16)).toBeLessThan(2);
   });
 
-  test('parity sample shows selected edge actions as a toolbar surface', async ({ page }) => {
+  test('parity sample shows selected edge actions as a toolbar frame', async ({ page }) => {
     test.skip(FRAMEWORK !== 'ember', 'The parity sample route is currently implemented for EmberFlow');
 
     await page.goto('/examples/parity/edges');

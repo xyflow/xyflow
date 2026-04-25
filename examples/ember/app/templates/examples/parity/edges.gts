@@ -19,12 +19,17 @@ import {
 
 import type { Connection, Edge, Node, Viewport } from '@xyflow/ember';
 
+import StatusEdge from 'ember-examples/components/parity-samples/status-edge';
+
 export default class EdgesSample extends Component {
   @tracked reconnectMessage = 'Reconnect anchors ready';
 
   initialViewport: Viewport = { x: 390, y: 410, zoom: 0.55 };
   publicReconnectSourcePosition = { x: -156, y: -39 };
   publicReconnectTargetPosition = { x: -40, y: 231 };
+  edgeTypes = {
+    status: StatusEdge,
+  };
 
   nodes: Node[] = [
     {
@@ -82,10 +87,11 @@ export default class EdgesSample extends Component {
       id: 'animated-marker',
       source: 'animated',
       target: 'marker',
+      type: 'status',
+      data: { status: 'custom edge' },
       style: { stroke: '#16a34a', strokeWidth: 2 },
       markerStart: { type: MarkerType.Arrow },
       markerEnd: { type: MarkerType.ArrowClosed },
-      label: 'markers',
     },
     {
       id: 'source-hitbox',
@@ -130,6 +136,7 @@ export default class EdgesSample extends Component {
         @initialViewport={{this.initialViewport}}
         @minZoom={{0.25}}
         @maxZoom={{4}}
+        @edgeTypes={{this.edgeTypes}}
         @edgesReconnectable={{true}}
         @onReconnect={{this.handleReconnect}}
         as |flow|
@@ -194,7 +201,7 @@ export default class EdgesSample extends Component {
               <li>Press Backspace after selecting an edge to delete it.</li>
               <li>Inspect or click the centered labels; they should target the owning edge.</li>
               <li>Click near the dashed purple edge; its wider interaction path should make selection easier and show an EdgeToolbar.</li>
-              <li>Compare the teal simple-bezier curve against the default and marker edges.</li>
+              <li>Compare the teal simple-bezier curve against the default and custom pink marker edge.</li>
               <li>The small renderer label is portal content that moves with the viewport.</li>
               <li>Drag an invisible edge endpoint anchor to another compatible handle to reconnect the edge.</li>
               <li>The visible teal endpoint uses the public EdgeReconnectAnchor component.</li>
@@ -209,7 +216,7 @@ export default class EdgesSample extends Component {
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>
             <a href='/examples/parity/custom-controls'>Custom UI</a>
-            <a href='/examples/parity/node-adornments'>Tile UI</a>
+            <a href='/examples/parity/node-controls'>Node UI</a>
             <a href='/examples/parity/editing'>Editing</a>
             <a href='/examples/parity/minimap'>MiniMap</a>
             <a href='/examples/parity/custom-handles'>Handles</a>

@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { pageTitle } from 'ember-page-title';
 import {
   Background,
@@ -12,7 +13,13 @@ import {
 
 import type { Edge, Node } from '@xyflow/ember';
 
+import CustomMiniMapNode from 'ember-examples/components/parity-samples/minimap-node';
+
 export default class MiniMapSample extends Component {
+  @tracked minimapMessage = 'MiniMap callbacks ready';
+
+  nodeComponent = CustomMiniMapNode;
+
   nodes: Node[] = [
     {
       id: 'north',
@@ -55,6 +62,14 @@ export default class MiniMapSample extends Component {
     },
   ];
 
+  handleMiniMapClick = (_event: MouseEvent, position: { x: number; y: number }) => {
+    this.minimapMessage = `minimap click ${Math.round(position.x)},${Math.round(position.y)}`;
+  };
+
+  handleMiniMapNodeClick = (_event: MouseEvent, node: Node) => {
+    this.minimapMessage = `minimap node ${node.id}`;
+  };
+
   <template>
     {{pageTitle "EmberFlow MiniMap Sample"}}
     <main class='parity-sample'>
@@ -76,6 +91,7 @@ export default class MiniMapSample extends Component {
           @position='top-right'
           @nodeStrokeColor='#334155'
           @nodeStrokeWidth={{3}}
+          @nodeComponent={{this.nodeComponent}}
           @nodeBorderRadius={{8}}
           @maskColor='rgba(148, 163, 184, 0.28)'
           @maskStrokeColor='#475569'
@@ -84,6 +100,8 @@ export default class MiniMapSample extends Component {
           @zoomable={{true}}
           @zoomStep={{1}}
           @ariaLabel='EmberFlow parity minimap'
+          @onClick={{this.handleMiniMapClick}}
+          @onNodeClick={{this.handleMiniMapNodeClick}}
         />
         <Controls />
         <Panel @position='top-left'>
@@ -95,7 +113,11 @@ export default class MiniMapSample extends Component {
               <li>Wheel inside the minimap to zoom the main canvas.</li>
               <li>Zoom with the wheel or controls and confirm the mask changes size.</li>
               <li>Node rectangles should match the flow node placement and colors.</li>
+              <li>Custom minimap nodes render as app-owned SVG components and emit node click callbacks.</li>
             </ol>
+            <div class='parity-event-log' aria-label='MiniMap log'>
+              <span>{{this.minimapMessage}}</span>
+            </div>
           </div>
         </Panel>
         <Panel @position='bottom-right'>
@@ -103,7 +125,7 @@ export default class MiniMapSample extends Component {
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>
             <a href='/examples/parity/custom-controls'>Custom UI</a>
-            <a href='/examples/parity/node-adornments'>Tile UI</a>
+            <a href='/examples/parity/node-controls'>Node UI</a>
             <a href='/examples/parity/editing'>Editing</a>
             <a href='/examples/parity/edges'>Edges</a>
             <a href='/examples/parity/custom-handles'>Handles</a>

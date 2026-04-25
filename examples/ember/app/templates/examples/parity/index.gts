@@ -12,9 +12,9 @@ const samples = [
     summary: 'Default controls with injected buttons plus a fully app-owned toolbar that calls the store API.',
   },
   {
-    title: 'Tile Adornments',
-    href: '/examples/parity/node-adornments',
-    summary: 'App-owned node menus positioned by NodeToolbar, including single-tile and grouped adornments.',
+    title: 'Node Controls',
+    href: '/examples/parity/node-controls',
+    summary: 'App-owned node menus positioned by NodeToolbar, including single-node and grouped controls.',
   },
   {
     title: 'Editing + Toolbar',
@@ -62,7 +62,7 @@ const samples = [
 
     <section class='parity-index__grid' aria-label='EmberFlow parity samples'>
       {{#each samples as |sample|}}
-        <a class='parity-index__card' href={{sample.href}}>
+        <a class='parity-index__sample' href={{sample.href}}>
           <span>{{sample.title}}</span>
           <small>{{sample.summary}}</small>
         </a>

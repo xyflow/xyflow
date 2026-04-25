@@ -1,4 +1,4 @@
-import { MarkerType } from '@xyflow/ember';
+import { MarkerType, Position } from '@xyflow/ember';
 
 import type { FlowConfig } from '../types';
 
@@ -91,40 +91,40 @@ export default {
         id: '13',
         data: { label: '13' },
         position: { x: 340, y: 160 },
-        sourcePosition: 'right',
-        targetPosition: 'left',
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
       },
       {
         id: '14',
         data: { label: '14' },
         position: { x: 560, y: 160 },
-        targetPosition: 'left',
+        targetPosition: Position.Left,
       },
       {
         id: '15',
         data: { label: '15' },
         position: { x: 340, y: 280 },
-        sourcePosition: 'right',
-        targetPosition: 'left',
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
       },
       {
         id: '16',
         data: { label: '16' },
         position: { x: 560, y: 280 },
-        targetPosition: 'left',
+        targetPosition: Position.Left,
       },
       {
         id: '17',
         data: { label: '17' },
         position: { x: 340, y: 400 },
-        sourcePosition: 'right',
-        targetPosition: 'left',
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
       },
       {
         id: '18',
         data: { label: '18' },
         position: { x: 560, y: 400 },
-        targetPosition: 'left',
+        targetPosition: Position.Left,
       },
     ],
     edges: [

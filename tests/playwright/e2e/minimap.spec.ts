@@ -53,4 +53,21 @@ test.describe('MiniMap', () => {
 
     await expect.poll(async () => (await getTransform(viewport)).scale).toBeGreaterThan(beforeZoom.scale);
   });
+
+  test('sample minimap renders custom node components and node click callbacks', async ({ page }) => {
+    test.skip(FRAMEWORK !== 'ember', 'The parity sample route is currently implemented for EmberFlow.');
+
+    await page.goto('/examples/parity/minimap');
+
+    const customNodes = page.getByTestId('custom-minimap-node');
+    await expect(customNodes).toHaveCount(3);
+
+    await customNodes.and(page.locator('[data-id="center"]')).click();
+    await expect(page.getByLabel('MiniMap log')).toContainText('minimap node center');
+
+    const minimapSvg = page.locator(`.${FRAMEWORK}-flow__minimap-svg`);
+    const box = await minimapSvg.boundingBox();
+    await page.mouse.click(box!.x + box!.width - 8, box!.y + box!.height - 8);
+    await expect(page.getByLabel('MiniMap log')).toContainText('minimap click');
+  });
 });

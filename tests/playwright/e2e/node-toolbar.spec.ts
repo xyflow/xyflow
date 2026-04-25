@@ -130,23 +130,23 @@ test.describe('Node Toolbar', async () => {
   });
 });
 
-test.describe('Node adornments', () => {
-  test('app-owned tile menu is positioned by NodeToolbar and can call the store', async ({ page }) => {
-    await page.goto('/examples/parity/node-adornments');
+test.describe('Node controls', () => {
+  test('app-owned node menu is positioned by NodeToolbar and can call the store', async ({ page }) => {
+    await page.goto('/examples/parity/node-controls');
 
     const strategyNode = page.locator('[data-id="strategy"]').and(page.locator(`.${FRAMEWORK}-flow__node`));
-    const adornment = page.locator('.parity-adornment-menu--tile');
+    const control = page.locator('.parity-control-menu--node');
 
     await expect(strategyNode).toBeAttached();
-    await expect(adornment).toBeAttached();
-    await expect(page.getByRole('toolbar', { name: 'Tile adornment actions' })).toBeVisible();
+    await expect(control).toBeAttached();
+    await expect(page.getByRole('toolbar', { name: 'Node control actions' })).toBeVisible();
 
     const nodeBefore = await strategyNode.boundingBox();
-    const toolbarBefore = await adornment.boundingBox();
+    const toolbarBefore = await control.boundingBox();
 
     await page.getByRole('button', { name: 'promote' }).click();
-    await expect(page.getByLabel('Adornment log')).toContainText('promoted strategy from NodeToolbar');
-    await expect(strategyNode).toContainText('Polished tile');
+    await expect(page.getByLabel('Control log')).toContainText('promoted strategy from NodeToolbar');
+    await expect(strategyNode).toContainText('Polished node');
 
     await page.mouse.move(nodeBefore!.x + nodeBefore!.width / 2, nodeBefore!.y + nodeBefore!.height / 2);
     await page.mouse.down();
@@ -156,33 +156,33 @@ test.describe('Node adornments', () => {
     await page.mouse.up();
 
     const nodeAfter = await strategyNode.boundingBox();
-    const toolbarAfter = await adornment.boundingBox();
+    const toolbarAfter = await control.boundingBox();
 
     expect(Math.abs((toolbarAfter!.x - toolbarBefore!.x) - (nodeAfter!.x - nodeBefore!.x))).toBeLessThan(1);
     expect(Math.abs((toolbarAfter!.y - toolbarBefore!.y) - (nodeAfter!.y - nodeBefore!.y))).toBeLessThan(1);
   });
 
-  test('external Ember UI can retarget tile adornments', async ({ page }) => {
-    await page.goto('/examples/parity/node-adornments');
+  test('external Ember UI can retarget node controls', async ({ page }) => {
+    await page.goto('/examples/parity/node-controls');
 
     const designNode = page.locator('[data-id="design"]').and(page.locator(`.${FRAMEWORK}-flow__node`));
-    const adornment = page.locator('.parity-adornment-menu--tile');
+    const control = page.locator('.parity-control-menu--node');
 
     await page.getByRole('button', { name: 'select design' }).click();
-    await expect(page.getByLabel('Adornment log')).toContainText('selected design');
-    await expect(adornment).toContainText('design');
+    await expect(page.getByLabel('Control log')).toContainText('selected design');
+    await expect(control).toContainText('design');
 
     const designBox = await designNode.boundingBox();
-    const adornmentBox = await adornment.boundingBox();
+    const controlBox = await control.boundingBox();
 
-    expect(adornmentBox!.y).toBeLessThan(designBox!.y);
+    expect(controlBox!.y).toBeLessThan(designBox!.y);
   });
 
-  test('passive artboard labels are always visible and track their tiles', async ({ page }) => {
-    await page.goto('/examples/parity/node-adornments');
+  test('passive artboard labels are always visible and track their nodes', async ({ page }) => {
+    await page.goto('/examples/parity/node-controls');
 
     const strategyNode = page.locator('[data-id="strategy"]').and(page.locator(`.${FRAMEWORK}-flow__node`));
-    const label = page.getByLabel('Artboard label').filter({ hasText: 'Strategy tile' });
+    const label = page.getByLabel('Artboard label').filter({ hasText: 'Strategy node' });
 
     await expect(label).toBeVisible();
     await expect(page.getByLabel('Artboard label')).toHaveCount(3);

@@ -87,7 +87,7 @@ body {
   margin-top: 32px;
 }
 
-.parity-index__card {
+.parity-index__sample {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -101,16 +101,16 @@ body {
   box-shadow: 0 10px 26px rgba(24, 33, 52, 0.08);
 }
 
-.parity-index__card:hover {
+.parity-index__sample:hover {
   border-color: #9aa7ff;
 }
 
-.parity-index__card span {
+.parity-index__sample span {
   font-size: 18px;
   font-weight: 700;
 }
 
-.parity-index__card small {
+.parity-index__sample small {
   color: #5f6e82;
   font-size: 13px;
   line-height: 1.45;
@@ -238,6 +238,19 @@ body {
   border: 1px solid #5eead4;
   border-radius: 6px;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
+}
+
+.parity-status-edge__path {
+  filter: drop-shadow(0 3px 8px rgba(219, 39, 119, 0.18));
+}
+
+.parity-node-context-chip {
+  display: block;
+  margin-bottom: 4px;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .parity-note__enhancement {
@@ -439,7 +452,7 @@ body {
   border-color: rgba(186, 230, 253, 0.6);
 }
 
-.ember-flow__node.parity-adornment-node {
+.ember-flow__node.parity-control-node {
   width: 188px;
   min-height: 74px;
 }
@@ -469,7 +482,7 @@ body {
   box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
 }
 
-.parity-sample .ember-flow__node-toolbar.parity-adornment-menu {
+.parity-sample .ember-flow__node-toolbar.parity-control-menu {
   padding: 0;
   background:
     linear-gradient(135deg, rgba(12, 18, 32, 0.86), rgba(31, 41, 55, 0.68)),
@@ -482,7 +495,7 @@ body {
   backdrop-filter: blur(12px) saturate(1.25);
 }
 
-.parity-adornment-menu__surface {
+.parity-control-menu__frame {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -490,7 +503,7 @@ body {
   white-space: nowrap;
 }
 
-.parity-adornment-menu__title {
+.parity-control-menu__title {
   max-width: 90px;
   padding: 0 6px;
   overflow: hidden;
@@ -500,7 +513,7 @@ body {
   text-overflow: ellipsis;
 }
 
-.parity-sample .ember-flow__node-toolbar.parity-adornment-menu button {
+.parity-sample .ember-flow__node-toolbar.parity-control-menu button {
   padding: 6px 8px;
   color: #f8fafc;
   font-size: 11px;
@@ -510,12 +523,12 @@ body {
   border-radius: 6px;
 }
 
-.parity-sample .ember-flow__node-toolbar.parity-adornment-menu button:hover {
+.parity-sample .ember-flow__node-toolbar.parity-control-menu button:hover {
   background: rgba(125, 211, 252, 0.26);
   border-color: rgba(186, 230, 253, 0.48);
 }
 
-.parity-sample .ember-flow__node-toolbar.parity-adornment-menu--group {
+.parity-sample .ember-flow__node-toolbar.parity-control-menu--group {
   background:
     linear-gradient(135deg, rgba(15, 118, 110, 0.8), rgba(20, 184, 166, 0.42)),
     rgba(15, 23, 42, 0.5);
@@ -567,4 +580,15 @@ body {
 
 .parity-sample .ember-flow__node-toolbar button:hover {
   background: rgba(255, 255, 255, 0.14);
+}
+
+.parity-custom-connection-line {
+  stroke: #0f766e;
+  stroke-width: 3;
+  stroke-dasharray: 8 5;
+  filter: drop-shadow(0 3px 8px rgba(15, 118, 110, 0.25));
+}
+
+.parity-custom-connection-line.is-invalid {
+  stroke: #ef4444;
 }

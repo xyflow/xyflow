@@ -153,7 +153,7 @@ export default class CustomControlsSample extends Component {
               <li>The top-right toolbar is fully custom: default buttons are disabled and only app buttons render.</li>
               <li>Position custom toolbars with @position, like Panel: top-right, bottom-left, top-center, or center-right.</li>
               <li>Use @orientation for row or column layout, and pass a class for app-specific visual treatment.</li>
-              <li>Both toolbars call the same surface API as external Ember application UI.</li>
+              <li>Both toolbars call the same store API as external Ember application UI.</li>
               <li>The helper buttons below use the EmberFlow block store outside Controls.</li>
             </ol>
             <UseEmberFlow as |flow|>
@@ -169,7 +169,7 @@ export default class CustomControlsSample extends Component {
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>
-            <a href='/examples/parity/node-adornments'>Tile UI</a>
+            <a href='/examples/parity/node-controls'>Node UI</a>
             <a href='/examples/parity/editing'>Editing</a>
             <a href='/examples/parity/edges'>Edges</a>
             <a href='/examples/parity/minimap'>MiniMap</a>

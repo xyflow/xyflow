@@ -16,8 +16,8 @@ interface Signature {
 }
 
 const ToolbarNode: TOC<Signature> = <template>
-  <Handle @node={{@node}} @type='target' @position={{Position.Left}} />
-  <NodeToolbar @node={{@node}} @position={{Position.Top}} @offset={{12}}>
+  <Handle @type='target' @position={{Position.Left}} />
+  <NodeToolbar @position={{Position.Top}} @offset={{12}}>
     <button type='button'>Format</button>
     <button type='button'>Inspect</button>
   </NodeToolbar>
@@ -27,7 +27,7 @@ const ToolbarNode: TOC<Signature> = <template>
       <small>{{@data.detail}}</small>
     {{/if}}
   </div>
-  <Handle @node={{@node}} @type='source' @position={{Position.Right}} />
+  <Handle @type='source' @position={{Position.Right}} />
 </template>;
 
 export default ToolbarNode;
