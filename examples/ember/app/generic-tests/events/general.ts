@@ -31,6 +31,13 @@ export default {
     onNodeDragStart: (_event, node) => record({ type: 'node-drag-start', id: node.id }),
     onNodeDrag: (_event, node) => record({ type: 'node-drag', id: node.id }),
     onNodeDragStop: (_event, node) => record({ type: 'node-drag-stop', id: node.id }),
+    onConnectStart: (_event, params) => record({ type: 'connect-start', id: `${params.nodeId}:${params.handleType}` }),
+    onConnect: (connection) => record({ type: 'connect', id: `${connection.source}->${connection.target}` }),
+    onConnectEnd: () => record({ type: 'connect-end' }),
+    isValidConnection: (connection) => {
+      record({ type: 'valid-connection', id: `${connection.source}->${connection.target}` });
+      return true;
+    },
     onSelectionChange: ({ nodes, edges }) =>
       record({
         type: 'selection-change',

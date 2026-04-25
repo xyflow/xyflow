@@ -538,6 +538,11 @@ export default class EmberFlow<
       toY: event.clientY - rendererRect.top,
     };
 
+    this.args.onConnectStart?.(event, {
+      nodeId: node.id,
+      handleId: this.getHandleId(handle),
+      handleType,
+    });
     this.renderConnectionLine();
     window.addEventListener('pointermove', this.handleWindowConnectionPointerMove);
     window.addEventListener('pointerup', this.handleWindowConnectionPointerUp);
@@ -565,14 +570,16 @@ export default class EmberFlow<
 
     let reconnectingSource = handleType === 'source';
     let fixedHandleType: HandleType = reconnectingSource ? 'target' : 'source';
+    let fixedNodeId = reconnectingSource ? edge.target : edge.source;
+    let fixedHandleId = reconnectingSource ? (edge.targetHandle ?? null) : (edge.sourceHandle ?? null);
     let rendererRect = renderer.getBoundingClientRect();
     let fixedRect = fixed.getBoundingClientRect();
     let fromX = fixedRect.left + fixedRect.width / 2 - rendererRect.left;
     let fromY = fixedRect.top + fixedRect.height / 2 - rendererRect.top;
 
     this.activeConnection = {
-      nodeId: reconnectingSource ? edge.target : edge.source,
-      handleId: reconnectingSource ? (edge.targetHandle ?? null) : (edge.sourceHandle ?? null),
+      nodeId: fixedNodeId,
+      handleId: fixedHandleId,
       handleType: fixedHandleType,
       pointerId: event.pointerId,
       currentEvent: null,
@@ -586,6 +593,11 @@ export default class EmberFlow<
       },
     };
 
+    this.args.onConnectStart?.(event, {
+      nodeId: fixedNodeId,
+      handleId: fixedHandleId,
+      handleType: fixedHandleType,
+    });
     this.args.onReconnectStart?.(event, edge as EdgeType, handleType);
     this.renderConnectionLine();
     window.addEventListener('pointermove', this.handleWindowConnectionPointerMove);
@@ -802,6 +814,7 @@ export default class EmberFlow<
     let target = document.elementFromPoint(event.clientX, event.clientY);
     let targetHandle = target?.closest('.ember-flow__handle') as HTMLElement | null;
     let completed = this.completeConnection(targetHandle);
+    this.args.onConnectEnd?.(event, { isValid: completed } as any);
     if (connection.reconnect) {
       this.args.onReconnectEnd?.(event, connection.reconnect.edge, connection.reconnect.handleType, {
         isValid: completed,
@@ -975,6 +988,10 @@ export default class EmberFlow<
       sourceHandle,
       targetHandle: targetHandleIdForPayload,
     };
+
+    if (this.args.isValidConnection && !this.args.isValidConnection(connectionPayload)) {
+      return false;
+    }
 
     if (connection.reconnect) {
       let oldEdge = connection.reconnect.edge;

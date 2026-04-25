@@ -11,6 +11,9 @@ import type {
   HandleProps as SystemHandleProps,
   NodeBase,
   NodeChange as SystemNodeChange,
+  IsValidConnection,
+  OnConnectEnd,
+  OnConnectStart,
   OnReconnect,
   OnReconnectEnd,
   OnReconnectStart,
@@ -186,7 +189,10 @@ export interface EmberFlowArgs<
   onMoveEnd?: (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
   onNodesChange?: (changes: NodeChange<NodeType>[]) => void;
   onEdgesChange?: (changes: EdgeChange<EdgeType>[]) => void;
+  onConnectStart?: OnConnectStart;
   onConnect?: (connection: Connection) => void;
+  onConnectEnd?: OnConnectEnd;
+  isValidConnection?: IsValidConnection;
   onReconnect?: OnReconnect<EdgeType>;
   onReconnectStart?: OnReconnectStart<EdgeType>;
   onReconnectEnd?: OnReconnectEnd<EdgeType>;
