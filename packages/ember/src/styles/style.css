@@ -40,6 +40,119 @@
   z-index: 1;
 }
 
+.ember-flow__panel {
+  position: absolute;
+  z-index: 5;
+  margin: 15px;
+}
+
+.ember-flow__panel.top {
+  top: 0;
+}
+
+.ember-flow__panel.bottom {
+  bottom: 0;
+}
+
+.ember-flow__panel.left {
+  left: 0;
+}
+
+.ember-flow__panel.right {
+  right: 0;
+}
+
+.ember-flow__panel.top.center,
+.ember-flow__panel.bottom.center {
+  left: 50%;
+  transform: translateX(-15px) translateX(-50%);
+}
+
+.ember-flow__panel.left.center,
+.ember-flow__panel.right.center {
+  top: 50%;
+  transform: translateY(-15px) translateY(-50%);
+}
+
+.ember-flow__controls {
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--xy-controls-box-shadow, var(--xy-controls-box-shadow-default));
+}
+
+.ember-flow__controls.horizontal {
+  flex-direction: row;
+}
+
+.ember-flow__controls-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 26px;
+  width: 26px;
+  padding: 4px;
+  border: none;
+  border-bottom: 1px solid
+    var(
+      --xy-controls-button-border-color-props,
+      var(--xy-controls-button-border-color, var(--xy-controls-button-border-color-default))
+    );
+  background: var(--xy-controls-button-background-color, var(--xy-controls-button-background-color-default));
+  color: var(
+    --xy-controls-button-color-props,
+    var(--xy-controls-button-color, var(--xy-controls-button-color-default))
+  );
+  cursor: pointer;
+  user-select: none;
+}
+
+.ember-flow__controls-button:hover {
+  background: var(
+    --xy-controls-button-background-color-hover-props,
+    var(--xy-controls-button-background-color-hover, var(--xy-controls-button-background-color-hover-default))
+  );
+  color: var(
+    --xy-controls-button-color-hover-props,
+    var(--xy-controls-button-color-hover, var(--xy-controls-button-color-hover-default))
+  );
+}
+
+.ember-flow__controls-button:disabled {
+  pointer-events: none;
+}
+
+.ember-flow__controls-button:disabled svg {
+  fill-opacity: 0.4;
+}
+
+.ember-flow__controls-button:last-child {
+  border-bottom: none;
+}
+
+.ember-flow__controls.horizontal .ember-flow__controls-button {
+  border-right: 1px solid
+    var(
+      --xy-controls-button-border-color-props,
+      var(--xy-controls-button-border-color, var(--xy-controls-button-border-color-default))
+    );
+  border-bottom: none;
+}
+
+.ember-flow__controls.horizontal .ember-flow__controls-button:last-child {
+  border-right: none;
+}
+
+.ember-flow__controls-button svg {
+  width: 100%;
+  max-width: 14px;
+  max-height: 14px;
+  fill: currentColor;
+}
+
+.ember-flow__controls-interactive.is-locked {
+  box-shadow: inset 3px 0 0 var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
+}
+
 .ember-flow__edges {
   position: absolute;
 }

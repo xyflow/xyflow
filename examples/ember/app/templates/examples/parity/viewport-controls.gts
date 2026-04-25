@@ -71,6 +71,10 @@ export default class ViewportControlsSample extends Component {
     void store.fitBounds({ x: -310, y: -110, width: 750, height: 330 }, { padding: 0.18, duration: 120 });
   };
 
+  centerOrigin = (store: EmberFlowStore) => {
+    void store.setCenter(0, 0, { zoom: 1, duration: 120 });
+  };
+
   <template>
     {{pageTitle "EmberFlow Viewport + Controls Sample"}}
     <main class='parity-sample'>
@@ -101,10 +105,14 @@ export default class ViewportControlsSample extends Component {
         <Controls>
           <ControlButton
             @className='parity-control-button'
-            @title='custom control'
-            @ariaLabel='custom control'
+            @title='center origin'
+            @ariaLabel='center origin'
+            {{on 'click' (fn this.centerOrigin flow)}}
           >
-            C
+            <svg width='14' height='14' viewBox='0 0 14 14' aria-hidden='true'>
+              <circle cx='7' cy='7' r='4.5' fill='none' stroke='currentColor' stroke-width='1.4' />
+              <path d='M7 1v3M7 10v3M1 7h3M10 7h3' stroke='currentColor' stroke-width='1.4' stroke-linecap='round' />
+            </svg>
           </ControlButton>
         </Controls>
         <Panel @position='top-left'>
@@ -115,6 +123,8 @@ export default class ViewportControlsSample extends Component {
               <li>Watch the dot background shift with the viewport.</li>
               <li>Scroll over the canvas to zoom.</li>
               <li>Use +, -, and fit in the lower-left controls.</li>
+              <li>Use the target control to center the origin.</li>
+              <li>The lock control should switch clearly between locked and unlocked interaction.</li>
               <li>Use the helper buttons below to exercise the yielded store viewport API.</li>
               <li>The ViewportPortal label should move and scale with nodes.</li>
             </ol>

@@ -28,6 +28,65 @@
   z-index: 1;
 }
 
+.ember-flow__panel {
+  position: absolute;
+  z-index: 5;
+  margin: 15px;
+}
+
+.ember-flow__panel.top {
+  top: 0;
+}
+
+.ember-flow__panel.bottom {
+  bottom: 0;
+}
+
+.ember-flow__panel.left {
+  left: 0;
+}
+
+.ember-flow__panel.right {
+  right: 0;
+}
+
+.ember-flow__panel.top.center,
+.ember-flow__panel.bottom.center {
+  left: 50%;
+  transform: translateX(-15px) translateX(-50%);
+}
+
+.ember-flow__panel.left.center,
+.ember-flow__panel.right.center {
+  top: 50%;
+  transform: translateY(-15px) translateY(-50%);
+}
+
+.ember-flow__controls {
+  display: flex;
+  flex-direction: column;
+}
+
+.ember-flow__controls.horizontal {
+  flex-direction: row;
+}
+
+.ember-flow__controls-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 26px;
+  width: 26px;
+  padding: 4px;
+}
+
+.ember-flow__controls-button svg {
+  width: 100%;
+  max-width: 14px;
+  max-height: 14px;
+  fill: currentColor;
+}
+
 .ember-flow__edges {
   position: absolute;
 }

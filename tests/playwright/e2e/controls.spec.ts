@@ -38,11 +38,16 @@ test.describe('Controls', () => {
 
     await expect(interactive).toBeAttached();
     await expect(node).toBeAttached();
+    await expect(interactive).toHaveAttribute('aria-pressed', 'false');
+    await expect(interactive).toHaveAttribute('aria-label', 'lock interactivity');
 
     const transformBefore = await node.evaluate((element) => (element as HTMLElement).style.transform);
     const nodeBox = await node.boundingBox();
 
     await interactive.click();
+    await expect(interactive).toHaveAttribute('aria-pressed', 'true');
+    await expect(interactive).toHaveAttribute('aria-label', 'unlock interactivity');
+    await expect(interactive).toHaveClass(/is-locked/);
     await page.mouse.move(nodeBox!.x + nodeBox!.width / 2, nodeBox!.y + nodeBox!.height / 2);
     await page.mouse.down();
     await page.mouse.move(nodeBox!.x + nodeBox!.width / 2 + 100, nodeBox!.y + nodeBox!.height / 2 + 100);
@@ -58,12 +63,16 @@ test.describe('Controls', () => {
 
     await page.goto('/examples/parity/viewport-controls');
 
+    const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
     const customButton = page
       .locator(`.${FRAMEWORK}-flow__controls-button`)
-      .and(page.locator('[aria-label="custom control"]'));
+      .and(page.locator('[aria-label="center origin"]'));
 
     await expect(customButton).toBeAttached();
-    await expect(customButton).toHaveText('C');
+    await expect(customButton.locator('svg')).toBeAttached();
+
+    await customButton.click();
+    await expect.poll(async () => (await getTransform(viewport)).scale).toBeCloseTo(1, 1);
   });
 
   test('viewport helper buttons update the viewport', async ({ page }) => {
