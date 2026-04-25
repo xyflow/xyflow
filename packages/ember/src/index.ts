@@ -4,6 +4,7 @@ export { default as BezierEdge } from './components/bezier-edge.js';
 export { default as ControlButton } from './components/control-button.js';
 export { default as Controls } from './components/controls.js';
 export { default as EdgeLabel } from './components/edge-label.js';
+export { default as EdgeLabelRenderer } from './components/edge-label-renderer.js';
 export { default as EdgeToolbar } from './components/edge-toolbar.js';
 export { default as EdgeText } from './components/edge-text.js';
 export { default as EmberFlow } from './components/ember-flow.js';

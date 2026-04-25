@@ -1238,7 +1238,7 @@ export default class EmberFlow<
               />
             {{/each}}
           </div>
-          <div class='ember-flow__edge-labels ember-flow__container'></div>
+          <div class='ember-flow__edge-labels ember-flow__edgelabel-renderer ember-flow__container'></div>
           <div class='ember-flow__nodes'>
             {{#each this.nodes key='id' as |node|}}
               {{#unless node.hidden}}

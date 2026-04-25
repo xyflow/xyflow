@@ -163,6 +163,11 @@
   transform-origin: 0 0;
 }
 
+.ember-flow__edgelabel-renderer {
+  pointer-events: none;
+  user-select: none;
+}
+
 .ember-flow__node {
   position: absolute;
   user-select: none;

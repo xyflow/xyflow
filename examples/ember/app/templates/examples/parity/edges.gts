@@ -4,6 +4,7 @@ import {
   Background,
   BackgroundVariant,
   Controls,
+  EdgeLabelRenderer,
   EdgeToolbar,
   EmberFlow,
   MarkerType,
@@ -111,6 +112,15 @@ export default class EdgesSample extends Component {
         >
           <div class='parity-edge-toolbar'>selected edge</div>
         </EdgeToolbar>
+        <EdgeLabelRenderer>
+          <div
+            class='parity-renderer-label nopan nodrag'
+            data-testid='edge-label-renderer-probe'
+            style='position: absolute; transform: translate(410px, 110px); pointer-events: all;'
+          >
+            EdgeLabelRenderer
+          </div>
+        </EdgeLabelRenderer>
         <Background
           @variant={{BackgroundVariant.Dots}}
           @gap={{18}}
@@ -128,6 +138,7 @@ export default class EdgesSample extends Component {
               <li>Inspect or click the centered labels; they should target the owning edge.</li>
               <li>Click near the dashed purple edge; its wider interaction path should make selection easier and show an EdgeToolbar.</li>
               <li>Compare the teal simple-bezier curve against the default and marker edges.</li>
+              <li>The small renderer label is portal content that moves with the viewport.</li>
             </ol>
           </div>
         </Panel>

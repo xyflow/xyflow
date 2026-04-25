@@ -358,6 +358,8 @@ export interface EdgeLabelArgs {
 
 export type EdgeLabelProps = EdgeLabelArgs;
 
+export type EdgeLabelRendererProps = Record<string, never>;
+
 export interface EdgeToolbarArgs extends Partial<EdgeToolbarBaseProps> {
   edgeId: string;
   position?: Position;
