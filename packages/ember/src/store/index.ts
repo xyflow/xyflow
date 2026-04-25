@@ -14,7 +14,9 @@ import {
   snapPosition,
   calculateNodePosition,
   updateConnectionLookup,
+  initialConnection,
   type CoordinateExtent,
+  type ConnectionState,
   type ConnectionLookup,
   type EdgeLookup,
   type FitBoundsOptions,
@@ -109,6 +111,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
 
   @tracked revision = 0;
   nodesInitialized = false;
+  @tracked connection: ConnectionState<InternalNodeBase<NodeType>> = initialConnection;
 
   readonly selectedNodeIds = new Set<string>();
   readonly selectedEdgeIds = new Set<string>();
@@ -119,7 +122,11 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   readonly nodeDimensions = new Map<string, { width: number; height: number }>();
   private readonly viewportListeners = new Set<(viewport: Viewport) => void>();
   private readonly nodeGeometryListeners = new Set<(nodeId: string) => void>();
+  private readonly graphListeners = new Set<(store: this) => void>();
+  private readonly connectionListeners = new Set<(connection: ConnectionState<InternalNodeBase<NodeType>>) => void>();
+  private readonly keyListeners = new Set<(keys: Set<string>) => void>();
   private deleteCallbacks: DeleteLifecycleCallbacks<NodeType, EdgeType> = {};
+  private cancelConnectionCallback: (() => void) | undefined;
 
   private addedNodes: NodeType[] = [];
   private addedEdges: EdgeType[] = [];
@@ -430,6 +437,15 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     this.deleteCallbacks = callbacks;
   }
 
+  setCancelConnectionCallback(callback: (() => void) | undefined) {
+    this.cancelConnectionCallback = callback;
+  }
+
+  cancelConnection() {
+    this.cancelConnectionCallback?.();
+    this.setConnection(initialConnection);
+  }
+
   async deleteElements({
     nodes: nodesToRemove = [],
     edges: edgesToRemove = [],
@@ -657,16 +673,67 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     };
   }
 
+  onChange(callback: (store: this) => void) {
+    this.graphListeners.add(callback);
+    callback(this);
+
+    return () => {
+      this.graphListeners.delete(callback);
+    };
+  }
+
+  subscribe(callback: (store: this) => void) {
+    return this.onChange(callback);
+  }
+
+  onConnectionChange(callback: (connection: ConnectionState<InternalNodeBase<NodeType>>) => void) {
+    this.connectionListeners.add(callback);
+    callback(this.connection);
+
+    return () => {
+      this.connectionListeners.delete(callback);
+    };
+  }
+
+  onKeyChange(callback: (keys: Set<string>) => void) {
+    this.keyListeners.add(callback);
+    callback(new Set(this.pressedKeys));
+
+    return () => {
+      this.keyListeners.delete(callback);
+    };
+  }
+
+  setConnection(connection: ConnectionState<InternalNodeBase<NodeType>>) {
+    this.connection = connection;
+    for (let listener of this.connectionListeners) {
+      listener(this.connection);
+    }
+  }
+
   syncPanZoomViewport() {
     this.panZoom?.syncViewport(this.viewport);
   }
 
   addPressedKey(key: string) {
+    let previousSize = this.pressedKeys.size;
     this.pressedKeys.add(key);
+    if (this.pressedKeys.size !== previousSize) {
+      this.notifyKeyListeners();
+    }
   }
 
   removePressedKey(key: string) {
-    this.pressedKeys.delete(key);
+    if (this.pressedKeys.delete(key)) {
+      this.notifyKeyListeners();
+    }
+  }
+
+  private notifyKeyListeners() {
+    let keys = new Set(this.pressedKeys);
+    for (let listener of this.keyListeners) {
+      listener(keys);
+    }
   }
 
   isMultiSelectionActive(configuredKey: string | string[] | null | undefined) {
@@ -886,6 +953,42 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     this.notifyNodeGeometryListeners(id);
 
     return rounded;
+  }
+
+  updateNodeInternals(nodeId?: string | string[]) {
+    let nodeIds = nodeId === undefined ? Array.from(this.nodeLookup.keys()) : Array.isArray(nodeId) ? nodeId : [nodeId];
+    let didUpdate = false;
+
+    for (let id of nodeIds) {
+      let element = this.domNode?.querySelector<HTMLElement>(
+        `.ember-flow__node[data-id="${this.escapeAttribute(id)}"]`
+      );
+
+      if (!element) {
+        this.notifyNodeGeometryListeners(id);
+        continue;
+      }
+
+      let width = element.offsetWidth;
+      let height = element.offsetHeight;
+
+      if (width > 0 && height > 0) {
+        let currentNode = this.getNode(id);
+        let currentWidth = currentNode ? this.getNodeWidth(currentNode) : 0;
+        let currentHeight = currentNode ? this.getNodeHeight(currentNode) : 0;
+
+        if (Math.abs(currentWidth - width) > 0.5 || Math.abs(currentHeight - height) > 0.5) {
+          this.setNodeDimensions(id, { width, height });
+          didUpdate = true;
+        }
+      }
+
+      this.notifyNodeGeometryListeners(id);
+    }
+
+    if (didUpdate) {
+      this.bump();
+    }
   }
 
   moveSelectedNodes(direction: XYPosition, factor = 1): NodeChange<NodeType>[] {
@@ -1299,6 +1402,13 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
 
   bump() {
     this.revision++;
+    this.notifyGraphListeners();
+  }
+
+  private notifyGraphListeners() {
+    for (let listener of this.graphListeners) {
+      listener(this);
+    }
   }
 
   normalizeViewport(viewport: Viewport): Viewport {
@@ -1336,6 +1446,10 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     for (let listener of this.nodeGeometryListeners) {
       listener(nodeId);
     }
+  }
+
+  private escapeAttribute(value: string) {
+    return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
   }
 
   private syncInternalNodeGeometry(id: string, positionAbsolute?: XYPosition) {

@@ -40,6 +40,7 @@ export default class NodeResizer extends Component<Signature> {
           @maxWidth={{@maxWidth}}
           @maxHeight={{@maxHeight}}
           @keepAspectRatio={{@keepAspectRatio}}
+          @resizeDirection={{@resizeDirection}}
           @autoScale={{@autoScale}}
           @shouldResize={{@shouldResize}}
           @onResizeStart={{@onResizeStart}}
@@ -60,6 +61,7 @@ export default class NodeResizer extends Component<Signature> {
           @maxWidth={{@maxWidth}}
           @maxHeight={{@maxHeight}}
           @keepAspectRatio={{@keepAspectRatio}}
+          @resizeDirection={{@resizeDirection}}
           @autoScale={{@autoScale}}
           @shouldResize={{@shouldResize}}
           @onResizeStart={{@onResizeStart}}

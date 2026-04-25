@@ -10,6 +10,7 @@ import {
 } from '@xyflow/system';
 
 import flowContext from '../modifiers/flow-context.js';
+import nodeIdContext, { getNodeId } from '../modifiers/node-id-context.js';
 import nodeToolbar from '../modifiers/node-toolbar.js';
 import portal from '../modifiers/portal.js';
 import { getFlowStore } from '../store/context.js';
@@ -27,6 +28,7 @@ interface Signature<NodeType extends Node = Node> {
 
 export default class NodeToolbar<NodeType extends Node = Node> extends Component<Signature<NodeType>> {
   @tracked private store: EmberFlowStore<NodeType> | undefined;
+  @tracked private contextNodeId: string | null = null;
 
   private viewport: Viewport = { x: 0, y: 0, zoom: 1 };
   private element: HTMLElement | undefined;
@@ -82,7 +84,7 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
       return this.args.nodeId;
     }
 
-    return [this.args.nodeId ?? this.args.node?.id].filter((id): id is string => Boolean(id));
+    return [this.args.nodeId ?? this.args.node?.id ?? this.contextNodeId].filter((id): id is string => Boolean(id));
   }
 
   get toolbarClasses() {
@@ -185,6 +187,14 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
     this.element = undefined;
   }
 
+  registerNodeContext(element: HTMLElement) {
+    this.contextNodeId = getNodeId(element);
+  }
+
+  unregisterNodeContext() {
+    this.contextNodeId = null;
+  }
+
   private updateToolbarElement() {
     let element = this.element;
     if (!element) {
@@ -202,6 +212,7 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
 
   <template>
     <span hidden {{flowContext this}}></span>
+    <span hidden {{nodeIdContext this}}></span>
     {{#let this.toolbarState as |toolbar|}}
       {{#if toolbar.shouldRender}}
         <div

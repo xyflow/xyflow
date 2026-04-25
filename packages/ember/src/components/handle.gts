@@ -1,6 +1,8 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { Position, type HandleProps as SystemHandleProps } from '@xyflow/system';
 
+import nodeIdContext, { getNodeId } from '../modifiers/node-id-context.js';
 import { safeStyle } from '../utils/style.js';
 import type { CssStyle, Node } from '../types.js';
 
@@ -19,6 +21,8 @@ interface Signature {
 }
 
 export default class Handle extends Component<Signature> {
+  @tracked private contextNodeId: string | null = null;
+
   get type() {
     return this.args.type ?? 'source';
   }
@@ -28,7 +32,7 @@ export default class Handle extends Component<Signature> {
   }
 
   get nodeId() {
-    return this.args.nodeId ?? this.args.node?.id;
+    return this.args.nodeId ?? this.args.node?.id ?? this.contextNodeId;
   }
 
   get handleId() {
@@ -70,6 +74,14 @@ export default class Handle extends Component<Signature> {
     return safeStyle(this.args.style);
   }
 
+  registerNodeContext(element: HTMLElement) {
+    this.contextNodeId = getNodeId(element);
+  }
+
+  unregisterNodeContext() {
+    this.contextNodeId = null;
+  }
+
   <template>
     <div
       class={{this.handleClasses}}
@@ -78,6 +90,7 @@ export default class Handle extends Component<Signature> {
       data-handlepos={{this.position}}
       data-handletype={{this.type}}
       style={{this.handleStyle}}
+      {{nodeIdContext this}}
       ...attributes
     >
       {{yield}}

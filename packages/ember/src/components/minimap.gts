@@ -116,6 +116,10 @@ export default class MiniMap<NodeType extends Node = Node> extends Component<Sig
     return this.args.ariaLabel ?? 'Mini Map';
   }
 
+  get nodeComponent() {
+    return this.args.nodeComponent as any;
+  }
+
   get rootStyle() {
     let declarations = [
       this.cssVariable('--xy-minimap-background-color-props', this.args.bgColor),
@@ -318,21 +322,40 @@ export default class MiniMap<NodeType extends Node = Node> extends Component<Sig
         {{/if}}
 
         {{#each this.nodeItems as |item|}}
-          <MiniMapNode
-            @id={{item.node.id}}
-            @x={{item.x}}
-            @y={{item.y}}
-            @width={{item.width}}
-            @height={{item.height}}
-            @borderRadius={{@nodeBorderRadius}}
-            @color={{item.color}}
-            @strokeColor={{item.strokeColor}}
-            @strokeWidth={{@nodeStrokeWidth}}
-            @className={{item.className}}
-            @selected={{item.node.selected}}
-            @shapeRendering='crispEdges'
-            @onClick={{this.handleNodeClick}}
-          />
+          {{#if this.nodeComponent}}
+            <this.nodeComponent
+              @id={{item.node.id}}
+              @node={{item.node}}
+              @x={{item.x}}
+              @y={{item.y}}
+              @width={{item.width}}
+              @height={{item.height}}
+              @borderRadius={{@nodeBorderRadius}}
+              @color={{item.color}}
+              @strokeColor={{item.strokeColor}}
+              @strokeWidth={{@nodeStrokeWidth}}
+              @className={{item.className}}
+              @selected={{item.node.selected}}
+              @shapeRendering='crispEdges'
+              @onClick={{this.handleNodeClick}}
+            />
+          {{else}}
+            <MiniMapNode
+              @id={{item.node.id}}
+              @x={{item.x}}
+              @y={{item.y}}
+              @width={{item.width}}
+              @height={{item.height}}
+              @borderRadius={{@nodeBorderRadius}}
+              @color={{item.color}}
+              @strokeColor={{item.strokeColor}}
+              @strokeWidth={{@nodeStrokeWidth}}
+              @className={{item.className}}
+              @selected={{item.node.selected}}
+              @shapeRendering='crispEdges'
+              @onClick={{this.handleNodeClick}}
+            />
+          {{/if}}
         {{/each}}
 
         <path

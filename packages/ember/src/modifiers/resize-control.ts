@@ -7,6 +7,7 @@ import {
   type OnResizeStart,
   type ResizeControlDirection,
   type ShouldResize,
+  type XYResizerChildChange,
   type XYResizerChange,
 } from '@xyflow/system';
 
@@ -27,7 +28,14 @@ type ResizeControlArgs = [
   OnResizeEnd | undefined,
 ];
 
-function dispatchResize(element: HTMLElement, id: string, change: XYResizerChange, resizing: boolean) {
+function dispatchResize(
+  element: HTMLElement,
+  id: string,
+  change: XYResizerChange,
+  childChanges: XYResizerChildChange[],
+  resizing: boolean,
+  resizeDirection: ResizeControlDirection | undefined
+) {
   let store = getFlowStore(element);
   let node = store?.getNode(id);
 
@@ -52,7 +60,8 @@ function dispatchResize(element: HTMLElement, id: string, change: XYResizerChang
         id,
         position,
         dimensions,
-        direction: [0, 0],
+        childChanges,
+        setAttributes: !resizeDirection ? true : resizeDirection === 'horizontal' ? 'width' : 'height',
         resizing,
       },
     })
@@ -79,6 +88,7 @@ export default modifier<HTMLDivElement, ResizeControlArgs>(
   ) => {
     let resizer: ReturnType<typeof XYResizer> | undefined;
     let frame: number | undefined;
+    let latestChildChanges: XYResizerChildChange[] = [];
 
     let install = () => {
       let store = getFlowStore(element);
@@ -103,11 +113,13 @@ export default modifier<HTMLDivElement, ResizeControlArgs>(
           autoPanOnResize: store.autoPanOnNodeDrag,
           autoPanSpeed: store.autoPanSpeed,
         }),
-        onChange: (change) => {
-          dispatchResize(element, id, change, true);
+        onChange: (change, childChanges) => {
+          latestChildChanges = childChanges;
+          dispatchResize(element, id, change, childChanges, true, resizeDirection);
         },
         onEnd: (change) => {
-          dispatchResize(element, id, change, false);
+          dispatchResize(element, id, change, latestChildChanges, false, resizeDirection);
+          latestChildChanges = [];
         },
       });
 

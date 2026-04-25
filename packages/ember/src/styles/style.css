@@ -275,6 +275,15 @@
   fill: none;
 }
 
+.ember-flow__connection.invalid .ember-flow__connection-path {
+  stroke: var(--xy-connectionline-invalid-stroke, #ef4444);
+}
+
+.ember-flow__handle.connectingto.invalid {
+  background: var(--xy-connectionline-invalid-stroke, #ef4444);
+  border-color: var(--xy-connectionline-invalid-stroke, #ef4444);
+}
+
 .ember-flow__selection {
   position: absolute;
   top: 0;

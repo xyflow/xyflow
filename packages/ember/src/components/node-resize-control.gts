@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { htmlSafe } from '@ember/template';
 import {
   ResizeControlVariant,
@@ -10,6 +11,7 @@ import {
   type OnResizeEnd,
 } from '@xyflow/system';
 
+import nodeIdContext, { getNodeId } from '../modifiers/node-id-context.js';
 import resizeControl from '../modifiers/resize-control.js';
 import { toCss } from '../utils/style.js';
 import type { CssStyle, Node } from '../types.js';
@@ -43,12 +45,14 @@ interface Signature {
 }
 
 export default class NodeResizeControl extends Component<Signature> {
+  @tracked private contextNodeId: string | null = null;
+
   get variant() {
     return this.args.variant ?? ResizeControlVariant.Handle;
   }
 
   get nodeId() {
-    return this.args.nodeId ?? this.args.node?.id;
+    return this.args.nodeId ?? this.args.node?.id ?? this.contextNodeId ?? undefined;
   }
 
   get controlPosition() {
@@ -109,10 +113,19 @@ export default class NodeResizeControl extends Component<Signature> {
     return css ? htmlSafe(css) : undefined;
   }
 
+  registerNodeContext(element: HTMLElement) {
+    this.contextNodeId = getNodeId(element);
+  }
+
+  unregisterNodeContext() {
+    this.contextNodeId = null;
+  }
+
   <template>
     <div
       class={{this.controlClasses}}
       style={{this.controlStyle}}
+      {{nodeIdContext this}}
       {{resizeControl
         this.nodeId
         this.controlPosition

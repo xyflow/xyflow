@@ -22,9 +22,22 @@ export { default as SmoothStepEdge } from './components/smooth-step-edge.js';
 export { default as StepEdge } from './components/step-edge.js';
 export { default as StraightEdge } from './components/straight-edge.js';
 export { default as UseEmberFlow } from './components/use-ember-flow.js';
+export { default as UseConnection } from './components/use-connection.js';
+export { default as UseEdges } from './components/use-edges.js';
+export { default as UseHandleConnections } from './components/use-handle-connections.js';
+export { default as UseInternalNode } from './components/use-internal-node.js';
+export { default as UseKeyPress } from './components/use-key-press.js';
+export { default as UseNodeConnections } from './components/use-node-connections.js';
+export { default as UseNodeId } from './components/use-node-id.js';
+export { default as UseNodes } from './components/use-nodes.js';
+export { default as UseNodesData } from './components/use-nodes-data.js';
+export { default as UseNodesInitialized } from './components/use-nodes-initialized.js';
+export { default as UseStore } from './components/use-store.js';
+export { default as UseViewport } from './components/use-viewport.js';
 export { default as ViewportPortal } from './components/viewport-portal.js';
 export { default as EmberFlowStore } from './store/index.js';
 export { getFlowStore } from './store/context.js';
+export { getNodeId } from './store/node-context.js';
 export { applyEdgeChanges, applyNodeChanges } from './utils/changes.js';
 export { getSimpleBezierPath } from './utils/edge-path.js';
 export type { GetSimpleBezierPathParams } from './utils/edge-path.js';
@@ -117,6 +130,7 @@ export type {
   ProOptions,
   Rect,
   ResizeDragEvent,
+  ResizeControlDirection,
   ResizeParams,
   ResizeParamsWithDirection,
   SelectionRect,

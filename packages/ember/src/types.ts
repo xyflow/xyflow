@@ -6,11 +6,14 @@ import type {
   EdgeChange as SystemEdgeChange,
   EdgePosition,
   EdgeToolbarBaseProps,
+  InternalNodeBase,
   FitViewOptionsBase,
   HandleType,
   HandleProps as SystemHandleProps,
+  ConnectionState,
   NodeBase,
   NodeChange as SystemNodeChange,
+  NodeProps as SystemNodeProps,
   IsValidConnection,
   ConnectionLineType,
   OnConnectEnd,
@@ -18,6 +21,7 @@ import type {
   OnReconnect,
   OnReconnectEnd,
   OnReconnectStart,
+  OnSelectionDrag,
   OnResize,
   OnResizeEnd,
   OnResizeStart,
@@ -32,20 +36,29 @@ import type {
   ControlPosition,
   CoordinateExtent,
   ConnectionMode,
+  HandleConnection,
   NodeOrigin,
+  NodeConnection,
   SelectionMode,
   SnapGrid,
   Viewport,
   XYPosition,
   OnBeforeDeleteBase,
   OnViewportChange,
+  ZIndexMode,
 } from '@xyflow/system';
 
 import type EmberFlowStore from './store/index.js';
 
 export type CssStyle = string | Record<string, string | number | undefined>;
-export type NodeComponent = unknown;
-export type NodeTypes = Record<string, NodeComponent>;
+
+export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeType>;
+
+export type EmberFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  nodes: NodeType[];
+  edges: EdgeType[];
+  viewport: Viewport;
+};
 
 export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
@@ -55,6 +68,7 @@ export type Node<
   className?: string;
   style?: CssStyle;
   focusable?: boolean;
+  ariaRole?: string;
   resizing?: boolean;
 };
 
@@ -73,6 +87,8 @@ export type Edge<
   className?: string;
   style?: CssStyle;
   reconnectable?: boolean | HandleType;
+  focusable?: boolean;
+  ariaRole?: string;
 };
 
 export type DefaultEdgeOptions<EdgeType extends Edge = Edge> = DefaultEdgeOptionsBase<EdgeType>;
@@ -84,16 +100,48 @@ export type BuiltInEdge =
   | (Edge<Record<string, unknown>, 'step'> & { pathOptions?: StepPathOptions })
   | (Edge<Record<string, unknown>, 'smoothstep'> & { pathOptions?: SmoothStepPathOptions });
 
+export type BuiltInNode =
+  | Node<{ label: string }, 'input' | 'output' | 'default' | undefined>
+  | Node<Record<string, never>, 'group'>;
+
+export type NodeProps<NodeType extends Node = Node> = Partial<SystemNodeProps<NodeType>> &
+  Pick<SystemNodeProps<NodeType>, 'id' | 'data'> & {
+    node: NodeType;
+    type?: NodeType['type'];
+    data: NodeType['data'];
+    positionAbsoluteX: number;
+    positionAbsoluteY: number;
+    isConnectable: boolean;
+  };
+
+export type NodeComponentArgs<NodeType extends Node = Node> = NodeProps<NodeType>;
+export type CustomNodeProps<NodeType extends Node = Node> = NodeProps<NodeType>;
+export type NodeComponent = unknown;
+export type NodeTypes<NodeType extends Node = Node> = Record<string, NodeComponent> & {
+  readonly __nodeType?: NodeType;
+};
+
 export type EdgeProps<EdgeType extends Edge = Edge> = Omit<EdgeType, 'sourceHandle' | 'targetHandle'> &
   EdgePosition & {
+    edge: EdgeType;
     type?: string;
+    data?: EdgeType['data'];
+    path?: string;
+    labelX?: number;
+    labelY?: number;
     markerStart?: string;
     markerEnd?: string;
     sourceHandleId?: string | null;
     targetHandleId?: string | null;
   };
 
-export type EdgeTypes = Record<string, unknown>;
+export type CustomEdgeProps<EdgeType extends Edge = Edge> = EdgeProps<EdgeType>;
+export type EdgeComponent = unknown;
+export type EdgeTypes<EdgeType extends Edge = Edge> = Record<string, EdgeComponent> & {
+  readonly __edgeType?: EdgeType;
+};
+export type MiniMapNodeComponent = unknown;
+export type ConnectionLineComponent = unknown;
 
 export type EdgeComponentProps = EdgePosition & {
   id?: string;
@@ -152,6 +200,20 @@ export type Connection = {
   targetHandle: string | null;
 };
 
+export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
+  connectionState: ConnectionState<InternalNode<NodeType>>;
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
+  fromPosition: Position;
+  toPosition: Position;
+  fromNodeId: string;
+  fromHandleId: string | null;
+  fromHandleType: HandleType;
+  isValid: boolean | null;
+};
+
 export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   store: EmberFlowStore<NodeType, EdgeType>
 ) => void;
@@ -170,17 +232,28 @@ export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge =
   EdgeType
 >;
 
+export type SelectionDragHandler<NodeType extends Node = Node> = OnSelectionDrag extends (
+  event: infer EventType,
+  nodes: infer _NodesType
+) => void
+  ? (event: EventType, nodes: NodeType[]) => void
+  : (event: MouseEvent, nodes: NodeType[]) => void;
+
 export interface EmberFlowArgs<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   store?: EmberFlowStore<NodeType, EdgeType>;
   nodes?: NodeType[];
   edges?: EdgeType[];
-  nodeTypes?: NodeTypes;
+  defaultNodes?: NodeType[];
+  defaultEdges?: EdgeType[];
+  nodeTypes?: NodeTypes<NodeType>;
+  edgeTypes?: EdgeTypes<EdgeType>;
   width?: number | string;
   height?: number | string;
   colorMode?: 'light' | 'dark' | 'system';
   fitView?: boolean;
   fitViewOptions?: FitViewOptions<NodeType>;
   initialViewport?: Viewport;
+  viewport?: Viewport;
   minZoom?: number;
   maxZoom?: number;
   panOnScroll?: boolean;
@@ -198,6 +271,10 @@ export interface EmberFlowArgs<NodeType extends Node = Node, EdgeType extends Ed
   translateExtent?: CoordinateExtent;
   nodesDraggable?: boolean;
   nodesConnectable?: boolean;
+  nodesFocusable?: boolean;
+  edgesFocusable?: boolean;
+  elevateNodesOnSelect?: boolean;
+  zIndexMode?: ZIndexMode;
   nodesDeletable?: boolean;
   elementsSelectable?: boolean;
   disableKeyboardA11y?: boolean;
@@ -208,18 +285,28 @@ export interface EmberFlowArgs<NodeType extends Node = Node, EdgeType extends Ed
   autoPanSpeed?: number;
   connectionMode?: ConnectionMode;
   connectionRadius?: number;
+  connectionDragThreshold?: number;
   connectionLineType?: ConnectionLineType;
   connectionLineStyle?: CssStyle;
   connectionLineContainerStyle?: CssStyle;
+  connectionLineComponent?: ConnectionLineComponent;
+  defaultMarkerColor?: string;
   defaultEdgeOptions?: DefaultEdgeOptions<EdgeType>;
+  paneClickDistance?: number;
   selectionKey?: string | string[] | null;
+  selectionKeyCode?: string | string[] | null;
   selectionOnDrag?: boolean;
   selectionMode?: SelectionMode;
   onlyRenderVisibleElements?: boolean;
   edgesReconnectable?: boolean;
   reconnectRadius?: number;
   deleteKey?: string;
+  deleteKeyCode?: string | string[] | null;
   multiSelectionKey?: string | string[] | null;
+  multiSelectionKeyCode?: string | string[] | null;
+  zoomActivationKeyCode?: string | string[] | null;
+  ariaLabelConfig?: unknown;
+  autoPanOnNodeFocus?: boolean;
   onInit?: OnInit<NodeType, EdgeType>;
   onMoveStart?: (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
   onMove?: (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
@@ -241,11 +328,29 @@ export interface EmberFlowArgs<NodeType extends Node = Node, EdgeType extends Ed
   onReconnectStart?: OnReconnectStart<EdgeType>;
   onReconnectEnd?: OnReconnectEnd<EdgeType>;
   onNodeClick?: (event: MouseEvent, node: NodeType) => void;
+  onNodeDoubleClick?: (event: MouseEvent, node: NodeType) => void;
+  onNodeContextMenu?: (event: MouseEvent, node: NodeType) => void;
   onEdgeClick?: (event: MouseEvent, edge: EdgeType) => void;
+  onEdgeDoubleClick?: (event: MouseEvent, edge: EdgeType) => void;
+  onEdgeContextMenu?: (event: MouseEvent, edge: EdgeType) => void;
+  onEdgeMouseEnter?: (event: MouseEvent, edge: EdgeType) => void;
+  onEdgeMouseMove?: (event: MouseEvent, edge: EdgeType) => void;
+  onEdgeMouseLeave?: (event: MouseEvent, edge: EdgeType) => void;
   onPaneClick?: (event: MouseEvent) => void;
+  onPaneMouseEnter?: (event: MouseEvent) => void;
+  onPaneMouseMove?: (event: MouseEvent) => void;
+  onPaneMouseLeave?: (event: MouseEvent) => void;
+  onPaneScroll?: (event: WheelEvent) => void;
+  onPaneContextMenu?: (event: MouseEvent) => void;
+  onSelectionContextMenu?: (event: MouseEvent, nodes: NodeType[]) => void;
   onNodeDragStart?: (event: PointerEvent, node: NodeType) => void;
   onNodeDrag?: (event: PointerEvent, node: NodeType) => void;
   onNodeDragStop?: (event: PointerEvent, node: NodeType) => void;
+  onSelectionDragStart?: SelectionDragHandler<NodeType>;
+  onSelectionDrag?: SelectionDragHandler<NodeType>;
+  onSelectionDragStop?: SelectionDragHandler<NodeType>;
+  onSelectionStart?: (event: PointerEvent) => void;
+  onSelectionEnd?: (event: PointerEvent) => void;
   onSelectionChange?: (selection: { nodes: NodeType[]; edges: EdgeType[] }) => void;
 }
 
@@ -308,6 +413,83 @@ export interface UseEmberFlowArgs {}
 
 export type UseEmberFlowProps = UseEmberFlowArgs;
 
+export interface UseNodesArgs {}
+
+export type UseNodesProps = UseNodesArgs;
+
+export interface UseEdgesArgs {}
+
+export type UseEdgesProps = UseEdgesArgs;
+
+export interface UseViewportArgs {}
+
+export type UseViewportProps = UseViewportArgs;
+
+export interface UseNodeIdArgs {}
+
+export type UseNodeIdProps = UseNodeIdArgs;
+
+export interface UseNodesDataArgs {
+  nodeId?: string;
+  nodeIds?: string | string[];
+}
+
+export type UseNodesDataProps = UseNodesDataArgs;
+
+export type NodeDataSnapshot<NodeType extends Node = Node> = Pick<NodeType, 'id' | 'type' | 'data'>;
+
+export interface UseHandleConnectionsArgs {
+  type: HandleType;
+  id?: string | null;
+  nodeId?: string;
+}
+
+export type UseHandleConnectionsProps = UseHandleConnectionsArgs;
+
+export interface UseNodeConnectionsArgs {
+  id?: string;
+  nodeId?: string;
+  handleType?: HandleType;
+  handleId?: string | null;
+}
+
+export type UseNodeConnectionsProps = UseNodeConnectionsArgs;
+
+export type HandleConnections = HandleConnection[];
+
+export type NodeConnections = NodeConnection[];
+
+export interface UseConnectionArgs {}
+
+export type UseConnectionProps = UseConnectionArgs;
+
+export interface UseInternalNodeArgs {
+  id?: string;
+  nodeId?: string;
+}
+
+export type UseInternalNodeProps = UseInternalNodeArgs;
+
+export interface UseNodesInitializedArgs {}
+
+export type UseNodesInitializedProps = UseNodesInitializedArgs;
+
+export interface UseKeyPressArgs {
+  key?: string | string[] | null;
+}
+
+export type UseKeyPressProps = UseKeyPressArgs;
+
+export interface UseStoreArgs<Selected = unknown, NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+  selector?: (store: EmberFlowStore<NodeType, EdgeType>) => Selected;
+}
+
+export type UseStoreProps<
+  Selected = unknown,
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge,
+> = UseStoreArgs<Selected, NodeType, EdgeType>;
+
 export interface EdgeReconnectAnchorArgs<EdgeType extends Edge = Edge> {
   edge?: EdgeType;
   edgeId?: string;
@@ -363,6 +545,7 @@ export interface NodeResizerArgs<NodeType extends Node = Node> {
   maxWidth?: number;
   maxHeight?: number;
   keepAspectRatio?: boolean;
+  resizeDirection?: ResizeControlDirection;
   autoScale?: boolean;
   shouldResize?: ShouldResize;
   onResizeStart?: OnResizeStart;
@@ -375,7 +558,6 @@ export type NodeResizerProps<NodeType extends Node = Node> = NodeResizerArgs<Nod
 export interface NodeResizeControlArgs<NodeType extends Node = Node> extends NodeResizerArgs<NodeType> {
   position?: ControlPosition;
   variant?: ResizeControlVariant;
-  resizeDirection?: ResizeControlDirection;
   className?: string;
   class?: string;
   style?: CssStyle;
@@ -395,6 +577,7 @@ export interface MiniMapArgs<NodeType extends Node = Node> {
   nodeClassName?: GetMiniMapNodeAttribute<NodeType>;
   nodeBorderRadius?: number;
   nodeStrokeWidth?: number;
+  nodeComponent?: MiniMapNodeComponent;
   bgColor?: string;
   maskColor?: string;
   maskStrokeColor?: string;
