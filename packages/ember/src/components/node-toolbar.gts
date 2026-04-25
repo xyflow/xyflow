@@ -10,6 +10,7 @@ import {
 } from '@xyflow/system';
 
 import flowContext from '../modifiers/flow-context.js';
+import nodeToolbar from '../modifiers/node-toolbar.js';
 import portal from '../modifiers/portal.js';
 import { getFlowStore } from '../store/context.js';
 import type EmberFlowStore from '../store/index.js';
@@ -26,16 +27,29 @@ interface Signature<NodeType extends Node = Node> {
 
 export default class NodeToolbar<NodeType extends Node = Node> extends Component<Signature<NodeType>> {
   @tracked private store: EmberFlowStore<NodeType> | undefined;
-  @tracked private viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
+  private viewport: Viewport = { x: 0, y: 0, zoom: 1 };
+  private element: HTMLElement | undefined;
   private unsubscribeViewport: (() => void) | undefined;
 
-  get isActive() {
+  get toolbarState() {
+    let nodes = this.toolbarNodes;
+    let isActive = this.isActive(nodes);
+
+    return {
+      nodes,
+      isActive,
+      shouldRender: isActive && nodes.length > 0,
+      classes: this.toolbarClasses,
+      dataId: nodes.map((node) => node.id).join(' '),
+      style: this.getToolbarStyle(nodes),
+    };
+  }
+
+  private isActive(nodes: InternalNodeBase<NodeType>[]) {
     if (typeof this.args.isVisible === 'boolean') {
       return this.args.isVisible;
     }
-
-    let nodes = this.toolbarNodes;
 
     if (this.store) {
       return nodes.length === 1 && Boolean(nodes[0]?.selected) && this.store.selectedNodes.length === 1;
@@ -65,35 +79,35 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
     return [this.args.nodeId ?? this.args.node?.id].filter((id): id is string => Boolean(id));
   }
 
-  get dataId() {
-    return this.toolbarNodes.map((node) => node.id).join(' ');
-  }
-
-  get shouldRender() {
-    return this.isActive && this.toolbarNodes.length > 0;
-  }
-
   get toolbarClasses() {
     return ['ember-flow__node-toolbar', this.args.className].filter(Boolean).join(' ');
   }
 
-  get toolbarStyle() {
-    let nodes = this.toolbarNodes;
+  private getToolbarTransform(nodes: InternalNodeBase<NodeType>[]) {
     let position = this.args.position ?? Position.Top;
     let align = this.args.align ?? 'center';
     let offset = this.args.offset ?? 10;
-    let zIndex = Math.max(...nodes.map((node) => (node.internals?.z ?? 0) + 1), 1);
-    let transform = '';
 
-    if (nodes.length > 0) {
-      transform = getNodeToolbarTransform(
-        getInternalNodesBounds(new Map(nodes.map((node) => [node.id, node]))),
-        this.viewport,
-        position,
-        offset,
-        align,
-      );
+    if (nodes.length === 0) {
+      return '';
     }
+
+    return getNodeToolbarTransform(
+      getInternalNodesBounds(new Map(nodes.map((node) => [node.id, node]))),
+      this.viewport,
+      position,
+      offset,
+      align,
+    );
+  }
+
+  private getToolbarZIndex(nodes: InternalNodeBase<NodeType>[]) {
+    return Math.max(...nodes.map((node) => (node.internals?.z ?? 0) + 1), 1);
+  }
+
+  private getToolbarStyle(nodes: InternalNodeBase<NodeType>[]) {
+    let transform = this.getToolbarTransform(nodes);
+    let zIndex = this.getToolbarZIndex(nodes);
 
     return htmlSafe(
       [
@@ -109,6 +123,15 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
     );
   }
 
+  registerNodeToolbar(element: HTMLElement) {
+    this.element = element;
+    this.updateToolbarElement();
+  }
+
+  unregisterNodeToolbar() {
+    this.element = undefined;
+  }
+
   registerFlowContext(element: HTMLElement) {
     let store = getFlowStore(element) as EmberFlowStore<NodeType> | undefined;
 
@@ -118,13 +141,15 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
 
     if (this.store === store) {
       this.viewport = store.getViewport();
+      this.updateToolbarElement();
       return;
     }
 
     this.unsubscribeViewport?.();
     this.store = store;
     this.unsubscribeViewport = store.onViewportChange((viewport) => {
-      this.viewport = { ...viewport };
+      this.viewport = viewport;
+      this.updateToolbarElement();
     });
   }
 
@@ -132,20 +157,39 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
     this.unsubscribeViewport?.();
     this.unsubscribeViewport = undefined;
     this.store = undefined;
+    this.element = undefined;
+  }
+
+  private updateToolbarElement() {
+    let element = this.element;
+    if (!element) {
+      return;
+    }
+
+    let nodes = this.toolbarNodes;
+    if (!this.isActive(nodes) || nodes.length === 0) {
+      return;
+    }
+
+    element.style.transform = this.getToolbarTransform(nodes);
+    element.style.zIndex = String(this.getToolbarZIndex(nodes));
   }
 
   <template>
     <span hidden {{flowContext this}}></span>
-    {{#if this.shouldRender}}
-      <div
-        class={{this.toolbarClasses}}
-        data-id={{this.dataId}}
-        style={{this.toolbarStyle}}
-        {{portal 'root'}}
-        ...attributes
-      >
-        {{yield}}
-      </div>
-    {{/if}}
+    {{#let this.toolbarState as |toolbar|}}
+      {{#if toolbar.shouldRender}}
+        <div
+          class={{toolbar.classes}}
+          data-id={{toolbar.dataId}}
+          style={{toolbar.style}}
+          {{portal 'root'}}
+          {{nodeToolbar this}}
+          ...attributes
+        >
+          {{yield}}
+        </div>
+      {{/if}}
+    {{/let}}
   </template>
 }
