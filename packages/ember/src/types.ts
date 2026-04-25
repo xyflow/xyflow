@@ -250,7 +250,7 @@ export type ControlButtonProps = ControlButtonArgs;
 
 export interface NodeToolbarArgs<NodeType extends Node = Node> {
   node?: NodeType;
-  nodeId?: string;
+  nodeId?: string | string[];
   isVisible?: boolean;
   position?: Position;
   align?: Align;

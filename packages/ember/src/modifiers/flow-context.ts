@@ -6,7 +6,6 @@ type FlowContextOwner = {
 };
 
 export default modifier<HTMLElement, [FlowContextOwner]>((element, [owner]) => {
-  owner.registerFlowContext(element);
   let frame = requestAnimationFrame(() => owner.registerFlowContext(element));
 
   return () => {

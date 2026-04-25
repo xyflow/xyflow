@@ -45,6 +45,7 @@ interface DeleteElementsResult<NodeType extends Node, EdgeType extends Edge> {
 export default class EmberFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   viewport: Viewport;
   panZoom: PanZoomInstance | null = null;
+  domNode: HTMLDivElement | null = null;
   translateExtent: CoordinateExtent = [
     [-Infinity, -Infinity],
     [Infinity, Infinity],
@@ -170,6 +171,30 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     return this.edgeLookup.get(id);
   }
 
+  getConnectedEdges(nodeId: string): EdgeType[] {
+    let connections = this.connectionLookup.get(nodeId);
+    if (!connections) {
+      return [];
+    }
+
+    let seen = new Set<string>();
+    let edges: EdgeType[] = [];
+
+    for (let connection of connections.values()) {
+      if (seen.has(connection.edgeId)) {
+        continue;
+      }
+
+      let edge = this.edgeLookup.get(connection.edgeId);
+      if (edge) {
+        seen.add(connection.edgeId);
+        edges.push(edge);
+      }
+    }
+
+    return edges;
+  }
+
   getInternalNodesBounds(): Rect {
     return getInternalNodesBounds(this.nodeLookup, {
       filter: (node) => !node.hidden,
@@ -189,9 +214,19 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
       .map((node) => {
         let position = this.nodePositions.get(node.id);
         let dimensions = this.nodeDimensions.get(node.id);
+        let width = dimensions?.width ?? node.width ?? node.initialWidth ?? node.measured?.width;
+        let height = dimensions?.height ?? node.height ?? node.initialHeight ?? node.measured?.height;
         let selected = this.selectedNodeIds.has(node.id) || node.selected;
+        let measured =
+          width !== undefined || height !== undefined
+            ? {
+                ...node.measured,
+                ...(width !== undefined ? { width } : {}),
+                ...(height !== undefined ? { height } : {}),
+              }
+            : node.measured;
 
-        if (!position && !dimensions && selected === node.selected) {
+        if (!position && !dimensions && selected === node.selected && measured === node.measured) {
           return node;
         }
 
@@ -199,6 +234,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
           ...node,
           ...(position ? { position } : {}),
           ...(dimensions ? { width: dimensions.width, height: dimensions.height } : {}),
+          ...(measured ? { measured } : {}),
           selected,
         };
       }) as NodeType[];

@@ -156,6 +156,7 @@
   user-select: none;
   pointer-events: all;
   transform-origin: 0 0;
+  will-change: transform, width, height;
   box-sizing: border-box;
 }
 
@@ -207,6 +208,26 @@
   pointer-events: all;
   display: flex;
   gap: 4px;
+}
+
+.ember-flow__resize-control.handle {
+  width: 9px;
+  height: 9px;
+  pointer-events: all;
+}
+
+.ember-flow__resize-control.line {
+  pointer-events: all;
+}
+
+.ember-flow__resize-control.line.left,
+.ember-flow__resize-control.line.right {
+  width: 10px;
+}
+
+.ember-flow__resize-control.line.top,
+.ember-flow__resize-control.line.bottom {
+  height: 10px;
 }
 
 .ember-flow__minimap {

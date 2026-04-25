@@ -13,7 +13,7 @@ test.describe('Pane default', () => {
   });
 
   test.describe('pan & zoom', () => {
-    test('panning the pane moves it', async ({ page }) => {
+    test('mouse dragging the pane moves it', async ({ page }) => {
       const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
       const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
 
@@ -25,11 +25,11 @@ test.describe('Pane default', () => {
 
       await pane.hover();
       await page.mouse.down();
-      // Move pane by 100, 100
       await page.mouse.move(
         paneBox!.x + paneBox!.width * 0.5 + movementPx,
         paneBox!.y + paneBox!.height * 0.5 + movementPx
       );
+      await page.mouse.up();
 
       const transformsAfter = await getTransform(viewport);
 
@@ -37,7 +37,7 @@ test.describe('Pane default', () => {
       expect(movementPx - Math.floor(transformsAfter.translateY - transformsBefore.translateY)).toBeLessThan(1);
     });
 
-    test('scrolling the default pane zooms it', async ({ page }) => {
+    test('mouse wheel on the default pane zooms it', async ({ page }) => {
       const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
       const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
 
@@ -121,6 +121,7 @@ test.describe('Pane default', () => {
       await page.mouse.move(0, 0);
       await page.waitForTimeout(500);
       await page.mouse.move(100, 100, { steps: 100 });
+      await page.mouse.up();
 
       const transformAfter = await getTransform(viewport);
 
@@ -140,7 +141,7 @@ test.describe('Pane non-default', () => {
   });
 
   test.describe('pan & zoom', () => {
-    test('panOnScroll pans the pane on scrolling', async ({ page }) => {
+    test('panOnScroll pans the pane on mouse wheel', async ({ page }) => {
       const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
       const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
 

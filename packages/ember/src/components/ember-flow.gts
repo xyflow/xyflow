@@ -59,11 +59,19 @@ export default class EmberFlow<
   private didFitView = false;
   private didSetInitialInteractivity = false;
   private suppressPaneClick = false;
+  // Hot pointer interactions should stay off Ember's tracked render path while the
+  // cursor is moving. Live movement mutates DOM/system mirrors directly; pointer-up
+  // commits the public Ember model changes and bumps tracked state once.
+  private pendingSelectionFrame: number | null = null;
+  private pendingConnectionFrame: number | null = null;
   private activeNodeDrag: {
     id: string;
     pointerId: number;
     startClientX: number;
     startClientY: number;
+    currentClientX: number;
+    currentClientY: number;
+    currentEvent: PointerEvent | null;
     startPosition: { x: number; y: number };
     didMove: boolean;
     started: boolean;
@@ -79,6 +87,7 @@ export default class EmberFlow<
     handleId: string | null;
     handleType: HandleType;
     pointerId: number;
+    currentEvent: PointerEvent | null;
     fromX: number;
     fromY: number;
     toX: number;
@@ -177,6 +186,7 @@ export default class EmberFlow<
     this.connectionLineElement = element.querySelector<SVGSVGElement>('.ember-flow__connectionline');
     this.connectionPathElement = element.querySelector<SVGPathElement>('.ember-flow__connection-path');
     this.store.setViewportDimensions(element.clientWidth, element.clientHeight);
+    this.store.domNode = element;
     this.store.setZoomExtent(this.minZoom, this.maxZoom);
     this.configureStorePlacement();
     if (!this.didSetInitialInteractivity) {
@@ -235,9 +245,14 @@ export default class EmberFlow<
       selectionOnDrag: false,
     });
 
+    requestAnimationFrame(() => {
+      this.measureRenderedNodes();
+    });
+
     if (this.args.fitView && !this.didFitView) {
       this.didFitView = true;
       requestAnimationFrame(() => {
+        this.measureRenderedNodes();
         this.store.setViewportDimensions(element.clientWidth, element.clientHeight);
         void this.store.fitView();
       });
@@ -252,6 +267,7 @@ export default class EmberFlow<
     this.selectionElement = null;
     this.connectionLineElement = null;
     this.connectionPathElement = null;
+    this.store.domNode = null;
     if (this.keydownHandler) {
       window.removeEventListener('keydown', this.keydownHandler);
       this.keydownHandler = null;
@@ -289,6 +305,36 @@ export default class EmberFlow<
       '--ember-flow-resize-control-scale',
       `${Math.max(1 / viewport.zoom, 1)}`,
     );
+  }
+
+  private measureRenderedNodes() {
+    let changed = false;
+
+    for (let node of this.nodes) {
+      let element = this.nodeElement(node.id);
+      if (!element) {
+        continue;
+      }
+
+      let width = element.offsetWidth;
+      let height = element.offsetHeight;
+
+      if (width <= 0 || height <= 0) {
+        continue;
+      }
+
+      let currentWidth = this.store.getNodeWidth(node);
+      let currentHeight = this.store.getNodeHeight(node);
+
+      if (Math.abs(currentWidth - width) > 0.5 || Math.abs(currentHeight - height) > 0.5) {
+        this.store.setNodeDimensions(node.id, { width, height });
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      this.store.bump();
+    }
   }
 
   private getViewportTransform(viewport: Viewport) {
@@ -371,6 +417,10 @@ export default class EmberFlow<
       return;
     }
 
+    if (target?.closest('.nodrag')) {
+      return;
+    }
+
     if (node.dragHandle && !target?.closest(node.dragHandle)) {
       return;
     }
@@ -383,6 +433,9 @@ export default class EmberFlow<
       pointerId: event.pointerId,
       startClientX: event.clientX,
       startClientY: event.clientY,
+      currentClientX: event.clientX,
+      currentClientY: event.clientY,
+      currentEvent: null,
       startPosition: this.store.getNodePosition(node),
       didMove: false,
       started: false,
@@ -453,6 +506,7 @@ export default class EmberFlow<
       handleId: this.getHandleId(handle),
       handleType,
       pointerId: event.pointerId,
+      currentEvent: null,
       fromX,
       fromY,
       toX: event.clientX - rendererRect.left,
@@ -465,14 +519,41 @@ export default class EmberFlow<
     window.addEventListener('pointercancel', this.handleWindowConnectionPointerUp);
   };
 
+  private applyActiveNodeDrag() {
+    let drag = this.activeNodeDrag;
+    if (!drag?.didMove) {
+      return;
+    }
+
+    let dx = (drag.currentClientX - drag.startClientX) / this.store.viewport.zoom;
+    let dy = (drag.currentClientY - drag.startClientY) / this.store.viewport.zoom;
+
+    this.applyNodePosition(drag.id, {
+      x: drag.startPosition.x + dx,
+      y: drag.startPosition.y + dy,
+    });
+
+    let node = this.store.getNode(drag.id);
+    let event = drag.currentEvent;
+    if (node && event) {
+      if (!drag.started) {
+        drag.started = true;
+        this.args.onNodeDragStart?.(event, node as NodeType);
+      }
+      this.args.onNodeDrag?.(event, node as NodeType);
+      this.autoPanForNodeDrag(event);
+    }
+  }
+
   private handleWindowNodePointerMove = (event: PointerEvent) => {
     let drag = this.activeNodeDrag;
     if (!drag || event.pointerId !== drag.pointerId) {
       return;
     }
 
-    let dx = (event.clientX - drag.startClientX) / this.store.viewport.zoom;
-    let dy = (event.clientY - drag.startClientY) / this.store.viewport.zoom;
+    drag.currentClientX = event.clientX;
+    drag.currentClientY = event.clientY;
+    drag.currentEvent = event;
 
     if (Math.abs(event.clientX - drag.startClientX) > 1 || Math.abs(event.clientY - drag.startClientY) > 1) {
       drag.didMove = true;
@@ -482,19 +563,7 @@ export default class EmberFlow<
       return;
     }
 
-    this.applyNodePosition(drag.id, {
-      x: drag.startPosition.x + dx,
-      y: drag.startPosition.y + dy,
-    });
-    let node = this.nodes.find((candidate) => candidate.id === drag.id);
-    if (node) {
-      if (!drag.started) {
-        drag.started = true;
-        this.args.onNodeDragStart?.(event, node as NodeType);
-      }
-      this.args.onNodeDrag?.(event, node as NodeType);
-    }
-    this.autoPanForNodeDrag(event);
+    this.applyActiveNodeDrag();
   };
 
   private handleWindowNodePointerUp = (event: PointerEvent) => {
@@ -509,12 +578,31 @@ export default class EmberFlow<
       this.args.onNodesChange?.([{ id: drag.id, type: 'position', position }] as any);
       this.store.bump();
     }
-    let node = this.nodes.find((candidate) => candidate.id === drag.id);
+    let node = this.store.getNode(drag.id);
     if (node && drag.started) {
       this.args.onNodeDragStop?.(event, node as NodeType);
     }
     this.detachNodeDragListeners();
   };
+
+  private scheduleSelectionFrame() {
+    if (this.pendingSelectionFrame !== null) {
+      return;
+    }
+
+    this.pendingSelectionFrame = requestAnimationFrame(() => {
+      this.pendingSelectionFrame = null;
+      this.renderSelectionRect();
+    });
+  }
+
+  private flushPendingSelectionFrame() {
+    if (this.pendingSelectionFrame !== null) {
+      cancelAnimationFrame(this.pendingSelectionFrame);
+      this.pendingSelectionFrame = null;
+      this.renderSelectionRect();
+    }
+  }
 
   private handleWindowSelectionPointerMove = (event: PointerEvent) => {
     let selection = this.activeSelection;
@@ -526,7 +614,7 @@ export default class EmberFlow<
     let rect = renderer.getBoundingClientRect();
     selection.currentX = event.clientX - rect.left;
     selection.currentY = event.clientY - rect.top;
-    this.renderSelectionRect();
+    this.scheduleSelectionFrame();
   };
 
   private handleWindowSelectionPointerUp = () => {
@@ -537,6 +625,7 @@ export default class EmberFlow<
       return;
     }
 
+    this.flushPendingSelectionFrame();
     let rendererRect = renderer.getBoundingClientRect();
     let x = Math.min(selection.startX, selection.currentX);
     let y = Math.min(selection.startY, selection.currentY);
@@ -573,6 +662,31 @@ export default class EmberFlow<
     this.detachSelectionListeners(false);
   };
 
+  private scheduleConnectionFrame() {
+    if (this.pendingConnectionFrame !== null) {
+      return;
+    }
+
+    this.pendingConnectionFrame = requestAnimationFrame(() => {
+      this.pendingConnectionFrame = null;
+      this.renderConnectionLine();
+      if (this.activeConnection?.currentEvent) {
+        this.autoPanForConnection(this.activeConnection.currentEvent);
+      }
+    });
+  }
+
+  private flushPendingConnectionFrame() {
+    if (this.pendingConnectionFrame !== null) {
+      cancelAnimationFrame(this.pendingConnectionFrame);
+      this.pendingConnectionFrame = null;
+      this.renderConnectionLine();
+      if (this.activeConnection?.currentEvent) {
+        this.autoPanForConnection(this.activeConnection.currentEvent);
+      }
+    }
+  }
+
   private handleWindowConnectionPointerMove = (event: PointerEvent) => {
     let connection = this.activeConnection;
     let renderer = this.rendererElement;
@@ -583,8 +697,8 @@ export default class EmberFlow<
     let rendererRect = renderer.getBoundingClientRect();
     connection.toX = event.clientX - rendererRect.left;
     connection.toY = event.clientY - rendererRect.top;
-    this.renderConnectionLine();
-    this.autoPanForConnection(event);
+    connection.currentEvent = event;
+    this.scheduleConnectionFrame();
   };
 
   private handleWindowConnectionPointerUp = (event: PointerEvent) => {
@@ -593,6 +707,7 @@ export default class EmberFlow<
       return;
     }
 
+    this.flushPendingConnectionFrame();
     let target = document.elementFromPoint(event.clientX, event.clientY);
     let targetHandle = target?.closest('.ember-flow__handle') as HTMLElement | null;
     this.completeConnection(targetHandle);
@@ -644,6 +759,10 @@ export default class EmberFlow<
     window.removeEventListener('pointermove', this.handleWindowSelectionPointerMove);
     window.removeEventListener('pointerup', this.handleWindowSelectionPointerUp);
     window.removeEventListener('pointercancel', this.handleWindowSelectionPointerUp);
+    if (this.pendingSelectionFrame !== null) {
+      cancelAnimationFrame(this.pendingSelectionFrame);
+      this.pendingSelectionFrame = null;
+    }
     this.activeSelection = null;
 
     if (hide && this.selectionElement) {
@@ -655,6 +774,10 @@ export default class EmberFlow<
     window.removeEventListener('pointermove', this.handleWindowConnectionPointerMove);
     window.removeEventListener('pointerup', this.handleWindowConnectionPointerUp);
     window.removeEventListener('pointercancel', this.handleWindowConnectionPointerUp);
+    if (this.pendingConnectionFrame !== null) {
+      cancelAnimationFrame(this.pendingConnectionFrame);
+      this.pendingConnectionFrame = null;
+    }
     this.activeConnection = null;
 
     if (this.connectionLineElement) {
@@ -814,7 +937,7 @@ export default class EmberFlow<
   }
 
   private applyNodePosition(id: string, position: { x: number; y: number }) {
-    let node = this.nodes.find((candidate) => candidate.id === id);
+    let node = this.store.getNode(id);
     if (!node) {
       return;
     }
@@ -831,17 +954,24 @@ export default class EmberFlow<
 
   handleNodeResize = (event: CustomEvent<NodeResizeDetail>) => {
     event.stopPropagation();
-    this.applyNodeResize(event.detail);
+
+    if (event.detail.resizing) {
+      this.applyNodeResize(event.detail, false);
+      return;
+    }
+
+    this.applyNodeResize(event.detail, true);
   };
 
-  private applyNodeResize(detail: NodeResizeDetail) {
-    let node = this.nodes.find((candidate) => candidate.id === detail.id);
+  private applyNodeResize(detail: NodeResizeDetail, commit: boolean) {
+    let node = this.store.getNode(detail.id);
     if (!node) {
       return;
     }
 
     let dimensions = this.store.setNodeDimensions(detail.id, detail.dimensions);
-    let { position, positionAbsolute } = this.store.setNodeAbsolutePosition(detail.id, node, detail.position);
+    let position = this.store.setNodePosition(detail.id, detail.position);
+    let positionAbsolute = this.store.getNodePosition(node);
     let element = this.nodeElement(detail.id);
 
     if (element) {
@@ -851,31 +981,30 @@ export default class EmberFlow<
     }
 
     this.updateConnectedEdges(detail.id);
-    this.args.onNodesChange?.([
-      {
-        id: detail.id,
-        type: 'position',
-        position,
-      },
-      {
-        id: detail.id,
-        type: 'dimensions',
-        dimensions,
-        resizing: detail.resizing,
-        setAttributes: true,
-      },
-    ] as any);
-    this.store.bump();
+
+    if (commit) {
+      this.args.onNodesChange?.([
+        {
+          id: detail.id,
+          type: 'position',
+          position,
+        },
+        {
+          id: detail.id,
+          type: 'dimensions',
+          dimensions,
+          resizing: false,
+          setAttributes: true,
+        },
+      ] as any);
+      this.store.bump();
+    }
   }
 
   private updateConnectedEdges(nodeId: string) {
-    for (let edge of this.edges) {
-      if (edge.source !== nodeId && edge.target !== nodeId) {
-        continue;
-      }
-
-      let source = this.nodes.find((node) => node.id === edge.source);
-      let target = this.nodes.find((node) => node.id === edge.target);
+    for (let edge of this.store.getConnectedEdges(nodeId)) {
+      let source = this.store.getNode(edge.source);
+      let target = this.store.getNode(edge.target);
       let edgeElement = this.edgeElement(edge.id);
 
       if (!source || !target || !edgeElement) {

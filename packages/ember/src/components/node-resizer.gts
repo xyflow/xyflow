@@ -19,7 +19,11 @@ export default class NodeResizer extends Component<Signature> {
   lineVariant = ResizeControlVariant.Line;
 
   get isVisible() {
-    return this.args.isVisible ?? true;
+    if ('isVisible' in this.args) {
+      return Boolean(this.args.isVisible);
+    }
+
+    return true;
   }
 
   <template>

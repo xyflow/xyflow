@@ -38,6 +38,7 @@ export default class ResizingSample extends Component {
       position: { x: 70, y: 30 },
       width: 210,
       height: 96,
+      selected: true,
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
       className: 'parity-node parity-node--purple parity-resizable-node',
@@ -91,7 +92,7 @@ export default class ResizingSample extends Component {
           <div class='parity-note'>
             <strong>Node Resizing</strong>
             <ol>
-              <li>Click a node to reveal resize lines and corner handles.</li>
+              <li>The Layout node starts selected with resize lines and corner handles visible.</li>
               <li>Drag a corner handle; the node should resize without scaling the toolbar UI.</li>
               <li>Connected edges should follow the resized node bounds while dragging.</li>
               <li>Try shrinking below the minimum size; it should clamp.</li>

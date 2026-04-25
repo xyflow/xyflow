@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { htmlSafe } from '@ember/template';
-import { Position, type Viewport } from '@xyflow/system';
+import { Position, getEdgeToolbarTransform, type Viewport } from '@xyflow/system';
 
 import EdgeLabel from './edge-label.js';
 import flowContext from '../modifiers/flow-context.js';
@@ -9,7 +9,6 @@ import { getFlowStore } from '../store/context.js';
 import type EmberFlowStore from '../store/index.js';
 import { getEdgePathData } from '../utils/edge-path.js';
 import { toCss } from '../utils/style.js';
-import { getViewportOverlayTransform } from '../utils/viewport-overlay.js';
 import type { EdgeToolbarArgs, Node } from '../types.js';
 
 interface Signature {
@@ -74,15 +73,14 @@ export default class EdgeToolbar extends Component<Signature> {
   get toolbarStyle() {
     let point = this.point;
     let offset = this.screenOffset;
-    let transform = getViewportOverlayTransform({
-      x: point.x,
-      y: point.y,
-      zoom: this.viewport.zoom,
-      offsetX: offset.x,
-      offsetY: offset.y,
-      alignX: this.args.alignX ?? 'center',
-      alignY: this.args.alignY ?? 'center',
-    });
+    let zoom = this.viewport.zoom || 1;
+    let transform = getEdgeToolbarTransform(
+      point.x + offset.x / zoom,
+      point.y + offset.y / zoom,
+      zoom,
+      this.args.alignX ?? 'center',
+      this.args.alignY ?? 'center',
+    );
     let zIndex = (this.edge?.zIndex ?? 0) + 1;
 
     return htmlSafe(
