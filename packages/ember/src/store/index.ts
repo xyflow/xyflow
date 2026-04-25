@@ -4,9 +4,11 @@ import {
   infiniteExtent,
   adoptUserNodes,
   getInternalNodesBounds,
+  getOverlappingArea,
   getNodesBounds as getNodesBoundsSystem,
   getViewportForBounds,
   isCoordinateExtent,
+  isRectObject,
   panBy as panBySystem,
   snapPosition,
   updateConnectionLookup,
@@ -14,8 +16,11 @@ import {
   type ConnectionLookup,
   type EdgeLookup,
   type FitBoundsOptions,
+  type HandleConnection,
+  type HandleType,
   type SetCenterOptions,
   type InternalNodeBase,
+  type NodeConnection,
   type NodeLookup,
   type NodeOrigin,
   type PanZoomInstance,
@@ -42,6 +47,22 @@ interface DeleteElementsResult<NodeType extends Node, EdgeType extends Edge> {
   nodeChanges: NodeChange<NodeType>[];
   edgeChanges: EdgeChange<EdgeType>[];
 }
+
+interface DeleteElementsParams<NodeType extends Node, EdgeType extends Edge> {
+  nodes?: (NodeType | { id: string })[];
+  edges?: (EdgeType | { id: string })[];
+}
+
+interface DeleteElementsApiResult<NodeType extends Node, EdgeType extends Edge> {
+  deletedNodes: NodeType[];
+  deletedEdges: EdgeType[];
+}
+
+type ElementsUpdater<ElementType> = ElementType[] | ((elements: ElementType[]) => ElementType[]);
+type ElementPayload<ElementType> = ElementType | ElementType[];
+type UpdateOptions = {
+  replace?: boolean;
+};
 
 export default class EmberFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   viewport: Viewport;
@@ -84,7 +105,12 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   private readonly viewportListeners = new Set<(viewport: Viewport) => void>();
   private readonly nodeGeometryListeners = new Set<(nodeId: string) => void>();
 
+  private addedNodes: NodeType[] = [];
   private addedEdges: EdgeType[] = [];
+  private nodeUpdates = new Map<string, NodeType>();
+  private edgeUpdates = new Map<string, EdgeType>();
+  private nodesOverride: NodeType[] | undefined;
+  private edgesOverride: EdgeType[] | undefined;
   private syncCache:
     | {
         revision: number;
@@ -103,12 +129,12 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
 
   getNodes(sourceNodes: NodeType[] = this.currentSourceNodes): NodeType[] {
     this.currentSourceNodes = sourceNodes;
-    return this.syncGraph(sourceNodes, this.currentSourceEdges).nodes;
+    return this.syncGraph(this.nodesOverride ?? sourceNodes, this.edgesOverride ?? this.currentSourceEdges).nodes;
   }
 
   getEdges(sourceEdges: EdgeType[] = this.currentSourceEdges): EdgeType[] {
     this.currentSourceEdges = sourceEdges;
-    return this.syncGraph(this.currentSourceNodes, sourceEdges).edges;
+    return this.syncGraph(this.nodesOverride ?? this.currentSourceNodes, this.edgesOverride ?? sourceEdges).edges;
   }
 
   syncGraph(sourceNodes: NodeType[] = [], sourceEdges: EdgeType[] = []) {
@@ -210,10 +236,240 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     });
   }
 
+  setNodes(payload: ElementsUpdater<NodeType>) {
+    let currentNodes = this.getNodes();
+    let nextNodes = typeof payload === 'function' ? payload(currentNodes) : payload;
+
+    this.nodesOverride = [...nextNodes];
+    this.addedNodes = [];
+    this.nodeUpdates.clear();
+    this.deletedNodeIds.clear();
+    this.nodePositions.clear();
+    this.nodeDimensions.clear();
+    this.bump();
+  }
+
+  setEdges(payload: ElementsUpdater<EdgeType>) {
+    let currentEdges = this.getEdges();
+    let nextEdges = typeof payload === 'function' ? payload(currentEdges) : payload;
+
+    this.edgesOverride = [...nextEdges];
+    this.addedEdges = [];
+    this.edgeUpdates.clear();
+    this.deletedEdgeIds.clear();
+    this.bump();
+  }
+
+  addNodes(payload: ElementPayload<NodeType>) {
+    let nodes = Array.isArray(payload) ? payload : [payload];
+
+    if (this.nodesOverride) {
+      this.nodesOverride = [...this.nodesOverride, ...nodes];
+    } else {
+      this.addedNodes = [...this.addedNodes, ...nodes];
+    }
+
+    this.bump();
+  }
+
+  addEdges(payload: ElementPayload<EdgeType>) {
+    let edges = Array.isArray(payload) ? payload : [payload];
+
+    if (this.edgesOverride) {
+      this.edgesOverride = [...this.edgesOverride, ...edges];
+    } else {
+      this.addedEdges = [...this.addedEdges, ...edges];
+    }
+
+    this.bump();
+  }
+
+  updateNode(
+    id: string,
+    nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
+    options: UpdateOptions = { replace: false },
+  ) {
+    let currentNode = this.nodeUpdates.get(id) ?? this.getNode(id);
+    if (!currentNode) {
+      return;
+    }
+
+    let nextUpdate = typeof nodeUpdate === 'function' ? nodeUpdate(currentNode) : nodeUpdate;
+    let nextNode = options.replace ? (nextUpdate as NodeType) : ({ ...currentNode, ...nextUpdate } as NodeType);
+
+    this.nodeUpdates.set(id, nextNode);
+
+    if (nextNode.position) {
+      this.nodePositions.set(id, this.roundPosition(nextNode.position));
+    }
+    if (nextNode.width !== undefined || nextNode.height !== undefined || nextNode.measured) {
+      this.nodeDimensions.set(id, {
+        width: nextNode.width ?? nextNode.measured?.width ?? this.getNodeWidth(currentNode),
+        height: nextNode.height ?? nextNode.measured?.height ?? this.getNodeHeight(currentNode),
+      });
+    }
+
+    this.bump();
+  }
+
+  updateNodeData(
+    id: string,
+    dataUpdate: Partial<NodeType['data']> | ((node: NodeType) => Partial<NodeType['data']>),
+    options: UpdateOptions = { replace: false },
+  ) {
+    this.updateNode(id, (node) => {
+      let nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
+
+      return {
+        data: options.replace ? nextData : { ...node.data, ...nextData },
+      } as Partial<NodeType>;
+    });
+  }
+
+  updateEdge(
+    id: string,
+    edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
+    options: UpdateOptions = { replace: false },
+  ) {
+    let currentEdge = this.edgeUpdates.get(id) ?? this.getEdge(id);
+    if (!currentEdge) {
+      return;
+    }
+
+    let nextUpdate = typeof edgeUpdate === 'function' ? edgeUpdate(currentEdge) : edgeUpdate;
+    let nextEdge = options.replace ? (nextUpdate as EdgeType) : ({ ...currentEdge, ...nextUpdate } as EdgeType);
+
+    this.edgeUpdates.set(id, nextEdge);
+    this.bump();
+  }
+
+  updateEdgeData(
+    id: string,
+    dataUpdate: Partial<EdgeType['data']> | ((edge: EdgeType) => Partial<EdgeType['data']>),
+    options: UpdateOptions = { replace: false },
+  ) {
+    this.updateEdge(id, (edge) => {
+      let nextData = typeof dataUpdate === 'function' ? dataUpdate(edge) : dataUpdate;
+
+      return {
+        data: options.replace ? nextData : { ...edge.data, ...nextData },
+      } as Partial<EdgeType>;
+    });
+  }
+
+  async deleteElements({
+    nodes: nodesToRemove = [],
+    edges: edgesToRemove = [],
+  }: DeleteElementsParams<NodeType, EdgeType>): Promise<DeleteElementsApiResult<NodeType, EdgeType>> {
+    let nodeIds = new Set(nodesToRemove.map((node) => node.id));
+    let edgeIds = new Set(edgesToRemove.map((edge) => edge.id));
+    let nodes = this.getNodes();
+    let edges = this.getEdges();
+    let deletedNodes = nodes.filter((node) => nodeIds.has(node.id));
+    let deletedEdges = edges.filter(
+      (edge) => edgeIds.has(edge.id) || nodeIds.has(edge.source) || nodeIds.has(edge.target),
+    );
+
+    if (deletedNodes.length === 0 && deletedEdges.length === 0) {
+      return { deletedNodes, deletedEdges };
+    }
+
+    for (let node of deletedNodes) {
+      this.deletedNodeIds.add(node.id);
+      this.selectedNodeIds.delete(node.id);
+      this.nodeUpdates.delete(node.id);
+    }
+
+    for (let edge of deletedEdges) {
+      this.deletedEdgeIds.add(edge.id);
+      this.selectedEdgeIds.delete(edge.id);
+      this.edgeUpdates.delete(edge.id);
+    }
+
+    this.bump();
+
+    return { deletedNodes, deletedEdges };
+  }
+
+  getIntersectingNodes(nodeOrRect: NodeType | { id: string } | Rect, partially = true, nodes?: NodeType[]) {
+    let isRect = isRectObject(nodeOrRect);
+    let nodeRect: Rect | null;
+    let nodeId: string | null;
+
+    if (isRect) {
+      nodeRect = nodeOrRect as Rect;
+      nodeId = null;
+    } else {
+      let nodeOrId = nodeOrRect as NodeType | { id: string };
+      nodeRect = this.getNodeRect(nodeOrId);
+      nodeId = nodeOrId.id;
+    }
+
+    if (!nodeRect) {
+      return [];
+    }
+
+    return (nodes ?? this.getNodes()).filter((node) => {
+      if (nodeId && node.id === nodeId) {
+        return false;
+      }
+
+      let currentNodeRect = this.getRenderedNodeBounds(node);
+      let overlappingArea = getOverlappingArea(currentNodeRect, nodeRect);
+      let partiallyVisible = partially && overlappingArea > 0;
+
+      return (
+        partiallyVisible ||
+        overlappingArea >= currentNodeRect.width * currentNodeRect.height ||
+        overlappingArea >= nodeRect.width * nodeRect.height
+      );
+    });
+  }
+
+  isNodeIntersecting(nodeOrRect: NodeType | { id: string } | Rect, area: Rect, partially = true) {
+    let isRect = isRectObject(nodeOrRect);
+    let nodeRect = isRect ? (nodeOrRect as Rect) : this.getNodeRect(nodeOrRect as NodeType | { id: string });
+
+    if (!nodeRect) {
+      return false;
+    }
+
+    let overlappingArea = getOverlappingArea(nodeRect, area);
+    let partiallyVisible = partially && overlappingArea > 0;
+
+    return (
+      partiallyVisible ||
+      overlappingArea >= area.width * area.height ||
+      overlappingArea >= nodeRect.width * nodeRect.height
+    );
+  }
+
+  getHandleConnections({ type, id, nodeId }: { type: HandleType; nodeId: string; id?: string | null }) {
+    return Array.from(
+      this.connectionLookup.get(`${nodeId}-${type}${id ? `-${id}` : ''}`)?.values() ?? [],
+    ) as HandleConnection[];
+  }
+
+  getNodeConnections({
+    type,
+    handleId,
+    nodeId,
+  }: {
+    type?: HandleType;
+    nodeId: string;
+    handleId?: string | null;
+  }) {
+    return Array.from(
+      this.connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
+        ?.values() ?? [],
+    ) as NodeConnection[];
+  }
+
   private materializeNodes(sourceNodes: NodeType[] = []): NodeType[] {
-    return sourceNodes
+    return ([...sourceNodes, ...this.addedNodes] as NodeType[])
       .filter((node) => !this.deletedNodeIds.has(node.id))
-      .map((node) => {
+      .map((sourceNode) => {
+        let node = this.nodeUpdates.get(sourceNode.id) ?? sourceNode;
         let position = this.nodePositions.get(node.id);
         let dimensions = this.nodeDimensions.get(node.id);
         let width = dimensions?.width ?? node.width ?? node.initialWidth ?? node.measured?.width;
@@ -244,6 +500,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
 
   private materializeEdges(sourceEdges: EdgeType[] = []): EdgeType[] {
     return ([...sourceEdges, ...this.addedEdges] as EdgeType[])
+      .map((sourceEdge) => this.edgeUpdates.get(sourceEdge.id) ?? sourceEdge)
       .filter(
         (edge) =>
           !this.deletedEdgeIds.has(edge.id) &&
@@ -374,8 +631,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   }
 
   addEdge(edge: EdgeType) {
-    this.addedEdges = [...this.addedEdges, edge];
-    this.bump();
+    this.addEdges(edge);
   }
 
   setNodePosition(id: string, position: XYPosition, positionAbsolute?: XYPosition) {
@@ -817,28 +1073,35 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     });
   }
 
-  screenToFlowPosition(clientPosition: XYPosition, domNode: HTMLElement | null) {
-    if (!domNode) {
+  screenToFlowPosition(
+    clientPosition: XYPosition,
+    options: { snapToGrid?: boolean; snapGrid?: SnapGrid } = {},
+  ) {
+    if (!this.domNode) {
       return clientPosition;
     }
 
-    let { x: domX, y: domY } = domNode.getBoundingClientRect();
+    let { x: domX, y: domY } = this.domNode.getBoundingClientRect();
+    let shouldSnap = options.snapToGrid ?? this.snapToGrid;
+    let snapGrid = options.snapGrid ?? this.snapGrid;
 
     return pointToRendererPoint(
       {
         x: clientPosition.x - domX,
         y: clientPosition.y - domY,
       },
-      [this.viewport.x, this.viewport.y, this.viewport.zoom]
+      [this.viewport.x, this.viewport.y, this.viewport.zoom],
+      shouldSnap,
+      snapGrid,
     );
   }
 
-  flowToScreenPosition(flowPosition: XYPosition, domNode: HTMLElement | null) {
-    if (!domNode) {
+  flowToScreenPosition(flowPosition: XYPosition) {
+    if (!this.domNode) {
       return flowPosition;
     }
 
-    let { x: domX, y: domY } = domNode.getBoundingClientRect();
+    let { x: domX, y: domY } = this.domNode.getBoundingClientRect();
     let rendererPosition = rendererPointToPoint(flowPosition, [this.viewport.x, this.viewport.y, this.viewport.zoom]);
 
     return {
@@ -863,7 +1126,12 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     this.pressedKeys.clear();
     this.nodePositions.clear();
     this.nodeDimensions.clear();
+    this.addedNodes = [];
     this.addedEdges = [];
+    this.nodeUpdates.clear();
+    this.edgeUpdates.clear();
+    this.nodesOverride = undefined;
+    this.edgesOverride = undefined;
     this.panZoom = null;
     this.viewport = initialViewport ?? { x: 0, y: 0, zoom: 1 };
     this.notifyViewportListeners();
@@ -891,6 +1159,12 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
       x: this.roundViewportValue(position.x),
       y: this.roundViewportValue(position.y),
     };
+  }
+
+  private getNodeRect(nodeOrId: NodeType | { id: string }) {
+    let node = 'position' in nodeOrId ? nodeOrId : this.getNode(nodeOrId.id);
+
+    return node ? this.getRenderedNodeBounds(node) : null;
   }
 
   private notifyViewportListeners() {

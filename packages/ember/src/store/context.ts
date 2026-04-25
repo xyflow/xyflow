@@ -1,9 +1,13 @@
 import type EmberFlowStore from './index.js';
+import type { Edge, Node } from '../types.js';
 
 const storeByElement = new WeakMap<Element, EmberFlowStore>();
 
-export function registerFlowStore(element: Element, store: EmberFlowStore) {
-  storeByElement.set(element, store);
+export function registerFlowStore<NodeType extends Node, EdgeType extends Edge>(
+  element: Element,
+  store: EmberFlowStore<NodeType, EdgeType>,
+) {
+  storeByElement.set(element, store as unknown as EmberFlowStore);
 }
 
 export function unregisterFlowStore(element: Element) {
