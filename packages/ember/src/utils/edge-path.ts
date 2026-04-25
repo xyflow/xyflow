@@ -36,7 +36,7 @@ export function getEdgePathData<NodeType extends Node = Node, EdgeType extends E
   edge: EdgeType,
   source: NodeType,
   target: NodeType,
-  options: EdgePathOptions<NodeType> = {},
+  options: EdgePathOptions<NodeType> = {}
 ) {
   let edgePosition = getEdgePosition(source, target, options);
   let pathOptions = edge.pathOptions ?? {};
@@ -120,7 +120,7 @@ export function getSimpleBezierPath({
 export function getEdgePosition<NodeType extends Node = Node>(
   source: NodeType,
   target: NodeType,
-  options: EdgePathOptions<NodeType> = {},
+  options: EdgePathOptions<NodeType> = {}
 ): EdgePosition {
   let sourcePosition = source.sourcePosition ?? Position.Bottom;
   let targetPosition = target.targetPosition ?? Position.Top;
@@ -140,7 +140,7 @@ export function getEdgePosition<NodeType extends Node = Node>(
 export function getHandlePosition<NodeType extends Node = Node>(
   node: NodeType,
   position: Position,
-  options: EdgePathOptions<NodeType> = {},
+  options: EdgePathOptions<NodeType> = {}
 ) {
   let width = options.getNodeWidth?.(node) ?? node.width ?? node.initialWidth ?? node.measured?.width ?? 150;
   let height = options.getNodeHeight?.(node) ?? node.height ?? node.initialHeight ?? node.measured?.height ?? 40;

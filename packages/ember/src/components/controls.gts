@@ -10,7 +10,7 @@ import type { ControlsArgs } from '../types.js';
 interface Signature {
   Args: ControlsArgs;
   Blocks: {
-    default: [];
+    default: [EmberFlowStore];
   };
   Element: HTMLDivElement;
 }
@@ -59,6 +59,14 @@ export default class Controls extends Component<Signature> {
 
   get isInteractive() {
     return this.store?.isInteractive ?? true;
+  }
+
+  get hasFlow() {
+    return Boolean(this.store);
+  }
+
+  get flow(): EmberFlowStore {
+    return this.store!;
   }
 
   get isLocked() {
@@ -207,7 +215,9 @@ export default class Controls extends Component<Signature> {
           {{/if}}
         </button>
       {{/if}}
-      {{yield}}
+      {{#if this.hasFlow}}
+        {{yield this.flow}}
+      {{/if}}
     </div>
   </template>
 }

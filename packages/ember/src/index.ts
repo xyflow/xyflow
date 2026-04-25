@@ -5,6 +5,7 @@ export { default as ControlButton } from './components/control-button.js';
 export { default as Controls } from './components/controls.js';
 export { default as EdgeLabel } from './components/edge-label.js';
 export { default as EdgeLabelRenderer } from './components/edge-label-renderer.js';
+export { default as EdgeReconnectAnchor } from './components/edge-reconnect-anchor.js';
 export { default as EdgeToolbar } from './components/edge-toolbar.js';
 export { default as EdgeText } from './components/edge-text.js';
 export { default as EmberFlow } from './components/ember-flow.js';
@@ -20,6 +21,7 @@ export { default as SimpleBezierEdge } from './components/simple-bezier-edge.js'
 export { default as SmoothStepEdge } from './components/smooth-step-edge.js';
 export { default as StepEdge } from './components/step-edge.js';
 export { default as StraightEdge } from './components/straight-edge.js';
+export { default as UseEmberFlow } from './components/use-ember-flow.js';
 export { default as ViewportPortal } from './components/viewport-portal.js';
 export { default as EmberFlowStore } from './store/index.js';
 export { getFlowStore } from './store/context.js';
@@ -80,6 +82,7 @@ export type {
   GetSmoothStepPathParams,
   GetStraightPathParams,
   HandleConnection,
+  Handle as SystemHandle,
   HandleType,
   IsValidConnection,
   KeyCode,
@@ -110,6 +113,7 @@ export type {
   OnResizeEnd,
   OnResizeStart,
   OnSelectionDrag,
+  PanelPosition,
   ProOptions,
   Rect,
   ResizeDragEvent,

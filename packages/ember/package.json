@@ -27,7 +27,7 @@
     "css-watch": "pnpm css --watch",
     "lint": "prettier --check .",
     "typecheck": "ember-tsc --noEmit",
-    "prepack": "rollup --config"
+    "prepack": "pnpm build"
   },
   "type": "module",
   "module": "./dist/index.js",

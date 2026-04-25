@@ -22,6 +22,7 @@ import type {
   OnResizeEnd,
   OnResizeStart,
   PanOnScrollMode,
+  PanelPosition,
   Position,
   ResizeControlDirection,
   ResizeControlVariant,
@@ -35,6 +36,7 @@ import type {
   SelectionMode,
   SnapGrid,
   Viewport,
+  XYPosition,
   OnBeforeDeleteBase,
   OnViewportChange,
 } from '@xyflow/system';
@@ -77,8 +79,8 @@ export type DefaultEdgeOptions<EdgeType extends Edge = Edge> = DefaultEdgeOption
 
 export type BuiltInEdge =
   | (Edge<Record<string, unknown>, 'default'> & { pathOptions?: BezierPathOptions })
-  | (Edge<Record<string, unknown>, 'straight'>)
-  | (Edge<Record<string, unknown>, 'simplebezier'>)
+  | Edge<Record<string, unknown>, 'straight'>
+  | Edge<Record<string, unknown>, 'simplebezier'>
   | (Edge<Record<string, unknown>, 'step'> & { pathOptions?: StepPathOptions })
   | (Edge<Record<string, unknown>, 'smoothstep'> & { pathOptions?: SmoothStepPathOptions });
 
@@ -151,7 +153,7 @@ export type Connection = {
 };
 
 export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
-  store: EmberFlowStore<NodeType, EdgeType>,
+  store: EmberFlowStore<NodeType, EdgeType>
 ) => void;
 
 export type OnNodesDelete<NodeType extends Node = Node> = (nodes: NodeType[]) => void;
@@ -168,10 +170,7 @@ export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge =
   EdgeType
 >;
 
-export interface EmberFlowArgs<
-  NodeType extends Node = Node,
-  EdgeType extends Edge = Edge,
-> {
+export interface EmberFlowArgs<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   store?: EmberFlowStore<NodeType, EdgeType>;
   nodes?: NodeType[];
   edges?: EdgeType[];
@@ -250,14 +249,6 @@ export interface EmberFlowArgs<
   onSelectionChange?: (selection: { nodes: NodeType[]; edges: EdgeType[] }) => void;
 }
 
-export type PanelPosition =
-  | 'top-left'
-  | 'top-center'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-center'
-  | 'bottom-right';
-
 export interface PanelArgs {
   position?: PanelPosition;
 }
@@ -312,6 +303,32 @@ export interface ControlButtonArgs {
 }
 
 export type ControlButtonProps = ControlButtonArgs;
+
+export interface UseEmberFlowArgs {}
+
+export type UseEmberFlowProps = UseEmberFlowArgs;
+
+export interface EdgeReconnectAnchorArgs<EdgeType extends Edge = Edge> {
+  edge?: EdgeType;
+  edgeId?: string;
+  type: HandleType;
+  reconnecting?: boolean;
+  position?: XYPosition;
+  size?: number;
+  dragThreshold?: number;
+  className?: string;
+  class?: string;
+  style?: CssStyle;
+}
+
+export type EdgeReconnectAnchorProps<EdgeType extends Edge = Edge> = EdgeReconnectAnchorArgs<EdgeType>;
+
+export interface EdgeReconnectAnchorEventDetail<EdgeType extends Edge = Edge> {
+  edge: EdgeType;
+  handleType: HandleType;
+  pointerEvent: PointerEvent;
+  fixedElement?: Element | null;
+}
 
 export interface NodeToolbarArgs<NodeType extends Node = Node> {
   node?: NodeType;

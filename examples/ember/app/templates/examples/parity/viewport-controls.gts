@@ -102,12 +102,12 @@ export default class ViewportControlsSample extends Component {
             ViewportPortal
           </div>
         </ViewportPortal>
-        <Controls>
+        <Controls as |controls|>
           <ControlButton
             @className='parity-control-button'
             @title='center origin'
             @ariaLabel='center origin'
-            {{on 'click' (fn this.centerOrigin flow)}}
+            {{on 'click' (fn this.centerOrigin controls)}}
           >
             <svg width='14' height='14' viewBox='0 0 14 14' aria-hidden='true'>
               <circle cx='7' cy='7' r='4.5' fill='none' stroke='currentColor' stroke-width='1.4' />
@@ -142,6 +142,7 @@ export default class ViewportControlsSample extends Component {
         <Panel @position='bottom-right'>
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
+            <a href='/examples/parity/custom-controls'>Custom UI</a>
             <a href='/examples/parity/editing'>Editing</a>
             <a href='/examples/parity/edges'>Edges</a>
             <a href='/examples/parity/minimap'>MiniMap</a>

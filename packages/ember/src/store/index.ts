@@ -336,7 +336,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
 
   private upsertElementsById<ElementType extends { id: string }>(
     elements: ElementType[],
-    updates: ElementType[],
+    updates: ElementType[]
   ): ElementType[] {
     let nextElements = [...elements];
 
@@ -356,7 +356,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   updateNode(
     id: string,
     nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
-    options: UpdateOptions = { replace: false },
+    options: UpdateOptions = { replace: false }
   ) {
     let currentNode = this.nodeUpdates.get(id) ?? this.getNode(id);
     if (!currentNode) {
@@ -384,7 +384,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   updateNodeData(
     id: string,
     dataUpdate: Partial<NodeType['data']> | ((node: NodeType) => Partial<NodeType['data']>),
-    options: UpdateOptions = { replace: false },
+    options: UpdateOptions = { replace: false }
   ) {
     this.updateNode(id, (node) => {
       let nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
@@ -398,7 +398,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   updateEdge(
     id: string,
     edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
-    options: UpdateOptions = { replace: false },
+    options: UpdateOptions = { replace: false }
   ) {
     let currentEdge = this.edgeUpdates.get(id) ?? this.getEdge(id);
     if (!currentEdge) {
@@ -415,7 +415,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   updateEdgeData(
     id: string,
     dataUpdate: Partial<EdgeType['data']> | ((edge: EdgeType) => Partial<EdgeType['data']>),
-    options: UpdateOptions = { replace: false },
+    options: UpdateOptions = { replace: false }
   ) {
     this.updateEdge(id, (edge) => {
       let nextData = typeof dataUpdate === 'function' ? dataUpdate(edge) : dataUpdate;
@@ -537,22 +537,14 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
 
   getHandleConnections({ type, id, nodeId }: { type: HandleType; nodeId: string; id?: string | null }) {
     return Array.from(
-      this.connectionLookup.get(`${nodeId}-${type}${id ? `-${id}` : ''}`)?.values() ?? [],
+      this.connectionLookup.get(`${nodeId}-${type}${id ? `-${id}` : ''}`)?.values() ?? []
     ) as HandleConnection[];
   }
 
-  getNodeConnections({
-    type,
-    handleId,
-    nodeId,
-  }: {
-    type?: HandleType;
-    nodeId: string;
-    handleId?: string | null;
-  }) {
+  getNodeConnections({ type, handleId, nodeId }: { type?: HandleType; nodeId: string; handleId?: string | null }) {
     return Array.from(
-      this.connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
-        ?.values() ?? [],
+      this.connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)?.values() ??
+        []
     ) as NodeConnection[];
   }
 
@@ -847,7 +839,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
       clampPosition(snappedPosition, extent, {
         width: this.getNodeWidth(node),
         height: this.getNodeHeight(node),
-      }),
+      })
     );
   }
 
@@ -855,7 +847,9 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     let parentPosition = this.getParentAbsolutePosition(node);
 
     if (node.extent === 'parent') {
-      let parent = node.parentId ? this.currentSourceNodes.find((candidate) => candidate.id === node.parentId) : undefined;
+      let parent = node.parentId
+        ? this.currentSourceNodes.find((candidate) => candidate.id === node.parentId)
+        : undefined;
 
       if (!parent) {
         return null;
@@ -1166,7 +1160,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
         duration: options?.duration,
         ease: options?.ease,
         interpolate: options?.interpolate,
-      },
+      }
     );
 
     return Promise.resolve(true);
@@ -1189,7 +1183,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
       this.height,
       options?.minZoom ?? this.minZoom,
       options?.maxZoom ?? this.maxZoom,
-      options?.padding ?? 0.1,
+      options?.padding ?? 0.1
     );
     let normalizedViewport = this.normalizeViewport({
       ...viewport,
@@ -1217,7 +1211,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
       this.height,
       this.minZoom,
       this.maxZoom,
-      options?.padding ?? 0.1,
+      options?.padding ?? 0.1
     );
 
     await this.panZoom.setViewport(this.normalizeViewport(viewport), {
@@ -1241,10 +1235,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     });
   }
 
-  screenToFlowPosition(
-    clientPosition: XYPosition,
-    options: { snapToGrid?: boolean; snapGrid?: SnapGrid } = {},
-  ) {
+  screenToFlowPosition(clientPosition: XYPosition, options: { snapToGrid?: boolean; snapGrid?: SnapGrid } = {}) {
     if (!this.domNode) {
       return clientPosition;
     }
@@ -1260,7 +1251,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
       },
       [this.viewport.x, this.viewport.y, this.viewport.zoom],
       shouldSnap,
-      snapGrid,
+      snapGrid
     );
   }
 

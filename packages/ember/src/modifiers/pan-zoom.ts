@@ -5,12 +5,10 @@ type PanZoomOwner = {
   uninstallPanZoom(): void;
 };
 
-export default modifier<HTMLDivElement, [PanZoomOwner]>(
-  (element, [owner]) => {
-    owner.installPanZoom(element);
+export default modifier<HTMLDivElement, [PanZoomOwner]>((element, [owner]) => {
+  owner.installPanZoom(element);
 
-    return () => {
-      owner.uninstallPanZoom();
-    };
-  },
-);
+  return () => {
+    owner.uninstallPanZoom();
+  };
+});

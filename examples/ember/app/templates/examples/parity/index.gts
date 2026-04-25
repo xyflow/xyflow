@@ -7,6 +7,11 @@ const samples = [
     summary: 'Pan, zoom, fitView, interactivity lock, layered background variants.',
   },
   {
+    title: 'Custom Controls',
+    href: '/examples/parity/custom-controls',
+    summary: 'Default controls with injected buttons plus a fully app-owned toolbar that calls the store API.',
+  },
+  {
     title: 'Editing + Toolbar',
     href: '/examples/parity/editing',
     summary: 'Provider-owned store, node selection, drag, marquee selection, connection creation, delete, NodeToolbar.',

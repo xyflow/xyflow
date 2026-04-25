@@ -220,6 +220,7 @@
 .ember-flow__edgelabel-renderer {
   pointer-events: none;
   user-select: none;
+  z-index: 3;
 }
 
 .ember-flow__node {

@@ -2,7 +2,10 @@ import type { EdgeChange, NodeChange } from '@xyflow/system';
 
 import type { Edge, Node } from '../types.js';
 
-function applyChanges<FlowElement extends Node | Edge>(changes: Array<NodeChange | EdgeChange>, elements: FlowElement[]) {
+function applyChanges<FlowElement extends Node | Edge>(
+  changes: Array<NodeChange | EdgeChange>,
+  elements: FlowElement[]
+) {
   let updatedElements: FlowElement[] = [];
   let changesMap = new Map<string, Array<NodeChange | EdgeChange>>();
   let addItemChanges: Array<NodeChange | EdgeChange> = [];
@@ -100,14 +103,14 @@ function applyChange(change: NodeChange | EdgeChange, element: Node | Edge) {
 
 export function applyNodeChanges<NodeType extends Node = Node>(
   changes: NodeChange<NodeType>[],
-  nodes: NodeType[],
+  nodes: NodeType[]
 ): NodeType[] {
   return applyChanges(changes, nodes) as NodeType[];
 }
 
 export function applyEdgeChanges<EdgeType extends Edge = Edge>(
   changes: EdgeChange<EdgeType>[],
-  edges: EdgeType[],
+  edges: EdgeType[]
 ): EdgeType[] {
   return applyChanges(changes, edges) as EdgeType[];
 }

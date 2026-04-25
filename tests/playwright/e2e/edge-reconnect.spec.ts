@@ -46,4 +46,24 @@ test.describe('Edge reconnect', () => {
 
     await expect(page.getByLabel('Reconnect log')).toContainText('source-animated: source -> marker');
   });
+
+  test('public EdgeReconnectAnchor reconnects an edge endpoint', async ({ page }) => {
+    await page.goto('/examples/parity/edges');
+
+    const publicAnchor = page.locator('.parity-public-reconnect-anchor--target');
+    const simpleTargetHandle = page.locator('[data-nodeid="simple"][data-handletype="target"]');
+
+    await expect(publicAnchor).toBeAttached();
+    await expect(simpleTargetHandle).toBeAttached();
+
+    const anchorBox = await publicAnchor.boundingBox();
+    const handleBox = await simpleTargetHandle.boundingBox();
+
+    await page.mouse.move(anchorBox!.x + anchorBox!.width / 2, anchorBox!.y + anchorBox!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(handleBox!.x + handleBox!.width / 2, handleBox!.y + handleBox!.height / 2, { steps: 8 });
+    await page.mouse.up();
+
+    await expect(page.getByLabel('Reconnect log')).toContainText('source-hitbox: source -> simple');
+  });
 });

@@ -5,7 +5,7 @@ const storeByElement = new WeakMap<Element, EmberFlowStore>();
 
 export function registerFlowStore<NodeType extends Node, EdgeType extends Edge>(
   element: Element,
-  store: EmberFlowStore<NodeType, EdgeType>,
+  store: EmberFlowStore<NodeType, EdgeType>
 ) {
   storeByElement.set(element, store as unknown as EmberFlowStore);
 }

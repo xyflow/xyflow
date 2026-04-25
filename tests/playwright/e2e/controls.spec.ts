@@ -61,18 +61,34 @@ test.describe('Controls', () => {
   test('custom control buttons render in the controls panel', async ({ page }) => {
     test.skip(FRAMEWORK !== 'ember', 'The parity sample route is currently implemented for EmberFlow.');
 
-    await page.goto('/examples/parity/viewport-controls');
+    await page.goto('/examples/parity/custom-controls');
 
     const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
-    const customButton = page
+    const centerOrigin = page
       .locator(`.${FRAMEWORK}-flow__controls-button`)
       .and(page.locator('[aria-label="center origin"]'));
+    const customZoom = page
+      .locator(`.${FRAMEWORK}-flow__controls-button`)
+      .and(page.locator('[aria-label="custom zoom to two"]'));
+    const customFit = page
+      .locator(`.${FRAMEWORK}-flow__controls-button`)
+      .and(page.locator('[aria-label="custom fit bounds"]'));
 
-    await expect(customButton).toBeAttached();
-    await expect(customButton.locator('svg')).toBeAttached();
+    await expect(centerOrigin).toBeAttached();
+    await expect(centerOrigin.locator('svg')).toBeAttached();
+    await expect(customZoom).toBeAttached();
+    await expect(customZoom.locator('svg')).toBeAttached();
+    await expect(customFit).toBeAttached();
+    await expect(customFit.locator('svg')).toBeAttached();
 
-    await customButton.click();
+    await centerOrigin.click();
     await expect.poll(async () => (await getTransform(viewport)).scale).toBeCloseTo(1, 1);
+
+    await customZoom.click();
+    await expect.poll(async () => (await getTransform(viewport)).scale).toBeGreaterThan(1.8);
+
+    await customFit.click();
+    await expect.poll(async () => (await getTransform(viewport)).scale).toBeGreaterThan(0.75);
   });
 
   test('viewport helper buttons update the viewport', async ({ page }) => {

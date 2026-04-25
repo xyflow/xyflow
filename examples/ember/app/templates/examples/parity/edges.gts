@@ -7,6 +7,7 @@ import {
   Background,
   BackgroundVariant,
   Controls,
+  EdgeReconnectAnchor,
   EdgeLabelRenderer,
   EdgeToolbar,
   EmberFlow,
@@ -22,6 +23,8 @@ export default class EdgesSample extends Component {
   @tracked reconnectMessage = 'Reconnect anchors ready';
 
   initialViewport: Viewport = { x: 390, y: 410, zoom: 0.55 };
+  publicReconnectSourcePosition = { x: -156, y: -39 };
+  publicReconnectTargetPosition = { x: -40, y: 231 };
 
   nodes: Node[] = [
     {
@@ -146,6 +149,26 @@ export default class EdgesSample extends Component {
             </button>
           </div>
         </EdgeToolbar>
+        <EdgeReconnectAnchor
+          @edgeId='source-hitbox'
+          @type='source'
+          @position={{this.publicReconnectSourcePosition}}
+          @size={{28}}
+          @className='parity-public-reconnect-anchor parity-public-reconnect-anchor--source'
+          @dragThreshold={{1}}
+        >
+          <span aria-hidden='true'></span>
+        </EdgeReconnectAnchor>
+        <EdgeReconnectAnchor
+          @edgeId='source-hitbox'
+          @type='target'
+          @position={{this.publicReconnectTargetPosition}}
+          @size={{28}}
+          @className='parity-public-reconnect-anchor parity-public-reconnect-anchor--target'
+          @dragThreshold={{1}}
+        >
+          <span aria-hidden='true'></span>
+        </EdgeReconnectAnchor>
         <EdgeLabelRenderer>
           <div
             class='parity-renderer-label nopan nodrag'
@@ -174,6 +197,7 @@ export default class EdgesSample extends Component {
               <li>Compare the teal simple-bezier curve against the default and marker edges.</li>
               <li>The small renderer label is portal content that moves with the viewport.</li>
               <li>Drag an invisible edge endpoint anchor to another compatible handle to reconnect the edge.</li>
+              <li>The visible teal endpoint uses the public EdgeReconnectAnchor component.</li>
             </ol>
             <div class='parity-event-log' aria-label='Reconnect log'>
               <span>{{this.reconnectMessage}}</span>
@@ -184,6 +208,7 @@ export default class EdgesSample extends Component {
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>
+            <a href='/examples/parity/custom-controls'>Custom UI</a>
             <a href='/examples/parity/editing'>Editing</a>
             <a href='/examples/parity/minimap'>MiniMap</a>
             <a href='/examples/parity/custom-handles'>Handles</a>

@@ -12,6 +12,7 @@ Router.map(function () {
     this.route('color-mode');
     this.route('parity', function () {
       this.route('viewport-controls');
+      this.route('custom-controls');
       this.route('editing');
       this.route('edges');
       this.route('minimap');

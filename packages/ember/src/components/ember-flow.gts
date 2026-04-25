@@ -23,6 +23,7 @@ import {
 } from '@xyflow/system';
 
 import listen from '../modifiers/listen.js';
+import flowController from '../modifiers/flow-controller.js';
 import flowStore from '../modifiers/flow-store.js';
 import panZoom from '../modifiers/pan-zoom.js';
 import EmberFlowStore from '../store/index.js';
@@ -31,7 +32,16 @@ import { getViewportOverlayTransform } from '../utils/viewport-overlay.js';
 import { safeStyle, toCss } from '../utils/style.js';
 import FlowEdge from './flow-edge.js';
 import FlowNode from './flow-node.js';
-import type { Connection, Edge, EdgeChange, EmberFlowArgs, Node, NodeChange, NodeComponent } from '../types.js';
+import type {
+  Connection,
+  Edge,
+  EdgeChange,
+  EdgeReconnectAnchorEventDetail,
+  EmberFlowArgs,
+  Node,
+  NodeChange,
+  NodeComponent,
+} from '../types.js';
 
 type HandleType = 'source' | 'target';
 
@@ -145,6 +155,16 @@ export default class EmberFlow<
   } | null = null;
   private keydownHandler: ((event: KeyboardEvent) => void) | null = null;
   private keyupHandler: ((event: KeyboardEvent) => void) | null = null;
+  private flowController = {
+    startEdgeReconnect: (
+      edge: EdgeType,
+      handleType: HandleType,
+      event: PointerEvent,
+      fixedElement?: Element | null
+    ) => {
+      this.handleEdgeReconnectPointerDown(edge, handleType, event, fixedElement ?? null);
+    },
+  };
 
   constructor(owner: Owner, args: Signature<NodeType, EdgeType>['Args']) {
     super(owner, args);
@@ -865,14 +885,18 @@ export default class EmberFlow<
     edge: Edge,
     handleType: HandleType,
     event: PointerEvent,
-    fixedElement: SVGElement | null,
+    fixedElement: Element | null,
   ) => {
     if (!this.args.onReconnect || event.button !== 0) {
       return;
     }
 
     let renderer = this.rendererElement;
-    let fixed = fixedElement ?? (event.currentTarget as SVGElement | null);
+    let reconnectingSource = handleType === 'source';
+    let fixedHandleType: HandleType = reconnectingSource ? 'target' : 'source';
+    let fixedNodeId = reconnectingSource ? edge.target : edge.source;
+    let fixedHandleId = reconnectingSource ? (edge.targetHandle ?? null) : (edge.sourceHandle ?? null);
+    let fixed = fixedElement ?? this.findHandleElement(fixedNodeId, fixedHandleType, fixedHandleId);
     if (!renderer || !fixed) {
       return;
     }
@@ -880,10 +904,6 @@ export default class EmberFlow<
     event.preventDefault();
     event.stopPropagation();
 
-    let reconnectingSource = handleType === 'source';
-    let fixedHandleType: HandleType = reconnectingSource ? 'target' : 'source';
-    let fixedNodeId = reconnectingSource ? edge.target : edge.source;
-    let fixedHandleId = reconnectingSource ? (edge.targetHandle ?? null) : (edge.sourceHandle ?? null);
     let rendererRect = renderer.getBoundingClientRect();
     let fixedRect = fixed.getBoundingClientRect();
     let fromX = fixedRect.left + fixedRect.width / 2 - rendererRect.left;
@@ -920,6 +940,20 @@ export default class EmberFlow<
     window.addEventListener('pointermove', this.handleWindowConnectionPointerMove);
     window.addEventListener('pointerup', this.handleWindowConnectionPointerUp);
     window.addEventListener('pointercancel', this.handleWindowConnectionPointerUp);
+  };
+
+  handleEdgeReconnectEvent = (event: Event) => {
+    let detail = (event as CustomEvent<EdgeReconnectAnchorEventDetail<EdgeType>>).detail;
+    if (!detail) {
+      return;
+    }
+
+    this.handleEdgeReconnectPointerDown(
+      detail.edge,
+      detail.handleType,
+      detail.pointerEvent,
+      detail.fixedElement ?? null,
+    );
   };
 
   private applyActiveNodeDrag(scheduleAutoPan = true) {
@@ -2175,7 +2209,9 @@ export default class EmberFlow<
       data-testid='ember-flow__wrapper'
       role='application'
       style={{this.rootStyle}}
+      {{flowController this.flowController}}
       {{flowStore this.store}}
+      {{listen 'ember-flow:edge-reconnect' this.handleEdgeReconnectEvent}}
       ...attributes
     >
       <div

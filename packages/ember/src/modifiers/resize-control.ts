@@ -55,7 +55,7 @@ function dispatchResize(element: HTMLElement, id: string, change: XYResizerChang
         direction: [0, 0],
         resizing,
       },
-    }),
+    })
   );
 }
 
@@ -75,7 +75,7 @@ export default modifier<HTMLDivElement, ResizeControlArgs>(
       onResizeStart,
       onResize,
       onResizeEnd,
-    ],
+    ]
   ) => {
     let resizer: ReturnType<typeof XYResizer> | undefined;
     let frame: number | undefined;
@@ -136,5 +136,5 @@ export default modifier<HTMLDivElement, ResizeControlArgs>(
       }
       resizer?.destroy();
     };
-  },
+  }
 );
