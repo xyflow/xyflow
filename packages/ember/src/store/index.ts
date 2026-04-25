@@ -13,6 +13,7 @@ import {
   type CoordinateExtent,
   type ConnectionLookup,
   type EdgeLookup,
+  type FitBoundsOptions,
   type SetCenterOptions,
   type InternalNodeBase,
   type NodeLookup,
@@ -267,8 +268,35 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     return { ...this.viewport };
   }
 
-  setViewport(viewport: Viewport) {
+  getZoom() {
+    return this.viewport.zoom;
+  }
+
+  setViewport(viewport: Viewport, options?: ViewportHelperFunctionOptions) {
+    let nextViewport = this.normalizeViewport({
+      x: viewport.x ?? this.viewport.x,
+      y: viewport.y ?? this.viewport.y,
+      zoom: viewport.zoom ?? this.viewport.zoom,
+    });
+
+    if (options && this.panZoom) {
+      return this.panZoom.setViewport(nextViewport, options).then(() => true);
+    }
+
+    this.commitViewport(nextViewport, true);
+
+    return Promise.resolve(true);
+  }
+
+  setViewportFromPanZoom(viewport: Viewport) {
+    this.commitViewport(viewport, false);
+  }
+
+  private commitViewport(viewport: Viewport, syncPanZoom: boolean) {
     this.viewport = this.normalizeViewport(viewport);
+    if (syncPanZoom) {
+      this.syncPanZoomViewport();
+    }
     this.notifyViewportListeners();
   }
 
@@ -689,6 +717,14 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     return this.zoomBy(1 / 1.2, options);
   }
 
+  zoomTo(zoom: number, options?: ViewportHelperFunctionOptions) {
+    return this.panZoom?.scaleTo(zoom, options) ?? Promise.resolve(false);
+  }
+
+  setZoom(zoom: number, options?: ViewportHelperFunctionOptions) {
+    return this.zoomTo(zoom, options);
+  }
+
   async setCenter(x: number, y: number, options?: SetCenterOptions) {
     if (!this.panZoom || this.width === 0 || this.height === 0) {
       return Promise.resolve(false);
@@ -738,6 +774,29 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     });
 
     await this.panZoom.setViewport(normalizedViewport, {
+      duration: options?.duration,
+      ease: options?.ease,
+      interpolate: options?.interpolate,
+    });
+
+    return Promise.resolve(true);
+  }
+
+  async fitBounds(bounds: Rect, options?: FitBoundsOptions) {
+    if (!this.panZoom || this.width === 0 || this.height === 0) {
+      return Promise.resolve(false);
+    }
+
+    let viewport = getViewportForBounds(
+      bounds,
+      this.width,
+      this.height,
+      this.minZoom,
+      this.maxZoom,
+      options?.padding ?? 0.1,
+    );
+
+    await this.panZoom.setViewport(this.normalizeViewport(viewport), {
       duration: options?.duration,
       ease: options?.ease,
       interpolate: options?.interpolate,

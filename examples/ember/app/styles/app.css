@@ -158,6 +158,27 @@ body {
   line-height: 1.35;
 }
 
+.parity-note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.parity-note-actions button {
+  padding: 6px 8px;
+  color: #172033;
+  font-size: 11px;
+  font-weight: 700;
+  background: #eef4ff;
+  border: 1px solid #c9d8f2;
+  border-radius: 6px;
+}
+
+.parity-note-actions button:hover {
+  background: #dfeaff;
+}
+
 .parity-edge-toolbar {
   padding: 5px 8px;
   color: #334155;

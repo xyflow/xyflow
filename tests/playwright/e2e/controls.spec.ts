@@ -54,6 +54,8 @@ test.describe('Controls', () => {
   });
 
   test('custom control buttons render in the controls panel', async ({ page }) => {
+    test.skip(FRAMEWORK !== 'ember', 'The parity sample route is currently implemented for EmberFlow.');
+
     await page.goto('/examples/parity/viewport-controls');
 
     const customButton = page
@@ -62,5 +64,23 @@ test.describe('Controls', () => {
 
     await expect(customButton).toBeAttached();
     await expect(customButton).toHaveText('C');
+  });
+
+  test('viewport helper buttons update the viewport', async ({ page }) => {
+    test.skip(FRAMEWORK !== 'ember', 'The parity sample route is currently implemented for EmberFlow.');
+
+    await page.goto('/examples/parity/viewport-controls');
+
+    const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
+    await expect(page.locator('[data-id="pan"]')).toBeAttached();
+
+    await page.getByRole('button', { name: 'zoomTo 2' }).click();
+    await expect.poll(async () => (await getTransform(viewport)).scale).toBeGreaterThan(1.8);
+
+    await page.getByRole('button', { name: 'setViewport' }).click();
+    await expect.poll(async () => (await getTransform(viewport)).scale).toBeCloseTo(0.75, 2);
+
+    await page.getByRole('button', { name: 'fitBounds' }).click();
+    await expect.poll(async () => (await getTransform(viewport)).scale).toBeGreaterThan(0.75);
   });
 });

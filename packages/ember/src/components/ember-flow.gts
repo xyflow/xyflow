@@ -61,6 +61,7 @@ export default class EmberFlow<
   private suppressPaneClick = false;
   private suppressNodeClick = false;
   private suppressNodeClickFrame: number | null = null;
+  private unsubscribeViewportTransform: (() => void) | null = null;
   // Hot pointer interactions should stay off Ember's tracked render path while the
   // cursor is moving. Live movement mutates DOM/system mirrors directly; pointer-up
   // commits the public Ember model changes and bumps tracked state once.
@@ -199,7 +200,10 @@ export default class EmberFlow<
         elementsSelectable: this.args.elementsSelectable ?? true,
       });
     }
-    this.applyViewportTransform(this.store.viewport);
+    this.unsubscribeViewportTransform?.();
+    this.unsubscribeViewportTransform = this.store.onViewportChange((viewport) => {
+      this.applyViewportTransform(viewport);
+    });
     this.keydownHandler = this.handleKeyDown;
     this.keyupHandler = this.handleKeyUp;
     window.addEventListener('keydown', this.keydownHandler);
@@ -270,6 +274,8 @@ export default class EmberFlow<
     this.connectionLineElement = null;
     this.connectionPathElement = null;
     this.store.domNode = null;
+    this.unsubscribeViewportTransform?.();
+    this.unsubscribeViewportTransform = null;
     if (this.keydownHandler) {
       window.removeEventListener('keydown', this.keydownHandler);
       this.keydownHandler = null;
@@ -284,8 +290,7 @@ export default class EmberFlow<
   }
 
   private handleTransformChange = (transform: Transform) => {
-    this.store.setViewport({ x: transform[0], y: transform[1], zoom: transform[2] });
-    this.applyViewportTransform(this.store.viewport);
+    this.store.setViewportFromPanZoom({ x: transform[0], y: transform[1], zoom: transform[2] });
   };
 
   private configureStorePlacement() {

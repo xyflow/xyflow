@@ -1,4 +1,6 @@
 import Component from '@glimmer/component';
+import { fn } from '@ember/helper';
+import { on } from '@ember/modifier';
 import { pageTitle } from 'ember-page-title';
 import {
   Background,
@@ -11,6 +13,7 @@ import {
 } from '@xyflow/ember';
 
 import type { Edge, Node } from '@xyflow/ember';
+import type { EmberFlowStore } from '@xyflow/ember';
 
 export default class ViewportControlsSample extends Component {
   nodes: Node[] = [
@@ -53,6 +56,18 @@ export default class ViewportControlsSample extends Component {
     },
   ];
 
+  zoomToTwo = (store: EmberFlowStore) => {
+    void store.zoomTo(2, { duration: 120 });
+  };
+
+  setWideViewport = (store: EmberFlowStore) => {
+    void store.setViewport({ x: 180, y: 120, zoom: 0.75 }, { duration: 120, interpolate: 'linear' });
+  };
+
+  fitBounds = (store: EmberFlowStore) => {
+    void store.fitBounds({ x: -310, y: -110, width: 750, height: 330 }, { padding: 0.18, duration: 120 });
+  };
+
   <template>
     {{pageTitle "EmberFlow Viewport + Controls Sample"}}
     <main class='parity-sample'>
@@ -62,6 +77,7 @@ export default class ViewportControlsSample extends Component {
         @fitView={{true}}
         @minZoom={{0.25}}
         @maxZoom={{4}}
+        as |flow|
       >
         <Background
           @id='major'
@@ -96,8 +112,13 @@ export default class ViewportControlsSample extends Component {
               <li>Watch the dot and cross background shift with the viewport.</li>
               <li>Scroll over the canvas to zoom.</li>
               <li>Use +, -, and fit in the lower-left controls.</li>
-              <li>Click the lock button, then try dragging a node; unlock to restore editing.</li>
+              <li>Use the helper buttons below to exercise the yielded store viewport API.</li>
             </ol>
+            <div class='parity-note-actions' aria-label='Viewport helper actions'>
+              <button type='button' {{on 'click' (fn this.zoomToTwo flow)}}>zoomTo 2</button>
+              <button type='button' {{on 'click' (fn this.setWideViewport flow)}}>setViewport</button>
+              <button type='button' {{on 'click' (fn this.fitBounds flow)}}>fitBounds</button>
+            </div>
             <p class='parity-note__enhancement'>
               Enhancement note: zoomed HTML text can remain browser-composited and soft until a repaint.
               EmberFlow should refresh that after zoom without requiring a click.
