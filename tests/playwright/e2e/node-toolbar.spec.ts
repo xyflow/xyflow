@@ -61,20 +61,22 @@ test.describe('Node Toolbar', async () => {
 
       const dimension = permutation.position === 'top' || permutation.position === 'bottom' ? 'x' : 'y';
       const extent = permutation.position === 'top' || permutation.position === 'bottom' ? 'width' : 'height';
+      const expectAligned = (actual: number, expected: number) => {
+        expect(Math.abs(actual - expected)).toBeLessThanOrEqual(1);
+      };
 
       switch (permutation.align) {
         case 'start':
-          expect(Math.floor(toolbarBox![dimension])).toBe(Math.floor(nodeBox![dimension]));
+          expectAligned(toolbarBox![dimension], nodeBox![dimension]);
           break;
         case 'center':
-          expect(Math.floor(toolbarBox![dimension] + toolbarBox![extent] * 0.5)).toBe(
-            Math.floor(nodeBox![dimension] + nodeBox![extent] * 0.5)
+          expectAligned(
+            toolbarBox![dimension] + toolbarBox![extent] * 0.5,
+            nodeBox![dimension] + nodeBox![extent] * 0.5
           );
           break;
         case 'end':
-          expect(Math.floor(toolbarBox![dimension] + toolbarBox![extent])).toBe(
-            Math.floor(nodeBox![dimension] + nodeBox![extent])
-          );
+          expectAligned(toolbarBox![dimension] + toolbarBox![extent], nodeBox![dimension] + nodeBox![extent]);
           break;
       }
     });

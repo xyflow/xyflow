@@ -2,13 +2,14 @@ import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
 
 import { getControlDirection, getDimensionsAfterResize, getResizeDirection } from './utils';
-import { getPointerPosition } from '../utils';
+import { calcAutoPan, getEventPosition, getPointerPosition } from '../utils';
 import type {
   CoordinateExtent,
   InternalNodeBase,
   NodeBase,
   NodeLookup,
   NodeOrigin,
+  PanBy,
   Transform,
   XYPosition,
 } from '../types';
@@ -54,6 +55,9 @@ type XYResizerParams = {
     snapToGrid: boolean;
     nodeOrigin: NodeOrigin;
     paneDomNode: HTMLDivElement | null;
+    panBy?: PanBy;
+    autoPanOnResize?: boolean;
+    autoPanSpeed?: number;
   };
   onChange: (changes: XYResizerChange, childChanges: XYResizerChildChange[]) => void;
   onEnd?: (change: Required<XYResizerChange>) => void;
@@ -144,6 +148,156 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     let childExtent: CoordinateExtent | undefined = undefined;
     // we only want to trigger onResizeEnd if onResize was actually called
     let resizeDetected = false;
+    let autoPanId = 0;
+    let autoPanStarted = false;
+    let mousePosition: XYPosition = { x: 0, y: 0 };
+    let lastEvent: ResizeDragEvent | null = null;
+
+    function stopAutoPan() {
+      autoPanStarted = false;
+      cancelAnimationFrame(autoPanId);
+      autoPanId = 0;
+      lastEvent = null;
+    }
+
+    async function autoPan() {
+      if (!containerBounds || !lastEvent) {
+        stopAutoPan();
+        return;
+      }
+
+      const { panBy, autoPanOnResize, autoPanSpeed } = getStoreItems();
+
+      if (!panBy || !autoPanOnResize) {
+        stopAutoPan();
+        return;
+      }
+
+      const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds, autoPanSpeed);
+
+      if (xMovement !== 0 || yMovement !== 0) {
+        if (await panBy({ x: xMovement, y: yMovement })) {
+          resize(lastEvent);
+        }
+      }
+
+      autoPanId = requestAnimationFrame(autoPan);
+    }
+
+    function resize(event: ResizeDragEvent) {
+      const { transform, snapGrid, snapToGrid, nodeOrigin: storeNodeOrigin } = getStoreItems();
+      const pointerPosition = getPointerPosition(event.sourceEvent, {
+        transform,
+        snapGrid,
+        snapToGrid,
+        containerBounds,
+      });
+
+      const childChanges: XYResizerChildChange[] = [];
+
+      if (!node) {
+        return;
+      }
+
+      const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
+      const change: XYResizerChange = {};
+      const nodeOrigin = node.origin ?? storeNodeOrigin;
+
+      const { width, height, x, y } = getDimensionsAfterResize(
+        startValues,
+        params.controlDirection,
+        pointerPosition,
+        params.boundaries,
+        params.keepAspectRatio,
+        nodeOrigin,
+        parentExtent,
+        childExtent
+      );
+
+      const isWidthChange = width !== prevWidth;
+      const isHeightChange = height !== prevHeight;
+
+      const isXPosChange = x !== prevX && isWidthChange;
+      const isYPosChange = y !== prevY && isHeightChange;
+
+      if (!isXPosChange && !isYPosChange && !isWidthChange && !isHeightChange) {
+        return;
+      }
+
+      if (isXPosChange || isYPosChange || nodeOrigin[0] === 1 || nodeOrigin[1] === 1) {
+        change.x = isXPosChange ? x : prevValues.x;
+        change.y = isYPosChange ? y : prevValues.y;
+
+        prevValues.x = change.x;
+        prevValues.y = change.y;
+
+        /*
+         * when top/left changes, correct the relative positions of child nodes
+         * so that they stay in the same position
+         */
+        if (childNodes.length > 0) {
+          const xChange = x - prevX;
+          const yChange = y - prevY;
+
+          for (const childNode of childNodes) {
+            childNode.position = {
+              x: childNode.position.x - xChange + nodeOrigin[0] * (width - prevWidth),
+              y: childNode.position.y - yChange + nodeOrigin[1] * (height - prevHeight),
+            };
+            childChanges.push(childNode);
+          }
+        }
+      }
+
+      if (isWidthChange || isHeightChange) {
+        change.width =
+          isWidthChange && (!params.resizeDirection || params.resizeDirection === 'horizontal')
+            ? width
+            : prevValues.width;
+        change.height =
+          isHeightChange && (!params.resizeDirection || params.resizeDirection === 'vertical')
+            ? height
+            : prevValues.height;
+        prevValues.width = change.width;
+        prevValues.height = change.height;
+      }
+
+      // Fix expandParent when resizing from top/left
+      if (parentNode && node.expandParent) {
+        const xLimit = nodeOrigin[0] * (change.width ?? 0);
+        if (change.x && change.x < xLimit) {
+          prevValues.x = xLimit;
+          startValues.x = startValues.x - (change.x - xLimit);
+        }
+
+        const yLimit = nodeOrigin[1] * (change.height ?? 0);
+        if (change.y && change.y < yLimit) {
+          prevValues.y = yLimit;
+          startValues.y = startValues.y - (change.y - yLimit);
+        }
+      }
+
+      const direction = getResizeDirection({
+        width: prevValues.width,
+        prevWidth,
+        height: prevValues.height,
+        prevHeight,
+        affectsX: params.controlDirection.affectsX,
+        affectsY: params.controlDirection.affectsY,
+      });
+
+      const nextValues = { ...prevValues, direction };
+
+      const callResize = shouldResize?.(event, nextValues);
+
+      if (callResize === false) {
+        return;
+      }
+      resizeDetected = true;
+
+      onResize?.(event, nextValues);
+      onChange(change, childChanges);
+    }
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
@@ -161,6 +315,8 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           snapToGrid,
           containerBounds,
         });
+        mousePosition = getEventPosition(event.sourceEvent, containerBounds ?? undefined);
+        lastEvent = event;
 
         prevValues = {
           width: node.measured.width ?? 0,
@@ -216,120 +372,20 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         onResizeStart?.(event, { ...prevValues });
       })
       .on('drag', (event: ResizeDragEvent) => {
-        const { transform, snapGrid, snapToGrid, nodeOrigin: storeNodeOrigin } = getStoreItems();
-        const pointerPosition = getPointerPosition(event.sourceEvent, {
-          transform,
-          snapGrid,
-          snapToGrid,
-          containerBounds,
-        });
+        const { panBy, autoPanOnResize } = getStoreItems();
+        lastEvent = event;
+        mousePosition = getEventPosition(event.sourceEvent, containerBounds ?? undefined);
 
-        const childChanges: XYResizerChildChange[] = [];
-
-        if (!node) {
-          return;
+        if (!autoPanStarted && panBy && autoPanOnResize) {
+          autoPanStarted = true;
+          void autoPan();
         }
 
-        const { x: prevX, y: prevY, width: prevWidth, height: prevHeight } = prevValues;
-        const change: XYResizerChange = {};
-        const nodeOrigin = node.origin ?? storeNodeOrigin;
-
-        const { width, height, x, y } = getDimensionsAfterResize(
-          startValues,
-          params.controlDirection,
-          pointerPosition,
-          params.boundaries,
-          params.keepAspectRatio,
-          nodeOrigin,
-          parentExtent,
-          childExtent
-        );
-
-        const isWidthChange = width !== prevWidth;
-        const isHeightChange = height !== prevHeight;
-
-        const isXPosChange = x !== prevX && isWidthChange;
-        const isYPosChange = y !== prevY && isHeightChange;
-
-        if (!isXPosChange && !isYPosChange && !isWidthChange && !isHeightChange) {
-          return;
-        }
-
-        if (isXPosChange || isYPosChange || nodeOrigin[0] === 1 || nodeOrigin[1] === 1) {
-          change.x = isXPosChange ? x : prevValues.x;
-          change.y = isYPosChange ? y : prevValues.y;
-
-          prevValues.x = change.x;
-          prevValues.y = change.y;
-
-          /*
-           * when top/left changes, correct the relative positions of child nodes
-           * so that they stay in the same position
-           */
-          if (childNodes.length > 0) {
-            const xChange = x - prevX;
-            const yChange = y - prevY;
-
-            for (const childNode of childNodes) {
-              childNode.position = {
-                x: childNode.position.x - xChange + nodeOrigin[0] * (width - prevWidth),
-                y: childNode.position.y - yChange + nodeOrigin[1] * (height - prevHeight),
-              };
-              childChanges.push(childNode);
-            }
-          }
-        }
-
-        if (isWidthChange || isHeightChange) {
-          change.width =
-            isWidthChange && (!params.resizeDirection || params.resizeDirection === 'horizontal')
-              ? width
-              : prevValues.width;
-          change.height =
-            isHeightChange && (!params.resizeDirection || params.resizeDirection === 'vertical')
-              ? height
-              : prevValues.height;
-          prevValues.width = change.width;
-          prevValues.height = change.height;
-        }
-
-        // Fix expandParent when resizing from top/left
-        if (parentNode && node.expandParent) {
-          const xLimit = nodeOrigin[0] * (change.width ?? 0);
-          if (change.x && change.x < xLimit) {
-            prevValues.x = xLimit;
-            startValues.x = startValues.x - (change.x - xLimit);
-          }
-
-          const yLimit = nodeOrigin[1] * (change.height ?? 0);
-          if (change.y && change.y < yLimit) {
-            prevValues.y = yLimit;
-            startValues.y = startValues.y - (change.y - yLimit);
-          }
-        }
-
-        const direction = getResizeDirection({
-          width: prevValues.width,
-          prevWidth,
-          height: prevValues.height,
-          prevHeight,
-          affectsX: params.controlDirection.affectsX,
-          affectsY: params.controlDirection.affectsY,
-        });
-
-        const nextValues = { ...prevValues, direction };
-
-        const callResize = shouldResize?.(event, nextValues);
-
-        if (callResize === false) {
-          return;
-        }
-        resizeDetected = true;
-
-        onResize?.(event, nextValues);
-        onChange(change, childChanges);
+        resize(event);
       })
       .on('end', (event: ResizeDragEvent) => {
+        stopAutoPan();
+
         if (!resizeDetected) {
           return;
         }

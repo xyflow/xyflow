@@ -108,6 +108,29 @@ test.describe('Pane default', () => {
       await expect(transformAfter.translateY).not.toEqual(transformBefore.translateY);
     });
 
+    test('autoPanOnNodeDrag keeps moving the dragged node while pointer is held near the edge', async ({ page }) => {
+      const node = page.locator('[data-id="1"]');
+
+      await expect(node).toBeAttached();
+
+      const box = await node.boundingBox();
+
+      await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(5, 5);
+      await page.waitForTimeout(250);
+
+      const duringAutoPan = await node.evaluate((element) => (element as HTMLElement).style.transform);
+
+      await page.waitForTimeout(350);
+
+      const afterAutoPan = await node.evaluate((element) => (element as HTMLElement).style.transform);
+
+      await page.mouse.up();
+
+      expect(afterAutoPan).not.toBe(duringAutoPan);
+    });
+
     test('autoPanOnConnect', async ({ page }) => {
       const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
       const handle = page.locator(`[data-id="1"] .${FRAMEWORK}-flow__handle`);
@@ -127,6 +150,31 @@ test.describe('Pane default', () => {
 
       await expect(transformAfter.translateX).not.toEqual(transformBefore.translateX);
       await expect(transformAfter.translateY).not.toEqual(transformBefore.translateY);
+    });
+  });
+
+  test.describe('selection options', () => {
+    test('selectionOnDrag selects without holding the selection key and respects full selection mode', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'This fixture tracks Ember selection prop parity during porting');
+
+      await page.goto('/tests/generic/pane/selection-options');
+
+      const inside = page.locator(`.${FRAMEWORK}-flow__node[data-id="inside"]`);
+      const partial = page.locator(`.${FRAMEWORK}-flow__node[data-id="partial"]`);
+
+      await expect(inside).toBeVisible();
+      await expect(partial).toBeVisible();
+
+      const insideBox = await inside.boundingBox();
+      const partialBox = await partial.boundingBox();
+
+      await page.mouse.move(insideBox!.x - 12, insideBox!.y - 12);
+      await page.mouse.down();
+      await page.mouse.move(partialBox!.x + 12, insideBox!.y + insideBox!.height + 12, { steps: 8 });
+      await page.mouse.up();
+
+      await expect(inside).toHaveClass(/selected/);
+      await expect(partial).not.toHaveClass(/selected/);
     });
   });
 });

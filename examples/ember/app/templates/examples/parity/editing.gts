@@ -23,14 +23,14 @@ export default class EditingSample extends Component {
     ToolbarNode,
   };
 
-  initialViewport: Viewport = { x: 230, y: 400, zoom: 1 };
+  initialViewport: Viewport = { x: 260, y: 250, zoom: 0.85 };
 
   nodes: Node[] = [
     {
       id: 'idea',
       type: 'ToolbarNode',
       data: { label: 'Idea card', detail: 'Click to show toolbar' },
-      position: { x: -220, y: -80 },
+      position: { x: 140, y: 20 },
       sourcePosition: Position.Right,
       className: 'parity-node parity-node--blue parity-toolbar-node',
     },
@@ -38,7 +38,7 @@ export default class EditingSample extends Component {
       id: 'draft',
       type: 'ToolbarNode',
       data: { label: 'Draft card', detail: 'Drag me' },
-      position: { x: 30, y: -40 },
+      position: { x: 300, y: 80 },
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
       className: 'parity-node parity-node--green parity-toolbar-node',
@@ -47,14 +47,14 @@ export default class EditingSample extends Component {
       id: 'review',
       type: 'ToolbarNode',
       data: { label: 'Review card', detail: 'Connect into me' },
-      position: { x: 280, y: 100 },
+      position: { x: 360, y: 230 },
       targetPosition: Position.Left,
       className: 'parity-node parity-node--amber parity-toolbar-node',
     },
     {
       id: 'locked',
       data: { label: 'Not draggable' },
-      position: { x: -70, y: 190 },
+      position: { x: 220, y: 330 },
       draggable: false,
       targetPosition: Position.Top,
       sourcePosition: Position.Right,
@@ -86,7 +86,7 @@ export default class EditingSample extends Component {
       id: 'api-added',
       type: 'ToolbarNode',
       data: { label: 'API card', detail: 'Added through EmberFlowStore' },
-      position: { x: 560, y: -20 },
+      position: { x: 520, y: 150 },
       targetPosition: Position.Left,
       className: 'parity-node parity-node--blue parity-toolbar-node',
     });
@@ -108,7 +108,7 @@ export default class EditingSample extends Component {
   };
 
   countIntersections = (store: EmberFlowStore) => {
-    let intersections = store.getIntersectingNodes({ x: -260, y: -120, width: 640, height: 300 });
+    let intersections = store.getIntersectingNodes({ x: 100, y: 0, width: 560, height: 280 });
     this.apiMessage = `intersections: ${intersections.map((node) => node.id).join(', ') || 'none'}`;
   };
 
@@ -159,7 +159,7 @@ export default class EditingSample extends Component {
             </div>
           </div>
         </Panel>
-        <Panel @position='top-right'>
+        <Panel @position='bottom-right'>
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>

@@ -15,6 +15,9 @@ interface Signature {
     target: Node;
     edgesReconnectable?: boolean;
     reconnectRadius?: number;
+    getNodePosition?: (node: Node) => { x: number; y: number };
+    getNodeWidth?: (node: Node) => number;
+    getNodeHeight?: (node: Node) => number;
     onReconnectPointerDown?: (
       edge: Edge,
       handleType: HandleType,
@@ -26,8 +29,16 @@ interface Signature {
 }
 
 export default class FlowEdge extends Component<Signature> {
+  get edgePathOptions() {
+    return {
+      getNodePosition: this.args.getNodePosition,
+      getNodeWidth: this.args.getNodeWidth,
+      getNodeHeight: this.args.getNodeHeight,
+    };
+  }
+
   get pathData() {
-    return getEdgePathData(this.args.edge, this.args.source, this.args.target);
+    return getEdgePathData(this.args.edge, this.args.source, this.args.target, this.edgePathOptions);
   }
 
   get path() {
@@ -43,7 +54,7 @@ export default class FlowEdge extends Component<Signature> {
   }
 
   get edgePosition() {
-    return getEdgePosition(this.args.source, this.args.target);
+    return getEdgePosition(this.args.source, this.args.target, this.edgePathOptions);
   }
 
   get sourceX() {

@@ -99,6 +99,9 @@ export default modifier<HTMLDivElement, ResizeControlArgs>(
           snapToGrid: store.snapToGrid,
           nodeOrigin: store.nodeOrigin,
           paneDomNode: store.domNode,
+          panBy: store.panBy.bind(store),
+          autoPanOnResize: store.autoPanOnNodeDrag,
+          autoPanSpeed: store.autoPanSpeed,
         }),
         onChange: (change) => {
           dispatchResize(element, id, change, true);

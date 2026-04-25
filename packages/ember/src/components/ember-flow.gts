@@ -2,12 +2,21 @@ import Component from '@glimmer/component';
 import type Owner from '@ember/owner';
 import { htmlSafe } from '@ember/template';
 import {
+  ConnectionLineType,
+  ConnectionMode,
+  SelectionMode,
   infiniteExtent,
   PanOnScrollMode,
   Position,
   XYPanZoom,
+  calcAutoPan,
+  getBezierPath,
+  getConnectionStatus,
+  getSmoothStepPath,
   getEdgeId,
   getStraightPath,
+  isEdgeVisible,
+  pointToRendererPoint,
   type Transform,
   type Viewport,
 } from '@xyflow/system';
@@ -16,13 +25,21 @@ import listen from '../modifiers/listen.js';
 import flowStore from '../modifiers/flow-store.js';
 import panZoom from '../modifiers/pan-zoom.js';
 import EmberFlowStore from '../store/index.js';
-import { getEdgePathData } from '../utils/edge-path.js';
+import { getEdgePathData, getSimpleBezierPath } from '../utils/edge-path.js';
 import { getViewportOverlayTransform } from '../utils/viewport-overlay.js';
+import { safeStyle, toCss } from '../utils/style.js';
 import FlowEdge from './flow-edge.js';
 import FlowNode from './flow-node.js';
-import type { Connection, Edge, EmberFlowArgs, Node, NodeComponent } from '../types.js';
+import type { Connection, Edge, EdgeChange, EmberFlowArgs, Node, NodeChange, NodeComponent } from '../types.js';
 
 type HandleType = 'source' | 'target';
+
+const oppositePosition = {
+  [Position.Left]: Position.Right,
+  [Position.Right]: Position.Left,
+  [Position.Top]: Position.Bottom,
+  [Position.Bottom]: Position.Top,
+};
 
 interface EdgeRenderItem<EdgeType extends Edge = Edge, NodeType extends Node = Node> {
   edge: EdgeType;
@@ -56,6 +73,8 @@ export default class EmberFlow<
   private selectionElement: HTMLDivElement | null = null;
   private connectionLineElement: SVGSVGElement | null = null;
   private connectionPathElement: SVGPathElement | null = null;
+  private resizeObserver: ResizeObserver | null = null;
+  private viewportDimensionsFrame: number | null = null;
   private didFitView = false;
   private didSetInitialInteractivity = false;
   private suppressPaneClick = false;
@@ -67,6 +86,9 @@ export default class EmberFlow<
   // commits the public Ember model changes and bumps tracked state once.
   private pendingSelectionFrame: number | null = null;
   private pendingConnectionFrame: number | null = null;
+  private pendingConnectionAutoPanFrame: number | null = null;
+  private pendingNodeAutoPanFrame: number | null = null;
+  private connectionTargetHandleElement: HTMLElement | null = null;
   private activeNodeDrag: {
     id: string;
     pointerId: number;
@@ -75,7 +97,10 @@ export default class EmberFlow<
     currentClientX: number;
     currentClientY: number;
     currentEvent: PointerEvent | null;
-    startPosition: { x: number; y: number };
+    pointerOffsetX: number;
+    pointerOffsetY: number;
+    startPrimaryPosition: { x: number; y: number };
+    startPositions: Map<string, { x: number; y: number }>;
     didMove: boolean;
     started: boolean;
   } | null = null;
@@ -91,10 +116,14 @@ export default class EmberFlow<
     handleType: HandleType;
     pointerId: number;
     currentEvent: PointerEvent | null;
+    fromElement: Element | null;
+    fromPosition: Position;
     fromX: number;
     fromY: number;
+    toPosition: Position;
     toX: number;
     toY: number;
+    targetHandle: HTMLElement | null;
     reconnect?: {
       edge: EdgeType;
       handleType: HandleType;
@@ -114,7 +143,7 @@ export default class EmberFlow<
   }
 
   get edges() {
-    return this.store.getEdges(this.args.edges ?? []);
+    return this.store.getEdges(this.args.edges ?? []).map((edge) => this.applyDefaultEdgeOptions(edge));
   }
 
   get minZoom() {
@@ -149,6 +178,22 @@ export default class EmberFlow<
     return this.args.reconnectRadius ?? 10;
   }
 
+  get connectionMode() {
+    return this.args.connectionMode ?? ConnectionMode.Strict;
+  }
+
+  get connectionRadius() {
+    return this.args.connectionRadius ?? 20;
+  }
+
+  get selectionMode() {
+    return this.args.selectionMode ?? SelectionMode.Full;
+  }
+
+  get defaultEdgeOptions() {
+    return this.args.defaultEdgeOptions ?? {};
+  }
+
   get rootClasses() {
     let classes = ['ember-flow', 'ember-flow__container'];
 
@@ -177,6 +222,14 @@ export default class EmberFlow<
     return htmlSafe(this.getViewportTransform(this.store.viewport));
   }
 
+  get connectionLineInitialStyle() {
+    return htmlSafe(`display: none; ${toCss(this.args.connectionLineContainerStyle)}`);
+  }
+
+  get connectionLinePathStyle() {
+    return safeStyle(this.args.connectionLineStyle);
+  }
+
   get edgeItems(): EdgeRenderItem<EdgeType, NodeType>[] {
     let nodesById = new Map(this.nodes.map((node) => [node.id, node]));
 
@@ -185,7 +238,7 @@ export default class EmberFlow<
         let source = nodesById.get(edge.source);
         let target = nodesById.get(edge.target);
 
-        if (!source || !target || edge.hidden) {
+        if (!source || !target || edge.hidden || !this.shouldRenderEdge(edge)) {
           return null;
         }
 
@@ -194,13 +247,77 @@ export default class EmberFlow<
       .filter((item): item is EdgeRenderItem<EdgeType, NodeType> => item !== null);
   }
 
+  get renderedNodes() {
+    let nodes = this.nodes;
+
+    if (!this.args.onlyRenderVisibleElements || this.store.width === 0 || this.store.height === 0) {
+      return nodes;
+    }
+
+    return nodes.filter((node) => this.isRenderedNodeVisible(node));
+  }
+
+  private isRenderedNodeVisible(node: NodeType) {
+    if (node.hidden) {
+      return false;
+    }
+
+    let bounds = this.store.getRenderedNodeBounds(node);
+    let viewport = this.store.viewport;
+    let viewRect = {
+      x: -viewport.x / viewport.zoom,
+      y: -viewport.y / viewport.zoom,
+      width: this.store.width / viewport.zoom,
+      height: this.store.height / viewport.zoom,
+    };
+
+    return (
+      bounds.x <= viewRect.x + viewRect.width &&
+      bounds.x + bounds.width >= viewRect.x &&
+      bounds.y <= viewRect.y + viewRect.height &&
+      bounds.y + bounds.height >= viewRect.y
+    );
+  }
+
+  private shouldRenderEdge(edge: EdgeType) {
+    if (!this.args.onlyRenderVisibleElements || this.store.width === 0 || this.store.height === 0) {
+      return true;
+    }
+
+    let sourceNode = this.store.nodeLookup.get(edge.source);
+    let targetNode = this.store.nodeLookup.get(edge.target);
+
+    return Boolean(
+      sourceNode &&
+        targetNode &&
+        isEdgeVisible({
+          sourceNode,
+          targetNode,
+          width: this.store.width,
+          height: this.store.height,
+          transform: [this.store.viewport.x, this.store.viewport.y, this.store.viewport.zoom],
+        }),
+    );
+  }
+
+  private applyDefaultEdgeOptions(edge: EdgeType): EdgeType {
+    return {
+      ...this.defaultEdgeOptions,
+      ...edge,
+    } as EdgeType;
+  }
+
   installPanZoom(element: HTMLDivElement) {
     this.rendererElement = element;
     this.viewportElement = element.querySelector<HTMLDivElement>('.ember-flow__viewport');
     this.selectionElement = element.querySelector<HTMLDivElement>('.ember-flow__selection');
     this.connectionLineElement = element.querySelector<SVGSVGElement>('.ember-flow__connectionline');
     this.connectionPathElement = element.querySelector<SVGPathElement>('.ember-flow__connection-path');
-    this.store.setViewportDimensions(element.clientWidth, element.clientHeight);
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = new ResizeObserver(() => {
+      this.scheduleViewportDimensionsUpdate();
+    });
+    this.resizeObserver.observe(element);
     this.store.domNode = element;
     this.store.setZoomExtent(this.minZoom, this.maxZoom);
     this.configureStorePlacement();
@@ -260,12 +377,10 @@ export default class EmberFlow<
       onTransformChange: this.handleTransformChange,
       connectionInProgress: false,
       paneClickDistance: 1,
-      selectionOnDrag: false,
+      selectionOnDrag: this.args.selectionOnDrag ?? false,
     });
 
-    requestAnimationFrame(() => {
-      this.measureRenderedNodes();
-    });
+    this.scheduleViewportDimensionsUpdate();
 
     if (this.args.fitView && !this.didFitView) {
       this.didFitView = true;
@@ -278,6 +393,12 @@ export default class EmberFlow<
   }
 
   uninstallPanZoom() {
+    if (this.viewportDimensionsFrame !== null) {
+      cancelAnimationFrame(this.viewportDimensionsFrame);
+      this.viewportDimensionsFrame = null;
+    }
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
     this.store.panZoom?.destroy();
     this.store.panZoom = null;
     this.rendererElement = null;
@@ -303,13 +424,47 @@ export default class EmberFlow<
 
   private handleTransformChange = (transform: Transform) => {
     this.store.setViewportFromPanZoom({ x: transform[0], y: transform[1], zoom: transform[2] });
+    if (this.args.onlyRenderVisibleElements) {
+      this.store.bump();
+    }
   };
+
+  private updateViewportDimensions() {
+    let element = this.rendererElement;
+
+    if (!element) {
+      return;
+    }
+
+    this.store.setViewportDimensions(element.clientWidth, element.clientHeight);
+  }
+
+  private scheduleViewportDimensionsUpdate(attempt = 0) {
+    if (this.viewportDimensionsFrame !== null) {
+      cancelAnimationFrame(this.viewportDimensionsFrame);
+    }
+
+    this.viewportDimensionsFrame = requestAnimationFrame(() => {
+      this.viewportDimensionsFrame = null;
+      this.updateViewportDimensions();
+      this.measureRenderedNodes();
+
+      if ((this.store.width === 0 || this.store.height === 0) && attempt < 10) {
+        this.scheduleViewportDimensionsUpdate(attempt + 1);
+      }
+    });
+  }
 
   private configureStorePlacement() {
     this.store.setNodeOrigin(this.args.nodeOrigin ?? [0, 0]);
     this.store.setNodeExtent(this.args.nodeExtent ?? infiniteExtent);
     this.store.setTranslateExtent(this.args.translateExtent ?? infiniteExtent);
     this.store.setSnapGrid(this.args.snapToGrid ?? false, this.args.snapGrid ?? [15, 15]);
+    this.store.setAutoPanOptions({
+      autoPanOnNodeDrag: this.args.autoPanOnNodeDrag,
+      autoPanOnConnect: this.args.autoPanOnConnect,
+      autoPanSpeed: this.args.autoPanSpeed,
+    });
   }
 
   private toCssSize(value: number | string) {
@@ -453,6 +608,15 @@ export default class EmberFlow<
     event.preventDefault();
     event.stopPropagation();
 
+    let nodePosition = this.store.getNodePosition(node);
+    let pointerPosition = this.clientToFlowPosition(event.clientX, event.clientY);
+
+    if (!pointerPosition) {
+      return;
+    }
+
+    let startPositions = this.getNodeDragStartPositions(node);
+
     this.activeNodeDrag = {
       id: node.id,
       pointerId: event.pointerId,
@@ -461,19 +625,42 @@ export default class EmberFlow<
       currentClientX: event.clientX,
       currentClientY: event.clientY,
       currentEvent: null,
-      startPosition: this.store.getNodePosition(node),
+      pointerOffsetX: pointerPosition.x - nodePosition.x,
+      pointerOffsetY: pointerPosition.y - nodePosition.y,
+      startPrimaryPosition: nodePosition,
+      startPositions,
       didMove: false,
       started: false,
     };
 
-    this.nodeElement(node.id)?.classList.add('dragging');
+    for (let id of startPositions.keys()) {
+      this.nodeElement(id)?.classList.add('dragging');
+    }
     window.addEventListener('pointermove', this.handleWindowNodePointerMove);
     window.addEventListener('pointerup', this.handleWindowNodePointerUp);
     window.addEventListener('pointercancel', this.handleWindowNodePointerUp);
   };
 
+  private getNodeDragStartPositions(primaryNode: Node) {
+    let shouldDragSelection = primaryNode.selected || this.store.selectedNodeIds.has(primaryNode.id);
+    let nodes = shouldDragSelection
+      ? this.nodes.filter((node) => (node.selected || this.store.selectedNodeIds.has(node.id)) && node.draggable !== false)
+      : [primaryNode];
+    let startPositions = new Map<string, { x: number; y: number }>();
+
+    if (!nodes.some((node) => node.id === primaryNode.id)) {
+      nodes = [primaryNode, ...nodes];
+    }
+
+    for (let node of nodes) {
+      startPositions.set(node.id, this.store.getNodePosition(node));
+    }
+
+    return startPositions;
+  }
+
   handlePanePointerDown = (event: PointerEvent) => {
-    if (!event.shiftKey || event.button !== 0 || !this.elementsSelectable) {
+    if (!this.shouldStartSelection(event)) {
       return;
     }
 
@@ -497,6 +684,18 @@ export default class EmberFlow<
     window.addEventListener('pointerup', this.handleWindowSelectionPointerUp);
     window.addEventListener('pointercancel', this.handleWindowSelectionPointerUp);
   };
+
+  private shouldStartSelection(event: PointerEvent) {
+    if (event.button !== 0 || !this.elementsSelectable) {
+      return false;
+    }
+
+    let target = event.target as Element | null;
+    let eventTargetIsPane = Boolean(target?.closest('.ember-flow__pane'));
+    let selectionOnDrag = (this.args.selectionOnDrag ?? false) && eventTargetIsPane;
+
+    return selectionOnDrag || this.isSelectionKeyActive(event);
+  }
 
   handleHandlePointerDown = (
     node: Node,
@@ -525,6 +724,7 @@ export default class EmberFlow<
     let handleRect = handle.getBoundingClientRect();
     let fromX = handleRect.left + handleRect.width / 2 - rendererRect.left;
     let fromY = handleRect.top + handleRect.height / 2 - rendererRect.top;
+    let fromPosition = this.getHandlePosition(handle, handleType === 'source' ? Position.Bottom : Position.Top);
 
     this.activeConnection = {
       nodeId: node.id,
@@ -532,10 +732,14 @@ export default class EmberFlow<
       handleType,
       pointerId: event.pointerId,
       currentEvent: null,
+      fromElement: handle,
+      fromPosition,
       fromX,
       fromY,
+      toPosition: oppositePosition[fromPosition],
       toX: event.clientX - rendererRect.left,
       toY: event.clientY - rendererRect.top,
+      targetHandle: null,
     };
 
     this.args.onConnectStart?.(event, {
@@ -576,6 +780,7 @@ export default class EmberFlow<
     let fixedRect = fixed.getBoundingClientRect();
     let fromX = fixedRect.left + fixedRect.width / 2 - rendererRect.left;
     let fromY = fixedRect.top + fixedRect.height / 2 - rendererRect.top;
+    let fromPosition = this.getHandlePosition(fixed, fixedHandleType === 'source' ? Position.Bottom : Position.Top);
 
     this.activeConnection = {
       nodeId: fixedNodeId,
@@ -583,10 +788,14 @@ export default class EmberFlow<
       handleType: fixedHandleType,
       pointerId: event.pointerId,
       currentEvent: null,
+      fromElement: fixed,
+      fromPosition,
       fromX,
       fromY,
+      toPosition: oppositePosition[fromPosition],
       toX: event.clientX - rendererRect.left,
       toY: event.clientY - rendererRect.top,
+      targetHandle: null,
       reconnect: {
         edge: edge as EdgeType,
         handleType,
@@ -605,19 +814,32 @@ export default class EmberFlow<
     window.addEventListener('pointercancel', this.handleWindowConnectionPointerUp);
   };
 
-  private applyActiveNodeDrag() {
+  private applyActiveNodeDrag(scheduleAutoPan = true) {
     let drag = this.activeNodeDrag;
     if (!drag?.didMove) {
       return;
     }
 
-    let dx = (drag.currentClientX - drag.startClientX) / this.store.viewport.zoom;
-    let dy = (drag.currentClientY - drag.startClientY) / this.store.viewport.zoom;
+    let pointerPosition = this.clientToFlowPosition(drag.currentClientX, drag.currentClientY);
+    if (!pointerPosition) {
+      return;
+    }
 
-    this.applyNodePosition(drag.id, {
-      x: drag.startPosition.x + dx,
-      y: drag.startPosition.y + dy,
-    });
+    let nextPrimaryPosition = {
+      x: pointerPosition.x - drag.pointerOffsetX,
+      y: pointerPosition.y - drag.pointerOffsetY,
+    };
+    let delta = {
+      x: nextPrimaryPosition.x - drag.startPrimaryPosition.x,
+      y: nextPrimaryPosition.y - drag.startPrimaryPosition.y,
+    };
+
+    for (let [id, startPosition] of drag.startPositions) {
+      this.applyNodePosition(id, {
+        x: startPosition.x + delta.x,
+        y: startPosition.y + delta.y,
+      });
+    }
 
     let node = this.store.getNode(drag.id);
     let event = drag.currentEvent;
@@ -627,7 +849,9 @@ export default class EmberFlow<
         this.args.onNodeDragStart?.(event, node as NodeType);
       }
       this.args.onNodeDrag?.(event, node as NodeType);
-      this.autoPanForNodeDrag(event);
+      if (scheduleAutoPan) {
+        this.scheduleNodeAutoPan();
+      }
     }
   }
 
@@ -658,10 +882,17 @@ export default class EmberFlow<
       return;
     }
 
-    this.nodeElement(drag.id)?.classList.remove('dragging');
+    for (let id of drag.startPositions.keys()) {
+      this.nodeElement(id)?.classList.remove('dragging');
+    }
     if (drag.didMove) {
-      let position = this.store.nodePositions.get(drag.id);
-      this.args.onNodesChange?.([{ id: drag.id, type: 'position', position }] as any);
+      this.args.onNodesChange?.(
+        Array.from(drag.startPositions.keys()).map((id) => ({
+          id,
+          type: 'position',
+          position: this.store.nodePositions.get(id),
+        })) as any,
+      );
       this.store.bump();
       this.scheduleSuppressNodeClick();
     }
@@ -751,18 +982,13 @@ export default class EmberFlow<
         continue;
       }
       let nodeRect = element.getBoundingClientRect();
-      if (
-        nodeRect.left <= selectionRect.right &&
-        nodeRect.right >= selectionRect.left &&
-        nodeRect.top <= selectionRect.bottom &&
-        nodeRect.bottom >= selectionRect.top
-      ) {
+      if (this.isNodeInsideSelection(nodeRect, selectionRect)) {
         this.selectNode(node.id);
       }
     }
 
     this.suppressPaneClick = true;
-    this.detachSelectionListeners(false);
+    this.detachSelectionListeners();
   };
 
   private scheduleConnectionFrame() {
@@ -773,9 +999,7 @@ export default class EmberFlow<
     this.pendingConnectionFrame = requestAnimationFrame(() => {
       this.pendingConnectionFrame = null;
       this.renderConnectionLine();
-      if (this.activeConnection?.currentEvent) {
-        this.autoPanForConnection(this.activeConnection.currentEvent);
-      }
+      this.scheduleConnectionAutoPan();
     });
   }
 
@@ -784,10 +1008,18 @@ export default class EmberFlow<
       cancelAnimationFrame(this.pendingConnectionFrame);
       this.pendingConnectionFrame = null;
       this.renderConnectionLine();
-      if (this.activeConnection?.currentEvent) {
-        this.autoPanForConnection(this.activeConnection.currentEvent);
-      }
     }
+  }
+
+  private scheduleConnectionAutoPan() {
+    if (this.pendingConnectionAutoPanFrame !== null || !this.activeConnection?.currentEvent) {
+      return;
+    }
+
+    this.pendingConnectionAutoPanFrame = requestAnimationFrame(() => {
+      this.pendingConnectionAutoPanFrame = null;
+      void this.autoPanForConnection();
+    });
   }
 
   private handleWindowConnectionPointerMove = (event: PointerEvent) => {
@@ -797,11 +1029,10 @@ export default class EmberFlow<
       return;
     }
 
-    let rendererRect = renderer.getBoundingClientRect();
-    connection.toX = event.clientX - rendererRect.left;
-    connection.toY = event.clientY - rendererRect.top;
     connection.currentEvent = event;
+    this.updateConnectionTargetFromEvent(event);
     this.scheduleConnectionFrame();
+    this.scheduleConnectionAutoPan();
   };
 
   private handleWindowConnectionPointerUp = (event: PointerEvent) => {
@@ -813,7 +1044,7 @@ export default class EmberFlow<
     this.flushPendingConnectionFrame();
     let target = document.elementFromPoint(event.clientX, event.clientY);
     let targetHandle = target?.closest('.ember-flow__handle') as HTMLElement | null;
-    let completed = this.completeConnection(targetHandle);
+    let completed = this.completeConnection(connection.targetHandle ?? targetHandle);
     this.args.onConnectEnd?.(event, { isValid: completed } as any);
     if (connection.reconnect) {
       this.args.onReconnectEnd?.(event, connection.reconnect.edge, connection.reconnect.handleType, {
@@ -823,6 +1054,186 @@ export default class EmberFlow<
     this.detachConnectionListeners();
   };
 
+  private updateConnectionTargetFromEvent(event: PointerEvent) {
+    let connection = this.activeConnection;
+    let renderer = this.rendererElement;
+
+    if (!connection || !renderer) {
+      return;
+    }
+
+    let rendererRect = renderer.getBoundingClientRect();
+    let pointerPoint = {
+      x: event.clientX - rendererRect.left,
+      y: event.clientY - rendererRect.top,
+    };
+    let candidate = this.findConnectionCandidate(event);
+
+    if (candidate) {
+      connection.toX = candidate.point.x;
+      connection.toY = candidate.point.y;
+      connection.toPosition = candidate.position;
+      connection.targetHandle = candidate.handle;
+      this.setConnectionTargetHandle(candidate.handle);
+      return;
+    }
+
+    connection.toX = pointerPoint.x;
+    connection.toY = pointerPoint.y;
+    connection.toPosition = oppositePosition[connection.fromPosition];
+    connection.targetHandle = null;
+    this.setConnectionTargetHandle(null);
+  }
+
+  private updateConnectionSourceFromAnchor() {
+    let connection = this.activeConnection;
+    let renderer = this.rendererElement;
+
+    if (!connection || !renderer) {
+      return;
+    }
+
+    let fromElement =
+      connection.fromElement && renderer.contains(connection.fromElement)
+        ? connection.fromElement
+        : this.findHandleElement(connection.nodeId, connection.handleType, connection.handleId);
+
+    if (!fromElement) {
+      return;
+    }
+
+    connection.fromElement = fromElement;
+    connection.fromPosition = this.getHandlePosition(
+      fromElement,
+      connection.handleType === 'source' ? Position.Bottom : Position.Top,
+    );
+    let point = this.getElementRendererPoint(fromElement);
+    connection.fromX = point.x;
+    connection.fromY = point.y;
+  }
+
+  private findHandleElement(nodeId: string, handleType: HandleType, handleId: string | null) {
+    let renderer = this.rendererElement;
+
+    if (!renderer) {
+      return null;
+    }
+
+    for (let handle of renderer.querySelectorAll<HTMLElement>(
+      `.ember-flow__handle[data-nodeid="${this.escapeAttribute(nodeId)}"][data-handletype="${handleType}"]`,
+    )) {
+      if (this.getHandleId(handle) === handleId) {
+        return handle;
+      }
+    }
+
+    return null;
+  }
+
+  private findConnectionCandidate(event: PointerEvent) {
+    let renderer = this.rendererElement;
+    let connection = this.activeConnection;
+
+    if (!renderer || !connection) {
+      return null;
+    }
+
+    let directHandle = document
+      .elementFromPoint(event.clientX, event.clientY)
+      ?.closest<HTMLElement>('.ember-flow__handle');
+    if (directHandle && renderer.contains(directHandle)) {
+      return this.connectionCandidateForHandle(directHandle);
+    }
+
+    let pointerPosition = this.clientToFlowPosition(event.clientX, event.clientY);
+    if (!pointerPosition) {
+      return null;
+    }
+
+    let closestCandidate: {
+      handle: HTMLElement;
+      point: { x: number; y: number };
+      position: Position;
+      distance: number;
+    } | null = null;
+
+    for (let handle of renderer.querySelectorAll<HTMLElement>('.ember-flow__handle')) {
+      if (this.isStartingHandle(handle, connection)) {
+        continue;
+      }
+
+      let handlePoint = this.getElementRendererPoint(handle);
+      let handleFlowPoint = pointToRendererPoint(handlePoint, [
+        this.store.viewport.x,
+        this.store.viewport.y,
+        this.store.viewport.zoom,
+      ]);
+      let distance = Math.hypot(handleFlowPoint.x - pointerPosition.x, handleFlowPoint.y - pointerPosition.y);
+
+      if (distance > this.connectionRadius) {
+        continue;
+      }
+
+      if (!closestCandidate || distance < closestCandidate.distance) {
+        closestCandidate = {
+          handle,
+          point: handlePoint,
+          position: this.getHandlePosition(handle, this.getHandleType(handle) === 'source' ? Position.Bottom : Position.Top),
+          distance,
+        };
+      }
+    }
+
+    if (!closestCandidate) {
+      return null;
+    }
+
+    return this.connectionCandidateForHandle(closestCandidate.handle, closestCandidate.point);
+  }
+
+  private connectionCandidateForHandle(handle: HTMLElement, point = this.getElementRendererPoint(handle)) {
+    if (!this.buildConnectionPayload(handle)) {
+      return null;
+    }
+
+    return {
+      handle,
+      point,
+      position: this.getHandlePosition(handle, this.getHandleType(handle) === 'source' ? Position.Bottom : Position.Top),
+    };
+  }
+
+  private getElementRendererPoint(element: Element) {
+    let rendererRect = this.rendererElement?.getBoundingClientRect();
+    let handleRect = element.getBoundingClientRect();
+
+    return {
+      x: handleRect.left + handleRect.width / 2 - (rendererRect?.left ?? 0),
+      y: handleRect.top + handleRect.height / 2 - (rendererRect?.top ?? 0),
+    };
+  }
+
+  private isStartingHandle(
+    handle: HTMLElement,
+    connection: { nodeId: string; handleId: string | null; handleType: HandleType },
+  ) {
+    return (
+      handle.dataset['nodeid'] === connection.nodeId &&
+      this.getHandleType(handle) === connection.handleType &&
+      this.getHandleId(handle) === connection.handleId
+    );
+  }
+
+  private setConnectionTargetHandle(handle: HTMLElement | null) {
+    if (this.connectionTargetHandleElement === handle) {
+      return;
+    }
+
+    this.connectionTargetHandleElement?.classList.remove('connectingto', 'valid');
+    this.connectionTargetHandleElement = handle;
+    this.connectionTargetHandleElement?.classList.add('connectingto', 'valid');
+  }
+
   private handleKeyDown = (event: KeyboardEvent) => {
     this.store.addPressedKey(event.key);
 
@@ -830,6 +1241,7 @@ export default class EmberFlow<
       return;
     }
 
+    event.preventDefault();
     this.deleteSelectedElements();
   };
 
@@ -861,6 +1273,10 @@ export default class EmberFlow<
     window.removeEventListener('pointermove', this.handleWindowNodePointerMove);
     window.removeEventListener('pointerup', this.handleWindowNodePointerUp);
     window.removeEventListener('pointercancel', this.handleWindowNodePointerUp);
+    if (this.pendingNodeAutoPanFrame !== null) {
+      cancelAnimationFrame(this.pendingNodeAutoPanFrame);
+      this.pendingNodeAutoPanFrame = null;
+    }
     this.activeNodeDrag = null;
   }
 
@@ -887,6 +1303,11 @@ export default class EmberFlow<
       cancelAnimationFrame(this.pendingConnectionFrame);
       this.pendingConnectionFrame = null;
     }
+    if (this.pendingConnectionAutoPanFrame !== null) {
+      cancelAnimationFrame(this.pendingConnectionAutoPanFrame);
+      this.pendingConnectionAutoPanFrame = null;
+    }
+    this.setConnectionTargetHandle(null);
     this.activeConnection = null;
 
     if (this.connectionLineElement) {
@@ -921,75 +1342,47 @@ export default class EmberFlow<
       return;
     }
 
+    this.updateConnectionSourceFromAnchor();
     line.setAttribute('width', `${renderer.clientWidth}`);
     line.setAttribute('height', `${renderer.clientHeight}`);
     line.style.display = 'block';
-    path.setAttribute(
-      'd',
-      getStraightPath({
-        sourceX: connection.fromX,
-        sourceY: connection.fromY,
-        targetX: connection.toX,
-        targetY: connection.toY,
-      })[0],
-    );
+    line
+      .querySelector('.ember-flow__connection')
+      ?.setAttribute('class', `ember-flow__connection ${getConnectionStatus(Boolean(connection.targetHandle))}`);
+    path.setAttribute('d', this.getConnectionLinePath(connection));
+    path.setAttribute('style', toCss(this.args.connectionLineStyle));
+  }
+
+  private getConnectionLinePath(connection: NonNullable<typeof this.activeConnection>) {
+    let pathParams = {
+      sourceX: connection.fromX,
+      sourceY: connection.fromY,
+      sourcePosition: connection.fromPosition,
+      targetX: connection.toX,
+      targetY: connection.toY,
+      targetPosition: connection.toPosition,
+    };
+
+    switch (this.args.connectionLineType ?? ConnectionLineType.Bezier) {
+      case ConnectionLineType.Bezier:
+        return getBezierPath(pathParams)[0];
+      case ConnectionLineType.SimpleBezier:
+        return getSimpleBezierPath(pathParams)[0];
+      case ConnectionLineType.Step:
+        return getSmoothStepPath({ ...pathParams, borderRadius: 0 })[0];
+      case ConnectionLineType.SmoothStep:
+        return getSmoothStepPath(pathParams)[0];
+      case ConnectionLineType.Straight:
+      default:
+        return getStraightPath(pathParams)[0];
+    }
   }
 
   private completeConnection(targetHandle: HTMLElement | null) {
     let connection = this.activeConnection;
-    if (!connection || !targetHandle) {
-      return false;
-    }
+    let connectionPayload = targetHandle ? this.buildConnectionPayload(targetHandle) : null;
 
-    let targetNodeId = targetHandle.dataset['nodeid'];
-    if (!targetNodeId || targetNodeId === connection.nodeId) {
-      return false;
-    }
-
-    let targetNode = this.nodes.find((node) => node.id === targetNodeId);
-    if (!targetNode || targetNode.connectable === false) {
-      return false;
-    }
-
-    if (!this.canEndConnection(targetHandle)) {
-      return false;
-    }
-
-    let targetHandleType = this.getHandleType(targetHandle);
-    if (!targetHandleType) {
-      return false;
-    }
-
-    let targetHandleId = this.getHandleId(targetHandle);
-    let sourceId: string | null = null;
-    let destinationId: string | null = null;
-    let sourceHandle: string | null = null;
-    let targetHandleIdForPayload: string | null = null;
-
-    if (connection.handleType === 'source' && targetHandleType === 'target') {
-      sourceId = connection.nodeId;
-      destinationId = targetNodeId;
-      sourceHandle = connection.handleId;
-      targetHandleIdForPayload = targetHandleId;
-    } else if (connection.handleType === 'target' && targetHandleType === 'source') {
-      sourceId = targetNodeId;
-      destinationId = connection.nodeId;
-      sourceHandle = targetHandleId;
-      targetHandleIdForPayload = connection.handleId;
-    }
-
-    if (!sourceId || !destinationId) {
-      return false;
-    }
-
-    let connectionPayload: Connection = {
-      source: sourceId,
-      target: destinationId,
-      sourceHandle,
-      targetHandle: targetHandleIdForPayload,
-    };
-
-    if (this.args.isValidConnection && !this.args.isValidConnection(connectionPayload)) {
+    if (!connection || !connectionPayload) {
       return false;
     }
 
@@ -1014,10 +1407,10 @@ export default class EmberFlow<
 
     let edge = {
       id,
-      source: sourceId,
-      target: destinationId,
-      sourceHandle,
-      targetHandle: targetHandleIdForPayload,
+      source: connectionPayload.source,
+      target: connectionPayload.target,
+      sourceHandle: connectionPayload.sourceHandle,
+      targetHandle: connectionPayload.targetHandle,
     } as EdgeType;
 
     this.store.addEdge(edge);
@@ -1027,22 +1420,111 @@ export default class EmberFlow<
     return true;
   }
 
+  private buildConnectionPayload(targetHandle: HTMLElement): Connection | null {
+    let connection = this.activeConnection;
+    if (!connection) {
+      return null;
+    }
+
+    let targetNodeId = targetHandle.dataset['nodeid'];
+    if (!targetNodeId || targetNodeId === connection.nodeId) {
+      return null;
+    }
+
+    let targetNode = this.nodes.find((node) => node.id === targetNodeId);
+    if (!targetNode || targetNode.connectable === false) {
+      return null;
+    }
+
+    if (!this.canEndConnection(targetHandle)) {
+      return null;
+    }
+
+    let targetHandleType = this.getHandleType(targetHandle);
+    if (!targetHandleType) {
+      return null;
+    }
+
+    let targetHandleId = this.getHandleId(targetHandle);
+    let sourceId: string | null = null;
+    let destinationId: string | null = null;
+    let sourceHandle: string | null = null;
+    let targetHandleIdForPayload: string | null = null;
+
+    if (
+      connection.handleType === 'source' &&
+      (targetHandleType === 'target' || this.connectionMode === ConnectionMode.Loose)
+    ) {
+      sourceId = connection.nodeId;
+      destinationId = targetNodeId;
+      sourceHandle = connection.handleId;
+      targetHandleIdForPayload = targetHandleId;
+    } else if (
+      connection.handleType === 'target' &&
+      (targetHandleType === 'source' || this.connectionMode === ConnectionMode.Loose)
+    ) {
+      sourceId = targetNodeId;
+      destinationId = connection.nodeId;
+      sourceHandle = targetHandleId;
+      targetHandleIdForPayload = connection.handleId;
+    }
+
+    if (!sourceId || !destinationId) {
+      return null;
+    }
+
+    let connectionPayload: Connection = {
+      source: sourceId,
+      target: destinationId,
+      sourceHandle,
+      targetHandle: targetHandleIdForPayload,
+    };
+
+    if (this.args.isValidConnection && !this.args.isValidConnection(connectionPayload)) {
+      return null;
+    }
+
+    return connectionPayload;
+  }
+
   private clearSelection() {
-    for (let id of this.store.selectedNodeIds) {
+    let selectedNodeIds = this.nodes
+      .filter((node) => node.selected || this.store.selectedNodeIds.has(node.id))
+      .map((node) => node.id);
+    let selectedEdgeIds = this.edges
+      .filter((edge) => edge.selected || this.store.selectedEdgeIds.has(edge.id))
+      .map((edge) => edge.id);
+
+    for (let id of selectedNodeIds) {
       this.nodeElement(id)?.classList.remove('selected');
     }
-    for (let id of this.store.selectedEdgeIds) {
+    for (let id of selectedEdgeIds) {
       this.edgeElement(id)?.classList.remove('selected');
     }
-    if (this.store.clearSelection()) {
-      this.emitSelectionChange();
+
+    this.store.clearSelection();
+
+    if (selectedNodeIds.length > 0) {
+      this.args.onNodesChange?.(
+        selectedNodeIds.map((id) => ({ id, type: 'select', selected: false }) as NodeChange<NodeType>),
+      );
+    }
+
+    if (selectedEdgeIds.length > 0) {
+      this.args.onEdgesChange?.(
+        selectedEdgeIds.map((id) => ({ id, type: 'select', selected: false }) as EdgeChange<EdgeType>),
+      );
+    }
+
+    if (selectedNodeIds.length > 0 || selectedEdgeIds.length > 0) {
+      this.args.onSelectionChange?.({ nodes: [], edges: [] });
     }
   }
 
   private selectNode(id: string) {
     let didSelect = this.store.selectNode(id);
     this.nodeElement(id)?.classList.add('selected');
-    this.args.onNodesChange?.([{ id, type: 'select' }] as any);
+    this.args.onNodesChange?.([{ id, type: 'select', selected: true }] as NodeChange<NodeType>[]);
     if (didSelect) {
       this.emitSelectionChange();
     }
@@ -1052,7 +1534,7 @@ export default class EmberFlow<
   private selectEdge(id: string) {
     let didSelect = this.store.selectEdge(id);
     this.edgeElement(id)?.classList.add('selected');
-    this.args.onEdgesChange?.([{ id, type: 'select' }] as any);
+    this.args.onEdgesChange?.([{ id, type: 'select', selected: true }] as EdgeChange<EdgeType>[]);
     if (didSelect) {
       this.emitSelectionChange();
     }
@@ -1216,6 +1698,20 @@ export default class EmberFlow<
     return null;
   }
 
+  private getHandlePosition(handle: Element, fallback: Position) {
+    let position = (handle as HTMLElement).dataset?.['handlepos'];
+
+    switch (position) {
+      case Position.Left:
+      case Position.Right:
+      case Position.Top:
+      case Position.Bottom:
+        return position;
+      default:
+        return fallback;
+    }
+  }
+
   private getHandleId(handle: HTMLElement) {
     let id = handle.dataset['handleid'];
     return id && id !== 'null' ? id : null;
@@ -1229,59 +1725,146 @@ export default class EmberFlow<
     return !handle.classList.contains('connectable') || handle.classList.contains('connectableend');
   }
 
-  private autoPanForNodeDrag(event: PointerEvent) {
+  private isSelectionKeyActive(event: PointerEvent | MouseEvent) {
+    let selectionKey = this.args.selectionKey ?? 'Shift';
+    if (selectionKey === null) {
+      return false;
+    }
+
+    let keys = Array.isArray(selectionKey) ? selectionKey : [selectionKey];
+
+    return keys.some((key) => {
+      switch (key) {
+        case 'Shift':
+          return event.shiftKey;
+        case 'Meta':
+          return event.metaKey;
+        case 'Control':
+        case 'Ctrl':
+          return event.ctrlKey;
+        case 'Alt':
+          return event.altKey;
+        default:
+          return this.store.pressedKeys.has(key);
+      }
+    });
+  }
+
+  private isNodeInsideSelection(
+    nodeRect: { left: number; right: number; top: number; bottom: number },
+    selectionRect: { left: number; right: number; top: number; bottom: number },
+  ) {
+    let intersects =
+      nodeRect.left <= selectionRect.right &&
+      nodeRect.right >= selectionRect.left &&
+      nodeRect.top <= selectionRect.bottom &&
+      nodeRect.bottom >= selectionRect.top;
+
+    if (this.selectionMode === SelectionMode.Partial) {
+      return intersects;
+    }
+
+    return (
+      intersects &&
+      nodeRect.left >= selectionRect.left &&
+      nodeRect.right <= selectionRect.right &&
+      nodeRect.top >= selectionRect.top &&
+      nodeRect.bottom <= selectionRect.bottom
+    );
+  }
+
+  private clientToFlowPosition(clientX: number, clientY: number) {
+    let renderer = this.rendererElement;
+    if (!renderer) {
+      return null;
+    }
+
+    let rect = renderer.getBoundingClientRect();
+
+    return pointToRendererPoint(
+      {
+        x: clientX - rect.left,
+        y: clientY - rect.top,
+      },
+      [this.store.viewport.x, this.store.viewport.y, this.store.viewport.zoom],
+    );
+  }
+
+  private scheduleNodeAutoPan() {
+    if (this.pendingNodeAutoPanFrame !== null) {
+      return;
+    }
+
+    this.pendingNodeAutoPanFrame = requestAnimationFrame(() => {
+      this.pendingNodeAutoPanFrame = null;
+      void this.autoPanForNodeDrag();
+    });
+  }
+
+  private async autoPanForNodeDrag() {
+    let drag = this.activeNodeDrag;
     if (this.args.autoPanOnNodeDrag === false || !this.rendererElement) {
       return;
     }
 
     let rect = this.rendererElement.getBoundingClientRect();
-    let threshold = 40;
-    let speed = this.args.autoPanSpeed ?? 15;
-    let x = 0;
-    let y = 0;
-
-    if (event.clientX < rect.left + threshold) {
-      x = speed;
-    } else if (event.clientX > rect.right - threshold) {
-      x = -speed;
+    if (!drag?.didMove) {
+      return;
     }
 
-    if (event.clientY < rect.top + threshold) {
-      y = speed;
-    } else if (event.clientY > rect.bottom - threshold) {
-      y = -speed;
-    }
+    let [x = 0, y = 0] = calcAutoPan(
+      {
+        x: drag.currentClientX - rect.left,
+        y: drag.currentClientY - rect.top,
+      },
+      { width: rect.width, height: rect.height },
+      this.args.autoPanSpeed ?? 15,
+    );
 
     if (x !== 0 || y !== 0) {
-      void this.store.panBy({ x, y }).then(() => this.applyViewportTransform(this.store.viewport));
+      let changed = await this.store.panBy({ x, y });
+      if (changed && this.activeNodeDrag === drag) {
+        this.applyViewportTransform(this.store.viewport);
+        this.applyActiveNodeDrag(false);
+      }
+
+      if (this.activeNodeDrag === drag) {
+        this.scheduleNodeAutoPan();
+      }
     }
   }
 
-  private autoPanForConnection(event: PointerEvent) {
-    if (this.args.autoPanOnConnect === false || !this.rendererElement) {
+  private async autoPanForConnection() {
+    let connection = this.activeConnection;
+    let event = connection?.currentEvent;
+
+    if (this.args.autoPanOnConnect === false || !this.rendererElement || !connection || !event) {
       return;
     }
 
     let rect = this.rendererElement.getBoundingClientRect();
-    let threshold = 40;
-    let speed = this.args.autoPanSpeed ?? 15;
-    let x = 0;
-    let y = 0;
-
-    if (event.clientX < rect.left + threshold) {
-      x = speed;
-    } else if (event.clientX > rect.right - threshold) {
-      x = -speed;
-    }
-
-    if (event.clientY < rect.top + threshold) {
-      y = speed;
-    } else if (event.clientY > rect.bottom - threshold) {
-      y = -speed;
-    }
+    let [x = 0, y = 0] = calcAutoPan(
+      {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      },
+      { width: rect.width, height: rect.height },
+      this.args.autoPanSpeed ?? 15,
+    );
 
     if (x !== 0 || y !== 0) {
-      void this.store.panBy({ x, y }).then(() => this.applyViewportTransform(this.store.viewport));
+      let changed = await this.store.panBy({ x, y });
+
+      if (changed && this.activeConnection === connection) {
+        this.applyViewportTransform(this.store.viewport);
+        this.updateConnectionSourceFromAnchor();
+        this.updateConnectionTargetFromEvent(event);
+        this.renderConnectionLine();
+      }
+
+      if (this.activeConnection === connection) {
+        this.scheduleConnectionAutoPan();
+      }
     }
   }
 
@@ -1292,6 +1875,14 @@ export default class EmberFlow<
 
   nodePositionFor = (node: Node) => {
     return this.store.getNodePosition(node);
+  };
+
+  nodeWidthFor = (node: Node) => {
+    return this.store.getNodeWidth(node);
+  };
+
+  nodeHeightFor = (node: Node) => {
+    return this.store.getNodeHeight(node);
   };
 
   private nodeElement(id: string) {
@@ -1342,13 +1933,16 @@ export default class EmberFlow<
                 @target={{item.target}}
                 @edgesReconnectable={{this.edgesReconnectable}}
                 @reconnectRadius={{this.reconnectRadius}}
+                @getNodePosition={{this.nodePositionFor}}
+                @getNodeWidth={{this.nodeWidthFor}}
+                @getNodeHeight={{this.nodeHeightFor}}
                 @onReconnectPointerDown={{this.handleEdgeReconnectPointerDown}}
               />
             {{/each}}
           </div>
           <div class='ember-flow__edge-labels ember-flow__edgelabel-renderer ember-flow__container'></div>
           <div class='ember-flow__nodes'>
-            {{#each this.nodes key='id' as |node|}}
+            {{#each this.renderedNodes key='id' as |node|}}
               {{#unless node.hidden}}
                 <FlowNode
                   @node={{node}}
@@ -1363,9 +1957,9 @@ export default class EmberFlow<
           </div>
           <div class='ember-flow__viewport-front ember-flow__container'></div>
         </div>
-        <svg class='ember-flow__connectionline ember-flow__container' style='display: none;'>
+        <svg class='ember-flow__connectionline ember-flow__container' style={{this.connectionLineInitialStyle}}>
           <g class='ember-flow__connection'>
-            <path class='ember-flow__connection-path' fill='none' />
+            <path class='ember-flow__connection-path' style={{this.connectionLinePathStyle}} fill='none' />
           </g>
         </svg>
         <div class='ember-flow__selection'></div>

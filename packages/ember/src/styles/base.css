@@ -71,10 +71,10 @@
 
 .ember-flow__edge-selection {
   stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
-  stroke-width: 6;
+  stroke-width: 7;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-opacity: 0.22;
+  stroke-opacity: 0.12;
   fill: none;
   pointer-events: none;
 }
@@ -103,8 +103,7 @@
   stroke-width: 1;
 }
 
-.ember-flow__edge.selectable:hover .ember-flow__edge-textbg,
-.ember-flow__edge.selected .ember-flow__edge-textbg {
+.ember-flow__edge.selectable:hover .ember-flow__edge-textbg {
   stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
   stroke-opacity: 0.35;
 }
@@ -186,6 +185,12 @@
 
 .ember-flow__handle.connectionindicator {
   cursor: crosshair;
+}
+
+.ember-flow__handle.connectingto.valid {
+  box-shadow:
+    0 0 0 5px rgba(37, 99, 235, 0.18),
+    0 0 0 1px var(--xy-background-color, #fff);
 }
 
 .ember-flow__handle-top {

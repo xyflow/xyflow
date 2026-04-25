@@ -12,10 +12,12 @@ import {
   Position,
 } from '@xyflow/ember';
 
-import type { Edge, Node } from '@xyflow/ember';
+import type { Edge, Node, Viewport } from '@xyflow/ember';
 import type { EmberFlowStore } from '@xyflow/ember';
 
 export default class ViewportControlsSample extends Component {
+  initialViewport: Viewport = { x: 520, y: 360, zoom: 0.65 };
+
   nodes: Node[] = [
     {
       id: 'pan',
@@ -36,7 +38,7 @@ export default class ViewportControlsSample extends Component {
     {
       id: 'lock',
       data: { label: 'Lock interactivity' },
-      position: { x: 340, y: -20 },
+      position: { x: 90, y: -20 },
       targetPosition: Position.Left,
       className: 'parity-node parity-node--amber',
     },
@@ -74,26 +76,17 @@ export default class ViewportControlsSample extends Component {
       <EmberFlow
         @nodes={{this.nodes}}
         @edges={{this.edges}}
-        @fitView={{true}}
+        @initialViewport={{this.initialViewport}}
         @minZoom={{0.25}}
         @maxZoom={{4}}
         as |flow|
       >
         <Background
-          @id='major'
-          @variant={{BackgroundVariant.Cross}}
-          @gap={{80}}
-          @size={{12}}
-          @lineWidth={{1}}
-          @color='#d7dee8'
-          @bgColor='#f8fafc'
-        />
-        <Background
-          @id='minor'
           @variant={{BackgroundVariant.Dots}}
           @gap={{20}}
           @size={{2}}
           @color='#9aa7b7'
+          @bgColor='#f8fafc'
         />
         <Controls>
           <ControlButton
@@ -109,7 +102,7 @@ export default class ViewportControlsSample extends Component {
             <strong>Viewport + Controls</strong>
             <ol>
               <li>Drag empty canvas to pan.</li>
-              <li>Watch the dot and cross background shift with the viewport.</li>
+              <li>Watch the dot background shift with the viewport.</li>
               <li>Scroll over the canvas to zoom.</li>
               <li>Use +, -, and fit in the lower-left controls.</li>
               <li>Use the helper buttons below to exercise the yielded store viewport API.</li>
@@ -125,7 +118,7 @@ export default class ViewportControlsSample extends Component {
             </p>
           </div>
         </Panel>
-        <Panel @position='top-right'>
+        <Panel @position='bottom-right'>
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/editing'>Editing</a>

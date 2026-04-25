@@ -154,6 +154,23 @@ test.describe('Edges', () => {
       await expect(edge).toHaveAttribute('marker-end', "url('#1__type=arrow')");
     });
 
+    test('defaultEdgeOptions apply to rendered edges', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'This fixture tracks Ember defaultEdgeOptions parity during porting');
+
+      await page.goto('/tests/generic/edges/default-options');
+
+      const edge = page.locator('[data-id="defaulted-edge"]');
+      const path = edge.locator(`.${FRAMEWORK}-flow__edge-path`);
+      const label = page
+        .locator(`.${FRAMEWORK}-flow__edge-text, .${FRAMEWORK}-flow__edge-label`)
+        .filter({ hasText: 'default edge' });
+
+      await expect(edge).toHaveClass(/animated/);
+      await expect(path).toHaveCSS('stroke', 'rgb(180, 0, 180)');
+      await expect(path).toHaveAttribute('marker-end', "url('#1__type=arrowclosed')");
+      await expect(label).toBeVisible();
+    });
+
     test('label renders regular edge text', async ({ page }) => {
       const label = page
         .locator(`.${FRAMEWORK}-flow__edge-text, .${FRAMEWORK}-flow__edge-label`)

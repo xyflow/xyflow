@@ -12,6 +12,7 @@ import type {
   NodeBase,
   NodeChange as SystemNodeChange,
   IsValidConnection,
+  ConnectionLineType,
   OnConnectEnd,
   OnConnectStart,
   OnReconnect,
@@ -29,7 +30,9 @@ import type {
   StepPathOptions,
   ControlPosition,
   CoordinateExtent,
+  ConnectionMode,
   NodeOrigin,
+  SelectionMode,
   SnapGrid,
   Viewport,
 } from '@xyflow/system';
@@ -180,6 +183,16 @@ export interface EmberFlowArgs<
   autoPanOnNodeDrag?: boolean;
   autoPanOnConnect?: boolean;
   autoPanSpeed?: number;
+  connectionMode?: ConnectionMode;
+  connectionRadius?: number;
+  connectionLineType?: ConnectionLineType;
+  connectionLineStyle?: CssStyle;
+  connectionLineContainerStyle?: CssStyle;
+  defaultEdgeOptions?: DefaultEdgeOptions<EdgeType>;
+  selectionKey?: string | string[] | null;
+  selectionOnDrag?: boolean;
+  selectionMode?: SelectionMode;
+  onlyRenderVisibleElements?: boolean;
   edgesReconnectable?: boolean;
   reconnectRadius?: number;
   deleteKey?: string;

@@ -73,6 +73,7 @@ export default class MiniMapSample extends Component {
           @bgColor='#fbfcfe'
         />
         <MiniMap
+          @position='top-right'
           @nodeStrokeColor='#334155'
           @nodeStrokeWidth={{3}}
           @nodeBorderRadius={{8}}
@@ -92,7 +93,7 @@ export default class MiniMapSample extends Component {
             </ol>
           </div>
         </Panel>
-        <Panel @position='top-right'>
+        <Panel @position='bottom-right'>
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>

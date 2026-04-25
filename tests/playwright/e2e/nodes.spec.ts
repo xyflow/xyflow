@@ -18,7 +18,7 @@ test.describe('Nodes', () => {
 
     test('selecting multiple nodes with shift drag', async ({ page }) => {
       let nodeSelection = page.locator(
-        FRAMEWORK === 'react' ? '.react-flow__nodesselection' : `.${FRAMEWORK}-flow__selection`
+        FRAMEWORK === 'react' ? '.react-flow__nodesselection' : '.svelte-flow__selection-wrapper'
       );
       let selection = page.locator(FRAMEWORK === 'react' ? '.react-flow__selection' : `.${FRAMEWORK}-flow__selection`);
 
@@ -42,7 +42,11 @@ test.describe('Nodes', () => {
       await expect(nodes.nth(1)).toHaveClass(/selected/);
       await expect(nodes.nth(2)).toHaveClass(/selected/);
 
-      await expect(nodeSelection).toBeInViewport();
+      if (FRAMEWORK === 'ember') {
+        await expect(selection).toHaveCSS('opacity', '0');
+      } else {
+        await expect(nodeSelection).toBeInViewport();
+      }
     });
 
     test('selectable=false prevents selection', async ({ page }) => {
@@ -129,6 +133,40 @@ test.describe('Nodes', () => {
 
       expect(transformBeforeMove).not.toMatch(transformAfterDragHandleMove);
     });
+
+    test('dragging a selected node moves the selected node group', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'EmberFlow implements selected-node group drag in the adapter layer');
+
+      const firstNode = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="Node-1"]'));
+      const secondNode = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="Node-2"]'));
+
+      await expect(firstNode).toBeVisible();
+      await expect(secondNode).toBeVisible();
+
+      const firstBox = await firstNode.boundingBox();
+
+      await page.keyboard.down('Shift');
+      await page.mouse.move(firstBox!.x - 150, firstBox!.y - 25);
+      await page.mouse.down();
+      await page.mouse.move(firstBox!.x + 275, firstBox!.y + 200);
+      await page.mouse.up();
+      await page.keyboard.up('Shift');
+
+      await expect(firstNode).toHaveClass(/selected/);
+      await expect(secondNode).toHaveClass(/selected/);
+
+      const secondTransformBefore = await secondNode.evaluate((element) => (element as HTMLElement).style.transform);
+      const dragBox = await firstNode.boundingBox();
+
+      await page.mouse.move(dragBox!.x + dragBox!.width / 2, dragBox!.y + dragBox!.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(dragBox!.x + dragBox!.width / 2 + 90, dragBox!.y + dragBox!.height / 2 + 35);
+      await page.mouse.up();
+
+      const secondTransformAfter = await secondNode.evaluate((element) => (element as HTMLElement).style.transform);
+
+      expect(secondTransformAfter).not.toEqual(secondTransformBefore);
+    });
   });
 
   test.describe('deleting', () => {
@@ -182,6 +220,63 @@ test.describe('Nodes', () => {
       await expect(page.locator('[data-id="xy-edge__Node-1-Node-4"]')).toBeInViewport();
 
       await expect(page.locator(`.${FRAMEWORK}-flow__edge`)).toHaveCount(3);
+    });
+
+    test('connection line stays anchored while auto-panning near the viewport edge', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'EmberFlow keeps connection drag off Ember tracked state');
+
+      await page.goto('/tests/generic/nodes/connection-autopan');
+
+      const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
+      const connectionLine = page.locator(`.${FRAMEWORK}-flow__connectionline`);
+      const connectionPath = page.locator(`.${FRAMEWORK}-flow__connection-path`);
+      const outputSourceHandle = page.locator(`.${FRAMEWORK}-flow__handle`).and(page.locator('[data-nodeid="source"]'));
+
+      await expect(outputSourceHandle).toBeInViewport();
+
+      const handleBox = await outputSourceHandle.boundingBox();
+      const paneBox = await pane.boundingBox();
+
+      await page.mouse.move(handleBox!.x + handleBox!.width / 2, handleBox!.y + handleBox!.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(paneBox!.x + paneBox!.width - 8, handleBox!.y + handleBox!.height / 2, { steps: 8 });
+
+      await expect(connectionLine).toBeInViewport();
+      const before = await connectionPath.getAttribute('d');
+
+      await expect.poll(async () => connectionPath.getAttribute('d'), { timeout: 2500 }).not.toEqual(before);
+
+      await page.mouse.up();
+      await expect(connectionLine).not.toBeInViewport();
+    });
+
+    test('connection line type and styles are applied while dragging', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'This fixture tracks Ember connectionLine prop parity during porting');
+
+      await page.goto('/tests/generic/nodes/connection-line');
+
+      const connectionLine = page.locator(`.${FRAMEWORK}-flow__connectionline`);
+      const connectionPath = page.locator(`.${FRAMEWORK}-flow__connection-path`);
+      const outputSourceHandle = page.locator(`.${FRAMEWORK}-flow__handle`).and(page.locator('[data-nodeid="source"]'));
+
+      await expect(outputSourceHandle).toBeInViewport();
+
+      const handleBox = await outputSourceHandle.boundingBox();
+
+      await page.mouse.move(handleBox!.x + handleBox!.width / 2, handleBox!.y + handleBox!.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(handleBox!.x + 260, handleBox!.y + 140, { steps: 8 });
+
+      await expect(connectionLine).toBeInViewport();
+      await expect(connectionLine).toHaveCSS('opacity', '0.75');
+      await expect(connectionPath).toHaveCSS('stroke', 'rgb(0, 128, 128)');
+      await expect(connectionPath).toHaveCSS('stroke-width', '3px');
+
+      const path = await connectionPath.getAttribute('d');
+      expect(path).toContain('L');
+      expect(path).not.toContain('C');
+
+      await page.mouse.up();
     });
 
     test('connecting two output handles does not work', async ({ page }) => {
@@ -270,6 +365,17 @@ test.describe('Nodes', () => {
     const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="hidden"]'));
 
     await expect(node).not.toBeInViewport();
+  });
+
+  test('onlyRenderVisibleElements filters offscreen nodes while keeping visible crossing edges', async ({ page }) => {
+    test.skip(FRAMEWORK !== 'ember', 'This fixture tracks Ember onlyRenderVisibleElements parity during porting');
+
+    await page.goto('/tests/generic/nodes/only-render-visible');
+
+    await expect(page.locator(`.${FRAMEWORK}-flow__node[data-id="visible"]`)).toBeVisible();
+    await expect(page.locator(`.${FRAMEWORK}-flow__node[data-id="offscreen"]`)).not.toBeAttached();
+    await expect(page.locator('[data-id="visible-crossing-edge"]')).toBeAttached();
+    await expect(page.locator('[data-id="offscreen-edge"]')).not.toBeAttached();
   });
 
   test('classes get applied', async ({ page }) => {

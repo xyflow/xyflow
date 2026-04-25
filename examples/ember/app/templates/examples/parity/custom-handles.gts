@@ -18,7 +18,7 @@ export default class CustomHandlesSample extends Component {
     HandleNode,
   };
 
-  initialViewport: Viewport = { x: 230, y: 300, zoom: 1 };
+  initialViewport: Viewport = { x: 260, y: 315, zoom: 0.9 };
 
   nodes: Node[] = [
     {
@@ -89,7 +89,7 @@ export default class CustomHandlesSample extends Component {
             </ol>
           </div>
         </Panel>
-        <Panel @position='top-right'>
+        <Panel @position='bottom-right'>
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>

@@ -78,9 +78,6 @@ export default class Handle extends Component<Signature> {
       data-handlepos={{this.position}}
       data-handletype={{this.type}}
       style={{this.handleStyle}}
-      role='button'
-      aria-label='Handle'
-      tabindex='-1'
       ...attributes
     >
       {{yield}}

@@ -15,6 +15,19 @@ function readTranslate(transform: string) {
   };
 }
 
+function readPathEndpoint(path: string) {
+  let coordinates = path.match(/-?\d+(?:\.\d+)?/g)?.map(Number);
+
+  if (!coordinates || coordinates.length < 2) {
+    throw new Error(`Could not parse edge path: ${path}`);
+  }
+
+  return {
+    x: coordinates[coordinates.length - 2],
+    y: coordinates[coordinates.length - 1],
+  };
+}
+
 test.describe('Placement', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tests/generic/placement/general');
@@ -27,6 +40,19 @@ test.describe('Placement', () => {
     const transform = await node.evaluate((element) => element.style.transform);
 
     expect(readTranslate(transform)).toEqual({ x: 350, y: 170 });
+  });
+
+  test('edges use origin-aware node coordinates', async ({ page }) => {
+    const edge = page
+      .locator(`.${FRAMEWORK}-flow__edge`)
+      .and(page.locator('[data-id="snap-to-origin"]'))
+      .locator(`.${FRAMEWORK}-flow__edge-path`);
+    await expect(edge).toBeAttached();
+
+    const endpoint = readPathEndpoint((await edge.getAttribute('d')) ?? '');
+
+    expect(endpoint.x).toBeCloseTo(400, 1);
+    expect(endpoint.y).toBeCloseTo(170, 1);
   });
 
   test('snapToGrid snaps node dragging', async ({ page }) => {

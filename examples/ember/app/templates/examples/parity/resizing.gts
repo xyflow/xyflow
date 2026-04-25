@@ -1,6 +1,8 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { pageTitle } from 'ember-page-title';
 import {
+  applyNodeChanges,
   Background,
   BackgroundVariant,
   Controls,
@@ -11,16 +13,16 @@ import {
 
 import ResizableNode from 'ember-examples/components/parity-samples/resizable-node';
 
-import type { Edge, Node, Viewport } from '@xyflow/ember';
+import type { Edge, Node, NodeChange, Viewport } from '@xyflow/ember';
 
 export default class ResizingSample extends Component {
   nodeTypes = {
     ResizableNode,
   };
 
-  initialViewport: Viewport = { x: 250, y: 300, zoom: 1 };
+  initialViewport: Viewport = { x: 280, y: 285, zoom: 0.85 };
 
-  nodes: Node[] = [
+  @tracked nodes: Node[] = [
     {
       id: 'brief',
       type: 'ResizableNode',
@@ -47,7 +49,7 @@ export default class ResizingSample extends Component {
       id: 'publish',
       type: 'ResizableNode',
       data: { label: 'Publish', detail: 'Minimum size is enforced' },
-      position: { x: 410, y: -70 },
+      position: { x: 320, y: -70 },
       width: 190,
       height: 84,
       targetPosition: Position.Left,
@@ -69,6 +71,10 @@ export default class ResizingSample extends Component {
     },
   ];
 
+  handleNodesChange = (changes: NodeChange[]) => {
+    this.nodes = applyNodeChanges(changes, this.nodes);
+  };
+
   <template>
     {{pageTitle "EmberFlow Resizing Sample"}}
     <main class='parity-sample'>
@@ -79,6 +85,7 @@ export default class ResizingSample extends Component {
         @initialViewport={{this.initialViewport}}
         @minZoom={{0.25}}
         @maxZoom={{4}}
+        @onNodesChange={{this.handleNodesChange}}
       >
         <Background
           @variant={{BackgroundVariant.Lines}}
@@ -92,14 +99,15 @@ export default class ResizingSample extends Component {
           <div class='parity-note'>
             <strong>Node Resizing</strong>
             <ol>
-              <li>The Layout node starts selected with resize lines and corner handles visible.</li>
+              <li>The Layout node starts selected; click empty canvas or another node to hide its resize handles.</li>
               <li>Drag a corner handle; the node should resize without scaling the toolbar UI.</li>
               <li>Connected edges should follow the resized node bounds while dragging.</li>
+              <li>Hold a resize drag near a viewport edge; the canvas should pan and resizing should continue.</li>
               <li>Try shrinking below the minimum size; it should clamp.</li>
             </ol>
           </div>
         </Panel>
-        <Panel @position='top-right'>
+        <Panel @position='bottom-right'>
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>

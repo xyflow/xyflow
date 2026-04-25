@@ -92,4 +92,53 @@ test.describe('Node Resizer', () => {
     expect(secondAfterBox!.width).toBeGreaterThan(afterBox!.width + 20);
     expect(secondAfterBox!.height).toBeGreaterThan(afterBox!.height + 15);
   });
+
+  test('resizing continues while auto-panning near the viewport edge', async ({ page }) => {
+    await page.setViewportSize({ width: 900, height: 700 });
+    await page.goto('/examples/parity/resizing');
+    await page.waitForSelector('[data-id="layout-publish"]', { timeout: 5000 });
+
+    const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="layout"]'));
+    const handle = node.locator(`.${FRAMEWORK}-flow__resize-control.handle.bottom.right`);
+    const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
+
+    await expect(handle).toBeInViewport();
+
+    const handleBox = await handle.boundingBox();
+    const beforeTransform = await viewport.getAttribute('style');
+
+    await page.mouse.move(handleBox!.x + handleBox!.width / 2, handleBox!.y + handleBox!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(892, 692, { steps: 10 });
+
+    const edgeBox = await node.boundingBox();
+
+    await page.waitForTimeout(350);
+
+    const afterHoldBox = await node.boundingBox();
+    const afterTransform = await viewport.getAttribute('style');
+
+    await page.mouse.up();
+
+    expect(afterTransform).not.toBe(beforeTransform);
+    expect(afterHoldBox!.width).toBeGreaterThan(edgeBox!.width + 5);
+    expect(afterHoldBox!.height).toBeGreaterThan(edgeBox!.height + 5);
+  });
+
+  test('resizing sample can deselect the initially selected node', async ({ page }) => {
+    await page.goto('/examples/parity/resizing');
+
+    const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="layout"]'));
+    const controls = page.locator(`.${FRAMEWORK}-flow__resize-control`);
+
+    await expect(node).toHaveClass(/selected/);
+    await expect(controls).toHaveCount(8);
+
+    const paneBox = await page.locator(`.${FRAMEWORK}-flow__pane`).boundingBox();
+
+    await page.mouse.click(paneBox!.x + paneBox!.width / 2, paneBox!.y + paneBox!.height - 80);
+
+    await expect(node).not.toHaveClass(/selected/);
+    await expect(controls).toHaveCount(0);
+  });
 });

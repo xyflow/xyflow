@@ -1,4 +1,6 @@
 import Component from '@glimmer/component';
+import { fn } from '@ember/helper';
+import { on } from '@ember/modifier';
 import { tracked } from '@glimmer/tracking';
 import { pageTitle } from 'ember-page-title';
 import {
@@ -8,15 +10,18 @@ import {
   EdgeLabelRenderer,
   EdgeToolbar,
   EmberFlow,
+  type EmberFlowStore,
   MarkerType,
   Panel,
   Position,
 } from '@xyflow/ember';
 
-import type { Connection, Edge, Node } from '@xyflow/ember';
+import type { Connection, Edge, Node, Viewport } from '@xyflow/ember';
 
 export default class EdgesSample extends Component {
   @tracked reconnectMessage = 'Reconnect anchors ready';
+
+  initialViewport: Viewport = { x: 390, y: 410, zoom: 0.55 };
 
   nodes: Node[] = [
     {
@@ -102,24 +107,44 @@ export default class EdgesSample extends Component {
     this.reconnectMessage = `${oldEdge.id}: ${connection.source} -> ${connection.target}`;
   };
 
+  inspectEdge = (edgeId: string, event: MouseEvent) => {
+    event.stopPropagation();
+    this.reconnectMessage = `selected: ${edgeId}`;
+  };
+
+  deleteEdge = async (flow: EmberFlowStore, edgeId: string, event: MouseEvent) => {
+    event.stopPropagation();
+    let { deletedEdges } = await flow.deleteElements({ edges: [{ id: edgeId }] });
+    this.reconnectMessage = `deleted ${deletedEdges.length} edge`;
+  };
+
   <template>
     {{pageTitle "EmberFlow Edges Sample"}}
     <main class='parity-sample'>
       <EmberFlow
         @nodes={{this.nodes}}
         @edges={{this.edges}}
-        @fitView={{true}}
+        @initialViewport={{this.initialViewport}}
         @minZoom={{0.25}}
         @maxZoom={{4}}
         @edgesReconnectable={{true}}
         @onReconnect={{this.handleReconnect}}
+        as |flow|
       >
         <EdgeToolbar
           @edgeId='source-hitbox'
-          @position={{Position.Top}}
-          @offset={{18}}
+          @position={{Position.Bottom}}
+          @offset={{52}}
+          @alignY='top'
         >
-          <div class='parity-edge-toolbar'>selected edge</div>
+          <div class='parity-edge-toolbar' role='toolbar' aria-label='Selected edge actions'>
+            <button type='button' class='nodrag nopan' {{on 'click' (fn this.inspectEdge 'source-hitbox')}}>
+              inspect
+            </button>
+            <button type='button' class='nodrag nopan' {{on 'click' (fn this.deleteEdge flow 'source-hitbox')}}>
+              delete
+            </button>
+          </div>
         </EdgeToolbar>
         <EdgeLabelRenderer>
           <div
@@ -142,7 +167,7 @@ export default class EdgesSample extends Component {
           <div class='parity-note'>
             <strong>Edges + Markers</strong>
             <ol>
-              <li>Click an edge to select it; a subtle outline and label keyline mark selection.</li>
+              <li>Click an edge to select it; the selected edge shows a dark action toolbar.</li>
               <li>Press Backspace after selecting an edge to delete it.</li>
               <li>Inspect or click the centered labels; they should target the owning edge.</li>
               <li>Click near the dashed purple edge; its wider interaction path should make selection easier and show an EdgeToolbar.</li>
@@ -155,7 +180,7 @@ export default class EdgesSample extends Component {
             </div>
           </div>
         </Panel>
-        <Panel @position='top-right'>
+        <Panel @position='bottom-right'>
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>

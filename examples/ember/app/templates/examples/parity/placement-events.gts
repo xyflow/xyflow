@@ -15,7 +15,7 @@ import type { Edge, Node, SnapGrid, Viewport } from '@xyflow/ember';
 export default class PlacementEventsSample extends Component {
   @tracked events: string[] = ['Ready'];
 
-  initialViewport: Viewport = { x: 220, y: 210, zoom: 1 };
+  initialViewport: Viewport = { x: 260, y: 310, zoom: 0.8 };
   snapGrid: SnapGrid = [50, 50];
 
   nodes: Node[] = [
@@ -42,7 +42,7 @@ export default class PlacementEventsSample extends Component {
     {
       id: 'extent',
       data: { label: 'Extent clamped' },
-      position: { x: 470, y: -70 },
+      position: { x: 420, y: -70 },
       width: 160,
       height: 72,
       extent: [
@@ -139,7 +139,7 @@ export default class PlacementEventsSample extends Component {
             </div>
           </div>
         </Panel>
-        <Panel @position='top-right'>
+        <Panel @position='bottom-right'>
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>

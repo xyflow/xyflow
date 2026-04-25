@@ -76,12 +76,15 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   nodeExtent: CoordinateExtent = infiniteExtent;
   zIndexMode: ZIndexMode = 'basic';
   elevateNodesOnSelect = true;
-  width = 0;
-  height = 0;
+  @tracked width = 0;
+  @tracked height = 0;
   minZoom = 0.5;
   maxZoom = 2;
   snapToGrid = false;
   snapGrid: SnapGrid = [15, 15];
+  autoPanOnNodeDrag = true;
+  autoPanOnConnect = true;
+  autoPanSpeed = 15;
 
   @tracked nodesDraggable = true;
   @tracked nodesConnectable = true;
@@ -263,10 +266,28 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   addNodes(payload: ElementPayload<NodeType>) {
     let nodes = Array.isArray(payload) ? payload : [payload];
 
+    for (let node of nodes) {
+      this.deletedNodeIds.delete(node.id);
+      this.nodeUpdates.delete(node.id);
+      this.nodePositions.delete(node.id);
+      this.nodeDimensions.delete(node.id);
+    }
+
     if (this.nodesOverride) {
-      this.nodesOverride = [...this.nodesOverride, ...nodes];
+      this.nodesOverride = this.upsertElementsById(this.nodesOverride, nodes);
     } else {
-      this.addedNodes = [...this.addedNodes, ...nodes];
+      let sourceNodes = this.currentSourceNodes;
+      let addedNodes = [...this.addedNodes];
+
+      for (let node of nodes) {
+        if (sourceNodes.some((sourceNode) => sourceNode.id === node.id)) {
+          this.nodeUpdates.set(node.id, node);
+        } else {
+          addedNodes = this.upsertElementsById(addedNodes, [node]);
+        }
+      }
+
+      this.addedNodes = addedNodes;
     }
 
     this.bump();
@@ -275,13 +296,48 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   addEdges(payload: ElementPayload<EdgeType>) {
     let edges = Array.isArray(payload) ? payload : [payload];
 
+    for (let edge of edges) {
+      this.deletedEdgeIds.delete(edge.id);
+      this.edgeUpdates.delete(edge.id);
+    }
+
     if (this.edgesOverride) {
-      this.edgesOverride = [...this.edgesOverride, ...edges];
+      this.edgesOverride = this.upsertElementsById(this.edgesOverride, edges);
     } else {
-      this.addedEdges = [...this.addedEdges, ...edges];
+      let sourceEdges = this.currentSourceEdges;
+      let addedEdges = [...this.addedEdges];
+
+      for (let edge of edges) {
+        if (sourceEdges.some((sourceEdge) => sourceEdge.id === edge.id)) {
+          this.edgeUpdates.set(edge.id, edge);
+        } else {
+          addedEdges = this.upsertElementsById(addedEdges, [edge]);
+        }
+      }
+
+      this.addedEdges = addedEdges;
     }
 
     this.bump();
+  }
+
+  private upsertElementsById<ElementType extends { id: string }>(
+    elements: ElementType[],
+    updates: ElementType[],
+  ): ElementType[] {
+    let nextElements = [...elements];
+
+    for (let update of updates) {
+      let index = nextElements.findIndex((element) => element.id === update.id);
+
+      if (index >= 0) {
+        nextElements[index] = update;
+      } else {
+        nextElements.push(update);
+      }
+    }
+
+    return nextElements;
   }
 
   updateNode(
@@ -694,6 +750,20 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     this.snapGrid = snapGrid;
   }
 
+  setAutoPanOptions({
+    autoPanOnNodeDrag,
+    autoPanOnConnect,
+    autoPanSpeed,
+  }: {
+    autoPanOnNodeDrag?: boolean;
+    autoPanOnConnect?: boolean;
+    autoPanSpeed?: number;
+  }) {
+    this.autoPanOnNodeDrag = autoPanOnNodeDrag ?? true;
+    this.autoPanOnConnect = autoPanOnConnect ?? true;
+    this.autoPanSpeed = autoPanSpeed ?? 15;
+  }
+
   setNodeOrigin(nodeOrigin: NodeOrigin) {
     this.nodeOrigin = nodeOrigin;
   }
@@ -904,8 +974,13 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   }
 
   setViewportDimensions(width: number, height: number) {
+    if (this.width === width && this.height === height) {
+      return;
+    }
+
     this.width = width;
     this.height = height;
+    this.bump();
   }
 
   setZoomExtent(minZoom: number, maxZoom: number) {

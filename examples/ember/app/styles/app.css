@@ -128,6 +128,8 @@ body {
 
 .parity-note {
   max-width: 320px;
+  max-height: min(42vh, 360px);
+  overflow: auto;
   padding: 14px 16px;
   color: #172033;
   background: rgba(255, 255, 255, 0.96);
@@ -179,12 +181,32 @@ body {
   background: #dfeaff;
 }
 
+.parity-sample .ember-flow__edge-toolbar {
+  padding: 4px;
+  background: #172033;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(24, 33, 52, 0.18);
+}
+
 .parity-edge-toolbar {
+  display: flex;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.parity-edge-toolbar button {
   padding: 5px 8px;
-  color: #334155;
+  color: #fff;
   font-size: 11px;
   font-weight: 700;
-  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+}
+
+.parity-edge-toolbar button:hover {
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .parity-renderer-label {
@@ -226,8 +248,11 @@ body {
 
 .parity-sample-nav {
   display: flex;
-  gap: 8px;
-  padding: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: min(560px, calc(100vw - 32px));
+  gap: 4px;
+  padding: 6px;
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid #d8e0ea;
   border-radius: 8px;
@@ -235,9 +260,9 @@ body {
 }
 
 .parity-sample-nav a {
-  padding: 7px 9px;
+  padding: 6px 8px;
   color: #334155;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-decoration: none;
   border-radius: 6px;

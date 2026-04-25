@@ -66,4 +66,31 @@ test.describe('EdgeToolbar', () => {
     expect(Math.abs(afterOffset - beforeOffset)).toBeLessThan(2);
     expect(Math.abs(afterOffset - 16)).toBeLessThan(2);
   });
+
+  test('parity sample shows selected edge actions as a toolbar surface', async ({ page }) => {
+    test.skip(FRAMEWORK !== 'ember', 'The parity sample route is currently implemented for EmberFlow');
+
+    await page.goto('/examples/parity/edges');
+
+    const edgeLabel = page
+      .locator(`.${FRAMEWORK}-flow__edge-textwrapper`)
+      .filter({ hasText: 'wide hitbox' });
+    const toolbar = page.locator(`.${FRAMEWORK}-flow__edge-toolbar[data-id="source-hitbox"]`);
+    const note = page.locator('.parity-note');
+
+    await expect(edgeLabel).toBeVisible();
+    await edgeLabel.click();
+
+    await expect(toolbar).toBeVisible();
+    await expect(toolbar.getByRole('button', { name: 'inspect' })).toBeVisible();
+    await expect(toolbar.getByRole('button', { name: 'delete' })).toBeVisible();
+    await expect(toolbar).toHaveCSS('background-color', 'rgb(23, 32, 51)');
+
+    const toolbarBox = await toolbar.boundingBox();
+    const noteBox = await note.boundingBox();
+
+    expect(toolbarBox).not.toBeNull();
+    expect(noteBox).not.toBeNull();
+    expect(toolbarBox!.y).toBeGreaterThan(noteBox!.y + noteBox!.height);
+  });
 });
