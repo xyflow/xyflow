@@ -8,6 +8,11 @@
   position: absolute;
 }
 
+.ember-flow__edge-label.transparent {
+  background: transparent;
+  padding: 0;
+}
+
 .ember-flow__viewport {
   transform-origin: 0 0;
   z-index: 2;
@@ -64,8 +69,59 @@
   animation: none;
 }
 
+.ember-flow__edge-selection {
+  stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-opacity: 0.22;
+  fill: none;
+  pointer-events: none;
+}
+
 .ember-flow__edge.selected .ember-flow__edge-path {
   stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
+}
+
+.ember-flow__edge-textwrapper {
+  pointer-events: all;
+  user-select: none;
+}
+
+.ember-flow__edge.selectable .ember-flow__edge-textwrapper {
+  cursor: pointer;
+}
+
+.ember-flow__edge-textbg {
+  fill: var(--xy-edge-label-background-color, var(--xy-edge-label-background-color-default, #fff));
+  stroke: transparent;
+  stroke-width: 1;
+}
+
+.ember-flow__edge.selectable:hover .ember-flow__edge-textbg,
+.ember-flow__edge.selected .ember-flow__edge-textbg {
+  stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
+  stroke-opacity: 0.35;
+}
+
+.ember-flow__edge-text {
+  fill: var(--xy-edge-label-color, var(--xy-edge-label-color-default, inherit));
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.ember-flow__edge-toolbar {
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgb(15 23 42 / 0.12);
+  background: var(--xy-node-background-color, var(--xy-node-background-color-default));
+  color: var(--xy-node-color, var(--xy-node-color-default));
+  border: 1px solid var(--xy-node-border, var(--xy-node-border-default));
+}
+
+.ember-flow__viewport-portal {
+  position: absolute;
+  inset: 0 auto auto 0;
+  pointer-events: none;
 }
 
 .ember-flow__connectionline {
@@ -103,12 +159,95 @@
   box-sizing: border-box;
 }
 
+.ember-flow__handle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  min-width: 5px;
+  min-height: 5px;
+  background-color: var(--xy-handle-background-color, var(--xy-handle-background-color-default, #333));
+  border: 1px solid var(--xy-handle-border-color, var(--xy-handle-border-color-default, #fff));
+  border-radius: 100%;
+  pointer-events: all;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.ember-flow__handle.connectionindicator {
+  cursor: crosshair;
+}
+
+.ember-flow__handle-top {
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ember-flow__handle-right {
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.ember-flow__handle-bottom {
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+
+.ember-flow__handle-left {
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
 .ember-flow__node-toolbar {
   position: absolute;
   z-index: 1000;
   pointer-events: all;
   display: flex;
   gap: 4px;
+}
+
+.ember-flow__minimap {
+  background: var(
+    --xy-minimap-background-color-props,
+    var(--xy-minimap-background-color, var(--xy-minimap-background-color-default, #fff))
+  );
+}
+
+.ember-flow__minimap-svg {
+  display: block;
+}
+
+.ember-flow__minimap-mask {
+  fill: var(
+    --xy-minimap-mask-background-color-props,
+    var(--xy-minimap-mask-background-color, var(--xy-minimap-mask-background-color-default, rgba(240, 240, 240, 0.6)))
+  );
+  stroke: var(
+    --xy-minimap-mask-stroke-color-props,
+    var(--xy-minimap-mask-stroke-color, var(--xy-minimap-mask-stroke-color-default, transparent))
+  );
+  stroke-width: var(
+    --xy-minimap-mask-stroke-width-props,
+    var(--xy-minimap-mask-stroke-width, var(--xy-minimap-mask-stroke-width-default, 1))
+  );
+}
+
+.ember-flow__minimap-node {
+  fill: var(
+    --xy-minimap-node-background-color-props,
+    var(--xy-minimap-node-background-color, var(--xy-minimap-node-background-color-default, #e2e2e2))
+  );
+  stroke: var(
+    --xy-minimap-node-stroke-color-props,
+    var(--xy-minimap-node-stroke-color, var(--xy-minimap-node-stroke-color-default, transparent))
+  );
+  stroke-width: var(
+    --xy-minimap-node-stroke-width-props,
+    var(--xy-minimap-node-stroke-width, var(--xy-minimap-node-stroke-width-default, 2))
+  );
 }
 
 .ember-flow__node-DragHandleNode .container {

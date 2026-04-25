@@ -2,7 +2,9 @@ import type {
   BackgroundArgs,
   ControlsArgs,
   Edge,
+  EdgeToolbarArgs,
   EmberFlowArgs,
+  MiniMapArgs,
   Node,
   PanelArgs,
 } from '@xyflow/ember';
@@ -15,4 +17,6 @@ export interface FlowConfig {
   panelProps?: PanelArgs;
   backgroundProps?: BackgroundArgs;
   controlsProps?: ControlsArgs;
+  edgeToolbarProps?: EdgeToolbarArgs;
+  minimapProps?: MiniMapArgs;
 }

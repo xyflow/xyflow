@@ -9,6 +9,9 @@ import type { ControlsArgs } from '../types.js';
 
 interface Signature {
   Args: ControlsArgs;
+  Blocks: {
+    default: [];
+  };
   Element: HTMLDivElement;
 }
 
@@ -165,6 +168,7 @@ export default class Controls extends Component<Signature> {
           {{/if}}
         </button>
       {{/if}}
+      {{yield}}
     </div>
   </template>
 }

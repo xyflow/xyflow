@@ -1,10 +1,14 @@
 import { tracked } from '@glimmer/tracking';
 import {
+  clampPosition,
   infiniteExtent,
   adoptUserNodes,
   getInternalNodesBounds,
   getNodesBounds as getNodesBoundsSystem,
   getViewportForBounds,
+  isCoordinateExtent,
+  panBy as panBySystem,
+  snapPosition,
   updateConnectionLookup,
   type CoordinateExtent,
   type ConnectionLookup,
@@ -16,6 +20,7 @@ import {
   type PanZoomInstance,
   type ParentLookup,
   type Rect,
+  type SnapGrid,
   type Viewport,
   type ViewportHelperFunctionOptions,
   type XYPosition,
@@ -52,6 +57,8 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   height = 0;
   minZoom = 0.5;
   maxZoom = 2;
+  snapToGrid = false;
+  snapGrid: SnapGrid = [15, 15];
 
   @tracked nodesDraggable = true;
   @tracked nodesConnectable = true;
@@ -71,6 +78,8 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   readonly deletedEdgeIds = new Set<string>();
   readonly pressedKeys = new Set<string>();
   readonly nodePositions = new Map<string, XYPosition>();
+  readonly nodeDimensions = new Map<string, { width: number; height: number }>();
+  private readonly viewportListeners = new Set<(viewport: Viewport) => void>();
 
   private addedEdges: EdgeType[] = [];
   private syncCache:
@@ -141,12 +150,12 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
 
   get selectedNodes() {
     return Array.from(this.nodeLookup.values())
-      .filter((node) => node.selected)
+      .filter((node) => this.selectedNodeIds.has(node.id) || node.selected)
       .map((node) => node.internals.userNode);
   }
 
   get selectedEdges() {
-    return Array.from(this.edgeLookup.values()).filter((edge) => edge.selected);
+    return Array.from(this.edgeLookup.values()).filter((edge) => this.selectedEdgeIds.has(edge.id) || edge.selected);
   }
 
   getInternalNode(id: string) {
@@ -179,15 +188,17 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
       .filter((node) => !this.deletedNodeIds.has(node.id))
       .map((node) => {
         let position = this.nodePositions.get(node.id);
+        let dimensions = this.nodeDimensions.get(node.id);
         let selected = this.selectedNodeIds.has(node.id) || node.selected;
 
-        if (!position && selected === node.selected) {
+        if (!position && !dimensions && selected === node.selected) {
           return node;
         }
 
         return {
           ...node,
           ...(position ? { position } : {}),
+          ...(dimensions ? { width: dimensions.width, height: dimensions.height } : {}),
           selected,
         };
       }) as NodeType[];
@@ -221,6 +232,16 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
 
   setViewport(viewport: Viewport) {
     this.viewport = this.normalizeViewport(viewport);
+    this.notifyViewportListeners();
+  }
+
+  onViewportChange(callback: (viewport: Viewport) => void) {
+    this.viewportListeners.add(callback);
+    callback(this.viewport);
+
+    return () => {
+      this.viewportListeners.delete(callback);
+    };
   }
 
   syncPanZoomViewport() {
@@ -295,16 +316,152 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     return rounded;
   }
 
-  getNodePosition(node: Node) {
+  setNodeAbsolutePosition(id: string, node: Node, absolutePosition: XYPosition) {
+    let constrainedPosition = this.constrainNodeAbsolutePosition(node, absolutePosition);
+    let userPosition = this.absoluteToUserPosition(node, constrainedPosition);
+
+    return {
+      position: this.setNodePosition(id, userPosition),
+      positionAbsolute: constrainedPosition,
+    };
+  }
+
+  getNodePosition(node: Node): XYPosition {
+    let position = this.getNodeUserPosition(node);
+    let origin = this.getNodeOrigin(node);
+    let localPosition = {
+      x: position.x - this.getNodeWidth(node) * origin[0],
+      y: position.y - this.getNodeHeight(node) * origin[1],
+    };
+
+    if (!node.parentId) {
+      return localPosition;
+    }
+
+    let parent = this.currentSourceNodes.find((candidate) => candidate.id === node.parentId);
+    if (!parent) {
+      return localPosition;
+    }
+
+    let parentPosition: XYPosition = this.getNodePosition(parent);
+    return {
+      x: parentPosition.x + localPosition.x,
+      y: parentPosition.y + localPosition.y,
+    };
+  }
+
+  getNodeUserPosition(node: Node): XYPosition {
     return this.nodePositions.get(node.id) ?? node.position;
   }
 
+  snapNodePosition(position: XYPosition) {
+    return this.snapToGrid ? snapPosition(position, this.snapGrid) : position;
+  }
+
+  setSnapGrid(snapToGrid: boolean, snapGrid: SnapGrid) {
+    this.snapToGrid = snapToGrid;
+    this.snapGrid = snapGrid;
+  }
+
+  setNodeOrigin(nodeOrigin: NodeOrigin) {
+    this.nodeOrigin = nodeOrigin;
+  }
+
+  setNodeExtent(nodeExtent: CoordinateExtent) {
+    this.nodeExtent = nodeExtent;
+  }
+
+  setTranslateExtent(translateExtent: CoordinateExtent) {
+    this.translateExtent = translateExtent;
+    this.panZoom?.setTranslateExtent(translateExtent);
+  }
+
+  private absoluteToUserPosition(node: Node, absolutePosition: XYPosition): XYPosition {
+    let parentPosition = this.getParentAbsolutePosition(node);
+    let origin = this.getNodeOrigin(node);
+
+    return {
+      x: absolutePosition.x - parentPosition.x + this.getNodeWidth(node) * origin[0],
+      y: absolutePosition.y - parentPosition.y + this.getNodeHeight(node) * origin[1],
+    };
+  }
+
+  private getParentAbsolutePosition(node: Node): XYPosition {
+    if (!node.parentId) {
+      return { x: 0, y: 0 };
+    }
+
+    let parent = this.currentSourceNodes.find((candidate) => candidate.id === node.parentId);
+    return parent ? this.getNodePosition(parent) : { x: 0, y: 0 };
+  }
+
+  private getNodeOrigin(node: Node): NodeOrigin {
+    return node.origin ?? this.nodeOrigin;
+  }
+
+  private constrainNodeAbsolutePosition(node: Node, absolutePosition: XYPosition) {
+    let snappedPosition = this.snapNodePosition(absolutePosition);
+    let extent = this.getNodeAbsoluteExtent(node);
+
+    if (!extent) {
+      return this.roundPosition(snappedPosition);
+    }
+
+    return this.roundPosition(
+      clampPosition(snappedPosition, extent, {
+        width: this.getNodeWidth(node),
+        height: this.getNodeHeight(node),
+      }),
+    );
+  }
+
+  private getNodeAbsoluteExtent(node: Node): CoordinateExtent | null {
+    let parentPosition = this.getParentAbsolutePosition(node);
+
+    if (node.extent === 'parent') {
+      let parent = node.parentId ? this.currentSourceNodes.find((candidate) => candidate.id === node.parentId) : undefined;
+
+      if (!parent) {
+        return null;
+      }
+
+      return [
+        [parentPosition.x, parentPosition.y],
+        [parentPosition.x + this.getNodeWidth(parent), parentPosition.y + this.getNodeHeight(parent)],
+      ];
+    }
+
+    if (isCoordinateExtent(node.extent)) {
+      if (!node.parentId) {
+        return node.extent;
+      }
+
+      return [
+        [node.extent[0][0] + parentPosition.x, node.extent[0][1] + parentPosition.y],
+        [node.extent[1][0] + parentPosition.x, node.extent[1][1] + parentPosition.y],
+      ];
+    }
+
+    return isCoordinateExtent(this.nodeExtent) ? this.nodeExtent : null;
+  }
+
+  setNodeDimensions(id: string, dimensions: { width: number; height: number }) {
+    let rounded = {
+      width: this.roundViewportValue(dimensions.width),
+      height: this.roundViewportValue(dimensions.height),
+    };
+
+    this.nodeDimensions.set(id, rounded);
+
+    return rounded;
+  }
+
   getNodeWidth(node: Node) {
-    return node.width ?? node.initialWidth ?? node.measured?.width ?? 150;
+    return this.nodeDimensions.get(node.id)?.width ?? node.width ?? node.initialWidth ?? node.measured?.width ?? 150;
   }
 
   getNodeHeight(node: Node) {
-    return node.height ?? node.initialHeight ?? node.measured?.height ?? 40;
+    return this.nodeDimensions.get(node.id)?.height ?? node.height ?? node.initialHeight ?? node.measured?.height ?? 40;
   }
 
   getRenderedNodeBounds(node: Node): Rect {
@@ -392,13 +549,25 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     return { nodeChanges, edgeChanges };
   }
 
-  panBy(delta: XYPosition) {
-    this.setViewport({
-      x: this.viewport.x + delta.x,
-      y: this.viewport.y + delta.y,
-      zoom: this.viewport.zoom,
+  async panBy(delta: XYPosition) {
+    let changed = await panBySystem({
+      delta,
+      panZoom: this.panZoom,
+      transform: [this.viewport.x, this.viewport.y, this.viewport.zoom],
+      translateExtent: this.translateExtent,
+      width: this.width,
+      height: this.height,
     });
-    this.syncPanZoomViewport();
+
+    if (!this.panZoom) {
+      this.setViewport({
+        x: this.viewport.x + delta.x,
+        y: this.viewport.y + delta.y,
+        zoom: this.viewport.zoom,
+      });
+    }
+
+    return changed;
   }
 
   setViewportDimensions(width: number, height: number) {
@@ -585,9 +754,11 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     this.deletedEdgeIds.clear();
     this.pressedKeys.clear();
     this.nodePositions.clear();
+    this.nodeDimensions.clear();
     this.addedEdges = [];
     this.panZoom = null;
     this.viewport = initialViewport ?? { x: 0, y: 0, zoom: 1 };
+    this.notifyViewportListeners();
     this.bump();
   }
 
@@ -605,6 +776,19 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
 
   roundViewportValue(value: number) {
     return Math.round(value * 1000) / 1000;
+  }
+
+  private roundPosition(position: XYPosition): XYPosition {
+    return {
+      x: this.roundViewportValue(position.x),
+      y: this.roundViewportValue(position.y),
+    };
+  }
+
+  private notifyViewportListeners() {
+    for (let listener of this.viewportListeners) {
+      listener(this.viewport);
+    }
   }
 }
 

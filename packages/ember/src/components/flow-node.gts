@@ -9,6 +9,7 @@ type HandleType = 'source' | 'target';
 interface Signature {
   Args: {
     node: Node;
+    position?: { x: number; y: number };
     nodeComponent?: NodeComponent;
     onNodeClick?: (node: Node, event: MouseEvent) => void;
     onNodePointerDown?: (node: Node, event: PointerEvent) => void;
@@ -38,6 +39,10 @@ export default class FlowNode extends Component<Signature> {
     return this.args.node.selected ?? false;
   }
 
+  get isConnectable() {
+    return this.args.node.connectable ?? true;
+  }
+
   get nodeClasses() {
     let classes = [
       'ember-flow__node',
@@ -61,8 +66,16 @@ export default class FlowNode extends Component<Signature> {
   }
 
   get nodeStyle() {
-    let { position, style } = this.args.node;
-    return htmlSafe(`transform: translate(${position.x}px, ${position.y}px); ${this.toCss(style)}`);
+    let { style } = this.args.node;
+    let position = this.args.position ?? this.args.node.position;
+    let dimensions = [
+      this.args.node.width !== undefined ? `width: ${this.args.node.width}px;` : undefined,
+      this.args.node.height !== undefined ? `height: ${this.args.node.height}px;` : undefined,
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+    return htmlSafe(`transform: translate(${position.x}px, ${position.y}px); ${dimensions} ${this.toCss(style)}`);
   }
 
   get label() {
@@ -81,11 +94,19 @@ export default class FlowNode extends Component<Signature> {
   }
 
   get hasTargetHandle() {
-    return this.nodeType !== 'input';
+    return !this.nodeComponent && this.nodeType !== 'input';
   }
 
   get hasSourceHandle() {
-    return this.nodeType !== 'output';
+    return !this.nodeComponent && this.nodeType !== 'output';
+  }
+
+  get targetHandleClasses() {
+    return this.handleClasses('target', this.targetPosition);
+  }
+
+  get sourceHandleClasses() {
+    return this.handleClasses('source', this.sourcePosition);
   }
 
   get isDragHandleNode() {
@@ -127,6 +148,23 @@ export default class FlowNode extends Component<Signature> {
       .join(' ');
   }
 
+  private handleClasses(type: HandleType, position: string) {
+    return [
+      'ember-flow__handle',
+      `ember-flow__handle-${position}`,
+      position,
+      type,
+      'nodrag',
+      'nopan',
+      this.isConnectable ? 'connectable' : undefined,
+      this.isConnectable ? 'connectablestart' : undefined,
+      this.isConnectable ? 'connectableend' : undefined,
+      this.isConnectable ? 'connectionindicator' : undefined,
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }
+
   <template>
     <div
       class={{this.nodeClasses}}
@@ -140,10 +178,10 @@ export default class FlowNode extends Component<Signature> {
     >
       {{#if this.hasTargetHandle}}
         <div
-          class='ember-flow__handle ember-flow__handle-{{this.targetPosition}} target connectionindicator'
+          class={{this.targetHandleClasses}}
           data-nodeid={{@node.id}}
-          data-handleid='target'
           data-handlepos={{this.targetPosition}}
+          data-handletype='target'
           {{listen 'pointerdown' this.handleTargetPointerDown}}
         ></div>
       {{/if}}
@@ -158,10 +196,10 @@ export default class FlowNode extends Component<Signature> {
       {{/if}}
       {{#if this.hasSourceHandle}}
         <div
-          class='ember-flow__handle ember-flow__handle-{{this.sourcePosition}} source connectionindicator'
+          class={{this.sourceHandleClasses}}
           data-nodeid={{@node.id}}
-          data-handleid='source'
           data-handlepos={{this.sourcePosition}}
+          data-handletype='source'
           {{listen 'pointerdown' this.handleSourcePointerDown}}
         ></div>
       {{/if}}

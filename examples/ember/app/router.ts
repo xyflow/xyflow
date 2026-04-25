@@ -10,6 +10,15 @@ export default class Router extends EmberRouter {
 Router.map(function () {
   this.route('examples', function () {
     this.route('color-mode');
+    this.route('parity', function () {
+      this.route('viewport-controls');
+      this.route('editing');
+      this.route('edges');
+      this.route('minimap');
+      this.route('custom-handles');
+      this.route('resizing');
+      this.route('placement-events');
+    });
   });
   this.route('tests', function () {
     this.route('generic', { path: '/generic/:topic/:example' });

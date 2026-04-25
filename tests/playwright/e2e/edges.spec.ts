@@ -154,6 +154,77 @@ test.describe('Edges', () => {
       await expect(edge).toHaveAttribute('marker-end', "url('#1__type=arrow')");
     });
 
+    test('label renders regular edge text', async ({ page }) => {
+      const label = page
+        .locator(`.${FRAMEWORK}-flow__edge-text, .${FRAMEWORK}-flow__edge-label`)
+        .filter({ hasText: 'animated' });
+
+      await expect(label).toBeVisible();
+    });
+
+    test('clicking a regular edge label selects the edge', async ({ page }) => {
+      const edge = page.locator('[data-id="animated-edge"]');
+      const label = page
+        .locator(`.${FRAMEWORK}-flow__edge-textwrapper, .${FRAMEWORK}-flow__edge-label`)
+        .filter({ hasText: 'animated' });
+
+      await expect(edge).toBeAttached();
+      await expect(label).toBeVisible();
+
+      await label.click();
+
+      await expect(edge).toHaveClass(/selected/);
+    });
+
+    test('built-in straight, step, and smoothstep edge types render distinct paths', async ({ page }) => {
+      const straightPath = page.locator('[data-id="straight-edge"]').locator(`.${FRAMEWORK}-flow__edge-path`);
+      const stepPath = page.locator('[data-id="step-edge"]').locator(`.${FRAMEWORK}-flow__edge-path`);
+      const smoothStepPath = page.locator('[data-id="smoothstep-edge"]').locator(`.${FRAMEWORK}-flow__edge-path`);
+
+      await expect(straightPath).toBeAttached();
+      await expect(stepPath).toBeAttached();
+      await expect(smoothStepPath).toBeAttached();
+
+      const straightD = await straightPath.getAttribute('d');
+      const stepD = await stepPath.getAttribute('d');
+      const smoothStepD = await smoothStepPath.getAttribute('d');
+
+      expect(straightD).toContain('L');
+      expect(straightD).not.toContain('C');
+      expect(stepD).toContain('L');
+      expect(stepD).not.toContain('C');
+      expect(smoothStepD).toContain('L');
+      expect(smoothStepD).not.toEqual(straightD);
+      expect(smoothStepD).not.toEqual(stepD);
+    });
+
+    test('selected edge affordance follows node drag', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'Ember selection halo is an Ember-specific affordance');
+
+      const edge = page.locator('[data-id="edge-with-class"]');
+      const edgePath = edge.locator('.ember-flow__edge-path');
+      const selectionPath = edge.locator('.ember-flow__edge-selection');
+      const sourceNode = page.locator('.ember-flow__node[data-id="1"]');
+
+      await expect(edge).toBeAttached();
+      await edge.click();
+      await expect(selectionPath).toBeAttached();
+
+      const before = await selectionPath.getAttribute('d');
+      const sourceBox = await sourceNode.boundingBox();
+
+      await page.mouse.move(sourceBox!.x + sourceBox!.width / 2, sourceBox!.y + sourceBox!.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(sourceBox!.x + sourceBox!.width / 2 + 80, sourceBox!.y + sourceBox!.height / 2 + 20);
+      await page.mouse.up();
+
+      const after = await selectionPath.getAttribute('d');
+      const visiblePath = await edgePath.getAttribute('d');
+
+      expect(after).not.toEqual(before);
+      expect(after).toEqual(visiblePath);
+    });
+
     test('z-index', async ({ page }) => {
       const svg = page.locator('svg', { has: page.locator('[data-id="edge-with-class"]') });
 

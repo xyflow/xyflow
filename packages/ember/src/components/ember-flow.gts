@@ -2,11 +2,11 @@ import Component from '@glimmer/component';
 import type Owner from '@ember/owner';
 import { htmlSafe } from '@ember/template';
 import {
+  infiniteExtent,
   PanOnScrollMode,
   Position,
   XYPanZoom,
   getEdgeId,
-  getBezierPath,
   getStraightPath,
   type Transform,
   type Viewport,
@@ -16,6 +16,8 @@ import listen from '../modifiers/listen.js';
 import flowStore from '../modifiers/flow-store.js';
 import panZoom from '../modifiers/pan-zoom.js';
 import EmberFlowStore from '../store/index.js';
+import { getEdgePathData } from '../utils/edge-path.js';
+import { getViewportOverlayTransform } from '../utils/viewport-overlay.js';
 import FlowEdge from './flow-edge.js';
 import FlowNode from './flow-node.js';
 import type { Connection, Edge, EmberFlowArgs, Node, NodeComponent } from '../types.js';
@@ -26,6 +28,14 @@ interface EdgeRenderItem<EdgeType extends Edge = Edge, NodeType extends Node = N
   edge: EdgeType;
   source: NodeType;
   target: NodeType;
+}
+
+interface NodeResizeDetail {
+  id: string;
+  position: { x: number; y: number };
+  dimensions: { width: number; height: number };
+  direction: number[];
+  resizing: boolean;
 }
 
 interface Signature<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
@@ -47,6 +57,8 @@ export default class EmberFlow<
   private connectionLineElement: SVGSVGElement | null = null;
   private connectionPathElement: SVGPathElement | null = null;
   private didFitView = false;
+  private didSetInitialInteractivity = false;
+  private suppressPaneClick = false;
   private activeNodeDrag: {
     id: string;
     pointerId: number;
@@ -54,6 +66,7 @@ export default class EmberFlow<
     startClientY: number;
     startPosition: { x: number; y: number };
     didMove: boolean;
+    started: boolean;
   } | null = null;
   private activeSelection: {
     startX: number;
@@ -63,6 +76,7 @@ export default class EmberFlow<
   } | null = null;
   private activeConnection: {
     nodeId: string;
+    handleId: string | null;
     handleType: HandleType;
     pointerId: number;
     fromX: number;
@@ -76,6 +90,7 @@ export default class EmberFlow<
   constructor(owner: Owner, args: Signature<NodeType, EdgeType>['Args']) {
     super(owner, args);
     this.store = new EmberFlowStore<NodeType, EdgeType>(args.initialViewport);
+    this.configureStorePlacement();
   }
 
   get nodes() {
@@ -163,11 +178,15 @@ export default class EmberFlow<
     this.connectionPathElement = element.querySelector<SVGPathElement>('.ember-flow__connection-path');
     this.store.setViewportDimensions(element.clientWidth, element.clientHeight);
     this.store.setZoomExtent(this.minZoom, this.maxZoom);
-    this.store.setInteractivity({
-      nodesDraggable: this.args.nodesDraggable ?? true,
-      nodesConnectable: this.args.nodesConnectable ?? true,
-      elementsSelectable: this.args.elementsSelectable ?? true,
-    });
+    this.configureStorePlacement();
+    if (!this.didSetInitialInteractivity) {
+      this.didSetInitialInteractivity = true;
+      this.store.setInteractivity({
+        nodesDraggable: this.args.nodesDraggable ?? true,
+        nodesConnectable: this.args.nodesConnectable ?? true,
+        elementsSelectable: this.args.elementsSelectable ?? true,
+      });
+    }
     this.applyViewportTransform(this.store.viewport);
     this.keydownHandler = this.handleKeyDown;
     this.keyupHandler = this.handleKeyUp;
@@ -251,6 +270,13 @@ export default class EmberFlow<
     this.applyViewportTransform(this.store.viewport);
   };
 
+  private configureStorePlacement() {
+    this.store.setNodeOrigin(this.args.nodeOrigin ?? [0, 0]);
+    this.store.setNodeExtent(this.args.nodeExtent ?? infiniteExtent);
+    this.store.setTranslateExtent(this.args.translateExtent ?? infiniteExtent);
+    this.store.setSnapGrid(this.args.snapToGrid ?? false, this.args.snapGrid ?? [15, 15]);
+  }
+
   private toCssSize(value: number | string) {
     return typeof value === 'number' ? `${value}px` : value;
   }
@@ -259,6 +285,10 @@ export default class EmberFlow<
     if (this.viewportElement) {
       this.viewportElement.style.transform = this.getViewportTransform(viewport);
     }
+    this.rendererElement?.style.setProperty(
+      '--ember-flow-resize-control-scale',
+      `${Math.max(1 / viewport.zoom, 1)}`,
+    );
   }
 
   private getViewportTransform(viewport: Viewport) {
@@ -266,6 +296,8 @@ export default class EmberFlow<
   }
 
   handleNodeClick = (node: Node, event: MouseEvent) => {
+    this.args.onNodeClick?.(event, node as NodeType);
+
     if (!this.elementsSelectable || node.selectable === false || this.activeNodeDrag?.didMove) {
       return;
     }
@@ -278,6 +310,8 @@ export default class EmberFlow<
   };
 
   handleEdgeClick = (edge: Edge, event: MouseEvent) => {
+    this.args.onEdgeClick?.(event, edge as EdgeType);
+
     if (!this.elementsSelectable || edge.selectable === false) {
       return;
     }
@@ -292,19 +326,34 @@ export default class EmberFlow<
   };
 
   handleRendererClick = (event: MouseEvent) => {
-    let target = event.target as Element | null;
-    let edgeElement = target?.closest<SVGGElement>('.ember-flow__edge');
-
-    if (!edgeElement || !this.rendererElement?.contains(edgeElement)) {
+    if (this.suppressPaneClick) {
+      this.suppressPaneClick = false;
       return;
     }
 
-    let edgeId = edgeElement.dataset['id'];
-    let edge = this.edges.find((candidate) => candidate.id === edgeId);
+    let target = event.target as Element | null;
+    let edgeElement = target?.closest<SVGGElement>('.ember-flow__edge');
 
-    if (edge) {
-      this.handleEdgeClick(edge, event);
+    if (edgeElement && this.rendererElement?.contains(edgeElement)) {
+      let edgeId = edgeElement.dataset['id'];
+      let edge = this.edges.find((candidate) => candidate.id === edgeId);
+
+      if (edge) {
+        this.handleEdgeClick(edge, event);
+        return;
+      }
     }
+
+    if (
+      target?.closest(
+        '.ember-flow__node, .ember-flow__edge, .ember-flow__edge-label, .ember-flow__panel, .ember-flow__controls',
+      )
+    ) {
+      return;
+    }
+
+    this.clearSelection();
+    this.args.onPaneClick?.(event);
   };
 
   handleNodePointerDown = (node: Node, event: PointerEvent) => {
@@ -313,7 +362,12 @@ export default class EmberFlow<
     }
 
     let target = event.target as Element | null;
-    if (target?.closest('.ember-flow__handle')) {
+    let handle = target?.closest<HTMLElement>('.ember-flow__handle');
+    if (handle) {
+      let handleType = this.getHandleType(handle);
+      if (handleType) {
+        this.handleHandlePointerDown(node, handleType, event, handle);
+      }
       return;
     }
 
@@ -331,6 +385,7 @@ export default class EmberFlow<
       startClientY: event.clientY,
       startPosition: this.store.getNodePosition(node),
       didMove: false,
+      started: false,
     };
 
     this.nodeElement(node.id)?.classList.add('dragging');
@@ -365,14 +420,23 @@ export default class EmberFlow<
     window.addEventListener('pointercancel', this.handleWindowSelectionPointerUp);
   };
 
-  handleHandlePointerDown = (node: Node, handleType: HandleType, event: PointerEvent) => {
+  handleHandlePointerDown = (
+    node: Node,
+    handleType: HandleType,
+    event: PointerEvent,
+    handleElement?: HTMLElement,
+  ) => {
     if (!this.nodesConnectable || node.connectable === false || event.button !== 0) {
       return;
     }
 
     let renderer = this.rendererElement;
-    let handle = event.currentTarget as HTMLElement | null;
+    let handle = handleElement ?? (event.currentTarget as HTMLElement | null);
     if (!renderer || !handle) {
+      return;
+    }
+
+    if (!this.canStartConnection(handle)) {
       return;
     }
 
@@ -386,6 +450,7 @@ export default class EmberFlow<
 
     this.activeConnection = {
       nodeId: node.id,
+      handleId: this.getHandleId(handle),
       handleType,
       pointerId: event.pointerId,
       fromX,
@@ -413,10 +478,22 @@ export default class EmberFlow<
       drag.didMove = true;
     }
 
+    if (!drag.didMove) {
+      return;
+    }
+
     this.applyNodePosition(drag.id, {
       x: drag.startPosition.x + dx,
       y: drag.startPosition.y + dy,
     });
+    let node = this.nodes.find((candidate) => candidate.id === drag.id);
+    if (node) {
+      if (!drag.started) {
+        drag.started = true;
+        this.args.onNodeDragStart?.(event, node as NodeType);
+      }
+      this.args.onNodeDrag?.(event, node as NodeType);
+    }
     this.autoPanForNodeDrag(event);
   };
 
@@ -431,6 +508,10 @@ export default class EmberFlow<
       let position = this.store.nodePositions.get(drag.id);
       this.args.onNodesChange?.([{ id: drag.id, type: 'position', position }] as any);
       this.store.bump();
+    }
+    let node = this.nodes.find((candidate) => candidate.id === drag.id);
+    if (node && drag.started) {
+      this.args.onNodeDragStop?.(event, node as NodeType);
     }
     this.detachNodeDragListeners();
   };
@@ -488,6 +569,7 @@ export default class EmberFlow<
       }
     }
 
+    this.suppressPaneClick = true;
     this.detachSelectionListeners(false);
   };
 
@@ -544,6 +626,10 @@ export default class EmberFlow<
 
     if (edgeChanges.length > 0) {
       this.args.onEdgesChange?.(edgeChanges as any);
+    }
+
+    if (nodeChanges.length > 0 || edgeChanges.length > 0) {
+      this.emitSelectionChange();
     }
   }
 
@@ -633,16 +719,31 @@ export default class EmberFlow<
       return;
     }
 
-    let targetHandleType = targetHandle.classList.contains('source') ? 'source' : 'target';
+    if (!this.canEndConnection(targetHandle)) {
+      return;
+    }
+
+    let targetHandleType = this.getHandleType(targetHandle);
+    if (!targetHandleType) {
+      return;
+    }
+
+    let targetHandleId = this.getHandleId(targetHandle);
     let sourceId: string | null = null;
     let destinationId: string | null = null;
+    let sourceHandle: string | null = null;
+    let targetHandleIdForPayload: string | null = null;
 
     if (connection.handleType === 'source' && targetHandleType === 'target') {
       sourceId = connection.nodeId;
       destinationId = targetNodeId;
+      sourceHandle = connection.handleId;
+      targetHandleIdForPayload = targetHandleId;
     } else if (connection.handleType === 'target' && targetHandleType === 'source') {
       sourceId = targetNodeId;
       destinationId = connection.nodeId;
+      sourceHandle = targetHandleId;
+      targetHandleIdForPayload = connection.handleId;
     }
 
     if (!sourceId || !destinationId) {
@@ -652,8 +753,8 @@ export default class EmberFlow<
     let connectionPayload: Connection = {
       source: sourceId,
       target: destinationId,
-      sourceHandle: null,
-      targetHandle: null,
+      sourceHandle,
+      targetHandle: targetHandleIdForPayload,
     };
     let id = getEdgeId(connectionPayload);
     if (this.edges.some((edge) => edge.id === id)) {
@@ -664,6 +765,8 @@ export default class EmberFlow<
       id,
       source: sourceId,
       target: destinationId,
+      sourceHandle,
+      targetHandle: targetHandleIdForPayload,
     } as EdgeType;
 
     this.store.addEdge(edge);
@@ -678,13 +781,18 @@ export default class EmberFlow<
     for (let id of this.store.selectedEdgeIds) {
       this.edgeElement(id)?.classList.remove('selected');
     }
-    this.store.clearSelection();
+    if (this.store.clearSelection()) {
+      this.emitSelectionChange();
+    }
   }
 
   private selectNode(id: string) {
     let didSelect = this.store.selectNode(id);
     this.nodeElement(id)?.classList.add('selected');
     this.args.onNodesChange?.([{ id, type: 'select' }] as any);
+    if (didSelect) {
+      this.emitSelectionChange();
+    }
     return didSelect;
   }
 
@@ -692,18 +800,72 @@ export default class EmberFlow<
     let didSelect = this.store.selectEdge(id);
     this.edgeElement(id)?.classList.add('selected');
     this.args.onEdgesChange?.([{ id, type: 'select' }] as any);
+    if (didSelect) {
+      this.emitSelectionChange();
+    }
     return didSelect;
   }
 
+  private emitSelectionChange() {
+    this.args.onSelectionChange?.({
+      nodes: this.store.selectedNodes as NodeType[],
+      edges: this.store.selectedEdges as EdgeType[],
+    });
+  }
+
   private applyNodePosition(id: string, position: { x: number; y: number }) {
-    let rounded = this.store.setNodePosition(id, position);
+    let node = this.nodes.find((candidate) => candidate.id === id);
+    if (!node) {
+      return;
+    }
+
+    let { positionAbsolute } = this.store.setNodeAbsolutePosition(id, node, position);
 
     let element = this.nodeElement(id);
     if (element) {
-      element.style.transform = `translate(${rounded.x}px, ${rounded.y}px)`;
+      element.style.transform = `translate(${positionAbsolute.x}px, ${positionAbsolute.y}px)`;
     }
 
     this.updateConnectedEdges(id);
+  }
+
+  handleNodeResize = (event: CustomEvent<NodeResizeDetail>) => {
+    event.stopPropagation();
+    this.applyNodeResize(event.detail);
+  };
+
+  private applyNodeResize(detail: NodeResizeDetail) {
+    let node = this.nodes.find((candidate) => candidate.id === detail.id);
+    if (!node) {
+      return;
+    }
+
+    let dimensions = this.store.setNodeDimensions(detail.id, detail.dimensions);
+    let { position, positionAbsolute } = this.store.setNodeAbsolutePosition(detail.id, node, detail.position);
+    let element = this.nodeElement(detail.id);
+
+    if (element) {
+      element.style.transform = `translate(${positionAbsolute.x}px, ${positionAbsolute.y}px)`;
+      element.style.width = `${dimensions.width}px`;
+      element.style.height = `${dimensions.height}px`;
+    }
+
+    this.updateConnectedEdges(detail.id);
+    this.args.onNodesChange?.([
+      {
+        id: detail.id,
+        type: 'position',
+        position,
+      },
+      {
+        id: detail.id,
+        type: 'dimensions',
+        dimensions,
+        resizing: detail.resizing,
+        setAttributes: true,
+      },
+    ] as any);
+    this.store.bump();
   }
 
   private updateConnectedEdges(nodeId: string) {
@@ -714,30 +876,98 @@ export default class EmberFlow<
 
       let source = this.nodes.find((node) => node.id === edge.source);
       let target = this.nodes.find((node) => node.id === edge.target);
-      let path = this.edgeElement(edge.id)?.querySelector<SVGPathElement>('.ember-flow__edge-path');
+      let edgeElement = this.edgeElement(edge.id);
 
-      if (!source || !target || !path) {
+      if (!source || !target || !edgeElement) {
         continue;
       }
 
-      path.setAttribute('d', this.getEdgePath(source, target));
+      let [edgePath, labelX, labelY] = getEdgePathData(edge, source, target, {
+        getNodePosition: (node) => this.store.getNodePosition(node),
+        getNodeWidth: (node) => this.store.getNodeWidth(node),
+        getNodeHeight: (node) => this.store.getNodeHeight(node),
+      });
+      for (let path of edgeElement.querySelectorAll<SVGPathElement>(
+        '.ember-flow__edge-path, .ember-flow__edge-interaction, .ember-flow__edge-selection',
+      )) {
+        path.setAttribute('d', edgePath);
+      }
+      edgeElement
+        ?.querySelector<SVGGElement>('.ember-flow__edge-textwrapper')
+        ?.setAttribute('transform', `translate(${labelX} ${labelY})`);
+      this.updateEdgeToolbar(edge.id, labelX, labelY);
     }
   }
 
-  private getEdgePath(source: Node, target: Node) {
-    let sourcePosition = source.sourcePosition ?? Position.Bottom;
-    let targetPosition = target.targetPosition ?? Position.Top;
-    let sourceHandle = this.getHandlePosition(source, sourcePosition);
-    let targetHandle = this.getHandlePosition(target, targetPosition);
+  private updateEdgeToolbar(edgeId: string, x: number, y: number) {
+    let toolbar = this.rendererElement?.querySelector<HTMLElement>(
+      `.ember-flow__edge-toolbar[data-id="${this.escapeAttribute(edgeId)}"]`,
+    );
 
-    return getBezierPath({
-      sourceX: sourceHandle.x,
-      sourceY: sourceHandle.y,
-      sourcePosition,
-      targetX: targetHandle.x,
-      targetY: targetHandle.y,
-      targetPosition,
-    })[0];
+    if (!toolbar) {
+      return;
+    }
+
+    let offset = Number(toolbar.dataset['offset'] ?? 10);
+    let position = toolbar.dataset['position'] as Position | undefined;
+    let alignX = toolbar.dataset['alignX'] as 'left' | 'center' | 'right' | undefined;
+    let alignY = toolbar.dataset['alignY'] as 'top' | 'center' | 'bottom' | undefined;
+    let screenOffset = this.getToolbarScreenOffset(position, Number.isFinite(offset) ? offset : 10);
+
+    toolbar.style.transform = getViewportOverlayTransform({
+      x,
+      y,
+      zoom: this.store.viewport.zoom,
+      offsetX: screenOffset.x,
+      offsetY: screenOffset.y,
+      alignX: alignX ?? 'center',
+      alignY: alignY ?? 'center',
+    });
+  }
+
+  private getToolbarScreenOffset(position: Position | undefined, offset: number) {
+    switch (position) {
+      case Position.Top:
+        return { x: 0, y: -offset };
+      case Position.Right:
+        return { x: offset, y: 0 };
+      case Position.Bottom:
+        return { x: 0, y: offset };
+      case Position.Left:
+        return { x: -offset, y: 0 };
+      default:
+        return { x: 0, y: 0 };
+    }
+  }
+
+  private getHandleType(handle: HTMLElement): HandleType | null {
+    let dataType = handle.dataset['handletype'];
+    if (dataType === 'source' || dataType === 'target') {
+      return dataType;
+    }
+
+    if (handle.classList.contains('source')) {
+      return 'source';
+    }
+
+    if (handle.classList.contains('target')) {
+      return 'target';
+    }
+
+    return null;
+  }
+
+  private getHandleId(handle: HTMLElement) {
+    let id = handle.dataset['handleid'];
+    return id && id !== 'null' ? id : null;
+  }
+
+  private canStartConnection(handle: HTMLElement) {
+    return !handle.classList.contains('connectable') || handle.classList.contains('connectablestart');
+  }
+
+  private canEndConnection(handle: HTMLElement) {
+    return !handle.classList.contains('connectable') || handle.classList.contains('connectableend');
   }
 
   private autoPanForNodeDrag(event: PointerEvent) {
@@ -764,8 +994,7 @@ export default class EmberFlow<
     }
 
     if (x !== 0 || y !== 0) {
-      this.store.panBy({ x, y });
-      this.applyViewportTransform(this.store.viewport);
+      void this.store.panBy({ x, y }).then(() => this.applyViewportTransform(this.store.viewport));
     }
   }
 
@@ -793,39 +1022,17 @@ export default class EmberFlow<
     }
 
     if (x !== 0 || y !== 0) {
-      this.store.panBy({ x, y });
-      this.applyViewportTransform(this.store.viewport);
-    }
-  }
-
-  private getNodeWidth(node: Node) {
-    return this.store.getNodeWidth(node);
-  }
-
-  private getNodeHeight(node: Node) {
-    return this.store.getNodeHeight(node);
-  }
-
-  private getHandlePosition(node: Node, position: Position) {
-    let nodePosition = this.store.getNodePosition(node);
-    let width = this.getNodeWidth(node);
-    let height = this.getNodeHeight(node);
-
-    switch (position) {
-      case Position.Top:
-        return { x: nodePosition.x + width / 2, y: nodePosition.y };
-      case Position.Right:
-        return { x: nodePosition.x + width, y: nodePosition.y + height / 2 };
-      case Position.Bottom:
-        return { x: nodePosition.x + width / 2, y: nodePosition.y + height };
-      case Position.Left:
-        return { x: nodePosition.x, y: nodePosition.y + height / 2 };
+      void this.store.panBy({ x, y }).then(() => this.applyViewportTransform(this.store.viewport));
     }
   }
 
   nodeComponentFor = (node: Node): NodeComponent | undefined => {
     let type = node.type;
     return type ? this.args.nodeTypes?.[type] : undefined;
+  };
+
+  nodePositionFor = (node: Node) => {
+    return this.store.getNodePosition(node);
   };
 
   private nodeElement(id: string) {
@@ -857,6 +1064,7 @@ export default class EmberFlow<
         class='ember-flow__renderer ember-flow__container'
         {{panZoom this}}
         {{listen 'click' this.handleRendererClick}}
+        {{listen 'ember-flow:node-resize' this.handleNodeResize}}
       >
         <div
           class='ember-flow__pane ember-flow__container draggable'
@@ -882,6 +1090,7 @@ export default class EmberFlow<
               {{#unless node.hidden}}
                 <FlowNode
                   @node={{node}}
+                  @position={{this.nodePositionFor node}}
                   @nodeComponent={{this.nodeComponentFor node}}
                   @onNodeClick={{this.handleNodeClick}}
                   @onNodePointerDown={{this.handleNodePointerDown}}

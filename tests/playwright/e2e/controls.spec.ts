@@ -52,4 +52,15 @@ test.describe('Controls', () => {
 
     expect(transformAfter).toBe(transformBefore);
   });
+
+  test('custom control buttons render in the controls panel', async ({ page }) => {
+    await page.goto('/examples/parity/viewport-controls');
+
+    const customButton = page
+      .locator(`.${FRAMEWORK}-flow__controls-button`)
+      .and(page.locator('[aria-label="custom control"]'));
+
+    await expect(customButton).toBeAttached();
+    await expect(customButton).toHaveText('C');
+  });
 });

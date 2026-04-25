@@ -1,10 +1,26 @@
+export { default as BaseEdge } from './components/base-edge.js';
 export { default as Background } from './components/background.js';
+export { default as BezierEdge } from './components/bezier-edge.js';
+export { default as ControlButton } from './components/control-button.js';
 export { default as Controls } from './components/controls.js';
+export { default as EdgeLabel } from './components/edge-label.js';
+export { default as EdgeToolbar } from './components/edge-toolbar.js';
+export { default as EdgeText } from './components/edge-text.js';
 export { default as EmberFlow } from './components/ember-flow.js';
+export { default as Handle } from './components/handle.js';
+export { default as MiniMap } from './components/minimap.js';
+export { default as MiniMapNode } from './components/minimap-node.js';
+export { default as NodeResizeControl } from './components/node-resize-control.js';
+export { default as NodeResizer } from './components/node-resizer.js';
 export { default as NodeToolbar } from './components/node-toolbar.js';
 export { default as Panel } from './components/panel.js';
+export { default as SmoothStepEdge } from './components/smooth-step-edge.js';
+export { default as StepEdge } from './components/step-edge.js';
+export { default as StraightEdge } from './components/straight-edge.js';
+export { default as ViewportPortal } from './components/viewport-portal.js';
 export { default as EmberFlowStore } from './store/index.js';
 export { getFlowStore } from './store/context.js';
+export { applyEdgeChanges, applyNodeChanges } from './utils/changes.js';
 export * from './types.js';
 export {
   ConnectionLineType,
@@ -19,6 +35,7 @@ export {
   getBezierEdgeCenter,
   getConnectedEdges,
   getEdgeCenter,
+  getEdgeToolbarTransform,
   getIncomers,
   getNodesBounds,
   getOutgoers,
@@ -42,9 +59,15 @@ export type {
   ControlPosition,
   CoordinateExtent,
   Dimensions,
+  EdgeAddChange,
   EdgeBase,
+  EdgeChange,
   EdgeMarker,
   EdgeMarkerType,
+  EdgePosition,
+  EdgeRemoveChange,
+  EdgeReplaceChange,
+  EdgeSelectionChange,
   FinalConnectionState,
   FitBounds,
   FitBoundsOptions,
@@ -56,9 +79,16 @@ export type {
   IsValidConnection,
   KeyCode,
   NoConnection,
+  NodeAddChange,
   NodeBase,
+  NodeChange,
   NodeConnection,
+  NodeDimensionChange,
   NodeOrigin,
+  NodePositionChange,
+  NodeRemoveChange,
+  NodeReplaceChange,
+  NodeSelectionChange,
   OnConnect,
   OnConnectEnd,
   OnConnectStart,
@@ -85,6 +115,7 @@ export type {
   SetViewport,
   ShouldResize,
   SmoothStepPathOptions,
+  StepPathOptions,
   SnapGrid,
   Transform,
   Viewport,

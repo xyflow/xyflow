@@ -84,6 +84,32 @@ export default {
 				position: { x: 140, y: 20 },
 				width: 50,
 				height: 50
+			},
+			{
+				id: '13',
+				data: { label: '13' },
+				position: { x: 340, y: 160 },
+				sourcePosition: 'right',
+				targetPosition: 'left'
+			},
+			{
+				id: '14',
+				data: { label: '14' },
+				position: { x: 560, y: 160 },
+				targetPosition: 'left'
+			},
+			{
+				id: '15',
+				data: { label: '15' },
+				position: { x: 340, y: 280 },
+				sourcePosition: 'right',
+				targetPosition: 'left'
+			},
+			{
+				id: '16',
+				data: { label: '16' },
+				position: { x: 560, y: 280 },
+				targetPosition: 'left'
 			}
 			// {
 			// 	id: '12',
@@ -175,6 +201,28 @@ export default {
 				id: 'subflow-edge-2',
 				source: '12-a',
 				target: '12-b'
+			},
+			{
+				id: 'straight-edge',
+				source: '13',
+				target: '14',
+				type: 'straight',
+				label: 'straight'
+			},
+			{
+				id: 'step-edge',
+				source: '13',
+				target: '15',
+				type: 'step',
+				label: 'step'
+			},
+			{
+				id: 'smoothstep-edge',
+				source: '15',
+				target: '16',
+				type: 'smoothstep',
+				label: 'smoothstep',
+				pathOptions: { borderRadius: 18 }
 			}
 			// {
 			// 	id: 'updatable',

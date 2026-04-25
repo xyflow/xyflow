@@ -43,3 +43,339 @@ body {
   justify-content: center;
   box-sizing: border-box;
 }
+
+.parity-index {
+  min-height: 100vh;
+  padding: 48px;
+  color: #172033;
+  background: #f8fafc;
+  box-sizing: border-box;
+}
+
+.parity-index__intro {
+  max-width: 720px;
+}
+
+.parity-index__eyebrow {
+  margin: 0 0 8px;
+  color: #4f46e5;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.parity-index h1 {
+  margin: 0;
+  font-size: 40px;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.parity-index__intro p:last-child {
+  margin: 16px 0 0;
+  color: #526072;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.parity-index__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  max-width: 980px;
+  margin-top: 32px;
+}
+
+.parity-index__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 132px;
+  padding: 18px;
+  color: inherit;
+  text-decoration: none;
+  background: #fff;
+  border: 1px solid #d8e0ea;
+  border-radius: 8px;
+  box-shadow: 0 10px 26px rgba(24, 33, 52, 0.08);
+}
+
+.parity-index__card:hover {
+  border-color: #9aa7ff;
+}
+
+.parity-index__card span {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.parity-index__card small {
+  color: #5f6e82;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.parity-sample {
+  width: 100vw;
+  height: 100vh;
+  background: #f8fafc;
+}
+
+.parity-sample .ember-flow {
+  --xy-edge-stroke-selected: #475569;
+}
+
+.parity-note {
+  max-width: 320px;
+  padding: 14px 16px;
+  color: #172033;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #d8e0ea;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(24, 33, 52, 0.12);
+}
+
+.parity-note--wide {
+  max-width: 380px;
+}
+
+.parity-note strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.parity-note ol {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.parity-note li {
+  margin: 5px 0;
+  color: #4a5870;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.parity-edge-toolbar {
+  padding: 5px 8px;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.parity-note__enhancement {
+  margin: 10px 0 0;
+  padding: 9px 10px;
+  color: #334155;
+  font-size: 11px;
+  line-height: 1.4;
+  background: #f8fafc;
+  border: 1px solid #dbe4f0;
+  border-radius: 6px;
+}
+
+.parity-event-log {
+  display: grid;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e1e7f0;
+}
+
+.parity-event-log span {
+  color: #334155;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.parity-sample-nav {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #d8e0ea;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(24, 33, 52, 0.1);
+}
+
+.parity-sample-nav a {
+  padding: 7px 9px;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.parity-sample-nav a:hover {
+  background: #edf2ff;
+  color: #3730a3;
+}
+
+.ember-flow__node.parity-node {
+  width: 164px;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  color: #172033;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #cfd8e6;
+  border-radius: 8px;
+  box-shadow: 0 8px 22px rgba(24, 33, 52, 0.1);
+}
+
+.ember-flow__node.parity-node.selected {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18), 0 8px 22px rgba(24, 33, 52, 0.1);
+}
+
+.ember-flow__node.parity-node--blue {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.ember-flow__node.parity-node--green {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.ember-flow__node.parity-node--amber {
+  border-color: #fcd34d;
+  background: #fffbeb;
+}
+
+.ember-flow__node.parity-node--purple {
+  border-color: #c4b5fd;
+  background: #f5f3ff;
+}
+
+.ember-flow__node.parity-node--muted {
+  color: #64748b;
+  background: #f1f5f9;
+}
+
+.ember-flow__node.parity-toolbar-node {
+  width: 190px;
+  padding: 0;
+}
+
+.parity-toolbar-node__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 16px;
+  box-sizing: border-box;
+}
+
+.parity-toolbar-node__body strong {
+  font-size: 13px;
+}
+
+.parity-toolbar-node__body small {
+  color: #58677d;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.ember-flow__node.parity-handle-node {
+  width: 190px;
+  min-height: 72px;
+  padding: 0;
+}
+
+.parity-handle-node__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 14px 16px;
+  box-sizing: border-box;
+}
+
+.parity-handle-node__body strong {
+  font-size: 13px;
+}
+
+.parity-handle-node__body small {
+  color: #58677d;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.ember-flow__handle.parity-custom-handle {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(24, 33, 52, 0.2);
+}
+
+.ember-flow__handle.parity-custom-handle--source {
+  background: #2563eb;
+}
+
+.ember-flow__handle.parity-custom-handle--target {
+  background: #16a34a;
+}
+
+.parity-control-button {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ember-flow__node.parity-resizable-node {
+  padding: 0;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.parity-resizable-node__body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  padding: 14px 16px;
+  box-sizing: border-box;
+}
+
+.parity-resizable-node__body strong {
+  font-size: 13px;
+}
+
+.parity-resizable-node__body small {
+  color: #58677d;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.ember-flow__node-toolbar {
+  padding: 4px;
+  background: #172033;
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(24, 33, 52, 0.18);
+}
+
+.ember-flow__node-toolbar button {
+  padding: 5px 8px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+}
+
+.ember-flow__node-toolbar button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}

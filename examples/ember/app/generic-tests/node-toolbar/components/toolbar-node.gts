@@ -1,7 +1,7 @@
 import type { TOC } from '@ember/component/template-only';
-import { NodeToolbar } from '@xyflow/ember';
+import { Handle, NodeToolbar, Position } from '@xyflow/ember';
 
-import type { Align, Node, Position } from '@xyflow/ember';
+import type { Align, Node } from '@xyflow/ember';
 
 type ToolbarNodeData = {
   label: string;
@@ -18,6 +18,7 @@ interface Signature {
 }
 
 const ToolbarNode: TOC<Signature> = <template>
+  <Handle @node={{@node}} @type='target' @position={{Position.Left}} />
   <NodeToolbar
     @node={{@node}}
     @isVisible={{@data.toolbarVisible}}
@@ -31,6 +32,7 @@ const ToolbarNode: TOC<Signature> = <template>
   <div class='toolbar-node'>
     {{@data.label}}
   </div>
+  <Handle @node={{@node}} @type='source' @position={{Position.Right}} />
 </template>;
 
 export default ToolbarNode;

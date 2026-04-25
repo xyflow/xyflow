@@ -1,8 +1,10 @@
 import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/template';
-import { Position, getBezierPath } from '@xyflow/system';
 
-import type { CssStyle, Edge, Node } from '../types.js';
+import EdgeText from './edge-text.js';
+import { getEdgePathData } from '../utils/edge-path.js';
+import { safeStyle } from '../utils/style.js';
+import type { Edge, Node } from '../types.js';
 
 interface Signature {
   Args: {
@@ -14,20 +16,29 @@ interface Signature {
 }
 
 export default class FlowEdge extends Component<Signature> {
-  get path() {
-    let sourcePosition = this.args.source.sourcePosition ?? Position.Bottom;
-    let targetPosition = this.args.target.targetPosition ?? Position.Top;
-    let source = this.getHandlePosition(this.args.source, sourcePosition);
-    let target = this.getHandlePosition(this.args.target, targetPosition);
+  get pathData() {
+    return getEdgePathData(this.args.edge, this.args.source, this.args.target);
+  }
 
-    return getBezierPath({
-      sourceX: source.x,
-      sourceY: source.y,
-      sourcePosition,
-      targetX: target.x,
-      targetY: target.y,
-      targetPosition,
-    })[0];
+  get path() {
+    return this.pathData[0];
+  }
+
+  get labelX() {
+    return this.pathData[1];
+  }
+
+  get labelY() {
+    return this.pathData[2];
+  }
+
+  get label() {
+    let label = this.args.edge.label;
+    return typeof label === 'string' || typeof label === 'number' ? String(label) : undefined;
+  }
+
+  get hasLabel() {
+    return Boolean(this.label);
   }
 
   get edgeClass() {
@@ -58,7 +69,47 @@ export default class FlowEdge extends Component<Signature> {
   }
 
   get edgeStyle() {
-    return this.args.edge.style ? htmlSafe(this.toCss(this.args.edge.style)) : undefined;
+    return safeStyle(this.args.edge.style);
+  }
+
+  get labelStyle() {
+    return safeStyle(this.args.edge.labelStyle);
+  }
+
+  get labelBgStyle() {
+    return safeStyle(this.args.edge.labelBgStyle);
+  }
+
+  get labelTransform() {
+    return `translate(${this.labelX} ${this.labelY})`;
+  }
+
+  get labelBgPadding() {
+    return this.args.edge.labelBgPadding ?? [4, 2];
+  }
+
+  get labelBgWidth() {
+    return Math.max((this.label?.length ?? 0) * 6.5 + this.labelBgPadding[0] * 2, 12);
+  }
+
+  get labelBgHeight() {
+    return 14 + this.labelBgPadding[1] * 2;
+  }
+
+  get labelBgX() {
+    return -this.labelBgWidth / 2;
+  }
+
+  get labelBgY() {
+    return -this.labelBgHeight / 2;
+  }
+
+  get labelBgBorderRadius() {
+    return this.args.edge.labelBgBorderRadius ?? 2;
+  }
+
+  get shouldShowLabelBg() {
+    return this.args.edge.labelShowBg ?? true;
   }
 
   get svgStyle() {
@@ -78,6 +129,10 @@ export default class FlowEdge extends Component<Signature> {
     return this.markerUrl(this.args.edge.markerEnd);
   }
 
+  get isSelected() {
+    return this.args.edge.selected ?? false;
+  }
+
   private markerUrl(marker: Edge['markerStart']) {
     if (!marker) {
       return undefined;
@@ -85,34 +140,6 @@ export default class FlowEdge extends Component<Signature> {
 
     let type = typeof marker === 'string' ? marker : marker.type;
     return `url('#1__type=${type}')`;
-  }
-
-  private toCss(style: CssStyle) {
-    if (typeof style === 'string') {
-      return style;
-    }
-
-    return Object.entries(style)
-      .filter((entry): entry is [string, string | number] => entry[1] !== undefined)
-      .map(([property, value]) => `${property}: ${value};`)
-      .join(' ');
-  }
-
-  private getHandlePosition(node: Node, position: Position) {
-    let width = node.width ?? node.initialWidth ?? node.measured?.width ?? 150;
-    let height = node.height ?? node.initialHeight ?? node.measured?.height ?? 40;
-    let { x, y } = node.position;
-
-    switch (position) {
-      case Position.Top:
-        return { x: x + width / 2, y };
-      case Position.Right:
-        return { x: x + width, y: y + height / 2 };
-      case Position.Bottom:
-        return { x: x + width / 2, y: y + height };
-      case Position.Left:
-        return { x, y: y + height / 2 };
-    }
   }
 
   <template>
@@ -125,6 +152,12 @@ export default class FlowEdge extends Component<Signature> {
         role='group'
         aria-label={{if @edge.ariaLabel @edge.ariaLabel @edge.id}}
       >
+        {{#if this.isSelected}}
+          <path
+            class='ember-flow__edge-selection'
+            d={{this.path}}
+          />
+        {{/if}}
         <path
           class='ember-flow__edge-path'
           d={{this.path}}
@@ -137,6 +170,18 @@ export default class FlowEdge extends Component<Signature> {
           d={{this.path}}
           stroke-width={{this.interactionWidth}}
         />
+        {{#if this.hasLabel}}
+          <EdgeText
+            @x={{this.labelX}}
+            @y={{this.labelY}}
+            @label={{this.label}}
+            @labelStyle={{@edge.labelStyle}}
+            @labelShowBg={{@edge.labelShowBg}}
+            @labelBgStyle={{@edge.labelBgStyle}}
+            @labelBgPadding={{@edge.labelBgPadding}}
+            @labelBgBorderRadius={{@edge.labelBgBorderRadius}}
+          />
+        {{/if}}
       </g>
     </svg>
   </template>
