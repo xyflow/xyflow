@@ -177,4 +177,30 @@ test.describe('Node adornments', () => {
 
     expect(adornmentBox!.y).toBeLessThan(designBox!.y);
   });
+
+  test('passive artboard labels are always visible and track their tiles', async ({ page }) => {
+    await page.goto('/examples/parity/node-adornments');
+
+    const strategyNode = page.locator('[data-id="strategy"]').and(page.locator(`.${FRAMEWORK}-flow__node`));
+    const label = page.getByLabel('Artboard label').filter({ hasText: 'Strategy tile' });
+
+    await expect(label).toBeVisible();
+    await expect(page.getByLabel('Artboard label')).toHaveCount(3);
+
+    const nodeBefore = await strategyNode.boundingBox();
+    const labelBefore = await label.boundingBox();
+
+    await page.mouse.move(nodeBefore!.x + nodeBefore!.width / 2, nodeBefore!.y + nodeBefore!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(nodeBefore!.x + nodeBefore!.width / 2 + 72, nodeBefore!.y + nodeBefore!.height / 2 + 36, {
+      steps: 5,
+    });
+    await page.mouse.up();
+
+    const nodeAfter = await strategyNode.boundingBox();
+    const labelAfter = await label.boundingBox();
+
+    expect(Math.abs((labelAfter!.x - labelBefore!.x) - (nodeAfter!.x - nodeBefore!.x))).toBeLessThan(1);
+    expect(Math.abs((labelAfter!.y - labelBefore!.y) - (nodeAfter!.y - nodeBefore!.y))).toBeLessThan(1);
+  });
 });

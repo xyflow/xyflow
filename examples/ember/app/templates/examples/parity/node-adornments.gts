@@ -27,6 +27,7 @@ export default class NodeAdornmentsSample extends Component {
   initialViewport: Viewport = { x: 290, y: 220, zoom: 0.9 };
 
   groupNodeIds = ['strategy', 'design'];
+  artboardLabelNodeIds = ['strategy', 'design', 'ship'];
 
   nodes: Node<AdornmentNodeData>[] = [
     {
@@ -129,6 +130,10 @@ export default class NodeAdornmentsSample extends Component {
     this.adornmentMessage = `tagged ${toolbar.nodeIds.join(', ')}`;
   };
 
+  artboardLabelFor(toolbar: NodeToolbarContext<Node<AdornmentNodeData>>) {
+    return toolbar.nodes[0]?.data.label ?? toolbar.nodeIds[0] ?? 'tile';
+  }
+
   <template>
     {{pageTitle "EmberFlow Tile Adornments Sample"}}
     <main class='parity-sample'>
@@ -141,11 +146,25 @@ export default class NodeAdornmentsSample extends Component {
         @onNodeClick={{this.handleNodeClick}}
         as |flow|
       >
+        {{#each this.artboardLabelNodeIds as |nodeId|}}
+          <NodeToolbar
+            @nodeId={{nodeId}}
+            @isVisible={{true}}
+            @position={{Position.Top}}
+            @align='start'
+            @offset={{7}}
+            @className='parity-artboard-label'
+            as |_toolbarFlow toolbar|
+          >
+            <span aria-label='Artboard label'>{{this.artboardLabelFor toolbar}}</span>
+          </NodeToolbar>
+        {{/each}}
+
         <NodeToolbar
           @nodeId={{this.activeNodeId}}
           @isVisible={{true}}
           @position={{Position.Top}}
-          @offset={{18}}
+          @offset={{34}}
           @className='parity-adornment-menu parity-adornment-menu--tile'
           as |toolbarFlow toolbar|
         >
@@ -186,6 +205,7 @@ export default class NodeAdornmentsSample extends Component {
               <li>Click any tile to retarget the menu without putting controls inside the node component.</li>
               <li>Drag the active tile; the menu should follow and stay the same screen size.</li>
               <li>The lower menu is anchored to a two-tile group using an array of node ids.</li>
+              <li>The gray artboard labels are passive adornments that are always visible.</li>
               <li>Use the note buttons to select tiles from external Ember UI.</li>
             </ol>
             <div class='parity-note-actions' aria-label='Tile selection actions'>

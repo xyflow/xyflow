@@ -444,6 +444,31 @@ body {
   min-height: 74px;
 }
 
+.parity-sample .ember-flow__node-toolbar.parity-artboard-label {
+  padding: 0;
+  pointer-events: none;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.parity-artboard-label span {
+  display: inline-flex;
+  max-width: 134px;
+  padding: 4px 8px;
+  overflow: hidden;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: #e5e7eb;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+}
+
 .parity-sample .ember-flow__node-toolbar.parity-adornment-menu {
   padding: 0;
   background:
