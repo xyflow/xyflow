@@ -18,6 +18,7 @@ const GenericTestTemplate: TOC<Signature> = <template>
       @edges={{@model.flowProps.edges}}
       @nodeTypes={{@model.flowProps.nodeTypes}}
       @fitView={{@model.flowProps.fitView}}
+      @fitViewOptions={{@model.flowProps.fitViewOptions}}
       @initialViewport={{@model.flowProps.initialViewport}}
       @minZoom={{@model.flowProps.minZoom}}
       @maxZoom={{@model.flowProps.maxZoom}}

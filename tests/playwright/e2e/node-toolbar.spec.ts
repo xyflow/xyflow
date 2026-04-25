@@ -91,4 +91,39 @@ test.describe('Node Toolbar', async () => {
     await node.click();
     await expect(toolbar).toBeAttached();
   });
+
+  test('toolbar follows node drag', async ({ page }) => {
+    const node = page.locator('[data-id="node-start-top"]').and(page.locator(`.${FRAMEWORK}-flow__node`));
+    const toolbar = page
+      .locator('[data-id="node-start-top"]')
+      .and(page.locator(`.${FRAMEWORK}-flow__node-toolbar`));
+
+    await expect(node).toBeAttached();
+    await expect(toolbar).toBeAttached();
+
+    const nodeBefore = await node.boundingBox();
+    const toolbarBefore = await toolbar.boundingBox();
+
+    await page.mouse.move(nodeBefore!.x + nodeBefore!.width / 2, nodeBefore!.y + nodeBefore!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(nodeBefore!.x + nodeBefore!.width / 2 + 90, nodeBefore!.y + nodeBefore!.height / 2 + 55, {
+      steps: 4,
+    });
+    await page.mouse.up();
+
+    const nodeAfter = await node.boundingBox();
+    const toolbarAfter = await toolbar.boundingBox();
+    const nodeDelta = {
+      x: nodeAfter!.x - nodeBefore!.x,
+      y: nodeAfter!.y - nodeBefore!.y,
+    };
+    const toolbarDelta = {
+      x: toolbarAfter!.x - toolbarBefore!.x,
+      y: toolbarAfter!.y - toolbarBefore!.y,
+    };
+
+    expect(Math.abs(toolbarDelta.x - nodeDelta.x)).toBeLessThan(1);
+    expect(Math.abs(toolbarDelta.y - nodeDelta.y)).toBeLessThan(1);
+    expect(toolbarAfter!.y).toBeLessThan(nodeAfter!.y);
+  });
 });

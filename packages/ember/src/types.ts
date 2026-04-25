@@ -143,6 +143,7 @@ export interface EmberFlowArgs<
   height?: number | string;
   colorMode?: 'light' | 'dark' | 'system';
   fitView?: boolean;
+  fitViewOptions?: FitViewOptions<NodeType>;
   initialViewport?: Viewport;
   minZoom?: number;
   maxZoom?: number;

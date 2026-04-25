@@ -29,7 +29,7 @@ const ToolbarNode: TOC<Signature> = <template>
     <button type='button'>copy</button>
     <button type='button'>expand</button>
   </NodeToolbar>
-  <div class='toolbar-node'>
+  <div>
     {{@data.label}}
   </div>
   <Handle @node={{@node}} @type='source' @position={{Position.Right}} />

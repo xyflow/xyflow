@@ -59,6 +59,8 @@ export default class EmberFlow<
   private didFitView = false;
   private didSetInitialInteractivity = false;
   private suppressPaneClick = false;
+  private suppressNodeClick = false;
+  private suppressNodeClickFrame: number | null = null;
   // Hot pointer interactions should stay off Ember's tracked render path while the
   // cursor is moving. Live movement mutates DOM/system mirrors directly; pointer-up
   // commits the public Ember model changes and bumps tracked state once.
@@ -254,7 +256,7 @@ export default class EmberFlow<
       requestAnimationFrame(() => {
         this.measureRenderedNodes();
         this.store.setViewportDimensions(element.clientWidth, element.clientHeight);
-        void this.store.fitView();
+        void this.store.fitView(this.args.fitViewOptions);
       });
     }
   }
@@ -342,6 +344,12 @@ export default class EmberFlow<
   }
 
   handleNodeClick = (node: Node, event: MouseEvent) => {
+    if (this.suppressNodeClick) {
+      this.suppressNodeClick = false;
+      this.flushSuppressNodeClickFrame();
+      return;
+    }
+
     this.args.onNodeClick?.(event, node as NodeType);
 
     if (!this.elementsSelectable || node.selectable === false || this.activeNodeDrag?.didMove) {
@@ -577,6 +585,7 @@ export default class EmberFlow<
       let position = this.store.nodePositions.get(drag.id);
       this.args.onNodesChange?.([{ id: drag.id, type: 'position', position }] as any);
       this.store.bump();
+      this.scheduleSuppressNodeClick();
     }
     let node = this.store.getNode(drag.id);
     if (node && drag.started) {
@@ -601,6 +610,22 @@ export default class EmberFlow<
       cancelAnimationFrame(this.pendingSelectionFrame);
       this.pendingSelectionFrame = null;
       this.renderSelectionRect();
+    }
+  }
+
+  private scheduleSuppressNodeClick() {
+    this.suppressNodeClick = true;
+    this.flushSuppressNodeClickFrame();
+    this.suppressNodeClickFrame = requestAnimationFrame(() => {
+      this.suppressNodeClick = false;
+      this.suppressNodeClickFrame = null;
+    });
+  }
+
+  private flushSuppressNodeClickFrame() {
+    if (this.suppressNodeClickFrame !== null) {
+      cancelAnimationFrame(this.suppressNodeClickFrame);
+      this.suppressNodeClickFrame = null;
     }
   }
 
@@ -1205,7 +1230,7 @@ export default class EmberFlow<
         >
           <div class='ember-flow__viewport-back ember-flow__container'></div>
           <div class='ember-flow__edges'>
-            {{#each this.edgeItems as |item|}}
+            {{#each this.edgeItems key='edge.id' as |item|}}
               <FlowEdge
                 @edge={{item.edge}}
                 @source={{item.source}}
@@ -1215,7 +1240,7 @@ export default class EmberFlow<
           </div>
           <div class='ember-flow__edge-labels ember-flow__container'></div>
           <div class='ember-flow__nodes'>
-            {{#each this.nodes as |node|}}
+            {{#each this.nodes key='id' as |node|}}
               {{#unless node.hidden}}
                 <FlowNode
                   @node={{node}}

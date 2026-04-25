@@ -81,6 +81,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   readonly nodePositions = new Map<string, XYPosition>();
   readonly nodeDimensions = new Map<string, { width: number; height: number }>();
   private readonly viewportListeners = new Set<(viewport: Viewport) => void>();
+  private readonly nodeGeometryListeners = new Set<(nodeId: string) => void>();
 
   private addedEdges: EdgeType[] = [];
   private syncCache:
@@ -280,6 +281,14 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     };
   }
 
+  onNodeGeometryChange(callback: (nodeId: string) => void) {
+    this.nodeGeometryListeners.add(callback);
+
+    return () => {
+      this.nodeGeometryListeners.delete(callback);
+    };
+  }
+
   syncPanZoomViewport() {
     this.panZoom?.syncViewport(this.viewport);
   }
@@ -341,13 +350,15 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     this.bump();
   }
 
-  setNodePosition(id: string, position: XYPosition) {
+  setNodePosition(id: string, position: XYPosition, positionAbsolute?: XYPosition) {
     let rounded = {
       x: this.roundViewportValue(position.x),
       y: this.roundViewportValue(position.y),
     };
 
     this.nodePositions.set(id, rounded);
+    this.syncInternalNodeGeometry(id, positionAbsolute);
+    this.notifyNodeGeometryListeners(id);
 
     return rounded;
   }
@@ -357,7 +368,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     let userPosition = this.absoluteToUserPosition(node, constrainedPosition);
 
     return {
-      position: this.setNodePosition(id, userPosition),
+      position: this.setNodePosition(id, userPosition, constrainedPosition),
       positionAbsolute: constrainedPosition,
     };
   }
@@ -488,6 +499,8 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     };
 
     this.nodeDimensions.set(id, rounded);
+    this.syncInternalNodeGeometry(id);
+    this.notifyNodeGeometryListeners(id);
 
     return rounded;
   }
@@ -825,6 +838,54 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     for (let listener of this.viewportListeners) {
       listener(this.viewport);
     }
+  }
+
+  private notifyNodeGeometryListeners(nodeId: string) {
+    for (let listener of this.nodeGeometryListeners) {
+      listener(nodeId);
+    }
+  }
+
+  private syncInternalNodeGeometry(id: string, positionAbsolute?: XYPosition) {
+    let internalNode = this.nodeLookup.get(id);
+    if (!internalNode) {
+      return;
+    }
+
+    let dimensions = this.nodeDimensions.get(id);
+    let position = this.nodePositions.get(id);
+    let nextMeasured =
+      dimensions === undefined
+        ? internalNode.measured
+        : {
+            ...internalNode.measured,
+            width: dimensions.width,
+            height: dimensions.height,
+          };
+
+    if (dimensions !== undefined) {
+      internalNode.measured = nextMeasured;
+      internalNode.width = dimensions.width;
+      internalNode.height = dimensions.height;
+    }
+
+    if (position !== undefined) {
+      internalNode.position = position;
+      internalNode.internals.positionAbsolute =
+        positionAbsolute ?? this.getNodePosition(internalNode.internals.userNode);
+    }
+
+    internalNode.internals.userNode = {
+      ...internalNode.internals.userNode,
+      ...(position !== undefined ? { position } : {}),
+      ...(dimensions !== undefined
+        ? {
+            width: dimensions.width,
+            height: dimensions.height,
+            measured: nextMeasured,
+          }
+        : {}),
+    };
   }
 }
 

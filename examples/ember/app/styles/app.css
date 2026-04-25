@@ -23,6 +23,16 @@ body {
   height: 100vh;
 }
 
+.generic-flow-page .ember-flow__node-toolbar {
+  gap: 3px;
+}
+
+.generic-flow-page .ember-flow__node-toolbar button {
+  padding: 2px 5px;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
 .color-mode-control {
   position: absolute;
   z-index: 20;
@@ -32,16 +42,6 @@ body {
   gap: 8px;
   align-items: center;
   font-size: 12px;
-}
-
-.toolbar-node {
-  width: 200px;
-  height: 50px;
-  border: solid 1px black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
 }
 
 .parity-index {
@@ -359,14 +359,14 @@ body {
   font-weight: 500;
 }
 
-.ember-flow__node-toolbar {
+.parity-sample .ember-flow__node-toolbar {
   padding: 4px;
   background: #172033;
   border-radius: 8px;
   box-shadow: 0 10px 24px rgba(24, 33, 52, 0.18);
 }
 
-.ember-flow__node-toolbar button {
+.parity-sample .ember-flow__node-toolbar button {
   padding: 5px 8px;
   color: #fff;
   font-size: 11px;
@@ -376,6 +376,6 @@ body {
   border-radius: 6px;
 }
 
-.ember-flow__node-toolbar button:hover {
+.parity-sample .ember-flow__node-toolbar button:hover {
   background: rgba(255, 255, 255, 0.14);
 }

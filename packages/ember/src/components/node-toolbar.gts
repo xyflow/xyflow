@@ -31,6 +31,7 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
   private viewport: Viewport = { x: 0, y: 0, zoom: 1 };
   private element: HTMLElement | undefined;
   private unsubscribeViewport: (() => void) | undefined;
+  private unsubscribeNodeGeometry: (() => void) | undefined;
 
   get toolbarState() {
     let nodes = this.toolbarNodes;
@@ -146,16 +147,24 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
     }
 
     this.unsubscribeViewport?.();
+    this.unsubscribeNodeGeometry?.();
     this.store = store;
     this.unsubscribeViewport = store.onViewportChange((viewport) => {
       this.viewport = viewport;
       this.updateToolbarElement();
     });
+    this.unsubscribeNodeGeometry = store.onNodeGeometryChange((nodeId) => {
+      if (this.nodeIds.includes(nodeId)) {
+        this.updateToolbarElement();
+      }
+    });
   }
 
   unregisterFlowContext() {
     this.unsubscribeViewport?.();
+    this.unsubscribeNodeGeometry?.();
     this.unsubscribeViewport = undefined;
+    this.unsubscribeNodeGeometry = undefined;
     this.store = undefined;
     this.element = undefined;
   }
