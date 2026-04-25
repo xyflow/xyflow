@@ -176,26 +176,33 @@ test.describe('Edges', () => {
       await expect(edge).toHaveClass(/selected/);
     });
 
-    test('built-in straight, step, and smoothstep edge types render distinct paths', async ({ page }) => {
+    test('built-in straight, step, smoothstep, and simplebezier edge types render distinct paths', async ({ page }) => {
       const straightPath = page.locator('[data-id="straight-edge"]').locator(`.${FRAMEWORK}-flow__edge-path`);
       const stepPath = page.locator('[data-id="step-edge"]').locator(`.${FRAMEWORK}-flow__edge-path`);
       const smoothStepPath = page.locator('[data-id="smoothstep-edge"]').locator(`.${FRAMEWORK}-flow__edge-path`);
+      const simpleBezierPath = page
+        .locator('[data-id="simplebezier-edge"]')
+        .locator(`.${FRAMEWORK}-flow__edge-path`);
 
       await expect(straightPath).toBeAttached();
       await expect(stepPath).toBeAttached();
       await expect(smoothStepPath).toBeAttached();
+      await expect(simpleBezierPath).toBeAttached();
 
       const straightD = await straightPath.getAttribute('d');
       const stepD = await stepPath.getAttribute('d');
       const smoothStepD = await smoothStepPath.getAttribute('d');
+      const simpleBezierD = await simpleBezierPath.getAttribute('d');
 
       expect(straightD).toContain('L');
       expect(straightD).not.toContain('C');
       expect(stepD).toContain('L');
       expect(stepD).not.toContain('C');
       expect(smoothStepD).toContain('L');
+      expect(simpleBezierD).toContain('C');
       expect(smoothStepD).not.toEqual(straightD);
       expect(smoothStepD).not.toEqual(stepD);
+      expect(simpleBezierD).not.toEqual(smoothStepD);
     });
 
     test('selected edge affordance follows node drag', async ({ page }) => {

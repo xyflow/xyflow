@@ -63,6 +63,7 @@ export type DefaultEdgeOptions<EdgeType extends Edge = Edge> = DefaultEdgeOption
 export type BuiltInEdge =
   | (Edge<Record<string, unknown>, 'default'> & { pathOptions?: BezierPathOptions })
   | (Edge<Record<string, unknown>, 'straight'>)
+  | (Edge<Record<string, unknown>, 'simplebezier'>)
   | (Edge<Record<string, unknown>, 'step'> & { pathOptions?: StepPathOptions })
   | (Edge<Record<string, unknown>, 'smoothstep'> & { pathOptions?: SmoothStepPathOptions });
 
@@ -100,6 +101,8 @@ export type EdgeComponentProps = EdgePosition & {
 export type BezierEdgeProps = EdgeComponentProps & {
   pathOptions?: BezierPathOptions;
 };
+
+export type SimpleBezierEdgeProps = EdgeComponentProps;
 
 export type SmoothStepEdgeProps = EdgeComponentProps & {
   pathOptions?: SmoothStepPathOptions;

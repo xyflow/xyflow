@@ -113,6 +113,19 @@ export default {
         position: { x: 560, y: 280 },
         targetPosition: 'left',
       },
+      {
+        id: '17',
+        data: { label: '17' },
+        position: { x: 340, y: 400 },
+        sourcePosition: 'right',
+        targetPosition: 'left',
+      },
+      {
+        id: '18',
+        data: { label: '18' },
+        position: { x: 560, y: 400 },
+        targetPosition: 'left',
+      },
     ],
     edges: [
       {
@@ -215,6 +228,13 @@ export default {
         type: 'smoothstep',
         label: 'smoothstep',
         pathOptions: { borderRadius: 18 },
+      },
+      {
+        id: 'simplebezier-edge',
+        source: '17',
+        target: '18',
+        type: 'simplebezier',
+        label: 'simplebezier',
       },
     ],
   },

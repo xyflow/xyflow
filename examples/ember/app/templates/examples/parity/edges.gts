@@ -43,8 +43,16 @@ export default class EdgesSample extends Component {
       id: 'hitbox',
       data: { label: 'Wide hit target' },
       position: { x: -40, y: 190 },
+      sourcePosition: Position.Right,
       targetPosition: Position.Left,
       className: 'parity-node parity-node--purple',
+    },
+    {
+      id: 'simple',
+      data: { label: 'Simple Bezier' },
+      position: { x: 330, y: 190 },
+      targetPosition: Position.Left,
+      className: 'parity-node parity-node--green',
     },
   ];
 
@@ -75,6 +83,14 @@ export default class EdgesSample extends Component {
       style: { stroke: '#7c3aed', strokeWidth: 2, strokeDasharray: '8 5' },
       ariaLabel: 'wide hit target edge',
       label: 'wide hitbox',
+    },
+    {
+      id: 'hitbox-simple',
+      source: 'hitbox',
+      target: 'simple',
+      type: 'simplebezier',
+      style: { stroke: '#0f766e', strokeWidth: 2 },
+      label: 'simplebezier',
     },
   ];
 
@@ -111,6 +127,7 @@ export default class EdgesSample extends Component {
               <li>Press Backspace after selecting an edge to delete it.</li>
               <li>Inspect or click the centered labels; they should target the owning edge.</li>
               <li>Click near the dashed purple edge; its wider interaction path should make selection easier and show an EdgeToolbar.</li>
+              <li>Compare the teal simple-bezier curve against the default and marker edges.</li>
             </ol>
           </div>
         </Panel>

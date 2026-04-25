@@ -14,6 +14,7 @@ export { default as NodeResizeControl } from './components/node-resize-control.j
 export { default as NodeResizer } from './components/node-resizer.js';
 export { default as NodeToolbar } from './components/node-toolbar.js';
 export { default as Panel } from './components/panel.js';
+export { default as SimpleBezierEdge } from './components/simple-bezier-edge.js';
 export { default as SmoothStepEdge } from './components/smooth-step-edge.js';
 export { default as StepEdge } from './components/step-edge.js';
 export { default as StraightEdge } from './components/straight-edge.js';

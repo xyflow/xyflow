@@ -14,6 +14,7 @@ export { default as NodeResizeControl } from './components/node-resize-control.j
 export { default as NodeResizer } from './components/node-resizer.js';
 export { default as NodeToolbar } from './components/node-toolbar.js';
 export { default as Panel } from './components/panel.js';
+export { default as SimpleBezierEdge } from './components/simple-bezier-edge.js';
 export { default as SmoothStepEdge } from './components/smooth-step-edge.js';
 export { default as StepEdge } from './components/step-edge.js';
 export { default as StraightEdge } from './components/straight-edge.js';
@@ -21,6 +22,8 @@ export { default as ViewportPortal } from './components/viewport-portal.js';
 export { default as EmberFlowStore } from './store/index.js';
 export { getFlowStore } from './store/context.js';
 export { applyEdgeChanges, applyNodeChanges } from './utils/changes.js';
+export { getSimpleBezierPath } from './utils/edge-path.js';
+export type { GetSimpleBezierPathParams } from './utils/edge-path.js';
 export * from './types.js';
 export {
   ConnectionLineType,
