@@ -7,9 +7,13 @@ import type {
   EdgePosition,
   EdgeToolbarBaseProps,
   FitViewOptionsBase,
+  HandleType,
   HandleProps as SystemHandleProps,
   NodeBase,
   NodeChange as SystemNodeChange,
+  OnReconnect,
+  OnReconnectEnd,
+  OnReconnectStart,
   OnResize,
   OnResizeEnd,
   OnResizeStart,
@@ -56,6 +60,7 @@ export type Edge<
   class?: string;
   className?: string;
   style?: CssStyle;
+  reconnectable?: boolean | HandleType;
 };
 
 export type DefaultEdgeOptions<EdgeType extends Edge = Edge> = DefaultEdgeOptionsBase<EdgeType>;
@@ -172,6 +177,8 @@ export interface EmberFlowArgs<
   autoPanOnNodeDrag?: boolean;
   autoPanOnConnect?: boolean;
   autoPanSpeed?: number;
+  edgesReconnectable?: boolean;
+  reconnectRadius?: number;
   deleteKey?: string;
   multiSelectionKey?: string | string[] | null;
   onMoveStart?: (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
@@ -180,6 +187,9 @@ export interface EmberFlowArgs<
   onNodesChange?: (changes: NodeChange<NodeType>[]) => void;
   onEdgesChange?: (changes: EdgeChange<EdgeType>[]) => void;
   onConnect?: (connection: Connection) => void;
+  onReconnect?: OnReconnect<EdgeType>;
+  onReconnectStart?: OnReconnectStart<EdgeType>;
+  onReconnectEnd?: OnReconnectEnd<EdgeType>;
   onNodeClick?: (event: MouseEvent, node: NodeType) => void;
   onEdgeClick?: (event: MouseEvent, edge: EdgeType) => void;
   onPaneClick?: (event: MouseEvent) => void;

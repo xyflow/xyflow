@@ -1,4 +1,5 @@
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { pageTitle } from 'ember-page-title';
 import {
   Background,
@@ -12,9 +13,11 @@ import {
   Position,
 } from '@xyflow/ember';
 
-import type { Edge, Node } from '@xyflow/ember';
+import type { Connection, Edge, Node } from '@xyflow/ember';
 
 export default class EdgesSample extends Component {
+  @tracked reconnectMessage = 'Reconnect anchors ready';
+
   nodes: Node[] = [
     {
       id: 'source',
@@ -95,6 +98,10 @@ export default class EdgesSample extends Component {
     },
   ];
 
+  handleReconnect = (oldEdge: Edge, connection: Connection) => {
+    this.reconnectMessage = `${oldEdge.id}: ${connection.source} -> ${connection.target}`;
+  };
+
   <template>
     {{pageTitle "EmberFlow Edges Sample"}}
     <main class='parity-sample'>
@@ -104,6 +111,8 @@ export default class EdgesSample extends Component {
         @fitView={{true}}
         @minZoom={{0.25}}
         @maxZoom={{4}}
+        @edgesReconnectable={{true}}
+        @onReconnect={{this.handleReconnect}}
       >
         <EdgeToolbar
           @edgeId='source-hitbox'
@@ -139,7 +148,11 @@ export default class EdgesSample extends Component {
               <li>Click near the dashed purple edge; its wider interaction path should make selection easier and show an EdgeToolbar.</li>
               <li>Compare the teal simple-bezier curve against the default and marker edges.</li>
               <li>The small renderer label is portal content that moves with the viewport.</li>
+              <li>Drag an invisible edge endpoint anchor to another compatible handle to reconnect the edge.</li>
             </ol>
+            <div class='parity-event-log' aria-label='Reconnect log'>
+              <span>{{this.reconnectMessage}}</span>
+            </div>
           </div>
         </Panel>
         <Panel @position='top-right'>

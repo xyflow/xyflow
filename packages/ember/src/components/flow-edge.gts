@@ -1,8 +1,10 @@
 import Component from '@glimmer/component';
 import { htmlSafe } from '@ember/template';
+import { Position, type HandleType } from '@xyflow/system';
 
 import EdgeText from './edge-text.js';
-import { getEdgePathData } from '../utils/edge-path.js';
+import listen from '../modifiers/listen.js';
+import { getEdgePathData, getEdgePosition } from '../utils/edge-path.js';
 import { safeStyle } from '../utils/style.js';
 import type { Edge, Node } from '../types.js';
 
@@ -11,6 +13,14 @@ interface Signature {
     edge: Edge;
     source: Node;
     target: Node;
+    edgesReconnectable?: boolean;
+    reconnectRadius?: number;
+    onReconnectPointerDown?: (
+      edge: Edge,
+      handleType: HandleType,
+      event: PointerEvent,
+      fixedElement: SVGElement | null,
+    ) => void;
   };
   Element: SVGSVGElement;
 }
@@ -30,6 +40,42 @@ export default class FlowEdge extends Component<Signature> {
 
   get labelY() {
     return this.pathData[2];
+  }
+
+  get edgePosition() {
+    return getEdgePosition(this.args.source, this.args.target);
+  }
+
+  get sourceX() {
+    return this.edgePosition.sourceX;
+  }
+
+  get sourceY() {
+    return this.edgePosition.sourceY;
+  }
+
+  get targetX() {
+    return this.edgePosition.targetX;
+  }
+
+  get targetY() {
+    return this.edgePosition.targetY;
+  }
+
+  get sourceAnchorX() {
+    return this.shiftX(this.sourceX, this.reconnectRadius, this.edgePosition.sourcePosition);
+  }
+
+  get sourceAnchorY() {
+    return this.shiftY(this.sourceY, this.reconnectRadius, this.edgePosition.sourcePosition);
+  }
+
+  get targetAnchorX() {
+    return this.shiftX(this.targetX, this.reconnectRadius, this.edgePosition.targetPosition);
+  }
+
+  get targetAnchorY() {
+    return this.shiftY(this.targetY, this.reconnectRadius, this.edgePosition.targetPosition);
   }
 
   get label() {
@@ -121,6 +167,22 @@ export default class FlowEdge extends Component<Signature> {
     return (this.args.edge.interactionWidth ?? 20) + 4;
   }
 
+  get reconnectRadius() {
+    return this.args.reconnectRadius ?? 10;
+  }
+
+  get reconnectable() {
+    return this.args.edge.reconnectable ?? this.args.edgesReconnectable ?? false;
+  }
+
+  get canReconnectSource() {
+    return this.reconnectable === true || this.reconnectable === 'source';
+  }
+
+  get canReconnectTarget() {
+    return this.reconnectable === true || this.reconnectable === 'target';
+  }
+
   get markerStart() {
     return this.markerUrl(this.args.edge.markerStart);
   }
@@ -141,6 +203,46 @@ export default class FlowEdge extends Component<Signature> {
     let type = typeof marker === 'string' ? marker : marker.type;
     return `url('#1__type=${type}')`;
   }
+
+  private shiftX(x: number, shift: number, position: Position) {
+    if (position === Position.Left) {
+      return x - shift;
+    }
+
+    if (position === Position.Right) {
+      return x + shift;
+    }
+
+    return x;
+  }
+
+  private shiftY(y: number, shift: number, position: Position) {
+    if (position === Position.Top) {
+      return y - shift;
+    }
+
+    if (position === Position.Bottom) {
+      return y + shift;
+    }
+
+    return y;
+  }
+
+  handleSourceReconnectPointerDown = (event: PointerEvent) => {
+    let fixedElement = (event.currentTarget as SVGElement).parentElement?.querySelector<SVGElement>(
+      '.ember-flow__edgeupdater-target',
+    );
+
+    this.args.onReconnectPointerDown?.(this.args.edge, 'source', event, fixedElement ?? null);
+  };
+
+  handleTargetReconnectPointerDown = (event: PointerEvent) => {
+    let fixedElement = (event.currentTarget as SVGElement).parentElement?.querySelector<SVGElement>(
+      '.ember-flow__edgeupdater-source',
+    );
+
+    this.args.onReconnectPointerDown?.(this.args.edge, 'target', event, fixedElement ?? null);
+  };
 
   <template>
     <svg class='ember-flow__edge-wrapper' style={{this.svgStyle}}>
@@ -180,6 +282,28 @@ export default class FlowEdge extends Component<Signature> {
             @labelBgStyle={{@edge.labelBgStyle}}
             @labelBgPadding={{@edge.labelBgPadding}}
             @labelBgBorderRadius={{@edge.labelBgBorderRadius}}
+          />
+        {{/if}}
+        {{#if this.canReconnectSource}}
+          <circle
+            class='ember-flow__edgeupdater ember-flow__edgeupdater-source nopan nodrag'
+            cx={{this.sourceAnchorX}}
+            cy={{this.sourceAnchorY}}
+            r={{this.reconnectRadius}}
+            stroke='transparent'
+            fill='transparent'
+            {{listen 'pointerdown' this.handleSourceReconnectPointerDown}}
+          />
+        {{/if}}
+        {{#if this.canReconnectTarget}}
+          <circle
+            class='ember-flow__edgeupdater ember-flow__edgeupdater-target nopan nodrag'
+            cx={{this.targetAnchorX}}
+            cy={{this.targetAnchorY}}
+            r={{this.reconnectRadius}}
+            stroke='transparent'
+            fill='transparent'
+            {{listen 'pointerdown' this.handleTargetReconnectPointerDown}}
           />
         {{/if}}
       </g>

@@ -95,6 +95,10 @@ export default class EmberFlow<
     fromY: number;
     toX: number;
     toY: number;
+    reconnect?: {
+      edge: EdgeType;
+      handleType: HandleType;
+    };
   } | null = null;
   private keydownHandler: ((event: KeyboardEvent) => void) | null = null;
   private keyupHandler: ((event: KeyboardEvent) => void) | null = null;
@@ -135,6 +139,14 @@ export default class EmberFlow<
 
   get deleteKey() {
     return this.args.deleteKey ?? 'Backspace';
+  }
+
+  get edgesReconnectable() {
+    return this.args.edgesReconnectable ?? Boolean(this.args.onReconnect);
+  }
+
+  get reconnectRadius() {
+    return this.args.reconnectRadius ?? 10;
   }
 
   get rootClasses() {
@@ -532,6 +544,55 @@ export default class EmberFlow<
     window.addEventListener('pointercancel', this.handleWindowConnectionPointerUp);
   };
 
+  handleEdgeReconnectPointerDown = (
+    edge: Edge,
+    handleType: HandleType,
+    event: PointerEvent,
+    fixedElement: SVGElement | null,
+  ) => {
+    if (!this.args.onReconnect || event.button !== 0) {
+      return;
+    }
+
+    let renderer = this.rendererElement;
+    let fixed = fixedElement ?? (event.currentTarget as SVGElement | null);
+    if (!renderer || !fixed) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    let reconnectingSource = handleType === 'source';
+    let fixedHandleType: HandleType = reconnectingSource ? 'target' : 'source';
+    let rendererRect = renderer.getBoundingClientRect();
+    let fixedRect = fixed.getBoundingClientRect();
+    let fromX = fixedRect.left + fixedRect.width / 2 - rendererRect.left;
+    let fromY = fixedRect.top + fixedRect.height / 2 - rendererRect.top;
+
+    this.activeConnection = {
+      nodeId: reconnectingSource ? edge.target : edge.source,
+      handleId: reconnectingSource ? (edge.targetHandle ?? null) : (edge.sourceHandle ?? null),
+      handleType: fixedHandleType,
+      pointerId: event.pointerId,
+      currentEvent: null,
+      fromX,
+      fromY,
+      toX: event.clientX - rendererRect.left,
+      toY: event.clientY - rendererRect.top,
+      reconnect: {
+        edge: edge as EdgeType,
+        handleType,
+      },
+    };
+
+    this.args.onReconnectStart?.(event, edge as EdgeType, handleType);
+    this.renderConnectionLine();
+    window.addEventListener('pointermove', this.handleWindowConnectionPointerMove);
+    window.addEventListener('pointerup', this.handleWindowConnectionPointerUp);
+    window.addEventListener('pointercancel', this.handleWindowConnectionPointerUp);
+  };
+
   private applyActiveNodeDrag() {
     let drag = this.activeNodeDrag;
     if (!drag?.didMove) {
@@ -740,7 +801,12 @@ export default class EmberFlow<
     this.flushPendingConnectionFrame();
     let target = document.elementFromPoint(event.clientX, event.clientY);
     let targetHandle = target?.closest('.ember-flow__handle') as HTMLElement | null;
-    this.completeConnection(targetHandle);
+    let completed = this.completeConnection(targetHandle);
+    if (connection.reconnect) {
+      this.args.onReconnectEnd?.(event, connection.reconnect.edge, connection.reconnect.handleType, {
+        isValid: completed,
+      } as any);
+    }
     this.detachConnectionListeners();
   };
 
@@ -859,26 +925,26 @@ export default class EmberFlow<
   private completeConnection(targetHandle: HTMLElement | null) {
     let connection = this.activeConnection;
     if (!connection || !targetHandle) {
-      return;
+      return false;
     }
 
     let targetNodeId = targetHandle.dataset['nodeid'];
     if (!targetNodeId || targetNodeId === connection.nodeId) {
-      return;
+      return false;
     }
 
     let targetNode = this.nodes.find((node) => node.id === targetNodeId);
     if (!targetNode || targetNode.connectable === false) {
-      return;
+      return false;
     }
 
     if (!this.canEndConnection(targetHandle)) {
-      return;
+      return false;
     }
 
     let targetHandleType = this.getHandleType(targetHandle);
     if (!targetHandleType) {
-      return;
+      return false;
     }
 
     let targetHandleId = this.getHandleId(targetHandle);
@@ -900,7 +966,7 @@ export default class EmberFlow<
     }
 
     if (!sourceId || !destinationId) {
-      return;
+      return false;
     }
 
     let connectionPayload: Connection = {
@@ -909,9 +975,24 @@ export default class EmberFlow<
       sourceHandle,
       targetHandle: targetHandleIdForPayload,
     };
+
+    if (connection.reconnect) {
+      let oldEdge = connection.reconnect.edge;
+      let nextEdge = {
+        ...oldEdge,
+        ...connectionPayload,
+      } as EdgeType;
+
+      this.store.updateEdge(oldEdge.id, nextEdge, { replace: true });
+      this.args.onReconnect?.(oldEdge, connectionPayload);
+      this.args.onEdgesChange?.([{ id: oldEdge.id, type: 'replace', item: nextEdge }] as any);
+
+      return true;
+    }
+
     let id = getEdgeId(connectionPayload);
     if (this.edges.some((edge) => edge.id === id)) {
-      return;
+      return false;
     }
 
     let edge = {
@@ -925,6 +1006,8 @@ export default class EmberFlow<
     this.store.addEdge(edge);
     this.args.onConnect?.(connectionPayload);
     this.args.onEdgesChange?.([{ id, type: 'add', item: edge }] as any);
+
+    return true;
   }
 
   private clearSelection() {
@@ -1240,6 +1323,9 @@ export default class EmberFlow<
                 @edge={{item.edge}}
                 @source={{item.source}}
                 @target={{item.target}}
+                @edgesReconnectable={{this.edgesReconnectable}}
+                @reconnectRadius={{this.reconnectRadius}}
+                @onReconnectPointerDown={{this.handleEdgeReconnectPointerDown}}
               />
             {{/each}}
           </div>

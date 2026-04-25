@@ -95,6 +95,11 @@
   stroke: var(--xy-edge-stroke-selected, var(--xy-edge-stroke-selected-default));
 }
 
+.ember-flow__edgeupdater {
+  cursor: move;
+  pointer-events: all;
+}
+
 .ember-flow__edge-textwrapper {
   pointer-events: all;
   user-select: none;
