@@ -5,6 +5,7 @@ import {
   adoptUserNodes,
   getInternalNodesBounds,
   getOverlappingArea,
+  getElementsToRemove,
   getNodesBounds as getNodesBoundsSystem,
   getViewportForBounds,
   isCoordinateExtent,
@@ -37,6 +38,7 @@ import {
 } from '@xyflow/system';
 
 import type { Edge, EdgeChange, FitViewOptions, Node, NodeChange } from '../types.js';
+import type { OnBeforeDelete, OnDelete, OnEdgesDelete, OnNodesDelete } from '../types.js';
 
 interface DeleteElementsOptions<NodeType extends Node, EdgeType extends Edge> {
   nodes: NodeType[];
@@ -57,6 +59,15 @@ interface DeleteElementsParams<NodeType extends Node, EdgeType extends Edge> {
 interface DeleteElementsApiResult<NodeType extends Node, EdgeType extends Edge> {
   deletedNodes: NodeType[];
   deletedEdges: EdgeType[];
+  nodeChanges: NodeChange<NodeType>[];
+  edgeChanges: EdgeChange<EdgeType>[];
+}
+
+interface DeleteLifecycleCallbacks<NodeType extends Node, EdgeType extends Edge> {
+  onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
+  onNodesDelete?: OnNodesDelete<NodeType>;
+  onEdgesDelete?: OnEdgesDelete<EdgeType>;
+  onDelete?: OnDelete<NodeType, EdgeType>;
 }
 
 type ElementsUpdater<ElementType> = ElementType[] | ((elements: ElementType[]) => ElementType[]);
@@ -108,6 +119,7 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
   readonly nodeDimensions = new Map<string, { width: number; height: number }>();
   private readonly viewportListeners = new Set<(viewport: Viewport) => void>();
   private readonly nodeGeometryListeners = new Set<(nodeId: string) => void>();
+  private deleteCallbacks: DeleteLifecycleCallbacks<NodeType, EdgeType> = {};
 
   private addedNodes: NodeType[] = [];
   private addedEdges: EdgeType[] = [];
@@ -414,21 +426,34 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     });
   }
 
+  setDeleteCallbacks(callbacks: DeleteLifecycleCallbacks<NodeType, EdgeType>) {
+    this.deleteCallbacks = callbacks;
+  }
+
   async deleteElements({
     nodes: nodesToRemove = [],
     edges: edgesToRemove = [],
   }: DeleteElementsParams<NodeType, EdgeType>): Promise<DeleteElementsApiResult<NodeType, EdgeType>> {
-    let nodeIds = new Set(nodesToRemove.map((node) => node.id));
-    let edgeIds = new Set(edgesToRemove.map((edge) => edge.id));
     let nodes = this.getNodes();
     let edges = this.getEdges();
-    let deletedNodes = nodes.filter((node) => nodeIds.has(node.id));
-    let deletedEdges = edges.filter(
-      (edge) => edgeIds.has(edge.id) || nodeIds.has(edge.source) || nodeIds.has(edge.target),
-    );
+    let { nodes: deletedNodes, edges: deletedEdges } = await getElementsToRemove({
+      nodesToRemove,
+      edgesToRemove,
+      nodes,
+      edges,
+      onBeforeDelete: this.deleteCallbacks.onBeforeDelete,
+    } as {
+      nodesToRemove: Partial<NodeType>[];
+      edgesToRemove: Partial<EdgeType>[];
+      nodes: NodeType[];
+      edges: EdgeType[];
+      onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
+    });
+    let nodeChanges = deletedNodes.map((node) => ({ id: node.id, type: 'remove' }) as NodeChange<NodeType>);
+    let edgeChanges = deletedEdges.map((edge) => ({ id: edge.id, type: 'remove' }) as EdgeChange<EdgeType>);
 
     if (deletedNodes.length === 0 && deletedEdges.length === 0) {
-      return { deletedNodes, deletedEdges };
+      return { deletedNodes, deletedEdges, nodeChanges, edgeChanges };
     }
 
     for (let node of deletedNodes) {
@@ -443,9 +468,18 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
       this.edgeUpdates.delete(edge.id);
     }
 
+    if (deletedEdges.length > 0) {
+      this.deleteCallbacks.onEdgesDelete?.(deletedEdges);
+    }
+
+    if (deletedNodes.length > 0) {
+      this.deleteCallbacks.onNodesDelete?.(deletedNodes);
+    }
+
+    this.deleteCallbacks.onDelete?.({ nodes: deletedNodes, edges: deletedEdges });
     this.bump();
 
-    return { deletedNodes, deletedEdges };
+    return { deletedNodes, deletedEdges, nodeChanges, edgeChanges };
   }
 
   getIntersectingNodes(nodeOrRect: NodeType | { id: string } | Rect, partially = true, nodes?: NodeType[]) {

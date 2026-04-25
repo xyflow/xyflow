@@ -25,6 +25,26 @@ export default {
     autoPanOnConnect: false,
     autoPanOnNodeDrag: false,
     deleteKey: 'd',
+    onInit: (flow) => record({ type: 'init', id: `${flow.getNodes().length}:${flow.getEdges().length}` }),
+    onViewportChangeStart: (viewport) => record({ type: 'viewport-start', id: `${viewport.zoom}` }),
+    onViewportChange: (viewport) => record({ type: 'viewport-change', id: `${viewport.zoom}` }),
+    onViewportChangeEnd: (viewport) => record({ type: 'viewport-end', id: `${viewport.zoom}` }),
+    onBeforeDelete: ({ nodes, edges }) => {
+      record({
+        type: 'before-delete',
+        nodes: nodes.map((node) => node.id),
+        edges: edges.map((edge) => edge.id),
+      });
+      return true;
+    },
+    onNodesDelete: (nodes) => record({ type: 'nodes-delete', nodes: nodes.map((node) => node.id) }),
+    onEdgesDelete: (edges) => record({ type: 'edges-delete', edges: edges.map((edge) => edge.id) }),
+    onDelete: ({ nodes, edges }) =>
+      record({
+        type: 'delete',
+        nodes: nodes.map((node) => node.id),
+        edges: edges.map((edge) => edge.id),
+      }),
     onNodeClick: (_event, node) => record({ type: 'node-click', id: node.id }),
     onEdgeClick: (_event, edge) => record({ type: 'edge-click', id: edge.id }),
     onPaneClick: () => record({ type: 'pane-click' }),

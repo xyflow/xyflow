@@ -22,6 +22,21 @@ test.describe('Store helpers', () => {
     await page.getByRole('button', { name: 'intersections' }).click();
     await expect(page.getByLabel('Store helper log')).toContainText('intersections:');
 
+    await page.getByRole('button', { name: 'api surface' }).click();
+    await expect(page.locator(`.${FRAMEWORK}-flow__edge`).and(page.locator('[data-id="idea-draft"]'))).toContainText(
+      'API edge',
+    );
+    await expect(page.getByLabel('Store helper log')).toContainText('snapshot');
+    await expect(page.getByLabel('Store helper log')).toContainText('node links');
+    await expect(page.getByLabel('Store helper log')).toContainText('roundtrip 200,200');
+
+    await page.getByRole('button', { name: 'replace sets' }).click();
+    await expect(page.locator('[data-id="review"]')).toContainText('Review updated');
+    await expect(page.locator(`.${FRAMEWORK}-flow__edge`).and(page.locator('[data-id="draft-review"]'))).toContainText(
+      'setEdges',
+    );
+    await expect(page.getByLabel('Store helper log')).toContainText('setNodes + setEdges');
+
     await page.getByRole('button', { name: 'delete added' }).click();
     await expect(page.locator('[data-id="api-added"]')).toBeHidden();
     await expect(page.locator('[data-id="review-api-added"]')).toHaveCount(0);

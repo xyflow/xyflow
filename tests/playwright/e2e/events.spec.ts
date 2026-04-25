@@ -8,10 +8,31 @@ async function getEvents(page: Page) {
 
 test.describe('Events', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/tests/generic/events/general');
-    await page.evaluate(() => {
+    await page.addInitScript(() => {
       (window as any).__emberFlowEvents = [];
     });
+    await page.goto('/tests/generic/events/general');
+    await page.waitForSelector('[data-id="event-a"]', { timeout: 5000 });
+  });
+
+  test('emits init and viewport callbacks', async ({ page }) => {
+    const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
+    const box = await pane.boundingBox();
+
+    await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
+    await page.mouse.wheel(0, -120);
+    await page.waitForFunction(() =>
+      ((window as any).__emberFlowEvents ?? []).some((event: { type: string }) => event.type === 'viewport-end'),
+    );
+
+    expect(await getEvents(page)).toEqual(
+      expect.arrayContaining([
+        { type: 'init', id: '2:1' },
+        expect.objectContaining({ type: 'viewport-start' }),
+        expect.objectContaining({ type: 'viewport-change' }),
+        expect.objectContaining({ type: 'viewport-end' }),
+      ]),
+    );
   });
 
   test('emits node click and selection change callbacks', async ({ page }) => {
@@ -79,6 +100,23 @@ test.describe('Events', () => {
         { type: 'valid-connection', id: 'event-b->event-a' },
         { type: 'connect', id: 'event-b->event-a' },
         { type: 'connect-end' },
+      ]),
+    );
+  });
+
+  test('emits delete lifecycle callbacks', async ({ page }) => {
+    const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="event-a"]'));
+
+    await node.click();
+    await page.keyboard.press('d');
+
+    await expect(node).toHaveCount(0);
+    expect(await getEvents(page)).toEqual(
+      expect.arrayContaining([
+        { type: 'before-delete', nodes: ['event-a'], edges: ['event-edge'] },
+        { type: 'edges-delete', edges: ['event-edge'] },
+        { type: 'nodes-delete', nodes: ['event-a'] },
+        { type: 'delete', nodes: ['event-a'], edges: ['event-edge'] },
       ]),
     );
   });

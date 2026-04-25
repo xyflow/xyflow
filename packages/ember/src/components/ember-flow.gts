@@ -83,7 +83,9 @@ export default class EmberFlow<
   private connectionPathElement: SVGPathElement | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private viewportDimensionsFrame: number | null = null;
+  private onInitFrame: number | null = null;
   private didFitView = false;
+  private didCallOnInit = false;
   private didSetInitialInteractivity = false;
   private suppressPaneClick = false;
   private suppressNodeClick = false;
@@ -144,6 +146,7 @@ export default class EmberFlow<
     super(owner, args);
     this.store = args.store ?? new EmberFlowStore<NodeType, EdgeType>(args.initialViewport);
     this.configureStorePlacement();
+    this.configureStoreCallbacks();
   }
 
   get nodes() {
@@ -329,6 +332,7 @@ export default class EmberFlow<
     this.store.domNode = element;
     this.store.setZoomExtent(this.minZoom, this.maxZoom);
     this.configureStorePlacement();
+    this.configureStoreCallbacks();
     if (!this.didSetInitialInteractivity) {
       this.didSetInitialInteractivity = true;
       this.store.setInteractivity({
@@ -352,9 +356,9 @@ export default class EmberFlow<
       maxZoom: this.maxZoom,
       translateExtent: this.store.translateExtent,
       viewport: this.store.viewport,
-      onPanZoomStart: this.args.onMoveStart,
-      onPanZoom: this.args.onMove,
-      onPanZoomEnd: this.args.onMoveEnd,
+      onPanZoomStart: this.handlePanZoomStart,
+      onPanZoom: this.handlePanZoom,
+      onPanZoomEnd: this.handlePanZoomEnd,
       onDraggingChange: () => {},
     });
 
@@ -389,6 +393,7 @@ export default class EmberFlow<
     });
 
     this.scheduleViewportDimensionsUpdate();
+    this.scheduleOnInit();
 
     if (this.args.fitView && !this.didFitView) {
       this.didFitView = true;
@@ -401,6 +406,10 @@ export default class EmberFlow<
   }
 
   uninstallPanZoom() {
+    if (this.onInitFrame !== null) {
+      cancelAnimationFrame(this.onInitFrame);
+      this.onInitFrame = null;
+    }
     if (this.viewportDimensionsFrame !== null) {
       cancelAnimationFrame(this.viewportDimensionsFrame);
       this.viewportDimensionsFrame = null;
@@ -431,10 +440,26 @@ export default class EmberFlow<
   }
 
   private handleTransformChange = (transform: Transform) => {
-    this.store.setViewportFromPanZoom({ x: transform[0], y: transform[1], zoom: transform[2] });
+    let viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
+    this.store.setViewportFromPanZoom(viewport);
+    this.args.onViewportChange?.(this.store.viewport);
     if (this.args.onlyRenderVisibleElements) {
       this.store.bump();
     }
+  };
+
+  private handlePanZoomStart = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => {
+    this.args.onMoveStart?.(event, viewport);
+    this.args.onViewportChangeStart?.(viewport);
+  };
+
+  private handlePanZoom = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => {
+    this.args.onMove?.(event, viewport);
+  };
+
+  private handlePanZoomEnd = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => {
+    this.args.onMoveEnd?.(event, viewport);
+    this.args.onViewportChangeEnd?.(viewport);
   };
 
   private updateViewportDimensions() {
@@ -472,6 +497,32 @@ export default class EmberFlow<
       autoPanOnNodeDrag: this.args.autoPanOnNodeDrag,
       autoPanOnConnect: this.args.autoPanOnConnect,
       autoPanSpeed: this.args.autoPanSpeed,
+    });
+  }
+
+  private configureStoreCallbacks() {
+    this.store.setDeleteCallbacks({
+      onBeforeDelete: this.args.onBeforeDelete,
+      onNodesDelete: this.args.onNodesDelete,
+      onEdgesDelete: this.args.onEdgesDelete,
+      onDelete: this.args.onDelete,
+    });
+  }
+
+  private scheduleOnInit() {
+    if (this.didCallOnInit || !this.args.onInit || this.onInitFrame !== null) {
+      return;
+    }
+
+    this.onInitFrame = requestAnimationFrame(() => {
+      this.onInitFrame = null;
+
+      if (this.didCallOnInit || !this.rendererElement) {
+        return;
+      }
+
+      this.didCallOnInit = true;
+      this.args.onInit?.(this.store);
     });
   }
 
@@ -1308,19 +1359,17 @@ export default class EmberFlow<
     }
 
     event.preventDefault();
-    this.deleteSelectedElements();
+    void this.deleteSelectedElements();
   };
 
   private handleKeyUp = (event: KeyboardEvent) => {
     this.store.removePressedKey(event.key);
   };
 
-  private deleteSelectedElements() {
-    let { nodeChanges, edgeChanges } = this.store.deleteSelectedElements({
-      nodes: this.nodes,
-      edges: this.edges,
-      nodesDeletable: this.args.nodesDeletable !== false,
-    });
+  private async deleteSelectedElements() {
+    let nodes = this.args.nodesDeletable === false ? [] : this.nodes.filter((node) => this.isNodeSelected(node));
+    let edges = this.edges.filter((edge) => this.isEdgeSelected(edge));
+    let { nodeChanges, edgeChanges } = await this.store.deleteElements({ nodes, edges });
 
     if (nodeChanges.length > 0) {
       this.args.onNodesChange?.(nodeChanges as any);
@@ -1333,6 +1382,14 @@ export default class EmberFlow<
     if (nodeChanges.length > 0 || edgeChanges.length > 0) {
       this.emitSelectionChange();
     }
+  }
+
+  private isNodeSelected(node: Node) {
+    return node.selected || this.store.selectedNodeIds.has(node.id);
+  }
+
+  private isEdgeSelected(edge: Edge) {
+    return edge.selected || this.store.selectedEdgeIds.has(edge.id);
   }
 
   private moveSelectedNodesWithKeyboard(event: KeyboardEvent) {

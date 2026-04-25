@@ -102,6 +102,7 @@ export type {
   OnMove,
   OnMoveEnd,
   OnMoveStart,
+  OnViewportChange,
   OnReconnect,
   OnReconnectEnd,
   OnReconnectStart,

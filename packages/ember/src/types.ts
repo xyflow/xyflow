@@ -35,6 +35,8 @@ import type {
   SelectionMode,
   SnapGrid,
   Viewport,
+  OnBeforeDeleteBase,
+  OnViewportChange,
 } from '@xyflow/system';
 
 import type EmberFlowStore from './store/index.js';
@@ -148,6 +150,24 @@ export type Connection = {
   targetHandle: string | null;
 };
 
+export type OnInit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
+  store: EmberFlowStore<NodeType, EdgeType>,
+) => void;
+
+export type OnNodesDelete<NodeType extends Node = Node> = (nodes: NodeType[]) => void;
+
+export type OnEdgesDelete<EdgeType extends Edge = Edge> = (edges: EdgeType[]) => void;
+
+export type OnDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (params: {
+  nodes: NodeType[];
+  edges: EdgeType[];
+}) => void;
+
+export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = OnBeforeDeleteBase<
+  NodeType,
+  EdgeType
+>;
+
 export interface EmberFlowArgs<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge,
@@ -201,11 +221,19 @@ export interface EmberFlowArgs<
   reconnectRadius?: number;
   deleteKey?: string;
   multiSelectionKey?: string | string[] | null;
+  onInit?: OnInit<NodeType, EdgeType>;
   onMoveStart?: (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
   onMove?: (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
   onMoveEnd?: (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
+  onViewportChangeStart?: OnViewportChange;
+  onViewportChange?: OnViewportChange;
+  onViewportChangeEnd?: OnViewportChange;
   onNodesChange?: (changes: NodeChange<NodeType>[]) => void;
   onEdgesChange?: (changes: EdgeChange<EdgeType>[]) => void;
+  onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
+  onNodesDelete?: OnNodesDelete<NodeType>;
+  onEdgesDelete?: OnEdgesDelete<EdgeType>;
+  onDelete?: OnDelete<NodeType, EdgeType>;
   onConnectStart?: OnConnectStart;
   onConnect?: (connection: Connection) => void;
   onConnectEnd?: OnConnectEnd;

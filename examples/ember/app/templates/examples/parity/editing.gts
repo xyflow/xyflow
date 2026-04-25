@@ -118,6 +118,47 @@ export default class EditingSample extends Component {
     this.apiMessage = `intersections: ${intersections.map((node) => node.id).join(', ') || 'none'}`;
   };
 
+  inspectApiSurface = (store: EmberFlowStore) => {
+    store.updateEdge('idea-draft', { label: 'API edge' });
+
+    let flowPoint = store.screenToFlowPosition({ x: 200, y: 200 });
+    let screenPoint = store.flowToScreenPosition(flowPoint);
+    let snapshot = store.toObject();
+    let draftConnections = store.getNodeConnections({ nodeId: 'draft' });
+    let draftTargetConnections = store.getHandleConnections({ nodeId: 'draft', type: 'target' });
+
+    this.apiMessage = [
+      `snapshot ${snapshot.nodes.length}/${snapshot.edges.length}`,
+      `node links ${draftConnections.length}`,
+      `target links ${draftTargetConnections.length}`,
+      `roundtrip ${Math.round(screenPoint.x)},${Math.round(screenPoint.y)}`,
+    ].join('; ');
+  };
+
+  replaceCollections = (store: EmberFlowStore) => {
+    store.setNodes((nodes) =>
+      nodes.map((node) =>
+        node.id === 'review'
+          ? {
+              ...node,
+              data: { ...node.data, label: 'Review updated' },
+            }
+          : node,
+      ),
+    );
+    store.setEdges((edges) =>
+      edges.map((edge) =>
+        edge.id === 'draft-review'
+          ? {
+              ...edge,
+              label: 'setEdges',
+            }
+          : edge,
+      ),
+    );
+    this.apiMessage = 'setNodes + setEdges replaced collection state';
+  };
+
   deleteApiNode = async (store: EmberFlowStore) => {
     let { deletedNodes, deletedEdges } = await store.deleteElements({ nodes: [{ id: 'api-added' }] });
     this.apiMessage = `deleted ${deletedNodes.length} node, ${deletedEdges.length} edge`;
@@ -155,12 +196,14 @@ export default class EditingSample extends Component {
                 <li>Use arrow keys after selecting a card; Shift+arrow moves faster.</li>
                 <li>Drag from a source handle to another card target handle to create an edge.</li>
                 <li>Click a node or edge and press Backspace to delete it.</li>
-                <li>Use the buttons below to exercise the provider-owned EmberFlowStore.</li>
+                <li>Use the buttons below to exercise the provider-owned EmberFlowStore helper surface.</li>
               </ol>
               <div class='parity-note-actions' aria-label='Store helper actions'>
                 <button type='button' {{on 'click' (fn this.addApiNode flow)}}>add node</button>
                 <button type='button' {{on 'click' (fn this.renameDraft flow)}}>update data</button>
                 <button type='button' {{on 'click' (fn this.countIntersections flow)}}>intersections</button>
+                <button type='button' {{on 'click' (fn this.inspectApiSurface flow)}}>api surface</button>
+                <button type='button' {{on 'click' (fn this.replaceCollections flow)}}>replace sets</button>
                 <button type='button' {{on 'click' (fn this.deleteApiNode flow)}}>delete added</button>
               </div>
               <div class='parity-event-log' aria-label='Store helper log'>
