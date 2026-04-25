@@ -10,6 +10,7 @@ import {
   EmberFlow,
   Panel,
   Position,
+  ViewportPortal,
 } from '@xyflow/ember';
 
 import type { Edge, Node, Viewport } from '@xyflow/ember';
@@ -88,6 +89,15 @@ export default class ViewportControlsSample extends Component {
           @color='#9aa7b7'
           @bgColor='#f8fafc'
         />
+        <ViewportPortal>
+          <div
+            class='parity-renderer-label nopan nodrag'
+            data-testid='viewport-portal-probe'
+            style='position: absolute; transform: translate(160px, -90px); pointer-events: all;'
+          >
+            ViewportPortal
+          </div>
+        </ViewportPortal>
         <Controls>
           <ControlButton
             @className='parity-control-button'
@@ -106,6 +116,7 @@ export default class ViewportControlsSample extends Component {
               <li>Scroll over the canvas to zoom.</li>
               <li>Use +, -, and fit in the lower-left controls.</li>
               <li>Use the helper buttons below to exercise the yielded store viewport API.</li>
+              <li>The ViewportPortal label should move and scale with nodes.</li>
             </ol>
             <div class='parity-note-actions' aria-label='Viewport helper actions'>
               <button type='button' {{on 'click' (fn this.zoomToTwo flow)}}>zoomTo 2</button>
