@@ -129,3 +129,52 @@ test.describe('Node Toolbar', async () => {
     expect(toolbarAfter!.y).toBeLessThan(nodeAfter!.y);
   });
 });
+
+test.describe('Node adornments', () => {
+  test('app-owned tile menu is positioned by NodeToolbar and can call the store', async ({ page }) => {
+    await page.goto('/examples/parity/node-adornments');
+
+    const strategyNode = page.locator('[data-id="strategy"]').and(page.locator(`.${FRAMEWORK}-flow__node`));
+    const adornment = page.locator('.parity-adornment-menu--tile');
+
+    await expect(strategyNode).toBeAttached();
+    await expect(adornment).toBeAttached();
+    await expect(page.getByRole('toolbar', { name: 'Tile adornment actions' })).toBeVisible();
+
+    const nodeBefore = await strategyNode.boundingBox();
+    const toolbarBefore = await adornment.boundingBox();
+
+    await page.getByRole('button', { name: 'promote' }).click();
+    await expect(page.getByLabel('Adornment log')).toContainText('promoted strategy from NodeToolbar');
+    await expect(strategyNode).toContainText('Polished tile');
+
+    await page.mouse.move(nodeBefore!.x + nodeBefore!.width / 2, nodeBefore!.y + nodeBefore!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(nodeBefore!.x + nodeBefore!.width / 2 + 80, nodeBefore!.y + nodeBefore!.height / 2 + 48, {
+      steps: 5,
+    });
+    await page.mouse.up();
+
+    const nodeAfter = await strategyNode.boundingBox();
+    const toolbarAfter = await adornment.boundingBox();
+
+    expect(Math.abs((toolbarAfter!.x - toolbarBefore!.x) - (nodeAfter!.x - nodeBefore!.x))).toBeLessThan(1);
+    expect(Math.abs((toolbarAfter!.y - toolbarBefore!.y) - (nodeAfter!.y - nodeBefore!.y))).toBeLessThan(1);
+  });
+
+  test('external Ember UI can retarget tile adornments', async ({ page }) => {
+    await page.goto('/examples/parity/node-adornments');
+
+    const designNode = page.locator('[data-id="design"]').and(page.locator(`.${FRAMEWORK}-flow__node`));
+    const adornment = page.locator('.parity-adornment-menu--tile');
+
+    await page.getByRole('button', { name: 'select design' }).click();
+    await expect(page.getByLabel('Adornment log')).toContainText('selected design');
+    await expect(adornment).toContainText('design');
+
+    const designBox = await designNode.boundingBox();
+    const adornmentBox = await adornment.boundingBox();
+
+    expect(adornmentBox!.y).toBeLessThan(designBox!.y);
+  });
+});

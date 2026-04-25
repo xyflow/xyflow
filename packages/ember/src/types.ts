@@ -343,6 +343,12 @@ export interface NodeToolbarArgs<NodeType extends Node = Node> {
 
 export type NodeToolbarProps<NodeType extends Node = Node> = NodeToolbarArgs<NodeType>;
 
+export interface NodeToolbarContext<NodeType extends Node = Node> {
+  nodes: NodeType[];
+  nodeIds: string[];
+  isVisible: boolean;
+}
+
 export interface NodeResizerArgs<NodeType extends Node = Node> {
   node?: NodeType;
   nodeId?: string;

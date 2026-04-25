@@ -169,6 +169,7 @@ export default class CustomControlsSample extends Component {
           <nav class='parity-sample-nav' aria-label='Parity samples'>
             <a href='/examples/parity'>All samples</a>
             <a href='/examples/parity/viewport-controls'>Viewport</a>
+            <a href='/examples/parity/node-adornments'>Tile UI</a>
             <a href='/examples/parity/editing'>Editing</a>
             <a href='/examples/parity/edges'>Edges</a>
             <a href='/examples/parity/minimap'>MiniMap</a>

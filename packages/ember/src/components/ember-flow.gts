@@ -700,7 +700,7 @@ export default class EmberFlow<
 
     if (
       target?.closest(
-        '.ember-flow__node, .ember-flow__edge, .ember-flow__edge-label, .ember-flow__panel, .ember-flow__controls',
+        '.ember-flow__node, .ember-flow__edge, .ember-flow__edge-label, .ember-flow__node-toolbar, .ember-flow__panel, .ember-flow__controls',
       )
     ) {
       return;

@@ -216,6 +216,7 @@ export default class EditingSample extends Component {
               <a href='/examples/parity'>All samples</a>
               <a href='/examples/parity/viewport-controls'>Viewport</a>
               <a href='/examples/parity/custom-controls'>Custom UI</a>
+              <a href='/examples/parity/node-adornments'>Tile UI</a>
               <a href='/examples/parity/edges'>Edges</a>
               <a href='/examples/parity/minimap'>MiniMap</a>
               <a href='/examples/parity/custom-handles'>Handles</a>

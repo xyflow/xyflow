@@ -439,6 +439,63 @@ body {
   border-color: rgba(186, 230, 253, 0.6);
 }
 
+.ember-flow__node.parity-adornment-node {
+  width: 188px;
+  min-height: 74px;
+}
+
+.parity-sample .ember-flow__node-toolbar.parity-adornment-menu {
+  padding: 0;
+  background:
+    linear-gradient(135deg, rgba(12, 18, 32, 0.86), rgba(31, 41, 55, 0.68)),
+    rgba(15, 23, 42, 0.58);
+  border: 1px solid rgba(203, 213, 225, 0.22);
+  border-radius: 8px;
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(12px) saturate(1.25);
+}
+
+.parity-adornment-menu__surface {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px;
+  white-space: nowrap;
+}
+
+.parity-adornment-menu__title {
+  max-width: 90px;
+  padding: 0 6px;
+  overflow: hidden;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+}
+
+.parity-sample .ember-flow__node-toolbar.parity-adornment-menu button {
+  padding: 6px 8px;
+  color: #f8fafc;
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(226, 232, 240, 0.14);
+  border-radius: 6px;
+}
+
+.parity-sample .ember-flow__node-toolbar.parity-adornment-menu button:hover {
+  background: rgba(125, 211, 252, 0.26);
+  border-color: rgba(186, 230, 253, 0.48);
+}
+
+.parity-sample .ember-flow__node-toolbar.parity-adornment-menu--group {
+  background:
+    linear-gradient(135deg, rgba(15, 118, 110, 0.8), rgba(20, 184, 166, 0.42)),
+    rgba(15, 23, 42, 0.5);
+}
+
 .ember-flow__node.parity-resizable-node {
   padding: 0;
   align-items: stretch;

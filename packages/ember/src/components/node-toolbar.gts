@@ -15,12 +15,12 @@ import portal from '../modifiers/portal.js';
 import { getFlowStore } from '../store/context.js';
 import type EmberFlowStore from '../store/index.js';
 import { toCss } from '../utils/style.js';
-import type { Node, NodeToolbarArgs } from '../types.js';
+import type { Node, NodeToolbarArgs, NodeToolbarContext } from '../types.js';
 
 interface Signature<NodeType extends Node = Node> {
   Args: NodeToolbarArgs<NodeType>;
   Blocks: {
-    default: [];
+    default: [EmberFlowStore<NodeType>, NodeToolbarContext<NodeType>];
   };
   Element: HTMLDivElement;
 }
@@ -44,7 +44,12 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
       classes: this.toolbarClasses,
       dataId: nodes.map((node) => node.id).join(' '),
       style: this.getToolbarStyle(nodes),
+      context: this.getToolbarContext(nodes, isActive),
     };
+  }
+
+  get toolbarStore() {
+    return this.store as EmberFlowStore<NodeType>;
   }
 
   private isActive(nodes: InternalNodeBase<NodeType>[]) {
@@ -124,6 +129,17 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
     );
   }
 
+  private getToolbarContext(
+    nodes: InternalNodeBase<NodeType>[],
+    isVisible: boolean
+  ): NodeToolbarContext<NodeType> {
+    return {
+      nodes: nodes.map((node) => this.store?.getNode(node.id) ?? node.internals.userNode),
+      nodeIds: nodes.map((node) => node.id),
+      isVisible,
+    };
+  }
+
   registerNodeToolbar(element: HTMLElement) {
     this.element = element;
     this.updateToolbarElement();
@@ -192,11 +208,11 @@ export default class NodeToolbar<NodeType extends Node = Node> extends Component
           class={{toolbar.classes}}
           data-id={{toolbar.dataId}}
           style={{toolbar.style}}
-          {{portal 'root'}}
+          {{portal '.ember-flow__renderer'}}
           {{nodeToolbar this}}
           ...attributes
         >
-          {{yield}}
+          {{yield this.toolbarStore toolbar.context}}
         </div>
       {{/if}}
     {{/let}}

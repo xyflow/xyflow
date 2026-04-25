@@ -12,6 +12,11 @@ const samples = [
     summary: 'Default controls with injected buttons plus a fully app-owned toolbar that calls the store API.',
   },
   {
+    title: 'Tile Adornments',
+    href: '/examples/parity/node-adornments',
+    summary: 'App-owned node menus positioned by NodeToolbar, including single-tile and grouped adornments.',
+  },
+  {
     title: 'Editing + Toolbar',
     href: '/examples/parity/editing',
     summary: 'Provider-owned store, node selection, drag, marquee selection, connection creation, delete, NodeToolbar.',
