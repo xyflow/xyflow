@@ -167,6 +167,53 @@ test.describe('Nodes', () => {
 
       expect(secondTransformAfter).not.toEqual(secondTransformBefore);
     });
+
+    test('selected nodes move with arrow keys and shift-arrow acceleration', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'EmberFlow handles keyboard movement in the adapter layer');
+
+      const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="Node-1"]'));
+      const edgePath = page
+        .locator(`.${FRAMEWORK}-flow__edge`)
+        .and(page.locator('[data-id="1-2"]'))
+        .locator(`.${FRAMEWORK}-flow__edge-path`);
+
+      await expect(node).toBeVisible();
+      await node.click();
+      await expect(node).toHaveClass(/selected/);
+
+      const beforeBox = await node.boundingBox();
+      const beforePath = await edgePath.getAttribute('d');
+
+      await page.keyboard.press('ArrowRight');
+      await page.keyboard.press('Shift+ArrowDown');
+
+      const afterBox = await node.boundingBox();
+      const afterPath = await edgePath.getAttribute('d');
+
+      expect(afterBox!.x).toBeGreaterThan(beforeBox!.x + 3);
+      expect(afterBox!.y).toBeGreaterThan(beforeBox!.y + 15);
+      expect(afterPath).not.toEqual(beforePath);
+    });
+
+    test('arrow keys do not move draggable=false nodes', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'ember', 'EmberFlow handles keyboard movement in the adapter layer');
+
+      const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="notDraggable"]'));
+
+      await expect(node).toBeVisible();
+      await node.click();
+      await expect(node).toHaveClass(/selected/);
+
+      const beforeBox = await node.boundingBox();
+
+      await page.keyboard.press('ArrowRight');
+      await page.keyboard.press('Shift+ArrowDown');
+
+      const afterBox = await node.boundingBox();
+
+      expect(afterBox!.x).toEqual(beforeBox!.x);
+      expect(afterBox!.y).toEqual(beforeBox!.y);
+    });
   });
 
   test.describe('deleting', () => {

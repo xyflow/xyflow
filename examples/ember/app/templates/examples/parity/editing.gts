@@ -4,6 +4,7 @@ import { on } from '@ember/modifier';
 import { tracked } from '@glimmer/tracking';
 import { pageTitle } from 'ember-page-title';
 import {
+  applyNodeChanges,
   Background,
   BackgroundVariant,
   Controls,
@@ -14,7 +15,7 @@ import {
 
 import ToolbarNode from 'ember-examples/components/parity-samples/toolbar-node';
 
-import type { Edge, EmberFlowStore, Node, Viewport } from '@xyflow/ember';
+import type { Edge, EmberFlowStore, Node, NodeChange, Viewport } from '@xyflow/ember';
 
 export default class EditingSample extends Component {
   @tracked apiMessage = 'Store helpers ready';
@@ -25,7 +26,7 @@ export default class EditingSample extends Component {
 
   initialViewport: Viewport = { x: 260, y: 250, zoom: 0.85 };
 
-  nodes: Node[] = [
+  @tracked nodes: Node[] = [
     {
       id: 'idea',
       type: 'ToolbarNode',
@@ -75,6 +76,10 @@ export default class EditingSample extends Component {
       animated: true,
     },
   ];
+
+  handleNodesChange = (changes: NodeChange[]) => {
+    this.nodes = applyNodeChanges(changes, this.nodes);
+  };
 
   addApiNode = (store: EmberFlowStore) => {
     if (store.getNode('api-added')) {
@@ -127,6 +132,7 @@ export default class EditingSample extends Component {
         @initialViewport={{this.initialViewport}}
         @minZoom={{0.25}}
         @maxZoom={{4}}
+        @onNodesChange={{this.handleNodesChange}}
         as |flow|
       >
         <Background
@@ -144,6 +150,7 @@ export default class EditingSample extends Component {
               <li>Click a card to select it and show its toolbar.</li>
               <li>Drag selected or unselected cards; the gray node should neither move nor pan the canvas.</li>
               <li>Shift-drag on empty canvas to marquee-select multiple nodes.</li>
+              <li>Use arrow keys after selecting a card; Shift+arrow moves faster.</li>
               <li>Drag from a source handle to another card target handle to create an edge.</li>
               <li>Click a node or edge and press Backspace to delete it.</li>
               <li>Use the buttons below to exercise EmberFlowStore helper parity.</li>

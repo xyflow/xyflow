@@ -178,6 +178,7 @@ export interface EmberFlowArgs<
   nodesConnectable?: boolean;
   nodesDeletable?: boolean;
   elementsSelectable?: boolean;
+  disableKeyboardA11y?: boolean;
   selectNodesOnDrag?: boolean;
   nodeDragThreshold?: number;
   autoPanOnNodeDrag?: boolean;

@@ -15,6 +15,7 @@ import {
   getSmoothStepPath,
   getEdgeId,
   getStraightPath,
+  isInputDOMNode,
   isEdgeVisible,
   pointToRendererPoint,
   type Transform,
@@ -39,6 +40,13 @@ const oppositePosition = {
   [Position.Right]: Position.Left,
   [Position.Top]: Position.Bottom,
   [Position.Bottom]: Position.Top,
+};
+
+const arrowKeyDiffs: Record<string, { x: number; y: number }> = {
+  ArrowUp: { x: 0, y: -1 },
+  ArrowDown: { x: 0, y: 1 },
+  ArrowLeft: { x: -1, y: 0 },
+  ArrowRight: { x: 1, y: 0 },
 };
 
 interface EdgeRenderItem<EdgeType extends Edge = Edge, NodeType extends Node = Node> {
@@ -1237,7 +1245,12 @@ export default class EmberFlow<
   private handleKeyDown = (event: KeyboardEvent) => {
     this.store.addPressedKey(event.key);
 
+    if (isInputDOMNode(event) || this.args.disableKeyboardA11y) {
+      return;
+    }
+
     if (event.key !== this.deleteKey) {
+      this.moveSelectedNodesWithKeyboard(event);
       return;
     }
 
@@ -1267,6 +1280,40 @@ export default class EmberFlow<
     if (nodeChanges.length > 0 || edgeChanges.length > 0) {
       this.emitSelectionChange();
     }
+  }
+
+  private moveSelectedNodesWithKeyboard(event: KeyboardEvent) {
+    let direction = arrowKeyDiffs[event.key];
+
+    if (!direction) {
+      return;
+    }
+
+    let changes = this.store.moveSelectedNodes(direction, event.shiftKey ? 4 : 1);
+
+    if (changes.length === 0) {
+      return;
+    }
+
+    event.preventDefault();
+
+    for (let change of changes) {
+      if (change.type !== 'position') {
+        continue;
+      }
+
+      let internalNode = this.store.getInternalNode(change.id);
+      let element = this.nodeElement(change.id);
+
+      if (internalNode && element) {
+        let { positionAbsolute } = internalNode.internals;
+        element.style.transform = `translate(${positionAbsolute.x}px, ${positionAbsolute.y}px)`;
+      }
+
+      this.updateConnectedEdges(change.id);
+    }
+
+    this.args.onNodesChange?.(changes);
   }
 
   private detachNodeDragListeners() {

@@ -11,6 +11,7 @@ import {
   isRectObject,
   panBy as panBySystem,
   snapPosition,
+  calculateNodePosition,
   updateConnectionLookup,
   type CoordinateExtent,
   type ConnectionLookup,
@@ -857,6 +858,64 @@ export default class EmberFlowStore<NodeType extends Node = Node, EdgeType exten
     this.notifyNodeGeometryListeners(id);
 
     return rounded;
+  }
+
+  moveSelectedNodes(direction: XYPosition, factor = 1): NodeChange<NodeType>[] {
+    let changes: NodeChange<NodeType>[] = [];
+    let xVelocity = this.snapToGrid ? this.snapGrid[0] : 5;
+    let yVelocity = this.snapToGrid ? this.snapGrid[1] : 5;
+    let xDiff = direction.x * xVelocity * factor;
+    let yDiff = direction.y * yVelocity * factor;
+
+    for (let internalNode of this.nodeLookup.values()) {
+      let userNode = internalNode.internals.userNode;
+      let isSelected = internalNode.selected || this.selectedNodeIds.has(internalNode.id) || userNode.selected;
+      let isDraggable = userNode.draggable ?? this.nodesDraggable;
+
+      if (!isSelected || !isDraggable) {
+        continue;
+      }
+
+      let nextPosition = {
+        x: internalNode.internals.positionAbsolute.x + xDiff,
+        y: internalNode.internals.positionAbsolute.y + yDiff,
+      };
+
+      if (this.snapToGrid) {
+        nextPosition = snapPosition(nextPosition, this.snapGrid);
+      }
+
+      let { position, positionAbsolute } = calculateNodePosition({
+        nodeId: internalNode.id,
+        nextPosition,
+        nodeLookup: this.nodeLookup,
+        nodeExtent: this.nodeExtent,
+        nodeOrigin: this.nodeOrigin,
+      });
+      let roundedPosition = this.roundPosition(position);
+      let roundedAbsolutePosition = this.roundPosition(positionAbsolute);
+      let currentPosition = this.getNodeUserPosition(userNode);
+
+      if (currentPosition.x === roundedPosition.x && currentPosition.y === roundedPosition.y) {
+        continue;
+      }
+
+      internalNode.position = roundedPosition;
+      internalNode.internals.positionAbsolute = roundedAbsolutePosition;
+      this.nodePositions.set(internalNode.id, roundedPosition);
+      this.notifyNodeGeometryListeners(internalNode.id);
+      changes.push({
+        id: internalNode.id,
+        type: 'position',
+        position: roundedPosition,
+      } as NodeChange<NodeType>);
+    }
+
+    if (changes.length > 0) {
+      this.bump();
+    }
+
+    return changes;
   }
 
   getNodeWidth(node: Node) {

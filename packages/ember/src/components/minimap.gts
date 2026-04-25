@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { htmlSafe } from '@ember/template';
-import type { Rect, Viewport } from '@xyflow/system';
+import { XYMinimap, type Rect, type Viewport, type XYMinimapInstance } from '@xyflow/system';
 
 import miniMap from '../modifiers/minimap.js';
 import listen from '../modifiers/listen.js';
@@ -34,6 +34,8 @@ export default class MiniMap<NodeType extends Node = Node> extends Component<Sig
   @tracked private viewport: Viewport = { x: 0, y: 0, zoom: 1 };
 
   private unsubscribeViewport: (() => void) | undefined;
+  private minimapElement: HTMLElement | undefined;
+  private minimapInstance: XYMinimapInstance | undefined;
 
   get width() {
     return this.args.width ?? defaultWidth;
@@ -171,21 +173,31 @@ export default class MiniMap<NodeType extends Node = Node> extends Component<Sig
       return;
     }
 
+    this.minimapElement = element;
+
     if (this.store === store) {
       this.viewport = store.getViewport();
+      this.installOrUpdateMiniMap();
       return;
     }
 
     this.unsubscribeViewport?.();
+    this.minimapInstance?.destroy();
+    this.minimapInstance = undefined;
     this.store = store;
     this.unsubscribeViewport = store.onViewportChange((viewport) => {
       this.viewport = { ...viewport };
+      this.installOrUpdateMiniMap();
     });
+    this.installOrUpdateMiniMap();
   }
 
   unregisterMiniMap() {
     this.unsubscribeViewport?.();
     this.unsubscribeViewport = undefined;
+    this.minimapInstance?.destroy();
+    this.minimapInstance = undefined;
+    this.minimapElement = undefined;
     this.store = undefined;
   }
 
@@ -255,6 +267,32 @@ export default class MiniMap<NodeType extends Node = Node> extends Component<Sig
 
   private cssVariable(name: string, value: string | number | undefined) {
     return value === undefined ? undefined : `${name}: ${value}`;
+  }
+
+  private installOrUpdateMiniMap() {
+    let store = this.store;
+    let svg = this.minimapElement?.querySelector<SVGSVGElement>('.ember-flow__minimap-svg');
+
+    if (!store?.panZoom || !svg) {
+      return;
+    }
+
+    this.minimapInstance ??= XYMinimap({
+      domNode: svg,
+      panZoom: store.panZoom,
+      getTransform: () => [this.viewport.x, this.viewport.y, this.viewport.zoom],
+      getViewScale: () => this.viewScale,
+    });
+
+    this.minimapInstance.update({
+      translateExtent: store.translateExtent,
+      width: store.width,
+      height: store.height,
+      inversePan: this.args.inversePan,
+      pannable: this.args.pannable ?? false,
+      zoomStep: this.args.zoomStep,
+      zoomable: this.args.zoomable ?? false,
+    });
   }
 
   <template>

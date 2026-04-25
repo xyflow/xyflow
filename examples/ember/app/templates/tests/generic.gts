@@ -37,6 +37,7 @@ const GenericTestTemplate: TOC<Signature> = <template>
       @nodesConnectable={{@model.flowProps.nodesConnectable}}
       @nodesDeletable={{@model.flowProps.nodesDeletable}}
       @elementsSelectable={{@model.flowProps.elementsSelectable}}
+      @disableKeyboardA11y={{@model.flowProps.disableKeyboardA11y}}
       @selectNodesOnDrag={{@model.flowProps.selectNodesOnDrag}}
       @nodeDragThreshold={{@model.flowProps.nodeDragThreshold}}
       @autoPanOnNodeDrag={{@model.flowProps.autoPanOnNodeDrag}}

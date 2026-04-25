@@ -80,6 +80,9 @@ export default class MiniMapSample extends Component {
           @maskColor='rgba(148, 163, 184, 0.28)'
           @maskStrokeColor='#475569'
           @maskStrokeWidth={{1}}
+          @pannable={{true}}
+          @zoomable={{true}}
+          @zoomStep={{1}}
           @ariaLabel='EmberFlow parity minimap'
         />
         <Controls />
@@ -88,6 +91,8 @@ export default class MiniMapSample extends Component {
             <strong>MiniMap</strong>
             <ol>
               <li>Drag the canvas and confirm the mask moves in the minimap.</li>
+              <li>Drag inside the minimap to pan the main canvas.</li>
+              <li>Wheel inside the minimap to zoom the main canvas.</li>
               <li>Zoom with the wheel or controls and confirm the mask changes size.</li>
               <li>Node rectangles should match the flow node placement and colors.</li>
             </ol>
