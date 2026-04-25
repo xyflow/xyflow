@@ -85,6 +85,7 @@ export default class CustomHandlesSample extends Component {
               <li>Drag from the blue node right handle to a target handle to create a new edge.</li>
               <li>Custom handles are DOM elements inside a custom Ember node component.</li>
               <li>The created connection preserves source and target handle ids.</li>
+              <li>Release near a compatible handle; the connection should magnetize without pixel-perfect targeting.</li>
               <li>Zoom and pan; handle positions should remain pinned to their nodes.</li>
             </ol>
           </div>

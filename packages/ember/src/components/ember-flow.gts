@@ -26,7 +26,7 @@ import listen from '../modifiers/listen.js';
 import flowStore from '../modifiers/flow-store.js';
 import panZoom from '../modifiers/pan-zoom.js';
 import EmberFlowStore from '../store/index.js';
-import { getEdgePathData, getSimpleBezierPath } from '../utils/edge-path.js';
+import { getEdgePathData, getEdgePosition, getSimpleBezierPath } from '../utils/edge-path.js';
 import { getViewportOverlayTransform } from '../utils/viewport-overlay.js';
 import { safeStyle, toCss } from '../utils/style.js';
 import FlowEdge from './flow-edge.js';
@@ -1050,9 +1050,10 @@ export default class EmberFlow<
     }
 
     this.flushPendingConnectionFrame();
+    let candidate = this.findConnectionCandidate(event);
     let target = document.elementFromPoint(event.clientX, event.clientY);
     let targetHandle = target?.closest('.ember-flow__handle') as HTMLElement | null;
-    let completed = this.completeConnection(connection.targetHandle ?? targetHandle);
+    let completed = this.completeConnection(connection.targetHandle ?? candidate?.handle ?? targetHandle);
     this.args.onConnectEnd?.(event, { isValid: completed } as any);
     if (connection.reconnect) {
       this.args.onReconnectEnd?.(event, connection.reconnect.edge, connection.reconnect.handleType, {
@@ -1150,7 +1151,10 @@ export default class EmberFlow<
       .elementFromPoint(event.clientX, event.clientY)
       ?.closest<HTMLElement>('.ember-flow__handle');
     if (directHandle && renderer.contains(directHandle)) {
-      return this.connectionCandidateForHandle(directHandle);
+      let directCandidate = this.connectionCandidateForHandle(directHandle);
+      if (directCandidate) {
+        return directCandidate;
+      }
     }
 
     let pointerPosition = this.clientToFlowPosition(event.clientX, event.clientY);
@@ -1163,6 +1167,7 @@ export default class EmberFlow<
       point: { x: number; y: number };
       position: Position;
       distance: number;
+      centerDistance: number;
     } | null = null;
 
     for (let handle of renderer.querySelectorAll<HTMLElement>('.ember-flow__handle')) {
@@ -1170,24 +1175,29 @@ export default class EmberFlow<
         continue;
       }
 
-      let handlePoint = this.getElementRendererPoint(handle);
-      let handleFlowPoint = pointToRendererPoint(handlePoint, [
-        this.store.viewport.x,
-        this.store.viewport.y,
-        this.store.viewport.zoom,
-      ]);
-      let distance = Math.hypot(handleFlowPoint.x - pointerPosition.x, handleFlowPoint.y - pointerPosition.y);
-
-      if (distance > this.connectionRadius) {
+      let metrics = this.getHandlePointerDistance(handle, pointerPosition);
+      if (!metrics) {
         continue;
       }
 
-      if (!closestCandidate || distance < closestCandidate.distance) {
+      if (metrics.distance > this.connectionRadius) {
+        continue;
+      }
+
+      let candidate = this.connectionCandidateForHandle(handle, metrics.point);
+      if (!candidate) {
+        continue;
+      }
+
+      if (
+        !closestCandidate ||
+        metrics.distance < closestCandidate.distance ||
+        (metrics.distance === closestCandidate.distance && metrics.centerDistance < closestCandidate.centerDistance)
+      ) {
         closestCandidate = {
-          handle,
-          point: handlePoint,
-          position: this.getHandlePosition(handle, this.getHandleType(handle) === 'source' ? Position.Bottom : Position.Top),
-          distance,
+          ...candidate,
+          distance: metrics.distance,
+          centerDistance: metrics.centerDistance,
         };
       }
     }
@@ -1197,6 +1207,49 @@ export default class EmberFlow<
     }
 
     return this.connectionCandidateForHandle(closestCandidate.handle, closestCandidate.point);
+  }
+
+  private getHandlePointerDistance(handle: HTMLElement, pointerPosition: { x: number; y: number }) {
+    let rendererRect = this.rendererElement?.getBoundingClientRect();
+    if (!rendererRect) {
+      return null;
+    }
+
+    let handleRect = handle.getBoundingClientRect();
+    let centerPoint = {
+      x: handleRect.left + handleRect.width / 2 - rendererRect.left,
+      y: handleRect.top + handleRect.height / 2 - rendererRect.top,
+    };
+    let transform: Transform = [this.store.viewport.x, this.store.viewport.y, this.store.viewport.zoom];
+    let centerFlowPoint = pointToRendererPoint(centerPoint, transform);
+    let topLeft = pointToRendererPoint(
+      {
+        x: handleRect.left - rendererRect.left,
+        y: handleRect.top - rendererRect.top,
+      },
+      transform,
+    );
+    let bottomRight = pointToRendererPoint(
+      {
+        x: handleRect.right - rendererRect.left,
+        y: handleRect.bottom - rendererRect.top,
+      },
+      transform,
+    );
+    let minX = Math.min(topLeft.x, bottomRight.x);
+    let maxX = Math.max(topLeft.x, bottomRight.x);
+    let minY = Math.min(topLeft.y, bottomRight.y);
+    let maxY = Math.max(topLeft.y, bottomRight.y);
+    let dx = pointerPosition.x < minX ? minX - pointerPosition.x : Math.max(pointerPosition.x - maxX, 0);
+    let dy = pointerPosition.y < minY ? minY - pointerPosition.y : Math.max(pointerPosition.y - maxY, 0);
+    let rectDistance = Math.hypot(dx, dy);
+    let centerDistance = Math.hypot(centerFlowPoint.x - pointerPosition.x, centerFlowPoint.y - pointerPosition.y);
+
+    return {
+      point: centerPoint,
+      distance: Math.min(rectDistance, centerDistance),
+      centerDistance,
+    };
   }
 
   private connectionCandidateForHandle(handle: HTMLElement, point = this.getElementRendererPoint(handle)) {
@@ -1680,11 +1733,73 @@ export default class EmberFlow<
       )) {
         path.setAttribute('d', edgePath);
       }
+      let edgePosition = getEdgePosition(source, target, {
+        getNodePosition: (node) => this.store.getNodePosition(node),
+        getNodeWidth: (node) => this.store.getNodeWidth(node),
+        getNodeHeight: (node) => this.store.getNodeHeight(node),
+      });
+      this.updateEdgeReconnectAnchor(
+        edgeElement,
+        'source',
+        edgePosition.sourceX,
+        edgePosition.sourceY,
+        edgePosition.sourcePosition,
+      );
+      this.updateEdgeReconnectAnchor(
+        edgeElement,
+        'target',
+        edgePosition.targetX,
+        edgePosition.targetY,
+        edgePosition.targetPosition,
+      );
       edgeElement
         ?.querySelector<SVGGElement>('.ember-flow__edge-textwrapper')
         ?.setAttribute('transform', `translate(${labelX} ${labelY})`);
       this.updateEdgeToolbar(edge.id, labelX, labelY);
     }
+  }
+
+  private updateEdgeReconnectAnchor(
+    edgeElement: SVGGElement,
+    handleType: HandleType,
+    x: number,
+    y: number,
+    position: Position,
+  ) {
+    let anchor = edgeElement.querySelector<SVGCircleElement>(`.ember-flow__edgeupdater-${handleType}`);
+    if (!anchor) {
+      return;
+    }
+
+    let radius = Number(anchor.getAttribute('r') ?? this.reconnectRadius);
+    let shift = Number.isFinite(radius) ? radius : this.reconnectRadius;
+
+    anchor.setAttribute('cx', `${this.shiftEdgeAnchorX(x, shift, position)}`);
+    anchor.setAttribute('cy', `${this.shiftEdgeAnchorY(y, shift, position)}`);
+  }
+
+  private shiftEdgeAnchorX(x: number, shift: number, position: Position) {
+    if (position === Position.Left) {
+      return x - shift;
+    }
+
+    if (position === Position.Right) {
+      return x + shift;
+    }
+
+    return x;
+  }
+
+  private shiftEdgeAnchorY(y: number, shift: number, position: Position) {
+    if (position === Position.Top) {
+      return y - shift;
+    }
+
+    if (position === Position.Bottom) {
+      return y + shift;
+    }
+
+    return y;
   }
 
   private updateEdgeToolbar(edgeId: string, x: number, y: number) {
