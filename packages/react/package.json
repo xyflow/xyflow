@@ -21,29 +21,25 @@
     "url": "https://github.com/xyflow/xyflow/issues"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "source": "src/index.ts",
-  "main": "dist/umd/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/esm/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "node": {
-        "types": "./dist/esm/index.d.ts",
-        "module": "./dist/esm/index.js",
-        "require": "./dist/umd/index.js",
-        "import": "./dist/esm/index.mjs"
-      },
-      "browser": {
-        "import": "./dist/esm/index.js",
-        "require": "./dist/umd/index.js"
-      },
-      "default": "./dist/esm/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./dist/base.css": "./dist/base.css",
-    "./dist/style.css": "./dist/style.css"
+    "./dist/style.css": "./dist/style.css",
+    "./base.css": "./src/styles/base.css",
+    "./style.css": "./src/styles/style.css"
   },
   "sideEffects": [
     "*.css"
@@ -53,8 +49,8 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\" pnpm:css-watch",
-    "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production && npm run css",
+    "dev": "concurrently \"vite build --watch\" pnpm:css-watch",
+    "build": "vite build && tsc --emitDeclarationOnly && pnpm run css",
     "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config/ --dir dist ",
     "css-watch": "pnpm css --watch",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
@@ -80,7 +76,8 @@
     "postcss": "^8.4.21",
     "postcss-cli": "^11.0.0",
     "react": "^18.2.0",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "vite": "^8.0.10"
   },
   "rollup": {
     "globals": {

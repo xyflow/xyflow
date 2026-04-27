@@ -45,13 +45,16 @@
 			"svelte": "./dist/index.js"
 		},
 		"./dist/base.css": "./dist/base.css",
-		"./dist/style.css": "./dist/style.css"
+		"./dist/style.css": "./dist/style.css",
+		"./base.css": "./dist/base.css",
+		"./style.css": "./dist/style.css"
 	},
 	"sideEffects": [
 		"*.css"
 	],
 	"files": [
-		"dist"
+		"dist",
+		"src/lib"
 	],
 	"dependencies": {
 		"@svelte-put/shortcut": "^4.1.0",
