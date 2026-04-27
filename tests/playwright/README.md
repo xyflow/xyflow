@@ -1,4 +1,5 @@
 # End-to-End with Playwright
+
 Here you can find our framework independent E2E tests written with [playwright](https://playwright.dev/).
 
 ## Installation
@@ -23,7 +24,7 @@ You can find all test implementations in the respective example projects under `
 
 ### Create new example or use an existing one
 You will find all of the flows currently implemented for E2E testing at `/examples/{framework}/src/generic-tests`. Here you can create a new flow you want to write you test on by creating a new file and defining all of the props that will be applied to the components like this:
-```javascript
+```typescript
 // NewFolder/NewTest.ts
 export default {
   flowProps: {
@@ -67,8 +68,9 @@ export default {
   controlsProps:  { /*... */},
 } satisfies FlowConfig;
 ```
-
-:warning: The directory and filename you choose will determine the route of the test case. Here it will reachable under `http://localhost:3000/tests/generic/newDirectory/newTest`. (3000 is the port of the react examples, it might differ for other frameworks)
+> [!WARN]
+>
+> The directory and filename you choose will determine the route of the test case. Here it will be reachable under `http://localhost:3000/tests/generic/newDirectory/newTest`. (3000 is the port of the React examples, it might differ for other frameworks)
 
 ### Create new E2E test case
 Now you can start writing you new test case under `/tests/playwright/e2e`
