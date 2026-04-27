@@ -68,7 +68,7 @@ export default {
   controlsProps:  { /*... */},
 } satisfies FlowConfig;
 ```
-> [!WARN]
+> [!WARNING]
 >
 > The directory and filename you choose will determine the route of the test case. Here it will be reachable under `http://localhost:3000/tests/generic/newDirectory/newTest`. (3000 is the port of the React examples, it might differ for other frameworks)
 
