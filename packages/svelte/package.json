@@ -25,7 +25,7 @@
 		"url": "https://github.com/xyflow/xyflow/issues"
 	},
 	"scripts": {
-		"dev": "concurrently \"svelte-package -o dist/lib -w\" pnpm:css --watch",
+		"dev": "concurrently \"svelte-package -p -w\" pnpm:css --watch",
 		"build": "svelte-package && pnpm run css && publint",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",

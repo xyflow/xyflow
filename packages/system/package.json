@@ -38,7 +38,7 @@
     "directory": "packages/system"
   },
   "scripts": {
-    "dev": "concurrently \"vite build --watch\"",
+    "dev": "concurrently \"vite build --watch\" \"tsc --emitDeclarationOnly --watch\"",
     "build": "vite build && tsc --emitDeclarationOnly",
     "format": "prettier --write .",
     "lint": "eslint src",

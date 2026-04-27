@@ -38,8 +38,8 @@
     },
     "./dist/base.css": "./dist/base.css",
     "./dist/style.css": "./dist/style.css",
-    "./base.css": "./src/styles/base.css",
-    "./style.css": "./src/styles/style.css"
+    "./base.css": "./dist/base.css",
+    "./style.css": "./dist/style.css"
   },
   "sideEffects": [
     "*.css"
