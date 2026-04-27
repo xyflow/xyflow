@@ -38,8 +38,9 @@
     "directory": "packages/system"
   },
   "scripts": {
-    "dev": "concurrently \"vite build --watch\" \"tsc --emitDeclarationOnly --watch\"",
-    "build": "vite build && tsc --emitDeclarationOnly",
+    "dev": "concurrently \"vite build --watch\" \"pnpm:types -- --watch\"",
+    "build": "vite build && pnpm run types",
+    "types": "tsc --emitDeclarationOnly",
     "format": "prettier --write .",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit"

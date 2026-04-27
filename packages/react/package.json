@@ -49,8 +49,9 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "concurrently \"vite build --watch\" pnpm:css-watch",
-    "build": "vite build && tsc --emitDeclarationOnly && pnpm run css",
+    "dev": "concurrently \"vite build --watch\" \"pnpm:types -- --watch\" pnpm:css-watch",
+    "build": "vite build && pnpm run types && pnpm run css",
+    "types": "tsc --emitDeclarationOnly",
     "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config/ --dir dist ",
     "css-watch": "pnpm css --watch",
     "format": "prettier --write .",
