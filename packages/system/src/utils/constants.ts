@@ -1,4 +1,4 @@
-import { CoordinateExtent, HandleType } from './types';
+import { CoordinateExtent, HandleType } from '../types';
 
 export const errorMessages = {
   error001: () =>

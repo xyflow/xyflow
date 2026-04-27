@@ -15,22 +15,16 @@
     "dist"
   ],
   "source": "src/index.ts",
-  "main": "dist/umd/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/esm/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "node": {
-        "types": "./dist/esm/index.d.ts",
-        "module": "./dist/esm/index.js",
-        "require": "./dist/umd/index.js",
-        "import": "./dist/esm/index.mjs"
-      },
-      "browser": {
-        "import": "./dist/esm/index.js",
-        "require": "./dist/umd/index.js"
-      },
-      "default": "./dist/esm/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "sideEffects": false,
@@ -44,8 +38,8 @@
     "directory": "packages/system"
   },
   "scripts": {
-    "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\"",
-    "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production",
+    "dev": "concurrently \"vite build --watch\"",
+    "build": "vite build && tsc --emitDeclarationOnly",
     "lint": "eslint --ext .js,.ts src",
     "typecheck": "tsc --noEmit"
   },
@@ -65,7 +59,8 @@
     "@xyflow/eslint-config": "workspace:*",
     "@xyflow/rollup-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "vite": "^8.0.10"
   },
   "rollup": {
     "globals": {

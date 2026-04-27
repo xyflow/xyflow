@@ -2,7 +2,7 @@ import { EdgePosition } from '../../types/edges';
 import { ConnectionMode, OnError } from '../../types/general';
 import { InternalNodeBase, NodeHandle } from '../../types/nodes';
 import { Position, XYPosition } from '../../types/utils';
-import { errorMessages } from '../../constants';
+import { errorMessages } from '../constants';
 import { Handle } from '../../types';
 import { getNodeDimensions } from '../general';
 

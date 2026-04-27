@@ -27,7 +27,7 @@ import {
   InternalNodeBase,
   NodeDragItem,
 } from '../types';
-import { errorMessages } from '../constants';
+import { errorMessages } from './constants';
 
 /**
  * Test whether an object is usable as an Edge
