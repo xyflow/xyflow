@@ -3,13 +3,13 @@
  * We distinguish between values we can update directly with `useDirectStoreUpdater` (like `snapGrid`)
  * and values that have a dedicated setter function in the store (like `setNodes`).
  */
-import { useRef } from 'react';
+import { type MutableRefObject, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
 import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelConfig } from '@xyflow/system';
 
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 import { useStore, useStoreApi } from '../../hooks/useStore';
-import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
+import type { Node, Edge, ReactFlowProps, FitViewOptions } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
 // These fields exist in the global store, and we need to keep them up to date
@@ -85,17 +85,6 @@ type StoreUpdaterProps<NodeType extends Node = Node, EdgeType extends Edge = Edg
 // rfId doesn't exist in ReactFlowProps, but it's one of the fields we want to update
 const fieldsToTrack = [...reactFlowFieldsToTrack, 'rfId'] as const;
 
-const selector = (s: ReactFlowState) => ({
-  setNodes: s.setNodes,
-  setEdges: s.setEdges,
-  setMinZoom: s.setMinZoom,
-  setMaxZoom: s.setMaxZoom,
-  setTranslateExtent: s.setTranslateExtent,
-  setNodeExtent: s.setNodeExtent,
-  reset: s.reset,
-  setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
-});
-
 const initPrevValues = {
   /*
    * these are values that are also passed directly to other components
@@ -123,7 +112,19 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     setNodeExtent,
     reset,
     setDefaultNodesAndEdges,
-  } = useStore(selector, shallow);
+  } = useStore(
+    (s) => ({
+      setNodes: s.setNodes,
+      setEdges: s.setEdges,
+      setMinZoom: s.setMinZoom,
+      setMaxZoom: s.setMaxZoom,
+      setTranslateExtent: s.setTranslateExtent,
+      setNodeExtent: s.setNodeExtent,
+      reset: s.reset,
+      setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
+    }),
+    shallow
+  );
   const store = useStoreApi<NodeType, EdgeType>();
 
   // We use layout effects here so that the store is always populated before
@@ -150,7 +151,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         const previousFieldValue = previousFields.current[fieldName];
 
         if (fieldValue === previousFieldValue) continue;
-        if (typeof props[fieldName] === 'undefined') continue;
+        if (props[fieldName] === undefined) continue;
         // Custom handling with dedicated setters for some fields
         if (fieldName === 'nodes') setNodes(fieldValue as Node[]);
         else if (fieldName === 'edges') setEdges(fieldValue as Edge[]);
@@ -167,11 +168,15 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         else store.setState({ [fieldName]: fieldValue });
       }
 
-      previousFields.current = props;
+      setProps(previousFields, props);
     },
     // Only re-run the effect if one of the fields we track changes
     fieldsToTrack.map((fieldName) => props[fieldName])
   );
 
   return null;
+}
+
+function setProps(ref: MutableRefObject<unknown>, props: unknown) {
+  ref.current = props;
 }

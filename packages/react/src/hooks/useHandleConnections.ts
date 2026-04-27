@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   Connection,
   HandleConnection,
@@ -62,5 +62,5 @@ export function useHandleConnections({
     prevConnections.current = connections ?? new Map();
   }, [connections, onConnect, onDisconnect]);
 
-  return useMemo(() => Array.from(connections?.values() ?? []), [connections]);
+  return Array.from(connections?.values() ?? []);
 }

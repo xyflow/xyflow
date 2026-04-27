@@ -1,9 +1,7 @@
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../hooks/useStore';
-import type { Node, ReactFlowState } from '../types';
-
-const nodesSelector = (state: ReactFlowState) => state.nodes;
+import type { Node } from '../types';
 
 /**
  * This hook returns an array of the current nodes. Components that use this hook
@@ -25,7 +23,7 @@ const nodesSelector = (state: ReactFlowState) => state.nodes;
  *```
  */
 export function useNodes<NodeType extends Node = Node>(): NodeType[] {
-  const nodes = useStore(nodesSelector, shallow) as NodeType[];
+  const nodes = useStore((state) => state.nodes, shallow) as NodeType[];
 
   return nodes;
 }

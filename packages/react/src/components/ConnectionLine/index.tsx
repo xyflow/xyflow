@@ -11,7 +11,7 @@ import {
 
 import { useStore } from '../../hooks/useStore';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
-import type { ConnectionLineComponent, Node, ReactFlowState } from '../../types';
+import type { ConnectionLineComponent, Node } from '../../types';
 import { useConnection } from '../../hooks/useConnection';
 
 type ConnectionLineWrapperProps<NodeType extends Node = Node> = {
@@ -21,21 +21,19 @@ type ConnectionLineWrapperProps<NodeType extends Node = Node> = {
   style?: CSSProperties;
 };
 
-const selector = (s: ReactFlowState) => ({
-  nodesConnectable: s.nodesConnectable,
-  isValid: s.connection.isValid,
-  inProgress: s.connection.inProgress,
-  width: s.width,
-  height: s.height,
-});
-
 export function ConnectionLineWrapper<NodeType extends Node = Node>({
   containerStyle,
   style,
   type,
   component,
 }: ConnectionLineWrapperProps<NodeType>) {
-  const { nodesConnectable, width, height, isValid, inProgress } = useStore(selector, shallow);
+  const { nodesConnectable, width, height, isValid, inProgress } = useStore((s) => ({
+    nodesConnectable: s.nodesConnectable,
+    isValid: s.connection.isValid,
+    inProgress: s.connection.inProgress,
+    width: s.width,
+    height: s.height,
+  }), shallow);
   const renderConnection = !!(width && nodesConnectable && inProgress);
 
   if (!renderConnection) {
@@ -130,5 +128,3 @@ const ConnectionLine = <NodeType extends Node = Node>({
 
   return <path d={path} fill="none" className="react-flow__connection-path" style={style} />;
 };
-
-ConnectionLine.displayName = 'ConnectionLine';

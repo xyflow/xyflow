@@ -31,7 +31,8 @@
         "require": "./dist/umd/index.js"
       },
       "default": "./dist/esm/index.js"
-    }
+    },
+    "./dist/esm/index.mjs": "./dist/esm/index.js"
   },
   "sideEffects": false,
   "license": "MIT",
@@ -46,7 +47,7 @@
   "scripts": {
     "dev": "concurrently \"rollup --config node:@xyflow/rollup-config --watch\"",
     "build": "rollup --config node:@xyflow/rollup-config --environment NODE_ENV:production",
-    "lint": "eslint --ext .js,.ts src",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint --ext .js,.ts src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

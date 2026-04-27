@@ -4,11 +4,12 @@ import { errorMessages } from '@xyflow/system';
 import { useStoreApi } from '../../hooks/useStore';
 
 export function useStylesLoadedWarning() {
+  'use no memo'
   const store = useStoreApi();
   const checked = useRef(false);
 
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
+    useEffect(() => {
       if (!checked.current) {
         const pane = document.querySelector('.react-flow__pane');
 
@@ -18,6 +19,6 @@ export function useStylesLoadedWarning() {
 
         checked.current = true;
       }
-    }
-  }, []);
+    }, []);
+  }
 }

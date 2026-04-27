@@ -15,12 +15,13 @@ const emptyTypes = {};
 export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes?: NodeTypes): void;
 export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes?: EdgeTypes): void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: any = emptyTypes): any {
+export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: any = emptyTypes): void {
+  'use no memo'
   const typesRef = useRef(nodeOrEdgeTypes);
   const store = useStoreApi();
 
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') {
+    useEffect(() => {
       const usedKeys = new Set([...Object.keys(typesRef.current), ...Object.keys(nodeOrEdgeTypes)]);
 
       for (const key of usedKeys) {
@@ -31,6 +32,6 @@ export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: any = emptyTypes): an
       }
 
       typesRef.current = nodeOrEdgeTypes;
-    }
-  }, [nodeOrEdgeTypes]);
+    }, [nodeOrEdgeTypes]);
+  }
 }

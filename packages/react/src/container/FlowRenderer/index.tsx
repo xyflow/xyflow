@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
@@ -8,7 +8,7 @@ import { GraphViewProps } from '../GraphView';
 import { ZoomPane } from '../ZoomPane';
 import { Pane } from '../Pane';
 import { NodesSelection } from '../../components/NodesSelection';
-import type { ReactFlowState, Node } from '../../types';
+import type { Node } from '../../types';
 
 export type FlowRendererProps<NodeType extends Node = Node> = Omit<
   GraphViewProps<NodeType>,
@@ -31,11 +31,7 @@ export type FlowRendererProps<NodeType extends Node = Node> = Omit<
 
 const win = typeof window !== 'undefined' ? window : undefined;
 
-const selector = (s: ReactFlowState) => {
-  return { nodesSelectionActive: s.nodesSelectionActive, userSelectionActive: s.userSelectionActive };
-};
-
-function FlowRendererComponent<NodeType extends Node = Node>({
+export function FlowRenderer<NodeType extends Node = Node>({
   children,
   onPaneClick,
   onPaneMouseEnter,
@@ -73,7 +69,10 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onViewportChange,
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
-  const { nodesSelectionActive, userSelectionActive } = useStore(selector, shallow);
+  const { nodesSelectionActive, userSelectionActive } = useStore(
+    (store) => ({ nodesSelectionActive: store.nodesSelectionActive, userSelectionActive: store.userSelectionActive }),
+    shallow
+  );
   const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: win });
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: win });
 
@@ -136,7 +135,3 @@ function FlowRendererComponent<NodeType extends Node = Node>({
     </ZoomPane>
   );
 }
-
-FlowRendererComponent.displayName = 'FlowRenderer';
-
-export const FlowRenderer = memo(FlowRendererComponent) as typeof FlowRendererComponent;

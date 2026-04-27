@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   areConnectionMapsEqual,
   errorMessages,
@@ -83,5 +83,5 @@ export function useNodeConnections({
     prevConnections.current = connections ?? new Map();
   }, [connections, onConnect, onDisconnect]);
 
-  return useMemo(() => Array.from(connections?.values() ?? []), [connections]);
+  return Array.from(connections?.values() ?? []);
 }

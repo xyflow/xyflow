@@ -1,29 +1,10 @@
 import { nodeHasDimensions } from '@xyflow/system';
 
 import { useStore } from './useStore';
-import type { ReactFlowState } from '../types';
 
 export type UseNodesInitializedOptions = {
   /** @default false */
   includeHiddenNodes?: boolean;
-};
-
-const selector = (options: UseNodesInitializedOptions) => (s: ReactFlowState) => {
-  if (!options.includeHiddenNodes) {
-    return s.nodesInitialized;
-  }
-
-  if (s.nodeLookup.size === 0) {
-    return false;
-  }
-
-  for (const [, { internals }] of s.nodeLookup) {
-    if (internals.handleBounds === undefined || !nodeHasDimensions(internals.userNode)) {
-      return false;
-    }
-  }
-
-  return true;
 };
 
 /**
@@ -64,7 +45,23 @@ export function useNodesInitialized(
     includeHiddenNodes: false,
   }
 ): boolean {
-  const initialized = useStore(selector(options));
+  const initialized = useStore(
+    !options.includeHiddenNodes
+      ? (s) => s.nodesInitialized
+      : (s) => {
+          if (s.nodeLookup.size === 0) {
+            return false;
+          }
+
+          for (const { internals } of s.nodeLookup.values()) {
+            if (internals.handleBounds === undefined || !nodeHasDimensions(internals.userNode)) {
+              return false;
+            }
+          }
+
+          return true;
+        }
+  );
 
   return initialized;
 }

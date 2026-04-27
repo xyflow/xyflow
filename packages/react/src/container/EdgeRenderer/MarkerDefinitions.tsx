@@ -1,4 +1,3 @@
-import { memo, useMemo } from 'react';
 import { type MarkerProps, createMarkerIds } from '@xyflow/system';
 
 import { useStore } from '../../hooks/useStore';
@@ -51,16 +50,12 @@ const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
   const edges = useStore((s) => s.edges);
   const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
 
-  const markers = useMemo(() => {
-    const markers = createMarkerIds(edges, {
-      id: rfId,
-      defaultColor,
-      defaultMarkerStart: defaultEdgeOptions?.markerStart,
-      defaultMarkerEnd: defaultEdgeOptions?.markerEnd,
-    });
-
-    return markers;
-  }, [edges, defaultEdgeOptions, rfId, defaultColor]);
+  const markers = createMarkerIds(edges, {
+    id: rfId,
+    defaultColor,
+    defaultMarkerStart: defaultEdgeOptions?.markerStart,
+    defaultMarkerEnd: defaultEdgeOptions?.markerEnd,
+  });
 
   if (!markers.length) {
     return null;
@@ -87,6 +82,4 @@ const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
   );
 };
 
-MarkerDefinitions.displayName = 'MarkerDefinitions';
-
-export default memo(MarkerDefinitions);
+export default MarkerDefinitions;

@@ -1,4 +1,4 @@
-import { useState, useCallback, type Dispatch, type SetStateAction } from 'react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
 
 import { applyNodeChanges, applyEdgeChanges } from '../utils/changes';
 import type { Node, Edge, OnNodesChange, OnEdgesChange } from '../types';
@@ -57,10 +57,7 @@ export function useNodesState<NodeType extends Node>(
   onNodesChange: OnNodesChange<NodeType>
 ] {
   const [nodes, setNodes] = useState(initialNodes);
-  const onNodesChange: OnNodesChange<NodeType> = useCallback(
-    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
-  );
+  const onNodesChange: OnNodesChange<NodeType> = (changes) => setNodes((nds) => applyNodeChanges(changes, nds));
 
   return [nodes, setNodes, onNodesChange];
 }
@@ -121,10 +118,7 @@ export function useEdgesState<EdgeType extends Edge = Edge>(
   onEdgesChange: OnEdgesChange<EdgeType>
 ] {
   const [edges, setEdges] = useState(initialEdges);
-  const onEdgesChange: OnEdgesChange<EdgeType> = useCallback(
-    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    []
-  );
+  const onEdgesChange: OnEdgesChange<EdgeType> = (changes) => setEdges((eds) => applyEdgeChanges(changes, eds));
 
   return [edges, setEdges, onEdgesChange];
 }

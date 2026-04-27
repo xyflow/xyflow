@@ -28,6 +28,20 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/no-non-null-assertion': 'off',
+    'no-restricted-imports': [
+      'error',
+      {
+        name: 'react',
+        importNames: ['memo', 'useCallback', 'useMemo'],
+      },
+    ],
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_', // allow underscores in destructuring
+      },
+    ],
   },
   overrides: [
     {

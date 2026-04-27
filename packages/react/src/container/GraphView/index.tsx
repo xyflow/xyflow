@@ -1,5 +1,3 @@
-import { memo } from 'react';
-
 import { FlowRenderer } from '../FlowRenderer';
 import { NodeRenderer } from '../NodeRenderer';
 import { EdgeRenderer } from '../EdgeRenderer';
@@ -39,7 +37,7 @@ export type GraphViewProps<NodeType extends Node = Node, EdgeType extends Edge =
     rfId: string;
   };
 
-function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
+export function GraphView<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   nodeTypes,
   edgeTypes,
   onInit,
@@ -198,7 +196,3 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
     </FlowRenderer>
   );
 }
-
-GraphViewComponent.displayName = 'GraphView';
-
-export const GraphView = memo(GraphViewComponent) as typeof GraphViewComponent;

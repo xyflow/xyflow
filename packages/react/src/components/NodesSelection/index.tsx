@@ -11,25 +11,12 @@ import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
-import type { Node, ReactFlowState } from '../../types';
+import type { Node } from '../../types';
 
 export type NodesSelectionProps<NodeType> = {
   onSelectionContextMenu?: (event: MouseEvent, nodes: NodeType[]) => void;
   noPanClassName?: string;
   disableKeyboardA11y: boolean;
-};
-
-const selector = (s: ReactFlowState) => {
-  const { width, height, x, y } = getInternalNodesBounds(s.nodeLookup, {
-    filter: (node) => !!node.selected,
-  });
-
-  return {
-    width: isNumeric(width) ? width : null,
-    height: isNumeric(height) ? height : null,
-    userSelectionActive: s.userSelectionActive,
-    transformString: `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]}) translate(${x}px,${y}px)`,
-  };
 };
 
 export function NodesSelection<NodeType extends Node>({
@@ -38,7 +25,18 @@ export function NodesSelection<NodeType extends Node>({
   disableKeyboardA11y,
 }: NodesSelectionProps<NodeType>) {
   const store = useStoreApi<NodeType>();
-  const { width, height, transformString, userSelectionActive } = useStore(selector, shallow);
+  const { width, height, transformString, userSelectionActive } = useStore((s) => {
+    const { width, height, x, y } = getInternalNodesBounds(s.nodeLookup, {
+      filter: (node) => !!node.selected,
+    });
+
+    return {
+      width: isNumeric(width) ? width : null,
+      height: isNumeric(height) ? height : null,
+      userSelectionActive: s.userSelectionActive,
+      transformString: `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]}) translate(${x}px,${y}px)`,
+    };
+  }, shallow);
   const moveSelectedNodes = useMoveSelectedNodes();
 
   const nodeRef = useRef<HTMLDivElement>(null);

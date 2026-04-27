@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from './useStore';
@@ -33,7 +32,7 @@ import type { InternalNode, Node } from '../types';
  */
 export function useInternalNode<NodeType extends Node = Node>(id: string): InternalNode<NodeType> | undefined {
   const node = useStore(
-    useCallback((s) => s.nodeLookup.get(id) as InternalNode<NodeType> | undefined, [id]),
+    (s) => s.nodeLookup.get(id) as InternalNode<NodeType> | undefined,
     shallow
   );
 
