@@ -38,7 +38,7 @@
     "directory": "packages/system"
   },
   "scripts": {
-    "dev": "concurrently \"vite build --watch\" \"pnpm:types -- --watch\"",
+    "dev": "concurrently \"vite build --watch\" \"pnpm:types --watch\"",
     "build": "vite build && pnpm run types",
     "types": "tsc --emitDeclarationOnly",
     "format": "prettier --write .",
