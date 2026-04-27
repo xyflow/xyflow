@@ -16,7 +16,7 @@ import {
   fitViewport,
   getHandlePosition,
   Position,
-  ZIndexMode
+  ZIndexMode,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -133,7 +133,7 @@ const createStore = ({
             nodesInitialized,
             fitViewQueued: false,
             fitViewOptions: undefined,
-            nodesSelectionActive: nextNodesSelectionActive
+            nodesSelectionActive: nextNodesSelectionActive,
           });
         } else {
           set({ nodes, nodesInitialized, nodesSelectionActive: nextNodesSelectionActive });

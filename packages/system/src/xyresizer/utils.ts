@@ -191,27 +191,20 @@ export function getDimensionsAfterResize(
 
       // Check if the extent is restricting the resize
       if (extent) {
-        let aspectExtentClamp = 0;
-        if ((!affectsX && !affectsY) || (affectsX && !affectsY && isDiagonal)) {
-          aspectExtentClamp =
-            getUpperExtentClamp(startY + originOffsetY + newWidth / aspectRatio, extent[1][1]) * aspectRatio;
-        } else {
-          aspectExtentClamp =
-            getLowerExtentClamp(startY + originOffsetY + (affectsX ? distX : -distX) / aspectRatio, extent[0][1]) *
-            aspectRatio;
-        }
+        const aspectExtentClamp =
+          (!affectsX && !affectsY) || (affectsX && !affectsY && isDiagonal)
+            ? getUpperExtentClamp(startY + originOffsetY + newWidth / aspectRatio, extent[1][1]) * aspectRatio
+            : getLowerExtentClamp(startY + originOffsetY + (affectsX ? distX : -distX) / aspectRatio, extent[0][1]) *
+              aspectRatio;
         clampX = Math.max(clampX, aspectExtentClamp);
       }
 
       // Check if the child extent is restricting the resize
       if (childExtent) {
-        let aspectExtentClamp = 0;
-        if ((!affectsX && !affectsY) || (affectsX && !affectsY && isDiagonal)) {
-          aspectExtentClamp = getLowerExtentClamp(startY + newWidth / aspectRatio, childExtent[1][1]) * aspectRatio;
-        } else {
-          aspectExtentClamp =
-            getUpperExtentClamp(startY + (affectsX ? distX : -distX) / aspectRatio, childExtent[0][1]) * aspectRatio;
-        }
+        const aspectExtentClamp =
+          (!affectsX && !affectsY) || (affectsX && !affectsY && isDiagonal)
+            ? getLowerExtentClamp(startY + newWidth / aspectRatio, childExtent[1][1]) * aspectRatio
+            : getUpperExtentClamp(startY + (affectsX ? distX : -distX) / aspectRatio, childExtent[0][1]) * aspectRatio;
         clampX = Math.max(clampX, aspectExtentClamp);
       }
     }
@@ -222,26 +215,19 @@ export function getDimensionsAfterResize(
       clampY = Math.max(clampY, aspectWidthClamp);
 
       if (extent) {
-        let aspectExtentClamp = 0;
-        if ((!affectsX && !affectsY) || (affectsY && !affectsX && isDiagonal)) {
-          aspectExtentClamp =
-            getUpperExtentClamp(startX + newHeight * aspectRatio + originOffsetX, extent[1][0]) / aspectRatio;
-        } else {
-          aspectExtentClamp =
-            getLowerExtentClamp(startX + (affectsY ? distY : -distY) * aspectRatio + originOffsetX, extent[0][0]) /
-            aspectRatio;
-        }
+        const aspectExtentClamp =
+          (!affectsX && !affectsY) || (affectsY && !affectsX && isDiagonal)
+            ? getUpperExtentClamp(startX + newHeight * aspectRatio + originOffsetX, extent[1][0]) / aspectRatio
+            : getLowerExtentClamp(startX + (affectsY ? distY : -distY) * aspectRatio + originOffsetX, extent[0][0]) /
+              aspectRatio;
         clampY = Math.max(clampY, aspectExtentClamp);
       }
 
       if (childExtent) {
-        let aspectExtentClamp = 0;
-        if ((!affectsX && !affectsY) || (affectsY && !affectsX && isDiagonal)) {
-          aspectExtentClamp = getLowerExtentClamp(startX + newHeight * aspectRatio, childExtent[1][0]) / aspectRatio;
-        } else {
-          aspectExtentClamp =
-            getUpperExtentClamp(startX + (affectsY ? distY : -distY) * aspectRatio, childExtent[0][0]) / aspectRatio;
-        }
+        const aspectExtentClamp =
+          (!affectsX && !affectsY) || (affectsY && !affectsX && isDiagonal)
+            ? getLowerExtentClamp(startX + newHeight * aspectRatio, childExtent[1][0]) / aspectRatio
+            : getUpperExtentClamp(startX + (affectsY ? distY : -distY) * aspectRatio, childExtent[0][0]) / aspectRatio;
         clampY = Math.max(clampY, aspectExtentClamp);
       }
     }

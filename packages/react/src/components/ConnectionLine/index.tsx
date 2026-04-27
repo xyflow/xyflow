@@ -97,7 +97,7 @@ const ConnectionLine = <NodeType extends Node = Node>({
     );
   }
 
-  let path = '';
+  let path: string;
 
   const pathParams = {
     sourceX: from.x,

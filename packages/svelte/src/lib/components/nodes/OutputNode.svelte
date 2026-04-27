@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Position } from '@xyflow/system';
-  import type { NodeProps } from '$lib/types';
+	import { Position } from '@xyflow/system';
+	import type { NodeProps } from '$lib/types';
 
-  import { Handle } from '$lib/components/Handle';
+	import { Handle } from '$lib/components/Handle';
 
-  let { data = { label: 'Node' }, targetPosition = Position.Top }: NodeProps = $props();
+	let { data = { label: 'Node' }, targetPosition = Position.Top }: NodeProps = $props();
 </script>
 
 {data?.label}

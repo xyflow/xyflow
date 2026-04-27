@@ -9,17 +9,17 @@ import type { InternalNode } from '$lib/types';
  * @returns An internal node or undefined
  */
 export function useInternalNode(id: string): { current: InternalNode | undefined } {
-  const { nodeLookup, nodes } = $derived(useStore());
+	const { nodeLookup, nodes } = $derived(useStore());
 
-  const node = $derived.by(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    nodes;
-    return nodeLookup.get(id);
-  });
+	const node = $derived.by(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		nodes;
+		return nodeLookup.get(id);
+	});
 
-  return {
-    get current() {
-      return node;
-    }
-  };
+	return {
+		get current() {
+			return node;
+		}
+	};
 }

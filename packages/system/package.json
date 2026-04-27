@@ -40,7 +40,8 @@
   "scripts": {
     "dev": "concurrently \"vite build --watch\"",
     "build": "vite build && tsc --emitDeclarationOnly",
-    "lint": "eslint --ext .js,.ts src",
+    "format": "prettier --write .",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -55,8 +56,11 @@
     "d3-zoom": "^3.0.0"
   },
   "devDependencies": {
+    "@types/node": "^25.6.0",
     "@xyflow/eslint-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
+    "eslint": "catalog:",
+    "prettier": "^3.8.3",
     "typescript": "catalog:",
     "vite": "catalog:"
   }

@@ -8,28 +8,28 @@ import { setContext, getContext, hasContext } from 'svelte';
  * - When called without arguments, it returns the context value or undefined
  */
 function createContext<T>(): [
-  {
-    (errorMessage: string): T;
-    (): T | undefined;
-  },
-  (context: T) => T
+	{
+		(errorMessage: string): T;
+		(): T | undefined;
+	},
+	(context: T) => T
 ] {
-  const key = {};
+	const key = {};
 
-  return [
-    (errorMessage?: string) => {
-      if (errorMessage && !hasContext(key)) {
-        throw new Error(errorMessage);
-      }
+	return [
+		(errorMessage?: string) => {
+			if (errorMessage && !hasContext(key)) {
+				throw new Error(errorMessage);
+			}
 
-      return getContext(key);
-    },
-    (context) => setContext(key, context)
-  ];
+			return getContext(key);
+		},
+		(context) => setContext(key, context)
+	];
 }
 
 export const [getNodeIdContext, setNodeIdContext] = createContext<string>();
 export const [getNodeConnectableContext, setNodeConnectableContext] =
-  createContext<ConnectableContext>();
+	createContext<ConnectableContext>();
 
 export const [getEdgeIdContext, setEdgeIdContext] = createContext<string>();

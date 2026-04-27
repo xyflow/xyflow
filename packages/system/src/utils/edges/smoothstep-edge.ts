@@ -91,7 +91,7 @@ function getPoints({
   const dirAccessor = dir.x !== 0 ? 'x' : 'y';
   const currDir = dir[dirAccessor];
 
-  let points: XYPosition[] = [];
+  let points: XYPosition[];
   let centerX, centerY;
   const sourceGapOffset = { x: 0, y: 0 };
   const targetGapOffset = { x: 0, y: 0 };

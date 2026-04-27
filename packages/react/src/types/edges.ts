@@ -53,7 +53,7 @@ export type EdgeLabelOptions = {
  */
 export type Edge<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
-  EdgeType extends string | undefined = string | undefined
+  EdgeType extends string | undefined = string | undefined,
 > = EdgeBase<EdgeData, EdgeType> &
   EdgeLabelOptions & {
     style?: CSSProperties;

@@ -15,53 +15,53 @@ export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeTy
  * @public
  */
 export type Node<
-  NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+	NodeData extends Record<string, unknown> = Record<string, unknown>,
+	NodeType extends string | undefined = string | undefined
 > = NodeBase<NodeData, NodeType> & {
-  class?: ClassValue;
-  style?: string;
-  focusable?: boolean;
-  /**
-   * The ARIA role attribute for the node element, used for accessibility.
-   * @default "group"
-   */
-  ariaRole?: HTMLAttributes<HTMLDivElement>['role'];
+	class?: ClassValue;
+	style?: string;
+	focusable?: boolean;
+	/**
+	 * The ARIA role attribute for the node element, used for accessibility.
+	 * @default "group"
+	 */
+	ariaRole?: HTMLAttributes<HTMLDivElement>['role'];
 
-  /**
-   * General escape hatch for adding custom attributes to the node's DOM element.
-   */
-  domAttributes?: Omit<
-    HTMLAttributes<HTMLDivElement>,
-    | 'id'
-    | 'style'
-    | 'class'
-    | 'draggable'
-    | 'role'
-    | 'aria-label'
-    | 'dangerouslySetInnerHTML'
-    | keyof DOMAttributes<HTMLDivElement>
-  >;
+	/**
+	 * General escape hatch for adding custom attributes to the node's DOM element.
+	 */
+	domAttributes?: Omit<
+		HTMLAttributes<HTMLDivElement>,
+		| 'id'
+		| 'style'
+		| 'class'
+		| 'draggable'
+		| 'role'
+		| 'aria-label'
+		| 'dangerouslySetInnerHTML'
+		| keyof DOMAttributes<HTMLDivElement>
+	>;
 };
 
 // @todo: currently generics for nodes are not really supported
 // let's fix `type: any` when we migrate to Svelte 5
 export type NodeProps<NodeType extends Node = Node> = NodePropsBase<NodeType> & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  type: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	type: any;
 };
 
 export type NodeTypes = Record<
-  string,
-  Component<
-    NodeProps & {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data: any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      type: any;
-    }
-  >
+	string,
+	Component<
+		NodeProps & {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			data: any;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			type: any;
+		}
+	>
 >;
 
 export type BuiltInNode =
-  | Node<{ label: string }, 'input' | 'output' | 'default' | undefined>
-  | Node<Record<string, never>, 'group'>;
+	| Node<{ label: string }, 'input' | 'output' | 'default' | undefined>
+	| Node<Record<string, never>, 'group'>;

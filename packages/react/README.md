@@ -20,7 +20,7 @@ A highly customizable React component for building interactive graphs and node-b
 
 - **Easy to use:** Seamless zooming and panning, single- and multi selection of graph elements and keyboard shortcuts are supported out of the box
 - **Customizable:** Different [node](https://reactflow.dev/examples) and [edge types](https://reactflow.dev/examples/edges/edge-types) and support for custom nodes with multiple handles and custom edges
-- **Fast rendering:** Only nodes that have changed are re-rendered 
+- **Fast rendering:** Only nodes that have changed are re-rendered
 - **Hooks and Utils:** [Hooks](https://reactflow.dev/api-reference/hooks) for handling nodes, edges and the viewport and graph [helper functions](https://reactflow.dev/api-reference/utils)
 - **Plugin Components:** [Background](https://reactflow.dev/api-reference/components/background), [MiniMap](https://reactflow.dev/api-reference/components/minimap) and [Controls](https://reactflow.dev/api-reference/components/controls)
 - **Reliable**: Written in [Typescript](https://www.typescriptlang.org/) and tested with [cypress](https://www.cypress.io/)
@@ -47,15 +47,7 @@ This is only a very basic usage example of React Flow. To see everything that is
 
 ```jsx
 import { useCallback } from 'react';
-import {
-  ReactFlow,
-  MiniMap,
-  Controls,
-  Background,
-  useNodesState,
-  useEdgesState,
-  addEdge,
-} from '@xyflow/react';
+import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
 

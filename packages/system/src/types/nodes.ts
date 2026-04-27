@@ -10,7 +10,7 @@ import { Optional } from '../utils/types';
  */
 export type NodeBase<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+  NodeType extends string | undefined = string | undefined,
 > = {
   /** Unique id of a node. */
   id: string;

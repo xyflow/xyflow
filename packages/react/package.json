@@ -53,7 +53,8 @@
     "build": "vite build && tsc --emitDeclarationOnly && pnpm run css",
     "css": "postcss src/styles/{base,style}.css --config ./../../tooling/postcss-config/ --dir dist ",
     "css-watch": "pnpm css --watch",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "format": "prettier --write .",
+    "lint": "eslint src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -66,13 +67,16 @@
     "react-dom": ">=17"
   },
   "devDependencies": {
+    "@types/node": "^25.6.0",
     "@types/react": ">=17",
     "@types/react-dom": ">=17",
     "@xyflow/eslint-config": "workspace:*",
     "@xyflow/postcss-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
+    "eslint": "catalog:",
     "postcss": "^8.4.21",
     "postcss-cli": "^11.0.0",
+    "prettier": "^3.8.3",
     "react": "catalog:",
     "react-dom": "catalog:",
     "typescript": "catalog:",

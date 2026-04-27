@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { PanelProps } from './types';
+	import type { PanelProps } from './types';
 
-  let { position = 'top-right', style, class: className, children, ...rest }: PanelProps = $props();
+	let { position = 'top-right', style, class: className, children, ...rest }: PanelProps = $props();
 
-  let positionClasses = $derived(`${position}`.split('-'));
+	let positionClasses = $derived(`${position}`.split('-'));
 </script>
 
 <div class={['svelte-flow__panel', className, ...positionClasses]} {style} {...rest}>
-  {@render children?.()}
+	{@render children?.()}
 </div>

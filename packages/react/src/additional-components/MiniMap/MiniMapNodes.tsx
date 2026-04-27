@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentType, memo } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';

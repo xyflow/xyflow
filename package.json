@@ -16,6 +16,7 @@
     "test:react:ui": "pnpm --filter=playwright run test:react:ui",
     "build:all": "turbo run build",
     "build": "turbo run build --filter=./packages/**",
+    "format": "turbo run format --filter=./packages/**",
     "lint": "turbo run lint --filter=./packages/**",
     "typecheck": "turbo run typecheck --filter=./packages/**",
     "release": "changeset publish",

@@ -196,7 +196,7 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
   nodes: (NodeType | InternalNodeBase<NodeType> | string)[],
   params: GetNodesBoundsParams<NodeType> = { nodeOrigin: [0, 0] }
 ): Rect => {
-  if (__DEV__ && !params.nodeLookup) {
+  if (process.env.NODE_ENV === 'development' && !params.nodeLookup) {
     console.warn(
       'Please use `getNodesBounds` from `useReactFlow`/`useSvelteFlow` hook to ensure correct values for sub flows. If not possible, you have to provide a nodeLookup to support sub flows.'
     );
@@ -215,8 +215,8 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
         currentNode = isId
           ? params.nodeLookup.get(nodeOrId)
           : !isInternalNodeBase(nodeOrId)
-          ? params.nodeLookup.get(nodeOrId.id)
-          : nodeOrId;
+            ? params.nodeLookup.get(nodeOrId.id)
+            : nodeOrId;
       }
 
       const nodeBox = currentNode ? nodeToBox(currentNode, params.nodeOrigin) : { x: 0, y: 0, x2: 0, y2: 0 };
@@ -335,7 +335,7 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
 
 function getFitViewNodes<
   Params extends NodeLookup<InternalNodeBase<NodeBase>>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(nodeLookup: Params, options?: Options) {
   const fitViewNodes: NodeLookup = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
@@ -353,7 +353,7 @@ function getFitViewNodes<
 
 export async function fitViewport<
   Params extends FitViewParamsBase<NodeBase>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(
   { nodes, width, height, panZoom, minZoom, maxZoom }: Params,
   options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>

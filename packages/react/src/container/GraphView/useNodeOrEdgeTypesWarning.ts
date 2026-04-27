@@ -20,7 +20,7 @@ export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: any = emptyTypes): an
   const store = useStoreApi();
 
   useEffect(() => {
-    if (__DEV__) {
+    if (process.env.NODE_ENV === 'development') {
       const usedKeys = new Set([...Object.keys(typesRef.current), ...Object.keys(nodeOrEdgeTypes)]);
 
       for (const key of usedKeys) {
