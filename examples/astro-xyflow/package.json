@@ -18,8 +18,8 @@
     "@xyflow/react": "workspace:^",
     "@xyflow/svelte": "workspace:^",
     "astro": "^5.13.5",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "svelte": "^5.38.7"
   }
 }

@@ -16,7 +16,7 @@
 		"@sveltejs/kit": "^2.49.1",
 		"@typescript-eslint/eslint-plugin": "^8.48.1",
 		"@typescript-eslint/parser": "^8.48.1",
-		"eslint": "^9.39.1",
+		"eslint": "catalog:",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.13.0",
 		"prettier": "^3.7.4",
@@ -24,8 +24,8 @@
 		"svelte": "^5.45.4",
 		"svelte-check": "^4.3.4",
 		"tslib": "^2.8.1",
-		"typescript": "^5.9.3",
-		"vite": "^7.2.6"
+		"typescript": "catalog:",
+		"vite": "catalog:"
 	},
 	"type": "module",
 	"dependencies": {

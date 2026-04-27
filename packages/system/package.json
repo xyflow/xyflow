@@ -55,10 +55,9 @@
     "d3-zoom": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.7.16",
     "@xyflow/eslint-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
-    "typescript": "5.4.5",
-    "vite": "^8.0.10"
+    "typescript": "catalog:",
+    "vite": "catalog:"
   }
 }

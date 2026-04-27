@@ -66,7 +66,6 @@
     "react-dom": ">=17"
   },
   "devDependencies": {
-    "@types/node": "^18.7.16",
     "@types/react": ">=17",
     "@types/react-dom": ">=17",
     "@xyflow/eslint-config": "workspace:*",
@@ -74,8 +73,9 @@
     "@xyflow/tsconfig": "workspace:*",
     "postcss": "^8.4.21",
     "postcss-cli": "^11.0.0",
-    "react": "^18.2.0",
-    "typescript": "5.4.5",
-    "vite": "^8.0.10"
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
   }
 }

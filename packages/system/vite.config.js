@@ -6,6 +6,9 @@ const external = ['d3-drag', 'd3-interpolate', 'd3-selection', 'd3-transition', 
 const externalPackages = /^(?:d3-drag|d3-interpolate|d3-selection|d3-transition|d3-zoom)(?:\/.*)?$/;
 
 export default defineConfig({
+  define: {
+    __DEV__: process.env.NODE_ENV === 'development',
+  },
   build: {
     minify: false,
     emptyOutDir: false,

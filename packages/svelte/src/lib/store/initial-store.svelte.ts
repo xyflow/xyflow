@@ -449,7 +449,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     );
 
     constructor() {
-      if (process.env.NODE_ENV === 'development') {
+      if (__DEV__) {
         warnIfDeeplyReactive(signals.nodes, 'nodes');
         warnIfDeeplyReactive(signals.edges, 'edges');
       }

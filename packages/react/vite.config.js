@@ -16,6 +16,9 @@ const external = [
 const externalPackages = /^(?:@xyflow\/system|classcat|react|react-dom|zustand)(?:\/.*)?$/;
 
 export default defineConfig({
+  define: {
+    __DEV__: process.env.NODE_ENV === 'development',
+  },
   build: {
     minify: false,
     emptyOutDir: false,

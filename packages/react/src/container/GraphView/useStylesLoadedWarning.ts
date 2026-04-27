@@ -8,7 +8,7 @@ export function useStylesLoadedWarning() {
   const checked = useRef(false);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
+    if (__DEV__) {
       if (!checked.current) {
         const pane = document.querySelector('.react-flow__pane');
 

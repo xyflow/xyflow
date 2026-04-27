@@ -101,7 +101,7 @@
   setNodeIdContext(id);
   setNodeConnectableContext(connectableContext);
 
-  if (process.env.NODE_ENV === 'development') {
+  if (__DEV__) {
     $effect(() => {
       const valid = !!store.nodeTypes[type];
       if (!valid) {

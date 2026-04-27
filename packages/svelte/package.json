@@ -58,8 +58,7 @@
 	],
 	"dependencies": {
 		"@svelte-put/shortcut": "^4.1.0",
-		"@xyflow/system": "workspace:*",
-		"postcss-cli": "^11.0.0"
+		"@xyflow/system": "workspace:*"
 	},
 	"peerDependencies": {
 		"svelte": "^5.25.0"
@@ -71,22 +70,20 @@
 		"@sveltejs/kit": "^2.57.0",
 		"@sveltejs/package": "^2.5.7",
 		"@sveltejs/vite-plugin-svelte": "^7.0.0",
-		"@types/node": "^22",
-		"cssnano": "^7.1.2",
-		"eslint": "^10.2.0",
+		"eslint": "catalog:",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.17.0",
 		"globals": "^17.4.0",
 		"lightningcss": "^1.32.0",
 		"postcss": "^8.5.6",
-		"postcss-nested": "^7.0.2",
-		"postcss-rename": "^0.8.0",
+		"postcss-cli": "^11.0.0",
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.5.1",
 		"publint": "^0.3.18",
 		"svelte": "^5.55.2",
 		"svelte-check": "^4.4.6",
-		"typescript": "^6.0.2",
-		"typescript-eslint": "^8.58.1"
+		"typescript": "catalog:",
+		"typescript-eslint": "^8.58.1",
+		"vite": "catalog:"
 	}
 }

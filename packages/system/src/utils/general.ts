@@ -144,7 +144,7 @@ export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
 // used for a11y key board controls for nodes and edges
 
 export const devWarn = (id: string, message: string) => {
-  if (process.env.NODE_ENV === 'development') {
+  if (__DEV__) {
     console.warn(`[React Flow]: ${message} Help: https://reactflow.dev/error#${id}`);
   }
 };
