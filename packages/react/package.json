@@ -71,20 +71,11 @@
     "@types/react-dom": ">=17",
     "@xyflow/eslint-config": "workspace:*",
     "@xyflow/postcss-config": "workspace:*",
-    "@xyflow/rollup-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
     "postcss": "^8.4.21",
     "postcss-cli": "^11.0.0",
     "react": "^18.2.0",
     "typescript": "5.4.5",
     "vite": "^8.0.10"
-  },
-  "rollup": {
-    "globals": {
-      "classcat": "cc",
-      "zustand": "zustand",
-      "zustand/shallow": "zustandShallow"
-    },
-    "name": "ReactFlow"
   }
 }

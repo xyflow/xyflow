@@ -57,18 +57,8 @@
   "devDependencies": {
     "@types/node": "^18.7.16",
     "@xyflow/eslint-config": "workspace:*",
-    "@xyflow/rollup-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
     "typescript": "5.4.5",
     "vite": "^8.0.10"
-  },
-  "rollup": {
-    "globals": {
-      "d3-selection": "d3Selection",
-      "d3-zoom": "d3Zoom",
-      "d3-drag": "d3Drag"
-    },
-    "vanilla": true,
-    "name": "XYFlowSystem"
   }
 }
