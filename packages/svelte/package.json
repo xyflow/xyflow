@@ -25,12 +25,13 @@
 		"url": "https://github.com/xyflow/xyflow/issues"
 	},
 	"scripts": {
-		"dev": "svelte-kit sync && svelte-package -o dist/lib -w",
-		"build": "svelte-kit sync && svelte-package && publint",
+		"dev": "concurrently \"svelte-package -o dist/lib -w\" pnpm:css --watch",
+		"build": "svelte-package && pnpm run css && publint",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"css": "postcss src/lib/styles/{base,style}.css --config ./../../tooling/postcss-config/ --dir dist ",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write ."
 	},
@@ -54,7 +55,8 @@
 	],
 	"dependencies": {
 		"@svelte-put/shortcut": "^4.1.0",
-		"@xyflow/system": "workspace:*"
+		"@xyflow/system": "workspace:*",
+		"postcss-cli": "^11.0.0"
 	},
 	"peerDependencies": {
 		"svelte": "^5.25.0"
@@ -82,7 +84,6 @@
 		"svelte": "^5.55.2",
 		"svelte-check": "^4.4.6",
 		"typescript": "^6.0.2",
-		"typescript-eslint": "^8.58.1",
-		"vite": "^8.0.7"
+		"typescript-eslint": "^8.58.1"
 	}
 }
