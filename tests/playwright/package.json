@@ -14,13 +14,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.51.1",
-    "@types/node": "^20.14.6"
+    "@playwright/test": "^1.59.1",
+    "@types/node": "catalog:"
   },
   "dependencies": {
-    "@playwright/experimental-ct-react": "^1.51.1",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
+    "@playwright/experimental-ct-react": "^1.59.1",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "typescript": "catalog:"
