@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
-    "@xyflow/eslint-config": "workspace:*",
+    "@xyflow/eslint": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "prettier": "^3.8.3",

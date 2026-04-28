@@ -1,3 +1,3 @@
-import config from '@xyflow/eslint-config';
+import config from '@xyflow/eslint/base';
 
 export default config;

@@ -1,17 +1,24 @@
 {
-  "name": "@xyflow/eslint-config",
+  "name": "@xyflow/eslint",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "license": "MIT",
   "main": "src/index.js",
+  "exports": {
+    "./base": "./src/base.js",
+    "./react": "./src/react.js"
+  },
   "dependencies": {
     "@eslint/compat": "^2.0.5",
     "@eslint/js": "^10.0.1",
     "eslint": "catalog:",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-config-turbo": "^2.5.4",
+    "eslint-config-turbo": "^2.9.6",
     "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.25",
     "globals": "^17.5.0",
-    "typescript-eslint": "^8.59.0"
+    "typescript-eslint": "^8.59.1"
   }
 }
