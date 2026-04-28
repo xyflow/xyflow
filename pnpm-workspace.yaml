@@ -5,8 +5,20 @@ packages:
   - 'tests/*'
 
 catalog:
-  eslint: ^10.2.0
-  react: ^18.2.0
-  react-dom: ^18.2.0
-  typescript: ^6.0.0
+  eslint: ^10.2.1
+  react: ^18.3.1
+  react-dom: ^18.3.1
+  '@types/react': ^18.3.28
+  '@types/react-dom': ^18.3.7
+  typescript: ^6.0.3
   vite: ^8.0.10
+  prettier: ^3.8.3
+  postcss: ^8.5.12
+  postcss-cli: ^11.0.1
+  '@types/node': ^20.19.39
+  publint: ^0.3.18
+  svelte: ^5.55.5
+  svelte-check: ^4.4.6
+  '@sveltejs/vite-plugin-svelte': ^7.0.0
+  '@sveltejs/adapter-auto': ^7.0.1
+  '@sveltejs/kit': ^2.58.0

@@ -32,14 +32,17 @@
   "publishConfig": {
     "access": "public"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/xyflow/xyflow.git",
+    "url": "git+https://github.com/xyflow/xyflow.git",
     "directory": "packages/system"
   },
   "scripts": {
     "dev": "concurrently \"vite build --watch\" \"pnpm:types --watch\"",
-    "build": "vite build && pnpm run types",
+    "build": "vite build && pnpm run types && publint",
     "types": "tsc --emitDeclarationOnly",
     "format": "prettier --write .",
     "lint": "eslint src",
@@ -48,8 +51,8 @@
   "dependencies": {
     "@types/d3-drag": "^3.0.7",
     "@types/d3-interpolate": "^3.0.4",
-    "@types/d3-selection": "^3.0.10",
-    "@types/d3-transition": "^3.0.8",
+    "@types/d3-selection": "^3.0.11",
+    "@types/d3-transition": "^3.0.9",
     "@types/d3-zoom": "^3.0.8",
     "d3-drag": "^3.0.0",
     "d3-interpolate": "^3.0.1",
@@ -57,11 +60,12 @@
     "d3-zoom": "^3.0.0"
   },
   "devDependencies": {
-    "@types/node": "^25.6.0",
     "@xyflow/eslint": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
+    "publint": "catalog:",
+    "@types/node": "catalog:",
     "eslint": "catalog:",
-    "prettier": "^3.8.3",
+    "prettier": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"
   }

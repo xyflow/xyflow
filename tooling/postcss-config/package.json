@@ -5,12 +5,12 @@
   "license": "MIT",
   "main": "postcss.config.js",
   "dependencies": {
-    "autoprefixer": "^10.4.15",
-    "cssnano": "^6.0.1",
-    "dotenv": "^16.3.1",
+    "autoprefixer": "^10.5.0",
+    "cssnano": "^6.1.2",
+    "dotenv": "^16.6.1",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-import": "^15.1.0",
-    "postcss-nested": "^6.0.0",
+    "postcss-nested": "^6.2.0",
     "postcss-rename": "^0.6.1"
   }
 }

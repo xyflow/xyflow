@@ -31,7 +31,7 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"css": "postcss src/lib/styles/{base,style}.css --config ./../../tooling/postcss-config/ --dir dist ",
+		"css": "postcss src/lib/styles/{base,style}.css --dir dist ",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write ."
 	},
@@ -56,35 +56,34 @@
 		"dist",
 		"src/lib"
 	],
+	"engines": {
+		"node": ">=20"
+	},
 	"dependencies": {
-		"@svelte-put/shortcut": "^4.1.0",
-		"@xyflow/system": "workspace:*"
+		"@xyflow/system": "workspace:*",
+		"@svelte-put/shortcut": "^4.1.0"
 	},
 	"peerDependencies": {
 		"svelte": "^5.25.0"
 	},
 	"devDependencies": {
-		"@eslint/compat": "^2.0.5",
-		"@eslint/js": "^10.0.1",
-		"@sveltejs/adapter-auto": "^7.0.1",
-		"@sveltejs/kit": "^2.58.0",
-		"@sveltejs/package": "^2.5.7",
-		"@sveltejs/vite-plugin-svelte": "^7.0.0",
-		"@types/node": "^25.6.0",
+		"@xyflow/eslint": "workspace:*",
+		"@xyflow/postcss-config": "workspace:*",
+		"@xyflow/tsconfig": "workspace:*",
+		"@sveltejs/adapter-auto": "catalog:",
+		"@sveltejs/kit": "catalog:",
+		"@types/node": "catalog:",
 		"eslint": "catalog:",
-		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-svelte": "^3.17.1",
-		"globals": "^17.5.0",
-		"lightningcss": "^1.32.0",
-		"postcss": "^8.5.12",
-		"postcss-cli": "^11.0.1",
-		"prettier": "^3.8.3",
-		"prettier-plugin-svelte": "^3.5.1",
-		"publint": "^0.3.18",
-		"svelte": "^5.55.5",
-		"svelte-check": "^4.4.6",
+		"postcss": "catalog:",
+		"postcss-cli": "catalog:",
+		"prettier": "catalog:",
+		"publint": "catalog:",
+		"svelte": "catalog:",
+		"svelte-check": "catalog:",
+		"@sveltejs/vite-plugin-svelte": "catalog:",
 		"typescript": "catalog:",
-		"typescript-eslint": "^8.59.0",
-		"vite": "catalog:"
+		"vite": "catalog:",
+		"@sveltejs/package": "^2.5.7",
+		"prettier-plugin-svelte": "^3.5.1"
 	}
 }
