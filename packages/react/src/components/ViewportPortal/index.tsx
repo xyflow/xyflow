@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useStore } from '../../hooks/useStore';
@@ -31,7 +31,7 @@ const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__v
  *}
  *```
  */
-export function ViewportPortal({ children }: { children: ReactNode }) {
+export function ViewportPortal({ children }: { children: ReactNode }): ReactPortal | null {
   const viewPortalDiv = useStore(selector);
 
   if (!viewPortalDiv) {
