@@ -88,9 +88,6 @@
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   let selectionInProgress = false;
 
-  // Position of the selection start in the flow so that it stays fixed on the canvas while auto-panning
-  let userSelectionFlowOrigin: XYPosition | null = null;
-
   // Used for auto pan when approaching the edges of the container during selection
   let autoPanId: number = 0;
   let position: XYPosition = { x: 0, y: 0 };
@@ -127,7 +124,7 @@
     const { x, y } = getEventPosition(event, containerBounds);
 
     // We convert the position to the flow space so that it stays fixed on the canvas while auto-panning
-    userSelectionFlowOrigin = pointToRendererPoint({ x, y }, [
+    const userSelectionFlowOrigin = pointToRendererPoint({ x, y }, [
       store.viewport.x,
       store.viewport.y,
       store.viewport.zoom
@@ -136,8 +133,8 @@
     store.selectionRect = {
       width: 0,
       height: 0,
-      startX: x,
-      startY: y,
+      startX: userSelectionFlowOrigin.x,
+      startY: userSelectionFlowOrigin.y,
       x,
       y
     };
@@ -150,18 +147,19 @@
 
   // We commit the user selection rectangle to the store on auto-panning or pointer move
   function commitUserSelectionRect(mouseX: number, mouseY: number): void {
-    if (!userSelectionFlowOrigin) {
+    if (store.selectionRect?.startX === undefined || store.selectionRect.startY === undefined) {
       return;
     }
 
-    const screenStart = rendererPointToPoint(userSelectionFlowOrigin, [
+    const userStartPosition = { x: store.selectionRect?.startX, y: store.selectionRect?.startY };
+    const screenStart = rendererPointToPoint(userStartPosition, [
       store.viewport.x,
       store.viewport.y,
       store.viewport.zoom
     ]);
     const nextUserSelectRect = {
-      startX: screenStart.x,
-      startY: screenStart.y,
+      startX: userStartPosition.x,
+      startY: userStartPosition.y,
       x: mouseX < screenStart.x ? mouseX : screenStart.x,
       y: mouseY < screenStart.y ? mouseY : screenStart.y,
       width: Math.abs(mouseX - screenStart.x),
@@ -216,7 +214,7 @@
     const [x, y] = calcAutoPan(position, containerBounds, store.autoPanSpeed);
 
     store.panBy({ x, y }).then((panned) => {
-      if (!selectionInProgress || !userSelectionFlowOrigin || !panned) {
+      if (!selectionInProgress || !panned) {
         autoPanId = requestAnimationFrame(autoPan);
         return;
       }
@@ -229,7 +227,6 @@
     cancelAnimationFrame(autoPanId);
     autoPanId = 0;
     autoPanStarted = false;
-    userSelectionFlowOrigin = null;
   }
 
   onDestroy(() => {
@@ -237,14 +234,15 @@
   });
 
   function onPointerMove(event: PointerEvent) {
-    if (!isSelecting || !containerBounds || !store.selectionRect || !userSelectionFlowOrigin) {
+    if (!isSelecting || !containerBounds || !store.selectionRect) {
       return;
     }
 
     const mousePos = getEventPosition(event, containerBounds);
     position = { x: mousePos.x, y: mousePos.y };
 
-    const screenStart = rendererPointToPoint(userSelectionFlowOrigin, [
+    const userStartPosition = { x: store.selectionRect.startX, y: store.selectionRect.startY };
+    const screenStart = rendererPointToPoint(userStartPosition, [
       store.viewport.x,
       store.viewport.y,
       store.viewport.zoom
