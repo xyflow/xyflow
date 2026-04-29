@@ -12,3 +12,4 @@ stats.html
 .log
 .turbo
 .rollup.cache
+example-apps/packed-libs/*.tgz

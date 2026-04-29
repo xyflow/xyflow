@@ -10,6 +10,6 @@
   "packageManager": "pnpm@10.33.2",
   "type": "module",
   "dependencies": {
-    "@xyflow/system": "file:../../tarballs/xyflow-system.tgz"
+    "@xyflow/system": "file:../../packed-libs/xyflow-system.tgz"
   }
 }

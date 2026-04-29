@@ -3,7 +3,6 @@ packages:
   - 'examples/*'
   - 'tooling/*'
   - 'tests/*'
-  - 'example-apps/**'
 
 catalog:
   eslint: ^10.2.1

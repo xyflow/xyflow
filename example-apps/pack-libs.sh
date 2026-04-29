@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
-# Builds @xyflow/system, @xyflow/react, and @xyflow/svelte, then packs them into example-apps/tarballs/
+# Builds @xyflow/system, @xyflow/react, and @xyflow/svelte, then packs them into example-apps/packed-libs/
 # (stable names: xyflow-system.tgz, xyflow-react.tgz, xyflow-svelte.tgz).
-#
-# These archives are committed so example-apps can depend on file:../../tarballs/*.tgz and a fresh
-# clone still passes pnpm install. After changing library code, run: pnpm pack:example-tarballs,
-# then commit any updated .tgz files and pnpm-lock.yaml when integrity changes.
+
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

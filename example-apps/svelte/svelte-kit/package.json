@@ -13,8 +13,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@xyflow/system": "file:../../tarballs/xyflow-system.tgz",
-    "@xyflow/svelte": "file:../../tarballs/xyflow-svelte.tgz"
+    "@xyflow/system": "file:../../packed-libs/xyflow-system.tgz",
+    "@xyflow/svelte": "file:../../packed-libs/xyflow-svelte.tgz"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.4",

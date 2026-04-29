@@ -1,0 +1,14 @@
+{
+  "name": "@xyflow/example-apps",
+  "version": "0.0.0",
+  "description": "A highly customizable React library for building node-based editors and interactive flow charts",
+  "repository": "git@github.com:xyflow/xyflow.git",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "pack:libs": "bash ./pack-libs.sh"
+  },
+  "devDependencies": {},
+  "packageManager": "pnpm@10.33.2"
+}
