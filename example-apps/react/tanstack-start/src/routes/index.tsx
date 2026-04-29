@@ -5,7 +5,7 @@ export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
   return (
-    <div className="p-8 h-full">
+    <div className="h-full">
       <Flow />
     </div>
   )

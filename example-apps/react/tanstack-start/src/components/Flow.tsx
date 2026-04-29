@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback } from 'react'
 import {
   Background,
   Controls,
@@ -8,21 +8,21 @@ import {
   useNodesState,
   useEdgesState,
   type OnConnect,
-} from "@xyflow/react";
+} from '@xyflow/react'
 
-import "@xyflow/react/dist/style.css";
+import '@xyflow/react/style.css'
 
-import { initialNodes, nodeTypes, type CustomNodeType } from "./nodes";
-import { initialEdges, edgeTypes, type CustomEdgeType } from "./edges";
+import { initialNodes, nodeTypes, type CustomNodeType } from './nodes'
+import { initialEdges, edgeTypes, type CustomEdgeType } from './edges'
 
 export default function App() {
-  const [nodes, , onNodesChange] = useNodesState<CustomNodeType>(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState<CustomNodeType>(initialNodes)
   const [edges, setEdges, onEdgesChange] =
-    useEdgesState<CustomEdgeType>(initialEdges);
+    useEdgesState<CustomEdgeType>(initialEdges)
   const onConnect: OnConnect = useCallback(
     (connection) => setEdges((edges) => addEdge(connection, edges)),
-    [setEdges]
-  );
+    [setEdges],
+  )
 
   return (
     <ReactFlow<CustomNodeType, CustomEdgeType>
@@ -39,5 +39,5 @@ export default function App() {
       <MiniMap />
       <Controls />
     </ReactFlow>
-  );
+  )
 }

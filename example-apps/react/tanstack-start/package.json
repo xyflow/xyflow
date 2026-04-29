@@ -26,8 +26,8 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwindcss": "^4.1.18",
-    "@xyflow/system": "file:../../tarballs/xyflow-system-0.0.76.tgz",
-    "@xyflow/react": "file:../../tarballs/xyflow-react-12.10.2.tgz"
+    "@xyflow/system": "file:../../tarballs/xyflow-system.tgz",
+    "@xyflow/react": "file:../../tarballs/xyflow-react.tgz"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",

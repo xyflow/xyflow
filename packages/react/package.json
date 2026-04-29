@@ -49,9 +49,8 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "concurrently \"vite build --watch\" \"pnpm:types --watch\" \"pnpm:css-watch\"",
-    "build": "vite build && pnpm run types && pnpm run css && publint",
-    "types": "tsc --emitDeclarationOnly",
+    "dev": "concurrently \"tsdown --watch\" \"pnpm:css-watch\"",
+    "build": "pnpm run css && tsdown",
     "css": "postcss src/styles/{base,style}.css --dir dist ",
     "css-watch": "pnpm css --watch",
     "format": "prettier --write .",
@@ -77,14 +76,13 @@
     "@xyflow/postcss-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
     "@types/node": "catalog:",
-    "publint": "catalog:",
     "eslint": "catalog:",
     "postcss": "catalog:",
     "postcss-cli": "catalog:",
     "prettier": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "typescript": "catalog:",
-    "vite": "catalog:"
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
   }
 }

@@ -41,9 +41,8 @@
     "directory": "packages/system"
   },
   "scripts": {
-    "dev": "concurrently \"vite build --watch\" \"pnpm:types --watch\"",
-    "build": "vite build && pnpm run types && publint",
-    "types": "tsc --emitDeclarationOnly",
+    "dev": "tsdown --watch",
+    "build": "tsdown",
     "format": "prettier --write .",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit"
@@ -62,11 +61,10 @@
   "devDependencies": {
     "@xyflow/eslint": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
-    "publint": "catalog:",
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "typescript": "catalog:",
-    "vite": "catalog:"
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
   }
 }
