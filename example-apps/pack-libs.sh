@@ -5,7 +5,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-OUT="$ROOT/example-apps/tarballs"
+OUT="$ROOT/example-apps/packed-libs"
 
 mkdir -p "$OUT"
 rm -f "$OUT"/xyflow-*.tgz

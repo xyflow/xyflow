@@ -20,8 +20,7 @@
     "lint": "turbo run lint --filter=./packages/**",
     "typecheck": "turbo run typecheck --filter=./packages/**",
     "release": "changeset publish",
-    "clean": "pnpm -r --parallel exec rimraf dist .turbo node_modules",
-    "update-tarballs": "bash example-apps/update-tarballs.sh"
+    "clean": "pnpm -r --parallel exec rimraf dist .turbo node_modules"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.6.0",
