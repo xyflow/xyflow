@@ -12,7 +12,8 @@
     "xyflow"
   ],
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "source": "src/index.ts",
   "main": "dist/index.js",
