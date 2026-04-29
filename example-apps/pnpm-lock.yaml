@@ -32,11 +32,11 @@ importers:
         specifier: ^1.132.0
         version: 1.167.28(@tanstack/react-router@1.168.25(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(vite@8.0.10(@types/node@22.19.17)(jiti@2.6.1))
       '@xyflow/react':
-        specifier: file:../../tarballs/xyflow-react.tgz
-        version: file:tarballs/xyflow-react.tgz(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        specifier: file:../../packed-libs/xyflow-react.tgz
+        version: file:packed-libs/xyflow-react.tgz(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@xyflow/system':
-        specifier: file:../../tarballs/xyflow-system.tgz
-        version: file:tarballs/xyflow-system.tgz
+        specifier: file:../../packed-libs/xyflow-system.tgz
+        version: file:packed-libs/xyflow-system.tgz
       lucide-react:
         specifier: ^0.545.0
         version: 0.545.0(react@19.2.5)
@@ -99,11 +99,11 @@ importers:
   svelte/svelte-kit:
     dependencies:
       '@xyflow/svelte':
-        specifier: file:../../tarballs/xyflow-svelte.tgz
-        version: file:tarballs/xyflow-svelte.tgz(svelte@5.55.5(@typescript-eslint/types@8.59.1))
+        specifier: file:../../packed-libs/xyflow-svelte.tgz
+        version: file:packed-libs/xyflow-svelte.tgz(svelte@5.55.5(@typescript-eslint/types@8.59.1))
       '@xyflow/system':
-        specifier: file:../../tarballs/xyflow-system.tgz
-        version: file:tarballs/xyflow-system.tgz
+        specifier: file:../../packed-libs/xyflow-system.tgz
+        version: file:packed-libs/xyflow-system.tgz
     devDependencies:
       '@eslint/compat':
         specifier: ^2.0.4
@@ -151,8 +151,8 @@ importers:
   system/nodejs:
     dependencies:
       '@xyflow/system':
-        specifier: file:../../tarballs/xyflow-system.tgz
-        version: file:tarballs/xyflow-system.tgz
+        specifier: file:../../packed-libs/xyflow-system.tgz
+        version: file:packed-libs/xyflow-system.tgz
 
 packages:
 
@@ -1261,16 +1261,16 @@ packages:
   '@vitest/utils@4.1.5':
     resolution: {integrity: sha512-76wdkrmfXfqGjueGgnb45ITPyUi1ycZ4IHgC2bhPDUfWHklY/q3MdLOAB+TF1e6xfl8NxNY0ZYaPCFNWSsw3Ug==}
 
-  '@xyflow/react@file:tarballs/xyflow-react.tgz':
-    resolution: {integrity: sha512-ycpmbeG+As93s28r9AwqPEaB0hcNJFEXqHkvIJe5NbtbgiZSm9+5oLIMVLN7p3H4AXGrxgmxYGtYB1VZOVH/lA==, tarball: file:tarballs/xyflow-react.tgz}
+  '@xyflow/react@file:packed-libs/xyflow-react.tgz':
+    resolution: {integrity: sha512-Qb06p2AHAj9RCirie9RAZG81gyyIHDn0qQezvS4Z/sGlsxAAKsog7TfP4MWsS17R80h7zcZ3vIzrKIsD0lguhw==, tarball: file:packed-libs/xyflow-react.tgz}
     version: 12.10.2
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=17'
       react-dom: '>=17'
 
-  '@xyflow/svelte@file:tarballs/xyflow-svelte.tgz':
-    resolution: {integrity: sha512-sVexq/9PD2qrJLX8tbCoYizKrHpmM0zMBLefNK2l7mvP7jrDlVB+xzd1tpZVUjzCw5JloLQ4Css62n6qz3MQTA==, tarball: file:tarballs/xyflow-svelte.tgz}
+  '@xyflow/svelte@file:packed-libs/xyflow-svelte.tgz':
+    resolution: {integrity: sha512-ApOjlE+AIzVvo8F6Z/t3U2c/37TltGw034vXMH7UiV2KkiWsEU+Ce0V8IpaA4Jd0kxP54nbYCqyc+yKS+ZnSBg==, tarball: file:packed-libs/xyflow-svelte.tgz}
     version: 1.5.2
     engines: {node: '>=20'}
     peerDependencies:
@@ -1279,8 +1279,8 @@ packages:
   '@xyflow/system@0.0.76':
     resolution: {integrity: sha512-hvwvnRS1B3REwVDlWexsq7YQaPZeG3/mKo1jv38UmnpWmxihp14bW6VtEOuHEwJX2FvzFw8k77LyKSk/wiZVNA==}
 
-  '@xyflow/system@file:tarballs/xyflow-system.tgz':
-    resolution: {integrity: sha512-TJuaSUs//9oXTY3h0pU58NvxubXzYQrrh2gQPCiYrJAjej9owVU3NjUJ3rSUWBDpfvDqGjMpw1RyG8fLO82kIA==, tarball: file:tarballs/xyflow-system.tgz}
+  '@xyflow/system@file:packed-libs/xyflow-system.tgz':
+    resolution: {integrity: sha512-+m13hNKdOm6ra4Nh/z+/KwU7Dy6aVEIGJk2ppgMmu37CeAA2y1Ivg1WAjnFk5l/bkhofeuBBDjuG9ciEETD9/g==, tarball: file:packed-libs/xyflow-system.tgz}
     version: 0.0.76
     engines: {node: '>=20'}
 
@@ -3887,7 +3887,7 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
-  '@xyflow/react@file:tarballs/xyflow-react.tgz(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@xyflow/react@file:packed-libs/xyflow-react.tgz(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@xyflow/system': 0.0.76
       classcat: 5.0.5
@@ -3898,7 +3898,7 @@ snapshots:
       - '@types/react'
       - immer
 
-  '@xyflow/svelte@file:tarballs/xyflow-svelte.tgz(svelte@5.55.5(@typescript-eslint/types@8.59.1))':
+  '@xyflow/svelte@file:packed-libs/xyflow-svelte.tgz(svelte@5.55.5(@typescript-eslint/types@8.59.1))':
     dependencies:
       '@svelte-put/shortcut': 4.1.0(svelte@5.55.5(@typescript-eslint/types@8.59.1))
       '@xyflow/system': 0.0.76
@@ -3916,7 +3916,7 @@ snapshots:
       d3-selection: 3.0.0
       d3-zoom: 3.0.0
 
-  '@xyflow/system@file:tarballs/xyflow-system.tgz':
+  '@xyflow/system@file:packed-libs/xyflow-system.tgz':
     dependencies:
       '@types/d3-drag': 3.0.7
       '@types/d3-interpolate': 3.0.4

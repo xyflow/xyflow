@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "pack:libs": "bash ./pack-libs.sh"
+    "pack:libs": "bash ./pack-libs.sh && pnpm install"
   },
   "devDependencies": {},
   "packageManager": "pnpm@10.33.2"
