@@ -62,9 +62,6 @@ importers:
 
   .:
     devDependencies:
-      '@arethetypeswrong/cli':
-        specifier: 0.18.2
-        version: 0.18.2
       '@changesets/changelog-github':
         specifier: ^0.6.0
         version: 0.6.0
@@ -74,9 +71,6 @@ importers:
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
-      publint:
-        specifier: ^0.3.18
-        version: 0.3.18
       rimraf:
         specifier: ^6.1.3
         version: 6.1.3
@@ -297,6 +291,9 @@ importers:
         specifier: workspace:*
         version: link:../system
     devDependencies:
+      '@arethetypeswrong/cli':
+        specifier: 0.18.2
+        version: 0.18.2
       '@sveltejs/adapter-auto':
         specifier: 'catalog:'
         version: 7.0.1(@sveltejs/kit@2.58.0(@sveltejs/vite-plugin-svelte@7.0.0(svelte@5.55.5(@typescript-eslint/types@8.59.1))(vite@8.0.10(@types/node@20.19.39)(esbuild@0.27.7)(terser@5.31.0)))(svelte@5.55.5(@typescript-eslint/types@8.59.1))(typescript@6.0.3)(vite@8.0.10(@types/node@20.19.39)(esbuild@0.27.7)(terser@5.31.0)))
@@ -336,6 +333,9 @@ importers:
       prettier-plugin-svelte:
         specifier: ^3.5.1
         version: 3.5.1(prettier@3.8.3)(svelte@5.55.5(@typescript-eslint/types@8.59.1))
+      publint:
+        specifier: ^0.3.18
+        version: 0.3.18
       svelte:
         specifier: 'catalog:'
         version: 5.55.5(@typescript-eslint/types@8.59.1)
@@ -6067,7 +6067,7 @@ snapshots:
     dependencies:
       '@arethetypeswrong/core': 0.18.2
       chalk: 4.1.2
-      cli-table3: 0.6.3
+      cli-table3: 0.6.5
       commander: 10.0.1
       marked: 9.1.6
       marked-terminal: 7.3.0(marked@9.1.6)

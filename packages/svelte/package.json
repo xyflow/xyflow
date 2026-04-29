@@ -26,7 +26,8 @@
 	},
 	"scripts": {
 		"dev": "concurrently \"svelte-package -p -w\" \"pnpm:css --watch\"",
-		"build": "svelte-package && pnpm run css && publint",
+		"build": "svelte-package && pnpm run css && publint && pnpm run attw",
+		"attw": "attw --pack --profile esm-only --ignore-rules internal-resolution-error --exclude-entrypoints ./dist/base.css ./dist/style.css ./base.css ./style.css",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -83,6 +84,8 @@
 		"typescript": "catalog:",
 		"vite": "catalog:",
 		"@sveltejs/package": "^2.5.7",
-		"prettier-plugin-svelte": "^3.5.1"
+		"prettier-plugin-svelte": "^3.5.1",
+		"publint": "^0.3.18",
+		"@arethetypeswrong/cli": "0.18.2"
 	}
 }
