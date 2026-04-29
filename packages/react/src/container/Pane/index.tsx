@@ -105,9 +105,6 @@ export function Pane({
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
 
-  // In auto-panning, selection start position must stay fixed in flow space, not pane pixels
-  const userSelectionFlowOrigin = useRef<XYPosition | null>(null);
-
   // Used for auto pan when approaching the edges of the container during selection
   const position = useRef<XYPosition>({ x: 0, y: 0 });
   const autoPanStarted = useRef<boolean>(false);
@@ -146,7 +143,7 @@ export function Pane({
   // We are using capture here in order to prevent other pointer events
   // to be able to create a selection above a node or an edge
   const onPointerDownCapture = (event: ReactPointerEvent): void => {
-    const { domNode } = store.getState();
+    const { domNode, transform } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
     if (!containerBounds.current) return;
 
@@ -164,15 +161,14 @@ export function Pane({
     selectionInProgress.current = false;
 
     const { x, y } = getEventPosition(event.nativeEvent, containerBounds.current);
-    const { transform } = store.getState();
-    userSelectionFlowOrigin.current = pointToRendererPoint({ x, y }, transform);
+    const userSelectionStartPosition = pointToRendererPoint({ x, y }, transform);
 
     store.setState({
       userSelectionRect: {
         width: 0,
         height: 0,
-        startX: x,
-        startY: y,
+        startX: userSelectionStartPosition.x,
+        startY: userSelectionStartPosition.y,
         x,
         y,
       },
@@ -186,8 +182,8 @@ export function Pane({
 
   // We commit the user selection rectangle to the store on auto-panning or pointer move during selection.
   function commitUserSelectionRect(mouseX: number, mouseY: number): void {
-    const flowOrigin = userSelectionFlowOrigin.current;
-    if (!flowOrigin) {
+    const { userSelectionRect } = store.getState();
+    if (!userSelectionRect) {
       return;
     }
 
@@ -201,17 +197,18 @@ export function Pane({
       defaultEdgeOptions,
     } = store.getState();
 
-    const screenStart = rendererPointToPoint(flowOrigin, transform);
+    const userStartPosition = { x: userSelectionRect.startX, y: userSelectionRect.startY };
+    const { x: screenStartX, y: screenStartY } = rendererPointToPoint(userStartPosition, transform);
     // This has to be in screen coordinates, not in flow coordinates.
-    // We store the selection rectangle in userSelectionFlowOrigin coordinates to be able to
+    // We store the selection rectangle in userSelectionStartPosition coordinates to be able to
     // fix the start position of the selection rectangle when we are auto-panning.
     const nextUserSelectRect = {
-      startX: screenStart.x,
-      startY: screenStart.y,
-      x: mouseX < screenStart.x ? mouseX : screenStart.x,
-      y: mouseY < screenStart.y ? mouseY : screenStart.y,
-      width: Math.abs(mouseX - screenStart.x),
-      height: Math.abs(mouseY - screenStart.y),
+      startX: userStartPosition.x,
+      startY: userStartPosition.y,
+      x: mouseX < screenStartX ? mouseX : screenStartX,
+      y: mouseY < screenStartY ? mouseY : screenStartY,
+      width: Math.abs(mouseX - screenStartX),
+      height: Math.abs(mouseY - screenStartY),
     };
 
     const prevSelectedNodeIds = selectedNodeIds.current;
@@ -262,7 +259,7 @@ export function Pane({
     const [x, y] = calcAutoPan(position.current, containerBounds.current, autoPanSpeed);
 
     panBy({ x, y }).then((panned) => {
-      if (!selectionInProgress.current || !userSelectionFlowOrigin.current || !panned) {
+      if (!selectionInProgress.current || !panned) {
         autoPanId.current = requestAnimationFrame(autoPan);
         return;
       }
@@ -276,7 +273,6 @@ export function Pane({
     cancelAnimationFrame(autoPanId.current);
     autoPanId.current = 0;
     autoPanStarted.current = false;
-    userSelectionFlowOrigin.current = null;
   };
 
   useEffect(() => {
@@ -286,14 +282,14 @@ export function Pane({
   const onPointerMove = (event: ReactPointerEvent): void => {
     const { userSelectionRect, transform, resetSelectedElements } = store.getState();
 
-    if (!containerBounds.current || !userSelectionRect || !userSelectionFlowOrigin.current) {
+    if (!containerBounds.current || !userSelectionRect) {
       return;
     }
 
     const { x: mouseX, y: mouseY } = getEventPosition(event.nativeEvent, containerBounds.current);
     position.current = { x: mouseX, y: mouseY };
 
-    const screenStart = rendererPointToPoint(userSelectionFlowOrigin.current, transform);
+    const screenStart = rendererPointToPoint({ x: userSelectionRect.startX, y: userSelectionRect.startY }, transform);
 
     if (!selectionInProgress.current) {
       const requiredDistance = selectionKeyPressed ? 0 : paneClickDistance;
