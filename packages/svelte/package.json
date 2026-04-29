@@ -77,7 +77,6 @@
 		"postcss": "catalog:",
 		"postcss-cli": "catalog:",
 		"prettier": "catalog:",
-		"publint": "catalog:",
 		"svelte": "catalog:",
 		"svelte-check": "catalog:",
 		"@sveltejs/vite-plugin-svelte": "catalog:",
