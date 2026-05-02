@@ -1,0 +1,45 @@
+apiVersion: specpm.dev/v0.1
+kind: SpecPackage
+metadata:
+  id: xyflow.core
+  name: xyflow
+  version: 0.1.0
+  summary: Monorepo for React Flow, Svelte Flow, and shared xyflow system utilities for node-based UI libraries.
+  license: MIT
+  authors:
+    - name: xyflow team
+specs:
+  - path: specs/xyflow.spec.yaml
+index:
+  provides:
+    capabilities:
+      - xyflow.react.node_based_ui
+      - xyflow.react.public_api
+      - xyflow.react.state_hooks_and_utils
+      - xyflow.react.plugin_components
+      - xyflow.svelte.node_based_ui
+      - xyflow.svelte.public_api
+      - xyflow.svelte.plugins_and_hooks
+      - xyflow.system.framework_agnostic_flow_utilities
+      - xyflow.system.graph_geometry_and_edge_paths
+      - xyflow.monorepo.package_workspace
+      - xyflow.monorepo.release_pipeline
+      - xyflow.monorepo.playwright_regression_surface
+  requires:
+    capabilities: []
+compatibility:
+  platforms:
+    - web
+    - node
+  languages:
+    - typescript
+    - react
+    - svelte
+keywords:
+  - xyflow
+  - react-flow
+  - svelte-flow
+  - node-based-ui
+  - flow-diagrams
+  - graph-editors
+foreignArtifacts: []

@@ -1,0 +1,370 @@
+apiVersion: specpm.dev/v0.1
+kind: BoundarySpec
+metadata:
+  id: xyflow.core
+  title: xyflow Public Package Boundary
+  version: 0.1.0
+  status: draft
+  authors:
+    - name: xyflow team
+intent:
+  summary: Describe the public package surface of the xyflow monorepo across React Flow, Svelte Flow, shared system utilities, and the supporting workspace lifecycle.
+scope:
+  boundedContext: xyflow
+  includes:
+    - Provide React Flow as the @xyflow/react package for building node-based UIs, interactive graphs, and flow charts with React.
+    - Provide Svelte Flow as the @xyflow/svelte package for building node-based editors, workflow systems, diagrams, and interactive graphs with Svelte.
+    - Provide @xyflow/system as the shared framework-agnostic utility layer used by React Flow and Svelte Flow.
+    - Expose public package entrypoints, exported components, hooks, utilities, types, and CSS artifacts declared by the package manifests and source entrypoints.
+    - Maintain a pnpm workspace covering packages, examples, tooling, and Playwright tests.
+    - Build, lint, typecheck, test, and release packages through the repository scripts, Turbo task graph, GitHub Actions, and Changesets release flow.
+  excludes:
+    - React Flow 11 branch behavior that is documented as living on the separate v11 branch rather than the current main checkout.
+    - React Flow Pro commercial product behavior, hosted documentation content, Discord operations, sponsorship flows, and other services outside this repository.
+    - A backend service or hosted runtime for executing user graphs.
+    - Guarantees about internal implementation details that are not exported through package manifests, public source entrypoints, README files, examples, or tests.
+    - SpecPM registry publication, package signing, security attestation, or downstream intent resolution.
+provides:
+  capabilities:
+    - id: xyflow.react.node_based_ui
+      role: primary
+      summary: Provide a React library for building node-based UIs, interactive graphs, and flow charts.
+    - id: xyflow.react.public_api
+      role: primary
+      summary: Expose the ReactFlow component, edge components, provider, panel, portal, hooks, types, CSS exports, and graph utility re-exports through @xyflow/react.
+    - id: xyflow.react.state_hooks_and_utils
+      role: secondary
+      summary: Provide React hooks and helpers for nodes, edges, viewport state, selection, connections, node internals, and graph utility operations.
+    - id: xyflow.react.plugin_components
+      role: secondary
+      summary: Provide React plugin-style components such as MiniMap, Controls, Background, node toolbars, edge toolbars, and resizing helpers.
+    - id: xyflow.svelte.node_based_ui
+      role: primary
+      summary: Provide a Svelte library for building node-based editors, workflow systems, diagrams, and interactive graphs.
+    - id: xyflow.svelte.public_api
+      role: primary
+      summary: Expose the SvelteFlow component, edge components, provider, panel, portal, hooks, actions, types, CSS exports, and graph utility re-exports through @xyflow/svelte.
+    - id: xyflow.svelte.plugins_and_hooks
+      role: secondary
+      summary: Provide Svelte plugin components, store access, actions, and hooks for controls, background, minimap, toolbars, node resizing, connection state, node data, and viewport state.
+    - id: xyflow.system.framework_agnostic_flow_utilities
+      role: primary
+      summary: Provide shared TypeScript utilities, types, constants, pan/zoom, drag, handle, minimap, and resizer primitives used by React Flow and Svelte Flow.
+    - id: xyflow.system.graph_geometry_and_edge_paths
+      role: secondary
+      summary: Provide graph, bounds, connection, viewport, and SVG edge path helpers such as bezier, smooth step, straight path, node bounds, incomers, outgoers, and connected edge calculations.
+    - id: xyflow.monorepo.package_workspace
+      role: secondary
+      summary: Maintain a pnpm and Turbo monorepo for packages, examples, tooling, and tests.
+    - id: xyflow.monorepo.release_pipeline
+      role: secondary
+      summary: Release packages through Changesets and a GitHub Actions workflow that can create release PRs or publish to npm.
+    - id: xyflow.monorepo.playwright_regression_surface
+      role: secondary
+      summary: Provide framework-independent Playwright end-to-end test infrastructure for React and Svelte examples.
+requires:
+  capabilities: []
+interfaces:
+  inbound:
+    - id: react_package
+      kind: library
+      summary: Import @xyflow/react from npm-compatible JavaScript package consumers.
+      functions:
+        - ReactFlow
+        - ReactFlowProvider
+        - Handle
+        - Panel
+        - useReactFlow
+        - useNodes
+        - useEdges
+        - useViewport
+        - useNodesState
+        - useEdgesState
+        - addEdge
+        - getBezierPath
+        - getSmoothStepPath
+        - getStraightPath
+        - getNodesBounds
+        - getIncomers
+        - getOutgoers
+      outputs:
+        - name: react_flow_package_exports
+          mediaTypes:
+            - application/javascript
+            - text/css
+    - id: svelte_package
+      kind: library
+      summary: Import @xyflow/svelte from npm-compatible Svelte package consumers.
+      functions:
+        - SvelteFlow
+        - Controls
+        - Background
+        - MiniMap
+        - NodeToolbar
+        - EdgeToolbar
+        - NodeResizer
+        - useStore
+        - useSvelteFlow
+        - useUpdateNodeInternals
+        - useConnection
+        - useNodesData
+        - addEdge
+        - getBezierPath
+        - getSmoothStepPath
+        - getStraightPath
+        - getNodesBounds
+        - getIncomers
+        - getOutgoers
+      outputs:
+        - name: svelte_flow_package_exports
+          mediaTypes:
+            - application/javascript
+            - text/css
+    - id: system_package
+      kind: library
+      summary: Import @xyflow/system utilities and types for xyflow's shared framework-agnostic layer.
+      functions:
+        - constants
+        - types
+        - utils
+        - xydrag
+        - xyhandle
+        - xyminimap
+        - xypanzoom
+        - xyresizer
+      outputs:
+        - name: system_package_exports
+          mediaTypes:
+            - application/javascript
+    - id: workspace_scripts
+      kind: cli
+      summary: Run package-manager scripts for development, builds, linting, typechecking, tests, and release publishing.
+      outputs:
+        - name: workspace_task_results
+          mediaTypes:
+            - text/plain
+  outbound:
+    - id: npm_packages
+      kind: library
+      summary: Build output for @xyflow/react, @xyflow/svelte, and @xyflow/system packages.
+    - id: css_artifacts
+      kind: file
+      summary: Package CSS exports such as dist/base.css and dist/style.css for React Flow and Svelte Flow.
+    - id: release_pr_or_npm_publish
+      kind: unknown
+      summary: The release workflow can create Changesets release PRs or publish packages to npm when configured with repository secrets.
+effects:
+  sideEffects:
+    - id: package_build_outputs
+      kind: filesystem_write
+      summary: Build and CSS scripts write package dist artifacts.
+    - id: browser_dom_interaction
+      kind: state_mutation
+      summary: Runtime libraries render and manage interactive browser UI for nodes, edges, viewport, selection, pan, zoom, dragging, and connections.
+    - id: release_network_write
+      kind: network_write
+      summary: The release workflow may publish packages to npm and create release pull requests when run on main with release credentials.
+constraints:
+  - id: mit_license
+    level: MUST
+    statement: Public package metadata declares the MIT license and the root repository includes the MIT license text.
+  - id: react_peer_dependencies
+    level: MUST
+    statement: Consumers of @xyflow/react must provide react and react-dom peer dependencies compatible with >=17.
+  - id: svelte_peer_dependency
+    level: MUST
+    statement: Consumers of @xyflow/svelte must provide a Svelte peer dependency compatible with ^5.25.0.
+  - id: system_package_scope
+    level: SHOULD
+    statement: "@xyflow/system is intended as a shared vanilla utility layer for React Flow and Svelte Flow, not as a general-purpose dependency for unrelated libraries."
+  - id: pnpm_workspace
+    level: MUST
+    statement: Repository scripts are authored for pnpm and the root preinstall script enforces pnpm usage.
+  - id: public_api_evidence
+    level: SHOULD
+    statement: This BoundarySpec should track the public package manifests, README files, source entrypoints, examples, and tests rather than private internal implementation details.
+evidence:
+  - id: root_readme
+    kind: documentation
+    path: README.md
+    supports:
+      - intent.summary
+      - scope.includes
+      - scope.excludes
+      - xyflow.react.node_based_ui
+      - xyflow.svelte.node_based_ui
+      - xyflow.system.framework_agnostic_flow_utilities
+      - xyflow.monorepo.release_pipeline
+  - id: root_license
+    kind: documentation
+    path: LICENSE
+    supports:
+      - metadata.license
+      - mit_license
+  - id: root_package_manifest
+    kind: package_manifest
+    path: package.json
+    supports:
+      - xyflow.monorepo.package_workspace
+      - xyflow.monorepo.release_pipeline
+      - pnpm_workspace
+  - id: pnpm_workspace
+    kind: package_manifest
+    path: pnpm-workspace.yaml
+    supports:
+      - xyflow.monorepo.package_workspace
+  - id: turbo_tasks
+    kind: package_manifest
+    path: turbo.json
+    supports:
+      - xyflow.monorepo.package_workspace
+  - id: react_readme
+    kind: documentation
+    path: packages/react/README.md
+    supports:
+      - xyflow.react.node_based_ui
+      - xyflow.react.plugin_components
+      - xyflow.react.state_hooks_and_utils
+  - id: react_package_manifest
+    kind: package_manifest
+    path: packages/react/package.json
+    supports:
+      - xyflow.react.public_api
+      - react_peer_dependencies
+      - css_artifacts
+  - id: react_entrypoint
+    kind: source
+    path: packages/react/src/index.ts
+    supports:
+      - xyflow.react.public_api
+      - xyflow.react.state_hooks_and_utils
+      - xyflow.react.plugin_components
+      - xyflow.system.graph_geometry_and_edge_paths
+      - interfaces.inbound
+  - id: svelte_readme
+    kind: documentation
+    path: packages/svelte/README.md
+    supports:
+      - xyflow.svelte.node_based_ui
+      - xyflow.svelte.plugins_and_hooks
+  - id: svelte_package_manifest
+    kind: package_manifest
+    path: packages/svelte/package.json
+    supports:
+      - xyflow.svelte.public_api
+      - svelte_peer_dependency
+      - css_artifacts
+  - id: svelte_entrypoint
+    kind: source
+    path: packages/svelte/src/lib/index.ts
+    supports:
+      - xyflow.svelte.public_api
+      - xyflow.svelte.plugins_and_hooks
+      - xyflow.system.graph_geometry_and_edge_paths
+      - interfaces.inbound
+  - id: system_readme
+    kind: documentation
+    path: packages/system/README.md
+    supports:
+      - xyflow.system.framework_agnostic_flow_utilities
+      - xyflow.system.graph_geometry_and_edge_paths
+      - system_package_scope
+  - id: system_package_manifest
+    kind: package_manifest
+    path: packages/system/package.json
+    supports:
+      - xyflow.system.framework_agnostic_flow_utilities
+  - id: system_entrypoint
+    kind: source
+    path: packages/system/src/index.ts
+    supports:
+      - xyflow.system.framework_agnostic_flow_utilities
+      - interfaces.inbound
+  - id: release_workflow
+    kind: source
+    path: .github/workflows/release.yml
+    supports:
+      - xyflow.monorepo.release_pipeline
+      - release_network_write
+  - id: playwright_workflow
+    kind: source
+    path: .github/workflows/playwright.yml
+    supports:
+      - xyflow.monorepo.playwright_regression_surface
+  - id: playwright_docs
+    kind: documentation
+    path: tests/playwright/README.md
+    supports:
+      - xyflow.monorepo.playwright_regression_surface
+implementationBindings:
+  - id: react_package
+    path: packages/react/src/index.ts
+    files:
+      owned:
+        - packages/react/src/index.ts
+        - packages/react/package.json
+        - packages/react/README.md
+      border:
+        - packages/system/src/index.ts
+        - packages/system/package.json
+        - examples/react
+        - tests/playwright
+  - id: svelte_package
+    path: packages/svelte/src/lib/index.ts
+    files:
+      owned:
+        - packages/svelte/src/lib/index.ts
+        - packages/svelte/package.json
+        - packages/svelte/README.md
+      border:
+        - packages/system/src/index.ts
+        - packages/system/package.json
+        - examples/svelte
+        - tests/playwright
+  - id: system_package
+    path: packages/system/src/index.ts
+    files:
+      owned:
+        - packages/system/src/index.ts
+        - packages/system/package.json
+        - packages/system/README.md
+      border:
+        - packages/react/src/index.ts
+        - packages/svelte/src/lib/index.ts
+  - id: workspace_lifecycle
+    path: package.json
+    files:
+      owned:
+        - package.json
+        - pnpm-workspace.yaml
+        - turbo.json
+        - .github/workflows/release.yml
+        - .github/workflows/playwright.yml
+      border:
+        - .changeset
+        - examples
+        - tooling
+        - tests
+provenance:
+  sourceConfidence:
+    intent: high
+    boundary: medium
+    behavior: medium
+  notes:
+    - Authored from repository README files, package manifests, public source entrypoints, workspace configuration, release workflow, and Playwright documentation.
+    - The package version is a SpecPM snapshot version and does not replace npm package versions for @xyflow/react, @xyflow/svelte, or @xyflow/system.
+keywords:
+  - xyflow
+  - react-flow
+  - svelte-flow
+  - node-based-ui
+  - graph-editors
+  - package-boundary
+compatibility:
+  platforms:
+    - web
+    - node
+  languages:
+    - typescript
+    - react
+    - svelte
