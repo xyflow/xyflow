@@ -151,7 +151,7 @@ interfaces:
       kind: file
       summary: Package CSS exports such as dist/base.css and dist/style.css for React Flow and Svelte Flow.
     - id: release_pr_or_npm_publish
-      kind: unknown
+      kind: event
       summary: The release workflow can create Changesets release PRs or publish packages to npm when configured with repository secrets.
 effects:
   sideEffects:
@@ -199,7 +199,6 @@ evidence:
     kind: documentation
     path: LICENSE
     supports:
-      - metadata.license
       - mit_license
   - id: root_package_manifest
     kind: package_manifest
@@ -208,7 +207,7 @@ evidence:
       - xyflow.monorepo.package_workspace
       - xyflow.monorepo.release_pipeline
       - pnpm_workspace
-  - id: pnpm_workspace
+  - id: pnpm_workspace_file
     kind: package_manifest
     path: pnpm-workspace.yaml
     supports:
@@ -297,7 +296,7 @@ evidence:
     supports:
       - xyflow.monorepo.playwright_regression_surface
 implementationBindings:
-  - id: react_package
+  - id: react_package_binding
     path: packages/react/src/index.ts
     files:
       owned:
@@ -309,7 +308,7 @@ implementationBindings:
         - packages/system/package.json
         - examples/react
         - tests/playwright
-  - id: svelte_package
+  - id: svelte_package_binding
     path: packages/svelte/src/lib/index.ts
     files:
       owned:
@@ -321,7 +320,7 @@ implementationBindings:
         - packages/system/package.json
         - examples/svelte
         - tests/playwright
-  - id: system_package
+  - id: system_package_binding
     path: packages/system/src/index.ts
     files:
       owned:
