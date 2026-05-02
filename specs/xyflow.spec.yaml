@@ -29,39 +29,67 @@ provides:
     - id: xyflow.react.node_based_ui
       role: primary
       summary: Provide a React library for building node-based UIs, interactive graphs, and flow charts.
+      intentIds:
+        - intent.ui.node_based_editor
+        - intent.ui.react_node_based_editor
+        - intent.ui.flow_diagram_library
     - id: xyflow.react.public_api
       role: primary
       summary: Expose the ReactFlow component, edge components, provider, panel, portal, hooks, types, CSS exports, and graph utility re-exports through @xyflow/react.
+      intentIds:
+        - intent.javascript.react_flow_library
     - id: xyflow.react.state_hooks_and_utils
       role: secondary
       summary: Provide React hooks and helpers for nodes, edges, viewport state, selection, connections, node internals, and graph utility operations.
+      intentIds:
+        - intent.ui.react_graph_state_management
     - id: xyflow.react.plugin_components
       role: secondary
       summary: Provide React plugin-style components such as MiniMap, Controls, Background, node toolbars, edge toolbars, and resizing helpers.
+      intentIds:
+        - intent.ui.react_flow_plugin_components
     - id: xyflow.svelte.node_based_ui
       role: primary
       summary: Provide a Svelte library for building node-based editors, workflow systems, diagrams, and interactive graphs.
+      intentIds:
+        - intent.ui.node_based_editor
+        - intent.ui.svelte_node_based_editor
+        - intent.ui.flow_diagram_library
     - id: xyflow.svelte.public_api
       role: primary
       summary: Expose the SvelteFlow component, edge components, provider, panel, portal, hooks, actions, types, CSS exports, and graph utility re-exports through @xyflow/svelte.
+      intentIds:
+        - intent.javascript.svelte_flow_library
     - id: xyflow.svelte.plugins_and_hooks
       role: secondary
       summary: Provide Svelte plugin components, store access, actions, and hooks for controls, background, minimap, toolbars, node resizing, connection state, node data, and viewport state.
+      intentIds:
+        - intent.ui.svelte_flow_plugin_components
     - id: xyflow.system.framework_agnostic_flow_utilities
       role: primary
       summary: Provide shared TypeScript utilities, types, constants, pan/zoom, drag, handle, minimap, and resizer primitives used by React Flow and Svelte Flow.
+      intentIds:
+        - intent.ui.framework_agnostic_flow_utilities
     - id: xyflow.system.graph_geometry_and_edge_paths
       role: secondary
       summary: Provide graph, bounds, connection, viewport, and SVG edge path helpers such as bezier, smooth step, straight path, node bounds, incomers, outgoers, and connected edge calculations.
+      intentIds:
+        - intent.graph.geometry_and_edge_paths
     - id: xyflow.monorepo.package_workspace
       role: secondary
       summary: Maintain a pnpm and Turbo monorepo for packages, examples, tooling, and tests.
+      intentIds:
+        - intent.repository.typescript_monorepo_workspace
     - id: xyflow.monorepo.release_pipeline
       role: secondary
       summary: Release packages through Changesets and a GitHub Actions workflow that can create release PRs or publish to npm.
+      intentIds:
+        - intent.release.changesets_npm_publish
     - id: xyflow.monorepo.playwright_regression_surface
       role: secondary
       summary: Provide framework-independent Playwright end-to-end test infrastructure for React and Svelte examples.
+      intentIds:
+        - intent.testing.playwright_regression_surface
 requires:
   capabilities: []
 interfaces:
