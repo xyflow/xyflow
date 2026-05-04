@@ -22,3 +22,5 @@ catalog:
   '@sveltejs/vite-plugin-svelte': ^7.0.0
   '@sveltejs/adapter-auto': ^7.0.1
   '@sveltejs/kit': ^2.58.0
+onlyBuiltDependencies:
+  - esbuild
