@@ -243,7 +243,9 @@ function HandleComponent(
           connectionindicator:
             isConnectable &&
             (!connectionInProcess || isPossibleEndHandle) &&
-            (connectionInProcess || clickConnectionInProcess ? isConnectableEnd : isConnectableStart),
+            (connectionInProcess || clickConnectionInProcess
+              ? isConnectableEnd || clickConnecting
+              : isConnectableStart),
         },
       ])}
       onMouseDown={onPointerDown}
