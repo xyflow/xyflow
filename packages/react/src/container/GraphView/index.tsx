@@ -80,6 +80,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   panOnScrollMode,
   zoomOnDoubleClick,
   panOnDrag,
+  autoPanOnSelection,
   onPaneClick,
   onPaneMouseEnter,
   onPaneMouseMove,
@@ -138,6 +139,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       panOnDrag={panOnDrag}
+      autoPanOnSelection={autoPanOnSelection}
       defaultViewport={defaultViewport}
       translateExtent={translateExtent}
       minZoom={minZoom}
