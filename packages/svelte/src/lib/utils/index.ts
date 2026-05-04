@@ -2,8 +2,6 @@ import { isNodeBase, isEdgeBase, type XYPosition } from '@xyflow/system';
 
 import type { Edge, Node } from '$lib/types';
 
-export const isDev = process.env.NODE_ENV === 'development';
-
 /**
  * Test whether an object is usable as a Node
  * @public
