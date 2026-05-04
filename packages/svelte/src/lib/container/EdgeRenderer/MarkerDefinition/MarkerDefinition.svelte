@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { useStore } from '$lib/store';
-	import { Marker } from '$lib/container/EdgeRenderer/MarkerDefinition';
+  import { useStore } from '$lib/store';
+  import { Marker } from '$lib/container/EdgeRenderer/MarkerDefinition';
 
-	const store = useStore();
+  const store = useStore();
 </script>
 
 <defs>
-	{#each store.markers as marker (marker.id)}
-		<Marker {...marker} />
-	{/each}
+  {#each store.markers as marker (marker.id)}
+    <Marker {...marker} />
+  {/each}
 </defs>

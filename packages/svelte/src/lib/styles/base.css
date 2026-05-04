@@ -4,10 +4,10 @@
 @import '../../../../system/src/styles/node-resizer.css';
 
 .svelte-flow__edge-label {
-	text-align: center;
-	position: absolute;
+  text-align: center;
+  position: absolute;
 }
 
 .svelte-flow__container {
-	user-select: none;
+  user-select: none;
 }

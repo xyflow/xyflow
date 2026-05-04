@@ -12,7 +12,7 @@ export const isDev = process.env.NODE_ENV === 'development';
  * @returns A boolean indicating whether the element is an Node
  */
 export const isNode = <NodeType extends Node = Node>(element: unknown): element is NodeType =>
-	isNodeBase<NodeType>(element);
+  isNodeBase<NodeType>(element);
 
 /**
  * Test whether an object is usable as an Edge
@@ -22,15 +22,15 @@ export const isNode = <NodeType extends Node = Node>(element: unknown): element 
  * @returns A boolean indicating whether the element is an Edge
  */
 export const isEdge = <EdgeType extends Edge = Edge>(element: unknown): element is EdgeType =>
-	isEdgeBase<EdgeType>(element);
+  isEdgeBase<EdgeType>(element);
 
 export function toPxString(value: number | undefined): string | undefined {
-	return value === undefined ? undefined : `${value}px`;
+  return value === undefined ? undefined : `${value}px`;
 }
 
 export const arrowKeyDiffs: Record<string, XYPosition> = {
-	ArrowUp: { x: 0, y: -1 },
-	ArrowDown: { x: 0, y: 1 },
-	ArrowLeft: { x: -1, y: 0 },
-	ArrowRight: { x: 1, y: 0 }
+  ArrowUp: { x: 0, y: -1 },
+  ArrowDown: { x: 0, y: 1 },
+  ArrowLeft: { x: -1, y: 0 },
+  ArrowRight: { x: 1, y: 0 }
 };

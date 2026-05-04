@@ -6,62 +6,62 @@ const packageRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const distDir = join(packageRoot, 'dist');
 
 async function exists(file) {
-	try {
-		await access(file);
-		return true;
-	} catch {
-		return false;
-	}
+  try {
+    await access(file);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function updateDeclarationMap(file) {
-	const map = JSON.parse(await readFile(file, 'utf8'));
+  const map = JSON.parse(await readFile(file, 'utf8'));
 
-	if (!Array.isArray(map.sources)) {
-		return false;
-	}
+  if (!Array.isArray(map.sources)) {
+    return false;
+  }
 
-	const sources = await Promise.all(
-		map.sources.map(async (source) => {
-			if (!source.endsWith('.svelte.ts')) {
-				return source;
-			}
+  const sources = await Promise.all(
+    map.sources.map(async (source) => {
+      if (!source.endsWith('.svelte.ts')) {
+        return source;
+      }
 
-			const svelteSource = source.slice(0, -3);
-			const sourcePath = resolve(dirname(file), svelteSource);
+      const svelteSource = source.slice(0, -3);
+      const sourcePath = resolve(dirname(file), svelteSource);
 
-			return (await exists(sourcePath)) ? svelteSource : source;
-		})
-	);
+      return (await exists(sourcePath)) ? svelteSource : source;
+    })
+  );
 
-	if (sources.every((source, index) => source === map.sources[index])) {
-		return false;
-	}
+  if (sources.every((source, index) => source === map.sources[index])) {
+    return false;
+  }
 
-	map.sources = sources;
-	await writeFile(file, JSON.stringify(map), 'utf8');
+  map.sources = sources;
+  await writeFile(file, JSON.stringify(map), 'utf8');
 
-	return true;
+  return true;
 }
 
 async function walk(dir) {
-	let fixed = 0;
+  let fixed = 0;
 
-	for (const entry of await readdir(dir, { withFileTypes: true })) {
-		const file = join(dir, entry.name);
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const file = join(dir, entry.name);
 
-		if (entry.isDirectory()) {
-			fixed += await walk(file);
-		} else if (entry.name.endsWith('.svelte.d.ts.map') && (await updateDeclarationMap(file))) {
-			fixed += 1;
-		}
-	}
+    if (entry.isDirectory()) {
+      fixed += await walk(file);
+    } else if (entry.name.endsWith('.svelte.d.ts.map') && (await updateDeclarationMap(file))) {
+      fixed += 1;
+    }
+  }
 
-	return fixed;
+  return fixed;
 }
 
 const fixed = await walk(distDir);
 
 if (fixed > 0) {
-	console.log(`Fixed ${fixed} Svelte declaration map${fixed === 1 ? '' : 's'}`);
+  console.log(`Fixed ${fixed} Svelte declaration map${fixed === 1 ? '' : 's'}`);
 }

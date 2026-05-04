@@ -6,9 +6,9 @@ import { useStore } from './useStore';
  *
  */
 export function useColorMode(): { current: ColorModeClass } {
-	const { colorMode } = $derived(useStore());
+  const { colorMode } = $derived(useStore());
 
-	return {
-		current: colorMode
-	};
+  return {
+    current: colorMode
+  };
 }

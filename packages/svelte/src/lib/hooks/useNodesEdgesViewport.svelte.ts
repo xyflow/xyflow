@@ -9,21 +9,21 @@ import type { Viewport } from '@xyflow/system';
  * @returns A reactive signal of the current nodes
  */
 export function useNodes() {
-	const store = $derived(useStore());
-	return {
-		get current() {
-			return store.nodes;
-		},
-		set current(nodes) {
-			store.nodes = nodes;
-		},
-		update(updateFn: (nodes: Node[]) => Node[]) {
-			store.nodes = updateFn(store.nodes);
-		},
-		set(nodes: Node[]) {
-			store.nodes = nodes;
-		}
-	};
+  const store = $derived(useStore());
+  return {
+    get current() {
+      return store.nodes;
+    },
+    set current(nodes) {
+      store.nodes = nodes;
+    },
+    update(updateFn: (nodes: Node[]) => Node[]) {
+      store.nodes = updateFn(store.nodes);
+    },
+    set(nodes: Node[]) {
+      store.nodes = nodes;
+    }
+  };
 }
 
 /**
@@ -33,21 +33,21 @@ export function useNodes() {
  * @returns A reactive signal of the current edges
  */
 export function useEdges() {
-	const store = $derived(useStore());
-	return {
-		get current() {
-			return store.edges;
-		},
-		set current(edges) {
-			store.edges = edges;
-		},
-		update(updateFn: (edges: Edge[]) => Edge[]) {
-			store.edges = updateFn(store.edges);
-		},
-		set(edges: Edge[]) {
-			store.edges = edges;
-		}
-	};
+  const store = $derived(useStore());
+  return {
+    get current() {
+      return store.edges;
+    },
+    set current(edges) {
+      store.edges = edges;
+    },
+    update(updateFn: (edges: Edge[]) => Edge[]) {
+      store.edges = updateFn(store.edges);
+    },
+    set(edges: Edge[]) {
+      store.edges = edges;
+    }
+  };
 }
 
 /**
@@ -57,19 +57,19 @@ export function useEdges() {
  * @returns A reactive signal of the current viewport
  */
 export function useViewport() {
-	const store = $derived(useStore());
-	return {
-		get current() {
-			return store.viewport;
-		},
-		set current(viewport: Viewport) {
-			store.viewport = viewport;
-		},
-		update(updateFn: (viewport: Viewport) => Viewport) {
-			store.viewport = updateFn(store.viewport);
-		},
-		set(viewport: Viewport) {
-			store.viewport = viewport;
-		}
-	};
+  const store = $derived(useStore());
+  return {
+    get current() {
+      return store.viewport;
+    },
+    set current(viewport: Viewport) {
+      store.viewport = viewport;
+    },
+    update(updateFn: (viewport: Viewport) => Viewport) {
+      store.viewport = updateFn(store.viewport);
+    },
+    set(viewport: Viewport) {
+      store.viewport = viewport;
+    }
+  };
 }

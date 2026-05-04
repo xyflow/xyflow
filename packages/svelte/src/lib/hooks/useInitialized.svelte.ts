@@ -6,12 +6,12 @@ import { useStore } from '$lib/store';
  * @public
  */
 export function useNodesInitialized() {
-	const { nodesInitialized } = $derived(useStore());
-	return {
-		get current() {
-			return nodesInitialized;
-		}
-	};
+  const { nodesInitialized } = $derived(useStore());
+  return {
+    get current() {
+      return nodesInitialized;
+    }
+  };
 }
 
 /**
@@ -19,10 +19,10 @@ export function useNodesInitialized() {
  * @returns - reactive viewportInitialized
  */
 export function useViewportInitialized() {
-	const { viewportInitialized } = $derived(useStore());
-	return {
-		get current() {
-			return viewportInitialized;
-		}
-	};
+  const { viewportInitialized } = $derived(useStore());
+  return {
+    get current() {
+      return viewportInitialized;
+    }
+  };
 }
