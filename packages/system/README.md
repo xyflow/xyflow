@@ -58,5 +58,3 @@ There is currently no dedicated API documentation for this package. For details 
 ## Contributing
 
 See the main [xyflow repository](https://github.com/xyflow/xyflow) for contribution guidelines.
-
-
