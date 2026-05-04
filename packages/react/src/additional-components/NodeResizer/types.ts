@@ -64,6 +64,11 @@ export type NodeResizerProps = {
    * @default true
    */
   autoScale?: boolean;
+  /**
+   * Whether to resize symmetrically around the center.
+   * @default false
+   */
+  symmetric?: boolean;
   /** Callback to determine if node should resize. */
   shouldResize?: ShouldResize;
   /** Callback called when resizing starts. */
@@ -77,20 +82,9 @@ export type NodeResizerProps = {
 /**
  * @expand
  */
-export type ResizeControlProps = Pick<
+export type ResizeControlProps = Omit<
   NodeResizerProps,
-  | 'nodeId'
-  | 'color'
-  | 'minWidth'
-  | 'minHeight'
-  | 'maxWidth'
-  | 'maxHeight'
-  | 'keepAspectRatio'
-  | 'shouldResize'
-  | 'autoScale'
-  | 'onResizeStart'
-  | 'onResize'
-  | 'onResizeEnd'
+  'handleClassName' | 'handleStyle' | 'lineClassName' | 'lineStyle' | 'isVisible'
 > & {
   /**
    * Position of the control.
