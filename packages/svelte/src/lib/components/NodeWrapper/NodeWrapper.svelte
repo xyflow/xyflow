@@ -11,7 +11,7 @@
 
   import drag from '$lib/actions/drag';
   import { setNodeConnectableContext, setNodeIdContext } from '$lib/store/context';
-  import { arrowKeyDiffs, isDev, toPxString } from '$lib/utils';
+  import { arrowKeyDiffs, toPxString } from '$lib/utils';
   import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 
   import type { Node, Edge, NodeEvents } from '$lib/types';

@@ -71,7 +71,6 @@ import type {
 
 import type { StoreSignals } from './types';
 import { MediaQuery } from 'svelte/reactivity';
-import { isDev } from '$lib/utils';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
 
 export const initialNodeTypes = {
