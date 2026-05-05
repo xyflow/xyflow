@@ -129,6 +129,36 @@ test.describe('Nodes', () => {
 
       expect(transformBeforeMove).not.toMatch(transformAfterDragHandleMove);
     });
+
+    test('window blur cancels active node drag', async ({ page }) => {
+      const node = page.locator(`.${FRAMEWORK}-flow__node`).first();
+
+      await expect(node).toHaveCSS('visibility', 'visible');
+
+      const nodeBox = await node.boundingBox();
+      const startX = nodeBox!.x + nodeBox!.width / 2;
+      const startY = nodeBox!.y + nodeBox!.height / 2;
+
+      await page.mouse.move(startX, startY);
+      await page.mouse.down();
+      await page.mouse.move(startX + 100, startY + 100);
+
+      const transformAfterMove = await node.evaluate((element) => {
+        return element.style.transform;
+      });
+
+      await page.evaluate(() => window.dispatchEvent(new Event('blur')));
+      // Move the mouse to confirm the node does not keep dragging after blur
+      await page.mouse.move(startX + 250, startY + 250);
+
+      const transformAfterBlurMove = await node.evaluate((element) => {
+        return element.style.transform;
+      });
+
+      expect(transformAfterBlurMove).toBe(transformAfterMove);
+
+      await page.mouse.up();
+    });
   });
 
   test.describe('deleting', () => {

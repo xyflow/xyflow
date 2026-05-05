@@ -106,6 +106,28 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let nodePositionsChanged = false;
   // we store the last drag event to be able to use it in the update function
   let dragEvent: MouseEvent | null = null;
+  let dragCancelWindow: Window | null = null;
+  let dragCancelHandler: (() => void) | null = null;
+
+  function removeWindowBlurDragCancelHandler() {
+    if (dragCancelWindow && dragCancelHandler) {
+      dragCancelWindow.removeEventListener('blur', dragCancelHandler);
+    }
+
+    dragCancelWindow = null;
+    dragCancelHandler = null;
+  }
+
+  function addWindowBlurDragCancelHandler(ownerWindow: Window | null, onCancel: () => void) {
+    if (!ownerWindow) {
+      return;
+    }
+
+    removeWindowBlurDragCancelHandler();
+    dragCancelWindow = ownerWindow;
+    dragCancelHandler = onCancel;
+    ownerWindow.addEventListener('blur', dragCancelHandler);
+  }
 
   // public functions
   function update({
@@ -296,12 +318,30 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
     const d3DragInstance = drag()
       .clickDistance(nodeClickDistance)
       .on('start', (event: UseDragEvent) => {
-        const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
-        containerBounds = domNode?.getBoundingClientRect() || null;
+        const { domNode: storeDomNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
+        containerBounds = storeDomNode?.getBoundingClientRect() || null;
 
         abortDrag = false;
         nodePositionsChanged = false;
         dragEvent = event.sourceEvent;
+
+        if (event.sourceEvent.type === 'mousedown') {
+          addWindowBlurDragCancelHandler(domNode.ownerDocument.defaultView, () => {
+            const mouseUpEvent = new MouseEvent('mouseup', {
+              view: domNode.ownerDocument.defaultView,
+              bubbles: true,
+              cancelable: true,
+              clientX: dragEvent?.clientX ?? 0,
+              clientY: dragEvent?.clientY ?? 0,
+              screenX: dragEvent?.screenX ?? 0,
+              screenY: dragEvent?.screenY ?? 0,
+            });
+
+            // If window blur prevents d3-drag from seeing mouseup, its window-level listeners stay active.
+            // Dispatch mouseup on the same window so d3 can run its normal cleanup path.
+            domNode.ownerDocument.defaultView?.dispatchEvent(mouseUpEvent);
+          });
+        }
 
         if (nodeDragThreshold === 0) {
           startDrag(event);
@@ -352,6 +392,8 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         }
       })
       .on('end', (event: UseDragEvent) => {
+        removeWindowBlurDragCancelHandler();
+
         if (!dragStarted || abortDrag) {
           return;
         }
@@ -399,6 +441,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   }
 
   function destroy() {
+    removeWindowBlurDragCancelHandler();
     d3Selection?.on('.drag', null);
   }
 
