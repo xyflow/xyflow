@@ -3,11 +3,10 @@
  * We distinguish between values we can update directly with `useDirectStoreUpdater` (like `snapGrid`)
  * and values that have a dedicated setter function in the store (like `setNodes`).
  */
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
 import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelConfig } from '@xyflow/system';
 
-import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
@@ -131,7 +130,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
   // cleanup calls reset() which empties the store, and child effects can run
   // before the new mount effect repopulates it — causing children to read
   // empty nodeLookup/nodes/edges during a <ReactFlow> remount.
-  useIsomorphicLayoutEffect(() => {
+  useEffect(() => {
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
 
     return () => {
@@ -143,7 +142,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
 
   const previousFields = useRef<Partial<StoreUpdaterProps<NodeType, EdgeType>>>(initPrevValues);
 
-  useIsomorphicLayoutEffect(
+  useEffect(
     () => {
       for (const fieldName of fieldsToTrack) {
         const fieldValue = props[fieldName];
