@@ -1,5 +1,18 @@
 # @xyflow/react
 
+## 12.11.0
+
+### Minor Changes
+
+- [#5677](https://github.com/xyflow/xyflow/pull/5677) [`e6661de53`](https://github.com/xyflow/xyflow/commit/e6661de531212f9a209dba17dd63fbbd4ee16f62) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Add `autoPanOnSelection` to auto-pan when user drags a selection close to the edge of the viewport.
+
+### Patch Changes
+
+- [#5769](https://github.com/xyflow/xyflow/pull/5769) [`ad4d54772`](https://github.com/xyflow/xyflow/commit/ad4d547724a1c2debf8eb7c6e117aabbfd601934) Thanks [@moklick](https://github.com/moklick)! - Use `useEffect` for StoreUpdater to restore previous behaviour
+
+- Updated dependencies [[`e6661de53`](https://github.com/xyflow/xyflow/commit/e6661de531212f9a209dba17dd63fbbd4ee16f62)]:
+  - @xyflow/system@0.0.77
+
 ## 12.10.2
 
 ### Patch Changes

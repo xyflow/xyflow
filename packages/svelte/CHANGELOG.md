@@ -1,5 +1,16 @@
 # @xyflow/svelte
 
+## 1.6.0
+
+### Minor Changes
+
+- [#5677](https://github.com/xyflow/xyflow/pull/5677) [`e6661de53`](https://github.com/xyflow/xyflow/commit/e6661de531212f9a209dba17dd63fbbd4ee16f62) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Add `autoPanOnSelection` to auto-pan when user drags a selection close to the edge of the viewport.
+
+### Patch Changes
+
+- Updated dependencies [[`e6661de53`](https://github.com/xyflow/xyflow/commit/e6661de531212f9a209dba17dd63fbbd4ee16f62)]:
+  - @xyflow/system@0.0.77
+
 ## 1.5.2
 
 ### Patch Changes
