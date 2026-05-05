@@ -125,11 +125,6 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
   } = useStore(selector, shallow);
   const store = useStoreApi<NodeType, EdgeType>();
 
-  // We use layout effects here so that the store is always populated before
-  // any child useEffect or useLayoutEffect fires. With regular useEffect, the
-  // cleanup calls reset() which empties the store, and child effects can run
-  // before the new mount effect repopulates it — causing children to read
-  // empty nodeLookup/nodes/edges during a <ReactFlow> remount.
   useEffect(() => {
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
 
