@@ -8,7 +8,7 @@ runs:
     - name: Setup node.js
       uses: actions/setup-node@v6
       with:
-        node-version: 20.x
+        node-version: 24.x
     - name: Install dependencies
       run: pnpm install
       shell: bash
