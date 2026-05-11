@@ -1,4 +1,5 @@
 import type { XYPosition, Dimensions, NodeBase, EdgeBase } from '.';
+import { ControlPosition, ResizeControlVariant } from '../xyresizer/types';
 
 export type NodeDimensionChange = {
   id: string;
@@ -8,6 +9,10 @@ export type NodeDimensionChange = {
   resizing?: boolean;
   /* if this is true, we will set width and height of the node and not just the measured dimensions */
   setAttributes?: boolean | 'width' | 'height';
+  /* If the node is being resized via a `NodeResizer` component, this will be the position identifier of the handle that is being resized */
+  resizerPosition?: ControlPosition;
+  /* If the node is being resized via a `NodeResizer` component, this will be the variant identifier (Line or Handle) */
+  resizerVariant?: ResizeControlVariant;
 };
 
 export type NodePositionChange = {
