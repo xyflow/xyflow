@@ -39,6 +39,10 @@ export type NodeResizerProps = {
   keepAspectRatio?: boolean;
   /** Automatically scale the node when resizing */
   autoScale?: boolean;
+  /** Whether to resize symmetrically around the center
+   * @default false
+   */
+  symmetric?: boolean;
   /** Callback to determine if node should resize */
   shouldResize?: ShouldResize;
   /** Callback called when resizing starts */
@@ -51,20 +55,9 @@ export type NodeResizerProps = {
   resizeDirection?: ResizeControlDirection;
 } & HTMLAttributes<HTMLDivElement>;
 
-export type ResizeControlProps = Pick<
+export type ResizeControlProps = Omit<
   NodeResizerProps,
-  | 'color'
-  | 'minWidth'
-  | 'minHeight'
-  | 'maxWidth'
-  | 'maxHeight'
-  | 'keepAspectRatio'
-  | 'autoScale'
-  | 'shouldResize'
-  | 'onResizeStart'
-  | 'onResize'
-  | 'onResizeEnd'
-  | 'resizeDirection'
+  'nodeId' | 'handleClass' | 'handleStyle' | 'lineClass' | 'lineStyle' | 'isVisible'
 > & {
   /** Position of control
    * @example ControlPosition.TopLeft, ControlPosition.TopRight,

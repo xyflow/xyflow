@@ -117,6 +117,7 @@ export function getDimensionsAfterResize(
   pointerPosition: ReturnType<typeof getPointerPosition>,
   boundaries: { minWidth: number; maxWidth: number; minHeight: number; maxHeight: number },
   keepAspectRatio: boolean,
+  symmetric: boolean,
   nodeOrigin: NodeOrigin,
   extent?: CoordinateExtent,
   childExtent?: CoordinateExtent
@@ -132,6 +133,17 @@ export function getDimensionsAfterResize(
   let distX = Math.floor(isHorizontal ? xSnapped - startValues.pointerX : 0);
   let distY = Math.floor(isVertical ? ySnapped - startValues.pointerY : 0);
 
+  // To stay symmetric around the center, we need to double the distance
+  // of the resize which will be added symmetrically to the other side.
+  if (symmetric) {
+    if (isHorizontal) {
+      distX = distX * 2;
+    }
+    if (isVertical) {
+      distY = distY * 2;
+    }
+  }
+
   const newWidth = startWidth + (affectsX ? -distX : distX);
   const newHeight = startHeight + (affectsY ? -distY : distY);
 
@@ -142,6 +154,7 @@ export function getDimensionsAfterResize(
   let clampX = getSizeClamp(newWidth, minWidth, maxWidth);
   let clampY = getSizeClamp(newHeight, minHeight, maxHeight);
 
+  // TODO: Extent checks need to be different for symmetric resize
   // Check if extent is restricting the resize
   if (extent) {
     let xExtentClamp = 0;
@@ -271,10 +284,20 @@ export function getDimensionsAfterResize(
   const x = affectsX ? startX + distX : startX;
   const y = affectsY ? startY + distY : startY;
 
-  return {
+  const dimensions = {
     width: startWidth + (affectsX ? -distX : distX),
     height: startHeight + (affectsY ? -distY : distY),
     x: nodeOrigin[0] * distX * (!affectsX ? 1 : -1) + x,
     y: nodeOrigin[1] * distY * (!affectsY ? 1 : -1) + y,
+  };
+
+  if (!symmetric) {
+    return dimensions;
+  }
+
+  return {
+    ...dimensions,
+    x: startX + (0.5 - nodeOrigin[0]) * (startWidth - dimensions.width),
+    y: startY + (0.5 - nodeOrigin[1]) * (startHeight - dimensions.height),
   };
 }
