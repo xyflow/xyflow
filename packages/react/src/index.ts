@@ -117,6 +117,7 @@ export {
   type FitBounds,
   type HandleConnection,
   type ZIndexMode,
+  type NodeHandle,
 } from '@xyflow/system';
 
 // we need this workaround to prevent a duplicate identifier error
