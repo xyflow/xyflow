@@ -10,7 +10,11 @@
 
 .xy-flow.dark {
   --xy-node-color-default: #f8f8f8;
+  --xy-node-border-default: 1px solid #3a3a3a;
+  --xy-node-border-selected-default: 1px solid #999;
   --xy-handle-background-color-default: #d6d5d5;
+  --xy-selection-background-color-default: rgba(200, 200, 220, 0.08);
+  --xy-selection-border-default: 1px dotted rgba(200, 200, 200, 0.6);
 }
 
 .xy-flow__handle {
