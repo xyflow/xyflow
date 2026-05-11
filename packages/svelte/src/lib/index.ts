@@ -123,7 +123,8 @@ export {
   type SetViewport,
   type FitBounds,
   type HandleConnection,
-  type ZIndexMode
+  type ZIndexMode,
+  type NodeHandle
 } from '@xyflow/system';
 
 // system utils
