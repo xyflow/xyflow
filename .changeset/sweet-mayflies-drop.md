@@ -2,4 +2,4 @@
 "@xyflow/system": patch
 "react-examples": patch
 ---
-Added variables to dark mode to match base styling in light mode
+Added variables to base.css in dark mode to match styling in light mode
