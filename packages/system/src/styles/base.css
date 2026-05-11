@@ -10,6 +10,7 @@
 
 .xy-flow.dark {
   --xy-node-color-default: #f8f8f8;
+  --xy-handle-background-color-default: #d6d5d5;
 }
 
 .xy-flow__handle {

@@ -14,8 +14,6 @@ import {
   ReactFlowProvider,
 } from '@xyflow/react';
 
-import './style.css';
-
 const initNodes: Node[] = [];
 
 for (let i = 0; i < 100; i++) {

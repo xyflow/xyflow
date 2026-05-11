@@ -1,6 +1,5 @@
 import { Node, ReactFlow, useNodesState } from '@xyflow/react';
 
-import '@xyflow/react/dist/style.css';
 import { useRef } from 'react';
 
 export default function App() {

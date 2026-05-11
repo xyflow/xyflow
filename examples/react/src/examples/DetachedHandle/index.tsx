@@ -9,8 +9,6 @@ import {
   Position,
 } from '@xyflow/react';
 
-import './style.css';
-
 const initialNodes: Node[] = [
   {
     id: '1',

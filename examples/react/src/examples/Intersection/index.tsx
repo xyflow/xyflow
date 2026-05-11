@@ -11,8 +11,6 @@ import {
   useNodesState,
 } from '@xyflow/react';
 
-import './style.css';
-
 const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 

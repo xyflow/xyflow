@@ -15,8 +15,6 @@ import CustomNode from './CustomNode';
 import FloatingEdge from './FloatingEdge';
 import CustomConnectionLine from './CustomConnectionLine';
 
-import './style.css';
-
 const initialNodes: Node[] = [
   {
     id: '1',
