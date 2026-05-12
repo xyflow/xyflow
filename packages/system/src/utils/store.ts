@@ -545,7 +545,7 @@ export async function panBy({
 
 /**
  * this function adds the connection to the connectionLookup
- * at the following keys: nodeId-type-handleId, nodeId-type and nodeId
+ * at the following keys: nodeId-type-handleId, nodeId-handleId, nodeId-type and nodeId
  * @param type type of the connection
  * @param connection connection that should be added to the lookup
  * @param connectionKey at which key the connection should be added
@@ -563,7 +563,7 @@ function addConnectionToLookup(
 ) {
   /*
    * We add the connection to the connectionLookup at the following keys
-   * 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId
+   * 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId, 4. nodeId-handleId
    * If the key already exists, we add the connection to the existing map
    */
   let key = nodeId;
@@ -578,6 +578,10 @@ function addConnectionToLookup(
     key = `${nodeId}-${type}-${handleId}`;
     const handleMap = connectionLookup.get(key) || new Map();
     connectionLookup.set(key, handleMap.set(connectionKey, connection));
+
+    key = `${nodeId}-${handleId}`;
+    const handleOnlyMap = connectionLookup.get(key) || new Map();
+    connectionLookup.set(key, handleOnlyMap.set(connectionKey, connection));
   }
 }
 

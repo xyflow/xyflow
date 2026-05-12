@@ -18,7 +18,7 @@ type UseNodeConnectionsParams = {
   id?: string;
   /** What type of handle connections do you want to observe? */
   handleType?: HandleType;
-  /** Filter by handle id (this is only needed if the node has multiple handles of the same type). */
+  /** Filter by handle id. When used without `handleType`, returns connections for that handle regardless of type. */
   handleId?: string;
   /** Gets called when a connection is established. */
   onConnect?: (connections: HandleConnection[]) => void;
@@ -67,7 +67,7 @@ export function useNodeConnections({
   const connections = useStore(
     (state) =>
       state.connectionLookup.get(
-        `${currentNodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
+        `${currentNodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : handleId ? `-${handleId}` : ''}`
       ),
     areConnectionMapsEqual
   );

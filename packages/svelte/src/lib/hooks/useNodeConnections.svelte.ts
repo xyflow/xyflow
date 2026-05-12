@@ -28,7 +28,7 @@ const initialConnections: NodeConnection[] = [];
  * @public
  * @param param.id - node id - optional if called inside a custom node
  * @param param.handleType - filter by handle type 'source' or 'target'
- * @param param.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type)
+ * @param param.handleId - filter by handle id. When used without `handleType`, returns connections for that handle regardless of type.
  * @param param.onConnect - gets called when a connection is established
  * @param param.onDisconnect - gets called when a connection is removed
  * @returns An array with connections
@@ -58,7 +58,7 @@ export function useNodeConnections({
     const prevConnections = connectionMaps.next;
     const nextConnections =
       connectionLookup.get(
-        `${nodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
+        `${nodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : handleId ? `-${handleId}` : ''}`
       ) ?? new Map();
     if (!areConnectionMapsEqual(nextConnections, prevConnections)) {
       connectionMaps = {
