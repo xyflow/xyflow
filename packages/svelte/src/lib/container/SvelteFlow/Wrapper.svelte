@@ -123,7 +123,7 @@
   bind:clientWidth
   style:width={toPxString(width)}
   style:height={toPxString(height)}
-  class={['svelte-flow', 'svelte-flow__container', className, colorMode]}
+  class={['svelte-flow', 'svelte-flow__container', colorMode, className ]}
   data-testid="svelte-flow__wrapper"
   role="application"
   onscroll={wrapperOnScroll}
