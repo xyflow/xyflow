@@ -20,6 +20,8 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v6
       - uses: ./.github/actions/ci-setup
+        with:
+          package-manager-cache: 'false'
       - uses: ./.github/actions/ci-checks
 
       - name: Create release PR or publish to npm
