@@ -2,7 +2,7 @@ import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
 
 import { getControlDirection, getDimensionsAfterResize, getResizeDirection } from './utils';
-import { getPointerPosition } from '../utils';
+import { getPointerPosition, isCoordinateExtent } from '../utils';
 import type {
   CoordinateExtent,
   InternalNodeBase,
@@ -140,7 +140,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     let containerBounds: DOMRect | null = null;
     let childNodes: XYResizerChildChange[] = [];
     let parentNode: InternalNodeBase | undefined = undefined; // Needed to fix expandParent
-    let parentExtent: CoordinateExtent | undefined = undefined;
+    let nodeExtent: CoordinateExtent | undefined = undefined;
     let childExtent: CoordinateExtent | undefined = undefined;
     // we only want to trigger onResizeEnd if onResize was actually called
     let resizeDetected = false;
@@ -178,9 +178,11 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
 
         parentNode = undefined;
 
+        nodeExtent = isCoordinateExtent(node.extent) ? node.extent : undefined;
+
         if (node.parentId && (node.extent === 'parent' || node.expandParent)) {
           parentNode = nodeLookup.get(node.parentId);
-          parentExtent = parentNode && node.extent === 'parent' ? nodeToParentExtent(parentNode) : undefined;
+          nodeExtent = parentNode && node.extent === 'parent' ? nodeToParentExtent(parentNode) : nodeExtent;
         }
 
         /*
@@ -241,7 +243,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           params.boundaries,
           params.keepAspectRatio,
           nodeOrigin,
-          parentExtent,
+          nodeExtent,
           childExtent
         );
 
