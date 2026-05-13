@@ -9,6 +9,7 @@ import {
   Panel,
   Node,
   Edge,
+  CoordinateExtent,
 } from '@xyflow/react';
 
 import DefaultResizer from './DefaultResizer';
@@ -16,6 +17,7 @@ import CustomResizer from './CustomResizer';
 import VerticalResizer from './VerticalResizer';
 import HorizontalResizer from './HorizontalResizer';
 import BottomRightResizer from './BottomRightResizer';
+import FixedExtentNode from './FixedExtentNode';
 
 const nodeTypes = {
   defaultResizer: DefaultResizer,
@@ -23,6 +25,7 @@ const nodeTypes = {
   verticalResizer: VerticalResizer,
   horizontalResizer: HorizontalResizer,
   bottomRightResizer: BottomRightResizer,
+  fixedExtent: FixedExtentNode,
 };
 
 const nodeStyle = {
@@ -30,6 +33,11 @@ const nodeStyle = {
   fontSize: 10,
   backgroundColor: '#ddd',
 };
+
+const extent: CoordinateExtent = [
+  [500, 350],
+  [700, 450],
+];
 
 const initialEdges: Edge[] = [];
 
@@ -160,7 +168,7 @@ const initialNodes: Node[] = [
   {
     id: '5c',
     type: 'defaultResizer',
-    data: { label: 'Child with expandParent & keepAspectRatio' },
+    data: { label: 'Child with expandParent & keepAspectRatio', keepAspectRatio: true },
     position: { x: 250, y: 200 },
     height: 100,
     width: 100,
@@ -174,6 +182,13 @@ const initialNodes: Node[] = [
     data: { label: 'Bottom Right with horizontal direction' },
     position: { x: 500, y: 500 },
     style: { ...nodeStyle },
+  },
+  {
+    id: '7',
+    type: 'fixedExtent',
+    data: { label: 'Fixed Extent', extent },
+    position: { x: 500, y: 350 },
+    extent,
   },
 ];
 
