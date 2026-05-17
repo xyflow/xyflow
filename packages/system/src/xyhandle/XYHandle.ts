@@ -58,6 +58,7 @@ function onPointerDown(
   const handleType = getHandleType(edgeUpdaterType, handleDomNode);
   const containerBounds = domNode?.getBoundingClientRect();
   let connectionStarted = false;
+  const touchId = 'touches' in event ? event.changedTouches[0]?.identifier : undefined;
 
   if (!containerBounds || !handleType) {
     return;
@@ -196,9 +197,12 @@ function onPointerDown(
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    // Prevent multi-touch aborting connection
-    if ('touches' in event && event.touches.length > 0) {
-      return;
+    // Only handle the touch that started the connection
+    if ('changedTouches' in event && touchId !== undefined) {
+      const touch = Array.from(event.changedTouches).find((t) => t.identifier === touchId);
+      if (!touch) {
+        return;
+      }
     }
 
     if (connectionStarted) {
