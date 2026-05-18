@@ -12,11 +12,12 @@ import { getNodeIdContext } from '$lib/store/context';
 
 type UseNodeConnectionsParams = {
   id?: string;
-  handleType?: HandleType;
-  handleId?: string;
   onConnect?: (connections: HandleConnection[]) => void;
   onDisconnect?: (connections: HandleConnection[]) => void;
-};
+} & (
+  | { handleType: HandleType; handleId?: string }
+  | { handleType?: HandleType; handleId?: never }
+);
 
 type ConnectionMap = Map<string, NodeConnection>;
 
@@ -28,7 +29,7 @@ const initialConnections: NodeConnection[] = [];
  * @public
  * @param param.id - node id - optional if called inside a custom node
  * @param param.handleType - filter by handle type 'source' or 'target'
- * @param param.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type)
+ * @param param.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type). Requires `handleType` to be set.
  * @param param.onConnect - gets called when a connection is established
  * @param param.onDisconnect - gets called when a connection is removed
  * @returns An array with connections

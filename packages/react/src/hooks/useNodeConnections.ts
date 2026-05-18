@@ -16,15 +16,19 @@ const error014 = errorMessages['error014']();
 type UseNodeConnectionsParams = {
   /** ID of the node, filled in automatically if used inside custom node. */
   id?: string;
-  /** What type of handle connections do you want to observe? */
-  handleType?: HandleType;
-  /** Filter by handle id (this is only needed if the node has multiple handles of the same type). */
-  handleId?: string;
   /** Gets called when a connection is established. */
   onConnect?: (connections: HandleConnection[]) => void;
   /** Gets called when a connection is removed. */
   onDisconnect?: (connections: HandleConnection[]) => void;
-};
+} & (
+  | {
+      /** What type of handle connections do you want to observe? */
+      handleType: HandleType;
+      /** Filter by handle id (this is only needed if the node has multiple handles of the same type). Requires `handleType` to be set. */
+      handleId?: string;
+    }
+  | { handleType?: HandleType; handleId?: never }
+);
 
 /**
  * This hook returns an array of connections on a specific node, handle type ('source', 'target') or handle ID.
