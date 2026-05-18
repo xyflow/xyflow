@@ -197,10 +197,15 @@ function onPointerDown(
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    // Only handle the touch that started the connection
     if ('changedTouches' in event && touchId !== undefined) {
-      const touch = Array.from(event.changedTouches).find((t) => t.identifier === touchId);
-      if (!touch) {
+      // ignore if the lifted finger is not the one that started the connection
+      const isOriginatingTouch = Array.from(event.changedTouches).some((t) => t.identifier === touchId);
+      if (!isOriginatingTouch) {
+        return;
+      }
+      // ignore if the originating touch is still active (e.g. second finger tapped and lifted while first is still down)
+      const stillActive = Array.from(event.touches).some((t) => t.identifier === touchId);
+      if (stillActive) {
         return;
       }
     }
