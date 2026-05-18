@@ -26,6 +26,7 @@
     typeof ResizeObserver === 'undefined'
       ? null
       : new ResizeObserver((entries: ResizeObserverEntry[]) => {
+          // eslint-disable-next-line svelte/prefer-svelte-reactivity
           const updates = new Map();
 
           entries.forEach((entry: ResizeObserverEntry) => {

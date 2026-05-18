@@ -114,7 +114,6 @@ function HandleComponent(
     onConnectAction?.(edgeParams);
     onConnect?.(edgeParams);
   };
-
   const onPointerDown = (event: ReactMouseEvent<HTMLDivElement> | ReactTouchEvent<HTMLDivElement>) => {
     if (!nodeId) {
       return;
@@ -129,6 +128,7 @@ function HandleComponent(
       const currentStore = store.getState();
 
       XYHandle.onPointerDown(event.nativeEvent, {
+        handleDomNode: event.currentTarget,
         autoPanOnConnect: currentStore.autoPanOnConnect,
         connectionMode: currentStore.connectionMode,
         connectionRadius: currentStore.connectionRadius,
@@ -142,13 +142,14 @@ function HandleComponent(
         panBy: currentStore.panBy,
         cancelConnection: currentStore.cancelConnection,
         onConnectStart: currentStore.onConnectStart,
-        onConnectEnd: currentStore.onConnectEnd,
+        onConnectEnd: (...args) => store.getState().onConnectEnd?.(...args),
         updateConnection: currentStore.updateConnection,
         onConnect: onConnectExtended,
-        isValidConnection: isValidConnection || currentStore.isValidConnection,
+        isValidConnection: isValidConnection || ((...args) => store.getState().isValidConnection?.(...args) ?? true),
         getTransform: () => store.getState().transform,
         getFromHandle: () => store.getState().connection.fromHandle,
         autoPanSpeed: currentStore.autoPanSpeed,
+        dragThreshold: currentStore.connectionDragThreshold,
       });
     }
 

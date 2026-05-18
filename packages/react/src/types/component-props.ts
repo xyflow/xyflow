@@ -22,6 +22,8 @@ import type {
   SnapGrid,
   OnReconnect,
   AriaLabelConfig,
+  FinalConnectionState,
+  ZIndexMode,
 } from '@xyflow/system';
 
 import type {
@@ -138,7 +140,12 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * This event fires when the user releases the source or target of an editable edge. It is called
    * even if an edge update does not occur.
    */
-  onReconnectEnd?: (event: MouseEvent | TouchEvent, edge: EdgeType, handleType: HandleType) => void;
+  onReconnectEnd?: (
+    event: MouseEvent | TouchEvent,
+    edge: EdgeType,
+    handleType: HandleType,
+    connectionState: FinalConnectionState
+  ) => void;
   /**
    * Use this event handler to add interactivity to a controlled flow.
    * It is called on node drag, select, and move.
@@ -493,9 +500,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   nodeExtent?: CoordinateExtent;
   /**
    * Color of edge markers.
+   * You can pass `null` to use the CSS variable `--xy-edge-stroke` for the marker color.
    * @default '#b1b1b7'
    */
-  defaultMarkerColor?: string;
+  defaultMarkerColor?: string | null;
   /**
    * Controls if the viewport should zoom by scrolling inside the container.
    * @default true
@@ -544,7 +552,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   noDragClassName?: string;
   /**
    * Typically, scrolling the mouse wheel when the mouse is over the canvas will zoom the viewport.
-   * Adding the `"nowheel"` class to an element n the canvas will prevent this behavior and this prop
+   * Adding the `"nowheel"` class to an element in the canvas will prevent this behavior and this prop
    * allows you to change the name of that class.
    * @default "nowheel"
    */
@@ -605,6 +613,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   elevateNodesOnSelect?: boolean;
   /**
    * Enabling this option will raise the z-index of edges when they are selected.
+   * @default false
    */
   elevateEdgesOnSelect?: boolean;
   /**
@@ -625,6 +634,12 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default true
    */
   autoPanOnConnect?: boolean;
+  /**
+   * When `true`, the viewport will pan automatically when the cursor moves to the edge of the
+   * viewport while creating a selection box.
+   * @default true
+   */
+  autoPanOnSelection?: boolean;
   /**
    * The speed at which the viewport pans while dragging a node or a selection box.
    * @default 15
@@ -657,6 +672,12 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default 1
    */
   nodeDragThreshold?: number;
+  /**
+   * The threshold in pixels that the mouse must move before a connection line starts to drag.
+   * This is useful to prevent accidental connections when clicking on a handle.
+   * @default 1
+   */
+  connectionDragThreshold?: number;
   /** Sets a fixed width for the flow. */
   width?: number;
   /** Sets a fixed height for the flow. */
@@ -677,4 +698,11 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * Allows localization, customization of ARIA descriptions, control labels, minimap labels, and other UI strings.
    */
   ariaLabelConfig?: Partial<AriaLabelConfig>;
+  /**
+   * Used to define how z-indexing is calculated for nodes and edges.
+   * 'auto' is for selections and sub flows, 'basic' for selections only, and 'manual' for no auto z-indexing.
+   *
+   * @default 'basic'
+   */
+  zIndexMode?: ZIndexMode;
 }

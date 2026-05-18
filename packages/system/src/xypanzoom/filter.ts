@@ -12,6 +12,7 @@ export type FilterParams = {
   noWheelClassName: string;
   noPanClassName: string;
   lib: string;
+  connectionInProgress: boolean;
 };
 
 export function createFilter({
@@ -25,10 +26,12 @@ export function createFilter({
   noWheelClassName,
   noPanClassName,
   lib,
+  connectionInProgress,
 }: FilterParams) {
   return (event: any): boolean => {
     const zoomScroll = zoomActivationKeyPressed || zoomOnScroll;
     const pinchZoom = zoomOnPinch && event.ctrlKey;
+    const isWheelEvent = event.type === 'wheel';
 
     if (
       event.button === 1 &&
@@ -48,20 +51,25 @@ export function createFilter({
       return false;
     }
 
+    // we want to disable pinch-zooming while making a connection
+    if (connectionInProgress && !isWheelEvent) {
+      return false;
+    }
+
     // if the target element is inside an element with the nowheel class, we prevent zooming
-    if (isWrappedWithClass(event, noWheelClassName) && event.type === 'wheel') {
+    if (isWrappedWithClass(event, noWheelClassName) && isWheelEvent) {
       return false;
     }
 
     // if the target element is inside an element with the nopan class, we prevent panning
     if (
       isWrappedWithClass(event, noPanClassName) &&
-      (event.type !== 'wheel' || (panOnScroll && event.type === 'wheel' && !zoomActivationKeyPressed))
+      (!isWheelEvent || (panOnScroll && isWheelEvent && !zoomActivationKeyPressed))
     ) {
       return false;
     }
 
-    if (!zoomOnPinch && event.ctrlKey && event.type === 'wheel') {
+    if (!zoomOnPinch && event.ctrlKey && isWheelEvent) {
       return false;
     }
 
@@ -71,7 +79,7 @@ export function createFilter({
     }
 
     // when there is no scroll handling enabled, we prevent all wheel events
-    if (!zoomScroll && !panOnScroll && !pinchZoom && event.type === 'wheel') {
+    if (!zoomScroll && !panOnScroll && !pinchZoom && isWheelEvent) {
       return false;
     }
 
@@ -90,6 +98,6 @@ export function createFilter({
       (Array.isArray(panOnDrag) && panOnDrag.includes(event.button)) || !event.button || event.button <= 1;
 
     // default filter for d3-zoom
-    return (!event.ctrlKey || event.type === 'wheel') && buttonAllowed;
+    return (!event.ctrlKey || isWheelEvent) && buttonAllowed;
   };
 }

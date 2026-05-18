@@ -5,15 +5,18 @@
 	import CustomResizer from './CustomResizer.svelte';
 	import VerticalResizer from './VerticalResizer.svelte';
 	import HorizontalResizer from './HorizontalResizer.svelte';
+	import BottomRightResizer from './BottomRightResizer.svelte';
 
 	import '@xyflow/svelte/dist/style.css';
 	import type { ResizeNode } from './types';
+	import { store } from './store.svelte';
 
 	const nodeTypes = {
 		defaultResizer: DefaultResizer,
 		customResizer: CustomResizer,
 		verticalResizer: VerticalResizer,
-		horizontalResizer: HorizontalResizer
+		horizontalResizer: HorizontalResizer,
+		bottomRightResizer: BottomRightResizer
 	};
 
 	const nodeStyle = 'border: 1px solid #222; font-size: 10px; background-color: #ddd;';
@@ -124,11 +127,27 @@
 			position: { x: 100, y: 100 },
 			parentId: '5',
 			style: nodeStyle
+		},
+		{
+			id: '6',
+			type: 'bottomRightResizer',
+			data: { label: 'bottom-right horizontal resizer' },
+			position: { x: 500, y: 0 },
+			style: nodeStyle
 		}
 	]);
 
 	let snapToGrid = $state(false);
 </script>
+
+<svelte:window
+	on:keydown={(e) => {
+		if (e.key === 'k') store.keepAspectRatio = true;
+	}}
+	on:keyup={(e) => {
+		if (e.key === 'k') store.keepAspectRatio = false;
+	}}
+/>
 
 <SvelteFlow
 	bind:nodes

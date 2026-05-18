@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { getContext, onMount } from 'svelte';
+  import { onMount } from 'svelte';
+
   import { useStore } from '$lib/store';
+  import { getNodeIdContext } from '$lib/store/context';
   import {
     XYResizer,
     ResizeControlVariant,
@@ -9,8 +11,8 @@
     type XYResizerChange,
     type XYResizerChildChange
   } from '@xyflow/system';
+
   import type { ResizeControlProps } from './types';
-  import type { Node } from '$lib/types';
 
   let {
     nodeId,
@@ -22,6 +24,7 @@
     maxWidth = Number.MAX_VALUE,
     maxHeight = Number.MAX_VALUE,
     keepAspectRatio = false,
+    resizeDirection,
     autoScale = true,
     shouldResize,
     onResizeStart,
@@ -33,10 +36,14 @@
   }: ResizeControlProps = $props();
 
   const store = useStore();
+  const contextNodeId = getNodeIdContext();
 
-  let id = $derived(
-    typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
-  );
+  let id = $derived(typeof nodeId === 'string' ? nodeId : contextNodeId);
+
+  // svelte-ignore state_referenced_locally
+  if (!id) {
+    throw new Error('Either pass a nodeId or use within a Custom Node component');
+  }
 
   let resizeControlRef: HTMLDivElement;
   let resizer: XYResizerInstance | null = $state(null);
@@ -66,27 +73,28 @@
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const changes = new Map<string, Partial<Node>>();
-          let position = change.x && change.y ? { x: change.x, y: change.y } : undefined;
-          changes.set(id, { ...change, position });
+          // eslint-disable-next-line svelte/prefer-svelte-reactivity
+          const changes = new Map<string, XYResizerChange>();
+          changes.set(id, change);
 
           for (const childChange of childChanges) {
-            changes.set(childChange.id, {
-              position: childChange.position
-            });
+            changes.set(childChange.id, { x: childChange.position.x, y: childChange.position.y });
           }
 
           store.nodes = store.nodes.map((node) => {
             const change = changes.get(node.id);
+            const horizontal = !resizeDirection || resizeDirection === 'horizontal';
+            const vertical = !resizeDirection || resizeDirection === 'vertical';
+
             if (change) {
               return {
                 ...node,
                 position: {
-                  x: change.position?.x ?? node.position.x,
-                  y: change.position?.y ?? node.position.y
+                  x: horizontal ? (change.x ?? node.position.x) : node.position.x,
+                  y: vertical ? (change.y ?? node.position.y) : node.position.y
                 },
-                width: change.width ?? node.width,
-                height: change.height ?? node.height
+                width: horizontal ? (change.width ?? node.width) : node.width,
+                height: vertical ? (change.height ?? node.height) : node.height
               };
             }
             return node;
@@ -109,6 +117,7 @@
         maxHeight
       },
       keepAspectRatio: !!keepAspectRatio,
+      resizeDirection,
       onResizeStart,
       onResize,
       onResizeEnd,

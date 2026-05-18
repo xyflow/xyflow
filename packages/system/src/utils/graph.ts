@@ -241,20 +241,17 @@ export const getInternalNodesBounds = <NodeType extends InternalNodeBase | NodeD
   nodeLookup: Map<string, NodeType>,
   params: GetInternalNodesBoundsParams<NodeType> = {}
 ): Rect => {
-  if (nodeLookup.size === 0) {
-    return { x: 0, y: 0, width: 0, height: 0 };
-  }
-
   let box = { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity };
+  let hasVisibleNodes = false;
 
   nodeLookup.forEach((node) => {
     if (params.filter === undefined || params.filter(node)) {
-      const nodeBox = nodeToBox(node as InternalNodeBase);
-      box = getBoundsOfBoxes(box, nodeBox);
+      box = getBoundsOfBoxes(box, nodeToBox(node as InternalNodeBase));
+      hasVisibleNodes = true;
     }
   });
 
-  return boxToRect(box);
+  return hasVisibleNodes ? boxToRect(box) : { x: 0, y: 0, width: 0, height: 0 };
 };
 
 export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
@@ -413,7 +410,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
   const { x: parentX, y: parentY } = parentNode ? parentNode.internals.positionAbsolute : { x: 0, y: 0 };
 
   const origin = node.origin ?? nodeOrigin;
-  let extent = nodeExtent;
+  let extent = node.extent || nodeExtent;
 
   if (node.extent === 'parent' && !node.expandParent) {
     if (!parentNode) {

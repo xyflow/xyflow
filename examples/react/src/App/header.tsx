@@ -6,13 +6,17 @@ import routes from './routes';
 export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [currentPath, setCurrentPath] = useState(location.pathname);
+
+  const pathParts = location.pathname.split('/').filter(Boolean);
+  const initialExample = pathParts.length > 1 ? pathParts[1] : 'basic';
+
+  const [currentPath, setCurrentPath] = useState(initialExample);
 
   useEffect(() => {
     const name = routes.find((route) => route.path === currentPath)?.name;
     document.title = `React Flow Examples${name ? ' - ' + name : ''}`;
     navigate(currentPath);
-  }, [currentPath]);
+  }, [currentPath, navigate]);
 
   return (
     <>
@@ -20,7 +24,11 @@ export default function Header() {
         <a className="logo" href="https://github.com/xyflow/xyflow">
           React Flow Dev
         </a>
-        <select value={currentPath} onChange={(event) => setCurrentPath(event.target.value)}>
+        <select
+          value={currentPath}
+          onChange={(event) => setCurrentPath(event.target.value)}
+          aria-label="select an example"
+        >
           {routes.map((route) => (
             <option value={route.path} key={route.path}>
               {route.name}

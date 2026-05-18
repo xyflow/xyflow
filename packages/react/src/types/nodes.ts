@@ -29,7 +29,15 @@ export type Node<
    */
   domAttributes?: Omit<
     HTMLAttributes<HTMLDivElement>,
-    'id' | 'style' | 'className' | 'draggable' | 'role' | 'aria-label' | keyof DOMAttributes<HTMLDivElement>
+    | 'id'
+    | 'style'
+    | 'className'
+    | 'draggable'
+    | 'role'
+    | 'aria-label'
+    | 'defaultValue'
+    | 'dangerouslySetInnerHTML'
+    | keyof DOMAttributes<HTMLDivElement>
   >;
 };
 
@@ -75,7 +83,7 @@ export type NodeWrapperProps<NodeType extends Node> = {
 
 /**
  * The `BuiltInNode` type represents the built-in node types that are available in React Flow.
- * You can use this type to extend your custom node type if you still want ot use the built-in ones.
+ * You can use this type to extend your custom node type if you still want to use the built-in ones.
  *
  * @public
  * @example
@@ -85,7 +93,7 @@ export type NodeWrapperProps<NodeType extends Node> = {
  * ```
  */
 export type BuiltInNode =
-  | Node<{ label: string }, 'input' | 'output' | 'default'>
+  | Node<{ label: string }, 'input' | 'output' | 'default' | undefined>
   | Node<Record<string, never>, 'group'>;
 
 /**

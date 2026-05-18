@@ -30,7 +30,8 @@
       sourcePosition,
       targetPosition,
       borderRadius: pathOptions?.borderRadius,
-      offset: pathOptions?.offset
+      offset: pathOptions?.offset,
+      stepPosition: pathOptions?.stepPosition
     })
   );
 </script>

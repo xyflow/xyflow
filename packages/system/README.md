@@ -1,47 +1,62 @@
 # @xyflow/system
 
-Core system that powers React Flow and Svelte Flow.
+Core system utilities powering [React Flow](https://reactflow.dev) and [Svelte Flow](https://svelteflow.dev).
 
-## Installation 
+> **Note:** This package is designed as a shared vanilla utility layer for React Flow and Svelte Flow. It is not intended for use with unrelated libraries.
 
-```sh 
-npm install @xyflow/system
+## Installation
+
+```sh
+pnpm add @xyflow/system
 ```
 
-## What is this package about?
+## What is this package?
 
-The @xyflow/system package was created to have a place for vanilla utils for React Flow and Svelte Flow. The package exports helpers for edge creation, pan and zoom, dragging of nodes, general utils and lots of types. All the helpers are specifically built for React Flow and Svelte Flow so it's probably not too interesting to use them with other libraries. 
+`@xyflow/system` provides core, framework-agnostic helpers and types for building node-based editors and flow diagrams. It contains the logic and utilities that are shared between React Flow and Svelte Flow, such as edge path calculations, pan/zoom, node dragging, and more.
 
-### XYPanZoom
+## Features
 
-Adds zoom and pan for the pane. 
+- **Pan & Zoom (`XYPanZoom`)**: Utilities for adding interactive pan and zoom to your canvas.
+- **Dragging (`XYDrag`)**: Helpers for node and selection dragging.
+- **Handles/Connections (`XYHandle`)**: Logic for drawing and managing connection lines between nodes.
+- **Minimap (`XYMiniMap`)**: Interactive minimap utilities for overview and navigation.
+- **Edge Utilities**: Functions for SVG edge path creation (bezier, straight, step, smoothstep, etc.).
+- **Store Utilities**: Helpers for managing and updating flow state.
+- **DOM Utilities**: Functions for DOM measurements and interactions.
+- **Marker Utilities**: Helpers for SVG markers on edges.
+- **Graph Utilities**: Functions for working with nodes, edges, and graph structure.
+- **General Utilities**: Miscellaneous helpers used throughout the system.
+- **Types & Constants**: Shared types, enums, and constants for consistent data structures.
 
-### XYDrag
+## Usage
 
-Adds drag for nodes and selection.
+You can import any utility, type, or helper directly from the package:
 
-### XYHandle 
+```ts
+import { getBezierPath, getConnectedEdges, Position, XYPanZoom } from '@xyflow/system';
+```
 
-Adds connection line drawing.
+### Example: Bezier Edge Path Creation
 
-### XYMinimap 
+```ts
+import { getBezierPath, Position } from '@xyflow/system';
 
-Adds interactive mini map (zoom and pan).
+const [path, labelX, labelY] = getBezierPath({
+  sourceX: 0,
+  sourceY: 20,
+  sourcePosition: Position.Right,
+  targetX: 150,
+  targetY: 100,
+  targetPosition: Position.Left,
+});
+```
 
-### Edge utils 
+## API Reference
 
-Util function for SVG edge path creating.
+There is currently no dedicated API documentation for this package. For details on available utilities, types, and helpers, please refer to the [source code](./src) or check out the [React Flow documentation](https://reactflow.dev/api-reference/) where we are documenting a lot of stuff from this package.
 
-### Store utils
+## Contributing
 
-Helpers for store functions.
-
-### Dom utils
-
-### Marker utils
-
-### Graph utils
-
-### General utils 
+See the main [xyflow repository](https://github.com/xyflow/xyflow) for contribution guidelines.
 
 

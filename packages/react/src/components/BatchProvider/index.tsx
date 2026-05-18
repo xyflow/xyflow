@@ -28,7 +28,15 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   const store = useStoreApi<NodeType, EdgeType>();
 
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
-    const { nodes = [], setNodes, hasDefaultNodes, onNodesChange, nodeLookup, fitViewQueued } = store.getState();
+    const {
+      nodes = [],
+      setNodes,
+      hasDefaultNodes,
+      onNodesChange,
+      nodeLookup,
+      fitViewQueued,
+      onNodesChangeMiddlewareMap,
+    } = store.getState();
 
     /*
      * This is essentially an `Array.reduce` in imperative clothing. Processing
@@ -40,10 +48,14 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       next = typeof payload === 'function' ? payload(next) : payload;
     }
 
-    const changes = getElementsDiffChanges({
+    let changes = getElementsDiffChanges({
       items: next,
       lookup: nodeLookup,
     }) as NodeChange<NodeType>[];
+
+    for (const middleware of onNodesChangeMiddlewareMap.values()) {
+      changes = middleware(changes);
+    }
 
     if (hasDefaultNodes) {
       setNodes(next);

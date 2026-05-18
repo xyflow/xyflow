@@ -31,7 +31,12 @@
     if (store.selectionRectMode === 'nodes') {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       store.nodes;
-      return getInternalNodesBounds(store.nodeLookup, { filter: (node) => !!node.selected });
+      const nodeBounds = getInternalNodesBounds(store.nodeLookup, {
+        filter: (node) => !!node.selected
+      });
+      if (nodeBounds.width > 0 && nodeBounds.height > 0) {
+        return nodeBounds;
+      }
     }
     return null;
   });
@@ -91,5 +96,10 @@
     left: 0;
     z-index: 2000;
     pointer-events: all;
+  }
+
+  .svelte-flow__selection-wrapper:focus,
+  .svelte-flow__selection-wrapper:focus-visible {
+    outline: none;
   }
 </style>

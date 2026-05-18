@@ -1,8 +1,8 @@
 <script lang="ts">
   import { useStore } from '$lib/store';
+  import { getEdgeIdContext } from '$lib/store/context';
   import type { Edge } from '$lib/types';
-  import { XYHandle, type HandleType } from '@xyflow/system';
-  import { getContext } from 'svelte';
+  import { XYHandle, type HandleType, type OnConnectStart } from '@xyflow/system';
   import { EdgeLabel } from '../EdgeLabel';
   import type { EdgeReconnectAnchorProps } from './types';
 
@@ -12,17 +12,16 @@
     position,
     class: className,
     size = 25,
+    dragThreshold = 1,
     children,
     ...rest
   }: EdgeReconnectAnchorProps = $props();
 
   const store = useStore();
 
-  let edgeId: string | undefined = getContext('svelteflow__edge_id');
-
-  if (!edgeId) {
-    throw new Error('EdgeReconnectAnchor must be used within an Edge component');
-  }
+  const edgeId = getEdgeIdContext(
+    'EdgeReconnectAnchor must be used within a Custom Edge component'
+  );
 
   const onPointerDown = (event: PointerEvent) => {
     if (event.button !== 0) {
@@ -49,11 +48,13 @@
       edgeLookup
     } = store;
 
-    let newEdge: Edge | undefined;
     let edge = edgeLookup.get(edgeId)!;
 
-    reconnecting = true;
-    onreconnectstart?.(event, edge, type);
+    const _onConnectStart: OnConnectStart = (evt, params) => {
+      reconnecting = true;
+      onreconnectstart?.(event, edge, type);
+      onconnectstart?.(evt, params);
+    };
 
     const opposite =
       type === 'target'
@@ -78,17 +79,20 @@
       flowId,
       cancelConnection,
       panBy,
-      isValidConnection,
-      onConnectStart: onconnectstart,
-      onConnectEnd: onconnectend,
+      isValidConnection: (...args) => store.isValidConnection?.(...args) ?? true,
+      onConnectStart: _onConnectStart,
+      onConnectEnd: (...args) => store.onconnectend?.(...args),
       onConnect: (connection) => {
-        newEdge = { ...edge, ...connection };
-        newEdge = onbeforereconnect ? (onbeforereconnect(newEdge, edge) ?? undefined) : newEdge;
+        const reconnectedEdge = { ...edge, ...connection };
+        const newEdge = onbeforereconnect
+          ? onbeforereconnect(reconnectedEdge, edge)
+          : reconnectedEdge;
 
-        if (newEdge) {
-          store.edges = store.edges.map((e) => (e.id === edge.id ? (newEdge as Edge) : e));
+        if (!newEdge) {
+          return;
         }
 
+        store.edges = store.edges.map((e) => (e.id === edge.id ? (newEdge as Edge) : e));
         onreconnect?.(edge, connection);
       },
       onReconnectEnd: (event, connectionState) => {
@@ -97,7 +101,9 @@
       },
       updateConnection,
       getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
-      getFromHandle: () => store.connection.fromHandle
+      getFromHandle: () => store.connection.fromHandle,
+      dragThreshold: dragThreshold ?? store.connectionDragThreshold,
+      handleDomNode: event.currentTarget as HTMLElement
     });
   };
 </script>

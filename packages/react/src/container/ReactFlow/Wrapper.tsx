@@ -3,7 +3,7 @@ import { useContext, type ReactNode } from 'react';
 import StoreContext from '../../contexts/StoreContext';
 import { ReactFlowProvider } from '../../components/ReactFlowProvider';
 import type { Node, Edge, FitViewOptions } from '../../types';
-import { CoordinateExtent, NodeOrigin } from '@xyflow/system';
+import { CoordinateExtent, NodeOrigin, ZIndexMode } from '@xyflow/system';
 
 export function Wrapper({
   children,
@@ -19,6 +19,7 @@ export function Wrapper({
   maxZoom,
   nodeOrigin,
   nodeExtent,
+  zIndexMode,
 }: {
   children: ReactNode;
   nodes?: Node[];
@@ -33,6 +34,7 @@ export function Wrapper({
   maxZoom?: number;
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
+  zIndexMode?: ZIndexMode;
 }) {
   const isWrapped = useContext(StoreContext);
 
@@ -58,6 +60,7 @@ export function Wrapper({
       initialMaxZoom={maxZoom}
       nodeOrigin={nodeOrigin}
       nodeExtent={nodeExtent}
+      zIndexMode={zIndexMode}
     >
       {children}
     </ReactFlowProvider>

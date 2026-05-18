@@ -69,7 +69,7 @@ const ConnectionLine = <NodeType extends Node = Node>({
   CustomComponent,
   isValid,
 }: ConnectionLineProps<NodeType>) => {
-  const { inProgress, from, fromNode, fromHandle, fromPosition, to, toNode, toHandle, toPosition } =
+  const { inProgress, from, fromNode, fromHandle, fromPosition, to, toNode, toHandle, toPosition, pointer } =
     useConnection<NodeType>();
 
   if (!inProgress) {
@@ -92,6 +92,7 @@ const ConnectionLine = <NodeType extends Node = Node>({
         connectionStatus={getConnectionStatus(isValid)}
         toNode={toNode}
         toHandle={toHandle}
+        pointer={pointer}
       />
     );
   }

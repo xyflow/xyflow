@@ -1,4 +1,4 @@
-import { HandleConnection, infiniteExtent } from '..';
+import { Handle, HandleConnection, infiniteExtent, NodeHandleBounds, ZIndexMode } from '..';
 import {
   NodeBase,
   CoordinateExtent,
@@ -30,10 +30,14 @@ import {
 import { getNodePositionWithOrigin } from './graph';
 import { ParentExpandChild } from './types';
 
+const SELECTED_NODE_Z = 1000;
+const ROOT_PARENT_Z_INCREMENT = 10;
+
 const defaultOptions = {
   nodeOrigin: [0, 0] as NodeOrigin,
   nodeExtent: infiniteExtent,
   elevateNodesOnSelect: true,
+  zIndexMode: 'basic' as ZIndexMode,
   defaults: {},
 };
 
@@ -72,25 +76,69 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
   }
 }
 
+function parseHandles(userNode: NodeBase, internalNode?: InternalNodeBase): NodeHandleBounds | undefined {
+  if (!userNode.handles) {
+    return !userNode.measured ? undefined : internalNode?.internals.handleBounds;
+  }
+
+  const source: Handle[] = [];
+  const target: Handle[] = [];
+
+  for (const handle of userNode.handles) {
+    const handleBounds = {
+      id: handle.id,
+      width: handle.width ?? 1,
+      height: handle.height ?? 1,
+      nodeId: userNode.id,
+      x: handle.x,
+      y: handle.y,
+      position: handle.position,
+      type: handle.type,
+    };
+    if (handle.type === 'source') {
+      source.push(handleBounds);
+    } else if (handle.type === 'target') {
+      target.push(handleBounds);
+    }
+  }
+
+  return {
+    source,
+    target,
+  };
+}
+
 type UpdateNodesOptions<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
   elevateNodesOnSelect?: boolean;
   defaults?: Partial<NodeType>;
+  zIndexMode?: ZIndexMode;
   checkEquality?: boolean;
+};
+
+export function isManualZIndexMode(zIndexMode?: ZIndexMode): boolean {
+  return zIndexMode === 'manual';
+}
+
+type AdoptUserNodesReturn = {
+  nodesInitialized: boolean;
+  hasSelectedNodes: boolean;
 };
 
 export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options?: UpdateNodesOptions<NodeType>
-): boolean {
+  options: UpdateNodesOptions<NodeType> = {}
+): AdoptUserNodesReturn {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
-
-  let nodesInitialized = nodes.length > 0;
+  const rootParentIndex = { i: 0 };
   const tmpLookup = new Map(nodeLookup);
-  const selectedNodeZ: number = _options?.elevateNodesOnSelect ? 1000 : 0;
+  const selectedNodeZ: number =
+    _options?.elevateNodesOnSelect && !isManualZIndexMode(_options.zIndexMode) ? SELECTED_NODE_Z : 0;
+  let nodesInitialized = nodes.length > 0;
+  let hasSelectedNodes = false;
 
   nodeLookup.clear();
   parentLookup.clear();
@@ -115,8 +163,8 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         internals: {
           positionAbsolute: clampedPosition,
           // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
-          handleBounds: !userNode.measured ? undefined : internalNode?.internals.handleBounds,
-          z: calculateZ(userNode, selectedNodeZ),
+          handleBounds: parseHandles(userNode, internalNode),
+          z: calculateZ(userNode, selectedNodeZ, _options.zIndexMode),
           userNode,
         },
       };
@@ -134,11 +182,13 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     }
 
     if (userNode.parentId) {
-      updateChildNode(internalNode, nodeLookup, parentLookup, options);
+      updateChildNode(internalNode, nodeLookup, parentLookup, options, rootParentIndex);
     }
+
+    hasSelectedNodes ||= userNode.selected ?? false;
   }
 
-  return nodesInitialized;
+  return { nodesInitialized, hasSelectedNodes };
 }
 
 function updateParentLookup<NodeType extends NodeBase>(
@@ -165,9 +215,10 @@ function updateChildNode<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options?: UpdateNodesOptions<NodeType>
+  options: UpdateNodesOptions<NodeType>,
+  rootParentIndex?: { i: number }
 ) {
-  const { elevateNodesOnSelect, nodeOrigin, nodeExtent } = mergeObjects(defaultOptions, options);
+  const { elevateNodesOnSelect, nodeOrigin, nodeExtent, zIndexMode } = mergeObjects(defaultOptions, options);
   const parentId = node.parentId!;
   const parentNode = nodeLookup.get(parentId);
 
@@ -180,8 +231,24 @@ function updateChildNode<NodeType extends NodeBase>(
 
   updateParentLookup(node, parentLookup);
 
-  const selectedNodeZ = elevateNodesOnSelect ? 1000 : 0;
-  const { x, y, z } = calculateChildXYZ(node, parentNode, nodeOrigin, nodeExtent, selectedNodeZ);
+  // We just want to set the rootParentIndex for the first child
+  if (
+    rootParentIndex &&
+    !parentNode.parentId &&
+    parentNode.internals.rootParentIndex === undefined &&
+    zIndexMode === 'auto'
+  ) {
+    parentNode.internals.rootParentIndex = ++rootParentIndex.i;
+    parentNode.internals.z = parentNode.internals.z + rootParentIndex.i * ROOT_PARENT_Z_INCREMENT;
+  }
+
+  // But we need to update rootParentIndex.i also when parent has not been updated
+  if (rootParentIndex && parentNode.internals.rootParentIndex !== undefined) {
+    rootParentIndex.i = parentNode.internals.rootParentIndex;
+  }
+
+  const selectedNodeZ = elevateNodesOnSelect && !isManualZIndexMode(zIndexMode) ? SELECTED_NODE_Z : 0;
+  const { x, y, z } = calculateChildXYZ(node, parentNode, nodeOrigin, nodeExtent, selectedNodeZ, zIndexMode);
   const { positionAbsolute } = node.internals;
   const positionChanged = x !== positionAbsolute.x || y !== positionAbsolute.y;
 
@@ -198,8 +265,14 @@ function updateChildNode<NodeType extends NodeBase>(
   }
 }
 
-function calculateZ(node: NodeBase, selectedNodeZ: number) {
-  return (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0);
+function calculateZ(node: NodeBase, selectedNodeZ: number, zIndexMode: ZIndexMode): number {
+  const zIndex = isNumeric(node.zIndex) ? node.zIndex : 0;
+
+  if (isManualZIndexMode(zIndexMode)) {
+    return zIndex;
+  }
+
+  return zIndex + (node.selected ? selectedNodeZ : 0);
 }
 
 function calculateChildXYZ<NodeType extends NodeBase>(
@@ -207,7 +280,8 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   parentNode: InternalNodeBase<NodeType>,
   nodeOrigin: NodeOrigin,
   nodeExtent: CoordinateExtent,
-  selectedNodeZ: number
+  selectedNodeZ: number,
+  zIndexMode: ZIndexMode
 ) {
   const { x: parentX, y: parentY } = parentNode.internals.positionAbsolute;
   const childDimensions = getNodeDimensions(childNode);
@@ -226,13 +300,13 @@ function calculateChildXYZ<NodeType extends NodeBase>(
     absolutePosition = clampPositionToParent(absolutePosition, childDimensions, parentNode);
   }
 
-  const childZ = calculateZ(childNode, selectedNodeZ);
+  const childZ = calculateZ(childNode, selectedNodeZ, zIndexMode);
   const parentZ = parentNode.internals.z ?? 0;
 
   return {
     x: absolutePosition.x,
     y: absolutePosition.y,
-    z: parentZ > childZ ? parentZ : childZ,
+    z: parentZ >= childZ ? parentZ + 1 : childZ,
   };
 }
 
@@ -330,7 +404,8 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   parentLookup: ParentLookup<NodeType>,
   domNode: HTMLElement | null,
   nodeOrigin?: NodeOrigin,
-  nodeExtent?: CoordinateExtent
+  nodeExtent?: CoordinateExtent,
+  zIndexMode?: ZIndexMode
 ): { changes: (NodeDimensionChange | NodePositionChange)[]; updatedInternals: boolean } {
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
   let updatedInternals = false;
@@ -398,7 +473,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       nodeLookup.set(node.id, newNode);
 
       if (node.parentId) {
-        updateChildNode(newNode, nodeLookup, parentLookup, { nodeOrigin });
+        updateChildNode(newNode, nodeLookup, parentLookup, { nodeOrigin, zIndexMode });
       }
 
       updatedInternals = true;
@@ -476,7 +551,7 @@ export async function panBy({
  * @param connectionKey at which key the connection should be added
  * @param connectionLookup reference to the connection lookup
  * @param nodeId nodeId of the connection
- * @param handleId handleId of the conneciton
+ * @param handleId handleId of the connection
  */
 function addConnectionToLookup(
   type: 'source' | 'target',

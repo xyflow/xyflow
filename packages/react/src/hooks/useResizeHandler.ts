@@ -13,7 +13,7 @@ export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null
 
   useEffect(() => {
     const updateDimensions = () => {
-      if (!domNode.current) {
+      if (!domNode.current || !(domNode.current.checkVisibility?.() ?? true)) {
         return false;
       }
       const size = getDimensions(domNode.current);

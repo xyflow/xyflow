@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX } from 'react';
+import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX, memo } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
@@ -15,7 +15,7 @@ import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
 import type { Edge, EdgeWrapperProps } from '../../types';
 
-export function EdgeWrapper<EdgeType extends Edge = Edge>({
+function EdgeWrapper<EdgeType extends Edge = Edge>({
   id,
   edgesFocusable,
   edgesReconnectable,
@@ -46,7 +46,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
   if (EdgeComponent === undefined) {
     onError?.('011', errorMessages['error011'](edgeType));
     edgeType = 'default';
-    EdgeComponent = builtinEdgeTypes.default;
+    EdgeComponent = edgeTypes?.['default'] || builtinEdgeTypes.default;
   }
 
   const isFocusable = !!(edge.focusable || (edgesFocusable && typeof edge.focusable === 'undefined'));
@@ -89,6 +89,7 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
           sourceNode,
           targetNode,
           elevateOnSelect: store.elevateEdgesOnSelect,
+          zIndexMode: store.zIndexMode,
         });
 
         return {
@@ -263,3 +264,5 @@ export function EdgeWrapper<EdgeType extends Edge = Edge>({
     </svg>
   );
 }
+
+export default memo(EdgeWrapper) as typeof EdgeWrapper;

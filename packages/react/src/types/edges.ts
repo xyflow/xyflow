@@ -22,6 +22,7 @@ import type {
   OnError,
   OnReconnect,
   FinalConnectionState,
+  XYPosition,
 } from '@xyflow/system';
 
 import { EdgeTypes, InternalNode, Node } from '.';
@@ -72,7 +73,10 @@ export type Edge<
     /**
      * General escape hatch for adding custom attributes to the edge's DOM element.
      */
-    domAttributes?: Omit<SVGAttributes<SVGGElement>, 'id' | 'style' | 'className' | 'role' | 'aria-label'>;
+    domAttributes?: Omit<
+      SVGAttributes<SVGGElement>,
+      'id' | 'style' | 'className' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
+    >;
   };
 
 type SmoothStepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<
@@ -146,7 +150,7 @@ export type EdgeTextProps = Omit<SVGAttributes<SVGElement>, 'x' | 'y'> &
  */
 export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
   EdgeType,
-  'id' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target' | 'selectable' | 'deletable'
+  'id' | 'type' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target' | 'selectable' | 'deletable'
 > &
   EdgePosition &
   EdgeLabelOptions & {
@@ -184,12 +188,12 @@ export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd' | 'path' | '
     path: string;
     /**
      * The id of the SVG marker to use at the start of the edge. This should be defined in a
-     * `<defs>` element in a separate SVG document or element.
+     * `<defs>` element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
      */
     markerStart?: string;
     /**
      * The id of the SVG marker to use at the end of the edge. This should be defined in a `<defs>`
-     * element in a separate SVG document or element.
+     * element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
      */
     markerEnd?: string;
   };
@@ -276,6 +280,7 @@ export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   connectionStatus: 'valid' | 'invalid' | null;
   toNode: InternalNode<NodeType> | null;
   toHandle: Handle | null;
+  pointer: XYPosition;
 };
 
 export type ConnectionLineComponent<NodeType extends Node = Node> = ComponentType<

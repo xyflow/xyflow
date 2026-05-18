@@ -23,7 +23,6 @@ export type SvelteFlowStoreActions<NodeType extends Node = Node, EdgeType extend
   setMinZoom: (minZoom: number) => void;
   setMaxZoom: (maxZoom: number) => void;
   setTranslateExtent: (extent: CoordinateExtent) => void;
-  setPaneClickDistance: (distance: number) => void;
   fitView: (options?: FitViewOptions) => Promise<boolean>;
   setCenter: SetCenter;
   updateNodePositions: UpdateNodePositions;

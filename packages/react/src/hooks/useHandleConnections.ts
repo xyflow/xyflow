@@ -52,7 +52,7 @@ export function useHandleConnections({
   );
 
   useEffect(() => {
-    // @todo dicuss if onConnect/onDisconnect should be called when the component mounts/unmounts
+    // @todo discuss if onConnect/onDisconnect should be called when the component mounts/unmounts
     if (prevConnections.current && prevConnections.current !== connections) {
       const _connections = connections ?? new Map();
       handleConnectionChange(prevConnections.current, _connections, onDisconnect);

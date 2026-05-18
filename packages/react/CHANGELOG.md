@@ -1,5 +1,229 @@
 # @xyflow/react
 
+## 12.10.2
+
+### Patch Changes
+
+- [#5735](https://github.com/xyflow/xyflow/pull/5735) [`a6c938fb2`](https://github.com/xyflow/xyflow/commit/a6c938fb2e5ed030512ef75d665ac80dc3a66bc6) Thanks [@nvie](https://github.com/nvie)! - Allow `type` field to be missing in `BuiltInNode` (no `type` field is the same as `type: "default"`)
+
+- [#5722](https://github.com/xyflow/xyflow/pull/5722) [`8c9b7e726`](https://github.com/xyflow/xyflow/commit/8c9b7e726e0bb79871c85017dace0f1ccf1b478c) Thanks [@dfblhmm](https://github.com/dfblhmm)! - Add `snapGrid` to `screenToFlowPosition` options
+
+- [#5723](https://github.com/xyflow/xyflow/pull/5723) [`82249517a`](https://github.com/xyflow/xyflow/commit/82249517a3338d7bd0d6d499abecfaa6bca8c339) Thanks [@moklick](https://github.com/moklick)! - Pass options to useReactFlow/useSvelteFlow viewport helper functions correctly
+
+- [#5733](https://github.com/xyflow/xyflow/pull/5733) [`64115cd08`](https://github.com/xyflow/xyflow/commit/64115cd086d2c04235f1cae80acb45455fd0de49) Thanks [@AlaricBaraou](https://github.com/AlaricBaraou)! - Fix empty store during ReactFlow remount by reordering StoreUpdater before GraphView and using layout effects
+
+- [#5727](https://github.com/xyflow/xyflow/pull/5727) [`dd54e86b9`](https://github.com/xyflow/xyflow/commit/dd54e86b91da29c1f58f646ad9a99f96f0c4a2e5) Thanks [@solastley](https://github.com/solastley)! - Ensure visual nodes selection state is cleared when zero selected nodes remain in the flow
+
+- Updated dependencies [[`4a278dbbf`](https://github.com/xyflow/xyflow/commit/4a278dbbf942b2bc964e4159347b70ae6617f3dc)]:
+  - @xyflow/system@0.0.76
+
+## 12.10.1
+
+### Patch Changes
+
+- [#5704](https://github.com/xyflow/xyflow/pull/5704) [`c91d3d022`](https://github.com/xyflow/xyflow/commit/c91d3d022f4517f4403a898cd02ee891b7e1f2d2) Thanks [@peterkogo](https://github.com/peterkogo)! - Keep `onConnectEnd` and `isValidConnection` up to date in an ongoing connection
+
+- [#5687](https://github.com/xyflow/xyflow/pull/5687) [`2624479ad`](https://github.com/xyflow/xyflow/commit/2624479ad3d0b06fcb690242b2372ff2a7e16f54) Thanks [@vkrol](https://github.com/vkrol)! - Optimize zooming performance when panOnScroll mode is enabled
+
+- [#5682](https://github.com/xyflow/xyflow/pull/5682) [`7b6e46ce1`](https://github.com/xyflow/xyflow/commit/7b6e46ce17f49e759f614a8f933f7dc729635b48) Thanks [@artemtam](https://github.com/artemtam)! - Prevent unnecessary updates when selectNodesOnDrag = false
+
+- [#5703](https://github.com/xyflow/xyflow/pull/5703) [`ce6c869df`](https://github.com/xyflow/xyflow/commit/ce6c869df40b2b013484808c742ca508da4a591f) Thanks [@peterkogo](https://github.com/peterkogo)! - Improve return type of useNodesData. Now you can narrow down the data type by checking the node type.
+
+- [#5692](https://github.com/xyflow/xyflow/pull/5692) [`49646858f`](https://github.com/xyflow/xyflow/commit/49646858f951455921aedbb83725b4225dbdef9d) Thanks [@moklick](https://github.com/moklick)! - Handle undefined node in mini map
+
+- [#5684](https://github.com/xyflow/xyflow/pull/5684) [`382c654c3`](https://github.com/xyflow/xyflow/commit/382c654c315accca2005e39d477eed6649f12e40) Thanks [@ysds](https://github.com/ysds)! - Consolidate drag handler effects in useDrag to fix programmatic selection issues
+
+- Updated dependencies [[`ce6c869df`](https://github.com/xyflow/xyflow/commit/ce6c869df40b2b013484808c742ca508da4a591f)]:
+  - @xyflow/system@0.0.75
+
+## 12.10.0
+
+### Minor Changes
+
+- [#5637](https://github.com/xyflow/xyflow/pull/5637) [`0c7261a6d`](https://github.com/xyflow/xyflow/commit/0c7261a6dc94f1aa58333a6aebcaca8ced9b5ad2) Thanks [@moklick](https://github.com/moklick)! - Add `zIndexMode` to control how z-index is calculated for nodes and edges
+
+- [#5484](https://github.com/xyflow/xyflow/pull/5484) [`a523919d6`](https://github.com/xyflow/xyflow/commit/a523919d6789995e9d0f3dd29b0b47fc3b8d8439) Thanks [@peterkogo](https://github.com/peterkogo)! - Add `experimental_useOnNodesChangeMiddleware` hook
+
+### Patch Changes
+
+- [#5629](https://github.com/xyflow/xyflow/pull/5629) [`9030fab2d`](https://github.com/xyflow/xyflow/commit/9030fab2df8285fdfb649bda6e1e885dfd228d45) Thanks [@AlaricBaraou](https://github.com/AlaricBaraou)! - Prevent unnecessary re-render in `FlowRenderer`
+
+- [#5592](https://github.com/xyflow/xyflow/pull/5592) [`38dbf41c4`](https://github.com/xyflow/xyflow/commit/38dbf41c464550cc803b946a4ad1f46982385a03) Thanks [@svilen-ivanov-kubit](https://github.com/svilen-ivanov-kubit)! - Always create a new measured object in apply changes.
+
+- [#5635](https://github.com/xyflow/xyflow/pull/5635) [`2d7fa40e2`](https://github.com/xyflow/xyflow/commit/2d7fa40e2684a0fcdd4eca7800ccf2c34338e549) Thanks [@tornado-softwares](https://github.com/tornado-softwares)! - Update an ongoing connection when user moves node with keyboard.
+
+- Updated dependencies [[`0c7261a6d`](https://github.com/xyflow/xyflow/commit/0c7261a6dc94f1aa58333a6aebcaca8ced9b5ad2), [`8598b6bc2`](https://github.com/xyflow/xyflow/commit/8598b6bc2a9d052b12d5215706382da0aa84827b), [`2d7fa40e2`](https://github.com/xyflow/xyflow/commit/2d7fa40e2684a0fcdd4eca7800ccf2c34338e549)]:
+  - @xyflow/system@0.0.74
+
+## 12.9.3
+
+### Patch Changes
+
+- [#5621](https://github.com/xyflow/xyflow/pull/5621) [`c1304dba7`](https://github.com/xyflow/xyflow/commit/c1304dba7a20bb8d74c7aceb23cd80b56e4c0482) Thanks [@moklick](https://github.com/moklick)! - Set `paneClickDistance` default value to `1`.
+
+- [#5578](https://github.com/xyflow/xyflow/pull/5578) [`00bcb9f5f`](https://github.com/xyflow/xyflow/commit/00bcb9f5f45f49814b9ac19b3f55cfe069ee3773) Thanks [@peterkogo](https://github.com/peterkogo)! - Pass current pointer position to connection
+
+- Updated dependencies [[`00bcb9f5f`](https://github.com/xyflow/xyflow/commit/00bcb9f5f45f49814b9ac19b3f55cfe069ee3773)]:
+  - @xyflow/system@0.0.73
+
+## 12.9.2
+
+### Patch Changes
+
+- [#5593](https://github.com/xyflow/xyflow/pull/5593) [`a8ee089d7`](https://github.com/xyflow/xyflow/commit/a8ee089d7689d9a58113690c8e90e1c1e109602a) Thanks [@moklick](https://github.com/moklick)! - Reset selection box when user selects a node
+
+## 12.9.1
+
+### Patch Changes
+
+- [#5572](https://github.com/xyflow/xyflow/pull/5572) [`5ec0cac7f`](https://github.com/xyflow/xyflow/commit/5ec0cac7fad21109b74839969c0818f88ddc87d9) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix onPaneClick events being suppressed when selectionOnDrag=true
+
+- Updated dependencies [[`5ec0cac7f`](https://github.com/xyflow/xyflow/commit/5ec0cac7fad21109b74839969c0818f88ddc87d9)]:
+  - @xyflow/system@0.0.72
+
+## 12.9.0
+
+### Minor Changes
+
+- [#5544](https://github.com/xyflow/xyflow/pull/5544) [`c17b49f4c`](https://github.com/xyflow/xyflow/commit/c17b49f4c16167da3f791430163edd592159d27d) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Add `EdgeToolbar` component
+
+- [#5550](https://github.com/xyflow/xyflow/pull/5550) [`6ffb9f790`](https://github.com/xyflow/xyflow/commit/6ffb9f7901c32f5b335aee2517f41bf87f274f32) Thanks [@peterkogo](https://github.com/peterkogo)! - Prevent child nodes of different parents from overlapping
+
+- [#5551](https://github.com/xyflow/xyflow/pull/5551) [`6bb64b3ed`](https://github.com/xyflow/xyflow/commit/6bb64b3ed60f26c9ea8bc01c8d62fb9bf74cd634) Thanks [@moklick](https://github.com/moklick)! - Allow to start a selection above a node
+
+### Patch Changes
+
+- [#5531](https://github.com/xyflow/xyflow/pull/5531) [`fe2a45ed2`](https://github.com/xyflow/xyflow/commit/fe2a45ed2aa0d96db8e1be0354038be7ce6f824d) Thanks [@Sec-ant](https://github.com/Sec-ant)! - Add `type` property to `EdgeProps` to match `NodeProps` behavior
+
+- [#5528](https://github.com/xyflow/xyflow/pull/5528) [`d50a963cd`](https://github.com/xyflow/xyflow/commit/d50a963cd0f00cd31236d760dcd7995218d80553) Thanks [@peterkogo](https://github.com/peterkogo)! - Let `NodeResizer` props change during ongoing resize
+
+- [#5530](https://github.com/xyflow/xyflow/pull/5530) [`3b9951e42`](https://github.com/xyflow/xyflow/commit/3b9951e42f2041276ac8957154598a7af41f81e9) Thanks [@peterkogo](https://github.com/peterkogo)! - Improve performance of adding nodes & edges
+
+- [#5547](https://github.com/xyflow/xyflow/pull/5547) [`1c8961207`](https://github.com/xyflow/xyflow/commit/1c8961207e8ac326098af18489465b36cdd2d831) Thanks [@moklick](https://github.com/moklick)! - Always call `onMoveEnd` when `onMoveStart` was called
+
+- Updated dependencies [[`c17b49f4c`](https://github.com/xyflow/xyflow/commit/c17b49f4c16167da3f791430163edd592159d27d), [`6ffb9f790`](https://github.com/xyflow/xyflow/commit/6ffb9f7901c32f5b335aee2517f41bf87f274f32), [`d50a963cd`](https://github.com/xyflow/xyflow/commit/d50a963cd0f00cd31236d760dcd7995218d80553), [`6bb64b3ed`](https://github.com/xyflow/xyflow/commit/6bb64b3ed60f26c9ea8bc01c8d62fb9bf74cd634), [`8a9ee2d83`](https://github.com/xyflow/xyflow/commit/8a9ee2d836776da42b867c6ba90d302fbbc79b37), [`1c8961207`](https://github.com/xyflow/xyflow/commit/1c8961207e8ac326098af18489465b36cdd2d831)]:
+  - @xyflow/system@0.0.71
+
+## 12.8.6
+
+### Patch Changes
+
+- [#5515](https://github.com/xyflow/xyflow/pull/5515) [`9b4e99029`](https://github.com/xyflow/xyflow/commit/9b4e99029ba87d44c71b33c06259a126db193b43) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix id of static handles not being parsed
+
+- [#5512](https://github.com/xyflow/xyflow/pull/5512) [`70b672604`](https://github.com/xyflow/xyflow/commit/70b67260470738dd0d88ed8ab558d400097be785) Thanks [@peterkogo](https://github.com/peterkogo)! - Prevent native page zoom when pinch zooming on node with nowheel class
+
+- Updated dependencies [[`9b4e99029`](https://github.com/xyflow/xyflow/commit/9b4e99029ba87d44c71b33c06259a126db193b43), [`70b672604`](https://github.com/xyflow/xyflow/commit/70b67260470738dd0d88ed8ab558d400097be785)]:
+  - @xyflow/system@0.0.70
+
+## 12.8.5
+
+### Patch Changes
+
+- [#5480](https://github.com/xyflow/xyflow/pull/5480) [`f869808e3`](https://github.com/xyflow/xyflow/commit/f869808e3dfd3d289db034d21d505d62f84cdde3) Thanks [@peterkogo](https://github.com/peterkogo)! - Prevent multi-touch events while making a new connection
+
+- [#5482](https://github.com/xyflow/xyflow/pull/5482) [`56381ae54`](https://github.com/xyflow/xyflow/commit/56381ae546f392b13e7c1390df60e48c9072f128) Thanks [@peterkogo](https://github.com/peterkogo)! - Make isNodeIntersecting behave the same as getIntersectingNodes
+
+- [#5509](https://github.com/xyflow/xyflow/pull/5509) [`b6ae4cc11`](https://github.com/xyflow/xyflow/commit/b6ae4cc11f1456f843ace7e7f3de41c9196179e0) Thanks [@moklick](https://github.com/moklick)! - Prevent calling onResizeEnd if node was not resized
+
+- [#5511](https://github.com/xyflow/xyflow/pull/5511) [`d891e5ff1`](https://github.com/xyflow/xyflow/commit/d891e5ff106c6202f69a9b14d261294cc29bbec7) Thanks [@peterkogo](https://github.com/peterkogo)! - Fix regression: elevate edges if connected nodes are selected
+
+- [#5497](https://github.com/xyflow/xyflow/pull/5497) [`eba087e8b`](https://github.com/xyflow/xyflow/commit/eba087e8bec74e6591e04ebf0e1e61799b94ecd8) Thanks [@peterkogo](https://github.com/peterkogo)! - Skip eagerly rendering nodes when node dimensions and handles are predefined
+
+- [#5455](https://github.com/xyflow/xyflow/pull/5455) [`d2df1dced`](https://github.com/xyflow/xyflow/commit/d2df1dced7a7de4ed69b003c0069c7d7141bef05) Thanks [@Sec-ant](https://github.com/Sec-ant)! - Fix warning when display is set to none on the wrapper div
+
+- Updated dependencies [[`f869808e3`](https://github.com/xyflow/xyflow/commit/f869808e3dfd3d289db034d21d505d62f84cdde3), [`2a35c65a0`](https://github.com/xyflow/xyflow/commit/2a35c65a02c6c8aec6b005ac3e72988f996669c4), [`b6ae4cc11`](https://github.com/xyflow/xyflow/commit/b6ae4cc11f1456f843ace7e7f3de41c9196179e0), [`d891e5ff1`](https://github.com/xyflow/xyflow/commit/d891e5ff106c6202f69a9b14d261294cc29bbec7), [`eba087e8b`](https://github.com/xyflow/xyflow/commit/eba087e8bec74e6591e04ebf0e1e61799b94ecd8)]:
+  - @xyflow/system@0.0.69
+
+## 12.8.4
+
+### Patch Changes
+
+- [#5472](https://github.com/xyflow/xyflow/pull/5472) [`372c493a`](https://github.com/xyflow/xyflow/commit/372c493a2f2008fd9eca7b00cece642d4335ed60) Thanks [@moklick](https://github.com/moklick)! - Remove dangerouslySetInnerHTML from domAttributes
+
+- [#5459](https://github.com/xyflow/xyflow/pull/5459) [`2e7c89c6`](https://github.com/xyflow/xyflow/commit/2e7c89c6c3379030391b842263b06ef36f7e8945) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Fix open arrow marker using fill color from edge instead of none
+
+- Updated dependencies [[`5ece6b36`](https://github.com/xyflow/xyflow/commit/5ece6b36da44d0dbbf6daf132eb9280e3c294bd2), [`53da1193`](https://github.com/xyflow/xyflow/commit/53da119313f2ad9f1f6512a5ed1f6048bb4b0bec)]:
+  - @xyflow/system@0.0.68
+
+## 12.8.3
+
+### Patch Changes
+
+- [#5420](https://github.com/xyflow/xyflow/pull/5420) [`c453ee3f`](https://github.com/xyflow/xyflow/commit/c453ee3f74512bf92f33a7afa3f7104aa82172f6) Thanks [@ShlomoGalle](https://github.com/ShlomoGalle)! - Omit `defaultValue` from `Node`'s `domAttributes` to fix type incompatibility when using `WritableDraft`
+
+- [#5436](https://github.com/xyflow/xyflow/pull/5436) [`def02b96`](https://github.com/xyflow/xyflow/commit/def02b960931c2d05a3419768e20d86f4c1bb0f9) Thanks [@moklick](https://github.com/moklick)! - Prevent a 0 added to the markup for edges when interactionWidth is 0
+
+- [#5444](https://github.com/xyflow/xyflow/pull/5444) [`9aca4839`](https://github.com/xyflow/xyflow/commit/9aca483928d0e24bb598c344806ca1fca840794b) Thanks [@paula-stacho](https://github.com/paula-stacho)! - Export MiniMapNode
+
+- [#5443](https://github.com/xyflow/xyflow/pull/5443) [`144f8feb`](https://github.com/xyflow/xyflow/commit/144f8feb0f4a74b63e44eb9edf5beed4dd8a9230) Thanks [@moklick](https://github.com/moklick)! - Use 1 as the default for interactive Minimap zoom step
+
+- [#5428](https://github.com/xyflow/xyflow/pull/5428) [`f18e9856`](https://github.com/xyflow/xyflow/commit/f18e98569b1cc38b6ec2b7d7a3d1fd8b56a5d42f) Thanks [@Karl255](https://github.com/Karl255)! - Fix clicking on detached handle elements not initiating drawing of connections
+
+- [#5453](https://github.com/xyflow/xyflow/pull/5453) [`7a088817`](https://github.com/xyflow/xyflow/commit/7a088817f71acb71c49e5bf4ac90352dab95f7b8) Thanks [@moklick](https://github.com/moklick)! - Snap selection instead of separate nodes when snap grid is enabled
+
+- [#5415](https://github.com/xyflow/xyflow/pull/5415) [`6838df9d`](https://github.com/xyflow/xyflow/commit/6838df9d67a1f093464e911e949f1360a005832d) Thanks [@moklick](https://github.com/moklick)! - Allow strings and enums for existing marker types
+
+- [#5444](https://github.com/xyflow/xyflow/pull/5444) [`9192fd7d`](https://github.com/xyflow/xyflow/commit/9192fd7d2c8a86c8720d1191bc488f01681dcef2) Thanks [@paula-stacho](https://github.com/paula-stacho)! - Export MiniMapNode
+
+- [#5448](https://github.com/xyflow/xyflow/pull/5448) [`f5fe1d71`](https://github.com/xyflow/xyflow/commit/f5fe1d71e04ded54a96250fa9c0ba7f8ce87fa66) Thanks [@moklick](https://github.com/moklick)! - Use correct HandleConnection type for Handle onConnect
+
+- [#5419](https://github.com/xyflow/xyflow/pull/5419) [`daa33fb3`](https://github.com/xyflow/xyflow/commit/daa33fb3bd40427e8f26117da4dbcd2de726cfde) Thanks [@0x0f0f0f](https://github.com/0x0f0f0f)! - Make arrow heads markers fallback to --xy-edge-stroke CSS variable when passing null as marker color
+
+- Updated dependencies [[`144f8feb`](https://github.com/xyflow/xyflow/commit/144f8feb0f4a74b63e44eb9edf5beed4dd8a9230), [`f18e9856`](https://github.com/xyflow/xyflow/commit/f18e98569b1cc38b6ec2b7d7a3d1fd8b56a5d42f), [`7a088817`](https://github.com/xyflow/xyflow/commit/7a088817f71acb71c49e5bf4ac90352dab95f7b8), [`6838df9d`](https://github.com/xyflow/xyflow/commit/6838df9d67a1f093464e911e949f1360a005832d), [`fddbb7de`](https://github.com/xyflow/xyflow/commit/fddbb7de47b180767a0d6286ec58b5598c0cf6df), [`f5fe1d71`](https://github.com/xyflow/xyflow/commit/f5fe1d71e04ded54a96250fa9c0ba7f8ce87fa66), [`daa33fb3`](https://github.com/xyflow/xyflow/commit/daa33fb3bd40427e8f26117da4dbcd2de726cfde)]:
+  - @xyflow/system@0.0.67
+
+## 12.8.2
+
+### Patch Changes
+
+- [#5384](https://github.com/xyflow/xyflow/pull/5384) [`18514e11`](https://github.com/xyflow/xyflow/commit/18514e118fc9a43e2bc80e55639db8beb1d9707a) Thanks [@Sec-ant](https://github.com/Sec-ant)! - Fix node fallback to respect custom default node type when unknown node type is encountered
+
+- [#5394](https://github.com/xyflow/xyflow/pull/5394) [`21db22d4`](https://github.com/xyflow/xyflow/commit/21db22d46a253dc4fd17d65dab201aca53a4a6f4) Thanks [@moklick](https://github.com/moklick)! - Return intersections correctly of passed node is bigger than intersecting nodes
+
+- [#5384](https://github.com/xyflow/xyflow/pull/5384) [`ab05d008`](https://github.com/xyflow/xyflow/commit/ab05d008d949c98124578e99e6a6e4c86a16f629) Thanks [@Sec-ant](https://github.com/Sec-ant)! - Fix edge fallback to respect custom default edge type when unknown edge type is encountered.
+
+- [#5376](https://github.com/xyflow/xyflow/pull/5376) [`f0ce2c87`](https://github.com/xyflow/xyflow/commit/f0ce2c876d8688e13632bc86286cf857f86dead6) Thanks [@kennyjwilli](https://github.com/kennyjwilli)! - Add stepPosition param to step edge
+
+- Updated dependencies [[`864d4188`](https://github.com/xyflow/xyflow/commit/864d4188089b3e7f45b18f8a63e02758ee183f7f), [`f0ce2c87`](https://github.com/xyflow/xyflow/commit/f0ce2c876d8688e13632bc86286cf857f86dead6)]:
+  - @xyflow/system@0.0.66
+
+## 12.8.1
+
+### Patch Changes
+
+- Updated dependencies [[`26f2cdd7`](https://github.com/xyflow/xyflow/commit/26f2cdd720fc2c8fb337d3af13b82dab6a90fb60)]:
+  - @xyflow/system@0.0.65
+
+## 12.8.0
+
+### Minor Changes
+
+- [#5361](https://github.com/xyflow/xyflow/pull/5361) [`90e9247a`](https://github.com/xyflow/xyflow/commit/90e9247adbdfa9d06db97e1d0d895e35c960551c) Thanks [@peterkogo](https://github.com/peterkogo)! - Render edges above nodes when they are within a subflow
+
+- [#5344](https://github.com/xyflow/xyflow/pull/5344) [`2441bf8d`](https://github.com/xyflow/xyflow/commit/2441bf8d97a6b72494f216915d52d5acbeefefde) Thanks [@moklick](https://github.com/moklick)! - Add connectionDragThreshold prop
+
+### Patch Changes
+
+- [#5368](https://github.com/xyflow/xyflow/pull/5368) [`445017ed`](https://github.com/xyflow/xyflow/commit/445017ed6fdedee4b39a0eaeb1cbbe0155f9a037) Thanks [@moklick](https://github.com/moklick)! - Cleanup store updater
+
+- [#5362](https://github.com/xyflow/xyflow/pull/5362) [`72dc1d60`](https://github.com/xyflow/xyflow/commit/72dc1d602110947e3db83c37b9a9125ee85cf4bc) Thanks [@moklick](https://github.com/moklick)! - Remove pointer events from Panel via CSS while a selection gets dragged
+
+- Updated dependencies [[`72dc1d60`](https://github.com/xyflow/xyflow/commit/72dc1d602110947e3db83c37b9a9125ee85cf4bc), [`90e9247a`](https://github.com/xyflow/xyflow/commit/90e9247adbdfa9d06db97e1d0d895e35c960551c), [`2441bf8d`](https://github.com/xyflow/xyflow/commit/2441bf8d97a6b72494f216915d52d5acbeefefde)]:
+  - @xyflow/system@0.0.64
+
+## 12.7.1
+
+### Patch Changes
+
+- [#5354](https://github.com/xyflow/xyflow/pull/5354) [`c4312d89`](https://github.com/xyflow/xyflow/commit/c4312d8997ecdc7ef12cfa4efc1fde7131a2b950) Thanks [@moklick](https://github.com/moklick)! - Add TSDoc annotations
+
+- [#5333](https://github.com/xyflow/xyflow/pull/5333) [`3d7e8b6b`](https://github.com/xyflow/xyflow/commit/3d7e8b6bb10001ee84d79ca4f6a9fd0053c4a276) Thanks [@peterkogo](https://github.com/peterkogo)! - Add missing type exports
+
+- [#5353](https://github.com/xyflow/xyflow/pull/5353) [`4dd3ae66`](https://github.com/xyflow/xyflow/commit/4dd3ae6684fa3c62ee8cabd64e7631a52173c8f4) Thanks [@aidanbarrett](https://github.com/aidanbarrett)! - Add missing `FinalConnectionState` parameter to `onReconnectEnd` prop types
+
+- Updated dependencies [[`c4312d89`](https://github.com/xyflow/xyflow/commit/c4312d8997ecdc7ef12cfa4efc1fde7131a2b950), [`3d7e8b6b`](https://github.com/xyflow/xyflow/commit/3d7e8b6bb10001ee84d79ca4f6a9fd0053c4a276), [`9c61000c`](https://github.com/xyflow/xyflow/commit/9c61000cac6277ce97274cc626fa7266f82dec27)]:
+  - @xyflow/system@0.0.63
+
 ## 12.7.0
 
 ### Minor Changes
@@ -545,7 +769,7 @@ There is more! Besides the new main features, we added some minor things that we
 
 ## 12.0.0-next.22
 
-- ⚠️ rename `updateEdge` to `reconnectEdge` and realted APIs [#4373](https://github.com/xyflow/xyflow/pull/4373)
+- ⚠️ rename `updateEdge` to `reconnectEdge` and related APIs [#4373](https://github.com/xyflow/xyflow/pull/4373)
 - revise selection usability (capture while dragging out of the flow)
 - use correct end handle position when drawing a connection lines
 - determine correct end positions for connection lines
@@ -814,7 +1038,7 @@ There is more! Besides the new main features, we added some minor things that we
 
 - **`useConnection` hook:** This hook makes it possible to handle an ongoing connection. For example, you can use it for colorizing handles.
 - **`onDelete` handler**: We added a combined handler for `onDeleteNodes` and `onDeleteEdges` to make it easier to react to deletions.
-- **`isValidConnection` prop:** This makes it possible to implement one validation function for all connections. It also gets called for programatically added edges.
+- **`isValidConnection` prop:** This makes it possible to implement one validation function for all connections. It also gets called for programmatically added edges.
 - **Controlled `viewport`:** This is definitely an advanced feature. Possible use cases are to animate the viewport or round the transform for lower res screens for example. This features brings two new props: `viewport` and `onViewportChange`.
 - **`ViewportPortal` component:** This makes it possible to render elements in the viewport without the need to implement a custom node.
 - **Background component**: add `patternClassName` to be able to style the background pattern by using a class name. This is useful if you want to style the background pattern with Tailwind for example.

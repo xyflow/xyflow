@@ -8,7 +8,7 @@
     height = 12.5,
     markerUnits = 'strokeWidth',
     orient = 'auto-start-reverse',
-    color,
+    color = 'none',
     strokeWidth
   }: MarkerProps = $props();
 </script>
@@ -26,20 +26,22 @@
 >
   {#if type === MarkerType.Arrow}
     <polyline
-      stroke={color}
+      class="arrow"
+      style:stroke={color}
+      fill="none"
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width={strokeWidth}
-      fill="none"
       points="-5,-4 0,0 -5,4"
     />
   {:else if type === MarkerType.ArrowClosed}
     <polyline
-      stroke={color}
+      class="arrowclosed"
+      style:stroke={color}
+      style:fill={color}
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width={strokeWidth}
-      fill={color}
       points="-5,-4 0,0 -5,4 -5,-4"
     />
   {/if}

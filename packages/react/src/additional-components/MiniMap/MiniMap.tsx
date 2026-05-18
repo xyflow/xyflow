@@ -65,7 +65,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
   zoomable = false,
   ariaLabel,
   inversePan,
-  zoomStep = 10,
+  zoomStep = 1,
   offsetScale = 5,
 }: MiniMapProps<NodeType>) {
   const store = useStoreApi<NodeType>();
@@ -202,7 +202,7 @@ MiniMapComponent.displayName = 'MiniMap';
  *
  *export default function Flow() {
  *  return (
- *    <ReactFlow nodes={[...]]} edges={[...]]}>
+ *    <ReactFlow nodes={[...]} edges={[...]}>
  *      <MiniMap nodeStrokeWidth={3} />
  *    </ReactFlow>
  *  );

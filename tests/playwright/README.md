@@ -1,5 +1,5 @@
 # End-to-End with Playwright
-Here you can find our framework independant E2E tests written with [playwright](https://playwright.dev/).
+Here you can find our framework independent E2E tests written with [playwright](https://playwright.dev/).
 
 ## Installation
 ```bash

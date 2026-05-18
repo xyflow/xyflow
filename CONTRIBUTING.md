@@ -1,14 +1,15 @@
-# Contributing to React Flow
+# Contributing to React Flow and Svelte Flow
 
 Hello there! So glad you want to help out with React Flow and Svelte Flow 🤗 You’re the best. Here’s a guide for how you can contribute to the project.
 
-# The new xyflow organization
+# The xyflow organization
 
-Just recently we renamed our organization and repository of React Flow to "xyflow". Now you can not only find the source code of React Flow but also of Svelte Flow in this repository. We are in a state of transition. This is the current structure:
+This is the current structure:
 
-* React Flow `reactflow` version v11 is on branch v11
+* React Flow `@xyflow/react` can be found under [packages/react](./packages/react)
 * Svelte Flow `@xyflow/svelte` can be found under [packages/svelte](./packages/svelte)
-* React Flow v12 (not published yet) can be found under [packages/react](./packages/react)
+* `@xyflow/system` can be found under [packages/system](./packages/system)
+* The legacy React Flow package `reactflow` (v11) is on branch "v11"
 
 # Our Contributing Philosophy
 
@@ -38,7 +39,7 @@ Talking to us first about the enhancement you want to build will be the most lik
 
 ### Contact us
 
-To ask about a possible enhancement, email us at info@reactflow.dev
+To ask about a possible enhancement, email us at info@xyflow.com
 
 
 ## 💫 Pull Requests

@@ -52,22 +52,23 @@ export function useDrag({
   }, []);
 
   useEffect(() => {
-    if (disabled) {
-      xyDrag.current?.destroy();
-    } else if (nodeRef.current) {
-      xyDrag.current?.update({
-        noDragClassName,
-        handleSelector,
-        domNode: nodeRef.current,
-        isSelectable,
-        nodeId,
-        nodeClickDistance,
-      });
-      return () => {
-        xyDrag.current?.destroy();
-      };
+    if (disabled || !nodeRef.current || !xyDrag.current) {
+      return;
     }
-  }, [noDragClassName, handleSelector, disabled, isSelectable, nodeRef, nodeId]);
+
+    xyDrag.current.update({
+      noDragClassName,
+      handleSelector,
+      domNode: nodeRef.current,
+      isSelectable,
+      nodeId,
+      nodeClickDistance,
+    });
+
+    return () => {
+      xyDrag.current?.destroy();
+    };
+  }, [noDragClassName, handleSelector, disabled, isSelectable, nodeRef, nodeId, nodeClickDistance]);
 
   return dragging;
 }

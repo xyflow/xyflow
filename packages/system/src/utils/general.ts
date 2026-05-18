@@ -335,8 +335,8 @@ export const getViewportForBounds = (
 
 export const isMacOs = () => typeof navigator !== 'undefined' && navigator?.userAgent?.indexOf('Mac') >= 0;
 
-export function isCoordinateExtent(extent?: CoordinateExtent | 'parent'): extent is CoordinateExtent {
-  return extent !== undefined && extent !== 'parent';
+export function isCoordinateExtent(extent?: CoordinateExtent | 'parent' | null): extent is CoordinateExtent {
+  return extent !== undefined && extent !== null && extent !== 'parent';
 }
 
 export function getNodeDimensions(node: {
@@ -360,7 +360,7 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
 }
 
 /**
- * Convert child position to aboslute position
+ * Convert child position to absolute position
  *
  * @internal
  * @param position

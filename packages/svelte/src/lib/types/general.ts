@@ -21,8 +21,16 @@ export type ConnectionData = {
   connectionStatus: string | null;
 };
 
+/**
+ * @inline
+ */
 export type FitViewOptions<NodeType extends Node = Node> = FitViewOptionsBase<NodeType>;
 
+/**
+ * This type can be used to type the `onDelete` function with a custom node and edge type.
+ *
+ * @public
+ */
 export type OnDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (params: {
   nodes: NodeType[];
   edges: EdgeType[];
@@ -30,16 +38,20 @@ export type OnDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge>
 
 export type OnBeforeConnect<EdgeType extends Edge = Edge> = (
   connection: Connection
-) => EdgeType | Connection | void;
+) => EdgeType | Connection | void | false | null;
 export type OnBeforeReconnect<EdgeType extends Edge = Edge> = (
   newEdge: EdgeType,
   oldEdge: EdgeType
-) => EdgeType | void;
+) => EdgeType | void | false | null;
 export type OnBeforeDelete<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
 > = OnBeforeDeleteBase<NodeType, EdgeType>;
 
+/**
+ *  This type can be used to type the `isValidConnection` function.
+ *  If the function returns `true`, the connection is valid and can be created.
+ */
 export type IsValidConnection<EdgeType extends Edge = Edge> = (
   edge: EdgeType | Connection
 ) => boolean;

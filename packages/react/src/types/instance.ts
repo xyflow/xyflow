@@ -105,7 +105,7 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
    * parameter can be set to `true` to include nodes that are only partially intersecting.
    *
    * @param node - the node or rect to check for intersections
-   * @param partially - if true, the node is considered to be intersecting if it partially overlaps with the passed node or rect
+   * @param partially - true by default, if set to false, only nodes that are fully intersecting will be returned
    * @param nodes - optional nodes array to check for intersections
    *
    * @returns an array of intersecting nodes
@@ -228,16 +228,16 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     nodeId: string;
     handleId?: string | null;
   }) => NodeConnection[];
-  // /**
-  //  * Fits the view.
-  //  *
-  //  * @param options.padding - optional padding
-  //  * @param options.includeHiddenNodes - optional includeHiddenNodes
-  //  * @param options.minZoom - optional minZoom
-  //  * @param options.maxZoom - optional maxZoom
-  //  * @param options.duration - optional duration. If set, a transition will be applied
-  //  * @param options.nodes - optional nodes to fit the view to
-  //  */
+  /**
+   * Fits the view based on the passed params. By default it fits the view to all nodes.
+   *
+   * @param options.padding - optional padding
+   * @param options.nodes - optional nodes to fit the view to
+   * @param options.minZoom - optional minZoom
+   * @param options.maxZoom - optional maxZoom
+   * @param options.duration - optional duration. If set, a transition will be applied
+   * @param options.includeHiddenNodes - optional includeHiddenNodes
+   */
   fitView: FitView<NodeType>;
 };
 /**
@@ -252,10 +252,10 @@ export type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edg
   NodeType,
   EdgeType
 > &
-   ViewportHelperFunctions & {
-  /**
-   * React Flow needs to mount the viewport to the DOM and initialize its zoom and pan behavior.
-   * This property tells you when viewport is initialized.
-   */
+  ViewportHelperFunctions & {
+    /**
+     * React Flow needs to mount the viewport to the DOM and initialize its zoom and pan behavior.
+     * This property tells you when viewport is initialized.
+     */
     viewportInitialized: boolean;
   };

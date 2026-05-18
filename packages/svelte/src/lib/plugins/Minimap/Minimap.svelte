@@ -6,12 +6,7 @@
 </script>
 
 <script lang="ts">
-  import {
-    getBoundsOfRects,
-    getInternalNodesBounds,
-    getNodeDimensions,
-    nodeHasDimensions
-  } from '@xyflow/system';
+  import { getBoundsOfRects, getInternalNodesBounds, nodeHasDimensions } from '@xyflow/system';
 
   import { useStore } from '$lib/store';
   import { Panel } from '$lib/container/Panel';
@@ -27,6 +22,7 @@
     nodeClass = '',
     nodeBorderRadius = 5,
     nodeStrokeWidth = 2,
+    nodeComponent,
     bgColor,
     maskColor,
     maskStrokeColor,
@@ -44,9 +40,6 @@
   let store = $derived(useStore());
   let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
-  const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
-  const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
-  const nodeClassFunc = getAttrFunction(nodeClass);
   const shapeRendering =
     // @ts-expect-error - TS doesn't know about chrome
     typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
@@ -59,14 +52,11 @@
     width: store.width / store.viewport.zoom,
     height: store.height / store.viewport.zoom
   });
+
   let boundingRect = $derived(
-    store.nodeLookup.size > 0
-      ? getBoundsOfRects(
-          getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }),
-          viewBB
-        )
-      : viewBB
+    getBoundsOfRects(getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }), viewBB)
   );
+
   let scaledWidth = $derived(boundingRect.width / width);
   let scaledHeight = $derived(boundingRect.height / height);
   let viewScale = $derived(Math.max(scaledWidth, scaledHeight));
@@ -120,19 +110,17 @@
 
       {#each store.nodes as userNode (userNode.id)}
         {@const node = store.nodeLookup.get(userNode.id)}
-        {#if node && nodeHasDimensions(node)}
-          {@const nodeDimesions = getNodeDimensions(node)}
+        {#if node && nodeHasDimensions(node) && !node.hidden}
           <MinimapNode
-            x={node.internals.positionAbsolute.x}
-            y={node.internals.positionAbsolute.y}
-            {...nodeDimesions}
+            id={node.id}
             selected={node.selected}
-            color={nodeColorFunc?.(node)}
+            {nodeComponent}
+            color={nodeColor === undefined ? undefined : getAttrFunction(nodeColor)(userNode)}
             borderRadius={nodeBorderRadius}
-            strokeColor={nodeStrokeColorFunc(node)}
+            strokeColor={getAttrFunction(nodeStrokeColor)(userNode)}
             strokeWidth={nodeStrokeWidth}
             {shapeRendering}
-            class={nodeClassFunc(node)}
+            class={getAttrFunction(nodeClass)(userNode)}
           />
         {/if}
       {/each}

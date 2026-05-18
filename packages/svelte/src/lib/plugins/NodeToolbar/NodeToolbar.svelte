@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
   import { Position, getNodeToolbarTransform } from '@xyflow/system';
 
-  import { hideOnSSR, portal } from '$lib/actions/portal';
   import { useStore } from '$lib/store';
+  import { getNodeIdContext } from '$lib/store/context';
+  import { hideOnSSR, portal } from '$lib/actions/portal';
   import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
 
   import type { InternalNode } from '$lib/types';
@@ -22,7 +22,7 @@
   const store = useStore();
 
   const { getNodesBounds } = useSvelteFlow();
-  const contextNodeId = getContext<string>('svelteflow__node_id');
+  const contextNodeId = getNodeIdContext();
 
   let toolbarNodes: InternalNode[] = $derived.by(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -30,6 +30,9 @@
     const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId ?? contextNodeId];
 
     return nodeIds.reduce<InternalNode[]>((res, nodeId) => {
+      if (!nodeId) {
+        throw new Error('Either pass a nodeId or use within a Custom Node component');
+      }
       const node = store.nodeLookup.get(nodeId);
 
       if (node) {

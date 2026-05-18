@@ -21,7 +21,8 @@ import type {
   OnReconnect,
   OnReconnectStart,
   OnReconnectEnd,
-  AriaLabelConfig
+  AriaLabelConfig,
+  ZIndexMode
 } from '@xyflow/system';
 
 import type {
@@ -170,6 +171,12 @@ export type SvelteFlowProps<
      * @default 0
      */
     nodeClickDistance?: number;
+    /**
+     * The threshold in pixels that the mouse must move before a connection line starts to drag.
+     * This is useful to prevent accidental connections when clicking on a handle.
+     * @default 1
+     */
+    connectionDragThreshold?: number;
     /** Minimum zoom level
      * @default 0.5
      */
@@ -202,7 +209,7 @@ export type SvelteFlowProps<
      * @default 'strict'
      */
     connectionMode?: ConnectionMode;
-    /** Provide a custom snippet to be used insted of the default connection line */
+    /** Provide a custom snippet to be used instead of the default connection line */
     connectionLineComponent?: Component;
     /** Styles to be applied to the connection line */
     connectionLineStyle?: string;
@@ -224,14 +231,20 @@ export type SvelteFlowProps<
      */
     snapGrid?: SnapGrid;
     /** Color of edge markers
+     * You can pass `null` to use the CSS variable `--xy-edge-stroke` for the marker color.
      * @example "#b1b1b7"
      */
-    defaultMarkerColor?: string;
+    defaultMarkerColor?: string | null;
     /**
      * Controls if all nodes should be draggable
      * @default true
      */
     nodesDraggable?: boolean;
+    /**
+     * The speed at which the viewport pans while dragging a node or a selection box.
+     * @default 15
+     */
+    autoPanSpeed?: number;
     /**
      * When `true`, the viewport will pan when a node is focused.
      * @default true
@@ -299,6 +312,12 @@ export type SvelteFlowProps<
      */
     panOnScroll?: boolean;
     /**
+     * Controls how fast viewport should be panned on scroll.
+     * Use together with `panOnScroll` prop.
+     * @default 0.5
+     */
+    panOnScrollSpeed?: number;
+    /**
      * This prop is used to limit the direction of panning when panOnScroll is enabled.
      * The "free" option allows panning in any direction.
      * @default "free"
@@ -306,7 +325,7 @@ export type SvelteFlowProps<
      */
     panOnScrollMode?: PanOnScrollMode;
     /**
-     * Enableing this prop allows users to pan the viewport by clicking and dragging.
+     * Enabling this prop allows users to pan the viewport by clicking and dragging.
      * You can also set this prop to an array of numbers to limit which mouse buttons can activate panning.
      * @default true
      * @example [0, 2] // allows panning with the left and right mouse buttons
@@ -334,6 +353,12 @@ export type SvelteFlowProps<
      * @default true
      */
     autoPanOnNodeDrag?: boolean;
+    /**
+     * When `true`, the viewport will pan automatically when the cursor moves to the edge of the
+     * viewport while creating a selection box.
+     * @default true
+     */
+    autoPanOnSelection?: boolean;
     /**
      * Defaults to be applied to all new edges that are added to the flow.
      * Properties on a new edge will override these defaults if they exist.
@@ -387,7 +412,7 @@ export type SvelteFlowProps<
     noDragClass?: string;
     /**
      * Typically, scrolling the mouse wheel when the mouse is over the canvas will zoom the viewport.
-     * Adding the `"nowheel"` class to an element n the canvas will prevent this behavior and this prop
+     * Adding the `"nowheel"` class to an element in the canvas will prevent this behavior and this prop
      * allows you to change the name of that class.
      * @default "nowheel"
      */
@@ -428,7 +453,7 @@ export type SvelteFlowProps<
     /** This event handler is called when the user stops panning or zooming the viewport */
     onmoveend?: OnMoveEnd;
     /**
-     * Ocassionally something may happen that causes Svelte Flow to throw an error.
+     * Occasionally something may happen that causes Svelte Flow to throw an error.
      * Instead of exploding your application, we log a message to the console and then call this event handler.
      * You might use it for additional logging or to show a message to the user.
      */
@@ -482,4 +507,11 @@ export type SvelteFlowProps<
      * Allows localization, customization of ARIA descriptions, control labels, minimap labels, and other UI strings.
      */
     ariaLabelConfig?: Partial<AriaLabelConfig>;
+    /**
+     * Used to define how z-indexing is calculated for nodes and edges.
+     * 'auto' is for selections and sub flows, 'basic' for selections only, and 'manual' for no auto z-indexing.
+     *
+     * @default 'basic'
+     */
+    zIndexMode?: ZIndexMode;
   };

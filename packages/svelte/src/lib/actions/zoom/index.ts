@@ -35,8 +35,10 @@ type ZoomParams = {
   userSelectionActive: boolean;
   lib: string;
   paneClickDistance: number;
+  selectionOnDrag?: boolean;
   onTransformChange: (transform: Transform) => void;
   onDraggingChange: (dragging: boolean) => void;
+  connectionInProgress: boolean;
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {
@@ -44,8 +46,10 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     minZoom,
     maxZoom,
     initialViewport,
+    onPanZoomStart,
+    onPanZoom,
+    onPanZoomEnd,
     translateExtent,
-    paneClickDistance,
     setPanZoomInstance,
     onDraggingChange,
     onTransformChange
@@ -57,7 +61,9 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     maxZoom,
     translateExtent,
     viewport: initialViewport,
-    paneClickDistance,
+    onPanZoom,
+    onPanZoomStart,
+    onPanZoomEnd,
     onDraggingChange
   });
 

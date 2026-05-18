@@ -64,6 +64,7 @@
     fitViewOptions,
     nodeOrigin,
     nodeDragThreshold,
+    connectionDragThreshold,
     minZoom,
     maxZoom,
     initialViewport,
@@ -79,7 +80,6 @@
     autoPanOnConnect,
     autoPanOnNodeDrag,
     colorModeSSR,
-    style,
     defaultEdgeOptions,
     elevateNodesOnSelect,
     elevateEdgesOnSelect,
@@ -94,6 +94,10 @@
     noPanClass,
     noWheelClass,
     ariaLabelConfig,
+    autoPanSpeed,
+    panOnScrollSpeed,
+    zIndexMode,
+    autoPanOnSelection,
     ...divAttributes
   } = $derived(rest);
   /* eslint-enable @typescript-eslint/no-unused-vars */

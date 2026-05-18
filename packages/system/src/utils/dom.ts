@@ -43,7 +43,6 @@ export function isInputDOMNode(event: KeyboardEvent): boolean {
   if (target?.nodeType !== 1 /* Node.ELEMENT_NODE */) return false;
 
   const isInput = inputTags.includes(target.nodeName) || target.hasAttribute('contenteditable');
-
   // when an input field is focused we don't want to trigger deletion or movement of nodes
   return isInput || !!target.closest('.nokey');
 }

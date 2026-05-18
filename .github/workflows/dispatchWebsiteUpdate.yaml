@@ -3,7 +3,7 @@ run-name: Dispatch Website Update for ${{ github.event.release.tag_name }}
 
 on:
   release:
-    types: [published]
+    types: [published, edited]
 
 jobs:
   dispatch_website_update:
@@ -21,7 +21,7 @@ jobs:
             echo EOF
           } >> "$GITHUB_ENV"
       - name: Dispatch Website Update
-        uses: peter-evans/repository-dispatch@v3
+        uses: peter-evans/repository-dispatch@v4
         with:
           repository: xyflow/web
           token: ${{ secrets.PAT }}

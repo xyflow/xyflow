@@ -2,6 +2,8 @@
 	import { Handle, NodeResizer, Position, type NodeProps } from '@xyflow/svelte';
 	import type { ResizeNode } from './types';
 
+	import { store } from './store.svelte';
+
 	let { data, selected }: NodeProps<ResizeNode> = $props();
 </script>
 
@@ -15,7 +17,7 @@
 	onResizeStart={data.onResizeStart ?? undefined}
 	onResize={data.onResize ?? undefined}
 	onResizeEnd={data.onResizeEnd ?? undefined}
-	keepAspectRatio={data.keepAspectRatio ?? undefined}
+	keepAspectRatio={store.keepAspectRatio || (data.keepAspectRatio ?? undefined)}
 />
 <Handle type="target" position={Position.Left} />
 <div>{data.label}</div>

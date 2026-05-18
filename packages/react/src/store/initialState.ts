@@ -11,6 +11,7 @@ import {
   initialConnection,
   CoordinateExtent,
   defaultAriaLabelConfig,
+  ZIndexMode,
 } from '@xyflow/system';
 
 import type { Edge, FitViewOptions, InternalNode, Node, ReactFlowStore } from '../types';
@@ -28,6 +29,7 @@ const getInitialState = ({
   maxZoom = 2,
   nodeOrigin,
   nodeExtent,
+  zIndexMode = 'basic',
 }: {
   nodes?: Node[];
   edges?: Edge[];
@@ -41,6 +43,7 @@ const getInitialState = ({
   maxZoom?: number;
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
+  zIndexMode?: ZIndexMode;
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map<string, InternalNode>();
   const parentLookup = new Map();
@@ -53,10 +56,10 @@ const getInitialState = ({
   const storeNodeExtent = nodeExtent ?? infiniteExtent;
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
-  const nodesInitialized = adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
+  const { nodesInitialized } = adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
     nodeOrigin: storeNodeOrigin,
     nodeExtent: storeNodeExtent,
-    elevateNodesOnSelect: false,
+    zIndexMode,
   });
 
   let transform: Transform = [0, 0, 1];
@@ -79,8 +82,8 @@ const getInitialState = ({
 
   return {
     rfId: '1',
-    width: 0,
-    height: 0,
+    width: width ?? 0,
+    height: height ?? 0,
     transform,
     nodes: storeNodes,
     nodesInitialized,
@@ -107,6 +110,7 @@ const getInitialState = ({
     noPanClassName: 'nopan',
     nodeOrigin: storeNodeOrigin,
     nodeDragThreshold: 1,
+    connectionDragThreshold: 1,
 
     snapGrid: [15, 15],
     snapToGrid: false,
@@ -118,7 +122,7 @@ const getInitialState = ({
     edgesReconnectable: true,
     elementsSelectable: true,
     elevateNodesOnSelect: true,
-    elevateEdgesOnSelect: false,
+    elevateEdgesOnSelect: true,
     selectNodesOnDrag: true,
 
     multiSelectionActive: false,
@@ -145,6 +149,10 @@ const getInitialState = ({
     lib: 'react',
     debug: false,
     ariaLabelConfig: defaultAriaLabelConfig,
+    zIndexMode,
+
+    onNodesChangeMiddlewareMap: new Map(),
+    onEdgesChangeMiddlewareMap: new Map(),
   };
 };
 

@@ -9,7 +9,6 @@ export type PanZoomParams = {
   domNode: Element;
   minZoom: number;
   maxZoom: number;
-  paneClickDistance: number;
   viewport: Viewport;
   translateExtent: CoordinateExtent;
   onDraggingChange: OnDraggingChange;
@@ -42,6 +41,9 @@ export type PanZoomUpdateOptions = {
   zoomActivationKeyPressed: boolean;
   lib: string;
   onTransformChange: OnTransformChange;
+  connectionInProgress: boolean;
+  paneClickDistance: number;
+  selectionOnDrag?: boolean;
 };
 
 export type PanZoomInstance = {

@@ -239,6 +239,16 @@ const StressFlow = () => {
         <button onClick={remount}>re-mount</button>
         <button onClick={updatePos}>change pos</button>
         <button onClick={updateElements}>update elements</button>
+        <button
+          onClick={() => {
+            setNodes((nds) => [
+              ...nds,
+              { id: (nds.length + 1).toString(), position: { x: 0, y: 0 }, data: { label: `Node ${nds.length + 1}` } },
+            ]);
+          }}
+        >
+          Add element
+        </button>
       </Panel>
     </ReactFlow>
   );

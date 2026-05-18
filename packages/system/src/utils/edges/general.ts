@@ -1,4 +1,4 @@
-import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase } from '../..';
+import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase, ZIndexMode } from '../..';
 import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
@@ -28,23 +28,33 @@ export type GetEdgeZIndexParams = {
   selected?: boolean;
   zIndex?: number;
   elevateOnSelect?: boolean;
+  zIndexMode?: ZIndexMode;
 };
 
+/**
+ * Returns the z-index for an edge based on the node it connects and whether it is selected.
+ * By default, edges are rendered below nodes. This behaviour is different for edges that are
+ * connected to nodes with a parent, as they are rendered above the parent node.
+ */
 export function getElevatedEdgeZIndex({
   sourceNode,
   targetNode,
   selected = false,
   zIndex = 0,
   elevateOnSelect = false,
+  zIndexMode = 'basic',
 }: GetEdgeZIndexParams): number {
-  if (!elevateOnSelect) {
+  if (zIndexMode === 'manual') {
     return zIndex;
   }
 
-  const edgeOrConnectedNodeSelected = selected || targetNode.selected || sourceNode.selected;
-  const selectedZIndex = Math.max(sourceNode.internals.z || 0, targetNode.internals.z || 0, 1000);
+  const edgeZ = elevateOnSelect && selected ? zIndex + 1000 : zIndex;
+  const nodeZ = Math.max(
+    sourceNode.parentId || (elevateOnSelect && sourceNode.selected) ? sourceNode.internals.z : 0,
+    targetNode.parentId || (elevateOnSelect && targetNode.selected) ? targetNode.internals.z : 0
+  );
 
-  return zIndex + (edgeOrConnectedNodeSelected ? selectedZIndex : 0);
+  return edgeZ + nodeZ;
 }
 
 type IsEdgeVisibleParams = {
@@ -76,7 +86,19 @@ export function isEdgeVisible({ sourceNode, targetNode, width, height, transform
   return getOverlappingArea(viewRect, boxToRect(edgeBox)) > 0;
 }
 
-const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | EdgeBase): string =>
+/**
+ * Type for a custom edge ID generator function.
+ * @public
+ */
+export type GetEdgeId = (params: Connection | EdgeBase) => string;
+
+/**
+ * The default edge ID generator function. Generates an ID based on the source, target, and handles.
+ * @public
+ * @param params - The connection or edge to generate an ID for.
+ * @returns The generated edge ID.
+ */
+export const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection | EdgeBase): string =>
   `xy-edge__${source}${sourceHandle || ''}-${target}${targetHandle || ''}`;
 
 const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
@@ -89,11 +111,19 @@ const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
   );
 };
 
+export type AddEdgeOptions = {
+  /**
+   * Custom function to generate edge IDs. If not provided, the default `getEdgeId` function is used.
+   */
+  getEdgeId?: GetEdgeId;
+};
+
 /**
  * This util is a convenience function to add a new Edge to an array of edges. It also performs some validation to make sure you don't add an invalid edge or duplicate an existing one.
  * @public
  * @param edgeParams - Either an `Edge` or a `Connection` you want to add.
  * @param edges - The array of all current edges.
+ * @param options - Optional configuration object.
  * @returns A new array of edges with the new edge added.
  *
  * @remarks If an edge with the same `target` and `source` already exists (and the same
@@ -103,7 +133,8 @@ const connectionExists = (edge: EdgeBase, edges: EdgeBase[]) => {
  */
 export const addEdge = <EdgeType extends EdgeBase>(
   edgeParams: EdgeType | Connection,
-  edges: EdgeType[]
+  edges: EdgeType[],
+  options: AddEdgeOptions = {}
 ): EdgeType[] => {
   if (!edgeParams.source || !edgeParams.target) {
     devWarn('006', errorMessages['error006']());
@@ -111,13 +142,15 @@ export const addEdge = <EdgeType extends EdgeBase>(
     return edges;
   }
 
+  const edgeIdGenerator = options.getEdgeId || getEdgeId;
+
   let edge: EdgeType;
   if (isEdgeBase(edgeParams)) {
     edge = { ...edgeParams };
   } else {
     edge = {
       ...edgeParams,
-      id: getEdgeId(edgeParams),
+      id: edgeIdGenerator(edgeParams),
     } as EdgeType;
   }
 
@@ -142,6 +175,10 @@ export type ReconnectEdgeOptions = {
    * @default true
    */
   shouldReplaceId?: boolean;
+  /**
+   * Custom function to generate edge IDs. If not provided, the default `getEdgeId` function is used.
+   */
+  getEdgeId?: GetEdgeId;
 };
 
 /**
@@ -182,10 +219,12 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
     return edges;
   }
 
+  const edgeIdGenerator = options.getEdgeId || getEdgeId;
+
   // Remove old edge and create the new edge with parameters of old edge.
   const edge = {
     ...rest,
-    id: options.shouldReplaceId ? getEdgeId(newConnection) : oldEdgeId,
+    id: options.shouldReplaceId ? edgeIdGenerator(newConnection) : oldEdgeId,
     source: newConnection.source,
     target: newConnection.target,
     sourceHandle: newConnection.sourceHandle,

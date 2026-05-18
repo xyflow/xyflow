@@ -15,8 +15,6 @@ import {
   Position,
 } from '@xyflow/react';
 
-import './style.css';
-
 const nodeDefaults = {
   sourcePosition: Position.Right,
   targetPosition: Position.Left,

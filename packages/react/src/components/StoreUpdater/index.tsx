@@ -65,11 +65,12 @@ const reactFlowFieldsToTrack = [
   'isValidConnection',
   'selectNodesOnDrag',
   'nodeDragThreshold',
+  'connectionDragThreshold',
   'onBeforeDelete',
   'debug',
   'autoPanSpeed',
-  'paneClickDistance',
   'ariaLabelConfig',
+  'zIndexMode',
 ] as const;
 
 type ReactFlowFieldsToTrack = (typeof reactFlowFieldsToTrack)[number];
@@ -92,7 +93,6 @@ const selector = (s: ReactFlowState) => ({
   setNodeExtent: s.setNodeExtent,
   reset: s.reset,
   setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
-  setPaneClickDistance: s.setPaneClickDistance,
 });
 
 const initPrevValues = {
@@ -108,7 +108,6 @@ const initPrevValues = {
   elementsSelectable: true,
   noPanClassName: 'nopan',
   rfId: '1',
-  paneClickDistance: 0,
 };
 
 export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
@@ -123,7 +122,6 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     setNodeExtent,
     reset,
     setDefaultNodesAndEdges,
-    setPaneClickDistance,
   } = useStore(selector, shallow);
   const store = useStoreApi<NodeType, EdgeType>();
 
@@ -154,14 +152,11 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         else if (fieldName === 'maxZoom') setMaxZoom(fieldValue as number);
         else if (fieldName === 'translateExtent') setTranslateExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
-        else if (fieldName === 'paneClickDistance') setPaneClickDistance(fieldValue as number);
+        else if (fieldName === 'ariaLabelConfig')
+          store.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
         // Renamed fields
         else if (fieldName === 'fitView') store.setState({ fitViewQueued: fieldValue as boolean });
         else if (fieldName === 'fitViewOptions') store.setState({ fitViewOptions: fieldValue as FitViewOptions });
-
-        if (fieldName === 'ariaLabelConfig') {
-          store.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
-        }
         // General case
         else store.setState({ [fieldName]: fieldValue });
       }

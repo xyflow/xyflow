@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Handle, Position, type NodeProps, NodeResizeControl, type Node } from '@xyflow/svelte';
 	import type { ResizeNode } from './types';
+	import { store } from './store.svelte';
 
 	let { data }: NodeProps<ResizeNode> = $props();
 </script>
@@ -14,7 +15,7 @@
 	onResizeStart={data.onResizeStart ?? undefined}
 	onResize={data.onResize ?? undefined}
 	onResizeEnd={data.onResizeEnd ?? undefined}
-	keepAspectRatio={data.keepAspectRatio ?? undefined}
+	keepAspectRatio={store.keepAspectRatio || (data.keepAspectRatio ?? undefined)}
 	style="background: transparent; border: none;"
 >
 	<svg

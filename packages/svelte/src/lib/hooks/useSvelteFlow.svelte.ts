@@ -125,7 +125,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * Returns all nodes that intersect with the given node or rect.
    *
    * @param node - the node or rect to check for intersections
-   * @param partially - if true, the node is considered to be intersecting if it partially overlaps with the passed node or rect
+   * @param partially - true by default, if set to false, only nodes that are fully intersecting will be returned
    * @param nodes - optional nodes array to check for intersections
    *
    * @returns an array of intersecting nodes
@@ -342,9 +342,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     getEdges: (ids) => (ids === undefined ? store.edges : getElements(store.edgeLookup, ids)),
     setZoom: (zoomLevel, options) => {
       const panZoom = store.panZoom;
-      return panZoom
-        ? panZoom.scaleTo(zoomLevel, { duration: options?.duration })
-        : Promise.resolve(false);
+      return panZoom ? panZoom.scaleTo(zoomLevel, options) : Promise.resolve(false);
     },
     getZoom: () => store.viewport.zoom,
     setViewport: async (nextViewport, options) => {
@@ -390,6 +388,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
 
       return Promise.resolve(true);
     },
+    /**
+     * Partial is defined as "the 2 nodes/areas are intersecting partially".
+     * If a is contained in b or b is contained in a, they are both
+     * considered fully intersecting.
+     */
     getIntersectingNodes: (
       nodeOrRect: NodeType | { id: NodeType['id'] } | Rect,
       partially = true,
@@ -412,7 +415,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
         const partiallyVisible = partially && overlappingArea > 0;
 
-        return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
+        return (
+          partiallyVisible ||
+          overlappingArea >= currNodeRect.width * currNodeRect.height ||
+          overlappingArea >= nodeRect.width * nodeRect.height
+        );
       });
     },
     isNodeIntersecting: (
@@ -430,7 +437,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       const overlappingArea = getOverlappingArea(nodeRect, area);
       const partiallyVisible = partially && overlappingArea > 0;
 
-      return partiallyVisible || overlappingArea >= nodeRect.width * nodeRect.height;
+      return (
+        partiallyVisible ||
+        overlappingArea >= area.width * area.height ||
+        overlappingArea >= nodeRect.width * nodeRect.height
+      );
     },
     deleteElements: async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [] }) => {
       const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove<
@@ -454,6 +465,13 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         store.edges = untrack(() => store.edges).filter(
           (edge) => !matchingEdges.some(({ id }) => id === edge.id)
         );
+      }
+
+      if (matchingNodes.length > 0 || matchingEdges.length > 0) {
+        store.ondelete?.({
+          nodes: matchingNodes,
+          edges: matchingEdges
+        });
       }
 
       return {

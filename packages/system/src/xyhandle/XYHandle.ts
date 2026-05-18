@@ -45,6 +45,8 @@ function onPointerDown(
     getTransform,
     getFromHandle,
     autoPanSpeed,
+    dragThreshold = 1,
+    handleDomNode,
   }: OnPointerDownParams
 ) {
   // when xyflow is used inside a shadow root we can't use document
@@ -53,9 +55,9 @@ function onPointerDown(
   let closestHandle: Handle | null;
 
   const { x, y } = getEventPosition(event);
-  const clickedHandle = doc?.elementFromPoint(x, y);
-  const handleType = getHandleType(edgeUpdaterType, clickedHandle);
+  const handleType = getHandleType(edgeUpdaterType, handleDomNode);
   const containerBounds = domNode?.getBoundingClientRect();
+  let connectionStarted = false;
 
   if (!containerBounds || !handleType) {
     return;
@@ -70,7 +72,7 @@ function onPointerDown(
   let autoPanStarted = false;
   let connection: Connection | null = null;
   let isValid: boolean | null = false;
-  let handleDomNode: Element | null = null;
+  let resultHandleDomNode: Element | null = null;
 
   // when the user is moving the mouse close to the edge of the canvas while connecting we move the canvas
   function autoPan(): void {
@@ -91,31 +93,49 @@ function onPointerDown(
     position: fromHandleInternal.position,
   };
 
-  const fromNodeInternal = nodeLookup.get(nodeId)!;
+  const fromInternalNode = nodeLookup.get(nodeId)!;
+  const from = getHandlePosition(fromInternalNode, fromHandle, Position.Left, true);
 
-  const from = getHandlePosition(fromNodeInternal, fromHandle, Position.Left, true);
-
-  const newConnection: ConnectionInProgress = {
+  let previousConnection: ConnectionInProgress = {
     inProgress: true,
     isValid: null,
 
     from,
     fromHandle,
     fromPosition: fromHandle.position,
-    fromNode: fromNodeInternal,
+    fromNode: fromInternalNode,
 
     to: position,
     toHandle: null,
     toPosition: oppositePosition[fromHandle.position],
     toNode: null,
+    pointer: position,
   };
 
-  updateConnection(newConnection);
-  let previousConnection: ConnectionInProgress = newConnection;
+  function startConnection() {
+    connectionStarted = true;
+    updateConnection(previousConnection);
+    onConnectStart?.(event, { nodeId, handleId, handleType });
+  }
 
-  onConnectStart?.(event, { nodeId, handleId, handleType });
+  if (dragThreshold === 0) {
+    startConnection();
+  }
 
   function onPointerMove(event: MouseEvent | TouchEvent) {
+    if (!connectionStarted) {
+      const { x: evtX, y: evtY } = getEventPosition(event);
+      const dx = evtX - x;
+      const dy = evtY - y;
+      const nextConnectionStarted = dx * dx + dy * dy > dragThreshold * dragThreshold;
+
+      if (!nextConnectionStarted) {
+        return;
+      }
+
+      startConnection();
+    }
+
     if (!getFromHandle() || !fromHandle) {
       onPointerUp(event);
       return;
@@ -148,13 +168,18 @@ function onPointerDown(
       nodeLookup,
     });
 
-    handleDomNode = result.handleDomNode;
+    resultHandleDomNode = result.handleDomNode;
     connection = result.connection;
     isValid = isConnectionValid(!!closestHandle, result.isValid);
 
+    const fromInternalNode = nodeLookup.get(nodeId);
+    const from = fromInternalNode
+      ? getHandlePosition(fromInternalNode, fromHandle, Position.Left, true)
+      : previousConnection.from;
+
     const newConnection: ConnectionInProgress = {
-      // from stays the same
       ...previousConnection,
+      from,
       isValid,
       to:
         result.toHandle && isValid
@@ -163,49 +188,40 @@ function onPointerDown(
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
       toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)! : null,
+      pointer: position,
     };
-
-    /*
-     * we don't want to trigger an update when the connection
-     * is snapped to the same handle as before
-     */
-    if (
-      isValid &&
-      closestHandle &&
-      previousConnection.toHandle &&
-      newConnection.toHandle &&
-      previousConnection.toHandle.type === newConnection.toHandle.type &&
-      previousConnection.toHandle.nodeId === newConnection.toHandle.nodeId &&
-      previousConnection.toHandle.id === newConnection.toHandle.id &&
-      previousConnection.to.x === newConnection.to.x &&
-      previousConnection.to.y === newConnection.to.y
-    ) {
-      return;
-    }
 
     updateConnection(newConnection);
     previousConnection = newConnection;
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    if ((closestHandle || handleDomNode) && connection && isValid) {
-      onConnect?.(connection);
+    // Prevent multi-touch aborting connection
+    if ('touches' in event && event.touches.length > 0) {
+      return;
     }
 
-    /*
-     * it's important to get a fresh reference from the store here
-     * in order to get the latest state of onConnectEnd
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { inProgress, ...connectionState } = previousConnection;
-    const finalConnectionState = {
-      ...connectionState,
-      toPosition: previousConnection.toHandle ? previousConnection.toPosition : null,
-    };
-    onConnectEnd?.(event, finalConnectionState);
+    if (connectionStarted) {
+      if ((closestHandle || resultHandleDomNode) && connection && isValid) {
+        onConnect?.(connection);
+      }
 
-    if (edgeUpdaterType) {
-      onReconnectEnd?.(event, finalConnectionState);
+      /*
+       * it's important to get a fresh reference from the store here
+       * in order to get the latest state of onConnectEnd
+       */
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { inProgress, ...connectionState } = previousConnection;
+      const finalConnectionState = {
+        ...connectionState,
+        toPosition: previousConnection.toHandle ? previousConnection.toPosition : null,
+      };
+
+      onConnectEnd?.(event, finalConnectionState);
+
+      if (edgeUpdaterType) {
+        onReconnectEnd?.(event, finalConnectionState);
+      }
     }
 
     cancelConnection();
@@ -213,7 +229,7 @@ function onPointerDown(
     autoPanStarted = false;
     isValid = false;
     connection = null;
-    handleDomNode = null;
+    resultHandleDomNode = null;
 
     doc.removeEventListener('mousemove', onPointerMove as EventListener);
     doc.removeEventListener('mouseup', onPointerUp as EventListener);
@@ -229,7 +245,7 @@ function onPointerDown(
   doc.addEventListener('touchend', onPointerUp as EventListener);
 }
 
-// checks if  and returns connection in fom of an object { source: 123, target: 312 }
+// checks if  and returns connection in form of an object { source: 123, target: 312 }
 function isValidHandle(
   event: MouseEvent | TouchEvent,
   {

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { shallowNodeData } from '@xyflow/system';
+import { DistributivePick, shallowNodeData } from '@xyflow/system';
 
 import { useStore } from '../hooks/useStore';
 import type { Node } from '../types';
@@ -25,11 +25,11 @@ import type { Node } from '../types';
 export function useNodesData<NodeType extends Node = Node>(
   /** The id of the node to get the data from. */
   nodeId: string
-): Pick<NodeType, 'id' | 'type' | 'data'> | null;
+): DistributivePick<NodeType, 'id' | 'type' | 'data'> | null;
 export function useNodesData<NodeType extends Node = Node>(
   /** The ids of the nodes to get the data from. */
   nodeIds: string[]
-): Pick<NodeType, 'id' | 'type' | 'data'>[];
+): DistributivePick<NodeType, 'id' | 'type' | 'data'>[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: any): any {
   const nodesData = useStore(

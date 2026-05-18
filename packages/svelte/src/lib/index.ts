@@ -22,6 +22,7 @@ export * from '$lib/plugins/Controls';
 export * from '$lib/plugins/Background';
 export * from '$lib/plugins/Minimap';
 export * from '$lib/plugins/NodeToolbar';
+export * from '$lib/plugins/EdgeToolbar';
 export * from '$lib/plugins/NodeResizer';
 
 // store
@@ -53,7 +54,8 @@ export type {
   StepEdgeProps,
   StraightEdgeProps,
   EdgeTypes,
-  DefaultEdgeOptions
+  DefaultEdgeOptions,
+  BuiltInEdge
 } from '$lib/types/edges';
 export type * from '$lib/types/general';
 export type { Node, NodeTypes, BuiltInNode, NodeProps, InternalNode } from '$lib/types/nodes';
@@ -105,6 +107,9 @@ export {
   type OnResizeStart,
   type OnResize,
   type OnResizeEnd,
+  type OnReconnect,
+  type OnReconnectStart,
+  type OnReconnectEnd,
   type ControlPosition,
   type ControlLinePosition,
   ResizeControlVariant,
@@ -113,7 +118,13 @@ export {
   type ResizeDragEvent,
   type IsValidConnection,
   type NodeConnection,
-  type AriaLabelConfig
+  type AriaLabelConfig,
+  type SetCenter,
+  type SetViewport,
+  type FitBounds,
+  type HandleConnection,
+  type ZIndexMode,
+  type NodeHandle
 } from '@xyflow/system';
 
 // system utils

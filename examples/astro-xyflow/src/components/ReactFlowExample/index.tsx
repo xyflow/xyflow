@@ -60,7 +60,7 @@ const initialNodes: Node[] = [
   {
     id: '3',
     data: { label: 'Node 3' },
-    position: { x: 400, y: 100 },
+    position: { x: 900, y: 100 },
     ...nodeSize,
     handles: [
       {
@@ -110,9 +110,10 @@ function Flow() {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
-        fitView
+        // fitView
         width={700}
         height={400}
+        onlyRenderVisibleElements
       >
         <Background />
         <Controls />

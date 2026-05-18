@@ -29,7 +29,8 @@ import {
   type EdgeChange,
   type ParentLookup,
   type AriaLabelConfig,
-  SetCenter,
+  type SetCenter,
+  type ZIndexMode,
 } from '@xyflow/system';
 
 import type {
@@ -76,6 +77,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   nodeExtent: CoordinateExtent;
   nodeOrigin: NodeOrigin;
   nodeDragThreshold: number;
+  connectionDragThreshold: number;
 
   nodesSelectionActive: boolean;
   userSelectionActive: boolean;
@@ -151,6 +153,10 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   lib: string;
   debug: boolean;
   ariaLabelConfig: AriaLabelConfig;
+
+  zIndexMode: ZIndexMode;
+  onNodesChangeMiddlewareMap: Map<symbol, (changes: NodeChange<NodeType>[]) => NodeChange<NodeType>[]>;
+  onEdgesChangeMiddlewareMap: Map<symbol, (changes: EdgeChange<EdgeType>[]) => EdgeChange<EdgeType>[]>;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
@@ -174,7 +180,6 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
   setCenter: SetCenter;
-  setPaneClickDistance: (distance: number) => void;
 };
 
 export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = ReactFlowStore<

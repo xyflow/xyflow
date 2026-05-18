@@ -12,12 +12,7 @@ import type { ReactFlowState } from '../../types';
 
 type ZoomPaneProps = Omit<
   FlowRendererProps,
-  | 'deleteKeyCode'
-  | 'selectionKeyCode'
-  | 'multiSelectionKeyCode'
-  | 'noDragClassName'
-  | 'disableKeyboardA11y'
-  | 'selectionOnDrag'
+  'deleteKeyCode' | 'selectionKeyCode' | 'multiSelectionKeyCode' | 'noDragClassName' | 'disableKeyboardA11y'
 > & {
   isControlledViewport: boolean;
 };
@@ -25,6 +20,7 @@ type ZoomPaneProps = Omit<
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   lib: s.lib,
+  connectionInProgress: s.connection.inProgress,
 });
 
 export function ZoomPane({
@@ -48,10 +44,11 @@ export function ZoomPane({
   onViewportChange,
   isControlledViewport,
   paneClickDistance,
+  selectionOnDrag,
 }: ZoomPaneProps) {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const { userSelectionActive, lib } = useStore(selector, shallow);
+  const { userSelectionActive, lib, connectionInProgress } = useStore(selector, shallow);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
   const panZoom = useRef<PanZoomInstance>();
 
@@ -76,8 +73,8 @@ export function ZoomPane({
         maxZoom,
         translateExtent,
         viewport: defaultViewport,
-        paneClickDistance,
-        onDraggingChange: (paneDragging: boolean) => store.setState({ paneDragging }),
+        onDraggingChange: (paneDragging) =>
+          store.setState((prevState) => prevState.paneDragging === paneDragging ? prevState : { paneDragging }),
         onPanZoomStart: (event, vp) => {
           const { onViewportChangeStart, onMoveStart } = store.getState();
           onMoveStart?.(event, vp);
@@ -126,6 +123,9 @@ export function ZoomPane({
       noWheelClassName,
       lib,
       onTransformChange,
+      connectionInProgress,
+      selectionOnDrag,
+      paneClickDistance,
     });
   }, [
     onPaneContextMenu,
@@ -143,6 +143,9 @@ export function ZoomPane({
     noWheelClassName,
     lib,
     onTransformChange,
+    connectionInProgress,
+    selectionOnDrag,
+    paneClickDistance,
   ]);
 
   return (

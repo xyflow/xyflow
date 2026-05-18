@@ -51,11 +51,14 @@ export function NodesSelection<NodeType extends Node>({
     }
   }, [disableKeyboardA11y]);
 
+  const shouldRender = !userSelectionActive && width !== null && height !== null;
+
   useDrag({
     nodeRef,
+    disabled: !shouldRender,
   });
 
-  if (userSelectionActive || !width || !height) {
+  if (!shouldRender) {
     return null;
   }
 

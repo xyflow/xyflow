@@ -36,6 +36,7 @@ const ConnectionLineFlow = () => {
       onEdgesChange={onEdgesChange}
       connectionLineComponent={ConnectionLine}
       onConnect={onConnect}
+      connectionDragThreshold={25}
     >
       <Background variant={BackgroundVariant.Lines} />
     </ReactFlow>

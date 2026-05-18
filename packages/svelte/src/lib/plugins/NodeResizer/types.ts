@@ -3,6 +3,7 @@ import type { HTMLAttributes } from 'svelte/elements';
 import type {
   ControlPosition,
   ResizeControlVariant,
+  ResizeControlDirection,
   ShouldResize,
   OnResizeStart,
   OnResize,
@@ -46,11 +47,12 @@ export type NodeResizerProps = {
   onResize?: OnResize;
   /** Callback called when resizing ends */
   onResizeEnd?: OnResizeEnd;
+  /** The direction the user can resize the node */
+  resizeDirection?: ResizeControlDirection;
 } & HTMLAttributes<HTMLDivElement>;
 
 export type ResizeControlProps = Pick<
   NodeResizerProps,
-  | 'nodeId'
   | 'color'
   | 'minWidth'
   | 'minHeight'
@@ -62,6 +64,7 @@ export type ResizeControlProps = Pick<
   | 'onResizeStart'
   | 'onResize'
   | 'onResizeEnd'
+  | 'resizeDirection'
 > & {
   /** Position of control
    * @example ControlPosition.TopLeft, ControlPosition.TopRight,
@@ -72,5 +75,7 @@ export type ResizeControlProps = Pick<
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
+  /** nodeId must be provided when used outside a custom node */
+  nodeId?: string;
   children?: Snippet;
 } & HTMLAttributes<HTMLDivElement>;

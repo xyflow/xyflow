@@ -10,4 +10,5 @@ export type EdgeReconnectAnchorProps = {
   position?: XYPosition;
   size?: number;
   children?: Snippet;
+  dragThreshold?: number;
 } & HTMLAttributes<HTMLDivElement>;

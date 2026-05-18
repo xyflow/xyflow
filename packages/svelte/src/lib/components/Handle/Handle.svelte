@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
   import {
     Position,
     XYHandle,
@@ -16,8 +15,8 @@
 
   import { useStore } from '$lib/store';
 
-  import type { ConnectableContext } from '../NodeWrapper/types';
   import type { HandleProps } from './types';
+  import { getNodeConnectableContext, getNodeIdContext } from '$lib/store/context';
 
   let {
     id: handleId = null,
@@ -35,8 +34,10 @@
     ...rest
   }: HandleProps = $props();
 
-  const nodeId = getContext<string>('svelteflow__node_id');
-  const isConnectableContext = getContext<ConnectableContext>('svelteflow__node_connectable');
+  const nodeId = getNodeIdContext('Handle must be used within a Custom Node component');
+  const isConnectableContext = getNodeConnectableContext(
+    'Handle must be used within a Custom Node component'
+  );
 
   let isTarget = $derived(type === 'target');
   let isConnectable = $derived(
@@ -98,7 +99,7 @@
     });
 
   function onConnectExtended(connection: Connection) {
-    const edge = store.onbeforeconnect?.(connection) ?? connection;
+    const edge = store.onbeforeconnect ? store.onbeforeconnect(connection) : connection;
 
     if (!edge) {
       return;
@@ -111,7 +112,7 @@
   function onpointerdown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
 
-    if ((isMouseTriggered && event.button === 0) || !isMouseTriggered) {
+    if (event.currentTarget && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
       XYHandle.onPointerDown(event, {
         handleId,
         nodeId,
@@ -122,24 +123,20 @@
         connectionMode: store.connectionMode,
         lib: 'svelte',
         autoPanOnConnect: store.autoPanOnConnect,
+        autoPanSpeed: store.autoPanSpeed,
         flowId: store.flowId,
-        isValidConnection: isValidConnection ?? store.isValidConnection,
+        isValidConnection:
+          isValidConnection || ((...args) => store.isValidConnection?.(...args) ?? true),
         updateConnection: store.updateConnection,
         cancelConnection: store.cancelConnection,
         panBy: store.panBy,
         onConnect: onConnectExtended,
-        onConnectStart: (event, startParams) => {
-          store.onconnectstart?.(event, {
-            nodeId: startParams.nodeId,
-            handleId: startParams.handleId,
-            handleType: startParams.handleType
-          });
-        },
-        onConnectEnd: (event, connectionState) => {
-          store.onconnectend?.(event, connectionState);
-        },
+        onConnectStart: store.onconnectstart,
+        onConnectEnd: (...args) => store.onconnectend?.(...args),
         getTransform: () => [store.viewport.x, store.viewport.y, store.viewport.zoom],
-        getFromHandle: () => store.connection.fromHandle
+        getFromHandle: () => store.connection.fromHandle,
+        dragThreshold: store.connectionDragThreshold,
+        handleDomNode: event.currentTarget as HTMLElement
       });
     }
   }

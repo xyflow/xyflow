@@ -47,7 +47,7 @@ export function BaseEdge({
   return (
     <>
       <path {...props} d={path} fill="none" className={cc(['react-flow__edge-path', props.className])} />
-      {interactionWidth && (
+      {interactionWidth ? (
         <path
           d={path}
           fill="none"
@@ -55,7 +55,7 @@ export function BaseEdge({
           strokeWidth={interactionWidth}
           className="react-flow__edge-interaction"
         />
-      )}
+      ) : null}
       {label && isNumeric(labelX) && isNumeric(labelY) ? (
         <EdgeText
           x={labelX}

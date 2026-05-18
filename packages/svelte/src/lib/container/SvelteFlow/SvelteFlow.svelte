@@ -59,8 +59,10 @@
     zoomOnDoubleClick = true,
     zoomOnPinch = true,
     panOnScroll = false,
+    panOnScrollSpeed = 0.5,
     panOnDrag = true,
-    selectionOnDrag = true,
+    selectionOnDrag = false,
+    autoPanOnSelection = true,
     connectionLineComponent,
     connectionLineStyle,
     connectionLineContainerStyle,
@@ -74,7 +76,7 @@
   }: SvelteFlowProps<NodeType, EdgeType> &
     Omit<HTMLAttributes<HTMLDivElement>, 'onselectionchange'> = $props();
 
-  // svelte-ignore non_reactive_update
+  // svelte-ignore non_reactive_update, state_referenced_locally
   let store = createStore<NodeType, EdgeType>({
     props,
     width,
@@ -152,8 +154,10 @@
     {zoomOnDoubleClick}
     {zoomOnPinch}
     {panOnScroll}
+    {panOnScrollSpeed}
     {panOnDrag}
     {paneClickDistance}
+    {selectionOnDrag}
     {onmovestart}
     {onmove}
     {onmoveend}
@@ -166,7 +170,9 @@
       {onselectionstart}
       {onselectionend}
       {panOnDrag}
+      {paneClickDistance}
       {selectionOnDrag}
+      {autoPanOnSelection}
     >
       <ViewportComponent bind:store>
         <div class="svelte-flow__viewport-back svelte-flow__container"></div>

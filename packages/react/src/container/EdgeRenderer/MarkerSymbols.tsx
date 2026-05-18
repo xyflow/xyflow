@@ -6,28 +6,33 @@ import { useStoreApi } from '../../hooks/useStore';
 type SymbolProps = Omit<EdgeMarker, 'type'>;
 
 const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
+  const style = {
+    strokeWidth,
+    ...(color && { stroke: color }),
+  };
+
   return (
     <polyline
-      style={{
-        stroke: color,
-        strokeWidth,
-      }}
+      className="arrow"
+      style={style}
       strokeLinecap="round"
-      strokeLinejoin="round"
       fill="none"
+      strokeLinejoin="round"
       points="-5,-4 0,0 -5,4"
     />
   );
 };
 
 const ArrowClosedSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
+  const style = {
+    strokeWidth,
+    ...(color && { stroke: color, fill: color }),
+  };
+
   return (
     <polyline
-      style={{
-        stroke: color,
-        fill: color,
-        strokeWidth,
-      }}
+      className="arrowclosed"
+      style={style}
       strokeLinecap="round"
       strokeLinejoin="round"
       points="-5,-4 0,0 -5,4 -5,-4"
@@ -40,7 +45,7 @@ export const MarkerSymbols = {
   [MarkerType.ArrowClosed]: ArrowClosedSymbol,
 };
 
-export function useMarkerSymbol(type: MarkerType) {
+export function useMarkerSymbol(type: MarkerType | `${MarkerType}`) {
   const store = useStoreApi();
 
   const symbol = useMemo(() => {

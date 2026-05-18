@@ -8,22 +8,21 @@
 		type Node,
 		type NodeProps
 	} from '@xyflow/svelte';
-	import { isTextNode, type MyNode } from './+page.svelte';
+	import { type MyNode } from './+page.svelte';
 
 	let { id }: NodeProps<Node<{ text: string }>> = $props();
 
 	const { updateNodeData } = useSvelteFlow();
 	const connections = useNodeConnections({
-		id: id,
 		handleType: 'target'
 	});
 
-	let nodeData = $derived(useNodesData<MyNode>(connections.current[0]?.source));
-	let textNodeData = $derived(isTextNode(nodeData.current) ? nodeData.current.data.text : null);
+	let nodesData = $derived(useNodesData<MyNode>(connections.current[0]?.source));
 
 	$effect.pre(() => {
-		const input = textNodeData?.toUpperCase() ?? '';
-		updateNodeData(id, { text: input });
+		const text =
+			nodesData.current?.type === 'text' ? nodesData.current?.data.text.toUpperCase() : undefined;
+		updateNodeData(id, { text });
 	});
 </script>
 
