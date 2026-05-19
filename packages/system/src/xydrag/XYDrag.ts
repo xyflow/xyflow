@@ -35,12 +35,16 @@ export type OnDrag<NodeType extends NodeBase = NodeBase> = (
   nodes: NodeType[]
 ) => void;
 
-type OnNodeDrag<NodeType extends NodeBase = NodeBase> = (e: MouseEvent | TouchEvent, node: NodeType, nodes: NodeType[]) => void | undefined;
+type OnNodeDrag<NodeType extends NodeBase = NodeBase> = (
+  e: MouseEvent | TouchEvent,
+  node: NodeType,
+  nodes: NodeType[]
+) => void | undefined;
 
 type FlowGraph<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
   nodes: NodeType[];
   edges: EdgeType[];
-}
+};
 
 type StoreItems<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
   nodes: NodeType[];
