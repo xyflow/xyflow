@@ -87,14 +87,14 @@ export const initialEdgeTypes = {
   step: StepEdgeInternal
 };
 
-function getInitialViewport(
+function getInitialViewport<NodeType extends Node = Node>(
   // This is just used to make sure adoptUserNodes is called before we calculate the viewport
   _nodesInitialized: boolean,
   fitView: boolean | undefined,
   initialViewport: Viewport | undefined,
   width: number,
   height: number,
-  nodeLookup: NodeLookup
+  nodeLookup: NodeLookup<InternalNode<NodeType>>
 ) {
   if (fitView && !initialViewport && width && height) {
     const bounds = getInternalNodesBounds(nodeLookup, {
@@ -297,7 +297,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     connectionDragThreshold: number = $derived(signals.props.connectionDragThreshold ?? 1);
 
     fitViewQueued: boolean = signals.props.fitView ?? false;
-    fitViewOptions: FitViewOptions | undefined = signals.props.fitViewOptions;
+    fitViewOptions: FitViewOptions<NodeType> | undefined = signals.props.fitViewOptions;
     fitViewResolver: PromiseWithResolvers<boolean> | null = null;
 
     snapGrid: SnapGrid | null = $derived(signals.props.snapGrid ?? null);
@@ -347,9 +347,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     }
 
     // _connection is viewport independent and originating from XYHandle
-    _connection: ConnectionState = $state.raw(initialConnection);
+    _connection: ConnectionState<InternalNode<NodeType>> = $state.raw(initialConnection);
     // We derive a viewport dependent connection here
-    connection: ConnectionState = $derived.by(() => {
+    connection: ConnectionState<InternalNode<NodeType>> = $derived.by(() => {
       if (!this._connection.inProgress) {
         return this._connection;
       }
@@ -367,7 +367,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       signals.props.connectionMode ?? ConnectionMode.Strict
     );
     connectionRadius: number = $derived(signals.props.connectionRadius ?? 20);
-    isValidConnection: IsValidConnection = $derived(
+    isValidConnection: IsValidConnection<EdgeType> = $derived(
       signals.props.isValidConnection ?? (() => true)
     );
 
@@ -390,7 +390,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     ondelete?: OnDelete<NodeType, EdgeType> = $derived(signals.props.ondelete);
     onbeforedelete?: OnBeforeDelete<NodeType, EdgeType> = $derived(signals.props.onbeforedelete);
 
-    onbeforeconnect?: OnBeforeConnect = $derived(signals.props.onbeforeconnect);
+    onbeforeconnect?: OnBeforeConnect<EdgeType> = $derived(signals.props.onbeforeconnect);
     onconnect?: OnConnect = $derived(signals.props.onconnect);
     onconnectstart?: OnConnectStart = $derived(signals.props.onconnectstart);
     onconnectend?: OnConnectEnd = $derived(signals.props.onconnectend);
