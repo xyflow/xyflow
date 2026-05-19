@@ -120,13 +120,18 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     zIndexMode = $state.raw<ZIndexMode>(signals.props.zIndexMode ?? 'basic');
 
     nodesInitialized: boolean = $derived.by(() => {
-      const { nodesInitialized } = adoptUserNodes(signals.nodes, this.nodeLookup, this.parentLookup, {
-        nodeExtent: this.nodeExtent,
-        nodeOrigin: this.nodeOrigin,
-        elevateNodesOnSelect: signals.props.elevateNodesOnSelect ?? true,
-        checkEquality: true,
-        zIndexMode: this.zIndexMode
-      });
+      const { nodesInitialized } = adoptUserNodes(
+        signals.nodes,
+        this.nodeLookup,
+        this.parentLookup,
+        {
+          nodeExtent: this.nodeExtent,
+          nodeOrigin: this.nodeOrigin,
+          elevateNodesOnSelect: signals.props.elevateNodesOnSelect ?? true,
+          checkEquality: true,
+          zIndexMode: this.zIndexMode
+        }
+      );
 
       if (this.fitViewQueued && nodesInitialized) {
         if (this.fitViewOptions?.duration) {
@@ -398,7 +403,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     onbeforereconnect?: OnBeforeReconnect<EdgeType> = $derived(signals.props.onbeforereconnect);
     onreconnect?: OnReconnect<EdgeType> = $derived(signals.props.onreconnect);
     onreconnectstart?: OnReconnectStart<EdgeType> = $derived(signals.props.onreconnectstart);
-    onreconnectend?: OnReconnectEnd<EdgeType> = $derived(signals.props.onreconnectend);
+    onreconnectend?: OnReconnectEnd<NodeType, EdgeType> = $derived(signals.props.onreconnectend);
 
     clickConnect?: boolean = $derived(signals.props.clickConnect ?? true);
     onclickconnectstart?: OnConnectStart = $derived(signals.props.onclickconnectstart);
