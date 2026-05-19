@@ -32,13 +32,13 @@
 
   let store = $derived(useStore());
 
-  const buttonProps = {
+  const buttonProps = $derived({
     bgColor: buttonBgColor,
     bgColorHover: buttonBgColorHover,
     color: buttonColor,
     colorHover: buttonColorHover,
     borderColor: buttonBorderColor
-  };
+  });
 
   let isInteractive = $derived(
     store.nodesDraggable || store.nodesConnectable || store.elementsSelectable
