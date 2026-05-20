@@ -80,13 +80,6 @@ export type XYResizerInstance = {
   destroy: () => void;
 };
 
-function nodeToParentExtent(node: NodeBase): CoordinateExtent {
-  return [
-    [0, 0],
-    [node.measured!.width!, node.measured!.height!],
-  ];
-}
-
 function nodeToChildExtent(child: NodeBase, parent: NodeBase, nodeOrigin: NodeOrigin): CoordinateExtent {
   const x = parent.position.x + child.position.x;
   const y = parent.position.y + child.position.y;
@@ -182,7 +175,13 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
 
         if (node.parentId && (node.extent === 'parent' || node.expandParent)) {
           parentNode = nodeLookup.get(node.parentId);
-          nodeExtent = parentNode && node.extent === 'parent' ? nodeToParentExtent(parentNode) : nodeExtent;
+        }
+
+        if (parentNode && node.extent === 'parent') {
+          nodeExtent = [
+            [0, 0],
+            [parentNode.measured.width!, parentNode.measured.height!],
+          ];
         }
 
         /*
