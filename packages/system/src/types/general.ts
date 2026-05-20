@@ -98,6 +98,23 @@ export type NodeConnection = Connection & {
   edgeId: string;
 };
 
+export type UseNodeConnectionsParams = {
+  /** ID of the node, filled in automatically if used inside custom node. */
+  id?: string;
+  /** Gets called when a connection is established. */
+  onConnect?: (connections: HandleConnection[]) => void;
+  /** Gets called when a connection is removed. */
+  onDisconnect?: (connections: HandleConnection[]) => void;
+} & (
+  | {
+      /** What type of handle connections do you want to observe? */
+      handleType: HandleType;
+      /** Filter by handle id (this is only needed if the node has multiple handles of the same type). Requires `handleType` to be set. */
+      handleId?: string;
+    }
+  | { handleType?: HandleType; handleId?: never }
+);
+
 /**
  * The `ConnectionMode` is used to set the mode of connection between nodes.
  * The `Strict` mode is the default one and only allows source to target edges.
