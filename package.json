@@ -22,8 +22,8 @@
     "clean": "pnpm -r --parallel exec rimraf dist .turbo node_modules"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.4.7",
-    "@changesets/cli": "^2.25.0",
+    "@changesets/changelog-github": "^0.7.0",
+    "@changesets/cli": "^2.31.0",
     "@playwright/test": "^1.44.1",
     "concurrently": "^7.6.0",
     "eslint": "^8.57.0",
