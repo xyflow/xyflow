@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { SvelteFlow, Controls, Panel, type Edge } from '@xyflow/svelte';
+	import { SvelteFlow, Controls, Panel, type CoordinateExtent, type Edge } from '@xyflow/svelte';
 
 	import DefaultResizer from './DefaultResizer.svelte';
 	import CustomResizer from './CustomResizer.svelte';
 	import VerticalResizer from './VerticalResizer.svelte';
 	import HorizontalResizer from './HorizontalResizer.svelte';
 	import BottomRightResizer from './BottomRightResizer.svelte';
+	import FixedExtentNode from './FixedExtentNode.svelte';
 
 	import '@xyflow/svelte/dist/style.css';
 	import type { ResizeNode } from './types';
@@ -16,10 +17,15 @@
 		customResizer: CustomResizer,
 		verticalResizer: VerticalResizer,
 		horizontalResizer: HorizontalResizer,
-		bottomRightResizer: BottomRightResizer
+		bottomRightResizer: BottomRightResizer,
+		fixedExtent: FixedExtentNode
 	};
 
 	const nodeStyle = 'border: 1px solid #222; font-size: 10px; background-color: #ddd;';
+	const extent: CoordinateExtent = [
+		[500, 350],
+		[700, 450]
+	];
 
 	let edges = $state.raw<Edge[]>([]);
 
@@ -134,6 +140,13 @@
 			data: { label: 'bottom-right horizontal resizer' },
 			position: { x: 500, y: 0 },
 			style: nodeStyle
+		},
+		{
+			id: '7',
+			type: 'fixedExtent',
+			data: { label: 'Fixed Extent', extent },
+			position: { x: 500, y: 350 },
+			extent
 		}
 	]);
 
