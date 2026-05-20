@@ -12,9 +12,12 @@ import {
   type IsValidConnection,
   NodeLookup,
   FinalConnectionState,
+  NodeBase,
+  InternalNodeBase,
+  EdgeBase,
 } from '../types';
 
-export type OnPointerDownParams = {
+export type OnPointerDownParams<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
   autoPanOnConnect: boolean;
   connectionMode: ConnectionMode;
   connectionRadius: number;
@@ -22,18 +25,21 @@ export type OnPointerDownParams = {
   handleId: string | null;
   nodeId: string;
   isTarget: boolean;
-  nodeLookup: NodeLookup;
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>;
   lib: string;
   flowId: string | null;
   edgeUpdaterType?: HandleType;
-  updateConnection: UpdateConnection;
+  updateConnection: UpdateConnection<InternalNodeBase<NodeType>>;
   panBy: PanBy;
   cancelConnection: () => void;
   onConnectStart?: OnConnectStart;
   onConnect?: OnConnect;
-  onConnectEnd?: OnConnectEnd;
-  isValidConnection?: IsValidConnection;
-  onReconnectEnd?: (evt: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => void;
+  onConnectEnd?: OnConnectEnd<NodeType>;
+  isValidConnection?: IsValidConnection<EdgeType>;
+  onReconnectEnd?: (
+    evt: MouseEvent | TouchEvent,
+    connectionState: FinalConnectionState<InternalNodeBase<NodeType>>
+  ) => void;
   getTransform: () => Transform;
   getFromHandle: () => Handle | null;
   autoPanSpeed?: number;
@@ -41,17 +47,17 @@ export type OnPointerDownParams = {
   handleDomNode: Element;
 };
 
-export type IsValidParams = {
+export type IsValidParams<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
   handle: Pick<Handle, 'nodeId' | 'id' | 'type'> | null;
   connectionMode: ConnectionMode;
   fromNodeId: string;
   fromHandleId: string | null;
   fromType: HandleType;
-  isValidConnection?: IsValidConnection;
+  isValidConnection?: IsValidConnection<EdgeType>;
   doc: Document | ShadowRoot;
   lib: string;
   flowId: string | null;
-  nodeLookup: NodeLookup;
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>;
 };
 
 export type XYHandleInstance = {

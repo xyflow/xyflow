@@ -120,7 +120,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * @param options.duration - optional duration. If set, a transition will be applied
    * @param options.nodes - optional nodes to fit the view to
    */
-  fitView: (options?: FitViewOptions) => Promise<boolean>;
+  fitView: (options?: FitViewOptions<NodeType>) => Promise<boolean>;
   /**
    * Returns all nodes that intersect with the given node or rect.
    *
@@ -365,7 +365,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     },
     getViewport: () => $state.snapshot(store.viewport),
     setCenter: async (x, y, options) => store.setCenter(x, y, options),
-    fitView: (options?: FitViewOptions) => store.fitView(options),
+    fitView: (options?: FitViewOptions<NodeType>) => store.fitView(options),
     fitBounds: async (bounds: Rect, options?: FitBoundsOptions) => {
       if (!store.panZoom) {
         return false;
