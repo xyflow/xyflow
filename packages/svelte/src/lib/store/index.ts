@@ -161,7 +161,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     return true;
   }
 
-  function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
+  async function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
     const panZoom = store.panZoom;
     if (!panZoom) {
       return false;
@@ -170,7 +170,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     return panZoom.scaleBy(factor, options);
   }
 
-  function zoomIn(options?: ViewportHelperFunctionOptions) {
+  async function zoomIn(options?: ViewportHelperFunctionOptions) {
     return zoomBy(1.2, options);
   }
 
