@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "xyflow/xyflow" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "xyflow/xyflow", "disableThanks": true }],
   "commit": false,
   "fixed": [],
   "linked": [],
