@@ -146,7 +146,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     const currentPanZoom = store.panZoom;
 
     if (!currentPanZoom) {
-      return Promise.resolve(false);
+      return false;
     }
 
     await currentPanZoom.setViewport(
@@ -158,19 +158,19 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
     );
 
-    return Promise.resolve(true);
+    return true;
   }
 
-  function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
+  async function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
     const panZoom = store.panZoom;
     if (!panZoom) {
-      return Promise.resolve(false);
+      return false;
     }
 
     return panZoom.scaleBy(factor, options);
   }
 
-  function zoomIn(options?: ViewportHelperFunctionOptions) {
+  async function zoomIn(options?: ViewportHelperFunctionOptions) {
     return zoomBy(1.2, options);
   }
 
