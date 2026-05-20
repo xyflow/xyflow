@@ -2,4 +2,4 @@
 '@xyflow/svelte': patch
 ---
 
-Improve generic types for useSvelteFlow and internal store
+Improve generic types on useSvelteFlow to better reflect custom node & edge data

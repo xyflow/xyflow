@@ -2,4 +2,4 @@
 '@xyflow/react': patch
 ---
 
-Fix OnNodeDrag event type
+Fix type for event passed to onNodeDrag
