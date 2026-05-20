@@ -24,8 +24,8 @@ importers:
         specifier: ^8.57.0
         version: 8.57.0
       prettier:
-        specifier: ^2.7.1
-        version: 2.8.8
+        specifier: ^3.7.2
+        version: 3.8.3
       react:
         specifier: ^18.2.0
         version: 18.3.1
