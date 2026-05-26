@@ -68,6 +68,7 @@
 
 .xy-flow__pane {
   z-index: 1;
+  touch-action: none;
 
   &.draggable {
     cursor: grab;
@@ -446,8 +447,4 @@ svg.xy-flow__connectionline {
       fill: currentColor;
     }
   }
-}
-
-.react-flow__pane {
-  touch-action: none;
 }
