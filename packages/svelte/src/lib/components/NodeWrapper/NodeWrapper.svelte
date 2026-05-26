@@ -107,7 +107,7 @@
     $effect(() => {
       const valid = !!store.nodeTypes[type];
       if (!valid) {
-        console.warn('003', errorMessages['error003'](type!));
+        store.onerror('003', errorMessages['error003'](type!));
       }
     });
   }

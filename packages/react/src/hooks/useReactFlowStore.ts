@@ -5,7 +5,7 @@ import { errorMessages } from '@xyflow/system';
 import StoreContext from '../contexts/StoreContext';
 import type { Edge, Node, ReactFlowState } from '../types';
 
-const zustandErrorMessage = errorMessages['error001']();
+const zustandErrorMessage = errorMessages['error001']('react');
 
 /**
  * This hook can be used to subscribe to internal state changes of the React Flow
