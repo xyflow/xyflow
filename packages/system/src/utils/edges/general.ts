@@ -1,4 +1,5 @@
 import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase, ZIndexMode } from '../..';
+import type { OnError } from '../../types/general';
 import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
@@ -116,6 +117,10 @@ export type AddEdgeOptions = {
    * Custom function to generate edge IDs. If not provided, the default `getEdgeId` function is used.
    */
   getEdgeId?: GetEdgeId;
+  /**
+   * Called when edge validation fails. If not provided, a default dev warning is used.
+   */
+  onError?: OnError;
 };
 
 /**
@@ -136,8 +141,10 @@ export const addEdge = <EdgeType extends EdgeBase>(
   edges: EdgeType[],
   options: AddEdgeOptions = {}
 ): EdgeType[] => {
+  const report = options.onError ?? devWarn;
+
   if (!edgeParams.source || !edgeParams.target) {
-    devWarn('006', errorMessages['error006']());
+    report('006', errorMessages['error006']());
 
     return edges;
   }
@@ -179,6 +186,10 @@ export type ReconnectEdgeOptions = {
    * Custom function to generate edge IDs. If not provided, the default `getEdgeId` function is used.
    */
   getEdgeId?: GetEdgeId;
+  /**
+   * Called when edge validation fails. If not provided, a default dev warning is used.
+   */
+  onError?: OnError;
 };
 
 /**
@@ -204,9 +215,10 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
   options: ReconnectEdgeOptions = { shouldReplaceId: true }
 ): EdgeType[] => {
   const { id: oldEdgeId, ...rest } = oldEdge;
+  const report = options.onError ?? devWarn;
 
   if (!newConnection.source || !newConnection.target) {
-    devWarn('006', errorMessages['error006']());
+    report('006', errorMessages['error006']());
 
     return edges;
   }
@@ -214,7 +226,7 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as EdgeType;
 
   if (!foundEdge) {
-    devWarn('007', errorMessages['error007'](oldEdgeId));
+    report('007', errorMessages['error007'](oldEdgeId));
 
     return edges;
   }

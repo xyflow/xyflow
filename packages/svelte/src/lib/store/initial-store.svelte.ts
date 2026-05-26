@@ -4,7 +4,7 @@ import {
   infiniteExtent,
   SelectionMode,
   ConnectionMode,
-  devWarn,
+  createDevWarn,
   adoptUserNodes,
   getViewportForBounds,
   updateConnectionLookup,
@@ -39,6 +39,8 @@ import {
   type AriaLabelConfig,
   type ZIndexMode
 } from '@xyflow/system';
+
+const devWarn = createDevWarn('Svelte Flow', 'https://svelteflow.dev/');
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
