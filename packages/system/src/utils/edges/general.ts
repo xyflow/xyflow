@@ -141,10 +141,8 @@ export const addEdge = <EdgeType extends EdgeBase>(
   edges: EdgeType[],
   options: AddEdgeOptions = {}
 ): EdgeType[] => {
-  const report = options.onError ?? devWarn;
-
   if (!edgeParams.source || !edgeParams.target) {
-    report('006', errorMessages['error006']());
+    (options.onError ?? devWarn)('006', errorMessages['error006']());
 
     return edges;
   }
@@ -215,10 +213,9 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
   options: ReconnectEdgeOptions = { shouldReplaceId: true }
 ): EdgeType[] => {
   const { id: oldEdgeId, ...rest } = oldEdge;
-  const report = options.onError ?? devWarn;
 
   if (!newConnection.source || !newConnection.target) {
-    report('006', errorMessages['error006']());
+    (options.onError ?? devWarn)('006', errorMessages['error006']());
 
     return edges;
   }
@@ -226,7 +223,7 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as EdgeType;
 
   if (!foundEdge) {
-    report('007', errorMessages['error007'](oldEdgeId));
+    (options.onError ?? devWarn)('007', errorMessages['error007'](oldEdgeId));
 
     return edges;
   }
