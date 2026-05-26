@@ -3,7 +3,6 @@ import {
   updateNodeInternals as updateNodeInternalsSystem,
   initialConnection,
   errorMessages,
-  createDevWarn,
   type UpdateNodePositions,
   type InternalNodeUpdate,
   type ViewportHelperFunctionOptions,
@@ -19,8 +18,6 @@ import {
   getHandlePosition,
   Position
 } from '@xyflow/system';
-
-const devWarn = createDevWarn('Svelte Flow', 'https://svelteflow.dev/');
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
 import { addEdge as addEdgeUtil } from '$lib/utils/edges';
@@ -281,7 +278,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     const node = store.nodeLookup.get(id);
 
     if (!node) {
-      devWarn('012', errorMessages['error012'](id));
+      store.onerror('012', errorMessages['error012'](id));
       return;
     }
 
@@ -301,7 +298,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     const edge = store.edgeLookup.get(id);
 
     if (!edge) {
-      devWarn('012', errorMessages['error012'](id));
+      store.onerror('012', errorMessages['error012'](id));
       return;
     }
 

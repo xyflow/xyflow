@@ -143,5 +143,3 @@ export {
   getOutgoers,
   getConnectedEdges,
 } from '@xyflow/system';
-
-export { addEdge } from '$lib/utils/edges';
