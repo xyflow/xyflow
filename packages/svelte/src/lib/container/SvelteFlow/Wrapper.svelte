@@ -153,8 +153,8 @@
 
     --controls-button-background-color-default: #fefefe;
     --controls-button-background-color-hover-default: #f4f4f4;
-    --controls-button-color-default: inherit;
-    --controls-button-color-hover-default: inherit;
+    --controls-button-color-default: #333;
+    --controls-button-color-hover-default: #111;
     --controls-button-border-color-default: #eee;
   }
 </style>
