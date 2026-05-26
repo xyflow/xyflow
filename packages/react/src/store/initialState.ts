@@ -5,7 +5,6 @@ import {
   getViewportForBounds,
   Transform,
   updateConnectionLookup,
-  createDevWarn,
   getInternalNodesBounds,
   NodeOrigin,
   initialConnection,
@@ -14,7 +13,7 @@ import {
   ZIndexMode,
 } from '@xyflow/system';
 
-const devWarn = createDevWarn('React Flow', 'https://reactflow.dev/');
+import { defaultOnError } from '../errors';
 
 import type { Edge, FitViewOptions, InternalNode, Node, ReactFlowStore } from '../types';
 
@@ -144,7 +143,7 @@ const getInitialState = ({
     autoPanSpeed: 15,
 
     connectionRadius: 20,
-    onError: devWarn,
+    onError: defaultOnError,
     isValidConnection: undefined,
     onSelectionChangeHandlers: [],
 

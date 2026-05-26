@@ -1,6 +1,7 @@
 import { useEffect, type MutableRefObject } from 'react';
-import { errorMessages, getDimensions } from '@xyflow/system';
+import { getDimensions, XYError, XYErrorCode } from '@xyflow/system';
 
+import { reportError } from '../errors';
 import { useStoreApi } from '../hooks/useStore';
 
 /**
@@ -19,7 +20,8 @@ export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null
       const size = getDimensions(domNode.current);
 
       if (size.height === 0 || size.width === 0) {
-        store.getState().onError?.('004', errorMessages['error004']());
+        const error = new XYError(XYErrorCode.MISSING_CONTAINER_DIMENSIONS);
+        reportError(store.getState().onError, error);
       }
 
       store.setState({ width: size.width || 500, height: size.height || 500 });

@@ -3,14 +3,16 @@ import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
   elementSelectionKeys,
-  errorMessages,
   getNodeDimensions,
   isInputDOMNode,
   nodeHasDimensions,
   getNodesInside,
+  XYError,
+  XYErrorCode,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
+import { reportError } from '../../errors';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
@@ -56,7 +58,8 @@ function NodeWrapper<NodeType extends Node>({
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
 
   if (NodeComponent === undefined) {
-    onError?.('003', errorMessages['error003'](nodeType));
+    const error = new XYError(XYErrorCode.NODE_TYPE_NOT_FOUND, nodeType);
+    reportError(onError, error);
     nodeType = 'default';
     NodeComponent = nodeTypes?.['default'] || builtinNodeTypes.default;
   }

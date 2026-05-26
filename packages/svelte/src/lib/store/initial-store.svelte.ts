@@ -4,7 +4,6 @@ import {
   infiniteExtent,
   SelectionMode,
   ConnectionMode,
-  createDevWarn,
   adoptUserNodes,
   getViewportForBounds,
   updateConnectionLookup,
@@ -40,7 +39,7 @@ import {
   type ZIndexMode
 } from '@xyflow/system';
 
-const devWarn = createDevWarn('Svelte Flow', 'https://svelteflow.dev/');
+import { defaultOnError } from '$lib/errors';
 
 import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 import InputNode from '$lib/components/nodes/InputNode.svelte';
@@ -392,7 +391,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       });
     });
     onlyRenderVisibleElements: boolean = $derived(signals.props.onlyRenderVisibleElements ?? false);
-    onerror: OnError = $derived(signals.props.onflowerror ?? devWarn);
+    onerror: OnError = $derived(signals.props.onflowerror ?? defaultOnError);
 
     ondelete?: OnDelete<NodeType, EdgeType> = $derived(signals.props.ondelete);
     onbeforedelete?: OnBeforeDelete<NodeType, EdgeType> = $derived(signals.props.onbeforedelete);

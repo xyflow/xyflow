@@ -1,4 +1,5 @@
 export * from './constants';
+export * from './xyerror';
 export * from './types';
 export * from './utils';
 export * from './xydrag';

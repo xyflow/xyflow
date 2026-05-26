@@ -5,11 +5,13 @@ import {
   getMarkerId,
   elementSelectionKeys,
   getEdgePosition,
-  errorMessages,
   getElevatedEdgeZIndex,
+  XYError,
+  XYErrorCode,
 } from '@xyflow/system';
 
 import { useStoreApi, useStore } from '../../hooks/useStore';
+import { reportError } from '../../errors';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
@@ -44,7 +46,8 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   let EdgeComponent = edgeTypes?.[edgeType] || builtinEdgeTypes[edgeType];
 
   if (EdgeComponent === undefined) {
-    onError?.('011', errorMessages['error011'](edgeType));
+    const error = new XYError(XYErrorCode.EDGE_TYPE_NOT_FOUND, edgeType);
+    reportError(onError, error);
     edgeType = 'default';
     EdgeComponent = edgeTypes?.['default'] || builtinEdgeTypes.default;
   }

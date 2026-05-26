@@ -1,14 +1,13 @@
 import {
   addEdge as addEdgeSystem,
   reconnectEdge as reconnectEdgeSystem,
-  createDevWarn,
   type AddEdgeOptions,
   type Connection,
   type EdgeBase,
   type ReconnectEdgeOptions,
 } from '@xyflow/system';
 
-const defaultOnError = createDevWarn('React Flow', 'https://reactflow.dev/');
+import { defaultOnError } from '../errors';
 
 export function addEdge<EdgeType extends EdgeBase>(
   edgeParams: EdgeType | Connection,

@@ -1,16 +1,15 @@
 import { useEffect, useMemo, useRef } from 'react';
 import {
   areConnectionMapsEqual,
-  errorMessages,
   handleConnectionChange,
+  XYError,
+  XYErrorCode,
   type NodeConnection,
   type UseNodeConnectionsParams,
 } from '@xyflow/system';
 
 import { useStore } from './useStore';
 import { useNodeId } from '../contexts/NodeIdContext';
-
-const error014 = errorMessages['error014']();
 
 /**
  * This hook returns an array of connections on a specific node, handle type ('source', 'target') or handle ID.
@@ -45,7 +44,7 @@ export function useNodeConnections({
   const currentNodeId = id ?? nodeId;
 
   if (!currentNodeId) {
-    throw new Error(error014);
+    throw new XYError(XYErrorCode.USE_NODE_CONNECTIONS_NO_ID);
   }
 
   const prevConnections = useRef<Map<string, NodeConnection> | null>(null);

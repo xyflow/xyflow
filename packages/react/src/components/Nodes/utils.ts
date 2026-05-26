@@ -1,7 +1,8 @@
 import type { RefObject } from 'react';
 import type { StoreApi } from 'zustand';
-import { errorMessages } from '@xyflow/system';
+import { XYError, XYErrorCode } from '@xyflow/system';
 
+import { reportError } from '../../errors';
 import type { ReactFlowState } from '../../types';
 
 /*
@@ -28,7 +29,8 @@ export function handleNodeClick({
   const node = nodeLookup.get(id);
 
   if (!node) {
-    onError?.('012', errorMessages['error012'](id));
+    const error = new XYError(XYErrorCode.NODE_NOT_FOUND, id);
+    reportError(onError, error);
     return;
   }
 

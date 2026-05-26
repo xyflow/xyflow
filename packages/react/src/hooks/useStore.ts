@@ -1,12 +1,13 @@
 import { useContext, useMemo } from 'react';
 import { UseBoundStoreWithEqualityFn, useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
 import { StoreApi } from 'zustand';
-import { errorMessages } from '@xyflow/system';
+import { XYErrorCode } from '@xyflow/system';
 
 import StoreContext from '../contexts/StoreContext';
+import { toError } from '../errors';
 import type { Edge, Node, ReactFlowState } from '../types';
 
-const zustandErrorMessage = errorMessages['error001']('react');
+const providerError = toError(XYErrorCode.ZUSTAND_STORE_NOT_PROVIDED);
 
 /**
  * This hook can be used to subscribe to internal state changes of the React Flow
@@ -38,7 +39,7 @@ function useStore<StateSlice = unknown>(
   const store = useContext(StoreContext);
 
   if (store === null) {
-    throw new Error(zustandErrorMessage);
+    throw providerError;
   }
 
   return useZustandStore(store, selector, equalityFn);
@@ -63,7 +64,7 @@ function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>
   > | null;
 
   if (store === null) {
-    throw new Error(zustandErrorMessage);
+    throw providerError;
   }
 
   return useMemo(

@@ -10,6 +10,7 @@ import {
   isCoordinateExtent,
   getNodeDimensions,
   nodeToBox,
+  reportError,
 } from './general';
 import {
   type Transform,
@@ -27,7 +28,7 @@ import {
   InternalNodeBase,
   NodeDragItem,
 } from '../types';
-import { errorMessages } from '../constants';
+import { XYError, XYErrorCode } from '../xyerror';
 
 /**
  * Test whether an object is usable as an Edge
@@ -414,7 +415,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
 
   if (node.extent === 'parent' && !node.expandParent) {
     if (!parentNode) {
-      onError?.('005', errorMessages['error005']());
+      reportError(onError, new XYError(XYErrorCode.NODE_EXTENT_INVALID));
     } else {
       const parentWidth = parentNode.measured.width;
       const parentHeight = parentNode.measured.height;
@@ -438,7 +439,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     : nextPosition;
 
   if (node.measured.width === undefined || node.measured.height === undefined) {
-    onError?.('015', errorMessages['error015']());
+    reportError(onError, new XYError(XYErrorCode.NODE_NOT_INITIALIZED));
   }
 
   return {

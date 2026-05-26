@@ -1,12 +1,11 @@
 import {
   addEdge as addEdgeSystem,
-  createDevWarn,
   type AddEdgeOptions,
   type Connection,
   type EdgeBase,
 } from '@xyflow/system';
 
-const defaultOnError = createDevWarn('Svelte Flow', 'https://svelteflow.dev/');
+import { defaultOnError } from '$lib/errors';
 
 export function addEdge<EdgeType extends EdgeBase>(
   edgeParams: EdgeType | Connection,
