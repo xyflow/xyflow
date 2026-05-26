@@ -1,4 +1,11 @@
 name: 'CI setup'
+description: 'Setup pnpm and node'
+
+inputs:
+  package-manager-cache:
+    description: 'Enable pnpm cache in setup-node'
+    required: false
+    default: 'true'
 
 runs:
   using: 'composite'
@@ -8,7 +15,9 @@ runs:
     - name: Setup node.js
       uses: actions/setup-node@v6
       with:
-        node-version: 24.x
+        node-version: '24'
+        registry-url: 'https://registry.npmjs.org'
+        package-manager-cache: ${{ inputs.package-manager-cache }}
     - name: Install dependencies
       run: pnpm install
       shell: bash

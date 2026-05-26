@@ -98,6 +98,23 @@ export type NodeConnection = Connection & {
   edgeId: string;
 };
 
+export type UseNodeConnectionsParams = {
+  /** ID of the node, filled in automatically if used inside custom node. */
+  id?: string;
+  /** Gets called when a connection is established. */
+  onConnect?: (connections: HandleConnection[]) => void;
+  /** Gets called when a connection is removed. */
+  onDisconnect?: (connections: HandleConnection[]) => void;
+} & (
+  | {
+      /** What type of handle connections do you want to observe? */
+      handleType: HandleType;
+      /** Filter by handle id (this is only needed if the node has multiple handles of the same type). Requires `handleType` to be set. */
+      handleId?: string;
+    }
+  | { handleType?: HandleType; handleId?: never }
+);
+
 /**
  * The `ConnectionMode` is used to set the mode of connection between nodes.
  * The `Strict` mode is the default one and only allows source to target edges.
@@ -118,7 +135,10 @@ export type OnConnectStartParams = {
 
 export type OnConnectStart = (event: MouseEvent | TouchEvent, params: OnConnectStartParams) => void;
 export type OnConnect = (connection: Connection) => void;
-export type OnConnectEnd = (event: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => void;
+export type OnConnectEnd<NodeType extends NodeBase = NodeBase> = (
+  event: MouseEvent | TouchEvent,
+  connectionState: FinalConnectionState<InternalNodeBase<NodeType>>
+) => void;
 
 export type OnReconnect<EdgeType extends EdgeBase = EdgeBase> = (oldEdge: EdgeType, newConnection: Connection) => void;
 export type OnReconnectStart<EdgeType extends EdgeBase = EdgeBase> = (
@@ -126,14 +146,14 @@ export type OnReconnectStart<EdgeType extends EdgeBase = EdgeBase> = (
   edge: EdgeType,
   handleType: HandleType
 ) => void;
-export type OnReconnectEnd<EdgeType extends EdgeBase = EdgeBase> = (
+export type OnReconnectEnd<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = (
   event: MouseEvent | TouchEvent,
   edge: EdgeType,
   handleType: HandleType,
-  connectionState: FinalConnectionState
+  connectionState: FinalConnectionState<InternalNodeBase<NodeType>>
 ) => void;
 
-export type IsValidConnection = (edge: EdgeBase | Connection) => boolean;
+export type IsValidConnection<EdgeType extends EdgeBase = EdgeBase> = (edge: EdgeType | Connection) => boolean;
 
 /**
  * @inline
@@ -278,7 +298,10 @@ export type SelectionRect = Rect & {
 
 export type OnError = (id: string, message: string) => void;
 
-export type UpdateNodePositions = (dragItems: Map<string, NodeDragItem | InternalNodeBase>, dragging?: boolean) => void;
+export type UpdateNodePositions<NodeType extends InternalNodeBase = InternalNodeBase> = (
+  dragItems: Map<string, NodeDragItem | NodeType>,
+  dragging?: boolean
+) => void;
 export type PanBy = (delta: XYPosition) => Promise<boolean>;
 
 export const initialConnection: NoConnection = {

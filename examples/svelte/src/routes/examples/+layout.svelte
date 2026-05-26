@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { Header } from '$components/Header';
-	interface Props {
-		children?: import('svelte').Snippet;
-	}
+	import type { Snippet } from 'svelte';
 
-	let { children }: Props = $props();
+	let { children }: { children?: Snippet } = $props();
 </script>
 
 <div class="app">

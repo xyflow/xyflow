@@ -445,7 +445,7 @@ export type SvelteFlowProps<
      * before doing so.
      */
     proOptions?: ProOptions;
-    isValidConnection?: IsValidConnection;
+    isValidConnection?: IsValidConnection<EdgeType>;
     /** This event handler is called when the user begins to pan or zoom the viewport */
     onmovestart?: OnMoveStart;
     /** This event handler is called when the user pans or zooms the viewport */
@@ -481,7 +481,7 @@ export type SvelteFlowProps<
     /** This event gets fired when a user starts to reconnect an edge */
     onreconnectstart?: OnReconnectStart<EdgeType>;
     /** This event gets fired when a user stops reconnecting an edge */
-    onreconnectend?: OnReconnectEnd<EdgeType>;
+    onreconnectend?: OnReconnectEnd<NodeType, EdgeType>;
     /** This handler gets called when an edge is reconnected. You can use it to modify the edge before the update is applied. */
     onbeforereconnect?: OnBeforeReconnect<EdgeType>;
     /** A connection is started by clicking on a handle */

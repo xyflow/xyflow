@@ -13,6 +13,9 @@ import {
   ConnectionInProgress,
   type Handle,
   type Connection,
+  NodeBase,
+  EdgeBase,
+  InternalNodeBase,
 } from '../types';
 
 import { getClosestHandle, isConnectionValid, getHandleType, getHandle } from './utils';
@@ -20,7 +23,7 @@ import { IsValidParams, OnPointerDownParams, Result, XYHandleInstance } from './
 
 const alwaysValid = () => true;
 
-function onPointerDown(
+function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   event: MouseEvent | TouchEvent,
   {
     connectionMode,
@@ -47,7 +50,7 @@ function onPointerDown(
     autoPanSpeed,
     dragThreshold = 1,
     handleDomNode,
-  }: OnPointerDownParams
+  }: OnPointerDownParams<NodeType, EdgeType>
 ) {
   // when xyflow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target);
@@ -96,7 +99,7 @@ function onPointerDown(
   const fromInternalNode = nodeLookup.get(nodeId)!;
   const from = getHandlePosition(fromInternalNode, fromHandle, Position.Left, true);
 
-  let previousConnection: ConnectionInProgress = {
+  let previousConnection: ConnectionInProgress<InternalNodeBase<NodeType>> = {
     inProgress: true,
     isValid: null,
 
@@ -177,7 +180,7 @@ function onPointerDown(
       ? getHandlePosition(fromInternalNode, fromHandle, Position.Left, true)
       : previousConnection.from;
 
-    const newConnection: ConnectionInProgress = {
+    const newConnection = {
       ...previousConnection,
       from,
       isValid,
@@ -246,7 +249,7 @@ function onPointerDown(
 }
 
 // checks if  and returns connection in form of an object { source: 123, target: 312 }
-function isValidHandle(
+function isValidHandle<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   event: MouseEvent | TouchEvent,
   {
     handle,
@@ -259,7 +262,7 @@ function isValidHandle(
     flowId,
     isValidConnection = alwaysValid,
     nodeLookup,
-  }: IsValidParams
+  }: IsValidParams<NodeType, EdgeType>
 ) {
   const isTarget = fromType === 'target';
   const handleDomNode = handle
