@@ -1,12 +1,12 @@
 import { type CoordinateExtent, type HandleType } from '../types';
 
 export const errorMessages = {
-  error001: () =>
-    '[React Flow]: Seems like you have not used zustand provider as an ancestor. Help: https://reactflow.dev/error#001',
+  error001: (lib: string = 'react') =>
+    `Seems like you have not used zustand provider as an ancestor. Help: https://${lib}flow.dev/error#001`,
   error002: () =>
     "It looks like you've created a new nodeTypes or edgeTypes object. If this wasn't on purpose please define the nodeTypes/edgeTypes outside of the component or memoize them.",
   error003: (nodeType: string) => `Node type "${nodeType}" not found. Using fallback type "default".`,
-  error004: () => 'The React Flow parent container needs a width and a height to render the graph.',
+  error004: () => 'The parent container needs a width and a height to render the graph.',
   error005: () => 'Only child nodes can use a parent extent.',
   error006: () => "Can't create edge. An edge needs a source and a target.",
   error007: (id: string) => `The old edge with id=${id} does not exist.`,
