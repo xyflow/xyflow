@@ -21,20 +21,20 @@ const useViewportHelper = (): ViewportHelperFunctions => {
 
   return useMemo<ViewportHelperFunctions>(() => {
     return {
-      zoomIn: (options) => {
+      zoomIn: async (options) => {
         const { panZoom } = store.getState();
 
-        return panZoom ? panZoom.scaleBy(1.2, options) : Promise.resolve(false);
+        return panZoom ? panZoom.scaleBy(1.2, options) : false;
       },
-      zoomOut: (options) => {
+      zoomOut: async (options) => {
         const { panZoom } = store.getState();
 
-        return panZoom ? panZoom.scaleBy(1 / 1.2, options) : Promise.resolve(false);
+        return panZoom ? panZoom.scaleBy(1 / 1.2, options) : false;
       },
-      zoomTo: (zoomLevel, options) => {
+      zoomTo: async (zoomLevel, options) => {
         const { panZoom } = store.getState();
 
-        return panZoom ? panZoom.scaleTo(zoomLevel, options) : Promise.resolve(false);
+        return panZoom ? panZoom.scaleTo(zoomLevel, options) : false;
       },
       getZoom: () => store.getState().transform[2],
       setViewport: async (viewport, options) => {
@@ -44,7 +44,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         } = store.getState();
 
         if (!panZoom) {
-          return Promise.resolve(false);
+          return false;
         }
 
         await panZoom.setViewport(
@@ -56,7 +56,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           options
         );
 
-        return Promise.resolve(true);
+        return true;
       },
       getViewport: () => {
         const [x, y, zoom] = store.getState().transform;
@@ -70,7 +70,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
 
         if (!panZoom) {
-          return Promise.resolve(false);
+          return false;
         }
 
         await panZoom.setViewport(viewport, {
@@ -79,7 +79,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           interpolate: options?.interpolate,
         });
 
-        return Promise.resolve(true);
+        return true;
       },
       screenToFlowPosition: (
         clientPosition: XYPosition,

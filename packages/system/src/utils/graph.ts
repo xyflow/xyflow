@@ -359,7 +359,7 @@ export async function fitViewport<
   options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>
 ): Promise<boolean> {
   if (nodes.size === 0) {
-    return Promise.resolve(true);
+    return true;
   }
 
   const nodesToFit = getFitViewNodes(nodes, options);
@@ -381,7 +381,7 @@ export async function fitViewport<
     interpolate: options?.interpolate,
   });
 
-  return Promise.resolve(true);
+  return true;
 }
 
 /**

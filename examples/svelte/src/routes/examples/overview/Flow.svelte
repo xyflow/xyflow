@@ -216,6 +216,7 @@
 	snapGrid={[25, 25]}
 	autoPanOnConnect
 	autoPanOnNodeDrag
+	autoPanOnSelection={true}
 	connectionMode={ConnectionMode.Strict}
 	attributionPosition={'top-center'}
 	deleteKey={['Backspace', 'd']}
@@ -265,13 +266,7 @@
 	}
 
 	:root {
-		/* --background-color: #ffffdd; */
-		--background-pattern-color: #5050ff;
-
 		--xy-minimap-background-color: red;
 		--xy-minimap-mask-color: rgb(255, 255, 240, 0.6);
-
-		--controls-button-background-color: #ddd;
-		--controls-button-background-color-hover: #ccc;
 	}
 </style>

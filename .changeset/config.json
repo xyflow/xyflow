@@ -1,11 +1,12 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "xyflow/xyflow" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "xyflow/xyflow", "disableThanks": true }],
   "commit": false,
   "fixed": [],
   "linked": [],
   "access": "restricted",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["react-examples", "svelte-examples", "astro-examples", "playwright"]
+  "ignore": ["react-examples", "svelte-examples", "astro-examples", "playwright"],
+  "prettier": false
 }

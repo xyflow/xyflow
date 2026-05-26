@@ -74,7 +74,7 @@ export function XYPanZoom({
   const d3DblClickZoomHandler = d3Selection.on('dblclick.zoom')!;
   d3ZoomInstance.wheelDelta(wheelDelta);
 
-  function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
+  async function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
         d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).transform(
@@ -84,7 +84,7 @@ export function XYPanZoom({
       });
     }
 
-    return Promise.resolve(false);
+    return false;
   }
 
   // public functions
@@ -139,36 +139,34 @@ export function XYPanZoom({
 
     d3Selection.on('wheel.zoom', wheelHandler, { passive: false });
 
-    if (!userSelectionActive) {
-      // pan zoom start
-      const startHandler = createPanZoomStartHandler({
-        zoomPanValues,
-        onDraggingChange,
-        onPanZoomStart,
-      });
-      d3ZoomInstance.on('start', startHandler);
+    // pan zoom start
+    const startHandler = createPanZoomStartHandler({
+      zoomPanValues,
+      onDraggingChange,
+      onPanZoomStart,
+    });
+    d3ZoomInstance.on('start', startHandler);
 
-      // pan zoom
-      const panZoomHandler = createPanZoomHandler({
-        zoomPanValues,
-        panOnDrag,
-        onPaneContextMenu: !!onPaneContextMenu,
-        onPanZoom,
-        onTransformChange,
-      });
-      d3ZoomInstance.on('zoom', panZoomHandler);
+    // pan zoom
+    const panZoomHandler = createPanZoomHandler({
+      zoomPanValues,
+      panOnDrag,
+      onPaneContextMenu: !!onPaneContextMenu,
+      onPanZoom,
+      onTransformChange,
+    });
+    d3ZoomInstance.on('zoom', panZoomHandler);
 
-      // pan zoom end
-      const panZoomEndHandler = createPanZoomEndHandler({
-        zoomPanValues,
-        panOnDrag,
-        panOnScroll,
-        onPaneContextMenu,
-        onPanZoomEnd,
-        onDraggingChange,
-      });
-      d3ZoomInstance.on('end', panZoomEndHandler);
-    }
+    // pan zoom end
+    const panZoomEndHandler = createPanZoomEndHandler({
+      zoomPanValues,
+      panOnDrag,
+      panOnScroll,
+      onPaneContextMenu,
+      onPanZoomEnd,
+      onDraggingChange,
+    });
+    d3ZoomInstance.on('end', panZoomEndHandler);
 
     const filter = createFilter({
       zoomActivationKeyPressed,
@@ -213,7 +211,7 @@ export function XYPanZoom({
       await setTransform(contrainedTransform);
     }
 
-    return new Promise((resolve) => resolve(contrainedTransform));
+    return contrainedTransform;
   }
 
   async function setViewport(viewport: Viewport, options?: PanZoomTransformOptions) {
@@ -221,7 +219,7 @@ export function XYPanZoom({
 
     await setTransform(nextTransform, options);
 
-    return new Promise<ZoomTransform>((resolve) => resolve(nextTransform));
+    return nextTransform;
   }
 
   function syncViewport(viewport: Viewport) {
@@ -246,7 +244,7 @@ export function XYPanZoom({
     return { x: transform.x, y: transform.y, zoom: transform.k };
   }
 
-  function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
+  async function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
         d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleTo(
@@ -256,10 +254,10 @@ export function XYPanZoom({
       });
     }
 
-    return Promise.resolve(false);
+    return false;
   }
 
-  function scaleBy(factor: number, options?: PanZoomTransformOptions) {
+  async function scaleBy(factor: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
         d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleBy(
@@ -269,7 +267,7 @@ export function XYPanZoom({
       });
     }
 
-    return Promise.resolve(false);
+    return false;
   }
 
   function setScaleExtent(scaleExtent: [number, number]) {

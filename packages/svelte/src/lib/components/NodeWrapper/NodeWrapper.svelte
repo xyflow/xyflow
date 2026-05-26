@@ -63,6 +63,8 @@
     }
   } = $derived(node);
 
+  // The id is stable and we don't want to pass signals everywhere
+  // svelte-ignore state_referenced_locally
   let { id } = node;
 
   let draggable = $derived(_draggable ?? store.nodesDraggable);
