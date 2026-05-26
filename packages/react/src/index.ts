@@ -118,6 +118,7 @@ export {
   type HandleConnection,
   type ZIndexMode,
   type NodeHandle,
+  type UseNodeConnectionsParams,
 } from '@xyflow/system';
 
 // we need this workaround to prevent a duplicate identifier error

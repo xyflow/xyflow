@@ -13,7 +13,7 @@ jobs:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.51.1-jammy
+      image: mcr.microsoft.com/playwright:v1.60.0-jammy
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6

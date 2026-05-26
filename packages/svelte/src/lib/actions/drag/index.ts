@@ -22,7 +22,7 @@ export default function drag<NodeType extends Node = Node, EdgeType extends Edge
   params: UseDragParams<NodeType, EdgeType>
 ) {
   const { store, onDrag, onDragStart, onDragStop, onNodeMouseDown } = params;
-  const dragInstance = XYDrag({
+  const dragInstance = XYDrag<NodeType, EdgeType>({
     onDrag,
     onDragStart,
     onDragStop,
@@ -53,7 +53,7 @@ export default function drag<NodeType extends Node = Node, EdgeType extends Edge
         panBy: store.panBy
       };
     }
-  } as XYDragParams<NodeTargetEventWithPointer<MouseEvent | TouchEvent, NodeType>>);
+  });
 
   function updateDrag(domNode: Element, params: UseDragParams<NodeType, EdgeType>) {
     if (params.disabled) {

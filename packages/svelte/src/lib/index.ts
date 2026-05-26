@@ -124,7 +124,8 @@ export {
   type FitBounds,
   type HandleConnection,
   type ZIndexMode,
-  type NodeHandle
+  type NodeHandle,
+  type UseNodeConnectionsParams
 } from '@xyflow/system';
 
 // system utils

@@ -422,7 +422,7 @@ const createStore = ({
         const { width, height, maxZoom, panZoom } = get();
 
         if (!panZoom) {
-          return Promise.resolve(false);
+          return false;
         }
 
         const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : maxZoom;
@@ -436,7 +436,7 @@ const createStore = ({
           { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
         );
 
-        return Promise.resolve(true);
+        return true;
       },
       cancelConnection: () => {
         set({

@@ -53,7 +53,7 @@ export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeTy
 export type NodeMouseHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, node: NodeType) => void;
 export type SelectionDragHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, nodes: NodeType[]) => void;
 export type OnNodeDrag<NodeType extends Node = Node> = (
-  event: ReactMouseEvent,
+  event: MouseEvent | TouchEvent,
   node: NodeType,
   nodes: NodeType[]
 ) => void;

@@ -120,7 +120,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * @param options.duration - optional duration. If set, a transition will be applied
    * @param options.nodes - optional nodes to fit the view to
    */
-  fitView: (options?: FitViewOptions) => Promise<boolean>;
+  fitView: (options?: FitViewOptions<NodeType>) => Promise<boolean>;
   /**
    * Returns all nodes that intersect with the given node or rect.
    *
@@ -340,16 +340,16 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     getNodes: (ids) => (ids === undefined ? store.nodes : getElements(store.nodeLookup, ids)),
     getEdge: (id) => store.edgeLookup.get(id),
     getEdges: (ids) => (ids === undefined ? store.edges : getElements(store.edgeLookup, ids)),
-    setZoom: (zoomLevel, options) => {
+    setZoom: async (zoomLevel, options) => {
       const panZoom = store.panZoom;
-      return panZoom ? panZoom.scaleTo(zoomLevel, options) : Promise.resolve(false);
+      return panZoom ? panZoom.scaleTo(zoomLevel, options) : false;
     },
     getZoom: () => store.viewport.zoom,
     setViewport: async (nextViewport, options) => {
       const currentViewport = store.viewport;
 
       if (!store.panZoom) {
-        return Promise.resolve(false);
+        return false;
       }
 
       await store.panZoom.setViewport(
@@ -361,14 +361,14 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         options
       );
 
-      return Promise.resolve(true);
+      return true;
     },
     getViewport: () => $state.snapshot(store.viewport),
     setCenter: async (x, y, options) => store.setCenter(x, y, options),
-    fitView: (options?: FitViewOptions) => store.fitView(options),
+    fitView: (options?: FitViewOptions<NodeType>) => store.fitView(options),
     fitBounds: async (bounds: Rect, options?: FitBoundsOptions) => {
       if (!store.panZoom) {
-        return Promise.resolve(false);
+        return false;
       }
 
       const viewport = getViewportForBounds(
@@ -386,7 +386,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         interpolate: options?.interpolate
       });
 
-      return Promise.resolve(true);
+      return true;
     },
     /**
      * Partial is defined as "the 2 nodes/areas are intersecting partially".
