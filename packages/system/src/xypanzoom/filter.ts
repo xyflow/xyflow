@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { isWrappedWithClass } from './utils';
+import { isMiddleMousePan, isWrappedWithClass } from './utils';
 
 export type FilterParams = {
   zoomActivationKeyPressed: boolean;
@@ -34,6 +34,8 @@ export function createFilter({
     const isWheelEvent = event.type === 'wheel';
 
     if (
+      isMiddleMousePan(panOnDrag) &&
+      !userSelectionActive &&
       event.button === 1 &&
       event.type === 'mousedown' &&
       (isWrappedWithClass(event, `${lib}-flow__node`) || isWrappedWithClass(event, `${lib}-flow__edge`))
