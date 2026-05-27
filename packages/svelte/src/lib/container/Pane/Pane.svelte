@@ -230,7 +230,9 @@
   }
 
   onDestroy(() => {
-    cleanupAutoPan();
+    if (typeof window !== 'undefined') {
+      cleanupAutoPan();
+    }
   });
 
   function onPointerMove(event: PointerEvent) {
