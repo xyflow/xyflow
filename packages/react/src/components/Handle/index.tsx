@@ -8,12 +8,10 @@ import {
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
 import {
-  errorMessages,
   Position,
   XYHandle,
   getHostForElement,
   isMouseEvent,
-  addEdge,
   type HandleProps as HandlePropsSystem,
   type Connection,
   type HandleType,
@@ -21,12 +19,16 @@ import {
   OnConnect,
   ConnectionState,
   Optional,
+  XYError,
+  XYErrorCode,
 } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
+import { reportError } from '../../errors';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
+import { addEdge } from '../../utils/edges';
 
 /**
  * @expand
@@ -96,7 +98,8 @@ function HandleComponent(
     valid,
   } = useStore(connectingSelector(nodeId, handleId, type), shallow);
   if (!nodeId) {
-    store.getState().onError?.('010', errorMessages['error010']());
+    const error = new XYError(XYErrorCode.HANDLE_NODE_ID_NOT_FOUND);
+    reportError(store.getState().onError, error);
   }
 
   const onConnectExtended = (params: Connection) => {
@@ -107,8 +110,8 @@ function HandleComponent(
       ...params,
     };
     if (hasDefaultEdges) {
-      const { edges, setEdges } = store.getState();
-      setEdges(addEdge(edgeParams, edges));
+      const { edges, setEdges, onError } = store.getState();
+      setEdges(addEdge(edgeParams, edges, { onError }));
     }
 
     onConnectAction?.(edgeParams);

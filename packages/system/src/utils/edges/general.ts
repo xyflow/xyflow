@@ -1,5 +1,6 @@
-import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase, ZIndexMode } from '../..';
-import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
+import { Connection, InternalNodeBase, Transform, isEdgeBase, EdgeBase, ZIndexMode, XYError, XYErrorCode } from '../..';
+import type { OnError } from '../../types/general';
+import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, reportError } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
 export function getEdgeCenter({
@@ -116,6 +117,10 @@ export type AddEdgeOptions = {
    * Custom function to generate edge IDs. If not provided, the default `getEdgeId` function is used.
    */
   getEdgeId?: GetEdgeId;
+  /**
+   * Called when edge validation fails. If not provided, a default dev warning is used.
+   */
+  onError?: OnError;
 };
 
 /**
@@ -137,7 +142,7 @@ export const addEdge = <EdgeType extends EdgeBase>(
   options: AddEdgeOptions = {}
 ): EdgeType[] => {
   if (!edgeParams.source || !edgeParams.target) {
-    devWarn('006', errorMessages['error006']());
+    reportError(options.onError, new XYError(XYErrorCode.EDGE_INVALID));
 
     return edges;
   }
@@ -179,6 +184,10 @@ export type ReconnectEdgeOptions = {
    * Custom function to generate edge IDs. If not provided, the default `getEdgeId` function is used.
    */
   getEdgeId?: GetEdgeId;
+  /**
+   * Called when edge validation fails. If not provided, a default dev warning is used.
+   */
+  onError?: OnError;
 };
 
 /**
@@ -206,7 +215,7 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
   const { id: oldEdgeId, ...rest } = oldEdge;
 
   if (!newConnection.source || !newConnection.target) {
-    devWarn('006', errorMessages['error006']());
+    reportError(options.onError, new XYError(XYErrorCode.EDGE_INVALID));
 
     return edges;
   }
@@ -214,7 +223,7 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
   const foundEdge = edges.find((e) => e.id === oldEdge.id) as EdgeType;
 
   if (!foundEdge) {
-    devWarn('007', errorMessages['error007'](oldEdgeId));
+    reportError(options.onError, new XYError(XYErrorCode.RECONNECT_EDGE, oldEdgeId));
 
     return edges;
   }

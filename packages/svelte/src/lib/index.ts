@@ -91,6 +91,10 @@ export {
   SelectionMode,
   type SelectionRect,
   type OnError,
+  XYError,
+  XYErrorCode,
+  XYErrorMessages,
+  isXYError,
   type NodeOrigin,
   type OnSelectionDrag,
   Position,
@@ -143,5 +147,4 @@ export {
   getIncomers,
   getOutgoers,
   getConnectedEdges,
-  addEdge
 } from '@xyflow/system';

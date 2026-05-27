@@ -2,16 +2,18 @@
   import { onDestroy } from 'svelte';
   import {
     elementSelectionKeys,
-    errorMessages,
     isInputDOMNode,
     nodeHasDimensions,
     Position,
-    getNodesInside
+    getNodesInside,
+    XYError,
+    XYErrorCode
   } from '@xyflow/system';
 
   import drag from '$lib/actions/drag';
   import { setNodeConnectableContext, setNodeIdContext } from '$lib/store/context';
   import { arrowKeyDiffs, toPxString } from '$lib/utils';
+  import { reportError } from '$lib/errors';
   import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 
   import type { Node, Edge, NodeEvents } from '$lib/types';
@@ -107,7 +109,7 @@
     $effect(() => {
       const valid = !!store.nodeTypes[type];
       if (!valid) {
-        console.warn('003', errorMessages['error003'](type!));
+        reportError(store.onerror, new XYError(XYErrorCode.NODE_TYPE_NOT_FOUND, type!));
       }
     });
   }

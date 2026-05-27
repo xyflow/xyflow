@@ -5,7 +5,6 @@ import {
   getViewportForBounds,
   Transform,
   updateConnectionLookup,
-  devWarn,
   getInternalNodesBounds,
   NodeOrigin,
   initialConnection,
@@ -13,6 +12,8 @@ import {
   defaultAriaLabelConfig,
   ZIndexMode,
 } from '@xyflow/system';
+
+import { defaultOnError } from '../errors';
 
 import type { Edge, FitViewOptions, InternalNode, Node, ReactFlowStore } from '../types';
 
@@ -142,7 +143,7 @@ const getInitialState = ({
     autoPanSpeed: 15,
 
     connectionRadius: 20,
-    onError: devWarn,
+    onError: defaultOnError,
     isValidConnection: undefined,
     onSelectionChangeHandlers: [],
 

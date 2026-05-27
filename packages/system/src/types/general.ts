@@ -296,7 +296,7 @@ export type SelectionRect = Rect & {
   startY: number;
 };
 
-export type OnError = (id: string, message: string) => void;
+export type { OnError } from '../xyerror';
 
 export type UpdateNodePositions<NodeType extends InternalNodeBase = InternalNodeBase> = (
   dragItems: Map<string, NodeDragItem | NodeType>,

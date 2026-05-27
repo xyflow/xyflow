@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { errorMessages, MarkerType, type EdgeMarker } from '@xyflow/system';
+import { MarkerType, type EdgeMarker, XYError, XYErrorCode } from '@xyflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
+import { reportError } from '../../errors';
 
 type SymbolProps = Omit<EdgeMarker, 'type'>;
 
@@ -52,7 +53,8 @@ export function useMarkerSymbol(type: MarkerType | `${MarkerType}`) {
     const symbolExists = Object.prototype.hasOwnProperty.call(MarkerSymbols, type);
 
     if (!symbolExists) {
-      store.getState().onError?.('009', errorMessages['error009'](type));
+      const error = new XYError(XYErrorCode.MARKER_TYPE_NOT_FOUND, type);
+      reportError(store.getState().onError, error);
 
       return null;
     }

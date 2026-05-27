@@ -14,6 +14,11 @@ import type {
   PaddingWithUnit,
 } from '../types';
 import { type Viewport } from '../types';
+import {
+  type OnError,
+  XYError,
+  XYErrorCode,
+} from '../xyerror';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
 
 import { defaultAriaLabelConfig, type AriaLabelConfig } from '../constants';
@@ -143,11 +148,41 @@ export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
 
 // used for a11y key board controls for nodes and edges
 
-export const devWarn = (id: string, message: string) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(`[React Flow]: ${message} Help: https://reactflow.dev/error#${id}`);
+function formatDevMessage(lib: string, helpUrl: string, id: string, message: string) {
+  return `[${lib}]: ${message} Help: ${helpUrl}error#${id}`;
+}
+
+function createDevWarn(lib: string, helpUrl: string): OnError {
+  return (id, message) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(formatDevMessage(lib, helpUrl, id, message));
+    }
+  };
+}
+
+export function createErrorReporter(config: { lib: string; helpUrl: string }) {
+  const defaultOnError = createDevWarn(config.lib, config.helpUrl);
+
+  function reportError(onError: OnError | undefined, error: XYError) {
+    (onError ?? defaultOnError)(error.code, error.message, error);
   }
-};
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function toError(code: XYErrorCode, ...args: any[]): Error {
+    // @ts-expect-error - TS doesn't know that the args are a tuple type
+    const xyError = new XYError(code, ...args);
+    return new Error(formatDevMessage(config.lib, config.helpUrl, xyError.code, xyError.message));
+  }
+
+  return { defaultOnError, reportError, toError };
+}
+
+const systemErrorReporter = createErrorReporter({ lib: 'xyflow', helpUrl: 'https://xyflow.com/' });
+
+/** Report a dev error, falling back to the generic system handler when none is provided. */
+export function reportError(onError: OnError | undefined, error: XYError) {
+  systemErrorReporter.reportError(onError, error);
+}
 
 export const snapPosition = (position: XYPosition, snapGrid: SnapGrid = [1, 1]): XYPosition => {
   return {
@@ -204,7 +239,7 @@ function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   }
 
   console.error(
-    `[React Flow] The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
+    `The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
   );
   return 0;
 }
