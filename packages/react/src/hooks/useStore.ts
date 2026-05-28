@@ -75,9 +75,9 @@ export { useStore, useStoreApi };
 export { useShallow } from 'zustand/react/shallow';
 
 export function useCustomDiff<S, U>(selector: (state: S) => U, compare: (a: U, b: U) => boolean): (state: S) => U {
-  const prev = useRef<U>(undefined);
+  const prev = useRef<U>();
   return (state) => {
     const next = selector(state);
-    return compare(prev.current, next) ? prev.current : (prev.current = next);
+    return prev.current && compare(prev.current, next) ? prev.current : (prev.current = next);
   };
 }
