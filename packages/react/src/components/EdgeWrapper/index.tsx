@@ -1,6 +1,5 @@
 import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX, memo } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import {
   getMarkerId,
   elementSelectionKeys,
@@ -9,7 +8,7 @@ import {
   getElevatedEdgeZIndex,
 } from '@xyflow/system';
 
-import { useStoreApi, useStore } from '../../hooks/useStore';
+import { useStoreApi, useStore, useShallow } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
@@ -61,45 +60,46 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const store = useStoreApi();
 
   const { zIndex, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = useStore(
-    useCallback(
-      (store) => {
-        const sourceNode = store.nodeLookup.get(edge.source);
-        const targetNode = store.nodeLookup.get(edge.target);
+    useShallow(
+      useCallback(
+        (store) => {
+          const sourceNode = store.nodeLookup.get(edge.source);
+          const targetNode = store.nodeLookup.get(edge.target);
 
-        if (!sourceNode || !targetNode) {
-          return {
+          if (!sourceNode || !targetNode) {
+            return {
+              zIndex: edge.zIndex,
+              ...nullPosition,
+            };
+          }
+
+          const edgePosition = getEdgePosition({
+            id,
+            sourceNode,
+            targetNode,
+            sourceHandle: edge.sourceHandle || null,
+            targetHandle: edge.targetHandle || null,
+            connectionMode: store.connectionMode,
+            onError,
+          });
+
+          const zIndex = getElevatedEdgeZIndex({
+            selected: edge.selected,
             zIndex: edge.zIndex,
-            ...nullPosition,
+            sourceNode,
+            targetNode,
+            elevateOnSelect: store.elevateEdgesOnSelect,
+            zIndexMode: store.zIndexMode,
+          });
+
+          return {
+            zIndex,
+            ...(edgePosition || nullPosition),
           };
-        }
-
-        const edgePosition = getEdgePosition({
-          id,
-          sourceNode,
-          targetNode,
-          sourceHandle: edge.sourceHandle || null,
-          targetHandle: edge.targetHandle || null,
-          connectionMode: store.connectionMode,
-          onError,
-        });
-
-        const zIndex = getElevatedEdgeZIndex({
-          selected: edge.selected,
-          zIndex: edge.zIndex,
-          sourceNode,
-          targetNode,
-          elevateOnSelect: store.elevateEdgesOnSelect,
-          zIndexMode: store.zIndexMode,
-        });
-
-        return {
-          zIndex,
-          ...(edgePosition || nullPosition),
-        };
-      },
-      [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex]
-    ),
-    shallow
+        },
+        [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex, id, onError]
+      )
+    )
   );
 
   const markerStartUrl = useMemo(

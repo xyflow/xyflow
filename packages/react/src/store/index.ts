@@ -1,4 +1,4 @@
-import { createWithEqualityFn } from 'zustand/traditional';
+import { create } from 'zustand';
 import {
   adoptUserNodes,
   updateAbsolutePositions,
@@ -52,7 +52,7 @@ const createStore = ({
   nodeExtent?: CoordinateExtent;
   zIndexMode?: ZIndexMode;
 }) =>
-  createWithEqualityFn<ReactFlowState>((set, get) => {
+  create<ReactFlowState>((set, get) => {
     async function resolveFitView() {
       const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
 
@@ -449,6 +449,6 @@ const createStore = ({
 
       reset: () => set({ ...getInitialState() }),
     };
-  }, Object.is);
+  });
 
 export { createStore };

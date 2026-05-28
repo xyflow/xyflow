@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { shallow } from 'zustand/shallow';
 import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from '@xyflow/system';
 
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { useResizeHandler } from '../../hooks/useResizeHandler';
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useStore, useShallow, useStoreApi } from '../../hooks/useStore';
 import { containerStyle } from '../../styles/utils';
 import type { FlowRendererProps } from '../FlowRenderer';
 import type { ReactFlowState } from '../../types';
@@ -47,7 +46,7 @@ export function ZoomPane({
 }: ZoomPaneProps) {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const { userSelectionActive, lib, connectionInProgress } = useStore(selector, shallow);
+  const { userSelectionActive, lib, connectionInProgress } = useStore(useShallow(selector));
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
   const panZoom = useRef<PanZoomInstance>();
 

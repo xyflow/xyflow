@@ -64,6 +64,7 @@ export function useNodesInitialized(
     includeHiddenNodes: false,
   }
 ): boolean {
+  // TODO: does this lead to re-renders
   const initialized = useStore(selector(options));
 
   return initialized;

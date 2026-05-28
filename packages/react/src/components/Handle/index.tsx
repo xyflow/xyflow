@@ -6,7 +6,6 @@ import {
   memo,
 } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import {
   errorMessages,
   Position,
@@ -23,7 +22,7 @@ import {
   Optional,
 } from '@xyflow/system';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useStore, useStoreApi, useShallow } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
@@ -85,7 +84,8 @@ function HandleComponent(
   const isTarget = type === 'target';
   const store = useStoreApi();
   const nodeId = useNodeId();
-  const { connectOnClick, noPanClassName, rfId } = useStore(selector, shallow);
+  const { connectOnClick, noPanClassName, rfId } = useStore(useShallow(selector));
+
   const {
     connectingFrom,
     connectingTo,
@@ -94,7 +94,7 @@ function HandleComponent(
     connectionInProcess,
     clickConnectionInProcess,
     valid,
-  } = useStore(connectingSelector(nodeId, handleId, type), shallow);
+  } = useStore(useShallow(connectingSelector(nodeId, handleId, type)));
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }
