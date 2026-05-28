@@ -5,10 +5,10 @@ import { interpolateZoom, interpolate } from 'd3-interpolate';
 import {
   type CoordinateExtent,
   type Viewport,
-  PanZoomTransformOptions,
-  PanZoomUpdateOptions,
-  PanZoomParams,
-  PanZoomInstance,
+  type PanZoomTransformOptions,
+  type PanZoomUpdateOptions,
+  type PanZoomParams,
+  type PanZoomInstance,
 } from '../types';
 import { clamp, isNumeric } from '../utils';
 import { getD3Transition, viewportToTransform, wheelDelta } from './utils';

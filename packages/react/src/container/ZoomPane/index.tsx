@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
 import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from '@xyflow/system';
@@ -74,7 +73,7 @@ export function ZoomPane({
         translateExtent,
         viewport: defaultViewport,
         onDraggingChange: (paneDragging) =>
-          store.setState((prevState) => prevState.paneDragging === paneDragging ? prevState : { paneDragging }),
+          store.setState((prevState) => (prevState.paneDragging === paneDragging ? prevState : { paneDragging })),
         onPanZoomStart: (event, vp) => {
           const { onViewportChangeStart, onMoveStart } = store.getState();
           onMoveStart?.(event, vp);

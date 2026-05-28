@@ -1,5 +1,5 @@
 import type { XYPosition, Position, CoordinateExtent, Handle } from '.';
-import { Optional } from '../utils/types';
+import { type Optional } from '../utils/types';
 
 /**
  * Framework independent node data structure.
@@ -10,7 +10,7 @@ import { Optional } from '../utils/types';
  */
 export type NodeBase<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+  NodeType extends string | undefined = string | undefined,
 > = {
   /** Unique id of a node. */
   id: string;

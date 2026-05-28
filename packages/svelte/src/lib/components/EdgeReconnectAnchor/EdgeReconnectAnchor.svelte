@@ -79,9 +79,9 @@
       flowId,
       cancelConnection,
       panBy,
-      isValidConnection: (...args) => store.isValidConnection?.(...args) ?? true,
+      isValidConnection: (...args) => isValidConnection?.(...args) ?? true,
       onConnectStart: _onConnectStart,
-      onConnectEnd: (...args) => store.onconnectend?.(...args),
+      onConnectEnd: (...args) => onconnectend?.(...args),
       onConnect: (connection) => {
         const reconnectedEdge = { ...edge, ...connection };
         const newEdge = onbeforereconnect

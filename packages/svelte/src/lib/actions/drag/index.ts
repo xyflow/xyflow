@@ -1,7 +1,7 @@
-import { XYDrag, type NodeBase, type OnDrag, type XYDragParams } from '@xyflow/system';
+import { XYDrag, type NodeBase, type OnDrag } from '@xyflow/system';
 
 import type { SvelteFlowStore } from '$lib/store/types';
-import type { Node, Edge, NodeTargetEventWithPointer } from '$lib/types';
+import type { Node, Edge } from '$lib/types';
 
 export type UseDragParams<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   store: SvelteFlowStore<NodeType, EdgeType>;

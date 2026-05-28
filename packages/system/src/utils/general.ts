@@ -16,7 +16,7 @@ import type {
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
 
-import { defaultAriaLabelConfig, type AriaLabelConfig } from '../constants';
+import { defaultAriaLabelConfig, type AriaLabelConfig } from './constants';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
 

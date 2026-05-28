@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType, CSSProperties, HTMLAttributes, MouseEvent } from 'react';
 import type { PanelPosition, XYPosition } from '@xyflow/system';
 

@@ -53,8 +53,10 @@ import type {
  * ReactFlow component props.
  * @public
  */
-export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge>
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'> {
+export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'onError'
+> {
   /**
    * An array of nodes to render in a controlled flow.
    * @default []

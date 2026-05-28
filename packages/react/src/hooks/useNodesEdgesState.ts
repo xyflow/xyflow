@@ -54,7 +54,7 @@ export function useNodesState<NodeType extends Node>(
   //
   nodes: NodeType[],
   setNodes: Dispatch<SetStateAction<NodeType[]>>,
-  onNodesChange: OnNodesChange<NodeType>
+  onNodesChange: OnNodesChange<NodeType>,
 ] {
   const [nodes, setNodes] = useState(initialNodes);
   const onNodesChange: OnNodesChange<NodeType> = useCallback(
@@ -118,7 +118,7 @@ export function useEdgesState<EdgeType extends Edge = Edge>(
   //
   edges: EdgeType[],
   setEdges: Dispatch<SetStateAction<EdgeType[]>>,
-  onEdgesChange: OnEdgesChange<EdgeType>
+  onEdgesChange: OnEdgesChange<EdgeType>,
 ] {
   const [edges, setEdges] = useState(initialEdges);
   const onEdgesChange: OnEdgesChange<EdgeType> = useCallback(
