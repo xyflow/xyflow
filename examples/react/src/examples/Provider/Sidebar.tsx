@@ -1,13 +1,13 @@
-import { useReactFlow, useStore } from '@xyflow/react';
+import { useNodes, useReactFlow, useStore, useViewport } from '@xyflow/react';
 
 import styles from './provider.module.css';
 
 const Sidebar = () => {
   const { setNodes } = useReactFlow();
-  const nodeInfos = useStore((store) =>
-    store.nodes.map((n) => `Node ${n.id} - x: ${n.position.x.toFixed(2)}, y: ${n.position.y.toFixed(2)}`)
-  );
-  const transform = useStore((store) => store.transform);
+  const nodes = useNodes();
+  const nodeInfos = nodes.map((n) => `Node ${n.id} - x: ${n.position.x.toFixed(2)}, y: ${n.position.y.toFixed(2)}`);
+
+  const transform = useViewport();
 
   const selectAll = () => {
     setNodes((nodes) => nodes.map((n) => ({ ...n, selected: true })));
@@ -20,7 +20,7 @@ const Sidebar = () => {
       </div>
       <div className={styles.title}>Zoom & pan transform</div>
       <div className={styles.transform}>
-        [{transform[0].toFixed(2)}, {transform[1].toFixed(2)}, {transform[2].toFixed(2)}]
+        [{transform.x.toFixed(2)}, {transform.y.toFixed(2)}, {transform.zoom.toFixed(2)}]
       </div>
       <div className={styles.title}>Nodes</div>
       {nodeInfos.map((info, index) => (
