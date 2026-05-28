@@ -23,7 +23,6 @@ export { useStore, useStoreApi } from './hooks/useStore';
 export { useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/useOnViewportChange';
 export { useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
 export { useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
-export { useHandleConnections } from './hooks/useHandleConnections';
 export { useNodeConnections } from './hooks/useNodeConnections';
 export { useNodesData } from './hooks/useNodesData';
 export { useConnection } from './hooks/useConnection';
