@@ -1,5 +1,5 @@
 import { useContext, useMemo, useRef } from 'react';
-import { type UseBoundStore, useStore as useZustandStore, type StoreApi } from 'zustand';
+import { useStore as useZustandStore, type StoreApi } from 'zustand';
 import { errorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/StoreContext';
@@ -54,21 +54,24 @@ function useStore<StateSlice = unknown>(selector: (state: ReactFlowState) => Sta
  * state. For many of the common use cases, there are dedicated hooks available
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
-function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>() {
-  const store = useContext(StoreContext) as UseBoundStore<StoreApi<ReactFlowState>>;
+function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): StoreApi<
+  ReactFlowState<NodeType, EdgeType>
+> {
+  const store = useContext(StoreContext);
 
   if (store === null) {
     throw new Error(zustandErrorMessage);
   }
 
   return useMemo(
-    () => ({
-      getState: store.getState,
-      setState: store.setState,
-      subscribe: store.subscribe,
-    }),
+    () =>
+      ({
+        getState: store.getState,
+        setState: store.setState,
+        subscribe: store.subscribe,
+      }) as StoreApi<ReactFlowState> as unknown as StoreApi<ReactFlowState<NodeType, EdgeType>>,
     [store]
-  ) as StoreApi<ReactFlowState>;
+  );
 }
 
 export { useStore, useStoreApi };
