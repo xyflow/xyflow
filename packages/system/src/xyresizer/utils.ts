@@ -1,6 +1,6 @@
-import { CoordinateExtent, NodeOrigin } from '../types';
-import { getPointerPosition } from '../utils';
-import { ControlPosition } from './types';
+import { type CoordinateExtent, type NodeOrigin } from '../types';
+import { type getPointerPosition } from '../utils';
+import { type ControlPosition } from './types';
 
 type GetResizeDirectionParams = {
   width: number;

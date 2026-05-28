@@ -1,4 +1,4 @@
-import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase, ZIndexMode } from '../..';
+import { type Connection, type InternalNodeBase, type Transform, errorMessages, isEdgeBase, type EdgeBase, type ZIndexMode } from '../..';
 import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes, devWarn } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)

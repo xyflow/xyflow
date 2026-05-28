@@ -20,12 +20,12 @@ import {
   type EdgeBase,
   type FitViewParamsBase,
   type FitViewOptionsBase,
-  CoordinateExtent,
-  OnError,
-  OnBeforeDeleteBase,
-  NodeLookup,
-  InternalNodeBase,
-  NodeDragItem,
+  type CoordinateExtent,
+  type OnError,
+  type OnBeforeDeleteBase,
+  type NodeLookup,
+  type InternalNodeBase,
+  type NodeDragItem,
 } from '../types';
 import { errorMessages } from './constants';
 

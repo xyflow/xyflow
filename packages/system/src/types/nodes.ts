@@ -1,5 +1,5 @@
 import type { XYPosition, Position, CoordinateExtent, Handle } from '.';
-import { Optional } from '../utils/types';
+import { type Optional } from '../utils/types';
 
 /**
  * Framework independent node data structure.

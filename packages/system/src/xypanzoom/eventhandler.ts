@@ -14,7 +14,7 @@ import {
 } from '../types';
 import { isRightClickPan, isWrappedWithClass, transformToViewport, wheelDelta } from './utils';
 import { isMacOs } from '../utils';
-import { ZoomPanValues } from './XYPanZoom';
+import { type ZoomPanValues } from './XYPanZoom';
 
 export type PanOnScrollParams = {
   zoomPanValues: ZoomPanValues;
