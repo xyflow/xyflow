@@ -1,9 +1,9 @@
-import { EdgePosition } from '../../types/edges';
-import { ConnectionMode, OnError } from '../../types/general';
-import { InternalNodeBase, NodeHandle } from '../../types/nodes';
-import { Position, XYPosition } from '../../types/utils';
+import { type EdgePosition } from '../../types/edges';
+import { ConnectionMode, type OnError } from '../../types/general';
+import { type InternalNodeBase, type NodeHandle } from '../../types/nodes';
+import { Position, type XYPosition } from '../../types/utils';
 import { errorMessages } from '../constants';
-import { Handle } from '../../types';
+import { type Handle } from '../../types';
 import { getNodeDimensions } from '../general';
 
 export type GetEdgePositionParams = {

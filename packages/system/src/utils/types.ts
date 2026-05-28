@@ -1,4 +1,4 @@
-import { Rect } from '../types';
+import { type Rect } from '../types';
 
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 

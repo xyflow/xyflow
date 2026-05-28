@@ -10,16 +10,16 @@ import {
   ConnectionMode,
   Position,
   oppositePosition,
-  ConnectionInProgress,
+  type ConnectionInProgress,
   type Handle,
   type Connection,
-  NodeBase,
-  EdgeBase,
-  InternalNodeBase,
+  type NodeBase,
+  type EdgeBase,
+  type InternalNodeBase,
 } from '../types';
 
 import { getClosestHandle, isConnectionValid, getHandleType, getHandle } from './utils';
-import { IsValidParams, OnPointerDownParams, Result, XYHandleInstance } from './types';
+import { type IsValidParams, type OnPointerDownParams, type Result, type XYHandleInstance } from './types';
 
 const alwaysValid = () => true;
 

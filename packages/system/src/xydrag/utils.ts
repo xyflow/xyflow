@@ -1,4 +1,4 @@
-import { type NodeDragItem, type XYPosition, InternalNodeBase, NodeBase, NodeLookup, SnapGrid } from '../types';
+import { type NodeDragItem, type XYPosition, type InternalNodeBase, type NodeBase, type NodeLookup, type SnapGrid } from '../types';
 import { snapPosition } from '../utils';
 
 export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodeLookup: NodeLookup): boolean {

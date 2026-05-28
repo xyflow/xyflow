@@ -1,4 +1,4 @@
-import { Position } from './utils';
+import { type Position } from './utils';
 
 export type EdgeBase<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,

@@ -1,5 +1,5 @@
 import {
-  ConnectionMode,
+  type ConnectionMode,
   type Connection,
   type OnConnect,
   type OnConnectStart,
@@ -10,11 +10,11 @@ import {
   type OnConnectEnd,
   type UpdateConnection,
   type IsValidConnection,
-  NodeLookup,
-  FinalConnectionState,
-  NodeBase,
-  InternalNodeBase,
-  EdgeBase,
+  type NodeLookup,
+  type FinalConnectionState,
+  type NodeBase,
+  type InternalNodeBase,
+  type EdgeBase,
 } from '../types';
 
 export type OnPointerDownParams<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {

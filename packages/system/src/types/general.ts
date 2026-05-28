@@ -8,8 +8,8 @@ import type { Transition } from 'd3-transition';
 import type { XYPosition, Rect, Position } from './utils';
 import type { InternalNodeBase, NodeBase, NodeDragItem } from './nodes';
 import type { Handle, HandleType } from './handles';
-import { PanZoomInstance } from './panzoom';
-import { EdgeBase } from '..';
+import { type PanZoomInstance } from './panzoom';
+import { type EdgeBase } from '..';
 
 export type Project = (position: XYPosition) => XYPosition;
 
