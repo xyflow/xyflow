@@ -291,6 +291,7 @@
     onfocus={focusable ? onFocus : undefined}
     tabIndex={focusable ? 0 : undefined}
     role={node.ariaRole ?? (focusable ? 'group' : undefined)}
+    aria-label={node.ariaLabel}
     aria-roledescription="node"
     aria-describedby={store.disableKeyboardA11y
       ? undefined
