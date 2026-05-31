@@ -298,7 +298,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     const edge = store.edgeLookup.get(id);
 
     if (!edge) {
-      store.onerror('012', errorMessages['error012'](id));
+      store.onerror('016', errorMessages['error016'](id));
       return;
     }
 

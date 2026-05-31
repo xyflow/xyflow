@@ -28,6 +28,8 @@ export const errorMessages = {
     'useNodeConnections: No node ID found. Call useNodeConnections inside a custom Node or provide a node ID.',
   error015: () =>
     'It seems that you are trying to drag a node that is not initialized. Please use onNodesChange as explained in the docs.',
+  error016: (id: string) =>
+    `Edge with id "${id}" does not exist, it may have been removed. This can happen when an edge is deleted before the "onEdgeClick" handler is called.`,
 };
 
 export const infiniteExtent: CoordinateExtent = [
