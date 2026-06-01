@@ -363,6 +363,9 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
       })
       .on('end', (event: UseDragEvent) => {
         if (!dragStarted || abortDrag) {
+          if (abortDrag && dragItems.size > 0) {
+            getStoreItems().updateNodePositions(dragItems, false);
+          }
           return;
         }
 
