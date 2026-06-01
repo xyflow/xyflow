@@ -1,4 +1,4 @@
-import { useNodes, useReactFlow, useStore, useViewport } from '@xyflow/react';
+import { useNodes, useReactFlow, useViewport } from '@xyflow/react';
 
 import styles from './provider.module.css';
 

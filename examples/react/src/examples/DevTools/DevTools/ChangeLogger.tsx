@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { NodeChange, OnNodesChange, useStore, useStoreApi } from '@xyflow/react';
+import { NodeChange, OnNodesChange, useReactFlowStore, useReactFlowStoreApi } from '@xyflow/react';
 
 type ChangeLoggerProps = {
   color?: string;
@@ -32,8 +32,8 @@ function ChangeInfo({ change }: ChangeInfoProps) {
 export default function ChangeLogger({ limit = 20 }: ChangeLoggerProps) {
   const [changes, setChanges] = useState<NodeChange[]>([]);
   const onNodesChangeIntercepted = useRef(false);
-  const onNodesChange = useStore((s) => s.onNodesChange);
-  const store = useStoreApi();
+  const onNodesChange = useReactFlowStore((s) => s.onNodesChange);
+  const store = useReactFlowStoreApi();
 
   useEffect(() => {
     if (!onNodesChange || onNodesChangeIntercepted.current) {

@@ -1,5 +1,13 @@
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { ReactFlow, ReactFlowProvider, useStoreApi, type Node, type Edge, type NodeTypes, type NodeProps } from '@xyflow/react';
+import {
+  ReactFlow,
+  ReactFlowProvider,
+  useReactFlowStoreApi,
+  type Node,
+  type Edge,
+  type NodeTypes,
+  type NodeProps,
+} from '@xyflow/react';
 
 import { edges as initialEdges } from '../../fixtures/simpleflow';
 
@@ -15,7 +23,7 @@ let checkSpy: ((result: CheckResult) => void) | null = null;
  * custom node effects fire after a <ReactFlow> key-based remount.
  */
 function CheckerNode({ data }: NodeProps) {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const useHook = data.useLayout ? useLayoutEffect : useEffect;
 
   useHook(() => {

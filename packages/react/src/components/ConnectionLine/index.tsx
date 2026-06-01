@@ -8,7 +8,7 @@ import {
   getStraightPath,
 } from '@xyflow/system';
 
-import { useStore, useShallow } from '../../hooks/useStore';
+import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 import type { ConnectionLineComponent, Node, ReactFlowState } from '../../types';
 import { useConnection } from '../../hooks/useConnection';
@@ -34,7 +34,7 @@ export function ConnectionLineWrapper<NodeType extends Node = Node>({
   type,
   component,
 }: ConnectionLineWrapperProps<NodeType>) {
-  const { nodesConnectable, width, height, isValid, inProgress } = useStore(useShallow(selector));
+  const { nodesConnectable, width, height, isValid, inProgress } = useReactFlowStore(useShallow(selector));
   const renderConnection = !!(width && nodesConnectable && inProgress);
 
   if (!renderConnection) {

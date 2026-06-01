@@ -31,7 +31,7 @@ const zustandErrorMessage = errorMessages['error001']();
  * state. For many of the common use cases, there are dedicated hooks available
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
-function useStore<StateSlice = unknown>(selector: (state: ReactFlowState) => StateSlice) {
+function useReactFlowStore<StateSlice = unknown>(selector: (state: ReactFlowState) => StateSlice) {
   const store = useContext(StoreContext);
 
   if (store === null) {
@@ -54,7 +54,7 @@ function useStore<StateSlice = unknown>(selector: (state: ReactFlowState) => Sta
  * state. For many of the common use cases, there are dedicated hooks available
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
-function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): StoreApi<
+function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): StoreApi<
   ReactFlowState<NodeType, EdgeType>
 > {
   const store = useContext(StoreContext);
@@ -74,7 +74,7 @@ function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>
   );
 }
 
-export { useStore, useStoreApi };
+export { useReactFlowStore, useReactFlowStoreApi };
 export { useShallow } from 'zustand/react/shallow';
 
 export function useCustomDiff<S, U>(selector: (state: S) => U, compare: (a: U, b: U) => boolean): (state: S) => U {

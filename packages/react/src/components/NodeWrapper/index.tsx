@@ -9,7 +9,7 @@ import {
   getNodesInside,
 } from '@xyflow/system';
 
-import { useStore, useStoreApi, useShallow } from '../../hooks/useStore';
+import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
@@ -53,7 +53,7 @@ function NodeWrapper<NodeType extends Node>({
     },
     [id]
   );
-  const { node, internals, isParent } = useStore(useShallow(selector));
+  const { node, internals, isParent } = useReactFlowStore(useShallow(selector));
 
   let nodeType = node.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
@@ -69,7 +69,7 @@ function NodeWrapper<NodeType extends Node>({
   const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
   const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
 
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const hasDimensions = nodeHasDimensions(node);
   const nodeRef = useNodeObserver({ node, nodeType, hasDimensions, resizeObserver });
   const dragging = useDrag({

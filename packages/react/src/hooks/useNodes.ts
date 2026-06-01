@@ -1,4 +1,4 @@
-import { useStore } from '../hooks/useStore';
+import { useReactFlowStore } from './useReactFlowStore';
 import type { Node, ReactFlowState } from '../types';
 
 const nodesSelector = (state: ReactFlowState) => state.nodes;
@@ -23,7 +23,7 @@ const nodesSelector = (state: ReactFlowState) => state.nodes;
  *```
  */
 export function useNodes<NodeType extends Node = Node>(): NodeType[] {
-  const nodes = useStore(nodesSelector) as NodeType[];
+  const nodes = useReactFlowStore(nodesSelector) as NodeType[];
 
   return nodes;
 }

@@ -16,7 +16,7 @@ import {
   ControlPosition,
 } from '@xyflow/system';
 
-import { useStoreApi, useStore, useShallow } from '../../hooks/useStore';
+import { useReactFlowStoreApi, useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
 import { ReactFlowState } from '../../types';
@@ -51,7 +51,7 @@ function ResizeControl({
 }: ResizeControlProps) {
   const contextNodeId = useNodeId();
   const id = typeof nodeId === 'string' ? nodeId : contextNodeId;
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const isHandleControl = variant === ResizeControlVariant.Handle;
 
@@ -61,7 +61,7 @@ function ResizeControl({
     },
     [isHandleControl, autoScale]
   );
-  const scale = useStore(useShallow(selector));
+  const scale = useReactFlowStore(useShallow(selector));
 
   const resizer = useRef<XYResizerInstance | null>(null);
   const controlPosition = position ?? defaultPositions[variant];

@@ -22,7 +22,7 @@ import {
   Optional,
 } from '@xyflow/system';
 
-import { useStore, useStoreApi, useShallow } from '../../hooks/useStore';
+import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
@@ -82,9 +82,9 @@ function HandleComponent(
 ) {
   const handleId = id || null;
   const isTarget = type === 'target';
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const nodeId = useNodeId();
-  const { connectOnClick, noPanClassName, rfId } = useStore(useShallow(selector));
+  const { connectOnClick, noPanClassName, rfId } = useReactFlowStore(useShallow(selector));
 
   const {
     connectingFrom,
@@ -94,7 +94,7 @@ function HandleComponent(
     connectionInProcess,
     clickConnectionInProcess,
     valid,
-  } = useStore(useShallow(connectingSelector(nodeId, handleId, type)));
+  } = useReactFlowStore(useShallow(connectingSelector(nodeId, handleId, type)));
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }

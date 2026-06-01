@@ -2,7 +2,7 @@
 import { ComponentType, memo, useCallback } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 
-import { useStore, useShallow } from '../../hooks/useStore';
+import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
 import { MiniMapNode } from './MiniMapNode';
 import type { ReactFlowState, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
@@ -26,7 +26,7 @@ function MiniMapNodes<NodeType extends Node>({
   nodeComponent: NodeComponent = MiniMapNode,
   onClick,
 }: MiniMapNodesProps<NodeType>) {
-  const nodeIds = useStore(useShallow(selectorNodeIds));
+  const nodeIds = useReactFlowStore(useShallow(selectorNodeIds));
   const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
@@ -104,7 +104,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
     [id]
   );
 
-  const { node, x, y, width, height } = useStore(useShallow(selector));
+  const { node, x, y, width, height } = useReactFlowStore(useShallow(selector));
 
   if (!node || node.hidden || !nodeHasDimensions(node)) {
     return null;

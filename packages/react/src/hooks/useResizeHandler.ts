@@ -1,7 +1,7 @@
 import { useEffect, type MutableRefObject } from 'react';
 import { errorMessages, getDimensions } from '@xyflow/system';
 
-import { useStoreApi } from '../hooks/useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 
 /**
  * Hook for handling resize events.
@@ -9,7 +9,7 @@ import { useStoreApi } from '../hooks/useStore';
  * @internal
  */
 export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): void {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
 
   useEffect(() => {
     const updateDimensions = () => {
