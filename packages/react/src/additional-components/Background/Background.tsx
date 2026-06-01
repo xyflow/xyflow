@@ -1,8 +1,7 @@
 import { CSSProperties, memo, useRef } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 
-import { useStore } from '../../hooks/useStore';
+import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
 import { DotPattern, LinePattern } from './Patterns';
 import { containerStyle } from '../../styles/utils';
 import { type BackgroundProps, BackgroundVariant } from './types';
@@ -32,7 +31,7 @@ function BackgroundComponent({
   patternClassName,
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const { transform, patternId } = useStore(selector, shallow);
+  const { transform, patternId } = useReactFlowStore(useShallow(selector));
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;

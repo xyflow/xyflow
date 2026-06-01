@@ -10,7 +10,7 @@ import {
   useEdgesState,
   OnConnectStart,
   OnConnectEnd,
-  useStore,
+  useReactFlowStore,
 } from '@xyflow/react';
 
 import useCountdown from './hooks/useCountdown';
@@ -22,7 +22,7 @@ const CANCEL_AFTER = 5; // seconds
 const CancelConnection = () => {
   const [nodes, _, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const cancelConnection = useStore((state) => state.cancelConnection);
+  const cancelConnection = useReactFlowStore((state) => state.cancelConnection);
 
   // Cancels connection after 5 seconds
   const countdown = useCountdown(() => cancelConnection());

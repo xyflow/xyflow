@@ -1,6 +1,5 @@
-import { useContext, useMemo } from 'react';
-import { UseBoundStoreWithEqualityFn, useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
-import { StoreApi } from 'zustand';
+import { useContext, useMemo, useRef } from 'react';
+import { useStore as useZustandStore, type StoreApi } from 'zustand';
 import { errorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/StoreContext';
@@ -18,8 +17,9 @@ const zustandErrorMessage = errorMessages['error001']();
  * Extracting or transforming just the state you need is a good practice to avoid unnecessary
  * re-renders.
  * @param equalityFn - A function to compare the previous and next value. This is incredibly useful
- * for preventing unnecessary re-renders. Good sensible defaults are using `Object.is` or importing
- * `zustand/shallow`, but you can be as granular as you like.
+ * for preventing unnecessary re-renders. For shallow comparisons, prefer `useShallow` from
+ * `zustand/react/shallow` by wrapping your selector: `useStore(useShallow(selector))`. Passing
+ * `zustand/shallow` as the second argument is still supported for backwards compatibility.
  * @returns The selected state slice.
  *
  * @example
@@ -31,17 +31,14 @@ const zustandErrorMessage = errorMessages['error001']();
  * state. For many of the common use cases, there are dedicated hooks available
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
-function useStore<StateSlice = unknown>(
-  selector: (state: ReactFlowState) => StateSlice,
-  equalityFn?: (a: StateSlice, b: StateSlice) => boolean
-) {
+function useReactFlowStore<StateSlice = unknown>(selector: (state: ReactFlowState) => StateSlice) {
   const store = useContext(StoreContext);
 
   if (store === null) {
     throw new Error(zustandErrorMessage);
   }
 
-  return useZustandStore(store, selector, equalityFn);
+  return useZustandStore(store, selector);
 }
 
 /**
@@ -57,23 +54,33 @@ function useStore<StateSlice = unknown>(
  * state. For many of the common use cases, there are dedicated hooks available
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
-function useStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>() {
-  const store = useContext(StoreContext) as UseBoundStoreWithEqualityFn<
-    StoreApi<ReactFlowState<NodeType, EdgeType>>
-  > | null;
+function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): StoreApi<
+  ReactFlowState<NodeType, EdgeType>
+> {
+  const store = useContext(StoreContext);
 
   if (store === null) {
     throw new Error(zustandErrorMessage);
   }
 
   return useMemo(
-    () => ({
-      getState: store.getState,
-      setState: store.setState,
-      subscribe: store.subscribe,
-    }),
+    () =>
+      ({
+        getState: store.getState,
+        setState: store.setState,
+        subscribe: store.subscribe,
+      }) as StoreApi<ReactFlowState> as unknown as StoreApi<ReactFlowState<NodeType, EdgeType>>,
     [store]
   );
 }
 
-export { useStore, useStoreApi };
+export { useReactFlowStore, useReactFlowStoreApi };
+export { useShallow } from 'zustand/react/shallow';
+
+export function useCustomDiff<S, U>(selector: (state: S) => U, compare: (a: U, b: U) => boolean): (state: S) => U {
+  const prev = useRef<U>();
+  return (state) => {
+    const next = selector(state);
+    return prev.current && compare(prev.current, next) ? prev.current : (prev.current = next);
+  };
+}

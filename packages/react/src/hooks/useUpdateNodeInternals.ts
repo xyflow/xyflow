@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import type { UpdateNodeInternals, InternalNodeUpdate } from '@xyflow/system';
 
-import { useStoreApi } from '../hooks/useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 
 /**
  * When you programmatically add or remove handles to a node or update a node's
@@ -49,7 +49,7 @@ import { useStoreApi } from '../hooks/useStore';
  *{@link ReactFlowProvider} or a {@link ReactFlow} component.
  */
 export function useUpdateNodeInternals(): UpdateNodeInternals {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
 
   return useCallback<UpdateNodeInternals>((id: string | string[]) => {
     const { domNode, updateNodeInternals } = store.getState();

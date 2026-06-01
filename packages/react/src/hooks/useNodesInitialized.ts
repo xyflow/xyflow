@@ -1,6 +1,6 @@
 import { nodeHasDimensions } from '@xyflow/system';
 
-import { useStore } from './useStore';
+import { useReactFlowStore } from './useReactFlowStore';
 import type { ReactFlowState } from '../types';
 
 export type UseNodesInitializedOptions = {
@@ -64,7 +64,8 @@ export function useNodesInitialized(
     includeHiddenNodes: false,
   }
 ): boolean {
-  const initialized = useStore(selector(options));
+  // TODO: does this lead to re-renders
+  const initialized = useReactFlowStore(selector(options));
 
   return initialized;
 }

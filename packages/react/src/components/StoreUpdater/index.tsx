@@ -4,10 +4,9 @@
  * and values that have a dedicated setter function in the store (like `setNodes`).
  */
 import { useEffect, useRef } from 'react';
-import { shallow } from 'zustand/shallow';
 import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelConfig } from '@xyflow/system';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
@@ -122,8 +121,8 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     setNodeExtent,
     reset,
     setDefaultNodesAndEdges,
-  } = useStore(selector, shallow);
-  const store = useStoreApi<NodeType, EdgeType>();
+  } = useReactFlowStore(useShallow(selector));
+  const store = useReactFlowStoreApi<NodeType, EdgeType>();
 
   useEffect(() => {
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);

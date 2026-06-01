@@ -1,10 +1,10 @@
-import type { ReactNode, ReactPortal } from 'react';
+import { useMemo, type ReactNode, type ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useStore } from '../../hooks/useStore';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import type { ReactFlowState } from '../../types';
 
-const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__viewport-portal');
+const selector = (s: ReactFlowState) => s.domNode;
 
 /**
  * The `<ViewportPortal />` component can be used to add components to the same viewport
@@ -32,7 +32,8 @@ const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__v
  *```
  */
 export function ViewportPortal({ children }: { children: ReactNode }): ReactPortal | null {
-  const viewPortalDiv = useStore(selector);
+  const domNode = useReactFlowStore(selector);
+  const viewPortalDiv = useMemo(() => domNode?.querySelector('.react-flow__viewport-portal'), [domNode]);
 
   if (!viewPortalDiv) {
     return null;

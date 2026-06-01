@@ -10,7 +10,7 @@ import {
 
 import { EdgeAnchor } from '../Edges/EdgeAnchor';
 import type { EdgeWrapperProps, Edge } from '../../types/edges';
-import { useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 
 type EdgeUpdateAnchorsProps<EdgeType extends Edge = Edge> = {
   edge: EdgeType;
@@ -39,7 +39,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
   setReconnecting,
   setUpdateHover,
 }: EdgeUpdateAnchorsProps<EdgeType>) {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
 
   const handleEdgeUpdater = (
     event: React.MouseEvent<SVGGElement, MouseEvent>,
