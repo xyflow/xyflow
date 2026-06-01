@@ -143,5 +143,4 @@ export {
   getIncomers,
   getOutgoers,
   getConnectedEdges,
-  addEdge
 } from '@xyflow/system';

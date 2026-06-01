@@ -13,7 +13,6 @@ import {
   XYHandle,
   getHostForElement,
   isMouseEvent,
-  addEdge,
   type HandleProps as HandlePropsSystem,
   type Connection,
   type HandleType,
@@ -27,6 +26,7 @@ import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
+import { addEdge } from '../../utils/edges';
 
 /**
  * @expand
@@ -107,8 +107,8 @@ function HandleComponent(
       ...params,
     };
     if (hasDefaultEdges) {
-      const { edges, setEdges } = store.getState();
-      setEdges(addEdge(edgeParams, edges));
+      const { edges, setEdges, onError } = store.getState();
+      setEdges(addEdge(edgeParams, edges, { onError }));
     }
 
     onConnectAction?.(edgeParams);
