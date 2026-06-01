@@ -21,6 +21,7 @@
 		'node-toolbar',
 		'node-resizer',
 		'overview',
+		'self-attach',
 		'stress',
 		'subflows',
 		'two-way-viewport',
