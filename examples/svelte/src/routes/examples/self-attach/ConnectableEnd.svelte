@@ -6,14 +6,12 @@
 	rest;
 </script>
 
-<div style:margin-bottom="10px">
-	x:{Math.round(positionAbsoluteX)} y:{Math.round(positionAbsoluteY)}
-</div>
+<div style:margin-bottom="10px">End</div>
 
 <Handle
-	type="source"
+	type="target"
 	position={Position.Bottom}
 	isConnectable
-	isConnectableStart
-	isConnectableEnd={false}
+	isConnectableStart={false}
+	isConnectableEnd
 />

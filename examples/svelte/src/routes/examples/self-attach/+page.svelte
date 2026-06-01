@@ -11,19 +11,50 @@
 
 	import '@xyflow/svelte/dist/style.css';
 
-	import DebugNode from './DebugNode.svelte';
+	import ConnectableStart from './ConnectableStart.svelte';
+	import ConnectableEnd from './ConnectableEnd.svelte';
+	import UnconnectableTarget from './UnconnectableTarget.svelte';
 
 	const nodeTypes: NodeTypes = {
-		debug: DebugNode
+		start: ConnectableStart,
+		end: ConnectableEnd,
+		unconnectable: UnconnectableTarget
 	};
 
 	let nodes = $state.raw<Node[]>([
 		{
-			id: 'debug',
-			type: 'debug',
+			id: 'start-1',
+			type: 'start',
 			position: {
 				x: 0,
 				y: 0
+			},
+			data: {}
+		},
+		{
+			id: 'start-2',
+			type: 'start',
+			position: {
+				x: -50,
+				y: -50
+			},
+			data: {}
+		},
+		{
+			id: 'second',
+			type: 'end',
+			position: {
+				x: 50,
+				y: 50
+			},
+			data: {}
+		},
+		{
+			id: 'unconnectable-1',
+			type: 'unconnectable',
+			position: {
+				x: 150,
+				y: -50
 			},
 			data: {}
 		}
