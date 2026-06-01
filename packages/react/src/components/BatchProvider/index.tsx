@@ -8,10 +8,8 @@ import type { Edge, Node } from '../../types';
 import { useQueue } from './useQueue';
 
 const BatchContext = createContext<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nodeQueue: Queue<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  edgeQueue: Queue<any>;
+  nodeQueue: Queue<Node>;
+  edgeQueue: Queue<Edge>;
 } | null>(null);
 
 /**
@@ -99,7 +97,10 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   }, []);
   const edgeQueue = useQueue<EdgeType>(edgeQueueHandler);
 
-  const value = useMemo(() => ({ nodeQueue, edgeQueue }), []);
+  const value = useMemo(
+    () => ({ nodeQueue, edgeQueue }) as unknown as { nodeQueue: Queue<Node>; edgeQueue: Queue<Edge> },
+    []
+  );
 
   return <BatchContext.Provider value={value}>{children}</BatchContext.Provider>;
 }

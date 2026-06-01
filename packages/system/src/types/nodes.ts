@@ -163,7 +163,10 @@ export type NodeDragItem = {
  */
 export type NodeOrigin = [number, number];
 
-export type OnSelectionDrag<NodeType extends NodeBase = NodeBase> = (event: MouseEvent, nodes: NodeType[]) => void;
+export type OnSelectionDrag<NodeType extends NodeBase = NodeBase> = (
+  event: MouseEvent | TouchEvent,
+  nodes: NodeType[]
+) => void;
 
 /**
  * Type for the handles of a node

@@ -14,7 +14,7 @@ import {
 } from '../types';
 import { isRightClickPan, isWrappedWithClass, transformToViewport, wheelDelta } from './utils';
 import { isMacOs } from '../utils';
-import { type D3ZoomInputEvent, type XYFlowSourceEvent } from '../utils/events';
+import { isPointerEvent, type D3ZoomInputEvent, type XYFlowSourceEvent } from '../utils/events';
 import { type ZoomPanValues } from './XYPanZoom';
 
 export type PanOnScrollParams = {
@@ -167,22 +167,24 @@ export function createPanZoomStartHandler({ zoomPanValues, onDraggingChange, onP
   return (event: D3ZoomEvent<HTMLDivElement, unknown>) => {
     const sourceEvent = event.sourceEvent as XYFlowSourceEvent | null;
 
-    if (!sourceEvent || sourceEvent.internal) {
+    if (sourceEvent?.internal) {
       return;
     }
 
     const viewport = transformToViewport(event.transform);
 
     // we need to remember it here, because it's always 0 in the "zoom" event
-    zoomPanValues.mouseButton = 'button' in sourceEvent ? sourceEvent.button : 0;
+    zoomPanValues.mouseButton = sourceEvent && 'button' in sourceEvent ? sourceEvent.button : 0;
     zoomPanValues.isZoomingOrPanning = true;
     zoomPanValues.prevViewport = viewport;
 
-    if (sourceEvent.type === 'mousedown') {
+    if (sourceEvent?.type === 'mousedown') {
       onDraggingChange(true);
     }
 
-    onPanZoomStart?.(sourceEvent, viewport);
+    if (onPanZoomStart && sourceEvent) {
+      onPanZoomStart(isPointerEvent(sourceEvent) ? sourceEvent : null, viewport);
+    }
   };
 }
 

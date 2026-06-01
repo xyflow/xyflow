@@ -31,7 +31,7 @@ export function useNodesData<NodeType extends Node = Node>(
   nodeIds: string[]
 ): DistributivePick<NodeType, 'id' | 'type' | 'data'>[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useNodesData(nodeIds: any): any {
+export function useNodesData(nodeIds: string | string[]): any {
   const selector = useCallback(
     (s: ReactFlowState) => {
       const data = [];

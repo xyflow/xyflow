@@ -1,7 +1,8 @@
-import { type D3ZoomEvent, zoom } from 'd3-zoom';
+import { zoom } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 
 import type { CoordinateExtent, PanZoomInstance, Transform } from '../types';
+import { getTouchPoint, isPointerEvent, isWheelEvent, type XYFlowZoomEvent } from '../utils/events';
 import { isMacOs } from '../utils';
 
 export type XYMinimapInstance = {
@@ -39,45 +40,45 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
     zoomable = true,
     inversePan = false,
   }: XYMinimapUpdate) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const zoomHandler = (event: D3ZoomEvent<SVGSVGElement, any>) => {
-      if (event.sourceEvent.type !== 'wheel' || !panZoom) {
+    const zoomHandler = (event: XYFlowZoomEvent<SVGSVGElement>) => {
+      const sourceEvent = event.sourceEvent;
+
+      if (!isWheelEvent(sourceEvent) || !panZoom) {
         return;
       }
+
       const transform = getTransform();
-      const factor = event.sourceEvent.ctrlKey && isMacOs() ? 10 : 1;
+      const factor = sourceEvent.ctrlKey && isMacOs() ? 10 : 1;
       const pinchDelta =
-        -event.sourceEvent.deltaY *
-        (event.sourceEvent.deltaMode === 1 ? 0.05 : event.sourceEvent.deltaMode ? 1 : 0.002) *
-        zoomStep;
+        -sourceEvent.deltaY * (sourceEvent.deltaMode === 1 ? 0.05 : sourceEvent.deltaMode ? 1 : 0.002) * zoomStep;
       const nextZoom = transform[2] * Math.pow(2, pinchDelta * factor);
 
-      panZoom.scaleTo(nextZoom);
+      void panZoom.scaleTo(nextZoom);
     };
 
     let panStart = [0, 0];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const panStartHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
-      if (event.sourceEvent.type === 'mousedown' || event.sourceEvent.type === 'touchstart') {
-        panStart = [
-          event.sourceEvent.clientX ?? event.sourceEvent.touches[0].clientX,
-          event.sourceEvent.clientY ?? event.sourceEvent.touches[0].clientY,
-        ];
-      }
-    };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const panHandler = (event: D3ZoomEvent<HTMLDivElement, any>) => {
-      const transform = getTransform();
+    const panStartHandler = (event: XYFlowZoomEvent<HTMLDivElement>) => {
+      const sourceEvent = event.sourceEvent;
 
-      if ((event.sourceEvent.type !== 'mousemove' && event.sourceEvent.type !== 'touchmove') || !panZoom) {
+      if (!isPointerEvent(sourceEvent)) {
         return;
       }
 
-      const panCurrent = [
-        event.sourceEvent.clientX ?? event.sourceEvent.touches[0].clientX,
-        event.sourceEvent.clientY ?? event.sourceEvent.touches[0].clientY,
-      ];
+      if (sourceEvent.type === 'mousedown' || sourceEvent.type === 'touchstart') {
+        panStart = getTouchPoint(sourceEvent);
+      }
+    };
+
+    const panHandler = (event: XYFlowZoomEvent<HTMLDivElement>) => {
+      const transform = getTransform();
+      const sourceEvent = event.sourceEvent;
+
+      if (!isPointerEvent(sourceEvent) || isWheelEvent(sourceEvent) || !panZoom) {
+        return;
+      }
+
+      const panCurrent = getTouchPoint(sourceEvent);
       const panDelta = [panCurrent[0] - panStart[0], panCurrent[1] - panStart[1]];
       panStart = panCurrent;
 
@@ -91,7 +92,7 @@ export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMi
         [width, height],
       ];
 
-      panZoom.setViewportConstrained(
+      void panZoom.setViewportConstrained(
         {
           x: position.x,
           y: position.y,

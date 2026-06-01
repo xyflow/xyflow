@@ -42,17 +42,17 @@ function ControlsComponent({
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const onZoomInHandler = () => {
-    zoomIn();
+    void zoomIn();
     onZoomIn?.();
   };
 
   const onZoomOutHandler = () => {
-    zoomOut();
+    void zoomOut();
     onZoomOut?.();
   };
 
   const onFitViewHandler = () => {
-    fitView(fitViewOptions);
+    void fitView(fitViewOptions);
     onFitView?.();
   };
 

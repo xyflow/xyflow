@@ -127,7 +127,7 @@ const createStore = ({
         const nextNodesSelectionActive = nodesSelectionActive && hasSelectedNodes;
 
         if (fitViewQueued && nodesInitialized) {
-          resolveFitView();
+          void resolveFitView();
           set({
             nodes,
             nodesInitialized,
@@ -193,7 +193,7 @@ const createStore = ({
         updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent, zIndexMode });
 
         if (fitViewQueued) {
-          resolveFitView();
+          void resolveFitView();
           set({ fitViewQueued: false, fitViewOptions: undefined });
         } else {
           // we always want to trigger useStore calls whenever updateNodeInternals is called

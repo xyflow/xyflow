@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentType, memo, useCallback } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 
@@ -7,11 +6,10 @@ import { MiniMapNode } from './MiniMapNode';
 import type { ReactFlowState, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
 
-declare const window: any;
-
 const selectorNodeIds = (s: ReactFlowState) => s.nodes.map((node) => node.id);
-const getAttrFunction = <NodeType extends Node>(func: any): GetMiniMapNodeAttribute<NodeType> =>
-  func instanceof Function ? func : () => func;
+const getAttrFunction = <NodeType extends Node>(
+  func: string | GetMiniMapNodeAttribute<NodeType> | undefined
+): GetMiniMapNodeAttribute<NodeType> => (func instanceof Function ? func : () => func);
 
 function MiniMapNodes<NodeType extends Node>({
   nodeStrokeColor,
@@ -31,7 +29,8 @@ function MiniMapNodes<NodeType extends Node>({
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
 
-  const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
+  const shapeRendering =
+    typeof window === 'undefined' || ('chrome' in window && !!window.chrome) ? 'crispEdges' : 'geometricPrecision';
 
   return (
     <>

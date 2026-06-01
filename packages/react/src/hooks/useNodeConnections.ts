@@ -65,12 +65,12 @@ export function useNodeConnections({
   useEffect(() => {
     // @todo discuss if onConnect/onDisconnect should be called when the component mounts/unmounts
     if (prevConnections.current && prevConnections.current !== connections) {
-      const _connections = connections ?? new Map();
+      const _connections = connections ?? new Map<string, NodeConnection>();
       handleConnectionChange(prevConnections.current, _connections, onDisconnect);
       handleConnectionChange(_connections, prevConnections.current, onConnect);
     }
 
-    prevConnections.current = connections ?? new Map();
+    prevConnections.current = connections ?? new Map<string, NodeConnection>();
   }, [connections, onConnect, onDisconnect]);
 
   return useMemo(() => Array.from(connections?.values() ?? []), [connections]);

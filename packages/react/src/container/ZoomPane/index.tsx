@@ -102,6 +102,7 @@ export function ZoomPane({
         panZoom.current?.destroy();
       };
     }
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
 
   useEffect(() => {

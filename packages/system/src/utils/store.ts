@@ -567,16 +567,16 @@ function addConnectionToLookup(
    * If the key already exists, we add the connection to the existing map
    */
   let key = nodeId;
-  const nodeMap = connectionLookup.get(key) || new Map();
+  const nodeMap = connectionLookup.get(key) || new Map<string, HandleConnection>();
   connectionLookup.set(key, nodeMap.set(connectionKey, connection));
 
   key = `${nodeId}-${type}`;
-  const typeMap = connectionLookup.get(key) || new Map();
+  const typeMap = connectionLookup.get(key) || new Map<string, HandleConnection>();
   connectionLookup.set(key, typeMap.set(connectionKey, connection));
 
   if (handleId) {
     key = `${nodeId}-${type}-${handleId}`;
-    const handleMap = connectionLookup.get(key) || new Map();
+    const handleMap = connectionLookup.get(key) || new Map<string, HandleConnection>();
     connectionLookup.set(key, handleMap.set(connectionKey, connection));
   }
 }
