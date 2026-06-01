@@ -1,5 +1,36 @@
 # @xyflow/system
 
+## 0.0.77
+### Patch Changes
+
+
+
+- [#5791](https://github.com/xyflow/xyflow/pull/5791) [`732c8eb`](https://github.com/xyflow/xyflow/commit/732c8eb8d5ff86ab1c057588724221e9b3b8553c) - Adds a type error when `handleId` is used without `handleType` in `useNodeConnections`
+
+
+
+- [#5793](https://github.com/xyflow/xyflow/pull/5793) [`c5c853d`](https://github.com/xyflow/xyflow/commit/c5c853d4a2f537caaea725ab9e7bd480e24b86fb) - Dev Warnings now use library-specific messaging with the correct documentation links.
+
+
+
+- [#5677](https://github.com/xyflow/xyflow/pull/5677) [`e6661de`](https://github.com/xyflow/xyflow/commit/e6661de531212f9a209dba17dd63fbbd4ee16f62) - Add `autoPanOnSelection` to auto-pan when user drags a selection close to the edge of the viewport.
+
+
+
+- [#5803](https://github.com/xyflow/xyflow/pull/5803) [`737194d`](https://github.com/xyflow/xyflow/commit/737194d571894dd84ce7cbab02f2a4d0b779d018) - Reset node drag state when drag is aborted
+
+
+
+- [#5638](https://github.com/xyflow/xyflow/pull/5638) [`40660cd`](https://github.com/xyflow/xyflow/commit/40660cdb054fb1a110799a3ad7cecbf51371727f) - Fix selection box issue on mobile devices by adding `touch-action:none`
+
+
+
+- [#5105](https://github.com/xyflow/xyflow/pull/5105) [`4806e7c`](https://github.com/xyflow/xyflow/commit/4806e7cde6d69cd7570098ecca86523666b80175) - Improve generic types for xydrag & xyhandle
+
+
+
+- [#5784](https://github.com/xyflow/xyflow/pull/5784) [`7055140`](https://github.com/xyflow/xyflow/commit/7055140e66e4aebb08ce512bdff34add7e115472) - Fix node resizing possible beyond absolute extents
+
 ## 0.0.76
 
 ### Patch Changes
