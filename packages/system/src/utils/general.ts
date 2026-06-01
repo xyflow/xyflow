@@ -15,7 +15,6 @@ import type {
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
-
 import { defaultAriaLabelConfig, type AriaLabelConfig } from '../constants';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
@@ -141,15 +140,11 @@ export const isRectObject = (obj: any): obj is Rect =>
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
 
-// used for a11y key board controls for nodes and edges
-
 export const createDevWarn = (lib: string, helpUrl: string) => (id: string, message: string) => {
   if (process.env.NODE_ENV === 'development') {
     console.warn(`[${lib}]: ${message} Help: ${helpUrl}error#${id}`);
   }
 };
-
-export const devWarn = createDevWarn('xyflow', 'https://xyflow.com/');
 
 export const snapPosition = (position: XYPosition, snapGrid: SnapGrid = [1, 1]): XYPosition => {
   return {
