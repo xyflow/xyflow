@@ -1,6 +1,6 @@
 ---
-"@xyflow/react": minor
+"@xyflow/react": major
 ---
 
-Rename useStore into useReactFlowStore
+Rename `useStore` to `useReactFlowStore` (and `useStoreAPI` to `useReactFlowStoreAPI`)
   
