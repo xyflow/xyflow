@@ -1,5 +1,54 @@
 # @xyflow/svelte
 
+## 1.6.0
+### Minor Changes
+
+
+
+- [#5677](https://github.com/xyflow/xyflow/pull/5677) [`e6661de`](https://github.com/xyflow/xyflow/commit/e6661de531212f9a209dba17dd63fbbd4ee16f62) - Add `autoPanOnSelection` to auto-pan when user drags a selection close to the edge of the viewport.
+
+
+### Patch Changes
+
+
+
+- [#5790](https://github.com/xyflow/xyflow/pull/5790) [`735d259`](https://github.com/xyflow/xyflow/commit/735d2598c1113cf35352cadde5a3f0c29ed7c646) - Fix control button props not being reactive
+
+
+
+- [#5791](https://github.com/xyflow/xyflow/pull/5791) [`732c8eb`](https://github.com/xyflow/xyflow/commit/732c8eb8d5ff86ab1c057588724221e9b3b8553c) - Adds a type error when `handleId` is used without `handleType` in `useNodeConnections`
+
+
+
+- [#5105](https://github.com/xyflow/xyflow/pull/5105) [`2a8d0bc`](https://github.com/xyflow/xyflow/commit/2a8d0bca5a33da75aeb7b31c31937392757d29e8) - Improve generic types on useSvelteFlow to better reflect custom node & edge data
+
+
+
+- [#5793](https://github.com/xyflow/xyflow/pull/5793) [`c5c853d`](https://github.com/xyflow/xyflow/commit/c5c853d4a2f537caaea725ab9e7bd480e24b86fb) - Dev Warnings now use library-specific messaging with the correct documentation links.
+
+
+
+- [#5776](https://github.com/xyflow/xyflow/pull/5776) [`0441e9f`](https://github.com/xyflow/xyflow/commit/0441e9f9471380b5ba057fc0a6a8cbdc6ff5ed7b) - Export `NodeHandle` type
+
+
+
+- [#5801](https://github.com/xyflow/xyflow/pull/5801) [`536ff5f`](https://github.com/xyflow/xyflow/commit/536ff5f51e503ea70251f0075e4efcdbcc84dfee) - Pass aria label to node dom element
+
+
+
+- [#5778](https://github.com/xyflow/xyflow/pull/5778) [`109ba13`](https://github.com/xyflow/xyflow/commit/109ba13e51fb59fc1b1252cc9acb7c6a6c3d7b61) - Remove unused `background-color` CSS variable
+
+
+
+- [#5784](https://github.com/xyflow/xyflow/pull/5784) [`7055140`](https://github.com/xyflow/xyflow/commit/7055140e66e4aebb08ce512bdff34add7e115472) - Fix node resizing possible beyond absolute extents
+
+
+
+- [#5795](https://github.com/xyflow/xyflow/pull/5795) [`d06cec7`](https://github.com/xyflow/xyflow/commit/d06cec7758e6fcd831976e9f515dca08a9c2782e) - Check if window is defined before calling browser functions
+
+- Updated dependencies [[`732c8eb`](https://github.com/xyflow/xyflow/commit/732c8eb8d5ff86ab1c057588724221e9b3b8553c), [`c5c853d`](https://github.com/xyflow/xyflow/commit/c5c853d4a2f537caaea725ab9e7bd480e24b86fb), [`e6661de`](https://github.com/xyflow/xyflow/commit/e6661de531212f9a209dba17dd63fbbd4ee16f62), [`737194d`](https://github.com/xyflow/xyflow/commit/737194d571894dd84ce7cbab02f2a4d0b779d018), [`40660cd`](https://github.com/xyflow/xyflow/commit/40660cdb054fb1a110799a3ad7cecbf51371727f), [`4806e7c`](https://github.com/xyflow/xyflow/commit/4806e7cde6d69cd7570098ecca86523666b80175), [`7055140`](https://github.com/xyflow/xyflow/commit/7055140e66e4aebb08ce512bdff34add7e115472)]:
+  - @xyflow/system@0.0.77
+
 ## 1.5.2
 
 ### Patch Changes
