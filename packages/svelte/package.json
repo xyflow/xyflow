@@ -30,7 +30,7 @@
     "attw": "attw --pack --profile esm-only --ignore-rules internal-resolution-error cjs-resolves-to-esm --exclude-entrypoints ./dist/base.css ./dist/style.css ./base.css ./style.css",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "css": "postcss src/lib/styles/{base,style}.css --dir dist ",
     "lint": "prettier --check . && eslint .",

@@ -178,7 +178,7 @@ function NodeWrapper<NodeType extends Node>({
       getNodesInside(new Map([[id, node]]), { x: 0, y: 0, width, height }, transform, true).length > 0;
 
     if (!withinViewport) {
-      setCenter(node.position.x + nodeDimensions.width / 2, node.position.y + nodeDimensions.height / 2, {
+      void setCenter(node.position.x + nodeDimensions.width / 2, node.position.y + nodeDimensions.height / 2, {
         zoom: transform[2],
       });
     }

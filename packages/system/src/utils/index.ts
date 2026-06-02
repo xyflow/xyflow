@@ -1,5 +1,6 @@
 export * from './connections';
 export * from './dom';
+export * from './events';
 export * from './edges';
 export * from './graph';
 export * from './general';

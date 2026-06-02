@@ -1,4 +1,5 @@
 import type { Transform, XYPosition, SnapGrid, Dimensions, Position, Handle } from '../types';
+import { isMouseEvent } from './events';
 import { snapPosition, pointToRendererPoint } from './general';
 
 export type GetPointerPositionParams = {
@@ -46,8 +47,6 @@ export function isInputDOMNode(event: KeyboardEvent): boolean {
   // when an input field is focused we don't want to trigger deletion or movement of nodes
   return isInput || !!target.closest('.nokey');
 }
-
-export const isMouseEvent = (event: MouseEvent | TouchEvent): event is MouseEvent => 'clientX' in event;
 
 export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRect) => {
   const isMouse = isMouseEvent(event);

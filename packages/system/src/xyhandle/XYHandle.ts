@@ -84,7 +84,7 @@ function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
     }
     const [x, y] = calcAutoPan(position, containerBounds, autoPanSpeed);
 
-    panBy({ x, y });
+    void panBy({ x, y });
     autoPanId = requestAnimationFrame(autoPan);
   }
 

@@ -23,37 +23,6 @@ export default defineConfig(
         projectService: true,
       },
     },
-    rules: {
-      // TODO: all of these rules should be enabled
-      'turbo/no-undeclared-env-vars': 'warn',
-      'no-undef': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
-      '@typescript-eslint/no-duplicate-type-constituents': 'off',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'error',
-      '@typescript-eslint/no-floating-promises': 'off',
-      '@typescript-eslint/no-misused-promises': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-enum-comparison': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        {
-          argsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-        },
-      ],
-      '@typescript-eslint/consistent-type-imports': [
-        'warn',
-        {
-          prefer: 'type-imports',
-          fixStyle: 'inline-type-imports',
-        },
-      ],
-    },
   },
 
   {

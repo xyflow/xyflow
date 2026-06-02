@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
-import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
+import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type XYMinimapInstance } from '@xyflow/system';
 
 import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import { Panel } from '../../components/Panel';
@@ -130,12 +130,16 @@ function MiniMapComponent<NodeType extends Node = Node>({
       }
     : undefined;
 
-  const onSvgNodeClick = onNodeClick
-    ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node = store.getState().nodeLookup.get(nodeId)!.internals.userNode as NodeType;
-        onNodeClick(event, node);
-      }, [])
-    : undefined;
+  const onSvgNodeClick = useCallback(
+    (event: MouseEvent, nodeId: string) => {
+      const internalNode = store.getState().nodeLookup.get(nodeId);
+
+      if (internalNode && onNodeClick) {
+        onNodeClick(event, internalNode.internals.userNode);
+      }
+    },
+    [onNodeClick]
+  );
 
   const _ariaLabel = ariaLabel ?? ariaLabelConfig['minimap.ariaLabel'];
 
@@ -171,7 +175,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         {_ariaLabel && <title id={labelledBy}>{_ariaLabel}</title>}
 
         <MiniMapNodes<NodeType>
-          onClick={onSvgNodeClick}
+          onClick={onNodeClick ? onSvgNodeClick : undefined}
           nodeColor={nodeColor}
           nodeStrokeColor={nodeStrokeColor}
           nodeBorderRadius={nodeBorderRadius}

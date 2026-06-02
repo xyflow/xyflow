@@ -255,7 +255,7 @@ export function Pane({
     }
     const [x, y] = calcAutoPan(position.current, containerBounds.current, autoPanSpeed);
 
-    panBy({ x, y }).then((panned) => {
+    void panBy({ x, y }).then((panned) => {
       if (!selectionInProgress.current || !panned) {
         autoPanId.current = requestAnimationFrame(autoPan);
         return;

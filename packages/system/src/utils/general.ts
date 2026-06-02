@@ -134,12 +134,17 @@ export const getOverlappingArea = (rectA: Rect, rectB: Rect): number => {
   return Math.ceil(xOverlap * yOverlap);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isRectObject = (obj: any): obj is Rect =>
-  isNumeric(obj.width) && isNumeric(obj.height) && isNumeric(obj.x) && isNumeric(obj.y);
+export const isRectObject = (obj: unknown): obj is Rect => {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
+  const rect = obj as Record<string, unknown>;
+
+  return isNumeric(rect.width) && isNumeric(rect.height) && isNumeric(rect.x) && isNumeric(rect.y);
+};
+
+export const isNumeric = (n: unknown): n is number => typeof n === 'number' && !isNaN(n) && isFinite(n);
 
 // used for a11y key board controls for nodes and edges
 

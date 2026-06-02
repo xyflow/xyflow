@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ZoomTransform, zoomIdentity } from 'd3-zoom';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { transition } from 'd3-transition';
 
 import { type D3SelectionInstance, type Viewport } from '../types';
 import { isMacOs } from '../utils';
+import { type D3ZoomInputEvent } from '../utils/events';
 
 export const transformToViewport = (transform: ZoomTransform): Viewport => ({
   x: transform.x,
@@ -15,7 +15,15 @@ export const transformToViewport = (transform: ZoomTransform): Viewport => ({
 export const viewportToTransform = ({ x, y, zoom }: Viewport): ZoomTransform =>
   zoomIdentity.translate(x, y).scale(zoom);
 
-export const isWrappedWithClass = (event: any, className: string | undefined) => event.target.closest(`.${className}`);
+export const isWrappedWithClass = (event: D3ZoomInputEvent, className: string | undefined) => {
+  if (!className) {
+    return false;
+  }
+
+  const target = event.target;
+
+  return target instanceof Element && !!target.closest(`.${className}`);
+};
 
 export const isRightClickPan = (panOnDrag: boolean | number[], usedButton: number) =>
   usedButton === 2 && Array.isArray(panOnDrag) && panOnDrag.includes(2);
@@ -33,7 +41,7 @@ export const getD3Transition = (selection: D3SelectionInstance, duration = 0, ea
   return hasDuration ? selection.transition().duration(duration).ease(ease).on('end', onEnd) : selection;
 };
 
-export const wheelDelta = (event: any) => {
+export const wheelDelta = (event: WheelEvent) => {
   const factor = event.ctrlKey && isMacOs() ? 10 : 1;
 
   return -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002) * factor;
