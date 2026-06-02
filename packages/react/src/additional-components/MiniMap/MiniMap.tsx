@@ -2,7 +2,7 @@ import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } 
 import cc from 'classcat';
 import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type XYMinimapInstance } from '@xyflow/system';
 
-import { useStore, useStoreApi, useShallow } from '../../hooks/useStore';
+import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import { Panel } from '../../components/Panel';
 import type { ReactFlowState, Node } from '../../types';
 
@@ -69,12 +69,14 @@ function MiniMapComponent<NodeType extends Node = Node>({
   zoomStep = 1,
   offsetScale = 5,
 }: MiniMapProps<NodeType>) {
-  const store = useStoreApi<NodeType>();
+  const store = useReactFlowStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
-  const { rfId, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useStore(useShallow(selector));
+  const { rfId, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useReactFlowStore(
+    useShallow(selector)
+  );
 
-  const viewBB = useStore(useShallow(viewBBSelector));
-  const boundingRect = useStore(useShallow(boundingRectSelector));
+  const viewBB = useReactFlowStore(useShallow(viewBBSelector));
+  const boundingRect = useReactFlowStore(useShallow(boundingRectSelector));
 
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;

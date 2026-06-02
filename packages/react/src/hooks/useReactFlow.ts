@@ -13,7 +13,7 @@ import {
 } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
-import { useStore, useStoreApi } from './useStore';
+import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
 import { useBatchContext } from '../components/BatchProvider';
 import { elementToRemoveChange, isEdge, isNode } from '../utils';
 import type {
@@ -60,9 +60,9 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
   EdgeType
 > {
   const viewportHelper = useViewportHelper();
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const batchContext = useBatchContext();
-  const viewportInitialized = useStore(selector);
+  const viewportInitialized = useReactFlowStore(selector);
 
   const generalHelper = useMemo<GeneralHelpers<NodeType, EdgeType>>(() => {
     const getInternalNode: GeneralHelpers<NodeType, EdgeType>['getInternalNode'] = (id) =>

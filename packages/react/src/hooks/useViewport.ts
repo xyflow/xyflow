@@ -1,6 +1,6 @@
 import type { Viewport } from '@xyflow/system';
 
-import { useStore, useShallow } from '../hooks/useStore';
+import { useReactFlowStore, useShallow } from './useReactFlowStore';
 import type { ReactFlowState } from '../types';
 
 const viewportSelector = (state: ReactFlowState) => ({
@@ -39,7 +39,7 @@ const viewportSelector = (state: ReactFlowState) => ({
  *{@link ReactFlowProvider} or a {@link ReactFlow} component.
  */
 export function useViewport(): Viewport {
-  const viewport = useStore(useShallow(viewportSelector));
+  const viewport = useReactFlowStore(useShallow(viewportSelector));
 
   return viewport;
 }

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { isEdgeVisible } from '@xyflow/system';
 
-import { useStore, useShallow } from './useStore';
+import { useReactFlowStore, useShallow } from './useReactFlowStore';
 import { type ReactFlowState } from '../types';
 
 /**
@@ -12,7 +12,7 @@ import { type ReactFlowState } from '../types';
  * @returns array with visible edge ids
  */
 export function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
-  const edgeIds = useStore(
+  const edgeIds = useReactFlowStore(
     useShallow(
       useCallback(
         (s: ReactFlowState) => {

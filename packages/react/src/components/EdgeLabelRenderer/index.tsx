@@ -1,7 +1,7 @@
 import { useMemo, type ReactNode, type ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useStore } from '../../hooks/useStore';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import type { ReactFlowState } from '../../types';
 
 const selector = (s: ReactFlowState) => s.domNode;
@@ -52,7 +52,7 @@ export type EdgeLabelRendererProps = {
  * the `nopan` class on the label or the element you want to interact with.
  */
 export function EdgeLabelRenderer({ children }: EdgeLabelRendererProps): ReactPortal | null {
-  const domNode = useStore(selector);
+  const domNode = useReactFlowStore(selector);
   const edgeLabelRenderer = useMemo(() => domNode?.querySelector('.react-flow__edgelabel-renderer'), [domNode]);
 
   if (!edgeLabelRenderer) {

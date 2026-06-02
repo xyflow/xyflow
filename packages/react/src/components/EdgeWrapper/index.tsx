@@ -8,7 +8,7 @@ import {
   getElevatedEdgeZIndex,
 } from '@xyflow/system';
 
-import { useStoreApi, useStore, useShallow } from '../../hooks/useStore';
+import { useReactFlowStoreApi, useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
@@ -35,8 +35,8 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   onError,
   disableKeyboardA11y,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
-  let edge = useStore((s) => s.edgeLookup.get(id)!) as EdgeType;
-  const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
+  let edge = useReactFlowStore((s) => s.edgeLookup.get(id)!) as EdgeType;
+  const defaultEdgeOptions = useReactFlowStore((s) => s.defaultEdgeOptions);
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
   let edgeType = edge.type || 'default';
@@ -57,9 +57,9 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const edgeRef = useRef<SVGGElement>(null);
   const [updateHover, setUpdateHover] = useState<boolean>(false);
   const [reconnecting, setReconnecting] = useState<boolean>(false);
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
 
-  const { zIndex, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = useStore(
+  const { zIndex, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = useReactFlowStore(
     useShallow(
       useCallback(
         (store) => {

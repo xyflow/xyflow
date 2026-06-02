@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { getNodesInside } from '@xyflow/system';
 
-import { useStore, useShallow } from './useStore';
+import { useReactFlowStore, useShallow } from './useReactFlowStore';
 import type { Node, ReactFlowState } from '../types';
 
 const selector = (onlyRenderVisible: boolean) => (s: ReactFlowState) => {
@@ -20,7 +20,7 @@ const selector = (onlyRenderVisible: boolean) => (s: ReactFlowState) => {
  * @returns array with visible node ids
  */
 export function useVisibleNodeIds(onlyRenderVisible: boolean) {
-  const nodeIds = useStore(useShallow(useCallback(selector(onlyRenderVisible), [onlyRenderVisible])));
+  const nodeIds = useReactFlowStore(useShallow(useCallback(selector(onlyRenderVisible), [onlyRenderVisible])));
 
   return nodeIds;
 }

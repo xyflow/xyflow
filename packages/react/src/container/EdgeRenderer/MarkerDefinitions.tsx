@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
 import { type MarkerProps, createMarkerIds } from '@xyflow/system';
 
-import { useShallow, useStore } from '../../hooks/useStore';
+import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useMarkerSymbol } from './MarkerSymbols';
 import { type ReactFlowState } from '../../types';
 
@@ -51,7 +51,7 @@ const selector = (s: ReactFlowState) => ({ edges: s.edges, defaultEdgeOptions: s
  * that we can then use for creating our unique marker ids
  */
 const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
-  const { edges, defaultEdgeOptions } = useStore(useShallow(selector));
+  const { edges, defaultEdgeOptions } = useReactFlowStore(useShallow(selector));
 
   const markers = useMemo(() => {
     const markers = createMarkerIds(edges, {

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { type DistributivePick, shallowNodeData } from '@xyflow/system';
 
-import { useCustomDiff, useStore } from '../hooks/useStore';
+import { useCustomDiff, useReactFlowStore } from './useReactFlowStore';
 import type { Node, ReactFlowState } from '../types';
 
 /**
@@ -53,7 +53,7 @@ export function useNodesData(nodeIds: string | string[]): any {
     },
     [nodeIds]
   );
-  const nodesData = useStore(useCustomDiff(selector, shallowNodeData));
+  const nodesData = useReactFlowStore(useCustomDiff(selector, shallowNodeData));
 
   return nodesData;
 }

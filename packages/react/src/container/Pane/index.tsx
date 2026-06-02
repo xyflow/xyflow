@@ -22,7 +22,7 @@ import {
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
-import { useStore, useStoreApi, useShallow } from '../../hooks/useStore';
+import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import { getSelectionChanges } from '../../utils';
 import type { ReactFlowProps, ReactFlowState } from '../../types';
 
@@ -89,10 +89,9 @@ export function Pane({
   children,
 }: PaneProps) {
   const autoPanId = useRef<number>(0);
-  const store = useStoreApi();
-  const { userSelectionActive, elementsSelectable, dragging, connectionInProgress, panBy, autoPanSpeed } = useStore(
-    useShallow(selector)
-  );
+  const store = useReactFlowStoreApi();
+  const { userSelectionActive, elementsSelectable, dragging, connectionInProgress, panBy, autoPanSpeed } =
+    useReactFlowStore(useShallow(selector));
   const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);
 
   const container = useRef<HTMLDivElement | null>(null);

@@ -3,7 +3,7 @@ import cc from 'classcat';
 import { Position, getNodeToolbarTransform, getInternalNodesBounds, NodeLookup } from '@xyflow/system';
 
 import { InternalNode, ReactFlowState } from '../../types';
-import { useStore, useShallow, useCustomDiff } from '../../hooks/useStore';
+import { useReactFlowStore, useShallow, useCustomDiff } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { NodeToolbarPortal } from './NodeToolbarPortal';
 import type { NodeToolbarProps } from './types';
@@ -101,8 +101,8 @@ export function NodeToolbar({
     },
     [nodeId, contextNodeId]
   );
-  const nodes = useStore(useCustomDiff(nodesSelector, nodesEqualityFn));
-  const { x, y, zoom, selectedNodesCount } = useStore(useShallow(storeSelector));
+  const nodes = useReactFlowStore(useCustomDiff(nodesSelector, nodesEqualityFn));
+  const { x, y, zoom, selectedNodesCount } = useReactFlowStore(useShallow(storeSelector));
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   const isActive =

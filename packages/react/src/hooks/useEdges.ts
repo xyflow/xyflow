@@ -1,4 +1,4 @@
-import { useStore } from '../hooks/useStore';
+import { useReactFlowStore } from './useReactFlowStore';
 import type { Edge, ReactFlowState } from '../types';
 
 const edgesSelector = (state: ReactFlowState) => state.edges;
@@ -22,7 +22,7 @@ const edgesSelector = (state: ReactFlowState) => state.edges;
  *```
  */
 export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
-  const edges = useStore(edgesSelector) as EdgeType[];
+  const edges = useReactFlowStore(edgesSelector) as EdgeType[];
 
   return edges;
 }
