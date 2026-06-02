@@ -9,15 +9,34 @@ function getMediaQuery() {
   return window.matchMedia('(prefers-color-scheme: dark)');
 }
 
+function getSystemColorMode(colorModeSSR: ColorModeClass): ColorModeClass {
+  const mediaQuery = getMediaQuery();
+
+  if (!mediaQuery) {
+    return colorModeSSR;
+  }
+
+  return mediaQuery.matches ? 'dark' : 'light';
+}
+
+function getInitialColorModeClass(colorMode: ColorMode, colorModeSSR: ColorModeClass): ColorModeClass {
+  if (colorMode === 'system') {
+    return getSystemColorMode(colorModeSSR);
+  }
+
+  return colorMode;
+}
+
 /**
  * Hook for receiving the current color mode class 'dark' or 'light'.
  *
  * @internal
  * @param colorMode - The color mode to use ('dark', 'light' or 'system')
+ * @param colorModeSSR - Fallback color mode when colorMode is 'system' and matchMedia is unavailable (SSR)
  */
-export function useColorModeClass(colorMode: ColorMode): ColorModeClass {
-  const [colorModeClass, setColorModeClass] = useState<ColorModeClass | null>(
-    colorMode === 'system' ? null : colorMode
+export function useColorModeClass(colorMode: ColorMode, colorModeSSR: ColorModeClass = 'light'): ColorModeClass {
+  const [colorModeClass, setColorModeClass] = useState<ColorModeClass>(() =>
+    getInitialColorModeClass(colorMode, colorModeSSR)
   );
 
   useEffect(() => {
@@ -37,5 +56,5 @@ export function useColorModeClass(colorMode: ColorMode): ColorModeClass {
     };
   }, [colorMode]);
 
-  return colorModeClass !== null ? colorModeClass : getMediaQuery()?.matches ? 'dark' : 'light';
+  return colorModeClass;
 }

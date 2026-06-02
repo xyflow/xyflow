@@ -427,6 +427,7 @@ svg.xy-flow__connectionline {
 .xy-flow__controls {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   &.horizontal {
     flex-direction: row;
