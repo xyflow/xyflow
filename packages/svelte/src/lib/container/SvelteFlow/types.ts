@@ -333,6 +333,12 @@ export type SvelteFlowProps<
      */
     panOnDrag?: boolean | number[];
     /**
+     * Mouse buttons that pan the viewport when drag starts on a node or edge, bypassing node drag.
+     * @default [1]
+     * @example [] // use with panOnDrag={[2]} to prevent middle-mouse pan on nodes
+     */
+    forcePanMouseButtons?: number[];
+    /**
      * Select multiple elements with a selection box, without pressing down selectionKey.
      * @default false
      */
