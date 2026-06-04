@@ -3,9 +3,7 @@ import {
   boxToRect,
   clampPosition,
   getBoundsOfBoxes,
-  getOverlappingArea,
-  nodeToRect,
-  pointToRendererPoint,
+  getRectsOverlappingArea,
   getViewportForBounds,
   isCoordinateExtent,
   getNodeDimensions,
@@ -262,11 +260,11 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
   excludeNonSelectableNodes = false
 ): InternalNodeBase<NodeType>[] => {
-  const paneRect = {
-    ...pointToRendererPoint(rect, [tx, ty, tScale]),
-    width: rect.width / tScale,
-    height: rect.height / tScale,
-  };
+  // viewport in flow coordinates, as scalars to avoid a Rect allocation per node
+  const paneX = (rect.x - tx) / tScale;
+  const paneY = (rect.y - ty) / tScale;
+  const paneWidth = rect.width / tScale;
+  const paneHeight = rect.height / tScale;
 
   const visibleNodes: InternalNodeBase<NodeType>[] = [];
 
@@ -277,11 +275,12 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
       continue;
     }
 
-    const width = measured.width ?? node.width ?? node.initialWidth ?? null;
-    const height = measured.height ?? node.height ?? node.initialHeight ?? null;
+    const width = measured.width ?? node.width ?? node.initialWidth ?? 0;
+    const height = measured.height ?? node.height ?? node.initialHeight ?? 0;
+    const { x, y } = node.internals.positionAbsolute;
 
-    const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node));
-    const area = (width ?? 0) * (height ?? 0);
+    const overlappingArea = getRectsOverlappingArea(paneX, paneY, paneWidth, paneHeight, x, y, width, height);
+    const area = width * height;
 
     const partiallyVisible = partially && overlappingArea > 0;
     const forceInitialRender = !node.internals.handleBounds;
