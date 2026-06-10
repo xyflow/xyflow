@@ -130,6 +130,63 @@ test.describe('Pane default', () => {
   });
 });
 
+// https://github.com/xyflow/xyflow/issues/5757 — `onPaneClick` was being fired
+// when the user ended a connection drag on the pane background (or close to but
+// not exactly on top of) a handle. The click event that the browser synthesises
+// from the mousedown/mouseup pair leaks to the pane's `onClick` handler because
+// `connectionInProgress` has already been reset to `false` by the time the
+// handler runs, so the early-return inside the handler doesn't fire.
+test.describe('Pane connection drag', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/tests/generic/pane/connection-drag');
+    await page.waitForSelector('[data-id="first-edge"]', { timeout: 5000 });
+    await page.evaluate(() => {
+      (window as unknown as { __paneClicks?: number }).__paneClicks = 0;
+    });
+  });
+
+  test('dragging a connection onto the pane background does not fire onPaneClick', async ({ page }) => {
+    const sourceHandle = page.locator(`[data-id="source"] .${FRAMEWORK}-flow__handle.source`);
+    const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
+
+    await expect(sourceHandle).toBeAttached();
+    await expect(pane).toBeAttached();
+
+    const paneBox = await pane.boundingBox();
+    if (!paneBox) throw new Error('pane has no bounding box');
+
+    // Drag from the source handle to an empty area in the bottom-right
+    // quadrant of the pane. The empty area is far from both nodes so the
+    // pointer ends up on the pane background, which is exactly the case the
+    // reporter's video shows.
+    await sourceHandle.hover();
+    await page.mouse.down();
+    await page.mouse.move(paneBox.x + paneBox.width - 40, paneBox.y + paneBox.height - 40, { steps: 20 });
+    await page.mouse.up();
+
+    // Give React a tick to flush the click event that the browser synthesises
+    // from the mousedown/mouseup pair.
+    await page.waitForTimeout(50);
+
+    const paneClicks = await page.evaluate(() => (window as unknown as { __paneClicks?: number }).__paneClicks);
+    expect(paneClicks).toBe(0);
+  });
+
+  test('a real click on the pane background still fires onPaneClick', async ({ page }) => {
+    const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
+    await expect(pane).toBeAttached();
+
+    const paneBox = await pane.boundingBox();
+    if (!paneBox) throw new Error('pane has no bounding box');
+
+    await page.mouse.click(paneBox.x + paneBox.width - 40, paneBox.y + paneBox.height - 40);
+    await page.waitForTimeout(50);
+
+    const paneClicks = await page.evaluate(() => (window as unknown as { __paneClicks?: number }).__paneClicks);
+    expect(paneClicks).toBe(1);
+  });
+});
+
 test.describe('Pane non-default', () => {
   test.beforeEach(async ({ page }) => {
     // Go to the starting url before each test.

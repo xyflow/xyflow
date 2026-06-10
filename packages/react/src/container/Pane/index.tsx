@@ -105,15 +105,28 @@ export function Pane({
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
 
+  // Used to suppress the click that the browser synthesises from the
+  // mousedown/mouseup pair at the end of a connection drag. By the time the
+  // click reaches the pane the store's `connection.inProgress` has already
+  // been reset to `false` in `XYHandle.onPointerUp`, so checking the flag
+  // directly inside `onClick` is too late. Mirror the flag in a ref that is
+  // latched whenever a connection is in progress and consumed on the next
+  // pane click (#5757).
+  const connectionEndedSinceLastClick = useRef<boolean>(false);
+  if (connectionInProgress) {
+    connectionEndedSinceLastClick.current = true;
+  }
+
   // Used for auto pan when approaching the edges of the container during selection
   const position = useRef<XYPosition>({ x: 0, y: 0 });
   const autoPanStarted = useRef<boolean>(false);
 
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
-    // We also prevent click events when a connection is in progress
-    if (selectionInProgress.current || connectionInProgress) {
+    // We also prevent click events when a connection has just ended (#5757)
+    if (selectionInProgress.current || connectionInProgress || connectionEndedSinceLastClick.current) {
       selectionInProgress.current = false;
+      connectionEndedSinceLastClick.current = false;
       return;
     }
 
