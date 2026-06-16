@@ -19,6 +19,7 @@ import {
   ConnectionMode,
   OnConnect,
   ConnectionState,
+  FinalConnectionState,
   Optional,
 } from '@xyflow/system';
 
@@ -209,7 +210,7 @@ function HandleComponent(
     const connectionClone = structuredClone(connectionState) as Optional<ConnectionState, 'inProgress'>;
     delete connectionClone.inProgress;
     connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
-    onClickConnectEnd?.(event as unknown as MouseEvent, connectionClone);
+    onClickConnectEnd?.(event as unknown as MouseEvent, connectionClone as FinalConnectionState);
 
     store.setState({ connectionClickStartHandle: null });
   };
