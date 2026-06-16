@@ -372,10 +372,9 @@ export type ConnectionState<NodeType extends InternalNodeBase = InternalNodeBase
   | ConnectionInProgress<NodeType>
   | NoConnection;
 
-export type FinalConnectionState<NodeType extends InternalNodeBase = InternalNodeBase> = Omit<
-  ConnectionState<NodeType>,
-  'inProgress'
->;
+export type FinalConnectionState<NodeType extends InternalNodeBase = InternalNodeBase> =
+  | (Omit<ConnectionInProgress<NodeType>, 'inProgress' | 'toPosition'> & { toPosition: Position | null })
+  | Omit<NoConnection, 'inProgress'>;
 
 export type UpdateConnection<NodeType extends InternalNodeBase = InternalNodeBase> = (
   params: ConnectionState<NodeType>
