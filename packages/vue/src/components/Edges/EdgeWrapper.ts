@@ -127,6 +127,13 @@ const EdgeWrapper = defineComponent({
       type: reconnectHandleType,
       isValidConnection,
       reconnectHandleType,
+      // xyflow/react + svelte hide the original edge AND emit `reconnectStart` from the system's
+      // `onConnectStart` — i.e. once the reconnect drag actually starts (after the drag threshold), not
+      // eagerly on pointerdown. A plain click on the anchor then leaves the edge in place and emits nothing.
+      onReconnectStart: (event) => {
+        updating.value = true;
+        emit.reconnectStart({ event, edge: storedEdge.value, handleType: reconnectHandleType.value });
+      },
       onReconnect,
       onReconnectEnd,
     });
@@ -326,14 +333,10 @@ const EdgeWrapper = defineComponent({
         return;
       }
 
-      updating.value = true;
-
       nodeId.value = isSourceHandle ? edge.value.target : edge.value.source;
       handleId.value = (isSourceHandle ? edge.value.targetHandle : edge.value.sourceHandle) ?? null;
 
       reconnectHandleType.value = isSourceHandle ? 'target' : 'source';
-
-      emit.reconnectStart({ event, edge: storedEdge.value, handleType: reconnectHandleType.value });
 
       handlePointerDown(event);
     }

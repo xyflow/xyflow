@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { HandleProps } from '../../types';
-import { ConnectionMode, getDimensions, isMouseEvent, Position } from '@xyflow/system';
+import { ConnectionMode, getDimensions, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
 import { computed, onMounted, shallowRef, toRef } from 'vue';
 import { storeToRefs, useHandle, useNode, useStore, useVueFlow } from '../../composables';
 import { isDef } from '../../utils';
@@ -22,7 +22,9 @@ const { id: flowId } = useVueFlow();
 
 const {
   connectionStartHandle,
+  connectionEndHandle,
   connectionClickStartHandle,
+  connectionStatus,
   connectionMode,
   vueFlowRef,
   nodesConnectable,
@@ -69,6 +71,25 @@ const isClickConnecting = toRef(
     && connectionClickStartHandle.value?.id === handleId
     && connectionClickStartHandle.value?.type === type.value,
 );
+
+// xyflow/react + svelte toggle these per handle during a connection: `connectingfrom` on the handle the
+// drag started from, `connectingto` on the handle currently hovered, and `valid` when that hovered handle
+// is a valid target. Core only toggles the classes — coloring is left to user CSS.
+const connectingFrom = toRef(
+  () =>
+    connectionStartHandle.value?.nodeId === nodeId
+    && connectionStartHandle.value?.id === handleId
+    && connectionStartHandle.value?.type === type.value,
+);
+
+const connectingTo = toRef(
+  () =>
+    connectionEndHandle.value?.nodeId === nodeId
+    && connectionEndHandle.value?.id === handleId
+    && connectionEndHandle.value?.type === type.value,
+);
+
+const valid = toRef(() => connectingTo.value && connectionStatus.value === 'valid');
 
 const { handlePointerDown, handleClick } = useHandle({
   nodeId,
@@ -118,7 +139,7 @@ onMounted(() => {
 
   // if the node isn't initialized yet, we can't set up the handle bounds
   // the handle bounds will be automatically set up when the node is initialized (`updateNodeDimensions`)
-  if (!node || !node.measured.width || !node.measured.height) {
+  if (!node || !nodeHasDimensions(node)) {
     return;
   }
 
@@ -210,6 +231,9 @@ export default {
         connecting: isClickConnecting,
         connectablestart: isConnectableStart,
         connectableend: isConnectableEnd,
+        connectingfrom: connectingFrom,
+        connectingto: connectingTo,
+        valid,
         connectionindicator:
           isHandleConnectable
           && (!connectionInProcess || isPossibleEndHandle)

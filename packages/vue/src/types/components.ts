@@ -41,7 +41,7 @@ export type DefaultNodeTypes = { [key in 'input' | 'output' | 'default']: NodeCo
 export interface EdgeTextProps {
   x: number;
   y: number;
-  label?: string | VNode | object;
+  label?: string | VNode | Component<EdgeTextProps> | object;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;

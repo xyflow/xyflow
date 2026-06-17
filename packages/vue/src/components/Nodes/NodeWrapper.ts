@@ -119,7 +119,7 @@ const NodeWrapper = defineComponent({
     // a node "has dimensions" once it's measured OR carries explicit `width`/`height` OR `initialWidth`/
     // `initialHeight` (the SSR fallback, where there's no ResizeObserver to measure) — mirrors xyflow/react
     // & xyflow/svelte's visibility gate so sized/SSR nodes render immediately instead of staying hidden.
-    const isInit = toRef(() => (nodeRef.value ? nodeHasDimensions(nodeRef.value) : false));
+    const isInit = computed(() => (nodeRef.value ? nodeHasDimensions(nodeRef.value) : false));
 
     // computed (not toRef): the value-equality gate keeps this node's render effect from re-running on
     // every `parentLookup` entry replacement — an uncached getter read in render tracks the raw map key
@@ -171,14 +171,6 @@ const NodeWrapper = defineComponent({
       onClick(event) {
         onSelectNode(event);
       },
-    });
-
-    const getClass = computed(() => {
-      const node = nodeRef.value;
-      if (!node) {
-        return undefined;
-      }
-      return node.class;
     });
 
     const getStyle = computed(() => {
@@ -261,7 +253,7 @@ const NodeWrapper = defineComponent({
               selectable: isSelectable.value,
               parent: isParent.value,
             },
-            getClass.value,
+            node.class,
           ],
           'style': {
             visibility: isInit.value ? 'visible' : 'hidden',

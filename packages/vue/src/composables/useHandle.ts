@@ -14,6 +14,7 @@ export interface UseHandleProps {
   type: MaybeRefOrGetter<HandleType>;
   isValidConnection?: MaybeRefOrGetter<ValidConnectionFunc | null>;
   reconnectHandleType?: MaybeRefOrGetter<HandleType>;
+  onReconnectStart?: (event: MouseTouchEvent) => void;
   onReconnect?: (event: MouseTouchEvent, connection: Connection) => void;
   onReconnectEnd?: (event: MouseTouchEvent, connectionState: FinalConnectionState<InternalNode>) => void;
 }
@@ -38,6 +39,7 @@ export function useHandle({
   type,
   isValidConnection,
   reconnectHandleType,
+  onReconnectStart,
   onReconnect,
   onReconnectEnd,
 }: UseHandleProps) {
@@ -177,6 +179,13 @@ export function useHandle({
           handleId: params.handleId,
           handleType: params.handleType ?? undefined,
         });
+        // For a reconnect this fires only once the drag actually begins (after `connectionDragThreshold`,
+        // or immediately when it's 0) — the cue to hide the original edge. Hiding it eagerly on pointerdown
+        // would strand a plain click (no drag) with a permanently hidden edge, because the system fires
+        // onConnectEnd/onReconnectEnd only after the drag has started.
+        if (reconnectHandleType) {
+          onReconnectStart?.(evt as MouseTouchEvent);
+        }
       },
       onConnect: (connection) => {
         if (onReconnect) {
