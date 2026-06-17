@@ -63,6 +63,7 @@
     "test": "exit 0"
   },
   "peerDependencies": {
+    "@vue/reactivity": "^3.5.0",
     "vue": "^3.5.0"
   },
   "dependencies": {
@@ -76,6 +77,7 @@
     "@types/d3-interpolate": "^3.0.4",
     "@types/d3-transition": "^3.0.9",
     "@types/d3-zoom": "^3.0.8",
+    "@vue/reactivity": "^3.5.0",
     "autoprefixer": "^10.5.0",
     "eslint": "catalog:",
     "jiti": "^2.7.0",

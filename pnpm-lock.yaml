@@ -431,6 +431,9 @@ importers:
       '@types/d3-zoom':
         specifier: ^3.0.8
         version: 3.0.8
+      '@vue/reactivity':
+        specifier: ^3.5.0
+        version: 3.5.38
       autoprefixer:
         specifier: ^10.5.0
         version: 10.5.0(postcss@8.5.15)
