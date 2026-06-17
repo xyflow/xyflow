@@ -153,7 +153,6 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     ...actions,
     emits,
     id,
-    vueFlowVersion: typeof __VUE_FLOW_VERSION__ !== 'undefined' ? __VUE_FLOW_VERSION__ : 'UNKNOWN',
     $destroy: () => {
       onDestroy?.(id);
     },

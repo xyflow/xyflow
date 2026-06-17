@@ -4,11 +4,7 @@ import { toRef } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
 import Panel from '../Panel/Panel.vue';
 import ControlButton from './ControlButton.vue';
-import FitView from './icons/fitview.svg';
-import Lock from './icons/lock.svg';
-import MinusIcon from './icons/minus.svg';
-import PlusIcon from './icons/plus.svg';
-import Unlock from './icons/unlock.svg';
+import { FitView, Lock, MinusIcon, PlusIcon, Unlock } from './icons';
 
 const props = withDefaults(defineProps<ControlProps>(), {
   showZoom: true,
