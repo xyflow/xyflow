@@ -17,7 +17,6 @@
     "emitDeclarationOnly": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "preserveSymlinks": true,
     "skipLibCheck": true
   },
   "vueCompilerOptions": {
