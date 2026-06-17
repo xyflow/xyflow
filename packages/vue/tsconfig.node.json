@@ -12,6 +12,6 @@
     "package.json"
   ],
   "include": [
-    "vite.config.ts"
+    "tsdown.config.mts"
   ]
 }

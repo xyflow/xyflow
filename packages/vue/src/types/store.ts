@@ -410,8 +410,6 @@ export type VueFlowState<NodeType extends Node = Node, EdgeType extends Edge = E
 export type VueFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   readonly id: string;
   readonly emits: FlowHooksEmit<NodeType, EdgeType>;
-  /** current vue flow version you're using */
-  readonly vueFlowVersion: string;
   /** tear the store down (internal) */
   $destroy: () => void;
 } & FlowHooksOn<NodeType, EdgeType>
