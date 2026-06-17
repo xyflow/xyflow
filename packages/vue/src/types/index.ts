@@ -7,5 +7,6 @@ export * from './handle';
 export * from './hooks';
 export * from './node';
 export * from './panel';
+export * from './reactivity-augmentation';
 export * from './store';
 export * from './zoom';
