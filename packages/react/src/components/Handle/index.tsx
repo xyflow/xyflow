@@ -25,6 +25,7 @@ import {
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
+import { useHandleConfig } from '../../contexts/HandleConfigContext';
 import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
 import { addEdge } from '../../utils/edges';
@@ -37,12 +38,6 @@ export type HandleProps = HandlePropsSystem &
     /** Callback called when connection is made */
     onConnect?: OnConnect;
   };
-
-const selector = (s: ReactFlowState) => ({
-  connectOnClick: s.connectOnClick,
-  noPanClassName: s.noPanClassName,
-  rfId: s.rfId,
-});
 
 const connectingSelector =
   (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
@@ -86,7 +81,7 @@ function HandleComponent(
   const isTarget = type === 'target';
   const store = useStoreApi();
   const nodeId = useNodeId();
-  const { connectOnClick, noPanClassName, rfId } = useStore(selector, shallow);
+  const { connectOnClick, noPanClassName, rfId } = useHandleConfig();
   const {
     connectingFrom,
     connectingTo,
