@@ -7,6 +7,6 @@
   "access": "restricted",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["react-examples", "svelte-examples", "astro-examples", "playwright"],
+  "ignore": ["react-examples", "svelte-examples", "astro-examples", "playwright", "@xyflow/vue"],
   "prettier": false
 }
