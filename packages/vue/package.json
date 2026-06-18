@@ -55,7 +55,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "dev": "tsdown --watch",
+    "dev": "concurrently \"tsdown --watch\" \"pnpm:css --watch\"",
     "build": "shx rm -rf dist && pnpm css && tsdown",
     "build:watch": "tsdown --watch",
     "css": "postcss src/styles/{base,style}.css --dir dist",
