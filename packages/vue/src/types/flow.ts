@@ -290,17 +290,26 @@ export interface FlowEmits<NodeType extends Node = Node, EdgeType extends Edge =
 // rather than a bare `Record`. Beyond correctness, a required index signature makes `<VueFlow>`
 // unassignable to Vue's `Component` (whose `InternalSlots` are optional), which breaks Options-API
 // `components: { VueFlow }` registration.
+// Pick the union member(s) whose `type` matches the slot's type tag. Distributive (not `Extract<…, {type:T}>`)
+// because `type` is OPTIONAL on Node/Edge (`type?:`), so an `Extract` against a required `{ type: T }` is
+// always `never`. For a generic `Node`/`Edge` (`type: string`) every member matches, so the slot stays broad;
+// for a discriminated union it narrows to the matching variant.
+type NodeByType<NodeType extends Node, T extends string> = NodeType extends any ? (T extends NonNullable<NodeType['type']> ? NodeType : never) : never;
+type EdgeByType<EdgeType extends Edge, T extends string> = EdgeType extends any ? (T extends NonNullable<EdgeType['type']> ? EdgeType : never) : never;
+
 export type NodeSlots<NodeType extends Node = Node> = Partial<
-  Record<`node-${NodeType['type'] | string}`, (nodeProps: NodeProps<NodeType>) => any>
+  & { [T in NonNullable<NodeType['type']> as `node-${T}`]: (nodeProps: NodeProps<NodeByType<NodeType, T>>) => any }
+  & Record<`node-${string}`, (nodeProps: NodeProps<NodeType>) => any>
 >;
 
 export type EdgeSlots<EdgeType extends Edge = Edge> = Partial<
-  Record<`edge-${NonNullable<EdgeType['type']> | string}`, (edgeProps: EdgeProps<EdgeType>) => any>
+  & { [T in NonNullable<EdgeType['type']> as `edge-${T}`]: (edgeProps: EdgeProps<EdgeByType<EdgeType, T>>) => any }
+  & Record<`edge-${string}`, (edgeProps: EdgeProps<EdgeType>) => any>
 >;
 
 export type FlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType>
   & EdgeSlots<EdgeType> & {
-    'connection-line'?: (connectionLineProps: ConnectionLineProps) => any;
+    'connection-line'?: (connectionLineProps: ConnectionLineProps<NodeType>) => any;
     'zoom-pane'?: () => any;
     'default'?: () => any;
   };

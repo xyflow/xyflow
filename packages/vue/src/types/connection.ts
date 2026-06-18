@@ -77,7 +77,7 @@ export interface OnConnectStartParams {
   handleType?: HandleType;
 }
 
-export interface ConnectionLineProps {
+export interface ConnectionLineProps<NodeType extends Node = Node> {
   /** X start position of the connection line */
   fromX: number;
   /** Y start position of the connection line */
@@ -91,11 +91,11 @@ export interface ConnectionLineProps {
   /** the side of the end handle */
   toPosition: Position;
   /** the node the connection started from */
-  fromNode: InternalNode;
+  fromNode: InternalNode<NodeType>;
   /** the handle the connection started from (not the DOM element) */
   fromHandle: HandleElement | null;
   /** the node the connection currently ends on, or `null` */
-  toNode: InternalNode | null;
+  toNode: InternalNode<NodeType> | null;
   /** the handle the connection currently ends on (not the DOM element), or `null` */
   toHandle: HandleElement | null;
   /** marker url */

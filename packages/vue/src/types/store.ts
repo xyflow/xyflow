@@ -183,14 +183,14 @@ export type AddNodes<NodeType extends Node = Node> = (
   nodes: NodeType | NodeType[] | ((nodes: NodeType[]) => NodeType | NodeType[]),
 ) => void;
 
-export type RemoveNodes = (
-  nodes: (string | Node) | (Node | string)[] | ((nodes: Node[]) => (string | Node) | (Node | string)[]),
+export type RemoveNodes<NodeType extends Node = Node> = (
+  nodes: (string | NodeType) | (NodeType | string)[] | ((nodes: NodeType[]) => (string | NodeType) | (NodeType | string)[]),
   removeConnectedEdges?: boolean,
   removeChildren?: boolean,
 ) => void;
 
-export type RemoveEdges = (
-  edges: (string | Edge) | (Edge | string)[] | ((edges: Edge[]) => (string | Edge) | (Edge | string)[]),
+export type RemoveEdges<EdgeType extends Edge = Edge> = (
+  edges: (string | EdgeType) | (EdgeType | string)[] | ((edges: EdgeType[]) => (string | EdgeType) | (EdgeType | string)[]),
 ) => void;
 
 /**
@@ -271,7 +271,7 @@ export type UpdateNodeData<NodeType extends Node = Node> = (
   options?: { replace: boolean },
 ) => void;
 
-export type IsNodeIntersecting = (node: (Partial<Node> & { id: Node['id'] }) | Rect, area: Rect, partially?: boolean) => boolean;
+export type IsNodeIntersecting<NodeType extends Node = Node> = (node: (Partial<NodeType> & { id: NodeType['id'] }) | Rect, area: Rect, partially?: boolean) => boolean;
 
 export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
   extends Omit<ViewportHelper<NodeType>, 'viewportInitialized'> {
@@ -284,9 +284,9 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   /** parses edges and adds to state */
   addEdges: AddEdges<EdgeType>;
   /** remove nodes (and possibly connected edges and children) from state */
-  removeNodes: RemoveNodes;
+  removeNodes: RemoveNodes<NodeType>;
   /** remove edges from state */
-  removeEdges: RemoveEdges;
+  removeEdges: RemoveEdges<EdgeType>;
   /** delete nodes/edges (with connected edges + children), gated by `onBeforeDelete`; mirrors xyflow/react */
   deleteElements: DeleteElements<NodeType, EdgeType>;
   /** find a node by id */
@@ -355,8 +355,8 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   /** returns all node intersections */
   getIntersectingNodes: GetIntersectingNodes<NodeType>;
   /** check if a node is intersecting with a defined area */
-  isNodeIntersecting: IsNodeIntersecting;
-  /** get a node's connected edges */
+  isNodeIntersecting: IsNodeIntersecting<NodeType>;
+  /** get a node's connected edges (accepts any nodes — it matches by id; output is the flow's `EdgeType`) */
   getConnectedEdges: (nodes: Node[]) => EdgeType[];
   /** get all connections of a handle belonging to a node */
   getHandleConnections: ({ id, type, nodeId }: { id?: string | null; type: HandleType; nodeId: string }) => NodeConnection[];
