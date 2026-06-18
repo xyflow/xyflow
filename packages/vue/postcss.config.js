@@ -1,3 +1,1 @@
-module.exports = {
-  plugins: [require('postcss-import'), require('postcss-nested'), require('autoprefixer')],
-};
+module.exports = require('@xyflow/postcss-config');

@@ -434,6 +434,9 @@ importers:
       '@vue/reactivity':
         specifier: ^3.5.0
         version: 3.5.38
+      '@xyflow/postcss-config':
+        specifier: workspace:*
+        version: link:../../tooling/postcss-config
       autoprefixer:
         specifier: ^10.5.0
         version: 10.5.0(postcss@8.5.15)

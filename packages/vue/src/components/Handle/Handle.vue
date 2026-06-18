@@ -149,7 +149,7 @@ onMounted(() => {
     return;
   }
 
-  const viewportNode = vueFlowRef.value.querySelector('.vue-flow__transformationpane');
+  const viewportNode = vueFlowRef.value.querySelector('.vue-flow__renderer');
 
   if (!nodeEl.value || !handle.value || !viewportNode || !handleId) {
     return;

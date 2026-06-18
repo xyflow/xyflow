@@ -155,7 +155,7 @@ export default {
       <Viewport>
         <EdgeRenderer />
 
-        <div class="vue-flow__edge-labels" />
+        <div class="vue-flow__edgelabel-renderer" />
 
         <NodeRenderer />
 

@@ -40,6 +40,8 @@
     },
     "./dist/style.css": "./dist/style.css",
     "./dist/base.css": "./dist/base.css",
+    "./base.css": "./dist/base.css",
+    "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
@@ -54,9 +56,9 @@
   },
   "scripts": {
     "dev": "tsdown --watch",
-    "build": "shx rm -rf dist && pnpm theme && tsdown",
+    "build": "shx rm -rf dist && pnpm css && tsdown",
     "build:watch": "tsdown --watch",
-    "theme": "postcss src/styles/style.css -o dist/style.css && postcss src/styles/base.css -o dist/base.css",
+    "css": "postcss src/styles/{base,style}.css --dir dist",
     "lint": "eslint .",
     "prepublishOnly": "shx cp ../../README.md .",
     "postpublish": "shx rm README.md",
@@ -78,6 +80,7 @@
     "@types/d3-transition": "^3.0.9",
     "@types/d3-zoom": "^3.0.8",
     "@vue/reactivity": "^3.5.0",
+    "@xyflow/postcss-config": "workspace:*",
     "autoprefixer": "^10.5.0",
     "eslint": "catalog:",
     "jiti": "^2.7.0",
