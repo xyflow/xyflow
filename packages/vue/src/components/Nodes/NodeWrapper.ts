@@ -16,7 +16,6 @@ import {
 } from 'vue';
 import {
   isInputDOMNode,
-  storeToRefs,
   useDrag,
   useNode,
   useNodeHooks,
@@ -48,26 +47,15 @@ const NodeWrapper = defineComponent({
       setCenter,
     } = useVueFlow();
 
-    const {
-      noPanClassName,
-      selectNodesOnDrag,
-      nodesSelectionActive,
-      multiSelectionActive,
-      disableKeyboardA11y,
-      ariaLiveMessage,
-      ariaLabelConfig,
-      nodeDragThreshold,
-      nodesDraggable,
-      elementsSelectable,
-      nodesConnectable,
-      nodesFocusable,
-      autoPanOnNodeFocus,
-      transform,
-      dimensions,
-      hooks,
-    } = storeToRefs(useStore());
+    // Read the reactive store directly. Inside computeds/handlers `store.x` already tracks reactively, so
+    // there's no need to project the whole state into refs per node (`storeToRefs` allocates a ref for every
+    // state key on each call — a real cost when it runs once per node/edge/handle).
+    const store = useStore();
+    const { parentLookup } = store;
 
-    const { parentLookup } = useStore();
+    // `nodesSelectionActive` is the one exception: it's handed to `handleNodeClick`, which writes it back,
+    // so it needs a writable ref.
+    const nodesSelectionActive = toRef(store, 'nodesSelectionActive');
 
     const nodeElement = shallowRef<HTMLDivElement | null>(null);
     provide(NodeRef, nodeElement);
@@ -87,33 +75,33 @@ const NodeWrapper = defineComponent({
 
     const isDraggable = toRef(() => {
       const node = nodeRef.value;
-      return !node || typeof node.draggable === 'undefined' ? nodesDraggable.value : node.draggable;
+      return !node || typeof node.draggable === 'undefined' ? store.nodesDraggable : node.draggable;
     });
 
     const isSelectable = toRef(() => {
       const node = nodeRef.value;
-      return !node || typeof node.selectable === 'undefined' ? elementsSelectable.value : node.selectable;
+      return !node || typeof node.selectable === 'undefined' ? store.elementsSelectable : node.selectable;
     });
 
     const isConnectable = toRef(() => {
       const node = nodeRef.value;
-      return !node || typeof node.connectable === 'undefined' ? nodesConnectable.value : node.connectable;
+      return !node || typeof node.connectable === 'undefined' ? store.nodesConnectable : node.connectable;
     });
 
     const isFocusable = toRef(() => {
       const node = nodeRef.value;
-      return !node || typeof node.focusable === 'undefined' ? nodesFocusable.value : node.focusable;
+      return !node || typeof node.focusable === 'undefined' ? store.nodesFocusable : node.focusable;
     });
 
     const hasPointerEvents = computed(
       () =>
         isSelectable.value
         || isDraggable.value
-        || hooks.value.nodeClick.hasListeners()
-        || hooks.value.nodeDoubleClick.hasListeners()
-        || hooks.value.nodeMouseEnter.hasListeners()
-        || hooks.value.nodeMouseMove.hasListeners()
-        || hooks.value.nodeMouseLeave.hasListeners(),
+        || store.hooks.nodeClick.hasListeners()
+        || store.hooks.nodeDoubleClick.hasListeners()
+        || store.hooks.nodeMouseEnter.hasListeners()
+        || store.hooks.nodeMouseMove.hasListeners()
+        || store.hooks.nodeMouseLeave.hasListeners(),
     );
 
     // a node "has dimensions" once it's measured OR carries explicit `width`/`height` OR `initialWidth`/
@@ -246,7 +234,7 @@ const NodeWrapper = defineComponent({
             'vue-flow__node',
             `vue-flow__node-${nodeCmp.value === false ? 'default' : node.type || 'default'}`,
             {
-              [noPanClassName.value]: isDraggable.value,
+              [store.noPanClassName]: isDraggable.value,
               dragging: dragging?.value,
               draggable: isDraggable.value,
               selected: node.selected,
@@ -264,7 +252,7 @@ const NodeWrapper = defineComponent({
           },
           'tabIndex': isFocusable.value ? 0 : undefined,
           'role': isFocusable.value ? 'group' : undefined,
-          'aria-describedby': disableKeyboardA11y.value ? undefined : `${ARIA_NODE_DESC_KEY}-${vueFlowId}`,
+          'aria-describedby': store.disableKeyboardA11y ? undefined : `${ARIA_NODE_DESC_KEY}-${vueFlowId}`,
           'aria-label': node.ariaLabel,
           'aria-roledescription': 'node',
           ...node.domAttributes,
@@ -352,11 +340,11 @@ const NodeWrapper = defineComponent({
         return;
       }
 
-      if (isSelectable.value && (!selectNodesOnDrag.value || !isDraggable.value || nodeDragThreshold.value > 0)) {
+      if (isSelectable.value && (!store.selectNodesOnDrag || !isDraggable.value || store.nodeDragThreshold > 0)) {
         // handleNodeClick needs the enriched InternalNode; the event payload gets the user node
         handleNodeClick(
           node,
-          multiSelectionActive.value,
+          store.multiSelectionActive,
           addSelectedNodes,
           removeSelectedNodes,
           nodesSelectionActive,
@@ -370,7 +358,7 @@ const NodeWrapper = defineComponent({
 
     function onKeyDown(event: KeyboardEvent) {
       const node = nodeRef.value;
-      if (!node || isInputDOMNode(event) || disableKeyboardA11y.value) {
+      if (!node || isInputDOMNode(event) || store.disableKeyboardA11y) {
         return;
       }
 
@@ -379,7 +367,7 @@ const NodeWrapper = defineComponent({
 
         handleNodeClick(
           node,
-          multiSelectionActive.value,
+          store.multiSelectionActive,
           addSelectedNodes,
           removeSelectedNodes,
           nodesSelectionActive,
@@ -391,7 +379,7 @@ const NodeWrapper = defineComponent({
         // prevent page scrolling
         event.preventDefault();
 
-        ariaLiveMessage.value = ariaLabelConfig.value['node.a11yDescription.ariaLiveMessage']({
+        store.ariaLiveMessage = store.ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
           direction: event.key.replace('Arrow', '').toLowerCase(),
           x: ~~node.position.x,
           y: ~~node.position.y,
@@ -412,15 +400,15 @@ const NodeWrapper = defineComponent({
     // focus (not pointer/programmatic).
     function onFocus() {
       const node = nodeRef.value;
-      if (!node || disableKeyboardA11y.value || !autoPanOnNodeFocus.value || !nodeElement.value?.matches(':focus-visible')) {
+      if (!node || store.disableKeyboardA11y || !store.autoPanOnNodeFocus || !nodeElement.value?.matches(':focus-visible')) {
         return;
       }
 
       const withinViewport
         = getNodesInside(
           new Map([[node.id, node]]),
-          { x: 0, y: 0, width: dimensions.value.width, height: dimensions.value.height },
-          transform.value,
+          { x: 0, y: 0, width: store.dimensions.width, height: store.dimensions.height },
+          store.transform,
           true,
         ).length > 0;
 
@@ -428,7 +416,7 @@ const NodeWrapper = defineComponent({
         setCenter(
           node.internals.positionAbsolute.x + (node.measured.width ?? 0) / 2,
           node.internals.positionAbsolute.y + (node.measured.height ?? 0) / 2,
-          { zoom: transform.value[2] },
+          { zoom: store.transform[2] },
         );
       }
     }

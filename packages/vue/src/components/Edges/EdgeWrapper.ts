@@ -2,7 +2,7 @@ import type { Connection, FinalConnectionState, HandleType } from '@xyflow/syste
 import type { Edge, EdgeComponent, InternalNode, MouseTouchEvent } from '../../types';
 import { ConnectionMode, getHandlePosition, getMarkerId, Position } from '@xyflow/system';
 import { computed, defineComponent, getCurrentInstance, h, inject, provide, resolveComponent, shallowRef, toRef } from 'vue';
-import { storeToRefs, useEdgeHooks, useHandle, useStore, useVueFlow } from '../../composables';
+import { useEdgeHooks, useHandle, useStore, useVueFlow } from '../../composables';
 import { EdgeId, EdgeRef, Slots } from '../../context';
 import { ARIA_EDGE_DESC_KEY, elementSelectionKeys, ErrorCode, getEdgeHandle, getEdgeZIndex, VueFlowError } from '../../utils';
 import EdgeAnchor from './EdgeAnchor';
@@ -30,34 +30,24 @@ const EdgeWrapper = defineComponent({
   setup(props: Props) {
     const { id: vueFlowId, addSelectedEdges, emits, getEdgeTypes, removeSelectedEdges, getEdge, getInternalNode } = useVueFlow();
 
-    const {
-      connectionMode,
-      reconnectRadius,
-      nodesSelectionActive,
-      noPanClassName,
-      isValidConnection,
-      multiSelectionActive,
-      disableKeyboardA11y,
-      elementsSelectable,
-      edgesReconnectable,
-      edgesFocusable,
-      elevateEdgesOnSelect,
-      zIndexMode,
-      defaultEdgeOptions,
-      hooks,
-    } = storeToRefs(useStore());
+    // Read the reactive store directly (see NodeWrapper) — `store.x` tracks reactively inside
+    // computeds/handlers, so there's no need to project the whole state into refs per edge.
+    const store = useStore();
+
+    // `isValidConnection` is handed to `useHandle`, which reads it as a ref, so keep it as one.
+    const isValidConnection = toRef(store, 'isValidConnection');
 
     const storedEdge = computed(() => getEdge(props.id) as Edge);
 
     const edge = computed<Edge>(() => {
-      const defaults = defaultEdgeOptions.value;
+      const defaults = store.defaultEdgeOptions;
       return defaults ? ({ ...(defaults as Edge), ...storedEdge.value } as Edge) : storedEdge.value;
     });
 
     // resolved per edge (value-gated computed) so the z-tracking of BOTH endpoint lookup keys lives in
     // this component's scope — resolving it in EdgeRenderer's v-for made the whole renderer re-render
     // (all edge vnodes) whenever ANY node entry was replaced, i.e. every drag frame
-    const zIndex = computed(() => getEdgeZIndex(edge.value, getInternalNode, elevateEdgesOnSelect.value, zIndexMode.value));
+    const zIndex = computed(() => getEdgeZIndex(edge.value, getInternalNode, store.elevateEdgesOnSelect, store.zIndexMode));
 
     const { emit } = useEdgeHooks(emits);
 
@@ -78,14 +68,14 @@ const EdgeWrapper = defineComponent({
     const edgeEl = shallowRef<SVGElement | null>(null);
 
     const isSelectable = toRef(() =>
-      typeof edge.value.selectable === 'undefined' ? elementsSelectable.value : edge.value.selectable,
+      typeof edge.value.selectable === 'undefined' ? store.elementsSelectable : edge.value.selectable,
     );
 
     const isReconnectable = toRef(() =>
-      typeof edge.value.reconnectable === 'undefined' ? edgesReconnectable.value : edge.value.reconnectable,
+      typeof edge.value.reconnectable === 'undefined' ? store.edgesReconnectable : edge.value.reconnectable,
     );
 
-    const isFocusable = toRef(() => (typeof edge.value.focusable === 'undefined' ? edgesFocusable.value : edge.value.focusable));
+    const isFocusable = toRef(() => (typeof edge.value.focusable === 'undefined' ? store.edgesFocusable : edge.value.focusable));
 
     provide(EdgeId, props.id);
     provide(EdgeRef, edgeEl);
@@ -172,7 +162,7 @@ const EdgeWrapper = defineComponent({
       }
 
       // strict mode considers only the matching side's handles; loose mode considers both (matching first)
-      const strict = connectionMode.value === ConnectionMode.Strict;
+      const strict = store.connectionMode === ConnectionMode.Strict;
       const sourceHandle = getEdgeHandle(getNodeHandles(sourceNode, 'source', strict), edge.value.sourceHandle);
       const targetHandle = getEdgeHandle(getNodeHandles(targetNode, 'target', strict), edge.value.targetHandle);
 
@@ -199,13 +189,13 @@ const EdgeWrapper = defineComponent({
             'class': [
               'vue-flow__edge',
               `vue-flow__edge-${edgeCmp.value === false ? 'default' : edge.value.type || 'default'}`,
-              noPanClassName.value,
+              store.noPanClassName,
               edgeClass.value,
               {
                 updating: mouseOver.value,
                 selected: edge.value.selected,
                 animated: edge.value.animated,
-                inactive: !isSelectable.value && !hooks.value.edgeClick.hasListeners(),
+                inactive: !isSelectable.value && !store.hooks.edgeClick.hasListeners(),
               },
             ],
             'tabIndex': isFocusable.value ? 0 : undefined,
@@ -278,7 +268,7 @@ const EdgeWrapper = defineComponent({
                         'position': sourcePosition,
                         'centerX': sourceX,
                         'centerY': sourceY,
-                        'radius': reconnectRadius.value,
+                        'radius': store.reconnectRadius,
                         'type': 'source',
                         'data-type': 'source',
                       }),
@@ -298,7 +288,7 @@ const EdgeWrapper = defineComponent({
                         'position': targetPosition,
                         'centerX': targetX,
                         'centerY': targetY,
-                        'radius': reconnectRadius.value,
+                        'radius': store.reconnectRadius,
                         'type': 'target',
                         'data-type': 'target',
                       }),
@@ -345,9 +335,9 @@ const EdgeWrapper = defineComponent({
       const data = { event, edge: storedEdge.value };
 
       if (isSelectable.value) {
-        nodesSelectionActive.value = false;
+        store.nodesSelectionActive = false;
 
-        if (edge.value.selected && multiSelectionActive.value) {
+        if (edge.value.selected && store.multiSelectionActive) {
           removeSelectedEdges([storedEdge.value]);
 
           edgeEl.value?.blur();
@@ -389,7 +379,7 @@ const EdgeWrapper = defineComponent({
     }
 
     function onKeyDown(event: KeyboardEvent) {
-      if (!disableKeyboardA11y.value && elementSelectionKeys.includes(event.key) && isSelectable.value) {
+      if (!store.disableKeyboardA11y && elementSelectionKeys.includes(event.key) && isSelectable.value) {
         const unselect = event.key === 'Escape';
 
         if (unselect) {

@@ -2,7 +2,7 @@
 import type { HandleProps } from '../../types';
 import { ConnectionMode, getDimensions, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
 import { computed, onMounted, shallowRef, toRef } from 'vue';
-import { storeToRefs, useHandle, useNode, useStore, useVueFlow } from '../../composables';
+import { useHandle, useNode, useStore, useVueFlow } from '../../composables';
 import { isDef } from '../../utils';
 
 const {
@@ -20,18 +20,9 @@ const isValidConnection = toRef(() => props.isValidConnection ?? null);
 
 const { id: flowId } = useVueFlow();
 
-const {
-  connectionStartHandle,
-  connectionEndHandle,
-  connectionClickStartHandle,
-  connectionStatus,
-  connectionMode,
-  vueFlowRef,
-  nodesConnectable,
-  noDragClassName,
-  noPanClassName,
-  ariaLabelConfig,
-} = storeToRefs(useStore());
+// Read the reactive store directly (see NodeWrapper) instead of projecting it into refs — there are ~2
+// handles per node, so this setup runs a lot; `store.x` already tracks reactively in computeds/template.
+const store = useStore();
 
 const { id: nodeId, node: nodeRef, nodeEl, connectedEdges } = useNode();
 
@@ -54,22 +45,22 @@ const isConnectableEnd = toRef(() => (typeof connectableEnd !== 'undefined' ? co
 // Connection-indicator flags, mirroring xyflow/react's `connectingSelector`. A connection is "in process"
 // globally while dragging (`connectionStartHandle`) or click-connecting (`connectionClickStartHandle`);
 // `isPossibleEndHandle` is whether this handle can be the END of the in-progress (drag) connection.
-const connectionInProcess = toRef(() => connectionStartHandle.value !== null);
+const connectionInProcess = toRef(() => store.connectionStartHandle !== null);
 
-const clickConnectionInProcess = toRef(() => connectionClickStartHandle.value !== null);
+const clickConnectionInProcess = toRef(() => store.connectionClickStartHandle !== null);
 
 const isPossibleEndHandle = toRef(() => {
-  const fromHandle = connectionStartHandle.value;
-  return connectionMode.value === ConnectionMode.Strict
+  const fromHandle = store.connectionStartHandle;
+  return store.connectionMode === ConnectionMode.Strict
     ? fromHandle?.type !== type.value
     : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
 });
 
 const isClickConnecting = toRef(
   () =>
-    connectionClickStartHandle.value?.nodeId === nodeId
-    && connectionClickStartHandle.value?.id === handleId
-    && connectionClickStartHandle.value?.type === type.value,
+    store.connectionClickStartHandle?.nodeId === nodeId
+    && store.connectionClickStartHandle?.id === handleId
+    && store.connectionClickStartHandle?.type === type.value,
 );
 
 // xyflow/react + svelte toggle these per handle during a connection: `connectingfrom` on the handle the
@@ -77,19 +68,19 @@ const isClickConnecting = toRef(
 // is a valid target. Core only toggles the classes — coloring is left to user CSS.
 const connectingFrom = toRef(
   () =>
-    connectionStartHandle.value?.nodeId === nodeId
-    && connectionStartHandle.value?.id === handleId
-    && connectionStartHandle.value?.type === type.value,
+    store.connectionStartHandle?.nodeId === nodeId
+    && store.connectionStartHandle?.id === handleId
+    && store.connectionStartHandle?.type === type.value,
 );
 
 const connectingTo = toRef(
   () =>
-    connectionEndHandle.value?.nodeId === nodeId
-    && connectionEndHandle.value?.id === handleId
-    && connectionEndHandle.value?.type === type.value,
+    store.connectionEndHandle?.nodeId === nodeId
+    && store.connectionEndHandle?.id === handleId
+    && store.connectionEndHandle?.type === type.value,
 );
 
-const valid = toRef(() => connectingTo.value && connectionStatus.value === 'valid');
+const valid = toRef(() => connectingTo.value && store.connectionStatus === 'valid');
 
 const { handlePointerDown, handleClick } = useHandle({
   nodeId,
@@ -129,7 +120,7 @@ const isHandleConnectable = computed(() => {
     return nodeRef.value ? isConnectable(nodeRef.value, connectedEdges.value) : false;
   }
 
-  return isDef(isConnectable) ? isConnectable : nodesConnectable.value;
+  return isDef(isConnectable) ? isConnectable : store.nodesConnectable;
 });
 
 // todo: remove this and have users handle this themselves using `updateNodeInternals`
@@ -145,11 +136,11 @@ onMounted(() => {
 
   const existingBounds = node.internals.handleBounds?.[type.value]?.find(b => b.id === handleId);
 
-  if (!vueFlowRef.value || existingBounds) {
+  if (!store.vueFlowRef || existingBounds) {
     return;
   }
 
-  const viewportNode = vueFlowRef.value.querySelector('.vue-flow__viewport');
+  const viewportNode = store.vueFlowRef.querySelector('.vue-flow__viewport');
 
   if (!nodeEl.value || !handle.value || !viewportNode || !handleId) {
     return;
@@ -188,7 +179,7 @@ function onPointerDown(event: MouseEvent | TouchEvent) {
 }
 
 function onClick(event: MouseEvent) {
-  if (!nodeId || (!connectionClickStartHandle.value && !isConnectableStart.value)) {
+  if (!nodeId || (!store.connectionClickStartHandle && !isConnectableStart.value)) {
     return;
   }
 
@@ -216,13 +207,13 @@ export default {
   <div
     ref="handle"
     v-bind="handleDataIds"
-    :aria-label="ariaLabelConfig['handle.ariaLabel']"
+    :aria-label="store.ariaLabelConfig['handle.ariaLabel']"
     class="vue-flow__handle"
     :class="[
       `vue-flow__handle-${position}`,
       handleId && `vue-flow__handle-${handleId}`,
-      noDragClassName,
-      noPanClassName,
+      store.noDragClassName,
+      store.noPanClassName,
       type,
       {
         // use the resolved value (falls back to `nodesConnectable`), not the raw prop — XYHandle's DOM
