@@ -149,7 +149,7 @@ onMounted(() => {
     return;
   }
 
-  const viewportNode = vueFlowRef.value.querySelector('.vue-flow__renderer');
+  const viewportNode = vueFlowRef.value.querySelector('.vue-flow__viewport');
 
   if (!nodeEl.value || !handle.value || !viewportNode || !handleId) {
     return;

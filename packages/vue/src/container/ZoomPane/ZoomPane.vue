@@ -146,7 +146,7 @@ export default {
 </script>
 
 <template>
-  <div ref="zoomPane" :key="`viewport-${id}`" class="vue-flow__viewport vue-flow__container">
+  <div ref="zoomPane" :key="`renderer-${id}`" class="vue-flow__renderer vue-flow__container">
     <Pane
       :is-selecting="isSelecting"
       :selection-key-pressed="selectionKeyPressed"

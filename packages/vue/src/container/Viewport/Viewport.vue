@@ -25,7 +25,7 @@ export default {
 </script>
 
 <template>
-  <div class="vue-flow__renderer vue-flow__container" :style="{ transform, opacity: isHidden ? 0 : undefined }">
+  <div class="vue-flow__viewport vue-flow__container" :style="{ transform, opacity: isHidden ? 0 : undefined }">
     <slot />
   </div>
 </template>

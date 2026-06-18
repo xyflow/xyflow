@@ -323,7 +323,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       return;
     }
 
-    const viewportNode = state.vueFlowRef.querySelector('.vue-flow__renderer') as HTMLElement;
+    const viewportNode = state.vueFlowRef.querySelector('.vue-flow__viewport') as HTMLElement;
 
     if (!viewportNode) {
       return;

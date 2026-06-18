@@ -3,6 +3,16 @@
 @import '../../../system/src/styles/style.css';
 @import '../../../system/src/styles/node-resizer.css';
 
+/* root container layout — @xyflow/system's CSS only declares vars + theme on `.vue-flow`; the framework
+   owns the layout box (xyflow/react applies the equivalent inline). */
+.vue-flow {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+
 .vue-flow__edge-textbg {
   fill: var(--xy-edge-label-background-color, var(--xy-edge-label-background-color-default));
 }

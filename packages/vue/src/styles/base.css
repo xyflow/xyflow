@@ -2,3 +2,13 @@
 @import '../../../system/src/styles/init.css';
 @import '../../../system/src/styles/base.css';
 @import '../../../system/src/styles/node-resizer.css';
+
+/* root container layout — @xyflow/system's CSS only declares vars + theme on `.vue-flow`; the framework
+   owns the layout box (xyflow/react applies the equivalent inline). */
+.vue-flow {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
