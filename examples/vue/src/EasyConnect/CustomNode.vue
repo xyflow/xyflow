@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { Handle, Position, storeToRefs, useStore } from '@xyflow/vue';
+import { Handle, Position, useStore } from '@xyflow/vue';
 import { computed } from 'vue';
 
 const props = defineProps<{ id: string }>();
 
-const { connectionStartHandle } = storeToRefs(useStore());
+const store = useStore();
 
-const isTarget = computed(() => connectionStartHandle.value && connectionStartHandle.value.nodeId !== props.id);
+const isTarget = computed(() => store.connectionStartHandle && store.connectionStartHandle.nodeId !== props.id);
 </script>
 
 <template>
