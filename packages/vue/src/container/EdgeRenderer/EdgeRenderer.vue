@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import ConnectionLine from '../../components/ConnectionLine';
 import EdgeWrapper from '../../components/Edges/EdgeWrapper';
 import { useVueFlow } from '../../composables';
 import MarkerDefinitions from './MarkerDefinitions.vue';
@@ -15,11 +14,11 @@ export default {
 </script>
 
 <template>
-  <MarkerDefinitions />
+  <div class="vue-flow__edges">
+    <MarkerDefinitions />
 
-  <!-- the per-edge svg wrapper (and its node-lookup-tracking zIndex) lives in EdgeWrapper, so this
-  v-for only re-renders on edge membership changes, not on every node replacement -->
-  <EdgeWrapper v-for="edge of getEdges" :id="edge.id" :key="edge.id" />
-
-  <ConnectionLine />
+    <!-- the per-edge svg wrapper (and its node-lookup-tracking zIndex) lives in EdgeWrapper, so this
+    v-for only re-renders on edge membership changes, not on every node replacement -->
+    <EdgeWrapper v-for="edge of getEdges" :id="edge.id" :key="edge.id" />
+  </div>
 </template>

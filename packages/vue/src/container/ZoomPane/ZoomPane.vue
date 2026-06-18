@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { XYPanZoom } from '@xyflow/system';
 import { onMounted, onUnmounted, toRef, watch } from 'vue';
+import ConnectionLine from '../../components/ConnectionLine';
 import { storeToRefs, useKeyPress, useStore, useVueFlow } from '../../composables';
 import { useFitViewOnInit } from '../../composables/useFitViewOnInit';
 import { useResizeHandler } from '../../composables/useResizeHandler';
@@ -154,6 +155,8 @@ export default {
     >
       <Viewport>
         <EdgeRenderer />
+
+        <ConnectionLine />
 
         <div class="vue-flow__edgelabel-renderer" />
 

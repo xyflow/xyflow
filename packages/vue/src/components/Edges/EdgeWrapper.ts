@@ -189,7 +189,7 @@ const EdgeWrapper = defineComponent({
       // than in EdgeRenderer's v-for so its node-lookup tracking stays scoped to this edge
       return h(
         'svg',
-        { class: 'vue-flow__edges vue-flow__container', style: { zIndex: zIndex.value } },
+        { style: { zIndex: zIndex.value } },
         h(
           'g',
           {
