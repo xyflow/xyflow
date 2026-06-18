@@ -3,7 +3,6 @@ import { getConnectedEdges } from '@xyflow/system';
 import { computed, inject, shallowRef } from 'vue';
 import { NodeRef } from '../context';
 import { ErrorCode, VueFlowError } from '../utils';
-import { storeToRefs } from './storeToRefs';
 import { useNodeId } from './useNodeId';
 import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
@@ -24,7 +23,7 @@ export function useNode<NodeType extends Node = Node>(id?: string) {
   const nodeEl = inject(NodeRef, shallowRef(null));
 
   const { getInternalNode, emits } = useVueFlow<NodeType>();
-  const { edges } = storeToRefs(useStore<NodeType>());
+  const store = useStore<NodeType>();
 
   // `node` is the enriched `InternalNode` (it carries `internals`/`measured`, which NodeWrapper + custom
   // nodes read) and a `computed` (not a one-time read) so it re-resolves whenever the store replaces this
@@ -40,6 +39,6 @@ export function useNode<NodeType extends Node = Node>(id?: string) {
     nodeEl,
     node,
     parentNode: computed(() => (node.value ? getInternalNode(node.value.parentId) : undefined)),
-    connectedEdges: computed(() => (node.value ? getConnectedEdges([node.value], edges.value) : [])),
+    connectedEdges: computed(() => (node.value ? getConnectedEdges([node.value], store.edges) : [])),
   };
 }

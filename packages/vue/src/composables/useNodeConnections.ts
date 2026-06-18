@@ -2,7 +2,6 @@ import type { HandleType, NodeConnection } from '@xyflow/system';
 import type { MaybeRefOrGetter } from 'vue';
 import { areConnectionMapsEqual, handleConnectionChange } from '@xyflow/system';
 import { computed, shallowRef, toValue, watch } from 'vue';
-import { storeToRefs } from './storeToRefs';
 import { useNodeId } from './useNodeId';
 import { useStore } from './useStore';
 
@@ -38,7 +37,7 @@ export type UseNodeConnectionsParams = {
 export function useNodeConnections(params: UseNodeConnectionsParams = {}) {
   const { handleType, handleId, id, onConnect, onDisconnect } = params;
 
-  const { connectionLookup } = storeToRefs(useStore());
+  const store = useStore();
 
   const nodeId = useNodeId();
 
@@ -60,7 +59,7 @@ export function useNodeConnections(params: UseNodeConnectionsParams = {}) {
   });
 
   watch(
-    () => connectionLookup.value.get(lookupKey.value),
+    () => store.connectionLookup.get(lookupKey.value),
     (nextConnections) => {
       if (areConnectionMapsEqual(connections.value, nextConnections)) {
         return;

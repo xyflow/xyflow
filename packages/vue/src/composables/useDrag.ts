@@ -3,7 +3,7 @@ import type { MaybeRefOrGetter, Ref } from 'vue';
 import type { Node, NodeDragEvent, NodeDragItem } from '../types';
 import { infiniteExtent, isCoordinateExtent, XYDrag } from '@xyflow/system';
 import { shallowRef, toValue, watchEffect } from 'vue';
-import { storeToRefs, useStore, useVueFlow } from '.';
+import { useStore, useVueFlow } from '.';
 
 interface UseDragParams {
   onStart: (event: NodeDragEvent) => void;
@@ -27,24 +27,12 @@ export function useDrag(params: UseDragParams) {
   const { panBy, getInternalNode, removeSelectedNodes, removeSelectedEdges, updateNodePositions, getNodes, getEdges }
     = useVueFlow();
 
-  const { nodeLookup } = useStore();
+  // Read the reactive store directly — these are read inside the XYDrag `getStoreItems`/`update` callbacks
+  // and the `watchEffect`, where `store.x` yields the current value with the same reactivity (no per-node
+  // ref projection).
+  const store = useStore();
 
-  const {
-    vueFlowRef,
-    snapToGrid,
-    snapGrid,
-    noDragClassName,
-    nodeExtent,
-    nodeOrigin,
-    nodeDragThreshold,
-    nodeClickDistance,
-    transform,
-    autoPanOnNodeDrag,
-    autoPanSpeed,
-    nodesDraggable,
-    multiSelectionActive,
-    selectNodesOnDrag,
-  } = storeToRefs(useStore());
+  const { nodeLookup } = store;
 
   const { onStart, onDrag, onStop, onClick, el, disabled, id, selectable, dragHandle } = params;
 
@@ -73,19 +61,19 @@ export function useDrag(params: UseDragParams) {
         get edges() {
           return getEdges.value as EdgeBase[];
         },
-        nodeExtent: (isCoordinateExtent(nodeExtent.value as CoordinateExtent)
-          ? nodeExtent.value
+        nodeExtent: (isCoordinateExtent(store.nodeExtent as CoordinateExtent)
+          ? store.nodeExtent
           : infiniteExtent) as CoordinateExtent,
-        snapGrid: snapGrid.value,
-        snapToGrid: snapToGrid.value,
-        nodeOrigin: nodeOrigin.value,
-        multiSelectionActive: multiSelectionActive.value,
-        domNode: vueFlowRef.value,
-        transform: transform.value,
-        autoPanOnNodeDrag: autoPanOnNodeDrag.value,
-        nodesDraggable: nodesDraggable.value,
-        selectNodesOnDrag: selectNodesOnDrag.value,
-        nodeDragThreshold: nodeDragThreshold.value,
+        snapGrid: store.snapGrid,
+        snapToGrid: store.snapToGrid,
+        nodeOrigin: store.nodeOrigin,
+        multiSelectionActive: store.multiSelectionActive,
+        domNode: store.vueFlowRef,
+        transform: store.transform,
+        autoPanOnNodeDrag: store.autoPanOnNodeDrag,
+        nodesDraggable: store.nodesDraggable,
+        selectNodesOnDrag: store.selectNodesOnDrag,
+        nodeDragThreshold: store.nodeDragThreshold,
         panBy,
         unselectNodesAndEdges: (args?: { nodes?: any[]; edges?: any[] }) => {
           removeSelectedNodes(args?.nodes);
@@ -116,7 +104,7 @@ export function useDrag(params: UseDragParams) {
           }
           updateNodePositions(items, true, isDragging ?? false);
         },
-        autoPanSpeed: autoPanSpeed.value,
+        autoPanSpeed: store.autoPanSpeed,
       }),
       // XYDrag hands user nodes (the InternalNode's `userNode`, spread with the live drag position +
       // `dragging`), which is exactly the event payload — emit them directly, no lookup round-trip
@@ -135,12 +123,12 @@ export function useDrag(params: UseDragParams) {
     });
 
     dragInstance.update({
-      noDragClassName: noDragClassName.value,
+      noDragClassName: store.noDragClassName,
       handleSelector: toValue(dragHandle),
       isSelectable: toValue(selectable),
       nodeId: id,
       domNode: nodeEl,
-      nodeClickDistance: nodeClickDistance.value,
+      nodeClickDistance: store.nodeClickDistance,
     });
 
     // Handle the "moved slightly but within threshold" click case.
@@ -157,7 +145,7 @@ export function useDrag(params: UseDragParams) {
         const dy = e.clientY - pointerDownPos.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist > 0 && dist <= nodeDragThreshold.value) {
+        if (dist > 0 && dist <= store.nodeDragThreshold) {
           onClick(e);
         }
       }
