@@ -10,6 +10,7 @@
     "dev": "turbo run dev --parallel --concurrency 12",
     "dev:svelte": "turbo run dev --filter=svelte-examples...",
     "dev:react": "turbo run dev --filter=react-examples...",
+    "dev:vue": "turbo run dev --filter=vue-examples...",
     "test:svelte": "pnpm --filter=playwright run test:svelte",
     "test:svelte:ui": "pnpm --filter=playwright run test:svelte:ui",
     "test:react": "pnpm --filter=playwright run test:react",

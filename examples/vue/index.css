@@ -1,0 +1,94 @@
+/* import the full theme (style.css now ships the complete default theme; theme-default.css was removed) */
+@import '@xyflow/vue/dist/style.css';
+
+body {
+  color: #111;
+}
+
+#root {
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  font-weight: 700;
+  align-items: center;
+}
+
+.logo {
+  text-decoration: none;
+  display: block;
+  line-height: 1;
+}
+
+header a,
+header a:focus,
+header a:active,
+header a:visited {
+  color: #111;
+}
+
+header a:hover {
+  color: #333;
+}
+
+header select {
+  margin-left: 1em;
+}
+
+.overview-example__add {
+  display: none;
+}
+
+.vue-flow__node a {
+  font-weight: 700;
+  color: #111;
+}
+
+.vue-flow__node.dark-node {
+  background: #0041d0;
+  color: #f8f8f8;
+}
+
+.vue-flow__node.dark {
+  background: #557;
+  color: #f8f8f8;
+}
+
+.vue-flow__node-selectorNode {
+  font-size: 14px;
+  background: #f0f2f3;
+  border: 1px solid #555;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.vue-flow__node-selectorNode .vue-flow__handle {
+  border-color: #f0f2f3;
+}
+
+@media screen and (min-width: 768px) {
+  .overview-example__add {
+    display: block;
+  }
+}
