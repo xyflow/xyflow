@@ -7,6 +7,10 @@ import antfu from '@antfu/eslint-config';
 export default antfu({
   vue: true,
   typescript: true,
+  // The xyflow monorepo has a pnpm catalog, so antfu auto-enables its pnpm/catalog rules. The vue package
+  // pins most of its deps literally rather than routing everything through the shared catalog, so disable
+  // antfu's catalog linting here instead of fighting it per-rule.
+  pnpm: false,
   stylistic: {
     indent: 2,
     quotes: 'single',
@@ -24,8 +28,5 @@ export default antfu({
     // misfires on the documented overloaded composables (useNodesData/useEdgesData): the shared JSDoc
     // block sits above the first overload, so `@param guard` reads as "not matching" a parameter
     'jsdoc/check-param-names': 'off',
-    // antfu auto-enables this in the xyflow monorepo because it has a pnpm catalog; the vue package pins its
-    // own (mostly vue-only) deps for now rather than bloating the shared catalog — revisit alongside tsdown
-    'pnpm/json-enforce-catalog': 'off',
   },
 });
