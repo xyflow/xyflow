@@ -412,9 +412,6 @@ importers:
       '@xyflow/system':
         specifier: workspace:*
         version: link:../system
-      d3-interpolate:
-        specifier: ^3.0.1
-        version: 3.0.1
     devDependencies:
       '@antfu/eslint-config':
         specifier: 8.2.0
@@ -422,24 +419,12 @@ importers:
       '@arethetypeswrong/core':
         specifier: ^0.18.3
         version: 0.18.3
-      '@types/d3-interpolate':
-        specifier: ^3.0.4
-        version: 3.0.4
-      '@types/d3-transition':
-        specifier: ^3.0.9
-        version: 3.0.9
-      '@types/d3-zoom':
-        specifier: ^3.0.8
-        version: 3.0.8
       '@vue/reactivity':
         specifier: ^3.5.0
         version: 3.5.38
       '@xyflow/postcss-config':
         specifier: workspace:*
         version: link:../../tooling/postcss-config
-      autoprefixer:
-        specifier: ^10.5.0
-        version: 10.5.0(postcss@8.5.15)
       eslint:
         specifier: 'catalog:'
         version: 10.4.0(jiti@2.7.0)
@@ -452,12 +437,6 @@ importers:
       postcss-cli:
         specifier: ^11.0.1
         version: 11.0.1(jiti@2.7.0)(postcss@8.5.15)
-      postcss-import:
-        specifier: ^16.1.0
-        version: 16.1.1(postcss@8.5.15)
-      postcss-nested:
-        specifier: ^7.0.2
-        version: 7.0.2(postcss@8.5.15)
       publint:
         specifier: ^0.3.21
         version: 0.3.21
@@ -5316,12 +5295,6 @@ packages:
     peerDependencies:
       postcss: ^8.0.0
 
-  postcss-import@16.1.1:
-    resolution: {integrity: sha512-2xVS1NCZAfjtVdvXiyegxzJ447GyqCeEI5V7ApgQVOWnros1p5lGNovJNapwPpMombyFBfqDwt7AD3n2l0KOfQ==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      postcss: ^8.0.0
-
   postcss-load-config@3.1.4:
     resolution: {integrity: sha512-6DiM4E7v4coTE4uzA8U//WhtPwyhiim3eyjEMFCnUpzbrkK9wJHgKDT2mR+HbtSrd/NubVaYTOpSpjUl8NQeRg==}
     engines: {node: '>= 10'}
@@ -5385,12 +5358,6 @@ packages:
   postcss-nested@6.2.0:
     resolution: {integrity: sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==}
     engines: {node: '>=12.0'}
-    peerDependencies:
-      postcss: ^8.2.14
-
-  postcss-nested@7.0.2:
-    resolution: {integrity: sha512-5osppouFc0VR9/VYzYxO03VaDa3e8F23Kfd6/9qcZTUI8P58GIYlArOET2Wq0ywSl2o2PjELhYOFI4W7l5QHKw==}
-    engines: {node: '>=18.0'}
     peerDependencies:
       postcss: ^8.2.14
 
@@ -12440,13 +12407,6 @@ snapshots:
       read-cache: 1.0.0
       resolve: 1.22.8
 
-  postcss-import@16.1.1(postcss@8.5.15):
-    dependencies:
-      postcss: 8.5.15
-      postcss-value-parser: 4.2.0
-      read-cache: 1.0.0
-      resolve: 1.22.8
-
   postcss-load-config@3.1.4(postcss@8.5.15):
     dependencies:
       lilconfig: 2.1.0
@@ -12504,11 +12464,6 @@ snapshots:
     dependencies:
       postcss: 8.5.15
       postcss-selector-parser: 6.1.2
-
-  postcss-nested@7.0.2(postcss@8.5.15):
-    dependencies:
-      postcss: 8.5.15
-      postcss-selector-parser: 7.1.0
 
   postcss-normalize-charset@6.0.2(postcss@8.5.15):
     dependencies:

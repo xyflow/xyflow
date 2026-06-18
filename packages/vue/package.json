@@ -70,24 +70,17 @@
   },
   "dependencies": {
     "@vueuse/core": "^14.3.0",
-    "@xyflow/system": "workspace:*",
-    "d3-interpolate": "^3.0.1"
+    "@xyflow/system": "workspace:*"
   },
   "devDependencies": {
     "@antfu/eslint-config": "8.2.0",
     "@arethetypeswrong/core": "^0.18.3",
-    "@types/d3-interpolate": "^3.0.4",
-    "@types/d3-transition": "^3.0.9",
-    "@types/d3-zoom": "^3.0.8",
     "@vue/reactivity": "^3.5.0",
     "@xyflow/postcss-config": "workspace:*",
-    "autoprefixer": "^10.5.0",
     "eslint": "catalog:",
     "jiti": "^2.7.0",
     "postcss": "^8.5.15",
     "postcss-cli": "^11.0.1",
-    "postcss-import": "^16.1.0",
-    "postcss-nested": "^7.0.2",
     "publint": "^0.3.21",
     "shx": "^0.4.0",
     "tsdown": "catalog:",
