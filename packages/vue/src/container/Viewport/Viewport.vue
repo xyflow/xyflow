@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
+import ZoomPaneSlot from './ZoomPaneSlot';
 
 const { viewport } = useVueFlow();
 
@@ -27,5 +28,9 @@ export default {
 <template>
   <div class="vue-flow__viewport vue-flow__container" :style="{ transform, opacity: isHidden ? 0 : undefined }">
     <slot />
+
+    <!-- the `zoom-pane` slot belongs in this transformed layer; pulled from the provided `Slots` as a
+    propless child so it bails out of this component's per-frame (transform) re-renders -->
+    <ZoomPaneSlot />
   </div>
 </template>

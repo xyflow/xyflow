@@ -161,8 +161,6 @@ export default {
         <div class="vue-flow__edgelabel-renderer" />
 
         <NodeRenderer />
-
-        <slot />
       </Viewport>
     </Pane>
   </div>

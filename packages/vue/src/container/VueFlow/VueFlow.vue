@@ -129,10 +129,9 @@ export default {
 
 <template>
   <div :ref="stateRefs.vueFlowRef" class="vue-flow" :class="colorModeClass">
-    <ZoomPane>
-      <!-- This slot is affected by zooming & panning -->
-      <slot name="zoom-pane" />
-    </ZoomPane>
+    <!-- the `zoom-pane` slot (affected by zooming & panning) renders inside the transformed Viewport via
+    the provided `Slots` (see ZoomPaneSlot), not drilled through ZoomPane → Pane → Viewport -->
+    <ZoomPane />
 
     <!-- This slot is _not_ affected by zooming & panning -->
     <slot />
