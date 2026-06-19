@@ -1,7 +1,6 @@
 export * from './storeToRefs';
 export * from './useDrag';
 export * from './useEdge';
-export * from './useGetPointerPosition';
 export * from './useHandle';
 export * from './useInternalNode';
 export * from './useKeyPress';

@@ -31,8 +31,6 @@ export { useEdge } from './composables/useEdge';
 
 export { useEdgesData } from './composables/useEdgesData';
 
-export { useGetPointerPosition } from './composables/useGetPointerPosition';
-
 export { useHandle } from './composables/useHandle';
 
 export { useInternalNode } from './composables/useInternalNode';
