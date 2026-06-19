@@ -2,7 +2,7 @@ import type { Connection, FinalConnectionState, HandleType } from '@xyflow/syste
 import type { Edge, EdgeComponent, InternalNode, MouseTouchEvent } from '../../types';
 import { ConnectionMode, getHandlePosition, getMarkerId, Position } from '@xyflow/system';
 import { computed, defineComponent, getCurrentInstance, h, inject, provide, resolveComponent, shallowRef, toRef } from 'vue';
-import { useEdgeHooks, useHandle, useStore, useVueFlow } from '../../composables';
+import { useHandle, useStore, useVueFlow } from '../../composables';
 import { EdgeId, EdgeRef, Slots } from '../../context';
 import { ARIA_EDGE_DESC_KEY, elementSelectionKeys, ErrorCode, getEdgeHandle, getEdgeZIndex, VueFlowError } from '../../utils';
 import EdgeAnchor from './EdgeAnchor';
@@ -48,8 +48,6 @@ const EdgeWrapper = defineComponent({
     // this component's scope — resolving it in EdgeRenderer's v-for made the whole renderer re-render
     // (all edge vnodes) whenever ANY node entry was replaced, i.e. every drag frame
     const zIndex = computed(() => getEdgeZIndex(edge.value, getInternalNode, store.elevateEdgesOnSelect, store.zIndexMode));
-
-    const { emit } = useEdgeHooks(emits);
 
     const slots = inject(Slots);
 
@@ -122,7 +120,7 @@ const EdgeWrapper = defineComponent({
       // eagerly on pointerdown. A plain click on the anchor then leaves the edge in place and emits nothing.
       onReconnectStart: (event) => {
         updating.value = true;
-        emit.reconnectStart({ event, edge: storedEdge.value, handleType: reconnectHandleType.value });
+        emits.reconnectStart({ event, edge: storedEdge.value, handleType: reconnectHandleType.value });
       },
       onReconnect,
       onReconnectEnd,
@@ -312,11 +310,11 @@ const EdgeWrapper = defineComponent({
     }
 
     function onReconnect(event: MouseTouchEvent, connection: Connection) {
-      emit.reconnect({ event, edge: storedEdge.value, connection });
+      emits.reconnect({ event, edge: storedEdge.value, connection });
     }
 
     function onReconnectEnd(event: MouseTouchEvent, connectionState: FinalConnectionState<InternalNode>) {
-      emit.reconnectEnd({ event, edge: storedEdge.value, handleType: reconnectHandleType.value, connectionState });
+      emits.reconnectEnd({ event, edge: storedEdge.value, handleType: reconnectHandleType.value, connectionState });
       updating.value = false;
     }
 
@@ -349,27 +347,27 @@ const EdgeWrapper = defineComponent({
         }
       }
 
-      emit.click(data);
+      emits.edgeClick(data);
     }
 
     function onEdgeContextMenu(event: MouseEvent) {
-      emit.contextMenu({ event, edge: storedEdge.value });
+      emits.edgeContextMenu({ event, edge: storedEdge.value });
     }
 
     function onDoubleClick(event: MouseEvent) {
-      emit.doubleClick({ event, edge: storedEdge.value });
+      emits.edgeDoubleClick({ event, edge: storedEdge.value });
     }
 
     function onEdgeMouseEnter(event: MouseEvent) {
-      emit.mouseEnter({ event, edge: storedEdge.value });
+      emits.edgeMouseEnter({ event, edge: storedEdge.value });
     }
 
     function onEdgeMouseMove(event: MouseEvent) {
-      emit.mouseMove({ event, edge: storedEdge.value });
+      emits.edgeMouseMove({ event, edge: storedEdge.value });
     }
 
     function onEdgeMouseLeave(event: MouseEvent) {
-      emit.mouseLeave({ event, edge: storedEdge.value });
+      emits.edgeMouseLeave({ event, edge: storedEdge.value });
     }
 
     function onReconnectSourceMouseDown(event: MouseEvent) {

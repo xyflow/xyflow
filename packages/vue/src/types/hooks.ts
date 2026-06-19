@@ -151,12 +151,6 @@ export type NodeEventsOn<NodeType extends Node = Node> = {
   >
 };
 
-export type NodeEventsEmit<NodeType extends Node = Node> = {
-  [key in keyof NodeEventsHandler<NodeType>]: EventHookTrigger<
-    NodeEventsHandler<NodeType>[key] extends (event: infer Event) => any ? Event : never
-  >
-};
-
 export interface EdgeEventsHandler<EdgeType extends Edge = Edge> {
   doubleClick: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
   click: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
@@ -171,12 +165,6 @@ export interface EdgeEventsHandler<EdgeType extends Edge = Edge> {
 
 export type EdgeEventsOn<EdgeType extends Edge = Edge> = {
   [key in keyof EdgeEventsHandler<EdgeType>]: EventHookOn<
-    EdgeEventsHandler<EdgeType>[key] extends (event: infer Event) => any ? Event : never
-  >
-};
-
-export type EdgeEventsEmit<EdgeType extends Edge = Edge> = {
-  [key in keyof EdgeEventsHandler<EdgeType>]: EventHookTrigger<
     EdgeEventsHandler<EdgeType>[key] extends (event: infer Event) => any ? Event : never
   >
 };

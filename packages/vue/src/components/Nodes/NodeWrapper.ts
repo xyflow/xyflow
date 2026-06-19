@@ -18,7 +18,6 @@ import {
   isInputDOMNode,
   useDrag,
   useNode,
-  useNodeHooks,
   useStore,
   useUpdateNodePositions,
   useVueFlow,
@@ -70,8 +69,6 @@ const NodeWrapper = defineComponent({
     // `nodeRef` is a `computed` over the lookup (see useNode): it re-resolves to a NEW InternalNode object
     // whenever the store re-adopts this node (immutable model), which is what re-renders this wrapper.
     const { node: nodeRef } = useNode(props.id);
-
-    const { emit } = useNodeHooks(emits);
 
     const isDraggable = toRef(() => {
       const node = nodeRef.value;
@@ -148,13 +145,13 @@ const NodeWrapper = defineComponent({
       selectable: isSelectable,
       dragHandle: () => nodeRef.value?.dragHandle,
       onStart(event) {
-        emit.dragStart(event);
+        emits.nodeDragStart(event);
       },
       onDrag(event) {
-        emit.drag(event);
+        emits.nodeDrag(event);
       },
       onStop(event) {
-        emit.dragStop(event);
+        emits.nodeDragStop(event);
       },
       onClick(event) {
         onSelectNode(event);
@@ -302,35 +299,35 @@ const NodeWrapper = defineComponent({
     function onMouseEnter(event: MouseEvent) {
       const node = nodeRef.value;
       if (node && !dragging?.value) {
-        emit.mouseEnter({ event, node: node.internals.userNode });
+        emits.nodeMouseEnter({ event, node: node.internals.userNode });
       }
     }
 
     function onMouseMove(event: MouseEvent) {
       const node = nodeRef.value;
       if (node && !dragging?.value) {
-        emit.mouseMove({ event, node: node.internals.userNode });
+        emits.nodeMouseMove({ event, node: node.internals.userNode });
       }
     }
 
     function onMouseLeave(event: MouseEvent) {
       const node = nodeRef.value;
       if (node && !dragging?.value) {
-        emit.mouseLeave({ event, node: node.internals.userNode });
+        emits.nodeMouseLeave({ event, node: node.internals.userNode });
       }
     }
 
     function onContextMenu(event: MouseEvent) {
       const node = nodeRef.value;
       if (node) {
-        emit.contextMenu({ event, node: node.internals.userNode });
+        emits.nodeContextMenu({ event, node: node.internals.userNode });
       }
     }
 
     function onDoubleClick(event: MouseEvent) {
       const node = nodeRef.value;
       if (node) {
-        emit.doubleClick({ event, node: node.internals.userNode });
+        emits.nodeDoubleClick({ event, node: node.internals.userNode });
       }
     }
 
@@ -353,7 +350,7 @@ const NodeWrapper = defineComponent({
         );
       }
 
-      emit.click({ event, node: node.internals.userNode });
+      emits.nodeClick({ event, node: node.internals.userNode });
     }
 
     function onKeyDown(event: KeyboardEvent) {
