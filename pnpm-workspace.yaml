@@ -5,6 +5,8 @@ packages:
   - 'tests/*'
 
 catalog:
+  '@vitejs/plugin-vue': ^6.0.7
+  '@vueuse/core': ^14.3.0
   eslint: ^10.2.1
   react: ^18.3.1
   react-dom: ^18.3.1
@@ -22,6 +24,8 @@ catalog:
   '@sveltejs/vite-plugin-svelte': ^7.0.0
   '@sveltejs/adapter-auto': ^7.0.1
   '@sveltejs/kit': ^2.58.0
+  vue: ^3.5.0
+  vue-tsc: ^3.3.4
 
 'overrides':
   'fflate': '0.8.2'

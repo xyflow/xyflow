@@ -1,0 +1,92 @@
+{
+  "name": "@xyflow/vue",
+  "version": "1.44.0",
+  "private": false,
+  "description": "Vue Flow - A highly customizable Vue library for building node-based editors, workflow systems, diagrams and more.",
+  "author": "Burak Cakmakoglu<78412429+bcakmakoglu@users.noreply.github.com>",
+  "license": "MIT",
+  "homepage": "https://vueflow.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xyflow/xyflow.git",
+    "directory": "packages/vue"
+  },
+  "bugs": {
+    "url": "https://github.com/xyflow/xyflow/issues"
+  },
+  "keywords": [
+    "vue",
+    "node-based UI",
+    "graph",
+    "diagram",
+    "workflow",
+    "vue-flow",
+    "xyflow"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "default": "./dist/index.mjs"
+    },
+    "./dist/style.css": "./dist/style.css",
+    "./dist/base.css": "./dist/base.css",
+    "./base.css": "./dist/base.css",
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "dev": "concurrently \"tsdown --watch\" \"pnpm:css --watch\"",
+    "build": "shx rm -rf dist && pnpm css && tsdown",
+    "build:watch": "tsdown --watch",
+    "css": "postcss src/styles/{base,style}.css --dir dist",
+    "lint": "eslint .",
+    "prepublishOnly": "shx cp ../../README.md .",
+    "postpublish": "shx rm README.md",
+    "test": "exit 0"
+  },
+  "peerDependencies": {
+    "@vue/reactivity": "^3.5.0",
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@vueuse/core": "^14.3.0",
+    "@xyflow/system": "workspace:*"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "8.2.0",
+    "@arethetypeswrong/core": "^0.18.3",
+    "@vue/reactivity": "^3.5.0",
+    "@xyflow/postcss-config": "workspace:*",
+    "eslint": "catalog:",
+    "jiti": "^2.7.0",
+    "postcss": "^8.5.15",
+    "postcss-cli": "^11.0.1",
+    "publint": "^0.3.21",
+    "shx": "^0.4.0",
+    "tsdown": "catalog:",
+    "typescript": "^5.6.0",
+    "unplugin-vue": "^7.2.0",
+    "vue": "^3.5.0",
+    "vue-tsc": "^3.3.4"
+  }
+}
