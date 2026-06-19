@@ -1,1 +1,1 @@
-module.exports = require('@xyflow/postcss-config');
+export { default } from '@xyflow/postcss-config';
