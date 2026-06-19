@@ -17,7 +17,6 @@ import {
 import {
   isInputDOMNode,
   useDrag,
-  useNode,
   useStore,
   useUpdateNodePositions,
   useVueFlow,
@@ -38,6 +37,7 @@ const NodeWrapper = defineComponent({
     const {
       id: vueFlowId,
       emits,
+      getInternalNode,
       removeSelectedNodes,
       addSelectedNodes,
       updateNodeDimensions,
@@ -66,9 +66,11 @@ const NodeWrapper = defineComponent({
 
     const updateNodePositions = useUpdateNodePositions();
 
-    // `nodeRef` is a `computed` over the lookup (see useNode): it re-resolves to a NEW InternalNode object
-    // whenever the store re-adopts this node (immutable model), which is what re-renders this wrapper.
-    const { node: nodeRef } = useNode(props.id);
+    // `nodeRef` re-resolves to a NEW InternalNode object whenever the store re-adopts this node (immutable
+    // model) — that reference swap is what re-renders this wrapper. Resolve it directly rather than through
+    // the public `useNode`, which the wrapper would only use for `node` while also allocating unused
+    // `parentNode`/`connectedEdges` computeds and a `nodeEl` inject per instance.
+    const nodeRef = computed(() => getInternalNode(props.id));
 
     const isDraggable = toRef(() => {
       const node = nodeRef.value;
