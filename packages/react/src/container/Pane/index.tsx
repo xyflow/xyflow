@@ -101,6 +101,7 @@ export function Pane({
   const containerBounds = useRef<DOMRect>();
   const selectedNodeIds = useRef<Set<string>>(new Set());
   const selectedEdgeIds = useRef<Set<string>>(new Set());
+  const connectionEndedOnPane = useRef<boolean>(false);
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
@@ -112,8 +113,9 @@ export function Pane({
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
     // We also prevent click events when a connection is in progress
-    if (selectionInProgress.current || connectionInProgress) {
+    if (selectionInProgress.current || connectionInProgress || connectionEndedOnPane.current) {
       selectionInProgress.current = false;
+      connectionEndedOnPane.current = false;
       return;
     }
 
@@ -316,6 +318,13 @@ export function Pane({
       return;
     }
 
+    if (!isSelectionEnabled) {
+      if (event.target === container.current && store.getState().connection.inProgress) {
+        connectionEndedOnPane.current = true;
+      }
+      return;
+    }
+
     (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
 
     /*
@@ -357,7 +366,7 @@ export function Pane({
       onWheel={wrapHandler(onWheel, container)}
       onPointerEnter={isSelectionEnabled ? undefined : onPaneMouseEnter}
       onPointerMove={isSelectionEnabled ? onPointerMove : onPaneMouseMove}
-      onPointerUp={isSelectionEnabled ? onPointerUp : undefined}
+      onPointerUp={onPointerUp}
       onPointerCancel={isSelectionEnabled ? onPointerCancel : undefined}
       onPointerDownCapture={isSelectionEnabled ? onPointerDownCapture : undefined}
       onClickCapture={isSelectionEnabled ? onClickCapture : undefined}
