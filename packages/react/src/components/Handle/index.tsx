@@ -39,10 +39,36 @@ export type HandleProps = HandlePropsSystem &
     onConnect?: OnConnect;
   };
 
+const selector = (s: ReactFlowState) => ({
+  connectOnClick: s.connectOnClick,
+  noPanClassName: s.noPanClassName,
+  rfId: s.rfId,
+});
+
+/*
+ * While no connection is in progress every handle has this same state, so we return a
+ * shared reference rather than allocating + shallow-comparing one per handle on every
+ * store update. `isPossibleEndHandle` matches what the selector computes when idle.
+ */
+const idleConnectingState = {
+  connectingFrom: false,
+  connectingTo: false,
+  clickConnecting: false,
+  isPossibleEndHandle: true,
+  connectionInProcess: false,
+  clickConnectionInProcess: false,
+  valid: false,
+};
+
 const connectingSelector =
   (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
     const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
     const { fromHandle, toHandle, isValid } = connection;
+
+    if (!fromHandle && !clickHandle) {
+      return idleConnectingState;
+    }
+
     const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
 
     return {
