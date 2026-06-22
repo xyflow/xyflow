@@ -382,31 +382,43 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   selectedNodeZ: number,
   zIndexMode: ZIndexMode
 ) {
-  const { x: parentX, y: parentY } = parentNode.internals.positionAbsolute;
-  const childDimensions = getNodeDimensions(childNode);
-  const positionWithOrigin = getNodePositionWithOrigin(childNode, nodeOrigin);
-  const clampedPosition = isCoordinateExtent(childNode.extent)
-    ? clampPosition(positionWithOrigin, childNode.extent, childDimensions)
-    : positionWithOrigin;
-
-  let absolutePosition = clampPosition(
-    { x: parentX + clampedPosition.x, y: parentY + clampedPosition.y },
-    nodeExtent,
-    childDimensions
-  );
-
-  if (childNode.extent === 'parent') {
-    absolutePosition = clampPositionToParent(absolutePosition, childDimensions, parentNode);
-  }
+  const { x, y } = getNodePositionAbsolute(childNode, parentNode, nodeOrigin, nodeExtent);
 
   const childZ = calculateZ(childNode, selectedNodeZ, zIndexMode);
   const parentZ = parentNode.internals.z ?? 0;
 
   return {
-    x: absolutePosition.x,
-    y: absolutePosition.y,
+    x,
+    y,
     z: parentZ >= childZ ? parentZ + 1 : childZ,
   };
+}
+
+/** Absolute position of a node from its (origin-adjusted, extent-clamped) position and its parent's
+ *  absolute position. Same derivation adoptUserNodes uses, exposed for the keyed patchNodes path. */
+export function getNodePositionAbsolute<NodeType extends NodeBase>(
+  node: InternalNodeBase<NodeType>,
+  parent: InternalNodeBase<NodeType> | undefined,
+  nodeOrigin: NodeOrigin,
+  nodeExtent: CoordinateExtent
+): XYPosition {
+  const dimensions = getNodeDimensions(node);
+  const positionWithOrigin = getNodePositionWithOrigin(node, nodeOrigin);
+
+  if (!parent) {
+    const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
+    return clampPosition(positionWithOrigin, extent, dimensions);
+  }
+
+  const clamped = isCoordinateExtent(node.extent)
+    ? clampPosition(positionWithOrigin, node.extent, dimensions)
+    : positionWithOrigin;
+  const absolute = clampPosition(
+    { x: parent.internals.positionAbsolute.x + clamped.x, y: parent.internals.positionAbsolute.y + clamped.y },
+    nodeExtent,
+    dimensions
+  );
+  return node.extent === 'parent' ? clampPositionToParent(absolute, dimensions, parent) : absolute;
 }
 
 export function handleExpandParent(

@@ -162,6 +162,12 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodes: (nodes: NodeType[]) => void;
   setEdges: (edges: EdgeType[]) => void;
+  /** Opt-in keyed write: patch nodes by id (O(changed) + cascaded children) straight to the internal
+   *  node store, waking only the changed nodes. Position / data / style only: bypasses the nodes
+   *  array, onNodesChange, z-index / selection, culling and the controlled `nodes` prop. Pair with
+   *  useInternalNode / useNode for reads; drive re-parenting / selection / structural changes through
+   *  setNodes. `id` and `parentId` are not patchable. */
+  patchNodes: (patches: ({ id: string } & Partial<Omit<NodeType, 'id' | 'parentId'>>)[]) => void;
   setDefaultNodesAndEdges: (nodes?: NodeType[], edges?: EdgeType[]) => void;
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>, params?: { triggerFitView: boolean }) => void;
   updateNodePositions: UpdateNodePositions;

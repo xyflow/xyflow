@@ -5,6 +5,7 @@ import {
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
   updateConnectionLookup,
+  getNodePositionAbsolute,
   handleExpandParent,
   NodeChange,
   EdgeSelectionChange,
@@ -482,6 +483,82 @@ const createStore = ({
             }
           }
           selection.notify();
+        }
+      },
+      /*
+       * Opt-in keyed write: patch nodes by id, O(changed + cascaded children), straight to the
+       * internal node store. Each patch merges onto the node's userNode and recomputes its absolute
+       * position (and any children it moves); only the changed nodes wake through the per-node channel,
+       * with their incident edges re-pathed. It deliberately bypasses the pipeline, so it does NOT:
+       *  - update `state.nodes` or fire onNodesChange (read through useInternalNode / useNode),
+       *  - recompute z-index or selection,
+       *  - recompute the visible set under onlyRenderVisibleElements,
+       *  - re-clamp `extent: 'parent'` children when a patch changes only the parent's size,
+       *  - survive a controlled `nodes` prop.
+       * Drive re-parenting, selection and structural changes through setNodes.
+       */
+      patchNodes: (patches: ({ id: string } & Partial<Omit<Node, 'id' | 'parentId'>>)[]) => {
+        const { nodeLookup, parentLookup, nodeOrigin, nodeExtent } = get();
+        const changedIds = new Set<string>();
+
+        const applyOne = (id: string, patch: Partial<Node> | undefined, path: Set<string>) => {
+          // path guards against a parentId cycle while cascading
+          if (path.has(id)) {
+            return;
+          }
+          const node = nodeLookup.get(id);
+          if (!node) {
+            return;
+          }
+
+          const userNode = patch ? { ...node.internals.userNode, ...patch } : node.internals.userNode;
+          const position = patch?.position ?? node.position;
+          const parent = node.parentId ? nodeLookup.get(node.parentId) : undefined;
+          const positionAbsolute = getNodePositionAbsolute({ ...node, ...patch, position }, parent, nodeOrigin, nodeExtent);
+
+          const absChanged =
+            positionAbsolute.x !== node.internals.positionAbsolute.x ||
+            positionAbsolute.y !== node.internals.positionAbsolute.y;
+
+          // a cascaded child (no own patch) whose absolute position did not move does not change,
+          // and neither do its descendants, so skip the whole subtree
+          if (!patch && !absChanged) {
+            return;
+          }
+
+          const newNode = {
+            ...node,
+            ...patch,
+            position,
+            internals: { ...node.internals, positionAbsolute, userNode },
+          };
+          nodeLookup.set(id, newNode);
+          if (node.parentId) {
+            parentLookup.get(node.parentId)?.set(id, newNode);
+          }
+          changedIds.add(id);
+
+          // moving a parent moves its children's absolute position, so re-fix only the subtree
+          if (absChanged) {
+            const children = parentLookup.get(id);
+            if (children) {
+              path.add(id);
+              for (const childId of children.keys()) {
+                applyOne(childId, undefined, path);
+              }
+              path.delete(id);
+            }
+          }
+        };
+
+        for (const patch of patches) {
+          if (patch?.id != null) {
+            applyOne(patch.id, patch, new Set());
+          }
+        }
+
+        if (changedIds.size > 0) {
+          notifyNodes([...changedIds]);
         }
       },
       setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
