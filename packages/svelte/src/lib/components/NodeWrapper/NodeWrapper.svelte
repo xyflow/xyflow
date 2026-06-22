@@ -107,7 +107,7 @@
     $effect(() => {
       const valid = !!store.nodeTypes[type];
       if (!valid) {
-        console.warn('003', errorMessages['error003'](type!));
+        store.onerror('003', errorMessages['error003'](type!));
       }
     });
   }
@@ -291,6 +291,7 @@
     onfocus={focusable ? onFocus : undefined}
     tabIndex={focusable ? 0 : undefined}
     role={node.ariaRole ?? (focusable ? 'group' : undefined)}
+    aria-label={node.ariaLabel}
     aria-roledescription="node"
     aria-describedby={store.disableKeyboardA11y
       ? undefined

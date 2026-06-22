@@ -1,7 +1,6 @@
 import {
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
-  addEdge as addEdgeUtil,
   initialConnection,
   errorMessages,
   type UpdateNodePositions,
@@ -21,6 +20,7 @@ import {
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, InternalNode } from '$lib/types';
+import { addEdge as addEdgeUtil } from '$lib/utils/edges';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
 
@@ -48,7 +48,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
   }
 
   function addEdge(edgeParams: EdgeType | Connection) {
-    store.edges = addEdgeUtil<EdgeType>(edgeParams, store.edges);
+    store.edges = addEdgeUtil<EdgeType>(edgeParams, store.edges, { onError: store.onerror });
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
@@ -278,7 +278,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     const node = store.nodeLookup.get(id);
 
     if (!node) {
-      console.warn('012', errorMessages['error012'](id));
+      store.onerror('012', errorMessages['error012'](id));
       return;
     }
 
@@ -298,7 +298,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     const edge = store.edgeLookup.get(id);
 
     if (!edge) {
-      console.warn('012', errorMessages['error012'](id));
+      store.onerror('016', errorMessages['error016'](id));
       return;
     }
 

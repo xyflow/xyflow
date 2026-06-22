@@ -10,6 +10,7 @@
     type HandleConnection,
     type Optional,
     type ConnectionState,
+    type FinalConnectionState,
     type Connection
   } from '@xyflow/system';
 
@@ -185,7 +186,7 @@
     connectionClone.toPosition = connectionClone.toHandle
       ? connectionClone.toHandle.position
       : null;
-    store.onclickconnectend?.(event, connectionClone);
+    store.onclickconnectend?.(event, connectionClone as FinalConnectionState);
 
     store.clickConnectStartHandle = null;
   }

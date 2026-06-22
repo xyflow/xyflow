@@ -1,5 +1,46 @@
 # @xyflow/react
 
+## 12.11.0
+### Minor Changes
+
+
+
+- [#5677](https://github.com/xyflow/xyflow/pull/5677) [`e6661de`](https://github.com/xyflow/xyflow/commit/e6661de531212f9a209dba17dd63fbbd4ee16f62) - Add `autoPanOnSelection` to auto-pan when user drags a selection close to the edge of the viewport.
+
+
+### Patch Changes
+
+
+
+- [#5791](https://github.com/xyflow/xyflow/pull/5791) [`732c8eb`](https://github.com/xyflow/xyflow/commit/732c8eb8d5ff86ab1c057588724221e9b3b8553c) - Adds a type error when `handleId` is used without `handleType` in `useNodeConnections`
+
+
+
+- [#5793](https://github.com/xyflow/xyflow/pull/5793) [`c5c853d`](https://github.com/xyflow/xyflow/commit/c5c853d4a2f537caaea725ab9e7bd480e24b86fb) - Dev Warnings now use library-specific messaging with the correct documentation links.
+
+
+
+- [#5776](https://github.com/xyflow/xyflow/pull/5776) [`0441e9f`](https://github.com/xyflow/xyflow/commit/0441e9f9471380b5ba057fc0a6a8cbdc6ff5ed7b) - Export `NodeHandle` type
+
+
+
+- [#5755](https://github.com/xyflow/xyflow/pull/5755) [`88737f9`](https://github.com/xyflow/xyflow/commit/88737f9713f3a6f99c6448e02b6518c7aeedae28) - Add `@types/react` and `@types/react-dom` as optional peer dependencies to prevent issues with pnpm strict mode (`hoist: false`)
+
+
+
+- [#5105](https://github.com/xyflow/xyflow/pull/5105) [`076ad38`](https://github.com/xyflow/xyflow/commit/076ad3893725f654641f7b8c39e7a4e7935eb702) - Fix type for event passed to onNodeDrag
+
+
+
+- [#5784](https://github.com/xyflow/xyflow/pull/5784) [`7055140`](https://github.com/xyflow/xyflow/commit/7055140e66e4aebb08ce512bdff34add7e115472) - Fix node resizing possible beyond absolute extents
+
+
+
+- [#5769](https://github.com/xyflow/xyflow/pull/5769) [`ad4d547`](https://github.com/xyflow/xyflow/commit/ad4d547724a1c2debf8eb7c6e117aabbfd601934) - Use `useEffect` for StoreUpdater to restore previous behaviour
+
+- Updated dependencies [[`732c8eb`](https://github.com/xyflow/xyflow/commit/732c8eb8d5ff86ab1c057588724221e9b3b8553c), [`c5c853d`](https://github.com/xyflow/xyflow/commit/c5c853d4a2f537caaea725ab9e7bd480e24b86fb), [`e6661de`](https://github.com/xyflow/xyflow/commit/e6661de531212f9a209dba17dd63fbbd4ee16f62), [`737194d`](https://github.com/xyflow/xyflow/commit/737194d571894dd84ce7cbab02f2a4d0b779d018), [`40660cd`](https://github.com/xyflow/xyflow/commit/40660cdb054fb1a110799a3ad7cecbf51371727f), [`4806e7c`](https://github.com/xyflow/xyflow/commit/4806e7cde6d69cd7570098ecca86523666b80175), [`7055140`](https://github.com/xyflow/xyflow/commit/7055140e66e4aebb08ce512bdff34add7e115472)]:
+  - @xyflow/system@0.0.77
+
 ## 12.10.2
 
 ### Patch Changes

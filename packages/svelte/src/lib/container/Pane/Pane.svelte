@@ -69,6 +69,7 @@
   // svelte-ignore non_reactive_update
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
+  let connectionEndedOnPane = false;
 
   /* eslint-disable svelte/prefer-svelte-reactivity */
   let selectedNodeIds: Set<string> = new Set();
@@ -271,6 +272,13 @@
   }
 
   function onPointerUp(event: PointerEvent) {
+    if (!isSelectionEnabled) {
+      if (event.target === container && store.connection.inProgress) {
+        connectionEndedOnPane = true;
+      }
+      return;
+    }
+
     if (event.button !== 0) {
       return;
     }
@@ -321,8 +329,9 @@
   function onClick(event: MouseEvent) {
     // We prevent click events when the user let go of the selectionKey during a selection
     // We also prevent click events when a connection is in progress
-    if (selectionInProgress || store.connection.inProgress) {
+    if (selectionInProgress || store.connection.inProgress || connectionEndedOnPane) {
       selectionInProgress = false;
+      connectionEndedOnPane = false;
       return;
     }
 
@@ -344,7 +353,7 @@
   onclick={isSelectionEnabled ? undefined : wrapHandler(onClick, container)}
   onpointerdowncapture={isSelectionEnabled ? onPointerDownCapture : undefined}
   onpointermove={isSelectionEnabled ? onPointerMove : undefined}
-  onpointerup={isSelectionEnabled ? onPointerUp : undefined}
+  onpointerup={onPointerUp}
   onpointercancel={isSelectionEnabled ? onPointerCancel : undefined}
   oncontextmenu={wrapHandler(onContextMenu, container)}
   onclickcapture={isSelectionEnabled ? onClickCapture : undefined}

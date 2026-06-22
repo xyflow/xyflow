@@ -12,20 +12,22 @@ import {
   XYHandle,
   getHostForElement,
   isMouseEvent,
-  addEdge,
   type HandleProps as HandlePropsSystem,
   type Connection,
   type HandleType,
   ConnectionMode,
   OnConnect,
   ConnectionState,
+  FinalConnectionState,
   Optional,
 } from '@xyflow/system';
 
 import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
+import { useHandleConfig } from '../../contexts/HandleConfigContext';
 import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
+import { addEdge } from '../../utils/edges';
 
 /**
  * @expand
@@ -42,10 +44,30 @@ const selector = (s: ReactFlowState) => ({
   rfId: s.rfId,
 });
 
+/*
+ * While no connection is in progress every handle has this same state, so we return a
+ * shared reference rather than allocating + shallow-comparing one per handle on every
+ * store update. `isPossibleEndHandle` matches what the selector computes when idle.
+ */
+const idleConnectingState = {
+  connectingFrom: false,
+  connectingTo: false,
+  clickConnecting: false,
+  isPossibleEndHandle: true,
+  connectionInProcess: false,
+  clickConnectionInProcess: false,
+  valid: false,
+};
+
 const connectingSelector =
   (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
     const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
     const { fromHandle, toHandle, isValid } = connection;
+
+    if (!fromHandle && !clickHandle) {
+      return idleConnectingState;
+    }
+
     const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
 
     return {
@@ -84,8 +106,7 @@ function HandleComponent(
   const isTarget = type === 'target';
   const store = useReactFlowStoreApi();
   const nodeId = useNodeId();
-  const { connectOnClick, noPanClassName, rfId } = useReactFlowStore(useShallow(selector));
-
+  const { connectOnClick, noPanClassName, rfId } = useHandleConfig();
   const {
     connectingFrom,
     connectingTo,
@@ -107,8 +128,8 @@ function HandleComponent(
       ...params,
     };
     if (hasDefaultEdges) {
-      const { edges, setEdges } = store.getState();
-      setEdges(addEdge(edgeParams, edges));
+      const { edges, setEdges, onError } = store.getState();
+      setEdges(addEdge(edgeParams, edges, { onError }));
     }
 
     onConnectAction?.(edgeParams);
@@ -209,7 +230,7 @@ function HandleComponent(
     const connectionClone = structuredClone(connectionState) as Optional<ConnectionState, 'inProgress'>;
     delete connectionClone.inProgress;
     connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
-    onClickConnectEnd?.(event as unknown as MouseEvent, connectionClone);
+    onClickConnectEnd?.(event as unknown as MouseEvent, connectionClone as FinalConnectionState);
 
     store.setState({ connectionClickStartHandle: null });
   };

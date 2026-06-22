@@ -59,7 +59,15 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const [reconnecting, setReconnecting] = useState<boolean>(false);
   const store = useReactFlowStoreApi();
 
-  const { zIndex, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = useReactFlowStore(
+  const {
+    zIndex = edge.zIndex,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+  } = useReactFlowStore(
     useShallow(
       useCallback(
         (store) => {
@@ -67,10 +75,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
           const targetNode = store.nodeLookup.get(edge.target);
 
           if (!sourceNode || !targetNode) {
-            return {
-              zIndex: edge.zIndex,
-              ...nullPosition,
-            };
+            return nullPosition;
           }
 
           const edgePosition = getEdgePosition({
@@ -93,8 +98,8 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
           });
 
           return {
-            zIndex,
             ...(edgePosition || nullPosition),
+            zIndex,
           };
         },
         [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex, id, onError]

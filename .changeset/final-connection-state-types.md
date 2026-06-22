@@ -4,4 +4,4 @@
 '@xyflow/svelte': patch
 ---
 
-Fix node resizing possible beyond absolute extents
+Fix `FinalConnectionState` type so it preserves the discriminated union. 

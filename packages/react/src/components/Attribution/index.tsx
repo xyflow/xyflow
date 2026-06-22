@@ -7,6 +7,10 @@ type AttributionProps = {
   position?: PanelPosition;
 };
 
+const link = `https://reactflow.dev${
+  process.env.NODE_ENV === 'production' ? '?utm_source=attribution' : '/attribution'
+}`;
+
 export function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps) {
   if (proOptions?.hideAttribution) {
     return null;
@@ -16,9 +20,9 @@ export function Attribution({ proOptions, position = 'bottom-right' }: Attributi
     <Panel
       position={position}
       className="react-flow__attribution"
-      data-message="Please only hide this attribution when you are subscribed to React Flow Pro: https://pro.reactflow.dev"
+      data-message={`Please only hide this attribution when you are subscribed to React Flow Pro: ${link}`}
     >
-      <a href="https://reactflow.dev" target="_blank" rel="noopener noreferrer" aria-label="React Flow attribution">
+      <a href={link} target="_blank" rel="noopener noreferrer" aria-label="React Flow attribution">
         React Flow
       </a>
     </Panel>

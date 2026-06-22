@@ -5,7 +5,7 @@ import {
   getViewportForBounds,
   Transform,
   updateConnectionLookup,
-  devWarn,
+  createDevWarn,
   getInternalNodesBounds,
   NodeOrigin,
   initialConnection,
@@ -16,6 +16,8 @@ import {
   type EdgeLookup,
   type ParentLookup,
 } from '@xyflow/system';
+
+const devWarn = createDevWarn('React Flow', 'https://reactflow.dev/');
 
 import type { Edge, FitViewOptions, InternalNode, Node, ReactFlowStore } from '../types';
 

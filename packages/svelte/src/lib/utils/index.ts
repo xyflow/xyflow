@@ -26,6 +26,8 @@ export function toPxString(value: number | undefined): string | undefined {
   return value === undefined ? undefined : `${value}px`;
 }
 
+export * from './edges';
+
 export const arrowKeyDiffs: Record<string, XYPosition> = {
   ArrowUp: { x: 0, y: -1 },
   ArrowDown: { x: 0, y: 1 },

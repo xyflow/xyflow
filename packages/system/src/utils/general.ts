@@ -15,7 +15,6 @@ import type {
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
-
 import { defaultAriaLabelConfig, type AriaLabelConfig } from './constants';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
@@ -127,12 +126,24 @@ export const nodeToBox = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOri
 export const getBoundsOfRects = (rect1: Rect, rect2: Rect): Rect =>
   boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
 
-export const getOverlappingArea = (rectA: Rect, rectB: Rect): number => {
-  const xOverlap = Math.max(0, Math.min(rectA.x + rectA.width, rectB.x + rectB.width) - Math.max(rectA.x, rectB.x));
-  const yOverlap = Math.max(0, Math.min(rectA.y + rectA.height, rectB.y + rectB.height) - Math.max(rectA.y, rectB.y));
+export const getRectsOverlappingArea = (
+  aX: number,
+  aY: number,
+  aWidth: number,
+  aHeight: number,
+  bX: number,
+  bY: number,
+  bWidth: number,
+  bHeight: number
+): number => {
+  const xOverlap = Math.max(0, Math.min(aX + aWidth, bX + bWidth) - Math.max(aX, bX));
+  const yOverlap = Math.max(0, Math.min(aY + aHeight, bY + bHeight) - Math.max(aY, bY));
 
   return Math.ceil(xOverlap * yOverlap);
 };
+
+export const getOverlappingArea = (rectA: Rect, rectB: Rect): number =>
+  getRectsOverlappingArea(rectA.x, rectA.y, rectA.width, rectA.height, rectB.x, rectB.y, rectB.width, rectB.height);
 
 export const isRectObject = (obj: unknown): obj is Rect => {
   if (typeof obj !== 'object' || obj === null) {
@@ -146,11 +157,9 @@ export const isRectObject = (obj: unknown): obj is Rect => {
 
 export const isNumeric = (n: unknown): n is number => typeof n === 'number' && !isNaN(n) && isFinite(n);
 
-// used for a11y key board controls for nodes and edges
-
-export const devWarn = (id: string, message: string) => {
+export const createDevWarn = (lib: string, helpUrl: string) => (id: string, message: string) => {
   if (process.env.NODE_ENV === 'development') {
-    console.warn(`[React Flow]: ${message} Help: https://reactflow.dev/error#${id}`);
+    console.warn(`[${lib}]: ${message} Help: ${helpUrl}error#${id}`);
   }
 };
 
@@ -209,7 +218,7 @@ function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   }
 
   console.error(
-    `[React Flow] The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
+    `The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
   );
   return 0;
 }
