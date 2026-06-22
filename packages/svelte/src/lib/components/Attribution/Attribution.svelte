@@ -9,10 +9,10 @@
   <Panel
     {position}
     class="svelte-flow__attribution"
-    data-message="Feel free to remove the attribution or check out how you could support us: https://svelteflow.dev/support-us"
+    data-message="Feel free to remove the attribution or check out how you could support us: https://svelteflow.dev/attribution"
   >
     <a
-      href="https://svelteflow.dev"
+      href="https://svelteflow.dev/attribution"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Svelte Flow attribution"
