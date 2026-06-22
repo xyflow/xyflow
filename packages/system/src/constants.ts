@@ -2,7 +2,7 @@ import { CoordinateExtent, HandleType } from './types';
 
 export const errorMessages = {
   error001: (lib: string = 'react') =>
-    `Seems like you have not used zustand provider as an ancestor. Help: https://${lib}flow.dev/error#001`,
+    `Seems like you have not used ${lib === 'svelte' ? 'SvelteFlowProvider' : 'ReactFlowProvider'} as an ancestor. Help: https://${lib}flow.dev/error#001`,
   error002: () =>
     "It looks like you've created a new nodeTypes or edgeTypes object. If this wasn't on purpose please define the nodeTypes/edgeTypes outside of the component or memoize them.",
   error003: (nodeType: string) => `Node type "${nodeType}" not found. Using fallback type "default".`,
