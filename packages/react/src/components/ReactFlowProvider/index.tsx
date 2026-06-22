@@ -3,6 +3,7 @@ import { useState, type ReactNode } from 'react';
 import { Provider } from '../../contexts/StoreContext';
 import { createStore } from '../../store';
 import { BatchProvider } from '../BatchProvider';
+import { HandleConfigProvider } from '../../contexts/HandleConfigContext';
 import type { Node, Edge, FitViewOptions } from '../../types';
 import { CoordinateExtent, NodeOrigin, ZIndexMode } from '@xyflow/system';
 
@@ -121,7 +122,9 @@ export function ReactFlowProvider({
 
   return (
     <Provider value={store}>
-      <BatchProvider>{children}</BatchProvider>
+      <BatchProvider>
+        <HandleConfigProvider>{children}</HandleConfigProvider>
+      </BatchProvider>
     </Provider>
   );
 }
