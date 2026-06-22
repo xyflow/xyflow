@@ -1,5 +1,16 @@
 # @xyflow/system
 
+## 0.0.78
+### Patch Changes
+
+
+
+- [#5806](https://github.com/xyflow/xyflow/pull/5806) [`ceb8604`](https://github.com/xyflow/xyflow/commit/ceb8604047f97e6c9028fed17bb10186a7ca9e8b) - Reduce allocations in `getNodesInside` by testing nodes against the viewport without building a `Rect` per node
+
+
+
+- [#5815](https://github.com/xyflow/xyflow/pull/5815) [`87da45c`](https://github.com/xyflow/xyflow/commit/87da45cdf55aaf4549120a60165598675993783d) - Fix `FinalConnectionState` type so it preserves the discriminated union.
+
 ## 0.0.77
 ### Patch Changes
 

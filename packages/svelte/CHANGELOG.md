@@ -1,5 +1,23 @@
 # @xyflow/svelte
 
+## 1.6.1
+### Patch Changes
+
+
+
+- [#5815](https://github.com/xyflow/xyflow/pull/5815) [`87da45c`](https://github.com/xyflow/xyflow/commit/87da45cdf55aaf4549120a60165598675993783d) - Fix `FinalConnectionState` type so it preserves the discriminated union.
+
+
+
+- [#5823](https://github.com/xyflow/xyflow/pull/5823) [`a6afc91`](https://github.com/xyflow/xyflow/commit/a6afc91160e0a0e172b03d82c43972222f9ae740) - Update attribution link
+
+
+
+- [#5824](https://github.com/xyflow/xyflow/pull/5824) [`6b1dac5`](https://github.com/xyflow/xyflow/commit/6b1dac50ff1b837688c362ede5dcc8a57ac97444) - Do not fire on pane click when connection ends on pane
+
+- Updated dependencies [[`ceb8604`](https://github.com/xyflow/xyflow/commit/ceb8604047f97e6c9028fed17bb10186a7ca9e8b), [`87da45c`](https://github.com/xyflow/xyflow/commit/87da45cdf55aaf4549120a60165598675993783d)]:
+  - @xyflow/system@0.0.78
+
 ## 1.6.0
 ### Minor Changes
 
