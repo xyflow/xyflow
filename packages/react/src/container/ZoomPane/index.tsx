@@ -60,7 +60,7 @@ export function ZoomPane({
         store.setState({ transform });
       }
     },
-    [onViewportChange, isControlledViewport]
+    [onViewportChange, isControlledViewport, store]
   );
 
   useEffect(() => {

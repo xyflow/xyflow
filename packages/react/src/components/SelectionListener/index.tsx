@@ -55,7 +55,7 @@ function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends E
 
     onSelectionChange?.(params);
     store.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));
-  }, [selectedNodes, selectedEdges, onSelectionChange]);
+  }, [selectedNodes, selectedEdges, onSelectionChange, store]);
 
   return null;
 }

@@ -109,7 +109,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         minimapInstance.current?.destroy();
       };
     }
-  }, [panZoom]);
+  }, [panZoom, store]);
 
   useEffect(() => {
     minimapInstance.current?.update({
@@ -138,7 +138,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         onNodeClick(event, internalNode.internals.userNode);
       }
     },
-    [onNodeClick]
+    [onNodeClick, store]
   );
 
   const _ariaLabel = ariaLabel ?? ariaLabelConfig['minimap.ariaLabel'];

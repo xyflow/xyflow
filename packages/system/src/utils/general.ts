@@ -12,6 +12,7 @@ import type {
   NodeLookup,
   Padding,
   PaddingWithUnit,
+  OnError,
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
@@ -157,11 +158,13 @@ export const isRectObject = (obj: unknown): obj is Rect => {
 
 export const isNumeric = (n: unknown): n is number => typeof n === 'number' && !isNaN(n) && isFinite(n);
 
-export const createDevWarn = (lib: string, helpUrl: string) => (id: string, message: string) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(`[${lib}]: ${message} Help: ${helpUrl}error#${id}`);
-  }
-};
+export const createDevWarn =
+  (lib: string, helpUrl: string): OnError =>
+  (id: string, message: string) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`[${lib}]: ${message} Help: ${helpUrl}error#${id}`);
+    }
+  };
 
 export const snapPosition = (position: XYPosition, snapGrid: SnapGrid = [1, 1]): XYPosition => {
   return {

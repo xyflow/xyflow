@@ -208,6 +208,9 @@ function ResizeControl({
     onResize,
     onResizeEnd,
     shouldResize,
+    id,
+    resizeDirection,
+    store,
   ]);
 
   const positionClassNames = controlPosition.split('-');

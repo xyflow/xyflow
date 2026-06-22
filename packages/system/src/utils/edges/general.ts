@@ -6,6 +6,7 @@ import {
   isEdgeBase,
   type EdgeBase,
   type ZIndexMode,
+  OnError,
 } from '../..';
 import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes } from '../general';
 

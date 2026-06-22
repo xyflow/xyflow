@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { calculateNodePosition, snapPosition, type XYPosition } from '@xyflow/system';
 
-import { type Node } from '../types';
+import type { InternalNode, Node } from '../types';
 import { useReactFlowStoreApi } from './useReactFlowStore';
 
 const selectedAndDraggable = (nodesDraggable: boolean) => (n: Node) =>

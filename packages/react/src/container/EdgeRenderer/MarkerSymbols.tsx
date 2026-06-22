@@ -58,7 +58,7 @@ export function useMarkerSymbol(type: MarkerType | `${MarkerType}`) {
     }
 
     return MarkerSymbols[type];
-  }, [type]);
+  }, [store, type]);
 
   return symbol;
 }
