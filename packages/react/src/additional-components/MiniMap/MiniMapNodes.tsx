@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentType, memo } from 'react';
+import { ComponentType, memo, useCallback } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 import { shallow } from 'zustand/shallow';
 
-import { useStore } from '../../hooks/useStore';
+import { useStoreApi } from '../../hooks/useStore';
+import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
+import { useExternalSnapshot } from '../../hooks/useExternalSnapshot';
 import { MiniMapNode } from './MiniMapNode';
-import type { ReactFlowState, Node } from '../../types';
+import type { Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
 
 declare const window: any;
 
-const selectorNodeIds = (s: ReactFlowState) => s.nodes.map((node) => node.id);
 const getAttrFunction = <NodeType extends Node>(func: any): GetMiniMapNodeAttribute<NodeType> =>
   func instanceof Function ? func : () => func;
 
@@ -28,7 +29,7 @@ function MiniMapNodes<NodeType extends Node>({
   nodeComponent: NodeComponent = MiniMapNode,
   onClick,
 }: MiniMapNodesProps<NodeType>) {
-  const nodeIds = useStore(selectorNodeIds, shallow);
+  const nodeIds = useVisibleNodeIds(false);
   const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
@@ -83,8 +84,16 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   onClick: MiniMapNodesProps['onClick'];
   shapeRendering: string;
 }) {
-  const { node, x, y, width, height } = useStore((s) => {
-    const node = s.nodeLookup.get(id);
+  const store = useStoreApi();
+  const subscribe = useCallback((onChange: () => void) => store.getState().subscribeNode(id, onChange), [store, id]);
+  const compute = useCallback((): {
+    node: NodeType | undefined;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } => {
+    const node = store.getState().nodeLookup.get(id);
 
     if (!node) {
       return { node: undefined, x: 0, y: 0, width: 0, height: 0 };
@@ -94,14 +103,10 @@ function NodeComponentWrapperInner<NodeType extends Node>({
     const { x, y } = node.internals.positionAbsolute;
     const { width, height } = getNodeDimensions(userNode);
 
-    return {
-      node: userNode,
-      x,
-      y,
-      width,
-      height,
-    };
-  }, shallow);
+    return { node: userNode, x, y, width, height };
+  }, [store, id]);
+
+  const { node, x, y, width, height } = useExternalSnapshot(subscribe, compute, shallow);
 
   if (!node || node.hidden || !nodeHasDimensions(node)) {
     return null;
