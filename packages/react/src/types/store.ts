@@ -187,6 +187,15 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   subscribeEdge: (id: string, listener: () => void) => () => void;
   /** @internal Version counter for a subscribed edge. */
   getEdgeVersion: (id: string) => number;
+  /** @internal Node-list signal: notifies when the node id set or order changes (not on a position
+   *  drag). The node renderer recomputes its visible id list from it. */
+  subscribeNodesList: (listener: () => void) => () => void;
+  /** @internal Edge-list signal: notifies when the edge id set or order (paint order) changes.
+   *  The edge renderer recomputes its visible id list from it. */
+  subscribeEdgesList: (listener: () => void) => () => void;
+  /** @internal Selection signal: notifies when the set of selected nodes or edges changes.
+   *  SelectionListener recomputes the selection from it. */
+  subscribeSelection: (listener: () => void) => () => void;
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
