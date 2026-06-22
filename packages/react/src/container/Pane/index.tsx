@@ -310,14 +310,14 @@ export function Pane({
   };
 
   const onPointerUp = (event: ReactPointerEvent) => {
-    if (event.button !== 0) {
-      return;
-    }
-
     if (!isSelectionEnabled) {
       if (event.target === container.current && store.getState().connection.inProgress) {
         connectionEndedOnPane.current = true;
       }
+      return;
+    }
+
+    if (event.button !== 0) {
       return;
     }
 

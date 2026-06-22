@@ -272,14 +272,14 @@
   }
 
   function onPointerUp(event: PointerEvent) {
-    if (event.button !== 0) {
-      return;
-    }
-
     if (!isSelectionEnabled) {
       if (event.target === container && store.connection.inProgress) {
         connectionEndedOnPane = true;
       }
+      return;
+    }
+
+    if (event.button !== 0) {
       return;
     }
 
