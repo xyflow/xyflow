@@ -165,11 +165,11 @@ const createStore = ({
     }
 
     /*
-     * Per-edge subscription registry, mirroring the per-node one. An edge re-renders
-     * on one of its endpoint nodes moving: the `incidentEdges` map (nodeId -> edge
-     * ids touching it) lets a single-node move re-path only those edges. Edge data
-     * and config changes still come through cheap global useStore selectors in
-     * EdgeWrapper (see there), not this registry.
+     * Per-edge subscription registry, mirroring the per-node one. An edge re-renders when its own
+     * object changes (setEdges wakes notifyEdge for it) or when one of its endpoint nodes moves: the
+     * `incidentEdges` map (nodeId -> edge ids touching it) lets a single-node move re-path only those
+     * edges. Edge config (connectionMode etc.) is shared through EdgeConfigContext, a single store
+     * subscription read by every edge.
      *
      * We key incident edges by bare nodeId rather than reusing connectionLookup,
      * which dedupes by handle pair and would collapse parallel edges (same endpoints
@@ -353,10 +353,35 @@ const createStore = ({
       setEdges: (edges: Edge[]) => {
         const { connectionLookup, edgeLookup } = get();
 
+        /*
+         * Diff the incoming edges against the still-current edgeLookup (before updateConnectionLookup
+         * rebuilds it) to collect the ones whose object changed, then wake the per-edge channel for
+         * them after the rebuild. EdgeWrapper reads its edge through that channel (subscribeEdge)
+         * instead of a global useStore selector that re-ran for every edge on every store emit (e.g.
+         * each node-drag frame). Only done when an edge is subscribed; setEdges is not the node-drag
+         * hot path, so the O(E) scan is fine.
+         */
+        let changedEdgeIds: string[] | null = null;
+        if (edgeListeners.size > 0) {
+          changedEdgeIds = [];
+          for (const edge of edges) {
+            const prev = edgeLookup.get(edge.id);
+            if (prev !== undefined && prev !== edge) {
+              changedEdgeIds.push(edge.id);
+            }
+          }
+        }
+
         updateConnectionLookup(connectionLookup, edgeLookup, edges);
         rebuildIncidentEdges(edges);
 
         set({ edges });
+
+        if (changedEdgeIds) {
+          for (const id of changedEdgeIds) {
+            notifyEdge(id);
+          }
+        }
       },
       setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
         if (nodes) {

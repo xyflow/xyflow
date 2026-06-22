@@ -7,6 +7,7 @@ import { Viewport } from '../Viewport';
 import { useOnInitHandler } from '../../hooks/useOnInitHandler';
 import { useViewportSync } from '../../hooks/useViewportSync';
 import { ConnectionLineWrapper } from '../../components/ConnectionLine';
+import { EdgeConfigProvider } from '../../contexts/EdgeConfigContext';
 import { useNodeOrEdgeTypesWarning } from './useNodeOrEdgeTypesWarning';
 import type { Edge, Node, ReactFlowProps } from '../../types';
 import { useStylesLoadedWarning } from './useStylesLoadedWarning';
@@ -154,24 +155,26 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
       isControlledViewport={!!viewport}
     >
       <Viewport>
-        <EdgeRenderer<EdgeType>
-          edgeTypes={edgeTypes}
-          onEdgeClick={onEdgeClick}
-          onEdgeDoubleClick={onEdgeDoubleClick}
-          onReconnect={onReconnect}
-          onReconnectStart={onReconnectStart}
-          onReconnectEnd={onReconnectEnd}
-          onlyRenderVisibleElements={onlyRenderVisibleElements}
-          onEdgeContextMenu={onEdgeContextMenu}
-          onEdgeMouseEnter={onEdgeMouseEnter}
-          onEdgeMouseMove={onEdgeMouseMove}
-          onEdgeMouseLeave={onEdgeMouseLeave}
-          reconnectRadius={reconnectRadius}
-          defaultMarkerColor={defaultMarkerColor}
-          noPanClassName={noPanClassName}
-          disableKeyboardA11y={disableKeyboardA11y}
-          rfId={rfId}
-        />
+        <EdgeConfigProvider>
+          <EdgeRenderer<EdgeType>
+            edgeTypes={edgeTypes}
+            onEdgeClick={onEdgeClick}
+            onEdgeDoubleClick={onEdgeDoubleClick}
+            onReconnect={onReconnect}
+            onReconnectStart={onReconnectStart}
+            onReconnectEnd={onReconnectEnd}
+            onlyRenderVisibleElements={onlyRenderVisibleElements}
+            onEdgeContextMenu={onEdgeContextMenu}
+            onEdgeMouseEnter={onEdgeMouseEnter}
+            onEdgeMouseMove={onEdgeMouseMove}
+            onEdgeMouseLeave={onEdgeMouseLeave}
+            reconnectRadius={reconnectRadius}
+            defaultMarkerColor={defaultMarkerColor}
+            noPanClassName={noPanClassName}
+            disableKeyboardA11y={disableKeyboardA11y}
+            rfId={rfId}
+          />
+        </EdgeConfigProvider>
         <ConnectionLineWrapper<NodeType>
           style={connectionLineStyle}
           type={connectionLineType}

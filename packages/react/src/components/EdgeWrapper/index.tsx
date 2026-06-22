@@ -1,7 +1,5 @@
-import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX, memo } from 'react';
-import { useSyncExternalStore } from 'use-sync-external-store/shim';
+import { useState, useMemo, useRef, type KeyboardEvent, JSX, memo } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import {
   getMarkerId,
   elementSelectionKeys,
@@ -10,20 +8,13 @@ import {
   getElevatedEdgeZIndex,
 } from '@xyflow/system';
 
-import { useStoreApi, useStore } from '../../hooks/useStore';
+import { useStoreApi } from '../../hooks/useStore';
+import { useEdge } from '../../hooks/useEdge';
+import { useEdgeConfig } from '../../contexts/EdgeConfigContext';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
-import type { Edge, EdgeWrapperProps, ReactFlowState } from '../../types';
-
-// edge config that affects path/zIndex; changes rarely, so a global subscription
-// here costs nothing on node drags (it bails) while the hot endpoint-position
-// dependency is handled by the per-edge subscription below
-const edgeConfigSelector = (s: ReactFlowState) => ({
-  connectionMode: s.connectionMode,
-  elevateEdgesOnSelect: s.elevateEdgesOnSelect,
-  zIndexMode: s.zIndexMode,
-});
+import type { Edge, EdgeWrapperProps } from '../../types';
 
 function EdgeWrapper<EdgeType extends Edge = Edge>({
   id,
@@ -46,8 +37,11 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   onError,
   disableKeyboardA11y,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
-  let edge = useStore((s) => s.edgeLookup.get(id)!) as EdgeType;
-  const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
+  const store = useStoreApi();
+
+  let edge = useEdge<EdgeType>(id);
+
+  const { defaultEdgeOptions, connectionMode, elevateEdgesOnSelect, zIndexMode } = useEdgeConfig();
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
   let edgeType = edge.type || 'default';
@@ -68,21 +62,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const edgeRef = useRef<SVGGElement>(null);
   const [updateHover, setUpdateHover] = useState<boolean>(false);
   const [reconnecting, setReconnecting] = useState<boolean>(false);
-  const store = useStoreApi();
 
-  // Per-edge subscription: re-render only when this edge's data or one of its endpoint nodes
-  // changes (via the store's incidentEdges map), not on every store emit. This is what lets a
-  // single-node move re-path only its edges.
-  const getEdgeVersion = useCallback(() => store.getState().getEdgeVersion(id), [store, id]);
-  useSyncExternalStore(
-    useCallback((onChange) => store.getState().subscribeEdge(id, onChange), [store, id]),
-    getEdgeVersion,
-    getEdgeVersion
-  );
-
-  const { connectionMode, elevateEdgesOnSelect, zIndexMode } = useStore(edgeConfigSelector, shallow);
-
-  // computed fresh from the live nodeLookup on each (subscription-driven) render
   const { nodeLookup } = store.getState();
   const sourceNode = nodeLookup.get(edge.source);
   const targetNode = nodeLookup.get(edge.target);
