@@ -65,7 +65,6 @@ const wrapHandler = (
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   elementsSelectable: s.elementsSelectable,
-  connectionInProgress: s.connection.inProgress,
   dragging: s.paneDragging,
   panBy: s.panBy,
   autoPanSpeed: s.autoPanSpeed,
@@ -91,16 +90,14 @@ export function Pane({
 }: PaneProps) {
   const autoPanId = useRef<number>(0);
   const store = useStoreApi();
-  const { userSelectionActive, elementsSelectable, dragging, connectionInProgress, panBy, autoPanSpeed } = useStore(
-    selector,
-    shallow
-  );
+  const { userSelectionActive, elementsSelectable, dragging, panBy, autoPanSpeed } = useStore(selector, shallow);
   const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);
 
   const container = useRef<HTMLDivElement | null>(null);
   const containerBounds = useRef<DOMRect>();
   const selectedNodeIds = useRef<Set<string>>(new Set());
   const selectedEdgeIds = useRef<Set<string>>(new Set());
+  const connectionEndedOnPane = useRef<boolean>(false);
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
@@ -112,8 +109,9 @@ export function Pane({
   const onClick = (event: ReactMouseEvent) => {
     // We prevent click events when the user let go of the selectionKey during a selection
     // We also prevent click events when a connection is in progress
-    if (selectionInProgress.current || connectionInProgress) {
+    if (selectionInProgress.current || connectionEndedOnPane.current || store.getState().connection.inProgress) {
       selectionInProgress.current = false;
+      connectionEndedOnPane.current = false;
       return;
     }
 
@@ -312,6 +310,13 @@ export function Pane({
   };
 
   const onPointerUp = (event: ReactPointerEvent) => {
+    if (!isSelectionEnabled) {
+      if (event.target === container.current && store.getState().connection.inProgress) {
+        connectionEndedOnPane.current = true;
+      }
+      return;
+    }
+
     if (event.button !== 0) {
       return;
     }
@@ -357,7 +362,7 @@ export function Pane({
       onWheel={wrapHandler(onWheel, container)}
       onPointerEnter={isSelectionEnabled ? undefined : onPaneMouseEnter}
       onPointerMove={isSelectionEnabled ? onPointerMove : onPaneMouseMove}
-      onPointerUp={isSelectionEnabled ? onPointerUp : undefined}
+      onPointerUp={onPointerUp}
       onPointerCancel={isSelectionEnabled ? onPointerCancel : undefined}
       onPointerDownCapture={isSelectionEnabled ? onPointerDownCapture : undefined}
       onClickCapture={isSelectionEnabled ? onClickCapture : undefined}
