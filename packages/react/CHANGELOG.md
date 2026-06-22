@@ -1,5 +1,35 @@
 # @xyflow/react
 
+## 12.11.1
+### Patch Changes
+
+
+
+- [#5815](https://github.com/xyflow/xyflow/pull/5815) [`87da45c`](https://github.com/xyflow/xyflow/commit/87da45cdf55aaf4549120a60165598675993783d) - Fix `FinalConnectionState` type so it preserves the discriminated union.
+
+
+
+- [#5823](https://github.com/xyflow/xyflow/pull/5823) [`a6afc91`](https://github.com/xyflow/xyflow/commit/a6afc91160e0a0e172b03d82c43972222f9ae740) - Update attribution link
+
+
+
+- [#5824](https://github.com/xyflow/xyflow/pull/5824) [`6b1dac5`](https://github.com/xyflow/xyflow/commit/6b1dac50ff1b837688c362ede5dcc8a57ac97444) - Do not fire on pane click when connection ends on pane
+
+
+
+- [#5818](https://github.com/xyflow/xyflow/pull/5818) [`4ddc2d8`](https://github.com/xyflow/xyflow/commit/4ddc2d8420c39ca2e16bbce0e2265601a63a332f) - Provide the shared handle config (`connectOnClick`, `noPanClassName`, `rfId`) through context instead of subscribing to the store in every `Handle`, so a store update no longer runs a selector once per handle
+
+
+
+- [#5817](https://github.com/xyflow/xyflow/pull/5817) [`8df250b`](https://github.com/xyflow/xyflow/commit/8df250b095d0c8a6c82c9155d22250b94b295e76) - Reduce per-handle work on store updates by returning a shared connection state while no connection is in progress.
+
+
+
+- [#5822](https://github.com/xyflow/xyflow/pull/5822) [`a6249de`](https://github.com/xyflow/xyflow/commit/a6249de56c5181edbbe205058a2e5eb593dc278b) - Return stable reference for edge position when connected node gets deleted
+
+- Updated dependencies [[`ceb8604`](https://github.com/xyflow/xyflow/commit/ceb8604047f97e6c9028fed17bb10186a7ca9e8b), [`87da45c`](https://github.com/xyflow/xyflow/commit/87da45cdf55aaf4549120a60165598675993783d)]:
+  - @xyflow/system@0.0.78
+
 ## 12.11.0
 ### Minor Changes
 
