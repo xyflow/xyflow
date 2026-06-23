@@ -38,50 +38,6 @@ const handleDataIds = computed<Record<string, string | null>>(() => ({
   'data-handlepos': position,
 }));
 
-const isConnectableStart = toRef(() => (typeof connectableStart !== 'undefined' ? connectableStart : true));
-
-const isConnectableEnd = toRef(() => (typeof connectableEnd !== 'undefined' ? connectableEnd : true));
-
-// Connection-indicator flags, mirroring xyflow/react's `connectingSelector`. A connection is "in process"
-// globally while dragging (`connectionStartHandle`) or click-connecting (`connectionClickStartHandle`);
-// `isPossibleEndHandle` is whether this handle can be the END of the in-progress (drag) connection.
-const connectionInProcess = toRef(() => store.connectionStartHandle !== null);
-
-const clickConnectionInProcess = toRef(() => store.connectionClickStartHandle !== null);
-
-const isPossibleEndHandle = toRef(() => {
-  const fromHandle = store.connectionStartHandle;
-  return store.connectionMode === ConnectionMode.Strict
-    ? fromHandle?.type !== type.value
-    : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
-});
-
-const isClickConnecting = toRef(
-  () =>
-    store.connectionClickStartHandle?.nodeId === nodeId
-    && store.connectionClickStartHandle?.id === handleId
-    && store.connectionClickStartHandle?.type === type.value,
-);
-
-// xyflow/react + svelte toggle these per handle during a connection: `connectingfrom` on the handle the
-// drag started from, `connectingto` on the handle currently hovered, and `valid` when that hovered handle
-// is a valid target. Core only toggles the classes — coloring is left to user CSS.
-const connectingFrom = toRef(
-  () =>
-    store.connectionStartHandle?.nodeId === nodeId
-    && store.connectionStartHandle?.id === handleId
-    && store.connectionStartHandle?.type === type.value,
-);
-
-const connectingTo = toRef(
-  () =>
-    store.connectionEndHandle?.nodeId === nodeId
-    && store.connectionEndHandle?.id === handleId
-    && store.connectionEndHandle?.type === type.value,
-);
-
-const valid = toRef(() => connectingTo.value && store.connectionStatus === 'valid');
-
 const { handlePointerDown, handleClick } = useHandle({
   nodeId,
   handleId,
@@ -121,6 +77,61 @@ const isHandleConnectable = computed(() => {
   }
 
   return isDef(isConnectable) ? isConnectable : store.nodesConnectable;
+});
+
+// All connection-driven classes in one computed instead of ~7 separate refs: they all derive from the same
+// global `connection*` store state (so they toggle together during a connection) and are used only in the
+// class binding. Mirrors xyflow/react's `connectingSelector`.
+const connectionClasses = computed<Record<string, boolean>>((prev) => {
+  const fromHandle = store.connectionStartHandle;
+  const clickFromHandle = store.connectionClickStartHandle;
+  const toHandle = store.connectionEndHandle;
+  const handleType = type.value;
+
+  const connectionInProcess = fromHandle !== null;
+  const clickConnectionInProcess = clickFromHandle !== null;
+  // whether this handle can be the END of the in-progress (drag) connection
+  const isPossibleEndHandle = store.connectionMode === ConnectionMode.Strict
+    ? fromHandle?.type !== handleType
+    : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
+  const connectingto = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === handleType;
+
+  const next = {
+    // resolved value (falls back to `nodesConnectable`), not the raw prop — XYHandle's DOM query targets
+    // `.connectable` to find drop targets, so an unset `:connectable` must still mark it
+    connectable: isHandleConnectable.value,
+    connecting:
+      clickFromHandle?.nodeId === nodeId && clickFromHandle?.id === handleId && clickFromHandle?.type === handleType,
+    connectablestart: connectableStart,
+    connectableend: connectableEnd,
+    connectingfrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === handleType,
+    connectingto,
+    valid: connectingto && store.connectionStatus === 'valid',
+    connectionindicator:
+      isHandleConnectable.value
+      && (!connectionInProcess || isPossibleEndHandle)
+      && ((connectionInProcess || clickConnectionInProcess) ? connectableEnd : connectableStart),
+  };
+
+  // Reuse the previous object when nothing changed so the class binding's render effect doesn't re-run
+  // (Vue gates dependents on reference identity). During a connection drag `connectionEndHandle` toggles
+  // every handle's recompute, but only the two endpoints' classes actually change — without this every
+  // visible handle re-renders on each intermediate target change.
+  if (
+    prev
+    && prev.connectable === next.connectable
+    && prev.connecting === next.connecting
+    && prev.connectablestart === next.connectablestart
+    && prev.connectableend === next.connectableend
+    && prev.connectingfrom === next.connectingfrom
+    && prev.connectingto === next.connectingto
+    && prev.valid === next.valid
+    && prev.connectionindicator === next.connectionindicator
+  ) {
+    return prev;
+  }
+
+  return next;
 });
 
 // todo: remove this and have users handle this themselves using `updateNodeInternals`
@@ -173,13 +184,13 @@ onMounted(() => {
 function onPointerDown(event: MouseEvent | TouchEvent) {
   const isMouseTriggered = isMouseEvent(event);
 
-  if (isHandleConnectable.value && isConnectableStart.value && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
+  if (isHandleConnectable.value && connectableStart && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
     handlePointerDown(event);
   }
 }
 
 function onClick(event: MouseEvent) {
-  if (!nodeId || (!store.connectionClickStartHandle && !isConnectableStart.value)) {
+  if (!nodeId || (!store.connectionClickStartHandle && !connectableStart)) {
     return;
   }
 
@@ -215,21 +226,7 @@ export default {
       store.noDragClassName,
       store.noPanClassName,
       type,
-      {
-        // use the resolved value (falls back to `nodesConnectable`), not the raw prop — XYHandle's DOM
-        // query targets `.connectable` to find drop targets, so an unset `:connectable` must still mark it
-        connectable: isHandleConnectable,
-        connecting: isClickConnecting,
-        connectablestart: isConnectableStart,
-        connectableend: isConnectableEnd,
-        connectingfrom: connectingFrom,
-        connectingto: connectingTo,
-        valid,
-        connectionindicator:
-          isHandleConnectable
-          && (!connectionInProcess || isPossibleEndHandle)
-          && ((connectionInProcess || clickConnectionInProcess) ? isConnectableEnd : isConnectableStart),
-      },
+      connectionClasses,
     ]"
     @mousedown="onPointerDown"
     @touchstart.passive="onPointerDown"
