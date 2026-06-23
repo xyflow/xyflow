@@ -82,7 +82,7 @@ const isHandleConnectable = computed(() => {
 // All connection-driven classes in one computed instead of ~7 separate refs: they all derive from the same
 // global `connection*` store state (so they toggle together during a connection) and are used only in the
 // class binding. Mirrors xyflow/react's `connectingSelector`.
-const connectionClasses = computed(() => {
+const connectionClasses = computed<Record<string, boolean>>((prev) => {
   const fromHandle = store.connectionStartHandle;
   const clickFromHandle = store.connectionClickStartHandle;
   const toHandle = store.connectionEndHandle;
@@ -96,7 +96,7 @@ const connectionClasses = computed(() => {
     : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
   const connectingto = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === handleType;
 
-  return {
+  const next = {
     // resolved value (falls back to `nodesConnectable`), not the raw prop — XYHandle's DOM query targets
     // `.connectable` to find drop targets, so an unset `:connectable` must still mark it
     connectable: isHandleConnectable.value,
@@ -112,6 +112,26 @@ const connectionClasses = computed(() => {
       && (!connectionInProcess || isPossibleEndHandle)
       && ((connectionInProcess || clickConnectionInProcess) ? connectableEnd : connectableStart),
   };
+
+  // Reuse the previous object when nothing changed so the class binding's render effect doesn't re-run
+  // (Vue gates dependents on reference identity). During a connection drag `connectionEndHandle` toggles
+  // every handle's recompute, but only the two endpoints' classes actually change — without this every
+  // visible handle re-renders on each intermediate target change.
+  if (
+    prev
+    && prev.connectable === next.connectable
+    && prev.connecting === next.connecting
+    && prev.connectablestart === next.connectablestart
+    && prev.connectableend === next.connectableend
+    && prev.connectingfrom === next.connectingfrom
+    && prev.connectingto === next.connectingto
+    && prev.valid === next.valid
+    && prev.connectionindicator === next.connectionindicator
+  ) {
+    return prev;
+  }
+
+  return next;
 });
 
 // todo: remove this and have users handle this themselves using `updateNodeInternals`
