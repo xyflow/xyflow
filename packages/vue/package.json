@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/vue",
-  "version": "2.0.0-next.0",
+  "version": "2.0.0-next.1",
   "private": false,
   "description": "Vue Flow - A highly customizable Vue library for building node-based editors, workflow systems, diagrams and more.",
   "author": "Burak Cakmakoglu<78412429+bcakmakoglu@users.noreply.github.com>",
