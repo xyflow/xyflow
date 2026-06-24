@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import { shallow } from 'zustand/shallow';
 
-import { useStore } from './useStore';
+import { useStoreApi } from './useStore';
+import { useExternalSnapshot } from './useExternalSnapshot';
 import type { InternalNode, Node } from '../types';
 
 /**
@@ -32,10 +32,20 @@ import type { InternalNode, Node } from '../types';
  *```
  */
 export function useInternalNode<NodeType extends Node = Node>(id: string): InternalNode<NodeType> | undefined {
-  const node = useStore(
-    useCallback((s) => s.nodeLookup.get(id) as InternalNode<NodeType> | undefined, [id]),
-    shallow
+  const store = useStoreApi();
+
+  /*
+   * Subscribe to this one node via the per-node channel, so the hook wakes only when this node
+   * changes and stays correct under keyed writes (patchNodes) that bump the channel without a store
+   * emit. The snapshot is the node reference itself (not a version counter) so a node that only
+   * appears after this hook first runs (e.g. adopted by the StoreUpdater effect after mount) is still
+   * picked up when the subscription settles.
+   */
+  const subscribe = useCallback((onChange: () => void) => store.getState().subscribeNode(id, onChange), [store, id]);
+  const compute = useCallback(
+    () => store.getState().nodeLookup.get(id) as InternalNode<NodeType> | undefined,
+    [store, id]
   );
 
-  return node;
+  return useExternalSnapshot(subscribe, compute, Object.is);
 }

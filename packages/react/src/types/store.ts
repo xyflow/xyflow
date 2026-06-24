@@ -162,6 +162,12 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodes: (nodes: NodeType[]) => void;
   setEdges: (edges: EdgeType[]) => void;
+  /** Opt-in keyed write: patch nodes by id (O(changed) + cascaded children) straight to the internal
+   *  node store, waking only the changed nodes. Position / data / style only: bypasses the nodes
+   *  array, onNodesChange, z-index / selection, culling and the controlled `nodes` prop. Pair with
+   *  useInternalNode / useNode for reads; drive re-parenting / selection / structural changes through
+   *  setNodes. `id` and `parentId` are not patchable. */
+  patchNodes: (patches: ({ id: string } & Partial<Omit<NodeType, 'id' | 'parentId'>>)[]) => void;
   setDefaultNodesAndEdges: (nodes?: NodeType[], edges?: EdgeType[]) => void;
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>, params?: { triggerFitView: boolean }) => void;
   updateNodePositions: UpdateNodePositions;
@@ -176,6 +182,26 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   cancelConnection: () => void;
   updateConnection: UpdateConnection<InternalNode<NodeType>>;
   reset: () => void;
+  /** @internal Per-node subscription used by the node renderer; bypasses the
+   *  global notify-all fan-out. Paired with getNodeVersion for useSyncExternalStore. */
+  subscribeNode: (id: string, listener: () => void) => () => void;
+  /** @internal Version counter for a subscribed node; bumps when the node's
+   *  internalNode reference or parent status changes. */
+  getNodeVersion: (id: string) => number;
+  /** @internal Per-edge subscription used by the edge renderer; fires on edge-data
+   *  or endpoint-node changes. Paired with getEdgeVersion for useSyncExternalStore. */
+  subscribeEdge: (id: string, listener: () => void) => () => void;
+  /** @internal Version counter for a subscribed edge. */
+  getEdgeVersion: (id: string) => number;
+  /** @internal Node-list signal: notifies when the node id set or order changes (not on a position
+   *  drag). The node renderer recomputes its visible id list from it. */
+  subscribeNodesList: (listener: () => void) => () => void;
+  /** @internal Edge-list signal: notifies when the edge id set or order (paint order) changes.
+   *  The edge renderer recomputes its visible id list from it. */
+  subscribeEdgesList: (listener: () => void) => () => void;
+  /** @internal Selection signal: notifies when the set of selected nodes or edges changes.
+   *  SelectionListener recomputes the selection from it. */
+  subscribeSelection: (listener: () => void) => () => void;
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;

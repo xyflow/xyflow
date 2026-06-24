@@ -1,6 +1,5 @@
-import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX, memo } from 'react';
+import { useState, useMemo, useRef, type KeyboardEvent, JSX, memo } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import {
   getMarkerId,
   elementSelectionKeys,
@@ -9,7 +8,9 @@ import {
   getElevatedEdgeZIndex,
 } from '@xyflow/system';
 
-import { useStoreApi, useStore } from '../../hooks/useStore';
+import { useStoreApi } from '../../hooks/useStore';
+import { useEdge } from '../../hooks/useEdge';
+import { useEdgeConfig } from '../../contexts/EdgeConfigContext';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
@@ -36,8 +37,11 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   onError,
   disableKeyboardA11y,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
-  let edge = useStore((s) => s.edgeLookup.get(id)!) as EdgeType;
-  const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
+  const store = useStoreApi();
+
+  let edge = useEdge<EdgeType>(id);
+
+  const { defaultEdgeOptions, connectionMode, elevateEdgesOnSelect, zIndexMode } = useEdgeConfig();
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
   let edgeType = edge.type || 'default';
@@ -58,54 +62,33 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const edgeRef = useRef<SVGGElement>(null);
   const [updateHover, setUpdateHover] = useState<boolean>(false);
   const [reconnecting, setReconnecting] = useState<boolean>(false);
-  const store = useStoreApi();
 
-  const {
-    zIndex = edge.zIndex,
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
-    sourcePosition,
-    targetPosition,
-  } = useStore(
-    useCallback(
-      (store) => {
-        const sourceNode = store.nodeLookup.get(edge.source);
-        const targetNode = store.nodeLookup.get(edge.target);
+  const { nodeLookup } = store.getState();
+  const sourceNode = nodeLookup.get(edge.source);
+  const targetNode = nodeLookup.get(edge.target);
 
-        if (!sourceNode || !targetNode) {
-          return nullPosition;
+  const { zIndex, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } =
+    sourceNode && targetNode
+      ? {
+          ...(getEdgePosition({
+            id,
+            sourceNode,
+            targetNode,
+            sourceHandle: edge.sourceHandle || null,
+            targetHandle: edge.targetHandle || null,
+            connectionMode,
+            onError,
+          }) || nullPosition),
+          zIndex: getElevatedEdgeZIndex({
+            selected: edge.selected,
+            zIndex: edge.zIndex,
+            sourceNode,
+            targetNode,
+            elevateOnSelect: elevateEdgesOnSelect,
+            zIndexMode,
+          }),
         }
-
-        const edgePosition = getEdgePosition({
-          id,
-          sourceNode,
-          targetNode,
-          sourceHandle: edge.sourceHandle || null,
-          targetHandle: edge.targetHandle || null,
-          connectionMode: store.connectionMode,
-          onError,
-        });
-
-        const zIndex = getElevatedEdgeZIndex({
-          selected: edge.selected,
-          zIndex: edge.zIndex,
-          sourceNode,
-          targetNode,
-          elevateOnSelect: store.elevateEdgesOnSelect,
-          zIndexMode: store.zIndexMode,
-        });
-
-        return {
-          ...(edgePosition || nullPosition),
-          zIndex,
-        };
-      },
-      [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex]
-    ),
-    shallow
-  );
+      : { ...nullPosition, zIndex: edge.zIndex };
 
   const markerStartUrl = useMemo(
     () => (edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId)}')` : undefined),
