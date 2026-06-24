@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { NodeChange } from '@xyflow/system';
 
-import { useStoreApi } from './useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 import type { Edge, Node } from '../types';
 
 /**
@@ -13,7 +13,7 @@ import type { Edge, Node } from '../types';
 export function experimental_useOnNodesChangeMiddleware<NodeType extends Node = Node>(
   fn: (changes: NodeChange<NodeType>[]) => NodeChange<NodeType>[]
 ) {
-  const store = useStoreApi<NodeType, Edge>();
+  const store = useReactFlowStoreApi<NodeType, Edge>();
   const [symbol] = useState(() => Symbol());
 
   useEffect(() => {

@@ -12,10 +12,11 @@ import type {
   NodeLookup,
   Padding,
   PaddingWithUnit,
+  OnError,
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
-import { defaultAriaLabelConfig, type AriaLabelConfig } from '../constants';
+import { defaultAriaLabelConfig, type AriaLabelConfig } from './constants';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
 
@@ -145,18 +146,25 @@ export const getRectsOverlappingArea = (
 export const getOverlappingArea = (rectA: Rect, rectB: Rect): number =>
   getRectsOverlappingArea(rectA.x, rectA.y, rectA.width, rectA.height, rectB.x, rectB.y, rectB.width, rectB.height);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isRectObject = (obj: any): obj is Rect =>
-  isNumeric(obj.width) && isNumeric(obj.height) && isNumeric(obj.x) && isNumeric(obj.y);
-
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
-
-export const createDevWarn = (lib: string, helpUrl: string) => (id: string, message: string) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(`[${lib}]: ${message} Help: ${helpUrl}error#${id}`);
+export const isRectObject = (obj: unknown): obj is Rect => {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
   }
+
+  const rect = obj as Record<string, unknown>;
+
+  return isNumeric(rect.width) && isNumeric(rect.height) && isNumeric(rect.x) && isNumeric(rect.y);
 };
+
+export const isNumeric = (n: unknown): n is number => typeof n === 'number' && !isNaN(n) && isFinite(n);
+
+export const createDevWarn =
+  (lib: string, helpUrl: string): OnError =>
+  (id: string, message: string) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`[${lib}]: ${message} Help: ${helpUrl}error#${id}`);
+    }
+  };
 
 export const snapPosition = (position: XYPosition, snapGrid: SnapGrid = [1, 1]): XYPosition => {
   return {

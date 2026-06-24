@@ -1,4 +1,4 @@
-import { createWithEqualityFn } from 'zustand/traditional';
+import { create } from 'zustand';
 import {
   adoptUserNodes,
   updateAbsolutePositions,
@@ -16,7 +16,7 @@ import {
   fitViewport,
   getHandlePosition,
   Position,
-  ZIndexMode
+  ZIndexMode,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -52,7 +52,7 @@ const createStore = ({
   nodeExtent?: CoordinateExtent;
   zIndexMode?: ZIndexMode;
 }) =>
-  createWithEqualityFn<ReactFlowState>((set, get) => {
+  create<ReactFlowState>((set, get) => {
     async function resolveFitView() {
       const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
 
@@ -127,13 +127,13 @@ const createStore = ({
         const nextNodesSelectionActive = nodesSelectionActive && hasSelectedNodes;
 
         if (fitViewQueued && nodesInitialized) {
-          resolveFitView();
+          void resolveFitView();
           set({
             nodes,
             nodesInitialized,
             fitViewQueued: false,
             fitViewOptions: undefined,
-            nodesSelectionActive: nextNodesSelectionActive
+            nodesSelectionActive: nextNodesSelectionActive,
           });
         } else {
           set({ nodes, nodesInitialized, nodesSelectionActive: nextNodesSelectionActive });
@@ -193,7 +193,7 @@ const createStore = ({
         updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent, zIndexMode });
 
         if (fitViewQueued) {
-          resolveFitView();
+          void resolveFitView();
           set({ fitViewQueued: false, fitViewOptions: undefined });
         } else {
           // we always want to trigger useStore calls whenever updateNodeInternals is called
@@ -449,6 +449,6 @@ const createStore = ({
 
       reset: () => set({ ...getInitialState() }),
     };
-  }, Object.is);
+  });
 
 export { createStore };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Selection as D3Selection } from 'd3-selection';
 import type { D3DragEvent, SubjectPosition } from 'd3-drag';
 import type { ZoomBehavior } from 'd3-zoom';
@@ -8,8 +7,9 @@ import type { Transition } from 'd3-transition';
 import type { XYPosition, Rect, Position } from './utils';
 import type { InternalNodeBase, NodeBase, NodeDragItem } from './nodes';
 import type { Handle, HandleType } from './handles';
-import { PanZoomInstance } from './panzoom';
-import { EdgeBase } from '..';
+import { type PanZoomInstance } from './panzoom';
+import { type EdgeBase } from '..';
+import type { D3ZoomInputEvent } from '../utils/events';
 
 export type Project = (position: XYPosition) => XYPosition;
 
@@ -257,7 +257,8 @@ export type OnViewportChange = (viewport: Viewport) => void;
 
 export type D3ZoomInstance = ZoomBehavior<Element, unknown>;
 export type D3SelectionInstance = D3Selection<Element, unknown, null, undefined>;
-export type D3ZoomHandler = (this: Element, event: any, d: unknown) => void;
+
+export type D3ZoomHandler = (this: Element, event: D3ZoomInputEvent, d: unknown) => void;
 
 export type UpdateNodeInternals = (nodeId: string | string[]) => void;
 
@@ -284,7 +285,9 @@ export type ProOptions = {
   hideAttribution: boolean;
 };
 
-export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
+export type UseDragEvent = Omit<D3DragEvent<HTMLDivElement, null, SubjectPosition>, 'sourceEvent'> & {
+  sourceEvent: MouseEvent | TouchEvent;
+};
 
 export enum SelectionMode {
   Partial = 'partial',

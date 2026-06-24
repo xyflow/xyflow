@@ -1,21 +1,21 @@
-import { Handle, HandleConnection, infiniteExtent, NodeHandleBounds, ZIndexMode } from '..';
+import { type Handle, type HandleConnection, infiniteExtent, type NodeHandleBounds, type ZIndexMode } from '..';
 import {
-  NodeBase,
-  CoordinateExtent,
-  InternalNodeUpdate,
-  NodeOrigin,
-  PanZoomInstance,
-  Transform,
-  XYPosition,
-  ConnectionLookup,
-  EdgeBase,
-  EdgeLookup,
-  InternalNodeBase,
-  NodeLookup,
-  Rect,
-  NodeDimensionChange,
-  NodePositionChange,
-  ParentLookup,
+  type NodeBase,
+  type CoordinateExtent,
+  type InternalNodeUpdate,
+  type NodeOrigin,
+  type PanZoomInstance,
+  type Transform,
+  type XYPosition,
+  type ConnectionLookup,
+  type EdgeBase,
+  type EdgeLookup,
+  type InternalNodeBase,
+  type NodeLookup,
+  type Rect,
+  type NodeDimensionChange,
+  type NodePositionChange,
+  type ParentLookup,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
 import {
@@ -28,7 +28,7 @@ import {
   nodeToRect,
 } from './general';
 import { getNodePositionWithOrigin } from './graph';
-import { ParentExpandChild } from './types';
+import { type ParentExpandChild } from './types';
 
 const SELECTED_NODE_Z = 1000;
 const ROOT_PARENT_Z_INCREMENT = 10;
@@ -567,16 +567,16 @@ function addConnectionToLookup(
    * If the key already exists, we add the connection to the existing map
    */
   let key = nodeId;
-  const nodeMap = connectionLookup.get(key) || new Map();
+  const nodeMap = connectionLookup.get(key) || new Map<string, HandleConnection>();
   connectionLookup.set(key, nodeMap.set(connectionKey, connection));
 
   key = `${nodeId}-${type}`;
-  const typeMap = connectionLookup.get(key) || new Map();
+  const typeMap = connectionLookup.get(key) || new Map<string, HandleConnection>();
   connectionLookup.set(key, typeMap.set(connectionKey, connection));
 
   if (handleId) {
     key = `${nodeId}-${type}-${handleId}`;
-    const handleMap = connectionLookup.get(key) || new Map();
+    const handleMap = connectionLookup.get(key) || new Map<string, HandleConnection>();
     connectionLookup.set(key, handleMap.set(connectionKey, connection));
   }
 }

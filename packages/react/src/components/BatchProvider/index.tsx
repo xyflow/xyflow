@@ -1,17 +1,15 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo } from 'react';
 import { EdgeChange, NodeChange } from '@xyflow/system';
 
-import { useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { getElementsDiffChanges } from '../../utils';
 import { Queue, QueueItem } from './types';
 import type { Edge, Node } from '../../types';
 import { useQueue } from './useQueue';
 
 const BatchContext = createContext<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nodeQueue: Queue<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  edgeQueue: Queue<any>;
+  nodeQueue: Queue<Node>;
+  edgeQueue: Queue<Edge>;
 } | null>(null);
 
 /**
@@ -25,7 +23,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
 }: {
   children: ReactNode;
 }) {
-  const store = useStoreApi<NodeType, EdgeType>();
+  const store = useReactFlowStoreApi<NodeType, EdgeType>();
 
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
     const {
@@ -99,7 +97,10 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   }, []);
   const edgeQueue = useQueue<EdgeType>(edgeQueueHandler);
 
-  const value = useMemo(() => ({ nodeQueue, edgeQueue }), []);
+  const value = useMemo(
+    () => ({ nodeQueue, edgeQueue }) as unknown as { nodeQueue: Queue<Node>; edgeQueue: Queue<Edge> },
+    []
+  );
 
   return <BatchContext.Provider value={value}>{children}</BatchContext.Provider>;
 }

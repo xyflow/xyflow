@@ -1,9 +1,9 @@
-import { EdgePosition } from '../../types/edges';
-import { ConnectionMode, OnError } from '../../types/general';
-import { InternalNodeBase, NodeHandle } from '../../types/nodes';
-import { Position, XYPosition } from '../../types/utils';
-import { errorMessages } from '../../constants';
-import { Handle } from '../../types';
+import { type EdgePosition } from '../../types/edges';
+import { ConnectionMode, type OnError } from '../../types/general';
+import { type InternalNodeBase, type NodeHandle } from '../../types/nodes';
+import { Position, type XYPosition } from '../../types/utils';
+import { errorMessages } from '../constants';
+import { type Handle } from '../../types';
 import { getNodeDimensions } from '../general';
 
 export type GetEdgePositionParams = {
@@ -38,7 +38,7 @@ export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | n
   const targetHandle = getHandle(
     // when connection type is loose we can define all handles as sources and connect source -> source
     params.connectionMode === ConnectionMode.Strict
-      ? targetHandleBounds?.target ?? []
+      ? (targetHandleBounds?.target ?? [])
       : (targetHandleBounds?.target ?? []).concat(targetHandleBounds?.source ?? []),
     params.targetHandle
   );
@@ -76,8 +76,8 @@ function toHandleBounds(handles?: NodeHandle[]) {
     return null;
   }
 
-  const source = [];
-  const target = [];
+  const source: Handle[] = [];
+  const target: Handle[] = [];
 
   for (const handle of handles) {
     handle.width = handle.width ?? 1;

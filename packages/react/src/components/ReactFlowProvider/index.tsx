@@ -1,11 +1,11 @@
 import { useState, type ReactNode } from 'react';
+import { CoordinateExtent, NodeOrigin, ZIndexMode } from '@xyflow/system';
 
 import { Provider } from '../../contexts/StoreContext';
 import { createStore } from '../../store';
 import { BatchProvider } from '../BatchProvider';
 import { HandleConfigProvider } from '../../contexts/HandleConfigContext';
 import type { Node, Edge, FitViewOptions } from '../../types';
-import { CoordinateExtent, NodeOrigin, ZIndexMode } from '@xyflow/system';
 
 export type ReactFlowProviderProps = {
   /** These nodes are used to initialize the flow. They are not dynamic. */

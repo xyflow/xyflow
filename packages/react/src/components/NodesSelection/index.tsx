@@ -4,10 +4,9 @@
  */
 import { useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import { getInternalNodesBounds, isNumeric } from '@xyflow/system';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStore, useShallow, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
@@ -37,8 +36,8 @@ export function NodesSelection<NodeType extends Node>({
   noPanClassName,
   disableKeyboardA11y,
 }: NodesSelectionProps<NodeType>) {
-  const store = useStoreApi<NodeType>();
-  const { width, height, transformString, userSelectionActive } = useStore(selector, shallow);
+  const store = useReactFlowStoreApi<NodeType>();
+  const { width, height, transformString, userSelectionActive } = useReactFlowStore(useShallow(selector));
   const moveSelectedNodes = useMoveSelectedNodes();
 
   const nodeRef = useRef<HTMLDivElement>(null);

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 import { XYDrag, type XYDragInstance } from '@xyflow/system';
 
 import { handleNodeClick } from '../components/Nodes/utils';
-import { useStoreApi } from './useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 
 type UseDragParams = {
   nodeRef: RefObject<HTMLDivElement>;
@@ -28,7 +28,7 @@ export function useDrag({
   isSelectable,
   nodeClickDistance,
 }: UseDragParams) {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const [dragging, setDragging] = useState<boolean>(false);
   const xyDrag = useRef<XYDragInstance>();
 

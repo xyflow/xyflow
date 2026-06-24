@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   areConnectionMapsEqual,
   errorMessages,
@@ -7,8 +7,9 @@ import {
   type UseNodeConnectionsParams,
 } from '@xyflow/system';
 
-import { useStore } from './useStore';
+import { useCustomDiff, useReactFlowStore } from './useReactFlowStore';
 import { useNodeId } from '../contexts/NodeIdContext';
+import { type ReactFlowState } from '../types';
 
 const error014 = errorMessages['error014']();
 
@@ -50,23 +51,26 @@ export function useNodeConnections({
 
   const prevConnections = useRef<Map<string, NodeConnection> | null>(null);
 
-  const connections = useStore(
-    (state) =>
-      state.connectionLookup.get(
+  const selector = useCallback(
+    (state: ReactFlowState) => {
+      return state.connectionLookup.get(
         `${currentNodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
-      ),
-    areConnectionMapsEqual
+      );
+    },
+    [currentNodeId, handleType, handleId]
   );
+
+  const connections = useReactFlowStore(useCustomDiff(selector, areConnectionMapsEqual));
 
   useEffect(() => {
     // @todo discuss if onConnect/onDisconnect should be called when the component mounts/unmounts
     if (prevConnections.current && prevConnections.current !== connections) {
-      const _connections = connections ?? new Map();
+      const _connections = connections ?? new Map<string, NodeConnection>();
       handleConnectionChange(prevConnections.current, _connections, onDisconnect);
       handleConnectionChange(_connections, prevConnections.current, onConnect);
     }
 
-    prevConnections.current = connections ?? new Map();
+    prevConnections.current = connections ?? new Map<string, NodeConnection>();
   }, [connections, onConnect, onDisconnect]);
 
   return useMemo(() => Array.from(connections?.values() ?? []), [connections]);

@@ -5,6 +5,7 @@ import {
   calcAutoPan,
   getEventPosition,
   getPointerPosition,
+  isTouchEvent,
   calculateNodePosition,
   snapPosition,
   getInternalNodesBounds,
@@ -29,7 +30,7 @@ import type {
 } from '../types';
 
 export type OnDrag<NodeType extends NodeBase = NodeBase> = (
-  event: MouseEvent,
+  event: MouseEvent | TouchEvent,
   dragItems: Map<string, NodeDragItem>,
   node: NodeType,
   nodes: NodeType[]
@@ -115,7 +116,7 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
   let abortDrag = false; // prevents unintentional dragging on multitouch
   let nodePositionsChanged = false;
   // we store the last drag event to be able to use it in the update function
-  let dragEvent: MouseEvent | null = null;
+  let dragEvent: MouseEvent | TouchEvent | null = null;
 
   // public functions
   function update({
@@ -253,7 +254,9 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
         }
       }
 
-      autoPanId = requestAnimationFrame(autoPan);
+      autoPanId = requestAnimationFrame(() => {
+        void autoPan();
+      });
     }
 
     function startDrag(event: UseDragEvent) {
@@ -283,7 +286,12 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
         onNodeMouseDown?.(nodeId);
       }
 
-      const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
+      const pointerPos = getPointerPosition(event.sourceEvent, {
+        transform,
+        snapGrid,
+        snapToGrid,
+        containerBounds,
+      });
       lastPos = pointerPos;
       dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, nodeId);
 
@@ -294,11 +302,11 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
           nodeLookup,
         });
 
-        onDragStart?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-        onNodeDragStart?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+        onDragStart?.(event.sourceEvent, dragItems, currentNode, currentNodes);
+        onNodeDragStart?.(event.sourceEvent, currentNode, currentNodes);
 
         if (!nodeId) {
-          onSelectionDragStart?.(event.sourceEvent as MouseEvent, currentNodes);
+          onSelectionDragStart?.(event.sourceEvent, currentNodes);
         }
       }
     }
@@ -323,11 +331,11 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
       })
       .on('drag', (event: UseDragEvent) => {
         const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold, nodeLookup } = getStoreItems();
-        const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
         dragEvent = event.sourceEvent;
+        const pointerPos = getPointerPosition(dragEvent, { transform, snapGrid, snapToGrid, containerBounds });
 
         if (
-          (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) ||
+          (isTouchEvent(dragEvent) && dragEvent.type === 'touchmove' && dragEvent.touches.length > 1) ||
           // if user deletes a node while dragging, we need to abort the drag to prevent errors
           (nodeId && !nodeLookup.has(nodeId))
         ) {
@@ -340,12 +348,12 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
 
         if (!autoPanStarted && autoPanOnNodeDrag && dragStarted) {
           autoPanStarted = true;
-          autoPan();
+          void autoPan();
         }
 
         if (!dragStarted) {
           // Calculate distance in client coordinates for consistent drag threshold behavior across zoom levels
-          const currentMousePosition = getEventPosition(event.sourceEvent, containerBounds!);
+          const currentMousePosition = getEventPosition(dragEvent, containerBounds!);
           const x = currentMousePosition.x - mousePosition.x;
           const y = currentMousePosition.y - mousePosition.y;
           const distance = Math.sqrt(x * x + y * y);
@@ -357,7 +365,7 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
 
         // skip events without movement
         if ((lastPos.x !== pointerPos.xSnapped || lastPos.y !== pointerPos.ySnapped) && dragItems && dragStarted) {
-          mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
+          mousePosition = getEventPosition(dragEvent, containerBounds!);
           updateNodes(pointerPos);
         }
       })
@@ -389,11 +397,11 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
               dragging: false,
             });
 
-            onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-            onNodeDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+            onDragStop?.(event.sourceEvent, dragItems, currentNode, currentNodes);
+            onNodeDragStop?.(event.sourceEvent, currentNode, currentNodes);
 
             if (!nodeId) {
-              onSelectionDragStop?.(event.sourceEvent as MouseEvent, currentNodes);
+              onSelectionDragStop?.(event.sourceEvent, currentNodes);
             }
           }
         }

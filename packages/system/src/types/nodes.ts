@@ -1,5 +1,5 @@
 import type { XYPosition, Position, CoordinateExtent, Handle } from '.';
-import { Optional } from '../utils/types';
+import { type Optional } from '../utils/types';
 
 /**
  * Framework independent node data structure.
@@ -10,7 +10,7 @@ import { Optional } from '../utils/types';
  */
 export type NodeBase<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+  NodeType extends string | undefined = string | undefined,
 > = {
   /** Unique id of a node. */
   id: string;
@@ -163,7 +163,10 @@ export type NodeDragItem = {
  */
 export type NodeOrigin = [number, number];
 
-export type OnSelectionDrag<NodeType extends NodeBase = NodeBase> = (event: MouseEvent, nodes: NodeType[]) => void;
+export type OnSelectionDrag<NodeType extends NodeBase = NodeBase> = (
+  event: MouseEvent | TouchEvent,
+  nodes: NodeType[]
+) => void;
 
 /**
  * Type for the handles of a node

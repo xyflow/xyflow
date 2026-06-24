@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { DistributivePick, shallowNodeData } from '@xyflow/system';
+import { type DistributivePick, shallowNodeData } from '@xyflow/system';
 
-import { useStore } from '../hooks/useStore';
-import type { Node } from '../types';
+import { useCustomDiff, useReactFlowStore } from './useReactFlowStore';
+import type { Node, ReactFlowState } from '../types';
 
 /**
  * This hook lets you subscribe to changes of a specific nodes `data` object.
@@ -31,31 +31,29 @@ export function useNodesData<NodeType extends Node = Node>(
   nodeIds: string[]
 ): DistributivePick<NodeType, 'id' | 'type' | 'data'>[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useNodesData(nodeIds: any): any {
-  const nodesData = useStore(
-    useCallback(
-      (s) => {
-        const data = [];
-        const isArrayOfIds = Array.isArray(nodeIds);
-        const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
+export function useNodesData(nodeIds: string | string[]): any {
+  const selector = useCallback(
+    (s: ReactFlowState) => {
+      const data = [];
+      const isArrayOfIds = Array.isArray(nodeIds);
+      const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
 
-        for (const nodeId of _nodeIds) {
-          const node = s.nodeLookup.get(nodeId);
-          if (node) {
-            data.push({
-              id: node.id,
-              type: node.type,
-              data: node.data,
-            });
-          }
+      for (const nodeId of _nodeIds) {
+        const node = s.nodeLookup.get(nodeId);
+        if (node) {
+          data.push({
+            id: node.id,
+            type: node.type,
+            data: node.data,
+          });
         }
+      }
 
-        return isArrayOfIds ? data : data[0] ?? null;
-      },
-      [nodeIds]
-    ),
-    shallowNodeData
+      return isArrayOfIds ? data : (data[0] ?? null);
+    },
+    [nodeIds]
   );
+  const nodesData = useReactFlowStore(useCustomDiff(selector, shallowNodeData));
 
   return nodesData;
 }

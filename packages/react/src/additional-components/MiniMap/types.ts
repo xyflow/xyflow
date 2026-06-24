@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType, CSSProperties, HTMLAttributes, MouseEvent } from 'react';
 import type { PanelPosition, XYPosition } from '@xyflow/system';
 
 import type { Node } from '../../types';
 
-export type GetMiniMapNodeAttribute<NodeType extends Node = Node> = (node: NodeType) => string;
+export type GetMiniMapNodeAttribute<NodeType extends Node = Node> = (node: NodeType) => string | undefined;
 
 /**
  * @expand
@@ -120,7 +119,7 @@ export type MiniMapNodeProps = {
   width: number;
   height: number;
   borderRadius: number;
-  className: string;
+  className?: string;
   color?: string;
   shapeRendering: string;
   strokeColor?: string;

@@ -1,6 +1,5 @@
 import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX, memo } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import {
   getMarkerId,
   elementSelectionKeys,
@@ -9,7 +8,7 @@ import {
   getElevatedEdgeZIndex,
 } from '@xyflow/system';
 
-import { useStoreApi, useStore } from '../../hooks/useStore';
+import { useReactFlowStoreApi, useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
@@ -36,8 +35,8 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   onError,
   disableKeyboardA11y,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
-  let edge = useStore((s) => s.edgeLookup.get(id)!) as EdgeType;
-  const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
+  let edge = useReactFlowStore((s) => s.edgeLookup.get(id)!) as EdgeType;
+  const defaultEdgeOptions = useReactFlowStore((s) => s.defaultEdgeOptions);
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
   let edgeType = edge.type || 'default';
@@ -58,7 +57,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const edgeRef = useRef<SVGGElement>(null);
   const [updateHover, setUpdateHover] = useState<boolean>(false);
   const [reconnecting, setReconnecting] = useState<boolean>(false);
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
 
   const {
     zIndex = edge.zIndex,
@@ -68,43 +67,44 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
     targetY,
     sourcePosition,
     targetPosition,
-  } = useStore(
-    useCallback(
-      (store) => {
-        const sourceNode = store.nodeLookup.get(edge.source);
-        const targetNode = store.nodeLookup.get(edge.target);
+  } = useReactFlowStore(
+    useShallow(
+      useCallback(
+        (store) => {
+          const sourceNode = store.nodeLookup.get(edge.source);
+          const targetNode = store.nodeLookup.get(edge.target);
 
-        if (!sourceNode || !targetNode) {
-          return nullPosition;
-        }
+          if (!sourceNode || !targetNode) {
+            return nullPosition;
+          }
 
-        const edgePosition = getEdgePosition({
-          id,
-          sourceNode,
-          targetNode,
-          sourceHandle: edge.sourceHandle || null,
-          targetHandle: edge.targetHandle || null,
-          connectionMode: store.connectionMode,
-          onError,
-        });
+          const edgePosition = getEdgePosition({
+            id,
+            sourceNode,
+            targetNode,
+            sourceHandle: edge.sourceHandle || null,
+            targetHandle: edge.targetHandle || null,
+            connectionMode: store.connectionMode,
+            onError,
+          });
 
-        const zIndex = getElevatedEdgeZIndex({
-          selected: edge.selected,
-          zIndex: edge.zIndex,
-          sourceNode,
-          targetNode,
-          elevateOnSelect: store.elevateEdgesOnSelect,
-          zIndexMode: store.zIndexMode,
-        });
+          const zIndex = getElevatedEdgeZIndex({
+            selected: edge.selected,
+            zIndex: edge.zIndex,
+            sourceNode,
+            targetNode,
+            elevateOnSelect: store.elevateEdgesOnSelect,
+            zIndexMode: store.zIndexMode,
+          });
 
-        return {
-          ...(edgePosition || nullPosition),
-          zIndex,
-        };
-      },
-      [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex]
-    ),
-    shallow
+          return {
+            ...(edgePosition || nullPosition),
+            zIndex,
+          };
+        },
+        [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex, id, onError]
+      )
+    )
   );
 
   const markerStartUrl = useMemo(

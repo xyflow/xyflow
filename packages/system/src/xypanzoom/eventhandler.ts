@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { D3ZoomEvent } from 'd3-zoom';
 import { pointer } from 'd3-selection';
+import type { ZoomTransform } from 'd3-zoom';
 
 import {
   PanOnScrollMode,
@@ -14,7 +14,8 @@ import {
 } from '../types';
 import { isRightClickPan, isWrappedWithClass, transformToViewport, wheelDelta } from './utils';
 import { isMacOs } from '../utils';
-import { ZoomPanValues } from './XYPanZoom';
+import { type D3ZoomInputEvent, type XYFlowSourceEvent } from '../utils/events';
+import { type ZoomPanValues } from './XYPanZoom';
 
 export type PanOnScrollParams = {
   zoomPanValues: ZoomPanValues;
@@ -55,7 +56,7 @@ export type PanZoomEndParams = {
   panOnScroll: boolean;
   onDraggingChange: (isDragging: boolean) => void;
   onPanZoomEnd?: OnPanZoom;
-  onPaneContextMenu?: (event: any) => void;
+  onPaneContextMenu?: (event: MouseEvent) => void;
 };
 
 export function createPanOnScrollHandler({
@@ -70,7 +71,7 @@ export function createPanOnScrollHandler({
   onPanZoom,
   onPanZoomEnd,
 }: PanOnScrollParams) {
-  return (event: any) => {
+  return (event: WheelEvent) => {
     if (isWrappedWithClass(event, noWheelClassName)) {
       if (event.ctrlKey) {
         event.preventDefault(); // stop native page zoom for pinch zooming
@@ -80,7 +81,7 @@ export function createPanOnScrollHandler({
     event.preventDefault();
     event.stopImmediatePropagation();
 
-    const currentZoom = d3Selection.property('__zoom').k || 1;
+    const currentZoom = (d3Selection.property('__zoom') as ZoomTransform).k || 1;
 
     // macos sets ctrlKey=true for pinch gesture on a trackpad
     if (event.ctrlKey && zoomOnPinch) {
@@ -115,7 +116,7 @@ export function createPanOnScrollHandler({
       { internal: true }
     );
 
-    const nextViewport = transformToViewport(d3Selection.property('__zoom'));
+    const nextViewport = transformToViewport(d3Selection.property('__zoom') as ZoomTransform);
 
     clearTimeout(zoomPanValues.panScrollTimeout);
 
@@ -141,7 +142,7 @@ export function createPanOnScrollHandler({
 }
 
 export function createZoomOnScrollHandler({ noWheelClassName, preventScrolling, d3ZoomHandler }: ZoomOnScrollParams) {
-  return function (this: Element, event: any, d: unknown) {
+  return function (this: Element, event: D3ZoomInputEvent, d: unknown) {
     const isWheel = event.type === 'wheel';
     // we still want to enable pinch zooming even if preventScrolling is set to false
     const preventZoom = !preventScrolling && isWheel && !event.ctrlKey;
@@ -163,25 +164,25 @@ export function createZoomOnScrollHandler({ noWheelClassName, preventScrolling, 
 }
 
 export function createPanZoomStartHandler({ zoomPanValues, onDraggingChange, onPanZoomStart }: PanZoomStartParams) {
-  return (event: D3ZoomEvent<HTMLDivElement, any>) => {
-    if (event.sourceEvent?.internal) {
+  return (event: D3ZoomEvent<HTMLDivElement, unknown>) => {
+    const sourceEvent = event.sourceEvent as XYFlowSourceEvent | null;
+
+    if (!sourceEvent || sourceEvent.internal) {
       return;
     }
 
     const viewport = transformToViewport(event.transform);
 
     // we need to remember it here, because it's always 0 in the "zoom" event
-    zoomPanValues.mouseButton = event.sourceEvent?.button || 0;
+    zoomPanValues.mouseButton = 'button' in sourceEvent ? sourceEvent.button : 0;
     zoomPanValues.isZoomingOrPanning = true;
     zoomPanValues.prevViewport = viewport;
 
-    if (event.sourceEvent?.type === 'mousedown') {
+    if (sourceEvent.type === 'mousedown') {
       onDraggingChange(true);
     }
 
-    if (onPanZoomStart) {
-      onPanZoomStart?.(event.sourceEvent as MouseEvent | TouchEvent, viewport);
-    }
+    onPanZoomStart?.(sourceEvent, viewport);
   };
 }
 
@@ -192,16 +193,18 @@ export function createPanZoomHandler({
   onTransformChange,
   onPanZoom,
 }: PanZoomParams) {
-  return (event: D3ZoomEvent<HTMLDivElement, any>) => {
+  return (event: D3ZoomEvent<HTMLDivElement, unknown>) => {
+    const sourceEvent = event.sourceEvent as XYFlowSourceEvent | null;
+
     zoomPanValues.usedRightMouseButton = !!(
       onPaneContextMenu && isRightClickPan(panOnDrag, zoomPanValues.mouseButton ?? 0)
     );
 
-    if (!event.sourceEvent?.sync) {
+    if (!sourceEvent?.sync) {
       onTransformChange([event.transform.x, event.transform.y, event.transform.k]);
     }
 
-    if (onPanZoom && !event.sourceEvent?.internal) {
+    if (onPanZoom && !sourceEvent?.internal) {
       onPanZoom?.(event.sourceEvent as MouseEvent | TouchEvent, transformToViewport(event.transform));
     }
   };
@@ -215,8 +218,10 @@ export function createPanZoomEndHandler({
   onPanZoomEnd,
   onPaneContextMenu,
 }: PanZoomEndParams) {
-  return (event: D3ZoomEvent<HTMLDivElement, any>) => {
-    if (event.sourceEvent?.internal) {
+  return (event: D3ZoomEvent<HTMLDivElement, unknown>) => {
+    const sourceEvent = event.sourceEvent as XYFlowSourceEvent | null;
+
+    if (sourceEvent?.internal) {
       return;
     }
 
@@ -228,7 +233,7 @@ export function createPanZoomEndHandler({
       !zoomPanValues.usedRightMouseButton &&
       event.sourceEvent
     ) {
-      onPaneContextMenu(event.sourceEvent);
+      onPaneContextMenu(event.sourceEvent as MouseEvent);
     }
     zoomPanValues.usedRightMouseButton = false;
 

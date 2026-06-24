@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import { createStore } from '../store';
+import { type createStore } from '../store';
 
 const StoreContext = createContext<ReturnType<typeof createStore> | null>(null);
 

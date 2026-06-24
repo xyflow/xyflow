@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import type { InternalNode } from '../../types';
-import { useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 
 /**
  * Hook to handle the resize observation + internal updates for the passed node.
@@ -20,7 +20,7 @@ export function useNodeObserver({
   hasDimensions: boolean;
   resizeObserver: ResizeObserver | null;
 }) {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const nodeRef = useRef<HTMLDivElement | null>(null);
   const observedNode = useRef<HTMLDivElement | null>(null);
   const prevSourcePosition = useRef(node.sourcePosition);

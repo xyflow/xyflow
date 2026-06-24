@@ -7,7 +7,7 @@ import {
   SnapGrid,
 } from '@xyflow/system';
 
-import { useStoreApi } from '../hooks/useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 import type { ViewportHelperFunctions } from '../types';
 
 /**
@@ -17,7 +17,7 @@ import type { ViewportHelperFunctions } from '../types';
  * @returns viewport helper functions
  */
 const useViewportHelper = (): ViewportHelperFunctions => {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
 
   return useMemo<ViewportHelperFunctions>(() => {
     return {

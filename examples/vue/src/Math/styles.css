@@ -1,0 +1,123 @@
+.math-flow {
+  background-color: #edf2f7;
+  height: 100%;
+  width: 100%;
+}
+
+.vue-flow__handle {
+  height: 24px;
+  width: 10px;
+  background: #aaa;
+  border-radius: 4px
+}
+
+.vue-flow__edges path {
+  stroke-width: 3;
+}
+
+.vue-flow__node-value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.vue-flow__node-value.selected {
+  box-shadow: 0 0 0 2px #ec4899;
+}
+
+.vue-flow__node-value input {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.vue-flow__node-value input:focus {
+  outline: none;
+}
+
+.vue-flow__node-value .vue-flow__handle {
+  background-color: #ec4899;
+}
+
+.vue-flow__node-operator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.vue-flow__node-operator.selected {
+  box-shadow: 0 0 0 2px #0EA5E9;
+}
+
+.vue-flow__node-operator .buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.vue-flow__node-operator button {
+  border: none;
+  cursor: pointer;
+  background-color: #4a5568;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vue-flow__node-operator button:hover {
+  background-color: #0EA5E9;
+  transition: background-color 0.2s;
+}
+
+.vue-flow__node-operator button.selected {
+  background-color: #0EA5E9;
+}
+
+.vue-flow__node-operator .vue-flow__handle[data-handleid="target-a"] {
+  top: 25%;
+}
+
+.vue-flow__node-operator .vue-flow__handle[data-handleid="target-b"] {
+  top: 75%;
+}
+
+.vue-flow__node-operator .vue-flow__handle {
+  background-color: #0EA5E9;
+}
+
+.vue-flow__node-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.vue-flow__node-result.selected {
+  box-shadow: 0 0 0 2px #5EC697;
+}
+
+.vue-flow__node-result .calculation {
+  display: flex;
+  gap: 8px;
+  font-size: 24px;
+}

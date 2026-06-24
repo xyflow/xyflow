@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
-import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
+import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type XYMinimapInstance } from '@xyflow/system';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import { Panel } from '../../components/Panel';
 import type { ReactFlowState, Node } from '../../types';
 
@@ -17,20 +14,24 @@ const defaultHeight = 150;
 
 const filterHidden = (node: Node) => !node.hidden;
 
-const selector = (s: ReactFlowState) => {
-  const viewBB: Rect = {
+const viewBBSelector = (s: ReactFlowState) => {
+  return {
     x: -s.transform[0] / s.transform[2],
     y: -s.transform[1] / s.transform[2],
     width: s.width / s.transform[2],
     height: s.height / s.transform[2],
   };
+};
 
+const boundingRectSelector = (s: ReactFlowState) => {
+  const viewBB = viewBBSelector(s);
+  return s.nodeLookup.size > 0
+    ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
+    : viewBB;
+};
+
+const selector = (s: ReactFlowState) => {
   return {
-    viewBB,
-    boundingRect:
-      s.nodeLookup.size > 0
-        ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
-        : viewBB,
     rfId: s.rfId,
     panZoom: s.panZoom,
     translateExtent: s.translateExtent,
@@ -68,12 +69,15 @@ function MiniMapComponent<NodeType extends Node = Node>({
   zoomStep = 1,
   offsetScale = 5,
 }: MiniMapProps<NodeType>) {
-  const store = useStoreApi<NodeType>();
+  const store = useReactFlowStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useStore(
-    selector,
-    shallow
+  const { rfId, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useReactFlowStore(
+    useShallow(selector)
   );
+
+  const viewBB = useReactFlowStore(useShallow(viewBBSelector));
+  const boundingRect = useReactFlowStore(useShallow(boundingRectSelector));
+
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const scaledWidth = boundingRect.width / elementWidth;
@@ -105,7 +109,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         minimapInstance.current?.destroy();
       };
     }
-  }, [panZoom]);
+  }, [panZoom, store]);
 
   useEffect(() => {
     minimapInstance.current?.update({
@@ -126,12 +130,16 @@ function MiniMapComponent<NodeType extends Node = Node>({
       }
     : undefined;
 
-  const onSvgNodeClick = onNodeClick
-    ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
-        onNodeClick(event, node);
-      }, [])
-    : undefined;
+  const onSvgNodeClick = useCallback(
+    (event: MouseEvent, nodeId: string) => {
+      const internalNode = store.getState().nodeLookup.get(nodeId);
+
+      if (internalNode && onNodeClick) {
+        onNodeClick(event, internalNode.internals.userNode);
+      }
+    },
+    [onNodeClick, store]
+  );
 
   const _ariaLabel = ariaLabel ?? ariaLabelConfig['minimap.ariaLabel'];
 
@@ -167,7 +175,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         {_ariaLabel && <title id={labelledBy}>{_ariaLabel}</title>}
 
         <MiniMapNodes<NodeType>
-          onClick={onSvgNodeClick}
+          onClick={onNodeClick ? onSvgNodeClick : undefined}
           nodeColor={nodeColor}
           nodeStrokeColor={nodeStrokeColor}
           nodeBorderRadius={nodeBorderRadius}
