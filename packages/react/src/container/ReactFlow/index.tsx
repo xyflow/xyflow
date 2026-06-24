@@ -146,6 +146,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     width,
     height,
     colorMode = 'light',
+    colorModeSSR = 'light',
     debug,
     onScroll,
     ariaLabelConfig,
@@ -155,7 +156,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   ref: ForwardedRef<HTMLDivElement>
 ) {
   const rfId = id || '1';
-  const colorModeClassName = useColorModeClass(colorMode);
+  const colorModeClassName = useColorModeClass(colorMode, colorModeSSR);
 
   // Undo scroll events, preventing viewport from shifting when nodes outside of it are focused
   const wrapperOnScroll = useCallback(

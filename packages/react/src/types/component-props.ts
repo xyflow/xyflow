@@ -19,6 +19,7 @@ import type {
   SelectionMode,
   OnError,
   ColorMode,
+  ColorModeClass,
   SnapGrid,
   OnReconnect,
   AriaLabelConfig,
@@ -688,6 +689,8 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @example 'system' | 'light' | 'dark'
    */
   colorMode?: ColorMode;
+  /** Fallback color mode for SSR if colorMode is set to 'system'. @default 'light' */
+  colorModeSSR?: ColorModeClass;
   /**
    * If set `true`, some debug information will be logged to the console like which events are fired.
    * @default false
