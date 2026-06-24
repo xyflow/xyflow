@@ -38,7 +38,6 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
       [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
     ],
     nodeOrigin: [0, 0],
-    colorMode: 'light',
 
     selectionMode: SelectionMode.Full,
     paneDragging: false,

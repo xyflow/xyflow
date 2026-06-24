@@ -45,8 +45,11 @@ const initialEdges: Edge[] = [
   },
 ];
 
+type PageTheme = 'system' | ColorMode;
+
 const ColorModeFlow = () => {
-  const [colorMode, setColorMode] = useState<ColorMode>('light');
+  const [pageTheme, setPageTheme] = useState<PageTheme>('system');
+  const [forceColorMode, setForceColorMode] = useState<ColorMode | undefined>(undefined);
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -58,7 +61,23 @@ const ColorModeFlow = () => {
     [setEdges]
   );
 
-  const onChange: ChangeEventHandler<HTMLSelectElement> = (evt) => setColorMode(evt.target.value as ColorMode);
+  const onPageThemeChange: ChangeEventHandler<HTMLSelectElement> = (evt) => {
+    const value = evt.target.value as PageTheme;
+
+    setPageTheme(value);
+
+    if (value === 'system') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', value);
+    }
+  };
+
+  const onForceColorModeChange: ChangeEventHandler<HTMLSelectElement> = (evt) => {
+    const value = evt.target.value;
+
+    setForceColorMode(value === 'none' ? undefined : (value as ColorMode));
+  };
 
   return (
     <ReactFlow
@@ -67,7 +86,7 @@ const ColorModeFlow = () => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      colorMode={colorMode}
+      forceColorMode={forceColorMode}
       fitView
     >
       <MiniMap />
@@ -75,11 +94,22 @@ const ColorModeFlow = () => {
       <Controls />
 
       <Panel position="top-right">
-        <select onChange={onChange} data-testid="colormode-select">
-          <option value="light">light</option>
-          <option value="dark">dark</option>
-          <option value="system">system</option>
-        </select>
+        <label>
+          Page theme (html data-theme)
+          <select onChange={onPageThemeChange} value={pageTheme} data-testid="colormode-select">
+            <option value="system">system</option>
+            <option value="light">light</option>
+            <option value="dark">dark</option>
+          </select>
+        </label>
+        <label>
+          Force color mode (flow only)
+          <select onChange={onForceColorModeChange} data-testid="force-colormode-select">
+            <option value="none">none</option>
+            <option value="light">light</option>
+            <option value="dark">dark</option>
+          </select>
+        </label>
       </Panel>
     </ReactFlow>
   );

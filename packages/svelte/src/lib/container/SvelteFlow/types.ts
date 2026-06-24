@@ -370,13 +370,10 @@ export type SvelteFlowProps<
      */
     defaultEdgeOptions?: DefaultEdgeOptions;
     /**
-     * Controls color scheme used for styling the flow
-     * @default 'system'
-     * @example 'system' | 'light' | 'dark'
+     * Forces a color scheme on the flow container via `data-theme`, overriding the system default.
+     * Page-level theming is typically done by setting `data-theme` on `<html>`.
      */
-    colorMode?: ColorMode;
-    /** Fallback color mode for SSR if colorMode is set to 'system' */
-    colorModeSSR?: Omit<ColorMode, 'system'>;
+    forceColorMode?: ColorMode;
     /** Class to be applied to the flow container */
     class?: ClassValue;
     /** Styles to be applied to the flow container */

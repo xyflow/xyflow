@@ -8,7 +8,7 @@
   let {
     width,
     height,
-    colorMode,
+    forceColorMode,
     domNode = $bindable(),
     clientWidth = $bindable(),
     clientHeight = $bindable(),
@@ -17,7 +17,7 @@
   }: {
     width?: number;
     height?: number;
-    colorMode?: string;
+    forceColorMode?: string;
     domNode: HTMLDivElement | null;
     clientWidth?: number;
     clientHeight?: number;
@@ -34,7 +34,7 @@
     class: className,
     nodeTypes,
     edgeTypes,
-    colorMode: _colorMode,
+    forceColorMode: _forceColorMode,
     isValidConnection,
     onmove,
     onmovestart,
@@ -79,7 +79,6 @@
     onlyRenderVisibleElements,
     autoPanOnConnect,
     autoPanOnNodeDrag,
-    colorModeSSR,
     defaultEdgeOptions,
     elevateNodesOnSelect,
     elevateEdgesOnSelect,
@@ -123,7 +122,7 @@
   bind:clientWidth
   style:width={toPxString(width)}
   style:height={toPxString(height)}
-  class={['svelte-flow', 'svelte-flow__container', colorMode, className]}
+  class={['svelte-flow', 'svelte-flow__container', forceColorMode, className]}
   data-testid="svelte-flow__wrapper"
   role="application"
   onscroll={wrapperOnScroll}

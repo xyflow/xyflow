@@ -147,8 +147,8 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
   nodeExtent?: CoordinateExtent;
   /** origin of all nodes relative to their position — `[0, 0]` top-left, `[0.5, 0.5]` center, `[1, 1]` bottom-right */
   nodeOrigin?: NodeOrigin;
-  /** light/dark/system — applies the resolved `light`/`dark` class to the flow container; `system` follows `prefers-color-scheme` @default 'light' */
-  colorMode?: ColorMode;
+  /** Forces a color scheme on the flow container via `data-theme`. Page-level theming is typically done by setting `data-theme` on `<html>`. */
+  forceColorMode?: ColorMode;
   /** color of edge markers; pass `null` to drive the arrowhead color from the `--xy-edge-stroke` CSS variable @default '#b1b1b7' */
   defaultMarkerColor?: string | null;
   zoomOnScroll?: boolean;

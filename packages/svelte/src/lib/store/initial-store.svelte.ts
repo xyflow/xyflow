@@ -29,7 +29,6 @@ import {
   type ConnectionLookup,
   type ParentLookup,
   pointToRendererPoint,
-  type ColorModeClass,
   type Transform,
   fitViewport,
   type Handle,
@@ -72,7 +71,6 @@ import type {
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
-import { MediaQuery } from 'svelte/reactivity';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
 
 export const initialNodeTypes = {
@@ -442,18 +440,6 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       this.fitViewOptions = undefined;
       this.fitViewResolver = null;
     };
-
-    _prefersDark = new MediaQuery(
-      '(prefers-color-scheme: dark)',
-      signals.props.colorModeSSR === 'dark'
-    );
-    colorMode: ColorModeClass = $derived(
-      signals.props.colorMode === 'system'
-        ? this._prefersDark.current
-          ? 'dark'
-          : 'light'
-        : (signals.props.colorMode ?? 'light')
-    );
 
     constructor() {
       if (process.env.NODE_ENV === 'development') {
