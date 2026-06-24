@@ -13,11 +13,11 @@
 	let { id }: NodeProps<Node<{ text: string }>> = $props();
 
 	const { updateNodeData } = useSvelteFlow();
-	const connections = useNodeConnections({
+	const connections = useNodeConnections(() => ({
 		handleType: 'target'
-	});
+	}));
 
-	let nodesData = $derived(useNodesData<MyNode>(connections.current[0]?.source));
+	const nodesData = useNodesData<MyNode>(() => ({ nodeIds: connections.current[0]?.source }));
 
 	$effect.pre(() => {
 		const text =

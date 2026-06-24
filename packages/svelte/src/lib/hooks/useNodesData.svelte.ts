@@ -7,17 +7,17 @@ import { useStore } from '$lib/store';
  * Hook for receiving data of one or multiple nodes
  *
  * @public
- * @param nodeId - The id (or ids) of the node to get the data from
+ * @param params - A function that returns the node id(s) to get the data from
  * @returns An array of data objects
  */
 export function useNodesData<NodeType extends Node = Node>(
-  nodeId: string
+  params: () => { nodeIds: string | null | undefined }
 ): { current: DistributivePick<NodeType, 'id' | 'data' | 'type'> | null };
 export function useNodesData<NodeType extends Node = Node>(
-  nodeIds: string[]
+  params: () => { nodeIds: string[] }
 ): { current: DistributivePick<NodeType, 'id' | 'data' | 'type'>[] };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useNodesData(nodeIds: any): any {
+export function useNodesData(params: () => { nodeIds: any }): any {
   const { nodes, nodeLookup } = $derived(useStore());
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let prevNodesData: any[] = [];
@@ -26,9 +26,10 @@ export function useNodesData(nodeIds: any): any {
   const nodeData = $derived.by(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     nodes;
+    const { nodeIds } = params();
     const nextNodesData = [];
     const isArrayOfIds = Array.isArray(nodeIds);
-    const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
+    const _nodeIds = isArrayOfIds ? nodeIds : nodeIds != null ? [nodeIds] : [];
 
     for (const nodeId of _nodeIds) {
       const node = nodeLookup.get(nodeId)?.internals.userNode;
