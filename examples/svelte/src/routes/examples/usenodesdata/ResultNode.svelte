@@ -4,30 +4,29 @@
 		Position,
 		useNodeConnections,
 		useNodesData,
-		type NodeProps,
-		type Node
+		type NodeProps
 	} from '@xyflow/svelte';
 	import { isTextNode, type MyNode } from './+page.svelte';
 
 	let { id }: NodeProps = $props();
 
-	const connections = useNodeConnections({
+	const connections = useNodeConnections(() => ({
 		id: id,
 		handleType: 'target'
-	});
+	}));
 
-	useNodeConnections({
+	useNodeConnections(() => ({
 		onConnect: (connection) => {
 			console.log('Connection made:', connection);
 		},
 		onDisconnect: (connection) => {
 			console.log('Connection disconnected:', connection);
 		}
-	});
+	}));
 
-	let nodeData = $derived(
-		useNodesData<MyNode>(connections.current.map((connection) => connection.source))
-	);
+	const nodeData = useNodesData<MyNode>(() => ({
+		nodeIds: connections.current.map((connection) => connection.source)
+	}));
 	let textNodes = $derived(nodeData.current.filter(isTextNode));
 </script>
 
@@ -35,7 +34,7 @@
 	<Handle type="target" position={Position.Left} />
 	<div>incoming texts:</div>
 
-	{#each textNodes as textNode}
+	{#each textNodes as textNode (textNode.id)}
 		<div>{textNode.data.text}</div>
 	{/each}
 </div>
