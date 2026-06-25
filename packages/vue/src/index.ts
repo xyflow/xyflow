@@ -86,7 +86,6 @@ export {
   type Align,
   type AriaLabelConfig,
   type ColorMode,
-  type ColorModeClass,
   type Connection,
   ConnectionLineType,
   ConnectionMode,

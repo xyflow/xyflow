@@ -86,7 +86,7 @@
 	]);
 </script>
 
-<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView colorMode="dark">
+<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView forceColorMode="dark">
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />

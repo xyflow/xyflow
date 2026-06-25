@@ -79,7 +79,6 @@ export {
   type Transform,
   type CoordinateExtent,
   type ColorMode,
-  type ColorModeClass,
   type HandleType,
   type ShouldResize,
   type OnResizeStart,

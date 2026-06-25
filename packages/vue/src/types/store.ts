@@ -1,7 +1,6 @@
 import type { KeyFilter } from '@vueuse/core';
 import type {
   AriaLabelConfig,
-  ColorMode,
   Connection,
   ConnectionMode,
   CoordinateExtent,
@@ -77,7 +76,6 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   translateExtent: CoordinateExtent;
   nodeExtent: CoordinateExtent;
   nodeOrigin: NodeOrigin;
-  colorMode: ColorMode;
 
   /** viewport dimensions - do not change! */
   readonly dimensions: Dimensions;

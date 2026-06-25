@@ -6,7 +6,6 @@ import { A11yDescriptions } from '../../components/A11yDescriptions';
 import { Attribution } from '../../components/Attribution';
 import { SelectionListener } from '../../components/SelectionListener';
 import { StoreUpdater } from '../../components/StoreUpdater';
-import { useColorModeClass } from '../../hooks/useColorModeClass';
 import { GraphView } from '../GraphView';
 import { Wrapper } from './Wrapper';
 import type { Edge, Node, ReactFlowProps } from '../../types';
@@ -145,7 +144,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     onViewportChange,
     width,
     height,
-    colorMode = 'light',
+    forceColorMode,
     debug,
     onScroll,
     ariaLabelConfig,
@@ -155,7 +154,6 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   ref: ForwardedRef<HTMLDivElement>
 ) {
   const rfId = id || '1';
-  const colorModeClassName = useColorModeClass(colorMode);
 
   // Undo scroll events, preventing viewport from shifting when nodes outside of it are focused
   const wrapperOnScroll = useCallback(
@@ -173,7 +171,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
       onScroll={wrapperOnScroll}
       style={{ ...style, ...wrapperStyle }}
       ref={ref}
-      className={cc(['react-flow', className, colorModeClassName])}
+      className={cc(['react-flow', forceColorMode, className])}
       id={id}
       role="application"
     >

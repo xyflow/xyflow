@@ -1,5 +1,17 @@
 import type { KeyFilter } from '@vueuse/core';
-import type { AriaLabelConfig, ColorMode, Connection, ConnectionMode, CoordinateExtent, FitViewOptionsBase, PanOnScrollMode, SelectionMode, SnapGrid, Viewport, ZIndexMode } from '@xyflow/system';
+import type {
+  AriaLabelConfig,
+  ColorMode,
+  Connection,
+  ConnectionMode,
+  CoordinateExtent,
+  FitViewOptionsBase,
+  PanOnScrollMode,
+  SelectionMode,
+  SnapGrid,
+  Viewport,
+  ZIndexMode,
+} from '@xyflow/system';
 import type { CSSProperties } from 'vue';
 import type { VueFlowError } from '../utils';
 import type { EdgeChange, NodeChange } from './changes';
@@ -40,42 +52,42 @@ export interface CustomThemeVars {
  * `@xyflow/react`/`@xyflow/svelte`). Set the un-suffixed var to override; the stylesheet falls back to
  * the shipped `--xy-*-default` value (`var(--xy-x, var(--xy-x-default))`).
  */
-export type CSSVars
-  = | '--xy-edge-stroke'
-    | '--xy-edge-stroke-width'
-    | '--xy-edge-stroke-selected'
-    | '--xy-connectionline-stroke'
-    | '--xy-connectionline-stroke-width'
-    | '--xy-attribution-background-color'
-    | '--xy-minimap-background-color'
-    | '--xy-minimap-mask-background-color'
-    | '--xy-minimap-mask-stroke-color'
-    | '--xy-minimap-mask-stroke-width'
-    | '--xy-minimap-node-background-color'
-    | '--xy-minimap-node-stroke-color'
-    | '--xy-minimap-node-stroke-width'
-    | '--xy-background-color'
-    | '--xy-background-pattern-color'
-    | '--xy-resize-background-color'
-    | '--xy-node-color'
-    | '--xy-node-border'
-    | '--xy-node-border-selected'
-    | '--xy-node-background-color'
-    | '--xy-node-boxshadow-hover'
-    | '--xy-node-boxshadow-selected'
-    | '--xy-node-border-radius'
-    | '--xy-handle-background-color'
-    | '--xy-handle-border-color'
-    | '--xy-selection-background-color'
-    | '--xy-selection-border'
-    | '--xy-controls-button-background-color'
-    | '--xy-controls-button-background-color-hover'
-    | '--xy-controls-button-color'
-    | '--xy-controls-button-color-hover'
-    | '--xy-controls-button-border-color'
-    | '--xy-controls-box-shadow'
-    | '--xy-edge-label-background-color'
-    | '--xy-edge-label-color';
+export type CSSVars =
+  | '--xy-edge-stroke'
+  | '--xy-edge-stroke-width'
+  | '--xy-edge-stroke-selected'
+  | '--xy-connectionline-stroke'
+  | '--xy-connectionline-stroke-width'
+  | '--xy-attribution-background-color'
+  | '--xy-minimap-background-color'
+  | '--xy-minimap-mask-background-color'
+  | '--xy-minimap-mask-stroke-color'
+  | '--xy-minimap-mask-stroke-width'
+  | '--xy-minimap-node-background-color'
+  | '--xy-minimap-node-stroke-color'
+  | '--xy-minimap-node-stroke-width'
+  | '--xy-background-color'
+  | '--xy-background-pattern-color'
+  | '--xy-resize-background-color'
+  | '--xy-node-color'
+  | '--xy-node-border'
+  | '--xy-node-border-selected'
+  | '--xy-node-background-color'
+  | '--xy-node-boxshadow-hover'
+  | '--xy-node-boxshadow-selected'
+  | '--xy-node-border-radius'
+  | '--xy-handle-background-color'
+  | '--xy-handle-border-color'
+  | '--xy-selection-background-color'
+  | '--xy-selection-border'
+  | '--xy-controls-button-background-color'
+  | '--xy-controls-button-background-color-hover'
+  | '--xy-controls-button-color'
+  | '--xy-controls-button-color-hover'
+  | '--xy-controls-button-border-color'
+  | '--xy-controls-box-shadow'
+  | '--xy-edge-label-background-color'
+  | '--xy-edge-label-color';
 
 export type ThemeVars = { [key in CSSVars]?: CSSProperties['color'] };
 export type Styles = CSSProperties & ThemeVars & CustomThemeVars;
@@ -147,8 +159,8 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
   nodeExtent?: CoordinateExtent;
   /** origin of all nodes relative to their position — `[0, 0]` top-left, `[0.5, 0.5]` center, `[1, 1]` bottom-right */
   nodeOrigin?: NodeOrigin;
-  /** light/dark/system — applies the resolved `light`/`dark` class to the flow container; `system` follows `prefers-color-scheme` @default 'light' */
-  colorMode?: ColorMode;
+  /** Forces a color scheme on the flow container via class name. Page-level theming is typically done by setting `data-theme` on `<html>`. */
+  forceColorMode?: ColorMode;
   /** color of edge markers; pass `null` to drive the arrowhead color from the `--xy-edge-stroke` CSS variable @default '#b1b1b7' */
   defaultMarkerColor?: string | null;
   zoomOnScroll?: boolean;
@@ -294,22 +306,32 @@ export interface FlowEmits<NodeType extends Node = Node, EdgeType extends Edge =
 // because `type` is OPTIONAL on Node/Edge (`type?:`), so an `Extract` against a required `{ type: T }` is
 // always `never`. For a generic `Node`/`Edge` (`type: string`) every member matches, so the slot stays broad;
 // for a discriminated union it narrows to the matching variant.
-type NodeByType<NodeType extends Node, T extends string> = NodeType extends any ? (T extends NonNullable<NodeType['type']> ? NodeType : never) : never;
-type EdgeByType<EdgeType extends Edge, T extends string> = EdgeType extends any ? (T extends NonNullable<EdgeType['type']> ? EdgeType : never) : never;
+type NodeByType<NodeType extends Node, T extends string> = NodeType extends any
+  ? T extends NonNullable<NodeType['type']>
+    ? NodeType
+    : never
+  : never;
+type EdgeByType<EdgeType extends Edge, T extends string> = EdgeType extends any
+  ? T extends NonNullable<EdgeType['type']>
+    ? EdgeType
+    : never
+  : never;
 
 export type NodeSlots<NodeType extends Node = Node> = Partial<
-  & { [T in NonNullable<NodeType['type']> as `node-${T}`]: (nodeProps: NodeProps<NodeByType<NodeType, T>>) => any }
-  & Record<`node-${string}`, (nodeProps: NodeProps<NodeType>) => any>
+  {
+    [T in NonNullable<NodeType['type']> as `node-${T}`]: (nodeProps: NodeProps<NodeByType<NodeType, T>>) => any;
+  } & Record<`node-${string}`, (nodeProps: NodeProps<NodeType>) => any>
 >;
 
 export type EdgeSlots<EdgeType extends Edge = Edge> = Partial<
-  & { [T in NonNullable<EdgeType['type']> as `edge-${T}`]: (edgeProps: EdgeProps<EdgeByType<EdgeType, T>>) => any }
-  & Record<`edge-${string}`, (edgeProps: EdgeProps<EdgeType>) => any>
+  {
+    [T in NonNullable<EdgeType['type']> as `edge-${T}`]: (edgeProps: EdgeProps<EdgeByType<EdgeType, T>>) => any;
+  } & Record<`edge-${string}`, (edgeProps: EdgeProps<EdgeType>) => any>
 >;
 
-export type FlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType>
-  & EdgeSlots<EdgeType> & {
+export type FlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType> &
+  EdgeSlots<EdgeType> & {
     'connection-line'?: (connectionLineProps: ConnectionLineProps<NodeType>) => any;
     'zoom-pane'?: () => any;
-    'default'?: () => any;
+    default?: () => any;
   };

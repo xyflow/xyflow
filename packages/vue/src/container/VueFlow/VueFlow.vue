@@ -5,7 +5,6 @@ import type { Edge, FlowEmits, FlowProps, FlowSlots, Node, VueFlowInstance, VueF
 import { inject, onUnmounted, provide } from 'vue';
 import A11yDescriptions from '../../components/A11y/A11yDescriptions.vue';
 import { storeToRefs } from '../../composables/storeToRefs';
-import { useColorModeClass } from '../../composables/useColorModeClass';
 import { useCreateVueFlow } from '../../composables/useCreateVueFlow';
 import { useOnInitHandler } from '../../composables/useOnInitHandler';
 import { useSelectionChange } from '../../composables/useSelectionChange';
@@ -31,7 +30,7 @@ const props = withDefaults(defineProps<FlowProps<NodeType, EdgeType>>(), {
   panOnScroll: undefined,
   panOnDrag: undefined,
   autoApplyChanges: undefined,
-  colorMode: undefined,
+  forceColorMode: undefined,
   fitView: undefined,
   fitViewOptions: undefined,
   connectOnClick: undefined,
@@ -78,8 +77,8 @@ const injectedState = inject(VueFlowStateKey, null) as VueFlowState<NodeType, Ed
 // reused store to the hosting `<VueFlow>`'s models is deferred to the multi-instance guard work).
 const ownsStore = !injectedInstance;
 
-const { instance, state }
-  = injectedInstance && injectedState
+const { instance, state } =
+  injectedInstance && injectedState
     ? { instance: injectedInstance, state: injectedState }
     : useCreateVueFlow<NodeType, EdgeType>(props, {
         nodes: modelNodes as unknown as Ref<NodeType[]>,
@@ -101,8 +100,6 @@ useOnInitHandler(instance);
 useSelectionChange(instance);
 
 useStylesLoadedWarning(instance);
-
-const colorModeClass = useColorModeClass(state);
 
 useViewportSync(modelViewport, state);
 
@@ -128,7 +125,7 @@ export default {
 </script>
 
 <template>
-  <div :ref="stateRefs.vueFlowRef" class="vue-flow" :class="colorModeClass">
+  <div :ref="stateRefs.vueFlowRef" class="vue-flow" :class="props.forceColorMode">
     <!-- the `zoom-pane` slot (affected by zooming & panning) renders inside the transformed Viewport via
     the provided `Slots` (see ZoomPaneSlot), not drilled through ZoomPane → Pane → Viewport -->
     <ZoomPane />

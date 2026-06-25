@@ -8,10 +8,6 @@
   --xy-selection-border-default: 1px dotted rgba(155, 155, 155, 0.8);
 }
 
-.xy-flow.dark {
-  --xy-node-color-default: #f8f8f8;
-}
-
 .xy-flow__handle {
   background-color: var(--xy-handle-background-color, var(--xy-handle-background-color-default));
 }
