@@ -685,7 +685,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /** Sets a fixed height for the flow. */
   height?: number;
   /**
-   * Forces a color scheme on the flow container via `data-theme`, overriding the system default.
+   * Forces a color scheme on the flow container via class name, overriding the system default.
    * Page-level theming is typically done by setting `data-theme` on `<html>`.
    */
   forceColorMode?: ColorMode;
