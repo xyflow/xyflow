@@ -3,5 +3,5 @@
 "@xyflow/react": minor
 ---
 
-styles  now live in @layer xyflow
+Exported styles now live in @layer xyflow
   
