@@ -264,6 +264,28 @@ test.describe('Nodes', () => {
 
       await expect(page.locator(`.${FRAMEWORK}-flow__edge`)).toHaveCount(2);
     });
+
+    test('creating a self-loop does not select the source node (#5833)', async ({ page }) => {
+      // dedicated harness with the default nodeDragThreshold (the bug lives in the click path)
+      await page.goto('/tests/generic/edges/selfloop');
+
+      const sourceHandle = page.locator(`.${FRAMEWORK}-flow__handle.source`).and(page.locator('[data-nodeid="A"]'));
+      const targetHandle = page.locator(`.${FRAMEWORK}-flow__handle.target`).and(page.locator('[data-nodeid="A"]'));
+      const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="A"]'));
+
+      await expect(node).toHaveCSS('visibility', 'visible');
+      await expect(page.locator(`.${FRAMEWORK}-flow__edge`)).toHaveCount(0);
+
+      await sourceHandle.hover();
+      await page.mouse.down();
+      await targetHandle.hover();
+      await page.mouse.up();
+
+      // the self-loop edge is created
+      await expect(page.locator(`.${FRAMEWORK}-flow__edge`)).toHaveCount(1);
+      // ...and creating it must not select the node, which would clear the edge's selection
+      await expect(node).not.toHaveClass(/selected/);
+    });
   });
 
   test('hidden=true hides the node', async ({ page }) => {
