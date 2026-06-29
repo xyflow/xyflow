@@ -452,9 +452,6 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       let { positionAbsolute } = node.internals;
 
       if (node.parentId && node.extent === 'parent') {
-        // The parent can be absent from `nodeLookup` (for example it was removed
-        // while a child's ResizeObserver callback still fires). Skip clamping
-        // instead of crashing on `getNodeDimensions(undefined)`. (#5835)
         const parentNode = nodeLookup.get(node.parentId);
         if (parentNode) {
           positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, parentNode);
