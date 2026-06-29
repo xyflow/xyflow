@@ -15,7 +15,8 @@ runs:
     - name: Setup node.js
       uses: actions/setup-node@v6
       with:
-        node-version: '24'
+        # https://github.com/changesets/changesets/issues/2115
+        node-version: '24.16.0'
         registry-url: 'https://registry.npmjs.org'
         package-manager-cache: ${{ inputs.package-manager-cache }}
     - name: Install dependencies
