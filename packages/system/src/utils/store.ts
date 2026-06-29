@@ -452,7 +452,10 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       let { positionAbsolute } = node.internals;
 
       if (node.parentId && node.extent === 'parent') {
-        positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, nodeLookup.get(node.parentId)!);
+        const parentNode = nodeLookup.get(node.parentId);
+        if (parentNode) {
+          positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, parentNode);
+        }
       } else if (extent) {
         positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
       }
