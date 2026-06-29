@@ -130,13 +130,20 @@ export function createPanOnScrollHandler({
       onPanZoomStart?.(event, nextViewport);
     } else {
       onPanZoom?.(event, nextViewport);
-
-      zoomPanValues.panScrollTimeout = setTimeout(() => {
-        onPanZoomEnd?.(event, nextViewport);
-
-        zoomPanValues.isPanScrolling = false;
-      }, 150);
     }
+
+    /*
+     * (re)arm the end timeout on every wheel tick, not only on subsequent ones.
+     * Otherwise a single isolated wheel tick fires onPanZoomStart but never
+     * schedules the end, so onPanZoomEnd is never called and isPanScrolling
+     * stays true forever - which also makes the next gesture skip its own
+     * onPanZoomStart. (#5840)
+     */
+    zoomPanValues.panScrollTimeout = setTimeout(() => {
+      onPanZoomEnd?.(event, nextViewport);
+
+      zoomPanValues.isPanScrolling = false;
+    }, 150);
   };
 }
 
