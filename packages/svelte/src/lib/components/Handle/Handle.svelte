@@ -49,6 +49,7 @@
   let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
   let prevConnections: Map<string, HandleConnection> | null = null;
+  let pointerDownPos: { x: number; y: number } | null = null;
   $effect.pre(() => {
     if (onconnect || ondisconnect) {
       // connectionLookup is not reactive, so we use edges to get notified about updates
@@ -68,6 +69,13 @@
       prevConnections = new Map(connections);
     }
   });
+
+  let isClickConnectSource = $derived(
+    store.clickConnectStartHandle !== null &&
+      store.clickConnectStartHandle.nodeId === nodeId &&
+      store.clickConnectStartHandle.type === type &&
+      store.clickConnectStartHandle.id === handleId
+  );
 
   let [connectionInProgress, connectingFrom, connectingTo, isPossibleTargetHandle, valid] =
     $derived.by(() => {
@@ -113,7 +121,18 @@
   function onpointerdown(event: MouseEvent | TouchEvent) {
     const isMouseTriggered = isMouseEvent(event);
 
-    if (event.currentTarget && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
+    if (
+      isConnectableStart &&
+      event.currentTarget &&
+      ((isMouseTriggered && event.button === 0) || !isMouseTriggered)
+    ) {
+      pointerDownPos = isMouseTriggered
+        ? { x: (event as MouseEvent).clientX, y: (event as MouseEvent).clientY }
+        : {
+            x: (event as TouchEvent).touches[0].clientX,
+            y: (event as TouchEvent).touches[0].clientY
+          };
+
       XYHandle.onPointerDown(event, {
         handleId,
         nodeId,
@@ -143,6 +162,16 @@
   }
 
   function onclick(event: MouseEvent) {
+    if (pointerDownPos) {
+      const dx = event.clientX - pointerDownPos.x;
+      const dy = event.clientY - pointerDownPos.y;
+      const threshold = store.connectionDragThreshold;
+      pointerDownPos = null;
+      if (dx * dx + dy * dy > threshold * threshold) {
+        return;
+      }
+    }
+
     if (!nodeId || (!store.clickConnectStartHandle && !isConnectableStart)) {
       return;
     }
@@ -219,7 +248,9 @@ The Handle component is the part of a node that can be used to connect nodes.
   class:connectable={isConnectable}
   class:connectionindicator={isConnectable &&
     (!connectionInProgress || isPossibleTargetHandle) &&
-    (connectionInProgress || store.clickConnectStartHandle ? isConnectableEnd : isConnectableStart)}
+    (connectionInProgress || store.clickConnectStartHandle
+      ? isConnectableEnd || isClickConnectSource
+      : isConnectableStart)}
   onmousedown={onpointerdown}
   ontouchstart={onpointerdown}
   onclick={store.clickConnect ? onclick : undefined}
