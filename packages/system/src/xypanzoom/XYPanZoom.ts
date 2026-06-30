@@ -54,7 +54,36 @@ export function XYPanZoom({
     isPanScrolling: false,
   };
   const bbox = domNode.getBoundingClientRect();
-  const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
+
+  /*
+   * Cache the pane extent and refresh it from a ResizeObserver instead of letting d3-zoom fall back
+   * to its defaultExtent, which reads `clientWidth`/`clientHeight` and so forces a synchronous layout
+   * on every wheel event. The observer is intentionally never disconnected: destroy() is also called
+   * to pause zooming while a user selection is active, so disconnecting there would leave the cache
+   * stale — it becomes unreachable (and is garbage collected) once the pane unmounts.
+   */
+  let cachedExtent: CoordinateExtent = [
+    [0, 0],
+    [bbox.width, bbox.height],
+  ];
+  const extentResizeObserver =
+    typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver((entries) => {
+          const entry = entries[0];
+          if (entry) {
+            cachedExtent = [
+              [0, 0],
+              [entry.contentRect.width, entry.contentRect.height],
+            ];
+          }
+        })
+      : null;
+  extentResizeObserver?.observe(domNode);
+
+  const d3ZoomInstance = zoom()
+    .extent(() => cachedExtent)
+    .scaleExtent([minZoom, maxZoom])
+    .translateExtent(translateExtent);
   const d3Selection = select(domNode).call(d3ZoomInstance);
 
   setViewportConstrained(
