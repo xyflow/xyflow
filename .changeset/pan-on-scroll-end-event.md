@@ -2,4 +2,4 @@
 "@xyflow/system": patch
 ---
 
-Fix `onPanZoomEnd` not firing (and `onPanZoomStart` being skipped on the next gesture) after a single pan-on-scroll wheel tick
+Always fire `onPanZoomEnd` when `onPanZoomStart` was fired due to a pan-on-scroll wheel tick
