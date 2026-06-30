@@ -56,11 +56,11 @@ export function XYPanZoom({
   const bbox = domNode.getBoundingClientRect();
 
   /*
-   * Cache the pane extent and refresh it from a ResizeObserver instead of letting d3-zoom fall back
-   * to its defaultExtent, which reads `clientWidth`/`clientHeight` and so forces a synchronous layout
-   * on every wheel event. The observer is intentionally never disconnected: destroy() is also called
-   * to pause zooming while a user selection is active, so disconnecting there would leave the cache
-   * stale — it becomes unreachable (and is garbage collected) once the pane unmounts.
+   * Cache the pane extent and refresh it from a ResizeObserver. Otherwise d3-zoom falls back to its
+   * defaultExtent, which reads clientWidth/clientHeight and forces a synchronous layout while panning
+   * and pinching. The observer is never disconnected on purpose: destroy() also runs to pause zooming
+   * during a user selection, so disconnecting there would leave the cache stale. It becomes unreachable
+   * and is garbage collected with the pane on unmount.
    */
   let cachedExtent: CoordinateExtent = [
     [0, 0],
