@@ -1,5 +1,24 @@
 # @xyflow/system
 
+## 0.0.79
+### Patch Changes
+
+
+
+- [#5839](https://github.com/xyflow/xyflow/pull/5839) [`0c0cebc`](https://github.com/xyflow/xyflow/commit/0c0cebc08cc34d2852d1ea429df638732b3edf68) - Use correct fill color for bg pattern in dark mode
+
+
+
+- [#5845](https://github.com/xyflow/xyflow/pull/5845) [`a01bb6b`](https://github.com/xyflow/xyflow/commit/a01bb6bf51e2de4eeee052187f3ce533c0e77754) - Check if parent node is in node lookup before clamp the position to prevent throwing an error.
+
+
+
+- [#5849](https://github.com/xyflow/xyflow/pull/5849) [`9b3f390`](https://github.com/xyflow/xyflow/commit/9b3f390e21c1801832449389b069c4e5a13b4d7f) - Always fire `onPanZoomEnd` when `onPanZoomStart` was fired due to a pan-on-scroll wheel tick
+
+
+
+- [#5837](https://github.com/xyflow/xyflow/pull/5837) [`cdfcbeb`](https://github.com/xyflow/xyflow/commit/cdfcbeb9618437b2e7c35336db157e36a5a0731e) - Check for element existence and type before checking property existence in node/edge typeguards.
+
 ## 0.0.78
 ### Patch Changes
 

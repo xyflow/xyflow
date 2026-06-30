@@ -1,5 +1,19 @@
 # @xyflow/react
 
+## 12.11.2
+### Patch Changes
+
+
+
+- [#5825](https://github.com/xyflow/xyflow/pull/5825) [`5072914`](https://github.com/xyflow/xyflow/commit/5072914791f89d99e4484f1d36c9b6781a0a2c36) - Only create an `XYDrag` instance for draggable nodes.
+
+
+
+- [#5847](https://github.com/xyflow/xyflow/pull/5847) [`742860c`](https://github.com/xyflow/xyflow/commit/742860c2939f1b5cba2fced275487fdaeee8a091) - Stop the `MiniMap` from re-rendering on every store update.
+
+- Updated dependencies [[`0c0cebc`](https://github.com/xyflow/xyflow/commit/0c0cebc08cc34d2852d1ea429df638732b3edf68), [`a01bb6b`](https://github.com/xyflow/xyflow/commit/a01bb6bf51e2de4eeee052187f3ce533c0e77754), [`9b3f390`](https://github.com/xyflow/xyflow/commit/9b3f390e21c1801832449389b069c4e5a13b4d7f), [`cdfcbeb`](https://github.com/xyflow/xyflow/commit/cdfcbeb9618437b2e7c35336db157e36a5a0731e)]:
+  - @xyflow/system@0.0.79
+
 ## 12.11.1
 ### Patch Changes
 
