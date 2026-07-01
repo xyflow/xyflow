@@ -451,6 +451,12 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    */
   panOnDrag?: boolean | number[];
   /**
+   * Mouse buttons that pan the viewport when drag starts on a node or edge, bypassing node drag.
+   * @default [1]
+   * @example [] // use with panOnDrag={[2]} to prevent middle-mouse pan on nodes
+   */
+  forcePanMouseButtons?: number[];
+  /**
    * Minimum zoom level.
    * @default 0.5
    */

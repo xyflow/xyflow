@@ -6,6 +6,7 @@ export type FilterParams = {
   zoomOnScroll: boolean;
   zoomOnPinch: boolean;
   panOnDrag: boolean | number[];
+  forcePanMouseButtons: number[];
   panOnScroll: boolean;
   zoomOnDoubleClick: boolean;
   userSelectionActive: boolean;
@@ -20,6 +21,7 @@ export function createFilter({
   zoomOnScroll,
   zoomOnPinch,
   panOnDrag,
+  forcePanMouseButtons,
   panOnScroll,
   zoomOnDoubleClick,
   userSelectionActive,
@@ -34,8 +36,9 @@ export function createFilter({
     const isWheelEvent = event.type === 'wheel';
 
     if (
-      event.button === 1 &&
+      !userSelectionActive &&
       event.type === 'mousedown' &&
+      forcePanMouseButtons.includes(event.button) &&
       (isWrappedWithClass(event, `${lib}-flow__node`) || isWrappedWithClass(event, `${lib}-flow__edge`))
     ) {
       return true;

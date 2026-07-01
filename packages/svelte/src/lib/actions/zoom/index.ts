@@ -24,6 +24,7 @@ type ZoomParams = {
   zoomOnDoubleClick: boolean;
   panOnScroll: boolean;
   panOnDrag: boolean | number[];
+  forcePanMouseButtons: number[];
   panOnScrollSpeed: number;
   panOnScrollMode: PanOnScrollMode;
   zoomActivationKeyPressed: boolean;
