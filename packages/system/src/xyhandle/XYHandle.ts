@@ -61,6 +61,7 @@ function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
   const handleType = getHandleType(edgeUpdaterType, handleDomNode);
   const containerBounds = domNode?.getBoundingClientRect();
   let connectionStarted = false;
+  const touchId = 'touches' in event ? event.changedTouches[0]?.identifier : undefined;
 
   if (!containerBounds || !handleType) {
     return;
@@ -199,9 +200,17 @@ function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    // Prevent multi-touch aborting connection
-    if ('touches' in event && event.touches.length > 0) {
-      return;
+    if ('changedTouches' in event && touchId !== undefined) {
+      // ignore if the lifted finger is not the one that started the connection
+      const isOriginatingTouch = Array.from(event.changedTouches).some((t) => t.identifier === touchId);
+      if (!isOriginatingTouch) {
+        return;
+      }
+      // ignore if the originating touch is still active (e.g. second finger tapped and lifted while first is still down)
+      const stillActive = Array.from(event.touches).some((t) => t.identifier === touchId);
+      if (stillActive) {
+        return;
+      }
     }
 
     if (connectionStarted) {
