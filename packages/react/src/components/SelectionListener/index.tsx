@@ -4,10 +4,11 @@
  * or is using the useOnSelectionChange hook.
  * @TODO: Now that we have the onNodesChange and on EdgesChange listeners, do we still need this component?
  */
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useExternalSnapshot } from '../../hooks/useExternalSnapshot';
 import type { ReactFlowState, OnSelectionChangeFunc, Node, Edge } from '../../types';
 
 type SelectionListenerProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
@@ -48,7 +49,17 @@ function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends E
   onSelectionChange,
 }: SelectionListenerProps<NodeType, EdgeType>) {
   const store = useStoreApi<NodeType, EdgeType>();
-  const { selectedNodes, selectedEdges } = useStore(selector, areEqual);
+
+  /*
+   * Read selection through the selection channel: it notifies only when the selected set changes,
+   * so the O(N+E) scan does not run on every emit. areEqual keeps a stable reference so the effect
+   * fires only on a real selection change.
+   */
+  const subscribe = useCallback((onChange: () => void) => store.getState().subscribeSelection(onChange), [store]);
+  // selector only reads nodeLookup/edgeLookup, so the default-typed state is fine here (the same
+  // widening useStore applies internally)
+  const compute = useCallback(() => selector(store.getState() as unknown as ReactFlowState), [store]);
+  const { selectedNodes, selectedEdges } = useExternalSnapshot(subscribe, compute, areEqual);
 
   useEffect(() => {
     const params = { nodes: selectedNodes as NodeType[], edges: selectedEdges as EdgeType[] };
