@@ -176,6 +176,17 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   cancelConnection: () => void;
   updateConnection: UpdateConnection<InternalNode<NodeType>>;
   reset: () => void;
+  /** @internal Per-node subscription used by the node renderer; bypasses the
+   *  global notify-all fan-out. Paired with getNodeVersion for useSyncExternalStore. */
+  subscribeNode: (id: string, listener: () => void) => () => void;
+  /** @internal Version counter for a subscribed node; bumps when the node's
+   *  internalNode reference or parent status changes. */
+  getNodeVersion: (id: string) => number;
+  /** @internal Per-edge subscription used by the edge renderer; fires on edge-data
+   *  or endpoint-node changes. Paired with getEdgeVersion for useSyncExternalStore. */
+  subscribeEdge: (id: string, listener: () => void) => () => void;
+  /** @internal Version counter for a subscribed edge. */
+  getEdgeVersion: (id: string) => number;
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
