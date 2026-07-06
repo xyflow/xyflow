@@ -1,0 +1,23 @@
+{
+  "name": "storybook-host",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "storybook": "storybook dev -p 6008",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "storybook": "^10.4.6",
+    "@storybook/react-vite": "^10.4.6",
+    "@storybook/addon-docs": "^10.4.6"
+  }
+}
