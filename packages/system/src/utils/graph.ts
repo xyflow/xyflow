@@ -339,7 +339,20 @@ function getFitViewNodes<
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
 
   nodeLookup.forEach((n) => {
-    const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
+    let isVisible: boolean;
+
+    if (options?.includeHiddenNodes) {
+      /*
+       * when hidden nodes are included they were never rendered, so they have no
+       * measured size. Fall back to the declared dimensions (same fallback as
+       * nodeToBox) so a hidden node with an intrinsic size still contributes to
+       * the fit bounds instead of being dropped by a measured-only check. (#5841)
+       */
+      const { width, height } = getNodeDimensions(n);
+      isVisible = width > 0 && height > 0;
+    } else {
+      isVisible = Boolean(n.measured.width && n.measured.height && !n.hidden);
+    }
 
     if (isVisible && (!optionNodeIds || optionNodeIds.has(n.id))) {
       fitViewNodes.set(n.id, n);
