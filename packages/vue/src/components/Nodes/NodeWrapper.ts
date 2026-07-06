@@ -166,6 +166,16 @@ const NodeWrapper = defineComponent({
       // reactive AND would cache stale width/height onto the user object across renders)
       const styles = { ...node?.style };
 
+      // xyflow/react auto-appends `px` to numeric CSS dimensions; Vue's `:style` binding does not, so a
+      // react-style `style: { width: 380 }` would be dropped as invalid CSS. Coerce numeric `style` width/
+      // height to px for parity (string values like `'50%'` are left untouched).
+      if (typeof styles.width === 'number') {
+        styles.width = `${styles.width}px`;
+      }
+      if (typeof styles.height === 'number') {
+        styles.height = `${styles.height}px`;
+      }
+
       // mirror xyflow/react's `getNodeInlineStyleDimensions`: before the node is measured (no handle bounds
       // yet — e.g. first paint / SSR) fall back through `initialWidth`/`initialHeight`; once measured, only
       // an explicit `width`/`height` overrides the natural measured size.
