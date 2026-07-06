@@ -1,0 +1,17 @@
+{
+  "name": "storybook-shared",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./types": "./types.ts",
+    "./flow-configs/pane-general": "./flow-configs/pane-general.ts",
+    "./play-helpers": "./play-helpers.ts"
+  },
+  "dependencies": {
+    "storybook": "^10.4.6"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}
