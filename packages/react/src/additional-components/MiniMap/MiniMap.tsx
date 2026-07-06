@@ -1,8 +1,8 @@
 import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
-import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type XYMinimapInstance } from '@xyflow/system';
+import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
+import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { Panel } from '../../components/Panel';
 import type { ReactFlowState, Node } from '../../types';
 
@@ -14,24 +14,20 @@ const defaultHeight = 150;
 
 const filterHidden = (node: Node) => !node.hidden;
 
-const viewBBSelector = (s: ReactFlowState) => {
-  return {
+const selector = (s: ReactFlowState) => {
+  const viewBB: Rect = {
     x: -s.transform[0] / s.transform[2],
     y: -s.transform[1] / s.transform[2],
     width: s.width / s.transform[2],
     height: s.height / s.transform[2],
   };
-};
 
-const boundingRectSelector = (s: ReactFlowState) => {
-  const viewBB = viewBBSelector(s);
-  return s.nodeLookup.size > 0
-    ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
-    : viewBB;
-};
-
-const selector = (s: ReactFlowState) => {
   return {
+    viewBB,
+    boundingRect:
+      s.nodeLookup.size > 0
+        ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
+        : viewBB,
     rfId: s.rfId,
     panZoom: s.panZoom,
     translateExtent: s.translateExtent,
@@ -40,6 +36,21 @@ const selector = (s: ReactFlowState) => {
     ariaLabelConfig: s.ariaLabelConfig,
   };
 };
+type MiniMapSlice = ReturnType<typeof selector>;
+
+const rectEqual = (a: Rect, b: Rect) => a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+
+// the selector builds new viewBB/boundingRect objects every call, so the default shallow equality always
+// treats them as changed; comparing the rects by value lets the minimap skip re-renders when nothing moved
+const areEqual = (a: MiniMapSlice, b: MiniMapSlice) =>
+  rectEqual(a.viewBB, b.viewBB) &&
+  rectEqual(a.boundingRect, b.boundingRect) &&
+  a.rfId === b.rfId &&
+  a.panZoom === b.panZoom &&
+  a.translateExtent === b.translateExtent &&
+  a.flowWidth === b.flowWidth &&
+  a.flowHeight === b.flowHeight &&
+  a.ariaLabelConfig === b.ariaLabelConfig;
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 function MiniMapComponent<NodeType extends Node = Node>({
@@ -71,12 +82,8 @@ function MiniMapComponent<NodeType extends Node = Node>({
 }: MiniMapProps<NodeType>) {
   const store = useReactFlowStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
-  const { rfId, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useReactFlowStore(
-    useShallow(selector)
-  );
-
-  const viewBB = useReactFlowStore(useShallow(viewBBSelector));
-  const boundingRect = useReactFlowStore(useShallow(boundingRectSelector));
+  const { rfId, viewBB, boundingRect, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } =
+    useReactFlowStore(useCustomDiff(selector, areEqual));
 
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
