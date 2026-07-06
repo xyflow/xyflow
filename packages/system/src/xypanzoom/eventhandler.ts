@@ -131,13 +131,13 @@ export function createPanOnScrollHandler({
       onPanZoomStart?.(event, nextViewport);
     } else {
       onPanZoom?.(event, nextViewport);
-
-      zoomPanValues.panScrollTimeout = setTimeout(() => {
-        onPanZoomEnd?.(event, nextViewport);
-
-        zoomPanValues.isPanScrolling = false;
-      }, 150);
     }
+
+    zoomPanValues.panScrollTimeout = setTimeout(() => {
+      onPanZoomEnd?.(event, nextViewport);
+
+      zoomPanValues.isPanScrolling = false;
+    }, 150);
   };
 }
 

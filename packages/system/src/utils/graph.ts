@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   boxToRect,
   clampPosition,
@@ -34,8 +33,8 @@ import { errorMessages } from './constants';
  * @param element - The element to test
  * @returns A boolean indicating whether the element is an Edge
  */
-export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): element is EdgeType =>
-  'id' in element && 'source' in element && 'target' in element;
+export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: unknown): element is EdgeType =>
+  !!element && typeof element === 'object' && 'id' in element && 'source' in element && 'target' in element;
 
 /**
  * Test whether an object is usable as a Node
@@ -44,12 +43,12 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): 
  * @param element - The element to test
  * @returns A boolean indicating whether the element is an Node
  */
-export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: any): element is NodeType =>
-  'id' in element && 'position' in element && !('source' in element) && !('target' in element);
+export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: unknown): element is NodeType =>
+    !!element && typeof element === 'object' && 'id' in element && 'position' in element && !('source' in element) && !('target' in element);
 
 export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalNodeBase>(
-  element: any
-): element is NodeType => 'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
+  element: unknown
+): element is NodeType => !!element && typeof element === 'object' &&  'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
 
 /**
  * This util is used to tell you what nodes, if any, are connected to the given node
@@ -340,7 +339,20 @@ function getFitViewNodes<
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
 
   nodeLookup.forEach((n) => {
-    const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
+    let isVisible: boolean;
+
+    if (options?.includeHiddenNodes) {
+      /*
+       * when hidden nodes are included they were never rendered, so they have no
+       * measured size. Fall back to the declared dimensions (same fallback as
+       * nodeToBox) so a hidden node with an intrinsic size still contributes to
+       * the fit bounds instead of being dropped by a measured-only check. (#5841)
+       */
+      const { width, height } = getNodeDimensions(n);
+      isVisible = width > 0 && height > 0;
+    } else {
+      isVisible = Boolean(n.measured.width && n.measured.height && !n.hidden);
+    }
 
     if (isVisible && (!optionNodeIds || optionNodeIds.has(n.id))) {
       fitViewNodes.set(n.id, n);
