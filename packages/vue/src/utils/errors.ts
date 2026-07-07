@@ -6,12 +6,14 @@ export enum ErrorCode {
   NODE_MISSING_PARENT = 'NODE_MISSING_PARENT',
   NODE_TYPE_MISSING = 'NODE_TYPE_MISSING',
   NODE_EXTENT_INVALID = 'NODE_EXTENT_INVALID',
+  NODE_DUPLICATE_ID = 'NODE_DUPLICATE_ID',
   EDGE_INVALID = 'EDGE_INVALID',
   EDGE_NOT_FOUND = 'EDGE_NOT_FOUND',
   EDGE_SOURCE_MISSING = 'EDGE_SOURCE_MISSING',
   EDGE_TARGET_MISSING = 'EDGE_TARGET_MISSING',
   EDGE_TYPE_MISSING = 'EDGE_TYPE_MISSING',
   EDGE_SOURCE_TARGET_MISSING = 'EDGE_SOURCE_TARGET_MISSING',
+  EDGE_DUPLICATE_ID = 'EDGE_DUPLICATE_ID',
 
   USE_VUE_FLOW_OUTSIDE_PROVIDER = 'USE_VUE_FLOW_OUTSIDE_PROVIDER',
 }
@@ -26,6 +28,7 @@ const messages = {
     `Node is missing a parent\nNode id: ${id}\nParent id: ${parentId}`,
   [ErrorCode.NODE_TYPE_MISSING]: (type: string) => `Node type is missing\nType: ${type}`,
   [ErrorCode.NODE_EXTENT_INVALID]: (id: string) => `Only child nodes can use a parent extent\nNode id: ${id}`,
+  [ErrorCode.NODE_DUPLICATE_ID]: (id: string) => `Node id is not unique — a later node overwrites the earlier one in the lookup\nNode id: ${id}`,
   [ErrorCode.EDGE_INVALID]: (id: string) => `An edge needs a source and a target\nEdge id: ${id}`,
   [ErrorCode.EDGE_SOURCE_MISSING]: (id: string, source: string) =>
     `Edge source is missing\nEdge id: ${id} \nSource id: ${source}`,
@@ -34,6 +37,7 @@ const messages = {
   [ErrorCode.EDGE_TYPE_MISSING]: (type: string) => `Edge type is missing\nType: ${type}`,
   [ErrorCode.EDGE_SOURCE_TARGET_MISSING]: (id: string, source: string, target: string) =>
     `Edge source or target is missing\nEdge id: ${id} \nSource id: ${source} \nTarget id: ${target}`,
+  [ErrorCode.EDGE_DUPLICATE_ID]: (id: string) => `Edge id is not unique — a later edge overwrites the earlier one in the lookup\nEdge id: ${id}`,
   [ErrorCode.EDGE_NOT_FOUND]: (id: string) => `Edge not found\nEdge id: ${id}`,
   [ErrorCode.USE_VUE_FLOW_OUTSIDE_PROVIDER]: () =>
     `useVueFlow() was called without a <VueFlow> or <VueFlowProvider> ancestor (or outside a component setup). Render one of them above the call, or wrap your components in <VueFlowProvider> to share a store.`,

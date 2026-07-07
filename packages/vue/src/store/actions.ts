@@ -40,6 +40,7 @@ import {
   createEdgeRemoveChange,
   createNodeRemoveChange,
   createSelectionChange,
+  ErrorCode,
   getSelectionChanges,
   isDef,
   isInternalNode,
@@ -47,6 +48,7 @@ import {
   reconnectEdgeAction,
   updateConnectionLookup,
   validateEdges,
+  VueFlowError,
 } from '../utils';
 import { storeOptionsToSkip, useState } from './state';
 
@@ -163,9 +165,18 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     // targeted sync instead of clear+refill: clearing a `reactive(Map)` invalidates every edge
     // subscriber even when a single edge changed
     const rawEdgeLookup = toRaw(edgeLookup);
+    const seenEdgeIds = new Set<string>();
 
     for (let i = 0; i < next.length; i++) {
       const edge = (next[i] = markRaw(toRaw(next[i])));
+      // a duplicate id silently overwrites the earlier edge in the id-keyed lookup (last wins) — surface it
+      // so the otherwise-invisible data bug is debuggable; behaviour is unchanged (we still adopt it)
+      if (seenEdgeIds.has(edge.id)) {
+        state.hooks.error.trigger(new VueFlowError(ErrorCode.EDGE_DUPLICATE_ID, edge.id));
+      }
+      else {
+        seenEdgeIds.add(edge.id);
+      }
       if (rawEdgeLookup.get(edge.id) !== edge) {
         edgeLookup.set(edge.id, edge);
       }

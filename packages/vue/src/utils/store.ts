@@ -126,6 +126,7 @@ export function adoptNodes<NodeType extends Node = Node>(
   options?: CreateInternalNodesOptions,
 ): { nodes: NodeType[]; hasSelectedNodes: boolean } {
   const validNodes: NodeType[] = [];
+  const seenNodeIds = new Set<string>();
   for (let i = 0; i < nodes.length; ++i) {
     const node = nodes[i];
 
@@ -134,6 +135,15 @@ export function adoptNodes<NodeType extends Node = Node>(
         new VueFlowError(ErrorCode.NODE_INVALID, (node as undefined | Record<any, any>)?.id ?? `[ID UNKNOWN|INDEX ${i}]`),
       );
       continue;
+    }
+
+    // a duplicate id silently overwrites the earlier node in the id-keyed lookup (last wins) — surface it
+    // so the otherwise-invisible data bug is debuggable; behaviour is unchanged (we still adopt it)
+    if (seenNodeIds.has(node.id)) {
+      triggerError(new VueFlowError(ErrorCode.NODE_DUPLICATE_ID, node.id));
+    }
+    else {
+      seenNodeIds.add(node.id);
     }
 
     // `markRaw` the user node so Vue never deep-proxies it (the perf goal — large `data` objects stay
