@@ -24,7 +24,7 @@ interface UseDragParams {
  * @param params
  */
 export function useDrag(params: UseDragParams) {
-  const { panBy, getInternalNode, removeSelectedNodes, removeSelectedEdges, updateNodePositions, getNodes, getEdges }
+  const { panBy, getInternalNode, addSelectedNodes, removeSelectedNodes, removeSelectedEdges, updateNodePositions, getNodes, getEdges }
     = useVueFlow();
 
   // Read the reactive store directly — these are read inside the XYDrag `getStoreItems`/`update` callbacks
@@ -106,6 +106,24 @@ export function useDrag(params: UseDragParams) {
         },
         autoPanSpeed: store.autoPanSpeed,
       }),
+      // select the node on drag-start when `selectNodesOnDrag` is on — XYDrag calls this from its
+      // pointerdown handler (mirrors xyflow/react's `onNodeMouseDown`). Single-selection deselects the
+      // rest; in multi-selection an already-selected node toggles off. `store` is reactive — write to it.
+      onNodeMouseDown: (nodeId: string) => {
+        const node = getInternalNode(nodeId);
+        if (!node) {
+          return;
+        }
+
+        store.nodesSelectionActive = false;
+
+        if (!node.selected) {
+          addSelectedNodes([node]);
+        }
+        else if (store.multiSelectionActive) {
+          removeSelectedNodes([node]);
+        }
+      },
       // XYDrag hands user nodes (the InternalNode's `userNode`, spread with the live drag position +
       // `dragging`), which is exactly the event payload — emit them directly, no lookup round-trip
       onDragStart: (event, _dragItems, node, nodes) => {
