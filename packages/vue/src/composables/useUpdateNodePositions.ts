@@ -1,7 +1,6 @@
 import type { XYPosition } from '@xyflow/system';
 import type { NodeDragItem } from '../types';
-import { getNodeDimensions } from '@xyflow/system';
-import { calcNextPosition } from '../utils';
+import { calculateNodePosition, getNodeDimensions, snapPosition } from '@xyflow/system';
 import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
 
@@ -11,7 +10,7 @@ import { useVueFlow } from './useVueFlow';
  * @internal
  */
 export function useUpdateNodePositions() {
-  const { getSelectedNodes, updateNodePositions, getInternalNode, emits } = useVueFlow();
+  const { getSelectedNodes, updateNodePositions, getInternalNode } = useVueFlow();
   const store = useStore();
 
   return (positionDiff: XYPosition, isShiftPressed = false) => {
@@ -33,27 +32,33 @@ export function useUpdateNodePositions() {
           continue;
         }
 
-        const nextPosition = {
+        let nextPosition = {
           x: internalNode.internals.positionAbsolute.x + positionDiffX,
           y: internalNode.internals.positionAbsolute.y + positionDiffY,
         };
 
-        const { position } = calcNextPosition(
-          internalNode,
+        if (store.snapToGrid) {
+          nextPosition = snapPosition(nextPosition, store.snapGrid);
+        }
+
+        // mirror xyflow/react's `useMoveSelectedNodes`: the origin-aware `calculateNodePosition` derives the
+        // new `position` AND `positionAbsolute` (accounting for `nodeOrigin`, extent + parent). The previous
+        // `calcNextPosition` ignored `nodeOrigin` and reused the stale `positionAbsolute`, so with a
+        // non-default origin the offset re-applied on every key press — the node drifted by the origin offset.
+        const { position, positionAbsolute } = calculateNodePosition({
+          nodeId: node.id,
           nextPosition,
-          emits.error,
-          store.nodeExtent,
-          node.parentId ? getInternalNode(node.parentId) : undefined,
-        );
+          nodeLookup: store.nodeLookup,
+          nodeExtent: store.nodeExtent,
+          nodeOrigin: store.nodeOrigin,
+        });
 
         nodeUpdates.push({
           id: node.id,
           position,
           distance: { x: positionDiff.x, y: positionDiff.y },
           measured: getNodeDimensions(internalNode),
-          internals: {
-            positionAbsolute: { x: internalNode.internals.positionAbsolute.x, y: internalNode.internals.positionAbsolute.y },
-          },
+          internals: { positionAbsolute },
         });
       }
     }

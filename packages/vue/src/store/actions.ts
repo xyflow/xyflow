@@ -187,8 +187,12 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     state.edges = next;
 
     // the connection lookup derives 1:1 from the edges array — rebuilding it here keeps every write
-    // path (setEdges/applyEdgeChanges/reconnectEdge/$reset) consistent by construction
-    updateConnectionLookup(state.connectionLookup, state.edges);
+    // path (setEdges/applyEdgeChanges/reconnectEdge/$reset) consistent by construction. Feed it `next`
+    // (the array we just committed), NOT the `state.edges` getter: edges are backed by a `defineModel`
+    // v-model ref whose writes round-trip through the parent asynchronously, so the getter still reads
+    // the pre-commit value on this tick — reading it here would rebuild the lookup from stale edges and
+    // leave `useNodeConnections` empty until the next commit (the reported one-frame connection lag).
+    updateConnectionLookup(state.connectionLookup, next);
   }
 
   /**
