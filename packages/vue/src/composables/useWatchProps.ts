@@ -9,9 +9,10 @@ import { storeToRefs } from './storeToRefs';
 /**
  * Two-way bind a `v-model` array ref to the store, identity-in / snapshot-out, with native `watch`.
  *
- * Used only when `<VueFlow>` does NOT own its store (it reuses a `<VueFlowProvider>`'s), so the model
- * refs can't back the store directly. The owned-store path is single-source instead — the model refs
- * ARE the store's nodes/edges (see `createStore`'s `StoreSignals` binding), needing no sync here.
+ * Runs for BOTH the owned- and reused-store paths: the store's canonical nodes/edges are always an
+ * internal `shallowRef` (see `createStore`), never the v-model ref, so this is the single place the model
+ * ref is bridged to the store. Both directions flush synchronously so the model ref and the store's
+ * synchronous reads (`getNodes`/`state.nodes`) never disagree within a tick.
  *
  * - **out** (store → model): snapshot on every membership change; element refs are shared, so per-node
  *   field mutations surface without a copy.
@@ -36,8 +37,10 @@ function syncModelArray<ModelItem, StoreItem>(
       lastSnapshot = [...storeItems.value] as unknown as ModelItem[];
       model.value = lastSnapshot;
     },
+    // `flush: 'sync'` so the user's v-model ref mirrors a store commit on the SAME tick (matching the
+    // synchronous store reads) — otherwise it lags a flush behind `getNodes`, the reported footgun.
     // seed the model only if the store already holds elements (populated by `setState(props)` on create)
-    { immediate: storeItems.value.length > 0 },
+    { immediate: storeItems.value.length > 0, flush: 'sync' },
   );
 
   watch(
@@ -56,7 +59,9 @@ function syncModelArray<ModelItem, StoreItem>(
 
       setItems(nextRaw);
     },
-    { immediate: true },
+    // `flush: 'sync'` so an external `nodes.value = [...]` is adopted into the store immediately, keeping
+    // the model ref and `getNodes` consistent on the same tick in both directions
+    { immediate: true, flush: 'sync' },
   );
 }
 
@@ -64,16 +69,14 @@ function syncModelArray<ModelItem, StoreItem>(
  * Watches props and updates the store accordingly
  *
  * @internal
- * @param models v-model refs for nodes/edges (bound only when `ownsStore` is false — see {@link syncModelArray})
+ * @param models v-model refs for nodes/edges — bridged to the store here (see {@link syncModelArray})
  * @param props the `<VueFlow>` props
  * @param handle the created store handle ({@link VueFlowStoreHandle}) — instance (actions) + reactive state
- * @param ownsStore whether this `<VueFlow>` created the store (then nodes/edges are signal-backed and skipped here)
  */
 export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   models: ToRefs<Pick<FlowProps<NodeType, EdgeType>, 'nodes' | 'edges'>>,
   props: FlowProps<NodeType, EdgeType>,
   handle: VueFlowStoreHandle<NodeType, EdgeType>,
-  ownsStore = false,
 ) {
   const { instance, state } = handle;
   // refs over the reactive state (writable) so the prop→store sync below can assign as before
@@ -82,8 +85,7 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
   const scope = effectScope(true);
 
   scope.run(() => {
-    // Only when this `<VueFlow>` reuses a provider's store (it didn't create it, so the model refs can't
-    // back it). Owned stores are single-source — the models ARE the store's nodes/edges — so these are skipped.
+    // Bridge the v-model nodes/edges refs to the store's internal canonical signals (both store paths).
     const watchNodesValue = () => {
       scope.run(() => {
         syncModelArray(models.nodes, storeRefs.nodes, nodes => instance.setNodes(nodes));
@@ -273,11 +275,10 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
     };
 
     const runAll = () => {
-      // owned stores bind nodes/edges single-source via signals (createStore); only reused stores sync here
-      if (!ownsStore) {
-        watchNodesValue();
-        watchEdgesValue();
-      }
+      // both owned + reused stores bridge nodes/edges here — the store's canonical signal is always
+      // internal, so the v-model ref is never the backing store and always needs syncing
+      watchNodesValue();
+      watchEdgesValue();
       watchMinZoom();
       watchMaxZoom();
       watchTranslateExtent();

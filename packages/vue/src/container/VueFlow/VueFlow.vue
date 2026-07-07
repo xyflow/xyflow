@@ -90,8 +90,9 @@ if (!ownsStore) {
   instance.setState(props as Parameters<typeof instance.setState>[0]);
 }
 
-// watch props and update store state (nodes/edges are signal-backed when we own the store — see above)
-const disposeWatchers = useWatchProps({ nodes: modelNodes, edges: modelEdges }, props, { instance, state }, ownsStore);
+// watch props and update store state; the v-model nodes/edges bridge (out+in, synchronous) lives here for
+// both store paths now — the store's canonical nodes/edges are always internal signals (see createStore)
+const disposeWatchers = useWatchProps({ nodes: modelNodes, edges: modelEdges }, props, { instance, state });
 
 useHooks(emit, state.hooks);
 

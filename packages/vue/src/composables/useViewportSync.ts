@@ -48,6 +48,9 @@ export function useViewportSync<NodeType extends Node = Node, EdgeType extends E
     { immediate: true },
   );
 
+  // `flush: 'sync'` so the `viewport` v-model ref mirrors a `transform` change on the same tick — the store's
+  // own `viewport` getter is already synchronous, so the model ref must be too (same rationale as the
+  // nodes/edges bridge in `useWatchProps`), else reading it right after a programmatic viewport change lags.
   watch(transform, (next) => {
     const viewport = { x: next[0], y: next[1], zoom: next[2] };
     if (sameViewport(viewport, model.value)) {
@@ -55,5 +58,5 @@ export function useViewportSync<NodeType extends Node = Node, EdgeType extends E
     }
 
     model.value = viewport;
-  });
+  }, { flush: 'sync' });
 }
