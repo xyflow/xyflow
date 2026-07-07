@@ -1,24 +1,26 @@
-export type SharedNode = {
+export type FlowFramework = 'react' | 'svelte';
+
+export type SharedNode = Record<string, unknown> & {
   id: string;
-  data: { label: string };
+  data?: Record<string, unknown>;
   position: { x: number; y: number };
-  type?: string;
 };
 
-export type SharedEdge = {
+export type SharedEdge = Record<string, unknown> & {
   id: string;
   source: string;
   target: string;
 };
 
-export type SharedFlowConfig = {
-  flowProps?: {
-    minZoom?: number;
-    maxZoom?: number;
-    fitView?: boolean;
-    nodes: SharedNode[];
-    edges: SharedEdge[];
-  };
+export type SharedFlowProps = Record<string, unknown> & {
+  nodes?: SharedNode[];
+  edges?: SharedEdge[];
 };
 
-export type FlowFramework = 'react' | 'svelte';
+export type SharedFlowConfig = {
+  flowProps?: SharedFlowProps;
+};
+
+export type StoryPlayContext = {
+  canvasElement: HTMLElement;
+};

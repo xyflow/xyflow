@@ -547,21 +547,42 @@ importers:
 
   storybook/react:
     dependencies:
+      '@reduxjs/toolkit':
+        specifier: ^2.11.2
+        version: 2.12.0(react-redux@9.3.0(@types/react@18.3.29)(react@18.3.1)(redux@5.0.1))(react@18.3.1)
       '@xyflow/react':
         specifier: workspace:*
         version: link:../../packages/react
       '@xyflow/system':
         specifier: workspace:*
         version: link:../../packages/system
+      classcat:
+        specifier: ^5.0.5
+        version: 5.0.5
+      dagre:
+        specifier: ^0.8.5
+        version: 0.8.5
+      localforage:
+        specifier: ^1.10.0
+        version: 1.10.0
       react:
         specifier: 'catalog:'
         version: 18.3.1
       react-dom:
         specifier: 'catalog:'
         version: 18.3.1(react@18.3.1)
+      react-redux:
+        specifier: ^9.2.0
+        version: 9.3.0(@types/react@18.3.29)(react@18.3.1)(redux@5.0.1)
+      redux:
+        specifier: ^5.0.1
+        version: 5.0.1
       storybook-shared:
         specifier: workspace:*
         version: link:../shared
+      zustand:
+        specifier: ^4.5.7
+        version: 4.5.7(@types/react@18.3.29)(immer@11.1.8)(react@18.3.1)
     devDependencies:
       '@chromatic-com/storybook':
         specifier: ^5.2.1
@@ -578,6 +599,9 @@ importers:
       '@storybook/react-vite':
         specifier: ^10.4.6
         version: 10.4.6(@types/react-dom@18.3.7(@types/react@18.3.29))(@types/react@18.3.29)(esbuild@0.27.7)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.52.5)(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@18.3.29)(prettier@3.8.3)(react@18.3.1))(typescript@6.0.3)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))
+      '@types/dagre':
+        specifier: ^0.7.54
+        version: 0.7.54
       '@types/react':
         specifier: 'catalog:'
         version: 18.3.29
@@ -618,6 +642,9 @@ importers:
 
   storybook/svelte:
     dependencies:
+      '@dagrejs/dagre':
+        specifier: ^1.1.8
+        version: 1.1.8
       '@xyflow/svelte':
         specifier: workspace:*
         version: link:../../packages/svelte

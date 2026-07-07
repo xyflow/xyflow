@@ -5,8 +5,22 @@
   "type": "module",
   "exports": {
     "./types": "./types.ts",
+    "./utils": "./utils.ts",
+    "./play-helpers": "./play-helpers.ts",
+    "./play-helpers/pane": "./play-helpers/pane.ts",
+    "./play-helpers/nodes": "./play-helpers/nodes.ts",
+    "./play-helpers/edges": "./play-helpers/edges.ts",
+    "./play-helpers/node-toolbar": "./play-helpers/node-toolbar.ts",
+    "./play-helpers/props": "./play-helpers/props.ts",
+    "./play-helpers/addons": "./play-helpers/addons.ts",
+    "./play-helpers/suite": "./play-helpers/suite.ts",
     "./flow-configs/pane-general": "./flow-configs/pane-general.ts",
-    "./play-helpers": "./play-helpers.ts"
+    "./flow-configs/pane-non-defaults": "./flow-configs/pane-non-defaults.ts",
+    "./flow-configs/nodes-general": "./flow-configs/nodes-general.ts",
+    "./flow-configs/edges-general": "./flow-configs/edges-general.ts",
+    "./flow-configs/node-toolbar-general": "./flow-configs/node-toolbar-general.ts",
+    "./flow-configs/color-mode": "./flow-configs/color-mode.ts",
+    "./flow-configs/basic-addons": "./flow-configs/basic-addons.ts"
   },
   "dependencies": {
     "storybook": "^10.4.6"

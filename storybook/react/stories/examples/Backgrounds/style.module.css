@@ -1,0 +1,13 @@
+.wrapper {
+  display: flex;
+  height: 100%;
+}
+
+.wrapper :global .react-flow {
+  width: 100%;
+  height: 100%;
+}
+
+.wrapper :global .react-flow {
+  border-right: 1px solid #ddd;
+}

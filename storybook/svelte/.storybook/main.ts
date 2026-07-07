@@ -22,6 +22,9 @@ const config: StorybookConfig = {
   ],
   framework: getAbsolutePath('@storybook/svelte-vite'),
   async viteFinal(config) {
+    config.server ??= {};
+    config.server.fs ??= {};
+    config.server.fs.allow = ['../..'];
     config.resolve ??= {};
     config.resolve.conditions = ['svelte', 'browser', 'development', 'import', 'module', 'default'];
     return config;

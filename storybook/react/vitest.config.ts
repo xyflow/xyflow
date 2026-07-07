@@ -21,6 +21,10 @@ export default defineConfig({
           storybookTest({
             configDir: path.join(dirname, '.storybook'),
             storybookScript: 'pnpm storybook --no-open',
+            tags: {
+              include: ['test'],
+              exclude: ['example'],
+            },
           }),
         ],
         test: {

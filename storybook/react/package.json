@@ -9,13 +9,21 @@
     "test-storybook": "vitest run --project=storybook-react"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.11.2",
     "@xyflow/react": "workspace:*",
     "@xyflow/system": "workspace:*",
+    "classcat": "^5.0.5",
+    "dagre": "^0.8.5",
+    "localforage": "^1.10.0",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "storybook-shared": "workspace:*"
+    "react-redux": "^9.2.0",
+    "redux": "^5.0.1",
+    "storybook-shared": "workspace:*",
+    "zustand": "^4.5.7"
   },
   "devDependencies": {
+    "@types/dagre": "^0.7.54",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "typescript": "catalog:",

@@ -1,0 +1,63 @@
+.react-flow__devtools {
+  --border-radius: 4px;
+  --highlight-color: rgba(238, 58, 115, 1);
+  --font: monospace, sans-serif;
+
+  border-radius: var(--border-radius);
+  font-size: 11px;
+  font-family: var(--font);
+}
+
+.react-flow__devtools button {
+  background: white;
+  border: none;
+  padding: 5px 15px;
+  color: #222;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: var(--font);
+  background-color: #f4f4f4;
+}
+
+.react-flow__devtools button:hover {
+  background: var(--highlight-color);
+  color: white;
+}
+
+.react-flow__devtools button.active {
+  background: var(--highlight-color);
+  color: white;
+}
+
+.react-flow__devtools button:first-child {
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  border-right: 1px solid #ddd;
+}
+
+.react-flow__devtools button:last-child {
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.react-flow__devtools-changelogger {
+  pointer-events: none;
+  position: relative;
+  top: 50px;
+  left: 20px;
+  font-family: var(--font);
+}
+
+.react-flow__devtools-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.react-flow__devtools-nodeinspector {
+  pointer-events: none;
+  font-family: monospace, sans-serif;
+  font-size: 10px;
+}
+
+.react-flow__devtools-nodeinfo {
+  top: 5px;
+}

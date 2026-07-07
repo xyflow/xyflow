@@ -9,6 +9,7 @@
     "test-storybook": "vitest run --project=storybook-svelte"
   },
   "dependencies": {
+    "@dagrejs/dagre": "^1.1.8",
     "@xyflow/svelte": "workspace:*",
     "@xyflow/system": "workspace:*",
     "svelte": "catalog:",
