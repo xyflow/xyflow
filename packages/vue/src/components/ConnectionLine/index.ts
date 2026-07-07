@@ -62,7 +62,10 @@ const ConnectionLine = defineComponent({
 
       const fromHandle = (startHandleId ? handleBounds.find(d => d.id === startHandleId) : handleBounds[0]) ?? null;
       const fromPosition = fromHandle?.position ?? Position.Top;
-      const { x: fromX, y: fromY } = getHandlePosition(fromNode.value, fromHandle, fromPosition);
+      // `center: true` — the connection line starts from the handle's CENTER, matching xyflow/react+system
+      // (`XYHandle` computes `connection.from` with center=true). Without it a large handle (e.g. one that
+      // covers the whole node, as in the "easy connect" example) would anchor to its `position` edge.
+      const { x: fromX, y: fromY } = getHandlePosition(fromNode.value, fromHandle, fromPosition, true);
 
       let toHandle: HandleElement | null = null;
       if (toNode.value) {
@@ -89,9 +92,10 @@ const ConnectionLine = defineComponent({
         return null;
       }
 
-      // snap the line end to the hovered handle when there is one; otherwise follow the raw pointer
+      // snap the line end to the hovered handle's CENTER (center=true, like the from-handle above and the
+      // system's closest-handle match) when there is one; otherwise follow the raw pointer
       const { x: toX, y: toY }
-        = toHandle && toNode.value ? getHandlePosition(toNode.value, toHandle, toPosition) : pointer.value;
+        = toHandle && toNode.value ? getHandlePosition(toNode.value, toHandle, toPosition, true) : pointer.value;
 
       const type = connectionLineOptions.value.type ?? ConnectionLineType.Bezier;
 
