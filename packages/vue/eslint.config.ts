@@ -7,6 +7,8 @@ import antfu from '@antfu/eslint-config';
 export default antfu({
   vue: true,
   typescript: true,
+  // generated artifacts (checked in + verified current by `pnpm codegen:check`) aren't hand-edited
+  ignores: ['src/**/*.gen.ts'],
   // The xyflow monorepo has a pnpm catalog, so antfu auto-enables its pnpm/catalog rules. The vue package
   // pins most of its deps literally rather than routing everything through the shared catalog, so disable
   // antfu's catalog linting here instead of fighting it per-rule.

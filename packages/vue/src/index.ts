@@ -48,6 +48,8 @@ export { useVueFlow } from './composables/useVueFlow';
 export { default as VueFlow } from './container/VueFlow/VueFlow.vue';
 export { default as VueFlowProvider } from './container/VueFlowProvider/VueFlowProvider.vue';
 export { NodeId as NodeIdInjection, VueFlow as VueFlowInjection } from './context';
+// Runtime prop-declaration factories for JS users (TS users use `defineProps<NodeProps<T>>()`).
+export { connectionLineProps, edgeProps, nodeProps } from './props-objects.gen';
 export * from './types';
 /**
  * @deprecated Prefer the store instance's `applyChanges`/`applyNodeChanges`/`applyEdgeChanges` (from
