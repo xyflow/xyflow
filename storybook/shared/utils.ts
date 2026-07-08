@@ -44,6 +44,10 @@ export function nodeToolbarSelector(framework: FlowFramework) {
   return flowClass(framework, 'node-toolbar');
 }
 
+export function backgroundSelector(framework: FlowFramework) {
+  return framework === 'react' ? '[data-testid="rf__background"]' : '[data-testid="svelte-flow__background"]';
+}
+
 export function selectionSelector(framework: FlowFramework) {
   return framework === 'react' ? '.react-flow__selection' : '.svelte-flow__selection';
 }

@@ -1,7 +1,7 @@
 import type { StorybookConfig } from '@storybook/svelte-vite';
 
+import path from 'node:path';
 import { dirname } from 'path';
-
 import { fileURLToPath } from 'url';
 
 /**
@@ -12,8 +12,14 @@ function getAbsolutePath(value: string) {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
 }
 
+const configDir = path.dirname(fileURLToPath(import.meta.url));
+const sharedRoot = path.resolve(configDir, '../../shared');
+
 const config: StorybookConfig = {
-  stories: ['../stories/**/*.stories.@(js|ts)'],
+  stories: [
+    '../stories/**/*.stories.@(js|ts)',
+    '../../shared/components/**/*.stories.ts',
+  ],
   addons: [
     getAbsolutePath('@chromatic-com/storybook'),
     getAbsolutePath('@storybook/addon-vitest'),
@@ -24,7 +30,7 @@ const config: StorybookConfig = {
   async viteFinal(config) {
     config.server ??= {};
     config.server.fs ??= {};
-    config.server.fs.allow = ['../..'];
+    config.server.fs.allow = ['../..', sharedRoot];
     config.resolve ??= {};
     config.resolve.conditions = ['svelte', 'browser', 'development', 'import', 'module', 'default'];
     return config;

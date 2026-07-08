@@ -1,0 +1,9 @@
+.flow {
+  width: 100%;
+  height: 100%;
+}
+
+.flow :global(.react-flow) {
+  width: 100%;
+  height: 100%;
+}

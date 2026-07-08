@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { createControlsSuite, createMinimapSuite } from 'storybook-shared/play-helpers';
 
-import { AddonsFlow } from '../../components/AddonsFlow';
+import { AddonsFlow } from '../../../components/AddonsFlowStory';
 
 const runMinimapSuite = createMinimapSuite();
 const runControlsSuite = createControlsSuite();

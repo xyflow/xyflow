@@ -17,6 +17,7 @@
     "./play-helpers/node-toolbar": "./play-helpers/node-toolbar.ts",
     "./play-helpers/props": "./play-helpers/props.ts",
     "./play-helpers/addons": "./play-helpers/addons.ts",
+    "./play-helpers/background": "./play-helpers/background.ts",
     "./play-helpers/suite": "./play-helpers/suite.ts",
     "./flow-configs/pane-general": "./flow-configs/pane-general.ts",
     "./flow-configs/pane-non-defaults": "./flow-configs/pane-non-defaults.ts",
@@ -27,8 +28,11 @@
     "./flow-configs/basic-addons": "./flow-configs/basic-addons.ts"
   },
   "dependencies": {
+    "@xyflow/react": "workspace:*",
+    "@xyflow/svelte": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "svelte": "catalog:",
     "storybook": "^10.4.6"
   },
   "devDependencies": {

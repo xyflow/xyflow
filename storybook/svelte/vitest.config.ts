@@ -10,12 +10,18 @@ import { playwright } from '@vitest/browser-playwright';
 
 const dirname =
   typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+const sharedRoot = path.resolve(dirname, '../shared');
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [svelte()],
   resolve: {
     conditions: ['svelte', 'browser', 'development', 'import', 'module', 'default'],
+  },
+  server: {
+    fs: {
+      allow: [sharedRoot, path.resolve(dirname, '../..')],
+    },
   },
   test: {
     root: dirname,
