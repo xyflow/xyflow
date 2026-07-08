@@ -12,7 +12,7 @@ pnpm build
 ## Running Storybook
 
 ```bash
-pnpm storybook              # host on :6008
+pnpm storybook              # all three — open :6008 for the combined view
 pnpm storybook:react        # :6006
 pnpm storybook:svelte       # :6007
 ```

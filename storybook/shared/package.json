@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "scripts": {
+    "storybook": "storybook dev -p 6008",
+    "build-storybook": "storybook build"
+  },
   "exports": {
     "./types": "./types.ts",
     "./utils": "./utils.ts",
@@ -23,9 +27,16 @@
     "./flow-configs/basic-addons": "./flow-configs/basic-addons.ts"
   },
   "dependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "storybook": "^10.4.6"
   },
   "devDependencies": {
-    "typescript": "catalog:"
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/react-vite": "^10.4.6",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
   }
 }

@@ -6,7 +6,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'This host Storybook composes the React Flow and Svelte Flow Storybooks. Use the sidebar to switch between them.',
+          'This Storybook composes the React Flow and Svelte Flow Storybooks. Use the sidebar to switch between them.',
       },
     },
   },
