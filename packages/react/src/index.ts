@@ -138,6 +138,8 @@ export {
   getIncomers,
   getOutgoers,
   getConnectedEdges,
+  updateParentNode,
+  type UpdateParentNodeParams,
 } from '@xyflow/system';
 
 export { addEdge, reconnectEdge } from './utils/edges';

@@ -44,11 +44,22 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: unknow
  * @returns A boolean indicating whether the element is an Node
  */
 export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: unknown): element is NodeType =>
-    !!element && typeof element === 'object' && 'id' in element && 'position' in element && !('source' in element) && !('target' in element);
+  !!element &&
+  typeof element === 'object' &&
+  'id' in element &&
+  'position' in element &&
+  !('source' in element) &&
+  !('target' in element);
 
 export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalNodeBase>(
   element: unknown
-): element is NodeType => !!element && typeof element === 'object' &&  'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
+): element is NodeType =>
+  !!element &&
+  typeof element === 'object' &&
+  'id' in element &&
+  'internals' in element &&
+  !('source' in element) &&
+  !('target' in element);
 
 /**
  * This util is used to tell you what nodes, if any, are connected to the given node
@@ -144,6 +155,73 @@ export const getNodePositionWithOrigin = (node: NodeBase, nodeOrigin: NodeOrigin
     y: node.position.y - offsetY,
   };
 };
+
+export type UpdateParentNodeParams<NodeType extends NodeBase = NodeBase> = {
+  nodeId: string;
+  parentNodeId: string | null;
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>;
+  nodeOrigin?: NodeOrigin;
+};
+
+function isDescendantNode<NodeType extends NodeBase>(
+  nodeId: string,
+  parentNodeId: string,
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>
+): boolean {
+  let currentNode = nodeLookup.get(parentNodeId);
+
+  while (currentNode?.parentId) {
+    if (currentNode.parentId === nodeId) {
+      return true;
+    }
+
+    currentNode = nodeLookup.get(currentNode.parentId);
+  }
+
+  return false;
+}
+
+/**
+ * Returns an updated user node with a new parent while keeping its absolute
+ * position on the canvas.
+ *
+ * @public
+ */
+export function updateParentNode<NodeType extends NodeBase = NodeBase>({
+  nodeId,
+  parentNodeId,
+  nodeLookup,
+  nodeOrigin = [0, 0],
+}: UpdateParentNodeParams<NodeType>): NodeType | undefined {
+  const node = nodeLookup.get(nodeId);
+
+  if (!node || parentNodeId === nodeId) {
+    return;
+  }
+
+  const parentNode = parentNodeId ? nodeLookup.get(parentNodeId) : undefined;
+
+  if (parentNodeId && (!parentNode || isDescendantNode(nodeId, parentNodeId, nodeLookup))) {
+    return;
+  }
+
+  const { width, height } = getNodeDimensions(node);
+  const origin = node.origin ?? nodeOrigin;
+  const parentPosition = parentNode?.internals.positionAbsolute ?? { x: 0, y: 0 };
+  const position = {
+    x: node.internals.positionAbsolute.x - parentPosition.x + width * origin[0],
+    y: node.internals.positionAbsolute.y - parentPosition.y + height * origin[1],
+  };
+  const nextNode = { ...node.internals.userNode, position };
+
+  if (parentNodeId) {
+    return { ...nextNode, parentId: parentNodeId };
+  }
+
+  delete nextNode.parentId;
+
+  return nextNode;
+}
 
 export type GetNodesBoundsParams<NodeType extends NodeBase = NodeBase> = {
   /**

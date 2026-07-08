@@ -142,4 +142,6 @@ export {
   getIncomers,
   getOutgoers,
   getConnectedEdges,
+  updateParentNode,
+  type UpdateParentNodeParams
 } from '@xyflow/system';
