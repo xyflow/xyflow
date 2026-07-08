@@ -20,6 +20,7 @@ export { default as StepEdge } from './components/Edges/StepEdge';
 export { default as StraightEdge } from './components/Edges/StraightEdge';
 export { default as Handle } from './components/Handle/Handle.vue';
 
+export * from './components/EdgeToolbar';
 export * from './components/MiniMap';
 export * from './components/NodeResizer';
 export * from './components/NodeToolbar';
