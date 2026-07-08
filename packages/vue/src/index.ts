@@ -44,6 +44,7 @@ export { useNodeId } from './composables/useNodeId';
 export { useNodesData } from './composables/useNodesData';
 export { useNodesInitialized } from './composables/useNodesInitialized';
 
+export { setupVueFlow } from './composables/setupVueFlow';
 export { useStore } from './composables/useStore';
 export { useVueFlow } from './composables/useVueFlow';
 export { default as VueFlow } from './container/VueFlow/VueFlow.vue';
