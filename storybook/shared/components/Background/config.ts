@@ -123,3 +123,47 @@ export function storyArgs(name: BackgroundStoryName) {
 export function storyTags(definition: BackgroundStoryDefinition) {
   return definition.test ? (['components', 'test'] as const) : (['components'] as const);
 }
+
+type ArgTypeConfig = {
+  control?: 'text' | 'color' | 'select' | 'object' | { type: string; min?: number; step?: number };
+  description: string;
+  options?: unknown[];
+};
+
+export function backgroundArgTypes(
+  framework: 'react' | 'svelte',
+  variantOptions: unknown[]
+): Record<string, ArgTypeConfig> {
+  const base: Record<string, ArgTypeConfig> = {
+    id: { control: 'text', description: backgroundArgTypeDescriptions.id },
+    color: { control: 'color', description: backgroundArgTypeDescriptions.color },
+    bgColor: { control: 'color', description: backgroundArgTypeDescriptions.bgColor },
+    gap: { control: { type: 'number', min: 0, step: 1 }, description: backgroundArgTypeDescriptions.gap },
+    size: { control: { type: 'number', min: 0, step: 1 }, description: backgroundArgTypeDescriptions.size },
+    lineWidth: {
+      control: { type: 'number', min: 0, step: 0.5 },
+      description: backgroundArgTypeDescriptions.lineWidth,
+    },
+    variant: {
+      control: 'select',
+      options: variantOptions,
+      description: backgroundArgTypeDescriptions.variant,
+    },
+  };
+
+  if (framework === 'react') {
+    return {
+      ...base,
+      className: { control: 'text', description: backgroundArgTypeDescriptions.className },
+      patternClassName: { control: 'text', description: backgroundArgTypeDescriptions.patternClassName },
+      offset: { control: { type: 'number' }, description: backgroundArgTypeDescriptions.offset },
+      style: { control: 'object', description: backgroundArgTypeDescriptions.style },
+    };
+  }
+
+  return {
+    ...base,
+    class: { control: 'text', description: backgroundArgTypeDescriptions.class },
+    patternClass: { control: 'text', description: backgroundArgTypeDescriptions.patternClass },
+  };
+}

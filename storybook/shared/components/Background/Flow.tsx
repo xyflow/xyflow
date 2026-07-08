@@ -11,7 +11,8 @@ import {
 } from '@xyflow/react';
 
 import { initialNodes, type BackgroundVariantName, type SharedBackgroundArgs } from './config';
-import styles from './Flow.module.css';
+
+const flowStyle = { width: '100%', height: '100%' } as const;
 
 const variantMap: Record<BackgroundVariantName, BackgroundVariant> = {
   dots: BackgroundVariant.Dots,
@@ -38,8 +39,8 @@ export const BackgroundExample: FC<SharedBackgroundArgs> = ({ id = 'background',
 
   return (
     <ReactFlowProvider>
-      <div className={styles.flow}>
-        <ReactFlow nodes={nodes} onNodesChange={onNodesChange}>
+      <div style={flowStyle}>
+        <ReactFlow nodes={nodes} onNodesChange={onNodesChange} style={flowStyle}>
           <Background id={id} {...backgroundProps} />
         </ReactFlow>
       </div>

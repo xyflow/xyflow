@@ -4,6 +4,8 @@ import path from 'node:path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+import { sharedStorybookViteConfig } from '../../shared/storybookVite';
+
 /**
 * This function is used to resolve the absolute path of a package.
 * It is needed in projects that use Yarn PnP or are set up within a monorepo.
@@ -14,11 +16,12 @@ function getAbsolutePath(value: string) {
 
 const configDir = path.dirname(fileURLToPath(import.meta.url));
 const sharedRoot = path.resolve(configDir, '../../shared');
+const sharedVite = sharedStorybookViteConfig('react', sharedRoot);
 
 const config: StorybookConfig = {
   "stories": [
     "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)",
-    "../../shared/components/**/*.stories.tsx"
+    "../../shared/components/**/*.stories.ts"
   ],
   "addons": [
     getAbsolutePath('@chromatic-com/storybook'),
@@ -31,6 +34,10 @@ const config: StorybookConfig = {
     config.server ??= {};
     config.server.fs ??= {};
     config.server.fs.allow = ['../..', sharedRoot];
+
+    config.define = { ...config.define, ...sharedVite.define };
+    config.resolve ??= {};
+    config.resolve.alias = { ...config.resolve.alias, ...sharedVite.resolve.alias };
 
     return config;
   },

@@ -4,6 +4,8 @@ import path from 'node:path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+import { sharedStorybookViteConfig } from '../../shared/storybookVite';
+
 /**
  * This function is used to resolve the absolute path of a package.
  * It is needed in projects that use Yarn PnP or are set up within a monorepo.
@@ -14,6 +16,7 @@ function getAbsolutePath(value: string) {
 
 const configDir = path.dirname(fileURLToPath(import.meta.url));
 const sharedRoot = path.resolve(configDir, '../../shared');
+const sharedVite = sharedStorybookViteConfig('svelte', sharedRoot);
 
 const config: StorybookConfig = {
   stories: [
@@ -33,6 +36,10 @@ const config: StorybookConfig = {
     config.server.fs.allow = ['../..', sharedRoot];
     config.resolve ??= {};
     config.resolve.conditions = ['svelte', 'browser', 'development', 'import', 'module', 'default'];
+
+    config.define = { ...config.define, ...sharedVite.define };
+    config.resolve.alias = { ...config.resolve.alias, ...sharedVite.resolve.alias };
+
     return config;
   },
 };
