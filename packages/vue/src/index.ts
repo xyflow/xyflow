@@ -57,6 +57,7 @@ export * from './types';
  */
 export { applyChanges, applyEdgeChanges, applyNodeChanges } from './utils/changes';
 export { defaultEdgeTypes, defaultNodeTypes } from './utils/defaultNodesEdges';
+export { addEdge, reconnectEdge } from './utils/edges';
 export { ErrorCode, isErrorOfType, VueFlowError } from './utils/errors';
 export { connectionExists, isEdge, isInternalNode, isNode } from './utils/graph';
 
