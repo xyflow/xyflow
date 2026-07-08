@@ -4,21 +4,21 @@ import { nodeToolbarReactConfig } from 'storybook-shared/flow-configs/node-toolb
 import { createNodeToolbarGeneralSuite } from 'storybook-shared/play-helpers';
 
 import ToolbarNode from '../../components/ToolbarNode';
-import { FlowStory } from '../FlowStory';
+import { Flow } from '../Flow';
 
 const runSuite = createNodeToolbarGeneralSuite('react');
 const nodeTypes = { ToolbarNode };
 
 const meta = {
   title: 'Generic Tests/Node Toolbar',
-  component: FlowStory,
+  component: Flow,
   tags: ['test'],
   parameters: { layout: 'fullscreen' },
   args: {
     flowConfig: nodeToolbarReactConfig,
     nodeTypes,
   },
-} satisfies Meta<typeof FlowStory>;
+} satisfies Meta<typeof Flow>;
 
 export default meta;
 

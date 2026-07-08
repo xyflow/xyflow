@@ -4,21 +4,21 @@ import { nodesGeneralReactConfig } from 'storybook-shared/flow-configs/nodes-gen
 import { createNodesGeneralSuite } from 'storybook-shared/play-helpers';
 
 import DragHandleNode from '../../components/DragHandleNode';
-import { FlowStory } from '../FlowStory';
+import { Flow } from '../Flow';
 
 const runSuite = createNodesGeneralSuite('react');
 const nodeTypes = { DragHandleNode };
 
 const meta = {
   title: 'Generic Tests/Nodes',
-  component: FlowStory,
+  component: Flow,
   tags: ['test'],
   parameters: { layout: 'fullscreen' },
   args: {
     flowConfig: nodesGeneralReactConfig,
     nodeTypes,
   },
-} satisfies Meta<typeof FlowStory>;
+} satisfies Meta<typeof Flow>;
 
 export default meta;
 

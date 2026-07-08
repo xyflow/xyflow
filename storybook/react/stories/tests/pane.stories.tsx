@@ -4,17 +4,17 @@ import { paneGeneralConfig } from 'storybook-shared/flow-configs/pane-general';
 import { paneNonDefaultsConfig } from 'storybook-shared/flow-configs/pane-non-defaults';
 import { createPaneGeneralSuite, createPaneNonDefaultsSuite } from 'storybook-shared/play-helpers';
 
-import { FlowStory } from '../FlowStory';
+import { Flow } from '../Flow';
 
 const runGeneralSuite = createPaneGeneralSuite('react');
 const runNonDefaultsSuite = createPaneNonDefaultsSuite('react');
 
 const meta = {
   title: 'Generic Tests/Pane',
-  component: FlowStory,
+  component: Flow,
   tags: ['test'],
   parameters: { layout: 'fullscreen' },
-} satisfies Meta<typeof FlowStory>;
+} satisfies Meta<typeof Flow>;
 
 export default meta;
 

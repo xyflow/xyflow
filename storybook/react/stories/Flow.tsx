@@ -1,22 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ReactFlow,
-  addEdge,
-  useEdgesState,
-  useNodesState,
-  type NodeTypes,
-  type OnConnect,
-} from '@xyflow/react';
+import { ReactFlow, addEdge, useEdgesState, useNodesState, type NodeTypes, type OnConnect } from '@xyflow/react';
 
 import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/play-helpers/suite';
 import type { SharedFlowConfig } from 'storybook-shared/types';
 
-type FlowStoryProps = {
+type FlowProps = {
   flowConfig: SharedFlowConfig;
   nodeTypes?: NodeTypes;
 };
 
-export function FlowStory({ flowConfig, nodeTypes }: FlowStoryProps) {
+export function Flow({ flowConfig, nodeTypes }: FlowProps) {
   const initialNodes = useMemo(() => flowConfig.flowProps?.nodes ?? [], [flowConfig]);
   const initialEdges = useMemo(() => flowConfig.flowProps?.edges ?? [], [flowConfig]);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -24,7 +17,10 @@ export function FlowStory({ flowConfig, nodeTypes }: FlowStoryProps) {
   const [resetKey, setResetKey] = useState(0);
   const props = { ...flowConfig.flowProps, nodes, edges, nodeTypes };
 
-  const onConnect: OnConnect = useCallback((params) => setEdges((currentEdges) => addEdge(params, currentEdges)), [setEdges]);
+  const onConnect: OnConnect = useCallback(
+    (params) => setEdges((currentEdges) => addEdge(params, currentEdges)),
+    [setEdges]
+  );
 
   useEffect(() => {
     const reset = () => {

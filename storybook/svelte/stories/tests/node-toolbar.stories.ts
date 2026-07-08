@@ -4,21 +4,21 @@ import { nodeToolbarSvelteConfig } from 'storybook-shared/flow-configs/node-tool
 import { createNodeToolbarGeneralSuite } from 'storybook-shared/play-helpers';
 
 import ToolbarNode from '../../components/ToolbarNode.svelte';
-import FlowStory from '../FlowStory.svelte';
+import Flow from '../Flow.svelte';
 
 const runSuite = createNodeToolbarGeneralSuite('svelte');
 const nodeTypes = { ToolbarNode };
 
 const meta = {
   title: 'Generic Tests/Node Toolbar',
-  component: FlowStory,
+  component: Flow,
   tags: ['test'],
   parameters: { layout: 'fullscreen' },
   args: {
     flowConfig: nodeToolbarSvelteConfig,
     nodeTypes,
   },
-} satisfies Meta<typeof FlowStory>;
+} satisfies Meta<typeof Flow>;
 
 export default meta;
 

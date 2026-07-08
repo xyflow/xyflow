@@ -3,17 +3,17 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { edgesGeneralReactConfig } from 'storybook-shared/flow-configs/edges-general';
 import { createEdgesGeneralSuite } from 'storybook-shared/play-helpers';
 
-import { FlowStory } from '../FlowStory';
+import { Flow } from '../Flow';
 
 const runSuite = createEdgesGeneralSuite('react');
 
 const meta = {
   title: 'Generic Tests/Edges',
-  component: FlowStory,
+  component: Flow,
   tags: ['test'],
   parameters: { layout: 'fullscreen' },
   args: { flowConfig: edgesGeneralReactConfig },
-} satisfies Meta<typeof FlowStory>;
+} satisfies Meta<typeof Flow>;
 
 export default meta;
 

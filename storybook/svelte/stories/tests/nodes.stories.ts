@@ -4,21 +4,21 @@ import { nodesGeneralSvelteConfig } from 'storybook-shared/flow-configs/nodes-ge
 import { createNodesGeneralSuite } from 'storybook-shared/play-helpers';
 
 import DragHandleNode from '../../components/DragHandleNode.svelte';
-import FlowStory from '../FlowStory.svelte';
+import Flow from '../Flow.svelte';
 
 const runSuite = createNodesGeneralSuite('svelte');
 const nodeTypes = { DragHandleNode };
 
 const meta = {
   title: 'Generic Tests/Nodes',
-  component: FlowStory,
+  component: Flow,
   tags: ['test'],
   parameters: { layout: 'fullscreen' },
   args: {
     flowConfig: nodesGeneralSvelteConfig,
     nodeTypes,
   },
-} satisfies Meta<typeof FlowStory>;
+} satisfies Meta<typeof Flow>;
 
 export default meta;
 

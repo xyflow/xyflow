@@ -14,14 +14,17 @@ import {
 import { basicAddonsConfig } from 'storybook-shared/flow-configs/basic-addons';
 import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/play-helpers/suite';
 
-export function AddonsFlowStory() {
+export function AddonsFlow() {
   const initialNodes = useMemo(() => basicAddonsConfig.flowProps?.nodes ?? [], []);
   const initialEdges = useMemo(() => basicAddonsConfig.flowProps?.edges ?? [], []);
   const [resetKey, setResetKey] = useState(0);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect: OnConnect = useCallback((params) => setEdges((currentEdges) => addEdge(params, currentEdges)), [setEdges]);
+  const onConnect: OnConnect = useCallback(
+    (params) => setEdges((currentEdges) => addEdge(params, currentEdges)),
+    [setEdges]
+  );
 
   useEffect(() => {
     const reset = () => {

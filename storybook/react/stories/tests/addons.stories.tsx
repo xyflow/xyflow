@@ -2,17 +2,17 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { createControlsSuite, createMinimapSuite } from 'storybook-shared/play-helpers';
 
-import { AddonsFlowStory } from '../../components/AddonsFlowStory';
+import { AddonsFlow } from '../../components/AddonsFlow';
 
 const runMinimapSuite = createMinimapSuite();
 const runControlsSuite = createControlsSuite();
 
 const meta = {
   title: 'Generic Tests/Addons',
-  component: AddonsFlowStory,
+  component: AddonsFlow,
   tags: ['test'],
   parameters: { layout: 'fullscreen' },
-} satisfies Meta<typeof AddonsFlowStory>;
+} satisfies Meta<typeof AddonsFlow>;
 
 export default meta;
 

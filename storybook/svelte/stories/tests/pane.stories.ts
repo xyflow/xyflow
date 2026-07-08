@@ -4,17 +4,17 @@ import { paneGeneralConfig } from 'storybook-shared/flow-configs/pane-general';
 import { paneNonDefaultsSvelteConfig } from 'storybook-shared/flow-configs/pane-non-defaults';
 import { createPaneGeneralSuite, createPaneNonDefaultsSuite } from 'storybook-shared/play-helpers';
 
-import FlowStory from '../FlowStory.svelte';
+import Flow from '../Flow.svelte';
 
 const runGeneralSuite = createPaneGeneralSuite('svelte');
 const runNonDefaultsSuite = createPaneNonDefaultsSuite('svelte');
 
 const meta = {
   title: 'Generic Tests/Pane',
-  component: FlowStory,
+  component: Flow,
   tags: ['test'],
   parameters: { layout: 'fullscreen' },
-} satisfies Meta<typeof FlowStory>;
+} satisfies Meta<typeof Flow>;
 
 export default meta;
 
