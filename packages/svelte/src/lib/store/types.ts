@@ -78,6 +78,7 @@ export type SvelteFlowRestProps<NodeType extends Node = Node, EdgeType extends E
   | 'zoomOnPinch'
   | 'panOnScroll'
   | 'panOnDrag'
+  | 'forcePanMouseButtons'
   | 'selectionOnDrag'
   | 'connectionLineComponent'
   | 'connectionLineStyle'

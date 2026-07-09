@@ -32,6 +32,7 @@ export type PanZoomUpdateOptions = {
   preventScrolling: boolean;
   panOnScroll: boolean;
   panOnDrag: boolean | number[];
+  forcePanMouseButtons: number[];
   panOnScrollMode: PanOnScrollMode;
   panOnScrollSpeed: number;
   userSelectionActive: boolean;

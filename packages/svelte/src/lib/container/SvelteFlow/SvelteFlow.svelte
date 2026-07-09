@@ -61,6 +61,7 @@
     panOnScroll = false,
     panOnScrollSpeed = 0.5,
     panOnDrag = true,
+    forcePanMouseButtons = [1],
     selectionOnDrag = false,
     autoPanOnSelection = true,
     connectionLineComponent,
@@ -156,6 +157,7 @@
     {panOnScroll}
     {panOnScrollSpeed}
     {panOnDrag}
+    {forcePanMouseButtons}
     {paneClickDistance}
     {selectionOnDrag}
     {onmovestart}

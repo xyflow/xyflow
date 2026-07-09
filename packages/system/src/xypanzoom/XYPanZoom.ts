@@ -124,6 +124,7 @@ export function XYPanZoom({
     userSelectionActive,
     panOnScroll,
     panOnDrag,
+    forcePanMouseButtons,
     panOnScrollMode,
     panOnScrollSpeed,
     preventScrolling,
@@ -200,6 +201,7 @@ export function XYPanZoom({
     const filter = createFilter({
       zoomActivationKeyPressed,
       panOnDrag,
+      forcePanMouseButtons,
       zoomOnScroll,
       panOnScroll,
       zoomOnDoubleClick,
