@@ -1,6 +1,5 @@
 import type { Edge, Node, VueFlowState } from '../types';
-import { inject } from 'vue';
-import { VueFlowStateKey } from '../context';
+import { injectFlowContext, VueFlowStateKey } from '../context';
 import { ErrorCode, VueFlowError } from '../utils/errors';
 
 /**
@@ -19,7 +18,7 @@ import { ErrorCode, VueFlowError } from '../utils/errors';
  * @returns the reactive state for the current context
  */
 export function useStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): VueFlowState<NodeType, EdgeType> {
-  const state = inject(VueFlowStateKey, null) as VueFlowState<NodeType, EdgeType> | null;
+  const state = injectFlowContext(VueFlowStateKey) as VueFlowState<NodeType, EdgeType> | null;
 
   if (!state) {
     throw new VueFlowError(ErrorCode.USE_VUE_FLOW_OUTSIDE_PROVIDER);
