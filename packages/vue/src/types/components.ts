@@ -35,7 +35,7 @@ export interface DefaultEdgeTypes {
   smoothstep: typeof SmoothStepEdge;
 }
 
-export type DefaultNodeTypes = { [key in 'input' | 'output' | 'default']: NodeComponent<BuiltInNode> };
+export type DefaultNodeTypes = { [key in 'input' | 'output' | 'default' | 'group']: NodeComponent<BuiltInNode> };
 
 /** these props are passed to edge texts */
 export interface EdgeTextProps {

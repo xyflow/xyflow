@@ -6,6 +6,7 @@ import SmoothStepEdge from '../components/Edges/SmoothStepEdge';
 import StepEdge from '../components/Edges/StepEdge';
 import StraightEdge from '../components/Edges/StraightEdge';
 import DefaultNode from '../components/Nodes/DefaultNode';
+import GroupNode from '../components/Nodes/GroupNode';
 import InputNode from '../components/Nodes/InputNode';
 import OutputNode from '../components/Nodes/OutputNode';
 
@@ -13,6 +14,7 @@ export const defaultNodeTypes: DefaultNodeTypes = {
   input: InputNode,
   default: DefaultNode,
   output: OutputNode,
+  group: GroupNode,
 };
 
 export const defaultEdgeTypes: DefaultEdgeTypes = {
