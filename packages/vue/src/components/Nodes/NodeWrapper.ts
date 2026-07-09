@@ -297,11 +297,11 @@ const NodeWrapper = defineComponent({
             targetPosition: node.targetPosition,
             sourcePosition: node.sourcePosition,
             dragHandle: node.dragHandle,
-            onUpdateNodeInternals: updateInternals,
           }),
         ],
       );
     };
+
     function updateInternals() {
       if (nodeElement.value) {
         updateNodeDimensions([{ id: props.id, nodeElement: nodeElement.value, forceUpdate: true }]);
