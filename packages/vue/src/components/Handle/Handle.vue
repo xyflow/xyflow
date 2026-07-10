@@ -1,7 +1,8 @@
 <script lang="ts" setup>
+import type { HandleConnection } from '@xyflow/system';
 import type { HandleProps } from '../../types';
-import { ConnectionMode, getDimensions, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
-import { computed, onMounted, shallowRef, toRef } from 'vue';
+import { areConnectionMapsEqual, ConnectionMode, getDimensions, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
+import { computed, getCurrentInstance, onMounted, shallowRef, toRef, watch } from 'vue';
 import { useHandle, useNode, useStore, useVueFlow } from '../../composables';
 import { isDef } from '../../utils';
 
@@ -13,6 +14,13 @@ const {
   id: handleId = null,
   ...props
 } = defineProps<HandleProps>();
+
+const emit = defineEmits<{
+  /** fired when an edge touching this handle is added, with the newly-connected connections */
+  connect: [connections: HandleConnection[]];
+  /** fired when an edge touching this handle is removed, with the removed connections */
+  disconnect: [connections: HandleConnection[]];
+}>();
 
 const type = toRef(() => props.type ?? 'source');
 
@@ -133,6 +141,31 @@ const connectionClasses = computed<Record<string, boolean>>((prev) => {
 
   return next;
 });
+
+// Emit `connect`/`disconnect` when the set of connections on THIS handle changes (mirrors xyflow/svelte).
+// `connectionLookup` isn't reactive, so `edges` is the change trigger; skip the diff when nobody listens.
+const instance = getCurrentInstance();
+let prevConnections: Map<string, HandleConnection> | null = null;
+
+watch(
+  () => store.edges,
+  () => {
+    if (!instance?.vnode.props?.onConnect && !instance?.vnode.props?.onDisconnect) {
+      return;
+    }
+
+    const connections = store.connectionLookup.get(`${nodeId}-${type.value}${handleId ? `-${handleId}` : ''}`);
+
+    if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
+      const nextConnections = connections ?? new Map<string, HandleConnection>();
+      handleConnectionChange(prevConnections, nextConnections, diff => emit('disconnect', diff));
+      handleConnectionChange(nextConnections, prevConnections, diff => emit('connect', diff));
+    }
+
+    prevConnections = new Map(connections);
+  },
+  { immediate: true },
+);
 
 // todo: remove this and have users handle this themselves using `updateNodeInternals`
 // set up handle bounds if they don't exist yet and the node has been initialized (i.e. the handle was added after the node has already been mounted)
