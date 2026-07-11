@@ -85,6 +85,7 @@ export {
   isNodeBase,
   pointToRendererPoint,
   rendererPointToPoint,
+  updateParentNode,
 } from '@xyflow/system';
 
 export {
@@ -123,6 +124,7 @@ export {
   type SetCenterOptions,
   type SetViewport,
   type SnapGrid,
+  type UpdateParentNodeParams,
   type Viewport,
   type ViewportHelperFunctionOptions,
   type XYPosition,

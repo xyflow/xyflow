@@ -30,6 +30,7 @@ import {
   nodeToRect,
   panBy as panBySystem,
   updateAbsolutePositions,
+  updateParentNode as updateParentNodeBase,
 } from '@xyflow/system';
 import { computed, markRaw, toRaw } from 'vue';
 import { useViewportHelper } from '../composables';
@@ -836,6 +837,21 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     commitNodes(next);
   };
 
+  const updateParentNode: Actions<NodeType>['updateParentNode'] = (id, parentId) => {
+    // The system helper does the position math (keep the node put on screen) + guards against cycles /
+    // missing nodes; we just feed it the store's lookup + origin and re-adopt the returned user node.
+    const next = updateParentNodeBase<NodeType>({
+      nodeId: id,
+      parentNodeId: parentId,
+      nodeLookup,
+      nodeOrigin: state.nodeOrigin,
+    });
+
+    if (next) {
+      updateNode(id, next, { replace: true });
+    }
+  };
+
   const startConnection: Actions<NodeType>['startConnection'] = (startHandle, position, isClick = false) => {
     if (isClick) {
       state.connectionClickStartHandle = startHandle;
@@ -1055,6 +1071,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     updateEdgeData,
     updateNode,
     updateNodeData,
+    updateParentNode,
     applyEdgeChanges,
     applyNodeChanges,
     addSelectedNodes,

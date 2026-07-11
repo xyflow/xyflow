@@ -269,6 +269,13 @@ export type UpdateNodeData<NodeType extends Node = Node> = (
   options?: { replace: boolean },
 ) => void;
 
+/**
+ * Re-parents a node while keeping its absolute position on the canvas. Imperative counterpart of the pure
+ * `updateParentNode` helper (same name, like `reconnectEdge`) — reads the node lookup + node origin from the
+ * store and applies the result, so you only pass the node and its new parent (`null` detaches it).
+ */
+export type UpdateParentNode = (id: string, parentId: string | null) => void;
+
 export type IsNodeIntersecting<NodeType extends Node = Node> = (node: (Partial<NodeType> & { id: NodeType['id'] }) | Rect, area: Rect, partially?: boolean) => boolean;
 
 export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
@@ -303,6 +310,8 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   updateNode: UpdateNode<NodeType>;
   /** updates the data of a node */
   updateNodeData: UpdateNodeData<NodeType>;
+  /** re-parents a node while keeping its absolute position (see {@link UpdateParentNode}) */
+  updateParentNode: UpdateParentNode;
   /** applies default edge change handler */
   applyEdgeChanges: (changes: EdgeChange<EdgeType>[]) => EdgeType[];
   /** applies default node change handler; returns the resulting user nodes */

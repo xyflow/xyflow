@@ -534,3 +534,70 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
 
   return onBeforeDeleteResult;
 }
+
+export type UpdateParentNodeParams<NodeType extends NodeBase = NodeBase> = {
+  nodeId: string;
+  parentNodeId: string | null;
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>;
+  nodeOrigin?: NodeOrigin;
+};
+
+function isDescendantNode<NodeType extends NodeBase>(
+  nodeId: string,
+  parentNodeId: string,
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
+): boolean {
+  let currentNode = nodeLookup.get(parentNodeId);
+
+  while (currentNode?.parentId) {
+    if (currentNode.parentId === nodeId) {
+      return true;
+    }
+
+    currentNode = nodeLookup.get(currentNode.parentId);
+  }
+
+  return false;
+}
+
+/**
+ * Returns an updated user node with a new parent while keeping its absolute
+ * position on the canvas.
+ *
+ * @public
+ */
+export function updateParentNode<NodeType extends NodeBase = NodeBase>({
+  nodeId,
+  parentNodeId,
+  nodeLookup,
+  nodeOrigin = [0, 0],
+}: UpdateParentNodeParams<NodeType>): NodeType | undefined {
+  const node = nodeLookup.get(nodeId);
+
+  if (!node || parentNodeId === nodeId) {
+    return;
+  }
+
+  const parentNode = parentNodeId ? nodeLookup.get(parentNodeId) : undefined;
+
+  if (parentNodeId && (!parentNode || isDescendantNode(nodeId, parentNodeId, nodeLookup))) {
+    return;
+  }
+
+  const { width, height } = getNodeDimensions(node);
+  const origin = node.origin ?? nodeOrigin;
+  const parentPosition = parentNode?.internals.positionAbsolute ?? { x: 0, y: 0 };
+  const position = {
+    x: node.internals.positionAbsolute.x - parentPosition.x + width * origin[0],
+    y: node.internals.positionAbsolute.y - parentPosition.y + height * origin[1],
+  };
+  const nextNode = { ...node.internals.userNode, position };
+
+  if (parentNodeId) {
+    return { ...nextNode, parentId: parentNodeId };
+  }
+
+  delete nextNode.parentId;
+
+  return nextNode;
+}
