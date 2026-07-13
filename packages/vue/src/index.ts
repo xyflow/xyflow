@@ -111,9 +111,11 @@ export {
   type Padding,
   type PaddingUnit,
   type PaddingWithUnit,
+  type PanelPosition,
   PanOnScrollMode,
   Position,
   type Project,
+  type ProOptions,
   type Rect,
   // value export (it's a runtime enum) — keeps `ResizeControlVariant.Line/.Handle` usable as a value, not
   // type-only, at the package root (mirrors xyflow/react #4947; `export *` via NodeResizer downgraded it)

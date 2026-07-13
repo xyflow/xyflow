@@ -4,6 +4,7 @@ import type { Ref } from 'vue';
 import type { Edge, FlowEmits, FlowProps, FlowSlots, Node, VueFlowInstance, VueFlowState } from '../../types';
 import { inject, onUnmounted, provide } from 'vue';
 import A11yDescriptions from '../../components/A11y/A11yDescriptions.vue';
+import Attribution from '../../components/Attribution/Attribution.vue';
 import { storeToRefs } from '../../composables/storeToRefs';
 import { useCreateVueFlow } from '../../composables/useCreateVueFlow';
 import { useOnInitHandler } from '../../composables/useOnInitHandler';
@@ -133,6 +134,8 @@ export default {
 
     <!-- This slot is _not_ affected by zooming & panning -->
     <slot />
+
+    <Attribution :pro-options="props.proOptions" :position="props.attributionPosition" />
 
     <A11yDescriptions />
   </div>
