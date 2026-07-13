@@ -101,6 +101,7 @@ export {
   type FinalConnectionState,
   type FitViewOptionsBase as FitViewOptions,
   type GetViewport,
+  type HandleConnection,
   type HandleType,
   type NodeConnection,
   type NodeDimensionChange,
