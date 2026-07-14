@@ -1,6 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { edgesGeneralReactConfig } from 'storybook-shared/flow-configs/edges-general';
+import { nodesGeneralReactConfig } from 'storybook-shared/flow-configs/nodes-general';
+import { paneGeneralConfig } from 'storybook-shared/flow-configs/pane-general';
+import { paneNonDefaultsConfig } from 'storybook-shared/flow-configs/pane-non-defaults';
+import {
+  createEdgesGeneralSuite,
+  createNodesGeneralSuite,
+  createPaneGeneralSuite,
+  createPaneNonDefaultsSuite,
+  createPropsColorModeSuite,
+} from 'storybook-shared/play-helpers';
+
+import { ColorModeStory } from '../../../components/ColorModeStory';
+import DragHandleNode from '../../../components/DragHandleNode';
 import { withReactFlowProvider, exampleStoryParameters } from '../../examples/exampleStory';
+import { Flow } from '../../Flow';
 
 import { createEventHandlerArgs, eventHandlerArgTypes } from './eventHandlers';
 import { ReactFlowApiExample } from './Flow';
@@ -16,17 +31,30 @@ import {
   type PropSection,
 } from './config';
 
+const runPaneGeneralSuite = createPaneGeneralSuite('react');
+const runPaneNonDefaultsSuite = createPaneNonDefaultsSuite('react');
+const runNodesGeneralSuite = createNodesGeneralSuite('react');
+const runEdgesGeneralSuite = createEdgesGeneralSuite('react');
+const runColorModeSuite = createPropsColorModeSuite('react');
+
+const nodeTypes = { DragHandleNode };
+
+const testStoryParameters = {
+  layout: 'fullscreen' as const,
+  controls: { disable: true },
+};
+
 const meta = {
   title: 'Components/ReactFlow',
   component: ReactFlowApiExample,
-  tags: ['api-reference'],
+  tags: ['components'],
   parameters: {
     ...exampleStoryParameters,
     docs: {
       description: {
         component: `Interactive playground for [\`<ReactFlow />\`](${API_DOCS_URL}) props. Each story focuses on one docs subsection — use the controls panel to tweak values. The EventHandlers story logs callbacks in the Storybook **Actions** panel.
 
-Automated regression tests for the same areas live under **Tests** in the sidebar (Viewport, Interaction, Edge, Common, etc.).`,
+Stories suffixed with regression coverage (e.g. ViewportGeneral) run automated play-function tests in CI.`,
       },
     },
   },
@@ -57,11 +85,46 @@ function sectionStory(section: PropSection): Story {
 
 export const CommonProps: Story = sectionStory('common');
 
+export const CommonColorMode: Story = {
+  tags: ['test', 'components'],
+  parameters: testStoryParameters,
+  render: () => <ColorModeStory />,
+  play: runColorModeSuite,
+};
+
 export const ViewportProps: Story = sectionStory('viewport');
+
+export const ViewportGeneral: Story = {
+  tags: ['test', 'components'],
+  parameters: testStoryParameters,
+  render: () => <Flow flowConfig={paneGeneralConfig} />,
+  play: runPaneGeneralSuite,
+};
+
+export const ViewportNonDefaults: Story = {
+  tags: ['test', 'components'],
+  parameters: testStoryParameters,
+  render: () => <Flow flowConfig={paneNonDefaultsConfig} />,
+  play: runPaneNonDefaultsSuite,
+};
 
 export const EdgeProps: Story = sectionStory('edge');
 
+export const EdgeGeneral: Story = {
+  tags: ['test', 'components'],
+  parameters: testStoryParameters,
+  render: () => <Flow flowConfig={edgesGeneralReactConfig} />,
+  play: runEdgesGeneralSuite,
+};
+
 export const InteractionProps: Story = sectionStory('interaction');
+
+export const InteractionGeneral: Story = {
+  tags: ['test', 'components'],
+  parameters: testStoryParameters,
+  render: () => <Flow flowConfig={nodesGeneralReactConfig} nodeTypes={nodeTypes} />,
+  play: runNodesGeneralSuite,
+};
 
 export const ConnectionLineProps: Story = sectionStory('connectionLine');
 
