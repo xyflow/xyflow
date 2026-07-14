@@ -118,6 +118,9 @@ export interface FlowEvents<NodeType extends Node = Node, EdgeType extends Edge 
   reconnectStart: EdgeReconnectStartEvent<EdgeType>;
   reconnect: EdgeReconnectEvent<EdgeType>;
   reconnectEnd: EdgeReconnectEndEvent<NodeType, EdgeType>;
+  nodesDelete: NodeType[];
+  edgesDelete: EdgeType[];
+  delete: { nodes: NodeType[]; edges: EdgeType[] };
   error: VueFlowError;
 }
 

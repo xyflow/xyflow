@@ -708,6 +708,20 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       onBeforeDelete: state.onBeforeDelete ?? undefined,
     });
 
+    // notify listeners of the removed set before applying it (parity with xyflow/react's delete events):
+    // the granular `edgesDelete`/`nodesDelete` plus the combined `delete`, each only when non-empty.
+    if (matchingEdges.length) {
+      state.hooks.edgesDelete.trigger(matchingEdges);
+    }
+
+    if (matchingNodes.length) {
+      state.hooks.nodesDelete.trigger(matchingNodes);
+    }
+
+    if (matchingNodes.length || matchingEdges.length) {
+      state.hooks.delete.trigger({ nodes: matchingNodes, edges: matchingEdges });
+    }
+
     // remove exactly that set: `matchingNodes` already includes children and `matchingEdges` the connected
     // edges (both reflecting any `onBeforeDelete` filtering), so tell `removeNodes` NOT to also pull in
     // connected edges/children — that would bypass an `onBeforeDelete` that chose to keep some.
