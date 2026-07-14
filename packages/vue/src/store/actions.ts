@@ -708,8 +708,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       onBeforeDelete: state.onBeforeDelete ?? undefined,
     });
 
-    // notify listeners of the removed set before applying it (parity with xyflow/react's delete events):
-    // the granular `edgesDelete`/`nodesDelete` plus the combined `delete`, each only when non-empty.
     if (matchingEdges.length) {
       state.hooks.edgesDelete.trigger(matchingEdges);
     }
