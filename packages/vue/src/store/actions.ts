@@ -60,13 +60,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 ): Actions<NodeType, EdgeType> {
   const viewportHelper = useViewportHelper(state, nodeLookup);
 
-  // The system-facing twins of the reactive lookups. `@xyflow/system`'s `adoptUserNodes` re-adopts by
-  // clearing + refilling the lookup it's given — on a `reactive(Map)` that's an O(n) trigger storm per
-  // call (`clear()` invalidates every key and iteration subscriber, every drag frame). Adoption and
-  // recompute therefore run against these plain Maps (which also persist across adoptions, keeping
-  // `checkEquality` reuse intact); `syncLookups` then mirrors the result into the reactive lookups with
-  // targeted `.set`/`.delete`, so only entries whose `InternalNode` reference actually changed trigger —
-  // per-frame render invalidation stays O(changed) instead of O(n).
   const systemNodeLookup: NodeLookup<NodeType> = new Map();
   const systemParentLookup: Map<string, Map<string, InternalNode<NodeType>>> = new Map();
 
@@ -90,10 +83,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     for (const [id, internal] of systemNodeLookup) {
       if (rawNodeLookup.get(id) !== internal) {
-        // `markRaw` exactly the entries that are new since the last sync — `adoptUserNodes` rebuilds
-        // changed nodes as fresh plain objects and `updateAbsolutePositions` clones moved children, and
-        // without the mark the reactive lookup would deep-proxy them on read. The per-node render
-        // computed still re-renders on the `.set` (key-level reactivity is independent of value markRaw).
         nodeLookup.set(id, markRaw(internal));
       }
     }
@@ -106,8 +95,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       }
     }
 
-    // adoption rebuilds every nested child-map instance, so compare content — blindly re-setting an
-    // unchanged entry would re-trigger every `parentLookup` subscriber each frame
     const rawParentLookup = toRaw(parentLookup);
 
     for (const [parentId, children] of systemParentLookup) {
@@ -138,7 +125,10 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
    * `checkEquality` would re-adopt the stale `InternalNode`.
    */
   function commitNodes(nodes: NodeType[]) {
-    const { nodes: adopted, hasSelectedNodes } = adoptNodes(nodes, systemNodeLookup, systemParentLookup, state.hooks.error.trigger, {
+    const {
+      nodes: adopted,
+      hasSelectedNodes,
+    } = adoptNodes(nodes, systemNodeLookup, systemParentLookup, state.hooks.error.trigger, {
       nodeOrigin: state.nodeOrigin,
       nodeExtent: state.nodeExtent,
       elevateNodesOnSelect: state.elevateNodesOnSelect,
@@ -147,9 +137,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     state.nodes = adopted;
 
-    // clear a stale visual selection box: `nodesSelectionActive` only ever turns on via a user drag-select,
-    // so once the selection empties out (e.g. the selected nodes were deleted) it must turn back off — else
-    // a later programmatic select would wrongly render the `NodesSelection` rect (xyflow/react #5727).
     state.nodesSelectionActive = state.nodesSelectionActive && hasSelectedNodes;
 
     recomputeAbsolutePositions();
@@ -162,15 +149,11 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
    * proxy: renders are driven by key-level lookup triggers + immutable replacement, like nodes.
    */
   function commitEdges(next: EdgeType[]) {
-    // targeted sync instead of clear+refill: clearing a `reactive(Map)` invalidates every edge
-    // subscriber even when a single edge changed
     const rawEdgeLookup = toRaw(edgeLookup);
     const seenEdgeIds = new Set<string>();
 
     for (let i = 0; i < next.length; i++) {
       const edge = (next[i] = markRaw(toRaw(next[i])));
-      // a duplicate id silently overwrites the earlier edge in the id-keyed lookup (last wins) — surface it
-      // so the otherwise-invisible data bug is debuggable; behaviour is unchanged (we still adopt it)
       if (seenEdgeIds.has(edge.id)) {
         state.hooks.error.trigger(new VueFlowError(ErrorCode.EDGE_DUPLICATE_ID, edge.id));
       }
@@ -197,12 +180,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     state.edges = next;
 
-    // the connection lookup derives 1:1 from the edges array — rebuilding it here keeps every write
-    // path (setEdges/applyEdgeChanges/reconnectEdge/$reset) consistent by construction. Feed it `next`
-    // (the array we just committed), NOT the `state.edges` getter: edges are backed by a `defineModel`
-    // v-model ref whose writes round-trip through the parent asynchronously, so the getter still reads
-    // the pre-commit value on this tick — reading it here would rebuild the lookup from stale edges and
-    // leave `useNodeConnections` empty until the next commit (the reported one-frame connection lag).
     updateConnectionLookup(state.connectionLookup, next);
   }
 
@@ -217,11 +194,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
    * graphs with child nodes — or when `forceFullPass` says inputs changed without a re-adoption.
    */
   function recomputeAbsolutePositions(forceFullPass = false) {
-    // `adoptUserNodes` already computed the clamped `positionAbsolute` + `z` for every changed node
-    // (reused nodes keep their still-valid values) and cascades parented nodes inline, so after a commit
-    // the full pass is only needed when child nodes exist — a moved parent must cascade to REUSED
-    // children regardless of the user array's parent/child order. Callers that change inputs without
-    // re-adopting (`setNodeExtent`) force it.
     if (forceFullPass || systemParentLookup.size > 0) {
       updateAbsolutePositions(systemNodeLookup, systemParentLookup, {
         nodeOrigin: state.nodeOrigin,
@@ -254,16 +226,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       return;
     }
 
-    // The public contract: `getNode` returns the user-facing `Node` (the exact object held in
-    // `state.nodes`/v-model), which the store keeps on the InternalNode as `internals.userNode`. Enriched
-    // data (internals/measured) is reached via `getInternalNode`. Don't mutate the result in place — it
-    // won't propagate; use the helpers (updateNode/applyNodeChanges/setNodes).
     return nodeLookup.get(id)?.internals.userNode as NodeType | undefined;
   };
 
-  // The enriched-node accessor (xyflow/react parity): returns the lookup `InternalNode` (enriched
-  // `internals`/`measured`), whereas `getNode` returns the user-facing `Node` (`internals.userNode`).
-  // Internal call sites that need `internals`/`measured` use this.
   const getInternalNode: Actions<NodeType>['getInternalNode'] = (id) => {
     if (!id) {
       return;
@@ -285,8 +250,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const parentExpandChildren: { id: string; parentId: string; rect: Rect }[] = [];
 
     for (const node of dragItems) {
-      // read `expandParent`/`parentId` from the canonical node: drag items carry them, but keyboard-move
-      // items (from `useUpdateNodePositions`) do not.
       const lookupNode = getNode(node.id);
       const expandParentId = lookupNode?.expandParent ? lookupNode.parentId : undefined;
 
@@ -322,8 +285,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       changes.push(change);
     }
 
-    // grow each parent to fit its `expandParent` children — system returns the parent's position +
-    // dimension changes plus counter-offsets for the other children, applied through the same pipeline.
     if (parentExpandChildren.length > 0) {
       changes.push(...handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
     }
@@ -423,10 +384,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       changes.push(...handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
     }
 
-    // the initial `fitView` (the `fitView` prop) is handled reactively by `useFitViewOnInit`: it waits
-    // for every node to be measured AND re-fits while the container is still settling — neither of which
-    // a one-shot here (fired per measurement batch, against a partial/zero-bounds subset) could do.
-
     if (changes.length) {
       state.hooks.nodesChange.trigger(changes);
     }
@@ -457,10 +414,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const removeSelectedNodes: Actions<NodeType>['removeSelectedNodes'] = (nodes) => {
     const nodesToUnselect = nodes || state.nodes;
 
-    // Emit select=false changes only for nodes that ARE selected — skipping the rest avoids re-committing
-    // (and re-rendering) every node on an unselect, e.g. on drag start with `selectNodesOnDrag: false`
-    // (xyflow/react #5682). `applyNodeChanges` applies them immutably + re-adopts (no in-place
-    // `n.selected = false`: it would keep the node's reference, so the re-adopt would reuse the stale entry).
     const nodeChanges = nodesToUnselect.filter(n => n.selected).map(n => createSelectionChange(n.id, false));
 
     if (nodeChanges.length) {
@@ -479,10 +432,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   };
 
   const resetSelectedElements: Actions<NodeType, EdgeType>['resetSelectedElements'] = () => {
-    // the interactive selection reset (used by a pane click): a no-op while selection is disabled, so a
-    // selection made before `elementsSelectable` was turned off — or set programmatically — survives the
-    // click (xyflow/react #5217). For unconditional clearing, call `removeSelectedNodes`/`removeSelectedEdges`
-    // directly (the equivalent of xyflow/react's ungated `unselectNodesAndEdges`).
     if (!state.elementsSelectable) {
       return;
     }
@@ -508,7 +457,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
   const setNodeExtent: Actions<NodeType>['setNodeExtent'] = (nodeExtent) => {
     state.nodeExtent = nodeExtent;
-    // force the full system pass — the extent changed without a re-adoption, so every root needs re-clamping
     recomputeAbsolutePositions(true);
     updateNodeInternals();
   };
@@ -530,7 +478,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       return;
     }
 
-    // `commitNodes` re-adopts the user nodes into the lookup (xyflow-style) and stores them as `state.nodes`
     commitNodes(nextNodes);
   };
 
@@ -558,8 +505,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     let nextNodes = typeof nodes === 'function' ? nodes(state.nodes) : nodes;
     nextNodes = Array.isArray(nextNodes) ? nextNodes : [nextNodes];
 
-    // Emit `add` changes for the valid user nodes (filter invalid up front — `applyChanges` would
-    // otherwise read `.id` off a non-node and throw; `commitNodes`/`adoptNodes` re-validates on adopt).
     const changes: NodeAddChange<NodeType>[] = [];
     for (const node of nextNodes) {
       if (!isNode(node)) {
@@ -577,8 +522,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     let nextEdges = typeof params === 'function' ? params(state.edges) : params;
     nextEdges = Array.isArray(nextEdges) ? nextEdges : [nextEdges];
 
-    // the `add` change items are the validated USER edges (a `Connection` becomes a new edge with
-    // `defaultEdgeOptions` merged at creation) — no enrichment leaks into the change event payload
     const validEdges = validateEdges<EdgeType>(
       nextEdges,
       state.isValidConnection,
@@ -609,7 +552,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     function createEdgeRemovalChanges(nodes: Node[]) {
       const connectedEdges = getConnectedEdges(nodes);
       for (const edge of connectedEdges) {
-        // deletable is no longer stamped onto stored edges — resolve through defaultEdgeOptions at read time
         const deletable = edge.deletable ?? state.defaultEdgeOptions?.deletable;
         if (isDef(deletable) ? deletable : true) {
           edgeChanges.push(createEdgeRemoveChange(edge.id));
@@ -697,9 +639,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   };
 
   const deleteElements: Actions<NodeType, EdgeType>['deleteElements'] = async ({ nodes = [], edges = [] }) => {
-    // `getElementsToRemove` (xyflow/system) gathers the full set — the targeted nodes + their child nodes,
-    // plus connected + explicitly-listed edges, skipping `deletable: false` — then consults `onBeforeDelete`
-    // and returns the elements that should actually be removed (`false` → none, an object → that subset).
     const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove<NodeType, EdgeType>({
       nodesToRemove: nodes,
       edgesToRemove: edges,
@@ -779,7 +718,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge as EdgeType) : edgeUpdate;
 
-    // immutable: build a NEW edge (full replace or shallow merge) for the target id and recommit
     const next = state.edges.map(e => (e.id === id ? ((options.replace ? nextEdge : { ...e, ...nextEdge }) as EdgeType) : e));
     commitEdges(next);
   };
@@ -793,8 +731,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     const nextData = typeof dataUpdate === 'function' ? dataUpdate(edge as EdgeType) : dataUpdate;
 
-    // build a NEW edge object — in-place mutation isn't reactive (edges are markRaw'd; renders trigger
-    // on lookup replacement)
     const nextEdge = { ...edge, data: options.replace ? nextData : { ...edge.data, ...nextData } } as EdgeType;
 
     commitEdges(state.edges.map(item => (item.id === id ? nextEdge : item)));
@@ -810,8 +746,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   };
 
   const applyEdgeChanges: Actions<NodeType, EdgeType>['applyEdgeChanges'] = (changes) => {
-    // apply immutably against the canonical user edges: new array, new objects for changed edges,
-    // unchanged reused by reference
     const result = applyChanges(changes, state.edges);
     commitEdges(result);
     return result;
@@ -826,8 +760,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
 
-    // Immutable update: build a NEW user node (full replacement or shallow merge) for the target id and
-    // re-adopt via `commitNodes`. Mutating in place would keep the reference and re-adopt the stale node.
     const next = state.nodes.map(n => (n.id === id ? ((options.replace ? nextNode : { ...n, ...nextNode }) as NodeType) : n));
     commitNodes(next);
   };
@@ -841,7 +773,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
 
-    // Immutable: new user node with new `data`, then re-adopt (see {@link updateNode}).
     const next = state.nodes.map(n =>
       n.id === id ? ({ ...n, data: options.replace ? nextData : { ...n.data, ...nextData } } as NodeType) : n,
     );
@@ -889,8 +820,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
   ): [Rect | null, Node | null | undefined, boolean] => {
     const isRectObj = isRectObject(nodeOrRect);
-    // use `getInternalNode` (not getNode): `nodeToRect` below needs `internals`/`measured`, which live on
-    // the InternalNode, not the user `Node` that getNode returns
     const node = isRectObj ? null : isInternalNode(nodeOrRect) ? nodeOrRect : getInternalNode(nodeOrRect.id);
 
     if (!isRectObj && !node) {
@@ -905,7 +834,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const getIntersectingNodes: Actions<NodeType>['getIntersectingNodes'] = (
     nodeOrRect,
     partially = true,
-    // defaults to the enriched InternalNodes — intersection geometry needs `internals`/`measured`
     nodes = Array.from(nodeLookup.values()),
   ) => {
     const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
@@ -946,8 +874,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const overlappingArea = getOverlappingArea(nodeRect, area);
     const partiallyVisible = partially && overlappingArea > 0;
 
-    // "intersecting" when partially overlapping (if `partially`) OR fully contained either way — the node
-    // inside the area, or the area inside the node (the latter was missing; xyflow/react #5482)
     return (
       partiallyVisible
       || overlappingArea >= area.width * area.height
@@ -1012,9 +938,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       }
     }
 
-    // min/max-zoom + translateExtent setters are panZoom-null-safe (they always write state, and
-    // `XYPanZoom` reads those state values when it mounts), so apply them directly — no need to wait
-    // for the panZoom instance to exist.
     setSkippedOptions();
 
     if (!state.initialized) {
@@ -1022,10 +945,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     }
   };
 
-  // Mirror xyflow/react's `toObject`: shallow-clone each node/edge and read the viewport off the transform.
-  // No field stripping (notably `measured` is kept, so a restored flow renders immediately instead of
-  // staying `visibility: hidden` until re-measured) and no JSON round-trip — the nodes/edges are already
-  // plain `markRaw`'d user objects, and callers that persist the result serialize it (`JSON.stringify(...)`).
   const toObject: Actions<NodeType>['toObject'] = () => ({
     nodes: state.nodes.map(node => ({ ...node })),
     edges: state.edges.map(edge => ({ ...edge })),
@@ -1103,6 +1022,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     updateNodeInternals,
     viewportInitialized: computed(() => viewportHelper.value.viewportInitialized),
     $reset,
-    $destroy: () => {},
+    $destroy: () => {
+    },
   };
 }
