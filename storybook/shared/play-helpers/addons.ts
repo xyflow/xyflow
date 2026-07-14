@@ -1,6 +1,6 @@
 import { expect, userEvent, waitFor } from 'storybook/test';
 
-import type { StoryPlayContext } from '../types';
+import type { FlowFramework, StoryPlayContext } from '../types';
 import {
   flowClass,
   getClassName,
@@ -15,36 +15,34 @@ import {
 } from '../utils';
 import { runPlaySuite, type PlaySuiteCase } from './suite';
 
-const framework = 'react' as const;
-
-function minimapSelector(className: string) {
+function minimapSelector(framework: FlowFramework, className: string) {
   return flowClass(framework, `minimap${className ? `-${className}` : ''}`);
 }
 
-function controlsSelector(className: string) {
+function controlsSelector(framework: FlowFramework, className: string) {
   return flowClass(framework, `controls-${className}`);
 }
 
-export function createAddonsPlays() {
+export function createAddonsPlays(framework: FlowFramework) {
   const rendersMinimap = async ({ canvasElement }: StoryPlayContext) => {
     await waitFor(() => {
-      expect(getQueryRoot(canvasElement).querySelector(minimapSelector(''))).toBeTruthy();
-      expect(getQueryRoot(canvasElement).querySelector(minimapSelector('mask'))).toBeTruthy();
+      expect(getQueryRoot(canvasElement).querySelector(minimapSelector(framework, ''))).toBeTruthy();
+      expect(getQueryRoot(canvasElement).querySelector(minimapSelector(framework, 'mask'))).toBeTruthy();
     });
   };
 
   const minimapHasSameNodeCount = async ({ canvasElement }: StoryPlayContext) => {
     await waitFor(() => {
       const paneNodes = getQueryRoot(canvasElement).querySelectorAll(nodeSelector(framework)).length;
-      const minimapNodes = getQueryRoot(canvasElement).querySelectorAll(minimapSelector('node')).length;
+      const minimapNodes = getQueryRoot(canvasElement).querySelectorAll(minimapSelector(framework, 'node')).length;
       expect(minimapNodes).toBe(paneNodes);
     });
   };
 
   const minimapChangesZoomLevel = async ({ canvasElement }: StoryPlayContext) => {
     const root = getQueryRoot(canvasElement);
-    const svg = root.querySelector(`${minimapSelector('')} svg`)!;
-    const mask = root.querySelector(minimapSelector('mask'))!;
+    const svg = root.querySelector(`${minimapSelector(framework, '')} svg`)!;
+    const mask = root.querySelector(minimapSelector(framework, 'mask'))!;
     const viewBoxBeforeZoom = svg.getAttribute('viewBox');
     const maskPathBeforeZoom = mask.getAttribute('d');
     const pane = root.querySelector(paneSelector(framework))!;
@@ -58,7 +56,7 @@ export function createAddonsPlays() {
 
   const minimapChangesNodePosition = async ({ canvasElement }: StoryPlayContext) => {
     const root = getQueryRoot(canvasElement);
-    const minimapNode = root.querySelector(`${minimapSelector('node')}:first-of-type`)!;
+    const minimapNode = root.querySelector(`${minimapSelector(framework, 'node')}:first-of-type`)!;
     const flowNode = root.querySelector(`${nodeSelector(framework)}:first-of-type`)!;
     const xPosBeforeDrag = Number(minimapNode.getAttribute('x'));
     const yPosBeforeDrag = Number(minimapNode.getAttribute('y'));
@@ -76,8 +74,8 @@ export function createAddonsPlays() {
 
   const minimapChangesViaPaneDrag = async ({ canvasElement }: StoryPlayContext) => {
     const root = getQueryRoot(canvasElement);
-    const svg = root.querySelector(`${minimapSelector('')} svg`)!;
-    const mask = root.querySelector(minimapSelector('mask'))!;
+    const svg = root.querySelector(`${minimapSelector(framework, '')} svg`)!;
+    const mask = root.querySelector(minimapSelector(framework, 'mask'))!;
     const viewBoxBeforeDrag = svg.getAttribute('viewBox');
     const maskPathBeforeDrag = mask.getAttribute('d');
     const pane = root.querySelector(paneSelector(framework))!;
@@ -101,7 +99,7 @@ export function createAddonsPlays() {
 
   const controlsZoomIn = async ({ canvasElement }: StoryPlayContext) => {
     const transformBefore = getTransform(canvasElement, viewportSelector(framework));
-    await userEvent.click(getQueryRoot(canvasElement).querySelector(controlsSelector('zoomin'))!);
+    await userEvent.click(getQueryRoot(canvasElement).querySelector(controlsSelector(framework,'zoomin'))!);
     await sleep(100);
     const transformAfter = getTransform(canvasElement, viewportSelector(framework));
     expect(transformAfter.scale).not.toBe(transformBefore.scale);
@@ -109,7 +107,7 @@ export function createAddonsPlays() {
 
   const controlsZoomOut = async ({ canvasElement }: StoryPlayContext) => {
     const transformBefore = getTransform(canvasElement, viewportSelector(framework));
-    await userEvent.click(getQueryRoot(canvasElement).querySelector(controlsSelector('zoomout'))!);
+    await userEvent.click(getQueryRoot(canvasElement).querySelector(controlsSelector(framework,'zoomout'))!);
     await sleep(100);
     const transformAfter = getTransform(canvasElement, viewportSelector(framework));
     expect(transformAfter.scale).not.toBe(transformBefore.scale);
@@ -143,7 +141,7 @@ export function createAddonsPlays() {
     ]);
     await sleep(100);
 
-    await userEvent.click(root.querySelector(controlsSelector('fitview'))!);
+    await userEvent.click(root.querySelector(controlsSelector(framework,'fitview'))!);
     await sleep(100);
     const transformAfter = getTransform(canvasElement, viewportSelector(framework));
     expect(transformAfter.scale).not.toBe(transformBefore.scale);
@@ -161,7 +159,7 @@ export function createAddonsPlays() {
     await userEvent.click(pane, { clientX: paneBox.x + 5, clientY: paneBox.y + 5 });
     expect(getClassName(node)).not.toMatch(/selected/);
 
-    await userEvent.click(root.querySelector(controlsSelector('interactive'))!);
+    await userEvent.click(root.querySelector(controlsSelector(framework,'interactive'))!);
     expect(getClassName(node)).not.toMatch(/selected/);
   };
 
@@ -189,8 +187,8 @@ export function createAddonsPlays() {
   };
 }
 
-export function createMinimapSuite() {
-  const plays = createAddonsPlays();
+export function createMinimapSuite(framework: FlowFramework) {
+  const plays = createAddonsPlays(framework);
 
   const cases: PlaySuiteCase[] = [
     { name: 'renders the mini map', run: plays.rendersMinimap },
@@ -203,8 +201,8 @@ export function createMinimapSuite() {
   return (context: StoryPlayContext) => runPlaySuite('Addons / Minimap', cases, context);
 }
 
-export function createControlsSuite() {
-  const plays = createAddonsPlays();
+export function createControlsSuite(framework: FlowFramework) {
+  const plays = createAddonsPlays(framework);
 
   const cases: PlaySuiteCase[] = [
     { name: 'renders the control panel', run: plays.rendersControls },

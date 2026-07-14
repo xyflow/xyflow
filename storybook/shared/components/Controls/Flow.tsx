@@ -25,6 +25,7 @@ export const ControlsExample: FC<ControlsExampleProps> = ({
   className,
   style,
   fitViewOptions,
+  showInteractive,
   onZoomIn,
   onZoomOut,
   onFitView,
@@ -58,6 +59,7 @@ export const ControlsExample: FC<ControlsExampleProps> = ({
             className={className}
             style={style}
             fitViewOptions={fitViewOptions}
+            showInteractive={showInteractive}
             onZoomIn={onZoomIn}
             onZoomOut={onZoomOut}
             onFitView={onFitView}

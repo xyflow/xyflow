@@ -1,15 +1,17 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/framework';
 import { fn } from 'storybook/test';
 
-import { createMinimapSuite } from 'storybook-shared/play-helpers';
+import { createMinimapSuite } from '../../play-helpers/addons';
+import type { FlowFramework } from '../../types';
 
-import { AddonsFlow } from '../../../components/AddonsFlowStory';
-import { exampleStoryParameters } from '../../examples/exampleStory';
+import AddonsTestFlow from 'storybook-component-addons-test-flow';
+import MiniMapExample from 'storybook-component-minimap-flow';
+import { apiDocsUrl, defaultMiniMapArgs, miniMapArgTypes } from './config';
 
-import { MiniMapExample } from './Flow';
-import { API_DOCS_URL, defaultMiniMapArgs, miniMapArgTypes } from './config';
+declare const __STORYBOOK_FRAMEWORK__: FlowFramework;
 
-const runMinimapSuite = createMinimapSuite();
+const framework = __STORYBOOK_FRAMEWORK__;
+const runMinimapSuite = createMinimapSuite(framework);
 
 const testStoryParameters = {
   layout: 'fullscreen' as const,
@@ -21,19 +23,18 @@ const meta = {
   component: MiniMapExample,
   tags: ['components'],
   parameters: {
-    ...exampleStoryParameters,
+    layout: 'fullscreen',
     docs: {
       description: {
-        component: `Interactive playground for [\`<MiniMap />\`](${API_DOCS_URL}). Use controls to tweak props. The General story runs automated regression tests in CI.`,
+        component: `Interactive playground for [\`<MiniMap />\`](${apiDocsUrl(framework)}). Use controls to tweak props. The General story runs automated regression tests in CI.`,
       },
     },
   },
   args: {
     ...defaultMiniMapArgs,
-    onClick: fn(),
-    onNodeClick: fn(),
+    ...(framework === 'react' ? { onClick: fn(), onNodeClick: fn() } : {}),
   },
-  argTypes: miniMapArgTypes,
+  argTypes: miniMapArgTypes(framework),
 } satisfies Meta<typeof MiniMapExample>;
 
 export default meta;
@@ -61,8 +62,8 @@ export const CustomColors: Story = {
 };
 
 export const General: Story = {
+  component: AddonsTestFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
-  render: () => <AddonsFlow />,
   play: runMinimapSuite,
 };

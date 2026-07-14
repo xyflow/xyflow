@@ -1,15 +1,13 @@
-import type { Align, Position } from '@xyflow/react';
+import type { FlowFramework } from '../../types';
 
-export const API_DOCS_URL = 'https://reactflow.dev/api-reference/components/node-toolbar';
-
-export const TOOLBAR_POSITIONS = ['top', 'right', 'bottom', 'left'] as const satisfies readonly Position[];
-export const TOOLBAR_ALIGNS = ['start', 'center', 'end'] as const satisfies readonly Align[];
+export const TOOLBAR_POSITIONS = ['top', 'right', 'bottom', 'left'] as const;
+export const TOOLBAR_ALIGNS = ['start', 'center', 'end'] as const;
 
 export type NodeToolbarStoryArgs = {
   isVisible?: boolean;
-  position?: Position;
+  position?: (typeof TOOLBAR_POSITIONS)[number];
   offset?: number;
-  align?: Align;
+  align?: (typeof TOOLBAR_ALIGNS)[number];
   nodeId?: string;
   renderMode?: 'inside-node' | 'external';
 };
@@ -20,6 +18,12 @@ export const defaultNodeToolbarArgs: NodeToolbarStoryArgs = {
   align: 'center',
   renderMode: 'inside-node',
 };
+
+export function apiDocsUrl(framework: FlowFramework) {
+  return framework === 'react'
+    ? 'https://reactflow.dev/api-reference/components/node-toolbar'
+    : 'https://svelteflow.dev/api-reference/components/node-toolbar';
+}
 
 type ArgTypeConfig = {
   control?: 'boolean' | 'text' | 'select' | 'number';

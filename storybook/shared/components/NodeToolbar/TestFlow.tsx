@@ -1,25 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Background,
-  BackgroundVariant,
-  Controls,
-  MiniMap,
-  ReactFlow,
-  addEdge,
-  useEdgesState,
-  useNodesState,
-  type OnConnect,
-} from '@xyflow/react';
+import { ReactFlow, addEdge, useEdgesState, useNodesState, type NodeTypes, type OnConnect } from '@xyflow/react';
 
-import { basicAddonsConfig } from 'storybook-shared/flow-configs/basic-addons';
+import { nodeToolbarReactConfig } from 'storybook-shared/flow-configs/node-toolbar-general';
 import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/play-helpers/suite';
 
-export function AddonsFlow() {
-  const initialNodes = useMemo(() => basicAddonsConfig.flowProps?.nodes ?? [], []);
-  const initialEdges = useMemo(() => basicAddonsConfig.flowProps?.edges ?? [], []);
-  const [resetKey, setResetKey] = useState(0);
+import ToolbarNode from 'storybook-component-toolbar-node';
+
+const flowStyle = { width: '100%', height: '100%' } as const;
+const nodeTypes: NodeTypes = { ToolbarNode };
+
+export default function NodeToolbarTestFlow() {
+  const initialNodes = useMemo(() => nodeToolbarReactConfig.flowProps?.nodes ?? [], []);
+  const initialEdges = useMemo(() => nodeToolbarReactConfig.flowProps?.edges ?? [], []);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [resetKey, setResetKey] = useState(0);
+  const props = { ...nodeToolbarReactConfig.flowProps, nodes, edges, nodeTypes };
 
   const onConnect: OnConnect = useCallback(
     (params) => setEdges((currentEdges) => addEdge(params, currentEdges)),
@@ -38,20 +34,14 @@ export function AddonsFlow() {
   }, [initialEdges, initialNodes, setEdges, setNodes]);
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={flowStyle}>
       <ReactFlow
         key={resetKey}
-        {...basicAddonsConfig.flowProps}
-        nodes={nodes}
-        edges={edges}
+        {...props}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-      >
-        <Background variant={BackgroundVariant.Dots} />
-        <MiniMap />
-        <Controls />
-      </ReactFlow>
+      />
     </div>
   );
 }

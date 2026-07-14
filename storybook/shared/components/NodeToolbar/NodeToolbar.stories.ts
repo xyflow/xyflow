@@ -1,17 +1,16 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/framework';
 
-import { nodeToolbarReactConfig } from 'storybook-shared/flow-configs/node-toolbar-general';
-import { createNodeToolbarGeneralSuite } from 'storybook-shared/play-helpers';
+import { createNodeToolbarGeneralSuite } from '../../play-helpers/node-toolbar';
+import type { FlowFramework } from '../../types';
 
-import ToolbarNode from '../../../components/ToolbarNode';
-import { Flow } from '../../Flow';
-import { exampleStoryParameters } from '../../examples/exampleStory';
+import NodeToolbarExample from 'storybook-component-nodetoolbar-flow';
+import NodeToolbarTestFlow from 'storybook-component-nodetoolbar-test-flow';
+import { apiDocsUrl, defaultNodeToolbarArgs, nodeToolbarArgTypes } from './config';
 
-import { NodeToolbarExample } from './Flow';
-import { API_DOCS_URL, defaultNodeToolbarArgs, nodeToolbarArgTypes } from './config';
+declare const __STORYBOOK_FRAMEWORK__: FlowFramework;
 
-const runNodeToolbarSuite = createNodeToolbarGeneralSuite('react');
-const nodeTypes = { ToolbarNode };
+const framework = __STORYBOOK_FRAMEWORK__;
+const runNodeToolbarSuite = createNodeToolbarGeneralSuite(framework);
 
 const testStoryParameters = {
   layout: 'fullscreen' as const,
@@ -23,10 +22,10 @@ const meta = {
   component: NodeToolbarExample,
   tags: ['components'],
   parameters: {
-    ...exampleStoryParameters,
+    layout: 'fullscreen',
     docs: {
       description: {
-        component: `Interactive playground for [\`<NodeToolbar />\`](${API_DOCS_URL}). Use controls to tweak props on a demo node. The General story runs automated regression tests in CI.`,
+        component: `Interactive playground for [\`<NodeToolbar />\`](${apiDocsUrl(framework)}). Use controls to tweak props on a demo node. The General story runs automated regression tests in CI.`,
       },
     },
   },
@@ -64,8 +63,8 @@ export const SelectToShow: Story = {
 };
 
 export const General: Story = {
+  component: NodeToolbarTestFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
-  render: () => <Flow flowConfig={nodeToolbarReactConfig} nodeTypes={nodeTypes} />,
   play: runNodeToolbarSuite,
 };
