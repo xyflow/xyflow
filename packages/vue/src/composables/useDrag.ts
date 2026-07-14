@@ -27,9 +27,8 @@ export function useDrag(params: UseDragParams) {
   const { panBy, getInternalNode, addSelectedNodes, removeSelectedNodes, removeSelectedEdges, updateNodePositions, getNodes, getEdges }
     = useVueFlow();
 
-  // Read the reactive store directly — these are read inside the XYDrag `getStoreItems`/`update` callbacks
-  // and the `watchEffect`, where `store.x` yields the current value with the same reactivity (no per-node
-  // ref projection).
+  // Read the reactive store directly — read inside the XYDrag callbacks / `watchEffect`, so `store.x`
+  // gives the current value; no per-node ref projection.
   const store = useStore();
 
   const { nodeLookup } = store;
@@ -50,10 +49,8 @@ export function useDrag(params: UseDragParams) {
 
     const dragInstance = XYDrag({
       getStoreItems: () => ({
-        // lazy getters: XYDrag never destructures `nodes`/`edges` (verified against every getStoreItems
-        // call site in system), and getStoreItems runs multiple times per pointermove — eagerly reading
-        // the getters here would recompute them per frame (O(n+m) with `onlyRenderVisibleElements`).
-        // getNodes is readonly (public guard); XYDrag reads node data from nodeLookup, not this array.
+        // lazy getters: XYDrag reads node data from `nodeLookup`, never destructures these, and
+        // getStoreItems runs per pointermove — eager reads would recompute O(n+m) each frame.
         get nodes() {
           return getNodes.value as NodeBase[];
         },
@@ -106,9 +103,8 @@ export function useDrag(params: UseDragParams) {
         },
         autoPanSpeed: store.autoPanSpeed,
       }),
-      // select the node on drag-start when `selectNodesOnDrag` is on — XYDrag calls this from its
-      // pointerdown handler (mirrors xyflow/react's `onNodeMouseDown`). Single-selection deselects the
-      // rest; in multi-selection an already-selected node toggles off. `store` is reactive — write to it.
+      // select the node on drag-start when `selectNodesOnDrag` is on. Single-selection deselects the rest;
+      // in multi-selection an already-selected node toggles off.
       onNodeMouseDown: (nodeId: string) => {
         const node = getInternalNode(nodeId);
         if (!node) {
@@ -124,8 +120,8 @@ export function useDrag(params: UseDragParams) {
           removeSelectedNodes([node]);
         }
       },
-      // XYDrag hands user nodes (the InternalNode's `userNode`, spread with the live drag position +
-      // `dragging`), which is exactly the event payload — emit them directly, no lookup round-trip
+      // XYDrag hands us the user nodes (with live drag position + `dragging`) — exactly the event payload,
+      // so emit them directly with no lookup round-trip
       onDragStart: (event, _dragItems, node, nodes) => {
         dragFired = true;
         dragging.value = true;
@@ -149,9 +145,8 @@ export function useDrag(params: UseDragParams) {
       nodeClickDistance: store.nodeClickDistance,
     });
 
-    // Handle the "moved slightly but within threshold" click case.
-    // XYDrag won't fire drag events for sub-threshold movement, and d3 would normally
-    // suppress the native click. We detect this case with pointer listeners.
+    // Handle the "moved slightly but within threshold" click: XYDrag won't fire drag events for
+    // sub-threshold movement and d3 suppresses the native click, so detect it with pointer listeners.
     const handlePointerDown = (e: PointerEvent) => {
       dragFired = false;
       pointerDownPos = { x: e.clientX, y: e.clientY };

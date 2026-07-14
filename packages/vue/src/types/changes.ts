@@ -12,9 +12,6 @@ import type { Node, NodeOrigin } from './node';
 
 /**
  * Drag-item shape used by the drag pipeline.
- *
- * Mirrors `@xyflow/system`'s `NodeDragItem` exactly so vue-flow's drag items are interchangeable with
- * system types.
  */
 export interface NodeDragItem {
   id: string;
@@ -33,23 +30,17 @@ export interface NodeDragItem {
   parentId?: string;
 }
 
-/**
- * Node change types — mirror `@xyflow/system`'s shapes (no `replace` variant yet).
- *
- * Renames vs the previous vue-flow shape:
- *   - `NodeDimensionChange.updateStyle` → `setAttributes` (truthy = set width/height on the DOM element;
- *     `'width'` / `'height'` restricts which axis is written).
- *   - `NodePositionChange.from` (the OLD absolute position) → dropped. Use `positionAbsolute` (the NEW
- *     absolute position) which now matches xyflow/react / xyflow/svelte.
- *
- * Item shapes on add changes are the user-provided `Node` / `Edge` types (not the internal `InternalNode`).
- */
 export interface NodeAddChange<NodeType extends Node = Node> {
   item: NodeType;
   type: 'add';
   index?: number;
 }
 
+/**
+ * The `nodes-change` event passes an array of `NodeChange` objects that you should use to update your
+ * flow's state. The `NodeChange` type is a union of the different object types that represent the
+ * various ways a node can change in a flow.
+ */
 export type NodeChange<NodeType extends Node = Node>
   = | NodeDimensionChange
     | NodePositionChange
@@ -63,6 +54,11 @@ export interface EdgeAddChange<EdgeType extends Edge = Edge> {
   index?: number;
 }
 
+/**
+ * The `edges-change` event passes an array of `EdgeChange` objects that you should use to update your
+ * flow's state. The `EdgeChange` type is a union of the different object types that represent the
+ * various ways an edge can change in a flow.
+ */
 export type EdgeChange<EdgeType extends Edge = Edge> = EdgeSelectionChange | EdgeRemoveChange | EdgeAddChange<EdgeType>;
 
 export type ElementChange = NodeChange | EdgeChange;

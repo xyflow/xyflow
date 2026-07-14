@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 defineProps<{
   disabled?: boolean;
-  /** accessible label; applied as both `aria-label` and `title` (mirrors xyflow) */
+  /** accessible label; applied as both `aria-label` and `title` */
   label?: string;
 }>();
 

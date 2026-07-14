@@ -58,7 +58,7 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
 
   /** id → enriched `InternalNode` (`internals`/`measured`); the canonical source for node-derived data */
   readonly nodeLookup: NodeLookup<NodeType>;
-  /** parentId → map of child id → child `InternalNode`. Matches `@xyflow/system`'s `ParentLookup`. */
+  /** parentId → map of child id → child `InternalNode`. */
   readonly parentLookup: Map<string, Map<string, InternalNode<NodeType>>>;
   /** id → user-facing `Edge` */
   readonly edgeLookup: EdgeLookup<EdgeType>;
@@ -193,7 +193,7 @@ export type RemoveEdges<EdgeType extends Edge = Edge> = (
 
 /**
  * Delete the given nodes/edges along with their connected edges and child nodes, gated by `onBeforeDelete`.
- * Resolves to the elements actually removed. Mirrors xyflow/react's `deleteElements`.
+ * Resolves to the elements actually removed.
  */
 export type DeleteElements<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (elements: {
   nodes?: (Partial<NodeType> & { id: string })[];
@@ -244,8 +244,8 @@ export type GetNode<NodeType extends Node = Node> = (id: string | undefined | nu
 
 /**
  * Returns the enriched {@link InternalNode} (`internals.{positionAbsolute, z, handleBounds, userNode}` +
- * authoritative `measured`) for an id, mirroring xyflow/react's `getInternalNode`. This is the accessor
- * for store-computed data; `getNode` exposes the user-facing node.
+ * authoritative `measured`) for an id. This is the accessor for store-computed data; `getNode` exposes
+ * the user-facing node.
  */
 export type GetInternalNode<NodeType extends Node = Node> = (id: string | undefined | null) => InternalNode<NodeType> | undefined;
 
@@ -285,7 +285,7 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   removeNodes: RemoveNodes<NodeType>;
   /** remove edges from state */
   removeEdges: RemoveEdges<EdgeType>;
-  /** delete nodes/edges (with connected edges + children), gated by `onBeforeDelete`; mirrors xyflow/react */
+  /** delete nodes/edges (with connected edges + children), gated by `onBeforeDelete` */
   deleteElements: DeleteElements<NodeType, EdgeType>;
   /** find a node by id */
   getNode: GetNode<NodeType>;
@@ -377,9 +377,8 @@ export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = E
   getNodeTypes: Record<keyof DefaultNodeTypes | string, NodeComponent<NodeType | BuiltInNode>>;
   /** all visible nodes (user-facing `Node`s; use `getInternalNode`/`nodeLookup` for enriched data) */
   getNodes: readonly NodeType[];
-  // the returned list is `readonly` — change nodes via setNodes/updateNode/applyNodeChanges (an in-place
-  // mutation to a node read here won't propagate). NOTE: shallow `readonly`, not `DeepReadonly`: the latter
-  // recurses into `Edge.label`'s VNode/Component types and trips TS2589 on a plain `.filter()` (#1886).
+  // returned list is shallow `readonly` — mutate via setNodes/updateNode/applyNodeChanges. Not
+  // `DeepReadonly`: it recurses into `Edge.label`'s VNode/Component types and trips TS2589 (#1886).
   /** all visible edges (user-facing `Edge`s) */
   getEdges: readonly EdgeType[];
   /** returns all currently selected nodes (user-facing `Node`s) */
@@ -396,14 +395,14 @@ export type ComputedGetters<NodeType extends Node = Node, EdgeType extends Edge 
 
 /**
  * The reactive state object returned by {@link useStore} — every {@link State} field plus the lookups,
- * read directly (`store.nodes`, no `.value`, like `xyflow/svelte`'s store / a Pinia store). Use
- * `storeToRefs(useStore())` to destructure scalar/array fields as refs.
+ * read directly (`store.nodes`, no `.value`, like a Pinia store). Use `storeToRefs(useStore())` to
+ * destructure scalar/array fields as refs.
  */
 export type VueFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = State<NodeType, EdgeType>;
 
 /**
- * The curated instance returned by {@link useVueFlow} — actions, computed getters, and event hooks
- * (mirrors `useReactFlow` / `useSvelteFlow`). Raw reactive state lives on {@link useStore} instead.
+ * The curated instance returned by {@link useVueFlow} — actions, computed getters, and event hooks.
+ * Raw reactive state lives on {@link useStore} instead.
  */
 export type VueFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   readonly id: string;

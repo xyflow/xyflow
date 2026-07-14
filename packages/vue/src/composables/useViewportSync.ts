@@ -10,13 +10,11 @@ function sameViewport(a: Viewport | undefined, b: Viewport | undefined) {
 }
 
 /**
- * Two-way binds the `viewport` v-model to the store's canonical `transform`, matching xyflow/react's
- * controlled viewport and svelte's `bind:viewport`.
+ * Two-way binds the `viewport` v-model to the store's canonical `transform`.
  *
- * - **in** (model → store): applies an externally-set `viewport` to the panzoom via `syncViewport` (which
- *   doesn't fire pan/zoom events) and mirrors it onto `transform`. Re-runs once the panzoom mounts so the
- *   controlled value wins over `ZoomPane`'s `defaultViewport` seed.
- * - **out** (store → model): writes `transform` changes back to the model so the binding stays in sync.
+ * - **in** (model → store): applies an externally-set `viewport` via `syncViewport` (no pan/zoom events)
+ *   and mirrors it onto `transform`. Re-runs once the panzoom mounts so it wins over `ZoomPane`'s seed.
+ * - **out** (store → model): writes `transform` changes back to the model.
  *
  * Equality guards on both sides stop the round-trip from looping.
  *
@@ -48,9 +46,8 @@ export function useViewportSync<NodeType extends Node = Node, EdgeType extends E
     { immediate: true },
   );
 
-  // `flush: 'sync'` so the `viewport` v-model ref mirrors a `transform` change on the same tick — the store's
-  // own `viewport` getter is already synchronous, so the model ref must be too (same rationale as the
-  // nodes/edges bridge in `useWatchProps`), else reading it right after a programmatic viewport change lags.
+  // `flush: 'sync'` so the `viewport` v-model ref mirrors a `transform` change on the same tick as the
+  // store's synchronous `viewport` getter — else reading it right after a programmatic change lags.
   watch(transform, (next) => {
     const viewport = { x: next[0], y: next[1], zoom: next[2] };
     if (sameViewport(viewport, model.value)) {

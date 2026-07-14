@@ -114,15 +114,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   }
 
   /**
-   * Single write path for node membership/content. Takes the canonical USER `Node`s, re-adopts them into
-   * `nodeLookup`/`parentLookup` via `adoptNodes` (xyflow/react+svelte parity — `adoptUserNodes` mutates the
-   * lookups in place, reusing unchanged `InternalNode`s by reference via `checkEquality`), then stores the
-   * validated user nodes as `state.nodes` (the v-model array / `getNodes`). The enriched `InternalNode`s
-   * live only in the lookup. `recomputeAbsolutePositions` refreshes parent-aware absolute positions/z.
-   *
-   * Because adoption is immutable+reference-based, callers MUST pass NEW user-node objects for changed
-   * nodes (see the immutable `applyChanges`) — mutating a node in place keeps its reference, so
-   * `checkEquality` would re-adopt the stale `InternalNode`.
+   * Single write path for nodes: re-adopt into `nodeLookup`/`parentLookup` (reusing unchanged
+   * `InternalNode`s by reference) and store the user nodes as `state.nodes`. Callers must pass NEW objects
+   * for changed nodes — mutating in place keeps the reference, so adoption reuses the stale `InternalNode`.
    */
   function commitNodes(nodes: NodeType[]) {
     const {
@@ -143,10 +137,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   }
 
   /**
-   * Single write path for edge membership (see {@link commitNodes}). Stores the USER edges verbatim
-   * (`edgeLookup` values are the same references as the `state.edges` elements; no
-   * enriched edge representation exists). `markRaw` at this choke point keeps edges out of Vue's deep
-   * proxy: renders are driven by key-level lookup triggers + immutable replacement, like nodes.
+   * Single write path for edges: stored verbatim (`edgeLookup` values are the same references as the
+   * `state.edges` elements). `markRaw` keeps edges out of Vue's deep proxy; renders come from lookup key
+   * changes + immutable replacement, like nodes.
    */
   function commitEdges(next: EdgeType[]) {
     const rawEdgeLookup = toRaw(edgeLookup);
@@ -184,14 +177,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   }
 
   /**
-   * Recompute parent-aware `internals.positionAbsolute` on the system lookup, then mirror into the
-   * reactive lookups (`syncLookups`). Lookup-only: there is NO write-back onto `state.nodes` — those hold
-   * the raw user `Node`s. This replaces the per-node positionAbsolute watcher that used to live in
-   * `NodeWrapper`.
-   *
-   * Adoption (`adoptUserNodes`) already computes clamped positions and `z` (via `calculateZ`, including
-   * select-elevation) for every changed node, so the full `updateAbsolutePositions` pass only runs for
-   * graphs with child nodes — or when `forceFullPass` says inputs changed without a re-adoption.
+   * Recompute parent-aware absolute positions/z on the system lookup, then mirror into the reactive
+   * lookups. Lookup-only — no write-back to `state.nodes`. The full `updateAbsolutePositions` pass only
+   * runs when there are child nodes (adoption already clamps position/z for changed nodes) or `forceFullPass`.
    */
   function recomputeAbsolutePositions(forceFullPass = false) {
     if (forceFullPass || systemParentLookup.size > 0) {
@@ -261,13 +249,11 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       };
 
       if (changed) {
-        // drag items already carry the parent-RELATIVE position: XYDrag's `calculateNodePosition` and the
-        // keyboard path's `calcNextPosition` both subtract the parent offset before handing items here.
+        // drag items already carry the parent-relative position (both drag paths subtract the parent offset)
         change.position = node.position;
 
         if (expandParentId) {
           // pin the child's relative position to >= 0; the parent grows to contain it instead
-          // (xyflow/react clamps the same way before collecting the child for expansion).
           change.position = { x: Math.max(0, change.position.x), y: Math.max(0, change.position.y) };
 
           parentExpandChildren.push({
@@ -340,11 +326,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
             dimensions,
           });
 
-          // a freshly-measured `expandParent` child grows its parent to fit (mirrors system's own
-          // `updateNodeDimensions`). Unlike the drag path (where the position is the user's target), here
-          // the position is fixed and only the size grew — so re-clamp it against the NEW dimensions and
-          // the node's extent BEFORE measuring expansion, exactly as system does. Otherwise a node that
-          // merely grew would be treated as overflowing and the parent would expand more than necessary.
+          // a freshly-measured `expandParent` child grows its parent to fit; re-clamp against the NEW
+          // dimensions/extent first so a node that only grew isn't treated as overflowing
           if (node.expandParent && node.parentId) {
             const parent = getInternalNode(node.parentId);
             let positionAbsolute = node.internals.positionAbsolute;
@@ -367,12 +350,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
             });
           }
 
-          // Re-set a fresh entry so the markRaw lookup re-renders this node — in-place `measured`/
-          // `handleBounds` writes don't trigger the per-node render computed (markRaw values aren't deep
-          // tracked; only the lookup `.set` is). This makes measurement reflect even with `autoApplyChanges:false`
-          // (the 'dimensions' change additionally flows `measured` onto the user node via re-adopt).
-          // The fresh entry goes into BOTH maps: the system map is what `adoptUserNodes` reuses via
-          // `checkEquality`, so leaving the old object there would let the maps' references diverge.
+          // re-set a fresh entry so the markRaw lookup re-renders (in-place measured/handleBounds writes
+          // aren't tracked; only the `.set` is). Into BOTH maps so their references don't diverge.
           const fresh = markRaw({ ...toRaw(node) });
           systemNodeLookup.set(node.id, fresh);
           nodeLookup.set(node.id, fresh);
@@ -559,7 +538,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       }
     }
 
-    // recursively get all children and if the child is a parent, get those children as well until all nodes have been removed that are children of the current node
+    // recursively collect all nested children
     function createChildrenRemovalChanges(id: string) {
       const children: NodeType[] = [];
       for (const node of state.nodes) {
@@ -659,9 +638,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       state.hooks.delete.trigger({ nodes: matchingNodes, edges: matchingEdges });
     }
 
-    // remove exactly that set: `matchingNodes` already includes children and `matchingEdges` the connected
-    // edges (both reflecting any `onBeforeDelete` filtering), so tell `removeNodes` NOT to also pull in
-    // connected edges/children — that would bypass an `onBeforeDelete` that chose to keep some.
+    // `matchingNodes`/`matchingEdges` already include children + connected edges (post-`onBeforeDelete`),
+    // so tell `removeNodes` not to re-expand them — that would bypass an `onBeforeDelete` that kept some.
     if (matchingNodes.length) {
       removeNodes(matchingNodes, false, false);
     }
@@ -737,9 +715,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   };
 
   const applyNodeChanges: Actions<NodeType>['applyNodeChanges'] = (changes) => {
-    // Apply changes IMMUTABLY against the canonical user nodes (`applyChanges` returns a new array — new
-    // objects for changed nodes, unchanged reused by reference), then re-adopt via `commitNodes`
-    // (`adoptUserNodes` reuses unchanged InternalNodes by reference via `checkEquality`).
+    // apply changes immutably (new array, new objects only for changed nodes), then re-adopt via `commitNodes`
     const result = applyChanges(changes, state.nodes);
     commitNodes(result);
     return result;
@@ -898,8 +874,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       state.defaultEdgeOptions = opts.defaultEdgeOptions;
     }
 
-    // the `fitView` prop maps to the internal `fitViewOnInit` flag (kept separate from the `fitView()`
-    // action); skipped from the generic loop above via `storeOptionsToSkip`
+    // the `fitView` prop maps to the internal `fitViewOnInit` flag (separate from the `fitView()` action)
     if (isDef(opts.fitView)) {
       state.fitViewOnInit = opts.fitView;
     }
@@ -922,8 +897,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       if (isDef(opts.translateExtent)) {
         setTranslateExtent(opts.translateExtent);
       }
-      // route through the setter (recomputes absolute positions) instead of the raw generic-loop
-      // assignment — runs after `setNodes`, so preloaded nodes get re-clamped to the extent
+      // route through the setter (recomputes absolute positions) so preloaded nodes get re-clamped to the extent
       if (isDef(opts.nodeExtent)) {
         setNodeExtent(opts.nodeExtent);
       }

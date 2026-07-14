@@ -1,13 +1,9 @@
 import type { PropType } from 'vue';
 
 /**
- * Builds a single Vue prop declaration whose runtime shape is `{ type: null, required }` — i.e. no
- * runtime type-check, because VueFlow always provides these props itself — but whose *type* is
- * `PropType<T>`, so `defineProps(nodeProps<MyNode>())` recovers precise, generic-aware prop types.
- *
- * Declaring the key is what keeps the prop out of `$attrs`, preventing the `draggable`/`class`
- * attribute leak on custom node components. Consumed only by the generated `*Props()` factories in
- * `props-objects.gen.ts`.
+ * Builds a Vue prop declaration typed as `PropType<T>` but with no runtime check (VueFlow supplies these
+ * props itself), so `defineProps(nodeProps<MyNode>())` recovers precise generic-aware types. Declaring the
+ * key also keeps the prop out of `$attrs`, preventing the `draggable`/`class` leak on custom nodes.
  *
  * @internal
  */

@@ -137,9 +137,8 @@ export const storeOptionsToSkip: (keyof Partial<FlowProps & Omit<State, 'nodes' 
   'translateExtent',
   'nodeExtent',
   'fitView',
-  // mapped from the `fitView` prop in `setState`; keep the generic option loop from re-applying the
-  // default — the full state is spread into `setState` on store creation, so a stale `fitViewOnInit: false`
-  // would otherwise clobber the value `fitView` just set, leaving `:fit-view` inert.
+  // mapped from the `fitView` prop in `setState`; skipped from the generic loop so a stale
+  // `fitViewOnInit: false` (spread in on store creation) can't clobber what `fitView` just set
   'fitViewOnInit',
   'viewport',
   'hooks',

@@ -30,8 +30,7 @@ const EdgeWrapper = defineComponent({
   setup(props: Props) {
     const { id: vueFlowId, addSelectedEdges, emits, getEdgeTypes, removeSelectedEdges, getEdge, getInternalNode } = useVueFlow();
 
-    // Read the reactive store directly (see NodeWrapper) — `store.x` tracks reactively inside
-    // computeds/handlers, so there's no need to project the whole state into refs per edge.
+    // read the reactive store directly (see NodeWrapper); `store.x` tracks reactively without per-edge ref projection
     const store = useStore();
 
     // `isValidConnection` is handed to `useHandle`, which reads it as a ref, so keep it as one.
@@ -44,9 +43,8 @@ const EdgeWrapper = defineComponent({
       return defaults ? ({ ...(defaults as Edge), ...storedEdge.value } as Edge) : storedEdge.value;
     });
 
-    // resolved per edge (value-gated computed) so the z-tracking of BOTH endpoint lookup keys lives in
-    // this component's scope — resolving it in EdgeRenderer's v-for made the whole renderer re-render
-    // (all edge vnodes) whenever ANY node entry was replaced, i.e. every drag frame
+    // per-edge value-gated computed so z-tracking of both endpoint lookups stays scoped to this component —
+    // resolving it in EdgeRenderer's v-for re-rendered every edge whenever any node entry changed (every drag frame)
     const zIndex = computed(() => getEdgeZIndex(edge.value, getInternalNode, store.elevateEdgesOnSelect, store.zIndexMode));
 
     const slots = inject(Slots);
@@ -115,9 +113,8 @@ const EdgeWrapper = defineComponent({
       type: reconnectHandleType,
       isValidConnection,
       reconnectHandleType,
-      // xyflow/react + svelte hide the original edge AND emit `reconnectStart` from the system's
-      // `onConnectStart` — i.e. once the reconnect drag actually starts (after the drag threshold), not
-      // eagerly on pointerdown. A plain click on the anchor then leaves the edge in place and emits nothing.
+      // fires once the reconnect drag actually starts (after the drag threshold), not eagerly on pointerdown —
+      // a plain click on the anchor leaves the edge in place and emits nothing
       onReconnectStart: (event) => {
         updating.value = true;
         emits.reconnectStart({ event, edge: storedEdge.value, handleType: reconnectHandleType.value });
@@ -173,8 +170,8 @@ const EdgeWrapper = defineComponent({
       const { x: sourceX, y: sourceY } = getHandlePosition(sourceNode, sourceHandle, sourcePosition);
       const { x: targetX, y: targetY } = getHandlePosition(targetNode, targetHandle, targetPosition);
 
-      // the full-container svg wrapper (one stacking context per edge zIndex) is rendered here rather
-      // than in EdgeRenderer's v-for so its node-lookup tracking stays scoped to this edge
+      // the full-container svg wrapper (one stacking context per edge zIndex) lives here, not in EdgeRenderer's
+      // v-for, so its node-lookup tracking stays scoped to this edge
       return h(
         'svg',
         { style: { zIndex: zIndex.value } },
@@ -238,9 +235,8 @@ const EdgeWrapper = defineComponent({
                   labelBgBorderRadius: edge.value.labelBgBorderRadius,
                   data: edge.value.data,
                   style: edgeStyle.value,
-                  // only emit a marker ref when the edge actually has one — `getMarkerId(undefined)`
-                  // returns '' (→ `url('#')`), which otherwise writes a bogus marker attr on every edge
-                  // path every render (a wasted `setAttribute` per frame for the common marker-less edge)
+                  // only emit a marker ref when the edge has one — `getMarkerId(undefined)` returns '' (→ `url('#')`),
+                  // a bogus marker attr written every render on the common marker-less edge
                   markerStart: edge.value.markerStart ? `url('#${getMarkerId(edge.value.markerStart, vueFlowId)}')` : undefined,
                   markerEnd: edge.value.markerEnd ? `url('#${getMarkerId(edge.value.markerEnd, vueFlowId)}')` : undefined,
                   sourcePosition,

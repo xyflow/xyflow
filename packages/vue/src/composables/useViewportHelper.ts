@@ -93,10 +93,8 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
           return false;
         }
 
-        // queue the fit until every node is measured (xyflow/react's `fitViewQueued`): a fit requested
-        // before the nodes settle — e.g. right after `addNodes` — would otherwise frame only the already
-        // measured nodes (`getFitViewNodes` skips unmeasured ones) and ignore the new ones. An empty flow has
-        // nothing to wait for, so don't queue (else the fit would never resolve).
+        // wait until every node is measured: a fit requested before the nodes settle (e.g. right after
+        // `addNodes`) would frame only the measured ones. Empty flow has nothing to wait for — don't queue.
         if (nodeLookup.size > 0 && !nodesInitialized.value) {
           await until(nodesInitialized).toBe(true);
         }

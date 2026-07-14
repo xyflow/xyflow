@@ -25,9 +25,8 @@ export function useNode<NodeType extends Node = Node>(id?: string) {
   const { getInternalNode, emits } = useVueFlow<NodeType>();
   const store = useStore<NodeType>();
 
-  // `node` is the enriched `InternalNode` (it carries `internals`/`measured`, which NodeWrapper + custom
-  // nodes read) and a `computed` (not a one-time read) so it re-resolves whenever the store replaces this
-  // node's lookup entry — required for the immutable re-adopt model where a changed node is a NEW object.
+  // enriched `InternalNode` (carries `internals`/`measured`) as a `computed` so it re-resolves whenever the
+  // store replaces this node's lookup entry (a changed node is a NEW object in the immutable model).
   const node = computed(() => getInternalNode(nodeId));
 
   if (!node.value) {

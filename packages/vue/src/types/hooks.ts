@@ -32,7 +32,7 @@ export interface EdgeReconnectEvent<EdgeType extends Edge = Edge> {
 
 /**
  * Payload for `connectEnd`/`clickConnectEnd` — the pointer event plus the {@link FinalConnectionState}
- * (whether the connection was valid, the from/to handles and nodes), mirroring xyflow/react's `OnConnectEnd`.
+ * (whether the connection was valid, the from/to handles and nodes).
  */
 export interface ConnectEndEvent<NodeType extends Node = Node> {
   event: MouseTouchEvent;
@@ -42,7 +42,7 @@ export interface ConnectEndEvent<NodeType extends Node = Node> {
 export interface EdgeReconnectStartEvent<EdgeType extends Edge = Edge> {
   event: MouseTouchEvent;
   edge: EdgeType;
-  /** the type of the handle being reconnected (the fixed end, opposite the grabbed anchor), as in xyflow/react */
+  /** the type of the handle being reconnected (the fixed end, opposite the grabbed anchor) */
   handleType: HandleType;
 }
 
@@ -55,7 +55,7 @@ export interface EdgeReconnectEndEvent<NodeType extends Node = Node, EdgeType ex
   connectionState: FinalConnectionState<InternalNode<NodeType>>;
 }
 
-/** Payload for `selectionChange` — the currently selected nodes and edges, mirroring xyflow/react's `OnSelectionChange`. */
+/** Payload for `selectionChange` — the currently selected nodes and edges. */
 export interface SelectionChangeEvent<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   nodes: NodeType[];
   edges: EdgeType[];

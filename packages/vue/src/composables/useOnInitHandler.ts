@@ -21,9 +21,7 @@ export function useOnInitHandler<NodeType extends Node = Node, EdgeType extends 
         vfInstance.emits.init(vfInstance);
       }
     },
-    // `flush: 'post'` runs the callback after the viewport DOM update, so consumers' `onInit` see the
-    // initialized viewport. Replaces a `setTimeout(() => …, 1)` that deferred the emit by a macrotask to
-    // approximate the same "after the viewport is ready" timing.
+    // `flush: 'post'` runs after the viewport DOM update, so consumers' `onInit` see the initialized viewport
     { flush: 'post' },
   );
 }

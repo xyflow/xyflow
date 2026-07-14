@@ -20,30 +20,34 @@ export type Connector = (
 export type ConnectionStatus = 'valid' | 'invalid';
 
 /**
- * An ongoing connection, mirroring xyflow/react's `ConnectionState` (returned by `useConnection`).
- * Handles are vue-flow `ConnectingHandle`s and nodes are `InternalNode`s (the resolved `InternalNode`s).
+ * An ongoing connection (the active `ConnectionState`). Handles are vue-flow `ConnectingHandle`s (not
+ * the DOM `Handle`) and nodes are resolved `InternalNode`s.
  */
 export interface ConnectionInProgress<NodeType extends Node = Node> {
+  /** Indicates whether a connection is currently in progress. */
   inProgress: true;
-  /** `true`/`false` when over a handle or inside the connection radius, otherwise `null` */
+  /**
+   * If an ongoing connection is above a handle or inside the connection radius, this will be `true`
+   * or `false`, otherwise `null`.
+   */
   isValid: boolean | null;
-  /** xy start position of the connection */
+  /** Returns the xy start position or `null` if no connection is in progress. */
   from: XYPosition;
-  /** the handle the connection started from */
+  /** Returns the start handle or `null` if no connection is in progress. */
   fromHandle: ConnectingHandle;
-  /** the side of the start handle */
+  /** Returns the side (called position) of the start handle or `null` if no connection is in progress. */
   fromPosition: Position;
-  /** the node the connection started from */
+  /** Returns the start node or `null` if no connection is in progress. */
   fromNode: InternalNode<NodeType>;
-  /** xy end position of the connection (the current pointer position) */
+  /** Returns the xy end position or `null` if no connection is in progress. */
   to: XYPosition;
-  /** the handle the connection currently ends on, or `null` */
+  /** Returns the end handle or `null` if no connection is in progress. */
   toHandle: ConnectingHandle | null;
-  /** the side of the end handle, or `null` */
+  /** Returns the side (called position) of the end handle or `null` if no connection is in progress. */
   toPosition: Position | null;
-  /** the node the connection currently ends on, or `null` */
+  /** Returns the end node or `null` if no connection is in progress. */
   toNode: InternalNode<NodeType> | null;
-  /** the current pointer position */
+  /** Returns the pointer position or `null` if no connection is in progress. */
   pointer: XYPosition;
 }
 
@@ -63,7 +67,8 @@ export interface NoConnection {
 }
 
 /**
- * The full connection state bundled for `useConnection`, mirroring xyflow/react's `ConnectionState`.
+ * The `ConnectionState` type bundles all information about an ongoing connection. It is returned by the
+ * `useConnection` hook.
  */
 export type ConnectionState<NodeType extends Node = Node> = ConnectionInProgress<NodeType> | NoConnection;
 
@@ -77,6 +82,10 @@ export interface OnConnectStartParams {
   handleType?: HandleType;
 }
 
+/**
+ * If you want to render a custom component for connection lines, you can pass it to the `connection-line`
+ * slot. These props are passed to your custom component.
+ */
 export interface ConnectionLineProps<NodeType extends Node = Node> {
   /** X start position of the connection line */
   fromX: number;
@@ -102,7 +111,10 @@ export interface ConnectionLineProps<NodeType extends Node = Node> {
   markerStart?: string;
   /** marker url */
   markerEnd?: string;
-  /** status of the connection (valid, invalid) */
+  /**
+   * If there is an `isValidConnection` callback, this prop will be set to `"valid"` or `"invalid"`
+   * based on the return value of that callback. Otherwise, it will be `null`.
+   */
   connectionStatus: ConnectionStatus | null;
   /** the raw pointer position in flow coordinates (unsnapped, unlike `toX`/`toY`) */
   pointer: XYPosition;
