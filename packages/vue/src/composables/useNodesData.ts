@@ -14,7 +14,6 @@ type NodeData<NodeType extends Node = InternalNode> = DistributivePick<NodeType,
  *
  * @public
  * @param nodeId - The id (or ids) of the node to get the data from
- * @param guard - Optional guard function to narrow down the node type
  * @returns An object (or array of objects) with `id`, `type`, `data` representing each node
  */
 export function useNodesData<NodeType extends Node = InternalNode>(
@@ -22,10 +21,6 @@ export function useNodesData<NodeType extends Node = InternalNode>(
 ): ComputedRef<NodeData<NodeType> | null>;
 export function useNodesData<NodeType extends Node = InternalNode>(
   nodeIds: MaybeRefOrGetter<string[]>,
-): ComputedRef<NodeData<NodeType>[]>;
-export function useNodesData<NodeType extends Node = InternalNode>(
-  nodeIds: MaybeRefOrGetter<string[]>,
-  guard: (node: Node) => node is NodeType,
 ): ComputedRef<NodeData<NodeType>[]>;
 export function useNodesData(_nodeIds: any): any {
   const { getNode } = useVueFlow();
