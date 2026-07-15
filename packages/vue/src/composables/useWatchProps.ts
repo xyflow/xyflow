@@ -87,7 +87,6 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
   const scope = effectScope(true);
 
   scope.run(() => {
-    // Bridge the v-model nodes/edges refs to the store's internal canonical signals (both store paths).
     const watchNodesValue = () => {
       scope.run(() => {
         syncModelArray(models.nodes, storeRefs.nodes, nodes => instance.setNodes(nodes), syncBack.nodes);
@@ -167,7 +166,6 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
         watch(
           () => props.ariaLabelConfig,
           (ariaLabelConfig) => {
-            // merge over defaults so unspecified keys keep their default text (watchRest would assign the partial verbatim)
             state.ariaLabelConfig = mergeAriaLabelConfig(ariaLabelConfig);
           },
           { immediate: true },
@@ -228,9 +226,7 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
         'maxZoom',
         'minZoom',
         'autoConnect',
-        // `viewport` isn't a state field (it's a getter on the instance); `useViewportSync` two-way binds it
         'viewport',
-        // merged (not assigned verbatim) by `watchAriaLabelConfig`
         'ariaLabelConfig',
       ];
 

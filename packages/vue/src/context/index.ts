@@ -27,7 +27,7 @@ export function injectFlowContext<T>(key: InjectionKey<T>): T | null {
   }
 
   const self = getCurrentInstance();
-  const ownProvides = self?.provides as unknown as Record<symbol, T | undefined> | undefined;
+  const ownProvides = (self as unknown as { provides: Record<symbol, T | undefined> } | null)?.provides;
 
   return ownProvides?.[key] ?? null;
 }

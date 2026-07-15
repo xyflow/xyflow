@@ -36,7 +36,7 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
   onDestroy?: (id: string) => void,
   signals?: StoreSignals<NodeType, EdgeType>,
 ): VueFlowStoreHandle<NodeType, EdgeType> {
-  // canonical source of truth is ALWAYS an internal shallowRef, never the v-model ref — defineModel's ref
+  // source of truth is ALWAYS an internal shallowRef, never the v-model ref — defineModel's ref
   // round-trips (its `.value` lags a write), so reading through it would stale same-tick state.nodes/getNodes.
   // useWatchProps bridges the v-model ref out+in; `signals` only seeds the initial value here.
   const nodesSignal = shallowRef<NodeType[]>((signals?.nodes?.value as NodeType[] | undefined) ?? []);
@@ -81,10 +81,6 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     emits[n] = (h as any).trigger;
   }
 
-  // lookups hold the enriched InternalNodes/edges; the user-facing Node/Edge arrays stay in state.nodes/edges.
-  // They're reactive Maps with stable identity — actions write both in one imperative pass (commitNodes/
-  // commitEdges), no derivation watcher. The `as` casts undo reactive()'s UnwrapNestedRefs widening over the
-  // generic Map; at runtime the proxy is exactly a Map<string, InternalNode>, so the assertion is sound.
   const nodeLookup = reactiveState.nodeLookup as NodeLookup<NodeType>;
   const parentLookup = reactiveState.parentLookup as Map<string, Map<string, InternalNode<NodeType>>>;
   const edgeLookup = reactiveState.edgeLookup as EdgeLookup<EdgeType>;
@@ -95,11 +91,6 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
 
   actions.setState({ ...reactiveState, ...preloadedState } as any);
 
-  // the v-model bridge (external reassignments IN, store commits OUT) lives entirely in `useWatchProps`, so
-  // the canonical `nodesSignal`/`edgesSignal` above stay purely internal.
-
-  // The curated instance (`useVueFlow()`): actions + getters + event hooks + identity. Raw reactive
-  // state (`useStore()`) is `reactiveState` itself — the two views over one store.
   const instance: VueFlowInstance<NodeType, EdgeType> = {
     ...hooksOn,
     ...getters,

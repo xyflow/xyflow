@@ -20,19 +20,18 @@ const el = shallowRef<SVGTextElement | null>(null);
 
 const transform = computed(() => `translate(${x - box.value.width / 2} ${y - box.value.height / 2})`);
 
-onMounted(() => {
-  getBox();
-
-  // the first measurement can run before the theme `font-size` / web font applies, sizing the box for the
-  // wrong font; we don't re-measure on x/y (reflow every drag frame — see watch below), so re-measure once
-  // after a frame and once fonts settle
-  requestAnimationFrame(getBox);
-  document.fonts?.ready?.then(getBox);
-});
-
 // the text's bounding box depends on its content/font, NOT its x/y position — re-measuring (getBBox forces
 // a reflow) on every move would thrash layout each drag frame for no change, so only watch el + label
 watch([el, () => label], getBox);
+
+onMounted(() => {
+  getBox();
+
+  // the first measurement can run before the theme `font-size` / web font applies, sizing the box for the wrong font
+  // we don't re-measure on x/y (reflow every drag frame — see watch below), so re-measure once after a frame and once fonts settle
+  requestAnimationFrame(getBox);
+  document.fonts?.ready?.then(getBox);
+});
 
 function getBox() {
   if (!el.value) {

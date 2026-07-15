@@ -130,8 +130,8 @@ export function adoptNodes<NodeType extends Node = Node>(
       continue;
     }
 
-    // a duplicate id silently overwrites the earlier node in the id-keyed lookup (last wins) — surface it
-    // so the otherwise-invisible data bug is debuggable; behaviour is unchanged (we still adopt it)
+    // a duplicate id silently overwrites the earlier node in the id-keyed lookup (last wins)
+    // surface it so the otherwise-invisible data bug is debuggable
     if (seenNodeIds.has(node.id)) {
       triggerError(new VueFlowError(ErrorCode.NODE_DUPLICATE_ID, node.id));
     }
@@ -139,16 +139,12 @@ export function adoptNodes<NodeType extends Node = Node>(
       seenNodeIds.add(node.id);
     }
 
-    // markRaw so Vue never deep-proxies the user node (large `data` stays raw); toRaw first in case it
-    // arrived as a proxy. UI reactivity comes from re-adopting (lookup `.set` + per-node render computed),
-    // not deep-proxying. Idempotent, so `checkEquality` keeps matching unchanged nodes across re-adopts.
+    // markRaw so Vue never deep-proxies the user node (large `data` stays raw).
+    // toRaw first in case it arrived as a proxy.
+    // UI reactivity comes from re-adopting (lookup `.set` + per-node render computed), not deep-proxying.
     validNodes.push(markRaw(toRaw(node)));
   }
 
-  // `measured`/`handleBounds` live only on the InternalNode, but system's `adoptUserNodes` sources them from
-  // the user node — so re-committing fresh user objects (layout pass, `nodes.value.map(...)`) would reset them,
-  // hiding nodes (fails `nodeHasDimensions`, ResizeObserver won't re-fire) and detaching edges from their handles.
-  // Snapshot both here and restore below; a genuine re-measure (`updateNodeDimensions`) still overwrites them.
   const priorInternals = new Map<
     string,
     { measured?: { width?: number; height?: number }; handleBounds: NodeHandleBounds | undefined }
@@ -168,8 +164,6 @@ export function adoptNodes<NodeType extends Node = Node>(
       triggerError(new VueFlowError(ErrorCode.NODE_MISSING_PARENT, node.id, node.parentId));
     }
 
-    // restore the snapshotted `measured`/`handleBounds` for re-committed nodes that didn't carry them, so a
-    // content-agnostic update (class/position/layout) keeps the node visible and its edges anchored
     const prior = priorInternals.get(node.id);
     if (prior) {
       const internal = nodeLookup.get(node.id);
@@ -205,7 +199,6 @@ function addConnectionToLookup(
   nodeId: string,
   handleId: string | null,
 ) {
-  // add to keys nodeId, nodeId-type and nodeId-type-handleId (merging into any existing map)
   let key = nodeId;
   const nodeMap = connectionLookup.get(key) || new Map();
   connectionLookup.set(key, nodeMap.set(connectionKey, connection));
@@ -266,11 +259,6 @@ export function validateEdges<EdgeType extends Edge = Edge>(
     const sourceNode = getInternalNode(edge.source);
     const targetNode = getInternalNode(edge.target);
 
-    // Keep edges whose endpoint node isn't in the store (yet) instead of dropping them: `EdgeWrapper`'s
-    // render-time guard already warns and skips drawing the edge until both nodes exist. This matches
-    // xyflow/react & xyflow/svelte — `setEdges`/`addEdges` are non-destructive, so callers don't have
-    // to add the referenced nodes before the edges. `isValidConnection` needs the resolved nodes, so it
-    // can't run in this case.
     if (!sourceNode || !targetNode) {
       validEdges.push(edge);
       continue;
