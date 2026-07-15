@@ -1,5 +1,6 @@
 import type { ComputedRef } from 'vue';
 import type { ConnectionState, Node } from '../types';
+import { pointToRendererPoint } from '@xyflow/system';
 import { computed } from 'vue';
 import { storeToRefs } from './storeToRefs';
 import { useStore } from './useStore';
@@ -29,7 +30,7 @@ const NO_CONNECTION = Object.freeze({
  */
 export function useConnection<NodeType extends Node = Node>(): ComputedRef<ConnectionState<NodeType>> {
   const { getInternalNode } = useVueFlow<NodeType>();
-  const { connectionStartHandle, connectionEndHandle, connectionPosition, connectionStatus } = storeToRefs(useStore<NodeType>());
+  const { connectionStartHandle, connectionEndHandle, connectionPosition, connectionStatus, transform } = storeToRefs(useStore<NodeType>());
 
   return computed<ConnectionState<NodeType>>(() => {
     const fromHandle = connectionStartHandle.value;
@@ -50,8 +51,7 @@ export function useConnection<NodeType extends Node = Node>(): ComputedRef<Conne
       fromHandle,
       fromPosition: fromHandle.position,
       fromNode,
-      // `to` snaps to the hovered end handle; falls back to the raw pointer when over empty canvas
-      to: toHandle ? { x: toHandle.x, y: toHandle.y } : pointer,
+      to: toHandle ? { x: toHandle.x, y: toHandle.y } : pointToRendererPoint(pointer, transform.value),
       toHandle: toHandle ?? null,
       toPosition: toHandle?.position ?? null,
       toNode: ((toHandle ? getInternalNode(toHandle.nodeId) : undefined) ?? null),
