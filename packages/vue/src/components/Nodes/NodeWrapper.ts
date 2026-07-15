@@ -1,5 +1,5 @@
 import type { BuiltInNode, MouseTouchEvent, NodeComponent } from '../../types';
-import { getNodesInside, isInputDOMNode, nodeHasDimensions } from '@xyflow/system';
+import { getNodeDimensions, getNodesInside, isInputDOMNode, nodeHasDimensions } from '@xyflow/system';
 import {
   computed,
   defineComponent,
@@ -266,8 +266,7 @@ const NodeWrapper = defineComponent({
             isConnectable: isConnectable.value,
             positionAbsoluteX: node.internals.positionAbsolute.x,
             positionAbsoluteY: node.internals.positionAbsolute.y,
-            width: node.measured.width,
-            height: node.measured.height,
+            ...getNodeDimensions(node),
             parentId: node.parentId,
             zIndex: node.internals.z ?? zIndex.value,
             selectable: isSelectable.value,
