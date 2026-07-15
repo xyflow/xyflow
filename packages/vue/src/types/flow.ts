@@ -308,9 +308,19 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
    * @default '#b1b1b7'
    */
   defaultMarkerColor?: string | null;
-  /** control the Vue Flow attribution; `{ hideAttribution: true }` removes it (only when subscribed to Vue Flow Pro) */
+  /**
+   * By default, we render a small attribution in the corner of your flows that links back to the project.
+   *
+   * Anyone is free to remove this attribution whether they're a Pro subscriber or not
+   * but we ask that you take a quick look at our {@link https://vueflow.dev/learn/troubleshooting/remove-attribution | removing attribution guide}
+   * before doing so.
+   */
   proOptions?: ProOptions;
-  /** position of the attribution @default 'bottom-right' */
+  /**
+   * Set position of the attribution
+   * @default 'bottom-right'
+   * @example 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+   */
   attributionPosition?: PanelPosition;
   /**
    * Controls if the viewport should zoom by scrolling inside the container.
