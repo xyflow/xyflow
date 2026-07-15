@@ -6,7 +6,9 @@ import type {
   ConnectionMode,
   CoordinateExtent,
   FitViewOptionsBase,
+  PanelPosition,
   PanOnScrollMode,
+  ProOptions,
   SelectionMode,
   SnapGrid,
   Viewport,
@@ -163,6 +165,10 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
   forceColorMode?: ColorMode;
   /** color of edge markers; pass `null` to drive the arrowhead color from the `--xy-edge-stroke` CSS variable @default '#b1b1b7' */
   defaultMarkerColor?: string | null;
+  /** control the Vue Flow attribution; `{ hideAttribution: true }` removes it (only when subscribed to Vue Flow Pro) */
+  proOptions?: ProOptions;
+  /** position of the attribution @default 'bottom-right' */
+  attributionPosition?: PanelPosition;
   zoomOnScroll?: boolean;
   zoomOnPinch?: boolean;
   panOnScroll?: boolean;
