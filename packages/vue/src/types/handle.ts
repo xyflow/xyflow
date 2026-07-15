@@ -1,4 +1,4 @@
-import type { Connection, ConnectionMode, Dimensions, HandleType, Position, XYPosition } from '@xyflow/system';
+import type { Connection, Dimensions, HandleType, Position, XYPosition } from '@xyflow/system';
 import type { Edge } from './edge';
 import type { InternalNode, Node } from './node';
 
@@ -74,23 +74,4 @@ export interface HandleProps {
    * @default true
    */
   connectableEnd?: boolean;
-}
-
-export interface IsValidParams {
-  handle: ConnectingHandle | null;
-  connectionMode: ConnectionMode;
-  fromNodeId: string;
-  fromHandleId: string | null;
-  fromType: HandleType;
-  isValidConnection?: ValidConnectionFunc;
-  doc: Document | ShadowRoot;
-  lib: string;
-  flowId: string | null;
-}
-
-export interface Result {
-  handleDomNode: Element | null;
-  isValid: boolean;
-  connection: Connection | null;
-  toHandle: ConnectingHandle | null;
 }

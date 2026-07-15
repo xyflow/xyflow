@@ -20,7 +20,7 @@ export enum ErrorCode {
 
 const messages = {
   [ErrorCode.MISSING_STYLES]: () =>
-    `It seems that you haven't loaded the necessary styles. Please import '@vue-flow/core/dist/style.css' to ensure that the graph is rendered correctly`,
+    `It seems that you haven't loaded the necessary styles. Please import '@xyflow/vue/style.css' to ensure that the graph is rendered correctly`,
   [ErrorCode.MISSING_VIEWPORT_DIMENSIONS]: () => 'The Vue Flow parent container needs a width and a height to render the graph',
   [ErrorCode.NODE_INVALID]: (id?: string) => `Node is invalid\nNode id: ${id}`,
   [ErrorCode.NODE_NOT_FOUND]: (id: string | null) => `Node not found\nNode id: ${id}`,

@@ -24,7 +24,7 @@ export interface EventHookExtended<T> extends EventHook<T> {
   setEmitter: (fn: (param: T) => void) => void;
   /** remove the external emitter */
   removeEmitter: () => void;
-  /** wire a function to detect if any emit listeners exist (e.g., for `$listeners` in Vue 2) */
+  /** wire a detector for whether a template `@event` listener is bound (so `trigger` can skip a void emit) */
   setHasEmitListeners: (fn: () => boolean) => void;
   /** remove the emit listeners detector */
   removeHasEmitListeners: () => void;

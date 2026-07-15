@@ -3,7 +3,6 @@ import type { MaybeRefOrGetter } from 'vue';
 import type { ConnectingHandle, InternalNode, MouseTouchEvent, ValidConnectionFunc } from '../types';
 import { getEventPosition, getHostForElement, Position, XYHandle } from '@xyflow/system';
 import { toValue } from 'vue';
-import { isValidHandle } from '../utils';
 import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
 
@@ -16,10 +15,6 @@ export interface UseHandleProps {
   onReconnectStart?: (event: MouseTouchEvent) => void;
   onReconnect?: (event: MouseTouchEvent, connection: Connection) => void;
   onReconnectEnd?: (event: MouseTouchEvent, connectionState: FinalConnectionState<InternalNode>) => void;
-}
-
-function alwaysValid() {
-  return true;
 }
 
 /**
@@ -198,8 +193,6 @@ export function useHandle({
       return;
     }
 
-    const isValidConnectionHandler = toValue(isValidConnection) || store.isValidConnection || alwaysValid;
-
     const node = getNode(toValue(nodeId));
 
     if (node && (typeof node.connectable === 'undefined' ? store.nodesConnectable : node.connectable) === false) {
@@ -208,30 +201,22 @@ export function useHandle({
 
     const doc = getHostForElement(event.target as HTMLElement);
 
-    const result = isValidHandle(
-      event,
-      {
-        handle: {
-          nodeId: toValue(nodeId),
-          id: toValue(handleId),
-          type: toValue(type),
-          position: Position.Top,
-          ...getEventPosition(event),
-        },
-        connectionMode: store.connectionMode,
-        fromNodeId: store.connectionClickStartHandle.nodeId,
-        fromHandleId: store.connectionClickStartHandle.id ?? null,
-        fromType: store.connectionClickStartHandle.type,
-        isValidConnection: isValidConnectionHandler,
-        doc,
-        lib: 'vue',
-        flowId,
+    const result = XYHandle.isValid(event, {
+      handle: {
+        nodeId: toValue(nodeId),
+        id: toValue(handleId),
+        type: toValue(type),
       },
-      store.edges,
-      store.nodes,
-      getInternalNode,
+      connectionMode: store.connectionMode,
+      fromNodeId: store.connectionClickStartHandle.nodeId,
+      fromHandleId: store.connectionClickStartHandle.id ?? null,
+      fromType: store.connectionClickStartHandle.type,
+      isValidConnection: buildSystemIsValidConnection(),
+      doc,
+      lib: 'vue',
+      flowId,
       nodeLookup,
-    );
+    });
 
     const isOwnHandle = result.connection?.source === result.connection?.target;
 
