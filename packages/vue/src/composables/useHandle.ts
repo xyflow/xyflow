@@ -1,7 +1,7 @@
 import type { Connection, ConnectionState, FinalConnectionState, HandleType, IsValidConnection as SystemIsValidConnection } from '@xyflow/system';
 import type { MaybeRefOrGetter } from 'vue';
 import type { ConnectingHandle, InternalNode, MouseTouchEvent, ValidConnectionFunc } from '../types';
-import { getEventPosition, getHostForElement, Position, XYHandle } from '@xyflow/system';
+import { getConnectionStatus, getEventPosition, getHostForElement, Position, XYHandle } from '@xyflow/system';
 import { toValue } from 'vue';
 import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
@@ -130,7 +130,7 @@ export function useHandle({
                   y: state.toHandle.y,
                 } as ConnectingHandle)
               : null,
-            state.isValid !== null ? (state.isValid ? 'valid' : 'invalid') : null,
+            getConnectionStatus(state.isValid),
           );
         }
       },
