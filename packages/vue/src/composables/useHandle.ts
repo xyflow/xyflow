@@ -140,9 +140,9 @@ export function useHandle({
       onConnectStart: (evt, params) => {
         emits.connectStart({
           event: evt as MouseTouchEvent,
-          nodeId: params.nodeId ?? undefined,
+          nodeId: params.nodeId,
           handleId: params.handleId,
-          handleType: params.handleType ?? undefined,
+          handleType: params.handleType,
         });
 
         if (reconnectHandleType) {
@@ -176,6 +176,7 @@ export function useHandle({
         event,
         nodeId: toValue(nodeId),
         handleId: toValue(handleId),
+        handleType: toValue(type),
       });
 
       startConnection(

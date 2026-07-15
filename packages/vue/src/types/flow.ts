@@ -7,6 +7,7 @@ import type {
   CoordinateExtent,
   FitViewOptionsBase,
   OnBeforeDeleteBase,
+  OnConnectStartParams,
   PanelPosition,
   PanOnScrollMode,
   ProOptions,
@@ -19,7 +20,7 @@ import type { CSSProperties } from 'vue';
 import type { VueFlowError } from '../utils';
 import type { EdgeChange, NodeChange } from './changes';
 import type { EdgeTypesObject, NodeTypesObject } from './components';
-import type { ConnectionLineOptions, ConnectionLineProps, Connector, OnConnectStartParams } from './connection';
+import type { ConnectionLineOptions, ConnectionLineProps, Connector } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeProps, EdgeReconnectable } from './edge';
 import type { ValidConnectionFunc } from './handle';
 import type {

@@ -1,7 +1,6 @@
-import type { InternalNodeBase, NodeBase } from '@xyflow/system';
+import type { Handle, InternalNodeBase, NodeBase } from '@xyflow/system';
 import type { HTMLAttributes } from 'vue';
 import type { ClassValue, Styles } from './flow';
-import type { HandleElement } from './handle';
 
 /**
  * The origin of a Node determines how it is placed relative to its own coordinates.
@@ -14,8 +13,8 @@ import type { HandleElement } from './handle';
 export type NodeOrigin = [number, number];
 
 export interface NodeHandleBounds {
-  source: HandleElement[] | null;
-  target: HandleElement[] | null;
+  source: Handle[] | null;
+  target: Handle[] | null;
 }
 
 /**

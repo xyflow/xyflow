@@ -1,4 +1,4 @@
-import type { HandleElement } from '../../types';
+import type { Handle } from '@xyflow/system';
 import { ConnectionLineType, ConnectionMode, getBezierPath, getHandlePosition, getMarkerId, getSmoothStepPath, oppositePosition, Position } from '@xyflow/system';
 import { computed, defineComponent, h, inject } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
@@ -64,7 +64,7 @@ const ConnectionLine = defineComponent({
       const fromPosition = fromHandle?.position ?? Position.Top;
       const { x: fromX, y: fromY } = getHandlePosition(fromNode.value, fromHandle, fromPosition, true);
 
-      let toHandle: HandleElement | null = null;
+      let toHandle: Handle | null = null;
       if (toNode.value) {
         // if connection mode is strict, we only look for handles of the opposite type
         if (connectionMode.value === ConnectionMode.Strict) {

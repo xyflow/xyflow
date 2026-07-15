@@ -1,7 +1,6 @@
-import type { Connection, FinalConnectionState, HandleType, Viewport } from '@xyflow/system';
+import type { Connection, FinalConnectionState, HandleType, OnConnectStartParams, Viewport } from '@xyflow/system';
 import type { EventHookExtended, EventHookOn, EventHookTrigger, VueFlowError } from '../utils';
 import type { EdgeChange, NodeChange } from './changes';
-import type { OnConnectStartParams } from './connection';
 import type { Edge } from './edge';
 import type { InternalNode, Node } from './node';
 import type { VueFlowInstance } from './store';

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { MarkerProps } from '../../types';
-import { MarkerType } from '../../types';
+import type { MarkerProps } from '@xyflow/system';
+import { MarkerType } from '@xyflow/system';
 
 const {
   id,
