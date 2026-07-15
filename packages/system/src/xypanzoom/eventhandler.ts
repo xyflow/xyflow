@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { D3ZoomEvent } from 'd3-zoom';
-import { pointer } from 'd3-selection';
 
 import {
   PanOnScrollMode,
@@ -14,10 +13,22 @@ import {
 } from '../types';
 import { isRightClickPan, isWrappedWithClass, transformToViewport, wheelDelta } from './utils';
 import { isMacOs } from '../utils';
-import { ZoomPanValues } from './XYPanZoom';
+import type { ZoomPanValues } from './XYPanZoom';
+
+const wheelGestureTimeout = 150;
+
+type PendingPanZoomEnd = {
+  callback: OnPanZoom | undefined;
+  deadline: number;
+  event: MouseEvent | TouchEvent | null;
+  viewport: ReturnType<typeof transformToViewport>;
+};
+
+const pendingPanZoomEnds = new WeakMap<ZoomPanValues, PendingPanZoomEnd>();
 
 export type PanOnScrollParams = {
   zoomPanValues: ZoomPanValues;
+  domNode: Element;
   noWheelClassName: string;
   d3Selection: D3SelectionInstance;
   d3Zoom: D3ZoomInstance;
@@ -60,6 +71,7 @@ export type PanZoomEndParams = {
 
 export function createPanOnScrollHandler({
   zoomPanValues,
+  domNode,
   noWheelClassName,
   d3Selection,
   d3Zoom,
@@ -70,6 +82,9 @@ export function createPanOnScrollHandler({
   onPanZoom,
   onPanZoomEnd,
 }: PanOnScrollParams) {
+  let pinchPointerOrigin: [number, number] | undefined;
+  let pinchPointerOriginDeadline = 0;
+
   return (event: any) => {
     if (isWrappedWithClass(event, noWheelClassName)) {
       if (event.ctrlKey) {
@@ -84,7 +99,14 @@ export function createPanOnScrollHandler({
 
     // macos sets ctrlKey=true for pinch gesture on a trackpad
     if (event.ctrlKey && zoomOnPinch) {
-      const point = pointer(event);
+      const now = Date.now();
+      if (!pinchPointerOrigin || now >= pinchPointerOriginDeadline) {
+        const rect = domNode.getBoundingClientRect();
+        pinchPointerOrigin = [rect.left + domNode.clientLeft, rect.top + domNode.clientTop];
+      }
+      pinchPointerOriginDeadline = now + wheelGestureTimeout;
+
+      const point = [event.clientX - pinchPointerOrigin[0], event.clientY - pinchPointerOrigin[1]];
       const pinchDelta = wheelDelta(event);
       const zoom = currentZoom * Math.pow(2, pinchDelta);
       // @ts-ignore
@@ -136,7 +158,7 @@ export function createPanOnScrollHandler({
       onPanZoomEnd?.(event, nextViewport);
 
       zoomPanValues.isPanScrolling = false;
-    }, 150);
+    }, wheelGestureTimeout);
   };
 }
 
@@ -215,6 +237,8 @@ export function createPanZoomEndHandler({
   onPanZoomEnd,
   onPaneContextMenu,
 }: PanZoomEndParams) {
+  const pendingPanZoomEnd = getPendingPanZoomEnd(zoomPanValues);
+
   return (event: D3ZoomEvent<HTMLDivElement, any>) => {
     if (event.sourceEvent?.internal) {
       return;
@@ -238,14 +262,77 @@ export function createPanZoomEndHandler({
       const viewport = transformToViewport(event.transform);
       zoomPanValues.prevViewport = viewport;
 
-      clearTimeout(zoomPanValues.timerId);
-      zoomPanValues.timerId = setTimeout(
-        () => {
-          onPanZoomEnd?.(event.sourceEvent as MouseEvent | TouchEvent, viewport);
-        },
-        // we need a setTimeout for panOnScroll to suppress multiple end events fired during scroll
-        panOnScroll ? 150 : 0
-      );
+      if (panOnScroll) {
+        schedulePanZoomEnd(
+          zoomPanValues,
+          pendingPanZoomEnd,
+          onPanZoomEnd,
+          event.sourceEvent as MouseEvent | TouchEvent,
+          viewport
+        );
+      } else {
+        clearTimeout(zoomPanValues.timerId);
+        pendingPanZoomEnd.callback = undefined;
+        zoomPanValues.timerId = setTimeout(() => {
+          zoomPanValues.timerId = undefined;
+          onPanZoomEnd(event.sourceEvent as MouseEvent | TouchEvent, viewport);
+        }, 0);
+      }
     }
   };
+}
+
+function schedulePanZoomEnd(
+  zoomPanValues: ZoomPanValues,
+  pending: PendingPanZoomEnd,
+  callback: OnPanZoom,
+  event: MouseEvent | TouchEvent,
+  viewport: ReturnType<typeof transformToViewport>
+) {
+  if (zoomPanValues.timerId !== undefined && pending.callback === undefined) {
+    clearTimeout(zoomPanValues.timerId);
+    zoomPanValues.timerId = undefined;
+  }
+
+  pending.callback = callback;
+  pending.deadline = Date.now() + wheelGestureTimeout;
+  pending.event = event;
+  pending.viewport = viewport;
+
+  if (zoomPanValues.timerId === undefined) {
+    zoomPanValues.timerId = setTimeout(() => flushPanZoomEnd(zoomPanValues, pending), wheelGestureTimeout);
+  }
+}
+
+function flushPanZoomEnd(zoomPanValues: ZoomPanValues, pending: PendingPanZoomEnd) {
+  const remaining = pending.deadline - Date.now();
+
+  if (remaining > 0) {
+    zoomPanValues.timerId = setTimeout(() => flushPanZoomEnd(zoomPanValues, pending), remaining);
+    return;
+  }
+
+  zoomPanValues.timerId = undefined;
+  const callback = pending.callback;
+  const event = pending.event;
+  const viewport = pending.viewport;
+  pending.callback = undefined;
+  pending.event = null;
+  callback?.(event, viewport);
+}
+
+function getPendingPanZoomEnd(zoomPanValues: ZoomPanValues): PendingPanZoomEnd {
+  let pending = pendingPanZoomEnds.get(zoomPanValues);
+
+  if (!pending) {
+    pending = {
+      callback: undefined,
+      deadline: 0,
+      event: null,
+      viewport: { x: 0, y: 0, zoom: 0 },
+    };
+    pendingPanZoomEnds.set(zoomPanValues, pending);
+  }
+
+  return pending;
 }

@@ -150,6 +150,7 @@ export function XYPanZoom({
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
           zoomPanValues,
+          domNode,
           noWheelClassName,
           d3Selection,
           d3Zoom: d3ZoomInstance,
