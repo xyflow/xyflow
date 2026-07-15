@@ -3,9 +3,9 @@ import type { CSSProperties } from 'vue';
 import type { InternalNode } from '../../types';
 import type { NodeToolbarProps } from './types';
 import { getNodesBounds, getNodeToolbarTransform, Position } from '@xyflow/system';
-import { computed, inject } from 'vue';
+import { computed } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
-import { NodeId } from '../../context';
+import { useNodeId } from '../../composables/useNodeId';
 
 const props = withDefaults(defineProps<NodeToolbarProps>(), {
   position: Position.Top,
@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<NodeToolbarProps>(), {
   isVisible: undefined,
 });
 
-const contextNodeId = inject(NodeId, null);
+const contextNodeId = useNodeId();
 
 const { viewport, getSelectedNodes, getInternalNode } = useVueFlow();
 
