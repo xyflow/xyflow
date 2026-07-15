@@ -111,17 +111,12 @@ const disposeWatchers = useWatchProps(
   { nodes: nodesManaged, edges: edgesManaged },
 );
 
-// dev nudge if a controlled one-way `:nodes`/`:edges` is missing its change handler (changes silently drop)
 useControlledBindingWarning({ nodes: nodesManaged, edges: edgesManaged }, instance);
-
-useHooks(emit, state.hooks);
-
-useOnInitHandler(instance);
-
-useSelectionChange(instance);
-
 useStylesLoadedWarning(instance);
 
+useHooks(emit, state.hooks);
+useOnInitHandler(instance);
+useSelectionChange(instance);
 useViewportSync(modelViewport, state);
 
 // the container element ref needs the writable ref (not the unwrapped value) so Vue can assign it;
