@@ -50,7 +50,6 @@ const connectionInProgress = toRef(() => connectionStartHandle.value !== null);
 let selectionInProgress = false;
 let selectionStarted = false;
 
-// Auto-pan while dragging the selection box near the edges of the container
 let autoPanId = 0;
 let autoPanStarted = false;
 let lastPointerPosition: XYPosition = { x: 0, y: 0 };
@@ -64,7 +63,7 @@ watch(deleteKeyPressed, (isKeyPressed) => {
     return;
   }
 
-  // routed through `deleteElements` so the `onBeforeDelete` guard (cancel/confirm/filter) is consulted
+  // routed through `deleteElements` so the `onBeforeDelete` guard (cancel/confirm/filter) is triggered
   deleteElements({
     nodes: [...getSelectedNodes.value],
     edges: [...getSelectedEdges.value],
@@ -155,15 +154,11 @@ function onPointerDown(event: PointerEvent) {
   };
 }
 
-// Recompute the selection rect (and the selected nodes/edges) from the current pointer position. Called
-// both on pointer move and on every auto-pan frame, so the selection keeps growing while the viewport pans.
 function commitUserSelectionRect(mouseX: number, mouseY: number) {
   if (!userSelectionRect.value) {
     return;
   }
 
-  // `startX`/`startY` are stored in flow coordinates (so the origin stays put while panning); convert
-  // back to screen coordinates to build the rect, which `getNodesInside` and `UserSelection` consume.
   const { startX = 0, startY = 0 } = userSelectionRect.value;
   const screenStart = rendererPointToPoint({ x: startX, y: startY }, transform.value);
 
@@ -185,7 +180,6 @@ function commitUserSelectionRect(mouseX: number, mouseY: number) {
   );
 
   selectedEdgeIds.value = new Set();
-  // resolution order mirrors EdgeWrapper's isSelectable: edge.selectable ?? defaults ?? global flag
   const edgesSelectable = defaultEdgeOptions.value?.selectable ?? elementsSelectable.value;
 
   // We look for all edges connected to the selected nodes
@@ -217,8 +211,6 @@ function commitUserSelectionRect(mouseX: number, mouseY: number) {
   nodesSelectionActive.value = false;
 }
 
-// rAF loop that pans the viewport while the pointer sits near a container edge during a selection, then
-// re-commits the selection rect from the (unchanged) pointer position so it grows toward the new viewport.
 function autoPan() {
   if (!autoPanOnSelection.value || !containerBounds.value) {
     return;
@@ -249,9 +241,6 @@ function onPointerMove(event: PointerEvent) {
   const { x: mouseX, y: mouseY } = getEventPosition(event, containerBounds.value);
   lastPointerPosition = { x: mouseX, y: mouseY };
 
-  // begin the selection only once the pointer moves past the click threshold, so a plain click neither resets
-  // the selection nor opens a box. Holding the selection key starts immediately (`requiredDistance` 0);
-  // `startX`/`startY` are flow coords, so compare against the start in screen space.
   if (!selectionInProgress) {
     const screenStart = rendererPointToPoint({ x: userSelectionRect.value.startX, y: userSelectionRect.value.startY }, transform.value);
     const requiredDistance = selectionKeyPressed ? 0 : paneClickDistance.value;
@@ -283,8 +272,6 @@ function onPointerUp(event: PointerEvent) {
 
   ;(event.target as Element)?.releasePointerCapture(event.pointerId);
 
-  // We only want to trigger click functions when in selection mode if
-  // the user did not move the mouse.
   if (!userSelectionActive.value && userSelectionRect.value && event.target === container.value) {
     onClick(event);
   }
@@ -292,15 +279,12 @@ function onPointerUp(event: PointerEvent) {
   userSelectionActive.value = false;
   userSelectionRect.value = null;
 
-  // only a real selection drag (not a plain click) updates the selection box / emits `selectionEnd`
-  // (xyflow/react #5593)
+  // only a real selection drag (not a plain click) updates the selection box / emits `selectionEnd` (xyflow/react #5593)
   if (selectionInProgress) {
     nodesSelectionActive.value = selectedNodeIds.value.size > 0;
     emits.selectionEnd(event);
   }
 
-  // If the user kept holding the selectionKey during the selection,
-  // we need to reset the selectionInProgress, so the next click event is not prevented
   if (selectionKeyPressed) {
     selectionInProgress = false;
   }

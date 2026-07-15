@@ -1,5 +1,5 @@
 import type { ComputedRef } from 'vue';
-import type { ConnectionState, InternalNode, Node } from '../types';
+import type { ConnectionState, Node } from '../types';
 import { computed } from 'vue';
 import { storeToRefs } from './storeToRefs';
 import { useStore } from './useStore';
@@ -28,7 +28,7 @@ const NO_CONNECTION = Object.freeze({
  * @returns a `ComputedRef<ConnectionState>` — `inProgress: false` (all-null fields) when idle
  */
 export function useConnection<NodeType extends Node = Node>(): ComputedRef<ConnectionState<NodeType>> {
-  const { getInternalNode } = useVueFlow();
+  const { getInternalNode } = useVueFlow<NodeType>();
   const { connectionStartHandle, connectionEndHandle, connectionPosition, connectionStatus } = storeToRefs(useStore<NodeType>());
 
   return computed<ConnectionState<NodeType>>(() => {
@@ -49,12 +49,12 @@ export function useConnection<NodeType extends Node = Node>(): ComputedRef<Conne
       from: { x: fromHandle.x, y: fromHandle.y },
       fromHandle,
       fromPosition: fromHandle.position,
-      fromNode: fromNode as InternalNode<NodeType>,
+      fromNode,
       // `to` snaps to the hovered end handle; falls back to the raw pointer when over empty canvas
       to: toHandle ? { x: toHandle.x, y: toHandle.y } : pointer,
       toHandle: toHandle ?? null,
       toPosition: toHandle?.position ?? null,
-      toNode: ((toHandle ? getInternalNode(toHandle.nodeId) : undefined) ?? null) as InternalNode<NodeType> | null,
+      toNode: ((toHandle ? getInternalNode(toHandle.nodeId) : undefined) ?? null),
       pointer,
     };
   });

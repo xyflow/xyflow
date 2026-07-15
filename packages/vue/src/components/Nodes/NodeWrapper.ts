@@ -46,11 +46,9 @@ const NodeWrapper = defineComponent({
       setCenter,
     } = useVueFlow();
 
-    // read the reactive store directly; `store.x` tracks reactively without projecting every key into refs per node
     const store = useStore();
     const { parentLookup } = store;
 
-    // `handleNodeClick` writes this back, so it needs a writable ref
     const nodesSelectionActive = toRef(store, 'nodesSelectionActive');
 
     const nodeElement = shallowRef<HTMLDivElement | null>(null);
@@ -63,27 +61,25 @@ const NodeWrapper = defineComponent({
 
     const updateNodePositions = useUpdateNodePositions();
 
-    // re-resolves to a NEW InternalNode whenever the store re-adopts this node (immutable model) — that ref
-    // swap is what re-renders the wrapper. Resolve directly, not via useNode (which allocates unused computeds).
-    const nodeRef = computed(() => getInternalNode(props.id));
+    const internalNode = computed(() => getInternalNode(props.id));
 
     const isDraggable = toRef(() => {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       return !node || typeof node.draggable === 'undefined' ? store.nodesDraggable : node.draggable;
     });
 
     const isSelectable = toRef(() => {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       return !node || typeof node.selectable === 'undefined' ? store.elementsSelectable : node.selectable;
     });
 
     const isConnectable = toRef(() => {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       return !node || typeof node.connectable === 'undefined' ? store.nodesConnectable : node.connectable;
     });
 
     const isFocusable = toRef(() => {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       return !node || typeof node.focusable === 'undefined' ? store.nodesFocusable : node.focusable;
     });
 
@@ -100,14 +96,12 @@ const NodeWrapper = defineComponent({
 
     // a node "has dimensions" once measured OR given explicit width/height OR initialWidth/initialHeight (the
     // SSR fallback, no ResizeObserver) — the visibility gate so sized/SSR nodes render immediately
-    const isInit = computed(() => (nodeRef.value ? nodeHasDimensions(nodeRef.value) : false));
+    const isInit = computed(() => (internalNode.value ? nodeHasDimensions(internalNode.value) : false));
 
-    // computed (not toRef): the value-equality gate keeps the render effect from re-running on every
-    // `parentLookup` entry replacement
     const isParent = computed(() => (parentLookup.get(props.id)?.size ?? 0) > 0);
 
     const nodeCmp = computed(() => {
-      const name = nodeRef.value?.type || 'default';
+      const name = internalNode.value?.type || 'default';
 
       const slot = slots?.[`node-${name}`];
       if (slot) {
@@ -139,7 +133,7 @@ const NodeWrapper = defineComponent({
       el: nodeElement,
       disabled: () => !isDraggable.value,
       selectable: isSelectable,
-      dragHandle: () => nodeRef.value?.dragHandle,
+      dragHandle: () => internalNode.value?.dragHandle,
       onStart(event) {
         emits.nodeDragStart(event);
       },
@@ -155,13 +149,10 @@ const NodeWrapper = defineComponent({
     });
 
     const getStyle = computed(() => {
-      const node = nodeRef.value;
-      // clone: never mutate the user's `node.style` (markRaw nodes — an in-place write isn't reactive and
-      // would cache stale width/height onto the user object)
+      const node = internalNode.value;
       const styles = { ...node?.style };
 
-      // Vue's `:style` doesn't auto-append `px` to numbers, so coerce numeric width/height to px (string
-      // values like `'50%'` pass through untouched)
+      // Vue's `:style` doesn't auto-append `px` to numbers, so coerce numeric width/height to px
       if (typeof styles.width === 'number') {
         styles.width = `${styles.width}px`;
       }
@@ -186,7 +177,7 @@ const NodeWrapper = defineComponent({
       return styles;
     });
 
-    const zIndex = toRef(() => Number(nodeRef.value?.zIndex ?? getStyle.value.zIndex ?? 0));
+    const zIndex = toRef(() => Number(internalNode.value?.zIndex ?? getStyle.value.zIndex ?? 0));
 
     onUpdateNodeInternals((updateIds) => {
       // when no ids are passed, update all nodes
@@ -197,7 +188,7 @@ const NodeWrapper = defineComponent({
 
     onMounted(() => {
       watch(
-        () => nodeRef.value?.hidden,
+        () => internalNode.value?.hidden,
         (isHidden = false, _, onCleanup) => {
           if (!isHidden && nodeElement.value) {
             props.resizeObserver.observe(nodeElement.value);
@@ -213,14 +204,14 @@ const NodeWrapper = defineComponent({
       );
     });
 
-    watch([() => nodeRef.value?.type, () => nodeRef.value?.sourcePosition, () => nodeRef.value?.targetPosition], () => {
+    watch([() => internalNode.value?.type, () => internalNode.value?.sourcePosition, () => internalNode.value?.targetPosition], () => {
       nextTick(() => {
         updateNodeDimensions([{ id: props.id, nodeElement: nodeElement.value as HTMLDivElement, forceUpdate: true }]);
       });
     });
 
     return () => {
-      const node = nodeRef.value;
+      const node = internalNode.value;
 
       if (!node || node.hidden) {
         return null;
@@ -268,7 +259,6 @@ const NodeWrapper = defineComponent({
         },
         [
           h(nodeCmp.value === false ? (getNodeTypes.value.default as NodeComponent<BuiltInNode>) : (nodeCmp.value as any), {
-            // exactly the `NodeProps` surface — no legacy duplicates that bloat props and leak onto custom-node DOM as `$attrs`
             id: node.id,
             type: node.type,
             data: node.data,
@@ -299,48 +289,47 @@ const NodeWrapper = defineComponent({
     }
 
     function onMouseEnter(event: MouseEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (node && !dragging?.value) {
         emits.nodeMouseEnter({ event, node: node.internals.userNode });
       }
     }
 
     function onMouseMove(event: MouseEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (node && !dragging?.value) {
         emits.nodeMouseMove({ event, node: node.internals.userNode });
       }
     }
 
     function onMouseLeave(event: MouseEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (node && !dragging?.value) {
         emits.nodeMouseLeave({ event, node: node.internals.userNode });
       }
     }
 
     function onContextMenu(event: MouseEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (node) {
         emits.nodeContextMenu({ event, node: node.internals.userNode });
       }
     }
 
     function onDoubleClick(event: MouseEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (node) {
         emits.nodeDoubleClick({ event, node: node.internals.userNode });
       }
     }
 
     function onSelectNode(event: MouseTouchEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (!node) {
         return;
       }
 
       if (isSelectable.value && (!store.selectNodesOnDrag || !isDraggable.value || store.nodeDragThreshold > 0)) {
-        // handleNodeClick needs the enriched InternalNode; the event payload gets the user node
         handleNodeClick(
           node,
           store.multiSelectionActive,
@@ -356,7 +345,7 @@ const NodeWrapper = defineComponent({
     }
 
     function onKeyDown(event: KeyboardEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (!node || isInputDOMNode(event) || store.disableKeyboardA11y) {
         return;
       }
@@ -394,10 +383,8 @@ const NodeWrapper = defineComponent({
       }
     }
 
-    // pan the viewport to a node that gets KEYBOARD focus (Tab) but is off-screen, so tabbing never lands
-    // off-screen; `:focus-visible` limits this to keyboard focus (not pointer/programmatic)
     function onFocus() {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (!node || store.disableKeyboardA11y || !store.autoPanOnNodeFocus || !nodeElement.value?.matches(':focus-visible')) {
         return;
       }

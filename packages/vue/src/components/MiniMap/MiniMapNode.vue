@@ -40,9 +40,11 @@ export default {
       :ry="borderRadius"
       :width="dimensions.width"
       :height="dimensions.height"
-      :fill="color || (attrs.style?.background as string) || attrs.style?.backgroundColor"
-      :stroke="strokeColor"
-      :stroke-width="strokeWidth"
+      :style="{
+        fill: color || (attrs.style?.background as string) || attrs.style?.backgroundColor,
+        stroke: strokeColor,
+        strokeWidth,
+      }"
       :shape-rendering="shapeRendering"
       @click="emits('click', $event)"
       @dblclick="emits('dblclick', $event)"

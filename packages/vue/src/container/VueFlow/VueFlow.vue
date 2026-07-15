@@ -2,10 +2,11 @@
 import type { Viewport } from '@xyflow/system';
 import type { Ref } from 'vue';
 import type { Edge, FlowEmits, FlowProps, FlowSlots, Node, VueFlowInstance, VueFlowState } from '../../types';
-import { inject, onUnmounted, provide } from 'vue';
+import { getCurrentInstance, inject, onUnmounted, provide } from 'vue';
 import A11yDescriptions from '../../components/A11y/A11yDescriptions.vue';
 import Attribution from '../../components/Attribution/Attribution.vue';
 import { storeToRefs } from '../../composables/storeToRefs';
+import { useControlledBindingWarning } from '../../composables/useControlledBindingWarning';
 import { useCreateVueFlow } from '../../composables/useCreateVueFlow';
 import { useOnInitHandler } from '../../composables/useOnInitHandler';
 import { useSelectionChange } from '../../composables/useSelectionChange';
@@ -14,6 +15,7 @@ import { useViewportSync } from '../../composables/useViewportSync';
 import { useWatchProps } from '../../composables/useWatchProps';
 import { Slots, VueFlow as VueFlowInjectionKey, VueFlowStateKey } from '../../context';
 import { useHooks } from '../../store/hooks';
+import { hasVNodeListener } from '../../utils';
 import ZoomPane from '../ZoomPane/ZoomPane.vue';
 
 const props = withDefaults(defineProps<FlowProps<NodeType, EdgeType>>(), {
@@ -30,7 +32,6 @@ const props = withDefaults(defineProps<FlowProps<NodeType, EdgeType>>(), {
   zoomOnDoubleClick: undefined,
   panOnScroll: undefined,
   panOnDrag: undefined,
-  autoApplyChanges: undefined,
   forceColorMode: undefined,
   fitView: undefined,
   fitViewOptions: undefined,
@@ -64,14 +65,16 @@ const modelNodes = defineModel<NodeType[]>('nodes');
 const modelEdges = defineModel<EdgeType[]>('edges');
 const modelViewport = defineModel<Viewport>('viewport');
 
-// reuse an ancestor `<VueFlowProvider>`'s store if present; otherwise this `<VueFlow>` creates + provides its
-// own (auto-wrap). A reused store exposes its two views (instance + state) via the same pair of injection keys.
+// `v-model:nodes` (or no binding at all → instance-driven) is UNCONTROLLED:
+// A bare one-way `:nodes` is CONTROLLED: changes are handed to you via `@nodes-change`.
+const inst = getCurrentInstance();
+const boundProps = inst?.vnode.props ?? {};
+const nodesManaged = !('nodes' in boundProps) || hasVNodeListener(inst, 'update:nodes');
+const edgesManaged = !('edges' in boundProps) || hasVNodeListener(inst, 'update:edges');
+
 const injectedInstance = inject(VueFlowInjectionKey, null) as VueFlowInstance<NodeType, EdgeType> | null;
 const injectedState = inject(VueFlowStateKey, null) as VueFlowState<NodeType, EdgeType> | null;
 
-// when this `<VueFlow>` owns the store, the v-model refs back it directly as signals (single source of truth),
-// so store mutations to nodes/edges ARE the v-model update. When it reuses a provider's store the model refs
-// can't back the already-created store, so `useWatchProps` syncs them instead.
 const ownsStore = !injectedInstance;
 
 const { instance, state }
@@ -87,22 +90,28 @@ if (!ownsStore) {
   instance.setState(props as Parameters<typeof instance.setState>[0]);
 }
 
-// watch props and update store state; the v-model nodes/edges bridge (out+in, synchronous) lives here for
-// both store paths — the store's canonical nodes/edges are always internal signals (see createStore)
-const disposeWatchers = useWatchProps({ nodes: modelNodes, edges: modelEdges }, props, { instance, state });
+if (nodesManaged) {
+  instance.onNodesChange(changes => instance.applyNodeChanges(changes));
+}
+if (edgesManaged) {
+  instance.onEdgesChange(changes => instance.applyEdgeChanges(changes));
+}
 
-useHooks(emit, state.hooks);
+const disposeWatchers = useWatchProps(
+  { nodes: modelNodes, edges: modelEdges },
+  props,
+  { instance, state },
+  { nodes: nodesManaged, edges: edgesManaged },
+);
 
-useOnInitHandler(instance);
-
-useSelectionChange(instance);
-
+useControlledBindingWarning({ nodes: nodesManaged, edges: edgesManaged }, instance);
 useStylesLoadedWarning(instance);
 
+useHooks(emit, state.hooks);
+useOnInitHandler(instance);
+useSelectionChange(instance);
 useViewportSync(modelViewport, state);
 
-// the container element ref needs the writable ref (not the unwrapped value) so Vue can assign it;
-// access it by member (`stateRefs.vueFlowRef`) so the template `:ref` binding doesn't auto-unwrap it
 const stateRefs = storeToRefs(state);
 
 // provide slots instead of drilling them through every component (boilerplate + significant perf cost)

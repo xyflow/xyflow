@@ -19,6 +19,7 @@ function syncModelArray<ModelItem, StoreItem>(
   model: Ref<ModelItem[] | undefined> | undefined,
   storeItems: Ref<StoreItem[]>,
   setItems: (items: ModelItem[]) => void,
+  syncBack: boolean,
 ) {
   if (!model) {
     return;
@@ -27,16 +28,20 @@ function syncModelArray<ModelItem, StoreItem>(
   // the array we last pushed store → model; the `in` watcher skips it so the snapshot doesn't loop back
   let lastSnapshot: ModelItem[] | undefined;
 
-  watch(
-    [storeItems, () => storeItems.value.length],
-    () => {
-      lastSnapshot = [...storeItems.value] as unknown as ModelItem[];
-      model.value = lastSnapshot;
-    },
-    // `flush: 'sync'` so the v-model ref mirrors a store commit on the same tick as the synchronous reads;
-    // seed the model only if the store already holds elements
-    { immediate: storeItems.value.length > 0, flush: 'sync' },
-  );
+  // OUT (store → model): only for a managed binding (`v-model`). A controlled one-way `:nodes` owns its
+  // own array, so we never write back to it — we only adopt reassignments IN (below).
+  // `flush: 'sync'` so the v-model ref mirrors a store commit on the same tick as the synchronous reads;
+  // seed the model only if the store already holds elements.
+  if (syncBack) {
+    watch(
+      [storeItems, () => storeItems.value.length],
+      () => {
+        lastSnapshot = [...storeItems.value] as unknown as ModelItem[];
+        model.value = lastSnapshot;
+      },
+      { immediate: storeItems.value.length > 0, flush: 'sync' },
+    );
+  }
 
   watch(
     [model, () => model.value?.length],
@@ -66,11 +71,14 @@ function syncModelArray<ModelItem, StoreItem>(
  * @param models v-model refs for nodes/edges — bridged to the store here (see {@link syncModelArray})
  * @param props the `<VueFlow>` props
  * @param handle the created store handle ({@link VueFlowStoreHandle}) — instance (actions) + reactive state
+ * @param syncBack per-collection managed flag — a managed binding (`v-model`) mirrors store changes back to
+ *   the model ref; a controlled one-way `:nodes` does not
  */
 export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   models: ToRefs<Pick<FlowProps<NodeType, EdgeType>, 'nodes' | 'edges'>>,
   props: FlowProps<NodeType, EdgeType>,
   handle: VueFlowStoreHandle<NodeType, EdgeType>,
+  syncBack: { nodes: boolean; edges: boolean },
 ) {
   const { instance, state } = handle;
   // refs over the reactive state (writable) so the prop→store sync below can assign as before
@@ -79,16 +87,15 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
   const scope = effectScope(true);
 
   scope.run(() => {
-    // Bridge the v-model nodes/edges refs to the store's internal canonical signals (both store paths).
     const watchNodesValue = () => {
       scope.run(() => {
-        syncModelArray(models.nodes, storeRefs.nodes, nodes => instance.setNodes(nodes));
+        syncModelArray(models.nodes, storeRefs.nodes, nodes => instance.setNodes(nodes), syncBack.nodes);
       });
     };
 
     const watchEdgesValue = () => {
       scope.run(() => {
-        syncModelArray(models.edges, storeRefs.edges, edges => instance.setEdges(edges));
+        syncModelArray(models.edges, storeRefs.edges, edges => instance.setEdges(edges), syncBack.edges);
       });
     };
 
@@ -159,26 +166,9 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
         watch(
           () => props.ariaLabelConfig,
           (ariaLabelConfig) => {
-            // merge over defaults so unspecified keys keep their default text (watchRest would assign the partial verbatim)
             state.ariaLabelConfig = mergeAriaLabelConfig(ariaLabelConfig);
           },
           { immediate: true },
-        );
-      });
-    };
-
-    const watchApplyDefault = () => {
-      scope.run(() => {
-        watch(
-          () => props.autoApplyChanges,
-          (autoApplyChanges) => {
-            if (isDef(autoApplyChanges)) {
-              storeRefs.autoApplyChanges.value = autoApplyChanges;
-            }
-          },
-          {
-            immediate: true,
-          },
         );
       });
     };
@@ -235,11 +225,8 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
         'nodes',
         'maxZoom',
         'minZoom',
-        'autoApplyChanges',
         'autoConnect',
-        // `viewport` isn't a state field (it's a getter on the instance); `useViewportSync` two-way binds it
         'viewport',
-        // merged (not assigned verbatim) by `watchAriaLabelConfig`
         'ariaLabelConfig',
       ];
 
@@ -274,7 +261,6 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
       watchMaxZoom();
       watchTranslateExtent();
       watchNodeExtent();
-      watchApplyDefault();
       watchAutoConnect();
       watchAriaLabelConfig();
       watchRest();

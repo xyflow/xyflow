@@ -9,3 +9,4 @@ export * from './handle';
 export * from './log';
 export * from './node';
 export * from './store';
+export * from './vnode';

@@ -26,7 +26,6 @@ export function useUpdateNodePositions() {
     const nodeUpdates: NodeDragItem[] = [];
     for (const node of getSelectedNodes.value) {
       if (node.draggable || (store.nodesDraggable && typeof node.draggable === 'undefined')) {
-        // `getSelectedNodes` returns user `Node`s — resolve the enriched InternalNode for internals/measured
         const internalNode = getInternalNode(node.id);
         if (!internalNode) {
           continue;
@@ -41,8 +40,6 @@ export function useUpdateNodePositions() {
           nextPosition = snapPosition(nextPosition, store.snapGrid);
         }
 
-        // origin-aware `calculateNodePosition` derives both `position` and `positionAbsolute` (accounting
-        // for `nodeOrigin`, extent + parent) — without it a non-default origin drifts on every key press.
         const { position, positionAbsolute } = calculateNodePosition({
           nodeId: node.id,
           nextPosition,

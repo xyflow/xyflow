@@ -28,15 +28,15 @@ const isValidConnection = toRef(() => props.isValidConnection ?? null);
 
 const { id: flowId } = useVueFlow();
 
-// read the reactive store directly (see NodeWrapper); this setup runs ~2× per node, so avoid projecting every key into refs
 const store = useStore();
 
 const { id: nodeId, node: nodeRef, nodeEl, connectedEdges } = useNode();
 
+const instance = getCurrentInstance();
+let prevConnections: Map<string, HandleConnection> | null = null;
+
 const handle = shallowRef<HTMLDivElement>();
 
-// Record-typed because Vue's `HTMLAttributes` lacks the `data-*` index signature `strictTemplates` needs, so
-// these can't be bare `:data-*` template attrs (`data-id` is queried by the handle DOM lookup in `utils/handle.ts`)
 const handleDataIds = computed<Record<string, string | null>>(() => ({
   'data-id': `${flowId}-${nodeId}-${handleId}-${type.value}`,
   'data-handleid': handleId,
@@ -85,8 +85,6 @@ const isHandleConnectable = computed(() => {
   return isDef(isConnectable) ? isConnectable : store.nodesConnectable;
 });
 
-// all connection-driven classes in one computed (not ~7 refs): they derive from the same global `connection*`
-// state, toggle together during a connection, and are used only in the class binding
 const connectionClasses = computed<Record<string, boolean>>((prev) => {
   const fromHandle = store.connectionStartHandle;
   const clickFromHandle = store.connectionClickStartHandle;
@@ -95,15 +93,12 @@ const connectionClasses = computed<Record<string, boolean>>((prev) => {
 
   const connectionInProcess = fromHandle !== null;
   const clickConnectionInProcess = clickFromHandle !== null;
-  // whether this handle can be the END of the in-progress (drag) connection
   const isPossibleEndHandle = store.connectionMode === ConnectionMode.Strict
     ? fromHandle?.type !== handleType
     : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
   const connectingto = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === handleType;
 
   const next = {
-    // resolved value (falls back to `nodesConnectable`), not the raw prop — XYHandle's DOM query targets
-    // `.connectable` to find drop targets, so an unset `:connectable` must still mark it
     connectable: isHandleConnectable.value,
     connecting:
       clickFromHandle?.nodeId === nodeId && clickFromHandle?.id === handleId && clickFromHandle?.type === handleType,
@@ -118,8 +113,8 @@ const connectionClasses = computed<Record<string, boolean>>((prev) => {
       && ((connectionInProcess || clickConnectionInProcess) ? connectableEnd : connectableStart),
   };
 
-  // reuse the previous object when nothing changed so the class binding doesn't re-render (Vue gates on ref
-  // identity) — a connection drag recomputes every handle, but only the two endpoints' classes actually change
+  // reuse the previous object when nothing changed so the class binding doesn't re-render (Vue gates on ref identity)
+  // a connection drag recomputes every handle, but only the two endpoints' classes actually change
   if (
     prev
     && prev.connectable === next.connectable
@@ -137,14 +132,10 @@ const connectionClasses = computed<Record<string, boolean>>((prev) => {
   return next;
 });
 
-// emit `connect`/`disconnect` when the set of connections on THIS handle changes. `connectionLookup` isn't
-// reactive, so `edges` is the change trigger; skip the diff when nobody listens.
-const instance = getCurrentInstance();
-let prevConnections: Map<string, HandleConnection> | null = null;
-
 watch(
   () => store.edges,
   () => {
+    // no listeners, bail
     if (!instance?.vnode.props?.onConnect && !instance?.vnode.props?.onDisconnect) {
       return;
     }

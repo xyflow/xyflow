@@ -98,7 +98,6 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
 
     hooks: createHooks(),
 
-    autoApplyChanges: true,
     autoConnect: false,
 
     fitViewOnInit: false,
@@ -137,8 +136,6 @@ export const storeOptionsToSkip: (keyof Partial<FlowProps & Omit<State, 'nodes' 
   'translateExtent',
   'nodeExtent',
   'fitView',
-  // mapped from the `fitView` prop in `setState`; skipped from the generic loop so a stale
-  // `fitViewOnInit: false` (spread in on store creation) can't clobber what `fitView` just set
   'fitViewOnInit',
   'viewport',
   'hooks',

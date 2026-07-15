@@ -8,6 +8,10 @@ const { getNodes, updateNodeDimensions, emits } = useVueFlow();
 
 const { nodeLookup } = useStore();
 
+const nodesInitialized = useNodesInitialized();
+
+const resizeObserver = shallowRef<ResizeObserver>();
+
 // iterate a value-stable id list so this v-for only re-runs on node *membership* changes, not every commit
 // (each update replaces the whole `nodes` array). A moved node still re-renders via its own lookup-backed
 // computed in NodeWrapper; this keeps a single-node drag from re-diffing all N children.
@@ -30,10 +34,6 @@ const nodeIds = computed<string[]>((prev) => {
   }
   return nodes.map(node => node.id);
 });
-
-const nodesInitialized = useNodesInitialized();
-
-const resizeObserver = shallowRef<ResizeObserver>();
 
 watch(
   nodesInitialized,

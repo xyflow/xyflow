@@ -27,8 +27,6 @@ export function useDrag(params: UseDragParams) {
   const { panBy, getInternalNode, addSelectedNodes, removeSelectedNodes, removeSelectedEdges, updateNodePositions, getNodes, getEdges }
     = useVueFlow();
 
-  // Read the reactive store directly — read inside the XYDrag callbacks / `watchEffect`, so `store.x`
-  // gives the current value; no per-node ref projection.
   const store = useStore();
 
   const { nodeLookup } = store;
@@ -49,8 +47,6 @@ export function useDrag(params: UseDragParams) {
 
     const dragInstance = XYDrag({
       getStoreItems: () => ({
-        // lazy getters: XYDrag reads node data from `nodeLookup`, never destructures these, and
-        // getStoreItems runs per pointermove — eager reads would recompute O(n+m) each frame.
         get nodes() {
           return getNodes.value as NodeBase[];
         },
@@ -79,8 +75,6 @@ export function useDrag(params: UseDragParams) {
         updateNodePositions: (dragItems: Map<string, SystemNodeDragItem | InternalNodeBase>, isDragging?: boolean) => {
           const items: NodeDragItem[] = [];
           for (const raw of dragItems.values()) {
-            // XYDrag may emit either NodeDragItem (the normal case) or InternalNodeBase entries
-            // (selection drags). Both shapes carry `measured` and `internals.positionAbsolute`.
             const item = raw as SystemNodeDragItem;
             const node = getInternalNode(item.id);
             const width = item.measured?.width ?? node?.measured.width ?? 0;
@@ -120,8 +114,6 @@ export function useDrag(params: UseDragParams) {
           removeSelectedNodes([node]);
         }
       },
-      // XYDrag hands us the user nodes (with live drag position + `dragging`) — exactly the event payload,
-      // so emit them directly with no lookup round-trip
       onDragStart: (event, _dragItems, node, nodes) => {
         dragFired = true;
         dragging.value = true;
