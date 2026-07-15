@@ -45,6 +45,15 @@ export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge =
   edges: EdgeType[];
 }) => Promise<boolean | { nodes: NodeType[]; edges: EdgeType[] }>;
 
+/**
+ * Called after nodes and/or edges have been removed (via the delete key or `deleteElements`), with the
+ * removed elements. The `delete` event payload; mirrors xyflow/react's `OnDelete` and xyflow/svelte's `ondelete`.
+ */
+export type OnDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (params: {
+  nodes: NodeType[];
+  edges: EdgeType[];
+}) => void;
+
 export interface CustomThemeVars {
   [key: string]: string | number | undefined;
 }
@@ -247,6 +256,9 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
 export interface FlowEmits<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   nodesChange: [changes: NodeChange<NodeType>[]];
   edgesChange: [changes: EdgeChange<EdgeType>[]];
+  nodesDelete: [nodes: NodeType[]];
+  edgesDelete: [edges: EdgeType[]];
+  delete: [event: { nodes: NodeType[]; edges: EdgeType[] }];
   nodesInitialized: [nodes: NodeType[]];
   miniMapNodeClick: [nodeMouseEvent: NodeMouseEvent<NodeType>];
   miniMapNodeDoubleClick: [nodeMouseEvent: NodeMouseEvent<NodeType>];

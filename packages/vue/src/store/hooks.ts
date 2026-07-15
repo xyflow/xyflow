@@ -55,6 +55,9 @@ export function createHooks<NodeType extends Node = Node, EdgeType extends Edge 
     reconnectStart: createExtendedEventHook(),
     reconnect: createExtendedEventHook(),
     reconnectEnd: createExtendedEventHook(),
+    nodesDelete: createExtendedEventHook(),
+    edgesDelete: createExtendedEventHook(),
+    delete: createExtendedEventHook(),
     updateNodeInternals: createExtendedEventHook(),
     error: createExtendedEventHook(err => warn(err.message)),
   };
