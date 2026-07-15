@@ -135,39 +135,3 @@ export type FlowHooksOn<NodeType extends Node = Node, EdgeType extends Edge = Ed
 export type FlowHooksEmit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Readonly<{
   [key in keyof FlowEvents<NodeType, EdgeType>]: EventHookTrigger<FlowEvents<NodeType, EdgeType>[key]>
 }>;
-
-export interface NodeEventsHandler<NodeType extends Node = Node> {
-  doubleClick: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  click: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  mouseEnter: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  mouseMove: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  mouseLeave: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  contextMenu: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  dragStart: (event: NodeDragEvent<NodeType>) => void | { off: () => void };
-  drag: (event: NodeDragEvent<NodeType>) => void | { off: () => void };
-  dragStop: (event: NodeDragEvent<NodeType>) => void | { off: () => void };
-}
-
-export type NodeEventsOn<NodeType extends Node = Node> = {
-  [key in keyof NodeEventsHandler<NodeType>]: EventHookOn<
-    NodeEventsHandler<NodeType>[key] extends (event: infer Event) => any ? Event : never
-  >
-};
-
-export interface EdgeEventsHandler<EdgeType extends Edge = Edge> {
-  doubleClick: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  click: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  mouseEnter: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  mouseMove: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  mouseLeave: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  contextMenu: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  reconnectStart: (event: EdgeReconnectStartEvent<EdgeType>) => void | { off: () => void };
-  reconnect: (event: EdgeReconnectEvent<EdgeType>) => void | { off: () => void };
-  reconnectEnd: (event: EdgeReconnectEndEvent<Node, EdgeType>) => void | { off: () => void };
-}
-
-export type EdgeEventsOn<EdgeType extends Edge = Edge> = {
-  [key in keyof EdgeEventsHandler<EdgeType>]: EventHookOn<
-    EdgeEventsHandler<EdgeType>[key] extends (event: infer Event) => any ? Event : never
-  >
-};

@@ -145,9 +145,9 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;
 
-  noDragClassName: 'nodrag' | string;
-  noWheelClassName: 'nowheel' | string;
-  noPanClassName: 'nopan' | string;
+  noDragClassName: string;
+  noWheelClassName: string;
+  noPanClassName: string;
 
   defaultEdgeOptions: DefaultEdgeOptions | undefined;
 
