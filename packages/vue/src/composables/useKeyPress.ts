@@ -1,6 +1,7 @@
 import type { KeyFilter, KeyPredicate } from '@vueuse/core';
 import type { MaybeRefOrGetter } from 'vue';
 import { onKeyStroke, useEventListener } from '@vueuse/core';
+import { isInputDOMNode } from '@xyflow/system';
 import { computed, shallowRef, toValue, watch } from 'vue';
 
 type PressedKeys = Set<string>;
@@ -12,20 +13,7 @@ export interface UseKeyPressOptions {
   preventDefault?: MaybeRefOrGetter<boolean>;
 }
 
-const inputTags = ['INPUT', 'SELECT', 'TEXTAREA'];
-
 const defaultDoc = typeof document !== 'undefined' ? document : null;
-
-export function isInputDOMNode(event: KeyboardEvent): boolean {
-  const target = (event.composedPath?.()?.[0] || event.target) as HTMLElement;
-
-  const hasAttribute = typeof target?.hasAttribute === 'function' ? target.hasAttribute('contenteditable') : false;
-
-  const closest = typeof target?.closest === 'function' ? target.closest('.nokey') : null;
-
-  // when an input field is focused we don't want to trigger deletion or movement of nodes
-  return inputTags.includes(target?.nodeName) || hasAttribute || !!closest;
-}
 
 // we want to be able to do a multi selection event if we are in an input field
 function wasModifierPressed(event: KeyboardEvent) {

@@ -71,14 +71,15 @@ export function useNodeConnections(params: UseNodeConnectionsParams = {}) {
   );
 
   watch(
-    [connections, () => typeof onConnect !== 'undefined', () => typeof onDisconnect !== 'undefined'],
-    ([currentConnections = new Map<string, NodeConnection>()]) => {
-      if (prevConnections.value && prevConnections.value !== currentConnections) {
-        handleConnectionChange(prevConnections.value, currentConnections, onDisconnect);
-        handleConnectionChange(currentConnections, prevConnections.value, onConnect);
+    connections,
+    (currentConnections) => {
+      const conns = currentConnections ?? new Map<string, NodeConnection>();
+      if (prevConnections.value && prevConnections.value !== conns) {
+        handleConnectionChange(prevConnections.value, conns, onDisconnect);
+        handleConnectionChange(conns, prevConnections.value, onConnect);
       }
 
-      prevConnections.value = currentConnections;
+      prevConnections.value = conns;
     },
     { immediate: true },
   );

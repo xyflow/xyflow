@@ -1,5 +1,5 @@
 import type { BuiltInNode, MouseTouchEvent, NodeComponent } from '../../types';
-import { getNodesInside, nodeHasDimensions } from '@xyflow/system';
+import { getNodesInside, isInputDOMNode, nodeHasDimensions } from '@xyflow/system';
 import {
   computed,
   defineComponent,
@@ -15,7 +15,6 @@ import {
   watch,
 } from 'vue';
 import {
-  isInputDOMNode,
   useDrag,
   useStore,
   useUpdateNodePositions,
