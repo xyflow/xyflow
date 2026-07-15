@@ -36,9 +36,9 @@ function isKeyMatch(pressedKey: string, keyToMatch: string, pressedKeys: Set<str
     pressedKeys.add(pressedKey.toLowerCase());
   }
 
-  const isMatch = keyCombination.every(
-    (key, index) => pressedKeys.has(key) && Array.from(pressedKeys.values())[index] === keyCombination[index],
-  );
+  // order-independent, size-guarded on keydown so e.g. 'Meta' alone doesn't match 'meta+a'
+  const isMatch = (isKeyUp || keyCombination.length === pressedKeys.size)
+    && keyCombination.every(key => pressedKeys.has(key));
 
   if (isKeyUp) {
     pressedKeys.delete(pressedKey.toLowerCase());
