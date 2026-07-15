@@ -28,17 +28,15 @@ const isValidConnection = toRef(() => props.isValidConnection ?? null);
 
 const { id: flowId } = useVueFlow();
 
-// Read the reactive store directly (see NodeWrapper) instead of projecting it into refs — there are ~2
-// handles per node, so this setup runs a lot; `store.x` already tracks reactively in computeds/template.
+// read the reactive store directly (see NodeWrapper); this setup runs ~2× per node, so avoid projecting every key into refs
 const store = useStore();
 
 const { id: nodeId, node: nodeRef, nodeEl, connectedEdges } = useNode();
 
 const handle = shallowRef<HTMLDivElement>();
 
-// `data-id` (queried by handle DOM lookup in `utils/handle.ts`) and the other handle identifiers are
-// typed through a `Record` because this vue version's `HTMLAttributes` lacks the `data-*` index signature
-// that `strictTemplates` needs, so they can't be written as bare `:data-*` attributes in the template.
+// Record-typed because Vue's `HTMLAttributes` lacks the `data-*` index signature `strictTemplates` needs, so
+// these can't be bare `:data-*` template attrs (`data-id` is queried by the handle DOM lookup in `utils/handle.ts`)
 const handleDataIds = computed<Record<string, string | null>>(() => ({
   'data-id': `${flowId}-${nodeId}-${handleId}-${type.value}`,
   'data-handleid': handleId,
@@ -87,9 +85,8 @@ const isHandleConnectable = computed(() => {
   return isDef(isConnectable) ? isConnectable : store.nodesConnectable;
 });
 
-// All connection-driven classes in one computed instead of ~7 separate refs: they all derive from the same
-// global `connection*` store state (so they toggle together during a connection) and are used only in the
-// class binding. Mirrors xyflow/react's `connectingSelector`.
+// all connection-driven classes in one computed (not ~7 refs): they derive from the same global `connection*`
+// state, toggle together during a connection, and are used only in the class binding
 const connectionClasses = computed<Record<string, boolean>>((prev) => {
   const fromHandle = store.connectionStartHandle;
   const clickFromHandle = store.connectionClickStartHandle;
@@ -121,10 +118,8 @@ const connectionClasses = computed<Record<string, boolean>>((prev) => {
       && ((connectionInProcess || clickConnectionInProcess) ? connectableEnd : connectableStart),
   };
 
-  // Reuse the previous object when nothing changed so the class binding's render effect doesn't re-run
-  // (Vue gates dependents on reference identity). During a connection drag `connectionEndHandle` toggles
-  // every handle's recompute, but only the two endpoints' classes actually change — without this every
-  // visible handle re-renders on each intermediate target change.
+  // reuse the previous object when nothing changed so the class binding doesn't re-render (Vue gates on ref
+  // identity) — a connection drag recomputes every handle, but only the two endpoints' classes actually change
   if (
     prev
     && prev.connectable === next.connectable
@@ -142,8 +137,8 @@ const connectionClasses = computed<Record<string, boolean>>((prev) => {
   return next;
 });
 
-// Emit `connect`/`disconnect` when the set of connections on THIS handle changes (mirrors xyflow/svelte).
-// `connectionLookup` isn't reactive, so `edges` is the change trigger; skip the diff when nobody listens.
+// emit `connect`/`disconnect` when the set of connections on THIS handle changes. `connectionLookup` isn't
+// reactive, so `edges` is the change trigger; skip the diff when nobody listens.
 const instance = getCurrentInstance();
 let prevConnections: Map<string, HandleConnection> | null = null;
 
@@ -167,13 +162,12 @@ watch(
   { immediate: true },
 );
 
-// todo: remove this and have users handle this themselves using `updateNodeInternals`
-// set up handle bounds if they don't exist yet and the node has been initialized (i.e. the handle was added after the node has already been mounted)
+// todo: remove this and have users handle it via `updateNodeInternals`
+// set up handle bounds if missing and the node is already initialized (handle added after the node mounted)
 onMounted(() => {
   const node = nodeRef.value;
 
-  // if the node isn't initialized yet, we can't set up the handle bounds
-  // the handle bounds will be automatically set up when the node is initialized (`updateNodeDimensions`)
+  // if the node isn't initialized yet, bounds get set up later by `updateNodeDimensions`
   if (!node || !nodeHasDimensions(node)) {
     return;
   }

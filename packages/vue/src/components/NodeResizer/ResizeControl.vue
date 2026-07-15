@@ -29,8 +29,8 @@ const { transform, nodeOrigin, snapGrid, snapToGrid, vueFlowRef, noDragClassName
 
 const resizeControlRef = shallowRef<HTMLDivElement>();
 
-// mirror NodeResizer: fall back to the node context id so a bare `<NodeResizeControl>` inside a custom
-// node resolves its node without an explicit `node-id` prop (matches xyflow/react's `useNodeId()` fallback)
+// fall back to the node context id so a bare `<NodeResizeControl>` inside a custom node resolves its node
+// without an explicit `node-id` prop
 const contextNodeId = inject(NodeId, null);
 
 const nodeId = toRef(() => (typeof props.nodeId === 'string' ? props.nodeId : contextNodeId ?? undefined));
@@ -70,7 +70,7 @@ watchEffect((onCleanup) => {
         const width = changes.width ?? node.measured.width ?? 0;
         const height = changes.height ?? node.measured.height ?? 0;
 
-        // grow the parent to fit the resized child (mirrors xyflow/react's NodeResizeControl)
+        // grow the parent to fit the resized child
         const child = {
           id: node.id,
           parentId: node.parentId,

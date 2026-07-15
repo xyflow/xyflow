@@ -64,22 +64,18 @@ const modelNodes = defineModel<NodeType[]>('nodes');
 const modelEdges = defineModel<EdgeType[]>('edges');
 const modelViewport = defineModel<Viewport>('viewport');
 
-// Reuse an ancestor `<VueFlowProvider>`'s store if present; otherwise this `<VueFlow>` owns it —
-// create + provide our own (auto-wrap, like react's `<Wrapper>`). The store is only ever created by a
-// provider boundary; `useVueFlow()`/`useStore()` are pure consumers. A reused store exposes its two
-// views via the same pair of injection keys (instance + state).
+// reuse an ancestor `<VueFlowProvider>`'s store if present; otherwise this `<VueFlow>` creates + provides its
+// own (auto-wrap). A reused store exposes its two views (instance + state) via the same pair of injection keys.
 const injectedInstance = inject(VueFlowInjectionKey, null) as VueFlowInstance<NodeType, EdgeType> | null;
 const injectedState = inject(VueFlowStateKey, null) as VueFlowState<NodeType, EdgeType> | null;
 
-// This `<VueFlow>` owns its store unless it reuses an ancestor provider's. When it owns the store, the
-// v-model refs back it directly as signals — single source of truth (svelte's `$bindable` proxy), so the
-// store mutating nodes/edges IS the v-model update, no out-sync. When it reuses a provider's store, the
-// model refs can't back the already-created store, so `useWatchProps` syncs them instead (rebinding a
-// reused store to the hosting `<VueFlow>`'s models is deferred to the multi-instance guard work).
+// when this `<VueFlow>` owns the store, the v-model refs back it directly as signals (single source of truth),
+// so store mutations to nodes/edges ARE the v-model update. When it reuses a provider's store the model refs
+// can't back the already-created store, so `useWatchProps` syncs them instead.
 const ownsStore = !injectedInstance;
 
-const { instance, state } =
-  injectedInstance && injectedState
+const { instance, state }
+  = injectedInstance && injectedState
     ? { instance: injectedInstance, state: injectedState }
     : useCreateVueFlow<NodeType, EdgeType>(props, {
         nodes: modelNodes as unknown as Ref<NodeType[]>,
@@ -92,7 +88,7 @@ if (!ownsStore) {
 }
 
 // watch props and update store state; the v-model nodes/edges bridge (out+in, synchronous) lives here for
-// both store paths now — the store's canonical nodes/edges are always internal signals (see createStore)
+// both store paths — the store's canonical nodes/edges are always internal signals (see createStore)
 const disposeWatchers = useWatchProps({ nodes: modelNodes, edges: modelEdges }, props, { instance, state });
 
 useHooks(emit, state.hooks);
@@ -109,9 +105,7 @@ useViewportSync(modelViewport, state);
 // access it by member (`stateRefs.vueFlowRef`) so the template `:ref` binding doesn't auto-unwrap it
 const stateRefs = storeToRefs(state);
 
-// slots will be passed via provide
-// this is to avoid having to pass them down through all the components
-// as that would require a lot of boilerplate and causes significant performance drops
+// provide slots instead of drilling them through every component (boilerplate + significant perf cost)
 provide(Slots, slots as unknown as FlowSlots);
 
 onUnmounted(disposeWatchers);

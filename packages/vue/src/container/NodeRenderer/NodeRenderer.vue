@@ -8,14 +8,12 @@ const { getNodes, updateNodeDimensions, emits } = useVueFlow();
 
 const { nodeLookup } = useStore();
 
-// Iterate a value-stable id list so this v-for's render effect only re-runs when node *membership*
-// changes — not on every commit (each position/data update replaces the whole `nodes` array). A moved
-// node still re-renders through its own lookup-backed computed in NodeWrapper; this keeps a single-node
-// drag from re-diffing all N children every frame.
+// iterate a value-stable id list so this v-for only re-runs on node *membership* changes, not every commit
+// (each update replaces the whole `nodes` array). A moved node still re-renders via its own lookup-backed
+// computed in NodeWrapper; this keeps a single-node drag from re-diffing all N children.
 const nodeIds = computed<string[]>((prev) => {
-  // hot path (every commit): reuse `prev` when membership is unchanged, allocating nothing. a plain
-  // indexed loop avoids the per-element callback of `.every` on this O(n)-per-frame comparison; the
-  // rebuild below only runs on the rare membership change, so the builtin stays for readability there.
+  // hot path (every commit): reuse `prev` when membership is unchanged, allocating nothing. a plain indexed
+  // loop avoids `.every`'s per-element callback on this O(n)-per-frame comparison
   const nodes = getNodes.value;
   const len = nodes.length;
   if (prev && prev.length === len) {

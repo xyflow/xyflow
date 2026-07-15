@@ -75,9 +75,8 @@ export function calcNextPosition(
 ) {
   const measured = getNodeDimensions(node);
 
-  // `clampPosition` already subtracts the node's dimensions from the extent's max corner (same as
-  // system's own `clampPositionToParent`), so pass `getExtent`'s region straight through — pre-shrinking
-  // it by the node size first would double-count it and clamp the node a full width/height too far in.
+  // `clampPosition` already subtracts the node's dimensions from the extent's max corner, so pass
+  // `getExtent`'s region straight through — pre-shrinking it would double-count and clamp a full size too far
   const clampedPos = clampPosition(nextPosition, getExtent(node, triggerError, nodeExtent, parentNode), measured);
 
   return {

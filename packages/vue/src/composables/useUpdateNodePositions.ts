@@ -41,10 +41,8 @@ export function useUpdateNodePositions() {
           nextPosition = snapPosition(nextPosition, store.snapGrid);
         }
 
-        // mirror xyflow/react's `useMoveSelectedNodes`: the origin-aware `calculateNodePosition` derives the
-        // new `position` AND `positionAbsolute` (accounting for `nodeOrigin`, extent + parent). The previous
-        // `calcNextPosition` ignored `nodeOrigin` and reused the stale `positionAbsolute`, so with a
-        // non-default origin the offset re-applied on every key press — the node drifted by the origin offset.
+        // origin-aware `calculateNodePosition` derives both `position` and `positionAbsolute` (accounting
+        // for `nodeOrigin`, extent + parent) — without it a non-default origin drifts on every key press.
         const { position, positionAbsolute } = calculateNodePosition({
           nodeId: node.id,
           nextPosition,

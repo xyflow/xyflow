@@ -36,6 +36,8 @@ export interface BackgroundProps {
    */
   size?: number;
   /**
+   * The stroke thickness used when drawing the pattern.
+   *
    * @default 1
    */
   lineWidth?: number;

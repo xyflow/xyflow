@@ -39,7 +39,9 @@ export type DefaultNodeTypes = { [key in 'input' | 'output' | 'default' | 'group
 
 /** these props are passed to edge texts */
 export interface EdgeTextProps {
+  /** The x position where the label should be rendered. */
   x: number;
+  /** The y position where the label should be rendered. */
   y: number;
   label?: string | VNode | Component<EdgeTextProps> | object;
   labelStyle?: CSSProperties;

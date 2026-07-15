@@ -7,17 +7,13 @@ import { isDef } from '../utils';
 import { storeToRefs } from './storeToRefs';
 
 /**
- * Two-way bind a `v-model` array ref to the store, identity-in / snapshot-out, with native `watch`.
- *
- * Runs for BOTH the owned- and reused-store paths: the store's canonical nodes/edges are always an
- * internal `shallowRef` (see `createStore`), never the v-model ref, so this is the single place the model
- * ref is bridged to the store. Both directions flush synchronously so the model ref and the store's
- * synchronous reads (`getNodes`/`state.nodes`) never disagree within a tick.
+ * Two-way bind a `v-model` array ref to the store's canonical `shallowRef` (never the v-model ref itself).
  *
  * - **out** (store → model): snapshot on every membership change; element refs are shared, so per-node
  *   field mutations surface without a copy.
- * - **in** (model → store): adopt externally-assigned arrays via `setItems`, ignoring our own snapshot
- *   (identity check against `lastSnapshot`) — replacing the previous `@vueuse` `watchPausable` flag dance.
+ * - **in** (model → store): adopt externally-assigned arrays via `setItems`, skipping our own snapshot.
+ *
+ * Both directions flush synchronously so the model ref and the store's synchronous reads never disagree.
  */
 function syncModelArray<ModelItem, StoreItem>(
   model: Ref<ModelItem[] | undefined> | undefined,
@@ -37,9 +33,8 @@ function syncModelArray<ModelItem, StoreItem>(
       lastSnapshot = [...storeItems.value] as unknown as ModelItem[];
       model.value = lastSnapshot;
     },
-    // `flush: 'sync'` so the user's v-model ref mirrors a store commit on the SAME tick (matching the
-    // synchronous store reads) — otherwise it lags a flush behind `getNodes`, the reported footgun.
-    // seed the model only if the store already holds elements (populated by `setState(props)` on create)
+    // `flush: 'sync'` so the v-model ref mirrors a store commit on the same tick as the synchronous reads;
+    // seed the model only if the store already holds elements
     { immediate: storeItems.value.length > 0, flush: 'sync' },
   );
 
@@ -50,8 +45,8 @@ function syncModelArray<ModelItem, StoreItem>(
         return;
       }
 
-      // compare raw identities: a deep model `ref` hands our own snapshot back as its reactive proxy,
-      // which would fail a plain `===` and loop snapshot → setItems → snapshot forever
+      // compare raw identities: a deep model ref hands our snapshot back as a proxy that fails `===`,
+      // looping snapshot → setItems → snapshot forever
       const nextRaw = toRaw(next);
       if (nextRaw === lastSnapshot) {
         return;
@@ -59,8 +54,7 @@ function syncModelArray<ModelItem, StoreItem>(
 
       setItems(nextRaw);
     },
-    // `flush: 'sync'` so an external `nodes.value = [...]` is adopted into the store immediately, keeping
-    // the model ref and `getNodes` consistent on the same tick in both directions
+    // `flush: 'sync'` so an external `nodes.value = [...]` is adopted immediately, keeping both sides on the same tick
     { immediate: true, flush: 'sync' },
   );
 }
@@ -165,8 +159,7 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
         watch(
           () => props.ariaLabelConfig,
           (ariaLabelConfig) => {
-            // merge over the defaults so unspecified keys keep their default text (handled here rather than
-            // in `watchRest`, which would assign the partial verbatim and drop the defaults)
+            // merge over defaults so unspecified keys keep their default text (watchRest would assign the partial verbatim)
             state.ariaLabelConfig = mergeAriaLabelConfig(ariaLabelConfig);
           },
           { immediate: true },
@@ -275,8 +268,6 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
     };
 
     const runAll = () => {
-      // both owned + reused stores bridge nodes/edges here — the store's canonical signal is always
-      // internal, so the v-model ref is never the backing store and always needs syncing
       watchNodesValue();
       watchEdgesValue();
       watchMinZoom();

@@ -70,8 +70,8 @@ const nodeClassNameFunc = computed<MiniMapNodeFunc>(() =>
   typeof nodeClassName === 'string' ? () => nodeClassName : typeof nodeClassName === 'function' ? nodeClassName : () => '',
 );
 
-// The minimap renders absolute positions + measured dimensions, which live on the InternalNode — iterate
-// the lookup (the public `nodes` ref holds user `Node`s without `internals`).
+// the minimap needs absolute positions + measured dimensions from the InternalNode, so iterate the lookup
+// (the public `nodes` ref holds user `Node`s without `internals`)
 const minimapNodes = computed(() => Array.from(nodeLookup.values()));
 
 const bb = computed(() =>
@@ -234,12 +234,10 @@ export default {
     >
       <title v-if="resolvedAriaLabel" :id="`vue-flow__minimap-${id}`">{{ resolvedAriaLabel }}</title>
 
-      <!-- v-memo on the lookup entry: unchanged nodes keep their InternalNode reference across commits
-      (checkEquality reuse), so drag/pan-frame MiniMap re-renders skip every untouched child instead of
-      re-rendering all of them (the inline per-node prop objects/calls would otherwise always patch). The
-      node*Func RESULTS are in the deps (not the fn refs) so a recolor driven by an external reactive dep
-      read inside a `nodeColor`/`nodeStrokeColor`/`nodeClassName` callback still re-renders the affected
-      node — memoizing the fn refs froze the color until the node itself changed -->
+      <!-- v-memo on the lookup entry: unchanged nodes keep their InternalNode reference across commits, so
+      drag/pan-frame re-renders skip untouched children. The node*Func RESULTS are in the deps (not the fn
+      refs) so a recolor driven by a reactive read inside a `nodeColor`/`nodeStrokeColor`/`nodeClassName`
+      callback still re-renders the affected node -->
       <MiniMapNode
         v-for="node of minimapNodes"
         :id="node.id"

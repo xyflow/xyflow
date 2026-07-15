@@ -11,12 +11,12 @@ interface EdgeData<EdgeType extends Edge = Edge> {
 }
 
 /**
- * Composable for receiving data of one or multiple nodes
+ * Composable that lets you subscribe to changes of a specific edge's `data` object.
  *
  * @public
- * @param edgeId - The id (or ids) of the node to get the data from
- * @param guard - Optional guard function to narrow down the node type
- * @returns An array of data objects
+ * @param edgeId - The id (or ids) of the edge to get the data from
+ * @param guard - Optional guard function to narrow down the edge type
+ * @returns An object (or array of objects) with `id`, `type`, `data` representing each edge
  */
 export function useEdgesData<EdgeType extends Edge = Edge>(
   edgeId: MaybeRefOrGetter<string>,

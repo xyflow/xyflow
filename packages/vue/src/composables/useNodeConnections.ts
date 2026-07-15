@@ -17,7 +17,7 @@ export type UseNodeConnectionsParams = {
     /** the handle id (only needed if the node has multiple handles of the same type). Requires `handleType` to be set. */
     handleId?: MaybeRefOrGetter<string | null | undefined>;
   }
-  // without `handleType` a `handleId` is meaningless at runtime, so the type forbids it (mirrors xyflow/react & xyflow/svelte)
+  // without `handleType` a `handleId` is meaningless at runtime, so the type forbids it
   | { handleType?: MaybeRefOrGetter<HandleType | null | undefined>; handleId?: never }
 );
 

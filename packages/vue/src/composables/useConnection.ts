@@ -20,8 +20,9 @@ const NO_CONNECTION = Object.freeze({
 } as const);
 
 /**
- * Access the currently ongoing connection, composed from the store's split connection fields into a
- * single {@link ConnectionState}.
+ * Returns the current connection when there is an active connection interaction. When idle, every field is
+ * null (`inProgress: false`). A typical use case is to colorize handles based on whether the connection is
+ * valid. Composed from the store's split connection fields into a single {@link ConnectionState}.
  *
  * @public
  * @returns a `ComputedRef<ConnectionState>` — `inProgress: false` (all-null fields) when idle

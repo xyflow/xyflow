@@ -46,14 +46,11 @@ const NodeWrapper = defineComponent({
       setCenter,
     } = useVueFlow();
 
-    // Read the reactive store directly. Inside computeds/handlers `store.x` already tracks reactively, so
-    // there's no need to project the whole state into refs per node (`storeToRefs` allocates a ref for every
-    // state key on each call — a real cost when it runs once per node/edge/handle).
+    // read the reactive store directly; `store.x` tracks reactively without projecting every key into refs per node
     const store = useStore();
     const { parentLookup } = store;
 
-    // `nodesSelectionActive` is the one exception: it's handed to `handleNodeClick`, which writes it back,
-    // so it needs a writable ref.
+    // `handleNodeClick` writes this back, so it needs a writable ref
     const nodesSelectionActive = toRef(store, 'nodesSelectionActive');
 
     const nodeElement = shallowRef<HTMLDivElement | null>(null);
@@ -66,10 +63,8 @@ const NodeWrapper = defineComponent({
 
     const updateNodePositions = useUpdateNodePositions();
 
-    // `nodeRef` re-resolves to a NEW InternalNode object whenever the store re-adopts this node (immutable
-    // model) — that reference swap is what re-renders this wrapper. Resolve it directly rather than through
-    // the public `useNode`, which the wrapper would only use for `node` while also allocating unused
-    // `parentNode`/`connectedEdges` computeds and a `nodeEl` inject per instance.
+    // re-resolves to a NEW InternalNode whenever the store re-adopts this node (immutable model) — that ref
+    // swap is what re-renders the wrapper. Resolve directly, not via useNode (which allocates unused computeds).
     const nodeRef = computed(() => getInternalNode(props.id));
 
     const isDraggable = toRef(() => {
@@ -103,13 +98,12 @@ const NodeWrapper = defineComponent({
         || store.hooks.nodeMouseLeave.hasListeners(),
     );
 
-    // a node "has dimensions" once it's measured OR carries explicit `width`/`height` OR `initialWidth`/
-    // `initialHeight` (the SSR fallback, where there's no ResizeObserver to measure) — mirrors xyflow/react
-    // & xyflow/svelte's visibility gate so sized/SSR nodes render immediately instead of staying hidden.
+    // a node "has dimensions" once measured OR given explicit width/height OR initialWidth/initialHeight (the
+    // SSR fallback, no ResizeObserver) — the visibility gate so sized/SSR nodes render immediately
     const isInit = computed(() => (nodeRef.value ? nodeHasDimensions(nodeRef.value) : false));
 
-    // computed (not toRef): the value-equality gate keeps this node's render effect from re-running on
-    // every `parentLookup` entry replacement — an uncached getter read in render tracks the raw map key
+    // computed (not toRef): the value-equality gate keeps the render effect from re-running on every
+    // `parentLookup` entry replacement
     const isParent = computed(() => (parentLookup.get(props.id)?.size ?? 0) > 0);
 
     const nodeCmp = computed(() => {
@@ -162,13 +156,12 @@ const NodeWrapper = defineComponent({
 
     const getStyle = computed(() => {
       const node = nodeRef.value;
-      // clone: never mutate the user's `node.style` (nodes are markRaw, so an in-place write isn't
-      // reactive AND would cache stale width/height onto the user object across renders)
+      // clone: never mutate the user's `node.style` (markRaw nodes — an in-place write isn't reactive and
+      // would cache stale width/height onto the user object)
       const styles = { ...node?.style };
 
-      // xyflow/react auto-appends `px` to numeric CSS dimensions; Vue's `:style` binding does not, so a
-      // react-style `style: { width: 380 }` would be dropped as invalid CSS. Coerce numeric `style` width/
-      // height to px for parity (string values like `'50%'` are left untouched).
+      // Vue's `:style` doesn't auto-append `px` to numbers, so coerce numeric width/height to px (string
+      // values like `'50%'` pass through untouched)
       if (typeof styles.width === 'number') {
         styles.width = `${styles.width}px`;
       }
@@ -176,9 +169,8 @@ const NodeWrapper = defineComponent({
         styles.height = `${styles.height}px`;
       }
 
-      // mirror xyflow/react's `getNodeInlineStyleDimensions`: before the node is measured (no handle bounds
-      // yet — e.g. first paint / SSR) fall back through `initialWidth`/`initialHeight`; once measured, only
-      // an explicit `width`/`height` overrides the natural measured size.
+      // before the node is measured (no handle bounds yet — first paint / SSR) fall back through
+      // `initialWidth`/`initialHeight`; once measured, only an explicit `width`/`height` overrides the measured size
       const isMeasured = !!node?.internals.handleBounds;
       const width = node?.width ?? (isMeasured ? undefined : node?.initialWidth);
       const height = node?.height ?? (isMeasured ? undefined : node?.initialHeight);
@@ -276,9 +268,7 @@ const NodeWrapper = defineComponent({
         },
         [
           h(nodeCmp.value === false ? (getNodeTypes.value.default as NodeComponent<BuiltInNode>) : (nodeCmp.value as any), {
-            // exactly the `NodeProps` surface (xyflow/react parity) — no legacy `connectable`/`position`/
-            // `dimensions`/`parent`/`parentNodeId`/`resizing` duplicates, which bloated every node's props
-            // and leaked onto custom-node DOM as `$attrs`
+            // exactly the `NodeProps` surface — no legacy duplicates that bloat props and leak onto custom-node DOM as `$attrs`
             id: node.id,
             type: node.type,
             data: node.data,
@@ -404,9 +394,8 @@ const NodeWrapper = defineComponent({
       }
     }
 
-    // Pan the viewport to a node that receives KEYBOARD focus (Tab) and isn't currently visible, so
-    // tabbing through nodes never lands on an off-screen one. `:focus-visible` keeps this to keyboard
-    // focus (not pointer/programmatic).
+    // pan the viewport to a node that gets KEYBOARD focus (Tab) but is off-screen, so tabbing never lands
+    // off-screen; `:focus-visible` limits this to keyboard focus (not pointer/programmatic)
     function onFocus() {
       const node = nodeRef.value;
       if (!node || store.disableKeyboardA11y || !store.autoPanOnNodeFocus || !nodeElement.value?.matches(':focus-visible')) {

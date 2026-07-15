@@ -2,7 +2,6 @@ import type { FunctionalComponent } from 'vue';
 import type { BuiltInNode, NodeProps } from '../../types';
 
 // A group node renders nothing — it's just a styled container (the `.vue-flow__node-group` class).
-// Mirrors xyflow/react's built-in `group: () => null`.
 const GroupNode: FunctionalComponent<NodeProps<BuiltInNode>> = function () {
   return null;
 };

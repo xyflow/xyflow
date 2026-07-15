@@ -103,20 +103,13 @@ export interface CreateInternalNodesOptions {
 }
 
 /**
- * Adopt user `Node`s into the store's lookups, xyflow/react+svelte style: validate, then run
- * `@xyflow/system`'s `adoptUserNodes` DIRECTLY against the PERSISTENT `nodeLookup`/`parentLookup`
- * (mutated in place — cleared + repopulated) to build the enriched `InternalNode`s with parent-aware
- * `internals.{positionAbsolute, z, rootParentIndex, handleBounds, userNode}`.
+ * Adopt user `Node`s into the store's lookups: validate them, then run `@xyflow/system`'s `adoptUserNodes`
+ * against the persistent `nodeLookup`/`parentLookup` (mutated in place) to build the enriched
+ * `InternalNode`s. `checkEquality` reuses the existing `InternalNode` when the user node is unchanged, so
+ * re-adopting on every change is O(changed) and `measured`/`handleBounds` survive for unchanged nodes.
  *
- * There is no second `parseNode` pass and no vue-flow-specific default-stamping (parity with RF/SF, which
- * apply no node defaults — undefined fields stay undefined; consumers tolerate them). `checkEquality`
- * reuses the existing `InternalNode` by reference whenever the user node is unchanged, so re-adopting on
- * every change is O(changed) and `measured`/`handleBounds` survive for unchanged nodes for free.
- *
- * Returns the validated user nodes (to be stored as the canonical `state.nodes` array) plus
- * `hasSelectedNodes` (whether any adopted node is `selected`, surfaced by `adoptUserNodes` for free — the
- * caller uses it to clear a stale `nodesSelectionActive`). The InternalNodes live only in `nodeLookup`;
- * `internals.userNode` references the exact user object stored in the array.
+ * Returns the validated user nodes (stored as `state.nodes`) plus `hasSelectedNodes` (used to clear a stale
+ * `nodesSelectionActive`). InternalNodes live only in the lookup; `internals.userNode` points at the stored object.
  */
 export function adoptNodes<NodeType extends Node = Node>(
   nodes: NodeType[],
@@ -146,25 +139,16 @@ export function adoptNodes<NodeType extends Node = Node>(
       seenNodeIds.add(node.id);
     }
 
-    // `markRaw` the user node so Vue never deep-proxies it (the perf goal — large `data` objects stay
-    // raw). `toRaw` first in case it arrived as a reactive proxy; this is the choke point through which
-    // every node enters `state.nodes`/`nodeLookup`. Reactivity for the UI comes from re-adopting (the
-    // lookup `.set` + the per-node render computed), not from deep-proxying. Idempotent across re-adopts,
-    // so `checkEquality` (reference identity) keeps matching for unchanged nodes.
+    // markRaw so Vue never deep-proxies the user node (large `data` stays raw); toRaw first in case it
+    // arrived as a proxy. UI reactivity comes from re-adopting (lookup `.set` + per-node render computed),
+    // not deep-proxying. Idempotent, so `checkEquality` keeps matching unchanged nodes across re-adopts.
     validNodes.push(markRaw(toRaw(node)));
   }
 
-  // vue-flow's node-rep split keeps `measured` AND `handleBounds` off the user `Node`s — they live only on
-  // the `InternalNode`. The system's `adoptUserNodes` sources both from the user node (`parseHandles` even
-  // resets `handleBounds` to `undefined` when the node carries no `measured`), so re-committing fresh user
-  // objects (a one-way `:nodes` reassignment, a layout pass, `nodes.value.map(...)`) resets:
-  //   - `measured` → `undefined`: the node fails `nodeHasDimensions`, renders `visibility:hidden`, and — since
-  //     its DOM size didn't change — the ResizeObserver never re-fires to restore it.
-  //   - `handleBounds` → `undefined`: edges fall back to the node's default handle positions, ignoring its
-  //     `sourcePosition`/`targetPosition` (e.g. a dagre layout's edges no longer meet the handles).
-  // Snapshot both before adoption clears the lookup and carry them forward below. A genuine re-measure
-  // (`updateNodeDimensions`, e.g. NodeWrapper's `sourcePosition` watcher) still overwrites them, and that
-  // fresh result is in turn preserved by the next re-commit.
+  // `measured`/`handleBounds` live only on the InternalNode, but system's `adoptUserNodes` sources them from
+  // the user node — so re-committing fresh user objects (layout pass, `nodes.value.map(...)`) would reset them,
+  // hiding nodes (fails `nodeHasDimensions`, ResizeObserver won't re-fire) and detaching edges from their handles.
+  // Snapshot both here and restore below; a genuine re-measure (`updateNodeDimensions`) still overwrites them.
   const priorInternals = new Map<
     string,
     { measured?: { width?: number; height?: number }; handleBounds: NodeHandleBounds | undefined }
@@ -184,9 +168,8 @@ export function adoptNodes<NodeType extends Node = Node>(
       triggerError(new VueFlowError(ErrorCode.NODE_MISSING_PARENT, node.id, node.parentId));
     }
 
-    // re-adoption only kept `measured`/`handleBounds` if the user object carried them; restore the prior
-    // values for re-committed nodes that didn't, so a content-agnostic update (class/position/layout) keeps
-    // the node visible and its edges anchored to the right handles (see the snapshot above)
+    // restore the snapshotted `measured`/`handleBounds` for re-committed nodes that didn't carry them, so a
+    // content-agnostic update (class/position/layout) keeps the node visible and its edges anchored
     const prior = priorInternals.get(node.id);
     if (prior) {
       const internal = nodeLookup.get(node.id);
@@ -222,9 +205,7 @@ function addConnectionToLookup(
   nodeId: string,
   handleId: string | null,
 ) {
-  // We add the connection to the connectionLookup at the following keys
-  // 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId
-  // If the key already exists, we add the connection to the existing map
+  // add to keys nodeId, nodeId-type and nodeId-type-handleId (merging into any existing map)
   let key = nodeId;
   const nodeMap = connectionLookup.get(key) || new Map();
   connectionLookup.set(key, nodeMap.set(connectionKey, connection));
@@ -256,10 +237,9 @@ export function updateConnectionLookup(connectionLookup: ConnectionLookup, edges
 }
 
 /**
- * Validate edges-or-connections for the store, xyflow-style: the returned edges are the USER's objects
- * (a `Connection` becomes a new edge via {@link addEdgeToStore}, the only path that persists
- * `defaultEdgeOptions`) — no enrichment, no captured node references, no default-stamping. Source/target
- * node resolution and `EdgePosition` happen per-render in `EdgeWrapper`.
+ * Validate edges-or-connections for the store: the returned edges are the USER's objects (a `Connection`
+ * becomes a new edge via {@link addEdgeToStore}, the only path that persists `defaultEdgeOptions`) — no
+ * enrichment, no captured node references. Source/target resolution happens per-render in `EdgeWrapper`.
  *
  * @internal
  */

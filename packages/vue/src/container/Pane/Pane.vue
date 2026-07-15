@@ -139,9 +139,8 @@ function onPointerDown(event: PointerEvent) {
   selectionInProgress = false;
   autoPanStarted = false;
 
-  // the selection (resetting the current selection + `selectionStart`) only begins once the pointer moves
-  // past the click threshold — see `onPointerMove`. Resetting here would clear the selection on a plain
-  // click and open a selection box for it (xyflow/react #5593).
+  // the selection only begins once the pointer moves past the click threshold (see `onPointerMove`); resetting
+  // here would clear the selection on a plain click and open a selection box for it
 
   // store the origin in flow coordinates so it stays anchored to the canvas while auto-panning
   const flowStart = pointToRendererPoint({ x, y }, transform.value);
@@ -250,10 +249,9 @@ function onPointerMove(event: PointerEvent) {
   const { x: mouseX, y: mouseY } = getEventPosition(event, containerBounds.value);
   lastPointerPosition = { x: mouseX, y: mouseY };
 
-  // begin the selection only once the pointer has moved past the click threshold — so a plain click
-  // neither resets the current selection nor opens a selection box (xyflow/react #5593). Holding the
-  // selection key starts immediately (`requiredDistance` 0). `startX`/`startY` are flow coords, so compare
-  // against the start in screen space.
+  // begin the selection only once the pointer moves past the click threshold, so a plain click neither resets
+  // the selection nor opens a box. Holding the selection key starts immediately (`requiredDistance` 0);
+  // `startX`/`startY` are flow coords, so compare against the start in screen space.
   if (!selectionInProgress) {
     const screenStart = rendererPointToPoint({ x: userSelectionRect.value.startX, y: userSelectionRect.value.startY }, transform.value);
     const requiredDistance = selectionKeyPressed ? 0 : paneClickDistance.value;

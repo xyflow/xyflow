@@ -74,7 +74,7 @@ export function useHooks<NodeType extends Node = Node, EdgeType extends Edge = E
         emit(key, data);
       };
 
-      // push into fns instead of using `on` to avoid overwriting default handlers - the emitter should be called in addition to the default handlers
+      // wire the emitter separately from `on` so it runs in addition to (not instead of) default handlers
       value.setEmitter(listener);
       onScopeDispose(value.removeEmitter, true);
 
