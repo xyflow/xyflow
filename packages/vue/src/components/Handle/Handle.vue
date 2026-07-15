@@ -37,13 +37,6 @@ let prevConnections: Map<string, HandleConnection> | null = null;
 
 const handle = shallowRef<HTMLDivElement>();
 
-const handleDataIds = computed<Record<string, string | null>>(() => ({
-  'data-id': `${flowId}-${nodeId}-${handleId}-${type.value}`,
-  'data-handleid': handleId,
-  'data-nodeid': nodeId,
-  'data-handlepos': position,
-}));
-
 const { handlePointerDown, handleClick } = useHandle({
   nodeId,
   handleId,
@@ -235,7 +228,10 @@ export default {
 <template>
   <div
     ref="handle"
-    v-bind="handleDataIds"
+    :data-id="`${flowId}-${nodeId}-${handleId}-${type}`"
+    :data-handleid="handleId"
+    :data-nodeid="nodeId"
+    :data-handlepos="position"
     :aria-label="store.ariaLabelConfig['handle.ariaLabel']"
     class="vue-flow__handle"
     :class="[
