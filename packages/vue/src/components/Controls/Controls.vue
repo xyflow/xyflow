@@ -106,7 +106,6 @@ export default {
     <template v-if="showInteractive">
       <slot name="control-interactive">
         <ControlButton
-          v-if="showInteractive"
           class="vue-flow__controls-interactive"
           :label="ariaLabelConfig['controls.interactive.ariaLabel']"
           @click="onInteractiveChangeHandler"
