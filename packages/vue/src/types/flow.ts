@@ -396,11 +396,6 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
    */
   connectOnClick?: boolean;
   /**
-   * Automatically apply node/edge changes (position, dimensions, add/remove, select) back to `nodes`/`edges`.
-   * Set to `false` to handle the `nodes-change` / `edges-change` events and apply the changes yourself.
-   */
-  autoApplyChanges?: boolean;
-  /**
    * automatically create an edge when connection is triggered
    */
   autoConnect?: boolean | Connector;
