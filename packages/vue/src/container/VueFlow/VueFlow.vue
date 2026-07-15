@@ -72,14 +72,9 @@ const boundProps = inst?.vnode.props ?? {};
 const nodesManaged = !('nodes' in boundProps) || hasVNodeListener(inst, 'update:nodes');
 const edgesManaged = !('edges' in boundProps) || hasVNodeListener(inst, 'update:edges');
 
-// reuse an ancestor `<VueFlowProvider>`'s store if present; otherwise this `<VueFlow>` creates + provides its
-// own (auto-wrap). A reused store exposes its two views (instance + state) via the same pair of injection keys.
 const injectedInstance = inject(VueFlowInjectionKey, null) as VueFlowInstance<NodeType, EdgeType> | null;
 const injectedState = inject(VueFlowStateKey, null) as VueFlowState<NodeType, EdgeType> | null;
 
-// when this `<VueFlow>` owns the store, the v-model refs back it directly as signals (single source of truth),
-// so store mutations to nodes/edges ARE the v-model update. When it reuses a provider's store the model refs
-// can't back the already-created store, so `useWatchProps` syncs them instead.
 const ownsStore = !injectedInstance;
 
 const { instance, state }
@@ -102,8 +97,6 @@ if (edgesManaged) {
   instance.onEdgesChange(changes => instance.applyEdgeChanges(changes));
 }
 
-// watch props and update store state; the v-model nodes/edges bridge (out+in, synchronous) lives here for
-// both store paths — the store's canonical nodes/edges are always internal signals (see createStore)
 const disposeWatchers = useWatchProps(
   { nodes: modelNodes, edges: modelEdges },
   props,
