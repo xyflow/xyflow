@@ -36,6 +36,8 @@ const slots = defineSlots<MiniMapSlots>();
 
 const attrs: Record<string, any> = useAttrs();
 
+provide(Slots, slots);
+
 const defaultWidth = 200;
 const defaultHeight = 150;
 
@@ -45,14 +47,11 @@ const { nodeLookup } = useStore();
 
 const { edges, nodes, transform, translateExtent, dimensions, panZoom, ariaLabelConfig } = storeToRefs(useStore());
 
-// fall back to the configurable default label (`ariaLabelConfig`) when no explicit `ariaLabel` is passed
-const resolvedAriaLabel = computed(() => ariaLabel ?? ariaLabelConfig.value['minimap.ariaLabel']);
-
 const el = shallowRef<SVGElement>();
 
 let minimapInstance: XYMinimapInstance | null = null;
 
-provide(Slots, slots);
+const resolvedAriaLabel = computed(() => ariaLabel ?? ariaLabelConfig.value['minimap.ariaLabel']);
 
 const elementWidth = toRef(() => width ?? attrs.style?.width ?? defaultWidth);
 
@@ -70,8 +69,6 @@ const nodeClassNameFunc = computed<MiniMapNodeFunc>(() =>
   typeof nodeClassName === 'string' ? () => nodeClassName : typeof nodeClassName === 'function' ? nodeClassName : () => '',
 );
 
-// the minimap needs absolute positions + measured dimensions from the InternalNode, so iterate the lookup
-// (the public `nodes` ref holds user `Node`s without `internals`)
 const minimapNodes = computed(() => Array.from(nodeLookup.values()));
 
 const bb = computed(() =>
@@ -148,10 +145,6 @@ onMounted(() => {
     { immediate: true },
   );
 
-  onUnmounted(() => {
-    minimapInstance?.destroy();
-  });
-
   watch(
     [
       () => pannable,
@@ -175,6 +168,10 @@ onMounted(() => {
     },
     { immediate: true },
   );
+});
+
+onUnmounted(() => {
+  minimapInstance?.destroy();
 });
 
 function onSvgClick(event: MouseEvent) {

@@ -28,10 +28,7 @@ export function useFitViewOnInit() {
     }
   });
 
-  // Latched once the container has settled (or the user took over) — the watcher then goes inert.
   let done = false;
-  // Each fit (re)arms this frame; if no dimension change re-fires the watcher first, the container has
-  // settled. A change cancels and re-fits, so we land on the final size.
   let settleFrame: number | undefined;
 
   watch(

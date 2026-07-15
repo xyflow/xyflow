@@ -43,14 +43,10 @@ export function useHandle({
 }: UseHandleProps) {
   const { id: flowId, getNode, getInternalNode, panBy, startConnection, updateConnection, endConnection, emits } = useVueFlow();
 
-  // Read the reactive store directly — every value below is read inside an event handler or lazy callback,
-  // so `store.x` gives the current value; no per-handle ref projection needed.
   const store = useStore();
 
   const { nodeLookup } = store;
 
-  // Adapt our richer `ValidConnectionFunc` (receives `{ nodes, edges, sourceNode, targetNode }`) into
-  // system's bare `IsValidConnection` (receives only the `Connection`), resolving nodes from `nodeLookup`.
   function buildSystemIsValidConnection(): SystemIsValidConnection | undefined {
     const userFn = toValue(isValidConnection) || store.isValidConnection;
     if (!userFn) {
@@ -91,7 +87,6 @@ export function useHandle({
       nodeLookup,
       lib: 'vue',
       flowId,
-      // system's own param name stays `edgeUpdaterType`; our prop is `reconnectHandleType`
       edgeUpdaterType: toValue(reconnectHandleType),
       autoPanSpeed: store.autoPanSpeed,
       dragThreshold: store.connectionDragThreshold,
@@ -99,8 +94,6 @@ export function useHandle({
       panBy,
       isValidConnection: buildSystemIsValidConnection(),
       getTransform: () => store.transform,
-      // system aborts the move loop on null — once `startConnection` populated `connectionStartHandle`,
-      // surface it as a system `Handle` (width/height untracked on `ConnectingHandle`, 0 is render-only).
       getFromHandle: () => {
         const h = store.connectionStartHandle;
         if (!h) {
@@ -119,7 +112,6 @@ export function useHandle({
       },
       updateConnection: (state: ConnectionState) => {
         if (state.inProgress) {
-          // first move: mirror the in-progress state into our split-field store for `useConnection` etc.
           if (!store.connectionStartHandle) {
             startConnection({
               nodeId: state.fromHandle.nodeId,
@@ -130,8 +122,7 @@ export function useHandle({
               y: state.to.y,
             });
           }
-          // store the raw pointer (not the snapped `to`) as `connectionPosition`: `useConnection` derives
-          // the snapped end from `connectionEndHandle`, so this surfaces the raw pointer (xyflow/react #5594/#5578).
+
           updateConnection(
             state.pointer,
             state.toHandle
@@ -158,8 +149,7 @@ export function useHandle({
           handleId: params.handleId,
           handleType: params.handleType ?? undefined,
         });
-        // For a reconnect this fires only once the drag begins — the cue to hide the original edge. Hiding
-        // it eagerly on pointerdown would strand a plain click (no drag) with a permanently-hidden edge.
+
         if (reconnectHandleType) {
           onReconnectStart?.(evt as MouseTouchEvent);
         }
@@ -249,8 +239,6 @@ export function useHandle({
       emits.connect(result.connection);
     }
 
-    // the click path doesn't drive system's connection state machine, so assemble the `FinalConnectionState`
-    // ourselves so `clickConnectEnd` carries the same payload shape as `connectEnd` (pad handle width/height).
     const fromHandle = store.connectionClickStartHandle;
     const fromNode = fromHandle ? getInternalNode(fromHandle.nodeId) : undefined;
     const toHandle = result.toHandle;

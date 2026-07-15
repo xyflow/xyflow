@@ -62,8 +62,6 @@ const ConnectionLine = defineComponent({
 
       const fromHandle = (startHandleId ? handleBounds.find(d => d.id === startHandleId) : handleBounds[0]) ?? null;
       const fromPosition = fromHandle?.position ?? Position.Top;
-      // `center: true` — the line starts from the handle's CENTER; without it a large handle (e.g. one that
-      // covers the whole node, as in the "easy connect" example) would anchor to its `position` edge
       const { x: fromX, y: fromY } = getHandlePosition(fromNode.value, fromHandle, fromPosition, true);
 
       let toHandle: HandleElement | null = null;
@@ -91,8 +89,6 @@ const ConnectionLine = defineComponent({
         return null;
       }
 
-      // snap the line end to the hovered handle's CENTER (center=true, like the from-handle above) when there
-      // is one; otherwise follow the raw pointer
       const { x: toX, y: toY }
         = toHandle && toNode.value ? getHandlePosition(toNode.value, toHandle, toPosition, true) : pointer.value;
 

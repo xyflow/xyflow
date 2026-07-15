@@ -119,8 +119,6 @@ useOnInitHandler(instance);
 useSelectionChange(instance);
 useViewportSync(modelViewport, state);
 
-// the container element ref needs the writable ref (not the unwrapped value) so Vue can assign it;
-// access it by member (`stateRefs.vueFlowRef`) so the template `:ref` binding doesn't auto-unwrap it
 const stateRefs = storeToRefs(state);
 
 // provide slots instead of drilling them through every component (boilerplate + significant perf cost)
