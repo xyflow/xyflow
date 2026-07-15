@@ -133,6 +133,12 @@ export function useKeyPress(keyFilter: MaybeRefOrGetter<KeyFilter | boolean | nu
   onKeyStroke(
     (...args) => currentFilter(...args),
     (e) => {
+      // macOS suppresses keyup for other keys while ⌘ (Meta) is held, leaving them stuck in `pressedKeys`;
+      // clear everything when Meta is released
+      if (e.key === 'Meta') {
+        pressedKeys.clear();
+      }
+
       const actInsideInputWithModifier = toValue(options?.actInsideInputWithModifier) ?? true;
 
       if (isPressed.value) {
