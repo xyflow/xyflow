@@ -7,7 +7,7 @@ import ColorSelectorNode from './ColorSelectorNode.vue';
 
 const bgColor = shallowRef('#1A192B');
 
-const nodes = ref<Node[]>([
+const nodes = shallowRef<Node[]>([
   {
     id: '1',
     type: 'input',
@@ -38,7 +38,7 @@ const nodes = ref<Node[]>([
   },
 ]);
 
-const edges = ref<Edge[]>([
+const edges = shallowRef<Edge[]>([
   { id: 'e1-2', source: '1', target: '2', animated: true, style: { stroke: '#fff' } },
   { id: 'e2a-3', source: '2', sourceHandle: 'a', target: '3', animated: true, style: { stroke: '#fff' } },
   { id: 'e2b-4', source: '2', sourceHandle: 'b', target: '4', animated: true, style: { stroke: '#fff' } },

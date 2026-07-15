@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Direction } from './composables/useLayout';
-import { Background, Panel, useVueFlow, VueFlow } from '@xyflow/vue';
+import { Background, Panel, setupVueFlow, VueFlow } from '@xyflow/vue';
 import { nextTick, ref } from 'vue';
 import Icon from './components/Icon.vue';
 import { useLayout } from './composables/useLayout';
@@ -12,9 +12,9 @@ import ProcessNode from './nodes/ProcessNode.vue';
 
 import './styles.css';
 
-const nodes = ref(initialNodes);
+const nodes = shallowRef(initialNodes);
 
-const edges = ref(initialEdges);
+const edges = shallowRef(initialEdges);
 
 const cancelOnError = ref(true);
 
@@ -22,7 +22,7 @@ const { graph, layout } = useLayout();
 
 const { run, stop, reset, isRunning } = useRunProcess({ graph, cancelOnError });
 
-const { fitView } = useVueFlow();
+const { fitView } = setupVueFlow();
 
 async function layoutGraph(direction: Direction) {
   // Stop the current execution process

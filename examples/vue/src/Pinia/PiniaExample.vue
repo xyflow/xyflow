@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { Panel, useVueFlow, VueFlow } from '@xyflow/vue';
+import { Panel, setupVueFlow, VueFlow } from '@xyflow/vue';
 import Icon from './Icon.vue';
 import useStore from './store';
 
 const store = useStore();
 
-const { onConnect, addEdges } = useVueFlow();
+const { onConnect, addEdges } = setupVueFlow();
 
 onConnect(params => addEdges([params]));
 </script>
