@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Edge, FlowEvents, Node, VueFlowInstance } from '@xyflow/vue';
-import { ConnectionMode, Controls, isEdge, isNode, VueFlow } from '@xyflow/vue';
+import { ConnectionMode, Controls, isEdge, isNode, setupVueFlow, VueFlow } from '@xyflow/vue';
 
 const initialElements: (Node | Edge)[] = [
   {
@@ -23,11 +23,10 @@ const initialElements: (Node | Edge)[] = [
   { id: 'e1-2', source: '1', target: '2', label: 'Updatable target', reconnectable: 'target' },
 ];
 
-const nodes = ref<Node[]>(initialElements.filter(isNode));
-const edges = ref<Edge[]>(initialElements.filter(isEdge));
+const nodes = shallowRef<Node[]>(initialElements.filter(isNode));
+const edges = shallowRef<Edge[]>(initialElements.filter(isEdge));
 
-// imperative store access for the component that renders `<VueFlow>` (pure-provider model)
-const flow = ref<VueFlowInstance>();
+const { reconnectEdge } = setupVueFlow();
 
 function onLoad(flowInstance: VueFlowInstance) {
   return flowInstance.fitView();
@@ -42,13 +41,12 @@ function onReconnectEnd({ edge }: FlowEvents['reconnectEnd']) {
 }
 
 function onReconnect({ edge, connection }: FlowEvents['reconnect']) {
-  return flow.value?.reconnectEdge(edge, connection);
+  return reconnectEdge(edge, connection);
 }
 </script>
 
 <template>
   <VueFlow
-    ref="flow"
     v-model:nodes="nodes"
     v-model:edges="edges"
     :snap-to-grid="true"

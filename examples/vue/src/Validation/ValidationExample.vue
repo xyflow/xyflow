@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { ConnectEndEvent, Connection, Node, NodeProps, OnConnectStartParams, ValidConnectionFunc, VueFlowInstance } from '@xyflow/vue';
-import { VueFlow } from '@xyflow/vue';
+import type { ConnectEndEvent, Connection, Node, NodeProps, OnConnectStartParams, ValidConnectionFunc } from '@xyflow/vue';
+import { setupVueFlow, VueFlow } from '@xyflow/vue';
 import CustomInput from './CustomInput.vue';
 import CustomNode from './CustomNode.vue';
 
-const flow = ref<VueFlowInstance>();
+const { addEdges } = setupVueFlow();
 
-const nodes = ref<Node[]>([
+const nodes = shallowRef<Node[]>([
   {
     id: '0',
     type: 'custominput',
@@ -43,13 +43,12 @@ function onConnectEnd({ event, connectionState }: ConnectEndEvent) {
 
 function onConnect(params: Connection) {
   console.log('on connect', params);
-  flow.value?.addEdges(params);
+  addEdges(params);
 }
 </script>
 
 <template>
   <VueFlow
-    ref="flow"
     :nodes="nodes"
     :select-nodes-on-drag="false"
     class="validationflow"

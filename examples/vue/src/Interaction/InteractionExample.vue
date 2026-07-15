@@ -1,16 +1,18 @@
 <script lang="ts" setup>
-import type { Connection, Edge, FlowEvents, Node, VueFlowInstance } from '@xyflow/vue';
-import { Controls, MiniMap, VueFlow, VueFlowProvider } from '@xyflow/vue';
+import type { Connection, Edge, FlowEvents, Node } from '@xyflow/vue';
+import { Controls, MiniMap, setupVueFlow, VueFlow } from '@xyflow/vue';
 import InteractionControls from './InteractionControls.vue';
 
-const nodes = ref<Node[]>([
+const { addEdges } = setupVueFlow();
+
+const nodes = shallowRef<Node[]>([
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 } },
   { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 100 } },
   { id: '3', data: { label: 'Node 3' }, position: { x: 400, y: 100 } },
   { id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 200 } },
 ]);
 
-const edges = ref<Edge[]>([
+const edges = shallowRef<Edge[]>([
   { id: 'e1-2', source: '1', target: '2', animated: true },
   { id: 'e1-3', source: '1', target: '3' },
 ]);
@@ -19,10 +21,8 @@ const captureZoomClick = ref(false);
 
 const captureZoomScroll = ref(false);
 
-const flow = ref<VueFlowInstance>();
-
 function onConnect(connection: Connection) {
-  flow.value?.addEdges([connection]);
+  addEdges([connection]);
 }
 
 function onNodeDragStart(e: FlowEvents['nodeDragStart']) {
@@ -51,24 +51,21 @@ function onMoveEnd(moveEvent: FlowEvents['moveEnd']) {
 </script>
 
 <template>
-  <VueFlowProvider>
-    <VueFlow
-      ref="flow"
-      v-model:nodes="nodes"
-      v-model:edges="edges"
-      @connect="onConnect"
-      @node-drag-start="onNodeDragStart"
-      @node-drag-stop="onNodeDragStop"
-      @pane-click="onPaneClick"
-      @pane-scroll="onPaneScroll"
-      @pane-context-menu="onPaneContextMenu"
-      @move-end="onMoveEnd"
-    >
-      <MiniMap />
+  <VueFlow
+    v-model:nodes="nodes"
+    v-model:edges="edges"
+    @connect="onConnect"
+    @node-drag-start="onNodeDragStart"
+    @node-drag-stop="onNodeDragStop"
+    @pane-click="onPaneClick"
+    @pane-scroll="onPaneScroll"
+    @pane-context-menu="onPaneContextMenu"
+    @move-end="onMoveEnd"
+  >
+    <MiniMap />
 
-      <Controls />
+    <Controls />
 
-      <InteractionControls v-model:capture-zoom-click="captureZoomClick" v-model:capture-zoom-scroll="captureZoomScroll" />
-    </VueFlow>
-  </VueFlowProvider>
+    <InteractionControls v-model:capture-zoom-click="captureZoomClick" v-model:capture-zoom-scroll="captureZoomScroll" />
+  </VueFlow>
 </template>

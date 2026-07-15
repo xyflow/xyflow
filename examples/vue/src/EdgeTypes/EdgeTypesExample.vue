@@ -5,8 +5,8 @@ import { Controls, isEdge, isNode, MiniMap, VueFlow } from '@xyflow/vue';
 import { getElements } from './utils';
 
 const initialElements = getElements();
-const nodes = ref<Node[]>(initialElements.filter(isNode));
-const edges = ref<Edge[]>(initialElements.filter(isEdge));
+const nodes = shallowRef<Node[]>(initialElements.filter(isNode));
+const edges = shallowRef<Edge[]>(initialElements.filter(isEdge));
 </script>
 
 <template>

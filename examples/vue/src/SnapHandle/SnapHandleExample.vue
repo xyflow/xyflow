@@ -3,7 +3,7 @@ import type { Edge, Node } from '@xyflow/vue';
 import { VueFlow } from '@xyflow/vue';
 import ConnectionLine from './SnappableConnectionLine.vue';
 
-const nodes = ref<Node[]>([
+const nodes = shallowRef<Node[]>([
   {
     id: '1',
     data: { label: 'Node 1' },
@@ -21,7 +21,7 @@ const nodes = ref<Node[]>([
   },
 ]);
 
-const edges = ref<Edge[]>([]);
+const edges = shallowRef<Edge[]>([]);
 </script>
 
 <template>

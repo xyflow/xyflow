@@ -3,7 +3,7 @@ import type { Edge, Node } from '@xyflow/vue';
 import { VueFlow } from '@xyflow/vue';
 import ConnectionLine from './ConnectionLine.vue';
 
-const nodes = ref<Node[]>([
+const nodes = shallowRef<Node[]>([
   {
     id: '1',
     type: 'input',
@@ -12,7 +12,7 @@ const nodes = ref<Node[]>([
   },
 ]);
 
-const edges = ref<Edge[]>([]);
+const edges = shallowRef<Edge[]>([]);
 </script>
 
 <template>
