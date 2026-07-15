@@ -18,16 +18,18 @@ export { getSimpleBezierPath } from './components/Edges/SimpleBezierEdge';
 export { default as SmoothStepEdge } from './components/Edges/SmoothStepEdge';
 export { default as StepEdge } from './components/Edges/StepEdge';
 export { default as StraightEdge } from './components/Edges/StraightEdge';
-export { default as Handle } from './components/Handle/Handle.vue';
-
 export * from './components/EdgeToolbar';
+
+export { default as Handle } from './components/Handle/Handle.vue';
 export * from './components/MiniMap';
 export * from './components/NodeResizer';
 export * from './components/NodeToolbar';
 export { default as Panel } from './components/Panel/Panel.vue';
-export { storeToRefs } from './composables/storeToRefs';
+export { setupVueFlow } from './composables/setupVueFlow';
 
+export { storeToRefs } from './composables/storeToRefs';
 export { useConnection } from './composables/useConnection';
+
 export { useEdge } from './composables/useEdge';
 
 export { useEdgesData } from './composables/useEdgesData';
@@ -37,14 +39,12 @@ export { useHandle } from './composables/useHandle';
 export { useInternalNode } from './composables/useInternalNode';
 
 export { useKeyPress } from './composables/useKeyPress';
-
 export { useNode } from './composables/useNode';
 export { useNodeConnections } from './composables/useNodeConnections';
 export { useNodeId } from './composables/useNodeId';
 export { useNodesData } from './composables/useNodesData';
-export { useNodesInitialized } from './composables/useNodesInitialized';
 
-export { setupVueFlow } from './composables/setupVueFlow';
+export { useNodesInitialized } from './composables/useNodesInitialized';
 export { useStore } from './composables/useStore';
 export { useVueFlow } from './composables/useVueFlow';
 export { default as VueFlow } from './container/VueFlow/VueFlow.vue';

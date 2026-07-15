@@ -74,8 +74,8 @@ const injectedState = inject(VueFlowStateKey, null) as VueFlowState<NodeType, Ed
 // can't back the already-created store, so `useWatchProps` syncs them instead.
 const ownsStore = !injectedInstance;
 
-const { instance, state } =
-  injectedInstance && injectedState
+const { instance, state }
+  = injectedInstance && injectedState
     ? { instance: injectedInstance, state: injectedState }
     : useCreateVueFlow<NodeType, EdgeType>(props, {
         nodes: modelNodes as unknown as Ref<NodeType[]>,
