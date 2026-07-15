@@ -286,18 +286,13 @@ export function validateEdges<EdgeType extends Edge = Edge>(
     const sourceNode = getInternalNode(edge.source);
     const targetNode = getInternalNode(edge.target);
 
-    if (!sourceNode && !targetNode) {
-      onError(new VueFlowError(ErrorCode.EDGE_SOURCE_TARGET_MISSING, edge.id, edge.source, edge.target));
-      continue;
-    }
-
-    if (!sourceNode) {
-      onError(new VueFlowError(ErrorCode.EDGE_SOURCE_MISSING, edge.id, edge.source));
-      continue;
-    }
-
-    if (!targetNode) {
-      onError(new VueFlowError(ErrorCode.EDGE_TARGET_MISSING, edge.id, edge.target));
+    // Keep edges whose endpoint node isn't in the store (yet) instead of dropping them: `EdgeWrapper`'s
+    // render-time guard already warns and skips drawing the edge until both nodes exist. This matches
+    // xyflow/react & xyflow/svelte — `setEdges`/`addEdges` are non-destructive, so callers don't have
+    // to add the referenced nodes before the edges. `isValidConnection` needs the resolved nodes, so it
+    // can't run in this case.
+    if (!sourceNode || !targetNode) {
+      validEdges.push(edge);
       continue;
     }
 
