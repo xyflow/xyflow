@@ -84,6 +84,30 @@ export function createPanOnScrollHandler({
 }: PanOnScrollParams) {
   let pinchPointerOrigin: [number, number] | undefined;
   let pinchPointerOriginDeadline = 0;
+  let panScrollEndDeadline = 0;
+  let panScrollEndEvent: MouseEvent | TouchEvent | null = null;
+  let panScrollEndViewport: ReturnType<typeof transformToViewport> | undefined;
+
+  const flushPanScrollEnd = () => {
+    const remaining = panScrollEndDeadline - Date.now();
+
+    if (remaining > 0) {
+      zoomPanValues.panScrollTimeout = setTimeout(flushPanScrollEnd, remaining);
+      return;
+    }
+
+    zoomPanValues.panScrollTimeout = undefined;
+    const event = panScrollEndEvent;
+    const viewport = panScrollEndViewport;
+    panScrollEndEvent = null;
+    panScrollEndViewport = undefined;
+
+    if (viewport) {
+      onPanZoomEnd?.(event, viewport);
+    }
+
+    zoomPanValues.isPanScrolling = false;
+  };
 
   return (event: any) => {
     if (isWrappedWithClass(event, noWheelClassName)) {
@@ -139,8 +163,6 @@ export function createPanOnScrollHandler({
 
     const nextViewport = transformToViewport(d3Selection.property('__zoom'));
 
-    clearTimeout(zoomPanValues.panScrollTimeout);
-
     /*
      * for pan on scroll we need to handle the event calls on our own
      * we can't use the start, zoom and end events from d3-zoom
@@ -154,11 +176,17 @@ export function createPanOnScrollHandler({
       onPanZoom?.(event, nextViewport);
     }
 
-    zoomPanValues.panScrollTimeout = setTimeout(() => {
-      onPanZoomEnd?.(event, nextViewport);
+    const scheduleEnd = panScrollEndEvent === null;
+    panScrollEndDeadline = Date.now() + wheelGestureTimeout;
+    panScrollEndEvent = event;
+    panScrollEndViewport = nextViewport;
 
-      zoomPanValues.isPanScrolling = false;
-    }, wheelGestureTimeout);
+    if (scheduleEnd) {
+      if (zoomPanValues.panScrollTimeout !== undefined) {
+        clearTimeout(zoomPanValues.panScrollTimeout);
+      }
+      zoomPanValues.panScrollTimeout = setTimeout(flushPanScrollEnd, wheelGestureTimeout);
+    }
   };
 }
 

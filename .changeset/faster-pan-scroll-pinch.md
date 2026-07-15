@@ -2,4 +2,4 @@
 '@xyflow/system': patch
 ---
 
-Reduce pinch-zoom work when pan-on-scroll is enabled by reusing the pane origin and end timer for each wheel gesture.
+Reduce pan-on-scroll and pinch-zoom work by reusing the pane origin and coalescing gesture-end timers.
