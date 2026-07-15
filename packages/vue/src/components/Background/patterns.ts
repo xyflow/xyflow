@@ -25,11 +25,6 @@ export const DotPattern: FunctionalComponent<DotPatternProps> = function ({ radi
   return h('circle', { cx: radius, cy: radius, r: radius, fill: color });
 };
 
-export const Patterns = {
-  lines: LinePattern,
-  dots: DotPattern,
-};
-
 export const DefaultBgColors: Record<BackgroundVariant, string> = {
   lines: '#eee',
   dots: '#91919a',
