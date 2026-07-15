@@ -171,12 +171,9 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
         if (state.vueFlowRef) {
           const { x: domX, y: domY } = state.vueFlowRef.getBoundingClientRect();
 
-          const correctedPosition = {
-            x: position.x + domX,
-            y: position.y + domY,
-          };
+          const rendererPosition = rendererPointToPoint(position, state.transform);
 
-          return rendererPointToPoint(correctedPosition, state.transform);
+          return { x: rendererPosition.x + domX, y: rendererPosition.y + domY };
         }
 
         return { x: 0, y: 0 };
