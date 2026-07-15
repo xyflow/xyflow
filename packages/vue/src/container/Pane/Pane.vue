@@ -80,13 +80,13 @@ onUnmounted(() => {
   cleanupAutoPan();
 });
 
-function wrapHandler(handler: Function, containerRef: HTMLDivElement | null) {
-  return (event: MouseEvent) => {
+function wrapHandler<E extends Event>(handler: (event: E) => void, containerRef: HTMLDivElement | null) {
+  return (event: E) => {
     if (event.target !== containerRef) {
       return;
     }
 
-    handler?.(event);
+    handler(event);
   };
 }
 
