@@ -2,8 +2,10 @@ import type { HandleType, NodeConnection } from '@xyflow/system';
 import type { MaybeRefOrGetter } from 'vue';
 import { areConnectionMapsEqual, handleConnectionChange } from '@xyflow/system';
 import { computed, shallowRef, toValue, watch } from 'vue';
+import { ErrorCode, VueFlowError } from '../utils';
 import { useNodeId } from './useNodeId';
 import { useStore } from './useStore';
+import { useVueFlow } from './useVueFlow';
 
 export type UseNodeConnectionsParams = {
   /** node id - if not provided, the node id from the `useNodeId` context injection is used */
@@ -37,9 +39,15 @@ export type UseNodeConnectionsParams = {
 export function useNodeConnections(params: UseNodeConnectionsParams = {}) {
   const { handleType, handleId, id, onConnect, onDisconnect } = params;
 
+  const { emits } = useVueFlow();
+
   const store = useStore();
 
   const nodeId = useNodeId();
+
+  if (!(toValue(id) ?? nodeId)) {
+    emits.error(new VueFlowError(ErrorCode.NODE_CONNECTIONS_MISSING_ID));
+  }
 
   const prevConnections = shallowRef<Map<string, NodeConnection> | null>(null);
 
