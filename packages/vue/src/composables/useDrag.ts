@@ -2,8 +2,9 @@ import type { CoordinateExtent, EdgeBase, InternalNodeBase, NodeBase, NodeDragIt
 import type { MaybeRefOrGetter, Ref } from 'vue';
 import type { Node, NodeDragEvent, NodeDragItem } from '../types';
 import { infiniteExtent, isCoordinateExtent, XYDrag } from '@xyflow/system';
-import { shallowRef, toValue, watchEffect } from 'vue';
+import { shallowRef, toRef, toValue, watchEffect } from 'vue';
 import { useStore, useVueFlow } from '.';
+import { handleNodeClick } from '../utils';
 
 interface UseDragParams {
   onStart: (event: NodeDragEvent) => void;
@@ -30,6 +31,8 @@ export function useDrag(params: UseDragParams) {
   const store = useStore();
 
   const { nodeLookup } = store;
+
+  const nodesSelectionActive = toRef(store, 'nodesSelectionActive');
 
   const { onStart, onDrag, onStop, onClick, el, disabled, id, selectable, dragHandle } = params;
 
@@ -101,18 +104,19 @@ export function useDrag(params: UseDragParams) {
       // in multi-selection an already-selected node toggles off.
       onNodeMouseDown: (nodeId: string) => {
         const node = getInternalNode(nodeId);
-        if (!node) {
+        if (!node || !el.value) {
           return;
         }
 
-        store.nodesSelectionActive = false;
-
-        if (!node.selected) {
-          addSelectedNodes([node]);
-        }
-        else if (store.multiSelectionActive) {
-          removeSelectedNodes([node]);
-        }
+        handleNodeClick(
+          node,
+          store.multiSelectionActive,
+          addSelectedNodes,
+          removeSelectedNodes,
+          nodesSelectionActive,
+          false,
+          el.value as HTMLDivElement,
+        );
       },
       onDragStart: (event, _dragItems, node, nodes) => {
         dragFired = true;
@@ -128,14 +132,7 @@ export function useDrag(params: UseDragParams) {
       },
     });
 
-    dragInstance.update({
-      noDragClassName: store.noDragClassName,
-      handleSelector: toValue(dragHandle),
-      isSelectable: toValue(selectable),
-      nodeId: id,
-      domNode: nodeEl,
-      nodeClickDistance: store.nodeClickDistance,
-    });
+    dragInstance.value = instance;
 
     // Handle the "moved slightly but within threshold" click: XYDrag won't fire drag events for
     // sub-threshold movement and d3 suppresses the native click, so detect it with pointer listeners.
