@@ -17,6 +17,7 @@ import type {
   Node,
   State,
 } from '../types';
+import type { Commit } from './commit';
 import {
   clampPosition,
   clampPositionToParent,
@@ -29,172 +30,36 @@ import {
   isRectObject,
   nodeToRect,
   panBy as panBySystem,
-  updateAbsolutePositions,
 } from '@xyflow/system';
 import { computed, markRaw, toRaw } from 'vue';
 import { useViewportHelper } from '../composables';
 import {
-  adoptNodes,
   applyChanges,
   createAdditionChange,
   createEdgeRemoveChange,
   createNodeRemoveChange,
   createSelectionChange,
-  defineControlled,
-  ErrorCode,
   getSelectionChanges,
   isDef,
   isInternalNode,
   isNode,
   reconnectEdgeAction,
-  updateConnectionLookup,
   validateEdges,
-  VueFlowError,
 } from '../utils';
 import { useState } from './state';
 
 export function useActions<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   state: State<NodeType, EdgeType>,
   nodeLookup: NodeLookup<InternalNode<NodeType>>,
-  parentLookup: Map<string, Map<string, InternalNode<NodeType>>>,
   edgeLookup: EdgeLookup<EdgeType>,
+  commit: Commit<NodeType, EdgeType>,
 ): Actions<NodeType, EdgeType> {
   const viewportHelper = useViewportHelper(state, nodeLookup);
 
-  const systemNodeLookup: NodeLookup<InternalNode<NodeType>> = new Map();
-  const systemParentLookup: Map<string, Map<string, InternalNode<NodeType>>> = new Map();
-
-  function sameMapEntries<K, V>(a: Map<K, V>, b: Map<K, V>) {
-    if (a.size !== b.size) {
-      return false;
-    }
-
-    for (const [key, value] of a) {
-      if (b.get(key) !== value) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  /** Mirror the system lookups into the reactive ones, touching only entries that actually changed. */
-  function syncLookups() {
-    const rawNodeLookup = toRaw(nodeLookup);
-
-    for (const [id, internal] of systemNodeLookup) {
-      if (rawNodeLookup.get(id) !== internal) {
-        nodeLookup.set(id, markRaw(internal));
-      }
-    }
-
-    if (rawNodeLookup.size !== systemNodeLookup.size) {
-      for (const id of rawNodeLookup.keys()) {
-        if (!systemNodeLookup.has(id)) {
-          nodeLookup.delete(id);
-        }
-      }
-    }
-
-    const rawParentLookup = toRaw(parentLookup);
-
-    for (const [parentId, children] of systemParentLookup) {
-      const prev = rawParentLookup.get(parentId);
-      if (!prev || !sameMapEntries(prev, children)) {
-        parentLookup.set(parentId, children);
-      }
-    }
-
-    if (rawParentLookup.size !== systemParentLookup.size) {
-      for (const parentId of rawParentLookup.keys()) {
-        if (!systemParentLookup.has(parentId)) {
-          parentLookup.delete(parentId);
-        }
-      }
-    }
-  }
-
-  /**
-   * Single write path for nodes: re-adopt into `nodeLookup`/`parentLookup` (reusing unchanged
-   * `InternalNode`s by reference) and store the user nodes as `state.nodes`. Callers must pass NEW objects
-   * for changed nodes — mutating in place keeps the reference, so adoption reuses the stale `InternalNode`.
-   */
-  function commitNodes(nodes: NodeType[], checkEquality = true) {
-    const {
-      nodes: adopted,
-      hasSelectedNodes,
-    } = adoptNodes(nodes, systemNodeLookup, systemParentLookup, state.hooks.error.trigger, {
-      nodeOrigin: state.nodeOrigin,
-      nodeExtent: state.nodeExtent,
-      elevateNodesOnSelect: state.elevateNodesOnSelect,
-      zIndexMode: state.zIndexMode,
-      checkEquality,
-    });
-
-    state.nodes = adopted;
-
-    state.nodesSelectionActive = state.nodesSelectionActive && hasSelectedNodes;
-
-    recomputeAbsolutePositions();
-  }
-
-  /**
-   * Single write path for edges: stored verbatim (`edgeLookup` values are the same references as the
-   * `state.edges` elements). `markRaw` keeps edges out of Vue's deep proxy; renders come from lookup key
-   * changes + immutable replacement, like nodes.
-   */
-  function commitEdges(next: EdgeType[]) {
-    const rawEdgeLookup = toRaw(edgeLookup);
-    const seenEdgeIds = new Set<string>();
-
-    for (let i = 0; i < next.length; i++) {
-      const edge = (next[i] = markRaw(toRaw(next[i])));
-      if (seenEdgeIds.has(edge.id)) {
-        state.hooks.error.trigger(new VueFlowError(ErrorCode.EDGE_DUPLICATE_ID, edge.id));
-      }
-      else {
-        seenEdgeIds.add(edge.id);
-      }
-      if (rawEdgeLookup.get(edge.id) !== edge) {
-        edgeLookup.set(edge.id, edge);
-      }
-    }
-
-    if (rawEdgeLookup.size !== next.length) {
-      const nextIds = new Set<string>();
-      for (const edge of next) {
-        nextIds.add(edge.id);
-      }
-
-      for (const id of rawEdgeLookup.keys()) {
-        if (!nextIds.has(id)) {
-          edgeLookup.delete(id);
-        }
-      }
-    }
-
-    state.edges = next;
-
-    updateConnectionLookup(state.connectionLookup, next);
-  }
-
-  /**
-   * Recompute parent-aware absolute positions/z on the system lookup, then mirror into the reactive
-   * lookups. Lookup-only — no write-back to `state.nodes`. The full `updateAbsolutePositions` pass only
-   * runs when there are child nodes (adoption already clamps position/z for changed nodes) or `forceFullPass`.
-   */
-  function recomputeAbsolutePositions(forceFullPass = false) {
-    if (forceFullPass || systemParentLookup.size > 0) {
-      updateAbsolutePositions(systemNodeLookup, systemParentLookup, {
-        nodeOrigin: state.nodeOrigin,
-        nodeExtent: state.nodeExtent,
-        elevateNodesOnSelect: state.elevateNodesOnSelect,
-        zIndexMode: state.zIndexMode,
-      });
-    }
-
-    syncLookups();
-  }
+  // the commit layer owns the write paths (`commitNodes`/`commitEdges`) and the system-side lookups; actions
+  // route every node/edge mutation through it. `createVueFlowStore` builds it so the `nodeExtent` accessor
+  // can reuse `commitNodes` too.
+  const { systemNodeLookup, systemParentLookup, commitNodes, commitEdges } = commit;
 
   const updateNodeInternals: Actions<NodeType>['updateNodeInternals'] = (nodeId) => {
     state.hooks.updateNodeInternals.trigger(Array.isArray(nodeId) ? nodeId : [nodeId]);
@@ -431,18 +296,12 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     state.translateExtent = translateExtent;
   };
 
-  // nodeExtent owns its effect via `defineControlled`, set up here (not createVueFlowStore) so it can call
-  // `commitNodes` directly — no cross-scope plumbing. Any write (props, setState, direct) re-adopts the
-  // nodes with `checkEquality: false`, re-clamping positions to the new extent AND reflowing the view.
-  // `toRaw` so the accessor lands on the object the reactive proxy reflects.
-  defineControlled(toRaw(state), 'nodeExtent', () => commitNodes(state.nodes, false));
-
   const setNodeExtent: Actions<NodeType>['setNodeExtent'] = (nodeExtent) => {
-    state.nodeExtent = nodeExtent; // the controlled setter re-adopts + reflows
+    state.nodeExtent = nodeExtent;
   };
 
   const setPaneClickDistance: Actions<NodeType>['setPaneClickDistance'] = (clickDistance) => {
-    state.paneClickDistance = clickDistance; // accessor mirrors to panZoom
+    state.paneClickDistance = clickDistance;
   };
 
   const setInteractive: Actions<NodeType>['setInteractive'] = (isInteractive) => {

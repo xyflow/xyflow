@@ -13,6 +13,7 @@ import { mergeAriaLabelConfig } from '@xyflow/system';
 import { reactive, shallowRef } from 'vue';
 import { defineControlled } from '../utils';
 import { useActions } from './actions';
+import { createCommit } from './commit';
 import { useGetters } from './getters';
 import { useState } from './state';
 
@@ -33,7 +34,7 @@ export interface StoreSignals<NodeType extends Node = Node, EdgeType extends Edg
  */
 export function createVueFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   id: string,
-  preloadedState?: FlowProps<NodeType, EdgeType>,
+  initialState?: FlowProps<NodeType, EdgeType>,
   onDestroy?: (id: string) => void,
   signals?: StoreSignals<NodeType, EdgeType>,
 ): VueFlowStoreHandle<NodeType, EdgeType> {
@@ -69,16 +70,6 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     configurable: true,
   });
 
-  // Controlled fields own their side effect via `defineControlled`: assigning the field (props, `setState`,
-  // or directly) mirrors to the panZoom instance (or transforms the value). min/max zoom share the
-  // scale-extent tuple; translateExtent + paneClickDistance mirror 1:1 (the latter previously had a setter
-  // action no prop watcher ever called — this wires it); ariaLabelConfig just merges on the way in.
-  defineControlled(state, 'minZoom', v => state.panZoom?.setScaleExtent([v, state.maxZoom]));
-  defineControlled(state, 'maxZoom', v => state.panZoom?.setScaleExtent([state.minZoom, v]));
-  defineControlled(state, 'translateExtent', v => state.panZoom?.setTranslateExtent(v));
-  defineControlled(state, 'paneClickDistance', v => state.panZoom?.setClickDistance(v));
-  defineControlled(state, 'ariaLabelConfig', () => {}, mergeAriaLabelConfig);
-
   const reactiveState = reactive(state) as unknown as VueFlowState<NodeType, EdgeType>;
 
   const hooksOn = <any>{};
@@ -96,14 +87,23 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
   const parentLookup = reactiveState.parentLookup as Map<string, Map<string, InternalNode<NodeType>>>;
   const edgeLookup = reactiveState.edgeLookup as EdgeLookup<EdgeType>;
 
+  const commit = createCommit<NodeType, EdgeType>(reactiveState, nodeLookup, parentLookup, edgeLookup);
+
+  defineControlled(state, 'minZoom', v => state.panZoom?.setScaleExtent([v, state.maxZoom]));
+  defineControlled(state, 'maxZoom', v => state.panZoom?.setScaleExtent([state.minZoom, v]));
+  defineControlled(state, 'translateExtent', v => state.panZoom?.setTranslateExtent(v));
+  defineControlled(state, 'paneClickDistance', v => state.panZoom?.setClickDistance(v));
+  defineControlled(state, 'ariaLabelConfig', () => {}, mergeAriaLabelConfig);
+  defineControlled(state, 'nodeExtent', () => commit.commitNodes(state.nodes, false));
+
   const getters = useGetters<NodeType, EdgeType>(reactiveState, nodeLookup);
 
-  const actions = useActions<NodeType, EdgeType>(reactiveState, nodeLookup, parentLookup, edgeLookup);
+  const actions = useActions<NodeType, EdgeType>(reactiveState, nodeLookup, edgeLookup, commit);
 
   // Apply the initial props. Controlled fields self-apply via their accessors; the node/edge arrays go
   // through their setters (setState no longer accepts them). Defaults already live in `state`.
-  if (preloadedState) {
-    const { nodes: initialNodes, edges: initialEdges, ...rest } = preloadedState;
+  if (initialState) {
+    const { nodes: initialNodes, edges: initialEdges, ...rest } = initialState;
     actions.setState(rest as VueFlowState<NodeType, EdgeType>);
 
     if (initialNodes !== undefined) {

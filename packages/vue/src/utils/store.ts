@@ -20,7 +20,7 @@ import type {
   VueFlowInstance,
 } from '../types';
 import { adoptUserNodes, getEdgeId } from '@xyflow/system';
-import { markRaw, shallowRef, toRaw, unref } from 'vue';
+import { markRaw, toRaw, unref } from 'vue';
 import { ErrorCode, VueFlowError } from './errors';
 import { connectionExists, isEdge, isNode } from './graph';
 
@@ -33,30 +33,33 @@ export function isDef<T>(val: T): val is NonUndefined<T> {
 }
 
 /**
- * Turn `target[key]` into a "controlled" field: reads come from a signal (stay reactive), and every write,
- * from props, `setState`, or a direct assignment, runs `apply` (mirror to an external instance, e.g. the
- * panZoom, or re-adopt nodes) after an optional `transform`. A same-value re-assign is skipped so the side
- * effect never fires redundantly.
+ * Turn `target[key]` into a "controlled" field: every write, from props, `setState`, or a direct assignment,
+ * runs `apply` (mirror to an external instance, e.g. the panZoom, or re-adopt nodes) after an optional
+ * `transform`. A same-value re-assign is skipped so the side effect never fires redundantly. `target` must be
+ * `reactive()`-wrapped for reads to stay reactive (the proxy tracks the key).
  */
 export function defineControlled<T extends object, K extends keyof T>(
   target: T,
   key: K,
   apply: (value: T[K]) => void,
   transform: (value: T[K]) => T[K] = value => value,
-): void {
-  const signal = shallowRef(transform(target[key]));
+) {
+  // No backing ref needed: once `target` is `reactive()`-wrapped, reads/writes through the proxy are tracked
+  // at the key level regardless of data-vs-accessor, so a plain closure is the storage. The dedupe guard
+  // skips a redundant `apply` (Vue's own change check already dedupes the trigger).
+  let value = transform(target[key]);
 
   Object.defineProperty(target, key, {
-    get: () => signal.value,
-    set: (value: T[K]) => {
-      const next = transform(value);
+    get: () => value,
+    set: (next: T[K]) => {
+      const transformed = transform(next);
 
-      if (Object.is(next, signal.value)) {
+      if (Object.is(transformed, value)) {
         return;
       }
 
-      signal.value = next;
-      apply(next);
+      value = transformed;
+      apply(transformed);
     },
     enumerable: true,
     configurable: true,
