@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import type { HandleConnection } from '@xyflow/system';
 import type { HandleProps } from '../../types';
-import { areConnectionMapsEqual, ConnectionMode, getConnectedEdges, getDimensions, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
-import { computed, getCurrentInstance, inject, onMounted, shallowRef, toRef, watch } from 'vue';
+import { areConnectionMapsEqual, ConnectionMode, getConnectedEdges, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
+import { computed, getCurrentInstance, onMounted, toRef, watch } from 'vue';
 import { useHandle, useInternalNode, useStore, useVueFlow } from '../../composables';
 import { useNodeId } from '../../composables/useNodeId';
-import { NodeRef } from '../../context';
 import { isDef } from '../../utils';
 
 const {
@@ -28,19 +27,16 @@ const type = toRef(() => props.type ?? 'source');
 
 const isValidConnection = toRef(() => props.isValidConnection ?? null);
 
-const { id: flowId } = useVueFlow();
+const { id: flowId, updateNodeInternals } = useVueFlow();
 
 const store = useStore();
 
 const nodeId = useNodeId() ?? '';
-const nodeEl = inject(NodeRef, shallowRef(null));
 const internalNode = useInternalNode();
 const connectedEdges = computed(() => (internalNode.value ? getConnectedEdges([internalNode.value], store.edges) : []));
 
 const instance = getCurrentInstance();
 let prevConnections: Map<string, HandleConnection> | null = null;
-
-const handle = shallowRef<HTMLDivElement>();
 
 const { handlePointerDown, handleClick } = useHandle({
   nodeId,
@@ -151,50 +147,15 @@ watch(
   { immediate: true },
 );
 
-// todo: remove this and have users handle it via `updateNodeInternals`
-// set up handle bounds if missing and the node is already initialized (handle added after the node mounted)
+// A handle mounted after its node was already measured isn't in the node's `handleBounds` yet; re-measure
+// the node so `getHandleBounds` picks it up. Fresh nodes measure all their handles together (the node has no
+// dimensions yet when the handle mounts), so this is a no-op there.
 onMounted(() => {
   const node = internalNode.value;
 
-  // if the node isn't initialized yet, bounds get set up later by `updateNodeDimensions`
-  if (!node || !nodeHasDimensions(node)) {
-    return;
+  if (node && nodeHasDimensions(node) && !node.internals.handleBounds?.[type.value]?.some(b => b.id === handleId)) {
+    updateNodeInternals(nodeId);
   }
-
-  const existingBounds = node.internals.handleBounds?.[type.value]?.find(b => b.id === handleId);
-
-  if (!store.vueFlowRef || existingBounds) {
-    return;
-  }
-
-  const viewportNode = store.vueFlowRef.querySelector('.vue-flow__viewport');
-
-  if (!nodeEl.value || !handle.value || !viewportNode || !handleId) {
-    return;
-  }
-
-  const nodeBounds = nodeEl.value.getBoundingClientRect();
-
-  const handleBounds = handle.value.getBoundingClientRect();
-
-  const style = window.getComputedStyle(viewportNode);
-  const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
-
-  const nextBounds = {
-    id: handleId,
-    position,
-    x: (handleBounds.left - nodeBounds.left) / zoom,
-    y: (handleBounds.top - nodeBounds.top) / zoom,
-    type: type.value,
-    nodeId,
-    ...getDimensions(handle.value),
-  };
-
-  if (!node.internals.handleBounds) {
-    node.internals.handleBounds = { source: null, target: null };
-  }
-  const bounds = node.internals.handleBounds;
-  bounds[type.value] = [...(bounds[type.value] ?? []), nextBounds];
 });
 
 function onPointerDown(event: MouseEvent | TouchEvent) {
@@ -232,7 +193,6 @@ export default {
 
 <template>
   <div
-    ref="handle"
     :data-id="`${flowId}-${nodeId}-${handleId}-${type}`"
     :data-handleid="handleId"
     :data-nodeid="nodeId"
