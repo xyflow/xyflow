@@ -25,7 +25,6 @@ import { useState } from './state';
 export function createVueFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   id: string,
   initialState?: FlowProps<NodeType, EdgeType>,
-  onDestroy?: (id: string) => void,
 ): VueFlowStoreHandle<NodeType, EdgeType> {
   const state = useState<NodeType, EdgeType>();
 
@@ -101,9 +100,6 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     ...actions,
     emits,
     id,
-    $destroy: () => {
-      onDestroy?.(id);
-    },
   };
 
   return { instance, state: reactiveState as VueFlowState<NodeType, EdgeType> };
