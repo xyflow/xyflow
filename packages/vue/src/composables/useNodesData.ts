@@ -1,6 +1,7 @@
 import type { DistributivePick } from '@xyflow/system';
 import type { ComputedRef, MaybeRefOrGetter } from 'vue';
 import type { InternalNode, Node } from '../types';
+import { shallowNodeData } from '@xyflow/system';
 import { computed, toValue } from 'vue';
 import { warn } from '../utils';
 import { useVueFlow } from './useVueFlow';
@@ -25,42 +26,35 @@ export function useNodesData<NodeType extends Node = InternalNode>(
 export function useNodesData(_nodeIds: any): any {
   const { getNode } = useVueFlow();
 
-  return computed({
-    get() {
+  return computed<NodeData<Node> | NodeData<Node>[] | null>({
+    get(prev) {
       const nodeIds = toValue(_nodeIds);
+
+      let next: NodeData<Node> | NodeData<Node>[] | null;
 
       if (!Array.isArray(nodeIds)) {
         const node = getNode(nodeIds);
+        next = node ? { id: node.id, type: node.type, data: node.data } : null;
+      }
+      else {
+        const data: NodeData<Node>[] = [];
 
-        if (node) {
-          return {
-            id: node.id,
-            type: node.type,
-            data: node.data,
-          };
+        for (const nodeId of nodeIds) {
+          const node = getNode(nodeId);
+
+          if (node) {
+            data.push({ id: node.id, type: node.type, data: node.data });
+          }
         }
 
-        return null;
+        next = data;
       }
 
-      const data: NodeData<Node>[] = [];
-
-      for (const nodeId of nodeIds) {
-        const node = getNode(nodeId);
-
-        if (node) {
-          data.push({
-            id: node.id,
-            type: node.type,
-            data: node.data,
-          });
-        }
-      }
-
-      return data;
+      // keep the previous val when the shallow `{ id, type, data }` shape is unchanged,
+      // so consumers don't re-run on unrelated node updates like position or selection
+      return prev != null && shallowNodeData(next, prev) ? prev : next;
     },
     set() {
-      // noop
       warn('You are trying to set node data via useNodesData. This is not supported.');
     },
   });
