@@ -10,6 +10,7 @@ import type {
   HandleType,
   NodeConnection,
   NodeDragItem,
+  NodeLookup,
   PanOnScrollMode,
   PanZoomInstance,
   Rect,
@@ -17,6 +18,7 @@ import type {
   SelectionRect,
   SnapGrid,
   Transform,
+  UpdateNodeInternals,
   Viewport,
   XYPosition,
   ZIndexMode,
@@ -31,8 +33,6 @@ import type { FlowExportObject, FlowProps, OnBeforeDelete } from './flow';
 import type { ConnectingHandle, ValidConnectionFunc } from './handle';
 import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
 import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
-
-export type NodeLookup<NodeType extends Node = Node> = Map<string, InternalNode<NodeType>>;
 
 export interface UpdateNodeDimensionsParams {
   id: string;
@@ -58,7 +58,7 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   edges: EdgeType[];
 
   /** id → enriched `InternalNode` (`internals`/`measured`); the canonical source for node-derived data */
-  readonly nodeLookup: NodeLookup<NodeType>;
+  readonly nodeLookup: NodeLookup<InternalNode<NodeType>>;
   /** parentId → map of child id → child `InternalNode`. */
   readonly parentLookup: Map<string, Map<string, InternalNode<NodeType>>>;
   /** id → user-facing `Edge` */
@@ -237,8 +237,6 @@ export type SetState<NodeType extends Node = Node, EdgeType extends Edge = Edge>
 export type UpdateNodePosition = (dragItems: NodeDragItem[], changed: boolean, dragging: boolean) => void;
 
 export type UpdateNodeDimensions = (updates: UpdateNodeDimensionsParams[]) => void;
-
-export type UpdateNodeInternals = (nodeIds?: string[]) => void;
 
 export type GetNode<NodeType extends Node = Node> = (id: string | undefined | null) => NodeType | undefined;
 

@@ -1,5 +1,5 @@
-import type { Project } from '@xyflow/system';
-import type { Edge, Node, NodeLookup, State, ViewportFunctions } from '../types';
+import type { NodeLookup, Project } from '@xyflow/system';
+import type { Edge, InternalNode, Node, State, ViewportFunctions } from '../types';
 import { until } from '@vueuse/core';
 import { fitViewport, getViewportForBounds, pointToRendererPoint, rendererPointToPoint } from '@xyflow/system';
 import { computed } from 'vue';
@@ -41,7 +41,7 @@ const initialViewportHelper: ViewportHelper = {
  */
 export function useViewportHelper<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   state: State<NodeType, EdgeType>,
-  nodeLookup: NodeLookup<NodeType>,
+  nodeLookup: NodeLookup<InternalNode<NodeType>>,
 ) {
   // whether every (non-hidden) node has been measured — `fitView` waits on this so an imperative call right
   // after `addNodes` doesn't fit around stale (unmeasured) geometry (`getFitViewNodes` skips unmeasured nodes)

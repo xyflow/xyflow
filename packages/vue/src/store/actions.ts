@@ -5,6 +5,7 @@ import type {
   EdgeSelectionChange,
   NodeAddChange,
   NodeDimensionChange,
+  NodeLookup,
   NodePositionChange,
   NodeRemoveChange,
   Rect,
@@ -14,7 +15,6 @@ import type {
   Edge,
   InternalNode,
   Node,
-  NodeLookup,
   State,
 } from '../types';
 import {
@@ -54,13 +54,13 @@ import { storeOptionsToSkip, useState } from './state';
 
 export function useActions<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   state: State<NodeType, EdgeType>,
-  nodeLookup: NodeLookup<NodeType>,
+  nodeLookup: NodeLookup<InternalNode<NodeType>>,
   parentLookup: Map<string, Map<string, InternalNode<NodeType>>>,
   edgeLookup: EdgeLookup<EdgeType>,
 ): Actions<NodeType, EdgeType> {
   const viewportHelper = useViewportHelper(state, nodeLookup);
 
-  const systemNodeLookup: NodeLookup<NodeType> = new Map();
+  const systemNodeLookup: NodeLookup<InternalNode<NodeType>> = new Map();
   const systemParentLookup: Map<string, Map<string, InternalNode<NodeType>>> = new Map();
 
   function sameMapEntries<K, V>(a: Map<K, V>, b: Map<K, V>) {
@@ -194,10 +194,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     syncLookups();
   }
 
-  const updateNodeInternals: Actions<NodeType>['updateNodeInternals'] = (ids) => {
-    const updateIds = ids ?? [];
-
-    state.hooks.updateNodeInternals.trigger(updateIds);
+  const updateNodeInternals: Actions<NodeType>['updateNodeInternals'] = (nodeId) => {
+    state.hooks.updateNodeInternals.trigger(Array.isArray(nodeId) ? nodeId : [nodeId]);
   };
 
   const getConnectedEdges: Actions<NodeType, EdgeType>['getConnectedEdges'] = (nodes) => {
@@ -437,7 +435,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const setNodeExtent: Actions<NodeType>['setNodeExtent'] = (nodeExtent) => {
     state.nodeExtent = nodeExtent;
     recomputeAbsolutePositions(true);
-    updateNodeInternals();
   };
 
   const setPaneClickDistance: Actions<NodeType>['setPaneClickDistance'] = (clickDistance) => {
