@@ -1,5 +1,4 @@
 import type { EdgeLookup, NodeLookup } from '@xyflow/system';
-import type { Ref } from 'vue';
 import type {
   Edge,
   FlowProps,
@@ -18,15 +17,6 @@ import { useGetters } from './getters';
 import { useState } from './state';
 
 /**
- * External backing refs that seed a store's nodes/edges. `<VueFlow>` passes its `v-model` refs here.
- * Omitted → the store uses internal refs.
- */
-export interface StoreSignals<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
-  nodes?: Ref<NodeType[]>;
-  edges?: Ref<EdgeType[]>;
-}
-
-/**
  * Builds a fully-wired VueFlow store instance (reactive state, lookups, getters, actions, hooks). The
  * creating component (`<VueFlow>`/`<VueFlowProvider>`) owns it and `provide`s it; `useVueFlow()` injects it.
  *
@@ -36,25 +26,15 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
   id: string,
   initialState?: FlowProps<NodeType, EdgeType>,
   onDestroy?: (id: string) => void,
-  signals?: StoreSignals<NodeType, EdgeType>,
 ): VueFlowStoreHandle<NodeType, EdgeType> {
-  // source of truth is ALWAYS an internal shallowRef, never the v-model ref, defineModel's ref round-trips (its `.value` lags a write),
-  // so reading through it would stale same-tick state.nodes/getNodes.
-  // useWatchProps bridges the v-model ref out+in; `signals` only seeds the initial value here.
-  const nodesSignal = shallowRef<NodeType[]>((signals?.nodes?.value as NodeType[] | undefined) ?? []);
-  const edgesSignal = shallowRef<EdgeType[]>((signals?.edges?.value as EdgeType[] | undefined) ?? []);
-
-  // stable empty fallbacks so reads never surface `undefined` while a v-model ref is still unbound; a stable
-  // reference avoids reactivity churn until `setState`/`commit` replaces it with a real array.
-  const emptyNodes: NodeType[] = [];
-  const emptyEdges: EdgeType[] = [];
-
   const state = useState<NodeType, EdgeType>();
 
-  // proxy `state.nodes`/`.edges` through the signals via accessors, so every existing read/write stays
-  // unchanged while the backing ref becomes injectable.
+  // nodes/edges stay SHALLOW-reactive (elements are markRaw'd, `data` can be huge)
+  const nodesSignal = shallowRef<NodeType[]>(state.nodes);
+  const edgesSignal = shallowRef<EdgeType[]>(state.edges);
+
   Object.defineProperty(state, 'nodes', {
-    get: () => nodesSignal.value ?? emptyNodes,
+    get: () => nodesSignal.value,
     set: (value: NodeType[]) => {
       nodesSignal.value = value;
     },
@@ -62,7 +42,7 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     configurable: true,
   });
   Object.defineProperty(state, 'edges', {
-    get: () => edgesSignal.value ?? emptyEdges,
+    get: () => edgesSignal.value,
     set: (value: EdgeType[]) => {
       edgesSignal.value = value;
     },
