@@ -6,10 +6,10 @@ import { onScopeDispose } from 'vue';
  * `onNodesChange((changes: NodeChange[]) => void)`. Owning them keeps the public hook contract stable.
  */
 export type EventHookOn<T = any> = (fn: (param: T) => void) => { off: () => void };
-export type EventHookOff<T = any> = (fn: (param: T) => void) => void;
+type EventHookOff<T = any> = (fn: (param: T) => void) => void;
 export type EventHookTrigger<T = any> = (param: T) => Promise<unknown[]>;
 
-export interface EventHook<T = any> {
+interface EventHook<T = any> {
   on: EventHookOn<T>;
   off: EventHookOff<T>;
   trigger: EventHookTrigger<T>;
