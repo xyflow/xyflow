@@ -9,6 +9,7 @@ import type {
   VueFlowState,
   VueFlowStoreHandle,
 } from '../types';
+import { mergeAriaLabelConfig } from '@xyflow/system';
 import { reactive, shallowRef } from 'vue';
 import { useActions } from './actions';
 import { useGetters } from './getters';
@@ -67,6 +68,40 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     configurable: true,
   });
 
+  // Controlled fields own their side effect: assigning the field — from props, `setState`, or directly —
+  // mirrors to the panZoom instance (or transforms the value). Backed by a signal like nodes/edges above,
+  // so reads stay reactive. This is what lets `useWatchProps` and `setState` treat every prop uniformly
+  // (no per-prop skip-lists); the dedupe guard keeps a same-value re-assign from re-hitting the mirror.
+  function controlled<K extends keyof typeof state>(
+    key: K,
+    apply: (value: (typeof state)[K]) => void,
+    transform: (value: (typeof state)[K]) => (typeof state)[K] = value => value,
+  ) {
+    const signal = shallowRef(transform(state[key]));
+    Object.defineProperty(state, key, {
+      get: () => signal.value,
+      set: (value: (typeof state)[K]) => {
+        const next = transform(value);
+        if (Object.is(next, signal.value)) {
+          return;
+        }
+        signal.value = next;
+        apply(next);
+      },
+      enumerable: true,
+      configurable: true,
+    });
+  }
+
+  // min/max zoom share the panZoom scale-extent tuple; translateExtent + paneClickDistance mirror 1:1.
+  // (paneClickDistance previously had a setter action that no prop watcher ever called — this wires it.)
+  controlled('minZoom', v => state.panZoom?.setScaleExtent([v, state.maxZoom]));
+  controlled('maxZoom', v => state.panZoom?.setScaleExtent([state.minZoom, v]));
+  controlled('translateExtent', v => state.panZoom?.setTranslateExtent(v));
+  controlled('paneClickDistance', v => state.panZoom?.setClickDistance(v));
+  // ariaLabelConfig has no external mirror — it just merges the partial config on the way in.
+  controlled('ariaLabelConfig', () => {}, mergeAriaLabelConfig);
+
   const reactiveState = reactive(state) as any;
 
   const hooksOn = <any>{};
@@ -88,7 +123,18 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
 
   const actions = useActions<NodeType, EdgeType>(reactiveState, nodeLookup, parentLookup, edgeLookup);
 
-  actions.setState({ ...reactiveState, ...preloadedState } as any);
+  // Apply the initial props. Controlled fields self-apply via their accessors; the node/edge arrays go
+  // through their setters (setState no longer accepts them). Defaults already live in `state`.
+  if (preloadedState) {
+    const { nodes: initialNodes, edges: initialEdges, ...rest } = preloadedState as any;
+    actions.setState(rest);
+    if (initialNodes !== undefined) {
+      actions.setNodes(initialNodes);
+    }
+    if (initialEdges !== undefined) {
+      actions.setEdges(initialEdges);
+    }
+  }
 
   const instance: VueFlowInstance<NodeType, EdgeType> = {
     ...hooksOn,

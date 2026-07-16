@@ -31,7 +31,7 @@ import {
   panBy as panBySystem,
   updateAbsolutePositions,
 } from '@xyflow/system';
-import { computed, markRaw, toRaw } from 'vue';
+import { computed, markRaw, toRaw, watch } from 'vue';
 import { useViewportHelper } from '../composables';
 import {
   adoptNodes,
@@ -50,7 +50,7 @@ import {
   validateEdges,
   VueFlowError,
 } from '../utils';
-import { storeOptionsToSkip, useState } from './state';
+import { useState } from './state';
 
 export function useActions<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   state: State<NodeType, EdgeType>,
@@ -418,27 +418,26 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   };
 
   const setMinZoom: Actions<NodeType>['setMinZoom'] = (minZoom) => {
-    state.panZoom?.setScaleExtent([minZoom, state.maxZoom]);
     state.minZoom = minZoom;
   };
 
   const setMaxZoom: Actions<NodeType>['setMaxZoom'] = (maxZoom) => {
-    state.panZoom?.setScaleExtent([state.minZoom, maxZoom]);
     state.maxZoom = maxZoom;
   };
 
   const setTranslateExtent: Actions<NodeType>['setTranslateExtent'] = (translateExtent) => {
-    state.panZoom?.setTranslateExtent(translateExtent);
     state.translateExtent = translateExtent;
   };
 
+  // nodeExtent is a derived-recompute field: any write (props, setState, direct) re-clamps node positions.
+  watch(() => state.nodeExtent, () => recomputeAbsolutePositions(true), { flush: 'sync' });
+
   const setNodeExtent: Actions<NodeType>['setNodeExtent'] = (nodeExtent) => {
-    state.nodeExtent = nodeExtent;
-    recomputeAbsolutePositions(true);
+    state.nodeExtent = nodeExtent; // watch above recomputes absolute positions
   };
 
   const setPaneClickDistance: Actions<NodeType>['setPaneClickDistance'] = (clickDistance) => {
-    state.panZoom?.setClickDistance(clickDistance);
+    state.paneClickDistance = clickDistance; // accessor mirrors to panZoom
   };
 
   const setInteractive: Actions<NodeType>['setInteractive'] = (isInteractive) => {
@@ -863,53 +862,23 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const setState: Actions<NodeType, EdgeType>['setState'] = (options) => {
     const opts = typeof options === 'function' ? options(state) : options;
 
-    // these options cannot be set after initialization
-    const exclude: (keyof typeof opts)[] = ['viewportRef', 'vueFlowRef', 'dimensions', 'hooks'];
-
-    // we need to set the default opts before setting any elements so the options are applied to the elements on first render
-    if (isDef(opts.defaultEdgeOptions)) {
-      state.defaultEdgeOptions = opts.defaultEdgeOptions;
-    }
+    // `nodes`/`edges` are NOT settable through setState, use setNodes/setEdges instead.
+    const skip = new Set<string>(['nodes', 'edges', 'fitView', 'fitViewOnInitDone', 'viewportRef', 'vueFlowRef', 'dimensions', 'hooks']);
 
     // the `fitView` prop maps to the internal `fitViewOnInit` flag (separate from the `fitView()` action)
     if (isDef(opts.fitView)) {
       state.fitViewOnInit = opts.fitView;
     }
 
-    if (isDef(opts.nodes)) {
-      setNodes(opts.nodes);
-    }
-
-    if (isDef(opts.edges)) {
-      setEdges(opts.edges);
-    }
-
-    const setSkippedOptions = () => {
-      if (isDef(opts.maxZoom)) {
-        setMaxZoom(opts.maxZoom);
+    for (const key of Object.keys(opts)) {
+      if (skip.has(key)) {
+        continue;
       }
-      if (isDef(opts.minZoom)) {
-        setMinZoom(opts.minZoom);
-      }
-      if (isDef(opts.translateExtent)) {
-        setTranslateExtent(opts.translateExtent);
-      }
-      // route through the setter (recomputes absolute positions) so preloaded nodes get re-clamped to the extent
-      if (isDef(opts.nodeExtent)) {
-        setNodeExtent(opts.nodeExtent);
-      }
-    };
-
-    for (const o of Object.keys(opts)) {
-      const key = o as keyof State;
-      const option = opts[key];
-
-      if (![...storeOptionsToSkip, ...exclude].includes(key) && isDef(option)) {
+      const option = (opts as any)[key];
+      if (isDef(option)) {
         ;(<any>state)[key] = option;
       }
     }
-
-    setSkippedOptions();
 
     if (!state.initialized) {
       state.initialized = true;
