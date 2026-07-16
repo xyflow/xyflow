@@ -11,6 +11,7 @@ import type {
 } from '../types';
 import { mergeAriaLabelConfig } from '@xyflow/system';
 import { reactive, shallowRef } from 'vue';
+import { defineControlled } from '../utils';
 import { useActions } from './actions';
 import { useGetters } from './getters';
 import { useState } from './state';
@@ -36,8 +37,8 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
   onDestroy?: (id: string) => void,
   signals?: StoreSignals<NodeType, EdgeType>,
 ): VueFlowStoreHandle<NodeType, EdgeType> {
-  // source of truth is ALWAYS an internal shallowRef, never the v-model ref — defineModel's ref
-  // round-trips (its `.value` lags a write), so reading through it would stale same-tick state.nodes/getNodes.
+  // source of truth is ALWAYS an internal shallowRef, never the v-model ref, defineModel's ref round-trips (its `.value` lags a write),
+  // so reading through it would stale same-tick state.nodes/getNodes.
   // useWatchProps bridges the v-model ref out+in; `signals` only seeds the initial value here.
   const nodesSignal = shallowRef<NodeType[]>((signals?.nodes?.value as NodeType[] | undefined) ?? []);
   const edgesSignal = shallowRef<EdgeType[]>((signals?.edges?.value as EdgeType[] | undefined) ?? []);
@@ -68,51 +69,27 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     configurable: true,
   });
 
-  // Controlled fields own their side effect: assigning the field — from props, `setState`, or directly —
-  // mirrors to the panZoom instance (or transforms the value). Backed by a signal like nodes/edges above,
-  // so reads stay reactive. This is what lets `useWatchProps` and `setState` treat every prop uniformly
-  // (no per-prop skip-lists); the dedupe guard keeps a same-value re-assign from re-hitting the mirror.
-  function controlled<K extends keyof typeof state>(
-    key: K,
-    apply: (value: (typeof state)[K]) => void,
-    transform: (value: (typeof state)[K]) => (typeof state)[K] = value => value,
-  ) {
-    const signal = shallowRef(transform(state[key]));
-    Object.defineProperty(state, key, {
-      get: () => signal.value,
-      set: (value: (typeof state)[K]) => {
-        const next = transform(value);
-        if (Object.is(next, signal.value)) {
-          return;
-        }
-        signal.value = next;
-        apply(next);
-      },
-      enumerable: true,
-      configurable: true,
-    });
-  }
+  // Controlled fields own their side effect via `defineControlled`: assigning the field (props, `setState`,
+  // or directly) mirrors to the panZoom instance (or transforms the value). min/max zoom share the
+  // scale-extent tuple; translateExtent + paneClickDistance mirror 1:1 (the latter previously had a setter
+  // action no prop watcher ever called — this wires it); ariaLabelConfig just merges on the way in.
+  defineControlled(state, 'minZoom', v => state.panZoom?.setScaleExtent([v, state.maxZoom]));
+  defineControlled(state, 'maxZoom', v => state.panZoom?.setScaleExtent([state.minZoom, v]));
+  defineControlled(state, 'translateExtent', v => state.panZoom?.setTranslateExtent(v));
+  defineControlled(state, 'paneClickDistance', v => state.panZoom?.setClickDistance(v));
+  defineControlled(state, 'ariaLabelConfig', () => {}, mergeAriaLabelConfig);
 
-  // min/max zoom share the panZoom scale-extent tuple; translateExtent + paneClickDistance mirror 1:1.
-  // (paneClickDistance previously had a setter action that no prop watcher ever called — this wires it.)
-  controlled('minZoom', v => state.panZoom?.setScaleExtent([v, state.maxZoom]));
-  controlled('maxZoom', v => state.panZoom?.setScaleExtent([state.minZoom, v]));
-  controlled('translateExtent', v => state.panZoom?.setTranslateExtent(v));
-  controlled('paneClickDistance', v => state.panZoom?.setClickDistance(v));
-  // ariaLabelConfig has no external mirror — it just merges the partial config on the way in.
-  controlled('ariaLabelConfig', () => {}, mergeAriaLabelConfig);
-
-  const reactiveState = reactive(state) as any;
+  const reactiveState = reactive(state) as unknown as VueFlowState<NodeType, EdgeType>;
 
   const hooksOn = <any>{};
   for (const [n, h] of Object.entries(reactiveState.hooks)) {
     const name = `on${n.charAt(0).toUpperCase() + n.slice(1)}`;
-    hooksOn[name] = (h as any).on;
+    hooksOn[name] = h.on;
   }
 
   const emits = <any>{};
   for (const [n, h] of Object.entries(reactiveState.hooks)) {
-    emits[n] = (h as any).trigger;
+    emits[n] = h.trigger;
   }
 
   const nodeLookup = reactiveState.nodeLookup as NodeLookup<InternalNode<NodeType>>;
@@ -126,11 +103,13 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
   // Apply the initial props. Controlled fields self-apply via their accessors; the node/edge arrays go
   // through their setters (setState no longer accepts them). Defaults already live in `state`.
   if (preloadedState) {
-    const { nodes: initialNodes, edges: initialEdges, ...rest } = preloadedState as any;
-    actions.setState(rest);
+    const { nodes: initialNodes, edges: initialEdges, ...rest } = preloadedState;
+    actions.setState(rest as VueFlowState<NodeType, EdgeType>);
+
     if (initialNodes !== undefined) {
       actions.setNodes(initialNodes);
     }
+
     if (initialEdges !== undefined) {
       actions.setEdges(initialEdges);
     }

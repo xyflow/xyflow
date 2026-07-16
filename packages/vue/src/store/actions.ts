@@ -31,7 +31,7 @@ import {
   panBy as panBySystem,
   updateAbsolutePositions,
 } from '@xyflow/system';
-import { computed, markRaw, toRaw, watch } from 'vue';
+import { computed, markRaw, toRaw } from 'vue';
 import { useViewportHelper } from '../composables';
 import {
   adoptNodes,
@@ -40,6 +40,7 @@ import {
   createEdgeRemoveChange,
   createNodeRemoveChange,
   createSelectionChange,
+  defineControlled,
   ErrorCode,
   getSelectionChanges,
   isDef,
@@ -430,12 +431,14 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     state.translateExtent = translateExtent;
   };
 
-  // nodeExtent is a derived field: any write (props, setState, direct) re-adopts the nodes so positions
-  // re-clamp to the new extent AND the view reflows. `checkEquality: false` forces new refs.
-  watch(() => state.nodeExtent, () => commitNodes(state.nodes, false), { flush: 'sync' });
+  // nodeExtent owns its effect via `defineControlled`, set up here (not createVueFlowStore) so it can call
+  // `commitNodes` directly — no cross-scope plumbing. Any write (props, setState, direct) re-adopts the
+  // nodes with `checkEquality: false`, re-clamping positions to the new extent AND reflowing the view.
+  // `toRaw` so the accessor lands on the object the reactive proxy reflects.
+  defineControlled(toRaw(state), 'nodeExtent', () => commitNodes(state.nodes, false));
 
   const setNodeExtent: Actions<NodeType>['setNodeExtent'] = (nodeExtent) => {
-    state.nodeExtent = nodeExtent; // watch above recomputes absolute positions
+    state.nodeExtent = nodeExtent; // the controlled setter re-adopts + reflows
   };
 
   const setPaneClickDistance: Actions<NodeType>['setPaneClickDistance'] = (clickDistance) => {
