@@ -1,8 +1,8 @@
-import type { Connection, ConnectionLineType, HandleType, NodeConnection, Position, XYPosition } from '@xyflow/system';
+import type { Connection, ConnectionLineType, EdgeMarkerType, Handle, NoConnection, Position, XYPosition } from '@xyflow/system';
 import type { CSSProperties } from 'vue';
-import type { Edge, EdgeMarkerType } from './edge';
+import type { Edge } from './edge';
 import type { ClassValue } from './flow';
-import type { ConnectingHandle, HandleElement } from './handle';
+import type { ConnectingHandle } from './handle';
 import type { InternalNode, Node } from './node';
 
 export interface ConnectionLineOptions {
@@ -51,36 +51,11 @@ export interface ConnectionInProgress<NodeType extends Node = Node> {
   pointer: XYPosition;
 }
 
-/** No connection in progress — the resting `ConnectionState`. */
-export interface NoConnection {
-  inProgress: false;
-  isValid: null;
-  from: null;
-  fromHandle: null;
-  fromPosition: null;
-  fromNode: null;
-  to: null;
-  toHandle: null;
-  toPosition: null;
-  toNode: null;
-  pointer: null;
-}
-
 /**
  * The `ConnectionState` type bundles all information about an ongoing connection. It is returned by the
  * `useConnection` hook.
  */
 export type ConnectionState<NodeType extends Node = Node> = ConnectionInProgress<NodeType> | NoConnection;
-
-/** The source nodes params when connection is initiated */
-export interface OnConnectStartParams {
-  /** Source node id */
-  nodeId?: string;
-  /** Source handle id */
-  handleId: string | null;
-  /** Source handle type */
-  handleType?: HandleType;
-}
 
 /**
  * If you want to render a custom component for connection lines, you can pass it to the `connection-line`
@@ -102,11 +77,11 @@ export interface ConnectionLineProps<NodeType extends Node = Node> {
   /** the node the connection started from */
   fromNode: InternalNode<NodeType>;
   /** the handle the connection started from (not the DOM element) */
-  fromHandle: HandleElement | null;
+  fromHandle: Handle | null;
   /** the node the connection currently ends on, or `null` */
   toNode: InternalNode<NodeType> | null;
   /** the handle the connection currently ends on (not the DOM element), or `null` */
-  toHandle: HandleElement | null;
+  toHandle: Handle | null;
   /** marker url */
   markerStart?: string;
   /** marker url */
@@ -119,5 +94,3 @@ export interface ConnectionLineProps<NodeType extends Node = Node> {
   /** the raw pointer position in flow coordinates (unsnapped, unlike `toX`/`toY`) */
   pointer: XYPosition;
 }
-
-export type ConnectionLookup = Map<string, Map<string, NodeConnection>>;

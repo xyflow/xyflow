@@ -1,9 +1,11 @@
-import type { CoordinateExtent, EdgeBase, InternalNodeBase, NodeBase, NodeDragItem as SystemNodeDragItem } from '@xyflow/system';
+import type { CoordinateExtent, EdgeBase, InternalNodeBase, NodeBase, NodeDragItem } from '@xyflow/system';
 import type { MaybeRefOrGetter, Ref } from 'vue';
-import type { Node, NodeDragEvent, NodeDragItem } from '../types';
+import type { Node, NodeDragEvent } from '../types';
 import { infiniteExtent, isCoordinateExtent, XYDrag } from '@xyflow/system';
-import { shallowRef, toValue, watchEffect } from 'vue';
-import { useStore, useVueFlow } from '.';
+import { shallowRef, toRef, toValue, watch, watchEffect } from 'vue';
+import { handleNodeClick } from '../utils';
+import { useStore } from './useStore';
+import { useVueFlow } from './useVueFlow';
 
 interface UseDragParams {
   onStart: (event: NodeDragEvent) => void;
@@ -31,9 +33,13 @@ export function useDrag(params: UseDragParams) {
 
   const { nodeLookup } = store;
 
+  const nodesSelectionActive = toRef(store, 'nodesSelectionActive');
+
   const { onStart, onDrag, onStop, onClick, el, disabled, id, selectable, dragHandle } = params;
 
   const dragging = shallowRef(false);
+
+  let dragInstance: ReturnType<typeof XYDrag> | undefined;
 
   watchEffect((onCleanup) => {
     const nodeEl = el.value;
@@ -45,7 +51,7 @@ export function useDrag(params: UseDragParams) {
     let dragFired = false;
     let pointerDownPos = { x: 0, y: 0 };
 
-    const dragInstance = XYDrag({
+    dragInstance = XYDrag({
       getStoreItems: () => ({
         get nodes() {
           return getNodes.value as NodeBase[];
@@ -72,10 +78,9 @@ export function useDrag(params: UseDragParams) {
           removeSelectedNodes(args?.nodes);
           removeSelectedEdges(args?.edges);
         },
-        updateNodePositions: (dragItems: Map<string, SystemNodeDragItem | InternalNodeBase>, isDragging?: boolean) => {
+        updateNodePositions: (dragItems: Map<string, NodeDragItem | InternalNodeBase>, isDragging?: boolean) => {
           const items: NodeDragItem[] = [];
-          for (const raw of dragItems.values()) {
-            const item = raw as SystemNodeDragItem;
+          for (const item of dragItems.values()) {
             const node = getInternalNode(item.id);
             const width = item.measured?.width ?? node?.measured.width ?? 0;
             const height = item.measured?.height ?? node?.measured.height ?? 0;
@@ -83,7 +88,9 @@ export function useDrag(params: UseDragParams) {
             items.push({
               id: item.id,
               position: item.position,
-              distance: item.distance ?? { x: 0, y: 0 },
+              // `distance` is a drag-item-only field; XYDrag always passes NodeDragItems, but the store-item
+              // contract widens the value to InternalNodeBase, so narrow instead of assuming.
+              distance: 'distance' in item ? item.distance : { x: 0, y: 0 },
               measured: { width, height },
               internals: { positionAbsolute },
               extent: item.extent,
@@ -101,18 +108,19 @@ export function useDrag(params: UseDragParams) {
       // in multi-selection an already-selected node toggles off.
       onNodeMouseDown: (nodeId: string) => {
         const node = getInternalNode(nodeId);
-        if (!node) {
+        if (!node || !el.value) {
           return;
         }
 
-        store.nodesSelectionActive = false;
-
-        if (!node.selected) {
-          addSelectedNodes([node]);
-        }
-        else if (store.multiSelectionActive) {
-          removeSelectedNodes([node]);
-        }
+        handleNodeClick(
+          node,
+          store.multiSelectionActive,
+          addSelectedNodes,
+          removeSelectedNodes,
+          nodesSelectionActive,
+          false,
+          el.value as HTMLDivElement,
+        );
       },
       onDragStart: (event, _dragItems, node, nodes) => {
         dragFired = true;
@@ -126,15 +134,6 @@ export function useDrag(params: UseDragParams) {
         dragging.value = false;
         onStop({ event, node: node as Node, nodes: nodes as Node[] });
       },
-    });
-
-    dragInstance.update({
-      noDragClassName: store.noDragClassName,
-      handleSelector: toValue(dragHandle),
-      isSelectable: toValue(selectable),
-      nodeId: id,
-      domNode: nodeEl,
-      nodeClickDistance: store.nodeClickDistance,
     });
 
     // Handle the "moved slightly but within threshold" click: XYDrag won't fire drag events for
@@ -161,11 +160,32 @@ export function useDrag(params: UseDragParams) {
     target.addEventListener('pointerup', handlePointerUp);
 
     onCleanup(() => {
-      dragInstance.destroy();
+      dragInstance?.destroy();
+      dragInstance = undefined;
       target.removeEventListener('pointerdown', handlePointerDown);
       target.removeEventListener('pointerup', handlePointerUp);
     });
   });
+
+  // push prop changes to the live instance instead of tearing it down and rebuilding it
+  watch(
+    [
+      () => store.noDragClassName,
+      () => toValue(dragHandle),
+      () => toValue(selectable),
+      () => store.nodeClickDistance,
+      () => toValue(disabled),
+      el,
+    ],
+    ([noDragClassName, handleSelector, isSelectable, nodeClickDistance, isDisabled, nodeEl]) => {
+      if (isDisabled || !nodeEl || !dragInstance) {
+        return;
+      }
+
+      dragInstance.update({ noDragClassName, handleSelector, isSelectable, nodeId: id, domNode: nodeEl, nodeClickDistance });
+    },
+    { immediate: true },
+  );
 
   return dragging;
 }

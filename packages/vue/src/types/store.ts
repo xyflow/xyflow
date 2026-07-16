@@ -2,11 +2,15 @@ import type { KeyFilter } from '@vueuse/core';
 import type {
   AriaLabelConfig,
   Connection,
+  ConnectionLookup,
   ConnectionMode,
   CoordinateExtent,
   Dimensions,
+  EdgeLookup,
   HandleType,
   NodeConnection,
+  NodeDragItem,
+  NodeLookup,
   PanOnScrollMode,
   PanZoomInstance,
   Rect,
@@ -14,24 +18,21 @@ import type {
   SelectionRect,
   SnapGrid,
   Transform,
+  UpdateNodeInternals,
   Viewport,
   XYPosition,
   ZIndexMode,
 } from '@xyflow/system';
 import type { ComputedRef } from 'vue';
 import type { ViewportHelper } from '../composables';
-import type { EdgeChange, NodeChange, NodeDragItem } from './changes';
+import type { EdgeChange, NodeChange } from './changes';
 import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
-import type { ConnectionLineOptions, ConnectionLookup, ConnectionStatus, Connector } from './connection';
+import type { ConnectionLineOptions, ConnectionStatus, Connector } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
 import type { FlowExportObject, FlowProps, OnBeforeDelete } from './flow';
 import type { ConnectingHandle, ValidConnectionFunc } from './handle';
 import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
 import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
-
-export type NodeLookup<NodeType extends Node = Node> = Map<string, InternalNode<NodeType>>;
-
-export type EdgeLookup<EdgeType extends Edge = Edge> = Map<string, EdgeType>;
 
 export interface UpdateNodeDimensionsParams {
   id: string;
@@ -57,7 +58,7 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   edges: EdgeType[];
 
   /** id → enriched `InternalNode` (`internals`/`measured`); the canonical source for node-derived data */
-  readonly nodeLookup: NodeLookup<NodeType>;
+  readonly nodeLookup: NodeLookup<InternalNode<NodeType>>;
   /** parentId → map of child id → child `InternalNode`. */
   readonly parentLookup: Map<string, Map<string, InternalNode<NodeType>>>;
   /** id → user-facing `Edge` */
@@ -145,9 +146,9 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;
 
-  noDragClassName: 'nodrag' | string;
-  noWheelClassName: 'nowheel' | string;
-  noPanClassName: 'nopan' | string;
+  noDragClassName: string;
+  noWheelClassName: string;
+  noPanClassName: string;
 
   defaultEdgeOptions: DefaultEdgeOptions | undefined;
 
@@ -236,8 +237,6 @@ export type SetState<NodeType extends Node = Node, EdgeType extends Edge = Edge>
 export type UpdateNodePosition = (dragItems: NodeDragItem[], changed: boolean, dragging: boolean) => void;
 
 export type UpdateNodeDimensions = (updates: UpdateNodeDimensionsParams[]) => void;
-
-export type UpdateNodeInternals = (nodeIds?: string[]) => void;
 
 export type GetNode<NodeType extends Node = Node> = (id: string | undefined | null) => NodeType | undefined;
 

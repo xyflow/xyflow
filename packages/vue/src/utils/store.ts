@@ -1,19 +1,19 @@
 import type {
   Connection,
+  ConnectionLookup,
   CoordinateExtent,
   NodeConnection,
+  NodeHandleBounds,
   NodeLookup as SystemNodeLookup,
   ParentLookup as SystemParentLookup,
   ZIndexMode,
 } from '@xyflow/system';
 import type {
   Actions,
-  ConnectionLookup,
   DefaultEdgeOptions,
   Edge,
   InternalNode,
   Node,
-  NodeHandleBounds,
   NodeOrigin,
   State,
   ValidConnectionFunc,
@@ -21,7 +21,8 @@ import type {
 } from '../types';
 import { adoptUserNodes, getEdgeId } from '@xyflow/system';
 import { markRaw, toRaw, unref } from 'vue';
-import { connectionExists, ErrorCode, isEdge, isNode, VueFlowError } from '.';
+import { ErrorCode, VueFlowError } from './errors';
+import { connectionExists, isEdge, isNode } from './graph';
 
 type NonUndefined<T> = T extends undefined ? never : T;
 

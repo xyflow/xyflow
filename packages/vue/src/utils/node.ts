@@ -1,5 +1,6 @@
+import type { NodeLookup } from '@xyflow/system';
 import type { Ref } from 'vue';
-import type { Actions, InternalNode, NodeLookup } from '../types';
+import type { Actions, InternalNode } from '../types';
 import { nextTick } from 'vue';
 
 /**
@@ -7,7 +8,7 @@ import { nextTick } from 'vue';
  * nodes are skipped unless `includeHiddenNodes`. Shared by `useNodesInitialized` and `fitView`'s queue so the
  * "are nodes ready" check has a single definition.
  */
-export function areNodesInitialized(nodeLookup: NodeLookup, includeHiddenNodes = false): boolean {
+export function areNodesInitialized(nodeLookup: NodeLookup<InternalNode>, includeHiddenNodes = false): boolean {
   if (nodeLookup.size === 0) {
     return false;
   }

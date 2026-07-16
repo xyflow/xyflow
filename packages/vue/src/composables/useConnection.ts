@@ -1,23 +1,10 @@
 import type { ComputedRef } from 'vue';
 import type { ConnectionState, Node } from '../types';
+import { initialConnection, pointToRendererPoint } from '@xyflow/system';
 import { computed } from 'vue';
 import { storeToRefs } from './storeToRefs';
 import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
-
-const NO_CONNECTION = Object.freeze({
-  inProgress: false,
-  isValid: null,
-  from: null,
-  fromHandle: null,
-  fromPosition: null,
-  fromNode: null,
-  to: null,
-  toHandle: null,
-  toPosition: null,
-  toNode: null,
-  pointer: null,
-} as const);
 
 /**
  * Returns the current connection when there is an active connection interaction. When idle, every field is
@@ -29,7 +16,7 @@ const NO_CONNECTION = Object.freeze({
  */
 export function useConnection<NodeType extends Node = Node>(): ComputedRef<ConnectionState<NodeType>> {
   const { getInternalNode } = useVueFlow<NodeType>();
-  const { connectionStartHandle, connectionEndHandle, connectionPosition, connectionStatus } = storeToRefs(useStore<NodeType>());
+  const { connectionStartHandle, connectionEndHandle, connectionPosition, connectionStatus, transform } = storeToRefs(useStore<NodeType>());
 
   return computed<ConnectionState<NodeType>>(() => {
     const fromHandle = connectionStartHandle.value;
@@ -37,7 +24,7 @@ export function useConnection<NodeType extends Node = Node>(): ComputedRef<Conne
 
     // no connection (or its source node vanished) → the resting state
     if (!fromHandle || !fromNode) {
-      return NO_CONNECTION;
+      return initialConnection;
     }
 
     const toHandle = connectionEndHandle.value;
@@ -50,8 +37,7 @@ export function useConnection<NodeType extends Node = Node>(): ComputedRef<Conne
       fromHandle,
       fromPosition: fromHandle.position,
       fromNode,
-      // `to` snaps to the hovered end handle; falls back to the raw pointer when over empty canvas
-      to: toHandle ? { x: toHandle.x, y: toHandle.y } : pointer,
+      to: toHandle ? { x: toHandle.x, y: toHandle.y } : pointToRendererPoint(pointer, transform.value),
       toHandle: toHandle ?? null,
       toPosition: toHandle?.position ?? null,
       toNode: ((toHandle ? getInternalNode(toHandle.nodeId) : undefined) ?? null),

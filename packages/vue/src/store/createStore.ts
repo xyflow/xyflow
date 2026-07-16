@@ -1,11 +1,10 @@
+import type { EdgeLookup, NodeLookup } from '@xyflow/system';
 import type { Ref } from 'vue';
 import type {
   Edge,
-  EdgeLookup,
   FlowProps,
   InternalNode,
   Node,
-  NodeLookup,
   VueFlowInstance,
   VueFlowState,
   VueFlowStoreHandle,
@@ -81,7 +80,7 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     emits[n] = (h as any).trigger;
   }
 
-  const nodeLookup = reactiveState.nodeLookup as NodeLookup<NodeType>;
+  const nodeLookup = reactiveState.nodeLookup as NodeLookup<InternalNode<NodeType>>;
   const parentLookup = reactiveState.parentLookup as Map<string, Map<string, InternalNode<NodeType>>>;
   const edgeLookup = reactiveState.edgeLookup as EdgeLookup<EdgeType>;
 

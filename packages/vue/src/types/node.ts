@@ -1,7 +1,6 @@
 import type { InternalNodeBase, NodeBase } from '@xyflow/system';
 import type { HTMLAttributes } from 'vue';
 import type { ClassValue, Styles } from './flow';
-import type { HandleElement } from './handle';
 
 /**
  * The origin of a Node determines how it is placed relative to its own coordinates.
@@ -12,11 +11,6 @@ import type { HandleElement } from './handle';
  * d.ts (its `Optional<T, K>` trips vuejs/core#14236); structurally identical to system's.
  */
 export type NodeOrigin = [number, number];
-
-export interface NodeHandleBounds {
-  source: HandleElement[] | null;
-  target: HandleElement[] | null;
-}
 
 /**
  * The `Node` type represents everything Vue Flow needs to know about a given node. Whenever you want to

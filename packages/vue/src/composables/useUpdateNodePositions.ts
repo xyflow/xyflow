@@ -1,5 +1,4 @@
-import type { XYPosition } from '@xyflow/system';
-import type { NodeDragItem } from '../types';
+import type { NodeDragItem, XYPosition } from '@xyflow/system';
 import { calculateNodePosition, getNodeDimensions, snapPosition } from '@xyflow/system';
 import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
