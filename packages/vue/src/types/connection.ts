@@ -1,4 +1,4 @@
-import type { Connection, ConnectionLineType, EdgeMarkerType, Handle, Position, XYPosition } from '@xyflow/system';
+import type { Connection, ConnectionLineType, EdgeMarkerType, Handle, NoConnection, Position, XYPosition } from '@xyflow/system';
 import type { CSSProperties } from 'vue';
 import type { Edge } from './edge';
 import type { ClassValue } from './flow';
@@ -49,21 +49,6 @@ export interface ConnectionInProgress<NodeType extends Node = Node> {
   toNode: InternalNode<NodeType> | null;
   /** Returns the pointer position or `null` if no connection is in progress. */
   pointer: XYPosition;
-}
-
-/** No connection in progress — the resting `ConnectionState`. */
-export interface NoConnection {
-  inProgress: false;
-  isValid: null;
-  from: null;
-  fromHandle: null;
-  fromPosition: null;
-  fromNode: null;
-  to: null;
-  toHandle: null;
-  toPosition: null;
-  toNode: null;
-  pointer: null;
 }
 
 /**

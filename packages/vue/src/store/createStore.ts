@@ -1,7 +1,7 @@
+import type { EdgeLookup } from '@xyflow/system';
 import type { Ref } from 'vue';
 import type {
   Edge,
-  EdgeLookup,
   FlowProps,
   InternalNode,
   Node,

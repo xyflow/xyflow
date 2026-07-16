@@ -6,6 +6,7 @@ import type {
   ConnectionMode,
   CoordinateExtent,
   Dimensions,
+  EdgeLookup,
   HandleType,
   NodeConnection,
   NodeDragItem,
@@ -32,8 +33,6 @@ import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
 import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
 
 export type NodeLookup<NodeType extends Node = Node> = Map<string, InternalNode<NodeType>>;
-
-export type EdgeLookup<EdgeType extends Edge = Edge> = Map<string, EdgeType>;
 
 export interface UpdateNodeDimensionsParams {
   id: string;

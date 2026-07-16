@@ -1,5 +1,6 @@
 import type {
   EdgeAddChange,
+  EdgeLookup,
   EdgeRemoveChange,
   EdgeSelectionChange,
   NodeAddChange,
@@ -11,7 +12,6 @@ import type {
 import type {
   Actions,
   Edge,
-  EdgeLookup,
   InternalNode,
   Node,
   NodeLookup,
