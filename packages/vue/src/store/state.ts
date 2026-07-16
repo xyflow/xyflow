@@ -98,8 +98,6 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
 
     hooks: createHooks(),
 
-    autoConnect: false,
-
     fitViewOnInit: false,
     fitViewOnInitDone: false,
 

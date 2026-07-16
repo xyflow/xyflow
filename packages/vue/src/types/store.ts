@@ -27,7 +27,7 @@ import type { ComputedRef } from 'vue';
 import type { ViewportHelper } from '../composables';
 import type { EdgeChange, NodeChange } from './changes';
 import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
-import type { ConnectionLineOptions, ConnectionStatus, Connector } from './connection';
+import type { ConnectionLineOptions, ConnectionStatus } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
 import type { FlowExportObject, FlowProps, OnBeforeDelete } from './flow';
 import type { ConnectingHandle, ValidConnectionFunc } from './handle';
@@ -141,7 +141,6 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   paneDragging: boolean;
 
   initialized: boolean;
-  autoConnect: boolean | Connector;
 
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;

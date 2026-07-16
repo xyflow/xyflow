@@ -20,7 +20,7 @@ import type { CSSProperties } from 'vue';
 import type { VueFlowError } from '../utils';
 import type { EdgeChange, NodeChange } from './changes';
 import type { EdgeTypesObject, NodeTypesObject } from './components';
-import type { ConnectionLineOptions, ConnectionLineProps, Connector } from './connection';
+import type { ConnectionLineOptions, ConnectionLineProps } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeProps, EdgeReconnectable } from './edge';
 import type { ValidConnectionFunc } from './handle';
 import type {
@@ -394,10 +394,6 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
    * @default true
    */
   connectOnClick?: boolean;
-  /**
-   * automatically create an edge when connection is triggered
-   */
-  autoConnect?: boolean | Connector;
   /**
    * If a node is draggable, clicking and dragging that node will move it around the canvas. Adding the
    * `"nodrag"` class prevents this behavior and this prop allows you to change the name of that class.
