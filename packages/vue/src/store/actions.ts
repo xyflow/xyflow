@@ -313,19 +313,11 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const setNodes: Actions<NodeType>['setNodes'] = (nodes) => {
     const nextNodes = typeof nodes === 'function' ? nodes(state.nodes) : nodes;
 
-    if (!state.initialized && !nextNodes.length) {
-      return;
-    }
-
     commitNodes(nextNodes);
   };
 
   const setEdges: Actions<NodeType, EdgeType>['setEdges'] = (edges) => {
     const nextEdges = typeof edges === 'function' ? edges(state.edges) : edges;
-
-    if (!state.initialized && !nextEdges.length) {
-      return;
-    }
 
     commitEdges(
       validateEdges<EdgeType>(
@@ -742,10 +734,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       if (isDef(option)) {
         ;(<any>state)[key] = option;
       }
-    }
-
-    if (!state.initialized) {
-      state.initialized = true;
     }
   };
 

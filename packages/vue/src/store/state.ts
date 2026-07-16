@@ -16,8 +16,6 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     nodeTypes: {},
     edgeTypes: {},
 
-    initialized: false,
-
     dimensions: {
       width: 0,
       height: 0,

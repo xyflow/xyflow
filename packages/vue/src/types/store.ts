@@ -140,8 +140,6 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   preventScrolling: boolean;
   paneDragging: boolean;
 
-  initialized: boolean;
-
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;
 
