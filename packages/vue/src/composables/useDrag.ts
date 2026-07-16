@@ -2,7 +2,7 @@ import type { CoordinateExtent, EdgeBase, InternalNodeBase, NodeBase, NodeDragIt
 import type { MaybeRefOrGetter, Ref } from 'vue';
 import type { Node, NodeDragEvent, NodeDragItem } from '../types';
 import { infiniteExtent, isCoordinateExtent, XYDrag } from '@xyflow/system';
-import { shallowRef, toRef, toValue, watchEffect } from 'vue';
+import { shallowRef, toRef, toValue, watch, watchEffect } from 'vue';
 import { useStore, useVueFlow } from '.';
 import { handleNodeClick } from '../utils';
 
@@ -38,6 +38,8 @@ export function useDrag(params: UseDragParams) {
 
   const dragging = shallowRef(false);
 
+  let dragInstance: ReturnType<typeof XYDrag> | undefined;
+
   watchEffect((onCleanup) => {
     const nodeEl = el.value;
 
@@ -48,7 +50,7 @@ export function useDrag(params: UseDragParams) {
     let dragFired = false;
     let pointerDownPos = { x: 0, y: 0 };
 
-    const dragInstance = XYDrag({
+    dragInstance = XYDrag({
       getStoreItems: () => ({
         get nodes() {
           return getNodes.value as NodeBase[];
@@ -132,8 +134,6 @@ export function useDrag(params: UseDragParams) {
       },
     });
 
-    dragInstance.value = instance;
-
     // Handle the "moved slightly but within threshold" click: XYDrag won't fire drag events for
     // sub-threshold movement and d3 suppresses the native click, so detect it with pointer listeners.
     const handlePointerDown = (e: PointerEvent) => {
@@ -158,11 +158,32 @@ export function useDrag(params: UseDragParams) {
     target.addEventListener('pointerup', handlePointerUp);
 
     onCleanup(() => {
-      dragInstance.destroy();
+      dragInstance?.destroy();
+      dragInstance = undefined;
       target.removeEventListener('pointerdown', handlePointerDown);
       target.removeEventListener('pointerup', handlePointerUp);
     });
   });
+
+  // push prop changes to the live instance instead of tearing it down and rebuilding it
+  watch(
+    [
+      () => store.noDragClassName,
+      () => toValue(dragHandle),
+      () => toValue(selectable),
+      () => store.nodeClickDistance,
+      () => toValue(disabled),
+      el,
+    ],
+    ([noDragClassName, handleSelector, isSelectable, nodeClickDistance, isDisabled, nodeEl]) => {
+      if (isDisabled || !nodeEl || !dragInstance) {
+        return;
+      }
+
+      dragInstance.update({ noDragClassName, handleSelector, isSelectable, nodeId: id, domNode: nodeEl, nodeClickDistance });
+    },
+    { immediate: true },
+  );
 
   return dragging;
 }
