@@ -1,5 +1,5 @@
 import type { Edge, Node, State } from '../types';
-import { ConnectionLineType, ConnectionMode, isMacOs, mergeAriaLabelConfig, PanOnScrollMode, SelectionMode } from '@xyflow/system';
+import { ConnectionLineType, ConnectionMode, defaultAriaLabelConfig, infiniteExtent, isMacOs, PanOnScrollMode, SelectionMode } from '@xyflow/system';
 
 import { createHooks } from './hooks';
 
@@ -29,14 +29,8 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     minZoom: 0.5,
     maxZoom: 2,
 
-    translateExtent: [
-      [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-      [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
-    ],
-    nodeExtent: [
-      [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-      [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
-    ],
+    translateExtent: infiniteExtent,
+    nodeExtent: infiniteExtent,
     nodeOrigin: [0, 0],
 
     selectionMode: SelectionMode.Full,
@@ -116,7 +110,7 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     autoPanSpeed: 15,
 
     disableKeyboardA11y: false,
-    ariaLabelConfig: mergeAriaLabelConfig(),
+    ariaLabelConfig: defaultAriaLabelConfig,
     ariaLiveMessage: '',
   };
 }
