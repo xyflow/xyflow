@@ -2,6 +2,7 @@ import type {
   Connection,
   ConnectionLookup,
   CoordinateExtent,
+  HandleType,
   NodeConnection,
   NodeHandleBounds,
   NodeLookup as SystemNodeLookup,
@@ -193,7 +194,7 @@ export function adoptNodes<NodeType extends Node = Node>(
  * @param handleId handleId of the conneciton
  */
 function addConnectionToLookup(
-  type: 'source' | 'target',
+  type: HandleType,
   connection: NodeConnection,
   connectionKey: string,
   connectionLookup: ConnectionLookup,
