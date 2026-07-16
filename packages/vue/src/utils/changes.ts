@@ -1,20 +1,20 @@
 import type {
+  EdgeAddChange,
   EdgeRemoveChange,
   EdgeSelectionChange,
+  NodeAddChange,
   NodeRemoveChange,
   NodeSelectionChange,
 } from '@xyflow/system';
 import type {
   Edge,
-  EdgeAddChange,
   EdgeChange,
   ElementChange,
   InternalNode,
   Node,
-  NodeAddChange,
   NodeChange,
 } from '../types';
-import { isNode } from '.';
+import { isNode } from './graph';
 
 /**
  * Apply element changes immutably: returns a NEW array with new objects for changed elements and unchanged

@@ -1,4 +1,4 @@
-import type { Connection, ConnectionLineType, EdgeMarkerType, Handle, NodeConnection, Position, XYPosition } from '@xyflow/system';
+import type { Connection, ConnectionLineType, EdgeMarkerType, Handle, Position, XYPosition } from '@xyflow/system';
 import type { CSSProperties } from 'vue';
 import type { Edge } from './edge';
 import type { ClassValue } from './flow';
@@ -109,5 +109,3 @@ export interface ConnectionLineProps<NodeType extends Node = Node> {
   /** the raw pointer position in flow coordinates (unsnapped, unlike `toX`/`toY`) */
   pointer: XYPosition;
 }
-
-export type ConnectionLookup = Map<string, Map<string, NodeConnection>>;

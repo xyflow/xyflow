@@ -1,6 +1,8 @@
 import type {
+  EdgeAddChange,
   EdgeRemoveChange,
   EdgeSelectionChange,
+  NodeAddChange,
   NodeDimensionChange,
   NodePositionChange,
   NodeRemoveChange,
@@ -9,11 +11,9 @@ import type {
 import type {
   Actions,
   Edge,
-  EdgeAddChange,
   EdgeLookup,
   InternalNode,
   Node,
-  NodeAddChange,
   NodeLookup,
   State,
 } from '../types';

@@ -2,11 +2,13 @@ import type { KeyFilter } from '@vueuse/core';
 import type {
   AriaLabelConfig,
   Connection,
+  ConnectionLookup,
   ConnectionMode,
   CoordinateExtent,
   Dimensions,
   HandleType,
   NodeConnection,
+  NodeDragItem,
   PanOnScrollMode,
   PanZoomInstance,
   Rect,
@@ -20,9 +22,9 @@ import type {
 } from '@xyflow/system';
 import type { ComputedRef } from 'vue';
 import type { ViewportHelper } from '../composables';
-import type { EdgeChange, NodeChange, NodeDragItem } from './changes';
+import type { EdgeChange, NodeChange } from './changes';
 import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
-import type { ConnectionLineOptions, ConnectionLookup, ConnectionStatus, Connector } from './connection';
+import type { ConnectionLineOptions, ConnectionStatus, Connector } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
 import type { FlowExportObject, FlowProps, OnBeforeDelete } from './flow';
 import type { ConnectingHandle, ValidConnectionFunc } from './handle';

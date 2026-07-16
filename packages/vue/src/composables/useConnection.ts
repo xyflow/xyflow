@@ -1,24 +1,10 @@
 import type { ComputedRef } from 'vue';
 import type { ConnectionState, Node } from '../types';
-import { pointToRendererPoint } from '@xyflow/system';
+import { initialConnection, pointToRendererPoint } from '@xyflow/system';
 import { computed } from 'vue';
 import { storeToRefs } from './storeToRefs';
 import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
-
-const NO_CONNECTION = Object.freeze({
-  inProgress: false,
-  isValid: null,
-  from: null,
-  fromHandle: null,
-  fromPosition: null,
-  fromNode: null,
-  to: null,
-  toHandle: null,
-  toPosition: null,
-  toNode: null,
-  pointer: null,
-} as const);
 
 /**
  * Returns the current connection when there is an active connection interaction. When idle, every field is
@@ -38,7 +24,7 @@ export function useConnection<NodeType extends Node = Node>(): ComputedRef<Conne
 
     // no connection (or its source node vanished) → the resting state
     if (!fromHandle || !fromNode) {
-      return NO_CONNECTION;
+      return initialConnection;
     }
 
     const toHandle = connectionEndHandle.value;

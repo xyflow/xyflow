@@ -1,10 +1,11 @@
-import type { CoordinateExtent, EdgeBase, InternalNodeBase, NodeBase, NodeDragItem as SystemNodeDragItem } from '@xyflow/system';
+import type { CoordinateExtent, EdgeBase, InternalNodeBase, NodeBase, NodeDragItem } from '@xyflow/system';
 import type { MaybeRefOrGetter, Ref } from 'vue';
-import type { Node, NodeDragEvent, NodeDragItem } from '../types';
+import type { Node, NodeDragEvent } from '../types';
 import { infiniteExtent, isCoordinateExtent, XYDrag } from '@xyflow/system';
 import { shallowRef, toRef, toValue, watch, watchEffect } from 'vue';
-import { useStore, useVueFlow } from '.';
 import { handleNodeClick } from '../utils';
+import { useStore } from './useStore';
+import { useVueFlow } from './useVueFlow';
 
 interface UseDragParams {
   onStart: (event: NodeDragEvent) => void;
@@ -77,10 +78,9 @@ export function useDrag(params: UseDragParams) {
           removeSelectedNodes(args?.nodes);
           removeSelectedEdges(args?.edges);
         },
-        updateNodePositions: (dragItems: Map<string, SystemNodeDragItem | InternalNodeBase>, isDragging?: boolean) => {
+        updateNodePositions: (dragItems: Map<string, NodeDragItem | InternalNodeBase>, isDragging?: boolean) => {
           const items: NodeDragItem[] = [];
-          for (const raw of dragItems.values()) {
-            const item = raw as SystemNodeDragItem;
+          for (const item of dragItems.values()) {
             const node = getInternalNode(item.id);
             const width = item.measured?.width ?? node?.measured.width ?? 0;
             const height = item.measured?.height ?? node?.measured.height ?? 0;
@@ -88,7 +88,9 @@ export function useDrag(params: UseDragParams) {
             items.push({
               id: item.id,
               position: item.position,
-              distance: item.distance ?? { x: 0, y: 0 },
+              // `distance` is a drag-item-only field; XYDrag always passes NodeDragItems, but the store-item
+              // contract widens the value to InternalNodeBase, so narrow instead of assuming.
+              distance: 'distance' in item ? item.distance : { x: 0, y: 0 },
               measured: { width, height },
               internals: { positionAbsolute },
               extent: item.extent,

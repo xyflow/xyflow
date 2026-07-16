@@ -1,4 +1,4 @@
-import type { Handle, InternalNodeBase, NodeBase } from '@xyflow/system';
+import type { InternalNodeBase, NodeBase } from '@xyflow/system';
 import type { HTMLAttributes } from 'vue';
 import type { ClassValue, Styles } from './flow';
 
@@ -11,11 +11,6 @@ import type { ClassValue, Styles } from './flow';
  * d.ts (its `Optional<T, K>` trips vuejs/core#14236); structurally identical to system's.
  */
 export type NodeOrigin = [number, number];
-
-export interface NodeHandleBounds {
-  source: Handle[] | null;
-  target: Handle[] | null;
-}
 
 /**
  * The `Node` type represents everything Vue Flow needs to know about a given node. Whenever you want to
