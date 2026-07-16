@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import type { HandleConnection } from '@xyflow/system';
 import type { HandleProps } from '../../types';
-import { areConnectionMapsEqual, ConnectionMode, getDimensions, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
-import { computed, getCurrentInstance, onMounted, shallowRef, toRef, watch } from 'vue';
-import { useHandle, useNode, useStore, useVueFlow } from '../../composables';
+import { areConnectionMapsEqual, ConnectionMode, getConnectedEdges, getDimensions, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
+import { computed, getCurrentInstance, inject, onMounted, shallowRef, toRef, watch } from 'vue';
+import { useHandle, useInternalNode, useStore, useVueFlow } from '../../composables';
+import { useNodeId } from '../../composables/useNodeId';
+import { NodeRef } from '../../context';
 import { isDef } from '../../utils';
 
 const {
@@ -30,7 +32,10 @@ const { id: flowId } = useVueFlow();
 
 const store = useStore();
 
-const { id: nodeId, node: nodeRef, nodeEl, connectedEdges } = useNode();
+const nodeId = useNodeId() ?? '';
+const nodeEl = inject(NodeRef, shallowRef(null));
+const internalNode = useInternalNode();
+const connectedEdges = computed(() => (internalNode.value ? getConnectedEdges([internalNode.value], store.edges) : []));
 
 const instance = getCurrentInstance();
 let prevConnections: Map<string, HandleConnection> | null = null;
@@ -72,7 +77,7 @@ const isHandleConnectable = computed(() => {
   }
 
   if (typeof isConnectable === 'function') {
-    return nodeRef.value ? isConnectable(nodeRef.value, connectedEdges.value) : false;
+    return internalNode.value ? isConnectable(internalNode.value, connectedEdges.value) : false;
   }
 
   return isDef(isConnectable) ? isConnectable : store.nodesConnectable;
@@ -149,7 +154,7 @@ watch(
 // todo: remove this and have users handle it via `updateNodeInternals`
 // set up handle bounds if missing and the node is already initialized (handle added after the node mounted)
 onMounted(() => {
-  const node = nodeRef.value;
+  const node = internalNode.value;
 
   // if the node isn't initialized yet, bounds get set up later by `updateNodeDimensions`
   if (!node || !nodeHasDimensions(node)) {
