@@ -1,5 +1,5 @@
-import type { HandleElement } from '../../types';
-import { ConnectionLineType, ConnectionMode, getBezierPath, getHandlePosition, getMarkerId, getSmoothStepPath, oppositePosition, Position } from '@xyflow/system';
+import type { Handle } from '@xyflow/system';
+import { ConnectionLineType, ConnectionMode, getBezierPath, getHandlePosition, getMarkerId, getSmoothStepPath, oppositePosition, pointToRendererPoint, Position } from '@xyflow/system';
 import { computed, defineComponent, h, inject } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
 import { Slots } from '../../context';
@@ -28,12 +28,9 @@ const ConnectionLine = defineComponent({
 
     // `connectionPosition` holds the raw pointer (screen space); convert to flow space for the line + the
     // custom connection-line component. The line END snaps to the hovered handle (below) when there is one.
-    const pointer = computed(() => {
-      return {
-        x: (connectionPosition.value.x - viewport.value.x) / viewport.value.zoom,
-        y: (connectionPosition.value.y - viewport.value.y) / viewport.value.zoom,
-      };
-    });
+    const pointer = computed(() =>
+      pointToRendererPoint(connectionPosition.value, [viewport.value.x, viewport.value.y, viewport.value.zoom]),
+    );
 
     const markerStart = computed(() =>
       connectionLineOptions.value.markerStart ? `url(#${getMarkerId(connectionLineOptions.value.markerStart, id)})` : '',
@@ -64,7 +61,7 @@ const ConnectionLine = defineComponent({
       const fromPosition = fromHandle?.position ?? Position.Top;
       const { x: fromX, y: fromY } = getHandlePosition(fromNode.value, fromHandle, fromPosition, true);
 
-      let toHandle: HandleElement | null = null;
+      let toHandle: Handle | null = null;
       if (toNode.value) {
         // if connection mode is strict, we only look for handles of the opposite type
         if (connectionMode.value === ConnectionMode.Strict) {

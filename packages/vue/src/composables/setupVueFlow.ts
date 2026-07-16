@@ -30,5 +30,5 @@ import { useCreateVueFlow } from './useCreateVueFlow';
 export function setupVueFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   options?: FlowOptions<NodeType, EdgeType>,
 ): VueFlowInstance<NodeType, EdgeType> {
-  return useCreateVueFlow<NodeType, EdgeType>(options).instance as unknown as VueFlowInstance<NodeType, EdgeType>;
+  return useCreateVueFlow<NodeType, EdgeType>(options).instance;
 }

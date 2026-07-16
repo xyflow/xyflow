@@ -1,40 +1,15 @@
 import type {
+  EdgeAddChange,
   EdgeRemoveChange,
   EdgeSelectionChange,
+  NodeAddChange,
   NodeDimensionChange,
   NodePositionChange,
   NodeRemoveChange,
   NodeSelectionChange,
-  XYPosition,
 } from '@xyflow/system';
 import type { Edge } from './edge';
-import type { Node, NodeOrigin } from './node';
-
-/**
- * Drag-item shape used by the drag pipeline.
- */
-export interface NodeDragItem {
-  id: string;
-  /** relative node position (to parent) */
-  position: XYPosition;
-  /** distance from the mouse cursor to the node when start dragging */
-  distance: XYPosition;
-
-  measured: { width: number; height: number };
-  internals: { positionAbsolute: XYPosition };
-
-  extent?: Node['extent'];
-  expandParent?: boolean;
-  dragging?: boolean;
-  origin?: NodeOrigin;
-  parentId?: string;
-}
-
-export interface NodeAddChange<NodeType extends Node = Node> {
-  item: NodeType;
-  type: 'add';
-  index?: number;
-}
+import type { Node } from './node';
 
 /**
  * The `nodes-change` event passes an array of `NodeChange` objects that you should use to update your
@@ -47,12 +22,6 @@ export type NodeChange<NodeType extends Node = Node>
     | NodeSelectionChange
     | NodeRemoveChange
     | NodeAddChange<NodeType>;
-
-export interface EdgeAddChange<EdgeType extends Edge = Edge> {
-  item: EdgeType;
-  type: 'add';
-  index?: number;
-}
 
 /**
  * The `edges-change` event passes an array of `EdgeChange` objects that you should use to update your

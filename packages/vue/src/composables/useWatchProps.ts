@@ -104,7 +104,7 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
         watch(
           () => props.maxZoom,
           (maxZoom) => {
-            if (maxZoom && isDef(maxZoom)) {
+            if (maxZoom) {
               instance.setMaxZoom(maxZoom);
             }
           },
@@ -120,7 +120,7 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
         watch(
           () => props.minZoom,
           (minZoom) => {
-            if (minZoom && isDef(minZoom)) {
+            if (minZoom) {
               instance.setMinZoom(minZoom);
             }
           },
@@ -134,7 +134,7 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
         watch(
           () => props.translateExtent,
           (translateExtent) => {
-            if (translateExtent && isDef(translateExtent)) {
+            if (translateExtent) {
               instance.setTranslateExtent(translateExtent);
             }
           },
@@ -150,7 +150,7 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
         watch(
           () => props.nodeExtent,
           (nodeExtent) => {
-            if (nodeExtent && isDef(nodeExtent)) {
+            if (nodeExtent) {
               instance.setNodeExtent(nodeExtent);
             }
           },

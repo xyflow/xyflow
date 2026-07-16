@@ -1,20 +1,8 @@
-import type { Connection, ConnectionMode, Dimensions, HandleType, Position, XYPosition } from '@xyflow/system';
+import type { Connection, Handle, HandleType, Position } from '@xyflow/system';
 import type { Edge } from './edge';
 import type { InternalNode, Node } from './node';
 
-export interface HandleElement extends XYPosition, Dimensions {
-  id?: string | null;
-  position: Position;
-  type: HandleType;
-  nodeId: string;
-}
-
-export interface ConnectingHandle extends XYPosition {
-  nodeId: string;
-  type: HandleType;
-  id?: string | null;
-  position: Position;
-}
+export type ConnectingHandle = Omit<Handle, 'width' | 'height'>;
 
 /** A valid connection function can determine if an attempted connection is valid or not, i.e. abort creating a new edge */
 export type ValidConnectionFunc = (
@@ -68,29 +56,10 @@ export interface HandleProps {
    * Dictates whether a connection can start from this handle.
    * @default true
    */
-  connectableStart?: boolean;
+  isConnectableStart?: boolean;
   /**
    * Dictates whether a connection can end on this handle.
    * @default true
    */
-  connectableEnd?: boolean;
-}
-
-export interface IsValidParams {
-  handle: ConnectingHandle | null;
-  connectionMode: ConnectionMode;
-  fromNodeId: string;
-  fromHandleId: string | null;
-  fromType: HandleType;
-  isValidConnection?: ValidConnectionFunc;
-  doc: Document | ShadowRoot;
-  lib: string;
-  flowId: string | null;
-}
-
-export interface Result {
-  handleDomNode: Element | null;
-  isValid: boolean;
-  connection: Connection | null;
-  toHandle: ConnectingHandle | null;
+  isConnectableEnd?: boolean;
 }

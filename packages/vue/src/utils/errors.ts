@@ -16,11 +16,12 @@ export enum ErrorCode {
   EDGE_DUPLICATE_ID = 'EDGE_DUPLICATE_ID',
 
   USE_VUE_FLOW_OUTSIDE_PROVIDER = 'USE_VUE_FLOW_OUTSIDE_PROVIDER',
+  NODE_CONNECTIONS_MISSING_ID = 'NODE_CONNECTIONS_MISSING_ID',
 }
 
 const messages = {
   [ErrorCode.MISSING_STYLES]: () =>
-    `It seems that you haven't loaded the necessary styles. Please import '@vue-flow/core/dist/style.css' to ensure that the graph is rendered correctly`,
+    `It seems that you haven't loaded the necessary styles. Please import '@xyflow/vue/style.css' to ensure that the graph is rendered correctly`,
   [ErrorCode.MISSING_VIEWPORT_DIMENSIONS]: () => 'The Vue Flow parent container needs a width and a height to render the graph',
   [ErrorCode.NODE_INVALID]: (id?: string) => `Node is invalid\nNode id: ${id}`,
   [ErrorCode.NODE_NOT_FOUND]: (id: string | null) => `Node not found\nNode id: ${id}`,
@@ -41,6 +42,8 @@ const messages = {
   [ErrorCode.EDGE_NOT_FOUND]: (id: string) => `Edge not found\nEdge id: ${id}`,
   [ErrorCode.USE_VUE_FLOW_OUTSIDE_PROVIDER]: () =>
     `useVueFlow() was called without a <VueFlow> or <VueFlowProvider> ancestor (or outside a component setup). Render one of them above the call, or wrap your components in <VueFlowProvider> to share a store.`,
+  [ErrorCode.NODE_CONNECTIONS_MISSING_ID]: () =>
+    `useNodeConnections: No node ID found. Call useNodeConnections inside a custom Node or provide a node ID.`,
 } as const;
 
 type ErrorArgs<T extends ErrorCode> = (typeof messages)[T] extends (...args: any[]) => string

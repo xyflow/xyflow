@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { ControlLinePosition, ControlPosition, NodeResizerEmits, NodeResizerProps } from './types';
+import type { NodeResizerEmits, NodeResizerProps } from './types';
+import { XY_RESIZER_HANDLE_POSITIONS, XY_RESIZER_LINE_POSITIONS } from '@xyflow/system';
 import ResizeControl from './ResizeControl.vue';
 import { ResizeControlVariant } from './types';
 
@@ -9,10 +10,6 @@ withDefaults(defineProps<NodeResizerProps>(), {
 });
 
 const emits = defineEmits<NodeResizerEmits>();
-
-const handleControls: ControlPosition[] = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
-
-const lineControls: ControlLinePosition[] = ['top', 'right', 'bottom', 'left'];
 </script>
 
 <script lang="ts">
@@ -26,7 +23,7 @@ export default {
 <template>
   <template v-if="isVisible">
     <ResizeControl
-      v-for="c of lineControls"
+      v-for="c of XY_RESIZER_LINE_POSITIONS"
       :key="c"
       :class="lineClassName"
       :style="lineStyle"
@@ -47,7 +44,7 @@ export default {
     />
 
     <ResizeControl
-      v-for="c of handleControls"
+      v-for="c of XY_RESIZER_HANDLE_POSITIONS"
       :key="c"
       :class="handleClassName"
       :style="handleStyle"

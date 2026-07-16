@@ -15,17 +15,12 @@ interface EdgeData<EdgeType extends Edge = Edge> {
  *
  * @public
  * @param edgeId - The id (or ids) of the edge to get the data from
- * @param guard - Optional guard function to narrow down the edge type
  * @returns An object (or array of objects) with `id`, `type`, `data` representing each edge
  */
 export function useEdgesData<EdgeType extends Edge = Edge>(
   edgeId: MaybeRefOrGetter<string>,
 ): ComputedRef<EdgeData<EdgeType> | null>;
 export function useEdgesData<EdgeType extends Edge = Edge>(edgeIds: MaybeRefOrGetter<string[]>): ComputedRef<EdgeData<EdgeType>[]>;
-export function useEdgesData<EdgeType extends Edge = Edge>(
-  edgeIds: MaybeRefOrGetter<string[]>,
-  guard: (node: Edge) => node is EdgeType,
-): ComputedRef<EdgeData<EdgeType>[]>;
 export function useEdgesData(_edgeIds: any): any {
   const { getEdge } = useVueFlow();
 

@@ -3,6 +3,11 @@
  * @module vue-flow
  */
 
+// `Handle` names both the component (exported below) and the system type for a handle's measured bounds.
+// Re-exporting the type through an alias declaration (not a re-export specifier) lets them share the name
+// without a duplicate-identifier error.
+import type { Handle as HandleBounds } from '@xyflow/system';
+
 export * from './components/Background';
 
 export * from './components/Controls';
@@ -21,6 +26,7 @@ export { default as StraightEdge } from './components/Edges/StraightEdge';
 export * from './components/EdgeToolbar';
 
 export { default as Handle } from './components/Handle/Handle.vue';
+export type Handle = HandleBounds;
 export * from './components/MiniMap';
 export * from './components/NodeResizer';
 export * from './components/NodeToolbar';
@@ -90,12 +96,19 @@ export {
 export {
   type Align,
   type AriaLabelConfig,
+  type BezierPathOptions,
   type ColorMode,
   type Connection,
   ConnectionLineType,
+  type ConnectionLookup,
   ConnectionMode,
   type CoordinateExtent,
   type Dimensions,
+  type EdgeAddChange,
+  type EdgeLookup,
+  type EdgeMarker,
+  type EdgeMarkerType,
+  type EdgePosition,
   type EdgeRemoveChange,
   type EdgeSelectionChange,
   type FinalConnectionState,
@@ -103,18 +116,25 @@ export {
   type GetViewport,
   type HandleConnection,
   type HandleType,
+  type MarkerProps,
+  MarkerType,
+  type NoConnection,
+  type NodeAddChange,
   type NodeConnection,
   type NodeDimensionChange,
+  type NodeDragItem,
+  type NodeHandleBounds,
+  type NodeLookup,
   type NodePositionChange,
   type NodeRemoveChange,
   type NodeSelectionChange,
+  type OnConnectStartParams,
   type Padding,
   type PaddingUnit,
   type PaddingWithUnit,
   type PanelPosition,
   PanOnScrollMode,
   Position,
-  type Project,
   type ProOptions,
   type Rect,
   // value export (it's a runtime enum) — keeps `ResizeControlVariant.Line/.Handle` usable as a value, not
@@ -125,7 +145,9 @@ export {
   type SetCenter,
   type SetCenterOptions,
   type SetViewport,
+  type SmoothStepPathOptions,
   type SnapGrid,
+  type UpdateNodeInternals,
   type Viewport,
   type ViewportHelperFunctionOptions,
   type XYPosition,

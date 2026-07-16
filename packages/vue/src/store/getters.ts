@@ -1,11 +1,12 @@
-import type { ComputedGetters, Edge, Node, NodeLookup, State } from '../types';
+import type { NodeLookup } from '@xyflow/system';
+import type { ComputedGetters, Edge, InternalNode, Node, State } from '../types';
 import { getNodesInside, isEdgeVisible } from '@xyflow/system';
 import { computed } from 'vue';
 import { defaultEdgeTypes, defaultNodeTypes } from '../utils/defaultNodesEdges';
 
 export function useGetters<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   state: State<NodeType, EdgeType>,
-  nodeLookup: NodeLookup<NodeType>,
+  nodeLookup: NodeLookup<InternalNode<NodeType>>,
 ): ComputedGetters<NodeType, EdgeType> {
   const getEdgeTypes: ComputedGetters<NodeType, EdgeType>['getEdgeTypes'] = computed(() => {
     const edgeTypes: Record<string, any> = {

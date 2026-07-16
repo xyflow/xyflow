@@ -6,6 +6,8 @@ import type {
   ConnectionMode,
   CoordinateExtent,
   FitViewOptionsBase,
+  OnBeforeDeleteBase,
+  OnConnectStartParams,
   PanelPosition,
   PanOnScrollMode,
   ProOptions,
@@ -18,7 +20,7 @@ import type { CSSProperties } from 'vue';
 import type { VueFlowError } from '../utils';
 import type { EdgeChange, NodeChange } from './changes';
 import type { EdgeTypesObject, NodeTypesObject } from './components';
-import type { ConnectionLineOptions, ConnectionLineProps, Connector, OnConnectStartParams } from './connection';
+import type { ConnectionLineOptions, ConnectionLineProps, Connector } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeProps, EdgeReconnectable } from './edge';
 import type { ValidConnectionFunc } from './handle';
 import type {
@@ -40,10 +42,7 @@ import type { VueFlowInstance } from './store';
  * about to be removed (the targeted nodes/edges plus connected edges and child nodes). Return `false` to
  * cancel, `true` to delete that set, or `{ nodes, edges }` to delete only a subset.
  */
-export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (params: {
-  nodes: NodeType[];
-  edges: EdgeType[];
-}) => Promise<boolean | { nodes: NodeType[]; edges: EdgeType[] }>;
+export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = OnBeforeDeleteBase<NodeType, EdgeType>;
 
 /**
  * Called after nodes and/or edges have been removed (via the delete key or `deleteElements`), with the

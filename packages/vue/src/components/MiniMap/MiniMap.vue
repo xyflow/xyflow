@@ -2,7 +2,7 @@
 import type { XYMinimapInstance } from '@xyflow/system';
 import type { InternalNode } from '../../types';
 import type { MiniMapEmits, MiniMapNodeFunc, MiniMapProps, MiniMapSlots, ShapeRendering } from './types';
-import { getBoundsOfRects, getConnectedEdges, getNodeDimensions, getNodesBounds, XYMinimap } from '@xyflow/system';
+import { getBoundsOfRects, getConnectedEdges, getNodeDimensions, getNodesBounds, isNumeric, XYMinimap } from '@xyflow/system';
 import { computed, onMounted, onUnmounted, provide, shallowRef, toRef, useAttrs, watch } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
 import Panel from '../Panel/Panel.vue';
@@ -109,7 +109,7 @@ const viewBox = computed(() => {
 });
 
 const d = computed(() => {
-  if (!viewBox.value.x || !viewBox.value.y) {
+  if (!isNumeric(viewBox.value.x) || !isNumeric(viewBox.value.y)) {
     return '';
   }
 

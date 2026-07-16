@@ -9,8 +9,8 @@ import { isDef } from '../../utils';
 const {
   position = Position.Top,
   isConnectable = undefined,
-  connectableStart = true,
-  connectableEnd = true,
+  isConnectableStart = true,
+  isConnectableEnd = true,
   id: handleId = null,
   ...props
 } = defineProps<HandleProps>();
@@ -36,13 +36,6 @@ const instance = getCurrentInstance();
 let prevConnections: Map<string, HandleConnection> | null = null;
 
 const handle = shallowRef<HTMLDivElement>();
-
-const handleDataIds = computed<Record<string, string | null>>(() => ({
-  'data-id': `${flowId}-${nodeId}-${handleId}-${type.value}`,
-  'data-handleid': handleId,
-  'data-nodeid': nodeId,
-  'data-handlepos': position,
-}));
 
 const { handlePointerDown, handleClick } = useHandle({
   nodeId,
@@ -102,15 +95,15 @@ const connectionClasses = computed<Record<string, boolean>>((prev) => {
     connectable: isHandleConnectable.value,
     connecting:
       clickFromHandle?.nodeId === nodeId && clickFromHandle?.id === handleId && clickFromHandle?.type === handleType,
-    connectablestart: connectableStart,
-    connectableend: connectableEnd,
+    connectablestart: isConnectableStart,
+    connectableend: isConnectableEnd,
     connectingfrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === handleType,
     connectingto,
     valid: connectingto && store.connectionStatus === 'valid',
     connectionindicator:
       isHandleConnectable.value
       && (!connectionInProcess || isPossibleEndHandle)
-      && ((connectionInProcess || clickConnectionInProcess) ? connectableEnd : connectableStart),
+      && ((connectionInProcess || clickConnectionInProcess) ? isConnectableEnd : isConnectableStart),
   };
 
   // reuse the previous object when nothing changed so the class binding doesn't re-render (Vue gates on ref identity)
@@ -202,13 +195,13 @@ onMounted(() => {
 function onPointerDown(event: MouseEvent | TouchEvent) {
   const isMouseTriggered = isMouseEvent(event);
 
-  if (isHandleConnectable.value && connectableStart && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
+  if (isHandleConnectable.value && isConnectableStart && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
     handlePointerDown(event);
   }
 }
 
 function onClick(event: MouseEvent) {
-  if (!nodeId || (!store.connectionClickStartHandle && !connectableStart)) {
+  if (!nodeId || (!store.connectionClickStartHandle && !isConnectableStart)) {
     return;
   }
 
@@ -235,7 +228,10 @@ export default {
 <template>
   <div
     ref="handle"
-    v-bind="handleDataIds"
+    :data-id="`${flowId}-${nodeId}-${handleId}-${type}`"
+    :data-handleid="handleId"
+    :data-nodeid="nodeId"
+    :data-handlepos="position"
     :aria-label="store.ariaLabelConfig['handle.ariaLabel']"
     class="vue-flow__handle"
     :class="[

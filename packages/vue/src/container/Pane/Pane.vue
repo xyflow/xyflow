@@ -80,13 +80,13 @@ onUnmounted(() => {
   cleanupAutoPan();
 });
 
-function wrapHandler(handler: Function, containerRef: HTMLDivElement | null) {
-  return (event: MouseEvent) => {
+function wrapHandler<E extends Event>(handler: (event: E) => void, containerRef: HTMLDivElement | null) {
+  return (event: E) => {
     if (event.target !== containerRef) {
       return;
     }
 
-    handler?.(event);
+    handler(event);
   };
 }
 
@@ -316,7 +316,7 @@ export default {
     @contextmenu="wrapHandler(onContextMenu, container)($event)"
     @wheel.passive="wrapHandler(onWheel, container)($event)"
     @pointerenter="(event) => (hasActiveSelection ? undefined : emits.paneMouseEnter(event))"
-    @pointerdown="(event) => (hasActiveSelection ? onPointerDown(event) : emits.paneMouseMove(event))"
+    @pointerdown="(event) => (hasActiveSelection ? onPointerDown(event) : undefined)"
     @pointermove="(event) => (hasActiveSelection ? onPointerMove(event) : emits.paneMouseMove(event))"
     @pointerup="(event) => (hasActiveSelection ? onPointerUp(event) : undefined)"
     @pointercancel="(event) => (hasActiveSelection ? onPointerCancel(event) : undefined)"

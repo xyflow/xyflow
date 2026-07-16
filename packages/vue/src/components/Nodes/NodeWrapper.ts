@@ -1,5 +1,5 @@
 import type { BuiltInNode, MouseTouchEvent, NodeComponent } from '../../types';
-import { getNodesInside, nodeHasDimensions } from '@xyflow/system';
+import { getNodeDimensions, getNodesInside, isInputDOMNode, nodeHasDimensions } from '@xyflow/system';
 import {
   computed,
   defineComponent,
@@ -15,7 +15,6 @@ import {
   watch,
 } from 'vue';
 import {
-  isInputDOMNode,
   useDrag,
   useStore,
   useUpdateNodePositions,
@@ -180,8 +179,7 @@ const NodeWrapper = defineComponent({
     const zIndex = toRef(() => Number(internalNode.value?.zIndex ?? getStyle.value.zIndex ?? 0));
 
     onUpdateNodeInternals((updateIds) => {
-      // when no ids are passed, update all nodes
-      if (updateIds.includes(props.id) || !updateIds.length) {
+      if (updateIds.includes(props.id)) {
         updateInternals();
       }
     });
@@ -267,13 +265,12 @@ const NodeWrapper = defineComponent({
             isConnectable: isConnectable.value,
             positionAbsoluteX: node.internals.positionAbsolute.x,
             positionAbsoluteY: node.internals.positionAbsolute.y,
-            width: node.measured.width,
-            height: node.measured.height,
+            ...getNodeDimensions(node),
             parentId: node.parentId,
             zIndex: node.internals.z ?? zIndex.value,
-            selectable: node.selectable ?? true,
+            selectable: isSelectable.value,
             deletable: node.deletable ?? true,
-            draggable: node.draggable ?? true,
+            draggable: isDraggable.value,
             targetPosition: node.targetPosition,
             sourcePosition: node.sourcePosition,
             dragHandle: node.dragHandle,
