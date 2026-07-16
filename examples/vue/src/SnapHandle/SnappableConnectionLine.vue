@@ -1,23 +1,23 @@
 <script lang="ts" setup>
-import type { ConnectingHandle, ConnectionLineProps, Handle, InternalNode } from '@xyflow/vue';
+import type { ConnectionLineProps, Handle, InternalNode } from '@xyflow/vue';
 import { getBezierPath, Position, storeToRefs, useStore, useVueFlow } from '@xyflow/vue';
 
 interface ClosestElements {
   node: InternalNode | null;
   handle: Handle | null;
-  startHandle: ConnectingHandle | null;
+  startHandle: Handle | null;
 }
 
 const props = defineProps<ConnectionLineProps>();
 
 const { getNodes, getInternalNode, onConnectEnd, addEdges } = useVueFlow();
 
-const { connectionStartHandle } = storeToRefs(useStore());
+const { connection } = storeToRefs(useStore());
 
 const closest = reactive<ClosestElements>({
   node: null,
   handle: null,
-  startHandle: connectionStartHandle.value,
+  startHandle: connection.value.fromHandle,
 });
 
 const canSnap = ref(false);
@@ -33,7 +33,7 @@ const SNAP_DISTANCE = 50;
 watch([() => props.toY, () => props.toX], (_, __, onCleanup) => {
   const closestNode = getNodes.value.reduce(
     (res, n) => {
-      if (n.id !== connectionStartHandle.value?.nodeId) {
+      if (n.id !== connection.value.fromHandle?.nodeId) {
         const internalNode = getInternalNode(n.id);
 
         if (!internalNode) {
@@ -64,7 +64,7 @@ watch([() => props.toY, () => props.toX], (_, __, onCleanup) => {
 
   canSnap.value = closestNode.distance < SNAP_DISTANCE;
 
-  const type = connectionStartHandle.value!.type === 'source' ? 'target' : 'source';
+  const type = connection.value.fromHandle!.type === 'source' ? 'target' : 'source';
 
   const closestHandle = closestNode.node.internals.handleBounds?.[type]?.reduce((prev, curr) => {
     const prevDistance = Math.sqrt((prev.x - props.toX) ** 2 + (prev.y - props.toY) ** 2);
@@ -92,7 +92,7 @@ watch([() => props.toY, () => props.toX], (_, __, onCleanup) => {
 const path = computed(() => getBezierPath({
   sourceX: props.fromX,
   sourceY: props.fromY,
-  sourcePosition: connectionStartHandle.value?.position ?? Position.Bottom,
+  sourcePosition: connection.value.fromHandle?.position ?? Position.Bottom,
   targetX: canSnap.value && closest.handle ? closest.handle.x : props.toX,
   targetY: canSnap.value && closest.handle ? closest.handle.y : props.toY,
   targetPosition: closest.handle?.position ?? Position.Top,

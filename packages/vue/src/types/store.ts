@@ -4,6 +4,7 @@ import type {
   Connection,
   ConnectionLookup,
   ConnectionMode,
+  ConnectionState,
   CoordinateExtent,
   Dimensions,
   EdgeLookup,
@@ -27,7 +28,7 @@ import type { ComputedRef } from 'vue';
 import type { ViewportHelper } from '../composables';
 import type { EdgeChange, NodeChange } from './changes';
 import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
-import type { ConnectionLineOptions, ConnectionStatus } from './connection';
+import type { ConnectionLineOptions } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
 import type { FlowExportObject, FlowProps, OnBeforeDelete } from './flow';
 import type { ConnectingHandle, ValidConnectionFunc } from './handle';
@@ -97,14 +98,12 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
 
   connectionMode: ConnectionMode;
   connectionLineOptions: ConnectionLineOptions;
-  connectionStartHandle: ConnectingHandle | null;
-  connectionEndHandle: ConnectingHandle | null;
+  /** the ongoing drag-connection as a single {@link ConnectionState} (`inProgress: false` when idle) */
+  connection: ConnectionState<InternalNode<NodeType>>;
+  /** the handle a click-to-connect interaction started from (separate from the drag `connection`) */
   connectionClickStartHandle: ConnectingHandle | null;
-  /** the raw pointer position during a connection drag (screen coords); the snapped end is `connectionEndHandle` */
-  connectionPosition: XYPosition;
   connectionRadius: number;
   connectionDragThreshold: number;
-  connectionStatus: ConnectionStatus | null;
   isValidConnection: ValidConnectionFunc | null;
   onBeforeDelete: OnBeforeDelete<NodeType, EdgeType> | null;
 
@@ -335,12 +334,10 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   toObject: () => FlowExportObject;
   /** force update node internal data, if handle bounds are incorrect, you might want to use this */
   updateNodeInternals: UpdateNodeInternals;
-  /** start a connection */
-  startConnection: (startHandle: ConnectingHandle, position?: XYPosition, isClick?: boolean) => void;
-  /** update connection position */
-  updateConnection: (position: XYPosition, result?: ConnectingHandle | null, status?: ConnectionStatus | null) => void;
-  /** end (or cancel) a connection */
-  endConnection: (event?: MouseEvent | TouchEvent, isClick?: boolean) => void;
+  /** store the current drag-connection state (fed by the handle interaction) */
+  updateConnection: (connection: ConnectionState<InternalNode<NodeType>>) => void;
+  /** reset the drag-connection to its idle state */
+  cancelConnection: () => void;
 
   /** internal position updater, you probably don't want to use this */
   updateNodePositions: UpdateNodePosition;
