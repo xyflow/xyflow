@@ -26,15 +26,8 @@ const edges = shallowRef<Edge[]>([]);
 
 <template>
   <VueFlow v-model:nodes="nodes" v-model:edges="edges" auto-connect fit-view>
-    <template #connection-line="{ fromX, fromY, toX, toY, fromPosition, toPosition }">
-      <ConnectionLine
-        :source-x="fromX"
-        :source-y="fromY"
-        :target-x="toX"
-        :target-y="toY"
-        :source-position="fromPosition"
-        :target-position="toPosition"
-      />
+    <template #connection-line="props">
+      <ConnectionLine v-bind="props" />
     </template>
   </VueFlow>
 </template>
