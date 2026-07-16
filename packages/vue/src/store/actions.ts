@@ -118,7 +118,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
    * `InternalNode`s by reference) and store the user nodes as `state.nodes`. Callers must pass NEW objects
    * for changed nodes — mutating in place keeps the reference, so adoption reuses the stale `InternalNode`.
    */
-  function commitNodes(nodes: NodeType[]) {
+  function commitNodes(nodes: NodeType[], checkEquality = true) {
     const {
       nodes: adopted,
       hasSelectedNodes,
@@ -127,6 +127,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       nodeExtent: state.nodeExtent,
       elevateNodesOnSelect: state.elevateNodesOnSelect,
       zIndexMode: state.zIndexMode,
+      checkEquality,
     });
 
     state.nodes = adopted;
@@ -429,8 +430,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     state.translateExtent = translateExtent;
   };
 
-  // nodeExtent is a derived-recompute field: any write (props, setState, direct) re-clamps node positions.
-  watch(() => state.nodeExtent, () => recomputeAbsolutePositions(true), { flush: 'sync' });
+  // nodeExtent is a derived field: any write (props, setState, direct) re-adopts the nodes so positions
+  // re-clamp to the new extent AND the view reflows. `checkEquality: false` forces new refs.
+  watch(() => state.nodeExtent, () => commitNodes(state.nodes, false), { flush: 'sync' });
 
   const setNodeExtent: Actions<NodeType>['setNodeExtent'] = (nodeExtent) => {
     state.nodeExtent = nodeExtent; // watch above recomputes absolute positions

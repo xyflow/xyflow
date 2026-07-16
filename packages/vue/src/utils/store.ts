@@ -101,6 +101,7 @@ export interface CreateInternalNodesOptions {
   nodeExtent?: CoordinateExtent;
   elevateNodesOnSelect?: boolean;
   zIndexMode?: ZIndexMode;
+  checkEquality?: boolean;
 }
 
 /**
@@ -158,7 +159,7 @@ export function adoptNodes<NodeType extends Node = Node>(
     });
   }
 
-  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: true });
+  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: options?.checkEquality ?? true });
 
   for (const node of validNodes) {
     if (node.parentId && !nodeLookup.has(node.parentId)) {
