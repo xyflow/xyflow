@@ -107,5 +107,6 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     disableKeyboardA11y: false,
     ariaLabelConfig: defaultAriaLabelConfig,
     ariaLiveMessage: '',
+    debug: false,
   };
 }

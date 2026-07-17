@@ -7,6 +7,7 @@ import Attribution from '../../components/Attribution/Attribution.vue';
 import { storeToRefs } from '../../composables/storeToRefs';
 import { useControlledBindingWarning } from '../../composables/useControlledBindingWarning';
 import { useCreateVueFlow } from '../../composables/useCreateVueFlow';
+import { useDebug } from '../../composables/useDebug';
 import { useOnInitHandler } from '../../composables/useOnInitHandler';
 import { useSelectionChange } from '../../composables/useSelectionChange';
 import { useStylesLoadedWarning } from '../../composables/useStylesLoadedWarning';
@@ -106,6 +107,7 @@ useHooks(emit, state.hooks);
 useOnInitHandler(instance);
 useSelectionChange(instance);
 useViewportSync(modelViewport, state);
+useDebug(state);
 
 const stateRefs = storeToRefs(state);
 

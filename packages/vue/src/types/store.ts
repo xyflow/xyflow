@@ -168,6 +168,9 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   ariaLabelConfig: AriaLabelConfig;
 
   ariaLiveMessage: string;
+
+  /** when `true`, log events to the console as they fire (see the `debug` prop) */
+  debug: boolean;
 }
 
 export type SetNodes<NodeType extends Node = Node> = (nodes: NodeType[] | ((nodes: NodeType[]) => NodeType[])) => void;
