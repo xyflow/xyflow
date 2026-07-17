@@ -446,6 +446,12 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
   /** customize the aria labels / a11y descriptions (node/edge descriptions, the aria-live move message, and the Controls/MiniMap/Handle labels); merged over the defaults */
   ariaLabelConfig?: Partial<AriaLabelConfig>;
   /**
+   * When `true`, Vue Flow logs its events to the console as they fire (high-frequency ones like move/drag
+   * are skipped) — handy for debugging which events run.
+   * @default false
+   */
+  debug?: boolean;
+  /**
    * When `true`, focus between edges can be cycled with the `Tab` key and selected with the `Enter`
    * key. This option can be overridden by individual edges by setting their `focusable` prop.
    * @default true

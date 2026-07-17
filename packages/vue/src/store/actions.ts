@@ -46,6 +46,7 @@ import {
   reconnectEdgeAction,
   validateEdges,
 } from '../utils';
+import { useState } from './state';
 
 export function useActions<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   state: State<NodeType, EdgeType>,
