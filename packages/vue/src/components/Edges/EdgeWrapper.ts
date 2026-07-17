@@ -1,6 +1,6 @@
 import type { Connection, FinalConnectionState, HandleType } from '@xyflow/system';
 import type { Component } from 'vue';
-import type { Edge, InternalNode, MouseTouchEvent } from '../../types';
+import type { Edge, EdgeProps, InternalNode, MouseTouchEvent } from '../../types';
 import { ConnectionMode, getHandlePosition, getMarkerId, Position } from '@xyflow/system';
 import { computed, defineComponent, getCurrentInstance, h, inject, provide, shallowRef, toRef } from 'vue';
 import { useHandle, useStore, useVueFlow } from '../../composables';
@@ -35,9 +35,9 @@ const EdgeWrapper = defineComponent({
 
     const storedEdge = computed(() => getEdge(props.id) as Edge);
 
-    const edge = computed<Edge>(() => {
+    const edge = computed(() => {
       const defaults = store.defaultEdgeOptions;
-      return defaults ? ({ ...(defaults as Edge), ...storedEdge.value } as Edge) : storedEdge.value;
+      return defaults ? ({ ...defaults, ...storedEdge.value }) : storedEdge.value;
     });
 
     const zIndex = computed(() => getEdgeZIndex(edge.value, getInternalNode, store.elevateEdgesOnSelect, store.zIndexMode));
@@ -147,6 +147,37 @@ const EdgeWrapper = defineComponent({
       const { x: sourceX, y: sourceY } = getHandlePosition(sourceNode, sourceHandle, sourcePosition);
       const { x: targetX, y: targetY } = getHandlePosition(targetNode, targetHandle, targetPosition);
 
+      const edgeComponentProps = {
+        id: props.id,
+        source: edge.value.source,
+        target: edge.value.target,
+        type: edge.value.type,
+        reconnectable: isReconnectable.value,
+        selectable: isSelectable.value,
+        deletable: edge.value.deletable,
+        selected: edge.value.selected,
+        animated: edge.value.animated,
+        label: edge.value.label,
+        labelStyle: edge.value.labelStyle,
+        labelShowBg: edge.value.labelShowBg,
+        labelBgStyle: edge.value.labelBgStyle,
+        labelBgPadding: edge.value.labelBgPadding,
+        labelBgBorderRadius: edge.value.labelBgBorderRadius,
+        data: edge.value.data,
+        style: edgeStyle.value,
+        markerStart: edge.value.markerStart ? `url('#${getMarkerId(edge.value.markerStart, vueFlowId)}')` : undefined,
+        markerEnd: edge.value.markerEnd ? `url('#${getMarkerId(edge.value.markerEnd, vueFlowId)}')` : undefined,
+        sourcePosition,
+        targetPosition,
+        sourceX,
+        sourceY,
+        targetX,
+        targetY,
+        sourceHandleId: edge.value.sourceHandle,
+        targetHandleId: edge.value.targetHandle,
+        interactionWidth: edge.value.interactionWidth,
+      } satisfies EdgeProps;
+
       return h(
         'svg',
         { style: { zIndex: zIndex.value } },
@@ -189,37 +220,7 @@ const EdgeWrapper = defineComponent({
           [
             updating.value
               ? null
-              : h(edgeCmp.value ?? (getEdgeTypes.value.default as Component), {
-                  id: props.id,
-                  source: edge.value.source,
-                  target: edge.value.target,
-                  type: edge.value.type,
-                  reconnectable: isReconnectable.value,
-                  selectable: isSelectable.value,
-                  deletable: edge.value.deletable,
-                  selected: edge.value.selected,
-                  animated: edge.value.animated,
-                  label: edge.value.label,
-                  labelStyle: edge.value.labelStyle,
-                  labelShowBg: edge.value.labelShowBg,
-                  labelBgStyle: edge.value.labelBgStyle,
-                  labelBgPadding: edge.value.labelBgPadding,
-                  labelBgBorderRadius: edge.value.labelBgBorderRadius,
-                  data: edge.value.data,
-                  style: edgeStyle.value,
-                  markerStart: edge.value.markerStart ? `url('#${getMarkerId(edge.value.markerStart, vueFlowId)}')` : undefined,
-                  markerEnd: edge.value.markerEnd ? `url('#${getMarkerId(edge.value.markerEnd, vueFlowId)}')` : undefined,
-                  sourcePosition,
-                  targetPosition,
-                  sourceX,
-                  sourceY,
-                  targetX,
-                  targetY,
-                  sourceHandleId: edge.value.sourceHandle,
-                  targetHandleId: edge.value.targetHandle,
-                  interactionWidth: edge.value.interactionWidth,
-                  ...pathOptions,
-                }),
+              : h(edgeCmp.value ?? (getEdgeTypes.value.default as Component), { ...edgeComponentProps, ...pathOptions }),
             [
               isReconnectable.value === 'source' || isReconnectable.value === true
                 ? [

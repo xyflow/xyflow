@@ -1,6 +1,6 @@
-import type { CoordinateExtent, EdgeBase, InternalNodeBase, NodeBase, NodeDragItem } from '@xyflow/system';
+import type { EdgeBase, NodeBase, NodeDragItem } from '@xyflow/system';
 import type { MaybeRefOrGetter, Ref } from 'vue';
-import type { Node, NodeDragEvent } from '../types';
+import type { NodeDragEvent } from '../types';
 import { infiniteExtent, isCoordinateExtent, XYDrag } from '@xyflow/system';
 import { shallowRef, toRef, toValue, watch, watchEffect } from 'vue';
 import { handleNodeClick } from '../utils';
@@ -12,7 +12,7 @@ interface UseDragParams {
   onDrag: (event: NodeDragEvent) => void;
   onStop: (event: NodeDragEvent) => void;
   onClick?: (event: PointerEvent) => void;
-  el: Ref<Element | null>;
+  el: Ref<HTMLDivElement | null>;
   disabled?: MaybeRefOrGetter<boolean>;
   selectable?: MaybeRefOrGetter<boolean>;
   dragHandle?: MaybeRefOrGetter<string | undefined>;
@@ -60,9 +60,9 @@ export function useDrag(params: UseDragParams) {
         get edges() {
           return getEdges.value as EdgeBase[];
         },
-        nodeExtent: (isCoordinateExtent(store.nodeExtent as CoordinateExtent)
+        nodeExtent: (isCoordinateExtent(store.nodeExtent)
           ? store.nodeExtent
-          : infiniteExtent) as CoordinateExtent,
+          : infiniteExtent),
         snapGrid: store.snapGrid,
         snapToGrid: store.snapToGrid,
         nodeOrigin: store.nodeOrigin,
@@ -74,11 +74,11 @@ export function useDrag(params: UseDragParams) {
         selectNodesOnDrag: store.selectNodesOnDrag,
         nodeDragThreshold: store.nodeDragThreshold,
         panBy,
-        unselectNodesAndEdges: (args?: { nodes?: any[]; edges?: any[] }) => {
+        unselectNodesAndEdges: (args) => {
           removeSelectedNodes(args?.nodes);
           removeSelectedEdges(args?.edges);
         },
-        updateNodePositions: (dragItems: Map<string, NodeDragItem | InternalNodeBase>, isDragging?: boolean) => {
+        updateNodePositions: (dragItems, isDragging) => {
           const items: NodeDragItem[] = [];
           for (const item of dragItems.values()) {
             const node = getInternalNode(item.id);
@@ -106,9 +106,9 @@ export function useDrag(params: UseDragParams) {
       }),
       // select the node on drag-start when `selectNodesOnDrag` is on. Single-selection deselects the rest;
       // in multi-selection an already-selected node toggles off.
-      onNodeMouseDown: (nodeId: string) => {
+      onNodeMouseDown: (nodeId) => {
         const node = getInternalNode(nodeId);
-        if (!node || !el.value) {
+        if (!node) {
           return;
         }
 
@@ -119,20 +119,20 @@ export function useDrag(params: UseDragParams) {
           removeSelectedNodes,
           nodesSelectionActive,
           false,
-          el.value as HTMLDivElement,
+          nodeEl,
         );
       },
       onDragStart: (event, _dragItems, node, nodes) => {
         dragFired = true;
         dragging.value = true;
-        onStart({ event, node: node as Node, nodes: nodes as Node[] });
+        onStart({ event, node, nodes });
       },
       onDrag: (event, _dragItems, node, nodes) => {
-        onDrag({ event, node: node as Node, nodes: nodes as Node[] });
+        onDrag({ event, node, nodes });
       },
       onDragStop: (event, _dragItems, node, nodes) => {
         dragging.value = false;
-        onStop({ event, node: node as Node, nodes: nodes as Node[] });
+        onStop({ event, node, nodes });
       },
     });
 
@@ -155,7 +155,7 @@ export function useDrag(params: UseDragParams) {
       }
     };
 
-    const target = nodeEl as HTMLElement;
+    const target = nodeEl;
     target.addEventListener('pointerdown', handlePointerDown);
     target.addEventListener('pointerup', handlePointerUp);
 

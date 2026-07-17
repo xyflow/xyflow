@@ -56,7 +56,7 @@ export function useHandle({
       autoPanOnConnect: store.autoPanOnConnect,
       connectionMode: store.connectionMode,
       connectionRadius: store.connectionRadius,
-      domNode: store.vueFlowRef as HTMLDivElement,
+      domNode: store.vueFlowRef,
       handleId: toValue(handleId),
       nodeId: toValue(nodeId),
       isTarget: toValue(type) === 'target',
@@ -75,14 +75,14 @@ export function useHandle({
       cancelConnection,
       onConnectStart: (evt, params) => {
         emits.connectStart({
-          event: evt as MouseTouchEvent,
+          event: evt,
           nodeId: params.nodeId,
           handleId: params.handleId,
           handleType: params.handleType,
         });
 
         if (reconnectHandleType) {
-          onReconnectStart?.(evt as MouseTouchEvent);
+          onReconnectStart?.(evt);
         }
       },
       onConnect: (connection) => {
@@ -94,9 +94,9 @@ export function useHandle({
         }
       },
       onConnectEnd: (evt, connectionState) => {
-        emits.connectEnd({ event: evt as MouseTouchEvent, connectionState });
+        emits.connectEnd({ event: evt, connectionState });
         if (reconnectHandleType) {
-          onReconnectEnd?.(evt as MouseTouchEvent, connectionState);
+          onReconnectEnd?.(evt, connectionState);
         }
       },
     });

@@ -1,5 +1,5 @@
 import type { Component } from 'vue';
-import type { MouseTouchEvent } from '../../types';
+import type { MouseTouchEvent, NodeProps } from '../../types';
 import { getNodeDimensions, getNodesInside, isInputDOMNode, nodeHasDimensions } from '@xyflow/system';
 import {
   computed,
@@ -202,6 +202,26 @@ const NodeWrapper = defineComponent({
         return null;
       }
 
+      const nodeComponentProps = {
+        id: node.id,
+        type: node.type,
+        data: node.data,
+        selected: !!node.selected,
+        dragging: dragging.value,
+        isConnectable: isConnectable.value,
+        positionAbsoluteX: node.internals.positionAbsolute.x,
+        positionAbsoluteY: node.internals.positionAbsolute.y,
+        ...getNodeDimensions(node),
+        parentId: node.parentId,
+        zIndex: node.internals.z ?? zIndex.value,
+        selectable: isSelectable.value,
+        deletable: node.deletable ?? true,
+        draggable: isDraggable.value,
+        targetPosition: node.targetPosition,
+        sourcePosition: node.sourcePosition,
+        dragHandle: node.dragHandle,
+      } satisfies NodeProps;
+
       return h(
         'div',
         {
@@ -243,25 +263,7 @@ const NodeWrapper = defineComponent({
           'onFocus': isFocusable.value ? onFocus : undefined,
         },
         [
-          h(nodeCmp.value ?? (getNodeTypes.value.default as Component), {
-            id: node.id,
-            type: node.type,
-            data: node.data,
-            selected: !!node.selected,
-            dragging: dragging.value,
-            isConnectable: isConnectable.value,
-            positionAbsoluteX: node.internals.positionAbsolute.x,
-            positionAbsoluteY: node.internals.positionAbsolute.y,
-            ...getNodeDimensions(node),
-            parentId: node.parentId,
-            zIndex: node.internals.z ?? zIndex.value,
-            selectable: isSelectable.value,
-            deletable: node.deletable ?? true,
-            draggable: isDraggable.value,
-            targetPosition: node.targetPosition,
-            sourcePosition: node.sourcePosition,
-            dragHandle: node.dragHandle,
-          }),
+          h(nodeCmp.value ?? (getNodeTypes.value.default as Component), nodeComponentProps),
         ],
       );
     };
