@@ -1,6 +1,6 @@
 import type { BezierPathOptions, EdgeBase, EdgeMarkerType, EdgePosition, SmoothStepPathOptions } from '@xyflow/system';
 import type { Component, CSSProperties, SVGAttributes, VNode } from 'vue';
-import type { EdgeComponent, EdgeTextProps } from './components';
+import type { EdgeTextProps } from './components';
 import type { ClassValue, Styles } from './flow';
 
 export type EdgeReconnectable = boolean | 'target' | 'source';
@@ -51,8 +51,6 @@ export interface DefaultEdge<Data extends Record<string, unknown> = Record<strin
   class?: ClassValue;
   /** Additional styles */
   style?: Styles;
-  /** Overwrites current edge type */
-  template?: EdgeComponent;
   /**
    * General escape hatch for adding custom attributes to the edge's DOM element.
    */
