@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Background, Panel, setupVueFlow, VueFlow } from '@xyflow/vue';
-import { nextTick, ref, shallowRef } from 'vue';
+import { ref, shallowRef } from 'vue';
 import { getElements } from './utils';
 
 const { nodes: initialNodes, edges: initialEdges } = getElements(30, 30);
@@ -24,7 +24,7 @@ function toggleClass() {
   }));
 }
 
-function updatePos() {
+async function updatePos() {
   const width = flowEl.value?.clientWidth ?? 0;
   const height = flowEl.value?.clientHeight ?? 0;
 
@@ -36,9 +36,7 @@ function updatePos() {
     },
   }));
 
-  nextTick(() => {
-    fitView({ duration: 1000, padding: 0.5 });
-  });
+  await fitView({ duration: 1000, padding: 0.5 });
 }
 </script>
 

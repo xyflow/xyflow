@@ -36,6 +36,7 @@ import { computed, markRaw, toRaw } from 'vue';
 import { useViewportHelper } from '../composables';
 import {
   applyChanges,
+  areNodesInitialized,
   createAdditionChange,
   createEdgeRemoveChange,
   createNodeRemoveChange,
@@ -47,6 +48,7 @@ import {
   reconnectEdgeAction,
   validateEdges,
 } from '../utils';
+import { resolveFitView } from './fitView';
 import { useState } from './state';
 
 export function useActions<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
@@ -231,6 +233,10 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     if (changes.length) {
       state.hooks.nodesChange.trigger(changes);
+    }
+
+    if (state.fitViewQueued && areNodesInitialized(nodeLookup)) {
+      resolveFitView(state, nodeLookup);
     }
   };
 

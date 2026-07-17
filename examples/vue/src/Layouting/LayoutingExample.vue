@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Direction } from './composables/useLayout';
 import { Background, Panel, setupVueFlow, VueFlow } from '@xyflow/vue';
-import { nextTick, ref } from 'vue';
+import { ref } from 'vue';
 import Icon from './components/Icon.vue';
 import { useLayout } from './composables/useLayout';
 
@@ -35,9 +35,7 @@ async function layoutGraph(direction: Direction) {
   nodes.value = layout(nodes.value, edges.value, direction);
 
   // Fit the view to the graph
-  nextTick(() => {
-    fitView();
-  });
+  await fitView();
 }
 </script>
 

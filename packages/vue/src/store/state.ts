@@ -89,6 +89,7 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
 
     fitViewOnInit: false,
     fitViewOnInitDone: false,
+    fitViewQueued: false,
 
     noDragClassName: 'nodrag',
     noWheelClassName: 'nowheel',
