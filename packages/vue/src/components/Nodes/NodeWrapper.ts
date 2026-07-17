@@ -201,8 +201,6 @@ const NodeWrapper = defineComponent({
       );
     });
 
-    // re-measure after the DOM patches the new handle layout; `flush: 'post'` runs the handler after that
-    // same-change patch (no extra tick needed)
     watch(
       [() => internalNode.value?.type, () => internalNode.value?.sourcePosition, () => internalNode.value?.targetPosition],
       () => {
