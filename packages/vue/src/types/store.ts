@@ -224,10 +224,10 @@ export type UpdateEdgeData<EdgeType extends Edge = Edge> = (
   options?: { replace: boolean },
 ) => void;
 
-// `fitView` lives on `FlowProps`, not `State` (the state keeps a separate `fitViewOnInit` flag so the
-// `fitView()` action isn't clobbered), but it's still a settable prop — accept it on the bridge.
-export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Partial<State<NodeType, EdgeType>>
-  & Partial<Pick<FlowProps<NodeType, EdgeType>, 'fitView'>>;
+// `nodes`/`edges` are intentionally excluded, set them via setNodes/setEdges instead.
+export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
+  = Partial<Omit<State<NodeType, EdgeType>, 'nodes' | 'edges' | 'vueFlowRef' | 'viewportRef' | 'dimensions' | 'hooks'>>
+    & Partial<Pick<FlowProps<NodeType, EdgeType>, 'fitView'>>;
 
 export type SetState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   state: SetStateOptions<NodeType, EdgeType> | ((state: State<NodeType, EdgeType>) => SetStateOptions<NodeType, EdgeType>),

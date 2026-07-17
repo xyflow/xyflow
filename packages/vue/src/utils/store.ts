@@ -33,6 +33,40 @@ export function isDef<T>(val: T): val is NonUndefined<T> {
 }
 
 /**
+ * Turn `target[key]` into a "controlled" field: every write, from props, `setState`, or a direct assignment,
+ * runs `apply` (mirror to an external instance, e.g. the panZoom, or re-adopt nodes) after an optional
+ * `transform`. A same-value re-assign is skipped so the side effect never fires redundantly. `target` must be
+ * `reactive()`-wrapped for reads to stay reactive (the proxy tracks the key).
+ */
+export function defineControlled<T extends object, K extends keyof T>(
+  target: T,
+  key: K,
+  apply: (value: T[K]) => void,
+  transform: (value: T[K]) => T[K] = value => value,
+) {
+  // No backing ref needed: once `target` is `reactive()`-wrapped, reads/writes through the proxy are tracked
+  // at the key level regardless of data-vs-accessor, so a plain closure is the storage. The dedupe guard
+  // skips a redundant `apply` (Vue's own change check already dedupes the trigger).
+  let value = transform(target[key]);
+
+  Object.defineProperty(target, key, {
+    get: () => value,
+    set: (next: T[K]) => {
+      const transformed = transform(next);
+
+      if (Object.is(transformed, value)) {
+        return;
+      }
+
+      value = transformed;
+      apply(transformed);
+    },
+    enumerable: true,
+    configurable: true,
+  });
+}
+
+/**
  * Build a user `Edge` from a `Connection` (or validate a passed `Edge`). A `Connection` becomes a NEW
  * edge with `defaultEdgeOptions` merged in — the only point where defaults are persisted onto an edge.
  * User-supplied `Edge`s pass through verbatim; stored edges are never parsed or re-stamped.
@@ -101,6 +135,7 @@ export interface CreateInternalNodesOptions {
   nodeExtent?: CoordinateExtent;
   elevateNodesOnSelect?: boolean;
   zIndexMode?: ZIndexMode;
+  checkEquality?: boolean;
 }
 
 /**
@@ -158,7 +193,7 @@ export function adoptNodes<NodeType extends Node = Node>(
     });
   }
 
-  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: true });
+  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: options?.checkEquality ?? true });
 
   for (const node of validNodes) {
     if (node.parentId && !nodeLookup.has(node.parentId)) {

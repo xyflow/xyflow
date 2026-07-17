@@ -1,4 +1,4 @@
-import type { Edge, FlowProps, Node, State } from '../types';
+import type { Edge, Node, State } from '../types';
 import { ConnectionLineType, ConnectionMode, isMacOs, mergeAriaLabelConfig, PanOnScrollMode, SelectionMode } from '@xyflow/system';
 
 import { createHooks } from './hooks';
@@ -120,22 +120,3 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     ariaLiveMessage: '',
   };
 }
-
-// these options will be set using the appropriate methods
-export const storeOptionsToSkip: (keyof Partial<FlowProps & Omit<State, 'nodes' | 'edges'>>)[] = [
-  'id',
-  'vueFlowRef',
-  'viewportRef',
-  'initialized',
-  'nodes',
-  'edges',
-  'maxZoom',
-  'minZoom',
-  'translateExtent',
-  'nodeExtent',
-  'fitView',
-  'fitViewOnInit',
-  'viewport',
-  'hooks',
-  'defaultEdgeOptions',
-];

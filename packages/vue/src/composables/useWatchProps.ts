@@ -1,6 +1,5 @@
 import type { Ref, ToRefs } from 'vue';
 import type { Edge, FlowProps, Node, VueFlowStoreHandle } from '../types';
-import { mergeAriaLabelConfig } from '@xyflow/system';
 import { effectScope, isRef, toRaw, toRef, watch } from 'vue';
 import { isDef } from '../utils';
 import { storeToRefs } from './storeToRefs';
@@ -98,91 +97,12 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
       });
     };
 
-    const watchMaxZoom = () => {
-      scope.run(() => {
-        watch(
-          () => props.maxZoom,
-          (maxZoom) => {
-            if (maxZoom) {
-              instance.setMaxZoom(maxZoom);
-            }
-          },
-          {
-            immediate: true,
-          },
-        );
-      });
-    };
-
-    const watchMinZoom = () => {
-      scope.run(() => {
-        watch(
-          () => props.minZoom,
-          (minZoom) => {
-            if (minZoom) {
-              instance.setMinZoom(minZoom);
-            }
-          },
-          { immediate: true },
-        );
-      });
-    };
-
-    const watchTranslateExtent = () => {
-      scope.run(() => {
-        watch(
-          () => props.translateExtent,
-          (translateExtent) => {
-            if (translateExtent) {
-              instance.setTranslateExtent(translateExtent);
-            }
-          },
-          {
-            immediate: true,
-          },
-        );
-      });
-    };
-
-    const watchNodeExtent = () => {
-      scope.run(() => {
-        watch(
-          () => props.nodeExtent,
-          (nodeExtent) => {
-            if (nodeExtent) {
-              instance.setNodeExtent(nodeExtent);
-            }
-          },
-          {
-            immediate: true,
-          },
-        );
-      });
-    };
-
-    const watchAriaLabelConfig = () => {
-      scope.run(() => {
-        watch(
-          () => props.ariaLabelConfig,
-          (ariaLabelConfig) => {
-            state.ariaLabelConfig = mergeAriaLabelConfig(ariaLabelConfig);
-          },
-          { immediate: true },
-        );
-      });
-    };
-
     const watchRest = () => {
       const skip: (keyof typeof props)[] = [
         'id',
-        'translateExtent',
-        'nodeExtent',
         'edges',
         'nodes',
-        'maxZoom',
-        'minZoom',
         'viewport',
-        'ariaLabelConfig',
       ];
 
       for (const key of Object.keys(props)) {
@@ -212,11 +132,6 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
     const runAll = () => {
       watchNodesValue();
       watchEdgesValue();
-      watchMinZoom();
-      watchMaxZoom();
-      watchTranslateExtent();
-      watchNodeExtent();
-      watchAriaLabelConfig();
       watchRest();
     };
 
