@@ -81,7 +81,7 @@ const EdgeWrapper = defineComponent({
         return slot;
       }
 
-      let edgeType = edge.value.template ?? getEdgeTypes.value[name];
+      let edgeType = getEdgeTypes.value[name];
 
       if (typeof edgeType === 'string') {
         if (instance) {
