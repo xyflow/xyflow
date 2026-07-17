@@ -359,6 +359,9 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   panBy: (delta: XYPosition) => Promise<boolean>;
   /** whether the viewport (panzoom) is initialized — `true` once `<ZoomPane>` has mounted and measured */
   viewportInitialized: ComputedRef<boolean>;
+
+  /** reset the store to its initial state */
+  $reset: () => void;
 }
 
 export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = Edge> {

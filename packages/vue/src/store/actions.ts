@@ -754,6 +754,23 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     viewport: { x: state.transform[0], y: state.transform[1], zoom: state.transform[2] },
   });
 
+  const $reset: Actions<NodeType, EdgeType>['$reset'] = () => {
+    const { nodes: _nodes, edges: _edges, ...resetState } = useState<NodeType, EdgeType>();
+
+    commitEdges([]);
+    commitNodes([]);
+
+    if (state.panZoom) {
+      state.panZoom.setViewport({
+        x: state.defaultViewport.x ?? 0,
+        y: state.defaultViewport.y ?? 0,
+        zoom: state.defaultViewport.zoom ?? 1,
+      });
+    }
+
+    setState(resetState);
+  };
+
   return {
     updateNodePositions,
     updateNodeDimensions,
@@ -807,5 +824,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     toObject,
     updateNodeInternals,
     viewportInitialized: computed(() => viewportHelper.value.viewportInitialized),
+    $reset,
   };
 }
