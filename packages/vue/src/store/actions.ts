@@ -46,6 +46,7 @@ import {
   reconnectEdgeAction,
   validateEdges,
 } from '../utils';
+import { useState } from './state';
 
 export function useActions<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   state: State<NodeType, EdgeType>,
@@ -754,7 +755,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     viewport: { x: state.transform[0], y: state.transform[1], zoom: state.transform[2] },
   });
 
-  const $reset: Actions<NodeType, EdgeType>['$reset'] = () => {
+  const reset: Actions<NodeType, EdgeType>['reset'] = () => {
     const { nodes: _nodes, edges: _edges, ...resetState } = useState<NodeType, EdgeType>();
 
     commitEdges([]);
@@ -824,6 +825,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     toObject,
     updateNodeInternals,
     viewportInitialized: computed(() => viewportHelper.value.viewportInitialized),
-    $reset,
+    reset,
   };
 }
