@@ -2,7 +2,8 @@ import type { EdgeLookup, NodeLookup } from '@xyflow/system';
 import type { Edge, InternalNode, Node, State } from '../types';
 import { updateAbsolutePositions } from '@xyflow/system';
 import { markRaw, toRaw } from 'vue';
-import { adoptNodes, ErrorCode, updateConnectionLookup, VueFlowError } from '../utils';
+import { adoptNodes, areNodesInitialized, ErrorCode, updateConnectionLookup, VueFlowError } from '../utils';
+import { resolveFitView } from './fitView';
 
 export interface Commit<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   /** system-side node lookup (source of truth for adoption); mirrored into the reactive `nodeLookup` */
@@ -114,6 +115,10 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
     state.nodesSelectionActive = state.nodesSelectionActive && hasSelectedNodes;
 
     recomputeAbsolutePositions();
+
+    if (state.fitViewQueued && areNodesInitialized(nodeLookup)) {
+      resolveFitView(state, nodeLookup);
+    }
   }
 
   function commitEdges(next: EdgeType[]) {

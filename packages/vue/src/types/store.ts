@@ -8,6 +8,7 @@ import type {
   CoordinateExtent,
   Dimensions,
   EdgeLookup,
+  FitViewOptionsBase,
   HandleType,
   IsValidConnection,
   NodeConnection,
@@ -40,6 +41,16 @@ export interface UpdateNodeDimensionsParams {
   id: string;
   nodeElement: HTMLDivElement;
   forceUpdate?: boolean;
+}
+
+/** a queued imperative `fitView()` awaiting the node commit / measurement that lets it fit current geometry */
+export interface FitViewRequest<NodeType extends Node = Node> {
+  options?: FitViewOptionsBase<NodeType>;
+  resolver: {
+    promise: Promise<boolean>;
+    resolve: (value: boolean) => void;
+    reject: (reason?: unknown) => void;
+  };
 }
 
 export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edge>
@@ -142,6 +153,8 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
 
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;
+  /** internal: a pending imperative `fitView()`, settled by the next node commit / measurement */
+  fitViewQueued: false | FitViewRequest<NodeType>;
 
   noDragClassName: string;
   noWheelClassName: string;
