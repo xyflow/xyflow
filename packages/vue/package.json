@@ -75,7 +75,7 @@
     "@xyflow/system": "workspace:*"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "8.2.0",
+    "@antfu/eslint-config": "9.1.0",
     "@arethetypeswrong/core": "^0.18.3",
     "@vue/reactivity": "^3.5.0",
     "@xyflow/postcss-config": "workspace:*",
