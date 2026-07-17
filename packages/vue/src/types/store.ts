@@ -360,11 +360,8 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   /** whether the viewport (panzoom) is initialized — `true` once `<ZoomPane>` has mounted and measured */
   viewportInitialized: ComputedRef<boolean>;
 
-  /** reset state to defaults */
+  /** reset the store to its initial state */
   $reset: () => void;
-
-  /** destroy the store instance (invalidates its effect scopes); runs the `onDestroy` hook if one was set */
-  $destroy: () => void;
 }
 
 export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
@@ -404,8 +401,6 @@ export type VueFlowState<NodeType extends Node = Node, EdgeType extends Edge = E
 export type VueFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   readonly id: string;
   readonly emits: FlowHooksEmit<NodeType, EdgeType>;
-  /** tear the store down (internal) */
-  $destroy: () => void;
 } & FlowHooksOn<NodeType, EdgeType>
 & Readonly<ComputedGetters<NodeType, EdgeType>>
 & Readonly<Actions<NodeType, EdgeType>>;
