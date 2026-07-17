@@ -6,7 +6,6 @@ import {
   getCurrentInstance,
   h,
   inject,
-  nextTick,
   onMounted,
   provide,
   resolveComponent,
@@ -202,11 +201,15 @@ const NodeWrapper = defineComponent({
       );
     });
 
-    watch([() => internalNode.value?.type, () => internalNode.value?.sourcePosition, () => internalNode.value?.targetPosition], () => {
-      nextTick(() => {
+    // re-measure after the DOM patches the new handle layout; `flush: 'post'` runs the handler after that
+    // same-change patch (no extra tick needed)
+    watch(
+      [() => internalNode.value?.type, () => internalNode.value?.sourcePosition, () => internalNode.value?.targetPosition],
+      () => {
         updateNodeDimensions([{ id: props.id, nodeElement: nodeElement.value as HTMLDivElement, forceUpdate: true }]);
-      });
-    });
+      },
+      { flush: 'post' },
+    );
 
     return () => {
       const node = internalNode.value;
