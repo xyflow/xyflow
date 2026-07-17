@@ -117,6 +117,7 @@ export {
   type GetViewport,
   type HandleConnection,
   type HandleType,
+  type IsValidConnection,
   type MarkerProps,
   MarkerType,
   type NoConnection,

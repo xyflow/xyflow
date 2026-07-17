@@ -9,6 +9,7 @@ import type {
   Dimensions,
   EdgeLookup,
   HandleType,
+  IsValidConnection,
   NodeConnection,
   NodeDragItem,
   NodeLookup,
@@ -31,7 +32,7 @@ import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent }
 import type { ConnectionLineOptions } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
 import type { FlowExportObject, FlowProps, OnBeforeDelete } from './flow';
-import type { ConnectingHandle, ValidConnectionFunc } from './handle';
+import type { ConnectingHandle } from './handle';
 import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
 import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
 
@@ -104,7 +105,7 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   connectionClickStartHandle: ConnectingHandle | null;
   connectionRadius: number;
   connectionDragThreshold: number;
-  isValidConnection: ValidConnectionFunc | null;
+  isValidConnection: IsValidConnection | null;
   onBeforeDelete: OnBeforeDelete<NodeType, EdgeType> | null;
 
   connectOnClick: boolean;

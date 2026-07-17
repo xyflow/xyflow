@@ -6,6 +6,7 @@ import type {
   ConnectionMode,
   CoordinateExtent,
   FitViewOptionsBase,
+  IsValidConnection,
   OnBeforeDeleteBase,
   OnConnectStartParams,
   PanelPosition,
@@ -22,7 +23,6 @@ import type { EdgeChange, NodeChange } from './changes';
 import type { EdgeTypesObject, NodeTypesObject } from './components';
 import type { ConnectionLineOptions, ConnectionLineProps } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeProps, EdgeReconnectable } from './edge';
-import type { ValidConnectionFunc } from './handle';
 import type {
   ConnectEndEvent,
   EdgeMouseEvent,
@@ -157,7 +157,7 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
    * be added to your flow. If you have custom connection logic it is preferred to use this callback
    * over the `isValidConnection` prop on the handle component for performance reasons.
    */
-  isValidConnection?: ValidConnectionFunc | null;
+  isValidConnection?: IsValidConnection | null;
   /**
    * This handler is called before nodes or edges are deleted, allowing the deletion to be aborted by
    * returning `false` or modified by returning updated nodes and edges.
