@@ -1,4 +1,5 @@
-import type { BuiltInNode, MouseTouchEvent, NodeComponent } from '../../types';
+import type { Component } from 'vue';
+import type { MouseTouchEvent } from '../../types';
 import { getNodeDimensions, getNodesInside, isInputDOMNode, nodeHasDimensions } from '@xyflow/system';
 import {
   computed,
@@ -8,7 +9,6 @@ import {
   inject,
   onMounted,
   provide,
-  resolveComponent,
   shallowRef,
   toRef,
   watch,
@@ -20,7 +20,7 @@ import {
   useVueFlow,
 } from '../../composables';
 import { NodeId, NodeRef, Slots } from '../../context';
-import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, elementSelectionKeys, ErrorCode, handleNodeClick, VueFlowError } from '../../utils';
+import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, elementSelectionKeys, ErrorCode, handleNodeClick, resolveTypeComponent, VueFlowError } from '../../utils';
 
 interface Props {
   id: string;
@@ -101,29 +101,15 @@ const NodeWrapper = defineComponent({
     const nodeCmp = computed(() => {
       const name = internalNode.value?.type || 'default';
 
-      const slot = slots?.[`node-${name}`];
-      if (slot) {
-        return slot;
+      const cmp = resolveTypeComponent(slots?.[`node-${name}`], getNodeTypes.value[name], name, instance);
+
+      if (cmp) {
+        return cmp;
       }
 
-      let nodeType = getNodeTypes.value[name];
+      emits.error(new VueFlowError(ErrorCode.NODE_TYPE_MISSING, name));
 
-      if (typeof nodeType === 'string') {
-        if (instance) {
-          const components = Object.keys(instance.appContext.components);
-          if (components && components.includes(name)) {
-            nodeType = resolveComponent(name, false) as NodeComponent;
-          }
-        }
-      }
-
-      if (nodeType && typeof nodeType !== 'string') {
-        return nodeType;
-      }
-
-      emits.error(new VueFlowError(ErrorCode.NODE_TYPE_MISSING, nodeType));
-
-      return false;
+      return undefined;
     });
 
     const dragging = useDrag({
@@ -223,7 +209,7 @@ const NodeWrapper = defineComponent({
           'data-id': node.id,
           'class': [
             'vue-flow__node',
-            `vue-flow__node-${nodeCmp.value === false ? 'default' : node.type || 'default'}`,
+            `vue-flow__node-${nodeCmp.value ? node.type || 'default' : 'default'}`,
             {
               [store.noPanClassName]: isDraggable.value,
               dragging: dragging?.value,
@@ -257,7 +243,7 @@ const NodeWrapper = defineComponent({
           'onFocus': isFocusable.value ? onFocus : undefined,
         },
         [
-          h(nodeCmp.value === false ? (getNodeTypes.value.default as NodeComponent<BuiltInNode>) : (nodeCmp.value as any), {
+          h(nodeCmp.value ?? (getNodeTypes.value.default as Component), {
             id: node.id,
             type: node.type,
             data: node.data,

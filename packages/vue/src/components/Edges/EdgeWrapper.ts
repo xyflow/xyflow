@@ -1,10 +1,11 @@
 import type { Connection, FinalConnectionState, HandleType } from '@xyflow/system';
-import type { Edge, EdgeComponent, InternalNode, MouseTouchEvent } from '../../types';
+import type { Component } from 'vue';
+import type { Edge, InternalNode, MouseTouchEvent } from '../../types';
 import { ConnectionMode, getHandlePosition, getMarkerId, Position } from '@xyflow/system';
-import { computed, defineComponent, getCurrentInstance, h, inject, provide, resolveComponent, shallowRef, toRef } from 'vue';
+import { computed, defineComponent, getCurrentInstance, h, inject, provide, shallowRef, toRef } from 'vue';
 import { useHandle, useStore, useVueFlow } from '../../composables';
 import { EdgeId, EdgeRef, Slots } from '../../context';
-import { ARIA_EDGE_DESC_KEY, elementSelectionKeys, ErrorCode, getEdgeHandle, getEdgeZIndex, VueFlowError } from '../../utils';
+import { ARIA_EDGE_DESC_KEY, elementSelectionKeys, ErrorCode, getEdgeHandle, getEdgeZIndex, resolveTypeComponent, VueFlowError } from '../../utils';
 import EdgeAnchor from './EdgeAnchor';
 
 interface Props {
@@ -76,29 +77,15 @@ const EdgeWrapper = defineComponent({
     const edgeCmp = computed(() => {
       const name = edge.value.type || 'default';
 
-      const slot = slots?.[`edge-${name}`];
-      if (slot) {
-        return slot;
+      const cmp = resolveTypeComponent(slots?.[`edge-${name}`], getEdgeTypes.value[name], name, instance);
+
+      if (cmp) {
+        return cmp;
       }
 
-      let edgeType = getEdgeTypes.value[name];
+      emits.error(new VueFlowError(ErrorCode.EDGE_TYPE_MISSING, name));
 
-      if (typeof edgeType === 'string') {
-        if (instance) {
-          const components = Object.keys(instance.appContext.components);
-          if (components && components.includes(name)) {
-            edgeType = resolveComponent(name, false) as EdgeComponent;
-          }
-        }
-      }
-
-      if (edgeType && typeof edgeType !== 'string') {
-        return edgeType;
-      }
-
-      emits.error(new VueFlowError(ErrorCode.EDGE_TYPE_MISSING, edgeType));
-
-      return false;
+      return undefined;
     });
 
     const { handlePointerDown } = useHandle({
@@ -171,7 +158,7 @@ const EdgeWrapper = defineComponent({
             'data-id': props.id,
             'class': [
               'vue-flow__edge',
-              `vue-flow__edge-${edgeCmp.value === false ? 'default' : edge.value.type || 'default'}`,
+              `vue-flow__edge-${edgeCmp.value ? edge.value.type || 'default' : 'default'}`,
               store.noPanClassName,
               edgeClass.value,
               {
@@ -202,7 +189,7 @@ const EdgeWrapper = defineComponent({
           [
             updating.value
               ? null
-              : h(edgeCmp.value === false ? getEdgeTypes.value.default : (edgeCmp.value as any), {
+              : h(edgeCmp.value ?? (getEdgeTypes.value.default as Component), {
                   id: props.id,
                   source: edge.value.source,
                   target: edge.value.target,
