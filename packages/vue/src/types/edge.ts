@@ -140,7 +140,7 @@ export interface BaseEdgeProps extends EdgeLabelOptions {
    * for a simple line.
    */
   path: string;
-  label?: any;
+  label?: string | VNode | Component<EdgeTextProps>;
   /**
    * The id of the SVG marker to use at the start of the edge. This should be defined in a `<defs>`
    * element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
