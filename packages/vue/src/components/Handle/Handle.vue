@@ -79,9 +79,9 @@ const isHandleConnectable = computed(() => {
 });
 
 const connectionClasses = computed<Record<string, boolean>>((prev) => {
-  const fromHandle = store.connectionStartHandle;
+  const fromHandle = store.connection.fromHandle;
   const clickFromHandle = store.connectionClickStartHandle;
-  const toHandle = store.connectionEndHandle;
+  const toHandle = store.connection.toHandle;
   const handleType = type.value;
 
   const connectionInProcess = fromHandle !== null;
@@ -99,7 +99,7 @@ const connectionClasses = computed<Record<string, boolean>>((prev) => {
     connectableend: isConnectableEnd,
     connectingfrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === handleType,
     connectingto,
-    valid: connectingto && store.connectionStatus === 'valid',
+    valid: connectingto && store.connection.isValid === true,
     connectionindicator:
       isHandleConnectable.value
       && (!connectionInProcess || isPossibleEndHandle)

@@ -1,5 +1,5 @@
 import type { Edge, Node, State } from '../types';
-import { ConnectionLineType, ConnectionMode, defaultAriaLabelConfig, infiniteExtent, isMacOs, PanOnScrollMode, SelectionMode } from '@xyflow/system';
+import { ConnectionLineType, ConnectionMode, defaultAriaLabelConfig, infiniteExtent, initialConnection, isMacOs, PanOnScrollMode, SelectionMode } from '@xyflow/system';
 
 import { createHooks } from './hooks';
 
@@ -60,14 +60,11 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
       style: {},
     },
     connectionMode: ConnectionMode.Strict,
-    connectionStartHandle: null,
-    connectionEndHandle: null,
+    connection: initialConnection,
     connectionClickStartHandle: null,
-    connectionPosition: { x: Number.NaN, y: Number.NaN },
     connectionRadius: 20,
     connectionDragThreshold: 1,
     connectOnClick: true,
-    connectionStatus: null,
     isValidConnection: null,
     onBeforeDelete: null,
 

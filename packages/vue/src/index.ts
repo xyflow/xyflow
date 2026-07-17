@@ -102,6 +102,7 @@ export {
   ConnectionLineType,
   type ConnectionLookup,
   ConnectionMode,
+  type ConnectionState,
   type CoordinateExtent,
   type Dimensions,
   type EdgeAddChange,

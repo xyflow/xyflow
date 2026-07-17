@@ -27,6 +27,7 @@ import {
   getHandleBounds,
   getOverlappingArea,
   handleExpandParent,
+  initialConnection,
   isRectObject,
   nodeToRect,
   panBy as panBySystem,
@@ -614,41 +615,12 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     commitNodes(next);
   };
 
-  const startConnection: Actions<NodeType>['startConnection'] = (startHandle, position, isClick = false) => {
-    if (isClick) {
-      state.connectionClickStartHandle = startHandle;
-    }
-    else {
-      state.connectionStartHandle = startHandle;
-    }
-
-    state.connectionEndHandle = null;
-    state.connectionStatus = null;
-
-    if (position) {
-      state.connectionPosition = position;
-    }
+  const updateConnection: Actions<NodeType>['updateConnection'] = (connection) => {
+    state.connection = connection;
   };
 
-  const updateConnection: Actions<NodeType>['updateConnection'] = (position, result = null, status = null) => {
-    if (state.connectionStartHandle) {
-      state.connectionPosition = position;
-      state.connectionEndHandle = result;
-      state.connectionStatus = status;
-    }
-  };
-
-  const endConnection: Actions<NodeType>['endConnection'] = (event, isClick) => {
-    state.connectionPosition = { x: Number.NaN, y: Number.NaN };
-    state.connectionEndHandle = null;
-    state.connectionStatus = null;
-
-    if (isClick) {
-      state.connectionClickStartHandle = null;
-    }
-    else {
-      state.connectionStartHandle = null;
-    }
+  const cancelConnection: Actions<NodeType>['cancelConnection'] = () => {
+    state.connection = initialConnection;
   };
 
   const getNodeRect = (
@@ -801,9 +773,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     removeSelectedNodes,
     removeSelectedEdges,
     resetSelectedElements,
-    startConnection,
     updateConnection,
-    endConnection,
+    cancelConnection,
     setInteractive,
     setState,
     getIntersectingNodes,

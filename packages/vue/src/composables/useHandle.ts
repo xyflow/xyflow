@@ -1,7 +1,7 @@
-import type { Connection, ConnectionState, FinalConnectionState, HandleType, IsValidConnection as SystemIsValidConnection } from '@xyflow/system';
+import type { Connection, FinalConnectionState, HandleType, IsValidConnection as SystemIsValidConnection } from '@xyflow/system';
 import type { MaybeRefOrGetter } from 'vue';
-import type { ConnectingHandle, InternalNode, MouseTouchEvent, ValidConnectionFunc } from '../types';
-import { getConnectionStatus, getEventPosition, getHostForElement, Position, XYHandle } from '@xyflow/system';
+import type { InternalNode, MouseTouchEvent, ValidConnectionFunc } from '../types';
+import { getEventPosition, getHostForElement, Position, XYHandle } from '@xyflow/system';
 import { toValue } from 'vue';
 import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
@@ -36,7 +36,7 @@ export function useHandle({
   onReconnect,
   onReconnectEnd,
 }: UseHandleProps) {
-  const { id: flowId, getNode, getInternalNode, panBy, startConnection, updateConnection, endConnection, emits } = useVueFlow();
+  const { id: flowId, getNode, getInternalNode, panBy, updateConnection, cancelConnection, emits } = useVueFlow();
 
   const store = useStore();
 
@@ -89,54 +89,9 @@ export function useHandle({
       panBy,
       isValidConnection: buildSystemIsValidConnection(),
       getTransform: () => store.transform,
-      getFromHandle: () => {
-        const h = store.connectionStartHandle;
-        if (!h) {
-          return null;
-        }
-        return {
-          id: h.id,
-          nodeId: h.nodeId,
-          type: h.type,
-          position: h.position,
-          x: h.x,
-          y: h.y,
-          width: 0,
-          height: 0,
-        };
-      },
-      updateConnection: (state: ConnectionState) => {
-        if (state.inProgress) {
-          if (!store.connectionStartHandle) {
-            startConnection({
-              nodeId: state.fromHandle.nodeId,
-              id: state.fromHandle.id ?? null,
-              type: state.fromHandle.type,
-              position: state.fromHandle.position,
-              x: state.to.x,
-              y: state.to.y,
-            });
-          }
-
-          updateConnection(
-            state.pointer,
-            state.toHandle
-              ? ({
-                  nodeId: state.toHandle.nodeId,
-                  id: state.toHandle.id ?? null,
-                  type: state.toHandle.type,
-                  position: state.toHandle.position,
-                  x: state.toHandle.x,
-                  y: state.toHandle.y,
-                } as ConnectingHandle)
-              : null,
-            getConnectionStatus(state.isValid),
-          );
-        }
-      },
-      cancelConnection: () => {
-        endConnection(event, false);
-      },
+      getFromHandle: () => (store.connection.inProgress ? store.connection.fromHandle : null),
+      updateConnection,
+      cancelConnection,
       onConnectStart: (evt, params) => {
         emits.connectStart({
           event: evt as MouseTouchEvent,
@@ -179,17 +134,13 @@ export function useHandle({
         handleType: toValue(type),
       });
 
-      startConnection(
-        {
-          nodeId: toValue(nodeId),
-          type: toValue(type),
-          id: toValue(handleId),
-          position: Position.Top,
-          ...getEventPosition(event),
-        },
-        undefined,
-        true,
-      );
+      store.connectionClickStartHandle = {
+        nodeId: toValue(nodeId),
+        type: toValue(type),
+        id: toValue(handleId),
+        position: Position.Top,
+        ...getEventPosition(event),
+      };
 
       return;
     }
@@ -258,7 +209,7 @@ export function useHandle({
 
     emits.clickConnectEnd({ event, connectionState });
 
-    endConnection(event, true);
+    store.connectionClickStartHandle = null;
   }
 
   return {
