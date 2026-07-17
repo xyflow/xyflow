@@ -8,8 +8,8 @@ import { useVueFlow } from './useVueFlow';
  * Access the enriched {@link InternalNode} (store-computed `internals.{positionAbsolute, z, handleBounds}` +
  * authoritative `measured`) for an id, as a `computed` that re-resolves whenever the store re-adopts the node.
  *
- * Mirrors xyflow/react's `useInternalNode`. If no id is given it is read from node context (call inside a
- * custom node). Use {@link useNode} for the user-facing node + dom element + connected edges.
+ * If no id is given it is read from node context (call inside a custom node).
+ * Use {@link useNode} for the user-facing node + dom element + connected edges.
  *
  * The id accepts a ref/getter so it can track a reactive source — e.g. a custom edge resolving its
  * endpoint with `useInternalNode(() => props.source)` stays correct after a reconnect changes the source.
