@@ -1,6 +1,5 @@
-import type { Connection, ConnectionLineType, EdgeMarkerType, Handle, NoConnection, Position, XYPosition } from '@xyflow/system';
+import type { ConnectionLineType, EdgeMarkerType, Handle, NoConnection, Position, XYPosition } from '@xyflow/system';
 import type { CSSProperties } from 'vue';
-import type { Edge } from './edge';
 import type { ClassValue } from './flow';
 import type { ConnectingHandle } from './handle';
 import type { InternalNode, Node } from './node';
@@ -12,10 +11,6 @@ export interface ConnectionLineOptions {
   markerEnd?: EdgeMarkerType;
   markerStart?: EdgeMarkerType;
 }
-
-export type Connector = (
-  params: Connection,
-) => Promise<(Connection & Partial<Edge>) | false> | ((Connection & Partial<Edge>) | false);
 
 export type ConnectionStatus = 'valid' | 'invalid';
 

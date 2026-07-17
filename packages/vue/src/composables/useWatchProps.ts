@@ -1,4 +1,3 @@
-import type { Connection } from '@xyflow/system';
 import type { Ref, ToRefs } from 'vue';
 import type { Edge, FlowProps, Node, VueFlowStoreHandle } from '../types';
 import { mergeAriaLabelConfig } from '@xyflow/system';
@@ -173,49 +172,6 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
       });
     };
 
-    const watchAutoConnect = () => {
-      scope.run(() => {
-        const autoConnector = async (params: Connection) => {
-          let connection: boolean | Connection = params;
-
-          if (typeof props.autoConnect === 'function') {
-            connection = await props.autoConnect(params);
-          }
-
-          if (connection !== false) {
-            instance.addEdges([connection]);
-          }
-        };
-
-        watch(
-          () => props.autoConnect,
-          (autConnect) => {
-            if (isDef(autConnect)) {
-              storeRefs.autoConnect.value = autConnect;
-            }
-          },
-          { immediate: true },
-        );
-
-        watch(
-          storeRefs.autoConnect,
-          (autoConnectEnabled, _, onCleanup) => {
-            if (autoConnectEnabled) {
-              instance.onConnect(autoConnector);
-            }
-            else {
-              state.hooks.connect.off(autoConnector);
-            }
-
-            onCleanup(() => {
-              state.hooks.connect.off(autoConnector);
-            });
-          },
-          { immediate: true },
-        );
-      });
-    };
-
     const watchRest = () => {
       const skip: (keyof typeof props)[] = [
         'id',
@@ -225,7 +181,6 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
         'nodes',
         'maxZoom',
         'minZoom',
-        'autoConnect',
         'viewport',
         'ariaLabelConfig',
       ];
@@ -261,7 +216,6 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
       watchMaxZoom();
       watchTranslateExtent();
       watchNodeExtent();
-      watchAutoConnect();
       watchAriaLabelConfig();
       watchRest();
     };
