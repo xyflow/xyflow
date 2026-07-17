@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 import { NodeWrapper } from '../../components';
 import { useStore, useVueFlow } from '../../composables';
 import { useNodesInitialized } from '../../composables/useNodesInitialized';
@@ -39,12 +39,10 @@ watch(
   nodesInitialized,
   (isInit) => {
     if (isInit) {
-      nextTick(() => {
-        emits.nodesInitialized(Array.from(nodeLookup.values(), node => node.internals.userNode));
-      });
+      emits.nodesInitialized(Array.from(nodeLookup.values(), node => node.internals.userNode));
     }
   },
-  { immediate: true },
+  { immediate: true, flush: 'post' },
 );
 
 onMounted(() => {
@@ -59,7 +57,7 @@ onMounted(() => {
       };
     });
 
-    nextTick(() => updateNodeDimensions(updates));
+    updateNodeDimensions(updates);
   });
 });
 
