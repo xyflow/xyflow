@@ -114,8 +114,6 @@ export interface FlowExportObject {
   viewport: Viewport;
 }
 
-export type FlowOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = FlowProps<NodeType, EdgeType>;
-
 /**
  * Vue Flow component props.
  */
