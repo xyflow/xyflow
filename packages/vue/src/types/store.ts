@@ -360,7 +360,7 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   viewportInitialized: ComputedRef<boolean>;
 
   /** reset the store to its initial state */
-  $reset: () => void;
+  reset: () => void;
 }
 
 export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
