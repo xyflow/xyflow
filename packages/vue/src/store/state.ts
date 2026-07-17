@@ -80,7 +80,7 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     snapGrid: [15, 15],
     snapToGrid: false,
 
-    edgesReconnectable: false,
+    edgesReconnectable: true,
     edgesFocusable: true,
     nodesFocusable: true,
     nodesConnectable: true,
@@ -105,7 +105,7 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     noWheelClassName: 'nowheel',
     noPanClassName: 'nopan',
     defaultEdgeOptions: undefined,
-    elevateEdgesOnSelect: false,
+    elevateEdgesOnSelect: true,
     elevateNodesOnSelect: true,
     zIndexMode: 'basic',
 
