@@ -1,14 +1,8 @@
-import type { Connection, Handle, HandleType, Position } from '@xyflow/system';
+import type { Handle, HandleType, IsValidConnection, Position } from '@xyflow/system';
 import type { Edge } from './edge';
-import type { InternalNode, Node } from './node';
+import type { InternalNode } from './node';
 
 export type ConnectingHandle = Omit<Handle, 'width' | 'height'>;
-
-/** A valid connection function can determine if an attempted connection is valid or not, i.e. abort creating a new edge */
-export type ValidConnectionFunc = (
-  connection: Connection,
-  elements: { edges: Edge[]; nodes: Node[]; sourceNode: InternalNode; targetNode: InternalNode },
-) => boolean;
 
 export type HandleConnectableFunc = (node: InternalNode, connectedEdges: Edge[]) => boolean;
 
@@ -46,7 +40,7 @@ export interface HandleProps {
    * for performance reasons.
    * @remarks connection becomes an edge if isValidConnection returns true
    */
-  isValidConnection?: ValidConnectionFunc;
+  isValidConnection?: IsValidConnection;
   /**
    * Should you be able to connect to/from this handle.
    * @default true

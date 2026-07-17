@@ -1,6 +1,6 @@
-import type { Connection, FinalConnectionState, HandleType, IsValidConnection as SystemIsValidConnection } from '@xyflow/system';
+import type { Connection, FinalConnectionState, HandleType, IsValidConnection } from '@xyflow/system';
 import type { MaybeRefOrGetter } from 'vue';
-import type { InternalNode, MouseTouchEvent, ValidConnectionFunc } from '../types';
+import type { InternalNode, MouseTouchEvent } from '../types';
 import { getEventPosition, getHostForElement, Position, XYHandle } from '@xyflow/system';
 import { toValue } from 'vue';
 import { useStore } from './useStore';
@@ -10,7 +10,7 @@ export interface UseHandleProps {
   handleId: MaybeRefOrGetter<string | null>;
   nodeId: MaybeRefOrGetter<string>;
   type: MaybeRefOrGetter<HandleType>;
-  isValidConnection?: MaybeRefOrGetter<ValidConnectionFunc | null>;
+  isValidConnection?: MaybeRefOrGetter<IsValidConnection | null>;
   reconnectHandleType?: MaybeRefOrGetter<HandleType>;
   onReconnectStart?: (event: MouseTouchEvent) => void;
   onReconnect?: (event: MouseTouchEvent, connection: Connection) => void;
@@ -19,8 +19,8 @@ export interface UseHandleProps {
 
 /**
  * Composable powering drag- and click-to-connect. Drag-to-connect delegates to `@xyflow/system`'s
- * `XYHandle`; click-to-connect stays Vue-specific because it uses the richer `ValidConnectionFunc` (which
- * also receives the source/target `InternalNode`s on top of the bare `Connection`).
+ * `XYHandle`; click-to-connect is handled here (it validates via `XYHandle.isValid` and builds the
+ * `clickConnect*` payloads itself).
  *
  * Generally it's recommended to use the `<Handle />` component instead of this composable.
  *
@@ -42,27 +42,8 @@ export function useHandle({
 
   const { nodeLookup } = store;
 
-  function buildSystemIsValidConnection(): SystemIsValidConnection | undefined {
-    const userFn = toValue(isValidConnection) || store.isValidConnection;
-    if (!userFn) {
-      return undefined;
-    }
-    return (edge) => {
-      const sourceNode = getInternalNode(edge.source);
-      const targetNode = getInternalNode(edge.target);
-      if (!sourceNode || !targetNode) {
-        return false;
-      }
-      return userFn(
-        {
-          source: edge.source,
-          target: edge.target,
-          sourceHandle: edge.sourceHandle ?? null,
-          targetHandle: edge.targetHandle ?? null,
-        },
-        { nodes: store.nodes, edges: store.edges, sourceNode, targetNode },
-      );
-    };
+  function getIsValidConnection(): IsValidConnection | undefined {
+    return toValue(isValidConnection) || store.isValidConnection || undefined;
   }
 
   function handlePointerDown(event: MouseTouchEvent) {
@@ -87,7 +68,7 @@ export function useHandle({
       dragThreshold: store.connectionDragThreshold,
       handleDomNode,
       panBy,
-      isValidConnection: buildSystemIsValidConnection(),
+      isValidConnection: getIsValidConnection(),
       getTransform: () => store.transform,
       getFromHandle: () => (store.connection.inProgress ? store.connection.fromHandle : null),
       updateConnection,
@@ -163,7 +144,7 @@ export function useHandle({
       fromNodeId: store.connectionClickStartHandle.nodeId,
       fromHandleId: store.connectionClickStartHandle.id ?? null,
       fromType: store.connectionClickStartHandle.type,
-      isValidConnection: buildSystemIsValidConnection(),
+      isValidConnection: getIsValidConnection(),
       doc,
       lib: 'vue',
       flowId,

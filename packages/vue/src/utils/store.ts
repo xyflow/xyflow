@@ -3,6 +3,7 @@ import type {
   ConnectionLookup,
   CoordinateExtent,
   HandleType,
+  IsValidConnection,
   NodeConnection,
   NodeHandleBounds,
   NodeLookup as SystemNodeLookup,
@@ -17,7 +18,6 @@ import type {
   Node,
   NodeOrigin,
   State,
-  ValidConnectionFunc,
   VueFlowInstance,
 } from '../types';
 import { adoptUserNodes, getEdgeId } from '@xyflow/system';
@@ -275,11 +275,10 @@ export function updateConnectionLookup(connectionLookup: ConnectionLookup, edges
  */
 export function validateEdges<EdgeType extends Edge = Edge>(
   nextEdges: (EdgeType | Connection)[],
-  isValidConnection: ValidConnectionFunc | null,
+  isValidConnection: IsValidConnection | null,
   getInternalNode: Actions['getInternalNode'],
   onError: VueFlowInstance['emits']['error'],
   defaultEdgeOptions: DefaultEdgeOptions | undefined,
-  nodes: Node[],
   edges: EdgeType[],
 ): EdgeType[] {
   const validEdges: EdgeType[] = [];
@@ -301,26 +300,9 @@ export function validateEdges<EdgeType extends Edge = Edge>(
       continue;
     }
 
-    if (isValidConnection) {
-      const isValid = isValidConnection(
-        {
-          source: edge.source,
-          target: edge.target,
-          sourceHandle: edge.sourceHandle ?? null,
-          targetHandle: edge.targetHandle ?? null,
-        },
-        {
-          edges,
-          nodes,
-          sourceNode,
-          targetNode,
-        },
-      );
-
-      if (!isValid) {
-        onError(new VueFlowError(ErrorCode.EDGE_INVALID, edge.id));
-        continue;
-      }
+    if (isValidConnection && !isValidConnection(edge)) {
+      onError(new VueFlowError(ErrorCode.EDGE_INVALID, edge.id));
+      continue;
     }
 
     validEdges.push(edge);

@@ -326,7 +326,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
         getInternalNode,
         state.hooks.error.trigger,
         state.defaultEdgeOptions,
-        state.nodes,
         state.edges,
       ),
     );
@@ -359,7 +358,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       getInternalNode,
       state.hooks.error.trigger,
       state.defaultEdgeOptions,
-      state.nodes,
       state.edges,
     );
 
@@ -523,7 +521,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
         getInternalNode,
         state.hooks.error.trigger,
         state.defaultEdgeOptions,
-        state.nodes,
         state.edges,
       );
 
