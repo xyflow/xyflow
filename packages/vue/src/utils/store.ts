@@ -225,7 +225,7 @@ export function adoptNodes<NodeType extends Node = Node>(
  * @param connectionKey at which key the connection should be added
  * @param connectionLookup reference to the connection lookup
  * @param nodeId nodeId of the connection
- * @param handleId handleId of the conneciton
+ * @param handleId handleId of the connection
  */
 function addConnectionToLookup(
   type: 'source' | 'target',
