@@ -1,7 +1,5 @@
-import type { Connection } from '@xyflow/system';
 import type { Ref, ToRefs } from 'vue';
 import type { Edge, FlowProps, Node, VueFlowStoreHandle } from '../types';
-import { mergeAriaLabelConfig } from '@xyflow/system';
 import { effectScope, isRef, toRaw, toRef, watch } from 'vue';
 import { isDef } from '../utils';
 import { storeToRefs } from './storeToRefs';
@@ -99,135 +97,12 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
       });
     };
 
-    const watchMaxZoom = () => {
-      scope.run(() => {
-        watch(
-          () => props.maxZoom,
-          (maxZoom) => {
-            if (maxZoom) {
-              instance.setMaxZoom(maxZoom);
-            }
-          },
-          {
-            immediate: true,
-          },
-        );
-      });
-    };
-
-    const watchMinZoom = () => {
-      scope.run(() => {
-        watch(
-          () => props.minZoom,
-          (minZoom) => {
-            if (minZoom) {
-              instance.setMinZoom(minZoom);
-            }
-          },
-          { immediate: true },
-        );
-      });
-    };
-
-    const watchTranslateExtent = () => {
-      scope.run(() => {
-        watch(
-          () => props.translateExtent,
-          (translateExtent) => {
-            if (translateExtent) {
-              instance.setTranslateExtent(translateExtent);
-            }
-          },
-          {
-            immediate: true,
-          },
-        );
-      });
-    };
-
-    const watchNodeExtent = () => {
-      scope.run(() => {
-        watch(
-          () => props.nodeExtent,
-          (nodeExtent) => {
-            if (nodeExtent) {
-              instance.setNodeExtent(nodeExtent);
-            }
-          },
-          {
-            immediate: true,
-          },
-        );
-      });
-    };
-
-    const watchAriaLabelConfig = () => {
-      scope.run(() => {
-        watch(
-          () => props.ariaLabelConfig,
-          (ariaLabelConfig) => {
-            state.ariaLabelConfig = mergeAriaLabelConfig(ariaLabelConfig);
-          },
-          { immediate: true },
-        );
-      });
-    };
-
-    const watchAutoConnect = () => {
-      scope.run(() => {
-        const autoConnector = async (params: Connection) => {
-          let connection: boolean | Connection = params;
-
-          if (typeof props.autoConnect === 'function') {
-            connection = await props.autoConnect(params);
-          }
-
-          if (connection !== false) {
-            instance.addEdges([connection]);
-          }
-        };
-
-        watch(
-          () => props.autoConnect,
-          (autConnect) => {
-            if (isDef(autConnect)) {
-              storeRefs.autoConnect.value = autConnect;
-            }
-          },
-          { immediate: true },
-        );
-
-        watch(
-          storeRefs.autoConnect,
-          (autoConnectEnabled, _, onCleanup) => {
-            if (autoConnectEnabled) {
-              instance.onConnect(autoConnector);
-            }
-            else {
-              state.hooks.connect.off(autoConnector);
-            }
-
-            onCleanup(() => {
-              state.hooks.connect.off(autoConnector);
-            });
-          },
-          { immediate: true },
-        );
-      });
-    };
-
     const watchRest = () => {
       const skip: (keyof typeof props)[] = [
         'id',
-        'translateExtent',
-        'nodeExtent',
         'edges',
         'nodes',
-        'maxZoom',
-        'minZoom',
-        'autoConnect',
         'viewport',
-        'ariaLabelConfig',
       ];
 
       for (const key of Object.keys(props)) {
@@ -257,12 +132,6 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
     const runAll = () => {
       watchNodesValue();
       watchEdgesValue();
-      watchMinZoom();
-      watchMaxZoom();
-      watchTranslateExtent();
-      watchNodeExtent();
-      watchAutoConnect();
-      watchAriaLabelConfig();
       watchRest();
     };
 

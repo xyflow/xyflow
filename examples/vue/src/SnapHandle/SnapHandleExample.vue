@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Edge, Node } from '@xyflow/vue';
-import { VueFlow } from '@xyflow/vue';
+import type { Connection, Edge, Node } from '@xyflow/vue';
+import { addEdge, VueFlow } from '@xyflow/vue';
 import ConnectionLine from './SnappableConnectionLine.vue';
 
 const nodes = shallowRef<Node[]>([
@@ -22,10 +22,14 @@ const nodes = shallowRef<Node[]>([
 ]);
 
 const edges = shallowRef<Edge[]>([]);
+
+function onConnect(connection: Connection) {
+  edges.value = addEdge(connection, edges.value);
+}
 </script>
 
 <template>
-  <VueFlow v-model:nodes="nodes" v-model:edges="edges" auto-connect fit-view>
+  <VueFlow v-model:nodes="nodes" v-model:edges="edges" fit-view @connect="onConnect">
     <template #connection-line="props">
       <ConnectionLine v-bind="props" />
     </template>

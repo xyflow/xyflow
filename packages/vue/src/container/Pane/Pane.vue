@@ -27,7 +27,7 @@ const {
   multiSelectionActive,
   connectionLookup,
   defaultEdgeOptions,
-  connectionStartHandle,
+  connection,
   panOnDrag,
   paneClickDistance,
   autoPanOnSelection,
@@ -44,7 +44,7 @@ const containerBounds = shallowRef<DOMRect | null>(null);
 
 const hasActiveSelection = toRef(() => elementsSelectable.value && (isSelecting || userSelectionActive.value));
 
-const connectionInProgress = toRef(() => connectionStartHandle.value !== null);
+const connectionInProgress = toRef(() => connection.value.inProgress);
 
 // Used to prevent click events when the user lets go of the selectionKey during a selection
 let selectionInProgress = false;

@@ -1,6 +1,6 @@
-import type { BezierPathOptions, EdgeBase, EdgeMarkerType, EdgePosition, SmoothStepPathOptions } from '@xyflow/system';
+import type { BezierPathOptions, DefaultEdgeOptionsBase, EdgeBase, EdgeMarkerType, EdgePosition, SmoothStepPathOptions } from '@xyflow/system';
 import type { Component, CSSProperties, SVGAttributes, VNode } from 'vue';
-import type { EdgeComponent, EdgeTextProps } from './components';
+import type { EdgeTextProps } from './components';
 import type { ClassValue, Styles } from './flow';
 
 export type EdgeReconnectable = boolean | 'target' | 'source';
@@ -51,8 +51,6 @@ export interface DefaultEdge<Data extends Record<string, unknown> = Record<strin
   class?: ClassValue;
   /** Additional styles */
   style?: Styles;
-  /** Overwrites current edge type */
-  template?: EdgeComponent;
   /**
    * General escape hatch for adding custom attributes to the edge's DOM element.
    */
@@ -93,7 +91,7 @@ export type Edge<Data extends Record<string, unknown> = Record<string, unknown>,
  * provided will be filled in with the default values passed to the `defaultEdgeOptions` prop of the
  * `<VueFlow />` component.
  */
-export type DefaultEdgeOptions = Omit<Edge, 'id' | 'source' | 'target' | 'sourceHandle' | 'targetHandle' | 'selected'>;
+export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
 /**
  * When you implement a custom edge it is wrapped in a component that enables some basic functionality.
@@ -108,7 +106,7 @@ export interface EdgeProps<EdgeType extends Edge = Edge> extends EdgeLabelOption
   // optional: defaults are no longer stamped onto stored edges, so `type`/`data` are genuinely
   // undefined at runtime when the user didn't set them
   type?: EdgeType['type'];
-  label?: string | VNode | Component<EdgeTextProps> | object;
+  label?: string | VNode | Component<EdgeTextProps>;
   style?: CSSProperties;
   selected?: boolean;
   selectable?: boolean;
@@ -140,7 +138,7 @@ export interface BaseEdgeProps extends EdgeLabelOptions {
    * for a simple line.
    */
   path: string;
-  label?: any;
+  label?: string | VNode | Component<EdgeTextProps>;
   /**
    * The id of the SVG marker to use at the start of the edge. This should be defined in a `<defs>`
    * element. Use the format "url(#markerId)" where markerId is the id of your marker definition.

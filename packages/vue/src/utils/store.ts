@@ -2,6 +2,8 @@ import type {
   Connection,
   ConnectionLookup,
   CoordinateExtent,
+  HandleType,
+  IsValidConnection,
   NodeConnection,
   NodeHandleBounds,
   NodeLookup as SystemNodeLookup,
@@ -16,7 +18,6 @@ import type {
   Node,
   NodeOrigin,
   State,
-  ValidConnectionFunc,
   VueFlowInstance,
 } from '../types';
 import { adoptUserNodes, getEdgeId } from '@xyflow/system';
@@ -30,6 +31,40 @@ export function isDef<T>(val: T): val is NonUndefined<T> {
   const unrefVal = unref(val);
 
   return typeof unrefVal !== 'undefined';
+}
+
+/**
+ * Turn `target[key]` into a "controlled" field: every write, from props, `setState`, or a direct assignment,
+ * runs `apply` (mirror to an external instance, e.g. the panZoom, or re-adopt nodes) after an optional
+ * `transform`. A same-value re-assign is skipped so the side effect never fires redundantly. `target` must be
+ * `reactive()`-wrapped for reads to stay reactive (the proxy tracks the key).
+ */
+export function defineControlled<T extends object, K extends keyof T>(
+  target: T,
+  key: K,
+  apply: (value: T[K]) => void,
+  transform: (value: T[K]) => T[K] = value => value,
+) {
+  // No backing ref needed: once `target` is `reactive()`-wrapped, reads/writes through the proxy are tracked
+  // at the key level regardless of data-vs-accessor, so a plain closure is the storage. The dedupe guard
+  // skips a redundant `apply` (Vue's own change check already dedupes the trigger).
+  let value = transform(target[key]);
+
+  Object.defineProperty(target, key, {
+    get: () => value,
+    set: (next: T[K]) => {
+      const transformed = transform(next);
+
+      if (Object.is(transformed, value)) {
+        return;
+      }
+
+      value = transformed;
+      apply(transformed);
+    },
+    enumerable: true,
+    configurable: true,
+  });
 }
 
 /**
@@ -101,6 +136,7 @@ export interface CreateInternalNodesOptions {
   nodeExtent?: CoordinateExtent;
   elevateNodesOnSelect?: boolean;
   zIndexMode?: ZIndexMode;
+  checkEquality?: boolean;
 }
 
 /**
@@ -158,7 +194,7 @@ export function adoptNodes<NodeType extends Node = Node>(
     });
   }
 
-  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: true });
+  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: options?.checkEquality ?? true });
 
   for (const node of validNodes) {
     if (node.parentId && !nodeLookup.has(node.parentId)) {
@@ -190,10 +226,10 @@ export function adoptNodes<NodeType extends Node = Node>(
  * @param connectionKey at which key the connection should be added
  * @param connectionLookup reference to the connection lookup
  * @param nodeId nodeId of the connection
- * @param handleId handleId of the conneciton
+ * @param handleId handleId of the connection
  */
 function addConnectionToLookup(
-  type: 'source' | 'target',
+  type: HandleType,
   connection: NodeConnection,
   connectionKey: string,
   connectionLookup: ConnectionLookup,
@@ -239,11 +275,10 @@ export function updateConnectionLookup(connectionLookup: ConnectionLookup, edges
  */
 export function validateEdges<EdgeType extends Edge = Edge>(
   nextEdges: (EdgeType | Connection)[],
-  isValidConnection: ValidConnectionFunc | null,
+  isValidConnection: IsValidConnection | null,
   getInternalNode: Actions['getInternalNode'],
   onError: VueFlowInstance['emits']['error'],
   defaultEdgeOptions: DefaultEdgeOptions | undefined,
-  nodes: Node[],
   edges: EdgeType[],
 ): EdgeType[] {
   const validEdges: EdgeType[] = [];
@@ -265,26 +300,9 @@ export function validateEdges<EdgeType extends Edge = Edge>(
       continue;
     }
 
-    if (isValidConnection) {
-      const isValid = isValidConnection(
-        {
-          source: edge.source,
-          target: edge.target,
-          sourceHandle: edge.sourceHandle ?? null,
-          targetHandle: edge.targetHandle ?? null,
-        },
-        {
-          edges,
-          nodes,
-          sourceNode,
-          targetNode,
-        },
-      );
-
-      if (!isValid) {
-        onError(new VueFlowError(ErrorCode.EDGE_INVALID, edge.id));
-        continue;
-      }
+    if (isValidConnection && !isValidConnection(edge)) {
+      onError(new VueFlowError(ErrorCode.EDGE_INVALID, edge.id));
+      continue;
     }
 
     validEdges.push(edge);

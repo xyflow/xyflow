@@ -6,6 +6,7 @@ import type {
   ConnectionMode,
   CoordinateExtent,
   FitViewOptionsBase,
+  IsValidConnection,
   OnBeforeDeleteBase,
   OnConnectStartParams,
   PanelPosition,
@@ -20,9 +21,8 @@ import type { CSSProperties } from 'vue';
 import type { VueFlowError } from '../utils';
 import type { EdgeChange, NodeChange } from './changes';
 import type { EdgeTypesObject, NodeTypesObject } from './components';
-import type { ConnectionLineOptions, ConnectionLineProps, Connector } from './connection';
+import type { ConnectionLineOptions, ConnectionLineProps } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeProps, EdgeReconnectable } from './edge';
-import type { ValidConnectionFunc } from './handle';
 import type {
   ConnectEndEvent,
   EdgeMouseEvent,
@@ -114,8 +114,6 @@ export interface FlowExportObject {
   viewport: Viewport;
 }
 
-export type FlowOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = FlowProps<NodeType, EdgeType>;
-
 /**
  * Vue Flow component props.
  */
@@ -159,7 +157,7 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
    * be added to your flow. If you have custom connection logic it is preferred to use this callback
    * over the `isValidConnection` prop on the handle component for performance reasons.
    */
-  isValidConnection?: ValidConnectionFunc | null;
+  isValidConnection?: IsValidConnection | null;
   /**
    * This handler is called before nodes or edges are deleted, allowing the deletion to be aborted by
    * returning `false` or modified by returning updated nodes and edges.
@@ -395,10 +393,6 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
    */
   connectOnClick?: boolean;
   /**
-   * automatically create an edge when connection is triggered
-   */
-  autoConnect?: boolean | Connector;
-  /**
    * If a node is draggable, clicking and dragging that node will move it around the canvas. Adding the
    * `"nodrag"` class prevents this behavior and this prop allows you to change the name of that class.
    * @default "nodrag"
@@ -449,6 +443,12 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
   disableKeyboardA11y?: boolean;
   /** customize the aria labels / a11y descriptions (node/edge descriptions, the aria-live move message, and the Controls/MiniMap/Handle labels); merged over the defaults */
   ariaLabelConfig?: Partial<AriaLabelConfig>;
+  /**
+   * When `true`, Vue Flow logs its events to the console as they fire (high-frequency ones like move/drag
+   * are skipped) — handy for debugging which events run.
+   * @default false
+   */
+  debug?: boolean;
   /**
    * When `true`, focus between edges can be cycled with the `Tab` key and selected with the `Enter`
    * key. This option can be overridden by individual edges by setting their `focusable` prop.

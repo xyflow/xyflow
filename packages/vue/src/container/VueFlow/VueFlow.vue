@@ -1,6 +1,5 @@
 <script lang="ts" setup generic="NodeType extends Node = Node, EdgeType extends Edge = Edge">
 import type { Viewport } from '@xyflow/system';
-import type { Ref } from 'vue';
 import type { Edge, FlowEmits, FlowProps, FlowSlots, Node, VueFlowInstance, VueFlowState } from '../../types';
 import { getCurrentInstance, inject, onUnmounted, provide } from 'vue';
 import A11yDescriptions from '../../components/A11y/A11yDescriptions.vue';
@@ -8,6 +7,7 @@ import Attribution from '../../components/Attribution/Attribution.vue';
 import { storeToRefs } from '../../composables/storeToRefs';
 import { useControlledBindingWarning } from '../../composables/useControlledBindingWarning';
 import { useCreateVueFlow } from '../../composables/useCreateVueFlow';
+import { useDebug } from '../../composables/useDebug';
 import { useOnInitHandler } from '../../composables/useOnInitHandler';
 import { useSelectionChange } from '../../composables/useSelectionChange';
 import { useStylesLoadedWarning } from '../../composables/useStylesLoadedWarning';
@@ -37,7 +37,6 @@ const props = withDefaults(defineProps<FlowProps<NodeType, EdgeType>>(), {
   fitViewOptions: undefined,
   connectOnClick: undefined,
   connectionLineOptions: undefined,
-  autoConnect: undefined,
   elevateEdgesOnSelect: undefined,
   elevateNodesOnSelect: undefined,
   disableKeyboardA11y: undefined,
@@ -80,10 +79,7 @@ const ownsStore = !injectedInstance;
 const { instance, state }
   = injectedInstance && injectedState
     ? { instance: injectedInstance, state: injectedState }
-    : useCreateVueFlow<NodeType, EdgeType>(props, {
-        nodes: modelNodes as unknown as Ref<NodeType[]>,
-        edges: modelEdges as unknown as Ref<EdgeType[]>,
-      });
+    : useCreateVueFlow<NodeType, EdgeType>(props);
 
 // when reusing a provider's store, apply this `<VueFlow>`'s props to it
 if (!ownsStore) {
@@ -111,6 +107,7 @@ useHooks(emit, state.hooks);
 useOnInitHandler(instance);
 useSelectionChange(instance);
 useViewportSync(modelViewport, state);
+useDebug(state);
 
 const stateRefs = storeToRefs(state);
 

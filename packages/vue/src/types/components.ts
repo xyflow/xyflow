@@ -43,7 +43,7 @@ export interface EdgeTextProps {
   x: number;
   /** The y position where the label should be rendered. */
   y: number;
-  label?: string | VNode | Component | object;
+  label?: string | VNode | Component;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;

@@ -1,5 +1,5 @@
-import type { Edge, FlowProps, Node, State } from '../types';
-import { ConnectionLineType, ConnectionMode, isMacOs, mergeAriaLabelConfig, PanOnScrollMode, SelectionMode } from '@xyflow/system';
+import type { Edge, Node, State } from '../types';
+import { ConnectionLineType, ConnectionMode, defaultAriaLabelConfig, infiniteExtent, initialConnection, isMacOs, PanOnScrollMode, SelectionMode } from '@xyflow/system';
 
 import { createHooks } from './hooks';
 
@@ -16,8 +16,6 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     nodeTypes: {},
     edgeTypes: {},
 
-    initialized: false,
-
     dimensions: {
       width: 0,
       height: 0,
@@ -29,14 +27,8 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     minZoom: 0.5,
     maxZoom: 2,
 
-    translateExtent: [
-      [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-      [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
-    ],
-    nodeExtent: [
-      [Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY],
-      [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
-    ],
+    translateExtent: infiniteExtent,
+    nodeExtent: infiniteExtent,
     nodeOrigin: [0, 0],
 
     selectionMode: SelectionMode.Full,
@@ -66,21 +58,18 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
       style: {},
     },
     connectionMode: ConnectionMode.Strict,
-    connectionStartHandle: null,
-    connectionEndHandle: null,
+    connection: initialConnection,
     connectionClickStartHandle: null,
-    connectionPosition: { x: Number.NaN, y: Number.NaN },
     connectionRadius: 20,
     connectionDragThreshold: 1,
     connectOnClick: true,
-    connectionStatus: null,
     isValidConnection: null,
     onBeforeDelete: null,
 
     snapGrid: [15, 15],
     snapToGrid: false,
 
-    edgesReconnectable: false,
+    edgesReconnectable: true,
     edgesFocusable: true,
     nodesFocusable: true,
     nodesConnectable: true,
@@ -98,16 +87,15 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
 
     hooks: createHooks(),
 
-    autoConnect: false,
-
     fitViewOnInit: false,
     fitViewOnInitDone: false,
+    fitViewQueued: false,
 
     noDragClassName: 'nodrag',
     noWheelClassName: 'nowheel',
     noPanClassName: 'nopan',
     defaultEdgeOptions: undefined,
-    elevateEdgesOnSelect: false,
+    elevateEdgesOnSelect: true,
     elevateNodesOnSelect: true,
     zIndexMode: 'basic',
 
@@ -118,26 +106,8 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     autoPanSpeed: 15,
 
     disableKeyboardA11y: false,
-    ariaLabelConfig: mergeAriaLabelConfig(),
+    ariaLabelConfig: defaultAriaLabelConfig,
     ariaLiveMessage: '',
+    debug: false,
   };
 }
-
-// these options will be set using the appropriate methods
-export const storeOptionsToSkip: (keyof Partial<FlowProps & Omit<State, 'nodes' | 'edges'>>)[] = [
-  'id',
-  'vueFlowRef',
-  'viewportRef',
-  'initialized',
-  'nodes',
-  'edges',
-  'maxZoom',
-  'minZoom',
-  'translateExtent',
-  'nodeExtent',
-  'fitView',
-  'fitViewOnInit',
-  'viewport',
-  'hooks',
-  'defaultEdgeOptions',
-];

@@ -4,10 +4,13 @@ import type {
   Connection,
   ConnectionLookup,
   ConnectionMode,
+  ConnectionState,
   CoordinateExtent,
   Dimensions,
   EdgeLookup,
+  FitViewOptionsBase,
   HandleType,
+  IsValidConnection,
   NodeConnection,
   NodeDragItem,
   NodeLookup,
@@ -27,10 +30,10 @@ import type { ComputedRef } from 'vue';
 import type { ViewportHelper } from '../composables';
 import type { EdgeChange, NodeChange } from './changes';
 import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
-import type { ConnectionLineOptions, ConnectionStatus, Connector } from './connection';
+import type { ConnectionLineOptions } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
 import type { FlowExportObject, FlowProps, OnBeforeDelete } from './flow';
-import type { ConnectingHandle, ValidConnectionFunc } from './handle';
+import type { ConnectingHandle } from './handle';
 import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
 import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
 
@@ -38,6 +41,16 @@ export interface UpdateNodeDimensionsParams {
   id: string;
   nodeElement: HTMLDivElement;
   forceUpdate?: boolean;
+}
+
+/** a queued imperative `fitView()` awaiting the node commit / measurement that lets it fit current geometry */
+export interface FitViewRequest<NodeType extends Node = Node> {
+  options?: FitViewOptionsBase<NodeType>;
+  resolver: {
+    promise: Promise<boolean>;
+    resolve: (value: boolean) => void;
+    reject: (reason?: unknown) => void;
+  };
 }
 
 export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edge>
@@ -97,15 +110,13 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
 
   connectionMode: ConnectionMode;
   connectionLineOptions: ConnectionLineOptions;
-  connectionStartHandle: ConnectingHandle | null;
-  connectionEndHandle: ConnectingHandle | null;
+  /** the ongoing drag-connection as a single {@link ConnectionState} (`inProgress: false` when idle) */
+  connection: ConnectionState<InternalNode<NodeType>>;
+  /** the handle a click-to-connect interaction started from (separate from the drag `connection`) */
   connectionClickStartHandle: ConnectingHandle | null;
-  /** the raw pointer position during a connection drag (screen coords); the snapped end is `connectionEndHandle` */
-  connectionPosition: XYPosition;
   connectionRadius: number;
   connectionDragThreshold: number;
-  connectionStatus: ConnectionStatus | null;
-  isValidConnection: ValidConnectionFunc | null;
+  isValidConnection: IsValidConnection | null;
   onBeforeDelete: OnBeforeDelete<NodeType, EdgeType> | null;
 
   connectOnClick: boolean;
@@ -140,11 +151,10 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   preventScrolling: boolean;
   paneDragging: boolean;
 
-  initialized: boolean;
-  autoConnect: boolean | Connector;
-
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;
+  /** internal: a pending imperative `fitView()`, settled by the next node commit / measurement */
+  fitViewQueued: false | FitViewRequest<NodeType>;
 
   noDragClassName: string;
   noWheelClassName: string;
@@ -171,6 +181,9 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   ariaLabelConfig: AriaLabelConfig;
 
   ariaLiveMessage: string;
+
+  /** when `true`, log events to the console as they fire (see the `debug` prop) */
+  debug: boolean;
 }
 
 export type SetNodes<NodeType extends Node = Node> = (nodes: NodeType[] | ((nodes: NodeType[]) => NodeType[])) => void;
@@ -225,10 +238,10 @@ export type UpdateEdgeData<EdgeType extends Edge = Edge> = (
   options?: { replace: boolean },
 ) => void;
 
-// `fitView` lives on `FlowProps`, not `State` (the state keeps a separate `fitViewOnInit` flag so the
-// `fitView()` action isn't clobbered), but it's still a settable prop — accept it on the bridge.
-export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Partial<State<NodeType, EdgeType>>
-  & Partial<Pick<FlowProps<NodeType, EdgeType>, 'fitView'>>;
+// `nodes`/`edges` are intentionally excluded, set them via setNodes/setEdges instead.
+export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
+  = Partial<Omit<State<NodeType, EdgeType>, 'nodes' | 'edges' | 'vueFlowRef' | 'viewportRef' | 'dimensions' | 'hooks'>>
+    & Partial<Pick<FlowProps<NodeType, EdgeType>, 'fitView'>>;
 
 export type SetState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   state: SetStateOptions<NodeType, EdgeType> | ((state: State<NodeType, EdgeType>) => SetStateOptions<NodeType, EdgeType>),
@@ -336,12 +349,10 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   toObject: () => FlowExportObject;
   /** force update node internal data, if handle bounds are incorrect, you might want to use this */
   updateNodeInternals: UpdateNodeInternals;
-  /** start a connection */
-  startConnection: (startHandle: ConnectingHandle, position?: XYPosition, isClick?: boolean) => void;
-  /** update connection position */
-  updateConnection: (position: XYPosition, result?: ConnectingHandle | null, status?: ConnectionStatus | null) => void;
-  /** end (or cancel) a connection */
-  endConnection: (event?: MouseEvent | TouchEvent, isClick?: boolean) => void;
+  /** store the current drag-connection state (fed by the handle interaction) */
+  updateConnection: (connection: ConnectionState<InternalNode<NodeType>>) => void;
+  /** reset the drag-connection to its idle state */
+  cancelConnection: () => void;
 
   /** internal position updater, you probably don't want to use this */
   updateNodePositions: UpdateNodePosition;
@@ -361,11 +372,8 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   /** whether the viewport (panzoom) is initialized — `true` once `<ZoomPane>` has mounted and measured */
   viewportInitialized: ComputedRef<boolean>;
 
-  /** reset state to defaults */
-  $reset: () => void;
-
-  /** destroy the store instance (invalidates its effect scopes); runs the `onDestroy` hook if one was set */
-  $destroy: () => void;
+  /** reset the store to its initial state */
+  reset: () => void;
 }
 
 export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
@@ -405,8 +413,6 @@ export type VueFlowState<NodeType extends Node = Node, EdgeType extends Edge = E
 export type VueFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   readonly id: string;
   readonly emits: FlowHooksEmit<NodeType, EdgeType>;
-  /** tear the store down (internal) */
-  $destroy: () => void;
 } & FlowHooksOn<NodeType, EdgeType>
 & Readonly<ComputedGetters<NodeType, EdgeType>>
 & Readonly<Actions<NodeType, EdgeType>>;

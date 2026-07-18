@@ -1,47 +1,33 @@
+import type { ConnectionState } from '@xyflow/system';
 import type { ComputedRef } from 'vue';
-import type { ConnectionState, Node } from '../types';
-import { initialConnection, pointToRendererPoint } from '@xyflow/system';
+import type { InternalNode, Node } from '../types';
+import { pointToRendererPoint } from '@xyflow/system';
 import { computed } from 'vue';
 import { storeToRefs } from './storeToRefs';
 import { useStore } from './useStore';
-import { useVueFlow } from './useVueFlow';
 
 /**
  * Returns the current connection when there is an active connection interaction. When idle, every field is
  * null (`inProgress: false`). A typical use case is to colorize handles based on whether the connection is
- * valid. Composed from the store's split connection fields into a single {@link ConnectionState}.
+ * valid. The store holds the raw {@link ConnectionState} from `@xyflow/system`; here the `to` endpoint is
+ * converted into flow coordinates (viewport-dependent).
  *
  * @public
  * @returns a `ComputedRef<ConnectionState>` — `inProgress: false` (all-null fields) when idle
  */
-export function useConnection<NodeType extends Node = Node>(): ComputedRef<ConnectionState<NodeType>> {
-  const { getInternalNode } = useVueFlow<NodeType>();
-  const { connectionStartHandle, connectionEndHandle, connectionPosition, connectionStatus, transform } = storeToRefs(useStore<NodeType>());
+export function useConnection<NodeType extends Node = Node>(): ComputedRef<ConnectionState<InternalNode<NodeType>>> {
+  const { connection, transform } = storeToRefs(useStore<NodeType>());
 
-  return computed<ConnectionState<NodeType>>(() => {
-    const fromHandle = connectionStartHandle.value;
-    const fromNode = fromHandle ? getInternalNode(fromHandle.nodeId) : undefined;
+  return computed<ConnectionState<InternalNode<NodeType>>>(() => {
+    const current = connection.value;
 
-    // no connection (or its source node vanished) → the resting state
-    if (!fromHandle || !fromNode) {
-      return initialConnection;
+    if (!current.inProgress) {
+      return current;
     }
 
-    const toHandle = connectionEndHandle.value;
-    const pointer = connectionPosition.value;
-
     return {
-      inProgress: true,
-      isValid: connectionStatus.value === null ? null : connectionStatus.value === 'valid',
-      from: { x: fromHandle.x, y: fromHandle.y },
-      fromHandle,
-      fromPosition: fromHandle.position,
-      fromNode,
-      to: toHandle ? { x: toHandle.x, y: toHandle.y } : pointToRendererPoint(pointer, transform.value),
-      toHandle: toHandle ?? null,
-      toPosition: toHandle?.position ?? null,
-      toNode: ((toHandle ? getInternalNode(toHandle.nodeId) : undefined) ?? null),
-      pointer,
+      ...current,
+      to: pointToRendererPoint(current.to, [transform.value[0], transform.value[1], transform.value[2]]),
     };
   });
 }

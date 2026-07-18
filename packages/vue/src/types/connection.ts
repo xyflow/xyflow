@@ -1,8 +1,6 @@
-import type { Connection, ConnectionLineType, EdgeMarkerType, Handle, NoConnection, Position, XYPosition } from '@xyflow/system';
+import type { ConnectionLineType, EdgeMarkerType, Handle, Position, XYPosition } from '@xyflow/system';
 import type { CSSProperties } from 'vue';
-import type { Edge } from './edge';
 import type { ClassValue } from './flow';
-import type { ConnectingHandle } from './handle';
 import type { InternalNode, Node } from './node';
 
 export interface ConnectionLineOptions {
@@ -13,49 +11,7 @@ export interface ConnectionLineOptions {
   markerStart?: EdgeMarkerType;
 }
 
-export type Connector = (
-  params: Connection,
-) => Promise<(Connection & Partial<Edge>) | false> | ((Connection & Partial<Edge>) | false);
-
 export type ConnectionStatus = 'valid' | 'invalid';
-
-/**
- * An ongoing connection (the active `ConnectionState`). Handles are vue-flow `ConnectingHandle`s (not
- * the DOM `Handle`) and nodes are resolved `InternalNode`s.
- */
-export interface ConnectionInProgress<NodeType extends Node = Node> {
-  /** Indicates whether a connection is currently in progress. */
-  inProgress: true;
-  /**
-   * If an ongoing connection is above a handle or inside the connection radius, this will be `true`
-   * or `false`, otherwise `null`.
-   */
-  isValid: boolean | null;
-  /** Returns the xy start position or `null` if no connection is in progress. */
-  from: XYPosition;
-  /** Returns the start handle or `null` if no connection is in progress. */
-  fromHandle: ConnectingHandle;
-  /** Returns the side (called position) of the start handle or `null` if no connection is in progress. */
-  fromPosition: Position;
-  /** Returns the start node or `null` if no connection is in progress. */
-  fromNode: InternalNode<NodeType>;
-  /** Returns the xy end position or `null` if no connection is in progress. */
-  to: XYPosition;
-  /** Returns the end handle or `null` if no connection is in progress. */
-  toHandle: ConnectingHandle | null;
-  /** Returns the side (called position) of the end handle or `null` if no connection is in progress. */
-  toPosition: Position | null;
-  /** Returns the end node or `null` if no connection is in progress. */
-  toNode: InternalNode<NodeType> | null;
-  /** Returns the pointer position or `null` if no connection is in progress. */
-  pointer: XYPosition;
-}
-
-/**
- * The `ConnectionState` type bundles all information about an ongoing connection. It is returned by the
- * `useConnection` hook.
- */
-export type ConnectionState<NodeType extends Node = Node> = ConnectionInProgress<NodeType> | NoConnection;
 
 /**
  * If you want to render a custom component for connection lines, you can pass it to the `connection-line`

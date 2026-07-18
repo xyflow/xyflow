@@ -1,5 +1,5 @@
 import type { Handle } from '@xyflow/system';
-import { ConnectionLineType, ConnectionMode, getBezierPath, getHandlePosition, getMarkerId, getSmoothStepPath, oppositePosition, pointToRendererPoint, Position } from '@xyflow/system';
+import { ConnectionLineType, ConnectionMode, getBezierPath, getConnectionStatus, getHandlePosition, getMarkerId, getSmoothStepPath, oppositePosition, pointToRendererPoint, Position } from '@xyflow/system';
 import { computed, defineComponent, h, inject } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
 import { Slots } from '../../context';
@@ -11,26 +11,22 @@ const ConnectionLine = defineComponent({
   setup() {
     const { id, viewport, getInternalNode } = useVueFlow();
 
-    const {
-      connectionMode,
-      connectionStartHandle,
-      connectionEndHandle,
-      connectionPosition,
-      connectionLineOptions,
-      connectionStatus,
-    } = storeToRefs(useStore());
+    const { connectionMode, connection, connectionLineOptions } = storeToRefs(useStore());
 
     const connectionLineComponent = inject(Slots)?.['connection-line'];
 
-    const fromNode = computed(() => getInternalNode(connectionStartHandle.value?.nodeId));
+    const fromNode = computed(() => getInternalNode(connection.value.fromHandle?.nodeId));
 
-    const toNode = computed(() => getInternalNode(connectionEndHandle.value?.nodeId) ?? null);
+    const toNode = computed(() => getInternalNode(connection.value.toHandle?.nodeId) ?? null);
 
-    // `connectionPosition` holds the raw pointer (screen space); convert to flow space for the line + the
-    // custom connection-line component. The line END snaps to the hovered handle (below) when there is one.
-    const pointer = computed(() =>
-      pointToRendererPoint(connectionPosition.value, [viewport.value.x, viewport.value.y, viewport.value.zoom]),
-    );
+    // the store holds the raw pointer (screen space); convert to flow space for the line + the custom
+    // connection-line component. The line END snaps to the hovered handle (below) when there is one.
+    const pointer = computed(() => {
+      const { pointer: point } = connection.value;
+      return point
+        ? pointToRendererPoint(point, [viewport.value.x, viewport.value.y, viewport.value.zoom])
+        : { x: Number.NaN, y: Number.NaN };
+    });
 
     const markerStart = computed(() =>
       connectionLineOptions.value.markerStart ? `url(#${getMarkerId(connectionLineOptions.value.markerStart, id)})` : '',
@@ -41,13 +37,17 @@ const ConnectionLine = defineComponent({
     );
 
     return () => {
-      if (!fromNode.value || !connectionStartHandle.value) {
+      const conn = connection.value;
+
+      if (!conn.inProgress || !fromNode.value) {
         return null;
       }
 
-      const startHandleId = connectionStartHandle.value.id;
+      const connectionStatus = getConnectionStatus(conn.isValid);
 
-      const handleType = connectionStartHandle.value.type;
+      const startHandleId = conn.fromHandle.id;
+
+      const handleType = conn.fromHandle.type;
 
       const fromHandleBounds = fromNode.value.internals.handleBounds;
       let handleBounds = fromHandleBounds?.[handleType] ?? [];
@@ -67,7 +67,7 @@ const ConnectionLine = defineComponent({
         if (connectionMode.value === ConnectionMode.Strict) {
           toHandle
             = toNode.value.internals.handleBounds?.[handleType === 'source' ? 'target' : 'source']?.find(
-              d => d.id === connectionEndHandle.value?.id,
+              d => d.id === conn.toHandle?.id,
             ) || null;
         }
         else {
@@ -76,11 +76,11 @@ const ConnectionLine = defineComponent({
             = [
               ...(toNode.value.internals.handleBounds?.source ?? []),
               ...(toNode.value.internals.handleBounds?.target ?? []),
-            ]?.find(d => d.id === connectionEndHandle.value?.id) || null;
+            ]?.find(d => d.id === conn.toHandle?.id) || null;
         }
       }
 
-      const toPosition = connectionEndHandle.value?.position ?? (fromPosition ? oppositePosition[fromPosition] : null);
+      const toPosition = conn.toHandle?.position ?? (fromPosition ? oppositePosition[fromPosition] : null);
 
       if (!fromPosition || !toPosition) {
         return null;
@@ -141,12 +141,12 @@ const ConnectionLine = defineComponent({
                 toHandle,
                 markerEnd: markerEnd.value,
                 markerStart: markerStart.value,
-                connectionStatus: connectionStatus.value,
+                connectionStatus,
                 pointer: pointer.value,
               })
             : h('path', {
                 'd': dAttr,
-                'class': [connectionLineOptions.value.class, connectionStatus.value, 'vue-flow__connection-path'],
+                'class': [connectionLineOptions.value.class, connectionStatus, 'vue-flow__connection-path'],
                 'style': {
                   ...connectionLineOptions.value.style,
                 },
