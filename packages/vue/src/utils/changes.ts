@@ -129,14 +129,14 @@ export function applyChanges<
   return next;
 }
 
-/** @deprecated Prefer the store instance's apply methods (from `useVueFlow` or the `onInit` instance). */
-export function applyEdgeChanges(changes: EdgeChange[], edges: Edge[]) {
-  return applyChanges(changes, edges);
+/** Apply a set of `EdgeChange`s to your edge array and return the next array (for controlled `:edges`). */
+export function applyEdgeChanges<EdgeType extends Edge = Edge>(changes: EdgeChange[], edges: EdgeType[]): EdgeType[] {
+  return applyChanges(changes, edges) as EdgeType[];
 }
 
-/** @deprecated Prefer the store instance's apply methods (from `useVueFlow` or the `onInit` instance). */
-export function applyNodeChanges(changes: NodeChange[], nodes: InternalNode[]) {
-  return applyChanges(changes, nodes);
+/** Apply a set of `NodeChange`s to your node array and return the next array (for controlled `:nodes`). */
+export function applyNodeChanges<NodeType extends Node = Node>(changes: NodeChange[], nodes: NodeType[]): NodeType[] {
+  return applyChanges(changes, nodes) as NodeType[];
 }
 
 export function createSelectionChange(id: string, selected: boolean): NodeSelectionChange | EdgeSelectionChange {
