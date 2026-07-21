@@ -1,9 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { edgesGeneralReactConfig } from 'storybook-shared/flow-configs/edges-general';
-import { nodesGeneralReactConfig } from 'storybook-shared/flow-configs/nodes-general';
-import { paneGeneralConfig } from 'storybook-shared/flow-configs/pane-general';
-import { paneNonDefaultsConfig } from 'storybook-shared/flow-configs/pane-non-defaults';
 import {
   createEdgesGeneralSuite,
   createNodesGeneralSuite,
@@ -12,8 +8,12 @@ import {
   createPropsColorModeSuite,
 } from 'storybook-shared/play-helpers';
 
-import { ColorModeStory } from '../../../components/ColorModeStory';
-import DragHandleNode from '../../../components/DragHandleNode';
+import {
+  edgesGeneralReactConfig,
+  nodesGeneralReactConfig,
+  paneGeneralConfig,
+  paneNonDefaultsConfig,
+} from './testConfigs';
 import { withReactFlowProvider, exampleStoryParameters } from '../../examples/exampleStory';
 import { Flow } from '../../Flow';
 
@@ -36,8 +36,6 @@ const runPaneNonDefaultsSuite = createPaneNonDefaultsSuite('react');
 const runNodesGeneralSuite = createNodesGeneralSuite('react');
 const runEdgesGeneralSuite = createEdgesGeneralSuite('react');
 const runColorModeSuite = createPropsColorModeSuite('react');
-
-const nodeTypes = { DragHandleNode };
 
 const testStoryParameters = {
   layout: 'fullscreen' as const,
@@ -85,13 +83,6 @@ function sectionStory(section: PropSection): Story {
 
 export const CommonProps: Story = sectionStory('common');
 
-export const CommonColorMode: Story = {
-  tags: ['test', 'components'],
-  parameters: testStoryParameters,
-  render: () => <ColorModeStory />,
-  play: runColorModeSuite,
-};
-
 export const ViewportProps: Story = sectionStory('viewport');
 
 export const ViewportGeneral: Story = {
@@ -122,7 +113,7 @@ export const InteractionProps: Story = sectionStory('interaction');
 export const InteractionGeneral: Story = {
   tags: ['test', 'components'],
   parameters: testStoryParameters,
-  render: () => <Flow flowConfig={nodesGeneralReactConfig} nodeTypes={nodeTypes} />,
+  render: () => <Flow flowConfig={nodesGeneralReactConfig} />,
   play: runNodesGeneralSuite,
 };
 

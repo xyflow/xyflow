@@ -1,9 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 
-import { edgesGeneralSvelteConfig } from 'storybook-shared/flow-configs/edges-general';
-import { nodesGeneralSvelteConfig } from 'storybook-shared/flow-configs/nodes-general';
-import { paneGeneralConfig } from 'storybook-shared/flow-configs/pane-general';
-import { paneNonDefaultsSvelteConfig } from 'storybook-shared/flow-configs/pane-non-defaults';
 import {
   createEdgesGeneralSuite,
   createNodesGeneralSuite,
@@ -12,12 +8,16 @@ import {
   createPropsColorModeSuite,
 } from 'storybook-shared/play-helpers';
 
-import ColorModeStory from '../../../components/ColorModeStory.svelte';
-import DragHandleNode from '../../../components/DragHandleNode.svelte';
+import {
+  edgesGeneralSvelteConfig,
+  nodesGeneralSvelteConfig,
+  paneGeneralConfig,
+  paneNonDefaultsSvelteConfig,
+} from './testConfigs';
 import { exampleStoryParameters } from '../../examples/exampleStory';
 
 import SvelteFlowExample from './Flow.svelte';
-import TestFlow from './TestFlow.svelte';
+import SvelteFlow from './SvelteFlow.svelte';
 import { createEventHandlerArgs, eventHandlerArgTypes } from './eventHandlers';
 import {
   API_DOCS_URL,
@@ -36,8 +36,6 @@ const runPaneNonDefaultsSuite = createPaneNonDefaultsSuite('svelte');
 const runNodesGeneralSuite = createNodesGeneralSuite('svelte');
 const runEdgesGeneralSuite = createEdgesGeneralSuite('svelte');
 const runColorModeSuite = createPropsColorModeSuite('svelte');
-
-const nodeTypes = { DragHandleNode };
 
 const testStoryParameters = {
   layout: 'fullscreen' as const,
@@ -84,17 +82,10 @@ function sectionStory(section: PropSection): Story {
 
 export const CommonProps: Story = sectionStory('common');
 
-export const CommonColorMode: Story = {
-  component: ColorModeStory,
-  tags: ['test', 'components'],
-  parameters: testStoryParameters,
-  play: runColorModeSuite,
-};
-
 export const ViewportProps: Story = sectionStory('viewport');
 
 export const ViewportGeneral: Story = {
-  component: TestFlow,
+  component: SvelteFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
   args: { flowConfig: paneGeneralConfig },
@@ -102,7 +93,7 @@ export const ViewportGeneral: Story = {
 };
 
 export const ViewportNonDefaults: Story = {
-  component: TestFlow,
+  component: SvelteFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
   args: { flowConfig: paneNonDefaultsSvelteConfig },
@@ -112,7 +103,7 @@ export const ViewportNonDefaults: Story = {
 export const EdgeProps: Story = sectionStory('edge');
 
 export const EdgeGeneral: Story = {
-  component: TestFlow,
+  component: SvelteFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
   args: { flowConfig: edgesGeneralSvelteConfig },
@@ -122,10 +113,10 @@ export const EdgeGeneral: Story = {
 export const InteractionProps: Story = sectionStory('interaction');
 
 export const InteractionGeneral: Story = {
-  component: TestFlow,
+  component: SvelteFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
-  args: { flowConfig: nodesGeneralSvelteConfig, nodeTypes },
+  args: { flowConfig: nodesGeneralSvelteConfig },
   play: runNodesGeneralSuite,
 };
 
