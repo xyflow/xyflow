@@ -18,14 +18,7 @@
     "./play-helpers/props": "./play-helpers/props.ts",
     "./play-helpers/addons": "./play-helpers/addons.ts",
     "./play-helpers/background": "./play-helpers/background.ts",
-    "./play-helpers/suite": "./play-helpers/suite.ts",
-    "./flow-configs/pane-general": "./flow-configs/pane-general.ts",
-    "./flow-configs/pane-non-defaults": "./flow-configs/pane-non-defaults.ts",
-    "./flow-configs/nodes-general": "./flow-configs/nodes-general.ts",
-    "./flow-configs/edges-general": "./flow-configs/edges-general.ts",
-    "./flow-configs/node-toolbar-general": "./flow-configs/node-toolbar-general.ts",
-    "./flow-configs/color-mode": "./flow-configs/color-mode.ts",
-    "./flow-configs/basic-addons": "./flow-configs/basic-addons.ts"
+    "./play-helpers/suite": "./play-helpers/suite.ts"
   },
   "dependencies": {
     "@xyflow/react": "workspace:*",

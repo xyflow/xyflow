@@ -1,4 +1,4 @@
-import type { SharedFlowConfig } from '../types';
+import type { SharedFlowConfig } from '../../types';
 
 export const basicAddonsConfig = {
   flowProps: {

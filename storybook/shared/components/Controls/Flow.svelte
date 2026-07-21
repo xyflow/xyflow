@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Background, BackgroundVariant, Controls, SvelteFlow } from '@xyflow/svelte';
 
-  import { basicAddonsConfig } from 'storybook-shared/flow-configs/basic-addons';
+  import { basicAddonsConfig } from '../AddonsTestFlow/config';
 
   import { type ControlsStoryArgs } from './config';
 

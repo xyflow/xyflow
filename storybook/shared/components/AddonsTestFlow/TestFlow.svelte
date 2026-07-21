@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { Background, BackgroundVariant, Controls, MiniMap, SvelteFlow } from '@xyflow/svelte';
 
-  import { basicAddonsConfig } from 'storybook-shared/flow-configs/basic-addons';
+  import { basicAddonsConfig } from '../AddonsTestFlow/config';
   import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/play-helpers/suite';
 
   const initialNodes = basicAddonsConfig.flowProps?.nodes ?? [];

@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { SvelteFlow, type NodeTypes } from '@xyflow/svelte';
 
-  import { nodeToolbarSvelteConfig } from 'storybook-shared/flow-configs/node-toolbar-general';
+  import { nodeToolbarSvelteConfig } from './testConfig';
   import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/play-helpers/suite';
 
   import ToolbarNode from 'storybook-component-toolbar-node';

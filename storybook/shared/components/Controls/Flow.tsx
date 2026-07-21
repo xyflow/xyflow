@@ -12,7 +12,7 @@ import {
   type OnConnect,
 } from '@xyflow/react';
 
-import { basicAddonsConfig } from 'storybook-shared/flow-configs/basic-addons';
+import { basicAddonsConfig } from '../AddonsTestFlow/config';
 
 import { type ControlsStoryArgs } from './config';
 

@@ -1,4 +1,4 @@
-import type { SharedFlowConfig, SharedNode } from '../types';
+import type { SharedFlowConfig, SharedNode } from '../../types';
 
 const positions = ['top', 'right', 'bottom', 'left'] as const;
 const alignments = ['start', 'center', 'end'] as const;

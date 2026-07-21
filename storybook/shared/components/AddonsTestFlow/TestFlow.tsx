@@ -11,7 +11,7 @@ import {
   type OnConnect,
 } from '@xyflow/react';
 
-import { basicAddonsConfig } from 'storybook-shared/flow-configs/basic-addons';
+import { basicAddonsConfig } from '../AddonsTestFlow/config';
 import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/play-helpers/suite';
 
 const flowStyle = { width: '100%', height: '100%' } as const;
