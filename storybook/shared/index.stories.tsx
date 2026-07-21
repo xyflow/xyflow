@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
-  title: 'xyflow/Welcome',
+  title: 'xyflow/Index',
   parameters: {
     docs: {
       description: {
@@ -12,7 +12,12 @@ const meta = {
   },
   render: () => (
     <div style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 480, lineHeight: 1.5 }}>
-      <h1 style={{ marginTop: 0 }}>xyflow Storybook</h1>
+      <img
+        src="https://user-images.githubusercontent.com/2857535/279643999-ffda9f91-6b6d-447d-82be-fcbd6103edb6.svg#gh-light-mode-only"
+        alt="xyflow-header"
+        style={{ width: '100%', height: 'auto' }}
+      />
+      <h1>xyflow Storybook</h1>
       <p>
         Select <strong>React Flow</strong> or <strong>Svelte Flow</strong> in the sidebar to browse framework-specific
         stories and run tests.

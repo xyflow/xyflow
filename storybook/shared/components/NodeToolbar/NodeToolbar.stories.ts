@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/framework';
 
-import { createNodeToolbarGeneralSuite } from '../../play-helpers/node-toolbar';
+import { createNodeToolbarGeneralSuite } from '../../tests/node-toolbar';
 import type { FlowFramework } from '../../types';
 
 import NodeToolbarExample from 'storybook-component-nodetoolbar-flow';

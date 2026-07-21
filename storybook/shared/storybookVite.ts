@@ -24,9 +24,7 @@ export function sharedStorybookViteConfig(framework: StorybookFramework, sharedR
     resolve: {
       alias: {
         'storybook-component-background-flow':
-          framework === 'react'
-            ? path.join(backgroundDir, 'Flow.tsx')
-            : path.join(backgroundDir, 'Flow.svelte'),
+          framework === 'react' ? path.join(backgroundDir, 'Flow.tsx') : path.join(backgroundDir, 'Flow.svelte'),
         'storybook-component-addons-test-flow':
           framework === 'react'
             ? path.join(sharedRoot, 'components/AddonsTestFlow/TestFlow.tsx')
@@ -40,8 +38,7 @@ export function sharedStorybookViteConfig(framework: StorybookFramework, sharedR
             ? path.join(sharedRoot, 'components/NodeToolbar/ToolbarNode.tsx')
             : path.join(sharedRoot, 'components/NodeToolbar/ToolbarNode.svelte'),
         '@xyflow/storybook': framework === 'react' ? '@xyflow/react' : '@xyflow/svelte',
-        '@storybook/framework':
-          framework === 'react' ? '@storybook/react-vite' : '@storybook/svelte-vite',
+        '@storybook/framework': framework === 'react' ? '@storybook/react-vite' : '@storybook/svelte-vite',
       },
     },
   };

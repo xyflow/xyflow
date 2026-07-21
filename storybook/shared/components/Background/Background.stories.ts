@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/framework';
 
 import { BackgroundVariant } from '@xyflow/storybook';
 
-import { createBackgroundPlays } from '../../play-helpers/background';
+import { createBackgroundPlays } from '../../tests/background';
 import type { FlowFramework } from '../../types';
 
 import BackgroundExample from 'storybook-component-background-flow';
@@ -38,9 +38,7 @@ function story(name: BackgroundStoryName): Story {
   const definition = backgroundStoryDefinitions[name];
   const playKey = definition.play;
   const play =
-    playKey && !(framework === 'svelte' && definition.reactOnly)
-      ? plays[playKey as keyof typeof plays]
-      : undefined;
+    playKey && !(framework === 'svelte' && definition.reactOnly) ? plays[playKey as keyof typeof plays] : undefined;
 
   return {
     ...(definition.args ? { args: storyArgs(name) } : {}),

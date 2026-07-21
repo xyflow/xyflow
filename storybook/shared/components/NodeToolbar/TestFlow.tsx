@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ReactFlow, addEdge, useEdgesState, useNodesState, type NodeTypes, type OnConnect } from '@xyflow/react';
 
 import { nodeToolbarReactConfig } from './testConfig';
-import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/play-helpers/suite';
+import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/tests/suite';
 
 import ToolbarNode from 'storybook-component-toolbar-node';
 

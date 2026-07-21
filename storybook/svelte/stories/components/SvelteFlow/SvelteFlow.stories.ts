@@ -6,7 +6,7 @@ import {
   createPaneGeneralSuite,
   createPaneNonDefaultsSuite,
   createPropsColorModeSuite,
-} from 'storybook-shared/play-helpers';
+} from 'storybook-shared/tests';
 
 import {
   edgesGeneralSvelteConfig,

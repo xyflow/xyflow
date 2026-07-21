@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/framework';
 import { fn } from 'storybook/test';
 
-import { createControlsSuite } from '../../play-helpers/addons';
+import { createControlsSuite } from '../../tests/addons';
 import type { FlowFramework } from '../../types';
 
 import AddonsTestFlow from 'storybook-component-addons-test-flow';

@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { SvelteFlow, type NodeTypes } from '@xyflow/svelte';
 
-  import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/play-helpers/suite';
+  import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/tests/suite';
   import type { SharedFlowConfig } from 'storybook-shared/types';
 
   let {

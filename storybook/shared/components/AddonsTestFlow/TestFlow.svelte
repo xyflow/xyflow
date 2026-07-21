@@ -3,7 +3,7 @@
   import { Background, BackgroundVariant, Controls, MiniMap, SvelteFlow } from '@xyflow/svelte';
 
   import { basicAddonsConfig } from '../AddonsTestFlow/config';
-  import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/play-helpers/suite';
+  import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/tests/suite';
 
   const initialNodes = basicAddonsConfig.flowProps?.nodes ?? [];
   const initialEdges = basicAddonsConfig.flowProps?.edges ?? [];
