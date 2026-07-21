@@ -190,7 +190,7 @@ const initialNodes: Node[] = [
     position: { x: 500, y: 350 },
     extent,
   },
-];
+].reverse();
 
 const CustomNodeFlow = () => {
   const [snapToGrid, setSnapToGrid] = useState(false);

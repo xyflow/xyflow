@@ -134,9 +134,8 @@ const initialNodes: Node[] = [
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
     className: 'light',
-    extent: 'parent',
   },
-];
+].reverse();
 
 const initialEdges: Edge[] = [
   {
