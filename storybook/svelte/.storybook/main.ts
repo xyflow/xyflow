@@ -4,7 +4,7 @@ import path from 'node:path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-import { sharedStorybookViteConfig } from '../../shared/storybookVite';
+import { sharedStorybookViteConfig } from '../../shared/storybookVite.ts';
 
 /**
  * This function is used to resolve the absolute path of a package.

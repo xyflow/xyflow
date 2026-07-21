@@ -10,7 +10,8 @@
   "exports": {
     "./types": "./types.ts",
     "./utils": "./utils.ts",
-    "./tests": "./tests.ts",
+    "./play-helpers": "./play-helpers.ts",
+    "./tests": "./tests/index.ts",
     "./tests/pane": "./tests/pane.ts",
     "./tests/nodes": "./tests/nodes.ts",
     "./tests/edges": "./tests/edges.ts",
