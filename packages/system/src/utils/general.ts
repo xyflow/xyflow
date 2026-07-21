@@ -12,6 +12,7 @@ import type {
   NodeLookup,
   Padding,
   PaddingWithUnit,
+  DeprecatedPaddingValue,
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
@@ -186,6 +187,8 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
   };
 };
 
+let didWarnUnitlessPadding = false;
+
 /**
  * Parses a single padding value to a number
  * @internal
@@ -193,8 +196,16 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
  * @param viewport - Width or height of the viewport
  * @returns The padding in pixels
  */
-function parsePadding(padding: PaddingWithUnit, viewport: number): number {
+function parsePadding(padding: PaddingWithUnit | DeprecatedPaddingValue, viewport: number): number {
   if (typeof padding === 'number') {
+    if (process.env.NODE_ENV === 'development' && !didWarnUnitlessPadding) {
+      didWarnUnitlessPadding = true;
+      console.warn(
+        '[DEPRECATED] Unitless padding values for `fitView`/`getViewportForBounds` are deprecated and will be removed in the next major version. Use a string with a unit instead, e.g. "10%" or "20px".'
+      );
+    }
+
+    // Legacy unitless formula — kept for backwards compatibility until the next major version
     return Math.floor((viewport - viewport / (1 + padding)) * 0.5);
   }
 
@@ -213,7 +224,7 @@ function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   }
 
   console.error(
-    `The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
+    `The padding value "${padding}" is invalid. Please provide a string with a valid unit (px or %).`
   );
   return 0;
 }
@@ -245,10 +256,10 @@ function parsePaddings(
   }
 
   if (typeof padding === 'object') {
-    const top = parsePadding(padding.top ?? padding.y ?? 0, height);
-    const bottom = parsePadding(padding.bottom ?? padding.y ?? 0, height);
-    const left = parsePadding(padding.left ?? padding.x ?? 0, width);
-    const right = parsePadding(padding.right ?? padding.x ?? 0, width);
+    const top = parsePadding(padding.top ?? padding.y ?? '0px', height);
+    const bottom = parsePadding(padding.bottom ?? padding.y ?? '0px', height);
+    const left = parsePadding(padding.left ?? padding.x ?? '0px', width);
+    const right = parsePadding(padding.right ?? padding.x ?? '0px', width);
     return { top, right, bottom, left, x: left + right, y: top + bottom };
   }
 
@@ -294,12 +305,12 @@ function calculateAppliedPaddings(bounds: Rect, x: number, y: number, zoom: numb
  * @param height  - Height of the viewport.
  * @param minZoom - Minimum zoom level of the resulting viewport.
  * @param maxZoom - Maximum zoom level of the resulting viewport.
- * @param padding - Padding around the bounds.
+ * @param padding - Padding around the bounds. Prefer a string with a unit (`'10%'` or `'20px'`). Unitless numbers are deprecated.
  * @returns A transformed {@link Viewport} that encloses the given bounds which you can pass to e.g. {@link setViewport}.
  * @example
  * const { x, y, zoom } = getViewportForBounds(
  * { x: 0, y: 0, width: 100, height: 100},
- * 1200, 800, 0.5, 2);
+ * 1200, 800, 0.5, 2, '10%');
  */
 export const getViewportForBounds = (
   bounds: Rect,

@@ -67,7 +67,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       },
       fitBounds: async (bounds, options) => {
         const { width, height, minZoom, maxZoom, panZoom } = store.getState();
-        const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
+        const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? '5%');
 
         if (!panZoom) {
           return false;

@@ -53,8 +53,10 @@ import type {
  * ReactFlow component props.
  * @public
  */
-export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge>
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'> {
+export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'onError'
+> {
   /**
    * An array of nodes to render in a controlled flow.
    * @default []
@@ -572,7 +574,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * call.
    * @example
    * const fitViewOptions = {
-   *  padding: 0.1,
+   *  padding: '5%',
    *  includeHiddenNodes: false,
    *  minZoom: 0.1,
    *  maxZoom: 1,

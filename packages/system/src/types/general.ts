@@ -168,17 +168,27 @@ export type FitViewParamsBase<NodeType extends NodeBase> = {
 };
 
 export type PaddingUnit = 'px' | '%';
-export type PaddingWithUnit = `${number}${PaddingUnit}` | number;
+
+/**
+ * Padding as a string with a unit, e.g. `'10%'` or `'20px'`.
+ */
+export type PaddingWithUnit = `${number}${PaddingUnit}`;
+
+/**
+ * @deprecated Unitless number paddings for fitView are deprecated and will be removed in the next major version. Use a string with a unit instead, e.g. `'10%'` or `'20px'`.
+ */
+export type DeprecatedPaddingValue = number;
 
 export type Padding =
   | PaddingWithUnit
+  | DeprecatedPaddingValue
   | {
-      top?: PaddingWithUnit;
-      right?: PaddingWithUnit;
-      bottom?: PaddingWithUnit;
-      left?: PaddingWithUnit;
-      x?: PaddingWithUnit;
-      y?: PaddingWithUnit;
+      top?: PaddingWithUnit | DeprecatedPaddingValue;
+      right?: PaddingWithUnit | DeprecatedPaddingValue;
+      bottom?: PaddingWithUnit | DeprecatedPaddingValue;
+      left?: PaddingWithUnit | DeprecatedPaddingValue;
+      x?: PaddingWithUnit | DeprecatedPaddingValue;
+      y?: PaddingWithUnit | DeprecatedPaddingValue;
     };
 
 /**
@@ -250,7 +260,7 @@ export type SetCenterOptions = ViewportHelperFunctionOptions & {
  * @inline
  */
 export type FitBoundsOptions = ViewportHelperFunctionOptions & {
-  padding?: number;
+  padding?: Padding;
 };
 
 export type OnViewportChange = (viewport: Viewport) => void;
