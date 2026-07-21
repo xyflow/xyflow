@@ -96,6 +96,12 @@
 
   // We start the selection process when the user clicks down on the pane
   function onPointerDownCapture(event: PointerEvent) {
+    // Mouse button arrays only restrict mouse input. Let touch panning handle this gesture
+    // unless the user explicitly activated selection with the selection key.
+    if (event.pointerType === 'touch' && panOnDragActive !== false && !store.selectionKeyPressed) {
+      return;
+    }
+
     containerBounds = container?.getBoundingClientRect();
     if (!containerBounds) return;
 
