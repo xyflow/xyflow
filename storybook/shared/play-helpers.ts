@@ -31,4 +31,4 @@ export async function getViewportTransform(canvasElement: HTMLElement, framework
   return getTransform(canvasElement, viewportSelector(framework));
 }
 
-export * from './play-helpers/index';
+export * from './tests/index';
