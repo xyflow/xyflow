@@ -423,7 +423,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
   const origin = node.origin ?? nodeOrigin;
   let extent = node.extent || nodeExtent;
 
-  if (node.extent === 'parent' && !node.expandParent) {
+  if (node.extent === 'parent') {
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {

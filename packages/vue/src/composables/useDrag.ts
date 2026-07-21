@@ -95,7 +95,6 @@ export function useDrag(params: UseDragParams) {
               internals: { positionAbsolute },
               extent: item.extent,
               parentId: item.parentId,
-              expandParent: item.expandParent,
               dragging: item.dragging,
               origin: item.origin,
             });

@@ -2,7 +2,7 @@
 import type { NodeDimensionChange, NodePositionChange } from '@xyflow/system';
 import type { NodeChange } from '../../types';
 import type { NodeResizerEmits, ResizeControlProps } from './types';
-import { evaluateAbsolutePosition, handleExpandParent, XYResizer } from '@xyflow/system';
+import { XYResizer } from '@xyflow/system';
 import { computed, shallowRef, toRef, watchEffect } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
 import { useNodeId } from '../../composables/useNodeId';
@@ -23,7 +23,7 @@ const emits = defineEmits<NodeResizerEmits>();
 
 const { emits: triggerEmits, viewport } = useVueFlow();
 
-const { nodeLookup, parentLookup } = useStore();
+const { nodeLookup } = useStore();
 
 const { transform, nodeOrigin, snapGrid, snapToGrid, vueFlowRef, noDragClassName } = storeToRefs(useStore());
 
@@ -61,39 +61,8 @@ watchEffect((onCleanup) => {
       const nodeChanges: NodeChange[] = [];
       const node = nodeLookup.get(nodeId.value!);
 
-      // resolved x/y for the resized node; clamped below when the node expands its parent
-      let nextX = changes.x;
-      let nextY = changes.y;
-
-      if (node?.expandParent && node.parentId) {
-        const origin = node.origin ?? nodeOrigin.value;
-        const width = changes.width ?? node.measured.width ?? 0;
-        const height = changes.height ?? node.measured.height ?? 0;
-
-        // grow the parent to fit the resized child
-        const child = {
-          id: node.id,
-          parentId: node.parentId,
-          rect: {
-            width,
-            height,
-            ...evaluateAbsolutePosition(
-              { x: changes.x ?? node.position.x, y: changes.y ?? node.position.y },
-              { width, height },
-              node.parentId,
-              nodeLookup,
-              origin,
-            ),
-          },
-        };
-
-        nodeChanges.push(...(handleExpandParent([child], nodeLookup, parentLookup, nodeOrigin.value) as NodeChange[]));
-
-        // once the parent was expanded, the child clamps to the parent's edge (0,0 for origin [0,0],
-        // width/height for [1,1]).
-        nextX = typeof changes.x !== 'undefined' ? Math.max(origin[0] * width, changes.x) : undefined;
-        nextY = typeof changes.y !== 'undefined' ? Math.max(origin[1] * height, changes.y) : undefined;
-      }
+      const nextX = changes.x;
+      const nextY = changes.y;
 
       if (typeof nextX !== 'undefined' || typeof nextY !== 'undefined') {
         const position = {

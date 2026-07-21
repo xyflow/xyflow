@@ -19,14 +19,11 @@ import type {
 } from '../types';
 import type { Commit } from './commit';
 import {
-  clampPosition,
-  clampPositionToParent,
   getConnectedEdges as getConnectedEdgesBase,
   getDimensions,
   getElementsToRemove,
   getHandleBounds,
   getOverlappingArea,
-  handleExpandParent,
   initialConnection,
   isRectObject,
   nodeToRect,
@@ -62,7 +59,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   // the commit layer owns the write paths (`commitNodes`/`commitEdges`) and the system-side lookups; actions
   // route every node/edge mutation through it. `createVueFlowStore` builds it so the `nodeExtent` accessor
   // can reuse `commitNodes` too.
-  const { systemNodeLookup, systemParentLookup, commitNodes, commitEdges } = commit;
+  const { systemNodeLookup, commitNodes, commitEdges } = commit;
 
   const updateNodeInternals: Actions<NodeType>['updateNodeInternals'] = (nodeId) => {
     state.hooks.updateNodeInternals.trigger(Array.isArray(nodeId) ? nodeId : [nodeId]);
@@ -103,12 +100,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
   const updateNodePositions: Actions<NodeType>['updateNodePositions'] = (dragItems, changed, dragging) => {
     const changes: (NodePositionChange | NodeDimensionChange)[] = [];
-    const parentExpandChildren: { id: string; parentId: string; rect: Rect }[] = [];
 
     for (const node of dragItems) {
-      const lookupNode = getNode(node.id);
-      const expandParentId = lookupNode?.expandParent ? lookupNode.parentId : undefined;
-
       const change: NodePositionChange = {
         id: node.id,
         type: 'position',
@@ -119,28 +112,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       if (changed) {
         // drag items already carry the parent-relative position (both drag paths subtract the parent offset)
         change.position = node.position;
-
-        if (expandParentId) {
-          // pin the child's relative position to >= 0; the parent grows to contain it instead
-          change.position = { x: Math.max(0, change.position.x), y: Math.max(0, change.position.y) };
-
-          parentExpandChildren.push({
-            id: node.id,
-            parentId: expandParentId,
-            rect: {
-              ...node.internals.positionAbsolute,
-              width: node.measured?.width ?? 0,
-              height: node.measured?.height ?? 0,
-            },
-          });
-        }
       }
 
       changes.push(change);
-    }
-
-    if (parentExpandChildren.length > 0) {
-      changes.push(...handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
     }
 
     if (changes.length) {
@@ -163,7 +137,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
 
     const changes: (NodeDimensionChange | NodePositionChange)[] = [];
-    const parentExpandChildren: { id: string; parentId: string; rect: Rect }[] = [];
 
     for (const element of updates) {
       const update = element;
@@ -194,30 +167,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
             dimensions,
           });
 
-          // a freshly-measured `expandParent` child grows its parent to fit; re-clamp against the NEW
-          // dimensions/extent first so a node that only grew isn't treated as overflowing
-          if (node.expandParent && node.parentId) {
-            const parent = getInternalNode(node.parentId);
-            let positionAbsolute = node.internals.positionAbsolute;
-            const extent = node.extent;
-
-            if (extent === 'parent' && parent) {
-              positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, parent);
-            }
-            else if (Array.isArray(extent)) {
-              positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
-            }
-            else {
-              positionAbsolute = clampPosition(positionAbsolute, state.nodeExtent, dimensions);
-            }
-
-            parentExpandChildren.push({
-              id: node.id,
-              parentId: node.parentId,
-              rect: { ...positionAbsolute, width: dimensions.width, height: dimensions.height },
-            });
-          }
-
           // re-set a fresh entry so the markRaw lookup re-renders (in-place measured/handleBounds writes
           // aren't tracked; only the `.set` is). Into BOTH maps so their references don't diverge.
           const fresh = markRaw({ ...toRaw(node) });
@@ -225,10 +174,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
           nodeLookup.set(node.id, fresh);
         }
       }
-    }
-
-    if (parentExpandChildren.length > 0) {
-      changes.push(...handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
     }
 
     if (changes.length) {
