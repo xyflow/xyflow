@@ -22,7 +22,6 @@ import type { Node, Edge, InternalNode } from '../types';
  * This function then applies the changes and returns the updated elements.
  */
 function applyChanges(changes: any[], elements: any[]): any[] {
-  const updatedElements: any[] = [];
   /*
    * By storing a map of changes for each element, we can a quick lookup as we
    * iterate over the elements array!
@@ -55,6 +54,11 @@ function applyChanges(changes: any[], elements: any[]): any[] {
     }
   }
 
+  return applyChangeMap(elements, changesMap, addItemChanges);
+}
+
+export function applyChangeMap(elements: any[], changesMap: Map<string, any[]>, addItemChanges: any[]): any[] {
+  const updatedElements: any[] = [];
   for (const element of elements) {
     const changes = changesMap.get(element.id);
 
@@ -306,7 +310,7 @@ export function getElementsDiffChanges({
     }
 
     if (storeItem === undefined) {
-      changes.push({ item: item, type: 'add', index });
+      changes.push({ item: item, type: 'add', index, id: item.id });
     }
   }
 

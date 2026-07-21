@@ -30,6 +30,7 @@ export type NodeRemoveChange = {
 };
 
 export type NodeAddChange<NodeType extends NodeBase = NodeBase> = {
+  id: string;
   item: NodeType;
   type: 'add';
   index?: number;

@@ -16,13 +16,15 @@ import {
   calculateNodePosition,
   type SetCenterOptions,
   getHandlePosition,
-  Position
+  Position,
+  type NodeChange
 } from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, InternalNode } from '$lib/types';
 import { addEdge as addEdgeUtil } from '$lib/utils/edges';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
+import { createSelectionChange, getSelectionChanges } from './changes';
 
 export const key = Symbol();
 
@@ -48,13 +50,16 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
   }
 
   function addEdge(edgeParams: EdgeType | Connection) {
+    // TODO: trigger changes instead
     store.edges = addEdgeUtil<EdgeType>(edgeParams, store.edges, { onError: store.onerror });
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    store.nodes = store.nodes.map((node) => {
-      if (store.connection.inProgress && store.connection.fromNode.id === node.id) {
-        const internalNode = store.nodeLookup.get(node.id);
+    const changes: NodeChange<NodeType>[] = [];
+
+    for (const [id, dragItem] of nodeDragItems) {
+      if (store.connection.inProgress && store.connection.fromNode.id === id) {
+        const internalNode = store.nodeLookup.get(id);
         if (internalNode) {
           store.connection = {
             ...store.connection,
@@ -62,9 +67,16 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
           };
         }
       }
-      const dragItem = nodeDragItems.get(node.id);
-      return dragItem ? { ...node, position: dragItem.position, dragging } : node;
-    });
+
+      changes.push({
+        id,
+        type: 'position',
+        position: dragItem.position,
+        dragging
+      });
+    }
+
+    store.dispatchNodeChanges(changes);
   };
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
@@ -92,37 +104,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       store.resolveFitView();
     }
 
-    const newNodes = new Map<string, NodeType>();
-    for (const change of changes) {
-      const userNode = store.nodeLookup.get(change.id)?.internals.userNode;
-
-      if (!userNode) {
-        continue;
-      }
-
-      const node = { ...userNode };
-
-      switch (change.type) {
-        case 'dimensions': {
-          const measured = { ...node.measured, ...change.dimensions };
-
-          if (change.setAttributes) {
-            node.width = change.dimensions?.width ?? node.width;
-            node.height = change.dimensions?.height ?? node.height;
-          }
-
-          node.measured = measured;
-          break;
-        }
-        case 'position':
-          node.position = change.position ?? node.position;
-          break;
-      }
-
-      newNodes.set(change.id, node);
-    }
-
-    store.nodes = store.nodes.map((node) => newNodes.get(node.id) ?? node);
+    store.dispatchNodeChanges(changes);
   }
 
   function fitView(options?: FitViewOptions<NodeType>) {
@@ -136,6 +118,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     store.fitViewResolver = fitViewResolver;
 
     // We need to update the nodes so that adoptUserNodes is triggered
+    // When only render visible is enabled
     store.nodes = [...store.nodes];
 
     return fitViewResolver.promise;
@@ -225,15 +208,22 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
   }
 
   function unselectNodesAndEdges(params?: { nodes?: NodeType[]; edges?: EdgeType[] }) {
+    // TODO: this is very weird
     const nodesToDeselect = params?.nodes ? new Set(params.nodes.map((node) => node.id)) : null;
     const [nodesDeselected, newNodes] = deselect(store.nodes, nodesToDeselect);
+    console.log(nodesDeselected);
     if (nodesDeselected) {
-      store.nodes = newNodes;
+      store.dispatchNodeChanges(
+        newNodes
+          .filter((node) => !!node.selected !== !!store.nodeLookup.get(node.id)?.selected)
+          .map((node) => createSelectionChange(node.id, !!node.selected))
+      );
     }
 
     const edgesToDeselect = params?.edges ? new Set(params.edges.map((node) => node.id)) : null;
     const [edgesDeselected, newEdges] = deselect(store.edges, edgesToDeselect);
     if (edgesDeselected) {
+      // TODO: trigger changes instead
       store.edges = newEdges;
     }
   }
@@ -241,24 +231,17 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.nodes = store.nodes.map((node) => {
-      const nodeWillBeSelected = ids.includes(node.id);
-      const selected = isMultiSelection ? node.selected || nodeWillBeSelected : nodeWillBeSelected;
+    const changes = isMultiSelection
+      ? ids.map((id) => createSelectionChange(id, true))
+      : getSelectionChanges(store.nodes, new Set(ids));
 
-      if (!!node.selected !== selected) {
-        return { ...node, selected };
-      }
-      return node;
-    });
-
-    if (!isMultiSelection) {
-      unselectNodesAndEdges({ nodes: [] });
-    }
+    store.dispatchNodeChanges(changes);
   }
 
   function addSelectedEdges(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
+    // TODO: trigger changes instead
     store.edges = store.edges.map((edge) => {
       const edgeWillBeSelected = ids.includes(edge.id);
       const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
@@ -268,13 +251,10 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       }
       return edge;
     });
-
-    if (!isMultiSelection) {
-      unselectNodesAndEdges({ edges: [] });
-    }
   }
 
   function handleNodeSelection(id: string, unselect?: boolean, nodeRef?: HTMLDivElement | null) {
+    console.log('handleNodeSelection', id, unselect, nodeRef);
     const node = store.nodeLookup.get(id);
 
     if (!node) {

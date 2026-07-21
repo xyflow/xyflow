@@ -52,6 +52,7 @@
 
   import type { Node, Edge } from '$lib/types';
   import type { PaneProps } from './types';
+  import { getSelectionChanges } from '$lib/store/changes';
 
   let {
     store = $bindable(),
@@ -197,10 +198,11 @@
 
     // this prevents unnecessary updates while updating the selection rectangle
     if (!isSetEqual(prevSelectedNodeIds, selectedNodeIds)) {
-      store.nodes = store.nodes.map(toggleSelected(selectedNodeIds));
+      store.dispatchNodeChanges(getSelectionChanges(store.nodes, selectedNodeIds));
     }
 
     if (!isSetEqual(prevSelectedEdgeIds, selectedEdgeIds)) {
+      // TODO: trigger changes instead
       store.edges = store.edges.map(toggleSelected(selectedEdgeIds));
     }
 

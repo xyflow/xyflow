@@ -37,7 +37,10 @@ import {
   type OnReconnectStart,
   type OnReconnectEnd,
   type AriaLabelConfig,
-  type ZIndexMode
+  type ZIndexMode,
+  type NodeAddChange,
+  type NodeChange,
+  type EdgeChange
 } from '@xyflow/system';
 
 const devWarn = createDevWarn('Svelte Flow', 'https://svelteflow.dev/');
@@ -74,6 +77,7 @@ import type {
 import type { StoreSignals } from './types';
 import { MediaQuery } from 'svelte/reactivity';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
+import { applyNodeChanges } from './changes';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -157,6 +161,41 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       updateConnectionLookup(this.connectionLookup, this.edgeLookup, signals.edges);
       return signals.edges;
     });
+
+    pendingNodeChanges: boolean = $state.raw(false);
+    pendingEdgeChanges: boolean = $state.raw(false);
+    batchedNodeChanges: Map<string, NodeChange<NodeType>[]> = new Map();
+    batchedNewNodes: NodeAddChange<NodeType>[] = [];
+    batchedEdgeChanges: Map<string, EdgeChange<EdgeType>[]> = new Map();
+    batchedNewEdges: EdgeType[] = [];
+
+    dispatchNodeChanges = (changes: NodeChange<NodeType>[]) => {
+      console.log('dispatchNodeChanges', changes);
+      this.pendingNodeChanges = true;
+      for (const change of changes) {
+        if (change.type === 'add') {
+          this.batchedNewNodes.push(change);
+          continue;
+        }
+
+        const batch = this.batchedNodeChanges.get(change.id);
+        if (batch) {
+          batch.push(change);
+        } else {
+          this.batchedNodeChanges.set(change.id, [change]);
+        }
+      }
+    };
+
+    flushNodeChanges = () => {
+      console.log('flushNodeChanges', this.batchedNodeChanges, this.batchedNewNodes);
+      this.pendingNodeChanges = false;
+      const newNodes = applyNodeChanges(this.nodes, this.batchedNodeChanges, this.batchedNewNodes);
+      this.batchedNodeChanges.clear();
+      this.batchedNewNodes = [];
+      this.nodes = newNodes;
+    };
+    // dispatchEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {};
 
     get nodes() {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -460,6 +499,12 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         warnIfDeeplyReactive(signals.nodes, 'nodes');
         warnIfDeeplyReactive(signals.edges, 'edges');
       }
+
+      $effect.pre(() => {
+        if (this.pendingNodeChanges) {
+          this.flushNodeChanges();
+        }
+      });
     }
 
     resetStoreValues() {
@@ -491,5 +536,4 @@ function warnIfDeeplyReactive(array: unknown[] | undefined, name: string) {
     console.warn(`Use $state.raw for ${name} to prevent performance issues.`);
   }
 }
-
 /* eslint-enable svelte/prefer-svelte-reactivity */

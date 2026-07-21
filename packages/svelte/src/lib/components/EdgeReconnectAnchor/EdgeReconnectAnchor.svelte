@@ -92,6 +92,7 @@
           return;
         }
 
+        // TODO: trigger changes instead
         store.edges = store.edges.map((e) => (e.id === edge.id ? (newEdge as Edge) : e));
         onreconnect?.(edge, connection);
       },

@@ -16,7 +16,8 @@ import {
   evaluateAbsolutePosition,
   type HandleType,
   type HandleConnection,
-  getNodesBounds
+  getNodesBounds,
+  type NodeChange
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -305,14 +306,21 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
     options: { replace: boolean } = { replace: false }
   ) {
-    store.nodes = untrack(() => store.nodes).map((node) => {
-      if (node.id === id) {
-        const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
-        return options?.replace && isNode<NodeType>(nextNode) ? nextNode : { ...node, ...nextNode };
-      }
+    const node = store.nodeLookup.get(id)?.internals.userNode;
 
-      return node;
-    });
+    if (!node) {
+      return;
+    }
+
+    const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
+
+    store.dispatchNodeChanges([
+      {
+        id,
+        type: 'replace',
+        item: options?.replace && isNode<NodeType>(nextNode) ? nextNode : { ...node, ...nextNode }
+      }
+    ]);
   }
 
   function updateEdge(
@@ -320,6 +328,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options: { replace: boolean } = { replace: false }
   ) {
+    // TODO: trigger changes instead
     store.edges = untrack(() => store.edges).map((edge) => {
       if (edge.id === id) {
         const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
@@ -455,13 +464,17 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         onBeforeDelete: store.onbeforedelete
       });
 
-      if (matchingNodes) {
-        store.nodes = untrack(() => store.nodes).filter(
-          (node) => !matchingNodes.some(({ id }) => id === node.id)
-        );
+      if (matchingNodes.length > 0) {
+        const nodeChanges: NodeChange<NodeType>[] = matchingNodes.map((node) => ({
+          id: node.id,
+          type: 'remove'
+        }));
+
+        store.dispatchNodeChanges(nodeChanges);
       }
 
       if (matchingEdges) {
+        // TODO: trigger changes instead
         store.edges = untrack(() => store.edges).filter(
           (edge) => !matchingEdges.some(({ id }) => id === edge.id)
         );
