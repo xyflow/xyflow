@@ -223,9 +223,7 @@ function parsePadding(padding: PaddingWithUnit | DeprecatedPaddingValue, viewpor
     }
   }
 
-  console.error(
-    `The padding value "${padding}" is invalid. Please provide a string with a valid unit (px or %).`
-  );
+  console.error(`The padding value "${padding}" is invalid. Please provide a string with a valid unit (px or %).`);
   return 0;
 }
 
@@ -242,6 +240,7 @@ function parsePaddings(
   width: number,
   height: number
 ): { top: number; bottom: number; left: number; right: number; x: number; y: number } {
+  didWarnUnitlessPadding = false;
   if (typeof padding === 'string' || typeof padding === 'number') {
     const paddingY = parsePadding(padding, height);
     const paddingX = parsePadding(padding, width);
