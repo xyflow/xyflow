@@ -44,11 +44,22 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: unknow
  * @returns A boolean indicating whether the element is an Node
  */
 export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: unknown): element is NodeType =>
-    !!element && typeof element === 'object' && 'id' in element && 'position' in element && !('source' in element) && !('target' in element);
+  !!element &&
+  typeof element === 'object' &&
+  'id' in element &&
+  'position' in element &&
+  !('source' in element) &&
+  !('target' in element);
 
 export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalNodeBase>(
   element: unknown
-): element is NodeType => !!element && typeof element === 'object' &&  'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
+): element is NodeType =>
+  !!element &&
+  typeof element === 'object' &&
+  'id' in element &&
+  'internals' in element &&
+  !('source' in element) &&
+  !('target' in element);
 
 /**
  * This util is used to tell you what nodes, if any, are connected to the given node
@@ -383,7 +394,7 @@ export async function fitViewport<
     height,
     options?.minZoom ?? minZoom,
     options?.maxZoom ?? maxZoom,
-    options?.padding ?? 0.1
+    options?.padding ?? '10%'
   );
 
   await panZoom.setViewport(viewport, {

@@ -168,7 +168,7 @@ export type FitViewParamsBase<NodeType extends NodeBase> = {
 };
 
 export type PaddingUnit = 'px' | '%';
-export type PaddingWithUnit = `${number}${PaddingUnit}` | number;
+export type PaddingWithUnit = `${number}${PaddingUnit}`;
 
 export type Padding =
   | PaddingWithUnit
@@ -250,7 +250,7 @@ export type SetCenterOptions = ViewportHelperFunctionOptions & {
  * @inline
  */
 export type FitBoundsOptions = ViewportHelperFunctionOptions & {
-  padding?: number;
+  padding?: PaddingWithUnit;
 };
 
 export type OnViewportChange = (viewport: Viewport) => void;

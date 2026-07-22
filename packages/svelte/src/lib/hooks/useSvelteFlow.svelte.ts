@@ -377,7 +377,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         store.height,
         store.minZoom,
         store.maxZoom,
-        options?.padding ?? 0.1
+        options?.padding ?? '10%'
       );
 
       await store.panZoom.setViewport(viewport, {

@@ -201,28 +201,29 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
  * @param viewport - Width or height of the viewport
  * @returns The padding in pixels
  */
-function parsePadding(padding: PaddingWithUnit, viewport: number): number {
-  if (typeof padding === 'number') {
-    return Math.floor((viewport - viewport / (1 + padding)) * 0.5);
+function parsePadding(padding: PaddingWithUnit | undefined, viewport: number): number {
+  if (typeof padding === 'undefined') {
+    return 0;
   }
 
-  if (typeof padding === 'string' && padding.endsWith('px')) {
-    const paddingValue = parseFloat(padding);
-    if (!Number.isNaN(paddingValue)) {
-      return Math.floor(paddingValue);
+  if (typeof padding === 'string') {
+    if (padding.endsWith('px')) {
+      const paddingValue = parseFloat(padding);
+      if (!Number.isNaN(paddingValue)) {
+        return Math.floor(paddingValue);
+      }
+    }
+
+    if (padding.endsWith('%')) {
+      const paddingValue = parseFloat(padding);
+      if (!Number.isNaN(paddingValue)) {
+        return Math.floor(viewport * paddingValue * 0.01);
+      }
     }
   }
 
-  if (typeof padding === 'string' && padding.endsWith('%')) {
-    const paddingValue = parseFloat(padding);
-    if (!Number.isNaN(paddingValue)) {
-      return Math.floor(viewport * paddingValue * 0.01);
-    }
-  }
+  console.error(`The padding value "${padding}" is invalid. Please provide a string with a valid unit (px or %).`);
 
-  console.error(
-    `The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
-  );
   return 0;
 }
 
@@ -253,10 +254,10 @@ function parsePaddings(
   }
 
   if (typeof padding === 'object') {
-    const top = parsePadding(padding.top ?? padding.y ?? 0, height);
-    const bottom = parsePadding(padding.bottom ?? padding.y ?? 0, height);
-    const left = parsePadding(padding.left ?? padding.x ?? 0, width);
-    const right = parsePadding(padding.right ?? padding.x ?? 0, width);
+    const top = parsePadding(padding.top ?? padding.y, height);
+    const bottom = parsePadding(padding.bottom ?? padding.y, height);
+    const left = parsePadding(padding.left ?? padding.x, width);
+    const right = parsePadding(padding.right ?? padding.x, width);
     return { top, right, bottom, left, x: left + right, y: top + bottom };
   }
 

@@ -100,7 +100,7 @@ function getInitialViewport<NodeType extends Node = Node>(
     const bounds = getInternalNodesBounds(nodeLookup, {
       filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight))
     });
-    return getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
+    return getViewportForBounds(bounds, width, height, 0.5, 2, '10%');
   } else {
     return initialViewport ?? { x: 0, y: 0, zoom: 1 };
   }
