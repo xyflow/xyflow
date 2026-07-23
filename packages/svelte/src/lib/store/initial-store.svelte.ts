@@ -37,10 +37,7 @@ import {
   type OnReconnectStart,
   type OnReconnectEnd,
   type AriaLabelConfig,
-  type ZIndexMode,
-  type NodeAddChange,
-  type NodeChange,
-  type EdgeChange
+  type ZIndexMode
 } from '@xyflow/system';
 
 const devWarn = createDevWarn('Svelte Flow', 'https://svelteflow.dev/');
@@ -77,7 +74,8 @@ import type {
 import type { StoreSignals } from './types';
 import { MediaQuery } from 'svelte/reactivity';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
-import { applyNodeChanges } from './changes';
+import { EdgeChanges, NodeChanges } from '$lib/changes';
+import type { NodeChange } from '$lib/changes/types';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -162,37 +160,22 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       return signals.edges;
     });
 
-    pendingNodeChanges: boolean = $state.raw(false);
-    pendingEdgeChanges: boolean = $state.raw(false);
-    batchedNodeChanges: Map<string, NodeChange<NodeType>[]> = new Map();
-    batchedNewNodes: NodeAddChange<NodeType>[] = [];
-    batchedEdgeChanges: Map<string, EdgeChange<EdgeType>[]> = new Map();
-    batchedNewEdges: EdgeType[] = [];
+    pendingNodeChanges: NodeChanges<NodeType> | undefined = $state.raw(new NodeChanges<NodeType>());
+    pendingEdgeChanges: EdgeChanges<EdgeType> | undefined = $state.raw(new EdgeChanges<EdgeType>());
 
     dispatchNodeChanges = (changes: NodeChange<NodeType>[]) => {
-      console.log('dispatchNodeChanges', changes);
-      this.pendingNodeChanges = true;
-      for (const change of changes) {
-        if (change.type === 'add') {
-          this.batchedNewNodes.push(change);
-          continue;
-        }
-
-        const batch = this.batchedNodeChanges.get(change.id);
-        if (batch) {
-          batch.push(change);
-        } else {
-          this.batchedNodeChanges.set(change.id, [change]);
-        }
+      if (!this.pendingNodeChanges) {
+        this.pendingNodeChanges = new NodeChanges<NodeType>();
       }
+      this.pendingNodeChanges.add(changes);
     };
 
     flushNodeChanges = () => {
-      console.log('flushNodeChanges', this.batchedNodeChanges, this.batchedNewNodes);
-      this.pendingNodeChanges = false;
-      const newNodes = applyNodeChanges(this.nodes, this.batchedNodeChanges, this.batchedNewNodes);
-      this.batchedNodeChanges.clear();
-      this.batchedNewNodes = [];
+      if (!this.pendingNodeChanges) {
+        return;
+      }
+      // call onNodesChange
+      const newNodes = this.pendingNodeChanges.applyTo(this.nodes);
       this.nodes = newNodes;
     };
     // dispatchEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {};

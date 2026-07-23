@@ -24,7 +24,8 @@ import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, InternalNode } f
 import { addEdge as addEdgeUtil } from '$lib/utils/edges';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
-import { createSelectionChange, getSelectionChanges } from './changes';
+import { selectionChange } from '../changes/create';
+import { getSelectionChangesFor } from '../changes/utils';
 
 export const key = Symbol();
 
@@ -216,7 +217,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       store.dispatchNodeChanges(
         newNodes
           .filter((node) => !!node.selected !== !!store.nodeLookup.get(node.id)?.selected)
-          .map((node) => createSelectionChange(node.id, !!node.selected))
+          .map((node) => selectionChange(node.id, !!node.selected))
       );
     }
 
@@ -232,8 +233,8 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     const isMultiSelection = store.multiselectionKeyPressed;
 
     const changes = isMultiSelection
-      ? ids.map((id) => createSelectionChange(id, true))
-      : getSelectionChanges(store.nodes, new Set(ids));
+      ? ids.map((id) => selectionChange(id, true))
+      : getSelectionChangesFor(store.nodes, new Set(ids));
 
     store.dispatchNodeChanges(changes);
   }
