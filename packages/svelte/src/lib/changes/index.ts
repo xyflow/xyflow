@@ -9,6 +9,7 @@ type ChangeOfType<ChangeType extends { type: string }, T extends ChangeType['typ
   { type: T }
 >;
 
+/** Generic apply changes function that works for both nodes and changes */
 type ApplyChangesFn<
   ElementType extends Node | Edge,
   ChangeType extends ElementChangeType<ElementType>
