@@ -53,6 +53,8 @@
     onclickconnectstart,
     onclickconnectend,
     oninit,
+    onnodeschange,
+    onedgeschange,
     onselectionchange,
     onselectiondragstart,
     onselectiondrag,

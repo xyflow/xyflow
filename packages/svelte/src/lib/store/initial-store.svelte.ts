@@ -68,14 +68,16 @@ import type {
   InternalNode,
   OnBeforeReconnect,
   OnSelectionChange,
-  OnSelectionDrag
+  OnSelectionDrag,
+  OnNodesChange,
+  OnEdgesChange
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
 import { MediaQuery } from 'svelte/reactivity';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
 import { EdgeChanges, NodeChanges } from '$lib/changes';
-import type { NodeChange } from '$lib/changes/types';
+import type { EdgeChange, NodeChange } from '$lib/changes/types';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -160,8 +162,8 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       return signals.edges;
     });
 
-    pendingNodeChanges: NodeChanges<NodeType> | undefined = $state.raw(new NodeChanges<NodeType>());
-    pendingEdgeChanges: EdgeChanges<EdgeType> | undefined = $state.raw(new EdgeChanges<EdgeType>());
+    pendingNodeChanges: NodeChanges<NodeType> | undefined = $state.raw();
+    pendingEdgeChanges: EdgeChanges<EdgeType> | undefined = $state.raw();
 
     dispatchNodeChanges = (changes: NodeChange<NodeType>[]) => {
       if (!this.pendingNodeChanges) {
@@ -170,15 +172,31 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       this.pendingNodeChanges.add(changes);
     };
 
+    dispatchEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {
+      if (!this.pendingEdgeChanges) {
+        this.pendingEdgeChanges = new EdgeChanges<EdgeType>();
+      }
+      this.pendingEdgeChanges.add(changes);
+    };
+
     flushNodeChanges = () => {
       if (!this.pendingNodeChanges) {
         return;
       }
-      // call onNodesChange
+      this.onnodeschange?.(this.pendingNodeChanges);
       const newNodes = this.pendingNodeChanges.applyTo(this.nodes);
       this.nodes = newNodes;
+      this.pendingNodeChanges = undefined;
     };
-    // dispatchEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {};
+    flushEdgeChanges = () => {
+      if (!this.pendingEdgeChanges) {
+        return;
+      }
+      this.onedgeschange?.(this.pendingEdgeChanges);
+      const newEdges = this.pendingEdgeChanges.applyTo(this.edges);
+      this.edges = newEdges;
+      this.pendingEdgeChanges = undefined;
+    };
 
     get nodes() {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -416,6 +434,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     onlyRenderVisibleElements: boolean = $derived(signals.props.onlyRenderVisibleElements ?? false);
     onerror: OnError = $derived(signals.props.onflowerror ?? devWarn);
 
+    onnodeschange?: OnNodesChange<NodeType> = $derived(signals.props.onnodeschange);
+    onedgeschange?: OnEdgesChange<EdgeType> = $derived(signals.props.onedgeschange);
+
     ondelete?: OnDelete<NodeType, EdgeType> = $derived(signals.props.ondelete);
     onbeforedelete?: OnBeforeDelete<NodeType, EdgeType> = $derived(signals.props.onbeforedelete);
 
@@ -486,6 +507,12 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       $effect.pre(() => {
         if (this.pendingNodeChanges) {
           this.flushNodeChanges();
+        }
+      });
+
+      $effect.pre(() => {
+        if (this.pendingEdgeChanges) {
+          this.flushEdgeChanges();
         }
       });
     }
