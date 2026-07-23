@@ -1,10 +1,10 @@
 import type { EdgeLookup, NodeLookup } from '@xyflow/system';
 import type {
   Edge,
-  FlowProps,
   InternalNode,
   Node,
   VueFlowInstance,
+  VueFlowProps,
   VueFlowState,
   VueFlowStoreHandle,
 } from '../types';
@@ -24,7 +24,7 @@ import { useState } from './state';
  */
 export function createVueFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   id: string,
-  initialState?: FlowProps<NodeType, EdgeType>,
+  initialState?: VueFlowProps<NodeType, EdgeType>,
 ): VueFlowStoreHandle<NodeType, EdgeType> {
   const state = useState<NodeType, EdgeType>();
 

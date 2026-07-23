@@ -117,7 +117,7 @@ export interface FlowExportObject {
 /**
  * Vue Flow component props.
  */
-export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+export interface VueFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   id?: string;
   /**
    * An array of nodes to render in a controlled flow.
@@ -494,7 +494,7 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
   autoPanSpeed?: number;
 }
 
-export interface FlowEmits<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+export interface VueFlowEmits<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   nodesChange: [changes: NodeChange<NodeType>[]];
   edgesChange: [changes: EdgeChange<EdgeType>[]];
   nodesDelete: [nodes: NodeType[]];
@@ -584,7 +584,7 @@ export type EdgeSlots<EdgeType extends Edge = Edge> = Partial<
   } & Record<`edge-${string}`, (edgeProps: EdgeProps<EdgeType>) => any>
 >;
 
-export type FlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType>
+export type VueFlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType>
   & EdgeSlots<EdgeType> & {
     'connection-line'?: (connectionLineProps: ConnectionLineProps<NodeType>) => any;
     'zoom-pane'?: () => any;
