@@ -29,126 +29,128 @@
 
 	let edges = $state.raw<Edge[]>([]);
 
-	let nodes = $state.raw<ResizeNode[]>([
-		{
-			id: '1',
-			type: 'defaultResizer',
-			data: { label: 'default resizer' },
-			position: { x: 0, y: 0 },
-			style: nodeStyle
-		},
-		{
-			id: '1a',
-			type: 'defaultResizer',
-			data: {
-				label: 'default resizer with min and max dimensions',
-				minWidth: 100,
-				minHeight: 80,
-				maxWidth: 200,
-				maxHeight: 200
+	let nodes = $state.raw<ResizeNode[]>(
+		[
+			{
+				id: '1',
+				type: 'defaultResizer',
+				data: { label: 'default resizer' },
+				position: { x: 0, y: 0 },
+				style: nodeStyle
 			},
-			position: { x: 0, y: 60 },
-			style: nodeStyle + ' width: 100px; height: 80px;'
-		},
-		{
-			id: '1b',
-			type: 'defaultResizer',
-			data: {
-				label: 'default resizer with initial size and aspect ratio',
-				keepAspectRatio: true,
-				minWidth: 100,
-				minHeight: 60,
-				maxWidth: 400,
-				maxHeight: 400
+			{
+				id: '1a',
+				type: 'defaultResizer',
+				data: {
+					label: 'default resizer with min and max dimensions',
+					minWidth: 100,
+					minHeight: 80,
+					maxWidth: 200,
+					maxHeight: 200
+				},
+				position: { x: 0, y: 60 },
+				style: nodeStyle + ' width: 100px; height: 80px;'
 			},
-			position: { x: 250, y: 0 },
-			style: nodeStyle + ' width: 174px; height: 123px;'
-		},
-		{
-			id: '2',
-			type: 'customResizer',
-			data: { label: 'custom resize icon' },
-			position: { x: 0, y: 200 },
-			style: nodeStyle + ' width: 100px; height: 60px;'
-		},
-		{
-			id: '3',
-			type: 'verticalResizer',
-			data: { label: 'vertical resizer' },
-			position: { x: 250, y: 200 },
-			style: nodeStyle
-		},
-		{
-			id: '3a',
-			type: 'verticalResizer',
-			data: {
-				label: 'vertical resizer with min/maxHeight and aspect ratio',
-				minHeight: 50,
-				maxHeight: 200,
-				keepAspectRatio: true
+			{
+				id: '1b',
+				type: 'defaultResizer',
+				data: {
+					label: 'default resizer with initial size and aspect ratio',
+					keepAspectRatio: true,
+					minWidth: 100,
+					minHeight: 60,
+					maxWidth: 400,
+					maxHeight: 400
+				},
+				position: { x: 250, y: 0 },
+				style: nodeStyle + ' width: 174px; height: 123px;'
 			},
-			position: { x: 400, y: 200 },
-			style: nodeStyle + ' height: 50px;'
-		},
-		{
-			id: '4',
-			type: 'horizontalResizer',
-			data: {
-				label: 'horizontal resizer with aspect ratio',
-				keepAspectRatio: true,
-				minHeight: 20,
-				maxHeight: 80,
-				maxWidth: 300
+			{
+				id: '2',
+				type: 'customResizer',
+				data: { label: 'custom resize icon' },
+				position: { x: 0, y: 200 },
+				style: nodeStyle + ' width: 100px; height: 60px;'
 			},
-			position: { x: 250, y: 300 },
-			style: nodeStyle
-		},
-		{
-			id: '4a',
-			type: 'horizontalResizer',
-			data: { label: 'horizontal resizer with maxWidth', maxWidth: 300 },
-			position: { x: 250, y: 400 },
-			style: nodeStyle
-		},
-		{
-			id: '5',
-			type: 'defaultResizer',
-			data: { label: 'Parent' },
-			position: { x: 700, y: 0 },
-			style: nodeStyle + 'width: 300px; height: 300px'
-		},
-		{
-			id: '5a',
-			type: 'defaultResizer',
-			data: { label: 'Child with extent parent' },
-			position: { x: 50, y: 50 },
-			parentId: '5',
-			extent: 'parent',
-			style: nodeStyle
-		},
-		{
-			id: '5b',
-			type: 'defaultResizer',
-			data: { label: 'Child' },
-			position: { x: 100, y: 100 },
-			parentId: '5',
-			style: nodeStyle
-		},
-		{
-			id: '6',
-			type: 'bottomRightResizer',
-			data: { label: 'bottom-right horizontal resizer' },
-			position: { x: 500, y: 0 },
-			style: nodeStyle
-		},
-		{
-			id: '7',
-			type: 'fixedExtent',
-			data: { label: 'Fixed Extent', extent },
-			position: { x: 500, y: 350 },
-			extent
-		}
-	]);
+			{
+				id: '3',
+				type: 'verticalResizer',
+				data: { label: 'vertical resizer' },
+				position: { x: 250, y: 200 },
+				style: nodeStyle
+			},
+			{
+				id: '3a',
+				type: 'verticalResizer',
+				data: {
+					label: 'vertical resizer with min/maxHeight and aspect ratio',
+					minHeight: 50,
+					maxHeight: 200,
+					keepAspectRatio: true
+				},
+				position: { x: 400, y: 200 },
+				style: nodeStyle + ' height: 50px;'
+			},
+			{
+				id: '4',
+				type: 'horizontalResizer',
+				data: {
+					label: 'horizontal resizer with aspect ratio',
+					keepAspectRatio: true,
+					minHeight: 20,
+					maxHeight: 80,
+					maxWidth: 300
+				},
+				position: { x: 250, y: 300 },
+				style: nodeStyle
+			},
+			{
+				id: '4a',
+				type: 'horizontalResizer',
+				data: { label: 'horizontal resizer with maxWidth', maxWidth: 300 },
+				position: { x: 250, y: 400 },
+				style: nodeStyle
+			},
+			{
+				id: '5',
+				type: 'defaultResizer',
+				data: { label: 'Parent' },
+				position: { x: 700, y: 0 },
+				style: nodeStyle + 'width: 300px; height: 300px'
+			},
+			{
+				id: '5a',
+				type: 'defaultResizer',
+				data: { label: 'Child with extent parent' },
+				position: { x: 50, y: 50 },
+				parentId: '5',
+				extent: 'parent',
+				style: nodeStyle
+			},
+			{
+				id: '5b',
+				type: 'defaultResizer',
+				data: { label: 'Child' },
+				position: { x: 100, y: 100 },
+				parentId: '5',
+				style: nodeStyle
+			},
+			{
+				id: '6',
+				type: 'bottomRightResizer',
+				data: { label: 'bottom-right horizontal resizer' },
+				position: { x: 500, y: 0 },
+				style: nodeStyle
+			},
+			{
+				id: '7',
+				type: 'fixedExtent',
+				data: { label: 'Fixed Extent', extent },
+				position: { x: 500, y: 350 },
+				extent
+			}
+		].reverse() as ResizeNode[]
+	);
 
 	let snapToGrid = $state(false);
 </script>
