@@ -208,11 +208,13 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     hasSelectedNodes ||= userNode.selected ?? false;
   }
 
-  // Any deferred child node which has not been processed yet is missing a parent node
-  for (const childNodes of deferredChildNodes.values()) {
-    childNodes.forEach((childNode) => {
-      console.warn(`Parent node with id "${childNode.parentId}" is missing for child node with id "${childNode.id}"`);
-    });
+  if (process.env.NODE_ENV === 'development') {
+    // Any deferred child node which has not been processed yet is missing a parent node
+    for (const childNodes of deferredChildNodes.values()) {
+      childNodes.forEach((childNode) => {
+        console.warn(`Parent node with id "${childNode.parentId}" is missing for child node with id "${childNode.id}"`);
+      });
+    }
   }
 
   return { nodesInitialized, hasSelectedNodes };
