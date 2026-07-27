@@ -11,18 +11,6 @@
     };
   }
 
-  export function toggleSelected<Item extends Node | Edge>(ids: Set<string>) {
-    return (item: Item) => {
-      const isSelected = ids.has(item.id);
-
-      if (!!item.selected !== isSelected) {
-        return { ...item, selected: isSelected };
-      }
-
-      return item;
-    };
-  }
-
   function isSetEqual(a: Set<string>, b: Set<string>) {
     if (a.size !== b.size) {
       return false;
@@ -52,7 +40,7 @@
 
   import type { Node, Edge } from '$lib/types';
   import type { PaneProps } from './types';
-  import { getSelectionChanges } from '$lib/store/changes';
+  import { getSelectionChangesFor } from '$lib/changes/utils';
 
   let {
     store = $bindable(),
@@ -198,12 +186,11 @@
 
     // this prevents unnecessary updates while updating the selection rectangle
     if (!isSetEqual(prevSelectedNodeIds, selectedNodeIds)) {
-      store.dispatchNodeChanges(getSelectionChanges(store.nodes, selectedNodeIds));
+      store.queueNodeChanges(getSelectionChangesFor(store.nodes, selectedNodeIds));
     }
 
     if (!isSetEqual(prevSelectedEdgeIds, selectedEdgeIds)) {
-      // TODO: trigger changes instead
-      store.edges = store.edges.map(toggleSelected(selectedEdgeIds));
+      store.queueEdgeChanges(getSelectionChangesFor(store.edges, selectedEdgeIds));
     }
 
     store.selectionRectMode = 'user';

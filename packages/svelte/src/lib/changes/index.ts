@@ -1,7 +1,7 @@
 import type { Edge, Node } from '../types';
 import type { EdgeChange, ElementChangeType, NodeChange } from './types';
 
-import { applyNodeChanges } from './apply';
+import { applyEdgeChanges, applyNodeChanges } from './apply';
 
 /** Helper to narrow down the type of a change based on it's name */
 type ChangeOfType<ChangeType extends { type: string }, T extends ChangeType['type']> = Extract<
@@ -275,8 +275,7 @@ export class EdgeChanges<EdgeType extends Edge = Edge> extends ElementChanges<
   EdgeChange<EdgeType>
 > {
   constructor() {
-    // TODO: implement applyEdgeChanges and pass it here
-    super(applyNodeChanges as unknown as ApplyChangesFn<EdgeType, EdgeChange<EdgeType>>);
+    super(applyEdgeChanges);
   }
 
   /**

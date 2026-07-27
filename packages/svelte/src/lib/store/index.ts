@@ -24,7 +24,7 @@ import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, InternalNode } f
 import { addEdge as addEdgeUtil } from '$lib/utils/edges';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
-import { selectionChange } from '../changes/create';
+import { addChange, selectionChange } from '../changes/create';
 import { getSelectionChangesFor } from '../changes/utils';
 
 export const key = Symbol();
@@ -51,8 +51,14 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
   }
 
   function addEdge(edgeParams: EdgeType | Connection) {
-    // TODO: trigger changes instead
-    store.edges = addEdgeUtil<EdgeType>(edgeParams, store.edges, { onError: store.onerror });
+    const nextEdges = addEdgeUtil<EdgeType>(edgeParams, store.edges, { onError: store.onerror });
+    const newEdge = nextEdges[nextEdges.length - 1];
+
+    if (nextEdges.length === store.edges.length || !newEdge) {
+      return;
+    }
+
+    store.queueEdgeChanges([addChange(newEdge)]);
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
@@ -77,7 +83,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       });
     }
 
-    store.dispatchNodeChanges(changes);
+    store.queueNodeChanges(changes);
   };
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
@@ -105,7 +111,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       store.resolveFitView();
     }
 
-    store.dispatchNodeChanges(changes);
+    store.queueNodeChanges(changes);
   }
 
   function fitView(options?: FitViewOptions<NodeType>) {
@@ -118,8 +124,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     store.fitViewOptions = options;
     store.fitViewResolver = fitViewResolver;
 
-    // We need to update the nodes so that adoptUserNodes is triggered
-    // When only render visible is enabled
+    // trigger adoptUserNodes in case onlyRenderVisible is enabled
     store.nodes = [...store.nodes];
 
     return fitViewResolver.promise;
@@ -214,18 +219,21 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     const [nodesDeselected, newNodes] = deselect(store.nodes, nodesToDeselect);
     console.log(nodesDeselected);
     if (nodesDeselected) {
-      store.dispatchNodeChanges(
+      store.queueNodeChanges(
         newNodes
           .filter((node) => !!node.selected !== !!store.nodeLookup.get(node.id)?.selected)
           .map((node) => selectionChange(node.id, !!node.selected))
       );
     }
 
-    const edgesToDeselect = params?.edges ? new Set(params.edges.map((node) => node.id)) : null;
+    const edgesToDeselect = params?.edges ? new Set(params.edges.map((edge) => edge.id)) : null;
     const [edgesDeselected, newEdges] = deselect(store.edges, edgesToDeselect);
     if (edgesDeselected) {
-      // TODO: trigger changes instead
-      store.edges = newEdges;
+      store.queueEdgeChanges(
+        newEdges
+          .filter((edge) => !!edge.selected !== !!store.edgeLookup.get(edge.id)?.selected)
+          .map((edge) => selectionChange(edge.id, !!edge.selected))
+      );
     }
   }
 
@@ -236,22 +244,17 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       ? ids.map((id) => selectionChange(id, true))
       : getSelectionChangesFor(store.nodes, new Set(ids));
 
-    store.dispatchNodeChanges(changes);
+    store.queueNodeChanges(changes);
   }
 
   function addSelectedEdges(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    // TODO: trigger changes instead
-    store.edges = store.edges.map((edge) => {
-      const edgeWillBeSelected = ids.includes(edge.id);
-      const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
+    const changes = isMultiSelection
+      ? ids.map((id) => selectionChange(id, true))
+      : getSelectionChangesFor(store.edges, new Set(ids));
 
-      if (!!edge.selected !== selected) {
-        return { ...edge, selected };
-      }
-      return edge;
-    });
+    store.queueEdgeChanges(changes);
   }
 
   function handleNodeSelection(id: string, unselect?: boolean, nodeRef?: HTMLDivElement | null) {

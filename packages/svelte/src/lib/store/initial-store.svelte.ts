@@ -165,14 +165,14 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     pendingNodeChanges: NodeChanges<NodeType> | undefined = $state.raw();
     pendingEdgeChanges: EdgeChanges<EdgeType> | undefined = $state.raw();
 
-    dispatchNodeChanges = (changes: NodeChange<NodeType>[]) => {
+    queueNodeChanges = (changes: NodeChange<NodeType>[]) => {
       if (!this.pendingNodeChanges) {
         this.pendingNodeChanges = new NodeChanges<NodeType>();
       }
       this.pendingNodeChanges.add(changes);
     };
 
-    dispatchEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {
+    queueEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {
       if (!this.pendingEdgeChanges) {
         this.pendingEdgeChanges = new EdgeChanges<EdgeType>();
       }
@@ -183,11 +183,13 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       if (!this.pendingNodeChanges) {
         return;
       }
+      console.log('flushNodeChanges', this.pendingNodeChanges.toArray());
       this.onnodeschange?.(this.pendingNodeChanges);
       const newNodes = this.pendingNodeChanges.applyTo(this.nodes);
       this.nodes = newNodes;
       this.pendingNodeChanges = undefined;
     };
+
     flushEdgeChanges = () => {
       if (!this.pendingEdgeChanges) {
         return;

@@ -23,7 +23,6 @@ import {
 import { useStore } from '$lib/store';
 import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
 import { isEdge, isNode } from '$lib/utils';
-import { untrack } from 'svelte';
 
 /**
  * Hook for accessing the SvelteFlow instance.
@@ -314,7 +313,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
 
     const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
 
-    store.dispatchNodeChanges([
+    store.queueNodeChanges([
       {
         id,
         type: 'replace',
@@ -328,15 +327,21 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options: { replace: boolean } = { replace: false }
   ) {
-    // TODO: trigger changes instead
-    store.edges = untrack(() => store.edges).map((edge) => {
-      if (edge.id === id) {
-        const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
-        return options.replace && isEdge<EdgeType>(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
-      }
+    const edge = store.edgeLookup.get(id);
 
-      return edge;
-    });
+    if (!edge) {
+      return;
+    }
+
+    const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
+
+    store.queueEdgeChanges([
+      {
+        id,
+        type: 'replace',
+        item: options?.replace && isEdge<EdgeType>(nextEdge) ? nextEdge : { ...edge, ...nextEdge }
+      }
+    ]);
   }
 
   const getInternalNode = (id: string) => store.nodeLookup.get(id);
@@ -470,14 +475,16 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
           type: 'remove'
         }));
 
-        store.dispatchNodeChanges(nodeChanges);
+        store.queueNodeChanges(nodeChanges);
       }
 
-      if (matchingEdges) {
-        // TODO: trigger changes instead
-        store.edges = untrack(() => store.edges).filter(
-          (edge) => !matchingEdges.some(({ id }) => id === edge.id)
-        );
+      if (matchingEdges.length > 0) {
+        const edgeChanges = matchingEdges.map((edge) => ({
+          id: edge.id,
+          type: 'remove' as const
+        }));
+
+        store.queueEdgeChanges(edgeChanges);
       }
 
       if (matchingNodes.length > 0 || matchingEdges.length > 0) {

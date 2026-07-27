@@ -1,6 +1,6 @@
 import { useStore } from '$lib/store';
 import type { Edge, Node } from '$lib/types';
-import type { NodeChange, Viewport } from '@xyflow/system';
+import type { Viewport } from '@xyflow/system';
 
 /**
  * Hook for getting the current nodes from the store.
@@ -18,10 +18,10 @@ export function useNodes() {
       store.nodes = nodes;
     },
     update(updateFn: (nodes: Node[]) => Node[]) {
-      store.dispatchNodeChanges(getNodeChanges(store.nodes, updateFn(store.nodes)));
+      store.queueNodeChanges(getElementChanges(store.nodes, updateFn(store.nodes)));
     },
     set(nodes: Node[]) {
-      store.dispatchNodeChanges(getNodeChanges(store.nodes, nodes));
+      store.queueNodeChanges(getElementChanges(store.nodes, nodes));
     }
   };
 }
@@ -42,12 +42,10 @@ export function useEdges() {
       store.edges = edges;
     },
     update(updateFn: (edges: Edge[]) => Edge[]) {
-      // TODO: trigger changes instead ?
-      store.edges = updateFn(store.edges);
+      store.queueEdgeChanges(getElementChanges(store.edges, updateFn(store.edges)));
     },
     set(edges: Edge[]) {
-      // TODO: trigger changes instead ?
-      store.edges = edges;
+      store.queueEdgeChanges(getElementChanges(store.edges, edges));
     }
   };
 }
@@ -76,31 +74,35 @@ export function useViewport() {
   };
 }
 
-function getNodeChanges<NodeType extends Node = Node>(
-  previousNodes: NodeType[],
-  nextNodes: NodeType[]
-): NodeChange<NodeType>[] {
-  const nextNodeLookup: Record<string, { node: NodeType; index: number }> = {};
-  const changes: NodeChange<NodeType>[] = [];
+function getElementChanges<ElementType extends { id: string }>(
+  previousElements: ElementType[],
+  nextElements: ElementType[]
+) {
+  const nextElementLookup: Record<string, { element: ElementType; index: number }> = {};
+  const changes: Array<
+    | { id: string; type: 'remove' }
+    | { id: string; type: 'replace'; item: ElementType }
+    | { id: string; type: 'add'; item: ElementType; index: number }
+  > = [];
 
-  for (const [index, node] of nextNodes.entries()) {
-    nextNodeLookup[node.id] = { node, index };
+  for (const [index, element] of nextElements.entries()) {
+    nextElementLookup[element.id] = { element, index };
   }
 
-  for (const previousNode of previousNodes) {
-    const nextNode = nextNodeLookup[previousNode.id];
+  for (const previousElement of previousElements) {
+    const nextElement = nextElementLookup[previousElement.id];
 
-    if (!nextNode) {
-      changes.push({ id: previousNode.id, type: 'remove' });
+    if (!nextElement) {
+      changes.push({ id: previousElement.id, type: 'remove' });
       continue;
     }
 
-    changes.push({ id: previousNode.id, type: 'replace', item: nextNode.node });
-    delete nextNodeLookup[previousNode.id];
+    changes.push({ id: previousElement.id, type: 'replace', item: nextElement.element });
+    delete nextElementLookup[previousElement.id];
   }
 
-  for (const { node, index } of Object.values(nextNodeLookup)) {
-    changes.push({ id: node.id, type: 'add', item: node, index });
+  for (const { element, index } of Object.values(nextElementLookup)) {
+    changes.push({ id: element.id, type: 'add', item: element, index });
   }
 
   return changes;
