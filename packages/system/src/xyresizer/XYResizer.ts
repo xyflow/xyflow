@@ -132,7 +132,6 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     let node: InternalNodeBase | undefined = undefined;
     let containerBounds: DOMRect | null = null;
     let childNodes: XYResizerChildChange[] = [];
-    let parentNode: InternalNodeBase | undefined = undefined; // Needed to fix expandParent
     let nodeExtent: CoordinateExtent | undefined = undefined;
     let childExtent: CoordinateExtent | undefined = undefined;
     // we only want to trigger onResizeEnd if onResize was actually called
@@ -169,19 +168,16 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           aspectRatio: prevValues.width / prevValues.height,
         };
 
-        parentNode = undefined;
-
         nodeExtent = isCoordinateExtent(node.extent) ? node.extent : undefined;
 
-        if (node.parentId && (node.extent === 'parent' || node.expandParent)) {
-          parentNode = nodeLookup.get(node.parentId);
-        }
-
-        if (parentNode && node.extent === 'parent') {
-          nodeExtent = [
-            [0, 0],
-            [parentNode.measured.width!, parentNode.measured.height!],
-          ];
+        if (node.parentId && node.extent === 'parent') {
+          const parentNode = nodeLookup.get(node.parentId);
+          if (parentNode && parentNode.measured.width && parentNode.measured.height) {
+            nodeExtent = [
+              [0, 0],
+              [parentNode.measured.width, parentNode.measured.height],
+            ];
+          }
         }
 
         /*
@@ -199,7 +195,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
               extent: child.extent,
             });
 
-            if (child.extent === 'parent' || child.expandParent) {
+            if (child.extent === 'parent') {
               const extent = nodeToChildExtent(child, node, child.origin ?? nodeOrigin);
 
               if (childExtent) {
@@ -292,21 +288,6 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
               : prevValues.height;
           prevValues.width = change.width;
           prevValues.height = change.height;
-        }
-
-        // Fix expandParent when resizing from top/left
-        if (parentNode && node.expandParent) {
-          const xLimit = nodeOrigin[0] * (change.width ?? 0);
-          if (change.x && change.x < xLimit) {
-            prevValues.x = xLimit;
-            startValues.x = startValues.x - (change.x - xLimit);
-          }
-
-          const yLimit = nodeOrigin[1] * (change.height ?? 0);
-          if (change.y && change.y < yLimit) {
-            prevValues.y = yLimit;
-            startValues.y = startValues.y - (change.y - yLimit);
-          }
         }
 
         const direction = getResizeDirection({

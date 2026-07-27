@@ -121,7 +121,6 @@ const initialNodes: Node[] = [
     position: { x: 200, y: 200 },
     className: 'light',
     parentId: '5',
-    expandParent: true,
   },
   {
     id: '2',

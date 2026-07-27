@@ -80,8 +80,7 @@
 			id: '5b',
 			data: { label: 'Node 5b' },
 			position: { x: 225, y: 50 },
-			parentId: '5',
-			expandParent: true
+			parentId: '5'
 		},
 		{
 			id: '2',

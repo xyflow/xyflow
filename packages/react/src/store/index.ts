@@ -5,11 +5,9 @@ import {
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
   updateConnectionLookup,
-  handleExpandParent,
   NodeChange,
   EdgeSelectionChange,
   NodeSelectionChange,
-  ParentExpandChild,
   initialConnection,
   NodeOrigin,
   CoordinateExtent,
@@ -208,24 +206,16 @@ const createStore = ({
         }
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
-        const parentExpandChildren: ParentExpandChild[] = [];
         let changes = [];
         const { nodeLookup, triggerNodeChanges, connection, updateConnection, onNodesChangeMiddlewareMap } = get();
 
         for (const [id, dragItem] of nodeDragItems) {
-          // we are using the nodelookup to be sure to use the current expandParent and parentId value
           const node = nodeLookup.get(id);
-          const expandParent = !!(node?.expandParent && node?.parentId && dragItem?.position);
 
           const change: NodeChange = {
             id,
             type: 'position',
-            position: expandParent
-              ? {
-                  x: Math.max(0, dragItem.position.x),
-                  y: Math.max(0, dragItem.position.y),
-                }
-              : dragItem.position,
+            position: dragItem.position,
             dragging,
           };
 
@@ -234,25 +224,7 @@ const createStore = ({
             updateConnection({ ...connection, from: updatedFrom });
           }
 
-          if (expandParent && node.parentId) {
-            parentExpandChildren.push({
-              id,
-              parentId: node.parentId,
-              rect: {
-                ...dragItem.internals.positionAbsolute,
-                width: dragItem.measured.width ?? 0,
-                height: dragItem.measured.height ?? 0,
-              },
-            });
-          }
-
           changes.push(change);
-        }
-
-        if (parentExpandChildren.length > 0) {
-          const { parentLookup, nodeOrigin } = get();
-          const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup, nodeOrigin);
-          changes.push(...parentExpandChanges);
         }
 
         for (const middleware of onNodesChangeMiddlewareMap.values()) {

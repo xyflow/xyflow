@@ -58,11 +58,6 @@ export type NodeBase<
    * @example 'parent' or [[0, 0], [100, 100]]
    */
   extent?: 'parent' | CoordinateExtent | null;
-  /**
-   * When `true`, the parent node will automatically expand if this node is dragged to the edge of
-   * the parent node's bounds.
-   */
-  expandParent?: boolean;
   ariaLabel?: string;
   /**
    * Origin of the node relative to its position.
@@ -152,7 +147,7 @@ export type NodeDragItem = {
   internals: {
     positionAbsolute: XYPosition;
   };
-} & Pick<InternalNodeBase, 'extent' | 'parentId' | 'origin' | 'expandParent' | 'dragging'>;
+} & Pick<InternalNodeBase, 'extent' | 'parentId' | 'origin' | 'dragging'>;
 
 /**
  * The origin of a Node determines how it is placed relative to its own coordinates.

@@ -2,7 +2,7 @@
 import type { Connection, Edge, Node } from '@xyflow/vue';
 import { Background, ConnectionMode, Controls, MiniMap, setupVueFlow, VueFlow } from '@xyflow/vue';
 
-const { addEdges, addNodes, getNode, updateNode } = setupVueFlow();
+const { addEdges, addNodes } = setupVueFlow();
 
 const nodes = shallowRef<Node[]>([
   { id: '1', type: 'input', data: { label: 'Node 1' }, position: { x: 250, y: 5 }, class: 'light' },
@@ -82,18 +82,8 @@ onMounted(() => {
     data: { label: 'Added after mount' },
     position: { x: 20, y: 100 },
     class: 'light',
-    expandParent: true,
+    extent: 'parent',
     parentId: '2',
-  });
-
-  setTimeout(() => {
-    const node = getNode('999');
-    if (node) {
-      updateNode('999', {
-        expandParent: false,
-        extent: 'parent',
-      });
-    }
   });
 });
 </script>
