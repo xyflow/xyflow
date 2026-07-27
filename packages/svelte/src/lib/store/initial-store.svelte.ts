@@ -183,7 +183,6 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       if (!this.pendingNodeChanges) {
         return;
       }
-      console.log('flushNodeChanges', this.pendingNodeChanges.toArray());
       this.onnodeschange?.(this.pendingNodeChanges);
       const newNodes = this.pendingNodeChanges.applyTo(this.nodes);
       this.nodes = newNodes;
