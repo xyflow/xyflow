@@ -40,7 +40,7 @@
 
   import type { Node, Edge } from '$lib/types';
   import type { PaneProps } from './types';
-  import { getSelectionChangesFor } from '$lib/changes/utils';
+  import { getSelectionChanges } from '$lib/changes/utils';
 
   let {
     store = $bindable(),
@@ -186,11 +186,11 @@
 
     // this prevents unnecessary updates while updating the selection rectangle
     if (!isSetEqual(prevSelectedNodeIds, selectedNodeIds)) {
-      store.queueNodeChanges(getSelectionChangesFor(store.nodes, selectedNodeIds));
+      store.queueNodeChanges(getSelectionChanges(store.nodeLookup, selectedNodeIds));
     }
 
     if (!isSetEqual(prevSelectedEdgeIds, selectedEdgeIds)) {
-      store.queueEdgeChanges(getSelectionChangesFor(store.edges, selectedEdgeIds));
+      store.queueEdgeChanges(getSelectionChanges(store.edgeLookup, selectedEdgeIds));
     }
 
     store.selectionRectMode = 'user';

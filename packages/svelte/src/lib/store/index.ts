@@ -25,7 +25,7 @@ import { addEdge as addEdgeUtil } from '$lib/utils/edges';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
 import { addChange, selectionChange } from '../changes/create';
-import { getSelectionChangesFor } from '../changes/utils';
+import { getDeselectionChanges, getSelectionChanges } from '../changes/utils';
 
 export const key = Symbol();
 
@@ -194,47 +194,12 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     }
   }
 
-  function deselect<T extends Node | Edge>(
-    elements: T[],
-    elementsToDeselect: Set<string> | null = null
-  ): [boolean, T[]] {
-    let deselected = false;
-
-    const newElements = elements.map((element) => {
-      const shouldDeselect = elementsToDeselect ? elementsToDeselect.has(element.id) : true;
-
-      if (shouldDeselect && element.selected) {
-        deselected = true;
-        return { ...element, selected: false };
-      }
-      return element;
-    });
-
-    return [deselected, newElements];
-  }
-
   function unselectNodesAndEdges(params?: { nodes?: NodeType[]; edges?: EdgeType[] }) {
-    // TODO: this is very weird
     const nodesToDeselect = params?.nodes ? new Set(params.nodes.map((node) => node.id)) : null;
-    const [nodesDeselected, newNodes] = deselect(store.nodes, nodesToDeselect);
-    console.log(nodesDeselected);
-    if (nodesDeselected) {
-      store.queueNodeChanges(
-        newNodes
-          .filter((node) => !!node.selected !== !!store.nodeLookup.get(node.id)?.selected)
-          .map((node) => selectionChange(node.id, !!node.selected))
-      );
-    }
+    store.queueNodeChanges(getDeselectionChanges(store.nodeLookup, nodesToDeselect, true));
 
     const edgesToDeselect = params?.edges ? new Set(params.edges.map((edge) => edge.id)) : null;
-    const [edgesDeselected, newEdges] = deselect(store.edges, edgesToDeselect);
-    if (edgesDeselected) {
-      store.queueEdgeChanges(
-        newEdges
-          .filter((edge) => !!edge.selected !== !!store.edgeLookup.get(edge.id)?.selected)
-          .map((edge) => selectionChange(edge.id, !!edge.selected))
-      );
-    }
+    store.queueEdgeChanges(getDeselectionChanges(store.edgeLookup, edgesToDeselect, true));
   }
 
   function addSelectedNodes(ids: string[]) {
@@ -242,7 +207,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
 
     const changes = isMultiSelection
       ? ids.map((id) => selectionChange(id, true))
-      : getSelectionChangesFor(store.nodes, new Set(ids));
+      : getSelectionChanges(store.nodeLookup, new Set(ids), true);
 
     store.queueNodeChanges(changes);
   }
@@ -252,13 +217,12 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
 
     const changes = isMultiSelection
       ? ids.map((id) => selectionChange(id, true))
-      : getSelectionChangesFor(store.edges, new Set(ids));
+      : getSelectionChanges(store.edgeLookup, new Set(ids), true);
 
     store.queueEdgeChanges(changes);
   }
 
   function handleNodeSelection(id: string, unselect?: boolean, nodeRef?: HTMLDivElement | null) {
-    console.log('handleNodeSelection', id, unselect, nodeRef);
     const node = store.nodeLookup.get(id);
 
     if (!node) {
