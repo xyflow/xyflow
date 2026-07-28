@@ -186,6 +186,8 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
   };
 };
 
+let surpressUnitlessPaddingWarning = false;
+
 /**
  * Parses a single padding value to a number
  * @internal
@@ -195,6 +197,13 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
  */
 function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   if (typeof padding === 'number') {
+    if (!surpressUnitlessPaddingWarning) {
+      console.warn(
+        `fitView: All padding values without a unit, will be interpreted as pixel values in the next major version. You can use string values (50px or 15%) to avoid this warning. (legacy padding of 0.1 ≈ 4.5%; 0.5 ≈ 16.7%; 1 ≈ 33.3%; 2 ≈ 50%)
+        `
+      );
+      surpressUnitlessPaddingWarning = true;
+    }
     return Math.floor((viewport - viewport / (1 + padding)) * 0.5);
   }
 
@@ -213,7 +222,7 @@ function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   }
 
   console.error(
-    `The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
+    `fitView: A padding value of "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
   );
   return 0;
 }
