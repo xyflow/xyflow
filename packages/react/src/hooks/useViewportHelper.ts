@@ -65,15 +65,19 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       setCenter: async (x, y, options) => {
         return store.getState().setCenter(x, y, options);
       },
-      fitBounds: async (bounds, options = { padding: '5%' }) => {
+      fitBounds: async (bounds, options) => {
         const { width, height, minZoom, maxZoom, panZoom } = store.getState();
-        const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options.padding ?? '5%');
+        const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
 
         if (!panZoom) {
           return false;
         }
 
-        await panZoom.setViewport(viewport, options);
+        await panZoom.setViewport(viewport, {
+          duration: options?.duration,
+          ease: options?.ease,
+          interpolate: options?.interpolate,
+        });
 
         return true;
       },

@@ -11,7 +11,7 @@ export interface ViewportHelper<NodeType extends Node = Node> extends ViewportFu
   flowToScreenPosition: Project;
 }
 
-const DEFAULT_PADDING = '5%';
+const DEFAULT_PADDING = 0.1;
 
 async function noop() {
   warn('Viewport not initialized yet.');

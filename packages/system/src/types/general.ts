@@ -250,7 +250,7 @@ export type SetCenterOptions = ViewportHelperFunctionOptions & {
  * @inline
  */
 export type FitBoundsOptions = ViewportHelperFunctionOptions & {
-  padding?: Padding;
+  padding?: number;
 };
 
 export type OnViewportChange = (viewport: Viewport) => void;

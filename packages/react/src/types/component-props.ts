@@ -572,7 +572,6 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * When you typically call `fitView` on a `ReactFlowInstance`, you can provide an object of
    * options to customize its behavior. This prop lets you do the same for the initial `fitView`
    * call.
-   * @default { padding: '5%' }
    * @example
    * const fitViewOptions = {
    *  padding: 0.1,

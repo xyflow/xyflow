@@ -80,7 +80,7 @@ const getInitialState = ({
       height,
       minZoom,
       maxZoom,
-      fitViewOptions?.padding ?? '5%'
+      fitViewOptions?.padding ?? 0.1
     );
     transform = [x, y, zoom];
   }
