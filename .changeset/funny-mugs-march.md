@@ -1,6 +1,7 @@
 ---
 "@xyflow/svelte": major
 "@xyflow/react": major
+"@xyflow/vue": major
 "@xyflow/system": patch
 ---
 
