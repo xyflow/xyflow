@@ -44,11 +44,22 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: unknow
  * @returns A boolean indicating whether the element is an Node
  */
 export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: unknown): element is NodeType =>
-    !!element && typeof element === 'object' && 'id' in element && 'position' in element && !('source' in element) && !('target' in element);
+  !!element &&
+  typeof element === 'object' &&
+  'id' in element &&
+  'position' in element &&
+  !('source' in element) &&
+  !('target' in element);
 
 export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalNodeBase>(
   element: unknown
-): element is NodeType => !!element && typeof element === 'object' &&  'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
+): element is NodeType =>
+  !!element &&
+  typeof element === 'object' &&
+  'id' in element &&
+  'internals' in element &&
+  !('source' in element) &&
+  !('target' in element);
 
 /**
  * This util is used to tell you what nodes, if any, are connected to the given node
@@ -212,8 +223,8 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
         currentNode = isId
           ? params.nodeLookup.get(nodeOrId)
           : !isInternalNodeBase(nodeOrId)
-          ? params.nodeLookup.get(nodeOrId.id)
-          : nodeOrId;
+            ? params.nodeLookup.get(nodeOrId.id)
+            : nodeOrId;
       }
 
       const nodeBox = currentNode ? nodeToBox(currentNode, params.nodeOrigin) : { x: 0, y: 0, x2: 0, y2: 0 };
@@ -333,7 +344,7 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
 
 function getFitViewNodes<
   Params extends NodeLookup<InternalNodeBase<NodeBase>>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(nodeLookup: Params, options?: Options) {
   const fitViewNodes: NodeLookup = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
@@ -364,7 +375,7 @@ function getFitViewNodes<
 
 export async function fitViewport<
   Params extends FitViewParamsBase<NodeBase>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(
   { nodes, width, height, panZoom, minZoom, maxZoom }: Params,
   options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>
@@ -427,12 +438,6 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      /*
-       * use the measured -> width -> initialWidth fallback (via getNodeDimensions)
-       * so a child with extent: 'parent' is still clamped to a parent that
-       * declares an intrinsic size but hasn't been measured yet. This keeps the
-       * drag path consistent with clampPositionToParent (the reconcile path).
-       */
       const { width: parentWidth, height: parentHeight } = getNodeDimensions(parentNode);
 
       if (parentWidth && parentHeight) {
