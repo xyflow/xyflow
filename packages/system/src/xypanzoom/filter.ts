@@ -38,7 +38,8 @@ export function createFilter({
       event.type === 'mousedown' &&
       (isWrappedWithClass(event, `${lib}-flow__node`) ||
         isWrappedWithClass(event, `${lib}-flow__edge`) ||
-        isWrappedWithClass(event, `${lib}-flow__nodesselection-rect`))
+        isWrappedWithClass(event, `${lib}-flow__selection`) ||
+        isWrappedWithClass(event, `${lib}-flow__nodesselection`))
     ) {
       return true;
     }
