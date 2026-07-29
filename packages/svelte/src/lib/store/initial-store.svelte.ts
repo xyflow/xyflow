@@ -10,6 +10,7 @@ import {
   updateConnectionLookup,
   initialConnection,
   mergeAriaLabelConfig,
+  defaultFitViewPadding,
   type SelectionRect,
   type SnapGrid,
   type MarkerProps,
@@ -109,7 +110,7 @@ function getInitialViewport<NodeType extends Node = Node>(
       height,
       minZoom,
       maxZoom,
-      fitViewOptions?.padding ?? '5%'
+      fitViewOptions?.padding ?? defaultFitViewPadding
     );
   } else {
     return initialViewport ?? { x: 0, y: 0, zoom: 1 };

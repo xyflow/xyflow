@@ -8,6 +8,7 @@ import {
   getNodeDimensions,
   nodeToBox,
 } from './general';
+import { defaultFitViewPadding } from './constants';
 import {
   type Transform,
   type XYPosition,
@@ -383,7 +384,7 @@ export async function fitViewport<
     height,
     options?.minZoom ?? minZoom,
     options?.maxZoom ?? maxZoom,
-    options?.padding ?? 0.1
+    options?.padding ?? defaultFitViewPadding
   );
 
   await panZoom.setViewport(viewport, {

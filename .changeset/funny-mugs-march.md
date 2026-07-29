@@ -4,5 +4,5 @@
 "@xyflow/system": patch
 ---
 
-Use 5% as new default padding for fitView
+Use 5% as new default padding for fitView, and fitBounds
   
