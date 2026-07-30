@@ -13,7 +13,7 @@ type ChangeOfType<ChangeType extends { type: string }, T extends ChangeType['typ
 type ApplyChangesFn<
   ElementType extends Node | Edge,
   ChangeType extends ElementChangeType<ElementType>
-> = (elements: ElementType[], changes: ElementChanges<ElementType, ChangeType>) => ElementType[];
+> = (elements: ElementType[], changes: Changeset<ElementType, ChangeType>) => ElementType[];
 
 /**
  * Tracks element changes for easy access and modification.
@@ -31,12 +31,12 @@ type ApplyChangesFn<
  * const nextNodes = changes.applyTo(nodes);
  * ```
  */
-export class ElementChanges<
+export class Changeset<
   ElementType extends Node | Edge,
   ChangeType extends ElementChangeType<ElementType>
 > {
   private changeTypes: Partial<Record<ChangeType['type'], boolean>> = {};
-  private changes: Map<string, ChangeType[]> = new Map();
+  private changeMap: Map<string, ChangeType[]> = new Map();
   private newElementIds: Set<string> = new Set();
 
   constructor(private applyChanges: ApplyChangesFn<ElementType, ChangeType>) {}
@@ -58,20 +58,17 @@ export class ElementChanges<
       if (change.type === 'add') {
         this.newElementIds.add(change.id);
       }
-      const elementChanges = this.changes.get(change.id);
-      if (elementChanges) {
+      const changes = this.changeMap.get(change.id);
+      if (changes) {
         // 'remove' and 'add' (in that order) should always be in front
-        if (
-          change.type === 'remove' ||
-          (change.type === 'add' && elementChanges[0]?.type !== 'remove')
-        ) {
+        if (change.type === 'remove' || (change.type === 'add' && changes[0]?.type !== 'remove')) {
           // we want "add" changes to be in the front
-          elementChanges.unshift(change);
+          changes.unshift(change);
         } else {
-          elementChanges.push(change);
+          changes.push(change);
         }
       } else {
-        this.changes.set(change.id, [change]);
+        this.changeMap.set(change.id, [change]);
       }
     }
   }
@@ -87,26 +84,24 @@ export class ElementChanges<
    * ```
    */
   remove(change: ChangeType): void {
-    const elementChanges = this.changes.get(change.id);
-    if (!elementChanges) {
+    const changes = this.changeMap.get(change.id);
+    if (!changes) {
       // TODO: change not found, warn?
       return;
     }
 
-    if (elementChanges.length === 1) {
-      this.changes.delete(change.id);
+    if (changes.length === 1) {
+      this.changeMap.delete(change.id);
       return;
     }
 
-    const index = elementChanges.indexOf(change);
+    const index = changes.indexOf(change);
     if (index < 0) {
       // TODO: change not found, warn?
       return;
     }
 
-    // swap the change with the last one & pop
-    elementChanges[index] = elementChanges[elementChanges.length - 1];
-    elementChanges.pop();
+    changes.splice(index, 1);
   }
 
   /**
@@ -118,7 +113,7 @@ export class ElementChanges<
    * ```
    */
   getForElement(elementId: string): ChangeType[] {
-    return this.changes.get(elementId) || [];
+    return this.changeMap.get(elementId) || [];
   }
 
   /**
@@ -130,7 +125,7 @@ export class ElementChanges<
    * ```
    */
   removeForElement(elementId: string): void {
-    this.changes.delete(elementId);
+    this.changeMap.delete(elementId);
   }
 
   /**
@@ -138,14 +133,14 @@ export class ElementChanges<
    *
    * @example
    * ```ts
-   * for (const change of changes.all()) {
+   * for (const change of changes) {
    *   console.log(change.type, change.id);
    * }
    * ```
    */
-  *all() {
-    for (const elementChanges of this.changes.values()) {
-      yield* elementChanges;
+  *[Symbol.iterator](): Iterator<ChangeType> {
+    for (const changes of this.changeMap.values()) {
+      yield* changes;
     }
   }
 
@@ -159,8 +154,8 @@ export class ElementChanges<
    */
   toArray() {
     const array: ChangeType[] = [];
-    for (const elementChanges of this.changes.values()) {
-      for (const change of elementChanges) {
+    for (const changes of this.changeMap.values()) {
+      for (const change of changes) {
         array.push(change);
       }
     }
@@ -183,17 +178,16 @@ export class ElementChanges<
       // Optimized path for add changes
       if (changeType === 'add') {
         for (const elementId of this.newElementIds) {
-          const elementChanges = this.changes.get(elementId);
+          const changes = this.changeMap.get(elementId);
           // We made sure that first change is an add change
           // TODO: double check? Possible to add remove before add
-          if (elementChanges?.[0])
-            changesOfType.push(elementChanges[0] as ChangeOfType<ChangeType, T>);
+          if (changes?.[0]) changesOfType.push(changes[0] as ChangeOfType<ChangeType, T>);
         }
         return changesOfType;
       }
 
-      for (const elementChanges of this.changes.values()) {
-        for (const change of elementChanges) {
+      for (const changes of this.changeMap.values()) {
+        for (const change of changes) {
           if (change.type === changeType) {
             changesOfType.push(change as ChangeOfType<ChangeType, T>);
           }
@@ -227,7 +221,7 @@ export class ElementChanges<
  * const nextNodes = changes.applyTo(nodes);
  * ```
  */
-export class NodeChanges<NodeType extends Node = Node> extends ElementChanges<
+export class NodeChangeset<NodeType extends Node = Node> extends Changeset<
   NodeType,
   NodeChange<NodeType>
 > {
@@ -270,7 +264,7 @@ export class NodeChanges<NodeType extends Node = Node> extends ElementChanges<
  * const nextEdges = changes.applyTo(edges);
  * ```
  */
-export class EdgeChanges<EdgeType extends Edge = Edge> extends ElementChanges<
+export class EdgeChangeset<EdgeType extends Edge = Edge> extends Changeset<
   EdgeType,
   EdgeChange<EdgeType>
 > {

@@ -1,17 +1,17 @@
-import type { ElementChanges } from '.';
+import type { Changeset } from '.';
 import type { Edge, Node } from '../types';
 import type { EdgeChange, ElementChangeType, NodeChange } from './types';
 
 export function applyNodeChanges<NodeType extends Node = Node>(
   nodes: NodeType[],
-  nodeChanges: ElementChanges<NodeType, NodeChange<NodeType>>
+  nodeChanges: Changeset<NodeType, NodeChange<NodeType>>
 ): NodeType[] {
   return applyChanges(nodes, nodeChanges, applyNodeChange);
 }
 
 export function applyEdgeChanges<EdgeType extends Edge = Edge>(
   edges: EdgeType[],
-  edgeChanges: ElementChanges<EdgeType, EdgeChange<EdgeType>>
+  edgeChanges: Changeset<EdgeType, EdgeChange<EdgeType>>
 ): EdgeType[] {
   return applyChanges(edges, edgeChanges, applyEdgeChange);
 }
@@ -21,7 +21,7 @@ function applyChanges<
   ChangeType extends ElementChangeType<ElementType>
 >(
   elements: ElementType[],
-  changes: ElementChanges<ElementType, ChangeType>,
+  changes: Changeset<ElementType, ChangeType>,
   applyChange: (element: ElementType, change: ChangeType) => void
 ): ElementType[] {
   const newElements: ElementType[] = [];
@@ -80,13 +80,11 @@ function applyNodeChange<NodeType extends Node = Node>(
           ...change.dimensions
         };
 
-        if (change.setAttributes) {
-          if (change.setAttributes === true || change.setAttributes === 'width') {
-            node.width = change.dimensions.width;
-          }
-          if (change.setAttributes === true || change.setAttributes === 'height') {
-            node.height = change.dimensions.height;
-          }
+        if (change.setAttributes === true || change.setAttributes === 'width') {
+          node.width = change.dimensions.width;
+        }
+        if (change.setAttributes === true || change.setAttributes === 'height') {
+          node.height = change.dimensions.height;
         }
       }
 
@@ -96,10 +94,12 @@ function applyNodeChange<NodeType extends Node = Node>(
 
       break;
     }
+
     case 'replace': {
       Object.assign(node, change.item);
       break;
     }
+
     default:
       return;
   }
@@ -114,10 +114,12 @@ export function applyEdgeChange<EdgeType extends Edge = Edge>(
       edge.selected = change.selected;
       break;
     }
+
     case 'replace': {
       Object.assign(edge, change.item);
       break;
     }
+
     default:
       return;
   }

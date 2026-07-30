@@ -76,7 +76,7 @@ import type {
 import type { StoreSignals } from './types';
 import { MediaQuery } from 'svelte/reactivity';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
-import { EdgeChanges, NodeChanges } from '$lib/changes';
+import { EdgeChangeset, NodeChangeset } from '$lib/changes';
 import type { EdgeChange, NodeChange } from '$lib/changes/types';
 
 export const initialNodeTypes = {
@@ -162,19 +162,19 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       return signals.edges;
     });
 
-    pendingNodeChanges: NodeChanges<NodeType> | undefined = $state.raw();
-    pendingEdgeChanges: EdgeChanges<EdgeType> | undefined = $state.raw();
+    pendingNodeChanges: NodeChangeset<NodeType> | undefined = $state.raw();
+    pendingEdgeChanges: EdgeChangeset<EdgeType> | undefined = $state.raw();
 
     queueNodeChanges = (changes: NodeChange<NodeType>[]) => {
       if (!this.pendingNodeChanges) {
-        this.pendingNodeChanges = new NodeChanges<NodeType>();
+        this.pendingNodeChanges = new NodeChangeset<NodeType>();
       }
       this.pendingNodeChanges.add(changes);
     };
 
     queueEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {
       if (!this.pendingEdgeChanges) {
-        this.pendingEdgeChanges = new EdgeChanges<EdgeType>();
+        this.pendingEdgeChanges = new EdgeChangeset<EdgeType>();
       }
       this.pendingEdgeChanges.add(changes);
     };
