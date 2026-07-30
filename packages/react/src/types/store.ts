@@ -161,6 +161,8 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodes: (nodes: NodeType[]) => void;
+  /** @internal Resolve a queued init fitView once nodes, container dimensions and panZoom are all ready. */
+  resolveFitViewIfReady: () => void;
   setEdges: (edges: EdgeType[]) => void;
   setDefaultNodesAndEdges: (nodes?: NodeType[], edges?: EdgeType[]) => void;
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>, params?: { triggerFitView: boolean }) => void;

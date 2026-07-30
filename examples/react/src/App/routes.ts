@@ -20,6 +20,7 @@ import EdgeRenderer from '../examples/EdgeRenderer';
 import EdgeTypes from '../examples/EdgeTypes';
 import Empty from '../examples/Empty';
 import Figma from '../examples/Figma';
+import FitViewHidden from '../examples/FitViewHidden';
 import FloatingEdges from '../examples/FloatingEdges';
 import Hidden from '../examples/Hidden';
 import Interaction from '../examples/Interaction';
@@ -395,6 +396,11 @@ const routes: IRoute[] = [
     name: 'Node Selection Bug',
     path: 'node-selection-bug',
     component: NodeSelectionBug,
+  },
+  {
+    name: 'FitView Hidden',
+    path: 'fit-view-hidden',
+    component: FitViewHidden,
   },
 ];
 

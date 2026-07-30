@@ -80,6 +80,20 @@ const createStore = ({
       set({ fitViewResolver: null });
     }
 
+    /*
+     * Resolve a queued init fitView once all of its inputs are ready: nodes initialized, the
+     * container measured, and panZoom created. setNodes, useResizeHandler and ZoomPane each call
+     * it as their input becomes ready, so whichever finishes last fires the fit.
+     */
+    function resolveFitViewIfReady() {
+      const { fitViewQueued, nodesInitialized, width, height, panZoom } = get();
+
+      if (fitViewQueued && nodesInitialized && width && height && panZoom) {
+        resolveFitView();
+        set({ fitViewQueued: false, fitViewOptions: undefined });
+      }
+    }
+
     return {
       ...getInitialState({
         nodes,
@@ -97,15 +111,7 @@ const createStore = ({
         zIndexMode,
       }),
       setNodes: (nodes: Node[]) => {
-        const {
-          nodeLookup,
-          parentLookup,
-          nodeOrigin,
-          elevateNodesOnSelect,
-          fitViewQueued,
-          zIndexMode,
-          nodesSelectionActive,
-        } = get();
+        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, zIndexMode, nodesSelectionActive } = get();
 
         /*
          * setNodes() is called exclusively in response to user actions:
@@ -126,19 +132,10 @@ const createStore = ({
 
         const nextNodesSelectionActive = nodesSelectionActive && hasSelectedNodes;
 
-        if (fitViewQueued && nodesInitialized) {
-          resolveFitView();
-          set({
-            nodes,
-            nodesInitialized,
-            fitViewQueued: false,
-            fitViewOptions: undefined,
-            nodesSelectionActive: nextNodesSelectionActive
-          });
-        } else {
-          set({ nodes, nodesInitialized, nodesSelectionActive: nextNodesSelectionActive });
-        }
+        set({ nodes, nodesInitialized, nodesSelectionActive: nextNodesSelectionActive });
+        resolveFitViewIfReady();
       },
+      resolveFitViewIfReady,
       setEdges: (edges: Edge[]) => {
         const { connectionLookup, edgeLookup } = get();
 
@@ -174,6 +171,9 @@ const createStore = ({
           debug,
           fitViewQueued,
           zIndexMode,
+          width,
+          height,
+          panZoom,
         } = get();
 
         const { changes, updatedInternals } = updateNodeInternalsSystem(
@@ -192,7 +192,7 @@ const createStore = ({
 
         updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent, zIndexMode });
 
-        if (fitViewQueued) {
+        if (fitViewQueued && width && height && panZoom) {
           resolveFitView();
           set({ fitViewQueued: false, fitViewOptions: undefined });
         } else {
