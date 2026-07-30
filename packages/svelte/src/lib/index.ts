@@ -1,49 +1,49 @@
 // main component
-export { SvelteFlow } from '$lib/container/SvelteFlow';
-export * from '$lib/container/SvelteFlow/types';
+export { SvelteFlow } from '$lib/container/SvelteFlow/index.js';
+export * from '$lib/container/SvelteFlow/types.js';
 
 // components
-export * from '$lib/container/Panel';
-export * from '$lib/components/SvelteFlowProvider';
-export * from '$lib/components/ViewportPortal';
+export * from '$lib/container/Panel/index.js';
+export * from '$lib/components/SvelteFlowProvider/index.js';
+export * from '$lib/components/ViewportPortal/index.js';
 export {
   BezierEdge,
   StepEdge,
   SmoothStepEdge,
   StraightEdge,
   BaseEdge
-} from '$lib/components/edges';
-export * from '$lib/components/Handle';
-export * from '$lib/components/EdgeLabel';
-export * from '$lib/components/EdgeReconnectAnchor';
+} from '$lib/components/edges/index.js';
+export * from '$lib/components/Handle/index.js';
+export * from '$lib/components/EdgeLabel/index.js';
+export * from '$lib/components/EdgeReconnectAnchor/index.js';
 
 // plugins
-export * from '$lib/plugins/Controls';
-export * from '$lib/plugins/Background';
-export * from '$lib/plugins/Minimap';
-export * from '$lib/plugins/NodeToolbar';
-export * from '$lib/plugins/EdgeToolbar';
-export * from '$lib/plugins/NodeResizer';
+export * from '$lib/plugins/Controls/index.js';
+export * from '$lib/plugins/Background/index.js';
+export * from '$lib/plugins/Minimap/index.js';
+export * from '$lib/plugins/NodeToolbar/index.js';
+export * from '$lib/plugins/EdgeToolbar/index.js';
+export * from '$lib/plugins/NodeResizer/index.js';
 
 // store
-export { useStore } from '$lib/store';
+export { useStore } from '$lib/store/index.js';
 
 // utils
-export * from '$lib/utils';
+export * from '$lib/utils/index.js';
 
 //hooks
-export * from '$lib/hooks/useSvelteFlow.svelte';
-export * from '$lib/hooks/useUpdateNodeInternals.svelte';
-export * from '$lib/hooks/useConnection.svelte';
-export * from '$lib/hooks/useNodesEdgesViewport.svelte';
-export * from '$lib/hooks/useNodeConnections.svelte';
-export * from '$lib/hooks/useNodesData.svelte';
-export * from '$lib/hooks/useInternalNode.svelte';
-export * from '$lib/hooks/useInitialized.svelte';
-export * from '$lib/hooks/useOnSelectionChange.svelte';
+export * from '$lib/hooks/useSvelteFlow.svelte.js';
+export * from '$lib/hooks/useUpdateNodeInternals.svelte.js';
+export * from '$lib/hooks/useConnection.svelte.js';
+export * from '$lib/hooks/useNodesEdgesViewport.svelte.js';
+export * from '$lib/hooks/useNodeConnections.svelte.js';
+export * from '$lib/hooks/useNodesData.svelte.js';
+export * from '$lib/hooks/useInternalNode.svelte.js';
+export * from '$lib/hooks/useInitialized.svelte.js';
+export * from '$lib/hooks/useOnSelectionChange.svelte.js';
 
 //actions
-export * from '$lib/actions/portal';
+export * from '$lib/actions/portal/index.js';
 
 // types
 export type {
@@ -56,11 +56,11 @@ export type {
   EdgeTypes,
   DefaultEdgeOptions,
   BuiltInEdge
-} from '$lib/types/edges';
-export type * from '$lib/types/general';
-export type { Node, NodeTypes, BuiltInNode, NodeProps, InternalNode } from '$lib/types/nodes';
-export * from '$lib/types/events';
-export type { SvelteFlowStore } from '$lib/store/types';
+} from '$lib/types/edges.js';
+export type * from '$lib/types/general.js';
+export type { Node, NodeTypes, BuiltInNode, NodeProps, InternalNode } from '$lib/types/nodes.js';
+export * from '$lib/types/events.js';
+export type { SvelteFlowStore } from '$lib/store/types.js';
 
 // system types
 export {

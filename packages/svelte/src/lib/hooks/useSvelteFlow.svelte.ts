@@ -19,9 +19,9 @@ import {
   getNodesBounds
 } from '@xyflow/system';
 
-import { useStore } from '$lib/store';
-import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
-import { isEdge, isNode } from '$lib/utils';
+import { useStore } from '$lib/store/index.js';
+import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types/index.js';
+import { isEdge, isNode } from '$lib/utils/index.js';
 import { untrack } from 'svelte';
 
 /**

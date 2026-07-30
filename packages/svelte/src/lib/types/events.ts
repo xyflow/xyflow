@@ -1,5 +1,5 @@
-import type { Edge } from './edges';
-import type { Node } from './nodes';
+import type { Edge } from './edges.js';
+import type { Node } from './nodes.js';
 
 export type NodeEventWithPointer<T = PointerEvent, NodeType extends Node = Node> = ({
   node,

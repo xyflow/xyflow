@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import { useStore } from '$lib/store';
-  import { getNodeIdContext } from '$lib/store/context';
+  import { useStore } from '$lib/store/index.js';
+  import { getNodeIdContext } from '$lib/store/context.js';
   import {
     XYResizer,
     ResizeControlVariant,
@@ -12,7 +12,7 @@
     type XYResizerChildChange
   } from '@xyflow/system';
 
-  import type { ResizeControlProps } from './types';
+  import type { ResizeControlProps } from './types.js';
 
   let {
     nodeId,

@@ -1,2 +1,2 @@
 export { default as KeyHandler } from './KeyHandler.svelte';
-export type { KeyHandlerProps } from './types';
+export type { KeyHandlerProps } from './types.js';

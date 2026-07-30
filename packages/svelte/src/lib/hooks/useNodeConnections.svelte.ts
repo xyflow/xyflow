@@ -6,8 +6,8 @@ import {
   type UseNodeConnectionsParams
 } from '@xyflow/system';
 
-import { useStore } from '$lib/store';
-import { getNodeIdContext } from '$lib/store/context';
+import { useStore } from '$lib/store/index.js';
+import { getNodeIdContext } from '$lib/store/context.js';
 
 type ConnectionMap = Map<string, NodeConnection>;
 
