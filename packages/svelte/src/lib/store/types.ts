@@ -11,7 +11,14 @@ import type {
 } from '@xyflow/system';
 
 import type { getInitialStore } from './initial-store.svelte.js';
-import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions, InternalNode } from '$lib/types/index.js';
+import type {
+  Node,
+  Edge,
+  NodeTypes,
+  EdgeTypes,
+  FitViewOptions,
+  InternalNode
+} from '$lib/types/index.js';
 import type { SvelteFlowProps } from '$lib/container/SvelteFlow/index.js';
 
 export type SvelteFlowStoreActions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {

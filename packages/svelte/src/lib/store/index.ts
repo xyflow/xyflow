@@ -19,7 +19,14 @@ import {
   Position
 } from '@xyflow/system';
 
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, InternalNode } from '$lib/types/index.js';
+import type {
+  EdgeTypes,
+  NodeTypes,
+  Node,
+  Edge,
+  FitViewOptions,
+  InternalNode
+} from '$lib/types/index.js';
 import { addEdge as addEdgeUtil } from '$lib/utils/edges.js';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte.js';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types.js';

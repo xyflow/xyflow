@@ -31,11 +31,9 @@
     const {
       autoPanOnConnect,
       domNode,
-      isValidConnection,
       connectionMode,
       connectionRadius,
       onconnectstart,
-      onconnectend,
       onreconnect,
       onreconnectstart,
       onreconnectend,

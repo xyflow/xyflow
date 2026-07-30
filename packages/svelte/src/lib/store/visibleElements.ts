@@ -1,4 +1,10 @@
-import type { DefaultEdgeOptions, Node, Edge, EdgeLayouted, InternalNode } from '$lib/types/index.js';
+import type {
+  DefaultEdgeOptions,
+  Node,
+  Edge,
+  EdgeLayouted,
+  InternalNode
+} from '$lib/types/index.js';
 import {
   ConnectionMode,
   getEdgePosition,
