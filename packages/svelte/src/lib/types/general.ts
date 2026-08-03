@@ -7,8 +7,8 @@ import type {
   OnBeforeDeleteBase
 } from '@xyflow/system';
 
-import type { Node } from './nodes';
-import type { Edge } from './edges';
+import type { Node } from './nodes.js';
+import type { Edge } from './edges.js';
 
 export type KeyModifier = ShortcutModifierDefinition;
 export type KeyDefinitionObject = { key: string; modifier?: KeyModifier };

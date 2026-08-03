@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { hideOnSSR, portal } from '$lib/actions/portal';
-  import type { ViewportPortalProps } from './types';
+  import { hideOnSSR, portal } from '$lib/actions/portal/index.js';
+  import type { ViewportPortalProps } from './types.js';
 
   let { target = 'front', children, ...rest }: ViewportPortalProps = $props();
 </script>

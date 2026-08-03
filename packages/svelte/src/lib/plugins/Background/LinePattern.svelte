@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ClassValue } from 'svelte/elements';
-  import type { BackgroundVariant } from './types';
+  import type { BackgroundVariant } from './types.js';
 
   let {
     lineWidth,

@@ -1,5 +1,5 @@
 import type { ColorModeClass } from '@xyflow/system';
-import { useStore } from './useStore';
+import { useStore } from './useStore.js';
 
 /**
  * Hook for receiving the current color mode class 'dark' or 'light'.

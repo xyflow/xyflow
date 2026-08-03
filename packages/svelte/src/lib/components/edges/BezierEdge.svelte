@@ -2,7 +2,7 @@
   import { getBezierPath } from '@xyflow/system';
 
   import BaseEdge from './BaseEdge.svelte';
-  import type { BezierEdgeProps } from '$lib/types';
+  import type { BezierEdgeProps } from '$lib/types/index.js';
 
   let {
     id,

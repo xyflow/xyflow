@@ -50,8 +50,8 @@
     type XYPosition
   } from '@xyflow/system';
 
-  import type { Node, Edge } from '$lib/types';
-  import type { PaneProps } from './types';
+  import type { Node, Edge } from '$lib/types/index.js';
+  import type { PaneProps } from './types.js';
 
   let {
     store = $bindable(),
