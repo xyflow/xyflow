@@ -1,7 +1,49 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
 
 import { FRAMEWORK } from './constants';
 import { getTransform } from './utils';
+
+type Point = { x: number; y: number };
+
+async function getPaneDragPoints(pane: Locator) {
+  const bounds = await pane.boundingBox();
+  if (!bounds) {
+    throw new Error('Could not measure the pane for the drag gesture.');
+  }
+
+  const start = { x: bounds.x + bounds.width * 0.75, y: bounds.y + bounds.height * 0.75 };
+  return { start, end: { x: start.x - 80, y: start.y - 80 } };
+}
+
+async function withTouchDrag(page: Page, start: Point, end: Point, assertions: () => Promise<void>) {
+  const client = await page.context().newCDPSession(page);
+
+  try {
+    await client.send('Input.dispatchTouchEvent', {
+      type: 'touchStart',
+      touchPoints: [{ ...start, id: 0 }],
+    });
+
+    for (let step = 1; step <= 4; step++) {
+      const progress = step / 4;
+      await client.send('Input.dispatchTouchEvent', {
+        type: 'touchMove',
+        touchPoints: [
+          {
+            x: start.x + (end.x - start.x) * progress,
+            y: start.y + (end.y - start.y) * progress,
+            id: 0,
+          },
+        ],
+      });
+    }
+
+    await assertions();
+  } finally {
+    await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await client.detach();
+  }
+}
 
 test.describe('Pane default', () => {
   test.beforeEach(async ({ page }) => {
@@ -168,6 +210,76 @@ test.describe('Pane non-default', () => {
       expect(viewportTransform.translateX).toBe(1.23);
       expect(viewportTransform.translateY).toBe(9.87);
       expect(viewportTransform.scale).toBe(1.234);
+    });
+
+    test.describe('touch input', () => {
+      // Model a hybrid touchscreen computer without switching to a mobile browser profile.
+      test.use({ hasTouch: true });
+
+      test('touch drag pans when primary mouse drag is reserved for selection', async ({ page, browserName }) => {
+        test.skip(browserName !== 'chromium', 'CDP touch input is only available in Chromium.');
+
+        const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
+        const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
+        const selection = page.locator(`.${FRAMEWORK}-flow__selection`);
+
+        await expect(pane).toBeAttached();
+
+        const { start, end } = await getPaneDragPoints(pane);
+        const transformBefore = await getTransform(viewport);
+
+        await withTouchDrag(page, start, end, async () => {
+          await expect.poll(async () => (await getTransform(viewport)).translateX).not.toBe(transformBefore.translateX);
+          await expect(selection).toHaveCount(0);
+        });
+      });
+
+      test('selection key keeps touch drag in selection mode', async ({ page, browserName }) => {
+        test.skip(browserName !== 'chromium', 'CDP touch input is only available in Chromium.');
+
+        const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
+        const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
+        const selection = page.locator(`.${FRAMEWORK}-flow__selection`);
+
+        await expect(pane).toBeAttached();
+
+        const { start, end } = await getPaneDragPoints(pane);
+        const transformBefore = await getTransform(viewport);
+
+        await page.keyboard.down('Shift');
+        await expect(pane).toHaveClass(/selection/);
+
+        try {
+          await withTouchDrag(page, start, end, async () => {
+            await expect(selection).toBeVisible();
+            expect(await getTransform(viewport)).toEqual(transformBefore);
+          });
+        } finally {
+          await page.keyboard.up('Shift');
+        }
+      });
+    });
+
+    test('primary mouse drag still creates a selection marquee', async ({ page }) => {
+      const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
+      const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
+      const selection = page.locator(`.${FRAMEWORK}-flow__selection`);
+
+      await expect(pane).toBeAttached();
+
+      const { start, end } = await getPaneDragPoints(pane);
+      const transformBefore = await getTransform(viewport);
+
+      await page.mouse.move(start.x, start.y);
+      await page.mouse.down();
+
+      try {
+        await page.mouse.move(end.x, end.y, { steps: 4 });
+        await expect(selection).toBeVisible();
+        expect(await getTransform(viewport)).toEqual(transformBefore);
+      } finally {
+        await page.mouse.up();
+      }
     });
   });
 });
