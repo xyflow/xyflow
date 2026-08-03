@@ -85,7 +85,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
           sourceHandle: edge.sourceHandle || null,
           targetHandle: edge.targetHandle || null,
           connectionMode: store.connectionMode,
-          onError,
+          onError: store.onError,
         });
 
         const zIndex = getElevatedEdgeZIndex({

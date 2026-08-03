@@ -175,4 +175,14 @@ test.describe('Edges', () => {
       await expect(svg).toHaveCSS('z-index', '1');
     });
   });
+
+  test('calls onError when an edge references a missing handle', async ({ page }) => {
+    const errorMessage = page.waitForEvent('console', {
+      predicate: (message) => message.text() === 'react-flow-error:008',
+    });
+
+    await page.goto('/tests/generic/edges/missing-handle');
+
+    await expect(errorMessage).resolves.toBeDefined();
+  });
 });
