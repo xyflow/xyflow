@@ -83,6 +83,8 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       });
     }
 
+    console.log('updateNodePositions', changes);
+
     store.queueNodeChanges(changes);
   };
 
@@ -196,10 +198,16 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
 
   function unselectNodesAndEdges(params?: { nodes?: NodeType[]; edges?: EdgeType[] }) {
     const nodesToDeselect = params?.nodes ? new Set(params.nodes.map((node) => node.id)) : null;
-    store.queueNodeChanges(getDeselectionChanges(store.nodeLookup, nodesToDeselect, true));
+    const nodeChanges = getDeselectionChanges(store.nodeLookup, nodesToDeselect, true);
+    if (nodeChanges.length > 0) {
+      store.queueNodeChanges(nodeChanges);
+    }
 
     const edgesToDeselect = params?.edges ? new Set(params.edges.map((edge) => edge.id)) : null;
-    store.queueEdgeChanges(getDeselectionChanges(store.edgeLookup, edgesToDeselect, true));
+    const edgeChanges = getDeselectionChanges(store.edgeLookup, edgesToDeselect, true);
+    if (edgeChanges.length > 0) {
+      store.queueEdgeChanges(edgeChanges);
+    }
   }
 
   function addSelectedNodes(ids: string[]) {
@@ -209,6 +217,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       ? ids.map((id) => selectionChange(id, true))
       : getSelectionChanges(store.nodeLookup, new Set(ids), true);
 
+    console.log('addSelectedNodes', changes);
     store.queueNodeChanges(changes);
   }
 
