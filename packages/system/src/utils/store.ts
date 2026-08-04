@@ -28,6 +28,7 @@ import {
   nodeToRect,
 } from './general';
 import { getNodePositionWithOrigin } from './graph';
+import { resolveGroupNodes } from './groups';
 import { type ParentExpandChild } from './types';
 
 const SELECTED_NODE_Z = 1000;
@@ -139,6 +140,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
+  groupLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options: UpdateNodesOptions<NodeType> = {}
 ): AdoptUserNodesReturn {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
@@ -150,11 +152,13 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   const processedNodes = new Set<string>();
   // Deferred child nodes are grouped by the parent id they are waiting for
   const deferredChildNodes = new Map<string, InternalNodeBase<NodeType>[]>();
+
   let nodesInitialized = nodes.length > 0;
   let hasSelectedNodes = false;
 
   nodeLookup.clear();
   parentLookup.clear();
+  groupLookup.clear();
 
   const subflowContext = {
     nodeLookup,
@@ -205,7 +209,19 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 
     resolveSubflowsForNode(internalNode, subflowContext);
 
+    if (internalNode.groupId) {
+      updateParentLookup(internalNode, groupLookup, internalNode.groupId);
+    }
+
     hasSelectedNodes ||= userNode.selected ?? false;
+  }
+
+  if (groupLookup.size > 0) {
+    resolveGroupNodes(groupLookup, nodeLookup, {
+      zIndexMode: _options.zIndexMode,
+      elevateNodesOnSelect: _options.elevateNodesOnSelect,
+      rootParentIndex,
+    });
   }
 
   if (process.env.NODE_ENV === 'development') {
@@ -214,6 +230,12 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       childNodes.forEach((childNode) => {
         console.warn(`Parent node with id "${childNode.parentId}" is missing for child node with id "${childNode.id}"`);
       });
+    }
+
+    for (const groupId of groupLookup.keys()) {
+      if (!nodeLookup.has(groupId)) {
+        console.warn(`Group node with id "${groupId}" is missing`);
+      }
     }
   }
 
@@ -250,18 +272,15 @@ function resolveSubflowsForNode<NodeType extends NodeBase>(
 
 function updateParentLookup<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
-  parentLookup: ParentLookup<InternalNodeBase<NodeType>>
+  parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
+  parentId: string
 ) {
-  if (!node.parentId) {
-    return;
-  }
-
-  const childNodes = parentLookup.get(node.parentId);
+  const childNodes = parentLookup.get(parentId);
 
   if (childNodes) {
     childNodes.set(node.id, node);
   } else {
-    parentLookup.set(node.parentId, new Map([[node.id, node]]));
+    parentLookup.set(parentId, new Map([[node.id, node]]));
   }
 }
 
@@ -284,7 +303,7 @@ function updateChildNode<NodeType extends NodeBase>(
     return;
   }
 
-  updateParentLookup(node, parentLookup);
+  updateParentLookup(node, parentLookup, parentId);
 
   // We just want to set the rootParentIndex for the first child
   if (
@@ -320,7 +339,7 @@ function updateChildNode<NodeType extends NodeBase>(
   }
 }
 
-function calculateZ(node: NodeBase, selectedNodeZ: number, zIndexMode: ZIndexMode): number {
+export function calculateZ(node: NodeBase, selectedNodeZ: number, zIndexMode: ZIndexMode): number {
   const zIndex = isNumeric(node.zIndex) ? node.zIndex : 0;
 
   if (isManualZIndexMode(zIndexMode)) {

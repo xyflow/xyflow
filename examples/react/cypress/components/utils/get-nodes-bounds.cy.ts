@@ -5,6 +5,7 @@ describe('getNodesBounds Testing', () => {
   it('calculates bounds for a node', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
 
     const nodes: Node[] = [
       {
@@ -15,7 +16,7 @@ describe('getNodesBounds Testing', () => {
       },
     ];
 
-    adoptUserNodes(nodes, nodeLookup, parentLookup);
+    adoptUserNodes(nodes, nodeLookup, parentLookup, groupLookup);
 
     const bounds = getNodesBounds(nodes, { nodeLookup });
 
@@ -28,6 +29,7 @@ describe('getNodesBounds Testing', () => {
   it('calculates bounds for a node (-x, -y)', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
 
     const nodes: Node[] = [
       {
@@ -38,7 +40,7 @@ describe('getNodesBounds Testing', () => {
       },
     ];
 
-    adoptUserNodes(nodes, nodeLookup, parentLookup);
+    adoptUserNodes(nodes, nodeLookup, parentLookup, groupLookup);
 
     const bounds = getNodesBounds(nodes, { nodeLookup });
 
@@ -51,6 +53,7 @@ describe('getNodesBounds Testing', () => {
   it('calculates bounds for multitple nodes', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
 
     const nodes: Node[] = [
       {
@@ -67,7 +70,7 @@ describe('getNodesBounds Testing', () => {
       },
     ];
 
-    adoptUserNodes(nodes, nodeLookup, parentLookup);
+    adoptUserNodes(nodes, nodeLookup, parentLookup, groupLookup);
 
     const bounds = getNodesBounds(nodes, { nodeLookup });
 
@@ -80,6 +83,7 @@ describe('getNodesBounds Testing', () => {
   it('calculates bounds for a node with a child node', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
 
     const nodes: Node[] = [
       {
@@ -104,7 +108,7 @@ describe('getNodesBounds Testing', () => {
       },
     ];
 
-    adoptUserNodes(nodes, nodeLookup, parentLookup);
+    adoptUserNodes(nodes, nodeLookup, parentLookup, groupLookup);
 
     const bounds = getNodesBounds(nodes, { nodeLookup });
 
@@ -117,6 +121,7 @@ describe('getNodesBounds Testing', () => {
   it('calculates bounds for child nodes', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
 
     const nodes: Node[] = [
       {
@@ -141,7 +146,7 @@ describe('getNodesBounds Testing', () => {
       },
     ];
 
-    adoptUserNodes(nodes, nodeLookup, parentLookup);
+    adoptUserNodes(nodes, nodeLookup, parentLookup, groupLookup);
 
     const bounds = getNodesBounds([nodes[1], nodes[2]], { nodeLookup });
 

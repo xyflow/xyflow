@@ -60,6 +60,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   nodesInitialized: boolean;
   nodeLookup: NodeLookup<InternalNode<NodeType>>;
   parentLookup: ParentLookup<InternalNode<NodeType>>;
+  groupLookup: ParentLookup<InternalNode<NodeType>>;
   edges: EdgeType[];
   edgeLookup: EdgeLookup<EdgeType>;
   connectionLookup: ConnectionLookup;

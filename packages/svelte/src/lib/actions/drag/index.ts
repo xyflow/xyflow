@@ -33,6 +33,7 @@ export default function drag<NodeType extends Node = Node, EdgeType extends Edge
       return {
         nodes: store.nodes satisfies NodeBase[],
         nodeLookup: store.nodeLookup,
+        groupLookup: store.groupLookup,
         edges: store.edges,
         nodeExtent: store.nodeExtent,
         snapGrid: snapGrid ? snapGrid : [0, 0],

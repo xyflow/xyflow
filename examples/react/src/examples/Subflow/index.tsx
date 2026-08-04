@@ -135,7 +135,45 @@ const initialNodes: Node[] = [
     position: { x: 400, y: 100 },
     className: 'light',
   },
-].reverse();
+  {
+    id: 'groupNode2',
+    position: { x: 0, y: 0 },
+    data: { label: 'Group Node 2' },
+    autoSize: '25px',
+    className: 'light',
+    style: {
+      backgroundColor: 'rgba(50, 200, 100, 0.3)',
+    },
+  },
+  {
+    id: 'groupNode',
+    groupId: 'groupNode2',
+    position: { x: 0, y: 0 },
+    data: { label: 'Group Node' },
+    autoSize: '25px',
+    className: 'light',
+    style: {
+      backgroundColor: 'rgba(50, 200, 100, 0.3)',
+    },
+    zIndex: -1,
+  },
+  {
+    id: 'groupedNode1',
+    position: { x: 600, y: 600 },
+    data: { label: 'Grouped Node 1' },
+    groupId: 'groupNode',
+    width: 150,
+    height: 40,
+  },
+  {
+    id: 'groupedNode2',
+    position: { x: 800, y: 700 },
+    data: { label: 'Grouped Node 2' },
+    groupId: 'groupNode',
+    width: 150,
+    height: 40,
+  },
+];
 
 const initialEdges: Edge[] = [
   {
@@ -163,7 +201,7 @@ const nodeTypes = {
 };
 
 const nodeExtent: CoordinateExtent = [
-  [0, 0],
+  [-500, 0],
   [1000, 1000],
 ];
 

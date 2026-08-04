@@ -5,6 +5,7 @@ describe('adoptUserNodes Testing', () => {
   it('builds node lookup', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
 
     const userNode: Node = {
       id: '1',
@@ -13,7 +14,7 @@ describe('adoptUserNodes Testing', () => {
       measured: { width: 100, height: 50 },
     };
 
-    adoptUserNodes([userNode], nodeLookup, parentLookup);
+    adoptUserNodes([userNode], nodeLookup, parentLookup, groupLookup);
     const internalNode = nodeLookup.get('1');
 
     expect(nodeLookup.size).to.equal(1);
@@ -23,6 +24,7 @@ describe('adoptUserNodes Testing', () => {
   it('calculates positionAbsolute with nodeOrigin', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
 
     const userNode: Node = {
       id: '1',
@@ -31,7 +33,7 @@ describe('adoptUserNodes Testing', () => {
       measured: { width: 100, height: 50 },
     };
 
-    adoptUserNodes([userNode], nodeLookup, parentLookup, {
+    adoptUserNodes([userNode], nodeLookup, parentLookup, groupLookup, {
       nodeOrigin: [0.5, 0.5],
     });
 
@@ -48,6 +50,7 @@ describe('adoptUserNodes Testing', () => {
   it('calculates positionAbsolute with nodeExtent', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
     const nodeExtent: CoordinateExtent = [
       [0, 0],
       [100, 100],
@@ -60,7 +63,7 @@ describe('adoptUserNodes Testing', () => {
       measured: { width: 50, height: 25 },
     };
 
-    adoptUserNodes([userNode], nodeLookup, parentLookup, {
+    adoptUserNodes([userNode], nodeLookup, parentLookup, groupLookup, {
       nodeExtent,
     });
 
@@ -73,6 +76,7 @@ describe('adoptUserNodes Testing', () => {
   it('calculates positionAbsolute for sub flow', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
 
     const userParentNode: Node = {
       id: '1',
@@ -89,7 +93,7 @@ describe('adoptUserNodes Testing', () => {
       parentId: '1',
     };
 
-    adoptUserNodes([userParentNode, userChildNode], nodeLookup, parentLookup);
+    adoptUserNodes([userParentNode, userChildNode], nodeLookup, parentLookup, groupLookup);
 
     const internalChildNode = nodeLookup.get('2');
 
@@ -106,6 +110,7 @@ describe('adoptUserNodes Testing', () => {
   it('calculates positionAbsolute for sub flow with nodeOrigin', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
     const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
     const userParentNode: Node = {
@@ -123,7 +128,7 @@ describe('adoptUserNodes Testing', () => {
       parentId: '1',
     };
 
-    adoptUserNodes([userParentNode, userChildNode], nodeLookup, parentLookup, {
+    adoptUserNodes([userParentNode, userChildNode], nodeLookup, parentLookup, groupLookup, {
       nodeOrigin,
     });
 
@@ -146,6 +151,7 @@ describe('adoptUserNodes Testing', () => {
   it('calculates positionAbsolute for sub flow with nodeExtent', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
     const nodeExtent: CoordinateExtent = [
       [0, 0],
       [200, 200],
@@ -173,7 +179,7 @@ describe('adoptUserNodes Testing', () => {
       parentId: 'a',
     };
 
-    adoptUserNodes([userParentNodeA, userParentNodeB, userChildNode], nodeLookup, parentLookup, {
+    adoptUserNodes([userParentNodeA, userParentNodeB, userChildNode], nodeLookup, parentLookup, groupLookup, {
       nodeExtent,
     });
 

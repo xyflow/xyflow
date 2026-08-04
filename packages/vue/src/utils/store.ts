@@ -194,7 +194,10 @@ export function adoptNodes<NodeType extends Node = Node>(
     });
   }
 
-  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: options?.checkEquality ?? true });
+  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, new Map(), {
+    ...options,
+    checkEquality: options?.checkEquality ?? true,
+  });
 
   for (const node of validNodes) {
     if (node.parentId && !nodeLookup.has(node.parentId)) {

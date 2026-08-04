@@ -52,6 +52,7 @@ const getInitialState = ({
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map<string, InternalNode>();
   const parentLookup: ParentLookup<InternalNode> = new Map();
+  const groupLookup: ParentLookup<InternalNode> = new Map();
   const connectionLookup: ConnectionLookup = new Map();
   const edgeLookup: EdgeLookup<Edge> = new Map();
 
@@ -61,7 +62,7 @@ const getInitialState = ({
   const storeNodeExtent = nodeExtent ?? infiniteExtent;
 
   updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
-  const { nodesInitialized } = adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
+  const { nodesInitialized } = adoptUserNodes(storeNodes, nodeLookup, parentLookup, groupLookup, {
     nodeOrigin: storeNodeOrigin,
     nodeExtent: storeNodeExtent,
     zIndexMode,
@@ -94,6 +95,7 @@ const getInitialState = ({
     nodesInitialized,
     nodeLookup,
     parentLookup,
+    groupLookup,
     edges: storeEdges,
     edgeLookup,
     connectionLookup,
