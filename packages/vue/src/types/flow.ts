@@ -383,6 +383,7 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
   /**
    * When you typically call `fitView` on a `VueFlowInstance`, you can provide an object of options to
    * customize its behavior. This prop lets you do the same for the initial `fitView` call.
+   * @default { padding: '5%' }
    */
   fitViewOptions?: FitViewOptionsBase<NodeType>;
   /**

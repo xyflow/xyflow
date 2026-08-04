@@ -37,6 +37,9 @@ export const infiniteExtent: CoordinateExtent = [
   [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
 ];
 
+/** Default padding used by `fitView` / `fitBounds` when none is provided. */
+export const defaultFitViewPadding = '5%';
+
 export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
 
 export const defaultAriaLabelConfig = {
