@@ -213,22 +213,25 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    const changes = isMultiSelection
-      ? ids.map((id) => selectionChange(id, true))
-      : getSelectionChanges(store.nodeLookup, new Set(ids), true);
+    if (isMultiSelection) {
+      store.queueNodeChanges(ids.map((id) => selectionChange(id, true)));
+      return;
+    }
 
-    console.log('addSelectedNodes', changes);
-    store.queueNodeChanges(changes);
+    store.queueNodeChanges(getSelectionChanges(store.nodeLookup, new Set(ids), true));
+    store.queueEdgeChanges(getSelectionChanges(store.edgeLookup));
   }
 
   function addSelectedEdges(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    const changes = isMultiSelection
-      ? ids.map((id) => selectionChange(id, true))
-      : getSelectionChanges(store.edgeLookup, new Set(ids), true);
+    if (isMultiSelection) {
+      store.queueEdgeChanges(ids.map((id) => selectionChange(id, true)));
+      return;
+    }
 
-    store.queueEdgeChanges(changes);
+    store.queueEdgeChanges(getSelectionChanges(store.edgeLookup, new Set(ids)));
+    store.queueNodeChanges(getSelectionChanges(store.nodeLookup, new Set(), true));
   }
 
   function handleNodeSelection(id: string, unselect?: boolean, nodeRef?: HTMLDivElement | null) {
