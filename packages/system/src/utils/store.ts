@@ -115,6 +115,10 @@ type UpdateNodesOptions<NodeType extends NodeBase> = {
   defaults?: Partial<NodeType>;
   zIndexMode?: ZIndexMode;
   checkEquality?: boolean;
+  /** Opt into the in-place fast path (no Map clone/clear/rebuild) when the incoming
+   *  array is structurally identical (flat, no parents, same ids in same order).
+   *  Returns changedIds. Falls back to the full rebuild otherwise. */
+  incremental?: boolean;
 };
 
 export function isManualZIndexMode(zIndexMode?: ZIndexMode): boolean {
@@ -124,7 +128,87 @@ export function isManualZIndexMode(zIndexMode?: ZIndexMode): boolean {
 type AdoptUserNodesReturn = {
   nodesInitialized: boolean;
   hasSelectedNodes: boolean;
+  /** ids whose internalNode was (re)created this call. Only populated on the
+   *  incremental fast path; undefined means "unknown, assume all changed". */
+  changedIds?: string[];
 };
+
+/** Can we reconcile the incoming array into the current lookup in place (no clone+clear+rebuild)?
+ *  Yes when the structure is unchanged: same ids in the same order and no re-parenting. A parented
+ *  node is allowed, its absolute position is cascaded from its parent, except under `auto`
+ *  zIndexMode whose rootParentIndex cascade mutates parents in place. */
+function canIncrementalAdopt<NodeType extends NodeBase>(
+  nodes: NodeType[],
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
+  zIndexMode?: ZIndexMode
+): boolean {
+  if (nodes.length !== nodeLookup.size) {
+    return false;
+  }
+  const keys = nodeLookup.keys();
+  const seen = new Set<string>();
+  for (const userNode of nodes) {
+    if (keys.next().value !== userNode.id) {
+      // an add / remove / reorder changes the id sequence
+      return false;
+    }
+    const internalNode = nodeLookup.get(userNode.id)!;
+    // re-parenting (including gaining or losing a parent) has to rebuild parentLookup ordering
+    if (userNode.parentId !== internalNode.parentId) {
+      return false;
+    }
+    if (userNode.parentId) {
+      // the cascade reads the parent from nodeLookup, so the parent must already be processed this
+      // pass; a child-before-parent order (or a missing parent) takes the full path, which handles
+      // it the same way main does. auto zIndexMode mutates parents in place, also full path.
+      if (zIndexMode === 'auto' || !seen.has(userNode.parentId)) {
+        return false;
+      }
+    }
+    seen.add(userNode.id);
+  }
+  return true;
+}
+
+/** Build the internal node for a user node. Shared by both adopt paths (full
+ *  rebuild and incremental fast path). `prevInternalNode` is the previous internal
+ *  node, if any, used to carry over handle bounds. */
+function createInternalNode<NodeType extends NodeBase>(
+  userNode: NodeType,
+  prevInternalNode: InternalNodeBase<NodeType> | undefined,
+  options: typeof adoptUserNodesDefaultOptions,
+  selectedNodeZ: number
+): InternalNodeBase<NodeType> {
+  const positionWithOrigin = getNodePositionWithOrigin(userNode, options.nodeOrigin);
+  const extent = isCoordinateExtent(userNode.extent) ? userNode.extent : options.nodeExtent;
+  const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(userNode));
+
+  return {
+    ...options.defaults,
+    ...userNode,
+    measured: {
+      width: userNode.measured?.width,
+      height: userNode.measured?.height,
+    },
+    internals: {
+      positionAbsolute: clampedPosition,
+      // if the user re-initializes the node or removes `measured`, reset handleBounds so the node gets re-measured
+      handleBounds: parseHandles(userNode, prevInternalNode),
+      z: calculateZ(userNode, selectedNodeZ, options.zIndexMode),
+      userNode,
+    },
+  };
+}
+
+/** A node still needs measuring when it has no measured size yet and is not hidden. */
+function isNodeUnmeasured<NodeType extends NodeBase>(internalNode: InternalNodeBase<NodeType>): boolean {
+  return (
+    (internalNode.measured === undefined ||
+      internalNode.measured.width === undefined ||
+      internalNode.measured.height === undefined) &&
+    !internalNode.hidden
+  );
+}
 
 export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
@@ -134,12 +218,46 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 ): AdoptUserNodesReturn {
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
   const rootParentIndex = { i: 0 };
-  const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number =
     _options?.elevateNodesOnSelect && !isManualZIndexMode(_options.zIndexMode) ? SELECTED_NODE_Z : 0;
   let nodesInitialized = nodes.length > 0;
   let hasSelectedNodes = false;
 
+  // in-place fast path: reconcile only changed entries instead of clone + clear + rebuild.
+  // canIncrementalAdopt guarantees no add / remove / reorder / reparent, so parentLookup stays valid.
+  if (options.incremental && canIncrementalAdopt(nodes, nodeLookup, _options.zIndexMode)) {
+    const changedIds = new Set<string>();
+    for (const userNode of nodes) {
+      const prevInternalNode = nodeLookup.get(userNode.id)!;
+      let internalNode = prevInternalNode;
+      if (!(_options.checkEquality && userNode === internalNode.internals.userNode)) {
+        internalNode = createInternalNode(userNode, internalNode, _options, selectedNodeZ);
+        nodeLookup.set(userNode.id, internalNode);
+      }
+
+      if (isNodeUnmeasured(internalNode)) {
+        nodesInitialized = false;
+      }
+
+      // recompute / re-clamp the child against its parent only when the child's own object changed
+      // or its parent moved (the parent is processed first, so changedIds already reflects it)
+      if (userNode.parentId && (internalNode !== prevInternalNode || changedIds.has(userNode.parentId))) {
+        updateChildNode(internalNode, nodeLookup, parentLookup, options);
+      }
+
+      // changed = own userNode replaced, or cascaded by a moved parent (updateChildNode swapped it)
+      if (nodeLookup.get(userNode.id) !== prevInternalNode) {
+        changedIds.add(userNode.id);
+      }
+
+      hasSelectedNodes ||= userNode.selected ?? false;
+    }
+
+    return { nodesInitialized, hasSelectedNodes, changedIds: [...changedIds] };
+  }
+
+  // full rebuild: snapshot the old lookup, then clear and re-adopt every node
+  const tmpLookup = new Map(nodeLookup);
   nodeLookup.clear();
   parentLookup.clear();
 
@@ -149,26 +267,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     if (_options.checkEquality && userNode === internalNode?.internals.userNode) {
       nodeLookup.set(userNode.id, internalNode);
     } else {
-      const positionWithOrigin = getNodePositionWithOrigin(userNode, _options.nodeOrigin);
-      const extent = isCoordinateExtent(userNode.extent) ? userNode.extent : _options.nodeExtent;
-      const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(userNode));
-
-      internalNode = {
-        ..._options.defaults,
-        ...userNode,
-        measured: {
-          width: userNode.measured?.width,
-          height: userNode.measured?.height,
-        },
-        internals: {
-          positionAbsolute: clampedPosition,
-          // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
-          handleBounds: parseHandles(userNode, internalNode),
-          z: calculateZ(userNode, selectedNodeZ, _options.zIndexMode),
-          userNode,
-        },
-      };
-
+      internalNode = createInternalNode(userNode, internalNode, _options, selectedNodeZ);
       nodeLookup.set(userNode.id, internalNode);
     }
 
@@ -283,31 +382,43 @@ function calculateChildXYZ<NodeType extends NodeBase>(
   selectedNodeZ: number,
   zIndexMode: ZIndexMode
 ) {
-  const { x: parentX, y: parentY } = parentNode.internals.positionAbsolute;
-  const childDimensions = getNodeDimensions(childNode);
-  const positionWithOrigin = getNodePositionWithOrigin(childNode, nodeOrigin);
-  const clampedPosition = isCoordinateExtent(childNode.extent)
-    ? clampPosition(positionWithOrigin, childNode.extent, childDimensions)
-    : positionWithOrigin;
-
-  let absolutePosition = clampPosition(
-    { x: parentX + clampedPosition.x, y: parentY + clampedPosition.y },
-    nodeExtent,
-    childDimensions
-  );
-
-  if (childNode.extent === 'parent') {
-    absolutePosition = clampPositionToParent(absolutePosition, childDimensions, parentNode);
-  }
+  const { x, y } = getNodePositionAbsolute(childNode, parentNode, nodeOrigin, nodeExtent);
 
   const childZ = calculateZ(childNode, selectedNodeZ, zIndexMode);
   const parentZ = parentNode.internals.z ?? 0;
 
   return {
-    x: absolutePosition.x,
-    y: absolutePosition.y,
+    x,
+    y,
     z: parentZ >= childZ ? parentZ + 1 : childZ,
   };
+}
+
+/** Absolute position of a node from its (origin-adjusted, extent-clamped) position and its parent's
+ *  absolute position. Same derivation adoptUserNodes uses, exposed for the keyed patchNodes path. */
+export function getNodePositionAbsolute<NodeType extends NodeBase>(
+  node: InternalNodeBase<NodeType>,
+  parent: InternalNodeBase<NodeType> | undefined,
+  nodeOrigin: NodeOrigin,
+  nodeExtent: CoordinateExtent
+): XYPosition {
+  const dimensions = getNodeDimensions(node);
+  const positionWithOrigin = getNodePositionWithOrigin(node, nodeOrigin);
+
+  if (!parent) {
+    const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
+    return clampPosition(positionWithOrigin, extent, dimensions);
+  }
+
+  const clamped = isCoordinateExtent(node.extent)
+    ? clampPosition(positionWithOrigin, node.extent, dimensions)
+    : positionWithOrigin;
+  const absolute = clampPosition(
+    { x: parent.internals.positionAbsolute.x + clamped.x, y: parent.internals.positionAbsolute.y + clamped.y },
+    nodeExtent,
+    dimensions
+  );
+  return node.extent === 'parent' ? clampPositionToParent(absolute, dimensions, parent) : absolute;
 }
 
 export function handleExpandParent(
