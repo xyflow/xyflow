@@ -22,6 +22,12 @@ export interface UseKeyPressOptions {
    * @default true
    */
   actInsideInputWithModifier?: MaybeRefOrGetter<boolean>;
+  /**
+   * Whether to call `preventDefault()` on a matched key event (skipped for a button/link pressed without a
+   * modifier). Set to `false` to leave the event's default behaviour untouched and handle it yourself.
+   *
+   * @default true
+   */
   preventDefault?: MaybeRefOrGetter<boolean>;
 }
 
@@ -120,7 +126,7 @@ export function useKeyPress(keyFilter: MaybeRefOrGetter<KeyFilter | boolean | nu
     (...args) => currentFilter(...args),
     (e) => {
       const actInsideInputWithModifier = toValue(options?.actInsideInputWithModifier) ?? true;
-      const preventDefault = toValue(options?.preventDefault) ?? false;
+      const preventDefault = toValue(options?.preventDefault) ?? true;
 
       modifierPressed = wasModifierPressed(e);
 
@@ -133,7 +139,7 @@ export function useKeyPress(keyFilter: MaybeRefOrGetter<KeyFilter | boolean | nu
       const target = (e.composedPath?.()?.[0] || e.target) as Element | null;
       const isInteractiveElement = target?.nodeName === 'BUTTON' || target?.nodeName === 'A';
 
-      if (!preventDefault && (modifierPressed || !isInteractiveElement)) {
+      if (preventDefault && (modifierPressed || !isInteractiveElement)) {
         e.preventDefault();
       }
 
