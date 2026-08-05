@@ -38,7 +38,9 @@ import type {
   OnBeforeDelete,
   IsValidConnection,
   OnBeforeReconnect,
-  OnSelectionChange
+  OnSelectionChange,
+  OnNodesChange,
+  OnEdgesChange
 } from '$lib/types';
 
 import type { Component } from 'svelte';
@@ -488,6 +490,22 @@ export type SvelteFlowProps<
     onclickconnectend?: OnConnectEnd;
     /** This handler gets called when the flow is finished initializing */
     oninit?: () => void;
+    /** This handler gets called before Svelte Flow updates nodes and can be used to modify the changes.
+     * Usually this happens, after initial measuring and when selecting, dragging or deleting nodes.
+     * @example
+     * onnodeschange={changes => {
+     *  // TODO: better example
+     * }}
+     */
+    onnodeschange?: OnNodesChange<NodeType>;
+    /** This handler gets called before Svelte Flow updates edges and can be used to modify the changes.
+     * Usually this happens when selecting, connecting or deleting edges.
+     * @example
+     * onedgeschange={changes => {
+     *  // TODO: better example
+     * }}
+     */
+    onedgeschange?: OnEdgesChange<EdgeType>;
     /** This event handler gets called when the selected nodes & edges change */
     onselectionchange?: OnSelectionChange<NodeType, EdgeType>;
     /** This event handler gets called when a user starts to drag a selection box. */

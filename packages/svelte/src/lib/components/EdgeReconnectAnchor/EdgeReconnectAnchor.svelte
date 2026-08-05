@@ -92,7 +92,13 @@
           return;
         }
 
-        store.edges = store.edges.map((e) => (e.id === edge.id ? (newEdge as Edge) : e));
+        store.queueEdgeChanges([
+          {
+            id: edge.id,
+            type: 'replace',
+            item: newEdge as Edge
+          }
+        ]);
         onreconnect?.(edge, connection);
       },
       onReconnectEnd: (event, connectionState) => {

@@ -68,11 +68,15 @@ import type {
   InternalNode,
   OnBeforeReconnect,
   OnSelectionChange,
-  OnSelectionDrag
+  OnSelectionDrag,
+  OnNodesChange,
+  OnEdgesChange
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
+import { EdgeChangeset, NodeChangeset } from '$lib/changes';
+import type { EdgeChange, NodeChange } from '$lib/changes/types';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -166,6 +170,43 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       updateConnectionLookup(this.connectionLookup, this.edgeLookup, signals.edges);
       return signals.edges;
     });
+
+    pendingNodeChanges: NodeChangeset<NodeType> | undefined = $state.raw();
+    pendingEdgeChanges: EdgeChangeset<EdgeType> | undefined = $state.raw();
+
+    queueNodeChanges = (changes: NodeChange<NodeType>[]) => {
+      if (!this.pendingNodeChanges) {
+        this.pendingNodeChanges = new NodeChangeset<NodeType>();
+      }
+      this.pendingNodeChanges.add(changes);
+    };
+
+    queueEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {
+      if (!this.pendingEdgeChanges) {
+        this.pendingEdgeChanges = new EdgeChangeset<EdgeType>();
+      }
+      this.pendingEdgeChanges.add(changes);
+    };
+
+    flushNodeChanges = () => {
+      if (!this.pendingNodeChanges) {
+        return;
+      }
+      this.onnodeschange?.(this.pendingNodeChanges);
+      const newNodes = this.pendingNodeChanges.applyTo(this.nodes);
+      this.nodes = newNodes;
+      this.pendingNodeChanges = undefined;
+    };
+
+    flushEdgeChanges = () => {
+      if (!this.pendingEdgeChanges) {
+        return;
+      }
+      this.onedgeschange?.(this.pendingEdgeChanges);
+      const newEdges = this.pendingEdgeChanges.applyTo(this.edges);
+      this.edges = newEdges;
+      this.pendingEdgeChanges = undefined;
+    };
 
     get nodes() {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -406,6 +447,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     onlyRenderVisibleElements: boolean = $derived(signals.props.onlyRenderVisibleElements ?? false);
     onerror: OnError = $derived(signals.props.onflowerror ?? devWarn);
 
+    onnodeschange?: OnNodesChange<NodeType> = $derived(signals.props.onnodeschange);
+    onedgeschange?: OnEdgesChange<EdgeType> = $derived(signals.props.onedgeschange);
+
     ondelete?: OnDelete<NodeType, EdgeType> = $derived(signals.props.ondelete);
     onbeforedelete?: OnBeforeDelete<NodeType, EdgeType> = $derived(signals.props.onbeforedelete);
 
@@ -460,6 +504,18 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         warnIfDeeplyReactive(signals.nodes, 'nodes');
         warnIfDeeplyReactive(signals.edges, 'edges');
       }
+
+      $effect.pre(() => {
+        if (this.pendingNodeChanges) {
+          this.flushNodeChanges();
+        }
+      });
+
+      $effect.pre(() => {
+        if (this.pendingEdgeChanges) {
+          this.flushEdgeChanges();
+        }
+      });
     }
 
     resetStoreValues() {
@@ -491,5 +547,4 @@ function warnIfDeeplyReactive(array: unknown[] | undefined, name: string) {
     console.warn(`Use $state.raw for ${name} to prevent performance issues.`);
   }
 }
-
 /* eslint-enable svelte/prefer-svelte-reactivity */

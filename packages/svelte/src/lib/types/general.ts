@@ -9,6 +9,7 @@ import type {
 
 import type { Node } from './nodes';
 import type { Edge } from './edges';
+import type { EdgeChangeset, NodeChangeset } from '$lib/changes';
 
 export type KeyModifier = ShortcutModifierDefinition;
 export type KeyDefinitionObject = { key: string; modifier?: KeyModifier };
@@ -60,3 +61,11 @@ export type OnSelectionChange<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
 > = (params: { nodes: NodeType[]; edges: EdgeType[] }) => void;
+
+export type OnNodesChange<NodeType extends Node = Node> = (
+  changes: NodeChangeset<NodeType>
+) => void;
+
+export type OnEdgesChange<EdgeType extends Edge = Edge> = (
+  changes: EdgeChangeset<EdgeType>
+) => void;
