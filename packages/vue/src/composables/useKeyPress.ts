@@ -8,7 +8,19 @@ type PressedKeys = Set<string>;
 type KeyOrCode = 'key' | 'code';
 
 export interface UseKeyPressOptions {
+  /**
+   * The DOM element the key listeners are attached to.
+   *
+   * @default document
+   */
   target?: MaybeRefOrGetter<EventTarget | null | undefined>;
+  /**
+   * A key press is normally ignored while a text input, textarea, or contentEditable element is focused. When
+   * `true`, key combinations that include a modifier (Ctrl/Meta/Shift/Alt) are still detected inside those
+   * elements — so a shortcut like `Meta+a` keeps working while the user is typing.
+   *
+   * @default true
+   */
   actInsideInputWithModifier?: MaybeRefOrGetter<boolean>;
   preventDefault?: MaybeRefOrGetter<boolean>;
 }
