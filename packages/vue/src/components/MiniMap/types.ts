@@ -8,48 +8,51 @@ export type MiniMapNodeFunc = (node: InternalNode) => string;
 export type ShapeRendering = CSSProperties['shapeRendering'];
 
 export interface MiniMapProps {
-  /** Fill color of each mini map node — a CSS color string, or a function that returns one per node. */
+  /** Color of nodes on minimap. */
   nodeColor?: string | MiniMapNodeFunc;
-  /** Stroke (border) color of each mini map node — a CSS color string, or a function that returns one per node. */
+  /** Stroke color of nodes on minimap. */
   nodeStrokeColor?: string | MiniMapNodeFunc;
-  /** Extra class name for each mini map node — a string, or a function that returns one per node. */
+  /** Class name applied to nodes on minimap. */
   nodeClassName?: string | MiniMapNodeFunc;
   /**
-   * Border radius of each mini map node, in pixels.
+   * Border radius of nodes on minimap.
    *
    * @default 5
    */
   nodeBorderRadius?: number;
   /**
-   * Stroke (border) width of each mini map node, in pixels.
+   * Stroke width of nodes on minimap.
    *
    * @default 2
    */
   nodeStrokeWidth?: number;
-  /** Fill color of the mask that covers the area outside the current viewport. */
+  /**
+   * The color of the mask that covers the portion of the minimap not currently visible in the
+   * viewport.
+   */
   maskColor?: string;
-  /** Stroke color of the viewport mask. */
+  /** Stroke color of mask representing viewport. */
   maskStrokeColor?: string;
   /**
-   * Stroke width of the viewport mask, in pixels.
+   * Stroke width of mask representing viewport.
    *
    * @default 1
    */
   maskStrokeWidth?: number;
   /**
-   * Where to place the mini map within the flow, see {@link PanelPosition}.
+   * Position of minimap on pane, see {@link PanelPosition}.
    *
    * @default 'bottom-right'
    */
   position?: PanelPosition;
   /**
-   * Allow panning the viewport by dragging on the mini map.
+   * Determines whether you can pan the viewport by dragging inside the minimap.
    *
    * @default false
    */
   pannable?: boolean;
   /**
-   * Allow zooming the viewport by scrolling over the mini map.
+   * Determines whether you can zoom the viewport by scrolling inside the minimap.
    *
    * @default false
    */
@@ -71,20 +74,16 @@ export interface MiniMapProps {
    * mini map aria-label.
    */
   ariaLabel?: string | null;
-  /**
-   * Invert the pan direction, i.e. drag the mini map to move the viewport the opposite way.
-   *
-   * @default false
-   */
+  /** Invert direction when panning the minimap viewport. */
   inversePan?: boolean;
   /**
-   * How much each scroll step zooms when `zoomable` is enabled.
+   * Step size for zooming in/out on minimap.
    *
    * @default 1
    */
   zoomStep?: number;
   /**
-   * Padding around the flow's bounds within the mini map, as a multiple of the mini map's scale.
+   * Offset the viewport on the minimap, acts like a padding.
    *
    * @default 5
    */

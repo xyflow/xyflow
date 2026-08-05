@@ -2,31 +2,27 @@ import type { Position } from '@xyflow/system';
 
 export interface NodeToolbarProps {
   /**
-   * The id of the node (or nodes) the toolbar is attached to. Defaults to the node the toolbar is rendered
-   * in, so you usually only set this to control a toolbar from outside its node.
+   * By passing in an array of node id's you can render a single tooltip for a group or collection
+   * of nodes.
    */
   nodeId?: string | string[];
-  /**
-   * Force the toolbar's visibility. When left unset, the toolbar is shown only while its node is selected
-   * (and hidden when several nodes are selected).
-   */
+  /** If `true`, node toolbar is visible even if node is not selected. */
   isVisible?: boolean;
   /**
-   * Which side of the node the toolbar is placed on, see {@link Position}.
-   *
+   * Position of the toolbar relative to the node.
    * @default Position.Top
+   * @example Position.TopLeft, Position.TopRight, Position.BottomLeft, Position.BottomRight
    */
   position?: Position;
   /**
-   * Distance between the toolbar and the node, in pixels.
-   *
+   * The space between the node and the toolbar, measured in pixels.
    * @default 10
    */
   offset?: number;
   /**
-   * Alignment of the toolbar along the chosen side.
-   *
-   * @default 'center'
+   * Align the toolbar relative to the node.
+   * @default "center"
+   * @example Align.Start, Align.Center, Align.End
    */
   align?: 'center' | 'start' | 'end';
 }

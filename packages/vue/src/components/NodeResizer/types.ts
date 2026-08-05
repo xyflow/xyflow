@@ -42,45 +42,51 @@ export interface OnResizeEnd {
 
 export interface NodeResizerProps {
   /**
-   * Id of the node to resize. Defaults to the node the resizer is rendered in, so you usually only set this
-   * to control another node's size from outside it.
+   * Id of the node it is resizing.
+   * @remarks optional if used inside custom node
    */
   nodeId?: string;
-  /** Color of the resize handles and lines. */
+  /** Color of the resize handle. */
   color?: string;
-  /** Extra class name applied to each resize handle. */
+  /** Class name applied to handle. */
   handleClassName?: string;
-  /** Inline style applied to each resize handle. */
+  /** Style applied to handle. */
   handleStyle?: CSSProperties;
-  /** Extra class name applied to each resize line. */
+  /** Class name applied to line. */
   lineClassName?: string;
-  /** Inline style applied to each resize line. */
+  /** Style applied to line. */
   lineStyle?: CSSProperties;
   /**
-   * Whether the resize controls are rendered.
-   *
+   * Are the controls visible.
    * @default true
    */
   isVisible?: boolean;
   /**
-   * Minimum width the node can be resized to, in pixels.
-   *
+   * Minimum width of node.
    * @default 10
    */
   minWidth?: number;
   /**
-   * Minimum height the node can be resized to, in pixels.
-   *
+   * Minimum height of node.
    * @default 10
    */
   minHeight?: number;
-  /** Maximum width the node can be resized to, in pixels. */
+  /**
+   * Maximum width of node.
+   * @default Number.MAX_VALUE
+   */
   maxWidth?: number;
-  /** Maximum height the node can be resized to, in pixels. */
+  /**
+   * Maximum height of node.
+   * @default Number.MAX_VALUE
+   */
   maxHeight?: number;
-  /** Callback to control whether a resize is allowed and clamp its result. */
+  /** Callback to determine if node should resize. */
   shouldResize?: ShouldResize;
-  /** Lock the aspect ratio while resizing. Pass a number to force a specific ratio. */
+  /**
+   * Keep aspect ratio when resizing.
+   * @default false
+   */
   keepAspectRatio?: boolean | number;
   /**
    * Scale the controls with the zoom level.
@@ -103,14 +109,15 @@ export interface ResizeControlProps extends NodeResizerProps {
   maxWidth?: number;
   maxHeight?: number;
   /**
-   * Which handle or line this control represents, e.g. `'top-left'` or `'right'`. Defaults to the position
-   * implied by `variant`.
+   * Position of the control.
+   * @example ControlPosition.TopLeft, ControlPosition.TopRight,
+   * ControlPosition.BottomLeft, ControlPosition.BottomRight
    */
   position?: ControlPosition;
   /**
-   * Whether the control is a corner handle or an edge line, see {@link ResizeControlVariant}.
-   *
-   * @default ResizeControlVariant.Handle
+   * Variant of the control.
+   * @default "handle"
+   * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
   shouldResize?: ShouldResize;

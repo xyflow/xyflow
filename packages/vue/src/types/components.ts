@@ -43,10 +43,31 @@ export interface EdgeTextProps {
   x: number;
   /** The y position where the label should be rendered. */
   y: number;
+  /**
+   * The label or custom element to render along the edge. This is commonly a text label or some
+   * custom controls.
+   */
   label?: string | VNode | Component;
+  /** Custom styles to apply to the label. */
   labelStyle?: CSSProperties;
+  /**
+   * Render a background rectangle behind the label.
+   *
+   * @default true
+   */
   labelShowBg?: boolean;
+  /** Inline style applied to the label background rectangle. */
   labelBgStyle?: CSSProperties;
+  /**
+   * Padding around the label inside its background, as `[x, y]` in pixels.
+   *
+   * @default [2, 4]
+   */
   labelBgPadding?: [number, number];
+  /**
+   * Border radius of the label background, in pixels.
+   *
+   * @default 2
+   */
   labelBgBorderRadius?: number;
 }
