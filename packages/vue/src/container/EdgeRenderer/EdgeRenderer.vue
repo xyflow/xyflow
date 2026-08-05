@@ -10,7 +10,7 @@ const { getEdges } = useVueFlow();
 // edge commit — an edge data/selection update then re-renders only that edge's own wrapper, not all of them.
 const edgeIds = computed<string[]>((prev) => {
   // hot path: reuse `prev` when edge membership is unchanged, allocating nothing. a plain indexed loop
-  // avoids the per-element callback of `.every`; the rebuild below only runs on a membership change.
+  // avoids `.every`'s per-element callback.
   const edges = getEdges.value;
   const len = edges.length;
   if (prev && prev.length === len) {

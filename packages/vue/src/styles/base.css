@@ -1,14 +1,16 @@
 /* this will be exported as base.css and can be used for a basic styling */
-@import '../../../system/src/styles/init.css';
-@import '../../../system/src/styles/base.css';
-@import '../../../system/src/styles/node-resizer.css';
+@import '../../../system/src/styles/init.css' layer(xyflow);
+@import '../../../system/src/styles/base.css' layer(xyflow);
+@import '../../../system/src/styles/node-resizer.css' layer(xyflow);
 
-/* root container layout — @xyflow/system's CSS only declares vars + theme on `.vue-flow`; the framework
-   owns the layout box (xyflow/react applies the equivalent inline). */
-.vue-flow {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  z-index: 0;
+@layer xyflow {
+  /* root container layout — @xyflow/system's CSS only declares vars + theme on `.vue-flow`; the framework
+     owns the layout box (xyflow/react applies the equivalent inline). */
+  .vue-flow {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+  }
 }

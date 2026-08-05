@@ -88,7 +88,7 @@ const defaultEdgeOptions = {
 };
 
 const CustomNodeFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
+  const [nodes, , onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
 
   console.log(edges);
@@ -106,7 +106,6 @@ const CustomNodeFlow = () => {
       fitView
       minZoom={0.3}
       maxZoom={2}
-      colorMode="dark"
       defaultEdgeOptions={defaultEdgeOptions}
     >
       <MiniMap />

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { Node, NodeProps, ValidConnectionFunc } from '@xyflow/vue';
+import type { IsValidConnection, Node, NodeProps } from '@xyflow/vue';
 import { Handle, Position } from '@xyflow/vue';
 
-type ValidationNode = Node<{ isValidSourcePos: ValidConnectionFunc }, 'customnode'>;
+type ValidationNode = Node<{ isValidSourcePos: IsValidConnection }, 'customnode'>;
 
 const props = defineProps<NodeProps<ValidationNode>>();
 </script>

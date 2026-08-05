@@ -572,9 +572,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * When you typically call `fitView` on a `ReactFlowInstance`, you can provide an object of
    * options to customize its behavior. This prop lets you do the same for the initial `fitView`
    * call.
+   * @default { padding: '5%' }
    * @example
    * const fitViewOptions = {
-   *  padding: 0.1,
+   *  padding: '5%',
    *  includeHiddenNodes: false,
    *  minZoom: 0.1,
    *  maxZoom: 1,
@@ -685,11 +686,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /** Sets a fixed height for the flow. */
   height?: number;
   /**
-   * Controls color scheme used for styling the flow.
-   * @default 'light'
-   * @example 'system' | 'light' | 'dark'
+   * Forces a color scheme on the flow container via class name, overriding the system default.
+   * Page-level theming is typically done by setting `data-theme` on `<html>`.
    */
-  colorMode?: ColorMode;
+  forceColorMode?: ColorMode;
   /**
    * If set `true`, some debug information will be logged to the console like which events are fired.
    * @default false

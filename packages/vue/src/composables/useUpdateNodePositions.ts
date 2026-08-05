@@ -1,7 +1,5 @@
-import type { XYPosition } from '@xyflow/system';
-import type { NodeDragItem } from '../types';
-import { getNodeDimensions } from '@xyflow/system';
-import { calcNextPosition } from '../utils';
+import type { NodeDragItem, XYPosition } from '@xyflow/system';
+import { calculateNodePosition, getNodeDimensions, snapPosition } from '@xyflow/system';
 import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
 
@@ -11,7 +9,7 @@ import { useVueFlow } from './useVueFlow';
  * @internal
  */
 export function useUpdateNodePositions() {
-  const { getSelectedNodes, updateNodePositions, getInternalNode, emits } = useVueFlow();
+  const { getSelectedNodes, updateNodePositions, getInternalNode } = useVueFlow();
   const store = useStore();
 
   return (positionDiff: XYPosition, isShiftPressed = false) => {
@@ -27,33 +25,34 @@ export function useUpdateNodePositions() {
     const nodeUpdates: NodeDragItem[] = [];
     for (const node of getSelectedNodes.value) {
       if (node.draggable || (store.nodesDraggable && typeof node.draggable === 'undefined')) {
-        // `getSelectedNodes` returns user `Node`s — resolve the enriched InternalNode for internals/measured
         const internalNode = getInternalNode(node.id);
         if (!internalNode) {
           continue;
         }
 
-        const nextPosition = {
+        let nextPosition = {
           x: internalNode.internals.positionAbsolute.x + positionDiffX,
           y: internalNode.internals.positionAbsolute.y + positionDiffY,
         };
 
-        const { position } = calcNextPosition(
-          internalNode,
+        if (store.snapToGrid) {
+          nextPosition = snapPosition(nextPosition, store.snapGrid);
+        }
+
+        const { position, positionAbsolute } = calculateNodePosition({
+          nodeId: node.id,
           nextPosition,
-          emits.error,
-          store.nodeExtent,
-          node.parentId ? getInternalNode(node.parentId) : undefined,
-        );
+          nodeLookup: store.nodeLookup,
+          nodeExtent: store.nodeExtent,
+          nodeOrigin: store.nodeOrigin,
+        });
 
         nodeUpdates.push({
           id: node.id,
           position,
           distance: { x: positionDiff.x, y: positionDiff.y },
           measured: getNodeDimensions(internalNode),
-          internals: {
-            positionAbsolute: { x: internalNode.internals.positionAbsolute.x, y: internalNode.internals.positionAbsolute.y },
-          },
+          internals: { positionAbsolute },
         });
       }
     }

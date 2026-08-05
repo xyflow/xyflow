@@ -5,7 +5,7 @@ import CustomResizableNode from './CustomResizableNode.vue';
 import ResizableNode from './ResizableNode.vue';
 import ResizableNodeSelected from './ResizableNodeSelected.vue';
 
-const nodes = ref<Node[]>([
+const nodes = shallowRef<Node[]>([
   {
     id: '1',
     type: 'resizable',
@@ -36,7 +36,7 @@ const nodes = ref<Node[]>([
   },
 ]);
 
-const edges = ref<Edge[]>([]);
+const edges = shallowRef<Edge[]>([]);
 </script>
 
 <template>

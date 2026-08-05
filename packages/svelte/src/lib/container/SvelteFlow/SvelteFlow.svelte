@@ -133,7 +133,6 @@
   bind:domNode={store.domNode}
   bind:clientWidth={store.width}
   bind:clientHeight={store.height}
-  colorMode={store.colorMode}
   {width}
   {height}
   rest={props}

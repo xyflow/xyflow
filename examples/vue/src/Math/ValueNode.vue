@@ -7,22 +7,15 @@ const props = defineProps<Pick<NodeProps<Node<ValueNodeData, 'value'>>, 'id' | '
 
 const { updateNodeData } = useVueFlow();
 
-function onChange(event: Event) {
-  const evt = event as InputEvent;
-
-  const target = evt.target as HTMLInputElement;
-
-  const value = Number.parseFloat(target.value);
-
-  if (!Number.isNaN(value)) {
-    updateNodeData(props.id, { value });
-  }
-}
+const value = computed({
+  get: () => props.data.value,
+  set: value => updateNodeData(props.id, { value }),
+});
 </script>
 
 <template>
   <label :for="`${id}-input`">Value</label>
-  <input :id="`${id}-input`" :value="data.value" type="number" class="nodrag" @change="onChange">
+  <input :id="`${id}-input`" v-model="value" type="number" class="nodrag">
 
   <Handle type="source" :position="Position.Right" :is-connectable="false" />
 </template>

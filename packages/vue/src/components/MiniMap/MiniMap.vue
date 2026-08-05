@@ -2,7 +2,7 @@
 import type { XYMinimapInstance } from '@xyflow/system';
 import type { InternalNode } from '../../types';
 import type { MiniMapEmits, MiniMapNodeFunc, MiniMapProps, MiniMapSlots, ShapeRendering } from './types';
-import { getBoundsOfRects, getConnectedEdges, getNodeDimensions, getNodesBounds, XYMinimap } from '@xyflow/system';
+import { getBoundsOfRects, getConnectedEdges, getNodeDimensions, getNodesBounds, isNumeric, XYMinimap } from '@xyflow/system';
 import { computed, onMounted, onUnmounted, provide, shallowRef, toRef, useAttrs, watch } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
 import Panel from '../Panel/Panel.vue';
@@ -36,6 +36,8 @@ const slots = defineSlots<MiniMapSlots>();
 
 const attrs: Record<string, any> = useAttrs();
 
+provide(Slots, slots);
+
 const defaultWidth = 200;
 const defaultHeight = 150;
 
@@ -45,14 +47,11 @@ const { nodeLookup } = useStore();
 
 const { edges, nodes, transform, translateExtent, dimensions, panZoom, ariaLabelConfig } = storeToRefs(useStore());
 
-// fall back to the configurable default label (`ariaLabelConfig`) when no explicit `ariaLabel` is passed
-const resolvedAriaLabel = computed(() => ariaLabel ?? ariaLabelConfig.value['minimap.ariaLabel']);
-
 const el = shallowRef<SVGElement>();
 
 let minimapInstance: XYMinimapInstance | null = null;
 
-provide(Slots, slots);
+const resolvedAriaLabel = computed(() => ariaLabel ?? ariaLabelConfig.value['minimap.ariaLabel']);
 
 const elementWidth = toRef(() => width ?? attrs.style?.width ?? defaultWidth);
 
@@ -70,8 +69,6 @@ const nodeClassNameFunc = computed<MiniMapNodeFunc>(() =>
   typeof nodeClassName === 'string' ? () => nodeClassName : typeof nodeClassName === 'function' ? nodeClassName : () => '',
 );
 
-// The minimap renders absolute positions + measured dimensions, which live on the InternalNode — iterate
-// the lookup (the public `nodes` ref holds user `Node`s without `internals`).
 const minimapNodes = computed(() => Array.from(nodeLookup.values()));
 
 const bb = computed(() =>
@@ -112,7 +109,7 @@ const viewBox = computed(() => {
 });
 
 const d = computed(() => {
-  if (!viewBox.value.x || !viewBox.value.y) {
+  if (!isNumeric(viewBox.value.x) || !isNumeric(viewBox.value.y)) {
     return '';
   }
 
@@ -148,10 +145,6 @@ onMounted(() => {
     { immediate: true },
   );
 
-  onUnmounted(() => {
-    minimapInstance?.destroy();
-  });
-
   watch(
     [
       () => pannable,
@@ -175,6 +168,10 @@ onMounted(() => {
     },
     { immediate: true },
   );
+});
+
+onUnmounted(() => {
+  minimapInstance?.destroy();
 });
 
 function onSvgClick(event: MouseEvent) {
@@ -234,12 +231,10 @@ export default {
     >
       <title v-if="resolvedAriaLabel" :id="`vue-flow__minimap-${id}`">{{ resolvedAriaLabel }}</title>
 
-      <!-- v-memo on the lookup entry: unchanged nodes keep their InternalNode reference across commits
-      (checkEquality reuse), so drag/pan-frame MiniMap re-renders skip every untouched child instead of
-      re-rendering all of them (the inline per-node prop objects/calls would otherwise always patch). The
-      node*Func RESULTS are in the deps (not the fn refs) so a recolor driven by an external reactive dep
-      read inside a `nodeColor`/`nodeStrokeColor`/`nodeClassName` callback still re-renders the affected
-      node — memoizing the fn refs froze the color until the node itself changed -->
+      <!-- v-memo on the lookup entry: unchanged nodes keep their InternalNode reference across commits, so
+      drag/pan-frame re-renders skip untouched children. The node*Func RESULTS are in the deps (not the fn
+      refs) so a recolor driven by a reactive read inside a `nodeColor`/`nodeStrokeColor`/`nodeClassName`
+      callback still re-renders the affected node -->
       <MiniMapNode
         v-for="node of minimapNodes"
         :id="node.id"

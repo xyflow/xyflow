@@ -10,6 +10,7 @@ import {
   updateConnectionLookup,
   initialConnection,
   mergeAriaLabelConfig,
+  defaultFitViewPadding,
   type SelectionRect,
   type SnapGrid,
   type MarkerProps,
@@ -29,7 +30,6 @@ import {
   type ConnectionLookup,
   type ParentLookup,
   pointToRendererPoint,
-  type ColorModeClass,
   type Transform,
   fitViewport,
   type Handle,
@@ -74,7 +74,6 @@ import type {
 } from '$lib/types';
 
 import type { StoreSignals } from './types';
-import { MediaQuery } from 'svelte/reactivity';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
 import { EdgeChangeset, NodeChangeset } from '$lib/changes';
 import type { EdgeChange, NodeChange } from '$lib/changes/types';
@@ -97,6 +96,9 @@ function getInitialViewport<NodeType extends Node = Node>(
   // This is just used to make sure adoptUserNodes is called before we calculate the viewport
   _nodesInitialized: boolean,
   fitView: boolean | undefined,
+  fitViewOptions: FitViewOptions<NodeType> | undefined,
+  minZoom: number = 0.5,
+  maxZoom: number = 2,
   initialViewport: Viewport | undefined,
   width: number,
   height: number,
@@ -106,7 +108,14 @@ function getInitialViewport<NodeType extends Node = Node>(
     const bounds = getInternalNodesBounds(nodeLookup, {
       filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight))
     });
-    return getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
+    return getViewportForBounds(
+      bounds,
+      width,
+      height,
+      minZoom,
+      maxZoom,
+      fitViewOptions?.padding ?? defaultFitViewPadding
+    );
   } else {
     return initialViewport ?? { x: 0, y: 0, zoom: 1 };
   }
@@ -378,6 +387,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       getInitialViewport(
         this.nodesInitialized,
         signals.props.fitView,
+        signals.props.fitViewOptions,
+        signals.props.minZoom,
+        signals.props.maxZoom,
         signals.props.initialViewport,
         this.width,
         this.height,
@@ -486,18 +498,6 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       this.fitViewOptions = undefined;
       this.fitViewResolver = null;
     };
-
-    _prefersDark = new MediaQuery(
-      '(prefers-color-scheme: dark)',
-      signals.props.colorModeSSR === 'dark'
-    );
-    colorMode: ColorModeClass = $derived(
-      signals.props.colorMode === 'system'
-        ? this._prefersDark.current
-          ? 'dark'
-          : 'light'
-        : (signals.props.colorMode ?? 'light')
-    );
 
     constructor() {
       if (process.env.NODE_ENV === 'development') {

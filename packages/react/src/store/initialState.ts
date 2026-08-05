@@ -11,6 +11,7 @@ import {
   initialConnection,
   CoordinateExtent,
   defaultAriaLabelConfig,
+  defaultFitViewPadding,
   ZIndexMode,
   type ConnectionLookup,
   type EdgeLookup,
@@ -80,7 +81,7 @@ const getInitialState = ({
       height,
       minZoom,
       maxZoom,
-      fitViewOptions?.padding ?? 0.1
+      fitViewOptions?.padding ?? defaultFitViewPadding
     );
     transform = [x, y, zoom];
   }

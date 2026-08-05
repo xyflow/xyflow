@@ -1,30 +1,27 @@
 import type {
+  EdgeAddChange,
   EdgeRemoveChange,
   EdgeSelectionChange,
+  NodeAddChange,
   NodeRemoveChange,
   NodeSelectionChange,
 } from '@xyflow/system';
 import type {
   Edge,
-  EdgeAddChange,
   EdgeChange,
   ElementChange,
   InternalNode,
   Node,
-  NodeAddChange,
   NodeChange,
 } from '../types';
-import { isNode } from '.';
+import { isNode } from './graph';
 
 /**
- * Apply element changes IMMUTABLY (xyflow/react `applyNodeChanges` semantics): returns a NEW array where
- * changed elements are NEW objects and unchanged elements are reused by reference. Immutability is required
- * by the node split — the store re-adopts the result via `adoptUserNodes`, whose `checkEquality` reuses the
- * existing `InternalNode` when the user-node reference is unchanged; mutating in place would keep the same
- * reference and re-adopt a stale internal node. Reusing unchanged refs keeps re-adoption O(changed).
+ * Apply element changes immutably: returns a NEW array with new objects for changed elements and unchanged
+ * ones reused by reference, so the store's `adoptUserNodes`/`checkEquality` re-adopt stays O(changed)
+ * (mutating in place would keep the reference and re-adopt a stale InternalNode).
  *
- * `position`/`dimensions` changes are gated on `isNode` (user `Node`s have no `internals`, so the old
- * `isInternalNode` guard would skip them) — edges never receive those change types anyway.
+ * `position`/`dimensions` changes are gated on `isNode` — edges never receive those change types.
  */
 export function applyChanges<
   T extends Node | Edge = Node | Edge,

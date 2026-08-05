@@ -17,7 +17,8 @@ import {
   type HandleType,
   type HandleConnection,
   getNodesBounds,
-  type NodeChange
+  type NodeChange,
+  defaultFitViewPadding
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -391,7 +392,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         store.height,
         store.minZoom,
         store.maxZoom,
-        options?.padding ?? 0.1
+        options?.padding ?? defaultFitViewPadding
       );
 
       await store.panZoom.setViewport(viewport, {

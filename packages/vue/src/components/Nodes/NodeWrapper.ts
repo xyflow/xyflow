@@ -1,12 +1,11 @@
 import type { BuiltInNode, MouseTouchEvent, NodeComponent } from '../../types';
-import { getNodesInside, nodeHasDimensions } from '@xyflow/system';
+import { getNodeDimensions, getNodesInside, isInputDOMNode, nodeHasDimensions } from '@xyflow/system';
 import {
   computed,
   defineComponent,
   getCurrentInstance,
   h,
   inject,
-  nextTick,
   onMounted,
   provide,
   resolveComponent,
@@ -15,7 +14,6 @@ import {
   watch,
 } from 'vue';
 import {
-  isInputDOMNode,
   useDrag,
   useStore,
   useUpdateNodePositions,
@@ -46,14 +44,9 @@ const NodeWrapper = defineComponent({
       setCenter,
     } = useVueFlow();
 
-    // Read the reactive store directly. Inside computeds/handlers `store.x` already tracks reactively, so
-    // there's no need to project the whole state into refs per node (`storeToRefs` allocates a ref for every
-    // state key on each call — a real cost when it runs once per node/edge/handle).
     const store = useStore();
     const { parentLookup } = store;
 
-    // `nodesSelectionActive` is the one exception: it's handed to `handleNodeClick`, which writes it back,
-    // so it needs a writable ref.
     const nodesSelectionActive = toRef(store, 'nodesSelectionActive');
 
     const nodeElement = shallowRef<HTMLDivElement | null>(null);
@@ -66,29 +59,25 @@ const NodeWrapper = defineComponent({
 
     const updateNodePositions = useUpdateNodePositions();
 
-    // `nodeRef` re-resolves to a NEW InternalNode object whenever the store re-adopts this node (immutable
-    // model) — that reference swap is what re-renders this wrapper. Resolve it directly rather than through
-    // the public `useNode`, which the wrapper would only use for `node` while also allocating unused
-    // `parentNode`/`connectedEdges` computeds and a `nodeEl` inject per instance.
-    const nodeRef = computed(() => getInternalNode(props.id));
+    const internalNode = computed(() => getInternalNode(props.id));
 
     const isDraggable = toRef(() => {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       return !node || typeof node.draggable === 'undefined' ? store.nodesDraggable : node.draggable;
     });
 
     const isSelectable = toRef(() => {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       return !node || typeof node.selectable === 'undefined' ? store.elementsSelectable : node.selectable;
     });
 
     const isConnectable = toRef(() => {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       return !node || typeof node.connectable === 'undefined' ? store.nodesConnectable : node.connectable;
     });
 
     const isFocusable = toRef(() => {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       return !node || typeof node.focusable === 'undefined' ? store.nodesFocusable : node.focusable;
     });
 
@@ -103,17 +92,14 @@ const NodeWrapper = defineComponent({
         || store.hooks.nodeMouseLeave.hasListeners(),
     );
 
-    // a node "has dimensions" once it's measured OR carries explicit `width`/`height` OR `initialWidth`/
-    // `initialHeight` (the SSR fallback, where there's no ResizeObserver to measure) — mirrors xyflow/react
-    // & xyflow/svelte's visibility gate so sized/SSR nodes render immediately instead of staying hidden.
-    const isInit = computed(() => (nodeRef.value ? nodeHasDimensions(nodeRef.value) : false));
+    // a node "has dimensions" once measured OR given explicit width/height OR initialWidth/initialHeight (the
+    // SSR fallback, no ResizeObserver) — the visibility gate so sized/SSR nodes render immediately
+    const isInit = computed(() => (internalNode.value ? nodeHasDimensions(internalNode.value) : false));
 
-    // computed (not toRef): the value-equality gate keeps this node's render effect from re-running on
-    // every `parentLookup` entry replacement — an uncached getter read in render tracks the raw map key
     const isParent = computed(() => (parentLookup.get(props.id)?.size ?? 0) > 0);
 
     const nodeCmp = computed(() => {
-      const name = nodeRef.value?.type || 'default';
+      const name = internalNode.value?.type || 'default';
 
       const slot = slots?.[`node-${name}`];
       if (slot) {
@@ -145,7 +131,7 @@ const NodeWrapper = defineComponent({
       el: nodeElement,
       disabled: () => !isDraggable.value,
       selectable: isSelectable,
-      dragHandle: () => nodeRef.value?.dragHandle,
+      dragHandle: () => internalNode.value?.dragHandle,
       onStart(event) {
         emits.nodeDragStart(event);
       },
@@ -161,14 +147,19 @@ const NodeWrapper = defineComponent({
     });
 
     const getStyle = computed(() => {
-      const node = nodeRef.value;
-      // clone: never mutate the user's `node.style` (nodes are markRaw, so an in-place write isn't
-      // reactive AND would cache stale width/height onto the user object across renders)
+      const node = internalNode.value;
       const styles = { ...node?.style };
 
-      // mirror xyflow/react's `getNodeInlineStyleDimensions`: before the node is measured (no handle bounds
-      // yet — e.g. first paint / SSR) fall back through `initialWidth`/`initialHeight`; once measured, only
-      // an explicit `width`/`height` overrides the natural measured size.
+      // Vue's `:style` doesn't auto-append `px` to numbers, so coerce numeric width/height to px
+      if (typeof styles.width === 'number') {
+        styles.width = `${styles.width}px`;
+      }
+      if (typeof styles.height === 'number') {
+        styles.height = `${styles.height}px`;
+      }
+
+      // before the node is measured (no handle bounds yet — first paint / SSR) fall back through
+      // `initialWidth`/`initialHeight`; once measured, only an explicit `width`/`height` overrides the measured size
       const isMeasured = !!node?.internals.handleBounds;
       const width = node?.width ?? (isMeasured ? undefined : node?.initialWidth);
       const height = node?.height ?? (isMeasured ? undefined : node?.initialHeight);
@@ -184,18 +175,17 @@ const NodeWrapper = defineComponent({
       return styles;
     });
 
-    const zIndex = toRef(() => Number(nodeRef.value?.zIndex ?? getStyle.value.zIndex ?? 0));
+    const zIndex = toRef(() => Number(internalNode.value?.zIndex ?? getStyle.value.zIndex ?? 0));
 
     onUpdateNodeInternals((updateIds) => {
-      // when no ids are passed, update all nodes
-      if (updateIds.includes(props.id) || !updateIds.length) {
+      if (updateIds.includes(props.id)) {
         updateInternals();
       }
     });
 
     onMounted(() => {
       watch(
-        () => nodeRef.value?.hidden,
+        () => internalNode.value?.hidden,
         (isHidden = false, _, onCleanup) => {
           if (!isHidden && nodeElement.value) {
             props.resizeObserver.observe(nodeElement.value);
@@ -211,14 +201,16 @@ const NodeWrapper = defineComponent({
       );
     });
 
-    watch([() => nodeRef.value?.type, () => nodeRef.value?.sourcePosition, () => nodeRef.value?.targetPosition], () => {
-      nextTick(() => {
+    watch(
+      [() => internalNode.value?.type, () => internalNode.value?.sourcePosition, () => internalNode.value?.targetPosition],
+      () => {
         updateNodeDimensions([{ id: props.id, nodeElement: nodeElement.value as HTMLDivElement, forceUpdate: true }]);
-      });
-    });
+      },
+      { flush: 'post' },
+    );
 
     return () => {
-      const node = nodeRef.value;
+      const node = internalNode.value;
 
       if (!node || node.hidden) {
         return null;
@@ -266,9 +258,6 @@ const NodeWrapper = defineComponent({
         },
         [
           h(nodeCmp.value === false ? (getNodeTypes.value.default as NodeComponent<BuiltInNode>) : (nodeCmp.value as any), {
-            // exactly the `NodeProps` surface (xyflow/react parity) — no legacy `connectable`/`position`/
-            // `dimensions`/`parent`/`parentNodeId`/`resizing` duplicates, which bloated every node's props
-            // and leaked onto custom-node DOM as `$attrs`
             id: node.id,
             type: node.type,
             data: node.data,
@@ -277,21 +266,20 @@ const NodeWrapper = defineComponent({
             isConnectable: isConnectable.value,
             positionAbsoluteX: node.internals.positionAbsolute.x,
             positionAbsoluteY: node.internals.positionAbsolute.y,
-            width: node.measured.width,
-            height: node.measured.height,
+            ...getNodeDimensions(node),
             parentId: node.parentId,
             zIndex: node.internals.z ?? zIndex.value,
-            selectable: node.selectable ?? true,
+            selectable: isSelectable.value,
             deletable: node.deletable ?? true,
-            draggable: node.draggable ?? true,
+            draggable: isDraggable.value,
             targetPosition: node.targetPosition,
             sourcePosition: node.sourcePosition,
             dragHandle: node.dragHandle,
-            onUpdateNodeInternals: updateInternals,
           }),
         ],
       );
     };
+
     function updateInternals() {
       if (nodeElement.value) {
         updateNodeDimensions([{ id: props.id, nodeElement: nodeElement.value, forceUpdate: true }]);
@@ -299,48 +287,47 @@ const NodeWrapper = defineComponent({
     }
 
     function onMouseEnter(event: MouseEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (node && !dragging?.value) {
         emits.nodeMouseEnter({ event, node: node.internals.userNode });
       }
     }
 
     function onMouseMove(event: MouseEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (node && !dragging?.value) {
         emits.nodeMouseMove({ event, node: node.internals.userNode });
       }
     }
 
     function onMouseLeave(event: MouseEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (node && !dragging?.value) {
         emits.nodeMouseLeave({ event, node: node.internals.userNode });
       }
     }
 
     function onContextMenu(event: MouseEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (node) {
         emits.nodeContextMenu({ event, node: node.internals.userNode });
       }
     }
 
     function onDoubleClick(event: MouseEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (node) {
         emits.nodeDoubleClick({ event, node: node.internals.userNode });
       }
     }
 
     function onSelectNode(event: MouseTouchEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (!node) {
         return;
       }
 
       if (isSelectable.value && (!store.selectNodesOnDrag || !isDraggable.value || store.nodeDragThreshold > 0)) {
-        // handleNodeClick needs the enriched InternalNode; the event payload gets the user node
         handleNodeClick(
           node,
           store.multiSelectionActive,
@@ -356,7 +343,7 @@ const NodeWrapper = defineComponent({
     }
 
     function onKeyDown(event: KeyboardEvent) {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (!node || isInputDOMNode(event) || store.disableKeyboardA11y) {
         return;
       }
@@ -394,11 +381,8 @@ const NodeWrapper = defineComponent({
       }
     }
 
-    // Pan the viewport to a node that receives KEYBOARD focus (Tab) and isn't currently visible, so
-    // tabbing through nodes never lands on an off-screen one. `:focus-visible` keeps this to keyboard
-    // focus (not pointer/programmatic).
     function onFocus() {
-      const node = nodeRef.value;
+      const node = internalNode.value;
       if (!node || store.disableKeyboardA11y || !store.autoPanOnNodeFocus || !nodeElement.value?.matches(':focus-visible')) {
         return;
       }

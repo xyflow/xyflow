@@ -1,27 +1,29 @@
 import type {
   Connection,
+  ConnectionLookup,
   CoordinateExtent,
+  HandleType,
+  IsValidConnection,
   NodeConnection,
+  NodeHandleBounds,
   NodeLookup as SystemNodeLookup,
   ParentLookup as SystemParentLookup,
   ZIndexMode,
 } from '@xyflow/system';
 import type {
   Actions,
-  ConnectionLookup,
   DefaultEdgeOptions,
   Edge,
   InternalNode,
   Node,
-  NodeHandleBounds,
   NodeOrigin,
   State,
-  ValidConnectionFunc,
   VueFlowInstance,
 } from '../types';
 import { adoptUserNodes, getEdgeId } from '@xyflow/system';
 import { markRaw, toRaw, unref } from 'vue';
-import { connectionExists, ErrorCode, isEdge, isNode, VueFlowError } from '.';
+import { ErrorCode, VueFlowError } from './errors';
+import { connectionExists, isEdge, isNode } from './graph';
 
 type NonUndefined<T> = T extends undefined ? never : T;
 
@@ -29,6 +31,40 @@ export function isDef<T>(val: T): val is NonUndefined<T> {
   const unrefVal = unref(val);
 
   return typeof unrefVal !== 'undefined';
+}
+
+/**
+ * Turn `target[key]` into a "controlled" field: every write, from props, `setState`, or a direct assignment,
+ * runs `apply` (mirror to an external instance, e.g. the panZoom, or re-adopt nodes) after an optional
+ * `transform`. A same-value re-assign is skipped so the side effect never fires redundantly. `target` must be
+ * `reactive()`-wrapped for reads to stay reactive (the proxy tracks the key).
+ */
+export function defineControlled<T extends object, K extends keyof T>(
+  target: T,
+  key: K,
+  apply: (value: T[K]) => void,
+  transform: (value: T[K]) => T[K] = value => value,
+) {
+  // No backing ref needed: once `target` is `reactive()`-wrapped, reads/writes through the proxy are tracked
+  // at the key level regardless of data-vs-accessor, so a plain closure is the storage. The dedupe guard
+  // skips a redundant `apply` (Vue's own change check already dedupes the trigger).
+  let value = transform(target[key]);
+
+  Object.defineProperty(target, key, {
+    get: () => value,
+    set: (next: T[K]) => {
+      const transformed = transform(next);
+
+      if (Object.is(transformed, value)) {
+        return;
+      }
+
+      value = transformed;
+      apply(transformed);
+    },
+    enumerable: true,
+    configurable: true,
+  });
 }
 
 /**
@@ -100,23 +136,17 @@ export interface CreateInternalNodesOptions {
   nodeExtent?: CoordinateExtent;
   elevateNodesOnSelect?: boolean;
   zIndexMode?: ZIndexMode;
+  checkEquality?: boolean;
 }
 
 /**
- * Adopt user `Node`s into the store's lookups, xyflow/react+svelte style: validate, then run
- * `@xyflow/system`'s `adoptUserNodes` DIRECTLY against the PERSISTENT `nodeLookup`/`parentLookup`
- * (mutated in place — cleared + repopulated) to build the enriched `InternalNode`s with parent-aware
- * `internals.{positionAbsolute, z, rootParentIndex, handleBounds, userNode}`.
+ * Adopt user `Node`s into the store's lookups: validate them, then run `@xyflow/system`'s `adoptUserNodes`
+ * against the persistent `nodeLookup`/`parentLookup` (mutated in place) to build the enriched
+ * `InternalNode`s. `checkEquality` reuses the existing `InternalNode` when the user node is unchanged, so
+ * re-adopting on every change is O(changed) and `measured`/`handleBounds` survive for unchanged nodes.
  *
- * There is no second `parseNode` pass and no vue-flow-specific default-stamping (parity with RF/SF, which
- * apply no node defaults — undefined fields stay undefined; consumers tolerate them). `checkEquality`
- * reuses the existing `InternalNode` by reference whenever the user node is unchanged, so re-adopting on
- * every change is O(changed) and `measured`/`handleBounds` survive for unchanged nodes for free.
- *
- * Returns the validated user nodes (to be stored as the canonical `state.nodes` array) plus
- * `hasSelectedNodes` (whether any adopted node is `selected`, surfaced by `adoptUserNodes` for free — the
- * caller uses it to clear a stale `nodesSelectionActive`). The InternalNodes live only in `nodeLookup`;
- * `internals.userNode` references the exact user object stored in the array.
+ * Returns the validated user nodes (stored as `state.nodes`) plus `hasSelectedNodes` (used to clear a stale
+ * `nodesSelectionActive`). InternalNodes live only in the lookup; `internals.userNode` points at the stored object.
  */
 export function adoptNodes<NodeType extends Node = Node>(
   nodes: NodeType[],
@@ -126,6 +156,7 @@ export function adoptNodes<NodeType extends Node = Node>(
   options?: CreateInternalNodesOptions,
 ): { nodes: NodeType[]; hasSelectedNodes: boolean } {
   const validNodes: NodeType[] = [];
+  const seenNodeIds = new Set<string>();
   for (let i = 0; i < nodes.length; ++i) {
     const node = nodes[i];
 
@@ -136,25 +167,21 @@ export function adoptNodes<NodeType extends Node = Node>(
       continue;
     }
 
-    // `markRaw` the user node so Vue never deep-proxies it (the perf goal — large `data` objects stay
-    // raw). `toRaw` first in case it arrived as a reactive proxy; this is the choke point through which
-    // every node enters `state.nodes`/`nodeLookup`. Reactivity for the UI comes from re-adopting (the
-    // lookup `.set` + the per-node render computed), not from deep-proxying. Idempotent across re-adopts,
-    // so `checkEquality` (reference identity) keeps matching for unchanged nodes.
+    // a duplicate id silently overwrites the earlier node in the id-keyed lookup (last wins)
+    // surface it so the otherwise-invisible data bug is debuggable
+    if (seenNodeIds.has(node.id)) {
+      triggerError(new VueFlowError(ErrorCode.NODE_DUPLICATE_ID, node.id));
+    }
+    else {
+      seenNodeIds.add(node.id);
+    }
+
+    // markRaw so Vue never deep-proxies the user node (large `data` stays raw).
+    // toRaw first in case it arrived as a proxy.
+    // UI reactivity comes from re-adopting (lookup `.set` + per-node render computed), not deep-proxying.
     validNodes.push(markRaw(toRaw(node)));
   }
 
-  // vue-flow's node-rep split keeps `measured` AND `handleBounds` off the user `Node`s — they live only on
-  // the `InternalNode`. The system's `adoptUserNodes` sources both from the user node (`parseHandles` even
-  // resets `handleBounds` to `undefined` when the node carries no `measured`), so re-committing fresh user
-  // objects (a one-way `:nodes` reassignment, a layout pass, `nodes.value.map(...)`) resets:
-  //   - `measured` → `undefined`: the node fails `nodeHasDimensions`, renders `visibility:hidden`, and — since
-  //     its DOM size didn't change — the ResizeObserver never re-fires to restore it.
-  //   - `handleBounds` → `undefined`: edges fall back to the node's default handle positions, ignoring its
-  //     `sourcePosition`/`targetPosition` (e.g. a dagre layout's edges no longer meet the handles).
-  // Snapshot both before adoption clears the lookup and carry them forward below. A genuine re-measure
-  // (`updateNodeDimensions`, e.g. NodeWrapper's `sourcePosition` watcher) still overwrites them, and that
-  // fresh result is in turn preserved by the next re-commit.
   const priorInternals = new Map<
     string,
     { measured?: { width?: number; height?: number }; handleBounds: NodeHandleBounds | undefined }
@@ -167,16 +194,13 @@ export function adoptNodes<NodeType extends Node = Node>(
     });
   }
 
-  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: true });
+  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: options?.checkEquality ?? true });
 
   for (const node of validNodes) {
     if (node.parentId && !nodeLookup.has(node.parentId)) {
       triggerError(new VueFlowError(ErrorCode.NODE_MISSING_PARENT, node.id, node.parentId));
     }
 
-    // re-adoption only kept `measured`/`handleBounds` if the user object carried them; restore the prior
-    // values for re-committed nodes that didn't, so a content-agnostic update (class/position/layout) keeps
-    // the node visible and its edges anchored to the right handles (see the snapshot above)
     const prior = priorInternals.get(node.id);
     if (prior) {
       const internal = nodeLookup.get(node.id);
@@ -202,19 +226,16 @@ export function adoptNodes<NodeType extends Node = Node>(
  * @param connectionKey at which key the connection should be added
  * @param connectionLookup reference to the connection lookup
  * @param nodeId nodeId of the connection
- * @param handleId handleId of the conneciton
+ * @param handleId handleId of the connection
  */
 function addConnectionToLookup(
-  type: 'source' | 'target',
+  type: HandleType,
   connection: NodeConnection,
   connectionKey: string,
   connectionLookup: ConnectionLookup,
   nodeId: string,
   handleId: string | null,
 ) {
-  // We add the connection to the connectionLookup at the following keys
-  // 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId
-  // If the key already exists, we add the connection to the existing map
   let key = nodeId;
   const nodeMap = connectionLookup.get(key) || new Map();
   connectionLookup.set(key, nodeMap.set(connectionKey, connection));
@@ -246,20 +267,18 @@ export function updateConnectionLookup(connectionLookup: ConnectionLookup, edges
 }
 
 /**
- * Validate edges-or-connections for the store, xyflow-style: the returned edges are the USER's objects
- * (a `Connection` becomes a new edge via {@link addEdgeToStore}, the only path that persists
- * `defaultEdgeOptions`) — no enrichment, no captured node references, no default-stamping. Source/target
- * node resolution and `EdgePosition` happen per-render in `EdgeWrapper`.
+ * Validate edges-or-connections for the store: the returned edges are the USER's objects (a `Connection`
+ * becomes a new edge via {@link addEdgeToStore}, the only path that persists `defaultEdgeOptions`) — no
+ * enrichment, no captured node references. Source/target resolution happens per-render in `EdgeWrapper`.
  *
  * @internal
  */
 export function validateEdges<EdgeType extends Edge = Edge>(
   nextEdges: (EdgeType | Connection)[],
-  isValidConnection: ValidConnectionFunc | null,
+  isValidConnection: IsValidConnection | null,
   getInternalNode: Actions['getInternalNode'],
   onError: VueFlowInstance['emits']['error'],
   defaultEdgeOptions: DefaultEdgeOptions | undefined,
-  nodes: Node[],
   edges: EdgeType[],
 ): EdgeType[] {
   const validEdges: EdgeType[] = [];
@@ -276,41 +295,14 @@ export function validateEdges<EdgeType extends Edge = Edge>(
     const sourceNode = getInternalNode(edge.source);
     const targetNode = getInternalNode(edge.target);
 
-    if (!sourceNode && !targetNode) {
-      onError(new VueFlowError(ErrorCode.EDGE_SOURCE_TARGET_MISSING, edge.id, edge.source, edge.target));
+    if (!sourceNode || !targetNode) {
+      validEdges.push(edge);
       continue;
     }
 
-    if (!sourceNode) {
-      onError(new VueFlowError(ErrorCode.EDGE_SOURCE_MISSING, edge.id, edge.source));
+    if (isValidConnection && !isValidConnection(edge)) {
+      onError(new VueFlowError(ErrorCode.EDGE_INVALID, edge.id));
       continue;
-    }
-
-    if (!targetNode) {
-      onError(new VueFlowError(ErrorCode.EDGE_TARGET_MISSING, edge.id, edge.target));
-      continue;
-    }
-
-    if (isValidConnection) {
-      const isValid = isValidConnection(
-        {
-          source: edge.source,
-          target: edge.target,
-          sourceHandle: edge.sourceHandle ?? null,
-          targetHandle: edge.targetHandle ?? null,
-        },
-        {
-          edges,
-          nodes,
-          sourceNode,
-          targetNode,
-        },
-      );
-
-      if (!isValid) {
-        onError(new VueFlowError(ErrorCode.EDGE_INVALID, edge.id));
-        continue;
-      }
     }
 
     validEdges.push(edge);

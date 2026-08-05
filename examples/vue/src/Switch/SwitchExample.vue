@@ -29,8 +29,8 @@ const edgesB: Edge[] = [
   { id: 'e4b', source: 'inputb', target: '4b' },
 ];
 
-const nodes = ref<Node[]>(nodesA);
-const edges = ref<Edge[]>(edgesA);
+const nodes = shallowRef<Node[]>(nodesA);
+const edges = shallowRef<Edge[]>(edgesA);
 
 function switchToA() {
   nodes.value = nodesA;

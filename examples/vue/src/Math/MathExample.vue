@@ -7,9 +7,9 @@ import ResultNode from './ResultNode.vue';
 import ValueNode from './ValueNode.vue';
 import './styles.css';
 
-const nodes = ref(initialNodes);
+const nodes = shallowRef(initialNodes);
 
-const edges = ref(initialEdges);
+const edges = shallowRef(initialEdges);
 </script>
 
 <template>

@@ -3,9 +3,8 @@ import { watch } from 'vue';
 import { useVueFlow } from './useVueFlow';
 
 /**
- * Fires the `selectionChange` event whenever the set of selected nodes or edges changes, mirroring
- * xyflow/react's `onSelectionChange`. Membership is tracked by id, so the event fires on select/deselect
- * — not on unrelated node/edge mutations (which would re-run the `getSelected*` getters but not change ids).
+ * Fires the `selectionChange` event whenever the set of selected nodes or edges changes. Membership is
+ * tracked by id, so it fires on select/deselect — not on unrelated node/edge mutations.
  *
  * Takes the store explicitly because it runs inside `<VueFlow>`'s own setup, where `inject` can't see
  * `<VueFlow>`'s own `provide` (see {@link useOnInitHandler}). Defaults to `useVueFlow()` for descendant callers.

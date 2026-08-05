@@ -5,6 +5,7 @@ import type { NodeResizerEmits, ResizeControlProps } from './types';
 import { evaluateAbsolutePosition, handleExpandParent, XYResizer } from '@xyflow/system';
 import { computed, shallowRef, toRef, watchEffect } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
+import { useNodeId } from '../../composables/useNodeId';
 import { ResizeControlVariant } from './types';
 import { DefaultPositions, StylingProperty } from './utils';
 
@@ -28,6 +29,12 @@ const { transform, nodeOrigin, snapGrid, snapToGrid, vueFlowRef, noDragClassName
 
 const resizeControlRef = shallowRef<HTMLDivElement>();
 
+// fall back to the node context id so a bare `<NodeResizeControl>` inside a custom node resolves its node
+// without an explicit `node-id` prop
+const contextNodeId = useNodeId();
+
+const nodeId = toRef(() => (typeof props.nodeId === 'string' ? props.nodeId : contextNodeId || undefined));
+
 const controlPosition = toRef(() => props.position ?? DefaultPositions[props.variant]);
 
 const positionClassNames = computed(() => controlPosition.value.split('-'));
@@ -35,13 +42,13 @@ const positionClassNames = computed(() => controlPosition.value.split('-'));
 const controlStyle = toRef(() => (props.color ? { [StylingProperty[props.variant]]: props.color } : {}));
 
 watchEffect((onCleanup) => {
-  if (!resizeControlRef.value || !props.nodeId) {
+  if (!resizeControlRef.value || !nodeId.value) {
     return;
   }
 
   const resizerInstance = XYResizer({
     domNode: resizeControlRef.value,
-    nodeId: props.nodeId,
+    nodeId: nodeId.value,
     getStoreItems: () => ({
       nodeLookup,
       transform: transform.value,
@@ -52,7 +59,7 @@ watchEffect((onCleanup) => {
     }),
     onChange: (changes, childChanges) => {
       const nodeChanges: NodeChange[] = [];
-      const node = nodeLookup.get(props.nodeId!);
+      const node = nodeLookup.get(nodeId.value!);
 
       // resolved x/y for the resized node; clamped below when the node expands its parent
       let nextX = changes.x;
@@ -63,7 +70,7 @@ watchEffect((onCleanup) => {
         const width = changes.width ?? node.measured.width ?? 0;
         const height = changes.height ?? node.measured.height ?? 0;
 
-        // grow the parent to fit the resized child (mirrors xyflow/react's NodeResizeControl)
+        // grow the parent to fit the resized child
         const child = {
           id: node.id,
           parentId: node.parentId,
@@ -94,7 +101,7 @@ watchEffect((onCleanup) => {
           y: nextY ?? node?.position.y ?? 0,
         };
         nodeChanges.push({
-          id: props.nodeId!,
+          id: nodeId.value!,
           type: 'position',
           position,
           positionAbsolute: position,
@@ -103,7 +110,7 @@ watchEffect((onCleanup) => {
 
       if (typeof changes.width !== 'undefined' || typeof changes.height !== 'undefined') {
         nodeChanges.push({
-          id: props.nodeId!,
+          id: nodeId.value!,
           type: 'dimensions',
           setAttributes: true,
           resizing: true,
@@ -130,7 +137,7 @@ watchEffect((onCleanup) => {
     onEnd: ({ width, height }) => {
       triggerEmits.nodesChange([
         {
-          id: props.nodeId!,
+          id: nodeId.value!,
           type: 'dimensions',
           resizing: false,
           dimensions: { width, height },

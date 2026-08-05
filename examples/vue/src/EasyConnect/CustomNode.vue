@@ -6,7 +6,7 @@ const props = defineProps<{ id: string }>();
 
 const store = useStore();
 
-const isTarget = computed(() => store.connectionStartHandle && store.connectionStartHandle.nodeId !== props.id);
+const isTarget = computed(() => store.connection.fromHandle && store.connection.fromHandle.nodeId !== props.id);
 </script>
 
 <template>

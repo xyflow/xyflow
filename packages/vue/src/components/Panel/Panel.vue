@@ -3,7 +3,7 @@ import type { PanelProps } from '../../types/panel';
 import { computed } from 'vue';
 import { storeToRefs, useStore } from '../../composables';
 
-const props = defineProps<PanelProps>();
+const props = withDefaults(defineProps<PanelProps>(), { position: 'top-left' });
 
 const { userSelectionActive } = storeToRefs(useStore());
 

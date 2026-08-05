@@ -3,6 +3,11 @@
  * @module vue-flow
  */
 
+// `Handle` names both the component (exported below) and the system type for a handle's measured bounds.
+// Re-exporting the type through an alias declaration (not a re-export specifier) lets them share the name
+// without a duplicate-identifier error.
+import type { Handle as HandleBounds } from '@xyflow/system';
+
 export * from './components/Background';
 
 export * from './components/Controls';
@@ -18,15 +23,19 @@ export { getSimpleBezierPath } from './components/Edges/SimpleBezierEdge';
 export { default as SmoothStepEdge } from './components/Edges/SmoothStepEdge';
 export { default as StepEdge } from './components/Edges/StepEdge';
 export { default as StraightEdge } from './components/Edges/StraightEdge';
-export { default as Handle } from './components/Handle/Handle.vue';
+export * from './components/EdgeToolbar';
 
+export { default as Handle } from './components/Handle/Handle.vue';
+export type Handle = HandleBounds;
 export * from './components/MiniMap';
 export * from './components/NodeResizer';
 export * from './components/NodeToolbar';
 export { default as Panel } from './components/Panel/Panel.vue';
-export { storeToRefs } from './composables/storeToRefs';
+export { setupVueFlow } from './composables/setupVueFlow';
 
+export { storeToRefs } from './composables/storeToRefs';
 export { useConnection } from './composables/useConnection';
+
 export { useEdge } from './composables/useEdge';
 
 export { useEdgesData } from './composables/useEdgesData';
@@ -36,18 +45,19 @@ export { useHandle } from './composables/useHandle';
 export { useInternalNode } from './composables/useInternalNode';
 
 export { useKeyPress } from './composables/useKeyPress';
-
 export { useNode } from './composables/useNode';
 export { useNodeConnections } from './composables/useNodeConnections';
 export { useNodeId } from './composables/useNodeId';
 export { useNodesData } from './composables/useNodesData';
-export { useNodesInitialized } from './composables/useNodesInitialized';
 
+export { useNodesInitialized } from './composables/useNodesInitialized';
 export { useStore } from './composables/useStore';
 export { useVueFlow } from './composables/useVueFlow';
 export { default as VueFlow } from './container/VueFlow/VueFlow.vue';
 export { default as VueFlowProvider } from './container/VueFlowProvider/VueFlowProvider.vue';
 export { NodeId as NodeIdInjection, VueFlow as VueFlowInjection } from './context';
+// Runtime prop-declaration factories for JS users (TS users use `defineProps<NodeProps<T>>()`).
+export { connectionLineProps, edgeProps, nodeProps } from './props-objects.gen';
 export * from './types';
 /**
  * @deprecated Prefer the store instance's `applyChanges`/`applyNodeChanges`/`applyEdgeChanges` (from
@@ -55,6 +65,7 @@ export * from './types';
  */
 export { applyChanges, applyEdgeChanges, applyNodeChanges } from './utils/changes';
 export { defaultEdgeTypes, defaultNodeTypes } from './utils/defaultNodesEdges';
+export { addEdge, reconnectEdge } from './utils/edges';
 export { ErrorCode, isErrorOfType, VueFlowError } from './utils/errors';
 export { connectionExists, isEdge, isInternalNode, isNode } from './utils/graph';
 
@@ -85,30 +96,48 @@ export {
 export {
   type Align,
   type AriaLabelConfig,
+  type BezierPathOptions,
   type ColorMode,
-  type ColorModeClass,
   type Connection,
   ConnectionLineType,
+  type ConnectionLookup,
   ConnectionMode,
+  type ConnectionState,
   type CoordinateExtent,
   type Dimensions,
+  type EdgeAddChange,
+  type EdgeLookup,
+  type EdgeMarker,
+  type EdgeMarkerType,
+  type EdgePosition,
   type EdgeRemoveChange,
   type EdgeSelectionChange,
   type FinalConnectionState,
   type FitViewOptionsBase as FitViewOptions,
   type GetViewport,
+  type HandleConnection,
   type HandleType,
+  type IsValidConnection,
+  type MarkerProps,
+  MarkerType,
+  type NoConnection,
+  type NodeAddChange,
   type NodeConnection,
   type NodeDimensionChange,
+  type NodeDragItem,
+  type NodeHandleBounds,
+  type NodeLookup,
   type NodePositionChange,
   type NodeRemoveChange,
   type NodeSelectionChange,
+  type OnConnectStartParams,
   type Padding,
   type PaddingUnit,
   type PaddingWithUnit,
+  type PanelPosition,
   PanOnScrollMode,
   Position,
-  type Project,
+  type ProOptions,
   type Rect,
   // value export (it's a runtime enum) — keeps `ResizeControlVariant.Line/.Handle` usable as a value, not
   // type-only, at the package root (mirrors xyflow/react #4947; `export *` via NodeResizer downgraded it)
@@ -118,7 +147,9 @@ export {
   type SetCenter,
   type SetCenterOptions,
   type SetViewport,
+  type SmoothStepPathOptions,
   type SnapGrid,
+  type UpdateNodeInternals,
   type Viewport,
   type ViewportHelperFunctionOptions,
   type XYPosition,

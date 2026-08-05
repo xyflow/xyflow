@@ -6,14 +6,14 @@ import RGBEdge from './RGBEdge.vue';
 import RGBNode from './RGBNode.vue';
 import RGBOutputNode from './RGBOutputNode.vue';
 
-const nodes = ref<Node[]>([
+const nodes = shallowRef<Node[]>([
   { id: '1', type: 'rgb', data: { color: 'red' }, position: { x: -25, y: 50 } },
   { id: '2', type: 'rgb', data: { color: 'green' }, position: { x: 50, y: -100 } },
   { id: '3', type: 'rgb', data: { color: 'blue' }, position: { x: 0, y: 200 } },
   { id: '4', type: 'rgb-output', data: { label: 'RGB' }, position: { x: 400, y: 50 } },
 ]);
 
-const edges = ref<Edge[]>([
+const edges = shallowRef<Edge[]>([
   { id: 'e1-4', type: 'rgb-edge', data: { color: 'red' }, source: '1', target: '4', animated: true },
   { id: 'e2-4', type: 'rgb-edge', data: { color: 'green' }, source: '2', target: '4', animated: true },
   { id: 'e3-4', type: 'rgb-edge', data: { color: 'blue' }, source: '3', target: '4', animated: true },

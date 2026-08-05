@@ -18,82 +18,84 @@
 		default: DebugNode
 	};
 
-	let nodes = $state.raw<Node[]>([
-		{
-			id: '1',
-			type: 'input',
-			data: { label: 'Node 1' },
-			position: { x: 250, y: 5 },
-			origin: [0.5, 0.5]
-		},
-		{
-			id: '4',
-			data: { label: 'Node 4' },
-			position: { x: 100, y: 200 },
-			style: 'width:500px; height:300px;'
-		},
-		{
-			id: '4a',
-			data: { label: 'Node 4a' },
-			position: { x: 15, y: 15 },
-			parentId: '4',
-			extent: [
-				[0, 0],
-				[100, 100]
-			]
-		},
-		{
-			id: '4b',
-			data: { label: 'Node 4b' },
-			position: { x: 100, y: 60 },
-			style: 'width: 300px; height: 200px;',
-			parentId: '4'
-		},
-		{
-			id: '4b1',
-			data: { label: 'Node 4b1' },
-			position: { x: 40, y: 20 },
-			parentId: '4b'
-		},
-		{
-			id: '4b2',
-			data: { label: 'Node 4b2' },
-			position: { x: 20, y: 100 },
-			parentId: '4b'
-		},
-		{
-			id: '5',
-			type: 'group',
-			data: { label: 'Node 5' },
-			position: { x: 650, y: 250 },
-			style: 'width: 400px; height: 150px',
-			zIndex: 1000
-		},
-		{
-			id: '5a',
-			data: { label: 'Node 5a' },
-			position: { x: 0, y: 0 },
-			parentId: '5',
-			extent: 'parent'
-		},
-		{
-			id: '5b',
-			data: { label: 'Node 5b' },
-			position: { x: 225, y: 50 },
-			parentId: '5',
-			expandParent: true
-		},
-		{
-			id: '2',
-			data: { label: 'Node 2' },
-			position: { x: 100, y: 100 }
-		},
-		{
-			id: '3',
-			data: { label: 'Node 3' },
-			position: { x: 400, y: 100 }
-		}
-	]);
+	let nodes = $state.raw<Node[]>(
+		[
+			{
+				id: '1',
+				type: 'input',
+				data: { label: 'Node 1' },
+				position: { x: 250, y: 5 },
+				origin: [0.5, 0.5]
+			},
+			{
+				id: '4',
+				data: { label: 'Node 4' },
+				position: { x: 100, y: 200 },
+				style: 'width:500px; height:300px;'
+			},
+			{
+				id: '4a',
+				data: { label: 'Node 4a' },
+				position: { x: 15, y: 15 },
+				parentId: '4',
+				extent: [
+					[0, 0],
+					[100, 100]
+				]
+			},
+			{
+				id: '4b',
+				data: { label: 'Node 4b' },
+				position: { x: 100, y: 60 },
+				style: 'width: 300px; height: 200px;',
+				parentId: '4'
+			},
+			{
+				id: '4b1',
+				data: { label: 'Node 4b1' },
+				position: { x: 40, y: 20 },
+				parentId: '4b'
+			},
+			{
+				id: '4b2',
+				data: { label: 'Node 4b2' },
+				position: { x: 20, y: 100 },
+				parentId: '4b'
+			},
+			{
+				id: '5',
+				type: 'group',
+				data: { label: 'Node 5' },
+				position: { x: 650, y: 250 },
+				style: 'width: 400px; height: 150px',
+				zIndex: 1000
+			},
+			{
+				id: '5a',
+				data: { label: 'Node 5a' },
+				position: { x: 0, y: 0 },
+				parentId: '5',
+				extent: 'parent'
+			},
+			{
+				id: '5b',
+				data: { label: 'Node 5b' },
+				position: { x: 225, y: 50 },
+				parentId: '5',
+				expandParent: true
+			},
+			{
+				id: '2',
+				data: { label: 'Node 2' },
+				position: { x: 100, y: 100 }
+			},
+			{
+				id: '3',
+				data: { label: 'Node 3' },
+				position: { x: 400, y: 100 }
+			}
+		].reverse() as Node[]
+	);
 
 	let edges = $state.raw<Edge[]>([
 		{

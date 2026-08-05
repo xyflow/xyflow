@@ -1,23 +1,20 @@
 import type { InternalNodeBase, NodeBase } from '@xyflow/system';
 import type { HTMLAttributes } from 'vue';
 import type { ClassValue, Styles } from './flow';
-import type { HandleElement } from './handle';
 
 /**
- * Origin of a node relative to its position. `[0, 0]` is top-left, `[0.5, 0.5]` centers it, `[1, 1]` is bottom-right.
+ * The origin of a Node determines how it is placed relative to its own coordinates.
+ * `[0, 0]` places it at the top left corner, `[0.5, 0.5]` right in the center and
+ * `[1, 1]` at the bottom right of its position.
  *
- * Locally defined (rather than re-exported from `@xyflow/system`) so the Vue SFC compiler stays out of the
- * system d.ts (its `Optional<T, K>` utility trips vuejs/core#14236). Structurally identical to system's.
+ * Locally defined (not re-exported from `@xyflow/system`) so the Vue SFC compiler stays out of system's
+ * d.ts (its `Optional<T, K>` trips vuejs/core#14236); structurally identical to system's.
  */
 export type NodeOrigin = [number, number];
 
-export interface NodeHandleBounds {
-  source: HandleElement[] | null;
-  target: HandleElement[] | null;
-}
-
 /**
- * User-facing node type — reuses `@xyflow/system`'s `NodeBase`.
+ * The `Node` type represents everything Vue Flow needs to know about a given node. Whenever you want to
+ * update a certain attribute of a node, you need to create a new node object.
  */
 export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
@@ -53,7 +50,8 @@ export type Node<
 export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeType>;
 
 /**
- * Props passed to custom node components, parameterized on a `NodeType`.
+ * When you implement a custom node it is wrapped in a component that enables basic functionality like
+ * selection and dragging. Your custom node receives `NodeProps` as props.
  */
 export interface NodeProps<NodeType extends Node = Node> {
   id: string;
@@ -65,8 +63,11 @@ export interface NodeProps<NodeType extends Node = Node> {
   draggable: boolean;
   dragging: boolean;
   zIndex: number;
+  /** Whether a node is connectable or not. */
   isConnectable: boolean;
+  /** Position absolute x value. */
   positionAbsoluteX: number;
+  /** Position absolute y value. */
   positionAbsoluteY: number;
   width?: NodeType['width'];
   height?: NodeType['height'];
@@ -76,4 +77,8 @@ export interface NodeProps<NodeType extends Node = Node> {
   parentId?: NodeType['parentId'];
 }
 
+/**
+ * The `BuiltInNode` type represents the built-in node types that are available in Vue Flow. You can use
+ * this type to extend your custom node type if you still want to use the built-in ones.
+ */
 export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'> | Node<Record<string, never>, 'group'>;

@@ -35,13 +35,15 @@ export interface DefaultEdgeTypes {
   smoothstep: typeof SmoothStepEdge;
 }
 
-export type DefaultNodeTypes = { [key in 'input' | 'output' | 'default']: NodeComponent<BuiltInNode> };
+export type DefaultNodeTypes = { [key in 'input' | 'output' | 'default' | 'group']: NodeComponent<BuiltInNode> };
 
 /** these props are passed to edge texts */
 export interface EdgeTextProps {
+  /** The x position where the label should be rendered. */
   x: number;
+  /** The y position where the label should be rendered. */
   y: number;
-  label?: string | VNode | Component<EdgeTextProps> | object;
+  label?: string | VNode | Component;
   labelStyle?: CSSProperties;
   labelShowBg?: boolean;
   labelBgStyle?: CSSProperties;

@@ -250,7 +250,7 @@ export type SetCenterOptions = ViewportHelperFunctionOptions & {
  * @inline
  */
 export type FitBoundsOptions = ViewportHelperFunctionOptions & {
-  padding?: number;
+  padding?: Padding;
 };
 
 export type OnViewportChange = (viewport: Viewport) => void;
@@ -380,8 +380,7 @@ export type UpdateConnection<NodeType extends InternalNodeBase = InternalNodeBas
   params: ConnectionState<NodeType>
 ) => void;
 
-export type ColorModeClass = 'light' | 'dark';
-export type ColorMode = ColorModeClass | 'system';
+export type ColorMode = 'light' | 'dark';
 
 export type ConnectionLookup = Map<string, Map<string, HandleConnection>>;
 

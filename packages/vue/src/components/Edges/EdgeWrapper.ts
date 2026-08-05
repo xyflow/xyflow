@@ -11,8 +11,6 @@ interface Props {
   id: string;
 }
 
-// candidate handles for one end of an edge: strict mode = only the matching side; loose mode = both
-// sides, matching side first (so `getEdgeHandle` prefers it)
 function getNodeHandles(node: InternalNode, side: 'source' | 'target', strict: boolean) {
   const bounds = node.internals.handleBounds;
   if (strict) {
@@ -30,11 +28,8 @@ const EdgeWrapper = defineComponent({
   setup(props: Props) {
     const { id: vueFlowId, addSelectedEdges, emits, getEdgeTypes, removeSelectedEdges, getEdge, getInternalNode } = useVueFlow();
 
-    // Read the reactive store directly (see NodeWrapper) — `store.x` tracks reactively inside
-    // computeds/handlers, so there's no need to project the whole state into refs per edge.
     const store = useStore();
 
-    // `isValidConnection` is handed to `useHandle`, which reads it as a ref, so keep it as one.
     const isValidConnection = toRef(store, 'isValidConnection');
 
     const storedEdge = computed(() => getEdge(props.id) as Edge);
@@ -44,9 +39,6 @@ const EdgeWrapper = defineComponent({
       return defaults ? ({ ...(defaults as Edge), ...storedEdge.value } as Edge) : storedEdge.value;
     });
 
-    // resolved per edge (value-gated computed) so the z-tracking of BOTH endpoint lookup keys lives in
-    // this component's scope — resolving it in EdgeRenderer's v-for made the whole renderer re-render
-    // (all edge vnodes) whenever ANY node entry was replaced, i.e. every drag frame
     const zIndex = computed(() => getEdgeZIndex(edge.value, getInternalNode, store.elevateEdgesOnSelect, store.zIndexMode));
 
     const slots = inject(Slots);
@@ -89,7 +81,7 @@ const EdgeWrapper = defineComponent({
         return slot;
       }
 
-      let edgeType = edge.value.template ?? getEdgeTypes.value[name];
+      let edgeType = getEdgeTypes.value[name];
 
       if (typeof edgeType === 'string') {
         if (instance) {
@@ -115,9 +107,6 @@ const EdgeWrapper = defineComponent({
       type: reconnectHandleType,
       isValidConnection,
       reconnectHandleType,
-      // xyflow/react + svelte hide the original edge AND emit `reconnectStart` from the system's
-      // `onConnectStart` — i.e. once the reconnect drag actually starts (after the drag threshold), not
-      // eagerly on pointerdown. A plain click on the anchor then leaves the edge in place and emits nothing.
       onReconnectStart: (event) => {
         updating.value = true;
         emits.reconnectStart({ event, edge: storedEdge.value, handleType: reconnectHandleType.value });
@@ -168,13 +157,9 @@ const EdgeWrapper = defineComponent({
 
       const targetPosition = targetHandle?.position || Position.Top;
 
-      // positions are render-local — computed each render and passed to the edge component as props,
-      // never stored on the edge
       const { x: sourceX, y: sourceY } = getHandlePosition(sourceNode, sourceHandle, sourcePosition);
       const { x: targetX, y: targetY } = getHandlePosition(targetNode, targetHandle, targetPosition);
 
-      // the full-container svg wrapper (one stacking context per edge zIndex) is rendered here rather
-      // than in EdgeRenderer's v-for so its node-lookup tracking stays scoped to this edge
       return h(
         'svg',
         { style: { zIndex: zIndex.value } },
@@ -194,7 +179,6 @@ const EdgeWrapper = defineComponent({
                 selected: edge.value.selected,
                 animated: edge.value.animated,
                 inactive: !isSelectable.value && !store.hooks.edgeClick.hasListeners(),
-                // @xyflow/system's CSS keys `cursor: pointer` and the focus stroke off `.selectable`
                 selectable: isSelectable.value,
               },
             ],
@@ -219,8 +203,6 @@ const EdgeWrapper = defineComponent({
             updating.value
               ? null
               : h(edgeCmp.value === false ? getEdgeTypes.value.default : (edgeCmp.value as any), {
-                  // no sourceNode/targetNode (custom edges resolve nodes via `useInternalNode`);
-                  // handles passed as sourceHandleId/targetHandleId
                   id: props.id,
                   source: edge.value.source,
                   target: edge.value.target,
@@ -238,9 +220,6 @@ const EdgeWrapper = defineComponent({
                   labelBgBorderRadius: edge.value.labelBgBorderRadius,
                   data: edge.value.data,
                   style: edgeStyle.value,
-                  // only emit a marker ref when the edge actually has one — `getMarkerId(undefined)`
-                  // returns '' (→ `url('#')`), which otherwise writes a bogus marker attr on every edge
-                  // path every render (a wasted `setAttribute` per frame for the common marker-less edge)
                   markerStart: edge.value.markerStart ? `url('#${getMarkerId(edge.value.markerStart, vueFlowId)}')` : undefined,
                   markerEnd: edge.value.markerEnd ? `url('#${getMarkerId(edge.value.markerEnd, vueFlowId)}')` : undefined,
                   sourcePosition,
