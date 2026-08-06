@@ -203,7 +203,7 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
  */
 function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   if (typeof padding === 'number') {
-    return Math.floor((viewport - viewport / (1 + padding)) * 0.5);
+    return Math.floor(padding);
   }
 
   if (typeof padding === 'string' && padding.endsWith('px')) {
@@ -313,9 +313,9 @@ export const getViewportForBounds = (
   bounds: Rect,
   width: number,
   height: number,
-  minZoom: number,
-  maxZoom: number,
-  padding: Padding
+  minZoom: number = 0,
+  maxZoom: number = Infinity,
+  padding: Padding = 0
 ): Viewport => {
   // First we resolve all the paddings to actual pixel values
   const p = parsePaddings(padding, width, height);

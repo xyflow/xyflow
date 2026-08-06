@@ -2,8 +2,6 @@ import type { NodeLookup } from '@xyflow/system';
 import type { Edge, InternalNode, Node, State } from '../types';
 import { fitViewport } from '@xyflow/system';
 
-const DEFAULT_PADDING = 0.1;
-
 /**
  * Settle a queued imperative `fitView()` against the current node lookup. Called from the node write paths
  * (`commitNodes`, `updateNodeDimensions`) once the nodes are measured, and from `fitView()` itself for a
@@ -37,7 +35,7 @@ export async function resolveFitView<NodeType extends Node = Node, EdgeType exte
       maxZoom: state.maxZoom,
     },
     {
-      padding: options?.padding ?? DEFAULT_PADDING,
+      padding: options?.padding,
       duration: options?.duration,
       ease: options?.ease,
       interpolate: options?.interpolate,

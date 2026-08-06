@@ -17,13 +17,14 @@ import {
   type HandleType,
   type HandleConnection,
   getNodesBounds,
+  type NodeChange,
+  defaultFitViewPadding,
   getNodeDimensions
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
 import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
 import { isEdge, isNode } from '$lib/utils';
-import { untrack } from 'svelte';
 
 /**
  * Hook for accessing the SvelteFlow instance.
@@ -313,14 +314,21 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
     options: { replace: boolean } = { replace: false }
   ) {
-    store.nodes = untrack(() => store.nodes).map((node) => {
-      if (node.id === id) {
-        const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
-        return options?.replace && isNode<NodeType>(nextNode) ? nextNode : { ...node, ...nextNode };
-      }
+    const node = store.nodeLookup.get(id)?.internals.userNode;
 
-      return node;
-    });
+    if (!node) {
+      return;
+    }
+
+    const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
+
+    store.queueNodeChanges([
+      {
+        id,
+        type: 'replace',
+        item: options?.replace && isNode<NodeType>(nextNode) ? nextNode : { ...node, ...nextNode }
+      }
+    ]);
   }
 
   function updateEdge(
@@ -328,14 +336,21 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options: { replace: boolean } = { replace: false }
   ) {
-    store.edges = untrack(() => store.edges).map((edge) => {
-      if (edge.id === id) {
-        const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
-        return options.replace && isEdge<EdgeType>(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
-      }
+    const edge = store.edgeLookup.get(id);
 
-      return edge;
-    });
+    if (!edge) {
+      return;
+    }
+
+    const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
+
+    store.queueEdgeChanges([
+      {
+        id,
+        type: 'replace',
+        item: options?.replace && isEdge<EdgeType>(nextEdge) ? nextEdge : { ...edge, ...nextEdge }
+      }
+    ]);
   }
 
   const getInternalNode = (id: string) => store.nodeLookup.get(id);
@@ -385,7 +400,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         store.height,
         store.minZoom,
         store.maxZoom,
-        options?.padding ?? 0.1
+        options?.padding ?? defaultFitViewPadding
       );
 
       await store.panZoom.setViewport(viewport, {
@@ -463,16 +478,22 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         onBeforeDelete: store.onbeforedelete
       });
 
-      if (matchingNodes) {
-        store.nodes = untrack(() => store.nodes).filter(
-          (node) => !matchingNodes.some(({ id }) => id === node.id)
-        );
+      if (matchingNodes.length > 0) {
+        const nodeChanges: NodeChange<NodeType>[] = matchingNodes.map((node) => ({
+          id: node.id,
+          type: 'remove'
+        }));
+
+        store.queueNodeChanges(nodeChanges);
       }
 
-      if (matchingEdges) {
-        store.edges = untrack(() => store.edges).filter(
-          (edge) => !matchingEdges.some(({ id }) => id === edge.id)
-        );
+      if (matchingEdges.length > 0) {
+        const edgeChanges = matchingEdges.map((edge) => ({
+          id: edge.id,
+          type: 'remove' as const
+        }));
+
+        store.queueEdgeChanges(edgeChanges);
       }
 
       if (matchingNodes.length > 0 || matchingEdges.length > 0) {

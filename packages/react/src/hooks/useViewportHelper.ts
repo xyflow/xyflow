@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
   pointToRendererPoint,
   getViewportForBounds,
+  defaultFitViewPadding,
   type XYPosition,
   rendererPointToPoint,
   SnapGrid,
@@ -67,17 +68,13 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       },
       fitBounds: async (bounds, options) => {
         const { width, height, minZoom, maxZoom, panZoom } = store.getState();
-        const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
+        const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? defaultFitViewPadding);
 
         if (!panZoom) {
           return false;
         }
 
-        await panZoom.setViewport(viewport, {
-          duration: options?.duration,
-          ease: options?.ease,
-          interpolate: options?.interpolate,
-        });
+        await panZoom.setViewport(viewport, options);
 
         return true;
       },

@@ -1,6 +1,6 @@
 import type { NodeLookup, Project } from '@xyflow/system';
 import type { Edge, InternalNode, Node, State, ViewportFunctions } from '../types';
-import { getViewportForBounds, pointToRendererPoint, rendererPointToPoint, withResolvers } from '@xyflow/system';
+import { defaultFitViewPadding, getViewportForBounds, pointToRendererPoint, rendererPointToPoint, withResolvers } from '@xyflow/system';
 import { computed, markRaw, nextTick } from 'vue';
 import { resolveFitView } from '../store/fitView';
 import { areNodesInitialized, warn } from '../utils';
@@ -10,8 +10,6 @@ export interface ViewportHelper<NodeType extends Node = Node> extends ViewportFu
   screenToFlowPosition: Project;
   flowToScreenPosition: Project;
 }
-
-const DEFAULT_PADDING = 0.1;
 
 async function noop() {
   warn('Viewport not initialized yet.');
@@ -113,7 +111,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
 
         return true;
       },
-      fitBounds: async (bounds, options = { padding: DEFAULT_PADDING }) => {
+      fitBounds: async (bounds, options) => {
         if (!panZoom) {
           return false;
         }
@@ -124,7 +122,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
           state.dimensions.height,
           state.minZoom,
           state.maxZoom,
-          options.padding ?? DEFAULT_PADDING,
+          options?.padding ?? defaultFitViewPadding,
         );
 
         await panZoom.setViewport({ x, y, zoom }, options);

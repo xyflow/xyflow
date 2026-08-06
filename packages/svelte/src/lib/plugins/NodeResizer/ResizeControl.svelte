@@ -81,6 +81,7 @@
             changes.set(childChange.id, { x: childChange.position.x, y: childChange.position.y });
           }
 
+          // TODO: trigger changes instead
           store.nodes = store.nodes.map((node) => {
             const change = changes.get(node.id);
             const horizontal = !resizeDirection || resizeDirection === 'horizontal';
