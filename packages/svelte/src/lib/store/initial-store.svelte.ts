@@ -16,6 +16,8 @@ import {
   type MarkerProps,
   type PanZoomInstance,
   type CoordinateExtent,
+  EdgeChangeset,
+  NodeChangeset,
   type NodeOrigin,
   type OnError,
   type Viewport,
@@ -37,7 +39,9 @@ import {
   type OnReconnectStart,
   type OnReconnectEnd,
   type AriaLabelConfig,
-  type ZIndexMode
+  type ZIndexMode,
+  type NodeChange,
+  type EdgeChange
 } from '@xyflow/system';
 
 const devWarn = createDevWarn('Svelte Flow', 'https://svelteflow.dev/');
@@ -75,8 +79,6 @@ import type {
 
 import type { StoreSignals } from './types';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
-import { EdgeChangeset, NodeChangeset } from '$lib/changes';
-import type { EdgeChange, NodeChange } from '$lib/changes/types';
 
 export const initialNodeTypes = {
   input: InputNode,

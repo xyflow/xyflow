@@ -4,12 +4,13 @@ import type {
   XYPosition,
   Handle,
   Connection,
-  OnBeforeDeleteBase
+  OnBeforeDeleteBase,
+  EdgeChangeset,
+  NodeChangeset
 } from '@xyflow/system';
 
 import type { Node } from './nodes';
 import type { Edge } from './edges';
-import type { EdgeChangeset, NodeChangeset } from '$lib/changes';
 
 export type KeyModifier = ShortcutModifierDefinition;
 export type KeyDefinitionObject = { key: string; modifier?: KeyModifier };

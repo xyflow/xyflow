@@ -4,16 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
-import {
-  EdgeLookup,
-  NodeLookup,
-  EdgeChange,
-  NodeChange,
-  NodeSelectionChange,
-  EdgeSelectionChange,
-  NodeRemoveChange,
-  EdgeRemoveChange,
-} from '@xyflow/system';
+import { EdgeLookup, NodeLookup, EdgeChange, NodeChange, RemoveChange } from '@xyflow/system';
 import type { Node, Edge, InternalNode } from '../types';
 
 /*
@@ -229,40 +220,40 @@ export function applyEdgeChanges<EdgeType extends Edge = Edge>(
   return applyChanges(changes, edges) as EdgeType[];
 }
 
-export function createSelectionChange(id: string, selected: boolean): NodeSelectionChange | EdgeSelectionChange {
-  return {
-    id,
-    type: 'select',
-    selected,
-  };
-}
+// export function createSelectionChange(id: string, selected: boolean): NodeSelectionChange | EdgeSelectionChange {
+//   return {
+//     id,
+//     type: 'select',
+//     selected,
+//   };
+// }
 
-export function getSelectionChanges(
-  items: Map<string, any>,
-  selectedIds: Set<string> = new Set(),
-  mutateItem = false
-): NodeSelectionChange[] | EdgeSelectionChange[] {
-  const changes: NodeSelectionChange[] | EdgeSelectionChange[] = [];
+// export function getSelectionChanges(
+//   items: Map<string, any>,
+//   selectedIds: Set<string> = new Set(),
+//   mutateItem = false
+// ): NodeSelectionChange[] | EdgeSelectionChange[] {
+//   const changes: NodeSelectionChange[] | EdgeSelectionChange[] = [];
 
-  for (const [id, item] of items) {
-    const willBeSelected = selectedIds.has(id);
+//   for (const [id, item] of items) {
+//     const willBeSelected = selectedIds.has(id);
 
-    // we don't want to set all items to selected=false on the first selection
-    if (!(item.selected === undefined && !willBeSelected) && item.selected !== willBeSelected) {
-      if (mutateItem) {
-        /*
-         * this hack is needed for nodes. When the user dragged a node, it's selected.
-         * When another node gets dragged, we need to deselect the previous one,
-         * in order to have only one selected node at a time - the onNodesChange callback comes too late here :/
-         */
-        item.selected = willBeSelected;
-      }
-      changes.push(createSelectionChange(item.id, willBeSelected));
-    }
-  }
+//     // we don't want to set all items to selected=false on the first selection
+//     if (!(item.selected === undefined && !willBeSelected) && item.selected !== willBeSelected) {
+//       if (mutateItem) {
+//         /*
+//          * this hack is needed for nodes. When the user dragged a node, it's selected.
+//          * When another node gets dragged, we need to deselect the previous one,
+//          * in order to have only one selected node at a time - the onNodesChange callback comes too late here :/
+//          */
+//         item.selected = willBeSelected;
+//       }
+//       changes.push(selectionChange(item.id, willBeSelected));
+//     }
+//   }
 
-  return changes;
-}
+//   return changes;
+// }
 
 /**
  * This function is used to find the changes between two sets of elements.
@@ -321,7 +312,7 @@ export function getElementsDiffChanges({
   return changes;
 }
 
-export function elementToRemoveChange<T extends Node | Edge>(item: T): NodeRemoveChange | EdgeRemoveChange {
+export function elementToRemoveChange<T extends Node | Edge>(item: T): RemoveChange {
   return {
     id: item.id,
     type: 'remove',

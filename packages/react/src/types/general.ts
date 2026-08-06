@@ -12,9 +12,9 @@ import {
   XYPosition,
   OnBeforeDeleteBase,
   Connection,
-  NodeChange,
-  EdgeChange,
   SnapGrid,
+  NodeChangeset,
+  EdgeChangeset,
 } from '@xyflow/system';
 
 import type { Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
@@ -32,7 +32,7 @@ import type { Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
  * },[]);
  * ```
  */
-export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<NodeType>[]) => void;
+export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChangeset<NodeType>) => void;
 
 /**
  * This type can be used to type the `onEdgesChange` function with a custom edge type.
@@ -47,7 +47,7 @@ export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<N
  * },[]);
  * ```
  */
-export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChange<EdgeType>[]) => void;
+export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChangeset<EdgeType>) => void;
 
 export type OnNodesDelete<NodeType extends Node = Node> = (nodes: NodeType[]) => void;
 export type OnEdgesDelete<EdgeType extends Edge = Edge> = (edges: EdgeType[]) => void;

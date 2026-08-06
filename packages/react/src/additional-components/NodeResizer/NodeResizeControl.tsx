@@ -7,13 +7,14 @@ import {
   type XYResizerChange,
   type XYResizerChildChange,
   type NodeChange,
-  type NodeDimensionChange,
-  type NodePositionChange,
+  type DimensionChange,
   handleExpandParent,
   evaluateAbsolutePosition,
   ParentExpandChild,
-  XYPosition,
   ControlPosition,
+  positionChange,
+  type PositionChange,
+  XYPosition,
 } from '@xyflow/system';
 
 import { useReactFlowStoreApi, useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
@@ -87,7 +88,7 @@ function ResizeControl({
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const { triggerNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
+          const { queueNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
           const changes: NodeChange[] = [];
           const nextPosition = { x: change.x, y: change.y };
           const node = nodeLookup.get(id);
@@ -128,17 +129,12 @@ function ResizeControl({
           }
 
           if (nextPosition.x !== undefined && nextPosition.y !== undefined) {
-            const positionChange: NodePositionChange = {
-              id,
-              type: 'position',
-              position: { ...(nextPosition as XYPosition) },
-            };
-            changes.push(positionChange);
+            changes.push(positionChange(id, nextPosition as XYPosition));
           }
 
           if (change.width !== undefined && change.height !== undefined) {
             const setAttributes = !resizeDirection ? true : resizeDirection === 'horizontal' ? 'width' : 'height';
-            const dimensionChange: NodeDimensionChange = {
+            const dimensionChange: DimensionChange = {
               id,
               type: 'dimensions',
               resizing: true,
@@ -153,18 +149,18 @@ function ResizeControl({
           }
 
           for (const childChange of childChanges) {
-            const positionChange: NodePositionChange = {
+            const _positionChange: PositionChange = {
               ...childChange,
               type: 'position',
             };
 
-            changes.push(positionChange);
+            changes.push(_positionChange);
           }
 
-          triggerNodeChanges(changes);
+          queueNodeChanges(changes);
         },
         onEnd: ({ width, height }) => {
-          const dimensionChange: NodeDimensionChange = {
+          const _dimensionChange: DimensionChange = {
             id: id,
             type: 'dimensions',
             resizing: false,
@@ -173,7 +169,7 @@ function ResizeControl({
               height,
             },
           };
-          store.getState().triggerNodeChanges([dimensionChange]);
+          store.getState().queueNodeChanges([_dimensionChange]);
         },
       });
     }

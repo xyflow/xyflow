@@ -1,25 +1,22 @@
 import type { Changeset } from '.';
-import type { Edge, Node } from '../types';
+import { EdgeBase, NodeBase } from '../types';
 import type { EdgeChange, ElementChangeType, NodeChange } from './types';
 
-export function applyNodeChanges<NodeType extends Node = Node>(
+export function applyNodeChanges<NodeType extends NodeBase = NodeBase>(
   nodes: NodeType[],
   nodeChanges: Changeset<NodeType, NodeChange<NodeType>>
 ): NodeType[] {
   return applyChanges(nodes, nodeChanges, applyNodeChange);
 }
 
-export function applyEdgeChanges<EdgeType extends Edge = Edge>(
+export function applyEdgeChanges<EdgeType extends EdgeBase = EdgeBase>(
   edges: EdgeType[],
   edgeChanges: Changeset<EdgeType, EdgeChange<EdgeType>>
 ): EdgeType[] {
   return applyChanges(edges, edgeChanges, applyEdgeChange);
 }
 
-function applyChanges<
-  ElementType extends Node | Edge,
-  ChangeType extends ElementChangeType<ElementType>
->(
+function applyChanges<ElementType extends NodeBase | EdgeBase, ChangeType extends ElementChangeType<ElementType>>(
   elements: ElementType[],
   changes: Changeset<ElementType, ChangeType>,
   applyChange: (element: ElementType, change: ChangeType) => void
@@ -52,10 +49,7 @@ function applyChanges<
   return newElements;
 }
 
-function applyNodeChange<NodeType extends Node = Node>(
-  node: NodeType,
-  change: NodeChange<NodeType>
-) {
+function applyNodeChange<NodeType extends NodeBase = NodeBase>(node: NodeType, change: NodeChange<NodeType>) {
   switch (change.type) {
     case 'select': {
       node.selected = change.selected;
@@ -77,7 +71,7 @@ function applyNodeChange<NodeType extends Node = Node>(
     case 'dimensions': {
       if (typeof change.dimensions !== 'undefined') {
         node.measured = {
-          ...change.dimensions
+          ...change.dimensions,
         };
 
         if (change.setAttributes === true || change.setAttributes === 'width') {
@@ -105,10 +99,7 @@ function applyNodeChange<NodeType extends Node = Node>(
   }
 }
 
-export function applyEdgeChange<EdgeType extends Edge = Edge>(
-  edge: EdgeType,
-  change: EdgeChange<EdgeType>
-) {
+export function applyEdgeChange<EdgeType extends EdgeBase = EdgeBase>(edge: EdgeType, change: EdgeChange<EdgeType>) {
   switch (change.type) {
     case 'select': {
       edge.selected = change.selected;

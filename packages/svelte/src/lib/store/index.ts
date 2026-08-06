@@ -19,13 +19,17 @@ import {
   Position,
   type NodeChange
 } from '@xyflow/system';
+import {
+  addChange,
+  selectionChange,
+  getDeselectionChanges,
+  getSelectionChanges
+} from '@xyflow/system';
 
 import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, InternalNode } from '$lib/types';
 import { addEdge as addEdgeUtil } from '$lib/utils/edges';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
-import { addChange, selectionChange } from '../changes/create';
-import { getDeselectionChanges, getSelectionChanges } from '../changes/utils';
 
 export const key = Symbol();
 
@@ -82,8 +86,6 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
         dragging
       });
     }
-
-    console.log('updateNodePositions', changes);
 
     store.queueNodeChanges(changes);
   };

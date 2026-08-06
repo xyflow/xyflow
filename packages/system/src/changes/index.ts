@@ -1,19 +1,16 @@
-import type { Edge, Node } from '../types';
+import type { EdgeBase, NodeBase } from '../types';
 import type { EdgeChange, ElementChangeType, NodeChange } from './types';
 
 import { applyEdgeChanges, applyNodeChanges } from './apply';
 
 /** Helper to narrow down the type of a change based on it's name */
-type ChangeOfType<ChangeType extends { type: string }, T extends ChangeType['type']> = Extract<
-  ChangeType,
-  { type: T }
->;
+type ChangeOfType<ChangeType extends { type: string }, T extends ChangeType['type']> = Extract<ChangeType, { type: T }>;
 
 /** Generic apply changes function that works for both nodes and changes */
-type ApplyChangesFn<
-  ElementType extends Node | Edge,
-  ChangeType extends ElementChangeType<ElementType>
-> = (elements: ElementType[], changes: Changeset<ElementType, ChangeType>) => ElementType[];
+type ApplyChangesFn<ElementType extends NodeBase | EdgeBase, ChangeType extends ElementChangeType<ElementType>> = (
+  elements: ElementType[],
+  changes: Changeset<ElementType, ChangeType>
+) => ElementType[];
 
 /**
  * Tracks element changes for easy access and modification.
@@ -31,10 +28,7 @@ type ApplyChangesFn<
  * const nextNodes = changes.applyTo(nodes);
  * ```
  */
-export class Changeset<
-  ElementType extends Node | Edge,
-  ChangeType extends ElementChangeType<ElementType>
-> {
+export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType extends ElementChangeType<ElementType>> {
   private changeTypes: Partial<Record<ChangeType['type'], boolean>> = {};
   private changeMap: Map<string, ChangeType[]> = new Map();
   private newElementIds: Set<string> = new Set();
@@ -209,6 +203,10 @@ export class Changeset<
   applyTo(elements: ElementType[]): ElementType[] {
     return this.applyChanges(elements, this);
   }
+
+  get size(): number {
+    return this.changeMap.size;
+  }
 }
 
 /**
@@ -221,10 +219,7 @@ export class Changeset<
  * const nextNodes = changes.applyTo(nodes);
  * ```
  */
-export class NodeChangeset<NodeType extends Node = Node> extends Changeset<
-  NodeType,
-  NodeChange<NodeType>
-> {
+export class NodeChangeset<NodeType extends NodeBase = NodeBase> extends Changeset<NodeType, NodeChange<NodeType>> {
   constructor() {
     super(applyNodeChanges);
   }
@@ -264,10 +259,7 @@ export class NodeChangeset<NodeType extends Node = Node> extends Changeset<
  * const nextEdges = changes.applyTo(edges);
  * ```
  */
-export class EdgeChangeset<EdgeType extends Edge = Edge> extends Changeset<
-  EdgeType,
-  EdgeChange<EdgeType>
-> {
+export class EdgeChangeset<EdgeType extends EdgeBase = EdgeBase> extends Changeset<EdgeType, EdgeChange<EdgeType>> {
   constructor() {
     super(applyEdgeChanges);
   }

@@ -159,6 +159,9 @@ const getInitialState = ({
 
     onNodesChangeMiddlewareMap: new Map(),
     onEdgesChangeMiddlewareMap: new Map(),
+
+    pendingNodeChanges: undefined,
+    pendingEdgeChanges: undefined,
   };
 };
 

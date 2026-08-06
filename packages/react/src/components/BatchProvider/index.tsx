@@ -6,6 +6,7 @@ import { getElementsDiffChanges } from '../../utils';
 import { Queue, QueueItem } from './types';
 import type { Edge, Node } from '../../types';
 import { useQueue } from './useQueue';
+import { useChangesFlusher } from '../../hooks/useChangesFlusher';
 
 const BatchContext = createContext<{
   nodeQueue: Queue<Node>;
@@ -24,13 +25,14 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   children: ReactNode;
 }) {
   const store = useReactFlowStoreApi<NodeType, EdgeType>();
+  useChangesFlusher();
 
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
     const {
       nodes = [],
       setNodes,
       hasDefaultNodes,
-      onNodesChange,
+      queueNodeChanges,
       nodeLookup,
       fitViewQueued,
       onNodesChangeMiddlewareMap,
@@ -61,7 +63,8 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
 
     // We only want to fire onNodesChange if there are changes to the nodes
     if (changes.length > 0) {
-      onNodesChange?.(changes);
+      queueNodeChanges(changes);
+      //onNodesChange?.(changes);
     } else if (fitViewQueued) {
       // If there are no changes to the nodes, we still need to call setNodes
       // to trigger a re-render and fitView.
@@ -77,7 +80,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   const nodeQueue = useQueue<NodeType>(nodeQueueHandler);
 
   const edgeQueueHandler = useCallback((queueItems: QueueItem<EdgeType>[]) => {
-    const { edges = [], setEdges, hasDefaultEdges, onEdgesChange, edgeLookup } = store.getState();
+    const { edges = [], setEdges, hasDefaultEdges, onEdgesChange, edgeLookup, queueEdgeChanges } = store.getState();
 
     let next = edges;
     for (const payload of queueItems) {
@@ -87,7 +90,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
     if (hasDefaultEdges) {
       setEdges(next);
     } else if (onEdgesChange) {
-      onEdgesChange(
+      queueEdgeChanges(
         getElementsDiffChanges({
           items: next,
           lookup: edgeLookup,

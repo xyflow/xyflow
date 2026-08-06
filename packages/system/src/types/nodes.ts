@@ -77,6 +77,7 @@ export type NodeBase<
     width?: number;
     height?: number;
   };
+  resizing?: boolean;
 } & (undefined extends NodeType
   ? {
       /** Type of node defined in nodeTypes */

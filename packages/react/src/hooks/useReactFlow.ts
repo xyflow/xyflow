@@ -1,13 +1,12 @@
 import { useMemo } from 'react';
 import {
-  EdgeRemoveChange,
   evaluateAbsolutePosition,
   getElementsToRemove,
   getNodesBounds,
   getOverlappingArea,
   isRectObject,
-  NodeRemoveChange,
   nodeToRect,
+  RemoveChange,
   withResolvers,
   type Rect,
 } from '@xyflow/system';
@@ -166,8 +165,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           edges,
           onNodesDelete,
           onEdgesDelete,
-          triggerNodeChanges,
-          triggerEdgeChanges,
+          queueNodeChanges,
+          queueEdgeChanges,
           onDelete,
           onBeforeDelete,
         } = store.getState();
@@ -183,17 +182,17 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         const hasMatchingNodes = matchingNodes.length > 0;
 
         if (hasMatchingEdges) {
-          const edgeChanges: EdgeRemoveChange[] = matchingEdges.map(elementToRemoveChange);
+          const edgeChanges: RemoveChange[] = matchingEdges.map(elementToRemoveChange);
 
           onEdgesDelete?.(matchingEdges);
-          triggerEdgeChanges(edgeChanges);
+          queueEdgeChanges(edgeChanges);
         }
 
         if (hasMatchingNodes) {
-          const nodeChanges: NodeRemoveChange[] = matchingNodes.map(elementToRemoveChange);
+          const nodeChanges: RemoveChange[] = matchingNodes.map(elementToRemoveChange);
 
           onNodesDelete?.(matchingNodes);
-          triggerNodeChanges(nodeChanges);
+          queueNodeChanges(nodeChanges);
         }
 
         if (hasMatchingNodes || hasMatchingEdges) {

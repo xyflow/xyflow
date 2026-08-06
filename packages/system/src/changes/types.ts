@@ -1,7 +1,7 @@
-import type { Edge, Node } from '../types';
+import type { EdgeBase, NodeBase } from '../types';
 import type { Dimensions, XYPosition } from '@xyflow/system';
 
-export type NodeChange<NodeType extends Node = Node> =
+export type NodeChange<NodeType extends NodeBase = NodeBase> =
   | DimensionChange
   | PositionChange
   | SelectionChange
@@ -9,16 +9,16 @@ export type NodeChange<NodeType extends Node = Node> =
   | AddChange<NodeType>
   | ReplaceChange<NodeType>;
 
-export type EdgeChange<EdgeType extends Edge = Edge> =
+export type EdgeChange<EdgeType extends EdgeBase = EdgeBase> =
   | SelectionChange
   | RemoveChange
   | AddChange<EdgeType>
   | ReplaceChange<EdgeType>;
 
 // Narrow down change type based on the element type (Node -> NodeChange, Edge -> EdgeChange)
-export type ElementChangeType<ElementType extends Node | Edge> =
-  | NodeChange<ElementType & Node>
-  | EdgeChange<ElementType & Edge>;
+export type ElementChangeType<ElementType extends NodeBase | EdgeBase> =
+  | NodeChange<ElementType & NodeBase>
+  | EdgeChange<ElementType & EdgeBase>;
 
 export type DimensionChange = {
   id: string;

@@ -1,4 +1,12 @@
-import { type Handle, type HandleConnection, infiniteExtent, type NodeHandleBounds, type ZIndexMode } from '..';
+import {
+  DimensionChange,
+  type Handle,
+  type HandleConnection,
+  infiniteExtent,
+  type NodeHandleBounds,
+  PositionChange,
+  type ZIndexMode,
+} from '..';
 import {
   type NodeBase,
   type CoordinateExtent,
@@ -13,8 +21,6 @@ import {
   type InternalNodeBase,
   type NodeLookup,
   type Rect,
-  type NodeDimensionChange,
-  type NodePositionChange,
   type ParentLookup,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
@@ -370,8 +376,8 @@ export function handleExpandParent(
   nodeLookup: NodeLookup,
   parentLookup: ParentLookup,
   nodeOrigin: NodeOrigin = [0, 0]
-): (NodeDimensionChange | NodePositionChange)[] {
-  const changes: (NodeDimensionChange | NodePositionChange)[] = [];
+): (DimensionChange | PositionChange)[] {
+  const changes: (DimensionChange | PositionChange)[] = [];
   const parentExpansions = new Map<string, { expandedRect: Rect; parent: InternalNodeBase }>();
 
   // determine the expanded rectangle the child nodes would take for each parent
@@ -461,7 +467,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   nodeOrigin?: NodeOrigin,
   nodeExtent?: CoordinateExtent,
   zIndexMode?: ZIndexMode
-): { changes: (NodeDimensionChange | NodePositionChange)[]; updatedInternals: boolean } {
+): { changes: (DimensionChange | PositionChange)[]; updatedInternals: boolean } {
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
   let updatedInternals = false;
 
@@ -469,7 +475,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
     return { changes: [], updatedInternals };
   }
 
-  const changes: (NodeDimensionChange | NodePositionChange)[] = [];
+  const changes: (DimensionChange | PositionChange)[] = [];
   const style = window.getComputedStyle(viewportNode);
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
   // in this array we collect nodes, that might trigger changes (like expanding parent)
