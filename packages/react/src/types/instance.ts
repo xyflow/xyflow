@@ -156,6 +156,13 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     options?: { replace: boolean }
   ) => void;
   /**
+   * Changes the parent of a node.
+   *
+   * @param nodeId - id of the node to change the parent of
+   * @param parentId - id of the new parent
+   */
+  changeParent: (nodeId: string, parentId: string | undefined) => void;
+  /**
    * Updates an edge.
    *
    * @param id - id of the edge to update

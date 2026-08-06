@@ -16,7 +16,8 @@ import {
   evaluateAbsolutePosition,
   type HandleType,
   type HandleConnection,
-  getNodesBounds
+  getNodesBounds,
+  getNodeDimensions
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -231,10 +232,12 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     options?: { replace: boolean }
   ) => void;
   /**
-   * Returns the nodes, edges and the viewport as a JSON object.
+   * Changes the parent of a node.
    *
-   * @returns the nodes, edges and the viewport as a JSON object
+   * @param nodeId - id of the node to change the parent of
+   * @param parentId - id of the new parent
    */
+  changeParent: (nodeId: string, parentId: string | undefined) => void;
   /**
    * Updates an edge.
    *
@@ -250,6 +253,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options?: { replace: boolean }
   ) => void;
+  /**
+   * Returns the nodes, edges and the viewport as a JSON object.
+   *
+   * @returns the nodes, edges and the viewport as a JSON object
+   */
   toObject: () => { nodes: NodeType[]; edges: EdgeType[]; viewport: Viewport };
   /**
    * Returns the bounds of the given nodes or node ids.
@@ -542,6 +550,52 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         ...node,
         data: options?.replace ? nextData : { ...node.data, ...nextData }
       }));
+    },
+    changeParent: (nodeId: string, parentId: string | undefined) => {
+      const node = getInternalNode(nodeId);
+      if (!node) {
+        console.warn(`changeParent: Node "${nodeId}" does not exists`);
+        return;
+      }
+
+      if (parentId === nodeId) {
+        return;
+      }
+
+      const childPosition = node.internals.positionAbsolute;
+      const childOrigin = node.origin ?? store.nodeOrigin;
+      const childDimensions = getNodeDimensions(node);
+
+      const originCorrection = {
+        x: childOrigin[0] * childDimensions.width,
+        y: childOrigin[1] * childDimensions.height
+      };
+
+      if (parentId === undefined) {
+        updateNode(nodeId, {
+          parentId: undefined,
+          position: {
+            x: childPosition.x + originCorrection.x,
+            y: childPosition.y + originCorrection.y
+          }
+        } as Partial<NodeType>);
+        return;
+      }
+
+      const parentNode = getInternalNode(parentId);
+      if (!parentNode) {
+        console.warn(`changeParent: Parent node "${parentId}" does not exists`);
+        return;
+      }
+
+      const parentPosition = parentNode.internals.positionAbsolute;
+      updateNode(nodeId, {
+        parentId,
+        position: {
+          x: childPosition.x + originCorrection.x - parentPosition.x,
+          y: childPosition.y + originCorrection.y - parentPosition.y
+        }
+      } as Partial<NodeType>);
     },
     updateEdge,
     getNodesBounds: (nodes) => {
