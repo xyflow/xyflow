@@ -28,8 +28,8 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
     const {
       nodes = [],
-      setNodes,
-      hasDefaultNodes,
+      // setNodes,
+      // hasDefaultNodes,
       queueNodeChanges,
       nodeLookup,
       fitViewQueued,
@@ -55,9 +55,9 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       changes = middleware(changes);
     }
 
-    if (hasDefaultNodes) {
-      setNodes(next);
-    }
+    // if (hasDefaultNodes) {
+    //   setNodes(next);
+    // }
 
     // We only want to fire onNodesChange if there are changes to the nodes
     if (changes.length > 0) {

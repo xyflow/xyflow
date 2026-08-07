@@ -90,10 +90,12 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       // @TODO: this is an idea how we can can rid of the batch provider.
       // We don't use the batch provider queue anymore, but create changes and add them the the changes queue.
       // Unfortunately this is still very buggy..
-      const state = store.getState();
-      const changes = nodesPayloadToChanges<NodeType>(payload, state);
+      // const state = store.getState();
+      // const changes = nodesPayloadToChanges<NodeType>(payload, state);
 
-      state.queueNodeChanges(changes);
+      // state.queueNodeChanges(changes);
+
+      batchContext.nodeQueue.push(payload as NodeType[]);
     };
 
     const setEdges: GeneralHelpers<NodeType, EdgeType>['setEdges'] = (payload) => {

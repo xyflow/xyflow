@@ -325,12 +325,6 @@ const createStore = ({
 
         if (hasDefaultNodes) {
           const newNodes = pendingNodeChanges.applyTo(nodes);
-          console.log({
-            nodes,
-            newNodes,
-            pendingNodeChanges: pendingNodeChanges.toArray(),
-            size: pendingNodeChanges.size,
-          });
           setNodes(newNodes);
         }
 
