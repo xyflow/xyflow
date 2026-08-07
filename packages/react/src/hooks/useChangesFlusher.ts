@@ -2,17 +2,17 @@ import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 export function useChangesFlusher() {
+  const pendingNodeChangesVersion = useReactFlowStore((s) => s.pendingNodeChanges?.version);
+  const pendingEdgeChangesVersion = useReactFlowStore((s) => s.pendingEdgeChanges?.version);
   const store = useReactFlowStoreApi();
-  const pendingNodeChanges = useReactFlowStore((s) => s.pendingNodeChanges);
-  const pendingEdgeChanges = useReactFlowStore((s) => s.pendingEdgeChanges);
 
   useIsomorphicLayoutEffect(() => {
     store.getState().flushNodeChanges();
-  }, [pendingNodeChanges]);
+  }, [pendingNodeChangesVersion]);
 
   useIsomorphicLayoutEffect(() => {
     store.getState().flushEdgeChanges();
-  }, [pendingEdgeChanges]);
+  }, [pendingEdgeChangesVersion]);
 
   return null;
 }

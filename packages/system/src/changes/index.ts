@@ -32,6 +32,7 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
   private changeTypes: Partial<Record<ChangeType['type'], boolean>> = {};
   private changeMap: Map<string, ChangeType[]> = new Map();
   private newElementIds: Set<string> = new Set();
+  private _version: number = 0;
 
   constructor(private applyChanges: ApplyChangesFn<ElementType, ChangeType>) {}
 
@@ -48,6 +49,7 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
   add(change: ChangeType | ChangeType[]): void {
     const newChanges = Array.isArray(change) ? change : [change];
     for (const change of newChanges) {
+      this._version++;
       this.changeTypes[change.type as ChangeType['type']] = true;
       if (change.type === 'add') {
         this.newElementIds.add(change.id);
@@ -86,6 +88,7 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
 
     if (changes.length === 1) {
       this.changeMap.delete(change.id);
+      this._version++;
       return;
     }
 
@@ -96,6 +99,7 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
     }
 
     changes.splice(index, 1);
+    this._version++;
   }
 
   /**
@@ -120,6 +124,7 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
    */
   removeForElement(elementId: string): void {
     this.changeMap.delete(elementId);
+    this._version++;
   }
 
   /**
@@ -206,6 +211,10 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
 
   get size(): number {
     return this.changeMap.size;
+  }
+
+  get version(): number {
+    return this._version ?? 0;
   }
 }
 

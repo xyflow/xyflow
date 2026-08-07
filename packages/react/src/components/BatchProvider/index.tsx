@@ -6,7 +6,6 @@ import { getElementsDiffChanges } from '../../utils';
 import { Queue, QueueItem } from './types';
 import type { Edge, Node } from '../../types';
 import { useQueue } from './useQueue';
-import { useChangesFlusher } from '../../hooks/useChangesFlusher';
 
 const BatchContext = createContext<{
   nodeQueue: Queue<Node>;
@@ -25,7 +24,6 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   children: ReactNode;
 }) {
   const store = useReactFlowStoreApi<NodeType, EdgeType>();
-  useChangesFlusher();
 
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
     const {
