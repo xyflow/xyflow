@@ -54,11 +54,7 @@ const CustomNodeFlow = () => {
   const [nodes, setNodes] = useState<MyNode[]>(initNodes);
 
   const onNodesChange: OnNodesChange<MyNode> = useCallback(
-    (changes) =>
-      setNodes((nds) => {
-        const nextNodes = applyNodeChanges(changes, nds);
-        return nextNodes;
-      }),
+    (changes) => setNodes((nds) => changes.applyTo(nds)),
     [setNodes]
   );
 

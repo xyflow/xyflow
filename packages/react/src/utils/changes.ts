@@ -4,7 +4,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
-import { EdgeLookup, NodeLookup, EdgeChange, NodeChange, RemoveChange } from '@xyflow/system';
+import {
+  EdgeLookup,
+  NodeLookup,
+  EdgeChange,
+  NodeChange,
+  RemoveChange,
+  addChange,
+  replaceChange,
+  removeChange,
+} from '@xyflow/system';
 import type { Node, Edge, InternalNode } from '../types';
 
 /*
@@ -288,16 +297,16 @@ export function getElementsDiffChanges({
   const changes: any[] = [];
   const itemsLookup = new Map<string, any>(items.map((item) => [item.id, item]));
 
-  for (const [index, item] of items.entries()) {
+  for (const [, item] of items.entries()) {
     const lookupItem = lookup.get(item.id);
     const storeItem = lookupItem?.internals?.userNode ?? lookupItem;
 
     if (storeItem !== undefined && storeItem !== item) {
-      changes.push({ id: item.id, item: item, type: 'replace' });
+      changes.push(replaceChange({ ...item }));
     }
 
     if (storeItem === undefined) {
-      changes.push({ item: item, type: 'add', index });
+      changes.push(addChange({ ...item }));
     }
   }
 
@@ -305,7 +314,7 @@ export function getElementsDiffChanges({
     const nextNode = itemsLookup.get(id);
 
     if (nextNode === undefined) {
-      changes.push({ id, type: 'remove' });
+      changes.push(removeChange(id));
     }
   }
 

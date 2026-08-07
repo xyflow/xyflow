@@ -209,10 +209,7 @@ const StressFlow = () => {
   };
 
   const onNodesChange = useCallback((changes: NodeChangeset) => {
-    setNodes((ns) => {
-      console.log(changes.toArray());
-      return changes.applyTo(ns);
-    });
+    setNodes((ns) => changes.applyTo(ns));
   }, []);
 
   const onEdgeChange = useCallback((changes: EdgeChangeset) => {

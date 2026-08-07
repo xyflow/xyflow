@@ -5,6 +5,7 @@ import {
   getNodesBounds,
   getOverlappingArea,
   isRectObject,
+  NodeChange,
   nodeToRect,
   RemoveChange,
   withResolvers,
@@ -14,7 +15,7 @@ import {
 import useViewportHelper from './useViewportHelper';
 import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
 import { useBatchContext } from '../components/BatchProvider';
-import { elementToRemoveChange, isEdge, isNode } from '../utils';
+import { elementToRemoveChange, getElementsDiffChanges, isEdge, isNode } from '../utils';
 import type {
   ReactFlowInstance,
   Node,
@@ -26,6 +27,24 @@ import type {
 } from '../types';
 
 const selector = (s: ReactFlowState) => !!s.panZoom;
+
+function nodesPayloadToChanges<NodeType extends Node = Node>(
+  payload: NodeType[] | ((nodes: NodeType[]) => NodeType[]),
+  state: ReactFlowState
+): NodeChange<NodeType>[] {
+  const next = typeof payload === 'function' ? payload(state.nodes as NodeType[]) : payload;
+
+  let changes = getElementsDiffChanges({
+    items: next,
+    lookup: state.nodeLookup,
+  }) as NodeChange<NodeType>[];
+
+  for (const middleware of state.onNodesChangeMiddlewareMap.values()) {
+    changes = middleware(changes) as NodeChange<NodeType>[];
+  }
+
+  return changes;
+}
 
 /**
  * This hook returns a ReactFlowInstance that can be used to update nodes and edges, manipulate the viewport, or query the current state of the flow.
@@ -68,7 +87,13 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       store.getState().nodeLookup.get(id) as InternalNode<NodeType>;
 
     const setNodes: GeneralHelpers<NodeType, EdgeType>['setNodes'] = (payload) => {
-      batchContext.nodeQueue.push(payload as NodeType[]);
+      // @TODO: this is an idea how we can can rid of the batch provider.
+      // We don't use the batch provider queue anymore, but create changes and add them the the changes queue.
+      // Unfortunately this is still very buggy..
+      const state = store.getState();
+      const changes = nodesPayloadToChanges<NodeType>(payload, state);
+
+      state.queueNodeChanges(changes);
     };
 
     const setEdges: GeneralHelpers<NodeType, EdgeType>['setEdges'] = (payload) => {

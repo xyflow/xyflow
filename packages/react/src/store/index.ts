@@ -327,11 +327,17 @@ const createStore = ({
 
         if (hasDefaultNodes) {
           const newNodes = pendingNodeChanges.applyTo(nodes);
+          console.log({
+            nodes,
+            newNodes,
+            pendingNodeChanges: pendingNodeChanges.toArray(),
+            size: pendingNodeChanges.size,
+          });
           setNodes(newNodes);
         }
 
         if (debug) {
-          console.log('React Flow: flush node changes', pendingNodeChanges);
+          console.log('React Flow: flush node changes', pendingNodeChanges.toArray());
         }
 
         onNodesChange?.(pendingNodeChanges);

@@ -39,7 +39,7 @@ const initEdges: Edge[] = [
 const onPaneClick = () => console.log('pane click');
 
 const BasicFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
+  const [nodes, , onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
   const [paneClickDistance, setPaneClickDistance] = useState(0);
 
