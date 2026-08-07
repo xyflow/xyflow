@@ -265,6 +265,7 @@ const createStore = ({
 
         if (!nextPendingNodeChanges) {
           nextPendingNodeChanges = new NodeChangeset();
+          set({ pendingNodeChanges: nextPendingNodeChanges });
         }
 
         if (debug) {
@@ -272,8 +273,6 @@ const createStore = ({
         }
 
         nextPendingNodeChanges.add(changes);
-
-        set({ pendingNodeChanges: nextPendingNodeChanges });
 
         // if (changes?.length) {
         //   if (hasDefaultNodes) {
@@ -295,6 +294,7 @@ const createStore = ({
 
         if (!nextPendingEdgeChanges) {
           nextPendingEdgeChanges = new EdgeChangeset();
+          set({ pendingEdgeChanges: nextPendingEdgeChanges });
         }
 
         if (debug) {
@@ -302,8 +302,6 @@ const createStore = ({
         }
 
         nextPendingEdgeChanges.add(changes);
-
-        set({ pendingEdgeChanges: nextPendingEdgeChanges });
 
         // if (changes?.length) {
         //   if (hasDefaultEdges) {
