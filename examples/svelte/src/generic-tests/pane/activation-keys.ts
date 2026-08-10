@@ -2,9 +2,9 @@ export default {
 	flowProps: {
 		zoomOnScroll: false,
 		// zoomActivationKey: 'Space',
-		// panOnDrag: false,
+		panOnDrag: [1],
 		// panOnScroll: false,
-		panActivationKey: 'Space',
+		panActivationKey: 'Control',
 		fitView: true,
 		nodes: [
 			{
