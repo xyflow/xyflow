@@ -11,8 +11,6 @@ const SKIP = new Set<string>([
   'paneMouseMove',
 ]);
 
-interface OnHook { on: (fn: (payload: unknown) => void) => { off: () => void } }
-
 /**
  * When `state.debug` is on, log each Vue Flow event to the console as it fires (skipping high-frequency ones
  * like move/drag). Subscribes across the store's hooks via one loop rather than scattering `console.log`s
@@ -36,7 +34,7 @@ export function useDebug<NodeType extends Node = Node, EdgeType extends Edge = E
         continue;
       }
 
-      const { off } = (hook as OnHook).on((payload) => {
+      const { off } = hook.on((payload) => {
         // eslint-disable-next-line no-console
         console.log(`[Vue Flow] ${name}`, payload);
       });

@@ -5,27 +5,42 @@ import type { Edge } from './edge';
 import type { InternalNode, Node } from './node';
 import type { VueFlowInstance } from './store';
 
+/** A DOM `MouseEvent` or `TouchEvent`. */
 export type MouseTouchEvent = MouseEvent | TouchEvent;
 
+/** Payload for the node pointer events (`nodeClick`, `nodeMouseEnter`, `nodeContextMenu`, …). */
 export interface NodeMouseEvent<NodeType extends Node = Node> {
+  /** The DOM event that triggered this. */
   event: MouseTouchEvent;
+  /** The node the event refers to. */
   node: NodeType;
 }
 
+/** Payload for the node drag events (`nodeDragStart`, `nodeDrag`, `nodeDragStop`). */
 export interface NodeDragEvent<NodeType extends Node = Node> {
+  /** The DOM event driving the drag. */
   event: MouseTouchEvent;
+  /** The node being dragged. */
   node: NodeType;
+  /** All nodes being dragged together (the grabbed node plus any others in the selection). */
   nodes: NodeType[];
 }
 
+/** Payload for the edge pointer events (`edgeClick`, `edgeMouseEnter`, `edgeContextMenu`, …). */
 export interface EdgeMouseEvent<EdgeType extends Edge = Edge> {
+  /** The DOM event that triggered this. */
   event: MouseTouchEvent;
+  /** The edge the event refers to. */
   edge: EdgeType;
 }
 
+/** Payload for the `reconnect` event — fired once an edge has been reconnected to a new handle. */
 export interface EdgeReconnectEvent<EdgeType extends Edge = Edge> {
+  /** The DOM event that completed the reconnect. */
   event: MouseTouchEvent;
+  /** The edge that was reconnected. */
   edge: EdgeType;
+  /** The new connection the edge now describes. */
   connection: Connection;
 }
 
@@ -34,19 +49,27 @@ export interface EdgeReconnectEvent<EdgeType extends Edge = Edge> {
  * (whether the connection was valid, the from/to handles and nodes).
  */
 export interface ConnectEndEvent<NodeType extends Node = Node> {
+  /** The DOM event that ended the connection attempt. */
   event: MouseTouchEvent;
+  /** The final connection state — validity plus the from/to handles and nodes. */
   connectionState: FinalConnectionState<InternalNode<NodeType>>;
 }
 
+/** Payload for the `reconnectStart` event — fired when the user grabs an edge endpoint to reconnect it. */
 export interface EdgeReconnectStartEvent<EdgeType extends Edge = Edge> {
+  /** The DOM event that started the reconnect. */
   event: MouseTouchEvent;
+  /** The edge being reconnected. */
   edge: EdgeType;
   /** the type of the handle being reconnected (the fixed end, opposite the grabbed anchor) */
   handleType: HandleType;
 }
 
+/** Payload for the `reconnectEnd` event — fired when a reconnect gesture ends, whether or not it succeeded. */
 export interface EdgeReconnectEndEvent<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+  /** The DOM event that ended the reconnect. */
   event: MouseTouchEvent;
+  /** The edge that was being reconnected. */
   edge: EdgeType;
   /** the type of the handle that was reconnected */
   handleType: HandleType;
@@ -56,7 +79,9 @@ export interface EdgeReconnectEndEvent<NodeType extends Node = Node, EdgeType ex
 
 /** Payload for `selectionChange` — the currently selected nodes and edges. */
 export interface SelectionChangeEvent<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+  /** The currently selected nodes. */
   nodes: NodeType[];
+  /** The currently selected edges. */
   edges: EdgeType[];
 }
 

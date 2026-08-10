@@ -1,6 +1,6 @@
 <script lang="ts" setup generic="NodeType extends Node = Node, EdgeType extends Edge = Edge">
 import type { Viewport } from '@xyflow/system';
-import type { Edge, FlowEmits, FlowProps, FlowSlots, Node, VueFlowInstance, VueFlowState } from '../../types';
+import type { Edge, Node, VueFlowEmits, VueFlowInstance, VueFlowProps, VueFlowSlots, VueFlowState } from '../../types';
 import { getCurrentInstance, inject, onUnmounted, provide } from 'vue';
 import A11yDescriptions from '../../components/A11y/A11yDescriptions.vue';
 import Attribution from '../../components/Attribution/Attribution.vue';
@@ -18,7 +18,7 @@ import { useHooks } from '../../store/hooks';
 import { hasVNodeListener } from '../../utils';
 import ZoomPane from '../ZoomPane/ZoomPane.vue';
 
-const props = withDefaults(defineProps<FlowProps<NodeType, EdgeType>>(), {
+const props = withDefaults(defineProps<VueFlowProps<NodeType, EdgeType>>(), {
   snapToGrid: undefined,
   onlyRenderVisibleElements: undefined,
   edgesReconnectable: undefined,
@@ -56,9 +56,9 @@ const props = withDefaults(defineProps<FlowProps<NodeType, EdgeType>>(), {
   zoomActivationKeyCode: undefined,
 });
 
-const emit = defineEmits<FlowEmits<NodeType, EdgeType>>();
+const emit = defineEmits<VueFlowEmits<NodeType, EdgeType>>();
 
-const slots = defineSlots<FlowSlots<NodeType, EdgeType>>();
+const slots = defineSlots<VueFlowSlots<NodeType, EdgeType>>();
 
 const modelNodes = defineModel<NodeType[]>('nodes');
 const modelEdges = defineModel<EdgeType[]>('edges');
@@ -112,7 +112,7 @@ useDebug(state);
 const stateRefs = storeToRefs(state);
 
 // provide slots instead of drilling them through every component (boilerplate + significant perf cost)
-provide(Slots, slots as unknown as FlowSlots);
+provide(Slots, slots as unknown as VueFlowSlots);
 
 onUnmounted(disposeWatchers);
 

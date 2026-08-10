@@ -1,4 +1,4 @@
-import type { Edge, FlowProps, Node, VueFlowInstance, VueFlowState, VueFlowStoreHandle } from '../types';
+import type { Edge, Node, VueFlowInstance, VueFlowProps, VueFlowState, VueFlowStoreHandle } from '../types';
 import { provide, useId } from 'vue';
 import { VueFlow, VueFlowStateKey } from '../context';
 import { createVueFlowStore } from '../store/createStore';
@@ -14,7 +14,7 @@ import { createVueFlowStore } from '../store/createStore';
  * @internal
  */
 export function useCreateVueFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
-  options?: FlowProps<NodeType, EdgeType>,
+  options?: VueFlowProps<NodeType, EdgeType>,
 ): VueFlowStoreHandle<NodeType, EdgeType> {
   // the flow id is only an aria/debug label (not a lookup key), so default it to Vue's SSR-safe `useId()`
   const handle = createVueFlowStore<NodeType, EdgeType>(options?.id ?? useId(), options);

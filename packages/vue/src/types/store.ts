@@ -32,7 +32,7 @@ import type { EdgeChange, NodeChange } from './changes';
 import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
 import type { ConnectionLineOptions } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
-import type { FlowExportObject, FlowProps, OnBeforeDelete } from './flow';
+import type { FlowExportObject, OnBeforeDelete, VueFlowProps } from './flow';
 import type { ConnectingHandle } from './handle';
 import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
 import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
@@ -56,7 +56,7 @@ export interface FitViewRequest<NodeType extends Node = Node> {
 export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edge>
   // `fitView` is omitted: the prop maps to the internal `fitViewOnInit` flag (below), keeping the store's
   // `fitView()` action from colliding with a `fitView` state ref (state spreads after actions).
-  extends Omit<FlowProps<NodeType, EdgeType>, 'id' | 'nodes' | 'edges' | 'fitView'> {
+  extends Omit<VueFlowProps<NodeType, EdgeType>, 'id' | 'nodes' | 'edges' | 'fitView'> {
   /** Vue flow element ref */
   vueFlowRef: HTMLDivElement | null;
   /** Vue flow viewport element */
@@ -241,7 +241,7 @@ export type UpdateEdgeData<EdgeType extends Edge = Edge> = (
 // `nodes`/`edges` are intentionally excluded, set them via setNodes/setEdges instead.
 export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
   = Partial<Omit<State<NodeType, EdgeType>, 'nodes' | 'edges' | 'vueFlowRef' | 'viewportRef' | 'dimensions' | 'hooks'>>
-    & Partial<Pick<FlowProps<NodeType, EdgeType>, 'fitView'>>;
+    & Partial<Pick<VueFlowProps<NodeType, EdgeType>, 'fitView'>>;
 
 export type SetState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   state: SetStateOptions<NodeType, EdgeType> | ((state: State<NodeType, EdgeType>) => SetStateOptions<NodeType, EdgeType>),

@@ -1,6 +1,7 @@
 import type { Edge, FlowHooks, Node } from '../types';
+import type { VueFlowError } from '../utils';
 import { getCurrentInstance, onBeforeMount, onScopeDispose } from 'vue';
-import { createExtendedEventHook, hasVNodeListener, warn } from '../utils';
+import { createExtendedEventHook, devWarn, hasVNodeListener } from '../utils';
 
 export function createHooks<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): FlowHooks<NodeType, EdgeType> {
   return {
@@ -59,7 +60,7 @@ export function createHooks<NodeType extends Node = Node, EdgeType extends Edge 
     edgesDelete: createExtendedEventHook(),
     delete: createExtendedEventHook(),
     updateNodeInternals: createExtendedEventHook(),
-    error: createExtendedEventHook(err => warn(err.message)),
+    error: createExtendedEventHook<VueFlowError>(err => devWarn(err.code, err.message)),
   };
 }
 
