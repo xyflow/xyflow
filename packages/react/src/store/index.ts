@@ -260,102 +260,50 @@ const createStore = ({
         queueNodeChanges(changes);
       },
       queueNodeChanges: (changes) => {
-        const { pendingNodeChanges, debug } = get();
-        let nextPendingNodeChanges = pendingNodeChanges;
-
-        if (!nextPendingNodeChanges) {
-          nextPendingNodeChanges = new NodeChangeset();
-          set({ pendingNodeChanges: nextPendingNodeChanges });
+        if (changes.length === 0) {
+          return;
         }
+
+        const { debug, onNodesChange, hasDefaultNodes } = get();
+        const nodeChanges = new NodeChangeset();
 
         if (debug) {
           console.log('React Flow: queue node changes', changes);
         }
 
-        nextPendingNodeChanges.add(changes);
+        nodeChanges.add(changes);
 
-        // if (changes?.length) {
-        //   if (hasDefaultNodes) {
-        //     const updatedNodes = applyNodeChanges(changes, nodes);
-        //     setNodes(updatedNodes);
-        //   }
+        if (hasDefaultNodes) {
+          const { nodes, setNodes } = get();
+          const newNodes = nodeChanges.applyTo(nodes);
+          setNodes(newNodes);
+        }
 
-        //   if (debug) {
-        //     console.log('React Flow: trigger node changes', changes);
-        //   }
-
-        //   onNodesChange?.(changes);
-        // }
+        onNodesChange?.(nodeChanges);
       },
       queueEdgeChanges: (changes) => {
-        const { pendingEdgeChanges, debug } = get();
-
-        let nextPendingEdgeChanges = pendingEdgeChanges;
-
-        if (!nextPendingEdgeChanges) {
-          nextPendingEdgeChanges = new EdgeChangeset();
-          set({ pendingEdgeChanges: nextPendingEdgeChanges });
+        if (changes.length === 0) {
+          return;
         }
+
+        const { debug, hasDefaultEdges, onEdgesChange } = get();
 
         if (debug) {
           console.log('React Flow: queue edge changes', changes);
         }
+        const edgeChanges = new EdgeChangeset();
 
-        nextPendingEdgeChanges.add(changes);
-
-        // if (changes?.length) {
-        //   if (hasDefaultEdges) {
-        //     const updatedEdges = applyEdgeChanges(changes, edges);
-        //     setEdges(updatedEdges);
-        //   }
-
-        //   if (debug) {
-        //     console.log('React Flow: trigger edge changes', changes);
-        //   }
-
-        //   onEdgesChange?.(changes);
-        // }
-      },
-      flushNodeChanges: () => {
-        const { pendingNodeChanges, onNodesChange, nodes, hasDefaultNodes, setNodes, debug } = get();
-
-        if (!pendingNodeChanges || pendingNodeChanges.size === 0) {
-          return;
-        }
-
-        if (hasDefaultNodes) {
-          const newNodes = pendingNodeChanges.applyTo(nodes);
-          setNodes(newNodes);
-        }
-
-        if (debug) {
-          console.log('React Flow: flush node changes', pendingNodeChanges.toArray());
-        }
-
-        onNodesChange?.(pendingNodeChanges);
-
-        set({ pendingNodeChanges: undefined });
-      },
-      flushEdgeChanges: () => {
-        const { pendingEdgeChanges, onEdgesChange, edges, hasDefaultEdges, debug } = get();
-
-        if (!pendingEdgeChanges || pendingEdgeChanges.size === 0) {
-          return;
-        }
+        edgeChanges.add(changes);
 
         if (hasDefaultEdges) {
-          const newEdges = pendingEdgeChanges.applyTo(edges);
-          get().setEdges(newEdges);
+          const { setEdges, edges } = get();
+          const newEdges = edgeChanges.applyTo(edges);
+          setEdges(newEdges);
         }
 
-        if (debug) {
-          console.log('React Flow: flush edge changes', pendingEdgeChanges);
-        }
-
-        onEdgesChange?.(pendingEdgeChanges);
-
-        set({ pendingEdgeChanges: undefined });
+        onEdgesChange?.(edgeChanges);
       },
+
       addSelectedNodes: (selectedNodeIds) => {
         const { multiSelectionActive, edgeLookup, nodeLookup, queueNodeChanges, queueEdgeChanges } = get();
 

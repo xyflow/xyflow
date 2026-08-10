@@ -159,9 +159,6 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   zIndexMode: ZIndexMode;
   onNodesChangeMiddlewareMap: Map<symbol, (changes: NodeChange<NodeType>[]) => NodeChange<NodeType>[]>;
   onEdgesChangeMiddlewareMap: Map<symbol, (changes: EdgeChange<EdgeType>[]) => EdgeChange<EdgeType>[]>;
-
-  pendingNodeChanges: NodeChangeset<NodeType> | undefined;
-  pendingEdgeChanges: EdgeChangeset<EdgeType> | undefined;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
@@ -183,8 +180,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   reset: () => void;
   queueNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   queueEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
-  flushNodeChanges: () => void;
-  flushEdgeChanges: () => void;
+
   panBy: PanBy;
   setCenter: SetCenter;
 };

@@ -9,7 +9,6 @@ import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelC
 import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
-import { useChangesFlusher } from '../../hooks/useChangesFlusher';
 
 // These fields exist in the global store, and we need to keep them up to date
 const reactFlowFieldsToTrack = [
@@ -124,8 +123,6 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     setDefaultNodesAndEdges,
   } = useReactFlowStore(useShallow(selector));
   const store = useReactFlowStoreApi<NodeType, EdgeType>();
-
-  useChangesFlusher();
 
   useEffect(() => {
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
