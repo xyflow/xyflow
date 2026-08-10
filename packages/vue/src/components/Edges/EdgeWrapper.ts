@@ -1,25 +1,15 @@
 import type { Connection, FinalConnectionState, HandleType } from '@xyflow/system';
 import type { Component } from 'vue';
 import type { Edge, EdgeProps, InternalNode, MouseTouchEvent } from '../../types';
-import { ConnectionMode, getHandlePosition, getMarkerId, Position } from '@xyflow/system';
+import { getEdgePosition, getMarkerId } from '@xyflow/system';
 import { computed, defineComponent, getCurrentInstance, h, inject, provide, shallowRef, toRef } from 'vue';
 import { useHandle, useStore, useVueFlow } from '../../composables';
 import { EdgeId, EdgeRef, Slots } from '../../context';
-import { ARIA_EDGE_DESC_KEY, elementSelectionKeys, ErrorCode, getEdgeHandle, getEdgeZIndex, resolveTypeComponent, VueFlowError } from '../../utils';
+import { ARIA_EDGE_DESC_KEY, devWarn, elementSelectionKeys, ErrorCode, getEdgeZIndex, resolveTypeComponent, VueFlowError } from '../../utils';
 import EdgeAnchor from './EdgeAnchor';
 
 interface Props {
   id: string;
-}
-
-function getNodeHandles(node: InternalNode, side: 'source' | 'target', strict: boolean) {
-  const bounds = node.internals.handleBounds;
-  if (strict) {
-    return bounds?.[side] ?? null;
-  }
-
-  const other = side === 'source' ? 'target' : 'source';
-  return [...(bounds?.[side] ?? []), ...(bounds?.[other] ?? [])];
 }
 
 const EdgeWrapper = defineComponent({
@@ -135,17 +125,21 @@ const EdgeWrapper = defineComponent({
         return null;
       }
 
-      // strict mode considers only the matching side's handles; loose mode considers both (matching first)
-      const strict = store.connectionMode === ConnectionMode.Strict;
-      const sourceHandle = getEdgeHandle(getNodeHandles(sourceNode, 'source', strict), edge.value.sourceHandle);
-      const targetHandle = getEdgeHandle(getNodeHandles(targetNode, 'target', strict), edge.value.targetHandle);
+      const edgePosition = getEdgePosition({
+        id: props.id,
+        sourceNode,
+        targetNode,
+        sourceHandle: edge.value.sourceHandle || null,
+        targetHandle: edge.value.targetHandle || null,
+        connectionMode: store.connectionMode,
+        onError: devWarn,
+      });
 
-      const sourcePosition = sourceHandle?.position || Position.Bottom;
+      if (!edgePosition) {
+        return null;
+      }
 
-      const targetPosition = targetHandle?.position || Position.Top;
-
-      const { x: sourceX, y: sourceY } = getHandlePosition(sourceNode, sourceHandle, sourcePosition);
-      const { x: targetX, y: targetY } = getHandlePosition(targetNode, targetHandle, targetPosition);
+      const { sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition } = edgePosition;
 
       const edgeComponentProps = {
         id: props.id,
