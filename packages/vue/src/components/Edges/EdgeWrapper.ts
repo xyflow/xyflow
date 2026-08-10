@@ -125,9 +125,6 @@ const EdgeWrapper = defineComponent({
         return null;
       }
 
-      // delegate to @xyflow/system (as React/Svelte do): it resolves the handles for the current
-      // connection mode and returns null when a node isn't initialized or a handle can't be found —
-      // so a node that renders no <Handle> draws no edge instead of a phantom line to its bounding box
       const edgePosition = getEdgePosition({
         id: props.id,
         sourceNode,
