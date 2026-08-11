@@ -101,6 +101,7 @@ const createStore = ({
           nodeLookup,
           parentLookup,
           nodeOrigin,
+          nodeExtent,
           elevateNodesOnSelect,
           fitViewQueued,
           zIndexMode,
