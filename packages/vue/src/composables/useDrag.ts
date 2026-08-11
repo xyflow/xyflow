@@ -39,13 +39,11 @@ export function useDrag(params: UseDragParams) {
 
   const dragging = shallowRef(false);
 
-  // Reactive so the update watcher below re-runs (and re-binds) whenever a new instance is created. The
-  // creating effect re-runs whenever `el` is reassigned, so without this dependency a create that lands after
-  // the update watcher last ran would leave the live instance with no d3 listeners — node dragging silently stops.
+  // Reactive so the update watcher below re-runs (and re-binds) whenever a new instance is created.
+  // The creating effect re-runs whenever `el` is reassigned, so without this dependency a create that lands after
+  // the update watcher last ran would leave the live instance with no d3 listeners and node dragging silently stops.
   const dragInstance = shallowRef<ReturnType<typeof XYDrag>>();
 
-  // Owns creation/teardown only (keyed on `el`/`disabled`), so prop changes update the live instance
-  // instead of tearing it down and rebuilding it.
   watchEffect((onCleanup) => {
     const nodeEl = el.value;
 
@@ -174,9 +172,6 @@ export function useDrag(params: UseDragParams) {
     });
   });
 
-  // push prop changes to the live instance instead of tearing it down and rebuilding it. Depends on
-  // `dragInstance` too, so a freshly created instance always gets (re-)bound via `update()` even when the
-  // creating effect re-ran after this watcher had already fired.
   watch(
     [
       dragInstance,
