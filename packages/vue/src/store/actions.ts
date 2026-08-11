@@ -25,6 +25,7 @@ import {
   getDimensions,
   getElementsToRemove,
   getHandleBounds,
+  getNodeDimensions,
   getOverlappingArea,
   handleExpandParent,
   initialConnection,
@@ -47,6 +48,7 @@ import {
   isNode,
   reconnectEdgeAction,
   validateEdges,
+  warn,
 } from '../utils';
 import { resolveFitView } from './fitView';
 import { useState } from './state';
@@ -611,6 +613,55 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     commitNodes(next);
   };
 
+  const changeParent: Actions<NodeType>['changeParent'] = (nodeId, parentId) => {
+    const node = getInternalNode(nodeId);
+
+    if (!node) {
+      warn(`changeParent: Node "${nodeId}" does not exist`);
+      return;
+    }
+
+    if (parentId === nodeId) {
+      return;
+    }
+
+    const childPosition = node.internals.positionAbsolute;
+    const childOrigin = node.origin ?? state.nodeOrigin;
+    const childDimensions = getNodeDimensions(node);
+
+    const originCorrection = {
+      x: childOrigin[0] * childDimensions.width,
+      y: childOrigin[1] * childDimensions.height,
+    };
+
+    if (parentId === undefined) {
+      updateNode(nodeId, {
+        parentId: undefined,
+        position: {
+          x: childPosition.x + originCorrection.x,
+          y: childPosition.y + originCorrection.y,
+        },
+      } as Partial<NodeType>);
+      return;
+    }
+
+    const parentNode = getInternalNode(parentId);
+
+    if (!parentNode) {
+      warn(`changeParent: Parent node "${parentId}" does not exist`);
+      return;
+    }
+
+    const parentPosition = parentNode.internals.positionAbsolute;
+    updateNode(nodeId, {
+      parentId,
+      position: {
+        x: childPosition.x + originCorrection.x - parentPosition.x,
+        y: childPosition.y + originCorrection.y - parentPosition.y,
+      },
+    } as Partial<NodeType>);
+  };
+
   const updateConnection: Actions<NodeType>['updateConnection'] = (connection) => {
     state.connection = connection;
   };
@@ -753,6 +804,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     updateEdgeData,
     updateNode,
     updateNodeData,
+    changeParent,
     applyEdgeChanges,
     applyNodeChanges,
     addSelectedNodes,

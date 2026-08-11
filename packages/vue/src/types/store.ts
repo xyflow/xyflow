@@ -314,6 +314,8 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   updateNode: UpdateNode<NodeType>;
   /** updates the data of a node */
   updateNodeData: UpdateNodeData<NodeType>;
+  /** changes the parent of a node, keeping its absolute position */
+  changeParent: (nodeId: string, parentId: string | undefined) => void;
   /** applies default edge change handler */
   applyEdgeChanges: (changes: EdgeChange<EdgeType>[]) => EdgeType[];
   /** applies default node change handler; returns the resulting user nodes */

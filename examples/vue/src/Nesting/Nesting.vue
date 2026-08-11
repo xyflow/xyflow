@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { Connection, Edge, Node } from '@xyflow/vue';
-import { Background, ConnectionMode, Controls, MiniMap, setupVueFlow, VueFlow } from '@xyflow/vue';
+import { Background, ConnectionMode, Controls, MiniMap, Panel, setupVueFlow, VueFlow } from '@xyflow/vue';
 
-const { addEdges, addNodes, getNode, updateNode } = setupVueFlow();
+const { addEdges, addNodes, getNode, updateNode, changeParent } = setupVueFlow();
 
 const nodes = shallowRef<Node[]>(
   [
@@ -111,5 +111,10 @@ onMounted(() => {
     <MiniMap />
     <Controls />
     <Background />
+    <Panel position="top-right">
+      <button @click="changeParent('4b1', '4')">
+        changeParent 4b1 → 4
+      </button>
+    </Panel>
   </VueFlow>
 </template>
