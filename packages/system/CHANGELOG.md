@@ -1,5 +1,24 @@
 # @xyflow/system
 
+## 0.0.80
+### Patch Changes
+
+
+
+- [#5902](https://github.com/xyflow/xyflow/pull/5902) [`393d951`](https://github.com/xyflow/xyflow/commit/393d95161802948a3c9cca55dde3d807e9a634f1) - Allow middle-mouse viewport panning to start from a selection rectangle.
+
+
+
+- [#5889](https://github.com/xyflow/xyflow/pull/5889) [`ff126a0`](https://github.com/xyflow/xyflow/commit/ff126a06a57c341948407d7f66b2972e2627828a) - Fix `extent: 'parent'` not immediately resolving when parent has `width` or `initialWidth`.
+
+
+
+- [#5871](https://github.com/xyflow/xyflow/pull/5871) [`e5d86bd`](https://github.com/xyflow/xyflow/commit/e5d86bde2379439a6dd33ccecb1cba354fe4f037) - Fix `getNodesBounds` stretching the returned bounds to include the origin `(0, 0)` when one of the passed ids/nodes can't be resolved.
+
+
+
+- [#5922](https://github.com/xyflow/xyflow/pull/5922) [`392da00`](https://github.com/xyflow/xyflow/commit/392da00ce0aa97c99cd7a7561fe69b20e1c2f0ca) - Allow `Control` to activate pane panning with a primary-button drag.
+
 ## 0.0.79
 ### Patch Changes
 

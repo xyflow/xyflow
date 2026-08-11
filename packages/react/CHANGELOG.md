@@ -1,5 +1,43 @@
 # @xyflow/react
 
+## 12.11.3
+### Patch Changes
+
+
+
+- [#5902](https://github.com/xyflow/xyflow/pull/5902) [`393d951`](https://github.com/xyflow/xyflow/commit/393d95161802948a3c9cca55dde3d807e9a634f1) - Allow middle-mouse viewport panning to start from a selection rectangle.
+
+
+
+- [#5889](https://github.com/xyflow/xyflow/pull/5889) [`ff126a0`](https://github.com/xyflow/xyflow/commit/ff126a06a57c341948407d7f66b2972e2627828a) - Fix `extent: 'parent'` not immediately resolving when parent has `width` or `initialWidth`.
+
+
+
+- [#5943](https://github.com/xyflow/xyflow/pull/5943) [`d1def59`](https://github.com/xyflow/xyflow/commit/d1def59dfc083304e58b8c113c8036764c7ae439) - Invoke an error if handle can not be found
+
+
+
+- [#5947](https://github.com/xyflow/xyflow/pull/5947) [`2ba040f`](https://github.com/xyflow/xyflow/commit/2ba040f148f22401b3a4fe59c42d8ea744933d24) - Use correct `nodeExtent` for internal `setNodes`.
+
+
+
+- [#5918](https://github.com/xyflow/xyflow/pull/5918) [`c5d7442`](https://github.com/xyflow/xyflow/commit/c5d74425a57adf18a5d582cf51d141909b564fd4) - Fix selection box appearing when dragging the pane via touch. Prefer touch panning over drag selection when `selectionOnDrag` is combined with mouse-button-specific `panOnDrag` settings.
+
+
+
+- [#5922](https://github.com/xyflow/xyflow/pull/5922) [`392da00`](https://github.com/xyflow/xyflow/commit/392da00ce0aa97c99cd7a7561fe69b20e1c2f0ca) - Allow `Control` to activate pane panning with a primary-button drag.
+
+
+
+- [#5929](https://github.com/xyflow/xyflow/pull/5929) [`4c5d7d2`](https://github.com/xyflow/xyflow/commit/4c5d7d276d3b1c8e5db97bc7a9fa0557cea02022) - Allow key combinations of three or more keys (e.g. `'Meta+Shift+s'`) for `useKeyPress`.
+
+
+
+- [#5938](https://github.com/xyflow/xyflow/pull/5938) [`91a052f`](https://github.com/xyflow/xyflow/commit/91a052f0554bd1a2597cfe77ce1f64786c3d4fc6) - Fix `<Background />` pattern offset miscalculation.
+
+- Updated dependencies [[`393d951`](https://github.com/xyflow/xyflow/commit/393d95161802948a3c9cca55dde3d807e9a634f1), [`ff126a0`](https://github.com/xyflow/xyflow/commit/ff126a06a57c341948407d7f66b2972e2627828a), [`e5d86bd`](https://github.com/xyflow/xyflow/commit/e5d86bde2379439a6dd33ccecb1cba354fe4f037), [`392da00`](https://github.com/xyflow/xyflow/commit/392da00ce0aa97c99cd7a7561fe69b20e1c2f0ca)]:
+  - @xyflow/system@0.0.80
+
 ## 12.11.2
 ### Patch Changes
 
