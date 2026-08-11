@@ -43,10 +43,10 @@ catalogs:
       specifier: ^3.8.3
       version: 3.8.3
     react:
-      specifier: ^18.3.1
+      specifier: ^18.3.0
       version: 18.3.1
     react-dom:
-      specifier: ^18.3.1
+      specifier: ^18.3.0
       version: 18.3.1
     svelte:
       specifier: ^5.55.5
