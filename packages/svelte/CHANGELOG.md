@@ -1,5 +1,31 @@
 # @xyflow/svelte
 
+## 1.6.3
+### Patch Changes
+
+
+
+- [#5902](https://github.com/xyflow/xyflow/pull/5902) [`393d951`](https://github.com/xyflow/xyflow/commit/393d95161802948a3c9cca55dde3d807e9a634f1) - Allow middle-mouse viewport panning to start from a selection rectangle.
+
+
+
+- [#5889](https://github.com/xyflow/xyflow/pull/5889) [`ff126a0`](https://github.com/xyflow/xyflow/commit/ff126a06a57c341948407d7f66b2972e2627828a) - Fix `extent: 'parent'` not immediately resolving when parent has `width` or `initialWidth`.
+
+
+
+- [#5930](https://github.com/xyflow/xyflow/pull/5930) [`48293bf`](https://github.com/xyflow/xyflow/commit/48293bf948c06c040f718fb0a3f0b82dda2acd77) - Fix module imports to adhere to Node ESM & Typescript conventions
+
+
+
+- [#5918](https://github.com/xyflow/xyflow/pull/5918) [`c5d7442`](https://github.com/xyflow/xyflow/commit/c5d74425a57adf18a5d582cf51d141909b564fd4) - Fix selection box appearing when dragging the pane via touch. Prefer touch panning over drag selection when `selectionOnDrag` is combined with mouse-button-specific `panOnDrag` settings.
+
+
+
+- [#5922](https://github.com/xyflow/xyflow/pull/5922) [`392da00`](https://github.com/xyflow/xyflow/commit/392da00ce0aa97c99cd7a7561fe69b20e1c2f0ca) - Allow `Control` to activate pane panning with a primary-button drag.
+
+- Updated dependencies [[`393d951`](https://github.com/xyflow/xyflow/commit/393d95161802948a3c9cca55dde3d807e9a634f1), [`ff126a0`](https://github.com/xyflow/xyflow/commit/ff126a06a57c341948407d7f66b2972e2627828a), [`e5d86bd`](https://github.com/xyflow/xyflow/commit/e5d86bde2379439a6dd33ccecb1cba354fe4f037), [`392da00`](https://github.com/xyflow/xyflow/commit/392da00ce0aa97c99cd7a7561fe69b20e1c2f0ca)]:
+  - @xyflow/system@0.0.80
+
 ## 1.6.2
 ### Patch Changes
 
