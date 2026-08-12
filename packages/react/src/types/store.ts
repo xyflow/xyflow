@@ -31,8 +31,6 @@ import {
   type AriaLabelConfig,
   type SetCenter,
   type ZIndexMode,
-  NodeChangeset,
-  EdgeChangeset,
 } from '@xyflow/system';
 
 import type {
@@ -178,8 +176,8 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   cancelConnection: () => void;
   updateConnection: UpdateConnection<InternalNode<NodeType>>;
   reset: () => void;
-  queueNodeChanges: (changes: NodeChange<NodeType>[]) => void;
-  queueEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
+  emitNodeChanges: (changes: NodeChange<NodeType>[]) => void;
+  emitEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
 
   panBy: PanBy;
   setCenter: SetCenter;

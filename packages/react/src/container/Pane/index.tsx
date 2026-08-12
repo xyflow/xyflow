@@ -197,8 +197,8 @@ export function Pane({
       nodeLookup,
       edgeLookup,
       connectionLookup,
-      queueNodeChanges,
-      queueEdgeChanges,
+      emitNodeChanges,
+      emitEdgeChanges,
       defaultEdgeOptions,
     } = store.getState();
 
@@ -242,12 +242,12 @@ export function Pane({
 
     if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
       const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true);
-      queueNodeChanges(changes);
+      emitNodeChanges(changes);
     }
 
     if (!areSetsEqual(prevSelectedEdgeIds, selectedEdgeIds.current)) {
       const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.current);
-      queueEdgeChanges(changes);
+      emitEdgeChanges(changes);
     }
 
     store.setState({

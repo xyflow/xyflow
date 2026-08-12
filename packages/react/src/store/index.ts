@@ -168,7 +168,7 @@ const createStore = ({
        */
       updateNodeInternals: (updates) => {
         const {
-          queueNodeChanges,
+          emitNodeChanges,
           nodeLookup,
           parentLookup,
           domNode,
@@ -203,13 +203,13 @@ const createStore = ({
         }
 
         if (changes?.length > 0) {
-          queueNodeChanges?.(changes);
+          emitNodeChanges?.(changes);
         }
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
         const parentExpandChildren: ParentExpandChild[] = [];
         let changes = [];
-        const { nodeLookup, queueNodeChanges, connection, updateConnection, onNodesChangeMiddlewareMap } = get();
+        const { nodeLookup, emitNodeChanges, connection, updateConnection, onNodesChangeMiddlewareMap } = get();
 
         for (const [id, dragItem] of nodeDragItems) {
           // we are using the nodelookup to be sure to use the current expandParent and parentId value
@@ -258,21 +258,19 @@ const createStore = ({
           changes = middleware(changes);
         }
 
-        queueNodeChanges(changes);
+        emitNodeChanges(changes);
       },
-      queueNodeChanges: (changes) => {
+      emitNodeChanges: (changes) => {
         if (changes.length === 0) {
           return;
         }
 
         const { debug, onNodesChange, hasDefaultNodes } = get();
-        const nodeChanges = new NodeChangeset();
+        const nodeChanges = new NodeChangeset(changes);
 
         if (debug) {
           console.log('React Flow: queue node changes', changes);
         }
-
-        nodeChanges.add(changes);
 
         if (hasDefaultNodes) {
           const { nodes, setNodes } = get();
@@ -282,19 +280,17 @@ const createStore = ({
 
         onNodesChange?.(nodeChanges);
       },
-      queueEdgeChanges: (changes) => {
+      emitEdgeChanges: (changes) => {
         if (changes.length === 0) {
           return;
         }
 
         const { debug, hasDefaultEdges, onEdgesChange } = get();
+        const edgeChanges = new EdgeChangeset(changes);
 
         if (debug) {
           console.log('React Flow: queue edge changes', changes);
         }
-        const edgeChanges = new EdgeChangeset();
-
-        edgeChanges.add(changes);
 
         if (hasDefaultEdges) {
           const { setEdges, edges } = get();
@@ -306,31 +302,31 @@ const createStore = ({
       },
 
       addSelectedNodes: (selectedNodeIds) => {
-        const { multiSelectionActive, edgeLookup, nodeLookup, queueNodeChanges, queueEdgeChanges } = get();
+        const { multiSelectionActive, edgeLookup, nodeLookup, emitNodeChanges, emitEdgeChanges } = get();
 
         if (multiSelectionActive) {
           const nodeChanges = selectedNodeIds.map((nodeId) => selectionChange(nodeId, true));
-          queueNodeChanges(nodeChanges);
+          emitNodeChanges(nodeChanges);
           return;
         }
 
-        queueNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
-        queueEdgeChanges(getSelectionChanges(edgeLookup));
+        emitNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
+        emitEdgeChanges(getSelectionChanges(edgeLookup));
       },
       addSelectedEdges: (selectedEdgeIds) => {
-        const { multiSelectionActive, edgeLookup, nodeLookup, queueNodeChanges, queueEdgeChanges } = get();
+        const { multiSelectionActive, edgeLookup, nodeLookup, emitNodeChanges, emitEdgeChanges } = get();
 
         if (multiSelectionActive) {
           const changedEdges = selectedEdgeIds.map((edgeId) => selectionChange(edgeId, true));
-          queueEdgeChanges(changedEdges);
+          emitEdgeChanges(changedEdges);
           return;
         }
 
-        queueEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
-        queueNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
+        emitEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
+        emitNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
-        const { edges: storeEdges, nodes: storeNodes, nodeLookup, queueNodeChanges, queueEdgeChanges } = get();
+        const { edges: storeEdges, nodes: storeNodes, nodeLookup, emitNodeChanges, emitEdgeChanges } = get();
         const nodesToUnselect = nodes ? nodes : storeNodes;
         const edgesToUnselect = edges ? edges : storeEdges;
 
@@ -364,8 +360,8 @@ const createStore = ({
           edgeChanges.push(selectionChange(edge.id, false));
         }
 
-        queueNodeChanges(nodeChanges);
-        queueEdgeChanges(edgeChanges);
+        emitNodeChanges(nodeChanges);
+        emitEdgeChanges(edgeChanges);
       },
       setMinZoom: (minZoom) => {
         const { panZoom, maxZoom } = get();
@@ -385,7 +381,7 @@ const createStore = ({
         set({ translateExtent });
       },
       resetSelectedElements: () => {
-        const { edges, nodes, queueNodeChanges, queueEdgeChanges, elementsSelectable } = get();
+        const { edges, nodes, emitNodeChanges, emitEdgeChanges, elementsSelectable } = get();
 
         if (!elementsSelectable) {
           return;
@@ -400,8 +396,8 @@ const createStore = ({
           []
         );
 
-        queueNodeChanges(nodeChanges);
-        queueEdgeChanges(edgeChanges);
+        emitNodeChanges(nodeChanges);
+        emitEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nextNodeExtent) => {
         const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode } = get();

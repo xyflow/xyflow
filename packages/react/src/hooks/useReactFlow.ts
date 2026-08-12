@@ -70,14 +70,6 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       store.getState().nodeLookup.get(id) as InternalNode<NodeType>;
 
     const setNodes: GeneralHelpers<NodeType, EdgeType>['setNodes'] = (payload) => {
-      // @TODO: this is an idea how we can can rid of the batch provider.
-      // We don't use the batch provider queue anymore, but create changes and add them the the changes queue.
-      // Unfortunately this is still very buggy..
-      // const state = store.getState();
-      // const changes = nodesPayloadToChanges<NodeType>(payload, state);
-
-      // state.queueNodeChanges(changes);
-
       batchContext.nodeQueue.push(payload as NodeType[]);
     };
 
@@ -175,8 +167,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           edges,
           onNodesDelete,
           onEdgesDelete,
-          queueNodeChanges,
-          queueEdgeChanges,
+          emitNodeChanges,
+          emitEdgeChanges,
           onDelete,
           onBeforeDelete,
         } = store.getState();
@@ -195,14 +187,14 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           const edgeChanges: RemoveChange[] = matchingEdges.map((e) => removeChange(e.id));
 
           onEdgesDelete?.(matchingEdges);
-          queueEdgeChanges(edgeChanges);
+          emitEdgeChanges(edgeChanges);
         }
 
         if (hasMatchingNodes) {
           const nodeChanges: RemoveChange[] = matchingNodes.map((n) => removeChange(n.id));
 
           onNodesDelete?.(matchingNodes);
-          queueNodeChanges(nodeChanges);
+          emitNodeChanges(nodeChanges);
         }
 
         if (hasMatchingNodes || hasMatchingEdges) {

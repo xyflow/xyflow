@@ -88,7 +88,7 @@ function ResizeControl({
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const { queueNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
+          const { emitNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
           const changes: NodeChange[] = [];
           const nextPosition = { x: change.x, y: change.y };
           const node = nodeLookup.get(id);
@@ -157,7 +157,7 @@ function ResizeControl({
             changes.push(_positionChange);
           }
 
-          queueNodeChanges(changes);
+          emitNodeChanges(changes);
         },
         onEnd: ({ width, height }) => {
           const _dimensionChange: DimensionChange = {
@@ -169,7 +169,7 @@ function ResizeControl({
               height,
             },
           };
-          store.getState().queueNodeChanges([_dimensionChange]);
+          store.getState().emitNodeChanges([_dimensionChange]);
         },
       });
     }
