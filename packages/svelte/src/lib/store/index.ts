@@ -26,12 +26,6 @@ import {
   getSelectionChanges
 } from '@xyflow/system';
 
-<<<<<<< HEAD
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, InternalNode } from '$lib/types';
-import { addEdge as addEdgeUtil } from '$lib/utils/edges';
-import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
-import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
-=======
 import type {
   EdgeTypes,
   NodeTypes,
@@ -45,7 +39,6 @@ import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-s
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types.js';
 import { addChange, selectionChange } from '../changes/create.js';
 import { getDeselectionChanges, getSelectionChanges } from '../changes/utils.js';
->>>>>>> renovate
 
 export const key = Symbol();
 

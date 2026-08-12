@@ -77,15 +77,10 @@ import type {
   OnEdgesChange
 } from '$lib/types/index.js';
 
-<<<<<<< HEAD
-import type { StoreSignals } from './types';
-import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
-=======
 import type { StoreSignals } from './types.js';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements.js';
 import { EdgeChangeset, NodeChangeset } from '$lib/changes/index.js';
 import type { EdgeChange, NodeChange } from '$lib/changes/types.js';
->>>>>>> renovate
 
 export const initialNodeTypes = {
   input: InputNode,
