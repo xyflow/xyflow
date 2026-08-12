@@ -141,12 +141,19 @@ function MiniMapComponent<NodeType extends Node = Node>({
       }
     : undefined;
 
-  const onSvgNodeClick = onNodeClick
-    ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
-        onNodeClick(event, node);
-      }, [])
-    : undefined;
+  /*
+   * the handler is kept in a ref so that the callback identity stays stable for
+   * the memoized minimap nodes while still calling the current onNodeClick
+   */
+  const onNodeClickRef = useRef(onNodeClick);
+  onNodeClickRef.current = onNodeClick;
+
+  const nodeClickHandler = useCallback((event: MouseEvent, nodeId: string) => {
+    const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
+    onNodeClickRef.current?.(event, node);
+  }, []);
+
+  const onSvgNodeClick = onNodeClick ? nodeClickHandler : undefined;
 
   const _ariaLabel = ariaLabel ?? ariaLabelConfig['minimap.ariaLabel'];
 
