@@ -447,6 +447,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /**
    * Enabling this prop allows users to pan the viewport by clicking and dragging.
    * You can also set this prop to an array of numbers to limit which mouse buttons can activate panning.
+   * Mouse button arrays do not disable touch panning; set this prop to `false` to disable all drag panning.
    * @default true
    * @example [0, 2] // allows panning with the left and right mouse buttons
    * [0, 1, 2, 3, 4] // allows panning with all mouse buttons
@@ -572,9 +573,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * When you typically call `fitView` on a `ReactFlowInstance`, you can provide an object of
    * options to customize its behavior. This prop lets you do the same for the initial `fitView`
    * call.
+   * @default { padding: '5%' }
    * @example
    * const fitViewOptions = {
-   *  padding: 0.1,
+   *  padding: '5%',
    *  includeHiddenNodes: false,
    *  minZoom: 0.1,
    *  maxZoom: 1,

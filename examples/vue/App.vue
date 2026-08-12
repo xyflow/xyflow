@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { VueFlowProvider } from '@xyflow/vue';
+import { useRoute } from 'vue-router';
 import Header from './Header.vue';
+
+const route = useRoute();
 </script>
 
 <template>
-  <Header />
-  <VueFlowProvider>
-    <router-view />
-  </VueFlowProvider>
+  <Header v-if="!route.meta.blank" />
+  <router-view />
 </template>

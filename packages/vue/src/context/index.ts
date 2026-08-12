@@ -1,5 +1,5 @@
 import type { InjectionKey, ShallowRef } from 'vue';
-import type { FlowSlots, VueFlowInstance, VueFlowState } from '../types';
+import type { VueFlowInstance, VueFlowSlots, VueFlowState } from '../types';
 import { getCurrentInstance, inject } from 'vue';
 
 /** the curated instance (`useVueFlow()`) */
@@ -10,7 +10,7 @@ export const NodeId: InjectionKey<string> = Symbol('nodeId');
 export const NodeRef: InjectionKey<ShallowRef<HTMLDivElement | null>> = Symbol('nodeRef');
 export const EdgeId: InjectionKey<string> = Symbol('edgeId');
 export const EdgeRef: InjectionKey<ShallowRef<SVGElement | null>> = Symbol('edgeRef');
-export const Slots: InjectionKey<Readonly<FlowSlots>> = Symbol('slots');
+export const Slots: InjectionKey<Readonly<VueFlowSlots>> = Symbol('slots');
 
 /**
  * Resolve a provided flow-context value: the nearest ancestor's `provide` (via Vue's `inject`), falling
@@ -27,7 +27,7 @@ export function injectFlowContext<T>(key: InjectionKey<T>): T | null {
   }
 
   const self = getCurrentInstance();
-  const ownProvides = self?.provides as unknown as Record<symbol, T | undefined> | undefined;
+  const ownProvides = (self as unknown as { provides: Record<symbol, T | undefined> } | null)?.provides;
 
   return ownProvides?.[key] ?? null;
 }

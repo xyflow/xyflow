@@ -91,6 +91,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
       zoomOnScroll={zoomOnScroll}
       zoomOnPinch={zoomOnPinch}
       panOnScroll={panOnScroll}
+      panActivationKeyPressed={panActivationKeyPressed}
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}

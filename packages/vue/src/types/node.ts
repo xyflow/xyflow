@@ -1,7 +1,6 @@
 import type { InternalNodeBase, NodeBase } from '@xyflow/system';
 import type { HTMLAttributes } from 'vue';
 import type { ClassValue, Styles } from './flow';
-import type { HandleElement } from './handle';
 
 /**
  * The origin of a Node determines how it is placed relative to its own coordinates.
@@ -13,11 +12,6 @@ import type { HandleElement } from './handle';
  */
 export type NodeOrigin = [number, number];
 
-export interface NodeHandleBounds {
-  source: HandleElement[] | null;
-  target: HandleElement[] | null;
-}
-
 /**
  * The `Node` type represents everything Vue Flow needs to know about a given node. Whenever you want to
  * update a certain attribute of a node, you need to create a new node object.
@@ -26,11 +20,17 @@ export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
   NodeType extends string | undefined = string | undefined,
 > = NodeBase<NodeData, NodeType> & {
+  /** Additional class names applied to the node element. */
   class?: ClassValue;
+  /** Additional inline styles applied to the node element. */
   style?: Styles;
+  /** Whether the node is currently being resized. */
   resizing?: boolean;
+  /** Whether the node can be focused for keyboard interaction (a11y). */
   focusable?: boolean;
+  /** The ARIA role attribute for the node element, used for accessibility. */
   ariaRole?: string;
+  /** General escape hatch for adding custom attributes to the node's DOM element. */
   domAttributes?: Omit<
     HTMLAttributes,
     | 'id'
@@ -60,14 +60,23 @@ export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeTy
  * selection and dragging. Your custom node receives `NodeProps` as props.
  */
 export interface NodeProps<NodeType extends Node = Node> {
+  /** Unique id of a node. */
   id: string;
+  /** Arbitrary data passed to a node. */
   data: NodeType['data'];
+  /** Type of node defined in `nodeTypes`. */
   type: NodeType['type'];
+  /** Whether the node is currently selected. */
   selected: boolean;
+  /** Whether the node can be selected. */
   selectable: boolean;
+  /** Whether the node can be deleted. */
   deletable: boolean;
+  /** Whether or not the node is able to be dragged. */
   draggable: boolean;
+  /** Whether or not the node is currently being dragged. */
   dragging: boolean;
+  /** The node's z-index. */
   zIndex: number;
   /** Whether a node is connectable or not. */
   isConnectable: boolean;
@@ -75,11 +84,26 @@ export interface NodeProps<NodeType extends Node = Node> {
   positionAbsoluteX: number;
   /** Position absolute y value. */
   positionAbsoluteY: number;
+  /** The node's width, in pixels. */
   width?: NodeType['width'];
+  /** The node's height, in pixels. */
   height?: NodeType['height'];
+  /**
+   * Only relevant for default, source, target nodeType. Controls source position.
+   * @example 'right', 'left', 'top', 'bottom'
+   */
   sourcePosition?: NodeType['sourcePosition'];
+  /**
+   * Only relevant for default, source, target nodeType. Controls target position.
+   * @example 'right', 'left', 'top', 'bottom'
+   */
   targetPosition?: NodeType['targetPosition'];
+  /**
+   * A class name that can be applied to elements inside the node that allows those elements to act
+   * as drag handles, letting the user drag the node by clicking and dragging on those elements.
+   */
   dragHandle?: NodeType['dragHandle'];
+  /** Parent node id, used for creating sub-flows. */
   parentId?: NodeType['parentId'];
 }
 

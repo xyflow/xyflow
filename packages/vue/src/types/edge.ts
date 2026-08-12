@@ -1,66 +1,20 @@
-import type { EdgeBase, Position } from '@xyflow/system';
+import type { BezierPathOptions, DefaultEdgeOptionsBase, EdgeBase, EdgeMarkerType, EdgePosition, SmoothStepPathOptions } from '@xyflow/system';
 import type { Component, CSSProperties, SVGAttributes, VNode } from 'vue';
-import type { EdgeComponent, EdgeTextProps } from './components';
+import type { EdgeTextProps } from './components';
 import type { ClassValue, Styles } from './flow';
-
-/**
- * Edges may optionally have a marker on either end. The MarkerType type enumerates the options
- * available to you when configuring a given marker.
- */
-export enum MarkerType {
-  Arrow = 'arrow',
-  ArrowClosed = 'arrowclosed',
-}
-
-/**
- * Edges can optionally have markers at the start and end of an edge. The `EdgeMarker` type is used to
- * configure those markers.
- */
-export interface EdgeMarker {
-  /** Unique marker id */
-  id?: string;
-  /** Marker type */
-  type: MarkerType;
-  /** Marker color */
-  color?: string;
-  /** Marker width */
-  width?: number;
-  /** Marker height */
-  height?: number;
-  /** Marker units */
-  markerUnits?: string;
-  /** Marker orientation */
-  orient?: string;
-  /** Marker stroke width */
-  strokeWidth?: number;
-}
-
-export interface MarkerProps {
-  id: string;
-  type: MarkerType | string;
-  /** Marker color; `null`/unset lets the `--xy-edge-stroke` CSS variable drive the arrowhead color */
-  color?: string | null;
-  width?: number;
-  height?: number;
-  markerUnits?: string;
-  orient?: string;
-  strokeWidth?: number;
-}
-
-export type EdgeMarkerType = string | EdgeMarker;
 
 export type EdgeReconnectable = boolean | 'target' | 'source';
 
 export interface EdgeLabelOptions {
   /** Custom styles to apply to the label. */
   labelStyle?: CSSProperties;
-  /** Show label bg */
+  /** Render a background rectangle behind the label. */
   labelShowBg?: boolean;
-  /** Label Bg styles (CSSProperties) */
+  /** Inline style applied to the label background rectangle. */
   labelBgStyle?: CSSProperties;
-  /** Label Bg padding */
+  /** Padding around the label inside its background, as `[x, y]` in pixels. */
   labelBgPadding?: [number, number];
-  /** Label Bg border radius */
+  /** Border radius of the label background, in pixels. */
   labelBgBorderRadius?: number;
 }
 
@@ -97,8 +51,6 @@ export interface DefaultEdge<Data extends Record<string, unknown> = Record<strin
   class?: ClassValue;
   /** Additional styles */
   style?: Styles;
-  /** Overwrites current edge type */
-  template?: EdgeComponent;
   /**
    * General escape hatch for adding custom attributes to the edge's DOM element.
    */
@@ -119,21 +71,10 @@ export interface DefaultEdge<Data extends Record<string, unknown> = Record<strin
   >;
 }
 
-export interface SmoothStepPathOptions {
-  offset?: number;
-  borderRadius?: number;
-  /** where the bend sits along the path: 0 = at source, 1 = at target, 0.5 = midpoint @default 0.5 */
-  stepPosition?: number;
-}
-
 export type SmoothStepEdgeType<Data extends Record<string, unknown> = Record<string, unknown>> = DefaultEdge<Data> & {
   type: 'smoothstep';
   pathOptions?: SmoothStepPathOptions;
 };
-
-export interface BezierPathOptions {
-  curvature?: number;
-}
 
 export type BezierEdgeType<Data extends Record<string, unknown> = Record<string, unknown>> = DefaultEdge<Data> & {
   type: 'default';
@@ -150,18 +91,7 @@ export type Edge<Data extends Record<string, unknown> = Record<string, unknown>,
  * provided will be filled in with the default values passed to the `defaultEdgeOptions` prop of the
  * `<VueFlow />` component.
  */
-export type DefaultEdgeOptions = Omit<Edge, 'id' | 'source' | 'target' | 'sourceHandle' | 'targetHandle' | 'selected'>;
-
-/**
- * The computed positions an edge renders with — a render-output type computed per render from the
- * source/target `InternalNode`s. Never stored on an edge.
- */
-export interface EdgePositions {
-  sourceX: number;
-  sourceY: number;
-  targetX: number;
-  targetY: number;
-}
+export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
 /**
  * When you implement a custom edge it is wrapped in a component that enables some basic functionality.
@@ -169,30 +99,52 @@ export interface EdgePositions {
  * (resolve them with `useInternalNode`); handles are exposed as `sourceHandleId`/`targetHandleId`;
  * markers are pre-resolved to url strings.
  */
-export interface EdgeProps<EdgeType extends Edge = Edge> extends EdgeLabelOptions, EdgePositions {
+export interface EdgeProps<EdgeType extends Edge = Edge> extends EdgeLabelOptions, EdgePosition {
+  /** Unique id of an edge. */
   id: string;
+  /** Id of source node. */
   source: string;
+  /** Id of target node. */
   target: string;
-  // optional: defaults are no longer stamped onto stored edges, so `type`/`data` are genuinely
-  // undefined at runtime when the user didn't set them
+  /** Type of edge defined in `edgeTypes`. */
   type?: EdgeType['type'];
-  label?: string | VNode | Component<EdgeTextProps> | object;
+  /**
+   * The label or custom element to render along the edge. This is commonly a text label or some
+   * custom controls.
+   */
+  label?: string | VNode | Component<EdgeTextProps>;
+  /** Inline style applied to the edge path. */
   style?: CSSProperties;
+  /** Whether the edge is currently selected. */
   selected?: boolean;
+  /** Whether the edge can be selected. */
   selectable?: boolean;
+  /** Whether the edge can be deleted. */
   deletable?: boolean;
-  sourcePosition: Position;
-  targetPosition: Position;
+  /** Id of source handle, only needed if there are multiple handles per node. */
   sourceHandleId?: string | null;
+  /** Id of target handle, only needed if there are multiple handles per node. */
   targetHandleId?: string | null;
+  /** Whether the edge path is animated. */
   animated?: boolean;
+  /** Whether the edge can be reconnected by dragging an endpoint, see {@link EdgeReconnectable}. */
   reconnectable?: EdgeReconnectable;
-  // optional: an edge without markers has none at runtime; typed as required, a custom edge's
-  // `defineProps<EdgeProps>()` would emit required runtime props and Vue would warn on undefined
+  /**
+   * Pre-resolved `url(#…)` reference for the start marker, or `undefined` when the edge has none.
+   */
   markerStart?: string;
+  /**
+   * Pre-resolved `url(#…)` reference for the end marker, or `undefined` when the edge has none.
+   */
   markerEnd?: string;
+  /** Curvature of the default bezier path, between 0 and 1. */
   curvature?: number;
+  /**
+   * The width of the invisible area around the edge that the user can interact with. This is useful
+   * for making the edge easier to click or hover over.
+   */
   interactionWidth?: number;
+  /** Arbitrary data passed to an edge. */
   data?: EdgeType['data'];
 }
 
@@ -200,6 +152,7 @@ export interface EdgeProps<EdgeType extends Edge = Edge> extends EdgeLabelOption
  * BaseEdge component props.
  */
 export interface BaseEdgeProps extends EdgeLabelOptions {
+  /** Unique id of an edge. */
   id?: string;
   /** The x position of edge label. */
   labelX?: number;
@@ -210,7 +163,7 @@ export interface BaseEdgeProps extends EdgeLabelOptions {
    * for a simple line.
    */
   path: string;
-  label?: any;
+  label?: string | VNode | Component<EdgeTextProps>;
   /**
    * The id of the SVG marker to use at the start of the edge. This should be defined in a `<defs>`
    * element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
@@ -230,26 +183,23 @@ export interface BaseEdgeProps extends EdgeLabelOptions {
 }
 
 /** BezierEdge component props */
-export type BezierEdgeProps = EdgePositions
+export type BezierEdgeProps = EdgePosition
   & BezierPathOptions
-  & Omit<BaseEdgeProps, 'labelX' | 'labelY' | 'path'>
-  & Pick<EdgeProps, 'sourcePosition' | 'targetPosition'>;
+  & Omit<BaseEdgeProps, 'labelX' | 'labelY' | 'path'>;
 
 /** SimpleBezier component props */
-export type SimpleBezierEdgeProps = EdgePositions
-  & Omit<BaseEdgeProps, 'labelX' | 'labelY' | 'path'>
-  & Pick<EdgeProps, 'sourcePosition' | 'targetPosition'>;
+export type SimpleBezierEdgeProps = EdgePosition
+  & Omit<BaseEdgeProps, 'labelX' | 'labelY' | 'path'>;
 
 /** StraightEdge component props */
-export type StraightEdgeProps = EdgePositions & Omit<BaseEdgeProps, 'labelX' | 'labelY' | 'path'>;
+export type StraightEdgeProps = Omit<EdgePosition, 'sourcePosition' | 'targetPosition'>
+  & Omit<BaseEdgeProps, 'labelX' | 'labelY' | 'path'>;
 
 /** StepEdge component props */
-export type StepEdgeProps = EdgePositions
-  & Omit<BaseEdgeProps, 'labelX' | 'labelY' | 'path'>
-  & Pick<EdgeProps, 'sourcePosition' | 'targetPosition'>;
+export type StepEdgeProps = EdgePosition
+  & Omit<BaseEdgeProps, 'labelX' | 'labelY' | 'path'>;
 
 /** SmoothStepEdge component props */
-export type SmoothStepEdgeProps = EdgePositions
+export type SmoothStepEdgeProps = EdgePosition
   & Omit<BaseEdgeProps, 'labelX' | 'labelY' | 'path'>
-  & Pick<EdgeProps, 'sourcePosition' | 'targetPosition'>
   & SmoothStepPathOptions;

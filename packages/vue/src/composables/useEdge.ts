@@ -21,8 +21,6 @@ export function useEdge<EdgeType extends Edge = Edge>(id?: string) {
 
   const { getEdge, emits } = useVueFlow<Node, EdgeType>();
 
-  // a `computed` so it re-resolves whenever the store replaces this edge's lookup entry (a changed edge is
-  // a NEW object in the immutable model)
   const edge = computed(() => getEdge(edgeId));
 
   if (!edge.value) {

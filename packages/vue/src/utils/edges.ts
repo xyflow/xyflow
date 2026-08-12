@@ -1,7 +1,6 @@
 import type { AddEdgeOptions, Connection, EdgeBase, ReconnectEdgeOptions } from '@xyflow/system';
-import { addEdge as addEdgeSystem, createDevWarn, reconnectEdge as reconnectEdgeSystem } from '@xyflow/system';
-
-const defaultOnError = createDevWarn('Vue Flow', 'https://vueflow.dev/');
+import { addEdge as addEdgeSystem, reconnectEdge as reconnectEdgeSystem } from '@xyflow/system';
+import { devWarn } from './log';
 
 /**
  * Adds a `Connection` (or a full `Edge`) to an edges array and returns a new array — generating the
@@ -16,7 +15,7 @@ export function addEdge<EdgeType extends EdgeBase>(
 ): EdgeType[] {
   return addEdgeSystem(edgeParams, edges, {
     ...options,
-    onError: options.onError ?? defaultOnError,
+    onError: options.onError ?? devWarn,
   });
 }
 
@@ -34,6 +33,6 @@ export function reconnectEdge<EdgeType extends EdgeBase>(
 ): EdgeType[] {
   return reconnectEdgeSystem(oldEdge, newConnection, edges, {
     ...options,
-    onError: options.onError ?? defaultOnError,
+    onError: options.onError ?? devWarn,
   });
 }

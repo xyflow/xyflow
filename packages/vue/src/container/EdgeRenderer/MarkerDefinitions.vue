@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { EdgeMarkerType, MarkerProps, MarkerType } from '../../types';
+import type { EdgeMarkerType, MarkerProps, MarkerType } from '@xyflow/system';
 import { getMarkerId } from '@xyflow/system';
 import { computed } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';

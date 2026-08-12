@@ -10,5 +10,5 @@ import { NodeId } from '../context';
  * @returns the current node id
  */
 export function useNodeId() {
-  return inject(NodeId, '');
+  return inject(NodeId, null);
 }

@@ -1,9 +1,8 @@
-import type { Connection, ConnectionState, FinalConnectionState, HandleType, IsValidConnection as SystemIsValidConnection } from '@xyflow/system';
+import type { Connection, FinalConnectionState, HandleType, IsValidConnection } from '@xyflow/system';
 import type { MaybeRefOrGetter } from 'vue';
-import type { ConnectingHandle, InternalNode, MouseTouchEvent, ValidConnectionFunc } from '../types';
+import type { InternalNode, MouseTouchEvent } from '../types';
 import { getEventPosition, getHostForElement, Position, XYHandle } from '@xyflow/system';
 import { toValue } from 'vue';
-import { isValidHandle } from '../utils';
 import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
 
@@ -11,21 +10,17 @@ export interface UseHandleProps {
   handleId: MaybeRefOrGetter<string | null>;
   nodeId: MaybeRefOrGetter<string>;
   type: MaybeRefOrGetter<HandleType>;
-  isValidConnection?: MaybeRefOrGetter<ValidConnectionFunc | null>;
+  isValidConnection?: MaybeRefOrGetter<IsValidConnection | null>;
   reconnectHandleType?: MaybeRefOrGetter<HandleType>;
   onReconnectStart?: (event: MouseTouchEvent) => void;
   onReconnect?: (event: MouseTouchEvent, connection: Connection) => void;
   onReconnectEnd?: (event: MouseTouchEvent, connectionState: FinalConnectionState<InternalNode>) => void;
 }
 
-function alwaysValid() {
-  return true;
-}
-
 /**
  * Composable powering drag- and click-to-connect. Drag-to-connect delegates to `@xyflow/system`'s
- * `XYHandle`; click-to-connect stays Vue-specific because it uses the richer `ValidConnectionFunc` (which
- * also receives the source/target `InternalNode`s on top of the bare `Connection`).
+ * `XYHandle`; click-to-connect is handled here (it validates via `XYHandle.isValid` and builds the
+ * `clickConnect*` payloads itself).
  *
  * Generally it's recommended to use the `<Handle />` component instead of this composable.
  *
@@ -41,37 +36,14 @@ export function useHandle({
   onReconnect,
   onReconnectEnd,
 }: UseHandleProps) {
-  const { id: flowId, getNode, getInternalNode, panBy, startConnection, updateConnection, endConnection, emits } = useVueFlow();
+  const { id: flowId, getNode, getInternalNode, panBy, updateConnection, cancelConnection, emits } = useVueFlow();
 
-  // Read the reactive store directly — every value below is read inside an event handler or lazy callback,
-  // so `store.x` gives the current value; no per-handle ref projection needed.
   const store = useStore();
 
   const { nodeLookup } = store;
 
-  // Adapt our richer `ValidConnectionFunc` (receives `{ nodes, edges, sourceNode, targetNode }`) into
-  // system's bare `IsValidConnection` (receives only the `Connection`), resolving nodes from `nodeLookup`.
-  function buildSystemIsValidConnection(): SystemIsValidConnection | undefined {
-    const userFn = toValue(isValidConnection) || store.isValidConnection;
-    if (!userFn) {
-      return undefined;
-    }
-    return (edge) => {
-      const sourceNode = getInternalNode(edge.source);
-      const targetNode = getInternalNode(edge.target);
-      if (!sourceNode || !targetNode) {
-        return false;
-      }
-      return userFn(
-        {
-          source: edge.source,
-          target: edge.target,
-          sourceHandle: edge.sourceHandle ?? null,
-          targetHandle: edge.targetHandle ?? null,
-        },
-        { nodes: store.nodes, edges: store.edges, sourceNode, targetNode },
-      );
-    };
+  function getIsValidConnection(): IsValidConnection | undefined {
+    return toValue(isValidConnection) || store.isValidConnection || undefined;
   }
 
   function handlePointerDown(event: MouseTouchEvent) {
@@ -84,84 +56,33 @@ export function useHandle({
       autoPanOnConnect: store.autoPanOnConnect,
       connectionMode: store.connectionMode,
       connectionRadius: store.connectionRadius,
-      domNode: store.vueFlowRef as HTMLDivElement,
+      domNode: store.vueFlowRef,
       handleId: toValue(handleId),
       nodeId: toValue(nodeId),
       isTarget: toValue(type) === 'target',
       nodeLookup,
       lib: 'vue',
       flowId,
-      // system's own param name stays `edgeUpdaterType`; our prop is `reconnectHandleType`
       edgeUpdaterType: toValue(reconnectHandleType),
       autoPanSpeed: store.autoPanSpeed,
       dragThreshold: store.connectionDragThreshold,
       handleDomNode,
       panBy,
-      isValidConnection: buildSystemIsValidConnection(),
+      isValidConnection: getIsValidConnection(),
       getTransform: () => store.transform,
-      // system aborts the move loop on null — once `startConnection` populated `connectionStartHandle`,
-      // surface it as a system `Handle` (width/height untracked on `ConnectingHandle`, 0 is render-only).
-      getFromHandle: () => {
-        const h = store.connectionStartHandle;
-        if (!h) {
-          return null;
-        }
-        return {
-          id: h.id,
-          nodeId: h.nodeId,
-          type: h.type,
-          position: h.position,
-          x: h.x,
-          y: h.y,
-          width: 0,
-          height: 0,
-        };
-      },
-      updateConnection: (state: ConnectionState) => {
-        if (state.inProgress) {
-          // first move: mirror the in-progress state into our split-field store for `useConnection` etc.
-          if (!store.connectionStartHandle) {
-            startConnection({
-              nodeId: state.fromHandle.nodeId,
-              id: state.fromHandle.id ?? null,
-              type: state.fromHandle.type,
-              position: state.fromHandle.position,
-              x: state.to.x,
-              y: state.to.y,
-            });
-          }
-          // store the raw pointer (not the snapped `to`) as `connectionPosition`: `useConnection` derives
-          // the snapped end from `connectionEndHandle`, so this surfaces the raw pointer (xyflow/react #5594/#5578).
-          updateConnection(
-            state.pointer,
-            state.toHandle
-              ? ({
-                  nodeId: state.toHandle.nodeId,
-                  id: state.toHandle.id ?? null,
-                  type: state.toHandle.type,
-                  position: state.toHandle.position,
-                  x: state.toHandle.x,
-                  y: state.toHandle.y,
-                } as ConnectingHandle)
-              : null,
-            state.isValid !== null ? (state.isValid ? 'valid' : 'invalid') : null,
-          );
-        }
-      },
-      cancelConnection: () => {
-        endConnection(event, false);
-      },
+      getFromHandle: () => (store.connection.inProgress ? store.connection.fromHandle : null),
+      updateConnection,
+      cancelConnection,
       onConnectStart: (evt, params) => {
         emits.connectStart({
-          event: evt as MouseTouchEvent,
-          nodeId: params.nodeId ?? undefined,
+          event: evt,
+          nodeId: params.nodeId,
           handleId: params.handleId,
-          handleType: params.handleType ?? undefined,
+          handleType: params.handleType,
         });
-        // For a reconnect this fires only once the drag begins — the cue to hide the original edge. Hiding
-        // it eagerly on pointerdown would strand a plain click (no drag) with a permanently-hidden edge.
+
         if (reconnectHandleType) {
-          onReconnectStart?.(evt as MouseTouchEvent);
+          onReconnectStart?.(evt);
         }
       },
       onConnect: (connection) => {
@@ -173,9 +94,9 @@ export function useHandle({
         }
       },
       onConnectEnd: (evt, connectionState) => {
-        emits.connectEnd({ event: evt as MouseTouchEvent, connectionState });
+        emits.connectEnd({ event: evt, connectionState });
         if (reconnectHandleType) {
-          onReconnectEnd?.(evt as MouseTouchEvent, connectionState);
+          onReconnectEnd?.(evt, connectionState);
         }
       },
     });
@@ -191,24 +112,19 @@ export function useHandle({
         event,
         nodeId: toValue(nodeId),
         handleId: toValue(handleId),
+        handleType: toValue(type),
       });
 
-      startConnection(
-        {
-          nodeId: toValue(nodeId),
-          type: toValue(type),
-          id: toValue(handleId),
-          position: Position.Top,
-          ...getEventPosition(event),
-        },
-        undefined,
-        true,
-      );
+      store.connectionClickStartHandle = {
+        nodeId: toValue(nodeId),
+        type: toValue(type),
+        id: toValue(handleId),
+        position: Position.Top,
+        ...getEventPosition(event),
+      };
 
       return;
     }
-
-    const isValidConnectionHandler = toValue(isValidConnection) || store.isValidConnection || alwaysValid;
 
     const node = getNode(toValue(nodeId));
 
@@ -218,30 +134,22 @@ export function useHandle({
 
     const doc = getHostForElement(event.target as HTMLElement);
 
-    const result = isValidHandle(
-      event,
-      {
-        handle: {
-          nodeId: toValue(nodeId),
-          id: toValue(handleId),
-          type: toValue(type),
-          position: Position.Top,
-          ...getEventPosition(event),
-        },
-        connectionMode: store.connectionMode,
-        fromNodeId: store.connectionClickStartHandle.nodeId,
-        fromHandleId: store.connectionClickStartHandle.id ?? null,
-        fromType: store.connectionClickStartHandle.type,
-        isValidConnection: isValidConnectionHandler,
-        doc,
-        lib: 'vue',
-        flowId,
+    const result = XYHandle.isValid(event, {
+      handle: {
+        nodeId: toValue(nodeId),
+        id: toValue(handleId),
+        type: toValue(type),
       },
-      store.edges,
-      store.nodes,
-      getInternalNode,
+      connectionMode: store.connectionMode,
+      fromNodeId: store.connectionClickStartHandle.nodeId,
+      fromHandleId: store.connectionClickStartHandle.id ?? null,
+      fromType: store.connectionClickStartHandle.type,
+      isValidConnection: getIsValidConnection(),
+      doc,
+      lib: 'vue',
+      flowId,
       nodeLookup,
-    );
+    });
 
     const isOwnHandle = result.connection?.source === result.connection?.target;
 
@@ -249,8 +157,6 @@ export function useHandle({
       emits.connect(result.connection);
     }
 
-    // the click path doesn't drive system's connection state machine, so assemble the `FinalConnectionState`
-    // ourselves so `clickConnectEnd` carries the same payload shape as `connectEnd` (pad handle width/height).
     const fromHandle = store.connectionClickStartHandle;
     const fromNode = fromHandle ? getInternalNode(fromHandle.nodeId) : undefined;
     const toHandle = result.toHandle;
@@ -284,7 +190,7 @@ export function useHandle({
 
     emits.clickConnectEnd({ event, connectionState });
 
-    endConnection(event, true);
+    store.connectionClickStartHandle = null;
   }
 
   return {

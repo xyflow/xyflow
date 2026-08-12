@@ -41,7 +41,7 @@ export default {
 
 <template>
   <EdgeLabelRenderer v-if="isActive">
-    <div v-bind="$attrs" :style="wrapperStyle" :data-id="edge?.id ?? ''" class="vue-flow__edge-toolbar">
+    <div v-bind="{ ...$attrs, 'data-id': edge?.id ?? '' }" :style="wrapperStyle" class="vue-flow__edge-toolbar">
       <slot />
     </div>
   </EdgeLabelRenderer>

@@ -1,4 +1,5 @@
-import type { Edge, Node } from '@xyflow/vue';
+import type { Node } from '@xyflow/vue';
+import type { AppEdge } from './types';
 import { MarkerType } from '@xyflow/vue';
 import CustomLabel from './CustomLabel.vue';
 
@@ -16,7 +17,7 @@ export const initialNodes: Node[] = [
   { id: '9', type: 'output', data: { label: 'Output 9' }, position: { x: 675, y: 500 } },
 ];
 
-export const initialEdges: Edge[] = [
+export const initialEdges: AppEdge[] = [
   { id: 'e1-2', source: '1', target: '2', label: 'bezier edge (default)', class: 'normal-edge' },
   { id: 'e2-2a', source: '2', target: '2a', type: 'smoothstep', label: 'smoothstep edge' },
   { id: 'e2-3', source: '2', target: '3', type: 'step', label: 'step edge' },

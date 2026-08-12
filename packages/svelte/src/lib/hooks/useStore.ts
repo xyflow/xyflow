@@ -1,10 +1,10 @@
 import { getContext } from 'svelte';
 import { errorMessages } from '@xyflow/system';
 
-import type { StoreContext, SvelteFlowStore } from '../store/types';
+import type { StoreContext, SvelteFlowStore } from '../store/types.js';
 
-import { key } from '../store';
-import type { Node, Edge } from '$lib/types';
+import { key } from '../store/index.js';
+import type { Node, Edge } from '$lib/types/index.js';
 
 const providerErrorMessage = errorMessages['error001']('svelte');
 

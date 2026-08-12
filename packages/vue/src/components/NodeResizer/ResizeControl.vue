@@ -3,9 +3,9 @@ import type { NodeDimensionChange, NodePositionChange } from '@xyflow/system';
 import type { NodeChange } from '../../types';
 import type { NodeResizerEmits, ResizeControlProps } from './types';
 import { evaluateAbsolutePosition, handleExpandParent, XYResizer } from '@xyflow/system';
-import { computed, inject, shallowRef, toRef, watchEffect } from 'vue';
+import { computed, shallowRef, toRef, watchEffect } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
-import { NodeId } from '../../context';
+import { useNodeId } from '../../composables/useNodeId';
 import { ResizeControlVariant } from './types';
 import { DefaultPositions, StylingProperty } from './utils';
 
@@ -31,9 +31,9 @@ const resizeControlRef = shallowRef<HTMLDivElement>();
 
 // fall back to the node context id so a bare `<NodeResizeControl>` inside a custom node resolves its node
 // without an explicit `node-id` prop
-const contextNodeId = inject(NodeId, null);
+const contextNodeId = useNodeId();
 
-const nodeId = toRef(() => (typeof props.nodeId === 'string' ? props.nodeId : contextNodeId ?? undefined));
+const nodeId = toRef(() => (typeof props.nodeId === 'string' ? props.nodeId : contextNodeId || undefined));
 
 const controlPosition = toRef(() => props.position ?? DefaultPositions[props.variant]);
 

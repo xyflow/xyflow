@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import type { Connection, Edge, Node, VueFlowInstance } from '@xyflow/vue';
-import { Background, MarkerType, VueFlow } from '@xyflow/vue';
-import { ref } from 'vue';
+import type { Connection, Edge, Node } from '@xyflow/vue';
+import { Background, MarkerType, setupVueFlow, VueFlow } from '@xyflow/vue';
 import CustomNode from './CustomNode.vue';
 import FloatingConnectionLine from './FloatingConnectionLine.vue';
 import FloatingEdge from './FloatingEdge.vue';
+
+const { addEdges } = setupVueFlow();
 
 const defaultEdgeOptions = {
   style: { strokeWidth: 3, stroke: 'black' },
@@ -15,7 +16,7 @@ const defaultEdgeOptions = {
   },
 };
 
-const nodes = ref<Node[]>([
+const nodes = shallowRef<Node[]>([
   {
     id: '1',
     type: 'custom',
@@ -42,18 +43,15 @@ const nodes = ref<Node[]>([
   },
 ]);
 
-const edges = ref<Edge[]>([]);
-
-const flow = ref<VueFlowInstance>();
+const edges = shallowRef<Edge[]>([]);
 
 function onConnect(connection: Connection) {
-  flow.value?.addEdges([connection]);
+  addEdges([connection]);
 }
 </script>
 
 <template>
   <VueFlow
-    ref="flow"
     v-model:nodes="nodes"
     v-model:edges="edges"
     :elevate-nodes-on-select="false"

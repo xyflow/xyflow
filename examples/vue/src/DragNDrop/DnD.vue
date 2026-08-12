@@ -1,14 +1,16 @@
 <script lang="ts" setup>
-import type { Connection, Node, VueFlowInstance } from '@xyflow/vue';
-import { VueFlow } from '@xyflow/vue';
+import type { Connection, Node } from '@xyflow/vue';
+import { setupVueFlow, VueFlow } from '@xyflow/vue';
 import Sidebar from './Sidebar.vue';
+
+const { addEdges, addNodes, screenToFlowPosition } = setupVueFlow();
 
 let id = 0;
 function getId() {
   return `dndnode_${id++}`;
 }
 
-const nodes = ref<Node[]>([
+const nodes = shallowRef<Node[]>([
   {
     id: '1',
     type: 'input',
@@ -16,8 +18,6 @@ const nodes = ref<Node[]>([
     position: { x: 250, y: 5 },
   },
 ]);
-
-const flow = ref<VueFlowInstance>();
 
 function onDragOver(event: DragEvent) {
   event.preventDefault();
@@ -27,19 +27,19 @@ function onDragOver(event: DragEvent) {
 }
 
 function onConnect(connection: Connection) {
-  flow.value?.addEdges([connection]);
+  addEdges([connection]);
 }
 
 function onDrop(event: DragEvent) {
   const type = event.dataTransfer?.getData('application/vueflow');
 
   // screenToFlowPosition handles the container-offset internally (replaces the removed `project`)
-  const position = flow.value!.screenToFlowPosition({
+  const position = screenToFlowPosition({
     x: event.clientX,
     y: event.clientY,
   });
 
-  flow.value?.addNodes({
+  addNodes({
     id: getId(),
     type,
     position,
@@ -50,7 +50,7 @@ function onDrop(event: DragEvent) {
 
 <template>
   <div class="dndflow" @drop="onDrop">
-    <VueFlow ref="flow" v-model:nodes="nodes" @connect="onConnect" @dragover="onDragOver" />
+    <VueFlow v-model:nodes="nodes" @connect="onConnect" @dragover="onDragOver" />
     <Sidebar />
   </div>
 </template>

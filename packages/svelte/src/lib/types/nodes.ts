@@ -20,6 +20,7 @@ export type Node<
 > = NodeBase<NodeData, NodeType> & {
   class?: ClassValue;
   style?: string;
+  resizing?: boolean;
   focusable?: boolean;
   /**
    * The ARIA role attribute for the node element, used for accessibility.

@@ -9,8 +9,8 @@ const initialElements: (Node | Edge)[] = [
   { id: 'e1-2', source: '1', target: '2' },
 ];
 
-const nodes = ref<Node[]>(initialElements.filter(isNode));
-const edges = ref<Edge[]>(initialElements.filter(isEdge));
+const nodes = shallowRef<Node[]>(initialElements.filter(isNode));
+const edges = shallowRef<Edge[]>(initialElements.filter(isEdge));
 </script>
 
 <template>

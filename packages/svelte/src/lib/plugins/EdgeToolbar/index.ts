@@ -1,2 +1,2 @@
 export { default as EdgeToolbar } from './EdgeToolbar.svelte';
-export * from './types';
+export * from './types.js';

@@ -10,7 +10,7 @@
 	} from '@xyflow/svelte';
 	import { type MyNode } from './+page.svelte';
 
-	let { id }: NodeProps<Node<{ text: string }>> = $props();
+	let { id, data }: NodeProps<Node<{ text: string }>> = $props();
 
 	const { updateNodeData } = useSvelteFlow();
 	const connections = useNodeConnections(() => ({
@@ -20,9 +20,13 @@
 	const nodesData = useNodesData<MyNode>(() => ({ nodeIds: connections.current[0]?.source }));
 
 	$effect.pre(() => {
-		const text =
-			nodesData.current?.type === 'text' ? nodesData.current?.data.text.toUpperCase() : undefined;
-		updateNodeData(id, { text });
+		const incomingText = nodesData.current?.data.text ?? '';
+		if (typeof incomingText === 'string') {
+			const newText = incomingText.toUpperCase();
+			if (data.text !== newText) {
+				updateNodeData(id, { text: newText });
+			}
+		}
 	});
 </script>
 

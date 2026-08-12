@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 import { NodeWrapper } from '../../components';
 import { useStore, useVueFlow } from '../../composables';
 import { useNodesInitialized } from '../../composables/useNodesInitialized';
@@ -7,6 +7,10 @@ import { useNodesInitialized } from '../../composables/useNodesInitialized';
 const { getNodes, updateNodeDimensions, emits } = useVueFlow();
 
 const { nodeLookup } = useStore();
+
+const nodesInitialized = useNodesInitialized();
+
+const resizeObserver = shallowRef<ResizeObserver>();
 
 // iterate a value-stable id list so this v-for only re-runs on node *membership* changes, not every commit
 // (each update replaces the whole `nodes` array). A moved node still re-renders via its own lookup-backed
@@ -31,20 +35,14 @@ const nodeIds = computed<string[]>((prev) => {
   return nodes.map(node => node.id);
 });
 
-const nodesInitialized = useNodesInitialized();
-
-const resizeObserver = shallowRef<ResizeObserver>();
-
 watch(
   nodesInitialized,
   (isInit) => {
     if (isInit) {
-      nextTick(() => {
-        emits.nodesInitialized(Array.from(nodeLookup.values(), node => node.internals.userNode));
-      });
+      emits.nodesInitialized(Array.from(nodeLookup.values(), node => node.internals.userNode));
     }
   },
-  { immediate: true },
+  { immediate: true, flush: 'post' },
 );
 
 onMounted(() => {
@@ -59,7 +57,7 @@ onMounted(() => {
       };
     });
 
-    nextTick(() => updateNodeDimensions(updates));
+    updateNodeDimensions(updates);
   });
 });
 

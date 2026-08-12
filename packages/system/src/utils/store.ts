@@ -126,6 +126,15 @@ type AdoptUserNodesReturn = {
   hasSelectedNodes: boolean;
 };
 
+type SubflowContext<NodeType extends NodeBase> = {
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>;
+  parentLookup: ParentLookup<InternalNodeBase<NodeType>>;
+  options: UpdateNodesOptions<NodeType>;
+  rootParentIndex: { i: number };
+  processedNodes: Set<string>;
+  deferredChildNodes: Map<string, InternalNodeBase<NodeType>[]>;
+};
+
 export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: NodeType[],
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
@@ -137,11 +146,24 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   const tmpLookup = new Map(nodeLookup);
   const selectedNodeZ: number =
     _options?.elevateNodesOnSelect && !isManualZIndexMode(_options.zIndexMode) ? SELECTED_NODE_Z : 0;
+  // We track the nodes that already have been processed (relevant for subflows)
+  const processedNodes = new Set<string>();
+  // Deferred child nodes are grouped by the parent id they are waiting for
+  const deferredChildNodes = new Map<string, InternalNodeBase<NodeType>[]>();
   let nodesInitialized = nodes.length > 0;
   let hasSelectedNodes = false;
 
   nodeLookup.clear();
   parentLookup.clear();
+
+  const subflowContext = {
+    nodeLookup,
+    parentLookup,
+    options,
+    rootParentIndex,
+    processedNodes,
+    deferredChildNodes,
+  };
 
   for (const userNode of nodes) {
     let internalNode = tmpLookup.get(userNode.id);
@@ -181,14 +203,49 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       nodesInitialized = false;
     }
 
-    if (userNode.parentId) {
-      updateChildNode(internalNode, nodeLookup, parentLookup, options, rootParentIndex);
-    }
+    resolveSubflowsForNode(internalNode, subflowContext);
 
     hasSelectedNodes ||= userNode.selected ?? false;
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    // Any deferred child node which has not been processed yet is missing a parent node
+    for (const childNodes of deferredChildNodes.values()) {
+      childNodes.forEach((childNode) => {
+        console.warn(`Parent node with id "${childNode.parentId}" is missing for child node with id "${childNode.id}"`);
+      });
+    }
+  }
+
   return { nodesInitialized, hasSelectedNodes };
+}
+
+function resolveSubflowsForNode<NodeType extends NodeBase>(
+  node: InternalNodeBase<NodeType>,
+  context: SubflowContext<NodeType>
+) {
+  const { nodeLookup, parentLookup, options, rootParentIndex, processedNodes, deferredChildNodes } = context;
+
+  // The parent may appear later in the nodes array or may itself still be deferred.
+  if (node.parentId && !processedNodes.has(node.parentId)) {
+    const children = deferredChildNodes.get(node.parentId) ?? [];
+    children.push(node);
+    deferredChildNodes.set(node.parentId, children);
+    return;
+  }
+
+  if (node.parentId) {
+    updateChildNode(node, nodeLookup, parentLookup, options, rootParentIndex);
+  }
+
+  processedNodes.add(node.id);
+
+  // Processing this node may unblock multiple generations of descendants.
+  const children = deferredChildNodes.get(node.id);
+  if (children) {
+    deferredChildNodes.delete(node.id);
+    children.forEach((child) => resolveSubflowsForNode(child, context));
+  }
 }
 
 function updateParentLookup<NodeType extends NodeBase>(
@@ -223,9 +280,7 @@ function updateChildNode<NodeType extends NodeBase>(
   const parentNode = nodeLookup.get(parentId);
 
   if (!parentNode) {
-    console.warn(
-      `Parent node ${parentId} not found. Please make sure that parent nodes are in front of their child nodes in the nodes array.`
-    );
+    console.warn(`Parent node ${parentId} not found.`);
     return;
   }
 

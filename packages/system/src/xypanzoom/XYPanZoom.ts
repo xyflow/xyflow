@@ -130,6 +130,7 @@ export function XYPanZoom({
     zoomOnPinch,
     zoomOnScroll,
     zoomOnDoubleClick,
+    panActivationKeyPressed = false,
     zoomActivationKeyPressed,
     lib,
     onTransformChange,
@@ -198,6 +199,7 @@ export function XYPanZoom({
     d3ZoomInstance.on('end', panZoomEndHandler);
 
     const filter = createFilter({
+      panActivationKeyPressed,
       zoomActivationKeyPressed,
       panOnDrag,
       zoomOnScroll,

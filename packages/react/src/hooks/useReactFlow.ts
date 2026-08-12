@@ -9,6 +9,7 @@ import {
   NodeRemoveChange,
   nodeToRect,
   withResolvers,
+  changeParentNode,
   type Rect,
 } from '@xyflow/system';
 
@@ -260,6 +261,20 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
             return options.replace ? { ...node, data: nextData } : { ...node, data: { ...node.data, ...nextData } };
           },
           options
+        );
+      },
+      changeParent: (nodeId: string, parentId: string | null) => {
+        changeParentNode(
+          nodeId,
+          store.getState().nodeLookup,
+          parentId,
+          store.getState().nodeOrigin,
+          ({ nodeId, parentId, x, y }) => {
+            updateNode(nodeId, {
+              parentId: parentId ?? undefined,
+              position: { x, y },
+            } as Partial<NodeType>);
+          }
         );
       },
       updateEdge,

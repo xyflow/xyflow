@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { PanelPosition, ProOptions } from '@xyflow/system';
+import { isDev } from '../../utils/log';
 import Panel from '../Panel/Panel.vue';
 
 const { proOptions = undefined, position = 'bottom-right' } = defineProps<{
@@ -7,7 +8,7 @@ const { proOptions = undefined, position = 'bottom-right' } = defineProps<{
   position?: PanelPosition;
 }>();
 
-const link = `https://vueflow.dev${process.env.NODE_ENV === 'production' ? '?utm_source=attribution' : '/attribution'}`;
+const link = `https://vueflow.dev${isDev() ? '/attribution' : '?utm_source=attribution'}`;
 </script>
 
 <script lang="ts">
@@ -22,7 +23,7 @@ export default {
     v-if="!proOptions?.hideAttribution"
     :position="position"
     class="vue-flow__attribution"
-    :data-message="`Please only hide this attribution when you are subscribed to Vue Flow Pro: ${link}`"
+    v-bind="{ 'data-message': `Please only hide this attribution when you are subscribed to Vue Flow Pro: ${link}` }"
   >
     <a :href="link" target="_blank" rel="noopener noreferrer" aria-label="Vue Flow attribution">
       Vue Flow

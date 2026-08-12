@@ -37,7 +37,7 @@ const {
   selectionKeyCode,
   selectionOnDrag,
   paneClickDistance,
-  connectionStartHandle,
+  connection,
 } = storeToRefs(useStore());
 
 const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
@@ -106,7 +106,7 @@ onMounted(() => {
         noWheelClassName,
         paneClickDistance,
         selectionOnDragActive,
-        connectionStartHandle,
+        connection,
       ],
       () => {
         panZoom.value?.update({
@@ -130,7 +130,7 @@ onMounted(() => {
             emits.viewportChange({ x: nextTransform[0], y: nextTransform[1], zoom: nextTransform[2] });
             transform.value = nextTransform;
           },
-          connectionInProgress: !!connectionStartHandle.value,
+          connectionInProgress: connection.value.inProgress,
           lib: 'vue',
         });
       },
@@ -143,6 +143,7 @@ onMounted(() => {
 <script lang="ts">
 export default {
   name: 'ZoomPane',
+  compatConfig: { MODE: 3 },
 };
 </script>
 
@@ -151,7 +152,7 @@ export default {
     <Pane
       :is-selecting="isSelecting"
       :selection-key-pressed="selectionKeyPressed"
-      :class="{ connecting: !!connectionStartHandle, dragging: paneDragging, draggable: shouldPanOnDrag }"
+      :class="{ connecting: connection.inProgress, dragging: paneDragging, draggable: shouldPanOnDrag }"
     >
       <Viewport>
         <EdgeRenderer />
