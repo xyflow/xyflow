@@ -39,7 +39,10 @@ export function useDrag(params: UseDragParams) {
 
   const dragging = shallowRef(false);
 
-  let dragInstance: ReturnType<typeof XYDrag> | undefined;
+  // Reactive so the update watcher below re-runs (and re-binds) whenever a new instance is created.
+  // The creating effect re-runs whenever `el` is reassigned, so without this dependency a create that lands after
+  // the update watcher last ran would leave the live instance with no d3 listeners and node dragging silently stops.
+  const dragInstance = shallowRef<ReturnType<typeof XYDrag>>();
 
   watchEffect((onCleanup) => {
     const nodeEl = el.value;
@@ -51,7 +54,7 @@ export function useDrag(params: UseDragParams) {
     let dragFired = false;
     let pointerDownPos = { x: 0, y: 0 };
 
-    dragInstance = XYDrag({
+    const instance = XYDrag({
       getStoreItems: () => ({
         get nodes() {
           return getNodes.value as NodeBase[];
@@ -136,6 +139,8 @@ export function useDrag(params: UseDragParams) {
       },
     });
 
+    dragInstance.value = instance;
+
     // Handle the "moved slightly but within threshold" click: XYDrag won't fire drag events for
     // sub-threshold movement and d3 suppresses the native click, so detect it with pointer listeners.
     const handlePointerDown = (e: PointerEvent) => {
@@ -160,16 +165,16 @@ export function useDrag(params: UseDragParams) {
     target.addEventListener('pointerup', handlePointerUp);
 
     onCleanup(() => {
-      dragInstance?.destroy();
-      dragInstance = undefined;
+      instance.destroy();
+      dragInstance.value = undefined;
       target.removeEventListener('pointerdown', handlePointerDown);
       target.removeEventListener('pointerup', handlePointerUp);
     });
   });
 
-  // push prop changes to the live instance instead of tearing it down and rebuilding it
   watch(
     [
+      dragInstance,
       () => store.noDragClassName,
       () => toValue(dragHandle),
       () => toValue(selectable),
@@ -177,12 +182,12 @@ export function useDrag(params: UseDragParams) {
       () => toValue(disabled),
       el,
     ],
-    ([noDragClassName, handleSelector, isSelectable, nodeClickDistance, isDisabled, nodeEl]) => {
-      if (isDisabled || !nodeEl || !dragInstance) {
+    ([instance, noDragClassName, handleSelector, isSelectable, nodeClickDistance, isDisabled, nodeEl]) => {
+      if (isDisabled || !nodeEl || !instance) {
         return;
       }
 
-      dragInstance.update({ noDragClassName, handleSelector, isSelectable, nodeId: id, domNode: nodeEl, nodeClickDistance });
+      instance.update({ noDragClassName, handleSelector, isSelectable, nodeId: id, domNode: nodeEl, nodeClickDistance });
     },
     { immediate: true },
   );
