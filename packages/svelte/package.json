@@ -70,7 +70,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-svelte": "^3.13.0",
     "globals": "^16.5.0",
-    "postcss": "^8.5.6",
+    "postcss": "^8.5.23",
     "postcss-cli": "^11.0.1",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-import": "^16.1.1",
