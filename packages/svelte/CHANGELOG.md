@@ -1,5 +1,37 @@
 # @xyflow/svelte
 
+## 1.6.3
+### Patch Changes
+
+
+
+- [#5902](https://github.com/xyflow/xyflow/pull/5902) [`393d951`](https://github.com/xyflow/xyflow/commit/393d95161802948a3c9cca55dde3d807e9a634f1) - Allow middle-mouse viewport panning to start from a selection rectangle.
+
+
+
+- [#5889](https://github.com/xyflow/xyflow/pull/5889) [`ff126a0`](https://github.com/xyflow/xyflow/commit/ff126a06a57c341948407d7f66b2972e2627828a) - Fix `extent: 'parent'` not immediately resolving when parent has `width` or `initialWidth`.
+
+
+
+- [#5930](https://github.com/xyflow/xyflow/pull/5930) [`48293bf`](https://github.com/xyflow/xyflow/commit/48293bf948c06c040f718fb0a3f0b82dda2acd77) - Fix module imports to adhere to Node ESM & Typescript conventions
+
+
+
+- [#5918](https://github.com/xyflow/xyflow/pull/5918) [`c5d7442`](https://github.com/xyflow/xyflow/commit/c5d74425a57adf18a5d582cf51d141909b564fd4) - Fix selection box appearing when dragging the pane via touch. Prefer touch panning over drag selection when `selectionOnDrag` is combined with mouse-button-specific `panOnDrag` settings.
+
+
+
+- [#5922](https://github.com/xyflow/xyflow/pull/5922) [`392da00`](https://github.com/xyflow/xyflow/commit/392da00ce0aa97c99cd7a7561fe69b20e1c2f0ca) - Allow `Control` to activate pane panning with a primary-button drag.
+
+- Updated dependencies [[`393d951`](https://github.com/xyflow/xyflow/commit/393d95161802948a3c9cca55dde3d807e9a634f1), [`ff126a0`](https://github.com/xyflow/xyflow/commit/ff126a06a57c341948407d7f66b2972e2627828a), [`e5d86bd`](https://github.com/xyflow/xyflow/commit/e5d86bde2379439a6dd33ccecb1cba354fe4f037), [`392da00`](https://github.com/xyflow/xyflow/commit/392da00ce0aa97c99cd7a7561fe69b20e1c2f0ca)]:
+  - @xyflow/system@0.0.80
+
+## 1.6.2
+### Patch Changes
+
+- Updated dependencies [[`c707267`](https://github.com/xyflow/xyflow/commit/c707267bc80bc954fdc69a08c9e00c98068dd613), [`0c0cebc`](https://github.com/xyflow/xyflow/commit/0c0cebc08cc34d2852d1ea429df638732b3edf68), [`56cf3b0`](https://github.com/xyflow/xyflow/commit/56cf3b00369a680a71743e4fb277db26e861d4b0), [`a01bb6b`](https://github.com/xyflow/xyflow/commit/a01bb6bf51e2de4eeee052187f3ce533c0e77754), [`9b3f390`](https://github.com/xyflow/xyflow/commit/9b3f390e21c1801832449389b069c4e5a13b4d7f), [`cdfcbeb`](https://github.com/xyflow/xyflow/commit/cdfcbeb9618437b2e7c35336db157e36a5a0731e)]:
+  - @xyflow/system@0.0.79
+
 ## 1.6.1
 ### Patch Changes
 

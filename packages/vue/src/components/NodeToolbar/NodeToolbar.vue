@@ -33,7 +33,7 @@ const nodes = computed(() => {
     }
 
     return acc;
-  }, [] as InternalNode[]);
+  }, []);
 });
 
 const isActive = computed(() =>

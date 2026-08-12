@@ -142,6 +142,12 @@ export function Pane({
   // We are using capture here in order to prevent other pointer events
   // to be able to create a selection above a node or an edge
   const onPointerDownCapture = (event: ReactPointerEvent): void => {
+    // Mouse button arrays only restrict mouse input. Let touch panning handle this gesture
+    // unless the user explicitly activated selection with the selection key.
+    if (event.pointerType === 'touch' && panOnDrag !== false && !selectionKeyPressed) {
+      return;
+    }
+
     const { domNode, transform } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
     if (!containerBounds.current) return;

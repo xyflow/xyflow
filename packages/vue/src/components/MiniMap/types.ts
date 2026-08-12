@@ -8,57 +8,119 @@ export type MiniMapNodeFunc = (node: InternalNode) => string;
 export type ShapeRendering = CSSProperties['shapeRendering'];
 
 export interface MiniMapProps {
-  /** Node color, can be either a string or a string func that receives the current node */
+  /** Color of nodes on minimap. */
   nodeColor?: string | MiniMapNodeFunc;
-  /** Node stroke color, can be either a string or a string func that receives the current node */
+  /** Stroke color of nodes on minimap. */
   nodeStrokeColor?: string | MiniMapNodeFunc;
-  /** Additional node class name, can be either a string or a string func that receives the current node */
+  /** Class name applied to nodes on minimap. */
   nodeClassName?: string | MiniMapNodeFunc;
-  /** Node border radius */
+  /**
+   * Border radius of nodes on minimap.
+   *
+   * @default 5
+   */
   nodeBorderRadius?: number;
-  /** Node stroke width */
+  /**
+   * Stroke width of nodes on minimap.
+   *
+   * @default 2
+   */
   nodeStrokeWidth?: number;
-  /** Background color of minimap mask */
+  /**
+   * The color of the mask that covers the portion of the minimap not currently visible in the
+   * viewport.
+   */
   maskColor?: string;
-  /** Border color of minimap mask */
+  /** Stroke color of mask representing viewport. */
   maskStrokeColor?: string;
-  /** Border width of minimap mask */
+  /**
+   * Stroke width of mask representing viewport.
+   *
+   * @default 1
+   */
   maskStrokeWidth?: number;
-  /** Position of the minimap {@link PanelPosition} */
+  /**
+   * Position of minimap on pane, see {@link PanelPosition}.
+   *
+   * @default 'bottom-right'
+   */
   position?: PanelPosition;
-  /** Enable drag minimap to drag viewport */
+  /**
+   * Determines whether you can pan the viewport by dragging inside the minimap.
+   *
+   * @default false
+   */
   pannable?: boolean;
-  /** Enable zoom minimap to zoom viewport */
+  /**
+   * Determines whether you can zoom the viewport by scrolling inside the minimap.
+   *
+   * @default false
+   */
   zoomable?: boolean;
-
+  /**
+   * Width of the mini map, in pixels.
+   *
+   * @default 200
+   */
   width?: number;
-
+  /**
+   * Height of the mini map, in pixels.
+   *
+   * @default 150
+   */
   height?: number;
-
+  /**
+   * Accessible label for the mini map. Pass `null` to render no label. Defaults to the flow's configured
+   * mini map aria-label.
+   */
   ariaLabel?: string | null;
-  /** Enable inverse panning, i.e. drag minimap to move viewport in opposite direction */
+  /** Invert direction when panning the minimap viewport. */
   inversePan?: boolean;
-  /** Specify zoom step */
+  /**
+   * Step size for zooming in/out on minimap.
+   *
+   * @default 1
+   */
   zoomStep?: number;
-  /** Specify minimap scale */
+  /**
+   * Offset the viewport on the minimap, acts like a padding.
+   *
+   * @default 5
+   */
   offsetScale?: number;
-  /** Mask border radius */
+  /**
+   * Border radius of the viewport mask, in pixels.
+   *
+   * @default 0
+   */
   maskBorderRadius?: number;
 }
 
 /** these props are passed to mini map node slots */
 export interface MiniMapNodeProps {
+  /** The node's id. */
   id: string;
+  /** The node's type. */
   type?: string;
+  /** Whether the node is selected. */
   selected?: boolean;
+  /** Whether the node is currently being dragged. */
   dragging?: boolean;
+  /** The node's absolute position in the flow. */
   position: XYPosition;
+  /** The node's measured width and height. */
   dimensions: Dimensions;
+  /** Border radius for the rendered node, in pixels. */
   borderRadius?: number;
+  /** Fill color for the rendered node. */
   color?: string;
+  /** The SVG `shape-rendering` used to draw the node. */
   shapeRendering?: ShapeRendering;
+  /** Stroke (border) color for the rendered node. */
   strokeColor?: string;
+  /** Stroke (border) width for the rendered node. */
   strokeWidth?: number;
+  /** Whether the node is hidden (hidden nodes aren't drawn on the mini map). */
   hidden?: boolean;
 }
 

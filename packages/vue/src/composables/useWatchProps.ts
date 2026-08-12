@@ -1,5 +1,5 @@
 import type { Ref, ToRefs } from 'vue';
-import type { Edge, FlowProps, Node, VueFlowStoreHandle } from '../types';
+import type { Edge, Node, VueFlowProps, VueFlowStoreHandle } from '../types';
 import { effectScope, isRef, toRaw, toRef, watch } from 'vue';
 import { isDef } from '../utils';
 import { storeToRefs } from './storeToRefs';
@@ -73,8 +73,8 @@ function syncModelArray<ModelItem, StoreItem>(
  *   the model ref; a controlled one-way `:nodes` does not
  */
 export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
-  models: ToRefs<Pick<FlowProps<NodeType, EdgeType>, 'nodes' | 'edges'>>,
-  props: FlowProps<NodeType, EdgeType>,
+  models: ToRefs<Pick<VueFlowProps<NodeType, EdgeType>, 'nodes' | 'edges'>>,
+  props: VueFlowProps<NodeType, EdgeType>,
   handle: VueFlowStoreHandle<NodeType, EdgeType>,
   syncBack: { nodes: boolean; edges: boolean },
 ) {

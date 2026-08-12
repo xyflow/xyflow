@@ -1,16 +1,35 @@
 <script lang="ts" setup>
 import type { XYPosition } from '@xyflow/system';
 import type { EdgeChange, NodeChange } from '../../types';
-import { areSetsEqual, calcAutoPan, getEventPosition, getNodesInside, pointToRendererPoint, rendererPointToPoint, SelectionMode } from '@xyflow/system';
+import {
+  areSetsEqual,
+  calcAutoPan,
+  EdgeChangeset,
+  getEventPosition,
+  getNodesInside,
+  getSelectionChanges,
+  NodeChangeset,
+  pointToRendererPoint,
+  rendererPointToPoint,
+  SelectionMode,
+} from '@xyflow/system';
 import { onUnmounted, shallowRef, toRef, watch } from 'vue';
 import NodesSelection from '../../components/NodesSelection/NodesSelection.vue';
 import UserSelection from '../../components/UserSelection/UserSelection.vue';
 import { storeToRefs, useKeyPress, useStore, useVueFlow } from '../../composables';
-import { getSelectionChanges } from '../../utils';
 
 const { isSelecting, selectionKeyPressed } = defineProps<{ isSelecting: boolean; selectionKeyPressed: boolean }>();
 
-const { emits, removeSelectedNodes, removeSelectedEdges, resetSelectedElements, getSelectedEdges, getSelectedNodes, deleteElements, panBy } = useVueFlow();
+const {
+  emits,
+  removeSelectedNodes,
+  removeSelectedEdges,
+  resetSelectedElements,
+  getSelectedEdges,
+  getSelectedNodes,
+  deleteElements,
+  panBy,
+} = useVueFlow();
 
 const { edgeLookup, nodeLookup } = useStore();
 
@@ -121,16 +140,16 @@ function onPointerDown(event: PointerEvent) {
   containerBounds.value = vueFlowRef.value?.getBoundingClientRect() ?? null;
 
   if (
-    !elementsSelectable.value
-    || !isSelecting
-    || event.button !== 0
-    || event.target !== container.value
-    || !containerBounds.value
+    !elementsSelectable.value ||
+    !isSelecting ||
+    event.button !== 0 ||
+    event.target !== container.value ||
+    !containerBounds.value
   ) {
     return;
   }
 
-  ;(event.target as Element)?.setPointerCapture?.(event.pointerId);
+  (event.target as Element)?.setPointerCapture?.(event.pointerId);
 
   const { x, y } = getEventPosition(event, containerBounds.value);
 
@@ -174,9 +193,13 @@ function commitUserSelectionRect(mouseX: number, mouseY: number) {
   const prevSelectedNodeIds = selectedNodeIds.value;
   const prevSelectedEdgeIds = selectedEdgeIds.value;
   selectedNodeIds.value = new Set(
-    getNodesInside(nodeLookup, nextUserSelectRect, transform.value, selectionMode.value === SelectionMode.Partial, true).map(
-      node => node.id,
-    ),
+    getNodesInside(
+      nodeLookup,
+      nextUserSelectRect,
+      transform.value,
+      selectionMode.value === SelectionMode.Partial,
+      true
+    ).map((node) => node.id)
   );
 
   selectedEdgeIds.value = new Set();
@@ -197,13 +220,15 @@ function commitUserSelectionRect(mouseX: number, mouseY: number) {
   }
 
   if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.value)) {
-    const changes = getSelectionChanges(nodeLookup, selectedNodeIds.value) as NodeChange[];
-    emits.nodesChange(changes);
+    const nodeChangeset = new NodeChangeset();
+    nodeChangeset.add(getSelectionChanges(nodeLookup, selectedNodeIds.value));
+    emits.nodesChange(nodeChangeset);
   }
 
   if (!areSetsEqual(prevSelectedEdgeIds, selectedEdgeIds.value)) {
-    const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.value) as EdgeChange[];
-    emits.edgesChange(changes);
+    const edgeChangeset = new EdgeChangeset();
+    edgeChangeset.add(getSelectionChanges(edgeLookup, selectedEdgeIds.value));
+    emits.edgesChange(edgeChangeset);
   }
 
   userSelectionRect.value = nextUserSelectRect;
@@ -242,7 +267,10 @@ function onPointerMove(event: PointerEvent) {
   lastPointerPosition = { x: mouseX, y: mouseY };
 
   if (!selectionInProgress) {
-    const screenStart = rendererPointToPoint({ x: userSelectionRect.value.startX, y: userSelectionRect.value.startY }, transform.value);
+    const screenStart = rendererPointToPoint(
+      { x: userSelectionRect.value.startX, y: userSelectionRect.value.startY },
+      transform.value
+    );
     const requiredDistance = selectionKeyPressed ? 0 : paneClickDistance.value;
     const distance = Math.hypot(mouseX - screenStart.x, mouseY - screenStart.y);
 
@@ -270,7 +298,7 @@ function onPointerUp(event: PointerEvent) {
     return;
   }
 
-  ;(event.target as Element)?.releasePointerCapture(event.pointerId);
+  (event.target as Element)?.releasePointerCapture(event.pointerId);
 
   if (!userSelectionActive.value && userSelectionRect.value && event.target === container.value) {
     onClick(event);
@@ -295,7 +323,7 @@ function onPointerUp(event: PointerEvent) {
 }
 
 function onPointerCancel(event: PointerEvent) {
-  ;(event.target as Element)?.releasePointerCapture?.(event.pointerId);
+  (event.target as Element)?.releasePointerCapture?.(event.pointerId);
   cleanupAutoPan();
 }
 </script>

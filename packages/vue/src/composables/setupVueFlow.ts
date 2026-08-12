@@ -1,4 +1,4 @@
-import type { Edge, FlowProps, Node, VueFlowInstance } from '../types';
+import type { Edge, Node, VueFlowInstance, VueFlowProps } from '../types';
 import { useCreateVueFlow } from './useCreateVueFlow';
 
 /**
@@ -28,7 +28,7 @@ import { useCreateVueFlow } from './useCreateVueFlow';
  * ```
  */
 export function setupVueFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
-  options?: FlowProps<NodeType, EdgeType>,
+  options?: VueFlowProps<NodeType, EdgeType>,
 ): VueFlowInstance<NodeType, EdgeType> {
   return useCreateVueFlow<NodeType, EdgeType>(options).instance;
 }

@@ -13,6 +13,7 @@ type ZoomPaneProps = Omit<
   'deleteKeyCode' | 'selectionKeyCode' | 'multiSelectionKeyCode' | 'noDragClassName' | 'disableKeyboardA11y'
 > & {
   isControlledViewport: boolean;
+  panActivationKeyPressed: boolean;
 };
 
 const selector = (s: ReactFlowState) => ({
@@ -26,6 +27,7 @@ export function ZoomPane({
   zoomOnScroll = true,
   zoomOnPinch = true,
   panOnScroll = false,
+  panActivationKeyPressed,
   panOnScrollSpeed = 0.5,
   panOnScrollMode = PanOnScrollMode.Free,
   zoomOnDoubleClick = true,
@@ -111,6 +113,7 @@ export function ZoomPane({
       zoomOnScroll,
       zoomOnPinch,
       panOnScroll,
+      panActivationKeyPressed,
       panOnScrollSpeed,
       panOnScrollMode,
       zoomOnDoubleClick,
@@ -131,6 +134,7 @@ export function ZoomPane({
     zoomOnScroll,
     zoomOnPinch,
     panOnScroll,
+    panActivationKeyPressed,
     panOnScrollSpeed,
     panOnScrollMode,
     zoomOnDoubleClick,

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { NodeDimensionChange, NodePositionChange } from '@xyflow/system';
+import type { DimensionChange, PositionChange } from '@xyflow/system';
 import type { NodeChange } from '../../types';
 import type { NodeResizerEmits, ResizeControlProps } from './types';
-import { evaluateAbsolutePosition, handleExpandParent, XYResizer } from '@xyflow/system';
+import { evaluateAbsolutePosition, handleExpandParent, NodeChangeset, XYResizer } from '@xyflow/system';
 import { computed, shallowRef, toRef, watchEffect } from 'vue';
 import { storeToRefs, useStore, useVueFlow } from '../../composables';
 import { useNodeId } from '../../composables/useNodeId';
@@ -82,7 +82,7 @@ watchEffect((onCleanup) => {
               { width, height },
               node.parentId,
               nodeLookup,
-              origin,
+              origin
             ),
           },
         };
@@ -105,7 +105,7 @@ watchEffect((onCleanup) => {
           type: 'position',
           position,
           positionAbsolute: position,
-        } as NodePositionChange);
+        } as PositionChange);
       }
 
       if (typeof changes.width !== 'undefined' || typeof changes.height !== 'undefined') {
@@ -118,7 +118,7 @@ watchEffect((onCleanup) => {
             width: changes.width ?? 0,
             height: changes.height ?? 0,
           },
-        } as NodeDimensionChange);
+        } as DimensionChange);
       }
 
       for (const child of childChanges) {
@@ -127,22 +127,27 @@ watchEffect((onCleanup) => {
           type: 'position',
           position: child.position,
           positionAbsolute: child.position,
-        } as NodePositionChange);
+        } as PositionChange);
       }
 
       if (nodeChanges.length) {
-        triggerEmits.nodesChange(nodeChanges);
+        const nodeChangeset = new NodeChangeset();
+        nodeChangeset.add(nodeChanges);
+        triggerEmits.nodesChange(nodeChangeset);
       }
     },
     onEnd: ({ width, height }) => {
-      triggerEmits.nodesChange([
+      const nodeChangeset = new NodeChangeset();
+      nodeChangeset.add([
         {
           id: nodeId.value!,
           type: 'dimensions',
           resizing: false,
           dimensions: { width, height },
-        } as NodeDimensionChange,
+        } as DimensionChange,
       ]);
+
+      triggerEmits.nodesChange(nodeChangeset);
     },
   });
 

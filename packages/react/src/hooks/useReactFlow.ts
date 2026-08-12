@@ -5,17 +5,17 @@ import {
   getNodesBounds,
   getOverlappingArea,
   isRectObject,
-  NodeChange,
   nodeToRect,
   RemoveChange,
   withResolvers,
+  changeParentNode,
   type Rect,
 } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
 import { useBatchContext } from '../components/BatchProvider';
-import { elementToRemoveChange, getElementsDiffChanges, isEdge, isNode } from '../utils';
+import { elementToRemoveChange, isEdge, isNode } from '../utils';
 import type {
   ReactFlowInstance,
   Node,
@@ -27,24 +27,6 @@ import type {
 } from '../types';
 
 const selector = (s: ReactFlowState) => !!s.panZoom;
-
-function nodesPayloadToChanges<NodeType extends Node = Node>(
-  payload: NodeType[] | ((nodes: NodeType[]) => NodeType[]),
-  state: ReactFlowState
-): NodeChange<NodeType>[] {
-  const next = typeof payload === 'function' ? payload(state.nodes as NodeType[]) : payload;
-
-  let changes = getElementsDiffChanges({
-    items: next,
-    lookup: state.nodeLookup,
-  }) as NodeChange<NodeType>[];
-
-  for (const middleware of state.onNodesChangeMiddlewareMap.values()) {
-    changes = middleware(changes) as NodeChange<NodeType>[];
-  }
-
-  return changes;
-}
 
 /**
  * This hook returns a ReactFlowInstance that can be used to update nodes and edges, manipulate the viewport, or query the current state of the flow.
@@ -286,6 +268,20 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
             return options.replace ? { ...node, data: nextData } : { ...node, data: { ...node.data, ...nextData } };
           },
           options
+        );
+      },
+      changeParent: (nodeId: string, parentId: string | null) => {
+        changeParentNode(
+          nodeId,
+          store.getState().nodeLookup,
+          parentId,
+          store.getState().nodeOrigin,
+          ({ nodeId, parentId, x, y }) => {
+            updateNode(nodeId, {
+              parentId: parentId ?? undefined,
+              position: { x, y },
+            } as Partial<NodeType>);
+          }
         );
       },
       updateEdge,

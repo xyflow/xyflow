@@ -1,5 +1,61 @@
 # @xyflow/react
 
+## 12.11.3
+### Patch Changes
+
+
+
+- [#5902](https://github.com/xyflow/xyflow/pull/5902) [`393d951`](https://github.com/xyflow/xyflow/commit/393d95161802948a3c9cca55dde3d807e9a634f1) - Allow middle-mouse viewport panning to start from a selection rectangle.
+
+
+
+- [#5889](https://github.com/xyflow/xyflow/pull/5889) [`ff126a0`](https://github.com/xyflow/xyflow/commit/ff126a06a57c341948407d7f66b2972e2627828a) - Fix `extent: 'parent'` not immediately resolving when parent has `width` or `initialWidth`.
+
+
+
+- [#5943](https://github.com/xyflow/xyflow/pull/5943) [`d1def59`](https://github.com/xyflow/xyflow/commit/d1def59dfc083304e58b8c113c8036764c7ae439) - Invoke an error if handle can not be found
+
+
+
+- [#5947](https://github.com/xyflow/xyflow/pull/5947) [`2ba040f`](https://github.com/xyflow/xyflow/commit/2ba040f148f22401b3a4fe59c42d8ea744933d24) - Use correct `nodeExtent` for internal `setNodes`.
+
+
+
+- [#5918](https://github.com/xyflow/xyflow/pull/5918) [`c5d7442`](https://github.com/xyflow/xyflow/commit/c5d74425a57adf18a5d582cf51d141909b564fd4) - Fix selection box appearing when dragging the pane via touch. Prefer touch panning over drag selection when `selectionOnDrag` is combined with mouse-button-specific `panOnDrag` settings.
+
+
+
+- [#5922](https://github.com/xyflow/xyflow/pull/5922) [`392da00`](https://github.com/xyflow/xyflow/commit/392da00ce0aa97c99cd7a7561fe69b20e1c2f0ca) - Allow `Control` to activate pane panning with a primary-button drag.
+
+
+
+- [#5929](https://github.com/xyflow/xyflow/pull/5929) [`4c5d7d2`](https://github.com/xyflow/xyflow/commit/4c5d7d276d3b1c8e5db97bc7a9fa0557cea02022) - Allow key combinations of three or more keys (e.g. `'Meta+Shift+s'`) for `useKeyPress`.
+
+
+
+- [#5938](https://github.com/xyflow/xyflow/pull/5938) [`91a052f`](https://github.com/xyflow/xyflow/commit/91a052f0554bd1a2597cfe77ce1f64786c3d4fc6) - Fix `<Background />` pattern offset miscalculation.
+
+- Updated dependencies [[`393d951`](https://github.com/xyflow/xyflow/commit/393d95161802948a3c9cca55dde3d807e9a634f1), [`ff126a0`](https://github.com/xyflow/xyflow/commit/ff126a06a57c341948407d7f66b2972e2627828a), [`e5d86bd`](https://github.com/xyflow/xyflow/commit/e5d86bde2379439a6dd33ccecb1cba354fe4f037), [`392da00`](https://github.com/xyflow/xyflow/commit/392da00ce0aa97c99cd7a7561fe69b20e1c2f0ca)]:
+  - @xyflow/system@0.0.80
+
+## 12.11.2
+### Patch Changes
+
+
+
+- [#5825](https://github.com/xyflow/xyflow/pull/5825) [`5072914`](https://github.com/xyflow/xyflow/commit/5072914791f89d99e4484f1d36c9b6781a0a2c36) - Only create an `XYDrag` instance for draggable nodes.
+
+
+
+- [#5847](https://github.com/xyflow/xyflow/pull/5847) [`742860c`](https://github.com/xyflow/xyflow/commit/742860c2939f1b5cba2fced275487fdaeee8a091) - Stop the `MiniMap` from re-rendering on every store update.
+
+
+
+- [#5846](https://github.com/xyflow/xyflow/pull/5846) [`17c64a1`](https://github.com/xyflow/xyflow/commit/17c64a158554b2a6172f6030e6c280b1dd12786c) - Apply the viewport pan/zoom transform imperatively so the `Viewport` component only renders once.
+
+- Updated dependencies [[`c707267`](https://github.com/xyflow/xyflow/commit/c707267bc80bc954fdc69a08c9e00c98068dd613), [`0c0cebc`](https://github.com/xyflow/xyflow/commit/0c0cebc08cc34d2852d1ea429df638732b3edf68), [`56cf3b0`](https://github.com/xyflow/xyflow/commit/56cf3b00369a680a71743e4fb277db26e861d4b0), [`a01bb6b`](https://github.com/xyflow/xyflow/commit/a01bb6bf51e2de4eeee052187f3ce533c0e77754), [`9b3f390`](https://github.com/xyflow/xyflow/commit/9b3f390e21c1801832449389b069c4e5a13b4d7f), [`cdfcbeb`](https://github.com/xyflow/xyflow/commit/cdfcbeb9618437b2e7c35336db157e36a5a0731e)]:
+  - @xyflow/system@0.0.79
+
 ## 12.11.1
 ### Patch Changes
 

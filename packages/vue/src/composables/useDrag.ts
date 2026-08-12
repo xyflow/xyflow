@@ -1,6 +1,6 @@
-import type { CoordinateExtent, EdgeBase, InternalNodeBase, NodeBase, NodeDragItem } from '@xyflow/system';
+import type { EdgeBase, NodeBase, NodeDragItem } from '@xyflow/system';
 import type { MaybeRefOrGetter, Ref } from 'vue';
-import type { Node, NodeDragEvent } from '../types';
+import type { NodeDragEvent } from '../types';
 import { infiniteExtent, isCoordinateExtent, XYDrag } from '@xyflow/system';
 import { shallowRef, toRef, toValue, watch, watchEffect } from 'vue';
 import { handleNodeClick } from '../utils';
@@ -12,7 +12,7 @@ interface UseDragParams {
   onDrag: (event: NodeDragEvent) => void;
   onStop: (event: NodeDragEvent) => void;
   onClick?: (event: PointerEvent) => void;
-  el: Ref<Element | null>;
+  el: Ref<HTMLDivElement | null>;
   disabled?: MaybeRefOrGetter<boolean>;
   selectable?: MaybeRefOrGetter<boolean>;
   dragHandle?: MaybeRefOrGetter<string | undefined>;
@@ -39,7 +39,10 @@ export function useDrag(params: UseDragParams) {
 
   const dragging = shallowRef(false);
 
-  let dragInstance: ReturnType<typeof XYDrag> | undefined;
+  // Reactive so the update watcher below re-runs (and re-binds) whenever a new instance is created.
+  // The creating effect re-runs whenever `el` is reassigned, so without this dependency a create that lands after
+  // the update watcher last ran would leave the live instance with no d3 listeners and node dragging silently stops.
+  const dragInstance = shallowRef<ReturnType<typeof XYDrag>>();
 
   watchEffect((onCleanup) => {
     const nodeEl = el.value;
@@ -51,7 +54,7 @@ export function useDrag(params: UseDragParams) {
     let dragFired = false;
     let pointerDownPos = { x: 0, y: 0 };
 
-    dragInstance = XYDrag({
+    const instance = XYDrag({
       getStoreItems: () => ({
         get nodes() {
           return getNodes.value as NodeBase[];
@@ -60,9 +63,9 @@ export function useDrag(params: UseDragParams) {
         get edges() {
           return getEdges.value as EdgeBase[];
         },
-        nodeExtent: (isCoordinateExtent(store.nodeExtent as CoordinateExtent)
+        nodeExtent: (isCoordinateExtent(store.nodeExtent)
           ? store.nodeExtent
-          : infiniteExtent) as CoordinateExtent,
+          : infiniteExtent),
         snapGrid: store.snapGrid,
         snapToGrid: store.snapToGrid,
         nodeOrigin: store.nodeOrigin,
@@ -74,11 +77,11 @@ export function useDrag(params: UseDragParams) {
         selectNodesOnDrag: store.selectNodesOnDrag,
         nodeDragThreshold: store.nodeDragThreshold,
         panBy,
-        unselectNodesAndEdges: (args?: { nodes?: any[]; edges?: any[] }) => {
+        unselectNodesAndEdges: (args) => {
           removeSelectedNodes(args?.nodes);
           removeSelectedEdges(args?.edges);
         },
-        updateNodePositions: (dragItems: Map<string, NodeDragItem | InternalNodeBase>, isDragging?: boolean) => {
+        updateNodePositions: (dragItems, isDragging) => {
           const items: NodeDragItem[] = [];
           for (const item of dragItems.values()) {
             const node = getInternalNode(item.id);
@@ -106,9 +109,9 @@ export function useDrag(params: UseDragParams) {
       }),
       // select the node on drag-start when `selectNodesOnDrag` is on. Single-selection deselects the rest;
       // in multi-selection an already-selected node toggles off.
-      onNodeMouseDown: (nodeId: string) => {
+      onNodeMouseDown: (nodeId) => {
         const node = getInternalNode(nodeId);
-        if (!node || !el.value) {
+        if (!node) {
           return;
         }
 
@@ -119,22 +122,24 @@ export function useDrag(params: UseDragParams) {
           removeSelectedNodes,
           nodesSelectionActive,
           false,
-          el.value as HTMLDivElement,
+          nodeEl,
         );
       },
       onDragStart: (event, _dragItems, node, nodes) => {
         dragFired = true;
         dragging.value = true;
-        onStart({ event, node: node as Node, nodes: nodes as Node[] });
+        onStart({ event, node, nodes });
       },
       onDrag: (event, _dragItems, node, nodes) => {
-        onDrag({ event, node: node as Node, nodes: nodes as Node[] });
+        onDrag({ event, node, nodes });
       },
       onDragStop: (event, _dragItems, node, nodes) => {
         dragging.value = false;
-        onStop({ event, node: node as Node, nodes: nodes as Node[] });
+        onStop({ event, node, nodes });
       },
     });
+
+    dragInstance.value = instance;
 
     // Handle the "moved slightly but within threshold" click: XYDrag won't fire drag events for
     // sub-threshold movement and d3 suppresses the native click, so detect it with pointer listeners.
@@ -155,21 +160,21 @@ export function useDrag(params: UseDragParams) {
       }
     };
 
-    const target = nodeEl as HTMLElement;
+    const target = nodeEl;
     target.addEventListener('pointerdown', handlePointerDown);
     target.addEventListener('pointerup', handlePointerUp);
 
     onCleanup(() => {
-      dragInstance?.destroy();
-      dragInstance = undefined;
+      instance.destroy();
+      dragInstance.value = undefined;
       target.removeEventListener('pointerdown', handlePointerDown);
       target.removeEventListener('pointerup', handlePointerUp);
     });
   });
 
-  // push prop changes to the live instance instead of tearing it down and rebuilding it
   watch(
     [
+      dragInstance,
       () => store.noDragClassName,
       () => toValue(dragHandle),
       () => toValue(selectable),
@@ -177,12 +182,12 @@ export function useDrag(params: UseDragParams) {
       () => toValue(disabled),
       el,
     ],
-    ([noDragClassName, handleSelector, isSelectable, nodeClickDistance, isDisabled, nodeEl]) => {
-      if (isDisabled || !nodeEl || !dragInstance) {
+    ([instance, noDragClassName, handleSelector, isSelectable, nodeClickDistance, isDisabled, nodeEl]) => {
+      if (isDisabled || !nodeEl || !instance) {
         return;
       }
 
-      dragInstance.update({ noDragClassName, handleSelector, isSelectable, nodeId: id, domNode: nodeEl, nodeClickDistance });
+      instance.update({ noDragClassName, handleSelector, isSelectable, nodeId: id, domNode: nodeEl, nodeClickDistance });
     },
     { immediate: true },
   );
