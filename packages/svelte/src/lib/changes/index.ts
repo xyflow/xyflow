@@ -1,7 +1,7 @@
-import type { Edge, Node } from '../types';
-import type { EdgeChange, ElementChangeType, NodeChange } from './types';
+import type { Edge, Node } from '../types/index.js';
+import type { EdgeChange, ElementChangeType, NodeChange } from './types.js';
 
-import { applyEdgeChanges, applyNodeChanges } from './apply';
+import { applyEdgeChanges, applyNodeChanges } from './apply.js';
 
 /** Helper to narrow down the type of a change based on it's name */
 type ChangeOfType<ChangeType extends { type: string }, T extends ChangeType['type']> = Extract<

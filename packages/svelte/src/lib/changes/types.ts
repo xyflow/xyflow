@@ -1,5 +1,5 @@
-import type { Edge, Node } from '../types';
 import type { Dimensions, XYPosition } from '@xyflow/system';
+import type { Edge, Node } from '../types/index.js';
 
 export type NodeChange<NodeType extends Node = Node> =
   | DimensionChange

@@ -1,9 +1,9 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { type PanZoomInstance, type Transform } from '@xyflow/system';
 
-  import zoom from '$lib/actions/zoom';
-  import type { ZoomProps } from './types';
-  import type { Node, Edge } from '$lib/types';
+  import zoom from '$lib/actions/zoom/index.js';
+  import type { ZoomProps } from './types.js';
+  import type { Node, Edge } from '$lib/types/index.js';
 
   let {
     store = $bindable(),
@@ -62,6 +62,7 @@
     panOnDrag: panOnDragActive,
     panOnScrollSpeed,
     panOnScrollMode,
+    panActivationKeyPressed: store.panActivationKeyPressed,
     zoomActivationKeyPressed: store.zoomActivationKeyPressed,
     preventScrolling: typeof preventScrolling === 'boolean' ? preventScrolling : true,
     noPanClassName: store.noPanClass,

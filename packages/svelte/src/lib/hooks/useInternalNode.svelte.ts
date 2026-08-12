@@ -1,5 +1,5 @@
-import { useStore } from '$lib/store';
-import type { InternalNode } from '$lib/types';
+import { useStore } from '$lib/store/index.js';
+import type { InternalNode } from '$lib/types/index.js';
 
 /**
  * Hook to get an internal node by id.

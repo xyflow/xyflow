@@ -204,6 +204,7 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
+  let hasNode = false;
   const box = nodes.reduce(
     (currBox, nodeOrId) => {
       const isId = typeof nodeOrId === 'string';
@@ -217,13 +218,22 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
             : nodeOrId;
       }
 
-      const nodeBox = currentNode ? nodeToBox(currentNode, params.nodeOrigin) : { x: 0, y: 0, x2: 0, y2: 0 };
-      return getBoundsOfBoxes(currBox, nodeBox);
+      /*
+       * Skip ids/nodes that can't be resolved (e.g. a stale or already-removed id).
+       * Merging a phantom box at the origin would stretch the bounds to include
+       * (0, 0). This mirrors getInternalNodesBounds, which skips unmatched nodes.
+       */
+      if (!currentNode) {
+        return currBox;
+      }
+
+      hasNode = true;
+      return getBoundsOfBoxes(currBox, nodeToBox(currentNode, params.nodeOrigin));
     },
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
-  return boxToRect(box);
+  return hasNode ? boxToRect(box) : { x: 0, y: 0, width: 0, height: 0 };
 };
 
 export type GetInternalNodesBoundsParams<NodeType> = {
@@ -428,8 +438,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      const parentWidth = parentNode.measured.width;
-      const parentHeight = parentNode.measured.height;
+      const { width: parentWidth, height: parentHeight } = getNodeDimensions(parentNode);
 
       if (parentWidth && parentHeight) {
         extent = [

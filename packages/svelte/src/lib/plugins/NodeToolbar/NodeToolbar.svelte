@@ -1,13 +1,13 @@
 <script lang="ts">
   import { Position, getNodeToolbarTransform } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
-  import { getNodeIdContext } from '$lib/store/context';
-  import { hideOnSSR, portal } from '$lib/actions/portal';
-  import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
+  import { useStore } from '$lib/store/index.js';
+  import { getNodeIdContext } from '$lib/store/context.js';
+  import { hideOnSSR, portal } from '$lib/actions/portal/index.js';
+  import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte.js';
 
-  import type { InternalNode } from '$lib/types';
-  import type { NodeToolbarProps } from './types';
+  import type { InternalNode } from '$lib/types/index.js';
+  import type { NodeToolbarProps } from './types.js';
 
   let {
     nodeId,

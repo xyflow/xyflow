@@ -1,4 +1,4 @@
-import { useStore } from '$lib/store';
+import { useStore } from '$lib/store/index.js';
 
 type Portal = 'viewport-back' | 'viewport-front' | 'root' | 'edge-labels';
 

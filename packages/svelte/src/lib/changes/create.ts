@@ -6,7 +6,7 @@ import type {
   RemoveChange,
   ReplaceChange,
   SelectionChange
-} from './types';
+} from './types.js';
 
 export function selectionChange(id: string, selected: boolean): SelectionChange {
   return {

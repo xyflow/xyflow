@@ -1,6 +1,6 @@
 import type { Changeset } from '.';
-import type { Edge, Node } from '../types';
-import type { EdgeChange, ElementChangeType, NodeChange } from './types';
+import type { Edge, Node } from '../types/index.js';
+import type { EdgeChange, ElementChangeType, NodeChange } from './types.js';
 
 export function applyNodeChanges<NodeType extends Node = Node>(
   nodes: NodeType[],

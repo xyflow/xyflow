@@ -1,5 +1,5 @@
-import { useStore } from '$lib/store';
-import type { Edge, Node } from '$lib/types';
+import { useStore } from '$lib/store/index.js';
+import type { Edge, Node } from '$lib/types/index.js';
 import type { Viewport } from '@xyflow/system';
 
 /**

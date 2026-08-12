@@ -1,5 +1,5 @@
-import type { Edge, Node, OnSelectionChange } from '$lib/types';
-import { useStore } from '$lib/hooks/useStore';
+import type { Edge, Node, OnSelectionChange } from '$lib/types/index.js';
+import { useStore } from '$lib/hooks/useStore.js';
 
 /**
  * Hook for listening to selection changes.

@@ -1,5 +1,5 @@
 import { XYMinimap, type PanZoomInstance, type XYMinimapUpdate } from '@xyflow/system';
-import type { SvelteFlowStore } from '$lib/store/types';
+import type { SvelteFlowStore } from '$lib/store/types.js';
 
 export type UseInteractiveParams = {
   panZoom: PanZoomInstance;
