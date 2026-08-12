@@ -18,7 +18,8 @@ import {
   type HandleConnection,
   getNodesBounds,
   type NodeChange,
-  defaultFitViewPadding
+  defaultFitViewPadding,
+  changeParentNode
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -232,10 +233,12 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     options?: { replace: boolean }
   ) => void;
   /**
-   * Returns the nodes, edges and the viewport as a JSON object.
+   * Changes the parent of a node.
    *
-   * @returns the nodes, edges and the viewport as a JSON object
+   * @param nodeId - id of the node to change the parent of
+   * @param parentId - id of the new parent
    */
+  changeParent: (nodeId: string, parentId: string | null) => void;
   /**
    * Updates an edge.
    *
@@ -251,6 +254,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options?: { replace: boolean }
   ) => void;
+  /**
+   * Returns the nodes, edges and the viewport as a JSON object.
+   *
+   * @returns the nodes, edges and the viewport as a JSON object
+   */
   toObject: () => { nodes: NodeType[]; edges: EdgeType[]; viewport: Viewport };
   /**
    * Returns the bounds of the given nodes or node ids.
@@ -563,6 +571,20 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         ...node,
         data: options?.replace ? nextData : { ...node.data, ...nextData }
       }));
+    },
+    changeParent: (nodeId: string, parentId: string | null) => {
+      changeParentNode(
+        nodeId,
+        store.nodeLookup,
+        parentId,
+        store.nodeOrigin,
+        ({ nodeId, parentId, x, y }) => {
+          updateNode(nodeId, {
+            parentId: parentId ?? undefined,
+            position: { x, y }
+          } as Partial<NodeType>);
+        }
+      );
     },
     updateEdge,
     getNodesBounds: (nodes) => {
