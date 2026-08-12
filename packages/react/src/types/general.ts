@@ -28,7 +28,7 @@ import type { Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
  *
  * ```ts
  * const onNodesChange: OnNodesChange<MyNodeType> = useCallback((changes) => {
- *  setNodes((nodes) => applyNodeChanges(nodes, changes));
+ *  setNodes((nodes) => changes.applyTo(nodes));
  * },[]);
  * ```
  */
@@ -43,7 +43,7 @@ export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChangese
  *
  * ```ts
  * const onEdgesChange: OnEdgesChange<MyEdgeType> = useCallback((changes) => {
- *  setEdges((edges) => applyEdgeChanges(edges, changes));
+ *  setEdges((edges) => changes.applyTo(edges));
  * },[]);
  * ```
  */

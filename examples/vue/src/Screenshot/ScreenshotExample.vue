@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Edge, Node } from '@xyflow/vue';
+import type { Edge, Node, NodeChangeset } from '@xyflow/vue';
 import { Panel, VueFlow } from '@xyflow/vue';
 import { useScreenshot } from './useScreenshot';
 
@@ -27,15 +27,16 @@ function doScreenshot() {
 
   capture(flowEl.value, { shouldDownload: true });
 }
+function onNodesChange(changes: NodeChangeset<Node>) {
+  nodes.value = changes.applyTo(nodes.value);
+}
 </script>
 
 <template>
   <div ref="flowEl" style="width: 100%; height: 100%">
-    <VueFlow :nodes="nodes" :edges="edges" fit-view style="background: white">
+    <VueFlow :nodes="nodes" :edges="edges" @nodes-change="onNodesChange" fit-view style="background: white">
       <Panel position="top-center">
-        <button @click="doScreenshot">
-          Screenshot
-        </button>
+        <button @click="doScreenshot">Screenshot</button>
       </Panel>
     </VueFlow>
   </div>

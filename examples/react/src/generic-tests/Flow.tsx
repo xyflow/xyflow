@@ -1,8 +1,6 @@
 import { useState, useCallback } from 'react';
 import {
   ReactFlow,
-  applyNodeChanges,
-  applyEdgeChanges,
   addEdge,
   OnNodesChange,
   OnEdgesChange,
@@ -11,6 +9,8 @@ import {
   Panel,
   MiniMap,
   Background,
+  Node,
+  Edge,
 } from '@xyflow/react';
 
 type FlowProps = {
@@ -22,9 +22,9 @@ export default ({ flowConfig }: FlowProps) => {
   const [edges, setEdges] = useState(flowConfig.flowProps?.edges);
   const props = { ...flowConfig.flowProps, nodes, edges };
 
-  const onNodesChange: OnNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
-  const onEdgesChange: OnEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
-  const onConnect: OnConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+  const onNodesChange: OnNodesChange = useCallback((changes) => setNodes((nds) => changes.applyTo(nds as Node[])), []);
+  const onEdgesChange: OnEdgesChange = useCallback((changes) => setEdges((eds) => changes.applyTo(eds as Edge[])), []);
+  const onConnect: OnConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds as Edge[])), []);
 
   return (
     <div style={{ height: '100%' }}>

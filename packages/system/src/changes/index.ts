@@ -229,8 +229,12 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
  * ```
  */
 export class NodeChangeset<NodeType extends NodeBase = NodeBase> extends Changeset<NodeType, NodeChange<NodeType>> {
-  constructor() {
+  constructor(changes?: NodeChange<NodeType>[]) {
     super(applyNodeChanges);
+
+    if (changes) {
+      this.add(changes);
+    }
   }
 
   /**
@@ -269,8 +273,12 @@ export class NodeChangeset<NodeType extends NodeBase = NodeBase> extends Changes
  * ```
  */
 export class EdgeChangeset<EdgeType extends EdgeBase = EdgeBase> extends Changeset<EdgeType, EdgeChange<EdgeType>> {
-  constructor() {
+  constructor(changes?: EdgeChange<EdgeType>[]) {
     super(applyEdgeChanges);
+
+    if (changes) {
+      this.add(changes);
+    }
   }
 
   /**

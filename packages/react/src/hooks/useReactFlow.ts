@@ -10,12 +10,13 @@ import {
   withResolvers,
   changeParentNode,
   type Rect,
+  removeChange,
 } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
 import { useBatchContext } from '../components/BatchProvider';
-import { elementToRemoveChange, isEdge, isNode } from '../utils';
+import { isEdge, isNode } from '../utils';
 import type {
   ReactFlowInstance,
   Node,
@@ -191,14 +192,14 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         const hasMatchingNodes = matchingNodes.length > 0;
 
         if (hasMatchingEdges) {
-          const edgeChanges: RemoveChange[] = matchingEdges.map(elementToRemoveChange);
+          const edgeChanges: RemoveChange[] = matchingEdges.map((e) => removeChange(e.id));
 
           onEdgesDelete?.(matchingEdges);
           queueEdgeChanges(edgeChanges);
         }
 
         if (hasMatchingNodes) {
-          const nodeChanges: RemoveChange[] = matchingNodes.map(elementToRemoveChange);
+          const nodeChanges: RemoveChange[] = matchingNodes.map((n) => removeChange(n.id));
 
           onNodesDelete?.(matchingNodes);
           queueNodeChanges(nodeChanges);

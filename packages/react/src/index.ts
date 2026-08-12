@@ -34,7 +34,6 @@ export { useEdge } from './hooks/useEdges';
 export { experimental_useOnNodesChangeMiddleware } from './hooks/useOnNodesChangeMiddleware';
 export { experimental_useOnEdgesChangeMiddleware } from './hooks/useOnEdgesChangeMiddleware';
 
-export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { isNode, isEdge } from './utils/general';
 
 export * from './additional-components';
