@@ -19,7 +19,7 @@ import {
   getNodesBounds,
   type NodeChange,
   defaultFitViewPadding,
-  getNodeDimensions
+  changeParentNode
 } from '@xyflow/system';
 
 import { useStore } from '$lib/store';
@@ -238,7 +238,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * @param nodeId - id of the node to change the parent of
    * @param parentId - id of the new parent
    */
-  changeParent: (nodeId: string, parentId: string | undefined) => void;
+  changeParent: (nodeId: string, parentId: string | null) => void;
   /**
    * Updates an edge.
    *
@@ -572,51 +572,19 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         data: options?.replace ? nextData : { ...node.data, ...nextData }
       }));
     },
-    changeParent: (nodeId: string, parentId: string | undefined) => {
-      const node = getInternalNode(nodeId);
-      if (!node) {
-        console.warn(`changeParent: Node "${nodeId}" does not exists`);
-        return;
-      }
-
-      if (parentId === nodeId) {
-        return;
-      }
-
-      const childPosition = node.internals.positionAbsolute;
-      const childOrigin = node.origin ?? store.nodeOrigin;
-      const childDimensions = getNodeDimensions(node);
-
-      const originCorrection = {
-        x: childOrigin[0] * childDimensions.width,
-        y: childOrigin[1] * childDimensions.height
-      };
-
-      if (parentId === undefined) {
-        updateNode(nodeId, {
-          parentId: undefined,
-          position: {
-            x: childPosition.x + originCorrection.x,
-            y: childPosition.y + originCorrection.y
-          }
-        } as Partial<NodeType>);
-        return;
-      }
-
-      const parentNode = getInternalNode(parentId);
-      if (!parentNode) {
-        console.warn(`changeParent: Parent node "${parentId}" does not exists`);
-        return;
-      }
-
-      const parentPosition = parentNode.internals.positionAbsolute;
-      updateNode(nodeId, {
+    changeParent: (nodeId: string, parentId: string | null) => {
+      changeParentNode(
+        nodeId,
+        store.nodeLookup,
         parentId,
-        position: {
-          x: childPosition.x + originCorrection.x - parentPosition.x,
-          y: childPosition.y + originCorrection.y - parentPosition.y
+        store.nodeOrigin,
+        ({ nodeId, parentId, x, y }) => {
+          updateNode(nodeId, {
+            parentId: parentId ?? undefined,
+            position: { x, y }
+          } as Partial<NodeType>);
         }
-      } as Partial<NodeType>);
+      );
     },
     updateEdge,
     getNodesBounds: (nodes) => {

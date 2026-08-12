@@ -191,17 +191,23 @@ export type SetNodes<NodeType extends Node = Node> = (nodes: NodeType[] | ((node
 export type SetEdges<EdgeType extends Edge = Edge> = (edges: EdgeType[] | ((edges: EdgeType[]) => EdgeType[])) => void;
 
 export type AddNodes<NodeType extends Node = Node> = (
-  nodes: NodeType | NodeType[] | ((nodes: NodeType[]) => NodeType | NodeType[]),
+  nodes: NodeType | NodeType[] | ((nodes: NodeType[]) => NodeType | NodeType[])
 ) => void;
 
 export type RemoveNodes<NodeType extends Node = Node> = (
-  nodes: (string | NodeType) | (NodeType | string)[] | ((nodes: NodeType[]) => (string | NodeType) | (NodeType | string)[]),
+  nodes:
+    | (string | NodeType)
+    | (NodeType | string)[]
+    | ((nodes: NodeType[]) => (string | NodeType) | (NodeType | string)[]),
   removeConnectedEdges?: boolean,
-  removeChildren?: boolean,
+  removeChildren?: boolean
 ) => void;
 
 export type RemoveEdges<EdgeType extends Edge = Edge> = (
-  edges: (string | EdgeType) | (EdgeType | string)[] | ((edges: EdgeType[]) => (string | EdgeType) | (EdgeType | string)[]),
+  edges:
+    | (string | EdgeType)
+    | (EdgeType | string)[]
+    | ((edges: EdgeType[]) => (string | EdgeType) | (EdgeType | string)[])
 ) => void;
 
 /**
@@ -217,34 +223,37 @@ export type AddEdges<EdgeType extends Edge = Edge> = (
   edgesOrConnections:
     | (EdgeType | Connection)
     | (EdgeType | Connection)[]
-    | ((edges: EdgeType[]) => (EdgeType | Connection) | (EdgeType | Connection)[]),
+    | ((edges: EdgeType[]) => (EdgeType | Connection) | (EdgeType | Connection)[])
 ) => void;
 
 export type ReconnectEdge<EdgeType extends Edge = Edge> = (
   oldEdge: EdgeType,
   newConnection: Connection,
-  shouldReplaceId?: boolean,
+  shouldReplaceId?: boolean
 ) => EdgeType | false;
 
 export type UpdateEdge<EdgeType extends Edge = Edge> = (
   id: string,
   edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
-  options?: { replace: boolean },
+  options?: { replace: boolean }
 ) => void;
 
 export type UpdateEdgeData<EdgeType extends Edge = Edge> = (
   id: string,
   dataUpdate: Partial<EdgeType['data']> | ((edge: EdgeType) => Partial<EdgeType['data']>),
-  options?: { replace: boolean },
+  options?: { replace: boolean }
 ) => void;
 
 // `nodes`/`edges` are intentionally excluded, set them via setNodes/setEdges instead.
-export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
-  = Partial<Omit<State<NodeType, EdgeType>, 'nodes' | 'edges' | 'vueFlowRef' | 'viewportRef' | 'dimensions' | 'hooks'>>
-    & Partial<Pick<FlowProps<NodeType, EdgeType>, 'fitView'>>;
+export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Partial<
+  Omit<State<NodeType, EdgeType>, 'nodes' | 'edges' | 'vueFlowRef' | 'viewportRef' | 'dimensions' | 'hooks'>
+> &
+  Partial<Pick<FlowProps<NodeType, EdgeType>, 'fitView'>>;
 
 export type SetState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
-  state: SetStateOptions<NodeType, EdgeType> | ((state: State<NodeType, EdgeType>) => SetStateOptions<NodeType, EdgeType>),
+  state:
+    | SetStateOptions<NodeType, EdgeType>
+    | ((state: State<NodeType, EdgeType>) => SetStateOptions<NodeType, EdgeType>)
 ) => void;
 
 export type UpdateNodePosition = (dragItems: NodeDragItem[], changed: boolean, dragging: boolean) => void;
@@ -258,32 +267,40 @@ export type GetNode<NodeType extends Node = Node> = (id: string | undefined | nu
  * authoritative `measured`) for an id. This is the accessor for store-computed data; `getNode` exposes
  * the user-facing node.
  */
-export type GetInternalNode<NodeType extends Node = Node> = (id: string | undefined | null) => InternalNode<NodeType> | undefined;
+export type GetInternalNode<NodeType extends Node = Node> = (
+  id: string | undefined | null
+) => InternalNode<NodeType> | undefined;
 
 export type GetEdge<EdgeType extends Edge = Edge> = (id: string | undefined | null) => EdgeType | undefined;
 
 export type GetIntersectingNodes<NodeType extends Node = Node> = (
   node: (Partial<NodeType> & { id: NodeType['id'] }) | Rect,
   partially?: boolean,
-  nodes?: InternalNode<NodeType>[],
+  nodes?: InternalNode<NodeType>[]
 ) => InternalNode<NodeType>[];
 
 export type UpdateNode<NodeType extends Node = Node> = (
   id: string,
   nodeUpdate: Partial<NodeType> | ((node: InternalNode<NodeType>) => Partial<NodeType>),
-  options?: { replace: boolean },
+  options?: { replace: boolean }
 ) => void;
 
 export type UpdateNodeData<NodeType extends Node = Node> = (
   id: string,
   dataUpdate: Partial<NodeType['data']> | ((node: InternalNode<NodeType>) => Partial<NodeType['data']>),
-  options?: { replace: boolean },
+  options?: { replace: boolean }
 ) => void;
 
-export type IsNodeIntersecting<NodeType extends Node = Node> = (node: (Partial<NodeType> & { id: NodeType['id'] }) | Rect, area: Rect, partially?: boolean) => boolean;
+export type IsNodeIntersecting<NodeType extends Node = Node> = (
+  node: (Partial<NodeType> & { id: NodeType['id'] }) | Rect,
+  area: Rect,
+  partially?: boolean
+) => boolean;
 
-export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
-  extends Omit<ViewportHelper<NodeType>, 'viewportInitialized'> {
+export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = Edge> extends Omit<
+  ViewportHelper<NodeType>,
+  'viewportInitialized'
+> {
   /** parses nodes and re-sets the state */
   setNodes: SetNodes<NodeType>;
   /** parses edges and re-sets the state */
@@ -315,7 +332,7 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   /** updates the data of a node */
   updateNodeData: UpdateNodeData<NodeType>;
   /** changes the parent of a node, keeping its absolute position */
-  changeParent: (nodeId: string, parentId: string | undefined) => void;
+  changeParent: (nodeId: string, parentId: string | null) => void;
   /** applies default edge change handler */
   applyEdgeChanges: (changes: EdgeChange<EdgeType>[]) => EdgeType[];
   /** applies default node change handler; returns the resulting user nodes */
@@ -368,7 +385,15 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   /** get a node's connected edges (accepts any nodes — it matches by id; output is the flow's `EdgeType`) */
   getConnectedEdges: (nodes: Node[]) => EdgeType[];
   /** get all connections of a handle belonging to a node */
-  getHandleConnections: ({ id, type, nodeId }: { id?: string | null; type: HandleType; nodeId: string }) => NodeConnection[];
+  getHandleConnections: ({
+    id,
+    type,
+    nodeId,
+  }: {
+    id?: string | null;
+    type: HandleType;
+    nodeId: string;
+  }) => NodeConnection[];
   /** pan the viewport; return indicates if a transform has happened or not */
   panBy: (delta: XYPosition) => Promise<boolean>;
   /** whether the viewport (panzoom) is initialized — `true` once `<ZoomPane>` has mounted and measured */
@@ -398,7 +423,7 @@ export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = E
 }
 
 export type ComputedGetters<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
-  [key in keyof Getters<NodeType, EdgeType>]: ComputedRef<Getters<NodeType, EdgeType>[key]>
+  [key in keyof Getters<NodeType, EdgeType>]: ComputedRef<Getters<NodeType, EdgeType>[key]>;
 };
 
 /**
@@ -415,9 +440,9 @@ export type VueFlowState<NodeType extends Node = Node, EdgeType extends Edge = E
 export type VueFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   readonly id: string;
   readonly emits: FlowHooksEmit<NodeType, EdgeType>;
-} & FlowHooksOn<NodeType, EdgeType>
-& Readonly<ComputedGetters<NodeType, EdgeType>>
-& Readonly<Actions<NodeType, EdgeType>>;
+} & FlowHooksOn<NodeType, EdgeType> &
+  Readonly<ComputedGetters<NodeType, EdgeType>> &
+  Readonly<Actions<NodeType, EdgeType>>;
 
 /** Internal handle bundling the two views a created store exposes; provided to descendants. */
 export interface VueFlowStoreHandle<NodeType extends Node = Node, EdgeType extends Edge = Edge> {

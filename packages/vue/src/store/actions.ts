@@ -10,22 +10,16 @@ import type {
   NodeRemoveChange,
   Rect,
 } from '@xyflow/system';
-import type {
-  Actions,
-  Edge,
-  InternalNode,
-  Node,
-  State,
-} from '../types';
+import type { Actions, Edge, InternalNode, Node, State } from '../types';
 import type { Commit } from './commit';
 import {
+  changeParentNode,
   clampPosition,
   clampPositionToParent,
   getConnectedEdges as getConnectedEdgesBase,
   getDimensions,
   getElementsToRemove,
   getHandleBounds,
-  getNodeDimensions,
   getOverlappingArea,
   handleExpandParent,
   initialConnection,
@@ -48,7 +42,6 @@ import {
   isNode,
   reconnectEdgeAction,
   validateEdges,
-  warn,
 } from '../utils';
 import { resolveFitView } from './fitView';
 import { useState } from './state';
@@ -57,7 +50,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   state: State<NodeType, EdgeType>,
   nodeLookup: NodeLookup<InternalNode<NodeType>>,
   edgeLookup: EdgeLookup<EdgeType>,
-  commit: Commit<NodeType, EdgeType>,
+  commit: Commit<NodeType, EdgeType>
 ): Actions<NodeType, EdgeType> {
   const viewportHelper = useViewportHelper(state, nodeLookup);
 
@@ -176,9 +169,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
         const dimensions = getDimensions(update.nodeElement);
 
         const doUpdate = !!(
-          dimensions.width
-          && dimensions.height
-          && (node.measured.width !== dimensions.width || node.measured.height !== dimensions.height || update.forceUpdate)
+          dimensions.width &&
+          dimensions.height &&
+          (node.measured.width !== dimensions.width || node.measured.height !== dimensions.height || update.forceUpdate)
         );
 
         if (doUpdate) {
@@ -205,11 +198,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
             if (extent === 'parent' && parent) {
               positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, parent);
-            }
-            else if (Array.isArray(extent)) {
+            } else if (Array.isArray(extent)) {
               positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
-            }
-            else {
+            } else {
               positionAbsolute = clampPosition(positionAbsolute, state.nodeExtent, dimensions);
             }
 
@@ -244,30 +235,30 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
   const addSelectedNodes: Actions<NodeType>['addSelectedNodes'] = (nodes) => {
     if (state.multiSelectionActive) {
-      const nodeChanges = nodes.map(node => createSelectionChange(node.id, true));
+      const nodeChanges = nodes.map((node) => createSelectionChange(node.id, true));
       state.hooks.nodesChange.trigger(nodeChanges);
       return;
     }
 
-    state.hooks.nodesChange.trigger(getSelectionChanges(nodeLookup, new Set(nodes.map(n => n.id))));
+    state.hooks.nodesChange.trigger(getSelectionChanges(nodeLookup, new Set(nodes.map((n) => n.id))));
     state.hooks.edgesChange.trigger(getSelectionChanges(edgeLookup));
   };
 
   const addSelectedEdges: Actions<NodeType, EdgeType>['addSelectedEdges'] = (edges) => {
     if (state.multiSelectionActive) {
-      const changedEdges = edges.map(edge => createSelectionChange(edge.id, true));
+      const changedEdges = edges.map((edge) => createSelectionChange(edge.id, true));
       state.hooks.edgesChange.trigger(changedEdges as EdgeSelectionChange[]);
       return;
     }
 
-    state.hooks.edgesChange.trigger(getSelectionChanges(edgeLookup, new Set(edges.map(e => e.id))));
+    state.hooks.edgesChange.trigger(getSelectionChanges(edgeLookup, new Set(edges.map((e) => e.id))));
     state.hooks.nodesChange.trigger(getSelectionChanges(nodeLookup, new Set()));
   };
 
   const removeSelectedNodes: Actions<NodeType>['removeSelectedNodes'] = (nodes) => {
     const nodesToUnselect = nodes || state.nodes;
 
-    const nodeChanges = nodesToUnselect.filter(n => n.selected).map(n => createSelectionChange(n.id, false));
+    const nodeChanges = nodesToUnselect.filter((n) => n.selected).map((n) => createSelectionChange(n.id, false));
 
     if (nodeChanges.length) {
       state.hooks.nodesChange.trigger(nodeChanges);
@@ -277,7 +268,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const removeSelectedEdges: Actions<NodeType, EdgeType>['removeSelectedEdges'] = (edges) => {
     const edgesToUnselect = edges || state.edges;
 
-    const edgeChanges = edgesToUnselect.filter(e => e.selected).map(e => createSelectionChange(e.id, false));
+    const edgeChanges = edgesToUnselect.filter((e) => e.selected).map((e) => createSelectionChange(e.id, false));
 
     if (edgeChanges.length) {
       state.hooks.edgesChange.trigger(edgeChanges);
@@ -335,8 +326,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
         getInternalNode,
         state.hooks.error.trigger,
         state.defaultEdgeOptions,
-        state.edges,
-      ),
+        state.edges
+      )
     );
   };
 
@@ -367,7 +358,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       getInternalNode,
       state.hooks.error.trigger,
       state.defaultEdgeOptions,
-      state.edges,
+      state.edges
     );
 
     const changes: EdgeAddChange<EdgeType>[] = [];
@@ -380,7 +371,11 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     }
   };
 
-  const removeNodes: Actions<NodeType>['removeNodes'] = (nodes, removeConnectedEdges = true, removeChildren = false) => {
+  const removeNodes: Actions<NodeType>['removeNodes'] = (
+    nodes,
+    removeConnectedEdges = true,
+    removeChildren = false
+  ) => {
     const nextNodes = typeof nodes === 'function' ? nodes(state.nodes) : nodes;
     const nodesToRemove = Array.isArray(nextNodes) ? nextNodes : [nextNodes];
 
@@ -510,7 +505,11 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     return { deletedNodes: matchingNodes, deletedEdges: matchingEdges };
   };
 
-  const reconnectEdge: Actions<NodeType, EdgeType>['reconnectEdge'] = (oldEdge, newConnection, shouldReplaceId = true) => {
+  const reconnectEdge: Actions<NodeType, EdgeType>['reconnectEdge'] = (
+    oldEdge,
+    newConnection,
+    shouldReplaceId = true
+  ) => {
     const prevEdge = getEdge(oldEdge.id);
 
     if (!prevEdge) {
@@ -519,9 +518,15 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     // resolve by id, not identity — callers commonly pass stale references (e.g. an edge captured in an
     // event payload before an immutable change replaced the stored object)
-    const prevEdgeIndex = state.edges.findIndex(edge => edge.id === oldEdge.id);
+    const prevEdgeIndex = state.edges.findIndex((edge) => edge.id === oldEdge.id);
 
-    const newEdge = reconnectEdgeAction(oldEdge, newConnection, prevEdge as EdgeType, shouldReplaceId, state.hooks.error.trigger);
+    const newEdge = reconnectEdgeAction(
+      oldEdge,
+      newConnection,
+      prevEdge as EdgeType,
+      shouldReplaceId,
+      state.hooks.error.trigger
+    );
 
     if (newEdge) {
       const [validEdge] = validateEdges<EdgeType>(
@@ -530,7 +535,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
         getInternalNode,
         state.hooks.error.trigger,
         state.defaultEdgeOptions,
-        state.edges,
+        state.edges
       );
 
       if (!validEdge) {
@@ -554,11 +559,17 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge as EdgeType) : edgeUpdate;
 
-    const next = state.edges.map(e => (e.id === id ? ((options.replace ? nextEdge : { ...e, ...nextEdge }) as EdgeType) : e));
+    const next = state.edges.map((e) =>
+      e.id === id ? ((options.replace ? nextEdge : { ...e, ...nextEdge }) as EdgeType) : e
+    );
     commitEdges(next);
   };
 
-  const updateEdgeData: Actions<NodeType, EdgeType>['updateEdgeData'] = (id, dataUpdate, options = { replace: false }) => {
+  const updateEdgeData: Actions<NodeType, EdgeType>['updateEdgeData'] = (
+    id,
+    dataUpdate,
+    options = { replace: false }
+  ) => {
     const edge = getEdge(id);
 
     if (!edge) {
@@ -569,7 +580,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     const nextEdge = { ...edge, data: options.replace ? nextData : { ...edge.data, ...nextData } } as EdgeType;
 
-    commitEdges(state.edges.map(item => (item.id === id ? nextEdge : item)));
+    commitEdges(state.edges.map((item) => (item.id === id ? nextEdge : item)));
   };
 
   const applyNodeChanges: Actions<NodeType>['applyNodeChanges'] = (changes) => {
@@ -594,7 +605,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
 
-    const next = state.nodes.map(n => (n.id === id ? ((options.replace ? nextNode : { ...n, ...nextNode }) as NodeType) : n));
+    const next = state.nodes.map((n) =>
+      n.id === id ? ((options.replace ? nextNode : { ...n, ...nextNode }) as NodeType) : n
+    );
     commitNodes(next);
   };
 
@@ -607,59 +620,19 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
 
-    const next = state.nodes.map(n =>
-      n.id === id ? ({ ...n, data: options.replace ? nextData : { ...n.data, ...nextData } } as NodeType) : n,
+    const next = state.nodes.map((n) =>
+      n.id === id ? ({ ...n, data: options.replace ? nextData : { ...n.data, ...nextData } } as NodeType) : n
     );
     commitNodes(next);
   };
 
   const changeParent: Actions<NodeType>['changeParent'] = (nodeId, parentId) => {
-    const node = getInternalNode(nodeId);
-
-    if (!node) {
-      warn(`changeParent: Node "${nodeId}" does not exist`);
-      return;
-    }
-
-    if (parentId === nodeId) {
-      return;
-    }
-
-    const childPosition = node.internals.positionAbsolute;
-    const childOrigin = node.origin ?? state.nodeOrigin;
-    const childDimensions = getNodeDimensions(node);
-
-    const originCorrection = {
-      x: childOrigin[0] * childDimensions.width,
-      y: childOrigin[1] * childDimensions.height,
-    };
-
-    if (parentId === undefined) {
+    changeParentNode(nodeId, nodeLookup, parentId, state.nodeOrigin, ({ nodeId, parentId, x, y }) => {
       updateNode(nodeId, {
-        parentId: undefined,
-        position: {
-          x: childPosition.x + originCorrection.x,
-          y: childPosition.y + originCorrection.y,
-        },
+        parentId: parentId ?? undefined,
+        position: { x, y },
       } as Partial<NodeType>);
-      return;
-    }
-
-    const parentNode = getInternalNode(parentId);
-
-    if (!parentNode) {
-      warn(`changeParent: Parent node "${parentId}" does not exist`);
-      return;
-    }
-
-    const parentPosition = parentNode.internals.positionAbsolute;
-    updateNode(nodeId, {
-      parentId,
-      position: {
-        x: childPosition.x + originCorrection.x - parentPosition.x,
-        y: childPosition.y + originCorrection.y - parentPosition.y,
-      },
-    } as Partial<NodeType>);
+    });
   };
 
   const updateConnection: Actions<NodeType>['updateConnection'] = (connection) => {
@@ -671,7 +644,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   };
 
   const getNodeRect = (
-    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect,
+    nodeOrRect: (Partial<Node> & { id: Node['id'] }) | Rect
   ): [Rect | null, Node | null | undefined, boolean] => {
     const isRectObj = isRectObject(nodeOrRect);
     const node = isRectObj ? null : isInternalNode(nodeOrRect) ? nodeOrRect : getInternalNode(nodeOrRect.id);
@@ -688,7 +661,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const getIntersectingNodes: Actions<NodeType>['getIntersectingNodes'] = (
     nodeOrRect,
     partially = true,
-    nodes = Array.from(nodeLookup.values()),
+    nodes = Array.from(nodeLookup.values())
   ) => {
     const [nodeRect, node, isRect] = getNodeRect(nodeOrRect);
 
@@ -707,9 +680,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       const partiallyVisible = partially && overlappingArea > 0;
 
       if (
-        partiallyVisible
-        || overlappingArea >= currNodeRect.width * currNodeRect.height
-        || overlappingArea >= Number(nodeRect.width) * Number(nodeRect.height)
+        partiallyVisible ||
+        overlappingArea >= currNodeRect.width * currNodeRect.height ||
+        overlappingArea >= Number(nodeRect.width) * Number(nodeRect.height)
       ) {
         intersections.push(n);
       }
@@ -729,9 +702,9 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const partiallyVisible = partially && overlappingArea > 0;
 
     return (
-      partiallyVisible
-      || overlappingArea >= area.width * area.height
-      || overlappingArea >= Number(nodeRect.width) * Number(nodeRect.height)
+      partiallyVisible ||
+      overlappingArea >= area.width * area.height ||
+      overlappingArea >= Number(nodeRect.width) * Number(nodeRect.height)
     );
   };
 
@@ -745,7 +718,16 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const opts = typeof options === 'function' ? options(state) : options;
 
     // `nodes`/`edges` are NOT settable through setState, use setNodes/setEdges instead.
-    const skip = new Set<string>(['nodes', 'edges', 'fitView', 'fitViewOnInitDone', 'viewportRef', 'vueFlowRef', 'dimensions', 'hooks']);
+    const skip = new Set<string>([
+      'nodes',
+      'edges',
+      'fitView',
+      'fitViewOnInitDone',
+      'viewportRef',
+      'vueFlowRef',
+      'dimensions',
+      'hooks',
+    ]);
 
     // the `fitView` prop maps to the internal `fitViewOnInit` flag (separate from the `fitView()` action)
     if (isDef(opts.fitView)) {
@@ -758,14 +740,14 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       }
       const option = (opts as any)[key];
       if (isDef(option)) {
-        ;(<any>state)[key] = option;
+        (<any>state)[key] = option;
       }
     }
   };
 
   const toObject: Actions<NodeType>['toObject'] = () => ({
-    nodes: state.nodes.map(node => ({ ...node })),
-    edges: state.edges.map(edge => ({ ...edge })),
+    nodes: state.nodes.map((node) => ({ ...node })),
+    edges: state.edges.map((edge) => ({ ...edge })),
     viewport: { x: state.transform[0], y: state.transform[1], zoom: state.transform[2] },
   });
 
@@ -826,16 +808,16 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     getHandleConnections,
     isNodeIntersecting,
     panBy,
-    fitView: params => viewportHelper.value.fitView(params),
-    zoomIn: transitionOpts => viewportHelper.value.zoomIn(transitionOpts),
-    zoomOut: transitionOpts => viewportHelper.value.zoomOut(transitionOpts),
+    fitView: (params) => viewportHelper.value.fitView(params),
+    zoomIn: (transitionOpts) => viewportHelper.value.zoomIn(transitionOpts),
+    zoomOut: (transitionOpts) => viewportHelper.value.zoomOut(transitionOpts),
     zoomTo: (zoomLevel, transitionOpts) => viewportHelper.value.zoomTo(zoomLevel, transitionOpts),
     setViewport: (params, transitionOpts) => viewportHelper.value.setViewport(params, transitionOpts),
     getViewport: () => viewportHelper.value.getViewport(),
     setCenter: (x, y, opts) => viewportHelper.value.setCenter(x, y, opts),
     fitBounds: (params, opts) => viewportHelper.value.fitBounds(params, opts),
-    screenToFlowPosition: params => viewportHelper.value.screenToFlowPosition(params),
-    flowToScreenPosition: params => viewportHelper.value.flowToScreenPosition(params),
+    screenToFlowPosition: (params) => viewportHelper.value.screenToFlowPosition(params),
+    flowToScreenPosition: (params) => viewportHelper.value.flowToScreenPosition(params),
     toObject,
     updateNodeInternals,
     viewportInitialized: computed(() => viewportHelper.value.viewportInitialized),

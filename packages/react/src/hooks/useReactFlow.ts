@@ -3,13 +3,13 @@ import {
   EdgeRemoveChange,
   evaluateAbsolutePosition,
   getElementsToRemove,
-  getNodeDimensions,
   getNodesBounds,
   getOverlappingArea,
   isRectObject,
   NodeRemoveChange,
   nodeToRect,
   withResolvers,
+  changeParentNode,
   type Rect,
 } from '@xyflow/system';
 
@@ -263,51 +263,19 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           options
         );
       },
-      changeParent: (nodeId: string, parentId: string | undefined) => {
-        const node = getInternalNode(nodeId);
-        if (!node) {
-          console.warn(`changeParent: Node "${nodeId}" does not exists`);
-          return;
-        }
-
-        if (parentId === nodeId) {
-          return;
-        }
-
-        const childPosition = node.internals.positionAbsolute;
-        const childOrigin = node.origin ?? store.getState().nodeOrigin;
-        const childDimensions = getNodeDimensions(node);
-
-        const originCorrection = {
-          x: childOrigin[0] * childDimensions.width,
-          y: childOrigin[1] * childDimensions.height,
-        };
-
-        if (parentId === undefined) {
-          updateNode(nodeId, {
-            parentId: undefined,
-            position: {
-              x: childPosition.x + originCorrection.x,
-              y: childPosition.y + originCorrection.y,
-            },
-          } as Partial<NodeType>);
-          return;
-        }
-
-        const parentNode = getInternalNode(parentId);
-        if (!parentNode) {
-          console.warn(`changeParent: Parent node "${parentId}" does not exists`);
-          return;
-        }
-
-        const parentPosition = parentNode.internals.positionAbsolute;
-        updateNode(nodeId, {
+      changeParent: (nodeId: string, parentId: string | null) => {
+        changeParentNode(
+          nodeId,
+          store.getState().nodeLookup,
           parentId,
-          position: {
-            x: childPosition.x + originCorrection.x - parentPosition.x,
-            y: childPosition.y + originCorrection.y - parentPosition.y,
-          },
-        } as Partial<NodeType>);
+          store.getState().nodeOrigin,
+          ({ nodeId, parentId, x, y }) => {
+            updateNode(nodeId, {
+              parentId: parentId ?? undefined,
+              position: { x, y },
+            } as Partial<NodeType>);
+          }
+        );
       },
       updateEdge,
       updateEdgeData: (id, dataUpdate, options = { replace: false }) => {
