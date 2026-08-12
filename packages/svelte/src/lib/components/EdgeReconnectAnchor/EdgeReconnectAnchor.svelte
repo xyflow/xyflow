@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { useStore } from '$lib/store';
-  import { getEdgeIdContext } from '$lib/store/context';
-  import type { Edge } from '$lib/types';
   import { XYHandle, type HandleType, type OnConnectStart } from '@xyflow/system';
-  import { EdgeLabel } from '../EdgeLabel';
-  import type { EdgeReconnectAnchorProps } from './types';
+
+  import { useStore } from '$lib/store/index.js';
+  import { getEdgeIdContext } from '$lib/store/context.js';
+  import type { Edge } from '$lib/types/index.js';
+  import { EdgeLabel } from '../EdgeLabel/index.js';
+  import type { EdgeReconnectAnchorProps } from './types.js';
 
   let {
     type,
@@ -31,11 +32,9 @@
     const {
       autoPanOnConnect,
       domNode,
-      isValidConnection,
       connectionMode,
       connectionRadius,
       onconnectstart,
-      onconnectend,
       onreconnect,
       onreconnectstart,
       onreconnectend,

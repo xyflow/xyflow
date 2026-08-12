@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { getEdgeIdContext } from '$lib/store/context';
-  import { hideOnSSR, portal } from '$lib/actions/portal';
-  import { useStore } from '$lib/store';
-  import { toPxString } from '$lib/utils';
+  import { getEdgeIdContext } from '$lib/store/context.js';
+  import { hideOnSSR, portal } from '$lib/actions/portal/index.js';
+  import { useStore } from '$lib/store/index.js';
+  import { toPxString } from '$lib/utils/index.js';
 
-  import type { EdgeLabelProps } from './types';
+  import type { EdgeLabelProps } from './types.js';
 
   let {
     x = 0,

@@ -1,6 +1,6 @@
 <script lang="ts">
   import ResizeControl from './ResizeControl.svelte';
-  import type { NodeResizerProps } from './types';
+  import type { NodeResizerProps } from './types.js';
   import {
     ResizeControlVariant,
     XY_RESIZER_HANDLE_POSITIONS,

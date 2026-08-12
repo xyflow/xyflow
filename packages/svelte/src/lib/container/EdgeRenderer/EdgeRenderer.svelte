@@ -1,8 +1,8 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
-  import { EdgeWrapper } from '$lib/components/EdgeWrapper';
-  import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition';
-  import type { Node, Edge, EdgeEvents } from '$lib/types';
-  import type { SvelteFlowStore } from '$lib/store/types';
+  import { EdgeWrapper } from '$lib/components/EdgeWrapper/index.js';
+  import { MarkerDefinition } from '$lib/container/EdgeRenderer/MarkerDefinition/index.js';
+  import type { Node, Edge, EdgeEvents } from '$lib/types/index.js';
+  import type { SvelteFlowStore } from '$lib/store/types.js';
 
   let {
     store = $bindable(),

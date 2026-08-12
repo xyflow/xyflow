@@ -117,7 +117,8 @@ export interface FlowExportObject {
 /**
  * Vue Flow component props.
  */
-export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+export interface VueFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+  /** An optional id for the flow. Useful when you render multiple flows on one page. */
   id?: string;
   /**
    * An array of nodes to render in a controlled flow.
@@ -129,9 +130,15 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
    * @default []
    */
   edges?: EdgeType[];
-  /** either use the edgeTypes prop to define your edge-types or use slots (<template #edge-mySpecialType="props">) */
+  /**
+   * Custom edge types to be available in a flow. Vue Flow matches an edge's type to a component in
+   * the `edgeTypes` object. Alternatively, register edge components with the `#edge-<type>` slots.
+   */
   edgeTypes?: EdgeTypesObject<EdgeType>;
-  /** either use the nodeTypes prop to define your node-types or use slots (<template #node-mySpecialType="props">) */
+  /**
+   * Custom node types to be available in a flow. Vue Flow matches a node's type to a component in
+   * the `nodeTypes` object. Alternatively, register node components with the `#node-<type>` slots.
+   */
   nodeTypes?: NodeTypesObject<NodeType>;
   /**
    * A loose connection mode will allow you to connect handles with differing types, including
@@ -140,6 +147,7 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
    * @default 'strict'
    */
   connectionMode?: ConnectionMode;
+  /** Styling and marker options for the connection line drawn while dragging a new connection. */
   connectionLineOptions?: ConnectionLineOptions;
   /**
    * The radius around a handle where you drop a connection line to create a new edge.
@@ -271,7 +279,7 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
    * @default { x: 0, y: 0, zoom: 1 }
    */
   defaultViewport?: Partial<Viewport>;
-  /** controlled viewport (`v-model:viewport`) — keeps the flow's transform in sync with the bound value */
+  /** Controlled viewport (`v-model:viewport`) — keeps the flow's transform in sync with the bound value. */
   viewport?: Viewport;
   /**
    * By default, the viewport extends infinitely. You can use this prop to set a boundary. The first
@@ -442,7 +450,10 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
    * @default false
    */
   disableKeyboardA11y?: boolean;
-  /** customize the aria labels / a11y descriptions (node/edge descriptions, the aria-live move message, and the Controls/MiniMap/Handle labels); merged over the defaults */
+  /**
+   * Customize the aria labels / a11y descriptions (node/edge descriptions, the aria-live move message,
+   * and the Controls/MiniMap/Handle labels). Merged over the defaults.
+   */
   ariaLabelConfig?: Partial<AriaLabelConfig>;
   /**
    * When `true`, Vue Flow logs its events to the console as they fire (high-frequency ones like move/drag
@@ -494,7 +505,7 @@ export interface FlowProps<NodeType extends Node = Node, EdgeType extends Edge =
   autoPanSpeed?: number;
 }
 
-export interface FlowEmits<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+export interface VueFlowEmits<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
   nodesChange: [changes: NodeChange<NodeType>[]];
   edgesChange: [changes: EdgeChange<EdgeType>[]];
   nodesDelete: [nodes: NodeType[]];
@@ -584,7 +595,7 @@ export type EdgeSlots<EdgeType extends Edge = Edge> = Partial<
   } & Record<`edge-${string}`, (edgeProps: EdgeProps<EdgeType>) => any>
 >;
 
-export type FlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType>
+export type VueFlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType>
   & EdgeSlots<EdgeType> & {
     'connection-line'?: (connectionLineProps: ConnectionLineProps<NodeType>) => any;
     'zoom-pane'?: () => any;

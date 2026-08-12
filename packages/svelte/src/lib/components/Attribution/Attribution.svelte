@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Panel } from '$lib/container/Panel';
-  import type { AttributionProps } from './types';
+  import { Panel } from '$lib/container/Panel/index.js';
+  import type { AttributionProps } from './types.js';
 
   let { proOptions, position = 'bottom-right' }: AttributionProps = $props();
 

@@ -26,6 +26,7 @@ type ZoomParams = {
   panOnDrag: boolean | number[];
   panOnScrollSpeed: number;
   panOnScrollMode: PanOnScrollMode;
+  panActivationKeyPressed: boolean;
   zoomActivationKeyPressed: boolean;
   preventScrolling: boolean;
   // last two instances of 'classname' being used

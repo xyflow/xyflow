@@ -2,6 +2,7 @@ import { isMouseEvent, isTouchEvent, type D3ZoomInputEvent } from '../utils/even
 import { isWrappedWithClass } from './utils';
 
 export type FilterParams = {
+  panActivationKeyPressed: boolean;
   zoomActivationKeyPressed: boolean;
   zoomOnScroll: boolean;
   zoomOnPinch: boolean;
@@ -16,6 +17,7 @@ export type FilterParams = {
 };
 
 export function createFilter({
+  panActivationKeyPressed,
   zoomActivationKeyPressed,
   zoomOnScroll,
   zoomOnPinch,
@@ -37,7 +39,10 @@ export function createFilter({
       isMouseEvent(event) &&
       event.button === 1 &&
       event.type === 'mousedown' &&
-      (isWrappedWithClass(event, `${lib}-flow__node`) || isWrappedWithClass(event, `${lib}-flow__edge`))
+      (isWrappedWithClass(event, `${lib}-flow__node`) ||
+        isWrappedWithClass(event, `${lib}-flow__edge`) ||
+        isWrappedWithClass(event, `${lib}-flow__selection`) ||
+        isWrappedWithClass(event, `${lib}-flow__nodesselection`))
     ) {
       return true;
     }
@@ -98,7 +103,9 @@ export function createFilter({
     const button = isMouseEvent(event) ? event.button : 0;
     const buttonAllowed = (Array.isArray(panOnDrag) && panOnDrag.includes(button)) || button <= 1;
 
-    // default filter for d3-zoom
-    return (!event.ctrlKey || isWheelEvent) && buttonAllowed;
+    // d3-zoom rejects Ctrl-modified mouse drags by default because Ctrl+wheel is
+    // commonly used for pinch zooming. Allow the drag when Control is the
+    // configured pan activation key, while retaining the wheel safeguard.
+    return (!event.ctrlKey || isWheelEvent || panActivationKeyPressed) && buttonAllowed;
   };
 }

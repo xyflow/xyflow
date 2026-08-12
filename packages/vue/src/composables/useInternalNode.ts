@@ -20,7 +20,7 @@ import { useVueFlow } from './useVueFlow';
 export function useInternalNode<NodeType extends Node = Node>(id?: MaybeRefOrGetter<string | undefined>) {
   const contextNodeId = useNodeId();
 
-  const { getInternalNode } = useVueFlow();
+  const { getInternalNode } = useVueFlow<NodeType>();
 
-  return computed(() => getInternalNode(toValue(id) ?? contextNodeId ?? '') as InternalNode<NodeType> | undefined);
+  return computed(() => getInternalNode(toValue(id) ?? contextNodeId ?? ''));
 }

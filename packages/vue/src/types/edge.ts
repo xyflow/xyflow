@@ -8,13 +8,13 @@ export type EdgeReconnectable = boolean | 'target' | 'source';
 export interface EdgeLabelOptions {
   /** Custom styles to apply to the label. */
   labelStyle?: CSSProperties;
-  /** Show label bg */
+  /** Render a background rectangle behind the label. */
   labelShowBg?: boolean;
-  /** Label Bg styles (CSSProperties) */
+  /** Inline style applied to the label background rectangle. */
   labelBgStyle?: CSSProperties;
-  /** Label Bg padding */
+  /** Padding around the label inside its background, as `[x, y]` in pixels. */
   labelBgPadding?: [number, number];
-  /** Label Bg border radius */
+  /** Border radius of the label background, in pixels. */
   labelBgBorderRadius?: number;
 }
 
@@ -100,27 +100,51 @@ export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
  * markers are pre-resolved to url strings.
  */
 export interface EdgeProps<EdgeType extends Edge = Edge> extends EdgeLabelOptions, EdgePosition {
+  /** Unique id of an edge. */
   id: string;
+  /** Id of source node. */
   source: string;
+  /** Id of target node. */
   target: string;
-  // optional: defaults are no longer stamped onto stored edges, so `type`/`data` are genuinely
-  // undefined at runtime when the user didn't set them
+  /** Type of edge defined in `edgeTypes`. */
   type?: EdgeType['type'];
+  /**
+   * The label or custom element to render along the edge. This is commonly a text label or some
+   * custom controls.
+   */
   label?: string | VNode | Component<EdgeTextProps>;
+  /** Inline style applied to the edge path. */
   style?: CSSProperties;
+  /** Whether the edge is currently selected. */
   selected?: boolean;
+  /** Whether the edge can be selected. */
   selectable?: boolean;
+  /** Whether the edge can be deleted. */
   deletable?: boolean;
+  /** Id of source handle, only needed if there are multiple handles per node. */
   sourceHandleId?: string | null;
+  /** Id of target handle, only needed if there are multiple handles per node. */
   targetHandleId?: string | null;
+  /** Whether the edge path is animated. */
   animated?: boolean;
+  /** Whether the edge can be reconnected by dragging an endpoint, see {@link EdgeReconnectable}. */
   reconnectable?: EdgeReconnectable;
-  // optional: an edge without markers has none at runtime; typed as required, a custom edge's
-  // `defineProps<EdgeProps>()` would emit required runtime props and Vue would warn on undefined
+  /**
+   * Pre-resolved `url(#…)` reference for the start marker, or `undefined` when the edge has none.
+   */
   markerStart?: string;
+  /**
+   * Pre-resolved `url(#…)` reference for the end marker, or `undefined` when the edge has none.
+   */
   markerEnd?: string;
+  /** Curvature of the default bezier path, between 0 and 1. */
   curvature?: number;
+  /**
+   * The width of the invisible area around the edge that the user can interact with. This is useful
+   * for making the edge easier to click or hover over.
+   */
   interactionWidth?: number;
+  /** Arbitrary data passed to an edge. */
   data?: EdgeType['data'];
 }
 
@@ -128,6 +152,7 @@ export interface EdgeProps<EdgeType extends Edge = Edge> extends EdgeLabelOption
  * BaseEdge component props.
  */
 export interface BaseEdgeProps extends EdgeLabelOptions {
+  /** Unique id of an edge. */
   id?: string;
   /** The x position of edge label. */
   labelX?: number;

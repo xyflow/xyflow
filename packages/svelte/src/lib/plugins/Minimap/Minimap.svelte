@@ -8,11 +8,11 @@
 <script lang="ts">
   import { getBoundsOfRects, getInternalNodesBounds, nodeHasDimensions } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
-  import { Panel } from '$lib/container/Panel';
+  import { useStore } from '$lib/store/index.js';
+  import { Panel } from '$lib/container/Panel/index.js';
   import MinimapNode from './MinimapNode.svelte';
-  import interactive from './interactive';
-  import type { GetMiniMapNodeAttribute, MiniMapProps } from './types';
+  import interactive from './interactive.js';
+  import type { GetMiniMapNodeAttribute, MiniMapProps } from './types.js';
 
   let {
     position = 'bottom-right',

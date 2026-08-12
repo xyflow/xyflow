@@ -41,7 +41,7 @@ import type {
   OnSelectionChange,
   OnNodesChange,
   OnEdgesChange
-} from '$lib/types';
+} from '$lib/types/index.js';
 
 import type { Component } from 'svelte';
 import type {
@@ -50,7 +50,7 @@ import type {
   NodeSelectionEvents,
   OnSelectionDrag,
   PaneEvents
-} from '$lib/types/events';
+} from '$lib/types/events.js';
 
 export type SvelteFlowProps<
   NodeType extends Node = Node,
@@ -330,6 +330,7 @@ export type SvelteFlowProps<
     /**
      * Enabling this prop allows users to pan the viewport by clicking and dragging.
      * You can also set this prop to an array of numbers to limit which mouse buttons can activate panning.
+     * Mouse button arrays do not disable touch panning; set this prop to `false` to disable all drag panning.
      * @default true
      * @example [0, 2] // allows panning with the left and right mouse buttons
      * [0, 1, 2, 3, 4] // allows panning with all mouse buttons

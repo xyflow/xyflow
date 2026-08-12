@@ -1,5 +1,5 @@
 import type { RouterOptions } from 'vue-router';
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
 export const routes: RouterOptions['routes'] = [
   {
@@ -140,7 +140,29 @@ export const routes: RouterOptions['routes'] = [
   },
 ];
 
+// routes exercised by the Playwright suite (tests/playwright) — kept out of `routes` so they don't
+// clutter the Header's example picker. `/tests/generic/*` renders the generic-tests harness.
+const testRoutes: RouterOptions['routes'] = [
+  {
+    path: '/examples/color-mode',
+    component: () => import('./src/ColorMode/ColorModeExample.vue'),
+    meta: { blank: true },
+  },
+  {
+    path: '/tests/generic/:pathMatch(.*)*',
+    component: () => import('./src/generic-tests/GenericTests.vue'),
+    meta: { blank: true },
+  },
+];
+
 export const router = createRouter({
-  history: createWebHashHistory(),
-  routes,
+  history: createWebHistory(),
+  routes: [...routes, ...testRoutes],
 });
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    // hide the example Header chrome so the flow fills the viewport (used by the e2e routes)
+    blank?: boolean;
+  }
+}

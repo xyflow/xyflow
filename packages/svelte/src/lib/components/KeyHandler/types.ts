@@ -1,5 +1,5 @@
-import type { SvelteFlowStore } from '$lib/store/types';
-import type { Node, Edge, KeyDefinition } from '$lib/types';
+import type { SvelteFlowStore } from '$lib/store/types.js';
+import type { Node, Edge, KeyDefinition } from '$lib/types/index.js';
 
 export type KeyHandlerProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   store: SvelteFlowStore<NodeType, EdgeType>;

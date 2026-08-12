@@ -52,7 +52,7 @@ import {
   SmoothStepEdgeInternal,
   StraightEdgeInternal,
   StepEdgeInternal
-} from '$lib/components/edges';
+} from '$lib/components/edges/index.js';
 
 import type {
   NodeTypes,
@@ -71,12 +71,12 @@ import type {
   OnSelectionDrag,
   OnNodesChange,
   OnEdgesChange
-} from '$lib/types';
+} from '$lib/types/index.js';
 
-import type { StoreSignals } from './types';
-import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
-import { EdgeChangeset, NodeChangeset } from '$lib/changes';
-import type { EdgeChange, NodeChange } from '$lib/changes/types';
+import type { StoreSignals } from './types.js';
+import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements.js';
+import { EdgeChangeset, NodeChangeset } from '$lib/changes/index.js';
+import type { EdgeChange, NodeChange } from '$lib/changes/types.js';
 
 export const initialNodeTypes = {
   input: InputNode,

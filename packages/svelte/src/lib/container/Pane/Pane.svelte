@@ -38,9 +38,9 @@
     type XYPosition
   } from '@xyflow/system';
 
-  import type { Node, Edge } from '$lib/types';
-  import type { PaneProps } from './types';
-  import { getSelectionChanges } from '$lib/changes/utils';
+  import type { Node, Edge } from '$lib/types/index.js';
+  import type { PaneProps } from './types.js';
+  import { getSelectionChanges } from '$lib/changes/utils.js';
 
   let {
     store = $bindable(),
@@ -85,6 +85,12 @@
 
   // We start the selection process when the user clicks down on the pane
   function onPointerDownCapture(event: PointerEvent) {
+    // Mouse button arrays only restrict mouse input. Let touch panning handle this gesture
+    // unless the user explicitly activated selection with the selection key.
+    if (event.pointerType === 'touch' && panOnDragActive !== false && !store.selectionKeyPressed) {
+      return;
+    }
+
     containerBounds = container?.getBoundingClientRect();
     if (!containerBounds) return;
 

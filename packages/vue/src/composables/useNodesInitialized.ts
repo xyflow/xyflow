@@ -3,6 +3,12 @@ import { areNodesInitialized } from '../utils';
 import { useStore } from './useStore';
 
 export interface UseNodesInitializedOptions {
+  /**
+   * Whether hidden nodes must also be measured before the flow counts as initialized. When `false`, hidden
+   * nodes are ignored (the result can be `true` while some hidden nodes are still unmeasured).
+   *
+   * @default false
+   */
   includeHiddenNodes?: boolean;
 }
 

@@ -1,4 +1,5 @@
-import type { ComponentInternalInstance } from 'vue';
+import type { Component, ComponentInternalInstance } from 'vue';
+import { resolveComponent } from 'vue';
 
 /**
  * Convert an event name to its Vue handler-prop key.
@@ -18,4 +19,28 @@ export function toHandlerKey(event: string) {
  */
 export function hasVNodeListener(inst: ComponentInternalInstance | null, event: string): boolean {
   return !!inst?.vnode.props?.[toHandlerKey(event)];
+}
+
+/**
+ * Resolve the component to render for a node/edge `type`:
+ * - a matching template slot wins, otherwise the registered type
+ * - a string type name is resolved against the app's globally-registered components.
+ *
+ * Returns `undefined` when the type can't be resolved (callers fall back to the `default` type and emit the missing-type error).
+ */
+export function resolveTypeComponent(
+  slot: unknown,
+  type: unknown,
+  name: string,
+  inst: ComponentInternalInstance | null,
+): Component | undefined {
+  if (slot) {
+    return slot as Component;
+  }
+
+  if (typeof type === 'string') {
+    return inst && name in inst.appContext.components ? (resolveComponent(name, false) as Component) : undefined;
+  }
+
+  return (type as Component) || undefined;
 }

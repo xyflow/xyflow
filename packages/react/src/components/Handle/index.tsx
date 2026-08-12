@@ -38,12 +38,6 @@ export type HandleProps = HandlePropsSystem &
     onConnect?: OnConnect;
   };
 
-const selector = (s: ReactFlowState) => ({
-  connectOnClick: s.connectOnClick,
-  noPanClassName: s.noPanClassName,
-  rfId: s.rfId,
-});
-
 /*
  * While no connection is in progress every handle has this same state, so we return a
  * shared reference rather than allocating + shallow-comparing one per handle on every

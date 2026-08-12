@@ -1,5 +1,5 @@
-import type { SelectionChange } from './types';
-import { selectionChange } from './create';
+import type { SelectionChange } from './types.js';
+import { selectionChange } from './create.js';
 
 export function getSelectionChanges(
   items: Map<string, { id: string; selected?: boolean }>,
