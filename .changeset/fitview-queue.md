@@ -1,5 +1,5 @@
 ---
-"@xyflow/vue": minor
+"@xyflow/vue": patch
 ---
 
-`fitView()` now waits for the nodes to be committed and measured before fitting, so it frames the current graph even when called right after `addNodes()` or a reposition. You no longer need a `nextTick()` before `fitView()`. It returns a promise you can await, but awaiting is optional.
+Defer an imperative `fitView()` until the nodes are measured. A `fitView()` call made before the nodes settle — e.g. right after `addNodes()` — used to frame only the already-measured nodes (`getFitViewNodes` skips unmeasured ones) and ignore the new ones. It now waits for `nodesInitialized` before fitting, so the fit always frames the current nodes. An empty flow resolves immediately (nothing to wait for). The `useNodesInitialized` check is now a shared `areNodesInitialized` helper used by both the composable and the fitView queue.
