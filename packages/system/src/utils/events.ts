@@ -18,7 +18,7 @@ export type XYFlowSourceEvent = D3ZoomInputEvent & {
 };
 
 export function isPointerEvent(event: Event): event is MouseEvent | TouchEvent {
-  return event instanceof MouseEvent || event instanceof TouchEvent;
+  return event instanceof MouseEvent || isTouchEvent(event);
 }
 
 export function isWheelEvent(event: Event): event is WheelEvent {
@@ -26,7 +26,7 @@ export function isWheelEvent(event: Event): event is WheelEvent {
 }
 
 export function isTouchEvent(event: Event): event is TouchEvent {
-  return event instanceof TouchEvent;
+  return typeof TouchEvent !== 'undefined' && event instanceof TouchEvent;
 }
 
 export function isMouseEvent(event: Event): event is MouseEvent {
