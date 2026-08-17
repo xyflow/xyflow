@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import {
+import type {
   FitViewParamsBase,
   FitViewOptionsBase,
   ZoomInOut,
