@@ -79,8 +79,6 @@ import type {
 
 import type { StoreSignals } from './types.js';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements.js';
-import { EdgeChangeset, NodeChangeset } from '$lib/changes/index.js';
-import type { EdgeChange, NodeChange } from '$lib/changes/types.js';
 
 export const initialNodeTypes = {
   input: InputNode,
