@@ -17,9 +17,7 @@ import {
   type SetCenterOptions,
   getHandlePosition,
   Position,
-  type NodeChange
-} from '@xyflow/system';
-import {
+  type NodeChange,
   addChange,
   selectionChange,
   getDeselectionChanges,
@@ -37,8 +35,6 @@ import type {
 import { addEdge as addEdgeUtil } from '$lib/utils/edges.js';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte.js';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types.js';
-import { addChange, selectionChange } from '../changes/create.js';
-import { getDeselectionChanges, getSelectionChanges } from '../changes/utils.js';
 
 export const key = Symbol();
 

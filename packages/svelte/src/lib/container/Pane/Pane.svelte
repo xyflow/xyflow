@@ -35,12 +35,12 @@
     calcAutoPan,
     pointToRendererPoint,
     rendererPointToPoint,
+    getSelectionChanges,
     type XYPosition
   } from '@xyflow/system';
 
   import type { Node, Edge } from '$lib/types/index.js';
   import type { PaneProps } from './types.js';
-  import { getSelectionChanges } from '$lib/changes/utils.js';
 
   let {
     store = $bindable(),
