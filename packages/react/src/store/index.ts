@@ -202,9 +202,7 @@ const createStore = ({
           set({});
         }
 
-        if (changes?.length > 0) {
-          emitNodeChanges?.(changes);
-        }
+        emitNodeChanges(changes);
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
         const parentExpandChildren: ParentExpandChild[] = [];
