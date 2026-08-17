@@ -62,6 +62,7 @@
     panOnScrollSpeed = 0.5,
     panOnDrag = true,
     selectionOnDrag = false,
+    deselectOnSelection = true,
     autoPanOnSelection = true,
     connectionLineComponent,
     connectionLineStyle,
@@ -172,6 +173,7 @@
       {panOnDrag}
       {paneClickDistance}
       {selectionOnDrag}
+      {deselectOnSelection}
       {autoPanOnSelection}
     >
       <ViewportComponent bind:store>

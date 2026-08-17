@@ -58,6 +58,7 @@
     panOnDrag = true,
     paneClickDistance = 1,
     selectionOnDrag,
+    deselectOnSelection = true,
     autoPanOnSelection = true,
     onpaneclick,
     onpanecontextmenu,
@@ -88,6 +89,8 @@
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   let selectionInProgress = false;
+  let selectedNodeIdsBeforeSelectionStart: Set<string> = new Set();
+  let selectedEdgeIdsBeforeSelectionStart: Set<string> = new Set();
 
   // Used for auto pan when approaching the edges of the container during selection
   let autoPanId: number = 0;
@@ -176,18 +179,19 @@
     const prevSelectedNodeIds = selectedNodeIds;
     const prevSelectedEdgeIds = selectedEdgeIds;
 
-    selectedNodeIds = new Set(
-      getNodesInside(
+    selectedNodeIds = new Set([
+      ...selectedNodeIdsBeforeSelectionStart,
+      ...getNodesInside(
         store.nodeLookup,
         nextUserSelectRect,
         [store.viewport.x, store.viewport.y, store.viewport.zoom],
         store.selectionMode === SelectionMode.Partial,
         true
       ).map((n) => n.id)
-    );
+    ]);
 
     const edgesSelectable = store.defaultEdgeOptions.selectable ?? true;
-    selectedEdgeIds = new Set();
+    selectedEdgeIds = new Set(selectedEdgeIdsBeforeSelectionStart);
 
     // We look for all edges connected to the selected nodes
     for (const nodeId of selectedNodeIds) {
@@ -263,8 +267,7 @@
       if (distance <= requiredDistance) {
         return;
       }
-      store.unselectNodesAndEdges();
-      onselectionstart?.(event);
+      beginSelection(event);
     }
 
     selectionInProgress = true;
@@ -275,6 +278,22 @@
     }
 
     commitUserSelectionRect(mousePos.x, mousePos.y);
+  }
+
+  function beginSelection(event: PointerEvent) {
+    if (deselectOnSelection) {
+      selectedNodeIdsBeforeSelectionStart = new Set();
+      selectedEdgeIdsBeforeSelectionStart = new Set();
+      store.unselectNodesAndEdges();
+    } else {
+      selectedNodeIdsBeforeSelectionStart = new Set(
+        store.nodes.filter((node) => node.selected).map((node) => node.id)
+      );
+      selectedEdgeIdsBeforeSelectionStart = new Set(
+        store.edges.filter((edge) => edge.selected).map((edge) => edge.id)
+      );
+    }
+    onselectionstart?.(event);
   }
 
   function onPointerUp(event: PointerEvent) {
