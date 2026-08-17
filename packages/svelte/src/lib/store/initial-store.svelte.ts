@@ -273,6 +273,8 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         visibleEdges = getLayoutedEdges(options as EdgeLayoutAllOptions<NodeType, EdgeType>);
       }
 
+      this._prevVisibleEdges = visibleEdges;
+
       return {
         nodes: visibleNodes,
         edges: visibleEdges
