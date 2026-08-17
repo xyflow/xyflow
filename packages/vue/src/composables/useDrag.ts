@@ -189,7 +189,7 @@ export function useDrag(params: UseDragParams) {
 
       instance.update({ noDragClassName, handleSelector, isSelectable, nodeId: id, domNode: nodeEl, nodeClickDistance });
     },
-    { immediate: true },
+    { immediate: true, flush: 'post' },
   );
 
   return dragging;
