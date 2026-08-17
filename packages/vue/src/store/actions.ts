@@ -1,42 +1,41 @@
 import type {
-  EdgeAddChange,
+  AddChange,
+  DimensionChange,
   EdgeLookup,
-  EdgeRemoveChange,
-  EdgeSelectionChange,
-  NodeAddChange,
-  NodeDimensionChange,
   NodeLookup,
-  NodePositionChange,
-  NodeRemoveChange,
+  PositionChange,
   Rect,
+  RemoveChange,
+  SelectionChange,
 } from '@xyflow/system';
 import type { Actions, Edge, InternalNode, Node, State } from '../types';
 import type { Commit } from './commit';
 import {
+  addChange,
   changeParentNode,
   clampPosition,
   clampPositionToParent,
+  dimensionChange,
+  EdgeChangeset,
   getConnectedEdges as getConnectedEdgesBase,
   getDimensions,
   getElementsToRemove,
   getHandleBounds,
   getOverlappingArea,
+  getSelectionChanges,
   handleExpandParent,
   initialConnection,
   isRectObject,
+  NodeChangeset,
   nodeToRect,
   panBy as panBySystem,
+  removeChange,
 } from '@xyflow/system';
 import { computed, markRaw, toRaw } from 'vue';
 import { useViewportHelper } from '../composables';
 import {
-  applyChanges,
   areNodesInitialized,
-  createAdditionChange,
-  createEdgeRemoveChange,
-  createNodeRemoveChange,
   createSelectionChange,
-  getSelectionChanges,
   isDef,
   isInternalNode,
   isNode,
@@ -97,14 +96,14 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   };
 
   const updateNodePositions: Actions<NodeType>['updateNodePositions'] = (dragItems, changed, dragging) => {
-    const changes: (NodePositionChange | NodeDimensionChange)[] = [];
+    const changes = new NodeChangeset<NodeType>();
     const parentExpandChildren: { id: string; parentId: string; rect: Rect }[] = [];
 
     for (const node of dragItems) {
       const lookupNode = getNode(node.id);
       const expandParentId = lookupNode?.expandParent ? lookupNode.parentId : undefined;
 
-      const change: NodePositionChange = {
+      const change: PositionChange = {
         id: node.id,
         type: 'position',
         dragging,
@@ -131,14 +130,14 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
         }
       }
 
-      changes.push(change);
+      changes.add(change);
     }
 
     if (parentExpandChildren.length > 0) {
-      changes.push(...handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
+      changes.add(handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
     }
 
-    if (changes.length) {
+    if (changes.size) {
       state.hooks.nodesChange.trigger(changes);
     }
   };
@@ -157,7 +156,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const style = window.getComputedStyle(viewportNode);
     const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
 
-    const changes: (NodeDimensionChange | NodePositionChange)[] = [];
+    const changes = new NodeChangeset<NodeType>();
     const parentExpandChildren: { id: string; parentId: string; rect: Rect }[] = [];
 
     for (const element of updates) {
@@ -183,11 +182,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
           node.internals.handleBounds.source = getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id);
           node.internals.handleBounds.target = getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id);
 
-          changes.push({
-            id: node.id,
-            type: 'dimensions',
-            dimensions,
-          });
+          changes.add(dimensionChange(node.id, dimensions));
 
           // a freshly-measured `expandParent` child grows its parent to fit; re-clamp against the NEW
           // dimensions/extent first so a node that only grew isn't treated as overflowing
@@ -221,10 +216,10 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     }
 
     if (parentExpandChildren.length > 0) {
-      changes.push(...handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
+      changes.add(handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
     }
 
-    if (changes.length) {
+    if (changes.size) {
       state.hooks.nodesChange.trigger(changes);
     }
 
@@ -235,32 +230,47 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
   const addSelectedNodes: Actions<NodeType>['addSelectedNodes'] = (nodes) => {
     if (state.multiSelectionActive) {
-      const nodeChanges = nodes.map((node) => createSelectionChange(node.id, true));
-      state.hooks.nodesChange.trigger(nodeChanges);
+      const nodeChangeset = new NodeChangeset<NodeType>();
+      nodes.forEach((node) => nodeChangeset.add(createSelectionChange(node.id, true)));
+      state.hooks.nodesChange.trigger(nodeChangeset);
       return;
     }
 
-    state.hooks.nodesChange.trigger(getSelectionChanges(nodeLookup, new Set(nodes.map((n) => n.id))));
-    state.hooks.edgesChange.trigger(getSelectionChanges(edgeLookup));
+    const nodeChangeset = new NodeChangeset<NodeType>();
+    const edgeChangeset = new EdgeChangeset<EdgeType>();
+
+    nodeChangeset.add(getSelectionChanges(nodeLookup, new Set(nodes.map((n) => n.id))));
+    edgeChangeset.add(getSelectionChanges(edgeLookup));
+
+    state.hooks.nodesChange.trigger(nodeChangeset);
+    state.hooks.edgesChange.trigger(edgeChangeset);
   };
 
   const addSelectedEdges: Actions<NodeType, EdgeType>['addSelectedEdges'] = (edges) => {
     if (state.multiSelectionActive) {
-      const changedEdges = edges.map((edge) => createSelectionChange(edge.id, true));
-      state.hooks.edgesChange.trigger(changedEdges as EdgeSelectionChange[]);
+      const changedEdges = new EdgeChangeset<EdgeType>();
+      edges.forEach((edge) => changedEdges.add(createSelectionChange(edge.id, true)));
+      state.hooks.edgesChange.trigger(changedEdges);
       return;
     }
 
-    state.hooks.edgesChange.trigger(getSelectionChanges(edgeLookup, new Set(edges.map((e) => e.id))));
-    state.hooks.nodesChange.trigger(getSelectionChanges(nodeLookup, new Set()));
+    const nodeChangeset = new NodeChangeset<NodeType>();
+    const edgeChangeset = new EdgeChangeset<EdgeType>();
+
+    nodeChangeset.add(getSelectionChanges(nodeLookup, new Set()));
+    edgeChangeset.add(getSelectionChanges(edgeLookup, new Set(edges.map((e) => e.id))));
+
+    state.hooks.edgesChange.trigger(edgeChangeset);
+    state.hooks.nodesChange.trigger(nodeChangeset);
   };
 
   const removeSelectedNodes: Actions<NodeType>['removeSelectedNodes'] = (nodes) => {
     const nodesToUnselect = nodes || state.nodes;
+    const nodeChanges = new NodeChangeset<NodeType>();
 
-    const nodeChanges = nodesToUnselect.filter((n) => n.selected).map((n) => createSelectionChange(n.id, false));
+    nodesToUnselect.filter((n) => n.selected).forEach((n) => nodeChanges.add(createSelectionChange(n.id, false)));
 
-    if (nodeChanges.length) {
+    if (nodeChanges.size) {
       state.hooks.nodesChange.trigger(nodeChanges);
     }
   };
@@ -268,9 +278,10 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const removeSelectedEdges: Actions<NodeType, EdgeType>['removeSelectedEdges'] = (edges) => {
     const edgesToUnselect = edges || state.edges;
 
-    const edgeChanges = edgesToUnselect.filter((e) => e.selected).map((e) => createSelectionChange(e.id, false));
+    const edgeChanges = new EdgeChangeset<EdgeType>();
+    edgesToUnselect.filter((e) => e.selected).forEach((e) => edgeChanges.add(createSelectionChange(e.id, false)));
 
-    if (edgeChanges.length) {
+    if (edgeChanges.size) {
       state.hooks.edgesChange.trigger(edgeChanges);
     }
   };
@@ -335,15 +346,16 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     let nextNodes = typeof nodes === 'function' ? nodes(state.nodes) : nodes;
     nextNodes = Array.isArray(nextNodes) ? nextNodes : [nextNodes];
 
-    const changes: NodeAddChange<NodeType>[] = [];
+    const changes = new NodeChangeset<NodeType>();
+
     for (const node of nextNodes) {
       if (!isNode(node)) {
         continue;
       }
-      changes.push(createAdditionChange(node));
+      changes.add(addChange(node));
     }
 
-    if (changes.length) {
+    if (changes.size) {
       state.hooks.nodesChange.trigger(changes);
     }
   };
@@ -361,12 +373,13 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       state.edges
     );
 
-    const changes: EdgeAddChange<EdgeType>[] = [];
+    const changes = new EdgeChangeset<EdgeType>();
+
     for (const edge of validEdges) {
-      changes.push(createAdditionChange(edge));
+      changes.add(addChange(edge));
     }
 
-    if (changes.length) {
+    if (changes.size) {
       state.hooks.edgesChange.trigger(changes);
     }
   };
@@ -379,15 +392,15 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const nextNodes = typeof nodes === 'function' ? nodes(state.nodes) : nodes;
     const nodesToRemove = Array.isArray(nextNodes) ? nextNodes : [nextNodes];
 
-    const nodeChanges: NodeRemoveChange[] = [];
-    const edgeChanges: EdgeRemoveChange[] = [];
+    const nodeChanges = new NodeChangeset<NodeType>();
+    const edgeChanges = new EdgeChangeset<EdgeType>();
 
     function createEdgeRemovalChanges(nodes: Node[]) {
       const connectedEdges = getConnectedEdges(nodes);
       for (const edge of connectedEdges) {
         const deletable = edge.deletable ?? state.defaultEdgeOptions?.deletable;
         if (isDef(deletable) ? deletable : true) {
-          edgeChanges.push(createEdgeRemoveChange(edge.id));
+          edgeChanges.add(removeChange(edge.id));
         }
       }
     }
@@ -403,7 +416,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
       if (children.length) {
         for (const child of children) {
-          nodeChanges.push(createNodeRemoveChange(child.id));
+          nodeChanges.add(removeChange(child.id));
         }
 
         if (removeConnectedEdges) {
@@ -427,7 +440,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
         continue;
       }
 
-      nodeChanges.push(createNodeRemoveChange(currNode.id));
+      nodeChanges.add(removeChange(currNode.id));
 
       if (removeConnectedEdges) {
         createEdgeRemovalChanges([currNode as Node]);
@@ -438,11 +451,11 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       }
     }
 
-    if (edgeChanges.length) {
+    if (edgeChanges.size) {
       state.hooks.edgesChange.trigger(edgeChanges);
     }
 
-    if (nodeChanges.length) {
+    if (nodeChanges.size) {
       state.hooks.nodesChange.trigger(nodeChanges);
     }
   };
@@ -451,7 +464,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const nextEdges = typeof edges === 'function' ? edges(state.edges) : edges;
     const edgesToRemove = Array.isArray(nextEdges) ? nextEdges : [nextEdges];
 
-    const changes: EdgeRemoveChange[] = [];
+    const changes = new EdgeChangeset<EdgeType>();
 
     for (const item of edgesToRemove) {
       const currEdge = typeof item === 'string' ? getEdge(item) : item;
@@ -465,10 +478,12 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
         continue;
       }
 
-      changes.push(createEdgeRemoveChange(typeof item === 'string' ? item : item.id));
+      changes.add(removeChange(typeof item === 'string' ? item : item.id));
     }
 
-    state.hooks.edgesChange.trigger(changes);
+    if (changes.size) {
+      state.hooks.edgesChange.trigger(changes);
+    }
   };
 
   const deleteElements: Actions<NodeType, EdgeType>['deleteElements'] = async ({ nodes = [], edges = [] }) => {
@@ -585,13 +600,13 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
   const applyNodeChanges: Actions<NodeType>['applyNodeChanges'] = (changes) => {
     // apply changes immutably (new array, new objects only for changed nodes), then re-adopt via `commitNodes`
-    const result = applyChanges(changes, state.nodes);
+    const result = changes.applyTo(state.nodes);
     commitNodes(result);
     return result;
   };
 
   const applyEdgeChanges: Actions<NodeType, EdgeType>['applyEdgeChanges'] = (changes) => {
-    const result = applyChanges(changes, state.edges);
+    const result = changes.applyTo(state.edges);
     commitEdges(result);
     return result;
   };

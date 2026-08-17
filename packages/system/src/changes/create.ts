@@ -1,18 +1,11 @@
-import type { Dimensions, XYPosition } from '@xyflow/system';
-import type {
-  AddChange,
-  DimensionChange,
-  PositionChange,
-  RemoveChange,
-  ReplaceChange,
-  SelectionChange
-} from './types.js';
+import type { Dimensions, XYPosition } from '../types';
+import type { AddChange, DimensionChange, PositionChange, RemoveChange, ReplaceChange, SelectionChange } from './types';
 
 export function selectionChange(id: string, selected: boolean): SelectionChange {
   return {
     id,
     type: 'select',
-    selected
+    selected,
   };
 }
 
@@ -20,7 +13,7 @@ export function positionChange(id: string, position: XYPosition): PositionChange
   return {
     id,
     type: 'position',
-    position
+    position,
   };
 }
 
@@ -28,14 +21,14 @@ export function dimensionChange(id: string, dimensions: Dimensions): DimensionCh
   return {
     id,
     type: 'dimensions',
-    dimensions
+    dimensions,
   };
 }
 
 export function removeChange(id: string): RemoveChange {
   return {
     id,
-    type: 'remove'
+    type: 'remove',
   };
 }
 
@@ -43,7 +36,7 @@ export function addChange<T extends { id: string }>(item: T): AddChange<T> {
   return {
     id: item.id,
     item: item,
-    type: 'add'
+    type: 'add',
   };
 }
 
@@ -51,6 +44,6 @@ export function replaceChange<T extends { id: string }>(item: T): ReplaceChange<
   return {
     id: item.id,
     item: item,
-    type: 'replace'
+    type: 'replace',
   };
 }

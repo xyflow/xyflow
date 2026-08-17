@@ -4,7 +4,9 @@ import type {
   XYPosition,
   Handle,
   Connection,
-  OnBeforeDeleteBase
+  OnBeforeDeleteBase,
+  EdgeChangeset,
+  NodeChangeset
 } from '@xyflow/system';
 
 import type { Node } from './nodes.js';

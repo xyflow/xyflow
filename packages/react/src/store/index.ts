@@ -7,8 +7,6 @@ import {
   updateConnectionLookup,
   handleExpandParent,
   NodeChange,
-  EdgeSelectionChange,
-  NodeSelectionChange,
   ParentExpandChild,
   initialConnection,
   NodeOrigin,
@@ -17,9 +15,13 @@ import {
   getHandlePosition,
   Position,
   ZIndexMode,
+  selectionChange,
+  getSelectionChanges,
+  SelectionChange,
+  NodeChangeset,
+  EdgeChangeset,
 } from '@xyflow/system';
 
-import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
 import getInitialState from './initialState';
 import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
 
@@ -166,13 +168,12 @@ const createStore = ({
        */
       updateNodeInternals: (updates) => {
         const {
-          triggerNodeChanges,
+          emitNodeChanges,
           nodeLookup,
           parentLookup,
           domNode,
           nodeOrigin,
           nodeExtent,
-          debug,
           fitViewQueued,
           zIndexMode,
         } = get();
@@ -201,17 +202,12 @@ const createStore = ({
           set({});
         }
 
-        if (changes?.length > 0) {
-          if (debug) {
-            console.log('React Flow: trigger node changes', changes);
-          }
-          triggerNodeChanges?.(changes);
-        }
+        emitNodeChanges(changes);
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
         const parentExpandChildren: ParentExpandChild[] = [];
         let changes = [];
-        const { nodeLookup, triggerNodeChanges, connection, updateConnection, onNodesChangeMiddlewareMap } = get();
+        const { nodeLookup, emitNodeChanges, connection, updateConnection, onNodesChangeMiddlewareMap } = get();
 
         for (const [id, dragItem] of nodeDragItems) {
           // we are using the nodelookup to be sure to use the current expandParent and parentId value
@@ -260,70 +256,79 @@ const createStore = ({
           changes = middleware(changes);
         }
 
-        triggerNodeChanges(changes);
+        emitNodeChanges(changes);
       },
-      triggerNodeChanges: (changes) => {
-        const { onNodesChange, setNodes, nodes, hasDefaultNodes, debug } = get();
-
-        if (changes?.length) {
-          if (hasDefaultNodes) {
-            const updatedNodes = applyNodeChanges(changes, nodes);
-            setNodes(updatedNodes);
-          }
-
-          if (debug) {
-            console.log('React Flow: trigger node changes', changes);
-          }
-
-          onNodesChange?.(changes);
-        }
-      },
-      triggerEdgeChanges: (changes) => {
-        const { onEdgesChange, setEdges, edges, hasDefaultEdges, debug } = get();
-
-        if (changes?.length) {
-          if (hasDefaultEdges) {
-            const updatedEdges = applyEdgeChanges(changes, edges);
-            setEdges(updatedEdges);
-          }
-
-          if (debug) {
-            console.log('React Flow: trigger edge changes', changes);
-          }
-
-          onEdgesChange?.(changes);
-        }
-      },
-      addSelectedNodes: (selectedNodeIds) => {
-        const { multiSelectionActive, edgeLookup, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
-
-        if (multiSelectionActive) {
-          const nodeChanges = selectedNodeIds.map((nodeId) => createSelectionChange(nodeId, true));
-          triggerNodeChanges(nodeChanges);
+      emitNodeChanges: (changes) => {
+        if (changes.length === 0) {
           return;
         }
 
-        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
-        triggerEdgeChanges(getSelectionChanges(edgeLookup));
+        const { debug, onNodesChange, hasDefaultNodes } = get();
+        const nodeChanges = new NodeChangeset(changes);
+
+        if (debug) {
+          console.log('React Flow: queue node changes', changes);
+        }
+
+        if (hasDefaultNodes) {
+          const { nodes, setNodes } = get();
+          const newNodes = nodeChanges.applyTo(nodes);
+          setNodes(newNodes);
+        }
+
+        onNodesChange?.(nodeChanges);
+      },
+      emitEdgeChanges: (changes) => {
+        if (changes.length === 0) {
+          return;
+        }
+
+        const { debug, hasDefaultEdges, onEdgesChange } = get();
+        const edgeChanges = new EdgeChangeset(changes);
+
+        if (debug) {
+          console.log('React Flow: queue edge changes', changes);
+        }
+
+        if (hasDefaultEdges) {
+          const { setEdges, edges } = get();
+          const newEdges = edgeChanges.applyTo(edges);
+          setEdges(newEdges);
+        }
+
+        onEdgesChange?.(edgeChanges);
+      },
+
+      addSelectedNodes: (selectedNodeIds) => {
+        const { multiSelectionActive, edgeLookup, nodeLookup, emitNodeChanges, emitEdgeChanges } = get();
+
+        if (multiSelectionActive) {
+          const nodeChanges = selectedNodeIds.map((nodeId) => selectionChange(nodeId, true));
+          emitNodeChanges(nodeChanges);
+          return;
+        }
+
+        emitNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
+        emitEdgeChanges(getSelectionChanges(edgeLookup));
       },
       addSelectedEdges: (selectedEdgeIds) => {
-        const { multiSelectionActive, edgeLookup, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { multiSelectionActive, edgeLookup, nodeLookup, emitNodeChanges, emitEdgeChanges } = get();
 
         if (multiSelectionActive) {
-          const changedEdges = selectedEdgeIds.map((edgeId) => createSelectionChange(edgeId, true));
-          triggerEdgeChanges(changedEdges);
+          const changedEdges = selectedEdgeIds.map((edgeId) => selectionChange(edgeId, true));
+          emitEdgeChanges(changedEdges);
           return;
         }
 
-        triggerEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
-        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
+        emitEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
+        emitNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
-        const { edges: storeEdges, nodes: storeNodes, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
+        const { edges: storeEdges, nodes: storeNodes, nodeLookup, emitNodeChanges, emitEdgeChanges } = get();
         const nodesToUnselect = nodes ? nodes : storeNodes;
         const edgesToUnselect = edges ? edges : storeEdges;
 
-        const nodeChanges: NodeSelectionChange[] = [];
+        const nodeChanges: SelectionChange[] = [];
 
         for (const node of nodesToUnselect) {
           if (!node.selected) {
@@ -340,21 +345,21 @@ const createStore = ({
             internalNode.selected = false;
           }
 
-          nodeChanges.push(createSelectionChange(node.id, false));
+          nodeChanges.push(selectionChange(node.id, false));
         }
 
-        const edgeChanges: EdgeSelectionChange[] = [];
+        const edgeChanges: SelectionChange[] = [];
 
         for (const edge of edgesToUnselect) {
           if (!edge.selected) {
             continue; // skip changing edges that are not selected
           }
 
-          edgeChanges.push(createSelectionChange(edge.id, false));
+          edgeChanges.push(selectionChange(edge.id, false));
         }
 
-        triggerNodeChanges(nodeChanges);
-        triggerEdgeChanges(edgeChanges);
+        emitNodeChanges(nodeChanges);
+        emitEdgeChanges(edgeChanges);
       },
       setMinZoom: (minZoom) => {
         const { panZoom, maxZoom } = get();
@@ -374,23 +379,23 @@ const createStore = ({
         set({ translateExtent });
       },
       resetSelectedElements: () => {
-        const { edges, nodes, triggerNodeChanges, triggerEdgeChanges, elementsSelectable } = get();
+        const { edges, nodes, emitNodeChanges, emitEdgeChanges, elementsSelectable } = get();
 
         if (!elementsSelectable) {
           return;
         }
 
-        const nodeChanges = nodes.reduce<NodeSelectionChange[]>(
-          (res, node) => (node.selected ? [...res, createSelectionChange(node.id, false)] : res),
+        const nodeChanges = nodes.reduce<SelectionChange[]>(
+          (res, node) => (node.selected ? [...res, selectionChange(node.id, false)] : res),
           []
         );
-        const edgeChanges = edges.reduce<EdgeSelectionChange[]>(
-          (res, edge) => (edge.selected ? [...res, createSelectionChange(edge.id, false)] : res),
+        const edgeChanges = edges.reduce<SelectionChange[]>(
+          (res, edge) => (edge.selected ? [...res, selectionChange(edge.id, false)] : res),
           []
         );
 
-        triggerNodeChanges(nodeChanges);
-        triggerEdgeChanges(edgeChanges);
+        emitNodeChanges(nodeChanges);
+        emitEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nextNodeExtent) => {
         const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode } = get();

@@ -5,8 +5,10 @@ import type {
   Connection,
   ConnectionMode,
   CoordinateExtent,
+  EdgeChangeset,
   FitViewOptionsBase,
   IsValidConnection,
+  NodeChangeset,
   OnBeforeDeleteBase,
   OnConnectStartParams,
   PanelPosition,
@@ -42,7 +44,10 @@ import type { VueFlowInstance } from './store';
  * about to be removed (the targeted nodes/edges plus connected edges and child nodes). Return `false` to
  * cancel, `true` to delete that set, or `{ nodes, edges }` to delete only a subset.
  */
-export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = OnBeforeDeleteBase<NodeType, EdgeType>;
+export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge = Edge> = OnBeforeDeleteBase<
+  NodeType,
+  EdgeType
+>;
 
 /**
  * Called after nodes and/or edges have been removed (via the delete key or `deleteElements`), with the
@@ -62,42 +67,42 @@ export interface CustomThemeVars {
  * override; the stylesheet falls back to the shipped `--xy-*-default` value
  * (`var(--xy-x, var(--xy-x-default))`).
  */
-export type CSSVars
-  = | '--xy-edge-stroke'
-    | '--xy-edge-stroke-width'
-    | '--xy-edge-stroke-selected'
-    | '--xy-connectionline-stroke'
-    | '--xy-connectionline-stroke-width'
-    | '--xy-attribution-background-color'
-    | '--xy-minimap-background-color'
-    | '--xy-minimap-mask-background-color'
-    | '--xy-minimap-mask-stroke-color'
-    | '--xy-minimap-mask-stroke-width'
-    | '--xy-minimap-node-background-color'
-    | '--xy-minimap-node-stroke-color'
-    | '--xy-minimap-node-stroke-width'
-    | '--xy-background-color'
-    | '--xy-background-pattern-color'
-    | '--xy-resize-background-color'
-    | '--xy-node-color'
-    | '--xy-node-border'
-    | '--xy-node-border-selected'
-    | '--xy-node-background-color'
-    | '--xy-node-boxshadow-hover'
-    | '--xy-node-boxshadow-selected'
-    | '--xy-node-border-radius'
-    | '--xy-handle-background-color'
-    | '--xy-handle-border-color'
-    | '--xy-selection-background-color'
-    | '--xy-selection-border'
-    | '--xy-controls-button-background-color'
-    | '--xy-controls-button-background-color-hover'
-    | '--xy-controls-button-color'
-    | '--xy-controls-button-color-hover'
-    | '--xy-controls-button-border-color'
-    | '--xy-controls-box-shadow'
-    | '--xy-edge-label-background-color'
-    | '--xy-edge-label-color';
+export type CSSVars =
+  | '--xy-edge-stroke'
+  | '--xy-edge-stroke-width'
+  | '--xy-edge-stroke-selected'
+  | '--xy-connectionline-stroke'
+  | '--xy-connectionline-stroke-width'
+  | '--xy-attribution-background-color'
+  | '--xy-minimap-background-color'
+  | '--xy-minimap-mask-background-color'
+  | '--xy-minimap-mask-stroke-color'
+  | '--xy-minimap-mask-stroke-width'
+  | '--xy-minimap-node-background-color'
+  | '--xy-minimap-node-stroke-color'
+  | '--xy-minimap-node-stroke-width'
+  | '--xy-background-color'
+  | '--xy-background-pattern-color'
+  | '--xy-resize-background-color'
+  | '--xy-node-color'
+  | '--xy-node-border'
+  | '--xy-node-border-selected'
+  | '--xy-node-background-color'
+  | '--xy-node-boxshadow-hover'
+  | '--xy-node-boxshadow-selected'
+  | '--xy-node-border-radius'
+  | '--xy-handle-background-color'
+  | '--xy-handle-border-color'
+  | '--xy-selection-background-color'
+  | '--xy-selection-border'
+  | '--xy-controls-button-background-color'
+  | '--xy-controls-button-background-color-hover'
+  | '--xy-controls-button-color'
+  | '--xy-controls-button-color-hover'
+  | '--xy-controls-button-border-color'
+  | '--xy-controls-box-shadow'
+  | '--xy-edge-label-background-color'
+  | '--xy-edge-label-color';
 
 export type ThemeVars = { [key in CSSVars]?: CSSProperties['color'] };
 export type Styles = CSSProperties & ThemeVars & CustomThemeVars;
@@ -506,8 +511,8 @@ export interface VueFlowProps<NodeType extends Node = Node, EdgeType extends Edg
 }
 
 export interface VueFlowEmits<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
-  nodesChange: [changes: NodeChange<NodeType>[]];
-  edgesChange: [changes: EdgeChange<EdgeType>[]];
+  nodesChange: NodeChangeset<NodeType>;
+  edgesChange: EdgeChangeset<EdgeType>;
   nodesDelete: [nodes: NodeType[]];
   edgesDelete: [edges: EdgeType[]];
   delete: [event: { nodes: NodeType[]; edges: EdgeType[] }];
@@ -595,9 +600,9 @@ export type EdgeSlots<EdgeType extends Edge = Edge> = Partial<
   } & Record<`edge-${string}`, (edgeProps: EdgeProps<EdgeType>) => any>
 >;
 
-export type VueFlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType>
-  & EdgeSlots<EdgeType> & {
+export type VueFlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType> &
+  EdgeSlots<EdgeType> & {
     'connection-line'?: (connectionLineProps: ConnectionLineProps<NodeType>) => any;
     'zoom-pane'?: () => any;
-    'default'?: () => any;
+    default?: () => any;
   };

@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo } from 'react';
-import { EdgeChange, NodeChange } from '@xyflow/system';
+import { EdgeChange, NodeChange, NodeChangeset, EdgeChangeset } from '@xyflow/system';
 
 import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { getElementsDiffChanges } from '../../utils';
@@ -28,12 +28,12 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
     const {
       nodes = [],
-      setNodes,
-      hasDefaultNodes,
       onNodesChange,
       nodeLookup,
       fitViewQueued,
       onNodesChangeMiddlewareMap,
+      setNodes,
+      hasDefaultNodes,
     } = store.getState();
 
     /*
@@ -61,7 +61,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
 
     // We only want to fire onNodesChange if there are changes to the nodes
     if (changes.length > 0) {
-      onNodesChange?.(changes);
+      onNodesChange?.(new NodeChangeset(changes));
     } else if (fitViewQueued) {
       // If there are no changes to the nodes, we still need to call setNodes
       // to trigger a re-render and fitView.
@@ -87,12 +87,11 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
     if (hasDefaultEdges) {
       setEdges(next);
     } else if (onEdgesChange) {
-      onEdgesChange(
-        getElementsDiffChanges({
-          items: next,
-          lookup: edgeLookup,
-        }) as EdgeChange<EdgeType>[]
-      );
+      const changes = getElementsDiffChanges({
+        items: next,
+        lookup: edgeLookup,
+      }) as EdgeChange<EdgeType>[];
+      onEdgesChange?.(new EdgeChangeset(changes));
     }
   }, []);
   const edgeQueue = useQueue<EdgeType>(edgeQueueHandler);

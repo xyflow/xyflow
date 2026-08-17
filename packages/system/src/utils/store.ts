@@ -1,4 +1,14 @@
-import { type Handle, type HandleConnection, infiniteExtent, type NodeHandleBounds, type ZIndexMode } from '..';
+import {
+  dimensionChange,
+  DimensionChange,
+  type Handle,
+  type HandleConnection,
+  infiniteExtent,
+  type NodeHandleBounds,
+  positionChange,
+  PositionChange,
+  type ZIndexMode,
+} from '..';
 import {
   type NodeBase,
   type CoordinateExtent,
@@ -13,8 +23,6 @@ import {
   type InternalNodeBase,
   type NodeLookup,
   type Rect,
-  type NodeDimensionChange,
-  type NodePositionChange,
   type ParentLookup,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
@@ -370,8 +378,8 @@ export function handleExpandParent(
   nodeLookup: NodeLookup,
   parentLookup: ParentLookup,
   nodeOrigin: NodeOrigin = [0, 0]
-): (NodeDimensionChange | NodePositionChange)[] {
-  const changes: (NodeDimensionChange | NodePositionChange)[] = [];
+): (DimensionChange | PositionChange)[] {
+  const changes: (DimensionChange | PositionChange)[] = [];
   const parentExpansions = new Map<string, { expandedRect: Rect; parent: InternalNodeBase }>();
 
   // determine the expanded rectangle the child nodes would take for each parent
@@ -408,14 +416,12 @@ export function handleExpandParent(
 
       // We need to correct the position of the parent node if the origin is not [0,0]
       if (xChange > 0 || yChange > 0 || widthChange || heightChange) {
-        changes.push({
-          id: parentId,
-          type: 'position',
-          position: {
+        changes.push(
+          positionChange(parentId, {
             x: parent.position.x - xChange + widthChange,
             y: parent.position.y - yChange + heightChange,
-          },
-        });
+          })
+        );
 
         /*
          * We move all child nodes in the oppsite direction
@@ -423,14 +429,12 @@ export function handleExpandParent(
          */
         parentLookup.get(parentId)?.forEach((childNode) => {
           if (!children.some((child) => child.id === childNode.id)) {
-            changes.push({
-              id: childNode.id,
-              type: 'position',
-              position: {
+            changes.push(
+              positionChange(childNode.id, {
                 x: childNode.position.x + xChange,
                 y: childNode.position.y + yChange,
-              },
-            });
+              })
+            );
           }
         });
       }
@@ -461,7 +465,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   nodeOrigin?: NodeOrigin,
   nodeExtent?: CoordinateExtent,
   zIndexMode?: ZIndexMode
-): { changes: (NodeDimensionChange | NodePositionChange)[]; updatedInternals: boolean } {
+): { changes: (DimensionChange | PositionChange)[]; updatedInternals: boolean } {
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
   let updatedInternals = false;
 
@@ -469,7 +473,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
     return { changes: [], updatedInternals };
   }
 
-  const changes: (NodeDimensionChange | NodePositionChange)[] = [];
+  const changes: (DimensionChange | PositionChange)[] = [];
   const style = window.getComputedStyle(viewportNode);
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
   // in this array we collect nodes, that might trigger changes (like expanding parent)
@@ -537,11 +541,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       updatedInternals = true;
 
       if (dimensionChanged) {
-        changes.push({
-          id: node.id,
-          type: 'dimensions',
-          dimensions,
-        });
+        changes.push(dimensionChange(node.id, dimensions));
 
         if (node.expandParent && node.parentId) {
           parentExpandChildren.push({

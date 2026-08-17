@@ -1,6 +1,13 @@
-import type { Connection, FinalConnectionState, HandleType, OnConnectStartParams, Viewport } from '@xyflow/system';
+import type {
+  Connection,
+  EdgeChangeset,
+  FinalConnectionState,
+  HandleType,
+  NodeChangeset,
+  OnConnectStartParams,
+  Viewport,
+} from '@xyflow/system';
 import type { EventHookExtended, EventHookOn, EventHookTrigger, VueFlowError } from '../utils';
-import type { EdgeChange, NodeChange } from './changes';
 import type { Edge } from './edge';
 import type { InternalNode, Node } from './node';
 import type { VueFlowInstance } from './store';
@@ -86,8 +93,8 @@ export interface SelectionChangeEvent<NodeType extends Node = Node, EdgeType ext
 }
 
 export interface FlowEvents<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
-  nodesChange: NodeChange<NodeType>[];
-  edgesChange: EdgeChange<EdgeType>[];
+  nodesChange: NodeChangeset<NodeType>;
+  edgesChange: EdgeChangeset<EdgeType>;
   nodeDoubleClick: NodeMouseEvent<NodeType>;
   nodeClick: NodeMouseEvent<NodeType>;
   nodeMouseEnter: NodeMouseEvent<NodeType>;
@@ -149,13 +156,15 @@ export interface FlowEvents<NodeType extends Node = Node, EdgeType extends Edge 
 }
 
 export type FlowHooks<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Readonly<{
-  [key in keyof FlowEvents<NodeType, EdgeType>]: EventHookExtended<FlowEvents<NodeType, EdgeType>[key]>
+  [key in keyof FlowEvents<NodeType, EdgeType>]: EventHookExtended<FlowEvents<NodeType, EdgeType>[key]>;
 }>;
 
 export type FlowHooksOn<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Readonly<{
-  [key in keyof FlowEvents<NodeType, EdgeType> as `on${Capitalize<key>}`]: EventHookOn<FlowEvents<NodeType, EdgeType>[key]>
+  [key in keyof FlowEvents<NodeType, EdgeType> as `on${Capitalize<key>}`]: EventHookOn<
+    FlowEvents<NodeType, EdgeType>[key]
+  >;
 }>;
 
 export type FlowHooksEmit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Readonly<{
-  [key in keyof FlowEvents<NodeType, EdgeType>]: EventHookTrigger<FlowEvents<NodeType, EdgeType>[key]>
+  [key in keyof FlowEvents<NodeType, EdgeType>]: EventHookTrigger<FlowEvents<NodeType, EdgeType>[key]>;
 }>;

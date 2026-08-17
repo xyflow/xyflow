@@ -176,8 +176,9 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   cancelConnection: () => void;
   updateConnection: UpdateConnection<InternalNode<NodeType>>;
   reset: () => void;
-  triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
-  triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
+  emitNodeChanges: (changes: NodeChange<NodeType>[]) => void;
+  emitEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
+
   panBy: PanBy;
   setCenter: SetCenter;
 };

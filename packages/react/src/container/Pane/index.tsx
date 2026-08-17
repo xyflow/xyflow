@@ -18,12 +18,12 @@ import {
   pointToRendererPoint,
   rendererPointToPoint,
   XYPosition,
+  getSelectionChanges,
 } from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
 import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
-import { getSelectionChanges } from '../../utils';
 import type { ReactFlowProps, ReactFlowState } from '../../types';
 
 type PaneProps = {
@@ -197,8 +197,8 @@ export function Pane({
       nodeLookup,
       edgeLookup,
       connectionLookup,
-      triggerNodeChanges,
-      triggerEdgeChanges,
+      emitNodeChanges,
+      emitEdgeChanges,
       defaultEdgeOptions,
     } = store.getState();
 
@@ -242,12 +242,12 @@ export function Pane({
 
     if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
       const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true);
-      triggerNodeChanges(changes);
+      emitNodeChanges(changes);
     }
 
     if (!areSetsEqual(prevSelectedEdgeIds, selectedEdgeIds.current)) {
       const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.current);
-      triggerEdgeChanges(changes);
+      emitEdgeChanges(changes);
     }
 
     store.setState({

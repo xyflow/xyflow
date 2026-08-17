@@ -7,10 +7,12 @@ import type {
   ConnectionState,
   CoordinateExtent,
   Dimensions,
+  EdgeChangeset,
   EdgeLookup,
   FitViewOptionsBase,
   HandleType,
   IsValidConnection,
+  NodeChangeset,
   NodeConnection,
   NodeDragItem,
   NodeLookup,
@@ -28,7 +30,6 @@ import type {
 } from '@xyflow/system';
 import type { ComputedRef } from 'vue';
 import type { ViewportHelper } from '../composables';
-import type { EdgeChange, NodeChange } from './changes';
 import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
 import type { ConnectionLineOptions } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
@@ -245,9 +246,10 @@ export type UpdateEdgeData<EdgeType extends Edge = Edge> = (
 ) => void;
 
 // `nodes`/`edges` are intentionally excluded, set them via setNodes/setEdges instead.
-export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
-  = Partial<Omit<State<NodeType, EdgeType>, 'nodes' | 'edges' | 'vueFlowRef' | 'viewportRef' | 'dimensions' | 'hooks'>>
-    & Partial<Pick<VueFlowProps<NodeType, EdgeType>, 'fitView'>>;
+export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Partial<
+  Omit<State<NodeType, EdgeType>, 'nodes' | 'edges' | 'vueFlowRef' | 'viewportRef' | 'dimensions' | 'hooks'>
+> &
+  Partial<Pick<VueFlowProps<NodeType, EdgeType>, 'fitView'>>;
 
 export type SetState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   state:
@@ -333,9 +335,9 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   /** changes the parent of a node, keeping its absolute position */
   changeParent: (nodeId: string, parentId: string | null) => void;
   /** applies default edge change handler */
-  applyEdgeChanges: (changes: EdgeChange<EdgeType>[]) => EdgeType[];
+  applyEdgeChanges: (changes: EdgeChangeset<EdgeType>) => EdgeType[];
   /** applies default node change handler; returns the resulting user nodes */
-  applyNodeChanges: (changes: NodeChange<NodeType>[]) => NodeType[];
+  applyNodeChanges: (changes: NodeChangeset<NodeType>) => NodeType[];
   /** manually select edges and add to state */
   addSelectedEdges: (edges: EdgeType[]) => void;
   /** manually select nodes and add to state */

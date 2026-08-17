@@ -34,7 +34,6 @@ export { useEdge } from './hooks/useEdges';
 export { experimental_useOnNodesChangeMiddleware } from './hooks/useOnNodesChangeMiddleware';
 export { experimental_useOnEdgesChangeMiddleware } from './hooks/useOnEdgesChangeMiddleware';
 
-export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { isNode, isEdge } from './utils/general';
 
 export * from './additional-components';
@@ -93,17 +92,13 @@ export {
   type ResizeParamsWithDirection,
   type ResizeDragEvent,
   type NodeChange,
-  type NodeDimensionChange,
-  type NodePositionChange,
-  type NodeSelectionChange,
-  type NodeRemoveChange,
-  type NodeAddChange,
-  type NodeReplaceChange,
+  type DimensionChange,
+  type PositionChange,
+  type SelectionChange,
+  type RemoveChange,
+  type AddChange,
+  type ReplaceChange,
   type EdgeChange,
-  type EdgeSelectionChange,
-  type EdgeRemoveChange,
-  type EdgeAddChange,
-  type EdgeReplaceChange,
   type KeyCode,
   type ConnectionState,
   type FinalConnectionState,
@@ -119,6 +114,8 @@ export {
   type ZIndexMode,
   type NodeHandle,
   type UseNodeConnectionsParams,
+  NodeChangeset,
+  EdgeChangeset,
 } from '@xyflow/system';
 
 // we need this workaround to prevent a duplicate identifier error

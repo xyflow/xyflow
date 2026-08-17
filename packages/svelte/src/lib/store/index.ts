@@ -19,6 +19,12 @@ import {
   Position,
   type NodeChange
 } from '@xyflow/system';
+import {
+  addChange,
+  selectionChange,
+  getDeselectionChanges,
+  getSelectionChanges
+} from '@xyflow/system';
 
 import type {
   EdgeTypes,
@@ -89,8 +95,6 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
         dragging
       });
     }
-
-    console.log('updateNodePositions', changes);
 
     store.queueNodeChanges(changes);
   };

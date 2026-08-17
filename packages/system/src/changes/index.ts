@@ -1,19 +1,16 @@
-import type { Edge, Node } from '../types/index.js';
-import type { EdgeChange, ElementChangeType, NodeChange } from './types.js';
+import type { EdgeBase, NodeBase } from '../types';
+import type { EdgeChange, ElementChangeType, NodeChange } from './types';
 
 import { applyEdgeChanges, applyNodeChanges } from './apply.js';
 
 /** Helper to narrow down the type of a change based on it's name */
-type ChangeOfType<ChangeType extends { type: string }, T extends ChangeType['type']> = Extract<
-  ChangeType,
-  { type: T }
->;
+type ChangeOfType<ChangeType extends { type: string }, T extends ChangeType['type']> = Extract<ChangeType, { type: T }>;
 
 /** Generic apply changes function that works for both nodes and changes */
-type ApplyChangesFn<
-  ElementType extends Node | Edge,
-  ChangeType extends ElementChangeType<ElementType>
-> = (elements: ElementType[], changes: Changeset<ElementType, ChangeType>) => ElementType[];
+type ApplyChangesFn<ElementType extends NodeBase | EdgeBase, ChangeType extends ElementChangeType<ElementType>> = (
+  elements: ElementType[],
+  changes: Changeset<ElementType, ChangeType>
+) => ElementType[];
 
 /**
  * Tracks element changes for easy access and modification.
@@ -31,13 +28,11 @@ type ApplyChangesFn<
  * const nextNodes = changes.applyTo(nodes);
  * ```
  */
-export class Changeset<
-  ElementType extends Node | Edge,
-  ChangeType extends ElementChangeType<ElementType>
-> {
+export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType extends ElementChangeType<ElementType>> {
   private changeTypes: Partial<Record<ChangeType['type'], boolean>> = {};
   private changeMap: Map<string, ChangeType[]> = new Map();
   private newElementIds: Set<string> = new Set();
+  private _version: number = 0;
 
   constructor(private applyChanges: ApplyChangesFn<ElementType, ChangeType>) {}
 
@@ -54,6 +49,7 @@ export class Changeset<
   add(change: ChangeType | ChangeType[]): void {
     const newChanges = Array.isArray(change) ? change : [change];
     for (const change of newChanges) {
+      this._version++;
       this.changeTypes[change.type as ChangeType['type']] = true;
       if (change.type === 'add') {
         this.newElementIds.add(change.id);
@@ -92,6 +88,7 @@ export class Changeset<
 
     if (changes.length === 1) {
       this.changeMap.delete(change.id);
+      this._version++;
       return;
     }
 
@@ -102,6 +99,7 @@ export class Changeset<
     }
 
     changes.splice(index, 1);
+    this._version++;
   }
 
   /**
@@ -126,6 +124,7 @@ export class Changeset<
    */
   removeForElement(elementId: string): void {
     this.changeMap.delete(elementId);
+    this._version++;
   }
 
   /**
@@ -209,6 +208,14 @@ export class Changeset<
   applyTo(elements: ElementType[]): ElementType[] {
     return this.applyChanges(elements, this);
   }
+
+  get size(): number {
+    return this.changeMap.size;
+  }
+
+  get version(): number {
+    return this._version ?? 0;
+  }
 }
 
 /**
@@ -221,12 +228,13 @@ export class Changeset<
  * const nextNodes = changes.applyTo(nodes);
  * ```
  */
-export class NodeChangeset<NodeType extends Node = Node> extends Changeset<
-  NodeType,
-  NodeChange<NodeType>
-> {
-  constructor() {
+export class NodeChangeset<NodeType extends NodeBase = NodeBase> extends Changeset<NodeType, NodeChange<NodeType>> {
+  constructor(changes?: NodeChange<NodeType>[]) {
     super(applyNodeChanges);
+
+    if (changes) {
+      this.add(changes);
+    }
   }
 
   /**
@@ -264,12 +272,13 @@ export class NodeChangeset<NodeType extends Node = Node> extends Changeset<
  * const nextEdges = changes.applyTo(edges);
  * ```
  */
-export class EdgeChangeset<EdgeType extends Edge = Edge> extends Changeset<
-  EdgeType,
-  EdgeChange<EdgeType>
-> {
-  constructor() {
+export class EdgeChangeset<EdgeType extends EdgeBase = EdgeBase> extends Changeset<EdgeType, EdgeChange<EdgeType>> {
+  constructor(changes?: EdgeChange<EdgeType>[]) {
     super(applyEdgeChanges);
+
+    if (changes) {
+      this.add(changes);
+    }
   }
 
   /**

@@ -46,7 +46,9 @@
     "build": "tsdown",
     "format": "prettier --write .",
     "lint": "eslint src",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@types/d3-drag": "^3.0.7",
@@ -57,12 +59,13 @@
     "d3-drag": "^3.0.0",
     "d3-interpolate": "^3.0.1",
     "d3-selection": "^3.0.0",
-    "d3-zoom": "^3.0.0"
+    "d3-zoom": "^3.0.0",
+    "vitest": "^4.1.10"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
     "@xyflow/eslint": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
-    "@types/node": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsdown": "catalog:",
