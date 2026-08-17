@@ -58,6 +58,13 @@ const EdgeWrapper = defineComponent({
 
     const isFocusable = toRef(() => (typeof edge.value.focusable === 'undefined' ? store.edgesFocusable : edge.value.focusable));
 
+    const hasReconnectListener = toRef(
+      () =>
+        store.hooks.reconnect.hasListeners()
+        || store.hooks.reconnectStart.hasListeners()
+        || store.hooks.reconnectEnd.hasListeners(),
+    );
+
     provide(EdgeId, props.id);
     provide(EdgeRef, edgeEl);
 
@@ -93,8 +100,6 @@ const EdgeWrapper = defineComponent({
     });
 
     return () => {
-      // bail if the edge was removed between a lookup update and this wrapper unmounting — otherwise the
-      // derefs below throw when no `defaultEdgeOptions` mask the now-undefined edge
       if (!storedEdge.value) {
         return null;
       }
@@ -216,7 +221,7 @@ const EdgeWrapper = defineComponent({
               ? null
               : h(edgeCmp.value ?? (getEdgeTypes.value.default as Component), { ...edgeComponentProps, ...pathOptions }),
             [
-              isReconnectable.value === 'source' || isReconnectable.value === true
+              hasReconnectListener.value && (isReconnectable.value === 'source' || isReconnectable.value === true)
                 ? [
                     h(
                       'g',
@@ -236,7 +241,7 @@ const EdgeWrapper = defineComponent({
                     ),
                   ]
                 : null,
-              isReconnectable.value === 'target' || isReconnectable.value === true
+              hasReconnectListener.value && (isReconnectable.value === 'target' || isReconnectable.value === true)
                 ? [
                     h(
                       'g',
