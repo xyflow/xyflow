@@ -284,7 +284,7 @@ export type PanelPosition =
  * */
 export type ProOptions = {
   account?: string;
-  /** This should only be used by users with a subscription. */
+  /** If you hide the attribution, please support our work with a subscription. */
   hideAttribution: boolean;
 };
 

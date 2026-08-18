@@ -12,7 +12,8 @@
 {#if !proOptions?.hideAttribution}
   <!--
 @component
-Please only hide the Svelte Flow attribution when you are subscribed to Svelte Flow Pro
+Svelte Flow is independent and entirely funded by its users.
+ * If you hide the attribution, please support our work by subscribing to Svelte Flow Pro: https://svelteflow.dev/attribution
 -->
   <Panel
     {position}
