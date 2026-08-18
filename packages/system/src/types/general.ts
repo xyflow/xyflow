@@ -279,8 +279,12 @@ export type PanelPosition =
   | 'center-left'
   | 'center-right';
 
+/**
+ * The pro options are meant to be used only for users with a subscription.
+ * */
 export type ProOptions = {
   account?: string;
+  /** This should only be used by users with a subscription. */
   hideAttribution: boolean;
 };
 

@@ -11,6 +11,9 @@ const link = `https://reactflow.dev${
   process.env.NODE_ENV === 'production' ? '?utm_source=attribution' : '/attribution'
 }`;
 
+/**
+ * Please only hide the React Flow attribution when you are subscribed to React Flow Pro
+ */
 export function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps) {
   if (proOptions?.hideAttribution) {
     return null;

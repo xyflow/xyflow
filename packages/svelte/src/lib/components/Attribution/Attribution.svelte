@@ -10,6 +10,10 @@
 </script>
 
 {#if !proOptions?.hideAttribution}
+  <!--
+@component
+Please only hide the Svelte Flow attribution when you are subscribed to Svelte Flow Pro
+-->
   <Panel
     {position}
     class="svelte-flow__attribution"
