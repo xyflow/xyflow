@@ -9,7 +9,9 @@ import type { InternalNode } from '$lib/types/index.js';
  * @param params.id - the node id
  * @returns An internal node or undefined
  */
-export function useInternalNode(params: () => { id: string }): { current: InternalNode | undefined } {
+export function useInternalNode(params: () => { id: string }): {
+  current: InternalNode | undefined;
+} {
   const { nodeLookup, nodes } = $derived(useStore());
 
   const node = $derived.by(() => {
