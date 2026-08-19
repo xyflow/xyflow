@@ -10,6 +10,11 @@
 </script>
 
 {#if !proOptions?.hideAttribution}
+  <!--
+@component
+Svelte Flow is independent and entirely funded by its users.
+If you hide the attribution, please support our work by subscribing to Svelte Flow Pro: https://svelteflow.dev/remove-attribution
+-->
   <Panel
     {position}
     class="svelte-flow__attribution"
