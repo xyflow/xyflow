@@ -2,7 +2,7 @@
 import { XYPanZoom } from '@xyflow/system';
 import { onMounted, onUnmounted, toRef, watch } from 'vue';
 import ConnectionLine from '../../components/ConnectionLine';
-import { storeToRefs, useKeyPress, useStore, useVueFlow } from '../../composables';
+import { storeToRefs, useKeyPress, useVueFlow, useVueFlowStore } from '../../composables';
 import { useFitViewOnInit } from '../../composables/useFitViewOnInit';
 import { useResizeHandler } from '../../composables/useResizeHandler';
 import EdgeRenderer from '../EdgeRenderer/EdgeRenderer.vue';
@@ -38,7 +38,7 @@ const {
   selectionOnDrag,
   paneClickDistance,
   connection,
-} = storeToRefs(useStore());
+} = storeToRefs(useVueFlowStore());
 
 const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
 

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 import { NodeWrapper } from '../../components';
-import { useStore, useVueFlow } from '../../composables';
+import { useVueFlow, useVueFlowStore } from '../../composables';
 import { useNodesInitialized } from '../../composables/useNodesInitialized';
 
 const { getNodes, updateNodeDimensions, emits } = useVueFlow();
 
-const { nodeLookup } = useStore();
+const { nodeLookup } = useVueFlowStore();
 
 const nodesInitialized = useNodesInitialized();
 

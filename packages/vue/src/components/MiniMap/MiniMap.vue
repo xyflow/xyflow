@@ -4,7 +4,7 @@ import type { InternalNode } from '../../types';
 import type { MiniMapEmits, MiniMapNodeFunc, MiniMapProps, MiniMapSlots, ShapeRendering } from './types';
 import { getBoundsOfRects, getConnectedEdges, getNodeDimensions, getNodesBounds, isNumeric, XYMinimap } from '@xyflow/system';
 import { computed, onMounted, onUnmounted, provide, shallowRef, toRef, useAttrs, watch } from 'vue';
-import { storeToRefs, useStore, useVueFlow } from '../../composables';
+import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import Panel from '../Panel/Panel.vue';
 import MiniMapNode from './MiniMapNode.vue';
 import { Slots } from './types';
@@ -43,9 +43,9 @@ const defaultHeight = 150;
 
 const { id, viewport, emits } = useVueFlow();
 
-const { nodeLookup } = useStore();
+const { nodeLookup } = useVueFlowStore();
 
-const { edges, nodes, transform, translateExtent, dimensions, panZoom, ariaLabelConfig } = storeToRefs(useStore());
+const { edges, nodes, transform, translateExtent, dimensions, panZoom, ariaLabelConfig } = storeToRefs(useVueFlowStore());
 
 const el = shallowRef<SVGElement>();
 

@@ -1,8 +1,8 @@
 import { onScopeDispose, watch } from 'vue';
 import { storeToRefs } from './storeToRefs';
 import { useNodesInitialized } from './useNodesInitialized';
-import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
+import { useVueFlowStore } from './useVueFlowStore';
 
 /**
  * Drives the `fitView` prop's initial fit. One-shot — later user resizes don't re-fit — but the container
@@ -16,7 +16,7 @@ import { useVueFlow } from './useVueFlow';
  */
 export function useFitViewOnInit() {
   const { fitView, onMoveStart } = useVueFlow();
-  const { panZoom, dimensions, fitViewOnInit, fitViewOnInitDone, fitViewOptions } = storeToRefs(useStore());
+  const { panZoom, dimensions, fitViewOnInit, fitViewOnInitDone, fitViewOptions } = storeToRefs(useVueFlowStore());
   const nodesInitialized = useNodesInitialized();
 
   // A user pan/zoom hands viewport control to the user — stop auto-fitting. Our own programmatic `fitView`

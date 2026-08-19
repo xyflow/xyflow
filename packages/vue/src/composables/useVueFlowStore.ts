@@ -17,7 +17,7 @@ import { ErrorCode, VueFlowError } from '../utils/errors';
  * @public
  * @returns the reactive state for the current context
  */
-export function useStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): VueFlowState<NodeType, EdgeType> {
+export function useVueFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): VueFlowState<NodeType, EdgeType> {
   const state = injectFlowContext<VueFlowState<NodeType, EdgeType>>(VueFlowStateKey);
 
   if (!state) {

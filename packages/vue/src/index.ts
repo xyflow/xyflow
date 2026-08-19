@@ -51,8 +51,8 @@ export { useNodeId } from './composables/useNodeId';
 export { useNodesData } from './composables/useNodesData';
 
 export { useNodesInitialized } from './composables/useNodesInitialized';
-export { useStore } from './composables/useStore';
 export { useVueFlow } from './composables/useVueFlow';
+export { useVueFlowStore } from './composables/useVueFlowStore';
 export { default as VueFlow } from './container/VueFlow/VueFlow.vue';
 export { default as VueFlowProvider } from './container/VueFlowProvider/VueFlowProvider.vue';
 export { NodeId as NodeIdInjection, VueFlow as VueFlowInjection } from './context';

@@ -3,7 +3,7 @@ import type { Ref } from 'vue';
 import type { Edge, Node, VueFlowState } from '../types';
 import { watch } from 'vue';
 import { storeToRefs } from './storeToRefs';
-import { useStore } from './useStore';
+import { useVueFlowStore } from './useVueFlowStore';
 
 function sameViewport(a: Viewport | undefined, b: Viewport | undefined) {
   return !!a && !!b && a.x === b.x && a.y === b.y && a.zoom === b.zoom;
@@ -22,7 +22,7 @@ function sameViewport(a: Viewport | undefined, b: Viewport | undefined) {
  */
 export function useViewportSync<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   model: Ref<Viewport | undefined>,
-  state: VueFlowState<NodeType, EdgeType> = useStore<NodeType, EdgeType>(),
+  state: VueFlowState<NodeType, EdgeType> = useVueFlowStore<NodeType, EdgeType>(),
 ) {
   const { transform, panZoom } = storeToRefs(state);
 

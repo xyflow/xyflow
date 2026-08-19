@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { storeToRefs, useStore, useVueFlow } from '../../composables';
+import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import ZoomPaneSlot from './ZoomPaneSlot';
 
 const { viewport } = useVueFlow();
 
-const { fitViewOnInit, fitViewOnInitDone } = storeToRefs(useStore());
+const { fitViewOnInit, fitViewOnInitDone } = storeToRefs(useVueFlowStore());
 
 const isHidden = computed(() => {
   if (fitViewOnInit.value) {

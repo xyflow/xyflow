@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { XYPosition } from '@xyflow/system';
-import type { EdgeChange, NodeChange } from '../../types';
 import {
   areSetsEqual,
   calcAutoPan,
@@ -16,7 +15,7 @@ import {
 import { onUnmounted, shallowRef, toRef, watch } from 'vue';
 import NodesSelection from '../../components/NodesSelection/NodesSelection.vue';
 import UserSelection from '../../components/UserSelection/UserSelection.vue';
-import { storeToRefs, useKeyPress, useStore, useVueFlow } from '../../composables';
+import { storeToRefs, useKeyPress, useVueFlow, useVueFlowStore } from '../../composables';
 
 const { isSelecting, selectionKeyPressed } = defineProps<{ isSelecting: boolean; selectionKeyPressed: boolean }>();
 
@@ -31,7 +30,7 @@ const {
   panBy,
 } = useVueFlow();
 
-const { edgeLookup, nodeLookup } = useStore();
+const { edgeLookup, nodeLookup } = useVueFlowStore();
 
 const {
   vueFlowRef,
@@ -51,7 +50,7 @@ const {
   paneClickDistance,
   autoPanOnSelection,
   autoPanSpeed,
-} = storeToRefs(useStore());
+} = storeToRefs(useVueFlowStore());
 
 const container = shallowRef<HTMLDivElement | null>(null);
 
@@ -140,11 +139,11 @@ function onPointerDown(event: PointerEvent) {
   containerBounds.value = vueFlowRef.value?.getBoundingClientRect() ?? null;
 
   if (
-    !elementsSelectable.value ||
-    !isSelecting ||
-    event.button !== 0 ||
-    event.target !== container.value ||
-    !containerBounds.value
+    !elementsSelectable.value
+    || !isSelecting
+    || event.button !== 0
+    || event.target !== container.value
+    || !containerBounds.value
   ) {
     return;
   }
@@ -198,8 +197,8 @@ function commitUserSelectionRect(mouseX: number, mouseY: number) {
       nextUserSelectRect,
       transform.value,
       selectionMode.value === SelectionMode.Partial,
-      true
-    ).map((node) => node.id)
+      true,
+    ).map(node => node.id),
   );
 
   selectedEdgeIds.value = new Set();
@@ -269,7 +268,7 @@ function onPointerMove(event: PointerEvent) {
   if (!selectionInProgress) {
     const screenStart = rendererPointToPoint(
       { x: userSelectionRect.value.startX, y: userSelectionRect.value.startY },
-      transform.value
+      transform.value,
     );
     const requiredDistance = selectionKeyPressed ? 0 : paneClickDistance.value;
     const distance = Math.hypot(mouseX - screenStart.x, mouseY - screenStart.y);

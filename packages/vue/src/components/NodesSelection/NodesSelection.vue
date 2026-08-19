@@ -2,14 +2,14 @@
 import type { InternalNode } from '../../types';
 import { getNodesBounds } from '@xyflow/system';
 import { computed, onMounted, shallowRef } from 'vue';
-import { storeToRefs, useDrag, useStore, useUpdateNodePositions, useVueFlow } from '../../composables';
+import { storeToRefs, useDrag, useUpdateNodePositions, useVueFlow, useVueFlowStore } from '../../composables';
 import { arrowKeyDiffs } from '../../utils';
 
 const { emits, viewport, getSelectedNodes } = useVueFlow();
 
-const { nodeLookup } = useStore();
+const { nodeLookup } = useVueFlowStore();
 
-const { noPanClassName, disableKeyboardA11y, userSelectionActive } = storeToRefs(useStore());
+const { noPanClassName, disableKeyboardA11y, userSelectionActive } = storeToRefs(useVueFlowStore());
 
 const updatePositions = useUpdateNodePositions();
 

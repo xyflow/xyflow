@@ -4,8 +4,8 @@ import type { NodeDragEvent } from '../types';
 import { infiniteExtent, isCoordinateExtent, XYDrag } from '@xyflow/system';
 import { shallowRef, toRef, toValue, watch, watchEffect } from 'vue';
 import { handleNodeClick } from '../utils';
-import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
+import { useVueFlowStore } from './useVueFlowStore';
 
 interface UseDragParams {
   onStart: (event: NodeDragEvent) => void;
@@ -29,7 +29,7 @@ export function useDrag(params: UseDragParams) {
   const { panBy, getInternalNode, addSelectedNodes, removeSelectedNodes, removeSelectedEdges, updateNodePositions, getNodes, getEdges }
     = useVueFlow();
 
-  const store = useStore();
+  const store = useVueFlowStore();
 
   const { nodeLookup } = store;
 
