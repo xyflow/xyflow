@@ -433,3 +433,19 @@ export function withResolvers<T>(): {
 export function mergeAriaLabelConfig(partial?: Partial<AriaLabelConfig>): AriaLabelConfig {
   return { ...defaultAriaLabelConfig, ...(partial || {}) };
 }
+
+export function domNodeIsVisible(selector: string) {
+  const el = typeof document !== 'undefined' ? document.querySelector(selector) : null;
+  if (!el || !el.isConnected) return false;
+
+  const style = getComputedStyle(el);
+
+  if (style.display === 'none') return false;
+  if (style.visibility === 'hidden' || style.visibility === 'collapse') return false;
+  if (style.opacity === '0') return false;
+
+  const rect = el.getBoundingClientRect();
+  if (rect.width === 0 && rect.height === 0) return false;
+
+  return true;
+}

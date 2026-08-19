@@ -1,7 +1,8 @@
-import type { PanelPosition, ProOptions } from '@xyflow/system';
+import { useEffect, useRef } from 'react';
+import { type PanelPosition, domNodeIsVisible } from '@xyflow/system';
 
 import { Panel } from '../Panel';
-import { useEffect, useRef } from 'react';
+import { type ProOptions } from '../../types/general';
 
 type AttributionProps = {
   proOptions?: ProOptions;
@@ -12,30 +13,19 @@ const link = `https://reactflow.dev${
   process.env.NODE_ENV === 'production' ? '?utm_source=attribution' : '/attribution'
 }`;
 
-const consoleLink = 'https://reactflow.dev/attribution';
+const consoleLink = 'https://reactflow.dev/remove-attribution?utm_source=console';
 
-function isVisible(el: Element | null) {
-  if (!el || !el.isConnected) return false;
-
-  const style = getComputedStyle(el);
-
-  if (style.display === 'none') return false;
-  if (style.visibility === 'hidden' || style.visibility === 'collapse') return false;
-  if (style.opacity === '0') return false;
-
-  const rect = el.getBoundingClientRect();
-  if (rect.width === 0 && rect.height === 0) return false;
-
-  return true;
-}
-
+/**
+ * React Flow is independent and entirely funded by its users.
+ * If you hide the attribution, please support our work by subscribing to React Flow Pro: https://reactflow.dev/remove-attribution
+ */
 export function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps) {
   const warned = useRef(false);
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && !warned.current) {
       setTimeout(() => {
-        if (!isVisible(document.querySelector('.react-flow__attribution'))) {
+        if (!domNodeIsVisible('.react-flow__attribution')) {
           console.warn(
             `React Flow: It seems like you are hiding the attribution. Please only do this when you are subscribed to React Flow Pro: ${consoleLink}\n%cYou can ignore this warning if you are subscribed.`,
             'font-style: italic;'
