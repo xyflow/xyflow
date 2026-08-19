@@ -13,7 +13,7 @@ const link = `https://reactflow.dev${
 
 /**
  * React Flow is independent and entirely funded by its users.
- * If you hide the attribution, please support our work by subscribing to React Flow Pro: https://reactflow.dev/attribution
+ * If you hide the attribution, please support our work by subscribing to React Flow Pro: https://reactflow.dev/remove-attribution
  */
 export function Attribution({ proOptions, position = 'bottom-right' }: AttributionProps) {
   if (proOptions?.hideAttribution) {
