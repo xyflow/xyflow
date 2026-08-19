@@ -1,4 +1,4 @@
-import { useStore } from '$lib/store/index.js';
+import { useSvelteFlowStore } from '$lib/store/index.js';
 
 type Portal = 'viewport-back' | 'viewport-front' | 'root' | 'edge-labels';
 
@@ -15,7 +15,7 @@ function tryToMount(node: Element, domNode: Element | null, target: Portal | und
 }
 
 export function portal(node: Element, target: Portal | undefined) {
-  const { domNode } = $derived(useStore());
+  const { domNode } = $derived(useSvelteFlowStore());
 
   let destroyEffect: (() => void) | undefined;
   // svelte-ignore state_referenced_locally

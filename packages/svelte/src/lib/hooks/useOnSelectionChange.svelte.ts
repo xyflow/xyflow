@@ -1,5 +1,5 @@
 import type { Edge, Node, OnSelectionChange } from '$lib/types/index.js';
-import { useStore } from '$lib/hooks/useStore.js';
+import { useSvelteFlowStore } from '$lib/hooks/useSvelteFlowStore.js';
 
 /**
  * Hook for listening to selection changes.
@@ -11,7 +11,7 @@ import { useStore } from '$lib/hooks/useStore.js';
 export function useOnSelectionChange<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   params: () => { onChange: OnSelectionChange<NodeType, EdgeType> }
 ) {
-  const store = $derived(useStore<NodeType, EdgeType>());
+  const store = $derived(useSvelteFlowStore<NodeType, EdgeType>());
   const symbol = Symbol();
 
   $effect(() => {

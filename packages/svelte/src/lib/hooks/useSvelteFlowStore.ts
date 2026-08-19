@@ -8,7 +8,7 @@ import type { Node, Edge } from '$lib/types/index.js';
 
 const providerErrorMessage = errorMessages['error001']('svelte');
 
-export function useStore<
+export function useSvelteFlowStore<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
 >(): SvelteFlowStore<NodeType, EdgeType> {

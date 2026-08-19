@@ -1,7 +1,7 @@
 <script lang="ts">
   import { XYHandle, type HandleType, type OnConnectStart } from '@xyflow/system';
 
-  import { useStore } from '$lib/store/index.js';
+  import { useSvelteFlowStore } from '$lib/store/index.js';
   import { getEdgeIdContext } from '$lib/store/context.js';
   import type { Edge } from '$lib/types/index.js';
   import { EdgeLabel } from '../EdgeLabel/index.js';
@@ -18,7 +18,7 @@
     ...rest
   }: EdgeReconnectAnchorProps = $props();
 
-  const store = useStore();
+  const store = useSvelteFlowStore();
 
   const edgeId = getEdgeIdContext(
     'EdgeReconnectAnchor must be used within a Custom Edge component'
