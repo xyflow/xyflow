@@ -50,7 +50,7 @@
   },
   "scripts": {
     "dev": "concurrently \"tsdown --watch\" \"pnpm:css-watch\"",
-    "build": "pnpm run css && tsdown && pnpm typecheck",
+    "build": "pnpm run css && tsdown",
     "css": "postcss src/styles/{base,style}.css --dir dist ",
     "css-watch": "pnpm css --watch",
     "format": "prettier --write .",

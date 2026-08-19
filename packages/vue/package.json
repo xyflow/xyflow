@@ -56,7 +56,7 @@
   },
   "scripts": {
     "dev": "concurrently \"tsdown --watch\" \"pnpm:css --watch\"",
-    "build": "pnpm codegen:check && shx rm -rf dist && pnpm css && tsdown && pnpm typecheck",
+    "build": "pnpm codegen:check && shx rm -rf dist && pnpm css && tsdown",
     "build:watch": "tsdown --watch",
     "codegen": "node scripts/gen-props-objects.mjs",
     "codegen:check": "node scripts/gen-props-objects.mjs --check",

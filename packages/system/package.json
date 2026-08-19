@@ -43,7 +43,7 @@
   },
   "scripts": {
     "dev": "tsdown --watch",
-    "build": "tsdown && pnpm typecheck",
+    "build": "tsdown",
     "format": "prettier --write .",
     "lint": "eslint src",
     "typecheck": "tsc --noEmit",
