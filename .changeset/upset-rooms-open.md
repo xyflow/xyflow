@@ -1,5 +1,5 @@
 ---
-"@xyflow/svelte": patch
+"@xyflow/svelte": major
 ---
 
 Rename `useStore` to `useSvelteFlowStore`
