@@ -26,7 +26,7 @@
   },
   "scripts": {
     "dev": "concurrently \"svelte-package -p -w\" \"pnpm:css --watch\"",
-    "build": "svelte-package && node scripts/fix-svelte-declaration-maps.mjs && pnpm run css && publint && pnpm run attw",
+    "build": "svelte-package && node scripts/fix-svelte-declaration-maps.mjs && pnpm run css && publint && pnpm run attw && pnpm typecheck",
     "attw": "attw --pack --profile esm-only --ignore-rules internal-resolution-error cjs-resolves-to-esm --exclude-entrypoints ./dist/base.css ./dist/style.css ./base.css ./style.css",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
