@@ -26,7 +26,7 @@ export * from '$lib/plugins/EdgeToolbar/index.js';
 export * from '$lib/plugins/NodeResizer/index.js';
 
 // store
-export { useStore } from '$lib/store/index.js';
+export { useSvelteFlowStore } from '$lib/store/index.js';
 
 // utils
 export * from '$lib/utils/index.js';

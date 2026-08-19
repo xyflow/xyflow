@@ -22,7 +22,7 @@ import {
   changeParentNode
 } from '@xyflow/system';
 
-import { useStore } from '$lib/store';
+import { useSvelteFlowStore } from '$lib/store';
 import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
 import { isEdge, isNode } from '$lib/utils';
 
@@ -285,7 +285,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     id?: string | null;
   }) => HandleConnection[];
 } {
-  const store = $derived(useStore<NodeType, EdgeType>());
+  const store = $derived(useSvelteFlowStore<NodeType, EdgeType>());
 
   const getNodeRect = (node: NodeType | { id: NodeType['id'] }): Rect | null => {
     const nodeToUse = isNode(node) ? node : store.nodeLookup.get(node.id)!;

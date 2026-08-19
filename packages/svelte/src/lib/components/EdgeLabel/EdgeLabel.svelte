@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getEdgeIdContext } from '$lib/store/context.js';
   import { hideOnSSR, portal } from '$lib/actions/portal/index.js';
-  import { useStore } from '$lib/store/index.js';
+  import { useSvelteFlowStore } from '$lib/store/index.js';
   import { toPxString } from '$lib/utils/index.js';
 
   import type { EdgeLabelProps } from './types.js';
@@ -18,7 +18,7 @@
     ...rest
   }: EdgeLabelProps = $props();
 
-  const store = useStore();
+  const store = useSvelteFlowStore();
 
   const edgeId = getEdgeIdContext('EdgeLabel must be used within a Custom Edge component');
 

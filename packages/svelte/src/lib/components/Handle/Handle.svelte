@@ -14,7 +14,7 @@
     type Connection
   } from '@xyflow/system';
 
-  import { useStore } from '$lib/store/index.js';
+  import { useSvelteFlowStore } from '$lib/store/index.js';
 
   import type { HandleProps } from './types.js';
   import { getNodeConnectableContext, getNodeIdContext } from '$lib/store/context.js';
@@ -45,7 +45,7 @@
     isConnectableProp !== undefined ? isConnectableProp : isConnectableContext.value
   );
 
-  let store = useStore();
+  let store = useSvelteFlowStore();
   let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
   let prevConnections: Map<string, HandleConnection> | null = null;

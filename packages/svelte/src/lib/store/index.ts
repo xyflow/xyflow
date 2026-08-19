@@ -38,7 +38,7 @@ import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } 
 
 export const key = Symbol();
 
-export { useStore } from '../hooks/useStore.js';
+export { useSvelteFlowStore } from '../hooks/useSvelteFlowStore.js';
 
 export function createStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   signals: StoreSignals<NodeType, EdgeType>
