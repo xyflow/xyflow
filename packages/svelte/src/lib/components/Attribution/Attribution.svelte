@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isDomNodeVisible } from '@xyflow/system';
+  import { handleAttributionWarning } from '@xyflow/system';
 
   import { Panel } from '$lib/container/Panel/index.js';
   import type { AttributionProps } from './types.js';
@@ -10,21 +10,8 @@
     process.env.NODE_ENV === 'production' ? '?utm_source=attribution' : '/attribution'
   }`;
 
-  const consoleLink = 'https://svelteflow.dev/remove-attribution?utm_source=console';
-
-  let warned = false;
-
-  if (process.env.NODE_ENV === 'development' && !warned) {
-    setTimeout(() => {
-      if (!isDomNodeVisible('.svelte-flow__attribution')) {
-        console.warn(
-          `Svelte Flow: It seems like you are hiding the attribution. Please only do this when you are subscribed to Svelte Flow Pro: ${consoleLink}\n%cYou can ignore this warning if you are subscribed.`,
-          'font-style: italic;'
-        );
-      }
-    }, 1000);
-
-    warned = true;
+  if (process.env.NODE_ENV === 'development') {
+    handleAttributionWarning('svelte');
   }
 </script>
 
