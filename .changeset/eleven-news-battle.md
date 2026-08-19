@@ -3,5 +3,5 @@
 "@xyflow/react": patch
 ---
 
-Show log if user hides attribution
+Show log if user hides attribution in development
   
