@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Edge, FlowExportObject, Node } from '@xyflow/vue';
-import { storeToRefs, useStore, useVueFlow } from '@xyflow/vue';
+import { storeToRefs, useVueFlowStore, useVueFlow } from '@xyflow/vue';
 
 const flowKey = 'example-flow';
 
@@ -16,7 +16,7 @@ function getNodeId() {
 
 const { addNodes, setNodes, setEdges, toObject, setViewport } = useVueFlow();
 
-const { dimensions } = storeToRefs(useStore());
+const { dimensions } = storeToRefs(useVueFlowStore());
 
 function onSave() {
   state.value = toObject();

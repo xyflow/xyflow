@@ -15,9 +15,9 @@ import {
 } from 'vue';
 import {
   useDrag,
-  useStore,
   useUpdateNodePositions,
   useVueFlow,
+  useVueFlowStore,
 } from '../../composables';
 import { NodeId, NodeRef, Slots } from '../../context';
 import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, elementSelectionKeys, ErrorCode, handleNodeClick, resolveTypeComponent, VueFlowError } from '../../utils';
@@ -44,7 +44,7 @@ const NodeWrapper = defineComponent({
       setCenter,
     } = useVueFlow();
 
-    const store = useStore();
+    const store = useVueFlowStore();
     const { parentLookup } = store;
 
     const nodesSelectionActive = toRef(store, 'nodesSelectionActive');

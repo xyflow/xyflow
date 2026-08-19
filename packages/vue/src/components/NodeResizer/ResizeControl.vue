@@ -4,7 +4,7 @@ import type { NodeChange } from '../../types';
 import type { NodeResizerEmits, ResizeControlProps } from './types';
 import { evaluateAbsolutePosition, handleExpandParent, NodeChangeset, XYResizer } from '@xyflow/system';
 import { computed, shallowRef, toRef, watchEffect } from 'vue';
-import { storeToRefs, useStore, useVueFlow } from '../../composables';
+import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import { useNodeId } from '../../composables/useNodeId';
 import { ResizeControlVariant } from './types';
 import { DefaultPositions, StylingProperty } from './utils';
@@ -23,9 +23,9 @@ const emits = defineEmits<NodeResizerEmits>();
 
 const { emits: triggerEmits, viewport } = useVueFlow();
 
-const { nodeLookup, parentLookup } = useStore();
+const { nodeLookup, parentLookup } = useVueFlowStore();
 
-const { transform, nodeOrigin, snapGrid, snapToGrid, vueFlowRef, noDragClassName } = storeToRefs(useStore());
+const { transform, nodeOrigin, snapGrid, snapToGrid, vueFlowRef, noDragClassName } = storeToRefs(useVueFlowStore());
 
 const resizeControlRef = shallowRef<HTMLDivElement>();
 
@@ -82,7 +82,7 @@ watchEffect((onCleanup) => {
               { width, height },
               node.parentId,
               nodeLookup,
-              origin
+              origin,
             ),
           },
         };

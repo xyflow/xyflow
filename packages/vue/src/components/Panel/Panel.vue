@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { PanelProps } from '../../types/panel';
 import { computed } from 'vue';
-import { storeToRefs, useStore } from '../../composables';
+import { storeToRefs, useVueFlowStore } from '../../composables';
 
 const props = withDefaults(defineProps<PanelProps>(), { position: 'top-left' });
 
-const { userSelectionActive } = storeToRefs(useStore());
+const { userSelectionActive } = storeToRefs(useVueFlowStore());
 
 const positionClasses = computed(() => `${props.position}`.split('-'));
 </script>

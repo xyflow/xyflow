@@ -5,8 +5,8 @@ import { computed, inject, shallowRef, toValue } from 'vue';
 import { NodeRef } from '../context';
 import { ErrorCode, VueFlowError } from '../utils';
 import { useNodeId } from './useNodeId';
-import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
+import { useVueFlowStore } from './useVueFlowStore';
 
 /**
  * Composable that provides access to a node object, its parent node, connected edges and its dom element.
@@ -25,7 +25,7 @@ export function useNode<NodeType extends Node = Node>(id?: MaybeRefOrGetter<stri
   const nodeEl = inject(NodeRef, shallowRef(null));
 
   const { getNode, emits } = useVueFlow<NodeType>();
-  const store = useStore<NodeType>();
+  const store = useVueFlowStore<NodeType>();
 
   const nodeId = toValue(id) ?? contextNodeId ?? '';
 

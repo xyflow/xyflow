@@ -1,7 +1,7 @@
 import type { Handle } from '@xyflow/system';
 import { ConnectionLineType, ConnectionMode, getBezierPath, getConnectionStatus, getHandlePosition, getMarkerId, getSmoothStepPath, oppositePosition, pointToRendererPoint, Position } from '@xyflow/system';
 import { computed, defineComponent, h, inject } from 'vue';
-import { storeToRefs, useStore, useVueFlow } from '../../composables';
+import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import { Slots } from '../../context';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 
@@ -11,7 +11,7 @@ const ConnectionLine = defineComponent({
   setup() {
     const { id, viewport, getInternalNode } = useVueFlow();
 
-    const { connectionMode, connection, connectionLineOptions } = storeToRefs(useStore());
+    const { connectionMode, connection, connectionLineOptions } = storeToRefs(useVueFlowStore());
 
     const connectionLineComponent = inject(Slots)?.['connection-line'];
 

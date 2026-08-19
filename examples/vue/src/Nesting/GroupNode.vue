@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import type { NodeProps } from '@xyflow/vue';
-import { getNodesInside, Handle, Position, useStore, useVueFlow } from '@xyflow/vue';
+import { getNodesInside, Handle, Position, useVueFlowStore, useVueFlow } from '@xyflow/vue';
 
 const props = defineProps<NodeProps>();
 
 const { onNodeDragStop, viewport, updateNodeData } = useVueFlow();
 
-const { nodeLookup } = useStore();
+const { nodeLookup } = useVueFlowStore();
 
 onNodeDragStop(({ node }) => {
   const nodes = getNodesInside(

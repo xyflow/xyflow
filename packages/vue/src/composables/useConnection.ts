@@ -4,7 +4,7 @@ import type { InternalNode, Node } from '../types';
 import { pointToRendererPoint } from '@xyflow/system';
 import { computed } from 'vue';
 import { storeToRefs } from './storeToRefs';
-import { useStore } from './useStore';
+import { useVueFlowStore } from './useVueFlowStore';
 
 /**
  * Returns the current connection when there is an active connection interaction. When idle, every field is
@@ -16,7 +16,7 @@ import { useStore } from './useStore';
  * @returns a `ComputedRef<ConnectionState>` — `inProgress: false` (all-null fields) when idle
  */
 export function useConnection<NodeType extends Node = Node>(): ComputedRef<ConnectionState<InternalNode<NodeType>>> {
-  const { connection, transform } = storeToRefs(useStore<NodeType>());
+  const { connection, transform } = storeToRefs(useVueFlowStore<NodeType>());
 
   return computed<ConnectionState<InternalNode<NodeType>>>(() => {
     const current = connection.value;

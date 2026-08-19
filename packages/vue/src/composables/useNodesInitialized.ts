@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import { areNodesInitialized } from '../utils';
-import { useStore } from './useStore';
+import { useVueFlowStore } from './useVueFlowStore';
 
 export interface UseNodesInitializedOptions {
   /**
@@ -24,7 +24,7 @@ export interface UseNodesInitializedOptions {
  * @returns boolean indicating whether all nodes are initialized
  */
 export function useNodesInitialized(options: UseNodesInitializedOptions = { includeHiddenNodes: false }) {
-  const { nodeLookup } = useStore();
+  const { nodeLookup } = useVueFlowStore();
 
   return computed(() => areNodesInitialized(nodeLookup, options.includeHiddenNodes));
 }

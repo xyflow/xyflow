@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Panel, storeToRefs, useStore } from '@xyflow/vue';
+import { Panel, storeToRefs, useVueFlowStore } from '@xyflow/vue';
 
 const captureZoomClick = defineModel<boolean>('captureZoomClick', { required: true });
 const captureZoomScroll = defineModel<boolean>('captureZoomScroll', { required: true });
@@ -14,7 +14,7 @@ const {
   panOnScroll,
   panOnScrollMode,
   panOnDrag,
-} = storeToRefs(useStore());
+} = storeToRefs(useVueFlowStore());
 </script>
 
 <template>

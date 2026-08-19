@@ -3,7 +3,7 @@ import type { HandleConnection } from '@xyflow/system';
 import type { HandleProps } from '../../types';
 import { areConnectionMapsEqual, ConnectionMode, getConnectedEdges, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
 import { computed, getCurrentInstance, onMounted, toRef, watch } from 'vue';
-import { useHandle, useInternalNode, useStore, useVueFlow } from '../../composables';
+import { useHandle, useInternalNode, useVueFlow, useVueFlowStore } from '../../composables';
 import { useNodeId } from '../../composables/useNodeId';
 import { isDef } from '../../utils';
 
@@ -29,7 +29,7 @@ const isValidConnection = toRef(() => props.isValidConnection ?? null);
 
 const { id: flowId, updateNodeInternals } = useVueFlow();
 
-const store = useStore();
+const store = useVueFlowStore();
 
 const nodeId = useNodeId() ?? '';
 const internalNode = useInternalNode();

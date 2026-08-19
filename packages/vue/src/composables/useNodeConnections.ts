@@ -4,8 +4,8 @@ import { areConnectionMapsEqual, handleConnectionChange } from '@xyflow/system';
 import { computed, shallowRef, toValue, watch } from 'vue';
 import { ErrorCode, VueFlowError } from '../utils';
 import { useNodeId } from './useNodeId';
-import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
+import { useVueFlowStore } from './useVueFlowStore';
 
 export type UseNodeConnectionsParams = {
   /** node id - if not provided, the node id from the `useNodeId` context injection is used */
@@ -41,7 +41,7 @@ export function useNodeConnections(params: UseNodeConnectionsParams = {}) {
 
   const { emits } = useVueFlow();
 
-  const store = useStore();
+  const store = useVueFlowStore();
 
   const nodeId = useNodeId();
 

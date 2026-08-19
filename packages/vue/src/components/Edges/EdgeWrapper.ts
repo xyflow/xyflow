@@ -3,7 +3,7 @@ import type { Component } from 'vue';
 import type { Edge, EdgeProps, InternalNode, MouseTouchEvent } from '../../types';
 import { getEdgePosition, getMarkerId } from '@xyflow/system';
 import { computed, defineComponent, getCurrentInstance, h, inject, provide, shallowRef, toRef } from 'vue';
-import { useHandle, useStore, useVueFlow } from '../../composables';
+import { useHandle, useVueFlow, useVueFlowStore } from '../../composables';
 import { EdgeId, EdgeRef, Slots } from '../../context';
 import { ARIA_EDGE_DESC_KEY, devWarn, elementSelectionKeys, ErrorCode, getEdgeZIndex, resolveTypeComponent, VueFlowError } from '../../utils';
 import EdgeAnchor from './EdgeAnchor';
@@ -19,7 +19,7 @@ const EdgeWrapper = defineComponent({
   setup(props: Props) {
     const { id: vueFlowId, addSelectedEdges, emits, getEdgeTypes, removeSelectedEdges, getEdge, getInternalNode } = useVueFlow();
 
-    const store = useStore();
+    const store = useVueFlowStore();
 
     const isValidConnection = toRef(store, 'isValidConnection');
 

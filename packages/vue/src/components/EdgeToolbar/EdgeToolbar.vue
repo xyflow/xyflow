@@ -3,7 +3,7 @@ import type { CSSProperties } from 'vue';
 import type { EdgeToolbarProps } from './types';
 import { getEdgeToolbarTransform } from '@xyflow/system';
 import { computed } from 'vue';
-import { useStore, useVueFlow } from '../../composables';
+import { useVueFlow, useVueFlowStore } from '../../composables';
 import EdgeLabelRenderer from '../Edges/EdgeLabelRenderer.vue';
 
 const props = withDefaults(defineProps<EdgeToolbarProps>(), {
@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<EdgeToolbarProps>(), {
 
 const { viewport } = useVueFlow();
 
-const { edgeLookup } = useStore();
+const { edgeLookup } = useVueFlowStore();
 
 const edge = computed(() => edgeLookup.get(props.edgeId));
 

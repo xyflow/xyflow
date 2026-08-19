@@ -4,7 +4,7 @@ import type { InternalNode } from '../../types';
 import type { NodeToolbarProps } from './types';
 import { getNodesBounds, getNodeToolbarTransform, Position } from '@xyflow/system';
 import { computed } from 'vue';
-import { storeToRefs, useStore, useVueFlow } from '../../composables';
+import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import { useNodeId } from '../../composables/useNodeId';
 
 const props = withDefaults(defineProps<NodeToolbarProps>(), {
@@ -18,9 +18,9 @@ const contextNodeId = useNodeId();
 
 const { viewport, getSelectedNodes, getInternalNode } = useVueFlow();
 
-const { nodeLookup } = useStore();
+const { nodeLookup } = useVueFlowStore();
 
-const { viewportRef } = storeToRefs(useStore());
+const { viewportRef } = storeToRefs(useVueFlowStore());
 
 const nodes = computed(() => {
   const nodeIds = Array.isArray(props.nodeId) ? props.nodeId : [props.nodeId || contextNodeId || ''];

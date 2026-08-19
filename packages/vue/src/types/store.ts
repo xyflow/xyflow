@@ -192,7 +192,7 @@ export type SetNodes<NodeType extends Node = Node> = (nodes: NodeType[] | ((node
 export type SetEdges<EdgeType extends Edge = Edge> = (edges: EdgeType[] | ((edges: EdgeType[]) => EdgeType[])) => void;
 
 export type AddNodes<NodeType extends Node = Node> = (
-  nodes: NodeType | NodeType[] | ((nodes: NodeType[]) => NodeType | NodeType[])
+  nodes: NodeType | NodeType[] | ((nodes: NodeType[]) => NodeType | NodeType[]),
 ) => void;
 
 export type RemoveNodes<NodeType extends Node = Node> = (
@@ -201,14 +201,14 @@ export type RemoveNodes<NodeType extends Node = Node> = (
     | (NodeType | string)[]
     | ((nodes: NodeType[]) => (string | NodeType) | (NodeType | string)[]),
   removeConnectedEdges?: boolean,
-  removeChildren?: boolean
+  removeChildren?: boolean,
 ) => void;
 
 export type RemoveEdges<EdgeType extends Edge = Edge> = (
   edges:
     | (string | EdgeType)
     | (EdgeType | string)[]
-    | ((edges: EdgeType[]) => (string | EdgeType) | (EdgeType | string)[])
+    | ((edges: EdgeType[]) => (string | EdgeType) | (EdgeType | string)[]),
 ) => void;
 
 /**
@@ -224,37 +224,37 @@ export type AddEdges<EdgeType extends Edge = Edge> = (
   edgesOrConnections:
     | (EdgeType | Connection)
     | (EdgeType | Connection)[]
-    | ((edges: EdgeType[]) => (EdgeType | Connection) | (EdgeType | Connection)[])
+    | ((edges: EdgeType[]) => (EdgeType | Connection) | (EdgeType | Connection)[]),
 ) => void;
 
 export type ReconnectEdge<EdgeType extends Edge = Edge> = (
   oldEdge: EdgeType,
   newConnection: Connection,
-  shouldReplaceId?: boolean
+  shouldReplaceId?: boolean,
 ) => EdgeType | false;
 
 export type UpdateEdge<EdgeType extends Edge = Edge> = (
   id: string,
   edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
-  options?: { replace: boolean }
+  options?: { replace: boolean },
 ) => void;
 
 export type UpdateEdgeData<EdgeType extends Edge = Edge> = (
   id: string,
   dataUpdate: Partial<EdgeType['data']> | ((edge: EdgeType) => Partial<EdgeType['data']>),
-  options?: { replace: boolean }
+  options?: { replace: boolean },
 ) => void;
 
 // `nodes`/`edges` are intentionally excluded, set them via setNodes/setEdges instead.
 export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Partial<
   Omit<State<NodeType, EdgeType>, 'nodes' | 'edges' | 'vueFlowRef' | 'viewportRef' | 'dimensions' | 'hooks'>
-> &
-  Partial<Pick<VueFlowProps<NodeType, EdgeType>, 'fitView'>>;
+>
+& Partial<Pick<VueFlowProps<NodeType, EdgeType>, 'fitView'>>;
 
 export type SetState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
   state:
     | SetStateOptions<NodeType, EdgeType>
-    | ((state: State<NodeType, EdgeType>) => SetStateOptions<NodeType, EdgeType>)
+    | ((state: State<NodeType, EdgeType>) => SetStateOptions<NodeType, EdgeType>),
 ) => void;
 
 export type UpdateNodePosition = (dragItems: NodeDragItem[], changed: boolean, dragging: boolean) => void;
@@ -269,7 +269,7 @@ export type GetNode<NodeType extends Node = Node> = (id: string | undefined | nu
  * the user-facing node.
  */
 export type GetInternalNode<NodeType extends Node = Node> = (
-  id: string | undefined | null
+  id: string | undefined | null,
 ) => InternalNode<NodeType> | undefined;
 
 export type GetEdge<EdgeType extends Edge = Edge> = (id: string | undefined | null) => EdgeType | undefined;
@@ -277,25 +277,25 @@ export type GetEdge<EdgeType extends Edge = Edge> = (id: string | undefined | nu
 export type GetIntersectingNodes<NodeType extends Node = Node> = (
   node: (Partial<NodeType> & { id: NodeType['id'] }) | Rect,
   partially?: boolean,
-  nodes?: InternalNode<NodeType>[]
+  nodes?: InternalNode<NodeType>[],
 ) => InternalNode<NodeType>[];
 
 export type UpdateNode<NodeType extends Node = Node> = (
   id: string,
   nodeUpdate: Partial<NodeType> | ((node: InternalNode<NodeType>) => Partial<NodeType>),
-  options?: { replace: boolean }
+  options?: { replace: boolean },
 ) => void;
 
 export type UpdateNodeData<NodeType extends Node = Node> = (
   id: string,
   dataUpdate: Partial<NodeType['data']> | ((node: InternalNode<NodeType>) => Partial<NodeType['data']>),
-  options?: { replace: boolean }
+  options?: { replace: boolean },
 ) => void;
 
 export type IsNodeIntersecting<NodeType extends Node = Node> = (
   node: (Partial<NodeType> & { id: NodeType['id'] }) | Rect,
   area: Rect,
-  partially?: boolean
+  partially?: boolean,
 ) => boolean;
 
 export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = Edge> extends Omit<
@@ -428,22 +428,22 @@ export type ComputedGetters<NodeType extends Node = Node, EdgeType extends Edge 
 };
 
 /**
- * The reactive state object returned by {@link useStore} — every {@link State} field plus the lookups,
- * read directly (`store.nodes`, no `.value`, like a Pinia store). Use `storeToRefs(useStore())` to
+ * The reactive state object returned by {@link useVueFlowStore} — every {@link State} field plus the lookups,
+ * read directly (`store.nodes`, no `.value`, like a Pinia store). Use `storeToRefs(useVueFlowStore())` to
  * destructure scalar/array fields as refs.
  */
 export type VueFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = State<NodeType, EdgeType>;
 
 /**
  * The curated instance returned by {@link useVueFlow} — actions, computed getters, and event hooks.
- * Raw reactive state lives on {@link useStore} instead.
+ * Raw reactive state lives on {@link useVueFlowStore} instead.
  */
 export type VueFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   readonly id: string;
   readonly emits: FlowHooksEmit<NodeType, EdgeType>;
-} & FlowHooksOn<NodeType, EdgeType> &
-  Readonly<ComputedGetters<NodeType, EdgeType>> &
-  Readonly<Actions<NodeType, EdgeType>>;
+} & FlowHooksOn<NodeType, EdgeType>
+& Readonly<ComputedGetters<NodeType, EdgeType>>
+& Readonly<Actions<NodeType, EdgeType>>;
 
 /** Internal handle bundling the two views a created store exposes; provided to descendants. */
 export interface VueFlowStoreHandle<NodeType extends Node = Node, EdgeType extends Edge = Edge> {

@@ -3,8 +3,8 @@ import type { MaybeRefOrGetter } from 'vue';
 import type { InternalNode, MouseTouchEvent } from '../types';
 import { getEventPosition, getHostForElement, Position, XYHandle } from '@xyflow/system';
 import { toValue } from 'vue';
-import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
+import { useVueFlowStore } from './useVueFlowStore';
 
 export interface UseHandleProps {
   handleId: MaybeRefOrGetter<string | null>;
@@ -38,7 +38,7 @@ export function useHandle({
 }: UseHandleProps) {
   const { id: flowId, getNode, getInternalNode, panBy, updateConnection, cancelConnection, emits } = useVueFlow();
 
-  const store = useStore();
+  const store = useVueFlowStore();
 
   const { nodeLookup } = store;
 
