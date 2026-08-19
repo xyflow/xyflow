@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { Handle, Position, useStore } from '@xyflow/vue';
+import { Handle, Position, useVueFlowStore } from '@xyflow/vue';
 import { computed } from 'vue';
 
 const props = defineProps<{ id: string }>();
 
-const store = useStore();
+const store = useVueFlowStore();
 
 const isTarget = computed(() => store.connection.fromHandle && store.connection.fromHandle.nodeId !== props.id);
 </script>

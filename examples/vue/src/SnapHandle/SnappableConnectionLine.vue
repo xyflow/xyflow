@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ConnectionLineProps, Handle, InternalNode } from '@xyflow/vue';
-import { getBezierPath, Position, storeToRefs, useStore, useVueFlow } from '@xyflow/vue';
+import { getBezierPath, Position, storeToRefs, useVueFlowStore, useVueFlow } from '@xyflow/vue';
 
 interface ClosestElements {
   node: InternalNode | null;
@@ -12,7 +12,7 @@ const props = defineProps<ConnectionLineProps>();
 
 const { getNodes, getInternalNode, onConnectEnd, addEdges } = useVueFlow();
 
-const { connection } = storeToRefs(useStore());
+const { connection } = storeToRefs(useVueFlowStore());
 
 const closest = reactive<ClosestElements>({
   node: null,
