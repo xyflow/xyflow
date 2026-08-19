@@ -61,6 +61,7 @@
     "codegen": "node scripts/gen-props-objects.mjs",
     "codegen:check": "node scripts/gen-props-objects.mjs --check",
     "css": "postcss src/styles/{base,style}.css --dir dist",
+    "typecheck": "vue-tsc --noEmit",
     "lint": "eslint .",
     "prepublishOnly": "shx cp ../../README.md .",
     "postpublish": "shx rm README.md",
