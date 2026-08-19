@@ -5,7 +5,7 @@ import { ErrorCode, VueFlowError } from '../utils/errors';
 /**
  * Access the raw reactive state of the surrounding flow — every {@link VueFlowState} field plus the
  * lookups, read directly (`store.nodes`, `store.transform`, `store.nodeLookup`, …; no `.value`, like
- * `xyflow/svelte`'s store). Mirrors `useStore` in `xyflow/react`+`svelte`.
+ * `xyflow/svelte`'s store). Mirrors `useVueFlowStore` in `xyflow/react`+`svelte`.
  *
  * Reading a field inside a `computed`/`watch`/template tracks it reactively; reading it in a plain
  * callback is just a current-value read. To destructure scalar/array fields as refs, wrap the result in

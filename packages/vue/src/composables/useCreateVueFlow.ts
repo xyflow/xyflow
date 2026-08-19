@@ -7,7 +7,7 @@ import { createVueFlowStore } from '../store/createStore';
  * Create a VueFlow store and `provide` it to descendants.
  *
  * Owned by `<VueFlow>` / `<VueFlowProvider>`. This is the *only* place a store is created and provided;
- * the public `useVueFlow()` (instance) and `useStore()` (state) are pure `inject` consumers. The default
+ * the public `useVueFlow()` (instance) and `useVueFlowStore()` (state) are pure `inject` consumers. The default
  * change handlers (auto-apply) are registered by `<VueFlow>` from its binding — not here — so they follow
  * the consuming `<VueFlow>` even when it reuses a provider's store. Must run in a component `setup`.
  *

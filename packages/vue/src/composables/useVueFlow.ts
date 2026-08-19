@@ -4,7 +4,7 @@ import { ErrorCode, VueFlowError } from '../utils/errors';
 
 /**
  * Access the VueFlow instance for the surrounding flow — actions, computed getters, and event hooks.
- * For the raw reactive state (`nodes`, `transform`, lookups, …) use {@link useStore} (and `storeToRefs` to destructure it).
+ * For the raw reactive state (`nodes`, `transform`, lookups, …) use {@link useVueFlowStore} (and `storeToRefs` to destructure it).
  *
  * Pure context consumer — resolves the instance provided by the nearest `<VueFlow>` /
  * `<VueFlowProvider>` / `setupVueFlow()` ancestor. It takes **no arguments**: there is no global registry, no
