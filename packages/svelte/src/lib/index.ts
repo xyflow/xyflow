@@ -124,7 +124,9 @@ export {
   type HandleConnection,
   type ZIndexMode,
   type NodeHandle,
-  type UseNodeConnectionsParams
+  type UseNodeConnectionsParams,
+  NodeChangeset,
+  EdgeChangeset
 } from '@xyflow/system';
 
 // system utils
