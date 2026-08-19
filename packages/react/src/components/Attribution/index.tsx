@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { type PanelPosition, domNodeIsVisible } from '@xyflow/system';
+import { type PanelPosition, isDomNodeVisible } from '@xyflow/system';
 
 import { Panel } from '../Panel';
 import { type ProOptions } from '../../types/general';
@@ -25,7 +25,7 @@ export function Attribution({ proOptions, position = 'bottom-right' }: Attributi
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && !warned.current) {
       setTimeout(() => {
-        if (!domNodeIsVisible('.react-flow__attribution')) {
+        if (!isDomNodeVisible('.react-flow__attribution')) {
           console.warn(
             `React Flow: It seems like you are hiding the attribution. Please only do this when you are subscribed to React Flow Pro: ${consoleLink}\n%cYou can ignore this warning if you are subscribed.`,
             'font-style: italic;'

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { domNodeIsVisible } from '@xyflow/system';
+  import { isDomNodeVisible } from '@xyflow/system';
 
   import { Panel } from '$lib/container/Panel/index.js';
   import type { AttributionProps } from './types.js';
@@ -16,7 +16,7 @@
 
   if (process.env.NODE_ENV === 'development' && !warned) {
     setTimeout(() => {
-      if (!domNodeIsVisible('.svelte-flow__attribution')) {
+      if (!isDomNodeVisible('.svelte-flow__attribution')) {
         console.warn(
           `Svelte Flow: It seems like you are hiding the attribution. Please only do this when you are subscribed to Svelte Flow Pro: ${consoleLink}\n%cYou can ignore this warning if you are subscribed.`,
           'font-style: italic;'

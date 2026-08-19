@@ -434,7 +434,7 @@ export function mergeAriaLabelConfig(partial?: Partial<AriaLabelConfig>): AriaLa
   return { ...defaultAriaLabelConfig, ...(partial || {}) };
 }
 
-export function domNodeIsVisible(selector: string) {
+export function isDomNodeVisible(selector: string) {
   const el = typeof document !== 'undefined' ? document.querySelector(selector) : null;
   if (!el || !el.isConnected) return false;
 
