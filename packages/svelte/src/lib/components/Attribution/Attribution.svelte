@@ -10,9 +10,13 @@
     process.env.NODE_ENV === 'production' ? '?utm_source=attribution' : '/attribution'
   }`;
 
-  if (process.env.NODE_ENV === 'development') {
+  $effect(() => {
+    if (process.env.NODE_ENV !== 'development') {
+      return;
+    }
+
     handleAttributionWarning('svelte');
-  }
+  });
 </script>
 
 {#if !proOptions?.hideAttribution}
