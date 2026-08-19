@@ -1,4 +1,4 @@
-import { useStore } from '$lib/store/index.js';
+import { useSvelteFlowStore } from '$lib/store/index.js';
 import type { InternalNode } from '$lib/types/index.js';
 
 /**
@@ -12,7 +12,7 @@ import type { InternalNode } from '$lib/types/index.js';
 export function useInternalNode(params: () => { id: string }): {
   current: InternalNode | undefined;
 } {
-  const { nodeLookup, nodes } = $derived(useStore());
+  const { nodeLookup, nodes } = $derived(useSvelteFlowStore());
 
   const node = $derived.by(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions

@@ -1,4 +1,4 @@
-import { useStore } from '$lib/store/index.js';
+import { useSvelteFlowStore } from '$lib/store/index.js';
 import type { Edge, Node } from '$lib/types/index.js';
 import type { Viewport } from '@xyflow/system';
 import { useSvelteFlow } from './useSvelteFlow.svelte';
@@ -20,7 +20,7 @@ import { useSvelteFlow } from './useSvelteFlow.svelte';
  *
  */
 export function useNodes() {
-  const store = $derived(useStore());
+  const store = $derived(useSvelteFlowStore());
   return {
     get current() {
       return store.nodes;
@@ -84,7 +84,7 @@ export function useNode<NodeType extends Node = Node>(id: string) {
  *```
  */
 export function useEdges() {
-  const store = $derived(useStore());
+  const store = $derived(useSvelteFlowStore());
   return {
     get current() {
       return store.edges;
@@ -147,7 +147,7 @@ export function useEdge<EdgeType extends Edge = Edge>(id: string) {
  * <div>Viewport: {viewport.current.x}, {viewport.current.y}, {viewport.current.zoom}</div>
  */
 export function useViewport() {
-  const store = $derived(useStore());
+  const store = $derived(useSvelteFlowStore());
   return {
     get current() {
       return store.viewport;

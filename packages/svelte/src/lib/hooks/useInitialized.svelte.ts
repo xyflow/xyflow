@@ -1,4 +1,4 @@
-import { useStore } from '$lib/store/index.js';
+import { useSvelteFlowStore } from '$lib/store/index.js';
 
 /**
  * Hook for seeing if nodes are initialized
@@ -6,7 +6,7 @@ import { useStore } from '$lib/store/index.js';
  * @public
  */
 export function useNodesInitialized() {
-  const { nodesInitialized } = $derived(useStore());
+  const { nodesInitialized } = $derived(useSvelteFlowStore());
   return {
     get current() {
       return nodesInitialized;
@@ -19,7 +19,7 @@ export function useNodesInitialized() {
  * @returns - reactive viewportInitialized
  */
 export function useViewportInitialized() {
-  const { viewportInitialized } = $derived(useStore());
+  const { viewportInitialized } = $derived(useSvelteFlowStore());
   return {
     get current() {
       return viewportInitialized;

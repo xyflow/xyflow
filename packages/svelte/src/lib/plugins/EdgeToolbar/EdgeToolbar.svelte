@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getEdgeToolbarTransform } from '@xyflow/system';
 
-  import { useStore } from '$lib/store/index.js';
+  import { useSvelteFlowStore } from '$lib/store/index.js';
   import { getEdgeIdContext } from '$lib/store/context.js';
 
   import { EdgeLabel } from '$lib/components/EdgeLabel/index.js';
@@ -19,7 +19,7 @@
     ...rest
   }: EdgeToolbarProps = $props();
 
-  const store = useStore();
+  const store = useSvelteFlowStore();
 
   const edgeId = getEdgeIdContext('EdgeToolbar must be used within an edge');
 

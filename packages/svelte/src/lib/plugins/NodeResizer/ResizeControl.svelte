@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import { useStore } from '$lib/store/index.js';
+  import { useSvelteFlowStore } from '$lib/store/index.js';
   import { getNodeIdContext } from '$lib/store/context.js';
   import {
     XYResizer,
@@ -35,7 +35,7 @@
     ...rest
   }: ResizeControlProps = $props();
 
-  const store = useStore();
+  const store = useSvelteFlowStore();
   const contextNodeId = getNodeIdContext();
 
   let id = $derived(typeof nodeId === 'string' ? nodeId : contextNodeId);

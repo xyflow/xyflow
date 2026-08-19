@@ -7,7 +7,7 @@
 </script>
 
 <script lang="ts">
-  import { useStore } from '$lib/store/index.js';
+  import { useSvelteFlowStore } from '$lib/store/index.js';
   import { BackgroundVariant, type BackgroundProps } from './types.js';
 
   import DotPattern from './DotPattern.svelte';
@@ -25,7 +25,7 @@
     class: className
   }: BackgroundProps = $props();
 
-  let store = $derived(useStore());
+  let store = $derived(useSvelteFlowStore());
 
   let isDots = $derived(variant === BackgroundVariant.Dots);
   let isCross = $derived(variant === BackgroundVariant.Cross);

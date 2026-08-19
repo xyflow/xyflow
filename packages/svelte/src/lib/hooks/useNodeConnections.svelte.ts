@@ -6,7 +6,7 @@ import {
   type UseNodeConnectionsParams
 } from '@xyflow/system';
 
-import { useStore } from '$lib/store/index.js';
+import { useSvelteFlowStore } from '$lib/store/index.js';
 import { getNodeIdContext } from '$lib/store/context.js';
 
 type ConnectionMap = Map<string, NodeConnection>;
@@ -26,7 +26,7 @@ const initialConnections: NodeConnection[] = [];
  * @returns An array with connections
  */
 export function useNodeConnections(params: () => UseNodeConnectionsParams = () => ({})) {
-  const { edges, connectionLookup } = $derived(useStore());
+  const { edges, connectionLookup } = $derived(useSvelteFlowStore());
 
   const contextNodeId = getNodeIdContext();
 
