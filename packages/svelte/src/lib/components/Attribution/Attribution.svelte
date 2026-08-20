@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { handleAttributionWarning } from '@xyflow/system';
+
   import { Panel } from '$lib/container/Panel/index.js';
   import type { AttributionProps } from './types.js';
 
@@ -7,6 +9,14 @@
   const link = `https://svelteflow.dev${
     process.env.NODE_ENV === 'production' ? '?utm_source=attribution' : '/attribution'
   }`;
+
+  $effect(() => {
+    if (process.env.NODE_ENV !== 'development') {
+      return;
+    }
+
+    handleAttributionWarning('svelte');
+  });
 </script>
 
 {#if !proOptions?.hideAttribution}
