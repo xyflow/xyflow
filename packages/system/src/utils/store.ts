@@ -262,8 +262,6 @@ function updateChildNode<NodeType extends NodeBase>(
     return;
   }
 
-  updateParentLookup(node, parentLookup);
-
   // We just want to set the rootParentIndex for the first child
   if (
     rootParentIndex &&
@@ -280,7 +278,8 @@ function updateChildNode<NodeType extends NodeBase>(
     rootParentIndex.i = parentNode.internals.rootParentIndex;
   }
 
-  updateChildXYZ(node, parentNode, context);
+  const updatedNode = updateChildXYZ(node, parentNode, context);
+  updateParentLookup(updatedNode, parentLookup);
 }
 
 /**
@@ -303,15 +302,18 @@ function updateChildXYZ<NodeType extends NodeBase>(
 
   if (positionChanged || z !== node.internals.z) {
     // we create a new object to mark the node as updated
-    context.nodeLookup.set(node.id, {
+    const newNode = {
       ...node,
       internals: {
         ...node.internals,
         positionAbsolute: positionChanged ? { x, y } : positionAbsolute,
         z,
       },
-    });
+    };
+    context.nodeLookup.set(node.id, newNode);
+    return newNode;
   }
+  return node;
 }
 
 function calculateZ(node: NodeBase, selectedNodeZ: number, zIndexMode: ZIndexMode): number {
@@ -492,6 +494,7 @@ export function updateNodeInternals<NodeType extends NodeBase>(
       continue;
     }
 
+    // if the node has a parent it will be updated via walkChildren later
     if (node.parentId) {
       continue;
     }
@@ -561,6 +564,7 @@ function updateInternals<NodeType extends NodeBase>(
     context.nodeLookup.set(node.id, newNode);
 
     context.updatedInternals = true;
+    // by deleting the update we prevent the node from being updated again
     updates.delete(node.id);
 
     if (dimensionChanged) {
@@ -583,7 +587,7 @@ function walkChildren<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
   context: UpdateInternalsContext<NodeType>
 ) {
-  const { parentLookup, nodeLookup, updates } = context;
+  const { parentLookup, updates } = context;
   const children = parentLookup.get(node.id);
   if (children) {
     for (const child of children.values()) {
@@ -591,12 +595,8 @@ function walkChildren<NodeType extends NodeBase>(
       if (!childUpdate) {
         return;
       }
-      const childNode = nodeLookup.get(child.id);
-      if (!childNode) {
-        return;
-      }
-      updateInternals(childNode, childUpdate, context);
-      updateChildXYZ(childNode, node, context);
+      updateInternals(child, childUpdate, context);
+      updateChildXYZ(child, node, context);
     }
   }
 }
