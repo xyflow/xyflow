@@ -1,6 +1,5 @@
 import type { EdgeLookup, NodeLookup } from '@xyflow/system';
 import type { Edge, InternalNode, Node, State } from '../types';
-import { updateAbsolutePositions } from '@xyflow/system';
 import { markRaw, toRaw } from 'vue';
 import { adoptNodes, areNodesInitialized, ErrorCode, updateConnectionLookup, VueFlowError } from '../utils';
 import { resolveFitView } from './fitView';
@@ -80,24 +79,6 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
     }
   }
 
-  /**
-   * Recompute parent-aware absolute positions/z on the system lookup, then mirror into the reactive lookups.
-   * Lookup-only, no write-back to `state.nodes`. The full `updateAbsolutePositions` pass only runs when there
-   * are child nodes (adoption already clamps position/z for changed nodes) or `forceFullPass`.
-   */
-  function recomputeAbsolutePositions(forceFullPass = false) {
-    if (forceFullPass || systemParentLookup.size > 0) {
-      updateAbsolutePositions(systemNodeLookup, systemParentLookup, {
-        nodeOrigin: state.nodeOrigin,
-        nodeExtent: state.nodeExtent,
-        elevateNodesOnSelect: state.elevateNodesOnSelect,
-        zIndexMode: state.zIndexMode,
-      });
-    }
-
-    syncLookups();
-  }
-
   function commitNodes(nodes: NodeType[], checkEquality = true) {
     const {
       nodes: adopted,
@@ -114,7 +95,9 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
 
     state.nodesSelectionActive = state.nodesSelectionActive && hasSelectedNodes;
 
-    recomputeAbsolutePositions();
+    if (systemParentLookup.size > 0) {
+      syncLookups();
+    }
 
     if (state.fitViewQueued && areNodesInitialized(nodeLookup)) {
       resolveFitView(state, nodeLookup);

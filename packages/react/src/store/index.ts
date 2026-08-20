@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import {
   adoptUserNodes,
-  updateAbsolutePositions,
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
   updateConnectionLookup,
@@ -191,8 +190,6 @@ const createStore = ({
         if (!updatedInternals) {
           return;
         }
-
-        updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent, zIndexMode });
 
         if (fitViewQueued) {
           void resolveFitView();
