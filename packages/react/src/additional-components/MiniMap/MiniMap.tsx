@@ -141,17 +141,10 @@ function MiniMapComponent<NodeType extends Node = Node>({
       }
     : undefined;
 
-  /*
-   * the handler is kept in a ref so that the callback identity stays stable for
-   * the memoized minimap nodes while still calling the current onNodeClick
-   */
-  const onNodeClickRef = useRef(onNodeClick);
-  onNodeClickRef.current = onNodeClick;
-
   const nodeClickHandler = useCallback((event: MouseEvent, nodeId: string) => {
     const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
-    onNodeClickRef.current?.(event, node);
-  }, []);
+    onNodeClick?.(event, node);
+  }, [onNodeClick]);
 
   const onSvgNodeClick = onNodeClick ? nodeClickHandler : undefined;
 
