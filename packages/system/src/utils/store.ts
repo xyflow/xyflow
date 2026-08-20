@@ -516,14 +516,8 @@ function updateInternals<NodeType extends NodeBase>(
 ) {
   const { nodeLookup, updates, changes, parentExpandChildren, zoom } = context;
   const { nodeOrigin, nodeExtent } = context.options;
+
   if (node.hidden) {
-    nodeLookup.set(node.id, {
-      ...node,
-      internals: {
-        ...node.internals,
-        handleBounds: undefined,
-      },
-    });
     updates.delete(node.id);
     context.updatedInternals = true;
     return;
