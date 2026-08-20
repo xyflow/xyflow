@@ -141,12 +141,12 @@ function MiniMapComponent<NodeType extends Node = Node>({
       }
     : undefined;
 
-  const onSvgNodeClick = onNodeClick
-    ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
-        onNodeClick(event, node);
-      }, [])
-    : undefined;
+  const nodeClickHandler = useCallback((event: MouseEvent, nodeId: string) => {
+    const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
+    onNodeClick?.(event, node);
+  }, [onNodeClick]);
+
+  const onSvgNodeClick = onNodeClick ? nodeClickHandler : undefined;
 
   const _ariaLabel = ariaLabel ?? ariaLabelConfig['minimap.ariaLabel'];
 
