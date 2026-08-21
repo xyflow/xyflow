@@ -128,7 +128,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     proOptions,
     defaultEdgeOptions,
     elevateNodesOnSelect = true,
-    elevateEdgesOnSelect = false,
+    elevateEdgesOnSelect = true,
     disableKeyboardA11y = false,
     autoPanOnConnect,
     autoPanOnNodeDrag,
