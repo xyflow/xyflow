@@ -4,6 +4,7 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
+  reconnectEdge,
   OnNodesChange,
   OnEdgesChange,
   OnConnect,
@@ -11,6 +12,7 @@ import {
   Panel,
   MiniMap,
   Background,
+  OnReconnect,
 } from '@xyflow/react';
 
 type FlowProps = {
@@ -25,10 +27,14 @@ export default ({ flowConfig }: FlowProps) => {
   const onNodesChange: OnNodesChange = useCallback((changes) => setNodes((nds) => applyNodeChanges(changes, nds)), []);
   const onEdgesChange: OnEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
   const onConnect: OnConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+  const onReconnect: OnReconnect = useCallback(
+    (oldEdge, connection) => setEdges((eds) => reconnectEdge(oldEdge, connection, eds)),
+    []
+  );
 
   return (
     <div style={{ height: '100%' }}>
-      <ReactFlow {...props} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect}>
+      <ReactFlow {...props} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} onReconnect={onReconnect}>
         {flowConfig.controlsProps && <Controls {...flowConfig.controlsProps} />}
         {flowConfig.panelProps && <Panel {...flowConfig.panelProps} />}
         {flowConfig.minimapProps && <MiniMap {...flowConfig.minimapProps} />}
