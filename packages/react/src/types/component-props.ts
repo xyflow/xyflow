@@ -617,7 +617,9 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   elevateNodesOnSelect?: boolean;
   /**
    * Enabling this option will raise the z-index of edges when they are selected.
-   * @default false
+   * This also ensures that, when multiple reconnectable edges share a handle,
+   * the selected edge's repoint anchor is the one that receives the drag.
+   * @default true
    */
   elevateEdgesOnSelect?: boolean;
   /**
