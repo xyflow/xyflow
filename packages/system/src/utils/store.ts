@@ -499,9 +499,9 @@ export function updateNodeInternals<NodeType extends NodeBase>(
       continue;
     }
 
-    updateInternals(node, update, context);
+    const updatedNode = updateInternals(node, update, context);
 
-    walkChildren(node, context);
+    walkChildren(updatedNode, context);
   }
 
   if (parentExpandChildren.length > 0) {
@@ -516,14 +516,14 @@ function updateInternals<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
   update: InternalNodeUpdate,
   context: UpdateInternalsContext<NodeType>
-) {
+): InternalNodeBase<NodeType> {
   const { nodeLookup, updates, changes, parentExpandChildren, zoom } = context;
   const { nodeOrigin, nodeExtent } = context.options;
 
   if (node.hidden) {
     updates.delete(node.id);
     context.updatedInternals = true;
-    return;
+    return node;
   }
 
   const dimensions = getDimensions(update.nodeElement);
@@ -533,6 +533,8 @@ function updateInternals<NodeType extends NodeBase>(
     dimensions.height &&
     (dimensionChanged || !node.internals.handleBounds || update.force)
   );
+
+  let updatedNode: InternalNodeBase<NodeType> = node;
 
   if (doUpdate) {
     const nodeBounds = update.nodeElement.getBoundingClientRect();
@@ -548,7 +550,7 @@ function updateInternals<NodeType extends NodeBase>(
       positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
     }
 
-    const newNode = {
+    updatedNode = {
       ...node,
       measured: dimensions,
       internals: {
@@ -561,7 +563,7 @@ function updateInternals<NodeType extends NodeBase>(
       },
     };
 
-    context.nodeLookup.set(node.id, newNode);
+    context.nodeLookup.set(node.id, updatedNode);
 
     context.updatedInternals = true;
     // by deleting the update we prevent the node from being updated again
@@ -574,13 +576,15 @@ function updateInternals<NodeType extends NodeBase>(
         parentExpandChildren.push({
           id: node.id,
           parentId: node.parentId,
-          rect: nodeToRect(newNode, nodeOrigin),
+          rect: nodeToRect(updatedNode, nodeOrigin),
         });
       }
     }
 
-    walkChildren(node, context);
+    walkChildren(updatedNode, context);
   }
+
+  return updatedNode;
 }
 
 function walkChildren<NodeType extends NodeBase>(
@@ -593,10 +597,10 @@ function walkChildren<NodeType extends NodeBase>(
     for (const child of children.values()) {
       const childUpdate = updates.get(child.id);
       if (!childUpdate) {
-        return;
+        continue;
       }
-      updateInternals(child, childUpdate, context);
-      updateChildXYZ(child, node, context);
+      const updatedChild = updateInternals(child, childUpdate, context);
+      updateChildXYZ(updatedChild, node, context);
     }
   }
 }
