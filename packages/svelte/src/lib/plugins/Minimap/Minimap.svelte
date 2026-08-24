@@ -55,8 +55,6 @@
 
   let hasVisibleNodes = $derived(store.nodes.some((n) => !n.hidden));
 
-  $inspect('asd', hasVisibleNodes);
-
   let boundingRect = $derived(
     hasVisibleNodes
       ? getBoundsOfRects(
