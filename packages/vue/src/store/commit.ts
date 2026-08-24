@@ -95,9 +95,9 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
 
     state.nodesSelectionActive = state.nodesSelectionActive && hasSelectedNodes;
 
-    if (systemParentLookup.size > 0) {
-      syncLookups();
-    }
+    // always mirror: `syncLookups` is the only writer that adds/prunes entries in the reactive
+    // `nodeLookup`, so skipping it on parentless graphs leaves added nodes unrendered
+    syncLookups();
 
     if (state.fitViewQueued && areNodesInitialized(nodeLookup)) {
       resolveFitView(state, nodeLookup);

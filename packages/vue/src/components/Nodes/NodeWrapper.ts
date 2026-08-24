@@ -94,7 +94,10 @@ const NodeWrapper = defineComponent({
 
     // a node "has dimensions" once measured OR given explicit width/height OR initialWidth/initialHeight (the
     // SSR fallback, no ResizeObserver) — the visibility gate so sized/SSR nodes render immediately
-    const isInit = computed(() => (internalNode.value ? nodeHasDimensions(internalNode.value) : false));
+    const hasDimensions = computed(() => (internalNode.value ? nodeHasDimensions(internalNode.value) : false));
+
+    // a node counts as initialized only once it ALSO has handle bounds.
+    const isInitialized = computed(() => hasDimensions.value && !!internalNode.value?.internals.handleBounds);
 
     const isParent = computed(() => (parentLookup.get(props.id)?.size ?? 0) > 0);
 
@@ -171,8 +174,8 @@ const NodeWrapper = defineComponent({
 
     onMounted(() => {
       watch(
-        () => internalNode.value?.hidden,
-        (isHidden = false, _, onCleanup) => {
+        [() => internalNode.value?.hidden, isInitialized],
+        ([isHidden = false], _, onCleanup) => {
           if (!isHidden && nodeElement.value) {
             props.resizeObserver.observe(nodeElement.value);
 
@@ -241,7 +244,7 @@ const NodeWrapper = defineComponent({
             node.class,
           ],
           'style': {
-            visibility: isInit.value ? 'visible' : 'hidden',
+            visibility: hasDimensions.value ? 'visible' : 'hidden',
             zIndex: node.internals.z ?? zIndex.value,
             transform: `translate(${node.internals.positionAbsolute.x}px,${node.internals.positionAbsolute.y}px)`,
             pointerEvents: hasPointerEvents.value ? 'all' : 'none',
