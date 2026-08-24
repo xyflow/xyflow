@@ -1,6 +1,6 @@
 import { memo, type ReactNode } from 'react';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useCustomDiff, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useGlobalKeyHandler } from '../../hooks/useGlobalKeyHandler';
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';
@@ -73,7 +73,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onViewportChange,
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
-  const { nodesSelectionActive, userSelectionActive } = useReactFlowStore(useShallow(selector));
+  const { nodesSelectionActive, userSelectionActive } = useReactFlowStore(useCustomDiff(selector, areEqual));
   const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: win });
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: win });
 
@@ -142,3 +142,9 @@ function FlowRendererComponent<NodeType extends Node = Node>({
 FlowRendererComponent.displayName = 'FlowRenderer';
 
 export const FlowRenderer = memo(FlowRendererComponent) as typeof FlowRendererComponent;
+function areEqual(
+  a: { nodesSelectionActive: boolean; userSelectionActive: boolean },
+  b: { nodesSelectionActive: boolean; userSelectionActive: boolean }
+): boolean {
+  return a.nodesSelectionActive === b.nodesSelectionActive && a.userSelectionActive === b.userSelectionActive;
+}

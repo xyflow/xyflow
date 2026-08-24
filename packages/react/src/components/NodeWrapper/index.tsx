@@ -9,7 +9,7 @@ import {
   getNodesInside,
 } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
+import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
@@ -53,7 +53,7 @@ function NodeWrapper<NodeType extends Node>({
     },
     [id]
   );
-  const { node, internals, isParent } = useReactFlowStore(useShallow(selector));
+  const { node, internals, isParent } = useReactFlowStore(useCustomDiff(selector, areEqual));
 
   let nodeType = node.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
@@ -254,3 +254,44 @@ function NodeWrapper<NodeType extends Node>({
 }
 
 export default memo(NodeWrapper) as typeof NodeWrapper;
+
+function areEqual(
+  a: {
+    node: InternalNode<Node>;
+    internals: {
+      positionAbsolute: { x: number; y: number };
+      z: number;
+      rootParentIndex?: number;
+      userNode: Node;
+      handleBounds?: unknown;
+      bounds?: unknown;
+    };
+    isParent: boolean;
+  },
+  b: {
+    node: InternalNode<Node>;
+    internals: {
+      positionAbsolute: { x: number; y: number };
+      z: number;
+      rootParentIndex?: number;
+      userNode: Node;
+      handleBounds?: unknown;
+      bounds?: unknown;
+    };
+    isParent: boolean;
+  }
+): boolean {
+  if (a.node !== b.node || a.isParent !== b.isParent) {
+    return false;
+  }
+
+  return (
+    a.internals.positionAbsolute.x === b.internals.positionAbsolute.x &&
+    a.internals.positionAbsolute.y === b.internals.positionAbsolute.y &&
+    a.internals.z === b.internals.z &&
+    a.internals.rootParentIndex === b.internals.rootParentIndex &&
+    a.internals.userNode === b.internals.userNode &&
+    a.internals.handleBounds === b.internals.handleBounds &&
+    a.internals.bounds === b.internals.bounds
+  );
+}
