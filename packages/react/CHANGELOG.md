@@ -1,5 +1,24 @@
 # @xyflow/react
 
+## 12.11.4
+### Patch Changes
+
+
+
+- [#5974](https://github.com/xyflow/xyflow/pull/5974) [`8c42922`](https://github.com/xyflow/xyflow/commit/8c429225b796f28c89c809ac1d4883ea44ae8c5b) - Minimap still works after ReactFlow remounts
+
+
+
+- [#5962](https://github.com/xyflow/xyflow/pull/5962) [`cbf40b9`](https://github.com/xyflow/xyflow/commit/cbf40b938f1651321198d3f1b2c1457c2b7145e4) - Show log if user hides attribution in development
+
+
+
+- [#5976](https://github.com/xyflow/xyflow/pull/5976) [`3319ef4`](https://github.com/xyflow/xyflow/commit/3319ef4917c3d43a6f3cc035ba9850e5fe72e8d6) - Fix the `MiniMap` zooming out to include the origin when every node is hidden.
+
+
+
+- [#5955](https://github.com/xyflow/xyflow/pull/5955) [`965ca70`](https://github.com/xyflow/xyflow/commit/965ca7040445780c217c6e25ee5e566f0949e2f6) - Fix `MiniMap` calling `useCallback` conditionally for `onNodeClick`.
+
 ## 12.11.3
 ### Patch Changes
 
