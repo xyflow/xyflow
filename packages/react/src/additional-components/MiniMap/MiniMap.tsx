@@ -24,12 +24,25 @@ const selector = (s: ReactFlowState) => {
     height: s.height / s.transform[2],
   };
 
+  /*
+   * the bounds only cover the visible nodes, so we have to check for a visible node
+   * here as well. getInternalNodesBounds returns a rect at the origin when nothing
+   * passes the filter, which would stretch the bounds to include (0, 0).
+   */
+  let hasVisibleNode = false;
+
+  for (const node of s.nodeLookup.values()) {
+    if (!node.hidden) {
+      hasVisibleNode = true;
+      break;
+    }
+  }
+
   return {
     viewBB,
-    boundingRect:
-      s.nodeLookup.size > 0
-        ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
-        : viewBB,
+    boundingRect: hasVisibleNode
+      ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
+      : viewBB,
     rfId: s.rfId,
     panZoom: s.panZoom,
     translateExtent: s.translateExtent,
