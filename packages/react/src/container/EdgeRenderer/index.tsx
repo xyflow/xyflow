@@ -1,11 +1,12 @@
 import { memo, ReactNode } from 'react';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useCustomDiff, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
 import EdgeWrapper from '../../components/EdgeWrapper';
-import type { Edge, ReactFlowState, Node } from '../../types';
+import type { Edge, Node, ReactFlowState } from '../../types';
+import { ConnectionMode, OnError } from '@xyflow/system';
 
 type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
   GraphViewProps<Node, EdgeType>,
@@ -33,7 +34,6 @@ const selector = (s: ReactFlowState) => ({
   edgesFocusable: s.edgesFocusable,
   edgesReconnectable: s.edgesReconnectable,
   elementsSelectable: s.elementsSelectable,
-  connectionMode: s.connectionMode,
   onError: s.onError,
 });
 
@@ -55,7 +55,9 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   onReconnectEnd,
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
-  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useReactFlowStore(useShallow(selector));
+  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useReactFlowStore(
+    useCustomDiff(selector, areEqual)
+  );
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
   return (
@@ -95,3 +97,24 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
 EdgeRendererComponent.displayName = 'EdgeRenderer';
 
 export const EdgeRenderer = memo(EdgeRendererComponent) as typeof EdgeRendererComponent;
+function areEqual(
+  a: {
+    edgesFocusable: boolean;
+    edgesReconnectable: boolean;
+    elementsSelectable: boolean;
+    onError: OnError | undefined;
+  },
+  b: {
+    edgesFocusable: boolean;
+    edgesReconnectable: boolean;
+    elementsSelectable: boolean;
+    onError: OnError | undefined;
+  }
+): boolean {
+  return (
+    a.edgesFocusable === b.edgesFocusable &&
+    a.edgesReconnectable === b.edgesReconnectable &&
+    a.elementsSelectable === b.elementsSelectable &&
+    a.onError === b.onError
+  );
+}

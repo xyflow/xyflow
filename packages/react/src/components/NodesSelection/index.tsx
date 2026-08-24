@@ -6,7 +6,7 @@ import { useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { getInternalNodesBounds, isNumeric } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useShallow, useReactFlowStoreApi, useCustomDiff } from '../../hooks/useReactFlowStore';
 import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
@@ -37,7 +37,7 @@ export function NodesSelection<NodeType extends Node>({
   disableKeyboardA11y,
 }: NodesSelectionProps<NodeType>) {
   const store = useReactFlowStoreApi<NodeType>();
-  const { width, height, transformString, userSelectionActive } = useReactFlowStore(useShallow(selector));
+  const { width, height, transformString, userSelectionActive } = useReactFlowStore(useCustomDiff(selector, areEqual));
   const moveSelectedNodes = useMoveSelectedNodes();
 
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -98,5 +98,16 @@ export function NodesSelection<NodeType extends Node>({
         }}
       />
     </div>
+  );
+}
+function areEqual(
+  a: { width: number | null; height: number | null; userSelectionActive: boolean; transformString: string },
+  b: { width: number | null; height: number | null; userSelectionActive: boolean; transformString: string }
+): boolean {
+  return (
+    a.width === b.width &&
+    a.height === b.height &&
+    a.userSelectionActive === b.userSelectionActive &&
+    a.transformString === b.transformString
   );
 }

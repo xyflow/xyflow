@@ -1,6 +1,6 @@
 import type { Viewport } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from './useReactFlowStore';
+import { useCustomDiff, useReactFlowStore } from './useReactFlowStore';
 import type { ReactFlowState } from '../types';
 
 const viewportSelector = (state: ReactFlowState) => ({
@@ -39,7 +39,11 @@ const viewportSelector = (state: ReactFlowState) => ({
  *{@link ReactFlowProvider} or a {@link ReactFlow} component.
  */
 export function useViewport(): Viewport {
-  const viewport = useReactFlowStore(useShallow(viewportSelector));
+  const viewport = useReactFlowStore(useCustomDiff(viewportSelector, areEqual));
 
   return viewport;
+}
+
+function areEqual(a: Viewport, b: Viewport): boolean {
+  return a.x === b.x && a.y === b.y && a.zoom === b.zoom;
 }

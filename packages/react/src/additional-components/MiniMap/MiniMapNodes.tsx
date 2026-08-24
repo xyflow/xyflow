@@ -1,7 +1,7 @@
 import { ComponentType, memo, useCallback } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useCustomDiff, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { MiniMapNode } from './MiniMapNode';
 import type { ReactFlowState, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
@@ -24,7 +24,7 @@ function MiniMapNodes<NodeType extends Node>({
   nodeComponent: NodeComponent = MiniMapNode,
   onClick,
 }: MiniMapNodesProps<NodeType>) {
-  const nodeIds = useReactFlowStore(useShallow(selectorNodeIds));
+  const nodeIds = useReactFlowStore(useCustomDiff(selectorNodeIds, areIdsEqual));
   const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
@@ -103,7 +103,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
     [id]
   );
 
-  const { node, x, y, width, height } = useReactFlowStore(useShallow(selector));
+  const { node, x, y, width, height } = useReactFlowStore(useCustomDiff(selector, areEqual));
 
   if (!node || node.hidden || !nodeHasDimensions(node)) {
     return null;
@@ -132,3 +132,26 @@ function NodeComponentWrapperInner<NodeType extends Node>({
 const NodeComponentWrapper = memo(NodeComponentWrapperInner) as typeof NodeComponentWrapperInner;
 
 export default memo(MiniMapNodes) as typeof MiniMapNodes;
+function areEqual(
+  a: { node: Node | undefined; x: number; y: number; width: number; height: number },
+  b: { node: Node | undefined; x: number; y: number; width: number; height: number }
+): boolean {
+  return a.node === b.node && a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+}
+
+function areIdsEqual(a: string[], b: string[]): boolean {
+  if (a === b) {
+    return true;
+  }
+
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+  return true;
+}
