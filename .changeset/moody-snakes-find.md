@@ -2,5 +2,4 @@
 "@xyflow/system": patch
 ---
 
-bump system
-  
+Add `handleAttributionWarning` function
