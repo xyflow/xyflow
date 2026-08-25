@@ -1,5 +1,12 @@
 # @xyflow/system
 
+## 0.0.81
+### Patch Changes
+
+
+
+- [#5981](https://github.com/xyflow/xyflow/pull/5981) [`22e0be2`](https://github.com/xyflow/xyflow/commit/22e0be21507cfc319a97e30b88dd2668fd9086a8) - Add `handleAttributionWarning` function
+
 ## 0.0.80
 ### Patch Changes
 
