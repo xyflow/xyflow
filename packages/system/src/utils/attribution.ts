@@ -1,12 +1,14 @@
 import { isDomNodeVisible } from './general';
 
-let warned = false;
+let warningDisplayed = false;
 
 export function handleAttributionWarning(library: 'react' | 'svelte' | 'vue') {
-  if (warned || process.env.NODE_ENV !== 'development') {
+  if (warningDisplayed || process.env.NODE_ENV !== 'development') {
     return;
   }
-  warned = true;
+
+  warningDisplayed = true;
+
   const framework = `${library.charAt(0).toUpperCase() + library.slice(1)} Flow`;
 
   setTimeout(() => {
