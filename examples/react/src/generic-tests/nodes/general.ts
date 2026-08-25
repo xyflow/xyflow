@@ -1,4 +1,5 @@
 import DragHandleNode from './components/DragHandleNode';
+import UpdateNodeInternalsNode from './components/UpdateNodeInternalsNode';
 
 export default {
   flowProps: {
@@ -7,6 +8,7 @@ export default {
     multiSelectionKeyCode: 's',
     nodeTypes: {
       DragHandleNode,
+      UpdateNodeInternalsNode,
     },
     nodeDragThreshold: 0,
     nodes: [
@@ -72,6 +74,12 @@ export default {
         data: { label: 'hidden' },
         position: { x: 0, y: 700 },
         hidden: true,
+      },
+      {
+        id: 'update-internals',
+        data: { label: 'Update Internals' },
+        position: { x: 300, y: 0 },
+        type: 'UpdateNodeInternalsNode',
       },
     ],
     edges: [
