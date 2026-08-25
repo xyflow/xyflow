@@ -260,7 +260,7 @@ export type D3SelectionInstance = D3Selection<Element, unknown, null, undefined>
 
 export type D3ZoomHandler = (this: Element, event: D3ZoomInputEvent, d: unknown) => void;
 
-export type UpdateNodeInternals = (nodeId: string | string[]) => void;
+export type UpdateNodeInternals = (nodeId: string | string[]) => Promise<void>;
 
 /**
  * This type is mostly used to help position things on top of the flow viewport. For

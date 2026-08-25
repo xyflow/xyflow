@@ -132,22 +132,20 @@
       targetPosition !== prevTargetPosition;
 
     if (doUpdate && nodeRef !== null) {
-      requestAnimationFrame(() => {
-        if (nodeRef !== null) {
-          store.updateNodeInternals(
-            new Map([
-              [
-                id,
-                {
-                  id,
-                  nodeElement: nodeRef,
-                  force: true
-                }
-              ]
-            ])
-          );
-        }
-      });
+      // This effect already runs after Svelte has applied the DOM updates
+      // so we can update immediately instead of deferring to a rAF
+      store.updateNodeInternals(
+        new Map([
+          [
+            id,
+            {
+              id,
+              nodeElement: nodeRef,
+              force: true
+            }
+          ]
+        ])
+      );
     }
 
     prevType = type;
