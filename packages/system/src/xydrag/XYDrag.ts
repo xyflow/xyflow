@@ -27,6 +27,7 @@ import type {
   OnSelectionDrag,
   UpdateNodePositions,
   InternalNodeBase,
+  ParentLookup,
 } from '../types';
 
 export type OnDrag<NodeType extends NodeBase = NodeBase> = (
@@ -50,6 +51,7 @@ type FlowGraph<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase =
 type StoreItems<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
   nodes: NodeType[];
   nodeLookup: Map<string, InternalNodeBase<NodeType>>;
+  groupLookup?: ParentLookup<InternalNodeBase<NodeType>>;
   edges: EdgeType[];
   nodeExtent: CoordinateExtent;
   snapGrid: SnapGrid;
@@ -262,6 +264,7 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
     function startDrag(event: UseDragEvent) {
       const {
         nodeLookup,
+        groupLookup,
         multiSelectionActive,
         nodesDraggable,
         transform,
@@ -293,7 +296,7 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
         containerBounds,
       });
       lastPos = pointerPos;
-      dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, nodeId);
+      dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, nodeId, groupLookup);
 
       if (dragItems.size > 0 && (onDragStart || onNodeDragStart || (!nodeId && onSelectionDragStart))) {
         const [currentNode, currentNodes] = getEventHandlerParams({

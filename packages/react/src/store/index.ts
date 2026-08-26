@@ -102,6 +102,7 @@ const createStore = ({
         const {
           nodeLookup,
           parentLookup,
+          groupLookup,
           nodeOrigin,
           nodeExtent,
           elevateNodesOnSelect,
@@ -119,7 +120,7 @@ const createStore = ({
          * relevant for internal React Flow operations.
          */
 
-        const { nodesInitialized, hasSelectedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        const { nodesInitialized, hasSelectedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, groupLookup, {
           nodeOrigin,
           nodeExtent,
           elevateNodesOnSelect,
@@ -398,7 +399,8 @@ const createStore = ({
         emitEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nextNodeExtent) => {
-        const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode } = get();
+        const { nodes, nodeLookup, parentLookup, groupLookup, nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode } =
+          get();
 
         if (
           nextNodeExtent[0][0] === nodeExtent[0][0] &&
@@ -409,7 +411,7 @@ const createStore = ({
           return;
         }
 
-        adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        adoptUserNodes(nodes, nodeLookup, parentLookup, groupLookup, {
           nodeOrigin,
           nodeExtent: nextNodeExtent,
           elevateNodesOnSelect,

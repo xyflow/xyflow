@@ -1,4 +1,4 @@
-import type { XYPosition, Position, CoordinateExtent, Handle } from '.';
+import type { XYPosition, Position, CoordinateExtent, Handle, Padding } from '.';
 import { type Optional } from '../utils/types';
 
 /**
@@ -52,6 +52,17 @@ export type NodeBase<
   initialHeight?: number;
   /** Parent node id, used for creating sub-flows. */
   parentId?: string;
+  /**
+   * Id of another node this node belongs to as a group member.
+   * Unlike `parentId`, group members keep absolute coordinates.
+   */
+  groupId?: string;
+  /**
+   * When set on a group node, its position, width and height are derived from
+   * the bounding box of all nodes with a matching `groupId`.
+   * Pass `true` for no padding, or a `Padding` value to inset the group bounds.
+   */
+  autoSize?: boolean | Padding;
   zIndex?: number;
   /**
    * Boundary a node can be moved in.

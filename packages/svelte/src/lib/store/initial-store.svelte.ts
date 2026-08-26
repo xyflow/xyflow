@@ -141,6 +141,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         signals.nodes,
         this.nodeLookup,
         this.parentLookup,
+        this.groupLookup,
         {
           nodeExtent: this.nodeExtent,
           nodeOrigin: this.nodeOrigin,
@@ -273,6 +274,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
 
     nodeLookup: NodeLookup<InternalNode<NodeType>> = new Map();
     parentLookup: ParentLookup<InternalNode<NodeType>> = new Map();
+    groupLookup: ParentLookup<InternalNode<NodeType>> = new Map();
     connectionLookup: ConnectionLookup = new Map();
     edgeLookup: EdgeLookup<EdgeType> = new Map();
 

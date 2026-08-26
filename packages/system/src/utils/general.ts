@@ -234,7 +234,7 @@ function parsePadding(padding: PaddingWithUnit, viewport: number): number {
  * @param height - Height of the viewport
  * @returns An object with the paddings in pixels
  */
-function parsePaddings(
+export function parsePaddings(
   padding: Padding,
   width: number,
   height: number

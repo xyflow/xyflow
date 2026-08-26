@@ -17,6 +17,7 @@ describe('updateNodeInternals with a missing parent', () => {
   it('does not crash when a node parent is absent from nodeLookup', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
+    const groupLookup: ParentLookup = new Map();
 
     // A child whose parent ("missing-parent") is never added to the lookup.
     const child: Node = {
@@ -27,7 +28,7 @@ describe('updateNodeInternals with a missing parent', () => {
       extent: 'parent',
       measured: { width: 50, height: 50 },
     };
-    adoptUserNodes([child], nodeLookup, parentLookup);
+    adoptUserNodes([child], nodeLookup, parentLookup, groupLookup);
 
     // Minimal flow DOM so `updateNodeInternals` does not bail out early on the
     // missing `.xyflow__viewport` and reads a real zoom from the transform.
