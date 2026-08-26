@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { PanelPosition } from '@xyflow/system';
 import type { ProOptions } from 'src/types/pro';
+import { handleAttributionWarning } from '@xyflow/system';
+import { onMounted } from 'vue';
 import { isDev } from '../../utils/log';
 import Panel from '../Panel/Panel.vue';
 
@@ -10,6 +12,12 @@ const { proOptions = undefined, position = 'bottom-right' } = defineProps<{
 }>();
 
 const link = `https://vueflow.dev${isDev() ? '/attribution' : '?utm_source=attribution'}`;
+
+onMounted(() => {
+  if (isDev()) {
+    handleAttributionWarning('vue');
+  }
+});
 </script>
 
 <script lang="ts">
