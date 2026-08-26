@@ -13,7 +13,6 @@ import type {
   OnConnectStartParams,
   PanelPosition,
   PanOnScrollMode,
-  ProOptions,
   SelectionMode,
   SnapGrid,
   Viewport,
@@ -21,7 +20,6 @@ import type {
 } from '@xyflow/system';
 import type { CSSProperties } from 'vue';
 import type { VueFlowError } from '../utils';
-import type { EdgeChange, NodeChange } from './changes';
 import type { EdgeTypesObject, NodeTypesObject } from './components';
 import type { ConnectionLineOptions, ConnectionLineProps } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeProps, EdgeReconnectable } from './edge';
@@ -37,6 +35,7 @@ import type {
   SelectionChangeEvent,
 } from './hooks';
 import type { Node, NodeOrigin, NodeProps } from './node';
+import type { ProOptions } from './pro';
 import type { VueFlowInstance } from './store';
 
 /**

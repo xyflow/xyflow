@@ -134,7 +134,6 @@ export {
   PanOnScrollMode,
   Position,
   type PositionChange,
-  type ProOptions,
   type Rect,
   type RemoveChange,
   // value export (it's a runtime enum) — keeps `ResizeControlVariant.Line/.Handle` usable as a value, not
