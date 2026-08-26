@@ -5,7 +5,6 @@ import type {
   HandleType,
   IsValidConnection,
   NodeConnection,
-  NodeHandleBounds,
   NodeLookup as SystemNodeLookup,
   ParentLookup as SystemParentLookup,
   ZIndexMode,
@@ -182,16 +181,10 @@ export function adoptNodes<NodeType extends Node = Node>(
     validNodes.push(markRaw(toRaw(node)));
   }
 
-  const priorInternals = new Map<
-    string,
-    { measured?: { width?: number; height?: number }; handleBounds: NodeHandleBounds | undefined }
-  >();
+  const priorMeasured = new Map<string, { width: number; height: number } | undefined>();
   for (const [id, internal] of nodeLookup) {
     const { width, height } = internal.measured ?? {};
-    priorInternals.set(id, {
-      measured: width !== undefined && height !== undefined ? { width, height } : undefined,
-      handleBounds: internal.internals.handleBounds,
-    });
+    priorMeasured.set(id, width !== undefined && height !== undefined ? { width, height } : undefined);
   }
 
   const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: options?.checkEquality ?? true });
@@ -201,16 +194,11 @@ export function adoptNodes<NodeType extends Node = Node>(
       triggerError(new VueFlowError(ErrorCode.NODE_MISSING_PARENT, node.id, node.parentId));
     }
 
-    const prior = priorInternals.get(node.id);
+    const prior = priorMeasured.get(node.id);
     if (prior) {
       const internal = nodeLookup.get(node.id);
-      if (internal) {
-        if (prior.measured && (internal.measured?.width === undefined || internal.measured?.height === undefined)) {
-          internal.measured = prior.measured;
-        }
-        if (prior.handleBounds && !internal.internals.handleBounds) {
-          internal.internals.handleBounds = prior.handleBounds;
-        }
+      if (internal && (internal.measured?.width === undefined || internal.measured?.height === undefined)) {
+        internal.measured = prior;
       }
     }
   }

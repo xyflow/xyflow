@@ -11,7 +11,6 @@ import {
   type CoordinateExtent,
   type UpdateConnection,
   type ConnectionState,
-  updateAbsolutePositions,
   snapPosition,
   calculateNodePosition,
   type SetCenterOptions,
@@ -109,12 +108,6 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     if (!updatedInternals) {
       return;
     }
-
-    updateAbsolutePositions(store.nodeLookup, store.parentLookup, {
-      nodeOrigin: store.nodeOrigin,
-      nodeExtent: store.nodeExtent,
-      zIndexMode: store.zIndexMode
-    });
 
     if (store.fitViewQueued) {
       store.resolveFitView();
