@@ -27,7 +27,7 @@ const INTERNAL_SCOPE = '@xyflow/';
 const RUNTIME_FILE = /\.(js|mjs|svelte)$/;
 const TYPES_FILE = /\.d\.(ts|mts|cts)$/;
 const IMPORT_RE =
-  /(?:^|[;\n])\s*(?:import|export)\s+(?<stmtType>type\s+)?(?:(?<defaultName>[\w$]+)\s*,\s*)?(?:\{(?<named>[^}]*)\}|(?<defaultOnly>[\w$]+))\s*from\s*['"](?<dep>[^'"]+)['"]/g;
+  /(?:^|[;\n])\s*(?:import|export)\b\s*(?<stmtType>type\b\s*)?(?:(?<defaultName>[\w$]+)\s*,\s*)?(?:\{(?<named>[^}]*)\}|(?<defaultOnly>[\w$]+))\s*from\s*['"](?<dep>[^'"]+)['"]/g;
 
 function run(cmd, args, opts = {}) {
   return execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
@@ -64,6 +64,20 @@ function registryVersions(name) {
   }
   return versionsCache.get(name);
 }
+
+// Exact pins are what the workspace protocol rewrites to today, but tolerate range
+// pins (e.g. from `workspace:^`) by letting the registry resolve them.
+function registrySatisfies(name, spec) {
+  if (registryVersions(name).has(spec)) return true;
+  try {
+    return run('npm', ['view', `${name}@${spec}`, 'version', '--json']).trim().length > 0;
+  } catch {
+    return false;
+  }
+}
+
+// Import specifiers may address subpaths ('@xyflow/system/foo'); dependency pins never do.
+const packageNameOf = (specifier) => specifier.split('/').slice(0, 2).join('/');
 
 function parseNamedSpecifiers(named) {
   const values = [];
@@ -200,29 +214,39 @@ for (const [pkgName, { extractedDir }] of tarballs) {
     continue;
   }
 
-  // Resolve each internal dependency to the exact artifact consumers will install:
-  // the local tarball when it is co-published in this release, the registry otherwise.
-  const installSpecs = [];
-  const depSources = new Map();
-  for (const dep of internalImports.keys()) {
-    const pin = packedManifest.dependencies?.[dep] ?? packedManifest.peerDependencies?.[dep];
-    if (!pin) {
-      failures.push(`${pkgLabel} imports from '${dep}' but does not declare it as a dependency.`);
-      internalImports.delete(dep);
-    } else if (releaseSet.has(dep)) {
-      installSpecs.push(tarballs.get(dep).tarball);
-      depSources.set(dep, `${dep}@${pin}, co-published in this release`);
-    } else if (registryVersions(dep).has(pin)) {
-      installSpecs.push(`${dep}@${pin}`);
-      depSources.set(dep, `${dep}@${pin} from the registry`);
-    } else {
-      failures.push(
-        `${pkgLabel} pins '${dep}@${pin}', but that version is neither on the registry nor part of this release.`
-      );
-      internalImports.delete(dep);
+  // A declared internal dependency with zero scanned imports means either a scanner
+  // blind spot (e.g. the output format changed) or an unused dependency — say so loudly.
+  const scannedPackages = new Set([...internalImports.keys()].map(packageNameOf));
+  for (const depName of Object.keys(packedManifest.dependencies ?? {})) {
+    if (depName.startsWith(INTERNAL_SCOPE) && !scannedPackages.has(depName)) {
+      console.warn(`⚠ ${pkgLabel} declares '${depName}' but the scan found no imports of it.`);
     }
   }
-  if (installSpecs.length === 0) continue;
+
+  // Resolve each internal dependency to the exact artifact consumers will install:
+  // the local tarball when it is co-published in this release, the registry otherwise.
+  const installSpecs = new Set();
+  const depSources = new Map();
+  for (const specifier of internalImports.keys()) {
+    const depName = packageNameOf(specifier);
+    const pin = packedManifest.dependencies?.[depName] ?? packedManifest.peerDependencies?.[depName];
+    if (!pin) {
+      failures.push(`${pkgLabel} imports from '${specifier}' but does not declare '${depName}' as a dependency.`);
+      internalImports.delete(specifier);
+    } else if (releaseSet.has(depName)) {
+      installSpecs.add(tarballs.get(depName).tarball);
+      depSources.set(specifier, `${specifier}@${pin}, co-published in this release`);
+    } else if (registrySatisfies(depName, pin)) {
+      installSpecs.add(`${depName}@${pin}`);
+      depSources.set(specifier, `${specifier}@${pin} from the registry`);
+    } else {
+      failures.push(
+        `${pkgLabel} pins '${depName}@${pin}', but that version is neither on the registry nor part of this release.`
+      );
+      internalImports.delete(specifier);
+    }
+  }
+  if (installSpecs.size === 0) continue;
 
   const consumerDir = path.join(tmp, 'consumer', slug(pkgName));
   fs.mkdirSync(consumerDir, { recursive: true });
@@ -234,13 +258,13 @@ for (const [pkgName, { extractedDir }] of tarballs) {
     cwd: consumerDir,
   });
 
-  for (const [dep, { runtime, types }] of internalImports) {
-    const missingRuntime = runtime.size > 0 ? checkRuntimeExports(consumerDir, dep, runtime) : [];
-    const missingTypes = types.size > 0 ? checkTypeExports(consumerDir, dep, types) : [];
+  for (const [specifier, { runtime, types }] of internalImports) {
+    const missingRuntime = runtime.size > 0 ? checkRuntimeExports(consumerDir, specifier, runtime) : [];
+    const missingTypes = types.size > 0 ? checkTypeExports(consumerDir, specifier, types) : [];
 
     if (missingRuntime.length === 0 && missingTypes.length === 0) {
       console.log(
-        `✓ ${pkgLabel} → ${depSources.get(dep)}: ${runtime.size} runtime + ${types.size} type imports resolve`
+        `✓ ${pkgLabel} → ${depSources.get(specifier)}: ${runtime.size} runtime + ${types.size} type imports resolve`
       );
       continue;
     }
@@ -251,10 +275,11 @@ for (const [pkgName, { extractedDir }] of tarballs) {
     ]
       .filter(Boolean)
       .join('\n  ');
-    let message = `${pkgLabel} → ${depSources.get(dep)}:\n  ${details}`;
-    if (!releaseSet.has(dep)) {
+    let message = `${pkgLabel} → ${depSources.get(specifier)}:\n  ${details}`;
+    const depName = packageNameOf(specifier);
+    if (!releaseSet.has(depName)) {
       message +=
-        `\n  Hint: '${dep}' is not part of this release. If it gained new exports, it needs its own` +
+        `\n  Hint: '${depName}' is not part of this release. If it gained new exports, it needs its own` +
         `\n  changeset so it gets bumped and published together with '${pkgName}'.`;
     }
     failures.push(message);
