@@ -11,6 +11,7 @@ import type {
   EdgeLookup,
   FitViewOptionsBase,
   HandleType,
+  HandleBounds,
   IsValidConnection,
   NodeChangeset,
   NodeConnection,
@@ -34,7 +35,6 @@ import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent }
 import type { ConnectionLineOptions } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
 import type { FlowExportObject, OnBeforeDelete, VueFlowProps } from './flow';
-import type { ConnectingHandle } from './handle';
 import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
 import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
 
@@ -114,7 +114,7 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   /** the ongoing drag-connection as a single {@link ConnectionState} (`inProgress: false` when idle) */
   connection: ConnectionState<InternalNode<NodeType>>;
   /** the handle a click-to-connect interaction started from (separate from the drag `connection`) */
-  connectionClickStartHandle: ConnectingHandle | null;
+  connectionClickStartHandle: HandleBounds | null;
   connectionRadius: number;
   connectionDragThreshold: number;
   isValidConnection: IsValidConnection | null;

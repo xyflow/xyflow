@@ -1,4 +1,4 @@
-import type { ConnectionLineType, EdgeMarkerType, Handle, Position, XYPosition } from '@xyflow/system';
+import type { ConnectionLineType, EdgeMarkerType, HandleBounds, Position, XYPosition } from '@xyflow/system';
 import type { CSSProperties } from 'vue';
 import type { ClassValue } from './flow';
 import type { InternalNode, Node } from './node';
@@ -38,11 +38,11 @@ export interface ConnectionLineProps<NodeType extends Node = Node> {
   /** the node the connection started from */
   fromNode: InternalNode<NodeType>;
   /** the handle the connection started from (not the DOM element) */
-  fromHandle: Handle | null;
+  fromHandle: HandleBounds | null;
   /** the node the connection currently ends on, or `null` */
   toNode: InternalNode<NodeType> | null;
   /** the handle the connection currently ends on (not the DOM element), or `null` */
-  toHandle: Handle | null;
+  toHandle: HandleBounds | null;
   /** marker url */
   markerStart?: string;
   /** marker url */

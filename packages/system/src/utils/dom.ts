@@ -1,4 +1,4 @@
-import type { Transform, XYPosition, SnapGrid, Dimensions, Position, Handle } from '../types';
+import type { Transform, XYPosition, SnapGrid, Dimensions, Position, HandleBounds } from '../types';
 import { isMouseEvent } from './events';
 import { snapPosition, pointToRendererPoint } from './general';
 
@@ -70,14 +70,14 @@ export const getHandleBounds = (
   nodeBounds: DOMRect,
   zoom: number,
   nodeId: string
-): Handle[] | null => {
+): HandleBounds[] | null => {
   const handles = nodeElement.querySelectorAll(`.${type}`);
 
   if (!handles || !handles.length) {
     return null;
   }
 
-  return Array.from(handles).map((handle): Handle => {
+  return Array.from(handles).map((handle): HandleBounds => {
     const handleBounds = handle.getBoundingClientRect();
 
     return {

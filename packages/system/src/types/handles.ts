@@ -5,7 +5,13 @@ import type { Position, IsValidConnection } from '.';
  */
 export type HandleType = 'source' | 'target';
 
-export type Handle = {
+/**
+ * Measured geometry of a connection handle on a node: identity, side, and box relative to the node.
+ * Distinct from the `<Handle />` component and from {@link NodeHandle} (user-declared layout on `node.handles`).
+ *
+ * @public
+ */
+export type HandleBounds = {
   id?: string | null;
   nodeId: string;
   x: number;

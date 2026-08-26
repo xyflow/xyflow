@@ -34,7 +34,7 @@ import {
   pointToRendererPoint,
   type Transform,
   fitViewport,
-  type Handle,
+  type HandleBounds,
   type OnReconnect,
   type OnReconnectStart,
   type OnReconnectEnd,
@@ -470,7 +470,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     clickConnect?: boolean = $derived(signals.props.clickConnect ?? true);
     onclickconnectstart?: OnConnectStart = $derived(signals.props.onclickconnectstart);
     onclickconnectend?: OnConnectEnd = $derived(signals.props.onclickconnectend);
-    clickConnectStartHandle: Pick<Handle, 'id' | 'nodeId' | 'type'> | null = $state.raw(null);
+    clickConnectStartHandle: Pick<HandleBounds, 'id' | 'nodeId' | 'type'> | null = $state.raw(null);
 
     onselectiondrag?: OnSelectionDrag<NodeType> = $derived(signals.props.onselectiondrag);
     onselectiondragstart?: OnSelectionDrag<NodeType> = $derived(signals.props.onselectiondragstart);

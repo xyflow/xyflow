@@ -1,9 +1,8 @@
 import { type EdgePosition } from '../../types/edges';
 import { ConnectionMode, type OnError } from '../../types/general';
-import { type InternalNodeBase, type NodeHandle } from '../../types/nodes';
+import { type HandleBounds, type InternalNodeBase } from '../../types';
 import { Position, type XYPosition } from '../../types/utils';
 import { errorMessages } from '../constants';
-import { type Handle } from '../../types';
 import { getNodeDimensions } from '../general';
 
 export type GetEdgePositionParams = {
@@ -31,8 +30,8 @@ export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | n
     return null;
   }
 
-  const sourceHandleBounds = sourceNode.internals.handleBounds || toHandleBounds(sourceNode.handles);
-  const targetHandleBounds = targetNode.internals.handleBounds || toHandleBounds(targetNode.handles);
+  const sourceHandleBounds = sourceNode.internals.handleBounds;
+  const targetHandleBounds = targetNode.internals.handleBounds;
 
   const sourceHandle = getHandle(sourceHandleBounds?.source ?? [], params.sourceHandle);
   const targetHandle = getHandle(
@@ -71,34 +70,9 @@ export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | n
   };
 }
 
-function toHandleBounds(handles?: NodeHandle[]) {
-  if (!handles) {
-    return null;
-  }
-
-  const source: Handle[] = [];
-  const target: Handle[] = [];
-
-  for (const handle of handles) {
-    handle.width = handle.width ?? 1;
-    handle.height = handle.height ?? 1;
-
-    if (handle.type === 'source') {
-      source.push(handle as Handle);
-    } else if (handle.type === 'target') {
-      target.push(handle as Handle);
-    }
-  }
-
-  return {
-    source,
-    target,
-  };
-}
-
 export function getHandlePosition(
   node: InternalNodeBase,
-  handle: Handle | null,
+  handle: HandleBounds | null,
   fallbackPosition: Position = Position.Left,
   center = false
 ): XYPosition {
@@ -124,7 +98,7 @@ export function getHandlePosition(
   }
 }
 
-function getHandle(bounds: Handle[], handleId?: string | null): Handle | null {
+function getHandle(bounds: HandleBounds[], handleId?: string | null): HandleBounds | null {
   if (!bounds) {
     return null;
   }
