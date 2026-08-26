@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { PanelPosition, ProOptions } from '@xyflow/system';
+import type { PanelPosition } from '@xyflow/system';
+import type { ProOptions } from 'src/types/pro';
 import { isDev } from '../../utils/log';
 import Panel from '../Panel/Panel.vue';
 
@@ -25,8 +26,6 @@ export default {
     class="vue-flow__attribution"
     v-bind="{ 'data-message': `Please only hide this attribution when you are subscribed to Vue Flow Pro: ${link}` }"
   >
-    <a :href="link" target="_blank" rel="noopener noreferrer" aria-label="Vue Flow attribution">
-      Vue Flow
-    </a>
+    <a :href="link" target="_blank" rel="noopener noreferrer" aria-label="Vue Flow attribution"> Vue Flow </a>
   </Panel>
 </template>
