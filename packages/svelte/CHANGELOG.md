@@ -1,5 +1,26 @@
 # @xyflow/svelte
 
+## 1.6.5
+### Patch Changes
+
+- Updated dependencies [[`22e0be2`](https://github.com/xyflow/xyflow/commit/22e0be21507cfc319a97e30b88dd2668fd9086a8)]:
+  - @xyflow/system@0.0.81
+
+## 1.6.4
+### Patch Changes
+
+
+
+- [#5962](https://github.com/xyflow/xyflow/pull/5962) [`cbf40b9`](https://github.com/xyflow/xyflow/commit/cbf40b938f1651321198d3f1b2c1457c2b7145e4) - Show log if user hides attribution in development
+
+
+
+- [#5976](https://github.com/xyflow/xyflow/pull/5976) [`3319ef4`](https://github.com/xyflow/xyflow/commit/3319ef4917c3d43a6f3cc035ba9850e5fe72e8d6) - Fix the `MiniMap` zooming out to include the origin when every node is hidden.
+
+
+
+- [#5959](https://github.com/xyflow/xyflow/pull/5959) [`ad025cf`](https://github.com/xyflow/xyflow/commit/ad025cfdcd640ae980018e7b97a6c59c958ca798) - Fix unnecessary edge rerenders
+
 ## 1.6.3
 ### Patch Changes
 

@@ -87,7 +87,6 @@ export {
   type SetCenterOptions,
   type FitBoundsOptions,
   type PanelPosition,
-  type ProOptions,
   SelectionMode,
   type SelectionRect,
   type OnError,

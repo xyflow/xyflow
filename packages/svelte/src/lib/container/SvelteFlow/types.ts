@@ -13,7 +13,6 @@ import type {
   OnError,
   ConnectionMode,
   PanelPosition,
-  ProOptions,
   ColorMode,
   OnConnect,
   OnConnectStart,
@@ -40,7 +39,8 @@ import type {
   OnBeforeReconnect,
   OnSelectionChange,
   OnNodesChange,
-  OnEdgesChange
+  OnEdgesChange,
+  ProOptions
 } from '$lib/types/index.js';
 
 import type { Component } from 'svelte';
@@ -441,9 +441,8 @@ export type SvelteFlowProps<
     attributionPosition?: PanelPosition;
     /**
      * By default, we render a small attribution in the corner of your flows that links back to the project.
-     * You are free to remove this attribution but we ask that you take a quick look at our
-     * {@link https://svelteflow.dev/learn/troubleshooting/remove-attribution | removing attribution guide}
-     * before doing so.
+     * Please only remove the attribution if you have a Svelte Flow subscription.
+     * More information in the {@link https://svelteflow.dev/remove-attribution | removing attribution guide}.
      */
     proOptions?: ProOptions;
     isValidConnection?: IsValidConnection<EdgeType>;

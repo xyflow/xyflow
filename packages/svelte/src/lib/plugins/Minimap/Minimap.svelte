@@ -53,8 +53,15 @@
     height: store.height / store.viewport.zoom
   });
 
+  let hasVisibleNodes = $derived(store.nodes.some((n) => !n.hidden));
+
   let boundingRect = $derived(
-    getBoundsOfRects(getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }), viewBB)
+    hasVisibleNodes
+      ? getBoundsOfRects(
+          getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }),
+          viewBB
+        )
+      : viewBB
   );
 
   let scaledWidth = $derived(boundingRect.width / width);

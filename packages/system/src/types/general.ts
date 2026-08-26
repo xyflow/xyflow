@@ -280,11 +280,6 @@ export type PanelPosition =
   | 'center-left'
   | 'center-right';
 
-export type ProOptions = {
-  account?: string;
-  hideAttribution: boolean;
-};
-
 export type UseDragEvent = Omit<D3DragEvent<HTMLDivElement, null, SubjectPosition>, 'sourceEvent'> & {
   sourceEvent: MouseEvent | TouchEvent;
 };

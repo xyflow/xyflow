@@ -70,3 +70,13 @@ export type OnNodesChange<NodeType extends Node = Node> = (
 export type OnEdgesChange<EdgeType extends Edge = Edge> = (
   changes: EdgeChangeset<EdgeType>
 ) => void;
+
+/**
+ * Svelte Flow is independent and entirely funded by its users.
+ * If you hide the attribution, please support our work by subscribing to Svelte Flow Pro: https://svelteflow.dev/remove-attribution
+ * */
+export type ProOptions = {
+  account?: string;
+  /** If you hide the attribution, please support our work with a subscription. */
+  hideAttribution: boolean;
+};
