@@ -13,14 +13,9 @@ import type { Commit } from './commit';
 import {
   addChange,
   changeParentNode,
-  clampPosition,
-  clampPositionToParent,
-  dimensionChange,
   EdgeChangeset,
   getConnectedEdges as getConnectedEdgesBase,
-  getDimensions,
   getElementsToRemove,
-  getHandleBounds,
   getOverlappingArea,
   getSelectionChanges,
   handleExpandParent,
@@ -30,6 +25,7 @@ import {
   nodeToRect,
   panBy as panBySystem,
   removeChange,
+  updateNodeInternals as updateNodeInternalsSystem,
 } from '@xyflow/system';
 import { computed, markRaw, toRaw } from 'vue';
 import { useViewportHelper } from '../composables';
@@ -56,7 +52,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   // the commit layer owns the write paths (`commitNodes`/`commitEdges`) and the system-side lookups; actions
   // route every node/edge mutation through it. `createVueFlowStore` builds it so the `nodeExtent` accessor
   // can reuse `commitNodes` too.
-  const { systemNodeLookup, systemParentLookup, commitNodes, commitEdges } = commit;
+  const { systemNodeLookup, systemParentLookup, commitNodes, commitEdges, syncLookups } = commit;
 
   const updateNodeInternals: Actions<NodeType>['updateNodeInternals'] = (nodeId) => {
     state.hooks.updateNodeInternals.trigger(Array.isArray(nodeId) ? nodeId : [nodeId]);
@@ -147,79 +143,30 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       return;
     }
 
-    const viewportNode = state.vueFlowRef.querySelector('.vue-flow__viewport') as HTMLElement;
+    // delegate to `@xyflow/system`: it measures, writes fresh InternalNodes into the system lookup and
+    // cascades child positions/z. Vue keeps only the reactive mirror + changeset conversion, so fixes to
+    // the measurement pipeline (origin handling, child cascade, hidden nodes) arrive with the system.
+    const { changes: systemChanges, updatedInternals } = updateNodeInternalsSystem(
+      new Map(updates.map(update => [update.id, { id: update.id, nodeElement: update.nodeElement, force: update.forceUpdate }])),
+      systemNodeLookup,
+      systemParentLookup,
+      state.vueFlowRef,
+      state.nodeOrigin,
+      state.nodeExtent,
+      state.zIndexMode,
+    );
 
-    if (!viewportNode) {
-      return;
+    if (updatedInternals) {
+      // the system wrote new node objects into the system lookup; mirror them (markRaw'd) so the
+      // per-node render computeds see them
+      syncLookups();
     }
 
-    const style = window.getComputedStyle(viewportNode);
-    const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
-
-    const changes = new NodeChangeset<NodeType>();
-    const parentExpandChildren: { id: string; parentId: string; rect: Rect }[] = [];
-
-    for (const element of updates) {
-      const update = element;
-
-      const node = getInternalNode(update.id);
-
-      if (node) {
-        const dimensions = getDimensions(update.nodeElement);
-
-        const doUpdate = !!(
-          dimensions.width &&
-          dimensions.height &&
-          (node.measured.width !== dimensions.width || node.measured.height !== dimensions.height || update.forceUpdate)
-        );
-
-        if (doUpdate) {
-          const nodeBounds = update.nodeElement.getBoundingClientRect();
-          node.measured = { width: dimensions.width, height: dimensions.height };
-          if (!node.internals.handleBounds) {
-            node.internals.handleBounds = { source: null, target: null };
-          }
-          node.internals.handleBounds.source = getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id);
-          node.internals.handleBounds.target = getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id);
-
-          changes.add(dimensionChange(node.id, dimensions));
-
-          // a freshly-measured `expandParent` child grows its parent to fit; re-clamp against the NEW
-          // dimensions/extent first so a node that only grew isn't treated as overflowing
-          if (node.expandParent && node.parentId) {
-            const parent = getInternalNode(node.parentId);
-            let positionAbsolute = node.internals.positionAbsolute;
-            const extent = node.extent;
-
-            if (extent === 'parent' && parent) {
-              positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, parent);
-            } else if (Array.isArray(extent)) {
-              positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
-            } else {
-              positionAbsolute = clampPosition(positionAbsolute, state.nodeExtent, dimensions);
-            }
-
-            parentExpandChildren.push({
-              id: node.id,
-              parentId: node.parentId,
-              rect: { ...positionAbsolute, width: dimensions.width, height: dimensions.height },
-            });
-          }
-
-          // re-set a fresh entry so the markRaw lookup re-renders (in-place measured/handleBounds writes
-          // aren't tracked; only the `.set` is). Into BOTH maps so their references don't diverge.
-          const fresh = markRaw({ ...toRaw(node) });
-          systemNodeLookup.set(node.id, fresh);
-          nodeLookup.set(node.id, fresh);
-        }
+    if (systemChanges.length) {
+      const changes = new NodeChangeset<NodeType>();
+      for (const change of systemChanges) {
+        changes.add(change);
       }
-    }
-
-    if (parentExpandChildren.length > 0) {
-      changes.add(handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
-    }
-
-    if (changes.size) {
       state.hooks.nodesChange.trigger(changes);
     }
 
