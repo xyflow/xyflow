@@ -21,6 +21,7 @@ import {
   getDimensions,
   getElementsToRemove,
   getHandleBounds,
+  getNodePositionWithOrigin,
   getOverlappingArea,
   getSelectionChanges,
   handleExpandParent,
@@ -183,6 +184,12 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
           node.internals.handleBounds.target = getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id);
 
           changes.add(dimensionChange(node.id, dimensions));
+
+          if (!node.parentId) {
+            const extent = Array.isArray(node.extent) ? node.extent : state.nodeExtent;
+            const positionWithOrigin = getNodePositionWithOrigin(node, state.nodeOrigin);
+            node.internals.positionAbsolute = clampPosition(positionWithOrigin, extent, dimensions);
+          }
 
           // a freshly-measured `expandParent` child grows its parent to fit; re-clamp against the NEW
           // dimensions/extent first so a node that only grew isn't treated as overflowing

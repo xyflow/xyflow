@@ -546,8 +546,13 @@ function updateInternals<NodeType extends NodeBase>(
       if (parentNode) {
         positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, parentNode);
       }
-    } else if (extent) {
+    } else if (node.parentId) {
+      // Child absolute position is corrected by updateChildXYZ (origin-aware).
       positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
+    } else {
+      const nodeWithDimensions = { ...node, measured: dimensions };
+      const positionWithOrigin = getNodePositionWithOrigin(nodeWithDimensions, nodeOrigin);
+      positionAbsolute = clampPosition(positionWithOrigin, extent, dimensions);
     }
 
     updatedNode = {
