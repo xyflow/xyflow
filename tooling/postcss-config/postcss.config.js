@@ -13,7 +13,9 @@ module.exports = (ctx) => {
       postcssImport,
       postcssNested,
       postcssCombine,
-      postcssRename({}),
+      postcssRename({
+        strategy: (className) => className.replace('xy', process.env.LIB),
+      }),
       autoprefixer,
       ctx.env === 'production' && cssnano,
     ],
