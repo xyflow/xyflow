@@ -123,7 +123,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   onClickConnectEnd: OnConnectEnd | undefined;
 
   connectOnClick: boolean;
-  defaultEdgeOptions?: DefaultEdgeOptions;
+  defaultEdgeOptions: DefaultEdgeOptions | undefined;
 
   fitViewQueued: boolean;
   fitViewOptions: FitViewOptions | undefined;
