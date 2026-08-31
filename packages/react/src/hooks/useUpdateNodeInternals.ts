@@ -10,8 +10,10 @@ import { useReactFlowStoreApi } from './useReactFlowStore';
  * on the canvas if necessary.
  *
  * @public
- * @returns Use this function to tell React Flow to update the internal state of one or more nodes
- * that you have changed programmatically.
+ * @returns A function that tells React Flow to update the internal state of one or more
+ * nodes that you have changed programmatically. Returns a `Promise<void>` that resolves
+ * after the next animation frame, once node dimensions have been re-measured and the store
+ * updated. `await` it before reading dimension-dependent state.
  *
  * @example
  * ```jsx
@@ -64,6 +66,15 @@ export function useUpdateNodeInternals(): UpdateNodeInternals {
       }
     });
 
-    requestAnimationFrame(() => updateNodeInternals(updates, { triggerFitView: false }));
+    return new Promise<void>((resolve, reject) => {
+      requestAnimationFrame(() => {
+        try {
+          updateNodeInternals(updates, { triggerFitView: false });
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
   }, []);
 }

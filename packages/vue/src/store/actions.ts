@@ -50,7 +50,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   // can reuse `commitNodes` too.
   const { systemNodeLookup, systemParentLookup, commitNodes, commitEdges, syncLookups } = commit;
 
-  const updateNodeInternals: Actions<NodeType>['updateNodeInternals'] = (nodeId) => {
+  const updateNodeInternals: Actions<NodeType>['updateNodeInternals'] = async (nodeId) => {
     state.hooks.updateNodeInternals.trigger(Array.isArray(nodeId) ? nodeId : [nodeId]);
   };
 
