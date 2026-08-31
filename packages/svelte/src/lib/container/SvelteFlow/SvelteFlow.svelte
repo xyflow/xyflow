@@ -125,7 +125,15 @@
   });
 
   onDestroy(() => {
-    store.reset();
+    providerContext?.setStore(
+      createStore({
+        width: 0,
+        height: 0,
+        nodes: [],
+        edges: [],
+        props: {} as SvelteFlowProps<NodeType, EdgeType>
+      })
+    );
   });
 </script>
 
