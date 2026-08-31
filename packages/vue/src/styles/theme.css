@@ -1,0 +1,12 @@
+/* this gets exported as theme.css: the full default theme on top of style.css */
+
+@import './style.css';
+@import '../../../system/src/styles/theme.css' layer(xyflow);
+
+@layer xyflow {
+  :root,
+  .vue-flow {
+    --xy-theme-primary: #16a34a;
+    --xy-theme-selected: #16a34a;
+  }
+}

@@ -1,0 +1,12 @@
+/* this gets exported as theme.css: the full default theme on top of style.css */
+
+@import './style.css';
+@import '../../../system/src/styles/theme.css' layer(xyflow);
+
+@layer xyflow {
+  :root,
+  .react-flow {
+    --xy-theme-primary: #ff0073;
+    --xy-theme-selected: #f57dbd;
+  }
+}

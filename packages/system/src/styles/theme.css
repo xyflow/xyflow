@@ -1,0 +1,279 @@
+/*
+ * The default xyflow theme, layered on top of style.css and shared by React/Svelte/Vue Flow. The
+ * `xy-flow` namespace is swapped for the library's own at build time; each library only supplies its
+ * brand colors in its own theme.css.
+ *
+ * Dark mode rides on `color-scheme`, which init.css derives from `.dark`/`.light`/`[data-theme]`, so
+ * `light-dark()` covers both the class-based and the system-preference case without a second selector.
+ */
+
+/* the brand accent lives on :root so theme helper classes outside the flow pick it up too; each
+   library overrides it in its own theme.css */
+:root {
+  --xy-theme-primary: #ff0073;
+}
+
+.xy-flow {
+  --xy-theme-selected: var(--xy-theme-primary);
+  --xy-theme-hover: light-dark(#c5c5c5, #7a7d86);
+  --xy-theme-edge-hover: light-dark(#000000, #f3f4f6);
+  --xy-theme-color-focus: light-dark(#e8e8e8, #4b4e57);
+  --xy-theme-focus-border: light-dark(#d9d9d9, #5f6470);
+  --xy-theme-panel-bg: light-dark(#ffffff, #141519);
+  --xy-theme-panel-text: light-dark(#111827, #f3f4f6);
+  --xy-theme-muted-bg: light-dark(#f3f4f6, #24262c);
+  --xy-theme-subtle-border: light-dark(#d1d5db, #3f434c);
+  --xy-theme-resize-handle-bg: light-dark(#ffffff, #141519);
+  --xy-theme-group-background-color: light-dark(rgba(207, 182, 255, 0.4), rgba(123, 107, 148, 0.22));
+  --xy-theme-group-border-color: light-dark(#9e86ed, #7b6b94);
+
+  --xy-background-color-default: light-dark(#f7f9fb, #101012);
+
+  --xy-node-border-default: 1px solid light-dark(#ededed, #303238);
+  --xy-node-border-radius-default: 8px;
+  --xy-node-background-color-default: light-dark(#ffffff, #1a1b1e);
+  /* light-dark() can't wrap the comma-separated shadow list itself, but it can supply each layer's
+     color, which fades the whole shadow out in dark mode */
+  --xy-node-boxshadow-default:
+    0px 3.54px 4.55px 0px light-dark(#00000005, #0000), 0px 3.54px 4.55px 0px light-dark(#0000000d, #0000),
+    0px 0.51px 1.01px 0px light-dark(#0000001a, #0000);
+
+  --xy-handle-background-color-default: light-dark(#ffffff, #141519);
+  --xy-handle-border-color-default: light-dark(#aaaaaa, #5a5d66);
+
+  --xy-edge-label-color-default: light-dark(#505050, #e6e7ea);
+  --xy-edge-label-background-color-default: var(--xy-background-color, var(--xy-background-color-default));
+
+  --xy-resize-background-color-default: #9e86ed;
+}
+
+.xy-flow__node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--xy-node-color, var(--xy-node-color-default));
+  border: var(--xy-node-border, var(--xy-node-border-default));
+  border-radius: var(--xy-node-border-radius, var(--xy-node-border-radius-default));
+  background-color: var(--xy-node-background-color, var(--xy-node-background-color-default));
+  box-shadow: var(--xy-node-boxshadow, var(--xy-node-boxshadow-default));
+
+  &.selectable:focus {
+    border-color: var(--xy-theme-focus-border);
+    box-shadow: 0px 0px 0px 4px var(--xy-theme-color-focus);
+  }
+
+  &.selectable:focus:active {
+    box-shadow: var(--xy-node-boxshadow, var(--xy-node-boxshadow-default));
+  }
+
+  &.selectable:hover,
+  &.draggable:hover {
+    border-color: var(--xy-theme-hover);
+  }
+
+  &.selectable.selected {
+    border-color: var(--xy-theme-selected);
+    box-shadow: var(--xy-node-boxshadow, var(--xy-node-boxshadow-default));
+  }
+}
+
+.xy-flow__node-group {
+  background-color: var(--xy-theme-group-background-color);
+  border-color: var(--xy-theme-group-border-color);
+}
+
+.xy-flow__edge.selectable:hover .xy-flow__edge-path,
+.xy-flow__edge.selectable.selected .xy-flow__edge-path {
+  stroke: var(--xy-theme-edge-hover);
+}
+
+.xy-flow__handle {
+  background-color: var(--xy-handle-background-color, var(--xy-handle-background-color-default));
+
+  &.connectionindicator:hover {
+    pointer-events: all;
+    border-color: var(--xy-theme-edge-hover);
+  }
+
+  &.connectionindicator:focus,
+  &.connectingfrom,
+  &.connectingto {
+    border-color: var(--xy-theme-edge-hover);
+  }
+}
+
+/* square off nodes that carry resize lines so the lines sit flush with the border */
+.xy-flow__node:has(.xy-flow__resize-control.line) {
+  border-radius: 0;
+}
+
+.xy-flow__resize-control.handle {
+  width: 5px;
+  height: 5px;
+  border-radius: 0;
+  background-color: var(--xy-theme-resize-handle-bg);
+  border-color: var(--xy-resize-background-color, var(--xy-resize-background-color-default));
+}
+
+/*
+  Theme helper classes for buttons, inputs and other controls placed inside a flow. These are opt-in:
+  they only apply to markup that uses the class names, and they are not renamed per library.
+
+    .xy-theme__button   - Styles for buttons.
+    .xy-theme__input    - Styles for text inputs.
+    .xy-theme__checkbox - Styles for checkboxes.
+    .xy-theme__select   - Styles for dropdown selects.
+    .xy-theme__label    - Styles for labels.
+*/
+
+:root {
+  --xy-theme-ui-background: light-dark(#fefefe, #1a1b1e);
+  --xy-theme-ui-hover-background: light-dark(#f6f6f6, #24262c);
+  --xy-theme-ui-disabled: light-dark(#76797e, #8b9099);
+  --xy-theme-ui-focus-ring: color-mix(in srgb, var(--xy-theme-primary) 30%, transparent);
+}
+
+.xy-theme__button-group {
+  display: flex;
+  align-items: center;
+
+  .xy-theme__button:first-child {
+    border-radius: 100px 0 0 100px;
+  }
+
+  .xy-theme__button:last-child {
+    border-radius: 0 100px 100px 0;
+    margin: 0;
+  }
+}
+
+.xy-theme__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border-radius: 100px;
+  border: 1px solid var(--xy-theme-primary);
+  background-color: var(--xy-theme-ui-background);
+  color: var(--xy-theme-primary);
+  box-shadow: var(--xy-node-boxshadow, var(--xy-node-boxshadow-default));
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+
+  &.active {
+    background-color: var(--xy-theme-primary);
+    border-color: var(--xy-theme-primary);
+    color: #fff;
+  }
+
+  &.active:hover,
+  &.active:active {
+    background-color: var(--xy-theme-primary);
+    opacity: 0.9;
+  }
+
+  &:hover {
+    background-color: var(
+      --xy-controls-button-background-color-hover,
+      var(--xy-controls-button-background-color-hover-default)
+    );
+  }
+
+  &:active {
+    background-color: var(--xy-theme-ui-hover-background);
+  }
+
+  &:disabled {
+    border: 1px solid var(--xy-theme-ui-disabled);
+    color: var(--xy-theme-ui-disabled);
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+
+  & > span {
+    margin-right: 0.2rem;
+  }
+}
+
+.xy-theme__button + .xy-theme__button {
+  margin-left: 0.3rem;
+}
+
+.xy-theme__input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--xy-theme-primary);
+  border-radius: 7px;
+  background-color: var(--xy-theme-ui-background);
+  font-size: 1rem;
+  color: var(--xy-theme-panel-text);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--xy-theme-primary);
+    box-shadow: 0 0 0 2px var(--xy-theme-ui-focus-ring);
+  }
+}
+
+.xy-theme__checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 7px;
+  border: 2px solid var(--xy-theme-primary);
+  background-color: var(--xy-theme-ui-background);
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:checked {
+    background-color: var(--xy-theme-primary);
+    border-color: var(--xy-theme-primary);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--xy-theme-ui-focus-ring);
+  }
+}
+
+.xy-theme__select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--xy-theme-primary);
+  border-radius: 50px;
+  background-color: var(--xy-theme-ui-background);
+  font-size: 1rem;
+  color: var(--xy-theme-panel-text);
+  margin-right: 0.5rem;
+  box-shadow: var(--xy-node-boxshadow, var(--xy-node-boxshadow-default));
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--xy-theme-primary);
+    box-shadow: 0 0 0 2px var(--xy-theme-ui-focus-ring);
+  }
+}
+
+.xy-theme__label {
+  margin-top: 10px;
+  margin-bottom: 3px;
+  display: inline-block;
+  color: var(--xy-theme-panel-text);
+}
