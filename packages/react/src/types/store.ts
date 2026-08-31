@@ -103,24 +103,24 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   multiSelectionActive: boolean;
 
-  onNodeDragStart?: OnNodeDrag<NodeType>;
-  onNodeDrag?: OnNodeDrag<NodeType>;
-  onNodeDragStop?: OnNodeDrag<NodeType>;
+  onNodeDragStart: OnNodeDrag<NodeType> | undefined;
+  onNodeDrag: OnNodeDrag<NodeType> | undefined;
+  onNodeDragStop: OnNodeDrag<NodeType> | undefined;
 
-  onSelectionDragStart?: OnSelectionDrag;
-  onSelectionDrag?: OnSelectionDrag;
-  onSelectionDragStop?: OnSelectionDrag;
+  onSelectionDragStart: OnSelectionDrag | undefined;
+  onSelectionDrag: OnSelectionDrag | undefined;
+  onSelectionDragStop: OnSelectionDrag | undefined;
 
-  onMoveStart?: OnMoveStart;
-  onMove?: OnMove;
-  onMoveEnd?: OnMoveEnd;
+  onMoveStart: OnMoveStart | undefined;
+  onMove: OnMove | undefined;
+  onMoveEnd: OnMoveEnd | undefined;
 
-  onConnect?: OnConnect;
-  onConnectStart?: OnConnectStart;
-  onConnectEnd?: OnConnectEnd;
+  onConnect: OnConnect | undefined;
+  onConnectStart: OnConnectStart | undefined;
+  onConnectEnd: OnConnectEnd | undefined;
 
-  onClickConnectStart?: OnConnectStart;
-  onClickConnectEnd?: OnConnectEnd;
+  onClickConnectStart: OnConnectStart | undefined;
+  onClickConnectEnd: OnConnectEnd | undefined;
 
   connectOnClick: boolean;
   defaultEdgeOptions?: DefaultEdgeOptions;
@@ -129,16 +129,16 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   fitViewOptions: FitViewOptions | undefined;
   fitViewResolver: ReturnType<typeof withResolvers<boolean>> | null;
 
-  onNodesDelete?: OnNodesDelete<NodeType>;
-  onEdgesDelete?: OnEdgesDelete<EdgeType>;
-  onDelete?: OnDelete;
-  onError?: OnError;
+  onNodesDelete: OnNodesDelete<NodeType> | undefined;
+  onEdgesDelete: OnEdgesDelete<EdgeType> | undefined;
+  onDelete: OnDelete | undefined;
+  onError: OnError | undefined;
 
   // event handlers
-  onViewportChangeStart?: OnViewportChange;
-  onViewportChange?: OnViewportChange;
-  onViewportChangeEnd?: OnViewportChange;
-  onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
+  onViewportChangeStart: OnViewportChange | undefined;
+  onViewportChange: OnViewportChange | undefined;
+  onViewportChangeEnd: OnViewportChange | undefined;
+  onBeforeDelete: OnBeforeDelete<NodeType, EdgeType> | undefined;
 
   onSelectionChangeHandlers: OnSelectionChangeFunc<NodeType, EdgeType>[];
 
@@ -148,7 +148,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   autoPanSpeed: number;
   connectionRadius: number;
 
-  isValidConnection?: IsValidConnection<EdgeType>;
+  isValidConnection: IsValidConnection<EdgeType> | undefined;
 
   lib: string;
   debug: boolean;
