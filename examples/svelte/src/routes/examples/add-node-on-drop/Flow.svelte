@@ -29,7 +29,7 @@
 
 	const { screenToFlowPosition, flowToScreenPosition } = useSvelteFlow();
 
-	const connections = useNodeConnections({ id: '0', handleType: 'source' });
+	const connections = useNodeConnections(() => ({ id: '0', handleType: 'source' }));
 
 	$inspect(connections.current);
 

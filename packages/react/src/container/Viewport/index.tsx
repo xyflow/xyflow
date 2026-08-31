@@ -1,7 +1,7 @@
 import { useRef, useState, type ReactNode } from 'react';
 import type { Transform } from '@xyflow/system';
 
-import { useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 
 const toTransformString = (transform: Transform) =>
@@ -12,7 +12,7 @@ type ViewportProps = {
 };
 
 export function Viewport({ children }: ViewportProps) {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const viewportRef = useRef<HTMLDivElement>(null);
   // seed the transform for first paint and SSR without subscribing, so we don't re-render on pan/zoom
   const [initialTransform] = useState(() => store.getState().transform);

@@ -12,11 +12,10 @@ import { NodeTypes } from './general';
  */
 export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+  NodeType extends string | undefined = string | undefined,
 > = NodeBase<NodeData, NodeType> & {
   style?: CSSProperties;
   className?: string;
-  resizing?: boolean;
   focusable?: boolean;
   /**
    * The ARIA role attribute for the node element, used for accessibility.

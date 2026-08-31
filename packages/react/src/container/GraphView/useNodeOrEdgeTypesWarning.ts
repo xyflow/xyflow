@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { errorMessages } from '@xyflow/system';
 
-import { useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import type { EdgeTypes, NodeTypes } from '../../types';
 
 const emptyTypes = {};
@@ -14,10 +14,9 @@ const emptyTypes = {};
  */
 export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes?: NodeTypes): void;
 export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes?: EdgeTypes): void;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: any = emptyTypes): any {
+export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: NodeTypes | EdgeTypes = emptyTypes): void {
   const typesRef = useRef(nodeOrEdgeTypes);
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {

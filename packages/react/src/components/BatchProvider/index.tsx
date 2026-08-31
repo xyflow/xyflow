@@ -1,17 +1,15 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo } from 'react';
-import { EdgeChange, NodeChange } from '@xyflow/system';
+import { EdgeChange, NodeChange, NodeChangeset, EdgeChangeset } from '@xyflow/system';
 
-import { useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { getElementsDiffChanges } from '../../utils';
 import { Queue, QueueItem } from './types';
 import type { Edge, Node } from '../../types';
 import { useQueue } from './useQueue';
 
 const BatchContext = createContext<{
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nodeQueue: Queue<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  edgeQueue: Queue<any>;
+  nodeQueue: Queue<Node>;
+  edgeQueue: Queue<Edge>;
 } | null>(null);
 
 /**
@@ -25,17 +23,17 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
 }: {
   children: ReactNode;
 }) {
-  const store = useStoreApi<NodeType, EdgeType>();
+  const store = useReactFlowStoreApi<NodeType, EdgeType>();
 
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
     const {
       nodes = [],
-      setNodes,
-      hasDefaultNodes,
       onNodesChange,
       nodeLookup,
       fitViewQueued,
       onNodesChangeMiddlewareMap,
+      setNodes,
+      hasDefaultNodes,
     } = store.getState();
 
     /*
@@ -63,7 +61,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
 
     // We only want to fire onNodesChange if there are changes to the nodes
     if (changes.length > 0) {
-      onNodesChange?.(changes);
+      onNodesChange?.(new NodeChangeset(changes));
     } else if (fitViewQueued) {
       // If there are no changes to the nodes, we still need to call setNodes
       // to trigger a re-render and fitView.
@@ -89,17 +87,19 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
     if (hasDefaultEdges) {
       setEdges(next);
     } else if (onEdgesChange) {
-      onEdgesChange(
-        getElementsDiffChanges({
-          items: next,
-          lookup: edgeLookup,
-        }) as EdgeChange<EdgeType>[]
-      );
+      const changes = getElementsDiffChanges({
+        items: next,
+        lookup: edgeLookup,
+      }) as EdgeChange<EdgeType>[];
+      onEdgesChange?.(new EdgeChangeset(changes));
     }
   }, []);
   const edgeQueue = useQueue<EdgeType>(edgeQueueHandler);
 
-  const value = useMemo(() => ({ nodeQueue, edgeQueue }), []);
+  const value = useMemo(
+    () => ({ nodeQueue, edgeQueue }) as unknown as { nodeQueue: Queue<Node>; edgeQueue: Queue<Edge> },
+    []
+  );
 
   return <BatchContext.Provider value={value}>{children}</BatchContext.Provider>;
 }

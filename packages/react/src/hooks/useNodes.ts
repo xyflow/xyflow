@@ -1,7 +1,7 @@
-import { shallow } from 'zustand/shallow';
-
-import { useStore } from '../hooks/useStore';
+import { useReactFlowStore } from './useReactFlowStore';
 import type { Node, ReactFlowState } from '../types';
+import { useReactFlow } from './useReactFlow';
+import { useMemo } from 'react';
 
 const nodesSelector = (state: ReactFlowState) => state.nodes;
 
@@ -25,7 +25,35 @@ const nodesSelector = (state: ReactFlowState) => state.nodes;
  *```
  */
 export function useNodes<NodeType extends Node = Node>(): NodeType[] {
-  const nodes = useStore(nodesSelector, shallow) as NodeType[];
+  const nodes = useReactFlowStore(nodesSelector) as NodeType[];
 
   return nodes;
+}
+
+/**
+ * This hook returns the node with the given id. Components that use this hook
+ * will re-render **whenever the node changes**.
+ *
+ * @public
+ * @param id - The id of the node to return.
+ * @returns The node with the given id.
+ *
+ * @example
+ * ```tsx
+ *import { useNode } from '@xyflow/react';
+ *
+ *export default function () {
+ *  const node = useNode('1');
+ *
+ *  return <div>Node: {node?.data.label}</div>;
+ *}
+ *```
+ */
+export function useNode<NodeType extends Node = Node>(id: string): NodeType | undefined {
+  const { getNode } = useReactFlow<NodeType>();
+  useReactFlowStore(nodesSelector);
+
+  const node = getNode(id);
+
+  return useMemo(() => node, [node]);
 }

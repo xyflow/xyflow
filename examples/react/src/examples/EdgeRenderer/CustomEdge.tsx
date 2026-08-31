@@ -1,5 +1,5 @@
 import { FC, MouseEvent } from 'react';
-import { EdgeProps, getBezierPath, EdgeLabelRenderer, useStore } from '@xyflow/react';
+import { EdgeProps, getBezierPath, EdgeLabelRenderer, useReactFlowStore } from '@xyflow/react';
 
 const CustomEdge: FC<EdgeProps> = ({
   id,
@@ -13,7 +13,7 @@ const CustomEdge: FC<EdgeProps> = ({
   targetPosition,
   data,
 }) => {
-  const isConnectedNodeDragging = useStore((s) =>
+  const isConnectedNodeDragging = useReactFlowStore((s) =>
     s.nodes.find((n) => n.dragging && (target === n.id || source === n.id))
   );
 

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import type { OnViewportChange } from '@xyflow/system';
 
-import { useStoreApi } from './useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 
 export type UseOnViewportChangeOptions = {
   /** Gets called when the viewport starts changing. */
@@ -35,7 +35,7 @@ export type UseOnViewportChangeOptions = {
  *```
  */
 export function useOnViewportChange({ onStart, onChange, onEnd }: UseOnViewportChangeOptions) {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
 
   useEffect(() => {
     store.setState({ onViewportChangeStart: onStart });

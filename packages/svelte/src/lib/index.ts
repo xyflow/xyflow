@@ -26,7 +26,7 @@ export * from '$lib/plugins/EdgeToolbar/index.js';
 export * from '$lib/plugins/NodeResizer/index.js';
 
 // store
-export { useStore } from '$lib/store/index.js';
+export { useSvelteFlowStore } from '$lib/store/index.js';
 
 // utils
 export * from '$lib/utils/index.js';
@@ -101,7 +101,6 @@ export {
   type Transform,
   type CoordinateExtent,
   type ColorMode,
-  type ColorModeClass,
   type ShouldResize,
   type OnResizeStart,
   type OnResize,
@@ -122,9 +121,12 @@ export {
   type SetViewport,
   type FitBounds,
   type HandleConnection,
+  type HandleBounds,
   type ZIndexMode,
   type NodeHandle,
-  type UseNodeConnectionsParams
+  type UseNodeConnectionsParams,
+  NodeChangeset,
+  EdgeChangeset
 } from '@xyflow/system';
 
 // system utils

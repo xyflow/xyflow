@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true
+  },
+  "files": [
+    "package.json"
+  ],
+  "include": [
+    "tsdown.config.mts"
+  ]
+}

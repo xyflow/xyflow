@@ -12,11 +12,12 @@ import {
   useNodesState,
   useEdgesState,
   ReactFlowInstance,
+  OnNodeDrag,
 } from '@xyflow/react';
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDragStop: OnNodeDrag = (_, node) => console.log('drag stop', node);
 
 const buttonStyle: CSSProperties = {
   position: 'absolute',

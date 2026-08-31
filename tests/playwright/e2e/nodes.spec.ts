@@ -18,10 +18,12 @@ test.describe('Nodes', () => {
     });
 
     test('selecting multiple nodes with shift drag', async ({ page }) => {
-      let nodeSelection = page.locator(
-        FRAMEWORK === 'react' ? '.react-flow__nodesselection' : '.svelte-flow__selection'
+      const nodeSelection = page.locator(
+        FRAMEWORK === 'svelte' ? '.svelte-flow__selection' : `.${FRAMEWORK}-flow__nodesselection`,
       );
-      let selection = page.locator(FRAMEWORK === 'react' ? '.react-flow__selection' : '.svelte-flow__selection');
+      const selection = page.locator(
+        FRAMEWORK === 'svelte' ? '.svelte-flow__selection' : `.${FRAMEWORK}-flow__selection`,
+      );
 
       const nodes = page.locator(`.${FRAMEWORK}-flow__node`);
 

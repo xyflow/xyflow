@@ -38,6 +38,8 @@ import type {
   IsValidConnection,
   OnBeforeReconnect,
   OnSelectionChange,
+  OnNodesChange,
+  OnEdgesChange,
   ProOptions
 } from '$lib/types/index.js';
 
@@ -136,9 +138,10 @@ export type SvelteFlowProps<
     fitView?: boolean;
     /**
      * Options to be used in combination with fitView
+     * @default { padding: '5%' }
      * @example
      * const fitViewOptions = {
-     *  padding: 0.1,
+     *  padding: '5%',
      *  includeHiddenNodes: false,
      *  minZoom: 0.1,
      *  maxZoom: 1,
@@ -371,13 +374,10 @@ export type SvelteFlowProps<
      */
     defaultEdgeOptions?: DefaultEdgeOptions;
     /**
-     * Controls color scheme used for styling the flow
-     * @default 'system'
-     * @example 'system' | 'light' | 'dark'
+     * Forces a color scheme on the flow container via class name, overriding the system default.
+     * Page-level theming is typically done by setting `data-theme` on `<html>`.
      */
-    colorMode?: ColorMode;
-    /** Fallback color mode for SSR if colorMode is set to 'system' */
-    colorModeSSR?: Omit<ColorMode, 'system'>;
+    forceColorMode?: ColorMode;
     /** Class to be applied to the flow container */
     class?: ClassValue;
     /** Styles to be applied to the flow container */
@@ -490,6 +490,22 @@ export type SvelteFlowProps<
     onclickconnectend?: OnConnectEnd;
     /** This handler gets called when the flow is finished initializing */
     oninit?: () => void;
+    /** This handler gets called before Svelte Flow updates nodes and can be used to modify the changes.
+     * Usually this happens, after initial measuring and when selecting, dragging or deleting nodes.
+     * @example
+     * onnodeschange={changes => {
+     *  // TODO: better example
+     * }}
+     */
+    onnodeschange?: OnNodesChange<NodeType>;
+    /** This handler gets called before Svelte Flow updates edges and can be used to modify the changes.
+     * Usually this happens when selecting, connecting or deleting edges.
+     * @example
+     * onedgeschange={changes => {
+     *  // TODO: better example
+     * }}
+     */
+    onedgeschange?: OnEdgesChange<EdgeType>;
     /** This event handler gets called when the selected nodes & edges change */
     onselectionchange?: OnSelectionChange<NodeType, EdgeType>;
     /** This event handler gets called when a user starts to drag a selection box. */

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
 import type { HandleConnection, HandleType, NodeConnection, Rect, Viewport } from '@xyflow/system';
 import type { Node, Edge, ViewportHelperFunctions, InternalNode, FitView } from '.';
 
@@ -156,6 +155,13 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     dataUpdate: Partial<NodeType['data']> | ((node: NodeType) => Partial<NodeType['data']>),
     options?: { replace: boolean }
   ) => void;
+  /**
+   * Changes the parent of a node.
+   *
+   * @param nodeId - id of the node to change the parent of
+   * @param parentId - id of the new parent
+   */
+  changeParent: (nodeId: string, parentId: string | null) => void;
   /**
    * Updates an edge.
    *

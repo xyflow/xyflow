@@ -26,7 +26,7 @@ export function useQueue<T>(runQueue: (items: QueueItem<T>[]) => void) {
    * want a reference here so multiple synchronous calls to `setNodes` etc can be
    * batched together.
    */
-  const [queue] = useState(() => createQueue<T>(() => setSerial(n => n + BigInt(1))));
+  const [queue] = useState(() => createQueue<T>(() => setSerial((n) => n + BigInt(1))));
 
   /*
    * Layout effects are guaranteed to run before the next render which means we

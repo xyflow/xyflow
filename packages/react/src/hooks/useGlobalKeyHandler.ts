@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import type { KeyCode } from '@xyflow/system';
 
-import { useStoreApi } from '../hooks/useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 import { useKeyPress } from './useKeyPress';
 import { useReactFlow } from './useReactFlow';
 import { Edge, Node } from '../types';
@@ -22,7 +22,7 @@ export function useGlobalKeyHandler({
   deleteKeyCode: KeyCode | null;
   multiSelectionKeyCode: KeyCode | null;
 }): void {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const { deleteElements } = useReactFlow();
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode, { actInsideInputWithModifier: false });
@@ -31,7 +31,7 @@ export function useGlobalKeyHandler({
   useEffect(() => {
     if (deleteKeyPressed) {
       const { edges, nodes } = store.getState();
-      deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected) });
+      void deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected) });
       store.setState({ nodesSelectionActive: false });
     }
   }, [deleteKeyPressed]);

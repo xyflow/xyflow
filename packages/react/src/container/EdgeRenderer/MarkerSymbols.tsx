@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { errorMessages, MarkerType, type EdgeMarker } from '@xyflow/system';
 
-import { useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 
 type SymbolProps = Omit<EdgeMarker, 'type'>;
 
@@ -46,7 +46,7 @@ export const MarkerSymbols = {
 };
 
 export function useMarkerSymbol(type: MarkerType | `${MarkerType}`) {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
 
   const symbol = useMemo(() => {
     const symbolExists = Object.prototype.hasOwnProperty.call(MarkerSymbols, type);
@@ -58,7 +58,7 @@ export function useMarkerSymbol(type: MarkerType | `${MarkerType}`) {
     }
 
     return MarkerSymbols[type];
-  }, [type]);
+  }, [store, type]);
 
   return symbol;
 }

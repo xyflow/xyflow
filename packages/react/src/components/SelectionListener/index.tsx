@@ -7,7 +7,7 @@
 import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import type { ReactFlowState, OnSelectionChangeFunc, Node, Edge } from '../../types';
 
 type SelectionListenerProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
@@ -47,15 +47,15 @@ function areEqual(a: SelectorSlice, b: SelectorSlice) {
 function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onSelectionChange,
 }: SelectionListenerProps<NodeType, EdgeType>) {
-  const store = useStoreApi<NodeType, EdgeType>();
-  const { selectedNodes, selectedEdges } = useStore(selector, areEqual);
+  const store = useReactFlowStoreApi<NodeType, EdgeType>();
+  const { selectedNodes, selectedEdges } = useReactFlowStore(useCustomDiff(selector, areEqual));
 
   useEffect(() => {
     const params = { nodes: selectedNodes as NodeType[], edges: selectedEdges as EdgeType[] };
 
     onSelectionChange?.(params);
     store.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));
-  }, [selectedNodes, selectedEdges, onSelectionChange]);
+  }, [selectedNodes, selectedEdges, onSelectionChange, store]);
 
   return null;
 }
@@ -65,7 +65,7 @@ const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers;
 export function SelectionListener<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onSelectionChange,
 }: SelectionListenerProps<NodeType, EdgeType>) {
-  const storeHasSelectionChangeHandlers = useStore(changeSelector);
+  const storeHasSelectionChangeHandlers = useReactFlowStore(changeSelector);
 
   if (onSelectionChange || storeHasSelectionChangeHandlers) {
     return <SelectionListenerInner<NodeType, EdgeType> onSelectionChange={onSelectionChange} />;

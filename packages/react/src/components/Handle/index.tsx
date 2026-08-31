@@ -6,7 +6,6 @@ import {
   memo,
 } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import {
   errorMessages,
   Position,
@@ -23,7 +22,7 @@ import {
   Optional,
 } from '@xyflow/system';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { useHandleConfig } from '../../contexts/HandleConfigContext';
 import { type ReactFlowState } from '../../types';
@@ -38,12 +37,6 @@ export type HandleProps = HandlePropsSystem &
     /** Callback called when connection is made */
     onConnect?: OnConnect;
   };
-
-const selector = (s: ReactFlowState) => ({
-  connectOnClick: s.connectOnClick,
-  noPanClassName: s.noPanClassName,
-  rfId: s.rfId,
-});
 
 /*
  * While no connection is in progress every handle has this same state, so we return a
@@ -105,7 +98,7 @@ function HandleComponent(
 ) {
   const handleId = id || null;
   const isTarget = type === 'target';
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const nodeId = useNodeId();
   const { connectOnClick, noPanClassName, rfId } = useHandleConfig();
   const {
@@ -116,7 +109,7 @@ function HandleComponent(
     connectionInProcess,
     clickConnectionInProcess,
     valid,
-  } = useStore(connectingSelector(nodeId, handleId, type), shallow);
+  } = useReactFlowStore(useShallow(connectingSelector(nodeId, handleId, type)));
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }

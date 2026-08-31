@@ -5,10 +5,10 @@ import { interpolateZoom, interpolate } from 'd3-interpolate';
 import {
   type CoordinateExtent,
   type Viewport,
-  PanZoomTransformOptions,
-  PanZoomUpdateOptions,
-  PanZoomParams,
-  PanZoomInstance,
+  type PanZoomTransformOptions,
+  type PanZoomUpdateOptions,
+  type PanZoomParams,
+  type PanZoomInstance,
 } from '../types';
 import { clamp, isNumeric } from '../utils';
 import { getD3Transition, viewportToTransform, wheelDelta } from './utils';
@@ -86,7 +86,7 @@ export function XYPanZoom({
     .translateExtent(translateExtent);
   const d3Selection = select(domNode).call(d3ZoomInstance);
 
-  setViewportConstrained(
+  void setViewportConstrained(
     {
       x: viewport.x,
       y: viewport.y,
@@ -256,7 +256,7 @@ export function XYPanZoom({
   function syncViewport(viewport: Viewport) {
     if (d3Selection) {
       const nextTransform = viewportToTransform(viewport);
-      const currentTransform = d3Selection.property('__zoom');
+      const currentTransform = d3Selection.property('__zoom') as ZoomTransform;
 
       if (
         currentTransform.k !== viewport.zoom ||

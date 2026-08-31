@@ -8,7 +8,6 @@ import {
   type WheelEvent as ReactWheelEvent,
   type ReactNode,
 } from 'react';
-import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 import {
   getNodesInside,
@@ -19,12 +18,12 @@ import {
   pointToRendererPoint,
   rendererPointToPoint,
   XYPosition,
+  getSelectionChanges,
 } from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
-import { useStore, useStoreApi } from '../../hooks/useStore';
-import { getSelectionChanges } from '../../utils';
+import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import type { ReactFlowProps, ReactFlowState } from '../../types';
 
 type PaneProps = {
@@ -89,8 +88,10 @@ export function Pane({
   children,
 }: PaneProps) {
   const autoPanId = useRef<number>(0);
-  const store = useStoreApi();
-  const { userSelectionActive, elementsSelectable, dragging, panBy, autoPanSpeed } = useStore(selector, shallow);
+  const store = useReactFlowStoreApi();
+  const { userSelectionActive, elementsSelectable, dragging, panBy, autoPanSpeed } = useReactFlowStore(
+    useShallow(selector)
+  );
   const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);
 
   const container = useRef<HTMLDivElement | null>(null);
@@ -196,8 +197,8 @@ export function Pane({
       nodeLookup,
       edgeLookup,
       connectionLookup,
-      triggerNodeChanges,
-      triggerEdgeChanges,
+      emitNodeChanges,
+      emitEdgeChanges,
       defaultEdgeOptions,
     } = store.getState();
 
@@ -241,12 +242,12 @@ export function Pane({
 
     if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
       const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true);
-      triggerNodeChanges(changes);
+      emitNodeChanges(changes);
     }
 
     if (!areSetsEqual(prevSelectedEdgeIds, selectedEdgeIds.current)) {
       const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.current);
-      triggerEdgeChanges(changes);
+      emitEdgeChanges(changes);
     }
 
     store.setState({
@@ -262,7 +263,7 @@ export function Pane({
     }
     const [x, y] = calcAutoPan(position.current, containerBounds.current, autoPanSpeed);
 
-    panBy({ x, y }).then((panned) => {
+    void panBy({ x, y }).then((panned) => {
       if (!selectionInProgress.current || !panned) {
         autoPanId.current = requestAnimationFrame(autoPan);
         return;

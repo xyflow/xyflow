@@ -2,12 +2,13 @@ import { useMemo } from 'react';
 import {
   pointToRendererPoint,
   getViewportForBounds,
+  defaultFitViewPadding,
   type XYPosition,
   rendererPointToPoint,
   SnapGrid,
 } from '@xyflow/system';
 
-import { useStoreApi } from '../hooks/useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 import type { ViewportHelperFunctions } from '../types';
 
 /**
@@ -17,7 +18,7 @@ import type { ViewportHelperFunctions } from '../types';
  * @returns viewport helper functions
  */
 const useViewportHelper = (): ViewportHelperFunctions => {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
 
   return useMemo<ViewportHelperFunctions>(() => {
     return {
@@ -67,17 +68,13 @@ const useViewportHelper = (): ViewportHelperFunctions => {
       },
       fitBounds: async (bounds, options) => {
         const { width, height, minZoom, maxZoom, panZoom } = store.getState();
-        const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? 0.1);
+        const viewport = getViewportForBounds(bounds, width, height, minZoom, maxZoom, options?.padding ?? defaultFitViewPadding);
 
         if (!panZoom) {
           return false;
         }
 
-        await panZoom.setViewport(viewport, {
-          duration: options?.duration,
-          ease: options?.ease,
-          interpolate: options?.interpolate,
-        });
+        await panZoom.setViewport(viewport, options);
 
         return true;
       },

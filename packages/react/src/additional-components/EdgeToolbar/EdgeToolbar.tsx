@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import { getEdgeToolbarTransform } from '@xyflow/system';
 
 import { EdgeLabelRenderer } from '../../components/EdgeLabelRenderer';
-import { useStore } from '../../hooks/useStore';
+import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
 import { Edge, ReactFlowState } from '../../types';
 import type { EdgeToolbarProps } from './types';
 
@@ -46,9 +45,9 @@ export function EdgeToolbar({
   ...rest
 }: EdgeToolbarProps) {
   const edgeSelector = useCallback((state: ReactFlowState): Edge | undefined => state.edgeLookup.get(edgeId), [edgeId]);
-  const edge = useStore(edgeSelector, shallow);
+  const edge = useReactFlowStore(useShallow(edgeSelector));
   const isActive = typeof isVisible === 'boolean' ? isVisible : edge?.selected;
-  const zoom = useStore(zoomSelector);
+  const zoom = useReactFlowStore(zoomSelector);
 
   if (!isActive) {
     return null;

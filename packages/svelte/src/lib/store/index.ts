@@ -11,12 +11,16 @@ import {
   type CoordinateExtent,
   type UpdateConnection,
   type ConnectionState,
-  updateAbsolutePositions,
   snapPosition,
   calculateNodePosition,
   type SetCenterOptions,
   getHandlePosition,
-  Position
+  Position,
+  type NodeChange,
+  addChange,
+  selectionChange,
+  getDeselectionChanges,
+  getSelectionChanges
 } from '@xyflow/system';
 
 import type {
@@ -33,7 +37,7 @@ import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } 
 
 export const key = Symbol();
 
-export { useStore } from '../hooks/useStore.js';
+export { useSvelteFlowStore } from '../hooks/useSvelteFlowStore.js';
 
 export function createStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   signals: StoreSignals<NodeType, EdgeType>
@@ -55,13 +59,22 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
   }
 
   function addEdge(edgeParams: EdgeType | Connection) {
-    store.edges = addEdgeUtil<EdgeType>(edgeParams, store.edges, { onError: store.onerror });
+    const nextEdges = addEdgeUtil<EdgeType>(edgeParams, store.edges, { onError: store.onerror });
+    const newEdge = nextEdges[nextEdges.length - 1];
+
+    if (nextEdges.length === store.edges.length || !newEdge) {
+      return;
+    }
+
+    store.queueEdgeChanges([addChange(newEdge)]);
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    store.nodes = store.nodes.map((node) => {
-      if (store.connection.inProgress && store.connection.fromNode.id === node.id) {
-        const internalNode = store.nodeLookup.get(node.id);
+    const changes: NodeChange<NodeType>[] = [];
+
+    for (const [id, dragItem] of nodeDragItems) {
+      if (store.connection.inProgress && store.connection.fromNode.id === id) {
+        const internalNode = store.nodeLookup.get(id);
         if (internalNode) {
           store.connection = {
             ...store.connection,
@@ -69,9 +82,16 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
           };
         }
       }
-      const dragItem = nodeDragItems.get(node.id);
-      return dragItem ? { ...node, position: dragItem.position, dragging } : node;
-    });
+
+      changes.push({
+        id,
+        type: 'position',
+        position: dragItem.position,
+        dragging
+      });
+    }
+
+    store.queueNodeChanges(changes);
   };
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
@@ -89,47 +109,11 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       return;
     }
 
-    updateAbsolutePositions(store.nodeLookup, store.parentLookup, {
-      nodeOrigin: store.nodeOrigin,
-      nodeExtent: store.nodeExtent,
-      zIndexMode: store.zIndexMode
-    });
-
     if (store.fitViewQueued) {
       store.resolveFitView();
     }
 
-    const newNodes = new Map<string, NodeType>();
-    for (const change of changes) {
-      const userNode = store.nodeLookup.get(change.id)?.internals.userNode;
-
-      if (!userNode) {
-        continue;
-      }
-
-      const node = { ...userNode };
-
-      switch (change.type) {
-        case 'dimensions': {
-          const measured = { ...node.measured, ...change.dimensions };
-
-          if (change.setAttributes) {
-            node.width = change.dimensions?.width ?? node.width;
-            node.height = change.dimensions?.height ?? node.height;
-          }
-
-          node.measured = measured;
-          break;
-        }
-        case 'position':
-          node.position = change.position ?? node.position;
-          break;
-      }
-
-      newNodes.set(change.id, node);
-    }
-
-    store.nodes = store.nodes.map((node) => newNodes.get(node.id) ?? node);
+    store.queueNodeChanges(changes);
   }
 
   function fitView(options?: FitViewOptions<NodeType>) {
@@ -142,7 +126,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     store.fitViewOptions = options;
     store.fitViewResolver = fitViewResolver;
 
-    // We need to update the nodes so that adoptUserNodes is triggered
+    // trigger adoptUserNodes in case onlyRenderVisible is enabled
     store.nodes = [...store.nodes];
 
     return fitViewResolver.promise;
@@ -212,73 +196,42 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     }
   }
 
-  function deselect<T extends Node | Edge>(
-    elements: T[],
-    elementsToDeselect: Set<string> | null = null
-  ): [boolean, T[]] {
-    let deselected = false;
-
-    const newElements = elements.map((element) => {
-      const shouldDeselect = elementsToDeselect ? elementsToDeselect.has(element.id) : true;
-
-      if (shouldDeselect && element.selected) {
-        deselected = true;
-        return { ...element, selected: false };
-      }
-      return element;
-    });
-
-    return [deselected, newElements];
-  }
-
   function unselectNodesAndEdges(params?: { nodes?: NodeType[]; edges?: EdgeType[] }) {
     const nodesToDeselect = params?.nodes ? new Set(params.nodes.map((node) => node.id)) : null;
-    const [nodesDeselected, newNodes] = deselect(store.nodes, nodesToDeselect);
-    if (nodesDeselected) {
-      store.nodes = newNodes;
+    const nodeChanges = getDeselectionChanges(store.nodeLookup, nodesToDeselect, true);
+    if (nodeChanges.length > 0) {
+      store.queueNodeChanges(nodeChanges);
     }
 
-    const edgesToDeselect = params?.edges ? new Set(params.edges.map((node) => node.id)) : null;
-    const [edgesDeselected, newEdges] = deselect(store.edges, edgesToDeselect);
-    if (edgesDeselected) {
-      store.edges = newEdges;
+    const edgesToDeselect = params?.edges ? new Set(params.edges.map((edge) => edge.id)) : null;
+    const edgeChanges = getDeselectionChanges(store.edgeLookup, edgesToDeselect, true);
+    if (edgeChanges.length > 0) {
+      store.queueEdgeChanges(edgeChanges);
     }
   }
 
   function addSelectedNodes(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.nodes = store.nodes.map((node) => {
-      const nodeWillBeSelected = ids.includes(node.id);
-      const selected = isMultiSelection ? node.selected || nodeWillBeSelected : nodeWillBeSelected;
-
-      if (!!node.selected !== selected) {
-        return { ...node, selected };
-      }
-      return node;
-    });
-
-    if (!isMultiSelection) {
-      unselectNodesAndEdges({ nodes: [] });
+    if (isMultiSelection) {
+      store.queueNodeChanges(ids.map((id) => selectionChange(id, true)));
+      return;
     }
+
+    store.queueNodeChanges(getSelectionChanges(store.nodeLookup, new Set(ids), true));
+    store.queueEdgeChanges(getSelectionChanges(store.edgeLookup));
   }
 
   function addSelectedEdges(ids: string[]) {
     const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.edges = store.edges.map((edge) => {
-      const edgeWillBeSelected = ids.includes(edge.id);
-      const selected = isMultiSelection ? edge.selected || edgeWillBeSelected : edgeWillBeSelected;
-
-      if (!!edge.selected !== selected) {
-        return { ...edge, selected };
-      }
-      return edge;
-    });
-
-    if (!isMultiSelection) {
-      unselectNodesAndEdges({ edges: [] });
+    if (isMultiSelection) {
+      store.queueEdgeChanges(ids.map((id) => selectionChange(id, true)));
+      return;
     }
+
+    store.queueEdgeChanges(getSelectionChanges(store.edgeLookup, new Set(ids)));
+    store.queueNodeChanges(getSelectionChanges(store.nodeLookup, new Set(), true));
   }
 
   function handleNodeSelection(id: string, unselect?: boolean, nodeRef?: HTMLDivElement | null) {

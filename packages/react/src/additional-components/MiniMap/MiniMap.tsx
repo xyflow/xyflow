@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { Panel } from '../../components/Panel';
 import type { ReactFlowState, Node } from '../../types';
 
@@ -51,7 +49,6 @@ const selector = (s: ReactFlowState) => {
     ariaLabelConfig: s.ariaLabelConfig,
   };
 };
-
 type MiniMapSlice = ReturnType<typeof selector>;
 
 const rectEqual = (a: Rect, b: Rect) => a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
@@ -96,12 +93,11 @@ function MiniMapComponent<NodeType extends Node = Node>({
   zoomStep = 1,
   offsetScale = 5,
 }: MiniMapProps<NodeType>) {
-  const store = useStoreApi<NodeType>();
+  const store = useReactFlowStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, panZoom, viewBB, rfId, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useStore(
-    selector,
-    areEqual
-  );
+  const { rfId, viewBB, boundingRect, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } =
+    useReactFlowStore(useCustomDiff(selector, areEqual));
+
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const scaledWidth = boundingRect.width / elementWidth;
@@ -134,7 +130,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         minimapInstance.current?.destroy();
       };
     }
-  }, [panZoom]);
+  }, [panZoom, store]);
 
   useEffect(() => {
     minimapInstance.current?.update({
@@ -157,10 +153,13 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
   const nodeClickHandler = useCallback(
     (event: MouseEvent, nodeId: string) => {
-      const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
-      onNodeClick?.(event, node);
+      const internalNode = store.getState().nodeLookup.get(nodeId)!;
+
+      if (internalNode && onNodeClick) {
+        onNodeClick(event, internalNode.internals.userNode);
+      }
     },
-    [onNodeClick]
+    [onNodeClick, store]
   );
 
   const onSvgNodeClick = onNodeClick ? nodeClickHandler : undefined;
@@ -199,7 +198,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         {_ariaLabel && <title id={labelledBy}>{_ariaLabel}</title>}
 
         <MiniMapNodes<NodeType>
-          onClick={onSvgNodeClick}
+          onClick={onNodeClick ? onSvgNodeClick : undefined}
           nodeColor={nodeColor}
           nodeStrokeColor={nodeStrokeColor}
           nodeBorderRadius={nodeBorderRadius}

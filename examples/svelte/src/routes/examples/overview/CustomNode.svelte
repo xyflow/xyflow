@@ -13,9 +13,11 @@
 		positionAbsoluteY = 0
 	}: NodeProps<BuiltInNode> = $props();
 
-	useOnSelectionChange(({ nodes, edges }) => {
-		console.log('on selection changed via hook', { nodes, edges });
-	});
+	useOnSelectionChange(() => ({
+		onChange: ({ nodes, edges }) => {
+			console.log('on selection changed via hook', { nodes, edges });
+		}
+	}));
 </script>
 
 <div class="custom">

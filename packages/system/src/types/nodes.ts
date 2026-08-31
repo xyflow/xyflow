@@ -1,5 +1,4 @@
-import type { XYPosition, Position, CoordinateExtent, Handle } from '.';
-import { Optional } from '../utils/types';
+import type { XYPosition, Position, CoordinateExtent, HandleBounds } from '.';
 
 /**
  * Framework independent node data structure.
@@ -10,7 +9,7 @@ import { Optional } from '../utils/types';
  */
 export type NodeBase<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+  NodeType extends string | undefined = string | undefined,
 > = {
   /** Unique id of a node. */
   id: string;
@@ -77,6 +76,7 @@ export type NodeBase<
     width?: number;
     height?: number;
   };
+  resizing?: boolean;
 } & (undefined extends NodeType
   ? {
       /** Type of node defined in nodeTypes */
@@ -124,9 +124,15 @@ export type NodeProps<NodeType extends NodeBase> = Pick<
     positionAbsoluteY: number;
   };
 
+/**
+ * Measured {@link HandleBounds} for a node, grouped by handle type.
+ * Stored on `internals.handleBounds`.
+ *
+ * @public
+ */
 export type NodeHandleBounds = {
-  source: Handle[] | null;
-  target: Handle[] | null;
+  source: HandleBounds[] | null;
+  target: HandleBounds[] | null;
 };
 
 export type InternalNodeUpdate = {
@@ -163,14 +169,21 @@ export type NodeDragItem = {
  */
 export type NodeOrigin = [number, number];
 
-export type OnSelectionDrag<NodeType extends NodeBase = NodeBase> = (event: MouseEvent, nodes: NodeType[]) => void;
+export type OnSelectionDrag<NodeType extends NodeBase = NodeBase> = (
+  event: MouseEvent | TouchEvent,
+  nodes: NodeType[]
+) => void;
 
 /**
- * Type for the handles of a node
+ * User-declared handle layout on {@link NodeBase.handles}.
+ * Same fields as {@link HandleBounds} except `nodeId` (implied by the node) and optional `width`/`height`.
  *
  * @public
  */
-export type NodeHandle = Omit<Optional<Handle, 'width' | 'height'>, 'nodeId'>;
+export type NodeHandle = Omit<HandleBounds, 'nodeId' | 'width' | 'height'> & {
+  width?: number;
+  height?: number;
+};
 
 export type Align = 'center' | 'start' | 'end';
 

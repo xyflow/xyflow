@@ -1,5 +1,5 @@
 /* eslint-disable svelte/prefer-svelte-reactivity */
-import { useStore } from '$lib/store/index.js';
+import { useSvelteFlowStore } from '$lib/store/index.js';
 import { getNodeIdContext } from '$lib/store/context.js';
 
 /**
@@ -13,7 +13,7 @@ import { getNodeIdContext } from '$lib/store/context.js';
  * that you have changed programmatically.
  */
 export function useUpdateNodeInternals(): (nodeId?: string | string[]) => void {
-  const { domNode, updateNodeInternals } = $derived(useStore());
+  const { domNode, updateNodeInternals } = $derived(useSvelteFlowStore());
   const nodeId = getNodeIdContext();
 
   // @todo: do we want to add this to system?

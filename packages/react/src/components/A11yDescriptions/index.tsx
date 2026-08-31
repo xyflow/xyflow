@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-import { useStore } from '../../hooks/useStore';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import type { ReactFlowState } from '../../types';
 
 const style: CSSProperties = { display: 'none' };
@@ -24,7 +24,7 @@ const ariaLiveSelector = (s: ReactFlowState) => s.ariaLiveMessage;
 const ariaLabelConfigSelector = (s: ReactFlowState) => s.ariaLabelConfig;
 
 function AriaLiveMessage({ rfId }: { rfId: string }) {
-  const ariaLiveMessage = useStore(ariaLiveSelector);
+  const ariaLiveMessage = useReactFlowStore(ariaLiveSelector);
 
   return (
     <div id={`${ARIA_LIVE_MESSAGE}-${rfId}`} aria-live="assertive" aria-atomic="true" style={ariaLiveStyle}>
@@ -34,7 +34,7 @@ function AriaLiveMessage({ rfId }: { rfId: string }) {
 }
 
 export function A11yDescriptions({ rfId, disableKeyboardA11y }: { rfId: string; disableKeyboardA11y: boolean }) {
-  const ariaLabelConfig = useStore(ariaLabelConfigSelector);
+  const ariaLabelConfig = useReactFlowStore(ariaLabelConfigSelector);
 
   return (
     <>

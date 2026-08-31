@@ -55,6 +55,5 @@ export const isEdge = <EdgeType extends Edge = Edge>(element: unknown): element 
 export function fixedForwardRef<T, P = {}>(
   render: (props: PropsWithoutRef<P>, ref: Ref<T>) => JSX.Element
 ): (props: P & RefAttributes<T>) => JSX.Element {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return forwardRef(render) as any;
+  return forwardRef(render) as (props: P & RefAttributes<T>) => JSX.Element;
 }

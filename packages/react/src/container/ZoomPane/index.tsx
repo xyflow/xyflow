@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useRef } from 'react';
-import { shallow } from 'zustand/shallow';
 import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from '@xyflow/system';
 
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { useResizeHandler } from '../../hooks/useResizeHandler';
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStore, useShallow, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import type { FlowRendererProps } from '../FlowRenderer';
 import type { ReactFlowState } from '../../types';
@@ -48,9 +46,9 @@ export function ZoomPane({
   paneClickDistance,
   selectionOnDrag,
 }: ZoomPaneProps) {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const { userSelectionActive, lib, connectionInProgress } = useStore(selector, shallow);
+  const { userSelectionActive, lib, connectionInProgress } = useReactFlowStore(useShallow(selector));
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
   const panZoom = useRef<PanZoomInstance>();
 
@@ -64,7 +62,7 @@ export function ZoomPane({
         store.setState({ transform });
       }
     },
-    [onViewportChange, isControlledViewport]
+    [onViewportChange, isControlledViewport, store]
   );
 
   useEffect(() => {
@@ -106,6 +104,7 @@ export function ZoomPane({
         panZoom.current?.destroy();
       };
     }
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, []);
 
   useEffect(() => {

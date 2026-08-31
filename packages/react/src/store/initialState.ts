@@ -11,7 +11,11 @@ import {
   initialConnection,
   CoordinateExtent,
   defaultAriaLabelConfig,
+  defaultFitViewPadding,
   ZIndexMode,
+  type ConnectionLookup,
+  type EdgeLookup,
+  type ParentLookup,
 } from '@xyflow/system';
 
 const devWarn = createDevWarn('React Flow', 'https://reactflow.dev/');
@@ -48,9 +52,9 @@ const getInitialState = ({
   zIndexMode?: ZIndexMode;
 } = {}): ReactFlowStore => {
   const nodeLookup = new Map<string, InternalNode>();
-  const parentLookup = new Map();
-  const connectionLookup = new Map();
-  const edgeLookup = new Map();
+  const parentLookup: ParentLookup<InternalNode> = new Map();
+  const connectionLookup: ConnectionLookup = new Map();
+  const edgeLookup: EdgeLookup<Edge> = new Map();
 
   const storeEdges = defaultEdges ?? edges ?? [];
   const storeNodes = defaultNodes ?? nodes ?? [];
@@ -77,7 +81,7 @@ const getInitialState = ({
       height,
       minZoom,
       maxZoom,
-      fitViewOptions?.padding ?? 0.1
+      fitViewOptions?.padding ?? defaultFitViewPadding
     );
     transform = [x, y, zoom];
   }

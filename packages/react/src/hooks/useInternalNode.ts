@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
-import { shallow } from 'zustand/shallow';
 
-import { useStore } from './useStore';
+import { useReactFlowStore } from './useReactFlowStore';
 import type { InternalNode, Node } from '../types';
 
 /**
@@ -32,10 +31,7 @@ import type { InternalNode, Node } from '../types';
  *```
  */
 export function useInternalNode<NodeType extends Node = Node>(id: string): InternalNode<NodeType> | undefined {
-  const node = useStore(
-    useCallback((s) => s.nodeLookup.get(id) as InternalNode<NodeType> | undefined, [id]),
-    shallow
-  );
+  const node = useReactFlowStore(useCallback((s) => s.nodeLookup.get(id) as InternalNode<NodeType> | undefined, [id]));
 
   return node;
 }

@@ -10,10 +10,11 @@ import {
   Edge,
   useReactFlow,
   XYPosition,
+  OnNodeDrag,
 } from '@xyflow/react';
 
-const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node);
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDrag: OnNodeDrag = (_, node) => console.log('drag', node);
+const onNodeDragStop: OnNodeDrag = (_, node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const initialNodes: Node[] = [

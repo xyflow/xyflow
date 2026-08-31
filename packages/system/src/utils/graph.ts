@@ -8,6 +8,7 @@ import {
   getNodeDimensions,
   nodeToBox,
 } from './general';
+import { defaultFitViewPadding } from './constants';
 import {
   type Transform,
   type XYPosition,
@@ -17,14 +18,14 @@ import {
   type EdgeBase,
   type FitViewParamsBase,
   type FitViewOptionsBase,
-  CoordinateExtent,
-  OnError,
-  OnBeforeDeleteBase,
-  NodeLookup,
-  InternalNodeBase,
-  NodeDragItem,
+  type CoordinateExtent,
+  type OnError,
+  type OnBeforeDeleteBase,
+  type NodeLookup,
+  type InternalNodeBase,
+  type NodeDragItem,
 } from '../types';
-import { errorMessages } from '../constants';
+import { errorMessages } from './constants';
 
 /**
  * Test whether an object is usable as an Edge
@@ -213,8 +214,8 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
         currentNode = isId
           ? params.nodeLookup.get(nodeOrId)
           : !isInternalNodeBase(nodeOrId)
-          ? params.nodeLookup.get(nodeOrId.id)
-          : nodeOrId;
+            ? params.nodeLookup.get(nodeOrId.id)
+            : nodeOrId;
       }
 
       /*
@@ -343,7 +344,7 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
 
 function getFitViewNodes<
   Params extends NodeLookup<InternalNodeBase<NodeBase>>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(nodeLookup: Params, options?: Options) {
   const fitViewNodes: NodeLookup = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
@@ -374,7 +375,7 @@ function getFitViewNodes<
 
 export async function fitViewport<
   Params extends FitViewParamsBase<NodeBase>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(
   { nodes, width, height, panZoom, minZoom, maxZoom }: Params,
   options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>
@@ -393,7 +394,7 @@ export async function fitViewport<
     height,
     options?.minZoom ?? minZoom,
     options?.maxZoom ?? maxZoom,
-    options?.padding ?? 0.1
+    options?.padding ?? defaultFitViewPadding
   );
 
   await panZoom.setViewport(viewport, {
