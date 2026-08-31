@@ -2,5 +2,4 @@
 "@xyflow/react": patch
 ---
 
-Reset passed functions on unmount
-  
+Reset all properties in provider store when unmounting flow  
