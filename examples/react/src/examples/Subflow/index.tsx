@@ -116,7 +116,6 @@ const initialNodes: Node[] = [
     //   [300, 300],
     // ],
     extent: 'parent',
-    origin: [0.5, 0.5],
   },
   {
     id: '5b',
