@@ -59,8 +59,7 @@
     "d3-drag": "^3.0.0",
     "d3-interpolate": "^3.0.1",
     "d3-selection": "^3.0.0",
-    "d3-zoom": "^3.0.0",
-    "vitest": "^4.1.10"
+    "d3-zoom": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "catalog:",
@@ -69,6 +68,7 @@
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsdown": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "^4.1.10"
   }
 }
