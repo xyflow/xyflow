@@ -175,7 +175,13 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
   cancelConnection: () => void;
   updateConnection: UpdateConnection<InternalNode<NodeType>>;
+  /** Set the click-to-connect start handle and wake the connection channel. */
+  setConnectionClickStartHandle: (
+    handle: (Pick<Handle, 'nodeId' | 'id'> & Required<Pick<Handle, 'type'>>) | null
+  ) => void;
   reset: () => void;
+  /** Subscribe to connection-state changes only, bypassing the global store fan-out. */
+  subscribeConnection: (listener: () => void) => () => void;
   triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
   panBy: PanBy;
