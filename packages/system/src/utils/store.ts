@@ -541,13 +541,18 @@ function updateInternals<NodeType extends NodeBase>(
     const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
     let { positionAbsolute } = node.internals;
 
-    if (node.parentId && node.extent === 'parent') {
+    if (node.extent === 'parent' && node.parentId) {
       const parentNode = nodeLookup.get(node.parentId);
       if (parentNode) {
         positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, parentNode);
       }
-    } else if (extent) {
+    } else if (node.parentId) {
+      // Origin-aware absolute position was already corrected by updateChildXYZ
       positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
+    } else {
+      const nodeWithDimensions = { ...node, measured: dimensions };
+      const positionWithOrigin = getNodePositionWithOrigin(nodeWithDimensions, nodeOrigin);
+      positionAbsolute = clampPosition(positionWithOrigin, extent, dimensions);
     }
 
     updatedNode = {
