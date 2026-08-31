@@ -1,21 +1,22 @@
 import { useMemo } from 'react';
 import {
-  EdgeRemoveChange,
   evaluateAbsolutePosition,
   getElementsToRemove,
   getNodesBounds,
   getOverlappingArea,
   isRectObject,
-  NodeRemoveChange,
   nodeToRect,
+  RemoveChange,
   withResolvers,
+  changeParentNode,
   type Rect,
+  removeChange,
 } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
 import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
 import { useBatchContext } from '../components/BatchProvider';
-import { elementToRemoveChange, isEdge, isNode } from '../utils';
+import { isEdge, isNode } from '../utils';
 import type {
   ReactFlowInstance,
   Node,
@@ -166,8 +167,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           edges,
           onNodesDelete,
           onEdgesDelete,
-          triggerNodeChanges,
-          triggerEdgeChanges,
+          emitNodeChanges,
+          emitEdgeChanges,
           onDelete,
           onBeforeDelete,
         } = store.getState();
@@ -183,17 +184,17 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         const hasMatchingNodes = matchingNodes.length > 0;
 
         if (hasMatchingEdges) {
-          const edgeChanges: EdgeRemoveChange[] = matchingEdges.map(elementToRemoveChange);
+          const edgeChanges: RemoveChange[] = matchingEdges.map((e) => removeChange(e.id));
 
           onEdgesDelete?.(matchingEdges);
-          triggerEdgeChanges(edgeChanges);
+          emitEdgeChanges(edgeChanges);
         }
 
         if (hasMatchingNodes) {
-          const nodeChanges: NodeRemoveChange[] = matchingNodes.map(elementToRemoveChange);
+          const nodeChanges: RemoveChange[] = matchingNodes.map((n) => removeChange(n.id));
 
           onNodesDelete?.(matchingNodes);
-          triggerNodeChanges(nodeChanges);
+          emitNodeChanges(nodeChanges);
         }
 
         if (hasMatchingNodes || hasMatchingEdges) {
@@ -260,6 +261,20 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
             return options.replace ? { ...node, data: nextData } : { ...node, data: { ...node.data, ...nextData } };
           },
           options
+        );
+      },
+      changeParent: (nodeId: string, parentId: string | null) => {
+        changeParentNode(
+          nodeId,
+          store.getState().nodeLookup,
+          parentId,
+          store.getState().nodeOrigin,
+          ({ nodeId, parentId, x, y }) => {
+            updateNode(nodeId, {
+              parentId: parentId ?? undefined,
+              position: { x, y },
+            } as Partial<NodeType>);
+          }
         );
       },
       updateEdge,

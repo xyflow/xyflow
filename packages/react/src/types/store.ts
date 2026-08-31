@@ -11,7 +11,7 @@ import {
   type OnViewportChange,
   type SelectionRect,
   type SnapGrid,
-  type Handle,
+  type HandleBounds,
   type Transform,
   type PanZoomInstance,
   type PanBy,
@@ -85,7 +85,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   connection: ConnectionState<InternalNode<NodeType>>;
   connectionMode: ConnectionMode;
-  connectionClickStartHandle: (Pick<Handle, 'nodeId' | 'id'> & Required<Pick<Handle, 'type'>>) | null;
+  connectionClickStartHandle: (Pick<HandleBounds, 'nodeId' | 'id'> & Required<Pick<HandleBounds, 'type'>>) | null;
 
   snapToGrid: boolean;
   snapGrid: SnapGrid;
@@ -176,8 +176,9 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   cancelConnection: () => void;
   updateConnection: UpdateConnection<InternalNode<NodeType>>;
   reset: () => void;
-  triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
-  triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
+  emitNodeChanges: (changes: NodeChange<NodeType>[]) => void;
+  emitEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
+
   panBy: PanBy;
   setCenter: SetCenter;
 };

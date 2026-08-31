@@ -1,8 +1,14 @@
 import { computed } from 'vue';
 import { areNodesInitialized } from '../utils';
-import { useStore } from './useStore';
+import { useVueFlowStore } from './useVueFlowStore';
 
 export interface UseNodesInitializedOptions {
+  /**
+   * Whether hidden nodes must also be measured before the flow counts as initialized. When `false`, hidden
+   * nodes are ignored (the result can be `true` while some hidden nodes are still unmeasured).
+   *
+   * @default false
+   */
   includeHiddenNodes?: boolean;
 }
 
@@ -18,7 +24,7 @@ export interface UseNodesInitializedOptions {
  * @returns boolean indicating whether all nodes are initialized
  */
 export function useNodesInitialized(options: UseNodesInitializedOptions = { includeHiddenNodes: false }) {
-  const { nodeLookup } = useStore();
+  const { nodeLookup } = useVueFlowStore();
 
   return computed(() => areNodesInitialized(nodeLookup, options.includeHiddenNodes));
 }

@@ -1,53 +1,82 @@
-import type { Connection, FinalConnectionState, HandleType, Viewport } from '@xyflow/system';
+import type {
+  Connection,
+  EdgeChangeset,
+  FinalConnectionState,
+  HandleType,
+  NodeChangeset,
+  OnConnectStartParams,
+  Viewport,
+} from '@xyflow/system';
 import type { EventHookExtended, EventHookOn, EventHookTrigger, VueFlowError } from '../utils';
-import type { EdgeChange, NodeChange } from './changes';
-import type { OnConnectStartParams } from './connection';
 import type { Edge } from './edge';
 import type { InternalNode, Node } from './node';
 import type { VueFlowInstance } from './store';
 
+/** A DOM `MouseEvent` or `TouchEvent`. */
 export type MouseTouchEvent = MouseEvent | TouchEvent;
 
+/** Payload for the node pointer events (`nodeClick`, `nodeMouseEnter`, `nodeContextMenu`, …). */
 export interface NodeMouseEvent<NodeType extends Node = Node> {
+  /** The DOM event that triggered this. */
   event: MouseTouchEvent;
+  /** The node the event refers to. */
   node: NodeType;
 }
 
+/** Payload for the node drag events (`nodeDragStart`, `nodeDrag`, `nodeDragStop`). */
 export interface NodeDragEvent<NodeType extends Node = Node> {
+  /** The DOM event driving the drag. */
   event: MouseTouchEvent;
+  /** The node being dragged. */
   node: NodeType;
+  /** All nodes being dragged together (the grabbed node plus any others in the selection). */
   nodes: NodeType[];
 }
 
+/** Payload for the edge pointer events (`edgeClick`, `edgeMouseEnter`, `edgeContextMenu`, …). */
 export interface EdgeMouseEvent<EdgeType extends Edge = Edge> {
+  /** The DOM event that triggered this. */
   event: MouseTouchEvent;
+  /** The edge the event refers to. */
   edge: EdgeType;
 }
 
+/** Payload for the `reconnect` event — fired once an edge has been reconnected to a new handle. */
 export interface EdgeReconnectEvent<EdgeType extends Edge = Edge> {
+  /** The DOM event that completed the reconnect. */
   event: MouseTouchEvent;
+  /** The edge that was reconnected. */
   edge: EdgeType;
+  /** The new connection the edge now describes. */
   connection: Connection;
 }
 
 /**
  * Payload for `connectEnd`/`clickConnectEnd` — the pointer event plus the {@link FinalConnectionState}
- * (whether the connection was valid, the from/to handles and nodes), mirroring xyflow/react's `OnConnectEnd`.
+ * (whether the connection was valid, the from/to handles and nodes).
  */
 export interface ConnectEndEvent<NodeType extends Node = Node> {
+  /** The DOM event that ended the connection attempt. */
   event: MouseTouchEvent;
+  /** The final connection state — validity plus the from/to handles and nodes. */
   connectionState: FinalConnectionState<InternalNode<NodeType>>;
 }
 
+/** Payload for the `reconnectStart` event — fired when the user grabs an edge endpoint to reconnect it. */
 export interface EdgeReconnectStartEvent<EdgeType extends Edge = Edge> {
+  /** The DOM event that started the reconnect. */
   event: MouseTouchEvent;
+  /** The edge being reconnected. */
   edge: EdgeType;
-  /** the type of the handle being reconnected (the fixed end, opposite the grabbed anchor), as in xyflow/react */
+  /** the type of the handle being reconnected (the fixed end, opposite the grabbed anchor) */
   handleType: HandleType;
 }
 
+/** Payload for the `reconnectEnd` event — fired when a reconnect gesture ends, whether or not it succeeded. */
 export interface EdgeReconnectEndEvent<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+  /** The DOM event that ended the reconnect. */
   event: MouseTouchEvent;
+  /** The edge that was being reconnected. */
   edge: EdgeType;
   /** the type of the handle that was reconnected */
   handleType: HandleType;
@@ -55,15 +84,17 @@ export interface EdgeReconnectEndEvent<NodeType extends Node = Node, EdgeType ex
   connectionState: FinalConnectionState<InternalNode<NodeType>>;
 }
 
-/** Payload for `selectionChange` — the currently selected nodes and edges, mirroring xyflow/react's `OnSelectionChange`. */
+/** Payload for `selectionChange` — the currently selected nodes and edges. */
 export interface SelectionChangeEvent<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+  /** The currently selected nodes. */
   nodes: NodeType[];
+  /** The currently selected edges. */
   edges: EdgeType[];
 }
 
 export interface FlowEvents<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
-  nodesChange: NodeChange<NodeType>[];
-  edgesChange: EdgeChange<EdgeType>[];
+  nodesChange: NodeChangeset<NodeType>;
+  edgesChange: EdgeChangeset<EdgeType>;
   nodeDoubleClick: NodeMouseEvent<NodeType>;
   nodeClick: NodeMouseEvent<NodeType>;
   nodeMouseEnter: NodeMouseEvent<NodeType>;
@@ -118,53 +149,22 @@ export interface FlowEvents<NodeType extends Node = Node, EdgeType extends Edge 
   reconnectStart: EdgeReconnectStartEvent<EdgeType>;
   reconnect: EdgeReconnectEvent<EdgeType>;
   reconnectEnd: EdgeReconnectEndEvent<NodeType, EdgeType>;
+  nodesDelete: NodeType[];
+  edgesDelete: EdgeType[];
+  delete: { nodes: NodeType[]; edges: EdgeType[] };
   error: VueFlowError;
 }
 
 export type FlowHooks<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Readonly<{
-  [key in keyof FlowEvents<NodeType, EdgeType>]: EventHookExtended<FlowEvents<NodeType, EdgeType>[key]>
+  [key in keyof FlowEvents<NodeType, EdgeType>]: EventHookExtended<FlowEvents<NodeType, EdgeType>[key]>;
 }>;
 
 export type FlowHooksOn<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Readonly<{
-  [key in keyof FlowEvents<NodeType, EdgeType> as `on${Capitalize<key>}`]: EventHookOn<FlowEvents<NodeType, EdgeType>[key]>
+  [key in keyof FlowEvents<NodeType, EdgeType> as `on${Capitalize<key>}`]: EventHookOn<
+    FlowEvents<NodeType, EdgeType>[key]
+  >;
 }>;
 
 export type FlowHooksEmit<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Readonly<{
-  [key in keyof FlowEvents<NodeType, EdgeType>]: EventHookTrigger<FlowEvents<NodeType, EdgeType>[key]>
+  [key in keyof FlowEvents<NodeType, EdgeType>]: EventHookTrigger<FlowEvents<NodeType, EdgeType>[key]>;
 }>;
-
-export interface NodeEventsHandler<NodeType extends Node = Node> {
-  doubleClick: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  click: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  mouseEnter: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  mouseMove: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  mouseLeave: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  contextMenu: (event: NodeMouseEvent<NodeType>) => void | { off: () => void };
-  dragStart: (event: NodeDragEvent<NodeType>) => void | { off: () => void };
-  drag: (event: NodeDragEvent<NodeType>) => void | { off: () => void };
-  dragStop: (event: NodeDragEvent<NodeType>) => void | { off: () => void };
-}
-
-export type NodeEventsOn<NodeType extends Node = Node> = {
-  [key in keyof NodeEventsHandler<NodeType>]: EventHookOn<
-    NodeEventsHandler<NodeType>[key] extends (event: infer Event) => any ? Event : never
-  >
-};
-
-export interface EdgeEventsHandler<EdgeType extends Edge = Edge> {
-  doubleClick: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  click: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  mouseEnter: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  mouseMove: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  mouseLeave: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  contextMenu: (event: EdgeMouseEvent<EdgeType>) => void | { off: () => void };
-  reconnectStart: (event: EdgeReconnectStartEvent<EdgeType>) => void | { off: () => void };
-  reconnect: (event: EdgeReconnectEvent<EdgeType>) => void | { off: () => void };
-  reconnectEnd: (event: EdgeReconnectEndEvent<Node, EdgeType>) => void | { off: () => void };
-}
-
-export type EdgeEventsOn<EdgeType extends Edge = Edge> = {
-  [key in keyof EdgeEventsHandler<EdgeType>]: EventHookOn<
-    EdgeEventsHandler<EdgeType>[key] extends (event: infer Event) => any ? Event : never
-  >
-};

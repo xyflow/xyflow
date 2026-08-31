@@ -2,11 +2,21 @@ import type { KeyFilter } from '@vueuse/core';
 import type {
   AriaLabelConfig,
   Connection,
+  ConnectionLookup,
   ConnectionMode,
+  ConnectionState,
   CoordinateExtent,
   Dimensions,
+  EdgeChangeset,
+  EdgeLookup,
+  FitViewOptionsBase,
   HandleType,
+  HandleBounds,
+  IsValidConnection,
+  NodeChangeset,
   NodeConnection,
+  NodeDragItem,
+  NodeLookup,
   PanOnScrollMode,
   PanZoomInstance,
   Rect,
@@ -14,24 +24,19 @@ import type {
   SelectionRect,
   SnapGrid,
   Transform,
+  UpdateNodeInternals,
   Viewport,
   XYPosition,
   ZIndexMode,
 } from '@xyflow/system';
 import type { ComputedRef } from 'vue';
 import type { ViewportHelper } from '../composables';
-import type { EdgeChange, NodeChange, NodeDragItem } from './changes';
 import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
-import type { ConnectionLineOptions, ConnectionLookup, ConnectionStatus, Connector } from './connection';
+import type { ConnectionLineOptions } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
-import type { FlowExportObject, FlowProps, OnBeforeDelete } from './flow';
-import type { ConnectingHandle, ValidConnectionFunc } from './handle';
+import type { FlowExportObject, OnBeforeDelete, VueFlowProps } from './flow';
 import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
 import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
-
-export type NodeLookup<NodeType extends Node = Node> = Map<string, InternalNode<NodeType>>;
-
-export type EdgeLookup<EdgeType extends Edge = Edge> = Map<string, EdgeType>;
 
 export interface UpdateNodeDimensionsParams {
   id: string;
@@ -39,10 +44,20 @@ export interface UpdateNodeDimensionsParams {
   forceUpdate?: boolean;
 }
 
+/** a queued imperative `fitView()` awaiting the node commit / measurement that lets it fit current geometry */
+export interface FitViewRequest<NodeType extends Node = Node> {
+  options?: FitViewOptionsBase<NodeType>;
+  resolver: {
+    promise: Promise<boolean>;
+    resolve: (value: boolean) => void;
+    reject: (reason?: unknown) => void;
+  };
+}
+
 export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edge>
   // `fitView` is omitted: the prop maps to the internal `fitViewOnInit` flag (below), keeping the store's
   // `fitView()` action from colliding with a `fitView` state ref (state spreads after actions).
-  extends Omit<FlowProps<NodeType, EdgeType>, 'id' | 'nodes' | 'edges' | 'fitView'> {
+  extends Omit<VueFlowProps<NodeType, EdgeType>, 'id' | 'nodes' | 'edges' | 'fitView'> {
   /** Vue flow element ref */
   vueFlowRef: HTMLDivElement | null;
   /** Vue flow viewport element */
@@ -57,8 +72,8 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   edges: EdgeType[];
 
   /** id → enriched `InternalNode` (`internals`/`measured`); the canonical source for node-derived data */
-  readonly nodeLookup: NodeLookup<NodeType>;
-  /** parentId → map of child id → child `InternalNode`. Matches `@xyflow/system`'s `ParentLookup`. */
+  readonly nodeLookup: NodeLookup<InternalNode<NodeType>>;
+  /** parentId → map of child id → child `InternalNode`. */
   readonly parentLookup: Map<string, Map<string, InternalNode<NodeType>>>;
   /** id → user-facing `Edge` */
   readonly edgeLookup: EdgeLookup<EdgeType>;
@@ -96,15 +111,13 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
 
   connectionMode: ConnectionMode;
   connectionLineOptions: ConnectionLineOptions;
-  connectionStartHandle: ConnectingHandle | null;
-  connectionEndHandle: ConnectingHandle | null;
-  connectionClickStartHandle: ConnectingHandle | null;
-  /** the raw pointer position during a connection drag (screen coords); the snapped end is `connectionEndHandle` */
-  connectionPosition: XYPosition;
+  /** the ongoing drag-connection as a single {@link ConnectionState} (`inProgress: false` when idle) */
+  connection: ConnectionState<InternalNode<NodeType>>;
+  /** the handle a click-to-connect interaction started from (separate from the drag `connection`) */
+  connectionClickStartHandle: HandleBounds | null;
   connectionRadius: number;
   connectionDragThreshold: number;
-  connectionStatus: ConnectionStatus | null;
-  isValidConnection: ValidConnectionFunc | null;
+  isValidConnection: IsValidConnection | null;
   onBeforeDelete: OnBeforeDelete<NodeType, EdgeType> | null;
 
   connectOnClick: boolean;
@@ -139,16 +152,14 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   preventScrolling: boolean;
   paneDragging: boolean;
 
-  initialized: boolean;
-  autoApplyChanges: boolean;
-  autoConnect: boolean | Connector;
-
   fitViewOnInit: boolean;
   fitViewOnInitDone: boolean;
+  /** internal: a pending imperative `fitView()`, settled by the next node commit / measurement */
+  fitViewQueued: false | FitViewRequest<NodeType>;
 
-  noDragClassName: 'nodrag' | string;
-  noWheelClassName: 'nowheel' | string;
-  noPanClassName: 'nopan' | string;
+  noDragClassName: string;
+  noWheelClassName: string;
+  noPanClassName: string;
 
   defaultEdgeOptions: DefaultEdgeOptions | undefined;
 
@@ -171,6 +182,9 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   ariaLabelConfig: AriaLabelConfig;
 
   ariaLiveMessage: string;
+
+  /** when `true`, log events to the console as they fire (see the `debug` prop) */
+  debug: boolean;
 }
 
 export type SetNodes<NodeType extends Node = Node> = (nodes: NodeType[] | ((nodes: NodeType[]) => NodeType[])) => void;
@@ -182,18 +196,24 @@ export type AddNodes<NodeType extends Node = Node> = (
 ) => void;
 
 export type RemoveNodes<NodeType extends Node = Node> = (
-  nodes: (string | NodeType) | (NodeType | string)[] | ((nodes: NodeType[]) => (string | NodeType) | (NodeType | string)[]),
+  nodes:
+    | (string | NodeType)
+    | (NodeType | string)[]
+    | ((nodes: NodeType[]) => (string | NodeType) | (NodeType | string)[]),
   removeConnectedEdges?: boolean,
   removeChildren?: boolean,
 ) => void;
 
 export type RemoveEdges<EdgeType extends Edge = Edge> = (
-  edges: (string | EdgeType) | (EdgeType | string)[] | ((edges: EdgeType[]) => (string | EdgeType) | (EdgeType | string)[]),
+  edges:
+    | (string | EdgeType)
+    | (EdgeType | string)[]
+    | ((edges: EdgeType[]) => (string | EdgeType) | (EdgeType | string)[]),
 ) => void;
 
 /**
  * Delete the given nodes/edges along with their connected edges and child nodes, gated by `onBeforeDelete`.
- * Resolves to the elements actually removed. Mirrors xyflow/react's `deleteElements`.
+ * Resolves to the elements actually removed.
  */
 export type DeleteElements<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (elements: {
   nodes?: (Partial<NodeType> & { id: string })[];
@@ -225,29 +245,32 @@ export type UpdateEdgeData<EdgeType extends Edge = Edge> = (
   options?: { replace: boolean },
 ) => void;
 
-// `fitView` lives on `FlowProps`, not `State` (the state keeps a separate `fitViewOnInit` flag so the
-// `fitView()` action isn't clobbered), but it's still a settable prop — accept it on the bridge.
-export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Partial<State<NodeType, EdgeType>>
-  & Partial<Pick<FlowProps<NodeType, EdgeType>, 'fitView'>>;
+// `nodes`/`edges` are intentionally excluded, set them via setNodes/setEdges instead.
+export type SetStateOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Partial<
+  Omit<State<NodeType, EdgeType>, 'nodes' | 'edges' | 'vueFlowRef' | 'viewportRef' | 'dimensions' | 'hooks'>
+>
+& Partial<Pick<VueFlowProps<NodeType, EdgeType>, 'fitView'>>;
 
 export type SetState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (
-  state: SetStateOptions<NodeType, EdgeType> | ((state: State<NodeType, EdgeType>) => SetStateOptions<NodeType, EdgeType>),
+  state:
+    | SetStateOptions<NodeType, EdgeType>
+    | ((state: State<NodeType, EdgeType>) => SetStateOptions<NodeType, EdgeType>),
 ) => void;
 
 export type UpdateNodePosition = (dragItems: NodeDragItem[], changed: boolean, dragging: boolean) => void;
 
 export type UpdateNodeDimensions = (updates: UpdateNodeDimensionsParams[]) => void;
 
-export type UpdateNodeInternals = (nodeIds?: string[]) => void;
-
 export type GetNode<NodeType extends Node = Node> = (id: string | undefined | null) => NodeType | undefined;
 
 /**
  * Returns the enriched {@link InternalNode} (`internals.{positionAbsolute, z, handleBounds, userNode}` +
- * authoritative `measured`) for an id, mirroring xyflow/react's `getInternalNode`. This is the accessor
- * for store-computed data; `getNode` exposes the user-facing node.
+ * authoritative `measured`) for an id. This is the accessor for store-computed data; `getNode` exposes
+ * the user-facing node.
  */
-export type GetInternalNode<NodeType extends Node = Node> = (id: string | undefined | null) => InternalNode<NodeType> | undefined;
+export type GetInternalNode<NodeType extends Node = Node> = (
+  id: string | undefined | null,
+) => InternalNode<NodeType> | undefined;
 
 export type GetEdge<EdgeType extends Edge = Edge> = (id: string | undefined | null) => EdgeType | undefined;
 
@@ -269,10 +292,16 @@ export type UpdateNodeData<NodeType extends Node = Node> = (
   options?: { replace: boolean },
 ) => void;
 
-export type IsNodeIntersecting<NodeType extends Node = Node> = (node: (Partial<NodeType> & { id: NodeType['id'] }) | Rect, area: Rect, partially?: boolean) => boolean;
+export type IsNodeIntersecting<NodeType extends Node = Node> = (
+  node: (Partial<NodeType> & { id: NodeType['id'] }) | Rect,
+  area: Rect,
+  partially?: boolean,
+) => boolean;
 
-export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
-  extends Omit<ViewportHelper<NodeType>, 'viewportInitialized'> {
+export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = Edge> extends Omit<
+  ViewportHelper<NodeType>,
+  'viewportInitialized'
+> {
   /** parses nodes and re-sets the state */
   setNodes: SetNodes<NodeType>;
   /** parses edges and re-sets the state */
@@ -285,7 +314,7 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   removeNodes: RemoveNodes<NodeType>;
   /** remove edges from state */
   removeEdges: RemoveEdges<EdgeType>;
-  /** delete nodes/edges (with connected edges + children), gated by `onBeforeDelete`; mirrors xyflow/react */
+  /** delete nodes/edges (with connected edges + children), gated by `onBeforeDelete` */
   deleteElements: DeleteElements<NodeType, EdgeType>;
   /** find a node by id */
   getNode: GetNode<NodeType>;
@@ -303,10 +332,12 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   updateNode: UpdateNode<NodeType>;
   /** updates the data of a node */
   updateNodeData: UpdateNodeData<NodeType>;
+  /** changes the parent of a node, keeping its absolute position */
+  changeParent: (nodeId: string, parentId: string | null) => void;
   /** applies default edge change handler */
-  applyEdgeChanges: (changes: EdgeChange<EdgeType>[]) => EdgeType[];
+  applyEdgeChanges: (changes: EdgeChangeset<EdgeType>) => EdgeType[];
   /** applies default node change handler; returns the resulting user nodes */
-  applyNodeChanges: (changes: NodeChange<NodeType>[]) => NodeType[];
+  applyNodeChanges: (changes: NodeChangeset<NodeType>) => NodeType[];
   /** manually select edges and add to state */
   addSelectedEdges: (edges: EdgeType[]) => void;
   /** manually select nodes and add to state */
@@ -338,12 +369,10 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   toObject: () => FlowExportObject;
   /** force update node internal data, if handle bounds are incorrect, you might want to use this */
   updateNodeInternals: UpdateNodeInternals;
-  /** start a connection */
-  startConnection: (startHandle: ConnectingHandle, position?: XYPosition, isClick?: boolean) => void;
-  /** update connection position */
-  updateConnection: (position: XYPosition, result?: ConnectingHandle | null, status?: ConnectionStatus | null) => void;
-  /** end (or cancel) a connection */
-  endConnection: (event?: MouseEvent | TouchEvent, isClick?: boolean) => void;
+  /** store the current drag-connection state (fed by the handle interaction) */
+  updateConnection: (connection: ConnectionState<InternalNode<NodeType>>) => void;
+  /** reset the drag-connection to its idle state */
+  cancelConnection: () => void;
 
   /** internal position updater, you probably don't want to use this */
   updateNodePositions: UpdateNodePosition;
@@ -357,17 +386,22 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   /** get a node's connected edges (accepts any nodes — it matches by id; output is the flow's `EdgeType`) */
   getConnectedEdges: (nodes: Node[]) => EdgeType[];
   /** get all connections of a handle belonging to a node */
-  getHandleConnections: ({ id, type, nodeId }: { id?: string | null; type: HandleType; nodeId: string }) => NodeConnection[];
+  getHandleConnections: ({
+    id,
+    type,
+    nodeId,
+  }: {
+    id?: string | null;
+    type: HandleType;
+    nodeId: string;
+  }) => NodeConnection[];
   /** pan the viewport; return indicates if a transform has happened or not */
   panBy: (delta: XYPosition) => Promise<boolean>;
   /** whether the viewport (panzoom) is initialized — `true` once `<ZoomPane>` has mounted and measured */
   viewportInitialized: ComputedRef<boolean>;
 
-  /** reset state to defaults */
-  $reset: () => void;
-
-  /** destroy the store instance (invalidates its effect scopes); runs the `onDestroy` hook if one was set */
-  $destroy: () => void;
+  /** reset the store to its initial state */
+  reset: () => void;
 }
 
 export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
@@ -377,9 +411,8 @@ export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = E
   getNodeTypes: Record<keyof DefaultNodeTypes | string, NodeComponent<NodeType | BuiltInNode>>;
   /** all visible nodes (user-facing `Node`s; use `getInternalNode`/`nodeLookup` for enriched data) */
   getNodes: readonly NodeType[];
-  // the returned list is `readonly` — change nodes via setNodes/updateNode/applyNodeChanges (an in-place
-  // mutation to a node read here won't propagate). NOTE: shallow `readonly`, not `DeepReadonly`: the latter
-  // recurses into `Edge.label`'s VNode/Component types and trips TS2589 on a plain `.filter()` (#1886).
+  // returned list is shallow `readonly` — mutate via setNodes/updateNode/applyNodeChanges. Not
+  // `DeepReadonly`: it recurses into `Edge.label`'s VNode/Component types and trips TS2589 (#1886).
   /** all visible edges (user-facing `Edge`s) */
   getEdges: readonly EdgeType[];
   /** returns all currently selected nodes (user-facing `Node`s) */
@@ -391,25 +424,23 @@ export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = E
 }
 
 export type ComputedGetters<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
-  [key in keyof Getters<NodeType, EdgeType>]: ComputedRef<Getters<NodeType, EdgeType>[key]>
+  [key in keyof Getters<NodeType, EdgeType>]: ComputedRef<Getters<NodeType, EdgeType>[key]>;
 };
 
 /**
- * The reactive state object returned by {@link useStore} — every {@link State} field plus the lookups,
- * read directly (`store.nodes`, no `.value`, like `xyflow/svelte`'s store / a Pinia store). Use
- * `storeToRefs(useStore())` to destructure scalar/array fields as refs.
+ * The reactive state object returned by {@link useVueFlowStore} — every {@link State} field plus the lookups,
+ * read directly (`store.nodes`, no `.value`, like a Pinia store). Use `storeToRefs(useVueFlowStore())` to
+ * destructure scalar/array fields as refs.
  */
 export type VueFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = State<NodeType, EdgeType>;
 
 /**
- * The curated instance returned by {@link useVueFlow} — actions, computed getters, and event hooks
- * (mirrors `useReactFlow` / `useSvelteFlow`). Raw reactive state lives on {@link useStore} instead.
+ * The curated instance returned by {@link useVueFlow} — actions, computed getters, and event hooks.
+ * Raw reactive state lives on {@link useVueFlowStore} instead.
  */
 export type VueFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   readonly id: string;
   readonly emits: FlowHooksEmit<NodeType, EdgeType>;
-  /** tear the store down (internal) */
-  $destroy: () => void;
 } & FlowHooksOn<NodeType, EdgeType>
 & Readonly<ComputedGetters<NodeType, EdgeType>>
 & Readonly<Actions<NodeType, EdgeType>>;

@@ -1,12 +1,7 @@
 import type { CSSProperties } from 'vue';
 
 /**
- * The props `BaseEdge` actually renders (label/marker/interaction) plus genuine `style`/`class`
- * fallthrough. The built-in edge components receive the full `EdgeProps` surface (geometry like
- * `sourceX`/`sourceY` + identity like `source`/`type`/`selected`); the geometry is consumed to COMPUTE
- * the path and the identity isn't BaseEdge's concern, so forwarding `{ ...attrs, ...props }` wholesale
- * leaked all of it onto the `<path>` via BaseEdge's `v-bind="$attrs"` (and re-wrote the changing
- * `sourceX`/`sourceY`/`targetX`/`targetY` attrs every drag frame). Pick only what BaseEdge needs.
+ * Pick only the props `BaseEdge` renders (label/marker/interaction) plus `style`/`class` fallthrough.
  */
 export function baseEdgeProps(props: Record<string, any>, attrs: Record<string, any>) {
   return {

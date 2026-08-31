@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { BaseEdgeProps } from '../../types';
+import { isNumeric } from '@xyflow/system';
 import { shallowRef, useAttrs } from 'vue';
 import EdgeText from './EdgeText.vue';
 
@@ -50,7 +51,7 @@ export default {
   />
 
   <EdgeText
-    v-if="label && labelX && labelY"
+    v-if="label && isNumeric(labelX) && isNumeric(labelY)"
     ref="labelEl"
     :x="labelX"
     :y="labelY"

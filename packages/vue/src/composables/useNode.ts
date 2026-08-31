@@ -1,34 +1,35 @@
+import type { MaybeRefOrGetter } from 'vue';
 import type { Node } from '../types';
 import { getConnectedEdges } from '@xyflow/system';
-import { computed, inject, shallowRef } from 'vue';
+import { computed, inject, shallowRef, toValue } from 'vue';
 import { NodeRef } from '../context';
 import { ErrorCode, VueFlowError } from '../utils';
 import { useNodeId } from './useNodeId';
-import { useStore } from './useStore';
 import { useVueFlow } from './useVueFlow';
+import { useVueFlowStore } from './useVueFlowStore';
 
 /**
- * Composable that provides access to a node object, parent node object, connected edges and it's dom element
+ * Composable that provides access to a node object, its parent node, connected edges and its dom element.
  *
- * If no node id is provided, the node id is injected from context
+ * Returns the user-facing {@link Node} — use {@link useInternalNode} for the enriched `InternalNode`.
  *
- * If you do not provide an id, this composable has to be called in a child of your custom node component, or it will throw
+ * If no id is given it is read from node context (call inside a custom node, or it will throw). The id
+ * accepts a ref/getter so it can track a reactive source.
  *
  * @public
- * @param id - The id of the node to access
- * @returns the node id, the node (a `ComputedRef`), the node dom element, it's parent and connected edges
+ * @param id - The id of the node to access (a value, ref, or getter; defaults to the node context id)
+ * @returns the node id, the node (a `ComputedRef`), its dom element, its parent and connected edges
  */
-export function useNode<NodeType extends Node = Node>(id?: string) {
-  const nodeId = id ?? useNodeId() ?? '';
+export function useNode<NodeType extends Node = Node>(id?: MaybeRefOrGetter<string | undefined>) {
+  const contextNodeId = useNodeId();
   const nodeEl = inject(NodeRef, shallowRef(null));
 
-  const { getInternalNode, emits } = useVueFlow<NodeType>();
-  const store = useStore<NodeType>();
+  const { getNode, emits } = useVueFlow<NodeType>();
+  const store = useVueFlowStore<NodeType>();
 
-  // `node` is the enriched `InternalNode` (it carries `internals`/`measured`, which NodeWrapper + custom
-  // nodes read) and a `computed` (not a one-time read) so it re-resolves whenever the store replaces this
-  // node's lookup entry — required for the immutable re-adopt model where a changed node is a NEW object.
-  const node = computed(() => getInternalNode(nodeId));
+  const nodeId = toValue(id) ?? contextNodeId ?? '';
+
+  const node = computed(() => getNode(toValue(id) ?? contextNodeId ?? ''));
 
   if (!node.value) {
     emits.error(new VueFlowError(ErrorCode.NODE_NOT_FOUND, nodeId));
@@ -38,7 +39,7 @@ export function useNode<NodeType extends Node = Node>(id?: string) {
     id: nodeId,
     nodeEl,
     node,
-    parentNode: computed(() => (node.value ? getInternalNode(node.value.parentId) : undefined)),
+    parentNode: computed(() => (node.value ? getNode(node.value.parentId) : undefined)),
     connectedEdges: computed(() => (node.value ? getConnectedEdges([node.value], store.edges) : [])),
   };
 }

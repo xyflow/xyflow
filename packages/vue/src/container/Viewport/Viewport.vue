@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { storeToRefs, useStore, useVueFlow } from '../../composables';
+import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import ZoomPaneSlot from './ZoomPaneSlot';
 
 const { viewport } = useVueFlow();
 
-const { fitViewOnInit, fitViewOnInitDone } = storeToRefs(useStore());
+const { fitViewOnInit, fitViewOnInitDone } = storeToRefs(useVueFlowStore());
 
 const isHidden = computed(() => {
   if (fitViewOnInit.value) {
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <template>
-  <div class="vue-flow__viewport vue-flow__container" :style="{ transform, opacity: isHidden ? 0 : undefined }">
+  <div class="vue-flow__viewport xyflow__viewport vue-flow__container" :style="{ transform, opacity: isHidden ? 0 : undefined }">
     <slot />
 
     <!-- the `zoom-pane` slot belongs in this transformed layer; pulled from the provided `Slots` as a

@@ -35,16 +35,39 @@ export interface DefaultEdgeTypes {
   smoothstep: typeof SmoothStepEdge;
 }
 
-export type DefaultNodeTypes = { [key in 'input' | 'output' | 'default']: NodeComponent<BuiltInNode> };
+export type DefaultNodeTypes = { [key in 'input' | 'output' | 'default' | 'group']: NodeComponent<BuiltInNode> };
 
 /** these props are passed to edge texts */
 export interface EdgeTextProps {
+  /** The x position where the label should be rendered. */
   x: number;
+  /** The y position where the label should be rendered. */
   y: number;
-  label?: string | VNode | Component<EdgeTextProps> | object;
+  /**
+   * The label or custom element to render along the edge. This is commonly a text label or some
+   * custom controls.
+   */
+  label?: string | VNode | Component;
+  /** Custom styles to apply to the label. */
   labelStyle?: CSSProperties;
+  /**
+   * Render a background rectangle behind the label.
+   *
+   * @default true
+   */
   labelShowBg?: boolean;
+  /** Inline style applied to the label background rectangle. */
   labelBgStyle?: CSSProperties;
+  /**
+   * Padding around the label inside its background, as `[x, y]` in pixels.
+   *
+   * @default [2, 4]
+   */
   labelBgPadding?: [number, number];
+  /**
+   * Border radius of the label background, in pixels.
+   *
+   * @default 2
+   */
   labelBgBorderRadius?: number;
 }

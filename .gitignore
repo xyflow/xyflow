@@ -14,3 +14,4 @@ stats.html
 .rollup.cache
 *storybook.log
 storybook-static
+*.tgz

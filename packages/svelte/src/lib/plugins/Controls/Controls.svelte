@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useStore } from '$lib/store';
+  import { useSvelteFlowStore } from '$lib/store/index.js';
   import Panel from '$lib/container/Panel/Panel.svelte';
   import ControlButton from './ControlButton.svelte';
   import PlusIcon from './Icons/Plus.svelte';
@@ -8,7 +8,7 @@
   import LockIcon from './Icons/Lock.svelte';
   import UnlockIcon from './Icons/Unlock.svelte';
 
-  import type { ControlsProps } from './types';
+  import type { ControlsProps } from './types.js';
 
   let {
     position = 'bottom-left',
@@ -30,7 +30,7 @@
     ...rest
   }: ControlsProps = $props();
 
-  let store = $derived(useStore());
+  let store = $derived(useSvelteFlowStore());
 
   const buttonProps = $derived({
     bgColor: buttonBgColor,

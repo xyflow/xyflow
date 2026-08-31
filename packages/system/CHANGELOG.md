@@ -1,5 +1,58 @@
 # @xyflow/system
 
+## 0.0.81
+### Patch Changes
+
+
+
+- [#5981](https://github.com/xyflow/xyflow/pull/5981) [`22e0be2`](https://github.com/xyflow/xyflow/commit/22e0be21507cfc319a97e30b88dd2668fd9086a8) - Add `handleAttributionWarning` function
+
+## 0.0.80
+### Patch Changes
+
+
+
+- [#5902](https://github.com/xyflow/xyflow/pull/5902) [`393d951`](https://github.com/xyflow/xyflow/commit/393d95161802948a3c9cca55dde3d807e9a634f1) - Allow middle-mouse viewport panning to start from a selection rectangle.
+
+
+
+- [#5889](https://github.com/xyflow/xyflow/pull/5889) [`ff126a0`](https://github.com/xyflow/xyflow/commit/ff126a06a57c341948407d7f66b2972e2627828a) - Fix `extent: 'parent'` not immediately resolving when parent has `width` or `initialWidth`.
+
+
+
+- [#5871](https://github.com/xyflow/xyflow/pull/5871) [`e5d86bd`](https://github.com/xyflow/xyflow/commit/e5d86bde2379439a6dd33ccecb1cba354fe4f037) - Fix `getNodesBounds` stretching the returned bounds to include the origin `(0, 0)` when one of the passed ids/nodes can't be resolved.
+
+
+
+- [#5922](https://github.com/xyflow/xyflow/pull/5922) [`392da00`](https://github.com/xyflow/xyflow/commit/392da00ce0aa97c99cd7a7561fe69b20e1c2f0ca) - Allow `Control` to activate pane panning with a primary-button drag.
+
+## 0.0.79
+### Patch Changes
+
+
+
+- [#5850](https://github.com/xyflow/xyflow/pull/5850) [`c707267`](https://github.com/xyflow/xyflow/commit/c707267bc80bc954fdc69a08c9e00c98068dd613) - Cache the zoom pane extent so panning and pinching no longer force a synchronous layout.
+
+
+
+- [#5839](https://github.com/xyflow/xyflow/pull/5839) [`0c0cebc`](https://github.com/xyflow/xyflow/commit/0c0cebc08cc34d2852d1ea429df638732b3edf68) - Use correct fill color for bg pattern in dark mode
+
+
+
+- [#5851](https://github.com/xyflow/xyflow/pull/5851) [`56cf3b0`](https://github.com/xyflow/xyflow/commit/56cf3b00369a680a71743e4fb277db26e861d4b0) - Fix `fitView` with `includeHiddenNodes` ignoring hidden nodes that declare an intrinsic size (`width`/`height`/`initialWidth`/`initialHeight`) but were never measured
+
+
+
+- [#5845](https://github.com/xyflow/xyflow/pull/5845) [`a01bb6b`](https://github.com/xyflow/xyflow/commit/a01bb6bf51e2de4eeee052187f3ce533c0e77754) - Check if parent node is in node lookup before clamp the position to prevent throwing an error.
+
+
+
+- [#5849](https://github.com/xyflow/xyflow/pull/5849) [`9b3f390`](https://github.com/xyflow/xyflow/commit/9b3f390e21c1801832449389b069c4e5a13b4d7f) - Always fire `onPanZoomEnd` when `onPanZoomStart` was fired due to a pan-on-scroll wheel tick
+
+
+
+- [#5837](https://github.com/xyflow/xyflow/pull/5837) [`cdfcbeb`](https://github.com/xyflow/xyflow/commit/cdfcbeb9618437b2e7c35336db157e36a5a0731e) - Check for element existence and type before checking property existence in node/edge typeguards.
+
 ## 0.0.78
 ### Patch Changes
 

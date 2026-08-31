@@ -28,11 +28,12 @@ export { useNodesData } from './hooks/useNodesData';
 export { useConnection } from './hooks/useConnection';
 export { useInternalNode } from './hooks/useInternalNode';
 export { useNodeId } from './contexts/NodeIdContext';
+export { useNode } from './hooks/useNodes';
+export { useEdge } from './hooks/useEdges';
 
 export { experimental_useOnNodesChangeMiddleware } from './hooks/useOnNodesChangeMiddleware';
 export { experimental_useOnEdgesChangeMiddleware } from './hooks/useOnEdgesChangeMiddleware';
 
-export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { isNode, isEdge } from './utils/general';
 
 export * from './additional-components';
@@ -64,7 +65,6 @@ export {
   type SetCenterOptions,
   type FitBoundsOptions,
   type PanelPosition,
-  type ProOptions,
   SelectionMode,
   type SelectionRect,
   type OnError,
@@ -80,6 +80,7 @@ export {
   type CoordinateExtent,
   type ColorMode,
   type HandleType,
+  type HandleBounds,
   type ShouldResize,
   type OnResizeStart,
   type OnResize,
@@ -91,17 +92,13 @@ export {
   type ResizeParamsWithDirection,
   type ResizeDragEvent,
   type NodeChange,
-  type NodeDimensionChange,
-  type NodePositionChange,
-  type NodeSelectionChange,
-  type NodeRemoveChange,
-  type NodeAddChange,
-  type NodeReplaceChange,
+  type DimensionChange,
+  type PositionChange,
+  type SelectionChange,
+  type RemoveChange,
+  type AddChange,
+  type ReplaceChange,
   type EdgeChange,
-  type EdgeSelectionChange,
-  type EdgeRemoveChange,
-  type EdgeAddChange,
-  type EdgeReplaceChange,
   type KeyCode,
   type ConnectionState,
   type FinalConnectionState,
@@ -117,11 +114,9 @@ export {
   type ZIndexMode,
   type NodeHandle,
   type UseNodeConnectionsParams,
+  NodeChangeset,
+  EdgeChangeset,
 } from '@xyflow/system';
-
-// we need this workaround to prevent a duplicate identifier error
-import { type Handle as HandleBound } from '@xyflow/system';
-export type Handle = HandleBound;
 
 // system utils
 export {

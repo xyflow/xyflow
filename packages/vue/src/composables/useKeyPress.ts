@@ -1,31 +1,37 @@
 import type { KeyFilter, KeyPredicate } from '@vueuse/core';
 import type { MaybeRefOrGetter } from 'vue';
 import { onKeyStroke, useEventListener } from '@vueuse/core';
+import { isInputDOMNode } from '@xyflow/system';
 import { computed, shallowRef, toValue, watch } from 'vue';
 
 type PressedKeys = Set<string>;
 type KeyOrCode = 'key' | 'code';
 
 export interface UseKeyPressOptions {
+  /**
+   * The DOM element the key listeners are attached to.
+   *
+   * @default document
+   */
   target?: MaybeRefOrGetter<EventTarget | null | undefined>;
+  /**
+   * A key press is normally ignored while a text input, textarea, or contentEditable element is focused. When
+   * `true`, key combinations that include a modifier (Ctrl/Meta/Shift/Alt) are still detected inside those
+   * elements — so a shortcut like `Meta+a` keeps working while the user is typing.
+   *
+   * @default true
+   */
   actInsideInputWithModifier?: MaybeRefOrGetter<boolean>;
+  /**
+   * Whether to call `preventDefault()` on a matched key event (skipped for a button/link pressed without a
+   * modifier). Set to `false` to leave the event's default behaviour untouched and handle it yourself.
+   *
+   * @default true
+   */
   preventDefault?: MaybeRefOrGetter<boolean>;
 }
 
-const inputTags = ['INPUT', 'SELECT', 'TEXTAREA'];
-
 const defaultDoc = typeof document !== 'undefined' ? document : null;
-
-export function isInputDOMNode(event: KeyboardEvent): boolean {
-  const target = (event.composedPath?.()?.[0] || event.target) as HTMLElement;
-
-  const hasAttribute = typeof target?.hasAttribute === 'function' ? target.hasAttribute('contenteditable') : false;
-
-  const closest = typeof target?.closest === 'function' ? target.closest('.nokey') : null;
-
-  // when an input field is focused we don't want to trigger deletion or movement of nodes
-  return inputTags.includes(target?.nodeName) || hasAttribute || !!closest;
-}
 
 // we want to be able to do a multi selection event if we are in an input field
 function wasModifierPressed(event: KeyboardEvent) {
@@ -48,9 +54,9 @@ function isKeyMatch(pressedKey: string, keyToMatch: string, pressedKeys: Set<str
     pressedKeys.add(pressedKey.toLowerCase());
   }
 
-  const isMatch = keyCombination.every(
-    (key, index) => pressedKeys.has(key) && Array.from(pressedKeys.values())[index] === keyCombination[index],
-  );
+  // order-independent, size-guarded on keydown so e.g. 'Meta' alone doesn't match 'meta+a'
+  const isMatch = (isKeyUp || keyCombination.length === pressedKeys.size)
+    && keyCombination.every(key => pressedKeys.has(key));
 
   if (isKeyUp) {
     pressedKeys.delete(pressedKey.toLowerCase());
@@ -120,7 +126,7 @@ export function useKeyPress(keyFilter: MaybeRefOrGetter<KeyFilter | boolean | nu
     (...args) => currentFilter(...args),
     (e) => {
       const actInsideInputWithModifier = toValue(options?.actInsideInputWithModifier) ?? true;
-      const preventDefault = toValue(options?.preventDefault) ?? false;
+      const preventDefault = toValue(options?.preventDefault) ?? true;
 
       modifierPressed = wasModifierPressed(e);
 
@@ -133,7 +139,7 @@ export function useKeyPress(keyFilter: MaybeRefOrGetter<KeyFilter | boolean | nu
       const target = (e.composedPath?.()?.[0] || e.target) as Element | null;
       const isInteractiveElement = target?.nodeName === 'BUTTON' || target?.nodeName === 'A';
 
-      if (!preventDefault && (modifierPressed || !isInteractiveElement)) {
+      if (preventDefault && (modifierPressed || !isInteractiveElement)) {
         e.preventDefault();
       }
 
@@ -145,6 +151,12 @@ export function useKeyPress(keyFilter: MaybeRefOrGetter<KeyFilter | boolean | nu
   onKeyStroke(
     (...args) => currentFilter(...args),
     (e) => {
+      // macOS suppresses keyup for other keys while ⌘ (Meta) is held, leaving them stuck in `pressedKeys`;
+      // clear everything when Meta is released
+      if (e.key === 'Meta') {
+        pressedKeys.clear();
+      }
+
       const actInsideInputWithModifier = toValue(options?.actInsideInputWithModifier) ?? true;
 
       if (isPressed.value) {

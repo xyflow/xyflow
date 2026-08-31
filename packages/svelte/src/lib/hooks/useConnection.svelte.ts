@@ -1,4 +1,4 @@
-import { useStore } from '$lib/store';
+import { useSvelteFlowStore } from '$lib/store/index.js';
 
 import type { ConnectionState } from '@xyflow/system';
 
@@ -9,7 +9,7 @@ import type { ConnectionState } from '@xyflow/system';
  * @returns Current connection as a signal
  */
 export function useConnection(): { current: ConnectionState } {
-  const { connection } = $derived(useStore());
+  const { connection } = $derived(useSvelteFlowStore());
 
   return {
     get current() {

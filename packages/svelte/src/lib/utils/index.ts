@@ -1,6 +1,6 @@
 import { isNodeBase, isEdgeBase, type XYPosition } from '@xyflow/system';
 
-import type { Edge, Node } from '$lib/types';
+import type { Edge, Node } from '$lib/types/index.js';
 
 /**
  * Test whether an object is usable as a Node
@@ -26,7 +26,7 @@ export function toPxString(value: number | undefined): string | undefined {
   return value === undefined ? undefined : `${value}px`;
 }
 
-export * from './edges';
+export * from './edges.js';
 
 export const arrowKeyDiffs: Record<string, XYPosition> = {
   ArrowUp: { x: 0, y: -1 },

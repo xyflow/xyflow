@@ -1,42 +1,42 @@
 <script lang="ts" setup>
+import type { HandleConnection } from '@xyflow/system';
 import type { HandleProps } from '../../types';
-import { ConnectionMode, getDimensions, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
-import { computed, onMounted, shallowRef, toRef } from 'vue';
-import { useHandle, useNode, useStore, useVueFlow } from '../../composables';
+import { areConnectionMapsEqual, ConnectionMode, getConnectedEdges, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
+import { computed, getCurrentInstance, onMounted, toRef, watch } from 'vue';
+import { useHandle, useInternalNode, useVueFlow, useVueFlowStore } from '../../composables';
+import { useNodeId } from '../../composables/useNodeId';
 import { isDef } from '../../utils';
 
 const {
   position = Position.Top,
   isConnectable = undefined,
-  connectableStart = true,
-  connectableEnd = true,
+  isConnectableStart = true,
+  isConnectableEnd = true,
   id: handleId = null,
   ...props
 } = defineProps<HandleProps>();
+
+const emit = defineEmits<{
+  /** fired when an edge touching this handle is added, with the newly-connected connections */
+  connect: [connections: HandleConnection[]];
+  /** fired when an edge touching this handle is removed, with the removed connections */
+  disconnect: [connections: HandleConnection[]];
+}>();
 
 const type = toRef(() => props.type ?? 'source');
 
 const isValidConnection = toRef(() => props.isValidConnection ?? null);
 
-const { id: flowId } = useVueFlow();
+const { id: flowId, updateNodeInternals } = useVueFlow();
 
-// Read the reactive store directly (see NodeWrapper) instead of projecting it into refs — there are ~2
-// handles per node, so this setup runs a lot; `store.x` already tracks reactively in computeds/template.
-const store = useStore();
+const store = useVueFlowStore();
 
-const { id: nodeId, node: nodeRef, nodeEl, connectedEdges } = useNode();
+const nodeId = useNodeId() ?? '';
+const internalNode = useInternalNode();
+const connectedEdges = computed(() => (internalNode.value ? getConnectedEdges([internalNode.value], store.edges) : []));
 
-const handle = shallowRef<HTMLDivElement>();
-
-// `data-id` (queried by handle DOM lookup in `utils/handle.ts`) and the other handle identifiers are
-// typed through a `Record` because this vue version's `HTMLAttributes` lacks the `data-*` index signature
-// that `strictTemplates` needs, so they can't be written as bare `:data-*` attributes in the template.
-const handleDataIds = computed<Record<string, string | null>>(() => ({
-  'data-id': `${flowId}-${nodeId}-${handleId}-${type.value}`,
-  'data-handleid': handleId,
-  'data-nodeid': nodeId,
-  'data-handlepos': position,
-}));
+const instance = getCurrentInstance();
+let prevConnections: Map<string, HandleConnection> | null = null;
 
 const { handlePointerDown, handleClick } = useHandle({
   nodeId,
@@ -73,50 +73,42 @@ const isHandleConnectable = computed(() => {
   }
 
   if (typeof isConnectable === 'function') {
-    return nodeRef.value ? isConnectable(nodeRef.value, connectedEdges.value) : false;
+    return internalNode.value ? isConnectable(internalNode.value, connectedEdges.value) : false;
   }
 
   return isDef(isConnectable) ? isConnectable : store.nodesConnectable;
 });
 
-// All connection-driven classes in one computed instead of ~7 separate refs: they all derive from the same
-// global `connection*` store state (so they toggle together during a connection) and are used only in the
-// class binding. Mirrors xyflow/react's `connectingSelector`.
 const connectionClasses = computed<Record<string, boolean>>((prev) => {
-  const fromHandle = store.connectionStartHandle;
+  const fromHandle = store.connection.fromHandle;
   const clickFromHandle = store.connectionClickStartHandle;
-  const toHandle = store.connectionEndHandle;
+  const toHandle = store.connection.toHandle;
   const handleType = type.value;
 
   const connectionInProcess = fromHandle !== null;
   const clickConnectionInProcess = clickFromHandle !== null;
-  // whether this handle can be the END of the in-progress (drag) connection
   const isPossibleEndHandle = store.connectionMode === ConnectionMode.Strict
     ? fromHandle?.type !== handleType
     : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
   const connectingto = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === handleType;
 
   const next = {
-    // resolved value (falls back to `nodesConnectable`), not the raw prop — XYHandle's DOM query targets
-    // `.connectable` to find drop targets, so an unset `:connectable` must still mark it
     connectable: isHandleConnectable.value,
     connecting:
       clickFromHandle?.nodeId === nodeId && clickFromHandle?.id === handleId && clickFromHandle?.type === handleType,
-    connectablestart: connectableStart,
-    connectableend: connectableEnd,
+    connectablestart: isConnectableStart,
+    connectableend: isConnectableEnd,
     connectingfrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === handleType,
     connectingto,
-    valid: connectingto && store.connectionStatus === 'valid',
+    valid: connectingto && store.connection.isValid === true,
     connectionindicator:
       isHandleConnectable.value
       && (!connectionInProcess || isPossibleEndHandle)
-      && ((connectionInProcess || clickConnectionInProcess) ? connectableEnd : connectableStart),
+      && ((connectionInProcess || clickConnectionInProcess) ? isConnectableEnd : isConnectableStart),
   };
 
-  // Reuse the previous object when nothing changed so the class binding's render effect doesn't re-run
-  // (Vue gates dependents on reference identity). During a connection drag `connectionEndHandle` toggles
-  // every handle's recompute, but only the two endpoints' classes actually change — without this every
-  // visible handle re-renders on each intermediate target change.
+  // reuse the previous object when nothing changed so the class binding doesn't re-render (Vue gates on ref identity)
+  // a connection drag recomputes every handle, but only the two endpoints' classes actually change
   if (
     prev
     && prev.connectable === next.connectable
@@ -134,63 +126,48 @@ const connectionClasses = computed<Record<string, boolean>>((prev) => {
   return next;
 });
 
-// todo: remove this and have users handle this themselves using `updateNodeInternals`
-// set up handle bounds if they don't exist yet and the node has been initialized (i.e. the handle was added after the node has already been mounted)
+watch(
+  () => store.edges,
+  () => {
+    // no listeners, bail
+    if (!instance?.vnode.props?.onConnect && !instance?.vnode.props?.onDisconnect) {
+      return;
+    }
+
+    const connections = store.connectionLookup.get(`${nodeId}-${type.value}${handleId ? `-${handleId}` : ''}`);
+
+    if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
+      const nextConnections = connections ?? new Map<string, HandleConnection>();
+      handleConnectionChange(prevConnections, nextConnections, diff => emit('disconnect', diff));
+      handleConnectionChange(nextConnections, prevConnections, diff => emit('connect', diff));
+    }
+
+    prevConnections = new Map(connections);
+  },
+  { immediate: true },
+);
+
+// A handle mounted after its node was already measured isn't in the node's `handleBounds` yet; re-measure
+// the node so `getHandleBounds` picks it up. Fresh nodes measure all their handles together (the node has no
+// dimensions yet when the handle mounts), so this is a no-op there.
 onMounted(() => {
-  const node = nodeRef.value;
+  const node = internalNode.value;
 
-  // if the node isn't initialized yet, we can't set up the handle bounds
-  // the handle bounds will be automatically set up when the node is initialized (`updateNodeDimensions`)
-  if (!node || !nodeHasDimensions(node)) {
-    return;
+  if (node && nodeHasDimensions(node) && !node.internals.handleBounds?.[type.value]?.some(b => b.id === handleId)) {
+    updateNodeInternals(nodeId);
   }
-
-  const existingBounds = node.internals.handleBounds?.[type.value]?.find(b => b.id === handleId);
-
-  if (!store.vueFlowRef || existingBounds) {
-    return;
-  }
-
-  const viewportNode = store.vueFlowRef.querySelector('.vue-flow__viewport');
-
-  if (!nodeEl.value || !handle.value || !viewportNode || !handleId) {
-    return;
-  }
-
-  const nodeBounds = nodeEl.value.getBoundingClientRect();
-
-  const handleBounds = handle.value.getBoundingClientRect();
-
-  const style = window.getComputedStyle(viewportNode);
-  const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
-
-  const nextBounds = {
-    id: handleId,
-    position,
-    x: (handleBounds.left - nodeBounds.left) / zoom,
-    y: (handleBounds.top - nodeBounds.top) / zoom,
-    type: type.value,
-    nodeId,
-    ...getDimensions(handle.value),
-  };
-
-  if (!node.internals.handleBounds) {
-    node.internals.handleBounds = { source: null, target: null };
-  }
-  const bounds = node.internals.handleBounds;
-  bounds[type.value] = [...(bounds[type.value] ?? []), nextBounds];
 });
 
 function onPointerDown(event: MouseEvent | TouchEvent) {
   const isMouseTriggered = isMouseEvent(event);
 
-  if (isHandleConnectable.value && connectableStart && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
+  if (isHandleConnectable.value && isConnectableStart && ((isMouseTriggered && event.button === 0) || !isMouseTriggered)) {
     handlePointerDown(event);
   }
 }
 
 function onClick(event: MouseEvent) {
-  if (!nodeId || (!store.connectionClickStartHandle && !connectableStart)) {
+  if (!nodeId || (!store.connectionClickStartHandle && !isConnectableStart)) {
     return;
   }
 
@@ -216,8 +193,10 @@ export default {
 
 <template>
   <div
-    ref="handle"
-    v-bind="handleDataIds"
+    :data-id="`${flowId}-${nodeId}-${handleId}-${type}`"
+    :data-handleid="handleId"
+    :data-nodeid="nodeId"
+    :data-handlepos="position"
     :aria-label="store.ariaLabelConfig['handle.ariaLabel']"
     class="vue-flow__handle"
     :class="[

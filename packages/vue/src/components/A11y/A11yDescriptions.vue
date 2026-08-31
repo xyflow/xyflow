@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { storeToRefs, useStore, useVueFlow } from '../../composables';
+import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import { ARIA_EDGE_DESC_KEY, ARIA_LIVE_MESSAGE, ARIA_NODE_DESC_KEY } from '../../utils/a11y';
 
 const { id } = useVueFlow();
-const { disableKeyboardA11y, ariaLiveMessage, ariaLabelConfig } = storeToRefs(useStore());
+const { disableKeyboardA11y, ariaLiveMessage, ariaLabelConfig } = storeToRefs(useVueFlowStore());
 </script>
 
 <script lang="ts">

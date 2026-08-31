@@ -8,11 +8,11 @@
 <script lang="ts">
   import { getBoundsOfRects, getInternalNodesBounds, nodeHasDimensions } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
-  import { Panel } from '$lib/container/Panel';
+  import { useSvelteFlowStore } from '$lib/store/index.js';
+  import { Panel } from '$lib/container/Panel/index.js';
   import MinimapNode from './MinimapNode.svelte';
-  import interactive from './interactive';
-  import type { GetMiniMapNodeAttribute, MiniMapProps } from './types';
+  import interactive from './interactive.js';
+  import type { GetMiniMapNodeAttribute, MiniMapProps } from './types.js';
 
   let {
     position = 'bottom-right',
@@ -37,7 +37,7 @@
     ...rest
   }: MiniMapProps = $props();
 
-  let store = $derived(useStore());
+  let store = $derived(useSvelteFlowStore());
   let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
   const shapeRendering =
@@ -53,8 +53,15 @@
     height: store.height / store.viewport.zoom
   });
 
+  let hasVisibleNodes = $derived(store.nodes.some((n) => !n.hidden));
+
   let boundingRect = $derived(
-    getBoundsOfRects(getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }), viewBB)
+    hasVisibleNodes
+      ? getBoundsOfRects(
+          getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }),
+          viewBB
+        )
+      : viewBB
   );
 
   let scaledWidth = $derived(boundingRect.width / width);

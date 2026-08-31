@@ -1,7 +1,7 @@
 import { shallowNodeData, type DistributivePick } from '@xyflow/system';
 
-import type { Node } from '$lib/types';
-import { useStore } from '$lib/store';
+import type { Node } from '$lib/types/index.js';
+import { useSvelteFlowStore } from '$lib/store/index.js';
 
 /**
  * Hook for receiving data of one or multiple nodes
@@ -18,7 +18,7 @@ export function useNodesData<NodeType extends Node = Node>(
 ): { current: DistributivePick<NodeType, 'id' | 'data' | 'type'>[] };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(params: () => { nodeIds: any }): any {
-  const { nodes, nodeLookup } = $derived(useStore());
+  const { nodes, nodeLookup } = $derived(useSvelteFlowStore());
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let prevNodesData: any[] = [];
   let initialRun = true;

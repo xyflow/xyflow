@@ -2,7 +2,7 @@
   import { getStraightPath } from '@xyflow/system';
 
   import BaseEdge from './BaseEdge.svelte';
-  import type { EdgeProps } from '$lib/types';
+  import type { EdgeProps } from '$lib/types/index.js';
 
   let {
     sourceX,

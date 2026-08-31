@@ -1,8 +1,8 @@
-import type { Project } from '@xyflow/system';
-import type { Edge, Node, NodeLookup, State, ViewportFunctions } from '../types';
-import { until } from '@vueuse/core';
-import { fitViewport, getViewportForBounds, pointToRendererPoint, rendererPointToPoint } from '@xyflow/system';
-import { computed } from 'vue';
+import type { NodeLookup, Project } from '@xyflow/system';
+import type { Edge, InternalNode, Node, State, ViewportFunctions } from '../types';
+import { defaultFitViewPadding, getViewportForBounds, pointToRendererPoint, rendererPointToPoint, withResolvers } from '@xyflow/system';
+import { computed, markRaw, nextTick } from 'vue';
+import { resolveFitView } from '../store/fitView';
 import { areNodesInitialized, warn } from '../utils';
 
 export interface ViewportHelper<NodeType extends Node = Node> extends ViewportFunctions<NodeType> {
@@ -10,8 +10,6 @@ export interface ViewportHelper<NodeType extends Node = Node> extends ViewportFu
   screenToFlowPosition: Project;
   flowToScreenPosition: Project;
 }
-
-const DEFAULT_PADDING = 0.1;
 
 async function noop() {
   warn('Viewport not initialized yet.');
@@ -41,12 +39,8 @@ const initialViewportHelper: ViewportHelper = {
  */
 export function useViewportHelper<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   state: State<NodeType, EdgeType>,
-  nodeLookup: NodeLookup<NodeType>,
+  nodeLookup: NodeLookup<InternalNode<NodeType>>,
 ) {
-  // whether every (non-hidden) node has been measured — `fitView` waits on this so an imperative call right
-  // after `addNodes` doesn't fit around stale (unmeasured) geometry (`getFitViewNodes` skips unmeasured nodes)
-  const nodesInitialized = computed(() => areNodesInitialized(nodeLookup));
-
   return computed<ViewportHelper<NodeType>>(() => {
     const panZoom = state.panZoom;
     const isInitialized = state.panZoom && state.dimensions.width && state.dimensions.height;
@@ -82,47 +76,27 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
         y: state.transform[1],
         zoom: state.transform[2],
       }),
-      fitView: async (
-        options = {
-          padding: DEFAULT_PADDING,
-          includeHiddenNodes: false,
-          duration: 0,
-        },
-      ) => {
+      fitView: async (options) => {
         if (!panZoom) {
           return false;
         }
 
-        // queue the fit until every node is measured (xyflow/react's `fitViewQueued`): a fit requested
-        // before the nodes settle — e.g. right after `addNodes` — would otherwise frame only the already
-        // measured nodes (`getFitViewNodes` skips unmeasured ones) and ignore the new ones. An empty flow has
-        // nothing to wait for, so don't queue (else the fit would never resolve).
-        if (nodeLookup.size > 0 && !nodesInitialized.value) {
-          await until(nodesInitialized).toBe(true);
-        }
+        const resolver = (state.fitViewQueued && state.fitViewQueued.resolver) || withResolvers<boolean>();
+        state.fitViewQueued = markRaw({ options, resolver });
 
-        return fitViewport(
-          {
-            nodes: nodeLookup,
-            width: state.dimensions.width,
-            height: state.dimensions.height,
-            panZoom,
-            minZoom: state.minZoom,
-            maxZoom: state.maxZoom,
-          },
-          {
-            padding: options.padding ?? DEFAULT_PADDING,
-            duration: options.duration,
-            ease: options.ease,
-            interpolate: options.interpolate,
-            minZoom: options.minZoom,
-            maxZoom: options.maxZoom,
-            // `fitViewport` forwards these to `getFitViewNodes` at runtime, but its options type `Omit`s
-            // them — pass via spread to satisfy TS.
-            ...(options.includeHiddenNodes ? { includeHiddenNodes: true } : {}),
-            ...(options.nodes?.length ? { nodes: options.nodes } : {}),
-          },
-        );
+        // A node commit settles the queue against fresh geometry: a same-tick reposition or `addNodes`
+        // triggers `commitNodes` (which resolves once measured), and `addNodes` also resolves via the
+        // measurement commit. Wait one tick for that. If nothing committed, this was a standalone `fitView()`
+        // (e.g. a toolbar button) with no pending change, resolve it directly so it doesn't hang. Waiting
+        // first also avoids resolving against a reposition's not-yet-committed (stale) positions.
+        await nextTick();
+
+        if (state.fitViewQueued && (nodeLookup.size === 0 || areNodesInitialized(nodeLookup))) {
+          resolveFitView(state, nodeLookup);
+        }
+        // still queued + unmeasured: a later measurement commit settles it
+
+        return resolver.promise;
       },
       setCenter: async (x, y, options) => {
         if (!panZoom) {
@@ -137,7 +111,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
 
         return true;
       },
-      fitBounds: async (bounds, options = { padding: DEFAULT_PADDING }) => {
+      fitBounds: async (bounds, options) => {
         if (!panZoom) {
           return false;
         }
@@ -148,7 +122,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
           state.dimensions.height,
           state.minZoom,
           state.maxZoom,
-          options.padding ?? DEFAULT_PADDING,
+          options?.padding ?? defaultFitViewPadding,
         );
 
         await panZoom.setViewport({ x, y, zoom }, options);
@@ -173,12 +147,9 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
         if (state.vueFlowRef) {
           const { x: domX, y: domY } = state.vueFlowRef.getBoundingClientRect();
 
-          const correctedPosition = {
-            x: position.x + domX,
-            y: position.y + domY,
-          };
+          const rendererPosition = rendererPointToPoint(position, state.transform);
 
-          return rendererPointToPoint(correctedPosition, state.transform);
+          return { x: rendererPosition.x + domX, y: rendererPosition.y + domY };
         }
 
         return { x: 0, y: 0 };

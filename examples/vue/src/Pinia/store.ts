@@ -1,9 +1,9 @@
 import type { Edge, Node } from '@xyflow/vue';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 
 const useStore = defineStore('vue-flow-pinia', () => {
-  const nodes = ref<Node[]>([
+  const nodes = shallowRef<Node[]>([
     {
       id: '1',
       type: 'input',
@@ -31,7 +31,7 @@ const useStore = defineStore('vue-flow-pinia', () => {
     },
   ]);
 
-  const edges = ref<Edge[]>([
+  const edges = shallowRef<Edge[]>([
     { id: 'e1-2', source: '1', target: '2' },
     { id: 'e1-3', source: '1', target: '3' },
     { id: 'e3-4', source: '3', target: '4' },

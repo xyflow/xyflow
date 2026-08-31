@@ -10,11 +10,14 @@ import {
   updateConnectionLookup,
   initialConnection,
   mergeAriaLabelConfig,
+  defaultFitViewPadding,
   type SelectionRect,
   type SnapGrid,
   type MarkerProps,
   type PanZoomInstance,
   type CoordinateExtent,
+  EdgeChangeset,
+  NodeChangeset,
   type NodeOrigin,
   type OnError,
   type Viewport,
@@ -31,12 +34,14 @@ import {
   pointToRendererPoint,
   type Transform,
   fitViewport,
-  type Handle,
+  type HandleBounds,
   type OnReconnect,
   type OnReconnectStart,
   type OnReconnectEnd,
   type AriaLabelConfig,
-  type ZIndexMode
+  type ZIndexMode,
+  type NodeChange,
+  type EdgeChange
 } from '@xyflow/system';
 
 const devWarn = createDevWarn('Svelte Flow', 'https://svelteflow.dev/');
@@ -51,7 +56,7 @@ import {
   SmoothStepEdgeInternal,
   StraightEdgeInternal,
   StepEdgeInternal
-} from '$lib/components/edges';
+} from '$lib/components/edges/index.js';
 
 import type {
   NodeTypes,
@@ -67,11 +72,13 @@ import type {
   InternalNode,
   OnBeforeReconnect,
   OnSelectionChange,
-  OnSelectionDrag
-} from '$lib/types';
+  OnSelectionDrag,
+  OnNodesChange,
+  OnEdgesChange
+} from '$lib/types/index.js';
 
-import type { StoreSignals } from './types';
-import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
+import type { StoreSignals } from './types.js';
+import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements.js';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -91,6 +98,9 @@ function getInitialViewport<NodeType extends Node = Node>(
   // This is just used to make sure adoptUserNodes is called before we calculate the viewport
   _nodesInitialized: boolean,
   fitView: boolean | undefined,
+  fitViewOptions: FitViewOptions<NodeType> | undefined,
+  minZoom: number = 0.5,
+  maxZoom: number = 2,
   initialViewport: Viewport | undefined,
   width: number,
   height: number,
@@ -100,7 +110,14 @@ function getInitialViewport<NodeType extends Node = Node>(
     const bounds = getInternalNodesBounds(nodeLookup, {
       filter: (node) => !!((node.width || node.initialWidth) && (node.height || node.initialHeight))
     });
-    return getViewportForBounds(bounds, width, height, 0.5, 2, 0.1);
+    return getViewportForBounds(
+      bounds,
+      width,
+      height,
+      minZoom,
+      maxZoom,
+      fitViewOptions?.padding ?? defaultFitViewPadding
+    );
   } else {
     return initialViewport ?? { x: 0, y: 0, zoom: 1 };
   }
@@ -155,6 +172,43 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       updateConnectionLookup(this.connectionLookup, this.edgeLookup, signals.edges);
       return signals.edges;
     });
+
+    pendingNodeChanges: NodeChangeset<NodeType> | undefined = $state.raw();
+    pendingEdgeChanges: EdgeChangeset<EdgeType> | undefined = $state.raw();
+
+    queueNodeChanges = (changes: NodeChange<NodeType>[]) => {
+      if (!this.pendingNodeChanges) {
+        this.pendingNodeChanges = new NodeChangeset<NodeType>();
+      }
+      this.pendingNodeChanges.add(changes);
+    };
+
+    queueEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {
+      if (!this.pendingEdgeChanges) {
+        this.pendingEdgeChanges = new EdgeChangeset<EdgeType>();
+      }
+      this.pendingEdgeChanges.add(changes);
+    };
+
+    flushNodeChanges = () => {
+      if (!this.pendingNodeChanges) {
+        return;
+      }
+      this.onnodeschange?.(this.pendingNodeChanges);
+      const newNodes = this.pendingNodeChanges.applyTo(this.nodes);
+      this.nodes = newNodes;
+      this.pendingNodeChanges = undefined;
+    };
+
+    flushEdgeChanges = () => {
+      if (!this.pendingEdgeChanges) {
+        return;
+      }
+      this.onedgeschange?.(this.pendingEdgeChanges);
+      const newEdges = this.pendingEdgeChanges.applyTo(this.edges);
+      this.edges = newEdges;
+      this.pendingEdgeChanges = undefined;
+    };
 
     get nodes() {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -271,6 +325,8 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         visibleEdges = getLayoutedEdges(options as EdgeLayoutAllOptions<NodeType, EdgeType>);
       }
 
+      this._prevVisibleEdges = visibleEdges;
+
       return {
         nodes: visibleNodes,
         edges: visibleEdges
@@ -335,6 +391,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       getInitialViewport(
         this.nodesInitialized,
         signals.props.fitView,
+        signals.props.fitViewOptions,
+        signals.props.minZoom,
+        signals.props.maxZoom,
         signals.props.initialViewport,
         this.width,
         this.height,
@@ -392,6 +451,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     onlyRenderVisibleElements: boolean = $derived(signals.props.onlyRenderVisibleElements ?? false);
     onerror: OnError = $derived(signals.props.onflowerror ?? devWarn);
 
+    onnodeschange?: OnNodesChange<NodeType> = $derived(signals.props.onnodeschange);
+    onedgeschange?: OnEdgesChange<EdgeType> = $derived(signals.props.onedgeschange);
+
     ondelete?: OnDelete<NodeType, EdgeType> = $derived(signals.props.ondelete);
     onbeforedelete?: OnBeforeDelete<NodeType, EdgeType> = $derived(signals.props.onbeforedelete);
 
@@ -408,7 +470,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     clickConnect?: boolean = $derived(signals.props.clickConnect ?? true);
     onclickconnectstart?: OnConnectStart = $derived(signals.props.onclickconnectstart);
     onclickconnectend?: OnConnectEnd = $derived(signals.props.onclickconnectend);
-    clickConnectStartHandle: Pick<Handle, 'id' | 'nodeId' | 'type'> | null = $state.raw(null);
+    clickConnectStartHandle: Pick<HandleBounds, 'id' | 'nodeId' | 'type'> | null = $state.raw(null);
 
     onselectiondrag?: OnSelectionDrag<NodeType> = $derived(signals.props.onselectiondrag);
     onselectiondragstart?: OnSelectionDrag<NodeType> = $derived(signals.props.onselectiondragstart);
@@ -446,6 +508,18 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         warnIfDeeplyReactive(signals.nodes, 'nodes');
         warnIfDeeplyReactive(signals.edges, 'edges');
       }
+
+      $effect.pre(() => {
+        if (this.pendingNodeChanges) {
+          this.flushNodeChanges();
+        }
+      });
+
+      $effect.pre(() => {
+        if (this.pendingEdgeChanges) {
+          this.flushEdgeChanges();
+        }
+      });
     }
 
     resetStoreValues() {
@@ -477,5 +551,4 @@ function warnIfDeeplyReactive(array: unknown[] | undefined, name: string) {
     console.warn(`Use $state.raw for ${name} to prevent performance issues.`);
   }
 }
-
 /* eslint-enable svelte/prefer-svelte-reactivity */

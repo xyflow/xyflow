@@ -1,30 +1,13 @@
-import type {
-  EdgeRemoveChange,
-  EdgeSelectionChange,
-  NodeRemoveChange,
-  NodeSelectionChange,
-} from '@xyflow/system';
-import type {
-  Edge,
-  EdgeAddChange,
-  EdgeChange,
-  ElementChange,
-  InternalNode,
-  Node,
-  NodeAddChange,
-  NodeChange,
-} from '../types';
-import { isNode } from '.';
+import type { AddChange, RemoveChange, SelectionChange } from '@xyflow/system';
+import type { Edge, EdgeChange, ElementChange, InternalNode, Node, NodeChange } from '../types';
+import { isNode } from './graph';
 
 /**
- * Apply element changes IMMUTABLY (xyflow/react `applyNodeChanges` semantics): returns a NEW array where
- * changed elements are NEW objects and unchanged elements are reused by reference. Immutability is required
- * by the node split — the store re-adopts the result via `adoptUserNodes`, whose `checkEquality` reuses the
- * existing `InternalNode` when the user-node reference is unchanged; mutating in place would keep the same
- * reference and re-adopt a stale internal node. Reusing unchanged refs keeps re-adoption O(changed).
+ * Apply element changes immutably: returns a NEW array with new objects for changed elements and unchanged
+ * ones reused by reference, so the store's `adoptUserNodes`/`checkEquality` re-adopt stays O(changed)
+ * (mutating in place would keep the reference and re-adopt a stale InternalNode).
  *
- * `position`/`dimensions` changes are gated on `isNode` (user `Node`s have no `internals`, so the old
- * `isInternalNode` guard would skip them) — edges never receive those change types anyway.
+ * `position`/`dimensions` changes are gated on `isNode` — edges never receive those change types.
  */
 export function applyChanges<
   T extends Node | Edge = Node | Edge,
@@ -32,17 +15,15 @@ export function applyChanges<
 >(changes: C[], elements: T[]): T[] {
   // bucket changes: field updates by id, plus add/remove
   const updatesById = new Map<string, C[]>();
-  const addChanges: (NodeAddChange | EdgeAddChange)[] = [];
+  const addChanges: AddChange<Node | Edge>[] = [];
   const removeIds = new Set<string>();
 
   for (const change of changes) {
     if (change.type === 'add') {
-      addChanges.push(change as NodeAddChange | EdgeAddChange);
-    }
-    else if (change.type === 'remove') {
-      removeIds.add((change as NodeRemoveChange | EdgeRemoveChange).id);
-    }
-    else {
+      addChanges.push(change as AddChange<Node | Edge>);
+    } else if (change.type === 'remove') {
+      removeIds.add((change as RemoveChange).id);
+    } else {
       const id = (change as { id?: string }).id;
       if (id == null) {
         continue;
@@ -50,8 +31,7 @@ export function applyChanges<
       const bucket = updatesById.get(id);
       if (bucket) {
         bucket.push(change);
-      }
-      else {
+      } else {
         updatesById.set(id, [change]);
       }
     }
@@ -76,7 +56,7 @@ export function applyChanges<
     for (const currentChange of elementChanges) {
       switch (currentChange.type) {
         case 'select':
-          ;(updated as { selected?: boolean }).selected = currentChange.selected;
+          (updated as { selected?: boolean }).selected = currentChange.selected;
           break;
         case 'position':
           if (isNode(updated)) {
@@ -117,14 +97,13 @@ export function applyChanges<
   }
 
   for (const change of addChanges) {
-    if (next.some(el => el.id === change.item.id)) {
+    if (next.some((el) => el.id === change.item.id)) {
       continue;
     }
 
     if (typeof change.index === 'number') {
       next.splice(change.index, 0, change.item as unknown as T);
-    }
-    else {
+    } else {
       next.push(change.item as unknown as T);
     }
   }
@@ -132,63 +111,20 @@ export function applyChanges<
   return next;
 }
 
-/** @deprecated Prefer the store instance's apply methods (from `useVueFlow` or the `onInit` instance). */
-export function applyEdgeChanges(changes: EdgeChange[], edges: Edge[]) {
-  return applyChanges(changes, edges);
+/** Apply a set of `EdgeChange`s to your edge array and return the next array (for controlled `:edges`). */
+export function applyEdgeChanges<EdgeType extends Edge = Edge>(changes: EdgeChange[], edges: EdgeType[]): EdgeType[] {
+  return applyChanges(changes, edges) as EdgeType[];
 }
 
-/** @deprecated Prefer the store instance's apply methods (from `useVueFlow` or the `onInit` instance). */
-export function applyNodeChanges(changes: NodeChange[], nodes: InternalNode[]) {
-  return applyChanges(changes, nodes);
+/** Apply a set of `NodeChange`s to your node array and return the next array (for controlled `:nodes`). */
+export function applyNodeChanges<NodeType extends Node = Node>(changes: NodeChange[], nodes: NodeType[]): NodeType[] {
+  return applyChanges(changes, nodes) as NodeType[];
 }
 
-export function createSelectionChange(id: string, selected: boolean): NodeSelectionChange | EdgeSelectionChange {
+export function createSelectionChange(id: string, selected: boolean): SelectionChange {
   return {
     id,
     type: 'select',
     selected,
   };
-}
-
-export function createAdditionChange<
-  T extends Node | Edge = Node,
-  C extends NodeAddChange | EdgeAddChange = T extends Node ? NodeAddChange : EdgeAddChange,
->(item: T, index?: number): C {
-  return <C>{
-    item,
-    type: 'add',
-    ...(typeof index === 'number' && { index }),
-  };
-}
-
-export function createNodeRemoveChange(id: string): NodeRemoveChange {
-  return {
-    id,
-    type: 'remove',
-  };
-}
-
-export function createEdgeRemoveChange(id: string): EdgeRemoveChange {
-  return {
-    id,
-    type: 'remove',
-  };
-}
-
-export function getSelectionChanges(
-  items: Map<string, { id: string; selected?: boolean }>,
-  selectedIds: Set<string> = new Set(),
-): NodeSelectionChange[] | EdgeSelectionChange[] {
-  const changes: NodeSelectionChange[] | EdgeSelectionChange[] = [];
-
-  for (const [id, item] of items) {
-    const willBeSelected = selectedIds.has(id);
-
-    // we don't want to set all items to selected=false on the first selection
-    if (!(item.selected === undefined && !willBeSelected) && item.selected !== willBeSelected) {
-      changes.push(createSelectionChange(item.id, willBeSelected));
-    }
-  }
-
-  return changes;
 }

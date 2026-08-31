@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Edge, Node } from '@xyflow/vue';
-import { isEdge, isNode, useVueFlow, VueFlow } from '@xyflow/vue';
+import { isEdge, isNode, setupVueFlow, VueFlow } from '@xyflow/vue';
 
 const initialElements: (Node | Edge)[] = [
   { id: '1', data: { label: '-' }, position: { x: 100, y: 100 } },
@@ -8,10 +8,10 @@ const initialElements: (Node | Edge)[] = [
   { id: 'e1-2', source: '1', target: '2' },
 ];
 
-const nodes = ref<Node[]>(initialElements.filter(isNode));
-const edges = ref<Edge[]>(initialElements.filter(isEdge));
+const nodes = shallowRef<Node[]>(initialElements.filter(isNode));
+const edges = shallowRef<Edge[]>(initialElements.filter(isEdge));
 
-const { updateNode } = useVueFlow();
+const { updateNode } = setupVueFlow();
 
 const opts = reactive({
   bg: '#eeeeee',

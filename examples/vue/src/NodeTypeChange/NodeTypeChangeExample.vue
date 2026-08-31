@@ -21,8 +21,8 @@ const initialElements: (Node | Edge)[] = [
   { id: 'e1-2', source: '1', type: 'smoothstep', target: '2', animated: true },
 ];
 
-const nodes = ref<Node[]>(initialElements.filter(isNode));
-const edges = ref<Edge[]>(initialElements.filter(isEdge));
+const nodes = shallowRef<Node[]>(initialElements.filter(isNode));
+const edges = shallowRef<Edge[]>(initialElements.filter(isEdge));
 
 function changeType() {
   // immutably re-map — user nodes are `markRaw`d in 2.0, so mutating `el.type` in place never re-commits

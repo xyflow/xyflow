@@ -3,7 +3,7 @@ import {
   ConnectionMode,
   type HandleType,
   type XYPosition,
-  type Handle,
+  type HandleBounds,
   type InternalNodeBase,
   type NodeLookup,
 } from '../types';
@@ -37,8 +37,8 @@ export function getClosestHandle(
   connectionRadius: number,
   nodeLookup: NodeLookup,
   fromHandle: { nodeId: string; type: HandleType; id?: string | null }
-): Handle | null {
-  let closestHandles: Handle[] = [];
+): HandleBounds | null {
+  let closestHandles: HandleBounds[] = [];
   let minDistance = Infinity;
 
   const closeNodes = getNodesWithinDistance(position, nodeLookup, connectionRadius + ADDITIONAL_DISTANCE);
@@ -89,7 +89,7 @@ export function getHandle(
   nodeLookup: NodeLookup,
   connectionMode: ConnectionMode,
   withAbsolutePosition = false
-): Handle | null {
+): HandleBounds | null {
   const node = nodeLookup.get(nodeId);
   if (!node) {
     return null;

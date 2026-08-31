@@ -203,7 +203,7 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
  */
 function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   if (typeof padding === 'number') {
-    return Math.floor((viewport - viewport / (1 + padding)) * 0.5);
+    return Math.floor(padding);
   }
 
   if (typeof padding === 'string' && padding.endsWith('px')) {
@@ -313,9 +313,9 @@ export const getViewportForBounds = (
   bounds: Rect,
   width: number,
   height: number,
-  minZoom: number,
-  maxZoom: number,
-  padding: Padding
+  minZoom: number = 0,
+  maxZoom: number = Infinity,
+  padding: Padding = 0
 ): Viewport => {
   // First we resolve all the paddings to actual pixel values
   const p = parsePaddings(padding, width, height);
@@ -440,4 +440,20 @@ export function withResolvers<T>(): {
 
 export function mergeAriaLabelConfig(partial?: Partial<AriaLabelConfig>): AriaLabelConfig {
   return { ...defaultAriaLabelConfig, ...(partial || {}) };
+}
+
+export function isDomNodeVisible(selector: string) {
+  const el = typeof document !== 'undefined' ? document.querySelector(selector) : null;
+  if (!el || !el.isConnected) return false;
+
+  const style = getComputedStyle(el);
+
+  if (style.display === 'none') return false;
+  if (style.visibility === 'hidden' || style.visibility === 'collapse') return false;
+  if (style.opacity === '0') return false;
+
+  const rect = el.getBoundingClientRect();
+  if (rect.width === 0 && rect.height === 0) return false;
+
+  return true;
 }

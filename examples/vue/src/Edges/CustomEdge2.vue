@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { Edge, EdgeProps } from '@xyflow/vue';
+import type { CustomEdge2Props } from './types';
 import { BezierEdge } from '@xyflow/vue';
 
-defineProps<EdgeProps<Edge<{ text: string }>>>();
+defineProps<CustomEdge2Props>();
 </script>
 
 <script lang="ts">
@@ -13,7 +13,7 @@ export default {
 
 <template>
   <BezierEdge
-    :label="data.text"
+    :label="data?.text"
     :source-x="sourceX"
     :source-y="sourceY"
     :target-x="targetX"

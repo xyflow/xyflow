@@ -12,7 +12,7 @@ const defaultNodeStyle = {
   borderRadius: '20px',
 };
 
-const nodes = ref<ToolbarNode[]>([
+const nodes = shallowRef<ToolbarNode[]>([
   {
     id: '1',
     type: 'custom',
@@ -50,7 +50,7 @@ const nodes = ref<ToolbarNode[]>([
   },
 ]);
 
-const edges = ref<Edge[]>([]);
+const edges = shallowRef<Edge[]>([]);
 </script>
 
 <template>

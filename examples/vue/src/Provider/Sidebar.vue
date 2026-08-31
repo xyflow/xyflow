@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { Node } from '@xyflow/vue';
-import { storeToRefs, useStore, useVueFlow } from '@xyflow/vue';
+import { storeToRefs, useVueFlowStore, useVueFlow } from '@xyflow/vue';
 
 const { addSelectedNodes, getNodes, viewport } = useVueFlow();
 
-const { nodesSelectionActive } = storeToRefs(useStore());
+const { nodesSelectionActive } = storeToRefs(useVueFlowStore());
 
 function selectAll() {
   addSelectedNodes(getNodes.value as unknown as Node[]);

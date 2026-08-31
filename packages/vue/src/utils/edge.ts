@@ -1,8 +1,8 @@
-import type { ZIndexMode } from '@xyflow/system';
-import type { Actions, Edge, HandleElement } from '../types';
+import type { HandleBounds, ZIndexMode } from '@xyflow/system';
+import type { Actions, Edge } from '../types';
 import { getElevatedEdgeZIndex } from '@xyflow/system';
 
-export function getEdgeHandle(bounds: HandleElement[] | null, handleId?: string | null): HandleElement | null {
+export function getEdgeHandle(bounds: HandleBounds[] | null, handleId?: string | null): HandleBounds | null {
   if (!bounds) {
     return null;
   }

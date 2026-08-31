@@ -4,7 +4,7 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "typecheck"],
       "outputs": ["dist/**"]
     },
     "dev": {
@@ -19,6 +19,7 @@
       "outputs": []
     },
     "typecheck": {
+      "dependsOn": ["^build"],
       "outputs": []
     },
     "storybook": {

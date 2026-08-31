@@ -1,27 +1,23 @@
-import type { Connection } from '@xyflow/system';
 import type { Ref, ToRefs } from 'vue';
-import type { Edge, FlowProps, Node, VueFlowStoreHandle } from '../types';
-import { mergeAriaLabelConfig } from '@xyflow/system';
+import type { Edge, Node, VueFlowProps, VueFlowStoreHandle } from '../types';
 import { effectScope, isRef, toRaw, toRef, watch } from 'vue';
 import { isDef } from '../utils';
 import { storeToRefs } from './storeToRefs';
 
 /**
- * Two-way bind a `v-model` array ref to the store, identity-in / snapshot-out, with native `watch`.
- *
- * Used only when `<VueFlow>` does NOT own its store (it reuses a `<VueFlowProvider>`'s), so the model
- * refs can't back the store directly. The owned-store path is single-source instead — the model refs
- * ARE the store's nodes/edges (see `createStore`'s `StoreSignals` binding), needing no sync here.
+ * Two-way bind a `v-model` array ref to the store's canonical `shallowRef` (never the v-model ref itself).
  *
  * - **out** (store → model): snapshot on every membership change; element refs are shared, so per-node
  *   field mutations surface without a copy.
- * - **in** (model → store): adopt externally-assigned arrays via `setItems`, ignoring our own snapshot
- *   (identity check against `lastSnapshot`) — replacing the previous `@vueuse` `watchPausable` flag dance.
+ * - **in** (model → store): adopt externally-assigned arrays via `setItems`, skipping our own snapshot.
+ *
+ * Both directions flush synchronously so the model ref and the store's synchronous reads never disagree.
  */
 function syncModelArray<ModelItem, StoreItem>(
   model: Ref<ModelItem[] | undefined> | undefined,
   storeItems: Ref<StoreItem[]>,
   setItems: (items: ModelItem[]) => void,
+  syncBack: boolean,
 ) {
   if (!model) {
     return;
@@ -30,15 +26,20 @@ function syncModelArray<ModelItem, StoreItem>(
   // the array we last pushed store → model; the `in` watcher skips it so the snapshot doesn't loop back
   let lastSnapshot: ModelItem[] | undefined;
 
-  watch(
-    [storeItems, () => storeItems.value.length],
-    () => {
-      lastSnapshot = [...storeItems.value] as unknown as ModelItem[];
-      model.value = lastSnapshot;
-    },
-    // seed the model only if the store already holds elements (populated by `setState(props)` on create)
-    { immediate: storeItems.value.length > 0 },
-  );
+  // OUT (store → model): only for a managed binding (`v-model`). A controlled one-way `:nodes` owns its
+  // own array, so we never write back to it — we only adopt reassignments IN (below).
+  // `flush: 'sync'` so the v-model ref mirrors a store commit on the same tick as the synchronous reads;
+  // seed the model only if the store already holds elements.
+  if (syncBack) {
+    watch(
+      [storeItems, () => storeItems.value.length],
+      () => {
+        lastSnapshot = [...storeItems.value] as unknown as ModelItem[];
+        model.value = lastSnapshot;
+      },
+      { immediate: storeItems.value.length > 0, flush: 'sync' },
+    );
+  }
 
   watch(
     [model, () => model.value?.length],
@@ -47,8 +48,8 @@ function syncModelArray<ModelItem, StoreItem>(
         return;
       }
 
-      // compare raw identities: a deep model `ref` hands our own snapshot back as its reactive proxy,
-      // which would fail a plain `===` and loop snapshot → setItems → snapshot forever
+      // compare raw identities: a deep model ref hands our snapshot back as a proxy that fails `===`,
+      // looping snapshot → setItems → snapshot forever
       const nextRaw = toRaw(next);
       if (nextRaw === lastSnapshot) {
         return;
@@ -56,7 +57,8 @@ function syncModelArray<ModelItem, StoreItem>(
 
       setItems(nextRaw);
     },
-    { immediate: true },
+    // `flush: 'sync'` so an external `nodes.value = [...]` is adopted immediately, keeping both sides on the same tick
+    { immediate: true, flush: 'sync' },
   );
 }
 
@@ -64,16 +66,17 @@ function syncModelArray<ModelItem, StoreItem>(
  * Watches props and updates the store accordingly
  *
  * @internal
- * @param models v-model refs for nodes/edges (bound only when `ownsStore` is false — see {@link syncModelArray})
+ * @param models v-model refs for nodes/edges — bridged to the store here (see {@link syncModelArray})
  * @param props the `<VueFlow>` props
  * @param handle the created store handle ({@link VueFlowStoreHandle}) — instance (actions) + reactive state
- * @param ownsStore whether this `<VueFlow>` created the store (then nodes/edges are signal-backed and skipped here)
+ * @param syncBack per-collection managed flag — a managed binding (`v-model`) mirrors store changes back to
+ *   the model ref; a controlled one-way `:nodes` does not
  */
 export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
-  models: ToRefs<Pick<FlowProps<NodeType, EdgeType>, 'nodes' | 'edges'>>,
-  props: FlowProps<NodeType, EdgeType>,
+  models: ToRefs<Pick<VueFlowProps<NodeType, EdgeType>, 'nodes' | 'edges'>>,
+  props: VueFlowProps<NodeType, EdgeType>,
   handle: VueFlowStoreHandle<NodeType, EdgeType>,
-  ownsStore = false,
+  syncBack: { nodes: boolean; edges: boolean },
 ) {
   const { instance, state } = handle;
   // refs over the reactive state (writable) so the prop→store sync below can assign as before
@@ -82,170 +85,24 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
   const scope = effectScope(true);
 
   scope.run(() => {
-    // Only when this `<VueFlow>` reuses a provider's store (it didn't create it, so the model refs can't
-    // back it). Owned stores are single-source — the models ARE the store's nodes/edges — so these are skipped.
     const watchNodesValue = () => {
       scope.run(() => {
-        syncModelArray(models.nodes, storeRefs.nodes, nodes => instance.setNodes(nodes));
+        syncModelArray(models.nodes, storeRefs.nodes, nodes => instance.setNodes(nodes), syncBack.nodes);
       });
     };
 
     const watchEdgesValue = () => {
       scope.run(() => {
-        syncModelArray(models.edges, storeRefs.edges, edges => instance.setEdges(edges));
-      });
-    };
-
-    const watchMaxZoom = () => {
-      scope.run(() => {
-        watch(
-          () => props.maxZoom,
-          (maxZoom) => {
-            if (maxZoom && isDef(maxZoom)) {
-              instance.setMaxZoom(maxZoom);
-            }
-          },
-          {
-            immediate: true,
-          },
-        );
-      });
-    };
-
-    const watchMinZoom = () => {
-      scope.run(() => {
-        watch(
-          () => props.minZoom,
-          (minZoom) => {
-            if (minZoom && isDef(minZoom)) {
-              instance.setMinZoom(minZoom);
-            }
-          },
-          { immediate: true },
-        );
-      });
-    };
-
-    const watchTranslateExtent = () => {
-      scope.run(() => {
-        watch(
-          () => props.translateExtent,
-          (translateExtent) => {
-            if (translateExtent && isDef(translateExtent)) {
-              instance.setTranslateExtent(translateExtent);
-            }
-          },
-          {
-            immediate: true,
-          },
-        );
-      });
-    };
-
-    const watchNodeExtent = () => {
-      scope.run(() => {
-        watch(
-          () => props.nodeExtent,
-          (nodeExtent) => {
-            if (nodeExtent && isDef(nodeExtent)) {
-              instance.setNodeExtent(nodeExtent);
-            }
-          },
-          {
-            immediate: true,
-          },
-        );
-      });
-    };
-
-    const watchAriaLabelConfig = () => {
-      scope.run(() => {
-        watch(
-          () => props.ariaLabelConfig,
-          (ariaLabelConfig) => {
-            // merge over the defaults so unspecified keys keep their default text (handled here rather than
-            // in `watchRest`, which would assign the partial verbatim and drop the defaults)
-            state.ariaLabelConfig = mergeAriaLabelConfig(ariaLabelConfig);
-          },
-          { immediate: true },
-        );
-      });
-    };
-
-    const watchApplyDefault = () => {
-      scope.run(() => {
-        watch(
-          () => props.autoApplyChanges,
-          (autoApplyChanges) => {
-            if (isDef(autoApplyChanges)) {
-              storeRefs.autoApplyChanges.value = autoApplyChanges;
-            }
-          },
-          {
-            immediate: true,
-          },
-        );
-      });
-    };
-
-    const watchAutoConnect = () => {
-      scope.run(() => {
-        const autoConnector = async (params: Connection) => {
-          let connection: boolean | Connection = params;
-
-          if (typeof props.autoConnect === 'function') {
-            connection = await props.autoConnect(params);
-          }
-
-          if (connection !== false) {
-            instance.addEdges([connection]);
-          }
-        };
-
-        watch(
-          () => props.autoConnect,
-          (autConnect) => {
-            if (isDef(autConnect)) {
-              storeRefs.autoConnect.value = autConnect;
-            }
-          },
-          { immediate: true },
-        );
-
-        watch(
-          storeRefs.autoConnect,
-          (autoConnectEnabled, _, onCleanup) => {
-            if (autoConnectEnabled) {
-              instance.onConnect(autoConnector);
-            }
-            else {
-              state.hooks.connect.off(autoConnector);
-            }
-
-            onCleanup(() => {
-              state.hooks.connect.off(autoConnector);
-            });
-          },
-          { immediate: true },
-        );
+        syncModelArray(models.edges, storeRefs.edges, edges => instance.setEdges(edges), syncBack.edges);
       });
     };
 
     const watchRest = () => {
       const skip: (keyof typeof props)[] = [
         'id',
-        'translateExtent',
-        'nodeExtent',
         'edges',
         'nodes',
-        'maxZoom',
-        'minZoom',
-        'autoApplyChanges',
-        'autoConnect',
-        // `viewport` isn't a state field (it's a getter on the instance); `useViewportSync` two-way binds it
         'viewport',
-        // merged (not assigned verbatim) by `watchAriaLabelConfig`
-        'ariaLabelConfig',
       ];
 
       for (const key of Object.keys(props)) {
@@ -273,18 +130,8 @@ export function useWatchProps<NodeType extends Node = Node, EdgeType extends Edg
     };
 
     const runAll = () => {
-      // owned stores bind nodes/edges single-source via signals (createStore); only reused stores sync here
-      if (!ownsStore) {
-        watchNodesValue();
-        watchEdgesValue();
-      }
-      watchMinZoom();
-      watchMaxZoom();
-      watchTranslateExtent();
-      watchNodeExtent();
-      watchApplyDefault();
-      watchAutoConnect();
-      watchAriaLabelConfig();
+      watchNodesValue();
+      watchEdgesValue();
       watchRest();
     };
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ControlEmits, ControlProps } from './types';
 import { toRef } from 'vue';
-import { storeToRefs, useStore, useVueFlow } from '../../composables';
+import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import Panel from '../Panel/Panel.vue';
 import ControlButton from './ControlButton.vue';
 import { FitView, Lock, MinusIcon, PlusIcon, Unlock } from './icons';
@@ -17,7 +17,7 @@ const emit = defineEmits<ControlEmits>();
 
 const { setInteractive, zoomIn, zoomOut, fitView, viewport } = useVueFlow();
 
-const { nodesDraggable, nodesConnectable, elementsSelectable, minZoom, maxZoom, ariaLabelConfig } = storeToRefs(useStore());
+const { nodesDraggable, nodesConnectable, elementsSelectable, minZoom, maxZoom, ariaLabelConfig } = storeToRefs(useVueFlowStore());
 
 const isInteractive = toRef(() => nodesDraggable.value || nodesConnectable.value || elementsSelectable.value);
 
@@ -106,7 +106,6 @@ export default {
     <template v-if="showInteractive">
       <slot name="control-interactive">
         <ControlButton
-          v-if="showInteractive"
           class="vue-flow__controls-interactive"
           :label="ariaLabelConfig['controls.interactive.ariaLabel']"
           @click="onInteractiveChangeHandler"

@@ -6,3 +6,8 @@ export * from './xyhandle';
 export * from './xyminimap';
 export * from './xypanzoom';
 export * from './xyresizer';
+export * from './changes/apply';
+export * from './changes/create';
+export * from './changes/index';
+export * from './changes/types';
+export * from './changes/utils';

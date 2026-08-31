@@ -1,4 +1,5 @@
 .xy-flow {
+  --xy-node-color-default: light-dark(CanvasText, #f8f8f8);
   --xy-node-border-default: 1px solid #bbb;
   --xy-node-border-selected-default: 1px solid #555;
 

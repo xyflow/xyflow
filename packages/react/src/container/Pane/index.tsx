@@ -18,12 +18,12 @@ import {
   pointToRendererPoint,
   rendererPointToPoint,
   XYPosition,
+  getSelectionChanges,
 } from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
 import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
-import { getSelectionChanges } from '../../utils';
 import type { ReactFlowProps, ReactFlowState } from '../../types';
 
 type PaneProps = {
@@ -142,6 +142,12 @@ export function Pane({
   // We are using capture here in order to prevent other pointer events
   // to be able to create a selection above a node or an edge
   const onPointerDownCapture = (event: ReactPointerEvent): void => {
+    // Mouse button arrays only restrict mouse input. Let touch panning handle this gesture
+    // unless the user explicitly activated selection with the selection key.
+    if (event.pointerType === 'touch' && panOnDrag !== false && !selectionKeyPressed) {
+      return;
+    }
+
     const { domNode, transform } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
     if (!containerBounds.current) return;
@@ -191,8 +197,8 @@ export function Pane({
       nodeLookup,
       edgeLookup,
       connectionLookup,
-      triggerNodeChanges,
-      triggerEdgeChanges,
+      emitNodeChanges,
+      emitEdgeChanges,
       defaultEdgeOptions,
     } = store.getState();
 
@@ -236,12 +242,12 @@ export function Pane({
 
     if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
       const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true);
-      triggerNodeChanges(changes);
+      emitNodeChanges(changes);
     }
 
     if (!areSetsEqual(prevSelectedEdgeIds, selectedEdgeIds.current)) {
       const changes = getSelectionChanges(edgeLookup, selectedEdgeIds.current);
-      triggerEdgeChanges(changes);
+      emitEdgeChanges(changes);
     }
 
     store.setState({

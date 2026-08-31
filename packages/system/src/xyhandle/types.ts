@@ -6,7 +6,7 @@ import {
   type HandleType,
   type PanBy,
   type Transform,
-  type Handle,
+  type HandleBounds,
   type OnConnectEnd,
   type UpdateConnection,
   type IsValidConnection,
@@ -41,14 +41,14 @@ export type OnPointerDownParams<NodeType extends NodeBase = NodeBase, EdgeType e
     connectionState: FinalConnectionState<InternalNodeBase<NodeType>>
   ) => void;
   getTransform: () => Transform;
-  getFromHandle: () => Handle | null;
+  getFromHandle: () => HandleBounds | null;
   autoPanSpeed?: number;
   dragThreshold?: number;
   handleDomNode: Element;
 };
 
 export type IsValidParams<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
-  handle: Pick<Handle, 'nodeId' | 'id' | 'type'> | null;
+  handle: Pick<HandleBounds, 'nodeId' | 'id' | 'type'> | null;
   connectionMode: ConnectionMode;
   fromNodeId: string;
   fromHandleId: string | null;
@@ -69,5 +69,5 @@ export type Result = {
   handleDomNode: Element | null;
   isValid: boolean;
   connection: Connection | null;
-  toHandle: Handle | null;
+  toHandle: HandleBounds | null;
 };

@@ -13,7 +13,6 @@ import type {
   OnError,
   ConnectionMode,
   PanelPosition,
-  ProOptions,
   ColorMode,
   OnConnect,
   OnConnectStart,
@@ -38,8 +37,11 @@ import type {
   OnBeforeDelete,
   IsValidConnection,
   OnBeforeReconnect,
-  OnSelectionChange
-} from '$lib/types';
+  OnSelectionChange,
+  OnNodesChange,
+  OnEdgesChange,
+  ProOptions
+} from '$lib/types/index.js';
 
 import type { Component } from 'svelte';
 import type {
@@ -48,7 +50,7 @@ import type {
   NodeSelectionEvents,
   OnSelectionDrag,
   PaneEvents
-} from '$lib/types/events';
+} from '$lib/types/events.js';
 
 export type SvelteFlowProps<
   NodeType extends Node = Node,
@@ -136,9 +138,10 @@ export type SvelteFlowProps<
     fitView?: boolean;
     /**
      * Options to be used in combination with fitView
+     * @default { padding: '5%' }
      * @example
      * const fitViewOptions = {
-     *  padding: 0.1,
+     *  padding: '5%',
      *  includeHiddenNodes: false,
      *  minZoom: 0.1,
      *  maxZoom: 1,
@@ -327,6 +330,7 @@ export type SvelteFlowProps<
     /**
      * Enabling this prop allows users to pan the viewport by clicking and dragging.
      * You can also set this prop to an array of numbers to limit which mouse buttons can activate panning.
+     * Mouse button arrays do not disable touch panning; set this prop to `false` to disable all drag panning.
      * @default true
      * @example [0, 2] // allows panning with the left and right mouse buttons
      * [0, 1, 2, 3, 4] // allows panning with all mouse buttons
@@ -437,9 +441,8 @@ export type SvelteFlowProps<
     attributionPosition?: PanelPosition;
     /**
      * By default, we render a small attribution in the corner of your flows that links back to the project.
-     * You are free to remove this attribution but we ask that you take a quick look at our
-     * {@link https://svelteflow.dev/learn/troubleshooting/remove-attribution | removing attribution guide}
-     * before doing so.
+     * Please only remove the attribution if you have a Svelte Flow subscription.
+     * More information in the {@link https://svelteflow.dev/remove-attribution | removing attribution guide}.
      */
     proOptions?: ProOptions;
     isValidConnection?: IsValidConnection<EdgeType>;
@@ -487,6 +490,22 @@ export type SvelteFlowProps<
     onclickconnectend?: OnConnectEnd;
     /** This handler gets called when the flow is finished initializing */
     oninit?: () => void;
+    /** This handler gets called before Svelte Flow updates nodes and can be used to modify the changes.
+     * Usually this happens, after initial measuring and when selecting, dragging or deleting nodes.
+     * @example
+     * onnodeschange={changes => {
+     *  // TODO: better example
+     * }}
+     */
+    onnodeschange?: OnNodesChange<NodeType>;
+    /** This handler gets called before Svelte Flow updates edges and can be used to modify the changes.
+     * Usually this happens when selecting, connecting or deleting edges.
+     * @example
+     * onedgeschange={changes => {
+     *  // TODO: better example
+     * }}
+     */
+    onedgeschange?: OnEdgesChange<EdgeType>;
     /** This event handler gets called when the selected nodes & edges change */
     onselectionchange?: OnSelectionChange<NodeType, EdgeType>;
     /** This event handler gets called when a user starts to drag a selection box. */

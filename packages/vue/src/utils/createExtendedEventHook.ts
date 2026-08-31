@@ -1,17 +1,15 @@
 import { onScopeDispose } from 'vue';
 
 /**
- * vue-flow's own event-hook types. We intentionally do NOT reuse `@vueuse/core`'s `EventHook*` types:
- * since v14 its `Callback<T>` spreads array payloads (for `T extends any[]` it becomes
- * `(...param: T) => void`), which is incompatible with vue-flow's single-array-payload hooks — e.g.
- * `onNodesChange((changes: NodeChange[]) => void)` and `trigger(changes)`. Owning these types keeps the
- * public hook contract stable regardless of `@vueuse/core`'s internal callback variance.
+ * vue-flow's own event-hook types. We don't reuse `@vueuse/core`'s `EventHook*`: since v14 its `Callback<T>`
+ * spreads array payloads (`(...param: T) => void`), which breaks single-array-payload hooks like
+ * `onNodesChange((changes: NodeChange[]) => void)`. Owning them keeps the public hook contract stable.
  */
 export type EventHookOn<T = any> = (fn: (param: T) => void) => { off: () => void };
-export type EventHookOff<T = any> = (fn: (param: T) => void) => void;
+type EventHookOff<T = any> = (fn: (param: T) => void) => void;
 export type EventHookTrigger<T = any> = (param: T) => Promise<unknown[]>;
 
-export interface EventHook<T = any> {
+interface EventHook<T = any> {
   on: EventHookOn<T>;
   off: EventHookOff<T>;
   trigger: EventHookTrigger<T>;
@@ -26,7 +24,7 @@ export interface EventHookExtended<T> extends EventHook<T> {
   setEmitter: (fn: (param: T) => void) => void;
   /** remove the external emitter */
   removeEmitter: () => void;
-  /** wire a function to detect if any emit listeners exist (e.g., for `$listeners` in Vue 2) */
+  /** wire a detector for whether a template `@event` listener is bound (so `trigger` can skip a void emit) */
   setHasEmitListeners: (fn: () => boolean) => void;
   /** remove the emit listeners detector */
   removeHasEmitListeners: () => void;
