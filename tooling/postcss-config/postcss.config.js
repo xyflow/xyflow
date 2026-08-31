@@ -13,12 +13,7 @@ module.exports = (ctx) => {
       postcssImport,
       postcssNested,
       postcssCombine,
-      postcssRename({
-        // only the `xy-flow` namespace is swapped, so theme helper classes like `xy-theme__button`
-        // keep the same name in every library
-        strategy: (className) =>
-          className.startsWith('xy-flow') ? className.replace('xy-flow', `${process.env.LIB}-flow`) : className,
-      }),
+      postcssRename({}),
       autoprefixer,
       ctx.env === 'production' && cssnano,
     ],
