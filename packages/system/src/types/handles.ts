@@ -6,8 +6,7 @@ import type { Position, IsValidConnection } from '.';
 export type HandleType = 'source' | 'target';
 
 /**
- * Measured geometry of a connection handle on a node: identity, side, and box relative to the node.
- * Distinct from the `<Handle />` component and from {@link NodeHandle} (user-declared layout on `node.handles`).
+ * Measured position and size of a handle relative to the node
  *
  * @public
  */
