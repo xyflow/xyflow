@@ -18,6 +18,12 @@ export interface Commit<NodeType extends Node = Node, EdgeType extends Edge = Ed
   commitNodes: (nodes: NodeType[], checkEquality?: boolean) => void;
   /** Single write path for edges: stored verbatim, mirrored into `edgeLookup` + the connection lookup. */
   commitEdges: (next: EdgeType[]) => void;
+  /**
+   * Mirror the system lookups into the reactive ones. Exposed because the measurement path hands the
+   * system-side lookups to `@xyflow/system`'s `updateNodeInternals`, which writes new node objects into
+   * them; without a sync the reactive lookup keeps the pre-measurement entries.
+   */
+  syncLookups: () => void;
 }
 
 export function createCommit<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
@@ -139,5 +145,5 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
     updateConnectionLookup(state.connectionLookup, next);
   }
 
-  return { systemNodeLookup, systemParentLookup, commitNodes, commitEdges };
+  return { systemNodeLookup, systemParentLookup, commitNodes, commitEdges, syncLookups };
 }
