@@ -1,8 +1,6 @@
-import type { Handle, HandleType, IsValidConnection, Position } from '@xyflow/system';
+import type { HandleType, IsValidConnection, Position } from '@xyflow/system';
 import type { Edge } from './edge';
 import type { InternalNode } from './node';
-
-export type ConnectingHandle = Omit<Handle, 'width' | 'height'>;
 
 export type HandleConnectableFunc = (node: InternalNode, connectedEdges: Edge[]) => boolean;
 

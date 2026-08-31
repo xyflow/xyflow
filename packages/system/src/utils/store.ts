@@ -1,7 +1,7 @@
 import {
   dimensionChange,
   DimensionChange,
-  type Handle,
+  type HandleBounds,
   type HandleConnection,
   infiniteExtent,
   type NodeHandleBounds,
@@ -67,8 +67,8 @@ function parseHandles(userNode: NodeBase, internalNode?: InternalNodeBase): Node
     return !userNode.measured || userNode.hidden ? undefined : internalNode?.internals.handleBounds;
   }
 
-  const source: Handle[] = [];
-  const target: Handle[] = [];
+  const source: HandleBounds[] = [];
+  const target: HandleBounds[] = [];
 
   for (const handle of userNode.handles) {
     const handleBounds = {

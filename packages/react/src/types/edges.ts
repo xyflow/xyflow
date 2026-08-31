@@ -16,7 +16,7 @@ import type {
   DefaultEdgeOptionsBase,
   HandleType,
   ConnectionLineType,
-  Handle,
+  HandleBounds,
   EdgePosition,
   StepPathOptions,
   OnError,
@@ -266,7 +266,7 @@ export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   /** The node the connection line originates from. */
   fromNode: InternalNode<NodeType>;
   /** The handle on the `fromNode` that the connection line originates from. */
-  fromHandle: Handle;
+  fromHandle: HandleBounds;
   fromX: number;
   fromY: number;
   toX: number;
@@ -279,7 +279,7 @@ export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
    */
   connectionStatus: 'valid' | 'invalid' | null;
   toNode: InternalNode<NodeType> | null;
-  toHandle: Handle | null;
+  toHandle: HandleBounds | null;
   pointer: XYPosition;
 };
 

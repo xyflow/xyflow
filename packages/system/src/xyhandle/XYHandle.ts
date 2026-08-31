@@ -11,7 +11,7 @@ import {
   Position,
   oppositePosition,
   type ConnectionInProgress,
-  type Handle,
+  type HandleBounds,
   type Connection,
   type NodeBase,
   type EdgeBase,
@@ -55,7 +55,7 @@ function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
   // when xyflow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target);
   let autoPanId = 0;
-  let closestHandle: Handle | null;
+  let closestHandle: HandleBounds | null;
 
   const { x, y } = getEventPosition(event);
   const handleType = getHandleType(edgeUpdaterType, handleDomNode);
@@ -89,7 +89,7 @@ function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
   }
 
   // Stays the same for all consecutive pointermove events
-  const fromHandle: Handle = {
+  const fromHandle: HandleBounds = {
     ...fromHandleInternal,
     nodeId,
     type: handleType,

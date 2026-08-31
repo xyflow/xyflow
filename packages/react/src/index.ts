@@ -80,6 +80,7 @@ export {
   type CoordinateExtent,
   type ColorMode,
   type HandleType,
+  type HandleBounds,
   type ShouldResize,
   type OnResizeStart,
   type OnResize,
@@ -116,10 +117,6 @@ export {
   NodeChangeset,
   EdgeChangeset,
 } from '@xyflow/system';
-
-// we need this workaround to prevent a duplicate identifier error
-import { type Handle as HandleBound } from '@xyflow/system';
-export type Handle = HandleBound;
 
 // system utils
 export {

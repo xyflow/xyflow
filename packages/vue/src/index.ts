@@ -3,11 +3,6 @@
  * @module vue-flow
  */
 
-// `Handle` names both the component (exported below) and the system type for a handle's measured bounds.
-// Re-exporting the type through an alias declaration (not a re-export specifier) lets them share the name
-// without a duplicate-identifier error.
-import type { Handle as HandleBounds } from '@xyflow/system';
-
 export * from './components/Background';
 
 export * from './components/Controls';
@@ -26,7 +21,6 @@ export { default as StraightEdge } from './components/Edges/StraightEdge';
 export * from './components/EdgeToolbar';
 
 export { default as Handle } from './components/Handle/Handle.vue';
-export type Handle = HandleBounds;
 export * from './components/MiniMap';
 export * from './components/NodeResizer';
 export * from './components/NodeToolbar';
@@ -116,6 +110,7 @@ export {
   type FitViewOptionsBase as FitViewOptions,
   type GetViewport,
   type HandleConnection,
+  type HandleBounds,
   type HandleType,
   type IsValidConnection,
   type MarkerProps,

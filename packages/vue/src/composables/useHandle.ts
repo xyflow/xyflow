@@ -120,6 +120,8 @@ export function useHandle({
         type: toValue(type),
         id: toValue(handleId),
         position: Position.Top,
+        width: 0,
+        height: 0,
         ...getEventPosition(event),
       };
 
