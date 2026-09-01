@@ -1,11 +1,11 @@
 import { expect, userEvent, waitFor } from 'storybook/test';
 
-import { DEMO_NODE_ID, type NodeToolbarStoryArgs } from '../components/NodeToolbar/config';
+import { DEMO_NODE_ID, type SharedNodeToolbarArgs } from '../components/NodeToolbar/config';
 import type { FlowFramework, StoryPlayContext } from '../types';
 import { dataIdSelector, getQueryRoot, nodeToolbarSelector, queryNode } from '../utils';
 
-type ToolbarPosition = NonNullable<NodeToolbarStoryArgs['position']>;
-type ToolbarAlign = NonNullable<NodeToolbarStoryArgs['align']>;
+type ToolbarPosition = NonNullable<SharedNodeToolbarArgs['position']>;
+type ToolbarAlign = NonNullable<SharedNodeToolbarArgs['align']>;
 
 export function createNodeToolbarPlays(framework: FlowFramework) {
   const toolbarSelector = `${dataIdSelector(DEMO_NODE_ID)}${nodeToolbarSelector(framework)}`;

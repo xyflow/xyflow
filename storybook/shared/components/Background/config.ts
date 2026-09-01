@@ -1,3 +1,5 @@
+import type { StoryArgTypes } from '../../types';
+
 export type BackgroundVariantName = 'dots' | 'lines' | 'cross';
 
 export type SharedBackgroundArgs = {
@@ -33,17 +35,11 @@ export const defaultBackgroundArgs: SharedBackgroundArgs = {
   lineWidth: 1,
 };
 
-type ArgTypeConfig = {
-  control?: 'text' | 'color' | 'select' | 'object' | { type: string; min?: number; step?: number };
-  description: string;
-  options?: unknown[];
-};
-
 export function backgroundArgTypes(
   framework: 'react' | 'svelte',
   variantOptions: unknown[]
-): Record<string, ArgTypeConfig> {
-  const base: Record<string, ArgTypeConfig> = {
+): StoryArgTypes {
+  const base: StoryArgTypes = {
     id: { control: 'text', description: 'Unique id for the background pattern.' },
     color: { control: 'color', description: 'Color of the pattern.' },
     bgColor: { control: 'color', description: 'Color of the background.' },

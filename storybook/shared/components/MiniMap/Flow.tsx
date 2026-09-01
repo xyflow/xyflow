@@ -12,23 +12,16 @@ import {
   type OnConnect,
 } from '@xyflow/react';
 
-import { defaultFlowProps } from '../defaultFlow';
 import { FLOW_STORY_RESET_EVENT } from '../../tests/suite';
+import { defaultFlowProps } from '../defaultFlow';
+import type { SharedMiniMapArgs } from './config';
 
-import { type MiniMapStoryArgs } from './config';
+type MiniMapExampleProps = SharedMiniMapArgs &
+  Pick<MiniMapProps, 'onClick' | 'onNodeClick'>;
 
 const flowStyle = { width: '100%', height: '100%' } as const;
 
-type MiniMapExampleProps = MiniMapStoryArgs &
-  Pick<MiniMapProps, 'onClick' | 'onNodeClick'>;
-
-export const MiniMapExample: FC<MiniMapExampleProps> = ({
-  className,
-  style,
-  onClick,
-  onNodeClick,
-  ...miniMapProps
-}) => {
+export const MiniMapExample: FC<MiniMapExampleProps> = (miniMapProps) => {
   const initialNodes = useMemo(() => defaultFlowProps.nodes ?? [], []);
   const initialEdges = useMemo(() => defaultFlowProps.edges ?? [], []);
   const [resetKey, setResetKey] = useState(0);
@@ -36,7 +29,7 @@ export const MiniMapExample: FC<MiniMapExampleProps> = ({
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect: OnConnect = useCallback(
-    (params) => setEdges((currentEdges) => addEdge(params, currentEdges)),
+    (connection) => setEdges((currentEdges) => addEdge(connection, currentEdges)),
     [setEdges]
   );
 
@@ -63,13 +56,7 @@ export const MiniMapExample: FC<MiniMapExampleProps> = ({
           onConnect={onConnect}
         >
           <Background variant={BackgroundVariant.Dots} />
-          <MiniMap
-            {...miniMapProps}
-            className={className}
-            style={style}
-            onClick={onClick}
-            onNodeClick={onNodeClick}
-          />
+          <MiniMap {...miniMapProps} />
         </ReactFlow>
       </div>
     </ReactFlowProvider>

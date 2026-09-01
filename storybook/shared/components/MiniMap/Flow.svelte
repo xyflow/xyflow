@@ -2,18 +2,18 @@
   import { onMount } from 'svelte';
   import { Background, BackgroundVariant, MiniMap, SvelteFlow } from '@xyflow/svelte';
 
+  import { FLOW_STORY_RESET_EVENT } from '../../tests/suite';
   import { defaultFlowProps } from '../defaultFlow';
-  import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/tests/suite';
-
-  import { type MiniMapStoryArgs } from './config';
+  import type { SharedMiniMapArgs } from './config';
 
   let {
-    class: className,
+    class: containerClass,
+    className,
     nodeClassName,
     nodeClass,
     style,
     ...miniMapProps
-  }: MiniMapStoryArgs & { class?: string; nodeClass?: string } = $props();
+  }: SharedMiniMapArgs & { class?: string; nodeClass?: string } = $props();
 
   const initialNodes = defaultFlowProps.nodes ?? [];
   const initialEdges = defaultFlowProps.edges ?? [];
@@ -40,8 +40,8 @@
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap
         {...miniMapProps}
-        class={className}
-        nodeClass={nodeClass ?? nodeClassName}
+        class={className ?? containerClass}
+        nodeClass={nodeClassName ?? nodeClass}
         style={typeof style === 'object' ? JSON.stringify(style) : style}
       />
     </SvelteFlow>

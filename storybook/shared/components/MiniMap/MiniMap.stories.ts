@@ -5,7 +5,7 @@ import { createMinimapSuite } from '../../tests/addons';
 import type { FlowFramework } from '../../types';
 
 import MiniMapExample from 'storybook-component-minimap-flow';
-import { apiDocsUrl, defaultMiniMapArgs, miniMapArgTypes } from './config';
+import { defaultMiniMapArgs, miniMapArgTypes } from './config';
 
 declare const __STORYBOOK_FRAMEWORK__: FlowFramework;
 
@@ -23,15 +23,10 @@ const meta = {
   tags: ['components'],
   parameters: {
     layout: 'fullscreen',
-    docs: {
-      description: {
-        component: `Interactive playground for [\`<MiniMap />\`](${apiDocsUrl(framework)}). Use controls to tweak props. The General story runs automated regression tests in CI.`,
-      },
-    },
   },
   args: {
     ...defaultMiniMapArgs,
-    ...(framework === 'react' ? { onClick: fn(), onNodeClick: fn() } : {}),
+    ...(framework === 'react' ? { offsetScale: 5, onClick: fn(), onNodeClick: fn() } : {}),
   },
   argTypes: miniMapArgTypes(framework),
 } satisfies Meta<typeof MiniMapExample>;

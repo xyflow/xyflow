@@ -2,7 +2,7 @@
   import { Background, BackgroundVariant, NodeToolbar, SvelteFlow } from '@xyflow/svelte';
 
   import ToolbarNode from './ToolbarNode.svelte';
-  import { DEMO_NODE_ID, demoNode, type NodeToolbarStoryArgs } from './config';
+  import { DEMO_NODE_ID, demoNode, type SharedNodeToolbarArgs } from './config';
 
   let {
     isVisible,
@@ -11,7 +11,7 @@
     align = 'center',
     nodeId,
     renderMode = 'inside-node',
-  }: NodeToolbarStoryArgs = $props();
+  }: SharedNodeToolbarArgs = $props();
 
   const nodeTypes = { ToolbarNode };
   const externalNodeId = $derived(nodeId || DEMO_NODE_ID);

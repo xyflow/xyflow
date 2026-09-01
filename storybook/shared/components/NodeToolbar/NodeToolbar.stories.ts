@@ -4,7 +4,7 @@ import { createNodeToolbarPlays } from '../../tests/node-toolbar';
 import type { FlowFramework } from '../../types';
 
 import NodeToolbarExample from 'storybook-component-nodetoolbar-flow';
-import { apiDocsUrl, defaultNodeToolbarArgs, nodeToolbarArgTypes } from './config';
+import { defaultNodeToolbarArgs, nodeToolbarArgTypes } from './config';
 
 declare const __STORYBOOK_FRAMEWORK__: FlowFramework;
 
@@ -17,11 +17,6 @@ const meta = {
   tags: ['components', 'test'],
   parameters: {
     layout: 'fullscreen',
-    docs: {
-      description: {
-        component: `Interactive playground for [\`<NodeToolbar />\`](${apiDocsUrl(framework)}). Use controls to tweak props on a demo node.`,
-      },
-    },
   },
   args: defaultNodeToolbarArgs,
   argTypes: nodeToolbarArgTypes,

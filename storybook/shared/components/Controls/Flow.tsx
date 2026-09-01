@@ -12,27 +12,16 @@ import {
   type OnConnect,
 } from '@xyflow/react';
 
-import { defaultFlowProps } from '../defaultFlow';
 import { FLOW_STORY_RESET_EVENT } from '../../tests/suite';
+import { defaultFlowProps } from '../defaultFlow';
+import type { SharedControlsArgs } from './config';
 
-import { type ControlsStoryArgs } from './config';
+type ControlsExampleProps = SharedControlsArgs &
+  Pick<ControlProps, 'onZoomIn' | 'onZoomOut' | 'onFitView' | 'onInteractiveChange'>;
 
 const flowStyle = { width: '100%', height: '100%' } as const;
 
-type ControlsExampleProps = ControlsStoryArgs &
-  Pick<ControlProps, 'onZoomIn' | 'onZoomOut' | 'onFitView' | 'onInteractiveChange'>;
-
-export const ControlsExample: FC<ControlsExampleProps> = ({
-  className,
-  style,
-  fitViewOptions,
-  showInteractive,
-  onZoomIn,
-  onZoomOut,
-  onFitView,
-  onInteractiveChange,
-  ...controlsProps
-}) => {
+export const ControlsExample: FC<ControlsExampleProps> = (controlsProps) => {
   const initialNodes = useMemo(() => defaultFlowProps.nodes ?? [], []);
   const initialEdges = useMemo(() => defaultFlowProps.edges ?? [], []);
   const [resetKey, setResetKey] = useState(0);
@@ -40,7 +29,7 @@ export const ControlsExample: FC<ControlsExampleProps> = ({
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect: OnConnect = useCallback(
-    (params) => setEdges((currentEdges) => addEdge(params, currentEdges)),
+    (connection) => setEdges((currentEdges) => addEdge(connection, currentEdges)),
     [setEdges]
   );
 
@@ -67,17 +56,7 @@ export const ControlsExample: FC<ControlsExampleProps> = ({
           onConnect={onConnect}
         >
           <Background variant={BackgroundVariant.Dots} />
-          <Controls
-            {...controlsProps}
-            className={className}
-            style={style}
-            fitViewOptions={fitViewOptions}
-            showInteractive={showInteractive}
-            onZoomIn={onZoomIn}
-            onZoomOut={onZoomOut}
-            onFitView={onFitView}
-            onInteractiveChange={onInteractiveChange}
-          />
+          <Controls {...controlsProps} />
         </ReactFlow>
       </div>
     </ReactFlowProvider>

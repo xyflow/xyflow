@@ -5,7 +5,7 @@ import { createControlsSuite } from '../../tests/addons';
 import type { FlowFramework } from '../../types';
 
 import ControlsExample from 'storybook-component-controls-flow';
-import { apiDocsUrl, defaultControlsArgs, controlsArgTypes } from './config';
+import { defaultControlsArgs, controlsArgTypes } from './config';
 
 declare const __STORYBOOK_FRAMEWORK__: FlowFramework;
 
@@ -23,14 +23,10 @@ const meta = {
   tags: ['components'],
   parameters: {
     layout: 'fullscreen',
-    docs: {
-      description: {
-        component: `Interactive playground for [\`<Controls />\`](${apiDocsUrl(framework)}). Use controls to tweak props. The General story runs automated regression tests in CI.`,
-      },
-    },
   },
   args: {
-    ...defaultControlsArgs(framework),
+    ...defaultControlsArgs,
+    'aria-label': framework === 'react' ? 'React Flow controls' : 'Svelte Flow controls',
     ...(framework === 'react'
       ? {
           onZoomIn: fn(),

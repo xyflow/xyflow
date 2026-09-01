@@ -2,17 +2,17 @@
   import { onMount } from 'svelte';
   import { Background, BackgroundVariant, Controls, SvelteFlow } from '@xyflow/svelte';
 
+  import { FLOW_STORY_RESET_EVENT } from '../../tests/suite';
   import { defaultFlowProps } from '../defaultFlow';
-  import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/tests/suite';
-
-  import { type ControlsStoryArgs } from './config';
+  import type { SharedControlsArgs } from './config';
 
   let {
-    class: className,
+    class: containerClass,
+    className,
     showInteractive,
     style,
     ...controlsProps
-  }: ControlsStoryArgs & { class?: string } = $props();
+  }: SharedControlsArgs & { class?: string } = $props();
 
   const initialNodes = defaultFlowProps.nodes ?? [];
   const initialEdges = defaultFlowProps.edges ?? [];
@@ -39,7 +39,7 @@
       <Background variant={BackgroundVariant.Dots} />
       <Controls
         {...controlsProps}
-        class={className}
+        class={className ?? containerClass}
         showLock={showInteractive}
         style={typeof style === 'object' ? JSON.stringify(style) : style}
       />
