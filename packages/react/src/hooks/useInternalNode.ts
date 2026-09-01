@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
-import { useReactFlowStore } from './useReactFlowStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 import type { InternalNode, Node } from '../types';
 
 /**
@@ -31,7 +31,17 @@ import type { InternalNode, Node } from '../types';
  *```
  */
 export function useInternalNode<NodeType extends Node = Node>(id: string): InternalNode<NodeType> | undefined {
-  const node = useReactFlowStore(useCallback((s) => s.nodeLookup.get(id) as InternalNode<NodeType> | undefined, [id]));
+  const store = useReactFlowStoreApi();
 
-  return node;
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => store.getState().pubSub.subscribeToNode(id, onStoreChange),
+    [store, id]
+  );
+
+  const getSnapshot = useCallback(
+    () => store.getState().nodeLookup.get(id) as InternalNode<NodeType> | undefined,
+    [store, id]
+  );
+
+  return useSyncExternalStore(subscribe, getSnapshot);
 }

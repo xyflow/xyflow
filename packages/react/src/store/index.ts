@@ -107,6 +107,7 @@ const createStore = ({
           fitViewQueued,
           zIndexMode,
           nodesSelectionActive,
+          pubSub,
         } = get();
 
         /*
@@ -118,13 +119,15 @@ const createStore = ({
          * relevant for internal React Flow operations.
          */
 
-        const { nodesInitialized, hasSelectedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        const { nodesInitialized, hasSelectedNodes, updatedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent,
           elevateNodesOnSelect,
           checkEquality: true,
           zIndexMode,
         });
+
+        pubSub.publishNodes(updatedNodes);
 
         const nextNodesSelectionActive = nodesSelectionActive && hasSelectedNodes;
 
@@ -142,9 +145,10 @@ const createStore = ({
         }
       },
       setEdges: (edges: Edge[]) => {
-        const { connectionLookup, edgeLookup } = get();
+        const { connectionLookup, edgeLookup, pubSub } = get();
 
-        updateConnectionLookup(connectionLookup, edgeLookup, edges);
+        const { updatedEdges } = updateConnectionLookup(connectionLookup, edgeLookup, edges);
+        pubSub.publishEdges(updatedEdges);
 
         set({ edges });
       },
@@ -395,7 +399,8 @@ const createStore = ({
         emitEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nextNodeExtent) => {
-        const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode } = get();
+        const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode, pubSub } =
+          get();
 
         if (
           nextNodeExtent[0][0] === nodeExtent[0][0] &&
@@ -406,13 +411,15 @@ const createStore = ({
           return;
         }
 
-        adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        const { updatedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent: nextNodeExtent,
           elevateNodesOnSelect,
           checkEquality: false,
           zIndexMode,
         });
+
+        pubSub.publishNodes(updatedNodes);
 
         set({ nodeExtent: nextNodeExtent });
       },

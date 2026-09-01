@@ -1,4 +1,4 @@
-import { type MouseEvent, type KeyboardEvent, memo, useCallback } from 'react';
+import { type MouseEvent, type KeyboardEvent, memo } from 'react';
 import cc from 'classcat';
 import {
   elementSelectionKeys,
@@ -9,7 +9,7 @@ import {
   getNodesInside,
 } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
@@ -17,7 +17,8 @@ import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
 import { useNodeObserver } from './useNodeObserver';
-import type { InternalNode, Node, NodeWrapperProps, ReactFlowState } from '../../types';
+import type { Node, NodeWrapperProps } from '../../types';
+import { useInternalNode } from '../../hooks/useInternalNode';
 
 function NodeWrapper<NodeType extends Node>({
   id,
@@ -40,20 +41,9 @@ function NodeWrapper<NodeType extends Node>({
   nodeClickDistance,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const selector = useCallback(
-    (s: ReactFlowState) => {
-      const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
-      const isParent = s.parentLookup.has(id);
+  const node = useInternalNode<NodeType>(id)!;
 
-      return {
-        node,
-        internals: node.internals,
-        isParent,
-      };
-    },
-    [id]
-  );
-  const { node, internals, isParent } = useReactFlowStore(useShallow(selector));
+  const { internals } = node;
 
   let nodeType = node.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
@@ -197,7 +187,7 @@ function NodeWrapper<NodeType extends Node>({
         {
           selected: node.selected,
           selectable: isSelectable,
-          parent: isParent,
+          parent: internals.isParent,
           draggable: isDraggable,
           dragging,
         },

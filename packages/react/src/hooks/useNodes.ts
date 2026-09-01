@@ -1,7 +1,6 @@
-import { useReactFlowStore } from './useReactFlowStore';
+import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
 import type { Node, ReactFlowState } from '../types';
-import { useReactFlow } from './useReactFlow';
-import { useMemo } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
 const nodesSelector = (state: ReactFlowState) => state.nodes;
 
@@ -50,10 +49,17 @@ export function useNodes<NodeType extends Node = Node>(): NodeType[] {
  *```
  */
 export function useNode<NodeType extends Node = Node>(id: string): NodeType | undefined {
-  const { getNode } = useReactFlow<NodeType>();
-  useReactFlowStore(nodesSelector);
+  const store = useReactFlowStoreApi();
 
-  const node = getNode(id);
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => store.getState().pubSub.subscribeToNode(id, onStoreChange),
+    [store, id]
+  );
 
-  return useMemo(() => node, [node]);
+  const getSnapshot = useCallback(
+    () => store.getState().nodeLookup.get(id)?.internals.userNode as NodeType | undefined,
+    [store, id]
+  );
+
+  return useSyncExternalStore(subscribe, getSnapshot);
 }

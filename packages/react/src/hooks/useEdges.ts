@@ -1,7 +1,7 @@
-import { useReactFlowStore } from './useReactFlowStore';
-import type { Node, Edge, ReactFlowState } from '../types';
-import { useReactFlow } from './useReactFlow';
-import { useMemo } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
+
+import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
+import type { Edge, ReactFlowState } from '../types';
 
 const edgesSelector = (state: ReactFlowState) => state.edges;
 
@@ -49,10 +49,17 @@ export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
  *```
  */
 export function useEdge<EdgeType extends Edge = Edge>(id: string): EdgeType | undefined {
-  const { getEdge } = useReactFlow<Node, EdgeType>();
-  useReactFlowStore(edgesSelector);
+  const store = useReactFlowStoreApi();
 
-  const edge = getEdge(id);
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => store.getState().pubSub.subscribeToEdge(id, onStoreChange),
+    [store, id]
+  );
 
-  return useMemo(() => edge, [edge]);
+  const getSnapshot = useCallback(
+    () => store.getState().edgeLookup.get(id) as EdgeType | undefined,
+    [store, id]
+  );
+
+  return useSyncExternalStore(subscribe, getSnapshot);
 }

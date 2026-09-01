@@ -21,6 +21,7 @@ import {
 const devWarn = createDevWarn('React Flow', 'https://reactflow.dev/');
 
 import type { Edge, FitViewOptions, InternalNode, Node, ReactFlowStore } from '../types';
+import { PubSub } from './pubsub';
 
 const getInitialState = ({
   nodes,
@@ -159,6 +160,8 @@ const getInitialState = ({
 
     onNodesChangeMiddlewareMap: new Map(),
     onEdgesChangeMiddlewareMap: new Map(),
+
+    pubSub: new PubSub(),
   };
 };
 
