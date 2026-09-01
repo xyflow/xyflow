@@ -1,12 +1,13 @@
 import { memo } from 'react';
 
 import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useCustomDiff, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import { useResizeObserver } from './useResizeObserver';
 import NodeWrapper from '../../components/NodeWrapper';
 import type { Node, ReactFlowState } from '../../types';
+import { OnError } from '@xyflow/system';
 
 export type NodeRendererProps<NodeType extends Node> = Pick<
   GraphViewProps<NodeType>,
@@ -34,8 +35,22 @@ const selector = (s: ReactFlowState) => ({
   onError: s.onError,
 });
 
+function areEqual(
+  a: { nodesConnectable: boolean; nodesFocusable: boolean; elementsSelectable: boolean; onError: OnError | undefined },
+  b: { nodesConnectable: boolean; nodesFocusable: boolean; elementsSelectable: boolean; onError: OnError | undefined }
+): boolean {
+  return (
+    a.nodesConnectable === b.nodesConnectable &&
+    a.nodesFocusable === b.nodesFocusable &&
+    a.elementsSelectable === b.elementsSelectable &&
+    a.onError === b.onError
+  );
+}
+
 function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
-  const { nodesConnectable, nodesFocusable, elementsSelectable, onError } = useReactFlowStore(useShallow(selector));
+  const { nodesConnectable, nodesFocusable, elementsSelectable, onError } = useReactFlowStore(
+    useCustomDiff(selector, areEqual)
+  );
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
 

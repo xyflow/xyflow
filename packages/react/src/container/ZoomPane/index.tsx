@@ -3,7 +3,7 @@ import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from
 
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { useResizeHandler } from '../../hooks/useResizeHandler';
-import { useReactFlowStore, useShallow, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useReactFlowStoreApi, useCustomDiff } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import type { FlowRendererProps } from '../FlowRenderer';
 import type { ReactFlowState } from '../../types';
@@ -48,7 +48,7 @@ export function ZoomPane({
 }: ZoomPaneProps) {
   const store = useReactFlowStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const { userSelectionActive, lib, connectionInProgress } = useReactFlowStore(useShallow(selector));
+  const { userSelectionActive, lib, connectionInProgress } = useReactFlowStore(useCustomDiff(selector, areEqual));
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
   const panZoom = useRef<PanZoomInstance>();
 
@@ -155,5 +155,15 @@ export function ZoomPane({
     <div className="react-flow__renderer" ref={zoomPane} style={containerStyle}>
       {children}
     </div>
+  );
+}
+function areEqual(
+  a: { userSelectionActive: boolean; lib: string; connectionInProgress: boolean },
+  b: { userSelectionActive: boolean; lib: string; connectionInProgress: boolean }
+): boolean {
+  return (
+    a.userSelectionActive === b.userSelectionActive &&
+    a.lib === b.lib &&
+    a.connectionInProgress === b.connectionInProgress
   );
 }
