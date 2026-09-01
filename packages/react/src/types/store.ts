@@ -50,6 +50,7 @@ import type {
   IsValidConnection,
   InternalNode,
 } from '.';
+import { PubSub } from '../store/pubsub';
 
 export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   rfId: string;
@@ -157,6 +158,8 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   zIndexMode: ZIndexMode;
   onNodesChangeMiddlewareMap: Map<symbol, (changes: NodeChange<NodeType>[]) => NodeChange<NodeType>[]>;
   onEdgesChangeMiddlewareMap: Map<symbol, (changes: EdgeChange<EdgeType>[]) => EdgeChange<EdgeType>[]>;
+
+  pubSub: PubSub;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
