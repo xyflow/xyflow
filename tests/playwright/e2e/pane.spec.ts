@@ -313,3 +313,28 @@ test.describe('Pane activation keys', () => {
     expect(movementPx - Math.floor(transformsAfter.translateY - transformsBefore.translateY)).toBeLessThan(1);
   });
 });
+
+test.describe('Pane deselectOnSelection', () => {
+  test('keeps the existing selection when a new selection box starts', async ({ page }) => {
+    await page.goto('/tests/generic/pane/deselect-on-selection');
+    await page.waitForSelector('[data-id="first-edge"]', { timeout: 5000 });
+
+    const node1 = page.locator(`.${FRAMEWORK}-flow__node[data-id="1"]`);
+    const node2 = page.locator(`.${FRAMEWORK}-flow__node[data-id="2"]`);
+    const node3 = page.locator(`.${FRAMEWORK}-flow__node[data-id="3"]`);
+
+    await node1.click();
+    await expect(node1).toHaveClass(/selected/);
+
+    // Draw a selection box (a plain drag, since selectionOnDrag is enabled) around node 3 only.
+    const box = await node3.boundingBox();
+    await page.mouse.move(box!.x - 20, box!.y - 20);
+    await page.mouse.down();
+    await page.mouse.move(box!.x + box!.width + 20, box!.y + box!.height + 20);
+    await page.mouse.up();
+
+    await expect(node1).toHaveClass(/selected/);
+    await expect(node3).toHaveClass(/selected/);
+    await expect(node2).not.toHaveClass(/selected/);
+  });
+});
