@@ -1,5 +1,23 @@
 # @xyflow/svelte
 
+## 1.6.6
+### Patch Changes
+
+
+
+- [#5994](https://github.com/xyflow/xyflow/pull/5994) [`17d3792`](https://github.com/xyflow/xyflow/commit/17d3792673d0e6b3df26b4739c287329fd74df16) - Reset all properties in provider store when unmounting flow
+
+
+
+- [#5977](https://github.com/xyflow/xyflow/pull/5977) [`b7d99a5`](https://github.com/xyflow/xyflow/commit/b7d99a53ff4c60435ce93a17277811db34232588) - Hide edge if connected node is hidden
+
+
+
+- [#5997](https://github.com/xyflow/xyflow/pull/5997) [`0117cc9`](https://github.com/xyflow/xyflow/commit/0117cc9447b082369f238243d15327a5ac9c3dc3) - Prevent attribution warning when pane is not rendered either
+
+- Updated dependencies [[`0117cc9`](https://github.com/xyflow/xyflow/commit/0117cc9447b082369f238243d15327a5ac9c3dc3)]:
+  - @xyflow/system@0.0.82
+
 ## 1.6.5
 ### Patch Changes
 
