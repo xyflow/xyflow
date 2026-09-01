@@ -1,14 +1,14 @@
 /*
  * The default xyflow theme, layered on top of style.css and shared by React/Svelte/Vue Flow. The
  * `xy-flow` namespace is swapped for the library's own at build time; each library only supplies its
- * brand colors in its own theme.css.
+ * brand colors in its own xy-theme.css.
  *
  * Dark mode rides on `color-scheme`, which init.css derives from `.dark`/`.light`/`[data-theme]`, so
  * `light-dark()` covers both the class-based and the system-preference case without a second selector.
  */
 
 /* the brand accent lives on :root so theme helper classes outside the flow pick it up too; each
-   library overrides it in its own theme.css */
+   library overrides it in its own xy-theme.css */
 :root {
   --xy-theme-primary: #ff0073;
 }

@@ -27,12 +27,12 @@
   "scripts": {
     "dev": "concurrently \"svelte-package -p -w\" \"pnpm:css --watch\"",
     "build": "svelte-package && node scripts/fix-svelte-declaration-maps.mjs && pnpm run css && publint && pnpm run attw",
-    "attw": "attw --pack --profile esm-only --ignore-rules internal-resolution-error cjs-resolves-to-esm --exclude-entrypoints ./dist/base.css ./dist/style.css ./dist/theme.css ./base.css ./style.css ./theme.css",
+    "attw": "attw --pack --profile esm-only --ignore-rules internal-resolution-error cjs-resolves-to-esm --exclude-entrypoints ./dist/base.css ./dist/style.css ./dist/xy-theme.css ./base.css ./style.css ./xy-theme.css",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
     "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "css": "postcss src/lib/styles/{base,style,theme}.css --dir dist ",
+    "css": "postcss src/lib/styles/{base,style,xy-theme}.css --dir dist ",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write ."
   },
@@ -47,10 +47,10 @@
     },
     "./dist/base.css": "./dist/base.css",
     "./dist/style.css": "./dist/style.css",
-    "./dist/theme.css": "./dist/theme.css",
+    "./dist/xy-theme.css": "./dist/xy-theme.css",
     "./base.css": "./dist/base.css",
     "./style.css": "./dist/style.css",
-    "./theme.css": "./dist/theme.css"
+    "./xy-theme.css": "./dist/xy-theme.css"
   },
   "sideEffects": [
     "*.css"

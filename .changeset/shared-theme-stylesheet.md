@@ -4,4 +4,4 @@
 '@xyflow/vue': minor
 ---
 
-Add an optional `theme.css` stylesheet (`@xyflow/<lib>/theme.css`) that ships the xyflow default theme on top of `style.css`.
+Add an optional `xy-theme.css` stylesheet (`@xyflow/<lib>/xy-theme.css`) that ships the xyflow default theme on top of `style.css`.

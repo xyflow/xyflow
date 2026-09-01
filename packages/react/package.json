@@ -38,10 +38,10 @@
     },
     "./dist/base.css": "./dist/base.css",
     "./dist/style.css": "./dist/style.css",
-    "./dist/theme.css": "./dist/theme.css",
+    "./dist/xy-theme.css": "./dist/xy-theme.css",
     "./base.css": "./dist/base.css",
     "./style.css": "./dist/style.css",
-    "./theme.css": "./dist/theme.css"
+    "./xy-theme.css": "./dist/xy-theme.css"
   },
   "sideEffects": [
     "*.css"
@@ -53,7 +53,7 @@
   "scripts": {
     "dev": "concurrently \"tsdown --watch\" \"pnpm:css-watch\"",
     "build": "pnpm run css && tsdown",
-    "css": "postcss src/styles/{base,style,theme}.css --dir dist ",
+    "css": "postcss src/styles/{base,style,xy-theme}.css --dir dist ",
     "css-watch": "pnpm css --watch",
     "format": "prettier --write .",
     "lint": "eslint src",
