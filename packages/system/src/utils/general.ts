@@ -434,17 +434,30 @@ export function mergeAriaLabelConfig(partial?: Partial<AriaLabelConfig>): AriaLa
   return { ...defaultAriaLabelConfig, ...(partial || {}) };
 }
 
-export function isDomNodeVisible(selector: string) {
-  const el = typeof document !== 'undefined' ? document.querySelector(selector) : null;
-  if (!el || !el.isConnected) return false;
+export function isAttributionVisible(library: string) {
+  if (typeof document === 'undefined') return true;
 
-  const style = getComputedStyle(el);
+  const pane = document.querySelector(`.${library}-flow__pane`);
+  if (!pane || !pane.isConnected) return true;
+
+  const paneStyle = getComputedStyle(pane);
+  if (paneStyle.display === 'none') return true;
+  if (paneStyle.visibility === 'hidden' || paneStyle.visibility === 'collapse') return true;
+  if (paneStyle.opacity === '0') return true;
+  if (paneStyle.width === '0' && paneStyle.height === '0') return true;
+  const paneRect = pane.getBoundingClientRect();
+  if (paneRect.width === 0 && paneRect.height === 0) return true;
+
+  const attr = document.querySelector(`.${library}-flow__attribution`);
+  if (!attr || !attr.isConnected) return false;
+
+  const style = getComputedStyle(attr);
 
   if (style.display === 'none') return false;
   if (style.visibility === 'hidden' || style.visibility === 'collapse') return false;
   if (style.opacity === '0') return false;
 
-  const rect = el.getBoundingClientRect();
+  const rect = attr.getBoundingClientRect();
   if (rect.width === 0 && rect.height === 0) return false;
 
   return true;
