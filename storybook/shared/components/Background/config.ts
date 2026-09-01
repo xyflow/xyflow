@@ -14,8 +14,6 @@ export type SharedBackgroundArgs = {
   style?: Record<string, string | number>;
 };
 
-export const BACKGROUND_STORY_TITLE = 'Components/Background';
-
 export const BACKGROUND_TEST_BG_COLOR = '#f8fafc';
 export const BACKGROUND_TEST_PATTERN_COLOR = '#6366f1';
 
@@ -35,95 +33,6 @@ export const defaultBackgroundArgs: SharedBackgroundArgs = {
   lineWidth: 1,
 };
 
-export const backgroundArgTypeDescriptions = {
-  id: 'Unique id for the background pattern.',
-  color: 'Color of the pattern.',
-  bgColor: 'Color of the background.',
-  className: 'Class applied to the container.',
-  patternClassName: 'Class applied to the pattern.',
-  gap: 'Gap between patterns. Can also be a [x, y] tuple.',
-  size: 'Dot radius or cross size. Defaults to 1 for dots and 6 for cross.',
-  offset: 'Offset of the pattern. Can also be a [x, y] tuple.',
-  lineWidth: 'Stroke thickness used when drawing the pattern.',
-  variant: 'Variant of the pattern.',
-  style: 'Style applied to the container.',
-  class: 'Class applied to the container.',
-  patternClass: 'Class applied to the pattern.',
-} as const;
-
-export type BackgroundPlayKey =
-  | 'rendersBackground'
-  | 'rendersDotsVariant'
-  | 'rendersLinesVariant'
-  | 'rendersCrossVariant'
-  | 'appliesBgColor'
-  | 'appliesPatternColor'
-  | 'appliesOffset';
-
-export type BackgroundStoryDefinition = {
-  args?: SharedBackgroundArgs;
-  play?: BackgroundPlayKey;
-  test?: boolean;
-  reactOnly?: boolean;
-};
-
-export const backgroundStoryDefinitions = {
-  Default: {
-    args: defaultBackgroundArgs,
-    play: 'rendersBackground',
-    test: true,
-  },
-  Lines: {
-    args: { variant: 'lines', gap: 20, lineWidth: 1 },
-    play: 'rendersLinesVariant',
-    test: true,
-  },
-  Cross: {
-    args: { variant: 'cross', gap: 30, size: 6 },
-    play: 'rendersCrossVariant',
-    test: true,
-  },
-  CustomColors: {
-    args: {
-      variant: 'dots',
-      color: BACKGROUND_TEST_PATTERN_COLOR,
-      bgColor: BACKGROUND_TEST_BG_COLOR,
-      gap: 24,
-      size: 2,
-    },
-    play: 'appliesPatternColor',
-    test: true,
-  },
-  GapTuple: {
-    args: { variant: 'lines', gap: [50, 25], lineWidth: 1 },
-  },
-  OffsetTuple: {
-    args: { variant: 'lines', gap: 20, offset: [10, 5], color: '#94a3b8' },
-    reactOnly: true,
-  },
-  AppliesBgColor: {
-    args: { bgColor: BACKGROUND_TEST_BG_COLOR },
-    play: 'appliesBgColor',
-    test: true,
-  },
-  AppliesOffset: {
-    args: { variant: 'lines', offset: 10 },
-    play: 'appliesOffset',
-    test: true,
-    reactOnly: true,
-  },
-} satisfies Record<string, BackgroundStoryDefinition>;
-
-export type BackgroundStoryName = keyof typeof backgroundStoryDefinitions;
-
-export function storyArgs(name: BackgroundStoryName) {
-  return { ...defaultBackgroundArgs, ...backgroundStoryDefinitions[name].args };
-}
-
-export function storyTags(definition: BackgroundStoryDefinition) {
-  return definition.test ? (['components', 'test'] as const) : (['components'] as const);
-}
-
 type ArgTypeConfig = {
   control?: 'text' | 'color' | 'select' | 'object' | { type: string; min?: number; step?: number };
   description: string;
@@ -135,35 +44,41 @@ export function backgroundArgTypes(
   variantOptions: unknown[]
 ): Record<string, ArgTypeConfig> {
   const base: Record<string, ArgTypeConfig> = {
-    id: { control: 'text', description: backgroundArgTypeDescriptions.id },
-    color: { control: 'color', description: backgroundArgTypeDescriptions.color },
-    bgColor: { control: 'color', description: backgroundArgTypeDescriptions.bgColor },
-    gap: { control: { type: 'number', min: 0, step: 1 }, description: backgroundArgTypeDescriptions.gap },
-    size: { control: { type: 'number', min: 0, step: 1 }, description: backgroundArgTypeDescriptions.size },
+    id: { control: 'text', description: 'Unique id for the background pattern.' },
+    color: { control: 'color', description: 'Color of the pattern.' },
+    bgColor: { control: 'color', description: 'Color of the background.' },
+    gap: {
+      control: { type: 'number', min: 0, step: 1 },
+      description: 'Gap between patterns. Can also be a [x, y] tuple.',
+    },
+    size: {
+      control: { type: 'number', min: 0, step: 1 },
+      description: 'Dot radius or cross size. Defaults to 1 for dots and 6 for cross.',
+    },
     lineWidth: {
       control: { type: 'number', min: 0, step: 0.5 },
-      description: backgroundArgTypeDescriptions.lineWidth,
+      description: 'Stroke thickness used when drawing the pattern.',
     },
     variant: {
       control: 'select',
       options: variantOptions,
-      description: backgroundArgTypeDescriptions.variant,
+      description: 'Variant of the pattern.',
     },
   };
 
   if (framework === 'react') {
     return {
       ...base,
-      className: { control: 'text', description: backgroundArgTypeDescriptions.className },
-      patternClassName: { control: 'text', description: backgroundArgTypeDescriptions.patternClassName },
-      offset: { control: { type: 'number' }, description: backgroundArgTypeDescriptions.offset },
-      style: { control: 'object', description: backgroundArgTypeDescriptions.style },
+      className: { control: 'text', description: 'Class applied to the container.' },
+      patternClassName: { control: 'text', description: 'Class applied to the pattern.' },
+      offset: { control: { type: 'number' }, description: 'Offset of the pattern. Can also be a [x, y] tuple.' },
+      style: { control: 'object', description: 'Style applied to the container.' },
     };
   }
 
   return {
     ...base,
-    class: { control: 'text', description: backgroundArgTypeDescriptions.class },
-    patternClass: { control: 'text', description: backgroundArgTypeDescriptions.patternClass },
+    class: { control: 'text', description: 'Class applied to the container.' },
+    patternClass: { control: 'text', description: 'Class applied to the pattern.' },
   };
 }

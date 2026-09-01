@@ -35,13 +35,10 @@ Component docs and tests live in `storybook/shared/components/$NAME/`:
 
 ```
 $NAME/
-├── config.ts               # fixtures, story definitions, argTypes, test flags
-├── Flow.tsx / Flow.svelte  # framework wrappers (include arg mapping)
-├── Background.stories.tsx  # React Storybook (via *.stories.tsx glob)
-└── Background.stories.ts   # Svelte Storybook (via *.stories.ts glob)
+├── config.ts               # fixtures, default args, argTypes
+├── Flow.tsx / Flow.svelte  # framework wrappers
+└── $NAME.stories.ts        # stories, shared by both Storybooks
 ```
-
-React and Svelte Storybook configs include shared `*.stories.tsx` / `*.stories.ts` 
 
 Examples stay separate under `storybook/{react,svelte}/stories/examples/`.
 

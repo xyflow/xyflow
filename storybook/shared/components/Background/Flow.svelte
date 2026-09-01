@@ -1,29 +1,21 @@
 <script lang="ts">
-  import { Background, BackgroundVariant, SvelteFlow } from '@xyflow/svelte';
+  import { Background, SvelteFlow } from '@xyflow/svelte';
 
-  import { initialNodes, type BackgroundVariantName, type SharedBackgroundArgs } from './config';
+  import { initialNodes, type SharedBackgroundArgs } from './config';
 
-  const variantMap: Record<BackgroundVariantName, BackgroundVariant> = {
-    dots: BackgroundVariant.Dots,
-    lines: BackgroundVariant.Lines,
-    cross: BackgroundVariant.Cross,
-  };
+  // Shared args use the React prop names, but the Svelte argTypes also expose the
+  // native `class` / `patternClass` controls, so accept either spelling.
+  type Props = SharedBackgroundArgs & { class?: string; patternClass?: string };
 
-  function mapBackgroundArgs(args: SharedBackgroundArgs = {}) {
-    const { variant, color, className, patternClassName, ...rest } = args;
-
-    return {
-      ...rest,
-      ...(variant ? { variant: variantMap[variant] } : {}),
-      ...(color ? { patternColor: color } : {}),
-      ...(className ? { class: className } : {}),
-      ...(patternClassName ? { patternClass: patternClassName } : {}),
-    };
-  }
-
-  let backgroundArgs: SharedBackgroundArgs = $props();
-
-  const backgroundProps = $derived(mapBackgroundArgs(backgroundArgs));
+  let {
+    id = 'background',
+    color,
+    className,
+    patternClassName,
+    class: containerClass,
+    patternClass,
+    ...rest
+  }: Props = $props();
 
   let nodes = $state.raw([...initialNodes]);
   let edges = $state.raw([]);
@@ -31,7 +23,13 @@
 
 <div class="flow">
   <SvelteFlow bind:nodes bind:edges>
-    <Background {...backgroundProps} id={backgroundProps.id ?? 'background'} />
+    <Background
+      {...rest}
+      {id}
+      patternColor={color}
+      class={className ?? containerClass}
+      patternClass={patternClassName ?? patternClass}
+    />
   </SvelteFlow>
 </div>
 
