@@ -4,7 +4,6 @@ import { fn } from 'storybook/test';
 import { createControlsSuite } from '../../tests/addons';
 import type { FlowFramework } from '../../types';
 
-import AddonsTestFlow from 'storybook-component-addons-test-flow';
 import ControlsExample from 'storybook-component-controls-flow';
 import { apiDocsUrl, defaultControlsArgs, controlsArgTypes } from './config';
 
@@ -65,7 +64,6 @@ export const ZoomOnly: Story = {
 };
 
 export const General: Story = {
-  component: AddonsTestFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
   play: runControlsSuite,

@@ -25,10 +25,6 @@ export function sharedStorybookViteConfig(framework: StorybookFramework, sharedR
       alias: {
         'storybook-component-background-flow':
           framework === 'react' ? path.join(backgroundDir, 'Flow.tsx') : path.join(backgroundDir, 'Flow.svelte'),
-        'storybook-component-addons-test-flow':
-          framework === 'react'
-            ? path.join(sharedRoot, 'components/AddonsTestFlow/TestFlow.tsx')
-            : path.join(sharedRoot, 'components/AddonsTestFlow/TestFlow.svelte'),
         'storybook-component-minimap-flow': componentFlowAlias(sharedRoot, 'MiniMap', framework),
         'storybook-component-controls-flow': componentFlowAlias(sharedRoot, 'Controls', framework),
         'storybook-component-nodetoolbar-flow': componentFlowAlias(sharedRoot, 'NodeToolbar', framework),

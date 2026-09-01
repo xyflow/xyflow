@@ -4,7 +4,6 @@ import { fn } from 'storybook/test';
 import { createMinimapSuite } from '../../tests/addons';
 import type { FlowFramework } from '../../types';
 
-import AddonsTestFlow from 'storybook-component-addons-test-flow';
 import MiniMapExample from 'storybook-component-minimap-flow';
 import { apiDocsUrl, defaultMiniMapArgs, miniMapArgTypes } from './config';
 
@@ -62,7 +61,6 @@ export const CustomColors: Story = {
 };
 
 export const General: Story = {
-  component: AddonsTestFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
   play: runMinimapSuite,
