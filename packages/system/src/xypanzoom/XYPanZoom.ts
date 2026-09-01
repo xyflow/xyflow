@@ -101,7 +101,6 @@ export function XYPanZoom({
 
   const d3ZoomHandler = d3Selection.on('wheel.zoom')!;
   const d3DblClickZoomHandler = d3Selection.on('dblclick.zoom')!;
-  d3ZoomInstance.wheelDelta(wheelDelta);
 
   async function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {
@@ -132,6 +131,7 @@ export function XYPanZoom({
     zoomOnDoubleClick,
     panActivationKeyPressed = false,
     zoomActivationKeyPressed,
+    zoomSensitivity,
     lib,
     onTransformChange,
     connectionInProgress,
@@ -148,6 +148,8 @@ export function XYPanZoom({
       selectionOnDrag ? Infinity : !isNumeric(paneClickDistance) || paneClickDistance < 0 ? 0 : paneClickDistance
     );
 
+    d3ZoomInstance.wheelDelta((event) => wheelDelta(event, zoomSensitivity));
+
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
           zoomPanValues,
@@ -157,6 +159,7 @@ export function XYPanZoom({
           panOnScrollMode,
           panOnScrollSpeed,
           zoomOnPinch,
+          zoomSensitivity,
           onPanZoomStart,
           onPanZoom,
           onPanZoomEnd,

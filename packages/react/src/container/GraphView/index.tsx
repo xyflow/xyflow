@@ -79,6 +79,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   panOnScrollSpeed,
   panOnScrollMode,
   zoomOnDoubleClick,
+  zoomSensitivity,
   panOnDrag,
   autoPanOnSelection,
   onPaneClick,
@@ -136,6 +137,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
       zoomOnScroll={zoomOnScroll}
       zoomOnPinch={zoomOnPinch}
       zoomOnDoubleClick={zoomOnDoubleClick}
+      zoomSensitivity={zoomSensitivity}
       panOnScroll={panOnScroll}
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}

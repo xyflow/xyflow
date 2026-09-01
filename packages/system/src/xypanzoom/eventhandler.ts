@@ -24,6 +24,7 @@ export type PanOnScrollParams = {
   panOnScrollMode: PanOnScrollMode;
   panOnScrollSpeed: number;
   zoomOnPinch: boolean;
+  zoomSensitivity: number;
   onPanZoomStart?: OnPanZoom;
   onPanZoom?: OnPanZoom;
   onPanZoomEnd?: OnPanZoom;
@@ -66,6 +67,7 @@ export function createPanOnScrollHandler({
   panOnScrollMode,
   panOnScrollSpeed,
   zoomOnPinch,
+  zoomSensitivity,
   onPanZoomStart,
   onPanZoom,
   onPanZoomEnd,
@@ -85,7 +87,7 @@ export function createPanOnScrollHandler({
     // macos sets ctrlKey=true for pinch gesture on a trackpad
     if (event.ctrlKey && zoomOnPinch) {
       const point = pointer(event);
-      const pinchDelta = wheelDelta(event);
+      const pinchDelta = wheelDelta(event, zoomSensitivity);
       const zoom = currentZoom * Math.pow(2, pinchDelta);
       // @ts-ignore
       d3Zoom.scaleTo(d3Selection, zoom, point, event);

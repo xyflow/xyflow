@@ -542,6 +542,12 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    */
   zoomOnDoubleClick?: boolean;
   /**
+   * Controls how sensitive the viewport is to zooming, e.g. by scrolling or pinching.
+   * Values greater than 1 zoom in/out faster, values between 0 and 1 zoom in/out slower.
+   * @default 1
+   */
+  zoomSensitivity?: number;
+  /**
    * The radius around an edge connection that can trigger an edge reconnection.
    * @default 10
    */

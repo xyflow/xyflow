@@ -96,6 +96,7 @@
     ariaLabelConfig,
     autoPanSpeed,
     panOnScrollSpeed,
+    zoomSensitivity,
     zIndexMode,
     autoPanOnSelection,
     ...divAttributes
