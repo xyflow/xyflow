@@ -1,5 +1,12 @@
 # @xyflow/system
 
+## 0.0.82
+### Patch Changes
+
+
+
+- [#5997](https://github.com/xyflow/xyflow/pull/5997) [`0117cc9`](https://github.com/xyflow/xyflow/commit/0117cc9447b082369f238243d15327a5ac9c3dc3) - Prevent attribution warning when pane is not rendered either
+
 ## 0.0.81
 ### Patch Changes
 

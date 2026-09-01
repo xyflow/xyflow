@@ -1,5 +1,19 @@
 # @xyflow/react
 
+## 12.11.6
+### Patch Changes
+
+
+
+- [#5994](https://github.com/xyflow/xyflow/pull/5994) [`2350158`](https://github.com/xyflow/xyflow/commit/2350158ba91e82823477b0a1160c0319e79d6172) - Reset all properties in provider store when unmounting flow
+
+
+
+- [#5997](https://github.com/xyflow/xyflow/pull/5997) [`0117cc9`](https://github.com/xyflow/xyflow/commit/0117cc9447b082369f238243d15327a5ac9c3dc3) - Prevent attribution warning when pane is not rendered either
+
+- Updated dependencies [[`0117cc9`](https://github.com/xyflow/xyflow/commit/0117cc9447b082369f238243d15327a5ac9c3dc3)]:
+  - @xyflow/system@0.0.82
+
 ## 12.11.5
 ### Patch Changes
 
