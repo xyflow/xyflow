@@ -1,10 +1,8 @@
 <script lang="ts">
-  import { Background, BackgroundVariant, Controls, MiniMap, NodeToolbar, SvelteFlow } from '@xyflow/svelte';
+  import { Background, BackgroundVariant, NodeToolbar, SvelteFlow } from '@xyflow/svelte';
 
-  import DemoToolbarNode from './DemoToolbarNode.svelte';
-  import { type NodeToolbarStoryArgs } from './config';
-
-  const DEMO_NODE_ID = 'demo-node';
+  import ToolbarNode from './ToolbarNode.svelte';
+  import { DEMO_NODE_ID, demoNode, type NodeToolbarStoryArgs } from './config';
 
   let {
     isVisible,
@@ -15,51 +13,22 @@
     renderMode = 'inside-node',
   }: NodeToolbarStoryArgs = $props();
 
-  const nodeTypes = { DemoToolbarNode };
+  const nodeTypes = { ToolbarNode };
   const externalNodeId = $derived(nodeId || DEMO_NODE_ID);
+  const showExternalToolbar = $derived(renderMode === 'external');
 
-  let nodes = $state.raw([
-    {
-      id: DEMO_NODE_ID,
-      type: 'DemoToolbarNode',
-      position: { x: 250, y: 200 },
-      data: {
-        label: 'Select or interact with this node',
-        isVisible,
-        position,
-        offset,
-        align,
-        renderMode,
-      },
-    },
-  ]);
+  let nodes = $state.raw([demoNode({ isVisible, position, offset, align, renderMode })]);
   let edges = $state.raw([]);
 
   $effect(() => {
-    nodes = [
-      {
-        id: DEMO_NODE_ID,
-        type: 'DemoToolbarNode',
-        position: { x: 250, y: 200 },
-        data: {
-          label: 'Select or interact with this node',
-          isVisible,
-          position,
-          offset,
-          align,
-          renderMode,
-        },
-      },
-    ];
+    nodes = [demoNode({ isVisible, position, offset, align, renderMode })];
   });
 </script>
 
 <div class="flow-story">
   <SvelteFlow bind:nodes bind:edges {nodeTypes} fitView minZoom={0.5} maxZoom={2}>
     <Background variant={BackgroundVariant.Dots} />
-    <MiniMap />
-    <Controls />
-    {#if renderMode === 'external'}
+    {#if showExternalToolbar}
       <NodeToolbar nodeId={externalNodeId} {isVisible} {position} {offset} {align}>
         <button type="button">delete</button>
         <button type="button">copy</button>

@@ -1,5 +1,7 @@
 import { memo } from 'react';
-import { Handle, NodeToolbar, Position, type NodeProps } from '@xyflow/react';
+import { Handle, NodeToolbar, Position, type Node, type NodeProps } from '@xyflow/react';
+
+import type { ToolbarNodeData } from './config';
 
 const positionMap: Record<string, Position> = {
   top: Position.Top,
@@ -8,19 +10,24 @@ const positionMap: Record<string, Position> = {
   left: Position.Left,
 };
 
-function ToolbarNode({ data }: NodeProps) {
+function ToolbarNode({ data }: NodeProps<Node<ToolbarNodeData>>) {
+  const showInternalToolbar = data.renderMode !== 'external';
+
   return (
     <>
-      <NodeToolbar
-        isVisible={typeof data.toolbarVisible === 'boolean' ? data.toolbarVisible : undefined}
-        position={positionMap[String(data.toolbarPosition)] ?? Position.Top}
-        align={data.toolbarAlign as 'start' | 'center' | 'end' | undefined}
-      >
-        <button type="button">delete</button>
-        <button type="button">copy</button>
-        <button type="button">expand</button>
-      </NodeToolbar>
-      <div>{data.label as string}</div>
+      {showInternalToolbar ? (
+        <NodeToolbar
+          isVisible={data.isVisible}
+          position={positionMap[data.position ?? 'top'] ?? Position.Top}
+          offset={data.offset}
+          align={data.align}
+        >
+          <button type="button">delete</button>
+          <button type="button">copy</button>
+          <button type="button">expand</button>
+        </NodeToolbar>
+      ) : null}
+      <div style={{ padding: '10px 20px' }}>{data.label}</div>
       <Handle type="target" position={Position.Left} />
       <Handle type="source" position={Position.Right} />
     </>

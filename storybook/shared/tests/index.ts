@@ -1,7 +1,7 @@
 export { createPanePlays, createPaneGeneralSuite, createPaneNonDefaultsSuite } from './pane';
 export { createNodesPlays, createNodesGeneralSuite } from './nodes';
 export { createEdgesPlays, createEdgesGeneralSuite } from './edges';
-export { createNodeToolbarPlays, createNodeToolbarGeneralSuite } from './node-toolbar';
+export { createNodeToolbarPlays } from './node-toolbar';
 export { createPropsPlays, createPropsColorModeSuite } from './props';
 export { createAddonsPlays, createMinimapSuite, createControlsSuite } from './addons';
 export { createBackgroundPlays, BACKGROUND_TEST_BG_COLOR, BACKGROUND_TEST_PATTERN_COLOR } from './background';

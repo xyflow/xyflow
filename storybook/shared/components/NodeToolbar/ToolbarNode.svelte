@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Handle, NodeToolbar, Position, type NodeProps } from '@xyflow/svelte';
+  import { Handle, NodeToolbar, Position, type Node, type NodeProps } from '@xyflow/svelte';
+
+  import type { ToolbarNodeData } from './config';
 
   const positionMap: Record<string, Position> = {
     top: Position.Top,
@@ -8,28 +10,29 @@
     left: Position.Left,
   };
 
-  let { data }: NodeProps = $props();
+  let { data }: NodeProps<Node<ToolbarNodeData>> = $props();
+
+  const showInternalToolbar = $derived(data.renderMode !== 'external');
 </script>
 
-<NodeToolbar
-  isVisible={typeof data.toolbarVisible === 'boolean' ? data.toolbarVisible : undefined}
-  position={positionMap[String(data.toolbarPosition)] ?? Position.Top}
-  align={data.toolbarAlign}
->
-  <button type="button">delete</button>
-  <button type="button">copy</button>
-  <button type="button">expand</button>
-</NodeToolbar>
-<div class="node">
-  <div>{data.label}</div>
-  <Handle type="target" position={Position.Left} />
-  <Handle type="source" position={Position.Right} />
-</div>
+{#if showInternalToolbar}
+  <NodeToolbar
+    isVisible={data.isVisible}
+    position={positionMap[data.position ?? 'top'] ?? Position.Top}
+    offset={data.offset}
+    align={data.align}
+  >
+    <button type="button">delete</button>
+    <button type="button">copy</button>
+    <button type="button">expand</button>
+  </NodeToolbar>
+{/if}
+<div class="node">{data.label}</div>
+<Handle type="target" position={Position.Left} />
+<Handle type="source" position={Position.Right} />
 
 <style>
   .node {
-    width: 200px;
-    height: 50px;
-    border: solid 1px black;
+    padding: 10px 20px;
   }
 </style>
