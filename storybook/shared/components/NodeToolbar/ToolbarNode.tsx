@@ -27,7 +27,7 @@ function ToolbarNode({ data }: NodeProps<Node<ToolbarNodeData>>) {
           <button type="button">expand</button>
         </NodeToolbar>
       ) : null}
-      <div style={{ padding: '10px 20px' }}>{data.label}</div>
+      {data.label}
       <Handle type="target" position={Position.Left} />
       <Handle type="source" position={Position.Right} />
     </>

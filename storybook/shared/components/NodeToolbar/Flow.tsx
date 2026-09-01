@@ -14,6 +14,10 @@ import { DEMO_NODE_ID, demoNode, type NodeToolbarStoryArgs } from './config';
 
 const flowStyle = { width: '100%', height: '100%' } as const;
 
+function createNodes(args: NodeToolbarStoryArgs) {
+  return [{ ...demoNode(args), className: 'react-flow__node-default' }] as Node[];
+}
+
 export const NodeToolbarExample: FC<NodeToolbarStoryArgs> = ({
   isVisible,
   position,
@@ -23,14 +27,14 @@ export const NodeToolbarExample: FC<NodeToolbarStoryArgs> = ({
   renderMode = 'inside-node',
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(
-    [demoNode({ isVisible, position, offset, align, renderMode })] as Node[]
+    createNodes({ isVisible, position, offset, align, renderMode })
   );
   const nodeTypes = useMemo(() => ({ ToolbarNode }), []);
   const externalNodeId = nodeId || DEMO_NODE_ID;
   const showExternalToolbar = renderMode === 'external';
 
   useEffect(() => {
-    setNodes([demoNode({ isVisible, position, offset, align, renderMode })] as Node[]);
+    setNodes(createNodes({ isVisible, position, offset, align, renderMode }));
   }, [align, isVisible, offset, position, renderMode, setNodes]);
 
   return (

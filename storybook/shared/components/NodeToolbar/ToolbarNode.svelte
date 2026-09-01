@@ -27,12 +27,6 @@
     <button type="button">expand</button>
   </NodeToolbar>
 {/if}
-<div class="node">{data.label}</div>
+{data.label}
 <Handle type="target" position={Position.Left} />
 <Handle type="source" position={Position.Right} />
-
-<style>
-  .node {
-    padding: 10px 20px;
-  }
-</style>

@@ -17,11 +17,20 @@
   const externalNodeId = $derived(nodeId || DEMO_NODE_ID);
   const showExternalToolbar = $derived(renderMode === 'external');
 
-  let nodes = $state.raw([demoNode({ isVisible, position, offset, align, renderMode })]);
+  function createNodes() {
+    return [
+      {
+        ...demoNode({ isVisible, position, offset, align, renderMode }),
+        class: 'svelte-flow__node-default',
+      },
+    ];
+  }
+
+  let nodes = $state.raw(createNodes());
   let edges = $state.raw([]);
 
   $effect(() => {
-    nodes = [demoNode({ isVisible, position, offset, align, renderMode })];
+    nodes = createNodes();
   });
 </script>
 
