@@ -14,7 +14,10 @@ import {
   addEdge,
   Connection,
 } from '@xyflow/react';
-import { initialNodes, initialEdges } from '../CancelConnection/data';
+import { defaultFlowProps } from '@shared/defaultFlow';
+
+const { nodes: initialNodes = [], edges: initialEdges = [], fitViewOptions } = defaultFlowProps;
+
 import { RestrictExtent } from './RestrictExtent';
 
 const a = { id: 'a', data: { label: 'A' }, position: { x: 250, y: 5 } };
