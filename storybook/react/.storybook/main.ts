@@ -21,7 +21,8 @@ const sharedVite = sharedStorybookViteConfig('react', sharedRoot);
 const config: StorybookConfig = {
   "stories": [
     "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)",
-    "../../shared/components/**/*.stories.ts"
+    "../../shared/components/**/*.stories.ts",
+    "../../shared/examples/**/*.stories.ts"
   ],
   "addons": [
     getAbsolutePath('@chromatic-com/storybook'),

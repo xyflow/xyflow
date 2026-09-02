@@ -22,6 +22,7 @@ const config: StorybookConfig = {
   stories: [
     '../stories/**/*.stories.@(js|ts)',
     '../../shared/components/**/*.stories.ts',
+    '../../shared/examples/**/*.stories.ts',
   ],
   addons: [
     getAbsolutePath('@chromatic-com/storybook'),
