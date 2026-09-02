@@ -6,8 +6,6 @@ import {
   BackgroundVariant,
   Controls,
   ReactFlowProvider,
-  Node,
-  Edge,
   useReactFlow,
   Panel,
 } from '@xyflow/react';

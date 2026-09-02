@@ -4,7 +4,7 @@ import Example from './index';
 import { exampleStoryParameters } from '../exampleStory';
 
 const meta = {
-  title: 'Examples/Controlled/Uncontrolled',
+  title: 'Examples/Uncontrolled Flow',
   tags: ['example'],
   parameters: exampleStoryParameters,
   render: () => <Example />,

@@ -14,8 +14,11 @@ import {
 } from '@xyflow/react';
 
 import useCountdown from './hooks/useCountdown';
-import { initialEdges, initialNodes } from './data';
 import Timer from './Timer';
+
+import { defaultFlowProps } from '@shared/defaultFlow';
+
+const { nodes: initialNodes = [], edges: initialEdges = [] } = defaultFlowProps;
 
 const CANCEL_AFTER = 5; // seconds
 
@@ -35,7 +38,8 @@ const CancelConnection = () => {
     <>
       <Timer duration={CANCEL_AFTER} show={countdown.counting} remaining={countdown.remaining} />
       <ReactFlow
-        nodes={nodes}
+        defaultNodes={initialNodes}
+        defaultEdges={initialEdges}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
