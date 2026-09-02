@@ -132,22 +132,5 @@ export const EventHandlers: Story = {
     controls: {
       include: [...PROP_SECTIONS.eventHandlers],
     },
-    docs: {
-      description: {
-        story: `${SECTION_DESCRIPTIONS.eventHandlers} See [docs](${API_DOCS_URL}${SECTION_DOC_ANCHORS.eventHandlers}).
-
-**General:** onError, onInit, onDelete, onBeforeDelete
-
-**Node:** onNodeClick, onNodeDoubleClick, onNodeDrag*, onNodeMouse*, onNodeContextMenu, onNodesDelete, onNodesChange
-
-**Edge:** onEdgeClick, onEdgeDoubleClick, onEdgeMouse*, onEdgeContextMenu, onReconnect*, onEdgesDelete, onEdgesChange
-
-**Connection:** onConnect, onConnectStart, onConnectEnd, onClickConnectStart, onClickConnectEnd, isValidConnection
-
-**Pane:** onMove, onMoveStart, onMoveEnd, onPaneClick, onPaneContextMenu, onPaneScroll, onPaneMouse*
-
-**Selection:** onSelectionChange, onSelectionDrag*, onSelectionStart, onSelectionEnd, onSelectionContextMenu`,
-      },
-    },
   },
 };

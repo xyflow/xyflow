@@ -7,12 +7,14 @@ import {
   Controls,
   ReactFlowProvider,
   Node,
-  Edge,
   useReactFlow,
   Panel,
   OnNodeDrag,
-  FitViewOptions,
 } from '@xyflow/react';
+
+import { defaultFlowProps } from '@shared/defaultFlow';
+
+const { nodes: initialNodes = [], edges: initialEdges = [], fitViewOptions } = defaultFlowProps;
 
 const onNodeDrag: OnNodeDrag = (_, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
 const onNodeDragStart = (_: MouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
@@ -20,44 +22,6 @@ const onNodeDragStop = (_: MouseEvent, node: Node, nodes: Node[]) => console.log
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const printSelectionEvent = (name: string) => (_: MouseEvent, nodes: Node[]) => console.log(name, nodes);
-
-const initialNodes: Node[] = [
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'Node 1' },
-    position: { x: 250, y: 5 },
-    className: 'light',
-  },
-  {
-    id: '2',
-    data: { label: 'Node 2' },
-    position: { x: 100, y: 100 },
-    className: 'light',
-  },
-  {
-    id: '3',
-    data: { label: 'Node 3' },
-    position: { x: 400, y: 100 },
-    className: 'light',
-  },
-  {
-    id: '4',
-    data: { label: 'Node 4' },
-    position: { x: 400, y: 200 },
-    className: 'light',
-  },
-];
-
-const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-  { id: 'e1-3', source: '1', target: '3' },
-];
-
-const defaultEdgeOptions = {};
-const fitViewOptions: FitViewOptions = {
-  padding: { top: '100px', left: '0%', right: '10%', bottom: 0.1 },
-};
 
 export type BasicExampleProps = {
   isHidden?: boolean;
@@ -158,7 +122,6 @@ function BasicFlow({ isHidden = false }: BasicExampleProps) {
         maxZoom={4}
         fitView
         fitViewOptions={fitViewOptions}
-        defaultEdgeOptions={defaultEdgeOptions}
         selectNodesOnDrag={false}
         elevateEdgesOnSelect
         elevateNodesOnSelect={false}

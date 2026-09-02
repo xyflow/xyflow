@@ -3,7 +3,7 @@
   import { Background, BackgroundVariant, MiniMap, SvelteFlow } from '@xyflow/svelte';
 
   import { FLOW_STORY_RESET_EVENT } from '../../tests/suite';
-  import { defaultFlowProps } from '../defaultFlow';
+  import { defaultFlowProps } from '@shared/defaultFlow';
   import type { SharedMiniMapArgs } from './config';
 
   let {

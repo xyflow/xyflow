@@ -1,4 +1,4 @@
-import type { SharedFlowProps } from '../types';
+import type { SharedFlowProps } from './types';
 
 export const defaultFlowProps = {
   minZoom: 0.2,

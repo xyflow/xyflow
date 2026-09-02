@@ -13,7 +13,7 @@ import {
 } from '@xyflow/react';
 
 import { FLOW_STORY_RESET_EVENT } from '../../tests/suite';
-import { defaultFlowProps } from '../defaultFlow';
+import { defaultFlowProps } from '@shared/defaultFlow';
 import type { SharedMiniMapArgs } from './config';
 
 type MiniMapExampleProps = SharedMiniMapArgs &

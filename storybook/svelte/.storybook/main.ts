@@ -4,7 +4,7 @@ import path from 'node:path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-import { sharedStorybookViteConfig } from '../../shared/storybookVite.ts';
+import { mergeViteAliases, sharedStorybookViteConfig } from '../../shared/storybookVite.ts';
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -39,7 +39,7 @@ const config: StorybookConfig = {
     config.resolve.conditions = ['svelte', 'browser', 'development', 'import', 'module', 'default'];
 
     config.define = { ...config.define, ...sharedVite.define };
-    config.resolve.alias = { ...config.resolve.alias, ...sharedVite.resolve.alias };
+    config.resolve.alias = mergeViteAliases(config.resolve.alias, sharedVite.resolve.alias);
 
     return config;
   },
