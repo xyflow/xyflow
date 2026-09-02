@@ -1,3 +1,4 @@
+// Resolves to @storybook/react-vite or @storybook/svelte-vite.
 import type { Meta, StoryObj } from '@storybook/framework';
 
 import { BackgroundVariant } from '@xyflow/storybook';
@@ -5,7 +6,8 @@ import { BackgroundVariant } from '@xyflow/storybook';
 import { createBackgroundPlays } from '../../tests/background';
 import type { FlowFramework } from '../../types';
 
-import BackgroundExample from 'storybook-component-background-flow';
+// Resolves to Flow.tsx or Flow.svelte in this folder.
+import BackgroundExample from 'Background';
 import {
   BACKGROUND_TEST_BG_COLOR,
   BACKGROUND_TEST_PATTERN_COLOR,

@@ -1,10 +1,12 @@
+// Resolves to @storybook/react-vite or @storybook/svelte-vite.
 import type { Meta, StoryObj } from '@storybook/framework';
 import { fn } from 'storybook/test';
 
 import { createControlsSuite } from '../../tests/addons';
 import type { FlowFramework } from '../../types';
 
-import ControlsExample from 'storybook-component-controls-flow';
+// Resolves to Flow.tsx or Flow.svelte in this folder.
+import ControlsExample from 'Controls';
 import { defaultControlsArgs, controlsArgTypes } from './config';
 
 declare const __STORYBOOK_FRAMEWORK__: FlowFramework;

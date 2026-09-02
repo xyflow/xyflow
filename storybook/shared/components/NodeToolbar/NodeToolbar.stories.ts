@@ -1,9 +1,11 @@
+// Resolves to @storybook/react-vite or @storybook/svelte-vite.
 import type { Meta, StoryObj } from '@storybook/framework';
 
 import { createNodeToolbarPlays } from '../../tests/node-toolbar';
 import type { FlowFramework } from '../../types';
 
-import NodeToolbarExample from 'storybook-component-nodetoolbar-flow';
+// Resolves to Flow.tsx or Flow.svelte in this folder.
+import NodeToolbarExample from 'NodeToolbar';
 import { defaultNodeToolbarArgs, nodeToolbarArgTypes } from './config';
 
 declare const __STORYBOOK_FRAMEWORK__: FlowFramework;

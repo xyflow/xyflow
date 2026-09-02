@@ -1,24 +1,37 @@
+import fs from 'node:fs';
 import path from 'node:path';
 
 export type StorybookFramework = 'react' | 'svelte';
 
-const sharedComponents = ['Background', 'Controls', 'MiniMap', 'NodeToolbar'] as const;
-const sharedExamples = ['A11y'] as const;
+const FLOW_FOLDERS = ['components', 'examples'];
 
-function flowAliases(
-  sharedRoot: string,
-  framework: StorybookFramework,
-  kind: 'component' | 'example',
-  names: readonly string[]
-) {
-  const folder = kind === 'component' ? 'components' : 'examples';
+/**
+ * Every shared folder holding a `Flow.tsx`/`Flow.svelte` pair is importable by its own
+ * name, so `import Example from 'A11y'` picks up the flow for the current framework.
+ */
+function flowAliases(sharedRoot: string, framework: StorybookFramework) {
+  const flowFile = framework === 'react' ? 'Flow.tsx' : 'Flow.svelte';
+  const aliases: Record<string, string> = {};
 
-  return Object.fromEntries(
-    names.map((name) => [
-      `storybook-${kind}-${name.toLowerCase()}-flow`,
-      path.join(sharedRoot, folder, name, framework === 'react' ? 'Flow.tsx' : 'Flow.svelte'),
-    ])
-  );
+  for (const folder of FLOW_FOLDERS) {
+    const folderPath = path.join(sharedRoot, folder);
+
+    for (const entry of fs.readdirSync(folderPath, { withFileTypes: true })) {
+      const flowPath = path.join(folderPath, entry.name, flowFile);
+
+      if (!entry.isDirectory() || !fs.existsSync(flowPath)) {
+        continue;
+      }
+
+      if (aliases[entry.name]) {
+        throw new Error(`Duplicate shared flow name "${entry.name}" in ${FLOW_FOLDERS.join(' and ')}.`);
+      }
+
+      aliases[entry.name] = flowPath;
+    }
+  }
+
+  return aliases;
 }
 
 export function sharedStorybookViteConfig(framework: StorybookFramework, sharedRoot: string) {
@@ -28,8 +41,7 @@ export function sharedStorybookViteConfig(framework: StorybookFramework, sharedR
     },
     resolve: {
       alias: {
-        ...flowAliases(sharedRoot, framework, 'component', sharedComponents),
-        ...flowAliases(sharedRoot, framework, 'example', sharedExamples),
+        ...flowAliases(sharedRoot, framework),
         '@xyflow/storybook': framework === 'react' ? '@xyflow/react' : '@xyflow/svelte',
         '@storybook/framework': framework === 'react' ? '@storybook/react-vite' : '@storybook/svelte-vite',
       },

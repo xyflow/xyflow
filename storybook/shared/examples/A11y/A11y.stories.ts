@@ -1,6 +1,8 @@
+// Resolves to @storybook/react-vite or @storybook/svelte-vite.
 import type { Meta, StoryObj } from '@storybook/framework';
 
-import A11yExample from 'storybook-example-a11y-flow';
+// Resolves to Flow.tsx or Flow.svelte in this folder.
+import A11yExample from 'A11y';
 import { a11yArgTypes, defaultA11yArgs } from './config';
 
 const meta = {
