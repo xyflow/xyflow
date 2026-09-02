@@ -1,0 +1,43 @@
+{
+  "name": "storybook-react",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "storybook:serve": "storybook dev -p 6006 --no-open",
+    "build-storybook": "storybook build",
+    "test-storybook": "vitest run --project=storybook-react"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.11.2",
+    "@xyflow/react": "workspace:*",
+    "@xyflow/system": "workspace:*",
+    "classcat": "^5.0.5",
+    "dagre": "^0.8.5",
+    "localforage": "^1.10.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-redux": "^9.2.0",
+    "redux": "^5.0.1",
+    "storybook-shared": "workspace:*",
+    "zustand": "^4.5.7"
+  },
+  "devDependencies": {
+    "@types/dagre": "^0.7.54",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "storybook": "^10.4.6",
+    "@storybook/react-vite": "^10.4.6",
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-vitest": "^10.4.6",
+    "@storybook/addon-a11y": "^10.4.6",
+    "@storybook/addon-docs": "^10.4.6",
+    "vitest": "^4.1.10",
+    "playwright": "^1.61.1",
+    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.10"
+  }
+}

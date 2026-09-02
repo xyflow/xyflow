@@ -1,0 +1,40 @@
+{
+  "name": "storybook-shared",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "storybook": "storybook dev -p 6008",
+    "build-storybook": "storybook build"
+  },
+  "exports": {
+    "./types": "./types.ts",
+    "./utils": "./utils.ts",
+    "./play-helpers": "./play-helpers.ts",
+    "./tests": "./tests/index.ts",
+    "./tests/pane": "./tests/pane.ts",
+    "./tests/nodes": "./tests/nodes.ts",
+    "./tests/edges": "./tests/edges.ts",
+    "./tests/node-toolbar": "./tests/node-toolbar.ts",
+    "./tests/props": "./tests/props.ts",
+    "./tests/addons": "./tests/addons.ts",
+    "./tests/background": "./tests/background.ts",
+    "./tests/suite": "./tests/suite.ts"
+  },
+  "dependencies": {
+    "@xyflow/react": "workspace:*",
+    "@xyflow/svelte": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "svelte": "catalog:",
+    "storybook": "^10.4.6"
+  },
+  "devDependencies": {
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/react-vite": "^10.4.6",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}
