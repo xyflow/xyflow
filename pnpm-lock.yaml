@@ -214,6 +214,9 @@ importers:
       react-dom:
         specifier: '>=17'
         version: 18.3.1(react@18.3.1)
+      use-sync-external-store:
+        specifier: ^1.2.0
+        version: 1.6.0(react@18.3.1)
       zustand:
         specifier: ^4.4.0
         version: 4.5.7(@types/react@18.3.29)(immer@11.1.8)(react@18.3.1)
@@ -227,6 +230,9 @@ importers:
       '@types/react-dom':
         specifier: '>=17'
         version: 18.3.7(@types/react@18.3.29)
+      '@types/use-sync-external-store':
+        specifier: ^0.0.6
+        version: 0.0.6
       '@xyflow/eslint-config':
         specifier: workspace:*
         version: link:../../tooling/eslint-config

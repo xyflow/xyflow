@@ -4,9 +4,11 @@ import {
   type TouchEvent as ReactTouchEvent,
   type ForwardedRef,
   memo,
+  useCallback,
 } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
+import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector';
 import {
   errorMessages,
   Position,
@@ -23,7 +25,7 @@ import {
   Optional,
 } from '@xyflow/system';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { useHandleConfig } from '../../contexts/HandleConfigContext';
 import { type ReactFlowState } from '../../types';
@@ -39,18 +41,21 @@ export type HandleProps = HandlePropsSystem &
     onConnect?: OnConnect;
   };
 
-const selector = (s: ReactFlowState) => ({
-  connectOnClick: s.connectOnClick,
-  noPanClassName: s.noPanClassName,
-  rfId: s.rfId,
-});
+type ConnectingState = {
+  connectingFrom: boolean;
+  connectingTo: boolean;
+  clickConnecting: boolean;
+  isPossibleEndHandle: boolean;
+  connectionInProcess: boolean;
+  clickConnectionInProcess: boolean;
+  valid: boolean | null;
+};
 
 /*
- * While no connection is in progress every handle has this same state, so we return a
- * shared reference rather than allocating + shallow-comparing one per handle on every
- * store update. `isPossibleEndHandle` matches what the selector computes when idle.
+ * While no connection is in progress every handle has this same state, so we return a shared
+ * reference rather than allocating one per handle. `isPossibleEndHandle` matches the idle branch.
  */
-const idleConnectingState = {
+const idleConnectingState: ConnectingState = {
   connectingFrom: false,
   connectingTo: false,
   clickConnecting: false,
@@ -60,30 +65,34 @@ const idleConnectingState = {
   valid: false,
 };
 
-const connectingSelector =
-  (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
-    const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
-    const { fromHandle, toHandle, isValid } = connection;
+function computeConnectingState(
+  state: ReactFlowState,
+  nodeId: string | null,
+  handleId: string | null,
+  type: HandleType
+): ConnectingState {
+  const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
+  const { fromHandle, toHandle, isValid } = connection;
 
-    if (!fromHandle && !clickHandle) {
-      return idleConnectingState;
-    }
+  if (!fromHandle && !clickHandle) {
+    return idleConnectingState;
+  }
 
-    const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
+  const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
 
-    return {
-      connectingFrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === type,
-      connectingTo,
-      clickConnecting: clickHandle?.nodeId === nodeId && clickHandle?.id === handleId && clickHandle?.type === type,
-      isPossibleEndHandle:
-        connectionMode === ConnectionMode.Strict
-          ? fromHandle?.type !== type
-          : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id,
-      connectionInProcess: !!fromHandle,
-      clickConnectionInProcess: !!clickHandle,
-      valid: connectingTo && isValid,
-    };
+  return {
+    connectingFrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === type,
+    connectingTo,
+    clickConnecting: clickHandle?.nodeId === nodeId && clickHandle?.id === handleId && clickHandle?.type === type,
+    isPossibleEndHandle:
+      connectionMode === ConnectionMode.Strict
+        ? fromHandle?.type !== type
+        : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id,
+    connectionInProcess: !!fromHandle,
+    clickConnectionInProcess: !!clickHandle,
+    valid: connectingTo && isValid,
   };
+}
 
 function HandleComponent(
   {
@@ -108,6 +117,17 @@ function HandleComponent(
   const store = useStoreApi();
   const nodeId = useNodeId();
   const { connectOnClick, noPanClassName, rfId } = useHandleConfig();
+
+  // connection state from a dedicated channel, so a node-position write never wakes the handle.
+  // shim variant, not react's useSyncExternalStore, so the react >=17 peer range keeps working.
+  const subscribeConnection = useCallback(
+    (onChange: () => void) => store.getState().subscribeConnection(onChange),
+    [store]
+  );
+  const selectConnecting = useCallback(
+    (state: ReactFlowState) => computeConnectingState(state, nodeId, handleId, type),
+    [nodeId, handleId, type]
+  );
   const {
     connectingFrom,
     connectingTo,
@@ -116,7 +136,7 @@ function HandleComponent(
     connectionInProcess,
     clickConnectionInProcess,
     valid,
-  } = useStore(connectingSelector(nodeId, handleId, type), shallow);
+  } = useSyncExternalStoreWithSelector(subscribeConnection, store.getState, store.getState, selectConnecting, shallow);
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }
@@ -201,7 +221,7 @@ function HandleComponent(
 
     if (!connectionClickStartHandle) {
       onClickConnectStart?.(event.nativeEvent, { nodeId, handleId, handleType: type });
-      store.setState({ connectionClickStartHandle: { nodeId, type, id: handleId } });
+      store.getState().setConnectionClickStartHandle({ nodeId, type, id: handleId });
       return;
     }
 
@@ -233,7 +253,7 @@ function HandleComponent(
     connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
     onClickConnectEnd?.(event as unknown as MouseEvent, connectionClone as FinalConnectionState);
 
-    store.setState({ connectionClickStartHandle: null });
+    store.getState().setConnectionClickStartHandle(null);
   };
 
   return (
