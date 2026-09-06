@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { isSkipMeasurementHonored } from '@xyflow/system';
 
 import type { InternalNode } from '../../types';
 import { useStoreApi } from '../../hooks/useStore';
@@ -27,8 +28,23 @@ export function useNodeObserver({
   const prevTargetPosition = useRef(node.targetPosition);
   const prevType = useRef(nodeType);
   const isInitialized = hasDimensions && !!node.internals.handleBounds;
+  /*
+   * opt-in, honored only once the app has actually provided the values (dimensions + user `handles`);
+   * shared with adoptUserNodes and the Svelte wrapper so all sites agree. Gating on the user-provided
+   * `handles` rather than `internals.handleBounds` is deliberate: a measurement only writes
+   * `internals.handleBounds`, so a node that opts in without providing `handles` keeps measuring
+   * normally instead of getting measured once and then skipping.
+   */
+  const skipMeasurement = isSkipMeasurementHonored(node);
 
   useEffect(() => {
+    if (skipMeasurement) {
+      if (observedNode.current) {
+        resizeObserver?.unobserve(observedNode.current);
+        observedNode.current = null;
+      }
+      return;
+    }
     if (nodeRef.current && !node.hidden && (!isInitialized || observedNode.current !== nodeRef.current)) {
       if (observedNode.current) {
         resizeObserver?.unobserve(observedNode.current);
@@ -36,7 +52,7 @@ export function useNodeObserver({
       resizeObserver?.observe(nodeRef.current);
       observedNode.current = nodeRef.current;
     }
-  }, [isInitialized, node.hidden]);
+  }, [skipMeasurement, isInitialized, node.hidden]);
 
   useEffect(() => {
     return () => {
@@ -48,6 +64,13 @@ export function useNodeObserver({
   }, []);
 
   useEffect(() => {
+    /*
+     * a node that opts in provides its own handles, so the edges follow the data; we must not force a
+     * DOM read here, otherwise the measurement we skipped on mount comes back on every handle change
+     */
+    if (skipMeasurement) {
+      return;
+    }
     if (nodeRef.current) {
       /*
        * when the user programmatically changes the source or handle position, we need to update the internals
@@ -67,7 +90,7 @@ export function useNodeObserver({
           .updateNodeInternals(new Map([[node.id, { id: node.id, nodeElement: nodeRef.current, force: true }]]));
       }
     }
-  }, [node.id, nodeType, node.sourcePosition, node.targetPosition]);
+  }, [skipMeasurement, node.id, nodeType, node.sourcePosition, node.targetPosition]);
 
   return nodeRef;
 }
