@@ -291,10 +291,23 @@ export function getElementsDiffChanges({
 }): any[] {
   const changes: any[] = [];
   const itemsLookup = new Map<string, any>(items.map((item) => [item.id, item]));
+  const previousIndices = new Map(Array.from(lookup.keys(), (id, index) => [id, index]));
+  let lastRetainedIndex = -1;
 
   for (const [index, item] of items.entries()) {
     const lookupItem = lookup.get(item.id);
     const storeItem = lookupItem?.internals?.userNode ?? lookupItem;
+    const previousIndex = previousIndices.get(item.id);
+
+    // Retained elements must stay in their previous relative order. Reinsert
+    // moved elements at their requested index using the existing change types.
+    if (previousIndex !== undefined) {
+      if (previousIndex < lastRetainedIndex) {
+        changes.push({ id: item.id, type: 'remove' }, { item, type: 'add', index });
+        continue;
+      }
+      lastRetainedIndex = previousIndex;
+    }
 
     if (storeItem !== undefined && storeItem !== item) {
       changes.push({ id: item.id, item: item, type: 'replace' });
