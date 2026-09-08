@@ -22,7 +22,11 @@ import {
 } from '@xyflow/system';
 
 import getInitialState from './initialState';
+import { middleware } from './middleware';
 import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
+
+const createWithMiddleware = (initializer: Parameters<typeof middleware>[0]) =>
+  create<ReactFlowState>()(middleware(initializer));
 
 const createStore = ({
   nodes,
@@ -53,7 +57,7 @@ const createStore = ({
   nodeExtent?: CoordinateExtent;
   zIndexMode?: ZIndexMode;
 }) =>
-  create<ReactFlowState>((set, get) => {
+  createWithMiddleware((set, get) => {
     async function resolveFitView() {
       const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
 
