@@ -156,6 +156,12 @@ export type OnReconnectEnd<NodeType extends NodeBase = NodeBase, EdgeType extend
 export type IsValidConnection<EdgeType extends EdgeBase = EdgeBase> = (edge: EdgeType | Connection) => boolean;
 
 /**
+ * Optional predicate used to exclude nodes from box/lasso selection after they are found inside the selection rect.
+ * When omitted, every node returned by `getNodesInside` remains selectable.
+ */
+export type IsNodeSelectable<NodeType extends NodeBase = NodeBase> = (node: NodeType) => boolean;
+
+/**
  * @inline
  */
 export type FitViewParamsBase<NodeType extends NodeBase> = {

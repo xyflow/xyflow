@@ -48,6 +48,7 @@ import type {
   OnNodeDrag,
   OnBeforeDelete,
   IsValidConnection,
+  IsNodeSelectable,
   InternalNode,
 } from '.';
 
@@ -149,6 +150,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   connectionRadius: number;
 
   isValidConnection: IsValidConnection<EdgeType> | undefined;
+  isNodeSelectable: IsNodeSelectable<NodeType> | undefined;
 
   lib: string;
   debug: boolean;
