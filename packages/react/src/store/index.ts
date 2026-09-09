@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { createWithEqualityFn } from 'zustand/traditional';
 import {
   adoptUserNodes,
   panBy as panBySystem,
@@ -53,7 +53,7 @@ const createStore = ({
   nodeExtent?: CoordinateExtent;
   zIndexMode?: ZIndexMode;
 }) =>
-  create<ReactFlowState>((set, get) => {
+  createWithEqualityFn<ReactFlowState>((set, get) => {
     async function resolveFitView() {
       const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
 

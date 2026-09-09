@@ -1,6 +1,7 @@
+import { shallow } from '../../utils/shallow';
 import { memo, type ReactNode } from 'react';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useGlobalKeyHandler } from '../../hooks/useGlobalKeyHandler';
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';
@@ -73,7 +74,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onViewportChange,
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
-  const { nodesSelectionActive, userSelectionActive } = useReactFlowStore(useShallow(selector));
+  const { nodesSelectionActive, userSelectionActive } = useReactFlowStore(selector, shallow);
   const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: win });
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: win });
 

@@ -1,9 +1,10 @@
+import { shallow } from '../../utils/shallow';
 import { useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { Position, getNodeToolbarTransform, getInternalNodesBounds, NodeLookup } from '@xyflow/system';
 
 import { InternalNode, ReactFlowState } from '../../types';
-import { useReactFlowStore, useShallow, useCustomDiff } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { NodeToolbarPortal } from './NodeToolbarPortal';
 import type { NodeToolbarProps } from './types';
@@ -101,8 +102,8 @@ export function NodeToolbar({
     },
     [nodeId, contextNodeId]
   );
-  const nodes = useReactFlowStore(useCustomDiff(nodesSelector, nodesEqualityFn));
-  const { x, y, zoom, selectedNodesCount } = useReactFlowStore(useShallow(storeSelector));
+  const nodes = useReactFlowStore(nodesSelector, nodesEqualityFn);
+  const { x, y, zoom, selectedNodesCount } = useReactFlowStore(storeSelector, shallow);
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   const isActive =

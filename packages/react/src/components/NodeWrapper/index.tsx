@@ -1,3 +1,4 @@
+import { shallow } from '../../utils/shallow';
 import { type MouseEvent, type KeyboardEvent, memo, useCallback } from 'react';
 import cc from 'classcat';
 import {
@@ -9,7 +10,7 @@ import {
   getNodesInside,
 } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
@@ -53,7 +54,7 @@ function NodeWrapper<NodeType extends Node>({
     },
     [id]
   );
-  const { node, internals, isParent } = useReactFlowStore(useShallow(selector));
+  const { node, internals, isParent } = useReactFlowStore(selector, shallow);
 
   let nodeType = node.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];

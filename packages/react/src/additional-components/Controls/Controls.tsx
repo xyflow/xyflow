@@ -1,7 +1,8 @@
+import { shallow } from '../../utils/shallow';
 import { memo } from 'react';
 import cc from 'classcat';
 
-import { useReactFlowStore, useShallow, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useReactFlow } from '../../hooks/useReactFlow';
 import { Panel } from '../../components/Panel';
 import { type ReactFlowState } from '../../types';
@@ -38,7 +39,7 @@ function ControlsComponent({
   'aria-label': ariaLabel,
 }: ControlProps) {
   const store = useReactFlowStoreApi();
-  const { isInteractive, minZoomReached, maxZoomReached, ariaLabelConfig } = useReactFlowStore(useShallow(selector));
+  const { isInteractive, minZoomReached, maxZoomReached, ariaLabelConfig } = useReactFlowStore(selector, shallow);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const onZoomInHandler = () => {

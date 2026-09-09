@@ -1,5 +1,6 @@
-import { useContext, useMemo, useRef } from 'react';
-import { useStore as useZustandStore, type StoreApi } from 'zustand';
+import { useContext, useMemo } from 'react';
+import type { StoreApi } from 'zustand';
+import { useStoreWithEqualityFn as useZustandStore } from 'zustand/traditional';
 import { errorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/StoreContext';
@@ -17,9 +18,7 @@ const zustandErrorMessage = errorMessages['error001']('react');
  * Extracting or transforming just the state you need is a good practice to avoid unnecessary
  * re-renders.
  * @param equalityFn - A function to compare the previous and next value. This is incredibly useful
- * for preventing unnecessary re-renders. For shallow comparisons, prefer `useShallow` from
- * `zustand/react/shallow` by wrapping your selector: `useStore(useShallow(selector))`. Passing
- * `zustand/shallow` as the second argument is still supported for backwards compatibility.
+ * for preventing unnecessary re-renders. Pass `shallow` from `@xyflow/react` for shallow comparisons.
  * @returns The selected state slice.
  *
  * @example
@@ -31,14 +30,17 @@ const zustandErrorMessage = errorMessages['error001']('react');
  * state. For many of the common use cases, there are dedicated hooks available
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
-function useReactFlowStore<StateSlice = unknown>(selector: (state: ReactFlowState) => StateSlice) {
+function useReactFlowStore<StateSlice = unknown>(
+  selector: (state: ReactFlowState) => StateSlice,
+  equalityFn?: (a: StateSlice, b: StateSlice) => boolean
+) {
   const store = useContext(StoreContext);
 
   if (store === null) {
     throw new Error(zustandErrorMessage);
   }
 
-  return useZustandStore(store, selector);
+  return useZustandStore(store, selector, equalityFn);
 }
 
 /**
@@ -75,12 +77,3 @@ function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edg
 }
 
 export { useReactFlowStore, useReactFlowStoreApi };
-export { useShallow } from 'zustand/react/shallow';
-
-export function useCustomDiff<S, U>(selector: (state: S) => U, compare: (a: U, b: U) => boolean): (state: S) => U {
-  const prev = useRef<U>();
-  return (state) => {
-    const next = selector(state);
-    return prev.current && compare(prev.current, next) ? prev.current : (prev.current = next);
-  };
-}

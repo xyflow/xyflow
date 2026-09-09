@@ -1,3 +1,4 @@
+import { shallow } from '../../utils/shallow';
 import {
   type HTMLAttributes,
   type MouseEvent as ReactMouseEvent,
@@ -22,7 +23,7 @@ import {
   Optional,
 } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { useHandleConfig } from '../../contexts/HandleConfigContext';
 import { type ReactFlowState } from '../../types';
@@ -109,7 +110,7 @@ function HandleComponent(
     connectionInProcess,
     clickConnectionInProcess,
     valid,
-  } = useReactFlowStore(useShallow(connectingSelector(nodeId, handleId, type)));
+  } = useReactFlowStore(connectingSelector(nodeId, handleId, type), shallow);
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }

@@ -1,6 +1,7 @@
+import { shallow } from '../utils/shallow';
 import { type ConnectionState, pointToRendererPoint } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from './useReactFlowStore';
+import { useReactFlowStore } from './useReactFlowStore';
 import type { InternalNode, Node, ReactFlowStore } from '../types';
 
 function connectionStoreSelector(s: ReactFlowStore) {
@@ -42,8 +43,8 @@ function toSelector(s: ReactFlowStore) {
 export function useConnection<NodeType extends Node = Node, SelectorReturn = ConnectionState<InternalNode<NodeType>>>(
   connectionSelector?: (connection: ConnectionState<InternalNode<NodeType>>) => SelectorReturn
 ): SelectorReturn {
-  const connectionStore = useReactFlowStore(useShallow(connectionStoreSelector));
-  const to = useReactFlowStore(useShallow(toSelector));
+  const connectionStore = useReactFlowStore(connectionStoreSelector, shallow);
+  const to = useReactFlowStore(toSelector, shallow);
 
   const connection = { ...connectionStore, to } as ConnectionState<InternalNode<NodeType>>;
 

@@ -293,6 +293,9 @@ importers:
       classcat:
         specifier: ^5.0.3
         version: 5.0.4
+      use-sync-external-store:
+        specifier: ^1.6.0
+        version: 1.6.0(react@18.3.1)
       zustand:
         specifier: ^5.0.0
         version: 5.0.14(@types/react@18.3.29)(immer@11.1.8)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
