@@ -1,6 +1,7 @@
+import { shallow } from 'zustand/shallow';
 import { memo, ReactNode } from 'react';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
@@ -55,7 +56,7 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   onReconnectEnd,
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
-  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useReactFlowStore(useShallow(selector));
+  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useReactFlowStore(selector, shallow);
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
   return (

@@ -1,3 +1,4 @@
+import { shallow } from 'zustand/shallow';
 /**
  * The nodes selection rectangle gets displayed when a user
  * made a selection with on or several nodes
@@ -6,7 +7,7 @@ import { useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { getInternalNodesBounds, isNumeric } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
@@ -37,7 +38,7 @@ export function NodesSelection<NodeType extends Node>({
   disableKeyboardA11y,
 }: NodesSelectionProps<NodeType>) {
   const store = useReactFlowStoreApi<NodeType>();
-  const { width, height, transformString, userSelectionActive } = useReactFlowStore(useShallow(selector));
+  const { width, height, transformString, userSelectionActive } = useReactFlowStore(selector, shallow);
   const moveSelectedNodes = useMoveSelectedNodes();
 
   const nodeRef = useRef<HTMLDivElement>(null);

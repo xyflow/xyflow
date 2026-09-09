@@ -1,9 +1,11 @@
+import { shallow } from 'zustand/shallow';
 import {
   type HTMLAttributes,
   type MouseEvent as ReactMouseEvent,
   type TouchEvent as ReactTouchEvent,
   type ForwardedRef,
   memo,
+  useMemo,
 } from 'react';
 import cc from 'classcat';
 import {
@@ -22,7 +24,7 @@ import {
   Optional,
 } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { useHandleConfig } from '../../contexts/HandleConfigContext';
 import { type ReactFlowState } from '../../types';
@@ -101,6 +103,7 @@ function HandleComponent(
   const store = useReactFlowStoreApi();
   const nodeId = useNodeId();
   const { connectOnClick, noPanClassName, rfId } = useHandleConfig();
+  const selector = useMemo(() => connectingSelector(nodeId, handleId, type), [nodeId, handleId, type]);
   const {
     connectingFrom,
     connectingTo,
@@ -109,7 +112,7 @@ function HandleComponent(
     connectionInProcess,
     clickConnectionInProcess,
     valid,
-  } = useReactFlowStore(useShallow(connectingSelector(nodeId, handleId, type)));
+  } = useReactFlowStore(selector, shallow);
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }

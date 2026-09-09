@@ -7,7 +7,7 @@
 import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
-import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import type { ReactFlowState, OnSelectionChangeFunc, Node, Edge } from '../../types';
 
 type SelectionListenerProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
@@ -48,7 +48,7 @@ function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends E
   onSelectionChange,
 }: SelectionListenerProps<NodeType, EdgeType>) {
   const store = useReactFlowStoreApi<NodeType, EdgeType>();
-  const { selectedNodes, selectedEdges } = useReactFlowStore(useCustomDiff(selector, areEqual));
+  const { selectedNodes, selectedEdges } = useReactFlowStore(selector, areEqual);
 
   useEffect(() => {
     const params = { nodes: selectedNodes as NodeType[], edges: selectedEdges as EdgeType[] };

@@ -1,12 +1,13 @@
+import { shallow } from 'zustand/shallow';
 import { ComponentType, memo, useCallback } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { MiniMapNode } from './MiniMapNode';
-import type { ReactFlowState, Node } from '../../types';
+import type { ReactFlowSelectorState, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
 
-const selectorNodeIds = (s: ReactFlowState) => s.nodes.map((node) => node.id);
+const selectorNodeIds = (s: ReactFlowSelectorState) => s.nodes.map((node) => node.id);
 const getAttrFunction = <NodeType extends Node>(
   func: string | GetMiniMapNodeAttribute<NodeType> | undefined
 ): GetMiniMapNodeAttribute<NodeType> => (func instanceof Function ? func : () => func);
@@ -24,7 +25,7 @@ function MiniMapNodes<NodeType extends Node>({
   nodeComponent: NodeComponent = MiniMapNode,
   onClick,
 }: MiniMapNodesProps<NodeType>) {
-  const nodeIds = useReactFlowStore(useShallow(selectorNodeIds));
+  const nodeIds = useReactFlowStore(selectorNodeIds, shallow);
   const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
@@ -81,8 +82,8 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   shapeRendering: string;
 }) {
   const selector = useCallback(
-    (s: ReactFlowState) => {
-      const node = s.nodeLookup.get(id);
+    (s: ReactFlowSelectorState) => {
+      const node = s.getInternalNodeById(id);
 
       if (!node) {
         return { node: undefined, x: 0, y: 0, width: 0, height: 0 };
@@ -103,7 +104,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
     [id]
   );
 
-  const { node, x, y, width, height } = useReactFlowStore(useShallow(selector));
+  const { node, x, y, width, height } = useReactFlowStore(selector, shallow);
 
   if (!node || node.hidden || !nodeHasDimensions(node)) {
     return null;

@@ -58,6 +58,10 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   transform: Transform;
   nodes: NodeType[];
   nodesInitialized: boolean;
+  /** IDs changed in the latest node lookup update. */
+  nodeLookupChanges: ReadonlySet<string>;
+  /** IDs changed in the latest edge lookup update. */
+  edgeLookupChanges: ReadonlySet<string>;
   nodeLookup: NodeLookup<InternalNode<NodeType>>;
   parentLookup: ParentLookup<InternalNode<NodeType>>;
   edges: EdgeType[];
@@ -188,3 +192,12 @@ export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge =
   EdgeType
 > &
   ReactFlowActions<NodeType, EdgeType>;
+
+/** State exposed to tracked selectors, including fine-grained node and edge reads. */
+export type ReactFlowSelectorState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = ReactFlowState<
+  NodeType,
+  EdgeType
+> & {
+  getInternalNodeById: (id: string) => InternalNode<NodeType> | undefined;
+  getEdgeById: (id: string) => EdgeType | undefined;
+};

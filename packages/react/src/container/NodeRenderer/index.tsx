@@ -1,7 +1,8 @@
+import { shallow } from 'zustand/shallow';
 import { memo } from 'react';
 
 import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import { useResizeObserver } from './useResizeObserver';
@@ -35,7 +36,7 @@ const selector = (s: ReactFlowState) => ({
 });
 
 function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
-  const { nodesConnectable, nodesFocusable, elementsSelectable, onError } = useReactFlowStore(useShallow(selector));
+  const { nodesConnectable, nodesFocusable, elementsSelectable, onError } = useReactFlowStore(selector, shallow);
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
 

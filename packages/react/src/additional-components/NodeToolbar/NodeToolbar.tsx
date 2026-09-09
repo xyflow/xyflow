@@ -1,9 +1,10 @@
+import { shallow } from 'zustand/shallow';
 import { useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { Position, getNodeToolbarTransform, getInternalNodesBounds, NodeLookup } from '@xyflow/system';
 
-import { InternalNode, ReactFlowState } from '../../types';
-import { useReactFlowStore, useShallow, useCustomDiff } from '../../hooks/useReactFlowStore';
+import { InternalNode, ReactFlowSelectorState } from '../../types';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { NodeToolbarPortal } from './NodeToolbarPortal';
 import type { NodeToolbarProps } from './types';
@@ -30,7 +31,7 @@ const nodesEqualityFn = (a: NodeLookup, b: NodeLookup) => {
   return true;
 };
 
-const storeSelector = (state: ReactFlowState) => ({
+const storeSelector = (state: ReactFlowSelectorState) => ({
   x: state.transform[0],
   y: state.transform[1],
   zoom: state.transform[2],
@@ -86,10 +87,10 @@ export function NodeToolbar({
   const contextNodeId = useNodeId();
 
   const nodesSelector = useCallback(
-    (state: ReactFlowState): NodeLookup => {
+    (state: ReactFlowSelectorState): NodeLookup => {
       const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
       const internalNodes = nodeIds.reduce<NodeLookup>((res, id) => {
-        const node = state.nodeLookup.get(id);
+        const node = state.getInternalNodeById(id);
         if (node) {
           res.set(node.id, node);
         }
@@ -101,8 +102,8 @@ export function NodeToolbar({
     },
     [nodeId, contextNodeId]
   );
-  const nodes = useReactFlowStore(useCustomDiff(nodesSelector, nodesEqualityFn));
-  const { x, y, zoom, selectedNodesCount } = useReactFlowStore(useShallow(storeSelector));
+  const nodes = useReactFlowStore(nodesSelector, nodesEqualityFn);
+  const { x, y, zoom, selectedNodesCount } = useReactFlowStore(storeSelector, shallow);
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   const isActive =

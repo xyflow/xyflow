@@ -8,11 +8,9 @@ export type UseNodesInitializedOptions = {
   includeHiddenNodes?: boolean;
 };
 
-const selector = (options: UseNodesInitializedOptions) => (s: ReactFlowState) => {
-  if (!options.includeHiddenNodes) {
-    return s.nodesInitialized;
-  }
+const selector = (s: ReactFlowState) => s.nodesInitialized;
 
+const includingHiddenSelector = (s: ReactFlowState) => {
   if (s.nodeLookup.size === 0) {
     return false;
   }
@@ -64,8 +62,5 @@ export function useNodesInitialized(
     includeHiddenNodes: false,
   }
 ): boolean {
-  // TODO: does this lead to re-renders
-  const initialized = useReactFlowStore(selector(options));
-
-  return initialized;
+  return useReactFlowStore(options.includeHiddenNodes ? includingHiddenSelector : selector);
 }

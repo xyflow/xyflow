@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { type DistributivePick, shallowNodeData } from '@xyflow/system';
 
-import { useCustomDiff, useReactFlowStore } from './useReactFlowStore';
-import type { Node, ReactFlowState } from '../types';
+import { useReactFlowStore } from './useReactFlowStore';
+import type { Node, ReactFlowSelectorState } from '../types';
 
 /**
  * This hook lets you subscribe to changes of a specific nodes `data` object.
@@ -33,13 +33,13 @@ export function useNodesData<NodeType extends Node = Node>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: string | string[]): any {
   const selector = useCallback(
-    (s: ReactFlowState) => {
+    (s: ReactFlowSelectorState) => {
       const data = [];
       const isArrayOfIds = Array.isArray(nodeIds);
       const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
 
       for (const nodeId of _nodeIds) {
-        const node = s.nodeLookup.get(nodeId);
+        const node = s.getInternalNodeById(nodeId);
         if (node) {
           data.push({
             id: node.id,
@@ -53,7 +53,7 @@ export function useNodesData(nodeIds: string | string[]): any {
     },
     [nodeIds]
   );
-  const nodesData = useReactFlowStore(useCustomDiff(selector, shallowNodeData));
+  const nodesData = useReactFlowStore(selector, shallowNodeData);
 
   return nodesData;
 }

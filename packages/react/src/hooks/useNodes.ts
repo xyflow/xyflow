@@ -1,7 +1,7 @@
+import { useCallback } from 'react';
+
 import { useReactFlowStore } from './useReactFlowStore';
 import type { Node, ReactFlowState } from '../types';
-import { useReactFlow } from './useReactFlow';
-import { useMemo } from 'react';
 
 const nodesSelector = (state: ReactFlowState) => state.nodes;
 
@@ -50,10 +50,7 @@ export function useNodes<NodeType extends Node = Node>(): NodeType[] {
  *```
  */
 export function useNode<NodeType extends Node = Node>(id: string): NodeType | undefined {
-  const { getNode } = useReactFlow<NodeType>();
-  useReactFlowStore(nodesSelector);
-
-  const node = getNode(id);
-
-  return useMemo(() => node, [node]);
+  return useReactFlowStore(
+    useCallback((s) => s.getInternalNodeById(id)?.internals.userNode as NodeType | undefined, [id])
+  );
 }

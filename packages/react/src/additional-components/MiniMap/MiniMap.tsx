@@ -2,7 +2,7 @@ import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } 
 import cc from 'classcat';
 import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
-import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { Panel } from '../../components/Panel';
 import type { ReactFlowState, Node } from '../../types';
 
@@ -96,7 +96,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
   const store = useReactFlowStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
   const { rfId, viewBB, boundingRect, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } =
-    useReactFlowStore(useCustomDiff(selector, areEqual));
+    useReactFlowStore(selector, areEqual);
 
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;

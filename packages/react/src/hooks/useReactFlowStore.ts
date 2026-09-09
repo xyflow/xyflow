@@ -1,45 +1,49 @@
-import { useContext, useMemo, useRef } from 'react';
-import { useStore as useZustandStore } from 'zustand';
+import { useContext, useMemo } from 'react';
 import { errorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/StoreContext';
-import type { TrackedStoreApi } from '../store/middleware';
+import { useStoreTracked, type TrackedStoreApi, type TrackedState } from '../store/middleware';
 import type { Edge, Node, ReactFlowState } from '../types';
 
 const zustandErrorMessage = errorMessages['error001']('react');
 
 /**
  * This hook can be used to subscribe to internal state changes of the React Flow
- * component. The `useStore` hook is re-exported from the [Zustand](https://github.com/pmndrs/zustand)
- * state management library, so you should check out their docs for more details.
+ * component. Selectors track the state properties they read and subscribe to changes
+ * in those properties.
  *
  * @public
  * @param selector - A selector function that returns a slice of the flow's internal state.
+ * Use `state.getInternalNodeById(id)` or `state.getEdgeById(id)` to subscribe to a single
+ * lookup entry. These helpers are available only inside tracked selectors.
  * Extracting or transforming just the state you need is a good practice to avoid unnecessary
  * re-renders.
  * @param equalityFn - A function to compare the previous and next value. This is incredibly useful
  * for preventing unnecessary re-renders. For shallow comparisons, prefer `useShallow` from
- * `zustand/react/shallow` by wrapping your selector: `useStore(useShallow(selector))`. Passing
+ * `zustand/react/shallow` by wrapping your selector: `useReactFlowStore(useShallow(selector))`. Passing
  * `zustand/shallow` as the second argument is still supported for backwards compatibility.
  * @returns The selected state slice.
  *
  * @example
  * ```ts
- * const nodes = useStore((state) => state.nodes);
+ * const node = useReactFlowStore((state) => state.getInternalNodeById('node-1'));
  * ```
  *
  * @remarks This hook should only be used if there is no other way to access the internal
  * state. For many of the common use cases, there are dedicated hooks available
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
-function useReactFlowStore<StateSlice = unknown>(selector: (state: ReactFlowState) => StateSlice) {
+function useReactFlowStore<StateSlice = unknown>(
+  selector: (state: TrackedState<ReactFlowState>) => StateSlice,
+  equalityFn?: (previous: StateSlice, next: StateSlice) => boolean
+) {
   const store = useContext(StoreContext);
 
   if (store === null) {
     throw new Error(zustandErrorMessage);
   }
 
-  return useZustandStore(store, selector);
+  return useStoreTracked(store, selector, equalityFn);
 }
 
 /**
@@ -68,6 +72,7 @@ function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edg
     () =>
       ({
         getState: store.getState,
+        getInitialState: store.getInitialState,
         setState: store.setState,
         subscribe: store.subscribe,
         subscribeTracked: store.subscribeTracked,
@@ -78,11 +83,3 @@ function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edg
 
 export { useReactFlowStore, useReactFlowStoreApi };
 export { useShallow } from 'zustand/react/shallow';
-
-export function useCustomDiff<S, U>(selector: (state: S) => U, compare: (a: U, b: U) => boolean): (state: S) => U {
-  const prev = useRef<U>();
-  return (state) => {
-    const next = selector(state);
-    return prev.current && compare(prev.current, next) ? prev.current : (prev.current = next);
-  };
-}

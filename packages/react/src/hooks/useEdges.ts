@@ -1,7 +1,7 @@
+import { useCallback } from 'react';
+
 import { useReactFlowStore } from './useReactFlowStore';
-import type { Node, Edge, ReactFlowState } from '../types';
-import { useReactFlow } from './useReactFlow';
-import { useMemo } from 'react';
+import type { Edge, ReactFlowState } from '../types';
 
 const edgesSelector = (state: ReactFlowState) => state.edges;
 
@@ -49,10 +49,5 @@ export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
  *```
  */
 export function useEdge<EdgeType extends Edge = Edge>(id: string): EdgeType | undefined {
-  const { getEdge } = useReactFlow<Node, EdgeType>();
-  useReactFlowStore(edgesSelector);
-
-  const edge = getEdge(id);
-
-  return useMemo(() => edge, [edge]);
+  return useReactFlowStore(useCallback((s) => s.getEdgeById(id) as EdgeType | undefined, [id]));
 }

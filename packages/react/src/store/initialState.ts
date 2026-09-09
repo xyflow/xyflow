@@ -93,6 +93,8 @@ const getInitialState = ({
     transform,
     nodes: storeNodes,
     nodesInitialized,
+    nodeLookupChanges: new Set(),
+    edgeLookupChanges: new Set(),
     nodeLookup,
     parentLookup,
     edges: storeEdges,

@@ -122,13 +122,24 @@ const createStore = ({
          * relevant for internal React Flow operations.
          */
 
-        const { nodesInitialized, hasSelectedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        const { nodesInitialized, hasSelectedNodes, updatedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent,
           elevateNodesOnSelect,
           checkEquality: true,
           zIndexMode,
         });
+
+        // The system change set covers adopted nodes, but not removals or a parent losing its last child.
+        for (const previousNode of get().nodes) {
+          const node = nodeLookup.get(previousNode.id);
+          if (!node) {
+            updatedNodes.add(previousNode.id);
+          } else if (node.internals.isParent && !parentLookup.has(node.id)) {
+            nodeLookup.set(node.id, { ...node, internals: { ...node.internals, isParent: false } });
+            updatedNodes.add(node.id);
+          }
+        }
 
         const nextNodesSelectionActive = nodesSelectionActive && hasSelectedNodes;
 
@@ -137,20 +148,26 @@ const createStore = ({
           set({
             nodes,
             nodesInitialized,
+            nodeLookupChanges: updatedNodes,
             fitViewQueued: false,
             fitViewOptions: undefined,
             nodesSelectionActive: nextNodesSelectionActive,
           });
         } else {
-          set({ nodes, nodesInitialized, nodesSelectionActive: nextNodesSelectionActive });
+          set({
+            nodes,
+            nodesInitialized,
+            nodeLookupChanges: updatedNodes,
+            nodesSelectionActive: nextNodesSelectionActive,
+          });
         }
       },
       setEdges: (edges: Edge[]) => {
         const { connectionLookup, edgeLookup } = get();
 
-        updateConnectionLookup(connectionLookup, edgeLookup, edges);
+        const { updatedEdges } = updateConnectionLookup(connectionLookup, edgeLookup, edges);
 
-        set({ edges });
+        set({ edges, edgeLookupChanges: updatedEdges });
       },
       setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
         if (nodes) {
@@ -181,6 +198,8 @@ const createStore = ({
           zIndexMode,
         } = get();
 
+        // Measurement consumes `updates`; retain only those entries to identify replaced internal nodes.
+        const previousNodes = new Map(Array.from(updates.keys(), (id) => [id, nodeLookup.get(id)]));
         const { changes, updatedInternals } = updateNodeInternalsSystem(
           updates,
           nodeLookup,
@@ -195,12 +214,18 @@ const createStore = ({
           return;
         }
 
+        const updatedNodes = new Set<string>();
+        for (const [id, previousNode] of previousNodes) {
+          if (nodeLookup.get(id) !== previousNode) {
+            updatedNodes.add(id);
+          }
+        }
+
         if (fitViewQueued) {
           void resolveFitView();
-          set({ fitViewQueued: false, fitViewOptions: undefined });
+          set({ fitViewQueued: false, fitViewOptions: undefined, nodeLookupChanges: updatedNodes });
         } else {
-          // we always want to trigger useStore calls whenever updateNodeInternals is called
-          set({});
+          set({ nodeLookupChanges: updatedNodes });
         }
 
         emitNodeChanges(changes);
@@ -410,7 +435,7 @@ const createStore = ({
           return;
         }
 
-        adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        const { updatedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent: nextNodeExtent,
           elevateNodesOnSelect,
@@ -418,7 +443,7 @@ const createStore = ({
           zIndexMode,
         });
 
-        set({ nodeExtent: nextNodeExtent });
+        set({ nodeExtent: nextNodeExtent, nodeLookupChanges: updatedNodes });
       },
       panBy: (delta): Promise<boolean> => {
         const { transform, width, height, panZoom, translateExtent } = get();

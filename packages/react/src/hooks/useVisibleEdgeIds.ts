@@ -1,7 +1,8 @@
+import { shallow } from 'zustand/shallow';
 import { useCallback } from 'react';
 import { isEdgeVisible } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from './useReactFlowStore';
+import { useReactFlowStore } from './useReactFlowStore';
 import { type ReactFlowState } from '../types';
 
 /**
@@ -13,41 +14,40 @@ import { type ReactFlowState } from '../types';
  */
 export function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
   const edgeIds = useReactFlowStore(
-    useShallow(
-      useCallback(
-        (s: ReactFlowState) => {
-          if (!onlyRenderVisible) {
-            return s.edges.map((edge) => edge.id);
-          }
+    useCallback(
+      (s: ReactFlowState) => {
+        if (!onlyRenderVisible) {
+          return s.edges.map((edge) => edge.id);
+        }
 
-          const visibleEdgeIds = [];
+        const visibleEdgeIds = [];
 
-          if (s.width && s.height) {
-            for (const edge of s.edges) {
-              const sourceNode = s.nodeLookup.get(edge.source);
-              const targetNode = s.nodeLookup.get(edge.target);
+        if (s.width && s.height) {
+          for (const edge of s.edges) {
+            const sourceNode = s.nodeLookup.get(edge.source);
+            const targetNode = s.nodeLookup.get(edge.target);
 
-              if (
-                sourceNode &&
-                targetNode &&
-                isEdgeVisible({
-                  sourceNode,
-                  targetNode,
-                  width: s.width,
-                  height: s.height,
-                  transform: s.transform,
-                })
-              ) {
-                visibleEdgeIds.push(edge.id);
-              }
+            if (
+              sourceNode &&
+              targetNode &&
+              isEdgeVisible({
+                sourceNode,
+                targetNode,
+                width: s.width,
+                height: s.height,
+                transform: s.transform,
+              })
+            ) {
+              visibleEdgeIds.push(edge.id);
             }
           }
+        }
 
-          return visibleEdgeIds;
-        },
-        [onlyRenderVisible]
-      )
-    )
+        return visibleEdgeIds;
+      },
+      [onlyRenderVisible]
+    ),
+    shallow
   );
 
   return edgeIds;

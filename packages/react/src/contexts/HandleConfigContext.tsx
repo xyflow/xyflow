@@ -1,6 +1,7 @@
+import { shallow } from 'zustand/shallow';
 import { createContext, useContext, type ReactNode } from 'react';
 
-import { useReactFlowStore, useShallow } from '../hooks/useReactFlowStore';
+import { useReactFlowStore } from '../hooks/useReactFlowStore';
 import type { ReactFlowState } from '../types';
 
 type HandleConfig = {
@@ -22,7 +23,7 @@ const HandleConfigContext = createContext<HandleConfig | null>(null);
  * shared through context from a single store subscription.
  */
 export function HandleConfigProvider({ children }: { children: ReactNode }) {
-  const config = useReactFlowStore(useShallow(selector));
+  const config = useReactFlowStore(selector, shallow);
   return <HandleConfigContext.Provider value={config}>{children}</HandleConfigContext.Provider>;
 }
 
