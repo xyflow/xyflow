@@ -1,11 +1,11 @@
 import { memo, ReactNode } from 'react';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
 import EdgeWrapper from '../../components/EdgeWrapper';
-import type { Edge, ReactFlowState, Node } from '../../types';
+import type { Edge, Node, ReactFlowState } from '../../types';
 
 type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
   GraphViewProps<Node, EdgeType>,
@@ -33,7 +33,6 @@ const selector = (s: ReactFlowState) => ({
   edgesFocusable: s.edgesFocusable,
   edgesReconnectable: s.edgesReconnectable,
   elementsSelectable: s.elementsSelectable,
-  connectionMode: s.connectionMode,
   onError: s.onError,
 });
 

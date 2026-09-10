@@ -23,7 +23,7 @@ import {
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
+import { useShallow, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import type { ReactFlowProps, ReactFlowState } from '../../types';
 
 type PaneProps = {

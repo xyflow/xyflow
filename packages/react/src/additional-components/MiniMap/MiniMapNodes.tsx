@@ -1,7 +1,7 @@
 import { ComponentType, memo, useCallback } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { MiniMapNode } from './MiniMapNode';
 import type { ReactFlowState, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';

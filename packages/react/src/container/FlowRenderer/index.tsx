@@ -1,6 +1,6 @@
 import { memo, type ReactNode } from 'react';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useGlobalKeyHandler } from '../../hooks/useGlobalKeyHandler';
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';

@@ -9,7 +9,7 @@ import {
   getNodesInside,
 } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
+import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
@@ -18,6 +18,21 @@ import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
 import { useNodeObserver } from './useNodeObserver';
 import type { InternalNode, Node, NodeWrapperProps, ReactFlowState } from '../../types';
+
+function areEqual(
+  a: {
+    node: InternalNode<Node>;
+    internals: InternalNode<Node>['internals'];
+    isParent: boolean;
+  },
+  b: {
+    node: InternalNode<Node>;
+    internals: InternalNode<Node>['internals'];
+    isParent: boolean;
+  }
+): boolean {
+  return a.node === b.node && a.internals === b.internals;
+}
 
 function NodeWrapper<NodeType extends Node>({
   id,
@@ -53,7 +68,7 @@ function NodeWrapper<NodeType extends Node>({
     },
     [id]
   );
-  const { node, internals, isParent } = useReactFlowStore(useShallow(selector));
+  const { node, internals, isParent } = useReactFlowStore(useCustomDiff(selector, areEqual));
 
   let nodeType = node.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];

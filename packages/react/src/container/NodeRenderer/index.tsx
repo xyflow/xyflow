@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import { useResizeObserver } from './useResizeObserver';

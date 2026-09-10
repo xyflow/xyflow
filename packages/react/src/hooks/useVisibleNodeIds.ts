@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { getNodesInside } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from './useReactFlowStore';
+import { useShallow, useReactFlowStore } from './useReactFlowStore';
 import type { Node, ReactFlowState } from '../types';
 
 const selector = (onlyRenderVisible: boolean) => (s: ReactFlowState) => {
