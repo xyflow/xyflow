@@ -59,7 +59,8 @@
     internals: {
       z: zIndex = 0,
       positionAbsolute: { x: positionX, y: positionY },
-      userNode
+      userNode,
+      isParent
     }
   } = $derived(node);
 
@@ -74,12 +75,6 @@
   let hasHandleBounds = $derived(!!node.internals.handleBounds);
   let isInitialized = $derived(hasDimensions && hasHandleBounds);
   let focusable = $derived(_focusable ?? store.nodesFocusable);
-
-  function isInParentLookup(id: string) {
-    return store.parentLookup.has(id);
-  }
-
-  let isParent = $derived(isInParentLookup(id));
 
   let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
