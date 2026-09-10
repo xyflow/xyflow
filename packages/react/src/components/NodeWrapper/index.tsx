@@ -23,12 +23,10 @@ function areEqual(
   a: {
     node: InternalNode<Node>;
     internals: InternalNode<Node>['internals'];
-    isParent: boolean;
   },
   b: {
     node: InternalNode<Node>;
     internals: InternalNode<Node>['internals'];
-    isParent: boolean;
   }
 ): boolean {
   return a.node === b.node && a.internals === b.internals;
@@ -58,17 +56,15 @@ function NodeWrapper<NodeType extends Node>({
   const selector = useCallback(
     (s: ReactFlowState) => {
       const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
-      const isParent = s.parentLookup.has(id);
 
       return {
         node,
         internals: node.internals,
-        isParent,
       };
     },
     [id]
   );
-  const { node, internals, isParent } = useReactFlowStore(useCustomDiff(selector, areEqual));
+  const { node, internals } = useReactFlowStore(useCustomDiff(selector, areEqual));
 
   let nodeType = node.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
@@ -212,7 +208,7 @@ function NodeWrapper<NodeType extends Node>({
         {
           selected: node.selected,
           selectable: isSelectable,
-          parent: isParent,
+          parent: internals.isParent,
           draggable: isDraggable,
           dragging,
         },

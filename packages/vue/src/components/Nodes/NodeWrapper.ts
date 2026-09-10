@@ -45,7 +45,6 @@ const NodeWrapper = defineComponent({
     } = useVueFlow();
 
     const store = useVueFlowStore();
-    const { parentLookup } = store;
 
     const nodesSelectionActive = toRef(store, 'nodesSelectionActive');
 
@@ -99,7 +98,7 @@ const NodeWrapper = defineComponent({
     // a node counts as initialized only once it ALSO has handle bounds.
     const isInitialized = computed(() => hasDimensions.value && !!internalNode.value?.internals.handleBounds);
 
-    const isParent = computed(() => (parentLookup.get(props.id)?.size ?? 0) > 0);
+    const isParent = computed(() => internalNode.value?.internals.isParent ?? false);
 
     const nodeCmp = computed(() => {
       const name = internalNode.value?.type || 'default';

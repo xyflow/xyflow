@@ -103,6 +103,7 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = Omit<NodeTy
     userNode: NodeType;
     handleBounds?: NodeHandleBounds;
     bounds?: NodeBounds;
+    isParent: boolean;
   };
 };
 
