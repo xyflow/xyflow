@@ -22,14 +22,16 @@ import type { InternalNode, Node, NodeWrapperProps, ReactFlowState } from '../..
 function areEqual(
   a: {
     node: InternalNode<Node>;
+    internals: InternalNode<Node>['internals'];
     isParent: boolean;
   },
   b: {
     node: InternalNode<Node>;
+    internals: InternalNode<Node>['internals'];
     isParent: boolean;
   }
 ): boolean {
-  return a.node.id === b.node.id && a.isParent === b.isParent;
+  return a.node === b.node && a.internals === b.internals;
 }
 
 function NodeWrapper<NodeType extends Node>({
