@@ -11,6 +11,23 @@ const getAttrFunction = <NodeType extends Node>(
   func: string | GetMiniMapNodeAttribute<NodeType> | undefined
 ): GetMiniMapNodeAttribute<NodeType> => (func instanceof Function ? func : () => func);
 
+function areIdsEqual(a: string[], b: string[]): boolean {
+  if (a === b) {
+    return true;
+  }
+
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function MiniMapNodes<NodeType extends Node>({
   nodeStrokeColor,
   nodeColor,
@@ -59,6 +76,10 @@ function MiniMapNodes<NodeType extends Node>({
   );
 }
 
+function areNodesEqual(a: { node?: Node }, b: { node?: Node }): boolean {
+  return a.node === b.node;
+}
+
 function NodeComponentWrapperInner<NodeType extends Node>({
   id,
   nodeColorFunc,
@@ -103,7 +124,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
     [id]
   );
 
-  const { node, x, y, width, height } = useReactFlowStore(useCustomDiff(selector, areEqual));
+  const { node, x, y, width, height } = useReactFlowStore(useCustomDiff(selector, areNodesEqual));
 
   if (!node || node.hidden || !nodeHasDimensions(node)) {
     return null;
@@ -132,26 +153,3 @@ function NodeComponentWrapperInner<NodeType extends Node>({
 const NodeComponentWrapper = memo(NodeComponentWrapperInner) as typeof NodeComponentWrapperInner;
 
 export default memo(MiniMapNodes) as typeof MiniMapNodes;
-function areEqual(
-  a: { node: Node | undefined; x: number; y: number; width: number; height: number },
-  b: { node: Node | undefined; x: number; y: number; width: number; height: number }
-): boolean {
-  return a.node === b.node && a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
-}
-
-function areIdsEqual(a: string[], b: string[]): boolean {
-  if (a === b) {
-    return true;
-  }
-
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) {
-      return false;
-    }
-  }
-  return true;
-}

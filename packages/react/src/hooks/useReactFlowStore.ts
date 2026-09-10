@@ -16,10 +16,8 @@ const zustandErrorMessage = errorMessages['error001']('react');
  * @param selector - A selector function that returns a slice of the flow's internal state.
  * Extracting or transforming just the state you need is a good practice to avoid unnecessary
  * re-renders.
- * @param equalityFn - A function to compare the previous and next value. This is incredibly useful
- * for preventing unnecessary re-renders. For shallow comparisons, prefer `useShallow` from
- * `zustand/react/shallow` by wrapping your selector: `useStore(useShallow(selector))`. Passing
- * `zustand/shallow` as the second argument is still supported for backwards compatibility.
+ * For shallow comparisons, use `useShallow` from `@xyflow/react` by wrapping your selector:
+ * `useReactFlowStore(useShallow(selector))`.
  * @returns The selected state slice.
  *
  * @example
@@ -75,7 +73,7 @@ function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edg
 }
 
 export { useReactFlowStore, useReactFlowStoreApi };
-export { useShallow } from 'zustand/react/shallow';
+export { useShallow } from './useShallow';
 
 export function useCustomDiff<S, U>(selector: (state: S) => U, compare: (a: U, b: U) => boolean): (state: S) => U {
   const prev = useRef<U>();

@@ -6,73 +6,19 @@ import {
   getEdgePosition,
   errorMessages,
   getElevatedEdgeZIndex,
-  Position,
+  EdgePosition,
 } from '@xyflow/system';
 
-import { useReactFlowStoreApi, useReactFlowStore, useShallow, useCustomDiff } from '../../hooks/useReactFlowStore';
+import { useReactFlowStoreApi, useReactFlowStore, useCustomDiff } from '../../hooks/useReactFlowStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
 import type { Edge, EdgeWrapperProps } from '../../types';
 
-function areEqual(
-  a:
-    | {
-        sourceX: null;
-        sourceY: null;
-        targetX: null;
-        targetY: null;
-        sourcePosition: null;
-        targetPosition: null;
-        zIndex: undefined;
-      }
-    | {
-        zIndex: number;
-        sourceX: null;
-        sourceY: null;
-        targetX: null;
-        targetY: null;
-        sourcePosition: null;
-        targetPosition: null;
-      }
-    | {
-        zIndex: number;
-        sourceX: number;
-        sourceY: number;
-        targetX: number;
-        targetY: number;
-        sourcePosition: Position;
-        targetPosition: Position;
-      },
-  b:
-    | {
-        sourceX: null;
-        sourceY: null;
-        targetX: null;
-        targetY: null;
-        sourcePosition: null;
-        targetPosition: null;
-        zIndex: undefined;
-      }
-    | {
-        zIndex: number;
-        sourceX: null;
-        sourceY: null;
-        targetX: null;
-        targetY: null;
-        sourcePosition: null;
-        targetPosition: null;
-      }
-    | {
-        zIndex: number;
-        sourceX: number;
-        sourceY: number;
-        targetX: number;
-        targetY: number;
-        sourcePosition: Position;
-        targetPosition: Position;
-      }
-): boolean {
+type Nullable<T> = { [K in keyof T]: T[K] | null };
+type EdgePositionWithZIndex = Nullable<EdgePosition> & { zIndex?: number };
+
+function areEqual(a: EdgePositionWithZIndex, b: EdgePositionWithZIndex): boolean {
   return (
     a.sourceX === b.sourceX &&
     a.sourceY === b.sourceY &&
