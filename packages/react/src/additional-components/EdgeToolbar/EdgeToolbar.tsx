@@ -44,7 +44,7 @@ export function EdgeToolbar({
   alignY = 'center',
   ...rest
 }: EdgeToolbarProps) {
-  const edgeSelector = useCallback((state: ReactFlowState): Edge | undefined => state.edgeLookup.get(edgeId), [edgeId]);
+  const edgeSelector = useCallback((state: ReactFlowState): Edge | undefined => state.getEdgeById(edgeId), [edgeId]);
   const edge = useReactFlowStore(useShallow(edgeSelector));
   const isActive = typeof isVisible === 'boolean' ? isVisible : edge?.selected;
   const zoom = useReactFlowStore(zoomSelector);

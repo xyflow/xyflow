@@ -57,11 +57,15 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   height: number;
   transform: Transform;
   nodes: NodeType[];
+  updatedNodes: Set<string>;
   nodesInitialized: boolean;
   nodeLookup: NodeLookup<InternalNode<NodeType>>;
+  getInternalNodeById: (id: string) => InternalNode<NodeType> | undefined;
   parentLookup: ParentLookup<InternalNode<NodeType>>;
   edges: EdgeType[];
+  updatedEdges: Set<string>;
   edgeLookup: EdgeLookup<EdgeType>;
+  getEdgeById: (id: string) => EdgeType | undefined;
   connectionLookup: ConnectionLookup;
   onNodesChange: OnNodesChange<NodeType> | null;
   onEdgesChange: OnEdgesChange<EdgeType> | null;

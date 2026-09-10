@@ -242,6 +242,10 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     }
   }
 
+  for (const id of tmpLookup.keys()) {
+    updatedNodes.add(id);
+  }
+
   return { nodesInitialized, hasSelectedNodes, updatedNodes };
 }
 

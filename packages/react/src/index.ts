@@ -20,6 +20,7 @@ export { useViewport } from './hooks/useViewport';
 export { useKeyPress } from './hooks/useKeyPress';
 export { useNodesState, useEdgesState } from './hooks/useNodesEdgesState';
 export { useReactFlowStore, useReactFlowStoreApi, useShallow } from './hooks/useReactFlowStore';
+export { useStoreTracked } from './hooks/useStoreTracked';
 export { useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/useOnViewportChange';
 export { useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
 export { useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';

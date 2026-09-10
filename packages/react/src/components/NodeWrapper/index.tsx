@@ -55,7 +55,7 @@ function NodeWrapper<NodeType extends Node>({
 }: NodeWrapperProps<NodeType>) {
   const selector = useCallback(
     (s: ReactFlowState) => {
-      const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
+      const node = s.getInternalNodeById(id)! as InternalNode<NodeType>;
 
       return {
         node,

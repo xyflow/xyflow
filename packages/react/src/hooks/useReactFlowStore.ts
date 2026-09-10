@@ -1,9 +1,10 @@
 import { useContext, useMemo, useRef } from 'react';
-import { useStore as useZustandStore, type StoreApi } from 'zustand';
+import { type StoreApi } from 'zustand';
 import { errorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/StoreContext';
 import type { Edge, Node, ReactFlowState } from '../types';
+import { useStoreTracked } from './useStoreTracked';
 
 const zustandErrorMessage = errorMessages['error001']('react');
 
@@ -36,7 +37,7 @@ function useReactFlowStore<StateSlice = unknown>(selector: (state: ReactFlowStat
     throw new Error(zustandErrorMessage);
   }
 
-  return useZustandStore(store, selector);
+  return useStoreTracked(store, selector);
 }
 
 /**

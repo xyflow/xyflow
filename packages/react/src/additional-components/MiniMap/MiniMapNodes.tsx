@@ -82,7 +82,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
 }) {
   const selector = useCallback(
     (s: ReactFlowState) => {
-      const node = s.nodeLookup.get(id);
+      const node = s.getInternalNodeById(id);
 
       if (!node) {
         return { node: undefined, x: 0, y: 0, width: 0, height: 0 };

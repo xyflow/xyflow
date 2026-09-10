@@ -35,7 +35,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   onError,
   disableKeyboardA11y,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
-  let edge = useReactFlowStore((s) => s.edgeLookup.get(id)!) as EdgeType;
+  let edge = useReactFlowStore((s) => s.getEdgeById(id)!) as EdgeType;
   const defaultEdgeOptions = useReactFlowStore((s) => s.defaultEdgeOptions);
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
@@ -71,8 +71,8 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
     useShallow(
       useCallback(
         (store) => {
-          const sourceNode = store.nodeLookup.get(edge.source);
-          const targetNode = store.nodeLookup.get(edge.target);
+          const sourceNode = store.getInternalNodeById(edge.source);
+          const targetNode = store.getInternalNodeById(edge.target);
 
           if (!sourceNode || !targetNode) {
             return nullPosition;

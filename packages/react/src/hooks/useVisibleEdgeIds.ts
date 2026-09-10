@@ -24,8 +24,8 @@ export function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
 
           if (s.width && s.height) {
             for (const edge of s.edges) {
-              const sourceNode = s.nodeLookup.get(edge.source);
-              const targetNode = s.nodeLookup.get(edge.target);
+              const sourceNode = s.getInternalNodeById(edge.source);
+              const targetNode = s.getInternalNodeById(edge.target);
 
               if (
                 sourceNode &&

@@ -39,7 +39,7 @@ export function useNodesData(nodeIds: string | string[]): any {
       const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
 
       for (const nodeId of _nodeIds) {
-        const node = s.nodeLookup.get(nodeId);
+        const node = s.getInternalNodeById(nodeId);
         if (node) {
           data.push({
             id: node.id,

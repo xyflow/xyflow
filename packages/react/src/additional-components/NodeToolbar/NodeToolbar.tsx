@@ -71,7 +71,7 @@ export function NodeToolbar({
 
       const internalNodes: InternalNode[] = [];
       for (const id of nodeIds) {
-        const node = state.nodeLookup.get(id);
+        const node = state.getInternalNodeById(id);
         if (node) {
           internalNodes.push(node);
         }

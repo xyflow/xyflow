@@ -61,8 +61,8 @@ const getInitialState = ({
   const storeNodeOrigin = nodeOrigin ?? [0, 0];
   const storeNodeExtent = nodeExtent ?? infiniteExtent;
 
-  updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
-  const { nodesInitialized } = adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
+  const { updatedEdges } = updateConnectionLookup(connectionLookup, edgeLookup, storeEdges);
+  const { nodesInitialized, updatedNodes } = adoptUserNodes(storeNodes, nodeLookup, parentLookup, {
     nodeOrigin: storeNodeOrigin,
     nodeExtent: storeNodeExtent,
     zIndexMode,
@@ -92,11 +92,15 @@ const getInitialState = ({
     height: height ?? 0,
     transform,
     nodes: storeNodes,
+    updatedNodes,
     nodesInitialized,
     nodeLookup,
+    getInternalNodeById: (id) => nodeLookup.get(id),
     parentLookup,
     edges: storeEdges,
+    updatedEdges,
     edgeLookup,
+    getEdgeById: (id) => edgeLookup.get(id),
     connectionLookup,
     onNodesChange: null,
     onEdgesChange: null,
