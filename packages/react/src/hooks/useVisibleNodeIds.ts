@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { getNodesInside } from '@xyflow/system';
 
-import { useCustomDiff, useReactFlowStore } from './useReactFlowStore';
+import { useShallow, useReactFlowStore } from './useReactFlowStore';
 import type { Node, ReactFlowState } from '../types';
 
 const selector = (onlyRenderVisible: boolean) => (s: ReactFlowState) => {
@@ -20,27 +20,7 @@ const selector = (onlyRenderVisible: boolean) => (s: ReactFlowState) => {
  * @returns array with visible node ids
  */
 export function useVisibleNodeIds(onlyRenderVisible: boolean) {
-  const nodeIds = useReactFlowStore(
-    useCustomDiff(useCallback(selector(onlyRenderVisible), [onlyRenderVisible]), areEqual)
-  );
+  const nodeIds = useReactFlowStore(useShallow(useCallback(selector(onlyRenderVisible), [onlyRenderVisible])));
 
   return nodeIds;
-}
-
-function areEqual(a: string[], b: string[]): boolean {
-  if (a === b) {
-    return true;
-  }
-
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) {
-      return false;
-    }
-  }
-
-  return true;
 }

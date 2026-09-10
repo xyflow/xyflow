@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { isEdgeVisible } from '@xyflow/system';
 
-import { useCustomDiff, useReactFlowStore } from './useReactFlowStore';
+import { useShallow, useReactFlowStore } from './useReactFlowStore';
 import { type ReactFlowState } from '../types';
 
 /**
@@ -13,7 +13,7 @@ import { type ReactFlowState } from '../types';
  */
 export function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
   const edgeIds = useReactFlowStore(
-    useCustomDiff(
+    useShallow(
       useCallback(
         (s: ReactFlowState) => {
           if (!onlyRenderVisible) {
@@ -46,28 +46,9 @@ export function useVisibleEdgeIds(onlyRenderVisible: boolean): string[] {
           return visibleEdgeIds;
         },
         [onlyRenderVisible]
-      ),
-      areEqual
+      )
     )
   );
 
   return edgeIds;
-}
-
-function areEqual(a: string[], b: string[]): boolean {
-  if (a === b) {
-    return true;
-  }
-
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) {
-      return false;
-    }
-  }
-
-  return true;
 }

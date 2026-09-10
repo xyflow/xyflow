@@ -1,7 +1,7 @@
 import { ComponentType, memo, useCallback } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 
-import { useCustomDiff, useReactFlowStore } from '../../hooks/useReactFlowStore';
+import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { MiniMapNode } from './MiniMapNode';
 import type { ReactFlowState, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
@@ -10,23 +10,6 @@ const selectorNodeIds = (s: ReactFlowState) => s.nodes.map((node) => node.id);
 const getAttrFunction = <NodeType extends Node>(
   func: string | GetMiniMapNodeAttribute<NodeType> | undefined
 ): GetMiniMapNodeAttribute<NodeType> => (func instanceof Function ? func : () => func);
-
-function areIdsEqual(a: string[], b: string[]): boolean {
-  if (a === b) {
-    return true;
-  }
-
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) {
-      return false;
-    }
-  }
-  return true;
-}
 
 function MiniMapNodes<NodeType extends Node>({
   nodeStrokeColor,
@@ -41,7 +24,7 @@ function MiniMapNodes<NodeType extends Node>({
   nodeComponent: NodeComponent = MiniMapNode,
   onClick,
 }: MiniMapNodesProps<NodeType>) {
-  const nodeIds = useReactFlowStore(useCustomDiff(selectorNodeIds, areIdsEqual));
+  const nodeIds = useReactFlowStore(useShallow(selectorNodeIds));
   const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
@@ -74,10 +57,6 @@ function MiniMapNodes<NodeType extends Node>({
       ))}
     </>
   );
-}
-
-function areNodesEqual(a: { node?: Node }, b: { node?: Node }): boolean {
-  return a.node === b.node;
 }
 
 function NodeComponentWrapperInner<NodeType extends Node>({
@@ -124,7 +103,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
     [id]
   );
 
-  const { node, x, y, width, height } = useReactFlowStore(useCustomDiff(selector, areNodesEqual));
+  const { node, x, y, width, height } = useReactFlowStore(useShallow(selector));
 
   if (!node || node.hidden || !nodeHasDimensions(node)) {
     return null;

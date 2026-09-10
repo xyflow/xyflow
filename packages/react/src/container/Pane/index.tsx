@@ -23,7 +23,7 @@ import {
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
-import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useShallow, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import type { ReactFlowProps, ReactFlowState } from '../../types';
 
 type PaneProps = {
@@ -90,7 +90,7 @@ export function Pane({
   const autoPanId = useRef<number>(0);
   const store = useReactFlowStoreApi();
   const { userSelectionActive, elementsSelectable, dragging, panBy, autoPanSpeed } = useReactFlowStore(
-    useCustomDiff(selector, areEqual)
+    useShallow(selector)
   );
   const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);
 
@@ -380,29 +380,5 @@ export function Pane({
       {children}
       <UserSelection />
     </div>
-  );
-}
-function areEqual(
-  a: {
-    userSelectionActive: boolean;
-    elementsSelectable: boolean;
-    dragging: boolean;
-    panBy: ReactFlowState['panBy'];
-    autoPanSpeed: number;
-  },
-  b: {
-    userSelectionActive: boolean;
-    elementsSelectable: boolean;
-    dragging: boolean;
-    panBy: ReactFlowState['panBy'];
-    autoPanSpeed: number;
-  }
-): boolean {
-  return (
-    a.userSelectionActive === b.userSelectionActive &&
-    a.elementsSelectable === b.elementsSelectable &&
-    a.dragging === b.dragging &&
-    a.panBy === b.panBy &&
-    a.autoPanSpeed === b.autoPanSpeed
   );
 }

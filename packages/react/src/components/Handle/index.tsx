@@ -22,7 +22,7 @@ import {
   Optional,
 } from '@xyflow/system';
 
-import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useShallow, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { useHandleConfig } from '../../contexts/HandleConfigContext';
 import { type ReactFlowState } from '../../types';
@@ -78,37 +78,6 @@ const connectingSelector =
     };
   };
 
-function areEqual(
-  a: {
-    connectingFrom: boolean;
-    connectingTo: boolean;
-    clickConnecting: boolean;
-    isPossibleEndHandle: boolean;
-    connectionInProcess: boolean;
-    clickConnectionInProcess: boolean;
-    valid: boolean | null;
-  },
-  b: {
-    connectingFrom: boolean;
-    connectingTo: boolean;
-    clickConnecting: boolean;
-    isPossibleEndHandle: boolean;
-    connectionInProcess: boolean;
-    clickConnectionInProcess: boolean;
-    valid: boolean | null;
-  }
-): boolean {
-  return (
-    a.connectingFrom === b.connectingFrom &&
-    a.connectingTo === b.connectingTo &&
-    a.clickConnecting === b.clickConnecting &&
-    a.isPossibleEndHandle === b.isPossibleEndHandle &&
-    a.connectionInProcess === b.connectionInProcess &&
-    a.clickConnectionInProcess === b.clickConnectionInProcess &&
-    a.valid === b.valid
-  );
-}
-
 function HandleComponent(
   {
     type = 'source',
@@ -140,7 +109,7 @@ function HandleComponent(
     connectionInProcess,
     clickConnectionInProcess,
     valid,
-  } = useReactFlowStore(useCustomDiff(connectingSelector(nodeId, handleId, type), areEqual));
+  } = useReactFlowStore(useShallow(connectingSelector(nodeId, handleId, type)));
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }
