@@ -19,6 +19,19 @@ import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from '.
 import { useNodeObserver } from './useNodeObserver';
 import type { InternalNode, Node, NodeWrapperProps, ReactFlowState } from '../../types';
 
+function areEqual(
+  a: {
+    node: InternalNode<Node>;
+    isParent: boolean;
+  },
+  b: {
+    node: InternalNode<Node>;
+    isParent: boolean;
+  }
+): boolean {
+  return a.node.id === b.node.id && a.isParent === b.isParent;
+}
+
 function NodeWrapper<NodeType extends Node>({
   id,
   onClick,
@@ -254,44 +267,3 @@ function NodeWrapper<NodeType extends Node>({
 }
 
 export default memo(NodeWrapper) as typeof NodeWrapper;
-
-function areEqual(
-  a: {
-    node: InternalNode<Node>;
-    internals: {
-      positionAbsolute: { x: number; y: number };
-      z: number;
-      rootParentIndex?: number;
-      userNode: Node;
-      handleBounds?: unknown;
-      bounds?: unknown;
-    };
-    isParent: boolean;
-  },
-  b: {
-    node: InternalNode<Node>;
-    internals: {
-      positionAbsolute: { x: number; y: number };
-      z: number;
-      rootParentIndex?: number;
-      userNode: Node;
-      handleBounds?: unknown;
-      bounds?: unknown;
-    };
-    isParent: boolean;
-  }
-): boolean {
-  if (a.node !== b.node || a.isParent !== b.isParent) {
-    return false;
-  }
-
-  return (
-    a.internals.positionAbsolute.x === b.internals.positionAbsolute.x &&
-    a.internals.positionAbsolute.y === b.internals.positionAbsolute.y &&
-    a.internals.z === b.internals.z &&
-    a.internals.rootParentIndex === b.internals.rootParentIndex &&
-    a.internals.userNode === b.internals.userNode &&
-    a.internals.handleBounds === b.internals.handleBounds &&
-    a.internals.bounds === b.internals.bounds
-  );
-}
