@@ -50,6 +50,7 @@ const reactFlowFieldsToTrack = [
   'onNodeDrag',
   'onNodeDragStart',
   'onNodeDragStop',
+  'onNodeMove',
   'onSelectionDrag',
   'onSelectionDragStart',
   'onSelectionDragStop',
