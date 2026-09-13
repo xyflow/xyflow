@@ -3,6 +3,8 @@
     Position,
     XYHandle,
     isMouseEvent,
+    isInputDOMNode,
+    elementSelectionKeys,
     areConnectionMapsEqual,
     handleConnectionChange,
     ConnectionMode,
@@ -16,6 +18,7 @@
 
   import { useStore } from '$lib/store/index.js';
 
+  import { ARIA_HANDLE_DESC_KEY } from '../A11yDescriptions/index.js';
   import type { HandleProps } from './types.js';
   import { getNodeConnectableContext, getNodeIdContext } from '$lib/store/context.js';
 
@@ -142,7 +145,21 @@
     }
   }
 
-  function onclick(event: MouseEvent) {
+  let isFocusable = $derived(
+    isConnectable && store.clickConnect && store.handlesFocusable && !store.disableKeyboardA11y
+  );
+
+  let clickConnecting = $derived(
+    store.clickConnectStartHandle?.nodeId === nodeId &&
+      store.clickConnectStartHandle?.type === type &&
+      store.clickConnectStartHandle?.id === handleId
+  );
+
+  /*
+   * Activating a handle - by clicking it or by pressing enter/space while it is focused -
+   * either starts a new connection or completes a pending one.
+   */
+  function onHandleActivate(event: MouseEvent | KeyboardEvent) {
     if (!nodeId || (!store.clickConnectStartHandle && !isConnectableStart)) {
       return;
     }
@@ -150,6 +167,7 @@
     if (!store.clickConnectStartHandle) {
       store.onclickconnectstart?.(event, { nodeId, handleId, handleType: type });
       store.clickConnectStartHandle = { nodeId, type, id: handleId };
+      store.ariaLiveMessage = store.ariaLabelConfig['handle.ariaLiveMessage.connectionStarted'];
       return;
     }
 
@@ -190,6 +208,21 @@
 
     store.clickConnectStartHandle = null;
   }
+
+  function onkeydown(event: KeyboardEvent) {
+    if (
+      isInputDOMNode(event) ||
+      !elementSelectionKeys.includes(event.key) ||
+      event.key === 'Escape'
+    ) {
+      return;
+    }
+
+    // prevent scrolling the viewport on space and the event from reaching the node wrapper
+    event.preventDefault();
+    event.stopPropagation();
+    onHandleActivate(event);
+  }
 </script>
 
 <!--
@@ -210,6 +243,7 @@ The Handle component is the part of a node that can be used to connect nodes.
     className
   ]}
   class:valid
+  class:clickconnecting={clickConnecting}
   class:connectingto={connectingTo}
   class:connectingfrom={connectingFrom}
   class:source={!isTarget}
@@ -222,12 +256,13 @@ The Handle component is the part of a node that can be used to connect nodes.
     (connectionInProgress || store.clickConnectStartHandle ? isConnectableEnd : isConnectableStart)}
   onmousedown={onpointerdown}
   ontouchstart={onpointerdown}
-  onclick={store.clickConnect ? onclick : undefined}
-  onkeypress={() => {}}
+  onclick={store.clickConnect ? (event) => onHandleActivate(event) : undefined}
+  onkeydown={isFocusable ? onkeydown : undefined}
   {style}
   role="button"
   aria-label={ariaLabelConfig[`handle.ariaLabel`]}
-  tabindex="-1"
+  aria-describedby={isFocusable ? `${ARIA_HANDLE_DESC_KEY}-${store.flowId}` : undefined}
+  tabindex={isFocusable ? 0 : -1}
   {...rest}
 >
   {@render children?.()}
