@@ -94,6 +94,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   autoPanOnNodeFocus: boolean;
   nodesConnectable: boolean;
   nodesFocusable: boolean;
+  handlesFocusable: boolean;
   edgesFocusable: boolean;
   edgesReconnectable: boolean;
   elementsSelectable: boolean;
@@ -143,6 +144,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   onSelectionChangeHandlers: OnSelectionChangeFunc<NodeType, EdgeType>[];
 
   ariaLiveMessage: string;
+  disableKeyboardA11y: boolean;
   autoPanOnConnect: boolean;
   autoPanOnNodeDrag: boolean;
   autoPanSpeed: number;

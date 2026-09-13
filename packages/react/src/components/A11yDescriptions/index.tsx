@@ -18,6 +18,7 @@ const ariaLiveStyle: CSSProperties = {
 
 export const ARIA_NODE_DESC_KEY = 'react-flow__node-desc';
 export const ARIA_EDGE_DESC_KEY = 'react-flow__edge-desc';
+export const ARIA_HANDLE_DESC_KEY = 'react-flow__handle-desc';
 export const ARIA_LIVE_MESSAGE = 'react-flow__aria-live';
 
 const ariaLiveSelector = (s: ReactFlowState) => s.ariaLiveMessage;
@@ -45,6 +46,9 @@ export function A11yDescriptions({ rfId, disableKeyboardA11y }: { rfId: string; 
       </div>
       <div id={`${ARIA_EDGE_DESC_KEY}-${rfId}`} style={style}>
         {ariaLabelConfig['edge.a11yDescription.default']}
+      </div>
+      <div id={`${ARIA_HANDLE_DESC_KEY}-${rfId}`} style={style}>
+        {ariaLabelConfig['handle.a11yDescription.default']}
       </div>
       {!disableKeyboardA11y && <AriaLiveMessage rfId={rfId} />}
     </>

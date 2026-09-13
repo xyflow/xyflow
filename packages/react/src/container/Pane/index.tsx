@@ -6,6 +6,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
   type WheelEvent as ReactWheelEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from 'react';
 import { shallow } from 'zustand/shallow';
@@ -18,7 +19,12 @@ import {
   calcAutoPan,
   pointToRendererPoint,
   rendererPointToPoint,
-  XYPosition,
+  elementSelectionKeys,
+  isInputDOMNode,
+  type ConnectionState,
+  type FinalConnectionState,
+  type Optional,
+  type XYPosition,
 } from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
@@ -68,6 +74,9 @@ const selector = (s: ReactFlowState) => ({
   dragging: s.paneDragging,
   panBy: s.panBy,
   autoPanSpeed: s.autoPanSpeed,
+  disableKeyboardA11y: s.disableKeyboardA11y,
+  handlesFocusable: s.handlesFocusable,
+  ariaLabelConfig: s.ariaLabelConfig,
 });
 
 export function Pane({
@@ -90,7 +99,16 @@ export function Pane({
 }: PaneProps) {
   const autoPanId = useRef<number>(0);
   const store = useStoreApi();
-  const { userSelectionActive, elementsSelectable, dragging, panBy, autoPanSpeed } = useStore(selector, shallow);
+  const {
+    userSelectionActive,
+    elementsSelectable,
+    dragging,
+    panBy,
+    autoPanSpeed,
+    disableKeyboardA11y,
+    handlesFocusable,
+    ariaLabelConfig,
+  } = useStore(selector, shallow);
   const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);
 
   const container = useRef<HTMLDivElement | null>(null);
@@ -358,11 +376,47 @@ export function Pane({
     cleanupAutoPan();
   };
 
+  /*
+   * While a click connection is pending, escape cancels it and enter/space on the pane
+   * itself completes it "on the pane" - the keyboard equivalent of dropping a connection
+   * on the canvas. Keydown events from focused handles bubble up to the pane.
+   */
+  const onKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const { connectionClickStartHandle, onClickConnectEnd, connection } = store.getState();
+    if (!connectionClickStartHandle || isInputDOMNode(event.nativeEvent)) {
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      store.setState({
+        connectionClickStartHandle: null,
+        ariaLiveMessage: ariaLabelConfig['handle.ariaLiveMessage.connectionCancelled'],
+      });
+      return;
+    }
+
+    if (elementSelectionKeys.includes(event.key) && event.target === container.current) {
+      event.preventDefault();
+
+      const connectionClone = structuredClone(connection) as Optional<ConnectionState, 'inProgress'>;
+      delete connectionClone.inProgress;
+      connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
+      onClickConnectEnd?.(event.nativeEvent, connectionClone as FinalConnectionState);
+
+      store.setState({ connectionClickStartHandle: null });
+    }
+  };
+
   const draggable = panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0));
+  const isFocusable = handlesFocusable && !disableKeyboardA11y;
 
   return (
     <div
       className={cc(['react-flow__pane', { draggable, dragging, selection: isSelecting }])}
+      tabIndex={isFocusable ? 0 : undefined}
+      role={isFocusable ? 'group' : undefined}
+      aria-label={isFocusable ? ariaLabelConfig['pane.ariaLabel'] : undefined}
+      onKeyDown={onKeyDown}
       onClick={isSelectionEnabled ? undefined : wrapHandler(onClick, container)}
       onContextMenu={wrapHandler(onContextMenu, container)}
       onWheel={wrapHandler(onWheel, container)}
