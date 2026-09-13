@@ -37,7 +37,8 @@ export const infiniteExtent: CoordinateExtent = [
   [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
 ];
 
-export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
+// some browsers report the space key as 'Space' or 'Spacebar' instead of ' '
+export const elementSelectionKeys = ['Enter', ' ', 'Spacebar', 'Space', 'Escape'];
 
 export const defaultAriaLabelConfig = {
   'node.a11yDescription.default':
