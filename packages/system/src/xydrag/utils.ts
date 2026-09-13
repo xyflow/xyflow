@@ -1,5 +1,13 @@
-import { type NodeDragItem, type XYPosition, InternalNodeBase, NodeBase, NodeLookup, SnapGrid } from '../types';
-import { snapPosition } from '../utils';
+import {
+  type NodeDragItem,
+  type XYPosition,
+  InternalNodeBase,
+  NodeBase,
+  NodeLookup,
+  SnapGrid,
+  NodeOrigin,
+} from '../types';
+import { snapNodePosition } from '../utils';
 
 export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodeLookup: NodeLookup): boolean {
   if (!node.parentId) {
@@ -130,11 +138,13 @@ export function getEventHandlerParams<NodeType extends NodeBase>({
 export function calculateSnapOffset({
   dragItems,
   snapGrid,
+  nodeOrigin,
   x,
   y,
 }: {
   dragItems: Map<string, NodeDragItem>;
   snapGrid: SnapGrid;
+  nodeOrigin: NodeOrigin;
   x: number;
   y: number;
 }) {
@@ -148,7 +158,7 @@ export function calculateSnapOffset({
     x: x - refDragItem.distance.x,
     y: y - refDragItem.distance.y,
   };
-  const refPosSnapped = snapPosition(refPos, snapGrid);
+  const refPosSnapped = snapNodePosition(refPos, refDragItem, snapGrid, nodeOrigin);
 
   return {
     x: refPosSnapped.x - refPos.x,
