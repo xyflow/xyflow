@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import {
   ReactFlow,
+  ReactFlowProvider,
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
@@ -26,7 +27,7 @@ export default ({ flowConfig }: FlowProps) => {
   const onEdgesChange: OnEdgesChange = useCallback((changes) => setEdges((eds) => applyEdgeChanges(changes, eds)), []);
   const onConnect: OnConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
 
-  return (
+  const flow = (
     <div style={{ height: '100%' }}>
       <ReactFlow {...props} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect}>
         {flowConfig.controlsProps && <Controls {...flowConfig.controlsProps} />}
@@ -36,4 +37,7 @@ export default ({ flowConfig }: FlowProps) => {
       </ReactFlow>
     </div>
   );
+
+  // nodes only reach an outer provider's store after mount, which is when some timing bugs show up
+  return flowConfig.withProvider ? <ReactFlowProvider>{flow}</ReactFlowProvider> : flow;
 };
