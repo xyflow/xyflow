@@ -72,23 +72,25 @@ const middlewareImpl: MiddlewareImpl = (initializer) => (set, get, api) => {
     subscription.props.clear();
     return new Proxy(store.getState(), {
       get(target, prop, receiver) {
-        if (prop === 'getInternalNodeById') {
-          return (id: string) => {
-            subscription.props.add(`n-${id}`);
-            return target.nodeLookup.get(id);
-          };
+        switch (prop) {
+          case 'getInternalNodeById':
+            return (id: string) => {
+              subscription.props.add(`n-${id}`);
+              return target.nodeLookup.get(id);
+            };
+          case 'getEdgeById':
+            return (id: string) => {
+              subscription.props.add(`e-${id}`);
+              return target.edgeLookup.get(id);
+            };
+          case 'nodeLookup':
+            subscription.props.add('nodes');
+            return;
+          // falls through
+          default:
+            subscription.props.add(prop);
+            return Reflect.get(target, prop, receiver);
         }
-        if (prop === 'getEdgeById') {
-          return (id: string) => {
-            subscription.props.add(`e-${id}`);
-            return target.edgeLookup.get(id);
-          };
-        }
-        if (prop === 'nodeLookup') {
-          subscription.props.add('nodes');
-        }
-        subscription.props.add(prop);
-        return Reflect.get(target, prop, receiver);
       },
     });
   }
