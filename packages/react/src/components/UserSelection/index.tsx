@@ -1,14 +1,12 @@
 import { SelectionRect } from '@xyflow/system';
-import { useCustomDiff, useReactFlowStore } from '../../hooks/useReactFlowStore';
-import type { ReactFlowState } from '../../types';
+import { useCustomDiff, useReactFlowStore, useSelectionStore } from '../../hooks/useReactFlowStore';
+import type { SelectionStore } from '../../types';
 
-const selector = (s: ReactFlowState) => ({
-  userSelectionActive: s.userSelectionActive,
-  userSelectionRect: s.userSelectionRect,
-});
+const selector = (s: SelectionStore) => s.userSelectionRect;
 
 export function UserSelection() {
-  const { userSelectionActive, userSelectionRect } = useReactFlowStore(useCustomDiff(selector, areEqual));
+  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
+  const userSelectionRect = useSelectionStore(useCustomDiff(selector, areEqual));
   const isActive = userSelectionActive && userSelectionRect;
 
   if (!isActive) {
@@ -26,15 +24,6 @@ export function UserSelection() {
     />
   );
 }
-function areEqual(
-  a: { userSelectionActive: boolean; userSelectionRect: SelectionRect | null },
-  b: { userSelectionActive: boolean; userSelectionRect: SelectionRect | null }
-): boolean {
-  return (
-    a.userSelectionActive === b.userSelectionActive &&
-    a.userSelectionRect?.x === b.userSelectionRect?.x &&
-    a.userSelectionRect?.y === b.userSelectionRect?.y &&
-    a.userSelectionRect?.width === b.userSelectionRect?.width &&
-    a.userSelectionRect?.height === b.userSelectionRect?.height
-  );
+function areEqual(a: SelectionRect | null, b: SelectionRect | null): boolean {
+  return a?.x === b?.x && a?.y === b?.y && a?.width === b?.width && a?.height === b?.height;
 }

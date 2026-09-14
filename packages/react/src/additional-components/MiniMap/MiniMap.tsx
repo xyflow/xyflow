@@ -2,9 +2,16 @@ import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } 
 import cc from 'classcat';
 import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
-import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import {
+  useCustomDiff,
+  useShallow,
+  useReactFlowStore,
+  useNodesStore,
+  useViewportStore,
+  useReactFlowStoreApi,
+} from '../../hooks/useReactFlowStore';
 import { Panel } from '../../components/Panel';
-import type { ReactFlowState, Node } from '../../types';
+import type { ReactFlowState, NodesStore, ViewportStore, Node } from '../../types';
 
 import MiniMapNodes from './MiniMapNodes';
 import type { MiniMapProps } from './types';
@@ -14,12 +21,19 @@ const defaultHeight = 150;
 
 const filterHidden = (node: Node) => !node.hidden;
 
-const selector = (s: ReactFlowState) => {
+const configSelector = (s: ReactFlowState) => ({
+  rfId: s.rfId,
+  panZoom: s.panZoom,
+  translateExtent: s.translateExtent,
+  ariaLabelConfig: s.ariaLabelConfig,
+});
+
+const selector = (s: NodesStore, viewport: ViewportStore) => {
   const viewBB: Rect = {
-    x: -s.transform[0] / s.transform[2],
-    y: -s.transform[1] / s.transform[2],
-    width: s.width / s.transform[2],
-    height: s.height / s.transform[2],
+    x: -viewport.transform[0] / viewport.transform[2],
+    y: -viewport.transform[1] / viewport.transform[2],
+    width: viewport.width / viewport.transform[2],
+    height: viewport.height / viewport.transform[2],
   };
 
   /*
@@ -41,12 +55,8 @@ const selector = (s: ReactFlowState) => {
     boundingRect: hasVisibleNode
       ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
       : viewBB,
-    rfId: s.rfId,
-    panZoom: s.panZoom,
-    translateExtent: s.translateExtent,
-    flowWidth: s.width,
-    flowHeight: s.height,
-    ariaLabelConfig: s.ariaLabelConfig,
+    flowWidth: viewport.width,
+    flowHeight: viewport.height,
   };
 };
 type MiniMapSlice = ReturnType<typeof selector>;
@@ -58,12 +68,8 @@ const rectEqual = (a: Rect, b: Rect) => a.x === b.x && a.y === b.y && a.width ==
 const areEqual = (a: MiniMapSlice, b: MiniMapSlice) =>
   rectEqual(a.viewBB, b.viewBB) &&
   rectEqual(a.boundingRect, b.boundingRect) &&
-  a.rfId === b.rfId &&
-  a.panZoom === b.panZoom &&
-  a.translateExtent === b.translateExtent &&
   a.flowWidth === b.flowWidth &&
-  a.flowHeight === b.flowHeight &&
-  a.ariaLabelConfig === b.ariaLabelConfig;
+  a.flowHeight === b.flowHeight;
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 function MiniMapComponent<NodeType extends Node = Node>({
@@ -95,8 +101,14 @@ function MiniMapComponent<NodeType extends Node = Node>({
 }: MiniMapProps<NodeType>) {
   const store = useReactFlowStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
-  const { rfId, viewBB, boundingRect, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } =
-    useReactFlowStore(useCustomDiff(selector, areEqual));
+  const { rfId, panZoom, translateExtent, ariaLabelConfig } = useReactFlowStore(useShallow(configSelector));
+  const viewport = useViewportStore((s) => s);
+  const { viewBB, boundingRect, flowWidth, flowHeight } = useNodesStore(
+    useCustomDiff(
+      useCallback((s: NodesStore) => selector(s, viewport), [viewport]),
+      areEqual
+    )
+  );
 
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
@@ -122,7 +134,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
       minimapInstance.current = XYMinimap({
         domNode: svg.current,
         panZoom: currentPanZoom,
-        getTransform: () => store.getState().transform,
+        getTransform: () => store.viewportStore.getState().transform,
         getViewScale: () => viewScaleRef.current,
       });
 
@@ -153,7 +165,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
   const nodeClickHandler = useCallback(
     (event: MouseEvent, nodeId: string) => {
-      const internalNode = store.getState().nodeLookup.get(nodeId)!;
+      const internalNode = store.nodesStore.getState().nodeLookup.get(nodeId)!;
 
       if (internalNode && onNodeClick) {
         onNodeClick(event, internalNode.internals.userNode);

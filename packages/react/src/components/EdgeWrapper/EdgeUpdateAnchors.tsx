@@ -58,11 +58,11 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       lib,
       onConnectStart,
       cancelConnection,
-      nodeLookup,
       rfId: flowId,
       panBy,
       updateConnection,
     } = store.getState();
+    const { nodeLookup } = store.nodesStore.getState();
     const isTarget = oppositeHandle.type === 'target';
 
     const _onReconnectEnd = (evt: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => {
@@ -97,8 +97,8 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       onConnectEnd: (...args) => store.getState().onConnectEnd?.(...args),
       onReconnectEnd: _onReconnectEnd,
       updateConnection,
-      getTransform: () => store.getState().transform,
-      getFromHandle: () => store.getState().connection.fromHandle,
+      getTransform: () => store.viewportStore.getState().transform,
+      getFromHandle: () => store.connectionStore.getState().connection.fromHandle,
       dragThreshold: store.getState().connectionDragThreshold,
       handleDomNode: event.currentTarget,
     });

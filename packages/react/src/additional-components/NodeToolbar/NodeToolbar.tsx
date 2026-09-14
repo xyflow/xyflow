@@ -2,19 +2,15 @@ import { useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
 import { Position, getNodeToolbarTransform } from '@xyflow/system';
 
-import { InternalNode, ReactFlowState } from '../../types';
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { InternalNode, NodesStore } from '../../types';
+import { useNodesStore, useShallow } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { NodeToolbarPortal } from './NodeToolbarPortal';
 import type { NodeToolbarProps } from './types';
 import { useReactFlow } from '../../hooks/useReactFlow';
+import { useViewport } from '../../hooks/useViewport';
 
-const storeSelector = (state: ReactFlowState) => ({
-  x: state.transform[0],
-  y: state.transform[1],
-  zoom: state.transform[2],
-  selectedNodesCount: state.nodes.filter((node) => node.selected).length,
-});
+const storeSelector = (state: NodesStore) => state.nodes.filter((node) => node.selected).length;
 
 /**
  * This component can render a toolbar or tooltip to one side of a custom node. This
@@ -66,7 +62,7 @@ export function NodeToolbar({
   const { getNodesBounds } = useReactFlow();
 
   const nodesSelector = useCallback(
-    (state: ReactFlowState): InternalNode[] => {
+    (state: NodesStore): InternalNode[] => {
       const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
 
       const internalNodes: InternalNode[] = [];
@@ -81,8 +77,9 @@ export function NodeToolbar({
     },
     [nodeId, contextNodeId]
   );
-  const nodes = useReactFlowStore(useShallow(nodesSelector));
-  const { x, y, zoom, selectedNodesCount } = useReactFlowStore(useShallow(storeSelector));
+  const nodes = useNodesStore(useShallow(nodesSelector));
+  const selectedNodesCount = useNodesStore(storeSelector);
+  const { x, y, zoom } = useViewport();
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   const isActive =

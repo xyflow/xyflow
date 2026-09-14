@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
 import { type MarkerProps, createMarkerIds } from '@xyflow/system';
 
-import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
+import { useEdgesStore, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useMarkerSymbol } from './MarkerSymbols';
 import { type ReactFlowState } from '../../types';
 
@@ -43,7 +43,7 @@ const Marker = ({
   );
 };
 
-const selector = (s: ReactFlowState) => ({ edges: s.edges, defaultEdgeOptions: s.defaultEdgeOptions });
+const selector = (s: ReactFlowState) => s.defaultEdgeOptions;
 
 /*
  * when you have multiple flows on a page and you hide the first one, the other ones have no markers anymore
@@ -51,7 +51,8 @@ const selector = (s: ReactFlowState) => ({ edges: s.edges, defaultEdgeOptions: s
  * that we can then use for creating our unique marker ids
  */
 const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
-  const { edges, defaultEdgeOptions } = useReactFlowStore(useShallow(selector));
+  const defaultEdgeOptions = useReactFlowStore(selector);
+  const edges = useEdgesStore((s) => s.edges);
 
   const markers = useMemo(() => {
     const markers = createMarkerIds(edges, {

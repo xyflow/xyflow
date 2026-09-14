@@ -7,9 +7,9 @@ import {
   type UseNodeConnectionsParams,
 } from '@xyflow/system';
 
-import { useCustomDiff, useReactFlowStore } from './useReactFlowStore';
+import { useCustomDiff, useEdgesStore } from './useReactFlowStore';
 import { useNodeId } from '../contexts/NodeIdContext';
-import { type ReactFlowState } from '../types';
+import { type EdgesStore } from '../types';
 
 const error014 = errorMessages['error014']();
 
@@ -52,7 +52,7 @@ export function useNodeConnections({
   const prevConnections = useRef<Map<string, NodeConnection> | null>(null);
 
   const selector = useCallback(
-    (state: ReactFlowState) => {
+    (state: EdgesStore) => {
       return state.connectionLookup.get(
         `${currentNodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
       );
@@ -60,7 +60,7 @@ export function useNodeConnections({
     [currentNodeId, handleType, handleId]
   );
 
-  const connections = useReactFlowStore(useCustomDiff(selector, areConnectionMapsEqual));
+  const connections = useEdgesStore(useCustomDiff(selector, areConnectionMapsEqual));
 
   useEffect(() => {
     // @todo discuss if onConnect/onDisconnect should be called when the component mounts/unmounts

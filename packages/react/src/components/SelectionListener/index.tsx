@@ -7,16 +7,21 @@
 import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
-import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
-import type { ReactFlowState, OnSelectionChangeFunc, Node, Edge } from '../../types';
+import {
+  useCustomDiff,
+  useReactFlowStore,
+  useNodesStore,
+  useEdgesStore,
+  useReactFlowStoreApi,
+} from '../../hooks/useReactFlowStore';
+import type { ReactFlowState, NodesStore, EdgesStore, OnSelectionChangeFunc, Node, Edge } from '../../types';
 
 type SelectionListenerProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   onSelectionChange?: OnSelectionChangeFunc<NodeType, EdgeType>;
 };
 
-const selector = (s: ReactFlowState) => {
+const nodesSelector = (s: NodesStore) => {
   const selectedNodes = [];
-  const selectedEdges = [];
 
   for (const [, node] of s.nodeLookup) {
     if (node.selected) {
@@ -24,34 +29,39 @@ const selector = (s: ReactFlowState) => {
     }
   }
 
+  return selectedNodes;
+};
+
+const edgesSelector = (s: EdgesStore) => {
+  const selectedEdges = [];
   for (const [, edge] of s.edgeLookup) {
     if (edge.selected) {
       selectedEdges.push(edge);
     }
   }
 
-  return { selectedNodes, selectedEdges };
+  return selectedEdges;
 };
-
-type SelectorSlice = ReturnType<typeof selector>;
 
 const selectId = (obj: Node | Edge) => obj.id;
 
-function areEqual(a: SelectorSlice, b: SelectorSlice) {
-  return (
-    shallow(a.selectedNodes.map(selectId), b.selectedNodes.map(selectId)) &&
-    shallow(a.selectedEdges.map(selectId), b.selectedEdges.map(selectId))
-  );
+function areEqual(a: (Node | Edge)[], b: (Node | Edge)[]) {
+  return shallow(a.map(selectId), b.map(selectId));
 }
 
 function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onSelectionChange,
 }: SelectionListenerProps<NodeType, EdgeType>) {
   const store = useReactFlowStoreApi<NodeType, EdgeType>();
-  const { selectedNodes, selectedEdges } = useReactFlowStore(useCustomDiff(selector, areEqual));
+  const selectedNodes = useNodesStore(useCustomDiff(nodesSelector, areEqual));
+  const selectedEdges = useEdgesStore(useCustomDiff(edgesSelector, areEqual));
 
   useEffect(() => {
-    const params = { nodes: selectedNodes as NodeType[], edges: selectedEdges as EdgeType[] };
+    // Either membership change should report the current objects from both stores.
+    const params = {
+      nodes: nodesSelector(store.nodesStore.getState()) as NodeType[],
+      edges: edgesSelector(store.edgesStore.getState()) as EdgeType[],
+    };
 
     onSelectionChange?.(params);
     store.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));

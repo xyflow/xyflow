@@ -17,8 +17,9 @@ export function useMoveSelectedNodes() {
   const store = useReactFlowStoreApi();
 
   const moveSelectedNodes = useCallback((params: { direction: XYPosition; factor: number }) => {
-    const { nodeExtent, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions, nodeLookup, nodeOrigin } =
+    const { nodeExtent, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions, nodeOrigin } =
       store.getState();
+    const { nodeLookup } = store.nodesStore.getState();
     const nodeUpdates = new Map<string, InternalNode>();
     const isSelected = selectedAndDraggable(nodesDraggable);
 

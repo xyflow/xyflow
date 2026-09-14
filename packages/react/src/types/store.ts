@@ -1,3 +1,4 @@
+import type { StoreApi } from 'zustand';
 import {
   ConnectionMode,
   withResolvers,
@@ -53,16 +54,6 @@ import type {
 
 export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   rfId: string;
-  width: number;
-  height: number;
-  transform: Transform;
-  nodes: NodeType[];
-  nodesInitialized: boolean;
-  nodeLookup: NodeLookup<InternalNode<NodeType>>;
-  parentLookup: ParentLookup<InternalNode<NodeType>>;
-  edges: EdgeType[];
-  edgeLookup: EdgeLookup<EdgeType>;
-  connectionLookup: ConnectionLookup;
   onNodesChange: OnNodesChange<NodeType> | null;
   onEdgesChange: OnEdgesChange<EdgeType> | null;
   hasDefaultNodes: boolean;
@@ -81,11 +72,8 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   nodesSelectionActive: boolean;
   userSelectionActive: boolean;
-  userSelectionRect: SelectionRect | null;
 
-  connection: ConnectionState<InternalNode<NodeType>>;
   connectionMode: ConnectionMode;
-  connectionClickStartHandle: (Pick<HandleBounds, 'nodeId' | 'id'> & Required<Pick<HandleBounds, 'type'>>) | null;
 
   snapToGrid: boolean;
   snapGrid: SnapGrid;
@@ -188,3 +176,41 @@ export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge =
   EdgeType
 > &
   ReactFlowActions<NodeType, EdgeType>;
+
+export type ViewportStore = {
+  transform: Transform;
+  width: number;
+  height: number;
+};
+
+export type ConnectionStore<NodeType extends Node = Node> = {
+  connection: ConnectionState<InternalNode<NodeType>>;
+  connectionClickStartHandle: (Pick<HandleBounds, 'nodeId' | 'id'> & Required<Pick<HandleBounds, 'type'>>) | null;
+};
+
+export type NodesStore<NodeType extends Node = Node> = {
+  nodes: NodeType[];
+  nodeLookup: NodeLookup<InternalNode<NodeType>>;
+  parentLookup: ParentLookup<InternalNode<NodeType>>;
+  nodesInitialized: boolean;
+};
+
+export type EdgesStore<EdgeType extends Edge = Edge> = {
+  edges: EdgeType[];
+  edgeLookup: EdgeLookup<EdgeType>;
+  connectionLookup: ConnectionLookup;
+};
+
+export type SelectionStore = {
+  userSelectionRect: SelectionRect | null;
+};
+
+export type ReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge> = StoreApi<
+  ReactFlowState<NodeType, EdgeType>
+> & {
+  viewportStore: StoreApi<ViewportStore>;
+  connectionStore: StoreApi<ConnectionStore<NodeType>>;
+  nodesStore: StoreApi<NodesStore<NodeType>>;
+  edgesStore: StoreApi<EdgesStore<EdgeType>>;
+  selectionStore: StoreApi<SelectionStore>;
+};

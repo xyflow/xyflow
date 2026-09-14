@@ -22,10 +22,10 @@ import {
   Optional,
 } from '@xyflow/system';
 
-import { useShallow, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useShallow, useReactFlowStore, useConnectionStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { useHandleConfig } from '../../contexts/HandleConfigContext';
-import { type ReactFlowState } from '../../types';
+import { type ConnectionStore } from '../../types';
 import { fixedForwardRef } from '../../utils';
 import { addEdge } from '../../utils/edges';
 
@@ -54,8 +54,9 @@ const idleConnectingState = {
 };
 
 const connectingSelector =
-  (nodeId: string | null, handleId: string | null, type: HandleType) => (state: ReactFlowState) => {
-    const { connectionClickStartHandle: clickHandle, connectionMode, connection } = state;
+  (nodeId: string | null, handleId: string | null, type: HandleType, connectionMode: ConnectionMode) =>
+  (state: ConnectionStore) => {
+    const { connectionClickStartHandle: clickHandle, connection } = state;
     const { fromHandle, toHandle, isValid } = connection;
 
     if (!fromHandle && !clickHandle) {
@@ -100,6 +101,7 @@ function HandleComponent(
   const isTarget = type === 'target';
   const store = useReactFlowStoreApi();
   const nodeId = useNodeId();
+  const connectionMode = useReactFlowStore((s) => s.connectionMode);
   const { connectOnClick, noPanClassName, rfId } = useHandleConfig();
   const {
     connectingFrom,
@@ -109,7 +111,7 @@ function HandleComponent(
     connectionInProcess,
     clickConnectionInProcess,
     valid,
-  } = useReactFlowStore(useShallow(connectingSelector(nodeId, handleId, type)));
+  } = useConnectionStore(useShallow(connectingSelector(nodeId, handleId, type, connectionMode)));
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }
@@ -122,7 +124,8 @@ function HandleComponent(
       ...params,
     };
     if (hasDefaultEdges) {
-      const { edges, setEdges, onError } = store.getState();
+      const { edges } = store.edgesStore.getState();
+      const { setEdges, onError } = store.getState();
       setEdges(addEdge(edgeParams, edges, { onError }));
     }
 
@@ -148,7 +151,7 @@ function HandleComponent(
         connectionMode: currentStore.connectionMode,
         connectionRadius: currentStore.connectionRadius,
         domNode: currentStore.domNode,
-        nodeLookup: currentStore.nodeLookup,
+        nodeLookup: store.nodesStore.getState().nodeLookup,
         lib: currentStore.lib,
         isTarget,
         handleId,
@@ -161,8 +164,8 @@ function HandleComponent(
         updateConnection: currentStore.updateConnection,
         onConnect: onConnectExtended,
         isValidConnection: isValidConnection || ((...args) => store.getState().isValidConnection?.(...args) ?? true),
-        getTransform: () => store.getState().transform,
-        getFromHandle: () => store.getState().connection.fromHandle,
+        getTransform: () => store.viewportStore.getState().transform,
+        getFromHandle: () => store.connectionStore.getState().connection.fromHandle,
         autoPanSpeed: currentStore.autoPanSpeed,
         dragThreshold: currentStore.connectionDragThreshold,
       });
@@ -179,14 +182,13 @@ function HandleComponent(
     const {
       onClickConnectStart,
       onClickConnectEnd,
-      connectionClickStartHandle,
       connectionMode,
       isValidConnection: isValidConnectionStore,
       lib,
       rfId: flowId,
-      nodeLookup,
-      connection: connectionState,
     } = store.getState();
+    const { connectionClickStartHandle, connection: connectionState } = store.connectionStore.getState();
+    const { nodeLookup } = store.nodesStore.getState();
 
     if (!nodeId || (!connectionClickStartHandle && !isConnectableStart)) {
       return;
@@ -194,7 +196,7 @@ function HandleComponent(
 
     if (!connectionClickStartHandle) {
       onClickConnectStart?.(event.nativeEvent, { nodeId, handleId, handleType: type });
-      store.setState({ connectionClickStartHandle: { nodeId, type, id: handleId } });
+      store.connectionStore.setState({ connectionClickStartHandle: { nodeId, type, id: handleId } });
       return;
     }
 
@@ -226,7 +228,7 @@ function HandleComponent(
     connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
     onClickConnectEnd?.(event as unknown as MouseEvent, connectionClone as FinalConnectionState);
 
-    store.setState({ connectionClickStartHandle: null });
+    store.connectionStore.setState({ connectionClickStartHandle: null });
   };
 
   return (

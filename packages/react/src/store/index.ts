@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { createStore as createZustandStore } from 'zustand/vanilla';
 import {
   adoptUserNodes,
   panBy as panBySystem,
@@ -8,12 +8,9 @@ import {
   NodeChange,
   ParentExpandChild,
   initialConnection,
-  NodeOrigin,
-  CoordinateExtent,
   fitViewport,
   getHandlePosition,
   Position,
-  ZIndexMode,
   selectionChange,
   getSelectionChanges,
   SelectionChange,
@@ -22,40 +19,31 @@ import {
 } from '@xyflow/system';
 
 import getInitialState from './initialState';
-import type { ReactFlowState, Node, Edge, UnselectNodesAndEdgesParams, FitViewOptions } from '../types';
+import type {
+  ReactFlowState,
+  ViewportStore,
+  ConnectionStore,
+  NodesStore,
+  EdgesStore,
+  SelectionStore,
+  Node,
+  Edge,
+  UnselectNodesAndEdgesParams,
+} from '../types';
 
-const createStore = ({
-  nodes,
-  edges,
-  defaultNodes,
-  defaultEdges,
-  width,
-  height,
-  fitView,
-  fitViewOptions,
-  minZoom,
-  maxZoom,
-  nodeOrigin,
-  nodeExtent,
-  zIndexMode,
-}: {
-  nodes?: Node[];
-  edges?: Edge[];
-  defaultNodes?: Node[];
-  defaultEdges?: Edge[];
-  width?: number;
-  height?: number;
-  fitView?: boolean;
-  fitViewOptions?: FitViewOptions;
-  minZoom?: number;
-  maxZoom?: number;
-  nodeOrigin?: NodeOrigin;
-  nodeExtent?: CoordinateExtent;
-  zIndexMode?: ZIndexMode;
-}) =>
-  create<ReactFlowState>((set, get) => {
+const createStore = (options: Parameters<typeof getInitialState>[0]) => {
+  const initialState = getInitialState(options);
+  const viewportStore = createZustandStore<ViewportStore>(() => initialState.viewportStore);
+  const connectionStore = createZustandStore<ConnectionStore>(() => initialState.connectionStore);
+  const nodesStore = createZustandStore<NodesStore>(() => initialState.nodesStore);
+  const edgesStore = createZustandStore<EdgesStore>(() => initialState.edgesStore);
+  const selectionStore = createZustandStore<SelectionStore>(() => initialState.selectionStore);
+
+  const store = createZustandStore<ReactFlowState>((set, get) => {
     async function resolveFitView() {
-      const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
+      const { nodeLookup } = nodesStore.getState();
+      const { panZoom, fitViewOptions, fitViewResolver, minZoom, maxZoom } = get();
+      const { width, height } = viewportStore.getState();
 
       if (!panZoom) {
         return;
@@ -82,32 +70,10 @@ const createStore = ({
     }
 
     return {
-      ...getInitialState({
-        nodes,
-        edges,
-        width,
-        height,
-        fitView,
-        fitViewOptions,
-        minZoom,
-        maxZoom,
-        nodeOrigin,
-        nodeExtent,
-        defaultNodes,
-        defaultEdges,
-        zIndexMode,
-      }),
+      ...initialState.store,
       setNodes: (nodes: Node[]) => {
-        const {
-          nodeLookup,
-          parentLookup,
-          nodeOrigin,
-          nodeExtent,
-          elevateNodesOnSelect,
-          fitViewQueued,
-          zIndexMode,
-          nodesSelectionActive,
-        } = get();
+        const { nodeLookup, parentLookup } = nodesStore.getState();
+        const { nodeOrigin, nodeExtent, elevateNodesOnSelect, fitViewQueued, zIndexMode, nodesSelectionActive } = get();
 
         /*
          * setNodes() is called exclusively in response to user actions:
@@ -130,23 +96,19 @@ const createStore = ({
 
         if (fitViewQueued && nodesInitialized) {
           void resolveFitView();
-          set({
-            nodes,
-            nodesInitialized,
-            fitViewQueued: false,
-            fitViewOptions: undefined,
-            nodesSelectionActive: nextNodesSelectionActive,
-          });
-        } else {
-          set({ nodes, nodesInitialized, nodesSelectionActive: nextNodesSelectionActive });
+          set({ fitViewQueued: false, fitViewOptions: undefined, nodesSelectionActive: nextNodesSelectionActive });
+        } else if (nodesSelectionActive !== nextNodesSelectionActive) {
+          set({ nodesSelectionActive: nextNodesSelectionActive });
         }
+
+        nodesStore.setState({ nodes, nodesInitialized });
       },
       setEdges: (edges: Edge[]) => {
-        const { connectionLookup, edgeLookup } = get();
+        const { connectionLookup, edgeLookup } = edgesStore.getState();
 
         updateConnectionLookup(connectionLookup, edgeLookup, edges);
 
-        set({ edges });
+        edgesStore.setState({ edges });
       },
       setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
         if (nodes) {
@@ -166,16 +128,8 @@ const createStore = ({
        * new dimensions and update the nodes.
        */
       updateNodeInternals: (updates) => {
-        const {
-          emitNodeChanges,
-          nodeLookup,
-          parentLookup,
-          domNode,
-          nodeOrigin,
-          nodeExtent,
-          fitViewQueued,
-          zIndexMode,
-        } = get();
+        const { emitNodeChanges, domNode, nodeOrigin, nodeExtent, fitViewQueued, zIndexMode } = get();
+        const { nodeLookup, parentLookup } = nodesStore.getState();
 
         const { changes, updatedInternals } = updateNodeInternalsSystem(
           updates,
@@ -194,17 +148,18 @@ const createStore = ({
         if (fitViewQueued) {
           void resolveFitView();
           set({ fitViewQueued: false, fitViewOptions: undefined });
-        } else {
-          // we always want to trigger useStore calls whenever updateNodeInternals is called
-          set({});
         }
 
+        // Internal measurements can change without changing the public nodes array.
+        nodesStore.setState({});
         emitNodeChanges(changes);
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
         const parentExpandChildren: ParentExpandChild[] = [];
         let changes = [];
-        const { nodeLookup, emitNodeChanges, connection, updateConnection, onNodesChangeMiddlewareMap } = get();
+        const { nodeLookup } = nodesStore.getState();
+        const { emitNodeChanges, updateConnection, onNodesChangeMiddlewareMap } = get();
+        const { connection } = connectionStore.getState();
 
         for (const [id, dragItem] of nodeDragItems) {
           // we are using the nodelookup to be sure to use the current expandParent and parentId value
@@ -244,7 +199,8 @@ const createStore = ({
         }
 
         if (parentExpandChildren.length > 0) {
-          const { parentLookup, nodeOrigin } = get();
+          const { parentLookup } = nodesStore.getState();
+          const { nodeOrigin } = get();
           const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup, nodeOrigin);
           changes.push(...parentExpandChanges);
         }
@@ -268,7 +224,8 @@ const createStore = ({
         }
 
         if (hasDefaultNodes) {
-          const { nodes, setNodes } = get();
+          const { nodes } = nodesStore.getState();
+          const { setNodes } = get();
           const newNodes = nodeChanges.applyTo(nodes);
           setNodes(newNodes);
         }
@@ -288,7 +245,8 @@ const createStore = ({
         }
 
         if (hasDefaultEdges) {
-          const { setEdges, edges } = get();
+          const { setEdges } = get();
+          const { edges } = edgesStore.getState();
           const newEdges = edgeChanges.applyTo(edges);
           setEdges(newEdges);
         }
@@ -297,7 +255,9 @@ const createStore = ({
       },
 
       addSelectedNodes: (selectedNodeIds) => {
-        const { multiSelectionActive, edgeLookup, nodeLookup, emitNodeChanges, emitEdgeChanges } = get();
+        const { multiSelectionActive, emitNodeChanges, emitEdgeChanges } = get();
+        const { edgeLookup } = edgesStore.getState();
+        const { nodeLookup } = nodesStore.getState();
 
         if (multiSelectionActive) {
           const nodeChanges = selectedNodeIds.map((nodeId) => selectionChange(nodeId, true));
@@ -309,7 +269,9 @@ const createStore = ({
         emitEdgeChanges(getSelectionChanges(edgeLookup));
       },
       addSelectedEdges: (selectedEdgeIds) => {
-        const { multiSelectionActive, edgeLookup, nodeLookup, emitNodeChanges, emitEdgeChanges } = get();
+        const { multiSelectionActive, emitNodeChanges, emitEdgeChanges } = get();
+        const { edgeLookup } = edgesStore.getState();
+        const { nodeLookup } = nodesStore.getState();
 
         if (multiSelectionActive) {
           const changedEdges = selectedEdgeIds.map((edgeId) => selectionChange(edgeId, true));
@@ -321,7 +283,9 @@ const createStore = ({
         emitNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
-        const { edges: storeEdges, nodes: storeNodes, nodeLookup, emitNodeChanges, emitEdgeChanges } = get();
+        const { edges: storeEdges } = edgesStore.getState();
+        const { nodes: storeNodes, nodeLookup } = nodesStore.getState();
+        const { emitNodeChanges, emitEdgeChanges } = get();
         const nodesToUnselect = nodes ? nodes : storeNodes;
         const edgesToUnselect = edges ? edges : storeEdges;
 
@@ -376,7 +340,9 @@ const createStore = ({
         set({ translateExtent });
       },
       resetSelectedElements: () => {
-        const { edges, nodes, emitNodeChanges, emitEdgeChanges, elementsSelectable } = get();
+        const { edges } = edgesStore.getState();
+        const { nodes } = nodesStore.getState();
+        const { emitNodeChanges, emitEdgeChanges, elementsSelectable } = get();
 
         if (!elementsSelectable) {
           return;
@@ -395,7 +361,8 @@ const createStore = ({
         emitEdgeChanges(edgeChanges);
       },
       setNodeExtent: (nextNodeExtent) => {
-        const { nodes, nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode } = get();
+        const { nodes, nodeLookup, parentLookup } = nodesStore.getState();
+        const { nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode } = get();
 
         if (
           nextNodeExtent[0][0] === nodeExtent[0][0] &&
@@ -415,14 +382,17 @@ const createStore = ({
         });
 
         set({ nodeExtent: nextNodeExtent });
+        nodesStore.setState({});
       },
       panBy: (delta): Promise<boolean> => {
-        const { transform, width, height, panZoom, translateExtent } = get();
+        const { transform, width, height } = viewportStore.getState();
+        const { panZoom, translateExtent } = get();
 
         return panBySystem({ delta, panZoom, transform, translateExtent, width, height });
       },
       setCenter: async (x, y, options) => {
-        const { width, height, maxZoom, panZoom } = get();
+        const { width, height } = viewportStore.getState();
+        const { maxZoom, panZoom } = get();
 
         if (!panZoom) {
           return false;
@@ -442,16 +412,25 @@ const createStore = ({
         return true;
       },
       cancelConnection: () => {
-        set({
-          connection: { ...initialConnection },
-        });
+        connectionStore.setState({ connection: { ...initialConnection } });
       },
       updateConnection: (connection) => {
-        set({ connection });
+        connectionStore.setState({ connection });
       },
 
-      reset: () => set({ ...getInitialState() }),
+      reset: () => {
+        const initialState = getInitialState();
+        viewportStore.setState(initialState.viewportStore);
+        connectionStore.setState(initialState.connectionStore);
+        nodesStore.setState(initialState.nodesStore);
+        edgesStore.setState(initialState.edgesStore);
+        selectionStore.setState(initialState.selectionStore);
+        set(initialState.store);
+      },
     };
   });
+
+  return Object.assign(store, { viewportStore, connectionStore, nodesStore, edgesStore, selectionStore });
+};
 
 export { createStore };

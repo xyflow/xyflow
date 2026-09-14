@@ -17,12 +17,12 @@ import {
   XYPosition,
 } from '@xyflow/system';
 
-import { useReactFlowStoreApi, useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStoreApi, useViewportStore, useShallow } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
-import { ReactFlowState } from '../../types';
+import { ViewportStore } from '../../types';
 
-const scaleSelector = (calculateScale: boolean) => (store: ReactFlowState) =>
+const scaleSelector = (calculateScale: boolean) => (store: ViewportStore) =>
   calculateScale ? `${Math.max(1 / store.transform[2], 1)}` : undefined;
 
 const defaultPositions: Record<ResizeControlVariant, ControlPosition> = {
@@ -57,12 +57,12 @@ function ResizeControl({
   const isHandleControl = variant === ResizeControlVariant.Handle;
 
   const selector = useCallback(
-    (s: ReactFlowState) => {
+    (s: ViewportStore) => {
       return scaleSelector(isHandleControl && autoScale)(s);
     },
     [isHandleControl, autoScale]
   );
-  const scale = useReactFlowStore(useShallow(selector));
+  const scale = useViewportStore(useShallow(selector));
 
   const resizer = useRef<XYResizerInstance | null>(null);
   const controlPosition = position ?? defaultPositions[variant];
@@ -77,7 +77,9 @@ function ResizeControl({
         domNode: resizeControlRef.current,
         nodeId: id,
         getStoreItems: () => {
-          const { nodeLookup, transform, snapGrid, snapToGrid, nodeOrigin, domNode } = store.getState();
+          const { nodeLookup } = store.nodesStore.getState();
+          const { transform } = store.viewportStore.getState();
+          const { snapGrid, snapToGrid, nodeOrigin, domNode } = store.getState();
           return {
             nodeLookup,
             transform,
@@ -88,7 +90,8 @@ function ResizeControl({
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const { emitNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
+          const { emitNodeChanges, nodeOrigin } = store.getState();
+          const { nodeLookup, parentLookup } = store.nodesStore.getState();
           const changes: NodeChange[] = [];
           const nextPosition = { x: change.x, y: change.y };
           const node = nodeLookup.get(id);

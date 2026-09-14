@@ -1,16 +1,27 @@
-import { useContext, useMemo, useRef } from 'react';
-import { useStore as useZustandStore, type StoreApi } from 'zustand';
+import { useContext, useRef } from 'react';
+import { useStore as useZustandStore } from 'zustand';
 import { errorMessages } from '@xyflow/system';
 
 import StoreContext from '../contexts/StoreContext';
-import type { Edge, Node, ReactFlowState } from '../types';
+import type {
+  Edge,
+  Node,
+  ReactFlowState,
+  ReactFlowStoreApi,
+  ViewportStore,
+  ConnectionStore,
+  NodesStore,
+  EdgesStore,
+  SelectionStore,
+} from '../types';
 
 const zustandErrorMessage = errorMessages['error001']('react');
 
 /**
- * This hook can be used to subscribe to internal state changes of the React Flow
- * component. The `useStore` hook is re-exported from the [Zustand](https://github.com/pmndrs/zustand)
- * state management library, so you should check out their docs for more details.
+ * This hook subscribes to the shared settings and actions of the React Flow
+ * component. Use `useViewportStore`, `useConnectionStore`, `useNodesStore`,
+ * `useEdgesStore`, or `useSelectionStore` for their respective state. These hooks
+ * use [Zustand](https://github.com/pmndrs/zustand) for subscriptions.
  *
  * @public
  * @param selector - A selector function that returns a slice of the flow's internal state.
@@ -22,7 +33,7 @@ const zustandErrorMessage = errorMessages['error001']('react');
  *
  * @example
  * ```ts
- * const nodes = useStore((state) => state.nodes);
+ * const nodesDraggable = useReactFlowStore((state) => state.nodesDraggable);
  * ```
  *
  * @remarks This hook should only be used if there is no other way to access the internal
@@ -45,15 +56,17 @@ function useReactFlowStore<StateSlice = unknown>(selector: (state: ReactFlowStat
  * @returns The store object.
  * @example
  * ```ts
- * const store = useStoreApi();
+ * const store = useReactFlowStoreApi();
+ * const nodes = store.nodesStore.getState().nodes;
  * ```
  *
  * @remarks This hook should only be used if there is no other way to access the internal
  * state. For many of the common use cases, there are dedicated hooks available
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
-function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): StoreApi<
-  ReactFlowState<NodeType, EdgeType>
+function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge>(): ReactFlowStoreApi<
+  NodeType,
+  EdgeType
 > {
   const store = useContext(StoreContext);
 
@@ -61,15 +74,27 @@ function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edg
     throw new Error(zustandErrorMessage);
   }
 
-  return useMemo(
-    () =>
-      ({
-        getState: store.getState,
-        setState: store.setState,
-        subscribe: store.subscribe,
-      }) as StoreApi<ReactFlowState> as unknown as StoreApi<ReactFlowState<NodeType, EdgeType>>,
-    [store]
-  );
+  return store as unknown as ReactFlowStoreApi<NodeType, EdgeType>;
+}
+
+export function useViewportStore<StateSlice>(selector: (state: ViewportStore) => StateSlice) {
+  return useZustandStore(useReactFlowStoreApi().viewportStore, selector);
+}
+
+export function useConnectionStore<StateSlice>(selector: (state: ConnectionStore) => StateSlice) {
+  return useZustandStore(useReactFlowStoreApi().connectionStore, selector);
+}
+
+export function useNodesStore<StateSlice>(selector: (state: NodesStore) => StateSlice) {
+  return useZustandStore(useReactFlowStoreApi().nodesStore, selector);
+}
+
+export function useEdgesStore<StateSlice>(selector: (state: EdgesStore) => StateSlice) {
+  return useZustandStore(useReactFlowStoreApi().edgesStore, selector);
+}
+
+export function useSelectionStore<StateSlice>(selector: (state: SelectionStore) => StateSlice) {
+  return useZustandStore(useReactFlowStoreApi().selectionStore, selector);
 }
 
 export { useReactFlowStore, useReactFlowStoreApi };

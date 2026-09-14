@@ -1,8 +1,7 @@
 import type { RefObject } from 'react';
-import type { StoreApi } from 'zustand';
 import { errorMessages } from '@xyflow/system';
 
-import type { ReactFlowState } from '../../types';
+import type { ReactFlowStoreApi } from '../../types';
 
 /*
  * this handler is called by
@@ -17,14 +16,12 @@ export function handleNodeClick({
   nodeRef,
 }: {
   id: string;
-  store: {
-    getState: StoreApi<ReactFlowState>['getState'];
-    setState: StoreApi<ReactFlowState>['setState'];
-  };
+  store: ReactFlowStoreApi;
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;
 }) {
-  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeLookup, onError } = store.getState();
+  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, onError } = store.getState();
+  const { nodeLookup } = store.nodesStore.getState();
   const node = nodeLookup.get(id);
 
   if (!node) {

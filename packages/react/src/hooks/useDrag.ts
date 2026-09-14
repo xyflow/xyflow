@@ -38,7 +38,12 @@ export function useDrag({
     }
 
     xyDrag.current = XYDrag({
-      getStoreItems: () => store.getState(),
+      getStoreItems: () => {
+        const { nodes, nodeLookup } = store.nodesStore.getState();
+        const { edges } = store.edgesStore.getState();
+        const { transform } = store.viewportStore.getState();
+        return { ...store.getState(), nodes, nodeLookup, edges, transform };
+      },
       onNodeMouseDown: (id: string) => {
         handleNodeClick({
           id,

@@ -67,7 +67,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
   const generalHelper = useMemo<GeneralHelpers<NodeType, EdgeType>>(() => {
     const getInternalNode: GeneralHelpers<NodeType, EdgeType>['getInternalNode'] = (id) =>
-      store.getState().nodeLookup.get(id) as InternalNode<NodeType>;
+      store.nodesStore.getState().nodeLookup.get(id) as InternalNode<NodeType>;
 
     const setNodes: GeneralHelpers<NodeType, EdgeType>['setNodes'] = (payload) => {
       batchContext.nodeQueue.push(payload as NodeType[]);
@@ -78,7 +78,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     };
 
     const getNodeRect = (node: NodeType | { id: string }): Rect | null => {
-      const { nodeLookup, nodeOrigin } = store.getState();
+      const { nodeLookup } = store.nodesStore.getState();
+      const { nodeOrigin } = store.getState();
 
       const nodeToUse = isNode<NodeType>(node) ? node : nodeLookup.get(node.id)!;
       const position = nodeToUse.parentId
@@ -130,14 +131,14 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
     };
 
     return {
-      getNodes: () => store.getState().nodes.map((n) => ({ ...n })) as NodeType[],
+      getNodes: () => store.nodesStore.getState().nodes.map((n) => ({ ...n })) as NodeType[],
       getNode: (id) => getInternalNode(id)?.internals.userNode,
       getInternalNode,
       getEdges: () => {
-        const { edges = [] } = store.getState();
+        const { edges = [] } = store.edgesStore.getState();
         return edges.map((e) => ({ ...e })) as EdgeType[];
       },
-      getEdge: (id) => store.getState().edgeLookup.get(id) as EdgeType,
+      getEdge: (id) => store.edgesStore.getState().edgeLookup.get(id) as EdgeType,
       setNodes,
       setEdges,
       addNodes: (payload) => {
@@ -149,7 +150,9 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         batchContext.edgeQueue.push((edges) => [...edges, ...newEdges]);
       },
       toObject: () => {
-        const { nodes = [], edges = [], transform } = store.getState();
+        const { nodes = [] } = store.nodesStore.getState();
+        const { edges = [] } = store.edgesStore.getState();
+        const { transform } = store.viewportStore.getState();
         const [x, y, zoom] = transform;
         return {
           nodes: nodes.map((n) => ({ ...n })) as NodeType[],
@@ -162,16 +165,10 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         };
       },
       deleteElements: async ({ nodes: nodesToRemove = [], edges: edgesToRemove = [] }) => {
-        const {
-          nodes,
-          edges,
-          onNodesDelete,
-          onEdgesDelete,
-          emitNodeChanges,
-          emitEdgeChanges,
-          onDelete,
-          onBeforeDelete,
-        } = store.getState();
+        const { nodes } = store.nodesStore.getState();
+        const { edges } = store.edgesStore.getState();
+        const { onNodesDelete, onEdgesDelete, emitNodeChanges, emitEdgeChanges, onDelete, onBeforeDelete } =
+          store.getState();
         const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
           nodesToRemove,
           edgesToRemove,
@@ -217,8 +214,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           return [];
         }
 
-        return (nodes || store.getState().nodes).filter((n) => {
-          const internalNode = store.getState().nodeLookup.get(n.id);
+        return (nodes || store.nodesStore.getState().nodes).filter((n) => {
+          const internalNode = store.nodesStore.getState().nodeLookup.get(n.id);
 
           if (internalNode && !isRect && (n.id === nodeOrRect.id || !internalNode.internals.positionAbsolute)) {
             return false;
@@ -266,7 +263,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       changeParent: (nodeId: string, parentId: string | null) => {
         changeParentNode(
           nodeId,
-          store.getState().nodeLookup,
+          store.nodesStore.getState().nodeLookup,
           parentId,
           store.getState().nodeOrigin,
           ({ nodeId, parentId, x, y }) => {
@@ -289,19 +286,20 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         );
       },
       getNodesBounds: (nodes: (NodeType | InternalNode | string)[]): Rect => {
-        const { nodeLookup, nodeOrigin } = store.getState();
+        const { nodeLookup } = store.nodesStore.getState();
+        const { nodeOrigin } = store.getState();
         return getNodesBounds(nodes, { nodeLookup, nodeOrigin });
       },
       getHandleConnections: ({ type, id, nodeId }) =>
         Array.from(
-          store
+          store.edgesStore
             .getState()
             .connectionLookup.get(`${nodeId}-${type}${id ? `-${id}` : ''}`)
             ?.values() ?? []
         ),
       getNodeConnections: ({ type, handleId, nodeId }) =>
         Array.from(
-          store
+          store.edgesStore
             .getState()
             .connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
             ?.values() ?? []

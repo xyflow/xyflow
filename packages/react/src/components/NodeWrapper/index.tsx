@@ -9,7 +9,7 @@ import {
   getNodesInside,
 } from '@xyflow/system';
 
-import { useCustomDiff, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useCustomDiff, useNodesStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
@@ -17,7 +17,7 @@ import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
 import { useNodeObserver } from './useNodeObserver';
-import type { InternalNode, Node, NodeWrapperProps, ReactFlowState } from '../../types';
+import type { InternalNode, Node, NodeWrapperProps, NodesStore } from '../../types';
 
 function areEqual(
   a: {
@@ -54,7 +54,7 @@ function NodeWrapper<NodeType extends Node>({
   onError,
 }: NodeWrapperProps<NodeType>) {
   const selector = useCallback(
-    (s: ReactFlowState) => {
+    (s: NodesStore) => {
       const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
 
       return {
@@ -64,7 +64,7 @@ function NodeWrapper<NodeType extends Node>({
     },
     [id]
   );
-  const { node, internals } = useReactFlowStore(useCustomDiff(selector, areEqual));
+  const { node, internals } = useNodesStore(useCustomDiff(selector, areEqual));
 
   let nodeType = node.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
@@ -179,7 +179,8 @@ function NodeWrapper<NodeType extends Node>({
       return;
     }
 
-    const { transform, width, height, autoPanOnNodeFocus, setCenter } = store.getState();
+    const { transform, width, height } = store.viewportStore.getState();
+    const { autoPanOnNodeFocus, setCenter } = store.getState();
 
     if (!autoPanOnNodeFocus) {
       return;

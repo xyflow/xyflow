@@ -19,7 +19,7 @@ export function useViewportSync(viewport?: Viewport) {
   useEffect(() => {
     if (viewport) {
       syncViewport?.(viewport);
-      store.setState({ transform: [viewport.x, viewport.y, viewport.zoom] });
+      store.viewportStore.setState({ transform: [viewport.x, viewport.y, viewport.zoom] });
     }
   }, [viewport, syncViewport]);
 

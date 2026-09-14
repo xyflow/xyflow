@@ -28,7 +28,7 @@ function CheckerNode({ data }: NodeProps) {
 
   useHook(() => {
     if (checkSpy) {
-      const { nodes, nodeLookup } = store.getState();
+      const { nodes, nodeLookup } = store.nodesStore.getState();
       checkSpy({ nodesLength: nodes.length, lookupSize: nodeLookup.size });
     }
   });

@@ -8,7 +8,13 @@ import {
   getElevatedEdgeZIndex,
 } from '@xyflow/system';
 
-import { useReactFlowStoreApi, useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import {
+  useReactFlowStoreApi,
+  useReactFlowStore,
+  useNodesStore,
+  useEdgesStore,
+  useShallow,
+} from '../../hooks/useReactFlowStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
@@ -35,7 +41,14 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   onError,
   disableKeyboardA11y,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
-  let edge = useReactFlowStore((s) => s.edgeLookup.get(id)!) as EdgeType;
+  let edge = useEdgesStore((s) => s.edgeLookup.get(id)!) as EdgeType;
+  const { connectionMode, elevateEdgesOnSelect, zIndexMode } = useReactFlowStore(
+    useShallow((s) => ({
+      connectionMode: s.connectionMode,
+      elevateEdgesOnSelect: s.elevateEdgesOnSelect,
+      zIndexMode: s.zIndexMode,
+    }))
+  );
   const defaultEdgeOptions = useReactFlowStore((s) => s.defaultEdgeOptions);
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
@@ -67,7 +80,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
     targetY,
     sourcePosition,
     targetPosition,
-  } = useReactFlowStore(
+  } = useNodesStore(
     useShallow(
       useCallback(
         (store) => {
@@ -84,7 +97,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
             targetNode,
             sourceHandle: edge.sourceHandle || null,
             targetHandle: edge.targetHandle || null,
-            connectionMode: store.connectionMode,
+            connectionMode,
             onError,
           });
 
@@ -93,8 +106,8 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
             zIndex: edge.zIndex,
             sourceNode,
             targetNode,
-            elevateOnSelect: store.elevateEdgesOnSelect,
-            zIndexMode: store.zIndexMode,
+            elevateOnSelect: elevateEdgesOnSelect,
+            zIndexMode,
           });
 
           return {
@@ -102,7 +115,19 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
             zIndex,
           };
         },
-        [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex, id, onError]
+        [
+          edge.source,
+          edge.target,
+          edge.sourceHandle,
+          edge.targetHandle,
+          edge.selected,
+          edge.zIndex,
+          id,
+          onError,
+          connectionMode,
+          elevateEdgesOnSelect,
+          zIndexMode,
+        ]
       )
     )
   );
