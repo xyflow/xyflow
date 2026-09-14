@@ -85,8 +85,7 @@ const middlewareImpl: MiddlewareImpl = (initializer) => (set, get, api) => {
             };
           case 'nodeLookup':
             subscription.props.add('nodes');
-            return;
-          // falls through
+            return target.nodeLookup;
           default:
             subscription.props.add(prop);
             return Reflect.get(target, prop, receiver);
