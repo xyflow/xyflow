@@ -62,3 +62,5 @@ export const General: Story = {
   parameters: testStoryParameters,
   play: runMinimapSuite,
 };
+
+export const CustomNode: Story = { args: { customNode: true } };

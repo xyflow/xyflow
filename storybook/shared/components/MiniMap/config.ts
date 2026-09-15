@@ -2,6 +2,7 @@ import type { FlowFramework, StoryArgTypes } from '../../types';
 import { PANEL_POSITIONS } from '../panelPositions';
 
 export type SharedMiniMapArgs = {
+  customNode?: boolean;
   position?: (typeof PANEL_POSITIONS)[number];
   nodeColor?: string;
   nodeStrokeColor?: string;

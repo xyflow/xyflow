@@ -2,7 +2,7 @@ import { expect, userEvent, waitFor } from 'storybook/test';
 
 import type { FlowFramework } from './types';
 
-const MATCH_ALL_NUMBERS = /[\d.]+/g;
+const MATCH_ALL_NUMBERS = /-?(?:\d*\.)?\d+(?:e[+-]?\d+)?/gi;
 
 export function getQueryRoot(canvasElement: HTMLElement) {
   return canvasElement.ownerDocument.body;
@@ -101,11 +101,7 @@ export function countEdges(canvasElement: HTMLElement, framework: FlowFramework)
   return getQueryRoot(canvasElement).querySelectorAll(edgeSelector(framework)).length;
 }
 
-export async function waitForEdgeCount(
-  canvasElement: HTMLElement,
-  framework: FlowFramework,
-  count: number
-) {
+export async function waitForEdgeCount(canvasElement: HTMLElement, framework: FlowFramework, count: number) {
   await waitFor(() => {
     expect(countEdges(canvasElement, framework)).toBe(count);
   });

@@ -50,7 +50,7 @@
 <style>
   .flow-story {
     width: 100%;
-    height: 100%;
+    height: 100vh;
   }
 
   .flow-story :global(.svelte-flow) {

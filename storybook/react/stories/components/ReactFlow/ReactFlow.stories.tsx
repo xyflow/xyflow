@@ -16,6 +16,8 @@ import {
 } from './testConfigs';
 import { withReactFlowProvider, exampleStoryParameters } from '../../examples/exampleStory';
 import { Flow } from '../../Flow';
+import DragHandleNode from '../../examples/Handles/DragHandle/DragHandleNode';
+const interactionNodeTypes = { DragHandleNode };
 
 import { createEventHandlerArgs, eventHandlerArgTypes } from './eventHandlers';
 import { ReactFlowApiExample } from './Flow';
@@ -113,7 +115,7 @@ export const InteractionProps: Story = sectionStory('interaction');
 export const InteractionGeneral: Story = {
   tags: ['test', 'components'],
   parameters: testStoryParameters,
-  render: () => <Flow flowConfig={nodesGeneralReactConfig} />,
+  render: () => <Flow flowConfig={nodesGeneralReactConfig} nodeTypes={interactionNodeTypes} />,
   play: runNodesGeneralSuite,
 };
 

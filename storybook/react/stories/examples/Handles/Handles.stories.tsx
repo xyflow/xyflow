@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import DragHandle from './DragHandle';
+import EasyConnect from './EasyConnect';
+import MovingHandles from './MovingHandles';
+const meta = { title: 'Examples/Handles', tags: ['example'], parameters: { layout: 'fullscreen' } } satisfies Meta;
+export default meta;
+type Story = StoryObj<typeof meta>;
+export const Drag: Story = { render: () => <DragHandle /> };
+export const Easy: Story = { render: () => <EasyConnect /> };
+export const Moving: Story = { render: () => <MovingHandles /> };

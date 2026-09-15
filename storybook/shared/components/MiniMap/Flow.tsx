@@ -14,14 +14,14 @@ import {
 
 import { FLOW_STORY_RESET_EVENT } from '../../tests/suite';
 import { defaultFlowProps } from '@shared/defaultFlow';
+import CustomNode from './CustomNode';
 import type { SharedMiniMapArgs } from './config';
 
-type MiniMapExampleProps = SharedMiniMapArgs &
-  Pick<MiniMapProps, 'onClick' | 'onNodeClick'>;
+type MiniMapExampleProps = SharedMiniMapArgs & Pick<MiniMapProps, 'onClick' | 'onNodeClick'>;
 
 const flowStyle = { width: '100%', height: '100%' } as const;
 
-export const MiniMapExample: FC<MiniMapExampleProps> = (miniMapProps) => {
+export const MiniMapExample: FC<MiniMapExampleProps> = ({ customNode = false, ...miniMapProps }) => {
   const initialNodes = useMemo(() => defaultFlowProps.nodes ?? [], []);
   const initialEdges = useMemo(() => defaultFlowProps.edges ?? [], []);
   const [resetKey, setResetKey] = useState(0);
@@ -56,7 +56,7 @@ export const MiniMapExample: FC<MiniMapExampleProps> = (miniMapProps) => {
           onConnect={onConnect}
         >
           <Background variant={BackgroundVariant.Dots} />
-          <MiniMap {...miniMapProps} />
+          <MiniMap {...miniMapProps} nodeComponent={customNode ? CustomNode : undefined} />
         </ReactFlow>
       </div>
     </ReactFlowProvider>

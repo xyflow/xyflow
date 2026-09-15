@@ -4,9 +4,11 @@
 
   import { FLOW_STORY_RESET_EVENT } from '../../tests/suite';
   import { defaultFlowProps } from '@shared/defaultFlow';
+  import CustomNode from './CustomNode.svelte';
   import type { SharedMiniMapArgs } from './config';
 
   let {
+    customNode = false,
     class: containerClass,
     className,
     nodeClassName,
@@ -40,6 +42,7 @@
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap
         {...miniMapProps}
+        nodeComponent={customNode ? CustomNode : undefined}
         class={className ?? containerClass}
         nodeClass={nodeClassName ?? nodeClass}
         style={typeof style === 'object' ? JSON.stringify(style) : style}
@@ -51,7 +54,7 @@
 <style>
   .flow-story {
     width: 100%;
-    height: 100%;
+    height: 100vh;
   }
 
   .flow-story :global(.svelte-flow) {

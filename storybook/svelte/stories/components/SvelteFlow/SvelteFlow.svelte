@@ -5,10 +5,7 @@
   import { FLOW_STORY_RESET_EVENT } from 'storybook-shared/tests/suite';
   import type { SharedFlowConfig } from 'storybook-shared/types';
 
-  let {
-    flowConfig,
-    nodeTypes = undefined,
-  }: { flowConfig: SharedFlowConfig; nodeTypes?: NodeTypes } = $props();
+  let { flowConfig, nodeTypes = undefined }: { flowConfig: SharedFlowConfig; nodeTypes?: NodeTypes } = $props();
 
   const initialNodes = flowConfig.flowProps?.nodes ?? [];
   const initialEdges = flowConfig.flowProps?.edges ?? [];
@@ -38,7 +35,7 @@
 <style>
   .flow-story {
     width: 100%;
-    height: 100%;
+    height: 100vh;
   }
 
   .flow-story :global(.svelte-flow) {

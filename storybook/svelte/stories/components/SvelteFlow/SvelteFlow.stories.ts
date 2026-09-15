@@ -1,3 +1,4 @@
+import DragHandleNode from '../../examples/Interaction/overview/CustomNodeDragHandle.svelte';
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 
 import {
@@ -85,38 +86,37 @@ export const CommonProps: Story = sectionStory('common');
 export const ViewportProps: Story = sectionStory('viewport');
 
 export const ViewportGeneral: Story = {
-  component: SvelteFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
-  args: { flowConfig: paneGeneralConfig },
+  render: () => ({ Component: SvelteFlow, props: { flowConfig: paneGeneralConfig } }),
   play: runPaneGeneralSuite,
 };
 
 export const ViewportNonDefaults: Story = {
-  component: SvelteFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
-  args: { flowConfig: paneNonDefaultsSvelteConfig },
+  render: () => ({ Component: SvelteFlow, props: { flowConfig: paneNonDefaultsSvelteConfig } }),
   play: runPaneNonDefaultsSuite,
 };
 
 export const EdgeProps: Story = sectionStory('edge');
 
 export const EdgeGeneral: Story = {
-  component: SvelteFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
-  args: { flowConfig: edgesGeneralSvelteConfig },
+  render: () => ({ Component: SvelteFlow, props: { flowConfig: edgesGeneralSvelteConfig } }),
   play: runEdgesGeneralSuite,
 };
 
 export const InteractionProps: Story = sectionStory('interaction');
 
 export const InteractionGeneral: Story = {
-  component: SvelteFlow,
   tags: ['test', 'components'],
   parameters: testStoryParameters,
-  args: { flowConfig: nodesGeneralSvelteConfig },
+  render: () => ({
+    Component: SvelteFlow,
+    props: { flowConfig: nodesGeneralSvelteConfig, nodeTypes: { DragHandleNode } },
+  }),
   play: runNodesGeneralSuite,
 };
 

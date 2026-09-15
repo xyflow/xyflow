@@ -16,13 +16,14 @@ function flowAliases(sharedRoot: string, framework: StorybookFramework): AliasEn
   const aliases: AliasEntry[] = [];
   const seen = new Set<string>();
 
-  for (const folder of FLOW_FOLDERS) {
-    const folderPath = path.join(sharedRoot, folder);
-
+  function visit(folderPath: string) {
     for (const entry of fs.readdirSync(folderPath, { withFileTypes: true })) {
-      const flowPath = path.join(folderPath, entry.name, flowFile);
+      if (!entry.isDirectory()) continue;
 
-      if (!entry.isDirectory() || !fs.existsSync(flowPath)) {
+      const entryPath = path.join(folderPath, entry.name);
+      const flowPath = path.join(entryPath, flowFile);
+      if (!fs.existsSync(flowPath)) {
+        visit(entryPath);
         continue;
       }
 
@@ -33,6 +34,10 @@ function flowAliases(sharedRoot: string, framework: StorybookFramework): AliasEn
       seen.add(entry.name);
       aliases.push({ find: entry.name, replacement: flowPath });
     }
+  }
+
+  for (const folder of FLOW_FOLDERS) {
+    visit(path.join(sharedRoot, folder));
   }
 
   return aliases;

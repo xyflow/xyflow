@@ -61,7 +61,8 @@ export function createAddonsPlays(framework: FlowFramework) {
     const xPosBeforeDrag = Number(minimapNode.getAttribute('x'));
     const yPosBeforeDrag = Number(minimapNode.getAttribute('y'));
 
-    await pointerDrag(flowNode, [{ x: 500, y: 25 }]);
+    const box = flowNode.getBoundingClientRect();
+    await pointerDrag(flowNode, [{ x: box.x + box.width / 2 + 100, y: box.y + box.height / 2 + 25 }]);
     await sleep(100);
 
     const xPosAfterDrag = Number(minimapNode.getAttribute('x'));
@@ -99,7 +100,7 @@ export function createAddonsPlays(framework: FlowFramework) {
 
   const controlsZoomIn = async ({ canvasElement }: StoryPlayContext) => {
     const transformBefore = getTransform(canvasElement, viewportSelector(framework));
-    await userEvent.click(getQueryRoot(canvasElement).querySelector(controlsSelector(framework,'zoomin'))!);
+    await userEvent.click(getQueryRoot(canvasElement).querySelector(controlsSelector(framework, 'zoomin'))!);
     await sleep(100);
     const transformAfter = getTransform(canvasElement, viewportSelector(framework));
     expect(transformAfter.scale).not.toBe(transformBefore.scale);
@@ -107,7 +108,7 @@ export function createAddonsPlays(framework: FlowFramework) {
 
   const controlsZoomOut = async ({ canvasElement }: StoryPlayContext) => {
     const transformBefore = getTransform(canvasElement, viewportSelector(framework));
-    await userEvent.click(getQueryRoot(canvasElement).querySelector(controlsSelector(framework,'zoomout'))!);
+    await userEvent.click(getQueryRoot(canvasElement).querySelector(controlsSelector(framework, 'zoomout'))!);
     await sleep(100);
     const transformAfter = getTransform(canvasElement, viewportSelector(framework));
     expect(transformAfter.scale).not.toBe(transformBefore.scale);
@@ -115,7 +116,7 @@ export function createAddonsPlays(framework: FlowFramework) {
 
   const controlsDragPane = async ({ canvasElement }: StoryPlayContext) => {
     const transformBefore = getTransform(canvasElement, viewportSelector(framework));
-    const renderer = getQueryRoot(canvasElement).querySelector(flowClass(framework, 'renderer'))!;
+    const renderer = getQueryRoot(canvasElement).querySelector(paneSelector(framework))!;
     const rendererBox = renderer.getBoundingClientRect();
 
     await pointerDrag(renderer, [
@@ -131,9 +132,8 @@ export function createAddonsPlays(framework: FlowFramework) {
 
   const controlsFitView = async ({ canvasElement }: StoryPlayContext) => {
     const root = getQueryRoot(canvasElement);
-    const renderer = root.querySelector(flowClass(framework, 'renderer'))!;
+    const renderer = root.querySelector(paneSelector(framework))!;
     const rendererBox = renderer.getBoundingClientRect();
-    const transformBefore = getTransform(canvasElement, viewportSelector(framework));
 
     await pointerDrag(renderer, [
       { x: rendererBox.x + 10, y: rendererBox.y + 10 },
@@ -141,10 +141,11 @@ export function createAddonsPlays(framework: FlowFramework) {
     ]);
     await sleep(100);
 
-    await userEvent.click(root.querySelector(controlsSelector(framework,'fitview'))!);
+    const transformBeforeFit = getTransform(canvasElement, viewportSelector(framework));
+    await userEvent.click(root.querySelector(controlsSelector(framework, 'fitview'))!);
     await sleep(100);
     const transformAfter = getTransform(canvasElement, viewportSelector(framework));
-    expect(transformAfter.scale).not.toBe(transformBefore.scale);
+    expect(transformAfter).not.toEqual(transformBeforeFit);
   };
 
   const controlsInteractiveOff = async ({ canvasElement }: StoryPlayContext) => {
@@ -159,7 +160,7 @@ export function createAddonsPlays(framework: FlowFramework) {
     await userEvent.click(pane, { clientX: paneBox.x + 5, clientY: paneBox.y + 5 });
     expect(getClassName(node)).not.toMatch(/selected/);
 
-    await userEvent.click(root.querySelector(controlsSelector(framework,'interactive'))!);
+    await userEvent.click(root.querySelector(controlsSelector(framework, 'interactive'))!);
     expect(getClassName(node)).not.toMatch(/selected/);
   };
 

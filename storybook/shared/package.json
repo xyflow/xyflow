@@ -22,12 +22,13 @@
     "./tests/suite": "./tests/suite.ts"
   },
   "dependencies": {
+    "@dagrejs/dagre": "^1.1.8",
     "@xyflow/react": "workspace:*",
     "@xyflow/svelte": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "svelte": "catalog:",
-    "storybook": "^10.4.6"
+    "storybook": "^10.4.6",
+    "svelte": "catalog:"
   },
   "devDependencies": {
     "@storybook/addon-docs": "^10.4.6",
