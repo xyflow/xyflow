@@ -1,4 +1,4 @@
-import { memo, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useGlobalKeyHandler } from '../../hooks/useGlobalKeyHandler';
@@ -141,4 +141,4 @@ function FlowRendererComponent<NodeType extends Node = Node>({
 
 FlowRendererComponent.displayName = 'FlowRenderer';
 
-export const FlowRenderer = memo(FlowRendererComponent) as typeof FlowRendererComponent;
+export const FlowRenderer = FlowRendererComponent;

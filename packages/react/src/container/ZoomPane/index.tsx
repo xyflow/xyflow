@@ -54,6 +54,7 @@ export function ZoomPane({
 
   useResizeHandler(zoomPane);
 
+  // The mount-only pan/zoom effect prevents compilation. Keep this update-effect dependency stable.
   const onTransformChange = useCallback(
     (transform: Transform) => {
       onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });

@@ -1,4 +1,4 @@
-import { ForwardedRef, useCallback, type CSSProperties } from 'react';
+import { ForwardedRef, type CSSProperties } from 'react';
 import cc from 'classcat';
 import { ConnectionLineType, PanOnScrollMode, SelectionMode, infiniteExtent, isMacOs } from '@xyflow/system';
 
@@ -156,13 +156,10 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   const rfId = id || '1';
 
   // Undo scroll events, preventing viewport from shifting when nodes outside of it are focused
-  const wrapperOnScroll = useCallback(
-    (e: React.UIEvent<HTMLDivElement>) => {
-      e.currentTarget.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      onScroll?.(e);
-    },
-    [onScroll]
-  );
+  const wrapperOnScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    e.currentTarget.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    onScroll?.(e);
+  };
 
   return (
     <div

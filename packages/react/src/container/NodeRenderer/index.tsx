@@ -1,5 +1,3 @@
-import { memo } from 'react';
-
 import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
 import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
@@ -99,4 +97,4 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
 
 NodeRendererComponent.displayName = 'NodeRenderer';
 
-export const NodeRenderer = memo(NodeRendererComponent) as typeof NodeRendererComponent;
+export const NodeRenderer = NodeRendererComponent;
