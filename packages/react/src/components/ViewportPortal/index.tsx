@@ -2,9 +2,6 @@ import { type ReactNode, type ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useReactFlowStore } from '../../hooks/useReactFlowStore';
-import type { ReactFlowState } from '../../types';
-
-const selector = (s: ReactFlowState) => s.domNode;
 
 /**
  * The `<ViewportPortal />` component can be used to add components to the same viewport
@@ -32,7 +29,7 @@ const selector = (s: ReactFlowState) => s.domNode;
  *```
  */
 export function ViewportPortal({ children }: { children: ReactNode }): ReactPortal | null {
-  const domNode = useReactFlowStore(selector);
+  const { domNode } = useReactFlowStore();
   const viewPortalDiv = domNode?.querySelector('.react-flow__viewport-portal');
 
   if (!viewPortalDiv) {

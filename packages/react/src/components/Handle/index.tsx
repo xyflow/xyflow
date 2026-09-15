@@ -101,7 +101,7 @@ function HandleComponent(
   const isTarget = type === 'target';
   const { store, viewportStore, connectionStore, nodesStore, edgesStore } = useReactFlowStoreApi();
   const nodeId = useNodeId();
-  const connectionMode = useReactFlowStore((s) => s.connectionMode);
+  const { connectionMode } = useReactFlowStore();
   const { connectOnClick, noPanClassName, rfId } = useHandleConfig();
   const {
     connectingFrom,

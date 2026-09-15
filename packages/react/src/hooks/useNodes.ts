@@ -1,7 +1,5 @@
 import { useNodesStore } from './useReactFlowStore';
-import type { Node, NodesStore } from '../types';
-
-const nodesSelector = (state: NodesStore) => state.nodes;
+import type { Node } from '../types';
 
 /**
  * This hook returns an array of the current nodes. Components that use this hook
@@ -23,9 +21,9 @@ const nodesSelector = (state: NodesStore) => state.nodes;
  *```
  */
 export function useNodes<NodeType extends Node = Node>(): NodeType[] {
-  const nodes = useNodesStore(nodesSelector) as NodeType[];
+  const { nodes } = useNodesStore();
 
-  return nodes;
+  return nodes as NodeType[];
 }
 
 /**

@@ -44,8 +44,8 @@ export function NodesSelection<NodeType extends Node>({
 }: NodesSelectionProps<NodeType>) {
   const { nodesStore } = useReactFlowStoreApi<NodeType>();
   const { width, height, x, y } = useNodesStore(useShallow(selector));
-  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
-  const transform = useViewportStore((s) => s.transform);
+  const { userSelectionActive } = useReactFlowStore();
+  const { transform } = useViewportStore();
   const transformString = `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]}) translate(${x}px,${y}px)`;
   const moveSelectedNodes = useMoveSelectedNodes();
 

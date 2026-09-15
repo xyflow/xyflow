@@ -3,10 +3,9 @@ import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from
 
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { useResizeHandler } from '../../hooks/useResizeHandler';
-import { useReactFlowStore, useConnectionStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useConnectionStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import type { FlowRendererProps } from '../FlowRenderer';
-import type { ReactFlowState } from '../../types';
 
 type ZoomPaneProps = Omit<
   FlowRendererProps,
@@ -15,11 +14,6 @@ type ZoomPaneProps = Omit<
   isControlledViewport: boolean;
   panActivationKeyPressed: boolean;
 };
-
-const selector = (s: ReactFlowState) => ({
-  userSelectionActive: s.userSelectionActive,
-  lib: s.lib,
-});
 
 export function ZoomPane({
   onPaneContextMenu,
@@ -47,8 +41,11 @@ export function ZoomPane({
 }: ZoomPaneProps) {
   const { store, viewportStore } = useReactFlowStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const { userSelectionActive, lib } = useReactFlowStore(useShallow(selector));
-  const connectionInProgress = useConnectionStore((s) => s.connection.inProgress);
+  const { userSelectionActive, lib } = useReactFlowStore();
+
+  const {
+    connection: { inProgress: connectionInProgress },
+  } = useConnectionStore();
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
   const panZoom = useRef<PanZoomInstance>();
 
@@ -75,7 +72,9 @@ export function ZoomPane({
         translateExtent,
         viewport: defaultViewport,
         onDraggingChange: (paneDragging) =>
-          store.setState((prevState) => (prevState.paneDragging === paneDragging ? prevState : { paneDragging })),
+          viewportStore.setState((prevState) =>
+            prevState.paneDragging === paneDragging ? prevState : { paneDragging }
+          ),
         onPanZoomStart: (event, vp) => {
           const { onViewportChangeStart, onMoveStart } = store.getState();
           onMoveStart?.(event, vp);

@@ -120,7 +120,6 @@ const getInitialState = ({
       userSelectionActive: false,
       connectionMode: ConnectionMode.Strict,
       domNode: null,
-      paneDragging: false,
       noPanClassName: 'nopan',
       nodeOrigin: storeNodeOrigin,
       nodeDragThreshold: 1,
@@ -158,6 +157,7 @@ const getInitialState = ({
       onEdgesChangeMiddlewareMap: new Map(),
     },
     viewportStore: {
+      paneDragging: false,
       width: width ?? 0,
       height: height ?? 0,
       transform,

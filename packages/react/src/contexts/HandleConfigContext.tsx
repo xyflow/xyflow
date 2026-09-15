@@ -1,7 +1,6 @@
 import { createContext, useContext, type ReactNode } from 'react';
 
-import { useReactFlowStore, useShallow } from '../hooks/useReactFlowStore';
-import type { ReactFlowState } from '../types';
+import { useReactFlowStore } from '../hooks/useReactFlowStore';
 
 type HandleConfig = {
   connectOnClick: boolean;
@@ -9,20 +8,16 @@ type HandleConfig = {
   rfId: string;
 };
 
-const selector = (s: ReactFlowState): HandleConfig => ({
-  connectOnClick: s.connectOnClick,
-  noPanClassName: s.noPanClassName,
-  rfId: s.rfId,
-});
-
 const HandleConfigContext = createContext<HandleConfig | null>(null);
 
 /*
  * `connectOnClick`, `noPanClassName` and `rfId` are the same for every handle, so they are
- * shared through context from a single store subscription.
+ * shared through context from one provider.
  */
 export function HandleConfigProvider({ children }: { children: ReactNode }) {
-  const config = useReactFlowStore(useShallow(selector));
+  const { connectOnClick, noPanClassName, rfId } = useReactFlowStore();
+
+  const config = { connectOnClick, noPanClassName, rfId };
   return <HandleConfigContext.Provider value={config}>{children}</HandleConfigContext.Provider>;
 }
 
