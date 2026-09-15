@@ -1,9 +1,9 @@
-import { useReactFlowStore } from './useReactFlowStore';
-import type { Node, Edge, ReactFlowState } from '../types';
+import { useEdgesStore } from './useReactFlowStore';
+import type { Node, Edge, EdgesStore } from '../types';
 import { useReactFlow } from './useReactFlow';
 import { useMemo } from 'react';
 
-const edgesSelector = (state: ReactFlowState) => state.edges;
+const edgesSelector = (state: EdgesStore) => state.edges;
 
 /**
  * This hook returns an array of the current edges. Components that use this hook
@@ -24,7 +24,7 @@ const edgesSelector = (state: ReactFlowState) => state.edges;
  *```
  */
 export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
-  const edges = useReactFlowStore(edgesSelector) as EdgeType[];
+  const edges = useEdgesStore(edgesSelector) as EdgeType[];
 
   return edges;
 }
@@ -50,7 +50,7 @@ export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
  */
 export function useEdge<EdgeType extends Edge = Edge>(id: string): EdgeType | undefined {
   const { getEdge } = useReactFlow<Node, EdgeType>();
-  useReactFlowStore(edgesSelector);
+  useEdgesStore(edgesSelector);
 
   const edge = getEdge(id);
 

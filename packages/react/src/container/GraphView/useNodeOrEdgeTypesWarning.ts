@@ -16,7 +16,7 @@ export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes?: NodeTypes): void;
 export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes?: EdgeTypes): void;
 export function useNodeOrEdgeTypesWarning(nodeOrEdgeTypes: NodeTypes | EdgeTypes = emptyTypes): void {
   const typesRef = useRef(nodeOrEdgeTypes);
-  const store = useReactFlowStoreApi();
+  const { store } = useReactFlowStoreApi();
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {

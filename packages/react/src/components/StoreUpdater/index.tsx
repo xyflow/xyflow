@@ -122,7 +122,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     reset,
     setDefaultNodesAndEdges,
   } = useReactFlowStore(useShallow(selector));
-  const store = useReactFlowStoreApi<NodeType, EdgeType>();
+  const { store } = useReactFlowStoreApi<NodeType, EdgeType>();
 
   useEffect(() => {
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);

@@ -46,7 +46,7 @@ export const MarkerSymbols = {
 };
 
 export function useMarkerSymbol(type: MarkerType | `${MarkerType}`) {
-  const store = useReactFlowStoreApi();
+  const { store } = useReactFlowStoreApi();
 
   const symbol = useMemo(() => {
     const symbolExists = Object.prototype.hasOwnProperty.call(MarkerSymbols, type);

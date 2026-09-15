@@ -23,12 +23,12 @@ let checkSpy: ((result: CheckResult) => void) | null = null;
  * custom node effects fire after a <ReactFlow> key-based remount.
  */
 function CheckerNode({ data }: NodeProps) {
-  const store = useReactFlowStoreApi();
+  const { nodesStore } = useReactFlowStoreApi();
   const useHook = data.useLayout ? useLayoutEffect : useEffect;
 
   useHook(() => {
     if (checkSpy) {
-      const { nodes, nodeLookup } = store.getState();
+      const { nodes, nodeLookup } = nodesStore.getState();
       checkSpy({ nodesLength: nodes.length, lookupSize: nodeLookup.size });
     }
   });

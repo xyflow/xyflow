@@ -1,14 +1,14 @@
 import { type ConnectionState, pointToRendererPoint } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from './useReactFlowStore';
-import type { InternalNode, Node, ReactFlowStore } from '../types';
+import { useConnectionStore, useViewportStore, useShallow } from './useReactFlowStore';
+import type { InternalNode, Node, ConnectionStore, ViewportStore } from '../types';
 
-function connectionStoreSelector(s: ReactFlowStore) {
+function connectionStoreSelector(s: ConnectionStore) {
   return s.connection;
 }
 
-function toSelector(s: ReactFlowStore) {
-  return s.connection.inProgress ? pointToRendererPoint(s.connection.to, s.transform) : undefined;
+function toSelector(s: ViewportStore, connection: ConnectionStore['connection']) {
+  return connection.inProgress ? pointToRendererPoint(connection.to, s.transform) : undefined;
 }
 /**
  * The `useConnection` hook returns the current connection when there is an active
@@ -42,8 +42,8 @@ function toSelector(s: ReactFlowStore) {
 export function useConnection<NodeType extends Node = Node, SelectorReturn = ConnectionState<InternalNode<NodeType>>>(
   connectionSelector?: (connection: ConnectionState<InternalNode<NodeType>>) => SelectorReturn
 ): SelectorReturn {
-  const connectionStore = useReactFlowStore(useShallow(connectionStoreSelector));
-  const to = useReactFlowStore(useShallow(toSelector));
+  const connectionStore = useConnectionStore(useShallow(connectionStoreSelector));
+  const to = useViewportStore(useShallow((s) => toSelector(s, connectionStore)));
 
   const connection = { ...connectionStore, to } as ConnectionState<InternalNode<NodeType>>;
 

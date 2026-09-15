@@ -1,9 +1,9 @@
-import { useReactFlowStore } from './useReactFlowStore';
-import type { Node, ReactFlowState } from '../types';
+import { useNodesStore } from './useReactFlowStore';
+import type { Node, NodesStore } from '../types';
 import { useReactFlow } from './useReactFlow';
 import { useMemo } from 'react';
 
-const nodesSelector = (state: ReactFlowState) => state.nodes;
+const nodesSelector = (state: NodesStore) => state.nodes;
 
 /**
  * This hook returns an array of the current nodes. Components that use this hook
@@ -25,7 +25,7 @@ const nodesSelector = (state: ReactFlowState) => state.nodes;
  *```
  */
 export function useNodes<NodeType extends Node = Node>(): NodeType[] {
-  const nodes = useReactFlowStore(nodesSelector) as NodeType[];
+  const nodes = useNodesStore(nodesSelector) as NodeType[];
 
   return nodes;
 }
@@ -51,7 +51,7 @@ export function useNodes<NodeType extends Node = Node>(): NodeType[] {
  */
 export function useNode<NodeType extends Node = Node>(id: string): NodeType | undefined {
   const { getNode } = useReactFlow<NodeType>();
-  useReactFlowStore(nodesSelector);
+  useNodesStore(nodesSelector);
 
   const node = getNode(id);
 

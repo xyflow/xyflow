@@ -1,12 +1,12 @@
 import { ComponentType, memo, useCallback } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 
-import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
+import { useShallow, useNodesStore } from '../../hooks/useReactFlowStore';
 import { MiniMapNode } from './MiniMapNode';
-import type { ReactFlowState, Node } from '../../types';
+import type { NodesStore, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
 
-const selectorNodeIds = (s: ReactFlowState) => s.nodes.map((node) => node.id);
+const selectorNodeIds = (s: NodesStore) => s.nodes.map((node) => node.id);
 const getAttrFunction = <NodeType extends Node>(
   func: string | GetMiniMapNodeAttribute<NodeType> | undefined
 ): GetMiniMapNodeAttribute<NodeType> => (func instanceof Function ? func : () => func);
@@ -24,7 +24,7 @@ function MiniMapNodes<NodeType extends Node>({
   nodeComponent: NodeComponent = MiniMapNode,
   onClick,
 }: MiniMapNodesProps<NodeType>) {
-  const nodeIds = useReactFlowStore(useShallow(selectorNodeIds));
+  const nodeIds = useNodesStore(useShallow(selectorNodeIds));
   const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
@@ -81,7 +81,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   shapeRendering: string;
 }) {
   const selector = useCallback(
-    (s: ReactFlowState) => {
+    (s: NodesStore) => {
       const node = s.nodeLookup.get(id);
 
       if (!node) {
@@ -103,7 +103,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
     [id]
   );
 
-  const { node, x, y, width, height } = useReactFlowStore(useShallow(selector));
+  const { node, x, y, width, height } = useNodesStore(useShallow(selector));
 
   if (!node || node.hidden || !nodeHasDimensions(node)) {
     return null;

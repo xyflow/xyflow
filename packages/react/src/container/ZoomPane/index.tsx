@@ -3,7 +3,7 @@ import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from
 
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { useResizeHandler } from '../../hooks/useResizeHandler';
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useConnectionStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import type { FlowRendererProps } from '../FlowRenderer';
 import type { ReactFlowState } from '../../types';
@@ -19,7 +19,6 @@ type ZoomPaneProps = Omit<
 const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   lib: s.lib,
-  connectionInProgress: s.connection.inProgress,
 });
 
 export function ZoomPane({
@@ -46,9 +45,10 @@ export function ZoomPane({
   paneClickDistance,
   selectionOnDrag,
 }: ZoomPaneProps) {
-  const store = useReactFlowStoreApi();
+  const { store, viewportStore } = useReactFlowStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const { userSelectionActive, lib, connectionInProgress } = useReactFlowStore(useShallow(selector));
+  const { userSelectionActive, lib } = useReactFlowStore(useShallow(selector));
+  const connectionInProgress = useConnectionStore((s) => s.connection.inProgress);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
   const panZoom = useRef<PanZoomInstance>();
 
@@ -59,10 +59,10 @@ export function ZoomPane({
       onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });
 
       if (!isControlledViewport) {
-        store.setState({ transform });
+        viewportStore.setState({ transform });
       }
     },
-    [onViewportChange, isControlledViewport, store]
+    [onViewportChange, isControlledViewport, viewportStore]
   );
 
   useEffect(() => {
@@ -94,11 +94,8 @@ export function ZoomPane({
 
       const { x, y, zoom } = panZoom.current.getViewport();
 
-      store.setState({
-        panZoom: panZoom.current,
-        transform: [x, y, zoom],
-        domNode: zoomPane.current.closest('.react-flow') as HTMLDivElement,
-      });
+      store.setState({ panZoom: panZoom.current, domNode: zoomPane.current.closest('.react-flow') as HTMLDivElement });
+      viewportStore.setState({ transform: [x, y, zoom] });
 
       return () => {
         panZoom.current?.destroy();

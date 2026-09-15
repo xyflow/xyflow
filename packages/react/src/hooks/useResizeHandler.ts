@@ -9,7 +9,7 @@ import { useReactFlowStoreApi } from './useReactFlowStore';
  * @internal
  */
 export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null>): void {
-  const store = useReactFlowStoreApi();
+  const { store, viewportStore } = useReactFlowStoreApi();
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -22,7 +22,7 @@ export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null
         store.getState().onError?.('004', errorMessages['error004']());
       }
 
-      store.setState({ width: size.width || 500, height: size.height || 500 });
+      viewportStore.setState({ width: size.width || 500, height: size.height || 500 });
     };
 
     if (domNode.current) {

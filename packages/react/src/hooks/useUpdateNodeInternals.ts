@@ -49,7 +49,7 @@ import { useReactFlowStoreApi } from './useReactFlowStore';
  *{@link ReactFlowProvider} or a {@link ReactFlow} component.
  */
 export function useUpdateNodeInternals(): UpdateNodeInternals {
-  const store = useReactFlowStoreApi();
+  const { store } = useReactFlowStoreApi();
 
   return useCallback<UpdateNodeInternals>((id: string | string[]) => {
     const { domNode, updateNodeInternals } = store.getState();
