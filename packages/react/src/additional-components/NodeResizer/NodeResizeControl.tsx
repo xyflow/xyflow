@@ -17,7 +17,7 @@ import {
   XYPosition,
 } from '@xyflow/system';
 
-import { useReactFlowStoreApi, useViewportStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useReactFlowStoreApi, useViewportStore } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
 import { ViewportStore } from '../../types';
@@ -59,7 +59,7 @@ function ResizeControl({
   const selector = (s: ViewportStore) => {
     return scaleSelector(isHandleControl && autoScale)(s);
   };
-  const scale = useViewportStore(useShallow(selector));
+  const scale = useViewportStore(selector);
 
   const resizer = useRef<XYResizerInstance | null>(null);
   const controlPosition = position ?? defaultPositions[variant];

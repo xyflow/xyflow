@@ -5,7 +5,7 @@ import type { SelectionStore } from '../../types';
 const selector = (s: SelectionStore) => s.userSelectionRect;
 
 export function UserSelection() {
-  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
+  const { userSelectionActive } = useReactFlowStore();
   const userSelectionRect = useSelectionStore(useCustomDiff(selector, areEqual));
   const isActive = userSelectionActive && userSelectionRect;
 

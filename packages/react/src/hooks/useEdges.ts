@@ -1,7 +1,5 @@
 import { useEdgesStore } from './useReactFlowStore';
-import type { Edge, EdgesStore } from '../types';
-
-const edgesSelector = (state: EdgesStore) => state.edges;
+import type { Edge } from '../types';
 
 /**
  * This hook returns an array of the current edges. Components that use this hook
@@ -22,9 +20,9 @@ const edgesSelector = (state: EdgesStore) => state.edges;
  *```
  */
 export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
-  const edges = useEdgesStore(edgesSelector) as EdgeType[];
+  const { edges } = useEdgesStore();
 
-  return edges;
+  return edges as EdgeType[];
 }
 
 /**

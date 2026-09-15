@@ -1,9 +1,8 @@
 import cc from 'classcat';
 
-import { useReactFlowStore, useViewportStore, useShallow, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore, useViewportStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useReactFlow } from '../../hooks/useReactFlow';
 import { Panel } from '../../components/Panel';
-import { type ReactFlowState } from '../../types';
 
 import { PlusIcon } from './Icons/Plus';
 import { MinusIcon } from './Icons/Minus';
@@ -12,13 +11,6 @@ import { LockIcon } from './Icons/Lock';
 import { UnlockIcon } from './Icons/Unlock';
 import { ControlButton } from './ControlButton';
 import type { ControlProps } from './types';
-
-const selector = (s: ReactFlowState) => ({
-  isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
-  minZoom: s.minZoom,
-  maxZoom: s.maxZoom,
-  ariaLabelConfig: s.ariaLabelConfig,
-});
 
 function ControlsComponent({
   style,
@@ -37,13 +29,13 @@ function ControlsComponent({
   'aria-label': ariaLabel,
 }: ControlProps) {
   const { store } = useReactFlowStoreApi();
-  const { isInteractive, minZoom, maxZoom, ariaLabelConfig } = useReactFlowStore(useShallow(selector));
-  const { minZoomReached, maxZoomReached } = useViewportStore(
-    useShallow((s) => ({
-      minZoomReached: s.transform[2] <= minZoom,
-      maxZoomReached: s.transform[2] >= maxZoom,
-    }))
-  );
+  const { nodesDraggable, nodesConnectable, elementsSelectable, minZoom, maxZoom, ariaLabelConfig } =
+    useReactFlowStore();
+
+  const isInteractive = nodesDraggable || nodesConnectable || elementsSelectable;
+  // Panning changes the viewport every frame without changing either zoom limit.
+  const minZoomReached = useViewportStore((s) => s.transform[2] <= minZoom);
+  const maxZoomReached = useViewportStore((s) => s.transform[2] >= maxZoom);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const onZoomInHandler = () => {

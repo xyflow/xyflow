@@ -42,14 +42,8 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   disableKeyboardA11y,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
   let edge = useEdgesStore((s) => s.edgeLookup.get(id)!) as EdgeType;
-  const { connectionMode, elevateEdgesOnSelect, zIndexMode } = useReactFlowStore(
-    useShallow((s) => ({
-      connectionMode: s.connectionMode,
-      elevateEdgesOnSelect: s.elevateEdgesOnSelect,
-      zIndexMode: s.zIndexMode,
-    }))
-  );
-  const defaultEdgeOptions = useReactFlowStore((s) => s.defaultEdgeOptions);
+  const { connectionMode, elevateEdgesOnSelect, zIndexMode, defaultEdgeOptions } = useReactFlowStore();
+
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
   let edgeType = edge.type || 'default';

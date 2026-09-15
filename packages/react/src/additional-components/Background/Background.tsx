@@ -5,15 +5,12 @@ import { useReactFlowStore, useViewportStore } from '../../hooks/useReactFlowSto
 import { DotPattern, LinePattern } from './Patterns';
 import { containerStyle } from '../../styles/utils';
 import { type BackgroundProps, BackgroundVariant } from './types';
-import { type ReactFlowState } from '../../types';
 
 const defaultSize = {
   [BackgroundVariant.Dots]: 1,
   [BackgroundVariant.Lines]: 1,
   [BackgroundVariant.Cross]: 6,
 };
-
-const selector = (s: ReactFlowState) => `pattern-${s.rfId}`;
 
 function BackgroundComponent({
   id,
@@ -31,8 +28,9 @@ function BackgroundComponent({
   patternClassName,
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const patternId = useReactFlowStore(selector);
-  const transform = useViewportStore((s) => s.transform);
+  const { rfId } = useReactFlowStore();
+  const patternId = `pattern-${rfId}`;
+  const { transform } = useViewportStore();
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;

@@ -59,7 +59,6 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   hasDefaultNodes: boolean;
   hasDefaultEdges: boolean;
   domNode: HTMLDivElement | null;
-  paneDragging: boolean;
   noPanClassName: string;
   panZoom: PanZoomInstance | null;
   minZoom: number;
@@ -178,6 +177,7 @@ export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge =
   ReactFlowActions<NodeType, EdgeType>;
 
 export type ViewportStore = {
+  paneDragging: boolean;
   transform: Transform;
   width: number;
   height: number;

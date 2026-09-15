@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { ReactFlowState } from '../../types';
 import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { InternalNodeUpdate } from '@xyflow/system';
 
-const selector = (s: ReactFlowState) => s.updateNodeInternals;
-
 export function useResizeObserver() {
-  const updateNodeInternals = useReactFlowStore(selector);
+  const { updateNodeInternals } = useReactFlowStore();
   const [resizeObserver] = useState(() => {
     if (typeof ResizeObserver === 'undefined') {
       return null;

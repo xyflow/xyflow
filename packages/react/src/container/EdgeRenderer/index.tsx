@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 
-import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
 import EdgeWrapper from '../../components/EdgeWrapper';
-import type { Edge, Node, ReactFlowState } from '../../types';
+import type { Edge, Node } from '../../types';
 
 type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
   GraphViewProps<Node, EdgeType>,
@@ -29,13 +29,6 @@ type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
   children?: ReactNode;
 };
 
-const selector = (s: ReactFlowState) => ({
-  edgesFocusable: s.edgesFocusable,
-  edgesReconnectable: s.edgesReconnectable,
-  elementsSelectable: s.elementsSelectable,
-  onError: s.onError,
-});
-
 function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   defaultMarkerColor,
   onlyRenderVisibleElements,
@@ -54,7 +47,8 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   onReconnectEnd,
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
-  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useReactFlowStore(useShallow(selector));
+  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useReactFlowStore();
+
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
   return (

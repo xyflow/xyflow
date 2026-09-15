@@ -15,6 +15,8 @@ import type {
   SelectionStore,
 } from '../types';
 
+const identity = <T>(state: T) => state;
+
 const zustandErrorMessage = errorMessages['error001']('react');
 
 /**
@@ -24,12 +26,13 @@ const zustandErrorMessage = errorMessages['error001']('react');
  * use [Zustand](https://github.com/pmndrs/zustand) for subscriptions.
  *
  * @public
- * @param selector - A selector function that returns a slice of the flow's internal state.
+ * @param selector - An optional selector function that returns a slice of the flow's internal state.
  * Extracting or transforming just the state you need is a good practice to avoid unnecessary
  * re-renders.
  * For shallow comparisons, use `useShallow` from `@xyflow/react` by wrapping your selector:
  * `useReactFlowStore(useShallow(selector))`.
- * @returns The selected state slice.
+ * Omit the selector to subscribe to the entire store.
+ * @returns The selected state slice, or the entire store when no selector is provided.
  *
  * @example
  * ```ts
@@ -40,7 +43,9 @@ const zustandErrorMessage = errorMessages['error001']('react');
  * state. For many of the common use cases, there are dedicated hooks available
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
-function useReactFlowStore<StateSlice = unknown>(selector: (state: ReactFlowState) => StateSlice) {
+function useReactFlowStore(): ReactFlowState;
+function useReactFlowStore<StateSlice>(selector: (state: ReactFlowState) => StateSlice): StateSlice;
+function useReactFlowStore(selector: (state: ReactFlowState) => unknown = identity) {
   const { store } = useReactFlowStoreApi();
   return useZustandStore(store, selector);
 }
@@ -72,23 +77,33 @@ function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edg
   return stores as unknown as ReactFlowStoreApi<NodeType, EdgeType>;
 }
 
-export function useViewportStore<StateSlice>(selector: (state: ViewportStore) => StateSlice) {
+export function useViewportStore(): ViewportStore;
+export function useViewportStore<StateSlice>(selector: (state: ViewportStore) => StateSlice): StateSlice;
+export function useViewportStore(selector: (state: ViewportStore) => unknown = identity) {
   return useZustandStore(useReactFlowStoreApi().viewportStore, selector);
 }
 
-export function useConnectionStore<StateSlice>(selector: (state: ConnectionStore) => StateSlice) {
+export function useConnectionStore(): ConnectionStore;
+export function useConnectionStore<StateSlice>(selector: (state: ConnectionStore) => StateSlice): StateSlice;
+export function useConnectionStore(selector: (state: ConnectionStore) => unknown = identity) {
   return useZustandStore(useReactFlowStoreApi().connectionStore, selector);
 }
 
-export function useNodesStore<StateSlice>(selector: (state: NodesStore) => StateSlice) {
+export function useNodesStore(): NodesStore;
+export function useNodesStore<StateSlice>(selector: (state: NodesStore) => StateSlice): StateSlice;
+export function useNodesStore(selector: (state: NodesStore) => unknown = identity) {
   return useZustandStore(useReactFlowStoreApi().nodesStore, selector);
 }
 
-export function useEdgesStore<StateSlice>(selector: (state: EdgesStore) => StateSlice) {
+export function useEdgesStore(): EdgesStore;
+export function useEdgesStore<StateSlice>(selector: (state: EdgesStore) => StateSlice): StateSlice;
+export function useEdgesStore(selector: (state: EdgesStore) => unknown = identity) {
   return useZustandStore(useReactFlowStoreApi().edgesStore, selector);
 }
 
-export function useSelectionStore<StateSlice>(selector: (state: SelectionStore) => StateSlice) {
+export function useSelectionStore(): SelectionStore;
+export function useSelectionStore<StateSlice>(selector: (state: SelectionStore) => StateSlice): StateSlice;
+export function useSelectionStore(selector: (state: SelectionStore) => unknown = identity) {
   return useZustandStore(useReactFlowStoreApi().selectionStore, selector);
 }
 

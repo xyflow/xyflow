@@ -6,8 +6,8 @@
 import { useEffect, useRef } from 'react';
 import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelConfig } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
-import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
+import { useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import type { Node, Edge, ReactFlowProps, FitViewOptions } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
 // These fields exist in the global store, and we need to keep them up to date
@@ -83,17 +83,6 @@ type StoreUpdaterProps<NodeType extends Node = Node, EdgeType extends Edge = Edg
 // rfId doesn't exist in ReactFlowProps, but it's one of the fields we want to update
 const fieldsToTrack = [...reactFlowFieldsToTrack, 'rfId'] as const;
 
-const selector = (s: ReactFlowState) => ({
-  setNodes: s.setNodes,
-  setEdges: s.setEdges,
-  setMinZoom: s.setMinZoom,
-  setMaxZoom: s.setMaxZoom,
-  setTranslateExtent: s.setTranslateExtent,
-  setNodeExtent: s.setNodeExtent,
-  reset: s.reset,
-  setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
-});
-
 const initPrevValues = {
   /*
    * these are values that are also passed directly to other components
@@ -121,7 +110,8 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     setNodeExtent,
     reset,
     setDefaultNodesAndEdges,
-  } = useReactFlowStore(useShallow(selector));
+  } = useReactFlowStore();
+
   const { store } = useReactFlowStoreApi<NodeType, EdgeType>();
 
   useEffect(() => {

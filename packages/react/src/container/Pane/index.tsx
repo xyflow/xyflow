@@ -23,8 +23,8 @@ import {
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
-import { useShallow, useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
-import type { ReactFlowProps, ReactFlowState } from '../../types';
+import { useReactFlowStore, useReactFlowStoreApi, useViewportStore } from '../../hooks/useReactFlowStore';
+import type { ReactFlowProps } from '../../types';
 
 type PaneProps = {
   isSelecting: boolean;
@@ -61,14 +61,6 @@ const wrapHandler = (
   };
 };
 
-const selector = (s: ReactFlowState) => ({
-  userSelectionActive: s.userSelectionActive,
-  elementsSelectable: s.elementsSelectable,
-  dragging: s.paneDragging,
-  panBy: s.panBy,
-  autoPanSpeed: s.autoPanSpeed,
-});
-
 export function Pane({
   isSelecting,
   selectionKeyPressed,
@@ -89,9 +81,9 @@ export function Pane({
 }: PaneProps) {
   const autoPanId = useRef<number>(0);
   const { store, viewportStore, connectionStore, nodesStore, edgesStore, selectionStore } = useReactFlowStoreApi();
-  const { userSelectionActive, elementsSelectable, dragging, panBy, autoPanSpeed } = useReactFlowStore(
-    useShallow(selector)
-  );
+  const { userSelectionActive, elementsSelectable, panBy, autoPanSpeed } = useReactFlowStore();
+  const dragging = useViewportStore((s) => s.paneDragging);
+
   const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);
 
   const container = useRef<HTMLDivElement | null>(null);

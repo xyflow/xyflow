@@ -1,10 +1,10 @@
 import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
-import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
+import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import { useResizeObserver } from './useResizeObserver';
 import NodeWrapper from '../../components/NodeWrapper';
-import type { Node, ReactFlowState } from '../../types';
+import type { Node } from '../../types';
 
 export type NodeRendererProps<NodeType extends Node> = Pick<
   GraphViewProps<NodeType>,
@@ -25,15 +25,9 @@ export type NodeRendererProps<NodeType extends Node> = Pick<
   | 'nodesDraggable'
 >;
 
-const selector = (s: ReactFlowState) => ({
-  nodesConnectable: s.nodesConnectable,
-  nodesFocusable: s.nodesFocusable,
-  elementsSelectable: s.elementsSelectable,
-  onError: s.onError,
-});
-
 function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
-  const { nodesConnectable, nodesFocusable, elementsSelectable, onError } = useReactFlowStore(useShallow(selector));
+  const { nodesConnectable, nodesFocusable, elementsSelectable, onError } = useReactFlowStore();
+
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
 
@@ -58,7 +52,7 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
            *   rerender *only* when visible nodes are added or removed.
            * - NodeRenderer performs all operations the result of which can be
            *   shared between nodes (such as creating the `ResizeObserver`
-           *   instance, or subscribing to `selector`). This means extra prop
+           *   instance, or subscribing to store settings). This means extra prop
            *   drilling into `NodeComponentWrapper`, but it means we need to run
            *   these operations only once – instead of once per node.
            * - Any operations that you’d normally write inside `nodes.map` are
