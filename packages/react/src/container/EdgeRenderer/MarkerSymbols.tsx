@@ -48,6 +48,7 @@ export const MarkerSymbols = {
 export function useMarkerSymbol(type: MarkerType | `${MarkerType}`) {
   const { store } = useReactFlowStoreApi();
 
+  // Also controls error reporting: only report an unknown marker again when its type or store changes.
   const symbol = useMemo(() => {
     const symbolExists = Object.prototype.hasOwnProperty.call(MarkerSymbols, type);
 

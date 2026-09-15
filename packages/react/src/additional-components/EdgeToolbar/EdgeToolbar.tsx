@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import cc from 'classcat';
 import { getEdgeToolbarTransform } from '@xyflow/system';
 
@@ -44,7 +43,7 @@ export function EdgeToolbar({
   alignY = 'center',
   ...rest
 }: EdgeToolbarProps) {
-  const edgeSelector = useCallback((state: EdgesStore): Edge | undefined => state.edgeLookup.get(edgeId), [edgeId]);
+  const edgeSelector = (state: EdgesStore): Edge | undefined => state.edgeLookup.get(edgeId);
   const edge = useEdgesStore(useShallow(edgeSelector));
   const isActive = typeof isVisible === 'boolean' ? isVisible : edge?.selected;
   const zoom = useViewportStore(zoomSelector);

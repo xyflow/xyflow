@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX, memo } from 'react';
+import { useState, useRef, type KeyboardEvent, JSX, memo } from 'react';
 import cc from 'classcat';
 import {
   getMarkerId,
@@ -72,8 +72,9 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const [reconnecting, setReconnecting] = useState<boolean>(false);
   const { store } = useReactFlowStoreApi();
 
+  const defaultZIndex = edge.zIndex;
   const {
-    zIndex = edge.zIndex,
+    zIndex = defaultZIndex,
     sourceX,
     sourceY,
     targetX,
@@ -81,66 +82,43 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
     sourcePosition,
     targetPosition,
   } = useNodesStore(
-    useShallow(
-      useCallback(
-        (store) => {
-          const sourceNode = store.nodeLookup.get(edge.source);
-          const targetNode = store.nodeLookup.get(edge.target);
+    useShallow((store) => {
+      const sourceNode = store.nodeLookup.get(edge.source);
+      const targetNode = store.nodeLookup.get(edge.target);
 
-          if (!sourceNode || !targetNode) {
-            return nullPosition;
-          }
+      if (!sourceNode || !targetNode) {
+        return nullPosition;
+      }
 
-          const edgePosition = getEdgePosition({
-            id,
-            sourceNode,
-            targetNode,
-            sourceHandle: edge.sourceHandle || null,
-            targetHandle: edge.targetHandle || null,
-            connectionMode,
-            onError,
-          });
+      const edgePosition = getEdgePosition({
+        id,
+        sourceNode,
+        targetNode,
+        sourceHandle: edge.sourceHandle || null,
+        targetHandle: edge.targetHandle || null,
+        connectionMode,
+        onError,
+      });
 
-          const zIndex = getElevatedEdgeZIndex({
-            selected: edge.selected,
-            zIndex: edge.zIndex,
-            sourceNode,
-            targetNode,
-            elevateOnSelect: elevateEdgesOnSelect,
-            zIndexMode,
-          });
+      const zIndex = getElevatedEdgeZIndex({
+        selected: edge.selected,
+        zIndex: edge.zIndex,
+        sourceNode,
+        targetNode,
+        elevateOnSelect: elevateEdgesOnSelect,
+        zIndexMode,
+      });
 
-          return {
-            ...(edgePosition || nullPosition),
-            zIndex,
-          };
-        },
-        [
-          edge.source,
-          edge.target,
-          edge.sourceHandle,
-          edge.targetHandle,
-          edge.selected,
-          edge.zIndex,
-          id,
-          onError,
-          connectionMode,
-          elevateEdgesOnSelect,
-          zIndexMode,
-        ]
-      )
-    )
+      return {
+        ...(edgePosition || nullPosition),
+        zIndex,
+      };
+    })
   );
 
-  const markerStartUrl = useMemo(
-    () => (edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId)}')` : undefined),
-    [edge.markerStart, rfId]
-  );
+  const markerStartUrl = edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId)}')` : undefined;
 
-  const markerEndUrl = useMemo(
-    () => (edge.markerEnd ? `url('#${getMarkerId(edge.markerEnd, rfId)}')` : undefined),
-    [edge.markerEnd, rfId]
-  );
+  const markerEndUrl = edge.markerEnd ? `url('#${getMarkerId(edge.markerEnd, rfId)}')` : undefined;
 
   if (edge.hidden || sourceX === null || sourceY === null || targetX === null || targetY === null) {
     return null;
@@ -295,4 +273,5 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   );
 }
 
+// The compiler caches the edges list as a whole. Keep per-edge bailouts when that list changes.
 export default memo(EdgeWrapper) as typeof EdgeWrapper;

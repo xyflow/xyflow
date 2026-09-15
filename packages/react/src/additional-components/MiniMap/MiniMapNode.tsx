@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import cc from 'classcat';
 
 import type { MiniMapNodeProps } from './types';
@@ -42,4 +41,4 @@ function MiniMapNodeComponent({
   );
 }
 
-export const MiniMapNode = memo(MiniMapNodeComponent);
+export const MiniMapNode = MiniMapNodeComponent;

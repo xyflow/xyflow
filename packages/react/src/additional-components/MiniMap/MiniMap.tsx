@@ -72,6 +72,8 @@ const areEqual = (a: MiniMapSlice, b: MiniMapSlice) =>
   a.flowHeight === b.flowHeight;
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
+// The compiler skips this component because viewScaleRef is updated during render.
+// Keep its memo boundary and callbacks so pan/zoom does not invalidate every minimap node.
 function MiniMapComponent<NodeType extends Node = Node>({
   style,
   className,

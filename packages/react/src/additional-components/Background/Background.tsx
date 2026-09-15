@@ -1,4 +1,4 @@
-import { CSSProperties, memo, useRef } from 'react';
+import { CSSProperties, useRef } from 'react';
 import cc from 'classcat';
 
 import { useReactFlowStore, useViewportStore } from '../../hooks/useReactFlowStore';
@@ -143,4 +143,4 @@ BackgroundComponent.displayName = 'Background';
  * When combining multiple <Background /> components it’s important to give each of them a unique id prop!
  *
  */
-export const Background = memo(BackgroundComponent);
+export const Background = BackgroundComponent;

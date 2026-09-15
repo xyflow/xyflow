@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode, type ReactPortal } from 'react';
+import { type ReactNode, type ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useReactFlowStore } from '../../hooks/useReactFlowStore';
@@ -53,7 +53,7 @@ export type EdgeLabelRendererProps = {
  */
 export function EdgeLabelRenderer({ children }: EdgeLabelRendererProps): ReactPortal | null {
   const domNode = useReactFlowStore(selector);
-  const edgeLabelRenderer = useMemo(() => domNode?.querySelector('.react-flow__edgelabel-renderer'), [domNode]);
+  const edgeLabelRenderer = domNode?.querySelector('.react-flow__edgelabel-renderer');
 
   if (!edgeLabelRenderer) {
     return null;

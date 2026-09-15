@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { getNodesInside } from '@xyflow/system';
 
 import { useShallow, useNodesStore, useViewportStore } from './useReactFlowStore';
@@ -24,9 +23,7 @@ const selector = (onlyRenderVisible: boolean, viewport: ViewportStore | undefine
  */
 export function useVisibleNodeIds(onlyRenderVisible: boolean) {
   const viewport = useViewportStore((s) => (onlyRenderVisible ? s : undefined));
-  const nodeIds = useNodesStore(
-    useShallow(useCallback(selector(onlyRenderVisible, viewport), [onlyRenderVisible, viewport]))
-  );
+  const nodeIds = useNodesStore(useShallow(selector(onlyRenderVisible, viewport)));
 
   return nodeIds;
 }
