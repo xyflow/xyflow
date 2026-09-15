@@ -80,7 +80,7 @@ function NodeWrapper<NodeType extends Node>({
   const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
   const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
 
-  const store = useReactFlowStoreApi();
+  const { store, viewportStore, nodesStore } = useReactFlowStoreApi();
   const hasDimensions = nodeHasDimensions(node);
   const nodeRef = useNodeObserver({ node, nodeType, hasDimensions, resizeObserver });
   const dragging = useDrag({
@@ -130,6 +130,7 @@ function NodeWrapper<NodeType extends Node>({
       handleNodeClick({
         id,
         store,
+        nodesStore,
         nodeRef,
       });
     }
@@ -150,6 +151,7 @@ function NodeWrapper<NodeType extends Node>({
       handleNodeClick({
         id,
         store,
+        nodesStore,
         unselect,
         nodeRef,
       });
@@ -179,7 +181,7 @@ function NodeWrapper<NodeType extends Node>({
       return;
     }
 
-    const { transform, width, height } = store.viewportStore.getState();
+    const { transform, width, height } = viewportStore.getState();
     const { autoPanOnNodeFocus, setCenter } = store.getState();
 
     if (!autoPanOnNodeFocus) {

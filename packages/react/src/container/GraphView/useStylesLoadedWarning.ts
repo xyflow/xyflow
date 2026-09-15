@@ -4,7 +4,7 @@ import { errorMessages } from '@xyflow/system';
 import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 
 export function useStylesLoadedWarning() {
-  const store = useReactFlowStoreApi();
+  const { store } = useReactFlowStoreApi();
   const checked = useRef(false);
 
   useEffect(() => {

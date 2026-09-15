@@ -18,7 +18,7 @@ import type { ViewportHelperFunctions } from '../types';
  * @returns viewport helper functions
  */
 const useViewportHelper = (): ViewportHelperFunctions => {
-  const store = useReactFlowStoreApi();
+  const { store, viewportStore } = useReactFlowStoreApi();
 
   return useMemo<ViewportHelperFunctions>(() => {
     return {
@@ -37,11 +37,11 @@ const useViewportHelper = (): ViewportHelperFunctions => {
 
         return panZoom ? panZoom.scaleTo(zoomLevel, options) : false;
       },
-      getZoom: () => store.viewportStore.getState().transform[2],
+      getZoom: () => viewportStore.getState().transform[2],
       setViewport: async (viewport, options) => {
         const {
           transform: [tX, tY, tZoom],
-        } = store.viewportStore.getState();
+        } = viewportStore.getState();
         const { panZoom } = store.getState();
 
         if (!panZoom) {
@@ -60,14 +60,14 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         return true;
       },
       getViewport: () => {
-        const [x, y, zoom] = store.viewportStore.getState().transform;
+        const [x, y, zoom] = viewportStore.getState().transform;
         return { x, y, zoom };
       },
       setCenter: async (x, y, options) => {
         return store.getState().setCenter(x, y, options);
       },
       fitBounds: async (bounds, options) => {
-        const { width, height } = store.viewportStore.getState();
+        const { width, height } = viewportStore.getState();
         const { minZoom, maxZoom, panZoom } = store.getState();
         const viewport = getViewportForBounds(
           bounds,
@@ -90,7 +90,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         clientPosition: XYPosition,
         options: { snapToGrid?: boolean; snapGrid?: SnapGrid } = {}
       ) => {
-        const { transform } = store.viewportStore.getState();
+        const { transform } = viewportStore.getState();
         const { snapGrid, snapToGrid, domNode } = store.getState();
 
         if (!domNode) {
@@ -108,7 +108,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         return pointToRendererPoint(correctedPosition, transform, _snapToGrid, _snapGrid);
       },
       flowToScreenPosition: (flowPosition: XYPosition) => {
-        const { transform } = store.viewportStore.getState();
+        const { transform } = viewportStore.getState();
         const { domNode } = store.getState();
 
         if (!domNode) {

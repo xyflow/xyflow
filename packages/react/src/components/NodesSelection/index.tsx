@@ -42,7 +42,7 @@ export function NodesSelection<NodeType extends Node>({
   noPanClassName,
   disableKeyboardA11y,
 }: NodesSelectionProps<NodeType>) {
-  const store = useReactFlowStoreApi<NodeType>();
+  const { nodesStore } = useReactFlowStoreApi<NodeType>();
   const { width, height, x, y } = useNodesStore(useShallow(selector));
   const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
   const transform = useViewportStore((s) => s.transform);
@@ -72,7 +72,7 @@ export function NodesSelection<NodeType extends Node>({
 
   const onContextMenu = onSelectionContextMenu
     ? (event: MouseEvent) => {
-        const selectedNodes = store.nodesStore.getState().nodes.filter((n) => n.selected);
+        const selectedNodes = nodesStore.getState().nodes.filter((n) => n.selected);
         onSelectionContextMenu(event, selectedNodes);
       }
     : undefined;

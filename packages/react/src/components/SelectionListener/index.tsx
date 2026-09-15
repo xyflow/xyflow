@@ -52,20 +52,20 @@ function areEqual(a: (Node | Edge)[], b: (Node | Edge)[]) {
 function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onSelectionChange,
 }: SelectionListenerProps<NodeType, EdgeType>) {
-  const store = useReactFlowStoreApi<NodeType, EdgeType>();
+  const { store, nodesStore, edgesStore } = useReactFlowStoreApi<NodeType, EdgeType>();
   const selectedNodes = useNodesStore(useCustomDiff(nodesSelector, areEqual));
   const selectedEdges = useEdgesStore(useCustomDiff(edgesSelector, areEqual));
 
   useEffect(() => {
     // Either membership change should report the current objects from both stores.
     const params = {
-      nodes: nodesSelector(store.nodesStore.getState()) as NodeType[],
-      edges: edgesSelector(store.edgesStore.getState()) as EdgeType[],
+      nodes: nodesSelector(nodesStore.getState()) as NodeType[],
+      edges: edgesSelector(edgesStore.getState()) as EdgeType[],
     };
 
     onSelectionChange?.(params);
     store.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));
-  }, [selectedNodes, selectedEdges, onSelectionChange, store]);
+  }, [selectedNodes, selectedEdges, onSelectionChange, store, nodesStore, edgesStore]);
 
   return null;
 }

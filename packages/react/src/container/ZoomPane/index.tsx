@@ -45,7 +45,7 @@ export function ZoomPane({
   paneClickDistance,
   selectionOnDrag,
 }: ZoomPaneProps) {
-  const store = useReactFlowStoreApi();
+  const { store, viewportStore } = useReactFlowStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
   const { userSelectionActive, lib } = useReactFlowStore(useShallow(selector));
   const connectionInProgress = useConnectionStore((s) => s.connection.inProgress);
@@ -59,10 +59,10 @@ export function ZoomPane({
       onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });
 
       if (!isControlledViewport) {
-        store.viewportStore.setState({ transform });
+        viewportStore.setState({ transform });
       }
     },
-    [onViewportChange, isControlledViewport, store]
+    [onViewportChange, isControlledViewport, viewportStore]
   );
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export function ZoomPane({
       const { x, y, zoom } = panZoom.current.getViewport();
 
       store.setState({ panZoom: panZoom.current, domNode: zoomPane.current.closest('.react-flow') as HTMLDivElement });
-      store.viewportStore.setState({ transform: [x, y, zoom] });
+      viewportStore.setState({ transform: [x, y, zoom] });
 
       return () => {
         panZoom.current?.destroy();

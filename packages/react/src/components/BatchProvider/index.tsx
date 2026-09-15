@@ -23,10 +23,10 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
 }: {
   children: ReactNode;
 }) {
-  const store = useReactFlowStoreApi<NodeType, EdgeType>();
+  const { store, nodesStore, edgesStore } = useReactFlowStoreApi<NodeType, EdgeType>();
 
   const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
-    const { nodes = [], nodeLookup } = store.nodesStore.getState();
+    const { nodes = [], nodeLookup } = nodesStore.getState();
     const { onNodesChange, fitViewQueued, onNodesChangeMiddlewareMap, setNodes, hasDefaultNodes } = store.getState();
 
     /*
@@ -60,7 +60,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       // to trigger a re-render and fitView.
       window.requestAnimationFrame(() => {
         const { fitViewQueued, setNodes } = store.getState();
-        const { nodes } = store.nodesStore.getState();
+        const { nodes } = nodesStore.getState();
         if (fitViewQueued) {
           setNodes(nodes);
         }
@@ -71,7 +71,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   const nodeQueue = useQueue<NodeType>(nodeQueueHandler);
 
   const edgeQueueHandler = useCallback((queueItems: QueueItem<EdgeType>[]) => {
-    const { edges = [], edgeLookup } = store.edgesStore.getState();
+    const { edges = [], edgeLookup } = edgesStore.getState();
     const { setEdges, hasDefaultEdges, onEdgesChange } = store.getState();
 
     let next = edges;

@@ -14,14 +14,14 @@ const selector = (state: ReactFlowState) => state.panZoom?.syncViewport;
  */
 export function useViewportSync(viewport?: Viewport) {
   const syncViewport = useReactFlowStore(selector);
-  const store = useReactFlowStoreApi();
+  const { viewportStore } = useReactFlowStoreApi();
 
   useEffect(() => {
     if (viewport) {
       syncViewport?.(viewport);
-      store.viewportStore.setState({ transform: [viewport.x, viewport.y, viewport.zoom] });
+      viewportStore.setState({ transform: [viewport.x, viewport.y, viewport.zoom] });
     }
-  }, [viewport, syncViewport]);
+  }, [viewport, syncViewport, viewportStore]);
 
   return null;
 }

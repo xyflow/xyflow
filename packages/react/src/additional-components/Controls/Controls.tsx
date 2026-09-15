@@ -37,7 +37,7 @@ function ControlsComponent({
   orientation = 'vertical',
   'aria-label': ariaLabel,
 }: ControlProps) {
-  const store = useReactFlowStoreApi();
+  const { store } = useReactFlowStoreApi();
   const { isInteractive, minZoom, maxZoom, ariaLabelConfig } = useReactFlowStore(useShallow(selector));
   const { minZoomReached, maxZoomReached } = useViewportStore(
     useShallow((s) => ({

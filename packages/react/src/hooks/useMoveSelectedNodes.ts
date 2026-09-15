@@ -14,12 +14,12 @@ const selectedAndDraggable = (nodesDraggable: boolean) => (n: Node) =>
  * @returns function for updating node positions
  */
 export function useMoveSelectedNodes() {
-  const store = useReactFlowStoreApi();
+  const { store, nodesStore } = useReactFlowStoreApi();
 
   const moveSelectedNodes = useCallback((params: { direction: XYPosition; factor: number }) => {
     const { nodeExtent, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions, nodeOrigin } =
       store.getState();
-    const { nodeLookup } = store.nodesStore.getState();
+    const { nodeLookup } = nodesStore.getState();
     const nodeUpdates = new Map<string, InternalNode>();
     const isSelected = selectedAndDraggable(nodesDraggable);
 

@@ -12,19 +12,19 @@ type ViewportProps = {
 };
 
 export function Viewport({ children }: ViewportProps) {
-  const store = useReactFlowStoreApi();
+  const { viewportStore } = useReactFlowStoreApi();
   const viewportRef = useRef<HTMLDivElement>(null);
   // seed the transform for first paint and SSR without subscribing, so we don't re-render on pan/zoom
-  const [initialTransform] = useState(() => store.viewportStore.getState().transform);
+  const [initialTransform] = useState(() => viewportStore.getState().transform);
 
   // transform changes every pan/zoom frame, so write it to the DOM directly to keep React out of the hot path
   useIsomorphicLayoutEffect(() => {
     let prevTransform: Transform | null = null;
 
     const applyTransform = () => {
-      const transform = store.viewportStore.getState().transform;
+      const transform = viewportStore.getState().transform;
 
-      // store.subscribe fires on every update, so only touch the DOM when x, y or zoom actually changed
+      // viewportStore.subscribe fires on every update, so only touch the DOM when x, y or zoom actually changed
       if (
         prevTransform &&
         transform[0] === prevTransform[0] &&
@@ -43,8 +43,8 @@ export function Viewport({ children }: ViewportProps) {
 
     applyTransform();
 
-    return store.viewportStore.subscribe(applyTransform);
-  }, [store]);
+    return viewportStore.subscribe(applyTransform);
+  }, [viewportStore]);
 
   return (
     <div

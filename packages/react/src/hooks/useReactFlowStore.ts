@@ -41,23 +41,18 @@ const zustandErrorMessage = errorMessages['error001']('react');
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
 function useReactFlowStore<StateSlice = unknown>(selector: (state: ReactFlowState) => StateSlice) {
-  const store = useContext(StoreContext);
-
-  if (store === null) {
-    throw new Error(zustandErrorMessage);
-  }
-
+  const { store } = useReactFlowStoreApi();
   return useZustandStore(store, selector);
 }
 
 /**
- * In some cases, you might need to access the store directly. This hook returns the store object which can be used on demand to access the state or dispatch actions.
+ * In some cases, you might need to access the stores directly. This hook returns the store APIs which can be used on demand to access state or dispatch actions.
  *
- * @returns The store object.
+ * @returns The main, viewport, connection, nodes, edges, and selection store APIs.
  * @example
  * ```ts
- * const store = useReactFlowStoreApi();
- * const nodes = store.nodesStore.getState().nodes;
+ * const { nodesStore } = useReactFlowStoreApi();
+ * const nodes = nodesStore.getState().nodes;
  * ```
  *
  * @remarks This hook should only be used if there is no other way to access the internal
@@ -68,13 +63,13 @@ function useReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edg
   NodeType,
   EdgeType
 > {
-  const store = useContext(StoreContext);
+  const stores = useContext(StoreContext);
 
-  if (store === null) {
+  if (stores === null) {
     throw new Error(zustandErrorMessage);
   }
 
-  return store as unknown as ReactFlowStoreApi<NodeType, EdgeType>;
+  return stores as unknown as ReactFlowStoreApi<NodeType, EdgeType>;
 }
 
 export function useViewportStore<StateSlice>(selector: (state: ViewportStore) => StateSlice) {

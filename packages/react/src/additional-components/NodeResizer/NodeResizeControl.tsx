@@ -52,7 +52,7 @@ function ResizeControl({
 }: ResizeControlProps) {
   const contextNodeId = useNodeId();
   const id = typeof nodeId === 'string' ? nodeId : contextNodeId;
-  const store = useReactFlowStoreApi();
+  const { store, viewportStore, nodesStore } = useReactFlowStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const isHandleControl = variant === ResizeControlVariant.Handle;
 
@@ -77,8 +77,8 @@ function ResizeControl({
         domNode: resizeControlRef.current,
         nodeId: id,
         getStoreItems: () => {
-          const { nodeLookup } = store.nodesStore.getState();
-          const { transform } = store.viewportStore.getState();
+          const { nodeLookup } = nodesStore.getState();
+          const { transform } = viewportStore.getState();
           const { snapGrid, snapToGrid, nodeOrigin, domNode } = store.getState();
           return {
             nodeLookup,
@@ -91,7 +91,7 @@ function ResizeControl({
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
           const { emitNodeChanges, nodeOrigin } = store.getState();
-          const { nodeLookup, parentLookup } = store.nodesStore.getState();
+          const { nodeLookup, parentLookup } = nodesStore.getState();
           const changes: NodeChange[] = [];
           const nextPosition = { x: change.x, y: change.y };
           const node = nodeLookup.get(id);
@@ -210,6 +210,8 @@ function ResizeControl({
     id,
     resizeDirection,
     store,
+    nodesStore,
+    viewportStore,
   ]);
 
   const positionClassNames = controlPosition.split('-');

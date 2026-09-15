@@ -430,7 +430,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
     };
   });
 
-  return Object.assign(store, { viewportStore, connectionStore, nodesStore, edgesStore, selectionStore });
+  return { store, viewportStore, connectionStore, nodesStore, edgesStore, selectionStore };
 };
 
 export { createStore };

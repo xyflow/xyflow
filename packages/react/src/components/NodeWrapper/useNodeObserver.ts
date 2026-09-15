@@ -20,7 +20,7 @@ export function useNodeObserver({
   hasDimensions: boolean;
   resizeObserver: ResizeObserver | null;
 }) {
-  const store = useReactFlowStoreApi();
+  const { store } = useReactFlowStoreApi();
   const nodeRef = useRef<HTMLDivElement | null>(null);
   const observedNode = useRef<HTMLDivElement | null>(null);
   const prevSourcePosition = useRef(node.sourcePosition);

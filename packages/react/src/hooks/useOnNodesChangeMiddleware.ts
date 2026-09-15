@@ -13,7 +13,7 @@ import type { Edge, Node } from '../types';
 export function experimental_useOnNodesChangeMiddleware<NodeType extends Node = Node>(
   fn: (changes: NodeChange<NodeType>[]) => NodeChange<NodeType>[]
 ) {
-  const store = useReactFlowStoreApi<NodeType, Edge>();
+  const { store } = useReactFlowStoreApi<NodeType, Edge>();
   const [symbol] = useState(() => Symbol());
 
   useEffect(() => {

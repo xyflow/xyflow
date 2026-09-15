@@ -70,7 +70,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const edgeRef = useRef<SVGGElement>(null);
   const [updateHover, setUpdateHover] = useState<boolean>(false);
   const [reconnecting, setReconnecting] = useState<boolean>(false);
-  const store = useReactFlowStoreApi();
+  const { store } = useReactFlowStoreApi();
 
   const {
     zIndex = edge.zIndex,

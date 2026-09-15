@@ -205,9 +205,8 @@ export type SelectionStore = {
   userSelectionRect: SelectionRect | null;
 };
 
-export type ReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge> = StoreApi<
-  ReactFlowState<NodeType, EdgeType>
-> & {
+export type ReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  store: StoreApi<ReactFlowState<NodeType, EdgeType>>;
   viewportStore: StoreApi<ViewportStore>;
   connectionStore: StoreApi<ConnectionStore<NodeType>>;
   nodesStore: StoreApi<NodesStore<NodeType>>;

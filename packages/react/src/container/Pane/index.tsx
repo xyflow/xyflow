@@ -88,7 +88,7 @@ export function Pane({
   children,
 }: PaneProps) {
   const autoPanId = useRef<number>(0);
-  const store = useReactFlowStoreApi();
+  const { store, viewportStore, connectionStore, nodesStore, edgesStore, selectionStore } = useReactFlowStoreApi();
   const { userSelectionActive, elementsSelectable, dragging, panBy, autoPanSpeed } = useReactFlowStore(
     useShallow(selector)
   );
@@ -113,7 +113,7 @@ export function Pane({
     if (
       selectionInProgress.current ||
       connectionEndedOnPane.current ||
-      store.connectionStore.getState().connection.inProgress
+      connectionStore.getState().connection.inProgress
     ) {
       selectionInProgress.current = false;
       connectionEndedOnPane.current = false;
@@ -153,7 +153,7 @@ export function Pane({
     }
 
     const { domNode } = store.getState();
-    const { transform } = store.viewportStore.getState();
+    const { transform } = viewportStore.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
     if (!containerBounds.current) return;
 
@@ -173,7 +173,7 @@ export function Pane({
     const { x, y } = getEventPosition(event.nativeEvent, containerBounds.current);
     const userSelectionStartPosition = pointToRendererPoint({ x, y }, transform);
 
-    store.selectionStore.setState({
+    selectionStore.setState({
       userSelectionRect: {
         width: 0,
         height: 0,
@@ -192,14 +192,14 @@ export function Pane({
 
   // We commit the user selection rectangle to the store on auto-panning or pointer move during selection.
   function commitUserSelectionRect(mouseX: number, mouseY: number): void {
-    const { userSelectionRect } = store.selectionStore.getState();
+    const { userSelectionRect } = selectionStore.getState();
     if (!userSelectionRect) {
       return;
     }
 
-    const { transform } = store.viewportStore.getState();
-    const { nodeLookup } = store.nodesStore.getState();
-    const { edgeLookup, connectionLookup } = store.edgesStore.getState();
+    const { transform } = viewportStore.getState();
+    const { nodeLookup } = nodesStore.getState();
+    const { edgeLookup, connectionLookup } = edgesStore.getState();
     const { emitNodeChanges, emitEdgeChanges, defaultEdgeOptions } = store.getState();
 
     const userStartPosition = { x: userSelectionRect.startX, y: userSelectionRect.startY };
@@ -250,7 +250,7 @@ export function Pane({
       emitEdgeChanges(changes);
     }
 
-    store.selectionStore.setState({ userSelectionRect: nextUserSelectRect });
+    selectionStore.setState({ userSelectionRect: nextUserSelectRect });
     store.setState((state) =>
       state.userSelectionActive && !state.nodesSelectionActive
         ? state
@@ -286,8 +286,8 @@ export function Pane({
   }, []);
 
   const onPointerMove = (event: ReactPointerEvent): void => {
-    const { userSelectionRect } = store.selectionStore.getState();
-    const { transform } = store.viewportStore.getState();
+    const { userSelectionRect } = selectionStore.getState();
+    const { transform } = viewportStore.getState();
     const { resetSelectedElements } = store.getState();
 
     if (!containerBounds.current || !userSelectionRect) {
@@ -321,7 +321,7 @@ export function Pane({
 
   const onPointerUp = (event: ReactPointerEvent) => {
     if (!isSelectionEnabled) {
-      if (event.target === container.current && store.connectionStore.getState().connection.inProgress) {
+      if (event.target === container.current && connectionStore.getState().connection.inProgress) {
         connectionEndedOnPane.current = true;
       }
       return;
@@ -337,16 +337,12 @@ export function Pane({
      * We only want to trigger click functions when in selection mode if
      * the user did not move the mouse.
      */
-    if (
-      !userSelectionActive &&
-      event.target === container.current &&
-      store.selectionStore.getState().userSelectionRect
-    ) {
+    if (!userSelectionActive && event.target === container.current && selectionStore.getState().userSelectionRect) {
       onClick?.(event);
     }
 
     store.setState({ userSelectionActive: false });
-    store.selectionStore.setState({ userSelectionRect: null });
+    selectionStore.setState({ userSelectionRect: null });
 
     if (selectionInProgress.current) {
       onSelectionEnd?.(event);

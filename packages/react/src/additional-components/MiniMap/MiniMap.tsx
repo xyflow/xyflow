@@ -99,7 +99,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
   zoomStep = 1,
   offsetScale = 5,
 }: MiniMapProps<NodeType>) {
-  const store = useReactFlowStoreApi<NodeType>();
+  const { store, viewportStore, nodesStore } = useReactFlowStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
   const { rfId, panZoom, translateExtent, ariaLabelConfig } = useReactFlowStore(useShallow(configSelector));
   const viewport = useViewportStore((s) => s);
@@ -134,7 +134,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
       minimapInstance.current = XYMinimap({
         domNode: svg.current,
         panZoom: currentPanZoom,
-        getTransform: () => store.viewportStore.getState().transform,
+        getTransform: () => viewportStore.getState().transform,
         getViewScale: () => viewScaleRef.current,
       });
 
@@ -142,7 +142,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         minimapInstance.current?.destroy();
       };
     }
-  }, [panZoom, store]);
+  }, [panZoom, store, viewportStore]);
 
   useEffect(() => {
     minimapInstance.current?.update({
@@ -165,13 +165,13 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
   const nodeClickHandler = useCallback(
     (event: MouseEvent, nodeId: string) => {
-      const internalNode = store.nodesStore.getState().nodeLookup.get(nodeId)!;
+      const internalNode = nodesStore.getState().nodeLookup.get(nodeId)!;
 
       if (internalNode && onNodeClick) {
         onNodeClick(event, internalNode.internals.userNode);
       }
     },
-    [onNodeClick, store]
+    [onNodeClick, nodesStore]
   );
 
   const onSvgNodeClick = onNodeClick ? nodeClickHandler : undefined;
