@@ -1,7 +1,5 @@
 import { useEdgesStore } from './useReactFlowStore';
-import type { Node, Edge, EdgesStore } from '../types';
-import { useReactFlow } from './useReactFlow';
-import { useMemo } from 'react';
+import type { Edge, EdgesStore } from '../types';
 
 const edgesSelector = (state: EdgesStore) => state.edges;
 
@@ -49,10 +47,7 @@ export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
  *```
  */
 export function useEdge<EdgeType extends Edge = Edge>(id: string): EdgeType | undefined {
-  const { getEdge } = useReactFlow<Node, EdgeType>();
-  useEdgesStore(edgesSelector);
+  const edge = useEdgesStore((state) => state.edgeLookup.get(id)) as EdgeType | undefined;
 
-  const edge = getEdge(id);
-
-  return useMemo(() => edge, [edge]);
+  return edge;
 }

@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   pointToRendererPoint,
   getViewportForBounds,
@@ -20,111 +19,106 @@ import type { ViewportHelperFunctions } from '../types';
 const useViewportHelper = (): ViewportHelperFunctions => {
   const { store, viewportStore } = useReactFlowStoreApi();
 
-  return useMemo<ViewportHelperFunctions>(() => {
-    return {
-      zoomIn: async (options) => {
-        const { panZoom } = store.getState();
+  return {
+    zoomIn: async (options) => {
+      const { panZoom } = store.getState();
 
-        return panZoom ? panZoom.scaleBy(1.2, options) : false;
-      },
-      zoomOut: async (options) => {
-        const { panZoom } = store.getState();
+      return panZoom ? panZoom.scaleBy(1.2, options) : false;
+    },
+    zoomOut: async (options) => {
+      const { panZoom } = store.getState();
 
-        return panZoom ? panZoom.scaleBy(1 / 1.2, options) : false;
-      },
-      zoomTo: async (zoomLevel, options) => {
-        const { panZoom } = store.getState();
+      return panZoom ? panZoom.scaleBy(1 / 1.2, options) : false;
+    },
+    zoomTo: async (zoomLevel, options) => {
+      const { panZoom } = store.getState();
 
-        return panZoom ? panZoom.scaleTo(zoomLevel, options) : false;
-      },
-      getZoom: () => viewportStore.getState().transform[2],
-      setViewport: async (viewport, options) => {
-        const {
-          transform: [tX, tY, tZoom],
-        } = viewportStore.getState();
-        const { panZoom } = store.getState();
+      return panZoom ? panZoom.scaleTo(zoomLevel, options) : false;
+    },
+    getZoom: () => viewportStore.getState().transform[2],
+    setViewport: async (viewport, options) => {
+      const {
+        transform: [tX, tY, tZoom],
+      } = viewportStore.getState();
+      const { panZoom } = store.getState();
 
-        if (!panZoom) {
-          return false;
-        }
+      if (!panZoom) {
+        return false;
+      }
 
-        await panZoom.setViewport(
-          {
-            x: viewport.x ?? tX,
-            y: viewport.y ?? tY,
-            zoom: viewport.zoom ?? tZoom,
-          },
-          options
-        );
+      await panZoom.setViewport(
+        {
+          x: viewport.x ?? tX,
+          y: viewport.y ?? tY,
+          zoom: viewport.zoom ?? tZoom,
+        },
+        options
+      );
 
-        return true;
-      },
-      getViewport: () => {
-        const [x, y, zoom] = viewportStore.getState().transform;
-        return { x, y, zoom };
-      },
-      setCenter: async (x, y, options) => {
-        return store.getState().setCenter(x, y, options);
-      },
-      fitBounds: async (bounds, options) => {
-        const { width, height } = viewportStore.getState();
-        const { minZoom, maxZoom, panZoom } = store.getState();
-        const viewport = getViewportForBounds(
-          bounds,
-          width,
-          height,
-          minZoom,
-          maxZoom,
-          options?.padding ?? defaultFitViewPadding
-        );
+      return true;
+    },
+    getViewport: () => {
+      const [x, y, zoom] = viewportStore.getState().transform;
+      return { x, y, zoom };
+    },
+    setCenter: async (x, y, options) => {
+      return store.getState().setCenter(x, y, options);
+    },
+    fitBounds: async (bounds, options) => {
+      const { width, height } = viewportStore.getState();
+      const { minZoom, maxZoom, panZoom } = store.getState();
+      const viewport = getViewportForBounds(
+        bounds,
+        width,
+        height,
+        minZoom,
+        maxZoom,
+        options?.padding ?? defaultFitViewPadding
+      );
 
-        if (!panZoom) {
-          return false;
-        }
+      if (!panZoom) {
+        return false;
+      }
 
-        await panZoom.setViewport(viewport, options);
+      await panZoom.setViewport(viewport, options);
 
-        return true;
-      },
-      screenToFlowPosition: (
-        clientPosition: XYPosition,
-        options: { snapToGrid?: boolean; snapGrid?: SnapGrid } = {}
-      ) => {
-        const { transform } = viewportStore.getState();
-        const { snapGrid, snapToGrid, domNode } = store.getState();
+      return true;
+    },
+    screenToFlowPosition: (clientPosition: XYPosition, options: { snapToGrid?: boolean; snapGrid?: SnapGrid } = {}) => {
+      const { transform } = viewportStore.getState();
+      const { snapGrid, snapToGrid, domNode } = store.getState();
 
-        if (!domNode) {
-          return clientPosition;
-        }
+      if (!domNode) {
+        return clientPosition;
+      }
 
-        const { x: domX, y: domY } = domNode.getBoundingClientRect();
-        const correctedPosition = {
-          x: clientPosition.x - domX,
-          y: clientPosition.y - domY,
-        };
-        const _snapGrid = options.snapGrid ?? snapGrid;
-        const _snapToGrid = options.snapToGrid ?? snapToGrid;
+      const { x: domX, y: domY } = domNode.getBoundingClientRect();
+      const correctedPosition = {
+        x: clientPosition.x - domX,
+        y: clientPosition.y - domY,
+      };
+      const _snapGrid = options.snapGrid ?? snapGrid;
+      const _snapToGrid = options.snapToGrid ?? snapToGrid;
 
-        return pointToRendererPoint(correctedPosition, transform, _snapToGrid, _snapGrid);
-      },
-      flowToScreenPosition: (flowPosition: XYPosition) => {
-        const { transform } = viewportStore.getState();
-        const { domNode } = store.getState();
+      return pointToRendererPoint(correctedPosition, transform, _snapToGrid, _snapGrid);
+    },
+    flowToScreenPosition: (flowPosition: XYPosition) => {
+      const { transform } = viewportStore.getState();
+      const { domNode } = store.getState();
 
-        if (!domNode) {
-          return flowPosition;
-        }
+      if (!domNode) {
+        return flowPosition;
+      }
 
-        const { x: domX, y: domY } = domNode.getBoundingClientRect();
-        const rendererPosition = rendererPointToPoint(flowPosition, transform);
+      const { x: domX, y: domY } = domNode.getBoundingClientRect();
+      const rendererPosition = rendererPointToPoint(flowPosition, transform);
 
-        return {
-          x: rendererPosition.x + domX,
-          y: rendererPosition.y + domY,
-        };
-      },
-    };
-  }, []);
+      return {
+        x: rendererPosition.x + domX,
+        y: rendererPosition.y + domY,
+      };
+    },
+  };
 };
 
 export default useViewportHelper;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   areConnectionMapsEqual,
   errorMessages,
@@ -51,14 +51,11 @@ export function useNodeConnections({
 
   const prevConnections = useRef<Map<string, NodeConnection> | null>(null);
 
-  const selector = useCallback(
-    (state: EdgesStore) => {
-      return state.connectionLookup.get(
-        `${currentNodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
-      );
-    },
-    [currentNodeId, handleType, handleId]
-  );
+  const selector = (state: EdgesStore) => {
+    return state.connectionLookup.get(
+      `${currentNodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
+    );
+  };
 
   const connections = useEdgesStore(useCustomDiff(selector, areConnectionMapsEqual));
 
@@ -73,5 +70,5 @@ export function useNodeConnections({
     prevConnections.current = connections ?? new Map<string, NodeConnection>();
   }, [connections, onConnect, onDisconnect]);
 
-  return useMemo(() => Array.from(connections?.values() ?? []), [connections]);
+  return Array.from(connections?.values() ?? []);
 }
