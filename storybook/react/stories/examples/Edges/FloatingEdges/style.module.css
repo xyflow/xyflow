@@ -1,0 +1,9 @@
+.floatingedges {
+  flex-direction: column;
+  display: flex;
+  height: 100%;
+}
+
+.floatingedges :global .react-flow__handle {
+  opacity: 0;
+}

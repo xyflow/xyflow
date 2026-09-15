@@ -22,7 +22,15 @@
       "dependsOn": ["^build"],
       "outputs": []
     },
-    "test": {
+    "storybook": {
+      "cache": false,
+      "persistent": true
+    },
+    "build-storybook": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"]
+    },
+    "test-storybook": {
       "dependsOn": ["^build"],
       "outputs": []
     }

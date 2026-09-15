@@ -12,4 +12,6 @@ stats.html
 .log
 .turbo
 .rollup.cache
+*storybook.log
+storybook-static
 *.tgz

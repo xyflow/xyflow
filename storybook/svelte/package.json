@@ -1,0 +1,33 @@
+{
+  "name": "storybook-svelte",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "storybook": "storybook dev -p 6007",
+    "storybook:serve": "storybook dev -p 6007 --no-open",
+    "build-storybook": "storybook build",
+    "test-storybook": "vitest run --project=storybook-svelte"
+  },
+  "dependencies": {
+    "@xyflow/svelte": "workspace:*",
+    "@xyflow/system": "workspace:*",
+    "storybook-shared": "workspace:*",
+    "svelte": "catalog:"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-a11y": "^10.4.6",
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/addon-vitest": "^10.4.6",
+    "@storybook/svelte-vite": "^10.4.6",
+    "@sveltejs/vite-plugin-svelte": "catalog:",
+    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.10",
+    "playwright": "^1.61.1",
+    "storybook": "^10.4.6",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "^4.1.10"
+  }
+}

@@ -1,0 +1,31 @@
+.Timer {
+  position: absolute;
+  bottom: 0;
+  transition-duration: 0.3s;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  font-size: 1.5rem;
+  z-index: 999;
+  background: linear-gradient(#fff, #fff, #f5f5f5);
+  padding: 0.8rem 1.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.Timer.show {
+  transform: translate(-50%, 0%) translateY(-15px);
+}
+
+.progress {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  background: linear-gradient(to right, #42df96, #16dfed);
+}
+
+.Timer.show .progress {
+  display: block;
+}

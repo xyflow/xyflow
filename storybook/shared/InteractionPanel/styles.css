@@ -1,0 +1,9 @@
+.interaction-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 280px;
+}
+.interaction-highlight {
+  outline: 3px solid #6366f1;
+}
