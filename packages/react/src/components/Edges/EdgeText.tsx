@@ -1,4 +1,4 @@
-import { memo, useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import cc from 'classcat';
 import type { Rect } from '@xyflow/system';
 
@@ -99,4 +99,4 @@ EdgeTextComponent.displayName = 'EdgeText';
  * }
  *```
  */
-export const EdgeText = memo(EdgeTextComponent);
+export const EdgeText = EdgeTextComponent;

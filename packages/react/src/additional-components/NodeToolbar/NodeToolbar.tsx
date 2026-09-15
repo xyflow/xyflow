@@ -1,4 +1,4 @@
-import { useCallback, CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 import cc from 'classcat';
 import { Position, getNodeToolbarTransform } from '@xyflow/system';
 
@@ -61,22 +61,19 @@ export function NodeToolbar({
   const contextNodeId = useNodeId();
   const { getNodesBounds } = useReactFlow();
 
-  const nodesSelector = useCallback(
-    (state: NodesStore): InternalNode[] => {
-      const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
+  const nodesSelector = (state: NodesStore): InternalNode[] => {
+    const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
 
-      const internalNodes: InternalNode[] = [];
-      for (const id of nodeIds) {
-        const node = state.nodeLookup.get(id);
-        if (node) {
-          internalNodes.push(node);
-        }
+    const internalNodes: InternalNode[] = [];
+    for (const id of nodeIds) {
+      const node = state.nodeLookup.get(id);
+      if (node) {
+        internalNodes.push(node);
       }
+    }
 
-      return internalNodes;
-    },
-    [nodeId, contextNodeId]
-  );
+    return internalNodes;
+  };
   const nodes = useNodesStore(useShallow(nodesSelector));
   const selectedNodesCount = useNodesStore(storeSelector);
   const { x, y, zoom } = useViewport();

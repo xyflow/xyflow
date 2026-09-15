@@ -1,4 +1,4 @@
-import { ComponentType, memo, useCallback } from 'react';
+import { ComponentType, memo } from 'react';
 import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 
 import { useShallow, useNodesStore } from '../../hooks/useReactFlowStore';
@@ -80,28 +80,25 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   onClick: MiniMapNodesProps['onClick'];
   shapeRendering: string;
 }) {
-  const selector = useCallback(
-    (s: NodesStore) => {
-      const node = s.nodeLookup.get(id);
+  const selector = (s: NodesStore) => {
+    const node = s.nodeLookup.get(id);
 
-      if (!node) {
-        return { node: undefined, x: 0, y: 0, width: 0, height: 0 };
-      }
+    if (!node) {
+      return { node: undefined, x: 0, y: 0, width: 0, height: 0 };
+    }
 
-      const userNode = node.internals.userNode as NodeType;
-      const { x, y } = node.internals.positionAbsolute;
-      const { width, height } = getNodeDimensions(userNode);
+    const userNode = node.internals.userNode as NodeType;
+    const { x, y } = node.internals.positionAbsolute;
+    const { width, height } = getNodeDimensions(userNode);
 
-      return {
-        node: userNode,
-        x,
-        y,
-        width,
-        height,
-      };
-    },
-    [id]
-  );
+    return {
+      node: userNode,
+      x,
+      y,
+      width,
+      height,
+    };
+  };
 
   const { node, x, y, width, height } = useNodesStore(useShallow(selector));
 
@@ -129,6 +126,8 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   );
 }
 
+// Keep per-node bailouts when the compiler rebuilds the list after nodes are added or removed.
 const NodeComponentWrapper = memo(NodeComponentWrapperInner) as typeof NodeComponentWrapperInner;
 
+// MiniMap's render-time ref update prevents compilation, so it cannot cache this child during pan/zoom.
 export default memo(MiniMapNodes) as typeof MiniMapNodes;

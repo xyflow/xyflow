@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import cc from 'classcat';
 
 import { useReactFlowStore, useViewportStore, useShallow, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
@@ -151,4 +150,4 @@ ControlsComponent.displayName = 'Controls';
  * @remarks To extend or customise the controls, you can use the [`<ControlButton />`](/api-reference/components/control-button) component
  *
  */
-export const Controls = memo(ControlsComponent);
+export const Controls = ControlsComponent;

@@ -1,9 +1,9 @@
 import {
+  memo,
   type HTMLAttributes,
   type MouseEvent as ReactMouseEvent,
   type TouchEvent as ReactTouchEvent,
   type ForwardedRef,
-  memo,
 } from 'react';
 import cc from 'classcat';
 import {
@@ -299,4 +299,6 @@ function HandleComponent(
  *};
  *```
  */
+// Custom nodes may recreate their handles on every drag update. Skip unchanged handles
+// before running their hooks, even when the custom node is not compiled.
 export const Handle = memo(fixedForwardRef(HandleComponent));

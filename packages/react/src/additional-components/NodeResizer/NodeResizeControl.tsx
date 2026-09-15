@@ -1,4 +1,4 @@
-import { useRef, useEffect, memo, useCallback } from 'react';
+import { useRef, useEffect } from 'react';
 import cc from 'classcat';
 import {
   XYResizer,
@@ -56,12 +56,9 @@ function ResizeControl({
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const isHandleControl = variant === ResizeControlVariant.Handle;
 
-  const selector = useCallback(
-    (s: ViewportStore) => {
-      return scaleSelector(isHandleControl && autoScale)(s);
-    },
-    [isHandleControl, autoScale]
-  );
+  const selector = (s: ViewportStore) => {
+    return scaleSelector(isHandleControl && autoScale)(s);
+  };
   const scale = useViewportStore(useShallow(selector));
 
   const resizer = useRef<XYResizerInstance | null>(null);
@@ -215,6 +212,7 @@ function ResizeControl({
   ]);
 
   const positionClassNames = controlPosition.split('-');
+  const colorProperty = isHandleControl ? 'backgroundColor' : 'borderColor';
 
   return (
     <div
@@ -223,7 +221,7 @@ function ResizeControl({
       style={{
         ...style,
         scale,
-        ...(color && { [isHandleControl ? 'backgroundColor' : 'borderColor']: color }),
+        ...(color && { [colorProperty]: color }),
       }}
     >
       {children}
@@ -240,4 +238,4 @@ export function ResizeControlLine(props: ResizeControlLineProps) {
  * @public
  *
  */
-export const NodeResizeControl = memo(ResizeControl);
+export const NodeResizeControl = ResizeControl;

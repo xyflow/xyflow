@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode, type ReactPortal } from 'react';
+import { type ReactNode, type ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
 import type { ReactFlowState } from '../../types';
@@ -9,7 +9,7 @@ const selector = (state: ReactFlowState) => state.domNode;
 export function NodeToolbarPortal({ children }: { children: ReactNode }): ReactPortal | null {
   const domNode = useReactFlowStore(selector);
 
-  const wrapperRef = useMemo(() => domNode?.querySelector('.react-flow__renderer'), [domNode]);
+  const wrapperRef = domNode?.querySelector('.react-flow__renderer');
 
   if (!wrapperRef) {
     return null;

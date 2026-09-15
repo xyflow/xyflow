@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode, type ReactPortal } from 'react';
+import { type ReactNode, type ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
 import { useReactFlowStore } from '../../hooks/useReactFlowStore';
@@ -33,7 +33,7 @@ const selector = (s: ReactFlowState) => s.domNode;
  */
 export function ViewportPortal({ children }: { children: ReactNode }): ReactPortal | null {
   const domNode = useReactFlowStore(selector);
-  const viewPortalDiv = useMemo(() => domNode?.querySelector('.react-flow__viewport-portal'), [domNode]);
+  const viewPortalDiv = domNode?.querySelector('.react-flow__viewport-portal');
 
   if (!viewPortalDiv) {
     return null;

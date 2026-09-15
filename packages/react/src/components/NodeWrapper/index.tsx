@@ -1,4 +1,4 @@
-import { type MouseEvent, type KeyboardEvent, memo, useCallback } from 'react';
+import { type MouseEvent, type KeyboardEvent, memo } from 'react';
 import cc from 'classcat';
 import {
   elementSelectionKeys,
@@ -53,17 +53,14 @@ function NodeWrapper<NodeType extends Node>({
   nodeClickDistance,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const selector = useCallback(
-    (s: NodesStore) => {
-      const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
+  const selector = (s: NodesStore) => {
+    const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
 
-      return {
-        node,
-        internals: node.internals,
-      };
-    },
-    [id]
-  );
+    return {
+      node,
+      internals: node.internals,
+    };
+  };
   const { node, internals } = useNodesStore(useCustomDiff(selector, areEqual));
 
   let nodeType = node.type || 'default';
@@ -267,4 +264,5 @@ function NodeWrapper<NodeType extends Node>({
   );
 }
 
+// The compiler caches the nodes list as a whole. Keep per-node bailouts when that list changes.
 export default memo(NodeWrapper) as typeof NodeWrapper;
