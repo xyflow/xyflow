@@ -59,6 +59,19 @@ test.describe('Edges', () => {
       await expect(edge).not.toBeVisible();
     });
 
+    test('hiding a connected node hides its edge', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'react', 'This regression only affects React Flow');
+
+      await page.goto('/examples/update-node');
+
+      const edge = page.locator('[data-id="e1-2"]');
+      await expect(edge).toBeAttached();
+
+      await page.getByRole('checkbox').check();
+
+      await expect(edge).not.toBeAttached();
+    });
+
     test('animated=true add "animated" class', async ({ page }) => {
       const edge = page.locator('[data-id="animated-edge"]');
 
