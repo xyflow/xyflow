@@ -344,6 +344,13 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    */
   selectionOnDrag?: boolean;
   /**
+   * When starting a new selection box, this controls whether the previously selected elements
+   * are deselected. Set to `false` to keep the existing selection and add the newly boxed
+   * elements to it.
+   * @default true
+   */
+  deselectOnSelection?: boolean;
+  /**
    * When set to `"partial"`, when the user creates a selection box by click and dragging nodes that
    * are only partially in the box are still selected.
    * @default 'full'
