@@ -1,7 +1,7 @@
 import { type DistributivePick, shallowNodeData } from '@xyflow/system';
 
 import { useCustomDiff } from './useReactFlowStore';
-import { useNodes } from './useNodes';
+import { useInternalNodes } from './useNodes';
 import type { Node } from '../types';
 
 /**
@@ -33,7 +33,7 @@ export function useNodesData<NodeType extends Node = Node>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: string | string[]): any {
   const isSingleId = typeof nodeIds === 'string';
-  const nodes = useNodes(isSingleId ? [nodeIds] : nodeIds);
+  const nodes = useInternalNodes(isSingleId ? [nodeIds] : nodeIds);
   const selector = (nodes: Node[]) => {
     const data = nodes.map(({ id, type, data }) => ({ id, type, data }));
     return isSingleId ? (data[0] ?? null) : data;

@@ -34,7 +34,7 @@ export { useNodeConnections } from './hooks/useNodeConnections';
 export { useNodesData } from './hooks/useNodesData';
 export { useConnection } from './hooks/useConnection';
 export { useNodeId } from './contexts/NodeIdContext';
-export { useNodes, useNode, useInternalNode } from './hooks/useNodes';
+export { useNodes, useNode, useInternalNode, useInternalNodes } from './hooks/useNodes';
 export { useEdges, useEdge } from './hooks/useEdges';
 
 export { experimental_useOnNodesChangeMiddleware } from './hooks/useOnNodesChangeMiddleware';

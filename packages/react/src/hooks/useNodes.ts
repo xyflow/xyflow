@@ -1,18 +1,15 @@
 import { useCallback, useSyncExternalStore } from 'react';
 
-import { useReactFlowStoreApi, useShallow } from './useReactFlowStore';
+import { useNodesStore, useReactFlowStoreApi, useShallow } from './useReactFlowStore';
 import type { InternalNode, Node } from '../types';
 
 /**
- * This hook returns the current nodes, optionally limited to an array of IDs.
- * When IDs are provided, it subscribes only to those nodes. Missing IDs are omitted
- * and results follow the iteration order of the IDs. An empty collection returns no nodes.
- * An optional selector can select a slice; results are compared shallowly.
+ * This hook returns an array of the current nodes. Components that use this hook
+ * will re-render **whenever any node changes**, including when a node is selected
+ * or moved.
  *
  * @public
- * @param ids - Optional IDs to subscribe to. Omit to subscribe to all nodes.
- * @param selector - Optional selector whose result is compared shallowly.
- * @returns The matching nodes, or the selected slice.
+ * @returns An array of all nodes currently in the flow.
  *
  * @example
  * ```jsx
@@ -25,38 +22,10 @@ import type { InternalNode, Node } from '../types';
  *}
  *```
  */
-export function useNodes<NodeType extends Node = Node, StateSlice = NodeType[]>(
-  ids?: readonly string[],
-  selector?: (nodes: NodeType[]) => StateSlice
-): StateSlice {
-  const { store, nodesStore } = useReactFlowStoreApi<NodeType>();
-  // Compare IDs by value so inline arrays do not recreate subscriptions on every render.
-  const itemIds = useShallow((value: typeof ids) => value?.slice())(ids);
+export function useNodes<NodeType extends Node = Node>(): NodeType[] {
+  const { nodes } = useNodesStore();
 
-  const subscribe = useCallback(
-    (onStoreChange: () => void) =>
-      itemIds === undefined
-        ? nodesStore.subscribe(onStoreChange)
-        : store.getState().pubSub.subscribeToNodes(itemIds, onStoreChange),
-    [store, nodesStore, itemIds]
-  );
-
-  const selectSnapshot = useShallow(() => {
-    const state = nodesStore.getState();
-    const nodes =
-      itemIds === undefined
-        ? state.nodes
-        : itemIds.flatMap((id) => {
-            const node = state.nodeLookup.get(id)?.internals.userNode;
-            return node ? [node] : [];
-          });
-
-    return selector ? selector(nodes) : (nodes as StateSlice);
-  });
-
-  const getSnapshot = () => selectSnapshot(undefined);
-
-  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  return nodes as NodeType[];
 }
 
 /**
@@ -133,6 +102,43 @@ export function useInternalNode<NodeType extends Node = Node>(id: string): Inter
     () => nodesStore.getState().nodeLookup.get(id) as InternalNode<NodeType> | undefined,
     [nodesStore, id]
   );
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+}
+
+/**
+ * This hook returns set of specific internal nodes and subscribes
+ * only to those nodes. Missing IDs are omitted and duplicate IDs are ignored.
+ * Reordering the IDs preserves the previous set and result order.
+ *
+ * @public
+ * @param ids - An array of node IDs to observe. An empty array returns no nodes.
+ * @returns The matching internal nodes.
+ */
+export function useInternalNodes<NodeType extends Node = Node>(ids: readonly string[]): InternalNode<NodeType>[] {
+  const { store, nodesStore } = useReactFlowStoreApi<NodeType>();
+  const nodeIds = useShallow((value: readonly string[]) => new Set(value))(ids);
+
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => store.getState().pubSub.subscribeToNodes(nodeIds, onStoreChange),
+    [store, nodeIds]
+  );
+
+  const selectSnapshot = useShallow(() => {
+    const { nodeLookup } = nodesStore.getState();
+    const nodes: InternalNode<NodeType>[] = [];
+
+    for (const id of nodeIds) {
+      const node = nodeLookup.get(id);
+      if (node) {
+        nodes.push(node);
+      }
+    }
+
+    return nodes;
+  });
+
+  const getSnapshot = () => selectSnapshot(undefined);
 
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }
