@@ -1,7 +1,8 @@
 import { type DistributivePick, shallowNodeData } from '@xyflow/system';
 
-import { useCustomDiff, useNodesStore } from './useReactFlowStore';
-import type { Node, NodesStore } from '../types';
+import { useCustomDiff } from './useReactFlowStore';
+import { useNodes } from './useNodes';
+import type { Node } from '../types';
 
 /**
  * This hook lets you subscribe to changes of a specific nodes `data` object.
@@ -31,25 +32,12 @@ export function useNodesData<NodeType extends Node = Node>(
 ): DistributivePick<NodeType, 'id' | 'type' | 'data'>[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: string | string[]): any {
-  const selector = (s: NodesStore) => {
-    const data = [];
-    const isArrayOfIds = Array.isArray(nodeIds);
-    const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
-
-    for (const nodeId of _nodeIds) {
-      const node = s.nodeLookup.get(nodeId);
-      if (node) {
-        data.push({
-          id: node.id,
-          type: node.type,
-          data: node.data,
-        });
-      }
-    }
-
-    return isArrayOfIds ? data : (data[0] ?? null);
+  const isSingleId = typeof nodeIds === 'string';
+  const nodes = useNodes(isSingleId ? [nodeIds] : nodeIds);
+  const selector = (nodes: Node[]) => {
+    const data = nodes.map(({ id, type, data }) => ({ id, type, data }));
+    return isSingleId ? (data[0] ?? null) : data;
   };
-  const nodesData = useNodesStore(useCustomDiff(selector, shallowNodeData));
 
-  return nodesData;
+  return useCustomDiff(selector, shallowNodeData)(nodes);
 }

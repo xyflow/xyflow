@@ -29,12 +29,22 @@ export class PubSub {
     return this.subscribe(this.nodeListeners, id, onStoreChange);
   }
 
+  subscribeToNodes(ids: readonly string[] | ReadonlySet<string>, onStoreChange: Listener) {
+    const unsubscribes = Array.from(new Set(ids), (id) => this.subscribeToNode(id, onStoreChange));
+    return () => unsubscribes.forEach((unsubscribe) => unsubscribe());
+  }
+
   publishNodes(ids: Set<string>) {
     this.notify(this.nodeListeners, ids);
   }
 
   subscribeToEdge(id: string, onStoreChange: Listener) {
     return this.subscribe(this.edgeListeners, id, onStoreChange);
+  }
+
+  subscribeToEdges(ids: readonly string[] | ReadonlySet<string>, onStoreChange: Listener) {
+    const unsubscribes = Array.from(new Set(ids), (id) => this.subscribeToEdge(id, onStoreChange));
+    return () => unsubscribes.forEach((unsubscribe) => unsubscribe());
   }
 
   publishEdges(ids: Set<string>) {

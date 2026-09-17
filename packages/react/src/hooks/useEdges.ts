@@ -1,14 +1,18 @@
 import { useCallback, useSyncExternalStore } from 'react';
 
-import { useEdgesStore, useReactFlowStoreApi } from './useReactFlowStore';
-import type { Edge } from '../types';
+import { useReactFlowStoreApi, useShallow } from './useReactFlowStore';
+import type { Edge, Node } from '../types';
 
 /**
- * This hook returns an array of the current edges. Components that use this hook
- * will re-render **whenever any edge changes**.
+ * This hook returns the current edges, optionally limited to an array of IDs.
+ * When IDs are provided, it subscribes only to those edges. Missing IDs are omitted
+ * and results follow the iteration order of the IDs. An empty collection returns no edges.
+ * An optional selector can select a slice; results are compared shallowly.
  *
  * @public
- * @returns An array of all edges currently in the flow.
+ * @param ids - Optional IDs to subscribe to. Omit to subscribe to all edges.
+ * @param selector - Optional selector whose result is compared shallowly.
+ * @returns The matching edges, or the selected slice.
  *
  * @example
  * ```tsx
@@ -21,10 +25,38 @@ import type { Edge } from '../types';
  *}
  *```
  */
-export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
-  const { edges } = useEdgesStore();
+export function useEdges<EdgeType extends Edge = Edge, StateSlice = EdgeType[]>(
+  ids?: readonly string[],
+  selector?: (edges: EdgeType[]) => StateSlice
+): StateSlice {
+  const { store, edgesStore } = useReactFlowStoreApi<Node, EdgeType>();
+  // Compare IDs by value so inline arrays do not recreate subscriptions on every render.
+  const itemIds = useShallow((value: typeof ids) => value?.slice())(ids);
 
-  return edges as EdgeType[];
+  const subscribe = useCallback(
+    (onStoreChange: () => void) =>
+      itemIds === undefined
+        ? edgesStore.subscribe(onStoreChange)
+        : store.getState().pubSub.subscribeToEdges(itemIds, onStoreChange),
+    [store, edgesStore, itemIds]
+  );
+
+  const selectSnapshot = useShallow(() => {
+    const state = edgesStore.getState();
+    const edges =
+      itemIds === undefined
+        ? state.edges
+        : itemIds.flatMap((id) => {
+            const edge = state.edgeLookup.get(id);
+            return edge ? [edge] : [];
+          });
+
+    return selector ? selector(edges) : (edges as StateSlice);
+  });
+
+  const getSnapshot = () => selectSnapshot(undefined);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }
 
 /**
