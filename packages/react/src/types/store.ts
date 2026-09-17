@@ -1,4 +1,5 @@
 import type { StoreApi } from 'zustand';
+import type { PubSub } from '../store/pubsub';
 import {
   ConnectionMode,
   withResolvers,
@@ -53,6 +54,7 @@ import type {
 } from '.';
 
 export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  pubSub: PubSub;
   rfId: string;
   onNodesChange: OnNodesChange<NodeType> | null;
   onEdgesChange: OnEdgesChange<EdgeType> | null;

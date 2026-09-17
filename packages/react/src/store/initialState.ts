@@ -33,6 +33,8 @@ import type {
   SelectionStore,
 } from '../types';
 
+import { PubSub } from './pubsub';
+
 const getInitialState = ({
   nodes,
   edges,
@@ -155,6 +157,7 @@ const getInitialState = ({
       zIndexMode,
       onNodesChangeMiddlewareMap: new Map(),
       onEdgesChangeMiddlewareMap: new Map(),
+      pubSub: new PubSub(),
     },
     viewportStore: {
       paneDragging: false,

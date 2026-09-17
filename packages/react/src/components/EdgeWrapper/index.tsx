@@ -1,4 +1,4 @@
-import { useState, useRef, type KeyboardEvent, JSX, memo } from 'react';
+import { useState, useRef, useMemo, type KeyboardEvent, JSX, memo } from 'react';
 import cc from 'classcat';
 import {
   getMarkerId,
@@ -8,13 +8,9 @@ import {
   getElevatedEdgeZIndex,
 } from '@xyflow/system';
 
-import {
-  useReactFlowStoreApi,
-  useReactFlowStore,
-  useNodesStore,
-  useEdgesStore,
-  useShallow,
-} from '../../hooks/useReactFlowStore';
+import { useInternalNode } from '../../hooks/useNodes';
+import { useEdge } from '../../hooks/useEdges';
+import { useReactFlowStoreApi, useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
@@ -41,7 +37,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   onError,
   disableKeyboardA11y,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
-  let edge = useEdgesStore((s) => s.edgeLookup.get(id)!) as EdgeType;
+  let edge = useEdge<EdgeType>(id)!;
   const { connectionMode, elevateEdgesOnSelect, zIndexMode, defaultEdgeOptions } = useReactFlowStore();
 
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
@@ -66,6 +62,9 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const [reconnecting, setReconnecting] = useState<boolean>(false);
   const { store } = useReactFlowStoreApi();
 
+  const sourceNode = useInternalNode(edge.source);
+  const targetNode = useInternalNode(edge.target);
+
   const defaultZIndex = edge.zIndex;
   const {
     zIndex = defaultZIndex,
@@ -75,40 +74,35 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
     targetY,
     sourcePosition,
     targetPosition,
-  } = useNodesStore(
-    useShallow((store) => {
-      const sourceNode = store.nodeLookup.get(edge.source);
-      const targetNode = store.nodeLookup.get(edge.target);
+  } = useMemo(() => {
+    if (!sourceNode || !targetNode) {
+      return nullPosition;
+    }
 
-      if (!sourceNode || !targetNode) {
-        return nullPosition;
-      }
+    const edgePosition = getEdgePosition({
+      id,
+      sourceNode,
+      targetNode,
+      sourceHandle: edge.sourceHandle || null,
+      targetHandle: edge.targetHandle || null,
+      connectionMode,
+      onError,
+    });
 
-      const edgePosition = getEdgePosition({
-        id,
-        sourceNode,
-        targetNode,
-        sourceHandle: edge.sourceHandle || null,
-        targetHandle: edge.targetHandle || null,
-        connectionMode,
-        onError,
-      });
+    const zIndex = getElevatedEdgeZIndex({
+      selected: edge.selected,
+      zIndex: edge.zIndex,
+      sourceNode,
+      targetNode,
+      elevateOnSelect: elevateEdgesOnSelect,
+      zIndexMode,
+    });
 
-      const zIndex = getElevatedEdgeZIndex({
-        selected: edge.selected,
-        zIndex: edge.zIndex,
-        sourceNode,
-        targetNode,
-        elevateOnSelect: elevateEdgesOnSelect,
-        zIndexMode,
-      });
-
-      return {
-        ...(edgePosition || nullPosition),
-        zIndex,
-      };
-    })
-  );
+    return {
+      ...(edgePosition || nullPosition),
+      zIndex,
+    };
+  }, [sourceNode, targetNode, edge, id, onError, connectionMode, elevateEdgesOnSelect, zIndexMode]);
 
   const markerStartUrl = edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId)}')` : undefined;
 
