@@ -68,6 +68,12 @@ export class PubSub {
     this.notify(this.handleListeners, notifyHandles);
   }
 
+  reset() {
+    this.notifyAll(this.nodeListeners);
+    this.notifyAll(this.edgeListeners);
+    this.notifyAll(this.handleListeners);
+  }
+
   private subscribe(listeners: ListenerMap, id: string, onStoreChange: Listener): () => void {
     let idListeners = listeners.get(id);
 

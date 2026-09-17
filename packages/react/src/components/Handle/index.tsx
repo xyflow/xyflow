@@ -194,6 +194,7 @@ function HandleComponent(
     const {
       onClickConnectStart,
       onClickConnectEnd,
+      updateConnectionClickStart,
       connectionMode,
       isValidConnection: isValidConnectionStore,
       lib,
@@ -208,8 +209,7 @@ function HandleComponent(
 
     if (!connectionClickStartHandle) {
       onClickConnectStart?.(event.nativeEvent, { nodeId, handleId, handleType: type });
-      connectionStore.setState({ connectionClickStartHandle: { nodeId, type, id: handleId } });
-      store.getState().pubSub.publishConnectionClickStart();
+      updateConnectionClickStart({ nodeId, type, id: handleId });
       return;
     }
 
@@ -241,8 +241,7 @@ function HandleComponent(
     connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
     onClickConnectEnd?.(event as unknown as MouseEvent, connectionClone as FinalConnectionState);
 
-    connectionStore.setState({ connectionClickStartHandle: null });
-    store.getState().pubSub.publishConnectionClickStart();
+    updateConnectionClickStart(null);
   };
 
   return (

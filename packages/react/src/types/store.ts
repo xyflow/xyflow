@@ -164,6 +164,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
   cancelConnection: () => void;
   updateConnection: UpdateConnection<InternalNode<NodeType>>;
+  updateConnectionClickStart: (connectionClickStartHandle: ConnectionStore['connectionClickStartHandle']) => void;
   reset: () => void;
   emitNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   emitEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
