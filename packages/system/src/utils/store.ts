@@ -154,6 +154,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
   const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
   const rootParentIndex = { i: 0 };
   const tmpLookup = new Map(nodeLookup);
+  const hasSubflows = !!options.defaults?.parentId || nodes.some((node) => !!node.parentId);
   const selectedNodeZ: number =
     _options?.elevateNodesOnSelect && !isManualZIndexMode(_options.zIndexMode) ? SELECTED_NODE_Z : 0;
   // We track the nodes that already have been processed (relevant for subflows)
@@ -190,7 +191,6 @@ export function adoptUserNodes<NodeType extends NodeBase>(
 
   for (const userNode of nodes) {
     let internalNode = tmpLookup.get(userNode.id);
-    tmpLookup.delete(userNode.id);
 
     if (_options.checkEquality && userNode === internalNode?.internals.userNode) {
       nodeLookup.set(userNode.id, internalNode);
@@ -228,7 +228,9 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       nodesInitialized = false;
     }
 
-    resolveSubflowsForNode(internalNode, subflowContext);
+    if (hasSubflows) {
+      resolveSubflowsForNode(internalNode, subflowContext);
+    }
 
     hasSelectedNodes ||= userNode.selected ?? false;
   }
@@ -239,6 +241,16 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       childNodes.forEach((childNode) => {
         console.warn(`Parent node with id "${childNode.parentId}" is missing for child node with id "${childNode.id}"`);
       });
+    }
+  }
+
+  for (const id of tmpLookup.keys()) {
+    const node = nodeLookup.get(id);
+    if (!node) {
+      updatedNodes.add(id);
+    } else if (node.internals.isParent && !parentLookup.has(id)) {
+      // An unchanged parent can lose its last child without receiving a new user node.
+      updateNode({ ...node, internals: { ...node.internals, isParent: false } });
     }
   }
 
@@ -518,12 +530,17 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   nodeOrigin?: NodeOrigin,
   nodeExtent?: CoordinateExtent,
   zIndexMode?: ZIndexMode
-): { changes: (DimensionChange | PositionChange)[]; updatedInternals: boolean } {
+): { changes: (DimensionChange | PositionChange)[]; updatedInternals: boolean; updatedNodes: Set<string> } {
+  const updatedNodes = new Set<string>();
+  const updateNode = (node: NodeType) => {
+    nodeLookup.set(node.id, node);
+    updatedNodes.add(node.id);
+  };
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
   let updatedInternals = false;
 
   if (!viewportNode) {
-    return { changes: [], updatedInternals };
+    return { changes: [], updatedInternals, updatedNodes };
   }
 
   const changes: (DimensionChange | PositionChange)[] = [];
@@ -539,7 +556,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
     }
 
     if (node.hidden) {
-      nodeLookup.set(node.id, {
+      updateNode({
         ...node,
         internals: {
           ...node.internals,
@@ -585,10 +602,13 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
         },
       };
 
-      nodeLookup.set(node.id, newNode);
+      updateNode(newNode);
 
       if (node.parentId) {
-        updateChildNode(newNode, nodeLookup, parentLookup, { nodeOrigin, zIndexMode });
+        updateChildNode(newNode, nodeLookup, parentLookup, { nodeOrigin, zIndexMode }, undefined, (node) => {
+          nodeLookup.set(node.id, node as NodeType);
+          updatedNodes.add(node.id);
+        });
       }
 
       updatedInternals = true;
@@ -612,7 +632,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
     changes.push(...parentExpandChanges);
   }
 
-  return { changes, updatedInternals };
+  return { changes, updatedInternals, updatedNodes };
 }
 
 export async function panBy({
@@ -678,17 +698,29 @@ function addConnectionToLookup(
    * If the key already exists, we add the connection to the existing map
    */
   let key = nodeId;
-  const nodeMap = connectionLookup.get(key) || new Map<string, HandleConnection>();
-  connectionLookup.set(key, nodeMap.set(connectionKey, connection));
+  let nodeMap = connectionLookup.get(key);
+  if (!nodeMap) {
+    nodeMap = new Map<string, HandleConnection>();
+    connectionLookup.set(key, nodeMap);
+  }
+  nodeMap.set(connectionKey, connection);
 
   key = `${nodeId}-${type}`;
-  const typeMap = connectionLookup.get(key) || new Map<string, HandleConnection>();
-  connectionLookup.set(key, typeMap.set(connectionKey, connection));
+  let typeMap = connectionLookup.get(key);
+  if (!typeMap) {
+    typeMap = new Map<string, HandleConnection>();
+    connectionLookup.set(key, typeMap);
+  }
+  typeMap.set(connectionKey, connection);
 
   if (handleId) {
     key = `${nodeId}-${type}-${handleId}`;
-    const handleMap = connectionLookup.get(key) || new Map<string, HandleConnection>();
-    connectionLookup.set(key, handleMap.set(connectionKey, connection));
+    let handleMap = connectionLookup.get(key);
+    if (!handleMap) {
+      handleMap = new Map<string, HandleConnection>();
+      connectionLookup.set(key, handleMap);
+    }
+    handleMap.set(connectionKey, connection);
   }
 }
 
@@ -747,25 +779,36 @@ export function updateConnectionLookup(
 
   for (const edge of edges) {
     const existing = tmpLookup.get(edge.id);
-    tmpLookup.delete(edge.id);
 
     if (existing === edge) {
       edgeLookup.set(edge.id, edge);
       continue;
     }
 
-    if (existing) {
-      syncEdgeConnections(connectionLookup, existing, 'remove');
+    // Data, selection and style changes should not affect the connection lookup
+    if (
+      !existing ||
+      existing.source !== edge.source ||
+      existing.target !== edge.target ||
+      // we use != because handles can be null or undefined
+      existing.sourceHandle != edge.sourceHandle ||
+      existing.targetHandle != edge.targetHandle
+    ) {
+      if (existing) {
+        syncEdgeConnections(connectionLookup, existing, 'remove');
+      }
+      syncEdgeConnections(connectionLookup, edge, 'add');
     }
 
-    syncEdgeConnections(connectionLookup, edge, 'add');
     edgeLookup.set(edge.id, edge);
     updatedEdges.add(edge.id);
   }
 
   for (const edge of tmpLookup.values()) {
-    syncEdgeConnections(connectionLookup, edge, 'remove');
-    updatedEdges.add(edge.id);
+    if (!edgeLookup.has(edge.id)) {
+      syncEdgeConnections(connectionLookup, edge, 'remove');
+      updatedEdges.add(edge.id);
+    }
   }
 
   return { updatedEdges };
