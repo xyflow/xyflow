@@ -40,13 +40,11 @@ export function ZoomPane({
   selectionOnDrag,
 }: ZoomPaneProps) {
   const { store, viewportStore } = useReactFlowStoreApi();
-  const zoomPane = useRef<HTMLDivElement>(null);
   const { userSelectionActive, lib } = useReactFlowStore();
-
-  const {
-    connection: { inProgress: connectionInProgress },
-  } = useConnectionStore();
+  const connectionInProgress = useConnectionStore((state) => state.connection.inProgress);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
+
+  const zoomPane = useRef<HTMLDivElement>(null);
   const panZoom = useRef<PanZoomInstance>();
 
   useResizeHandler(zoomPane);

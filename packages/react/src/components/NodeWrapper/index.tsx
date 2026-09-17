@@ -9,7 +9,8 @@ import {
   getNodesInside,
 } from '@xyflow/system';
 
-import { useCustomDiff, useNodesStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useInternalNode } from '../../hooks/useNodes';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
@@ -17,20 +18,7 @@ import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
 import { useNodeObserver } from './useNodeObserver';
-import type { InternalNode, Node, NodeWrapperProps, NodesStore } from '../../types';
-
-function areEqual(
-  a: {
-    node: InternalNode<Node>;
-    internals: InternalNode<Node>['internals'];
-  },
-  b: {
-    node: InternalNode<Node>;
-    internals: InternalNode<Node>['internals'];
-  }
-): boolean {
-  return a.node === b.node && a.internals === b.internals;
-}
+import type { Node, NodeWrapperProps } from '../../types';
 
 function NodeWrapper<NodeType extends Node>({
   id,
@@ -53,15 +41,8 @@ function NodeWrapper<NodeType extends Node>({
   nodeClickDistance,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const selector = (s: NodesStore) => {
-    const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
-
-    return {
-      node,
-      internals: node.internals,
-    };
-  };
-  const { node, internals } = useNodesStore(useCustomDiff(selector, areEqual));
+  const node = useInternalNode<NodeType>(id)!;
+  const { internals } = node;
 
   let nodeType = node.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];

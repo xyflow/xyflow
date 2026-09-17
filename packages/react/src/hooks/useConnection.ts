@@ -1,7 +1,8 @@
-import { type ConnectionState, pointToRendererPoint } from '@xyflow/system';
+import { type ConnectionState, HandleType, pointToRendererPoint } from '@xyflow/system';
 
-import { useConnectionStore, useViewportStore, useShallow } from './useReactFlowStore';
+import { useConnectionStore, useViewportStore, useShallow, useReactFlowStoreApi } from './useReactFlowStore';
 import type { InternalNode, Node, ConnectionStore, ViewportStore } from '../types';
+import { useCallback, useSyncExternalStore } from 'react';
 
 function toSelector(s: ViewportStore, connection: ConnectionStore['connection']) {
   return connection.inProgress ? pointToRendererPoint(connection.to, s.transform) : undefined;
@@ -44,4 +45,17 @@ export function useConnection<NodeType extends Node = Node, SelectorReturn = Con
   const connection = { ...connectionStore, to } as ConnectionState<InternalNode<NodeType>>;
 
   return connectionSelector ? connectionSelector(connection) : (connection as SelectorReturn);
+}
+
+export function useConnectionStateForHandle(handle: { nodeId: string; type: HandleType; id: string | null }) {
+  const { store, connectionStore } = useReactFlowStoreApi();
+
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => store.getState().pubSub.subscribeToConnectionForHandle(handle, onStoreChange),
+    [store, handle]
+  );
+
+  const getSnapshot = useCallback(() => connectionStore.getState(), [connectionStore]);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }

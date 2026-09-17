@@ -2,9 +2,9 @@ import cc from 'classcat';
 import { getEdgeToolbarTransform } from '@xyflow/system';
 
 import { EdgeLabelRenderer } from '../../components/EdgeLabelRenderer';
-import { useEdgesStore, useViewportStore } from '../../hooks/useReactFlowStore';
-import { Edge, EdgesStore } from '../../types';
+import { useViewportStore } from '../../hooks/useReactFlowStore';
 import type { EdgeToolbarProps } from './types';
+import { useEdge } from '../../hooks/useEdges';
 
 /**
  * This component can render a toolbar or tooltip to one side of a custom edge. This
@@ -41,8 +41,7 @@ export function EdgeToolbar({
   alignY = 'center',
   ...rest
 }: EdgeToolbarProps) {
-  const edgeSelector = (state: EdgesStore): Edge | undefined => state.edgeLookup.get(edgeId);
-  const edge = useEdgesStore(edgeSelector);
+  const edge = useEdge(edgeId);
   const isActive = typeof isVisible === 'boolean' ? isVisible : edge?.selected;
   const {
     transform: [, , zoom],

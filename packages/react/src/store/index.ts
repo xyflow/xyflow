@@ -73,7 +73,15 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
       ...initialState.store,
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, parentLookup } = nodesStore.getState();
-        const { nodeOrigin, nodeExtent, elevateNodesOnSelect, fitViewQueued, zIndexMode, nodesSelectionActive } = get();
+        const {
+          nodeOrigin,
+          nodeExtent,
+          elevateNodesOnSelect,
+          fitViewQueued,
+          zIndexMode,
+          nodesSelectionActive,
+          pubSub,
+        } = get();
 
         /*
          * setNodes() is called exclusively in response to user actions:
@@ -84,7 +92,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
          * relevant for internal React Flow operations.
          */
 
-        const { nodesInitialized, hasSelectedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        const { nodesInitialized, hasSelectedNodes, updatedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent,
           elevateNodesOnSelect,
@@ -102,13 +110,15 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         }
 
         nodesStore.setState({ nodes, nodesInitialized });
+        pubSub.publishNodes(updatedNodes);
       },
       setEdges: (edges: Edge[]) => {
         const { connectionLookup, edgeLookup } = edgesStore.getState();
 
-        updateConnectionLookup(connectionLookup, edgeLookup, edges);
+        const { updatedEdges } = updateConnectionLookup(connectionLookup, edgeLookup, edges);
 
         edgesStore.setState({ edges });
+        get().pubSub.publishEdges(updatedEdges);
       },
       setDefaultNodesAndEdges: (nodes?: Node[], edges?: Edge[]) => {
         if (nodes) {
@@ -128,10 +138,10 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
        * new dimensions and update the nodes.
        */
       updateNodeInternals: (updates) => {
-        const { emitNodeChanges, domNode, nodeOrigin, nodeExtent, fitViewQueued, zIndexMode } = get();
+        const { emitNodeChanges, domNode, nodeOrigin, nodeExtent, fitViewQueued, zIndexMode, pubSub } = get();
         const { nodeLookup, parentLookup } = nodesStore.getState();
 
-        const { changes, updatedInternals } = updateNodeInternalsSystem(
+        const { changes, updatedInternals, updatedNodes } = updateNodeInternalsSystem(
           updates,
           nodeLookup,
           parentLookup,
@@ -152,6 +162,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
 
         // Internal measurements can change without changing the public nodes array.
         nodesStore.setState({});
+        pubSub.publishNodes(updatedNodes);
         emitNodeChanges(changes);
       },
       updateNodePositions: (nodeDragItems, dragging = false) => {
@@ -362,7 +373,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
       },
       setNodeExtent: (nextNodeExtent) => {
         const { nodes, nodeLookup, parentLookup } = nodesStore.getState();
-        const { nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode } = get();
+        const { nodeOrigin, elevateNodesOnSelect, nodeExtent, zIndexMode, pubSub } = get();
 
         if (
           nextNodeExtent[0][0] === nodeExtent[0][0] &&
@@ -373,7 +384,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
           return;
         }
 
-        adoptUserNodes(nodes, nodeLookup, parentLookup, {
+        const { updatedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent: nextNodeExtent,
           elevateNodesOnSelect,
@@ -383,6 +394,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
 
         set({ nodeExtent: nextNodeExtent });
         nodesStore.setState({});
+        pubSub.publishNodes(updatedNodes);
       },
       panBy: (delta): Promise<boolean> => {
         const { transform, width, height } = viewportStore.getState();
@@ -412,10 +424,18 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         return true;
       },
       cancelConnection: () => {
-        connectionStore.setState({ connection: { ...initialConnection } });
+        const { connection: previousConnection } = connectionStore.getState();
+        connectionStore.setState({ connection: initialConnection });
+        get().pubSub.publishConnection(previousConnection, initialConnection);
       },
       updateConnection: (connection) => {
+        const { connection: previousConnection } = connectionStore.getState();
         connectionStore.setState({ connection });
+        get().pubSub.publishConnection(previousConnection, connection);
+      },
+      updateConnectionClickStart: (connectionClickStartHandle) => {
+        connectionStore.setState({ connectionClickStartHandle });
+        get().pubSub.publishConnectionClickStart();
       },
 
       reset: () => {
@@ -425,7 +445,11 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         nodesStore.setState(initialState.nodesStore);
         edgesStore.setState(initialState.edgesStore);
         selectionStore.setState(initialState.selectionStore);
-        set(initialState.store);
+
+        const { pubSub } = get();
+        // Keep mounted hooks subscribed to the same PubSub instance.
+        set({ ...initialState.store, pubSub });
+        pubSub.reset();
       },
     };
   });

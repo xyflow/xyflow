@@ -4,6 +4,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type TouchEvent as ReactTouchEvent,
   type ForwardedRef,
+  useMemo,
 } from 'react';
 import cc from 'classcat';
 import {
@@ -22,12 +23,13 @@ import {
   Optional,
 } from '@xyflow/system';
 
-import { useShallow, useReactFlowStore, useConnectionStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { useHandleConfig } from '../../contexts/HandleConfigContext';
 import { type ConnectionStore } from '../../types';
 import { fixedForwardRef } from '../../utils';
 import { addEdge } from '../../utils/edges';
+import { useConnectionStateForHandle } from '../../hooks/useConnection';
 
 /**
  * @expand
@@ -99,10 +101,18 @@ function HandleComponent(
 ) {
   const handleId = id || null;
   const isTarget = type === 'target';
+
   const { store, viewportStore, connectionStore, nodesStore, edgesStore } = useReactFlowStoreApi();
   const nodeId = useNodeId();
-  const { connectionMode } = useReactFlowStore();
-  const { connectOnClick, noPanClassName, rfId } = useHandleConfig();
+  const { connectOnClick, noPanClassName, rfId, connectionMode } = useHandleConfig();
+
+  const selector = useMemo(
+    () => connectingSelector(nodeId, handleId, type, connectionMode),
+    [nodeId, handleId, type, connectionMode]
+  );
+
+  const connection = useConnectionStateForHandle({ nodeId: nodeId || '', type, id: handleId });
+
   const {
     connectingFrom,
     connectingTo,
@@ -111,7 +121,8 @@ function HandleComponent(
     connectionInProcess,
     clickConnectionInProcess,
     valid,
-  } = useConnectionStore(useShallow(connectingSelector(nodeId, handleId, type, connectionMode)));
+  } = selector(connection);
+
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }
@@ -132,6 +143,7 @@ function HandleComponent(
     onConnectAction?.(edgeParams);
     onConnect?.(edgeParams);
   };
+
   const onPointerDown = (event: ReactMouseEvent<HTMLDivElement> | ReactTouchEvent<HTMLDivElement>) => {
     if (!nodeId) {
       return;
@@ -182,6 +194,7 @@ function HandleComponent(
     const {
       onClickConnectStart,
       onClickConnectEnd,
+      updateConnectionClickStart,
       connectionMode,
       isValidConnection: isValidConnectionStore,
       lib,
@@ -196,7 +209,7 @@ function HandleComponent(
 
     if (!connectionClickStartHandle) {
       onClickConnectStart?.(event.nativeEvent, { nodeId, handleId, handleType: type });
-      connectionStore.setState({ connectionClickStartHandle: { nodeId, type, id: handleId } });
+      updateConnectionClickStart({ nodeId, type, id: handleId });
       return;
     }
 
@@ -228,7 +241,7 @@ function HandleComponent(
     connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
     onClickConnectEnd?.(event as unknown as MouseEvent, connectionClone as FinalConnectionState);
 
-    connectionStore.setState({ connectionClickStartHandle: null });
+    updateConnectionClickStart(null);
   };
 
   return (

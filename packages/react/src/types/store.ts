@@ -1,4 +1,5 @@
 import type { StoreApi } from 'zustand';
+import type { PubSub } from '../store/pubsub';
 import {
   ConnectionMode,
   withResolvers,
@@ -53,6 +54,7 @@ import type {
 } from '.';
 
 export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  pubSub: PubSub;
   rfId: string;
   onNodesChange: OnNodesChange<NodeType> | null;
   onEdgesChange: OnEdgesChange<EdgeType> | null;
@@ -162,6 +164,7 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
   cancelConnection: () => void;
   updateConnection: UpdateConnection<InternalNode<NodeType>>;
+  updateConnectionClickStart: (connectionClickStartHandle: ConnectionStore['connectionClickStartHandle']) => void;
   reset: () => void;
   emitNodeChanges: (changes: NodeChange<NodeType>[]) => void;
   emitEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;

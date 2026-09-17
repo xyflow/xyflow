@@ -1,10 +1,11 @@
 import { ComponentType, memo } from 'react';
-import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
+import { getNodeDimensions } from '@xyflow/system';
 
 import { useShallow, useNodesStore } from '../../hooks/useReactFlowStore';
 import { MiniMapNode } from './MiniMapNode';
 import type { NodesStore, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
+import { useInternalNode } from '../../hooks/useNodes';
 
 const selectorNodeIds = (s: NodesStore) => s.nodes.map((node) => node.id);
 const getAttrFunction = <NodeType extends Node>(
@@ -80,31 +81,19 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   onClick: MiniMapNodesProps['onClick'];
   shapeRendering: string;
 }) {
-  const selector = (s: NodesStore) => {
-    const node = s.nodeLookup.get(id);
+  const internalNode = useInternalNode(id);
 
-    if (!node) {
-      return { node: undefined, x: 0, y: 0, width: 0, height: 0 };
-    }
-
-    const userNode = node.internals.userNode as NodeType;
-    const { x, y } = node.internals.positionAbsolute;
-    const { width, height } = getNodeDimensions(userNode);
-
-    return {
-      node: userNode,
-      x,
-      y,
-      width,
-      height,
-    };
-  };
-
-  const { node, x, y, width, height } = useNodesStore(useShallow(selector));
-
-  if (!node || node.hidden || !nodeHasDimensions(node)) {
+  if (!internalNode || internalNode.hidden) {
     return null;
   }
+
+  const { width, height } = getNodeDimensions(internalNode);
+  if (width === 0 || height === 0) {
+    return null;
+  }
+
+  const node = internalNode.internals.userNode as NodeType;
+  const { x, y } = internalNode.internals.positionAbsolute;
 
   return (
     <NodeComponent
