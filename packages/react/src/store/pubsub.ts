@@ -24,7 +24,6 @@ export class PubSub {
   private nodeListeners: ListenerMap = new Map();
   private edgeListeners: ListenerMap = new Map();
   private handleListeners: ListenerMap = new Map();
-  private handleTypeListeners: ListenerMap = new Map();
 
   subscribeToNode(id: string, onStoreChange: Listener) {
     return this.subscribe(this.nodeListeners, id, onStoreChange);
@@ -43,16 +42,7 @@ export class PubSub {
   }
 
   subscribeToConnectionForHandle(handle: HandleArgs, onStoreChange: Listener) {
-    const unsubscribeHandleListener = this.subscribe(
-      this.handleListeners,
-      `${handle.nodeId}-${handle.id}-${handle.type}`,
-      onStoreChange
-    );
-    const unsubscribeHandleTypeListener = this.subscribe(this.handleTypeListeners, handle.type, onStoreChange);
-    return () => {
-      unsubscribeHandleListener();
-      unsubscribeHandleTypeListener();
-    };
+    return this.subscribe(this.handleListeners, getHandleKey(handle), onStoreChange);
   }
 
   publishConnectionClickStart() {
@@ -63,7 +53,7 @@ export class PubSub {
     const notifyHandles = new Set<string>();
 
     if (!sameHandle(previous.fromHandle, connection.fromHandle)) {
-      this.notifyAll(this.handleTypeListeners);
+      this.notifyAll(this.handleListeners);
       return;
     }
 

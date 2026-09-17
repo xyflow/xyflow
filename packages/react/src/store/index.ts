@@ -417,8 +417,8 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
       },
       cancelConnection: () => {
         const { connection: previousConnection } = connectionStore.getState();
-        connectionStore.setState({ connection: { ...initialConnection } });
-        get().pubSub.publishConnection(previousConnection, { ...initialConnection });
+        connectionStore.setState({ connection: initialConnection });
+        get().pubSub.publishConnection(previousConnection, initialConnection);
       },
       updateConnection: (connection) => {
         const { connection: previousConnection } = connectionStore.getState();
