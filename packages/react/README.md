@@ -86,7 +86,7 @@ export default Flow;
 
 Before you can start developing please make sure that you have [pnpm](https://pnpm.io/) installed (`npm i -g pnpm`). Then install the dependencies using pnpm: `pnpm install`.
 
-Run `pnpm build` once and then you can use `pnpm dev` for local development.
+Run `pnpm build` once and then use `pnpm dev:react` to start React Storybook at http://localhost:6006 and watch its library dependencies.
 
 ## Testing
 
@@ -98,7 +98,7 @@ pnpm test:cypress:react
 
 This starts React Storybook on port 6006, runs the eight Cypress suites in Chrome, and stops the server afterwards. Chrome must be installed. To use the interactive runner, start `pnpm storybook:react` and run `pnpm --filter storybook-react test:e2e:open` in another terminal.
 
-Cypress component and utility tests remain in [`examples/react/cypress/components`](/examples/react/cypress/components/) and run with `pnpm --filter react-examples test-component`.
+Cypress component and utility tests live in [`storybook/react/cypress/components`](/storybook/react/cypress/components/) and run with `pnpm test:cypress:components`.
 
 ## xyflow Team
 

@@ -3,10 +3,11 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "types": ["cypress", "cypress-real-events"],
+    "types": ["cypress", "cypress-real-events", "vite/client"],
     "skipLibCheck": true,
     "ignoreDeprecations": "6.0",
-    "noEmit": true
+    "noEmit": true,
+    "jsx": "react-jsx"
   },
-  "include": ["./**/*.ts", "../cypress.config.ts"]
+  "include": ["./**/*.ts", "./**/*.tsx", "../cypress.config.ts"]
 }

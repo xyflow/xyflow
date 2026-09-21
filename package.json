@@ -8,8 +8,8 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "turbo run dev --parallel --concurrency 12",
-    "dev:svelte": "turbo run dev --filter=svelte-examples...",
-    "dev:react": "turbo run dev --filter=react-examples...",
+    "dev:svelte": "turbo run dev --filter=storybook-svelte...",
+    "dev:react": "turbo run dev --filter=storybook-react...",
     "dev:vue": "turbo run dev --filter=storybook-vue...",
     "storybook": "concurrently -n react,svelte,vue,shared -c blue,magenta,cyan,green \"pnpm --filter=storybook-react run storybook:serve\" \"pnpm --filter=storybook-svelte run storybook:serve\" \"pnpm --filter=storybook-vue run storybook:serve\" \"pnpm --filter=storybook-shared run storybook\"",
     "storybook:react": "pnpm --filter=storybook-react run storybook",
@@ -25,7 +25,8 @@
     "lint": "turbo run lint --filter=./packages/**",
     "typecheck": "turbo run typecheck --filter=./packages/**",
     "release": "changeset publish",
-    "clean": "pnpm -r --parallel exec rimraf dist .turbo node_modules"
+    "clean": "pnpm -r --parallel exec rimraf dist .turbo node_modules",
+    "test:cypress:components": "pnpm --filter storybook-react test:component"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",

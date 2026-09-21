@@ -17,4 +17,4 @@ For interactive debugging, run `pnpm storybook:react` and, in another terminal, 
 
 The selected stories have no play functions, so Cypress owns the interactions. Hidden uses the Storybook args channel to toggle `isHidden` without remounting. Each suite deliberately shares story state between its tests, preserving the original test sequences.
 
-Component and utility suites still live under `examples/react/cypress/components`; run those with `pnpm --filter react-examples test-component`.
+Component and utility suites live under `storybook/react/cypress/components`; run those with `pnpm test:cypress:components`.

@@ -1,13 +1,16 @@
 Cypress.Commands.add('drag', (selector, { x, y }) =>
-  cy.get(selector).then(($el) => {
-    const { left, top, width, height } = $el[0].getBoundingClientRect();
-    const endX = left + width / 2 + x;
-    const endY = top + height / 2 + y;
-    cy.wrap($el).realMouseDown();
-    cy.get('body').realMouseMove(left + width / 2 + x / 2, top + height / 2 + y / 2);
-    cy.get('body').realMouseMove(endX, endY).wait(50).realMouseUp({ x: endX, y: endY });
-    return cy.wrap($el);
-  })
+  cy
+    .get(selector)
+    .should('be.visible')
+    .then(($el) => {
+      const { left, top, width, height } = $el[0].getBoundingClientRect();
+      const endX = left + width / 2 + x;
+      const endY = top + height / 2 + y;
+      cy.wrap($el).realMouseDown();
+      cy.get('body').realMouseMove(left + width / 2 + x / 2, top + height / 2 + y / 2);
+      cy.get('body').realMouseMove(endX, endY).wait(50).realMouseUp({ x: endX, y: endY });
+      return cy.wrap($el);
+    })
 );
 
 Cypress.Commands.add('dragPane', ({ from, to }) =>

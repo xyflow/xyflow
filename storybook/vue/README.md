@@ -1,6 +1,6 @@
 # Vue Flow Storybook
 
-Standalone Vue stories migrated from `examples/vue`. These components, fixtures, and stories are local to this workspace; they do not use the shared React/Svelte story implementation.
+Standalone Vue stories. These components, fixtures, and stories are local to this workspace; they do not use the shared React/Svelte story implementation.
 
 From the repository root:
 

@@ -10,7 +10,10 @@
     "test-storybook": "vitest run --project=storybook-react",
     "test:e2e:open": "cypress open --e2e",
     "test:e2e:run": "cypress run --e2e --browser chrome",
-    "test:e2e": "start-server-and-test 'storybook dev -p 6006 --ci --no-open' http-get://localhost:6006/index.json 'pnpm test:e2e:run'"
+    "test:e2e": "start-server-and-test 'storybook dev -p 6006 --ci --no-open' http-get://localhost:6006/index.json 'pnpm test:e2e:run'",
+    "dev": "storybook dev -p 6006",
+    "test:component": "cypress run --component --browser chrome",
+    "test:component:open": "cypress open --component"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
@@ -35,13 +38,15 @@
     "@types/react-dom": "catalog:",
     "@vitest/browser-playwright": "^4.1.10",
     "@vitest/coverage-v8": "^4.1.10",
-    "cypress": "13.6.6",
+    "cypress": "15.21.1",
     "cypress-real-events": "1.12.0",
     "playwright": "^1.61.1",
     "start-server-and-test": "^2.1.5",
     "storybook": "^10.4.6",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "@cypress/skip-test": "^2.6.1",
+    "@vitejs/plugin-react": "6.0.1"
   }
 }

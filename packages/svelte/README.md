@@ -97,9 +97,9 @@ If you want to check out the current version you need to run the following comma
 
 1. `pnpm install` - install dependencies
 2. `pnpm build` - needs to be done once
-3. `pnpm dev` - starts dev server
+3. `pnpm dev:svelte` - starts Svelte Storybook and watches its library dependencies
 
-You can now access the examples under http://127.0.0.1:5173
+Open Svelte Storybook at http://localhost:6007.
 
 ## Maintainers
 

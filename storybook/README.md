@@ -49,3 +49,14 @@ Examples stay separate under `storybook/{react,svelte}/stories/examples/`.
 Vue has its own stories and example components under `storybook/vue/stories/examples/`, migrated from the former Vue examples app. It does not consume `storybook/shared` stories or test helpers. The combined sidebar links to Vue alongside React and Svelte.
 
 Build it with `pnpm exec turbo run build-storybook --filter=storybook-vue`. Run `pnpm --filter storybook-vue typecheck` to check its Vue components and stories.
+
+## Cypress (React)
+
+The Cypress suites live in `storybook/react/cypress/`:
+
+```sh
+pnpm test:cypress:react       # end-to-end tests against Storybook
+pnpm test:cypress:components  # component, hook, and utility tests
+```
+
+Chrome must be installed. Component tests start their own Vite server and do not need Storybook running.

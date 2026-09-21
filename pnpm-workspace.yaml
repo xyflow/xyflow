@@ -1,6 +1,5 @@
 packages:
   - 'packages/*'
-  - 'examples/*'
   - 'tooling/*'
   - 'tests/*'
   - 'storybook/*'
