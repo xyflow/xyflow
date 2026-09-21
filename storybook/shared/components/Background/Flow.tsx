@@ -12,7 +12,7 @@ export const BackgroundExample: FC<SharedBackgroundArgs> = ({ id = 'background',
   return (
     <ReactFlowProvider>
       <div style={flowStyle}>
-        <ReactFlow nodes={nodes} onNodesChange={onNodesChange} style={flowStyle}>
+        <ReactFlow nodes={nodes} onNodesChange={onNodesChange} style={flowStyle} defaultViewport={{ x: 0, y: 0, zoom: 1 }}>
           <Background id={id} {...backgroundProps} />
         </ReactFlow>
       </div>

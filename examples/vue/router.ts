@@ -140,7 +140,7 @@ export const routes: RouterOptions['routes'] = [
   },
 ];
 
-// routes exercised by the Playwright suite (tests/playwright) — kept out of `routes` so they don't
+// Generic test routes — kept out of `routes` so they don't
 // clutter the Header's example picker. `/tests/generic/*` renders the generic-tests harness.
 const testRoutes: RouterOptions['routes'] = [
   {

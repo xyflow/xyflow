@@ -34,7 +34,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  play: plays.rendersBackground,
+  play: framework === 'react' ? plays.centersDefaultDots : plays.rendersBackground,
 };
 
 export const Lines: Story = {
@@ -73,6 +73,6 @@ export const OffsetTuple: Story = {
 
 // Svelte's Background has no offset prop, so the assertion only runs for React.
 export const AppliesOffset: Story = {
-  args: { variant: 'lines', offset: 10 },
+  args: { variant: 'lines', gap: 100, offset: 2 },
   play: framework === 'react' ? plays.appliesOffset : undefined,
 };

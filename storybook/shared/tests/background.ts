@@ -63,10 +63,20 @@ export function createBackgroundPlays(framework: FlowFramework) {
     });
   };
 
+  // Regression coverage migrated from tests/playwright/e2e/background.spec.ts.
+  const centersDefaultDots = async ({ canvasElement }: StoryPlayContext) => {
+    await waitFor(() => {
+      const pattern = getBackground(canvasElement, framework)?.querySelector('pattern');
+      // At zoom 1, gap 20 and offset 0 center the cell by 10, not 11.
+      expect(pattern).toHaveAttribute('patternTransform', 'translate(-10,-10)');
+    });
+  };
+
   const appliesOffset = async ({ canvasElement }: StoryPlayContext) => {
     await waitFor(() => {
       const pattern = getBackground(canvasElement, framework)?.querySelector('pattern');
-      expect(pattern?.getAttribute('patternTransform')).toMatch(/translate\(-[\d.]+,-[\d.]+\)/);
+      // At zoom 1, gap 100 and offset 2 give 2 + 100 / 2 = 52.
+      expect(pattern).toHaveAttribute('patternTransform', 'translate(-52,-52)');
     });
   };
 
@@ -77,7 +87,7 @@ export function createBackgroundPlays(framework: FlowFramework) {
     rendersCrossVariant,
     appliesBgColor,
     appliesPatternColor,
-    ...(framework === 'react' ? { appliesOffset } : {}),
+    ...(framework === 'react' ? { centersDefaultDots, appliesOffset } : {}),
   };
 }
 
