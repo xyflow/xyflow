@@ -96,38 +96,6 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
 
-  examples/astro-xyflow:
-    dependencies:
-      '@astrojs/react':
-        specifier: ^5.0.4
-        version: 5.0.5(@types/node@20.19.41)(@types/react-dom@18.3.7(@types/react@18.3.29))(@types/react@18.3.29)(jiti@2.7.0)(lightningcss@1.33.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(terser@5.31.0)(yaml@2.9.0)
-      '@astrojs/svelte':
-        specifier: ^8.1.0
-        version: 8.1.1(@types/node@20.19.41)(astro@6.3.7(@types/node@20.19.41)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.52.5)(terser@5.31.0)(yaml@2.9.0))(jiti@2.7.0)(lightningcss@1.33.0)(svelte@5.55.9(@typescript-eslint/types@8.64.0))(terser@5.31.0)(typescript@6.0.3)(yaml@2.9.0)
-      '@types/react':
-        specifier: 'catalog:'
-        version: 18.3.29
-      '@types/react-dom':
-        specifier: 'catalog:'
-        version: 18.3.7(@types/react@18.3.29)
-      '@xyflow/react':
-        specifier: workspace:^
-        version: link:../../packages/react
-      '@xyflow/svelte':
-        specifier: workspace:^
-        version: link:../../packages/svelte
-      astro:
-        specifier: ^6.1.10
-        version: 6.3.7(@types/node@20.19.41)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.52.5)(terser@5.31.0)(yaml@2.9.0)
-      react:
-        specifier: 'catalog:'
-        version: 18.3.1
-      react-dom:
-        specifier: 'catalog:'
-        version: 18.3.1(react@18.3.1)
-      svelte:
-        specifier: 'catalog:'
-        version: 5.55.9(@typescript-eslint/types@8.64.0)
 
   examples/react:
     dependencies:
@@ -700,33 +668,38 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10(@types/node@20.19.41)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))
 
-  tests/playwright:
+  tests/astro-xyflow:
     dependencies:
-      '@playwright/experimental-ct-react':
-        specifier: ^1.59.1
-        version: 1.62.1(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(vite@8.2.2(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))(yaml@2.9.0)
+      '@astrojs/react':
+        specifier: ^5.0.4
+        version: 5.0.5(@types/node@20.19.41)(@types/react-dom@18.3.7(@types/react@18.3.29))(@types/react@18.3.29)(jiti@2.7.0)(lightningcss@1.33.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(terser@5.31.0)(yaml@2.9.0)
+      '@astrojs/svelte':
+        specifier: ^8.1.0
+        version: 8.1.1(@types/node@20.19.41)(astro@6.3.7(@types/node@20.19.41)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.52.5)(terser@5.31.0)(yaml@2.9.0))(jiti@2.7.0)(lightningcss@1.33.0)(svelte@5.55.9(@typescript-eslint/types@8.64.0))(terser@5.31.0)(typescript@6.0.3)(yaml@2.9.0)
       '@types/react':
         specifier: 'catalog:'
         version: 18.3.29
       '@types/react-dom':
         specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.29)
+      '@xyflow/react':
+        specifier: workspace:^
+        version: link:../../packages/react
+      '@xyflow/svelte':
+        specifier: workspace:^
+        version: link:../../packages/svelte
+      astro:
+        specifier: ^6.1.10
+        version: 6.3.7(@types/node@20.19.41)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.52.5)(terser@5.31.0)(yaml@2.9.0)
       react:
         specifier: 'catalog:'
         version: 18.3.1
       react-dom:
         specifier: 'catalog:'
         version: 18.3.1(react@18.3.1)
-      typescript:
+      svelte:
         specifier: 'catalog:'
-        version: 6.0.3
-    devDependencies:
-      '@playwright/test':
-        specifier: ^1.59.1
-        version: 1.62.1
-      '@types/node':
-        specifier: 'catalog:'
-        version: 20.19.41
+        version: 5.55.9(@typescript-eslint/types@8.64.0)
 
   tooling/eslint-config:
     dependencies:

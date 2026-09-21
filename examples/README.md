@@ -6,8 +6,8 @@ SvelteKit App with Svelte Flow examples at [`examples/svelte`](./svelte)
 
 Vite App with React Flow examples at [`examples/react`](./react)
 
-Astro App used for SSR testing at [`examples/astro-xyflow`](./astro-xyflow)
+Astro App used for SSR testing at [`tests/astro-xyflow`](../tests/astro-xyflow)
 
 ## E2E
 
-For further documentation of E2E tests have a look at [`/tests/playwright`](/tests/playwright).
+Browser tests live in [`storybook/`](/storybook). Run `pnpm test:storybook` from the repository root.
