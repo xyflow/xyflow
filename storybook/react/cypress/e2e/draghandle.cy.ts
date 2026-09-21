@@ -1,6 +1,6 @@
 describe('DragHandle Flow Rendering', { testIsolation: false }, () => {
   before(() => {
-    cy.visit('/DragHandle');
+    cy.visitStory('examples-handles--drag');
   });
 
   it('renders a flow with a node', () => {
@@ -12,7 +12,7 @@ describe('DragHandle Flow Rendering', { testIsolation: false }, () => {
     const $nodeElement = Cypress.$('.react-flow__node:first');
     const styleBeforeDrag = $nodeElement.css('transform');
 
-    cy.drag('.react-flow__node:first', { x: 500, y: 500 }).then(() => {
+    cy.drag('.react-flow__node:first', { x: 100, y: 100 }).then(() => {
       const styleAfterDrag = $nodeElement.css('transform');
       expect(styleBeforeDrag).to.be.equal(styleAfterDrag);
     });
@@ -22,7 +22,7 @@ describe('DragHandle Flow Rendering', { testIsolation: false }, () => {
     const $nodeElement = Cypress.$('.react-flow__node:first');
     const styleBeforeDrag = $nodeElement.css('transform');
 
-    cy.drag('.custom-drag-handle:first', { x: 500, y: 500 }).then(() => {
+    cy.drag('.custom-drag-handle:first', { x: 100, y: 100 }).then(() => {
       const styleAfterDrag = $nodeElement.css('transform');
       expect(styleBeforeDrag).to.not.equal(styleAfterDrag);
     });

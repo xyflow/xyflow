@@ -1,6 +1,6 @@
 describe('Controls Testing', { testIsolation: false }, () => {
   before(() => {
-    cy.visit('/');
+    cy.visitStory('components-controls--default');
   });
 
   it('renders the control panel', () => {

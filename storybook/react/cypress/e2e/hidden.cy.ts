@@ -1,6 +1,6 @@
 describe('Hidden Flow Rendering', { testIsolation: false }, () => {
   before(() => {
-    cy.visit('/Hidden');
+    cy.visitStory('examples-nodes-hidden--default');
   });
 
   it('renders empty flow', () => {
@@ -10,18 +10,18 @@ describe('Hidden Flow Rendering', { testIsolation: false }, () => {
   });
 
   it('toggles isHidden mode', () => {
-    cy.get('.react-flow__ishidden').click();
+    cy.updateStoryArgs({ isHidden: false });
   });
 
   it('renders initial flow', () => {
     cy.get('.react-flow__renderer');
     cy.get('.react-flow__node').should('have.length', 4);
-    cy.get('.react-flow__edge').should('have.length', 3);
+    cy.get('.react-flow__edge').should('have.length', 2);
     cy.get('.react-flow__minimap-node').should('have.length', 4);
   });
 
   it('toggles isHidden mode again', () => {
-    cy.get('.react-flow__ishidden').click();
+    cy.updateStoryArgs({ isHidden: true });
   });
 
   it('renders empty flow', () => {

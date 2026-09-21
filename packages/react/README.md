@@ -90,11 +90,15 @@ Run `pnpm build` once and then you can use `pnpm dev` for local development.
 
 ## Testing
 
-Testing is done with cypress. You can find the tests in the [`examples/vite-app/cypress`](/examples/vite-app/cypress/) folder. In order to run the tests do:
+Cypress end-to-end tests live in [`storybook/react/cypress`](/storybook/react/cypress/) and run against standalone Storybook stories. Build the workspace packages once with `pnpm build`, then run from the repository root:
 
 ```sh
-pnpm test
+pnpm test:cypress:react
 ```
+
+This starts React Storybook on port 6006, runs the eight Cypress suites in Chrome, and stops the server afterwards. Chrome must be installed. To use the interactive runner, start `pnpm storybook:react` and run `pnpm --filter storybook-react test:e2e:open` in another terminal.
+
+Cypress component and utility tests remain in [`examples/react/cypress/components`](/examples/react/cypress/components/) and run with `pnpm --filter react-examples test-component`.
 
 ## xyflow Team
 

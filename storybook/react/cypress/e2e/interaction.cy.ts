@@ -1,6 +1,6 @@
 describe('Interaction Flow Rendering', { testIsolation: false }, () => {
   before(() => {
-    cy.visit('/Interaction');
+    cy.visitStory('examples-interaction-interaction--default');
   });
 
   it('renders initial flow', () => {
@@ -61,23 +61,23 @@ describe('Interaction Flow Rendering', { testIsolation: false }, () => {
   });
 
   it('tries to zoom by double click', () => {
-    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+    const styleBeforeZoom = Cypress.$('.react-flow__viewport').css('transform');
 
     cy.get('.react-flow__renderer')
       .dblclick()
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
         expect(styleBeforeZoom).to.equal(styleAfterZoom);
       });
   });
 
   it('tries to zoom by scroll', () => {
-    const styleBeforeZoom = Cypress.$('.react-flow__nodes').css('transform');
+    const styleBeforeZoom = Cypress.$('.react-flow__viewport').css('transform');
 
     cy.get('.react-flow__renderer')
       .trigger('wheel', 'topLeft', { deltaY: -200 })
       .then(() => {
-        const styleAfterZoom = Cypress.$('.react-flow__nodes').css('transform');
+        const styleAfterZoom = Cypress.$('.react-flow__viewport').css('transform');
         expect(styleBeforeZoom).to.equal(styleAfterZoom);
       });
   });
@@ -113,16 +113,7 @@ describe('Interaction Flow Rendering', { testIsolation: false }, () => {
   });
 
   it('connects two nodes', () => {
-    cy.get('.react-flow__node')
-      .contains('Node 3')
-      .find('.react-flow__handle.source')
-      .trigger('mousedown', { button: 0 });
-
-    cy.get('.react-flow__node')
-      .contains('Node 4')
-      .find('.react-flow__handle.target')
-      .trigger('mousemove')
-      .trigger('mouseup', { force: true });
+    cy.connectNodes('3', '4');
 
     cy.get('.react-flow__edge').should('have.length', 3);
   });

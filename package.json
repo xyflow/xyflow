@@ -17,6 +17,7 @@
     "test:storybook": "pnpm --filter storybook-react run test-storybook && pnpm --filter storybook-svelte run test-storybook",
     "test:storybook:react": "pnpm --filter storybook-react run test-storybook",
     "test:storybook:svelte": "pnpm --filter storybook-svelte run test-storybook",
+    "test:cypress:react": "pnpm --filter storybook-react test:e2e",
     "build:all": "turbo run build",
     "build": "turbo run build --filter=./packages/**",
     "format": "turbo run format --filter=./packages/**",

@@ -1,6 +1,6 @@
 describe('Empty Flow Rendering', { testIsolation: false }, () => {
   before(() => {
-    cy.visit('/Empty');
+    cy.visitStory('examples-state-api-empty--default');
   });
 
   it('renders an empty flow', () => {
@@ -29,13 +29,7 @@ describe('Empty Flow Rendering', { testIsolation: false }, () => {
   });
 
   it('connects nodes', () => {
-    cy.get('.react-flow__node').first().find('.react-flow__handle.source').trigger('mousedown', { button: 0 });
-
-    cy.get('.react-flow__node')
-      .last()
-      .find('.react-flow__handle.target')
-      .trigger('mousemove')
-      .trigger('mouseup', { force: true });
+    cy.connectNodes('1', '2');
 
     cy.get('.react-flow__edge').should('have.length', 1);
   });

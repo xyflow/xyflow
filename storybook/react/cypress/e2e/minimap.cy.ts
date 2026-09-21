@@ -1,6 +1,6 @@
 describe('Minimap Testing', { testIsolation: false }, () => {
   before(() => {
-    cy.visit('/');
+    cy.visitStory('components-minimap--default');
   });
 
   it('renders the mini map', () => {

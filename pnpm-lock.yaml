@@ -189,9 +189,6 @@ importers:
       cypress-real-events:
         specifier: 1.12.0
         version: 1.12.0(cypress@13.6.6)
-      start-server-and-test:
-        specifier: ^2.1.5
-        version: 2.1.5
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -580,9 +577,18 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^4.1.10
         version: 4.1.10(@vitest/browser@4.1.10)(vitest@4.1.10)
+      cypress:
+        specifier: 13.6.6
+        version: 13.6.6
+      cypress-real-events:
+        specifier: 1.12.0
+        version: 1.12.0(cypress@13.6.6)
       playwright:
         specifier: ^1.61.1
         version: 1.61.1
+      start-server-and-test:
+        specifier: ^2.1.5
+        version: 2.1.5
       storybook:
         specifier: ^10.4.6
         version: 10.4.6(@testing-library/dom@10.4.1)(@types/react@18.3.29)(prettier@3.8.3)(react@18.3.1)

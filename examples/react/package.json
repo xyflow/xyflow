@@ -9,10 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:dev": "cypress open",
-    "test": "pnpm test-component && pnpm test-e2e",
-    "test-component": "cypress run --component",
-    "test-e2e-cypress": "cypress run --e2e --headless",
-    "test-e2e": "start-server-and-test 'pnpm serve' http-get://localhost:3000 'pnpm test-e2e-cypress'"
+    "test": "pnpm test-component",
+    "test-component": "cypress run --component"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
@@ -36,7 +34,6 @@
     "@vitejs/plugin-react": "6.0.1",
     "cypress": "13.6.6",
     "cypress-real-events": "1.12.0",
-    "start-server-and-test": "^2.1.5",
     "typescript": "catalog:",
     "vite": "catalog:"
   }

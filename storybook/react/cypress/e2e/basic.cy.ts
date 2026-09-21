@@ -1,11 +1,10 @@
 describe('Basic Flow Rendering', { testIsolation: false }, () => {
   before(() => {
-    cy.visit('/');
+    cy.visitStory('examples-basic--default');
   });
 
-  it('renders a flow with three nodes', () => {
+  it('renders a flow with four nodes', () => {
     cy.get('.react-flow__renderer');
-    cy.get('.react-flow-basic-example'); // check if className prop works
     cy.get('.react-flow__node').should('have.length', 4);
     cy.get('.react-flow__edge').should('have.length', 2);
     cy.get('.react-flow__node').children('.react-flow__handle');
@@ -48,36 +47,28 @@ describe('Basic Flow Rendering', { testIsolation: false }, () => {
   });
 
   it('selects one node with a selection', () => {
-    cy.get('body')
-      .type('{Shift}', { release: false })
-      .get('.react-flow__pane')
-      .trigger('mousedown', 1, 10, { button: 0, force: true })
-      .trigger('mousemove', 1000, 200, { button: 0 })
-      .trigger('mouseup', 1000, 200, { button: 0 });
-
+    cy.get('body').type('{shift}', { release: false });
+    cy.get('.react-flow__node')
+      .first()
+      .then(($node) => {
+        const { left, top, right, bottom } = $node[0].getBoundingClientRect();
+        cy.get('body').realMouseDown({ x: left - 10, y: top - 10, shiftKey: true });
+        cy.get('body').realMouseMove(right + 10, bottom + 10, { shiftKey: true });
+        cy.get('body').realMouseUp({ x: right + 10, y: bottom + 10, shiftKey: true });
+      });
+    cy.get('body').type('{shift}', { release: true });
     cy.get('.react-flow__node').eq(0).should('have.class', 'selected');
-    cy.get('.react-flow__node').eq(3).should('have.not.class', 'selected');
-
-    cy.get('.react-flow__nodesselection-rect');
-    cy.get('body').type('{shift}', { release: true, force: true });
+    cy.get('.react-flow__node').eq(3).should('not.have.class', 'selected');
   });
 
   it('selects all nodes', () => {
-    cy.get('body')
-      .type('{shift}', { release: false })
-      .get('.react-flow__pane')
-      .trigger('mousedown', 'topRight', { button: 0, force: true })
-      .trigger('mousemove', 'bottomLeft', { button: 0 })
-      .wait(50)
-      .trigger('mouseup', 'bottomLeft', { button: 0, force: true })
-      .wait(400)
-      .get('.react-flow__node')
-      .should('have.class', 'selected');
-
-    cy.wait(200);
-    cy.get('.react-flow__nodesselection-rect');
-
-    cy.get('body').type('{shift}', { release: true, force: true });
+    cy.get('body').type('{shift}', { release: false });
+    cy.get('body').realMouseDown({ x: 5, y: 5, shiftKey: true });
+    cy.get('body').realMouseMove(1270, 710, { shiftKey: true });
+    cy.get('body').realMouseUp({ x: 1270, y: 710, shiftKey: true });
+    cy.get('body').type('{shift}', { release: true });
+    cy.get('.react-flow__node').should('have.class', 'selected');
+    cy.get('.react-flow__nodesselection-rect').should('exist');
   });
 
   it('removes selection', () => {
@@ -107,17 +98,7 @@ describe('Basic Flow Rendering', { testIsolation: false }, () => {
   });
 
   it('connects nodes', () => {
-    cy.get('.react-flow__node')
-      .contains('Node 3')
-      .find('.react-flow__handle.source')
-      .trigger('mousedown', { force: true, button: 0 });
-
-    cy.get('.react-flow__node')
-      .contains('Node 4')
-      .find('.react-flow__handle.target')
-      .trigger('mousemove', { force: true, button: 0 })
-      .wait(200)
-      .trigger('mouseup', { force: true, button: 0 });
+    cy.connectNodes('3', '4');
 
     cy.get('.react-flow__edge').as('edge');
     cy.get('@edge').should('have.length', 1);

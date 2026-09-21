@@ -7,5 +7,6 @@
       "@shared/*": ["../shared/*"]
     }
   },
-  "include": ["./**/*", "../shared/**/*"]
+  "include": ["./**/*", "../shared/**/*"],
+  "exclude": ["cypress", "cypress.config.ts"]
 }
