@@ -1,0 +1,32 @@
+{
+  "name": "storybook-vue",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev -p 6009",
+    "storybook": "storybook dev -p 6009",
+    "storybook:serve": "storybook dev -p 6009 --no-open",
+    "build-storybook": "storybook build",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@dagrejs/dagre": "^3.0.0",
+    "@xyflow/vue": "workspace:*",
+    "html-to-image": "^1.11.13",
+    "pinia": "^3.0.4"
+  },
+  "devDependencies": {
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/vue3-vite": "10.4.6",
+    "@types/node": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vueuse/core": "catalog:",
+    "storybook": "^10.4.6",
+    "typescript": "catalog:",
+    "unplugin-auto-import": "^21.0.0",
+    "vite": "catalog:",
+    "vue": "catalog:",
+    "vue-tsc": "catalog:"
+  }
+}

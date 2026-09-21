@@ -13,11 +13,12 @@ pnpm build
 pnpm storybook              # :6008
 pnpm storybook:react        # :6006
 pnpm storybook:svelte       # :6007
+pnpm storybook:vue          # :6009
 ```
 
 ## Running Vitest (CI)
 
-Only stories tagged `test` run in CI:
+React and Svelte stories tagged `test` run in CI:
 
 ```bash
 pnpm test:storybook
@@ -42,3 +43,9 @@ $NAME/
 
 Examples stay separate under `storybook/{react,svelte}/stories/examples/`.
 
+
+## Vue Storybook (`storybook/vue`)
+
+Vue has its own stories and example components under `storybook/vue/stories/examples/`, migrated from the former Vue examples app. It does not consume `storybook/shared` stories or test helpers. The combined sidebar links to Vue alongside React and Svelte.
+
+Build it with `pnpm exec turbo run build-storybook --filter=storybook-vue`. Run `pnpm --filter storybook-vue typecheck` to check its Vue components and stories.

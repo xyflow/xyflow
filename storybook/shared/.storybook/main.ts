@@ -19,6 +19,7 @@ const config: StorybookConfig = {
           title: 'React Flow',
           url: 'http://localhost:6006',
         },
+        vue: { title: 'Vue Flow', url: 'http://localhost:6009' },
         svelte: {
           title: 'Svelte Flow',
           url: 'http://localhost:6007',
@@ -27,6 +28,7 @@ const config: StorybookConfig = {
     }
 
     return {
+      vue: { title: 'Vue Flow', url: '/vue' },
       react: {
         title: 'React Flow',
         url: '/react',

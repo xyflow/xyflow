@@ -6,7 +6,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'This Storybook composes the React Flow and Svelte Flow Storybooks. Use the sidebar to switch between them.',
+          'This Storybook composes the React Flow, Svelte Flow, and Vue Flow Storybooks. Use the sidebar to switch between them.',
       },
     },
   },
@@ -19,8 +19,8 @@ const meta = {
       />
       <h1>xyflow Storybook</h1>
       <p>
-        Select <strong>React Flow</strong> or <strong>Svelte Flow</strong> in the sidebar to browse framework-specific
-        stories and run tests.
+        Select <strong>React Flow</strong>, <strong>Svelte Flow</strong>, or <strong>Vue Flow</strong> in the sidebar to
+        browse framework-specific stories and run tests.
       </p>
       <p style={{ marginBottom: 0, color: '#666' }}>
         In development, run all instances with <code>pnpm storybook</code> from the monorepo root.
