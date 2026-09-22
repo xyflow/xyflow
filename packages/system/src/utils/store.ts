@@ -474,7 +474,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
           positionAbsolute,
           handleBounds: {
             source: getHandleBounds('source', update.nodeElement, nodeBounds, handleZoom, node.id),
-            target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
+            target: getHandleBounds('target', update.nodeElement, nodeBounds, handleZoom, node.id),
           },
         },
       };
