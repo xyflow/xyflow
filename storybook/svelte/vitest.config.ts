@@ -1,3 +1,4 @@
+import { svelteConditions } from '../shared/config/vite';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,15 +9,14 @@ import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 
 import { playwright } from '@vitest/browser-playwright';
 
-const dirname =
-  typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 const sharedRoot = path.resolve(dirname, '../shared');
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   plugins: [svelte()],
   resolve: {
-    conditions: ['svelte', 'browser', 'development', 'import', 'module', 'default'],
+    conditions: svelteConditions,
   },
   server: {
     fs: {
@@ -31,7 +31,7 @@ export default defineConfig({
         plugins: [
           storybookTest({
             configDir: path.join(dirname, '.storybook'),
-            storybookScript: 'pnpm storybook --no-open',
+            storybookScript: 'pnpm dev',
             tags: {
               include: ['test'],
               exclude: ['example'],

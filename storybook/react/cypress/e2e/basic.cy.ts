@@ -105,7 +105,8 @@ describe('Basic Flow Rendering', { testIsolation: false }, () => {
   });
 
   it('removes an edge', () => {
-    cy.get('.react-flow__edge:first').click();
+    // The vertical SVG edge has zero geometric width despite its visible stroke.
+    cy.get('.react-flow__edge:first').click({ force: true }).should('have.class', 'selected');
     cy.get('html').realPress('Backspace');
 
     cy.get('.react-flow__edge').should('have.length', 0);

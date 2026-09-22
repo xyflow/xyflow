@@ -9,13 +9,13 @@ import {
   createPropsColorModeSuite,
 } from 'storybook-shared/tests';
 
-import {
-  edgesGeneralSvelteConfig,
-  nodesGeneralSvelteConfig,
-  paneGeneralConfig,
-  paneNonDefaultsSvelteConfig,
-} from './testConfigs';
-import { exampleStoryParameters } from '../../examples/exampleStory';
+import { createTestConfigs } from '@shared/tests/fixtures';
+const {
+  edgesGeneral: edgesGeneralSvelteConfig,
+  nodesGeneral: nodesGeneralSvelteConfig,
+  paneGeneral: paneGeneralConfig,
+  paneNonDefaults: paneNonDefaultsSvelteConfig,
+} = createTestConfigs('svelte');
 
 import SvelteFlowExample from './Flow.svelte';
 import SvelteFlow from './SvelteFlow.svelte';
@@ -48,7 +48,6 @@ const meta = {
   component: SvelteFlowExample,
   tags: ['components'],
   parameters: {
-    ...exampleStoryParameters,
     docs: {
       description: {
         component: `Interactive playground for [\`<SvelteFlow />\`](${API_DOCS_URL}) props. Each story focuses on one docs subsection — use the controls panel to tweak values. The EventHandlers story logs callbacks in the Storybook **Actions** panel.

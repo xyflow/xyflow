@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
-import Example from './+page.svelte';
+import Example from './Example.svelte';
 
 const meta = {
   title: 'Examples/State & API/SetNodesBatching',

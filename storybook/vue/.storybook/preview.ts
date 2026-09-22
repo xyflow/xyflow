@@ -9,7 +9,16 @@ setup((app) => {
 const preview: Preview = {
   parameters: {
     layout: 'fullscreen',
-    options: { storySort: { order: ['Examples', ['Basic'], 'Generic Tests'] } },
+    options: {
+      storySort: {
+        order: [
+          'Components',
+          'Examples',
+          ['Basic', 'Edges', 'Nodes', 'Handles', 'Connections', 'State & API', 'Layout', 'Interaction', 'Stress'],
+          'Generic Tests',
+        ],
+      },
+    },
   },
   decorators: [() => ({ template: '<div style="width: 100%; height: 100vh"><story /></div>' })],
 };

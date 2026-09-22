@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "storybook": "storybook dev -p 6008",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "dev": "storybook dev -p 6008 --no-open"
   },
   "exports": {
     "./types": "./types.ts",
@@ -28,7 +28,9 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "storybook": "^10.4.6",
-    "svelte": "catalog:"
+    "svelte": "catalog:",
+    "@xyflow/vue": "workspace:*",
+    "vue": "catalog:"
   },
   "devDependencies": {
     "@storybook/addon-docs": "^10.4.6",

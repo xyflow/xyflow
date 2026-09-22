@@ -1,4 +1,4 @@
-import './component-commands';
+import './commands';
 import 'cypress-real-events/support';
 import { mount } from 'cypress/react';
 import '@xyflow/react/dist/style.css';

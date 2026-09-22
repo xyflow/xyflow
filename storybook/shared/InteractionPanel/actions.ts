@@ -32,7 +32,7 @@ export const replacementFlow = {
 
 export function createInteractionPanel(
   api: InteractionAPI,
-  framework: 'react' | 'svelte',
+  framework: 'react' | 'svelte' | 'vue',
   report: (name: string, value: unknown) => void
 ) {
   return {
@@ -54,7 +54,7 @@ export function createInteractionPanel(
         api.getEdges().map((edge) => ({
           ...edge,
           style:
-            framework === 'react'
+            framework !== 'svelte'
               ? { ...(typeof edge.style === 'object' ? edge.style : {}), stroke: '#ff5050' }
               : `${typeof edge.style === 'string' ? edge.style : ''}; stroke: #ff5050;`,
         }))

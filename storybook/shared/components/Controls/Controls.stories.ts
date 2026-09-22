@@ -28,7 +28,12 @@ const meta = {
   },
   args: {
     ...defaultControlsArgs,
-    'aria-label': framework === 'react' ? 'React Flow controls' : 'Svelte Flow controls',
+    'aria-label':
+      framework === 'react'
+        ? 'React Flow controls'
+        : framework === 'vue'
+          ? 'Vue Flow controls'
+          : 'Svelte Flow controls',
     ...(framework === 'react'
       ? {
           onZoomIn: fn(),

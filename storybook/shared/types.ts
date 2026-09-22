@@ -1,4 +1,4 @@
-export type FlowFramework = 'react' | 'svelte';
+export type FlowFramework = 'react' | 'svelte' | 'vue';
 
 export type StoryArgTypes = Record<
   string,

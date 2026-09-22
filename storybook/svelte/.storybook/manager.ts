@@ -1,3 +1,3 @@
-import { configureSidebar } from '../../shared/manager-config.ts';
+import { configureSidebar } from '../../shared/config/manager.ts';
 
 configureSidebar(['examples', 'generic-tests']);

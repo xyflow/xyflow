@@ -157,7 +157,11 @@ export function createAddonsPlays(framework: FlowFramework) {
     expect(getClassName(node)).toMatch(/selected/);
 
     const paneBox = pane.getBoundingClientRect();
-    await userEvent.click(pane, { clientX: paneBox.x + 5, clientY: paneBox.y + 5 });
+    await userEvent.pointer({
+      target: pane,
+      keys: '[MouseLeft]',
+      coords: { clientX: paneBox.x + 5, clientY: paneBox.y + 5 },
+    });
     expect(getClassName(node)).not.toMatch(/selected/);
 
     await userEvent.click(root.querySelector(controlsSelector(framework, 'interactive'))!);

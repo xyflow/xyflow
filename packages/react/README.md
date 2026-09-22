@@ -93,12 +93,12 @@ Run `pnpm build` once and then use `pnpm dev:react` to start React Storybook at 
 Cypress end-to-end tests live in [`storybook/react/cypress`](/storybook/react/cypress/) and run against standalone Storybook stories. Build the workspace packages once with `pnpm build`, then run from the repository root:
 
 ```sh
-pnpm test:cypress:react
+pnpm --filter storybook-react test:e2e
 ```
 
-This starts React Storybook on port 6006, runs the eight Cypress suites in Chrome, and stops the server afterwards. Chrome must be installed. To use the interactive runner, start `pnpm storybook:react` and run `pnpm --filter storybook-react test:e2e:open` in another terminal.
+This starts React Storybook on port 6006, runs the eight Cypress suites in Chrome, and stops the server afterwards. Chrome must be installed. To use the interactive runner, start `pnpm --filter storybook-react dev` and run `pnpm --filter storybook-react test:e2e:open` in another terminal.
 
-Cypress component and utility tests live in [`storybook/react/cypress/components`](/storybook/react/cypress/components/) and run with `pnpm test:cypress:components`.
+Cypress component and utility tests live in [`storybook/react/cypress/components`](/storybook/react/cypress/components/) and run with `pnpm --filter storybook-react test:component`.
 
 ## xyflow Team
 

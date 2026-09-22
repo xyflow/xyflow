@@ -45,15 +45,15 @@ export function nodeToolbarSelector(framework: FlowFramework) {
 }
 
 export function backgroundSelector(framework: FlowFramework) {
-  return framework === 'react' ? '[data-testid="rf__background"]' : '[data-testid="svelte-flow__background"]';
+  return flowClass(framework, 'background');
 }
 
 export function selectionSelector(framework: FlowFramework) {
-  return framework === 'react' ? '.react-flow__selection' : '.svelte-flow__selection';
+  return flowClass(framework, 'selection');
 }
 
 export function nodesSelectionSelector(framework: FlowFramework) {
-  return framework === 'react' ? '.react-flow__nodesselection' : '.svelte-flow__selection';
+  return flowClass(framework, framework === 'svelte' ? 'selection' : 'nodesselection');
 }
 
 export function dataIdSelector(id: string) {

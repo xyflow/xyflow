@@ -4,14 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "storybook": "storybook dev -p 6006",
-    "storybook:serve": "storybook dev -p 6006 --no-open",
     "build-storybook": "storybook build",
     "test-storybook": "vitest run --project=storybook-react",
     "test:e2e:open": "cypress open --e2e",
     "test:e2e:run": "cypress run --e2e --browser chrome",
-    "test:e2e": "start-server-and-test 'storybook dev -p 6006 --ci --no-open' http-get://localhost:6006/index.json 'pnpm test:e2e:run'",
-    "dev": "storybook dev -p 6006",
+    "test:e2e": "start-server-and-test 'pnpm dev --ci' http-get://localhost:6006/index.json 'pnpm test:e2e:run'",
+    "dev": "storybook dev -p 6006 --no-open",
     "test:component": "cypress run --component --browser chrome",
     "test:component:open": "cypress open --component"
   },

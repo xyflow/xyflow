@@ -35,10 +35,7 @@ export const defaultBackgroundArgs: SharedBackgroundArgs = {
   lineWidth: 1,
 };
 
-export function backgroundArgTypes(
-  framework: 'react' | 'svelte',
-  variantOptions: unknown[]
-): StoryArgTypes {
+export function backgroundArgTypes(framework: 'react' | 'svelte' | 'vue', variantOptions: unknown[]): StoryArgTypes {
   const base: StoryArgTypes = {
     id: { control: 'text', description: 'Unique id for the background pattern.' },
     color: { control: 'color', description: 'Color of the pattern.' },

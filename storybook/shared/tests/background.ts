@@ -1,9 +1,6 @@
 import { expect, waitFor } from 'storybook/test';
 
-import {
-  BACKGROUND_TEST_BG_COLOR,
-  BACKGROUND_TEST_PATTERN_COLOR,
-} from '../components/Background/config';
+import { BACKGROUND_TEST_BG_COLOR, BACKGROUND_TEST_PATTERN_COLOR } from '../components/Background/config';
 
 import type { FlowFramework, StoryPlayContext } from '../types';
 import { backgroundSelector, flowClass, getClassName, getQueryRoot } from '../utils';
@@ -34,7 +31,8 @@ export function createBackgroundPlays(framework: FlowFramework) {
       const background = getBackground(canvasElement, framework);
       const path = background?.querySelector('path');
       expect(path).toBeInTheDocument();
-      expect(getClassName(path!)).toMatch(/lines/);
+      if (framework !== 'vue') expect(getClassName(path!)).toMatch(/lines/);
+      else expect(path).toHaveAttribute('d', expect.stringContaining('M'));
     });
   };
 
@@ -50,16 +48,20 @@ export function createBackgroundPlays(framework: FlowFramework) {
   const appliesBgColor = async ({ canvasElement }: StoryPlayContext) => {
     await waitFor(() => {
       const background = getBackground(canvasElement, framework) as HTMLElement | null;
-      expect(background?.style.getPropertyValue('--xy-background-color-props')).toBe(BACKGROUND_TEST_BG_COLOR);
+      if (framework === 'vue') expect(background).toHaveStyle({ backgroundColor: BACKGROUND_TEST_BG_COLOR });
+      else expect(background?.style.getPropertyValue('--xy-background-color-props')).toBe(BACKGROUND_TEST_BG_COLOR);
     });
   };
 
   const appliesPatternColor = async ({ canvasElement }: StoryPlayContext) => {
     await waitFor(() => {
       const background = getBackground(canvasElement, framework) as HTMLElement | null;
-      expect(background?.style.getPropertyValue('--xy-background-pattern-color-props')).toBe(
-        BACKGROUND_TEST_PATTERN_COLOR
-      );
+      if (framework === 'vue')
+        expect(background?.querySelector('circle')).toHaveAttribute('fill', BACKGROUND_TEST_PATTERN_COLOR);
+      else
+        expect(background?.style.getPropertyValue('--xy-background-pattern-color-props')).toBe(
+          BACKGROUND_TEST_PATTERN_COLOR
+        );
     });
   };
 

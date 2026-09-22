@@ -1,10 +1,9 @@
 import type { StorybookConfig } from '@storybook/svelte-vite';
 
-import path from 'node:path';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { mergeViteAliases, sharedStorybookViteConfig } from '../../shared/storybookVite.ts';
+import { configureSharedVite } from '../../shared/config/vite.ts';
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -14,9 +13,8 @@ function getAbsolutePath(value: string) {
   return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
 }
 
-const configDir = path.dirname(fileURLToPath(import.meta.url));
-const sharedRoot = path.resolve(configDir, '../../shared');
-const sharedVite = sharedStorybookViteConfig('svelte', sharedRoot);
+const configDir = dirname(fileURLToPath(import.meta.url));
+const sharedRoot = resolve(configDir, '../../shared');
 
 const config: StorybookConfig = {
   stories: [
@@ -31,17 +29,7 @@ const config: StorybookConfig = {
     getAbsolutePath('@storybook/addon-docs'),
   ],
   framework: getAbsolutePath('@storybook/svelte-vite'),
-  async viteFinal(config) {
-    config.server ??= {};
-    config.server.fs ??= {};
-    config.server.fs.allow = ['../..', sharedRoot];
-    config.resolve ??= {};
-    config.resolve.conditions = ['svelte', 'browser', 'development', 'import', 'module', 'default'];
-
-    config.define = { ...config.define, ...sharedVite.define };
-    config.resolve.alias = mergeViteAliases(config.resolve.alias, sharedVite.resolve.alias);
-
-    return config;
-  },
+  viteFinal: (config) => configureSharedVite(config, 'svelte', sharedRoot),
 };
+
 export default config;

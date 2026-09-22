@@ -2,15 +2,7 @@ import { expect, userEvent, waitFor } from 'storybook/test';
 
 import type { FlowFramework, StoryPlayContext } from '../types';
 import { runPlaySuite, type PlaySuiteCase } from './suite';
-import {
-  clickAt,
-  dataIdSelector,
-  edgePathSelector,
-  getClassName,
-  getQueryRoot,
-  queryEdge,
-  sleep,
-} from '../utils';
+import { clickAt, dataIdSelector, edgePathSelector, getClassName, getQueryRoot, queryEdge, sleep } from '../utils';
 
 async function waitForEdges(canvasElement: HTMLElement, edgeIds: string[]) {
   for (const edgeId of edgeIds) {
@@ -110,9 +102,10 @@ export function createEdgesPlays(framework: FlowFramework) {
     await waitForEdges(canvasElement, ['interaction-width']);
     const edge = queryEdge(canvasElement, 'interaction-width')!;
     const edgeBox = edge.getBoundingClientRect();
-    await userEvent.click(edge, {
-      clientX: edgeBox.x + edgeBox.width * 0.5 + 21,
-      clientY: edgeBox.y + edgeBox.height * 0.5,
+    await userEvent.pointer({
+      target: edge,
+      keys: '[MouseLeft]',
+      coords: { clientX: edgeBox.x + edgeBox.width * 0.5 + 21, clientY: edgeBox.y + edgeBox.height * 0.5 },
     });
     expect(getClassName(edge)).toMatch(/selected/);
   };

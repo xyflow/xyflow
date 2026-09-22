@@ -1,14 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import { PanOnScrollMode } from '@xyflow/svelte';
 
-import Page from './+page.svelte';
-import { exampleStoryParameters } from '../../exampleStory';
+import Example from './Example.svelte';
 
 const meta = {
   title: 'Examples/Interaction/Interaction',
-  component: Page,
+  component: Example,
   tags: ['example'],
-  parameters: exampleStoryParameters,
   args: {
     elementsSelectable: false,
     nodesDraggable: false,
@@ -40,7 +38,7 @@ const meta = {
     captureZoomScroll: { control: 'boolean' },
     captureElementClick: { control: 'boolean' },
   },
-} satisfies Meta<typeof Page>;
+} satisfies Meta<typeof Example>;
 
 export default meta;
 

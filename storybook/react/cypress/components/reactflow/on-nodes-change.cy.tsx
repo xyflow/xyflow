@@ -129,7 +129,7 @@ function Comp(props: CompProps) {
   }, []);
 
   return (
-    <ReactFlow nodes={nodes} onNodesChange={onNodesChange} nodeDragThreshold={0}>
+    <ReactFlow nodes={nodes} onNodesChange={onNodesChange} nodeDragThreshold={0} autoPanOnNodeDrag={false}>
       <UpdateButton />
     </ReactFlow>
   );

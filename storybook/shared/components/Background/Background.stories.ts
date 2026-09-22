@@ -1,8 +1,6 @@
 // Resolves to @storybook/react-vite or @storybook/svelte-vite.
 import type { Meta, StoryObj } from '@storybook/framework';
 
-import { BackgroundVariant } from '@xyflow/storybook';
-
 import { createBackgroundPlays } from '../../tests/background';
 import type { FlowFramework } from '../../types';
 
@@ -26,7 +24,7 @@ const meta = {
   tags: ['components', 'test'],
   parameters: { layout: 'fullscreen' },
   args: defaultBackgroundArgs,
-  argTypes: backgroundArgTypes(framework, Object.values(BackgroundVariant)),
+  argTypes: backgroundArgTypes(framework, ['dots', 'lines', 'cross']),
 } satisfies Meta<typeof BackgroundExample>;
 
 export default meta;

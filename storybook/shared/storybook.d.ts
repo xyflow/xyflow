@@ -1,1 +1,1 @@
-declare const __STORYBOOK_FRAMEWORK__: 'react' | 'svelte';
+declare const __STORYBOOK_FRAMEWORK__: 'react' | 'svelte' | 'vue';

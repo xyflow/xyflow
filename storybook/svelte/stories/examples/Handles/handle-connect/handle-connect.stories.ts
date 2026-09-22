@@ -1,14 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 
-import Page from './+page.svelte';
-import { exampleStoryParameters } from '../../exampleStory';
+import Example from './Example.svelte';
 
 const meta = {
   title: 'Examples/Handles/Handle Connect',
-  component: Page,
+  component: Example,
   tags: ['example'],
-  parameters: exampleStoryParameters,
-} satisfies Meta<typeof Page>;
+} satisfies Meta<typeof Example>;
 
 export default meta;
 

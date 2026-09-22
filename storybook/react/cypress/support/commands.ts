@@ -2,15 +2,35 @@ Cypress.Commands.add('drag', (selector, { x, y }) =>
   cy
     .get(selector)
     .should('be.visible')
-    .then(($el) => {
-      const { left, top, width, height } = $el[0].getBoundingClientRect();
-      const endX = left + width / 2 + x;
-      const endY = top + height / 2 + y;
-      cy.wrap($el).realMouseDown();
-      cy.get('body').realMouseMove(left + width / 2 + x / 2, top + height / 2 + y / 2);
-      cy.get('body').realMouseMove(endX, endY).wait(50).realMouseUp({ x: endX, y: endY });
-      return cy.wrap($el);
-    })
+    .then(($el) =>
+      cy.window().then((win) => {
+        const { left, top, width, height } = $el[0].getBoundingClientRect();
+        const startX = left + width / 2;
+        const startY = top + height / 2;
+        const dispatch = (target: EventTarget, type: string, clientX: number, clientY: number) =>
+          target.dispatchEvent(
+            new win.MouseEvent(type, {
+              bubbles: true,
+              cancelable: true,
+              view: win,
+              button: 0,
+              buttons: type === 'mouseup' ? 0 : 1,
+              clientX,
+              clientY,
+            })
+          );
+
+        dispatch($el[0], 'mousedown', startX, startY);
+        dispatch(win.document, 'mousemove', startX + x / 2, startY + y / 2);
+        return cy.wait(50).then(() => {
+          dispatch(win.document, 'mousemove', startX + x, startY + y);
+          return cy.wait(50).then(() => {
+            dispatch(win.document, 'mouseup', startX + x, startY + y);
+            return cy.wrap($el);
+          });
+        });
+      })
+    )
 );
 
 Cypress.Commands.add('dragPane', ({ from, to }) =>

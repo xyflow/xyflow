@@ -8,11 +8,13 @@ type ToolbarPosition = NonNullable<SharedNodeToolbarArgs['position']>;
 type ToolbarAlign = NonNullable<SharedNodeToolbarArgs['align']>;
 
 export function createNodeToolbarPlays(framework: FlowFramework) {
-  const toolbarSelector = `${dataIdSelector(DEMO_NODE_ID)}${nodeToolbarSelector(framework)}`;
+  const toolbarSelector = `${framework === 'vue' ? '' : dataIdSelector(DEMO_NODE_ID)}${nodeToolbarSelector(framework)}`;
 
   const waitForDemoNode = async ({ canvasElement }: StoryPlayContext) => {
     await waitFor(() => {
-      expect(queryNode(canvasElement, framework, DEMO_NODE_ID)).toBeTruthy();
+      const node = queryNode(canvasElement, framework, DEMO_NODE_ID);
+      expect(node).toBeTruthy();
+      expect(node).toBeVisible();
     });
   };
 

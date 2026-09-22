@@ -50,7 +50,7 @@ Please use a meaningful commit message and add a little description of your chan
 1. Install dependencies `pnpm install`
 2. Build once with `pnpm build`, then start Storybook with `pnpm storybook`
 3. Test your changes with the existing Storybook stories or add a new story if needed
-4. Run `pnpm test:storybook`, `pnpm test:cypress:react`, and `pnpm test:cypress:components`; add tests for new features
+4. Run `pnpm test:storybook`, `pnpm --filter storybook-react test:e2e`, and `pnpm --filter storybook-react test:component`; add tests for new features
 
 ## Changeset Style Guide
 

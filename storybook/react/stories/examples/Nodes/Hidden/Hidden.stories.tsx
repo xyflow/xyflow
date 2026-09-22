@@ -1,13 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { HiddenExample } from './index';
-import { exampleStoryParameters } from '../../exampleStory';
 
 const meta = {
   title: 'Examples/Nodes/Hidden',
   component: HiddenExample,
   tags: ['example'],
-  parameters: exampleStoryParameters,
   args: {
     isHidden: true,
   },

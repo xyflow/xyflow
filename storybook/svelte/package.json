@@ -4,11 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "storybook": "storybook dev -p 6007",
-    "storybook:serve": "storybook dev -p 6007 --no-open",
     "build-storybook": "storybook build",
     "test-storybook": "vitest run --project=storybook-svelte",
-    "dev": "storybook dev -p 6007"
+    "dev": "storybook dev -p 6007 --no-open"
   },
   "dependencies": {
     "@xyflow/svelte": "workspace:*",

@@ -8,14 +8,15 @@ import {
   createPropsColorModeSuite,
 } from 'storybook-shared/play-helpers';
 
-import {
-  edgesGeneralReactConfig,
-  nodesGeneralReactConfig,
-  paneGeneralConfig,
-  paneNonDefaultsConfig,
-} from './testConfigs';
-import { withReactFlowProvider, exampleStoryParameters } from '../../examples/exampleStory';
-import { Flow } from '../../Flow';
+import { createTestConfigs } from '@shared/tests/fixtures';
+const {
+  edgesGeneral: edgesGeneralReactConfig,
+  nodesGeneral: nodesGeneralReactConfig,
+  paneGeneral: paneGeneralConfig,
+  paneNonDefaults: paneNonDefaultsConfig,
+} = createTestConfigs('react');
+import { withReactFlowProvider } from './decorators';
+import { Flow } from './TestFlow';
 import DragHandleNode from '../../examples/Handles/DragHandle/DragHandleNode';
 const interactionNodeTypes = { DragHandleNode };
 
@@ -49,7 +50,6 @@ const meta = {
   component: ReactFlowApiExample,
   tags: ['components'],
   parameters: {
-    ...exampleStoryParameters,
     docs: {
       description: {
         component: `Interactive playground for [\`<ReactFlow />\`](${API_DOCS_URL}) props. Each story focuses on one docs subsection — use the controls panel to tweak values. The EventHandlers story logs callbacks in the Storybook **Actions** panel.
