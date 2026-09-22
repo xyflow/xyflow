@@ -112,9 +112,12 @@ export function Pane({
       return;
     }
 
+    const { resetSelectedElements, nodesSelectionActive } = store.getState();
     onPaneClick?.(event);
-    store.getState().resetSelectedElements();
-    store.setState({ nodesSelectionActive: false });
+    resetSelectedElements();
+    if (nodesSelectionActive) {
+      store.setState({ nodesSelectionActive: false });
+    }
   };
 
   const onContextMenu = (event: ReactMouseEvent) => {
@@ -339,9 +342,10 @@ export function Pane({
     if (selectionInProgress.current) {
       onSelectionEnd?.(event);
 
-      store.setState({
-        nodesSelectionActive: selectedNodeIds.current.size > 0,
-      });
+      const nodesSelectionActive = selectedNodeIds.current.size > 0;
+      if (store.getState().nodesSelectionActive !== nodesSelectionActive) {
+        store.setState({ nodesSelectionActive });
+      }
     }
 
     cleanupAutoPan();

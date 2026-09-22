@@ -33,7 +33,9 @@ export function useGlobalKeyHandler({
       const { edges } = edgesStore.getState();
       const { nodes } = nodesStore.getState();
       void deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected) });
-      store.setState({ nodesSelectionActive: false });
+      if (store.getState().nodesSelectionActive) {
+        store.setState({ nodesSelectionActive: false });
+      }
     }
   }, [deleteKeyPressed]);
 

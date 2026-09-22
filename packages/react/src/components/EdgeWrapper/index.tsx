@@ -113,10 +113,12 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   }
 
   const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-    const { addSelectedEdges, unselectNodesAndEdges, multiSelectionActive } = store.getState();
+    const { addSelectedEdges, unselectNodesAndEdges, multiSelectionActive, nodesSelectionActive } = store.getState();
 
     if (isSelectable) {
-      store.setState({ nodesSelectionActive: false });
+      if (nodesSelectionActive) {
+        store.setState({ nodesSelectionActive: false });
+      }
 
       if (edge.selected && multiSelectionActive) {
         unselectNodesAndEdges({ nodes: [], edges: [edge] });

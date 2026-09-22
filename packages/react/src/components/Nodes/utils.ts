@@ -22,7 +22,8 @@ export function handleNodeClick({
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;
 }) {
-  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, onError } = store.getState();
+  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, onError, nodesSelectionActive } =
+    store.getState();
   const { nodeLookup } = nodesStore.getState();
   const node = nodeLookup.get(id);
 
@@ -31,7 +32,9 @@ export function handleNodeClick({
     return;
   }
 
-  store.setState({ nodesSelectionActive: false });
+  if (nodesSelectionActive) {
+    store.setState({ nodesSelectionActive: false });
+  }
 
   if (!node.selected) {
     addSelectedNodes([id]);

@@ -8,6 +8,7 @@ import {
   useNodesStore,
   useViewportStore,
   useReactFlowStoreApi,
+  useShallow,
 } from '../../hooks/useReactFlowStore';
 import { Panel } from '../../components/Panel';
 import type { NodesStore, ViewportStore, Node } from '../../types';
@@ -20,7 +21,9 @@ const defaultHeight = 150;
 
 const filterHidden = (node: Node) => !node.hidden;
 
-const selector = (s: NodesStore, viewport: ViewportStore) => {
+const viewportSelector = ({ transform, width, height }: ViewportStore) => ({ transform, width, height });
+
+const selector = (s: NodesStore, viewport: ReturnType<typeof viewportSelector>) => {
   const viewBB: Rect = {
     x: -viewport.transform[0] / viewport.transform[2],
     y: -viewport.transform[1] / viewport.transform[2],
@@ -97,7 +100,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
   const svg = useRef<SVGSVGElement>(null);
   const { rfId, panZoom, translateExtent, ariaLabelConfig } = useReactFlowStore();
 
-  const viewport = useViewportStore();
+  const viewport = useViewportStore(useShallow(viewportSelector));
   const { viewBB, boundingRect, flowWidth, flowHeight } = useNodesStore(
     useCustomDiff(
       useCallback((s: NodesStore) => selector(s, viewport), [viewport]),
