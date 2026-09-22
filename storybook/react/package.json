@@ -1,0 +1,50 @@
+{
+  "name": "storybook-react",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build-storybook": "storybook build",
+    "test-storybook": "vitest run --project=storybook-react",
+    "test:e2e:open": "cypress open --e2e",
+    "test:e2e:run": "cypress run --e2e --browser chrome",
+    "test:e2e": "start-server-and-test 'pnpm dev --ci' http-get://localhost:6006/index.json 'pnpm test:e2e:run'",
+    "dev": "storybook dev -p 6006 --no-open",
+    "test:component": "cypress run --component --browser chrome",
+    "test:component:open": "cypress open --component"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.11.2",
+    "@xyflow/react": "workspace:*",
+    "@xyflow/system": "workspace:*",
+    "classcat": "^5.0.5",
+    "localforage": "^1.10.0",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-redux": "^9.2.0",
+    "redux": "^5.0.1",
+    "storybook-shared": "workspace:*",
+    "zustand": "^4.5.7"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-a11y": "^10.4.6",
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/addon-vitest": "^10.4.6",
+    "@storybook/react-vite": "^10.4.6",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.10",
+    "cypress": "15.21.1",
+    "cypress-real-events": "1.12.0",
+    "playwright": "^1.61.1",
+    "start-server-and-test": "^2.1.5",
+    "storybook": "^10.4.6",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "^4.1.10",
+    "@cypress/skip-test": "^2.6.1",
+    "@vitejs/plugin-react": "6.0.1"
+  }
+}

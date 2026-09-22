@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "es2017",
+    "lib": ["DOM", "ESNext"],
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": false,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "incremental": false,
+    "allowJs": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "types": ["vite/client"],
+    "paths": {
+      "@shared/*": ["../shared/*"],
+      "@storybook/framework": ["./node_modules/@storybook/vue3-vite"],
+      "@xyflow/storybook": ["../../packages/vue/src/index.ts"],
+      "Basic": ["../shared/examples/Basic/Flow.vue"],
+      "A11y": ["../shared/examples/Interaction/A11y/Flow.vue"],
+      "CustomConnectionLine": ["../shared/examples/Connections/CustomConnectionLine/Flow.vue"],
+      "AddNodeOnEdgeDrop": ["../shared/examples/Connections/AddNodeOnEdgeDrop/Flow.vue"],
+      "Validation": ["../shared/examples/Connections/Validation/Flow.vue"],
+      "Dagre": ["../shared/examples/Layout/Dagre/Flow.vue"],
+      "CustomNode": ["../shared/examples/Nodes/CustomNode/Flow.vue"],
+      "NodesData": ["../shared/examples/StateAndAPI/NodesData/Flow.vue"],
+      "DetachedHandle": ["../shared/examples/Handles/DetachedHandle/Flow.vue"],
+      "Background": ["../shared/components/Background/Flow.vue"],
+      "NodeResizer": ["../shared/components/NodeResizer/Flow.vue"],
+      "MiniMap": ["../shared/components/MiniMap/Flow.vue"],
+      "Controls": ["../shared/components/Controls/Flow.vue"],
+      "EdgeToolbar": ["../shared/components/EdgeToolbar/Flow.vue"],
+      "NodeToolbar": ["../shared/components/NodeToolbar/Flow.vue"]
+    }
+  },
+  "vueCompilerOptions": {
+    "strictTemplates": true
+  },
+  "exclude": ["node_modules", "storybook-static"],
+  "include": ["stories/**/*", ".storybook/**/*", "../shared/**/*.vue", "../shared/storybook.d.ts"]
+}

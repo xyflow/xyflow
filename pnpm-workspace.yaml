@@ -1,8 +1,8 @@
 packages:
   - 'packages/*'
-  - 'examples/*'
   - 'tooling/*'
   - 'tests/*'
+  - 'storybook/*'
 
 catalog:
   '@vitejs/plugin-vue': ^6.0.7

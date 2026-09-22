@@ -2,7 +2,6 @@
 .cache
 .npm
 node_modules
-examples/build
 cypress/videos
 cypress/screenshots
 dist
@@ -12,4 +11,6 @@ stats.html
 .log
 .turbo
 .rollup.cache
+*storybook.log
+storybook-static
 *.tgz

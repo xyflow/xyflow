@@ -44,13 +44,13 @@ To ask about a possible enhancement, email us at info@xyflow.com
 
 ## 💫 Pull Requests
 
-If you want to contribute improvements or new features we are happy to review your PR :)  
+If you want to contribute improvements or new features we are happy to review your PR :)
 Please use a meaningful commit message and add a little description of your changes.
 
-1. Install dependencies `pnpm install` 
-2. Start dev server `pnpm dev` 
-3. Test your changes with the existing examples or add a new one if it's needed for your changes
-4. Run tests `pnpm test` and add new new tests if you are introducing a new feature
+1. Install dependencies `pnpm install`
+2. Build once with `pnpm build`, then start Storybook with `pnpm storybook`
+3. Test your changes with the existing Storybook stories or add a new story if needed
+4. Run `pnpm test:storybook`, `pnpm --filter storybook-react test:e2e`, and `pnpm --filter storybook-react test:component`; add tests for new features
 
 ## Changeset Style Guide
 
@@ -80,7 +80,7 @@ If you are writing a changeset for a PR, here are some helpful tips:
 “fix(handles): reconnect for connectionMode=loose”
 
 **✅ Good:**
-“Fix reconnections when connectionMode is set to loose” 
+“Fix reconnections when connectionMode is set to loose”
 
 **🛑 Bad:**
 “use correct index when using setNodes for inserting”

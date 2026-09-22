@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Storybook Tests
 
 on:
   push:
@@ -10,16 +10,14 @@ on:
 
 jobs:
   playwright:
-    name: 'Playwright Tests'
+    name: 'Storybook Tests'
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.60.0-jammy
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
       - uses: ./.github/actions/ci-setup
       - uses: ./.github/actions/ci-checks
-      - name: Run your tests
-        run: CI=true pnpm test:react
-        env:
-          HOME: /root
+      - name: Install Chromium
+        run: pnpm --filter storybook-react exec playwright install --with-deps chromium
+      - name: Run Storybook tests
+        run: pnpm test:storybook
