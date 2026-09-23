@@ -135,8 +135,6 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     let parentNode: InternalNodeBase | undefined = undefined; // Needed to fix expandParent
     let nodeExtent: CoordinateExtent | undefined = undefined;
     let childExtent: CoordinateExtent | undefined = undefined;
-    // we only want to trigger onResizeEnd if onResize was actually called
-    let resizeDetected = false;
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
@@ -256,6 +254,16 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           return;
         }
 
+        const lastValid = {
+          prevValues: { ...prevValues },
+          startX: startValues.x,
+          startY: startValues.y,
+          childNodes: childNodes.map((child) => ({
+            ...child,
+            position: { ...child.position },
+          })),
+        };
+
         if (isXPosChange || isYPosChange || nodeOrigin[0] === 1 || nodeOrigin[1] === 1) {
           change.x = isXPosChange ? x : prevValues.x;
           change.y = isYPosChange ? y : prevValues.y;
@@ -323,22 +331,21 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         const callResize = shouldResize?.(event, nextValues);
 
         if (callResize === false) {
+          prevValues = lastValid.prevValues;
+          startValues.x = lastValid.startX;
+          startValues.y = lastValid.startY;
+          childNodes.forEach((child, i) => {
+            child.position = lastValid.childNodes[i].position;
+          });
           return;
         }
-        resizeDetected = true;
 
         onResize?.(event, nextValues);
         onChange(change, childChanges);
       })
       .on('end', (event: ResizeDragEvent) => {
-        if (!resizeDetected) {
-          return;
-        }
-
         onResizeEnd?.(event, { ...prevValues });
         onEnd?.({ ...prevValues });
-
-        resizeDetected = false;
       });
     selection.call(dragHandler);
   }
