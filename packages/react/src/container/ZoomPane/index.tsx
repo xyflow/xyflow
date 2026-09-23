@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from '@xyflow/system';
 
 import { useKeyPress } from '../../hooks/useKeyPress';
@@ -46,10 +46,16 @@ export function ZoomPane({
 
   const zoomPane = useRef<HTMLDivElement>(null);
   const panZoom = useRef<PanZoomInstance>();
+  // We want to prevent re-initialization of the pan/zoom instance
+  const [panZoomOptions] = useState(() => ({
+    minZoom,
+    maxZoom,
+    translateExtent,
+    defaultViewport,
+  }));
 
   useResizeHandler(zoomPane);
 
-  // The mount-only pan/zoom effect prevents compilation. Keep this update-effect dependency stable.
   const onTransformChange = useCallback(
     (transform: Transform) => {
       onViewportChange?.({ x: transform[0], y: transform[1], zoom: transform[2] });
@@ -65,10 +71,10 @@ export function ZoomPane({
     if (zoomPane.current) {
       panZoom.current = XYPanZoom({
         domNode: zoomPane.current,
-        minZoom,
-        maxZoom,
-        translateExtent,
-        viewport: defaultViewport,
+        minZoom: panZoomOptions.minZoom,
+        maxZoom: panZoomOptions.maxZoom,
+        translateExtent: panZoomOptions.translateExtent,
+        viewport: panZoomOptions.defaultViewport,
         onDraggingChange: (paneDragging) =>
           viewportStore.setState((prevState) =>
             prevState.paneDragging === paneDragging ? prevState : { paneDragging }
@@ -99,8 +105,7 @@ export function ZoomPane({
         panZoom.current?.destroy();
       };
     }
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, []);
+  }, [panZoomOptions, store, viewportStore]);
 
   useEffect(() => {
     panZoom.current?.update({

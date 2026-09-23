@@ -49,16 +49,16 @@ type PaneProps = {
   >
 >;
 
-const wrapHandler = (
+// Invoke at event time so React Compiler can keep ref access outside render.
+const invokeHandler = (
+  event: ReactMouseEvent,
   handler: MouseEventHandler | undefined,
   containerRef: MutableRefObject<HTMLDivElement | null>
-): MouseEventHandler => {
-  return (event: ReactMouseEvent) => {
-    if (event.target !== containerRef.current) {
-      return;
-    }
-    handler?.(event);
-  };
+): void => {
+  if (event.target !== containerRef.current) {
+    return;
+  }
+  handler?.(event);
 };
 
 export function Pane({
@@ -256,7 +256,7 @@ export function Pane({
     );
   }
 
-  function autoPan(): void {
+  const autoPan = (): void => {
     if (!autoPanOnSelection || !containerBounds.current) {
       return;
     }
@@ -271,7 +271,7 @@ export function Pane({
       commitUserSelectionRect(mx, my);
       autoPanId.current = requestAnimationFrame(autoPan);
     });
-  }
+  };
 
   const cleanupAutoPan = (): void => {
     cancelAnimationFrame(autoPanId.current);
@@ -364,9 +364,9 @@ export function Pane({
   return (
     <div
       className={cc(['react-flow__pane', { draggable, dragging, selection: isSelecting }])}
-      onClick={isSelectionEnabled ? undefined : wrapHandler(onClick, container)}
-      onContextMenu={wrapHandler(onContextMenu, container)}
-      onWheel={wrapHandler(onWheel, container)}
+      onClick={isSelectionEnabled ? undefined : (event) => invokeHandler(event, onClick, container)}
+      onContextMenu={(event) => invokeHandler(event, onContextMenu, container)}
+      onWheel={(event) => invokeHandler(event, onWheel, container)}
       onPointerEnter={isSelectionEnabled ? undefined : onPaneMouseEnter}
       onPointerMove={isSelectionEnabled ? onPointerMove : onPaneMouseMove}
       onPointerUp={onPointerUp}
