@@ -102,6 +102,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
   props: StoreUpdaterProps<NodeType, EdgeType>
 ) {
   const { store } = useReactFlowStoreApi<NodeType, EdgeType>();
+  const previousFields = useRef<Partial<StoreUpdaterProps<NodeType, EdgeType>>>(initPrevValues);
 
   useEffect(() => {
     const { setDefaultNodesAndEdges, reset } = store.getState();
@@ -114,8 +115,6 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const previousFields = useRef<Partial<StoreUpdaterProps<NodeType, EdgeType>>>(initPrevValues);
 
   useEffect(
     () => {
@@ -139,7 +138,9 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         else if (fieldName === 'fitView') store.setState({ fitViewQueued: fieldValue as boolean });
         else if (fieldName === 'fitViewOptions') store.setState({ fitViewOptions: fieldValue as FitViewOptions });
         // General case
-        else store.setState({ [fieldName]: fieldValue });
+        else {
+          store.setState({ [fieldName]: fieldValue });
+        }
       }
 
       previousFields.current = props;

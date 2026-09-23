@@ -11,6 +11,7 @@ import {
   useShallow,
 } from '../../hooks/useReactFlowStore';
 import { Panel } from '../../components/Panel';
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 import type { NodesStore, ViewportStore, Node } from '../../types';
 
 import MiniMapNodes from './MiniMapNodes';
@@ -67,8 +68,6 @@ const areEqual = (a: MiniMapSlice, b: MiniMapSlice) =>
   a.flowHeight === b.flowHeight;
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
-// The compiler skips this component because viewScaleRef is updated during render.
-// Keep its memo boundary and callbacks so pan/zoom does not invalidate every minimap node.
 function MiniMapComponent<NodeType extends Node = Node>({
   style,
   className,
@@ -125,10 +124,12 @@ function MiniMapComponent<NodeType extends Node = Node>({
   const width = viewWidth + offset * 2;
   const height = viewHeight + offset * 2;
   const labelledBy = `${ARIA_LABEL_KEY}-${rfId}`;
-  const viewScaleRef = useRef(0);
   const minimapInstance = useRef<XYMinimapInstance>();
 
-  viewScaleRef.current = viewScale;
+  const viewScaleRef = useRef(viewScale);
+  useIsomorphicLayoutEffect(() => {
+    viewScaleRef.current = viewScale;
+  }, [viewScale]);
 
   useEffect(() => {
     const currentPanZoom = store.getState().panZoom;

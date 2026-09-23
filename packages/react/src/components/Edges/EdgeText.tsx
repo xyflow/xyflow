@@ -4,6 +4,8 @@ import type { Rect } from '@xyflow/system';
 
 import type { EdgeTextProps } from '../../types';
 
+const defaultLabelBgPadding: [number, number] = [2, 4];
+
 function EdgeTextComponent({
   x,
   y,
@@ -11,7 +13,7 @@ function EdgeTextComponent({
   labelStyle,
   labelShowBg = true,
   labelBgStyle,
-  labelBgPadding = [2, 4],
+  labelBgPadding = defaultLabelBgPadding,
   labelBgBorderRadius = 2,
   children,
   className,

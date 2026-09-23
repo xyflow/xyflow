@@ -1,11 +1,12 @@
-import { type MarkerProps, createMarkerIds } from '@xyflow/system';
+import { type MarkerProps, type OnError, createMarkerIds, errorMessages } from '@xyflow/system';
 
 import { useEdgesStore, useReactFlowStore } from '../../hooks/useReactFlowStore';
-import { useMarkerSymbol } from './MarkerSymbols';
+import { arrowSymbols } from './MarkerSymbols';
 
 type MarkerDefinitionsProps = {
   defaultColor: string | null;
   rfId?: string;
+  onError?: OnError;
 };
 
 const Marker = ({
@@ -17,12 +18,15 @@ const Marker = ({
   markerUnits = 'strokeWidth',
   strokeWidth,
   orient = 'auto-start-reverse',
-}: MarkerProps) => {
-  const Symbol = useMarkerSymbol(type);
+  onError,
+}: MarkerProps & { onError?: OnError }) => {
+  if (!Object.hasOwn(arrowSymbols, type)) {
+    onError?.('009', errorMessages['error009'](type));
 
-  if (!Symbol) {
     return null;
   }
+
+  const Symbol = arrowSymbols[type];
 
   return (
     <marker
@@ -46,7 +50,7 @@ const Marker = ({
  * when they do have markers with the same ids. To prevent this the user can pass a unique id to the react flow wrapper
  * that we can then use for creating our unique marker ids
  */
-const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
+const MarkerDefinitions = ({ defaultColor, rfId, onError }: MarkerDefinitionsProps) => {
   const defaultEdgeOptions = useReactFlowStore((s) => s.defaultEdgeOptions);
   const { edges } = useEdgesStore();
 
@@ -75,6 +79,7 @@ const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
             markerUnits={marker.markerUnits}
             strokeWidth={marker.strokeWidth}
             orient={marker.orient}
+            onError={onError}
           />
         ))}
       </defs>

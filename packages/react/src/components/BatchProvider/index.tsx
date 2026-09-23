@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { EdgeChange, NodeChange, NodeChangeset, EdgeChangeset } from '@xyflow/system';
 
 import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
@@ -91,7 +91,10 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
   };
   const edgeQueue = useQueue<EdgeType>(edgeQueueHandler);
 
-  const value = { nodeQueue, edgeQueue } as unknown as { nodeQueue: Queue<Node>; edgeQueue: Queue<Edge> };
+  const value = useMemo(
+    () => ({ nodeQueue, edgeQueue }) as unknown as { nodeQueue: Queue<Node>; edgeQueue: Queue<Edge> },
+    [nodeQueue, edgeQueue]
+  );
 
   return <BatchContext.Provider value={value}>{children}</BatchContext.Provider>;
 }

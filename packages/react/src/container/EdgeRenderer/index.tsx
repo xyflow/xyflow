@@ -60,7 +60,7 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
 
   return (
     <div className="react-flow__edges">
-      <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />
+      <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} onError={onError} />
 
       {edgeIds.map((id) => {
         return (
