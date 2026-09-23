@@ -6,7 +6,7 @@
 import { useEffect, useRef } from 'react';
 import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelConfig } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import type { Node, Edge, ReactFlowProps, FitViewOptions } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
@@ -101,20 +101,10 @@ const initPrevValues = {
 export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   props: StoreUpdaterProps<NodeType, EdgeType>
 ) {
-  const {
-    setNodes,
-    setEdges,
-    setMinZoom,
-    setMaxZoom,
-    setTranslateExtent,
-    setNodeExtent,
-    reset,
-    setDefaultNodesAndEdges,
-  } = useReactFlowStore();
-
   const { store } = useReactFlowStoreApi<NodeType, EdgeType>();
 
   useEffect(() => {
+    const { setDefaultNodesAndEdges, reset } = store.getState();
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
 
     return () => {
@@ -129,6 +119,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
 
   useEffect(
     () => {
+      const { setNodes, setEdges, setMinZoom, setMaxZoom, setTranslateExtent, setNodeExtent } = store.getState();
       for (const fieldName of fieldsToTrack) {
         const fieldValue = props[fieldName];
         const previousFieldValue = previousFields.current[fieldName];
@@ -136,8 +127,8 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         if (fieldValue === previousFieldValue) continue;
         if (typeof props[fieldName] === 'undefined') continue;
         // Custom handling with dedicated setters for some fields
-        if (fieldName === 'nodes') setNodes(fieldValue as Node[]);
-        else if (fieldName === 'edges') setEdges(fieldValue as Edge[]);
+        if (fieldName === 'nodes') setNodes(fieldValue as NodeType[]);
+        else if (fieldName === 'edges') setEdges(fieldValue as EdgeType[]);
         else if (fieldName === 'minZoom') setMinZoom(fieldValue as number);
         else if (fieldName === 'maxZoom') setMaxZoom(fieldValue as number);
         else if (fieldName === 'translateExtent') setTranslateExtent(fieldValue as CoordinateExtent);

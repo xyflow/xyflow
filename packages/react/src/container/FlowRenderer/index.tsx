@@ -69,7 +69,8 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onViewportChange,
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
-  const { nodesSelectionActive, userSelectionActive } = useReactFlowStore();
+  const nodesSelectionActive = useReactFlowStore((s) => s.nodesSelectionActive);
+  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
 
   const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: win });
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: win });

@@ -26,7 +26,7 @@ export function ConnectionLineWrapper<NodeType extends Node = Node>({
   type,
   component,
 }: ConnectionLineWrapperProps<NodeType>) {
-  const { nodesConnectable } = useReactFlowStore();
+  const nodesConnectable = useReactFlowStore((s) => s.nodesConnectable);
   // Viewport movement must not wake the wrapper when its dimensions are unchanged.
   const width = useViewportStore((s) => s.width);
   const height = useViewportStore((s) => s.height);

@@ -151,7 +151,6 @@ const getInitialState = ({
       onError: devWarn,
       isValidConnection: undefined,
       onSelectionChangeHandlers: [],
-      lib: 'react',
       debug: false,
       ariaLabelConfig: defaultAriaLabelConfig,
       zIndexMode,

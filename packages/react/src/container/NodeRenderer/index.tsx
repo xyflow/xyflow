@@ -26,7 +26,10 @@ export type NodeRendererProps<NodeType extends Node> = Pick<
 >;
 
 function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
-  const { nodesConnectable, nodesFocusable, elementsSelectable, onError } = useReactFlowStore();
+  const nodesConnectable = useReactFlowStore((s) => s.nodesConnectable);
+  const nodesFocusable = useReactFlowStore((s) => s.nodesFocusable);
+  const elementsSelectable = useReactFlowStore((s) => s.elementsSelectable);
+  const onError = useReactFlowStore((s) => s.onError);
 
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();

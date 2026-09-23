@@ -10,7 +10,7 @@ import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
  * @param viewport
  */
 export function useViewportSync(viewport?: Viewport) {
-  const { panZoom } = useReactFlowStore();
+  const panZoom = useReactFlowStore((s) => s.panZoom);
   const syncViewport = panZoom?.syncViewport;
   const { viewportStore } = useReactFlowStoreApi();
 

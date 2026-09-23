@@ -29,7 +29,7 @@ import { useReactFlowStore } from '../../hooks/useReactFlowStore';
  *```
  */
 export function ViewportPortal({ children }: { children: ReactNode }): ReactPortal | null {
-  const { domNode } = useReactFlowStore();
+  const domNode = useReactFlowStore((s) => s.domNode);
   const viewPortalDiv = domNode?.querySelector('.react-flow__viewport-portal');
 
   if (!viewPortalDiv) {

@@ -10,7 +10,7 @@ import {
 
 import { useInternalNode } from '../../hooks/useNodes';
 import { useEdge } from '../../hooks/useEdges';
-import { useReactFlowStoreApi, useReactFlowStore } from '../../hooks/useReactFlowStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
@@ -36,9 +36,12 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   noPanClassName,
   onError,
   disableKeyboardA11y,
+  connectionMode,
+  elevateEdgesOnSelect,
+  zIndexMode,
+  defaultEdgeOptions,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
   let edge = useEdge<EdgeType>(id)!;
-  const { connectionMode, elevateEdgesOnSelect, zIndexMode, defaultEdgeOptions } = useReactFlowStore();
 
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 

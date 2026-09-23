@@ -1,12 +1,8 @@
-import { SelectionRect } from '@xyflow/system';
-import { useCustomDiff, useReactFlowStore, useSelectionStore } from '../../hooks/useReactFlowStore';
-import type { SelectionStore } from '../../types';
-
-const selector = (s: SelectionStore) => s.userSelectionRect;
+import { useReactFlowStore, useSelectionStore, useShallow } from '../../hooks/useReactFlowStore';
 
 export function UserSelection() {
-  const { userSelectionActive } = useReactFlowStore();
-  const userSelectionRect = useSelectionStore(useCustomDiff(selector, areEqual));
+  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
+  const userSelectionRect = useSelectionStore(useShallow((s) => s.userSelectionRect));
   const isActive = userSelectionActive && userSelectionRect;
 
   if (!isActive) {
@@ -23,7 +19,4 @@ export function UserSelection() {
       }}
     />
   );
-}
-function areEqual(a: SelectionRect | null, b: SelectionRect | null): boolean {
-  return a?.x === b?.x && a?.y === b?.y && a?.width === b?.width && a?.height === b?.height;
 }

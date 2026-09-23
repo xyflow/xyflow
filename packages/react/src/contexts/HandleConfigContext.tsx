@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from 'react';
 
-import { useReactFlowStore } from '../hooks/useReactFlowStore';
+import { useReactFlowStore, useShallow } from '../hooks/useReactFlowStore';
 import { ConnectionMode } from '@xyflow/system';
 
 type HandleConfig = {
@@ -17,9 +17,15 @@ const HandleConfigContext = createContext<HandleConfig | null>(null);
  * shared through context from one provider.
  */
 export function HandleConfigProvider({ children }: { children: ReactNode }) {
-  const { connectOnClick, noPanClassName, rfId, connectionMode } = useReactFlowStore();
+  const config = useReactFlowStore(
+    useShallow((s) => ({
+      connectOnClick: s.connectOnClick,
+      noPanClassName: s.noPanClassName,
+      rfId: s.rfId,
+      connectionMode: s.connectionMode,
+    }))
+  );
 
-  const config = { connectOnClick, noPanClassName, rfId, connectionMode };
   return <HandleConfigContext.Provider value={config}>{children}</HandleConfigContext.Provider>;
 }
 

@@ -28,9 +28,11 @@ function BackgroundComponent({
   patternClassName,
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const { rfId } = useReactFlowStore();
+
+  const rfId = useReactFlowStore((s) => s.rfId);
   const patternId = `pattern-${rfId}`;
   const transform = useViewportStore((s) => s.transform);
+
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;

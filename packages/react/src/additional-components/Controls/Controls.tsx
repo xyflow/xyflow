@@ -29,8 +29,12 @@ function ControlsComponent({
   'aria-label': ariaLabel,
 }: ControlProps) {
   const { store } = useReactFlowStoreApi();
-  const { nodesDraggable, nodesConnectable, elementsSelectable, minZoom, maxZoom, ariaLabelConfig } =
-    useReactFlowStore();
+  const nodesDraggable = useReactFlowStore((s) => s.nodesDraggable);
+  const nodesConnectable = useReactFlowStore((s) => s.nodesConnectable);
+  const elementsSelectable = useReactFlowStore((s) => s.elementsSelectable);
+  const minZoom = useReactFlowStore((s) => s.minZoom);
+  const maxZoom = useReactFlowStore((s) => s.maxZoom);
+  const ariaLabelConfig = useReactFlowStore((s) => s.ariaLabelConfig);
 
   const isInteractive = nodesDraggable || nodesConnectable || elementsSelectable;
   // Panning changes the viewport every frame without changing either zoom limit.

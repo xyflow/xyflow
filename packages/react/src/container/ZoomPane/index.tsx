@@ -40,7 +40,7 @@ export function ZoomPane({
   selectionOnDrag,
 }: ZoomPaneProps) {
   const { store, viewportStore } = useReactFlowStoreApi();
-  const { userSelectionActive, lib } = useReactFlowStore();
+  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
   const connectionInProgress = useConnectionStore((state) => state.connection.inProgress);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
 
@@ -118,7 +118,7 @@ export function ZoomPane({
       noPanClassName,
       userSelectionActive,
       noWheelClassName,
-      lib,
+      lib: 'react',
       onTransformChange,
       connectionInProgress,
       selectionOnDrag,
@@ -139,7 +139,6 @@ export function ZoomPane({
     noPanClassName,
     userSelectionActive,
     noWheelClassName,
-    lib,
     onTransformChange,
     connectionInProgress,
     selectionOnDrag,

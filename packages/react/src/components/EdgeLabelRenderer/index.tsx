@@ -49,7 +49,7 @@ export type EdgeLabelRendererProps = {
  * the `nopan` class on the label or the element you want to interact with.
  */
 export function EdgeLabelRenderer({ children }: EdgeLabelRendererProps): ReactPortal | null {
-  const { domNode } = useReactFlowStore();
+  const domNode = useReactFlowStore((s) => s.domNode);
   const edgeLabelRenderer = domNode?.querySelector('.react-flow__edgelabel-renderer');
 
   if (!edgeLabelRenderer) {

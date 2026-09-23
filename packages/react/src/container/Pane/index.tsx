@@ -81,7 +81,10 @@ export function Pane({
 }: PaneProps) {
   const autoPanId = useRef<number>(0);
   const { store, viewportStore, connectionStore, nodesStore, edgesStore, selectionStore } = useReactFlowStoreApi();
-  const { userSelectionActive, elementsSelectable, panBy, autoPanSpeed } = useReactFlowStore();
+  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
+  const elementsSelectable = useReactFlowStore((s) => s.elementsSelectable);
+  const panBy = useReactFlowStore((s) => s.panBy);
+  const autoPanSpeed = useReactFlowStore((s) => s.autoPanSpeed);
   const dragging = useViewportStore((s) => s.paneDragging);
 
   const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);

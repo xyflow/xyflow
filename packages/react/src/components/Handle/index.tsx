@@ -164,7 +164,7 @@ function HandleComponent(
         connectionRadius: currentStore.connectionRadius,
         domNode: currentStore.domNode,
         nodeLookup: nodesStore.getState().nodeLookup,
-        lib: currentStore.lib,
+        lib: 'react',
         isTarget,
         handleId,
         nodeId,
@@ -197,7 +197,6 @@ function HandleComponent(
       updateConnectionClickStart,
       connectionMode,
       isValidConnection: isValidConnectionStore,
-      lib,
       rfId: flowId,
     } = store.getState();
     const { connectionClickStartHandle, connection: connectionState } = connectionStore.getState();
@@ -228,7 +227,7 @@ function HandleComponent(
       isValidConnection: isValidConnectionHandler,
       flowId,
       doc,
-      lib,
+      lib: 'react',
       nodeLookup,
     });
 

@@ -47,7 +47,7 @@ const Marker = ({
  * that we can then use for creating our unique marker ids
  */
 const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
-  const { defaultEdgeOptions } = useReactFlowStore();
+  const defaultEdgeOptions = useReactFlowStore((s) => s.defaultEdgeOptions);
   const { edges } = useEdgesStore();
 
   const markers = createMarkerIds(edges, {

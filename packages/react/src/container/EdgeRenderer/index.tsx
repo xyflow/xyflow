@@ -47,7 +47,14 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   onReconnectEnd,
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
-  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useReactFlowStore();
+  const edgesFocusable = useReactFlowStore((s) => s.edgesFocusable);
+  const edgesReconnectable = useReactFlowStore((s) => s.edgesReconnectable);
+  const elementsSelectable = useReactFlowStore((s) => s.elementsSelectable);
+  const onError = useReactFlowStore((s) => s.onError);
+  const connectionMode = useReactFlowStore((s) => s.connectionMode);
+  const elevateEdgesOnSelect = useReactFlowStore((s) => s.elevateEdgesOnSelect);
+  const zIndexMode = useReactFlowStore((s) => s.zIndexMode);
+  const defaultEdgeOptions = useReactFlowStore((s) => s.defaultEdgeOptions);
 
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
@@ -78,6 +85,10 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
             onError={onError}
             edgeTypes={edgeTypes}
             disableKeyboardA11y={disableKeyboardA11y}
+            connectionMode={connectionMode}
+            elevateEdgesOnSelect={elevateEdgesOnSelect}
+            zIndexMode={zIndexMode}
+            defaultEdgeOptions={defaultEdgeOptions}
           />
         );
       })}

@@ -98,7 +98,11 @@ function MiniMapComponent<NodeType extends Node = Node>({
 }: MiniMapProps<NodeType>) {
   const { store, viewportStore, nodesStore } = useReactFlowStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
-  const { rfId, panZoom, translateExtent, ariaLabelConfig } = useReactFlowStore();
+
+  const rfId = useReactFlowStore((s) => s.rfId);
+  const panZoom = useReactFlowStore((s) => s.panZoom);
+  const translateExtent = useReactFlowStore((s) => s.translateExtent);
+  const ariaLabelConfig = useReactFlowStore((s) => s.ariaLabelConfig);
 
   const viewport = useViewportStore(useShallow(viewportSelector));
   const { viewBB, boundingRect, flowWidth, flowHeight } = useNodesStore(
