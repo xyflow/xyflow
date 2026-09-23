@@ -1,5 +1,22 @@
 # @xyflow/svelte
 
+## 1.7.0
+### Minor Changes
+
+
+
+- [#5998](https://github.com/xyflow/xyflow/pull/5998) [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423) - Always fire onresizeend after onresizestart
+
+
+### Patch Changes
+
+
+
+- [#5998](https://github.com/xyflow/xyflow/pull/5998) [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423) - Fix incorrect values during resize when shouldResize returns false
+
+- Updated dependencies [[`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423), [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423)]:
+  - @xyflow/system@0.0.83
+
 ## 1.6.6
 ### Patch Changes
 

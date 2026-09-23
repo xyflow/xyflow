@@ -1,5 +1,16 @@
 # @xyflow/system
 
+## 0.0.83
+### Patch Changes
+
+
+
+- [#5998](https://github.com/xyflow/xyflow/pull/5998) [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423) - Always fire onResizeEnd after onResizeStart
+
+
+
+- [#5998](https://github.com/xyflow/xyflow/pull/5998) [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423) - Fix incorrect values during resize when shouldResize returns false
+
 ## 0.0.82
 ### Patch Changes
 
