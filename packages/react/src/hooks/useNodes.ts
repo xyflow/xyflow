@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'react';
 
 import { useNodesStore, useReactFlowStoreApi, useShallow } from './useReactFlowStore';
 import type { InternalNode, Node } from '../types';
@@ -50,15 +50,9 @@ export function useNodes<NodeType extends Node = Node>(): NodeType[] {
 export function useNode<NodeType extends Node = Node>(id: string): NodeType | undefined {
   const { store, nodesStore } = useReactFlowStoreApi();
 
-  const subscribe = useCallback(
-    (onStoreChange: () => void) => store.getState().pubSub.subscribeToNode(id, onStoreChange),
-    [store, id]
-  );
+  const subscribe = (onStoreChange: () => void) => store.getState().pubSub.subscribeToNode(id, onStoreChange);
 
-  const getSnapshot = useCallback(
-    () => nodesStore.getState().nodeLookup.get(id)?.internals.userNode as NodeType | undefined,
-    [nodesStore, id]
-  );
+  const getSnapshot = () => nodesStore.getState().nodeLookup.get(id)?.internals.userNode as NodeType | undefined;
 
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }
@@ -93,15 +87,9 @@ export function useNode<NodeType extends Node = Node>(id: string): NodeType | un
 export function useInternalNode<NodeType extends Node = Node>(id: string): InternalNode<NodeType> | undefined {
   const { store, nodesStore } = useReactFlowStoreApi();
 
-  const subscribe = useCallback(
-    (onStoreChange: () => void) => store.getState().pubSub.subscribeToNode(id, onStoreChange),
-    [store, id]
-  );
+  const subscribe = (onStoreChange: () => void) => store.getState().pubSub.subscribeToNode(id, onStoreChange);
 
-  const getSnapshot = useCallback(
-    () => nodesStore.getState().nodeLookup.get(id) as InternalNode<NodeType> | undefined,
-    [nodesStore, id]
-  );
+  const getSnapshot = () => nodesStore.getState().nodeLookup.get(id) as InternalNode<NodeType> | undefined;
 
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }
@@ -119,10 +107,7 @@ export function useInternalNodes<NodeType extends Node = Node>(ids: readonly str
   const { store, nodesStore } = useReactFlowStoreApi<NodeType>();
   const nodeIds = useShallow((value: readonly string[]) => new Set(value))(ids);
 
-  const subscribe = useCallback(
-    (onStoreChange: () => void) => store.getState().pubSub.subscribeToNodes(nodeIds, onStoreChange),
-    [store, nodeIds]
-  );
+  const subscribe = (onStoreChange: () => void) => store.getState().pubSub.subscribeToNodes(nodeIds, onStoreChange);
 
   const selectSnapshot = useShallow(() => {
     const { nodeLookup } = nodesStore.getState();
