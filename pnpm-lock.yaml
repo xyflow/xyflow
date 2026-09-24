@@ -123,6 +123,9 @@ importers:
       '@types/dagre':
         specifier: ^0.7.52
         version: 0.7.54
+      '@types/node':
+        specifier: ^20.19.41
+        version: 20.19.41
       '@types/react':
         specifier: ^18.2.36
         version: 18.3.29
@@ -294,6 +297,9 @@ importers:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^6.2.1
         version: 6.2.4(svelte@5.55.9(@typescript-eslint/types@8.59.4))(vite@8.0.13(@types/node@20.19.41)(esbuild@0.27.7)(terser@5.47.1)(yaml@2.9.0))
+      '@types/node':
+        specifier: ^20.19.41
+        version: 20.19.41
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.48.1
         version: 8.59.4(@typescript-eslint/parser@8.59.4(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3)
