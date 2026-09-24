@@ -285,6 +285,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     nodesConnectable: boolean = $derived(signals.props.nodesConnectable ?? true);
     elementsSelectable: boolean = $derived(signals.props.elementsSelectable ?? true);
     nodesFocusable: boolean = $derived(signals.props.nodesFocusable ?? true);
+    handlesFocusable: boolean = $derived(signals.props.handlesFocusable ?? true);
     edgesFocusable: boolean = $derived(signals.props.edgesFocusable ?? true);
 
     disableKeyboardA11y: boolean = $derived(signals.props.disableKeyboardA11y ?? false);

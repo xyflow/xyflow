@@ -266,6 +266,14 @@ export type SvelteFlowProps<
      */
     nodesFocusable?: boolean;
     /**
+     * When `true`, focus between handles can be cycled with the `Tab` key. Pressing `Enter` or
+     * `Space` on a focused handle starts a connection (when `clickConnect` is enabled) and
+     * pressing it on another handle completes the connection. `Escape` cancels a pending
+     * connection.
+     * @default true
+     */
+    handlesFocusable?: boolean;
+    /**
      * When `true`, focus between edges can be cycled with the `Tab` key and selected with the `Enter`
      * key. This option can be overridden by individual edges by setting their `focusable` prop.
      * @default true
@@ -484,9 +492,9 @@ export type SvelteFlowProps<
     onreconnectend?: OnReconnectEnd<NodeType, EdgeType>;
     /** This handler gets called when an edge is reconnected. You can use it to modify the edge before the update is applied. */
     onbeforereconnect?: OnBeforeReconnect<EdgeType>;
-    /** A connection is started by clicking on a handle */
+    /** A connection is started by clicking on a handle or by pressing `Enter` or `Space` on a focused handle */
     onclickconnectstart?: OnConnectStart;
-    /** A connection is finished by clicking on a handle */
+    /** A connection that was started with a click or the keyboard ends - either on a handle or on the pane */
     onclickconnectend?: OnConnectEnd;
     /** This handler gets called when the flow is finished initializing */
     oninit?: () => void;
