@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useContext, useMemo } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { EdgeChange, NodeChange, NodeChangeset, EdgeChangeset } from '@xyflow/system';
 
 import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
@@ -23,18 +23,12 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
 }: {
   children: ReactNode;
 }) {
-  const store = useReactFlowStoreApi<NodeType, EdgeType>();
+  const { optionsStore, nodesStore, edgesStore } = useReactFlowStoreApi<NodeType, EdgeType>();
 
-  const nodeQueueHandler = useCallback((queueItems: QueueItem<NodeType>[]) => {
-    const {
-      nodes = [],
-      onNodesChange,
-      nodeLookup,
-      fitViewQueued,
-      onNodesChangeMiddlewareMap,
-      setNodes,
-      hasDefaultNodes,
-    } = store.getState();
+  const nodeQueueHandler = (queueItems: QueueItem<NodeType>[]) => {
+    const { nodes = [], nodeLookup } = nodesStore.getState();
+    const { onNodesChange, fitViewQueued, onNodesChangeMiddlewareMap, setNodes, hasDefaultNodes } =
+      optionsStore.getState();
 
     /*
      * This is essentially an `Array.reduce` in imperative clothing. Processing
@@ -66,18 +60,20 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       // If there are no changes to the nodes, we still need to call setNodes
       // to trigger a re-render and fitView.
       window.requestAnimationFrame(() => {
-        const { fitViewQueued, nodes, setNodes } = store.getState();
+        const { fitViewQueued, setNodes } = optionsStore.getState();
+        const { nodes } = nodesStore.getState();
         if (fitViewQueued) {
           setNodes(nodes);
         }
       });
     }
-  }, []);
+  };
 
   const nodeQueue = useQueue<NodeType>(nodeQueueHandler);
 
-  const edgeQueueHandler = useCallback((queueItems: QueueItem<EdgeType>[]) => {
-    const { edges = [], setEdges, hasDefaultEdges, onEdgesChange, edgeLookup } = store.getState();
+  const edgeQueueHandler = (queueItems: QueueItem<EdgeType>[]) => {
+    const { edges = [], edgeLookup } = edgesStore.getState();
+    const { setEdges, hasDefaultEdges, onEdgesChange } = optionsStore.getState();
 
     let next = edges;
     for (const payload of queueItems) {
@@ -93,12 +89,12 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       }) as EdgeChange<EdgeType>[];
       onEdgesChange?.(new EdgeChangeset(changes));
     }
-  }, []);
+  };
   const edgeQueue = useQueue<EdgeType>(edgeQueueHandler);
 
   const value = useMemo(
     () => ({ nodeQueue, edgeQueue }) as unknown as { nodeQueue: Queue<Node>; edgeQueue: Queue<Edge> },
-    []
+    [nodeQueue, edgeQueue]
   );
 
   return <BatchContext.Provider value={value}>{children}</BatchContext.Provider>;

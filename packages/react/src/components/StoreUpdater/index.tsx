@@ -6,8 +6,8 @@
 import { useEffect, useRef } from 'react';
 import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelConfig } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi, useShallow } from '../../hooks/useReactFlowStore';
-import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import type { Node, Edge, ReactFlowProps, FitViewOptions } from '../../types';
 import { defaultNodeOrigin } from '../../container/ReactFlow/init-values';
 
 // These fields exist in the global store, and we need to keep them up to date
@@ -83,17 +83,6 @@ type StoreUpdaterProps<NodeType extends Node = Node, EdgeType extends Edge = Edg
 // rfId doesn't exist in ReactFlowProps, but it's one of the fields we want to update
 const fieldsToTrack = [...reactFlowFieldsToTrack, 'rfId'] as const;
 
-const selector = (s: ReactFlowState) => ({
-  setNodes: s.setNodes,
-  setEdges: s.setEdges,
-  setMinZoom: s.setMinZoom,
-  setMaxZoom: s.setMaxZoom,
-  setTranslateExtent: s.setTranslateExtent,
-  setNodeExtent: s.setNodeExtent,
-  reset: s.reset,
-  setDefaultNodesAndEdges: s.setDefaultNodesAndEdges,
-});
-
 const initPrevValues = {
   /*
    * these are values that are also passed directly to other components
@@ -112,19 +101,11 @@ const initPrevValues = {
 export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   props: StoreUpdaterProps<NodeType, EdgeType>
 ) {
-  const {
-    setNodes,
-    setEdges,
-    setMinZoom,
-    setMaxZoom,
-    setTranslateExtent,
-    setNodeExtent,
-    reset,
-    setDefaultNodesAndEdges,
-  } = useReactFlowStore(useShallow(selector));
-  const store = useReactFlowStoreApi<NodeType, EdgeType>();
+  const { optionsStore } = useReactFlowStoreApi<NodeType, EdgeType>();
+  const previousFields = useRef<Partial<StoreUpdaterProps<NodeType, EdgeType>>>(initPrevValues);
 
   useEffect(() => {
+    const { setDefaultNodesAndEdges, reset } = optionsStore.getState();
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
 
     return () => {
@@ -135,10 +116,9 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const previousFields = useRef<Partial<StoreUpdaterProps<NodeType, EdgeType>>>(initPrevValues);
-
   useEffect(
     () => {
+      const { setNodes, setEdges, setMinZoom, setMaxZoom, setTranslateExtent, setNodeExtent } = optionsStore.getState();
       for (const fieldName of fieldsToTrack) {
         const fieldValue = props[fieldName];
         const previousFieldValue = previousFields.current[fieldName];
@@ -146,19 +126,22 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         if (fieldValue === previousFieldValue) continue;
         if (typeof props[fieldName] === 'undefined') continue;
         // Custom handling with dedicated setters for some fields
-        if (fieldName === 'nodes') setNodes(fieldValue as Node[]);
-        else if (fieldName === 'edges') setEdges(fieldValue as Edge[]);
+        if (fieldName === 'nodes') setNodes(fieldValue as NodeType[]);
+        else if (fieldName === 'edges') setEdges(fieldValue as EdgeType[]);
         else if (fieldName === 'minZoom') setMinZoom(fieldValue as number);
         else if (fieldName === 'maxZoom') setMaxZoom(fieldValue as number);
         else if (fieldName === 'translateExtent') setTranslateExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'ariaLabelConfig')
-          store.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
+          optionsStore.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
         // Renamed fields
-        else if (fieldName === 'fitView') store.setState({ fitViewQueued: fieldValue as boolean });
-        else if (fieldName === 'fitViewOptions') store.setState({ fitViewOptions: fieldValue as FitViewOptions });
+        else if (fieldName === 'fitView') optionsStore.setState({ fitViewQueued: fieldValue as boolean });
+        else if (fieldName === 'fitViewOptions')
+          optionsStore.setState({ fitViewOptions: fieldValue as FitViewOptions });
         // General case
-        else store.setState({ [fieldName]: fieldValue });
+        else {
+          optionsStore.setState({ [fieldName]: fieldValue });
+        }
       }
 
       previousFields.current = props;

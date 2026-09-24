@@ -1,41 +1,17 @@
-import { useCallback, CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 import cc from 'classcat';
-import { Position, getNodeToolbarTransform, getInternalNodesBounds, NodeLookup } from '@xyflow/system';
+import { Position, getNodeToolbarTransform } from '@xyflow/system';
 
-import { InternalNode, ReactFlowState } from '../../types';
-import { useReactFlowStore, useShallow, useCustomDiff } from '../../hooks/useReactFlowStore';
+import { NodesStore } from '../../types';
+import { useNodesStore } from '../../hooks/useReactFlowStore';
+import { useInternalNodes } from '../../hooks/useNodes';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { NodeToolbarPortal } from './NodeToolbarPortal';
 import type { NodeToolbarProps } from './types';
+import { useReactFlow } from '../../hooks/useReactFlow';
+import { useViewport } from '../../hooks/useViewport';
 
-const nodeEqualityFn = (a?: InternalNode, b?: InternalNode) =>
-  a?.internals.positionAbsolute.x !== b?.internals.positionAbsolute.x ||
-  a?.internals.positionAbsolute.y !== b?.internals.positionAbsolute.y ||
-  a?.measured.width !== b?.measured.width ||
-  a?.measured.height !== b?.measured.height ||
-  a?.selected !== b?.selected ||
-  a?.internals.z !== b?.internals.z;
-
-const nodesEqualityFn = (a: NodeLookup, b: NodeLookup) => {
-  if (a.size !== b.size) {
-    return false;
-  }
-
-  for (const [key, node] of a) {
-    if (nodeEqualityFn(node, b.get(key))) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
-const storeSelector = (state: ReactFlowState) => ({
-  x: state.transform[0],
-  y: state.transform[1],
-  zoom: state.transform[2],
-  selectedNodesCount: state.nodes.filter((node) => node.selected).length,
-});
+const storeSelector = (state: NodesStore) => state.nodes.filter((node) => node.selected).length;
 
 /**
  * This component can render a toolbar or tooltip to one side of a custom node. This
@@ -84,39 +60,23 @@ export function NodeToolbar({
   ...rest
 }: NodeToolbarProps) {
   const contextNodeId = useNodeId();
+  const { getNodesBounds } = useReactFlow();
 
-  const nodesSelector = useCallback(
-    (state: ReactFlowState): NodeLookup => {
-      const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
-      const internalNodes = nodeIds.reduce<NodeLookup>((res, id) => {
-        const node = state.nodeLookup.get(id);
-        if (node) {
-          res.set(node.id, node);
-        }
-
-        return res;
-      }, new Map());
-
-      return internalNodes;
-    },
-    [nodeId, contextNodeId]
-  );
-  const nodes = useReactFlowStore(useCustomDiff(nodesSelector, nodesEqualityFn));
-  const { x, y, zoom, selectedNodesCount } = useReactFlowStore(useShallow(storeSelector));
+  const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId || ''];
+  const nodes = useInternalNodes(nodeIds);
+  const selectedNodesCount = useNodesStore(storeSelector);
+  const { x, y, zoom } = useViewport();
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
   const isActive =
-    typeof isVisible === 'boolean'
-      ? isVisible
-      : nodes.size === 1 && nodes.values().next().value?.selected && selectedNodesCount === 1;
+    typeof isVisible === 'boolean' ? isVisible : nodes.length === 1 && nodes[0].selected && selectedNodesCount === 1;
 
-  if (!isActive || !nodes.size) {
+  if (!isActive || !nodes.length) {
     return null;
   }
 
-  const nodeRect = getInternalNodesBounds(nodes);
-  const nodesArray = Array.from(nodes.values());
-  const zIndex = Math.max(...nodesArray.map((node) => node.internals.z + 1));
+  const nodeRect = getNodesBounds(nodes);
+  const zIndex = Math.max(...nodes.map((node) => node.internals.z + 1));
 
   const wrapperStyle: CSSProperties = {
     position: 'absolute',
@@ -132,7 +92,7 @@ export function NodeToolbar({
         className={cc(['react-flow__node-toolbar', className])}
         {...rest}
         // @todo: check if we could only do this for non-prod envs
-        data-id={nodesArray.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
+        data-id={nodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
       >
         {children}
       </div>

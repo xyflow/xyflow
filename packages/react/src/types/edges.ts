@@ -23,6 +23,8 @@ import type {
   OnReconnect,
   FinalConnectionState,
   XYPosition,
+  ConnectionMode,
+  ZIndexMode,
 } from '@xyflow/system';
 
 import { EdgeTypes, InternalNode, Node } from '.';
@@ -125,6 +127,10 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   edgeTypes?: EdgeTypes;
   onError?: OnError;
   disableKeyboardA11y?: boolean;
+  connectionMode: ConnectionMode;
+  elevateEdgesOnSelect: boolean;
+  zIndexMode: ZIndexMode;
+  defaultEdgeOptions?: DefaultEdgeOptions;
 };
 
 /**

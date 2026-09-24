@@ -1,9 +1,7 @@
-import { useReactFlowStore } from './useReactFlowStore';
-import type { Node, ReactFlowState } from '../types';
-import { useReactFlow } from './useReactFlow';
-import { useMemo } from 'react';
+import { useSyncExternalStore } from 'react';
 
-const nodesSelector = (state: ReactFlowState) => state.nodes;
+import { useNodesStore, useReactFlowStoreApi, useShallow } from './useReactFlowStore';
+import type { InternalNode, Node } from '../types';
 
 /**
  * This hook returns an array of the current nodes. Components that use this hook
@@ -25,9 +23,9 @@ const nodesSelector = (state: ReactFlowState) => state.nodes;
  *```
  */
 export function useNodes<NodeType extends Node = Node>(): NodeType[] {
-  const nodes = useReactFlowStore(nodesSelector) as NodeType[];
+  const { nodes } = useNodesStore();
 
-  return nodes;
+  return nodes as NodeType[];
 }
 
 /**
@@ -50,10 +48,83 @@ export function useNodes<NodeType extends Node = Node>(): NodeType[] {
  *```
  */
 export function useNode<NodeType extends Node = Node>(id: string): NodeType | undefined {
-  const { getNode } = useReactFlow<NodeType>();
-  useReactFlowStore(nodesSelector);
+  const { optionsStore, nodesStore } = useReactFlowStoreApi();
 
-  const node = getNode(id);
+  const subscribe = (onStoreChange: () => void) => optionsStore.getState().pubSub.subscribeToNode(id, onStoreChange);
 
-  return useMemo(() => node, [node]);
+  const getSnapshot = () => nodesStore.getState().nodeLookup.get(id)?.internals.userNode as NodeType | undefined;
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+}
+
+/**
+ * This hook returns the internal representation of a specific node.
+ * Components that use this hook will re-render **whenever the node changes**,
+ * including when a node is selected or moved.
+ *
+ * @public
+ * @param id - The ID of a node you want to observe.
+ * @returns The `InternalNode` object for the node with the given ID.
+ *
+ * @example
+ * ```tsx
+ *import { useInternalNode } from '@xyflow/react';
+ *
+ *export default function () {
+ *  const internalNode = useInternalNode('node-1');
+ *  const absolutePosition = internalNode.internals.positionAbsolute;
+ *
+ *  return (
+ *    <div>
+ *      The absolute position of the node is at:
+ *      <p>x: {absolutePosition.x}</p>
+ *      <p>y: {absolutePosition.y}</p>
+ *    </div>
+ *  );
+ *}
+ *```
+ */
+export function useInternalNode<NodeType extends Node = Node>(id: string): InternalNode<NodeType> | undefined {
+  const { optionsStore, nodesStore } = useReactFlowStoreApi();
+
+  const subscribe = (onStoreChange: () => void) => optionsStore.getState().pubSub.subscribeToNode(id, onStoreChange);
+
+  const getSnapshot = () => nodesStore.getState().nodeLookup.get(id) as InternalNode<NodeType> | undefined;
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+}
+
+/**
+ * This hook returns set of specific internal nodes and subscribes
+ * only to those nodes. Missing IDs are omitted and duplicate IDs are ignored.
+ * Reordering the IDs preserves the previous set and result order.
+ *
+ * @public
+ * @param ids - An array of node IDs to observe. An empty array returns no nodes.
+ * @returns The matching internal nodes.
+ */
+export function useInternalNodes<NodeType extends Node = Node>(ids: readonly string[]): InternalNode<NodeType>[] {
+  const { optionsStore, nodesStore } = useReactFlowStoreApi<NodeType>();
+  const nodeIds = useShallow((value: readonly string[]) => new Set(value))(ids);
+
+  const subscribe = (onStoreChange: () => void) =>
+    optionsStore.getState().pubSub.subscribeToNodes(nodeIds, onStoreChange);
+
+  const selectSnapshot = useShallow(() => {
+    const { nodeLookup } = nodesStore.getState();
+    const nodes: InternalNode<NodeType>[] = [];
+
+    for (const id of nodeIds) {
+      const node = nodeLookup.get(id);
+      if (node) {
+        nodes.push(node);
+      }
+    }
+
+    return nodes;
+  });
+
+  const getSnapshot = () => selectSnapshot(undefined);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }

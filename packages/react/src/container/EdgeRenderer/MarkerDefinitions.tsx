@@ -1,13 +1,13 @@
-import { memo, useMemo } from 'react';
-import { type MarkerProps, createMarkerIds } from '@xyflow/system';
+import { memo } from 'react';
+import { type MarkerProps, type OnError, createMarkerIds, errorMessages } from '@xyflow/system';
 
-import { useShallow, useReactFlowStore } from '../../hooks/useReactFlowStore';
-import { useMarkerSymbol } from './MarkerSymbols';
-import { type ReactFlowState } from '../../types';
+import { useEdgesStore, useOptionsStore } from '../../hooks/useReactFlowStore';
+import { arrowSymbols } from './MarkerSymbols';
 
 type MarkerDefinitionsProps = {
   defaultColor: string | null;
   rfId?: string;
+  onError?: OnError;
 };
 
 const Marker = ({
@@ -19,12 +19,15 @@ const Marker = ({
   markerUnits = 'strokeWidth',
   strokeWidth,
   orient = 'auto-start-reverse',
-}: MarkerProps) => {
-  const Symbol = useMarkerSymbol(type);
+  onError,
+}: MarkerProps & { onError?: OnError }) => {
+  if (!Object.hasOwn(arrowSymbols, type)) {
+    onError?.('009', errorMessages['error009'](type));
 
-  if (!Symbol) {
     return null;
   }
+
+  const Symbol = arrowSymbols[type];
 
   return (
     <marker
@@ -43,26 +46,21 @@ const Marker = ({
   );
 };
 
-const selector = (s: ReactFlowState) => ({ edges: s.edges, defaultEdgeOptions: s.defaultEdgeOptions });
-
 /*
  * when you have multiple flows on a page and you hide the first one, the other ones have no markers anymore
  * when they do have markers with the same ids. To prevent this the user can pass a unique id to the react flow wrapper
  * that we can then use for creating our unique marker ids
  */
-const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
-  const { edges, defaultEdgeOptions } = useReactFlowStore(useShallow(selector));
+const MarkerDefinitions = ({ defaultColor, rfId, onError }: MarkerDefinitionsProps) => {
+  const defaultEdgeOptions = useOptionsStore((s) => s.defaultEdgeOptions);
+  const { edges } = useEdgesStore();
 
-  const markers = useMemo(() => {
-    const markers = createMarkerIds(edges, {
-      id: rfId,
-      defaultColor,
-      defaultMarkerStart: defaultEdgeOptions?.markerStart,
-      defaultMarkerEnd: defaultEdgeOptions?.markerEnd,
-    });
-
-    return markers;
-  }, [edges, defaultEdgeOptions, rfId, defaultColor]);
+  const markers = createMarkerIds(edges, {
+    id: rfId,
+    defaultColor,
+    defaultMarkerStart: defaultEdgeOptions?.markerStart,
+    defaultMarkerEnd: defaultEdgeOptions?.markerEnd,
+  });
 
   if (!markers.length) {
     return null;
@@ -82,6 +80,7 @@ const MarkerDefinitions = ({ defaultColor, rfId }: MarkerDefinitionsProps) => {
             markerUnits={marker.markerUnits}
             strokeWidth={marker.strokeWidth}
             orient={marker.orient}
+            onError={onError}
           />
         ))}
       </defs>

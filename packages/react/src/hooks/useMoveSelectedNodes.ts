@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { calculateNodePosition, snapPosition, type XYPosition } from '@xyflow/system';
 
 import type { InternalNode, Node } from '../types';
@@ -14,11 +13,12 @@ const selectedAndDraggable = (nodesDraggable: boolean) => (n: Node) =>
  * @returns function for updating node positions
  */
 export function useMoveSelectedNodes() {
-  const store = useReactFlowStoreApi();
+  const { optionsStore, nodesStore } = useReactFlowStoreApi();
 
-  const moveSelectedNodes = useCallback((params: { direction: XYPosition; factor: number }) => {
-    const { nodeExtent, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions, nodeLookup, nodeOrigin } =
-      store.getState();
+  const moveSelectedNodes = (params: { direction: XYPosition; factor: number }) => {
+    const { nodeExtent, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions, nodeOrigin } =
+      optionsStore.getState();
+    const { nodeLookup } = nodesStore.getState();
     const nodeUpdates = new Map<string, InternalNode>();
     const isSelected = selectedAndDraggable(nodesDraggable);
 
@@ -62,7 +62,7 @@ export function useMoveSelectedNodes() {
     }
 
     updateNodePositions(nodeUpdates);
-  }, []);
+  };
 
   return moveSelectedNodes;
 }

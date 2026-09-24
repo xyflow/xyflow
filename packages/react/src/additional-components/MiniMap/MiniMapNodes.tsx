@@ -1,12 +1,13 @@
-import { ComponentType, memo, useCallback } from 'react';
-import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
+import { ComponentType, memo } from 'react';
+import { getNodeDimensions } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useShallow, useNodesStore } from '../../hooks/useReactFlowStore';
 import { MiniMapNode } from './MiniMapNode';
-import type { ReactFlowState, Node } from '../../types';
+import type { NodesStore, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
+import { useInternalNode } from '../../hooks/useNodes';
 
-const selectorNodeIds = (s: ReactFlowState) => s.nodes.map((node) => node.id);
+const selectorNodeIds = (s: NodesStore) => s.nodes.map((node) => node.id);
 const getAttrFunction = <NodeType extends Node>(
   func: string | GetMiniMapNodeAttribute<NodeType> | undefined
 ): GetMiniMapNodeAttribute<NodeType> => (func instanceof Function ? func : () => func);
@@ -24,7 +25,7 @@ function MiniMapNodes<NodeType extends Node>({
   nodeComponent: NodeComponent = MiniMapNode,
   onClick,
 }: MiniMapNodesProps<NodeType>) {
-  const nodeIds = useReactFlowStore(useShallow(selectorNodeIds));
+  const nodeIds = useNodesStore(useShallow(selectorNodeIds));
   const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
@@ -80,34 +81,19 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   onClick: MiniMapNodesProps['onClick'];
   shapeRendering: string;
 }) {
-  const selector = useCallback(
-    (s: ReactFlowState) => {
-      const node = s.nodeLookup.get(id);
+  const internalNode = useInternalNode(id);
 
-      if (!node) {
-        return { node: undefined, x: 0, y: 0, width: 0, height: 0 };
-      }
-
-      const userNode = node.internals.userNode as NodeType;
-      const { x, y } = node.internals.positionAbsolute;
-      const { width, height } = getNodeDimensions(userNode);
-
-      return {
-        node: userNode,
-        x,
-        y,
-        width,
-        height,
-      };
-    },
-    [id]
-  );
-
-  const { node, x, y, width, height } = useReactFlowStore(useShallow(selector));
-
-  if (!node || node.hidden || !nodeHasDimensions(node)) {
+  if (!internalNode || internalNode.hidden) {
     return null;
   }
+
+  const { width, height } = getNodeDimensions(internalNode);
+  if (width === 0 || height === 0) {
+    return null;
+  }
+
+  const node = internalNode.internals.userNode as NodeType;
+  const { x, y } = internalNode.internals.positionAbsolute;
 
   return (
     <NodeComponent
@@ -129,6 +115,8 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   );
 }
 
+// Keep per-node bailouts when the compiler rebuilds the list after nodes are added or removed.
 const NodeComponentWrapper = memo(NodeComponentWrapperInner) as typeof NodeComponentWrapperInner;
 
+// MiniMap's render-time ref update prevents compilation, so it cannot cache this child during pan/zoom.
 export default memo(MiniMapNodes) as typeof MiniMapNodes;

@@ -8,9 +8,9 @@ import {
   getStraightPath,
 } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useOptionsStore, useConnectionStore, useViewportStore } from '../../hooks/useReactFlowStore';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
-import type { ConnectionLineComponent, Node, ReactFlowState } from '../../types';
+import type { ConnectionLineComponent, Node } from '../../types';
 import { useConnection } from '../../hooks/useConnection';
 
 type ConnectionLineWrapperProps<NodeType extends Node = Node> = {
@@ -20,21 +20,19 @@ type ConnectionLineWrapperProps<NodeType extends Node = Node> = {
   style?: CSSProperties;
 };
 
-const selector = (s: ReactFlowState) => ({
-  nodesConnectable: s.nodesConnectable,
-  isValid: s.connection.isValid,
-  inProgress: s.connection.inProgress,
-  width: s.width,
-  height: s.height,
-});
-
 export function ConnectionLineWrapper<NodeType extends Node = Node>({
   containerStyle,
   style,
   type,
   component,
 }: ConnectionLineWrapperProps<NodeType>) {
-  const { nodesConnectable, width, height, isValid, inProgress } = useReactFlowStore(useShallow(selector));
+  const nodesConnectable = useOptionsStore((s) => s.nodesConnectable);
+  // Viewport movement must not wake the wrapper when its dimensions are unchanged.
+  const width = useViewportStore((s) => s.width);
+  const height = useViewportStore((s) => s.height);
+  const {
+    connection: { isValid, inProgress },
+  } = useConnectionStore();
   const renderConnection = !!(width && nodesConnectable && inProgress);
 
   if (!renderConnection) {

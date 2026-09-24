@@ -102,7 +102,7 @@ export function ReactFlowProvider({
   zIndexMode,
   children,
 }: ReactFlowProviderProps) {
-  const [store] = useState(() =>
+  const [stores] = useState(() =>
     createStore({
       nodes,
       edges,
@@ -121,7 +121,7 @@ export function ReactFlowProvider({
   );
 
   return (
-    <Provider value={store}>
+    <Provider value={stores}>
       <BatchProvider>
         <HandleConfigProvider>{children}</HandleConfigProvider>
       </BatchProvider>

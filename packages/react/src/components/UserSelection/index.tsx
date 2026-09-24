@@ -1,13 +1,8 @@
-import { useReactFlowStore, useShallow } from '../../hooks/useReactFlowStore';
-import type { ReactFlowState } from '../../types';
-
-const selector = (s: ReactFlowState) => ({
-  userSelectionActive: s.userSelectionActive,
-  userSelectionRect: s.userSelectionRect,
-});
+import { useOptionsStore, useSelectionStore, useShallow } from '../../hooks/useReactFlowStore';
 
 export function UserSelection() {
-  const { userSelectionActive, userSelectionRect } = useReactFlowStore(useShallow(selector));
+  const userSelectionActive = useOptionsStore((s) => s.userSelectionActive);
+  const userSelectionRect = useSelectionStore(useShallow((s) => s.userSelectionRect));
   const isActive = userSelectionActive && userSelectionRect;
 
   if (!isActive) {

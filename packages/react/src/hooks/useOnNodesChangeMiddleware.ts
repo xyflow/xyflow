@@ -13,16 +13,16 @@ import type { Edge, Node } from '../types';
 export function experimental_useOnNodesChangeMiddleware<NodeType extends Node = Node>(
   fn: (changes: NodeChange<NodeType>[]) => NodeChange<NodeType>[]
 ) {
-  const store = useReactFlowStoreApi<NodeType, Edge>();
+  const { optionsStore } = useReactFlowStoreApi<NodeType, Edge>();
   const [symbol] = useState(() => Symbol());
 
   useEffect(() => {
-    const { onNodesChangeMiddlewareMap } = store.getState();
+    const { onNodesChangeMiddlewareMap } = optionsStore.getState();
     onNodesChangeMiddlewareMap.set(symbol, fn);
   }, [fn]);
 
   useEffect(() => {
-    const { onNodesChangeMiddlewareMap } = store.getState();
+    const { onNodesChangeMiddlewareMap } = optionsStore.getState();
     return () => {
       onNodesChangeMiddlewareMap.delete(symbol);
     };

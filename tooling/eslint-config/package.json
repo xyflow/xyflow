@@ -18,7 +18,6 @@
     "eslint-config-turbo": "^2.9.6",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.4.26",
     "eslint-plugin-svelte": "^3.17.1",
     "globals": "^17.5.0",
     "typescript-eslint": "^8.59.1"

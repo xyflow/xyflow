@@ -6,15 +6,6 @@ settings:
 
 catalogs:
   default:
-    '@sveltejs/adapter-auto':
-      specifier: ^7.0.1
-      version: 7.0.1
-    '@sveltejs/kit':
-      specifier: ^2.58.0
-      version: 2.61.1
-    '@sveltejs/vite-plugin-svelte':
-      specifier: ^7.0.0
-      version: 7.1.2
     '@types/node':
       specifier: ^20.19.39
       version: 20.19.41
@@ -24,12 +15,6 @@ catalogs:
     '@types/react-dom':
       specifier: ^18.3.7
       version: 18.3.7
-    '@vitejs/plugin-vue':
-      specifier: ^6.0.7
-      version: 6.0.7
-    '@vueuse/core':
-      specifier: ^14.3.0
-      version: 14.3.0
     eslint:
       specifier: ^10.2.1
       version: 10.4.0
@@ -48,27 +33,12 @@ catalogs:
     react-dom:
       specifier: ^18.3.1
       version: 18.3.1
-    svelte:
-      specifier: ^5.55.5
-      version: 5.55.9
-    svelte-check:
-      specifier: ^4.4.6
-      version: 4.4.8
     tsdown:
       specifier: ^0.22.0
       version: 0.22.0
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
-    vite:
-      specifier: ^8.0.10
-      version: 8.0.14
-    vue:
-      specifier: ^3.5.0
-      version: 3.5.40
-    vue-tsc:
-      specifier: ^3.3.4
-      version: 3.3.7
 
 overrides:
   fflate: 0.8.2
@@ -182,7 +152,7 @@ importers:
         version: 18.3.7(@types/react@18.3.29)
       '@vitejs/plugin-react':
         specifier: 6.0.1
-        version: 6.0.1(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))
+        version: 6.0.1(@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7)(rolldown@1.0.2)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0)))(babel-plugin-react-compiler@1.0.0)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))
       cypress:
         specifier: 13.6.6
         version: 13.6.6
@@ -234,7 +204,7 @@ importers:
         version: 5.55.9(@typescript-eslint/types@8.64.0)
       svelte-check:
         specifier: 'catalog:'
-        version: 4.4.8(picomatch@4.0.5)(svelte@5.55.9(@typescript-eslint/types@8.64.0))(typescript@6.0.3)
+        version: 4.4.8(picomatch@4.0.7)(svelte@5.55.9(@typescript-eslint/types@8.64.0))(typescript@6.0.3)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -293,10 +263,16 @@ importers:
       classcat:
         specifier: ^5.0.3
         version: 5.0.4
+      react-compiler-runtime:
+        specifier: ^1.0.0
+        version: 1.0.0(react@18.3.1)
       zustand:
         specifier: ^5.0.0
         version: 5.0.14(@types/react@18.3.29)(immer@11.1.8)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
     devDependencies:
+      '@rolldown/plugin-babel':
+        specifier: ^0.2.4
+        version: 0.2.4(@babel/core@7.29.7)(rolldown@1.0.2)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))
       '@types/node':
         specifier: 'catalog:'
         version: 20.19.41
@@ -306,6 +282,9 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 18.3.7(@types/react@18.3.29)
+      '@vitejs/plugin-react':
+        specifier: 6.0.1
+        version: 6.0.1(@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7)(rolldown@1.0.2)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0)))(babel-plugin-react-compiler@1.0.0)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))
       '@xyflow/eslint':
         specifier: workspace:*
         version: link:../../tooling/eslint-config
@@ -315,6 +294,9 @@ importers:
       '@xyflow/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/tsconfig
+      babel-plugin-react-compiler:
+        specifier: ^1.0.0
+        version: 1.0.0
       eslint:
         specifier: 'catalog:'
         version: 10.4.0(jiti@2.7.0)
@@ -399,7 +381,7 @@ importers:
         version: 5.55.9(@typescript-eslint/types@8.64.0)
       svelte-check:
         specifier: 'catalog:'
-        version: 4.4.8(picomatch@4.0.5)(svelte@5.55.9(@typescript-eslint/types@8.64.0))(typescript@6.0.3)
+        version: 4.4.8(picomatch@4.0.7)(svelte@5.55.9(@typescript-eslint/types@8.64.0))(typescript@6.0.3)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -568,9 +550,6 @@ importers:
       eslint-plugin-react-hooks:
         specifier: ^7.1.1
         version: 7.1.1(eslint@10.4.0(jiti@2.7.0))
-      eslint-plugin-react-refresh:
-        specifier: ^0.4.26
-        version: 0.4.26(eslint@10.4.0(jiti@2.7.0))
       eslint-plugin-svelte:
         specifier: ^3.17.1
         version: 3.17.1(eslint@10.4.0(jiti@2.7.0))(svelte@5.55.9(@typescript-eslint/types@8.64.0))
@@ -1938,6 +1917,23 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@rolldown/plugin-babel@0.2.4':
+    resolution: {integrity: sha512-ygmm2j/mN+aCvstHo0x3IOu4uc6LqXT9SJ3q4kpfG/+Yhfz0B+E47FITcC0FljZADwUFARP6E2kiE+Lc26D8wg==}
+    engines: {node: '>=22.12.0 || ^24.0.0'}
+    peerDependencies:
+      '@babel/core': ^7.29.0 || ^8.0.0-rc.1
+      '@babel/plugin-transform-runtime': ^7.29.0 || ^8.0.0-rc.1
+      '@babel/runtime': ^7.27.0 || ^8.0.0-rc.1
+      rolldown: ^1.0.0-rc.5
+      vite: ^8.0.0
+    peerDependenciesMeta:
+      '@babel/plugin-transform-runtime':
+        optional: true
+      '@babel/runtime':
+        optional: true
+      vite:
+        optional: true
+
   '@rolldown/pluginutils@1.0.0-beta.11':
     resolution: {integrity: sha512-L/gAA/hyCSuzTF1ftlzUSI/IKr2POHsv1Dd78GfqkR83KMNuswWD61JxGV2L7nRwBBBSDr6R1gCkdTmoN7W4ag==}
 
@@ -2888,6 +2884,9 @@ packages:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
     engines: {node: '>= 0.4'}
 
+  babel-plugin-react-compiler@1.0.0:
+    resolution: {integrity: sha512-Ixm8tFfoKKIPYdCCKYTsqv+Fd4IJ0DQqMyEimo+pxUOMUR9cVPlwTrFt9Avu+3cb6Zp3mAzl+t1MrG2fxxKsxw==}
+
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
 
@@ -2906,8 +2905,9 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  baseline-browser-mapping@2.8.32:
-    resolution: {integrity: sha512-OPz5aBThlyLFgxyhdwf/s2+8ab3OvT7AdTNvKHBwpXomIYeXqpUUuT8LrdtxZSsWJ4R4CU1un4XGh5Ez3nlTpw==}
+  baseline-browser-mapping@2.11.25:
+    resolution: {integrity: sha512-gMmEShwwq7FJqMwvfRwvCl00v4kN+KOfJqXn+f4nrufak5gNHJOksd/60Dvjuz7sI8Y5WiSFBa8FEYr+zoyqCw==}
+    engines: {node: '>=6.0.0'}
     hasBin: true
 
   bcrypt-pbkdf@1.0.2:
@@ -3754,11 +3754,6 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0 || ^10.0.0
-
-  eslint-plugin-react-refresh@0.4.26:
-    resolution: {integrity: sha512-1RETEylht2O6FM/MvgnyvT+8K21wLqDNg4qD51Zj3guhjt433XbnnkVttHMyaVyAFD03QSV4LPS5iE3VQmO7XQ==}
-    peerDependencies:
-      eslint: '>=8.40'
 
   eslint-plugin-react@7.37.5:
     resolution: {integrity: sha512-Qteup0SqU15kdocexFNAJMvCJEfa2xUKNV4CC1xsVMrIIqEy3SQ/rqyxCWNzfrd3/ldy6HMlD2e0JDVpDg2qIA==}
@@ -5474,6 +5469,10 @@ packages:
     resolution: {integrity: sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A==}
     engines: {node: '>=12'}
 
+  picomatch@4.0.7:
+    resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
+    engines: {node: '>=12'}
+
   pify@2.3.0:
     resolution: {integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==}
     engines: {node: '>=0.10.0'}
@@ -5866,6 +5865,11 @@ packages:
 
   radix3@1.1.2:
     resolution: {integrity: sha512-b484I/7b8rDEdSDKckSSBA8knMpcdsXudlE/LNL639wFoHKwLbEkQFZHWEYwDC0wa0FKUcCY+GAF73Z7wxNVFA==}
+
+  react-compiler-runtime@1.0.0:
+    resolution: {integrity: sha512-rRfjYv66HlG8896yPUDONgKzG5BxZD1nV9U6rkm+7VCuvQc903C4MjcoZR4zPw53IKSOX9wMQVpA1IAbRtzQ7w==}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0 || ^0.0.0-experimental
 
   react-dom@18.3.1:
     resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
@@ -7597,7 +7601,7 @@ snapshots:
       '@babel/types': 7.29.7
       '@jridgewell/remapping': 2.3.5
       convert-source-map: 2.0.0
-      debug: 4.4.1
+      debug: 4.4.3
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -7641,7 +7645,7 @@ snapshots:
     dependencies:
       '@babel/compat-data': 7.29.7
       '@babel/helper-validator-option': 7.29.7
-      browserslist: 4.28.0
+      browserslist: 4.28.2
       lru-cache: 5.1.1
       semver: 6.3.1
 
@@ -7779,7 +7783,7 @@ snapshots:
       '@babel/parser': 7.29.7
       '@babel/template': 7.29.7
       '@babel/types': 7.29.7
-      debug: 4.4.1
+      debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
 
@@ -8443,8 +8447,8 @@ snapshots:
 
   '@jridgewell/remapping@2.3.5':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.5
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/gen-mapping': 0.3.13
+      '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
@@ -8687,6 +8691,14 @@ snapshots:
 
   '@rolldown/binding-win32-x64-msvc@1.0.2':
     optional: true
+
+  '@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7)(rolldown@1.0.2)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))':
+    dependencies:
+      '@babel/core': 7.29.7
+      picomatch: 4.0.7
+      rolldown: 1.0.2
+    optionalDependencies:
+      vite: 8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0)
 
   '@rolldown/pluginutils@1.0.0-beta.11': {}
 
@@ -9340,10 +9352,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-react@6.0.1(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))':
+  '@vitejs/plugin-react@6.0.1(@rolldown/plugin-babel@0.2.4(@babel/core@7.29.7)(rolldown@1.0.2)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0)))(babel-plugin-react-compiler@1.0.0)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-rc.7
       vite: 8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0)
+    optionalDependencies:
+      '@rolldown/plugin-babel': 0.2.4(@babel/core@7.29.7)(rolldown@1.0.2)(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))
+      babel-plugin-react-compiler: 1.0.0
 
   '@vitejs/plugin-vue@6.0.7(vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0))(vue@3.5.40(typescript@6.0.3))':
     dependencies:
@@ -9853,6 +9868,10 @@ snapshots:
 
   axobject-query@4.1.0: {}
 
+  babel-plugin-react-compiler@1.0.0:
+    dependencies:
+      '@babel/types': 7.29.7
+
   bail@2.0.2: {}
 
   balanced-match@1.0.2: {}
@@ -9863,7 +9882,7 @@ snapshots:
 
   baseline-browser-mapping@2.10.32: {}
 
-  baseline-browser-mapping@2.8.32: {}
+  baseline-browser-mapping@2.11.25: {}
 
   bcrypt-pbkdf@1.0.2:
     dependencies:
@@ -9904,7 +9923,7 @@ snapshots:
 
   browserslist@4.28.0:
     dependencies:
-      baseline-browser-mapping: 2.8.32
+      baseline-browser-mapping: 2.10.32
       caniuse-lite: 1.0.30001759
       electron-to-chromium: 1.5.263
       node-releases: 2.0.27
@@ -9912,7 +9931,7 @@ snapshots:
 
   browserslist@4.28.2:
     dependencies:
-      baseline-browser-mapping: 2.10.32
+      baseline-browser-mapping: 2.11.25
       caniuse-lite: 1.0.30001793
       electron-to-chromium: 1.5.361
       node-releases: 2.0.46
@@ -10897,10 +10916,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-react-refresh@0.4.26(eslint@10.4.0(jiti@2.7.0)):
-    dependencies:
-      eslint: 10.4.0(jiti@2.7.0)
-
   eslint-plugin-react@7.37.5(eslint@10.4.0(jiti@2.7.0)):
     dependencies:
       array-includes: 3.1.8
@@ -11235,6 +11250,10 @@ snapshots:
   fdir@6.5.0(picomatch@4.0.5):
     optionalDependencies:
       picomatch: 4.0.5
+
+  fdir@6.5.0(picomatch@4.0.7):
+    optionalDependencies:
+      picomatch: 4.0.7
 
   fflate@0.8.2: {}
 
@@ -12905,6 +12924,8 @@ snapshots:
 
   picomatch@4.0.5: {}
 
+  picomatch@4.0.7: {}
+
   pify@2.3.0: {}
 
   pify@4.0.1: {}
@@ -13285,6 +13306,10 @@ snapshots:
   queue-microtask@1.2.3: {}
 
   radix3@1.1.2: {}
+
+  react-compiler-runtime@1.0.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   react-dom@18.3.1(react@18.3.1):
     dependencies:
@@ -14098,11 +14123,11 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@4.4.8(picomatch@4.0.5)(svelte@5.55.9(@typescript-eslint/types@8.64.0))(typescript@6.0.3):
+  svelte-check@4.4.8(picomatch@4.0.7)(svelte@5.55.9(@typescript-eslint/types@8.64.0))(typescript@6.0.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       chokidar: 4.0.3
-      fdir: 6.5.0(picomatch@4.0.5)
+      fdir: 6.5.0(picomatch@4.0.7)
       picocolors: 1.1.1
       sade: 1.8.1
       svelte: 5.55.9(@typescript-eslint/types@8.64.0)
@@ -14268,7 +14293,7 @@ snapshots:
 
   ts-declaration-location@1.0.7(typescript@5.9.3):
     dependencies:
-      picomatch: 4.0.5
+      picomatch: 4.0.7
       typescript: 5.9.3
     optional: true
 
@@ -14702,8 +14727,8 @@ snapshots:
   vite@8.0.14(@types/node@20.19.41)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.31.0)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.32.0
-      picomatch: 4.0.4
-      postcss: 8.5.15
+      picomatch: 4.0.7
+      postcss: 8.5.19
       rolldown: 1.0.2
       tinyglobby: 0.2.16
     optionalDependencies:
