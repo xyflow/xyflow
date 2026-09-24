@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { SmoothStepEdge } from './SmoothStepEdge';
 import type { StepEdgeProps } from '../../types';
 
@@ -9,7 +11,7 @@ function createStepEdge(params: { isInternal: boolean }) {
   }
 
   StepEdgeComponent.displayName = params.isInternal ? 'StepEdgeInternal' : 'StepEdge';
-  return StepEdgeComponent;
+  return memo(StepEdgeComponent);
 }
 
 /**

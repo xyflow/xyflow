@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { memo, ReactNode } from 'react';
 
 import { useReactFlowStore } from '../../hooks/useReactFlowStore';
 import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
@@ -98,4 +98,4 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
 
 EdgeRendererComponent.displayName = 'EdgeRenderer';
 
-export const EdgeRenderer = EdgeRendererComponent;
+export const EdgeRenderer = memo(EdgeRendererComponent) as typeof EdgeRendererComponent;

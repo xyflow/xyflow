@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { FlowRenderer } from '../FlowRenderer';
 import { NodeRenderer } from '../NodeRenderer';
 import { EdgeRenderer } from '../EdgeRenderer';
@@ -203,4 +205,4 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
 
 GraphViewComponent.displayName = 'GraphView';
 
-export const GraphView = GraphViewComponent;
+export const GraphView = memo(GraphViewComponent) as typeof GraphViewComponent;

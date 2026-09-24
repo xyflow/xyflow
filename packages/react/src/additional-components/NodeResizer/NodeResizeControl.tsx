@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { memo, useRef, useEffect } from 'react';
 import cc from 'classcat';
 import {
   XYResizer,
@@ -238,4 +238,4 @@ export function ResizeControlLine(props: ResizeControlLineProps) {
  * @public
  *
  */
-export const NodeResizeControl = ResizeControl;
+export const NodeResizeControl = memo(ResizeControl);

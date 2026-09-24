@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { getStraightPath } from '@xyflow/system';
 
 import { BaseEdge } from './BaseEdge';
@@ -46,7 +47,7 @@ function createStraightEdge(params: { isInternal: boolean }) {
   }
 
   StraightEdgeComponent.displayName = params.isInternal ? 'StraightEdgeInternal' : 'StraightEdge';
-  return StraightEdgeComponent;
+  return memo(StraightEdgeComponent);
 }
 
 /**

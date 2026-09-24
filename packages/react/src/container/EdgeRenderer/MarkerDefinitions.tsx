@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { type MarkerProps, type OnError, createMarkerIds, errorMessages } from '@xyflow/system';
 
 import { useEdgesStore, useReactFlowStore } from '../../hooks/useReactFlowStore';
@@ -89,4 +90,4 @@ const MarkerDefinitions = ({ defaultColor, rfId, onError }: MarkerDefinitionsPro
 
 MarkerDefinitions.displayName = 'MarkerDefinitions';
 
-export default MarkerDefinitions;
+export default memo(MarkerDefinitions);

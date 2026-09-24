@@ -40,4 +40,4 @@ const ArrowClosedSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => 
 export const arrowSymbols = {
   [MarkerType.Arrow]: ArrowSymbol,
   [MarkerType.ArrowClosed]: ArrowClosedSymbol,
-};
+} as const;

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Position, getSmoothStepPath } from '@xyflow/system';
 
 import { BaseEdge } from './BaseEdge';
@@ -59,7 +60,7 @@ function createSmoothStepEdge(params: { isInternal: boolean }) {
   }
 
   SmoothStepEdgeComponent.displayName = params.isInternal ? 'SmoothStepEdgeInternal' : 'SmoothStepEdge';
-  return SmoothStepEdgeComponent;
+  return memo(SmoothStepEdgeComponent);
 }
 
 /**

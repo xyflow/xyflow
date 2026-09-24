@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Position, getBezierPath } from '@xyflow/system';
 
 import { BaseEdge } from './BaseEdge';
@@ -57,7 +58,7 @@ function createBezierEdge(params: { isInternal: boolean }) {
   }
 
   BezierEdgeComponent.displayName = params.isInternal ? 'BezierEdgeInternal' : 'BezierEdge';
-  return BezierEdgeComponent;
+  return memo(BezierEdgeComponent);
 }
 
 /**
