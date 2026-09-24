@@ -47,9 +47,9 @@ export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
  *```
  */
 export function useEdge<EdgeType extends Edge = Edge>(id: string): EdgeType | undefined {
-  const { store, edgesStore } = useReactFlowStoreApi();
+  const { optionsStore, edgesStore } = useReactFlowStoreApi();
 
-  const subscribe = (onStoreChange: () => void) => store.getState().pubSub.subscribeToEdge(id, onStoreChange);
+  const subscribe = (onStoreChange: () => void) => optionsStore.getState().pubSub.subscribeToEdge(id, onStoreChange);
 
   const getSnapshot = () => edgesStore.getState().edgeLookup.get(id) as EdgeType | undefined;
 

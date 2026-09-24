@@ -20,7 +20,7 @@ export function useNodeObserver({
   hasDimensions: boolean;
   resizeObserver: ResizeObserver | null;
 }) {
-  const { store } = useReactFlowStoreApi();
+  const { optionsStore } = useReactFlowStoreApi();
   const nodeRef = useRef<HTMLDivElement | null>(null);
   const observedNode = useRef<HTMLDivElement | null>(null);
   const prevSourcePosition = useRef(node.sourcePosition);
@@ -62,7 +62,7 @@ export function useNodeObserver({
         prevSourcePosition.current = node.sourcePosition;
         prevTargetPosition.current = node.targetPosition;
 
-        store
+        optionsStore
           .getState()
           .updateNodeInternals(new Map([[node.id, { id: node.id, nodeElement: nodeRef.current, force: true }]]));
       }

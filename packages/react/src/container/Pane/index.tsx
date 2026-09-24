@@ -23,7 +23,7 @@ import {
 
 import { UserSelection } from '../../components/UserSelection';
 import { containerStyle } from '../../styles/utils';
-import { useReactFlowStore, useReactFlowStoreApi, useViewportStore } from '../../hooks/useReactFlowStore';
+import { useOptionsStore, useReactFlowStoreApi, useViewportStore } from '../../hooks/useReactFlowStore';
 import type { ReactFlowProps } from '../../types';
 
 type PaneProps = {
@@ -80,11 +80,12 @@ export function Pane({
   children,
 }: PaneProps) {
   const autoPanId = useRef<number>(0);
-  const { store, viewportStore, connectionStore, nodesStore, edgesStore, selectionStore } = useReactFlowStoreApi();
-  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
-  const elementsSelectable = useReactFlowStore((s) => s.elementsSelectable);
-  const panBy = useReactFlowStore((s) => s.panBy);
-  const autoPanSpeed = useReactFlowStore((s) => s.autoPanSpeed);
+  const { optionsStore, viewportStore, connectionStore, nodesStore, edgesStore, selectionStore } =
+    useReactFlowStoreApi();
+  const userSelectionActive = useOptionsStore((s) => s.userSelectionActive);
+  const elementsSelectable = useOptionsStore((s) => s.elementsSelectable);
+  const panBy = useOptionsStore((s) => s.panBy);
+  const autoPanSpeed = useOptionsStore((s) => s.autoPanSpeed);
   const dragging = useViewportStore((s) => s.paneDragging);
 
   const isSelectionEnabled = elementsSelectable && (isSelecting || userSelectionActive);
@@ -115,11 +116,11 @@ export function Pane({
       return;
     }
 
-    const { resetSelectedElements, nodesSelectionActive } = store.getState();
+    const { resetSelectedElements, nodesSelectionActive } = optionsStore.getState();
     onPaneClick?.(event);
     resetSelectedElements();
     if (nodesSelectionActive) {
-      store.setState({ nodesSelectionActive: false });
+      optionsStore.setState({ nodesSelectionActive: false });
     }
   };
 
@@ -150,7 +151,7 @@ export function Pane({
       return;
     }
 
-    const { domNode } = store.getState();
+    const { domNode } = optionsStore.getState();
     const { transform } = viewportStore.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
     if (!containerBounds.current) return;
@@ -198,7 +199,7 @@ export function Pane({
     const { transform } = viewportStore.getState();
     const { nodeLookup } = nodesStore.getState();
     const { edgeLookup, connectionLookup } = edgesStore.getState();
-    const { emitNodeChanges, emitEdgeChanges, defaultEdgeOptions } = store.getState();
+    const { emitNodeChanges, emitEdgeChanges, defaultEdgeOptions } = optionsStore.getState();
 
     const userStartPosition = { x: userSelectionRect.startX, y: userSelectionRect.startY };
     const { x: screenStartX, y: screenStartY } = rendererPointToPoint(userStartPosition, transform);
@@ -249,7 +250,7 @@ export function Pane({
     }
 
     selectionStore.setState({ userSelectionRect: nextUserSelectRect });
-    store.setState((state) =>
+    optionsStore.setState((state) =>
       state.userSelectionActive && !state.nodesSelectionActive
         ? state
         : { userSelectionActive: true, nodesSelectionActive: false }
@@ -286,7 +287,7 @@ export function Pane({
   const onPointerMove = (event: ReactPointerEvent): void => {
     const { userSelectionRect } = selectionStore.getState();
     const { transform } = viewportStore.getState();
-    const { resetSelectedElements } = store.getState();
+    const { resetSelectedElements } = optionsStore.getState();
 
     if (!containerBounds.current || !userSelectionRect) {
       return;
@@ -339,15 +340,15 @@ export function Pane({
       onClick?.(event);
     }
 
-    store.setState({ userSelectionActive: false });
+    optionsStore.setState({ userSelectionActive: false });
     selectionStore.setState({ userSelectionRect: null });
 
     if (selectionInProgress.current) {
       onSelectionEnd?.(event);
 
       const nodesSelectionActive = selectedNodeIds.current.size > 0;
-      if (store.getState().nodesSelectionActive !== nodesSelectionActive) {
-        store.setState({ nodesSelectionActive });
+      if (optionsStore.getState().nodesSelectionActive !== nodesSelectionActive) {
+        optionsStore.setState({ nodesSelectionActive });
       }
     }
 

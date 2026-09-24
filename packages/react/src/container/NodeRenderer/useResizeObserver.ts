@@ -4,7 +4,7 @@ import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { InternalNodeUpdate } from '@xyflow/system';
 
 export function useResizeObserver() {
-  const { store } = useReactFlowStoreApi();
+  const { optionsStore } = useReactFlowStoreApi();
   const [resizeObserver] = useState(() => {
     if (typeof ResizeObserver === 'undefined') {
       return null;
@@ -21,7 +21,7 @@ export function useResizeObserver() {
         });
       });
 
-      store.getState().updateNodeInternals(updates);
+      optionsStore.getState().updateNodeInternals(updates);
     });
   });
 

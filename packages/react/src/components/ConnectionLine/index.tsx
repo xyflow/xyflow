@@ -8,7 +8,7 @@ import {
   getStraightPath,
 } from '@xyflow/system';
 
-import { useReactFlowStore, useConnectionStore, useViewportStore } from '../../hooks/useReactFlowStore';
+import { useOptionsStore, useConnectionStore, useViewportStore } from '../../hooks/useReactFlowStore';
 import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 import type { ConnectionLineComponent, Node } from '../../types';
 import { useConnection } from '../../hooks/useConnection';
@@ -26,7 +26,7 @@ export function ConnectionLineWrapper<NodeType extends Node = Node>({
   type,
   component,
 }: ConnectionLineWrapperProps<NodeType>) {
-  const nodesConnectable = useReactFlowStore((s) => s.nodesConnectable);
+  const nodesConnectable = useOptionsStore((s) => s.nodesConnectable);
   // Viewport movement must not wake the wrapper when its dimensions are unchanged.
   const width = useViewportStore((s) => s.width);
   const height = useViewportStore((s) => s.height);

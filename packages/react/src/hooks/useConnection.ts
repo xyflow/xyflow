@@ -48,10 +48,10 @@ export function useConnection<NodeType extends Node = Node, SelectorReturn = Con
 }
 
 export function useConnectionStateForHandle(handle: { nodeId: string; type: HandleType; id: string | null }) {
-  const { store, connectionStore } = useReactFlowStoreApi();
+  const { optionsStore, connectionStore } = useReactFlowStoreApi();
 
   const subscribe = (onStoreChange: () => void) =>
-    store.getState().pubSub.subscribeToConnectionForHandle(handle, onStoreChange);
+    optionsStore.getState().pubSub.subscribeToConnectionForHandle(handle, onStoreChange);
 
   const getSnapshot = () => connectionStore.getState();
 

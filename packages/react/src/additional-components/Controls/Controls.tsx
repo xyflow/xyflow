@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import cc from 'classcat';
 
-import { useReactFlowStore, useViewportStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useOptionsStore, useViewportStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useReactFlow } from '../../hooks/useReactFlow';
 import { Panel } from '../../components/Panel';
 
@@ -29,13 +29,13 @@ function ControlsComponent({
   orientation = 'vertical',
   'aria-label': ariaLabel,
 }: ControlProps) {
-  const { store } = useReactFlowStoreApi();
-  const nodesDraggable = useReactFlowStore((s) => s.nodesDraggable);
-  const nodesConnectable = useReactFlowStore((s) => s.nodesConnectable);
-  const elementsSelectable = useReactFlowStore((s) => s.elementsSelectable);
-  const minZoom = useReactFlowStore((s) => s.minZoom);
-  const maxZoom = useReactFlowStore((s) => s.maxZoom);
-  const ariaLabelConfig = useReactFlowStore((s) => s.ariaLabelConfig);
+  const { optionsStore } = useReactFlowStoreApi();
+  const nodesDraggable = useOptionsStore((s) => s.nodesDraggable);
+  const nodesConnectable = useOptionsStore((s) => s.nodesConnectable);
+  const elementsSelectable = useOptionsStore((s) => s.elementsSelectable);
+  const minZoom = useOptionsStore((s) => s.minZoom);
+  const maxZoom = useOptionsStore((s) => s.maxZoom);
+  const ariaLabelConfig = useOptionsStore((s) => s.ariaLabelConfig);
 
   const isInteractive = nodesDraggable || nodesConnectable || elementsSelectable;
   // Panning changes the viewport every frame without changing either zoom limit.
@@ -59,7 +59,7 @@ function ControlsComponent({
   };
 
   const onToggleInteractivity = () => {
-    store.setState({
+    optionsStore.setState({
       nodesDraggable: !isInteractive,
       nodesConnectable: !isInteractive,
       elementsSelectable: !isInteractive,

@@ -47,15 +47,15 @@ export type UseOnSelectionChangeOptions<NodeType extends Node = Node, EdgeType e
 export function useOnSelectionChange<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onChange,
 }: UseOnSelectionChangeOptions<NodeType, EdgeType>) {
-  const { store } = useReactFlowStoreApi<NodeType, EdgeType>();
+  const { optionsStore } = useReactFlowStoreApi<NodeType, EdgeType>();
 
   useEffect(() => {
-    const nextOnSelectionChangeHandlers = [...store.getState().onSelectionChangeHandlers, onChange];
-    store.setState({ onSelectionChangeHandlers: nextOnSelectionChangeHandlers });
+    const nextOnSelectionChangeHandlers = [...optionsStore.getState().onSelectionChangeHandlers, onChange];
+    optionsStore.setState({ onSelectionChangeHandlers: nextOnSelectionChangeHandlers });
 
     return () => {
-      const nextHandlers = store.getState().onSelectionChangeHandlers.filter((fn) => fn !== onChange);
-      store.setState({ onSelectionChangeHandlers: nextHandlers });
+      const nextHandlers = optionsStore.getState().onSelectionChangeHandlers.filter((fn) => fn !== onChange);
+      optionsStore.setState({ onSelectionChangeHandlers: nextHandlers });
     };
   }, [onChange]);
 }

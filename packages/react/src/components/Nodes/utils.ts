@@ -11,19 +11,19 @@ import type { ReactFlowStoreApi } from '../../types';
  */
 export function handleNodeClick({
   id,
-  store,
+  optionsStore,
   nodesStore,
   unselect = false,
   nodeRef,
 }: {
   id: string;
-  store: ReactFlowStoreApi['store'];
+  optionsStore: ReactFlowStoreApi['optionsStore'];
   nodesStore: ReactFlowStoreApi['nodesStore'];
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;
 }) {
   const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, onError, nodesSelectionActive } =
-    store.getState();
+    optionsStore.getState();
   const { nodeLookup } = nodesStore.getState();
   const node = nodeLookup.get(id);
 
@@ -33,7 +33,7 @@ export function handleNodeClick({
   }
 
   if (nodesSelectionActive) {
-    store.setState({ nodesSelectionActive: false });
+    optionsStore.setState({ nodesSelectionActive: false });
   }
 
   if (!node.selected) {

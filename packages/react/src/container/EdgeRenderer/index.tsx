@@ -1,6 +1,6 @@
 import { memo, ReactNode } from 'react';
 
-import { useReactFlowStore } from '../../hooks/useReactFlowStore';
+import { useOptionsStore } from '../../hooks/useReactFlowStore';
 import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
@@ -47,14 +47,14 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   onReconnectEnd,
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
-  const edgesFocusable = useReactFlowStore((s) => s.edgesFocusable);
-  const edgesReconnectable = useReactFlowStore((s) => s.edgesReconnectable);
-  const elementsSelectable = useReactFlowStore((s) => s.elementsSelectable);
-  const onError = useReactFlowStore((s) => s.onError);
-  const connectionMode = useReactFlowStore((s) => s.connectionMode);
-  const elevateEdgesOnSelect = useReactFlowStore((s) => s.elevateEdgesOnSelect);
-  const zIndexMode = useReactFlowStore((s) => s.zIndexMode);
-  const defaultEdgeOptions = useReactFlowStore((s) => s.defaultEdgeOptions);
+  const edgesFocusable = useOptionsStore((s) => s.edgesFocusable);
+  const edgesReconnectable = useOptionsStore((s) => s.edgesReconnectable);
+  const elementsSelectable = useOptionsStore((s) => s.elementsSelectable);
+  const onError = useOptionsStore((s) => s.onError);
+  const connectionMode = useOptionsStore((s) => s.connectionMode);
+  const elevateEdgesOnSelect = useOptionsStore((s) => s.elevateEdgesOnSelect);
+  const zIndexMode = useOptionsStore((s) => s.zIndexMode);
+  const defaultEdgeOptions = useOptionsStore((s) => s.defaultEdgeOptions);
 
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 

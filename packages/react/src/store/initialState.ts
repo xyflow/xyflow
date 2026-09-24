@@ -64,7 +64,7 @@ const getInitialState = ({
   nodeExtent?: CoordinateExtent;
   zIndexMode?: ZIndexMode;
 } = {}): {
-  store: ReactFlowStore;
+  optionsStore: ReactFlowStore;
   viewportStore: ViewportStore;
   connectionStore: ConnectionStore;
   nodesStore: NodesStore;
@@ -107,7 +107,7 @@ const getInitialState = ({
   }
 
   return {
-    store: {
+    optionsStore: {
       rfId: '1',
       onNodesChange: null,
       onEdgesChange: null,

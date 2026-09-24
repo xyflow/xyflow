@@ -9,7 +9,7 @@ import { shallow } from 'zustand/shallow';
 
 import {
   useCustomDiff,
-  useReactFlowStore,
+  useOptionsStore,
   useNodesStore,
   useEdgesStore,
   useReactFlowStoreApi,
@@ -52,7 +52,7 @@ function areEqual(a: (Node | Edge)[], b: (Node | Edge)[]) {
 function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onSelectionChange,
 }: SelectionListenerProps<NodeType, EdgeType>) {
-  const { store, nodesStore, edgesStore } = useReactFlowStoreApi<NodeType, EdgeType>();
+  const { optionsStore, nodesStore, edgesStore } = useReactFlowStoreApi<NodeType, EdgeType>();
   const selectedNodes = useNodesStore(useCustomDiff(nodesSelector, areEqual));
   const selectedEdges = useEdgesStore(useCustomDiff(edgesSelector, areEqual));
 
@@ -64,8 +64,8 @@ function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends E
     };
 
     onSelectionChange?.(params);
-    store.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));
-  }, [selectedNodes, selectedEdges, onSelectionChange, store, nodesStore, edgesStore]);
+    optionsStore.getState().onSelectionChangeHandlers.forEach((fn) => fn(params));
+  }, [selectedNodes, selectedEdges, onSelectionChange, optionsStore, nodesStore, edgesStore]);
 
   return null;
 }
@@ -75,7 +75,7 @@ const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers;
 export function SelectionListener<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onSelectionChange,
 }: SelectionListenerProps<NodeType, EdgeType>) {
-  const storeHasSelectionChangeHandlers = useReactFlowStore(changeSelector);
+  const storeHasSelectionChangeHandlers = useOptionsStore(changeSelector);
 
   if (onSelectionChange || storeHasSelectionChangeHandlers) {
     return <SelectionListenerInner<NodeType, EdgeType> onSelectionChange={onSelectionChange} />;

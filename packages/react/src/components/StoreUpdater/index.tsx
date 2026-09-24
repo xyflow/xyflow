@@ -101,11 +101,11 @@ const initPrevValues = {
 export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   props: StoreUpdaterProps<NodeType, EdgeType>
 ) {
-  const { store } = useReactFlowStoreApi<NodeType, EdgeType>();
+  const { optionsStore } = useReactFlowStoreApi<NodeType, EdgeType>();
   const previousFields = useRef<Partial<StoreUpdaterProps<NodeType, EdgeType>>>(initPrevValues);
 
   useEffect(() => {
-    const { setDefaultNodesAndEdges, reset } = store.getState();
+    const { setDefaultNodesAndEdges, reset } = optionsStore.getState();
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
 
     return () => {
@@ -118,7 +118,7 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
 
   useEffect(
     () => {
-      const { setNodes, setEdges, setMinZoom, setMaxZoom, setTranslateExtent, setNodeExtent } = store.getState();
+      const { setNodes, setEdges, setMinZoom, setMaxZoom, setTranslateExtent, setNodeExtent } = optionsStore.getState();
       for (const fieldName of fieldsToTrack) {
         const fieldValue = props[fieldName];
         const previousFieldValue = previousFields.current[fieldName];
@@ -133,13 +133,14 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
         else if (fieldName === 'translateExtent') setTranslateExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'nodeExtent') setNodeExtent(fieldValue as CoordinateExtent);
         else if (fieldName === 'ariaLabelConfig')
-          store.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
+          optionsStore.setState({ ariaLabelConfig: mergeAriaLabelConfig(fieldValue as AriaLabelConfig) });
         // Renamed fields
-        else if (fieldName === 'fitView') store.setState({ fitViewQueued: fieldValue as boolean });
-        else if (fieldName === 'fitViewOptions') store.setState({ fitViewOptions: fieldValue as FitViewOptions });
+        else if (fieldName === 'fitView') optionsStore.setState({ fitViewQueued: fieldValue as boolean });
+        else if (fieldName === 'fitViewOptions')
+          optionsStore.setState({ fitViewOptions: fieldValue as FitViewOptions });
         // General case
         else {
-          store.setState({ [fieldName]: fieldValue });
+          optionsStore.setState({ [fieldName]: fieldValue });
         }
       }
 

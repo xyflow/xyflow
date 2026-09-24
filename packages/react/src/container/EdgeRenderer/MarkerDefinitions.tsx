@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { type MarkerProps, type OnError, createMarkerIds, errorMessages } from '@xyflow/system';
 
-import { useEdgesStore, useReactFlowStore } from '../../hooks/useReactFlowStore';
+import { useEdgesStore, useOptionsStore } from '../../hooks/useReactFlowStore';
 import { arrowSymbols } from './MarkerSymbols';
 
 type MarkerDefinitionsProps = {
@@ -52,7 +52,7 @@ const Marker = ({
  * that we can then use for creating our unique marker ids
  */
 const MarkerDefinitions = ({ defaultColor, rfId, onError }: MarkerDefinitionsProps) => {
-  const defaultEdgeOptions = useReactFlowStore((s) => s.defaultEdgeOptions);
+  const defaultEdgeOptions = useOptionsStore((s) => s.defaultEdgeOptions);
   const { edges } = useEdgesStore();
 
   const markers = createMarkerIds(edges, {

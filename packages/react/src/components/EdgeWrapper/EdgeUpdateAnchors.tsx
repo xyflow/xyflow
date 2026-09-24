@@ -39,7 +39,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
   setReconnecting,
   setUpdateHover,
 }: EdgeUpdateAnchorsProps<EdgeType>) {
-  const { store, viewportStore, connectionStore, nodesStore } = useReactFlowStoreApi();
+  const { optionsStore, viewportStore, connectionStore, nodesStore } = useReactFlowStoreApi();
 
   const handleEdgeUpdater = (
     event: React.MouseEvent<SVGGElement, MouseEvent>,
@@ -60,7 +60,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       rfId: flowId,
       panBy,
       updateConnection,
-    } = store.getState();
+    } = optionsStore.getState();
     const { nodeLookup } = nodesStore.getState();
     const isTarget = oppositeHandle.type === 'target';
 
@@ -90,15 +90,15 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       flowId,
       cancelConnection,
       panBy,
-      isValidConnection: (...args) => store.getState().isValidConnection?.(...args) ?? true,
+      isValidConnection: (...args) => optionsStore.getState().isValidConnection?.(...args) ?? true,
       onConnect: onConnectEdge,
       onConnectStart: _onConnectStart,
-      onConnectEnd: (...args) => store.getState().onConnectEnd?.(...args),
+      onConnectEnd: (...args) => optionsStore.getState().onConnectEnd?.(...args),
       onReconnectEnd: _onReconnectEnd,
       updateConnection,
       getTransform: () => viewportStore.getState().transform,
       getFromHandle: () => connectionStore.getState().connection.fromHandle,
-      dragThreshold: store.getState().connectionDragThreshold,
+      dragThreshold: optionsStore.getState().connectionDragThreshold,
       handleDomNode: event.currentTarget,
     });
   };

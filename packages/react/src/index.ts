@@ -18,7 +18,7 @@ export { useViewport } from './hooks/useViewport';
 export { useKeyPress } from './hooks/useKeyPress';
 export { useNodesState, useEdgesState } from './hooks/useNodesEdgesState';
 export {
-  useReactFlowStore,
+  useOptionsStore,
   useReactFlowStoreApi,
   useViewportStore,
   useConnectionStore,

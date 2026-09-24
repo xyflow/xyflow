@@ -28,7 +28,7 @@ export function useDrag({
   isSelectable,
   nodeClickDistance,
 }: UseDragParams) {
-  const { store, viewportStore, nodesStore, edgesStore } = useReactFlowStoreApi();
+  const { optionsStore, viewportStore, nodesStore, edgesStore } = useReactFlowStoreApi();
   const [dragging, setDragging] = useState<boolean>(false);
   const xyDrag = useRef<XYDragInstance>();
 
@@ -42,12 +42,12 @@ export function useDrag({
         const { nodes, nodeLookup } = nodesStore.getState();
         const { edges } = edgesStore.getState();
         const { transform } = viewportStore.getState();
-        return { ...store.getState(), nodes, nodeLookup, edges, transform };
+        return { ...optionsStore.getState(), nodes, nodeLookup, edges, transform };
       },
       onNodeMouseDown: (id: string) => {
         handleNodeClick({
           id,
-          store,
+          optionsStore,
           nodesStore,
           nodeRef,
         });
@@ -64,7 +64,7 @@ export function useDrag({
       xyDrag.current?.destroy();
       xyDrag.current = undefined;
     };
-  }, [disabled, store, viewportStore, nodesStore, edgesStore, nodeRef]);
+  }, [disabled, optionsStore, viewportStore, nodesStore, edgesStore, nodeRef]);
 
   useEffect(() => {
     if (disabled || !nodeRef.current || !xyDrag.current) {

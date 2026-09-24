@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import type { Viewport } from '@xyflow/system';
 
-import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
+import { useOptionsStore, useReactFlowStoreApi } from './useReactFlowStore';
 
 /**
  * Hook for syncing the viewport with the panzoom instance.
@@ -10,7 +10,7 @@ import { useReactFlowStore, useReactFlowStoreApi } from './useReactFlowStore';
  * @param viewport
  */
 export function useViewportSync(viewport?: Viewport) {
-  const panZoom = useReactFlowStore((s) => s.panZoom);
+  const panZoom = useOptionsStore((s) => s.panZoom);
   const syncViewport = panZoom?.syncViewport;
   const { viewportStore } = useReactFlowStoreApi();
 

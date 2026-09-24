@@ -30,30 +30,30 @@ const zustandErrorMessage = errorMessages['error001']('react');
  * Extracting or transforming just the state you need is a good practice to avoid unnecessary
  * re-renders.
  * For shallow comparisons, use `useShallow` from `@xyflow/react` by wrapping your selector:
- * `useReactFlowStore(useShallow(selector))`.
+ * `useOptionsStore(useShallow(selector))`.
  * Omit the selector to subscribe to the entire store.
  * @returns The selected state slice, or the entire store when no selector is provided.
  *
  * @example
  * ```ts
- * const nodesDraggable = useReactFlowStore((state) => state.nodesDraggable);
+ * const nodesDraggable = useOptionsStore((state) => state.nodesDraggable);
  * ```
  *
  * @remarks This hook should only be used if there is no other way to access the internal
  * state. For many of the common use cases, there are dedicated hooks available
  * such as {@link useReactFlow}, {@link useViewport}, etc.
  */
-function useReactFlowStore(): ReactFlowState;
-function useReactFlowStore<StateSlice>(selector: (state: ReactFlowState) => StateSlice): StateSlice;
-function useReactFlowStore(selector: (state: ReactFlowState) => unknown = identity) {
-  const { store } = useReactFlowStoreApi();
-  return useZustandStore(store, selector);
+function useOptionsStore(): ReactFlowState;
+function useOptionsStore<StateSlice>(selector: (state: ReactFlowState) => StateSlice): StateSlice;
+function useOptionsStore(selector: (state: ReactFlowState) => unknown = identity) {
+  const { optionsStore } = useReactFlowStoreApi();
+  return useZustandStore(optionsStore, selector);
 }
 
 /**
  * In some cases, you might need to access the stores directly. This hook returns the store APIs which can be used on demand to access state or dispatch actions.
  *
- * @returns The main, viewport, connection, nodes, edges, and selection store APIs.
+ * @returns The options, viewport, connection, nodes, edges, and selection store APIs.
  * @example
  * ```ts
  * const { nodesStore } = useReactFlowStoreApi();
@@ -107,7 +107,7 @@ export function useSelectionStore(selector: (state: SelectionStore) => unknown =
   return useZustandStore(useReactFlowStoreApi().selectionStore, selector);
 }
 
-export { useReactFlowStore, useReactFlowStoreApi };
+export { useOptionsStore, useReactFlowStoreApi };
 export { useShallow } from './useShallow';
 
 export function useCustomDiff<S, U>(selector: (state: S) => U, compare: (a: U, b: U) => boolean): (state: S) => U {

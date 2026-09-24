@@ -3,7 +3,7 @@ import { XYPanZoom, PanOnScrollMode, type Transform, type PanZoomInstance } from
 
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { useResizeHandler } from '../../hooks/useResizeHandler';
-import { useReactFlowStore, useConnectionStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useOptionsStore, useConnectionStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import type { FlowRendererProps } from '../FlowRenderer';
 
@@ -39,8 +39,8 @@ export function ZoomPane({
   paneClickDistance,
   selectionOnDrag,
 }: ZoomPaneProps) {
-  const { store, viewportStore } = useReactFlowStoreApi();
-  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
+  const { optionsStore, viewportStore } = useReactFlowStoreApi();
+  const userSelectionActive = useOptionsStore((s) => s.userSelectionActive);
   const connectionInProgress = useConnectionStore((state) => state.connection.inProgress);
   const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
 
@@ -80,17 +80,17 @@ export function ZoomPane({
             prevState.paneDragging === paneDragging ? prevState : { paneDragging }
           ),
         onPanZoomStart: (event, vp) => {
-          const { onViewportChangeStart, onMoveStart } = store.getState();
+          const { onViewportChangeStart, onMoveStart } = optionsStore.getState();
           onMoveStart?.(event, vp);
           onViewportChangeStart?.(vp);
         },
         onPanZoom: (event, vp) => {
-          const { onViewportChange, onMove } = store.getState();
+          const { onViewportChange, onMove } = optionsStore.getState();
           onMove?.(event, vp);
           onViewportChange?.(vp);
         },
         onPanZoomEnd: (event, vp) => {
-          const { onViewportChangeEnd, onMoveEnd } = store.getState();
+          const { onViewportChangeEnd, onMoveEnd } = optionsStore.getState();
           onMoveEnd?.(event, vp);
           onViewportChangeEnd?.(vp);
         },
@@ -98,14 +98,17 @@ export function ZoomPane({
 
       const { x, y, zoom } = panZoom.current.getViewport();
 
-      store.setState({ panZoom: panZoom.current, domNode: zoomPane.current.closest('.react-flow') as HTMLDivElement });
+      optionsStore.setState({
+        panZoom: panZoom.current,
+        domNode: zoomPane.current.closest('.react-flow') as HTMLDivElement,
+      });
       viewportStore.setState({ transform: [x, y, zoom] });
 
       return () => {
         panZoom.current?.destroy();
       };
     }
-  }, [panZoomOptions, store, viewportStore]);
+  }, [panZoomOptions, optionsStore, viewportStore]);
 
   useEffect(() => {
     panZoom.current?.update({

@@ -23,11 +23,12 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
 }: {
   children: ReactNode;
 }) {
-  const { store, nodesStore, edgesStore } = useReactFlowStoreApi<NodeType, EdgeType>();
+  const { optionsStore, nodesStore, edgesStore } = useReactFlowStoreApi<NodeType, EdgeType>();
 
   const nodeQueueHandler = (queueItems: QueueItem<NodeType>[]) => {
     const { nodes = [], nodeLookup } = nodesStore.getState();
-    const { onNodesChange, fitViewQueued, onNodesChangeMiddlewareMap, setNodes, hasDefaultNodes } = store.getState();
+    const { onNodesChange, fitViewQueued, onNodesChangeMiddlewareMap, setNodes, hasDefaultNodes } =
+      optionsStore.getState();
 
     /*
      * This is essentially an `Array.reduce` in imperative clothing. Processing
@@ -59,7 +60,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
       // If there are no changes to the nodes, we still need to call setNodes
       // to trigger a re-render and fitView.
       window.requestAnimationFrame(() => {
-        const { fitViewQueued, setNodes } = store.getState();
+        const { fitViewQueued, setNodes } = optionsStore.getState();
         const { nodes } = nodesStore.getState();
         if (fitViewQueued) {
           setNodes(nodes);
@@ -72,7 +73,7 @@ export function BatchProvider<NodeType extends Node = Node, EdgeType extends Edg
 
   const edgeQueueHandler = (queueItems: QueueItem<EdgeType>[]) => {
     const { edges = [], edgeLookup } = edgesStore.getState();
-    const { setEdges, hasDefaultEdges, onEdgesChange } = store.getState();
+    const { setEdges, hasDefaultEdges, onEdgesChange } = optionsStore.getState();
 
     let next = edges;
     for (const payload of queueItems) {

@@ -4,7 +4,7 @@ import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XY
 
 import {
   useCustomDiff,
-  useReactFlowStore,
+  useOptionsStore,
   useNodesStore,
   useViewportStore,
   useReactFlowStoreApi,
@@ -95,13 +95,13 @@ function MiniMapComponent<NodeType extends Node = Node>({
   zoomStep = 1,
   offsetScale = 5,
 }: MiniMapProps<NodeType>) {
-  const { store, viewportStore, nodesStore } = useReactFlowStoreApi<NodeType>();
+  const { optionsStore, viewportStore, nodesStore } = useReactFlowStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
 
-  const rfId = useReactFlowStore((s) => s.rfId);
-  const panZoom = useReactFlowStore((s) => s.panZoom);
-  const translateExtent = useReactFlowStore((s) => s.translateExtent);
-  const ariaLabelConfig = useReactFlowStore((s) => s.ariaLabelConfig);
+  const rfId = useOptionsStore((s) => s.rfId);
+  const panZoom = useOptionsStore((s) => s.panZoom);
+  const translateExtent = useOptionsStore((s) => s.translateExtent);
+  const ariaLabelConfig = useOptionsStore((s) => s.ariaLabelConfig);
 
   const viewport = useViewportStore(useShallow(viewportSelector));
   const { viewBB, boundingRect, flowWidth, flowHeight } = useNodesStore(
@@ -132,7 +132,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
   }, [viewScale]);
 
   useEffect(() => {
-    const currentPanZoom = store.getState().panZoom;
+    const currentPanZoom = optionsStore.getState().panZoom;
     if (svg.current && currentPanZoom) {
       minimapInstance.current = XYMinimap({
         domNode: svg.current,
@@ -145,7 +145,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         minimapInstance.current?.destroy();
       };
     }
-  }, [panZoom, store, viewportStore]);
+  }, [panZoom, optionsStore, viewportStore]);
 
   useEffect(() => {
     minimapInstance.current?.update({

@@ -39,7 +39,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
   const edgesStore = createZustandStore<EdgesStore>(() => initialState.edgesStore);
   const selectionStore = createZustandStore<SelectionStore>(() => initialState.selectionStore);
 
-  const store = createZustandStore<ReactFlowState>((set, get) => {
+  const optionsStore = createZustandStore<ReactFlowState>((set, get) => {
     async function resolveFitView() {
       const { nodeLookup } = nodesStore.getState();
       const { panZoom, fitViewOptions, fitViewResolver, minZoom, maxZoom } = get();
@@ -70,7 +70,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
     }
 
     return {
-      ...initialState.store,
+      ...initialState.optionsStore,
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, parentLookup } = nodesStore.getState();
         const {
@@ -448,13 +448,13 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
 
         const { pubSub } = get();
         // Keep mounted hooks subscribed to the same PubSub instance.
-        set({ ...initialState.store, pubSub });
+        set({ ...initialState.optionsStore, pubSub });
         pubSub.reset();
       },
     };
   });
 
-  return { store, viewportStore, connectionStore, nodesStore, edgesStore, selectionStore };
+  return { optionsStore, viewportStore, connectionStore, nodesStore, edgesStore, selectionStore };
 };
 
 export { createStore };

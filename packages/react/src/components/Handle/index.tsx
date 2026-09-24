@@ -105,12 +105,12 @@ function HandleComponent(
   const handleId = id || null;
   const isTarget = type === 'target';
 
-  const { store, viewportStore, connectionStore, nodesStore, edgesStore } = useReactFlowStoreApi();
+  const { optionsStore, viewportStore, connectionStore, nodesStore, edgesStore } = useReactFlowStoreApi();
   const { connectOnClick, noPanClassName, rfId, connectionMode } = useHandleConfig();
 
   const nodeId = useNodeId();
   if (!nodeId) {
-    store.getState().onError?.('010', errorMessages['error010']());
+    optionsStore.getState().onError?.('010', errorMessages['error010']());
   }
 
   const connection = useConnectionStateForHandle({ nodeId: nodeId || '', type, id: handleId });
@@ -118,7 +118,7 @@ function HandleComponent(
   const handleState = deriveHandleState(connection, nodeId, handleId, type, connectionMode);
 
   const onConnectExtended = (params: Connection) => {
-    const { defaultEdgeOptions, onConnect: onConnectAction, hasDefaultEdges } = store.getState();
+    const { defaultEdgeOptions, onConnect: onConnectAction, hasDefaultEdges } = optionsStore.getState();
 
     const edgeParams = {
       ...defaultEdgeOptions,
@@ -126,7 +126,7 @@ function HandleComponent(
     };
     if (hasDefaultEdges) {
       const { edges } = edgesStore.getState();
-      const { setEdges, onError } = store.getState();
+      const { setEdges, onError } = optionsStore.getState();
       setEdges(addEdge(edgeParams, edges, { onError }));
     }
 
@@ -145,7 +145,7 @@ function HandleComponent(
       isConnectableStart &&
       ((isMouseTriggered && (event as ReactMouseEvent<HTMLDivElement>).button === 0) || !isMouseTriggered)
     ) {
-      const currentStore = store.getState();
+      const currentStore = optionsStore.getState();
 
       XYHandle.onPointerDown(event.nativeEvent, {
         handleDomNode: event.currentTarget,
@@ -162,10 +162,11 @@ function HandleComponent(
         panBy: currentStore.panBy,
         cancelConnection: currentStore.cancelConnection,
         onConnectStart: currentStore.onConnectStart,
-        onConnectEnd: (...args) => store.getState().onConnectEnd?.(...args),
+        onConnectEnd: (...args) => optionsStore.getState().onConnectEnd?.(...args),
         updateConnection: currentStore.updateConnection,
         onConnect: onConnectExtended,
-        isValidConnection: isValidConnection || ((...args) => store.getState().isValidConnection?.(...args) ?? true),
+        isValidConnection:
+          isValidConnection || ((...args) => optionsStore.getState().isValidConnection?.(...args) ?? true),
         getTransform: () => viewportStore.getState().transform,
         getFromHandle: () => connectionStore.getState().connection.fromHandle,
         autoPanSpeed: currentStore.autoPanSpeed,
@@ -188,7 +189,7 @@ function HandleComponent(
       connectionMode,
       isValidConnection: isValidConnectionStore,
       rfId: flowId,
-    } = store.getState();
+    } = optionsStore.getState();
     const { connectionClickStartHandle, connection: connectionState } = connectionStore.getState();
     const { nodeLookup } = nodesStore.getState();
 

@@ -58,7 +58,7 @@ function NodeWrapper<NodeType extends Node>({
   const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
   const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
 
-  const { store, viewportStore, nodesStore } = useReactFlowStoreApi();
+  const { optionsStore, viewportStore, nodesStore } = useReactFlowStoreApi();
   const hasDimensions = nodeHasDimensions(node);
   const nodeRef = useNodeObserver({ node, nodeType, hasDimensions, resizeObserver });
   const dragging = useDrag({
@@ -98,7 +98,7 @@ function NodeWrapper<NodeType extends Node>({
     : undefined;
 
   const onSelectNodeHandler = (event: MouseEvent) => {
-    const { selectNodesOnDrag, nodeDragThreshold } = store.getState();
+    const { selectNodesOnDrag, nodeDragThreshold } = optionsStore.getState();
 
     if (isSelectable && (!selectNodesOnDrag || !isDraggable || nodeDragThreshold > 0)) {
       /*
@@ -107,7 +107,7 @@ function NodeWrapper<NodeType extends Node>({
        */
       handleNodeClick({
         id,
-        store,
+        optionsStore,
         nodesStore,
         nodeRef,
       });
@@ -128,7 +128,7 @@ function NodeWrapper<NodeType extends Node>({
 
       handleNodeClick({
         id,
-        store,
+        optionsStore,
         nodesStore,
         unselect,
         nodeRef,
@@ -137,9 +137,9 @@ function NodeWrapper<NodeType extends Node>({
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
 
-      const { ariaLabelConfig } = store.getState();
+      const { ariaLabelConfig } = optionsStore.getState();
 
-      store.setState({
+      optionsStore.setState({
         ariaLiveMessage: ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
           direction: event.key.replace('Arrow', '').toLowerCase(),
           x: ~~internals.positionAbsolute.x,
@@ -160,7 +160,7 @@ function NodeWrapper<NodeType extends Node>({
     }
 
     const { transform, width, height } = viewportStore.getState();
-    const { autoPanOnNodeFocus, setCenter } = store.getState();
+    const { autoPanOnNodeFocus, setCenter } = optionsStore.getState();
 
     if (!autoPanOnNodeFocus) {
       return;

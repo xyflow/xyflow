@@ -48,9 +48,9 @@ export function useNodes<NodeType extends Node = Node>(): NodeType[] {
  *```
  */
 export function useNode<NodeType extends Node = Node>(id: string): NodeType | undefined {
-  const { store, nodesStore } = useReactFlowStoreApi();
+  const { optionsStore, nodesStore } = useReactFlowStoreApi();
 
-  const subscribe = (onStoreChange: () => void) => store.getState().pubSub.subscribeToNode(id, onStoreChange);
+  const subscribe = (onStoreChange: () => void) => optionsStore.getState().pubSub.subscribeToNode(id, onStoreChange);
 
   const getSnapshot = () => nodesStore.getState().nodeLookup.get(id)?.internals.userNode as NodeType | undefined;
 
@@ -85,9 +85,9 @@ export function useNode<NodeType extends Node = Node>(id: string): NodeType | un
  *```
  */
 export function useInternalNode<NodeType extends Node = Node>(id: string): InternalNode<NodeType> | undefined {
-  const { store, nodesStore } = useReactFlowStoreApi();
+  const { optionsStore, nodesStore } = useReactFlowStoreApi();
 
-  const subscribe = (onStoreChange: () => void) => store.getState().pubSub.subscribeToNode(id, onStoreChange);
+  const subscribe = (onStoreChange: () => void) => optionsStore.getState().pubSub.subscribeToNode(id, onStoreChange);
 
   const getSnapshot = () => nodesStore.getState().nodeLookup.get(id) as InternalNode<NodeType> | undefined;
 
@@ -104,10 +104,11 @@ export function useInternalNode<NodeType extends Node = Node>(id: string): Inter
  * @returns The matching internal nodes.
  */
 export function useInternalNodes<NodeType extends Node = Node>(ids: readonly string[]): InternalNode<NodeType>[] {
-  const { store, nodesStore } = useReactFlowStoreApi<NodeType>();
+  const { optionsStore, nodesStore } = useReactFlowStoreApi<NodeType>();
   const nodeIds = useShallow((value: readonly string[]) => new Set(value))(ids);
 
-  const subscribe = (onStoreChange: () => void) => store.getState().pubSub.subscribeToNodes(nodeIds, onStoreChange);
+  const subscribe = (onStoreChange: () => void) =>
+    optionsStore.getState().pubSub.subscribeToNodes(nodeIds, onStoreChange);
 
   const selectSnapshot = useShallow(() => {
     const { nodeLookup } = nodesStore.getState();

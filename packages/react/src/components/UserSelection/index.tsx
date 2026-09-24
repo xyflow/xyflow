@@ -1,7 +1,7 @@
-import { useReactFlowStore, useSelectionStore, useShallow } from '../../hooks/useReactFlowStore';
+import { useOptionsStore, useSelectionStore, useShallow } from '../../hooks/useReactFlowStore';
 
 export function UserSelection() {
-  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
+  const userSelectionActive = useOptionsStore((s) => s.userSelectionActive);
   const userSelectionRect = useSelectionStore(useShallow((s) => s.userSelectionRect));
   const isActive = userSelectionActive && userSelectionRect;
 

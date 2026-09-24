@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { useReactFlowStore } from '../../hooks/useReactFlowStore';
+import { useOptionsStore } from '../../hooks/useReactFlowStore';
 import { useGlobalKeyHandler } from '../../hooks/useGlobalKeyHandler';
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';
@@ -69,8 +69,8 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onViewportChange,
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
-  const nodesSelectionActive = useReactFlowStore((s) => s.nodesSelectionActive);
-  const userSelectionActive = useReactFlowStore((s) => s.userSelectionActive);
+  const nodesSelectionActive = useOptionsStore((s) => s.nodesSelectionActive);
+  const userSelectionActive = useOptionsStore((s) => s.userSelectionActive);
 
   const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: win });
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: win });

@@ -52,7 +52,7 @@ function ResizeControl({
 }: ResizeControlProps) {
   const contextNodeId = useNodeId();
   const id = typeof nodeId === 'string' ? nodeId : contextNodeId;
-  const { store, viewportStore, nodesStore } = useReactFlowStoreApi();
+  const { optionsStore, viewportStore, nodesStore } = useReactFlowStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const isHandleControl = variant === ResizeControlVariant.Handle;
 
@@ -76,7 +76,7 @@ function ResizeControl({
         getStoreItems: () => {
           const { nodeLookup } = nodesStore.getState();
           const { transform } = viewportStore.getState();
-          const { snapGrid, snapToGrid, nodeOrigin, domNode } = store.getState();
+          const { snapGrid, snapToGrid, nodeOrigin, domNode } = optionsStore.getState();
           return {
             nodeLookup,
             transform,
@@ -87,7 +87,7 @@ function ResizeControl({
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const { emitNodeChanges, nodeOrigin } = store.getState();
+          const { emitNodeChanges, nodeOrigin } = optionsStore.getState();
           const { nodeLookup, parentLookup } = nodesStore.getState();
           const changes: NodeChange[] = [];
           const nextPosition = { x: change.x, y: change.y };
@@ -169,7 +169,7 @@ function ResizeControl({
               height,
             },
           };
-          store.getState().emitNodeChanges([_dimensionChange]);
+          optionsStore.getState().emitNodeChanges([_dimensionChange]);
         },
       });
     }
@@ -206,7 +206,7 @@ function ResizeControl({
     shouldResize,
     id,
     resizeDirection,
-    store,
+    optionsStore,
     nodesStore,
     viewportStore,
   ]);

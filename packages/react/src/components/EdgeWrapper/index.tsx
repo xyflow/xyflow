@@ -63,7 +63,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const edgeRef = useRef<SVGGElement>(null);
   const [updateHover, setUpdateHover] = useState<boolean>(false);
   const [reconnecting, setReconnecting] = useState<boolean>(false);
-  const { store } = useReactFlowStoreApi();
+  const { optionsStore } = useReactFlowStoreApi();
 
   const sourceNode = useInternalNode(edge.source);
   const targetNode = useInternalNode(edge.target);
@@ -116,11 +116,12 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   }
 
   const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-    const { addSelectedEdges, unselectNodesAndEdges, multiSelectionActive, nodesSelectionActive } = store.getState();
+    const { addSelectedEdges, unselectNodesAndEdges, multiSelectionActive, nodesSelectionActive } =
+      optionsStore.getState();
 
     if (isSelectable) {
       if (nodesSelectionActive) {
-        store.setState({ nodesSelectionActive: false });
+        optionsStore.setState({ nodesSelectionActive: false });
       }
 
       if (edge.selected && multiSelectionActive) {
@@ -164,7 +165,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (!disableKeyboardA11y && elementSelectionKeys.includes(event.key) && isSelectable) {
-      const { unselectNodesAndEdges, addSelectedEdges } = store.getState();
+      const { unselectNodesAndEdges, addSelectedEdges } = optionsStore.getState();
       const unselect = event.key === 'Escape';
 
       if (unselect) {

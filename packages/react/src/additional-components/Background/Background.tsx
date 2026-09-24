@@ -1,7 +1,7 @@
 import { memo, CSSProperties, useRef } from 'react';
 import cc from 'classcat';
 
-import { useReactFlowStore, useViewportStore } from '../../hooks/useReactFlowStore';
+import { useOptionsStore, useViewportStore } from '../../hooks/useReactFlowStore';
 import { DotPattern, LinePattern } from './Patterns';
 import { containerStyle } from '../../styles/utils';
 import { type BackgroundProps, BackgroundVariant } from './types';
@@ -29,7 +29,7 @@ function BackgroundComponent({
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
 
-  const rfId = useReactFlowStore((s) => s.rfId);
+  const rfId = useOptionsStore((s) => s.rfId);
   const patternId = `pattern-${rfId}`;
   const transform = useViewportStore((s) => s.transform);
 

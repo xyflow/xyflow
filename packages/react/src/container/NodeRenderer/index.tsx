@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
-import { useReactFlowStore } from '../../hooks/useReactFlowStore';
+import { useOptionsStore } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import { useResizeObserver } from './useResizeObserver';
@@ -28,10 +28,10 @@ export type NodeRendererProps<NodeType extends Node> = Pick<
 >;
 
 function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
-  const nodesConnectable = useReactFlowStore((s) => s.nodesConnectable);
-  const nodesFocusable = useReactFlowStore((s) => s.nodesFocusable);
-  const elementsSelectable = useReactFlowStore((s) => s.elementsSelectable);
-  const onError = useReactFlowStore((s) => s.onError);
+  const nodesConnectable = useOptionsStore((s) => s.nodesConnectable);
+  const nodesFocusable = useOptionsStore((s) => s.nodesFocusable);
+  const elementsSelectable = useOptionsStore((s) => s.elementsSelectable);
+  const onError = useOptionsStore((s) => s.onError);
 
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
