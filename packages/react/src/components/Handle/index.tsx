@@ -4,7 +4,6 @@ import {
   type MouseEvent as ReactMouseEvent,
   type TouchEvent as ReactTouchEvent,
   type ForwardedRef,
-  useMemo,
 } from 'react';
 import cc from 'classcat';
 import {
@@ -50,36 +49,40 @@ const idleConnectingState = {
   connectingTo: false,
   clickConnecting: false,
   isPossibleEndHandle: true,
-  connectionInProcess: false,
-  clickConnectionInProcess: false,
+  connectionInProgress: false,
+  clickConnectionInProgress: false,
   valid: false,
 };
 
-const connectingSelector =
-  (nodeId: string | null, handleId: string | null, type: HandleType, connectionMode: ConnectionMode) =>
-  (state: ConnectionStore) => {
-    const { connectionClickStartHandle: clickHandle, connection } = state;
-    const { fromHandle, toHandle, isValid } = connection;
+const deriveHandleState = (
+  state: ConnectionStore,
+  nodeId: string | null,
+  handleId: string | null,
+  type: HandleType,
+  connectionMode: ConnectionMode
+) => {
+  const { connectionClickStartHandle: clickHandle, connection } = state;
+  const { fromHandle, toHandle, isValid } = connection;
 
-    if (!fromHandle && !clickHandle) {
-      return idleConnectingState;
-    }
+  if (!fromHandle && !clickHandle) {
+    return idleConnectingState;
+  }
 
-    const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
+  const connectingTo = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === type;
 
-    return {
-      connectingFrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === type,
-      connectingTo,
-      clickConnecting: clickHandle?.nodeId === nodeId && clickHandle?.id === handleId && clickHandle?.type === type,
-      isPossibleEndHandle:
-        connectionMode === ConnectionMode.Strict
-          ? fromHandle?.type !== type
-          : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id,
-      connectionInProcess: !!fromHandle,
-      clickConnectionInProcess: !!clickHandle,
-      valid: connectingTo && isValid,
-    };
+  return {
+    connectingFrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === type,
+    connectingTo,
+    clickConnecting: clickHandle?.nodeId === nodeId && clickHandle?.id === handleId && clickHandle?.type === type,
+    isPossibleEndHandle:
+      connectionMode === ConnectionMode.Strict
+        ? fromHandle?.type !== type
+        : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id,
+    connectionInProgress: connection.inProgress,
+    clickConnectionInProgress: !!clickHandle,
+    valid: connectingTo && isValid,
   };
+};
 
 function HandleComponent(
   {
@@ -103,29 +106,16 @@ function HandleComponent(
   const isTarget = type === 'target';
 
   const { store, viewportStore, connectionStore, nodesStore, edgesStore } = useReactFlowStoreApi();
-  const nodeId = useNodeId();
   const { connectOnClick, noPanClassName, rfId, connectionMode } = useHandleConfig();
 
-  const selector = useMemo(
-    () => connectingSelector(nodeId, handleId, type, connectionMode),
-    [nodeId, handleId, type, connectionMode]
-  );
-
-  const connection = useConnectionStateForHandle({ nodeId: nodeId || '', type, id: handleId });
-
-  const {
-    connectingFrom,
-    connectingTo,
-    clickConnecting,
-    isPossibleEndHandle,
-    connectionInProcess,
-    clickConnectionInProcess,
-    valid,
-  } = selector(connection);
-
+  const nodeId = useNodeId();
   if (!nodeId) {
     store.getState().onError?.('010', errorMessages['error010']());
   }
+
+  const connection = useConnectionStateForHandle({ nodeId: nodeId || '', type, id: handleId });
+
+  const handleState = deriveHandleState(connection, nodeId, handleId, type, connectionMode);
 
   const onConnectExtended = (params: Connection) => {
     const { defaultEdgeOptions, onConnect: onConnectAction, hasDefaultEdges } = store.getState();
@@ -261,18 +251,18 @@ function HandleComponent(
           connectable: isConnectable,
           connectablestart: isConnectableStart,
           connectableend: isConnectableEnd,
-          clickconnecting: clickConnecting,
-          connectingfrom: connectingFrom,
-          connectingto: connectingTo,
-          valid,
+          clickconnecting: handleState.clickConnecting,
+          connectingfrom: handleState.connectingFrom,
+          connectingto: handleState.connectingTo,
+          valid: handleState.valid,
           /*
            * shows where you can start a connection from
            * and where you can end it while connecting
            */
           connectionindicator:
             isConnectable &&
-            (!connectionInProcess || isPossibleEndHandle) &&
-            (connectionInProcess || clickConnectionInProcess ? isConnectableEnd : isConnectableStart),
+            (!handleState.connectionInProgress || handleState.isPossibleEndHandle) &&
+            (handleState.connectionInProgress || handleState.clickConnecting ? isConnectableEnd : isConnectableStart),
         },
       ])}
       onMouseDown={onPointerDown}
