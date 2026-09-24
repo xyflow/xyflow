@@ -20,10 +20,6 @@ import {
 import { useReactFlowStoreApi, useViewportStore } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
-import { ViewportStore } from '../../types';
-
-const scaleSelector = (calculateScale: boolean) => (store: ViewportStore) =>
-  calculateScale ? `${Math.max(1 / store.transform[2], 1)}` : undefined;
 
 const defaultPositions: Record<ResizeControlVariant, ControlPosition> = {
   [ResizeControlVariant.Line]: 'right',
@@ -56,10 +52,9 @@ function ResizeControl({
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const isHandleControl = variant === ResizeControlVariant.Handle;
 
-  const selector = (s: ViewportStore) => {
-    return scaleSelector(isHandleControl && autoScale)(s);
-  };
-  const scale = useViewportStore(selector);
+  const scale = useViewportStore((s) =>
+    isHandleControl && autoScale ? `${Math.max(1 / s.transform[2], 1)}` : undefined
+  );
 
   const resizer = useRef<XYResizerInstance | null>(null);
   const controlPosition = position ?? defaultPositions[variant];
