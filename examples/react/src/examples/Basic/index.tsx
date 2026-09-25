@@ -56,7 +56,8 @@ const initialEdges: Edge[] = [
 
 const defaultEdgeOptions = {};
 const fitViewOptions: FitViewOptions = {
-  padding: { top: '100px', left: '0%', right: '10%', bottom: 0.1 },
+  padding: 0.1,
+  // padding: { top: '100px', left: '0%', right: '10%', bottom: 0.1 },
 };
 
 const BasicFlow = () => {
@@ -157,7 +158,7 @@ const BasicFlow = () => {
         minZoom={0.2}
         maxZoom={4}
         fitView
-        fitViewOptions={fitViewOptions}
+        // fitViewOptions={fitViewOptions}
         defaultEdgeOptions={defaultEdgeOptions}
         selectNodesOnDrag={false}
         elevateEdgesOnSelect

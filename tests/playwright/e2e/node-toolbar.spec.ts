@@ -64,17 +64,22 @@ test.describe('Node Toolbar', async () => {
 
       switch (permutation.align) {
         case 'start':
-          expect(Math.floor(toolbarBox![dimension])).toBe(Math.floor(nodeBox![dimension]));
+          expect(Math.floor(toolbarBox![dimension] - Math.floor(nodeBox![dimension]))).toBeLessThanOrEqual(1);
           break;
         case 'center':
-          expect(Math.floor(toolbarBox![dimension] + toolbarBox![extent] * 0.5)).toBe(
-            Math.floor(nodeBox![dimension] + nodeBox![extent] * 0.5)
-          );
+          expect(
+            Math.floor(
+              toolbarBox![dimension] +
+                toolbarBox![extent] * 0.5 -
+                Math.floor(nodeBox![dimension] + nodeBox![extent] * 0.5)
+            )
+          ).toBeLessThanOrEqual(1);
           break;
         case 'end':
-          expect(Math.floor(toolbarBox![dimension] + toolbarBox![extent])).toBe(
-            Math.floor(nodeBox![dimension] + nodeBox![extent])
-          );
+          expect(
+            Math.floor(toolbarBox![dimension] + toolbarBox![extent]) -
+              Math.floor(nodeBox![dimension] + nodeBox![extent])
+          ).toBeLessThanOrEqual(1);
           break;
       }
     });

@@ -136,9 +136,10 @@ export type SvelteFlowProps<
     fitView?: boolean;
     /**
      * Options to be used in combination with fitView
+     * @default '4.5%'
      * @example
      * const fitViewOptions = {
-     *  padding: 0.1,
+     *  padding: '10%',
      *  includeHiddenNodes: false,
      *  minZoom: 0.1,
      *  maxZoom: 1,
