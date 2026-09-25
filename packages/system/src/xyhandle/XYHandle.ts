@@ -225,6 +225,18 @@ function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
       if (edgeUpdaterType) {
         onReconnectEnd?.(event, finalConnectionState);
       }
+
+      /*
+       * When a connection starts and ends on the same node (a self-loop), the
+       * browser fires a click on that node because pointerdown and pointerup
+       * share it as a common ancestor. That click would select the node and
+       * clear the selection of the freshly created edge. Swallow the click that
+       * immediately follows the connection so it doesn't change the selection.
+       */
+      const preventNextClick = (clickEvent: Event) => clickEvent.stopPropagation();
+      doc.addEventListener('click', preventNextClick, { capture: true, once: true });
+      // remove it again in case no click follows (e.g. connection to another node)
+      setTimeout(() => doc.removeEventListener('click', preventNextClick, { capture: true }), 0);
     }
 
     cancelConnection();
