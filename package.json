@@ -22,7 +22,8 @@
     "format": "turbo run format --filter=./packages/**",
     "lint": "turbo run lint --filter=./packages/**",
     "typecheck": "turbo run typecheck --filter=./packages/**",
-    "release": "changeset publish",
+    "release": "pnpm release:verify && changeset publish",
+    "release:verify": "node scripts/verify-release-artifacts.mjs",
     "clean": "pnpm -r --parallel exec rimraf dist .turbo node_modules"
   },
   "devDependencies": {
