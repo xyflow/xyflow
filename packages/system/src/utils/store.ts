@@ -417,6 +417,12 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   const changes: (NodeDimensionChange | NodePositionChange)[] = [];
   const style = window.getComputedStyle(viewportNode);
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
+  // getBoundingClientRect() includes ancestor transforms while offsetWidth does not.
+  // Include that scale when converting screen-space handle offsets to flow space.
+  const domRect = domNode.getBoundingClientRect();
+  const ancestorScale =
+    domNode.offsetWidth > 0 && domRect.width > 0 ? domRect.width / domNode.offsetWidth : 1;
+  const handleZoom = zoom * ancestorScale;
   // in this array we collect nodes, that might trigger changes (like expanding parent)
   const parentExpandChildren: ParentExpandChild[] = [];
 
@@ -467,8 +473,8 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
           ...node.internals,
           positionAbsolute,
           handleBounds: {
-            source: getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id),
-            target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
+            source: getHandleBounds('source', update.nodeElement, nodeBounds, handleZoom, node.id),
+            target: getHandleBounds('target', update.nodeElement, nodeBounds, handleZoom, node.id),
           },
         },
       };
