@@ -33,8 +33,9 @@ export const getD3Transition = (selection: D3SelectionInstance, duration = 0, ea
   return hasDuration ? selection.transition().duration(duration).ease(ease).on('end', onEnd) : selection;
 };
 
-export const wheelDelta = (event: any) => {
+export const wheelDelta = (event: WheelEvent, zoomSensitivity: number = 1) => {
   const factor = event.ctrlKey && isMacOs() ? 10 : 1;
 
-  return -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002) * factor;
+  return -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002) * factor *
+  zoomSensitivity;
 };

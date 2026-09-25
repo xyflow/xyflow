@@ -94,6 +94,31 @@ test.describe('Pane default', () => {
 
       expect(transformsAfter.scale).not.toBe(transformsBefore.scale);
     });
+
+    test('zoomSensitivity increases the zoom amount per scroll tick', async ({ page }) => {
+      const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
+      const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
+
+      await expect(pane).toBeAttached();
+
+      const defaultTransformsBefore = await getTransform(viewport);
+      await pane.hover();
+      await page.mouse.wheel(0, 100);
+      const defaultTransformsAfter = await getTransform(viewport);
+      
+      await page.goto('/tests/generic/pane/zoom-sensitivity');
+      await page.waitForSelector('[data-id="first-edge"]', { timeout: 5000 });
+      
+      const sensitiveTransformsBefore = await getTransform(viewport);
+      await pane.hover();
+      await page.mouse.wheel(0, 100);
+      const sensitiveTransformsAfter = await getTransform(viewport);
+
+      const defaultScaleDelta = Math.log(defaultTransformsAfter.scale / defaultTransformsBefore.scale);
+      const sensitiveScaleDelta = Math.log(sensitiveTransformsAfter.scale / sensitiveTransformsBefore.scale);
+
+      expect(sensitiveScaleDelta / defaultScaleDelta).toBeCloseTo(3);
+    });
   });
 
   test.describe('minZoom & maxZoom', () => {

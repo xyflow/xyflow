@@ -306,6 +306,12 @@ export type SvelteFlowProps<
      */
     zoomOnPinch?: boolean;
     /**
+     * Controls how sensitive the viewport is to zooming, e.g. by scrolling or pinching.
+     * Values greater than 1 zoom in/out faster, values between 0 and 1 zoom in/out slower.
+     * @default 1
+     */
+    zoomSensitivity?: number;
+    /**
      * Controls if the viewport should pan by scrolling inside the container
      * Can be limited to a specific direction with panOnScrollMode
      * @default false
