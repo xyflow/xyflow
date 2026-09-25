@@ -12,7 +12,7 @@ import {
   type UpdateConnection,
   type ConnectionState,
   updateAbsolutePositions,
-  snapPosition,
+  snapNodePosition,
   calculateNodePosition,
   type SetCenterOptions,
   getHandlePosition,
@@ -353,7 +353,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       };
 
       if (snapGrid) {
-        nextPosition = snapPosition(nextPosition, snapGrid);
+        nextPosition = snapNodePosition(nextPosition, node, snapGrid, nodeOrigin);
       }
 
       const { position, positionAbsolute } = calculateNodePosition({
