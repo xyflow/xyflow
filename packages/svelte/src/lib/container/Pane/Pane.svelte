@@ -44,6 +44,7 @@
     SelectionMode,
     getEventPosition,
     getNodesInside,
+    filterSelectedNodes,
     calcAutoPan,
     pointToRendererPoint,
     rendererPointToPoint,
@@ -177,12 +178,15 @@
     const prevSelectedEdgeIds = selectedEdgeIds;
 
     selectedNodeIds = new Set(
-      getNodesInside(
-        store.nodeLookup,
-        nextUserSelectRect,
-        [store.viewport.x, store.viewport.y, store.viewport.zoom],
-        store.selectionMode === SelectionMode.Partial,
-        true
+      filterSelectedNodes(
+        getNodesInside(
+          store.nodeLookup,
+          nextUserSelectRect,
+          [store.viewport.x, store.viewport.y, store.viewport.zoom],
+          store.selectionMode === SelectionMode.Partial,
+          true
+        ),
+        store.isNodeSelectable
       ).map((n) => n.id)
     );
 

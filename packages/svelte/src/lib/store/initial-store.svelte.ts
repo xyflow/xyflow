@@ -62,6 +62,7 @@ import type {
   OnBeforeConnect,
   OnBeforeDelete,
   IsValidConnection,
+  IsNodeSelectable,
   Edge,
   Node,
   EdgeLayouted,
@@ -378,6 +379,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     connectionRadius: number = $derived(signals.props.connectionRadius ?? 20);
     isValidConnection: IsValidConnection<EdgeType> = $derived(
       signals.props.isValidConnection ?? (() => true)
+    );
+    isNodeSelectable: IsNodeSelectable<NodeType> | undefined = $derived(
+      signals.props.isNodeSelectable
     );
 
     selectNodesOnDrag: boolean = $derived(signals.props.selectNodesOnDrag ?? true);

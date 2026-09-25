@@ -36,6 +36,7 @@ import type {
   OnBeforeConnect,
   OnBeforeDelete,
   IsValidConnection,
+  IsNodeSelectable,
   OnBeforeReconnect,
   OnSelectionChange,
   ProOptions
@@ -221,6 +222,16 @@ export type SvelteFlowProps<
      * @default 'full'
      */
     selectionMode?: SelectionMode;
+    /**
+     * Optional predicate used to exclude nodes from box/lasso selection after they are found inside
+     * the selection rect. Click selection is not affected.
+     *
+     * When omitted, every node inside the rect is selected (current behavior).
+     *
+     * @example
+     * isNodeSelectable={(node) => node.type !== 'group'}
+     */
+    isNodeSelectable?: IsNodeSelectable<NodeType>;
     /**
      * Controls if nodes should be automatically selected when being dragged
      */
