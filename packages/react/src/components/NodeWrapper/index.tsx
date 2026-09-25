@@ -78,7 +78,7 @@ function NodeWrapper<NodeType extends Node>({
     isSelectable,
     nodeClickDistance,
   });
-  const moveSelectedNodes = useMoveSelectedNodes();
+  const moveSelectedNodes = useMoveSelectedNodes<NodeType>();
 
   if (node.hidden) {
     return null;
@@ -156,6 +156,8 @@ function NodeWrapper<NodeType extends Node>({
       moveSelectedNodes({
         direction: arrowKeyDiffs[event.key],
         factor: event.shiftKey ? 4 : 1,
+        event: event.nativeEvent,
+        nodeId: id,
       });
     }
   };

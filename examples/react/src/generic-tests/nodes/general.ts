@@ -9,6 +9,13 @@ export default {
       DragHandleNode,
     },
     nodeDragThreshold: 0,
+    onNodeMove: (event, node, nodes) => {
+      document.body.dataset.nodeMoveEvent = JSON.stringify({
+        key: event.key,
+        node: { id: node.id, position: node.position },
+        nodes: nodes.map(({ id, position }) => ({ id, position })),
+      });
+    },
     nodes: [
       {
         id: 'Node-1',
