@@ -139,6 +139,10 @@ test.describe('Nodes', () => {
       const startX = nodeBox!.x + nodeBox!.width / 2;
       const startY = nodeBox!.y + nodeBox!.height / 2;
 
+      const transformBeforeMove = await node.evaluate((element) => {
+        return element.style.transform;
+      });
+
       await page.mouse.move(startX, startY);
       await page.mouse.down();
       await page.mouse.move(startX + 100, startY + 100);
@@ -146,6 +150,8 @@ test.describe('Nodes', () => {
       const transformAfterMove = await node.evaluate((element) => {
         return element.style.transform;
       });
+
+      expect(transformAfterMove).not.toBe(transformBeforeMove);
 
       await page.evaluate(() => window.dispatchEvent(new Event('blur')));
       // Move the mouse to confirm the node does not keep dragging after blur
