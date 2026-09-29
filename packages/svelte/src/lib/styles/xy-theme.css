@@ -1,0 +1,12 @@
+/* this gets exported as xy-theme.css: the full default theme on top of style.css */
+
+@import './style.css';
+@import '../../../../system/src/styles/xy-theme.css' layer(xyflow);
+
+@layer xyflow {
+  :root,
+  .svelte-flow {
+    --xy-theme-primary: #ff4000;
+    --xy-theme-selected: #ff4000;
+  }
+}
