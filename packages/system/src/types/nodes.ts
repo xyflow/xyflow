@@ -25,45 +25,45 @@ export type NodeBase<
    * Only relevant for default, source, target nodeType. Controls source position.
    * @example 'right', 'left', 'top', 'bottom'
    */
-  sourcePosition?: Position;
+  sourcePosition?: Position | undefined;
   /**
    * Only relevant for default, source, target nodeType. Controls target position.
    * @example 'right', 'left', 'top', 'bottom'
    */
-  targetPosition?: Position;
+  targetPosition?: Position | undefined;
   /** Whether or not the node should be visible on the canvas. */
-  hidden?: boolean;
-  selected?: boolean;
+  hidden?: boolean | undefined;
+  selected?: boolean | undefined;
   /** Whether or not the node is currently being dragged. */
-  dragging?: boolean;
+  dragging?: boolean | undefined;
   /** Whether or not the node is able to be dragged. */
-  draggable?: boolean;
-  selectable?: boolean;
-  connectable?: boolean;
-  deletable?: boolean;
+  draggable?: boolean | undefined;
+  selectable?: boolean | undefined;
+  connectable?: boolean | undefined;
+  deletable?: boolean | undefined;
   /**
    * A class name that can be applied to elements inside the node that allows those elements to act
    * as drag handles, letting the user drag the node by clicking and dragging on those elements.
    */
-  dragHandle?: string;
-  width?: number;
-  height?: number;
-  initialWidth?: number;
-  initialHeight?: number;
+  dragHandle?: string | undefined;
+  width?: number | undefined;
+  height?: number | undefined;
+  initialWidth?: number | undefined;
+  initialHeight?: number | undefined;
   /** Parent node id, used for creating sub-flows. */
-  parentId?: string;
-  zIndex?: number;
+  parentId?: string | undefined;
+  zIndex?: number | undefined;
   /**
    * Boundary a node can be moved in.
    * @example 'parent' or [[0, 0], [100, 100]]
    */
-  extent?: 'parent' | CoordinateExtent | null;
+  extent?: 'parent' | CoordinateExtent | null | undefined;
   /**
    * When `true`, the parent node will automatically expand if this node is dragged to the edge of
    * the parent node's bounds.
    */
-  expandParent?: boolean;
-  ariaLabel?: string;
+  expandParent?: boolean | undefined;
+  ariaLabel?: string | undefined;
   /**
    * Origin of the node relative to its position.
    * @example
@@ -71,8 +71,8 @@ export type NodeBase<
    * [0, 0] // top left
    * [1, 1] // bottom right
    */
-  origin?: NodeOrigin;
-  handles?: NodeHandle[];
+  origin?: NodeOrigin | undefined;
+  handles?: NodeHandle[] | undefined;
   measured?: {
     width?: number;
     height?: number;
