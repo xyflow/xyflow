@@ -1,7 +1,8 @@
 import type { EdgeLookup, NodeLookup } from '@xyflow/system';
 import type { Edge, InternalNode, Node, State } from '../types';
+import { updateConnectionLookup } from '@xyflow/system';
 import { markRaw, toRaw } from 'vue';
-import { adoptNodes, areNodesInitialized, ErrorCode, updateConnectionLookup, VueFlowError } from '../utils';
+import { adoptNodes, areNodesInitialized, ErrorCode, VueFlowError } from '../utils';
 import { resolveFitView } from './fitView';
 
 export interface Commit<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
@@ -23,7 +24,7 @@ export interface Commit<NodeType extends Node = Node, EdgeType extends Edge = Ed
    * system-side lookups to `@xyflow/system`'s `updateNodeInternals`, which writes new node objects into
    * them; without a sync the reactive lookup keeps the pre-measurement entries.
    */
-  syncLookups: () => void;
+  syncLookups: (updatedNodes?: Set<string>) => void;
 }
 
 export function createCommit<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
@@ -34,6 +35,9 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
 ): Commit<NodeType, EdgeType> {
   const systemNodeLookup: NodeLookup<InternalNode<NodeType>> = new Map();
   const systemParentLookup: Map<string, Map<string, InternalNode<NodeType>>> = new Map();
+  // the system owns the raw edge lookup so `updateConnectionLookup` can diff against it; the reactive
+  // `edgeLookup` is mirrored from the ids it reports back
+  const systemEdgeLookup: EdgeLookup<EdgeType> = new Map();
 
   function sameMapEntries<K, V>(a: Map<K, V>, b: Map<K, V>) {
     if (a.size !== b.size) {
@@ -50,16 +54,29 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
   }
 
   /** Mirror the system lookups into the reactive ones, touching only entries that actually changed. */
-  function syncLookups() {
+  function syncLookups(updatedNodes?: Set<string>) {
     const rawNodeLookup = toRaw(nodeLookup);
 
-    for (const [id, internal] of systemNodeLookup) {
-      if (rawNodeLookup.get(id) !== internal) {
-        nodeLookup.set(id, markRaw(internal));
+    if (updatedNodes) {
+      // the system tells us exactly which ids changed, including ones it dropped
+      for (const id of updatedNodes) {
+        const internal = systemNodeLookup.get(id);
+        if (!internal) {
+          nodeLookup.delete(id);
+        }
+        else if (rawNodeLookup.get(id) !== internal) {
+          nodeLookup.set(id, markRaw(internal));
+        }
       }
     }
+    else {
+      for (const [id, internal] of systemNodeLookup) {
+        if (rawNodeLookup.get(id) !== internal) {
+          nodeLookup.set(id, markRaw(internal));
+        }
+      }
 
-    if (rawNodeLookup.size !== systemNodeLookup.size) {
+      // no change set to work from: a same-size add+remove would otherwise leave a stale entry
       for (const id of rawNodeLookup.keys()) {
         if (!systemNodeLookup.has(id)) {
           nodeLookup.delete(id);
@@ -89,6 +106,7 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
     const {
       nodes: adopted,
       hasSelectedNodes,
+      updatedNodes,
     } = adoptNodes(nodes, systemNodeLookup, systemParentLookup, state.hooks.error.trigger, {
       nodeOrigin: state.nodeOrigin,
       nodeExtent: state.nodeExtent,
@@ -103,7 +121,7 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
 
     // always mirror: `syncLookups` is the only writer that adds/prunes entries in the reactive
     // `nodeLookup`, so skipping it on parentless graphs leaves added nodes unrendered
-    syncLookups();
+    syncLookups(updatedNodes);
 
     if (state.fitViewQueued && areNodesInitialized(nodeLookup)) {
       resolveFitView(state, nodeLookup);
@@ -111,7 +129,6 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
   }
 
   function commitEdges(next: EdgeType[]) {
-    const rawEdgeLookup = toRaw(edgeLookup);
     const seenEdgeIds = new Set<string>();
 
     for (let i = 0; i < next.length; i++) {
@@ -122,27 +139,22 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
       else {
         seenEdgeIds.add(edge.id);
       }
-      if (rawEdgeLookup.get(edge.id) !== edge) {
-        edgeLookup.set(edge.id, edge);
-      }
-    }
-
-    if (rawEdgeLookup.size !== next.length) {
-      const nextIds = new Set<string>();
-      for (const edge of next) {
-        nextIds.add(edge.id);
-      }
-
-      for (const id of rawEdgeLookup.keys()) {
-        if (!nextIds.has(id)) {
-          edgeLookup.delete(id);
-        }
-      }
     }
 
     state.edges = next;
 
-    updateConnectionLookup(state.connectionLookup, next);
+    const { updatedEdges } = updateConnectionLookup(state.connectionLookup, systemEdgeLookup, next);
+
+    // mirror only what changed, instead of scanning every edge
+    for (const id of updatedEdges) {
+      const edge = systemEdgeLookup.get(id);
+      if (edge) {
+        edgeLookup.set(id, edge);
+      }
+      else {
+        edgeLookup.delete(id);
+      }
+    }
   }
 
   return { systemNodeLookup, systemParentLookup, commitNodes, commitEdges, syncLookups };

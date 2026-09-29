@@ -1,10 +1,7 @@
 import type {
   Connection,
-  ConnectionLookup,
   CoordinateExtent,
-  HandleType,
   IsValidConnection,
-  NodeConnection,
   NodeLookup as SystemNodeLookup,
   ParentLookup as SystemParentLookup,
   ZIndexMode,
@@ -153,7 +150,7 @@ export function adoptNodes<NodeType extends Node = Node>(
   parentLookup: SystemParentLookup<InternalNode<NodeType>>,
   triggerError: State['hooks']['error']['trigger'],
   options?: CreateInternalNodesOptions,
-): { nodes: NodeType[]; hasSelectedNodes: boolean } {
+): { nodes: NodeType[]; hasSelectedNodes: boolean; updatedNodes: Set<string> } {
   const validNodes: NodeType[] = [];
   const seenNodeIds = new Set<string>();
   for (let i = 0; i < nodes.length; ++i) {
@@ -187,7 +184,7 @@ export function adoptNodes<NodeType extends Node = Node>(
     priorMeasured.set(id, width !== undefined && height !== undefined ? { width, height } : undefined);
   }
 
-  const { hasSelectedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: options?.checkEquality ?? true });
+  const { hasSelectedNodes, updatedNodes } = adoptUserNodes(validNodes, nodeLookup, parentLookup, { ...options, checkEquality: options?.checkEquality ?? true });
 
   for (const node of validNodes) {
     if (node.parentId && !nodeLookup.has(node.parentId)) {
@@ -203,55 +200,7 @@ export function adoptNodes<NodeType extends Node = Node>(
     }
   }
 
-  return { nodes: validNodes, hasSelectedNodes };
-}
-
-/**
- * this function adds the connection to the connectionLookup
- * at the following keys: nodeId-type-handleId, nodeId-type and nodeId
- * @param type type of the connection
- * @param connection connection that should be added to the lookup
- * @param connectionKey at which key the connection should be added
- * @param connectionLookup reference to the connection lookup
- * @param nodeId nodeId of the connection
- * @param handleId handleId of the connection
- */
-function addConnectionToLookup(
-  type: HandleType,
-  connection: NodeConnection,
-  connectionKey: string,
-  connectionLookup: ConnectionLookup,
-  nodeId: string,
-  handleId: string | null,
-) {
-  let key = nodeId;
-  const nodeMap = connectionLookup.get(key) || new Map();
-  connectionLookup.set(key, nodeMap.set(connectionKey, connection));
-
-  key = `${nodeId}-${type}`;
-  const typeMap = connectionLookup.get(key) || new Map();
-  connectionLookup.set(key, typeMap.set(connectionKey, connection));
-
-  if (handleId) {
-    key = `${nodeId}-${type}-${handleId}`;
-    const handleMap = connectionLookup.get(key) || new Map();
-    connectionLookup.set(key, handleMap.set(connectionKey, connection));
-  }
-}
-
-export function updateConnectionLookup(connectionLookup: ConnectionLookup, edges: Edge[]) {
-  connectionLookup.clear();
-
-  for (const edge of edges) {
-    const { source: sourceNode, target: targetNode, sourceHandle = null, targetHandle = null } = edge;
-
-    const connection = { edgeId: edge.id, source: sourceNode, target: targetNode, sourceHandle, targetHandle };
-    const sourceKey = `${sourceNode}-${sourceHandle}--${targetNode}-${targetHandle}`;
-    const targetKey = `${targetNode}-${targetHandle}--${sourceNode}-${sourceHandle}`;
-
-    addConnectionToLookup('source', connection, targetKey, connectionLookup, sourceNode, sourceHandle);
-    addConnectionToLookup('target', connection, sourceKey, connectionLookup, targetNode, targetHandle);
-  }
+  return { nodes: validNodes, hasSelectedNodes, updatedNodes };
 }
 
 /**

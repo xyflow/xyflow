@@ -139,7 +139,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       return;
     }
 
-    const { changes: systemChanges, updatedInternals } = updateNodeInternalsSystem(
+    const { changes: systemChanges, updatedInternals, updatedNodes } = updateNodeInternalsSystem(
       new Map(updates.map(update => [update.id, { id: update.id, nodeElement: update.nodeElement, force: update.forceUpdate }])),
       systemNodeLookup,
       systemParentLookup,
@@ -150,7 +150,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     );
 
     if (updatedInternals) {
-      syncLookups();
+      syncLookups(updatedNodes);
     }
 
     if (systemChanges.length) {
