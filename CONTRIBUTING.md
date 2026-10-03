@@ -52,6 +52,14 @@ Please use a meaningful commit message and add a little description of your chan
 3. Test your changes with the existing examples or add a new one if it's needed for your changes
 4. Run tests `pnpm test` and add new new tests if you are introducing a new feature
 
+### Release coverage
+
+For changes to published library source under `packages/*/src`, include every changed package in the changeset release plan. CI checks the calculated plan, so packages bumped automatically through dependency updates also count. Documentation, tests, examples, private packages, and version-only release PRs are excluded from this check.
+
+If the entire PR needs no release, add an empty changeset with `pnpm exec changeset add --empty`. An empty changeset does not exempt missing packages when the PR also contains a nonempty changeset.
+
+To check a committed branch locally, run `node .github/scripts/check-release-coverage.mjs origin/main`. Run the check's regression tests with `node --test .github/scripts/check-release-coverage.test.mjs`.
+
 ## Changeset Style Guide
 
 *Inspired and taken from [Common Changelogs](https://github.com/vweevers/common-changelog?tab=readme-ov-file) and [Warp by Broad Institute](https://broadinstitute.github.io/warp/docs/contribution/contribute_to_warp/changelog_style/)*
