@@ -56,6 +56,8 @@ export type NodeSelectionEvents<NodeType extends Node = Node> = {
 export type PaneEvents = {
   /** This event handler is called when a user clicks the pane. */
   onpaneclick?: ({ event }: { event: MouseEvent }) => void;
+  /** This event handler is called when a user double-clicks the pane. Use `zoomOnDoubleClick` to control whether this also zooms. */
+  onpanedoubleclick?: ({ event }: { event: MouseEvent }) => void;
   /** This event handler is called when a user right-clicks the pane. */
   onpanecontextmenu?: ({ event }: { event: MouseEvent }) => void;
 };
