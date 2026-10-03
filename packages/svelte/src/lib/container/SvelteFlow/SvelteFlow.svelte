@@ -52,6 +52,7 @@
     onedgepointerenter,
     onedgepointerleave,
     onpaneclick,
+    onpanedoubleclick,
     onpanecontextmenu,
     panOnScrollMode = PanOnScrollMode.Free,
     preventScrolling = true,
@@ -174,6 +175,7 @@
     <Pane
       bind:store
       {onpaneclick}
+      {onpanedoubleclick}
       {onpanecontextmenu}
       {onselectionstart}
       {onselectionend}
