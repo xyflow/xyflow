@@ -46,8 +46,8 @@ export type NodeBase<
    * as drag handles, letting the user drag the node by clicking and dragging on those elements.
    */
   dragHandle?: string;
-  width?: number;
-  height?: number;
+  width?: number | undefined;
+  height?: number | undefined;
   initialWidth?: number;
   initialHeight?: number;
   /** Parent node id, used for creating sub-flows. */

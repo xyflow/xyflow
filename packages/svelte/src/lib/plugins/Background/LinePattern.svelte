@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { OptionalOrUndefined } from '@xyflow/system';
   import type { ClassValue } from 'svelte/elements';
   import type { BackgroundVariant } from './types.js';
 
@@ -7,12 +8,12 @@
     dimensions,
     variant,
     class: className
-  }: {
+  }: OptionalOrUndefined<{
     lineWidth: number;
     dimensions: [number, number];
     variant: BackgroundVariant;
     class?: ClassValue;
-  } = $props();
+  }> = $props();
 </script>
 
 <path

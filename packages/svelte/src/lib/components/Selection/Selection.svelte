@@ -8,10 +8,10 @@
     height = 0,
     isVisible = true
   }: {
-    x?: number;
-    y?: number;
-    width?: number | string;
-    height?: number | string;
+    x?: number | undefined;
+    y?: number | undefined;
+    width?: number | string | undefined;
+    height?: number | string | undefined;
     isVisible?: boolean;
   } = $props();
 </script>

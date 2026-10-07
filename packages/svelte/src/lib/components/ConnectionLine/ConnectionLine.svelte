@@ -1,6 +1,7 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import type { Component } from 'svelte';
   import {
+    type OptionalOrUndefined,
     ConnectionLineType,
     getBezierPath,
     getConnectionStatus,
@@ -17,13 +18,13 @@
     containerStyle,
     style,
     LineComponent
-  }: {
+  }: OptionalOrUndefined<{
     store: SvelteFlowStore<NodeType, EdgeType>;
     type: ConnectionLineType;
     containerStyle?: string;
     style?: string;
     LineComponent?: Component;
-  } = $props();
+  }> = $props();
 
   let path = $derived.by(() => {
     if (!store.connection.inProgress) {

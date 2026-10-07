@@ -75,14 +75,17 @@ type StoreItems<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase 
   autoPanSpeed?: number;
 }>;
 
-export type XYDragParams<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
+export type XYDragParams<
+  NodeType extends NodeBase = NodeBase,
+  EdgeType extends EdgeBase = EdgeBase,
+> = OptionalOrUndefined<{
   getStoreItems: () => StoreItems<NodeType, EdgeType>;
   onDragStart?: OnDrag<NodeType>;
   onDrag?: OnDrag<NodeType>;
   onDragStop?: OnDrag<NodeType>;
   onNodeMouseDown?: (id: string) => void;
   autoPanSpeed?: number;
-};
+}>;
 
 export type XYDragInstance = {
   update: (params: DragUpdateParams) => void;

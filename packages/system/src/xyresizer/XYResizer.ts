@@ -50,7 +50,7 @@ type XYResizerParams = {
   getStoreItems: () => {
     nodeLookup: NodeLookup;
     transform: Transform;
-    snapGrid?: [number, number];
+    snapGrid?: [number, number] | undefined;
     snapToGrid: boolean;
     nodeOrigin: NodeOrigin;
     paneDomNode: HTMLDivElement | null;

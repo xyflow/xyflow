@@ -272,21 +272,24 @@ export const getInternalNodesBounds = <NodeType extends InternalNodeBase | NodeD
   return hasVisibleNodes ? boxToRect(box) : { x: 0, y: 0, width: 0, height: 0 };
 };
 
-export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
-  nodes: Map<string, InternalNodeBase<NodeType>>,
+export const getNodesInside = <
+  NodeType extends NodeBase = NodeBase,
+  InternalNodeType extends InternalNodeBase<NodeType> = InternalNodeBase<NodeType>,
+>(
+  nodes: Map<string, InternalNodeType>,
   rect: Rect,
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially = false,
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
   excludeNonSelectableNodes = false
-): InternalNodeBase<NodeType>[] => {
+): InternalNodeType[] => {
   // viewport in flow coordinates, as scalars to avoid a Rect allocation per node
   const paneX = (rect.x - tx) / tScale;
   const paneY = (rect.y - ty) / tScale;
   const paneWidth = rect.width / tScale;
   const paneHeight = rect.height / tScale;
 
-  const visibleNodes: InternalNodeBase<NodeType>[] = [];
+  const visibleNodes: InternalNodeType[] = [];
 
   for (const node of nodes.values()) {
     const { measured, selectable = true, hidden = false } = node;

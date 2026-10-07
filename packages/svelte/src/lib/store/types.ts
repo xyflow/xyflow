@@ -1,4 +1,5 @@
 import type {
+  OptionalOrUndefined,
   InternalNodeUpdate,
   XYPosition,
   ViewportHelperFunctionOptions,
@@ -97,14 +98,17 @@ export type SvelteFlowRestProps<NodeType extends Node = Node, EdgeType extends E
   | 'viewport'
 >;
 
-export type StoreSignals<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+export type StoreSignals<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> = OptionalOrUndefined<{
   props: SvelteFlowRestProps<NodeType, EdgeType>;
   width?: number;
   height?: number;
   nodes: NodeType[];
   edges: EdgeType[];
   viewport?: Viewport;
-};
+}>;
 
 export type SvelteFlowStoreState<
   NodeType extends Node = Node,
