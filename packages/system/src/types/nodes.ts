@@ -10,7 +10,7 @@ import { Optional } from '../utils/types';
  */
 export type NodeBase<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+  NodeType extends string | undefined = string | undefined,
 > = {
   /** Unique id of a node. */
   id: string;
@@ -51,18 +51,18 @@ export type NodeBase<
   initialWidth?: number;
   initialHeight?: number;
   /** Parent node id, used for creating sub-flows. */
-  parentId?: string;
+  parentId?: string | undefined;
   zIndex?: number;
   /**
    * Boundary a node can be moved in.
    * @example 'parent' or [[0, 0], [100, 100]]
    */
-  extent?: 'parent' | CoordinateExtent | null;
+  extent?: 'parent' | CoordinateExtent | null | undefined;
   /**
    * When `true`, the parent node will automatically expand if this node is dragged to the edge of
    * the parent node's bounds.
    */
-  expandParent?: boolean;
+  expandParent?: boolean | undefined;
   ariaLabel?: string;
   /**
    * Origin of the node relative to its position.
@@ -71,7 +71,7 @@ export type NodeBase<
    * [0, 0] // top left
    * [1, 1] // bottom right
    */
-  origin?: NodeOrigin;
+  origin?: NodeOrigin | undefined;
   handles?: NodeHandle[];
   measured?: {
     width?: number;
@@ -87,24 +87,26 @@ export type NodeBase<
       type: NodeType;
     });
 
-export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = Omit<NodeType, 'measured'> & {
-  measured: {
-    width?: number;
-    height?: number;
+export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = Omit<NodeType, 'measured'> &
+  Omit<NodeBase, 'measured'> & {
+    measured: {
+      width?: number;
+      height?: number;
+    };
+    internals: {
+      positionAbsolute: XYPosition;
+      z: number;
+      rootParentIndex?: number;
+      /**
+       * Holds a reference to the original node object provided by the user.
+       * Used as an optimization to avoid certain operations.
+       */
+      userNode: NodeType;
+      // Explicitly cleared when a node needs to be measured again.
+      handleBounds?: NodeHandleBounds | undefined;
+      bounds?: NodeBounds;
+    };
   };
-  internals: {
-    positionAbsolute: XYPosition;
-    z: number;
-    rootParentIndex?: number;
-    /**
-     * Holds a reference to the original node object provided by the user.
-     * Used as an optimization to avoid certain operations.
-     */
-    userNode: NodeType;
-    handleBounds?: NodeHandleBounds;
-    bounds?: NodeBounds;
-  };
-};
 
 /**
  * The node data structure that gets used for the custom nodes props.

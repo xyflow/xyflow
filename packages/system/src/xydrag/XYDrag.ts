@@ -1,3 +1,4 @@
+import type { OptionalOrUndefined } from '../utils/types';
 import { drag } from 'd3-drag';
 import { select, type Selection } from 'd3-selection';
 
@@ -46,7 +47,7 @@ type FlowGraph<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase =
   edges: EdgeType[];
 };
 
-type StoreItems<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
+type StoreItems<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = OptionalOrUndefined<{
   nodes: NodeType[];
   nodeLookup: Map<string, InternalNodeBase<NodeType>>;
   edges: EdgeType[];
@@ -72,7 +73,7 @@ type StoreItems<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase 
   onSelectionDragStop?: OnSelectionDrag<NodeType>;
   updateNodePositions: UpdateNodePositions<InternalNodeBase<NodeType>>;
   autoPanSpeed?: number;
-};
+}>;
 
 export type XYDragParams<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
   getStoreItems: () => StoreItems<NodeType, EdgeType>;
@@ -88,14 +89,14 @@ export type XYDragInstance = {
   destroy: () => void;
 };
 
-export type DragUpdateParams = {
+export type DragUpdateParams = OptionalOrUndefined<{
   noDragClassName?: string;
   handleSelector?: string;
   isSelectable?: boolean;
   nodeId?: string;
   domNode: Element;
   nodeClickDistance?: number;
-};
+}>;
 
 export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
   onNodeMouseDown,

@@ -1,3 +1,4 @@
+import type { OptionalOrUndefined } from '@xyflow/system';
 import { memo } from 'react';
 
 import { FlowRenderer } from '../FlowRenderer';
@@ -11,33 +12,35 @@ import { useNodeOrEdgeTypesWarning } from './useNodeOrEdgeTypesWarning';
 import type { Edge, Node, ReactFlowProps } from '../../types';
 import { useStylesLoadedWarning } from './useStylesLoadedWarning';
 
-export type GraphViewProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Omit<
-  ReactFlowProps<NodeType, EdgeType>,
-  'onSelectionChange' | 'nodes' | 'edges' | 'onMove' | 'onMoveStart' | 'onMoveEnd' | 'elevateEdgesOnSelect'
-> &
-  Required<
-    Pick<
-      ReactFlowProps<NodeType, EdgeType>,
-      | 'selectionKeyCode'
-      | 'deleteKeyCode'
-      | 'multiSelectionKeyCode'
-      | 'connectionLineType'
-      | 'onlyRenderVisibleElements'
-      | 'translateExtent'
-      | 'minZoom'
-      | 'maxZoom'
-      | 'defaultMarkerColor'
-      | 'noDragClassName'
-      | 'noWheelClassName'
-      | 'noPanClassName'
-      | 'defaultViewport'
-      | 'disableKeyboardA11y'
-      | 'paneClickDistance'
-      | 'nodeClickDistance'
-    >
-  > & {
-    rfId: string;
-  };
+export type GraphViewProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = OptionalOrUndefined<
+  Omit<
+    ReactFlowProps<NodeType, EdgeType>,
+    'onSelectionChange' | 'nodes' | 'edges' | 'onMove' | 'onMoveStart' | 'onMoveEnd' | 'elevateEdgesOnSelect'
+  > &
+    Required<
+      Pick<
+        ReactFlowProps<NodeType, EdgeType>,
+        | 'selectionKeyCode'
+        | 'deleteKeyCode'
+        | 'multiSelectionKeyCode'
+        | 'connectionLineType'
+        | 'onlyRenderVisibleElements'
+        | 'translateExtent'
+        | 'minZoom'
+        | 'maxZoom'
+        | 'defaultMarkerColor'
+        | 'noDragClassName'
+        | 'noWheelClassName'
+        | 'noPanClassName'
+        | 'defaultViewport'
+        | 'disableKeyboardA11y'
+        | 'paneClickDistance'
+        | 'nodeClickDistance'
+      >
+    > & {
+      rfId: string;
+    }
+>;
 
 function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   nodeTypes,

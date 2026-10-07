@@ -73,11 +73,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
           return false;
         }
 
-        await panZoom.setViewport(viewport, {
-          duration: options?.duration,
-          ease: options?.ease,
-          interpolate: options?.interpolate,
-        });
+        await panZoom.setViewport(viewport, options);
 
         return true;
       },

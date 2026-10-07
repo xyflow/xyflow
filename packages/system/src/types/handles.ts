@@ -6,7 +6,7 @@ import type { Position, IsValidConnection } from '.';
 export type HandleType = 'source' | 'target';
 
 export type Handle = {
-  id?: string | null;
+  id?: string | null | undefined;
   nodeId: string;
   x: number;
   y: number;

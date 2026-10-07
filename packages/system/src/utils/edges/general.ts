@@ -1,6 +1,7 @@
 import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase, ZIndexMode } from '../..';
 import type { OnError } from '../../types/general';
 import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes } from '../general';
+import type { OptionalOrUndefined } from '../types';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
 export function getEdgeCenter({
@@ -23,14 +24,14 @@ export function getEdgeCenter({
   return [centerX, centerY, xOffset, yOffset];
 }
 
-export type GetEdgeZIndexParams = {
+export type GetEdgeZIndexParams = OptionalOrUndefined<{
   sourceNode: InternalNodeBase;
   targetNode: InternalNodeBase;
   selected?: boolean;
   zIndex?: number;
   elevateOnSelect?: boolean;
   zIndexMode?: ZIndexMode;
-};
+}>;
 
 /**
  * Returns the z-index for an edge based on the node it connects and whether it is selected.
@@ -120,7 +121,7 @@ export type AddEdgeOptions = {
   /**
    * Called when edge validation fails. If not provided, a default dev warning is used.
    */
-  onError?: OnError;
+  onError?: OnError | undefined;
 };
 
 /**

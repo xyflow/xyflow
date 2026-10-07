@@ -5,7 +5,13 @@
  */
 import { useEffect, useRef } from 'react';
 import { shallow } from 'zustand/shallow';
-import { infiniteExtent, type CoordinateExtent, mergeAriaLabelConfig, AriaLabelConfig } from '@xyflow/system';
+import {
+  type OptionalOrUndefined,
+  infiniteExtent,
+  type CoordinateExtent,
+  mergeAriaLabelConfig,
+  AriaLabelConfig,
+} from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import type { Node, Edge, ReactFlowState, ReactFlowProps, FitViewOptions } from '../../types';
@@ -74,12 +80,11 @@ const reactFlowFieldsToTrack = [
 ] as const;
 
 type ReactFlowFieldsToTrack = (typeof reactFlowFieldsToTrack)[number];
-type StoreUpdaterProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = Pick<
-  ReactFlowProps<NodeType, EdgeType>,
-  ReactFlowFieldsToTrack
-> & {
-  rfId: string;
-};
+type StoreUpdaterProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = OptionalOrUndefined<
+  Pick<ReactFlowProps<NodeType, EdgeType>, ReactFlowFieldsToTrack> & {
+    rfId: string;
+  }
+>;
 
 // rfId doesn't exist in ReactFlowProps, but it's one of the fields we want to update
 const fieldsToTrack = [...reactFlowFieldsToTrack, 'rfId'] as const;

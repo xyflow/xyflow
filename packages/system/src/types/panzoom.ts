@@ -1,3 +1,4 @@
+import type { OptionalOrUndefined } from '../utils/types';
 import type { ZoomTransform } from 'd3-zoom';
 
 import { PanOnScrollMode, type CoordinateExtent, type Transform, type Viewport } from './';
@@ -25,7 +26,7 @@ export type PanZoomTransformOptions = {
 
 export type OnPanZoom = (event: MouseEvent | TouchEvent | null, viewport: Viewport) => void;
 
-export type PanZoomUpdateOptions = {
+export type PanZoomUpdateOptions = OptionalOrUndefined<{
   noWheelClassName: string;
   noPanClassName: string;
   onPaneContextMenu?: (event: MouseEvent) => void;
@@ -45,7 +46,7 @@ export type PanZoomUpdateOptions = {
   connectionInProgress: boolean;
   paneClickDistance: number;
   selectionOnDrag?: boolean;
-};
+}>;
 
 export type PanZoomInstance = {
   update: (params: PanZoomUpdateOptions) => void;

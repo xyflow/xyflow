@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { errorMessages, MarkerType, type EdgeMarker } from '@xyflow/system';
+import { type OptionalOrUndefined, errorMessages, MarkerType, type EdgeMarker } from '@xyflow/system';
 
 import { useStoreApi } from '../../hooks/useStore';
 
-type SymbolProps = Omit<EdgeMarker, 'type'>;
+type SymbolProps = OptionalOrUndefined<Omit<EdgeMarker, 'type'>>;
 
 const ArrowSymbol = ({ color = 'none', strokeWidth = 1 }: SymbolProps) => {
   const style = {

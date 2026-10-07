@@ -86,7 +86,7 @@ export function getEventHandlerParams<NodeType extends NodeBase>({
   nodeLookup,
   dragging = true,
 }: {
-  nodeId?: string;
+  nodeId?: string | undefined;
   dragItems: Map<string, NodeDragItem>;
   nodeLookup: Map<string, InternalNodeBase<NodeType>>;
   dragging?: boolean;

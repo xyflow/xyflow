@@ -1,13 +1,14 @@
+import type { OptionalOrUndefined } from '@xyflow/system';
 import cc from 'classcat';
 
 import { BackgroundVariant } from './types';
 
-type LinePatternProps = {
+type LinePatternProps = OptionalOrUndefined<{
   dimensions: [number, number];
   variant: BackgroundVariant;
   lineWidth?: number;
   className?: string;
-};
+}>;
 
 export function LinePattern({ dimensions, lineWidth, variant, className }: LinePatternProps) {
   return (
@@ -19,10 +20,10 @@ export function LinePattern({ dimensions, lineWidth, variant, className }: LineP
   );
 }
 
-type DotPatternProps = {
+type DotPatternProps = OptionalOrUndefined<{
   radius: number;
   className?: string;
-};
+}>;
 
 export function DotPattern({ radius, className }: DotPatternProps) {
   return (

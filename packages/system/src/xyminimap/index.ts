@@ -1,3 +1,4 @@
+import type { OptionalOrUndefined } from '../utils/types';
 import { type D3ZoomEvent, zoom } from 'd3-zoom';
 import { select, pointer } from 'd3-selection';
 
@@ -17,7 +18,7 @@ export type XYMinimapParams = {
   getViewScale: () => number;
 };
 
-export type XYMinimapUpdate = {
+export type XYMinimapUpdate = OptionalOrUndefined<{
   translateExtent: CoordinateExtent;
   width: number;
   height: number;
@@ -25,7 +26,7 @@ export type XYMinimapUpdate = {
   zoomStep?: number;
   pannable?: boolean;
   zoomable?: boolean;
-};
+}>;
 
 export function XYMinimap({ domNode, panZoom, getTransform, getViewScale }: XYMinimapParams) {
   const selection = select(domNode);

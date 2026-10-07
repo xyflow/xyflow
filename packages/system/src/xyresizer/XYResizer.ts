@@ -68,7 +68,7 @@ type XYResizerUpdateParams = {
     maxHeight: number;
   };
   keepAspectRatio: boolean;
-  resizeDirection?: ResizeControlDirection;
+  resizeDirection?: ResizeControlDirection | undefined;
   onResizeStart: OnResizeStart | undefined;
   onResize: OnResize | undefined;
   onResizeEnd: OnResizeEnd | undefined;

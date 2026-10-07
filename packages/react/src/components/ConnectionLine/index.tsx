@@ -2,6 +2,7 @@ import { CSSProperties } from 'react';
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 import {
+  type OptionalOrUndefined,
   ConnectionLineType,
   getBezierPath,
   getSmoothStepPath,
@@ -14,12 +15,12 @@ import { getSimpleBezierPath } from '../Edges/SimpleBezierEdge';
 import type { ConnectionLineComponent, Node, ReactFlowState } from '../../types';
 import { useConnection } from '../../hooks/useConnection';
 
-type ConnectionLineWrapperProps<NodeType extends Node = Node> = {
+type ConnectionLineWrapperProps<NodeType extends Node = Node> = OptionalOrUndefined<{
   type: ConnectionLineType;
   component?: ConnectionLineComponent<NodeType>;
   containerStyle?: CSSProperties;
   style?: CSSProperties;
-};
+}>;
 
 const selector = (s: ReactFlowState) => ({
   nodesConnectable: s.nodesConnectable,
@@ -56,12 +57,12 @@ export function ConnectionLineWrapper<NodeType extends Node = Node>({
   );
 }
 
-type ConnectionLineProps<NodeType extends Node = Node> = {
+type ConnectionLineProps<NodeType extends Node = Node> = OptionalOrUndefined<{
   type: ConnectionLineType;
   style?: CSSProperties;
   CustomComponent?: ConnectionLineComponent<NodeType>;
   isValid: boolean | null;
-};
+}>;
 
 const ConnectionLine = <NodeType extends Node = Node>({
   style,

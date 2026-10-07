@@ -24,9 +24,9 @@ export type PanOnScrollParams = {
   panOnScrollMode: PanOnScrollMode;
   panOnScrollSpeed: number;
   zoomOnPinch: boolean;
-  onPanZoomStart?: OnPanZoom;
-  onPanZoom?: OnPanZoom;
-  onPanZoomEnd?: OnPanZoom;
+  onPanZoomStart: OnPanZoom | undefined;
+  onPanZoom: OnPanZoom | undefined;
+  onPanZoomEnd: OnPanZoom | undefined;
 };
 
 export type ZoomOnScrollParams = {
@@ -38,7 +38,7 @@ export type ZoomOnScrollParams = {
 export type PanZoomStartParams = {
   zoomPanValues: ZoomPanValues;
   onDraggingChange: OnDraggingChange;
-  onPanZoomStart?: OnPanZoom;
+  onPanZoomStart: OnPanZoom | undefined;
 };
 
 export type PanZoomParams = {
@@ -46,7 +46,7 @@ export type PanZoomParams = {
   panOnDrag: boolean | number[];
   onPaneContextMenu: boolean;
   onTransformChange: OnTransformChange;
-  onPanZoom?: OnPanZoom;
+  onPanZoom: OnPanZoom | undefined;
 };
 
 export type PanZoomEndParams = {
@@ -54,8 +54,8 @@ export type PanZoomEndParams = {
   panOnDrag: boolean | number[];
   panOnScroll: boolean;
   onDraggingChange: (isDragging: boolean) => void;
-  onPanZoomEnd?: OnPanZoom;
-  onPaneContextMenu?: (event: any) => void;
+  onPanZoomEnd: OnPanZoom | undefined;
+  onPaneContextMenu: ((event: any) => void) | undefined;
 };
 
 export function createPanOnScrollHandler({

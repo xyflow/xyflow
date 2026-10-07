@@ -1,5 +1,12 @@
 import type { CSSProperties, MouseEvent as ReactMouseEvent, AriaRole, HTMLAttributes, DOMAttributes } from 'react';
-import type { CoordinateExtent, NodeBase, OnError, NodeProps as NodePropsBase, InternalNodeBase } from '@xyflow/system';
+import type {
+  OptionalOrUndefined,
+  CoordinateExtent,
+  NodeBase,
+  OnError,
+  NodeProps as NodePropsBase,
+  InternalNodeBase,
+} from '@xyflow/system';
 
 import { NodeTypes } from './general';
 
@@ -12,7 +19,7 @@ import { NodeTypes } from './general';
  */
 export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+  NodeType extends string | undefined = string | undefined,
 > = NodeBase<NodeData, NodeType> & {
   style?: CSSProperties;
   className?: string;
@@ -48,7 +55,7 @@ export type Node<
  *
  * @public
  */
-export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeType>;
+export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeType> & Omit<Node, 'measured'>;
 
 export type NodeMouseHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, node: NodeType) => void;
 export type SelectionDragHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, nodes: NodeType[]) => void;
@@ -58,7 +65,7 @@ export type OnNodeDrag<NodeType extends Node = Node> = (
   nodes: NodeType[]
 ) => void;
 
-export type NodeWrapperProps<NodeType extends Node> = {
+export type NodeWrapperProps<NodeType extends Node> = OptionalOrUndefined<{
   id: string;
   nodesConnectable: boolean;
   elementsSelectable: boolean;
@@ -79,7 +86,7 @@ export type NodeWrapperProps<NodeType extends Node> = {
   nodeExtent?: CoordinateExtent;
   onError?: OnError;
   nodeClickDistance?: number;
-};
+}>;
 
 /**
  * The `BuiltInNode` type represents the built-in node types that are available in React Flow.
@@ -123,4 +130,4 @@ export type BuiltInNode =
  *}
  *```
  */
-export type NodeProps<NodeType extends Node = Node> = NodePropsBase<NodeType>;
+export type NodeProps<NodeType extends Node = Node> = OptionalOrUndefined<NodePropsBase<NodeType>>;

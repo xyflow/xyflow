@@ -1,3 +1,4 @@
+import type { OptionalOrUndefined } from '@xyflow/system';
 /*
  * This is a helper component for calling the onSelectionChange listener.
  * It will only be mounted if the user has passed an onSelectionChange listener
@@ -10,9 +11,9 @@ import { shallow } from 'zustand/shallow';
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import type { ReactFlowState, OnSelectionChangeFunc, Node, Edge } from '../../types';
 
-type SelectionListenerProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+type SelectionListenerProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = OptionalOrUndefined<{
   onSelectionChange?: OnSelectionChangeFunc<NodeType, EdgeType>;
-};
+}>;
 
 const selector = (s: ReactFlowState) => {
   const selectedNodes = [];

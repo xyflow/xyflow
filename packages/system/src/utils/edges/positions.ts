@@ -3,7 +3,6 @@ import { ConnectionMode, OnError } from '../../types/general';
 import { InternalNodeBase, NodeHandle } from '../../types/nodes';
 import { Position, XYPosition } from '../../types/utils';
 import { errorMessages } from '../../constants';
-import { Handle } from '../../types';
 import { getNodeDimensions } from '../general';
 
 export type GetEdgePositionParams = {
@@ -13,7 +12,7 @@ export type GetEdgePositionParams = {
   targetNode: InternalNodeBase;
   targetHandle: string | null;
   connectionMode: ConnectionMode;
-  onError?: OnError;
+  onError?: OnError | undefined;
 };
 
 function isNodeInitialized(node: InternalNodeBase): boolean {
@@ -38,7 +37,7 @@ export function getEdgePosition(params: GetEdgePositionParams): EdgePosition | n
   const targetHandle = getHandle(
     // when connection type is loose we can define all handles as sources and connect source -> source
     params.connectionMode === ConnectionMode.Strict
-      ? targetHandleBounds?.target ?? []
+      ? (targetHandleBounds?.target ?? [])
       : (targetHandleBounds?.target ?? []).concat(targetHandleBounds?.source ?? []),
     params.targetHandle
   );
@@ -84,9 +83,9 @@ function toHandleBounds(handles?: NodeHandle[]) {
     handle.height = handle.height ?? 1;
 
     if (handle.type === 'source') {
-      source.push(handle as Handle);
+      source.push(handle);
     } else if (handle.type === 'target') {
-      target.push(handle as Handle);
+      target.push(handle);
     }
   }
 
@@ -98,13 +97,13 @@ function toHandleBounds(handles?: NodeHandle[]) {
 
 export function getHandlePosition(
   node: InternalNodeBase,
-  handle: Handle | null,
+  handle: Pick<NodeHandle, 'x' | 'y' | 'position' | 'width' | 'height'> | null,
   fallbackPosition: Position = Position.Left,
   center = false
 ): XYPosition {
   const x = (handle?.x ?? 0) + node.internals.positionAbsolute.x;
   const y = (handle?.y ?? 0) + node.internals.positionAbsolute.y;
-  const { width, height } = handle ?? getNodeDimensions(node);
+  const { width = 1, height = 1 } = handle ?? getNodeDimensions(node);
 
   if (center) {
     return { x: x + width / 2, y: y + height / 2 };
@@ -124,7 +123,7 @@ export function getHandlePosition(
   }
 }
 
-function getHandle(bounds: Handle[], handleId?: string | null): Handle | null {
+function getHandle<T extends { id?: string | undefined | null }>(bounds: T[], handleId?: string | null): T | null {
   if (!bounds) {
     return null;
   }

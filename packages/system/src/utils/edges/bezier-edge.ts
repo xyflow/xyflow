@@ -1,6 +1,7 @@
+import type { OptionalOrUndefined } from '../types';
 import { Position } from '../../types';
 
-export type GetBezierPathParams = {
+export type GetBezierPathParams = OptionalOrUndefined<{
   /** The `x` position of the source handle. */
   sourceX: number;
   /** The `y` position of the source handle. */
@@ -24,7 +25,7 @@ export type GetBezierPathParams = {
    * @default 0.25
    */
   curvature?: number;
-};
+}>;
 
 export type GetControlWithCurvatureParams = {
   pos: Position;
