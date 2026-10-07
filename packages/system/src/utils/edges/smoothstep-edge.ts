@@ -10,7 +10,7 @@ export interface GetSmoothStepPathParams {
    * The position of the source handle.
    * @default Position.Bottom
    */
-  sourcePosition?: Position;
+  sourcePosition?: Position | undefined;
   /** The `x` position of the target handle. */
   targetX: number;
   /** The `y` position of the target handle. */
@@ -19,19 +19,19 @@ export interface GetSmoothStepPathParams {
    * The position of the target handle.
    * @default Position.Top
    */
-  targetPosition?: Position;
+  targetPosition?: Position | undefined;
   /** @default 5 */
-  borderRadius?: number;
-  centerX?: number;
-  centerY?: number;
+  borderRadius?: number | undefined;
+  centerX?: number | undefined;
+  centerY?: number | undefined;
   /** @default 20 */
-  offset?: number;
+  offset?: number | undefined;
   /**
    * Controls where the bend occurs along the path.
    * 0 = at source, 1 = at target, 0.5 = midpoint
    * @default 0.5
    */
-  stepPosition?: number;
+  stepPosition?: number | undefined;
 }
 
 const handleDirections = {
@@ -75,7 +75,7 @@ function getPoints({
   sourcePosition: Position;
   target: XYPosition;
   targetPosition: Position;
-  center: Partial<XYPosition>;
+  center: { x: number | undefined; y: number | undefined };
   offset: number;
   stepPosition: number;
 }): [XYPosition[], number, number, number, number] {

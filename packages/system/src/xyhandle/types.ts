@@ -1,3 +1,4 @@
+import type { OptionalOrUndefined } from '../utils/types';
 import {
   ConnectionMode,
   type Connection,
@@ -17,7 +18,10 @@ import {
   EdgeBase,
 } from '../types';
 
-export type OnPointerDownParams<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
+export type OnPointerDownParams<
+  NodeType extends NodeBase = NodeBase,
+  EdgeType extends EdgeBase = EdgeBase,
+> = OptionalOrUndefined<{
   autoPanOnConnect: boolean;
   connectionMode: ConnectionMode;
   connectionRadius: number;
@@ -45,9 +49,12 @@ export type OnPointerDownParams<NodeType extends NodeBase = NodeBase, EdgeType e
   autoPanSpeed?: number;
   dragThreshold?: number;
   handleDomNode: Element;
-};
+}>;
 
-export type IsValidParams<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
+export type IsValidParams<
+  NodeType extends NodeBase = NodeBase,
+  EdgeType extends EdgeBase = EdgeBase,
+> = OptionalOrUndefined<{
   handle: Pick<Handle, 'nodeId' | 'id' | 'type'> | null;
   connectionMode: ConnectionMode;
   fromNodeId: string;
@@ -58,7 +65,7 @@ export type IsValidParams<NodeType extends NodeBase = NodeBase, EdgeType extends
   lib: string;
   flowId: string | null;
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>;
-};
+}>;
 
 export type XYHandleInstance = {
   onPointerDown: (event: MouseEvent | TouchEvent, params: OnPointerDownParams) => void;

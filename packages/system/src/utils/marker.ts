@@ -1,3 +1,4 @@
+import type { PartialOrUndefined } from './types';
 import type { EdgeBase, EdgeMarker, EdgeMarkerType, MarkerProps } from '../types';
 
 export function getMarkerId(marker: EdgeMarkerType | undefined, id?: string | null): string {
@@ -24,12 +25,12 @@ export function createMarkerIds(
     defaultColor,
     defaultMarkerStart,
     defaultMarkerEnd,
-  }: {
+  }: PartialOrUndefined<{
     id?: string | null;
     defaultColor?: string | null;
     defaultMarkerStart?: EdgeMarkerType;
     defaultMarkerEnd?: EdgeMarkerType;
-  }
+  }>
 ) {
   const ids = new Set<string>();
 

@@ -10,7 +10,7 @@ export type UseKeyPressOptions = {
    * Listen to key presses on a specific element.
    * @default document
    */
-  target?: Window | Document | HTMLElement | ShadowRoot | null;
+  target?: Window | Document | HTMLElement | ShadowRoot | null | undefined;
   /**
    * You can use this flag to prevent triggering the key press hook when an input field is focused.
    * @default true

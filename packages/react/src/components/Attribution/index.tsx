@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
-import { type PanelPosition, handleAttributionWarning } from '@xyflow/system';
+import { type OptionalOrUndefined, type PanelPosition, handleAttributionWarning } from '@xyflow/system';
 
 import { Panel } from '../Panel';
 import { type ProOptions } from '../../types/general';
 
-type AttributionProps = {
+type AttributionProps = OptionalOrUndefined<{
   proOptions?: ProOptions;
   position?: PanelPosition;
-};
+}>;
 
 const link = `https://reactflow.dev${
   process.env.NODE_ENV === 'production' ? '?utm_source=attribution' : '/attribution'

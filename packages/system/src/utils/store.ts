@@ -28,7 +28,7 @@ import {
   nodeToRect,
 } from './general';
 import { getNodePositionWithOrigin } from './graph';
-import { ParentExpandChild } from './types';
+import { ParentExpandChild, PartialOrUndefined } from './types';
 
 const SELECTED_NODE_Z = 1000;
 const ROOT_PARENT_Z_INCREMENT = 10;
@@ -46,7 +46,7 @@ const adoptUserNodesDefaultOptions = {
   checkEquality: true,
 };
 
-function mergeObjects<T extends Record<string, unknown>>(base: T, incoming?: Partial<T>): T {
+function mergeObjects<T extends Record<string, unknown>>(base: T, incoming?: PartialOrUndefined<T>): T {
   const result = { ...base };
   for (const key in incoming) {
     if (incoming[key] !== undefined) {
@@ -156,10 +156,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       internalNode = {
         ..._options.defaults,
         ...userNode,
-        measured: {
-          width: userNode.measured?.width,
-          height: userNode.measured?.height,
-        },
+        measured: { ...userNode.measured },
         internals: {
           positionAbsolute: clampedPosition,
           // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
@@ -215,7 +212,7 @@ function updateChildNode<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options: UpdateNodesOptions<NodeType>,
+  options: PartialOrUndefined<UpdateNodesOptions<NodeType>>,
   rootParentIndex?: { i: number }
 ) {
   const { elevateNodesOnSelect, nodeOrigin, nodeExtent, zIndexMode } = mergeObjects(defaultOptions, options);

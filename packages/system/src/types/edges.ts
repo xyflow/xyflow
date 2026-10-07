@@ -2,7 +2,7 @@ import { Position } from './utils';
 
 export type EdgeBase<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
-  EdgeType extends string | undefined = string | undefined
+  EdgeType extends string | undefined = string | undefined,
 > = {
   /** Unique id of an edge. */
   id: string;
@@ -91,7 +91,7 @@ export enum ConnectionLineType {
  */
 export type EdgeMarker = {
   type: MarkerType | `${MarkerType}`;
-  color?: string | null;
+  color?: string | null | undefined;
   width?: number;
   height?: number;
   markerUnits?: string;

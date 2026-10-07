@@ -11,6 +11,7 @@ import {
 import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 import {
+  type OptionalOrUndefined,
   getNodesInside,
   getEventPosition,
   SelectionMode,
@@ -27,26 +28,28 @@ import { useStore, useStoreApi } from '../../hooks/useStore';
 import { getSelectionChanges } from '../../utils';
 import type { ReactFlowProps, ReactFlowState } from '../../types';
 
-type PaneProps = {
-  isSelecting: boolean;
-  selectionKeyPressed: boolean;
-  children: ReactNode;
-  paneClickDistance: number;
-} & Partial<
-  Pick<
-    ReactFlowProps,
-    | 'selectionMode'
-    | 'panOnDrag'
-    | 'autoPanOnSelection'
-    | 'onSelectionStart'
-    | 'onSelectionEnd'
-    | 'onPaneClick'
-    | 'onPaneContextMenu'
-    | 'onPaneScroll'
-    | 'onPaneMouseEnter'
-    | 'onPaneMouseMove'
-    | 'onPaneMouseLeave'
-    | 'selectionOnDrag'
+type PaneProps = OptionalOrUndefined<
+  {
+    isSelecting: boolean;
+    selectionKeyPressed: boolean;
+    children: ReactNode;
+    paneClickDistance: number;
+  } & Partial<
+    Pick<
+      ReactFlowProps,
+      | 'selectionMode'
+      | 'panOnDrag'
+      | 'autoPanOnSelection'
+      | 'onSelectionStart'
+      | 'onSelectionEnd'
+      | 'onPaneClick'
+      | 'onPaneContextMenu'
+      | 'onPaneScroll'
+      | 'onPaneMouseEnter'
+      | 'onPaneMouseMove'
+      | 'onPaneMouseLeave'
+      | 'selectionOnDrag'
+    >
   >
 >;
 

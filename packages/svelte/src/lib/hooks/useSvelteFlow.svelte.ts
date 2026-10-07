@@ -292,9 +292,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
 
     const nodeWithPosition = {
       ...nodeToUse,
-      position,
-      width: nodeToUse.measured?.width ?? nodeToUse.width,
-      height: nodeToUse.measured?.height ?? nodeToUse.height
+      position
     };
 
     return nodeToRect(nodeWithPosition);
@@ -380,11 +378,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         options?.padding ?? 0.1
       );
 
-      await store.panZoom.setViewport(viewport, {
-        duration: options?.duration,
-        ease: options?.ease,
-        interpolate: options?.interpolate
-      });
+      await store.panZoom.setViewport(viewport, options);
 
       return true;
     },

@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
-import { XYDrag, type XYDragInstance } from '@xyflow/system';
+import { type OptionalOrUndefined, XYDrag, type XYDragInstance } from '@xyflow/system';
 
 import { handleNodeClick } from '../components/Nodes/utils';
 import { useStoreApi } from './useStore';
 
-type UseDragParams = {
+type UseDragParams = OptionalOrUndefined<{
   nodeRef: RefObject<HTMLDivElement>;
   disabled?: boolean;
   noDragClassName?: string;
@@ -12,7 +12,7 @@ type UseDragParams = {
   nodeId?: string;
   isSelectable?: boolean;
   nodeClickDistance?: number;
-};
+}>;
 
 /**
  * Hook for calling XYDrag helper from @xyflow/system.

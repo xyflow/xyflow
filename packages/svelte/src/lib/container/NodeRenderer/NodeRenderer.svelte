@@ -1,4 +1,5 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
+  import type { OptionalOrUndefined } from '@xyflow/system';
   import { onDestroy } from 'svelte';
 
   import { NodeWrapper } from '$lib/components/NodeWrapper/index.js';
@@ -17,10 +18,12 @@
     onnodedrag,
     onnodedragstart,
     onnodedragstop
-  }: {
-    store: SvelteFlowStore<NodeType, EdgeType>;
-    nodeClickDistance?: number;
-  } & NodeEvents<NodeType> = $props();
+  }: OptionalOrUndefined<
+    {
+      store: SvelteFlowStore<NodeType, EdgeType>;
+      nodeClickDistance?: number;
+    } & NodeEvents<NodeType>
+  > = $props();
 
   const resizeObserver: ResizeObserver | null =
     typeof ResizeObserver === 'undefined'

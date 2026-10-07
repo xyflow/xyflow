@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type {
+  OptionalOrUndefined,
   ControlPosition,
   ControlLinePosition,
   ResizeControlVariant,
@@ -13,7 +14,7 @@ import type {
 /**
  * @expand
  */
-export type NodeResizerProps = {
+export type NodeResizerProps = OptionalOrUndefined<{
   /**
    * Id of the node it is resizing.
    * @remarks optional if used inside custom node
@@ -72,47 +73,49 @@ export type NodeResizerProps = {
   onResize?: OnResize;
   /** Callback called when resizing ends. */
   onResizeEnd?: OnResizeEnd;
-};
+}>;
 
 /**
  * @expand
  */
-export type ResizeControlProps = Pick<
-  NodeResizerProps,
-  | 'nodeId'
-  | 'color'
-  | 'minWidth'
-  | 'minHeight'
-  | 'maxWidth'
-  | 'maxHeight'
-  | 'keepAspectRatio'
-  | 'shouldResize'
-  | 'autoScale'
-  | 'onResizeStart'
-  | 'onResize'
-  | 'onResizeEnd'
-> & {
-  /**
-   * Position of the control.
-   * @example ControlPosition.TopLeft, ControlPosition.TopRight,
-   * ControlPosition.BottomLeft, ControlPosition.BottomRight
-   */
-  position?: ControlPosition;
-  /**
-   * Variant of the control.
-   * @default "handle"
-   * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
-   */
-  variant?: ResizeControlVariant;
-  /**
-   * The direction the user can resize the node.
-   * If not provided, the user can resize in any direction.
-   */
-  resizeDirection?: ResizeControlDirection;
-  className?: string;
-  style?: CSSProperties;
-  children?: ReactNode;
-};
+export type ResizeControlProps = OptionalOrUndefined<
+  Pick<
+    NodeResizerProps,
+    | 'nodeId'
+    | 'color'
+    | 'minWidth'
+    | 'minHeight'
+    | 'maxWidth'
+    | 'maxHeight'
+    | 'keepAspectRatio'
+    | 'shouldResize'
+    | 'autoScale'
+    | 'onResizeStart'
+    | 'onResize'
+    | 'onResizeEnd'
+  > & {
+    /**
+     * Position of the control.
+     * @example ControlPosition.TopLeft, ControlPosition.TopRight,
+     * ControlPosition.BottomLeft, ControlPosition.BottomRight
+     */
+    position?: ControlPosition;
+    /**
+     * Variant of the control.
+     * @default "handle"
+     * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
+     */
+    variant?: ResizeControlVariant;
+    /**
+     * The direction the user can resize the node.
+     * If not provided, the user can resize in any direction.
+     */
+    resizeDirection?: ResizeControlDirection;
+    className?: string;
+    style?: CSSProperties;
+    children?: ReactNode;
+  }
+>;
 
 /**
  * @expand
