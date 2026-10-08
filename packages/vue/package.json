@@ -68,8 +68,8 @@
     "test": "pnpm codegen:check"
   },
   "peerDependencies": {
-    "@vue/reactivity": "^3.5.0",
-    "vue": "^3.5.0"
+    "@vue/reactivity": "^3.5.27",
+    "vue": "^3.5.27"
   },
   "dependencies": {
     "@vueuse/core": "^14.3.0",
@@ -78,7 +78,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "9.1.0",
     "@arethetypeswrong/core": "^0.18.3",
-    "@vue/reactivity": "^3.5.0",
+    "@vue/reactivity": "^3.5.27",
     "@xyflow/postcss-config": "workspace:*",
     "eslint": "catalog:",
     "jiti": "^2.7.0",
@@ -89,7 +89,7 @@
     "tsdown": "catalog:",
     "typescript": "^5.6.0",
     "unplugin-vue": "^7.2.0",
-    "vue": "^3.5.0",
+    "vue": "^3.5.27",
     "vue-tsc": "^3.3.4"
   }
 }
