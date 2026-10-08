@@ -176,7 +176,7 @@ const edges = shallowRef<Edge[]>(initialElements.filter(isEdge));
   <VueFlow
     v-model:nodes="nodes"
     v-model:edges="edges"
-    :connection-line-options="{ type: ConnectionLineType.SmoothStep }"
+    :connection-line-type="ConnectionLineType.SmoothStep"
     :connection-mode="ConnectionMode.Loose"
     @init="({ fitView }) => fitView()"
   >
