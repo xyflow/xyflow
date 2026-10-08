@@ -60,10 +60,6 @@ const elementHeight = toRef(() => height ?? attrs.style?.height ?? defaultHeight
 
 const shapeRendering: ShapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
 
-function getAttrFunction(attr: string | MiniMapNodeFunc | undefined): MiniMapNodeFunc {
-  return typeof attr === 'function' ? attr : () => attr;
-}
-
 const nodeColorFunc = computed(() => getAttrFunction(nodeColor));
 
 const nodeStrokeColorFunc = computed(() => getAttrFunction(nodeStrokeColor));
@@ -185,6 +181,10 @@ onMounted(() => {
 onUnmounted(() => {
   minimapInstance?.destroy();
 });
+
+function getAttrFunction(attr: string | MiniMapNodeFunc | undefined): MiniMapNodeFunc {
+  return typeof attr === 'function' ? attr : () => attr;
+}
 
 function onSvgClick(event: MouseEvent) {
   const [x, y] = minimapInstance?.pointer(event) || [0, 0];
