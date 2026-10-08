@@ -174,7 +174,7 @@ const edges = shallowRef<Edge[]>(initialElements.filter(isEdge));
     @edge-double-click="onEdgeDoubleClick"
   >
     <MiniMap :node-stroke-color="nodeStrokeColor" :node-color="nodeColor" :node-border-radius="2" />
-    <Controls />
+    <Controls orientation="horizontal" />
     <Background variant="lines" />
   </VueFlow>
 </template>
