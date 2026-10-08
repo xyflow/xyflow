@@ -47,6 +47,20 @@ export type Node<
  */
 export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeType>;
 
+/*
+  Spelled out rather than aliased to system's `NodeProps` (`Pick<NodeType, …> & Required<Pick<…>>`),
+  which would make the SFC compiler list every member of `NodeType` to build its key list.
+  It cannot do that for `Node`.
+  A generic type alias forwarding its parameters into another package's generic is unresolvable,
+  so `defineProps<NodeProps<MyNode>>()` would stop compiling in user components.
+  Listing the keys here keeps the key list local;
+  only the value types stay unresolvable, and those harmlessly fall back to no runtime type.
+
+  Note this fails at *build* time only.
+  `vue-tsc` resolves it fine, so a typecheck will not catch it.
+  `interface Node extends NodeBase<…>` would fix the resolver but is illegal TS (TS2312: system's `NodeBase` ends in a conditional type),
+  and `scripts/gen-props-objects.mjs` needs this to be an interface regardless.
+*/
 /**
  * When you implement a custom node it is wrapped in a component that enables basic functionality like
  * selection and dragging. Your custom node receives `NodeProps` as props.
