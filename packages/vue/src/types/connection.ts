@@ -1,20 +1,5 @@
-import type { ConnectionLineType, EdgeMarkerType, HandleBounds, Position, XYPosition } from '@xyflow/system';
-import type { CSSProperties } from 'vue';
-import type { ClassValue } from './flow';
+import type { HandleBounds, Position, XYPosition } from '@xyflow/system';
 import type { InternalNode, Node } from './node';
-
-export interface ConnectionLineOptions {
-  /** The path shape drawn while dragging a new connection, see {@link ConnectionLineType}. */
-  type?: ConnectionLineType;
-  /** Inline style applied to the connection line. */
-  style?: CSSProperties;
-  /** Additional class names applied to the connection line. */
-  class?: ClassValue;
-  /** Marker rendered at the end (pointer side) of the connection line. */
-  markerEnd?: EdgeMarkerType;
-  /** Marker rendered at the start (source handle) of the connection line. */
-  markerStart?: EdgeMarkerType;
-}
 
 export type ConnectionStatus = 'valid' | 'invalid';
 

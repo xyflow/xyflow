@@ -2,6 +2,7 @@ import type { KeyFilter } from '@vueuse/core';
 import type {
   AriaLabelConfig,
   Connection,
+  ConnectionLineType,
   ConnectionLookup,
   ConnectionMode,
   ConnectionState,
@@ -9,6 +10,7 @@ import type {
   Dimensions,
   EdgeChangeset,
   EdgeLookup,
+  EdgeMarkerType,
   FitViewOptionsBase,
   HandleType,
   HandleBounds,
@@ -29,12 +31,11 @@ import type {
   XYPosition,
   ZIndexMode,
 } from '@xyflow/system';
-import type { ComputedRef } from 'vue';
+import type { ComputedRef, CSSProperties } from 'vue';
 import type { ViewportHelper } from '../composables';
 import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
-import type { ConnectionLineOptions } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
-import type { FlowExportObject, OnBeforeDelete, VueFlowProps } from './flow';
+import type { ClassValue, FlowExportObject, OnBeforeDelete, VueFlowProps } from './flow';
 import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
 import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
 
@@ -110,7 +111,12 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   panActivationKeyCode: KeyFilter | null;
 
   connectionMode: ConnectionMode;
-  connectionLineOptions: ConnectionLineOptions;
+  connectionLineType: ConnectionLineType;
+  connectionLineStyle: CSSProperties;
+  connectionLineContainerStyle: CSSProperties;
+  connectionLineClass: ClassValue;
+  connectionLineMarkerStart: EdgeMarkerType | undefined;
+  connectionLineMarkerEnd: EdgeMarkerType | undefined;
   /** the ongoing drag-connection as a single {@link ConnectionState} (`inProgress: false` when idle) */
   connection: ConnectionState<InternalNode<NodeType>>;
   /** the handle a click-to-connect interaction started from (separate from the drag `connection`) */
