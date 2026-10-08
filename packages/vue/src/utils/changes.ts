@@ -21,9 +21,11 @@ export function applyChanges<
   for (const change of changes) {
     if (change.type === 'add') {
       addChanges.push(change as AddChange<Node | Edge>);
-    } else if (change.type === 'remove') {
+    }
+    else if (change.type === 'remove') {
       removeIds.add((change as RemoveChange).id);
-    } else {
+    }
+    else {
       const id = (change as { id?: string }).id;
       if (id == null) {
         continue;
@@ -31,7 +33,8 @@ export function applyChanges<
       const bucket = updatesById.get(id);
       if (bucket) {
         bucket.push(change);
-      } else {
+      }
+      else {
         updatesById.set(id, [change]);
       }
     }
@@ -97,13 +100,14 @@ export function applyChanges<
   }
 
   for (const change of addChanges) {
-    if (next.some((el) => el.id === change.item.id)) {
+    if (next.some(el => el.id === change.item.id)) {
       continue;
     }
 
     if (typeof change.index === 'number') {
       next.splice(change.index, 0, change.item as unknown as T);
-    } else {
+    }
+    else {
       next.push(change.item as unknown as T);
     }
   }
