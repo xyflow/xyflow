@@ -2,15 +2,7 @@ import type { InternalNodeBase, NodeBase } from '@xyflow/system';
 import type { HTMLAttributes } from 'vue';
 import type { ClassValue, Styles } from './flow';
 
-/**
- * The origin of a Node determines how it is placed relative to its own coordinates.
- * `[0, 0]` places it at the top left corner, `[0.5, 0.5]` right in the center and
- * `[1, 1]` at the bottom right of its position.
- *
- * Locally defined (not re-exported from `@xyflow/system`) so the Vue SFC compiler stays out of system's
- * d.ts (its `Optional<T, K>` trips vuejs/core#14236); structurally identical to system's.
- */
-export type NodeOrigin = [number, number];
+export type { NodeOrigin } from '@xyflow/system';
 
 /**
  * The `Node` type represents everything Vue Flow needs to know about a given node. Whenever you want to
