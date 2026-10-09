@@ -1,9 +1,9 @@
 /**
- * The Background can be either a dotted one or a lined one
+ * The Background can be either a dotted, lined or crossed one
  *
  * @default 'dots'
  */
-export type BackgroundVariant = 'dots' | 'lines';
+export type BackgroundVariant = 'dots' | 'lines' | 'cross';
 
 export interface BackgroundProps {
   /**
@@ -30,9 +30,9 @@ export interface BackgroundProps {
    */
   gap?: number | number[];
   /**
-   * Background pattern size
+   * The radius of each dot or the size of each rectangle if the `dots` or `cross` variant is used.
    *
-   * @default 1
+   * Defaults to 1 or 6 respectively, and is ignored by the `lines` variant.
    */
   size?: number;
   /**
@@ -44,11 +44,17 @@ export interface BackgroundProps {
   /**
    * The background pattern color
    *
-   * This only changes the color of the *pattern*, not the background color itself.
-   *
-   * If you want to change the background color itself, you can apply a bg-color to the `<VueFlow>` element instead
+   * This only changes the color of the *pattern*, not the background color itself - use {@link BackgroundProps.bgColor} for that.
    */
   color?: string;
+  /**
+   * The background color
+   */
+  bgColor?: string;
+  /**
+   * Class applied to the pattern
+   */
+  patternClassName?: string;
   /**
    * Background x-coordinate (offset x)
    *

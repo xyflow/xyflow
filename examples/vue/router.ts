@@ -7,6 +7,10 @@ export const routes: RouterOptions['routes'] = [
     redirect: '/overview',
   },
   {
+    path: '/backgrounds',
+    component: () => import('./src/Backgrounds/BackgroundsExample.vue'),
+  },
+  {
     path: '/basic',
     component: () => import('./src/Basic/Basic.vue'),
   },
