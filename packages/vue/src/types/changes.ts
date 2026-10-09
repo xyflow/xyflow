@@ -7,12 +7,12 @@ import type { Node } from './node';
  * flow's state. The `NodeChange` type is a union of the different object types that represent the
  * various ways a node can change in a flow.
  */
-export type NodeChange<NodeType extends Node = Node> =
-  | DimensionChange
-  | PositionChange
-  | SelectionChange
-  | RemoveChange
-  | AddChange<NodeType>;
+export type NodeChange<NodeType extends Node = Node>
+  = | DimensionChange
+    | PositionChange
+    | SelectionChange
+    | RemoveChange
+    | AddChange<NodeType>;
 
 /**
  * The `edges-change` event passes an array of `EdgeChange` objects that you should use to update your
