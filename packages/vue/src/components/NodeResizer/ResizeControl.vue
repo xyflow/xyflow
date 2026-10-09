@@ -112,7 +112,7 @@ watchEffect((onCleanup) => {
         nodeChanges.push({
           id: nodeId.value!,
           type: 'dimensions',
-          setAttributes: true,
+          setAttributes: !props.resizeDirection ? true : props.resizeDirection === 'horizontal' ? 'width' : 'height',
           resizing: true,
           dimensions: {
             width: changes.width ?? 0,
@@ -160,6 +160,7 @@ watchEffect((onCleanup) => {
       maxHeight: props.maxHeight,
     },
     keepAspectRatio: Boolean(props.keepAspectRatio ?? false),
+    resizeDirection: props.resizeDirection,
     onResizeStart: (event, params) => emits('resizeStart', { event, params }),
     onResize: (event, params) => emits('resize', { event, params }),
     onResizeEnd: (event, params) => emits('resizeEnd', { event, params }),

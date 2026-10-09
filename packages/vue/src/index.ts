@@ -64,7 +64,16 @@ export { ErrorCode, isErrorOfType, VueFlowError } from './utils/errors';
 export { connectionExists, isEdge, isInternalNode, isNode } from './utils/graph';
 
 // re-export these utils from system
-export { getBezierEdgeCenter, getBezierPath, getSmoothStepPath, getStraightPath } from '@xyflow/system';
+export {
+  getBezierEdgeCenter,
+  getBezierPath,
+  type GetBezierPathParams,
+  getEdgeCenter,
+  getSmoothStepPath,
+  type GetSmoothStepPathParams,
+  getStraightPath,
+  type GetStraightPathParams,
+} from '@xyflow/system';
 
 // re-export graph utils
 export {

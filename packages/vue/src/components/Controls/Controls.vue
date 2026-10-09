@@ -39,7 +39,7 @@ function onZoomOutHandler() {
 }
 
 function onFitViewHandler() {
-  fitView(props.fitViewParams);
+  fitView(props.fitViewOptions);
 
   emit('fitView');
 }

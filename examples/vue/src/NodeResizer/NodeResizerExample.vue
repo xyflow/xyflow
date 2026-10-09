@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Edge, Node } from '@xyflow/vue';
 import { VueFlow } from '@xyflow/vue';
+import BottomRightResizer from './BottomRightResizer.vue';
 import CustomResizableNode from './CustomResizableNode.vue';
 import ResizableNode from './ResizableNode.vue';
 import ResizableNodeSelected from './ResizableNodeSelected.vue';
@@ -34,6 +35,20 @@ const nodes = shallowRef<Node[]>([
       height: '100px',
     },
   },
+  {
+    id: '4',
+    type: 'bottom-right-resizer',
+    data: { label: 'Horizontal resize only' },
+    position: { x: 400, y: 50 },
+    style: {
+      background: '#fff',
+      fontSize: '12px',
+      border: '1px solid black',
+      padding: '5px',
+      borderRadius: '15px',
+      height: '100px',
+    },
+  },
 ]);
 
 const edges = shallowRef<Edge[]>([]);
@@ -51,6 +66,10 @@ const edges = shallowRef<Edge[]>([]);
 
     <template #node-custom-resizable="customResizableNodeProps">
       <CustomResizableNode :label="customResizableNodeProps.data?.label" />
+    </template>
+
+    <template #node-bottom-right-resizer="bottomRightResizerProps">
+      <BottomRightResizer :label="bottomRightResizerProps.data?.label" />
     </template>
   </VueFlow>
 </template>
