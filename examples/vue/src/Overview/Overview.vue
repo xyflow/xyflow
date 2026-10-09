@@ -151,7 +151,7 @@ const edges = shallowRef<Edge[]>(initialElements.filter(isEdge));
   <VueFlow
     v-model:nodes="nodes"
     v-model:edges="edges"
-    :connection-line-options="{ style: { stroke: '#ddd' } }"
+    :connection-line-style="{ stroke: '#ddd' }"
     snap-to-grid
     :snap-grid="snapGrid"
     @init="onLoad"

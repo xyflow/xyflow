@@ -3,9 +3,11 @@ import type {
   AriaLabelConfig,
   ColorMode,
   Connection,
+  ConnectionLineType,
   ConnectionMode,
   CoordinateExtent,
   EdgeChangeset,
+  EdgeMarkerType,
   FitViewOptionsBase,
   IsValidConnection,
   NodeChangeset,
@@ -21,7 +23,7 @@ import type {
 import type { CSSProperties } from 'vue';
 import type { VueFlowError } from '../utils';
 import type { EdgeTypesObject, NodeTypesObject } from './components';
-import type { ConnectionLineOptions, ConnectionLineProps } from './connection';
+import type { ConnectionLineProps } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeProps, EdgeReconnectable } from './edge';
 import type {
   ConnectEndEvent,
@@ -151,8 +153,25 @@ export interface VueFlowProps<NodeType extends Node = Node, EdgeType extends Edg
    * @default 'strict'
    */
   connectionMode?: ConnectionMode;
-  /** Styling and marker options for the connection line drawn while dragging a new connection. */
-  connectionLineOptions?: ConnectionLineOptions;
+  /**
+   * The path shape drawn while dragging a new connection, see {@link ConnectionLineType}.
+   *
+   * Edges can be of any type once created, but the connection line has to know which path to draw
+   * before that.
+   *
+   * @default 'default'
+   */
+  connectionLineType?: ConnectionLineType;
+  /** Inline style applied to the connection line itself. */
+  connectionLineStyle?: CSSProperties;
+  /** Inline style applied to the `<svg>` the connection line is drawn in. */
+  connectionLineContainerStyle?: CSSProperties;
+  /** Additional class names applied to the connection line. */
+  connectionLineClass?: ClassValue;
+  /** Marker rendered at the start (source handle) of the connection line. */
+  connectionLineMarkerStart?: EdgeMarkerType;
+  /** Marker rendered at the end (pointer side) of the connection line. */
+  connectionLineMarkerEnd?: EdgeMarkerType;
   /**
    * The radius around a handle where you drop a connection line to create a new edge.
    * @default 20

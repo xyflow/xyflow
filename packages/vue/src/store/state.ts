@@ -53,10 +53,12 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     userSelectionRect: null,
 
     defaultMarkerColor: '#b1b1b7',
-    connectionLineOptions: {
-      type: ConnectionLineType.Bezier,
-      style: {},
-    },
+    connectionLineType: ConnectionLineType.Bezier,
+    connectionLineStyle: {},
+    connectionLineContainerStyle: {},
+    connectionLineClass: '',
+    connectionLineMarkerStart: undefined,
+    connectionLineMarkerEnd: undefined,
     connectionMode: ConnectionMode.Strict,
     connection: initialConnection,
     connectionClickStartHandle: null,
