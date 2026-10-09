@@ -38,6 +38,12 @@ export interface ControlProps {
    * @default 'Control Panel'
    */
   ariaLabel?: string | null;
+  /**
+   * The direction the control buttons are laid out in
+   *
+   * @default 'vertical'
+   */
+  orientation?: 'horizontal' | 'vertical';
 }
 
 export interface ControlEmits {

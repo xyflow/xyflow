@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<ControlProps>(), {
   showFitView: true,
   showInteractive: true,
   position: 'bottom-left',
+  orientation: 'vertical',
 });
 
 const emit = defineEmits<ControlEmits>();
@@ -58,7 +59,12 @@ export default {
 </script>
 
 <template>
-  <Panel class="vue-flow__controls" :position="position" :label="ariaLabel ?? ariaLabelConfig['controls.ariaLabel']">
+  <Panel
+    :class="orientation"
+    :position="position"
+    :label="ariaLabel ?? ariaLabelConfig['controls.ariaLabel']"
+    class="vue-flow__controls"
+  >
     <slot name="top" />
 
     <template v-if="showZoom">

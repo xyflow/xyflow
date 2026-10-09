@@ -2,8 +2,8 @@ import type { Dimensions, PanelPosition, XYPosition } from '@xyflow/system';
 import type { CSSProperties, InjectionKey } from 'vue';
 import type { InternalNode, NodeMouseEvent } from '../../types';
 
-/** expects a node and returns a color value */
-export type MiniMapNodeFunc = (node: InternalNode) => string;
+/** expects a node and returns a color value, or `undefined` to fall back to the themed default */
+export type MiniMapNodeFunc = (node: InternalNode) => string | undefined;
 
 export type ShapeRendering = CSSProperties['shapeRendering'];
 
@@ -26,6 +26,8 @@ export interface MiniMapProps {
    * @default 2
    */
   nodeStrokeWidth?: number;
+  /** Background color of minimap. */
+  bgColor?: string;
   /**
    * The color of the mask that covers the portion of the minimap not currently visible in the
    * viewport.
@@ -35,6 +37,8 @@ export interface MiniMapProps {
   maskStrokeColor?: string;
   /**
    * Stroke width of mask representing viewport.
+   *
+   * Scaled by the minimap's view scale, so the mask border keeps a constant on-screen thickness.
    *
    * @default 1
    */
