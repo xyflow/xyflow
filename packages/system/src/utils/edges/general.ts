@@ -229,11 +229,12 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
   }
 
   const edgeIdGenerator = options.getEdgeId || getEdgeId;
+  const shouldReplaceId = options.shouldReplaceId ?? true;
 
   // Remove old edge and create the new edge with parameters of old edge.
   const edge = {
     ...rest,
-    id: options.shouldReplaceId ? edgeIdGenerator(newConnection) : oldEdgeId,
+    id: shouldReplaceId ? edgeIdGenerator(newConnection) : oldEdgeId,
     source: newConnection.source,
     target: newConnection.target,
     sourceHandle: newConnection.sourceHandle,
