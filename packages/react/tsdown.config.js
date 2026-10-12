@@ -10,6 +10,7 @@ export default defineConfig({
   clean: false,
   minify: true,
   sourcemap: true,
+  banner: { js: '"use client";' },
   plugins: [
     pluginBabel({
       // Keep React 18 support by using react-compiler-runtime instead of React 19's built-in runtime.
