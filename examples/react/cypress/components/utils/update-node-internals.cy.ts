@@ -55,3 +55,60 @@ describe('updateNodeInternals with a missing parent', () => {
     nodeElement.remove();
   });
 });
+
+
+describe('updateNodeInternals with an ancestor scale', () => {
+  it('keeps handle offsets in flow coordinates when an ancestor is scaled', () => {
+    const nodeLookup: NodeLookup = new Map();
+    const parentLookup: ParentLookup = new Map();
+    const node: Node = {
+      id: 'node',
+      data: { label: 'node' },
+      position: { x: 0, y: 0 },
+      measured: { width: 50, height: 50 },
+    };
+    adoptUserNodes([node], nodeLookup, parentLookup);
+
+    const domNode = document.createElement('div');
+    domNode.style.width = '200px';
+    domNode.style.height = '200px';
+    domNode.style.transform = 'scale(1.5)';
+    domNode.style.transformOrigin = 'top left';
+
+    const viewport = document.createElement('div');
+    viewport.className = 'xyflow__viewport';
+    viewport.style.width = '200px';
+    viewport.style.height = '200px';
+    viewport.style.transform = 'translate(0px, 0px) scale(1)';
+    domNode.appendChild(viewport);
+
+    const nodeElement = document.createElement('div');
+    nodeElement.style.position = 'absolute';
+    nodeElement.style.width = '50px';
+    nodeElement.style.height = '50px';
+
+    const handle = document.createElement('div');
+    handle.className = 'source';
+    handle.setAttribute('data-handlepos', 'right');
+    handle.style.position = 'absolute';
+    handle.style.left = '20px';
+    handle.style.top = '10px';
+    handle.style.width = '8px';
+    handle.style.height = '8px';
+    nodeElement.appendChild(handle);
+    viewport.appendChild(nodeElement);
+    document.body.appendChild(domNode);
+
+    const updates = new Map<string, InternalNodeUpdate>([
+      ['node', { id: 'node', nodeElement, force: true }],
+    ]);
+
+    updateNodeInternals(updates, nodeLookup, parentLookup, domNode, [0, 0]);
+
+    const measuredHandle = nodeLookup.get('node')?.internals.handleBounds?.source?.[0];
+    expect(measuredHandle?.x).to.equal(20);
+    expect(measuredHandle?.y).to.equal(10);
+
+    domNode.remove();
+  });
+});
