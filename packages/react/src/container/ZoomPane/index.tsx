@@ -35,6 +35,7 @@ export function ZoomPane({
   zoomOnDoubleClick = true,
   panOnDrag = true,
   defaultViewport,
+  preserveStateOnUnmount,
   translateExtent,
   minZoom,
   maxZoom,
@@ -69,12 +70,17 @@ export function ZoomPane({
 
   useEffect(() => {
     if (zoomPane.current) {
+      const state = store.getState();
+      const initialViewport = preserveStateOnUnmount && state.panZoom
+        ? { x: state.transform[0], y: state.transform[1], zoom: state.transform[2] }
+        : defaultViewport;
+
       panZoom.current = XYPanZoom({
         domNode: zoomPane.current,
         minZoom,
         maxZoom,
         translateExtent,
-        viewport: defaultViewport,
+        viewport: initialViewport,
         onDraggingChange: (paneDragging) =>
           store.setState((prevState) => (prevState.paneDragging === paneDragging ? prevState : { paneDragging })),
         onPanZoomStart: (event, vp) => {
