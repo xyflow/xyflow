@@ -68,6 +68,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   onlyRenderVisibleElements,
   elementsSelectable,
   defaultViewport,
+  preserveStateOnUnmount,
   translateExtent,
   minZoom,
   maxZoom,
@@ -142,6 +143,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
       panOnDrag={panOnDrag}
       autoPanOnSelection={autoPanOnSelection}
       defaultViewport={defaultViewport}
+      preserveStateOnUnmount={preserveStateOnUnmount}
       translateExtent={translateExtent}
       minZoom={minZoom}
       maxZoom={maxZoom}
