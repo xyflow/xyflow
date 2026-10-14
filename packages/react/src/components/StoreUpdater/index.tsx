@@ -79,6 +79,7 @@ type StoreUpdaterProps<NodeType extends Node = Node, EdgeType extends Edge = Edg
   ReactFlowFieldsToTrack
 > & {
   rfId: string;
+  preserveStateOnUnmount?: boolean;
 };
 
 // rfId doesn't exist in ReactFlowProps, but it's one of the fields we want to update
@@ -129,9 +130,11 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
 
     return () => {
-      // when we reset the store we also need to reset the previous fields
-      previousFields.current = initPrevValues;
-      reset();
+      if (!props.preserveStateOnUnmount) {
+        // when we reset the store we also need to reset the previous fields
+        previousFields.current = initPrevValues;
+        reset();
+      }
     };
   }, []);
 
