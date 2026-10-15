@@ -1,8 +1,8 @@
 # @xyflow/system
 
-Core system utilities powering [React Flow](https://reactflow.dev) and [Svelte Flow](https://svelteflow.dev).
+Core system utilities powering [React Flow](https://reactflow.dev), [Svelte Flow](https://svelteflow.dev) and [Vue Flow](https://vueflow.dev).
 
-> **Note:** This package is designed as a shared vanilla utility layer for React Flow and Svelte Flow. It is not intended for use with unrelated libraries.
+> **Note:** This package is designed as a shared vanilla utility layer for React Flow, Svelte Flow and Vue Flow. It is not intended for use with unrelated libraries.
 
 ## Installation
 
@@ -12,7 +12,7 @@ pnpm add @xyflow/system
 
 ## What is this package?
 
-`@xyflow/system` provides core, framework-agnostic helpers and types for building node-based editors and flow diagrams. It contains the logic and utilities that are shared between React Flow and Svelte Flow, such as edge path calculations, pan/zoom, node dragging, and more.
+`@xyflow/system` provides core, framework-agnostic helpers and types for building node-based editors and flow diagrams. It contains the logic and utilities that are shared between React Flow, Svelte Flow and Vue Flow, such as edge path calculations, pan/zoom, node dragging, and more.
 
 ## Features
 
@@ -53,7 +53,7 @@ const [path, labelX, labelY] = getBezierPath({
 
 ## API Reference
 
-There is currently no dedicated API documentation for this package. For details on available utilities, types, and helpers, please refer to the [source code](./src) or check out the [React Flow documentation](https://reactflow.dev/api-reference/) where we are documenting a lot of stuff from this package.
+There is currently no dedicated API documentation for this package. For details on available utilities, types, and helpers, please refer to the [source code](./src) or check out the [React Flow documentation](https://reactflow.dev/api-reference/) where we are documenting some parts of this package.
 
 ## Contributing
 
