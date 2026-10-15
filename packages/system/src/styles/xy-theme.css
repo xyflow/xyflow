@@ -16,7 +16,7 @@
 .xy-flow {
   --xy-theme-selected: var(--xy-theme-primary);
   --xy-theme-hover: light-dark(#c5c5c5, #7a7d86);
-  --xy-theme-edge-hover: light-dark(#000000, #f3f4f6);
+  --xy-theme-edge-hover: light-dark(#222222, #f6f7f5);
   --xy-theme-color-focus: light-dark(#e8e8e8, #4b4e57);
   --xy-theme-focus-border: light-dark(#d9d9d9, #5f6470);
   --xy-theme-panel-bg: light-dark(#ffffff, #141519);
@@ -45,6 +45,13 @@
   --xy-edge-label-background-color-default: var(--xy-background-color, var(--xy-background-color-default));
 
   --xy-resize-background-color-default: #9e86ed;
+
+  --xy-controls-button-background-color-default: light-dark(#fefefe, #2b2b2b);
+  --xy-controls-button-background-color-hover-default: light-dark(#f4f4f4, #3e3e3e);
+  --xy-controls-button-color-default: light-dark(CanvasText, #f8f8f8);
+  --xy-controls-button-color-hover-default: light-dark(CanvasText, #fff);
+  --xy-controls-button-border-color-default: light-dark(#eee, #5b5b5b);
+  --xy-controls-box-shadow-default: 0 0 2px 1px rgba(0, 0, 0, 0.08);
 }
 
 .xy-flow__node {
@@ -59,7 +66,6 @@
   border: var(--xy-node-border, var(--xy-node-border-default));
   border-radius: var(--xy-node-border-radius, var(--xy-node-border-radius-default));
   background-color: var(--xy-node-background-color, var(--xy-node-background-color-default));
-  box-shadow: var(--xy-node-boxshadow, var(--xy-node-boxshadow-default));
 
   &.selectable:focus {
     border-color: var(--xy-theme-focus-border);
@@ -93,6 +99,10 @@
 
 .xy-flow__handle {
   background-color: var(--xy-handle-background-color, var(--xy-handle-background-color-default));
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--xy-handle-border-color, var(--xy-handle-border-color-default));
+  border-radius: 100%;
 
   &.connectionindicator:hover {
     pointer-events: all;
@@ -117,4 +127,60 @@
   border-radius: 0;
   background-color: var(--xy-theme-resize-handle-bg);
   border-color: var(--xy-resize-background-color, var(--xy-resize-background-color-default));
+}
+
+.xy-flow__controls {
+  box-shadow: var(--xy-controls-box-shadow, var(--xy-controls-box-shadow-default));
+
+  &-button {
+    border: none;
+    background: var(--xy-controls-button-background-color, var(--xy-controls-button-background-color-default));
+    border-bottom: 1px solid
+      var(
+        --xy-controls-button-border-color-props,
+        var(--xy-controls-button-border-color, var(--xy-controls-button-border-color-default))
+      );
+    color: var(
+      --xy-controls-button-color-props,
+      var(--xy-controls-button-color, var(--xy-controls-button-color-default))
+    );
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      background: var(
+        --xy-controls-button-background-color-hover-props,
+        var(--xy-controls-button-background-color-hover, var(--xy-controls-button-background-color-hover-default))
+      );
+      color: var(
+        --xy-controls-button-color-hover-props,
+        var(--xy-controls-button-color-hover, var(--xy-controls-button-color-hover-default))
+      );
+    }
+
+    &:disabled {
+      pointer-events: none;
+
+      svg {
+        fill-opacity: 0.4;
+      }
+    }
+  }
+
+  &-button:last-child {
+    border-bottom: none;
+  }
+
+  &.horizontal &-button {
+    border-bottom: none;
+    border-right: 1px solid
+      var(
+        --xy-controls-button-border-color-props,
+        var(--xy-controls-button-border-color, var(--xy-controls-button-border-color-default))
+      );
+  }
+
+  &.horizontal &-button:last-child {
+    border-right: none;
+  }
 }
