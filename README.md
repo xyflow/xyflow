@@ -1,5 +1,5 @@
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/6d89dc3a-7de2-4b5e-a0e2-45e29d14b066">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/36e3324c-f7c7-40be-8263-9a1d8f320887">
   <img alt="xyflow: React Flow, Svelte Flow and Vue Flow" src="https://github.com/user-attachments/assets/4a696428-e0eb-4ea8-a1fe-67393b62e09d">
 </picture>
 
