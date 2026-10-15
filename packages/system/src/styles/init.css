@@ -57,15 +57,23 @@
   z-index: 1;
   touch-action: none;
 
-  &.draggable {
+  /* Keep cursor changes off the pane so they aren't inherited by the entire flow.
+   * A pseudo-element still targets the pane for pointer and mouse events. */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  &.draggable::before {
     cursor: grab;
   }
 
-  &.dragging {
+  &.dragging::before {
     cursor: grabbing;
   }
 
-  &.selection {
+  &.selection::before {
     cursor: pointer;
   }
 }
