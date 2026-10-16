@@ -1,5 +1,12 @@
 # @xyflow/system
 
+## 0.0.84
+### Patch Changes
+
+
+
+- [#6055](https://github.com/xyflow/xyflow/pull/6055) [`9dcbd29`](https://github.com/xyflow/xyflow/commit/9dcbd29a8e597b6f4cd26ebf64f755d2fb96332b) - Keep `reconnectEdge` id replacement when other options are passed
+
 ## 0.0.83
 ### Patch Changes
 
