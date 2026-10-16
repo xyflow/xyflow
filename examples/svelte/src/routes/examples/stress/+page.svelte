@@ -9,7 +9,7 @@
 		type Edge
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	const yNodes = 25;
 	const xNodes = 25;

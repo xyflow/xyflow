@@ -8,7 +8,7 @@
 	import BottomRightResizer from './BottomRightResizer.svelte';
 	import FixedExtentNode from './FixedExtentNode.svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 	import type { ResizeNode } from './types';
 	import { store } from './store.svelte';
 

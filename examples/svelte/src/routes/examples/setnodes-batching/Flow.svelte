@@ -12,7 +12,7 @@
 		type Edge
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	const a: Node = { id: 'a', data: { label: 'A' }, position: { x: 250, y: 5 } };
 	const b: Node = { id: 'b', data: { label: 'B' }, position: { x: 100, y: 100 } };
