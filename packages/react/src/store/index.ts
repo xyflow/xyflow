@@ -53,12 +53,16 @@ const createStore = ({
   zIndexMode?: ZIndexMode;
 }) =>
   createWithEqualityFn<ReactFlowState>((set, get) => {
+    let latestFitViewId = 0;
+
     async function resolveFitView() {
       const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
 
       if (!panZoom) {
         return;
       }
+
+      const fitViewId = ++latestFitViewId;
 
       await fitViewport(
         {
@@ -71,6 +75,13 @@ const createStore = ({
         },
         fitViewOptions
       );
+
+      /*
+       * A newer fitView started while this one was running and settles the shared promise instead
+       */
+      if (fitViewId !== latestFitViewId) {
+        return;
+      }
 
       fitViewResolver?.resolve(true);
       /**

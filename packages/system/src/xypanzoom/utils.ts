@@ -30,7 +30,13 @@ export const getD3Transition = (selection: D3SelectionInstance, duration = 0, ea
     onEnd();
   }
 
-  return hasDuration ? selection.transition().duration(duration).ease(ease).on('end', onEnd) : selection;
+  /*
+   * A user gesture or another viewport update stops a running transition with "interrupt"
+   * (or with "cancel" if it has not started yet) and the transition never sends "end"
+   */
+  return hasDuration
+    ? selection.transition().duration(duration).ease(ease).on('end interrupt cancel', onEnd)
+    : selection;
 };
 
 export const wheelDelta = (event: any) => {
