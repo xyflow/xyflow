@@ -77,6 +77,7 @@ export type SvelteFlowRestProps<NodeType extends Node = Node, EdgeType extends E
   | 'onedgepointerenter'
   | 'onedgepointerleave'
   | 'onpaneclick'
+  | 'onpanedoubleclick'
   | 'onpanecontextmenu'
   | 'panOnScrollMode'
   | 'preventScrolling'
