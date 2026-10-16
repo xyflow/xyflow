@@ -58,6 +58,13 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   'onError'
 > {
   /**
+   * Preserve the internal flow state when React effects are cleaned up.
+   * This is useful with React's Activity component, which cleans up effects while preserving the tree.
+   * If the surrounding ReactFlowProvider is unmounted, its state is discarded as usual.
+   * @default false
+   */
+  preserveStateOnUnmount?: boolean;
+  /**
    * An array of nodes to render in a controlled flow.
    * @default []
    * @example
