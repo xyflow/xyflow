@@ -1,0 +1,26 @@
+name: Changeset Coverage
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  changesets:
+    name: Changeset Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/ci-setup
+      - name: Test release coverage check
+        run: node --test .github/scripts/check-release-coverage.test.mjs
+      - name: Check changed library release coverage
+        run: node .github/scripts/check-release-coverage.mjs "$BASE_REF"
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha }}
