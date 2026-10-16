@@ -12,6 +12,7 @@ import type {
   NodeLookup,
   Padding,
   PaddingWithUnit,
+  NodeDragItem,
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
@@ -164,6 +165,25 @@ export const snapPosition = (position: XYPosition, snapGrid: SnapGrid = [1, 1]):
     y: snapGrid[1] * Math.round(position.y / snapGrid[1]),
   };
 };
+
+/**
+ * Snaps a node's origin while keeping the result in absolute top-left coordinates.
+ * @internal
+ */
+export function snapNodePosition(
+  position: XYPosition,
+  node: NodeBase | NodeDragItem,
+  snapGrid: SnapGrid,
+  nodeOrigin: NodeOrigin = [0, 0]
+): XYPosition {
+  const origin = node.origin ?? nodeOrigin;
+  const { width, height } = getNodeDimensions(node);
+  const offsetX = width * origin[0];
+  const offsetY = height * origin[1];
+  const snapped = snapPosition({ x: position.x + offsetX, y: position.y + offsetY }, snapGrid);
+
+  return { x: snapped.x - offsetX, y: snapped.y - offsetY };
+}
 
 export const pointToRendererPoint = (
   { x, y }: XYPosition,

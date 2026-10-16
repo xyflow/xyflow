@@ -6,7 +6,7 @@ import {
   getEventPosition,
   getPointerPosition,
   calculateNodePosition,
-  snapPosition,
+  snapNodePosition,
   getInternalNodesBounds,
   rectToBox,
 } from '../utils';
@@ -150,6 +150,7 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
           ? calculateSnapOffset({
               dragItems,
               snapGrid,
+              nodeOrigin,
               x,
               y,
             })
@@ -167,10 +168,10 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
         if (snapToGrid) {
           nextPosition = multiDragSnapOffset
             ? {
-                x: Math.round(nextPosition.x + multiDragSnapOffset.x),
-                y: Math.round(nextPosition.y + multiDragSnapOffset.y),
+                x: nextPosition.x + multiDragSnapOffset.x,
+                y: nextPosition.y + multiDragSnapOffset.y,
               }
-            : snapPosition(nextPosition, snapGrid);
+            : snapNodePosition(nextPosition, dragItem, snapGrid, nodeOrigin);
         }
 
         let adjustedNodeExtent: CoordinateExtent | null = null;

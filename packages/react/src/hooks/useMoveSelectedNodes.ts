@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { calculateNodePosition, snapPosition, type XYPosition } from '@xyflow/system';
+import { calculateNodePosition, snapNodePosition, type XYPosition } from '@xyflow/system';
 
 import { type Node } from '../types';
 import { useStoreApi } from './useStore';
@@ -43,7 +43,7 @@ export function useMoveSelectedNodes() {
       };
 
       if (snapToGrid) {
-        nextPosition = snapPosition(nextPosition, snapGrid);
+        nextPosition = snapNodePosition(nextPosition, node, snapGrid, nodeOrigin);
       }
 
       const { position, positionAbsolute } = calculateNodePosition({
