@@ -116,7 +116,7 @@ BackgroundComponent.displayName = 'Background';
  *
  * ```tsx
  * import { ReactFlow, Background, BackgroundVariant } from '@xyflow/react';
- * import '@xyflow/react/dist/style.css';
+ * import '@xyflow/react/style.css';
  *
  * export default function Flow() {
  *   return (

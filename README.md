@@ -9,30 +9,37 @@
 ![npm downloads](https://img.shields.io/npm/dt/reactflow?color=%23FF0072&label=React%20Flow%20downloads)
 ![npm downloads](https://img.shields.io/npm/dt/@xyflow/svelte?color=%23FF3E00&label=Svelte%20Flow%20downloads)
 
-Powerful open source libraries for building node-based UIs with React or Svelte. Ready out-of-the-box and infinitely customizable.
+Powerful open source libraries for building node-based UIs with React, Svelte and Vue. Ready out-of-the-box and infinitely customizable.
 
-[React Flow](https://reactflow.dev/) · [Svelte Flow](https://svelteflow.dev/) · [React Flow Pro](https://reactflow.dev/pro) · [Discord](https://discord.gg/Bqt6xrs)
+[React Flow](https://reactflow.dev/) · [Svelte Flow](https://svelteflow.dev/) · [Vue Flow](https://vueflow.dev/) · [React Flow Pro](https://reactflow.dev/pro) · [Discord](https://discord.gg/Bqt6xrs)
 </div>
 
 ---
 
 ## The xyflow mono repo
 
-The xyflow repository is the home of four packages:
-* React Flow 12 `@xyflow/react` [packages/react](./packages/react)
-* React Flow 11 `reactflow` [v11 branch](https://github.com/xyflow/xyflow/tree/v11)
+The xyflow repository is the home of several packages:
+* React Flow `@xyflow/react` [packages/react](./packages/react)
 * Svelte Flow `@xyflow/svelte` [packages/svelte](./packages/svelte)
+* Vue Flow `@xyflow/vue` [packages/vue](./packages/vue)
 * Shared helper library `@xyflow/system` [packages/system](./packages/system)
+* React Flow 11 (legacy package) `reactflow` [v11 branch](https://github.com/xyflow/xyflow/tree/v11)
 
 ## Commercial usage
 
-**Are you using React Flow or Svelte Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
+**Are you using React Flow, Svelte Flow or Vue Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
 
-**Are you using React Flow or Svelte Flow at your organization and making money from it?** Awesome! We rely on your support to keep our libraries developed and maintained under an MIT License, just how we like it. For React Flow you can do that on the [React Flow Pro website](https://reactflow.dev/pro) and for both of our libraries you can do it through [Github Sponsors](https://github.com/sponsors/xyflow).
+**Are you using React Flow, Svelte Flow or Vue Flow at your organization and making money from it?** Awesome! We rely on your support to keep our libraries developed and maintained under an MIT License, just how we like it. Every library has it's own pro page:
+
+- [React Flow Pro](https://reactflow.dev/pro)
+- [Svelte Flow Pro](https://svelteflow.dev/pro)
+- [Vue Flow Pro](https://vueflow.dev/pro)
+
+You can also use [Github Sponsors](https://github.com/sponsors/xyflow) to do a subscription.
 
 ## Getting started
 
-The best way to get started is to check out the [React Flow](https://reactflow.dev/learn) or [Svelte Flow](https://svelteflow.dev/learn) learn section. However if you want to get a sneak peek of how to install and use the libraries you can see it here: 
+The best way to get started is to check out the [React Flow](https://reactflow.dev/learn), [Svelte Flow](https://svelteflow.dev/learn) or [Vue Flow](https://vueflow.dev/learn) learn section. However if you want to get a sneak peek of how to install and use the libraries you can see it here: 
 
 <details>
   <summary><strong>React Flow</strong> basic usage</summary>
@@ -45,7 +52,7 @@ npm install @xyflow/react
 
   ### Basic usage
   ```jsx
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -53,23 +60,25 @@ import {
   Background,
   useNodesState,
   useEdgesState,
-  addEdge,
+  addEdge
 } from '@xyflow/react';
 
-import '@xyflow/react/dist/style.css';
+import '@xyflow/react/style.css';
 
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
-  { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
+  { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } }
 ];
 
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
 
 function Flow() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes] = useState(initialNodes);
+  const [edges, setEdges] = useState(initialEdges);
 
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+  const onConnect= useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+  const onNodesChange = useCallback((changes) => setNodes(nds => changes.applyTo(nds)));
+  const onEdgesChange= useCallback((changes) => setEdges(eds => changes.applyTo(eds)));
 
   return (
     <ReactFlow
@@ -102,7 +111,6 @@ npm install @xyflow/svelte
   ### Basic usage
   ```svelte
 <script lang="ts">
-  import { writable } from 'svelte/store';
   import {
     SvelteFlow,
     Controls,
@@ -111,9 +119,9 @@ npm install @xyflow/svelte
     MiniMap,
   } from '@xyflow/svelte';
 
-  import '@xyflow/svelte/dist/style.css'
+  import '@xyflow/svelte/style.css'
   
-  const nodes = writable([
+  const nodes = $state.raw([
     {
       id: '1',
       type: 'input',
@@ -128,7 +136,7 @@ npm install @xyflow/svelte
     }
   ]);
 
-  const edges = writable([
+  const edges = $state.raw([
     {
       id: '1-2',
       type: 'default',
@@ -140,8 +148,8 @@ npm install @xyflow/svelte
 </script>
 
 <SvelteFlow
-  {nodes}
-  {edges}
+  bind:nodes
+  bind:edges
   fitView
   on:nodeclick={(event) => console.log('on node click', event)}
 >
@@ -163,8 +171,8 @@ For releasing packages we are using [changesets](https://github.com/changesets/c
 
 ## Built by [xyflow](https://xyflow.com)
 
-React Flow and Svelte Flow are maintained by the [xyflow team](https://xyflow.com/about). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
+React Flow, Svelte Flow and Vue Flow are maintained by the [xyflow team](https://xyflow.com/about). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
 ## License
 
-React Flow and Svelte Flow are [MIT licensed](./LICENSE).
+React Flow, Svelte Flow and Vue Flow are [MIT licensed](./LICENSE).

@@ -64,7 +64,6 @@ function Flow() {
   const onNodesChange = useCallback((changes) => setNodes(nds => changes.applyTo(nds)));
   const onEdgesChange = useCallback((changes) => setEdges(eds => changes.applyTo(eds)));
 
-
   return (
     <ReactFlow
       nodes={nodes}
