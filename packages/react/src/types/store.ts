@@ -46,6 +46,7 @@ import type {
   UnselectNodesAndEdgesParams,
   OnDelete,
   OnNodeDrag,
+  OnNodeMove,
   OnBeforeDelete,
   IsValidConnection,
   InternalNode,
@@ -106,6 +107,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   onNodeDragStart: OnNodeDrag<NodeType> | undefined;
   onNodeDrag: OnNodeDrag<NodeType> | undefined;
   onNodeDragStop: OnNodeDrag<NodeType> | undefined;
+  onNodeMove: OnNodeMove<NodeType> | undefined;
 
   onSelectionDragStart: OnSelectionDrag | undefined;
   onSelectionDrag: OnSelectionDrag | undefined;
