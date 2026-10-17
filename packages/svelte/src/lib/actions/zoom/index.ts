@@ -1,4 +1,5 @@
 import {
+  type OptionalOrUndefined,
   PanOnScrollMode,
   XYPanZoom,
   type CoordinateExtent,
@@ -8,7 +9,7 @@ import {
   type Viewport
 } from '@xyflow/system';
 
-type ZoomParams = {
+type ZoomParams = OptionalOrUndefined<{
   viewport: Viewport;
   initialViewport: Viewport;
   minZoom: number;
@@ -40,7 +41,7 @@ type ZoomParams = {
   onTransformChange: (transform: Transform) => void;
   onDraggingChange: (dragging: boolean) => void;
   connectionInProgress: boolean;
-};
+}>;
 
 export default function zoom(domNode: Element, params: ZoomParams) {
   const {

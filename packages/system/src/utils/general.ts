@@ -348,13 +348,9 @@ export function isCoordinateExtent(extent?: CoordinateExtent | 'parent' | null):
   return extent !== undefined && extent !== null && extent !== 'parent';
 }
 
-export function getNodeDimensions(node: {
-  measured?: { width?: number; height?: number };
-  width?: number;
-  height?: number;
-  initialWidth?: number;
-  initialHeight?: number;
-}): { width: number; height: number } {
+export function getNodeDimensions(
+  node: Pick<NodeBase, 'measured' | 'width' | 'height' | 'initialWidth' | 'initialHeight'>
+): { width: number; height: number } {
   return {
     width: node.measured?.width ?? node.width ?? node.initialWidth ?? 0,
     height: node.measured?.height ?? node.height ?? node.initialHeight ?? 0,

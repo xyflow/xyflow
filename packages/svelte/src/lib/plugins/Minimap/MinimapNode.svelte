@@ -19,7 +19,7 @@
     class: className,
     nodeComponent
   }: MiniMapNodeProps & {
-    nodeComponent?: Component<MiniMapNodeProps>;
+    nodeComponent?: Component<MiniMapNodeProps> | undefined;
   } = $props();
 
   let internalNode = $derived(useInternalNode(id));

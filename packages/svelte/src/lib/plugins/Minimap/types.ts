@@ -1,4 +1,4 @@
-import type { PanelPosition } from '@xyflow/system';
+import type { OptionalOrUndefined, PanelPosition } from '@xyflow/system';
 import type { ClassValue, HTMLAttributes } from 'svelte/elements';
 import type { Component } from 'svelte';
 import type { Node } from '$lib/types/index.js';
@@ -10,7 +10,7 @@ export type GetMiniMapNodeAttribute = (node: Node) => string;
  *
  * @public
  */
-export type MiniMapNodeProps = {
+export type MiniMapNodeProps = OptionalOrUndefined<{
   id: string;
   x?: number;
   y?: number;
@@ -23,7 +23,7 @@ export type MiniMapNodeProps = {
   strokeColor?: string;
   strokeWidth?: number;
   selected?: boolean;
-};
+}>;
 
 export type MiniMapProps = {
   /** Background color of minimap */

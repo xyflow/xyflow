@@ -44,11 +44,22 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: unknow
  * @returns A boolean indicating whether the element is an Node
  */
 export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: unknown): element is NodeType =>
-    !!element && typeof element === 'object' && 'id' in element && 'position' in element && !('source' in element) && !('target' in element);
+  !!element &&
+  typeof element === 'object' &&
+  'id' in element &&
+  'position' in element &&
+  !('source' in element) &&
+  !('target' in element);
 
 export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalNodeBase>(
   element: unknown
-): element is NodeType => !!element && typeof element === 'object' &&  'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
+): element is NodeType =>
+  !!element &&
+  typeof element === 'object' &&
+  'id' in element &&
+  'internals' in element &&
+  !('source' in element) &&
+  !('target' in element);
 
 /**
  * This util is used to tell you what nodes, if any, are connected to the given node
@@ -213,8 +224,8 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
         currentNode = isId
           ? params.nodeLookup.get(nodeOrId)
           : !isInternalNodeBase(nodeOrId)
-          ? params.nodeLookup.get(nodeOrId.id)
-          : nodeOrId;
+            ? params.nodeLookup.get(nodeOrId.id)
+            : nodeOrId;
       }
 
       /*
@@ -261,21 +272,24 @@ export const getInternalNodesBounds = <NodeType extends InternalNodeBase | NodeD
   return hasVisibleNodes ? boxToRect(box) : { x: 0, y: 0, width: 0, height: 0 };
 };
 
-export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
-  nodes: Map<string, InternalNodeBase<NodeType>>,
+export const getNodesInside = <
+  NodeType extends NodeBase = NodeBase,
+  InternalNodeType extends InternalNodeBase<NodeType> = InternalNodeBase<NodeType>,
+>(
+  nodes: Map<string, InternalNodeType>,
   rect: Rect,
   [tx, ty, tScale]: Transform = [0, 0, 1],
   partially = false,
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
   excludeNonSelectableNodes = false
-): InternalNodeBase<NodeType>[] => {
+): InternalNodeType[] => {
   // viewport in flow coordinates, as scalars to avoid a Rect allocation per node
   const paneX = (rect.x - tx) / tScale;
   const paneY = (rect.y - ty) / tScale;
   const paneWidth = rect.width / tScale;
   const paneHeight = rect.height / tScale;
 
-  const visibleNodes: InternalNodeBase<NodeType>[] = [];
+  const visibleNodes: InternalNodeType[] = [];
 
   for (const node of nodes.values()) {
     const { measured, selectable = true, hidden = false } = node;
@@ -343,7 +357,7 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
 
 function getFitViewNodes<
   Params extends NodeLookup<InternalNodeBase<NodeBase>>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(nodeLookup: Params, options?: Options) {
   const fitViewNodes: NodeLookup = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
@@ -374,11 +388,8 @@ function getFitViewNodes<
 
 export async function fitViewport<
   Params extends FitViewParamsBase<NodeBase>,
-  Options extends FitViewOptionsBase<NodeBase>
->(
-  { nodes, width, height, panZoom, minZoom, maxZoom }: Params,
-  options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>
-): Promise<boolean> {
+  Options extends FitViewOptionsBase<NodeBase>,
+>({ nodes, width, height, panZoom, minZoom, maxZoom }: Params, options?: Options): Promise<boolean> {
   if (nodes.size === 0) {
     return true;
   }
@@ -396,11 +407,7 @@ export async function fitViewport<
     options?.padding ?? 0.1
   );
 
-  await panZoom.setViewport(viewport, {
-    duration: options?.duration,
-    ease: options?.ease,
-    interpolate: options?.interpolate,
-  });
+  await panZoom.setViewport(viewport, options);
 
   return true;
 }
@@ -424,7 +431,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>;
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
-  onError?: OnError;
+  onError?: OnError | undefined;
 }): { position: XYPosition; positionAbsolute: XYPosition } {
   const node = nodeLookup.get(nodeId)!;
   const parentNode = node.parentId ? nodeLookup.get(node.parentId) : undefined;
@@ -491,7 +498,7 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
   edgesToRemove: Partial<EdgeType>[];
   nodes: NodeType[];
   edges: EdgeType[];
-  onBeforeDelete?: OnBeforeDeleteBase<NodeType, EdgeType>;
+  onBeforeDelete?: OnBeforeDeleteBase<NodeType, EdgeType> | undefined;
 }): Promise<{
   nodes: NodeType[];
   edges: EdgeType[];

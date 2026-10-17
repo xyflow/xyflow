@@ -18,7 +18,7 @@ export interface EdgeAnchorProps extends SVGAttributes<SVGGElement> {
   position: Position;
   centerX: number;
   centerY: number;
-  radius?: number;
+  radius?: number | undefined;
   onMouseDown: (event: ReactMouseEvent<SVGGElement, MouseEvent>) => void;
   onMouseEnter: (event: ReactMouseEvent<SVGGElement, MouseEvent>) => void;
   onMouseOut: (event: ReactMouseEvent<SVGGElement, MouseEvent>) => void;

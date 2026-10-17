@@ -5,9 +5,9 @@ import { createStore } from '../../store';
 import { BatchProvider } from '../BatchProvider';
 import { HandleConfigProvider } from '../../contexts/HandleConfigContext';
 import type { Node, Edge, FitViewOptions } from '../../types';
-import { CoordinateExtent, NodeOrigin, ZIndexMode } from '@xyflow/system';
+import { type OptionalOrUndefined, CoordinateExtent, NodeOrigin, ZIndexMode } from '@xyflow/system';
 
-export type ReactFlowProviderProps = {
+export type ReactFlowProviderProps = OptionalOrUndefined<{
   /** These nodes are used to initialize the flow. They are not dynamic. */
   initialNodes?: Node[];
   /** These edges are used to initialize the flow. They are not dynamic. */
@@ -50,7 +50,7 @@ export type ReactFlowProviderProps = {
   nodeExtent?: CoordinateExtent;
   children: ReactNode;
   zIndexMode?: ZIndexMode;
-};
+}>;
 
 /**
  * The `<ReactFlowProvider />` component is a [context provider](https://react.dev/learn/passing-data-deeply-with-context#)

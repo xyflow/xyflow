@@ -1,4 +1,5 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
+  import type { OptionalOrUndefined } from '@xyflow/system';
   import type { HTMLAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
   import { type SvelteFlowRestProps } from '$lib/store/types.js';
@@ -14,7 +15,7 @@
     clientHeight = $bindable(),
     children,
     rest
-  }: {
+  }: OptionalOrUndefined<{
     width?: number;
     height?: number;
     colorMode?: string;
@@ -24,7 +25,7 @@
     children?: Snippet;
     rest: SvelteFlowRestProps<NodeType, EdgeType> &
       Omit<HTMLAttributes<HTMLDivElement>, 'onselectionchange'>;
-  } = $props();
+  }> = $props();
 
   // Unfortunately we have to destructure the props here this way,
   // so we don't pass all the props as attributes to the div element

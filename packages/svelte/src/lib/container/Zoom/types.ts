@@ -1,9 +1,18 @@
 import type { SvelteFlowStore } from '$lib/store/types.js';
 import type { Edge, Node } from '$lib/types/index.js';
-import type { OnMoveStart, OnMove, OnMoveEnd, PanOnScrollMode } from '@xyflow/system';
+import type {
+  OptionalOrUndefined,
+  OnMoveStart,
+  OnMove,
+  OnMoveEnd,
+  PanOnScrollMode
+} from '@xyflow/system';
 import type { Snippet } from 'svelte';
 
-export type ZoomProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+export type ZoomProps<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> = OptionalOrUndefined<{
   store: SvelteFlowStore<NodeType, EdgeType>;
   panOnScrollMode: PanOnScrollMode;
   panOnScrollSpeed: number;
@@ -20,4 +29,4 @@ export type ZoomProps<NodeType extends Node = Node, EdgeType extends Edge = Edge
   onmoveend?: OnMoveEnd;
   oninit?: () => void;
   children: Snippet;
-};
+}>;

@@ -1,3 +1,4 @@
+import type { OptionalOrUndefined } from '@xyflow/system';
 import type { Edge } from './edges.js';
 import type { Node } from './nodes.js';
 
@@ -27,7 +28,7 @@ export type NodeTargetEventWithPointer<T = PointerEvent, NodeType extends Node =
   event: T;
 }) => void;
 
-export type NodeEvents<NodeType extends Node = Node> = {
+export type NodeEvents<NodeType extends Node = Node> = OptionalOrUndefined<{
   /** This event handler is called when a user clicks on a node. */
   onnodeclick?: NodeEventWithPointer<MouseEvent | TouchEvent, NodeType>;
   /** This event handler is called when a user right-clicks on a node. */
@@ -44,23 +45,23 @@ export type NodeEvents<NodeType extends Node = Node> = {
   onnodepointerleave?: NodeEventWithPointer<PointerEvent, NodeType>;
   /** This event handler is called when the pointer of a user moves over a node. */
   onnodepointermove?: NodeEventWithPointer<PointerEvent, NodeType>;
-};
+}>;
 
-export type NodeSelectionEvents<NodeType extends Node = Node> = {
+export type NodeSelectionEvents<NodeType extends Node = Node> = OptionalOrUndefined<{
   /** This event handler is called when a user right-clicks the selection box. */
   onselectioncontextmenu?: NodesEventWithPointer<MouseEvent, NodeType>;
   /** This event handler is called when a user clicks the selection box. */
   onselectionclick?: NodesEventWithPointer<MouseEvent, NodeType>;
-};
+}>;
 
-export type PaneEvents = {
+export type PaneEvents = OptionalOrUndefined<{
   /** This event handler is called when a user clicks the pane. */
   onpaneclick?: ({ event }: { event: MouseEvent }) => void;
   /** This event handler is called when a user right-clicks the pane. */
   onpanecontextmenu?: ({ event }: { event: MouseEvent }) => void;
-};
+}>;
 
-export type EdgeEvents<EdgeType extends Edge = Edge> = {
+export type EdgeEvents<EdgeType extends Edge = Edge> = OptionalOrUndefined<{
   /** This event handler is called when a user clicks an edge. */
   onedgeclick?: ({ edge, event }: { edge: EdgeType; event: MouseEvent }) => void;
   /** This event handler is called when a user right-clicks an edge. */
@@ -69,7 +70,7 @@ export type EdgeEvents<EdgeType extends Edge = Edge> = {
   onedgepointerenter?: ({ edge, event }: { edge: EdgeType; event: PointerEvent }) => void;
   /** This event handler is called when the pointer of a user enters an edge. */
   onedgepointerleave?: ({ edge, event }: { edge: EdgeType; event: PointerEvent }) => void;
-};
+}>;
 
 export type OnSelectionDrag<NodeType extends Node = Node> = (
   event: MouseEvent,

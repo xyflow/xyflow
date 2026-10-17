@@ -1,6 +1,7 @@
 import type { Snippet } from 'svelte';
 import type { HTMLAttributes } from 'svelte/elements';
 import type {
+  OptionalOrUndefined,
   ControlPosition,
   ResizeControlVariant,
   ResizeControlDirection,
@@ -51,31 +52,33 @@ export type NodeResizerProps = {
   resizeDirection?: ResizeControlDirection;
 } & HTMLAttributes<HTMLDivElement>;
 
-export type ResizeControlProps = Pick<
-  NodeResizerProps,
-  | 'color'
-  | 'minWidth'
-  | 'minHeight'
-  | 'maxWidth'
-  | 'maxHeight'
-  | 'keepAspectRatio'
-  | 'autoScale'
-  | 'shouldResize'
-  | 'onResizeStart'
-  | 'onResize'
-  | 'onResizeEnd'
-  | 'resizeDirection'
-> & {
-  /** Position of control
-   * @example ControlPosition.TopLeft, ControlPosition.TopRight,
-   * ControlPosition.BottomLeft, ControlPosition.BottomRight
-   */
-  position?: ControlPosition;
-  /** Variant of control
-   * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
-   */
-  variant?: ResizeControlVariant;
-  /** nodeId must be provided when used outside a custom node */
-  nodeId?: string;
-  children?: Snippet;
-} & HTMLAttributes<HTMLDivElement>;
+export type ResizeControlProps = OptionalOrUndefined<
+  Pick<
+    NodeResizerProps,
+    | 'color'
+    | 'minWidth'
+    | 'minHeight'
+    | 'maxWidth'
+    | 'maxHeight'
+    | 'keepAspectRatio'
+    | 'autoScale'
+    | 'shouldResize'
+    | 'onResizeStart'
+    | 'onResize'
+    | 'onResizeEnd'
+    | 'resizeDirection'
+  > & {
+    /** Position of control
+     * @example ControlPosition.TopLeft, ControlPosition.TopRight,
+     * ControlPosition.BottomLeft, ControlPosition.BottomRight
+     */
+    position?: ControlPosition;
+    /** Variant of control
+     * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
+     */
+    variant?: ResizeControlVariant;
+    /** nodeId must be provided when used outside a custom node */
+    nodeId?: string;
+    children?: Snippet;
+  } & HTMLAttributes<HTMLDivElement>
+>;

@@ -1,4 +1,5 @@
 import {
+  type OptionalOrUndefined,
   infiniteExtent,
   ConnectionMode,
   adoptUserNodes,
@@ -32,7 +33,7 @@ const getInitialState = ({
   nodeOrigin,
   nodeExtent,
   zIndexMode = 'basic',
-}: {
+}: OptionalOrUndefined<{
   nodes?: Node[];
   edges?: Edge[];
   defaultNodes?: Node[];
@@ -46,7 +47,7 @@ const getInitialState = ({
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
   zIndexMode?: ZIndexMode;
-} = {}): ReactFlowStore => {
+}> = {}): ReactFlowStore => {
   const nodeLookup = new Map<string, InternalNode>();
   const parentLookup = new Map();
   const connectionLookup = new Map();

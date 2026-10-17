@@ -9,6 +9,7 @@ import type {
   AriaRole,
 } from 'react';
 import type {
+  OptionalOrUndefined,
   EdgeBase,
   BezierPathOptions,
   Position,
@@ -53,7 +54,7 @@ export type EdgeLabelOptions = {
  */
 export type Edge<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
-  EdgeType extends string | undefined = string | undefined
+  EdgeType extends string | undefined = string | undefined,
 > = EdgeBase<EdgeData, EdgeType> &
   EdgeLabelOptions & {
     style?: CSSProperties;
@@ -100,7 +101,7 @@ export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge | StraightEdge;
 
 export type EdgeMouseHandler<EdgeType extends Edge = Edge> = (event: ReactMouseEvent, edge: EdgeType) => void;
 
-export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
+export type EdgeWrapperProps<EdgeType extends Edge = Edge> = OptionalOrUndefined<{
   id: string;
   edgesFocusable: boolean;
   edgesReconnectable: boolean;
@@ -125,7 +126,7 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   edgeTypes?: EdgeTypes;
   onError?: OnError;
   disableKeyboardA11y?: boolean;
-};
+}>;
 
 /**
  * Many properties on an [`Edge`](/api-reference/types/edge) are optional. When a new edge is created,
@@ -134,13 +135,15 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
  */
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
-export type EdgeTextProps = Omit<SVGAttributes<SVGElement>, 'x' | 'y'> &
-  EdgeLabelOptions & {
-    /** The x position where the label should be rendered. */
-    x: number;
-    /** The y position where the label should be rendered. */
-    y: number;
-  };
+export type EdgeTextProps = OptionalOrUndefined<
+  Omit<SVGAttributes<SVGElement>, 'x' | 'y'> &
+    EdgeLabelOptions & {
+      /** The x position where the label should be rendered. */
+      x: number;
+      /** The y position where the label should be rendered. */
+      y: number;
+    }
+>;
 
 /**
  * When you implement a custom edge it is wrapped in a component that enables some
@@ -148,71 +151,77 @@ export type EdgeTextProps = Omit<SVGAttributes<SVGElement>, 'x' | 'y'> &
  * @public
  * @expand
  */
-export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
-  EdgeType,
-  'id' | 'type' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target' | 'selectable' | 'deletable'
-> &
-  EdgePosition &
-  EdgeLabelOptions & {
-    sourceHandleId?: string | null;
-    targetHandleId?: string | null;
-    markerStart?: string;
-    markerEnd?: string;
-    // @TODO: how can we get better types for pathOptions?
-    pathOptions?: any;
-    interactionWidth?: number;
-  };
+export type EdgeProps<EdgeType extends Edge = Edge> = OptionalOrUndefined<
+  Pick<
+    EdgeType,
+    'id' | 'type' | 'animated' | 'data' | 'style' | 'selected' | 'source' | 'target' | 'selectable' | 'deletable'
+  > &
+    EdgePosition &
+    EdgeLabelOptions & {
+      sourceHandleId?: string | null;
+      targetHandleId?: string | null;
+      markerStart?: string;
+      markerEnd?: string;
+      // @TODO: how can we get better types for pathOptions?
+      pathOptions?: any;
+      interactionWidth?: number;
+    }
+>;
 
 /**
  * BaseEdge component props
  * @public
  * @expand
  */
-export type BaseEdgeProps = Omit<SVGAttributes<SVGPathElement>, 'd' | 'path' | 'markerStart' | 'markerEnd'> &
-  EdgeLabelOptions & {
-    /**
-     * The width of the invisible area around the edge that the user can interact with. This is
-     * useful for making the edge easier to click or hover over.
-     * @default 20
-     */
-    interactionWidth?: number;
-    /** The x position of edge label */
-    labelX?: number;
-    /** The y position of edge label */
-    labelY?: number;
-    /**
-     * The SVG path string that defines the edge. This should look something like
-     * `'M 0 0 L 100 100'` for a simple line. The utility functions like `getSimpleBezierEdge` can
-     * be used to generate this string for you.
-     */
-    path: string;
-    /**
-     * The id of the SVG marker to use at the start of the edge. This should be defined in a
-     * `<defs>` element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
-     */
-    markerStart?: string;
-    /**
-     * The id of the SVG marker to use at the end of the edge. This should be defined in a `<defs>`
-     * element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
-     */
-    markerEnd?: string;
-  };
+export type BaseEdgeProps = OptionalOrUndefined<
+  Omit<SVGAttributes<SVGPathElement>, 'd' | 'path' | 'markerStart' | 'markerEnd'> &
+    EdgeLabelOptions & {
+      /**
+       * The width of the invisible area around the edge that the user can interact with. This is
+       * useful for making the edge easier to click or hover over.
+       * @default 20
+       */
+      interactionWidth?: number;
+      /** The x position of edge label */
+      labelX?: number;
+      /** The y position of edge label */
+      labelY?: number;
+      /**
+       * The SVG path string that defines the edge. This should look something like
+       * `'M 0 0 L 100 100'` for a simple line. The utility functions like `getSimpleBezierEdge` can
+       * be used to generate this string for you.
+       */
+      path: string;
+      /**
+       * The id of the SVG marker to use at the start of the edge. This should be defined in a
+       * `<defs>` element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
+       */
+      markerStart?: string;
+      /**
+       * The id of the SVG marker to use at the end of the edge. This should be defined in a `<defs>`
+       * element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
+       */
+      markerEnd?: string;
+    }
+>;
 
 /**
  * Helper type for edge components that get exported by the library
  * @public
  * @expand
  */
-export type EdgeComponentProps = EdgePosition &
-  EdgeLabelOptions & {
-    id?: EdgeProps['id'];
-    markerStart?: EdgeProps['markerStart'];
-    markerEnd?: EdgeProps['markerEnd'];
-    interactionWidth?: EdgeProps['interactionWidth'];
-    style?: EdgeProps['style'];
-    sourceHandleId?: EdgeProps['sourceHandleId'];
-    targetHandleId?: EdgeProps['targetHandleId'];
-  };
+export type EdgeComponentProps = OptionalOrUndefined<
+  EdgePosition &
+    EdgeLabelOptions & {
+      id?: EdgeProps['id'];
+      markerStart?: EdgeProps['markerStart'];
+      markerEnd?: EdgeProps['markerEnd'];
+      interactionWidth?: EdgeProps['interactionWidth'];
+      style?: EdgeProps['style'];
+      sourceHandleId?: EdgeProps['sourceHandleId'];
+      targetHandleId?: EdgeProps['targetHandleId'];
+    }
+>;
 
 export type EdgeComponentWithPathOptions<PathOptions> = EdgeComponentProps & {
   pathOptions?: PathOptions;
@@ -260,7 +269,7 @@ export type SimpleBezierEdgeProps = EdgeComponentProps;
  *
  * @public
  */
-export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
+export type ConnectionLineComponentProps<NodeType extends Node = Node> = OptionalOrUndefined<{
   connectionLineStyle?: CSSProperties;
   connectionLineType: ConnectionLineType;
   /** The node the connection line originates from. */
@@ -281,7 +290,7 @@ export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   toNode: InternalNode<NodeType> | null;
   toHandle: Handle | null;
   pointer: XYPosition;
-};
+}>;
 
 export type ConnectionLineComponent<NodeType extends Node = Node> = ComponentType<
   ConnectionLineComponentProps<NodeType>

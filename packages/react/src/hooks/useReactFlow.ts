@@ -87,8 +87,6 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       const nodeWithPosition = {
         ...nodeToUse,
         position,
-        width: nodeToUse.measured?.width ?? nodeToUse.width,
-        height: nodeToUse.measured?.height ?? nodeToUse.height,
       };
 
       return nodeToRect(nodeWithPosition);
@@ -130,7 +128,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
     return {
       getNodes: () => store.getState().nodes.map((n) => ({ ...n })) as NodeType[],
-      getNode: (id) => getInternalNode(id)?.internals.userNode as NodeType,
+      getNode: (id) => getInternalNode(id)?.internals.userNode,
       getInternalNode,
       getEdges: () => {
         const { edges = [] } = store.getState();

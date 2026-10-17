@@ -12,10 +12,7 @@ function createStepEdge(params: { isInternal: boolean }) {
       <SmoothStepEdge
         {...props}
         id={_id}
-        pathOptions={useMemo(
-          () => ({ borderRadius: 0, offset: props.pathOptions?.offset }),
-          [props.pathOptions?.offset]
-        )}
+        pathOptions={useMemo(() => ({ ...props.pathOptions, borderRadius: 0 }), [props.pathOptions?.offset])}
       />
     );
   });
