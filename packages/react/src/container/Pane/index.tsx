@@ -19,6 +19,9 @@ import {
   pointToRendererPoint,
   rendererPointToPoint,
   XYPosition,
+  type ConnectionState,
+  type FinalConnectionState,
+  type Optional,
 } from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
@@ -113,6 +116,17 @@ export function Pane({
       selectionInProgress.current = false;
       connectionEndedOnPane.current = false;
       return;
+    }
+
+    const { connectionClickStartHandle, connection, onClickConnectEnd } = store.getState();
+
+    if (connectionClickStartHandle) {
+      const connectionClone = structuredClone(connection) as Optional<ConnectionState, 'inProgress'>;
+      delete connectionClone.inProgress;
+      connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
+      onClickConnectEnd?.(event.nativeEvent, connectionClone as FinalConnectionState);
+
+      store.setState({ connectionClickStartHandle: null });
     }
 
     onPaneClick?.(event);
