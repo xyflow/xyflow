@@ -141,24 +141,26 @@ function NodeWrapper<NodeType extends Node>({
       });
     } else if (isDraggable && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
       const { ariaLabelConfig, nodeLookup, nodesDraggable } = store.getState();
-      const hasSelectedDraggableNodes = Array.from(nodeLookup.values()).some(
+      const selectedDraggableNode = Array.from(nodeLookup.values()).find(
         (selectedNode) =>
           selectedNode.selected &&
           (selectedNode.draggable || (nodesDraggable && typeof selectedNode.draggable === 'undefined'))
       );
 
-      if (!node.selected && !hasSelectedDraggableNodes) {
+      if (!node.selected && !selectedDraggableNode) {
         return;
       }
 
       // prevent default scrolling behavior on arrow key press when selected nodes are moved
       event.preventDefault();
 
+      const nodeToAnnounce = node.selected ? node : selectedDraggableNode ?? node;
+
       store.setState({
         ariaLiveMessage: ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
           direction: event.key.replace('Arrow', '').toLowerCase(),
-          x: ~~internals.positionAbsolute.x,
-          y: ~~internals.positionAbsolute.y,
+          x: ~~nodeToAnnounce.internals.positionAbsolute.x,
+          y: ~~nodeToAnnounce.internals.positionAbsolute.y,
         }),
       });
 
