@@ -107,6 +107,7 @@ export default {
         id: 'edge-with-style',
         source: '1',
         target: '3',
+        pannable: true,
         style: {
           stroke: 'red',
         },
