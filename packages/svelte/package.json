@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "@xyflow/system": "workspace:*",
-    "@svelte-put/shortcut": "^4.1.0"
+    "@svelte-put/shortcut": "^4.2.0"
   },
   "peerDependencies": {
     "svelte": "^5.25.0"
@@ -83,9 +83,9 @@
     "@sveltejs/vite-plugin-svelte": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "@sveltejs/package": "^2.5.7",
-    "prettier-plugin-svelte": "^3.5.1",
-    "publint": "^0.3.18",
-    "@arethetypeswrong/cli": "0.18.2"
+    "@sveltejs/package": "^3.0.1",
+    "prettier-plugin-svelte": "^4.1.1",
+    "publint": "^0.3.25",
+    "@arethetypeswrong/cli": "0.18.5"
   }
 }
