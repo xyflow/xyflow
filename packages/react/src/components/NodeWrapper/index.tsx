@@ -139,11 +139,20 @@ function NodeWrapper<NodeType extends Node>({
         unselect,
         nodeRef,
       });
-    } else if (isDraggable && node.selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
-      // prevent default scrolling behavior on arrow key press when node is moved
-      event.preventDefault();
+    } else if (isDraggable && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
+      const { ariaLabelConfig, nodeLookup, nodesDraggable } = store.getState();
+      const hasSelectedDraggableNodes = Array.from(nodeLookup.values()).some(
+        (selectedNode) =>
+          selectedNode.selected &&
+          (selectedNode.draggable || (nodesDraggable && typeof selectedNode.draggable === 'undefined'))
+      );
 
-      const { ariaLabelConfig } = store.getState();
+      if (!node.selected && !hasSelectedDraggableNodes) {
+        return;
+      }
+
+      // prevent default scrolling behavior on arrow key press when selected nodes are moved
+      event.preventDefault();
 
       store.setState({
         ariaLiveMessage: ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
