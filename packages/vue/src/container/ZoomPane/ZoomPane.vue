@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { XYPanZoom } from '@xyflow/system';
-import { onMounted, onUnmounted, toRef, watch } from 'vue';
+import { computed, onMounted, onUnmounted, toRef, watch } from 'vue';
 import ConnectionLine from '../../components/ConnectionLine';
 import { storeToRefs, useKeyPress, useVueFlow, useVueFlowStore } from '../../composables';
 import { useFitViewOnInit } from '../../composables/useFitViewOnInit';
@@ -46,12 +46,12 @@ const panKeyPressed = useKeyPress(panActivationKeyCode);
 
 const selectionKeyPressed = useKeyPress(selectionKeyCode);
 
-const shouldPanOnDrag = toRef(() => !selectionKeyPressed.value && (panKeyPressed.value || panOnDrag.value));
+const shouldPanOnDrag = computed(() => !selectionKeyPressed.value && (panKeyPressed.value || panOnDrag.value));
 
 const shouldPanOnScroll = toRef(() => panKeyPressed.value || panOnScroll.value);
 
 // selection-on-drag is active when the user opted in AND a left-drag wouldn't pan (so it selects instead)
-const selectionOnDragActive = toRef(() => selectionOnDrag.value === true && shouldPanOnDrag.value !== true);
+const selectionOnDragActive = computed(() => selectionOnDrag.value === true && shouldPanOnDrag.value !== true);
 
 const isSelecting = toRef(() => selectionKeyPressed.value || selectionOnDragActive.value);
 

@@ -12,7 +12,7 @@ import {
   rendererPointToPoint,
   SelectionMode,
 } from '@xyflow/system';
-import { onUnmounted, shallowRef, toRef, watch } from 'vue';
+import { computed, onUnmounted, shallowRef, toRef, watch } from 'vue';
 import NodesSelection from '../../components/NodesSelection/NodesSelection.vue';
 import UserSelection from '../../components/UserSelection/UserSelection.vue';
 import { storeToRefs, useKeyPress, useVueFlow, useVueFlowStore } from '../../composables';
@@ -60,7 +60,7 @@ const selectedEdgeIds = shallowRef<Set<string>>(new Set());
 
 const containerBounds = shallowRef<DOMRect | null>(null);
 
-const hasActiveSelection = toRef(() => elementsSelectable.value && (isSelecting || userSelectionActive.value));
+const hasActiveSelection = computed(() => elementsSelectable.value && (isSelecting || userSelectionActive.value));
 
 const connectionInProgress = toRef(() => connection.value.inProgress);
 
