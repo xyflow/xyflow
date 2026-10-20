@@ -1,9 +1,9 @@
 <script lang="ts">
   import { XYHandle, type HandleType, type OnConnectStart } from '@xyflow/system';
 
-  import { useSvelteFlowStore } from '$lib/store/index.js';
-  import { getEdgeIdContext } from '$lib/store/context.js';
-  import type { Edge } from '$lib/types/index.js';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { getEdgeIdContext } from '#lib/store/context.js';
+  import type { Edge } from '#lib/types/index.js';
   import { EdgeLabel } from '../EdgeLabel/index.js';
   import type { EdgeReconnectAnchorProps } from './types.js';
 

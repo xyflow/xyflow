@@ -1,7 +1,7 @@
 import { shallowNodeData, type DistributivePick } from '@xyflow/system';
 
-import type { Node } from '$lib/types/index.js';
-import { useSvelteFlowStore } from '$lib/store/index.js';
+import type { Node } from '#lib/types/index.js';
+import { useSvelteFlowStore } from '#lib/store/index.js';
 
 /**
  * Hook for receiving data of one or multiple nodes

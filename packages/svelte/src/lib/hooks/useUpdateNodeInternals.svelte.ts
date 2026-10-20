@@ -1,6 +1,6 @@
 /* eslint-disable svelte/prefer-svelte-reactivity */
-import { useSvelteFlowStore } from '$lib/store/index.js';
-import { getNodeIdContext } from '$lib/store/context.js';
+import { useSvelteFlowStore } from '#lib/store/index.js';
+import { getNodeIdContext } from '#lib/store/context.js';
 
 /**
  * When you programmatically add or remove handles to a node or update a node's

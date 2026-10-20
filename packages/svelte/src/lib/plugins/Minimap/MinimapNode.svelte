@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Component } from 'svelte';
   import type { MiniMapNodeProps } from './types.js';
-  import { useInternalNode } from '$lib/hooks/useInternalNode.svelte.js';
+  import { useInternalNode } from '#lib/hooks/useInternalNode.svelte.js';
   import { getNodeDimensions } from '@xyflow/system';
 
   let {

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { getEdgeIdContext } from '$lib/store/context.js';
-  import { hideOnSSR, portal } from '$lib/actions/portal/index.js';
-  import { useSvelteFlowStore } from '$lib/store/index.js';
-  import { toPxString } from '$lib/utils/index.js';
+  import { getEdgeIdContext } from '#lib/store/context.js';
+  import { hideOnSSR, portal } from '#lib/actions/portal/index.js';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { toPxString } from '#lib/utils/index.js';
 
   import type { EdgeLabelProps } from './types.js';
 
