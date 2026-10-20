@@ -498,8 +498,7 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
   edges: EdgeType[];
 }> {
   const nodeIds = new Set(nodesToRemove.map((node) => node.id));
-  const matchingNodes: NodeType[] = [];
-  const matchingNodeIds = new Set<string>();
+  const matchingNodeMap = new Map<string, NodeType>();
 
   for (const node of nodes) {
     if (node.deletable === false) {
@@ -507,28 +506,33 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
     }
 
     const isIncluded = nodeIds.has(node.id);
-    const parentHit = !isIncluded && node.parentId && matchingNodeIds.has(node.parentId);
+    const parentHit = !isIncluded && node.parentId && matchingNodeMap.has(node.parentId);
 
     if (isIncluded || parentHit) {
-      matchingNodes.push(node);
-      matchingNodeIds.add(node.id);
+      matchingNodeMap.set(node.id, node);
     }
   }
 
   const edgeIds = new Set(edgesToRemove.map((edge) => edge.id));
-  const deletableEdges = edges.filter((edge) => edge.deletable !== false);
-  const connectedEdges = getConnectedEdges(matchingNodes, deletableEdges);
-  const matchingEdges: EdgeType[] = connectedEdges;
-  const matchingEdgeIds = new Set(matchingEdges.map((edge) => edge.id));
+  const matchingEdgeMap = new Map<string, EdgeType>();
 
-  for (const edge of deletableEdges) {
-    const isIncluded = edgeIds.has(edge.id);
-
-    if (isIncluded && !matchingEdgeIds.has(edge.id)) {
-      matchingEdges.push(edge);
-      matchingEdgeIds.add(edge.id);
+  for (const edge of edges) {
+    if (
+      edge.deletable !== false &&
+      (matchingNodeMap.has(edge.source) || matchingNodeMap.has(edge.target))
+    ) {
+      matchingEdgeMap.set(edge.id, edge);
     }
   }
+
+  for (const edge of edges) {
+    if (edge.deletable !== false && edgeIds.has(edge.id) && !matchingEdgeMap.has(edge.id)) {
+      matchingEdgeMap.set(edge.id, edge);
+    }
+  }
+
+  const matchingNodes = Array.from(matchingNodeMap.values());
+  const matchingEdges = Array.from(matchingEdgeMap.values());
 
   if (!onBeforeDelete) {
     return {
