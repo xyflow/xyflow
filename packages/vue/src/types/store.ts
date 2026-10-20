@@ -8,14 +8,12 @@ import type {
   ConnectionState,
   CoordinateExtent,
   Dimensions,
-  EdgeChangeset,
   EdgeLookup,
   EdgeMarkerType,
   FitViewOptionsBase,
   HandleBounds,
   HandleType,
   IsValidConnection,
-  NodeChangeset,
   NodeConnection,
   NodeDragItem,
   NodeLookup,
@@ -340,10 +338,6 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   updateNodeData: UpdateNodeData<NodeType>;
   /** changes the parent of a node, keeping its absolute position */
   changeParent: (nodeId: string, parentId: string | null) => void;
-  /** applies default edge change handler */
-  applyEdgeChanges: (changes: EdgeChangeset<EdgeType>) => EdgeType[];
-  /** applies default node change handler; returns the resulting user nodes */
-  applyNodeChanges: (changes: NodeChangeset<NodeType>) => NodeType[];
   /** manually select edges and add to state */
   addSelectedEdges: (edges: EdgeType[]) => void;
   /** manually select nodes and add to state */
@@ -417,7 +411,7 @@ export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = E
   getNodeTypes: Record<keyof DefaultNodeTypes | string, NodeComponent<NodeType | BuiltInNode>>;
   /** all visible nodes (user-facing `Node`s; use `getInternalNode`/`nodeLookup` for enriched data) */
   getNodes: readonly NodeType[];
-  // returned list is shallow `readonly` — mutate via setNodes/updateNode/applyNodeChanges. Not
+  // returned list is shallow `readonly` — mutate via setNodes/updateNode. Not
   // `DeepReadonly`: it recurses into `Edge.label`'s VNode/Component types and trips TS2589 (#1886).
   /** all visible edges (user-facing `Edge`s) */
   getEdges: readonly EdgeType[];

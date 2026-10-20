@@ -4,6 +4,7 @@ import type {
   PositionChange,
   Rect,
 } from '@xyflow/system';
+import type { AutoApplyHandlers } from '../context';
 import type { Actions, Edge, InternalNode, Node, State } from '../types';
 import type { Commit } from './commit';
 import {
@@ -42,7 +43,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   nodeLookup: NodeLookup<InternalNode<NodeType>>,
   edgeLookup: EdgeLookup<EdgeType>,
   commit: Commit<NodeType, EdgeType>,
-): Actions<NodeType, EdgeType> {
+): Actions<NodeType, EdgeType> & { autoApply: AutoApplyHandlers<NodeType, EdgeType> } {
   const viewportHelper = useViewportHelper(state, nodeLookup);
 
   // the commit layer owns the write paths (`commitNodes`/`commitEdges`) and the system-side lookups; actions
@@ -536,17 +537,13 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     commitEdges(state.edges.map(item => (item.id === id ? nextEdge : item)));
   };
 
-  const applyNodeChanges: Actions<NodeType>['applyNodeChanges'] = (changes) => {
+  const applyNodeChanges: AutoApplyHandlers<NodeType, EdgeType>['nodes'] = (changes) => {
     // apply changes immutably (new array, new objects only for changed nodes), then re-adopt via `commitNodes`
-    const result = changes.applyTo(state.nodes);
-    commitNodes(result);
-    return result;
+    commitNodes(changes.applyTo(state.nodes));
   };
 
-  const applyEdgeChanges: Actions<NodeType, EdgeType>['applyEdgeChanges'] = (changes) => {
-    const result = changes.applyTo(state.edges);
-    commitEdges(result);
-    return result;
+  const applyEdgeChanges: AutoApplyHandlers<NodeType, EdgeType>['edges'] = (changes) => {
+    commitEdges(changes.applyTo(state.edges));
   };
 
   const updateNode: Actions<NodeType>['updateNode'] = (id, nodeUpdate, options = { replace: false }) => {
@@ -721,7 +718,10 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     setState(resetState);
   };
 
+  const autoApply: AutoApplyHandlers<NodeType, EdgeType> = { nodes: applyNodeChanges, edges: applyEdgeChanges };
+
   return {
+    autoApply,
     updateNodePositions,
     updateNodeDimensions,
     setNodes,
@@ -740,8 +740,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     updateNode,
     updateNodeData,
     changeParent,
-    applyEdgeChanges,
-    applyNodeChanges,
     addSelectedNodes,
     addSelectedEdges,
     setMinZoom,
