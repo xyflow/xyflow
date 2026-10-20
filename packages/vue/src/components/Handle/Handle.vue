@@ -23,9 +23,9 @@ const emit = defineEmits<{
   disconnect: [connections: HandleConnection[]];
 }>();
 
-const type = toRef(() => props.type ?? 'source');
+const type = computed(() => props.type ?? 'source');
 
-const isValidConnection = toRef(() => props.isValidConnection ?? null);
+const isValidConnection = computed(() => props.isValidConnection ?? null);
 
 const { id: flowId, updateNodeInternals } = useVueFlow();
 

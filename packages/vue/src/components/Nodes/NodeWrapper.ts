@@ -60,22 +60,22 @@ const NodeWrapper = defineComponent({
 
     const internalNode = computed(() => getInternalNode(props.id));
 
-    const isDraggable = toRef(() => {
+    const isDraggable = computed(() => {
       const node = internalNode.value;
       return !node || typeof node.draggable === 'undefined' ? store.nodesDraggable : node.draggable;
     });
 
-    const isSelectable = toRef(() => {
+    const isSelectable = computed(() => {
       const node = internalNode.value;
       return !node || typeof node.selectable === 'undefined' ? store.elementsSelectable : node.selectable;
     });
 
-    const isConnectable = toRef(() => {
+    const isConnectable = computed(() => {
       const node = internalNode.value;
       return !node || typeof node.connectable === 'undefined' ? store.nodesConnectable : node.connectable;
     });
 
-    const isFocusable = toRef(() => {
+    const isFocusable = computed(() => {
       const node = internalNode.value;
       return !node || typeof node.focusable === 'undefined' ? store.nodesFocusable : node.focusable;
     });
@@ -163,7 +163,7 @@ const NodeWrapper = defineComponent({
       return styles;
     });
 
-    const zIndex = toRef(() => Number(internalNode.value?.zIndex ?? getStyle.value.zIndex ?? 0));
+    const zIndex = computed(() => Number(internalNode.value?.zIndex ?? getStyle.value.zIndex ?? 0));
 
     onUpdateNodeInternals((updateIds) => {
       if (updateIds.includes(props.id)) {
