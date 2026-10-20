@@ -123,6 +123,34 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
   }
 
   /**
+   * Clears all queued changes.
+   *
+   * @example
+   * ```ts
+   * changes.clear();
+   * ```
+   */
+  clear(): void {
+    this.changeTypes = {};
+    this.changeMap.clear();
+    this.newElementIds.clear();
+  }
+
+  /**
+   * Returns true if there are no queued changes.
+   *
+   * @example
+   * ```ts
+   * if (changes.isEmpty()) return;
+   * ```
+   */
+  isEmpty(): boolean {
+    // entries are deleted as soon as their last change is removed,
+    // so the map never holds empty arrays
+    return this.changeMap.size === 0;
+  }
+
+  /**
    * Iterates over all queued changes.
    *
    * @example

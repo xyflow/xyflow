@@ -195,6 +195,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         return;
       }
       this.onnodeschange?.(this.pendingNodeChanges);
+
+      if (this.pendingNodeChanges.isEmpty()) return
+
       const newNodes = this.pendingNodeChanges.applyTo(this.nodes);
       this.nodes = newNodes;
       this.pendingNodeChanges = undefined;
@@ -205,6 +208,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         return;
       }
       this.onedgeschange?.(this.pendingEdgeChanges);
+
+      if (this.pendingEdgeChanges.isEmpty()) return
+
       const newEdges = this.pendingEdgeChanges.applyTo(this.edges);
       this.edges = newEdges;
       this.pendingEdgeChanges = undefined;
