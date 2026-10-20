@@ -34,8 +34,6 @@ export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null
 
       return () => {
         window.removeEventListener('resize', updateDimensions);
-
-        // domNode.current is already null when this cleanup runs on unmount, so disconnect everything.
         resizeObserver.disconnect();
       };
     }
