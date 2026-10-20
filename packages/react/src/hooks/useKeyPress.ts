@@ -148,16 +148,43 @@ export function useKeyPress(
         setKeyPressed(false);
       };
 
+      // Some browser/OS overlays (for example macOS Screenshot) can swallow keyup events
+      // without blurring the window. Clear modifier keys that are no longer physically held
+      // when the user resumes interacting with the page.
+      const pointerDownHandler = (event: PointerEvent) => {
+        const modifiers = [
+          { key: 'Shift', codes: ['ShiftLeft', 'ShiftRight'] },
+          { key: 'Control', codes: ['ControlLeft', 'ControlRight'] },
+          { key: 'Meta', codes: ['MetaLeft', 'MetaRight'] },
+          { key: 'Alt', codes: ['AltLeft', 'AltRight'] },
+        ];
+
+        for (const { key, codes } of modifiers) {
+          if (!event.getModifierState(key)) {
+            pressedKeys.current.delete(key);
+            codes.forEach((code) => pressedKeys.current.delete(code));
+          }
+        }
+
+        modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey || event.altKey;
+
+        if (!isMatchingKey(keyCodes, pressedKeys.current, false)) {
+          setKeyPressed(false);
+        }
+      };
+
       target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
       target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
       window.addEventListener('blur', resetHandler);
       window.addEventListener('contextmenu', resetHandler);
+      window.addEventListener('pointerdown', pointerDownHandler);
 
       return () => {
         target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
         target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
         window.removeEventListener('blur', resetHandler);
         window.removeEventListener('contextmenu', resetHandler);
+        window.removeEventListener('pointerdown', pointerDownHandler);
       };
     }
   }, [keyCode, setKeyPressed]);
