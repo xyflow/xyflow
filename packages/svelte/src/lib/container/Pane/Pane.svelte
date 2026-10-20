@@ -39,7 +39,7 @@
     type XYPosition
   } from '@xyflow/system';
 
-  import type { Node, Edge } from '$lib/types/index.js';
+  import type { Node, Edge } from '#lib/types/index.js';
   import type { PaneProps } from './types.js';
 
   let {

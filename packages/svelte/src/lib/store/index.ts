@@ -30,8 +30,8 @@ import type {
   Edge,
   FitViewOptions,
   InternalNode
-} from '$lib/types/index.js';
-import { addEdge as addEdgeUtil } from '$lib/utils/edges.js';
+} from '#lib/types/index.js';
+import { addEdge as addEdgeUtil } from '#lib/utils/edges.js';
 import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte.js';
 import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types.js';
 

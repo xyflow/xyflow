@@ -29,6 +29,8 @@ catalog:
   '@sveltejs/vite-plugin-svelte': ^7.3.1
   '@sveltejs/adapter-auto': ^8.0.0
   '@sveltejs/kit': ^3.1.0
+  '@sveltejs/load-config': ^0.2.3
+  prettier-plugin-svelte: ^4.1.1
   vue: ^3.5.0
   vue-tsc: ^3.3.4
 

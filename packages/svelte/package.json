@@ -61,31 +61,36 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@xyflow/system": "workspace:*",
-    "@svelte-put/shortcut": "^4.2.0"
+    "@svelte-put/shortcut": "^4.2.0",
+    "@xyflow/system": "workspace:*"
   },
   "peerDependencies": {
     "svelte": "^5.25.0"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
+    "@sveltejs/adapter-auto": "catalog:",
+    "@sveltejs/kit": "catalog:",
+    "@sveltejs/load-config": "catalog:",
+    "@sveltejs/package": "^3.0.1",
+    "@sveltejs/vite-plugin-svelte": "catalog:",
+    "@types/node": "catalog:",
     "@xyflow/eslint": "workspace:*",
     "@xyflow/postcss-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
-    "@sveltejs/adapter-auto": "catalog:",
-    "@sveltejs/kit": "catalog:",
-    "@types/node": "catalog:",
     "eslint": "catalog:",
     "postcss": "catalog:",
     "postcss-cli": "catalog:",
     "prettier": "catalog:",
+    "prettier-plugin-svelte": "catalog:",
+    "publint": "^0.3.25",
     "svelte": "catalog:",
     "svelte-check": "catalog:",
-    "@sveltejs/vite-plugin-svelte": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:",
-    "@sveltejs/package": "^3.0.1",
-    "prettier-plugin-svelte": "^4.1.1",
-    "publint": "^0.3.25",
-    "@arethetypeswrong/cli": "0.18.5"
+    "vite": "catalog:"
+  },
+  "imports": {
+    "#lib": "./src/lib/index.js",
+    "#lib/*": "./src/lib/*"
   }
 }

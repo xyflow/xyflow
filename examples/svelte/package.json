@@ -14,11 +14,12 @@
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "catalog:",
 		"@sveltejs/kit": "catalog:",
+		"@sveltejs/load-config": "catalog:",
 		"@sveltejs/vite-plugin-svelte": "catalog:",
 		"@xyflow/eslint": "workspace:*",
 		"eslint": "catalog:",
 		"prettier": "catalog:",
-		"prettier-plugin-svelte": "^3.5.1",
+		"prettier-plugin-svelte": "catalog:",
 		"svelte": "catalog:",
 		"svelte-check": "catalog:",
 		"typescript": "catalog:",
@@ -28,5 +29,8 @@
 	"dependencies": {
 		"@dagrejs/dagre": "^1.1.8",
 		"@xyflow/svelte": "workspace:^"
+	},
+	"imports": {
+		"#components/*": "./src/components/*"
 	}
 }

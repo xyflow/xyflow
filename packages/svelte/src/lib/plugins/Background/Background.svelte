@@ -7,7 +7,7 @@
 </script>
 
 <script lang="ts">
-  import { useSvelteFlowStore } from '$lib/store/index.js';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
   import { BackgroundVariant, type BackgroundProps } from './types.js';
 
   import DotPattern from './DotPattern.svelte';

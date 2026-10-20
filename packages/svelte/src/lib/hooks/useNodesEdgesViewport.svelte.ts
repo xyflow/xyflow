@@ -1,5 +1,5 @@
-import { useSvelteFlowStore } from '$lib/store/index.js';
-import type { Edge, Node } from '$lib/types/index.js';
+import { useSvelteFlowStore } from '#lib/store/index.js';
+import type { Edge, Node } from '#lib/types/index.js';
 import type { Viewport } from '@xyflow/system';
 import { useSvelteFlow } from './useSvelteFlow.svelte';
 

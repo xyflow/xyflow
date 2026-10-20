@@ -1,5 +1,5 @@
-import { useSvelteFlowStore } from '$lib/store/index.js';
-import type { InternalNode } from '$lib/types/index.js';
+import { useSvelteFlowStore } from '#lib/store/index.js';
+import type { InternalNode } from '#lib/types/index.js';
 
 /**
  * Hook to get an internal node by id.
