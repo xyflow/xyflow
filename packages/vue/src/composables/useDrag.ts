@@ -54,6 +54,30 @@ export function useDrag(params: UseDragParams) {
     let dragFired = false;
     let pointerDownPos = { x: 0, y: 0 };
 
+    // XYDrag drives `updateNodePositions` from BOTH the pointermove handler and the autoPan rAF loop, and
+    // `autoPan` awaits `panBy` (a d3 transition) before updating nodes. Vue flushes on a microtask, so those
+    // two writes land in separate flushes and the node/edge tree is patched twice in the same frame. Coalesce
+    // to one commit per animation frame; `flushPending` keeps the drag-end position exact.
+    let pendingItems: NodeDragItem[] | null = null;
+    let pendingDragging = false;
+    let pendingFrame = 0;
+
+    function flushPending() {
+      if (pendingFrame) {
+        cancelAnimationFrame(pendingFrame);
+        pendingFrame = 0;
+      }
+
+      if (!pendingItems) {
+        return;
+      }
+
+      const items = pendingItems;
+      const isDragging = pendingDragging;
+      pendingItems = null;
+      updateNodePositions(items, true, isDragging);
+    }
+
     const instance = XYDrag({
       getStoreItems: () => ({
         get nodes() {
@@ -103,7 +127,12 @@ export function useDrag(params: UseDragParams) {
               origin: item.origin,
             });
           }
-          updateNodePositions(items, true, isDragging ?? false);
+          pendingItems = items;
+          pendingDragging = isDragging ?? false;
+
+          if (!pendingFrame) {
+            pendingFrame = requestAnimationFrame(flushPending);
+          }
         },
         autoPanSpeed: store.autoPanSpeed,
       }),
@@ -134,6 +163,7 @@ export function useDrag(params: UseDragParams) {
         onDrag({ event, node, nodes });
       },
       onDragStop: (event, _dragItems, node, nodes) => {
+        flushPending();
         dragging.value = false;
         onStop({ event, node, nodes });
       },
@@ -165,6 +195,7 @@ export function useDrag(params: UseDragParams) {
     target.addEventListener('pointerup', handlePointerUp);
 
     onCleanup(() => {
+      flushPending();
       instance.destroy();
       dragInstance.value = undefined;
       target.removeEventListener('pointerdown', handlePointerDown);
