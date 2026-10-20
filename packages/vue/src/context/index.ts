@@ -10,16 +10,15 @@ export const VueFlowStateKey: InjectionKey<VueFlowState> = Symbol('vueFlowState'
 /**
  * Key for the store's change-application handlers, hung off the state object. `<VueFlow>` registers them
  * as the default `onNodesChange`/`onEdgesChange` listeners when its binding is managed, so auto-apply
- * follows the consuming `<VueFlow>` even when it reuses a provider's store. A symbol on the state rather
- * than a `provide` because `<VueFlow>` already holds the state in both cases — created or injected.
+ * follows the consuming `<VueFlow>` even when it reuses a provider's store.
  *
  * @internal
  */
 export const AUTO_APPLY = Symbol('autoApply');
 /**
  * Applies a changeset to the store. Registered by `<VueFlow>` as the default change listeners when the
- * binding is managed; not exposed on the public instance — apply a changeset yourself with
- * `changes.applyTo(elements)`.
+ * binding is managed; not exposed on the public instance.
+ * Apply a changeset yourself with changes.applyTo(elements)`.
  *
  * @internal
  */

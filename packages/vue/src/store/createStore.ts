@@ -88,7 +88,7 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     }
   }
 
-  // `autoApply` is internal — `<VueFlow>` registers it as the default change listeners, it is not an action
+  // `autoApply` is internal
   const { autoApply, ...publicActions } = actions;
 
   (reactiveState as WithAutoApply<NodeType, EdgeType>)[AUTO_APPLY] = autoApply;

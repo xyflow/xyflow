@@ -92,8 +92,6 @@ if (!ownsStore) {
   instance.setState(props as Parameters<typeof instance.setState>[0]);
 }
 
-// auto-apply: the store's own change handlers, kept off the public instance. Registered here rather than
-// at store creation so they follow THIS `<VueFlow>`'s binding even when it reuses a provider's store.
 const autoApply = (state as WithAutoApply<NodeType, EdgeType>)[AUTO_APPLY];
 
 if (autoApply && nodesManaged) {
