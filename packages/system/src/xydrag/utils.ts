@@ -36,10 +36,12 @@ export function getDragItems<NodeType extends NodeBase>(
   nodeLookup: Map<string, InternalNodeBase<NodeType>>,
   nodesDraggable: boolean,
   mousePos: XYPosition,
+  multiSelectionActive: boolean,
   nodeId?: string,
   onlyDragNode?: boolean
 ): Map<string, NodeDragItem> {
   const dragItems = new Map<string, NodeDragItem>();
+  const dragSelectedNodes = !nodeId || nodeLookup.get(nodeId)?.selected || multiSelectionActive
 
   for (const [id, node] of nodeLookup) {
     // if onlyDragNode is true, only the grabbed node gets dragged, otherwise all selected nodes are dragged with it
@@ -48,6 +50,7 @@ export function getDragItems<NodeType extends NodeBase>(
     if (
       isDragged &&
       (onlyDragNode || !node.parentId || !isParentSelected(node, nodeLookup)) &&
+      (node.id === nodeId || (dragSelectedNodes && node.selected)) &&
       (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'))
     ) {
       const internalNode = nodeLookup.get(id);
