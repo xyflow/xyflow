@@ -272,9 +272,8 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
 
       dragStarted = true;
 
-      if ((!selectNodesOnDrag || !isSelectable) && !multiSelectionActive && nodeId) {
+      if (!isSelectable && !multiSelectionActive && nodeId) {
         if (!nodeLookup.get(nodeId)?.selected) {
-          // we need to reset selected nodes when selectNodesOnDrag=false
           unselectNodesAndEdges();
         }
       }
@@ -285,7 +284,7 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
 
       const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
       lastPos = pointerPos;
-      dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, nodeId);
+      dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, multiSelectionActive, nodeId);
 
       if (dragItems.size > 0 && (onDragStart || onNodeDragStart || (!nodeId && onSelectionDragStart))) {
         const [currentNode, currentNodes] = getEventHandlerParams({
