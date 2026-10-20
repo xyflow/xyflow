@@ -21,13 +21,13 @@ import {
   nodeToRect,
   panBy as panBySystem,
   removeChange,
+  selectionChange,
   updateNodeInternals as updateNodeInternalsSystem,
 } from '@xyflow/system';
 import { computed } from 'vue';
 import { useViewportHelper } from '../composables';
 import {
   areNodesInitialized,
-  createSelectionChange,
   isDef,
   isInternalNode,
   isNode,
@@ -169,7 +169,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const addSelectedNodes: Actions<NodeType>['addSelectedNodes'] = (nodes) => {
     if (state.multiSelectionActive) {
       const nodeChangeset = new NodeChangeset<NodeType>();
-      nodes.forEach(node => nodeChangeset.add(createSelectionChange(node.id, true)));
+      nodes.forEach(node => nodeChangeset.add(selectionChange(node.id, true)));
       state.hooks.nodesChange.trigger(nodeChangeset);
       return;
     }
@@ -187,7 +187,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const addSelectedEdges: Actions<NodeType, EdgeType>['addSelectedEdges'] = (edges) => {
     if (state.multiSelectionActive) {
       const changedEdges = new EdgeChangeset<EdgeType>();
-      edges.forEach(edge => changedEdges.add(createSelectionChange(edge.id, true)));
+      edges.forEach(edge => changedEdges.add(selectionChange(edge.id, true)));
       state.hooks.edgesChange.trigger(changedEdges);
       return;
     }
@@ -206,7 +206,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const nodesToUnselect = nodes || state.nodes;
     const nodeChanges = new NodeChangeset<NodeType>();
 
-    nodesToUnselect.filter(n => n.selected).forEach(n => nodeChanges.add(createSelectionChange(n.id, false)));
+    nodesToUnselect.filter(n => n.selected).forEach(n => nodeChanges.add(selectionChange(n.id, false)));
 
     if (nodeChanges.size) {
       state.hooks.nodesChange.trigger(nodeChanges);
@@ -217,7 +217,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const edgesToUnselect = edges || state.edges;
 
     const edgeChanges = new EdgeChangeset<EdgeType>();
-    edgesToUnselect.filter(e => e.selected).forEach(e => edgeChanges.add(createSelectionChange(e.id, false)));
+    edgesToUnselect.filter(e => e.selected).forEach(e => edgeChanges.add(selectionChange(e.id, false)));
 
     if (edgeChanges.size) {
       state.hooks.edgesChange.trigger(edgeChanges);
