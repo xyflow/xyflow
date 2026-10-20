@@ -1,5 +1,6 @@
 <script lang="ts" setup generic="NodeType extends Node = Node, EdgeType extends Edge = Edge">
 import type { Viewport } from '@xyflow/system';
+import type { WithAutoApply } from '../../context';
 import type { Edge, Node, VueFlowEmits, VueFlowInstance, VueFlowProps, VueFlowSlots, VueFlowState } from '../../types';
 import { getCurrentInstance, inject, onUnmounted, provide } from 'vue';
 import A11yDescriptions from '../../components/A11y/A11yDescriptions.vue';
@@ -13,7 +14,7 @@ import { useSelectionChange } from '../../composables/useSelectionChange';
 import { useStylesLoadedWarning } from '../../composables/useStylesLoadedWarning';
 import { useViewportSync } from '../../composables/useViewportSync';
 import { useWatchProps } from '../../composables/useWatchProps';
-import { Slots, VueFlow as VueFlowInjectionKey, VueFlowStateKey } from '../../context';
+import { AUTO_APPLY, Slots, VueFlow as VueFlowInjectionKey, VueFlowStateKey } from '../../context';
 import { useHooks } from '../../store/hooks';
 import { hasVNodeListener } from '../../utils';
 import ZoomPane from '../ZoomPane/ZoomPane.vue';
@@ -91,11 +92,13 @@ if (!ownsStore) {
   instance.setState(props as Parameters<typeof instance.setState>[0]);
 }
 
-if (nodesManaged) {
-  instance.onNodesChange(changes => instance.applyNodeChanges(changes));
+const autoApply = (state as WithAutoApply<NodeType, EdgeType>)[AUTO_APPLY];
+
+if (autoApply && nodesManaged) {
+  instance.onNodesChange(autoApply.nodes);
 }
-if (edgesManaged) {
-  instance.onEdgesChange(changes => instance.applyEdgeChanges(changes));
+if (autoApply && edgesManaged) {
+  instance.onEdgesChange(autoApply.edges);
 }
 
 const disposeWatchers = useWatchProps(

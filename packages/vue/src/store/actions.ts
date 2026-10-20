@@ -4,6 +4,7 @@ import type {
   PositionChange,
   Rect,
 } from '@xyflow/system';
+import type { AutoApplyHandlers } from '../context';
 import type { Actions, Edge, InternalNode, Node, State } from '../types';
 import type { Commit } from './commit';
 import {
@@ -21,13 +22,13 @@ import {
   nodeToRect,
   panBy as panBySystem,
   removeChange,
+  selectionChange,
   updateNodeInternals as updateNodeInternalsSystem,
 } from '@xyflow/system';
 import { computed } from 'vue';
 import { useViewportHelper } from '../composables';
 import {
   areNodesInitialized,
-  createSelectionChange,
   isDef,
   isInternalNode,
   isNode,
@@ -42,7 +43,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   nodeLookup: NodeLookup<InternalNode<NodeType>>,
   edgeLookup: EdgeLookup<EdgeType>,
   commit: Commit<NodeType, EdgeType>,
-): Actions<NodeType, EdgeType> {
+): Actions<NodeType, EdgeType> & { autoApply: AutoApplyHandlers<NodeType, EdgeType> } {
   const viewportHelper = useViewportHelper(state, nodeLookup);
 
   // the commit layer owns the write paths (`commitNodes`/`commitEdges`) and the system-side lookups; actions
@@ -169,7 +170,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const addSelectedNodes: Actions<NodeType>['addSelectedNodes'] = (nodes) => {
     if (state.multiSelectionActive) {
       const nodeChangeset = new NodeChangeset<NodeType>();
-      nodes.forEach(node => nodeChangeset.add(createSelectionChange(node.id, true)));
+      nodes.forEach(node => nodeChangeset.add(selectionChange(node.id, true)));
       state.hooks.nodesChange.trigger(nodeChangeset);
       return;
     }
@@ -187,7 +188,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   const addSelectedEdges: Actions<NodeType, EdgeType>['addSelectedEdges'] = (edges) => {
     if (state.multiSelectionActive) {
       const changedEdges = new EdgeChangeset<EdgeType>();
-      edges.forEach(edge => changedEdges.add(createSelectionChange(edge.id, true)));
+      edges.forEach(edge => changedEdges.add(selectionChange(edge.id, true)));
       state.hooks.edgesChange.trigger(changedEdges);
       return;
     }
@@ -206,7 +207,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const nodesToUnselect = nodes || state.nodes;
     const nodeChanges = new NodeChangeset<NodeType>();
 
-    nodesToUnselect.filter(n => n.selected).forEach(n => nodeChanges.add(createSelectionChange(n.id, false)));
+    nodesToUnselect.filter(n => n.selected).forEach(n => nodeChanges.add(selectionChange(n.id, false)));
 
     if (nodeChanges.size) {
       state.hooks.nodesChange.trigger(nodeChanges);
@@ -217,7 +218,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const edgesToUnselect = edges || state.edges;
 
     const edgeChanges = new EdgeChangeset<EdgeType>();
-    edgesToUnselect.filter(e => e.selected).forEach(e => edgeChanges.add(createSelectionChange(e.id, false)));
+    edgesToUnselect.filter(e => e.selected).forEach(e => edgeChanges.add(selectionChange(e.id, false)));
 
     if (edgeChanges.size) {
       state.hooks.edgesChange.trigger(edgeChanges);
@@ -536,17 +537,13 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     commitEdges(state.edges.map(item => (item.id === id ? nextEdge : item)));
   };
 
-  const applyNodeChanges: Actions<NodeType>['applyNodeChanges'] = (changes) => {
+  const applyNodeChanges: AutoApplyHandlers<NodeType, EdgeType>['nodes'] = (changes) => {
     // apply changes immutably (new array, new objects only for changed nodes), then re-adopt via `commitNodes`
-    const result = changes.applyTo(state.nodes);
-    commitNodes(result);
-    return result;
+    commitNodes(changes.applyTo(state.nodes));
   };
 
-  const applyEdgeChanges: Actions<NodeType, EdgeType>['applyEdgeChanges'] = (changes) => {
-    const result = changes.applyTo(state.edges);
-    commitEdges(result);
-    return result;
+  const applyEdgeChanges: AutoApplyHandlers<NodeType, EdgeType>['edges'] = (changes) => {
+    commitEdges(changes.applyTo(state.edges));
   };
 
   const updateNode: Actions<NodeType>['updateNode'] = (id, nodeUpdate, options = { replace: false }) => {
@@ -721,7 +718,10 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     setState(resetState);
   };
 
+  const autoApply: AutoApplyHandlers<NodeType, EdgeType> = { nodes: applyNodeChanges, edges: applyEdgeChanges };
+
   return {
+    autoApply,
     updateNodePositions,
     updateNodeDimensions,
     setNodes,
@@ -740,8 +740,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     updateNode,
     updateNodeData,
     changeParent,
-    applyEdgeChanges,
-    applyNodeChanges,
     addSelectedNodes,
     addSelectedEdges,
     setMinZoom,
