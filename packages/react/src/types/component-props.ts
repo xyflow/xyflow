@@ -23,6 +23,7 @@ import type {
   AriaLabelConfig,
   FinalConnectionState,
   ZIndexMode,
+  Transform,
 } from '@xyflow/system';
 
 import type {
@@ -31,6 +32,7 @@ import type {
   EdgeTypes,
   Node,
   Edge,
+  InternalNode,
   ConnectionLineComponent,
   OnInit,
   DefaultEdgeOptions,
@@ -48,6 +50,18 @@ import type {
   IsValidConnection,
   ProOptions,
 } from '.';
+
+/**
+ * Parameters passed to a custom edge visibility predicate.
+ */
+export type IsEdgeVisible = (params: {
+  edge: Edge;
+  sourceNode: InternalNode;
+  targetNode: InternalNode;
+  transform: Transform;
+  width: number;
+  height: number;
+}) => boolean;
 
 /**
  * ReactFlow component props.
@@ -385,6 +399,11 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default false
    */
   onlyRenderVisibleElements?: boolean;
+  /**
+   * Custom visibility check for edges when `onlyRenderVisibleElements` is enabled.
+   * Defaults to the built-in check based on the bounds of the source and target nodes.
+   */
+  isEdgeVisible?: IsEdgeVisible;
   /**
    * Controls whether all nodes should be draggable or not. Individual nodes can override this
    * setting by setting their `draggable` prop. If you want to use the mouse handlers on
