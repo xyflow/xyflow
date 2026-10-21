@@ -44,13 +44,19 @@ function applyChanges<ElementType extends NodeBase | EdgeBase, ChangeType extend
         continue;
       }
 
-      const updatedElement = { ...element };
+      let updatedElement = { ...element };
       for (const change of elementChanges) {
-        if (change.type === 'remove') {
-          addedIds.delete(element.id);
-          continue elementsLoop;
+        switch (change.type) {
+          case 'remove':
+            //remove takes prescedent
+            addedIds.delete(element.id);
+            continue elementsLoop;
+          case 'replace':
+            updatedElement = { ...change.item };
+            continue;
+          default:
+            applyChange(updatedElement, change);
         }
-        applyChange(updatedElement, change);
       }
       newElements.push(updatedElement);
       addedIds.delete(element.id);
@@ -100,11 +106,6 @@ function applyNodeChange<NodeType extends NodeBase = NodeBase>(node: NodeType, c
       break;
     }
 
-    case 'replace': {
-      Object.assign(node, change.item);
-      break;
-    }
-
     default:
       return;
   }
@@ -114,11 +115,6 @@ export function applyEdgeChange<EdgeType extends EdgeBase = EdgeBase>(edge: Edge
   switch (change.type) {
     case 'select': {
       edge.selected = change.selected;
-      break;
-    }
-
-    case 'replace': {
-      Object.assign(edge, change.item);
       break;
     }
 
