@@ -129,7 +129,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       changes.add(handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
     }
 
-    if (changes.size) {
+    if (!changes.isEmpty()) {
       state.hooks.nodesChange.trigger(changes);
     }
   };
@@ -208,7 +208,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
 
     nodesToUnselect.filter(n => n.selected).forEach(n => nodeChanges.add(createSelectionChange(n.id, false)));
 
-    if (nodeChanges.size) {
+    if (!nodeChanges.isEmpty()) {
       state.hooks.nodesChange.trigger(nodeChanges);
     }
   };
@@ -219,7 +219,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     const edgeChanges = new EdgeChangeset<EdgeType>();
     edgesToUnselect.filter(e => e.selected).forEach(e => edgeChanges.add(createSelectionChange(e.id, false)));
 
-    if (edgeChanges.size) {
+    if (!edgeChanges.isEmpty()) {
       state.hooks.edgesChange.trigger(edgeChanges);
     }
   };
@@ -293,7 +293,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       changes.add(addChange(node));
     }
 
-    if (changes.size) {
+    if (!changes.isEmpty()) {
       state.hooks.nodesChange.trigger(changes);
     }
   };
@@ -317,7 +317,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       changes.add(addChange(edge));
     }
 
-    if (changes.size) {
+    if (!changes.isEmpty()) {
       state.hooks.edgesChange.trigger(changes);
     }
   };
@@ -389,11 +389,11 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       }
     }
 
-    if (edgeChanges.size) {
+    if (!edgeChanges.isEmpty()) {
       state.hooks.edgesChange.trigger(edgeChanges);
     }
 
-    if (nodeChanges.size) {
+    if (!nodeChanges.isEmpty()) {
       state.hooks.nodesChange.trigger(nodeChanges);
     }
   };
@@ -419,7 +419,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       changes.add(removeChange(typeof item === 'string' ? item : item.id));
     }
 
-    if (changes.size) {
+    if (!changes.isEmpty()) {
       state.hooks.edgesChange.trigger(changes);
     }
   };
