@@ -199,6 +199,48 @@ const EdgeWrapper = defineComponent({
         prevEdgeComponentProps = edgeProps;
       }
 
+      // flat children: a nested array child makes Vue build and diff a Fragment on every render,
+      // for every edge, even when both anchors are null (no reconnect listener)
+      const canReconnect = hasReconnectListener.value;
+
+      const sourceAnchor = canReconnect && (isReconnectable.value === 'source' || isReconnectable.value === true)
+        ? h(
+            'g',
+            {
+              onMousedown: onReconnectSourceMouseDown,
+              onMouseenter: onReconnectMouseEnter,
+              onMouseout: onReconnectMouseOut,
+            },
+            h(EdgeAnchor, {
+              'position': sourcePosition,
+              'centerX': sourceX,
+              'centerY': sourceY,
+              'radius': store.reconnectRadius,
+              'type': 'source',
+              'data-type': 'source',
+            }),
+          )
+        : null;
+
+      const targetAnchor = canReconnect && (isReconnectable.value === 'target' || isReconnectable.value === true)
+        ? h(
+            'g',
+            {
+              onMousedown: onReconnectTargetMouseDown,
+              onMouseenter: onReconnectMouseEnter,
+              onMouseout: onReconnectMouseOut,
+            },
+            h(EdgeAnchor, {
+              'position': targetPosition,
+              'centerX': targetX,
+              'centerY': targetY,
+              'radius': store.reconnectRadius,
+              'type': 'target',
+              'data-type': 'target',
+            }),
+          )
+        : null;
+
       return h(
         'svg',
         { style: { zIndex: zIndex.value } },
@@ -238,51 +280,7 @@ const EdgeWrapper = defineComponent({
             'onMouseleave': onEdgeMouseLeave,
             'onKeyDown': isFocusable.value ? onKeyDown : undefined,
           },
-          [
-            edgeComponent,
-            [
-              hasReconnectListener.value && (isReconnectable.value === 'source' || isReconnectable.value === true)
-                ? [
-                    h(
-                      'g',
-                      {
-                        onMousedown: onReconnectSourceMouseDown,
-                        onMouseenter: onReconnectMouseEnter,
-                        onMouseout: onReconnectMouseOut,
-                      },
-                      h(EdgeAnchor, {
-                        'position': sourcePosition,
-                        'centerX': sourceX,
-                        'centerY': sourceY,
-                        'radius': store.reconnectRadius,
-                        'type': 'source',
-                        'data-type': 'source',
-                      }),
-                    ),
-                  ]
-                : null,
-              hasReconnectListener.value && (isReconnectable.value === 'target' || isReconnectable.value === true)
-                ? [
-                    h(
-                      'g',
-                      {
-                        onMousedown: onReconnectTargetMouseDown,
-                        onMouseenter: onReconnectMouseEnter,
-                        onMouseout: onReconnectMouseOut,
-                      },
-                      h(EdgeAnchor, {
-                        'position': targetPosition,
-                        'centerX': targetX,
-                        'centerY': targetY,
-                        'radius': store.reconnectRadius,
-                        'type': 'target',
-                        'data-type': 'target',
-                      }),
-                    ),
-                  ]
-                : null,
-            ],
-          ],
+          [edgeComponent, sourceAnchor, targetAnchor],
         ),
       );
     };
