@@ -17,33 +17,44 @@ export function applyEdgeChanges<EdgeType extends EdgeBase = EdgeBase>(
 }
 
 function applyChanges<ElementType extends NodeBase | EdgeBase, ChangeType extends ElementChangeType<ElementType>>(
-  elements: ElementType[],
+  previousElements: ElementType[],
   changes: Changeset<ElementType, ChangeType>,
   applyChange: (element: ElementType, change: ChangeType) => void
 ): ElementType[] {
   const newElements: ElementType[] = [];
-  for (const element of elements) {
-    const elementChanges = changes.getForElement(element.id);
 
-    if (!elementChanges.length) {
-      newElements.push(element);
-      continue;
+  const addedElements = changes.getNewElements();
+  const addedIds = new Set(addedElements.map((element) => element.id));
+
+  let isPreviousElement: boolean | undefined;
+  for (const elements of [previousElements, addedElements]) {
+    isPreviousElement = !isPreviousElement;
+
+    elementsLoop: for (const element of elements) {
+      // when we loop over the addedElements we skip elements that already exist
+      if (!isPreviousElement && !addedIds.has(element.id)) {
+        continue;
+      }
+
+      const elementChanges = changes.getForElement(element.id);
+
+      if (!elementChanges.length) {
+        newElements.push(element);
+        addedIds.delete(element.id);
+        continue;
+      }
+
+      const updatedElement = { ...element };
+      for (const change of elementChanges) {
+        if (change.type === 'remove') {
+          addedIds.delete(element.id);
+          continue elementsLoop;
+        }
+        applyChange(updatedElement, change);
+      }
+      newElements.push(updatedElement);
+      addedIds.delete(element.id);
     }
-
-    // we expect remove to be at the beginning
-    if (elementChanges[0].type === 'remove') {
-      continue;
-    }
-
-    const updatedElement = { ...element };
-    for (const change of elementChanges) {
-      applyChange(updatedElement, change);
-    }
-    newElements.push(updatedElement);
-  }
-
-  for (const change of changes.getByType('add')) {
-    newElements.push(change.item);
   }
 
   return newElements;
