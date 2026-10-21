@@ -1,4 +1,4 @@
-import type { Component, ComponentInternalInstance } from 'vue';
+import type { Component, ComponentInternalInstance, VNode } from 'vue';
 import { resolveComponent } from 'vue';
 
 /**
@@ -43,4 +43,43 @@ export function resolveTypeComponent(
   }
 
   return (type as Component) || undefined;
+}
+
+/** Vue's `PatchFlags.PROPS`: only the keys listed in `dynamicProps` are re-resolved. */
+const PATCH_FLAG_PROPS = 8;
+
+/**
+ * Tag a child component vnode with the props that actually changed since the last render.
+ *
+ * Without a patch flag Vue takes `setFullProps` on every update, re-resolving and re-writing
+ * every declared prop into the child's `shallowReactive` props object. A node or edge component
+ * takes around twenty props of which a drag frame changes two, so the rest cost a reactive write
+ * each, per component, per frame. Vue's compiler derives `dynamicProps` from a template; these
+ * props are built in a render function, so derive it by comparing against the previous object.
+ *
+ * Pass `null` as `prev` on the first render so the child still goes through the full props pass.
+ */
+export function markChangedProps(vnode: VNode, props: Record<string, unknown>, prev: Record<string, unknown> | null) {
+  if (!prev) {
+    return;
+  }
+
+  // a key that vanished between renders cannot be removed by the fast path, so bail to a full pass
+  for (const key in prev) {
+    if (!(key in props)) {
+      return;
+    }
+  }
+
+  const dynamicProps: string[] = [];
+
+  for (const key in props) {
+    if (props[key] !== prev[key]) {
+      dynamicProps.push(key);
+    }
+  }
+
+  const target = vnode as VNode & { dynamicProps?: string[] | null };
+  target.patchFlag = PATCH_FLAG_PROPS;
+  target.dynamicProps = dynamicProps;
 }

@@ -5,7 +5,7 @@ import { getEdgePosition, getMarkerId } from '@xyflow/system';
 import { computed, defineComponent, getCurrentInstance, h, inject, provide, shallowRef, toRef } from 'vue';
 import { useHandle, useVueFlow, useVueFlowStore } from '../../composables';
 import { EdgeId, EdgeRef, Slots } from '../../context';
-import { ARIA_EDGE_DESC_KEY, defaultEdgeTypes, devWarn, elementSelectionKeys, ErrorCode, getEdgeZIndex, resolveTypeComponent, VueFlowError } from '../../utils';
+import { ARIA_EDGE_DESC_KEY, defaultEdgeTypes, devWarn, elementSelectionKeys, ErrorCode, getEdgeZIndex, markChangedProps, resolveTypeComponent, VueFlowError } from '../../utils';
 import EdgeAnchor from './EdgeAnchor';
 
 interface Props {
@@ -103,6 +103,8 @@ const EdgeWrapper = defineComponent({
       onReconnectEnd,
     });
 
+    let prevEdgeComponentProps: Record<string, unknown> | null = null;
+
     return () => {
       if (!storedEdge.value) {
         return null;
@@ -181,6 +183,19 @@ const EdgeWrapper = defineComponent({
         interactionWidth: edge.value.interactionWidth,
       } satisfies EdgeProps;
 
+      let edgeComponent = null;
+
+      if (updating.value) {
+        prevEdgeComponentProps = null;
+      }
+      else {
+        const edgeProps = { ...edgeComponentProps, ...pathOptions };
+        edgeComponent = h(edgeCmp.value ?? (defaultEdgeTypes.default as Component), edgeProps);
+
+        markChangedProps(edgeComponent, edgeProps, prevEdgeComponentProps);
+        prevEdgeComponentProps = edgeProps;
+      }
+
       return h(
         'svg',
         { style: { zIndex: zIndex.value } },
@@ -221,9 +236,7 @@ const EdgeWrapper = defineComponent({
             'onKeyDown': isFocusable.value ? onKeyDown : undefined,
           },
           [
-            updating.value
-              ? null
-              : h(edgeCmp.value ?? (defaultEdgeTypes.default as Component), { ...edgeComponentProps, ...pathOptions }),
+            edgeComponent,
             [
               hasReconnectListener.value && (isReconnectable.value === 'source' || isReconnectable.value === true)
                 ? [

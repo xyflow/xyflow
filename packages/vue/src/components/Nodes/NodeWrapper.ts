@@ -20,7 +20,7 @@ import {
   useVueFlowStore,
 } from '../../composables';
 import { NodeId, NodeRef, Slots } from '../../context';
-import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, defaultNodeTypes, elementSelectionKeys, ErrorCode, handleNodeClick, resolveTypeComponent, VueFlowError } from '../../utils';
+import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, defaultNodeTypes, elementSelectionKeys, ErrorCode, handleNodeClick, markChangedProps, resolveTypeComponent, VueFlowError } from '../../utils';
 
 interface Props {
   id: string;
@@ -203,6 +203,8 @@ const NodeWrapper = defineComponent({
       { flush: 'post' },
     );
 
+    let prevNodeComponentProps: Record<string, unknown> | null = null;
+
     return () => {
       const node = internalNode.value;
 
@@ -229,6 +231,11 @@ const NodeWrapper = defineComponent({
         sourcePosition: node.sourcePosition,
         dragHandle: node.dragHandle,
       } satisfies NodeProps;
+
+      const nodeComponent = h(nodeCmp.value ?? (defaultNodeTypes.default as Component), nodeComponentProps);
+
+      markChangedProps(nodeComponent, nodeComponentProps, prevNodeComponentProps);
+      prevNodeComponentProps = nodeComponentProps;
 
       return h(
         'div',
@@ -270,9 +277,7 @@ const NodeWrapper = defineComponent({
           'onKeydown': onKeyDown,
           'onFocus': isFocusable.value ? onFocus : undefined,
         },
-        [
-          h(nodeCmp.value ?? (defaultNodeTypes.default as Component), nodeComponentProps),
-        ],
+        [nodeComponent],
       );
     };
 
