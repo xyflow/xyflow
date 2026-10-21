@@ -90,7 +90,7 @@ export function useEdges() {
       return store.edges;
     },
     set current(edges) {
-      store.edges = edges;
+      store.queueEdgeChanges(getElementChanges(store.edges, edges));
     },
     update(updateFn: (edges: Edge[]) => Edge[]) {
       store.queueEdgeChanges(getElementChanges(store.edges, updateFn(store.edges)));
@@ -168,31 +168,35 @@ function getElementChanges<ElementType extends { id: string }>(
   previousElements: ElementType[],
   nextElements: ElementType[]
 ) {
-  const nextElementLookup: Record<string, { element: ElementType; index: number }> = {};
+  // eslint-disable-next-line svelte/prefer-svelte-reactivity
+  const nextElementLookup = new Map<string, ElementType>();
   const changes: Array<
     | { id: string; type: 'remove' }
     | { id: string; type: 'replace'; item: ElementType }
-    | { id: string; type: 'add'; item: ElementType; index: number }
+    | { id: string; type: 'add'; item: ElementType }
   > = [];
 
-  for (const [index, element] of nextElements.entries()) {
-    nextElementLookup[element.id] = { element, index };
+  for (const element of nextElements) {
+    nextElementLookup.set(element.id, element);
   }
 
   for (const previousElement of previousElements) {
-    const nextElement = nextElementLookup[previousElement.id];
+    const nextElement = nextElementLookup.get(previousElement.id);
 
     if (!nextElement) {
       changes.push({ id: previousElement.id, type: 'remove' });
       continue;
     }
 
-    changes.push({ id: previousElement.id, type: 'replace', item: nextElement.element });
-    delete nextElementLookup[previousElement.id];
+    // unchanged elements keep their reference, so we don't need to replace them
+    if (nextElement !== previousElement) {
+      changes.push({ id: previousElement.id, type: 'replace', item: nextElement });
+    }
+    nextElementLookup.delete(previousElement.id);
   }
 
-  for (const { element, index } of Object.values(nextElementLookup)) {
-    changes.push({ id: element.id, type: 'add', item: element, index });
+  for (const element of nextElementLookup.values()) {
+    changes.push({ id: element.id, type: 'add', item: element });
   }
 
   return changes;

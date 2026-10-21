@@ -177,6 +177,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     pendingEdgeChanges: EdgeChangeset<EdgeType> | undefined = $state.raw();
 
     queueNodeChanges = (changes: NodeChange<NodeType>[]) => {
+      if (changes.length === 0) {
+        return;
+      }
       if (!this.pendingNodeChanges) {
         this.pendingNodeChanges = new NodeChangeset<NodeType>();
       }
@@ -184,6 +187,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     };
 
     queueEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {
+      if (changes.length === 0) {
+        return;
+      }
       if (!this.pendingEdgeChanges) {
         this.pendingEdgeChanges = new EdgeChangeset<EdgeType>();
       }

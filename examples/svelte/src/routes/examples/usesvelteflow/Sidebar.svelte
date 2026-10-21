@@ -18,10 +18,7 @@
 	let viewport = useViewport();
 
 	const deleteNode = () => {
-		//TODO: do we really want to allow this?
-		// nodes.shift();
-		nodes.current.shift();
-		nodes.current = [...nodes.current];
+		nodes.current = nodes.current.slice(1);
 	};
 </script>
 
