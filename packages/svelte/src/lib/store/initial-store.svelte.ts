@@ -197,8 +197,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       this.onnodeschange?.(this.pendingNodeChanges);
 
       if (!this.pendingNodeChanges.isEmpty()) {
-        const newNodes = this.pendingNodeChanges.applyTo(this.nodes);
-        this.nodes = newNodes;
+        this.nodes = this.pendingNodeChanges.applyTo(this.nodes);
       }
       this.pendingNodeChanges = undefined;
     };
@@ -210,8 +209,7 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
       this.onedgeschange?.(this.pendingEdgeChanges);
 
       if (!this.pendingEdgeChanges.isEmpty()) {
-        const newEdges = this.pendingEdgeChanges.applyTo(this.edges);
-        this.edges = newEdges;
+        this.edges = this.pendingEdgeChanges.applyTo(this.edges);
       }
       this.pendingEdgeChanges = undefined;
     };
