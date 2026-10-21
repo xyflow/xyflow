@@ -28,7 +28,12 @@ const StraightEdge = defineComponent<StraightEdgeProps>({
     let prevBaseProps: Record<string, unknown> | null = null;
 
     return () => {
-      const [path, labelX, labelY] = getStraightPath(props);
+      const [path, labelX, labelY] = getStraightPath({
+        sourceX: props.sourceX,
+        sourceY: props.sourceY,
+        targetX: props.targetX,
+        targetY: props.targetY,
+      });
 
       const baseProps = { path, labelX, labelY, ...baseEdgeProps(props, attrs) };
 

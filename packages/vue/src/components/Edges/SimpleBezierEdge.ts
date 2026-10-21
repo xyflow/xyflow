@@ -121,7 +121,10 @@ const SimpleBezierEdge = defineComponent<SimpleBezierEdgeProps>({
 
     return () => {
       const [path, labelX, labelY] = getSimpleBezierPath({
-        ...props,
+        sourceX: props.sourceX,
+        sourceY: props.sourceY,
+        targetX: props.targetX,
+        targetY: props.targetY,
         sourcePosition: props.sourcePosition ?? Position.Bottom,
         targetPosition: props.targetPosition ?? Position.Top,
       });

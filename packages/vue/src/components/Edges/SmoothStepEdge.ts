@@ -33,9 +33,15 @@ const SmoothStepEdge = defineComponent<SmoothStepEdgeProps>({
 
     return () => {
       const [path, labelX, labelY] = getSmoothStepPath({
-        ...props,
+        sourceX: props.sourceX,
+        sourceY: props.sourceY,
+        targetX: props.targetX,
+        targetY: props.targetY,
         sourcePosition: props.sourcePosition ?? Position.Bottom,
         targetPosition: props.targetPosition ?? Position.Top,
+        borderRadius: props.borderRadius,
+        offset: props.offset,
+        stepPosition: props.stepPosition,
       });
 
       const baseProps = { path, labelX, labelY, ...baseEdgeProps(props, attrs) };

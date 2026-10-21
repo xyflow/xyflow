@@ -31,9 +31,13 @@ const BezierEdge = defineComponent<BezierEdgeProps>({
 
     return () => {
       const [path, labelX, labelY] = getBezierPath({
-        ...props,
+        sourceX: props.sourceX,
+        sourceY: props.sourceY,
+        targetX: props.targetX,
+        targetY: props.targetY,
         sourcePosition: props.sourcePosition ?? Position.Bottom,
         targetPosition: props.targetPosition ?? Position.Top,
+        curvature: props.curvature,
       });
 
       const baseProps = { path, labelX, labelY, ...baseEdgeProps(props, attrs) };
