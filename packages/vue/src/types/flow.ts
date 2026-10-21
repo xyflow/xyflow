@@ -3,9 +3,11 @@ import type {
   AriaLabelConfig,
   ColorMode,
   Connection,
+  ConnectionLineType,
   ConnectionMode,
   CoordinateExtent,
   EdgeChangeset,
+  EdgeMarkerType,
   FitViewOptionsBase,
   IsValidConnection,
   NodeChangeset,
@@ -21,7 +23,7 @@ import type {
 import type { CSSProperties } from 'vue';
 import type { VueFlowError } from '../utils';
 import type { EdgeTypesObject, NodeTypesObject } from './components';
-import type { ConnectionLineOptions, ConnectionLineProps } from './connection';
+import type { ConnectionLineProps } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeProps, EdgeReconnectable } from './edge';
 import type {
   ConnectEndEvent,
@@ -66,42 +68,42 @@ export interface CustomThemeVars {
  * override; the stylesheet falls back to the shipped `--xy-*-default` value
  * (`var(--xy-x, var(--xy-x-default))`).
  */
-export type CSSVars =
-  | '--xy-edge-stroke'
-  | '--xy-edge-stroke-width'
-  | '--xy-edge-stroke-selected'
-  | '--xy-connectionline-stroke'
-  | '--xy-connectionline-stroke-width'
-  | '--xy-attribution-background-color'
-  | '--xy-minimap-background-color'
-  | '--xy-minimap-mask-background-color'
-  | '--xy-minimap-mask-stroke-color'
-  | '--xy-minimap-mask-stroke-width'
-  | '--xy-minimap-node-background-color'
-  | '--xy-minimap-node-stroke-color'
-  | '--xy-minimap-node-stroke-width'
-  | '--xy-background-color'
-  | '--xy-background-pattern-color'
-  | '--xy-resize-background-color'
-  | '--xy-node-color'
-  | '--xy-node-border'
-  | '--xy-node-border-selected'
-  | '--xy-node-background-color'
-  | '--xy-node-boxshadow-hover'
-  | '--xy-node-boxshadow-selected'
-  | '--xy-node-border-radius'
-  | '--xy-handle-background-color'
-  | '--xy-handle-border-color'
-  | '--xy-selection-background-color'
-  | '--xy-selection-border'
-  | '--xy-controls-button-background-color'
-  | '--xy-controls-button-background-color-hover'
-  | '--xy-controls-button-color'
-  | '--xy-controls-button-color-hover'
-  | '--xy-controls-button-border-color'
-  | '--xy-controls-box-shadow'
-  | '--xy-edge-label-background-color'
-  | '--xy-edge-label-color';
+export type CSSVars
+  = | '--xy-edge-stroke'
+    | '--xy-edge-stroke-width'
+    | '--xy-edge-stroke-selected'
+    | '--xy-connectionline-stroke'
+    | '--xy-connectionline-stroke-width'
+    | '--xy-attribution-background-color'
+    | '--xy-minimap-background-color'
+    | '--xy-minimap-mask-background-color'
+    | '--xy-minimap-mask-stroke-color'
+    | '--xy-minimap-mask-stroke-width'
+    | '--xy-minimap-node-background-color'
+    | '--xy-minimap-node-stroke-color'
+    | '--xy-minimap-node-stroke-width'
+    | '--xy-background-color'
+    | '--xy-background-pattern-color'
+    | '--xy-resize-background-color'
+    | '--xy-node-color'
+    | '--xy-node-border'
+    | '--xy-node-border-selected'
+    | '--xy-node-background-color'
+    | '--xy-node-boxshadow-hover'
+    | '--xy-node-boxshadow-selected'
+    | '--xy-node-border-radius'
+    | '--xy-handle-background-color'
+    | '--xy-handle-border-color'
+    | '--xy-selection-background-color'
+    | '--xy-selection-border'
+    | '--xy-controls-button-background-color'
+    | '--xy-controls-button-background-color-hover'
+    | '--xy-controls-button-color'
+    | '--xy-controls-button-color-hover'
+    | '--xy-controls-button-border-color'
+    | '--xy-controls-box-shadow'
+    | '--xy-edge-label-background-color'
+    | '--xy-edge-label-color';
 
 export type ThemeVars = { [key in CSSVars]?: CSSProperties['color'] };
 export type Styles = CSSProperties & ThemeVars & CustomThemeVars;
@@ -151,8 +153,25 @@ export interface VueFlowProps<NodeType extends Node = Node, EdgeType extends Edg
    * @default 'strict'
    */
   connectionMode?: ConnectionMode;
-  /** Styling and marker options for the connection line drawn while dragging a new connection. */
-  connectionLineOptions?: ConnectionLineOptions;
+  /**
+   * The path shape drawn while dragging a new connection, see {@link ConnectionLineType}.
+   *
+   * Edges can be of any type once created, but the connection line has to know which path to draw
+   * before that.
+   *
+   * @default 'default'
+   */
+  connectionLineType?: ConnectionLineType;
+  /** Inline style applied to the connection line itself. */
+  connectionLineStyle?: CSSProperties;
+  /** Inline style applied to the `<svg>` the connection line is drawn in. */
+  connectionLineContainerStyle?: CSSProperties;
+  /** Additional class names applied to the connection line. */
+  connectionLineClass?: ClassValue;
+  /** Marker rendered at the start (source handle) of the connection line. */
+  connectionLineMarkerStart?: EdgeMarkerType;
+  /** Marker rendered at the end (pointer side) of the connection line. */
+  connectionLineMarkerEnd?: EdgeMarkerType;
   /**
    * The radius around a handle where you drop a connection line to create a new edge.
    * @default 20
@@ -599,9 +618,9 @@ export type EdgeSlots<EdgeType extends Edge = Edge> = Partial<
   } & Record<`edge-${string}`, (edgeProps: EdgeProps<EdgeType>) => any>
 >;
 
-export type VueFlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType> &
-  EdgeSlots<EdgeType> & {
+export type VueFlowSlots<NodeType extends Node = Node, EdgeType extends Edge = Edge> = NodeSlots<NodeType>
+  & EdgeSlots<EdgeType> & {
     'connection-line'?: (connectionLineProps: ConnectionLineProps<NodeType>) => any;
     'zoom-pane'?: () => any;
-    default?: () => any;
+    'default'?: () => any;
   };

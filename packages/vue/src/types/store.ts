@@ -2,18 +2,18 @@ import type { KeyFilter } from '@vueuse/core';
 import type {
   AriaLabelConfig,
   Connection,
+  ConnectionLineType,
   ConnectionLookup,
   ConnectionMode,
   ConnectionState,
   CoordinateExtent,
   Dimensions,
-  EdgeChangeset,
   EdgeLookup,
+  EdgeMarkerType,
   FitViewOptionsBase,
-  HandleType,
   HandleBounds,
+  HandleType,
   IsValidConnection,
-  NodeChangeset,
   NodeConnection,
   NodeDragItem,
   NodeLookup,
@@ -29,12 +29,11 @@ import type {
   XYPosition,
   ZIndexMode,
 } from '@xyflow/system';
-import type { ComputedRef } from 'vue';
+import type { ComputedRef, CSSProperties } from 'vue';
 import type { ViewportHelper } from '../composables';
 import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
-import type { ConnectionLineOptions } from './connection';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
-import type { FlowExportObject, OnBeforeDelete, VueFlowProps } from './flow';
+import type { ClassValue, FlowExportObject, OnBeforeDelete, VueFlowProps } from './flow';
 import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
 import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
 
@@ -110,7 +109,12 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   panActivationKeyCode: KeyFilter | null;
 
   connectionMode: ConnectionMode;
-  connectionLineOptions: ConnectionLineOptions;
+  connectionLineType: ConnectionLineType;
+  connectionLineStyle: CSSProperties;
+  connectionLineContainerStyle: CSSProperties;
+  connectionLineClass: ClassValue;
+  connectionLineMarkerStart: EdgeMarkerType | undefined;
+  connectionLineMarkerEnd: EdgeMarkerType | undefined;
   /** the ongoing drag-connection as a single {@link ConnectionState} (`inProgress: false` when idle) */
   connection: ConnectionState<InternalNode<NodeType>>;
   /** the handle a click-to-connect interaction started from (separate from the drag `connection`) */
@@ -334,10 +338,6 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   updateNodeData: UpdateNodeData<NodeType>;
   /** changes the parent of a node, keeping its absolute position */
   changeParent: (nodeId: string, parentId: string | null) => void;
-  /** applies default edge change handler */
-  applyEdgeChanges: (changes: EdgeChangeset<EdgeType>) => EdgeType[];
-  /** applies default node change handler; returns the resulting user nodes */
-  applyNodeChanges: (changes: NodeChangeset<NodeType>) => NodeType[];
   /** manually select edges and add to state */
   addSelectedEdges: (edges: EdgeType[]) => void;
   /** manually select nodes and add to state */
@@ -411,7 +411,7 @@ export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = E
   getNodeTypes: Record<keyof DefaultNodeTypes | string, NodeComponent<NodeType | BuiltInNode>>;
   /** all visible nodes (user-facing `Node`s; use `getInternalNode`/`nodeLookup` for enriched data) */
   getNodes: readonly NodeType[];
-  // returned list is shallow `readonly` — mutate via setNodes/updateNode/applyNodeChanges. Not
+  // returned list is shallow `readonly` — mutate via setNodes/updateNode. Not
   // `DeepReadonly`: it recurses into `Edge.label`'s VNode/Component types and trips TS2589 (#1886).
   /** all visible edges (user-facing `Edge`s) */
   getEdges: readonly EdgeType[];

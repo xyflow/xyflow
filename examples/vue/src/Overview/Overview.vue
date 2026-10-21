@@ -151,7 +151,7 @@ const edges = shallowRef<Edge[]>(initialElements.filter(isEdge));
   <VueFlow
     v-model:nodes="nodes"
     v-model:edges="edges"
-    :connection-line-options="{ style: { stroke: '#ddd' } }"
+    :connection-line-style="{ stroke: '#ddd' }"
     snap-to-grid
     :snap-grid="snapGrid"
     @init="onLoad"
@@ -174,7 +174,7 @@ const edges = shallowRef<Edge[]>(initialElements.filter(isEdge));
     @edge-double-click="onEdgeDoubleClick"
   >
     <MiniMap :node-stroke-color="nodeStrokeColor" :node-color="nodeColor" :node-border-radius="2" />
-    <Controls />
+    <Controls orientation="horizontal" />
     <Background variant="lines" />
   </VueFlow>
 </template>

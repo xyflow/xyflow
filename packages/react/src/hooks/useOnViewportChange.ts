@@ -35,17 +35,17 @@ export type UseOnViewportChangeOptions = {
  *```
  */
 export function useOnViewportChange({ onStart, onChange, onEnd }: UseOnViewportChangeOptions) {
-  const store = useReactFlowStoreApi();
+  const { optionsStore } = useReactFlowStoreApi();
 
   useEffect(() => {
-    store.setState({ onViewportChangeStart: onStart });
+    optionsStore.setState({ onViewportChangeStart: onStart });
   }, [onStart]);
 
   useEffect(() => {
-    store.setState({ onViewportChange: onChange });
+    optionsStore.setState({ onViewportChange: onChange });
   }, [onChange]);
 
   useEffect(() => {
-    store.setState({ onViewportChangeEnd: onEnd });
+    optionsStore.setState({ onViewportChangeEnd: onEnd });
   }, [onEnd]);
 }

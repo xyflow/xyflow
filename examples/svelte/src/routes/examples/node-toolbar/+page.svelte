@@ -8,7 +8,7 @@
 		type NodeTypes
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	import CustomNode, { type CustomNodeType } from './CustomNode.svelte';
 	import SelectedNodesToolbar from './SelectedNodesToolbar.svelte';

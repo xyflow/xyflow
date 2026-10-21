@@ -8,7 +8,7 @@
 		Position
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 	import './style.css';
 
 	const nodeDefaults = {

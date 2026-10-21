@@ -1,4 +1,4 @@
-import { useSvelteFlowStore } from '$lib/store/index.js';
+import { useSvelteFlowStore } from '#lib/store/index.js';
 
 import type { ConnectionState } from '@xyflow/system';
 

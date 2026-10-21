@@ -22,7 +22,7 @@ export function useGlobalKeyHandler({
   deleteKeyCode: KeyCode | null;
   multiSelectionKeyCode: KeyCode | null;
 }): void {
-  const store = useReactFlowStoreApi();
+  const { optionsStore, nodesStore, edgesStore } = useReactFlowStoreApi();
   const { deleteElements } = useReactFlow();
 
   const deleteKeyPressed = useKeyPress(deleteKeyCode, { actInsideInputWithModifier: false });
@@ -30,13 +30,16 @@ export function useGlobalKeyHandler({
 
   useEffect(() => {
     if (deleteKeyPressed) {
-      const { edges, nodes } = store.getState();
+      const { edges } = edgesStore.getState();
+      const { nodes } = nodesStore.getState();
       void deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected) });
-      store.setState({ nodesSelectionActive: false });
+      if (optionsStore.getState().nodesSelectionActive) {
+        optionsStore.setState({ nodesSelectionActive: false });
+      }
     }
   }, [deleteKeyPressed]);
 
   useEffect(() => {
-    store.setState({ multiSelectionActive: multiSelectionKeyPressed });
+    optionsStore.setState({ multiSelectionActive: multiSelectionKeyPressed });
   }, [multiSelectionKeyPressed]);
 }

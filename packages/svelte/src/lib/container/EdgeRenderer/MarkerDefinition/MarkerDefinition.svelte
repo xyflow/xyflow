@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { useSvelteFlowStore } from '$lib/store/index.js';
-  import { Marker } from '$lib/container/EdgeRenderer/MarkerDefinition/index.js';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { Marker } from '#lib/container/EdgeRenderer/MarkerDefinition/index.js';
 
   const store = useSvelteFlowStore();
 </script>

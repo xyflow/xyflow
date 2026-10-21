@@ -1,4 +1,6 @@
 import createConfig from '@xyflow/eslint/svelte';
-import svelteConfig from './svelte.config.js';
+import { loadConfig } from '@sveltejs/load-config';
+
+const svelteConfig = (await loadConfig('./', { traverse: false }))?.config;
 
 export default createConfig({ svelteConfig });

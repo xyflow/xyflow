@@ -53,18 +53,22 @@ export { NodeId as NodeIdInjection, VueFlow as VueFlowInjection } from './contex
 // Runtime prop-declaration factories for JS users (TS users use `defineProps<NodeProps<T>>()`).
 export { connectionLineProps, edgeProps, nodeProps } from './props-objects.gen';
 export * from './types';
-/**
- * @deprecated Prefer the store instance's `applyChanges`/`applyNodeChanges`/`applyEdgeChanges` (from
- * `useVueFlow`, or the instance received by `onInit`). Kept for the options API.
- */
-export { applyChanges, applyEdgeChanges, applyNodeChanges } from './utils/changes';
 export { defaultEdgeTypes, defaultNodeTypes } from './utils/defaultNodesEdges';
 export { addEdge, reconnectEdge } from './utils/edges';
 export { ErrorCode, isErrorOfType, VueFlowError } from './utils/errors';
 export { connectionExists, isEdge, isInternalNode, isNode } from './utils/graph';
 
 // re-export these utils from system
-export { getBezierEdgeCenter, getBezierPath, getSmoothStepPath, getStraightPath } from '@xyflow/system';
+export {
+  getBezierEdgeCenter,
+  getBezierPath,
+  type GetBezierPathParams,
+  getEdgeCenter,
+  getSmoothStepPath,
+  type GetSmoothStepPathParams,
+  getStraightPath,
+  type GetStraightPathParams,
+} from '@xyflow/system';
 
 // re-export graph utils
 export {
@@ -109,8 +113,8 @@ export {
   type FinalConnectionState,
   type FitViewOptionsBase as FitViewOptions,
   type GetViewport,
-  type HandleConnection,
   type HandleBounds,
+  type HandleConnection,
   type HandleType,
   type IsValidConnection,
   type MarkerProps,

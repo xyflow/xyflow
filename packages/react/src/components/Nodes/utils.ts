@@ -1,8 +1,7 @@
 import type { RefObject } from 'react';
-import type { StoreApi } from 'zustand';
 import { errorMessages } from '@xyflow/system';
 
-import type { ReactFlowState } from '../../types';
+import type { ReactFlowStoreApi } from '../../types';
 
 /*
  * this handler is called by
@@ -12,19 +11,20 @@ import type { ReactFlowState } from '../../types';
  */
 export function handleNodeClick({
   id,
-  store,
+  optionsStore,
+  nodesStore,
   unselect = false,
   nodeRef,
 }: {
   id: string;
-  store: {
-    getState: StoreApi<ReactFlowState>['getState'];
-    setState: StoreApi<ReactFlowState>['setState'];
-  };
+  optionsStore: ReactFlowStoreApi['optionsStore'];
+  nodesStore: ReactFlowStoreApi['nodesStore'];
   unselect?: boolean;
   nodeRef?: RefObject<HTMLDivElement>;
 }) {
-  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, nodeLookup, onError } = store.getState();
+  const { addSelectedNodes, unselectNodesAndEdges, multiSelectionActive, onError, nodesSelectionActive } =
+    optionsStore.getState();
+  const { nodeLookup } = nodesStore.getState();
   const node = nodeLookup.get(id);
 
   if (!node) {
@@ -32,7 +32,9 @@ export function handleNodeClick({
     return;
   }
 
-  store.setState({ nodesSelectionActive: false });
+  if (nodesSelectionActive) {
+    optionsStore.setState({ nodesSelectionActive: false });
+  }
 
   if (!node.selected) {
     addSelectedNodes([id]);

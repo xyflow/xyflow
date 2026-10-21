@@ -22,7 +22,7 @@
 		type NodeTypes,
 		type Edge
 	} from '@xyflow/svelte';
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	import TextNode from './TextNode.svelte';
 	import UppercaseNode from './UppercaseNode.svelte';

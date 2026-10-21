@@ -39,7 +39,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
   setReconnecting,
   setUpdateHover,
 }: EdgeUpdateAnchorsProps<EdgeType>) {
-  const store = useReactFlowStoreApi();
+  const { optionsStore, viewportStore, connectionStore, nodesStore } = useReactFlowStoreApi();
 
   const handleEdgeUpdater = (
     event: React.MouseEvent<SVGGElement, MouseEvent>,
@@ -55,14 +55,13 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       domNode,
       connectionMode,
       connectionRadius,
-      lib,
       onConnectStart,
       cancelConnection,
-      nodeLookup,
       rfId: flowId,
       panBy,
       updateConnection,
-    } = store.getState();
+    } = optionsStore.getState();
+    const { nodeLookup } = nodesStore.getState();
     const isTarget = oppositeHandle.type === 'target';
 
     const _onReconnectEnd = (evt: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => {
@@ -87,19 +86,19 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       nodeLookup,
       isTarget,
       edgeUpdaterType: oppositeHandle.type,
-      lib,
+      lib: 'react',
       flowId,
       cancelConnection,
       panBy,
-      isValidConnection: (...args) => store.getState().isValidConnection?.(...args) ?? true,
+      isValidConnection: (...args) => optionsStore.getState().isValidConnection?.(...args) ?? true,
       onConnect: onConnectEdge,
       onConnectStart: _onConnectStart,
-      onConnectEnd: (...args) => store.getState().onConnectEnd?.(...args),
+      onConnectEnd: (...args) => optionsStore.getState().onConnectEnd?.(...args),
       onReconnectEnd: _onReconnectEnd,
       updateConnection,
-      getTransform: () => store.getState().transform,
-      getFromHandle: () => store.getState().connection.fromHandle,
-      dragThreshold: store.getState().connectionDragThreshold,
+      getTransform: () => viewportStore.getState().transform,
+      getFromHandle: () => connectionStore.getState().connection.fromHandle,
+      dragThreshold: optionsStore.getState().connectionDragThreshold,
       handleDomNode: event.currentTarget,
     });
   };

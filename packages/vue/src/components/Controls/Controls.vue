@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ControlEmits, ControlProps } from './types';
-import { toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import Panel from '../Panel/Panel.vue';
 import ControlButton from './ControlButton.vue';
@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<ControlProps>(), {
   showFitView: true,
   showInteractive: true,
   position: 'bottom-left',
+  orientation: 'vertical',
 });
 
 const emit = defineEmits<ControlEmits>();
@@ -19,7 +20,7 @@ const { setInteractive, zoomIn, zoomOut, fitView, viewport } = useVueFlow();
 
 const { nodesDraggable, nodesConnectable, elementsSelectable, minZoom, maxZoom, ariaLabelConfig } = storeToRefs(useVueFlowStore());
 
-const isInteractive = toRef(() => nodesDraggable.value || nodesConnectable.value || elementsSelectable.value);
+const isInteractive = computed(() => nodesDraggable.value || nodesConnectable.value || elementsSelectable.value);
 
 const minZoomReached = toRef(() => viewport.value.zoom <= minZoom.value);
 
@@ -38,7 +39,7 @@ function onZoomOutHandler() {
 }
 
 function onFitViewHandler() {
-  fitView(props.fitViewParams);
+  fitView(props.fitViewOptions);
 
   emit('fitView');
 }
@@ -58,7 +59,12 @@ export default {
 </script>
 
 <template>
-  <Panel class="vue-flow__controls" :position="position" :label="ariaLabel ?? ariaLabelConfig['controls.ariaLabel']">
+  <Panel
+    :class="orientation"
+    :position="position"
+    :label="ariaLabel ?? ariaLabelConfig['controls.ariaLabel']"
+    class="vue-flow__controls"
+  >
     <slot name="top" />
 
     <template v-if="showZoom">

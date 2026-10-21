@@ -4,7 +4,7 @@ import type {
   Edge,
   EdgeLayouted,
   InternalNode
-} from '$lib/types/index.js';
+} from '#lib/types/index.js';
 import {
   ConnectionMode,
   getEdgePosition,
@@ -67,8 +67,7 @@ export interface EdgeLayoutOnlyVisibleOptions<
 }
 
 export type EdgeLayoutOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> =
-  | EdgeLayoutAllOptions<NodeType, EdgeType>
-  | EdgeLayoutOnlyVisibleOptions<NodeType, EdgeType>;
+  EdgeLayoutAllOptions<NodeType, EdgeType> | EdgeLayoutOnlyVisibleOptions<NodeType, EdgeType>;
 
 export function getLayoutedEdges<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   options: EdgeLayoutOptions<NodeType, EdgeType>

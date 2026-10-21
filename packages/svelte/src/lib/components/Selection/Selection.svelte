@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { toPxString } from '$lib/utils/index.js';
+  import { toPxString } from '#lib/utils/index.js';
 
   let {
     x = 0,

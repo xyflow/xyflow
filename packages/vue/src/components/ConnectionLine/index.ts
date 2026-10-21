@@ -11,7 +11,16 @@ const ConnectionLine = defineComponent({
   setup() {
     const { id, viewport, getInternalNode } = useVueFlow();
 
-    const { connectionMode, connection, connectionLineOptions } = storeToRefs(useVueFlowStore());
+    const {
+      connectionMode,
+      connection,
+      connectionLineType: lineType,
+      connectionLineStyle,
+      connectionLineContainerStyle,
+      connectionLineClass,
+      connectionLineMarkerStart,
+      connectionLineMarkerEnd,
+    } = storeToRefs(useVueFlowStore());
 
     const connectionLineComponent = inject(Slots)?.['connection-line'];
 
@@ -29,11 +38,11 @@ const ConnectionLine = defineComponent({
     });
 
     const markerStart = computed(() =>
-      connectionLineOptions.value.markerStart ? `url(#${getMarkerId(connectionLineOptions.value.markerStart, id)})` : '',
+      connectionLineMarkerStart.value ? `url(#${getMarkerId(connectionLineMarkerStart.value, id)})` : '',
     );
 
     const markerEnd = computed(() =>
-      connectionLineOptions.value.markerEnd ? `url(#${getMarkerId(connectionLineOptions.value.markerEnd, id)})` : '',
+      connectionLineMarkerEnd.value ? `url(#${getMarkerId(connectionLineMarkerEnd.value, id)})` : '',
     );
 
     return () => {
@@ -89,7 +98,7 @@ const ConnectionLine = defineComponent({
       const { x: toX, y: toY }
         = toHandle && toNode.value ? getHandlePosition(toNode.value, toHandle, toPosition, true) : pointer.value;
 
-      const type = connectionLineOptions.value.type ?? ConnectionLineType.Bezier;
+      const type = lineType.value ?? ConnectionLineType.Bezier;
 
       let dAttr = '';
 
@@ -123,10 +132,13 @@ const ConnectionLine = defineComponent({
 
       return h(
         'svg',
-        { class: 'vue-flow__edges vue-flow__connectionline vue-flow__container' },
+        {
+          class: 'vue-flow__edges vue-flow__connectionline vue-flow__container',
+          style: connectionLineContainerStyle.value,
+        },
         h(
           'g',
-          { class: 'vue-flow__connection' },
+          { class: ['vue-flow__connection', connectionStatus] },
           connectionLineComponent
             ? h(connectionLineComponent, {
                 fromX,
@@ -146,10 +158,9 @@ const ConnectionLine = defineComponent({
               })
             : h('path', {
                 'd': dAttr,
-                'class': [connectionLineOptions.value.class, connectionStatus, 'vue-flow__connection-path'],
-                'style': {
-                  ...connectionLineOptions.value.style,
-                },
+                'fill': 'none',
+                'class': [connectionLineClass.value, 'vue-flow__connection-path'],
+                'style': connectionLineStyle.value,
                 'marker-end': markerEnd.value,
                 'marker-start': markerStart.value,
               }),

@@ -7,7 +7,13 @@ import MarkerSymbols from './MarkerSymbols.vue';
 
 const { id: vueFlowId } = useVueFlow();
 
-const { edges, connectionLineOptions, defaultEdgeOptions, defaultMarkerColor: defaultColor } = storeToRefs(useVueFlowStore());
+const {
+  edges,
+  connectionLineMarkerStart,
+  connectionLineMarkerEnd,
+  defaultEdgeOptions,
+  defaultMarkerColor: defaultColor,
+} = storeToRefs(useVueFlowStore());
 
 const markers = computed(() => {
   const ids: Set<string> = new Set();
@@ -30,7 +36,7 @@ const markers = computed(() => {
     }
   };
 
-  for (const marker of [connectionLineOptions.value.markerEnd, connectionLineOptions.value.markerStart]) {
+  for (const marker of [connectionLineMarkerEnd.value, connectionLineMarkerStart.value]) {
     createMarkers(marker);
   }
 

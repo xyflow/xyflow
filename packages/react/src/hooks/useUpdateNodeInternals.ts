@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import type { UpdateNodeInternals, InternalNodeUpdate } from '@xyflow/system';
 
 import { useReactFlowStoreApi } from './useReactFlowStore';
@@ -49,10 +48,10 @@ import { useReactFlowStoreApi } from './useReactFlowStore';
  *{@link ReactFlowProvider} or a {@link ReactFlow} component.
  */
 export function useUpdateNodeInternals(): UpdateNodeInternals {
-  const store = useReactFlowStoreApi();
+  const { optionsStore } = useReactFlowStoreApi();
 
-  return useCallback<UpdateNodeInternals>((id: string | string[]) => {
-    const { domNode, updateNodeInternals } = store.getState();
+  return (id: string | string[]) => {
+    const { domNode, updateNodeInternals } = optionsStore.getState();
     const updateIds = Array.isArray(id) ? id : [id];
     const updates = new Map<string, InternalNodeUpdate>();
 
@@ -65,5 +64,5 @@ export function useUpdateNodeInternals(): UpdateNodeInternals {
     });
 
     requestAnimationFrame(() => updateNodeInternals(updates, { triggerFitView: false }));
-  }, []);
+  };
 }

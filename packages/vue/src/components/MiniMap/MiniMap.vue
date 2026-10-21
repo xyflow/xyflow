@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { XYMinimapInstance } from '@xyflow/system';
+import type { Rect, XYMinimapInstance } from '@xyflow/system';
 import type { InternalNode } from '../../types';
 import type { MiniMapEmits, MiniMapNodeFunc, MiniMapProps, MiniMapSlots, ShapeRendering } from './types';
 import { getBoundsOfRects, getConnectedEdges, getNodeDimensions, getNodesBounds, isNumeric, XYMinimap } from '@xyflow/system';
-import { computed, onMounted, onUnmounted, provide, shallowRef, toRef, useAttrs, watch } from 'vue';
+import { computed, onMounted, onUnmounted, provide, shallowRef, useAttrs, watch } from 'vue';
 import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import Panel from '../Panel/Panel.vue';
 import MiniMapNode from './MiniMapNode.vue';
@@ -12,15 +12,16 @@ import { Slots } from './types';
 const {
   width,
   height,
-  nodeStrokeColor = 'var(--xy-minimap-node-stroke-color, var(--xy-minimap-node-stroke-color-default))',
-  nodeColor = 'var(--xy-minimap-node-background-color, var(--xy-minimap-node-background-color-default))',
+  nodeStrokeColor,
+  nodeColor,
   nodeClassName,
   nodeBorderRadius = 5,
-  nodeStrokeWidth = 2,
-  maskColor = 'var(--xy-minimap-mask-background-color, var(--xy-minimap-mask-background-color-default))',
+  nodeStrokeWidth,
+  bgColor,
+  maskColor,
   position = 'bottom-right',
-  maskStrokeColor = 'var(--xy-minimap-mask-stroke-color, var(--xy-minimap-mask-stroke-color-default))',
-  maskStrokeWidth = 1,
+  maskStrokeColor,
+  maskStrokeWidth,
   maskBorderRadius = 0,
   pannable = false,
   zoomable = false,
@@ -53,30 +54,35 @@ let minimapInstance: XYMinimapInstance | null = null;
 
 const resolvedAriaLabel = computed(() => ariaLabel ?? ariaLabelConfig.value['minimap.ariaLabel']);
 
-const elementWidth = toRef(() => width ?? attrs.style?.width ?? defaultWidth);
+const elementWidth = computed(() => width ?? attrs.style?.width ?? defaultWidth);
 
-const elementHeight = toRef(() => height ?? attrs.style?.height ?? defaultHeight);
+const elementHeight = computed(() => height ?? attrs.style?.height ?? defaultHeight);
 
 const shapeRendering: ShapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
 
-const nodeColorFunc = computed<MiniMapNodeFunc>(() => (typeof nodeColor === 'string' ? () => nodeColor : nodeColor));
+const nodeColorFunc = computed(() => getAttrFunction(nodeColor));
 
-const nodeStrokeColorFunc = computed<MiniMapNodeFunc>(() =>
-  typeof nodeStrokeColor === 'string' ? () => nodeStrokeColor : nodeStrokeColor,
-);
+const nodeStrokeColorFunc = computed(() => getAttrFunction(nodeStrokeColor));
 
-const nodeClassNameFunc = computed<MiniMapNodeFunc>(() =>
-  typeof nodeClassName === 'string' ? () => nodeClassName : typeof nodeClassName === 'function' ? nodeClassName : () => '',
-);
+const nodeClassNameFunc = computed(() => getAttrFunction(nodeClassName));
 
 const minimapNodes = computed(() => Array.from(nodeLookup.values()));
 
-const bb = computed(() =>
-  getNodesBounds(
+// value-stable: the node bounds are recomputed on every commit (every drag frame) but usually come back
+// numerically identical — a node moving inside the existing bounds doesn't change them. Returning `prev`
+// then keeps `boundingRect`/`viewScale`/`viewBox`/`d` from invalidating and re-writing the whole minimap SVG.
+const bb = computed<Rect>((prev) => {
+  const next = getNodesBounds(
     nodes.value.filter(node => !node.hidden),
     { nodeLookup },
-  ),
-);
+  );
+
+  if (prev && prev.x === next.x && prev.y === next.y && prev.width === next.width && prev.height === next.height) {
+    return prev;
+  }
+
+  return next;
+});
 
 const viewBB = computed(() => ({
   x: -viewport.value.x / viewport.value.zoom,
@@ -107,6 +113,17 @@ const viewBox = computed(() => {
     height: viewHeight + offset * 2,
   };
 });
+
+const minimapStyle = computed(() => ({
+  '--xy-minimap-background-color-props': bgColor,
+  '--xy-minimap-mask-background-color-props': maskColor,
+  '--xy-minimap-mask-stroke-color-props': maskStrokeColor,
+  '--xy-minimap-mask-stroke-width-props':
+    typeof maskStrokeWidth === 'number' ? maskStrokeWidth * viewScale.value : undefined,
+  '--xy-minimap-node-background-color-props': typeof nodeColor === 'string' ? nodeColor : undefined,
+  '--xy-minimap-node-stroke-color-props': typeof nodeStrokeColor === 'string' ? nodeStrokeColor : undefined,
+  '--xy-minimap-node-stroke-width-props': nodeStrokeWidth,
+}));
 
 const d = computed(() => {
   if (!isNumeric(viewBox.value.x) || !isNumeric(viewBox.value.y)) {
@@ -174,6 +191,10 @@ onUnmounted(() => {
   minimapInstance?.destroy();
 });
 
+function getAttrFunction(attr: string | MiniMapNodeFunc | undefined): MiniMapNodeFunc {
+  return typeof attr === 'function' ? attr : () => attr;
+}
+
 function onSvgClick(event: MouseEvent) {
   const [x, y] = minimapInstance?.pointer(event) || [0, 0];
 
@@ -219,7 +240,7 @@ export default {
 </script>
 
 <template>
-  <Panel :class="{ pannable, zoomable }" :position="position" class="vue-flow__minimap">
+  <Panel :class="{ pannable, zoomable }" :style="minimapStyle" :position="position" class="vue-flow__minimap">
     <svg
       ref="el"
       :width="elementWidth"
@@ -227,6 +248,7 @@ export default {
       :viewBox="[viewBox.x, viewBox.y, viewBox.width, viewBox.height].join(' ')"
       :aria-labelledby="`vue-flow__minimap-${id}`"
       role="img"
+      class="vue-flow__minimap-svg"
       @click="onSvgClick"
     >
       <title v-if="resolvedAriaLabel" :id="`vue-flow__minimap-${id}`">{{ resolvedAriaLabel }}</title>
@@ -260,14 +282,7 @@ export default {
         @mouseleave="onNodeMouseLeave($event, node)"
       />
 
-      <path
-        :d="d"
-        :fill="maskColor"
-        :stroke="maskStrokeColor"
-        :stroke-width="maskStrokeWidth"
-        class="vue-flow__minimap-mask"
-        fill-rule="evenodd"
-      />
+      <path :d="d" class="vue-flow__minimap-mask" fill-rule="evenodd" pointer-events="none" />
     </svg>
   </Panel>
 </template>

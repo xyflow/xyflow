@@ -4,28 +4,38 @@ import { h } from 'vue';
 
 interface LinePatternProps {
   dimensions: [number, number];
-  size?: number;
-  color: string;
+  variant: BackgroundVariant;
+  lineWidth?: number;
+  patternClassName?: string;
 }
 
-export const LinePattern: FunctionalComponent<LinePatternProps> = function ({ dimensions, size, color }) {
+export const LinePattern: FunctionalComponent<LinePatternProps> = function ({
+  dimensions,
+  lineWidth,
+  variant,
+  patternClassName,
+}) {
   return h('path', {
-    'stroke': color,
-    'stroke-width': size,
+    'class': ['vue-flow__background-pattern', variant, patternClassName],
+    'stroke-width': lineWidth,
     'd': `M${dimensions[0] / 2} 0 V${dimensions[1]} M0 ${dimensions[1] / 2} H${dimensions[0]}`,
   });
 };
 
+LinePattern.props = ['dimensions', 'variant', 'lineWidth', 'patternClassName'];
+
 interface DotPatternProps {
   radius: number;
-  color: string;
+  patternClassName?: string;
 }
 
-export const DotPattern: FunctionalComponent<DotPatternProps> = function ({ radius, color }) {
-  return h('circle', { cx: radius, cy: radius, r: radius, fill: color });
+export const DotPattern: FunctionalComponent<DotPatternProps> = function ({ radius, patternClassName }) {
+  return h('circle', {
+    class: ['vue-flow__background-pattern', 'dots', patternClassName],
+    cx: radius,
+    cy: radius,
+    r: radius,
+  });
 };
 
-export const DefaultBgColors: Record<BackgroundVariant, string> = {
-  lines: '#eee',
-  dots: '#91919a',
-};
+DotPattern.props = ['radius', 'patternClassName'];

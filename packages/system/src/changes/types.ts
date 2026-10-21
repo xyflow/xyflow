@@ -1,5 +1,4 @@
-import type { EdgeBase, NodeBase } from '../types';
-import type { Dimensions, XYPosition } from '@xyflow/system';
+import type { Dimensions, EdgeBase, NodeBase, XYPosition } from '../types';
 
 export type NodeChange<NodeType extends NodeBase = NodeBase> =
   | DimensionChange

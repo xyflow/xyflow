@@ -48,15 +48,15 @@ const EdgeWrapper = defineComponent({
 
     const edgeEl = shallowRef<SVGElement | null>(null);
 
-    const isSelectable = toRef(() =>
+    const isSelectable = computed(() =>
       typeof edge.value.selectable === 'undefined' ? store.elementsSelectable : edge.value.selectable,
     );
 
-    const isReconnectable = toRef(() =>
+    const isReconnectable = computed(() =>
       typeof edge.value.reconnectable === 'undefined' ? store.edgesReconnectable : edge.value.reconnectable,
     );
 
-    const isFocusable = toRef(() => (typeof edge.value.focusable === 'undefined' ? store.edgesFocusable : edge.value.focusable));
+    const isFocusable = computed(() => (typeof edge.value.focusable === 'undefined' ? store.edgesFocusable : edge.value.focusable));
 
     const hasReconnectListener = toRef(
       () =>

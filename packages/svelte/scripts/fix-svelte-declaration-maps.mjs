@@ -23,7 +23,7 @@ async function updateDeclarationMap(file) {
 
   const sources = await Promise.all(
     map.sources.map(async (source) => {
-      if (!source.endsWith('.svelte.ts')) {
+      if (!source.endsWith('.svelte.ts') && !source.endsWith('.svelte.js')) {
         return source;
       }
 

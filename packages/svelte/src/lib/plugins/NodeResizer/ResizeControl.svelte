@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import { useSvelteFlowStore } from '$lib/store/index.js';
-  import { getNodeIdContext } from '$lib/store/context.js';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { getNodeIdContext } from '#lib/store/context.js';
   import {
     XYResizer,
     ResizeControlVariant,

@@ -29,9 +29,7 @@ A highly customizable React component for building interactive graphs and node-b
 
 **Are you using React Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
 
-**Are you using React Flow at your organization and making money from it?** Awesome! We rely on your support to keep React Flow developed and maintained under an MIT License, just how we like it. You can do that on the [React Flow Pro website](https://pro.reactflow.dev) or through [Github Sponsors](https://github.com/sponsors/wbkd).
-
-You can find more information in our [React Flow Pro FAQs](https://pro.reactflow.dev/info).
+**Are you using React Flow at your organization and making money from it?** Awesome! We rely on your support to keep React Flow developed and maintained under an MIT License, just how we like it. You can do that on the [React Flow Pro website](https://reactflow.dev/pro) or through [Github Sponsors](https://github.com/sponsors/wbkd).
 
 ## Installation
 
@@ -43,13 +41,13 @@ npm install @xyflow/react
 
 ## Quickstart
 
-This is only a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/learn/customization/custom-nodes), [examples](https://reactflow.dev/examples/overview) and the full [API reference](https://reactflow.dev/api-reference/react-flow).
+This is a very basic usage example of React Flow. To see everything that is possible with the library, please refer to the [website](https://reactflow.dev) for [guides](https://reactflow.dev/learn/customization/custom-nodes), [examples](https://reactflow.dev/examples/overview) and the full [API reference](https://reactflow.dev/api-reference/react-flow).
 
 ```jsx
-import { useCallback } from 'react';
-import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from '@xyflow/react';
+import { useCallback, useState } from 'react';
+import { ReactFlow, MiniMap, Controls, Background, addEdge } from '@xyflow/react';
 
-import '@xyflow/react/dist/style.css';
+import '@xyflow/react/style.css';
 
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
@@ -59,10 +57,12 @@ const initialNodes = [
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
 
 function Flow() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes] = useState(initialNodes);
+  const [edges, setEdges] = useState(initialEdges);
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+  const onNodesChange = useCallback((changes) => setNodes(nds => changes.applyTo(nds)));
+  const onEdgesChange = useCallback((changes) => setEdges(eds => changes.applyTo(eds)));
 
   return (
     <ReactFlow
@@ -100,13 +100,7 @@ pnpm test
 
 React Flow is maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
 
-- Christopher • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
-- Hayleigh • [Twitter](https://twitter.com/hayleighdotdev) • [Github](https://github.com/hayleigh-dot-dev)
-- John • [Website](https://johnrobbdesign.com/) • [Mastodon](https://mastodon.social/@johnrobbjr)
-- Moritz • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
-- Peter • [Github](https://github.com/peterkogo)
-
-Any support you provide goes directly towards the development and maintenance of React Flow and Svelte Flow, allowing us to continue to operate as an independent company, working on what we think is best for our open-source libraries.
+Any support you provide goes directly towards the development and maintenance of React Flow, Svelte Flow and Vue Flow, allowing us to continue to operate as an independent company, working on what we think is best for our open-source libraries.
 
 ## Community Packages
 

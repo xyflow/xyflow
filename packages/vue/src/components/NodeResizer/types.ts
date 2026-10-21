@@ -1,6 +1,7 @@
 import type {
   ControlLinePosition,
   ControlPosition,
+  ResizeControlDirection,
   ResizeControlVariant,
   ResizeDragEvent,
   ResizeParams,
@@ -12,6 +13,7 @@ import type { CSSProperties } from 'vue';
 export type {
   ControlLinePosition,
   ControlPosition,
+  ResizeControlDirection,
   ResizeDragEvent,
   ResizeParams,
   ResizeParamsWithDirection,
@@ -98,7 +100,7 @@ export interface NodeResizerProps {
 export interface NodeResizerEmits {
   resizeStart: [resizeEvent: OnResizeStart];
   resize: [resizeEvent: OnResize];
-  resizeEnd: [resizeEvent: OnResizeStart];
+  resizeEnd: [resizeEvent: OnResizeEnd];
 }
 
 export interface ResizeControlProps extends NodeResizerProps {
@@ -120,6 +122,12 @@ export interface ResizeControlProps extends NodeResizerProps {
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
+  /**
+   * The direction the user can resize the node in.
+   *
+   * When left unset the node can be resized in any direction.
+   */
+  resizeDirection?: ResizeControlDirection;
   shouldResize?: ShouldResize;
   keepAspectRatio?: boolean | number;
   /**
@@ -129,14 +137,6 @@ export interface ResizeControlProps extends NodeResizerProps {
   autoScale?: boolean;
 }
 
-export interface ResizeControlLineProps extends ResizeControlProps {
-  nodeId?: string;
-  color?: string;
-  minWidth?: number;
-  minHeight?: number;
-  maxWidth?: number;
-  maxHeight?: number;
-  variant?: ResizeControlVariant;
+export type ResizeControlLineProps = Omit<ResizeControlProps, 'position' | 'resizeDirection'> & {
   position?: ControlLinePosition;
-  keepAspectRatio?: boolean | number;
-}
+};

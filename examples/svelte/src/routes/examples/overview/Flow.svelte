@@ -22,7 +22,7 @@
 	import CustomNodeDragHandle from './CustomNodeDragHandle.svelte';
 	import CustomEdge from './CustomEdge.svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 	import InitTracker from './InitTracker.svelte';
 
 	const nodeTypes: NodeTypes = {

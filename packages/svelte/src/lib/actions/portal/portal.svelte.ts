@@ -1,4 +1,4 @@
-import { useSvelteFlowStore } from '$lib/store/index.js';
+import { useSvelteFlowStore } from '#lib/store/index.js';
 
 type Portal = 'viewport-back' | 'viewport-front' | 'root' | 'edge-labels';
 

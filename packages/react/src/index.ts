@@ -14,22 +14,28 @@ export { ViewportPortal } from './components/ViewportPortal';
 
 export { useReactFlow } from './hooks/useReactFlow';
 export { useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
-export { useNodes } from './hooks/useNodes';
-export { useEdges } from './hooks/useEdges';
 export { useViewport } from './hooks/useViewport';
 export { useKeyPress } from './hooks/useKeyPress';
 export { useNodesState, useEdgesState } from './hooks/useNodesEdgesState';
-export { useReactFlowStore, useReactFlowStoreApi, useShallow } from './hooks/useReactFlowStore';
+export {
+  useOptionsStore,
+  useReactFlowStoreApi,
+  useViewportStore,
+  useConnectionStore,
+  useNodesStore,
+  useEdgesStore,
+  useSelectionStore,
+  useShallow,
+} from './hooks/useReactFlowStore';
 export { useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/useOnViewportChange';
 export { useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
 export { useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
 export { useNodeConnections } from './hooks/useNodeConnections';
 export { useNodesData } from './hooks/useNodesData';
 export { useConnection } from './hooks/useConnection';
-export { useInternalNode } from './hooks/useInternalNode';
 export { useNodeId } from './contexts/NodeIdContext';
-export { useNode } from './hooks/useNodes';
-export { useEdge } from './hooks/useEdges';
+export { useNodes, useNode, useInternalNode, useInternalNodes } from './hooks/useNodes';
+export { useEdges, useEdge } from './hooks/useEdges';
 
 export { experimental_useOnNodesChangeMiddleware } from './hooks/useOnNodesChangeMiddleware';
 export { experimental_useOnEdgesChangeMiddleware } from './hooks/useOnEdgesChangeMiddleware';

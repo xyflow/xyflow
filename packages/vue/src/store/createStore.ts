@@ -1,15 +1,9 @@
 import type { EdgeLookup, NodeLookup } from '@xyflow/system';
-import type {
-  Edge,
-  InternalNode,
-  Node,
-  VueFlowInstance,
-  VueFlowProps,
-  VueFlowState,
-  VueFlowStoreHandle,
-} from '../types';
+import type { WithAutoApply } from '../context';
+import type { Edge, InternalNode, Node, VueFlowInstance, VueFlowProps, VueFlowState, VueFlowStoreHandle } from '../types';
 import { mergeAriaLabelConfig } from '@xyflow/system';
 import { reactive, shallowRef } from 'vue';
+import { AUTO_APPLY } from '../context';
 import { defineControlled } from '../utils';
 import { useActions } from './actions';
 import { createCommit } from './commit';
@@ -94,10 +88,15 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     }
   }
 
+  // `autoApply` is internal
+  const { autoApply, ...publicActions } = actions;
+
+  (reactiveState as WithAutoApply<NodeType, EdgeType>)[AUTO_APPLY] = autoApply;
+
   const instance: VueFlowInstance<NodeType, EdgeType> = {
     ...hooksOn,
     ...getters,
-    ...actions,
+    ...publicActions,
     emits,
     id,
   };

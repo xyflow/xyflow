@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import type { ConnectionLineProps, Handle, InternalNode } from '@xyflow/vue';
+import type { ConnectionLineProps, HandleBounds, InternalNode } from '@xyflow/vue';
 import { getBezierPath, Position, storeToRefs, useVueFlowStore, useVueFlow } from '@xyflow/vue';
 
 interface ClosestElements {
   node: InternalNode | null;
-  handle: Handle | null;
-  startHandle: Handle | null;
+  handle: HandleBounds | null;
+  startHandle: HandleBounds | null;
 }
 
 const props = defineProps<ConnectionLineProps>();

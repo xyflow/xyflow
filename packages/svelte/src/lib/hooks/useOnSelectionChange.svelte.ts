@@ -1,5 +1,5 @@
-import type { Edge, Node, OnSelectionChange } from '$lib/types/index.js';
-import { useSvelteFlowStore } from '$lib/hooks/useSvelteFlowStore.js';
+import type { Edge, Node, OnSelectionChange } from '#lib/types/index.js';
+import { useSvelteFlowStore } from '#lib/hooks/useSvelteFlowStore.js';
 
 /**
  * Hook for listening to selection changes.

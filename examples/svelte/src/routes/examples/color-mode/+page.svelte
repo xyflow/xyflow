@@ -10,7 +10,7 @@
 		type ColorMode
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	const nodeDefaults = {
 		sourcePosition: Position.Right,

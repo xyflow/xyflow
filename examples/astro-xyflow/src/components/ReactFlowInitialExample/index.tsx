@@ -13,7 +13,7 @@ import {
 
 import CustomNode from './CustomNode';
 
-import '@xyflow/react/dist/style.css';
+import '@xyflow/react/style.css';
 
 const initialNodes: Node[] = [
   {

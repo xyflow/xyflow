@@ -22,9 +22,9 @@ import {
   changeParentNode
 } from '@xyflow/system';
 
-import { useSvelteFlowStore } from '$lib/store';
-import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
-import { isEdge, isNode } from '$lib/utils';
+import { useSvelteFlowStore } from '#lib/store/index.js';
+import type { Edge, FitViewOptions, InternalNode, Node } from '#lib/types/index.js';
+import { isEdge, isNode } from '#lib/utils/index.js';
 
 /**
  * Hook for accessing the SvelteFlow instance.

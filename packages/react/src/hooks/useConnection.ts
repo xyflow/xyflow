@@ -1,14 +1,11 @@
-import { type ConnectionState, pointToRendererPoint } from '@xyflow/system';
+import { type ConnectionState, HandleType, pointToRendererPoint } from '@xyflow/system';
 
-import { useReactFlowStore, useShallow } from './useReactFlowStore';
-import type { InternalNode, Node, ReactFlowStore } from '../types';
+import { useConnectionStore, useViewportStore, useShallow, useReactFlowStoreApi } from './useReactFlowStore';
+import type { InternalNode, Node, ConnectionStore, ViewportStore } from '../types';
+import { useSyncExternalStore } from 'react';
 
-function connectionStoreSelector(s: ReactFlowStore) {
-  return s.connection;
-}
-
-function toSelector(s: ReactFlowStore) {
-  return s.connection.inProgress ? pointToRendererPoint(s.connection.to, s.transform) : undefined;
+function toSelector(s: ViewportStore, connection: ConnectionStore['connection']) {
+  return connection.inProgress ? pointToRendererPoint(connection.to, s.transform) : undefined;
 }
 /**
  * The `useConnection` hook returns the current connection when there is an active
@@ -42,10 +39,21 @@ function toSelector(s: ReactFlowStore) {
 export function useConnection<NodeType extends Node = Node, SelectorReturn = ConnectionState<InternalNode<NodeType>>>(
   connectionSelector?: (connection: ConnectionState<InternalNode<NodeType>>) => SelectorReturn
 ): SelectorReturn {
-  const connectionStore = useReactFlowStore(useShallow(connectionStoreSelector));
-  const to = useReactFlowStore(useShallow(toSelector));
+  const { connection: connectionStore } = useConnectionStore();
+  const to = useViewportStore(useShallow((s) => toSelector(s, connectionStore)));
 
   const connection = { ...connectionStore, to } as ConnectionState<InternalNode<NodeType>>;
 
   return connectionSelector ? connectionSelector(connection) : (connection as SelectorReturn);
+}
+
+export function useConnectionStateForHandle(handle: { nodeId: string; type: HandleType; id: string | null }) {
+  const { optionsStore, connectionStore } = useReactFlowStoreApi();
+
+  const subscribe = (onStoreChange: () => void) =>
+    optionsStore.getState().pubSub.subscribeToConnectionForHandle(handle, onStoreChange);
+
+  const getSnapshot = () => connectionStore.getState();
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }

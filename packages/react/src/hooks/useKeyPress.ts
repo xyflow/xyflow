@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { isInputDOMNode, type KeyCode } from '@xyflow/system';
 
 type Keys = Array<string>;
@@ -77,24 +77,7 @@ export function useKeyPress(
    * and the key is "Meta". We want users to be able to pass keys and codes so we assume that the key is meant when
    * we can't find it in the list of keysToWatch.
    */
-  const [keyCodes, keysToWatch] = useMemo<[Array<Keys>, Keys]>(() => {
-    if (keyCode !== null) {
-      const keyCodeArr = Array.isArray(keyCode) ? keyCode : [keyCode];
-      const keys = keyCodeArr
-        .filter((kc) => typeof kc === 'string')
-        /*
-         * we first replace all '+' with '\n'  which we will use to split the keys on
-         * then we replace '\n\n' with '\n+', this way we can also support the combination 'key++'
-         * in the end we simply split on '\n' to get the key array
-         */
-        .map((kc) => kc.replace(/\+/g, '\n').replace('\n\n', '\n+').split('\n'));
-      const keysFlat = keys.reduce((res: Keys, item) => res.concat(...item), []);
-
-      return [keys, keysFlat];
-    }
-
-    return [[], []];
-  }, [keyCode]);
+  const [keyCodes, keysToWatch] = getKeyCodes(keyCode);
 
   useEffect(() => {
     const target = options?.target ?? defaultDoc;
@@ -110,7 +93,7 @@ export function useKeyPress(
         if (preventAction) {
           return false;
         }
-        const keyOrCode = useKeyOrCode(event.code, keysToWatch);
+        const keyOrCode = getKeyOrCode(event.code, keysToWatch);
         pressedKeys.current.add(event[keyOrCode]);
 
         if (isMatchingKey(keyCodes, pressedKeys.current, false)) {
@@ -126,7 +109,7 @@ export function useKeyPress(
       };
 
       const upHandler = (event: KeyboardEvent) => {
-        const keyOrCode = useKeyOrCode(event.code, keysToWatch);
+        const keyOrCode = getKeyOrCode(event.code, keysToWatch);
 
         if (isMatchingKey(keyCodes, pressedKeys.current, true)) {
           setKeyPressed(false);
@@ -167,6 +150,25 @@ export function useKeyPress(
 
 // utils
 
+function getKeyCodes(keyCode: KeyCode | null): [Array<Keys>, Keys] {
+  if (keyCode !== null) {
+    const keyCodeArr = Array.isArray(keyCode) ? keyCode : [keyCode];
+    const keys = keyCodeArr
+      .filter((kc) => typeof kc === 'string')
+      /*
+       * we first replace all '+' with '\n'  which we will use to split the keys on
+       * then we replace '\n\n' with '\n+', this way we can also support the combination 'key++'
+       * in the end we simply split on '\n' to get the key array
+       */
+      .map((kc) => kc.replace(/\+/g, '\n').replace('\n\n', '\n+').split('\n'));
+    const keysFlat = keys.reduce((res: Keys, item) => res.concat(...item), []);
+
+    return [keys, keysFlat];
+  }
+
+  return [[], []];
+}
+
 function isMatchingKey(keyCodes: Array<Keys>, pressedKeys: PressedKeys, isUp: boolean): boolean {
   return (
     keyCodes
@@ -184,6 +186,6 @@ function isMatchingKey(keyCodes: Array<Keys>, pressedKeys: PressedKeys, isUp: bo
   );
 }
 
-function useKeyOrCode(eventCode: string, keysToWatch: KeyCode): KeyOrCode {
+function getKeyOrCode(eventCode: string, keysToWatch: KeyCode): KeyOrCode {
   return keysToWatch.includes(eventCode) ? 'code' : 'key';
 }

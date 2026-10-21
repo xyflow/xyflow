@@ -1,12 +1,9 @@
 <script lang="ts" setup>
-defineProps<{
-  disabled?: boolean;
-  label?: string;
-}>();
+import type { ControlButtonEmits, ControlButtonProps } from './types';
 
-defineEmits<{
-  click: [payload: MouseEvent];
-}>();
+defineProps<ControlButtonProps>();
+
+defineEmits<ControlButtonEmits>();
 </script>
 
 <script lang="ts">

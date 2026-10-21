@@ -1,6 +1,6 @@
 {
   "name": "@xyflow/svelte",
-  "version": "2.0.0-next.3",
+  "version": "2.0.0-next.4",
   "description": "Svelte Flow - A highly customizable Svelte library for building node-based editors, workflow systems, diagrams and more.",
   "license": "MIT",
   "publishConfig": {
@@ -63,31 +63,36 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@xyflow/system": "workspace:*",
-    "@svelte-put/shortcut": "^4.1.0"
+    "@svelte-put/shortcut": "^4.2.0",
+    "@xyflow/system": "workspace:*"
   },
   "peerDependencies": {
     "svelte": "^5.25.0"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
+    "@sveltejs/adapter-auto": "catalog:",
+    "@sveltejs/kit": "catalog:",
+    "@sveltejs/load-config": "catalog:",
+    "@sveltejs/package": "^3.0.1",
+    "@sveltejs/vite-plugin-svelte": "catalog:",
+    "@types/node": "catalog:",
     "@xyflow/eslint": "workspace:*",
     "@xyflow/postcss-config": "workspace:*",
     "@xyflow/tsconfig": "workspace:*",
-    "@sveltejs/adapter-auto": "catalog:",
-    "@sveltejs/kit": "catalog:",
-    "@types/node": "catalog:",
     "eslint": "catalog:",
     "postcss": "catalog:",
     "postcss-cli": "catalog:",
     "prettier": "catalog:",
+    "prettier-plugin-svelte": "catalog:",
+    "publint": "^0.3.25",
     "svelte": "catalog:",
     "svelte-check": "catalog:",
-    "@sveltejs/vite-plugin-svelte": "catalog:",
     "typescript": "catalog:",
-    "vite": "catalog:",
-    "@sveltejs/package": "^2.5.7",
-    "prettier-plugin-svelte": "^3.5.1",
-    "publint": "^0.3.18",
-    "@arethetypeswrong/cli": "0.18.2"
+    "vite": "catalog:"
+  },
+  "imports": {
+    "#lib": "./src/lib/index.js",
+    "#lib/*": "./src/lib/*"
   }
 }

@@ -1,10 +1,9 @@
 import { memo } from 'react';
 import cc from 'classcat';
 
-import { useReactFlowStore, useShallow, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
+import { useOptionsStore, useViewportStore, useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { useReactFlow } from '../../hooks/useReactFlow';
 import { Panel } from '../../components/Panel';
-import { type ReactFlowState } from '../../types';
 
 import { PlusIcon } from './Icons/Plus';
 import { MinusIcon } from './Icons/Minus';
@@ -13,13 +12,6 @@ import { LockIcon } from './Icons/Lock';
 import { UnlockIcon } from './Icons/Unlock';
 import { ControlButton } from './ControlButton';
 import type { ControlProps } from './types';
-
-const selector = (s: ReactFlowState) => ({
-  isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
-  minZoomReached: s.transform[2] <= s.minZoom,
-  maxZoomReached: s.transform[2] >= s.maxZoom,
-  ariaLabelConfig: s.ariaLabelConfig,
-});
 
 function ControlsComponent({
   style,
@@ -37,8 +29,18 @@ function ControlsComponent({
   orientation = 'vertical',
   'aria-label': ariaLabel,
 }: ControlProps) {
-  const store = useReactFlowStoreApi();
-  const { isInteractive, minZoomReached, maxZoomReached, ariaLabelConfig } = useReactFlowStore(useShallow(selector));
+  const { optionsStore } = useReactFlowStoreApi();
+  const nodesDraggable = useOptionsStore((s) => s.nodesDraggable);
+  const nodesConnectable = useOptionsStore((s) => s.nodesConnectable);
+  const elementsSelectable = useOptionsStore((s) => s.elementsSelectable);
+  const minZoom = useOptionsStore((s) => s.minZoom);
+  const maxZoom = useOptionsStore((s) => s.maxZoom);
+  const ariaLabelConfig = useOptionsStore((s) => s.ariaLabelConfig);
+
+  const isInteractive = nodesDraggable || nodesConnectable || elementsSelectable;
+  // Panning changes the viewport every frame without changing either zoom limit.
+  const minZoomReached = useViewportStore((s) => s.transform[2] <= minZoom);
+  const maxZoomReached = useViewportStore((s) => s.transform[2] >= maxZoom);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const onZoomInHandler = () => {
@@ -57,7 +59,7 @@ function ControlsComponent({
   };
 
   const onToggleInteractivity = () => {
-    store.setState({
+    optionsStore.setState({
       nodesDraggable: !isInteractive,
       nodesConnectable: !isInteractive,
       elementsSelectable: !isInteractive,

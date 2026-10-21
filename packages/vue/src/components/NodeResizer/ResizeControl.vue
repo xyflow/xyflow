@@ -33,9 +33,9 @@ const resizeControlRef = shallowRef<HTMLDivElement>();
 // without an explicit `node-id` prop
 const contextNodeId = useNodeId();
 
-const nodeId = toRef(() => (typeof props.nodeId === 'string' ? props.nodeId : contextNodeId || undefined));
+const nodeId = computed(() => (typeof props.nodeId === 'string' ? props.nodeId : contextNodeId || undefined));
 
-const controlPosition = toRef(() => props.position ?? DefaultPositions[props.variant]);
+const controlPosition = computed(() => props.position ?? DefaultPositions[props.variant]);
 
 const positionClassNames = computed(() => controlPosition.value.split('-'));
 
@@ -112,7 +112,7 @@ watchEffect((onCleanup) => {
         nodeChanges.push({
           id: nodeId.value!,
           type: 'dimensions',
-          setAttributes: true,
+          setAttributes: !props.resizeDirection ? true : props.resizeDirection === 'horizontal' ? 'width' : 'height',
           resizing: true,
           dimensions: {
             width: changes.width ?? 0,
@@ -160,6 +160,7 @@ watchEffect((onCleanup) => {
       maxHeight: props.maxHeight,
     },
     keepAspectRatio: Boolean(props.keepAspectRatio ?? false),
+    resizeDirection: props.resizeDirection,
     onResizeStart: (event, params) => emits('resizeStart', { event, params }),
     onResize: (event, params) => emits('resize', { event, params }),
     onResizeEnd: (event, params) => emits('resizeEnd', { event, params }),

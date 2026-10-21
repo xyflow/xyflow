@@ -41,7 +41,7 @@ import type {
   OnNodesChange,
   OnEdgesChange,
   ProOptions
-} from '$lib/types/index.js';
+} from '#lib/types/index.js';
 
 import type { Component } from 'svelte';
 import type {
@@ -50,7 +50,7 @@ import type {
   NodeSelectionEvents,
   OnSelectionDrag,
   PaneEvents
-} from '$lib/types/events.js';
+} from '#lib/types/events.js';
 
 export type SvelteFlowProps<
   NodeType extends Node = Node,

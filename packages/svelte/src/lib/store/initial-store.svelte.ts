@@ -46,17 +46,17 @@ import {
 
 const devWarn = createDevWarn('Svelte Flow', 'https://svelteflow.dev/');
 
-import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
-import InputNode from '$lib/components/nodes/InputNode.svelte';
-import OutputNode from '$lib/components/nodes/OutputNode.svelte';
-import GroupNode from '$lib/components/nodes/GroupNode.svelte';
+import DefaultNode from '#lib/components/nodes/DefaultNode.svelte';
+import InputNode from '#lib/components/nodes/InputNode.svelte';
+import OutputNode from '#lib/components/nodes/OutputNode.svelte';
+import GroupNode from '#lib/components/nodes/GroupNode.svelte';
 
 import {
   BezierEdgeInternal,
   SmoothStepEdgeInternal,
   StraightEdgeInternal,
   StepEdgeInternal
-} from '$lib/components/edges/index.js';
+} from '#lib/components/edges/index.js';
 
 import type {
   NodeTypes,
@@ -75,7 +75,7 @@ import type {
   OnSelectionDrag,
   OnNodesChange,
   OnEdgesChange
-} from '$lib/types/index.js';
+} from '#lib/types/index.js';
 
 import type { StoreSignals } from './types.js';
 import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements.js';
