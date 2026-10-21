@@ -110,29 +110,32 @@ const EdgeWrapper = defineComponent({
         return null;
       }
 
-      const sourceNode = getInternalNode(edge.value.source);
-      const targetNode = getInternalNode(edge.value.target);
-      const pathOptions = 'pathOptions' in edge.value ? edge.value.pathOptions : {};
+      // one read: `edge` is a computed, and every `.value` pays a dirty check
+      const currentEdge = edge.value;
+
+      const sourceNode = getInternalNode(currentEdge.source);
+      const targetNode = getInternalNode(currentEdge.target);
+      const pathOptions = 'pathOptions' in currentEdge ? currentEdge.pathOptions : {};
 
       if (!sourceNode && !targetNode) {
-        emits.error(new VueFlowError(ErrorCode.EDGE_SOURCE_TARGET_MISSING, edge.value.id, edge.value.source, edge.value.target));
+        emits.error(new VueFlowError(ErrorCode.EDGE_SOURCE_TARGET_MISSING, currentEdge.id, currentEdge.source, currentEdge.target));
 
         return null;
       }
 
       if (!sourceNode) {
-        emits.error(new VueFlowError(ErrorCode.EDGE_SOURCE_MISSING, edge.value.id, edge.value.source));
+        emits.error(new VueFlowError(ErrorCode.EDGE_SOURCE_MISSING, currentEdge.id, currentEdge.source));
 
         return null;
       }
 
       if (!targetNode) {
-        emits.error(new VueFlowError(ErrorCode.EDGE_TARGET_MISSING, edge.value.id, edge.value.target));
+        emits.error(new VueFlowError(ErrorCode.EDGE_TARGET_MISSING, currentEdge.id, currentEdge.target));
 
         return null;
       }
 
-      if (!edge.value || edge.value.hidden || sourceNode.hidden || targetNode.hidden) {
+      if (!currentEdge || currentEdge.hidden || sourceNode.hidden || targetNode.hidden) {
         return null;
       }
 
@@ -140,8 +143,8 @@ const EdgeWrapper = defineComponent({
         id: props.id,
         sourceNode,
         targetNode,
-        sourceHandle: edge.value.sourceHandle || null,
-        targetHandle: edge.value.targetHandle || null,
+        sourceHandle: currentEdge.sourceHandle || null,
+        targetHandle: currentEdge.targetHandle || null,
         connectionMode: store.connectionMode,
         onError: devWarn,
       });
@@ -154,33 +157,33 @@ const EdgeWrapper = defineComponent({
 
       const edgeComponentProps = {
         id: props.id,
-        source: edge.value.source,
-        target: edge.value.target,
-        type: edge.value.type,
+        source: currentEdge.source,
+        target: currentEdge.target,
+        type: currentEdge.type,
         reconnectable: isReconnectable.value,
         selectable: isSelectable.value,
-        deletable: edge.value.deletable,
-        selected: edge.value.selected,
-        animated: edge.value.animated,
-        label: edge.value.label,
-        labelStyle: edge.value.labelStyle,
-        labelShowBg: edge.value.labelShowBg,
-        labelBgStyle: edge.value.labelBgStyle,
-        labelBgPadding: edge.value.labelBgPadding,
-        labelBgBorderRadius: edge.value.labelBgBorderRadius,
-        data: edge.value.data,
+        deletable: currentEdge.deletable,
+        selected: currentEdge.selected,
+        animated: currentEdge.animated,
+        label: currentEdge.label,
+        labelStyle: currentEdge.labelStyle,
+        labelShowBg: currentEdge.labelShowBg,
+        labelBgStyle: currentEdge.labelBgStyle,
+        labelBgPadding: currentEdge.labelBgPadding,
+        labelBgBorderRadius: currentEdge.labelBgBorderRadius,
+        data: currentEdge.data,
         style: edgeStyle.value,
-        markerStart: edge.value.markerStart ? `url('#${getMarkerId(edge.value.markerStart, vueFlowId)}')` : undefined,
-        markerEnd: edge.value.markerEnd ? `url('#${getMarkerId(edge.value.markerEnd, vueFlowId)}')` : undefined,
+        markerStart: currentEdge.markerStart ? `url('#${getMarkerId(currentEdge.markerStart, vueFlowId)}')` : undefined,
+        markerEnd: currentEdge.markerEnd ? `url('#${getMarkerId(currentEdge.markerEnd, vueFlowId)}')` : undefined,
         sourcePosition,
         targetPosition,
         sourceX,
         sourceY,
         targetX,
         targetY,
-        sourceHandleId: edge.value.sourceHandle,
-        targetHandleId: edge.value.targetHandle,
-        interactionWidth: edge.value.interactionWidth,
+        sourceHandleId: currentEdge.sourceHandle,
+        targetHandleId: currentEdge.targetHandle,
+        interactionWidth: currentEdge.interactionWidth,
       } satisfies EdgeProps;
 
       let edgeComponent = null;
@@ -207,26 +210,26 @@ const EdgeWrapper = defineComponent({
             'data-id': props.id,
             'class': [
               'vue-flow__edge',
-              `vue-flow__edge-${edgeCmp.value ? edge.value.type || 'default' : 'default'}`,
+              `vue-flow__edge-${edgeCmp.value ? currentEdge.type || 'default' : 'default'}`,
               store.noPanClassName,
               edgeClass.value,
               {
                 updating: mouseOver.value,
-                selected: edge.value.selected,
-                animated: edge.value.animated,
+                selected: currentEdge.selected,
+                animated: currentEdge.animated,
                 inactive: !isSelectable.value && !store.hooks.edgeClick.hasListeners(),
                 selectable: isSelectable.value,
               },
             ],
             'tabIndex': isFocusable.value ? 0 : undefined,
             'aria-label':
-              edge.value.ariaLabel === null
+              currentEdge.ariaLabel === null
                 ? undefined
-                : edge.value.ariaLabel ?? `Edge from ${edge.value.source} to ${edge.value.target}`,
+                : currentEdge.ariaLabel ?? `Edge from ${currentEdge.source} to ${currentEdge.target}`,
             'aria-describedby': isFocusable.value ? `${ARIA_EDGE_DESC_KEY}-${vueFlowId}` : undefined,
             'aria-roledescription': 'edge',
             'role': isFocusable.value ? 'group' : 'img',
-            ...edge.value.domAttributes,
+            ...currentEdge.domAttributes,
             'onClick': onEdgeClick,
             'onContextmenu': onEdgeContextMenu,
             'onDblclick': onDoubleClick,
