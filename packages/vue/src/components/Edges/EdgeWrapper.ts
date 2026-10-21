@@ -5,7 +5,7 @@ import { getEdgePosition, getMarkerId } from '@xyflow/system';
 import { computed, defineComponent, getCurrentInstance, h, inject, provide, shallowRef, toRef } from 'vue';
 import { useHandle, useVueFlow, useVueFlowStore } from '../../composables';
 import { EdgeId, EdgeRef, Slots } from '../../context';
-import { ARIA_EDGE_DESC_KEY, devWarn, elementSelectionKeys, ErrorCode, getEdgeZIndex, resolveTypeComponent, VueFlowError } from '../../utils';
+import { ARIA_EDGE_DESC_KEY, defaultEdgeTypes, devWarn, elementSelectionKeys, ErrorCode, getEdgeZIndex, resolveTypeComponent, VueFlowError } from '../../utils';
 import EdgeAnchor from './EdgeAnchor';
 
 interface Props {
@@ -17,7 +17,7 @@ const EdgeWrapper = defineComponent({
   compatConfig: { MODE: 3 },
   props: ['id'],
   setup(props: Props) {
-    const { id: vueFlowId, addSelectedEdges, emits, getEdgeTypes, removeSelectedEdges, getEdge, getInternalNode } = useVueFlow();
+    const { id: vueFlowId, addSelectedEdges, emits, removeSelectedEdges, getEdge, getInternalNode } = useVueFlow();
 
     const store = useVueFlowStore();
 
@@ -74,7 +74,11 @@ const EdgeWrapper = defineComponent({
     const edgeCmp = computed(() => {
       const name = edge.value.type || 'default';
 
-      const cmp = resolveTypeComponent(slots?.[`edge-${name}`], getEdgeTypes.value[name], name, instance);
+      // see NodeWrapper: `getEdgeTypes` derives its registry from `state.edges`, so reading it
+      // here subscribes every wrapper to the whole edge array
+      const registered = store.edgeTypes?.[name] ?? defaultEdgeTypes[name as keyof typeof defaultEdgeTypes] ?? name;
+
+      const cmp = resolveTypeComponent(slots?.[`edge-${name}`], registered, name, instance);
 
       if (cmp) {
         return cmp;
@@ -219,7 +223,7 @@ const EdgeWrapper = defineComponent({
           [
             updating.value
               ? null
-              : h(edgeCmp.value ?? (getEdgeTypes.value.default as Component), { ...edgeComponentProps, ...pathOptions }),
+              : h(edgeCmp.value ?? (defaultEdgeTypes.default as Component), { ...edgeComponentProps, ...pathOptions }),
             [
               hasReconnectListener.value && (isReconnectable.value === 'source' || isReconnectable.value === true)
                 ? [

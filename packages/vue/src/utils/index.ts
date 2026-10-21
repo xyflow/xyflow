@@ -1,5 +1,6 @@
 export * from './a11y';
 export * from './createExtendedEventHook';
+export * from './defaultNodesEdges';
 export * from './edge';
 export * from './errors';
 export * from './graph';

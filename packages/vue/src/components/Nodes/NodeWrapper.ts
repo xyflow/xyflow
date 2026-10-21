@@ -20,7 +20,7 @@ import {
   useVueFlowStore,
 } from '../../composables';
 import { NodeId, NodeRef, Slots } from '../../context';
-import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, elementSelectionKeys, ErrorCode, handleNodeClick, resolveTypeComponent, VueFlowError } from '../../utils';
+import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, defaultNodeTypes, elementSelectionKeys, ErrorCode, handleNodeClick, resolveTypeComponent, VueFlowError } from '../../utils';
 
 interface Props {
   id: string;
@@ -40,7 +40,6 @@ const NodeWrapper = defineComponent({
       addSelectedNodes,
       updateNodeDimensions,
       onUpdateNodeInternals,
-      getNodeTypes,
       setCenter,
     } = useVueFlow();
 
@@ -103,7 +102,14 @@ const NodeWrapper = defineComponent({
     const nodeCmp = computed(() => {
       const name = internalNode.value?.type || 'default';
 
-      const cmp = resolveTypeComponent(slots?.[`node-${name}`], getNodeTypes.value[name], name, instance);
+      // resolve against the registered types directly. `getNodeTypes` derives its registry from
+      // `state.nodes`, so reading it here subscribes every wrapper to the whole node array and a
+      // single moved node invalidates all of them. an unregistered name falls through as a string
+      // and resolves against globally registered components, exactly as the derived registry's
+      // auto-registered entries did.
+      const registered = store.nodeTypes?.[name] ?? defaultNodeTypes[name as keyof typeof defaultNodeTypes] ?? name;
+
+      const cmp = resolveTypeComponent(slots?.[`node-${name}`], registered, name, instance);
 
       if (cmp) {
         return cmp;
@@ -265,7 +271,7 @@ const NodeWrapper = defineComponent({
           'onFocus': isFocusable.value ? onFocus : undefined,
         },
         [
-          h(nodeCmp.value ?? (getNodeTypes.value.default as Component), nodeComponentProps),
+          h(nodeCmp.value ?? (defaultNodeTypes.default as Component), nodeComponentProps),
         ],
       );
     };
