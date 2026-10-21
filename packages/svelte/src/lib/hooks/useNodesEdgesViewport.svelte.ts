@@ -26,7 +26,7 @@ export function useNodes() {
       return store.nodes;
     },
     set current(nodes) {
-      store.nodes = nodes;
+      store.queueNodeChanges(getElementChanges(store.nodes, nodes));
     },
     update(updateFn: (nodes: Node[]) => Node[]) {
       store.queueNodeChanges(getElementChanges(store.nodes, updateFn(store.nodes)));
