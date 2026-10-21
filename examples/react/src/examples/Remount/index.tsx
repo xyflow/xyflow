@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ReactFlow, ReactFlowProvider, MiniMap, Background, Controls } from '@xyflow/react';
-import '@xyflow/react/style.css';
 
 const defaultNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: 'Root' } },
