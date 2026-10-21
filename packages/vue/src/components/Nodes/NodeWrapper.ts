@@ -1,4 +1,4 @@
-import type { Component } from 'vue';
+import type { Component, VNode } from 'vue';
 import type { MouseTouchEvent, NodeProps } from '../../types';
 import { getNodeDimensions, getNodesInside, isInputDOMNode, nodeHasDimensions } from '@xyflow/system';
 import {
@@ -243,7 +243,10 @@ const NodeWrapper = defineComponent({
       return h(
         'div',
         {
-          'ref': nodeElement,
+          // not a template ref: vue re-registers one on every patch and queues a post-flush job
+          // for it, and this element is created once and never replaced
+          'onVnodeMounted': (vnode: VNode) => { nodeElement.value = vnode.el as HTMLDivElement; },
+          'onVnodeBeforeUnmount': () => { nodeElement.value = null; },
           'data-id': node.id,
           'class': [
             'vue-flow__node',

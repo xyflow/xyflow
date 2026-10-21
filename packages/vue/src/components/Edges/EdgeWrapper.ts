@@ -1,5 +1,5 @@
 import type { Connection, FinalConnectionState, HandleType } from '@xyflow/system';
-import type { Component } from 'vue';
+import type { Component, VNode } from 'vue';
 import type { Edge, EdgeProps, InternalNode, MouseTouchEvent } from '../../types';
 import { getEdgePosition, getMarkerId } from '@xyflow/system';
 import { computed, defineComponent, getCurrentInstance, h, inject, provide, shallowRef, toRef } from 'vue';
@@ -253,7 +253,9 @@ const EdgeWrapper = defineComponent({
         h(
           'g',
           {
-            'ref': edgeEl,
+            // see NodeWrapper: a template ref is re-registered on every patch
+            'onVnodeMounted': (vnode: VNode) => { edgeEl.value = vnode.el as SVGElement; },
+            'onVnodeBeforeUnmount': () => { edgeEl.value = null; },
             'key': props.id,
             'data-id': props.id,
             'class': [
