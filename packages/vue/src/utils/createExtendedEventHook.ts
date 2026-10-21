@@ -1,4 +1,4 @@
-import { onScopeDispose } from 'vue';
+import { onScopeDispose, shallowRef } from 'vue';
 
 /**
  * vue-flow's own event-hook types. We don't reuse `@vueuse/core`'s `EventHook*`: since v14 its `Callback<T>`
@@ -43,7 +43,18 @@ export function createExtendedEventHook<T = any>(defaultHandler?: (param: T) => 
   let emitter: Handler = noop;
   let hasEmitListeners = () => false;
 
-  const hasListeners = () => listeners.size > 0 || hasEmitListeners();
+  // `listeners` is a plain Set, so reading its size tracks nothing. callers that want to react to a
+  // listener being bound (pointer-events, the `inactive` edge class) could only do so by being
+  // recomputed for some other reason, which meant recomputing them on every frame of a drag. bump a
+  // signal instead so `hasListeners()` is reactive and callers can cache it.
+  const version = shallowRef(0);
+
+  const hasListeners = () => {
+    // read the signal so callers can cache this in a computed
+    void version.value;
+
+    return listeners.size > 0 || hasEmitListeners();
+  };
 
   const setEmitter = (fn: Handler) => {
     emitter = fn;
@@ -55,18 +66,23 @@ export function createExtendedEventHook<T = any>(defaultHandler?: (param: T) => 
 
   const setHasEmitListeners = (fn: () => boolean) => {
     hasEmitListeners = fn;
+    version.value++;
   };
 
   const removeHasEmitListeners = () => {
     hasEmitListeners = () => false;
+    version.value++;
   };
 
   const off: EventHookOff<T> = (fn) => {
-    listeners.delete(fn);
+    if (listeners.delete(fn)) {
+      version.value++;
+    }
   };
 
   const on: EventHookOn<T> = (fn) => {
     listeners.add(fn);
+    version.value++;
 
     const offFn = () => off(fn);
     // `failSilently` (Vue 3.5+) mirrors `tryOnScopeDispose`: auto-remove the listener when registered
