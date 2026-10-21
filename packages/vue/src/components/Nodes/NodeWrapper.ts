@@ -79,16 +79,19 @@ const NodeWrapper = defineComponent({
       return !node || typeof node.focusable === 'undefined' ? store.nodesFocusable : node.focusable;
     });
 
-    const hasPointerEvents = computed(
+    // whether any pointer handler is bound changes only when one is added or removed, so keep it
+    // out of `hasPointerEvents`, which depends on the node and is therefore recomputed every frame.
+    // otherwise each node walks five reactive hooks per frame for a value that is the same for all.
+    const hasPointerListeners = computed(
       () =>
-        isSelectable.value
-        || isDraggable.value
-        || store.hooks.nodeClick.hasListeners()
+        store.hooks.nodeClick.hasListeners()
         || store.hooks.nodeDoubleClick.hasListeners()
         || store.hooks.nodeMouseEnter.hasListeners()
         || store.hooks.nodeMouseMove.hasListeners()
         || store.hooks.nodeMouseLeave.hasListeners(),
     );
+
+    const hasPointerEvents = computed(() => isSelectable.value || isDraggable.value || hasPointerListeners.value);
 
     // a node "has dimensions" once measured OR given explicit width/height OR initialWidth/initialHeight (the
     // SSR fallback, no ResizeObserver) — the visibility gate so sized/SSR nodes render immediately
@@ -245,8 +248,8 @@ const NodeWrapper = defineComponent({
           'class': [
             'vue-flow__node',
             `vue-flow__node-${nodeCmp.value ? node.type || 'default' : 'default'}`,
+            isDraggable.value ? store.noPanClassName : undefined,
             {
-              [store.noPanClassName]: isDraggable.value,
               dragging: dragging?.value,
               draggable: isDraggable.value,
               selected: node.selected,

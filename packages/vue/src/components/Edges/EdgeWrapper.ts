@@ -58,7 +58,9 @@ const EdgeWrapper = defineComponent({
 
     const isFocusable = computed(() => (typeof edge.value.focusable === 'undefined' ? store.edgesFocusable : edge.value.focusable));
 
-    const hasReconnectListener = toRef(
+    // `computed`, not `toRef`: a toRef getter re-runs on every read, so this walked three
+    // reactive hooks each time the render consulted it
+    const hasReconnectListener = computed(
       () =>
         store.hooks.reconnect.hasListeners()
         || store.hooks.reconnectStart.hasListeners()
@@ -67,6 +69,10 @@ const EdgeWrapper = defineComponent({
 
     provide(EdgeId, props.id);
     provide(EdgeRef, edgeEl);
+
+    // see NodeWrapper: listener presence is shared and near-static, so it does not belong in a
+    // value recomputed per edge per frame
+    const hasEdgeClickListener = computed(() => store.hooks.edgeClick.hasListeners());
 
     const edgeClass = computed(() => edge.value.class);
     const edgeStyle = computed(() => edge.value.style);
@@ -259,7 +265,7 @@ const EdgeWrapper = defineComponent({
                 updating: mouseOver.value,
                 selected: currentEdge.selected,
                 animated: currentEdge.animated,
-                inactive: !isSelectable.value && !store.hooks.edgeClick.hasListeners(),
+                inactive: !isSelectable.value && !hasEdgeClickListener.value,
                 selectable: isSelectable.value,
               },
             ],
