@@ -1,4 +1,5 @@
 import A11y from '../examples/A11y';
+import KeyboardOutline from '../examples/KeyboardOutline';
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
 import BrokenNodes from '../examples/BrokenNodes';
@@ -72,6 +73,11 @@ export interface IRoute {
 }
 
 const routes: IRoute[] = [
+  {
+    name: 'Keyboard Outline',
+    path: 'keyboard-outline',
+    component: KeyboardOutline,
+  },
   {
     name: 'Add Node on edge Drop',
     path: 'add-node-edge-drop',
