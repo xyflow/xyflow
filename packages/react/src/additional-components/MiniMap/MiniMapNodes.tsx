@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentType, memo } from 'react';
-import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
+import { type OptionalOrUndefined, getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
 import { shallow } from 'zustand/shallow';
 
 import { useStore } from '../../hooks/useStore';
@@ -72,7 +72,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   shapeRendering,
   NodeComponent,
   onClick,
-}: {
+}: OptionalOrUndefined<{
   id: string;
   nodeColorFunc: GetMiniMapNodeAttribute<NodeType>;
   nodeStrokeColorFunc: GetMiniMapNodeAttribute<NodeType>;
@@ -82,7 +82,7 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   NodeComponent: ComponentType<MiniMapNodeProps>;
   onClick: MiniMapNodesProps['onClick'];
   shapeRendering: string;
-}) {
+}>) {
   const { node, x, y, width, height } = useStore((s) => {
     const node = s.nodeLookup.get(id);
 

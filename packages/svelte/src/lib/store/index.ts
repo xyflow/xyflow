@@ -113,9 +113,9 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
         case 'dimensions': {
           const measured = { ...node.measured, ...change.dimensions };
 
-          if (change.setAttributes) {
-            node.width = change.dimensions?.width ?? node.width;
-            node.height = change.dimensions?.height ?? node.height;
+          if (change.setAttributes && change.dimensions) {
+            node.width = change.dimensions.width;
+            node.height = change.dimensions.height;
           }
 
           node.measured = measured;
@@ -162,7 +162,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
         y: store.height / 2 - y * nextZoom,
         zoom: nextZoom
       },
-      { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
+      options
     );
 
     return true;
