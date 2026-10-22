@@ -63,6 +63,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   panOnDrag: _panOnDrag,
   autoPanOnSelection,
   defaultViewport,
+  preserveStateOnUnmount,
   translateExtent,
   minZoom,
   maxZoom,
@@ -98,6 +99,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
       zoomOnDoubleClick={zoomOnDoubleClick}
       panOnDrag={!selectionKeyPressed && panOnDrag}
       defaultViewport={defaultViewport}
+      preserveStateOnUnmount={preserveStateOnUnmount}
       translateExtent={translateExtent}
       minZoom={minZoom}
       maxZoom={maxZoom}
