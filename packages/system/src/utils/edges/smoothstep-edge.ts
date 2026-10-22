@@ -216,8 +216,25 @@ function getPoints({
   return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
 }
 
-function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): string {
-  const bendSize = Math.min(distance(a, b) / 2, distance(b, c) / 2, size);
+function isBend(a: XYPosition, b: XYPosition, c: XYPosition): boolean {
+  return !((a.x === b.x && b.x === c.x) || (a.y === b.y && b.y === c.y));
+}
+
+function getBend(
+  a: XYPosition,
+  b: XYPosition,
+  c: XYPosition,
+  size: number,
+  previousIsBend: boolean,
+  nextIsBend: boolean
+): string {
+  // Only constrain a corner by half the length of a segment when the segment
+  // ends at another corner. Collinear gap points and path endpoints are not bends.
+  const bendSize = Math.min(
+    previousIsBend ? distance(a, b) / 2 : size,
+    nextIsBend ? distance(b, c) / 2 : size,
+    size
+  );
   const { x, y } = b;
 
   // no bend
@@ -294,7 +311,10 @@ export function getSmoothStepPath({
   let path = `M${points[0].x} ${points[0].y}`;
 
   for (let i = 1; i < points.length - 1; i++) {
-    path += getBend(points[i - 1], points[i], points[i + 1], borderRadius);
+    const previousIsBend = i > 1 && isBend(points[i - 2], points[i - 1], points[i]);
+    const nextIsBend = i < points.length - 2 && isBend(points[i], points[i + 1], points[i + 2]);
+
+    path += getBend(points[i - 1], points[i], points[i + 1], borderRadius, previousIsBend, nextIsBend);
   }
 
   path += `L${points[points.length - 1].x} ${points[points.length - 1].y}`;
