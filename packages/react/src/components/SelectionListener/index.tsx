@@ -70,7 +70,7 @@ function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends E
   return null;
 }
 
-const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers;
+const changeSelector = (s: ReactFlowState) => s.onSelectionChangeHandlers.length > 0;
 
 export function SelectionListener<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onSelectionChange,
