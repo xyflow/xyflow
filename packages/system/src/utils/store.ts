@@ -25,6 +25,7 @@ import {
   getNodeDimensions,
   isCoordinateExtent,
   isNumeric,
+  isSkipMeasurementHonored,
   nodeToRect,
 } from './general';
 import { getNodePositionWithOrigin } from './graph';
@@ -153,12 +154,21 @@ export function adoptUserNodes<NodeType extends NodeBase>(
       const extent = isCoordinateExtent(userNode.extent) ? userNode.extent : _options.nodeExtent;
       const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(userNode));
 
+      // skipMeasurement is honored only when the values it replaces are actually provided (dimensions
+      // + handles); otherwise the flag is ignored and the node is measured normally, so we keep the
+      // regular `measured` seeding here too. Shared predicate so all sites agree on "honored".
+      const useProvidedDimensions = isSkipMeasurementHonored(userNode);
+
       internalNode = {
         ..._options.defaults,
         ...userNode,
         measured: {
-          width: userNode.measured?.width,
-          height: userNode.measured?.height,
+          width: useProvidedDimensions
+            ? userNode.width ?? userNode.measured?.width ?? userNode.initialWidth
+            : userNode.measured?.width,
+          height: useProvidedDimensions
+            ? userNode.height ?? userNode.measured?.height ?? userNode.initialHeight
+            : userNode.measured?.height,
         },
         internals: {
           positionAbsolute: clampedPosition,
@@ -423,6 +433,12 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   for (const update of updates.values()) {
     const node = nodeLookup.get(update.id);
     if (!node) {
+      continue;
+    }
+
+    // a node that opts in (with values provided) is authoritative: never measure it from the DOM, not
+    // even via an explicit updateNodeInternals (force), so its provided measured/handleBounds stand
+    if (isSkipMeasurementHonored(node)) {
       continue;
     }
 
