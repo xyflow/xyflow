@@ -49,6 +49,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     onNodeDragStart,
     onNodeDrag,
     onNodeDragStop,
+    onNodeMove,
     onNodesDelete,
     onEdgesDelete,
     onDelete,
@@ -228,6 +229,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           onNodeDragStart={onNodeDragStart}
           onNodeDrag={onNodeDrag}
           onNodeDragStop={onNodeDragStop}
+          onNodeMove={onNodeMove}
           onSelectionDrag={onSelectionDrag}
           onSelectionDragStart={onSelectionDragStart}
           onSelectionDragStop={onSelectionDragStop}
