@@ -172,6 +172,20 @@ describe('<ReactFlow />: View Props', () => {
         cy.get('.react-flow__node').should('have.length', 1);
       });
     });
+
+    it('uses a custom edge visibility predicate', () => {
+      const nodes = nodesOutsideOfView.map((node, index) => ({
+        ...node,
+        position: { x: -500 + index * 100, y: 0 },
+      }));
+      const edges = [{ id: 'edge-1', source: '1', target: '2' }];
+      const isEdgeVisible = cy.stub().callsFake(({ edge }: { edge: { id: string } }) => edge.id === 'edge-1');
+
+      cy.mount(<ReactFlow nodes={nodes} edges={edges} onlyRenderVisibleElements isEdgeVisible={isEdgeVisible} />).then(() => {
+        cy.get('.react-flow__edge').should('have.length', 1);
+        expect(isEdgeVisible).to.have.been.calledWithMatch({ edge: { id: 'edge-1' } });
+      });
+    });
   });
 
   it('uses translateExtent', () => {

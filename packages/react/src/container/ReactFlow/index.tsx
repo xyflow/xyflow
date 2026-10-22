@@ -75,6 +75,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     snapToGrid,
     snapGrid,
     onlyRenderVisibleElements = false,
+    isEdgeVisible,
     selectNodesOnDrag,
     nodesDraggable,
     autoPanOnNodeFocus,
@@ -274,6 +275,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           panActivationKeyCode={panActivationKeyCode}
           zoomActivationKeyCode={zoomActivationKeyCode}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
+          isEdgeVisible={isEdgeVisible}
           defaultViewport={defaultViewport}
           translateExtent={translateExtent}
           minZoom={minZoom}
