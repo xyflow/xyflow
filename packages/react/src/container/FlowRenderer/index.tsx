@@ -60,6 +60,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   panOnScrollSpeed,
   panOnScrollMode,
   zoomOnDoubleClick,
+  zoomSensitivity,
   panOnDrag: _panOnDrag,
   autoPanOnSelection,
   defaultViewport,
@@ -96,6 +97,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
+      zoomSensitivity={zoomSensitivity}
       panOnDrag={!selectionKeyPressed && panOnDrag}
       defaultViewport={defaultViewport}
       translateExtent={translateExtent}
