@@ -155,11 +155,21 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           containerBounds,
         });
 
+        const width = node.measured.width ?? 0;
+        const height = node.measured.height ?? 0;
+        const origin = node.origin ?? nodeOrigin;
+        const parentPosition = node.parentId
+          ? nodeLookup.get(node.parentId)?.internals.positionAbsolute
+          : undefined;
+
+        // node.position can lie outside of the node's extent, but the node is drawn at the clamped
+        // positionAbsolute. We derive the start position from it, so the resizer works with the
+        // position the user actually sees.
         prevValues = {
-          width: node.measured.width ?? 0,
-          height: node.measured.height ?? 0,
-          x: node.position.x ?? 0,
-          y: node.position.y ?? 0,
+          width,
+          height,
+          x: node.internals.positionAbsolute.x - (parentPosition?.x ?? 0) + origin[0] * width,
+          y: node.internals.positionAbsolute.y - (parentPosition?.y ?? 0) + origin[1] * height,
         };
 
         startValues = {
