@@ -1,15 +1,35 @@
-import type { Connection, FinalConnectionState, HandleType } from '@xyflow/system';
+import type { Connection, FinalConnectionState, HandleType, Position } from '@xyflow/system';
 import type { Component } from 'vue';
 import type { Edge, EdgeProps, InternalNode, MouseTouchEvent } from '../../types';
 import { getEdgePosition, getMarkerId } from '@xyflow/system';
 import { computed, defineComponent, getCurrentInstance, h, inject, provide, shallowRef, toRef } from 'vue';
 import { useHandle, useVueFlow, useVueFlowStore } from '../../composables';
 import { EdgeId, EdgeRef, Slots } from '../../context';
-import { ARIA_EDGE_DESC_KEY, devWarn, elementSelectionKeys, ErrorCode, getEdgeZIndex, resolveTypeComponent, VueFlowError } from '../../utils';
+import { ARIA_EDGE_DESC_KEY, captureElement, createChangedPropsRenderer, devWarn, elementSelectionKeys, ErrorCode, getEdgeZIndex, resolveTypeComponent, VueFlowError } from '../../utils';
+import { defaultEdgeTypes } from '../../utils/defaultNodesEdges';
 import EdgeAnchor from './EdgeAnchor';
 
 interface Props {
   id: string;
+}
+
+type AnchorHandler = (event: MouseEvent) => void;
+
+function reconnectAnchor(
+  type: HandleType,
+  position: Position,
+  centerX: number,
+  centerY: number,
+  radius: number,
+  onMousedown: AnchorHandler,
+  onMouseenter: AnchorHandler,
+  onMouseout: AnchorHandler,
+) {
+  return h(
+    'g',
+    { onMousedown, onMouseenter, onMouseout },
+    h(EdgeAnchor, { position, centerX, centerY, radius, type, 'data-type': type }),
+  );
 }
 
 const EdgeWrapper = defineComponent({
@@ -17,7 +37,7 @@ const EdgeWrapper = defineComponent({
   compatConfig: { MODE: 3 },
   props: ['id'],
   setup(props: Props) {
-    const { id: vueFlowId, addSelectedEdges, emits, getEdgeTypes, removeSelectedEdges, getEdge, getInternalNode } = useVueFlow();
+    const { id: vueFlowId, addSelectedEdges, emits, removeSelectedEdges, getEdge, getInternalNode } = useVueFlow();
 
     const store = useVueFlowStore();
 
@@ -58,7 +78,8 @@ const EdgeWrapper = defineComponent({
 
     const isFocusable = computed(() => (typeof edge.value.focusable === 'undefined' ? store.edgesFocusable : edge.value.focusable));
 
-    const hasReconnectListener = toRef(
+    // `computed`, not `toRef`: a toRef getter re-runs on every read
+    const hasReconnectListener = computed(
       () =>
         store.hooks.reconnect.hasListeners()
         || store.hooks.reconnectStart.hasListeners()
@@ -68,13 +89,18 @@ const EdgeWrapper = defineComponent({
     provide(EdgeId, props.id);
     provide(EdgeRef, edgeEl);
 
+    const hasEdgeClickListener = computed(() => store.hooks.edgeClick.hasListeners());
+
     const edgeClass = computed(() => edge.value.class);
     const edgeStyle = computed(() => edge.value.style);
 
     const edgeCmp = computed(() => {
       const name = edge.value.type || 'default';
 
-      const cmp = resolveTypeComponent(slots?.[`edge-${name}`], getEdgeTypes.value[name], name, instance);
+      // see NodeWrapper
+      const registered = store.edgeTypes?.[name] ?? defaultEdgeTypes[name as keyof typeof defaultEdgeTypes] ?? name;
+
+      const cmp = resolveTypeComponent(slots?.[`edge-${name}`], registered, name, instance);
 
       if (cmp) {
         return cmp;
@@ -99,34 +125,39 @@ const EdgeWrapper = defineComponent({
       onReconnectEnd,
     });
 
+    const renderEdge = createChangedPropsRenderer();
+
     return () => {
       if (!storedEdge.value) {
         return null;
       }
 
-      const sourceNode = getInternalNode(edge.value.source);
-      const targetNode = getInternalNode(edge.value.target);
-      const pathOptions = 'pathOptions' in edge.value ? edge.value.pathOptions : {};
+      // read the computed once: every `.value` pays a dirty check
+      const currentEdge = edge.value;
+
+      const sourceNode = getInternalNode(currentEdge.source);
+      const targetNode = getInternalNode(currentEdge.target);
+      const pathOptions = 'pathOptions' in currentEdge ? currentEdge.pathOptions : {};
 
       if (!sourceNode && !targetNode) {
-        emits.error(new VueFlowError(ErrorCode.EDGE_SOURCE_TARGET_MISSING, edge.value.id, edge.value.source, edge.value.target));
+        emits.error(new VueFlowError(ErrorCode.EDGE_SOURCE_TARGET_MISSING, currentEdge.id, currentEdge.source, currentEdge.target));
 
         return null;
       }
 
       if (!sourceNode) {
-        emits.error(new VueFlowError(ErrorCode.EDGE_SOURCE_MISSING, edge.value.id, edge.value.source));
+        emits.error(new VueFlowError(ErrorCode.EDGE_SOURCE_MISSING, currentEdge.id, currentEdge.source));
 
         return null;
       }
 
       if (!targetNode) {
-        emits.error(new VueFlowError(ErrorCode.EDGE_TARGET_MISSING, edge.value.id, edge.value.target));
+        emits.error(new VueFlowError(ErrorCode.EDGE_TARGET_MISSING, currentEdge.id, currentEdge.target));
 
         return null;
       }
 
-      if (!edge.value || edge.value.hidden || sourceNode.hidden || targetNode.hidden) {
+      if (!currentEdge || currentEdge.hidden || sourceNode.hidden || targetNode.hidden) {
         return null;
       }
 
@@ -134,8 +165,8 @@ const EdgeWrapper = defineComponent({
         id: props.id,
         sourceNode,
         targetNode,
-        sourceHandle: edge.value.sourceHandle || null,
-        targetHandle: edge.value.targetHandle || null,
+        sourceHandle: currentEdge.sourceHandle || null,
+        targetHandle: currentEdge.targetHandle || null,
         connectionMode: store.connectionMode,
         onError: devWarn,
       });
@@ -148,34 +179,53 @@ const EdgeWrapper = defineComponent({
 
       const edgeComponentProps = {
         id: props.id,
-        source: edge.value.source,
-        target: edge.value.target,
-        type: edge.value.type,
+        source: currentEdge.source,
+        target: currentEdge.target,
+        type: currentEdge.type,
         reconnectable: isReconnectable.value,
         selectable: isSelectable.value,
-        deletable: edge.value.deletable,
-        selected: edge.value.selected,
-        animated: edge.value.animated,
-        label: edge.value.label,
-        labelStyle: edge.value.labelStyle,
-        labelShowBg: edge.value.labelShowBg,
-        labelBgStyle: edge.value.labelBgStyle,
-        labelBgPadding: edge.value.labelBgPadding,
-        labelBgBorderRadius: edge.value.labelBgBorderRadius,
-        data: edge.value.data,
+        deletable: currentEdge.deletable,
+        selected: currentEdge.selected,
+        animated: currentEdge.animated,
+        label: currentEdge.label,
+        labelStyle: currentEdge.labelStyle,
+        labelShowBg: currentEdge.labelShowBg,
+        labelBgStyle: currentEdge.labelBgStyle,
+        labelBgPadding: currentEdge.labelBgPadding,
+        labelBgBorderRadius: currentEdge.labelBgBorderRadius,
+        data: currentEdge.data,
         style: edgeStyle.value,
-        markerStart: edge.value.markerStart ? `url('#${getMarkerId(edge.value.markerStart, vueFlowId)}')` : undefined,
-        markerEnd: edge.value.markerEnd ? `url('#${getMarkerId(edge.value.markerEnd, vueFlowId)}')` : undefined,
+        markerStart: currentEdge.markerStart ? `url('#${getMarkerId(currentEdge.markerStart, vueFlowId)}')` : undefined,
+        markerEnd: currentEdge.markerEnd ? `url('#${getMarkerId(currentEdge.markerEnd, vueFlowId)}')` : undefined,
         sourcePosition,
         targetPosition,
         sourceX,
         sourceY,
         targetX,
         targetY,
-        sourceHandleId: edge.value.sourceHandle,
-        targetHandleId: edge.value.targetHandle,
-        interactionWidth: edge.value.interactionWidth,
+        sourceHandleId: currentEdge.sourceHandle,
+        targetHandleId: currentEdge.targetHandle,
+        interactionWidth: currentEdge.interactionWidth,
       } satisfies EdgeProps;
+
+      let edgeComponent = null;
+
+      if (updating.value) {
+        renderEdge.reset();
+      }
+      else {
+        edgeComponent = renderEdge(edgeCmp.value ?? (defaultEdgeTypes.default as Component), { ...edgeComponentProps, ...pathOptions });
+      }
+
+      const reconnectable = hasReconnectListener.value && isReconnectable.value;
+
+      const sourceAnchor = reconnectable === true || reconnectable === 'source'
+        ? reconnectAnchor('source', sourcePosition, sourceX, sourceY, store.reconnectRadius, onReconnectSourceMouseDown, onReconnectMouseEnter, onReconnectMouseOut)
+        : null;
+
+      const targetAnchor = reconnectable === true || reconnectable === 'target'
+        ? reconnectAnchor('target', targetPosition, targetX, targetY, store.reconnectRadius, onReconnectTargetMouseDown, onReconnectMouseEnter, onReconnectMouseOut)
+        : null;
 
       return h(
         'svg',
@@ -183,31 +233,31 @@ const EdgeWrapper = defineComponent({
         h(
           'g',
           {
-            'ref': edgeEl,
+            ...captureElement(edgeEl),
             'key': props.id,
             'data-id': props.id,
             'class': [
               'vue-flow__edge',
-              `vue-flow__edge-${edgeCmp.value ? edge.value.type || 'default' : 'default'}`,
+              `vue-flow__edge-${edgeCmp.value ? currentEdge.type || 'default' : 'default'}`,
               store.noPanClassName,
               edgeClass.value,
               {
                 updating: mouseOver.value,
-                selected: edge.value.selected,
-                animated: edge.value.animated,
-                inactive: !isSelectable.value && !store.hooks.edgeClick.hasListeners(),
+                selected: currentEdge.selected,
+                animated: currentEdge.animated,
+                inactive: !isSelectable.value && !hasEdgeClickListener.value,
                 selectable: isSelectable.value,
               },
             ],
             'tabIndex': isFocusable.value ? 0 : undefined,
             'aria-label':
-              edge.value.ariaLabel === null
+              currentEdge.ariaLabel === null
                 ? undefined
-                : edge.value.ariaLabel ?? `Edge from ${edge.value.source} to ${edge.value.target}`,
+                : currentEdge.ariaLabel ?? `Edge from ${currentEdge.source} to ${currentEdge.target}`,
             'aria-describedby': isFocusable.value ? `${ARIA_EDGE_DESC_KEY}-${vueFlowId}` : undefined,
             'aria-roledescription': 'edge',
             'role': isFocusable.value ? 'group' : 'img',
-            ...edge.value.domAttributes,
+            ...currentEdge.domAttributes,
             'onClick': onEdgeClick,
             'onContextmenu': onEdgeContextMenu,
             'onDblclick': onDoubleClick,
@@ -216,53 +266,7 @@ const EdgeWrapper = defineComponent({
             'onMouseleave': onEdgeMouseLeave,
             'onKeyDown': isFocusable.value ? onKeyDown : undefined,
           },
-          [
-            updating.value
-              ? null
-              : h(edgeCmp.value ?? (getEdgeTypes.value.default as Component), { ...edgeComponentProps, ...pathOptions }),
-            [
-              hasReconnectListener.value && (isReconnectable.value === 'source' || isReconnectable.value === true)
-                ? [
-                    h(
-                      'g',
-                      {
-                        onMousedown: onReconnectSourceMouseDown,
-                        onMouseenter: onReconnectMouseEnter,
-                        onMouseout: onReconnectMouseOut,
-                      },
-                      h(EdgeAnchor, {
-                        'position': sourcePosition,
-                        'centerX': sourceX,
-                        'centerY': sourceY,
-                        'radius': store.reconnectRadius,
-                        'type': 'source',
-                        'data-type': 'source',
-                      }),
-                    ),
-                  ]
-                : null,
-              hasReconnectListener.value && (isReconnectable.value === 'target' || isReconnectable.value === true)
-                ? [
-                    h(
-                      'g',
-                      {
-                        onMousedown: onReconnectTargetMouseDown,
-                        onMouseenter: onReconnectMouseEnter,
-                        onMouseout: onReconnectMouseOut,
-                      },
-                      h(EdgeAnchor, {
-                        'position': targetPosition,
-                        'centerX': targetX,
-                        'centerY': targetY,
-                        'radius': store.reconnectRadius,
-                        'type': 'target',
-                        'data-type': 'target',
-                      }),
-                    ),
-                  ]
-                : null,
-            ],
-          ],
+          [edgeComponent, sourceAnchor, targetAnchor],
         ),
       );
     };

@@ -44,6 +44,9 @@ export function useDrag(params: UseDragParams) {
   // the update watcher last ran would leave the live instance with no d3 listeners and node dragging silently stops.
   const dragInstance = shallowRef<ReturnType<typeof XYDrag>>();
 
+  // post-flush: a pre-flush effect queues one scheduler job per node per commit, and Vue rescans
+  // that queue on every parent-driven child update, so its length costs quadratically. The element
+  // read below only exists after render anyway.
   watchEffect((onCleanup) => {
     const nodeEl = el.value;
 
@@ -201,7 +204,7 @@ export function useDrag(params: UseDragParams) {
       target.removeEventListener('pointerdown', handlePointerDown);
       target.removeEventListener('pointerup', handlePointerUp);
     });
-  });
+  }, { flush: 'post' });
 
   watch(
     [
