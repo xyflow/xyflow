@@ -47,6 +47,7 @@ type PaneProps = {
     | 'onPaneMouseMove'
     | 'onPaneMouseLeave'
     | 'selectionOnDrag'
+    | 'deselectOnSelection'
   >
 >;
 
@@ -78,6 +79,7 @@ export function Pane({
   autoPanOnSelection,
   paneClickDistance,
   selectionOnDrag,
+  deselectOnSelection = true,
   onSelectionStart,
   onSelectionEnd,
   onPaneClick,
@@ -101,6 +103,8 @@ export function Pane({
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   const selectionInProgress = useRef<boolean>(false);
+  const selectedNodeIdsBeforeSelectionStart = useRef<Set<string>>(new Set());
+  const selectedEdgeIdsBeforeSelectionStart = useRef<Set<string>>(new Set());
 
   // Used for auto pan when approaching the edges of the container during selection
   const position = useRef<XYPosition>({ x: 0, y: 0 });
@@ -218,13 +222,14 @@ export function Pane({
     const prevSelectedNodeIds = selectedNodeIds.current;
     const prevSelectedEdgeIds = selectedEdgeIds.current;
 
-    selectedNodeIds.current = new Set(
-      getNodesInside(nodeLookup, nextUserSelectRect, transform, selectionMode === SelectionMode.Partial, true).map(
+    selectedNodeIds.current = new Set([
+      ...selectedNodeIdsBeforeSelectionStart.current,
+      ...getNodesInside(nodeLookup, nextUserSelectRect, transform, selectionMode === SelectionMode.Partial, true).map(
         (node) => node.id
-      )
-    );
+      ),
+    ]);
 
-    selectedEdgeIds.current = new Set();
+    selectedEdgeIds.current = new Set(selectedEdgeIdsBeforeSelectionStart.current);
     const edgesSelectable = defaultEdgeOptions?.selectable ?? true;
 
     // We look for all edges connected to the selected nodes
@@ -284,7 +289,7 @@ export function Pane({
   }, []);
 
   const onPointerMove = (event: ReactPointerEvent): void => {
-    const { userSelectionRect, transform, resetSelectedElements } = store.getState();
+    const { userSelectionRect, transform } = store.getState();
 
     if (!containerBounds.current || !userSelectionRect) {
       return;
@@ -301,8 +306,7 @@ export function Pane({
       if (distance <= requiredDistance) {
         return;
       }
-      resetSelectedElements();
-      onSelectionStart?.(event);
+      beginSelection(event);
     }
 
     selectionInProgress.current = true;
@@ -313,6 +317,24 @@ export function Pane({
     }
 
     commitUserSelectionRect(mouseX, mouseY);
+  };
+
+  const beginSelection = (event: ReactPointerEvent): void => {
+    const { resetSelectedElements, nodeLookup, edgeLookup } = store.getState();
+
+    if (deselectOnSelection) {
+      selectedNodeIdsBeforeSelectionStart.current = new Set();
+      selectedEdgeIdsBeforeSelectionStart.current = new Set();
+      resetSelectedElements();
+    } else {
+      selectedNodeIdsBeforeSelectionStart.current = new Set(
+        [...nodeLookup.values()].filter((node) => node.selected).map((node) => node.id)
+      );
+      selectedEdgeIdsBeforeSelectionStart.current = new Set(
+        [...edgeLookup.values()].filter((edge) => edge.selected).map((edge) => edge.id)
+      );
+    }
+    onSelectionStart?.(event);
   };
 
   const onPointerUp = (event: ReactPointerEvent) => {
