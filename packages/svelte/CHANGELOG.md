@@ -1,5 +1,15 @@
 # @xyflow/svelte
 
+## 1.7.1
+### Patch Changes
+
+
+
+- [#6054](https://github.com/xyflow/xyflow/pull/6054) [`c7d0fcb`](https://github.com/xyflow/xyflow/commit/c7d0fcb3372e234c33d2c87bec8d4c8394abab74) - Disconnect the `ResizeObserver`s when a flow unmounts
+
+- Updated dependencies [[`c7d0fcb`](https://github.com/xyflow/xyflow/commit/c7d0fcb3372e234c33d2c87bec8d4c8394abab74), [`9dcbd29`](https://github.com/xyflow/xyflow/commit/9dcbd29a8e597b6f4cd26ebf64f755d2fb96332b), [`cba335d`](https://github.com/xyflow/xyflow/commit/cba335d7cdb809fe274591985bfa377ca2e21bcf)]:
+  - @xyflow/system@0.0.84
+
 ## 1.7.0
 ### Minor Changes
 
