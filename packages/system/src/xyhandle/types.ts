@@ -62,7 +62,7 @@ export type IsValidParams<NodeType extends NodeBase = NodeBase, EdgeType extends
 
 export type XYHandleInstance = {
   onPointerDown: (event: MouseEvent | TouchEvent, params: OnPointerDownParams) => void;
-  isValid: (event: MouseEvent | TouchEvent, params: IsValidParams) => Result;
+  isValid: (event: MouseEvent | TouchEvent | KeyboardEvent, params: IsValidParams) => Result;
 };
 
 export type Result = {

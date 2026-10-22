@@ -80,6 +80,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     autoPanOnNodeFocus,
     nodesConnectable,
     nodesFocusable,
+    handlesFocusable,
     nodeOrigin = defaultNodeOrigin,
     edgesFocusable,
     edgesReconnectable,
@@ -204,7 +205,9 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           autoPanOnNodeFocus={autoPanOnNodeFocus}
           nodesConnectable={nodesConnectable}
           nodesFocusable={nodesFocusable}
+          handlesFocusable={handlesFocusable}
           edgesFocusable={edgesFocusable}
+          disableKeyboardA11y={disableKeyboardA11y}
           edgesReconnectable={edgesReconnectable}
           elementsSelectable={elementsSelectable}
           elevateNodesOnSelect={elevateNodesOnSelect}

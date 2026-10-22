@@ -226,7 +226,15 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * unsuccessful.
    */
   onConnectEnd?: OnConnectEnd;
+  /**
+   * This event handler gets called when a user starts a connection by clicking a handle or
+   * by pressing `Enter` or `Space` on a focused handle.
+   */
   onClickConnectStart?: OnConnectStart;
+  /**
+   * This event handler gets called when a connection that was started with a click or the
+   * keyboard ends - either on another handle or on the pane.
+   */
   onClickConnectEnd?: OnConnectEnd;
   /**
    * The `onInit` callback is called when the viewport is initialized. At this point you can use the
@@ -409,6 +417,14 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default true
    */
   nodesFocusable?: boolean;
+  /**
+   * When `true`, focus between handles can be cycled with the `Tab` key. Pressing `Enter` or
+   * `Space` on a focused handle starts a connection (when `connectOnClick` is enabled) and
+   * pressing it on another handle completes the connection. `Escape` cancels a pending
+   * connection.
+   * @default true
+   */
+  handlesFocusable?: boolean;
   /**
    * The origin of the node to use when placing it in the flow or looking up its `x` and `y`
    * position. An origin of `[0, 0]` means that a node's top left corner will be placed at the `x`

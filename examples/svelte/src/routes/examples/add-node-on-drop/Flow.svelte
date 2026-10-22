@@ -27,7 +27,7 @@
 	let id = 1;
 	const getId = () => `${id++}`;
 
-	const { screenToFlowPosition, flowToScreenPosition } = useSvelteFlow();
+	const { screenToFlowPosition, flowToScreenPosition, getInternalNode } = useSvelteFlow();
 
 	const connections = useNodeConnections({ id: '0', handleType: 'source' });
 
@@ -72,6 +72,45 @@
 			edges = [...edges, newEdge];
 		}
 	};
+
+	/*
+	 * Fired when a connection started with a click or the keyboard ends on the pane.
+	 * Keyboard events carry no pointer position, so the new node is placed below the
+	 * node the connection was started from.
+	 */
+	const handleClickConnectEnd: OnConnectEnd = (event) => {
+		if (!connectingNodeId) return;
+
+		const targetIsPane = (event.target as Partial<Element> | null)?.classList?.contains(
+			'svelte-flow__pane'
+		);
+
+		if (targetIsPane) {
+			const sourceNode = getInternalNode(connectingNodeId);
+			const id = getId();
+			const newNode: Node = {
+				id,
+				data: { label: `Node ${id}` },
+				position: {
+					x: sourceNode?.internals.positionAbsolute.x ?? 0,
+					y:
+						(sourceNode?.internals.positionAbsolute.y ?? 0) +
+						(sourceNode?.measured.height ?? 0) +
+						50
+				}
+			};
+
+			nodes = [...nodes, newNode];
+
+			const newEdge = {
+				source: connectingNodeId,
+				target: id,
+				id: `${connectingNodeId}--${id}`
+			};
+			edges = [...edges, newEdge];
+			connectingNodeId = null;
+		}
+	};
 </script>
 
 <svelte:window />
@@ -87,6 +126,10 @@
 			connectingNodeId = nodeId;
 		}}
 		onconnectend={handleConnectEnd}
+		onclickconnectstart={(_, { nodeId }) => {
+			connectingNodeId = nodeId;
+		}}
+		onclickconnectend={handleClickConnectEnd}
 	/>
 </div>
 

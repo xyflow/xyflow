@@ -133,10 +133,13 @@ export type OnConnectStartParams = {
   handleType: HandleType | null;
 };
 
-export type OnConnectStart = (event: MouseEvent | TouchEvent, params: OnConnectStartParams) => void;
+export type OnConnectStart = (
+  event: MouseEvent | TouchEvent | KeyboardEvent,
+  params: OnConnectStartParams
+) => void;
 export type OnConnect = (connection: Connection) => void;
 export type OnConnectEnd<NodeType extends NodeBase = NodeBase> = (
-  event: MouseEvent | TouchEvent,
+  event: MouseEvent | TouchEvent | KeyboardEvent,
   connectionState: FinalConnectionState<InternalNodeBase<NodeType>>
 ) => void;
 

@@ -9,6 +9,7 @@
 
   --xy-handle-background-color-default: #1a192b;
   --xy-handle-border-color-default: #fff;
+  --xy-handle-boxshadow-focus-default: 0 0 0 2px #1a192b;
 
   --xy-selection-background-color-default: rgba(0, 89, 220, 0.08);
   --xy-selection-border-default: 1px dotted rgba(0, 89, 220, 0.8);
@@ -34,6 +35,7 @@
 
   --xy-handle-background-color-default: #bebebe;
   --xy-handle-border-color-default: #1e1e1e;
+  --xy-handle-boxshadow-focus-default: 0 0 0 2px #bebebe;
 
   --xy-selection-background-color-default: rgba(200, 200, 220, 0.08);
   --xy-selection-border-default: 1px dotted rgba(200, 200, 220, 0.8);
@@ -115,6 +117,15 @@
   background-color: var(--xy-handle-background-color, var(--xy-handle-background-color-default));
   border: 1px solid var(--xy-handle-border-color, var(--xy-handle-border-color-default));
   border-radius: 100%;
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: var(--xy-handle-boxshadow-focus, var(--xy-handle-boxshadow-focus-default));
+  }
 }
 
 .xy-flow__controls {

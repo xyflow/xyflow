@@ -88,6 +88,7 @@
     nodesConnectable,
     elementsSelectable,
     nodesFocusable,
+    handlesFocusable,
     edgesFocusable,
     disableKeyboardA11y,
     noDragClass,

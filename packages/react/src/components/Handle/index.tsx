@@ -2,6 +2,7 @@ import {
   type HTMLAttributes,
   type MouseEvent as ReactMouseEvent,
   type TouchEvent as ReactTouchEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
   type ForwardedRef,
   memo,
 } from 'react';
@@ -13,6 +14,8 @@ import {
   XYHandle,
   getHostForElement,
   isMouseEvent,
+  isInputDOMNode,
+  elementSelectionKeys,
   type HandleProps as HandlePropsSystem,
   type Connection,
   type HandleType,
@@ -26,6 +29,7 @@ import {
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { useHandleConfig } from '../../contexts/HandleConfigContext';
+import { ARIA_HANDLE_DESC_KEY } from '../A11yDescriptions';
 import { type ReactFlowState } from '../../types';
 import { fixedForwardRef } from '../../utils';
 import { addEdge } from '../../utils/edges';
@@ -107,7 +111,8 @@ function HandleComponent(
   const isTarget = type === 'target';
   const store = useStoreApi();
   const nodeId = useNodeId();
-  const { connectOnClick, noPanClassName, rfId } = useHandleConfig();
+  const { connectOnClick, noPanClassName, rfId, handlesFocusable, disableKeyboardA11y, ariaLabelConfig } =
+    useHandleConfig();
   const {
     connectingFrom,
     connectingTo,
@@ -182,7 +187,11 @@ function HandleComponent(
     }
   };
 
-  const onClick = (event: ReactMouseEvent) => {
+  /*
+   * Activating a handle - by clicking it or by pressing enter/space while it is focused -
+   * either starts a new connection or completes a pending one.
+   */
+  const onHandleActivate = (event: MouseEvent | KeyboardEvent) => {
     const {
       onClickConnectStart,
       onClickConnectEnd,
@@ -200,14 +209,17 @@ function HandleComponent(
     }
 
     if (!connectionClickStartHandle) {
-      onClickConnectStart?.(event.nativeEvent, { nodeId, handleId, handleType: type });
-      store.setState({ connectionClickStartHandle: { nodeId, type, id: handleId } });
+      onClickConnectStart?.(event, { nodeId, handleId, handleType: type });
+      store.setState({
+        connectionClickStartHandle: { nodeId, type, id: handleId },
+        ariaLiveMessage: ariaLabelConfig['handle.ariaLiveMessage.connectionStarted'],
+      });
       return;
     }
 
     const doc = getHostForElement(event.target);
     const isValidConnectionHandler = isValidConnection || isValidConnectionStore;
-    const { connection, isValid } = XYHandle.isValid(event.nativeEvent, {
+    const { connection, isValid } = XYHandle.isValid(event, {
       handle: {
         nodeId,
         id: handleId,
@@ -231,9 +243,22 @@ function HandleComponent(
     const connectionClone = structuredClone(connectionState) as Optional<ConnectionState, 'inProgress'>;
     delete connectionClone.inProgress;
     connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
-    onClickConnectEnd?.(event as unknown as MouseEvent, connectionClone as FinalConnectionState);
+    onClickConnectEnd?.(event, connectionClone as FinalConnectionState);
 
     store.setState({ connectionClickStartHandle: null });
+  };
+
+  const isFocusable = isConnectable && connectOnClick && handlesFocusable && !disableKeyboardA11y;
+
+  const onKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (isInputDOMNode(event.nativeEvent) || !elementSelectionKeys.includes(event.key) || event.key === 'Escape') {
+      return;
+    }
+
+    // prevent scrolling the viewport on space and the event from reaching the node wrapper
+    event.preventDefault();
+    event.stopPropagation();
+    onHandleActivate(event.nativeEvent);
   };
 
   return (
@@ -270,7 +295,12 @@ function HandleComponent(
       ])}
       onMouseDown={onPointerDown}
       onTouchStart={onPointerDown}
-      onClick={connectOnClick ? onClick : undefined}
+      onClick={connectOnClick ? (event) => onHandleActivate(event.nativeEvent) : undefined}
+      onKeyDown={isFocusable ? onKeyDown : undefined}
+      tabIndex={isFocusable ? 0 : undefined}
+      role={isFocusable ? 'button' : undefined}
+      aria-label={isFocusable ? ariaLabelConfig['handle.ariaLabel'] : undefined}
+      aria-describedby={isFocusable ? `${ARIA_HANDLE_DESC_KEY}-${rfId}` : undefined}
       ref={ref}
       {...rest}
     >

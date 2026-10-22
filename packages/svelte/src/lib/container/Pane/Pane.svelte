@@ -47,6 +47,11 @@
     calcAutoPan,
     pointToRendererPoint,
     rendererPointToPoint,
+    elementSelectionKeys,
+    isInputDOMNode,
+    type ConnectionState,
+    type FinalConnectionState,
+    type Optional,
     type XYPosition
   } from '@xyflow/system';
 
@@ -346,16 +351,56 @@
     store.selectionRectMode = null;
     store.selectionRect = null;
   }
+
+  /*
+   * While a click connection is pending, escape cancels it and enter/space on the pane
+   * itself completes it "on the pane" - the keyboard equivalent of dropping a connection
+   * on the canvas. Keydown events from focused handles bubble up to the pane.
+   */
+  function onkeydown(event: KeyboardEvent) {
+    if (!store.clickConnectStartHandle || isInputDOMNode(event)) {
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      store.clickConnectStartHandle = null;
+      store.ariaLiveMessage = store.ariaLabelConfig['handle.ariaLiveMessage.connectionCancelled'];
+      return;
+    }
+
+    if (elementSelectionKeys.includes(event.key) && event.target === container) {
+      event.preventDefault();
+
+      const connectionClone = structuredClone($state.snapshot(store.connection)) as Optional<
+        ConnectionState,
+        'inProgress'
+      >;
+      delete connectionClone.inProgress;
+      connectionClone.toPosition = connectionClone.toHandle
+        ? connectionClone.toHandle.position
+        : null;
+      store.onclickconnectend?.(event, connectionClone as FinalConnectionState);
+
+      store.clickConnectStartHandle = null;
+    }
+  }
+
+  let isFocusable = $derived(store.handlesFocusable && !store.disableKeyboardA11y);
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <div
   bind:this={container}
   class="svelte-flow__pane svelte-flow__container"
   class:draggable={panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0))}
   class:dragging={store.dragging}
   class:selection={isSelecting}
+  tabindex={isFocusable ? 0 : undefined}
+  role={isFocusable ? 'group' : undefined}
+  aria-label={isFocusable ? store.ariaLabelConfig['pane.ariaLabel'] : undefined}
+  {onkeydown}
   onclick={isSelectionEnabled ? undefined : wrapHandler(onClick, container)}
   onpointerdowncapture={isSelectionEnabled ? onPointerDownCapture : undefined}
   onpointermove={isSelectionEnabled ? onPointerMove : undefined}

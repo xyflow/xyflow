@@ -250,7 +250,7 @@ function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
 
 // checks if  and returns connection in form of an object { source: 123, target: 312 }
 function isValidHandle<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
-  event: MouseEvent | TouchEvent,
+  event: MouseEvent | TouchEvent | KeyboardEvent,
   {
     handle,
     connectionMode,
@@ -269,8 +269,13 @@ function isValidHandle<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
     ? doc.querySelector(`.${lib}-flow__handle[data-id="${flowId}-${handle?.nodeId}-${handle?.id}-${handle?.type}"]`)
     : null;
 
-  const { x, y } = getEventPosition(event);
-  const handleBelow = doc.elementFromPoint(x, y);
+  /*
+   * keyboard events don't carry a pointer position, so we can't use elementFromPoint
+   * and fall back to the handle resolved through the data-id attribute
+   */
+  const hasPointerPosition = 'clientX' in event || 'touches' in event;
+  const { x, y } = hasPointerPosition ? getEventPosition(event as MouseEvent | TouchEvent) : { x: 0, y: 0 };
+  const handleBelow = hasPointerPosition ? doc.elementFromPoint(x, y) : null;
   /*
    * we always want to prioritize the handle below the mouse cursor over the closest distance handle,
    * because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor

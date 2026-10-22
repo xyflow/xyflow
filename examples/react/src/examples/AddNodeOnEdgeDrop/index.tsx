@@ -32,7 +32,7 @@ const AddNodeOnEdgeDrop = () => {
   const connectingNodeId = useRef<string | null>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const { screenToFlowPosition } = useReactFlow();
+  const { screenToFlowPosition, getInternalNode } = useReactFlow();
   const onConnect: OnConnect = useCallback((params) => {
     // reset the start node on connections
     connectingNodeId.current = null;
@@ -75,6 +75,43 @@ const AddNodeOnEdgeDrop = () => {
     [screenToFlowPosition]
   );
 
+  /*
+   * Fired when a connection started with a click or the keyboard ends on the pane.
+   * Keyboard events carry no pointer position, so the new node is placed below the
+   * node the connection was started from.
+   */
+  const onClickConnectEnd: OnConnectEnd = useCallback(
+    (event) => {
+      if (!connectingNodeId.current) return;
+
+      const targetIsPane = (event.target as Partial<Element> | null)?.classList?.contains('react-flow__pane');
+
+      if (targetIsPane) {
+        const sourceNode = getInternalNode(connectingNodeId.current);
+        const id = getId();
+        const newNode: Node = {
+          id,
+          position: {
+            x: sourceNode?.internals.positionAbsolute.x ?? 0,
+            y: (sourceNode?.internals.positionAbsolute.y ?? 0) + (sourceNode?.measured.height ?? 0) + 50,
+          },
+          data: { label: `Node ${id}` },
+        };
+
+        const newEdge: Edge = {
+          id,
+          source: connectingNodeId.current,
+          target: id,
+        };
+
+        setNodes((nds) => nds.concat(newNode));
+        setEdges((eds) => eds.concat(newEdge));
+        connectingNodeId.current = null;
+      }
+    },
+    [getInternalNode]
+  );
+
   return (
     <div className="wrapper" ref={reactFlowWrapper} style={{ height: '100%' }}>
       <ReactFlow
@@ -85,6 +122,8 @@ const AddNodeOnEdgeDrop = () => {
         onConnect={onConnect}
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
+        onClickConnectStart={onConnectStart}
+        onClickConnectEnd={onClickConnectEnd}
         fitView
       />
     </div>

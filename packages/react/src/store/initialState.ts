@@ -120,6 +120,7 @@ const getInitialState = ({
     nodesDraggable: true,
     nodesConnectable: true,
     nodesFocusable: true,
+    handlesFocusable: true,
     edgesFocusable: true,
     edgesReconnectable: true,
     elementsSelectable: true,
@@ -138,6 +139,7 @@ const getInitialState = ({
     connectOnClick: true,
 
     ariaLiveMessage: '',
+    disableKeyboardA11y: false,
     autoPanOnConnect: true,
     autoPanOnNodeDrag: true,
     autoPanOnNodeFocus: true,

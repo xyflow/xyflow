@@ -37,7 +37,8 @@ export const infiniteExtent: CoordinateExtent = [
   [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY],
 ];
 
-export const elementSelectionKeys = ['Enter', ' ', 'Escape'];
+// some browsers report the space key as 'Space' or 'Spacebar' instead of ' '
+export const elementSelectionKeys = ['Enter', ' ', 'Spacebar', 'Space', 'Escape'];
 
 export const defaultAriaLabelConfig = {
   'node.a11yDescription.default':
@@ -59,8 +60,16 @@ export const defaultAriaLabelConfig = {
   // Mini map
   'minimap.ariaLabel': 'Mini Map',
 
+  // Pane
+  'pane.ariaLabel': 'Flow pane',
+
   // Handle
   'handle.ariaLabel': 'Handle',
+  'handle.a11yDescription.default':
+    'Press enter or space to start a connection. Move to another handle and press enter or space to connect them.',
+  'handle.ariaLiveMessage.connectionStarted':
+    'Connection started. Move to a target handle and press enter or space to connect, or press escape to cancel.',
+  'handle.ariaLiveMessage.connectionCancelled': 'Connection cancelled.',
 };
 
 export type AriaLabelConfig = typeof defaultAriaLabelConfig;
