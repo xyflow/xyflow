@@ -36,13 +36,15 @@ export function getDragItems<NodeType extends NodeBase>(
   nodeLookup: Map<string, InternalNodeBase<NodeType>>,
   nodesDraggable: boolean,
   mousePos: XYPosition,
+  multiSelectionActive: boolean,
   nodeId?: string
 ): Map<string, NodeDragItem> {
   const dragItems = new Map<string, NodeDragItem>();
+  const dragSelectedNodes = !nodeId || nodeLookup.get(nodeId)?.selected || multiSelectionActive
 
   for (const [id, node] of nodeLookup) {
     if (
-      (node.selected || node.id === nodeId) &&
+      (node.id === nodeId || (dragSelectedNodes && node.selected)) &&
       (!node.parentId || !isParentSelected(node, nodeLookup)) &&
       (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'))
     ) {
