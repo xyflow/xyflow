@@ -1,6 +1,5 @@
-import type { Component, CSSProperties, VNode } from 'vue';
-import { h } from 'vue';
-import { markChangedProps } from '../../utils';
+import type { Component, CSSProperties } from 'vue';
+import { createChangedPropsRenderer } from '../../utils/vnode';
 import BaseEdge from './BaseEdge.vue';
 
 /**
@@ -22,15 +21,9 @@ export function baseEdgeProps(props: Record<string, any>, attrs: Record<string, 
   };
 }
 
-/**
- * Render `BaseEdge` for a built-in edge type, tagging the vnode with the props that changed so
- * Vue's props fast path applies here too. A drag frame changes `path`/`labelX`/`labelY` and leaves
- * the label and marker props alone.
- */
-export function renderBaseEdge(baseProps: Record<string, any>, prev: Record<string, unknown> | null): VNode {
-  const vnode = h(BaseEdge as Component, baseProps);
+/** A {@link createChangedPropsRenderer} bound to `BaseEdge`, for the built-in edge types. */
+export function createBaseEdgeRenderer() {
+  const render = createChangedPropsRenderer();
 
-  markChangedProps(vnode, baseProps, prev);
-
-  return vnode;
+  return (baseProps: Record<string, any>) => render(BaseEdge as Component, baseProps);
 }

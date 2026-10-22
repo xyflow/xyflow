@@ -1,4 +1,4 @@
-import type { Component, VNode } from 'vue';
+import type { Component } from 'vue';
 import type { MouseTouchEvent, NodeProps } from '../../types';
 import { getNodeDimensions, getNodesInside, isInputDOMNode, nodeHasDimensions } from '@xyflow/system';
 import {
@@ -20,7 +20,8 @@ import {
   useVueFlowStore,
 } from '../../composables';
 import { NodeId, NodeRef, Slots } from '../../context';
-import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, defaultNodeTypes, elementSelectionKeys, ErrorCode, handleNodeClick, markChangedProps, resolveTypeComponent, VueFlowError } from '../../utils';
+import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, captureElement, createChangedPropsRenderer, elementSelectionKeys, ErrorCode, handleNodeClick, resolveTypeComponent, VueFlowError } from '../../utils';
+import { defaultNodeTypes } from '../../utils/defaultNodesEdges';
 
 interface Props {
   id: string;
@@ -79,9 +80,8 @@ const NodeWrapper = defineComponent({
       return !node || typeof node.focusable === 'undefined' ? store.nodesFocusable : node.focusable;
     });
 
-    // whether any pointer handler is bound changes only when one is added or removed, so keep it
-    // out of `hasPointerEvents`, which depends on the node and is therefore recomputed every frame.
-    // otherwise each node walks five reactive hooks per frame for a value that is the same for all.
+    // kept out of `hasPointerEvents`, which depends on the node and so is recomputed every frame;
+    // this value is the same for every node and only changes when a handler is bound
     const hasPointerListeners = computed(
       () =>
         store.hooks.nodeClick.hasListeners()
@@ -105,11 +105,8 @@ const NodeWrapper = defineComponent({
     const nodeCmp = computed(() => {
       const name = internalNode.value?.type || 'default';
 
-      // resolve against the registered types directly. `getNodeTypes` derives its registry from
-      // `state.nodes`, so reading it here subscribes every wrapper to the whole node array and a
-      // single moved node invalidates all of them. an unregistered name falls through as a string
-      // and resolves against globally registered components, exactly as the derived registry's
-      // auto-registered entries did.
+      // an unregistered name falls through as a string and resolves against the app's globally
+      // registered components
       const registered = store.nodeTypes?.[name] ?? defaultNodeTypes[name as keyof typeof defaultNodeTypes] ?? name;
 
       const cmp = resolveTypeComponent(slots?.[`node-${name}`], registered, name, instance);
@@ -206,7 +203,7 @@ const NodeWrapper = defineComponent({
       { flush: 'post' },
     );
 
-    let prevNodeComponentProps: Record<string, unknown> | null = null;
+    const renderNode = createChangedPropsRenderer();
 
     return () => {
       const node = internalNode.value;
@@ -235,18 +232,10 @@ const NodeWrapper = defineComponent({
         dragHandle: node.dragHandle,
       } satisfies NodeProps;
 
-      const nodeComponent = h(nodeCmp.value ?? (defaultNodeTypes.default as Component), nodeComponentProps);
-
-      markChangedProps(nodeComponent, nodeComponentProps, prevNodeComponentProps);
-      prevNodeComponentProps = nodeComponentProps;
-
       return h(
         'div',
         {
-          // not a template ref: vue re-registers one on every patch and queues a post-flush job
-          // for it, and this element is created once and never replaced
-          'onVnodeMounted': (vnode: VNode) => { nodeElement.value = vnode.el as HTMLDivElement; },
-          'onVnodeBeforeUnmount': () => { nodeElement.value = null; },
+          ...captureElement(nodeElement),
           'data-id': node.id,
           'class': [
             'vue-flow__node',
@@ -283,7 +272,7 @@ const NodeWrapper = defineComponent({
           'onKeydown': onKeyDown,
           'onFocus': isFocusable.value ? onFocus : undefined,
         },
-        [nodeComponent],
+        [renderNode(nodeCmp.value ?? (defaultNodeTypes.default as Component), nodeComponentProps)],
       );
     };
 

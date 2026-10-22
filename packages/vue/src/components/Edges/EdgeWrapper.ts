@@ -1,15 +1,35 @@
-import type { Connection, FinalConnectionState, HandleType } from '@xyflow/system';
-import type { Component, VNode } from 'vue';
+import type { Connection, FinalConnectionState, HandleType, Position } from '@xyflow/system';
+import type { Component } from 'vue';
 import type { Edge, EdgeProps, InternalNode, MouseTouchEvent } from '../../types';
 import { getEdgePosition, getMarkerId } from '@xyflow/system';
 import { computed, defineComponent, getCurrentInstance, h, inject, provide, shallowRef, toRef } from 'vue';
 import { useHandle, useVueFlow, useVueFlowStore } from '../../composables';
 import { EdgeId, EdgeRef, Slots } from '../../context';
-import { ARIA_EDGE_DESC_KEY, defaultEdgeTypes, devWarn, elementSelectionKeys, ErrorCode, getEdgeZIndex, markChangedProps, resolveTypeComponent, VueFlowError } from '../../utils';
+import { ARIA_EDGE_DESC_KEY, captureElement, createChangedPropsRenderer, devWarn, elementSelectionKeys, ErrorCode, getEdgeZIndex, resolveTypeComponent, VueFlowError } from '../../utils';
+import { defaultEdgeTypes } from '../../utils/defaultNodesEdges';
 import EdgeAnchor from './EdgeAnchor';
 
 interface Props {
   id: string;
+}
+
+type AnchorHandler = (event: MouseEvent) => void;
+
+function reconnectAnchor(
+  type: HandleType,
+  position: Position,
+  centerX: number,
+  centerY: number,
+  radius: number,
+  onMousedown: AnchorHandler,
+  onMouseenter: AnchorHandler,
+  onMouseout: AnchorHandler,
+) {
+  return h(
+    'g',
+    { onMousedown, onMouseenter, onMouseout },
+    h(EdgeAnchor, { position, centerX, centerY, radius, type, 'data-type': type }),
+  );
 }
 
 const EdgeWrapper = defineComponent({
@@ -58,8 +78,7 @@ const EdgeWrapper = defineComponent({
 
     const isFocusable = computed(() => (typeof edge.value.focusable === 'undefined' ? store.edgesFocusable : edge.value.focusable));
 
-    // `computed`, not `toRef`: a toRef getter re-runs on every read, so this walked three
-    // reactive hooks each time the render consulted it
+    // `computed`, not `toRef`: a toRef getter re-runs on every read
     const hasReconnectListener = computed(
       () =>
         store.hooks.reconnect.hasListeners()
@@ -70,8 +89,6 @@ const EdgeWrapper = defineComponent({
     provide(EdgeId, props.id);
     provide(EdgeRef, edgeEl);
 
-    // see NodeWrapper: listener presence is shared and near-static, so it does not belong in a
-    // value recomputed per edge per frame
     const hasEdgeClickListener = computed(() => store.hooks.edgeClick.hasListeners());
 
     const edgeClass = computed(() => edge.value.class);
@@ -80,8 +97,7 @@ const EdgeWrapper = defineComponent({
     const edgeCmp = computed(() => {
       const name = edge.value.type || 'default';
 
-      // see NodeWrapper: `getEdgeTypes` derives its registry from `state.edges`, so reading it
-      // here subscribes every wrapper to the whole edge array
+      // see NodeWrapper
       const registered = store.edgeTypes?.[name] ?? defaultEdgeTypes[name as keyof typeof defaultEdgeTypes] ?? name;
 
       const cmp = resolveTypeComponent(slots?.[`edge-${name}`], registered, name, instance);
@@ -109,14 +125,14 @@ const EdgeWrapper = defineComponent({
       onReconnectEnd,
     });
 
-    let prevEdgeComponentProps: Record<string, unknown> | null = null;
+    const renderEdge = createChangedPropsRenderer();
 
     return () => {
       if (!storedEdge.value) {
         return null;
       }
 
-      // one read: `edge` is a computed, and every `.value` pays a dirty check
+      // read the computed once: every `.value` pays a dirty check
       const currentEdge = edge.value;
 
       const sourceNode = getInternalNode(currentEdge.source);
@@ -195,56 +211,20 @@ const EdgeWrapper = defineComponent({
       let edgeComponent = null;
 
       if (updating.value) {
-        prevEdgeComponentProps = null;
+        renderEdge.reset();
       }
       else {
-        const edgeProps = { ...edgeComponentProps, ...pathOptions };
-        edgeComponent = h(edgeCmp.value ?? (defaultEdgeTypes.default as Component), edgeProps);
-
-        markChangedProps(edgeComponent, edgeProps, prevEdgeComponentProps);
-        prevEdgeComponentProps = edgeProps;
+        edgeComponent = renderEdge(edgeCmp.value ?? (defaultEdgeTypes.default as Component), { ...edgeComponentProps, ...pathOptions });
       }
 
-      // flat children: a nested array child makes Vue build and diff a Fragment on every render,
-      // for every edge, even when both anchors are null (no reconnect listener)
-      const canReconnect = hasReconnectListener.value;
+      const reconnectable = hasReconnectListener.value && isReconnectable.value;
 
-      const sourceAnchor = canReconnect && (isReconnectable.value === 'source' || isReconnectable.value === true)
-        ? h(
-            'g',
-            {
-              onMousedown: onReconnectSourceMouseDown,
-              onMouseenter: onReconnectMouseEnter,
-              onMouseout: onReconnectMouseOut,
-            },
-            h(EdgeAnchor, {
-              'position': sourcePosition,
-              'centerX': sourceX,
-              'centerY': sourceY,
-              'radius': store.reconnectRadius,
-              'type': 'source',
-              'data-type': 'source',
-            }),
-          )
+      const sourceAnchor = reconnectable === true || reconnectable === 'source'
+        ? reconnectAnchor('source', sourcePosition, sourceX, sourceY, store.reconnectRadius, onReconnectSourceMouseDown, onReconnectMouseEnter, onReconnectMouseOut)
         : null;
 
-      const targetAnchor = canReconnect && (isReconnectable.value === 'target' || isReconnectable.value === true)
-        ? h(
-            'g',
-            {
-              onMousedown: onReconnectTargetMouseDown,
-              onMouseenter: onReconnectMouseEnter,
-              onMouseout: onReconnectMouseOut,
-            },
-            h(EdgeAnchor, {
-              'position': targetPosition,
-              'centerX': targetX,
-              'centerY': targetY,
-              'radius': store.reconnectRadius,
-              'type': 'target',
-              'data-type': 'target',
-            }),
-          )
+      const targetAnchor = reconnectable === true || reconnectable === 'target'
+        ? reconnectAnchor('target', targetPosition, targetX, targetY, store.reconnectRadius, onReconnectTargetMouseDown, onReconnectMouseEnter, onReconnectMouseOut)
         : null;
 
       return h(
@@ -253,9 +233,7 @@ const EdgeWrapper = defineComponent({
         h(
           'g',
           {
-            // see NodeWrapper: a template ref is re-registered on every patch
-            'onVnodeMounted': (vnode: VNode) => { edgeEl.value = vnode.el as SVGElement; },
-            'onVnodeBeforeUnmount': () => { edgeEl.value = null; },
+            ...captureElement(edgeEl),
             'key': props.id,
             'data-id': props.id,
             'class': [

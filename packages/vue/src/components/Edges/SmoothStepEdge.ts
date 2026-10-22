@@ -1,7 +1,7 @@
 import type { SmoothStepEdgeProps } from '../../types';
 import { getSmoothStepPath, Position } from '@xyflow/system';
 import { defineComponent } from 'vue';
-import { baseEdgeProps, renderBaseEdge } from './utils';
+import { baseEdgeProps, createBaseEdgeRenderer } from './utils';
 
 const SmoothStepEdge = defineComponent<SmoothStepEdgeProps>({
   name: 'SmoothStepEdge',
@@ -29,7 +29,7 @@ const SmoothStepEdge = defineComponent<SmoothStepEdgeProps>({
   ],
   compatConfig: { MODE: 3 },
   setup(props, { attrs }) {
-    let prevBaseProps: Record<string, unknown> | null = null;
+    const renderBaseEdge = createBaseEdgeRenderer();
 
     return () => {
       const [path, labelX, labelY] = getSmoothStepPath({
@@ -44,12 +44,7 @@ const SmoothStepEdge = defineComponent<SmoothStepEdgeProps>({
         stepPosition: props.stepPosition,
       });
 
-      const baseProps = { path, labelX, labelY, ...baseEdgeProps(props, attrs) };
-
-      const vnode = renderBaseEdge(baseProps, prevBaseProps);
-      prevBaseProps = baseProps;
-
-      return vnode;
+      return renderBaseEdge({ path, labelX, labelY, ...baseEdgeProps(props, attrs) });
     };
   },
 });

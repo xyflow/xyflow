@@ -1,7 +1,7 @@
 import type { StraightEdgeProps } from '../../types';
 import { getStraightPath } from '@xyflow/system';
 import { defineComponent } from 'vue';
-import { baseEdgeProps, renderBaseEdge } from './utils';
+import { baseEdgeProps, createBaseEdgeRenderer } from './utils';
 
 const StraightEdge = defineComponent<StraightEdgeProps>({
   name: 'StraightEdge',
@@ -25,7 +25,7 @@ const StraightEdge = defineComponent<StraightEdgeProps>({
   ],
   compatConfig: { MODE: 3 },
   setup(props, { attrs }) {
-    let prevBaseProps: Record<string, unknown> | null = null;
+    const renderBaseEdge = createBaseEdgeRenderer();
 
     return () => {
       const [path, labelX, labelY] = getStraightPath({
@@ -35,12 +35,7 @@ const StraightEdge = defineComponent<StraightEdgeProps>({
         targetY: props.targetY,
       });
 
-      const baseProps = { path, labelX, labelY, ...baseEdgeProps(props, attrs) };
-
-      const vnode = renderBaseEdge(baseProps, prevBaseProps);
-      prevBaseProps = baseProps;
-
-      return vnode;
+      return renderBaseEdge({ path, labelX, labelY, ...baseEdgeProps(props, attrs) });
     };
   },
 });
