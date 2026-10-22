@@ -116,6 +116,7 @@ export {
   type ResizeParamsWithDirection,
   type ResizeDragEvent,
   type IsValidConnection,
+  type IsNodeSelectable,
   type NodeConnection,
   type AriaLabelConfig,
   type SetCenter,

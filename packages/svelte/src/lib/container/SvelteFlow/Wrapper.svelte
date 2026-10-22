@@ -36,6 +36,7 @@
     edgeTypes,
     colorMode: _colorMode,
     isValidConnection,
+    isNodeSelectable,
     onmove,
     onmovestart,
     onmoveend,
