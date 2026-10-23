@@ -297,7 +297,8 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       height: nodeToUse.measured?.height ?? nodeToUse.height
     };
 
-    return nodeToRect(nodeWithPosition);
+    // Child positions already account for the flow origin above.
+    return nodeToRect(nodeWithPosition, nodeToUse.parentId ? undefined : store.nodeOrigin);
   };
 
   function updateNode(
