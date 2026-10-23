@@ -129,9 +129,19 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
 
     return () => {
-      // when we reset the store we also need to reset the previous fields
-      previousFields.current = initPrevValues;
-      reset();
+      // React Activity cleans up effects while keeping the DOM and component state.
+      // Defer the reset until after the commit so a real unmount can be distinguished
+      // from an Activity hide (whose DOM remains connected).
+      const domNode = store.getState().domNode;
+
+      queueMicrotask(() => {
+        if (domNode?.isConnected) {
+          return;
+        }
+
+        previousFields.current = initPrevValues;
+        reset();
+      });
     };
   }, []);
 
