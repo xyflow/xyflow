@@ -45,7 +45,6 @@ import type {
   SelectionDragHandler,
   EdgeMouseHandler,
   OnNodeDrag,
-  OnNodeMove,
   OnBeforeDelete,
   IsValidConnection,
   ProOptions,
@@ -137,8 +136,6 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   onNodeDrag?: OnNodeDrag<NodeType>;
   /** This event handler is called when a user stops dragging a node. */
   onNodeDragStop?: OnNodeDrag<NodeType>;
-  /** This event handler is called when a user moves one or more selected nodes with the keyboard. */
-  onNodeMove?: OnNodeMove<NodeType>;
   /** This event handler is called when a user clicks on an edge. */
   onEdgeClick?: (event: ReactMouseEvent, edge: EdgeType) => void;
   /** This event handler is called when a user right-clicks on an edge. */
