@@ -118,7 +118,7 @@ export function Pane({
       return;
     }
 
-    const { connectionClickStartHandle, connection, onClickConnectEnd } = store.getState();
+    const { connectionClickStartHandle, connection, onClickConnectEnd, resetSelectedElements } = store.getState();
 
     if (connectionClickStartHandle) {
       const connectionClone = structuredClone(connection) as Optional<ConnectionState, 'inProgress'>;
@@ -130,7 +130,7 @@ export function Pane({
     }
 
     onPaneClick?.(event);
-    store.getState().resetSelectedElements();
+    resetSelectedElements();
     store.setState({ nodesSelectionActive: false });
   };
 
