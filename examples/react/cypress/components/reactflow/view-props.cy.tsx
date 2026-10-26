@@ -155,6 +155,24 @@ describe('<ReactFlow />: View Props', () => {
   });
 
   describe('uses onlyRenderVisibleElements', () => {
+    it('uses the custom isEdgeVisible callback', () => {
+      const nodes = nodesOutsideOfView.map((node, index) => ({
+        ...node,
+        position: { x: -500 + index * 100, y: 0 },
+      }));
+
+      cy.mount(
+        <ControlledFlow
+          initialNodes={nodes}
+          initialEdges={[{ id: 'edge-1', source: '1', target: '2' }]}
+          onlyRenderVisibleElements
+          isEdgeVisible={() => true}
+        />
+      ).then(() => {
+        cy.get('.react-flow__edge').should('have.length', 1);
+      });
+    });
+
     it('displays no nodes', () => {
       cy.mount(<ControlledFlow initialNodes={nodesOutsideOfView} onlyRenderVisibleElements />).then(() => {
         cy.get('.react-flow__node').should('have.length', 0);
