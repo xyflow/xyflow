@@ -79,7 +79,6 @@ type StoreUpdaterProps<NodeType extends Node = Node, EdgeType extends Edge = Edg
   ReactFlowFieldsToTrack
 > & {
   rfId: string;
-  preserveStateOnUnmount?: boolean;
 };
 
 // rfId doesn't exist in ReactFlowProps, but it's one of the fields we want to update
@@ -130,11 +129,19 @@ export function StoreUpdater<NodeType extends Node = Node, EdgeType extends Edge
     setDefaultNodesAndEdges(props.defaultNodes, props.defaultEdges);
 
     return () => {
-      if (!props.preserveStateOnUnmount) {
-        // when we reset the store we also need to reset the previous fields
+      // React Activity cleans up effects while keeping the DOM connected.
+      // Defer resetting until after the commit so an Activity hide can be
+      // distinguished from a real unmount.
+      const domNode = store.getState().domNode;
+
+      queueMicrotask(() => {
+        if (domNode?.isConnected) {
+          return;
+        }
+
         previousFields.current = initPrevValues;
         reset();
-      }
+      });
     };
   }, []);
 
