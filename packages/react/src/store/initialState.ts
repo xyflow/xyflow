@@ -169,7 +169,6 @@ const getInitialState = ({
     onNodeDragStart: undefined,
     onNodeDrag: undefined,
     onNodeDragStop: undefined,
-    onNodeMove: undefined,
 
     onSelectionDragStart: undefined,
     onSelectionDrag: undefined,
