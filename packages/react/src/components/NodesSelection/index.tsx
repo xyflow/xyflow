@@ -39,7 +39,7 @@ export function NodesSelection<NodeType extends Node>({
 }: NodesSelectionProps<NodeType>) {
   const store = useStoreApi<NodeType>();
   const { width, height, transformString, userSelectionActive } = useStore(selector, shallow);
-  const moveSelectedNodes = useMoveSelectedNodes<NodeType>();
+  const moveSelectedNodes = useMoveSelectedNodes();
 
   const nodeRef = useRef<HTMLDivElement>(null);
 
@@ -76,7 +76,6 @@ export function NodesSelection<NodeType extends Node>({
       moveSelectedNodes({
         direction: arrowKeyDiffs[event.key],
         factor: event.shiftKey ? 4 : 1,
-        event: event.nativeEvent,
       });
     }
   };
