@@ -14,6 +14,7 @@ type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
   | 'onEdgeDoubleClick'
   | 'defaultMarkerColor'
   | 'onlyRenderVisibleElements'
+  | 'isEdgeVisible'
   | 'onReconnect'
   | 'onEdgeContextMenu'
   | 'onEdgeMouseEnter'
@@ -41,6 +42,7 @@ const selector = (s: ReactFlowState) => ({
 function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   defaultMarkerColor,
   onlyRenderVisibleElements,
+  isEdgeVisible,
   rfId,
   edgeTypes,
   noPanClassName,
@@ -57,7 +59,7 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
   const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useStore(selector, shallow);
-  const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
+  const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements, isEdgeVisible);
 
   return (
     <div className="react-flow__edges">
