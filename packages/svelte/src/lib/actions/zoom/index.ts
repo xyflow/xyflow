@@ -84,6 +84,9 @@ export default function zoom(domNode: Element, params: ZoomParams) {
   return {
     update(params: ZoomParams) {
       panZoomInstance.update(params);
+    },
+    destroy() {
+      panZoomInstance.destroy();
     }
   };
 }

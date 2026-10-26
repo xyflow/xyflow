@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import { FRAMEWORK } from './constants';
 
 test.describe('Click connections', () => {
-  test.skip(FRAMEWORK !== 'react', 'Click connections are only supported by React Flow.');
+  test.skip(FRAMEWORK !== 'react', 'Uses React Flow-specific handle classes.');
 
   for (const route of ['click-connect', 'click-connect-selection']) {
     test(`pane click cancels a pending connection (${route})`, async ({ page }) => {
