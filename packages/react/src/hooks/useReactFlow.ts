@@ -91,7 +91,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         height: nodeToUse.measured?.height ?? nodeToUse.height,
       };
 
-      return nodeToRect(nodeWithPosition);
+      // Child positions already account for the flow origin above.
+      return nodeToRect(nodeWithPosition, nodeToUse.parentId ? undefined : nodeOrigin);
     };
 
     const updateNode: GeneralHelpers<NodeType, EdgeType>['updateNode'] = (
@@ -216,6 +217,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
           return [];
         }
 
+        const { nodeOrigin } = store.getState();
         return (nodes || store.getState().nodes).filter((n) => {
           const internalNode = store.getState().nodeLookup.get(n.id);
 
@@ -223,7 +225,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
             return false;
           }
 
-          const currNodeRect = nodeToRect(hasNodesOption ? n : internalNode!);
+          const currNodeRect = nodeToRect(hasNodesOption ? n : internalNode!, nodeOrigin);
           const overlappingArea = getOverlappingArea(currNodeRect, nodeRect);
           const partiallyVisible = partially && overlappingArea > 0;
 
