@@ -20,7 +20,6 @@ describe('adoptUserNodes Testing', () => {
     expect(internalNode).to.have.property('internals');
   });
 
-
   it('retains existing handle bounds while a node is re-measured', () => {
     const nodeLookup: NodeLookup = new Map();
     const parentLookup: ParentLookup = new Map();
@@ -44,8 +43,17 @@ describe('adoptUserNodes Testing', () => {
 
     adoptUserNodes([updatedNode], nodeLookup, parentLookup);
 
-    expect(previousHandleBounds).to.exist;
-    expect(nodeLookup.get('1')?.internals.handleBounds).to.equal(previousHandleBounds);
+    const reinitializedNode = nodeLookup.get('1');
+
+    // Dimensions are cleared so the observer can measure the node again, but edges
+    // can still use the last known handle bounds in the meantime.
+    expect(reinitializedNode?.measured?.width).to.be.undefined;
+    expect(reinitializedNode?.measured?.height).to.be.undefined;
+    expect(previousHandleBounds).to.deep.equal({
+      source: [{ id: 'source', type: 'source', position: 'right', x: 100, y: 20, width: 8, height: 8, nodeId: '1' }],
+      target: [],
+    });
+    expect(reinitializedNode?.internals.handleBounds).to.equal(previousHandleBounds);
   });
 
   it('calculates positionAbsolute with nodeOrigin', () => {
