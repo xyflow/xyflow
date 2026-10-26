@@ -58,6 +58,11 @@ const getDirection = ({
 
 const distance = (a: XYPosition, b: XYPosition) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 
+// checks if b lies on the straight segment from a to c, including b === c
+const isBetween = (a: XYPosition, b: XYPosition, c: XYPosition) =>
+  (a.x === b.x && b.x === c.x && (b.y - a.y) * (c.y - b.y) >= 0) ||
+  (a.y === b.y && b.y === c.y && (b.x - a.x) * (c.x - b.x) >= 0);
+
 /*
  * With this function we try to mimic an orthogonal edge routing behaviour
  * It's not as good as a real orthogonal edge routing, but it's faster and good enough as a default for step and smooth step edges
@@ -197,39 +202,23 @@ function getPoints({
   const gappedSource = { x: sourceGapped.x + sourceGapOffset.x, y: sourceGapped.y + sourceGapOffset.y };
   const gappedTarget = { x: targetGapped.x + targetGapOffset.x, y: targetGapped.y + targetGapOffset.y };
 
-  const pathPoints = [
-    source,
-    // we only want to add the gapped source/target if they are different from the first/last point to avoid duplicates which can cause issues with the bends
-    ...(gappedSource.x !== points[0].x || gappedSource.y !== points[0].y ? [gappedSource] : []),
-    ...points,
-    ...(gappedTarget.x !== points[points.length - 1].x || gappedTarget.y !== points[points.length - 1].y
-      ? [gappedTarget]
-      : []),
-    target,
-  ];
+  const pathPoints: XYPosition[] = [];
+
+  for (const point of [source, gappedSource, ...points, gappedTarget, target]) {
+    const [a, b] = pathPoints.slice(-2);
+    // Drop a point when the path runs straight through it; otherwise it can
+    // incorrectly shrink the border radius of the next corner.
+    if (b && isBetween(a, b, point)) {
+      pathPoints.pop();
+    }
+    pathPoints.push(point);
+  }
 
   return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
 }
 
-function isBend(a: XYPosition, b: XYPosition, c: XYPosition): boolean {
-  return !((a.x === b.x && b.x === c.x) || (a.y === b.y && b.y === c.y));
-}
-
-function getBend(
-  a: XYPosition,
-  b: XYPosition,
-  c: XYPosition,
-  size: number,
-  previousIsBend: boolean,
-  nextIsBend: boolean
-): string {
-  // Only constrain a corner by half the length of a segment when the segment
-  // ends at another corner. Collinear gap points and path endpoints are not bends.
-  const bendSize = Math.min(
-    previousIsBend ? distance(a, b) / 2 : size,
-    nextIsBend ? distance(b, c) / 2 : size,
-    size
-  );
+function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): string {
+  const bendSize = Math.min(distance(a, b) / 2, distance(b, c) / 2, size);
   const { x, y } = b;
 
   // no bend
@@ -306,10 +295,7 @@ export function getSmoothStepPath({
   let path = `M${points[0].x} ${points[0].y}`;
 
   for (let i = 1; i < points.length - 1; i++) {
-    const previousIsBend = i > 1 && isBend(points[i - 2], points[i - 1], points[i]);
-    const nextIsBend = i < points.length - 2 && isBend(points[i], points[i + 1], points[i + 2]);
-
-    path += getBend(points[i - 1], points[i], points[i + 1], borderRadius, previousIsBend, nextIsBend);
+    path += getBend(points[i - 1], points[i], points[i + 1], borderRadius);
   }
 
   path += `L${points[points.length - 1].x} ${points[points.length - 1].y}`;
