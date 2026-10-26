@@ -25,17 +25,15 @@ The xyflow repository is the home of several packages:
 * Shared helper library `@xyflow/system` [packages/system](./packages/system)
 * React Flow 11 (legacy package) `reactflow` [v11 branch](https://github.com/xyflow/xyflow/tree/v11)
 
-## Commercial usage
+## Attribution and support
 
-**Are you using React Flow, Svelte Flow or Vue Flow for a personal project?** Great! No sponsorship needed, you can support us by reporting any bugs you find, sending us screenshots of your projects, and starring us on Github 🌟
+React Flow, Svelte Flow and Vue Flow show a small attribution link in the corner of the canvas. **If you remove it, we ask you to subscribe** – no matter if you are building a side project, an internal tool or a commercial product. Subscriptions are how we keep our libraries developed and maintained under an MIT license, just how we like it.
 
-**Are you using React Flow, Svelte Flow or Vue Flow at your organization and making money from it?** Awesome! We rely on your support to keep our libraries developed and maintained under an MIT License, just how we like it. Every library has it's own pro page:
+- [Remove the attribution in React Flow](https://reactflow.dev/remove-attribution)
+- [Remove the attribution in Svelte Flow](https://svelteflow.dev/remove-attribution)
+- [Remove the attribution in Vue Flow](https://vueflow.dev/remove-attribution)
 
-- [React Flow Pro](https://reactflow.dev/pro)
-- [Svelte Flow Pro](https://svelteflow.dev/pro)
-- [Vue Flow Pro](https://vueflow.dev/pro)
-
-You can also use [Github Sponsors](https://github.com/sponsors/xyflow) to do a subscription.
+This is a support expectation, not a legal requirement: the MIT license does not require you to pay or to keep the attribution. If you keep it, you can still support us by reporting bugs, building something for the ecosystem, starring us on GitHub 🌟 or sponsoring us via [GitHub Sponsors](https://github.com/sponsors/xyflow).
 
 ## Getting started
 
