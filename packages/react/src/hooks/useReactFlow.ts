@@ -89,7 +89,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
         position,
         // Child positions are already converted to absolute top-left coordinates.
         // Reset their origin to avoid applying the node origin a second time.
-        origin: nodeToUse.parentId ? [0, 0] : nodeToUse.origin,
+        origin: nodeToUse.parentId ? ([0, 0] as [number, number]) : nodeToUse.origin,
         width: nodeToUse.measured?.width ?? nodeToUse.width,
         height: nodeToUse.measured?.height ?? nodeToUse.height,
       };
