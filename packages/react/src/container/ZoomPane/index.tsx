@@ -35,7 +35,6 @@ export function ZoomPane({
   zoomOnDoubleClick = true,
   panOnDrag = true,
   defaultViewport,
-  preserveStateOnUnmount,
   translateExtent,
   minZoom,
   maxZoom,
@@ -70,9 +69,11 @@ export function ZoomPane({
 
   useEffect(() => {
     if (zoomPane.current) {
-      const state = store.getState();
-      const initialViewport = preserveStateOnUnmount && state.panZoom
-        ? { x: state.transform[0], y: state.transform[1], zoom: state.transform[2] }
+      // Activity tears down effects without removing the DOM. Restore the
+      // current transform when the flow is being shown again.
+      const { transform, domNode } = store.getState();
+      const initialViewport = domNode?.isConnected
+        ? { x: transform[0], y: transform[1], zoom: transform[2] }
         : defaultViewport;
 
       panZoom.current = XYPanZoom({
