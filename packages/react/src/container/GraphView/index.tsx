@@ -66,6 +66,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   zoomActivationKeyCode,
   deleteKeyCode,
   onlyRenderVisibleElements,
+  isEdgeVisible,
   elementsSelectable,
   defaultViewport,
   translateExtent,
@@ -163,6 +164,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
           onReconnectStart={onReconnectStart}
           onReconnectEnd={onReconnectEnd}
           onlyRenderVisibleElements={onlyRenderVisibleElements}
+          isEdgeVisible={isEdgeVisible}
           onEdgeContextMenu={onEdgeContextMenu}
           onEdgeMouseEnter={onEdgeMouseEnter}
           onEdgeMouseMove={onEdgeMouseMove}
