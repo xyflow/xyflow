@@ -11,7 +11,7 @@ function ActivityFlow() {
     <>
       <button onClick={() => setVisible((value) => !value)}>Toggle flow</button>
       <Activity mode={visible ? 'visible' : 'hidden'}>
-        <ReactFlow nodes={simpleflow.nodes} defaultViewport={{ x: 0, y: 0, zoom: 1 }} preserveStateOnUnmount />
+        <ReactFlow nodes={simpleflow.nodes} defaultViewport={{ x: 0, y: 0, zoom: 1 }} />
       </Activity>
     </>
   );
