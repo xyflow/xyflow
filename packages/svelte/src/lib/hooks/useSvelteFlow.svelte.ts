@@ -293,11 +293,14 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     const nodeWithPosition = {
       ...nodeToUse,
       position,
+      // Child positions are already converted to absolute top-left coordinates.
+      // Reset their origin to avoid applying the node origin a second time.
+      origin: nodeToUse.parentId ? [0, 0] : nodeToUse.origin,
       width: nodeToUse.measured?.width ?? nodeToUse.width,
       height: nodeToUse.measured?.height ?? nodeToUse.height
     };
 
-    return nodeToRect(nodeWithPosition);
+    return nodeToRect(nodeWithPosition, store.nodeOrigin);
   };
 
   function updateNode(
