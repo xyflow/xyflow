@@ -3,4 +3,4 @@
 '@xyflow/svelte': patch
 ---
 
-Respect the flow's `nodeOrigin` when checking intersections with root node objects.
+Respect `nodeOrigin` in `isNodeIntersecting` and `getIntersectingNodes` when you pass a node object instead of `{ id }`
