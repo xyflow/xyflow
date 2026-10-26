@@ -3,4 +3,4 @@
 '@xyflow/svelte': patch
 ---
 
-Cancel pending click connections when clicking the pane and call the click-connection end callback.
+ Cancel a pending click connection when clicking the pane and call `onClickConnectEnd` / `onclickconnectend`
