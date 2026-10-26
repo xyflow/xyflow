@@ -32,6 +32,7 @@ export { useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/
 export { useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
 export { useNodeConnections } from './hooks/useNodeConnections';
 export { useNodesData } from './hooks/useNodesData';
+export { useEqualSelector } from './hooks/useEqualSelector';
 export { useConnection } from './hooks/useConnection';
 export { useNodeId } from './contexts/NodeIdContext';
 export { useNodes, useNode, useInternalNode, useInternalNodes } from './hooks/useNodes';
