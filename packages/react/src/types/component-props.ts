@@ -56,10 +56,10 @@ import type {
  * Callback used to determine whether an edge should be rendered when
  * `onlyRenderVisibleElements` is enabled.
  */
-export type IsEdgeVisible<NodeType extends Node = Node, EdgeType extends Edge = Edge> = (params: {
-  edge: EdgeType;
-  sourceNode: InternalNode<NodeType>;
-  targetNode: InternalNode<NodeType>;
+export type IsEdgeVisible = (params: {
+  edge: Edge;
+  sourceNode: InternalNode;
+  targetNode: InternalNode;
   transform: Transform;
   width: number;
   height: number;
@@ -103,7 +103,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * Custom visibility test for edges when `onlyRenderVisibleElements` is enabled.
    * The default uses the bounding box between the source and target nodes.
    */
-  isEdgeVisible?: IsEdgeVisible<NodeType, EdgeType>;
+  isEdgeVisible?: IsEdgeVisible;
   edges?: EdgeType[];
   /** The initial nodes to render in an uncontrolled flow. */
   defaultNodes?: NodeType[];
