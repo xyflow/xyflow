@@ -240,7 +240,7 @@ export function Pane({
     }
 
     if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
-      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true);
+      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current);
       triggerNodeChanges(changes);
     }
 
