@@ -206,8 +206,7 @@ function getPoints({
 
   for (const point of [source, gappedSource, ...points, gappedTarget, target]) {
     const [a, b] = pathPoints.slice(-2);
-    // Drop a point when the path runs straight through it; otherwise it can
-    // incorrectly shrink the border radius of the next corner.
+    // drop b if the path runs straight through it, otherwise it would shrink the bend of the next corner
     if (b && isBetween(a, b, point)) {
       pathPoints.pop();
     }
