@@ -5,7 +5,7 @@
 import { useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { getInternalNodesBounds, isNumeric } from '@xyflow/system';
+import { type OptionalOrUndefined, getInternalNodesBounds, isNumeric } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useDrag } from '../../hooks/useDrag';
@@ -13,11 +13,11 @@ import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
 import type { Node, ReactFlowState } from '../../types';
 
-export type NodesSelectionProps<NodeType> = {
+export type NodesSelectionProps<NodeType> = OptionalOrUndefined<{
   onSelectionContextMenu?: (event: MouseEvent, nodes: NodeType[]) => void;
   noPanClassName?: string;
   disableKeyboardA11y: boolean;
-};
+}>;
 
 const selector = (s: ReactFlowState) => {
   const { width, height, x, y } = getInternalNodesBounds(s.nodeLookup, {

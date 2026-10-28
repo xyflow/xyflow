@@ -3,7 +3,7 @@ import { snapPosition, pointToRendererPoint } from './general';
 
 export type GetPointerPositionParams = {
   transform: Transform;
-  snapGrid?: SnapGrid;
+  snapGrid?: SnapGrid | undefined;
   snapToGrid?: boolean;
   containerBounds: DOMRect | null;
 };

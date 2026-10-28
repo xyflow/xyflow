@@ -1,9 +1,12 @@
-import { XYDrag, type NodeBase, type OnDrag } from '@xyflow/system';
+import { type OptionalOrUndefined, XYDrag, type NodeBase, type OnDrag } from '@xyflow/system';
 
 import type { SvelteFlowStore } from '$lib/store/types.js';
 import type { Node, Edge } from '$lib/types/index.js';
 
-export type UseDragParams<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+export type UseDragParams<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> = OptionalOrUndefined<{
   store: SvelteFlowStore<NodeType, EdgeType>;
   disabled?: boolean;
   noDragClass?: string;
@@ -15,7 +18,7 @@ export type UseDragParams<NodeType extends Node = Node, EdgeType extends Edge = 
   onDragStart?: OnDrag;
   onDragStop?: OnDrag;
   onNodeMouseDown?: (id: string) => void;
-};
+}>;
 
 export default function drag<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   domNode: Element,

@@ -1,6 +1,11 @@
 import type { Component } from 'svelte';
 import type { ClassValue, HTMLAttributes, DOMAttributes } from 'svelte/elements';
-import type { InternalNodeBase, NodeBase, NodeProps as NodePropsBase } from '@xyflow/system';
+import type {
+  OptionalOrUndefined,
+  InternalNodeBase,
+  NodeBase,
+  NodeProps as NodePropsBase
+} from '@xyflow/system';
 
 /**
  * The node data structure that gets used for internal nodes.
@@ -8,7 +13,8 @@ import type { InternalNodeBase, NodeBase, NodeProps as NodePropsBase } from '@xy
  * that are needed for tracking some properties
  * @public
  */
-export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeType>;
+export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeType> &
+  Omit<Node, 'measured'>;
 
 /**
  * The node data structure that gets used for the nodes prop.
@@ -45,10 +51,12 @@ export type Node<
 
 // @todo: currently generics for nodes are not really supported
 // let's fix `type: any` when we migrate to Svelte 5
-export type NodeProps<NodeType extends Node = Node> = NodePropsBase<NodeType> & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  type: any;
-};
+export type NodeProps<NodeType extends Node = Node> = OptionalOrUndefined<
+  NodePropsBase<NodeType> & {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    type: any;
+  }
+>;
 
 export type NodeTypes = Record<
   string,

@@ -29,7 +29,7 @@ export function getClosestHandle(
   position: XYPosition,
   connectionRadius: number,
   nodeLookup: NodeLookup,
-  fromHandle: { nodeId: string; type: HandleType; id?: string | null }
+  fromHandle: { nodeId: string; type: HandleType; id?: string | null | undefined }
 ): Handle | null {
   let closestHandles: Handle[] = [];
   let minDistance = Infinity;

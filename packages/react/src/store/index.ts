@@ -1,5 +1,6 @@
 import { createWithEqualityFn } from 'zustand/traditional';
 import {
+  type OptionalOrUndefined,
   adoptUserNodes,
   updateAbsolutePositions,
   panBy as panBySystem,
@@ -37,7 +38,7 @@ const createStore = ({
   nodeOrigin,
   nodeExtent,
   zIndexMode,
-}: {
+}: OptionalOrUndefined<{
   nodes?: Node[];
   edges?: Edge[];
   defaultNodes?: Node[];
@@ -51,7 +52,7 @@ const createStore = ({
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
   zIndexMode?: ZIndexMode;
-}) =>
+}>) =>
   createWithEqualityFn<ReactFlowState>((set, get) => {
     async function resolveFitView() {
       const { nodeLookup, panZoom, fitViewOptions, fitViewResolver, width, height, minZoom, maxZoom } = get();
@@ -424,7 +425,7 @@ const createStore = ({
             y: height / 2 - y * nextZoom,
             zoom: nextZoom,
           },
-          { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
+          options
         );
 
         return true;
