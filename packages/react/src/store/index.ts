@@ -16,7 +16,7 @@ import {
   fitViewport,
   getHandlePosition,
   Position,
-  ZIndexMode
+  ZIndexMode,
 } from '@xyflow/system';
 
 import { applyEdgeChanges, applyNodeChanges, createSelectionChange, getSelectionChanges } from '../utils/changes';
@@ -134,7 +134,7 @@ const createStore = ({
             nodesInitialized,
             fitViewQueued: false,
             fitViewOptions: undefined,
-            nodesSelectionActive: nextNodesSelectionActive
+            nodesSelectionActive: nextNodesSelectionActive,
           });
         } else {
           set({ nodes, nodesInitialized, nodesSelectionActive: nextNodesSelectionActive });
@@ -303,7 +303,7 @@ const createStore = ({
           return;
         }
 
-        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
+        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds])));
         triggerEdgeChanges(getSelectionChanges(edgeLookup));
       },
       addSelectedEdges: (selectedEdgeIds) => {
@@ -316,7 +316,7 @@ const createStore = ({
         }
 
         triggerEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
-        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
+        triggerNodeChanges(getSelectionChanges(nodeLookup, new Set()));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
         const { edges: storeEdges, nodes: storeNodes, nodeLookup, triggerNodeChanges, triggerEdgeChanges } = get();
@@ -328,16 +328,6 @@ const createStore = ({
         for (const node of nodesToUnselect) {
           if (!node.selected) {
             continue; // skip changing nodes that are not selected
-          }
-
-          const internalNode = nodeLookup.get(node.id);
-
-          if (internalNode) {
-            /*
-             * we need to unselect the internal node that was selected previously before we
-             * send the change to the user to prevent it to be selected while dragging the new node
-             */
-            internalNode.selected = false;
           }
 
           nodeChanges.push(createSelectionChange(node.id, false));
