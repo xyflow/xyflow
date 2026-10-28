@@ -148,6 +148,11 @@ export const routes: RouterOptions['routes'] = [
 // clutter the Header's example picker. `/tests/generic/*` renders the generic-tests harness.
 const testRoutes: RouterOptions['routes'] = [
   {
+    path: '/examples/backgrounds',
+    component: () => import('./src/Backgrounds/BackgroundsExample.vue'),
+    meta: { blank: true },
+  },
+  {
     path: '/examples/color-mode',
     component: () => import('./src/ColorMode/ColorModeExample.vue'),
     meta: { blank: true },
