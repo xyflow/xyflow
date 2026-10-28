@@ -47,7 +47,10 @@
     calcAutoPan,
     pointToRendererPoint,
     rendererPointToPoint,
-    type XYPosition
+    type XYPosition,
+    type ConnectionState,
+    type FinalConnectionState,
+    type Optional
   } from '@xyflow/system';
 
   import type { Node, Edge } from '$lib/types/index.js';
@@ -339,6 +342,20 @@
       selectionInProgress = false;
       connectionEndedOnPane = false;
       return;
+    }
+
+    if (store.clickConnectStartHandle) {
+      const connectionClone = structuredClone($state.snapshot(store.connection)) as Optional<
+        ConnectionState,
+        'inProgress'
+      >;
+      delete connectionClone.inProgress;
+      connectionClone.toPosition = connectionClone.toHandle
+        ? connectionClone.toHandle.position
+        : null;
+      store.onclickconnectend?.(event, connectionClone as FinalConnectionState);
+
+      store.clickConnectStartHandle = null;
     }
 
     onpaneclick?.({ event });
