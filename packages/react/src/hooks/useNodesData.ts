@@ -1,6 +1,6 @@
 import { type DistributivePick, shallowNodeData } from '@xyflow/system';
 
-import { useCustomDiff } from './useReactFlowStore';
+import { useEqualSelector } from './useReactFlowStore';
 import { useInternalNodes } from './useNodes';
 import type { Node } from '../types';
 
@@ -39,5 +39,5 @@ export function useNodesData(nodeIds: string | string[]): any {
     return isSingleId ? (data[0] ?? null) : data;
   };
 
-  return useCustomDiff(selector, shallowNodeData)(nodes);
+  return useEqualSelector(selector, shallowNodeData)(nodes);
 }

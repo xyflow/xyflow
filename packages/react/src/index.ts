@@ -26,6 +26,7 @@ export {
   useEdgesStore,
   useSelectionStore,
   useShallow,
+  useEqualSelector,
 } from './hooks/useReactFlowStore';
 export { useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/useOnViewportChange';
 export { useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
