@@ -25,7 +25,7 @@ import {
   selectionChange,
   updateNodeInternals as updateNodeInternalsSystem,
 } from '@xyflow/system';
-import { computed } from 'vue';
+import { computed, toRaw } from 'vue';
 import { useViewportHelper } from '../composables';
 import {
   areNodesInitialized,
@@ -127,7 +127,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     }
 
     if (parentExpandChildren.length > 0) {
-      changes.add(handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, state.nodeOrigin));
+      changes.add(handleExpandParent(parentExpandChildren, systemNodeLookup, systemParentLookup, toRaw(state.nodeOrigin)));
     }
 
     if (changes.size) {
@@ -145,8 +145,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       systemNodeLookup,
       systemParentLookup,
       state.vueFlowRef,
-      state.nodeOrigin,
-      state.nodeExtent,
+      toRaw(state.nodeOrigin),
+      toRaw(state.nodeExtent),
       state.zIndexMode,
     );
 
@@ -577,7 +577,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   };
 
   const changeParent: Actions<NodeType>['changeParent'] = (nodeId, parentId) => {
-    changeParentNode(nodeId, nodeLookup, parentId, state.nodeOrigin, ({ nodeId, parentId, x, y }) => {
+    changeParentNode(nodeId, nodeLookup, parentId, toRaw(state.nodeOrigin), ({ nodeId, parentId, x, y }) => {
       updateNode(nodeId, {
         parentId: parentId ?? undefined,
         position: { x, y },

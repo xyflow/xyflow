@@ -10,6 +10,7 @@ import {
   onMounted,
   provide,
   shallowRef,
+  toRaw,
   toRef,
   watch,
 } from 'vue';
@@ -387,7 +388,7 @@ const NodeWrapper = defineComponent({
         = getNodesInside(
           new Map([[node.id, node]]),
           { x: 0, y: 0, width: store.dimensions.width, height: store.dimensions.height },
-          store.transform,
+          toRaw(store.transform),
           true,
         ).length > 0;
 
