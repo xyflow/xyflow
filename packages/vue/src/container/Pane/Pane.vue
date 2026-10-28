@@ -136,6 +136,12 @@ function onWheel(event: WheelEvent) {
 }
 
 function onPointerDown(event: PointerEvent) {
+  // a `panOnDrag` button array only restricts MOUSE input, so leave the gesture to touch panning unless
+  // the user explicitly asked for selection with the selection key (xyflow/react parity)
+  if (event.pointerType === 'touch' && panOnDrag.value !== false && !selectionKeyPressed) {
+    return;
+  }
+
   containerBounds.value = vueFlowRef.value?.getBoundingClientRect() ?? null;
 
   if (
