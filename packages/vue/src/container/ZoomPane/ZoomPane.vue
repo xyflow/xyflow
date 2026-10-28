@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { XYPanZoom } from '@xyflow/system';
-import { computed, onMounted, onUnmounted, toRef, watch } from 'vue';
+import { computed, markRaw, onMounted, onUnmounted, toRef, watch } from 'vue';
 import ConnectionLine from '../../components/ConnectionLine';
 import { storeToRefs, useKeyPress, useVueFlow, useVueFlowStore } from '../../composables';
 import { useFitViewOnInit } from '../../composables/useFitViewOnInit';
@@ -88,7 +88,7 @@ onMounted(() => {
 
     const initialViewport = panZoomInstance.getViewport();
     transform.value = [initialViewport.x, initialViewport.y, initialViewport.zoom];
-    panZoom.value = panZoomInstance;
+    panZoom.value = markRaw(panZoomInstance);
 
     watch(
       [

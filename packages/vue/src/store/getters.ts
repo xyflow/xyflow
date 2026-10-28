@@ -18,7 +18,7 @@ export function useGetters<NodeType extends Node = Node, EdgeType extends Edge =
           width: state.dimensions.width,
           height: state.dimensions.height,
         },
-        state.transform,
+        toRaw(state.transform),
         true,
       ).map(node => node.internals.userNode);
     }
@@ -29,8 +29,11 @@ export function useGetters<NodeType extends Node = Node, EdgeType extends Edge =
   const getEdges: ComputedGetters<NodeType, EdgeType>['getEdges'] = computed(() => {
     if (state.onlyRenderVisibleElements) {
       const visibleEdges: EdgeType[] = [];
+      // raw transform/dimensions — see `getSelectedNodes`; these are read again for every edge below
+      const transform = toRaw(state.transform);
+      const { width, height } = toRaw(state.dimensions);
 
-      for (const edge of state.edges) {
+      for (const edge of toRaw(state.edges)) {
         const source = nodeLookup.get(edge.source);
         const target = nodeLookup.get(edge.target);
 
@@ -43,9 +46,9 @@ export function useGetters<NodeType extends Node = Node, EdgeType extends Edge =
           isEdgeVisible({
             sourceNode: source,
             targetNode: target,
-            width: state.dimensions.width,
-            height: state.dimensions.height,
-            transform: state.transform,
+            width,
+            height,
+            transform,
           })
         ) {
           visibleEdges.push(edge);

@@ -2,7 +2,7 @@ import type { EdgeBase, NodeBase, NodeDragItem } from '@xyflow/system';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 import type { NodeDragEvent } from '../types';
 import { infiniteExtent, isCoordinateExtent, XYDrag } from '@xyflow/system';
-import { shallowRef, toRef, toValue, watch, watchEffect } from 'vue';
+import { shallowRef, toRaw, toRef, toValue, watch, watchEffect } from 'vue';
 import { handleNodeClick } from '../utils';
 import { useVueFlow } from './useVueFlow';
 import { useVueFlowStore } from './useVueFlowStore';
@@ -31,7 +31,7 @@ export function useDrag(params: UseDragParams) {
 
   const store = useVueFlowStore();
 
-  const { nodeLookup } = store;
+  const nodeLookup = toRaw(store.nodeLookup);
 
   const nodesSelectionActive = toRef(store, 'nodesSelectionActive');
 
@@ -91,14 +91,14 @@ export function useDrag(params: UseDragParams) {
           return getEdges.value as EdgeBase[];
         },
         nodeExtent: (isCoordinateExtent(store.nodeExtent)
-          ? store.nodeExtent
+          ? toRaw(store.nodeExtent)
           : infiniteExtent),
-        snapGrid: store.snapGrid,
+        snapGrid: toRaw(store.snapGrid),
         snapToGrid: store.snapToGrid,
-        nodeOrigin: store.nodeOrigin,
+        nodeOrigin: toRaw(store.nodeOrigin),
         multiSelectionActive: store.multiSelectionActive,
         domNode: store.vueFlowRef,
-        transform: store.transform,
+        transform: toRaw(store.transform),
         autoPanOnNodeDrag: store.autoPanOnNodeDrag,
         nodesDraggable: store.nodesDraggable,
         selectNodesOnDrag: store.selectNodesOnDrag,
