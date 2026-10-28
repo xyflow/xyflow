@@ -9,13 +9,13 @@
     getNodesInside
   } from '@xyflow/system';
 
-  import drag from '$lib/actions/drag';
-  import { setNodeConnectableContext, setNodeIdContext } from '$lib/store/context';
-  import { arrowKeyDiffs, toPxString } from '$lib/utils';
-  import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
+  import drag from '$lib/actions/drag/index.js';
+  import { setNodeConnectableContext, setNodeIdContext } from '$lib/store/context.js';
+  import { arrowKeyDiffs, toPxString } from '$lib/utils/index.js';
+  import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions/index.js';
 
-  import type { Node, Edge, NodeEvents } from '$lib/types';
-  import type { ConnectableContext, NodeWrapperProps } from './types';
+  import type { Node, Edge, NodeEvents } from '$lib/types/index.js';
+  import type { ConnectableContext, NodeWrapperProps } from './types.js';
 
   import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
 

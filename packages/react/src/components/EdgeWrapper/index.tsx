@@ -102,7 +102,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
           zIndex,
         };
       },
-      [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex]
+      [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex, onError]
     ),
     shallow
   );

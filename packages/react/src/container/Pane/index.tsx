@@ -19,6 +19,9 @@ import {
   pointToRendererPoint,
   rendererPointToPoint,
   XYPosition,
+  type ConnectionState,
+  type FinalConnectionState,
+  type Optional,
 } from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
@@ -115,8 +118,19 @@ export function Pane({
       return;
     }
 
+    const { connectionClickStartHandle, connection, onClickConnectEnd, resetSelectedElements } = store.getState();
+
+    if (connectionClickStartHandle) {
+      const connectionClone = structuredClone(connection) as Optional<ConnectionState, 'inProgress'>;
+      delete connectionClone.inProgress;
+      connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
+      onClickConnectEnd?.(event.nativeEvent, connectionClone as FinalConnectionState);
+
+      store.setState({ connectionClickStartHandle: null });
+    }
+
     onPaneClick?.(event);
-    store.getState().resetSelectedElements();
+    resetSelectedElements();
     store.setState({ nodesSelectionActive: false });
   };
 
@@ -141,6 +155,12 @@ export function Pane({
   // We are using capture here in order to prevent other pointer events
   // to be able to create a selection above a node or an edge
   const onPointerDownCapture = (event: ReactPointerEvent): void => {
+    // Mouse button arrays only restrict mouse input. Let touch panning handle this gesture
+    // unless the user explicitly activated selection with the selection key.
+    if (event.pointerType === 'touch' && panOnDrag !== false && !selectionKeyPressed) {
+      return;
+    }
+
     const { domNode, transform } = store.getState();
     containerBounds.current = domNode?.getBoundingClientRect();
     if (!containerBounds.current) return;
@@ -234,7 +254,7 @@ export function Pane({
     }
 
     if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
-      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true);
+      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current);
       triggerNodeChanges(changes);
     }
 

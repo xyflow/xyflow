@@ -279,11 +279,6 @@ export type PanelPosition =
   | 'center-left'
   | 'center-right';
 
-export type ProOptions = {
-  account?: string;
-  hideAttribution: boolean;
-};
-
 export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
 
 export enum SelectionMode {

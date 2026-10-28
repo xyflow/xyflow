@@ -1,7 +1,7 @@
 import type { PanelPosition } from '@xyflow/system';
 import type { ClassValue, HTMLAttributes } from 'svelte/elements';
 import type { Component } from 'svelte';
-import type { Node } from '$lib/types';
+import type { Node } from '$lib/types/index.js';
 
 export type GetMiniMapNodeAttribute = (node: Node) => string;
 

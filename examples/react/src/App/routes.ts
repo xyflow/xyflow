@@ -64,6 +64,7 @@ import DetachedHandle from '../examples/DetachedHandle';
 import ZIndexMode from '../examples/ZIndexMode';
 import Middlewares from '../examples/Middlewares';
 import NodeSelectionBug from '../examples/NodeSelectionBug';
+import Remount from '../examples/Remount';
 
 export interface IRoute {
   name: string;
@@ -291,6 +292,11 @@ const routes: IRoute[] = [
     name: 'Provider',
     path: 'provider',
     component: Provider,
+  },
+  {
+    name: 'Remount',
+    path: 'remount',
+    component: Remount,
   },
   {
     name: 'Save/Restore',

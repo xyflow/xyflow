@@ -8,7 +8,6 @@ import type {
   CoordinateExtent,
   KeyCode,
   PanOnScrollMode,
-  ProOptions,
   PanelPosition,
   OnMove,
   OnMoveStart,
@@ -47,14 +46,17 @@ import type {
   OnNodeDrag,
   OnBeforeDelete,
   IsValidConnection,
+  ProOptions,
 } from '.';
 
 /**
  * ReactFlow component props.
  * @public
  */
-export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge>
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'> {
+export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'onError'
+> {
   /**
    * An array of nodes to render in a controlled flow.
    * @default []
@@ -445,6 +447,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /**
    * Enabling this prop allows users to pan the viewport by clicking and dragging.
    * You can also set this prop to an array of numbers to limit which mouse buttons can activate panning.
+   * Mouse button arrays do not disable touch panning; set this prop to `false` to disable all drag panning.
    * @default true
    * @example [0, 2] // allows panning with the left and right mouse buttons
    * [0, 1, 2, 3, 4] // allows panning with all mouse buttons
@@ -601,9 +604,8 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /**
    * By default, we render a small attribution in the corner of your flows that links back to the project.
    *
-   * Anyone is free to remove this attribution whether they're a Pro subscriber or not
-   * but we ask that you take a quick look at our {@link https://reactflow.dev/learn/troubleshooting/remove-attribution | removing attribution guide}
-   * before doing so.
+   * Please only remove the attribution if you have a React Flow subscription.
+   * More information in the {@link https://reactflow.dev/remove-attribution | removing attribution guide}.
    */
   proOptions?: ProOptions;
   /**

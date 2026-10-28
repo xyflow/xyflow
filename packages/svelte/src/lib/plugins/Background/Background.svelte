@@ -7,8 +7,8 @@
 </script>
 
 <script lang="ts">
-  import { useStore } from '$lib/store';
-  import { BackgroundVariant, type BackgroundProps } from './types';
+  import { useStore } from '$lib/store/index.js';
+  import { BackgroundVariant, type BackgroundProps } from './types.js';
 
   import DotPattern from './DotPattern.svelte';
   import LinePattern from './LinePattern.svelte';

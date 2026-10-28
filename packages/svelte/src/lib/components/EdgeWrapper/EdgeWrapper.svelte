@@ -1,13 +1,13 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { elementSelectionKeys, getMarkerId } from '@xyflow/system';
 
-  import { setEdgeIdContext } from '$lib/store/context';
+  import { setEdgeIdContext } from '$lib/store/context.js';
 
-  import { BezierEdgeInternal } from '$lib/components/edges';
+  import { BezierEdgeInternal } from '$lib/components/edges/index.js';
 
-  import type { Node, EdgeLayouted, Edge, EdgeEvents } from '$lib/types';
-  import type { SvelteFlowStore } from '$lib/store/types';
-  import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
+  import type { Node, EdgeLayouted, Edge, EdgeEvents } from '$lib/types/index.js';
+  import type { SvelteFlowStore } from '$lib/store/types.js';
+  import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions/index.js';
 
   const {
     edge,

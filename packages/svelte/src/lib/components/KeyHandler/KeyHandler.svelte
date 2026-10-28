@@ -6,9 +6,9 @@
   } from '@svelte-put/shortcut';
   import { isInputDOMNode, isMacOs } from '@xyflow/system';
 
-  import type { KeyHandlerProps } from './types';
-  import type { Node, Edge, KeyDefinition, KeyDefinitionObject } from '$lib/types';
-  import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte';
+  import type { KeyHandlerProps } from './types.js';
+  import type { Node, Edge, KeyDefinition, KeyDefinitionObject } from '$lib/types/index.js';
+  import { useSvelteFlow } from '$lib/hooks/useSvelteFlow.svelte.js';
 
   let {
     store = $bindable(),

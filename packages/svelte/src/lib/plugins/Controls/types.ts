@@ -2,7 +2,7 @@ import type { Snippet } from 'svelte';
 import type { ClassValue, HTMLAttributes, HTMLButtonAttributes } from 'svelte/elements';
 import type { PanelPosition } from '@xyflow/system';
 
-import type { FitViewOptions } from '$lib/types';
+import type { FitViewOptions } from '$lib/types/index.js';
 
 export type ControlsProps = {
   /** Position of the controls on the pane

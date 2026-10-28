@@ -47,11 +47,14 @@
     calcAutoPan,
     pointToRendererPoint,
     rendererPointToPoint,
-    type XYPosition
+    type XYPosition,
+    type ConnectionState,
+    type FinalConnectionState,
+    type Optional
   } from '@xyflow/system';
 
-  import type { Node, Edge } from '$lib/types';
-  import type { PaneProps } from './types';
+  import type { Node, Edge } from '$lib/types/index.js';
+  import type { PaneProps } from './types.js';
 
   let {
     store = $bindable(),
@@ -96,6 +99,12 @@
 
   // We start the selection process when the user clicks down on the pane
   function onPointerDownCapture(event: PointerEvent) {
+    // Mouse button arrays only restrict mouse input. Let touch panning handle this gesture
+    // unless the user explicitly activated selection with the selection key.
+    if (event.pointerType === 'touch' && panOnDragActive !== false && !store.selectionKeyPressed) {
+      return;
+    }
+
     containerBounds = container?.getBoundingClientRect();
     if (!containerBounds) return;
 
@@ -333,6 +342,20 @@
       selectionInProgress = false;
       connectionEndedOnPane = false;
       return;
+    }
+
+    if (store.clickConnectStartHandle) {
+      const connectionClone = structuredClone($state.snapshot(store.connection)) as Optional<
+        ConnectionState,
+        'inProgress'
+      >;
+      delete connectionClone.inProgress;
+      connectionClone.toPosition = connectionClone.toHandle
+        ? connectionClone.toHandle.position
+        : null;
+      store.onclickconnectend?.(event, connectionClone as FinalConnectionState);
+
+      store.clickConnectStartHandle = null;
     }
 
     onpaneclick?.({ event });

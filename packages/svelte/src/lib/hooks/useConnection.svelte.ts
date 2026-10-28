@@ -1,4 +1,4 @@
-import { useStore } from '$lib/store';
+import { useStore } from '$lib/store/index.js';
 
 import type { ConnectionState } from '@xyflow/system';
 

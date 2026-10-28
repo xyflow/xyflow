@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
 import { useStore, useStoreApi } from '../../hooks/useStore';
@@ -25,12 +24,25 @@ const selector = (s: ReactFlowState) => {
     height: s.height / s.transform[2],
   };
 
+  /*
+   * the bounds only cover the visible nodes, so we have to check for a visible node
+   * here as well. getInternalNodesBounds returns a rect at the origin when nothing
+   * passes the filter, which would stretch the bounds to include (0, 0).
+   */
+  let hasVisibleNode = false;
+
+  for (const node of s.nodeLookup.values()) {
+    if (!node.hidden) {
+      hasVisibleNode = true;
+      break;
+    }
+  }
+
   return {
     viewBB,
-    boundingRect:
-      s.nodeLookup.size > 0
-        ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
-        : viewBB,
+    boundingRect: hasVisibleNode
+      ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
+      : viewBB,
     rfId: s.rfId,
     panZoom: s.panZoom,
     translateExtent: s.translateExtent,
@@ -39,6 +51,22 @@ const selector = (s: ReactFlowState) => {
     ariaLabelConfig: s.ariaLabelConfig,
   };
 };
+
+type MiniMapSlice = ReturnType<typeof selector>;
+
+const rectEqual = (a: Rect, b: Rect) => a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+
+// the selector builds new viewBB/boundingRect objects every call, so the default shallow equality always
+// treats them as changed; comparing the rects by value lets the minimap skip re-renders when nothing moved
+const areEqual = (a: MiniMapSlice, b: MiniMapSlice) =>
+  rectEqual(a.viewBB, b.viewBB) &&
+  rectEqual(a.boundingRect, b.boundingRect) &&
+  a.rfId === b.rfId &&
+  a.panZoom === b.panZoom &&
+  a.translateExtent === b.translateExtent &&
+  a.flowWidth === b.flowWidth &&
+  a.flowHeight === b.flowHeight &&
+  a.ariaLabelConfig === b.ariaLabelConfig;
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
 function MiniMapComponent<NodeType extends Node = Node>({
@@ -70,9 +98,9 @@ function MiniMapComponent<NodeType extends Node = Node>({
 }: MiniMapProps<NodeType>) {
   const store = useStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useStore(
+  const { boundingRect, panZoom, viewBB, rfId, translateExtent, flowWidth, flowHeight, ariaLabelConfig } = useStore(
     selector,
-    shallow
+    areEqual
   );
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
@@ -93,10 +121,11 @@ function MiniMapComponent<NodeType extends Node = Node>({
   viewScaleRef.current = viewScale;
 
   useEffect(() => {
-    if (svg.current && panZoom) {
+    const currentPanZoom = store.getState().panZoom;
+    if (svg.current && currentPanZoom) {
       minimapInstance.current = XYMinimap({
         domNode: svg.current,
-        panZoom,
+        panZoom: currentPanZoom,
         getTransform: () => store.getState().transform,
         getViewScale: () => viewScaleRef.current,
       });
@@ -126,12 +155,15 @@ function MiniMapComponent<NodeType extends Node = Node>({
       }
     : undefined;
 
-  const onSvgNodeClick = onNodeClick
-    ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
-        onNodeClick(event, node);
-      }, [])
-    : undefined;
+  const nodeClickHandler = useCallback(
+    (event: MouseEvent, nodeId: string) => {
+      const node: NodeType = store.getState().nodeLookup.get(nodeId)!.internals.userNode;
+      onNodeClick?.(event, node);
+    },
+    [onNodeClick]
+  );
+
+  const onSvgNodeClick = onNodeClick ? nodeClickHandler : undefined;
 
   const _ariaLabel = ariaLabel ?? ariaLabelConfig['minimap.ariaLabel'];
 

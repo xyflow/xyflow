@@ -316,6 +316,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           nodeExtent={nodeExtent}
           viewport={viewport}
           onViewportChange={onViewportChange}
+          nodesDraggable={nodesDraggable}
         />
         <SelectionListener<NodeType, EdgeType> onSelectionChange={onSelectionChange} />
         {children}

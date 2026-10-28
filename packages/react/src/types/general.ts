@@ -230,3 +230,13 @@ export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge =
  *  If the function returns `true`, the connection is valid and can be created.
  */
 export type IsValidConnection<EdgeType extends Edge = Edge> = (edge: EdgeType | Connection) => boolean;
+
+/**
+ * React Flow is independent and entirely funded by its users.
+ * If you hide the attribution, please support our work by subscribing to React Flow Pro: https://reactflow.dev/remove-attribution
+ * */
+export type ProOptions = {
+  account?: string;
+  /** If you hide the attribution, please support our work with a subscription. */
+  hideAttribution: boolean;
+};

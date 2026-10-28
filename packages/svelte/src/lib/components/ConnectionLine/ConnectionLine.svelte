@@ -8,8 +8,8 @@
     getStraightPath
   } from '@xyflow/system';
 
-  import type { SvelteFlowStore } from '$lib/store/types';
-  import type { Node, Edge } from '$lib/types';
+  import type { SvelteFlowStore } from '$lib/store/types.js';
+  import type { Node, Edge } from '$lib/types/index.js';
 
   let {
     store = $bindable(),

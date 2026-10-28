@@ -43,8 +43,8 @@ function BackgroundComponent({
 
   const patternDimensions: [number, number] = isCross ? [scaledSize, scaledSize] : scaledGap;
   const scaledOffset: [number, number] = [
-    offsetXY[0] * transform[2] || 1 + patternDimensions[0] / 2,
-    offsetXY[1] * transform[2] || 1 + patternDimensions[1] / 2,
+    offsetXY[0] * transform[2] + patternDimensions[0] / 2,
+    offsetXY[1] * transform[2] + patternDimensions[1] / 2,
   ];
 
   const _patternId = `${patternId}${id ? id : ''}`;

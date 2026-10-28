@@ -50,3 +50,7 @@
   left: 50%;
   transform: translateX(-50%);
 }
+
+.validationflow :global .react-flow__attribution {
+  opacity: 0;
+}

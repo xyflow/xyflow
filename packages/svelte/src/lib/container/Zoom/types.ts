@@ -1,5 +1,5 @@
-import type { SvelteFlowStore } from '$lib/store/types';
-import type { Edge, Node } from '$lib/types';
+import type { SvelteFlowStore } from '$lib/store/types.js';
+import type { Edge, Node } from '$lib/types/index.js';
 import type { OnMoveStart, OnMove, OnMoveEnd, PanOnScrollMode } from '@xyflow/system';
 import type { Snippet } from 'svelte';
 

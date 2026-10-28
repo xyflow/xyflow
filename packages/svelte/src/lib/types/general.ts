@@ -7,8 +7,8 @@ import type {
   OnBeforeDeleteBase
 } from '@xyflow/system';
 
-import type { Node } from './nodes';
-import type { Edge } from './edges';
+import type { Node } from './nodes.js';
+import type { Edge } from './edges.js';
 
 export type KeyModifier = ShortcutModifierDefinition;
 export type KeyDefinitionObject = { key: string; modifier?: KeyModifier };
@@ -60,3 +60,13 @@ export type OnSelectionChange<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
 > = (params: { nodes: NodeType[]; edges: EdgeType[] }) => void;
+
+/**
+ * Svelte Flow is independent and entirely funded by its users.
+ * If you hide the attribution, please support our work by subscribing to Svelte Flow Pro: https://svelteflow.dev/remove-attribution
+ * */
+export type ProOptions = {
+  account?: string;
+  /** If you hide the attribution, please support our work with a subscription. */
+  hideAttribution: boolean;
+};

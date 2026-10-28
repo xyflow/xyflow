@@ -9,7 +9,7 @@ import type {
   StepPathOptions
 } from '@xyflow/system';
 
-import type { Node } from '$lib/types';
+import type { Node } from '$lib/types/index.js';
 
 /**
  * An `Edge` is the complete description with everything Svelte Flow needs to know in order to

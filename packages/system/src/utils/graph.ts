@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   boxToRect,
   clampPosition,
@@ -34,8 +33,8 @@ import { errorMessages } from '../constants';
  * @param element - The element to test
  * @returns A boolean indicating whether the element is an Edge
  */
-export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): element is EdgeType =>
-  'id' in element && 'source' in element && 'target' in element;
+export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: unknown): element is EdgeType =>
+  !!element && typeof element === 'object' && 'id' in element && 'source' in element && 'target' in element;
 
 /**
  * Test whether an object is usable as a Node
@@ -44,12 +43,12 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): 
  * @param element - The element to test
  * @returns A boolean indicating whether the element is an Node
  */
-export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: any): element is NodeType =>
-  'id' in element && 'position' in element && !('source' in element) && !('target' in element);
+export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: unknown): element is NodeType =>
+    !!element && typeof element === 'object' && 'id' in element && 'position' in element && !('source' in element) && !('target' in element);
 
 export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalNodeBase>(
-  element: any
-): element is NodeType => 'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
+  element: unknown
+): element is NodeType => !!element && typeof element === 'object' &&  'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
 
 /**
  * This util is used to tell you what nodes, if any, are connected to the given node
@@ -204,6 +203,7 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
+  let hasNode = false;
   const box = nodes.reduce(
     (currBox, nodeOrId) => {
       const isId = typeof nodeOrId === 'string';
@@ -217,13 +217,22 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
           : nodeOrId;
       }
 
-      const nodeBox = currentNode ? nodeToBox(currentNode, params.nodeOrigin) : { x: 0, y: 0, x2: 0, y2: 0 };
-      return getBoundsOfBoxes(currBox, nodeBox);
+      /*
+       * Skip ids/nodes that can't be resolved (e.g. a stale or already-removed id).
+       * Merging a phantom box at the origin would stretch the bounds to include
+       * (0, 0). This mirrors getInternalNodesBounds, which skips unmatched nodes.
+       */
+      if (!currentNode) {
+        return currBox;
+      }
+
+      hasNode = true;
+      return getBoundsOfBoxes(currBox, nodeToBox(currentNode, params.nodeOrigin));
     },
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
-  return boxToRect(box);
+  return hasNode ? boxToRect(box) : { x: 0, y: 0, width: 0, height: 0 };
 };
 
 export type GetInternalNodesBoundsParams<NodeType> = {
@@ -340,7 +349,20 @@ function getFitViewNodes<
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
 
   nodeLookup.forEach((n) => {
-    const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
+    let isVisible: boolean;
+
+    if (options?.includeHiddenNodes) {
+      /*
+       * when hidden nodes are included they were never rendered, so they have no
+       * measured size. Fall back to the declared dimensions (same fallback as
+       * nodeToBox) so a hidden node with an intrinsic size still contributes to
+       * the fit bounds instead of being dropped by a measured-only check. (#5841)
+       */
+      const { width, height } = getNodeDimensions(n);
+      isVisible = width > 0 && height > 0;
+    } else {
+      isVisible = Boolean(n.measured.width && n.measured.height && !n.hidden);
+    }
 
     if (isVisible && (!optionNodeIds || optionNodeIds.has(n.id))) {
       fitViewNodes.set(n.id, n);
@@ -415,8 +437,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      const parentWidth = parentNode.measured.width;
-      const parentHeight = parentNode.measured.height;
+      const { width: parentWidth, height: parentHeight } = getNodeDimensions(parentNode);
 
       if (parentWidth && parentHeight) {
         extent = [

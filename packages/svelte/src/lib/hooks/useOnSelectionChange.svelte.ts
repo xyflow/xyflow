@@ -1,5 +1,5 @@
-import type { OnSelectionChange } from '$lib/types';
-import { useStore } from '$lib/hooks/useStore';
+import type { OnSelectionChange } from '$lib/types/index.js';
+import { useStore } from '$lib/hooks/useStore.js';
 
 export function useOnSelectionChange(onselectionchange: OnSelectionChange) {
   const store = $derived(useStore());

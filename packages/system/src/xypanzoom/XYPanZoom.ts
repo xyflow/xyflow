@@ -54,7 +54,35 @@ export function XYPanZoom({
     isPanScrolling: false,
   };
   const bbox = domNode.getBoundingClientRect();
-  const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
+
+  /*
+   * Cache the pane extent and refresh it from a ResizeObserver. Otherwise d3-zoom falls back to its
+   * defaultExtent, which reads clientWidth/clientHeight and forces a synchronous layout while panning
+   * and pinching. The observer stays connected while zooming is paused during a user selection, so the
+   * cache stays fresh, and is disconnected in destroy().
+   */
+  let cachedExtent: CoordinateExtent = [
+    [0, 0],
+    [bbox.width, bbox.height],
+  ];
+  const extentResizeObserver =
+    typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver((entries) => {
+          const entry = entries[0];
+          if (entry) {
+            cachedExtent = [
+              [0, 0],
+              [entry.contentRect.width, entry.contentRect.height],
+            ];
+          }
+        })
+      : null;
+  extentResizeObserver?.observe(domNode);
+
+  const d3ZoomInstance = zoom()
+    .extent(() => cachedExtent)
+    .scaleExtent([minZoom, maxZoom])
+    .translateExtent(translateExtent);
   const d3Selection = select(domNode).call(d3ZoomInstance);
 
   setViewportConstrained(
@@ -101,6 +129,7 @@ export function XYPanZoom({
     zoomOnPinch,
     zoomOnScroll,
     zoomOnDoubleClick,
+    panActivationKeyPressed = false,
     zoomActivationKeyPressed,
     lib,
     onTransformChange,
@@ -109,7 +138,8 @@ export function XYPanZoom({
     selectionOnDrag,
   }: PanZoomUpdateOptions) {
     if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
-      destroy();
+      // pause zooming during a user selection
+      d3ZoomInstance.on('zoom', null);
     }
 
     const isPanOnScroll = panOnScroll && !zoomActivationKeyPressed && !userSelectionActive;
@@ -169,6 +199,7 @@ export function XYPanZoom({
     d3ZoomInstance.on('end', panZoomEndHandler);
 
     const filter = createFilter({
+      panActivationKeyPressed,
       zoomActivationKeyPressed,
       panOnDrag,
       zoomOnScroll,
@@ -197,6 +228,7 @@ export function XYPanZoom({
 
   function destroy() {
     d3ZoomInstance.on('zoom', null);
+    extentResizeObserver?.disconnect();
   }
 
   async function setViewportConstrained(

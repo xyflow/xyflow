@@ -14,10 +14,10 @@
     type Connection
   } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
+  import { useStore } from '$lib/store/index.js';
 
-  import type { HandleProps } from './types';
-  import { getNodeConnectableContext, getNodeIdContext } from '$lib/store/context';
+  import type { HandleProps } from './types.js';
+  import { getNodeConnectableContext, getNodeIdContext } from '$lib/store/context.js';
 
   let {
     id: handleId = null,

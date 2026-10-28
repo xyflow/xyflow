@@ -19,14 +19,21 @@ import {
   Position
 } from '@xyflow/system';
 
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions, InternalNode } from '$lib/types';
-import { addEdge as addEdgeUtil } from '$lib/utils/edges';
-import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte';
-import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types';
+import type {
+  EdgeTypes,
+  NodeTypes,
+  Node,
+  Edge,
+  FitViewOptions,
+  InternalNode
+} from '$lib/types/index.js';
+import { addEdge as addEdgeUtil } from '$lib/utils/edges.js';
+import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte.js';
+import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types.js';
 
 export const key = Symbol();
 
-export { useStore } from '../hooks/useStore';
+export { useStore } from '../hooks/useStore.js';
 
 export function createStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   signals: StoreSignals<NodeType, EdgeType>

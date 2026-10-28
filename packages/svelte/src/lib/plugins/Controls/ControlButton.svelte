@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ControlButtonProps } from './types';
+  import type { ControlButtonProps } from './types.js';
 
   let {
     class: className,

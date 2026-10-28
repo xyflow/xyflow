@@ -1,4 +1,4 @@
-import type { ConnectableContext } from '$lib/components/NodeWrapper/types';
+import type { ConnectableContext } from '$lib/components/NodeWrapper/types.js';
 import { setContext, getContext, hasContext } from 'svelte';
 
 /**

@@ -150,6 +150,31 @@ describe('getNodesBounds Testing', () => {
     expect(bounds.width).to.equal(100);
     expect(bounds.height).to.equal(230);
   });
+
+  it('ignores unresolvable ids instead of stretching the bounds to the origin', () => {
+    const nodeLookup: NodeLookup = new Map();
+    const parentLookup: ParentLookup = new Map();
+
+    const nodes: Node[] = [
+      {
+        id: '1',
+        data: { label: 'node' },
+        position: { x: 100, y: 100 },
+        measured: { width: 100, height: 50 },
+      },
+    ];
+
+    adoptUserNodes(nodes, nodeLookup, parentLookup);
+
+    // '2' is not in the lookup (e.g. a stale id after that node was removed)
+    const bounds = getNodesBounds(['1', '2'], { nodeLookup });
+
+    // bounds should match node '1' only, not be stretched to include (0, 0)
+    expect(bounds.x).to.equal(100);
+    expect(bounds.y).to.equal(100);
+    expect(bounds.width).to.equal(100);
+    expect(bounds.height).to.equal(50);
+  });
 });
 
 export {};

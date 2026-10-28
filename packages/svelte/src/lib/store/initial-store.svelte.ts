@@ -52,7 +52,7 @@ import {
   SmoothStepEdgeInternal,
   StraightEdgeInternal,
   StepEdgeInternal
-} from '$lib/components/edges';
+} from '$lib/components/edges/index.js';
 
 import type {
   NodeTypes,
@@ -69,11 +69,11 @@ import type {
   OnBeforeReconnect,
   OnSelectionChange,
   OnSelectionDrag
-} from '$lib/types';
+} from '$lib/types/index.js';
 
-import type { StoreSignals } from './types';
+import type { StoreSignals } from './types.js';
 import { MediaQuery } from 'svelte/reactivity';
-import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements';
+import { getLayoutedEdges, getVisibleNodes, type EdgeLayoutAllOptions } from './visibleElements.js';
 
 export const initialNodeTypes = {
   input: InputNode,
@@ -272,6 +272,8 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         visibleNodes = this.nodeLookup;
         visibleEdges = getLayoutedEdges(options as EdgeLayoutAllOptions<NodeType, EdgeType>);
       }
+
+      this._prevVisibleEdges = visibleEdges;
 
       return {
         nodes: visibleNodes,

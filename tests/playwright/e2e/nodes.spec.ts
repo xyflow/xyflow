@@ -1,6 +1,7 @@
 import { test, expect, Locator } from '@playwright/test';
 
 import { FRAMEWORK } from './constants';
+import { getTransform } from './utils';
 
 test.describe('Nodes', () => {
   test.beforeEach(async ({ page }) => {
@@ -43,6 +44,42 @@ test.describe('Nodes', () => {
       await expect(nodes.nth(2)).toHaveClass(/selected/);
 
       await expect(nodeSelection).toBeInViewport();
+    });
+
+    test('panning from a multi-selection rectangle with the middle mouse button', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'react', 'The React selection rectangle has its own drag handler');
+
+      const nodes = page.locator('.react-flow__node');
+      const selection = page.locator('.react-flow__nodesselection-rect');
+      const viewport = page.locator('.react-flow__viewport');
+
+      await expect(nodes.first()).toHaveCSS('visibility', 'visible');
+      const nodeBox = await nodes.first().boundingBox();
+
+      await page.keyboard.down('Shift');
+      await page.mouse.move(nodeBox!.x - 150, nodeBox!.y - 25);
+      await page.mouse.down();
+      await page.mouse.move(nodeBox!.x + 275, nodeBox!.y + 200);
+      await page.mouse.up();
+      await page.keyboard.up('Shift');
+
+      await expect(selection).toBeInViewport();
+      const selectionBox = await selection.boundingBox();
+      const transformsBefore = await getTransform(viewport);
+      const selectionCenter = {
+        x: selectionBox!.x + selectionBox!.width / 2,
+        y: selectionBox!.y + selectionBox!.height / 2,
+      };
+
+      await page.mouse.move(selectionCenter.x, selectionCenter.y);
+      await page.mouse.down({ button: 'middle' });
+      await page.mouse.move(selectionCenter.x + 100, selectionCenter.y + 100);
+      await page.mouse.up({ button: 'middle' });
+
+      const transformsAfter = await getTransform(viewport);
+
+      expect(transformsAfter.translateX).not.toBe(transformsBefore.translateX);
+      expect(transformsAfter.translateY).not.toBe(transformsBefore.translateY);
     });
 
     test('selectable=false prevents selection', async ({ page }) => {

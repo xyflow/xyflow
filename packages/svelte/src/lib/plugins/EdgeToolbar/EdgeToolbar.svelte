@@ -1,11 +1,11 @@
 <script lang="ts">
   import { getEdgeToolbarTransform } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
-  import { getEdgeIdContext } from '$lib/store/context';
+  import { useStore } from '$lib/store/index.js';
+  import { getEdgeIdContext } from '$lib/store/context.js';
 
-  import { EdgeLabel } from '$lib/components/EdgeLabel';
-  import type { EdgeToolbarProps } from './types';
+  import { EdgeLabel } from '$lib/components/EdgeLabel/index.js';
+  import type { EdgeToolbarProps } from './types.js';
 
   let {
     x,

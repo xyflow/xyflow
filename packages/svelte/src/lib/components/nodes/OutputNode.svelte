@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Position } from '@xyflow/system';
-  import type { NodeProps } from '$lib/types';
+  import type { NodeProps } from '$lib/types/index.js';
 
-  import { Handle } from '$lib/components/Handle';
+  import { Handle } from '$lib/components/Handle/index.js';
 
   let { data = { label: 'Node' }, targetPosition = Position.Top }: NodeProps = $props();
 </script>

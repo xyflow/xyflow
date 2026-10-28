@@ -30,6 +30,7 @@ export type PanZoomUpdateOptions = {
   noPanClassName: string;
   onPaneContextMenu?: (event: MouseEvent) => void;
   preventScrolling: boolean;
+  panActivationKeyPressed?: boolean;
   panOnScroll: boolean;
   panOnDrag: boolean | number[];
   panOnScrollMode: PanOnScrollMode;

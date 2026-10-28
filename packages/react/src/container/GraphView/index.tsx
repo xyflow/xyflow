@@ -105,6 +105,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   rfId,
   viewport,
   onViewportChange,
+  nodesDraggable,
 }: GraphViewProps<NodeType, EdgeType>) {
   useNodeOrEdgeTypesWarning(nodeTypes);
   useNodeOrEdgeTypesWarning(edgeTypes);
@@ -194,6 +195,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
           disableKeyboardA11y={disableKeyboardA11y}
           nodeExtent={nodeExtent}
           rfId={rfId}
+          nodesDraggable={nodesDraggable}
         />
         <div className="react-flow__viewport-portal" />
       </Viewport>

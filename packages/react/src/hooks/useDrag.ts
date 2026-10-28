@@ -33,6 +33,10 @@ export function useDrag({
   const xyDrag = useRef<XYDragInstance>();
 
   useEffect(() => {
+    if (disabled) {
+      return;
+    }
+
     xyDrag.current = XYDrag({
       getStoreItems: () => store.getState(),
       onNodeMouseDown: (id: string) => {
@@ -49,7 +53,12 @@ export function useDrag({
         setDragging(false);
       },
     });
-  }, []);
+
+    return () => {
+      xyDrag.current?.destroy();
+      xyDrag.current = undefined;
+    };
+  }, [disabled, store, nodeRef]);
 
   useEffect(() => {
     if (disabled || !nodeRef.current || !xyDrag.current) {
@@ -64,10 +73,6 @@ export function useDrag({
       nodeId,
       nodeClickDistance,
     });
-
-    return () => {
-      xyDrag.current?.destroy();
-    };
   }, [noDragClassName, handleSelector, disabled, isSelectable, nodeRef, nodeId, nodeClickDistance]);
 
   return dragging;

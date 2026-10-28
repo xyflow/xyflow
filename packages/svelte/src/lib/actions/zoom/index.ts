@@ -26,6 +26,7 @@ type ZoomParams = {
   panOnDrag: boolean | number[];
   panOnScrollSpeed: number;
   panOnScrollMode: PanOnScrollMode;
+  panActivationKeyPressed: boolean;
   zoomActivationKeyPressed: boolean;
   preventScrolling: boolean;
   // last two instances of 'classname' being used
@@ -83,6 +84,9 @@ export default function zoom(domNode: Element, params: ZoomParams) {
   return {
     update(params: ZoomParams) {
       panZoomInstance.update(params);
+    },
+    destroy() {
+      panZoomInstance.destroy();
     }
   };
 }

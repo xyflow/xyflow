@@ -1,9 +1,9 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import type { HTMLAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
-  import { type SvelteFlowRestProps } from '$lib/store/types';
-  import { toPxString } from '$lib/utils';
-  import type { Node, Edge } from '$lib/types';
+  import { type SvelteFlowRestProps } from '$lib/store/types.js';
+  import { toPxString } from '$lib/utils/index.js';
+  import type { Node, Edge } from '$lib/types/index.js';
 
   let {
     width,
@@ -123,7 +123,7 @@
   bind:clientWidth
   style:width={toPxString(width)}
   style:height={toPxString(height)}
-  class={['svelte-flow', 'svelte-flow__container', colorMode, className ]}
+  class={['svelte-flow', 'svelte-flow__container', colorMode, className]}
   data-testid="svelte-flow__wrapper"
   role="application"
   onscroll={wrapperOnScroll}

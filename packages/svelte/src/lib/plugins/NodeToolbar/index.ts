@@ -1,2 +1,2 @@
 export { default as NodeToolbar } from './NodeToolbar.svelte';
-export * from './types';
+export * from './types.js';

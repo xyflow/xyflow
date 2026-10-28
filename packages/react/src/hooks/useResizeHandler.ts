@@ -43,10 +43,7 @@ export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null
       return () => {
         cancelAnimationFrame(fitViewRaf);
         window.removeEventListener('resize', updateDimensions);
-
-        if (resizeObserver && domNode.current) {
-          resizeObserver.unobserve(domNode.current);
-        }
+        resizeObserver.disconnect();
       };
     }
   }, []);

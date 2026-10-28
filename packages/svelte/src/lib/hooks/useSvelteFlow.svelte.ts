@@ -19,9 +19,9 @@ import {
   getNodesBounds
 } from '@xyflow/system';
 
-import { useStore } from '$lib/store';
-import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types';
-import { isEdge, isNode } from '$lib/utils';
+import { useStore } from '$lib/store/index.js';
+import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types/index.js';
+import { isEdge, isNode } from '$lib/utils/index.js';
 import { untrack } from 'svelte';
 
 /**
@@ -297,7 +297,8 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       height: nodeToUse.measured?.height ?? nodeToUse.height
     };
 
-    return nodeToRect(nodeWithPosition);
+    // Child positions already account for the flow origin above.
+    return nodeToRect(nodeWithPosition, nodeToUse.parentId ? undefined : store.nodeOrigin);
   };
 
   function updateNode(
