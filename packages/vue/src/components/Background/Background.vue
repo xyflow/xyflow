@@ -42,7 +42,9 @@ const background = computed(() => {
 });
 
 // when there are multiple flows on a page we need to make sure that every background gets its own pattern.
-const patternId = computed(() => `pattern-${vueFlowId}${props.id ? `-${props.id}` : ''}`);
+// no separator before the id: `@xyflow/react` builds `pattern-${rfId}${id}`, and a theme or test
+// that targets the pattern should not have to know which library rendered it
+const patternId = computed(() => `pattern-${vueFlowId}${props.id ?? ''}`);
 </script>
 
 <script lang="ts">

@@ -47,6 +47,7 @@ const {
   defaultEdgeOptions,
   connection,
   panOnDrag,
+  selectionOnDrag,
   paneClickDistance,
   autoPanOnSelection,
   autoPanSpeed,
@@ -136,13 +137,25 @@ function onWheel(event: WheelEvent) {
 }
 
 function onPointerDown(event: PointerEvent) {
+  if (event.pointerType === 'touch' && panOnDrag.value !== false && !selectionKeyPressed) {
+    return;
+  }
+
   containerBounds.value = vueFlowRef.value?.getBoundingClientRect() ?? null;
 
+  const eventTargetIsContainer = event.target === container.value;
+  // a child opts out of being swallowed by this capture handler with `nokey`
+  const isNoKeyEvent = !eventTargetIsContainer && !!(event.target as HTMLElement).closest?.('.nokey');
+  // holding the selection key starts a box over a node or edge too; `selectionOnDrag` only starts one on the pane
+  const isSelectionActive = (selectionOnDrag.value && eventTargetIsContainer) || selectionKeyPressed;
+
   if (
-    !elementsSelectable.value
+    isNoKeyEvent
+    || !elementsSelectable.value
     || !isSelecting
+    || !isSelectionActive
     || event.button !== 0
-    || event.target !== container.value
+    || !event.isPrimary
     || !containerBounds.value
   ) {
     return;
@@ -170,6 +183,12 @@ function onPointerDown(event: PointerEvent) {
     x,
     y,
   };
+
+  // the box started over a node or edge, so keep that element from also beginning a drag
+  if (!eventTargetIsContainer) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
 }
 
 function commitUserSelectionRect(mouseX: number, mouseY: number) {
@@ -343,7 +362,7 @@ export default {
     @contextmenu="wrapHandler(onContextMenu, container)($event)"
     @wheel.passive="wrapHandler(onWheel, container)($event)"
     @pointerenter="(event) => (hasActiveSelection ? undefined : emits.paneMouseEnter(event))"
-    @pointerdown="(event) => (hasActiveSelection ? onPointerDown(event) : undefined)"
+    @pointerdown.capture="(event) => (hasActiveSelection ? onPointerDown(event) : undefined)"
     @pointermove="(event) => (hasActiveSelection ? onPointerMove(event) : emits.paneMouseMove(event))"
     @pointerup="(event) => (hasActiveSelection ? onPointerUp(event) : undefined)"
     @pointercancel="(event) => (hasActiveSelection ? onPointerCancel(event) : undefined)"
