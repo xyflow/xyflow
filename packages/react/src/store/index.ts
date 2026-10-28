@@ -40,6 +40,8 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
   const selectionStore = createZustandStore<SelectionStore>(() => initialState.selectionStore);
 
   const optionsStore = createZustandStore<ReactFlowState>((set, get) => {
+    let latestFitViewId = 0;
+
     async function resolveFitView() {
       const { nodeLookup } = nodesStore.getState();
       const { panZoom, fitViewOptions, fitViewResolver, minZoom, maxZoom } = get();
@@ -49,7 +51,9 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         return;
       }
 
-      await fitViewport(
+      const fitViewId = ++latestFitViewId;
+
+      const ended = await fitViewport(
         {
           nodes: nodeLookup,
           width,
@@ -61,12 +65,21 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         fitViewOptions
       );
 
-      fitViewResolver?.resolve(true);
+      /*
+       * A newer fitView started while this one was running and settles the shared promise instead
+       */
+      if (fitViewId !== latestFitViewId) {
+        return;
+      }
+
+      fitViewResolver?.resolve(ended);
       /**
        * wait for the fitViewport to resolve before deleting the resolver,
        * we want to reuse the old resolver if the user calls fitView again in the mean time
        */
-      set({ fitViewResolver: null });
+      if (get().fitViewResolver === fitViewResolver) {
+        set({ fitViewResolver: null });
+      }
     }
 
     return {
@@ -412,7 +425,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
 
         const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : maxZoom;
 
-        await panZoom.setViewport(
+        return panZoom.setViewport(
           {
             x: width / 2 - x * nextZoom,
             y: height / 2 - y * nextZoom,
@@ -420,8 +433,6 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
           },
           { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
         );
-
-        return true;
       },
       cancelConnection: () => {
         const { connection: previousConnection } = connectionStore.getState();

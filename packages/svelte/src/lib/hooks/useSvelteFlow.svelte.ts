@@ -375,7 +375,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         return false;
       }
 
-      await store.panZoom.setViewport(
+      return store.panZoom.setViewport(
         {
           x: nextViewport.x ?? currentViewport.x,
           y: nextViewport.y ?? currentViewport.y,
@@ -383,8 +383,6 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         },
         options
       );
-
-      return true;
     },
     getViewport: () => $state.snapshot(store.viewport),
     setCenter: async (x, y, options) => store.setCenter(x, y, options),
@@ -403,13 +401,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         options?.padding ?? defaultFitViewPadding
       );
 
-      await store.panZoom.setViewport(viewport, {
+      return store.panZoom.setViewport(viewport, {
         duration: options?.duration,
         ease: options?.ease,
         interpolate: options?.interpolate
       });
-
-      return true;
     },
     /**
      * Partial is defined as "the 2 nodes/areas are intersecting partially".
