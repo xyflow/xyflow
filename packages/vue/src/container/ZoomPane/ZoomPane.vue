@@ -99,6 +99,7 @@ onMounted(() => {
         panOnScrollMode,
         zoomOnDoubleClick,
         shouldPanOnDrag,
+        panKeyPressed,
         zoomActivationKeyPressed,
         preventScrolling,
         noPanClassName,
@@ -117,6 +118,9 @@ onMounted(() => {
           panOnScrollMode: panOnScrollMode.value,
           zoomOnDoubleClick: zoomOnDoubleClick.value,
           panOnDrag: shouldPanOnDrag.value,
+          // the filter drops a ctrlKey-modified pointerdown unless this says the pan key is down, which
+          // matters whenever `panActivationKeyCode` is a modifier
+          panActivationKeyPressed: panKeyPressed.value,
           zoomActivationKeyPressed: zoomActivationKeyPressed.value,
           preventScrolling: preventScrolling.value,
           noPanClassName: noPanClassName.value,
