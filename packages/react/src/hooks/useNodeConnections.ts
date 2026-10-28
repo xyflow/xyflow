@@ -7,7 +7,7 @@ import {
   type UseNodeConnectionsParams,
 } from '@xyflow/system';
 
-import { useCustomDiff, useEdgesStore } from './useReactFlowStore';
+import { useEqualSelector, useEdgesStore } from './useReactFlowStore';
 import { useNodeId } from '../contexts/NodeIdContext';
 import { type EdgesStore } from '../types';
 
@@ -57,7 +57,7 @@ export function useNodeConnections({
     );
   };
 
-  const connections = useEdgesStore(useCustomDiff(selector, areConnectionMapsEqual));
+  const connections = useEdgesStore(useEqualSelector(selector, areConnectionMapsEqual));
 
   useEffect(() => {
     // @todo discuss if onConnect/onDisconnect should be called when the component mounts/unmounts
