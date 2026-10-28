@@ -111,7 +111,7 @@ const createStore = ({
         zIndexMode,
       }),
       setNodes: (nodes: Node[]) => {
-        const { nodeLookup, parentLookup, nodeOrigin, elevateNodesOnSelect, fitViewQueued, zIndexMode, nodesSelectionActive } = get();
+        const { nodeLookup, parentLookup, nodeExtent, nodeOrigin, elevateNodesOnSelect, fitViewQueued, zIndexMode, nodesSelectionActive } = get();
 
         /*
          * setNodes() is called exclusively in response to user actions:
