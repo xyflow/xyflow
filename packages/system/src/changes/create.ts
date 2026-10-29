@@ -1,5 +1,14 @@
 import type { Dimensions, XYPosition } from '../types';
-import type { AddChange, DimensionChange, PositionChange, RemoveChange, ReplaceChange, SelectionChange } from './types';
+import type {
+  AddChange,
+  DataChange,
+  DimensionChange,
+  PositionChange,
+  RemoveChange,
+  ReplaceChange,
+  SelectionChange,
+  UpdateChange,
+} from './types';
 
 export function selectionChange(id: string, selected: boolean): SelectionChange {
   return {
@@ -46,4 +55,26 @@ export function replaceChange<T extends { id: string }>(item: T): ReplaceChange<
     item: item,
     type: 'replace',
   };
+}
+
+export function updateChange<T extends { id: string }>(id: string, item: Partial<T>): UpdateChange<T> {
+  return {
+    id,
+    item,
+    type: 'update',
+  };
+}
+
+export function dataChange<Data = Record<string, unknown>>(id: string, data: Data, replace: true): DataChange<Data>;
+export function dataChange<Data = Record<string, unknown>>(
+  id: string,
+  data: Partial<Data>,
+  replace?: false
+): DataChange<Data>;
+export function dataChange<Data = Record<string, unknown>>(
+  id: string,
+  data: Partial<Data>,
+  replace?: boolean
+): DataChange<Data> {
+  return (replace ? { id, type: 'data', data, replace } : { id, type: 'data', data }) as DataChange<Data>;
 }

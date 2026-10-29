@@ -11,7 +11,7 @@ import ts from 'typescript-eslint';
 const rootGitignorePath = path.resolve(import.meta.dirname, '../../../.gitignore');
 const packageGitignorePath = path.resolve(process.cwd(), '.gitignore');
 
-export default function createSvelteConfig({ svelteConfig } = {}) {
+export default function createSvelteConfig({ svelteConfig, tsconfigRootDir = process.cwd() } = {}) {
   return defineConfig(
     includeIgnoreFile(rootGitignorePath),
     ...(fs.existsSync(packageGitignorePath) ? [includeIgnoreFile(packageGitignorePath)] : []),
@@ -33,6 +33,7 @@ export default function createSvelteConfig({ svelteConfig } = {}) {
       languageOptions: {
         parserOptions: {
           projectService: true,
+          tsconfigRootDir,
           extraFileExtensions: ['.svelte'],
           parser: ts.parser,
           svelteConfig,

@@ -44,6 +44,8 @@ import {
   type EdgeChange
 } from '@xyflow/system';
 
+import { untrack } from 'svelte';
+
 const devWarn = createDevWarn('Svelte Flow', 'https://svelteflow.dev/');
 
 import DefaultNode from '#lib/components/nodes/DefaultNode.svelte';
@@ -176,39 +178,63 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
     pendingNodeChanges: NodeChangeset<NodeType> | undefined = $state.raw();
     pendingEdgeChanges: EdgeChangeset<EdgeType> | undefined = $state.raw();
 
+    /**
+     * Changes are flushed in our own microtask. It is queued *before* the first reactive write,
+     * so if nothing else touched state in this task yet, it runs ahead of Svelte's batch flush and
+     * Svelte only ever sees the final nodes/edges.
+     * If a Svelte batch was already scheduled, the $effect.pre in the constructor flushes the
+     * changes as part of that batch instead.
+     */
     queueNodeChanges = (changes: NodeChange<NodeType>[]) => {
+      if (changes.length === 0) {
+        return;
+      }
       if (!this.pendingNodeChanges) {
+        queueMicrotask(this.flushNodeChanges);
         this.pendingNodeChanges = new NodeChangeset<NodeType>();
       }
       this.pendingNodeChanges.add(changes);
     };
 
     queueEdgeChanges = (changes: EdgeChange<EdgeType>[]) => {
+      if (changes.length === 0) {
+        return;
+      }
       if (!this.pendingEdgeChanges) {
+        queueMicrotask(this.flushEdgeChanges);
         this.pendingEdgeChanges = new EdgeChangeset<EdgeType>();
       }
       this.pendingEdgeChanges.add(changes);
     };
 
-    flushNodeChanges = () => {
-      if (!this.pendingNodeChanges) {
-        return;
-      }
-      this.onnodeschange?.(this.pendingNodeChanges);
-      const newNodes = this.pendingNodeChanges.applyTo(this.nodes);
-      this.nodes = newNodes;
-      this.pendingNodeChanges = undefined;
-    };
+    // untracked, so reads inside onnodeschange/onedgeschange never become dependencies of the effect
+    flushNodeChanges = () =>
+      untrack(() => {
+        const changes = this.pendingNodeChanges;
+        if (!changes) {
+          return;
+        }
+        this.pendingNodeChanges = undefined;
+        this.onnodeschange?.(changes);
 
-    flushEdgeChanges = () => {
-      if (!this.pendingEdgeChanges) {
-        return;
-      }
-      this.onedgeschange?.(this.pendingEdgeChanges);
-      const newEdges = this.pendingEdgeChanges.applyTo(this.edges);
-      this.edges = newEdges;
-      this.pendingEdgeChanges = undefined;
-    };
+        if (!changes.isEmpty()) {
+          this.nodes = changes.applyTo(this.nodes);
+        }
+      });
+
+    flushEdgeChanges = () =>
+      untrack(() => {
+        const changes = this.pendingEdgeChanges;
+        if (!changes) {
+          return;
+        }
+        this.pendingEdgeChanges = undefined;
+        this.onedgeschange?.(changes);
+
+        if (!changes.isEmpty()) {
+          this.edges = changes.applyTo(this.edges);
+        }
+      });
 
     get nodes() {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions

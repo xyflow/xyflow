@@ -9,7 +9,9 @@
     type ControlPosition,
     type XYResizerInstance,
     type XYResizerChange,
-    type XYResizerChildChange
+    type XYResizerChildChange,
+    type NodeChange,
+    positionChange
   } from '@xyflow/system';
 
   import type { ResizeControlProps } from './types.js';
@@ -73,33 +75,52 @@
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          // eslint-disable-next-line svelte/prefer-svelte-reactivity
-          const changes = new Map<string, XYResizerChange>();
-          changes.set(id, change);
+          const changes: NodeChange[] = [];
+          const horizontal = !resizeDirection || resizeDirection === 'horizontal';
+          const vertical = !resizeDirection || resizeDirection === 'vertical';
+          const node = store.nodeLookup.get(id);
 
-          for (const childChange of childChanges) {
-            changes.set(childChange.id, { x: childChange.position.x, y: childChange.position.y });
+          if (node && change.x !== undefined && change.y !== undefined) {
+            changes.push(
+              positionChange(id, {
+                x: horizontal ? change.x : node.position.x,
+                y: vertical ? change.y : node.position.y
+              })
+            );
           }
 
-          // TODO: trigger changes instead
-          store.nodes = store.nodes.map((node) => {
-            const change = changes.get(node.id);
-            const horizontal = !resizeDirection || resizeDirection === 'horizontal';
-            const vertical = !resizeDirection || resizeDirection === 'vertical';
+          if (change.width !== undefined && change.height !== undefined) {
+            changes.push({
+              id,
+              type: 'dimensions',
+              resizing: true,
+              setAttributes: !resizeDirection
+                ? true
+                : resizeDirection === 'horizontal'
+                  ? 'width'
+                  : 'height',
+              dimensions: {
+                width: change.width,
+                height: change.height
+              }
+            });
+          }
 
-            if (change) {
-              return {
-                ...node,
-                position: {
-                  x: horizontal ? (change.x ?? node.position.x) : node.position.x,
-                  y: vertical ? (change.y ?? node.position.y) : node.position.y
-                },
-                width: horizontal ? (change.width ?? node.width) : node.width,
-                height: vertical ? (change.height ?? node.height) : node.height
-              };
+          for (const childChange of childChanges) {
+            changes.push(positionChange(childChange.id, childChange.position));
+          }
+
+          store.queueNodeChanges(changes);
+        },
+        onEnd: ({ width, height }) => {
+          store.queueNodeChanges([
+            {
+              id,
+              type: 'dimensions',
+              resizing: false,
+              dimensions: { width, height }
             }
-            return node;
-          });
+          ]);
         }
       });
     }
