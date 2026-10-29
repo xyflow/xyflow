@@ -63,6 +63,7 @@
     selectionOnDrag,
     autoPanOnSelection = true,
     onpaneclick,
+    onpanedoubleclick,
     onpanecontextmenu,
     onselectionstart,
     onselectionend,
@@ -335,6 +336,13 @@
     }
   };
 
+  function onDoubleClick(event: MouseEvent) {
+    if (selectionInProgress || store.connection.inProgress || connectionEndedOnPane) {
+      return;
+    }
+    onpanedoubleclick?.({ event });
+  }
+
   function onClick(event: MouseEvent) {
     // We prevent click events when the user let go of the selectionKey during a selection
     // We also prevent click events when a connection is in progress
@@ -379,6 +387,7 @@
   onpointerup={onPointerUp}
   onpointercancel={isSelectionEnabled ? onPointerCancel : undefined}
   oncontextmenu={wrapHandler(onContextMenu, container)}
+  ondblclickcapture={wrapHandler(onDoubleClick, container)}
   onclickcapture={isSelectionEnabled ? onClickCapture : undefined}
 >
   {@render children()}
