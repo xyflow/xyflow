@@ -7,5 +7,6 @@ declare global {
     backgroundProps?: BackgroundProps;
     controlsProps?: ControlProps;
     minimapProps?: MiniMapProps;
+    withProvider?: boolean;
   }
 }

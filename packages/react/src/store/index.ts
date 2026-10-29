@@ -164,7 +164,7 @@ const createStore = ({
        * changes its dimensions, this function is called to measure the
        * new dimensions and update the nodes.
        */
-      updateNodeInternals: (updates) => {
+      updateNodeInternals: (updates, params = { triggerFitView: true }) => {
         const {
           triggerNodeChanges,
           nodeLookup,
@@ -193,7 +193,7 @@ const createStore = ({
 
         updateAbsolutePositions(nodeLookup, parentLookup, { nodeOrigin, nodeExtent, zIndexMode });
 
-        if (fitViewQueued) {
+        if (params.triggerFitView && fitViewQueued) {
           resolveFitView();
           set({ fitViewQueued: false, fitViewOptions: undefined });
         } else {
