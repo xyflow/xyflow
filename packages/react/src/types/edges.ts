@@ -96,6 +96,8 @@ type StepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>
 
 type StraightEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData, 'straight'>;
 
+type InferPathOptions<E extends Edge> = E extends { pathOptions?: infer P } ? P : any;
+
 export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge | StraightEdge;
 
 export type EdgeMouseHandler<EdgeType extends Edge = Edge> = (event: ReactMouseEvent, edge: EdgeType) => void;
@@ -158,8 +160,7 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
     targetHandleId?: string | null;
     markerStart?: string;
     markerEnd?: string;
-    // @TODO: how can we get better types for pathOptions?
-    pathOptions?: any;
+    pathOptions?: InferPathOptions<EdgeType>;
     interactionWidth?: number;
   };
 
