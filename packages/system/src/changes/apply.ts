@@ -106,6 +106,11 @@ function applyNodeChange<NodeType extends NodeBase = NodeBase>(node: NodeType, c
       break;
     }
 
+    case 'data': {
+      node.data = change.replace ? change.data : { ...node.data, ...change.data };
+      break;
+    }
+
     default:
       return;
   }
@@ -115,6 +120,11 @@ export function applyEdgeChange<EdgeType extends EdgeBase = EdgeBase>(edge: Edge
   switch (change.type) {
     case 'select': {
       edge.selected = change.selected;
+      break;
+    }
+
+    case 'data': {
+      edge.data = change.replace ? change.data : { ...edge.data, ...change.data };
       break;
     }
 

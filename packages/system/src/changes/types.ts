@@ -6,13 +6,15 @@ export type NodeChange<NodeType extends NodeBase = NodeBase> =
   | SelectionChange
   | RemoveChange
   | AddChange<NodeType>
-  | ReplaceChange<NodeType>;
+  | ReplaceChange<NodeType>
+  | DataChange<NodeType['data']>;
 
 export type EdgeChange<EdgeType extends EdgeBase = EdgeBase> =
   | SelectionChange
   | RemoveChange
   | AddChange<EdgeType>
-  | ReplaceChange<EdgeType>;
+  | ReplaceChange<EdgeType>
+  | DataChange<NonNullable<EdgeType['data']>>;
 
 // Narrow down change type based on the element type (Node -> NodeChange, Edge -> EdgeChange)
 export type ElementChangeType<ElementType extends NodeBase | EdgeBase> =
@@ -60,3 +62,19 @@ export type ReplaceChange<NodeOrEdge> = {
   item: NodeOrEdge;
   type: 'replace';
 };
+
+export type DataChange<Data = Record<string, unknown>> =
+  | {
+      id: string;
+      type: 'data';
+      /* the data gets merged into the existing data */
+      data: Partial<Data>;
+      replace?: false;
+    }
+  | {
+      id: string;
+      type: 'data';
+      /* the data replaces the existing data, so it has to be complete */
+      data: Data;
+      replace: true;
+    };
