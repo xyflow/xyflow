@@ -1,5 +1,24 @@
 # @xyflow/system
 
+## 0.0.84
+### Patch Changes
+
+
+
+- [#6097](https://github.com/xyflow/xyflow/pull/6097) [`d150c38`](https://github.com/xyflow/xyflow/commit/d150c38a46c4e6ded900676f4eafbbae60e37a4c) - Don't mutate the internal selection state
+
+
+
+- [#6054](https://github.com/xyflow/xyflow/pull/6054) [`c7d0fcb`](https://github.com/xyflow/xyflow/commit/c7d0fcb3372e234c33d2c87bec8d4c8394abab74) - Disconnect the `ResizeObserver`s when a flow unmounts
+
+
+
+- [#6055](https://github.com/xyflow/xyflow/pull/6055) [`9dcbd29`](https://github.com/xyflow/xyflow/commit/9dcbd29a8e597b6f4cd26ebf64f755d2fb96332b) - Keep `reconnectEdge` id replacement when other options are passed
+
+
+
+- [#6036](https://github.com/xyflow/xyflow/pull/6036) [`cba335d`](https://github.com/xyflow/xyflow/commit/cba335d7cdb809fe274591985bfa377ca2e21bcf) - Fix `getSmoothStepPath` bends that render sharper than `borderRadius` when nodes are close to each other
+
 ## 0.0.83
 ### Patch Changes
 
