@@ -323,3 +323,31 @@ test.describe('Nodes', () => {
     await expect(node).toHaveCSS('background-color', 'rgb(255, 0, 0)');
   });
 });
+
+test.describe('Nodes selectNodesOnDrag=false', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/tests/generic/nodes/select-nodes-on-drag');
+    await page.waitForSelector('[data-id="first-edge"]', { timeout: 5000 });
+  });
+
+  test('dragging an unselected node preserves existing selection', async ({ page }) => {
+    const node1 = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="Node-1"]'));
+    const node2 = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="Node-2"]'));
+
+    await expect(node1).toHaveCSS('visibility', 'visible');
+    await expect(node2).toHaveCSS('visibility', 'visible');
+
+    await node1.click();
+    await expect(node1).toHaveClass(/selected/);
+
+    const node2Box = await node2.boundingBox();
+    expect(node2Box).not.toBeNull();
+    await page.mouse.move(node2Box!.x + 10, node2Box!.y + 10);
+    await page.mouse.down();
+    await page.mouse.move(node2Box!.x + 60, node2Box!.y + 60);
+    await page.mouse.up();
+
+    await expect(node1).toHaveClass(/selected/);
+    await expect(node2).not.toHaveClass(/selected/);
+  });
+});
