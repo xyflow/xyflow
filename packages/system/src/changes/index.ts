@@ -13,12 +13,7 @@ type ApplyChangesFn<ElementType extends NodeBase | EdgeBase, ChangeType extends 
 ) => ElementType[];
 
 /**
- * Tracks element changes for easy access and modification.
- * Prevents mistakes: You can't add elements that exist and
- * can't remove or change elements that don't exist.
- * TODO: upsert?
- * TODO: automatically minify changes?
- * TODO: warn if something is invalid? (it was just ignored before when applying)
+ * Tracks a batch of changes to be applied to either edges or nodes
  * TODO: include a way to split ephemeral dimension changes to split
  *
  * @example
@@ -41,9 +36,8 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
    *
    * @example
    * ```ts
-   * // TODO: maybe use examples with helper function
-   * changes.add({ id: '1', type: 'select', selected: true });
-   * changes.add({ id: '1', type: 'position', position: { x: 0, y: 0 } });
+   * changes.add(selectionChange('1', true));
+   * changes.add(positionChnage('1', { x: 0, y: 0 }));
    * ```
    */
   add(change: ChangeType | ChangeType[]): void {
@@ -83,13 +77,11 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
 
     const changes = this.changeMap.get(change.id);
     if (!changes) {
-      // TODO: change not found, warn?
       return;
     }
 
     const index = changes.indexOf(change);
     if (index < 0) {
-      // TODO: change not found, warn?
       return;
     }
 
@@ -216,7 +208,6 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
    * const positionChanges = changes.getByType('position');
    * ```
    */
-  // TODO: support filtering for multiple types at once?
   getByType<T extends ChangeType['type']>(changeType: T): ChangeOfType<ChangeType, T>[] {
     if (this.changeTypes[changeType]) {
       // Optimized path for add changes
@@ -251,7 +242,7 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
 }
 
 /**
- * Tracks node changes for easy access and modification.
+ * Defines a batch of changes to be applied to nodes
  *
  * @example
  * ```ts
@@ -307,7 +298,7 @@ export class NodeChangeset<NodeType extends NodeBase = NodeBase> extends Changes
 }
 
 /**
- * Tracks edge changes for easy access and modification.
+ * Defines a batch of changes to be applied to the edges
  *
  * @example
  * ```ts
