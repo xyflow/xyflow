@@ -28,6 +28,9 @@ export function useNodeObserver({
   const prevType = useRef(nodeType);
   const isInitialized = hasDimensions && !!node.internals.handleBounds;
 
+  // A controlled update can clear handle bounds while the dimensions change
+  // is still being applied. isInitialized stays false in that case, so retry
+  // observation when the measured dimensions arrive, even with explicit sizes.
   useEffect(() => {
     if (nodeRef.current && !node.hidden && (!isInitialized || observedNode.current !== nodeRef.current)) {
       if (observedNode.current) {
@@ -36,7 +39,7 @@ export function useNodeObserver({
       resizeObserver?.observe(nodeRef.current);
       observedNode.current = nodeRef.current;
     }
-  }, [isInitialized, node.hidden]);
+  }, [isInitialized, node.hidden, node.measured.width, node.measured.height]);
 
   useEffect(() => {
     return () => {
