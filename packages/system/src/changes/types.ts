@@ -7,6 +7,7 @@ export type NodeChange<NodeType extends NodeBase = NodeBase> =
   | RemoveChange
   | AddChange<NodeType>
   | ReplaceChange<NodeType>
+  | UpdateChange<NodeType>
   | DataChange<NodeType['data']>;
 
 export type EdgeChange<EdgeType extends EdgeBase = EdgeBase> =
@@ -14,6 +15,7 @@ export type EdgeChange<EdgeType extends EdgeBase = EdgeBase> =
   | RemoveChange
   | AddChange<EdgeType>
   | ReplaceChange<EdgeType>
+  | UpdateChange<EdgeType>
   | DataChange<NonNullable<EdgeType['data']>>;
 
 // Narrow down change type based on the element type (Node -> NodeChange, Edge -> EdgeChange)
@@ -61,6 +63,12 @@ export type ReplaceChange<NodeOrEdge> = {
   id: string;
   item: NodeOrEdge;
   type: 'replace';
+};
+
+export type UpdateChange<NodeOrEdge> = {
+  id: string;
+  item: Partial<NodeOrEdge>;
+  type: 'update';
 };
 
 export type DataChange<Data = Record<string, unknown>> =

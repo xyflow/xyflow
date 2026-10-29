@@ -7,6 +7,7 @@ import type {
   RemoveChange,
   ReplaceChange,
   SelectionChange,
+  UpdateChange,
 } from './types';
 
 export function selectionChange(id: string, selected: boolean): SelectionChange {
@@ -53,6 +54,14 @@ export function replaceChange<T extends { id: string }>(item: T): ReplaceChange<
     id: item.id,
     item: item,
     type: 'replace',
+  };
+}
+
+export function updateChange<T extends { id: string }>(id: string, item: Partial<T>): UpdateChange<T> {
+  return {
+    id,
+    item,
+    type: 'update',
   };
 }
 

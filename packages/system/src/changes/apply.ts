@@ -106,6 +106,11 @@ function applyNodeChange<NodeType extends NodeBase = NodeBase>(node: NodeType, c
       break;
     }
 
+    case 'update': {
+      Object.assign(node, change.item);
+      break;
+    }
+
     case 'data': {
       node.data = change.replace ? change.data : { ...node.data, ...change.data };
       break;
@@ -120,6 +125,11 @@ export function applyEdgeChange<EdgeType extends EdgeBase = EdgeBase>(edge: Edge
   switch (change.type) {
     case 'select': {
       edge.selected = change.selected;
+      break;
+    }
+
+    case 'update': {
+      Object.assign(edge, change.item);
       break;
     }
 

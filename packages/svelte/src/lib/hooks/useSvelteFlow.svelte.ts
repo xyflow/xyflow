@@ -12,6 +12,8 @@ import {
   type Rect,
   getViewportForBounds,
   dataChange,
+  replaceChange,
+  updateChange,
   getElementsToRemove,
   rendererPointToPoint,
   evaluateAbsolutePosition,
@@ -358,11 +360,9 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
 
     store.queueNodeChanges([
-      {
-        id,
-        type: 'replace',
-        item: options?.replace && isNode<NodeType>(nextNode) ? nextNode : { ...node, ...nextNode }
-      }
+      options?.replace && isNode<NodeType>(nextNode)
+        ? replaceChange(nextNode)
+        : updateChange<NodeType>(id, nextNode)
     ]);
   }
 
@@ -380,11 +380,9 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
 
     store.queueEdgeChanges([
-      {
-        id,
-        type: 'replace',
-        item: options?.replace && isEdge<EdgeType>(nextEdge) ? nextEdge : { ...edge, ...nextEdge }
-      }
+      options?.replace && isEdge<EdgeType>(nextEdge)
+        ? replaceChange(nextEdge)
+        : updateChange<EdgeType>(id, nextEdge)
     ]);
   }
 
