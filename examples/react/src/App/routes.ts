@@ -1,5 +1,7 @@
+import A11y from '../examples/A11y';
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
+import BrokenNodes from '../examples/BrokenNodes';
 import ColorMode from '../examples/ColorMode';
 import ClickDistance from '../examples/ClickDistance';
 import ControlledUncontrolled from '../examples/ControlledUncontrolled';
@@ -7,6 +9,8 @@ import ControlledViewport from '../examples/ControlledViewport';
 import CustomConnectionLine from '../examples/CustomConnectionLine';
 import CustomMiniMapNode from '../examples/CustomMiniMapNode';
 import CustomNode from '../examples/CustomNode';
+import DefaultEdgeOverwrite from '../examples/DefaultEdgeOverwrite';
+import DefaultNodeOverwrite from '../examples/DefaultNodeOverwrite';
 import DefaultNodes from '../examples/DefaultNodes';
 import DragHandle from '../examples/DragHandle';
 import DragNDrop from '../examples/DragNDrop';
@@ -46,13 +50,20 @@ import CancelConnection from '../examples/CancelConnection';
 import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
+import EdgeToolbar from '../examples/EdgeToolbar';
 import UseConnection from '../examples/UseConnection';
 import UseNodesInitialized from '../examples/UseNodesInit';
 import UseNodesData from '../examples/UseNodesData';
-import UseHandleConnections from '../examples/UseHandleConnections';
+import UseNodeConnections from '../examples/UseNodeConnections';
 import AddNodeOnEdgeDrop from '../examples/AddNodeOnEdgeDrop';
 import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
+import MovingHandles from '../examples/MovingHandles';
+import DetachedHandle from '../examples/DetachedHandle';
+import ZIndexMode from '../examples/ZIndexMode';
+import Middlewares from '../examples/Middlewares';
+import NodeSelectionBug from '../examples/NodeSelectionBug';
+import Remount from '../examples/Remount';
 
 export interface IRoute {
   name: string;
@@ -67,6 +78,11 @@ const routes: IRoute[] = [
     component: AddNodeOnEdgeDrop,
   },
   {
+    name: 'A11y',
+    path: 'a11y',
+    component: A11y,
+  },
+  {
     name: 'Basic',
     path: 'basic',
     component: Basic,
@@ -75,6 +91,11 @@ const routes: IRoute[] = [
     name: 'Backgrounds',
     path: 'backgrounds',
     component: Backgrounds,
+  },
+  {
+    name: 'Broken Nodes',
+    path: 'broken-nodes',
+    component: BrokenNodes,
   },
   {
     name: 'Color Mode',
@@ -117,9 +138,24 @@ const routes: IRoute[] = [
     component: CustomNode,
   },
   {
+    name: 'Default Node Overwrite',
+    path: 'default-node-overwrite',
+    component: DefaultNodeOverwrite,
+  },
+  {
+    name: 'Default Edge Overwrite',
+    path: 'default-edge-overwrite',
+    component: DefaultEdgeOverwrite,
+  },
+  {
     name: 'Default Nodes',
     path: 'default-nodes',
     component: DefaultNodes,
+  },
+  {
+    name: 'DetachedHandle',
+    path: 'detached-handle',
+    component: DetachedHandle,
   },
   {
     name: 'DevTools',
@@ -162,6 +198,11 @@ const routes: IRoute[] = [
     component: EdgeRouting,
   },
   {
+    name: 'Edge Toolbar',
+    path: 'edge-toolbar',
+    component: EdgeToolbar,
+  },
+  {
     name: 'Empty',
     path: 'empty',
     component: Empty,
@@ -202,9 +243,19 @@ const routes: IRoute[] = [
     component: Layouting,
   },
   {
+    name: 'Middlewares',
+    path: 'middlewares',
+    component: Middlewares,
+  },
+  {
     name: 'Multi setNodes',
     path: 'multi-setnodes',
     component: MultiSetNodes,
+  },
+  {
+    name: 'Moving Handles',
+    path: 'moving-handles',
+    component: MovingHandles,
   },
   {
     name: 'Multi Flows',
@@ -240,6 +291,11 @@ const routes: IRoute[] = [
     name: 'Provider',
     path: 'provider',
     component: Provider,
+  },
+  {
+    name: 'Remount',
+    path: 'remount',
+    component: Remount,
   },
   {
     name: 'Save/Restore',
@@ -307,9 +363,9 @@ const routes: IRoute[] = [
     component: UseReactFlow,
   },
   {
-    name: 'useHandleConnections',
-    path: 'usehandleconnections',
-    component: UseHandleConnections,
+    name: 'useNodeConnections',
+    path: 'usenodeconnections',
+    component: UseNodeConnections,
   },
   {
     name: 'useNodesData',
@@ -335,6 +391,16 @@ const routes: IRoute[] = [
     name: 'useKeyPress',
     path: 'use-key-press',
     component: UseKeyPress,
+  },
+  {
+    name: 'zIndexMode',
+    path: 'z-index-mode',
+    component: ZIndexMode,
+  },
+  {
+    name: 'Node Selection Bug',
+    path: 'node-selection-bug',
+    component: NodeSelectionBug,
   },
 ];
 

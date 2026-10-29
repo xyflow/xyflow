@@ -1,76 +1,204 @@
 import {
-  NodeBase,
-  CoordinateExtent,
-  InternalNodeUpdate,
-  NodeOrigin,
-  PanZoomInstance,
-  Transform,
-  XYPosition,
-  ConnectionLookup,
-  EdgeBase,
-  EdgeLookup,
-  InternalNodeBase,
-  NodeLookup,
-  Rect,
-  NodeDimensionChange,
-  NodePositionChange,
-  ParentLookup,
+  dimensionChange,
+  DimensionChange,
+  type HandleConnection,
+  infiniteExtent,
+  positionChange,
+  PositionChange,
+  type ZIndexMode,
+} from '..';
+import {
+  type NodeBase,
+  type CoordinateExtent,
+  type HandleBounds,
+  type InternalNodeUpdate,
+  type NodeHandleBounds,
+  type NodeOrigin,
+  type PanZoomInstance,
+  type Transform,
+  type XYPosition,
+  type ConnectionLookup,
+  type EdgeBase,
+  type EdgeLookup,
+  type InternalNodeBase,
+  type NodeLookup,
+  type Rect,
+  type ParentLookup,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
-import { getBoundsOfRects, getNodeDimensions, isNumeric, nodeToRect } from './general';
+import {
+  clampPosition,
+  clampPositionToParent,
+  getBoundsOfRects,
+  getNodeDimensions,
+  isCoordinateExtent,
+  isNumeric,
+  nodeToRect,
+} from './general';
 import { getNodePositionWithOrigin } from './graph';
-import { ParentExpandChild } from './types';
+import { type ParentExpandChild } from './types';
+
+const SELECTED_NODE_Z = 1000;
+const ROOT_PARENT_Z_INCREMENT = 10;
 
 const defaultOptions = {
   nodeOrigin: [0, 0] as NodeOrigin,
+  nodeExtent: infiniteExtent,
   elevateNodesOnSelect: true,
+  zIndexMode: 'basic' as ZIndexMode,
   defaults: {},
 };
+
 const adoptUserNodesDefaultOptions = {
   ...defaultOptions,
   checkEquality: true,
 };
+
+function mergeObjects<T extends Record<string, unknown>>(base: T, incoming?: Partial<T>): T {
+  const result = { ...base };
+  for (const key in incoming) {
+    if (incoming[key] !== undefined) {
+      // typecast is safe here, because we check for undefined
+      result[key] = (incoming as T)[key]!;
+    }
+  }
+
+  return result;
+}
 
 export function updateAbsolutePositions<NodeType extends NodeBase>(
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
   options?: UpdateNodesOptions<NodeType>
 ) {
-  const _options = { ...defaultOptions, ...options };
+  const _options = mergeObjects(defaultOptions, options);
   for (const node of nodeLookup.values()) {
-    if (!node.parentId) {
-      continue;
+    if (node.parentId) {
+      updateChildNode(node, nodeLookup, parentLookup, _options);
+    } else {
+      const positionWithOrigin = getNodePositionWithOrigin(node, _options.nodeOrigin);
+      const extent = isCoordinateExtent(node.extent) ? node.extent : _options.nodeExtent;
+      const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(node));
+      node.internals.positionAbsolute = clampedPosition;
     }
-
-    updateChildPosition(node, nodeLookup, parentLookup, _options);
   }
+}
+
+function parseHandles(userNode: NodeBase, internalNode?: InternalNodeBase): NodeHandleBounds | undefined {
+  if (!userNode.handles) {
+    return !userNode.measured ? undefined : internalNode?.internals.handleBounds;
+  }
+
+  const source: HandleBounds[] = [];
+  const target: HandleBounds[] = [];
+
+  for (const handle of userNode.handles) {
+    const handleBounds = {
+      id: handle.id,
+      width: handle.width ?? 1,
+      height: handle.height ?? 1,
+      nodeId: userNode.id,
+      x: handle.x,
+      y: handle.y,
+      position: handle.position,
+      type: handle.type,
+    };
+    if (handle.type === 'source') {
+      source.push(handleBounds);
+    } else if (handle.type === 'target') {
+      target.push(handleBounds);
+    }
+  }
+
+  return {
+    source,
+    target,
+  };
 }
 
 type UpdateNodesOptions<NodeType extends NodeBase> = {
   nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
   elevateNodesOnSelect?: boolean;
   defaults?: Partial<NodeType>;
+  zIndexMode?: ZIndexMode;
   checkEquality?: boolean;
+};
+
+export function isManualZIndexMode(zIndexMode?: ZIndexMode): boolean {
+  return zIndexMode === 'manual';
+}
+
+type AdoptUserNodesReturn = {
+  nodesInitialized: boolean;
+  hasSelectedNodes: boolean;
+  updatedNodes: Set<string>;
+};
+
+type SubflowContext<NodeType extends NodeBase> = {
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>;
+  parentLookup: ParentLookup<InternalNodeBase<NodeType>>;
+  options: UpdateNodesOptions<NodeType>;
+  rootParentIndex: { i: number };
+  processedNodes: Set<string>;
+  deferredChildNodes: Map<string, InternalNodeBase<NodeType>[]>;
+  updateNode: (node: InternalNodeBase<NodeType>) => void;
 };
 
 export function adoptUserNodes<NodeType extends NodeBase>(
   nodes: readonly NodeType[],
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options?: UpdateNodesOptions<NodeType>
-) {
-  const _options = { ...adoptUserNodesDefaultOptions, ...options };
+  options: UpdateNodesOptions<NodeType> = {}
+): AdoptUserNodesReturn {
+  const _options = mergeObjects(adoptUserNodesDefaultOptions, options);
+  const rootParentIndex = { i: 0 };
   const tmpLookup = new Map(nodeLookup);
+  const hasSubflows = !!options.defaults?.parentId || nodes.some((node) => !!node.parentId);
+  const selectedNodeZ: number =
+    _options?.elevateNodesOnSelect && !isManualZIndexMode(_options.zIndexMode) ? SELECTED_NODE_Z : 0;
+  // We track the nodes that already have been processed (relevant for subflows)
+  const processedNodes = new Set<string>();
+  // Deferred child nodes are grouped by the parent id they are waiting for
+  const deferredChildNodes = new Map<string, InternalNodeBase<NodeType>[]>();
+  let nodesInitialized = nodes.length > 0;
+  let hasSelectedNodes = false;
+  const updatedNodes = new Set<string>();
+  function updateNode(node: InternalNodeBase<NodeType>) {
+    if (updatedNodes.has(node.id)) {
+      const internalNode = nodeLookup.get(node.id);
+      if (internalNode) {
+        Object.assign(internalNode, node);
+      }
+    } else {
+      updatedNodes.add(node.id);
+      nodeLookup.set(node.id, node);
+    }
+  }
+
   nodeLookup.clear();
   parentLookup.clear();
 
-  const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
+  const subflowContext = {
+    nodeLookup,
+    parentLookup,
+    options,
+    rootParentIndex,
+    processedNodes,
+    deferredChildNodes,
+    updateNode,
+  };
 
   for (const userNode of nodes) {
     let internalNode = tmpLookup.get(userNode.id);
+
     if (_options.checkEquality && userNode === internalNode?.internals.userNode) {
       nodeLookup.set(userNode.id, internalNode);
     } else {
+      const positionWithOrigin = getNodePositionWithOrigin(userNode, _options.nodeOrigin);
+      const extent = isCoordinateExtent(userNode.extent) ? userNode.extent : _options.nodeExtent;
+      const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(userNode));
+
       internalNode = {
         ..._options.defaults,
         ...userNode,
@@ -79,77 +207,234 @@ export function adoptUserNodes<NodeType extends NodeBase>(
           height: userNode.measured?.height,
         },
         internals: {
-          positionAbsolute: getNodePositionWithOrigin(userNode, _options.nodeOrigin),
-          handleBounds: internalNode?.internals.handleBounds,
-          z: calculateZ(userNode, selectedNodeZ),
+          positionAbsolute: clampedPosition,
+          // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
+          handleBounds: parseHandles(userNode, internalNode),
+          z: calculateZ(userNode, selectedNodeZ, _options.zIndexMode),
           userNode,
+          isParent: false,
         },
       };
-      nodeLookup.set(userNode.id, internalNode);
+
+      updateNode(internalNode);
     }
 
-    if (userNode.parentId) {
-      updateChildPosition(internalNode, nodeLookup, parentLookup, options);
+    if (
+      (internalNode.measured === undefined ||
+        internalNode.measured.width === undefined ||
+        internalNode.measured.height === undefined) &&
+      !internalNode.hidden
+    ) {
+      nodesInitialized = false;
     }
+
+    if (hasSubflows) {
+      resolveSubflowsForNode(internalNode, subflowContext);
+    }
+
+    hasSelectedNodes ||= userNode.selected ?? false;
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    // Any deferred child node which has not been processed yet is missing a parent node
+    for (const childNodes of deferredChildNodes.values()) {
+      childNodes.forEach((childNode) => {
+        console.warn(`Parent node with id "${childNode.parentId}" is missing for child node with id "${childNode.id}"`);
+      });
+    }
+  }
+
+  for (const id of tmpLookup.keys()) {
+    const node = nodeLookup.get(id);
+    if (!node) {
+      updatedNodes.add(id);
+    } else if (node.internals.isParent && !parentLookup.has(id)) {
+      // An unchanged parent can lose its last child without receiving a new user node.
+      updateNode({ ...node, internals: { ...node.internals, isParent: false } });
+    }
+  }
+
+  return { nodesInitialized, hasSelectedNodes, updatedNodes };
+}
+
+function resolveSubflowsForNode<NodeType extends NodeBase>(
+  node: InternalNodeBase<NodeType>,
+  context: SubflowContext<NodeType>
+) {
+  const { nodeLookup, parentLookup, options, rootParentIndex, processedNodes, deferredChildNodes, updateNode } =
+    context;
+
+  // The parent may appear later in the nodes array or may itself still be deferred.
+  if (node.parentId && !processedNodes.has(node.parentId)) {
+    const children = deferredChildNodes.get(node.parentId) ?? [];
+    children.push(node);
+    deferredChildNodes.set(node.parentId, children);
+    return;
+  }
+
+  if (node.parentId) {
+    updateChildNode(node, nodeLookup, parentLookup, options, rootParentIndex, updateNode);
+  }
+
+  processedNodes.add(node.id);
+
+  // Processing this node may unblock multiple generations of descendants.
+  const children = deferredChildNodes.get(node.id);
+  if (children) {
+    deferredChildNodes.delete(node.id);
+    children.forEach((child) => resolveSubflowsForNode(child, context));
   }
 }
 
-function updateChildPosition<NodeType extends NodeBase>(
+function updateParentLookup<NodeType extends NodeBase>(
   node: InternalNodeBase<NodeType>,
-  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
-  options?: UpdateNodesOptions<NodeType>
+  parentNode: InternalNodeBase<NodeType>,
+  updateNode: (node: InternalNodeBase<NodeType>) => void
 ) {
-  const _options = { ...defaultOptions, ...options };
-
-  const parentId = node.parentId!;
-  const parentNode = nodeLookup.get(parentId);
-  if (!parentNode) {
-    throw new Error(`Parent node ${parentId} not found`);
+  if (!node.parentId) {
+    return;
   }
 
-  // update the parentLookup
-  const childNodes = parentLookup.get(parentId);
+  const childNodes = parentLookup.get(node.parentId);
+
   if (childNodes) {
     childNodes.set(node.id, node);
   } else {
-    parentLookup.set(parentId, new Map([[node.id, node]]));
+    parentLookup.set(node.parentId, new Map([[node.id, node]]));
   }
 
-  const selectedNodeZ: number = options?.elevateNodesOnSelect ? 1000 : 0;
-
-  const { x, y, z } = calculateChildXYZ(node, parentNode, _options.nodeOrigin!, selectedNodeZ);
-
-  const currPosition = node.internals.positionAbsolute;
-  const positionChanged = x !== currPosition.x || y !== currPosition.y;
-
-  if (positionChanged || z !== node.internals.z) {
-    node.internals = {
-      ...node.internals,
-      positionAbsolute: positionChanged ? { x, y } : currPosition,
-      z,
-    };
+  if (!parentNode.internals.isParent) {
+    updateNode({
+      ...parentNode,
+      internals: {
+        ...parentNode.internals,
+        isParent: true,
+      },
+    });
   }
 }
 
-function calculateZ(node: NodeBase, selectedNodeZ: number) {
-  return (isNumeric(node.zIndex) ? node.zIndex : 0) + (node.selected ? selectedNodeZ : 0);
+/**
+ * Updates positionAbsolute and zIndex of a child node and the parentLookup.
+ */
+function updateChildNode<NodeType extends NodeBase>(
+  node: InternalNodeBase<NodeType>,
+  nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
+  parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
+  options: UpdateNodesOptions<NodeType>,
+  rootParentIndex?: { i: number },
+  updateNode: (node: InternalNodeBase<NodeType>) => void = (node) => {
+    nodeLookup.set(node.id, node);
+  }
+) {
+  const mergedOptions = mergeObjects(adoptUserNodesDefaultOptions, options);
+  const { zIndexMode } = mergedOptions;
+  const parentId = node.parentId!;
+  const parentNode = nodeLookup.get(parentId);
+
+  if (!parentNode) {
+    console.warn(`Parent node ${parentId} not found.`);
+    return;
+  }
+
+  // We just want to set the rootParentIndex for the first child
+  if (
+    rootParentIndex &&
+    !parentNode.parentId &&
+    parentNode.internals.rootParentIndex === undefined &&
+    zIndexMode === 'auto'
+  ) {
+    parentNode.internals.rootParentIndex = ++rootParentIndex.i;
+    parentNode.internals.z = parentNode.internals.z + rootParentIndex.i * ROOT_PARENT_Z_INCREMENT;
+  }
+
+  // But we need to update rootParentIndex.i also when parent has not been updated
+  if (rootParentIndex && parentNode.internals.rootParentIndex !== undefined) {
+    rootParentIndex.i = parentNode.internals.rootParentIndex;
+  }
+
+  const updatedNode = updateChildXYZ(node, parentNode, { nodeLookup, options: mergedOptions, updateNode });
+  updateParentLookup(updatedNode, parentLookup, parentNode, updateNode);
+}
+
+/**
+ * Updates positionAbsolute and zIndex of a child node and the parentLookup.
+ */
+function updateChildXYZ<NodeType extends NodeBase>(
+  node: InternalNodeBase<NodeType>,
+  parentNode: InternalNodeBase<NodeType>,
+  context: {
+    nodeLookup: NodeLookup<InternalNodeBase<NodeType>>;
+    options: Required<UpdateNodesOptions<NodeType>>;
+    updateNode: (node: InternalNodeBase<NodeType>) => void;
+  }
+) {
+  const { elevateNodesOnSelect, nodeOrigin, nodeExtent, zIndexMode } = context.options;
+
+  const selectedNodeZ = elevateNodesOnSelect && !isManualZIndexMode(zIndexMode) ? SELECTED_NODE_Z : 0;
+  const { x, y, z } = calculateChildXYZ(node, parentNode, nodeOrigin, nodeExtent, selectedNodeZ, zIndexMode);
+  const { positionAbsolute } = node.internals;
+  const positionChanged = x !== positionAbsolute.x || y !== positionAbsolute.y;
+
+  if (positionChanged || z !== node.internals.z) {
+    // we create a new object to mark the node as updated
+    const newNode = {
+      ...node,
+      internals: {
+        ...node.internals,
+        positionAbsolute: positionChanged ? { x, y } : positionAbsolute,
+        z,
+      },
+    };
+    context.updateNode(newNode);
+    return newNode;
+  }
+  return node;
+}
+
+function calculateZ(node: NodeBase, selectedNodeZ: number, zIndexMode: ZIndexMode): number {
+  const zIndex = isNumeric(node.zIndex) ? node.zIndex : 0;
+
+  if (isManualZIndexMode(zIndexMode)) {
+    return zIndex;
+  }
+
+  return zIndex + (node.selected ? selectedNodeZ : 0);
 }
 
 function calculateChildXYZ<NodeType extends NodeBase>(
   childNode: InternalNodeBase<NodeType>,
   parentNode: InternalNodeBase<NodeType>,
   nodeOrigin: NodeOrigin,
-  selectedNodeZ: number
+  nodeExtent: CoordinateExtent,
+  selectedNodeZ: number,
+  zIndexMode: ZIndexMode
 ) {
-  const position = getNodePositionWithOrigin(childNode, nodeOrigin);
-  const childZ = calculateZ(childNode, selectedNodeZ);
+  const { x: parentX, y: parentY } = parentNode.internals.positionAbsolute;
+  const childDimensions = getNodeDimensions(childNode);
+  const positionWithOrigin = getNodePositionWithOrigin(childNode, nodeOrigin);
+  const clampedPosition = isCoordinateExtent(childNode.extent)
+    ? clampPosition(positionWithOrigin, childNode.extent, childDimensions)
+    : positionWithOrigin;
+
+  let absolutePosition = clampPosition(
+    { x: parentX + clampedPosition.x, y: parentY + clampedPosition.y },
+    nodeExtent,
+    childDimensions
+  );
+
+  if (childNode.extent === 'parent') {
+    absolutePosition = clampPositionToParent(absolutePosition, childDimensions, parentNode);
+  }
+
+  const childZ = calculateZ(childNode, selectedNodeZ, zIndexMode);
   const parentZ = parentNode.internals.z ?? 0;
 
   return {
-    x: parentNode.internals.positionAbsolute.x + position.x,
-    y: parentNode.internals.positionAbsolute.y + position.y,
-    z: parentZ > childZ ? parentZ : childZ,
+    x: absolutePosition.x,
+    y: absolutePosition.y,
+    z: parentZ >= childZ ? parentZ + 1 : childZ,
   };
 }
 
@@ -158,8 +443,8 @@ export function handleExpandParent(
   nodeLookup: NodeLookup,
   parentLookup: ParentLookup,
   nodeOrigin: NodeOrigin = [0, 0]
-): (NodeDimensionChange | NodePositionChange)[] {
-  const changes: (NodeDimensionChange | NodePositionChange)[] = [];
+): (DimensionChange | PositionChange)[] {
+  const changes: (DimensionChange | PositionChange)[] = [];
   const parentExpansions = new Map<string, { expandedRect: Rect; parent: InternalNodeBase }>();
 
   // determine the expanded rectangle the child nodes would take for each parent
@@ -196,27 +481,25 @@ export function handleExpandParent(
 
       // We need to correct the position of the parent node if the origin is not [0,0]
       if (xChange > 0 || yChange > 0 || widthChange || heightChange) {
-        changes.push({
-          id: parentId,
-          type: 'position',
-          position: {
+        changes.push(
+          positionChange(parentId, {
             x: parent.position.x - xChange + widthChange,
             y: parent.position.y - yChange + heightChange,
-          },
-        });
+          })
+        );
 
-        // We move all child nodes in the oppsite direction
-        // so the x,y changes of the parent do not move the children
+        /*
+         * We move all child nodes in the oppsite direction
+         * so the x,y changes of the parent do not move the children
+         */
         parentLookup.get(parentId)?.forEach((childNode) => {
           if (!children.some((child) => child.id === childNode.id)) {
-            changes.push({
-              id: childNode.id,
-              type: 'position',
-              position: {
+            changes.push(
+              positionChange(childNode.id, {
                 x: childNode.position.x + xChange,
                 y: childNode.position.y + yChange,
-              },
-            });
+              })
+            );
           }
         });
       }
@@ -244,16 +527,23 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   nodeLookup: NodeLookup<NodeType>,
   parentLookup: ParentLookup<NodeType>,
   domNode: HTMLElement | null,
-  nodeOrigin?: NodeOrigin
-): { changes: (NodeDimensionChange | NodePositionChange)[]; updatedInternals: boolean } {
+  nodeOrigin?: NodeOrigin,
+  nodeExtent?: CoordinateExtent,
+  zIndexMode?: ZIndexMode
+): { changes: (DimensionChange | PositionChange)[]; updatedInternals: boolean; updatedNodes: Set<string> } {
+  const updatedNodes = new Set<string>();
+  const updateNode = (node: NodeType) => {
+    nodeLookup.set(node.id, node);
+    updatedNodes.add(node.id);
+  };
   const viewportNode = domNode?.querySelector('.xyflow__viewport');
   let updatedInternals = false;
 
   if (!viewportNode) {
-    return { changes: [], updatedInternals };
+    return { changes: [], updatedInternals, updatedNodes };
   }
 
-  const changes: (NodeDimensionChange | NodePositionChange)[] = [];
+  const changes: (DimensionChange | PositionChange)[] = [];
   const style = window.getComputedStyle(viewportNode);
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
   // in this array we collect nodes, that might trigger changes (like expanding parent)
@@ -266,52 +556,72 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
     }
 
     if (node.hidden) {
-      node.internals = {
-        ...node.internals,
-        handleBounds: undefined,
-      };
-      updatedInternals = true;
-    } else {
-      const dimensions = getDimensions(update.nodeElement);
-      const dimensionChanged = node.measured.width !== dimensions.width || node.measured.height !== dimensions.height;
-      const doUpdate = !!(
-        dimensions.width &&
-        dimensions.height &&
-        (dimensionChanged || !node.internals.handleBounds || update.force)
-      );
-
-      if (doUpdate) {
-        const nodeBounds = update.nodeElement.getBoundingClientRect();
-
-        node.measured = dimensions;
-        node.internals = {
+      updateNode({
+        ...node,
+        internals: {
           ...node.internals,
-          positionAbsolute: getNodePositionWithOrigin(node, nodeOrigin),
+          handleBounds: undefined,
+        },
+      });
+      updatedInternals = true;
+      continue;
+    }
+
+    const dimensions = getDimensions(update.nodeElement);
+    const dimensionChanged = node.measured.width !== dimensions.width || node.measured.height !== dimensions.height;
+    const doUpdate = !!(
+      dimensions.width &&
+      dimensions.height &&
+      (dimensionChanged || !node.internals.handleBounds || update.force)
+    );
+
+    if (doUpdate) {
+      const nodeBounds = update.nodeElement.getBoundingClientRect();
+      const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
+      let { positionAbsolute } = node.internals;
+
+      if (node.parentId && node.extent === 'parent') {
+        const parentNode = nodeLookup.get(node.parentId);
+        if (parentNode) {
+          positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, parentNode);
+        }
+      } else if (extent) {
+        positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
+      }
+
+      const newNode = {
+        ...node,
+        measured: dimensions,
+        internals: {
+          ...node.internals,
+          positionAbsolute,
           handleBounds: {
             source: getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id),
             target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
           },
-        };
-        if (node.parentId) {
-          updateChildPosition(node, nodeLookup, parentLookup, { nodeOrigin });
-        }
+        },
+      };
 
-        updatedInternals = true;
+      updateNode(newNode);
 
-        if (dimensionChanged) {
-          changes.push({
+      if (node.parentId) {
+        updateChildNode(newNode, nodeLookup, parentLookup, { nodeOrigin, zIndexMode }, undefined, (node) => {
+          nodeLookup.set(node.id, node as NodeType);
+          updatedNodes.add(node.id);
+        });
+      }
+
+      updatedInternals = true;
+
+      if (dimensionChanged) {
+        changes.push(dimensionChange(node.id, dimensions));
+
+        if (node.expandParent && node.parentId) {
+          parentExpandChildren.push({
             id: node.id,
-            type: 'dimensions',
-            dimensions,
+            parentId: node.parentId,
+            rect: nodeToRect(newNode, nodeOrigin),
           });
-
-          if (node.expandParent && node.parentId) {
-            parentExpandChildren.push({
-              id: node.id,
-              parentId: node.parentId,
-              rect: nodeToRect(node, nodeOrigin),
-            });
-          }
         }
       }
     }
@@ -322,7 +632,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
     changes.push(...parentExpandChanges);
   }
 
-  return { changes, updatedInternals };
+  return { changes, updatedInternals, updatedNodes };
 }
 
 export async function panBy({
@@ -341,7 +651,7 @@ export async function panBy({
   height: number;
 }): Promise<boolean> {
   if (!panZoom || (!delta.x && !delta.y)) {
-    return Promise.resolve(false);
+    return false;
   }
 
   const nextViewport = await panZoom.setViewportConstrained(
@@ -361,29 +671,145 @@ export async function panBy({
     !!nextViewport &&
     (nextViewport.x !== transform[0] || nextViewport.y !== transform[1] || nextViewport.k !== transform[2]);
 
-  return Promise.resolve(transformChanged);
+  return transformChanged;
+}
+
+/**
+ * this function adds the connection to the connectionLookup
+ * at the following keys: nodeId-type-handleId, nodeId-type and nodeId
+ * @param type type of the connection
+ * @param connection connection that should be added to the lookup
+ * @param connectionKey at which key the connection should be added
+ * @param connectionLookup reference to the connection lookup
+ * @param nodeId nodeId of the connection
+ * @param handleId handleId of the connection
+ */
+function addConnectionToLookup(
+  type: 'source' | 'target',
+  connection: HandleConnection,
+  connectionKey: string,
+  connectionLookup: ConnectionLookup,
+  nodeId: string,
+  handleId: string | null
+) {
+  /*
+   * We add the connection to the connectionLookup at the following keys
+   * 1. nodeId, 2. nodeId-type, 3. nodeId-type-handleId
+   * If the key already exists, we add the connection to the existing map
+   */
+  let key = nodeId;
+  let nodeMap = connectionLookup.get(key);
+  if (!nodeMap) {
+    nodeMap = new Map<string, HandleConnection>();
+    connectionLookup.set(key, nodeMap);
+  }
+  nodeMap.set(connectionKey, connection);
+
+  key = `${nodeId}-${type}`;
+  let typeMap = connectionLookup.get(key);
+  if (!typeMap) {
+    typeMap = new Map<string, HandleConnection>();
+    connectionLookup.set(key, typeMap);
+  }
+  typeMap.set(connectionKey, connection);
+
+  if (handleId) {
+    key = `${nodeId}-${type}-${handleId}`;
+    let handleMap = connectionLookup.get(key);
+    if (!handleMap) {
+      handleMap = new Map<string, HandleConnection>();
+      connectionLookup.set(key, handleMap);
+    }
+    handleMap.set(connectionKey, connection);
+  }
+}
+
+function removeConnectionFromLookup(
+  type: 'source' | 'target',
+  connectionKey: string,
+  connectionLookup: ConnectionLookup,
+  nodeId: string,
+  handleId: string | null
+) {
+  const keys = [nodeId, `${nodeId}-${type}`];
+
+  if (handleId) {
+    keys.push(`${nodeId}-${type}-${handleId}`);
+  }
+
+  for (const key of keys) {
+    const map = connectionLookup.get(key);
+
+    if (!map) {
+      continue;
+    }
+
+    map.delete(connectionKey);
+
+    if (map.size === 0) {
+      connectionLookup.delete(key);
+    }
+  }
+}
+
+function syncEdgeConnections(connectionLookup: ConnectionLookup, edge: EdgeBase, action: 'add' | 'remove') {
+  const { source: sourceNode, target: targetNode, sourceHandle = null, targetHandle = null } = edge;
+  const connection = { edgeId: edge.id, source: sourceNode, target: targetNode, sourceHandle, targetHandle };
+  const sourceKey = `${sourceNode}-${sourceHandle}--${targetNode}-${targetHandle}`;
+  const targetKey = `${targetNode}-${targetHandle}--${sourceNode}-${sourceHandle}`;
+
+  if (action === 'add') {
+    addConnectionToLookup('source', connection, targetKey, connectionLookup, sourceNode, sourceHandle);
+    addConnectionToLookup('target', connection, sourceKey, connectionLookup, targetNode, targetHandle);
+  } else {
+    removeConnectionFromLookup('source', targetKey, connectionLookup, sourceNode, sourceHandle);
+    removeConnectionFromLookup('target', sourceKey, connectionLookup, targetNode, targetHandle);
+  }
 }
 
 export function updateConnectionLookup(
   connectionLookup: ConnectionLookup,
   edgeLookup: EdgeLookup,
   edges: readonly EdgeBase[]
-) {
-  connectionLookup.clear();
+): { updatedEdges: Set<string> } {
+  const tmpLookup = new Map(edgeLookup);
+  const updatedEdges = new Set<string>();
+
   edgeLookup.clear();
 
   for (const edge of edges) {
-    const { source, target, sourceHandle = null, targetHandle = null } = edge;
+    const existing = tmpLookup.get(edge.id);
 
-    const sourceKey = `${source}-source-${sourceHandle}`;
-    const targetKey = `${target}-target-${targetHandle}`;
+    if (existing === edge) {
+      edgeLookup.set(edge.id, edge);
+      continue;
+    }
 
-    const prevSource = connectionLookup.get(sourceKey) || new Map();
-    const prevTarget = connectionLookup.get(targetKey) || new Map();
-    const connection = { edgeId: edge.id, source, target, sourceHandle, targetHandle };
+    // Data, selection and style changes should not affect the connection lookup
+    if (
+      !existing ||
+      existing.source !== edge.source ||
+      existing.target !== edge.target ||
+      // we use != because handles can be null or undefined
+      existing.sourceHandle != edge.sourceHandle ||
+      existing.targetHandle != edge.targetHandle
+    ) {
+      if (existing) {
+        syncEdgeConnections(connectionLookup, existing, 'remove');
+      }
+      syncEdgeConnections(connectionLookup, edge, 'add');
+    }
 
     edgeLookup.set(edge.id, edge);
-    connectionLookup.set(sourceKey, prevSource.set(`${target}-${targetHandle}`, connection));
-    connectionLookup.set(targetKey, prevTarget.set(`${source}-${sourceHandle}`, connection));
+    updatedEdges.add(edge.id);
   }
+
+  for (const edge of tmpLookup.values()) {
+    if (!edgeLookup.has(edge.id)) {
+      syncEdgeConnections(connectionLookup, edge, 'remove');
+      updatedEdges.add(edge.id);
+    }
+  }
+
+  return { updatedEdges };
 }

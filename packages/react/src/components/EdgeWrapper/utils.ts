@@ -22,4 +22,5 @@ export const nullPosition = {
   targetY: null,
   sourcePosition: null,
   targetPosition: null,
+  zIndex: undefined,
 };

@@ -7,7 +7,7 @@ test.describe('Edges', () => {
     // Go to the starting url before each test.
     await page.goto('/tests/generic/edges/general');
 
-    // Timeout get's ignored and tests timeout after 200ms ???
+    // Timeout gets ignored and tests timeout after 200ms ???
     // page.waitForSelector('[data-id="edge-with-class"]', { timeout: 5000 });
   });
 
@@ -92,7 +92,7 @@ test.describe('Edges', () => {
       await edge.click();
       await expect(edge).toHaveClass(/selected/);
 
-      await page.keyboard.press('Backspace');
+      await page.keyboard.press('d');
 
       await expect(edge).not.toBeAttached();
     });
@@ -112,10 +112,9 @@ test.describe('Edges', () => {
       await page.mouse.down();
       await page.mouse.up();
 
-      // TODO: times out on webkit
       await expect(edge).toHaveClass(/selected/);
 
-      await page.keyboard.press('Backspace');
+      await page.keyboard.press('d');
       await expect(edge).toBeAttached();
     });
 
@@ -139,12 +138,10 @@ test.describe('Edges', () => {
 
       const edgeBox = await edge.boundingBox();
 
-      //FIXME: Negative values are not working. Investigate further
       await page.mouse.move(edgeBox!.x + edgeBox!.width * 0.5 + 21, edgeBox!.y + edgeBox!.height * 0.5);
       await page.mouse.down();
       await page.mouse.up();
 
-      // TODO: times out on webkit
       await expect(edge).toHaveClass(/selected/);
     });
 
@@ -156,5 +153,48 @@ test.describe('Edges', () => {
       await expect(edge).toHaveAttribute('marker-start', "url('#1__type=arrowclosed')");
       await expect(edge).toHaveAttribute('marker-end', "url('#1__type=arrow')");
     });
+
+    test('z-index', async ({ page }) => {
+      const svg = page.locator('svg', { has: page.locator('[data-id="edge-with-class"]') });
+
+      await expect(svg).toBeAttached();
+      await expect(svg).toHaveCSS('z-index', '0');
+    });
+
+    test('sub flow: normal node to child node, z-index', async ({ page }) => {
+      const svg = page.locator('svg', { has: page.locator('[data-id="subflow-edge"]') });
+
+      await expect(svg).toBeAttached();
+      await expect(svg).toHaveCSS('z-index', '1');
+    });
+
+    test('sub flow: child node to child node, z-index', async ({ page }) => {
+      const svg = page.locator('svg', { has: page.locator('[data-id="subflow-edge-2"]') });
+
+      await expect(svg).toBeAttached();
+      await expect(svg).toHaveCSS('z-index', '1');
+    });
+  });
+});
+
+test.describe('elevate edges on select for overlapping reconnect anchors', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/tests/generic/edges/reconnect');
+  });
+
+  test('selected edge gets elevated z-index above non-selected overlapping edge', async ({ page }) => {
+    const edge1 = page.locator('[data-id="reconnect-1"]');
+
+    await edge1.click();
+    await expect(edge1).toHaveClass(/selected/);
+
+    const svg1 = page.locator('svg', { has: page.locator('[data-id="reconnect-1"]') });
+    const svg2 = page.locator('svg', { has: page.locator('[data-id="reconnect-2"]') });
+
+    await expect(svg1).toHaveCSS('z-index', '1000');
+    await expect(svg2).toHaveCSS('z-index', '0');
+    const z1 = await svg1.evaluate((el) => parseInt(getComputedStyle(el).zIndex, 10));
+    const z2 = await svg2.evaluate((el) => parseInt(getComputedStyle(el).zIndex, 10));
+    expect(z1).toBeGreaterThan(z2);
   });
 });

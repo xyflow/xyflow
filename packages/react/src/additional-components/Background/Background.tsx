@@ -1,20 +1,16 @@
-import { CSSProperties, memo, useRef } from 'react';
+import { memo, CSSProperties, useRef } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 
-import { useStore } from '../../hooks/useStore';
+import { useOptionsStore, useViewportStore } from '../../hooks/useReactFlowStore';
 import { DotPattern, LinePattern } from './Patterns';
 import { containerStyle } from '../../styles/utils';
 import { type BackgroundProps, BackgroundVariant } from './types';
-import { type ReactFlowState } from '../../types';
 
 const defaultSize = {
   [BackgroundVariant.Dots]: 1,
   [BackgroundVariant.Lines]: 1,
   [BackgroundVariant.Cross]: 6,
 };
-
-const selector = (s: ReactFlowState) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` });
 
 function BackgroundComponent({
   id,
@@ -24,7 +20,7 @@ function BackgroundComponent({
   // only used for lines and cross
   size,
   lineWidth = 1,
-  offset = 2,
+  offset = 0,
   color,
   bgColor,
   style,
@@ -32,19 +28,24 @@ function BackgroundComponent({
   patternClassName,
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const { transform, patternId } = useStore(selector, shallow);
+
+  const rfId = useOptionsStore((s) => s.rfId);
+  const patternId = `pattern-${rfId}`;
+  const transform = useViewportStore((s) => s.transform);
+
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
   const gapXY: [number, number] = Array.isArray(gap) ? gap : [gap, gap];
   const scaledGap: [number, number] = [gapXY[0] * transform[2] || 1, gapXY[1] * transform[2] || 1];
   const scaledSize = patternSize * transform[2];
+  const offsetXY: [number, number] = Array.isArray(offset) ? offset : [offset, offset];
 
   const patternDimensions: [number, number] = isCross ? [scaledSize, scaledSize] : scaledGap;
-
-  const patternOffset = isDots
-    ? [scaledSize / offset, scaledSize / offset]
-    : [patternDimensions[0] / offset, patternDimensions[1] / offset];
+  const scaledOffset: [number, number] = [
+    offsetXY[0] * transform[2] + patternDimensions[0] / 2,
+    offsetXY[1] * transform[2] + patternDimensions[1] / 2,
+  ];
 
   const _patternId = `${patternId}${id ? id : ''}`;
 
@@ -69,10 +70,10 @@ function BackgroundComponent({
         width={scaledGap[0]}
         height={scaledGap[1]}
         patternUnits="userSpaceOnUse"
-        patternTransform={`translate(-${patternOffset[0]},-${patternOffset[1]})`}
+        patternTransform={`translate(-${scaledOffset[0]},-${scaledOffset[1]})`}
       >
         {isDots ? (
-          <DotPattern radius={scaledSize / offset} className={patternClassName} />
+          <DotPattern radius={scaledSize / 2} className={patternClassName} />
         ) : (
           <LinePattern
             dimensions={patternDimensions}
@@ -89,4 +90,57 @@ function BackgroundComponent({
 
 BackgroundComponent.displayName = 'Background';
 
+/**
+ * The `<Background />` component makes it convenient to render different types of backgrounds common in node-based UIs. It comes with three variants: lines, dots and cross.
+ *
+ * @example
+ *
+ * A simple example of how to use the Background component.
+ *
+ * ```tsx
+ * import { useState } from 'react';
+ * import { ReactFlow, Background, BackgroundVariant } from '@xyflow/react';
+ *
+ * export default function Flow() {
+ *   return (
+ *     <ReactFlow defaultNodes={[...]} defaultEdges={[...]}>
+ *       <Background color="#ccc" variant={BackgroundVariant.Dots} />
+ *     </ReactFlow>
+ *   );
+ * }
+ * ```
+ *
+ * @example
+ *
+ * In this example you can see how to combine multiple backgrounds
+ *
+ * ```tsx
+ * import { ReactFlow, Background, BackgroundVariant } from '@xyflow/react';
+ * import '@xyflow/react/style.css';
+ *
+ * export default function Flow() {
+ *   return (
+ *     <ReactFlow defaultNodes={[...]} defaultEdges={[...]}>
+ *       <Background
+ *         id="1"
+ *         gap={10}
+ *         color="#f1f1f1"
+ *         variant={BackgroundVariant.Lines}
+ *       />
+ *       <Background
+ *         id="2"
+ *         gap={100}
+ *         color="#ccc"
+ *         variant={BackgroundVariant.Lines}
+ *       />
+ *     </ReactFlow>
+ *   );
+ * }
+ * ```
+ *
+ * @remarks
+ *
+ * When combining multiple <Background /> components it’s important to give each of them a unique id prop!
+ *
+ */
 export const Background = memo(BackgroundComponent);

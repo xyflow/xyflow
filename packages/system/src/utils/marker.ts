@@ -26,7 +26,7 @@ export function createMarkerIds(
     defaultMarkerEnd,
   }: {
     id?: string | null;
-    defaultColor?: string;
+    defaultColor?: string | null;
     defaultMarkerStart?: EdgeMarkerType;
     defaultMarkerEnd?: EdgeMarkerType;
   }

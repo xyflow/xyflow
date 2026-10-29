@@ -9,18 +9,24 @@ import {
   Panel,
   Node,
   Edge,
+  CoordinateExtent,
+  NodeOrigin,
 } from '@xyflow/react';
 
 import DefaultResizer from './DefaultResizer';
 import CustomResizer from './CustomResizer';
 import VerticalResizer from './VerticalResizer';
 import HorizontalResizer from './HorizontalResizer';
+import BottomRightResizer from './BottomRightResizer';
+import FixedExtentNode from './FixedExtentNode';
 
 const nodeTypes = {
   defaultResizer: DefaultResizer,
   customResizer: CustomResizer,
   verticalResizer: VerticalResizer,
   horizontalResizer: HorizontalResizer,
+  bottomRightResizer: BottomRightResizer,
+  fixedExtent: FixedExtentNode,
 };
 
 const nodeStyle = {
@@ -29,9 +35,14 @@ const nodeStyle = {
   backgroundColor: '#ddd',
 };
 
+const extent: CoordinateExtent = [
+  [500, 350],
+  [700, 450],
+];
+
 const initialEdges: Edge[] = [];
 
-const initialNodes: Node[] = [
+const initialNodes = [
   {
     id: '1',
     type: 'defaultResizer',
@@ -158,7 +169,7 @@ const initialNodes: Node[] = [
   {
     id: '5c',
     type: 'defaultResizer',
-    data: { label: 'Child with expandParent & keepAspectRatio' },
+    data: { label: 'Child with expandParent & keepAspectRatio', keepAspectRatio: true },
     position: { x: 250, y: 200 },
     height: 100,
     width: 100,
@@ -166,11 +177,25 @@ const initialNodes: Node[] = [
     expandParent: true,
     style: { ...nodeStyle },
   },
-];
+  {
+    id: '6',
+    type: 'bottomRightResizer',
+    data: { label: 'Bottom Right with horizontal direction' },
+    position: { x: 500, y: 500 },
+    style: { ...nodeStyle },
+  },
+  {
+    id: '7',
+    type: 'fixedExtent',
+    data: { label: 'Fixed Extent', extent },
+    position: { x: 500, y: 350 },
+    extent,
+  },
+].reverse();
 
 const CustomNodeFlow = () => {
   const [snapToGrid, setSnapToGrid] = useState(false);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(

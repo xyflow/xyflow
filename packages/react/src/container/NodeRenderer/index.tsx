@@ -1,13 +1,12 @@
 import { memo } from 'react';
-import { shallow } from 'zustand/shallow';
 
 import { useVisibleNodeIds } from '../../hooks/useVisibleNodeIds';
-import { useStore } from '../../hooks/useStore';
+import { useOptionsStore } from '../../hooks/useReactFlowStore';
 import { containerStyle } from '../../styles/utils';
 import { GraphViewProps } from '../GraphView';
 import { useResizeObserver } from './useResizeObserver';
-import { NodeWrapper } from '../../components/NodeWrapper';
-import type { Node, ReactFlowState } from '../../types';
+import NodeWrapper from '../../components/NodeWrapper';
+import type { Node } from '../../types';
 
 export type NodeRendererProps<NodeType extends Node> = Pick<
   GraphViewProps<NodeType>,
@@ -25,18 +24,15 @@ export type NodeRendererProps<NodeType extends Node> = Pick<
   | 'nodeExtent'
   | 'nodeTypes'
   | 'nodeClickDistance'
+  | 'nodesDraggable'
 >;
 
-const selector = (s: ReactFlowState) => ({
-  nodesDraggable: s.nodesDraggable,
-  nodesConnectable: s.nodesConnectable,
-  nodesFocusable: s.nodesFocusable,
-  elementsSelectable: s.elementsSelectable,
-  onError: s.onError,
-});
-
 function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<NodeType>) {
-  const { nodesDraggable, nodesConnectable, nodesFocusable, elementsSelectable, onError } = useStore(selector, shallow);
+  const nodesConnectable = useOptionsStore((s) => s.nodesConnectable);
+  const nodesFocusable = useOptionsStore((s) => s.nodesFocusable);
+  const elementsSelectable = useOptionsStore((s) => s.elementsSelectable);
+  const onError = useOptionsStore((s) => s.onError);
+
   const nodeIds = useVisibleNodeIds(props.onlyRenderVisibleElements);
   const resizeObserver = useResizeObserver();
 
@@ -44,29 +40,31 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
     <div className="react-flow__nodes" style={containerStyle}>
       {nodeIds.map((nodeId) => {
         return (
-          // The split of responsibilities between NodeRenderer and
-          // NodeComponentWrapper may appear weird. However, it’s designed to
-          // minimize the cost of updates when individual nodes change.
-          //
-          // For example, when you’re dragging a single node, that node gets
-          // updated multiple times per second. If `NodeRenderer` were to update
-          // every time, it would have to re-run the `nodes.map()` loop every
-          // time. This gets pricey with hundreds of nodes, especially if every
-          // loop cycle does more than just rendering a JSX element!
-          //
-          // As a result of this choice, we took the following implementation
-          // decisions:
-          // - NodeRenderer subscribes *only* to node IDs – and therefore
-          //   rerender *only* when visible nodes are added or removed.
-          // - NodeRenderer performs all operations the result of which can be
-          //   shared between nodes (such as creating the `ResizeObserver`
-          //   instance, or subscribing to `selector`). This means extra prop
-          //   drilling into `NodeComponentWrapper`, but it means we need to run
-          //   these operations only once – instead of once per node.
-          // - Any operations that you’d normally write inside `nodes.map` are
-          //   moved into `NodeComponentWrapper`. This ensures they are
-          //   memorized – so if `NodeRenderer` *has* to rerender, it only
-          //   needs to regenerate the list of nodes, nothing else.
+          /*
+           * The split of responsibilities between NodeRenderer and
+           * NodeComponentWrapper may appear weird. However, it’s designed to
+           * minimize the cost of updates when individual nodes change.
+           *
+           * For example, when you’re dragging a single node, that node gets
+           * updated multiple times per second. If `NodeRenderer` were to update
+           * every time, it would have to re-run the `nodes.map()` loop every
+           * time. This gets pricey with hundreds of nodes, especially if every
+           * loop cycle does more than just rendering a JSX element!
+           *
+           * As a result of this choice, we took the following implementation
+           * decisions:
+           * - NodeRenderer subscribes *only* to node IDs – and therefore
+           *   rerender *only* when visible nodes are added or removed.
+           * - NodeRenderer performs all operations the result of which can be
+           *   shared between nodes (such as creating the `ResizeObserver`
+           *   instance, or subscribing to store settings). This means extra prop
+           *   drilling into `NodeComponentWrapper`, but it means we need to run
+           *   these operations only once – instead of once per node.
+           * - Any operations that you’d normally write inside `nodes.map` are
+           *   moved into `NodeComponentWrapper`. This ensures they are
+           *   memorized – so if `NodeRenderer` *has* to rerender, it only
+           *   needs to regenerate the list of nodes, nothing else.
+           */
           <NodeWrapper<NodeType>
             key={nodeId}
             id={nodeId}
@@ -83,7 +81,7 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
             rfId={props.rfId}
             disableKeyboardA11y={props.disableKeyboardA11y}
             resizeObserver={resizeObserver}
-            nodesDraggable={nodesDraggable}
+            nodesDraggable={props.nodesDraggable ?? true}
             nodesConnectable={nodesConnectable}
             nodesFocusable={nodesFocusable}
             elementsSelectable={elementsSelectable}

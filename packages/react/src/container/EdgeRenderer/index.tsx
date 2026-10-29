@@ -1,12 +1,11 @@
 import { memo, ReactNode } from 'react';
-import { shallow } from 'zustand/shallow';
 
-import { useStore } from '../../hooks/useStore';
+import { useOptionsStore } from '../../hooks/useReactFlowStore';
 import { useVisibleEdgeIds } from '../../hooks/useVisibleEdgeIds';
 import MarkerDefinitions from './MarkerDefinitions';
 import { GraphViewProps } from '../GraphView';
-import { EdgeWrapper } from '../../components/EdgeWrapper';
-import type { Edge, ReactFlowState, Node } from '../../types';
+import EdgeWrapper from '../../components/EdgeWrapper';
+import type { Edge, Node } from '../../types';
 
 type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
   GraphViewProps<Node, EdgeType>,
@@ -30,16 +29,6 @@ type EdgeRendererProps<EdgeType extends Edge = Edge> = Pick<
   children?: ReactNode;
 };
 
-const selector = (s: ReactFlowState) => ({
-  width: s.width,
-  height: s.height,
-  edgesFocusable: s.edgesFocusable,
-  edgesReconnectable: s.edgesReconnectable,
-  elementsSelectable: s.elementsSelectable,
-  connectionMode: s.connectionMode,
-  onError: s.onError,
-});
-
 function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   defaultMarkerColor,
   onlyRenderVisibleElements,
@@ -58,12 +47,20 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
   onReconnectEnd,
   disableKeyboardA11y,
 }: EdgeRendererProps<EdgeType>) {
-  const { edgesFocusable, edgesReconnectable, elementsSelectable, onError } = useStore(selector, shallow);
+  const edgesFocusable = useOptionsStore((s) => s.edgesFocusable);
+  const edgesReconnectable = useOptionsStore((s) => s.edgesReconnectable);
+  const elementsSelectable = useOptionsStore((s) => s.elementsSelectable);
+  const onError = useOptionsStore((s) => s.onError);
+  const connectionMode = useOptionsStore((s) => s.connectionMode);
+  const elevateEdgesOnSelect = useOptionsStore((s) => s.elevateEdgesOnSelect);
+  const zIndexMode = useOptionsStore((s) => s.zIndexMode);
+  const defaultEdgeOptions = useOptionsStore((s) => s.defaultEdgeOptions);
+
   const edgeIds = useVisibleEdgeIds(onlyRenderVisibleElements);
 
   return (
     <div className="react-flow__edges">
-      <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} />
+      <MarkerDefinitions defaultColor={defaultMarkerColor} rfId={rfId} onError={onError} />
 
       {edgeIds.map((id) => {
         return (
@@ -88,6 +85,10 @@ function EdgeRendererComponent<EdgeType extends Edge = Edge>({
             onError={onError}
             edgeTypes={edgeTypes}
             disableKeyboardA11y={disableKeyboardA11y}
+            connectionMode={connectionMode}
+            elevateEdgesOnSelect={elevateEdgesOnSelect}
+            zIndexMode={zIndexMode}
+            defaultEdgeOptions={defaultEdgeOptions}
           />
         );
       })}

@@ -30,7 +30,7 @@ function ColorSelectorNode({ data, isConnectable }: NodeProps<ColorSelectorNode>
       <div>
         Custom Color Picker Node: <strong>{data.color}</strong>
       </div>
-      <input className="nodrag" type="color" onChange={data.onChange} defaultValue={data.color} />
+      <input className="nodrag nokey" type="color" onChange={data.onChange} defaultValue={data.color} />
       <Handle
         type="source"
         position={Position.Right}

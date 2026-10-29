@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
 	import {
 		SvelteFlow,
 		Controls,
@@ -8,20 +7,15 @@
 		SelectionMode
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
-
-	const onPaneContextMenu = (e: any) => {
-		e.preventDefault();
-		console.log('context menu');
-	};
+	import '@xyflow/svelte/style.css';
 
 	const panOnDrag = [1, 2];
 
-	const onMoveStart = (e: any) => console.log('move start', e);
-	const onMove = (e: any) => console.log('move', e);
-	const onMoveEnd = (e: any) => console.log('move end', e);
+	const onmovestart = (e: any) => console.log('move start', e);
+	const onmove = (e: any) => console.log('move', e);
+	const onmoveend = (e: any) => console.log('move end', e);
 
-	const nodes = writable([
+	let nodes = $state.raw([
 		{
 			id: '1',
 			type: 'input',
@@ -34,23 +28,28 @@
 		{ id: '4', data: { label: 'Node 4' }, position: { x: 400, y: 200 }, className: 'light' }
 	]);
 
-	const edges = writable([
+	let edges = $state.raw([
 		{ id: 'e1-2', source: '1', target: '2', animated: true },
 		{ id: 'e1-3', source: '1', target: '3' }
 	]);
 </script>
 
 <SvelteFlow
-	{nodes}
-	{edges}
+	bind:nodes
+	bind:edges
 	fitView
 	selectionMode={SelectionMode.Partial}
+	multiSelectionKey={['Meta', 'Shift']}
 	selectionOnDrag
 	panOnScroll
+	paneClickDistance={100}
 	{panOnDrag}
-	{onMoveStart}
-	{onMove}
-	{onMoveEnd}
+	{onmovestart}
+	{onmove}
+	{onmoveend}
+	onpaneclick={(e) => console.log('on pane click', e)}
+	onselectionend={(e) => console.log('on selection end', e)}
+	onselectionstart={(e) => console.log('on selection start', e)}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

@@ -1,15 +1,8 @@
-import { getContext, setContext } from 'svelte';
-import { derived, get, writable } from 'svelte/store';
 import {
-  createMarkerIds,
-  fitView as fitViewSystem,
-  getElementsToRemove,
   panBy as panBySystem,
   updateNodeInternals as updateNodeInternalsSystem,
-  addEdge as addEdgeUtil,
   initialConnection,
   errorMessages,
-  pointToRendererPoint,
   type UpdateNodePositions,
   type InternalNodeUpdate,
   type ViewportHelperFunctionOptions,
@@ -18,191 +11,157 @@ import {
   type CoordinateExtent,
   type UpdateConnection,
   type ConnectionState,
-  type NodeOrigin,
-  getFitViewNodes
+  snapPosition,
+  calculateNodePosition,
+  type SetCenterOptions,
+  getHandlePosition,
+  Position,
+  type NodeChange,
+  addChange,
+  selectionChange,
+  getDeselectionChanges,
+  getSelectionChanges
 } from '@xyflow/system';
 
-import type { EdgeTypes, NodeTypes, Node, Edge, FitViewOptions } from '$lib/types';
-import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store';
-import type { SvelteFlowStore } from './types';
-import { syncNodeStores, syncEdgeStores, syncViewportStores } from './utils';
-import { getVisibleEdges } from './visible-edges';
-import { getVisibleNodes } from './visible-nodes';
+import type {
+  EdgeTypes,
+  NodeTypes,
+  Node,
+  Edge,
+  FitViewOptions,
+  InternalNode
+} from '#lib/types/index.js';
+import { addEdge as addEdgeUtil } from '#lib/utils/edges.js';
+import { initialEdgeTypes, initialNodeTypes, getInitialStore } from './initial-store.svelte.js';
+import { type StoreSignals, type SvelteFlowStore, type SvelteFlowStoreActions } from './types.js';
 
 export const key = Symbol();
 
-export function createStore({
-  nodes,
-  edges,
-  width,
-  height,
-  fitView: fitViewOnCreate,
-  nodeOrigin
-}: {
-  nodes?: readonly Node[];
-  edges?: readonly Edge[];
-  width?: number;
-  height?: number;
-  fitView?: boolean;
-  nodeOrigin?: NodeOrigin;
-}): SvelteFlowStore {
-  const store = getInitialStore({
-    nodes,
-    edges,
-    width,
-    height,
-    fitView: fitViewOnCreate,
-    nodeOrigin
-  });
+export { useSvelteFlowStore } from '../hooks/useSvelteFlowStore.js';
+
+export function createStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
+  signals: StoreSignals<NodeType, EdgeType>
+): SvelteFlowStore<NodeType, EdgeType> {
+  const store = getInitialStore<NodeType, EdgeType>(signals);
 
   function setNodeTypes(nodeTypes: NodeTypes) {
-    store.nodeTypes.set({
+    store.nodeTypes = {
       ...initialNodeTypes,
       ...nodeTypes
-    });
+    };
   }
 
   function setEdgeTypes(edgeTypes: EdgeTypes) {
-    store.edgeTypes.set({
+    store.edgeTypes = {
       ...initialEdgeTypes,
       ...edgeTypes
-    });
+    };
   }
 
-  function addEdge(edgeParams: Edge | Connection) {
-    const edges = get(store.edges);
-    store.edges.set(addEdgeUtil(edgeParams, edges));
+  function addEdge(edgeParams: EdgeType | Connection) {
+    const nextEdges = addEdgeUtil(edgeParams, store.edges, { onError: store.onerror });
+    const newEdge = nextEdges[nextEdges.length - 1];
+
+    if (nextEdges.length === store.edges.length || !newEdge) {
+      return;
+    }
+
+    store.queueEdgeChanges([addChange(newEdge)]);
   }
 
   const updateNodePositions: UpdateNodePositions = (nodeDragItems, dragging = false) => {
-    const nodeLookup = get(store.nodeLookup);
+    const changes: NodeChange<NodeType>[] = [];
 
     for (const [id, dragItem] of nodeDragItems) {
-      const node = nodeLookup.get(id)?.internals.userNode;
-
-      if (!node) {
-        continue;
+      if (store.connection.inProgress && store.connection.fromNode.id === id) {
+        const internalNode = store.nodeLookup.get(id);
+        if (internalNode) {
+          store.connection = {
+            ...store.connection,
+            from: getHandlePosition(internalNode, store.connection.fromHandle, Position.Left, true)
+          };
+        }
       }
 
-      node.position = dragItem.position;
-      node.dragging = dragging;
+      changes.push({
+        id,
+        type: 'position',
+        position: dragItem.position,
+        dragging
+      });
     }
 
-    store.nodes.update((nds) => nds);
+    store.queueNodeChanges(changes);
   };
 
   function updateNodeInternals(updates: Map<string, InternalNodeUpdate>) {
-    const nodeLookup = get(store.nodeLookup);
     const { changes, updatedInternals } = updateNodeInternalsSystem(
       updates,
-      nodeLookup,
-      get(store.parentLookup),
-      get(store.domNode),
-      get(store.nodeOrigin)
+      store.nodeLookup,
+      store.parentLookup,
+      store.domNode,
+      store.nodeOrigin,
+      store.nodeExtent,
+      store.zIndexMode
     );
 
     if (!updatedInternals) {
       return;
     }
 
-    if (!get(store.fitViewOnInitDone) && get(store.fitViewOnInit)) {
-      const fitViewOptions = get(store.fitViewOptions);
-      const fitViewOnInitDone = fitViewSync({
-        ...fitViewOptions,
-        nodes: fitViewOptions?.nodes
-      });
-      store.fitViewOnInitDone.set(fitViewOnInitDone);
+    if (store.fitViewQueued) {
+      store.resolveFitView();
     }
 
-    for (const change of changes) {
-      const node = nodeLookup.get(change.id)?.internals.userNode;
-
-      if (!node) {
-        continue;
-      }
-
-      switch (change.type) {
-        case 'dimensions': {
-          const measured = { ...node.measured, ...change.dimensions };
-
-          if (change.setAttributes) {
-            node.width = change.dimensions?.width ?? node.width;
-            node.height = change.dimensions?.height ?? node.height;
-          }
-
-          node.measured = measured;
-          break;
-        }
-        case 'position':
-          node.position = change.position ?? node.position;
-
-          break;
-      }
-    }
-
-    store.nodes.update((nds) => nds);
-
-    if (!get(store.nodesInitialized)) {
-      store.nodesInitialized.set(true);
-    }
+    store.queueNodeChanges(changes);
   }
 
-  function fitView(options?: FitViewOptions) {
-    const panZoom = get(store.panZoom);
+  function fitView(options?: FitViewOptions<NodeType>) {
+    // We either create a new Promise or reuse the existing one
+    // Even if fitView is called multiple times in a row, we only end up with a single Promise
+    const fitViewResolver = store.fitViewResolver ?? Promise.withResolvers<boolean>();
 
-    if (!panZoom) {
-      return Promise.resolve(false);
-    }
+    // We schedule a fitView by setting fitViewQueued and triggering a setNodes
+    store.fitViewQueued = true;
+    store.fitViewOptions = options;
+    store.fitViewResolver = fitViewResolver;
 
-    const fitViewNodes = getFitViewNodes(get(store.nodeLookup), options);
+    // trigger adoptUserNodes in case onlyRenderVisible is enabled
+    store.nodes = [...store.nodes];
 
-    return fitViewSystem(
-      {
-        nodes: fitViewNodes,
-        width: get(store.width),
-        height: get(store.height),
-        minZoom: get(store.minZoom),
-        maxZoom: get(store.maxZoom),
-        panZoom
-      },
-      options
-    );
+    return fitViewResolver.promise;
   }
 
-  function fitViewSync(options?: FitViewOptions) {
-    const panZoom = get(store.panZoom);
+  async function setCenter(x: number, y: number, options?: SetCenterOptions) {
+    const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : store.maxZoom;
+    const currentPanZoom = store.panZoom;
 
-    if (!panZoom) {
+    if (!currentPanZoom) {
       return false;
     }
 
-    const fitViewNodes = getFitViewNodes(get(store.nodeLookup), options);
-
-    fitViewSystem(
+    await currentPanZoom.setViewport(
       {
-        nodes: fitViewNodes,
-        width: get(store.width),
-        height: get(store.height),
-        minZoom: get(store.minZoom),
-        maxZoom: get(store.maxZoom),
-        panZoom
+        x: store.width / 2 - x * nextZoom,
+        y: store.height / 2 - y * nextZoom,
+        zoom: nextZoom
       },
-      options
+      { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
     );
 
-    return fitViewNodes.size > 0;
+    return true;
   }
 
-  function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
-    const panZoom = get(store.panZoom);
+  async function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {
+    const panZoom = store.panZoom;
     if (!panZoom) {
-      return Promise.resolve(false);
+      return false;
     }
 
     return panZoom.scaleBy(factor, options);
   }
 
-  function zoomIn(options?: ViewportHelperFunctionOptions) {
+  async function zoomIn(options?: ViewportHelperFunctionOptions) {
     return zoomBy(1.2, options);
   }
 
@@ -211,236 +170,192 @@ export function createStore({
   }
 
   function setMinZoom(minZoom: number) {
-    const panZoom = get(store.panZoom);
+    const panZoom = store.panZoom;
 
     if (panZoom) {
-      panZoom.setScaleExtent([minZoom, get(store.maxZoom)]);
-      store.minZoom.set(minZoom);
+      panZoom.setScaleExtent([minZoom, store.maxZoom]);
+      store.minZoom = minZoom;
     }
   }
 
   function setMaxZoom(maxZoom: number) {
-    const panZoom = get(store.panZoom);
+    const panZoom = store.panZoom;
 
     if (panZoom) {
-      panZoom.setScaleExtent([get(store.minZoom), maxZoom]);
-      store.maxZoom.set(maxZoom);
+      panZoom.setScaleExtent([store.minZoom, maxZoom]);
+      store.maxZoom = maxZoom;
     }
   }
 
   function setTranslateExtent(extent: CoordinateExtent) {
-    const panZoom = get(store.panZoom);
+    const panZoom = store.panZoom;
 
     if (panZoom) {
       panZoom.setTranslateExtent(extent);
-      store.translateExtent.set(extent);
+      store.translateExtent = extent;
     }
   }
 
-  function resetSelectedElements(elements: readonly Node[] | readonly Edge[]) {
-    let elementsChanged = false;
-    elements.forEach((element) => {
-      if (element.selected) {
-        element.selected = false;
-        elementsChanged = true;
-      }
-    });
-    return elementsChanged;
-  }
-
-  function setPaneClickDistance(distance: number) {
-    get(store.panZoom)?.setClickDistance(distance);
-  }
-
-  function unselectNodesAndEdges(params?: { nodes?: readonly Node[]; edges?: readonly Edge[] }) {
-    const resetNodes = resetSelectedElements(params?.nodes || get(store.nodes));
-    if (resetNodes) store.nodes.set(get(store.nodes));
-
-    const resetEdges = resetSelectedElements(params?.edges || get(store.edges));
-    if (resetEdges) store.edges.set(get(store.edges));
-  }
-
-  store.deleteKeyPressed.subscribe(async (deleteKeyPressed) => {
-    if (deleteKeyPressed) {
-      const nodes = get(store.nodes);
-      const edges = get(store.edges);
-      const selectedNodes = nodes.filter((node) => node.selected);
-      const selectedEdges = edges.filter((edge) => edge.selected);
-
-      const { nodes: matchingNodes, edges: matchingEdges } = await getElementsToRemove({
-        nodesToRemove: selectedNodes,
-        edgesToRemove: selectedEdges,
-        nodes,
-        edges,
-        onBeforeDelete: get(store.onbeforedelete)
-      });
-
-      if (matchingNodes.length || matchingEdges.length) {
-        store.nodes.update((nds) =>
-          nds.filter((node) => !matchingNodes.some((mN) => mN.id === node.id))
-        );
-        store.edges.update((eds) =>
-          eds.filter((edge) => !matchingEdges.some((mE) => mE.id === edge.id))
-        );
-
-        get(store.ondelete)?.({
-          nodes: matchingNodes,
-          edges: matchingEdges
-        });
-      }
+  function unselectNodesAndEdges(params?: {
+    nodes?: readonly NodeType[];
+    edges?: readonly EdgeType[];
+  }) {
+    const nodesToDeselect = params?.nodes ? new Set(params.nodes.map((node) => node.id)) : null;
+    const nodeChanges = getDeselectionChanges(store.nodeLookup, nodesToDeselect, true);
+    if (nodeChanges.length > 0) {
+      store.queueNodeChanges(nodeChanges);
     }
-  });
 
-  function addSelectedNodes(ids: string[]) {
-    const isMultiSelection = get(store.multiselectionKeyPressed);
-
-    store.nodes.update((ns) =>
-      ns.map((node) => {
-        const nodeWillBeSelected = ids.includes(node.id);
-        const selected = isMultiSelection
-          ? node.selected || nodeWillBeSelected
-          : nodeWillBeSelected;
-
-        // we need to mutate the node here in order to have the correct selected state in the drag handler
-        node.selected = selected;
-
-        return node;
-      })
-    );
-
-    if (!isMultiSelection) {
-      store.edges.update((es) =>
-        es.map((edge) => {
-          edge.selected = false;
-          return edge;
-        })
-      );
+    const edgesToDeselect = params?.edges ? new Set(params.edges.map((edge) => edge.id)) : null;
+    const edgeChanges = getDeselectionChanges(store.edgeLookup, edgesToDeselect, true);
+    if (edgeChanges.length > 0) {
+      store.queueEdgeChanges(edgeChanges);
     }
   }
 
-  function addSelectedEdges(ids: string[]) {
-    const isMultiSelection = get(store.multiselectionKeyPressed);
+  function addSelectedNodes(ids: readonly string[]) {
+    const isMultiSelection = store.multiselectionKeyPressed;
 
-    store.edges.update((edges) =>
-      edges.map((edge) => {
-        const edgeWillBeSelected = ids.includes(edge.id);
-        const selected = isMultiSelection
-          ? edge.selected || edgeWillBeSelected
-          : edgeWillBeSelected;
-
-        edge.selected = selected;
-
-        return edge;
-      })
-    );
-
-    if (!isMultiSelection) {
-      store.nodes.update((ns) =>
-        ns.map((node) => {
-          node.selected = false;
-          return node;
-        })
-      );
-    }
-  }
-
-  function handleNodeSelection(id: string) {
-    const node = get(store.nodes)?.find((n) => n.id === id);
-
-    if (!node) {
-      console.warn('012', errorMessages['error012'](id));
+    if (isMultiSelection) {
+      store.queueNodeChanges(ids.map((id) => selectionChange(id, true)));
       return;
     }
 
-    store.selectionRect.set(null);
-    store.selectionRectMode.set(null);
+    store.queueNodeChanges(getSelectionChanges(store.nodeLookup, new Set(ids), true));
+    store.queueEdgeChanges(getSelectionChanges(store.edgeLookup));
+  }
+
+  function addSelectedEdges(ids: readonly string[]) {
+    const isMultiSelection = store.multiselectionKeyPressed;
+
+    if (isMultiSelection) {
+      store.queueEdgeChanges(ids.map((id) => selectionChange(id, true)));
+      return;
+    }
+
+    store.queueEdgeChanges(getSelectionChanges(store.edgeLookup, new Set(ids)));
+    store.queueNodeChanges(getSelectionChanges(store.nodeLookup, new Set(), true));
+  }
+
+  function handleNodeSelection(id: string, unselect?: boolean, nodeRef?: HTMLDivElement | null) {
+    const node = store.nodeLookup.get(id);
+
+    if (!node) {
+      store.onerror('012', errorMessages['error012'](id));
+      return;
+    }
+
+    store.selectionRect = null;
+    store.selectionRectMode = null;
 
     if (!node.selected) {
       addSelectedNodes([id]);
-    } else if (node.selected && get(store.multiselectionKeyPressed)) {
-      unselectNodesAndEdges({ nodes: [node], edges: [] });
+    } else if (unselect || (node.selected && store.multiselectionKeyPressed)) {
+      unselectNodesAndEdges({ nodes: [node.internals.userNode], edges: [] });
+
+      requestAnimationFrame(() => nodeRef?.blur());
     }
   }
 
+  function handleEdgeSelection(id: string) {
+    const edge = store.edgeLookup.get(id);
+
+    if (!edge) {
+      store.onerror('016', errorMessages['error016'](id));
+      return;
+    }
+
+    const selectable =
+      edge.selectable || (store.elementsSelectable && typeof edge.selectable === 'undefined');
+
+    if (selectable) {
+      store.selectionRect = null;
+      store.selectionRectMode = null;
+
+      if (!edge.selected) {
+        addSelectedEdges([id]);
+      } else if (edge.selected && store.multiselectionKeyPressed) {
+        unselectNodesAndEdges({ nodes: [], edges: [edge] });
+      }
+    }
+  }
+
+  function moveSelectedNodes(direction: XYPosition, factor: number) {
+    const { nodeExtent, snapGrid, nodeOrigin, nodeLookup, nodesDraggable, onerror } = store;
+
+    const nodeUpdates = new Map();
+    /*
+     * by default a node moves 5px on each key press
+     * if snap grid is enabled, we use that for the velocity
+     */
+    const xVelo = snapGrid?.[0] ?? 5;
+    const yVelo = snapGrid?.[1] ?? 5;
+
+    const xDiff = direction.x * xVelo * factor;
+    const yDiff = direction.y * yVelo * factor;
+
+    for (const node of nodeLookup.values()) {
+      const isSelected =
+        node.selected &&
+        (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'));
+
+      if (!isSelected) {
+        continue;
+      }
+
+      let nextPosition = {
+        x: node.internals.positionAbsolute.x + xDiff,
+        y: node.internals.positionAbsolute.y + yDiff
+      };
+
+      if (snapGrid) {
+        nextPosition = snapPosition(nextPosition, snapGrid);
+      }
+
+      const { position, positionAbsolute } = calculateNodePosition({
+        nodeId: node.id,
+        nextPosition,
+        nodeLookup,
+        nodeExtent,
+        nodeOrigin,
+        onError: onerror
+      });
+
+      node.position = position;
+      node.internals.positionAbsolute = positionAbsolute;
+
+      nodeUpdates.set(node.id, node);
+    }
+    updateNodePositions(nodeUpdates);
+  }
+
   function panBy(delta: XYPosition) {
-    const viewport = get(store.viewport);
     return panBySystem({
       delta,
-      panZoom: get(store.panZoom),
-      transform: [viewport.x, viewport.y, viewport.zoom],
-      translateExtent: get(store.translateExtent),
-      width: get(store.width),
-      height: get(store.height)
+      panZoom: store.panZoom,
+      transform: [store.viewport.x, store.viewport.y, store.viewport.zoom],
+      translateExtent: store.translateExtent,
+      width: store.width,
+      height: store.height
     });
   }
 
-  const _connection = writable<ConnectionState>(initialConnection);
-  const updateConnection: UpdateConnection = (newConnection: ConnectionState) => {
-    _connection.set({ ...newConnection });
+  const updateConnection: UpdateConnection<InternalNode<NodeType>> = (
+    newConnection: ConnectionState<InternalNode<NodeType>>
+  ) => {
+    store._connection = { ...newConnection };
   };
 
   function cancelConnection() {
-    _connection.set(initialConnection);
+    store._connection = initialConnection;
   }
 
   function reset() {
-    store.fitViewOnInitDone.set(false);
-    store.selectionRect.set(null);
-    store.selectionRectMode.set(null);
-    store.snapGrid.set(null);
-    store.isValidConnection.set(() => true);
-
+    store.resetStoreValues();
     unselectNodesAndEdges();
-    cancelConnection();
   }
 
-  return {
-    // state
-    ...store,
-
-    // derived state
-    visibleEdges: getVisibleEdges(store),
-    visibleNodes: getVisibleNodes(store),
-    connection: derived([_connection, store.viewport], ([connection, viewport]) => {
-      return connection.inProgress
-        ? {
-            ...connection,
-            to: pointToRendererPoint(connection.to, [viewport.x, viewport.y, viewport.zoom])
-          }
-        : { ...connection };
-    }),
-    markers: derived(
-      [store.edges, store.defaultMarkerColor, store.flowId],
-      ([edges, defaultColor, id]) => createMarkerIds(edges, { defaultColor, id })
-    ),
-    initialized: (() => {
-      let initialized = false;
-      const initialNodesLength = get(store.nodes).length;
-      const initialEdgesLength = get(store.edges).length;
-      return derived(
-        [store.nodesInitialized, store.edgesInitialized, store.viewportInitialized],
-        ([nodesInitialized, edgesInitialized, viewportInitialized]) => {
-          // If it was already initialized, return true from then on
-          if (initialized) return initialized;
-
-          // if it hasn't been initialised check if it's now
-          if (initialNodesLength === 0) {
-            initialized = viewportInitialized;
-          } else if (initialEdgesLength === 0) {
-            initialized = viewportInitialized && nodesInitialized;
-          } else {
-            initialized = viewportInitialized && nodesInitialized && edgesInitialized;
-          }
-
-          return initialized;
-        }
-      );
-    })(),
-
-    // actions
-    syncNodeStores: (nodes) => syncNodeStores(store.nodes, nodes),
-    syncEdgeStores: (edges) => syncEdgeStores(store.edges, edges),
-    syncViewport: (viewport) => syncViewportStores(store.panZoom, store.viewport, viewport),
+  const storeWithActions = Object.assign(store, {
     setNodeTypes,
     setEdgeTypes,
     addEdge,
@@ -448,54 +363,22 @@ export function createStore({
     updateNodeInternals,
     zoomIn,
     zoomOut,
-    fitView: (options?: FitViewOptions) => fitView(options),
+    fitView,
+    setCenter,
     setMinZoom,
     setMaxZoom,
     setTranslateExtent,
-    setPaneClickDistance,
     unselectNodesAndEdges,
     addSelectedNodes,
     addSelectedEdges,
     handleNodeSelection,
+    handleEdgeSelection,
+    moveSelectedNodes,
     panBy,
     updateConnection,
     cancelConnection,
     reset
-  };
-}
+  } satisfies SvelteFlowStoreActions<NodeType, EdgeType>);
 
-export function useStore(): SvelteFlowStore {
-  const store = getContext<{ getStore: () => SvelteFlowStore }>(key);
-
-  if (!store) {
-    throw new Error(
-      'In order to use useStore you need to wrap your component in a <SvelteFlowProvider />'
-    );
-  }
-
-  return store.getStore();
-}
-
-export function createStoreContext({
-  nodes,
-  edges,
-  width,
-  height,
-  fitView,
-  nodeOrigin
-}: {
-  nodes?: Node[];
-  edges?: Edge[];
-  width?: number;
-  height?: number;
-  fitView?: boolean;
-  nodeOrigin?: NodeOrigin;
-}) {
-  const store = createStore({ nodes, edges, width, height, fitView, nodeOrigin });
-
-  setContext(key, {
-    getStore: () => store
-  });
-
-  return store;
+  return storeWithActions;
 }

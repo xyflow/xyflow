@@ -1,4 +1,4 @@
-import { NodeBase } from '../types';
+import { type NodeBase } from '../types';
 
 type NodeData = Pick<NodeBase, 'id' | 'type' | 'data'>;
 

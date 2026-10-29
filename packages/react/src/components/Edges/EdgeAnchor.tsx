@@ -27,6 +27,9 @@ export interface EdgeAnchorProps extends SVGAttributes<SVGGElement> {
 
 const EdgeUpdaterClassName = 'react-flow__edgeupdater';
 
+/**
+ * @internal
+ */
 export function EdgeAnchor({
   position,
   centerX,

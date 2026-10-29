@@ -1,0 +1,29 @@
+{
+  "name": "vue-examples",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit && vue-tsc -p tsconfig.node.json --noEmit"
+  },
+  "dependencies": {
+    "@dagrejs/dagre": "^3.0.0",
+    "@xyflow/vue": "workspace:*",
+    "html-to-image": "^1.11.13",
+    "pinia": "^3.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "@vueuse/core": "catalog:",
+    "typescript": "catalog:",
+    "unplugin-auto-import": "^21.0.0",
+    "vite": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "^5.1.0",
+    "vue-tsc": "catalog:"
+  }
+}

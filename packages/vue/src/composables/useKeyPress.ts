@@ -1,0 +1,207 @@
+import type { KeyFilter, KeyPredicate } from '@vueuse/core';
+import type { MaybeRefOrGetter } from 'vue';
+import { onKeyStroke, useEventListener } from '@vueuse/core';
+import { isInputDOMNode } from '@xyflow/system';
+import { computed, shallowRef, toValue, watch } from 'vue';
+
+type PressedKeys = Set<string>;
+type KeyOrCode = 'key' | 'code';
+
+export interface UseKeyPressOptions {
+  /**
+   * The DOM element the key listeners are attached to.
+   *
+   * @default document
+   */
+  target?: MaybeRefOrGetter<EventTarget | null | undefined>;
+  /**
+   * A key press is normally ignored while a text input, textarea, or contentEditable element is focused. When
+   * `true`, key combinations that include a modifier (Ctrl/Meta/Shift/Alt) are still detected inside those
+   * elements — so a shortcut like `Meta+a` keeps working while the user is typing.
+   *
+   * @default true
+   */
+  actInsideInputWithModifier?: MaybeRefOrGetter<boolean>;
+  /**
+   * Whether to call `preventDefault()` on a matched key event (skipped for a button/link pressed without a
+   * modifier). Set to `false` to leave the event's default behaviour untouched and handle it yourself.
+   *
+   * @default true
+   */
+  preventDefault?: MaybeRefOrGetter<boolean>;
+}
+
+const defaultDoc = typeof document !== 'undefined' ? document : null;
+
+// we want to be able to do a multi selection event if we are in an input field
+function wasModifierPressed(event: KeyboardEvent) {
+  return event.ctrlKey || event.metaKey || event.shiftKey || event.altKey;
+}
+
+function isKeyMatch(pressedKey: string, keyToMatch: string, pressedKeys: Set<string>, isKeyUp: boolean) {
+  const keyCombination = keyToMatch
+    .replace('+', '\n')
+    .replace('\n\n', '\n+')
+    .split('\n')
+    .map(k => k.trim().toLowerCase());
+
+  if (keyCombination.length === 1) {
+    return pressedKey.toLowerCase() === keyToMatch.toLowerCase();
+  }
+
+  // we need to remove the key *after* checking for a match otherwise a combination like 'shift+a' would never get unmatched/reset
+  if (!isKeyUp) {
+    pressedKeys.add(pressedKey.toLowerCase());
+  }
+
+  // order-independent, size-guarded on keydown so e.g. 'Meta' alone doesn't match 'meta+a'
+  const isMatch = (isKeyUp || keyCombination.length === pressedKeys.size)
+    && keyCombination.every(key => pressedKeys.has(key));
+
+  if (isKeyUp) {
+    pressedKeys.delete(pressedKey.toLowerCase());
+  }
+
+  return isMatch;
+}
+
+function createKeyPredicate(keyFilter: string | string[], pressedKeys: PressedKeys): KeyPredicate {
+  return (event: KeyboardEvent) => {
+    if (!event.code && !event.key) {
+      return false;
+    }
+
+    const keyOrCode = useKeyOrCode(event.code, keyFilter);
+
+    // if the keyFilter is an array of multiple keys, we need to check each possible key combination
+    if (Array.isArray(keyFilter)) {
+      return keyFilter.some(key => isKeyMatch(event[keyOrCode], key, pressedKeys, event.type === 'keyup'));
+    }
+
+    // if the keyFilter is a string, we need to check if the key matches the string
+    return isKeyMatch(event[keyOrCode], keyFilter, pressedKeys, event.type === 'keyup');
+  };
+}
+
+function useKeyOrCode(code: string, keysToWatch: string | string[]): KeyOrCode {
+  return keysToWatch.includes(code) ? 'code' : 'key';
+}
+
+/**
+ * Composable that returns a boolean value if a key is pressed
+ *
+ * @public
+ * @param keyFilter - Can be a boolean, a string, an array of strings or a function that returns a boolean. If it's a boolean, it will act as if the key is always pressed. If it's a string, it will return true if a key matching that string is pressed. If it's an array of strings, it will return true if any of the strings match a key being pressed, or a combination (e.g. ['ctrl+a', 'ctrl+b'])
+ * @param options - Options object
+ */
+export function useKeyPress(keyFilter: MaybeRefOrGetter<KeyFilter | boolean | null>, options?: UseKeyPressOptions) {
+  const target = computed(() => toValue(options?.target) ?? defaultDoc);
+
+  const isPressed = shallowRef(toValue(keyFilter) === true);
+
+  let modifierPressed = false;
+
+  const pressedKeys = new Set<string>();
+
+  let currentFilter = createKeyFilterFn(toValue(keyFilter));
+
+  watch(
+    () => toValue(keyFilter),
+    (nextKeyFilter, previousKeyFilter) => {
+      // if the previous keyFilter was a boolean but is now something else, we need to reset the isPressed value
+      if (typeof previousKeyFilter === 'boolean' && typeof nextKeyFilter !== 'boolean') {
+        reset();
+      }
+
+      currentFilter = createKeyFilterFn(nextKeyFilter);
+    },
+    {
+      immediate: true,
+    },
+  );
+
+  useEventListener(['blur', 'contextmenu'], reset);
+
+  onKeyStroke(
+    (...args) => currentFilter(...args),
+    (e) => {
+      const actInsideInputWithModifier = toValue(options?.actInsideInputWithModifier) ?? true;
+      const preventDefault = toValue(options?.preventDefault) ?? true;
+
+      modifierPressed = wasModifierPressed(e);
+
+      const preventAction = (!modifierPressed || (modifierPressed && !actInsideInputWithModifier)) && isInputDOMNode(e);
+
+      if (preventAction) {
+        return;
+      }
+
+      const target = (e.composedPath?.()?.[0] || e.target) as Element | null;
+      const isInteractiveElement = target?.nodeName === 'BUTTON' || target?.nodeName === 'A';
+
+      if (preventDefault && (modifierPressed || !isInteractiveElement)) {
+        e.preventDefault();
+      }
+
+      isPressed.value = true;
+    },
+    { eventName: 'keydown', target },
+  );
+
+  onKeyStroke(
+    (...args) => currentFilter(...args),
+    (e) => {
+      // macOS suppresses keyup for other keys while ⌘ (Meta) is held, leaving them stuck in `pressedKeys`;
+      // clear everything when Meta is released
+      if (e.key === 'Meta') {
+        pressedKeys.clear();
+      }
+
+      const actInsideInputWithModifier = toValue(options?.actInsideInputWithModifier) ?? true;
+
+      if (isPressed.value) {
+        const preventAction = (!modifierPressed || (modifierPressed && !actInsideInputWithModifier)) && isInputDOMNode(e);
+
+        if (preventAction) {
+          return;
+        }
+
+        modifierPressed = false;
+        isPressed.value = false;
+      }
+    },
+    { eventName: 'keyup', target },
+  );
+
+  function reset() {
+    modifierPressed = false;
+
+    pressedKeys.clear();
+
+    isPressed.value = toValue(keyFilter) === true;
+  }
+
+  function createKeyFilterFn(keyFilter: KeyFilter | boolean | null) {
+    // if the keyFilter is null, we just set the isPressed value to false
+    if (keyFilter === null) {
+      reset();
+      return () => false;
+    }
+
+    // if the keyFilter is a boolean, we just set the isPressed value to that boolean
+    if (typeof keyFilter === 'boolean') {
+      reset();
+      isPressed.value = keyFilter;
+
+      return () => false;
+    }
+
+    if (Array.isArray(keyFilter) || typeof keyFilter === 'string') {
+      return createKeyPredicate(keyFilter, pressedKeys);
+    }
+
+    return keyFilter;
+  }
+
+  return isPressed;
+}

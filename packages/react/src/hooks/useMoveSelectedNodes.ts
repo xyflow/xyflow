@@ -1,8 +1,7 @@
-import { useCallback } from 'react';
 import { calculateNodePosition, snapPosition, type XYPosition } from '@xyflow/system';
 
-import { type Node } from '../types';
-import { useStoreApi } from './useStore';
+import type { InternalNode, Node } from '../types';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 
 const selectedAndDraggable = (nodesDraggable: boolean) => (n: Node) =>
   n.selected && (n.draggable || (nodesDraggable && typeof n.draggable === 'undefined'));
@@ -14,16 +13,19 @@ const selectedAndDraggable = (nodesDraggable: boolean) => (n: Node) =>
  * @returns function for updating node positions
  */
 export function useMoveSelectedNodes() {
-  const store = useStoreApi();
+  const { optionsStore, nodesStore } = useReactFlowStoreApi();
 
-  const moveSelectedNodes = useCallback((params: { direction: XYPosition; factor: number }) => {
-    const { nodeExtent, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions, nodeLookup, nodeOrigin } =
-      store.getState();
-    const nodeUpdates = new Map();
+  const moveSelectedNodes = (params: { direction: XYPosition; factor: number }) => {
+    const { nodeExtent, snapToGrid, snapGrid, nodesDraggable, onError, updateNodePositions, nodeOrigin } =
+      optionsStore.getState();
+    const { nodeLookup } = nodesStore.getState();
+    const nodeUpdates = new Map<string, InternalNode>();
     const isSelected = selectedAndDraggable(nodesDraggable);
 
-    // by default a node moves 5px on each key press
-    // if snap grid is enabled, we use that for the velocity
+    /*
+     * by default a node moves 5px on each key press
+     * if snap grid is enabled, we use that for the velocity
+     */
     const xVelo = snapToGrid ? snapGrid[0] : 5;
     const yVelo = snapToGrid ? snapGrid[1] : 5;
 
@@ -60,7 +62,7 @@ export function useMoveSelectedNodes() {
     }
 
     updateNodePositions(nodeUpdates);
-  }, []);
+  };
 
   return moveSelectedNodes;
 }

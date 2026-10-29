@@ -1,139 +1,172 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
-	import { SvelteFlow, Controls, Panel, type Edge } from '@xyflow/svelte';
+	import { SvelteFlow, Controls, Panel, type CoordinateExtent, type Edge } from '@xyflow/svelte';
 
 	import DefaultResizer from './DefaultResizer.svelte';
 	import CustomResizer from './CustomResizer.svelte';
 	import VerticalResizer from './VerticalResizer.svelte';
 	import HorizontalResizer from './HorizontalResizer.svelte';
+	import BottomRightResizer from './BottomRightResizer.svelte';
+	import FixedExtentNode from './FixedExtentNode.svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 	import type { ResizeNode } from './types';
+	import { store } from './store.svelte';
 
 	const nodeTypes = {
 		defaultResizer: DefaultResizer,
 		customResizer: CustomResizer,
 		verticalResizer: VerticalResizer,
-		horizontalResizer: HorizontalResizer
+		horizontalResizer: HorizontalResizer,
+		bottomRightResizer: BottomRightResizer,
+		fixedExtent: FixedExtentNode
 	};
 
 	const nodeStyle = 'border: 1px solid #222; font-size: 10px; background-color: #ddd;';
+	const extent: CoordinateExtent = [
+		[500, 350],
+		[700, 450]
+	];
 
-	const edges = writable<Edge[]>([]);
+	let edges = $state.raw<Edge[]>([]);
 
-	const nodes = writable<ResizeNode[]>([
-		{
-			id: '1',
-			type: 'defaultResizer',
-			data: { label: 'default resizer' },
-			position: { x: 0, y: 0 },
-			style: nodeStyle
-		},
-		{
-			id: '1a',
-			type: 'defaultResizer',
-			data: {
-				label: 'default resizer with min and max dimensions',
-				minWidth: 100,
-				minHeight: 80,
-				maxWidth: 200,
-				maxHeight: 200
+	let nodes = $state.raw<ResizeNode[]>(
+		[
+			{
+				id: '1',
+				type: 'defaultResizer',
+				data: { label: 'default resizer' },
+				position: { x: 0, y: 0 },
+				style: nodeStyle
 			},
-			position: { x: 0, y: 60 },
-			style: nodeStyle + ' width: 100px; height: 80px;'
-		},
-		{
-			id: '1b',
-			type: 'defaultResizer',
-			data: {
-				label: 'default resizer with initial size and aspect ratio',
-				keepAspectRatio: true,
-				minWidth: 100,
-				minHeight: 60,
-				maxWidth: 400,
-				maxHeight: 400
+			{
+				id: '1a',
+				type: 'defaultResizer',
+				data: {
+					label: 'default resizer with min and max dimensions',
+					minWidth: 100,
+					minHeight: 80,
+					maxWidth: 200,
+					maxHeight: 200
+				},
+				position: { x: 0, y: 60 },
+				style: nodeStyle + ' width: 100px; height: 80px;'
 			},
-			position: { x: 250, y: 0 },
-			style: nodeStyle + ' width: 174px; height: 123px;'
-		},
-		{
-			id: '2',
-			type: 'customResizer',
-			data: { label: 'custom resize icon' },
-			position: { x: 0, y: 200 },
-			style: nodeStyle + ' width: 100px; height: 60px;'
-		},
-		{
-			id: '3',
-			type: 'verticalResizer',
-			data: { label: 'vertical resizer' },
-			position: { x: 250, y: 200 },
-			style: nodeStyle
-		},
-		{
-			id: '3a',
-			type: 'verticalResizer',
-			data: {
-				label: 'vertical resizer with min/maxHeight and aspect ratio',
-				minHeight: 50,
-				maxHeight: 200,
-				keepAspectRatio: true
+			{
+				id: '1b',
+				type: 'defaultResizer',
+				data: {
+					label: 'default resizer with initial size and aspect ratio',
+					keepAspectRatio: true,
+					minWidth: 100,
+					minHeight: 60,
+					maxWidth: 400,
+					maxHeight: 400
+				},
+				position: { x: 250, y: 0 },
+				style: nodeStyle + ' width: 174px; height: 123px;'
 			},
-			position: { x: 400, y: 200 },
-			style: nodeStyle + ' height: 50px;'
-		},
-		{
-			id: '4',
-			type: 'horizontalResizer',
-			data: {
-				label: 'horizontal resizer with aspect ratio',
-				keepAspectRatio: true,
-				minHeight: 20,
-				maxHeight: 80,
-				maxWidth: 300
+			{
+				id: '2',
+				type: 'customResizer',
+				data: { label: 'custom resize icon' },
+				position: { x: 0, y: 200 },
+				style: nodeStyle + ' width: 100px; height: 60px;'
 			},
-			position: { x: 250, y: 300 },
-			style: nodeStyle
-		},
-		{
-			id: '4a',
-			type: 'horizontalResizer',
-			data: { label: 'horizontal resizer with maxWidth', maxWidth: 300 },
-			position: { x: 250, y: 400 },
-			style: nodeStyle
-		},
-		{
-			id: '5',
-			type: 'defaultResizer',
-			data: { label: 'Parent' },
-			position: { x: 700, y: 0 },
-			style: nodeStyle + 'width: 300px; height: 300px'
-		},
-		{
-			id: '5a',
-			type: 'defaultResizer',
-			data: { label: 'Child with extent parent' },
-			position: { x: 50, y: 50 },
-			parentId: '5',
-			extent: 'parent',
-			style: nodeStyle
-		},
-		{
-			id: '5b',
-			type: 'defaultResizer',
-			data: { label: 'Child' },
-			position: { x: 100, y: 100 },
-			parentId: '5',
-			style: nodeStyle
-		}
-	]);
+			{
+				id: '3',
+				type: 'verticalResizer',
+				data: { label: 'vertical resizer' },
+				position: { x: 250, y: 200 },
+				style: nodeStyle
+			},
+			{
+				id: '3a',
+				type: 'verticalResizer',
+				data: {
+					label: 'vertical resizer with min/maxHeight and aspect ratio',
+					minHeight: 50,
+					maxHeight: 200,
+					keepAspectRatio: true
+				},
+				position: { x: 400, y: 200 },
+				style: nodeStyle + ' height: 50px;'
+			},
+			{
+				id: '4',
+				type: 'horizontalResizer',
+				data: {
+					label: 'horizontal resizer with aspect ratio',
+					keepAspectRatio: true,
+					minHeight: 20,
+					maxHeight: 80,
+					maxWidth: 300
+				},
+				position: { x: 250, y: 300 },
+				style: nodeStyle
+			},
+			{
+				id: '4a',
+				type: 'horizontalResizer',
+				data: { label: 'horizontal resizer with maxWidth', maxWidth: 300 },
+				position: { x: 250, y: 400 },
+				style: nodeStyle
+			},
+			{
+				id: '5',
+				type: 'defaultResizer',
+				data: { label: 'Parent' },
+				position: { x: 700, y: 0 },
+				style: nodeStyle + 'width: 300px; height: 300px'
+			},
+			{
+				id: '5a',
+				type: 'defaultResizer',
+				data: { label: 'Child with extent parent' },
+				position: { x: 50, y: 50 },
+				parentId: '5',
+				extent: 'parent',
+				style: nodeStyle
+			},
+			{
+				id: '5b',
+				type: 'defaultResizer',
+				data: { label: 'Child' },
+				position: { x: 100, y: 100 },
+				parentId: '5',
+				style: nodeStyle
+			},
+			{
+				id: '6',
+				type: 'bottomRightResizer',
+				data: { label: 'bottom-right horizontal resizer' },
+				position: { x: 500, y: 0 },
+				style: nodeStyle
+			},
+			{
+				id: '7',
+				type: 'fixedExtent',
+				data: { label: 'Fixed Extent', extent },
+				position: { x: 500, y: 350 },
+				extent
+			}
+		].reverse() as ResizeNode[]
+	);
 
-	let snapToGrid = false;
+	let snapToGrid = $state(false);
 </script>
 
+<svelte:window
+	on:keydown={(e) => {
+		if (e.key === 'k') store.keepAspectRatio = true;
+	}}
+	on:keyup={(e) => {
+		if (e.key === 'k') store.keepAspectRatio = false;
+	}}
+/>
+
 <SvelteFlow
-	{nodes}
-	{edges}
+	bind:nodes
+	bind:edges
 	{nodeTypes}
 	minZoom={0.2}
 	maxZoom={5}
@@ -144,7 +177,7 @@
 	<Controls />
 	<Panel position="bottom-right">
 		<button
-			on:click={() => {
+			onclick={() => {
 				snapToGrid = !snapToGrid;
 			}}
 		>

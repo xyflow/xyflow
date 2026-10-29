@@ -3,13 +3,12 @@ import {
   ReactFlow,
   Node,
   Edge,
-  NodeChange,
-  EdgeChange,
-  applyNodeChanges,
-  applyEdgeChanges,
   Connection,
   addEdge,
   ReactFlowProps,
+  OnNodesChange,
+  OnEdgesChange,
+  OnConnect,
 } from '@xyflow/react';
 
 function ControlledFlow({
@@ -29,22 +28,16 @@ function ControlledFlow({
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
 
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes]
-  );
+  const onNodesChange: OnNodesChange = useCallback((changes) => setNodes((nds) => changes.applyTo(nds)), [setNodes]);
 
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges]
-  );
+  const onEdgesChange: OnEdgesChange = useCallback((changes) => setEdges((eds) => changes.applyTo(eds)), [setEdges]);
 
   const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
   const handlers: {
-    onNodesChange?: (changes: NodeChange[]) => void;
-    onEdgesChange?: (changes: EdgeChange[]) => void;
-    onConnect?: (params: Connection | Edge) => void;
+    onNodesChange?: OnNodesChange;
+    onEdgesChange?: OnEdgesChange;
+    onConnect?: OnConnect;
   } = {};
 
   if (addOnNodeChangeHandler) {

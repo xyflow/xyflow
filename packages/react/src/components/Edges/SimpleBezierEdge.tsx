@@ -7,9 +7,11 @@ import type { SimpleBezierEdgeProps } from '../../types';
 export interface GetSimpleBezierPathParams {
   sourceX: number;
   sourceY: number;
+  /** @default Position.Bottom */
   sourcePosition?: Position;
   targetX: number;
   targetY: number;
+  /** @default Position.Top */
   targetPosition?: Position;
 }
 
@@ -29,6 +31,19 @@ function getControl({ pos, x1, y1, x2, y2 }: GetControlParams): [number, number]
   return [x1, 0.5 * (y1 + y2)];
 }
 
+/**
+ * The `getSimpleBezierPath` util returns everything you need to render a simple
+ * bezier edge between two nodes.
+ * @public
+ * @returns
+ * - `path`: the path to use in an SVG `<path>` element.
+ * - `labelX`: the `x` position you can use to render a label for this edge.
+ * - `labelY`: the `y` position you can use to render a label for this edge.
+ * - `offsetX`: the absolute difference between the source `x` position and the `x` position of the
+ * middle of this path.
+ * - `offsetY`: the absolute difference between the source `y` position and the `y` position of the
+ * middle of this path.
+ */
 export function getSimpleBezierPath({
   sourceX,
   sourceY,
@@ -72,64 +87,61 @@ export function getSimpleBezierPath({
 }
 
 function createSimpleBezierEdge(params: { isInternal: boolean }) {
-  // eslint-disable-next-line react/display-name
-  return memo(
-    ({
-      id,
+  function SimpleBezierEdgeComponent({
+    id,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition,
+    targetPosition,
+    label,
+    labelStyle,
+    labelShowBg,
+    labelBgStyle,
+    labelBgPadding,
+    labelBgBorderRadius,
+    style,
+    markerEnd,
+    markerStart,
+    interactionWidth,
+  }: SimpleBezierEdgeProps) {
+    const [path, labelX, labelY] = getSimpleBezierPath({
       sourceX,
       sourceY,
+      sourcePosition,
       targetX,
       targetY,
-      sourcePosition = Position.Bottom,
-      targetPosition = Position.Top,
-      label,
-      labelStyle,
-      labelShowBg,
-      labelBgStyle,
-      labelBgPadding,
-      labelBgBorderRadius,
-      style,
-      markerEnd,
-      markerStart,
-      interactionWidth,
-    }: SimpleBezierEdgeProps) => {
-      const [path, labelX, labelY] = getSimpleBezierPath({
-        sourceX,
-        sourceY,
-        sourcePosition,
-        targetX,
-        targetY,
-        targetPosition,
-      });
+      targetPosition,
+    });
 
-      const _id = params.isInternal ? undefined : id;
+    const _id = params.isInternal ? undefined : id;
 
-      return (
-        <BaseEdge
-          id={_id}
-          path={path}
-          labelX={labelX}
-          labelY={labelY}
-          label={label}
-          labelStyle={labelStyle}
-          labelShowBg={labelShowBg}
-          labelBgStyle={labelBgStyle}
-          labelBgPadding={labelBgPadding}
-          labelBgBorderRadius={labelBgBorderRadius}
-          style={style}
-          markerEnd={markerEnd}
-          markerStart={markerStart}
-          interactionWidth={interactionWidth}
-        />
-      );
-    }
-  );
+    return (
+      <BaseEdge
+        id={_id}
+        path={path}
+        labelX={labelX}
+        labelY={labelY}
+        label={label}
+        labelStyle={labelStyle}
+        labelShowBg={labelShowBg}
+        labelBgStyle={labelBgStyle}
+        labelBgPadding={labelBgPadding}
+        labelBgBorderRadius={labelBgBorderRadius}
+        style={style}
+        markerEnd={markerEnd}
+        markerStart={markerStart}
+        interactionWidth={interactionWidth}
+      />
+    );
+  }
+
+  SimpleBezierEdgeComponent.displayName = params.isInternal ? 'SimpleBezierEdgeInternal' : 'SimpleBezierEdge';
+  return memo(SimpleBezierEdgeComponent);
 }
 
 const SimpleBezierEdge = createSimpleBezierEdge({ isInternal: false });
 const SimpleBezierEdgeInternal = createSimpleBezierEdge({ isInternal: true });
-
-SimpleBezierEdge.displayName = 'SimpleBezierEdge';
-SimpleBezierEdgeInternal.displayName = 'SimpleBezierEdgeInternal';
 
 export { SimpleBezierEdge, SimpleBezierEdgeInternal };

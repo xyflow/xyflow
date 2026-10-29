@@ -1,13 +1,14 @@
 import { type ZoomTransform, zoom, zoomTransform } from 'd3-zoom';
 import { select } from 'd3-selection';
+import { interpolateZoom, interpolate } from 'd3-interpolate';
 
 import {
   type CoordinateExtent,
   type Viewport,
-  PanZoomTransformOptions,
-  PanZoomUpdateOptions,
-  PanZoomParams,
-  PanZoomInstance,
+  type PanZoomTransformOptions,
+  type PanZoomUpdateOptions,
+  type PanZoomParams,
+  type PanZoomInstance,
 } from '../types';
 import { clamp, isNumeric } from '../utils';
 import { getD3Transition, viewportToTransform, wheelDelta } from './utils';
@@ -19,6 +20,8 @@ import {
   createZoomOnScrollHandler,
 } from './eventhandler';
 import { createFilter } from './filter';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { transition } from 'd3-transition';
 
 export type ZoomPanValues = {
   isZoomingOrPanning: boolean;
@@ -34,13 +37,11 @@ export function XYPanZoom({
   domNode,
   minZoom,
   maxZoom,
-  paneClickDistance,
   translateExtent,
   viewport,
   onPanZoom,
   onPanZoomStart,
   onPanZoomEnd,
-  onTransformChange,
   onDraggingChange,
 }: PanZoomParams): PanZoomInstance {
   const zoomPanValues: ZoomPanValues = {
@@ -53,13 +54,39 @@ export function XYPanZoom({
     isPanScrolling: false,
   };
   const bbox = domNode.getBoundingClientRect();
+
+  /*
+   * Cache the pane extent and refresh it from a ResizeObserver. Otherwise d3-zoom falls back to its
+   * defaultExtent, which reads clientWidth/clientHeight and forces a synchronous layout while panning
+   * and pinching. The observer is never disconnected on purpose: destroy() also runs to pause zooming
+   * during a user selection, so disconnecting there would leave the cache stale. It becomes unreachable
+   * and is garbage collected with the pane on unmount.
+   */
+  let cachedExtent: CoordinateExtent = [
+    [0, 0],
+    [bbox.width, bbox.height],
+  ];
+  const extentResizeObserver =
+    typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver((entries) => {
+          const entry = entries[0];
+          if (entry) {
+            cachedExtent = [
+              [0, 0],
+              [entry.contentRect.width, entry.contentRect.height],
+            ];
+          }
+        })
+      : null;
+  extentResizeObserver?.observe(domNode);
+
   const d3ZoomInstance = zoom()
-    .clickDistance(!isNumeric(paneClickDistance) || paneClickDistance < 0 ? 0 : paneClickDistance)
+    .extent(() => cachedExtent)
     .scaleExtent([minZoom, maxZoom])
     .translateExtent(translateExtent);
   const d3Selection = select(domNode).call(d3ZoomInstance);
 
-  setViewportConstrained(
+  void setViewportConstrained(
     {
       x: viewport.x,
       y: viewport.y,
@@ -76,17 +103,17 @@ export function XYPanZoom({
   const d3DblClickZoomHandler = d3Selection.on('dblclick.zoom')!;
   d3ZoomInstance.wheelDelta(wheelDelta);
 
-  function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
+  async function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.transform(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).transform(
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           transform
         );
       });
     }
 
-    return Promise.resolve(false);
+    return false;
   }
 
   // public functions
@@ -103,14 +130,23 @@ export function XYPanZoom({
     zoomOnPinch,
     zoomOnScroll,
     zoomOnDoubleClick,
+    panActivationKeyPressed = false,
     zoomActivationKeyPressed,
     lib,
+    onTransformChange,
+    connectionInProgress,
+    paneClickDistance,
+    selectionOnDrag,
   }: PanZoomUpdateOptions) {
     if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
       destroy();
     }
 
     const isPanOnScroll = panOnScroll && !zoomActivationKeyPressed && !userSelectionActive;
+
+    d3ZoomInstance.clickDistance(
+      selectionOnDrag ? Infinity : !isNumeric(paneClickDistance) || paneClickDistance < 0 ? 0 : paneClickDistance
+    );
 
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
@@ -133,38 +169,37 @@ export function XYPanZoom({
 
     d3Selection.on('wheel.zoom', wheelHandler, { passive: false });
 
-    if (!userSelectionActive) {
-      // pan zoom start
-      const startHandler = createPanZoomStartHandler({
-        zoomPanValues,
-        onDraggingChange,
-        onPanZoomStart,
-      });
-      d3ZoomInstance.on('start', startHandler);
+    // pan zoom start
+    const startHandler = createPanZoomStartHandler({
+      zoomPanValues,
+      onDraggingChange,
+      onPanZoomStart,
+    });
+    d3ZoomInstance.on('start', startHandler);
 
-      // pan zoom
-      const panZoomHandler = createPanZoomHandler({
-        zoomPanValues,
-        panOnDrag,
-        onPaneContextMenu: !!onPaneContextMenu,
-        onPanZoom,
-        onTransformChange,
-      });
-      d3ZoomInstance.on('zoom', panZoomHandler);
+    // pan zoom
+    const panZoomHandler = createPanZoomHandler({
+      zoomPanValues,
+      panOnDrag,
+      onPaneContextMenu: !!onPaneContextMenu,
+      onPanZoom,
+      onTransformChange,
+    });
+    d3ZoomInstance.on('zoom', panZoomHandler);
 
-      // pan zoom end
-      const panZoomEndHandler = createPanZoomEndHandler({
-        zoomPanValues,
-        panOnDrag,
-        panOnScroll,
-        onPaneContextMenu,
-        onPanZoomEnd,
-        onDraggingChange,
-      });
-      d3ZoomInstance.on('end', panZoomEndHandler);
-    }
+    // pan zoom end
+    const panZoomEndHandler = createPanZoomEndHandler({
+      zoomPanValues,
+      panOnDrag,
+      panOnScroll,
+      onPaneContextMenu,
+      onPanZoomEnd,
+      onDraggingChange,
+    });
+    d3ZoomInstance.on('end', panZoomEndHandler);
 
     const filter = createFilter({
+      panActivationKeyPressed,
       zoomActivationKeyPressed,
       panOnDrag,
       zoomOnScroll,
@@ -175,12 +210,15 @@ export function XYPanZoom({
       noPanClassName,
       noWheelClassName,
       lib,
+      connectionInProgress,
     });
     d3ZoomInstance.filter(filter);
 
-    // We cannot add zoomOnDoubleClick to the filter above because
-    // double tapping on touch screens circumvents the filter and
-    // dblclick.zoom is fired on the selection directly
+    /*
+     * We cannot add zoomOnDoubleClick to the filter above because
+     * double tapping on touch screens circumvents the filter and
+     * dblclick.zoom is fired on the selection directly
+     */
     if (zoomOnDoubleClick) {
       d3Selection.on('dblclick.zoom', d3DblClickZoomHandler);
     } else {
@@ -204,7 +242,7 @@ export function XYPanZoom({
       await setTransform(contrainedTransform);
     }
 
-    return new Promise((resolve) => resolve(contrainedTransform));
+    return contrainedTransform;
   }
 
   async function setViewport(viewport: Viewport, options?: PanZoomTransformOptions) {
@@ -212,13 +250,13 @@ export function XYPanZoom({
 
     await setTransform(nextTransform, options);
 
-    return new Promise<ZoomTransform>((resolve) => resolve(nextTransform));
+    return nextTransform;
   }
 
   function syncViewport(viewport: Viewport) {
     if (d3Selection) {
       const nextTransform = viewportToTransform(viewport);
-      const currentTransform = d3Selection.property('__zoom');
+      const currentTransform = d3Selection.property('__zoom') as ZoomTransform;
 
       if (
         currentTransform.k !== viewport.zoom ||
@@ -237,30 +275,30 @@ export function XYPanZoom({
     return { x: transform.x, y: transform.y, zoom: transform.k };
   }
 
-  function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
+  async function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.scaleTo(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleTo(
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           zoom
         );
       });
     }
 
-    return Promise.resolve(false);
+    return false;
   }
 
-  function scaleBy(factor: number, options?: PanZoomTransformOptions) {
+  async function scaleBy(factor: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.scaleBy(
-          getD3Transition(d3Selection, options?.duration, () => resolve(true)),
+        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleBy(
+          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
           factor
         );
       });
     }
 
-    return Promise.resolve(false);
+    return false;
   }
 
   function setScaleExtent(scaleExtent: [number, number]) {

@@ -1,18 +1,17 @@
 <script lang="ts">
 	import { SvelteFlow } from '@xyflow/svelte';
 	import { Background, BackgroundVariant, type Edge, type Node } from '@xyflow/svelte';
-	import { writable } from 'svelte/store';
 
 	import CustomNode from './CustomNode.svelte';
 	import ConnectionLine from './ConnectionLine.svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	const nodeTypes = {
 		custom: CustomNode
 	};
 
-	const nodes = writable<Node[]>([
+	let nodes = $state.raw<Node[]>([
 		{
 			id: 'connectionline-1',
 			type: 'custom',
@@ -21,12 +20,18 @@
 		}
 	]);
 
-	const edges = writable<Edge[]>([]);
+	let edges = $state.raw<Edge[]>([]);
 </script>
 
 <div style="height:100vh;">
-	<SvelteFlow {nodeTypes} {nodes} {edges} fitView>
-		<ConnectionLine slot="connectionLine" />
+	<SvelteFlow
+		bind:nodes
+		bind:edges
+		{nodeTypes}
+		fitView
+		connectionLineComponent={ConnectionLine}
+		connectionDragThreshold={100}
+	>
 		<Background variant={BackgroundVariant.Lines} />
 	</SvelteFlow>
 </div>

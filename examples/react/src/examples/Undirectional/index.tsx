@@ -198,7 +198,7 @@ const UpdateNodeInternalsFlow = () => {
           id: getId(),
           position: screenToFlowPosition({ x: evt.clientX, y: evt.clientY }),
           type: 'custom',
-          data: null,
+          data: {},
         })
       ),
     [screenToFlowPosition, setNodes]

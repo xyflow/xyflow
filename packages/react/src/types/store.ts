@@ -1,5 +1,8 @@
+import type { StoreApi } from 'zustand';
+import type { PubSub } from '../store/pubsub';
 import {
   ConnectionMode,
+  withResolvers,
   type ConnectionState,
   type CoordinateExtent,
   type InternalNodeUpdate,
@@ -10,7 +13,7 @@ import {
   type OnViewportChange,
   type SelectionRect,
   type SnapGrid,
-  type Handle,
+  type HandleBounds,
   type Transform,
   type PanZoomInstance,
   type PanBy,
@@ -27,6 +30,9 @@ import {
   type NodeChange,
   type EdgeChange,
   type ParentLookup,
+  type AriaLabelConfig,
+  type SetCenter,
+  type ZIndexMode,
 } from '@xyflow/system';
 
 import type {
@@ -48,24 +54,14 @@ import type {
 } from '.';
 
 export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  pubSub: PubSub;
   rfId: string;
-  width: number;
-  height: number;
-  transform: Transform;
-  nodes: readonly NodeType[];
-  nodeLookup: NodeLookup<InternalNode<NodeType>>;
-  parentLookup: ParentLookup<InternalNode<NodeType>>;
-  edges: readonly Edge[];
-  edgeLookup: EdgeLookup<EdgeType>;
-  connectionLookup: ConnectionLookup;
   onNodesChange: OnNodesChange<NodeType> | null;
   onEdgesChange: OnEdgesChange<EdgeType> | null;
   hasDefaultNodes: boolean;
   hasDefaultEdges: boolean;
   domNode: HTMLDivElement | null;
-  paneDragging: boolean;
   noPanClassName: string;
-
   panZoom: PanZoomInstance | null;
   minZoom: number;
   maxZoom: number;
@@ -73,19 +69,18 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   nodeExtent: CoordinateExtent;
   nodeOrigin: NodeOrigin;
   nodeDragThreshold: number;
+  connectionDragThreshold: number;
 
   nodesSelectionActive: boolean;
   userSelectionActive: boolean;
-  userSelectionRect: SelectionRect | null;
 
-  connection: ConnectionState<InternalNode<NodeType>>;
   connectionMode: ConnectionMode;
-  connectionClickStartHandle: (Pick<Handle, 'nodeId' | 'id'> & Required<Pick<Handle, 'type'>>) | null;
 
   snapToGrid: boolean;
   snapGrid: SnapGrid;
 
   nodesDraggable: boolean;
+  autoPanOnNodeFocus: boolean;
   nodesConnectable: boolean;
   nodesFocusable: boolean;
   edgesFocusable: boolean;
@@ -119,9 +114,9 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   connectOnClick: boolean;
   defaultEdgeOptions?: DefaultEdgeOptions;
 
-  fitViewOnInit: boolean;
-  fitViewDone: boolean;
-  fitViewOnInitOptions: FitViewOptions | undefined;
+  fitViewQueued: boolean;
+  fitViewOptions: FitViewOptions | undefined;
+  fitViewResolver: ReturnType<typeof withResolvers<boolean>> | null;
 
   onNodesDelete?: OnNodesDelete<NodeType>;
   onEdgesDelete?: OnEdgesDelete<EdgeType>;
@@ -134,7 +129,7 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
   onViewportChangeEnd?: OnViewportChange;
   onBeforeDelete?: OnBeforeDelete<NodeType, EdgeType>;
 
-  onSelectionChangeHandlers: OnSelectionChangeFunc[];
+  onSelectionChangeHandlers: OnSelectionChangeFunc<NodeType, EdgeType>[];
 
   ariaLiveMessage: string;
   autoPanOnConnect: boolean;
@@ -144,18 +139,22 @@ export type ReactFlowStore<NodeType extends Node = Node, EdgeType extends Edge =
 
   isValidConnection?: IsValidConnection<EdgeType>;
 
-  lib: string;
   debug: boolean;
+  ariaLabelConfig: AriaLabelConfig;
+
+  zIndexMode: ZIndexMode;
+  onNodesChangeMiddlewareMap: Map<symbol, (changes: NodeChange<NodeType>[]) => NodeChange<NodeType>[]>;
+  onEdgesChangeMiddlewareMap: Map<symbol, (changes: EdgeChange<EdgeType>[]) => EdgeChange<EdgeType>[]>;
 };
 
 export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodes: (nodes: readonly NodeType[]) => void;
   setEdges: (edges: readonly EdgeType[]) => void;
   setDefaultNodesAndEdges: (nodes?: readonly NodeType[], edges?: readonly EdgeType[]) => void;
-  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
+  updateNodeInternals: (updates: Map<string, InternalNodeUpdate>, params?: { triggerFitView: boolean }) => void;
   updateNodePositions: UpdateNodePositions;
   resetSelectedElements: () => void;
-  unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams) => void;
+  unselectNodesAndEdges: (params?: UnselectNodesAndEdgesParams<NodeType, EdgeType>) => void;
   addSelectedNodes: (nodeIds: string[]) => void;
   addSelectedEdges: (edgeIds: string[]) => void;
   setMinZoom: (minZoom: number) => void;
@@ -164,13 +163,13 @@ export type ReactFlowActions<NodeType extends Node, EdgeType extends Edge> = {
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
   cancelConnection: () => void;
   updateConnection: UpdateConnection<InternalNode<NodeType>>;
+  updateConnectionClickStart: (connectionClickStartHandle: ConnectionStore['connectionClickStartHandle']) => void;
   reset: () => void;
-  triggerNodeChanges: (changes: NodeChange<NodeType>[]) => void;
-  triggerEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
+  emitNodeChanges: (changes: NodeChange<NodeType>[]) => void;
+  emitEdgeChanges: (changes: EdgeChange<EdgeType>[]) => void;
+
   panBy: PanBy;
-  fitView: (options?: FitViewOptions) => Promise<boolean>;
-  fitViewSync: (options?: FitViewOptions) => boolean;
-  setPaneClickDistance: (distance: number) => void;
+  setCenter: SetCenter;
 };
 
 export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge = Edge> = ReactFlowStore<
@@ -178,3 +177,41 @@ export type ReactFlowState<NodeType extends Node = Node, EdgeType extends Edge =
   EdgeType
 > &
   ReactFlowActions<NodeType, EdgeType>;
+
+export type ViewportStore = {
+  paneDragging: boolean;
+  transform: Transform;
+  width: number;
+  height: number;
+};
+
+export type ConnectionStore<NodeType extends Node = Node> = {
+  connection: ConnectionState<InternalNode<NodeType>>;
+  connectionClickStartHandle: (Pick<HandleBounds, 'nodeId' | 'id'> & Required<Pick<HandleBounds, 'type'>>) | null;
+};
+
+export type NodesStore<NodeType extends Node = Node> = {
+  nodes: readonly NodeType[];
+  nodeLookup: NodeLookup<InternalNode<NodeType>>;
+  parentLookup: ParentLookup<InternalNode<NodeType>>;
+  nodesInitialized: boolean;
+};
+
+export type EdgesStore<EdgeType extends Edge = Edge> = {
+  edges: readonly EdgeType[];
+  edgeLookup: EdgeLookup<EdgeType>;
+  connectionLookup: ConnectionLookup;
+};
+
+export type SelectionStore = {
+  userSelectionRect: SelectionRect | null;
+};
+
+export type ReactFlowStoreApi<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
+  optionsStore: StoreApi<ReactFlowState<NodeType, EdgeType>>;
+  viewportStore: StoreApi<ViewportStore>;
+  connectionStore: StoreApi<ConnectionStore<NodeType>>;
+  nodesStore: StoreApi<NodesStore<NodeType>>;
+  edgesStore: StoreApi<EdgesStore<EdgeType>>;
+  selectionStore: StoreApi<SelectionStore>;
+};

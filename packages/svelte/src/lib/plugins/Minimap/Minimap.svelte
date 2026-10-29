@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
   declare const window: Window | undefined;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getAttrFunction = (func: any): GetMiniMapNodeAttribute =>
@@ -6,106 +6,89 @@
 </script>
 
 <script lang="ts">
-  import cc from 'classcat';
-  import {
-    getBoundsOfRects,
-    getInternalNodesBounds,
-    getNodeDimensions,
-    nodeHasDimensions,
-    type Rect
-  } from '@xyflow/system';
+  import { getBoundsOfRects, getInternalNodesBounds, nodeHasDimensions } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
-  import { Panel } from '$lib/container/Panel';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { Panel } from '#lib/container/Panel/index.js';
   import MinimapNode from './MinimapNode.svelte';
-  import interactive from './interactive';
-  import type { GetMiniMapNodeAttribute, MiniMapProps } from './types';
+  import interactive from './interactive.js';
+  import type { GetMiniMapNodeAttribute, MiniMapProps } from './types.js';
 
-  type $$Props = MiniMapProps;
+  let {
+    position = 'bottom-right',
+    ariaLabel,
+    nodeStrokeColor = 'transparent',
+    nodeColor,
+    nodeClass = '',
+    nodeBorderRadius = 5,
+    nodeStrokeWidth = 2,
+    nodeComponent,
+    bgColor,
+    maskColor,
+    maskStrokeColor,
+    maskStrokeWidth,
+    width = 200,
+    height = 150,
+    pannable = true,
+    zoomable = true,
+    inversePan,
+    zoomStep,
+    class: className,
+    ...rest
+  }: MiniMapProps = $props();
 
-  export let position: $$Props['position'] = 'bottom-right';
-  export let ariaLabel: $$Props['ariaLabel'] = 'Mini map';
-  export let nodeStrokeColor: $$Props['nodeStrokeColor'] = 'transparent';
-  export let nodeColor: $$Props['nodeColor'] = undefined;
-  export let nodeClass: $$Props['nodeClass'] = '';
-  export let nodeBorderRadius: $$Props['nodeBorderRadius'] = 5;
-  export let nodeStrokeWidth: $$Props['nodeStrokeWidth'] = 2;
-  export let bgColor: $$Props['bgColor'] = undefined;
-  export let maskColor: $$Props['maskColor'] = undefined;
-  export let maskStrokeColor: $$Props['maskStrokeColor'] = undefined;
-  export let maskStrokeWidth: $$Props['maskStrokeWidth'] = undefined;
-  export let width: $$Props['width'] = undefined;
-  export let height: $$Props['height'] = undefined;
-  export let pannable: $$Props['pannable'] = true;
-  export let zoomable: $$Props['zoomable'] = true;
-  export let inversePan: $$Props['inversePan'] = undefined;
-  export let zoomStep: $$Props['zoomStep'] = undefined;
-  export let style: $$Props['style'] = '';
+  let store = $derived(useSvelteFlowStore());
+  let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
-  let className: $$Props['class'] = '';
-  export { className as class };
-
-  const defaultWidth = 200;
-  const defaultHeight = 150;
-  const {
-    nodes,
-    nodeLookup,
-    viewport,
-    width: containerWidth,
-    height: containerHeight,
-    flowId,
-    panZoom,
-    translateExtent
-  } = useStore();
-
-  const nodeColorFunc = nodeColor === undefined ? undefined : getAttrFunction(nodeColor);
-  const nodeStrokeColorFunc = getAttrFunction(nodeStrokeColor);
-  const nodeClassFunc = getAttrFunction(nodeClass);
   const shapeRendering =
     // @ts-expect-error - TS doesn't know about chrome
     typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
-  const labelledBy = `svelte-flow__minimap-desc-${$flowId}`;
 
-  $: viewBB = {
-    x: -$viewport.x / $viewport.zoom,
-    y: -$viewport.y / $viewport.zoom,
-    width: $containerWidth / $viewport.zoom,
-    height: $containerHeight / $viewport.zoom
-  };
-  let boundingRect: Rect = viewBB;
+  let labelledBy = $derived(`svelte-flow__minimap-desc-${store.flowId}`);
 
-  $: {
-    boundingRect =
-      $nodeLookup.size > 0 ? getBoundsOfRects(getInternalNodesBounds($nodeLookup), viewBB) : viewBB;
-    $nodes;
-  }
+  let viewBB = $derived({
+    x: -store.viewport.x / store.viewport.zoom,
+    y: -store.viewport.y / store.viewport.zoom,
+    width: store.width / store.viewport.zoom,
+    height: store.height / store.viewport.zoom
+  });
 
-  $: elementWidth = width ?? defaultWidth;
-  $: elementHeight = height ?? defaultHeight;
-  $: scaledWidth = boundingRect.width / elementWidth;
-  $: scaledHeight = boundingRect.height / elementHeight;
-  $: viewScale = Math.max(scaledWidth, scaledHeight);
-  $: viewWidth = viewScale * elementWidth;
-  $: viewHeight = viewScale * elementHeight;
-  $: offset = 5 * viewScale;
-  $: x = boundingRect.x - (viewWidth - boundingRect.width) / 2 - offset;
-  $: y = boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset;
-  $: viewboxWidth = viewWidth + offset * 2;
-  $: viewboxHeight = viewHeight + offset * 2;
+  let hasVisibleNodes = $derived(store.nodes.some((n) => !n.hidden));
+
+  let boundingRect = $derived(
+    hasVisibleNodes
+      ? getBoundsOfRects(
+          getInternalNodesBounds(store.nodeLookup, { filter: (n) => !n.hidden }),
+          viewBB
+        )
+      : viewBB
+  );
+
+  let scaledWidth = $derived(boundingRect.width / width);
+  let scaledHeight = $derived(boundingRect.height / height);
+  let viewScale = $derived(Math.max(scaledWidth, scaledHeight));
+  let viewWidth = $derived(viewScale * width);
+  let viewHeight = $derived(viewScale * height);
+  let offset = $derived(5 * viewScale);
+  let x = $derived(boundingRect.x - (viewWidth - boundingRect.width) / 2 - offset);
+  let y = $derived(boundingRect.y - (viewHeight - boundingRect.height) / 2 - offset);
+  let viewboxWidth = $derived(viewWidth + offset * 2);
+  let viewboxHeight = $derived(viewHeight + offset * 2);
 
   const getViewScale = () => viewScale;
 </script>
 
 <Panel
   {position}
-  style={style + (bgColor ? `;--xy-minimap-background-color-props:${bgColor}` : '')}
-  class={cc(['svelte-flow__minimap', className])}
+  class={['svelte-flow__minimap', className]}
   data-testid="svelte-flow__minimap"
+  --xy-minimap-background-color-props={bgColor}
+  {...rest}
 >
-  {#if $panZoom}
+  {#if store.panZoom}
     <svg
-      width={elementWidth}
-      height={elementHeight}
+      {width}
+      {height}
       viewBox="{x} {y} {viewboxWidth} {viewboxHeight}"
       class="svelte-flow__minimap-svg"
       role="img"
@@ -116,35 +99,35 @@
         ? maskStrokeWidth * viewScale
         : undefined}
       use:interactive={{
-        panZoom: $panZoom,
-        viewport,
+        store,
+        panZoom: store.panZoom,
         getViewScale,
-        translateExtent: $translateExtent,
-        width: $containerWidth,
-        height: $containerHeight,
+        translateExtent: store.translateExtent,
+        width: store.width,
+        height: store.height,
         inversePan,
         zoomStep,
         pannable,
         zoomable
       }}
     >
-      {#if ariaLabel}<title id={labelledBy}>{ariaLabel}</title>{/if}
+      {#if ariaLabel ?? ariaLabelConfig['minimap.ariaLabel']}
+        <title id={labelledBy}>{ariaLabel ?? ariaLabelConfig['minimap.ariaLabel']}</title>
+      {/if}
 
-      {#each $nodes as userNode (userNode.id)}
-        {@const node = $nodeLookup.get(userNode.id)}
-        {#if node && nodeHasDimensions(node)}
-          {@const nodeDimesions = getNodeDimensions(node)}
+      {#each store.nodes as userNode (userNode.id)}
+        {@const node = store.nodeLookup.get(userNode.id)}
+        {#if node && nodeHasDimensions(node) && !node.hidden}
           <MinimapNode
-            x={node.internals.positionAbsolute.x}
-            y={node.internals.positionAbsolute.y}
-            {...nodeDimesions}
+            id={node.id}
             selected={node.selected}
-            color={nodeColorFunc?.(node)}
+            {nodeComponent}
+            color={nodeColor === undefined ? undefined : getAttrFunction(nodeColor)(userNode)}
             borderRadius={nodeBorderRadius}
-            strokeColor={nodeStrokeColorFunc(node)}
+            strokeColor={getAttrFunction(nodeStrokeColor)(userNode)}
             strokeWidth={nodeStrokeWidth}
             {shapeRendering}
-            class={nodeClassFunc(node)}
+            class={getAttrFunction(nodeClass)(userNode)}
           />
         {/if}
       {/each}

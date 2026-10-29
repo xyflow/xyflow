@@ -1,37 +1,39 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
-  import { getNodesBounds, Position, getNodeToolbarTransform } from '@xyflow/system';
-  import portal from '$lib/actions/portal';
-  import type { InternalNode } from '$lib/types';
-  import { useStore } from '$lib/store';
+  import { Position, getNodeToolbarTransform } from '@xyflow/system';
 
-  import type { NodeToolbarProps } from './types';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { getNodeIdContext } from '#lib/store/context.js';
+  import { hideOnSSR, portal } from '#lib/actions/portal/index.js';
+  import { useSvelteFlow } from '#lib/hooks/useSvelteFlow.svelte.js';
 
-  type $$Props = NodeToolbarProps;
+  import type { InternalNode } from '#lib/types/index.js';
+  import type { NodeToolbarProps } from './types.js';
 
-  export let nodeId: $$Props['nodeId'] = undefined;
-  export let position: $$Props['position'] = undefined;
-  export let align: $$Props['align'] = undefined;
-  export let offset: $$Props['offset'] = undefined;
-  export let isVisible: $$Props['isVisible'] = undefined;
+  let {
+    nodeId,
+    position = Position.Top,
+    align = 'center',
+    offset = 10,
+    isVisible,
+    children,
+    ...rest
+  }: NodeToolbarProps = $props();
 
-  const { domNode, viewport, nodeLookup, nodes, nodeOrigin } = useStore();
-  const contextNodeId = getContext<string>('svelteflow__node_id');
+  const store = useSvelteFlowStore();
 
-  let transform: string;
-  let toolbarNodes: InternalNode[] = [];
-  let _offset = offset !== undefined ? offset : 10;
-  let _position = position !== undefined ? position : Position.Top;
-  let _align = align !== undefined ? align : 'center';
+  const { getNodesBounds } = useSvelteFlow();
+  const contextNodeId = getNodeIdContext();
 
-  $: {
-    // nly needed to trigger updates, $nodeLookup is just a helper that does not trigger any updates
-    $nodes;
+  let toolbarNodes: InternalNode[] = $derived.by(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    store.nodes;
+    const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId ?? contextNodeId];
 
-    const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId || contextNodeId];
-
-    toolbarNodes = nodeIds.reduce<InternalNode[]>((res, nodeId) => {
-      const node = $nodeLookup.get(nodeId);
+    return nodeIds.reduce<InternalNode[]>((res, nodeId) => {
+      if (!nodeId) {
+        throw new Error('Either pass a nodeId or use within a Custom Node component');
+      }
+      const node = store.nodeLookup.get(nodeId);
 
       if (node) {
         res.push(node);
@@ -39,40 +41,44 @@
 
       return res;
     }, []);
-  }
+  });
 
-  $: {
-    const nodeRect = getNodesBounds(toolbarNodes, { nodeOrigin: $nodeOrigin });
-
+  let transform: string = $derived.by(() => {
+    const nodeRect = getNodesBounds(toolbarNodes);
     if (nodeRect) {
-      transform = getNodeToolbarTransform(nodeRect, $viewport, _position, _offset, _align);
+      return getNodeToolbarTransform(nodeRect, store.viewport, position, offset, align);
     }
-  }
+    return '';
+  });
 
-  $: zIndex =
+  let zIndex = $derived(
     toolbarNodes.length === 0
       ? 1
-      : Math.max(...toolbarNodes.map((node) => (node.internals.z || 5) + 1));
+      : Math.max(...toolbarNodes.map((node) => (node.internals.z || 5) + 1))
+  );
 
   //FIXME: Possible performance bottleneck
-  $: selectedNodesCount = $nodes.filter((node) => node.selected).length;
+  let selectedNodesCount = $derived(store.nodes.filter((node) => node.selected).length);
 
   // if isVisible is not set, we show the toolbar only if its node is selected and no other node is selected
-  $: isActive =
+  let isActive = $derived(
     typeof isVisible === 'boolean'
       ? isVisible
-      : toolbarNodes.length === 1 && toolbarNodes[0].selected && selectedNodesCount === 1;
+      : toolbarNodes.length === 1 && toolbarNodes[0].selected && selectedNodesCount === 1
+  );
 </script>
 
-{#if $domNode && isActive && toolbarNodes}
+{#if store.domNode && isActive && toolbarNodes}
   <div
-    data-id={toolbarNodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
+    use:portal={'root'}
+    style:display={hideOnSSR().value ? 'none' : undefined}
     class="svelte-flow__node-toolbar"
-    use:portal={{ domNode: $domNode }}
+    data-id={toolbarNodes.reduce((acc, node) => `${acc}${node.id} `, '').trim()}
     style:position="absolute"
     style:transform
     style:z-index={zIndex}
+    {...rest}
   >
-    <slot />
+    {@render children?.()}
   </div>
 {/if}

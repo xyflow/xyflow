@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
   export function wrapHandler(
     handler: (evt: MouseEvent) => void,
     container: HTMLDivElement
@@ -7,228 +7,351 @@
       if (event.target !== container) {
         return;
       }
-
       handler?.(event);
     };
   }
 
-  export function toggleSelected<Item extends Node | Edge>(ids: string[]) {
-    return (item: Item) => {
-      const isSelected = ids.includes(item.id);
+  function isSetEqual(a: Set<string>, b: Set<string>) {
+    if (a.size !== b.size) {
+      return false;
+    }
 
-      if (item.selected !== isSelected) {
-        item.selected = isSelected;
+    for (const item of a) {
+      if (!b.has(item)) {
+        return false;
       }
+    }
 
-      return item;
-    };
+    return true;
   }
 </script>
 
-<script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+<script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
+  import { onDestroy } from 'svelte';
   import {
     SelectionMode,
     getEventPosition,
     getNodesInside,
-    getConnectedEdges
+    calcAutoPan,
+    pointToRendererPoint,
+    rendererPointToPoint,
+    getSelectionChanges,
+    type XYPosition
   } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
-  import type { Node, Edge, InternalNode } from '$lib/types';
-  import type { PaneProps } from './types';
+  import type { Node, Edge } from '#lib/types/index.js';
+  import type { PaneProps } from './types.js';
 
-  type $$Props = PaneProps;
+  let {
+    store = $bindable(),
+    panOnDrag = true,
+    paneClickDistance = 1,
+    selectionOnDrag,
+    autoPanOnSelection = true,
+    onpaneclick,
+    onpanecontextmenu,
+    onselectionstart,
+    onselectionend,
+    children
+  }: PaneProps<NodeType, EdgeType> = $props();
 
-  export let panOnDrag: $$Props['panOnDrag'] = undefined;
-  export let selectionOnDrag: $$Props['selectionOnDrag'] = undefined;
-
-  const dispatch = createEventDispatcher<{
-    paneclick: {
-      event: MouseEvent | TouchEvent;
-    };
-    panecontextmenu: {
-      event: MouseEvent;
-    };
-  }>();
-  const {
-    nodes,
-    nodeLookup,
-    edges,
-    viewport,
-    dragging,
-    elementsSelectable,
-    selectionRect,
-    selectionRectMode,
-    selectionKeyPressed,
-    selectionMode,
-    panActivationKeyPressed,
-    unselectNodesAndEdges
-  } = useStore();
-
+  // svelte-ignore non_reactive_update
   let container: HTMLDivElement;
   let containerBounds: DOMRect | null = null;
-  let selectedNodes: InternalNode[] = [];
+  let connectionEndedOnPane = false;
 
-  $: _panOnDrag = $panActivationKeyPressed || panOnDrag;
-  $: isSelecting =
-    $selectionKeyPressed || $selectionRect || (selectionOnDrag && _panOnDrag !== true);
-  $: hasActiveSelection = $elementsSelectable && (isSelecting || $selectionRectMode === 'user');
+  /* eslint-disable svelte/prefer-svelte-reactivity */
+  let selectedNodeIds: Set<string> = new Set();
+  let selectedEdgeIds: Set<string> = new Set();
+  /* eslint-enable svelte/prefer-svelte-reactivity */
+
+  let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
+  let isSelecting = $derived(
+    store.selectionKeyPressed ||
+      !!store.selectionRect ||
+      (selectionOnDrag && panOnDragActive !== true)
+  );
+  let isSelectionEnabled = $derived(
+    store.elementsSelectable && (isSelecting || store.selectionRectMode === 'user')
+  );
 
   // Used to prevent click events when the user lets go of the selectionKey during a selection
   let selectionInProgress = false;
 
-  function onClick(event: MouseEvent | TouchEvent) {
-    // We prevent click events when the user let go of the selectionKey during a selection
-    if (selectionInProgress) {
-      selectionInProgress = false;
+  // Used for auto pan when approaching the edges of the container during selection
+  let autoPanId: number = 0;
+  let position: XYPosition = { x: 0, y: 0 };
+  let autoPanStarted = false;
+
+  // We start the selection process when the user clicks down on the pane
+  function onPointerDownCapture(event: PointerEvent) {
+    // Mouse button arrays only restrict mouse input. Let touch panning handle this gesture
+    // unless the user explicitly activated selection with the selection key.
+    if (event.pointerType === 'touch' && panOnDragActive !== false && !store.selectionKeyPressed) {
       return;
     }
 
-    dispatch('paneclick', { event });
-    unselectNodesAndEdges();
-    selectionRectMode.set(null);
-  }
+    containerBounds = container?.getBoundingClientRect();
+    if (!containerBounds) return;
 
-  function onPointerDown(event: PointerEvent) {
-    containerBounds = container.getBoundingClientRect();
-    (event.target as Element)?.setPointerCapture?.(event.pointerId);
+    const eventTargetIsContainer = event.target === container;
+
+    const isNoKeyEvent =
+      !eventTargetIsContainer && !!(event.target as HTMLElement).closest('.nokey');
+
+    const isSelectionActive =
+      (selectionOnDrag && eventTargetIsContainer) || store.selectionKeyPressed;
 
     if (
-      !elementsSelectable ||
+      isNoKeyEvent ||
       !isSelecting ||
+      !isSelectionActive ||
       event.button !== 0 ||
-      event.target !== container ||
-      !containerBounds
+      !event.isPrimary
     ) {
       return;
     }
 
+    (event.target as Partial<Element>)?.setPointerCapture?.(event.pointerId);
+
+    selectionInProgress = false;
+    autoPanStarted = false;
+
     const { x, y } = getEventPosition(event, containerBounds);
 
-    unselectNodesAndEdges();
+    // We convert the position to the flow space so that it stays fixed on the canvas while auto-panning
+    const userSelectionFlowOrigin = pointToRendererPoint({ x, y }, [
+      store.viewport.x,
+      store.viewport.y,
+      store.viewport.zoom
+    ]);
 
-    selectionRect.set({
+    store.selectionRect = {
       width: 0,
       height: 0,
-      startX: x,
-      startY: y,
+      startX: userSelectionFlowOrigin.x,
+      startY: userSelectionFlowOrigin.y,
       x,
       y
-    });
+    };
 
-    // onSelectionStart?.(event);
+    if (!eventTargetIsContainer) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
   }
 
-  function onPointerMove(event: PointerEvent) {
-    if (!isSelecting || !containerBounds || !$selectionRect) {
+  // We commit the user selection rectangle to the store on auto-panning or pointer move
+  function commitUserSelectionRect(mouseX: number, mouseY: number): void {
+    if (store.selectionRect?.startX === undefined || store.selectionRect.startY === undefined) {
       return;
+    }
+
+    const userStartPosition = { x: store.selectionRect?.startX, y: store.selectionRect?.startY };
+    const screenStart = rendererPointToPoint(userStartPosition, [
+      store.viewport.x,
+      store.viewport.y,
+      store.viewport.zoom
+    ]);
+    const nextUserSelectRect = {
+      startX: userStartPosition.x,
+      startY: userStartPosition.y,
+      x: mouseX < screenStart.x ? mouseX : screenStart.x,
+      y: mouseY < screenStart.y ? mouseY : screenStart.y,
+      width: Math.abs(mouseX - screenStart.x),
+      height: Math.abs(mouseY - screenStart.y)
+    };
+
+    const prevSelectedNodeIds = selectedNodeIds;
+    const prevSelectedEdgeIds = selectedEdgeIds;
+
+    selectedNodeIds = new Set(
+      getNodesInside(
+        store.nodeLookup,
+        nextUserSelectRect,
+        [store.viewport.x, store.viewport.y, store.viewport.zoom],
+        store.selectionMode === SelectionMode.Partial,
+        true
+      ).map((n) => n.id)
+    );
+
+    const edgesSelectable = store.defaultEdgeOptions.selectable ?? true;
+    selectedEdgeIds = new Set();
+
+    // We look for all edges connected to the selected nodes
+    for (const nodeId of selectedNodeIds) {
+      const connections = store.connectionLookup.get(nodeId);
+      if (!connections) continue;
+      for (const { edgeId } of connections.values()) {
+        const edge = store.edgeLookup.get(edgeId);
+        if (edge && (edge.selectable ?? edgesSelectable)) {
+          selectedEdgeIds.add(edgeId);
+        }
+      }
+    }
+
+    // this prevents unnecessary updates while updating the selection rectangle
+    if (!isSetEqual(prevSelectedNodeIds, selectedNodeIds)) {
+      store.queueNodeChanges(getSelectionChanges(store.nodeLookup, selectedNodeIds));
+    }
+
+    if (!isSetEqual(prevSelectedEdgeIds, selectedEdgeIds)) {
+      store.queueEdgeChanges(getSelectionChanges(store.edgeLookup, selectedEdgeIds));
+    }
+
+    store.selectionRectMode = 'user';
+    store.selectionRect = nextUserSelectRect;
+  }
+
+  function autoPan(): void {
+    if (!autoPanOnSelection || !containerBounds) {
+      return;
+    }
+    const [x, y] = calcAutoPan(position, containerBounds, store.autoPanSpeed);
+
+    store.panBy({ x, y }).then((panned) => {
+      if (!selectionInProgress || !panned) {
+        autoPanId = requestAnimationFrame(autoPan);
+        return;
+      }
+      commitUserSelectionRect(position.x, position.y);
+      autoPanId = requestAnimationFrame(autoPan);
+    });
+  }
+
+  function cleanupAutoPan(): void {
+    cancelAnimationFrame(autoPanId);
+    autoPanId = 0;
+    autoPanStarted = false;
+  }
+
+  onDestroy(() => {
+    if (typeof window !== 'undefined') {
+      cleanupAutoPan();
+    }
+  });
+
+  function onPointerMove(event: PointerEvent) {
+    if (!isSelecting || !containerBounds || !store.selectionRect) {
+      return;
+    }
+
+    const mousePos = getEventPosition(event, containerBounds);
+    position = { x: mousePos.x, y: mousePos.y };
+
+    const userStartPosition = { x: store.selectionRect.startX, y: store.selectionRect.startY };
+    const screenStart = rendererPointToPoint(userStartPosition, [
+      store.viewport.x,
+      store.viewport.y,
+      store.viewport.zoom
+    ]);
+
+    if (!selectionInProgress) {
+      const requiredDistance = store.selectionKeyPressed ? 0 : paneClickDistance;
+      const distance = Math.hypot(mousePos.x - screenStart.x, mousePos.y - screenStart.y);
+      if (distance <= requiredDistance) {
+        return;
+      }
+      store.unselectNodesAndEdges();
+      onselectionstart?.(event);
     }
 
     selectionInProgress = true;
 
-    const mousePos = getEventPosition(event, containerBounds);
-    const startX = $selectionRect.startX ?? 0;
-    const startY = $selectionRect.startY ?? 0;
-    const nextUserSelectRect = {
-      ...$selectionRect,
-      x: mousePos.x < startX ? mousePos.x : startX,
-      y: mousePos.y < startY ? mousePos.y : startY,
-      width: Math.abs(mousePos.x - startX),
-      height: Math.abs(mousePos.y - startY)
-    };
-    const prevSelectedNodeIds = selectedNodes.map((n) => n.id);
-    const prevSelectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
-
-    selectedNodes = getNodesInside(
-      $nodeLookup,
-      nextUserSelectRect,
-      [$viewport.x, $viewport.y, $viewport.zoom],
-      $selectionMode === SelectionMode.Partial,
-      true
-    );
-    const selectedEdgeIds = getConnectedEdges(selectedNodes, $edges).map((e) => e.id);
-    const selectedNodeIds = selectedNodes.map((n) => n.id);
-
-    // this prevents unnecessary updates while updating the selection rectangle
-    if (
-      prevSelectedNodeIds.length !== selectedNodeIds.length ||
-      selectedNodeIds.some((id) => !prevSelectedNodeIds.includes(id))
-    ) {
-      nodes.update((nodes) => nodes.map(toggleSelected(selectedNodeIds)));
+    if (!autoPanStarted) {
+      autoPan();
+      autoPanStarted = true;
     }
 
-    if (
-      prevSelectedEdgeIds.length !== selectedEdgeIds.length ||
-      selectedEdgeIds.some((id) => !prevSelectedEdgeIds.includes(id))
-    ) {
-      edges.update((edges) => edges.map(toggleSelected(selectedEdgeIds)));
-    }
-
-    selectionRectMode.set('user');
-    selectionRect.set(nextUserSelectRect);
+    commitUserSelectionRect(mousePos.x, mousePos.y);
   }
 
   function onPointerUp(event: PointerEvent) {
+    if (!isSelectionEnabled) {
+      if (event.target === container && store.connection.inProgress) {
+        connectionEndedOnPane = true;
+      }
+      return;
+    }
+
     if (event.button !== 0) {
       return;
     }
 
-    (event.target as Element)?.releasePointerCapture?.(event.pointerId);
+    (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
 
     // We only want to trigger click functions when in selection mode if
     // the user did not move the mouse.
-    if (!isSelecting && $selectionRectMode === 'user' && event.target === container) {
+
+    if (!selectionInProgress && event.target === container) {
       onClick?.(event);
     }
-    selectionRect.set(null);
 
-    if (selectedNodes.length > 0) {
-      $selectionRectMode = 'nodes';
+    store.selectionRect = null;
+
+    if (selectionInProgress) {
+      store.selectionRectMode = selectedNodeIds.size > 0 ? 'nodes' : null;
     }
 
-    // If the user kept holding the selectionKey during the selection,
-    // we need to reset the selectionInProgress, so the next click event is not prevented
-    if ($selectionKeyPressed) {
-      selectionInProgress = false;
+    if (selectionInProgress) {
+      onselectionend?.(event);
     }
 
-    // onSelectionEnd?.(event);
+    cleanupAutoPan();
+  }
+
+  function onPointerCancel(event: PointerEvent) {
+    (event.target as Partial<Element>)?.releasePointerCapture?.(event.pointerId);
+    cleanupAutoPan();
   }
 
   const onContextMenu = (event: MouseEvent) => {
-    if (Array.isArray(_panOnDrag) && _panOnDrag?.includes(2)) {
+    if (Array.isArray(panOnDragActive) && panOnDragActive.includes(2)) {
       event.preventDefault();
       return;
     }
 
-    dispatch('panecontextmenu', { event });
+    onpanecontextmenu?.({ event });
   };
+
+  const onClickCapture = (event: MouseEvent) => {
+    if (selectionInProgress) {
+      event.stopPropagation();
+      selectionInProgress = false;
+    }
+  };
+
+  function onClick(event: MouseEvent) {
+    // We prevent click events when the user let go of the selectionKey during a selection
+    // We also prevent click events when a connection is in progress
+    if (selectionInProgress || store.connection.inProgress || connectionEndedOnPane) {
+      selectionInProgress = false;
+      connectionEndedOnPane = false;
+      return;
+    }
+
+    onpaneclick?.({ event });
+    store.unselectNodesAndEdges();
+    store.selectionRectMode = null;
+    store.selectionRect = null;
+  }
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   bind:this={container}
-  class="svelte-flow__pane"
-  class:draggable={panOnDrag}
-  class:dragging={$dragging}
+  class="svelte-flow__pane svelte-flow__container"
+  class:draggable={panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0))}
+  class:dragging={store.dragging}
   class:selection={isSelecting}
-  on:click={hasActiveSelection ? undefined : wrapHandler(onClick, container)}
-  on:pointerdown={hasActiveSelection ? onPointerDown : undefined}
-  on:pointermove={hasActiveSelection ? onPointerMove : undefined}
-  on:pointerup={hasActiveSelection ? onPointerUp : undefined}
-  on:contextmenu={wrapHandler(onContextMenu, container)}
+  onclick={isSelectionEnabled ? undefined : wrapHandler(onClick, container)}
+  onpointerdowncapture={isSelectionEnabled ? onPointerDownCapture : undefined}
+  onpointermove={isSelectionEnabled ? onPointerMove : undefined}
+  onpointerup={onPointerUp}
+  onpointercancel={isSelectionEnabled ? onPointerCancel : undefined}
+  oncontextmenu={wrapHandler(onContextMenu, container)}
+  onclickcapture={isSelectionEnabled ? onClickCapture : undefined}
 >
-  <slot />
+  {@render children()}
 </div>
-
-<style>
-  .svelte-flow__pane {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

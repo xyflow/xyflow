@@ -1,13 +1,12 @@
-import { ReactNode } from 'react';
+import { type ReactNode, type ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
-import type { ReactFlowState } from '../../types';
-import { useStore } from '../../hooks/useStore';
+import { useOptionsStore } from '../../hooks/useReactFlowStore';
 
-const selector = (state: ReactFlowState) => state.domNode?.querySelector('.react-flow__renderer');
+export function NodeToolbarPortal({ children }: { children: ReactNode }): ReactPortal | null {
+  const domNode = useOptionsStore((s) => s.domNode);
 
-export function NodeToolbarPortal({ children }: { children: ReactNode }) {
-  const wrapperRef = useStore(selector);
+  const wrapperRef = domNode?.querySelector('.react-flow__renderer');
 
   if (!wrapperRef) {
     return null;

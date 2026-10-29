@@ -1,2 +1,3 @@
 export { default as MiniMap } from './Minimap.svelte';
-export * from './types';
+export { default as MiniMapNode } from './MinimapNode.svelte';
+export * from './types.js';

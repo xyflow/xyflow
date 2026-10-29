@@ -1,31 +1,75 @@
 <script lang="ts">
-  import cc from 'classcat';
+  import type { Component } from 'svelte';
+  import type { MiniMapNodeProps } from './types.js';
+  import { useInternalNode } from '#lib/hooks/useInternalNode.svelte.js';
+  import { getNodeDimensions } from '@xyflow/system';
 
-  export let x: number;
-  export let y: number;
-  export let width: number = 0;
-  export let height: number = 0;
-  export let borderRadius: number = 5;
-  export let color: string | undefined = undefined;
-  export let shapeRendering: string;
-  export let strokeColor: string | undefined = undefined;
-  export let strokeWidth: number = 2;
-  export let selected: boolean = false;
-  let className: string = '';
-  export { className as class };
+  let {
+    id,
+    x: xProp,
+    y: yProp,
+    width: widthProp,
+    height: heightProp,
+    borderRadius = 5,
+    color,
+    shapeRendering,
+    strokeColor,
+    strokeWidth = 2,
+    selected,
+    class: className,
+    nodeComponent
+  }: MiniMapNodeProps & {
+    nodeComponent?: Component<MiniMapNodeProps>;
+  } = $props();
+
+  let internalNode = useInternalNode(() => ({ id }));
+
+  let { width, height, x, y } = $derived.by(() => {
+    if (!internalNode.current) {
+      return { width: 0, height: 0, x: 0, y: 0 };
+    }
+
+    const { width, height } = getNodeDimensions(internalNode.current);
+
+    return {
+      width: widthProp ?? width,
+      height: heightProp ?? height,
+      x: xProp ?? internalNode.current.internals.positionAbsolute.x,
+      y: yProp ?? internalNode.current.internals.positionAbsolute.y
+    };
+  });
 </script>
 
-<rect
-  class={cc(['svelte-flow__minimap-node', className])}
-  class:selected
-  {x}
-  {y}
-  rx={borderRadius}
-  ry={borderRadius}
-  {width}
-  {height}
-  style={`${color ? `fill: ${color};` : ''}${strokeColor ? `stroke: ${strokeColor};` : ''}${
-    strokeWidth ? `stroke-width: ${strokeWidth};` : ''
-  }`}
-  shape-rendering={shapeRendering}
-/>
+{#if nodeComponent}
+  {@const CustomComponent = nodeComponent}
+
+  <CustomComponent
+    {id}
+    {x}
+    {y}
+    {width}
+    {height}
+    {borderRadius}
+    class={className}
+    {color}
+    {shapeRendering}
+    {strokeColor}
+    {strokeWidth}
+    {selected}
+  />
+{:else}
+  <rect
+    class={['svelte-flow__minimap-node', className]}
+    class:selected
+    {x}
+    {y}
+    rx={borderRadius}
+    ry={borderRadius}
+    {width}
+    {height}
+    style:fill={color}
+    style:stroke={strokeColor}
+    style:stroke-width={strokeWidth}
+    shape-rendering={shapeRendering}
+  />
+{/if}

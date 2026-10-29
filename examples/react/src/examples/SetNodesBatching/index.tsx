@@ -6,8 +6,6 @@ import {
   BackgroundVariant,
   Controls,
   ReactFlowProvider,
-  Node,
-  Edge,
   useReactFlow,
   Panel,
 } from '@xyflow/react';
@@ -48,6 +46,7 @@ const SetNotesBatchingFlow = () => {
       minZoom={0.2}
       maxZoom={4}
       fitView
+      debug
     >
       <Background variant={BackgroundVariant.Dots} />
       <MiniMap />

@@ -1,0 +1,14 @@
+@keyframes react-flow-edge-dash {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.react-flow__edge-custom3 {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: react-flow-edge-dash 1s linear forwards;
+}

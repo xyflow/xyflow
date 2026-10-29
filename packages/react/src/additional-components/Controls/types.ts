@@ -3,24 +3,46 @@ import type { PanelPosition } from '@xyflow/system';
 
 import type { FitViewOptions } from '../../types';
 
+/**
+ * @expand
+ */
 export type ControlProps = {
-  /** Show button for zoom in/out */
+  /**
+   * Whether or not to show the zoom in and zoom out buttons. These buttons will adjust the viewport
+   * zoom by a fixed amount each press.
+   * @default true
+   */
   showZoom?: boolean;
-  /** Show button for fit view */
+  /**
+   * Whether or not to show the fit view button. By default, this button will adjust the viewport so
+   * that all nodes are visible at once.
+   * @default true
+   */
   showFitView?: boolean;
-  /** Show button for toggling interactivity */
+  /**
+   * Show button for toggling interactivity
+   * @default true
+   */
   showInteractive?: boolean;
-  /** Options being used when fit view button is clicked */
+  /**
+   * Customise the options for the fit view button. These are the same options you would pass to the
+   * fitView function.
+   */
   fitViewOptions?: FitViewOptions;
-  /** Callback when zoom in button is clicked */
+  /** Called in addition the default zoom behavior when the zoom in button is clicked. */
   onZoomIn?: () => void;
-  /** Callback when zoom out button is clicked */
+  /** Called in addition the default zoom behavior when the zoom out button is clicked. */
   onZoomOut?: () => void;
-  /** Callback when fit view button is clicked */
+  /**
+   * Called when the fit view button is clicked. When this is not provided, the viewport will be
+   * adjusted so that all nodes are visible.
+   */
   onFitView?: () => void;
-  /** Callback when interactivity is toggled */
+  /** Called when the interactive (lock) button is clicked. */
   onInteractiveChange?: (interactiveStatus: boolean) => void;
-  /** Position of the controls on the pane
+  /**
+   * Position of the controls on the pane
+   * @default PanelPosition.BottomLeft
    * @example PanelPosition.TopLeft, PanelPosition.TopRight,
    * PanelPosition.BottomLeft, PanelPosition.BottomRight
    */
@@ -28,10 +50,19 @@ export type ControlProps = {
   children?: ReactNode;
   /** Style applied to container */
   style?: React.CSSProperties;
-  /** ClassName applied to container */
+  /** Class name applied to container */
   className?: string;
+  /**
+   * @default 'React Flow controls'
+   */
   'aria-label'?: string;
+  /**
+   * @default 'vertical'
+   */
   orientation?: 'horizontal' | 'vertical';
 };
 
+/**
+ * @expand
+ */
 export type ControlButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;

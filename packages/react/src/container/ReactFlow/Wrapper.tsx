@@ -2,8 +2,8 @@ import { useContext, type ReactNode } from 'react';
 
 import StoreContext from '../../contexts/StoreContext';
 import { ReactFlowProvider } from '../../components/ReactFlowProvider';
-import type { Node, Edge } from '../../types';
-import { NodeOrigin } from '@xyflow/system';
+import type { Node, Edge, FitViewOptions } from '../../types';
+import { CoordinateExtent, NodeOrigin, ZIndexMode } from '@xyflow/system';
 
 export function Wrapper({
   children,
@@ -14,7 +14,12 @@ export function Wrapper({
   width,
   height,
   fitView,
+  fitViewOptions,
+  minZoom,
+  maxZoom,
   nodeOrigin,
+  nodeExtent,
+  zIndexMode,
 }: {
   children: ReactNode;
   nodes?: readonly Node[];
@@ -24,13 +29,20 @@ export function Wrapper({
   width?: number;
   height?: number;
   fitView?: boolean;
+  fitViewOptions?: FitViewOptions;
+  minZoom?: number;
+  maxZoom?: number;
   nodeOrigin?: NodeOrigin;
+  nodeExtent?: CoordinateExtent;
+  zIndexMode?: ZIndexMode;
 }) {
   const isWrapped = useContext(StoreContext);
 
   if (isWrapped) {
-    // we need to wrap it with a fragment because it's not allowed for children to be a ReactNode
-    // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18051
+    /*
+     * we need to wrap it with a fragment because it's not allowed for children to be a ReactNode
+     * https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18051
+     */
     return <>{children}</>;
   }
 
@@ -43,7 +55,12 @@ export function Wrapper({
       initialWidth={width}
       initialHeight={height}
       fitView={fitView}
+      initialFitViewOptions={fitViewOptions}
+      initialMinZoom={minZoom}
+      initialMaxZoom={maxZoom}
       nodeOrigin={nodeOrigin}
+      nodeExtent={nodeExtent}
+      zIndexMode={zIndexMode}
     >
       {children}
     </ReactFlowProvider>

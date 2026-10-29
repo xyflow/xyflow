@@ -1,10 +1,18 @@
 <script lang="ts">
-  import { writable } from 'svelte/store';
-  import { SvelteFlow, Controls, Background, BackgroundVariant, Position, type Node, type Edge } from '@xyflow/svelte';
+  import {
+    SvelteFlow,
+    Controls,
+    Background,
+    BackgroundVariant,
+    Position,
+    ViewportPortal,
+    type Node,
+    type Edge,
+  } from '@xyflow/svelte';
 
-  import '@xyflow/svelte/dist/style.css';
+  import '@xyflow/svelte/style.css';
 
-  const nodes = writable<Node[]>([
+  let nodes = $state.raw<Node[]>([
     {
       id: '0',
       position: { x: 0, y: 150 },
@@ -46,7 +54,7 @@
     },
     {
       id: 'C',
-      position: { x: 250, y: 300 },
+      position: { x: 950, y: 300 },
       data: { label: 'C' },
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
@@ -59,7 +67,7 @@
     },
   ]);
 
-  const edges = writable<Edge[]>([
+  let edges = $state.raw<Edge[]>([
     { id: '0A', source: '0', target: 'A', animated: true },
     { id: '0B', source: '0', target: 'B', animated: true },
     { id: '0C', source: '0', target: 'C', animated: true },
@@ -71,8 +79,11 @@
 </script>
 
 <div style="height: 400px; width: 700px;">
-  <SvelteFlow {nodes} {edges} fitView {defaultEdgeOptions} width={700} height={400}>
+  <SvelteFlow bind:nodes bind:edges onlyRenderVisibleElements {defaultEdgeOptions} width={700} height={400}>
     <Controls />
     <Background variant={BackgroundVariant.Dots} />
+    <ViewportPortal target="front">
+      <div style:transform="translate(100px, 100px)" style:position="absolute">[100, 100] inside the flow.</div>
+    </ViewportPortal>
   </SvelteFlow>
 </div>

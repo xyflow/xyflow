@@ -6,38 +6,38 @@ import SvelteFlowInitialApp from '../components/SvelteFlowInitialExample/index.s
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro example for React Flow and Svelte Flow</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro example for React Flow and Svelte Flow</title>
 
-		<style>
-			html, body {
-				margin:0;
-				font-family: sans-serif;
-			}
-		</style>
-	</head>
-	<body>
-		<h2>React Flow</h2>
-		<p>no client hydration</p>
-		<ReactFlowApp />
+    <style>
+      html,
+      body {
+        margin: 0;
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>React Flow</h2>
+    <p>no client hydration</p>
+    <ReactFlowApp />
 
-		<p>client hydration on load (client:load)</p>
-		<ReactFlowApp client:load />
+    <p>client hydration on load (client:load)</p>
+    <ReactFlowApp client:load />
 
-		<p>client hydration on load (client:load) and initialWidth / initialHeight</p>
-		<ReactFlowInitialApp client:load />
+    <p>client hydration on load (client:load) and initialWidth / initialHeight</p>
+    <ReactFlowInitialApp client:load />
 
-		<h2>Svelte Flow</h2>
-		<SvelteFlowApp />
+    <h2>Svelte Flow</h2>
+    <SvelteFlowApp />
 
-		<p>client hydration on load (client:load)</p>
-		<SvelteFlowApp client:load />
+    <p>client hydration on load (client:load)</p>
+    <SvelteFlowApp client:load />
 
-		<p>client hydration on load (client:load) and initialWidth / initialHeight</p>
-		<SvelteFlowInitialApp client:load />
-
-	</body>
+    <p>client hydration on load (client:load) and initialWidth / initialHeight</p>
+    <SvelteFlowInitialApp client:load />
+  </body>
 </html>

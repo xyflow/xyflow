@@ -4,14 +4,19 @@
  */
 import { useRef, useEffect, type MouseEvent, type KeyboardEvent } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import { getInternalNodesBounds, isNumeric } from '@xyflow/system';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import {
+  useOptionsStore,
+  useNodesStore,
+  useViewportStore,
+  useShallow,
+  useReactFlowStoreApi,
+} from '../../hooks/useReactFlowStore';
 import { useDrag } from '../../hooks/useDrag';
 import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { arrowKeyDiffs } from '../NodeWrapper/utils';
-import type { Node, ReactFlowState } from '../../types';
+import type { Node, NodesStore } from '../../types';
 
 export type NodesSelectionProps<NodeType> = {
   onSelectionContextMenu?: (event: MouseEvent, nodes: NodeType[]) => void;
@@ -19,7 +24,7 @@ export type NodesSelectionProps<NodeType> = {
   disableKeyboardA11y: boolean;
 };
 
-const selector = (s: ReactFlowState) => {
+const selector = (s: NodesStore) => {
   const { width, height, x, y } = getInternalNodesBounds(s.nodeLookup, {
     filter: (node) => !!node.selected,
   });
@@ -27,8 +32,8 @@ const selector = (s: ReactFlowState) => {
   return {
     width: isNumeric(width) ? width : null,
     height: isNumeric(height) ? height : null,
-    userSelectionActive: s.userSelectionActive,
-    transformString: `translate(${s.transform[0]}px,${s.transform[1]}px) scale(${s.transform[2]}) translate(${x}px,${y}px)`,
+    x,
+    y,
   };
 };
 
@@ -37,8 +42,11 @@ export function NodesSelection<NodeType extends Node>({
   noPanClassName,
   disableKeyboardA11y,
 }: NodesSelectionProps<NodeType>) {
-  const store = useStoreApi<NodeType>();
-  const { width, height, transformString, userSelectionActive } = useStore(selector, shallow);
+  const { nodesStore } = useReactFlowStoreApi<NodeType>();
+  const { width, height, x, y } = useNodesStore(useShallow(selector));
+  const userSelectionActive = useOptionsStore((s) => s.userSelectionActive);
+  const { transform } = useViewportStore();
+  const transformString = `translate(${transform[0]}px,${transform[1]}px) scale(${transform[2]}) translate(${x}px,${y}px)`;
   const moveSelectedNodes = useMoveSelectedNodes();
 
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -51,23 +59,28 @@ export function NodesSelection<NodeType extends Node>({
     }
   }, [disableKeyboardA11y]);
 
+  const shouldRender = !userSelectionActive && width !== null && height !== null;
+
   useDrag({
     nodeRef,
+    disabled: !shouldRender,
   });
 
-  if (userSelectionActive || !width || !height) {
+  if (!shouldRender) {
     return null;
   }
 
   const onContextMenu = onSelectionContextMenu
     ? (event: MouseEvent) => {
-        const selectedNodes = store.getState().nodes.filter((n) => n.selected);
+        const selectedNodes = nodesStore.getState().nodes.filter((n) => n.selected);
         onSelectionContextMenu(event, selectedNodes);
       }
     : undefined;
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
+      event.preventDefault();
+
       moveSelectedNodes({
         direction: arrowKeyDiffs[event.key],
         factor: event.shiftKey ? 4 : 1,

@@ -1,0 +1,30 @@
+import { useEffect, useState } from 'react';
+import type { EdgeChange } from '@xyflow/system';
+
+import { useReactFlowStoreApi } from './useReactFlowStore';
+import type { Edge, Node } from '../types';
+
+/**
+ * Registers a middleware function to transform edge changes.
+ *
+ * @public
+ * @param fn - Middleware function. Should be memoized with useCallback to avoid re-registration.
+ */
+export function experimental_useOnEdgesChangeMiddleware<EdgeType extends Edge = Edge>(
+  fn: (changes: EdgeChange<EdgeType>[]) => EdgeChange<EdgeType>[]
+) {
+  const { optionsStore } = useReactFlowStoreApi<Node, EdgeType>();
+  const [symbol] = useState(() => Symbol());
+
+  useEffect(() => {
+    const { onEdgesChangeMiddlewareMap } = optionsStore.getState();
+    onEdgesChangeMiddlewareMap.set(symbol, fn);
+  }, [fn]);
+
+  useEffect(() => {
+    const { onEdgesChangeMiddlewareMap } = optionsStore.getState();
+    return () => {
+      onEdgesChangeMiddlewareMap.delete(symbol);
+    };
+  }, []);
+}

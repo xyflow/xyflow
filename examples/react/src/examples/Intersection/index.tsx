@@ -9,11 +9,12 @@ import {
   Edge,
   useReactFlow,
   useNodesState,
+  OnNodeDrag,
 } from '@xyflow/react';
 
 import './style.css';
 
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDragStop: OnNodeDrag = (_, node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const initialNodes: Node[] = [
@@ -65,7 +66,7 @@ const BasicFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const { getIntersectingNodes, isNodeIntersecting } = useReactFlow();
 
-  const onNodeDrag = useCallback((_: MouseEvent, node: Node) => {
+  const onNodeDrag: OnNodeDrag = useCallback((_, node) => {
     const intersections = getIntersectingNodes(node).map((n) => n.id);
     const isIntersecting = isNodeIntersecting(node, { x: 0, y: 0, width: 100, height: 100 });
 

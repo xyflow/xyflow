@@ -1,13 +1,18 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useEffect, useRef, type MouseEvent, useCallback, CSSProperties } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import {
+  useEqualSelector,
+  useOptionsStore,
+  useNodesStore,
+  useViewportStore,
+  useReactFlowStoreApi,
+  useShallow,
+} from '../../hooks/useReactFlowStore';
 import { Panel } from '../../components/Panel';
-import type { ReactFlowState, Node } from '../../types';
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
+import type { NodesStore, ViewportStore, Node } from '../../types';
 
 import MiniMapNodes from './MiniMapNodes';
 import type { MiniMapProps } from './types';
@@ -15,27 +20,54 @@ import type { MiniMapProps } from './types';
 const defaultWidth = 200;
 const defaultHeight = 150;
 
-const selector = (s: ReactFlowState) => {
+const filterHidden = (node: Node) => !node.hidden;
+
+const viewportSelector = ({ transform, width, height }: ViewportStore) => ({ transform, width, height });
+
+const selector = (s: NodesStore, viewport: ReturnType<typeof viewportSelector>) => {
   const viewBB: Rect = {
-    x: -s.transform[0] / s.transform[2],
-    y: -s.transform[1] / s.transform[2],
-    width: s.width / s.transform[2],
-    height: s.height / s.transform[2],
+    x: -viewport.transform[0] / viewport.transform[2],
+    y: -viewport.transform[1] / viewport.transform[2],
+    width: viewport.width / viewport.transform[2],
+    height: viewport.height / viewport.transform[2],
   };
+
+  /*
+   * the bounds only cover the visible nodes, so we have to check for a visible node
+   * here as well. getInternalNodesBounds returns a rect at the origin when nothing
+   * passes the filter, which would stretch the bounds to include (0, 0).
+   */
+  let hasVisibleNode = false;
+
+  for (const node of s.nodeLookup.values()) {
+    if (!node.hidden) {
+      hasVisibleNode = true;
+      break;
+    }
+  }
 
   return {
     viewBB,
-    boundingRect: s.nodeLookup.size > 0 ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup), viewBB) : viewBB,
-    rfId: s.rfId,
-    panZoom: s.panZoom,
-    translateExtent: s.translateExtent,
-    flowWidth: s.width,
-    flowHeight: s.height,
+    boundingRect: hasVisibleNode
+      ? getBoundsOfRects(getInternalNodesBounds(s.nodeLookup, { filter: filterHidden }), viewBB)
+      : viewBB,
+    flowWidth: viewport.width,
+    flowHeight: viewport.height,
   };
 };
+type MiniMapSlice = ReturnType<typeof selector>;
+
+const rectEqual = (a: Rect, b: Rect) => a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+
+// the selector builds new viewBB/boundingRect objects every call, so the default shallow equality always
+// treats them as changed; comparing the rects by value lets the minimap skip re-renders when nothing moved
+const areEqual = (a: MiniMapSlice, b: MiniMapSlice) =>
+  rectEqual(a.viewBB, b.viewBB) &&
+  rectEqual(a.boundingRect, b.boundingRect) &&
+  a.flowWidth === b.flowWidth &&
+  a.flowHeight === b.flowHeight;
 
 const ARIA_LABEL_KEY = 'react-flow__minimap-desc';
-
 function MiniMapComponent<NodeType extends Node = Node>({
   style,
   className,
@@ -44,8 +76,10 @@ function MiniMapComponent<NodeType extends Node = Node>({
   nodeClassName = '',
   nodeBorderRadius = 5,
   nodeStrokeWidth,
-  // We need to rename the prop to be `CapitalCase` so that JSX will render it as
-  // a component properly.
+  /*
+   * We need to rename the prop to be `CapitalCase` so that JSX will render it as
+   * a component properly.
+   */
   nodeComponent,
   bgColor,
   maskColor,
@@ -56,14 +90,27 @@ function MiniMapComponent<NodeType extends Node = Node>({
   onNodeClick,
   pannable = false,
   zoomable = false,
-  ariaLabel = 'React Flow mini map',
+  ariaLabel,
   inversePan,
-  zoomStep = 10,
+  zoomStep = 1,
   offsetScale = 5,
 }: MiniMapProps<NodeType>) {
-  const store = useStoreApi<NodeType>();
+  const { optionsStore, viewportStore, nodesStore } = useReactFlowStoreApi<NodeType>();
   const svg = useRef<SVGSVGElement>(null);
-  const { boundingRect, viewBB, rfId, panZoom, translateExtent, flowWidth, flowHeight } = useStore(selector, shallow);
+
+  const rfId = useOptionsStore((s) => s.rfId);
+  const panZoom = useOptionsStore((s) => s.panZoom);
+  const translateExtent = useOptionsStore((s) => s.translateExtent);
+  const ariaLabelConfig = useOptionsStore((s) => s.ariaLabelConfig);
+
+  const viewport = useViewportStore(useShallow(viewportSelector));
+  const { viewBB, boundingRect, flowWidth, flowHeight } = useNodesStore(
+    useEqualSelector(
+      useCallback((s: NodesStore) => selector(s, viewport), [viewport]),
+      areEqual
+    )
+  );
+
   const elementWidth = (style?.width as number) ?? defaultWidth;
   const elementHeight = (style?.height as number) ?? defaultHeight;
   const scaledWidth = boundingRect.width / elementWidth;
@@ -77,17 +124,20 @@ function MiniMapComponent<NodeType extends Node = Node>({
   const width = viewWidth + offset * 2;
   const height = viewHeight + offset * 2;
   const labelledBy = `${ARIA_LABEL_KEY}-${rfId}`;
-  const viewScaleRef = useRef(0);
   const minimapInstance = useRef<XYMinimapInstance>();
 
-  viewScaleRef.current = viewScale;
+  const viewScaleRef = useRef(viewScale);
+  useIsomorphicLayoutEffect(() => {
+    viewScaleRef.current = viewScale;
+  }, [viewScale]);
 
   useEffect(() => {
-    if (svg.current && panZoom) {
+    const currentPanZoom = optionsStore.getState().panZoom;
+    if (svg.current && currentPanZoom) {
       minimapInstance.current = XYMinimap({
         domNode: svg.current,
-        panZoom,
-        getTransform: () => store.getState().transform,
+        panZoom: currentPanZoom,
+        getTransform: () => viewportStore.getState().transform,
         getViewScale: () => viewScaleRef.current,
       });
 
@@ -95,7 +145,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
         minimapInstance.current?.destroy();
       };
     }
-  }, [panZoom]);
+  }, [panZoom, optionsStore, viewportStore]);
 
   useEffect(() => {
     minimapInstance.current?.update({
@@ -116,12 +166,20 @@ function MiniMapComponent<NodeType extends Node = Node>({
       }
     : undefined;
 
-  const onSvgNodeClick = onNodeClick
-    ? useCallback((event: MouseEvent, nodeId: string) => {
-        const node = store.getState().nodeLookup.get(nodeId)!;
-        onNodeClick(event, node);
-      }, [])
-    : undefined;
+  const nodeClickHandler = useCallback(
+    (event: MouseEvent, nodeId: string) => {
+      const internalNode = nodesStore.getState().nodeLookup.get(nodeId)!;
+
+      if (internalNode && onNodeClick) {
+        onNodeClick(event, internalNode.internals.userNode);
+      }
+    },
+    [onNodeClick, nodesStore]
+  );
+
+  const onSvgNodeClick = onNodeClick ? nodeClickHandler : undefined;
+
+  const _ariaLabel = ariaLabel ?? ariaLabelConfig['minimap.ariaLabel'];
 
   return (
     <Panel
@@ -136,7 +194,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
             typeof maskStrokeWidth === 'number' ? maskStrokeWidth * viewScale : undefined,
           '--xy-minimap-node-background-color-props': typeof nodeColor === 'string' ? nodeColor : undefined,
           '--xy-minimap-node-stroke-color-props': typeof nodeStrokeColor === 'string' ? nodeStrokeColor : undefined,
-          '--xy-minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'string' ? nodeStrokeWidth : undefined,
+          '--xy-minimap-node-stroke-width-props': typeof nodeStrokeWidth === 'number' ? nodeStrokeWidth : undefined,
         } as CSSProperties
       }
       className={cc(['react-flow__minimap', className])}
@@ -152,9 +210,10 @@ function MiniMapComponent<NodeType extends Node = Node>({
         ref={svg}
         onClick={onSvgClick}
       >
-        {ariaLabel && <title id={labelledBy}>{ariaLabel}</title>}
+        {_ariaLabel && <title id={labelledBy}>{_ariaLabel}</title>}
+
         <MiniMapNodes<NodeType>
-          onClick={onSvgNodeClick}
+          onClick={onNodeClick ? onSvgNodeClick : undefined}
           nodeColor={nodeColor}
           nodeStrokeColor={nodeStrokeColor}
           nodeBorderRadius={nodeBorderRadius}
@@ -176,4 +235,24 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
 MiniMapComponent.displayName = 'MiniMap';
 
+/**
+ * The `<MiniMap />` component can be used to render an overview of your flow. It
+ * renders each node as an SVG element and visualizes where the current viewport is
+ * in relation to the rest of the flow.
+ *
+ * @public
+ * @example
+ *
+ * ```jsx
+ *import { ReactFlow, MiniMap } from '@xyflow/react';
+ *
+ *export default function Flow() {
+ *  return (
+ *    <ReactFlow nodes={[...]} edges={[...]}>
+ *      <MiniMap nodeStrokeWidth={3} />
+ *    </ReactFlow>
+ *  );
+ *}
+ *```
+ */
 export const MiniMap = memo(MiniMapComponent) as typeof MiniMapComponent;

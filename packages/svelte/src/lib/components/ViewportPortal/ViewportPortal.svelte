@@ -1,10 +1,14 @@
 <script lang="ts">
-  import portal from '$lib/actions/portal';
-  import { useStore } from '$lib/store';
+  import { hideOnSSR, portal } from '#lib/actions/portal/index.js';
+  import type { ViewportPortalProps } from './types.js';
 
-  const { domNode } = useStore();
+  let { target = 'front', children, ...rest }: ViewportPortalProps = $props();
 </script>
 
-<div use:portal={{ target: '.svelte-flow__viewport-portal', domNode: $domNode }}>
-  <slot />
+<div
+  use:portal={`viewport-${target}`}
+  style:display={hideOnSSR().value ? 'none' : undefined}
+  {...rest}
+>
+  {@render children?.()}
 </div>

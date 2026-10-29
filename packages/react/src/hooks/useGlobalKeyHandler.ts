@@ -1,14 +1,13 @@
 import { useEffect } from 'react';
 import type { KeyCode } from '@xyflow/system';
 
-import { useStoreApi } from '../hooks/useStore';
-import { useKeyPress, UseKeyPressOptions } from './useKeyPress';
+import { useReactFlowStoreApi } from './useReactFlowStore';
+import { useKeyPress } from './useKeyPress';
 import { useReactFlow } from './useReactFlow';
 import { Edge, Node } from '../types';
 
 const selected = (item: Node | Edge) => item.selected;
 
-const deleteKeyOptions: UseKeyPressOptions = { actInsideInputWithModifier: false };
 const win = typeof window !== 'undefined' ? window : undefined;
 
 /**
@@ -23,21 +22,24 @@ export function useGlobalKeyHandler({
   deleteKeyCode: KeyCode | null;
   multiSelectionKeyCode: KeyCode | null;
 }): void {
-  const store = useStoreApi();
+  const { optionsStore, nodesStore, edgesStore } = useReactFlowStoreApi();
   const { deleteElements } = useReactFlow();
 
-  const deleteKeyPressed = useKeyPress(deleteKeyCode, deleteKeyOptions);
+  const deleteKeyPressed = useKeyPress(deleteKeyCode, { actInsideInputWithModifier: false });
   const multiSelectionKeyPressed = useKeyPress(multiSelectionKeyCode, { target: win });
 
   useEffect(() => {
     if (deleteKeyPressed) {
-      const { edges, nodes } = store.getState();
-      deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected) });
-      store.setState({ nodesSelectionActive: false });
+      const { edges } = edgesStore.getState();
+      const { nodes } = nodesStore.getState();
+      void deleteElements({ nodes: nodes.filter(selected), edges: edges.filter(selected) });
+      if (optionsStore.getState().nodesSelectionActive) {
+        optionsStore.setState({ nodesSelectionActive: false });
+      }
     }
   }, [deleteKeyPressed]);
 
   useEffect(() => {
-    store.setState({ multiSelectionActive: multiSelectionKeyPressed });
+    optionsStore.setState({ multiSelectionActive: multiSelectionKeyPressed });
   }, [multiSelectionKeyPressed]);
 }

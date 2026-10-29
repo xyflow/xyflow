@@ -10,7 +10,8 @@ export const initialNodes: Node[] = [
 	{
 		id: '2',
 		data: { label: 'Node 2' },
-		position: { x: 0, y: 150 }
+		position: { x: 0, y: 150 },
+		parentId: '1'
 	},
 	{
 		id: '3',

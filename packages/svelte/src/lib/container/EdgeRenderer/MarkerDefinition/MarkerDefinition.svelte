@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { useStore } from '$lib/store';
-  import { Marker } from '$lib/container/EdgeRenderer/MarkerDefinition';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { Marker } from '#lib/container/EdgeRenderer/MarkerDefinition/index.js';
 
-  const { markers } = useStore();
+  const store = useSvelteFlowStore();
 </script>
 
 <defs>
-  {#each $markers as marker (marker.id)}
+  {#each store.markers as marker (marker.id)}
     <Marker {...marker} />
   {/each}
 </defs>

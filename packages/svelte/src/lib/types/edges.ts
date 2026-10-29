@@ -1,4 +1,5 @@
-import type { SvelteComponent, ComponentType } from 'svelte';
+import type { Component } from 'svelte';
+import type { ClassValue, HTMLAttributes, SVGAttributes } from 'svelte/elements';
 import type {
   EdgeBase,
   BezierPathOptions,
@@ -8,10 +9,12 @@ import type {
   StepPathOptions
 } from '@xyflow/system';
 
-import type { Node } from '$lib/types';
+import type { Node } from '#lib/types/index.js';
 
 /**
- * The Edge type is mainly used for the `edges` that get passed to the SvelteFlow component.
+ * An `Edge` is the complete description with everything Svelte Flow needs to know in order to
+ * render it.
+ * @public
  */
 export type Edge<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
@@ -20,8 +23,47 @@ export type Edge<
   label?: string;
   labelStyle?: string;
   style?: string;
-  class?: string;
+  class?: ClassValue;
+  focusable?: boolean;
+  /**
+   * The ARIA role attribute for the edge, used for accessibility.
+   * @default "group"
+   */
+  ariaRole?: HTMLAttributes<HTMLElement>['role'];
+  /**
+   * General escape hatch for adding custom attributes to the edge's DOM element.
+   */
+  domAttributes?: Omit<
+    SVGAttributes<SVGGElement>,
+    'id' | 'style' | 'class' | 'role' | 'aria-label' | 'dangerouslySetInnerHTML'
+  >;
 };
+
+export type BaseEdgeProps = Pick<
+  EdgeProps,
+  'interactionWidth' | 'label' | 'labelStyle' | 'style'
+> & {
+  id?: string;
+  /** SVG path of the edge */
+  path: string;
+  /** The x coordinate of the label */
+  labelX?: number;
+  /** The y coordinate of the label */
+  labelY?: number;
+  /**
+   * The id of the SVG marker to use at the start of the edge. This should be defined in a
+   * `<defs>` element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
+   * @example 'url(#arrow)'
+   */
+  markerStart?: string;
+  /**
+   * The id of the SVG marker to use at the end of the edge. This should be defined in a `<defs>`
+   * element in a separate SVG document or element. Use the format "url(#markerId)" where markerId is the id of your marker definition.
+   * @example 'url(#arrow)'
+   */
+  markerEnd?: string;
+  class?: ClassValue;
+} & HTMLAttributes<SVGPathElement>;
 
 type SmoothStepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<
   EdgeData,
@@ -59,8 +101,6 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Omit<
   'sourceHandle' | 'targetHandle'
 > &
   EdgePosition & {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data?: any;
     type: string;
     markerStart?: string;
     markerEnd?: string;
@@ -113,47 +153,23 @@ export type StraightEdgeProps = Omit<EdgeComponentProps, 'sourcePosition' | 'tar
 
 export type EdgeTypes = Record<
   string,
-  ComponentType<
-    SvelteComponent<
-      EdgeProps & {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data?: any;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        type: any;
-      }
-    >
+  Component<
+    EdgeProps & {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data?: any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      type: any;
+    }
   >
 >;
 
 export type DefaultEdgeOptions = DefaultEdgeOptionsBase<Edge>;
 
-export type EdgeLayouted = Pick<
-  Edge,
-  | 'type'
-  | 'id'
-  | 'data'
-  | 'style'
-  | 'source'
-  | 'target'
-  | 'animated'
-  | 'selected'
-  | 'selectable'
-  | 'deletable'
-  | 'label'
-  | 'labelStyle'
-  | 'interactionWidth'
-  | 'markerStart'
-  | 'markerEnd'
-  | 'sourceHandle'
-  | 'targetHandle'
-  | 'ariaLabel'
-  | 'hidden'
-  | 'class'
-  | 'zIndex'
-> &
+export type EdgeLayouted<EdgeType extends Edge = Edge> = EdgeType &
   EdgePosition & {
     sourceNode?: Node;
     targetNode?: Node;
     sourceHandleId?: string | null;
     targetHandleId?: string | null;
+    edge: EdgeType;
   };

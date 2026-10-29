@@ -1,15 +1,11 @@
 import { CSSProperties } from 'react';
-import { EdgeProps, useStore, getBezierPath } from '@xyflow/react';
+import { EdgeProps, getBezierPath, useInternalNode } from '@xyflow/react';
 
 import { getEdgeParams } from './utils';
 
 function FloatingEdge({ id, source, target, style }: EdgeProps) {
-  const { sourceNode, targetNode } = useStore((s) => {
-    const sourceNode = s.nodeLookup.get(source);
-    const targetNode = s.nodeLookup.get(target);
-
-    return { sourceNode, targetNode };
-  });
+  const sourceNode = useInternalNode(source);
+  const targetNode = useInternalNode(target);
 
   if (!sourceNode || !targetNode) {
     return null;

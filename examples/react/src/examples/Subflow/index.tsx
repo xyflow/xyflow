@@ -13,9 +13,10 @@ import {
   MiniMap,
   Background,
   Panel,
-  NodeOrigin,
   useUpdateNodeInternals,
   ReactFlowProvider,
+  CoordinateExtent,
+  useReactFlow,
 } from '@xyflow/react';
 
 import DebugNode from './DebugNode';
@@ -27,11 +28,20 @@ const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 const initialNodes: Node[] = [
+  // {
+  //   id: 'extent',
+  //   position: { x: 0, y: 0 },
+  //   width: 1000,
+  //   height: 1000,
+  //   data: { label: 'Extent' },
+  //   origin: [0, 0],
+  //   zIndex: -1,
+  // },
   {
     id: '1',
     type: 'input',
     data: { label: 'Node 1' },
-    position: { x: 250, y: 5 },
+    position: { x: -200, y: -500 },
     className: 'light',
     origin: [0.5, 0.5],
   },
@@ -40,7 +50,7 @@ const initialNodes: Node[] = [
     data: { label: 'Node 4' },
     position: { x: 100, y: 200 },
     className: 'light',
-    origin: [0.5, 0.5],
+    origin: [0, 0],
     style: {
       backgroundColor: 'rgba(255,50, 50, 0.5)',
       width: 500,
@@ -50,14 +60,13 @@ const initialNodes: Node[] = [
   {
     id: '4a',
     data: { label: 'Node 4a' },
-    position: { x: 15, y: 15 },
+    position: { x: -15, y: -15 },
     className: 'light',
     parentId: '4',
-    origin: [0.5, 0.5],
-
+    origin: [0, 0],
     extent: [
       [0, 0],
-      [100, 100],
+      [300, 100],
     ],
   },
   {
@@ -78,6 +87,7 @@ const initialNodes: Node[] = [
     position: { x: 40, y: 20 },
     className: 'light',
     parentId: '4b',
+    origin: [0.5, 0.5],
   },
   {
     id: '4b2',
@@ -88,19 +98,23 @@ const initialNodes: Node[] = [
   },
   {
     id: '5',
-    type: 'group',
+    // type: 'group',
     data: { label: 'Node 5' },
     position: { x: 650, y: 250 },
     className: 'light',
     style: { width: 100, height: 100 },
-    zIndex: 1000,
+    // zIndex: 1000,
   },
   {
     id: '5a',
     data: { label: 'Node 5a' },
-    position: { x: 0, y: 0 },
+    position: { x: -100, y: -100 },
     className: 'light',
     parentId: '5',
+    // extent: [
+    //   [0, 0],
+    //   [300, 300],
+    // ],
     extent: 'parent',
   },
   {
@@ -122,9 +136,8 @@ const initialNodes: Node[] = [
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
     className: 'light',
-    extent: 'parent',
   },
-];
+].reverse();
 
 const initialEdges: Edge[] = [
   {
@@ -140,10 +153,10 @@ const initialEdges: Edge[] = [
     },
   },
   { id: 'e1-3', source: '1', target: '3' },
-  { id: 'e3-4', source: '3', target: '4', zIndex: 100 },
+  { id: 'e3-4', source: '3', target: '4' },
   { id: 'e3-4b', source: '3', target: '4b' },
   { id: 'e4a-4b1', source: '4a', target: '4b1' },
-  { id: 'e4a-4b2', source: '4a', target: '4b2', zIndex: 100 },
+  { id: 'e4a-4b2', source: '4a', target: '4b2' },
   { id: 'e4b1-4b2', source: '4b1', target: '4b2' },
 ];
 
@@ -151,11 +164,17 @@ const nodeTypes = {
   default: DebugNode,
 };
 
+const nodeExtent: CoordinateExtent = [
+  [0, 0],
+  [1000, 1000],
+];
+
 const Subflow = () => {
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const updateNodeInternals = useUpdateNodeInternals();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { changeParent } = useReactFlow();
 
   const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), [setEdges]);
   const onInit = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
@@ -220,6 +239,7 @@ const Subflow = () => {
       nodeTypes={nodeTypes}
       fitView
       nodeOrigin={[0, 0]}
+      // nodeExtent={nodeExtent}
     >
       <MiniMap />
       <Controls />
@@ -233,13 +253,14 @@ const Subflow = () => {
         <button onClick={logToObject}>toObject</button>
         <button onClick={() => setNodes(initialNodes)}>setNodes</button>
         <button onClick={() => updateNodeInternals(nodes.map((node) => node.id))}>updateNodeInternals</button>
+        <button onClick={() => changeParent('4b1', '5')}>changeParent</button>
       </Panel>
     </ReactFlow>
   );
 };
 
 export default () => (
-  <ReactFlowProvider>
+  <ReactFlowProvider nodeExtent={nodeExtent}>
     <Subflow />
   </ReactFlowProvider>
 );

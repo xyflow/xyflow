@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "incremental": false,
+    "target": "es2017",
+    "jsx": "preserve",
+    "lib": ["DOM", "ESNext"],
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "types": [],
+    "strict": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": false,
+    "declaration": true,
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "vueCompilerOptions": {
+    "strictTemplates": true
+  },
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "include": ["./src"],
+  "exclude": ["node_modules", "dist"]
+}

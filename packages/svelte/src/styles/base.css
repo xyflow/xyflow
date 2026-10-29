@@ -1,9 +1,0 @@
-/* this gets exported as style.css and can be used for the default theming */
-@import '../../../system/src/styles/init.css';
-@import '../../../system/src/styles/base.css';
-@import '../../../system/src/styles/node-resizer.css';
-
-.svelte-flow__edge-label {
-  text-align: center;
-  position: absolute;
-}

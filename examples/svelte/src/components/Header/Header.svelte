@@ -1,15 +1,19 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	const routes = [
+		'a11y',
 		'add-node-on-drop',
 		'color-mode',
 		'custom-connection-line',
+		'custom-minimap',
 		'customnode',
 		'dagre',
+		'detached-handle',
 		'drag-n-drop',
 		'edges',
+		'edge-toolbar',
 		'figma',
 		'handle-connect',
 		'interaction',
@@ -17,6 +21,7 @@
 		'node-toolbar',
 		'node-resizer',
 		'overview',
+		'setnodes-batching',
 		'stress',
 		'subflows',
 		'two-way-viewport',
@@ -35,8 +40,8 @@
 
 <header>
 	<div class="logo">Svelte Flow</div>
-	<select on:change={onChange} value={$page.route.id}>
-		{#each routes as route}
+	<select onchange={onChange} value={page.route.id}>
+		{#each routes as route (route)}
 			<option value={`/examples/${route}`}>{route}</option>
 		{/each}
 	</select>

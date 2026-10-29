@@ -1,11 +1,14 @@
 <script lang="ts">
-	import { Header } from '$components/Header';
+	import { Header } from '#components/Header/index.js';
+	import type { Snippet } from 'svelte';
+
+	let { children }: { children?: Snippet } = $props();
 </script>
 
 <div class="app">
 	<Header />
 	<div class="flow">
-		<slot />
+		{@render children?.()}
 	</div>
 </div>
 

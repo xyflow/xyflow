@@ -1,46 +1,35 @@
 <script lang="ts">
-	import {
-		BaseEdge,
-		EdgeLabelRenderer,
-		useEdges,
-		type EdgeProps,
-		getBezierPath
-	} from '@xyflow/svelte';
+	import { BaseEdge, useEdges, getBezierPath, type EdgeProps, EdgeLabel } from '@xyflow/svelte';
 
-	type $$Props = EdgeProps;
+	let { ...props }: EdgeProps = $props();
 
-	$: [path, labelX, labelY] = getBezierPath({
-		sourceX: $$props.sourceX,
-		sourceY: $$props.sourceY,
-		targetX: $$props.targetX,
-		targetY: $$props.targetY,
-		sourcePosition: $$props.sourcePosition,
-		targetPosition: $$props.targetPosition
-	});
+	let [path, labelX, labelY] = $derived(
+		getBezierPath({
+			sourceX: props.sourceX,
+			sourceY: props.sourceY,
+			targetX: props.targetX,
+			targetY: props.targetY,
+			sourcePosition: props.sourcePosition,
+			targetPosition: props.targetPosition
+		})
+	);
 
 	const edges = useEdges();
 
 	function onClick() {
-		edges.update((eds) => eds.filter((e) => e.id !== $$props.id));
+		edges.current = edges.current.filter((e) => e.id !== props.id);
 	}
 </script>
 
-<BaseEdge {path} {labelX} {labelY} {...$$props} />
+<BaseEdge {path} {labelX} {labelY} {...props} />
 
-<EdgeLabelRenderer>
-	<button
-		style:transform={`translate(-50%,-50%) translate(${labelX}px,${labelY}px)`}
-		class="edge-button"
-		on:click={onClick}
-	>
-		✕
-	</button>
-</EdgeLabelRenderer>
+<EdgeLabel x={labelX} y={labelY} selectEdgeOnClick>
+	<button class="edge-button" onclick={onClick}> ✕ </button>
+</EdgeLabel>
 
 <style>
 	.edge-button {
 		border-radius: 50%;
-		position: absolute;
 		border: none;
 		width: 1rem;
 		height: 1rem;
@@ -48,7 +37,6 @@
 		justify-content: center;
 		align-items: center;
 		font-size: 8px;
-		pointer-events: all;
 		cursor: pointer;
 		background-color: #eee;
 	}

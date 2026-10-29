@@ -1,31 +1,53 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
+  import { getEdgeIdContext } from '#lib/store/context.js';
+  import { hideOnSSR, portal } from '#lib/actions/portal/index.js';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { toPxString } from '#lib/utils/index.js';
 
-  import { EdgeLabelRenderer } from '$lib/components/EdgeLabelRenderer';
-  import { useHandleEdgeSelect } from '$lib/hooks/useHandleEdgeSelect';
-  import type { BaseEdgeProps } from '$lib/components/BaseEdge/types';
+  import type { EdgeLabelProps } from './types.js';
 
-  export let style: BaseEdgeProps['labelStyle'] = undefined;
-  export let x: BaseEdgeProps['labelX'] = undefined;
-  export let y: BaseEdgeProps['labelY'] = undefined;
+  let {
+    x = 0,
+    y = 0,
+    width,
+    height,
+    selectEdgeOnClick = false,
+    transparent = false,
+    class: className,
+    children,
+    ...rest
+  }: EdgeLabelProps = $props();
 
-  const handleEdgeSelect = useHandleEdgeSelect();
+  const store = useSvelteFlowStore();
 
-  const id = getContext<string>('svelteflow__edge_id');
+  const edgeId = getEdgeIdContext('EdgeLabel must be used within a Custom Edge component');
+
+  let z = $derived.by(() => {
+    return store.visible.edges.get(edgeId)?.zIndex;
+  });
 </script>
 
-<EdgeLabelRenderer>
-  <div
-    class="svelte-flow__edge-label"
-    style:transform="translate(-50%, -50%) translate({x}px,{y}px)"
-    style={'pointer-events: all;' + style}
-    role="button"
-    tabindex="-1"
-    on:keyup={() => {}}
-    on:click={() => {
-      if (id) handleEdgeSelect(id);
-    }}
-  >
-    <slot />
-  </div>
-</EdgeLabelRenderer>
+<div
+  use:portal={'edge-labels'}
+  style:display={hideOnSSR().value ? 'none' : undefined}
+  class={['svelte-flow__edge-label', { transparent }, className]}
+  style:cursor={selectEdgeOnClick ? 'pointer' : undefined}
+  style:transform="translate(-50%, -50%) translate({x}px,{y}px)"
+  style:pointer-events="all"
+  style:width={toPxString(width)}
+  style:height={toPxString(height)}
+  style:z-index={z}
+  tabindex="-1"
+  onclick={() => {
+    if (selectEdgeOnClick && edgeId) store.handleEdgeSelection(edgeId);
+  }}
+  {...rest}
+>
+  {@render children?.()}
+</div>
+
+<style>
+  .transparent {
+    background: transparent;
+  }
+</style>

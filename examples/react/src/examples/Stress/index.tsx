@@ -3,15 +3,15 @@ import {
   ReactFlow,
   Edge,
   Node,
-  NodeChange,
-  applyNodeChanges,
   Connection,
   addEdge,
-  applyEdgeChanges,
-  EdgeChange,
   Controls,
   Background,
   Panel,
+  ReactFlowProvider,
+  useReactFlow,
+  NodeChangeset,
+  EdgeChangeset,
 } from '@xyflow/react';
 
 import { getNodesAndEdges } from './utils';
@@ -22,6 +22,7 @@ const { nodes: initialNodes, edges: initialEdges } = getNodesAndEdges(25, 25);
 const StressFlow = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const { fitView } = useReactFlow();
   const onConnect = useCallback((connection: Connection) => {
     setEdges((eds) => addEdge(connection, eds));
   }, []);
@@ -191,12 +192,13 @@ const StressFlow = () => {
         return {
           ...n,
           position: {
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * window.innerWidth * 4,
+            y: Math.random() * window.innerHeight * 4,
           },
         };
       });
     });
+    fitView();
   };
 
   const updateElements = () => {
@@ -206,12 +208,12 @@ const StressFlow = () => {
     setEdges(initialElements.edges);
   };
 
-  const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((ns) => applyNodeChanges(changes, ns));
+  const onNodesChange = useCallback((changes: NodeChangeset) => {
+    setNodes((ns) => changes.applyTo(ns));
   }, []);
 
-  const onEdgeChange = useCallback((changes: EdgeChange[]) => {
-    setEdges((es) => applyEdgeChanges(changes, es));
+  const onEdgeChange = useCallback((changes: EdgeChangeset) => {
+    setEdges((es) => changes.applyTo(es));
   }, []);
 
   return (
@@ -235,9 +237,25 @@ const StressFlow = () => {
         <button onClick={remount}>re-mount</button>
         <button onClick={updatePos}>change pos</button>
         <button onClick={updateElements}>update elements</button>
+        <button
+          onClick={() => {
+            setNodes((nds) => [
+              ...nds,
+              { id: (nds.length + 1).toString(), position: { x: 0, y: 0 }, data: { label: `Node ${nds.length + 1}` } },
+            ]);
+          }}
+        >
+          Add element
+        </button>
       </Panel>
     </ReactFlow>
   );
 };
 
-export default StressFlow;
+export default function StressFlowProvider() {
+  return (
+    <ReactFlowProvider>
+      <StressFlow />
+    </ReactFlowProvider>
+  );
+}

@@ -1,6 +1,9 @@
+import type { Snippet } from 'svelte';
+import type { HTMLAttributes } from 'svelte/elements';
 import type {
   ControlPosition,
   ResizeControlVariant,
+  ResizeControlDirection,
   ShouldResize,
   OnResizeStart,
   OnResize,
@@ -34,6 +37,8 @@ export type NodeResizerProps = {
   maxHeight?: number;
   /** Keep aspect ratio when resizing */
   keepAspectRatio?: boolean;
+  /** Automatically scale the node when resizing */
+  autoScale?: boolean;
   /** Callback to determine if node should resize */
   shouldResize?: ShouldResize;
   /** Callback called when resizing starts */
@@ -42,21 +47,24 @@ export type NodeResizerProps = {
   onResize?: OnResize;
   /** Callback called when resizing ends */
   onResizeEnd?: OnResizeEnd;
-};
+  /** The direction the user can resize the node */
+  resizeDirection?: ResizeControlDirection;
+} & HTMLAttributes<HTMLDivElement>;
 
 export type ResizeControlProps = Pick<
   NodeResizerProps,
-  | 'nodeId'
   | 'color'
   | 'minWidth'
   | 'minHeight'
   | 'maxWidth'
   | 'maxHeight'
   | 'keepAspectRatio'
+  | 'autoScale'
   | 'shouldResize'
   | 'onResizeStart'
   | 'onResize'
   | 'onResizeEnd'
+  | 'resizeDirection'
 > & {
   /** Position of control
    * @example ControlPosition.TopLeft, ControlPosition.TopRight,
@@ -67,6 +75,7 @@ export type ResizeControlProps = Pick<
    * @example ResizeControlVariant.Handle, ResizeControlVariant.Line
    */
   variant?: ResizeControlVariant;
-  class?: string;
-  style?: string;
-};
+  /** nodeId must be provided when used outside a custom node */
+  nodeId?: string;
+  children?: Snippet;
+} & HTMLAttributes<HTMLDivElement>;

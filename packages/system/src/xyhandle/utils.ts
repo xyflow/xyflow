@@ -1,88 +1,109 @@
-import { getHandlePosition } from '../utils';
+import { getHandlePosition, getOverlappingArea, nodeToRect } from '../utils';
 import {
+  ConnectionMode,
   type HandleType,
-  type NodeHandleBounds,
   type XYPosition,
-  type Handle,
-  InternalNodeBase,
-  NodeLookup,
+  type HandleBounds,
+  type InternalNodeBase,
+  type NodeLookup,
 } from '../types';
 
-// this functions collects all handles and adds an absolute position
-// so that we can later find the closest handle to the mouse position
-function getHandles(
-  node: InternalNodeBase,
-  handleBounds: NodeHandleBounds,
-  type: HandleType,
-  currentHandle: { nodeId: string; handleId: string | null; handleType: HandleType }
-): [Handle[], Handle | null] {
-  let excludedHandle = null;
-  const handles = (handleBounds[type] || []).reduce<Handle[]>((res, handle) => {
-    if (node.id === currentHandle.nodeId && type === currentHandle.handleType && handle.id === currentHandle.handleId) {
-      excludedHandle = handle;
-    } else {
-      const handleXY = getHandlePosition(node, handle, handle.position, true);
-      res.push({ ...handle, ...handleXY });
+function getNodesWithinDistance(position: XYPosition, nodeLookup: NodeLookup, distance: number): InternalNodeBase[] {
+  const nodes: InternalNodeBase[] = [];
+  const rect = {
+    x: position.x - distance,
+    y: position.y - distance,
+    width: distance * 2,
+    height: distance * 2,
+  };
+
+  for (const node of nodeLookup.values()) {
+    if (getOverlappingArea(rect, nodeToRect(node)) > 0) {
+      nodes.push(node);
     }
-    return res;
-  }, []);
-  return [handles, excludedHandle];
+  }
+
+  return nodes;
 }
 
-export function getClosestHandle(pos: XYPosition, connectionRadius: number, handles: Handle[]): Handle | null {
-  let closestHandles: Handle[] = [];
+/*
+ * this distance is used for the area around the user pointer
+ * while doing a connection for finding the closest nodes
+ */
+const ADDITIONAL_DISTANCE = 250;
+
+export function getClosestHandle(
+  position: XYPosition,
+  connectionRadius: number,
+  nodeLookup: NodeLookup,
+  fromHandle: { nodeId: string; type: HandleType; id?: string | null }
+): HandleBounds | null {
+  let closestHandles: HandleBounds[] = [];
   let minDistance = Infinity;
 
-  for (const handle of handles) {
-    const distance = Math.sqrt(Math.pow(handle.x - pos.x, 2) + Math.pow(handle.y - pos.y, 2));
-    if (distance <= connectionRadius) {
+  const closeNodes = getNodesWithinDistance(position, nodeLookup, connectionRadius + ADDITIONAL_DISTANCE);
+
+  for (const node of closeNodes) {
+    const allHandles = [...(node.internals.handleBounds?.source ?? []), ...(node.internals.handleBounds?.target ?? [])];
+
+    for (const handle of allHandles) {
+      // if the handle is the same as the fromHandle we skip it
+      if (fromHandle.nodeId === handle.nodeId && fromHandle.type === handle.type && fromHandle.id === handle.id) {
+        continue;
+      }
+
+      // determine absolute position of the handle
+      const { x, y } = getHandlePosition(node, handle, handle.position, true);
+
+      const distance = Math.sqrt(Math.pow(x - position.x, 2) + Math.pow(y - position.y, 2));
+      if (distance > connectionRadius) {
+        continue;
+      }
+
       if (distance < minDistance) {
-        closestHandles = [handle];
+        closestHandles = [{ ...handle, x, y }];
+        minDistance = distance;
       } else if (distance === minDistance) {
         // when multiple handles are on the same distance we collect all of them
-        closestHandles.push(handle);
+        closestHandles.push({ ...handle, x, y });
       }
-      minDistance = distance;
     }
   }
 
   if (!closestHandles.length) {
     return null;
   }
-
-  return closestHandles.length === 1
-    ? closestHandles[0]
-    : // if multiple handles are layouted on top of each other we take the one with type = target because it's more likely that the user wants to connect to this one
-      closestHandles.find((handle) => handle.type === 'target') || closestHandles[0];
-}
-
-type GetHandleLookupParams = {
-  nodeLookup: NodeLookup;
-  nodeId: string;
-  handleId: string | null;
-  handleType: HandleType;
-};
-
-export function getHandleLookup({
-  nodeLookup,
-  nodeId,
-  handleId,
-  handleType,
-}: GetHandleLookupParams): [Handle[], Handle] {
-  const connectionHandles: Handle[] = [];
-  const currentHandle = { nodeId, handleId, handleType };
-  let excludedHandle: Handle | null = null;
-
-  for (const node of nodeLookup.values()) {
-    if (node.internals.handleBounds) {
-      const [sourceHandles, excludedSource] = getHandles(node, node.internals.handleBounds, 'source', currentHandle);
-      const [targetHandles, excludedTarget] = getHandles(node, node.internals.handleBounds, 'target', currentHandle);
-      excludedHandle = excludedHandle ? excludedHandle : excludedSource ?? excludedTarget;
-      connectionHandles.push(...sourceHandles, ...targetHandles);
-    }
+  // when multiple handles overlay each other we prefer the opposite handle
+  if (closestHandles.length > 1) {
+    const oppositeHandleType = fromHandle.type === 'source' ? 'target' : 'source';
+    return closestHandles.find((handle) => handle.type === oppositeHandleType) ?? closestHandles[0];
   }
 
-  return [connectionHandles, excludedHandle!];
+  return closestHandles[0];
+}
+
+export function getHandle(
+  nodeId: string,
+  handleType: HandleType,
+  handleId: string | null,
+  nodeLookup: NodeLookup,
+  connectionMode: ConnectionMode,
+  withAbsolutePosition = false
+): HandleBounds | null {
+  const node = nodeLookup.get(nodeId);
+  if (!node) {
+    return null;
+  }
+
+  const handles =
+    connectionMode === ConnectionMode.Strict
+      ? node.internals.handleBounds?.[handleType]
+      : [...(node.internals.handleBounds?.source ?? []), ...(node.internals.handleBounds?.target ?? [])];
+  const handle = (handleId ? handles?.find((h) => h.id === handleId) : handles?.[0]) ?? null;
+
+  return handle && withAbsolutePosition
+    ? { ...handle, ...getHandlePosition(node, handle, handle.position, true) }
+    : handle;
 }
 
 export function getHandleType(

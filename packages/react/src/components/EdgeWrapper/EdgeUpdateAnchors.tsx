@@ -1,16 +1,21 @@
 // Reconnectable edges have a anchors around their handles to reconnect the edge.
-import { XYHandle, type Connection, EdgePosition } from '@xyflow/system';
+import {
+  XYHandle,
+  type EdgePosition,
+  type FinalConnectionState,
+  type HandleType,
+  type OnConnectStart,
+  type Connection,
+} from '@xyflow/system';
 
 import { EdgeAnchor } from '../Edges/EdgeAnchor';
 import type { EdgeWrapperProps, Edge } from '../../types/edges';
-import { useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 
 type EdgeUpdateAnchorsProps<EdgeType extends Edge = Edge> = {
   edge: EdgeType;
   isReconnectable: boolean | 'source' | 'target';
   reconnectRadius: EdgeWrapperProps['reconnectRadius'];
-  sourceHandleId: Edge['sourceHandle'];
-  targetHandleId: Edge['targetHandle'];
   onReconnect: EdgeWrapperProps<EdgeType>['onReconnect'];
   onReconnectStart: EdgeWrapperProps<EdgeType>['onReconnectStart'];
   onReconnectEnd: EdgeWrapperProps<EdgeType>['onReconnectEnd'];
@@ -22,8 +27,6 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
   isReconnectable,
   reconnectRadius,
   edge,
-  targetHandleId,
-  sourceHandleId,
   sourceX,
   sourceY,
   targetX,
@@ -36,9 +39,12 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
   setReconnecting,
   setUpdateHover,
 }: EdgeUpdateAnchorsProps<EdgeType>) {
-  const store = useStoreApi();
+  const { optionsStore, viewportStore, connectionStore, nodesStore } = useReactFlowStoreApi();
 
-  const handleEdgeUpdater = (event: React.MouseEvent<SVGGElement, MouseEvent>, isSourceHandle: boolean) => {
+  const handleEdgeUpdater = (
+    event: React.MouseEvent<SVGGElement, MouseEvent>,
+    oppositeHandle: { nodeId: string; id: string | null; type: HandleType }
+  ) => {
     // avoid triggering edge updater if mouse btn is not left
     if (event.button !== 0) {
       return;
@@ -47,69 +53,66 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
     const {
       autoPanOnConnect,
       domNode,
-      isValidConnection,
       connectionMode,
       connectionRadius,
-      lib,
       onConnectStart,
-      onConnectEnd,
       cancelConnection,
-      nodeLookup,
       rfId: flowId,
       panBy,
       updateConnection,
-    } = store.getState();
-    const nodeId = isSourceHandle ? edge.target : edge.source;
-    const handleId = (isSourceHandle ? targetHandleId : sourceHandleId) || null;
-    const handleType = isSourceHandle ? 'target' : 'source';
+    } = optionsStore.getState();
+    const { nodeLookup } = nodesStore.getState();
+    const isTarget = oppositeHandle.type === 'target';
 
-    const isTarget = isSourceHandle;
-
-    setReconnecting(true);
-    onReconnectStart?.(event, edge, handleType);
-
-    const _onReconnectEnd = (evt: MouseEvent | TouchEvent) => {
+    const _onReconnectEnd = (evt: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => {
       setReconnecting(false);
-      onReconnectEnd?.(evt, edge, handleType);
+      onReconnectEnd?.(evt, edge, oppositeHandle.type, connectionState);
     };
 
     const onConnectEdge = (connection: Connection) => onReconnect?.(edge, connection);
+    const _onConnectStart: OnConnectStart = (_event, params) => {
+      setReconnecting(true);
+      onReconnectStart?.(event, edge, oppositeHandle.type);
+      onConnectStart?.(_event, params);
+    };
 
     XYHandle.onPointerDown(event.nativeEvent, {
       autoPanOnConnect,
       connectionMode,
       connectionRadius,
       domNode,
-      handleId,
-      nodeId,
+      handleId: oppositeHandle.id,
+      nodeId: oppositeHandle.nodeId,
       nodeLookup,
       isTarget,
-      edgeUpdaterType: handleType,
-      lib,
+      edgeUpdaterType: oppositeHandle.type,
+      lib: 'react',
       flowId,
       cancelConnection,
       panBy,
-      isValidConnection,
+      isValidConnection: (...args) => optionsStore.getState().isValidConnection?.(...args) ?? true,
       onConnect: onConnectEdge,
-      onConnectStart,
-      onConnectEnd,
+      onConnectStart: _onConnectStart,
+      onConnectEnd: (...args) => optionsStore.getState().onConnectEnd?.(...args),
       onReconnectEnd: _onReconnectEnd,
       updateConnection,
-      getTransform: () => store.getState().transform,
-      getFromHandle: () => store.getState().connection.fromHandle,
+      getTransform: () => viewportStore.getState().transform,
+      getFromHandle: () => connectionStore.getState().connection.fromHandle,
+      dragThreshold: optionsStore.getState().connectionDragThreshold,
+      handleDomNode: event.currentTarget,
     });
   };
 
   const onReconnectSourceMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
-    handleEdgeUpdater(event, true);
+    handleEdgeUpdater(event, { nodeId: edge.target, id: edge.targetHandle ?? null, type: 'target' });
   const onReconnectTargetMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void =>
-    handleEdgeUpdater(event, false);
+    handleEdgeUpdater(event, { nodeId: edge.source, id: edge.sourceHandle ?? null, type: 'source' });
   const onReconnectMouseEnter = () => setUpdateHover(true);
   const onReconnectMouseOut = () => setUpdateHover(false);
 
   return (
     <>
-      {(isReconnectable === 'source' || isReconnectable === true) && (
+      {(isReconnectable === true || isReconnectable === 'source') && (
         <EdgeAnchor
           position={sourcePosition}
           centerX={sourceX}
@@ -121,7 +124,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
           type="source"
         />
       )}
-      {(isReconnectable === 'target' || isReconnectable === true) && (
+      {(isReconnectable === true || isReconnectable === 'target') && (
         <EdgeAnchor
           position={targetPosition}
           centerX={targetX}

@@ -2,39 +2,36 @@
 	import {
 		Handle,
 		Position,
-		useHandleConnections,
+		useNodeConnections,
 		useNodesData,
 		useSvelteFlow,
+		type Node,
 		type NodeProps
 	} from '@xyflow/svelte';
-	import { isTextNode, type MyNode } from './+page.svelte';
+	import { type MyNode } from './+page.svelte';
 
-	type $$Props = NodeProps;
-
-	export let id: $$Props['id'];
-	export let data: $$Props['data'];
-	$$restProps;
+	let { id, data }: NodeProps<Node<{ text: string }>> = $props();
 
 	const { updateNodeData } = useSvelteFlow();
-	const connections = useHandleConnections({
-		nodeId: id,
-		type: 'target'
+	const connections = useNodeConnections(() => ({
+		handleType: 'target'
+	}));
+
+	const nodesData = useNodesData<MyNode>(() => ({ nodeIds: connections.current[0]?.source }));
+
+	$effect.pre(() => {
+		const incomingText = nodesData.current?.data.text ?? '';
+		if (typeof incomingText === 'string') {
+			const newText = incomingText.toUpperCase();
+			if (data.text !== newText) {
+				updateNodeData(id, { text: newText });
+			}
+		}
 	});
-
-	$: nodeData = useNodesData<MyNode>($connections[0]?.source);
-	$: textNode = isTextNode($nodeData) ? $nodeData : null;
-
-	$: console.log(textNode?.data, data);
-
-	$: {
-		const input = textNode?.data.text.toUpperCase() ?? '';
-		updateNodeData(id, { text: input });
-		console.log('updatedNodeData with', input);
-	}
 </script>
 
 <div class="custom">
-	<Handle type="target" position={Position.Left} isConnectable={$connections.length === 0} />
+	<Handle type="target" position={Position.Left} isConnectable={connections.current.length === 0} />
 	<div>uppercase transform</div>
 	<Handle type="source" position={Position.Right} />
 </div>

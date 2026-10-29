@@ -2,52 +2,39 @@
 
 .xy-flow {
   direction: ltr;
+  color-scheme: light dark;
 
-  --xy-edge-stroke-default: #b1b1b7;
+  --xy-edge-stroke-default: light-dark(#b1b1b7, #3e3e3e);
   --xy-edge-stroke-width-default: 1;
-  --xy-edge-stroke-selected-default: #555;
+  --xy-edge-stroke-selected-default: light-dark(#555, #727272);
 
   --xy-connectionline-stroke-default: #b1b1b7;
   --xy-connectionline-stroke-width-default: 1;
 
-  --xy-attribution-background-color-default: rgba(255, 255, 255, 0.5);
+  --xy-attribution-background-color-default: light-dark(rgba(255, 255, 255, 0.5), rgba(150, 150, 150, 0.25));
 
-  --xy-minimap-background-color-default: #fff;
-  --xy-minimap-mask-background-color-default: rgb(240, 240, 240, 0.6);
+  --xy-minimap-background-color-default: light-dark(#fff, #141414);
+  --xy-minimap-mask-background-color-default: light-dark(rgba(240, 240, 240, 0.6), rgba(60, 60, 60, 0.6));
   --xy-minimap-mask-stroke-color-default: transparent;
   --xy-minimap-mask-stroke-width-default: 1;
-  --xy-minimap-node-background-color-default: #e2e2e2;
+  --xy-minimap-node-background-color-default: light-dark(#e2e2e2, #2b2b2b);
   --xy-minimap-node-stroke-color-default: transparent;
   --xy-minimap-node-stroke-width-default: 2;
 
-  --xy-background-color-default: transparent;
-  --xy-background-pattern-dots-color-default: #91919a;
-  --xy-background-pattern-lines-color-default: #eee;
-  --xy-background-pattern-cross-color-default: #e2e2e2;
+  --xy-background-color-default: light-dark(transparent, #141414);
+  --xy-background-pattern-dots-color-default: light-dark(#91919a, #555);
+  --xy-background-pattern-lines-color-default: light-dark(#eee, #333);
+  --xy-background-pattern-cross-color-default: light-dark(#e2e2e2, #333);
 }
 
+[data-theme='dark'] .xy-flow,
 .xy-flow.dark {
-  --xy-edge-stroke-default: #3e3e3e;
-  --xy-edge-stroke-width-default: 1;
-  --xy-edge-stroke-selected-default: #727272;
+  color-scheme: dark;
+}
 
-  --xy-connectionline-stroke-default: #b1b1b7;
-  --xy-connectionline-stroke-width-default: 1;
-
-  --xy-attribution-background-color-default: rgba(150, 150, 150, 0.25);
-
-  --xy-minimap-background-color-default: #141414;
-  --xy-minimap-mask-background-color-default: rgb(60, 60, 60, 0.6);
-  --xy-minimap-mask-stroke-color-default: transparent;
-  --xy-minimap-mask-stroke-width-default: 1;
-  --xy-minimap-node-background-color-default: #2b2b2b;
-  --xy-minimap-node-stroke-color-default: transparent;
-  --xy-minimap-node-stroke-width-default: 2;
-
-  --xy-background-color-default: #141414;
-  --xy-background-pattern-dots-color-default: #777;
-  --xy-background-pattern-lines-color-default: #777;
-  --xy-background-pattern-cross-color-default: #777;
+[data-theme='light'] .xy-flow,
+.xy-flow.light {
+  color-scheme: light;
 }
 
 .xy-flow {
@@ -55,7 +42,7 @@
 }
 
 .xy-flow__background {
-  background-color: var(--xy-background-color, var(--xy-background-color-props, var(--xy-background-color-default)));
+  background-color: var(--xy-background-color-props, var(--xy-background-color, var(--xy-background-color-default)));
 }
 
 .xy-flow__container {
@@ -68,17 +55,18 @@
 
 .xy-flow__pane {
   z-index: 1;
-
-  &.selection {
-    cursor: pointer;
-  }
+  touch-action: none;
 
   &.draggable {
     cursor: grab;
+  }
 
-    &.dragging {
-      cursor: grabbing;
-    }
+  &.dragging {
+    cursor: grabbing;
+  }
+
+  &.selection {
+    cursor: pointer;
   }
 }
 
@@ -113,7 +101,7 @@
   fill: none;
 }
 
-.xy-flow__edges {
+.xy-flow .xy-flow__edges {
   position: absolute;
 
   svg {
@@ -165,6 +153,16 @@
     user-select: none;
   }
 }
+
+/* Arrowhead marker styles - use CSS custom properties as default */
+.xy-flow__arrowhead polyline {
+  stroke: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
+}
+
+.xy-flow__arrowhead polyline.arrowclosed {
+  fill: var(--xy-edge-stroke, var(--xy-edge-stroke-default));
+}
+
 .xy-flow__connection {
   pointer-events: none;
 
@@ -265,6 +263,10 @@ svg.xy-flow__connectionline {
   pointer-events: all;
 }
 
+.xy-flow__pane.selection .xy-flow__panel {
+  pointer-events: none;
+}
+
 .xy-flow__panel {
   position: absolute;
   z-index: 5;
@@ -278,6 +280,14 @@ svg.xy-flow__connectionline {
     bottom: 0;
   }
 
+  &.top,
+  &.bottom {
+    &.center {
+      left: 50%;
+      transform: translateX(-15px) translateX(-50%);
+    }
+  }
+
   &.left {
     left: 0;
   }
@@ -286,9 +296,12 @@ svg.xy-flow__connectionline {
     right: 0;
   }
 
-  &.center {
-    left: 50%;
-    transform: translateX(-50%);
+  &.left,
+  &.right {
+    &.center {
+      top: 50%;
+      transform: translateY(-15px) translateY(-50%);
+    }
   }
 }
 

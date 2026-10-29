@@ -1,8 +1,16 @@
 import type { Position, IsValidConnection } from '.';
 
+/**
+ * @inline
+ */
 export type HandleType = 'source' | 'target';
 
-export type Handle = {
+/**
+ * Measured position and size of a handle relative to the node
+ *
+ * @public
+ */
+export type HandleBounds = {
   id?: string | null;
   nodeId: string;
   x: number;
@@ -14,27 +22,44 @@ export type Handle = {
 };
 
 export type HandleProps = {
-  /** Type of the handle
-   * @example HandleType.Source, HandleType.Target
+  /**
+   * Type of the handle.
+   * @default "source"
    */
   type: HandleType;
-  /** Position of the handle
-   * @example Position.TopLeft, Position.TopRight,
-   * Position.BottomLeft, Position.BottomRight
+  /**
+   * The position of the handle relative to the node. In a horizontal flow source handles are
+   * typically `Position.Right` and in a vertical flow they are typically `Position.Top`.
+   * @default Position.Top
+   * @example Position.Top, Position.Right, Position.Bottom, Position.Left
    */
   position: Position;
-  /** Should you be able to connect to/from this handle */
+  /**
+   * Should you be able to connect to/from this handle.
+   * @default true
+   */
   isConnectable?: boolean;
-  /** Should you be able to connect from this handle */
+  /**
+   * Dictates whether a connection can start from this handle.
+   * @default true
+   */
   isConnectableStart?: boolean;
-  /** Should you be able to connect to this handle */
+  /**
+   * Dictates whether a connection can end on this handle.
+   * @default true
+   */
   isConnectableEnd?: boolean;
-  /** Callback if connection is valid
+  /**
+   * Called when a connection is dragged to this handle. You can use this callback to perform some
+   * custom validation logic based on the connection target and source, for example. Where possible,
+   * we recommend you move this logic to the `isValidConnection` prop on the main ReactFlow
+   * component for performance reasons.
    * @remarks connection becomes an edge if isValidConnection returns true
    */
   isValidConnection?: IsValidConnection;
-  /** Id of the handle
+  /**
+   * Id of the handle.
    * @remarks optional if there is only one handle of this type
    */
-  id?: string;
+  id?: string | null;
 };

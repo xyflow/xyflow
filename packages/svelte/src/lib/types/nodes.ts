@@ -1,4 +1,5 @@
-import type { ComponentType, SvelteComponent } from 'svelte';
+import type { Component } from 'svelte';
+import type { ClassValue, HTMLAttributes, DOMAttributes } from 'svelte/elements';
 import type { InternalNodeBase, NodeBase, NodeProps as NodePropsBase } from '@xyflow/system';
 
 /**
@@ -15,10 +16,31 @@ export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeTy
  */
 export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string = string
+  NodeType extends string | undefined = string | undefined
 > = NodeBase<NodeData, NodeType> & {
-  class?: string;
+  class?: ClassValue;
   style?: string;
+  focusable?: boolean;
+  /**
+   * The ARIA role attribute for the node element, used for accessibility.
+   * @default "group"
+   */
+  ariaRole?: HTMLAttributes<HTMLDivElement>['role'];
+
+  /**
+   * General escape hatch for adding custom attributes to the node's DOM element.
+   */
+  domAttributes?: Omit<
+    HTMLAttributes<HTMLDivElement>,
+    | 'id'
+    | 'style'
+    | 'class'
+    | 'draggable'
+    | 'role'
+    | 'aria-label'
+    | 'dangerouslySetInnerHTML'
+    | keyof DOMAttributes<HTMLDivElement>
+  >;
 };
 
 // @todo: currently generics for nodes are not really supported
@@ -30,33 +52,16 @@ export type NodeProps<NodeType extends Node = Node> = NodePropsBase<NodeType> & 
 
 export type NodeTypes = Record<
   string,
-  ComponentType<
-    SvelteComponent<
-      NodeProps & {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        data: any;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        type: any;
-      }
-    >
+  Component<
+    NodeProps & {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      type: any;
+    }
   >
 >;
 
-export type DefaultNodeOptions = Partial<Omit<Node, 'id'>>;
-
-export type BuiltInNode = Node<{ label: string }, 'input' | 'output' | 'default'>;
-
-export type NodeEventMap = {
-  nodeclick: { node: Node; event: MouseEvent | TouchEvent };
-  nodecontextmenu: { node: Node; event: MouseEvent | TouchEvent };
-  nodedrag: { targetNode: Node | null; nodes: readonly Node[]; event: MouseEvent | TouchEvent };
-  nodedragstart: {
-    targetNode: Node | null;
-    nodes: readonly Node[];
-    event: MouseEvent | TouchEvent;
-  };
-  nodedragstop: { targetNode: Node | null; nodes: readonly Node[]; event: MouseEvent | TouchEvent };
-  nodemouseenter: { node: Node; event: MouseEvent | TouchEvent };
-  nodemouseleave: { node: Node; event: MouseEvent | TouchEvent };
-  nodemousemove: { node: Node; event: MouseEvent | TouchEvent };
-};
+export type BuiltInNode =
+  | Node<{ label: string }, 'input' | 'output' | 'default' | undefined>
+  | Node<Record<string, never>, 'group'>;

@@ -1,3 +1,10 @@
+/**
+ * While [`PanelPosition`](/api-reference/types/panel-position) can be used to place a
+ * component in the corners of a container, the `Position` enum is less precise and used
+ * primarily in relation to edges and handles.
+ *
+ * @public
+ */
 export enum Position {
   Left = 'left',
   Top = 'top',
@@ -12,6 +19,11 @@ export const oppositePosition = {
   [Position.Bottom]: Position.Top,
 };
 
+/**
+ * All positions are stored in an object with x and y coordinates.
+ *
+ * @public
+ */
 export type XYPosition = {
   x: number;
   y: number;
@@ -33,4 +45,21 @@ export type Box = XYPosition & {
 
 export type Transform = [number, number, number];
 
+/**
+ * A coordinate extent represents two points in a coordinate system: one in the top
+ * left corner and one in the bottom right corner. It is used to represent the
+ * bounds of nodes in the flow or the bounds of the viewport.
+ *
+ * @public
+ *
+ * @remarks Props that expect a `CoordinateExtent` usually default to `[[-∞, -∞], [+∞, +∞]]`
+ * to represent an unbounded extent.
+ */
 export type CoordinateExtent = [[number, number], [number, number]];
+
+/**
+ * Using Pick with a union type (e.g. `NodeType`) will merge every property type along all union members.
+ * See https://github.com/microsoft/TypeScript/issues/28339#issuecomment-463577347
+ * Note: Currently you are able to Pick properties that are not in the type without error.
+ */
+export type DistributivePick<T, K extends string> = T extends unknown ? { [P in Extract<keyof T, K>]: T[P] } : never;

@@ -1,5 +1,5 @@
 import type { PanelPosition } from '@xyflow/system';
-import type { HTMLAttributes } from 'svelte/elements';
+import type { ClassValue, HTMLAttributes } from 'svelte/elements';
 
 export type PanelProps = HTMLAttributes<HTMLDivElement> & {
   'data-testid'?: string;
@@ -9,5 +9,5 @@ export type PanelProps = HTMLAttributes<HTMLDivElement> & {
    */
   position?: PanelPosition;
   style?: string;
-  class?: string;
+  class?: ClassValue;
 };

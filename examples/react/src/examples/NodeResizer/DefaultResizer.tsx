@@ -1,7 +1,9 @@
 import { memo, FC } from 'react';
-import { Handle, Position, NodeProps, NodeResizer } from '@xyflow/react';
+import { Handle, Position, NodeProps, NodeResizer, useKeyPress } from '@xyflow/react';
 
 const DefaultResizerNode: FC<NodeProps> = ({ data, selected }) => {
+  const keepAspectRatio = useKeyPress('k');
+
   return (
     <>
       <NodeResizer
@@ -14,7 +16,7 @@ const DefaultResizerNode: FC<NodeProps> = ({ data, selected }) => {
         onResizeStart={data.onResizeStart ?? undefined}
         onResize={data.onResize ?? undefined}
         onResizeEnd={data.onResizeEnd ?? undefined}
-        keepAspectRatio={data.keepAspectRatio ?? undefined}
+        keepAspectRatio={keepAspectRatio || (data.keepAspectRatio ?? undefined)}
       />
       <Handle type="target" position={Position.Left} />
       <div>{data.label}</div>

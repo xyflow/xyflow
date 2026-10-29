@@ -153,6 +153,7 @@ const UseZoomPanHelperFlow = () => {
     ]);
 
     setEdges([{ id: 'a-b', source: 'a', target: 'b' }]);
+    fitView();
   };
 
   const onUpdateNode = () => {
@@ -170,11 +171,18 @@ const UseZoomPanHelperFlow = () => {
       onConnect={onConnect}
       onPaneClick={onPaneClick}
       fitView
-      fitViewOptions={{ duration: 1200, padding: 0.2 }}
       maxZoom={Infinity}
+      debug
     >
       <Panel position="top-right">
-        <button onClick={() => zoomIn({ duration: 1200 })}>zoomIn</button>
+        <button
+          onClick={async () => {
+            await zoomIn({ duration: 1200 });
+            console.log('zoomIn success');
+          }}
+        >
+          zoomIn
+        </button>
         <button onClick={() => zoomOut({ duration: 0 })}>zoomOut</button>
         <button
           onClick={async () => {
@@ -183,7 +191,16 @@ const UseZoomPanHelperFlow = () => {
             console.log('fit view success');
           }}
         >
-          fitView
+          fitView default
+        </button>
+        <button
+          onClick={async () => {
+            console.log('fit view start');
+            await fitView({ duration: 1200, padding: 0.3, ease: (t) => +t });
+            console.log('fit view success');
+          }}
+        >
+          fitView linear
         </button>
         <button onClick={onAddNode}>add node</button>
         <button onClick={onResetNodes}>reset nodes</button>

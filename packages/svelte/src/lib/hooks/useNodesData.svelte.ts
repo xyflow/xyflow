@@ -1,0 +1,58 @@
+import { shallowNodeData, type DistributivePick } from '@xyflow/system';
+
+import type { Node } from '#lib/types/index.js';
+import { useSvelteFlowStore } from '#lib/store/index.js';
+
+/**
+ * Hook for receiving data of one or multiple nodes
+ *
+ * @public
+ * @param params - A function that returns the node id(s) to get the data from
+ * @returns An array of data objects
+ */
+export function useNodesData<NodeType extends Node = Node>(
+  params: () => { nodeIds: string | null | undefined }
+): { current: DistributivePick<NodeType, 'id' | 'data' | 'type'> | null };
+export function useNodesData<NodeType extends Node = Node>(
+  params: () => { nodeIds: string[] }
+): { current: DistributivePick<NodeType, 'id' | 'data' | 'type'>[] };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useNodesData(params: () => { nodeIds: any }): any {
+  const { nodes, nodeLookup } = $derived(useSvelteFlowStore());
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let prevNodesData: any[] = [];
+  let initialRun = true;
+
+  const nodeData = $derived.by(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    nodes;
+    const { nodeIds } = params();
+    const nextNodesData = [];
+    const isArrayOfIds = Array.isArray(nodeIds);
+    const _nodeIds = isArrayOfIds ? nodeIds : nodeIds != null ? [nodeIds] : [];
+
+    for (const nodeId of _nodeIds) {
+      const node = nodeLookup.get(nodeId)?.internals.userNode;
+      if (node) {
+        nextNodesData.push({
+          id: node.id,
+          type: node.type,
+          data: node.data
+        });
+      }
+    }
+
+    if (!shallowNodeData(nextNodesData, prevNodesData) || initialRun) {
+      prevNodesData = nextNodesData;
+      initialRun = false;
+    }
+
+    return isArrayOfIds ? prevNodesData : (prevNodesData[0] ?? null);
+  });
+
+  return {
+    get current() {
+      return nodeData;
+    }
+  };
+}

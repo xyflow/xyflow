@@ -10,17 +10,20 @@ import {
   ConnectionMode,
   Position,
   oppositePosition,
-  ConnectionInProgress,
-  type Handle,
+  type ConnectionInProgress,
+  type HandleBounds,
   type Connection,
+  type NodeBase,
+  type EdgeBase,
+  type InternalNodeBase,
 } from '../types';
 
-import { getClosestHandle, isConnectionValid, getHandleLookup, getHandleType } from './utils';
-import { IsValidParams, OnPointerDownParams, Result, XYHandleInstance } from './types';
+import { getClosestHandle, isConnectionValid, getHandleType, getHandle } from './utils';
+import { type IsValidParams, type OnPointerDownParams, type Result, type XYHandleInstance } from './types';
 
 const alwaysValid = () => true;
 
-function onPointerDown(
+function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   event: MouseEvent | TouchEvent,
   {
     connectionMode,
@@ -45,19 +48,26 @@ function onPointerDown(
     getTransform,
     getFromHandle,
     autoPanSpeed,
-  }: OnPointerDownParams
+    dragThreshold = 1,
+    handleDomNode,
+  }: OnPointerDownParams<NodeType, EdgeType>
 ) {
   // when xyflow is used inside a shadow root we can't use document
-  const doc = getHostForElement(event.target as HTMLElement);
+  const doc = getHostForElement(event.target);
   let autoPanId = 0;
-  let closestHandle: Handle | null;
+  let closestHandle: HandleBounds | null;
 
   const { x, y } = getEventPosition(event);
-  const clickedHandle = doc?.elementFromPoint(x, y);
-  const handleType = getHandleType(edgeUpdaterType, clickedHandle);
+  const handleType = getHandleType(edgeUpdaterType, handleDomNode);
   const containerBounds = domNode?.getBoundingClientRect();
+  let connectionStarted = false;
 
   if (!containerBounds || !handleType) {
+    return;
+  }
+
+  const fromHandleInternal = getHandle(nodeId, handleType, handleId, nodeLookup, connectionMode);
+  if (!fromHandleInternal) {
     return;
   }
 
@@ -65,14 +75,7 @@ function onPointerDown(
   let autoPanStarted = false;
   let connection: Connection | null = null;
   let isValid: boolean | null = false;
-  let handleDomNode: Element | null = null;
-
-  const [handleLookup, fromHandleInternal] = getHandleLookup({
-    nodeLookup,
-    nodeId,
-    handleId,
-    handleType,
-  });
+  let resultHandleDomNode: Element | null = null;
 
   // when the user is moving the mouse close to the edge of the canvas while connecting we move the canvas
   function autoPan(): void {
@@ -81,43 +84,61 @@ function onPointerDown(
     }
     const [x, y] = calcAutoPan(position, containerBounds, autoPanSpeed);
 
-    panBy({ x, y });
+    void panBy({ x, y });
     autoPanId = requestAnimationFrame(autoPan);
   }
 
   // Stays the same for all consecutive pointermove events
-  const fromHandle: Handle = {
+  const fromHandle: HandleBounds = {
     ...fromHandleInternal,
     nodeId,
     type: handleType,
     position: fromHandleInternal.position,
   };
 
-  const fromNodeInternal = nodeLookup.get(nodeId)!;
+  const fromInternalNode = nodeLookup.get(nodeId)!;
+  const from = getHandlePosition(fromInternalNode, fromHandle, Position.Left, true);
 
-  const from = getHandlePosition(fromNodeInternal, fromHandle, Position.Left, true);
-
-  const newConnection: ConnectionInProgress = {
+  let previousConnection: ConnectionInProgress<InternalNodeBase<NodeType>> = {
     inProgress: true,
     isValid: null,
 
     from,
     fromHandle,
     fromPosition: fromHandle.position,
-    fromNode: fromNodeInternal,
+    fromNode: fromInternalNode,
 
     to: position,
     toHandle: null,
     toPosition: oppositePosition[fromHandle.position],
     toNode: null,
+    pointer: position,
   };
 
-  updateConnection(newConnection);
-  let previousConnection: ConnectionInProgress = newConnection;
+  function startConnection() {
+    connectionStarted = true;
+    updateConnection(previousConnection);
+    onConnectStart?.(event, { nodeId, handleId, handleType });
+  }
 
-  onConnectStart?.(event, { nodeId, handleId, handleType });
+  if (dragThreshold === 0) {
+    startConnection();
+  }
 
   function onPointerMove(event: MouseEvent | TouchEvent) {
+    if (!connectionStarted) {
+      const { x: evtX, y: evtY } = getEventPosition(event);
+      const dx = evtX - x;
+      const dy = evtY - y;
+      const nextConnectionStarted = dx * dx + dy * dy > dragThreshold * dragThreshold;
+
+      if (!nextConnectionStarted) {
+        return;
+      }
+
+      startConnection();
+    }
+
     if (!getFromHandle() || !fromHandle) {
       onPointerUp(event);
       return;
@@ -128,7 +149,8 @@ function onPointerDown(
     closestHandle = getClosestHandle(
       pointToRendererPoint(position, transform, false, [1, 1]),
       connectionRadius,
-      handleLookup
+      nodeLookup,
+      fromHandle
     );
 
     if (!autoPanStarted) {
@@ -146,55 +168,63 @@ function onPointerDown(
       doc,
       lib,
       flowId,
-      handleLookup,
+      nodeLookup,
     });
 
-    handleDomNode = result.handleDomNode;
+    resultHandleDomNode = result.handleDomNode;
     connection = result.connection;
     isValid = isConnectionValid(!!closestHandle, result.isValid);
 
-    const newConnection: ConnectionInProgress = {
-      // from stays the same
+    const fromInternalNode = nodeLookup.get(nodeId);
+    const from = fromInternalNode
+      ? getHandlePosition(fromInternalNode, fromHandle, Position.Left, true)
+      : previousConnection.from;
+
+    const newConnection = {
       ...previousConnection,
+      from,
       isValid,
       to:
-        closestHandle && isValid
-          ? rendererPointToPoint({ x: closestHandle.x, y: closestHandle.y }, transform)
+        result.toHandle && isValid
+          ? rendererPointToPoint({ x: result.toHandle.x, y: result.toHandle.y }, transform)
           : position,
       toHandle: result.toHandle,
       toPosition: isValid && result.toHandle ? result.toHandle.position : oppositePosition[fromHandle.position],
       toNode: result.toHandle ? nodeLookup.get(result.toHandle.nodeId)! : null,
+      pointer: position,
     };
-
-    // we don't want to trigger an update when the connection
-    // is snapped to the same handle as before
-    if (
-      isValid &&
-      closestHandle &&
-      previousConnection.toHandle &&
-      newConnection.toHandle &&
-      previousConnection.toHandle.type === newConnection.toHandle.type &&
-      previousConnection.toHandle.nodeId === newConnection.toHandle.nodeId &&
-      previousConnection.toHandle.id === newConnection.toHandle.id
-    ) {
-      return;
-    }
 
     updateConnection(newConnection);
     previousConnection = newConnection;
   }
 
   function onPointerUp(event: MouseEvent | TouchEvent) {
-    if ((closestHandle || handleDomNode) && connection && isValid) {
-      onConnect?.(connection);
+    // Prevent multi-touch aborting connection
+    if ('touches' in event && event.touches.length > 0) {
+      return;
     }
 
-    // it's important to get a fresh reference from the store here
-    // in order to get the latest state of onConnectEnd
-    onConnectEnd?.(event);
+    if (connectionStarted) {
+      if ((closestHandle || resultHandleDomNode) && connection && isValid) {
+        onConnect?.(connection);
+      }
 
-    if (edgeUpdaterType) {
-      onReconnectEnd?.(event);
+      /*
+       * it's important to get a fresh reference from the store here
+       * in order to get the latest state of onConnectEnd
+       */
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { inProgress, ...connectionState } = previousConnection;
+      const finalConnectionState = {
+        ...connectionState,
+        toPosition: previousConnection.toHandle ? previousConnection.toPosition : null,
+      };
+
+      onConnectEnd?.(event, finalConnectionState);
+
+      if (edgeUpdaterType) {
+        onReconnectEnd?.(event, finalConnectionState);
+      }
     }
 
     cancelConnection();
@@ -202,7 +232,7 @@ function onPointerDown(
     autoPanStarted = false;
     isValid = false;
     connection = null;
-    handleDomNode = null;
+    resultHandleDomNode = null;
 
     doc.removeEventListener('mousemove', onPointerMove as EventListener);
     doc.removeEventListener('mouseup', onPointerUp as EventListener);
@@ -218,8 +248,8 @@ function onPointerDown(
   doc.addEventListener('touchend', onPointerUp as EventListener);
 }
 
-// checks if  and returns connection in fom of an object { source: 123, target: 312 }
-function isValidHandle(
+// checks if  and returns connection in form of an object { source: 123, target: 312 }
+function isValidHandle<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>(
   event: MouseEvent | TouchEvent,
   {
     handle,
@@ -231,8 +261,8 @@ function isValidHandle(
     lib,
     flowId,
     isValidConnection = alwaysValid,
-    handleLookup,
-  }: IsValidParams
+    nodeLookup,
+  }: IsValidParams<NodeType, EdgeType>
 ) {
   const isTarget = fromType === 'target';
   const handleDomNode = handle
@@ -241,8 +271,10 @@ function isValidHandle(
 
   const { x, y } = getEventPosition(event);
   const handleBelow = doc.elementFromPoint(x, y);
-  // we always want to prioritize the handle below the mouse cursor over the closest distance handle,
-  // because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
+  /*
+   * we always want to prioritize the handle below the mouse cursor over the closest distance handle,
+   * because it could be that the center of another handle is closer to the mouse pointer than the handle below the cursor
+   */
   const handleToCheck = handleBelow?.classList.contains(`${lib}-flow__handle`) ? handleBelow : handleDomNode;
 
   const result: Result = {
@@ -259,7 +291,7 @@ function isValidHandle(
     const connectable = handleToCheck.classList.contains('connectable');
     const connectableEnd = handleToCheck.classList.contains('connectableend');
 
-    if (!handleNodeId) {
+    if (!handleNodeId || !handleType) {
       return result;
     }
 
@@ -282,17 +314,7 @@ function isValidHandle(
 
     result.isValid = isValid && isValidConnection(connection);
 
-    if (handleLookup) {
-      const toHandle = handleLookup.find(
-        (h) => h.id === handleId && h.nodeId === handleNodeId && h.type === handleType
-      );
-
-      if (toHandle) {
-        result.toHandle = {
-          ...toHandle,
-        };
-      }
-    }
+    result.toHandle = getHandle(handleNodeId, handleType, handleId, nodeLookup, connectionMode, true);
   }
 
   return result;

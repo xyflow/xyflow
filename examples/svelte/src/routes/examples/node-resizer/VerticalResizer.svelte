@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { Handle, NodeResizeControl, Position, type NodeProps } from '@xyflow/svelte';
 	import type { ResizeNode } from './types';
+	import { store } from './store.svelte';
 
-	type $$Props = NodeProps<ResizeNode>;
-
-	export let data: $$Props['data'];
+	let { data }: NodeProps<ResizeNode> = $props();
 </script>
 
 <NodeResizeControl
@@ -16,7 +15,7 @@
 	onResizeStart={data.onResizeStart ?? undefined}
 	onResize={data.onResize ?? undefined}
 	onResizeEnd={data.onResizeEnd ?? undefined}
-	keepAspectRatio={data.keepAspectRatio ?? undefined}
+	keepAspectRatio={store.keepAspectRatio || (data.keepAspectRatio ?? undefined)}
 	color="red"
 	position={Position.Top}
 />

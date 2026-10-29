@@ -2,16 +2,36 @@ import { getEdgeCenter } from './general';
 import { Position, type XYPosition } from '../../types';
 
 export interface GetSmoothStepPathParams {
+  /** The `x` position of the source handle. */
   sourceX: number;
+  /** The `y` position of the source handle. */
   sourceY: number;
+  /**
+   * The position of the source handle.
+   * @default Position.Bottom
+   */
   sourcePosition?: Position;
+  /** The `x` position of the target handle. */
   targetX: number;
+  /** The `y` position of the target handle. */
   targetY: number;
+  /**
+   * The position of the target handle.
+   * @default Position.Top
+   */
   targetPosition?: Position;
+  /** @default 5 */
   borderRadius?: number;
   centerX?: number;
   centerY?: number;
+  /** @default 20 */
   offset?: number;
+  /**
+   * Controls where the bend occurs along the path.
+   * 0 = at source, 1 = at target, 0.5 = midpoint
+   * @default 0.5
+   */
+  stepPosition?: number;
 }
 
 const handleDirections = {
@@ -38,8 +58,10 @@ const getDirection = ({
 
 const distance = (a: XYPosition, b: XYPosition) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 
-// ith this function we try to mimic a orthogonal edge routing behaviour
-// It's not as good as a real orthogonal edge routing but it's faster and good enough as a default for step and smooth step edges
+/*
+ * With this function we try to mimic an orthogonal edge routing behaviour
+ * It's not as good as a real orthogonal edge routing, but it's faster and good enough as a default for step and smooth step edges
+ */
 function getPoints({
   source,
   sourcePosition = Position.Bottom,
@@ -47,6 +69,7 @@ function getPoints({
   targetPosition = Position.Top,
   center,
   offset,
+  stepPosition,
 }: {
   source: XYPosition;
   sourcePosition: Position;
@@ -54,6 +77,7 @@ function getPoints({
   targetPosition: Position;
   center: Partial<XYPosition>;
   offset: number;
+  stepPosition: number;
 }): [XYPosition[], number, number, number, number] {
   const sourceDir = handleDirections[sourcePosition];
   const targetDir = handleDirections[targetPosition];
@@ -67,12 +91,12 @@ function getPoints({
   const dirAccessor = dir.x !== 0 ? 'x' : 'y';
   const currDir = dir[dirAccessor];
 
-  let points: XYPosition[] = [];
+  let points: XYPosition[];
   let centerX, centerY;
   const sourceGapOffset = { x: 0, y: 0 };
   const targetGapOffset = { x: 0, y: 0 };
 
-  const [defaultCenterX, defaultCenterY, defaultOffsetX, defaultOffsetY] = getEdgeCenter({
+  const [, , defaultOffsetX, defaultOffsetY] = getEdgeCenter({
     sourceX: source.x,
     sourceY: source.y,
     targetX: target.x,
@@ -81,18 +105,30 @@ function getPoints({
 
   // opposite handle positions, default case
   if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
-    centerX = center.x ?? defaultCenterX;
-    centerY = center.y ?? defaultCenterY;
-    //    --->
-    //    |
-    // >---
+    if (dirAccessor === 'x') {
+      // Primary direction is horizontal, so stepPosition affects X coordinate
+      centerX = center.x ?? sourceGapped.x + (targetGapped.x - sourceGapped.x) * stepPosition;
+      centerY = center.y ?? (sourceGapped.y + targetGapped.y) / 2;
+    } else {
+      // Primary direction is vertical, so stepPosition affects Y coordinate
+      centerX = center.x ?? (sourceGapped.x + targetGapped.x) / 2;
+      centerY = center.y ?? sourceGapped.y + (targetGapped.y - sourceGapped.y) * stepPosition;
+    }
+
+    /*
+     *    --->
+     *    |
+     * >---
+     */
     const verticalSplit: XYPosition[] = [
       { x: centerX, y: sourceGapped.y },
       { x: centerX, y: targetGapped.y },
     ];
-    //    |
-    //  ---
-    //  |
+    /*
+     *    |
+     *  ---
+     *  |
+     */
     const horizontalSplit: XYPosition[] = [
       { x: sourceGapped.x, y: centerY },
       { x: targetGapped.x, y: centerY },
@@ -158,11 +194,17 @@ function getPoints({
     }
   }
 
+  const gappedSource = { x: sourceGapped.x + sourceGapOffset.x, y: sourceGapped.y + sourceGapOffset.y };
+  const gappedTarget = { x: targetGapped.x + targetGapOffset.x, y: targetGapped.y + targetGapOffset.y };
+
   const pathPoints = [
     source,
-    { x: sourceGapped.x + sourceGapOffset.x, y: sourceGapped.y + sourceGapOffset.y },
+    // we only want to add the gapped source/target if they are different from the first/last point to avoid duplicates which can cause issues with the bends
+    ...(gappedSource.x !== points[0].x || gappedSource.y !== points[0].y ? [gappedSource] : []),
     ...points,
-    { x: targetGapped.x + targetGapOffset.x, y: targetGapped.y + targetGapOffset.y },
+    ...(gappedTarget.x !== points[points.length - 1].x || gappedTarget.y !== points[points.length - 1].y
+      ? [gappedTarget]
+      : []),
     target,
   ];
 
@@ -191,26 +233,35 @@ function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): str
 }
 
 /**
- * Get a smooth step path from source to target handle
- * @param params.sourceX - The x position of the source handle
- * @param params.sourceY - The y position of the source handle
- * @param params.sourcePosition - The position of the source handle (default: Position.Bottom)
- * @param params.targetX - The x position of the target handle
- * @param params.targetY - The y position of the target handle
- * @param params.targetPosition - The position of the target handle (default: Position.Top)
- * @returns A path string you can use in an SVG, the labelX and labelY position (center of path) and offsetX, offsetY between source handle and label
+ * The `getSmoothStepPath` util returns everything you need to render a stepped path
+ * between two nodes. The `borderRadius` property can be used to choose how rounded
+ * the corners of those steps are.
+ * @public
+ * @returns A path string you can use in an SVG, the `labelX` and `labelY` position (center of path)
+ * and `offsetX`, `offsetY` between source handle and label.
+ *
+ * - `path`: the path to use in an SVG `<path>` element.
+ * - `labelX`: the `x` position you can use to render a label for this edge.
+ * - `labelY`: the `y` position you can use to render a label for this edge.
+ * - `offsetX`: the absolute difference between the source `x` position and the `x` position of the
+ * middle of this path.
+ * - `offsetY`: the absolute difference between the source `y` position and the `y` position of the
+ * middle of this path.
  * @example
+ * ```js
  *  const source = { x: 0, y: 20 };
-    const target = { x: 150, y: 100 };
-    
-    const [path, labelX, labelY, offsetX, offsetY] = getSmoothStepPath({
-      sourceX: source.x,
-      sourceY: source.y,
-      sourcePosition: Position.Right,
-      targetX: target.x,
-      targetY: target.y,
-      targetPosition: Position.Left,
-    });
+ *  const target = { x: 150, y: 100 };
+ *
+ *  const [path, labelX, labelY, offsetX, offsetY] = getSmoothStepPath({
+ *    sourceX: source.x,
+ *    sourceY: source.y,
+ *    sourcePosition: Position.Right,
+ *    targetX: target.x,
+ *    targetY: target.y,
+ *    targetPosition: Position.Left,
+ *  });
+ * ```
+ * @remarks This function returns a tuple (aka a fixed-size array) to make it easier to work with multiple edge paths at once.
  */
 export function getSmoothStepPath({
   sourceX,
@@ -223,6 +274,7 @@ export function getSmoothStepPath({
   centerX,
   centerY,
   offset = 20,
+  stepPosition = 0.5,
 }: GetSmoothStepPathParams): [path: string, labelX: number, labelY: number, offsetX: number, offsetY: number] {
   const [points, labelX, labelY, offsetX, offsetY] = getPoints({
     source: { x: sourceX, y: sourceY },
@@ -231,21 +283,16 @@ export function getSmoothStepPath({
     targetPosition,
     center: { x: centerX, y: centerY },
     offset,
+    stepPosition,
   });
 
-  const path = points.reduce<string>((res, p, i) => {
-    let segment = '';
+  let path = `M${points[0].x} ${points[0].y}`;
 
-    if (i > 0 && i < points.length - 1) {
-      segment = getBend(points[i - 1], p, points[i + 1], borderRadius);
-    } else {
-      segment = `${i === 0 ? 'M' : 'L'}${p.x} ${p.y}`;
-    }
+  for (let i = 1; i < points.length - 1; i++) {
+    path += getBend(points[i - 1], points[i], points[i + 1], borderRadius);
+  }
 
-    res += segment;
-
-    return res;
-  }, '');
+  path += `L${points[points.length - 1].x} ${points[points.length - 1].y}`;
 
   return [path, labelX, labelY, offsetX, offsetY];
 }

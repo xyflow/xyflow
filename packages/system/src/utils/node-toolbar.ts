@@ -15,8 +15,10 @@ export function getNodeToolbarTransform(
     alignmentOffset = 1;
   }
 
-  // position === Position.Top
-  // we set the x any y position of the toolbar based on the nodes position
+  /*
+   * position === Position.Top
+   * we set the x any y position of the toolbar based on the nodes position
+   */
   let pos = [
     (nodeRect.x + nodeRect.width * alignmentOffset) * viewport.zoom + viewport.x,
     nodeRect.y * viewport.zoom + viewport.y - offset,

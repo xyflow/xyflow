@@ -30,10 +30,11 @@ const BasicFlow = () => {
     <ReactFlow
       defaultNodes={initialNodes}
       defaultEdges={initialEdges}
-      selectionOnDrag
+      selectionOnDrag={true}
       selectionMode={SelectionMode.Partial}
       panOnDrag={panOnDrag}
       panOnScroll
+      paneClickDistance={100}
       zoomActivationKeyCode="Meta"
       multiSelectionKeyCode={MULTI_SELECT_KEY}
       onPaneContextMenu={onPaneContextMenu}
@@ -43,6 +44,12 @@ const BasicFlow = () => {
       onMoveStart={onMoveStart}
       onMove={onMove}
       onMoveEnd={onMoveEnd}
+      onPaneClick={(e) => console.log('pane click', e)}
+      onSelectionStart={(e) => console.log('on selection start', e)}
+      onSelectionEnd={(e) => console.log('on selection end', e)}
+      onPointerDown={(e) => console.log('pointer down', e)}
+      onPointerUp={(e) => console.log('pointer up', e)}
+      onClick={(e) => console.log('click', e)}
     >
       <Background variant={BackgroundVariant.Cross} />
       <Controls />

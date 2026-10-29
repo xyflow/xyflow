@@ -1,25 +1,24 @@
-import type { Writable } from 'svelte/store';
 import {
   PanOnScrollMode,
   XYPanZoom,
   type CoordinateExtent,
   type OnPanZoom,
   type PanZoomInstance,
+  type Transform,
   type Viewport
 } from '@xyflow/system';
 
 type ZoomParams = {
-  viewport: Writable<Viewport>;
+  viewport: Viewport;
   initialViewport: Viewport;
   minZoom: number;
   maxZoom: number;
-  dragging: Writable<boolean>;
+  setPanZoomInstance: (panZoomInstance: PanZoomInstance) => void;
   onPanZoomStart?: OnPanZoom;
   onPanZoom?: OnPanZoom;
   onPanZoomEnd?: OnPanZoom;
   onPaneContextMenu?: (event: MouseEvent) => void;
   translateExtent: CoordinateExtent;
-  panZoom: Writable<PanZoomInstance | null>;
   zoomOnScroll: boolean;
   zoomOnPinch: boolean;
   zoomOnDoubleClick: boolean;
@@ -27,6 +26,7 @@ type ZoomParams = {
   panOnDrag: boolean | number[];
   panOnScrollSpeed: number;
   panOnScrollMode: PanOnScrollMode;
+  panActivationKeyPressed: boolean;
   zoomActivationKeyPressed: boolean;
   preventScrolling: boolean;
   // last two instances of 'classname' being used
@@ -36,18 +36,24 @@ type ZoomParams = {
   userSelectionActive: boolean;
   lib: string;
   paneClickDistance: number;
+  selectionOnDrag?: boolean;
+  onTransformChange: (transform: Transform) => void;
+  onDraggingChange: (dragging: boolean) => void;
+  connectionInProgress: boolean;
 };
 
 export default function zoom(domNode: Element, params: ZoomParams) {
   const {
-    panZoom,
     minZoom,
     maxZoom,
     initialViewport,
-    viewport,
-    dragging,
+    onPanZoomStart,
+    onPanZoom,
+    onPanZoomEnd,
     translateExtent,
-    paneClickDistance
+    setPanZoomInstance,
+    onDraggingChange,
+    onTransformChange
   } = params;
 
   const panZoomInstance = XYPanZoom({
@@ -56,14 +62,22 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     maxZoom,
     translateExtent,
     viewport: initialViewport,
-    paneClickDistance,
-    onTransformChange: (transform) =>
-      viewport.set({ x: transform[0], y: transform[1], zoom: transform[2] }),
-    onDraggingChange: dragging.set
+    onPanZoom,
+    onPanZoomStart,
+    onPanZoomEnd,
+    onDraggingChange
   });
-  const currentViewport = panZoomInstance.getViewport();
-  viewport.set(currentViewport);
-  panZoom.set(panZoomInstance);
+
+  const viewport = panZoomInstance.getViewport();
+  if (
+    initialViewport.x !== viewport.x ||
+    initialViewport.y !== viewport.y ||
+    initialViewport.zoom !== viewport.zoom
+  ) {
+    onTransformChange([viewport.x, viewport.y, viewport.zoom]);
+  }
+
+  setPanZoomInstance(panZoomInstance);
 
   panZoomInstance.update(params);
 

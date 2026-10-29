@@ -21,7 +21,7 @@ export type UppercaseNode = Node<{ text: string }, 'uppercase'>;
 export type MyNode = TextNode | ResultNode | UppercaseNode;
 
 export function isTextNode(node: any): node is TextNode | UppercaseNode {
-  return node.type === 'text' || node.type === 'uppercase';
+  return !node || !node.type ? false : node.type === 'text' || node.type === 'uppercase';
 }
 
 const nodeTypes = {

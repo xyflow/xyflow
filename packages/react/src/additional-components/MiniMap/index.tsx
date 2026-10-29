@@ -1,2 +1,3 @@
 export { MiniMap } from './MiniMap';
-export * from './types';
+export { MiniMapNode } from './MiniMapNode';
+export type * from './types';
