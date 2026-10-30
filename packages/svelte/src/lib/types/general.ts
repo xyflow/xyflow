@@ -56,6 +56,12 @@ export type IsValidConnection<EdgeType extends Edge = Edge> = (
   edge: EdgeType | Connection
 ) => boolean;
 
+/**
+ * This type can be used to type the `isNodeSelectable` function.
+ * If the function returns `false`, the node is excluded from box/lasso selection.
+ */
+export type IsNodeSelectable<NodeType extends Node = Node> = (node: NodeType) => boolean;
+
 export type OnSelectionChange<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge

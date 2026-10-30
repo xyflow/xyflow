@@ -12,6 +12,7 @@ import { shallow } from 'zustand/shallow';
 import cc from 'classcat';
 import {
   getNodesInside,
+  filterSelectedNodes,
   getEventPosition,
   SelectionMode,
   areSetsEqual,
@@ -213,6 +214,7 @@ export function Pane({
       triggerNodeChanges,
       triggerEdgeChanges,
       defaultEdgeOptions,
+      isNodeSelectable,
     } = store.getState();
 
     const userStartPosition = { x: userSelectionRect.startX, y: userSelectionRect.startY };
@@ -233,9 +235,10 @@ export function Pane({
     const prevSelectedEdgeIds = selectedEdgeIds.current;
 
     selectedNodeIds.current = new Set(
-      getNodesInside(nodeLookup, nextUserSelectRect, transform, selectionMode === SelectionMode.Partial, true).map(
-        (node) => node.id
-      )
+      filterSelectedNodes(
+        getNodesInside(nodeLookup, nextUserSelectRect, transform, selectionMode === SelectionMode.Partial, true),
+        isNodeSelectable
+      ).map((node) => node.id)
     );
 
     selectedEdgeIds.current = new Set();
