@@ -148,6 +148,30 @@ export function useKeyPress(
         setKeyPressed(false);
       };
 
+      // Browser/OS overlays can swallow keyup without blurring the window.
+      // Reconcile modifier state when the user next interacts with the page.
+      const pointerDownHandler = (event: PointerEvent) => {
+        const modifiers = [
+          { key: 'Shift', codes: ['ShiftLeft', 'ShiftRight'] },
+          { key: 'Control', codes: ['ControlLeft', 'ControlRight'] },
+          { key: 'Meta', codes: ['MetaLeft', 'MetaRight'] },
+          { key: 'Alt', codes: ['AltLeft', 'AltRight'] },
+        ];
+
+        for (const { key, codes } of modifiers) {
+          if (!event.getModifierState(key)) {
+            pressedKeys.current.delete(key);
+            codes.forEach((code) => pressedKeys.current.delete(code));
+          }
+        }
+
+        modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey || event.altKey;
+
+        if (!isMatchingKey(keyCodes, pressedKeys.current, false)) {
+          setKeyPressed(false);
+        }
+      };
+
       target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
       target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
       window.addEventListener('blur', resetHandler);
