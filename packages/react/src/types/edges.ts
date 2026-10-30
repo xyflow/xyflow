@@ -66,6 +66,13 @@ export type Edge<
     reconnectable?: boolean | HandleType;
     focusable?: boolean;
     /**
+     * Allow viewport panning when a drag starts on this edge, subject to `panOnDrag`.
+     * Set through `defaultEdgeOptions` to enable this for all edges. Custom interactive
+     * content can still prevent panning with `noPanClassName`.
+     * @default false
+     */
+    pannable?: boolean;
+    /**
      * The ARIA role attribute for the edge, used for accessibility.
      * @default "group"
      */
