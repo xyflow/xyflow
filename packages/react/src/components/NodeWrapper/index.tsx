@@ -78,7 +78,7 @@ function NodeWrapper<NodeType extends Node>({
     isSelectable,
     nodeClickDistance,
   });
-  const moveSelectedNodes = useMoveSelectedNodes();
+  const moveSelectedNodes = useMoveSelectedNodes<NodeType>();
 
   if (node.hidden) {
     return null;
@@ -139,23 +139,36 @@ function NodeWrapper<NodeType extends Node>({
         unselect,
         nodeRef,
       });
-    } else if (isDraggable && node.selected && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
-      // prevent default scrolling behavior on arrow key press when node is moved
+    } else if (isDraggable && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
+      const { ariaLabelConfig, nodeLookup, nodesDraggable } = store.getState();
+      const selectedDraggableNode = Array.from(nodeLookup.values()).find(
+        (selectedNode) =>
+          selectedNode.selected &&
+          (selectedNode.draggable || (nodesDraggable && typeof selectedNode.draggable === 'undefined'))
+      );
+
+      if (!node.selected && !selectedDraggableNode) {
+        return;
+      }
+
+      // prevent default scrolling behavior on arrow key press when selected nodes are moved
       event.preventDefault();
 
-      const { ariaLabelConfig } = store.getState();
+      const nodeToAnnounce = node.selected ? node : selectedDraggableNode ?? node;
 
       store.setState({
         ariaLiveMessage: ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
           direction: event.key.replace('Arrow', '').toLowerCase(),
-          x: ~~internals.positionAbsolute.x,
-          y: ~~internals.positionAbsolute.y,
+          x: ~~nodeToAnnounce.internals.positionAbsolute.x,
+          y: ~~nodeToAnnounce.internals.positionAbsolute.y,
         }),
       });
 
       moveSelectedNodes({
         direction: arrowKeyDiffs[event.key],
         factor: event.shiftKey ? 4 : 1,
+        event: event.nativeEvent,
+        nodeId: id,
       });
     }
   };

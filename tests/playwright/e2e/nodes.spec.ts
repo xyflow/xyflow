@@ -92,6 +92,71 @@ test.describe('Nodes', () => {
   });
 
   test.describe('dragging', () => {
+    test('moving a node with the keyboard fires onNodeMove', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'react', 'onNodeMove is a React Flow callback');
+
+      const node = page.locator('.react-flow__node').and(page.locator('[data-id="Node-1"]'));
+
+      await expect(node).toHaveCSS('visibility', 'visible');
+      await node.click();
+      await node.press('ArrowRight');
+
+      const event = JSON.parse((await page.locator('body').getAttribute('data-node-move-event'))!);
+
+      expect(event).toEqual({
+        key: 'ArrowRight',
+        node: { id: 'Node-1', position: { x: 5, y: 0 } },
+        nodes: [{ id: 'Node-1', position: { x: 5, y: 0 } }],
+      });
+    });
+
+    test('keyboard movement with Shift reports the larger step', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'react', 'onNodeMove is a React Flow callback');
+      const node = page.locator('.react-flow__node[data-id="Node-1"]');
+      await node.click();
+      await node.press('Shift+ArrowDown');
+      await expect(page.locator('body')).toHaveAttribute(
+        'data-node-move-event',
+        JSON.stringify({
+          key: 'ArrowDown',
+          node: { id: 'Node-1', position: { x: 0, y: 20 } },
+          nodes: [{ id: 'Node-1', position: { x: 0, y: 20 } }],
+        })
+      );
+    });
+
+    test('keyboard movement reports all selected nodes', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'react', 'onNodeMove is a React Flow callback');
+      const first = page.locator('.react-flow__node[data-id="Node-1"]');
+      const second = page.locator('.react-flow__node[data-id="Node-2"]');
+      await first.click();
+      await page.keyboard.down('s');
+      await second.click();
+      await page.keyboard.up('s');
+      await expect(first).toHaveClass(/selected/);
+      await expect(second).toHaveClass(/selected/);
+      await second.press('ArrowLeft');
+      await expect(page.locator('body')).toHaveAttribute(
+        'data-node-move-event',
+        JSON.stringify({
+          key: 'ArrowLeft',
+          node: { id: 'Node-2', position: { x: -105, y: 100 } },
+          nodes: [
+            { id: 'Node-1', position: { x: -5, y: 0 } },
+            { id: 'Node-2', position: { x: -105, y: 100 } },
+          ],
+        })
+      );
+    });
+
+    test('keyboard movement does not fire for a non-draggable node', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'react', 'onNodeMove is a React Flow callback');
+      const node = page.locator('.react-flow__node[data-id="notDraggable"]');
+      await node.click();
+      await node.press('ArrowRight');
+      await expect(page.locator('body')).not.toHaveAttribute('data-node-move-event');
+    });
+
     test('dragging a node', async ({ page }) => {
       const node = page.locator(`.${FRAMEWORK}-flow__node`).first();
 
