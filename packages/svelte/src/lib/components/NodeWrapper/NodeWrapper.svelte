@@ -4,6 +4,7 @@
     elementSelectionKeys,
     errorMessages,
     isInputDOMNode,
+    isSkipMeasurementHonored,
     nodeHasDimensions,
     Position,
     getNodesInside
@@ -73,6 +74,9 @@
   let hasDimensions = $derived(nodeHasDimensions(node));
   let hasHandleBounds = $derived(!!node.internals.handleBounds);
   let isInitialized = $derived(hasDimensions && hasHandleBounds);
+  // opt-in, honored only once the app has provided the values (dimensions + user `handles`); shared
+  // predicate with adoptUserNodes and the React wrapper so all sites agree on "honored"
+  let skipMeasurement = $derived(isSkipMeasurementHonored(node));
   let focusable = $derived(_focusable ?? store.nodesFocusable);
 
   function isInParentLookup(id: string) {
@@ -131,7 +135,7 @@
       sourcePosition !== prevSourcePosition ||
       targetPosition !== prevTargetPosition;
 
-    if (doUpdate && nodeRef !== null) {
+    if (!skipMeasurement && doUpdate && nodeRef !== null) {
       requestAnimationFrame(() => {
         if (nodeRef !== null) {
           store.updateNodeInternals(
@@ -157,6 +161,14 @@
 
   $effect(() => {
     /* eslint-disable @typescript-eslint/no-unused-expressions */
+    if (skipMeasurement) {
+      if (prevNodeRef) {
+        resizeObserver?.unobserve(prevNodeRef);
+        prevNodeRef = null;
+      }
+      return;
+    }
+
     if (resizeObserver && (!isInitialized || nodeRef !== prevNodeRef)) {
       prevNodeRef && resizeObserver.unobserve(prevNodeRef);
       nodeRef && resizeObserver.observe(nodeRef);

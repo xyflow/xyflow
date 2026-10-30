@@ -77,6 +77,16 @@ export type NodeBase<
     width?: number;
     height?: number;
   };
+  /**
+   * Opt out of dimension and handle measurement. It is honored only while you provide the values it
+   * would otherwise measure: real dimensions (`width`/`height` or `measured`) and `handles` (use
+   * `handles: []` for a node without handles). While honored the node is never measured (not by the
+   * ResizeObserver, on type/handle-position changes, nor by an explicit `updateNodeInternals`), and
+   * those values are authoritative. If the values are missing (or removed later) the flag is ignored
+   * and the node is measured normally, so it cannot render broken. Set it only when your dimensions
+   * and handles are correct and the node does not resize after mount.
+   */
+  skipMeasurement?: boolean;
 } & (undefined extends NodeType
   ? {
       /** Type of node defined in nodeTypes */
