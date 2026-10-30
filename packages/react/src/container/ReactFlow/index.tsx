@@ -97,6 +97,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     panOnScrollSpeed = 0.5,
     panOnScrollMode = PanOnScrollMode.Free,
     zoomOnDoubleClick = true,
+    zoomSensitivity = 1,
     panOnDrag = true,
     onPaneClick,
     onPaneMouseEnter,
@@ -282,6 +283,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           zoomOnScroll={zoomOnScroll}
           zoomOnPinch={zoomOnPinch}
           zoomOnDoubleClick={zoomOnDoubleClick}
+          zoomSensitivity={zoomSensitivity}
           panOnScroll={panOnScroll}
           panOnScrollSpeed={panOnScrollSpeed}
           panOnScrollMode={panOnScrollMode}

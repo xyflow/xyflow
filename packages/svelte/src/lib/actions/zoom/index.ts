@@ -22,6 +22,7 @@ type ZoomParams = {
   zoomOnScroll: boolean;
   zoomOnPinch: boolean;
   zoomOnDoubleClick: boolean;
+  zoomSensitivity: number;
   panOnScroll: boolean;
   panOnDrag: boolean | number[];
   panOnScrollSpeed: number;
