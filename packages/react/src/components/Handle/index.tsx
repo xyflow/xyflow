@@ -27,7 +27,7 @@ import { useStore, useStoreApi } from '../../hooks/useStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import { useHandleConfig } from '../../contexts/HandleConfigContext';
 import { type ReactFlowState } from '../../types';
-import { fixedForwardRef } from '../../utils';
+import { fixedForwardRef, isEventTargetInPortal } from '../../utils';
 import { addEdge } from '../../utils/edges';
 
 /**
@@ -138,6 +138,11 @@ function HandleComponent(
   };
   const onPointerDown = (event: ReactMouseEvent<HTMLDivElement> | ReactTouchEvent<HTMLDivElement>) => {
     if (!nodeId) {
+      return;
+    }
+
+    // Ignore event from portal
+    if (isEventTargetInPortal(event)) {
       return;
     }
 
