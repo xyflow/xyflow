@@ -42,7 +42,6 @@
 <div
   class="svelte-flow__zoom svelte-flow__container"
   use:zoom={{
-    viewport: store.viewport,
     minZoom: store.minZoom,
     maxZoom: store.maxZoom,
     initialViewport,

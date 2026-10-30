@@ -9,7 +9,6 @@ import {
 } from '@xyflow/system';
 
 type ZoomParams = {
-  viewport: Viewport;
   initialViewport: Viewport;
   minZoom: number;
   maxZoom: number;
