@@ -69,12 +69,19 @@ export function ZoomPane({
 
   useEffect(() => {
     if (zoomPane.current) {
+      // Activity tears down effects without removing the DOM. Restore the
+      // current transform when the flow is being shown again.
+      const { transform, domNode } = store.getState();
+      const initialViewport = domNode?.isConnected
+        ? { x: transform[0], y: transform[1], zoom: transform[2] }
+        : defaultViewport;
+
       panZoom.current = XYPanZoom({
         domNode: zoomPane.current,
         minZoom,
         maxZoom,
         translateExtent,
-        viewport: defaultViewport,
+        viewport: initialViewport,
         onDraggingChange: (paneDragging) =>
           store.setState((prevState) => (prevState.paneDragging === paneDragging ? prevState : { paneDragging })),
         onPanZoomStart: (event, vp) => {
