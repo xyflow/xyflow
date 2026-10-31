@@ -69,7 +69,7 @@ export function XYPanZoom({
     typeof ResizeObserver !== 'undefined'
       ? new ResizeObserver((entries) => {
           const entry = entries[0];
-          if (entry) {
+          if (entry?.contentRect) {
             cachedExtent = [
               [0, 0],
               [entry.contentRect.width, entry.contentRect.height],
