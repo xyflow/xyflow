@@ -19,15 +19,15 @@ describe('useKeyPress', () => {
     cy.get('[data-testid="shift-code"]').should('have.attr', 'data-pressed', 'true');
 
     // The modifier is still physically held, so the pointer interaction must not clear it.
-    cy.window().then((win) => {
-      win.dispatchEvent(new PointerEvent('pointerdown', { shiftKey: true, bubbles: true }));
+    cy.document().then((doc) => {
+      doc.dispatchEvent(new PointerEvent('pointerdown', { shiftKey: true, bubbles: true }));
     });
     cy.get('[data-testid="shift-key"]').should('have.attr', 'data-pressed', 'true');
     cy.get('[data-testid="shift-code"]').should('have.attr', 'data-pressed', 'true');
 
     // Simulate the next interaction after the OS overlay swallowed Shift's keyup.
-    cy.window().then((win) => {
-      win.dispatchEvent(new PointerEvent('pointerdown', { shiftKey: false, bubbles: true }));
+    cy.document().then((doc) => {
+      doc.dispatchEvent(new PointerEvent('pointerdown', { shiftKey: false, bubbles: true }));
     });
     cy.get('[data-testid="shift-key"]').should('have.attr', 'data-pressed', 'false');
     cy.get('[data-testid="shift-code"]').should('have.attr', 'data-pressed', 'false');
