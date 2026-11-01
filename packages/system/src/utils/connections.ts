@@ -4,7 +4,7 @@ import { type HandleConnection } from '../types';
  * @internal
  */
 export function areConnectionMapsEqual(a?: Map<string, HandleConnection>, b?: Map<string, HandleConnection>) {
-  if (!a && !b) {
+  if (a === b) {
     return true;
   }
 
@@ -16,8 +16,8 @@ export function areConnectionMapsEqual(a?: Map<string, HandleConnection>, b?: Ma
     return true;
   }
 
-  for (const key of a.keys()) {
-    if (!b.has(key)) {
+  for (const [key, connection] of a) {
+    if (b.get(key)?.edgeId !== connection.edgeId) {
       return false;
     }
   }
@@ -42,7 +42,7 @@ export function handleConnectionChange(
   const diff: HandleConnection[] = [];
 
   a.forEach((connection, key) => {
-    if (!b?.has(key)) {
+    if (b?.get(key)?.edgeId !== connection.edgeId) {
       diff.push(connection);
     }
   });

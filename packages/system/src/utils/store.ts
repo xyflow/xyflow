@@ -690,7 +690,8 @@ function addConnectionToLookup(
   connectionKey: string,
   connectionLookup: ConnectionLookup,
   nodeId: string,
-  handleId: string | null
+  handleId: string | null,
+  updatedConnectionKeys: Set<string>
 ) {
   /*
    * We add the connection to the connectionLookup at the following keys
@@ -699,16 +700,18 @@ function addConnectionToLookup(
    */
   let key = nodeId;
   let nodeMap = connectionLookup.get(key);
-  if (!nodeMap) {
-    nodeMap = new Map<string, HandleConnection>();
+  if (!nodeMap || !updatedConnectionKeys.has(key)) {
+    nodeMap = new Map(nodeMap);
+    updatedConnectionKeys.add(key);
     connectionLookup.set(key, nodeMap);
   }
   nodeMap.set(connectionKey, connection);
 
   key = `${nodeId}-${type}`;
   let typeMap = connectionLookup.get(key);
-  if (!typeMap) {
-    typeMap = new Map<string, HandleConnection>();
+  if (!typeMap || !updatedConnectionKeys.has(key)) {
+    typeMap = new Map(typeMap);
+    updatedConnectionKeys.add(key);
     connectionLookup.set(key, typeMap);
   }
   typeMap.set(connectionKey, connection);
@@ -716,8 +719,9 @@ function addConnectionToLookup(
   if (handleId) {
     key = `${nodeId}-${type}-${handleId}`;
     let handleMap = connectionLookup.get(key);
-    if (!handleMap) {
-      handleMap = new Map<string, HandleConnection>();
+    if (!handleMap || !updatedConnectionKeys.has(key)) {
+      handleMap = new Map(handleMap);
+      updatedConnectionKeys.add(key);
       connectionLookup.set(key, handleMap);
     }
     handleMap.set(connectionKey, connection);
@@ -729,7 +733,8 @@ function removeConnectionFromLookup(
   connectionKey: string,
   connectionLookup: ConnectionLookup,
   nodeId: string,
-  handleId: string | null
+  handleId: string | null,
+  updatedConnectionKeys: Set<string>
 ) {
   const keys = [nodeId, `${nodeId}-${type}`];
 
@@ -738,10 +743,16 @@ function removeConnectionFromLookup(
   }
 
   for (const key of keys) {
-    const map = connectionLookup.get(key);
+    let map = connectionLookup.get(key);
 
     if (!map) {
       continue;
+    }
+
+    if (!updatedConnectionKeys.has(key)) {
+      map = new Map(map);
+      connectionLookup.set(key, map);
+      updatedConnectionKeys.add(key);
     }
 
     map.delete(connectionKey);
@@ -752,18 +763,39 @@ function removeConnectionFromLookup(
   }
 }
 
-function syncEdgeConnections(connectionLookup: ConnectionLookup, edge: EdgeBase, action: 'add' | 'remove') {
+function syncEdgeConnections(
+  connectionLookup: ConnectionLookup,
+  edge: EdgeBase,
+  action: 'add' | 'remove',
+  updatedConnectionKeys: Set<string>
+) {
   const { source: sourceNode, target: targetNode, sourceHandle = null, targetHandle = null } = edge;
   const connection = { edgeId: edge.id, source: sourceNode, target: targetNode, sourceHandle, targetHandle };
   const sourceKey = `${sourceNode}-${sourceHandle}--${targetNode}-${targetHandle}`;
   const targetKey = `${targetNode}-${targetHandle}--${sourceNode}-${sourceHandle}`;
 
   if (action === 'add') {
-    addConnectionToLookup('source', connection, targetKey, connectionLookup, sourceNode, sourceHandle);
-    addConnectionToLookup('target', connection, sourceKey, connectionLookup, targetNode, targetHandle);
+    addConnectionToLookup(
+      'source',
+      connection,
+      targetKey,
+      connectionLookup,
+      sourceNode,
+      sourceHandle,
+      updatedConnectionKeys
+    );
+    addConnectionToLookup(
+      'target',
+      connection,
+      sourceKey,
+      connectionLookup,
+      targetNode,
+      targetHandle,
+      updatedConnectionKeys
+    );
   } else {
-    removeConnectionFromLookup('source', targetKey, connectionLookup, sourceNode, sourceHandle);
-    removeConnectionFromLookup('target', sourceKey, connectionLookup, targetNode, targetHandle);
+    removeConnectionFromLookup('source', targetKey, connectionLookup, sourceNode, sourceHandle, updatedConnectionKeys);
+    removeConnectionFromLookup('target', sourceKey, connectionLookup, targetNode, targetHandle, updatedConnectionKeys);
   }
 }
 
@@ -774,6 +806,9 @@ export function updateConnectionLookup(
 ): { updatedEdges: Set<string> } {
   const tmpLookup = new Map(edgeLookup);
   const updatedEdges = new Set<string>();
+  // Clone each affected connection map once, preserving subscribers' previous snapshots.
+  const updatedConnectionKeys = new Set<string>();
+  const connectionsToAdd: EdgeBase[] = [];
 
   edgeLookup.clear();
 
@@ -795,9 +830,9 @@ export function updateConnectionLookup(
       existing.targetHandle != edge.targetHandle
     ) {
       if (existing) {
-        syncEdgeConnections(connectionLookup, existing, 'remove');
+        syncEdgeConnections(connectionLookup, existing, 'remove', updatedConnectionKeys);
       }
-      syncEdgeConnections(connectionLookup, edge, 'add');
+      connectionsToAdd.push(edge);
     }
 
     edgeLookup.set(edge.id, edge);
@@ -806,9 +841,14 @@ export function updateConnectionLookup(
 
   for (const edge of tmpLookup.values()) {
     if (!edgeLookup.has(edge.id)) {
-      syncEdgeConnections(connectionLookup, edge, 'remove');
+      syncEdgeConnections(connectionLookup, edge, 'remove', updatedConnectionKeys);
       updatedEdges.add(edge.id);
     }
+  }
+
+  // Remove old connections before adding new ones that may use the same connection key.
+  for (const edge of connectionsToAdd) {
+    syncEdgeConnections(connectionLookup, edge, 'add', updatedConnectionKeys);
   }
 
   return { updatedEdges };
