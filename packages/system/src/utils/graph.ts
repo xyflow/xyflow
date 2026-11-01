@@ -499,17 +499,31 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
 }> {
   const nodeIds = new Set(nodesToRemove.map((node) => node.id));
   const matchingNodeMap = new Map<string, NodeType>();
+  const children = new Map<string, NodeType[]>();
 
   for (const node of nodes) {
     if (node.deletable === false) {
       continue;
     }
 
-    const isIncluded = nodeIds.has(node.id);
-    const parentHit = !isIncluded && node.parentId && matchingNodeMap.has(node.parentId);
-
-    if (isIncluded || parentHit) {
+    if (nodeIds.has(node.id)) {
       matchingNodeMap.set(node.id, node);
+    }
+
+    if (node.parentId) {
+      const siblings = children.get(node.parentId) ?? [];
+      siblings.push(node);
+      children.set(node.parentId, siblings);
+    }
+  }
+
+  const queue = [...matchingNodeMap.keys()];
+  for (let index = 0; index < queue.length; index++) {
+    for (const child of children.get(queue[index]) ?? []) {
+      if (!matchingNodeMap.has(child.id)) {
+        matchingNodeMap.set(child.id, child);
+        queue.push(child.id);
+      }
     }
   }
 
@@ -531,7 +545,7 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
     }
   }
 
-  const matchingNodes = Array.from(matchingNodeMap.values());
+  const matchingNodes = nodes.filter((node) => matchingNodeMap.has(node.id));
   const matchingEdges = Array.from(matchingEdgeMap.values());
 
   if (!onBeforeDelete) {
