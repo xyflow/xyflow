@@ -198,13 +198,13 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
 
   function unselectNodesAndEdges(params?: { nodes?: NodeType[]; edges?: EdgeType[] }) {
     const nodesToDeselect = params?.nodes ? new Set(params.nodes.map((node) => node.id)) : null;
-    const nodeChanges = getDeselectionChanges(store.nodeLookup, nodesToDeselect, true);
+    const nodeChanges = getDeselectionChanges(store.nodeLookup, nodesToDeselect);
     if (nodeChanges.length > 0) {
       store.queueNodeChanges(nodeChanges);
     }
 
     const edgesToDeselect = params?.edges ? new Set(params.edges.map((edge) => edge.id)) : null;
-    const edgeChanges = getDeselectionChanges(store.edgeLookup, edgesToDeselect, true);
+    const edgeChanges = getDeselectionChanges(store.edgeLookup, edgesToDeselect);
     if (edgeChanges.length > 0) {
       store.queueEdgeChanges(edgeChanges);
     }
@@ -218,7 +218,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       return;
     }
 
-    store.queueNodeChanges(getSelectionChanges(store.nodeLookup, new Set(ids), true));
+    store.queueNodeChanges(getSelectionChanges(store.nodeLookup, new Set(ids)));
     store.queueEdgeChanges(getSelectionChanges(store.edgeLookup));
   }
 
@@ -231,7 +231,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
     }
 
     store.queueEdgeChanges(getSelectionChanges(store.edgeLookup, new Set(ids)));
-    store.queueNodeChanges(getSelectionChanges(store.nodeLookup, new Set(), true));
+    store.queueNodeChanges(getSelectionChanges(store.nodeLookup, new Set()));
   }
 
   function handleNodeSelection(id: string, unselect?: boolean, nodeRef?: HTMLDivElement | null) {

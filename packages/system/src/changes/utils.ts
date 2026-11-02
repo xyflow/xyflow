@@ -3,8 +3,7 @@ import { selectionChange } from './create.js';
 
 export function getSelectionChanges(
   items: Map<string, { id: string; selected?: boolean }>,
-  selectedIds: Set<string> = new Set(),
-  mutateItem = false
+  selectedIds: Set<string> = new Set()
 ): SelectionChange[] {
   const changes: SelectionChange[] = [];
 
@@ -12,9 +11,6 @@ export function getSelectionChanges(
     const willBeSelected = selectedIds.has(item.id);
 
     if (!(item.selected === undefined && !willBeSelected) && item.selected !== willBeSelected) {
-      if (mutateItem) {
-        item.selected = willBeSelected;
-      }
       changes.push(selectionChange(item.id, willBeSelected));
     }
   }
@@ -24,8 +20,7 @@ export function getSelectionChanges(
 
 export function getDeselectionChanges(
   items: Map<string, { id: string; selected?: boolean }>,
-  deselectedIds: Set<string> | null = new Set(),
-  mutateItem = false
+  deselectedIds: Set<string> | null = new Set()
 ): SelectionChange[] {
   const changes: SelectionChange[] = [];
 
@@ -33,9 +28,6 @@ export function getDeselectionChanges(
     const shouldDeselect = deselectedIds ? deselectedIds.has(item.id) : true;
 
     if (shouldDeselect && item.selected) {
-      if (mutateItem) {
-        item.selected = false;
-      }
       changes.push(selectionChange(item.id, false));
     }
   }

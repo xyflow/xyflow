@@ -276,7 +276,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
           return;
         }
 
-        emitNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
+        emitNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds])));
         emitEdgeChanges(getSelectionChanges(edgeLookup));
       },
       addSelectedEdges: (selectedEdgeIds) => {
@@ -291,11 +291,11 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         }
 
         emitEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
-        emitNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
+        emitNodeChanges(getSelectionChanges(nodeLookup, new Set()));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
         const { edges: storeEdges } = edgesStore.getState();
-        const { nodes: storeNodes, nodeLookup } = nodesStore.getState();
+        const { nodes: storeNodes } = nodesStore.getState();
         const { emitNodeChanges, emitEdgeChanges } = get();
         const nodesToUnselect = nodes ? nodes : storeNodes;
         const edgesToUnselect = edges ? edges : storeEdges;
@@ -305,16 +305,6 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         for (const node of nodesToUnselect) {
           if (!node.selected) {
             continue; // skip changing nodes that are not selected
-          }
-
-          const internalNode = nodeLookup.get(node.id);
-
-          if (internalNode) {
-            /*
-             * we need to unselect the internal node that was selected previously before we
-             * send the change to the user to prevent it to be selected while dragging the new node
-             */
-            internalNode.selected = false;
           }
 
           nodeChanges.push(selectionChange(node.id, false));
