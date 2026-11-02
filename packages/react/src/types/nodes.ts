@@ -57,6 +57,11 @@ export type OnNodeDrag<NodeType extends Node = Node> = (
   node: NodeType,
   nodes: NodeType[]
 ) => void;
+export type OnNodeMove<NodeType extends Node = Node> = (
+  event: KeyboardEvent,
+  node: NodeType,
+  nodes: NodeType[]
+) => void;
 
 export type NodeWrapperProps<NodeType extends Node> = {
   id: string;
