@@ -28,12 +28,12 @@
 }
 
 [data-theme='dark'] .xy-flow,
-.xy-flow.dark {
+.dark .xy-flow {
   color-scheme: dark;
 }
 
 [data-theme='light'] .xy-flow,
-.xy-flow.light {
+.light .xy-flow {
   color-scheme: light;
 }
 
