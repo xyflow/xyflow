@@ -69,6 +69,7 @@ export function XYPanZoom({
     typeof ResizeObserver !== 'undefined'
       ? new ResizeObserver((entries) => {
           const entry = entries[0];
+          // test mocks may call back without contentRect
           if (entry?.contentRect) {
             cachedExtent = [
               [0, 0],
