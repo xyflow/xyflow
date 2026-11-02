@@ -78,7 +78,9 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
 
 function parseHandles(userNode: NodeBase, internalNode?: InternalNodeBase): NodeHandleBounds | undefined {
   if (!userNode.handles) {
-    return !userNode.measured ? undefined : internalNode?.internals.handleBounds;
+    // Keep the last known bounds while the node is being re-measured. Clearing them
+    // here can make connected edges disappear if the measurement update is delayed.
+    return internalNode?.internals.handleBounds;
   }
 
   const source: Handle[] = [];
@@ -162,7 +164,8 @@ export function adoptUserNodes<NodeType extends NodeBase>(
         },
         internals: {
           positionAbsolute: clampedPosition,
-          // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
+          // If the user re-initializes the node or removes `measured`, dimensions are reset so it gets re-measured.
+          // Keep previous handle bounds as a fallback until the observer recalculates them.
           handleBounds: parseHandles(userNode, internalNode),
           z: calculateZ(userNode, selectedNodeZ, _options.zIndexMode),
           userNode,
