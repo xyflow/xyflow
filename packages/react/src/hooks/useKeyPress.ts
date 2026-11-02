@@ -51,11 +51,11 @@ export function useKeyPress(
    * an action.
    *
    * A **string** can represent:
-   * - A **single key**, e.g. `'a'`
-   * - A **key combination**, using `'+'` to separate keys, e.g. `'a+d'`
+   * - A **single key**, e.g. 'a'
+   * - A **key combination**, using '+' to separate keys, e.g. 'a+d'
    *
-   * An  **array of strings** represents **multiple possible key inputs**. For example, `['a', 'd+s']`
-   * means the user can press either the single key `'a'` or the combination of `'d'` and `'s'`.
+   * An  **array of strings** represents **multiple possible key inputs**. For example, ['a', 'd+s']
+   * means the user can press either the single key 'a' or the combination of 'd' and 's'.
    * @default null
    */
   keyCode: KeyCode | null = null,
@@ -148,14 +148,40 @@ export function useKeyPress(
         setKeyPressed(false);
       };
 
+      // Browser/OS overlays can swallow keyup without blurring the window.
+      // Reconcile modifier state when the user next interacts with the page.
+      const pointerDownHandler = (event: PointerEvent) => {
+        const modifiers = [
+          { key: 'Shift', codes: ['ShiftLeft', 'ShiftRight'] },
+          { key: 'Control', codes: ['ControlLeft', 'ControlRight'] },
+          { key: 'Meta', codes: ['MetaLeft', 'MetaRight'] },
+          { key: 'Alt', codes: ['AltLeft', 'AltRight'] },
+        ];
+
+        for (const { key, codes } of modifiers) {
+          if (!event.getModifierState(key)) {
+            pressedKeys.current.delete(key);
+            codes.forEach((code) => pressedKeys.current.delete(code));
+          }
+        }
+
+        modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey || event.altKey;
+
+        if (!isMatchingKey(keyCodes, pressedKeys.current, false)) {
+          setKeyPressed(false);
+        }
+      };
+
       target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
       target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
+      target?.addEventListener('pointerdown', pointerDownHandler as EventListenerOrEventListenerObject);
       window.addEventListener('blur', resetHandler);
       window.addEventListener('contextmenu', resetHandler);
 
       return () => {
         target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
         target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
+        target?.removeEventListener('pointerdown', pointerDownHandler as EventListenerOrEventListenerObject);
         window.removeEventListener('blur', resetHandler);
         window.removeEventListener('contextmenu', resetHandler);
       };
