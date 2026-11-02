@@ -24,15 +24,6 @@ export function useNodes() {
   return {
     get current() {
       return store.nodes;
-    },
-    set current(nodes) {
-      store.queueNodeChanges(getElementChanges(store.nodes, nodes));
-    },
-    update(updateFn: (nodes: Node[]) => Node[]) {
-      store.queueNodeChanges(getElementChanges(store.nodes, updateFn(store.nodes)));
-    },
-    set(nodes: Node[]) {
-      store.queueNodeChanges(getElementChanges(store.nodes, nodes));
     }
   };
 }
@@ -88,15 +79,6 @@ export function useEdges() {
   return {
     get current() {
       return store.edges;
-    },
-    set current(edges) {
-      store.queueEdgeChanges(getElementChanges(store.edges, edges));
-    },
-    update(updateFn: (edges: Edge[]) => Edge[]) {
-      store.queueEdgeChanges(getElementChanges(store.edges, updateFn(store.edges)));
-    },
-    set(edges: Edge[]) {
-      store.queueEdgeChanges(getElementChanges(store.edges, edges));
     }
   };
 }
@@ -162,42 +144,4 @@ export function useViewport() {
       store.viewport = viewport;
     }
   };
-}
-
-function getElementChanges<ElementType extends { id: string }>(
-  previousElements: ElementType[],
-  nextElements: ElementType[]
-) {
-  // eslint-disable-next-line svelte/prefer-svelte-reactivity
-  const nextElementLookup = new Map<string, ElementType>();
-  const changes: Array<
-    | { id: string; type: 'remove' }
-    | { id: string; type: 'replace'; item: ElementType }
-    | { id: string; type: 'add'; item: ElementType }
-  > = [];
-
-  for (const element of nextElements) {
-    nextElementLookup.set(element.id, element);
-  }
-
-  for (const previousElement of previousElements) {
-    const nextElement = nextElementLookup.get(previousElement.id);
-
-    if (!nextElement) {
-      changes.push({ id: previousElement.id, type: 'remove' });
-      continue;
-    }
-
-    // unchanged elements keep their reference, so we don't need to replace them
-    if (nextElement !== previousElement) {
-      changes.push({ id: previousElement.id, type: 'replace', item: nextElement });
-    }
-    nextElementLookup.delete(previousElement.id);
-  }
-
-  for (const element of nextElementLookup.values()) {
-    changes.push({ id: element.id, type: 'add', item: element });
-  }
-
-  return changes;
 }
