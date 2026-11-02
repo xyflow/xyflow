@@ -1,7 +1,21 @@
+import { Activity, useState } from 'react';
 import { ReactFlow, ReactFlowProps, Viewport, useViewport, SnapGrid, CoordinateExtent, Node } from '@xyflow/react';
 
 import ControlledFlow from '../../support/ControlledFlow';
 import * as simpleflow from '../../fixtures/simpleflow';
+
+function ActivityFlow() {
+  const [visible, setVisible] = useState(true);
+
+  return (
+    <>
+      <button onClick={() => setVisible((value) => !value)}>Toggle flow</button>
+      <Activity mode={visible ? 'visible' : 'hidden'}>
+        <ReactFlow nodes={simpleflow.nodes} defaultViewport={{ x: 0, y: 0, zoom: 1 }} />
+      </Activity>
+    </>
+  );
+}
 
 const nodesOutsideOfView = [
   {
@@ -21,6 +35,15 @@ const nodesOutsideOfView = [
 ];
 
 describe('<ReactFlow />: View Props', () => {
+  it('preserves the viewport when hidden and shown with React Activity', () => {
+    cy.mount(<ActivityFlow />).then(() => {
+      cy.dragPane({ from: { x: 200, y: 200 }, to: { x: 260, y: 240 } });
+      cy.get('.react-flow__viewport').invoke('css', 'transform').then((viewportBefore) => {
+        cy.get('button').click().click();
+        cy.get('.react-flow__viewport').should('have.css', 'transform', viewportBefore);
+      });
+    });
+  });
   it('uses fitView', () => {
     cy.mount(<Comp nodes={nodesOutsideOfView} fitView minZoom={0.2} />).wait(200);
     cy.get('.react-flow__node:first').isWithinViewport();
