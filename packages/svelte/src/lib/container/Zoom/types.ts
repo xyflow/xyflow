@@ -10,6 +10,7 @@ export type ZoomProps<NodeType extends Node = Node, EdgeType extends Edge = Edge
   preventScrolling: boolean;
   zoomOnScroll: boolean;
   zoomOnDoubleClick: boolean;
+  zoomSensitivity: number;
   zoomOnPinch: boolean;
   panOnScroll: boolean;
   panOnDrag: boolean | number[];

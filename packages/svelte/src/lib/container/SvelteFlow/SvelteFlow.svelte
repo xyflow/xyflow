@@ -57,6 +57,7 @@
     preventScrolling = true,
     zoomOnScroll = true,
     zoomOnDoubleClick = true,
+    zoomSensitivity = 1,
     zoomOnPinch = true,
     panOnScroll = false,
     panOnScrollSpeed = 0.5,
@@ -160,6 +161,7 @@
     {preventScrolling}
     {zoomOnScroll}
     {zoomOnDoubleClick}
+    {zoomSensitivity}
     {zoomOnPinch}
     {panOnScroll}
     {panOnScrollSpeed}
