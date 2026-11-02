@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import { FRAMEWORK } from './constants';
+import { getTransform } from './utils';
 
 test.describe('Edges', () => {
   test.beforeEach(async ({ page }) => {
@@ -38,6 +39,37 @@ test.describe('Edges', () => {
       await expect(edge2).toHaveClass(/selected/);
       await expect(edge1).toHaveClass(/selected/);
     });
+  });
+
+  test.describe('panning', () => {
+    test.skip(FRAMEWORK !== 'react', 'The pannable edge option is specific to React Flow.');
+
+    for (const { id, pannable } of [
+      { id: 'edge-with-class', pannable: false },
+      { id: 'edge-with-style', pannable: true },
+    ]) {
+      test(
+        pannable ? 'pannable=true allows panning from an edge' : 'edges prevent panning by default',
+        async ({ page }) => {
+          const edge = page.locator(`[data-id="${id}"]`);
+          const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
+
+          await edge.hover();
+          const edgeBox = await edge.boundingBox();
+          if (!edgeBox) throw new Error('Could not measure the edge.');
+          const before = await getTransform(viewport);
+
+          await page.mouse.down();
+          await page.mouse.move(edgeBox.x + edgeBox.width / 2 + 100, edgeBox.y + edgeBox.height / 2 + 100);
+          await page.mouse.up();
+
+          const after = await getTransform(viewport);
+          const expectedMovement = pannable ? 100 : 0;
+          expect(after.translateX - before.translateX).toBeCloseTo(expectedMovement, 0);
+          expect(after.translateY - before.translateY).toBeCloseTo(expectedMovement, 0);
+        }
+      );
+    }
   });
 
   test.describe('properties', () => {

@@ -39,13 +39,14 @@ export function EdgeAnchor({
   onMouseEnter,
   onMouseOut,
   type,
+  className,
 }: EdgeAnchorProps) {
   return (
     <circle
       onMouseDown={onMouseDown}
       onMouseEnter={onMouseEnter}
       onMouseOut={onMouseOut}
-      className={cc([EdgeUpdaterClassName, `${EdgeUpdaterClassName}-${type}`])}
+      className={cc([EdgeUpdaterClassName, `${EdgeUpdaterClassName}-${type}`, className])}
       cx={shiftX(centerX, radius, position)}
       cy={shiftY(centerY, radius, position)}
       r={radius}
