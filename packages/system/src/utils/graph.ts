@@ -23,6 +23,7 @@ import {
   NodeLookup,
   InternalNodeBase,
   NodeDragItem,
+  IsNodeSelectable,
 } from '../types';
 import { errorMessages } from '../constants';
 
@@ -302,6 +303,18 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
 
   return visibleNodes;
 };
+
+/**
+ * Filters nodes found inside a selection rect with an optional `isNodeSelectable` predicate.
+ * When the predicate is omitted, the original list is returned unchanged.
+ *
+ * @internal
+ */
+export const filterSelectedNodes = <NodeType extends NodeBase = NodeBase>(
+  nodes: InternalNodeBase<NodeType>[],
+  isNodeSelectable?: IsNodeSelectable<NodeType>
+): InternalNodeBase<NodeType>[] =>
+  isNodeSelectable ? nodes.filter((node) => isNodeSelectable(node.internals.userNode)) : nodes;
 
 /**
  * This utility filters an array of edges, keeping only those where either the source or target

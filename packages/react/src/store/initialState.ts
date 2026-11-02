@@ -146,6 +146,7 @@ const getInitialState = ({
     connectionRadius: 20,
     onError: devWarn,
     isValidConnection: undefined,
+    isNodeSelectable: undefined,
     onSelectionChangeHandlers: [],
 
     lib: 'react',

@@ -63,6 +63,7 @@ const reactFlowFieldsToTrack = [
   'onError',
   'connectionRadius',
   'isValidConnection',
+  'isNodeSelectable',
   'selectNodesOnDrag',
   'nodeDragThreshold',
   'connectionDragThreshold',

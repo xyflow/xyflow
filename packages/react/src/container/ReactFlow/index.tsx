@@ -136,6 +136,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     autoPanSpeed,
     connectionRadius,
     isValidConnection,
+    isNodeSelectable,
     onError,
     style,
     id,
@@ -243,6 +244,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           onError={onError}
           connectionRadius={connectionRadius}
           isValidConnection={isValidConnection}
+          isNodeSelectable={isNodeSelectable}
           selectNodesOnDrag={selectNodesOnDrag}
           nodeDragThreshold={nodeDragThreshold}
           connectionDragThreshold={connectionDragThreshold}

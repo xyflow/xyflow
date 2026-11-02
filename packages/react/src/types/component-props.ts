@@ -46,6 +46,7 @@ import type {
   OnNodeDrag,
   OnBeforeDelete,
   IsValidConnection,
+  IsNodeSelectable,
   ProOptions,
 } from '.';
 
@@ -349,6 +350,16 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default 'full'
    */
   selectionMode?: SelectionMode;
+  /**
+   * Optional predicate used to exclude nodes from box/lasso selection after they are found inside
+   * the selection rect. Click selection is not affected.
+   *
+   * When omitted, every node inside the rect is selected (current behavior).
+   *
+   * @example
+   * isNodeSelectable={(node) => node.type !== 'group'}
+   */
+  isNodeSelectable?: IsNodeSelectable<NodeType>;
   /**
    * If a key is set, you can pan the viewport while that key is held down even if `panOnScroll`
    * is set to `false`.
