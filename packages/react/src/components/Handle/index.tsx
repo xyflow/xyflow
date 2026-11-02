@@ -4,6 +4,7 @@ import {
   type TouchEvent as ReactTouchEvent,
   type ForwardedRef,
   memo,
+  useRef,
 } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
@@ -121,6 +122,8 @@ function HandleComponent(
     store.getState().onError?.('010', errorMessages['error010']());
   }
 
+  const pointerDownPos = useRef<{ x: number; y: number } | null>(null);
+
   const onConnectExtended = (params: Connection) => {
     const { defaultEdgeOptions, onConnect: onConnectAction, hasDefaultEdges } = store.getState();
 
@@ -148,6 +151,16 @@ function HandleComponent(
       ((isMouseTriggered && (event as ReactMouseEvent<HTMLDivElement>).button === 0) || !isMouseTriggered)
     ) {
       const currentStore = store.getState();
+
+      pointerDownPos.current = isMouseTriggered
+        ? {
+            x: (event as ReactMouseEvent<HTMLDivElement>).clientX,
+            y: (event as ReactMouseEvent<HTMLDivElement>).clientY,
+          }
+        : {
+            x: (event as ReactTouchEvent<HTMLDivElement>).touches[0].clientX,
+            y: (event as ReactTouchEvent<HTMLDivElement>).touches[0].clientY,
+          };
 
       XYHandle.onPointerDown(event.nativeEvent, {
         handleDomNode: event.currentTarget,
@@ -193,7 +206,17 @@ function HandleComponent(
       rfId: flowId,
       nodeLookup,
       connection: connectionState,
+      connectionDragThreshold,
     } = store.getState();
+
+    if (pointerDownPos.current) {
+      const dx = event.clientX - pointerDownPos.current.x;
+      const dy = event.clientY - pointerDownPos.current.y;
+      pointerDownPos.current = null;
+      if (dx * dx + dy * dy > connectionDragThreshold * connectionDragThreshold) {
+        return;
+      }
+    }
 
     if (!nodeId || (!connectionClickStartHandle && !isConnectableStart)) {
       return;
@@ -265,7 +288,9 @@ function HandleComponent(
           connectionindicator:
             isConnectable &&
             (!connectionInProcess || isPossibleEndHandle) &&
-            (connectionInProcess || clickConnectionInProcess ? isConnectableEnd : isConnectableStart),
+            (connectionInProcess || clickConnectionInProcess
+              ? isConnectableEnd || clickConnecting
+              : isConnectableStart),
         },
       ])}
       onMouseDown={onPointerDown}
