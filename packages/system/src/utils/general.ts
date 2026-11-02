@@ -369,6 +369,21 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
 }
 
 /**
+ * Whether a node's opt-in `skipMeasurement` should be honored. It is honored only when the values it
+ * would otherwise measure are actually provided: real dimensions (`width`/`height` or `measured`,
+ * not the `initialWidth`/`initialHeight` estimates, which are placeholders until measured) and
+ * `handles` (use `handles: []` for a node without handles). Otherwise the flag is ignored and the
+ * node is measured normally, so it cannot render broken.
+ *
+ * @internal
+ */
+export function isSkipMeasurementHonored<NodeType extends NodeBase = NodeBase>(node: NodeType): boolean {
+  const hasWidth = (node.measured?.width ?? node.width) !== undefined;
+  const hasHeight = (node.measured?.height ?? node.height) !== undefined;
+  return !!node.skipMeasurement && hasWidth && hasHeight && !!node.handles;
+}
+
+/**
  * Convert child position to absolute position
  *
  * @internal
