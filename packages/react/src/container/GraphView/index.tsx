@@ -60,6 +60,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   connectionLineContainerStyle,
   selectionKeyCode,
   selectionOnDrag,
+  deselectOnSelection,
   selectionMode,
   multiSelectionKeyCode,
   panActivationKeyCode,
@@ -126,6 +127,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
       deleteKeyCode={deleteKeyCode}
       selectionKeyCode={selectionKeyCode}
       selectionOnDrag={selectionOnDrag}
+      deselectOnSelection={deselectOnSelection}
       selectionMode={selectionMode}
       onSelectionStart={onSelectionStart}
       onSelectionEnd={onSelectionEnd}

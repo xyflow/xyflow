@@ -47,6 +47,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   deleteKeyCode,
   selectionKeyCode,
   selectionOnDrag,
+  deselectOnSelection,
   selectionMode,
   onSelectionStart,
   onSelectionEnd,
@@ -126,6 +127,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
         selectionKeyPressed={selectionKeyPressed}
         paneClickDistance={paneClickDistance}
         selectionOnDrag={_selectionOnDrag}
+        deselectOnSelection={deselectOnSelection}
       >
         {children}
         {nodesSelectionActive && (

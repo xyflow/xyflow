@@ -68,6 +68,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     deleteKeyCode = 'Backspace',
     selectionKeyCode = 'Shift',
     selectionOnDrag = false,
+    deselectOnSelection = true,
     selectionMode = SelectionMode.Full,
     panActivationKeyCode = 'Space',
     multiSelectionKeyCode = isMacOs() ? 'Meta' : 'Control',
@@ -268,6 +269,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           connectionLineContainerStyle={connectionLineContainerStyle}
           selectionKeyCode={selectionKeyCode}
           selectionOnDrag={selectionOnDrag}
+          deselectOnSelection={deselectOnSelection}
           selectionMode={selectionMode}
           deleteKeyCode={deleteKeyCode}
           multiSelectionKeyCode={multiSelectionKeyCode}

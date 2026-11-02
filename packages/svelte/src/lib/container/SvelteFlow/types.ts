@@ -339,6 +339,13 @@ export type SvelteFlowProps<
      */
     selectionOnDrag?: boolean;
     /**
+     * When starting a new selection box, this controls whether the previously selected elements
+     * are deselected. Set to `false` to keep the existing selection and add the newly boxed
+     * elements to it.
+     * @default true
+     */
+    deselectOnSelection?: boolean;
+    /**
      * You can enable this optimisation to instruct Svelte Flow to only render nodes and edges that would be visible in the viewport.
      * This might improve performance when you have a large number of nodes and edges but also adds an overhead.
      * @default false
