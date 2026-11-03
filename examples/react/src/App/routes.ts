@@ -74,11 +74,6 @@ export interface IRoute {
 
 const routes: IRoute[] = [
   {
-    name: 'Measurement Race',
-    path: 'measurement-race',
-    component: MeasurementRace,
-  },
-  {
     name: 'Add Node on edge Drop',
     path: 'add-node-edge-drop',
     component: AddNodeOnEdgeDrop,
@@ -247,6 +242,11 @@ const routes: IRoute[] = [
     name: 'Layouting',
     path: 'layouting',
     component: Layouting,
+  },
+  {
+    name: 'Measurement Race',
+    path: 'measurement-race',
+    component: MeasurementRace,
   },
   {
     name: 'Middlewares',
