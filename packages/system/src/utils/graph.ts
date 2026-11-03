@@ -1,16 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   boxToRect,
   clampPosition,
   getBoundsOfBoxes,
-  getOverlappingArea,
-  nodeToRect,
-  pointToRendererPoint,
+  getRectsOverlappingArea,
   getViewportForBounds,
   isCoordinateExtent,
   getNodeDimensions,
   nodeToBox,
 } from './general';
+import { defaultFitViewPadding } from './constants';
 import {
   type Transform,
   type XYPosition,
@@ -20,14 +18,14 @@ import {
   type EdgeBase,
   type FitViewParamsBase,
   type FitViewOptionsBase,
-  CoordinateExtent,
-  OnError,
-  OnBeforeDeleteBase,
-  NodeLookup,
-  InternalNodeBase,
-  NodeDragItem,
+  type CoordinateExtent,
+  type OnError,
+  type OnBeforeDeleteBase,
+  type NodeLookup,
+  type InternalNodeBase,
+  type NodeDragItem,
 } from '../types';
-import { errorMessages } from '../constants';
+import { errorMessages } from './constants';
 
 /**
  * Test whether an object is usable as an Edge
@@ -36,8 +34,8 @@ import { errorMessages } from '../constants';
  * @param element - The element to test
  * @returns A boolean indicating whether the element is an Edge
  */
-export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): element is EdgeType =>
-  'id' in element && 'source' in element && 'target' in element;
+export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: unknown): element is EdgeType =>
+  !!element && typeof element === 'object' && 'id' in element && 'source' in element && 'target' in element;
 
 /**
  * Test whether an object is usable as a Node
@@ -46,12 +44,12 @@ export const isEdgeBase = <EdgeType extends EdgeBase = EdgeBase>(element: any): 
  * @param element - The element to test
  * @returns A boolean indicating whether the element is an Node
  */
-export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: any): element is NodeType =>
-  'id' in element && 'position' in element && !('source' in element) && !('target' in element);
+export const isNodeBase = <NodeType extends NodeBase = NodeBase>(element: unknown): element is NodeType =>
+    !!element && typeof element === 'object' && 'id' in element && 'position' in element && !('source' in element) && !('target' in element);
 
 export const isInternalNodeBase = <NodeType extends InternalNodeBase = InternalNodeBase>(
-  element: any
-): element is NodeType => 'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
+  element: unknown
+): element is NodeType => !!element && typeof element === 'object' &&  'id' in element && 'internals' in element && !('source' in element) && !('target' in element);
 
 /**
  * This util is used to tell you what nodes, if any, are connected to the given node
@@ -206,6 +204,7 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
+  let hasNode = false;
   const box = nodes.reduce(
     (currBox, nodeOrId) => {
       const isId = typeof nodeOrId === 'string';
@@ -215,17 +214,26 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
         currentNode = isId
           ? params.nodeLookup.get(nodeOrId)
           : !isInternalNodeBase(nodeOrId)
-          ? params.nodeLookup.get(nodeOrId.id)
-          : nodeOrId;
+            ? params.nodeLookup.get(nodeOrId.id)
+            : nodeOrId;
       }
 
-      const nodeBox = currentNode ? nodeToBox(currentNode, params.nodeOrigin) : { x: 0, y: 0, x2: 0, y2: 0 };
-      return getBoundsOfBoxes(currBox, nodeBox);
+      /*
+       * Skip ids/nodes that can't be resolved (e.g. a stale or already-removed id).
+       * Merging a phantom box at the origin would stretch the bounds to include
+       * (0, 0). This mirrors getInternalNodesBounds, which skips unmatched nodes.
+       */
+      if (!currentNode) {
+        return currBox;
+      }
+
+      hasNode = true;
+      return getBoundsOfBoxes(currBox, nodeToBox(currentNode, params.nodeOrigin));
     },
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
-  return boxToRect(box);
+  return hasNode ? boxToRect(box) : { x: 0, y: 0, width: 0, height: 0 };
 };
 
 export type GetInternalNodesBoundsParams<NodeType> = {
@@ -262,11 +270,11 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
   // set excludeNonSelectableNodes if you want to pay attention to the nodes "selectable" attribute
   excludeNonSelectableNodes = false
 ): InternalNodeBase<NodeType>[] => {
-  const paneRect = {
-    ...pointToRendererPoint(rect, [tx, ty, tScale]),
-    width: rect.width / tScale,
-    height: rect.height / tScale,
-  };
+  // viewport in flow coordinates, as scalars to avoid a Rect allocation per node
+  const paneX = (rect.x - tx) / tScale;
+  const paneY = (rect.y - ty) / tScale;
+  const paneWidth = rect.width / tScale;
+  const paneHeight = rect.height / tScale;
 
   const visibleNodes: InternalNodeBase<NodeType>[] = [];
 
@@ -277,11 +285,12 @@ export const getNodesInside = <NodeType extends NodeBase = NodeBase>(
       continue;
     }
 
-    const width = measured.width ?? node.width ?? node.initialWidth ?? null;
-    const height = measured.height ?? node.height ?? node.initialHeight ?? null;
+    const width = measured.width ?? node.width ?? node.initialWidth ?? 0;
+    const height = measured.height ?? node.height ?? node.initialHeight ?? 0;
+    const { x, y } = node.internals.positionAbsolute;
 
-    const overlappingArea = getOverlappingArea(paneRect, nodeToRect(node));
-    const area = (width ?? 0) * (height ?? 0);
+    const overlappingArea = getRectsOverlappingArea(paneX, paneY, paneWidth, paneHeight, x, y, width, height);
+    const area = width * height;
 
     const partiallyVisible = partially && overlappingArea > 0;
     const forceInitialRender = !node.internals.handleBounds;
@@ -335,13 +344,26 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
 
 function getFitViewNodes<
   Params extends NodeLookup<InternalNodeBase<NodeBase>>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(nodeLookup: Params, options?: Options) {
   const fitViewNodes: NodeLookup = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
 
   nodeLookup.forEach((n) => {
-    const isVisible = n.measured.width && n.measured.height && (options?.includeHiddenNodes || !n.hidden);
+    let isVisible: boolean;
+
+    if (options?.includeHiddenNodes) {
+      /*
+       * when hidden nodes are included they were never rendered, so they have no
+       * measured size. Fall back to the declared dimensions (same fallback as
+       * nodeToBox) so a hidden node with an intrinsic size still contributes to
+       * the fit bounds instead of being dropped by a measured-only check. (#5841)
+       */
+      const { width, height } = getNodeDimensions(n);
+      isVisible = width > 0 && height > 0;
+    } else {
+      isVisible = Boolean(n.measured.width && n.measured.height && !n.hidden);
+    }
 
     if (isVisible && (!optionNodeIds || optionNodeIds.has(n.id))) {
       fitViewNodes.set(n.id, n);
@@ -353,13 +375,13 @@ function getFitViewNodes<
 
 export async function fitViewport<
   Params extends FitViewParamsBase<NodeBase>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(
   { nodes, width, height, panZoom, minZoom, maxZoom }: Params,
   options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>
 ): Promise<boolean> {
   if (nodes.size === 0) {
-    return Promise.resolve(true);
+    return true;
   }
 
   const nodesToFit = getFitViewNodes(nodes, options);
@@ -372,7 +394,7 @@ export async function fitViewport<
     height,
     options?.minZoom ?? minZoom,
     options?.maxZoom ?? maxZoom,
-    options?.padding ?? 0.1
+    options?.padding ?? defaultFitViewPadding
   );
 
   await panZoom.setViewport(viewport, {
@@ -381,7 +403,7 @@ export async function fitViewport<
     interpolate: options?.interpolate,
   });
 
-  return Promise.resolve(true);
+  return true;
 }
 
 /**
@@ -416,8 +438,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      const parentWidth = parentNode.measured.width;
-      const parentHeight = parentNode.measured.height;
+      const { width: parentWidth, height: parentHeight } = getNodeDimensions(parentNode);
 
       if (parentWidth && parentHeight) {
         extent = [
@@ -477,33 +498,55 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
   edges: EdgeType[];
 }> {
   const nodeIds = new Set(nodesToRemove.map((node) => node.id));
-  const matchingNodes: NodeType[] = [];
+  const matchingNodeMap = new Map<string, NodeType>();
+  const children = new Map<string, NodeType[]>();
 
   for (const node of nodes) {
     if (node.deletable === false) {
       continue;
     }
 
-    const isIncluded = nodeIds.has(node.id);
-    const parentHit = !isIncluded && node.parentId && matchingNodes.find((n) => n.id === node.parentId);
+    if (nodeIds.has(node.id)) {
+      matchingNodeMap.set(node.id, node);
+    }
 
-    if (isIncluded || parentHit) {
-      matchingNodes.push(node);
+    if (node.parentId) {
+      const siblings = children.get(node.parentId) ?? [];
+      siblings.push(node);
+      children.set(node.parentId, siblings);
+    }
+  }
+
+  const queue = [...matchingNodeMap.keys()];
+  for (let index = 0; index < queue.length; index++) {
+    for (const child of children.get(queue[index]) ?? []) {
+      if (!matchingNodeMap.has(child.id)) {
+        matchingNodeMap.set(child.id, child);
+        queue.push(child.id);
+      }
     }
   }
 
   const edgeIds = new Set(edgesToRemove.map((edge) => edge.id));
-  const deletableEdges = edges.filter((edge) => edge.deletable !== false);
-  const connectedEdges = getConnectedEdges(matchingNodes, deletableEdges);
-  const matchingEdges: EdgeType[] = connectedEdges;
+  const matchingEdgeMap = new Map<string, EdgeType>();
 
-  for (const edge of deletableEdges) {
-    const isIncluded = edgeIds.has(edge.id);
-
-    if (isIncluded && !matchingEdges.find((e) => e.id === edge.id)) {
-      matchingEdges.push(edge);
+  for (const edge of edges) {
+    if (
+      edge.deletable !== false &&
+      (matchingNodeMap.has(edge.source) || matchingNodeMap.has(edge.target))
+    ) {
+      matchingEdgeMap.set(edge.id, edge);
     }
   }
+
+  for (const edge of edges) {
+    if (edge.deletable !== false && edgeIds.has(edge.id) && !matchingEdgeMap.has(edge.id)) {
+      matchingEdgeMap.set(edge.id, edge);
+    }
+  }
+
+  const matchingNodes = nodes.filter((node) => matchingNodeMap.has(node.id));
+  const matchingEdges = Array.from(matchingEdgeMap.values());
 
   if (!onBeforeDelete) {
     return {

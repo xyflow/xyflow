@@ -7,12 +7,7 @@
 		SelectionMode
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
-
-	const onPaneContextMenu = (e: any) => {
-		e.preventDefault();
-		console.log('context menu');
-	};
+	import '@xyflow/svelte/style.css';
 
 	const panOnDrag = [1, 2];
 
@@ -44,12 +39,17 @@
 	bind:edges
 	fitView
 	selectionMode={SelectionMode.Partial}
+	multiSelectionKey={['Meta', 'Shift']}
 	selectionOnDrag
 	panOnScroll
+	paneClickDistance={100}
 	{panOnDrag}
 	{onmovestart}
 	{onmove}
 	{onmoveend}
+	onpaneclick={(e) => console.log('on pane click', e)}
+	onselectionend={(e) => console.log('on selection end', e)}
+	onselectionstart={(e) => console.log('on selection start', e)}
 >
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />

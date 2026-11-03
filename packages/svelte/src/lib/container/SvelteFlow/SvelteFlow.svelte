@@ -1,24 +1,24 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
-  import type { Edge, Node } from '$lib/types';
+  import type { Edge, Node } from '#lib/types/index.js';
   import { getContext, setContext, onDestroy, untrack } from 'svelte';
   import type { HTMLAttributes } from 'svelte/elements';
   import { ConnectionLineType, PanOnScrollMode } from '@xyflow/system';
 
-  import { key, createStore } from '$lib/store';
-  import { Zoom } from '$lib/container/Zoom';
-  import { Pane } from '$lib/container/Pane';
-  import { Viewport as ViewportComponent } from '$lib/container/Viewport';
-  import { NodeRenderer } from '$lib/container/NodeRenderer';
-  import { EdgeRenderer } from '$lib/container/EdgeRenderer';
-  import { NodeSelection } from '$lib/components/NodeSelection';
-  import { Selection } from '$lib/components/Selection';
-  import { KeyHandler } from '$lib/components/KeyHandler';
-  import { ConnectionLine } from '$lib/components/ConnectionLine';
-  import { Attribution } from '$lib/components/Attribution';
-  import type { SvelteFlowProps } from './types';
-  import { type ProviderContext, type StoreContext } from '$lib/store/types';
+  import { key, createStore } from '#lib/store/index.js';
+  import { Zoom } from '#lib/container/Zoom/index.js';
+  import { Pane } from '#lib/container/Pane/index.js';
+  import { Viewport as ViewportComponent } from '#lib/container/Viewport/index.js';
+  import { NodeRenderer } from '#lib/container/NodeRenderer/index.js';
+  import { EdgeRenderer } from '#lib/container/EdgeRenderer/index.js';
+  import { NodeSelection } from '#lib/components/NodeSelection/index.js';
+  import { Selection } from '#lib/components/Selection/index.js';
+  import { KeyHandler } from '#lib/components/KeyHandler/index.js';
+  import { ConnectionLine } from '#lib/components/ConnectionLine/index.js';
+  import { Attribution } from '#lib/components/Attribution/index.js';
+  import type { SvelteFlowProps } from './types.js';
+  import { type ProviderContext, type StoreContext } from '#lib/store/types.js';
   import Wrapper from './Wrapper.svelte';
-  import { A11yDescriptions } from '$lib/components/A11yDescriptions';
+  import { A11yDescriptions } from '#lib/components/A11yDescriptions/index.js';
 
   let {
     width,
@@ -61,7 +61,8 @@
     panOnScroll = false,
     panOnScrollSpeed = 0.5,
     panOnDrag = true,
-    selectionOnDrag = true,
+    selectionOnDrag = false,
+    autoPanOnSelection = true,
     connectionLineComponent,
     connectionLineStyle,
     connectionLineContainerStyle,
@@ -75,7 +76,7 @@
   }: SvelteFlowProps<NodeType, EdgeType> &
     Omit<HTMLAttributes<HTMLDivElement>, 'onselectionchange'> = $props();
 
-  // svelte-ignore non_reactive_update
+  // svelte-ignore non_reactive_update, state_referenced_locally
   let store = createStore<NodeType, EdgeType>({
     props,
     width,
@@ -124,7 +125,15 @@
   });
 
   onDestroy(() => {
-    store.reset();
+    providerContext?.setStore(
+      createStore({
+        width: 0,
+        height: 0,
+        nodes: [],
+        edges: [],
+        props: {} as SvelteFlowProps<NodeType, EdgeType>
+      })
+    );
   });
 </script>
 
@@ -132,7 +141,6 @@
   bind:domNode={store.domNode}
   bind:clientWidth={store.width}
   bind:clientHeight={store.height}
-  colorMode={store.colorMode}
   {width}
   {height}
   rest={props}
@@ -156,6 +164,7 @@
     {panOnScrollSpeed}
     {panOnDrag}
     {paneClickDistance}
+    {selectionOnDrag}
     {onmovestart}
     {onmove}
     {onmoveend}
@@ -168,7 +177,9 @@
       {onselectionstart}
       {onselectionend}
       {panOnDrag}
+      {paneClickDistance}
       {selectionOnDrag}
+      {autoPanOnSelection}
     >
       <ViewportComponent bind:store>
         <div class="svelte-flow__viewport-back svelte-flow__container"></div>

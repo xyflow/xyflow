@@ -13,7 +13,6 @@ import type {
   OnError,
   ConnectionMode,
   PanelPosition,
-  ProOptions,
   ColorMode,
   OnConnect,
   OnConnectStart,
@@ -21,7 +20,8 @@ import type {
   OnReconnect,
   OnReconnectStart,
   OnReconnectEnd,
-  AriaLabelConfig
+  AriaLabelConfig,
+  ZIndexMode
 } from '@xyflow/system';
 
 import type {
@@ -37,8 +37,11 @@ import type {
   OnBeforeDelete,
   IsValidConnection,
   OnBeforeReconnect,
-  OnSelectionChange
-} from '$lib/types';
+  OnSelectionChange,
+  OnNodesChange,
+  OnEdgesChange,
+  ProOptions
+} from '#lib/types/index.js';
 
 import type { Component } from 'svelte';
 import type {
@@ -47,7 +50,7 @@ import type {
   NodeSelectionEvents,
   OnSelectionDrag,
   PaneEvents
-} from '$lib/types/events';
+} from '#lib/types/events.js';
 
 export type SvelteFlowProps<
   NodeType extends Node = Node,
@@ -135,9 +138,10 @@ export type SvelteFlowProps<
     fitView?: boolean;
     /**
      * Options to be used in combination with fitView
+     * @default { padding: '5%' }
      * @example
      * const fitViewOptions = {
-     *  padding: 0.1,
+     *  padding: '5%',
      *  includeHiddenNodes: false,
      *  minZoom: 0.1,
      *  maxZoom: 1,
@@ -208,7 +212,7 @@ export type SvelteFlowProps<
      * @default 'strict'
      */
     connectionMode?: ConnectionMode;
-    /** Provide a custom snippet to be used insted of the default connection line */
+    /** Provide a custom snippet to be used instead of the default connection line */
     connectionLineComponent?: Component;
     /** Styles to be applied to the connection line */
     connectionLineStyle?: string;
@@ -324,8 +328,9 @@ export type SvelteFlowProps<
      */
     panOnScrollMode?: PanOnScrollMode;
     /**
-     * Enableing this prop allows users to pan the viewport by clicking and dragging.
+     * Enabling this prop allows users to pan the viewport by clicking and dragging.
      * You can also set this prop to an array of numbers to limit which mouse buttons can activate panning.
+     * Mouse button arrays do not disable touch panning; set this prop to `false` to disable all drag panning.
      * @default true
      * @example [0, 2] // allows panning with the left and right mouse buttons
      * [0, 1, 2, 3, 4] // allows panning with all mouse buttons
@@ -353,6 +358,12 @@ export type SvelteFlowProps<
      */
     autoPanOnNodeDrag?: boolean;
     /**
+     * When `true`, the viewport will pan automatically when the cursor moves to the edge of the
+     * viewport while creating a selection box.
+     * @default true
+     */
+    autoPanOnSelection?: boolean;
+    /**
      * Defaults to be applied to all new edges that are added to the flow.
      * Properties on a new edge will override these defaults if they exist.
      * @example
@@ -363,13 +374,10 @@ export type SvelteFlowProps<
      */
     defaultEdgeOptions?: DefaultEdgeOptions;
     /**
-     * Controls color scheme used for styling the flow
-     * @default 'system'
-     * @example 'system' | 'light' | 'dark'
+     * Forces a color scheme on the flow container via class name, overriding the system default.
+     * Page-level theming is typically done by setting `data-theme` on `<html>`.
      */
-    colorMode?: ColorMode;
-    /** Fallback color mode for SSR if colorMode is set to 'system' */
-    colorModeSSR?: Omit<ColorMode, 'system'>;
+    forceColorMode?: ColorMode;
     /** Class to be applied to the flow container */
     class?: ClassValue;
     /** Styles to be applied to the flow container */
@@ -433,12 +441,11 @@ export type SvelteFlowProps<
     attributionPosition?: PanelPosition;
     /**
      * By default, we render a small attribution in the corner of your flows that links back to the project.
-     * You are free to remove this attribution but we ask that you take a quick look at our
-     * {@link https://svelteflow.dev/learn/troubleshooting/remove-attribution | removing attribution guide}
-     * before doing so.
+     * Please only remove the attribution if you have a Svelte Flow subscription.
+     * More information in the {@link https://svelteflow.dev/remove-attribution | removing attribution guide}.
      */
     proOptions?: ProOptions;
-    isValidConnection?: IsValidConnection;
+    isValidConnection?: IsValidConnection<EdgeType>;
     /** This event handler is called when the user begins to pan or zoom the viewport */
     onmovestart?: OnMoveStart;
     /** This event handler is called when the user pans or zooms the viewport */
@@ -446,7 +453,7 @@ export type SvelteFlowProps<
     /** This event handler is called when the user stops panning or zooming the viewport */
     onmoveend?: OnMoveEnd;
     /**
-     * Ocassionally something may happen that causes Svelte Flow to throw an error.
+     * Occasionally something may happen that causes Svelte Flow to throw an error.
      * Instead of exploding your application, we log a message to the console and then call this event handler.
      * You might use it for additional logging or to show a message to the user.
      */
@@ -474,7 +481,7 @@ export type SvelteFlowProps<
     /** This event gets fired when a user starts to reconnect an edge */
     onreconnectstart?: OnReconnectStart<EdgeType>;
     /** This event gets fired when a user stops reconnecting an edge */
-    onreconnectend?: OnReconnectEnd<EdgeType>;
+    onreconnectend?: OnReconnectEnd<NodeType, EdgeType>;
     /** This handler gets called when an edge is reconnected. You can use it to modify the edge before the update is applied. */
     onbeforereconnect?: OnBeforeReconnect<EdgeType>;
     /** A connection is started by clicking on a handle */
@@ -483,6 +490,22 @@ export type SvelteFlowProps<
     onclickconnectend?: OnConnectEnd;
     /** This handler gets called when the flow is finished initializing */
     oninit?: () => void;
+    /** This handler gets called before Svelte Flow updates nodes and can be used to modify the changes.
+     * Usually this happens, after initial measuring and when selecting, dragging or deleting nodes.
+     * @example
+     * onnodeschange={changes => {
+     *  // TODO: better example
+     * }}
+     */
+    onnodeschange?: OnNodesChange<NodeType>;
+    /** This handler gets called before Svelte Flow updates edges and can be used to modify the changes.
+     * Usually this happens when selecting, connecting or deleting edges.
+     * @example
+     * onedgeschange={changes => {
+     *  // TODO: better example
+     * }}
+     */
+    onedgeschange?: OnEdgesChange<EdgeType>;
     /** This event handler gets called when the selected nodes & edges change */
     onselectionchange?: OnSelectionChange<NodeType, EdgeType>;
     /** This event handler gets called when a user starts to drag a selection box. */
@@ -500,4 +523,11 @@ export type SvelteFlowProps<
      * Allows localization, customization of ARIA descriptions, control labels, minimap labels, and other UI strings.
      */
     ariaLabelConfig?: Partial<AriaLabelConfig>;
+    /**
+     * Used to define how z-indexing is calculated for nodes and edges.
+     * 'auto' is for selections and sub flows, 'basic' for selections only, and 'manual' for no auto z-indexing.
+     *
+     * @default 'basic'
+     */
+    zIndexMode?: ZIndexMode;
   };

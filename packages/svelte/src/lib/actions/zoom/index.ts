@@ -9,7 +9,6 @@ import {
 } from '@xyflow/system';
 
 type ZoomParams = {
-  viewport: Viewport;
   initialViewport: Viewport;
   minZoom: number;
   maxZoom: number;
@@ -26,6 +25,7 @@ type ZoomParams = {
   panOnDrag: boolean | number[];
   panOnScrollSpeed: number;
   panOnScrollMode: PanOnScrollMode;
+  panActivationKeyPressed: boolean;
   zoomActivationKeyPressed: boolean;
   preventScrolling: boolean;
   // last two instances of 'classname' being used
@@ -35,6 +35,7 @@ type ZoomParams = {
   userSelectionActive: boolean;
   lib: string;
   paneClickDistance: number;
+  selectionOnDrag?: boolean;
   onTransformChange: (transform: Transform) => void;
   onDraggingChange: (dragging: boolean) => void;
   connectionInProgress: boolean;
@@ -49,7 +50,6 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     onPanZoom,
     onPanZoomEnd,
     translateExtent,
-    paneClickDistance,
     setPanZoomInstance,
     onDraggingChange,
     onTransformChange
@@ -61,7 +61,6 @@ export default function zoom(domNode: Element, params: ZoomParams) {
     maxZoom,
     translateExtent,
     viewport: initialViewport,
-    paneClickDistance,
     onPanZoom,
     onPanZoomStart,
     onPanZoomEnd,
@@ -84,6 +83,9 @@ export default function zoom(domNode: Element, params: ZoomParams) {
   return {
     update(params: ZoomParams) {
       panZoomInstance.update(params);
+    },
+    destroy() {
+      panZoomInstance.destroy();
     }
   };
 }

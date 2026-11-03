@@ -1,6 +1,6 @@
 /* eslint-disable svelte/prefer-svelte-reactivity */
-import { useStore } from '$lib/store';
-import { getContext } from 'svelte';
+import { useSvelteFlowStore } from '#lib/store/index.js';
+import { getNodeIdContext } from '#lib/store/context.js';
 
 /**
  * When you programmatically add or remove handles to a node or update a node's
@@ -13,8 +13,8 @@ import { getContext } from 'svelte';
  * that you have changed programmatically.
  */
 export function useUpdateNodeInternals(): (nodeId?: string | string[]) => void {
-  const { domNode, updateNodeInternals } = $derived(useStore());
-  const nodeId = getContext('svelteflow__node_id') as string | undefined;
+  const { domNode, updateNodeInternals } = $derived(useSvelteFlowStore());
+  const nodeId = getNodeIdContext();
 
   // @todo: do we want to add this to system?
   const updateInternals = (id?: string | string[]) => {

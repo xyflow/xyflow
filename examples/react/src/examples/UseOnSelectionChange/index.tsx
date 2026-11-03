@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 import {
   ReactFlow,
   addEdge,
-  ReactFlowProvider,
   Node,
   Connection,
   Edge,
@@ -49,7 +48,7 @@ const SelectionLogger = ({ id }: { id: string }) => {
 };
 
 const Flow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const onConnect = useCallback((params: Edge | Connection) => setEdges((els) => addEdge(params, els)), [setEdges]);
   const [elementsSelectable, setElementsSelectable] = useState<boolean>(true);

@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { useStore } from '$lib/store';
-  import type { Edge } from '$lib/types';
   import { XYHandle, type HandleType, type OnConnectStart } from '@xyflow/system';
-  import { getContext } from 'svelte';
-  import { EdgeLabel } from '../EdgeLabel';
-  import type { EdgeReconnectAnchorProps } from './types';
+
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { getEdgeIdContext } from '#lib/store/context.js';
+  import type { Edge } from '#lib/types/index.js';
+  import { EdgeLabel } from '../EdgeLabel/index.js';
+  import type { EdgeReconnectAnchorProps } from './types.js';
 
   let {
     type,
@@ -17,13 +18,11 @@
     ...rest
   }: EdgeReconnectAnchorProps = $props();
 
-  const store = useStore();
+  const store = useSvelteFlowStore();
 
-  let edgeId: string | undefined = getContext('svelteflow__edge_id');
-
-  if (!edgeId) {
-    throw new Error('EdgeReconnectAnchor must be used within an Edge component');
-  }
+  const edgeId = getEdgeIdContext(
+    'EdgeReconnectAnchor must be used within a Custom Edge component'
+  );
 
   const onPointerDown = (event: PointerEvent) => {
     if (event.button !== 0) {
@@ -33,11 +32,9 @@
     const {
       autoPanOnConnect,
       domNode,
-      isValidConnection,
       connectionMode,
       connectionRadius,
       onconnectstart,
-      onconnectend,
       onreconnect,
       onreconnectstart,
       onreconnectend,
@@ -81,9 +78,9 @@
       flowId,
       cancelConnection,
       panBy,
-      isValidConnection,
+      isValidConnection: (...args) => store.isValidConnection?.(...args) ?? true,
       onConnectStart: _onConnectStart,
-      onConnectEnd: onconnectend,
+      onConnectEnd: (...args) => store.onconnectend?.(...args),
       onConnect: (connection) => {
         const reconnectedEdge = { ...edge, ...connection };
         const newEdge = onbeforereconnect
@@ -94,7 +91,13 @@
           return;
         }
 
-        store.edges = store.edges.map((e) => (e.id === edge.id ? (newEdge as Edge) : e));
+        store.queueEdgeChanges([
+          {
+            id: edge.id,
+            type: 'replace',
+            item: newEdge as Edge
+          }
+        ]);
         onreconnect?.(edge, connection);
       },
       onReconnectEnd: (event, connectionState) => {

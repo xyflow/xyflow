@@ -50,6 +50,7 @@ import CancelConnection from '../examples/CancelConnection';
 import InteractiveMinimap from '../examples/InteractiveMinimap';
 import UseOnSelectionChange from '../examples/UseOnSelectionChange';
 import NodeToolbar from '../examples/NodeToolbar';
+import EdgeToolbar from '../examples/EdgeToolbar';
 import UseConnection from '../examples/UseConnection';
 import UseNodesInitialized from '../examples/UseNodesInit';
 import UseNodesData from '../examples/UseNodesData';
@@ -59,6 +60,11 @@ import DevTools from '../examples/DevTools';
 import Redux from '../examples/Redux';
 import MovingHandles from '../examples/MovingHandles';
 import DetachedHandle from '../examples/DetachedHandle';
+import ZIndexMode from '../examples/ZIndexMode';
+import Middlewares from '../examples/Middlewares';
+import NodeSelectionBug from '../examples/NodeSelectionBug';
+import Remount from '../examples/Remount';
+import MeasurementRace from '../examples/MeasurementRace';
 
 export interface IRoute {
   name: string;
@@ -193,6 +199,11 @@ const routes: IRoute[] = [
     component: EdgeRouting,
   },
   {
+    name: 'Edge Toolbar',
+    path: 'edge-toolbar',
+    component: EdgeToolbar,
+  },
+  {
     name: 'Empty',
     path: 'empty',
     component: Empty,
@@ -231,6 +242,16 @@ const routes: IRoute[] = [
     name: 'Layouting',
     path: 'layouting',
     component: Layouting,
+  },
+  {
+    name: 'Measurement Race',
+    path: 'measurement-race',
+    component: MeasurementRace,
+  },
+  {
+    name: 'Middlewares',
+    path: 'middlewares',
+    component: Middlewares,
   },
   {
     name: 'Multi setNodes',
@@ -276,6 +297,11 @@ const routes: IRoute[] = [
     name: 'Provider',
     path: 'provider',
     component: Provider,
+  },
+  {
+    name: 'Remount',
+    path: 'remount',
+    component: Remount,
   },
   {
     name: 'Save/Restore',
@@ -371,6 +397,16 @@ const routes: IRoute[] = [
     name: 'useKeyPress',
     path: 'use-key-press',
     component: UseKeyPress,
+  },
+  {
+    name: 'zIndexMode',
+    path: 'z-index-mode',
+    component: ZIndexMode,
+  },
+  {
+    name: 'Node Selection Bug',
+    path: 'node-selection-bug',
+    component: NodeSelectionBug,
   },
 ];
 

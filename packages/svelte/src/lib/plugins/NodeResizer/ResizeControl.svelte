@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { getContext, onMount } from 'svelte';
-  import { useStore } from '$lib/store';
+  import { onMount } from 'svelte';
+
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { getNodeIdContext } from '#lib/store/context.js';
   import {
     XYResizer,
     ResizeControlVariant,
@@ -9,8 +11,8 @@
     type XYResizerChange,
     type XYResizerChildChange
   } from '@xyflow/system';
-  import type { ResizeControlProps } from './types';
-  import type { Node } from '$lib/types';
+
+  import type { ResizeControlProps } from './types.js';
 
   let {
     nodeId,
@@ -33,11 +35,15 @@
     ...rest
   }: ResizeControlProps = $props();
 
-  const store = useStore();
+  const store = useSvelteFlowStore();
+  const contextNodeId = getNodeIdContext();
 
-  let id = $derived(
-    typeof nodeId === 'string' ? nodeId : getContext<string>('svelteflow__node_id')
-  );
+  let id = $derived(typeof nodeId === 'string' ? nodeId : contextNodeId);
+
+  // svelte-ignore state_referenced_locally
+  if (!id) {
+    throw new Error('Either pass a nodeId or use within a Custom Node component');
+  }
 
   let resizeControlRef: HTMLDivElement;
   let resizer: XYResizerInstance | null = $state(null);
@@ -68,16 +74,14 @@
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
           // eslint-disable-next-line svelte/prefer-svelte-reactivity
-          const changes = new Map<string, Partial<Node>>();
-          let position = change.x && change.y ? { x: change.x, y: change.y } : undefined;
-          changes.set(id, { ...change, position });
+          const changes = new Map<string, XYResizerChange>();
+          changes.set(id, change);
 
           for (const childChange of childChanges) {
-            changes.set(childChange.id, {
-              position: childChange.position
-            });
+            changes.set(childChange.id, { x: childChange.position.x, y: childChange.position.y });
           }
 
+          // TODO: trigger changes instead
           store.nodes = store.nodes.map((node) => {
             const change = changes.get(node.id);
             const horizontal = !resizeDirection || resizeDirection === 'horizontal';
@@ -87,8 +91,8 @@
               return {
                 ...node,
                 position: {
-                  x: horizontal ? (change.position?.x ?? node.position.x) : node.position.x,
-                  y: vertical ? (change.position?.y ?? node.position.y) : node.position.y
+                  x: horizontal ? (change.x ?? node.position.x) : node.position.x,
+                  y: vertical ? (change.y ?? node.position.y) : node.position.y
                 },
                 width: horizontal ? (change.width ?? node.width) : node.width,
                 height: vertical ? (change.height ?? node.height) : node.height

@@ -1,4 +1,5 @@
 name: 'CI checks'
+description: 'Checks if the code builds and typechecks'
 
 runs:
   using: 'composite'

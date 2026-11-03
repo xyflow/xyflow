@@ -3,20 +3,11 @@ import {
   areConnectionMapsEqual,
   handleConnectionChange,
   type NodeConnection,
-  type HandleType,
-  type HandleConnection
+  type UseNodeConnectionsParams
 } from '@xyflow/system';
 
-import { useStore } from '$lib/store';
-import { getContext } from 'svelte';
-
-type UseNodeConnectionsParams = {
-  id?: string;
-  handleType?: HandleType;
-  handleId?: string;
-  onConnect?: (connections: HandleConnection[]) => void;
-  onDisconnect?: (connections: HandleConnection[]) => void;
-};
+import { useSvelteFlowStore } from '#lib/store/index.js';
+import { getNodeIdContext } from '#lib/store/context.js';
 
 type ConnectionMap = Map<string, NodeConnection>;
 
@@ -26,24 +17,18 @@ const initialConnections: NodeConnection[] = [];
  * Hook to retrieve all edges connected to a node. Can be filtered by handle type and id.
  *
  * @public
- * @param param.id - node id - optional if called inside a custom node
- * @param param.handleType - filter by handle type 'source' or 'target'
- * @param param.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type)
- * @param param.onConnect - gets called when a connection is established
- * @param param.onDisconnect - gets called when a connection is removed
+ * @param params - A function that returns the hook parameters
+ * @param params.id - node id - optional if called inside a custom node
+ * @param params.handleType - filter by handle type 'source' or 'target'
+ * @param params.handleId - filter by handle id (this is only needed if the node has multiple handles of the same type). Requires `handleType` to be set.
+ * @param params.onConnect - gets called when a connection is established
+ * @param params.onDisconnect - gets called when a connection is removed
  * @returns An array with connections
  */
-export function useNodeConnections({
-  id,
-  handleType,
-  handleId,
-  onConnect,
-  onDisconnect
-}: UseNodeConnectionsParams = {}) {
-  const { edges, connectionLookup } = $derived(useStore());
+export function useNodeConnections(params: () => UseNodeConnectionsParams = () => ({})) {
+  const { edges, connectionLookup } = $derived(useSvelteFlowStore());
 
-  const contextNodeId = getContext<string>('svelteflow__node_id');
-  const nodeId = id ?? contextNodeId;
+  const contextNodeId = getNodeIdContext();
 
   let connectionMaps: { previous: ConnectionMap; next: ConnectionMap } = {
     previous: new Map(),
@@ -54,6 +39,9 @@ export function useNodeConnections({
   const connections = $derived.by(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     edges;
+
+    const { id, handleType, handleId } = params();
+    const nodeId = id ?? contextNodeId;
 
     const prevConnections = connectionMaps.next;
     const nextConnections =
@@ -71,6 +59,8 @@ export function useNodeConnections({
   });
 
   $effect(() => {
+    const { onConnect, onDisconnect } = params();
+
     // We subscribe to changes to the connections only when onConnect/onDisconnect are provided
     if (onConnect) {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions

@@ -1,13 +1,13 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
-  import { setContext } from 'svelte';
-
   import { elementSelectionKeys, getMarkerId } from '@xyflow/system';
 
-  import { BezierEdgeInternal } from '$lib/components/edges';
+  import { setEdgeIdContext } from '#lib/store/context.js';
 
-  import type { Node, EdgeLayouted, Edge, EdgeEvents } from '$lib/types';
-  import type { SvelteFlowStore } from '$lib/store/types';
-  import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
+  import { BezierEdgeInternal } from '#lib/components/edges/index.js';
+
+  import type { Node, EdgeLayouted, Edge, EdgeEvents } from '#lib/types/index.js';
+  import type { SvelteFlowStore } from '#lib/store/types.js';
+  import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions/index.js';
 
   const {
     edge,
@@ -22,6 +22,7 @@
   } & EdgeEvents<EdgeType> = $props();
 
   let {
+    id,
     source,
     target,
     sourceX,
@@ -51,11 +52,11 @@
     ariaLabel
   } = $derived(edge);
 
+  // svelte-ignore state_referenced_locally
+  setEdgeIdContext(id);
+
   // svelte-ignore non_reactive_update
   let edgeRef: SVGGElement | null = null;
-
-  const { id } = edge;
-  setContext('svelteflow__edge_id', id);
 
   let selectable = $derived(_selectable ?? store.elementsSelectable);
   let focusable = $derived(_focusable ?? store.edgesFocusable);

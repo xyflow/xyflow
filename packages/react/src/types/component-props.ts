@@ -8,7 +8,6 @@ import type {
   CoordinateExtent,
   KeyCode,
   PanOnScrollMode,
-  ProOptions,
   PanelPosition,
   OnMove,
   OnMoveStart,
@@ -23,6 +22,7 @@ import type {
   OnReconnect,
   AriaLabelConfig,
   FinalConnectionState,
+  ZIndexMode,
 } from '@xyflow/system';
 
 import type {
@@ -46,14 +46,17 @@ import type {
   OnNodeDrag,
   OnBeforeDelete,
   IsValidConnection,
+  ProOptions,
 } from '.';
 
 /**
  * ReactFlow component props.
  * @public
  */
-export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge>
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'> {
+export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends Edge = Edge> extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'onError'
+> {
   /**
    * An array of nodes to render in a controlled flow.
    * @default []
@@ -444,6 +447,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /**
    * Enabling this prop allows users to pan the viewport by clicking and dragging.
    * You can also set this prop to an array of numbers to limit which mouse buttons can activate panning.
+   * Mouse button arrays do not disable touch panning; set this prop to `false` to disable all drag panning.
    * @default true
    * @example [0, 2] // allows panning with the left and right mouse buttons
    * [0, 1, 2, 3, 4] // allows panning with all mouse buttons
@@ -569,9 +573,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * When you typically call `fitView` on a `ReactFlowInstance`, you can provide an object of
    * options to customize its behavior. This prop lets you do the same for the initial `fitView`
    * call.
+   * @default { padding: '5%' }
    * @example
    * const fitViewOptions = {
-   *  padding: 0.1,
+   *  padding: '5%',
    *  includeHiddenNodes: false,
    *  minZoom: 0.1,
    *  maxZoom: 1,
@@ -600,9 +605,8 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /**
    * By default, we render a small attribution in the corner of your flows that links back to the project.
    *
-   * Anyone is free to remove this attribution whether they're a Pro subscriber or not
-   * but we ask that you take a quick look at our {@link https://reactflow.dev/learn/troubleshooting/remove-attribution | removing attribution guide}
-   * before doing so.
+   * Please only remove the attribution if you have a React Flow subscription.
+   * More information in the {@link https://reactflow.dev/remove-attribution | removing attribution guide}.
    */
   proOptions?: ProOptions;
   /**
@@ -612,7 +616,9 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   elevateNodesOnSelect?: boolean;
   /**
    * Enabling this option will raise the z-index of edges when they are selected.
-   * @default false
+   * This also ensures that, when multiple reconnectable edges share a handle,
+   * the selected edge's repoint anchor is the one that receives the drag.
+   * @default true
    */
   elevateEdgesOnSelect?: boolean;
   /**
@@ -633,6 +639,12 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @default true
    */
   autoPanOnConnect?: boolean;
+  /**
+   * When `true`, the viewport will pan automatically when the cursor moves to the edge of the
+   * viewport while creating a selection box.
+   * @default true
+   */
+  autoPanOnSelection?: boolean;
   /**
    * The speed at which the viewport pans while dragging a node or a selection box.
    * @default 15
@@ -676,11 +688,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /** Sets a fixed height for the flow. */
   height?: number;
   /**
-   * Controls color scheme used for styling the flow.
-   * @default 'light'
-   * @example 'system' | 'light' | 'dark'
+   * Forces a color scheme on the flow container via class name, overriding the system default.
+   * Page-level theming is typically done by setting `data-theme` on `<html>`.
    */
-  colorMode?: ColorMode;
+  forceColorMode?: ColorMode;
   /**
    * If set `true`, some debug information will be logged to the console like which events are fired.
    * @default false
@@ -691,4 +702,11 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * Allows localization, customization of ARIA descriptions, control labels, minimap labels, and other UI strings.
    */
   ariaLabelConfig?: Partial<AriaLabelConfig>;
+  /**
+   * Used to define how z-indexing is calculated for nodes and edges.
+   * 'auto' is for selections and sub flows, 'basic' for selections only, and 'manual' for no auto z-indexing.
+   *
+   * @default 'basic'
+   */
+  zIndexMode?: ZIndexMode;
 }

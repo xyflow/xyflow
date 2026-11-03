@@ -8,7 +8,7 @@
 		type OnConnectEnd
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	const initialNodes: Node[] = [
 		{
@@ -29,7 +29,7 @@
 
 	const { screenToFlowPosition, flowToScreenPosition } = useSvelteFlow();
 
-	const connections = useNodeConnections({ id: '0', handleType: 'source' });
+	const connections = useNodeConnections(() => ({ id: '0', handleType: 'source' }));
 
 	$inspect(connections.current);
 
@@ -83,7 +83,7 @@
 		fitView
 		fitViewOptions={{ padding: 2 }}
 		onconnectstart={(_, { nodeId }) => {
-			// Memorize the nodeId you start draggin a connection line from a node
+			// Memorize the nodeId you start dragging a connection line from a node
 			connectingNodeId = nodeId;
 		}}
 		onconnectend={handleConnectEnd}

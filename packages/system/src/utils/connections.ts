@@ -1,4 +1,4 @@
-import { HandleConnection } from '../types';
+import { type HandleConnection } from '../types';
 
 /**
  * @internal

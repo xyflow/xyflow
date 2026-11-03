@@ -13,10 +13,10 @@ jobs:
     name: 'Playwright Tests'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.51.1-jammy
+      image: mcr.microsoft.com/playwright:v1.60.0-jammy
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - uses: ./.github/actions/ci-setup
       - uses: ./.github/actions/ci-checks
       - name: Run your tests

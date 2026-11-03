@@ -3,7 +3,7 @@
 	import type { Edge, Node } from '@xyflow/svelte';
 	import dagre from '@dagrejs/dagre';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	import { initialNodes, initialEdges } from './nodes-and-edges';
 

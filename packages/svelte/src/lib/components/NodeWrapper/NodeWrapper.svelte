@@ -1,5 +1,5 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
-  import { setContext, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
   import {
     elementSelectionKeys,
     errorMessages,
@@ -9,13 +9,15 @@
     getNodesInside
   } from '@xyflow/system';
 
-  import drag from '$lib/actions/drag';
-  import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
+  import drag from '#lib/actions/drag/index.js';
+  import { setNodeConnectableContext, setNodeIdContext } from '#lib/store/context.js';
+  import { arrowKeyDiffs, toPxString } from '#lib/utils/index.js';
+  import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions/index.js';
 
-  import type { ConnectableContext, NodeWrapperProps } from './types';
-  import type { Node, Edge, NodeEvents } from '$lib/types';
-  import { arrowKeyDiffs, toPxString } from '$lib/utils';
-  import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
+  import type { Node, Edge, NodeEvents } from '#lib/types/index.js';
+  import type { ConnectableContext, NodeWrapperProps } from './types.js';
+
+  import DefaultNode from '#lib/components/nodes/DefaultNode.svelte';
 
   let {
     store = $bindable(),
@@ -57,10 +59,13 @@
     internals: {
       z: zIndex = 0,
       positionAbsolute: { x: positionX, y: positionY },
-      userNode
+      userNode,
+      isParent
     }
   } = $derived(node);
 
+  // The id is stable and we don't want to pass signals everywhere
+  // svelte-ignore state_referenced_locally
   let { id } = node;
 
   let draggable = $derived(_draggable ?? store.nodesDraggable);
@@ -70,12 +75,6 @@
   let hasHandleBounds = $derived(!!node.internals.handleBounds);
   let isInitialized = $derived(hasDimensions && hasHandleBounds);
   let focusable = $derived(_focusable ?? store.nodesFocusable);
-
-  function isInParentLookup(id: string) {
-    return store.parentLookup.has(id);
-  }
-
-  let isParent = $derived(isInParentLookup(id));
 
   let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
@@ -95,14 +94,15 @@
       return connectable;
     }
   };
-  setContext('svelteflow__node_connectable', connectableContext);
-  setContext('svelteflow__node_id', id);
+
+  setNodeIdContext(id);
+  setNodeConnectableContext(connectableContext);
 
   if (process.env.NODE_ENV === 'development') {
     $effect(() => {
       const valid = !!store.nodeTypes[type];
       if (!valid) {
-        console.warn('003', errorMessages['error003'](type!));
+        store.onerror('003', errorMessages['error003'](type!));
       }
     });
   }
@@ -286,6 +286,7 @@
     onfocus={focusable ? onFocus : undefined}
     tabIndex={focusable ? 0 : undefined}
     role={node.ariaRole ?? (focusable ? 'group' : undefined)}
+    aria-label={node.ariaLabel}
     aria-roledescription="node"
     aria-describedby={store.disableKeyboardA11y
       ? undefined

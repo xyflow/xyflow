@@ -1,14 +1,14 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import type { HTMLAttributes } from 'svelte/elements';
   import type { Snippet } from 'svelte';
-  import { type SvelteFlowRestProps } from '$lib/store/types';
-  import { toPxString } from '$lib/utils';
-  import type { Node, Edge } from '$lib/types';
+  import { type SvelteFlowRestProps } from '#lib/store/types.js';
+  import { toPxString } from '#lib/utils/index.js';
+  import type { Node, Edge } from '#lib/types/index.js';
 
   let {
     width,
     height,
-    colorMode,
+    forceColorMode,
     domNode = $bindable(),
     clientWidth = $bindable(),
     clientHeight = $bindable(),
@@ -17,7 +17,7 @@
   }: {
     width?: number;
     height?: number;
-    colorMode?: string;
+    forceColorMode?: string;
     domNode: HTMLDivElement | null;
     clientWidth?: number;
     clientHeight?: number;
@@ -34,7 +34,7 @@
     class: className,
     nodeTypes,
     edgeTypes,
-    colorMode: _colorMode,
+    forceColorMode: _forceColorMode,
     isValidConnection,
     onmove,
     onmovestart,
@@ -53,6 +53,8 @@
     onclickconnectstart,
     onclickconnectend,
     oninit,
+    onnodeschange,
+    onedgeschange,
     onselectionchange,
     onselectiondragstart,
     onselectiondrag,
@@ -79,7 +81,6 @@
     onlyRenderVisibleElements,
     autoPanOnConnect,
     autoPanOnNodeDrag,
-    colorModeSSR,
     defaultEdgeOptions,
     elevateNodesOnSelect,
     elevateEdgesOnSelect,
@@ -96,6 +97,8 @@
     ariaLabelConfig,
     autoPanSpeed,
     panOnScrollSpeed,
+    zIndexMode,
+    autoPanOnSelection,
     ...divAttributes
   } = $derived(rest);
   /* eslint-enable @typescript-eslint/no-unused-vars */
@@ -121,7 +124,7 @@
   bind:clientWidth
   style:width={toPxString(width)}
   style:height={toPxString(height)}
-  class={['svelte-flow', 'svelte-flow__container', className, colorMode]}
+  class={['svelte-flow', 'svelte-flow__container', forceColorMode, className]}
   data-testid="svelte-flow__wrapper"
   role="application"
   onscroll={wrapperOnScroll}
@@ -137,22 +140,5 @@
     overflow: hidden;
     position: relative;
     z-index: 0;
-
-    background-color: var(--background-color, var(--background-color-default));
-  }
-
-  :root {
-    --background-color-default: #fff;
-    --background-pattern-color-default: #ddd;
-
-    --minimap-mask-color-default: rgb(240, 240, 240, 0.6);
-    --minimap-mask-stroke-color-default: none;
-    --minimap-mask-stroke-width-default: 1;
-
-    --controls-button-background-color-default: #fefefe;
-    --controls-button-background-color-hover-default: #f4f4f4;
-    --controls-button-color-default: inherit;
-    --controls-button-color-hover-default: inherit;
-    --controls-button-border-color-default: #eee;
   }
 </style>

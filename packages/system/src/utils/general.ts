@@ -12,11 +12,11 @@ import type {
   NodeLookup,
   Padding,
   PaddingWithUnit,
+  OnError,
 } from '../types';
 import { type Viewport } from '../types';
 import { getNodePositionWithOrigin, isInternalNodeBase } from './graph';
-
-import { defaultAriaLabelConfig, type AriaLabelConfig } from '../constants';
+import { defaultAriaLabelConfig, type AriaLabelConfig } from './constants';
 
 export const clamp = (val: number, min = 0, max = 1): number => Math.min(Math.max(val, min), max);
 
@@ -127,27 +127,44 @@ export const nodeToBox = (node: InternalNodeBase | NodeBase, nodeOrigin: NodeOri
 export const getBoundsOfRects = (rect1: Rect, rect2: Rect): Rect =>
   boxToRect(getBoundsOfBoxes(rectToBox(rect1), rectToBox(rect2)));
 
-export const getOverlappingArea = (rectA: Rect, rectB: Rect): number => {
-  const xOverlap = Math.max(0, Math.min(rectA.x + rectA.width, rectB.x + rectB.width) - Math.max(rectA.x, rectB.x));
-  const yOverlap = Math.max(0, Math.min(rectA.y + rectA.height, rectB.y + rectB.height) - Math.max(rectA.y, rectB.y));
+export const getRectsOverlappingArea = (
+  aX: number,
+  aY: number,
+  aWidth: number,
+  aHeight: number,
+  bX: number,
+  bY: number,
+  bWidth: number,
+  bHeight: number
+): number => {
+  const xOverlap = Math.max(0, Math.min(aX + aWidth, bX + bWidth) - Math.max(aX, bX));
+  const yOverlap = Math.max(0, Math.min(aY + aHeight, bY + bHeight) - Math.max(aY, bY));
 
   return Math.ceil(xOverlap * yOverlap);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isRectObject = (obj: any): obj is Rect =>
-  isNumeric(obj.width) && isNumeric(obj.height) && isNumeric(obj.x) && isNumeric(obj.y);
+export const getOverlappingArea = (rectA: Rect, rectB: Rect): number =>
+  getRectsOverlappingArea(rectA.x, rectA.y, rectA.width, rectA.height, rectB.x, rectB.y, rectB.width, rectB.height);
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const isNumeric = (n: any): n is number => !isNaN(n) && isFinite(n);
-
-// used for a11y key board controls for nodes and edges
-
-export const devWarn = (id: string, message: string) => {
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(`[React Flow]: ${message} Help: https://reactflow.dev/error#${id}`);
+export const isRectObject = (obj: unknown): obj is Rect => {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
   }
+
+  const rect = obj as Record<string, unknown>;
+
+  return isNumeric(rect.width) && isNumeric(rect.height) && isNumeric(rect.x) && isNumeric(rect.y);
 };
+
+export const isNumeric = (n: unknown): n is number => typeof n === 'number' && !isNaN(n) && isFinite(n);
+
+export const createDevWarn =
+  (lib: string, helpUrl: string): OnError =>
+  (id: string, message: string) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`[${lib}]: ${message} Help: ${helpUrl}error#${id}`);
+    }
+  };
 
 export const snapPosition = (position: XYPosition, snapGrid: SnapGrid = [1, 1]): XYPosition => {
   return {
@@ -186,7 +203,7 @@ export const rendererPointToPoint = ({ x, y }: XYPosition, [tx, ty, tScale]: Tra
  */
 function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   if (typeof padding === 'number') {
-    return Math.floor((viewport - viewport / (1 + padding)) * 0.5);
+    return Math.floor(padding);
   }
 
   if (typeof padding === 'string' && padding.endsWith('px')) {
@@ -204,7 +221,7 @@ function parsePadding(padding: PaddingWithUnit, viewport: number): number {
   }
 
   console.error(
-    `[React Flow] The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
+    `The padding value "${padding}" is invalid. Please provide a number or a string with a valid unit (px or %).`
   );
   return 0;
 }
@@ -296,9 +313,9 @@ export const getViewportForBounds = (
   bounds: Rect,
   width: number,
   height: number,
-  minZoom: number,
-  maxZoom: number,
-  padding: Padding
+  minZoom: number = 0,
+  maxZoom: number = Infinity,
+  padding: Padding = 0
 ): Viewport => {
   // First we resolve all the paddings to actual pixel values
   const p = parsePaddings(padding, width, height);
@@ -360,7 +377,7 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
 }
 
 /**
- * Convert child position to aboslute position
+ * Convert child position to absolute position
  *
  * @internal
  * @param position
@@ -423,4 +440,33 @@ export function withResolvers<T>(): {
 
 export function mergeAriaLabelConfig(partial?: Partial<AriaLabelConfig>): AriaLabelConfig {
   return { ...defaultAriaLabelConfig, ...(partial || {}) };
+}
+
+export function isAttributionVisible(library: string) {
+  if (typeof document === 'undefined') return true;
+
+  const pane = document.querySelector(`.${library}-flow__pane`);
+  if (!pane || !pane.isConnected) return true;
+
+  const paneStyle = getComputedStyle(pane);
+  if (paneStyle.display === 'none') return true;
+  if (paneStyle.visibility === 'hidden' || paneStyle.visibility === 'collapse') return true;
+  if (paneStyle.opacity === '0') return true;
+  if (paneStyle.width === '0' && paneStyle.height === '0') return true;
+  const paneRect = pane.getBoundingClientRect();
+  if (paneRect.width === 0 && paneRect.height === 0) return true;
+
+  const attr = document.querySelector(`.${library}-flow__attribution`);
+  if (!attr || !attr.isConnected) return false;
+
+  const style = getComputedStyle(attr);
+
+  if (style.display === 'none') return false;
+  if (style.visibility === 'hidden' || style.visibility === 'collapse') return false;
+  if (style.opacity === '0') return false;
+
+  const rect = attr.getBoundingClientRect();
+  if (rect.width === 0 && rect.height === 0) return false;
+
+  return true;
 }

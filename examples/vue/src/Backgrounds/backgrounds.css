@@ -1,0 +1,8 @@
+.vue-flow__example-backgrounds {
+  display: flex;
+  height: 100%;
+}
+
+.vue-flow__example-backgrounds .vue-flow {
+  border-right: 1px solid #ddd;
+}

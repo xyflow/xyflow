@@ -58,6 +58,11 @@ const getDirection = ({
 
 const distance = (a: XYPosition, b: XYPosition) => Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 
+// checks if b lies on the straight segment from a to c, including b === c
+const isBetween = (a: XYPosition, b: XYPosition, c: XYPosition) =>
+  (a.x === b.x && b.x === c.x && (b.y - a.y) * (c.y - b.y) >= 0) ||
+  (a.y === b.y && b.y === c.y && (b.x - a.x) * (c.x - b.x) >= 0);
+
 /*
  * With this function we try to mimic an orthogonal edge routing behaviour
  * It's not as good as a real orthogonal edge routing, but it's faster and good enough as a default for step and smooth step edges
@@ -91,7 +96,7 @@ function getPoints({
   const dirAccessor = dir.x !== 0 ? 'x' : 'y';
   const currDir = dir[dirAccessor];
 
-  let points: XYPosition[] = [];
+  let points: XYPosition[];
   let centerX, centerY;
   const sourceGapOffset = { x: 0, y: 0 };
   const targetGapOffset = { x: 0, y: 0 };
@@ -107,12 +112,12 @@ function getPoints({
   if (sourceDir[dirAccessor] * targetDir[dirAccessor] === -1) {
     if (dirAccessor === 'x') {
       // Primary direction is horizontal, so stepPosition affects X coordinate
-      centerX = center.x ?? (sourceGapped.x + (targetGapped.x - sourceGapped.x) * stepPosition);
+      centerX = center.x ?? sourceGapped.x + (targetGapped.x - sourceGapped.x) * stepPosition;
       centerY = center.y ?? (sourceGapped.y + targetGapped.y) / 2;
     } else {
-      // Primary direction is vertical, so stepPosition affects Y coordinate  
+      // Primary direction is vertical, so stepPosition affects Y coordinate
       centerX = center.x ?? (sourceGapped.x + targetGapped.x) / 2;
-      centerY = center.y ?? (sourceGapped.y + (targetGapped.y - sourceGapped.y) * stepPosition);
+      centerY = center.y ?? sourceGapped.y + (targetGapped.y - sourceGapped.y) * stepPosition;
     }
 
     /*
@@ -194,13 +199,19 @@ function getPoints({
     }
   }
 
-  const pathPoints = [
-    source,
-    { x: sourceGapped.x + sourceGapOffset.x, y: sourceGapped.y + sourceGapOffset.y },
-    ...points,
-    { x: targetGapped.x + targetGapOffset.x, y: targetGapped.y + targetGapOffset.y },
-    target,
-  ];
+  const gappedSource = { x: sourceGapped.x + sourceGapOffset.x, y: sourceGapped.y + sourceGapOffset.y };
+  const gappedTarget = { x: targetGapped.x + targetGapOffset.x, y: targetGapped.y + targetGapOffset.y };
+
+  const pathPoints: XYPosition[] = [];
+
+  for (const point of [source, gappedSource, ...points, gappedTarget, target]) {
+    const [a, b] = pathPoints.slice(-2);
+    // drop b if the path runs straight through it, otherwise it would shrink the bend of the next corner
+    if (b && isBetween(a, b, point)) {
+      pathPoints.pop();
+    }
+    pathPoints.push(point);
+  }
 
   return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
 }
@@ -280,19 +291,13 @@ export function getSmoothStepPath({
     stepPosition,
   });
 
-  const path = points.reduce<string>((res, p, i) => {
-    let segment = '';
+  let path = `M${points[0].x} ${points[0].y}`;
 
-    if (i > 0 && i < points.length - 1) {
-      segment = getBend(points[i - 1], p, points[i + 1], borderRadius);
-    } else {
-      segment = `${i === 0 ? 'M' : 'L'}${p.x} ${p.y}`;
-    }
+  for (let i = 1; i < points.length - 1; i++) {
+    path += getBend(points[i - 1], points[i], points[i + 1], borderRadius);
+  }
 
-    res += segment;
-
-    return res;
-  }, '');
+  path += `L${points[points.length - 1].x} ${points[points.length - 1].y}`;
 
   return [path, labelX, labelY, offsetX, offsetY];
 }

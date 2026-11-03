@@ -19,6 +19,8 @@
 		}
 		return null;
 	});
+
+	$inspect(connection.current.pointer);
 </script>
 
 {#if connection.current.inProgress}

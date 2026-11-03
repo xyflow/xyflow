@@ -12,25 +12,25 @@
 		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^6.0.0",
-		"@sveltejs/kit": "^2.20.7",
-		"@typescript-eslint/eslint-plugin": "^8.34.0",
-		"@typescript-eslint/parser": "^8.34.0",
-		"eslint": "^9.24.0",
-		"eslint-config-prettier": "^10.1.2",
-		"eslint-plugin-svelte": "^3.5.1",
-		"prettier": "^3.5.3",
-		"prettier-plugin-svelte": "^3.3.3",
-		"svelte": "^5.27.0",
-		"svelte-check": "^4.1.6",
-		"tslib": "^2.8.1",
-		"typescript": "^5.8.3",
-		"vite": "^6.3.0"
+		"@sveltejs/adapter-auto": "catalog:",
+		"@sveltejs/kit": "catalog:",
+		"@sveltejs/load-config": "catalog:",
+		"@sveltejs/vite-plugin-svelte": "catalog:",
+		"@xyflow/eslint": "workspace:*",
+		"eslint": "catalog:",
+		"prettier": "catalog:",
+		"prettier-plugin-svelte": "catalog:",
+		"svelte": "catalog:",
+		"svelte-check": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:"
 	},
 	"type": "module",
 	"dependencies": {
-		"@dagrejs/dagre": "^1.1.4",
-		"@sveltejs/vite-plugin-svelte": "^5.0.3",
+		"@dagrejs/dagre": "^1.1.8",
 		"@xyflow/svelte": "workspace:^"
+	},
+	"imports": {
+		"#components/*": "./src/components/*"
 	}
 }

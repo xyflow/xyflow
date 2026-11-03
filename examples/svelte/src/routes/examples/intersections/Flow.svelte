@@ -2,7 +2,7 @@
 	import { SvelteFlow, Background, Controls, useSvelteFlow } from '@xyflow/svelte';
 	import type { Edge, Node } from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	import { initialNodes, initialEdges } from './nodes-and-edges';
 

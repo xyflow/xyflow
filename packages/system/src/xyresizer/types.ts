@@ -52,7 +52,9 @@ export const XY_RESIZER_HANDLE_POSITIONS: ControlPosition[] = ['top-left', 'top-
 export const XY_RESIZER_LINE_POSITIONS: ControlLinePosition[] = ['top', 'right', 'bottom', 'left'];
 
 type OnResizeHandler<Params = ResizeParams, Result = void> = (event: ResizeDragEvent, params: Params) => Result;
-export type ResizeDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
+export type ResizeDragEvent = Omit<D3DragEvent<HTMLDivElement, null, SubjectPosition>, 'sourceEvent'> & {
+  sourceEvent: MouseEvent | TouchEvent;
+};
 
 /**
  * Callback to determine if node should resize

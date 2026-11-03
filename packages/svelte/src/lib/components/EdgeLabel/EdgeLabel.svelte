@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
-  import { hideOnSSR, portal } from '$lib/actions/portal';
+  import { getEdgeIdContext } from '#lib/store/context.js';
+  import { hideOnSSR, portal } from '#lib/actions/portal/index.js';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { toPxString } from '#lib/utils/index.js';
 
-  import { useStore } from '$lib/store';
-  import type { EdgeLabelProps } from './types';
-  import { toPxString } from '$lib/utils';
+  import type { EdgeLabelProps } from './types.js';
 
   let {
     x = 0,
@@ -18,12 +18,12 @@
     ...rest
   }: EdgeLabelProps = $props();
 
-  const store = useStore();
+  const store = useSvelteFlowStore();
 
-  const id = getContext<string>('svelteflow__edge_id');
+  const edgeId = getEdgeIdContext('EdgeLabel must be used within a Custom Edge component');
 
   let z = $derived.by(() => {
-    return store.visible.edges.get(id)?.zIndex;
+    return store.visible.edges.get(edgeId)?.zIndex;
   });
 </script>
 
@@ -39,7 +39,7 @@
   style:z-index={z}
   tabindex="-1"
   onclick={() => {
-    if (selectEdgeOnClick && id) store.handleEdgeSelection(id);
+    if (selectEdgeOnClick && edgeId) store.handleEdgeSelection(edgeId);
   }}
   {...rest}
 >

@@ -1,19 +1,16 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentType, memo } from 'react';
-import { getNodeDimensions, nodeHasDimensions } from '@xyflow/system';
-import { shallow } from 'zustand/shallow';
+import { getNodeDimensions } from '@xyflow/system';
 
-import { useStore } from '../../hooks/useStore';
+import { useShallow, useNodesStore } from '../../hooks/useReactFlowStore';
 import { MiniMapNode } from './MiniMapNode';
-import type { ReactFlowState, Node } from '../../types';
+import type { NodesStore, Node } from '../../types';
 import type { MiniMapNodes as MiniMapNodesProps, GetMiniMapNodeAttribute, MiniMapNodeProps } from './types';
+import { useInternalNode } from '../../hooks/useNodes';
 
-declare const window: any;
-
-const selectorNodeIds = (s: ReactFlowState) => s.nodes.map((node) => node.id);
-const getAttrFunction = <NodeType extends Node>(func: any): GetMiniMapNodeAttribute<NodeType> =>
-  func instanceof Function ? func : () => func;
+const selectorNodeIds = (s: NodesStore) => s.nodes.map((node) => node.id);
+const getAttrFunction = <NodeType extends Node>(
+  func: string | GetMiniMapNodeAttribute<NodeType> | undefined
+): GetMiniMapNodeAttribute<NodeType> => (func instanceof Function ? func : () => func);
 
 function MiniMapNodes<NodeType extends Node>({
   nodeStrokeColor,
@@ -28,12 +25,13 @@ function MiniMapNodes<NodeType extends Node>({
   nodeComponent: NodeComponent = MiniMapNode,
   onClick,
 }: MiniMapNodesProps<NodeType>) {
-  const nodeIds = useStore(selectorNodeIds, shallow);
+  const nodeIds = useNodesStore(useShallow(selectorNodeIds));
   const nodeColorFunc = getAttrFunction<NodeType>(nodeColor);
   const nodeStrokeColorFunc = getAttrFunction<NodeType>(nodeStrokeColor);
   const nodeClassNameFunc = getAttrFunction<NodeType>(nodeClassName);
 
-  const shapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
+  const shapeRendering =
+    typeof window === 'undefined' || ('chrome' in window && !!window.chrome) ? 'crispEdges' : 'geometricPrecision';
 
   return (
     <>
@@ -83,24 +81,19 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   onClick: MiniMapNodesProps['onClick'];
   shapeRendering: string;
 }) {
-  const { node, x, y, width, height } = useStore((s) => {
-    const { internals } = s.nodeLookup.get(id)!;
-    const node = internals.userNode as NodeType;
-    const { x, y } = internals.positionAbsolute;
-    const { width, height } = getNodeDimensions(node);
+  const internalNode = useInternalNode(id);
 
-    return {
-      node,
-      x,
-      y,
-      width,
-      height,
-    };
-  }, shallow);
-
-  if (!node || node.hidden || !nodeHasDimensions(node)) {
+  if (!internalNode || internalNode.hidden) {
     return null;
   }
+
+  const { width, height } = getNodeDimensions(internalNode);
+  if (width === 0 || height === 0) {
+    return null;
+  }
+
+  const node = internalNode.internals.userNode as NodeType;
+  const { x, y } = internalNode.internals.positionAbsolute;
 
   return (
     <NodeComponent
@@ -122,6 +115,8 @@ function NodeComponentWrapperInner<NodeType extends Node>({
   );
 }
 
+// Keep per-node bailouts when the compiler rebuilds the list after nodes are added or removed.
 const NodeComponentWrapper = memo(NodeComponentWrapperInner) as typeof NodeComponentWrapperInner;
 
+// MiniMap's render-time ref update prevents compilation, so it cannot cache this child during pan/zoom.
 export default memo(MiniMapNodes) as typeof MiniMapNodes;

@@ -1,4 +1,4 @@
-import { type NodeDragItem, type XYPosition, InternalNodeBase, NodeBase, NodeLookup, SnapGrid } from '../types';
+import { type NodeDragItem, type XYPosition, type InternalNodeBase, type NodeBase, type NodeLookup, type SnapGrid } from '../types';
 import { snapPosition } from '../utils';
 
 export function isParentSelected<NodeType extends NodeBase>(node: NodeType, nodeLookup: NodeLookup): boolean {
@@ -36,14 +36,18 @@ export function getDragItems<NodeType extends NodeBase>(
   nodeLookup: Map<string, InternalNodeBase<NodeType>>,
   nodesDraggable: boolean,
   mousePos: XYPosition,
-  nodeId?: string
+  nodeId?: string,
+  onlyDragNode?: boolean
 ): Map<string, NodeDragItem> {
   const dragItems = new Map<string, NodeDragItem>();
 
   for (const [id, node] of nodeLookup) {
+    // if onlyDragNode is true, only the grabbed node gets dragged, otherwise all selected nodes are dragged with it
+    const isDragged = onlyDragNode ? node.id === nodeId : node.selected || node.id === nodeId;
+
     if (
-      (node.selected || node.id === nodeId) &&
-      (!node.parentId || !isParentSelected(node, nodeLookup)) &&
+      isDragged &&
+      (onlyDragNode || !node.parentId || !isParentSelected(node, nodeLookup)) &&
       (node.draggable || (nodesDraggable && typeof node.draggable === 'undefined'))
     ) {
       const internalNode = nodeLookup.get(id);
@@ -80,7 +84,7 @@ export function getDragItems<NodeType extends NodeBase>(
  * 1. the dragged node (or the first of the list, if we are dragging a node selection)
  * 2. array of selected nodes (for multi selections)
  */
-export function getEventHandlerParams<NodeType extends InternalNodeBase>({
+export function getEventHandlerParams<NodeType extends NodeBase>({
   nodeId,
   dragItems,
   nodeLookup,
@@ -88,10 +92,10 @@ export function getEventHandlerParams<NodeType extends InternalNodeBase>({
 }: {
   nodeId?: string;
   dragItems: Map<string, NodeDragItem>;
-  nodeLookup: Map<string, NodeType>;
+  nodeLookup: Map<string, InternalNodeBase<NodeType>>;
   dragging?: boolean;
-}): [NodeBase, NodeBase[]] {
-  const nodesFromDragItems: NodeBase[] = [];
+}): [NodeType, NodeType[]] {
+  const nodesFromDragItems: NodeType[] = [];
 
   for (const [id, dragItem] of dragItems) {
     const node = nodeLookup.get(id)?.internals.userNode;

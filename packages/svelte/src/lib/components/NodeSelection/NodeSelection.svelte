@@ -1,12 +1,12 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { getInternalNodesBounds, isNumeric, type Rect } from '@xyflow/system';
 
-  import { Selection } from '$lib/components/Selection';
-  import drag from '$lib/actions/drag';
+  import { Selection } from '#lib/components/Selection/index.js';
+  import drag from '#lib/actions/drag/index.js';
 
-  import type { NodeSelectionProps } from './types';
-  import { arrowKeyDiffs, toPxString } from '$lib/utils';
-  import type { Node, Edge } from '$lib/types';
+  import type { NodeSelectionProps } from './types.js';
+  import { arrowKeyDiffs, toPxString } from '#lib/utils/index.js';
+  import type { Node, Edge } from '#lib/types/index.js';
 
   let {
     store = $bindable(),
@@ -31,7 +31,12 @@
     if (store.selectionRectMode === 'nodes') {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       store.nodes;
-      return getInternalNodesBounds(store.nodeLookup, { filter: (node) => !!node.selected });
+      const nodeBounds = getInternalNodesBounds(store.nodeLookup, {
+        filter: (node) => !!node.selected
+      });
+      if (nodeBounds.width > 0 && nodeBounds.height > 0) {
+        return nodeBounds;
+      }
     }
     return null;
   });
@@ -91,5 +96,10 @@
     left: 0;
     z-index: 2000;
     pointer-events: all;
+  }
+
+  .svelte-flow__selection-wrapper:focus,
+  .svelte-flow__selection-wrapper:focus-visible {
+    outline: none;
   }
 </style>

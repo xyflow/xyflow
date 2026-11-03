@@ -1,10 +1,11 @@
 import { useState, type ReactNode } from 'react';
+import { CoordinateExtent, NodeOrigin, ZIndexMode } from '@xyflow/system';
 
 import { Provider } from '../../contexts/StoreContext';
 import { createStore } from '../../store';
 import { BatchProvider } from '../BatchProvider';
+import { HandleConfigProvider } from '../../contexts/HandleConfigContext';
 import type { Node, Edge, FitViewOptions } from '../../types';
-import { CoordinateExtent, NodeOrigin } from '@xyflow/system';
 
 export type ReactFlowProviderProps = {
   /** These nodes are used to initialize the flow. They are not dynamic. */
@@ -48,6 +49,7 @@ export type ReactFlowProviderProps = {
    */
   nodeExtent?: CoordinateExtent;
   children: ReactNode;
+  zIndexMode?: ZIndexMode;
 };
 
 /**
@@ -97,9 +99,10 @@ export function ReactFlowProvider({
   fitView,
   nodeOrigin,
   nodeExtent,
+  zIndexMode,
   children,
 }: ReactFlowProviderProps) {
-  const [store] = useState(() =>
+  const [stores] = useState(() =>
     createStore({
       nodes,
       edges,
@@ -113,12 +116,15 @@ export function ReactFlowProvider({
       fitViewOptions,
       nodeOrigin,
       nodeExtent,
+      zIndexMode,
     })
   );
 
   return (
-    <Provider value={store}>
-      <BatchProvider>{children}</BatchProvider>
+    <Provider value={stores}>
+      <BatchProvider>
+        <HandleConfigProvider>{children}</HandleConfigProvider>
+      </BatchProvider>
     </Provider>
   );
 }

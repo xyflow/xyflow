@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 import { XYDrag, type XYDragInstance } from '@xyflow/system';
 
 import { handleNodeClick } from '../components/Nodes/utils';
-import { useStoreApi } from './useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 
 type UseDragParams = {
   nodeRef: RefObject<HTMLDivElement>;
@@ -28,17 +28,27 @@ export function useDrag({
   isSelectable,
   nodeClickDistance,
 }: UseDragParams) {
-  const store = useStoreApi();
+  const { optionsStore, viewportStore, nodesStore, edgesStore } = useReactFlowStoreApi();
   const [dragging, setDragging] = useState<boolean>(false);
   const xyDrag = useRef<XYDragInstance>();
 
   useEffect(() => {
+    if (disabled) {
+      return;
+    }
+
     xyDrag.current = XYDrag({
-      getStoreItems: () => store.getState(),
+      getStoreItems: () => {
+        const { nodes, nodeLookup } = nodesStore.getState();
+        const { edges } = edgesStore.getState();
+        const { transform } = viewportStore.getState();
+        return { ...optionsStore.getState(), nodes, nodeLookup, edges, transform };
+      },
       onNodeMouseDown: (id: string) => {
         handleNodeClick({
           id,
-          store,
+          optionsStore,
+          nodesStore,
           nodeRef,
         });
       },
@@ -49,25 +59,27 @@ export function useDrag({
         setDragging(false);
       },
     });
-  }, []);
+
+    return () => {
+      xyDrag.current?.destroy();
+      xyDrag.current = undefined;
+    };
+  }, [disabled, optionsStore, viewportStore, nodesStore, edgesStore, nodeRef]);
 
   useEffect(() => {
-    if (disabled) {
-      xyDrag.current?.destroy();
-    } else if (nodeRef.current) {
-      xyDrag.current?.update({
-        noDragClassName,
-        handleSelector,
-        domNode: nodeRef.current,
-        isSelectable,
-        nodeId,
-        nodeClickDistance,
-      });
-      return () => {
-        xyDrag.current?.destroy();
-      };
+    if (disabled || !nodeRef.current || !xyDrag.current) {
+      return;
     }
-  }, [noDragClassName, handleSelector, disabled, isSelectable, nodeRef, nodeId]);
+
+    xyDrag.current.update({
+      noDragClassName,
+      handleSelector,
+      domNode: nodeRef.current,
+      isSelectable,
+      nodeId,
+      nodeClickDistance,
+    });
+  }, [noDragClassName, handleSelector, disabled, isSelectable, nodeRef, nodeId, nodeClickDistance]);
 
   return dragging;
 }

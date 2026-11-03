@@ -5,6 +5,7 @@ import {
   calcAutoPan,
   getEventPosition,
   getPointerPosition,
+  isTouchEvent,
   calculateNodePosition,
   snapPosition,
   getInternalNodesBounds,
@@ -28,17 +29,28 @@ import type {
   InternalNodeBase,
 } from '../types';
 
-export type OnDrag = (
-  event: MouseEvent,
+export type OnDrag<NodeType extends NodeBase = NodeBase> = (
+  event: MouseEvent | TouchEvent,
   dragItems: Map<string, NodeDragItem>,
-  node: NodeBase,
-  nodes: NodeBase[]
+  node: NodeType,
+  nodes: NodeType[]
 ) => void;
 
-type StoreItems<OnNodeDrag> = {
-  nodes: NodeBase[];
-  nodeLookup: Map<string, InternalNodeBase>;
-  edges: EdgeBase[];
+type OnNodeDrag<NodeType extends NodeBase = NodeBase> = (
+  e: MouseEvent | TouchEvent,
+  node: NodeType,
+  nodes: NodeType[]
+) => void | undefined;
+
+type FlowGraph<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
+  nodes: NodeType[];
+  edges: EdgeType[];
+};
+
+type StoreItems<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
+  nodes: NodeType[];
+  nodeLookup: Map<string, InternalNodeBase<NodeType>>;
+  edges: EdgeType[];
   nodeExtent: CoordinateExtent;
   snapGrid: SnapGrid;
   snapToGrid: boolean;
@@ -51,23 +63,23 @@ type StoreItems<OnNodeDrag> = {
   selectNodesOnDrag: boolean;
   nodeDragThreshold: number;
   panBy: PanBy;
-  unselectNodesAndEdges: (params?: { nodes?: NodeBase[]; edges?: EdgeBase[] }) => void;
+  unselectNodesAndEdges: (params?: Partial<FlowGraph<NodeType, EdgeType>>) => void;
   onError?: OnError;
-  onNodeDragStart?: OnNodeDrag;
-  onNodeDrag?: OnNodeDrag;
-  onNodeDragStop?: OnNodeDrag;
-  onSelectionDragStart?: OnSelectionDrag;
-  onSelectionDrag?: OnSelectionDrag;
-  onSelectionDragStop?: OnSelectionDrag;
-  updateNodePositions: UpdateNodePositions;
+  onNodeDragStart?: OnNodeDrag<NodeType>;
+  onNodeDrag?: OnNodeDrag<NodeType>;
+  onNodeDragStop?: OnNodeDrag<NodeType>;
+  onSelectionDragStart?: OnSelectionDrag<NodeType>;
+  onSelectionDrag?: OnSelectionDrag<NodeType>;
+  onSelectionDragStop?: OnSelectionDrag<NodeType>;
+  updateNodePositions: UpdateNodePositions<InternalNodeBase<NodeType>>;
   autoPanSpeed?: number;
 };
 
-export type XYDragParams<OnNodeDrag> = {
-  getStoreItems: () => StoreItems<OnNodeDrag>;
-  onDragStart?: OnDrag;
-  onDrag?: OnDrag;
-  onDragStop?: OnDrag;
+export type XYDragParams<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = {
+  getStoreItems: () => StoreItems<NodeType, EdgeType>;
+  onDragStart?: OnDrag<NodeType>;
+  onDrag?: OnDrag<NodeType>;
+  onDragStop?: OnDrag<NodeType>;
   onNodeMouseDown?: (id: string) => void;
   autoPanSpeed?: number;
 };
@@ -86,14 +98,13 @@ export type DragUpdateParams = {
   nodeClickDistance?: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => void | undefined>({
+export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
   onNodeMouseDown,
   getStoreItems,
   onDragStart,
   onDrag,
   onDragStop,
-}: XYDragParams<OnNodeDrag>): XYDragInstance {
+}: XYDragParams<NodeType, EdgeType>): XYDragInstance {
   let lastPos: { x: number | null; y: number | null } = { x: null, y: null };
   let autoPanId = 0;
   let dragItems = new Map<string, NodeDragItem>();
@@ -107,7 +118,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
   let abortDrag = false; // prevents unintentional dragging on multitouch
   let nodePositionsChanged = false;
   // we store the last drag event to be able to use it in the update function
-  let dragEvent: MouseEvent | null = null;
+  let dragEvent: MouseEvent | TouchEvent | null = null;
 
   // public functions
   function update({
@@ -245,7 +256,9 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         }
       }
 
-      autoPanId = requestAnimationFrame(autoPan);
+      autoPanId = requestAnimationFrame(() => {
+        void autoPan();
+      });
     }
 
     function startDrag(event: UseDragEvent) {
@@ -264,6 +277,9 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
       dragStarted = true;
 
+      // if a node is being dragged that is not currently selected, we only want to drag that node and not the rest of the selection
+      const isUnselectedNodeDrag = !!nodeId && !multiSelectionActive && !nodeLookup.get(nodeId)?.selected;
+
       if ((!selectNodesOnDrag || !isSelectable) && !multiSelectionActive && nodeId) {
         if (!nodeLookup.get(nodeId)?.selected) {
           // we need to reset selected nodes when selectNodesOnDrag=false
@@ -275,9 +291,14 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
         onNodeMouseDown?.(nodeId);
       }
 
-      const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
+      const pointerPos = getPointerPosition(event.sourceEvent, {
+        transform,
+        snapGrid,
+        snapToGrid,
+        containerBounds,
+      });
       lastPos = pointerPos;
-      dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, nodeId);
+      dragItems = getDragItems(nodeLookup, nodesDraggable, pointerPos, nodeId, isUnselectedNodeDrag);
 
       if (dragItems.size > 0 && (onDragStart || onNodeDragStart || (!nodeId && onSelectionDragStart))) {
         const [currentNode, currentNodes] = getEventHandlerParams({
@@ -286,11 +307,11 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
           nodeLookup,
         });
 
-        onDragStart?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-        onNodeDragStart?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+        onDragStart?.(event.sourceEvent, dragItems, currentNode, currentNodes);
+        onNodeDragStart?.(event.sourceEvent, currentNode, currentNodes);
 
         if (!nodeId) {
-          onSelectionDragStart?.(event.sourceEvent as MouseEvent, currentNodes);
+          onSelectionDragStart?.(event.sourceEvent, currentNodes);
         }
       }
     }
@@ -318,11 +339,11 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
       })
       .on('drag', (event: UseDragEvent) => {
         const { autoPanOnNodeDrag, transform, snapGrid, snapToGrid, nodeDragThreshold, nodeLookup } = getStoreItems();
-        const pointerPos = getPointerPosition(event.sourceEvent, { transform, snapGrid, snapToGrid, containerBounds });
         dragEvent = event.sourceEvent;
+        const pointerPos = getPointerPosition(dragEvent, { transform, snapGrid, snapToGrid, containerBounds });
 
         if (
-          (event.sourceEvent.type === 'touchmove' && event.sourceEvent.touches.length > 1) ||
+          (isTouchEvent(dragEvent) && dragEvent.type === 'touchmove' && dragEvent.touches.length > 1) ||
           // if user deletes a node while dragging, we need to abort the drag to prevent errors
           (nodeId && !nodeLookup.has(nodeId))
         ) {
@@ -335,7 +356,7 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
         if (!autoPanStarted && autoPanOnNodeDrag && dragStarted) {
           autoPanStarted = true;
-          autoPan();
+          void autoPan();
         }
 
         if (!dragStarted) {
@@ -352,12 +373,15 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
 
         // skip events without movement
         if ((lastPos.x !== pointerPos.xSnapped || lastPos.y !== pointerPos.ySnapped) && dragItems && dragStarted) {
-          mousePosition = getEventPosition(event.sourceEvent, containerBounds!);
+          mousePosition = getEventPosition(dragEvent, containerBounds!);
           updateNodes(pointerPos);
         }
       })
       .on('end', (event: UseDragEvent) => {
         if (!dragStarted || abortDrag) {
+          if (abortDrag && dragItems.size > 0) {
+            getStoreItems().updateNodePositions(dragItems, false);
+          }
           return;
         }
 
@@ -380,11 +404,11 @@ export function XYDrag<OnNodeDrag extends (e: any, nodes: any, node: any) => voi
               dragging: false,
             });
 
-            onDragStop?.(event.sourceEvent as MouseEvent, dragItems, currentNode, currentNodes);
-            onNodeDragStop?.(event.sourceEvent as MouseEvent, currentNode, currentNodes);
+            onDragStop?.(event.sourceEvent, dragItems, currentNode, currentNodes);
+            onNodeDragStop?.(event.sourceEvent, currentNode, currentNodes);
 
             if (!nodeId) {
-              onSelectionDragStop?.(event.sourceEvent as MouseEvent, currentNodes);
+              onSelectionDragStop?.(event.sourceEvent, currentNodes);
             }
           }
         }

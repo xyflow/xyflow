@@ -80,6 +80,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   panOnScrollMode,
   zoomOnDoubleClick,
   panOnDrag,
+  autoPanOnSelection,
   onPaneClick,
   onPaneMouseEnter,
   onPaneMouseMove,
@@ -104,6 +105,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
   rfId,
   viewport,
   onViewportChange,
+  nodesDraggable,
 }: GraphViewProps<NodeType, EdgeType>) {
   useNodeOrEdgeTypesWarning(nodeTypes);
   useNodeOrEdgeTypesWarning(edgeTypes);
@@ -138,6 +140,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       panOnDrag={panOnDrag}
+      autoPanOnSelection={autoPanOnSelection}
       defaultViewport={defaultViewport}
       translateExtent={translateExtent}
       minZoom={minZoom}
@@ -192,6 +195,7 @@ function GraphViewComponent<NodeType extends Node = Node, EdgeType extends Edge 
           disableKeyboardA11y={disableKeyboardA11y}
           nodeExtent={nodeExtent}
           rfId={rfId}
+          nodesDraggable={nodesDraggable}
         />
         <div className="react-flow__viewport-portal" />
       </Viewport>

@@ -1,4 +1,4 @@
-import { ForwardedRef, useCallback, type CSSProperties } from 'react';
+import { ForwardedRef, type CSSProperties } from 'react';
 import cc from 'classcat';
 import { ConnectionLineType, PanOnScrollMode, SelectionMode, infiniteExtent, isMacOs } from '@xyflow/system';
 
@@ -6,7 +6,6 @@ import { A11yDescriptions } from '../../components/A11yDescriptions';
 import { Attribution } from '../../components/Attribution';
 import { SelectionListener } from '../../components/SelectionListener';
 import { StoreUpdater } from '../../components/StoreUpdater';
-import { useColorModeClass } from '../../hooks/useColorModeClass';
 import { GraphView } from '../GraphView';
 import { Wrapper } from './Wrapper';
 import type { Edge, Node, ReactFlowProps } from '../../types';
@@ -104,7 +103,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     onPaneMouseLeave,
     onPaneScroll,
     onPaneContextMenu,
-    paneClickDistance = 0,
+    paneClickDistance = 1,
     nodeClickDistance = 0,
     children,
     onReconnect,
@@ -127,11 +126,12 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     attributionPosition,
     proOptions,
     defaultEdgeOptions,
-    elevateNodesOnSelect,
-    elevateEdgesOnSelect,
+    elevateNodesOnSelect = true,
+    elevateEdgesOnSelect = true,
     disableKeyboardA11y = false,
     autoPanOnConnect,
     autoPanOnNodeDrag,
+    autoPanOnSelection = true,
     autoPanSpeed,
     connectionRadius,
     isValidConnection,
@@ -144,25 +144,22 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     onViewportChange,
     width,
     height,
-    colorMode = 'light',
+    forceColorMode,
     debug,
     onScroll,
     ariaLabelConfig,
+    zIndexMode = 'basic',
     ...rest
   }: ReactFlowProps<NodeType, EdgeType>,
   ref: ForwardedRef<HTMLDivElement>
 ) {
   const rfId = id || '1';
-  const colorModeClassName = useColorModeClass(colorMode);
 
   // Undo scroll events, preventing viewport from shifting when nodes outside of it are focused
-  const wrapperOnScroll = useCallback(
-    (e: React.UIEvent<HTMLDivElement>) => {
-      e.currentTarget.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      onScroll?.(e);
-    },
-    [onScroll]
-  );
+  const wrapperOnScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    e.currentTarget.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    onScroll?.(e);
+  };
 
   return (
     <div
@@ -171,7 +168,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
       onScroll={wrapperOnScroll}
       style={{ ...style, ...wrapperStyle }}
       ref={ref}
-      className={cc(['react-flow', className, colorModeClassName])}
+      className={cc(['react-flow', forceColorMode, className])}
       id={id}
       role="application"
     >
@@ -186,72 +183,8 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
         maxZoom={maxZoom}
         nodeOrigin={nodeOrigin}
         nodeExtent={nodeExtent}
+        zIndexMode={zIndexMode}
       >
-        <GraphView<NodeType, EdgeType>
-          onInit={onInit}
-          onNodeClick={onNodeClick}
-          onEdgeClick={onEdgeClick}
-          onNodeMouseEnter={onNodeMouseEnter}
-          onNodeMouseMove={onNodeMouseMove}
-          onNodeMouseLeave={onNodeMouseLeave}
-          onNodeContextMenu={onNodeContextMenu}
-          onNodeDoubleClick={onNodeDoubleClick}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          connectionLineType={connectionLineType}
-          connectionLineStyle={connectionLineStyle}
-          connectionLineComponent={connectionLineComponent}
-          connectionLineContainerStyle={connectionLineContainerStyle}
-          selectionKeyCode={selectionKeyCode}
-          selectionOnDrag={selectionOnDrag}
-          selectionMode={selectionMode}
-          deleteKeyCode={deleteKeyCode}
-          multiSelectionKeyCode={multiSelectionKeyCode}
-          panActivationKeyCode={panActivationKeyCode}
-          zoomActivationKeyCode={zoomActivationKeyCode}
-          onlyRenderVisibleElements={onlyRenderVisibleElements}
-          defaultViewport={defaultViewport}
-          translateExtent={translateExtent}
-          minZoom={minZoom}
-          maxZoom={maxZoom}
-          preventScrolling={preventScrolling}
-          zoomOnScroll={zoomOnScroll}
-          zoomOnPinch={zoomOnPinch}
-          zoomOnDoubleClick={zoomOnDoubleClick}
-          panOnScroll={panOnScroll}
-          panOnScrollSpeed={panOnScrollSpeed}
-          panOnScrollMode={panOnScrollMode}
-          panOnDrag={panOnDrag}
-          onPaneClick={onPaneClick}
-          onPaneMouseEnter={onPaneMouseEnter}
-          onPaneMouseMove={onPaneMouseMove}
-          onPaneMouseLeave={onPaneMouseLeave}
-          onPaneScroll={onPaneScroll}
-          onPaneContextMenu={onPaneContextMenu}
-          paneClickDistance={paneClickDistance}
-          nodeClickDistance={nodeClickDistance}
-          onSelectionContextMenu={onSelectionContextMenu}
-          onSelectionStart={onSelectionStart}
-          onSelectionEnd={onSelectionEnd}
-          onReconnect={onReconnect}
-          onReconnectStart={onReconnectStart}
-          onReconnectEnd={onReconnectEnd}
-          onEdgeContextMenu={onEdgeContextMenu}
-          onEdgeDoubleClick={onEdgeDoubleClick}
-          onEdgeMouseEnter={onEdgeMouseEnter}
-          onEdgeMouseMove={onEdgeMouseMove}
-          onEdgeMouseLeave={onEdgeMouseLeave}
-          reconnectRadius={reconnectRadius}
-          defaultMarkerColor={defaultMarkerColor}
-          noDragClassName={noDragClassName}
-          noWheelClassName={noWheelClassName}
-          noPanClassName={noPanClassName}
-          rfId={rfId}
-          disableKeyboardA11y={disableKeyboardA11y}
-          nodeExtent={nodeExtent}
-          viewport={viewport}
-          onViewportChange={onViewportChange}
-        />
         <StoreUpdater<NodeType, EdgeType>
           nodes={nodes}
           edges={edges}
@@ -309,9 +242,76 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           nodeDragThreshold={nodeDragThreshold}
           connectionDragThreshold={connectionDragThreshold}
           onBeforeDelete={onBeforeDelete}
-          paneClickDistance={paneClickDistance}
           debug={debug}
           ariaLabelConfig={ariaLabelConfig}
+          zIndexMode={zIndexMode}
+        />
+        <GraphView<NodeType, EdgeType>
+          onInit={onInit}
+          onNodeClick={onNodeClick}
+          onEdgeClick={onEdgeClick}
+          onNodeMouseEnter={onNodeMouseEnter}
+          onNodeMouseMove={onNodeMouseMove}
+          onNodeMouseLeave={onNodeMouseLeave}
+          onNodeContextMenu={onNodeContextMenu}
+          onNodeDoubleClick={onNodeDoubleClick}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          connectionLineType={connectionLineType}
+          connectionLineStyle={connectionLineStyle}
+          connectionLineComponent={connectionLineComponent}
+          connectionLineContainerStyle={connectionLineContainerStyle}
+          selectionKeyCode={selectionKeyCode}
+          selectionOnDrag={selectionOnDrag}
+          selectionMode={selectionMode}
+          deleteKeyCode={deleteKeyCode}
+          multiSelectionKeyCode={multiSelectionKeyCode}
+          panActivationKeyCode={panActivationKeyCode}
+          zoomActivationKeyCode={zoomActivationKeyCode}
+          onlyRenderVisibleElements={onlyRenderVisibleElements}
+          defaultViewport={defaultViewport}
+          translateExtent={translateExtent}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
+          preventScrolling={preventScrolling}
+          zoomOnScroll={zoomOnScroll}
+          zoomOnPinch={zoomOnPinch}
+          zoomOnDoubleClick={zoomOnDoubleClick}
+          panOnScroll={panOnScroll}
+          panOnScrollSpeed={panOnScrollSpeed}
+          panOnScrollMode={panOnScrollMode}
+          panOnDrag={panOnDrag}
+          autoPanOnSelection={autoPanOnSelection}
+          onPaneClick={onPaneClick}
+          onPaneMouseEnter={onPaneMouseEnter}
+          onPaneMouseMove={onPaneMouseMove}
+          onPaneMouseLeave={onPaneMouseLeave}
+          onPaneScroll={onPaneScroll}
+          onPaneContextMenu={onPaneContextMenu}
+          paneClickDistance={paneClickDistance}
+          nodeClickDistance={nodeClickDistance}
+          onSelectionContextMenu={onSelectionContextMenu}
+          onSelectionStart={onSelectionStart}
+          onSelectionEnd={onSelectionEnd}
+          onReconnect={onReconnect}
+          onReconnectStart={onReconnectStart}
+          onReconnectEnd={onReconnectEnd}
+          onEdgeContextMenu={onEdgeContextMenu}
+          onEdgeDoubleClick={onEdgeDoubleClick}
+          onEdgeMouseEnter={onEdgeMouseEnter}
+          onEdgeMouseMove={onEdgeMouseMove}
+          onEdgeMouseLeave={onEdgeMouseLeave}
+          reconnectRadius={reconnectRadius}
+          defaultMarkerColor={defaultMarkerColor}
+          noDragClassName={noDragClassName}
+          noWheelClassName={noWheelClassName}
+          noPanClassName={noPanClassName}
+          rfId={rfId}
+          disableKeyboardA11y={disableKeyboardA11y}
+          nodeExtent={nodeExtent}
+          viewport={viewport}
+          onViewportChange={onViewportChange}
+          nodesDraggable={nodesDraggable}
         />
         <SelectionListener<NodeType, EdgeType> onSelectionChange={onSelectionChange} />
         {children}

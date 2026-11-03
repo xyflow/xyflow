@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Selection as D3Selection } from 'd3-selection';
 import type { D3DragEvent, SubjectPosition } from 'd3-drag';
 import type { ZoomBehavior } from 'd3-zoom';
@@ -7,9 +6,10 @@ import type { Transition } from 'd3-transition';
 
 import type { XYPosition, Rect, Position } from './utils';
 import type { InternalNodeBase, NodeBase, NodeDragItem } from './nodes';
-import type { Handle, HandleType } from './handles';
-import { PanZoomInstance } from './panzoom';
-import { EdgeBase } from '..';
+import type { HandleBounds, HandleType } from './handles';
+import { type PanZoomInstance } from './panzoom';
+import { type EdgeBase } from '..';
+import type { D3ZoomInputEvent } from '../utils/events';
 
 export type Project = (position: XYPosition) => XYPosition;
 
@@ -98,6 +98,23 @@ export type NodeConnection = Connection & {
   edgeId: string;
 };
 
+export type UseNodeConnectionsParams = {
+  /** ID of the node, filled in automatically if used inside custom node. */
+  id?: string;
+  /** Gets called when a connection is established. */
+  onConnect?: (connections: HandleConnection[]) => void;
+  /** Gets called when a connection is removed. */
+  onDisconnect?: (connections: HandleConnection[]) => void;
+} & (
+  | {
+      /** What type of handle connections do you want to observe? */
+      handleType: HandleType;
+      /** Filter by handle id (this is only needed if the node has multiple handles of the same type). Requires `handleType` to be set. */
+      handleId?: string;
+    }
+  | { handleType?: HandleType; handleId?: never }
+);
+
 /**
  * The `ConnectionMode` is used to set the mode of connection between nodes.
  * The `Strict` mode is the default one and only allows source to target edges.
@@ -118,7 +135,10 @@ export type OnConnectStartParams = {
 
 export type OnConnectStart = (event: MouseEvent | TouchEvent, params: OnConnectStartParams) => void;
 export type OnConnect = (connection: Connection) => void;
-export type OnConnectEnd = (event: MouseEvent | TouchEvent, connectionState: FinalConnectionState) => void;
+export type OnConnectEnd<NodeType extends NodeBase = NodeBase> = (
+  event: MouseEvent | TouchEvent,
+  connectionState: FinalConnectionState<InternalNodeBase<NodeType>>
+) => void;
 
 export type OnReconnect<EdgeType extends EdgeBase = EdgeBase> = (oldEdge: EdgeType, newConnection: Connection) => void;
 export type OnReconnectStart<EdgeType extends EdgeBase = EdgeBase> = (
@@ -126,14 +146,14 @@ export type OnReconnectStart<EdgeType extends EdgeBase = EdgeBase> = (
   edge: EdgeType,
   handleType: HandleType
 ) => void;
-export type OnReconnectEnd<EdgeType extends EdgeBase = EdgeBase> = (
+export type OnReconnectEnd<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = (
   event: MouseEvent | TouchEvent,
   edge: EdgeType,
   handleType: HandleType,
-  connectionState: FinalConnectionState
+  connectionState: FinalConnectionState<InternalNodeBase<NodeType>>
 ) => void;
 
-export type IsValidConnection = (edge: EdgeBase | Connection) => boolean;
+export type IsValidConnection<EdgeType extends EdgeBase = EdgeBase> = (edge: EdgeType | Connection) => boolean;
 
 /**
  * @inline
@@ -230,14 +250,15 @@ export type SetCenterOptions = ViewportHelperFunctionOptions & {
  * @inline
  */
 export type FitBoundsOptions = ViewportHelperFunctionOptions & {
-  padding?: number;
+  padding?: Padding;
 };
 
 export type OnViewportChange = (viewport: Viewport) => void;
 
 export type D3ZoomInstance = ZoomBehavior<Element, unknown>;
 export type D3SelectionInstance = D3Selection<Element, unknown, null, undefined>;
-export type D3ZoomHandler = (this: Element, event: any, d: unknown) => void;
+
+export type D3ZoomHandler = (this: Element, event: D3ZoomInputEvent, d: unknown) => void;
 
 export type UpdateNodeInternals = (nodeId: string | string[]) => void;
 
@@ -259,12 +280,9 @@ export type PanelPosition =
   | 'center-left'
   | 'center-right';
 
-export type ProOptions = {
-  account?: string;
-  hideAttribution: boolean;
+export type UseDragEvent = Omit<D3DragEvent<HTMLDivElement, null, SubjectPosition>, 'sourceEvent'> & {
+  sourceEvent: MouseEvent | TouchEvent;
 };
-
-export type UseDragEvent = D3DragEvent<HTMLDivElement, null, SubjectPosition>;
 
 export enum SelectionMode {
   Partial = 'partial',
@@ -278,7 +296,10 @@ export type SelectionRect = Rect & {
 
 export type OnError = (id: string, message: string) => void;
 
-export type UpdateNodePositions = (dragItems: Map<string, NodeDragItem | InternalNodeBase>, dragging?: boolean) => void;
+export type UpdateNodePositions<NodeType extends InternalNodeBase = InternalNodeBase> = (
+  dragItems: Map<string, NodeDragItem | NodeType>,
+  dragging?: boolean
+) => void;
 export type PanBy = (delta: XYPosition) => Promise<boolean>;
 
 export const initialConnection: NoConnection = {
@@ -292,6 +313,7 @@ export const initialConnection: NoConnection = {
   toHandle: null,
   toPosition: null,
   toNode: null,
+  pointer: null,
 };
 
 export type NoConnection = {
@@ -305,6 +327,7 @@ export type NoConnection = {
   toHandle: null;
   toPosition: null;
   toNode: null;
+  pointer: null;
 };
 export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNodeBase> = {
   /** Indicates whether a connection is currently in progress. */
@@ -317,7 +340,7 @@ export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNod
   /** Returns the xy start position or `null` if no connection is in progress. */
   from: XYPosition;
   /** Returns the start handle or `null` if no connection is in progress. */
-  fromHandle: Handle;
+  fromHandle: HandleBounds;
   /** Returns the side (called position) of the start handle or `null` if no connection is in progress. */
   fromPosition: Position;
   /** Returns the start node or `null` if no connection is in progress. */
@@ -325,11 +348,13 @@ export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNod
   /** Returns the xy end position or `null` if no connection is in progress. */
   to: XYPosition;
   /** Returns the end handle or `null` if no connection is in progress. */
-  toHandle: Handle | null;
+  toHandle: HandleBounds | null;
   /** Returns the side (called position) of the end handle or `null` if no connection is in progress. */
   toPosition: Position;
   /** Returns the end node or `null` if no connection is in progress. */
   toNode: NodeType | null;
+  /** Returns the pointer position or `null` if no connection is in progress. */
+  pointer: XYPosition;
 };
 
 /**
@@ -342,17 +367,15 @@ export type ConnectionState<NodeType extends InternalNodeBase = InternalNodeBase
   | ConnectionInProgress<NodeType>
   | NoConnection;
 
-export type FinalConnectionState<NodeType extends InternalNodeBase = InternalNodeBase> = Omit<
-  ConnectionState<NodeType>,
-  'inProgress'
->;
+export type FinalConnectionState<NodeType extends InternalNodeBase = InternalNodeBase> =
+  | (Omit<ConnectionInProgress<NodeType>, 'inProgress' | 'toPosition'> & { toPosition: Position | null })
+  | Omit<NoConnection, 'inProgress'>;
 
 export type UpdateConnection<NodeType extends InternalNodeBase = InternalNodeBase> = (
   params: ConnectionState<NodeType>
 ) => void;
 
-export type ColorModeClass = 'light' | 'dark';
-export type ColorMode = ColorModeClass | 'system';
+export type ColorMode = 'light' | 'dark';
 
 export type ConnectionLookup = Map<string, Map<string, HandleConnection>>;
 
@@ -363,3 +386,13 @@ export type OnBeforeDeleteBase<NodeType extends NodeBase = NodeBase, EdgeType ex
   nodes: NodeType[];
   edges: EdgeType[];
 }) => Promise<boolean | { nodes: NodeType[]; edges: EdgeType[] }>;
+
+/**
+ * The `ZIndexMode` type is used to define how z-indexing is calculated for nodes and edges.
+ * `auto` mode will automatically manage z-indexing for selections and sub flows.
+ * `basic` mode will only manage z-indexing for selections.
+ * `manual` mode does not apply any automatic z-indexing.
+ *
+ * @public
+ */
+export type ZIndexMode = 'auto' | 'basic' | 'manual';

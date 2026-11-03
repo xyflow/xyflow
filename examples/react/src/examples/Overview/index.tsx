@@ -17,11 +17,12 @@ import {
   ConnectionMode,
   OnBeforeDelete,
   OnDelete,
+  OnNodeDrag,
 } from '@xyflow/react';
 
-const onNodeDragStart = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag start', node, nodes);
-const onNodeDrag = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag', node, nodes);
-const onNodeDragStop = (_: ReactMouseEvent, node: Node, nodes: Node[]) => console.log('drag stop', node, nodes);
+const onNodeDragStart: OnNodeDrag = (_, node, nodes) => console.log('drag start', node, nodes);
+const onNodeDrag: OnNodeDrag = (_, node, nodes) => console.log('drag', node, nodes);
+const onNodeDragStop: OnNodeDrag = (_, node, nodes) => console.log('drag stop', node, nodes);
 const onNodeDoubleClick = (_: ReactMouseEvent, node: Node) => console.log('node double click', node);
 const onPaneClick = (event: ReactMouseEvent) => console.log('pane click', event);
 const onPaneScroll = (event?: ReactMouseEvent) => console.log('pane scroll', event);

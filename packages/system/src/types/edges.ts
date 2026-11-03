@@ -1,8 +1,8 @@
-import { Position } from './utils';
+import { type Position } from './utils';
 
 export type EdgeBase<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
-  EdgeType extends string | undefined = string | undefined
+  EdgeType extends string | undefined = string | undefined,
 > = {
   /** Unique id of an edge. */
   id: string;
@@ -129,3 +129,30 @@ export type EdgePosition = {
 };
 
 export type EdgeLookup<EdgeType extends EdgeBase = EdgeBase> = Map<string, EdgeType>;
+
+export type EdgeToolbarBaseProps = {
+  /**
+   * The `x` position of the edge toolbar.
+   */
+  x: number;
+  /**
+   * The `y` position of the edge toolbar.
+   */
+  y: number;
+  /** If `true`, edge toolbar is visible even if edge is not selected.
+   * @default false
+   */
+  isVisible?: boolean;
+  /**
+   * Align the vertical toolbar position relative to the passed x position.
+   * @default "center"
+   * @example 'left', 'center', 'right'
+   */
+  alignX?: 'left' | 'center' | 'right';
+  /**
+   * Align the horizontal toolbar position relative to the passed y position.
+   * @default "center"
+   * @example 'top', 'center', 'bottom'
+   */
+  alignY?: 'top' | 'center' | 'bottom';
+};

@@ -9,3 +9,7 @@
 .svelte-flow__handle.valid {
 	background: #55dd99;
 }
+
+.svelte-flow__attribution {
+	display: none;
+}

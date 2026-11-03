@@ -1,20 +1,16 @@
-import { CSSProperties, memo, useRef } from 'react';
+import { memo, CSSProperties, useRef } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 
-import { useStore } from '../../hooks/useStore';
+import { useOptionsStore, useViewportStore } from '../../hooks/useReactFlowStore';
 import { DotPattern, LinePattern } from './Patterns';
 import { containerStyle } from '../../styles/utils';
 import { type BackgroundProps, BackgroundVariant } from './types';
-import { type ReactFlowState } from '../../types';
 
 const defaultSize = {
   [BackgroundVariant.Dots]: 1,
   [BackgroundVariant.Lines]: 1,
   [BackgroundVariant.Cross]: 6,
 };
-
-const selector = (s: ReactFlowState) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` });
 
 function BackgroundComponent({
   id,
@@ -32,7 +28,11 @@ function BackgroundComponent({
   patternClassName,
 }: BackgroundProps) {
   const ref = useRef<SVGSVGElement>(null);
-  const { transform, patternId } = useStore(selector, shallow);
+
+  const rfId = useOptionsStore((s) => s.rfId);
+  const patternId = `pattern-${rfId}`;
+  const transform = useViewportStore((s) => s.transform);
+
   const patternSize = size || defaultSize[variant];
   const isDots = variant === BackgroundVariant.Dots;
   const isCross = variant === BackgroundVariant.Cross;
@@ -43,8 +43,8 @@ function BackgroundComponent({
 
   const patternDimensions: [number, number] = isCross ? [scaledSize, scaledSize] : scaledGap;
   const scaledOffset: [number, number] = [
-    offsetXY[0] * transform[2] || 1 + patternDimensions[0] / 2,
-    offsetXY[1] * transform[2] || 1 + patternDimensions[1] / 2,
+    offsetXY[0] * transform[2] + patternDimensions[0] / 2,
+    offsetXY[1] * transform[2] + patternDimensions[1] / 2,
   ];
 
   const _patternId = `${patternId}${id ? id : ''}`;
@@ -116,7 +116,7 @@ BackgroundComponent.displayName = 'Background';
  *
  * ```tsx
  * import { ReactFlow, Background, BackgroundVariant } from '@xyflow/react';
- * import '@xyflow/react/dist/style.css';
+ * import '@xyflow/react/style.css';
  *
  * export default function Flow() {
  *   return (

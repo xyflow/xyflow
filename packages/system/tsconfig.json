@@ -5,8 +5,9 @@
     "lib": ["dom", "esnext"],
     "module": "esnext",
     "target": "esnext",
+    "rootDir": "src",
     "outDir": "dist"
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]
 }

@@ -12,11 +12,10 @@ import { NodeTypes } from './general';
  */
 export type Node<
   NodeData extends Record<string, unknown> = Record<string, unknown>,
-  NodeType extends string | undefined = string | undefined
+  NodeType extends string | undefined = string | undefined,
 > = NodeBase<NodeData, NodeType> & {
   style?: CSSProperties;
   className?: string;
-  resizing?: boolean;
   focusable?: boolean;
   /**
    * The ARIA role attribute for the node element, used for accessibility.
@@ -53,7 +52,7 @@ export type InternalNode<NodeType extends Node = Node> = InternalNodeBase<NodeTy
 export type NodeMouseHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, node: NodeType) => void;
 export type SelectionDragHandler<NodeType extends Node = Node> = (event: ReactMouseEvent, nodes: NodeType[]) => void;
 export type OnNodeDrag<NodeType extends Node = Node> = (
-  event: ReactMouseEvent,
+  event: MouseEvent | TouchEvent,
   node: NodeType,
   nodes: NodeType[]
 ) => void;
@@ -83,7 +82,7 @@ export type NodeWrapperProps<NodeType extends Node> = {
 
 /**
  * The `BuiltInNode` type represents the built-in node types that are available in React Flow.
- * You can use this type to extend your custom node type if you still want ot use the built-in ones.
+ * You can use this type to extend your custom node type if you still want to use the built-in ones.
  *
  * @public
  * @example
@@ -93,7 +92,7 @@ export type NodeWrapperProps<NodeType extends Node> = {
  * ```
  */
 export type BuiltInNode =
-  | Node<{ label: string }, 'input' | 'output' | 'default'>
+  | Node<{ label: string }, 'input' | 'output' | 'default' | undefined>
   | Node<Record<string, never>, 'group'>;
 
 /**

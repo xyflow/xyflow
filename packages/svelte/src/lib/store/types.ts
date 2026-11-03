@@ -10,9 +10,16 @@ import type {
   SetCenter
 } from '@xyflow/system';
 
-import type { getInitialStore } from './initial-store.svelte';
-import type { Node, Edge, NodeTypes, EdgeTypes, FitViewOptions } from '$lib/types';
-import type { SvelteFlowProps } from '$lib/container/SvelteFlow';
+import type { getInitialStore } from './initial-store.svelte.js';
+import type {
+  Node,
+  Edge,
+  NodeTypes,
+  EdgeTypes,
+  FitViewOptions,
+  InternalNode
+} from '#lib/types/index.js';
+import type { SvelteFlowProps } from '#lib/container/SvelteFlow/index.js';
 
 export type SvelteFlowStoreActions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   setNodeTypes: (nodeTypes: NodeTypes) => void;
@@ -23,8 +30,7 @@ export type SvelteFlowStoreActions<NodeType extends Node = Node, EdgeType extend
   setMinZoom: (minZoom: number) => void;
   setMaxZoom: (maxZoom: number) => void;
   setTranslateExtent: (extent: CoordinateExtent) => void;
-  setPaneClickDistance: (distance: number) => void;
-  fitView: (options?: FitViewOptions) => Promise<boolean>;
+  fitView: (options?: FitViewOptions<NodeType>) => Promise<boolean>;
   setCenter: SetCenter;
   updateNodePositions: UpdateNodePositions;
   updateNodeInternals: (updates: Map<string, InternalNodeUpdate>) => void;
@@ -35,7 +41,7 @@ export type SvelteFlowStoreActions<NodeType extends Node = Node, EdgeType extend
   handleEdgeSelection: (id: string) => void;
   moveSelectedNodes: (direction: XYPosition, factor: number) => void;
   panBy: (delta: XYPosition) => Promise<boolean>;
-  updateConnection: UpdateConnection;
+  updateConnection: UpdateConnection<InternalNode<NodeType>>;
   cancelConnection: () => void;
   reset(): void;
 };

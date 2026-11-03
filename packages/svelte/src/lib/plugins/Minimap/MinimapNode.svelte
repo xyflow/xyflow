@@ -1,13 +1,15 @@
 <script lang="ts">
-  import type { ClassValue } from 'svelte/elements';
   import type { Component } from 'svelte';
-  import type { MiniMapNodeProps } from './types';
+  import type { MiniMapNodeProps } from './types.js';
+  import { useInternalNode } from '#lib/hooks/useInternalNode.svelte.js';
+  import { getNodeDimensions } from '@xyflow/system';
 
   let {
-    x,
-    y,
-    width,
-    height,
+    id,
+    x: xProp,
+    y: yProp,
+    width: widthProp,
+    height: heightProp,
     borderRadius = 5,
     color,
     shapeRendering,
@@ -16,26 +18,33 @@
     selected,
     class: className,
     nodeComponent
-  }: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    borderRadius?: number;
-    color?: string;
-    shapeRendering: string;
-    strokeColor?: string;
-    strokeWidth?: number;
-    selected?: boolean;
-    class?: ClassValue;
+  }: MiniMapNodeProps & {
     nodeComponent?: Component<MiniMapNodeProps>;
   } = $props();
+
+  let internalNode = useInternalNode(() => ({ id }));
+
+  let { width, height, x, y } = $derived.by(() => {
+    if (!internalNode.current) {
+      return { width: 0, height: 0, x: 0, y: 0 };
+    }
+
+    const { width, height } = getNodeDimensions(internalNode.current);
+
+    return {
+      width: widthProp ?? width,
+      height: heightProp ?? height,
+      x: xProp ?? internalNode.current.internals.positionAbsolute.x,
+      y: yProp ?? internalNode.current.internals.positionAbsolute.y
+    };
+  });
 </script>
 
 {#if nodeComponent}
   {@const CustomComponent = nodeComponent}
 
   <CustomComponent
+    {id}
     {x}
     {y}
     {width}

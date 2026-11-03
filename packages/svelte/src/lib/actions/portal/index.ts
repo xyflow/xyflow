@@ -1,2 +1,2 @@
-export { portal } from './portal.svelte';
-export { hideOnSSR } from './utils.svelte';
+export { portal } from './portal.svelte.js';
+export { hideOnSSR } from './utils.svelte.js';

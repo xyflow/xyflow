@@ -2,7 +2,7 @@ import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
 
 import { getControlDirection, getDimensionsAfterResize, getResizeDirection } from './utils';
-import { getPointerPosition } from '../utils';
+import { getPointerPosition, isCoordinateExtent } from '../utils';
 import type {
   CoordinateExtent,
   InternalNodeBase,
@@ -80,13 +80,6 @@ export type XYResizerInstance = {
   destroy: () => void;
 };
 
-function nodeToParentExtent(node: NodeBase): CoordinateExtent {
-  return [
-    [0, 0],
-    [node.measured!.width!, node.measured!.height!],
-  ];
-}
-
 function nodeToChildExtent(child: NodeBase, parent: NodeBase, nodeOrigin: NodeOrigin): CoordinateExtent {
   const x = parent.position.x + child.position.x;
   const y = parent.position.y + child.position.y;
@@ -140,10 +133,8 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
     let containerBounds: DOMRect | null = null;
     let childNodes: XYResizerChildChange[] = [];
     let parentNode: InternalNodeBase | undefined = undefined; // Needed to fix expandParent
-    let parentExtent: CoordinateExtent | undefined = undefined;
+    let nodeExtent: CoordinateExtent | undefined = undefined;
     let childExtent: CoordinateExtent | undefined = undefined;
-    // we only want to trigger onResizeEnd if onResize was actually called
-    let resizeDetected = false;
 
     const dragHandler = drag<HTMLDivElement, unknown>()
       .on('start', (event: ResizeDragEvent) => {
@@ -178,9 +169,17 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
 
         parentNode = undefined;
 
+        nodeExtent = isCoordinateExtent(node.extent) ? node.extent : undefined;
+
         if (node.parentId && (node.extent === 'parent' || node.expandParent)) {
           parentNode = nodeLookup.get(node.parentId);
-          parentExtent = parentNode && node.extent === 'parent' ? nodeToParentExtent(parentNode) : undefined;
+        }
+
+        if (parentNode && node.extent === 'parent') {
+          nodeExtent = [
+            [0, 0],
+            [parentNode.measured.width!, parentNode.measured.height!],
+          ];
         }
 
         /*
@@ -241,7 +240,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           params.boundaries,
           params.keepAspectRatio,
           nodeOrigin,
-          parentExtent,
+          nodeExtent,
           childExtent
         );
 
@@ -254,6 +253,16 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         if (!isXPosChange && !isYPosChange && !isWidthChange && !isHeightChange) {
           return;
         }
+
+        const lastValid = {
+          prevValues: { ...prevValues },
+          startX: startValues.x,
+          startY: startValues.y,
+          childNodes: childNodes.map((child) => ({
+            ...child,
+            position: { ...child.position },
+          })),
+        };
 
         if (isXPosChange || isYPosChange || nodeOrigin[0] === 1 || nodeOrigin[1] === 1) {
           change.x = isXPosChange ? x : prevValues.x;
@@ -322,22 +331,21 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         const callResize = shouldResize?.(event, nextValues);
 
         if (callResize === false) {
+          prevValues = lastValid.prevValues;
+          startValues.x = lastValid.startX;
+          startValues.y = lastValid.startY;
+          childNodes.forEach((child, i) => {
+            child.position = lastValid.childNodes[i].position;
+          });
           return;
         }
-        resizeDetected = true;
 
         onResize?.(event, nextValues);
         onChange(change, childChanges);
       })
       .on('end', (event: ResizeDragEvent) => {
-        if (!resizeDetected) {
-          return;
-        }
-
         onResizeEnd?.(event, { ...prevValues });
         onEnd?.({ ...prevValues });
-
-        resizeDetected = false;
       });
     selection.call(dragHandler);
   }

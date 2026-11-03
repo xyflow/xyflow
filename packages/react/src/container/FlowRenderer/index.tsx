@@ -1,13 +1,13 @@
-import { memo, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { useStore } from '../../hooks/useStore';
+import { useOptionsStore } from '../../hooks/useReactFlowStore';
 import { useGlobalKeyHandler } from '../../hooks/useGlobalKeyHandler';
 import { useKeyPress } from '../../hooks/useKeyPress';
 import { GraphViewProps } from '../GraphView';
 import { ZoomPane } from '../ZoomPane';
 import { Pane } from '../Pane';
 import { NodesSelection } from '../../components/NodesSelection';
-import type { ReactFlowState, Node } from '../../types';
+import type { Node } from '../../types';
 
 export type FlowRendererProps<NodeType extends Node = Node> = Omit<
   GraphViewProps<NodeType>,
@@ -29,10 +29,6 @@ export type FlowRendererProps<NodeType extends Node = Node> = Omit<
 };
 
 const win = typeof window !== 'undefined' ? window : undefined;
-
-const selector = (s: ReactFlowState) => {
-  return { nodesSelectionActive: s.nodesSelectionActive, userSelectionActive: s.userSelectionActive };
-};
 
 function FlowRendererComponent<NodeType extends Node = Node>({
   children,
@@ -60,6 +56,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   panOnScrollMode,
   zoomOnDoubleClick,
   panOnDrag: _panOnDrag,
+  autoPanOnSelection,
   defaultViewport,
   translateExtent,
   minZoom,
@@ -72,7 +69,9 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onViewportChange,
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
-  const { nodesSelectionActive, userSelectionActive } = useStore(selector);
+  const nodesSelectionActive = useOptionsStore((s) => s.nodesSelectionActive);
+  const userSelectionActive = useOptionsStore((s) => s.userSelectionActive);
+
   const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: win });
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: win });
 
@@ -90,6 +89,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
       zoomOnScroll={zoomOnScroll}
       zoomOnPinch={zoomOnPinch}
       panOnScroll={panOnScroll}
+      panActivationKeyPressed={panActivationKeyPressed}
       panOnScrollSpeed={panOnScrollSpeed}
       panOnScrollMode={panOnScrollMode}
       zoomOnDoubleClick={zoomOnDoubleClick}
@@ -105,6 +105,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
       onViewportChange={onViewportChange}
       isControlledViewport={isControlledViewport}
       paneClickDistance={paneClickDistance}
+      selectionOnDrag={_selectionOnDrag}
     >
       <Pane
         onSelectionStart={onSelectionStart}
@@ -116,9 +117,11 @@ function FlowRendererComponent<NodeType extends Node = Node>({
         onPaneContextMenu={onPaneContextMenu}
         onPaneScroll={onPaneScroll}
         panOnDrag={panOnDrag}
+        autoPanOnSelection={autoPanOnSelection}
         isSelecting={!!isSelecting}
         selectionMode={selectionMode}
         selectionKeyPressed={selectionKeyPressed}
+        paneClickDistance={paneClickDistance}
         selectionOnDrag={_selectionOnDrag}
       >
         {children}
@@ -136,4 +139,4 @@ function FlowRendererComponent<NodeType extends Node = Node>({
 
 FlowRendererComponent.displayName = 'FlowRenderer';
 
-export const FlowRenderer = memo(FlowRendererComponent) as typeof FlowRendererComponent;
+export const FlowRenderer = FlowRendererComponent;

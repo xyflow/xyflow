@@ -1,4 +1,10 @@
-import type { DefaultEdgeOptions, Node, Edge, EdgeLayouted, InternalNode } from '$lib/types';
+import type {
+  DefaultEdgeOptions,
+  Node,
+  Edge,
+  EdgeLayouted,
+  InternalNode
+} from '#lib/types/index.js';
 import {
   ConnectionMode,
   getEdgePosition,
@@ -7,7 +13,8 @@ import {
   isEdgeVisible,
   type NodeLookup,
   type OnError,
-  type Transform
+  type Transform,
+  type ZIndexMode
 } from '@xyflow/system';
 
 export function getVisibleNodes<NodeType extends Node = Node>(
@@ -35,13 +42,16 @@ export interface EdgeLayoutBaseOptions<NodeType extends Node = Node, EdgeType ex
   onerror: OnError;
 }
 
-export interface EdgeLayoutAllOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge>
-  extends EdgeLayoutBaseOptions<NodeType, EdgeType> {
+export interface EdgeLayoutAllOptions<
+  NodeType extends Node = Node,
+  EdgeType extends Edge = Edge
+> extends EdgeLayoutBaseOptions<NodeType, EdgeType> {
   onlyRenderVisible: never;
   visibleNodes: never;
   transform: never;
   width: never;
   height: never;
+  zIndexMode: never;
 }
 
 export interface EdgeLayoutOnlyVisibleOptions<
@@ -53,11 +63,11 @@ export interface EdgeLayoutOnlyVisibleOptions<
   width: number;
   height: number;
   onlyRenderVisible: true;
+  zIndexMode: ZIndexMode;
 }
 
 export type EdgeLayoutOptions<NodeType extends Node = Node, EdgeType extends Edge = Edge> =
-  | EdgeLayoutAllOptions<NodeType, EdgeType>
-  | EdgeLayoutOnlyVisibleOptions<NodeType, EdgeType>;
+  EdgeLayoutAllOptions<NodeType, EdgeType> | EdgeLayoutOnlyVisibleOptions<NodeType, EdgeType>;
 
 export function getLayoutedEdges<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   options: EdgeLayoutOptions<NodeType, EdgeType>
@@ -70,14 +80,15 @@ export function getLayoutedEdges<NodeType extends Node = Node, EdgeType extends 
     connectionMode,
     onerror,
     onlyRenderVisible,
-    elevateEdgesOnSelect
+    elevateEdgesOnSelect,
+    zIndexMode
   } = options;
   const layoutedEdges = new Map<string, EdgeLayouted<EdgeType>>();
   for (const edge of edges) {
     const sourceNode = nodeLookup.get(edge.source);
     const targetNode = nodeLookup.get(edge.target);
 
-    if (!sourceNode || !targetNode) {
+    if (!sourceNode || !targetNode || sourceNode.hidden || targetNode.hidden) {
       continue;
     }
 
@@ -134,7 +145,8 @@ export function getLayoutedEdges<NodeType extends Node = Node, EdgeType extends 
           zIndex: edge.zIndex ?? defaultEdgeOptions.zIndex,
           sourceNode,
           targetNode,
-          elevateOnSelect: elevateEdgesOnSelect
+          elevateOnSelect: elevateEdgesOnSelect,
+          zIndexMode
         }),
         sourceNode,
         targetNode,

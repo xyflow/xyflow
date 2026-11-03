@@ -1,5 +1,6 @@
 import {
 	type Node,
+	type CoordinateExtent,
 	type ShouldResize,
 	type OnResizeStart,
 	type OnResize,
@@ -18,4 +19,5 @@ export type ResizeNode = Node<{
 	keepAspectRatio?: boolean;
 	label?: string;
 	isVisible?: boolean;
+	extent?: CoordinateExtent;
 }>;

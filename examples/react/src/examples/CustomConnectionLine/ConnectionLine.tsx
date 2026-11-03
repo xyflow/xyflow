@@ -1,6 +1,7 @@
 import { ConnectionLineComponentProps } from '@xyflow/react';
 
-function ConnectionLine({ fromX, fromY, toX, toY }: ConnectionLineComponentProps) {
+function ConnectionLine({ fromX, fromY, toX, toY, pointer }: ConnectionLineComponentProps) {
+  console.log('pointer', pointer);
   return (
     <>
       <path

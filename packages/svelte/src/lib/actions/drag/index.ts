@@ -1,7 +1,7 @@
-import { XYDrag, type NodeBase, type OnDrag, type XYDragParams } from '@xyflow/system';
+import { XYDrag, type NodeBase, type OnDrag } from '@xyflow/system';
 
-import type { SvelteFlowStore } from '$lib/store/types';
-import type { Node, Edge, NodeTargetEventWithPointer } from '$lib/types';
+import type { SvelteFlowStore } from '#lib/store/types.js';
+import type { Node, Edge } from '#lib/types/index.js';
 
 export type UseDragParams<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   store: SvelteFlowStore<NodeType, EdgeType>;
@@ -22,7 +22,7 @@ export default function drag<NodeType extends Node = Node, EdgeType extends Edge
   params: UseDragParams<NodeType, EdgeType>
 ) {
   const { store, onDrag, onDragStart, onDragStop, onNodeMouseDown } = params;
-  const dragInstance = XYDrag({
+  const dragInstance = XYDrag<NodeType, EdgeType>({
     onDrag,
     onDragStart,
     onDragStop,
@@ -53,7 +53,7 @@ export default function drag<NodeType extends Node = Node, EdgeType extends Edge
         panBy: store.panBy
       };
     }
-  } as XYDragParams<NodeTargetEventWithPointer<MouseEvent | TouchEvent, NodeType>>);
+  });
 
   function updateDrag(domNode: Element, params: UseDragParams<NodeType, EdgeType>) {
     if (params.disabled) {
