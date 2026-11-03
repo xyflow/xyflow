@@ -1,10 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { ReactFlow, ReactFlowProvider, Panel, Node, useNodesState, useStore, useStoreApi } from '@xyflow/react';
+import {
+  ReactFlow,
+  ReactFlowProvider,
+  Panel,
+  Node,
+  useNodesState,
+  useNodesStore,
+  useReactFlowStoreApi,
+} from '@xyflow/react';
 
 const edges = [{ id: 'a-b', source: 'a', target: 'b' }];
 
 function MeasurementStatus() {
-  const status = useStore((state) => {
+  const status = useNodesStore((state) => {
     const nodes = [...state.nodeLookup.values()];
     const measured = nodes.filter((node) => node.measured.width && node.measured.height).length;
     const ready = nodes.filter((node) => node.internals.handleBounds).length;
@@ -15,7 +23,7 @@ function MeasurementStatus() {
 }
 
 function MeasurementRace() {
-  const store = useStoreApi();
+  const store = useReactFlowStoreApi();
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [races, setRaces] = useState(0);
   const staleNodes = useRef<Node[]>([]);
@@ -23,12 +31,12 @@ function MeasurementRace() {
 
   useEffect(
     () =>
-      store.subscribe((state) => {
+      store.nodesStore.subscribe((state) => {
         if (pendingRace.current && state.nodeLookup.get('a')?.internals.handleBounds) {
           pendingRace.current = false;
           // Reproduce a pending StoreUpdater effect running after measurement,
           // but before updateNodeInternals delivers its dimensions changes.
-          state.setNodes(staleNodes.current.map((node) => ({ ...node })));
+          store.optionsStore.getState().setNodes(staleNodes.current.map((node) => ({ ...node })));
           setRaces((count) => count + 1);
         }
       }),
