@@ -1,7 +1,6 @@
 import {
   dimensionChange,
   DimensionChange,
-  type HandleConnection,
   infiniteExtent,
   positionChange,
   PositionChange,
@@ -24,6 +23,7 @@ import {
   type NodeLookup,
   type Rect,
   type ParentLookup,
+  type NodeConnection,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
 import {
@@ -686,7 +686,7 @@ export async function panBy({
  */
 function addConnectionToLookup(
   type: 'source' | 'target',
-  connection: HandleConnection,
+  connection: NodeConnection,
   connectionKey: string,
   connectionLookup: ConnectionLookup,
   nodeId: string,
@@ -700,7 +700,7 @@ function addConnectionToLookup(
   let key = nodeId;
   let nodeMap = connectionLookup.get(key);
   if (!nodeMap) {
-    nodeMap = new Map<string, HandleConnection>();
+    nodeMap = new Map<string, NodeConnection>();
     connectionLookup.set(key, nodeMap);
   }
   nodeMap.set(connectionKey, connection);
@@ -708,7 +708,7 @@ function addConnectionToLookup(
   key = `${nodeId}-${type}`;
   let typeMap = connectionLookup.get(key);
   if (!typeMap) {
-    typeMap = new Map<string, HandleConnection>();
+    typeMap = new Map<string, NodeConnection>();
     connectionLookup.set(key, typeMap);
   }
   typeMap.set(connectionKey, connection);
@@ -717,7 +717,7 @@ function addConnectionToLookup(
     key = `${nodeId}-${type}-${handleId}`;
     let handleMap = connectionLookup.get(key);
     if (!handleMap) {
-      handleMap = new Map<string, HandleConnection>();
+      handleMap = new Map<string, NodeConnection>();
       connectionLookup.set(key, handleMap);
     }
     handleMap.set(connectionKey, connection);

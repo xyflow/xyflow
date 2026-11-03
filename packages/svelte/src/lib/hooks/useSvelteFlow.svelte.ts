@@ -15,11 +15,12 @@ import {
   rendererPointToPoint,
   evaluateAbsolutePosition,
   type HandleType,
-  type HandleConnection,
+  type NodeConnection,
   getNodesBounds,
   type NodeChange,
   defaultFitViewPadding,
-  changeParentNode
+  changeParentNode,
+  getConnectionsFromLookup
 } from '@xyflow/system';
 
 import { useSvelteFlowStore } from '#lib/store/index.js';
@@ -268,22 +269,22 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * @returns the bounds of the given nodes
    */
   getNodesBounds: (nodes: (NodeType | InternalNode<NodeType> | string)[]) => Rect;
-  /** Gets all connections for a given handle belonging to a specific node.
-   *
+  /**
+   * Gets all connections to a node. Can be filtered by handle type and id.
    * @param type - handle type 'source' or 'target'
-   * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
+   * @param handleId - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
    * @param nodeId - the node id the handle belongs to
-   * @returns an array with handle connections
+   * @returns an array with node connections
    */
-  getHandleConnections: ({
+  getNodeConnections: ({
     type,
-    id,
+    handleId,
     nodeId
   }: {
-    type: HandleType;
+    type?: HandleType;
     nodeId: string;
-    id?: string | null;
-  }) => HandleConnection[];
+    handleId?: string | null;
+  }) => NodeConnection[];
 } {
   const store = $derived(useSvelteFlowStore<NodeType, EdgeType>());
 
@@ -591,8 +592,8 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     getNodesBounds: (nodes) => {
       return getNodesBounds(nodes, { nodeLookup: store.nodeLookup, nodeOrigin: store.nodeOrigin });
     },
-    getHandleConnections: ({ type, id, nodeId }) =>
-      Array.from(store.connectionLookup.get(`${nodeId}-${type}-${id ?? null}`)?.values() ?? [])
+    getNodeConnections: ({ type, handleId, nodeId }) =>
+      getConnectionsFromLookup(store.connectionLookup, { nodeId, type, handleId })
   };
 }
 

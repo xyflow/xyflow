@@ -1,6 +1,7 @@
 /* eslint-disable svelte/prefer-svelte-reactivity */
 import {
   areConnectionMapsEqual,
+  getConnectionLookupKey,
   handleConnectionChange,
   type NodeConnection,
   type UseNodeConnectionsParams
@@ -45,9 +46,7 @@ export function useNodeConnections(params: () => UseNodeConnectionsParams = () =
 
     const prevConnections = connectionMaps.next;
     const nextConnections =
-      connectionLookup.get(
-        `${nodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
-      ) ?? new Map();
+      connectionLookup.get(getConnectionLookupKey(`${nodeId}`, handleType, handleId)) ?? new Map();
     if (!areConnectionMapsEqual(nextConnections, prevConnections)) {
       connectionMaps = {
         previous: prevConnections,

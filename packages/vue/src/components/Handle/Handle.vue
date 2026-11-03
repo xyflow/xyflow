@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { HandleConnection } from '@xyflow/system';
+import type { NodeConnection } from '@xyflow/system';
 import type { HandleProps } from '../../types';
-import { areConnectionMapsEqual, ConnectionMode, getConnectedEdges, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
+import { areConnectionMapsEqual, ConnectionMode, getConnectedEdges, getConnectionLookupKey, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
 import { computed, getCurrentInstance, onMounted, watch } from 'vue';
 import { useHandle, useInternalNode, useVueFlow, useVueFlowStore } from '../../composables';
 import { handleKey, useConnectionSignals } from '../../composables/useConnectionSignals';
@@ -19,9 +19,9 @@ const {
 
 const emit = defineEmits<{
   /** fired when an edge touching this handle is added, with the newly-connected connections */
-  connect: [connections: HandleConnection[]];
+  connect: [connections: NodeConnection[]];
   /** fired when an edge touching this handle is removed, with the removed connections */
-  disconnect: [connections: HandleConnection[]];
+  disconnect: [connections: NodeConnection[]];
 }>();
 
 const type = computed(() => props.type ?? 'source');
@@ -39,7 +39,7 @@ const internalNode = useInternalNode();
 const connectedEdges = computed(() => (internalNode.value ? getConnectedEdges([internalNode.value], store.edges) : []));
 
 const instance = getCurrentInstance();
-let prevConnections: Map<string, HandleConnection> | null = null;
+let prevConnections: Map<string, NodeConnection> | null = null;
 
 const { handlePointerDown, handleClick } = useHandle({
   nodeId,
@@ -137,10 +137,10 @@ watch(
       return;
     }
 
-    const connections = store.connectionLookup.get(`${nodeId}-${type.value}${handleId ? `-${handleId}` : ''}`);
+    const connections = store.connectionLookup.get(getConnectionLookupKey(nodeId, type.value, handleId));
 
     if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
-      const nextConnections = connections ?? new Map<string, HandleConnection>();
+      const nextConnections = connections ?? new Map<string, NodeConnection>();
       handleConnectionChange(prevConnections, nextConnections, diff => emit('disconnect', diff));
       handleConnectionChange(nextConnections, prevConnections, diff => emit('connect', diff));
     }

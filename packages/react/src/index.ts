@@ -117,7 +117,6 @@ export {
   type SetCenter,
   type SetViewport,
   type FitBounds,
-  type HandleConnection,
   type ZIndexMode,
   type NodeHandle,
   type UseNodeConnectionsParams,

@@ -384,15 +384,15 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   isNodeIntersecting: IsNodeIntersecting<NodeType>;
   /** get a node's connected edges (accepts any nodes — it matches by id; output is the flow's `EdgeType`) */
   getConnectedEdges: (nodes: Node[]) => EdgeType[];
-  /** get all connections of a handle belonging to a node */
-  getHandleConnections: ({
-    id,
+  /** get all connections of a node, optionally filtered by handle type and handle id */
+  getNodeConnections: ({
     type,
+    handleId,
     nodeId,
   }: {
-    id?: string | null;
-    type: HandleType;
+    type?: HandleType;
     nodeId: string;
+    handleId?: string | null;
   }) => NodeConnection[];
   /** pan the viewport; return indicates if a transform has happened or not */
   panBy: (delta: XYPosition) => Promise<boolean>;
