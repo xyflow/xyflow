@@ -140,7 +140,7 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       return false;
     }
 
-    await currentPanZoom.setViewport(
+    return currentPanZoom.setViewport(
       {
         x: store.width / 2 - x * nextZoom,
         y: store.height / 2 - y * nextZoom,
@@ -148,8 +148,6 @@ export function createStore<NodeType extends Node = Node, EdgeType extends Edge 
       },
       { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
     );
-
-    return true;
   }
 
   async function zoomBy(factor: number, options?: ViewportHelperFunctionOptions) {

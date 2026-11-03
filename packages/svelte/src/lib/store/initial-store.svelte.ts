@@ -126,6 +126,8 @@ function getInitialViewport<NodeType extends Node = Node>(
 export function getInitialStore<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
   signals: StoreSignals<NodeType, EdgeType>
 ) {
+  let latestFitViewId = 0;
+
   // We use a class here, because Svelte adds getters & setter for us.
   // Inline classes have some performance implications but we just call it once (max twice).
   class SvelteFlowStore {
@@ -481,7 +483,9 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         return;
       }
 
-      await fitViewport(
+      const fitViewId = ++latestFitViewId;
+
+      const ended = await fitViewport(
         {
           nodes: this.nodeLookup,
           width: this.width,
@@ -493,7 +497,14 @@ export function getInitialStore<NodeType extends Node = Node, EdgeType extends E
         this.fitViewOptions
       );
 
-      this.fitViewResolver?.resolve(true);
+      /*
+       * A newer fitView started while this one was running and settles the shared promise instead
+       */
+      if (fitViewId !== latestFitViewId) {
+        return;
+      }
+
+      this.fitViewResolver?.resolve(ended);
       /**
        * wait for the fitViewport to resolve before deleting the resolver,
        * we want to reuse the old resolver if the user calls fitView again in the mean time

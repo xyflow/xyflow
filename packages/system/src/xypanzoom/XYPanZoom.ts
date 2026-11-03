@@ -106,10 +106,9 @@ export function XYPanZoom({
   async function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).transform(
-          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
-          transform
-        );
+        d3ZoomInstance
+          ?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom)
+          .transform(getD3Transition(d3Selection, options?.duration, options?.ease, resolve), transform);
       });
     }
 
@@ -250,9 +249,7 @@ export function XYPanZoom({
   async function setViewport(viewport: Viewport, options?: PanZoomTransformOptions) {
     const nextTransform = viewportToTransform(viewport);
 
-    await setTransform(nextTransform, options);
-
-    return nextTransform;
+    return setTransform(nextTransform, options);
   }
 
   function syncViewport(viewport: Viewport) {
@@ -280,10 +277,9 @@ export function XYPanZoom({
   async function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleTo(
-          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
-          zoom
-        );
+        d3ZoomInstance
+          ?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom)
+          .scaleTo(getD3Transition(d3Selection, options?.duration, options?.ease, resolve), zoom);
       });
     }
 
@@ -293,10 +289,9 @@ export function XYPanZoom({
   async function scaleBy(factor: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleBy(
-          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
-          factor
-        );
+        d3ZoomInstance
+          ?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom)
+          .scaleBy(getD3Transition(d3Selection, options?.duration, options?.ease, resolve), factor);
       });
     }
 

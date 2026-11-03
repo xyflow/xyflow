@@ -31,14 +31,30 @@ export const isRightClickPan = (panOnDrag: boolean | number[], usedButton: numbe
 // taken from d3-ease: https://github.com/d3/d3-ease/blob/main/src/cubic.js
 const defaultEase = (t: number) => ((t *= 2) <= 1 ? t * t * t : (t -= 2) * t * t + 2) / 2;
 
-export const getD3Transition = (selection: D3SelectionInstance, duration = 0, ease = defaultEase, onEnd = () => {}) => {
+export const getD3Transition = (
+  selection: D3SelectionInstance,
+  duration = 0,
+  ease = defaultEase,
+  onEnd: (ended: boolean) => void = () => {}
+) => {
   const hasDuration = typeof duration === 'number' && duration > 0;
 
   if (!hasDuration) {
-    onEnd();
+    onEnd(true);
   }
 
-  return hasDuration ? selection.transition().duration(duration).ease(ease).on('end', onEnd) : selection;
+  /*
+   * A user gesture or another viewport update stops a running transition with "interrupt"
+   * (or with "cancel" if it has not started yet) and the transition never sends "end"
+   */
+  return hasDuration
+    ? selection
+        .transition()
+        .duration(duration)
+        .ease(ease)
+        .on('end', () => onEnd(true))
+        .on('interrupt cancel', () => onEnd(false))
+    : selection;
 };
 
 export const wheelDelta = (event: WheelEvent) => {

@@ -60,7 +60,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
           return false;
         }
 
-        await panZoom.setViewport(
+        return panZoom.setViewport(
           {
             x: viewport.x ?? state.transform[0],
             y: viewport.y ?? state.transform[1],
@@ -68,8 +68,6 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
           },
           options,
         );
-
-        return true;
       },
       getViewport: () => ({
         x: state.transform[0],
@@ -107,9 +105,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
         const centerX = state.dimensions.width / 2 - x * nextZoom;
         const centerY = state.dimensions.height / 2 - y * nextZoom;
 
-        await panZoom.setViewport({ x: centerX, y: centerY, zoom: nextZoom }, options);
-
-        return true;
+        return panZoom.setViewport({ x: centerX, y: centerY, zoom: nextZoom }, options);
       },
       fitBounds: async (bounds, options) => {
         if (!panZoom) {
@@ -125,9 +121,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
           options?.padding ?? defaultFitViewPadding,
         );
 
-        await panZoom.setViewport({ x, y, zoom }, options);
-
-        return true;
+        return panZoom.setViewport({ x, y, zoom }, options);
       },
       screenToFlowPosition: (position) => {
         if (state.vueFlowRef) {

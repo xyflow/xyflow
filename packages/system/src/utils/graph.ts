@@ -397,13 +397,11 @@ export async function fitViewport<
     options?.padding ?? defaultFitViewPadding
   );
 
-  await panZoom.setViewport(viewport, {
+  return panZoom.setViewport(viewport, {
     duration: options?.duration,
     ease: options?.ease,
     interpolate: options?.interpolate,
   });
-
-  return true;
 }
 
 /**
