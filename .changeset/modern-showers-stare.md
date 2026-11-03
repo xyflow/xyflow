@@ -4,5 +4,5 @@
 "@xyflow/system": patch
 ---
 
-Performance: Prevent recalculating style when changing cursor on pane
+Improve panning performance by avoiding a full style recalculation when the pane cursor changes.
   
