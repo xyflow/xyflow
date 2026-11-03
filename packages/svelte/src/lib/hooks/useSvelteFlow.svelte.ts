@@ -286,7 +286,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
           nodeToUse.measured,
           nodeToUse.parentId,
           store.nodeLookup,
-          store.nodeOrigin
+          nodeToUse.origin ?? store.nodeOrigin
         )
       : nodeToUse.position;
 

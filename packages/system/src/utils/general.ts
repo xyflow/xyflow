@@ -373,9 +373,10 @@ export function nodeHasDimensions<NodeType extends NodeBase = NodeBase>(node: No
  *
  * @internal
  * @param position
+ * @param dimensions
  * @param parentId
  * @param nodeLookup
- * @param nodeOrigin
+ * @param nodeOrigin - the effective origin of the node itself (`node.origin ?? flow nodeOrigin`)
  * @returns an internal node with an absolute position
  */
 export function evaluateAbsolutePosition(
@@ -389,9 +390,14 @@ export function evaluateAbsolutePosition(
 
   const parent = nodeLookup.get(parentId);
   if (parent) {
-    const origin = parent.origin || nodeOrigin;
-    positionAbsolute.x += parent.internals.positionAbsolute.x - (dimensions.width ?? 0) * origin[0];
-    positionAbsolute.y += parent.internals.positionAbsolute.y - (dimensions.height ?? 0) * origin[1];
+    /*
+     * A child position is relative to the top left corner of its parent, but it is
+     * expressed in the coordinate system of the child's own origin. We therefore have
+     * to subtract the child's dimensions scaled by the child's origin to get the
+     * absolute top left position (same rule as `getNodePositionWithOrigin`).
+     */
+    positionAbsolute.x += parent.internals.positionAbsolute.x - (dimensions.width ?? 0) * nodeOrigin[0];
+    positionAbsolute.y += parent.internals.positionAbsolute.y - (dimensions.height ?? 0) * nodeOrigin[1];
   }
 
   return positionAbsolute;

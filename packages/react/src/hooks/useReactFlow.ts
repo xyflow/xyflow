@@ -81,7 +81,13 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
       const nodeToUse = isNode<NodeType>(node) ? node : nodeLookup.get(node.id)!;
       const position = nodeToUse.parentId
-        ? evaluateAbsolutePosition(nodeToUse.position, nodeToUse.measured, nodeToUse.parentId, nodeLookup, nodeOrigin)
+        ? evaluateAbsolutePosition(
+            nodeToUse.position,
+            nodeToUse.measured,
+            nodeToUse.parentId,
+            nodeLookup,
+            nodeToUse.origin ?? nodeOrigin
+          )
         : nodeToUse.position;
 
       const nodeWithPosition = {
