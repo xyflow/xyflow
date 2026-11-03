@@ -73,7 +73,9 @@
     cursor: grabbing;
   }
 
-  &.selection {
+  /* selection uses pointer capture on the pane, so the cursor has to be on the pane itself */
+  &.selection,
+  &.selection::before {
     cursor: pointer;
   }
 }
