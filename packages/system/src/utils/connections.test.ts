@@ -76,6 +76,26 @@ describe('connection lookup snapshots', () => {
     expect(disconnected).toHaveBeenCalledWith([expect.objectContaining({ edgeId: 'old' })]);
   });
 
+  it('detects an edge reversing direction while keeping its id and handles', () => {
+    const original = edge('ab', 'b');
+    const { connections, edgesById } = createLookup([original]);
+    const previous = connections.get('a')!;
+
+    updateConnectionLookup(connections, edgesById, [
+      { ...original, source: 'b', sourceHandle: 'in', target: 'a', targetHandle: 'out' },
+    ]);
+    const next = connections.get('a')!;
+
+    expect([...next.keys()]).toEqual([...previous.keys()]);
+    expect(areConnectionMapsEqual(previous, next)).toBe(false);
+    const connected = vi.fn();
+    const disconnected = vi.fn();
+    handleConnectionChange(next, previous, connected);
+    handleConnectionChange(previous, next, disconnected);
+    expect(connected).toHaveBeenCalledWith([expect.objectContaining({ edgeId: 'ab', source: 'b', target: 'a' })]);
+    expect(disconnected).toHaveBeenCalledWith([expect.objectContaining({ edgeId: 'ab', source: 'a', target: 'b' })]);
+  });
+
   it("removes all old connections before reconnecting edges to each other's endpoints", () => {
     const { connections, edgesById } = createLookup([edge('first', 'b'), edge('second', 'c')]);
     updateConnectionLookup(connections, edgesById, [edge('first', 'c'), edge('second', 'b')]);

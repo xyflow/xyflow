@@ -17,7 +17,7 @@ export function areConnectionMapsEqual(a?: Map<string, HandleConnection>, b?: Ma
   }
 
   for (const [key, connection] of a) {
-    if (b.get(key)?.edgeId !== connection.edgeId) {
+    if (b.get(key) !== connection) {
       return false;
     }
   }
@@ -42,7 +42,7 @@ export function handleConnectionChange(
   const diff: HandleConnection[] = [];
 
   a.forEach((connection, key) => {
-    if (b?.get(key)?.edgeId !== connection.edgeId) {
+    if (b?.get(key) !== connection) {
       diff.push(connection);
     }
   });
