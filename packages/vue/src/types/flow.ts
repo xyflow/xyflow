@@ -208,7 +208,8 @@ export interface VueFlowProps<NodeType extends Node = Node, EdgeType extends Edg
   selectionKeyCode?: KeyFilter | null;
   /**
    * Draw a selection box on a plain pane drag (no key held). Pair it with `panOnDrag` set to a non-left
-   * button (e.g. `[1, 2]`) or `false` so a left-drag selects instead of panning.
+   * button (e.g. `[1, 2]`) or `false` so a left-drag selects instead of panning. Has no effect when the left
+   * mouse button pans the viewport (`panOnDrag` is `true` or includes `0`).
    * @default false
    */
   selectionOnDrag?: boolean;
@@ -379,10 +380,13 @@ export interface VueFlowProps<NodeType extends Node = Node, EdgeType extends Edg
    */
   panOnScrollMode?: PanOnScrollMode;
   /**
-   * Distance that the mouse can move between mousedown/up that will trigger a click
-   * @default 0
+   * Distance in pixels the pointer has to move before dragging the pane starts panning or a selection.
+   * If the pointer moves less, the gesture is treated as a click: `paneClick` (or `paneContextMenu`
+   * when panning with the right mouse button) is emitted and the viewport does not move.
+   * This applies to every mouse button that is enabled via `panOnDrag` and to `selectionOnDrag`.
+   * @default 1
    */
-  paneClickDistance?: number;
+  paneDragThreshold?: number;
   /**
    * Controls if the viewport should zoom by double-clicking somewhere on the flow.
    * @default true

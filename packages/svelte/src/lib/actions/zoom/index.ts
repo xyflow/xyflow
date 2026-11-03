@@ -34,8 +34,7 @@ type ZoomParams = {
   noWheelClassName: string;
   userSelectionActive: boolean;
   lib: string;
-  paneClickDistance: number;
-  selectionOnDrag?: boolean;
+  paneDragThreshold: number;
   onTransformChange: (transform: Transform) => void;
   onDraggingChange: (dragging: boolean) => void;
   connectionInProgress: boolean;

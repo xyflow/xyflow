@@ -250,8 +250,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     state.nodeExtent = nodeExtent;
   };
 
-  const setPaneClickDistance: Actions<NodeType>['setPaneClickDistance'] = (clickDistance) => {
-    state.paneClickDistance = clickDistance;
+  const setPaneDragThreshold: Actions<NodeType>['setPaneDragThreshold'] = (paneDragThreshold) => {
+    state.paneDragThreshold = paneDragThreshold;
   };
 
   const setInteractive: Actions<NodeType>['setInteractive'] = (isInteractive) => {
@@ -746,7 +746,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     setMaxZoom,
     setTranslateExtent,
     setNodeExtent,
-    setPaneClickDistance,
+    setPaneDragThreshold,
     removeSelectedNodes,
     removeSelectedEdges,
     resetSelectedElements,

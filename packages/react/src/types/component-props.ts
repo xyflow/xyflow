@@ -257,10 +257,13 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /** This event handler gets called when mouse leaves the pane. */
   onPaneMouseLeave?: (event: ReactMouseEvent) => void;
   /**
-   * Distance that the mouse can move between mousedown/up that will trigger a click.
-   * @default 0
+   * Distance in pixels the pointer has to move before dragging the pane starts panning or a selection.
+   * If the pointer moves less, the gesture is treated as a click: `onPaneClick` (or `onPaneContextMenu`
+   * when panning with the right mouse button) is called and the viewport does not move.
+   * This applies to every mouse button that is enabled via `panOnDrag` and to `selectionOnDrag`.
+   * @default 1
    */
-  paneClickDistance?: number;
+  paneDragThreshold?: number;
   /**
    * This handler is called before nodes or edges are deleted, allowing the deletion to be aborted
    * by returning `false` or modified by returning updated nodes and edges.
@@ -335,6 +338,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   selectionKeyCode?: KeyCode | null;
   /**
    * Select multiple elements with a selection box, without pressing down `selectionKey`.
+   * Has no effect when the left mouse button pans the viewport (`panOnDrag` is `true` or includes `0`).
    * @default false
    */
   selectionOnDrag?: boolean;

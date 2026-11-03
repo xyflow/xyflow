@@ -25,6 +25,9 @@ export const isWrappedWithClass = (event: D3ZoomInputEvent, className: string | 
   return target instanceof Element && !!target.closest(`.${className}`);
 };
 
+export const isLeftClickPan = (panOnDrag: boolean | number[]) =>
+  panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(0));
+
 export const isRightClickPan = (panOnDrag: boolean | number[], usedButton: number) =>
   usedButton === 2 && Array.isArray(panOnDrag) && panOnDrag.includes(2);
 

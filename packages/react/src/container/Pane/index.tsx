@@ -33,7 +33,7 @@ type PaneProps = {
   isSelecting: boolean;
   selectionKeyPressed: boolean;
   children: ReactNode;
-  paneClickDistance: number;
+  paneDragThreshold: number;
 } & Partial<
   Pick<
     ReactFlowProps,
@@ -70,7 +70,7 @@ export function Pane({
   selectionMode = SelectionMode.Full,
   panOnDrag,
   autoPanOnSelection,
-  paneClickDistance,
+  paneDragThreshold,
   selectionOnDrag,
   onSelectionStart,
   onSelectionEnd,
@@ -313,7 +313,7 @@ export function Pane({
     const screenStart = rendererPointToPoint({ x: userSelectionRect.startX, y: userSelectionRect.startY }, transform);
 
     if (!selectionInProgress.current) {
-      const requiredDistance = selectionKeyPressed ? 0 : paneClickDistance;
+      const requiredDistance = selectionKeyPressed ? 0 : paneDragThreshold;
       const distance = Math.hypot(mouseX - screenStart.x, mouseY - screenStart.y);
       if (distance <= requiredDistance) {
         return;

@@ -48,7 +48,7 @@ const {
   connection,
   panOnDrag,
   selectionOnDrag,
-  paneClickDistance,
+  paneDragThreshold,
   autoPanOnSelection,
   autoPanSpeed,
 } = storeToRefs(useVueFlowStore());
@@ -121,6 +121,14 @@ function onClick(event: MouseEvent) {
   resetSelectedElements();
 
   nodesSelectionActive.value = false;
+}
+
+// swallow the click that follows a selection drag
+function onClickCapture(event: MouseEvent) {
+  if (selectionInProgress) {
+    event.stopPropagation();
+    selectionInProgress = false;
+  }
 }
 
 function onContextMenu(event: MouseEvent) {
@@ -289,7 +297,7 @@ function onPointerMove(event: PointerEvent) {
       { x: userSelectionRect.value.startX, y: userSelectionRect.value.startY },
       transform.value,
     );
-    const requiredDistance = selectionKeyPressed ? 0 : paneClickDistance.value;
+    const requiredDistance = selectionKeyPressed ? 0 : paneDragThreshold.value;
     const distance = Math.hypot(mouseX - screenStart.x, mouseY - screenStart.y);
 
     if (distance <= requiredDistance) {
@@ -359,6 +367,7 @@ export default {
     class="vue-flow__pane vue-flow__container"
     :class="{ selection: isSelecting }"
     @click="(event) => (hasActiveSelection ? undefined : wrapHandler(onClick, container)(event))"
+    @click.capture="(event) => (hasActiveSelection ? onClickCapture(event) : undefined)"
     @contextmenu="wrapHandler(onContextMenu, container)($event)"
     @wheel.passive="wrapHandler(onWheel, container)($event)"
     @pointerenter="(event) => (hasActiveSelection ? undefined : emits.paneMouseEnter(event))"

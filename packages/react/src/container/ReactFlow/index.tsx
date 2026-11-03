@@ -103,7 +103,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
     onPaneMouseLeave,
     onPaneScroll,
     onPaneContextMenu,
-    paneClickDistance = 1,
+    paneDragThreshold = 1,
     children,
     onReconnect,
     onReconnectStart,
@@ -287,7 +287,7 @@ function ReactFlow<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
           onPaneMouseLeave={onPaneMouseLeave}
           onPaneScroll={onPaneScroll}
           onPaneContextMenu={onPaneContextMenu}
-          paneClickDistance={paneClickDistance}
+          paneDragThreshold={paneDragThreshold}
           onSelectionContextMenu={onSelectionContextMenu}
           onSelectionStart={onSelectionStart}
           onSelectionEnd={onSelectionEnd}

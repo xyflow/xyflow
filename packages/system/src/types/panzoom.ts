@@ -43,8 +43,7 @@ export type PanZoomUpdateOptions = {
   lib: string;
   onTransformChange: OnTransformChange;
   connectionInProgress: boolean;
-  paneClickDistance: number;
-  selectionOnDrag?: boolean;
+  paneDragThreshold: number;
 };
 
 export type PanZoomInstance = {
@@ -62,5 +61,4 @@ export type PanZoomInstance = {
   scaleTo: (scale: number, options?: PanZoomTransformOptions) => Promise<boolean>;
   scaleBy: (factor: number, options?: PanZoomTransformOptions) => Promise<boolean>;
   syncViewport: (viewport: Viewport) => void;
-  setClickDistance: (distance: number) => void;
 };

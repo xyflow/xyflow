@@ -42,7 +42,7 @@
 	multiSelectionKey={['Meta', 'Shift']}
 	selectionOnDrag
 	panOnScroll
-	paneClickDistance={100}
+	paneDragThreshold={100}
 	{panOnDrag}
 	{onmovestart}
 	{onmove}

@@ -25,12 +25,23 @@ import { transition } from 'd3-transition';
 
 export type ZoomPanValues = {
   isZoomingOrPanning: boolean;
-  usedRightMouseButton: boolean;
   prevViewport: Viewport;
   mouseButton: number;
   timerId: ReturnType<typeof setTimeout> | undefined;
   panScrollTimeout: ReturnType<typeof setTimeout> | undefined;
   isPanScrolling: boolean;
+  // only set for mouse drags; the drag starts once the pointer moved further than paneDragThreshold
+  mouseDrag: {
+    startX: number;
+    startY: number;
+    startTransform: ZoomTransform;
+    thresholdCrossed: boolean;
+    // d3-zoom reuses the last mousemove as sourceEvent for programmatic changes during the gesture
+    lastMouseMove: MouseEvent | null;
+    // onPanZoomStart was called (can happen before the threshold is crossed, e.g. by a wheel zoom)
+    moveStarted: boolean;
+    dragging: boolean;
+  } | null;
 };
 
 export function XYPanZoom({
@@ -46,12 +57,12 @@ export function XYPanZoom({
 }: PanZoomParams): PanZoomInstance {
   const zoomPanValues: ZoomPanValues = {
     isZoomingOrPanning: false,
-    usedRightMouseButton: false,
     prevViewport: { x: 0, y: 0, zoom: 0 },
     mouseButton: 0,
     timerId: undefined,
     panScrollTimeout: undefined,
     isPanScrolling: false,
+    mouseDrag: null,
   };
   const bbox = domNode.getBoundingClientRect();
 
@@ -135,8 +146,7 @@ export function XYPanZoom({
     lib,
     onTransformChange,
     connectionInProgress,
-    paneClickDistance,
-    selectionOnDrag,
+    paneDragThreshold,
   }: PanZoomUpdateOptions) {
     if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
       // pause zooming during a user selection
@@ -145,9 +155,8 @@ export function XYPanZoom({
 
     const isPanOnScroll = panOnScroll && !zoomActivationKeyPressed && !userSelectionActive;
 
-    d3ZoomInstance.clickDistance(
-      selectionOnDrag ? Infinity : !isNumeric(paneClickDistance) || paneClickDistance < 0 ? 0 : paneClickDistance
-    );
+    const dragThreshold = isNumeric(paneDragThreshold) && paneDragThreshold > 0 ? paneDragThreshold : 0;
+    d3ZoomInstance.clickDistance(dragThreshold);
 
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
@@ -173,6 +182,7 @@ export function XYPanZoom({
     // pan zoom start
     const startHandler = createPanZoomStartHandler({
       zoomPanValues,
+      paneDragThreshold: dragThreshold,
       onDraggingChange,
       onPanZoomStart,
     });
@@ -181,9 +191,11 @@ export function XYPanZoom({
     // pan zoom
     const panZoomHandler = createPanZoomHandler({
       zoomPanValues,
-      panOnDrag,
-      onPaneContextMenu: !!onPaneContextMenu,
+      d3Selection,
+      paneDragThreshold: dragThreshold,
+      onPanZoomStart,
       onPanZoom,
+      onDraggingChange,
       onTransformChange,
     });
     d3ZoomInstance.on('zoom', panZoomHandler);
@@ -311,11 +323,6 @@ export function XYPanZoom({
     d3ZoomInstance?.translateExtent(translateExtent);
   }
 
-  function setClickDistance(distance: number) {
-    const validDistance = !isNumeric(distance) || distance < 0 ? 0 : distance;
-    d3ZoomInstance?.clickDistance(validDistance);
-  }
-
   return {
     update,
     destroy,
@@ -327,6 +334,5 @@ export function XYPanZoom({
     setScaleExtent,
     setTranslateExtent,
     syncViewport,
-    setClickDistance,
   };
 }

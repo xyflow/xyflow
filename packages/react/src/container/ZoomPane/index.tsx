@@ -36,8 +36,7 @@ export function ZoomPane({
   noPanClassName,
   onViewportChange,
   isControlledViewport,
-  paneClickDistance,
-  selectionOnDrag,
+  paneDragThreshold,
 }: ZoomPaneProps) {
   const { optionsStore, viewportStore } = useReactFlowStoreApi();
   const userSelectionActive = useOptionsStore((s) => s.userSelectionActive);
@@ -129,8 +128,7 @@ export function ZoomPane({
       lib: 'react',
       onTransformChange,
       connectionInProgress,
-      selectionOnDrag,
-      paneClickDistance,
+      paneDragThreshold,
     });
   }, [
     onPaneContextMenu,
@@ -149,8 +147,7 @@ export function ZoomPane({
     noWheelClassName,
     onTransformChange,
     connectionInProgress,
-    selectionOnDrag,
-    paneClickDistance,
+    paneDragThreshold,
   ]);
 
   return (

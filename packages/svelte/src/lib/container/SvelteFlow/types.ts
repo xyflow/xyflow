@@ -166,10 +166,13 @@ export type SvelteFlowProps<
      */
     nodeDragThreshold?: number;
     /**
-     * Distance that the mouse can move between mousedown/up that will trigger a click
-     * @default 0
+     * Distance in pixels the pointer has to move before dragging the pane starts panning or a selection.
+     * If the pointer moves less, the gesture is treated as a click: `onpaneclick` (or `onpanecontextmenu`
+     * when panning with the right mouse button) is called and the viewport does not move.
+     * This applies to every mouse button that is enabled via `panOnDrag` and to `selectionOnDrag`.
+     * @default 1
      */
-    paneClickDistance?: number;
+    paneDragThreshold?: number;
     /**
      * The threshold in pixels that the mouse must move before a connection line starts to drag.
      * This is useful to prevent accidental connections when clicking on a handle.
@@ -334,6 +337,7 @@ export type SvelteFlowProps<
     panOnDrag?: boolean | number[];
     /**
      * Select multiple elements with a selection box, without pressing down selectionKey.
+     * Has no effect when the left mouse button pans the viewport (`panOnDrag` is `true` or includes `0`).
      * @default false
      */
     selectionOnDrag?: boolean;

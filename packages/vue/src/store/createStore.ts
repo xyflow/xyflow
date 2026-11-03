@@ -65,7 +65,6 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
   defineControlled(state, 'minZoom', v => state.panZoom?.setScaleExtent([v, state.maxZoom]));
   defineControlled(state, 'maxZoom', v => state.panZoom?.setScaleExtent([state.minZoom, v]));
   defineControlled(state, 'translateExtent', v => state.panZoom?.setTranslateExtent(v));
-  defineControlled(state, 'paneClickDistance', v => state.panZoom?.setClickDistance(v));
   defineControlled(state, 'ariaLabelConfig', () => {}, mergeAriaLabelConfig);
   defineControlled(state, 'nodeExtent', () => commit.commitNodes(state.nodes, false));
 
