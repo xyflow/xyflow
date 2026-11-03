@@ -73,7 +73,7 @@
     cursor: grabbing;
   }
 
-  &.selection::before {
+  &.selection {
     cursor: pointer;
   }
 }
