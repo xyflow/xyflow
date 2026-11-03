@@ -64,6 +64,7 @@ import ZIndexMode from '../examples/ZIndexMode';
 import Middlewares from '../examples/Middlewares';
 import NodeSelectionBug from '../examples/NodeSelectionBug';
 import Remount from '../examples/Remount';
+import MeasurementRace from '../examples/MeasurementRace';
 
 export interface IRoute {
   name: string;
@@ -241,6 +242,11 @@ const routes: IRoute[] = [
     name: 'Layouting',
     path: 'layouting',
     component: Layouting,
+  },
+  {
+    name: 'Measurement Race',
+    path: 'measurement-race',
+    component: MeasurementRace,
   },
   {
     name: 'Middlewares',
