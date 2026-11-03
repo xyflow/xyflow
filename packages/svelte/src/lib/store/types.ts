@@ -58,7 +58,6 @@ export type SvelteFlowRestProps<NodeType extends Node = Node, EdgeType extends E
   | 'multiSelectionKey'
   | 'zoomActivationKey'
   | 'paneClickDistance'
-  | 'nodeClickDistance'
   | 'onMoveStart'
   | 'onMoveEnd'
   | 'onMove'

@@ -15,6 +15,10 @@ export const routes: RouterOptions['routes'] = [
     component: () => import('./src/Basic/Basic.vue'),
   },
   {
+    path: '/drag-threshold',
+    component: () => import('./src/DragThreshold/DragThresholdExample.vue'),
+  },
+  {
     path: '/basic-options-api',
     component: () => import('./src/Basic/BasicOptionsAPI.vue'),
   },

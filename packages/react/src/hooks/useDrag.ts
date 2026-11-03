@@ -11,7 +11,6 @@ type UseDragParams = {
   handleSelector?: string;
   nodeId?: string;
   isSelectable?: boolean;
-  nodeClickDistance?: number;
 };
 
 /**
@@ -26,7 +25,6 @@ export function useDrag({
   handleSelector,
   nodeId,
   isSelectable,
-  nodeClickDistance,
 }: UseDragParams) {
   const { optionsStore, viewportStore, nodesStore, edgesStore } = useReactFlowStoreApi();
   const [dragging, setDragging] = useState<boolean>(false);
@@ -77,9 +75,8 @@ export function useDrag({
       domNode: nodeRef.current,
       isSelectable,
       nodeId,
-      nodeClickDistance,
     });
-  }, [noDragClassName, handleSelector, disabled, isSelectable, nodeRef, nodeId, nodeClickDistance]);
+  }, [noDragClassName, handleSelector, disabled, isSelectable, nodeRef, nodeId]);
 
   return dragging;
 }

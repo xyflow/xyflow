@@ -41,7 +41,6 @@ export function useState<NodeType extends Node = Node, EdgeType extends Edge = E
     panOnScrollSpeed: 0.5,
     panOnScrollMode: PanOnScrollMode.Free,
     paneClickDistance: 0,
-    nodeClickDistance: 0,
     panOnDrag: true,
     reconnectRadius: 10,
     onlyRenderVisibleElements: false,

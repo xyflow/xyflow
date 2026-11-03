@@ -150,7 +150,6 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   panOnScrollSpeed: number;
   panOnScrollMode: PanOnScrollMode;
   paneClickDistance: number;
-  nodeClickDistance: number;
   zoomOnDoubleClick: boolean;
   preventScrolling: boolean;
   paneDragging: boolean;
