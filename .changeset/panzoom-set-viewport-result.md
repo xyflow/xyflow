@@ -2,4 +2,4 @@
 "@xyflow/system": major
 ---
 
-`PanZoomInstance.setViewport` resolves with whether the transition ended instead of with the target transform
+Resolve `PanZoomInstance.setViewport` with `true` when the transition finishes and `false` when it gets interrupted.
