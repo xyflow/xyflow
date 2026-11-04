@@ -51,7 +51,7 @@ export type PanZoomInstance = {
   update: (params: PanZoomUpdateOptions) => void;
   destroy: () => void;
   getViewport: () => Viewport;
-  setViewport: (viewport: Viewport, options?: PanZoomTransformOptions) => Promise<ZoomTransform | undefined>;
+  setViewport: (viewport: Viewport, options?: PanZoomTransformOptions) => Promise<boolean>;
   setViewportConstrained: (
     viewport: Viewport,
     extent: CoordinateExtent,

@@ -84,15 +84,7 @@ export type Connection = {
 };
 
 /**
- * The `HandleConnection` type is an extension of a basic [Connection](/api-reference/types/connection) that includes the `edgeId`.
- */
-export type HandleConnection = Connection & {
-  edgeId: string;
-};
-
-/**
  * The `NodeConnection` type is an extension of a basic [Connection](/api-reference/types/connection) that includes the `edgeId`.
- *
  */
 export type NodeConnection = Connection & {
   edgeId: string;
@@ -102,9 +94,9 @@ export type UseNodeConnectionsParams = {
   /** ID of the node, filled in automatically if used inside custom node. */
   id?: string;
   /** Gets called when a connection is established. */
-  onConnect?: (connections: HandleConnection[]) => void;
+  onConnect?: (connections: NodeConnection[]) => void;
   /** Gets called when a connection is removed. */
-  onDisconnect?: (connections: HandleConnection[]) => void;
+  onDisconnect?: (connections: NodeConnection[]) => void;
 } & (
   | {
       /** What type of handle connections do you want to observe? */
@@ -377,7 +369,7 @@ export type UpdateConnection<NodeType extends InternalNodeBase = InternalNodeBas
 
 export type ColorMode = 'light' | 'dark';
 
-export type ConnectionLookup = Map<string, Map<string, HandleConnection>>;
+export type ConnectionLookup = Map<string, Map<string, NodeConnection>>;
 
 export type OnBeforeDeleteBase<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase> = ({
   nodes,

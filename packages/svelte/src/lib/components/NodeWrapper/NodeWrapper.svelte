@@ -23,7 +23,6 @@
     store = $bindable(),
     node,
     resizeObserver,
-    nodeClickDistance,
     onnodeclick,
     onnodedrag,
     onnodedragstart,
@@ -238,7 +237,6 @@
       disabled: !draggable,
       handleSelector: dragHandle,
       noDragClass: store.noDragClass,
-      nodeClickDistance,
       onNodeMouseDown: store.handleNodeSelection,
       onDrag: (event, _, targetNode, nodes) => {
         onnodedrag?.({ event, targetNode: targetNode as NodeType, nodes: nodes as NodeType[] });

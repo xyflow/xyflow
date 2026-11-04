@@ -3,7 +3,7 @@ import cc from 'classcat';
 import { getInternalNodesBounds, getBoundsOfRects, XYMinimap, type Rect, type XYMinimapInstance } from '@xyflow/system';
 
 import {
-  useCustomDiff,
+  useEqualSelector,
   useOptionsStore,
   useNodesStore,
   useViewportStore,
@@ -105,7 +105,7 @@ function MiniMapComponent<NodeType extends Node = Node>({
 
   const viewport = useViewportStore(useShallow(viewportSelector));
   const { viewBB, boundingRect, flowWidth, flowHeight } = useNodesStore(
-    useCustomDiff(
+    useEqualSelector(
       useCallback((s: NodesStore) => selector(s, viewport), [viewport]),
       areEqual
     )

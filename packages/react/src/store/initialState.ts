@@ -157,6 +157,36 @@ const getInitialState = ({
       onNodesChangeMiddlewareMap: new Map(),
       onEdgesChangeMiddlewareMap: new Map(),
       pubSub: new PubSub(),
+
+      defaultEdgeOptions: undefined,
+
+      onNodesDelete: undefined,
+      onEdgesDelete: undefined,
+      onDelete: undefined,
+      onBeforeDelete: undefined,
+
+      onViewportChangeStart: undefined,
+      onViewportChange: undefined,
+      onViewportChangeEnd: undefined,
+
+      onNodeDragStart: undefined,
+      onNodeDrag: undefined,
+      onNodeDragStop: undefined,
+
+      onSelectionDragStart: undefined,
+      onSelectionDrag: undefined,
+      onSelectionDragStop: undefined,
+
+      onMoveStart: undefined,
+      onMove: undefined,
+      onMoveEnd: undefined,
+
+      onConnect: undefined,
+      onConnectStart: undefined,
+      onConnectEnd: undefined,
+
+      onClickConnectStart: undefined,
+      onClickConnectEnd: undefined,
     },
     viewportStore: {
       paneDragging: false,

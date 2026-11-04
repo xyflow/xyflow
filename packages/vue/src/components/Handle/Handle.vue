@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import type { HandleConnection } from '@xyflow/system';
+import type { NodeConnection } from '@xyflow/system';
 import type { HandleProps } from '../../types';
-import { areConnectionMapsEqual, ConnectionMode, getConnectedEdges, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
-import { computed, getCurrentInstance, onMounted, toRef, watch } from 'vue';
+import { areConnectionMapsEqual, ConnectionMode, getConnectedEdges, getConnectionLookupKey, handleConnectionChange, isMouseEvent, nodeHasDimensions, Position } from '@xyflow/system';
+import { computed, getCurrentInstance, onMounted, watch } from 'vue';
 import { useHandle, useInternalNode, useVueFlow, useVueFlowStore } from '../../composables';
+import { handleKey, useConnectionSignals } from '../../composables/useConnectionSignals';
 import { useNodeId } from '../../composables/useNodeId';
 import { isDef } from '../../utils';
 
@@ -18,25 +19,27 @@ const {
 
 const emit = defineEmits<{
   /** fired when an edge touching this handle is added, with the newly-connected connections */
-  connect: [connections: HandleConnection[]];
+  connect: [connections: NodeConnection[]];
   /** fired when an edge touching this handle is removed, with the removed connections */
-  disconnect: [connections: HandleConnection[]];
+  disconnect: [connections: NodeConnection[]];
 }>();
 
-const type = toRef(() => props.type ?? 'source');
+const type = computed(() => props.type ?? 'source');
 
-const isValidConnection = toRef(() => props.isValidConnection ?? null);
+const isValidConnection = computed(() => props.isValidConnection ?? null);
 
 const { id: flowId, updateNodeInternals } = useVueFlow();
 
 const store = useVueFlowStore();
 
 const nodeId = useNodeId() ?? '';
+const connectionSignals = useConnectionSignals(store);
+const selfKey = computed(() => handleKey(nodeId, handleId, type.value));
 const internalNode = useInternalNode();
 const connectedEdges = computed(() => (internalNode.value ? getConnectedEdges([internalNode.value], store.edges) : []));
 
 const instance = getCurrentInstance();
-let prevConnections: Map<string, HandleConnection> | null = null;
+let prevConnections: Map<string, NodeConnection> | null = null;
 
 const { handlePointerDown, handleClick } = useHandle({
   nodeId,
@@ -80,29 +83,29 @@ const isHandleConnectable = computed(() => {
 });
 
 const connectionClasses = computed<Record<string, boolean>>((prev) => {
-  const fromHandle = store.connection.fromHandle;
-  const clickFromHandle = store.connectionClickStartHandle;
-  const toHandle = store.connection.toHandle;
+  const fromHandle = connectionSignals.from.value;
+  const clickFromHandle = connectionSignals.clickFrom.value;
   const handleType = type.value;
+  const connectable = isHandleConnectable.value;
 
   const connectionInProcess = fromHandle !== null;
   const clickConnectionInProcess = clickFromHandle !== null;
   const isPossibleEndHandle = store.connectionMode === ConnectionMode.Strict
     ? fromHandle?.type !== handleType
     : nodeId !== fromHandle?.nodeId || handleId !== fromHandle?.id;
-  const connectingto = toHandle?.nodeId === nodeId && toHandle?.id === handleId && toHandle?.type === handleType;
+  const connectingto = connectionSignals.toKey.value === selfKey.value;
 
   const next = {
-    connectable: isHandleConnectable.value,
+    connectable,
     connecting:
       clickFromHandle?.nodeId === nodeId && clickFromHandle?.id === handleId && clickFromHandle?.type === handleType,
     connectablestart: isConnectableStart,
     connectableend: isConnectableEnd,
     connectingfrom: fromHandle?.nodeId === nodeId && fromHandle?.id === handleId && fromHandle?.type === handleType,
     connectingto,
-    valid: connectingto && store.connection.isValid === true,
+    valid: connectingto && connectionSignals.isValid.value,
     connectionindicator:
-      isHandleConnectable.value
+      connectable
       && (!connectionInProcess || isPossibleEndHandle)
       && ((connectionInProcess || clickConnectionInProcess) ? isConnectableEnd : isConnectableStart),
   };
@@ -134,10 +137,10 @@ watch(
       return;
     }
 
-    const connections = store.connectionLookup.get(`${nodeId}-${type.value}${handleId ? `-${handleId}` : ''}`);
+    const connections = store.connectionLookup.get(getConnectionLookupKey(nodeId, type.value, handleId));
 
     if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
-      const nextConnections = connections ?? new Map<string, HandleConnection>();
+      const nextConnections = connections ?? new Map<string, NodeConnection>();
       handleConnectionChange(prevConnections, nextConnections, diff => emit('disconnect', diff));
       handleConnectionChange(nextConnections, prevConnections, diff => emit('connect', diff));
     }

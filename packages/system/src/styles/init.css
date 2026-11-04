@@ -28,11 +28,20 @@
 }
 
 [data-theme='dark'] .xy-flow,
-.xy-flow.dark {
+.dark .xy-flow {
   color-scheme: dark;
 }
 
 [data-theme='light'] .xy-flow,
+.light .xy-flow {
+  color-scheme: light;
+}
+
+/* forceColorMode: these must come last to override the theme */
+.xy-flow.dark {
+  color-scheme: dark;
+}
+
 .xy-flow.light {
   color-scheme: light;
 }
@@ -57,15 +66,25 @@
   z-index: 1;
   touch-action: none;
 
-  &.draggable {
+  /* Keep cursor changes off the pane so they aren't inherited by the entire flow.
+   * A pseudo-element still targets the pane for pointer and mouse events. */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  &.draggable::before {
     cursor: grab;
   }
 
-  &.dragging {
+  &.dragging::before {
     cursor: grabbing;
   }
 
-  &.selection {
+  /* selection uses pointer capture on the pane, so the cursor has to be on the pane itself */
+  &.selection,
+  &.selection::before {
     cursor: pointer;
   }
 }

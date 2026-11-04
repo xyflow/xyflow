@@ -1,11 +1,36 @@
+import type { EdgeChangeset, NodeChangeset } from '@xyflow/system';
 import type { InjectionKey, ShallowRef } from 'vue';
-import type { VueFlowInstance, VueFlowSlots, VueFlowState } from '../types';
+import type { Edge, Node, VueFlowInstance, VueFlowSlots, VueFlowState } from '../types';
 import { getCurrentInstance, inject } from 'vue';
 
 /** the curated instance (`useVueFlow()`) */
 export const VueFlow: InjectionKey<VueFlowInstance> = Symbol('vueFlow');
 /** the reactive state (`useVueFlowStore()`) */
 export const VueFlowStateKey: InjectionKey<VueFlowState> = Symbol('vueFlowState');
+/**
+ * Key for the store's change-application handlers, hung off the state object. `<VueFlow>` registers them
+ * as the default `onNodesChange`/`onEdgesChange` listeners when its binding is managed, so auto-apply
+ * follows the consuming `<VueFlow>` even when it reuses a provider's store.
+ *
+ * @internal
+ */
+export const AUTO_APPLY = Symbol('autoApply');
+/**
+ * Applies a changeset to the store. Registered by `<VueFlow>` as the default change listeners when the
+ * binding is managed; not exposed on the public instance.
+ * Apply a changeset yourself with changes.applyTo(elements)`.
+ *
+ * @internal
+ */
+export interface AutoApplyHandlers<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+  nodes: (changes: NodeChangeset<NodeType>) => void;
+  edges: (changes: EdgeChangeset<EdgeType>) => void;
+}
+
+/** @internal */
+export interface WithAutoApply<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
+  [AUTO_APPLY]?: AutoApplyHandlers<NodeType, EdgeType>;
+}
 export const NodeId: InjectionKey<string> = Symbol('nodeId');
 export const NodeRef: InjectionKey<ShallowRef<HTMLDivElement | null>> = Symbol('nodeRef');
 export const EdgeId: InjectionKey<string> = Symbol('edgeId');

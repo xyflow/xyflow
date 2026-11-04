@@ -1,7 +1,7 @@
 import type { NodeLookup, Project } from '@xyflow/system';
 import type { Edge, InternalNode, Node, State, ViewportFunctions } from '../types';
 import { defaultFitViewPadding, getViewportForBounds, pointToRendererPoint, rendererPointToPoint, withResolvers } from '@xyflow/system';
-import { computed, markRaw, nextTick } from 'vue';
+import { computed, markRaw, nextTick, toRaw } from 'vue';
 import { resolveFitView } from '../store/fitView';
 import { areNodesInitialized, warn } from '../utils';
 
@@ -60,7 +60,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
           return false;
         }
 
-        await panZoom.setViewport(
+        return panZoom.setViewport(
           {
             x: viewport.x ?? state.transform[0],
             y: viewport.y ?? state.transform[1],
@@ -68,8 +68,6 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
           },
           options,
         );
-
-        return true;
       },
       getViewport: () => ({
         x: state.transform[0],
@@ -107,9 +105,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
         const centerX = state.dimensions.width / 2 - x * nextZoom;
         const centerY = state.dimensions.height / 2 - y * nextZoom;
 
-        await panZoom.setViewport({ x: centerX, y: centerY, zoom: nextZoom }, options);
-
-        return true;
+        return panZoom.setViewport({ x: centerX, y: centerY, zoom: nextZoom }, options);
       },
       fitBounds: async (bounds, options) => {
         if (!panZoom) {
@@ -125,9 +121,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
           options?.padding ?? defaultFitViewPadding,
         );
 
-        await panZoom.setViewport({ x, y, zoom }, options);
-
-        return true;
+        return panZoom.setViewport({ x, y, zoom }, options);
       },
       screenToFlowPosition: (position) => {
         if (state.vueFlowRef) {
@@ -138,7 +132,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
             y: position.y - domY,
           };
 
-          return pointToRendererPoint(correctedPosition, state.transform, state.snapToGrid, state.snapGrid);
+          return pointToRendererPoint(correctedPosition, toRaw(state.transform), state.snapToGrid, toRaw(state.snapGrid));
         }
 
         return { x: 0, y: 0 };
@@ -147,7 +141,7 @@ export function useViewportHelper<NodeType extends Node = Node, EdgeType extends
         if (state.vueFlowRef) {
           const { x: domX, y: domY } = state.vueFlowRef.getBoundingClientRect();
 
-          const rendererPosition = rendererPointToPoint(position, state.transform);
+          const rendererPosition = rendererPointToPoint(position, toRaw(state.transform));
 
           return { x: rendererPosition.x + domX, y: rendererPosition.y + domY };
         }

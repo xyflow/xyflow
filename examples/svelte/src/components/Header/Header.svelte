@@ -12,6 +12,7 @@
 		'dagre',
 		'detached-handle',
 		'drag-n-drop',
+		'drag-threshold',
 		'edges',
 		'edge-toolbar',
 		'figma',
@@ -29,7 +30,8 @@
 		'usesvelteflow',
 		'useupdatenodeinternals',
 		'validation',
-		'reset'
+		'reset',
+		'unmount'
 	];
 
 	const onChange = (event: Event) => {

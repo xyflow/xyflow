@@ -397,13 +397,11 @@ export async function fitViewport<
     options?.padding ?? defaultFitViewPadding
   );
 
-  await panZoom.setViewport(viewport, {
+  return panZoom.setViewport(viewport, {
     duration: options?.duration,
     ease: options?.ease,
     interpolate: options?.interpolate,
   });
-
-  return true;
 }
 
 /**
@@ -498,33 +496,55 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
   edges: EdgeType[];
 }> {
   const nodeIds = new Set(nodesToRemove.map((node) => node.id));
-  const matchingNodes: NodeType[] = [];
+  const matchingNodeMap = new Map<string, NodeType>();
+  const children = new Map<string, NodeType[]>();
 
   for (const node of nodes) {
     if (node.deletable === false) {
       continue;
     }
 
-    const isIncluded = nodeIds.has(node.id);
-    const parentHit = !isIncluded && node.parentId && matchingNodes.find((n) => n.id === node.parentId);
+    if (nodeIds.has(node.id)) {
+      matchingNodeMap.set(node.id, node);
+    }
 
-    if (isIncluded || parentHit) {
-      matchingNodes.push(node);
+    if (node.parentId) {
+      const siblings = children.get(node.parentId) ?? [];
+      siblings.push(node);
+      children.set(node.parentId, siblings);
+    }
+  }
+
+  const queue = [...matchingNodeMap.keys()];
+  for (let index = 0; index < queue.length; index++) {
+    for (const child of children.get(queue[index]) ?? []) {
+      if (!matchingNodeMap.has(child.id)) {
+        matchingNodeMap.set(child.id, child);
+        queue.push(child.id);
+      }
     }
   }
 
   const edgeIds = new Set(edgesToRemove.map((edge) => edge.id));
-  const deletableEdges = edges.filter((edge) => edge.deletable !== false);
-  const connectedEdges = getConnectedEdges(matchingNodes, deletableEdges);
-  const matchingEdges: EdgeType[] = connectedEdges;
+  const matchingEdgeMap = new Map<string, EdgeType>();
 
-  for (const edge of deletableEdges) {
-    const isIncluded = edgeIds.has(edge.id);
-
-    if (isIncluded && !matchingEdges.find((e) => e.id === edge.id)) {
-      matchingEdges.push(edge);
+  for (const edge of edges) {
+    if (
+      edge.deletable !== false &&
+      (matchingNodeMap.has(edge.source) || matchingNodeMap.has(edge.target))
+    ) {
+      matchingEdgeMap.set(edge.id, edge);
     }
   }
+
+  for (const edge of edges) {
+    if (edge.deletable !== false && edgeIds.has(edge.id) && !matchingEdgeMap.has(edge.id)) {
+      matchingEdgeMap.set(edge.id, edge);
+    }
+  }
+
+  const matchingNodes = nodes.filter((node) => matchingNodeMap.has(node.id));
+  const matchingEdges = Array.from(matchingEdgeMap.values());
 
   if (!onBeforeDelete) {
     return {

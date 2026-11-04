@@ -1,4 +1,4 @@
-import { onScopeDispose } from 'vue';
+import { onScopeDispose, shallowReactive, shallowRef, toRaw } from 'vue';
 
 /**
  * vue-flow's own event-hook types. We don't reuse `@vueuse/core`'s `EventHook*`: since v14 its `Callback<T>`
@@ -39,11 +39,14 @@ const noop: Handler = () => {};
 const EMPTY_TRIGGER_RESULT: Promise<unknown[]> = Promise.resolve([]);
 
 export function createExtendedEventHook<T = any>(defaultHandler?: (param: T) => void): EventHookExtended<T> {
-  const listeners = new Set<Handler>();
+  // reactive, so callers can cache `hasListeners()` in a computed: registering a listener has to
+  // invalidate it, and a plain Set tracks nothing
+  const listeners = shallowReactive(new Set<Handler>());
+  const rawListeners = toRaw(listeners);
   let emitter: Handler = noop;
-  let hasEmitListeners = () => false;
+  const hasEmitListeners = shallowRef<() => boolean>(() => false);
 
-  const hasListeners = () => listeners.size > 0 || hasEmitListeners();
+  const hasListeners = () => listeners.size > 0 || hasEmitListeners.value();
 
   const setEmitter = (fn: Handler) => {
     emitter = fn;
@@ -54,11 +57,11 @@ export function createExtendedEventHook<T = any>(defaultHandler?: (param: T) => 
   };
 
   const setHasEmitListeners = (fn: () => boolean) => {
-    hasEmitListeners = fn;
+    hasEmitListeners.value = fn;
   };
 
   const removeHasEmitListeners = () => {
-    hasEmitListeners = () => false;
+    hasEmitListeners.value = () => false;
   };
 
   const off: EventHookOff<T> = (fn) => {
@@ -84,16 +87,19 @@ export function createExtendedEventHook<T = any>(defaultHandler?: (param: T) => 
    * Errors are isolated via allSettled so one failing handler doesn't break others.
    */
   const trigger: EventHookTrigger<T> = (param) => {
+    // the raw set, because `trigger` can run inside an effect and must not subscribe it to registrations
+    const observed = rawListeners.size > 0 || hasEmitListeners.value();
+
     // fast path: nothing can observe this event — no programmatic listeners, no `@event` vnode handler
     // (the emitter would dispatch into a void emit), no default. Skip the dispatch + allocations.
-    if (listeners.size === 0 && !hasEmitListeners() && !defaultHandler) {
+    if (!observed && !defaultHandler) {
       return EMPTY_TRIGGER_RESULT;
     }
 
     const queue: Handler[] = [emitter];
 
-    if (hasListeners()) {
-      queue.push(...listeners);
+    if (observed) {
+      queue.push(...rawListeners);
     }
     else if (defaultHandler) {
       queue.push(defaultHandler);

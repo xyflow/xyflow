@@ -30,7 +30,6 @@
     multiSelectionKey,
     zoomActivationKey,
     paneClickDistance = 1,
-    nodeClickDistance = 1,
     onmovestart,
     onmoveend,
     onmove,
@@ -125,7 +124,15 @@
   });
 
   onDestroy(() => {
-    store.reset();
+    providerContext?.setStore(
+      createStore({
+        width: 0,
+        height: 0,
+        nodes: [],
+        edges: [],
+        props: {} as SvelteFlowProps<NodeType, EdgeType>
+      })
+    );
   });
 </script>
 
@@ -192,7 +199,6 @@
         />
         <NodeRenderer
           bind:store
-          {nodeClickDistance}
           {onnodeclick}
           {onnodecontextmenu}
           {onnodepointerenter}

@@ -88,7 +88,7 @@ export function getLayoutedEdges<NodeType extends Node = Node, EdgeType extends 
     const sourceNode = nodeLookup.get(edge.source);
     const targetNode = nodeLookup.get(edge.target);
 
-    if (!sourceNode || !targetNode) {
+    if (!sourceNode || !targetNode || sourceNode.hidden || targetNode.hidden) {
       continue;
     }
 

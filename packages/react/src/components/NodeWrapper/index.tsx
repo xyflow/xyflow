@@ -38,7 +38,6 @@ function NodeWrapper<NodeType extends Node>({
   disableKeyboardA11y,
   rfId,
   nodeTypes,
-  nodeClickDistance,
   onError,
 }: NodeWrapperProps<NodeType>) {
   const node = useInternalNode<NodeType>(id)!;
@@ -68,7 +67,6 @@ function NodeWrapper<NodeType extends Node>({
     handleSelector: node.dragHandle,
     nodeId: id,
     isSelectable,
-    nodeClickDistance,
   });
   const moveSelectedNodes = useMoveSelectedNodes();
 

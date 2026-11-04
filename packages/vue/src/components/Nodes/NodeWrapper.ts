@@ -10,6 +10,7 @@ import {
   onMounted,
   provide,
   shallowRef,
+  toRaw,
   toRef,
   watch,
 } from 'vue';
@@ -20,7 +21,8 @@ import {
   useVueFlowStore,
 } from '../../composables';
 import { NodeId, NodeRef, Slots } from '../../context';
-import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, elementSelectionKeys, ErrorCode, handleNodeClick, resolveTypeComponent, VueFlowError } from '../../utils';
+import { ARIA_NODE_DESC_KEY, arrowKeyDiffs, captureElement, createChangedPropsRenderer, elementSelectionKeys, ErrorCode, handleNodeClick, resolveTypeComponent, VueFlowError } from '../../utils';
+import { defaultNodeTypes } from '../../utils/defaultNodesEdges';
 
 interface Props {
   id: string;
@@ -40,7 +42,6 @@ const NodeWrapper = defineComponent({
       addSelectedNodes,
       updateNodeDimensions,
       onUpdateNodeInternals,
-      getNodeTypes,
       setCenter,
     } = useVueFlow();
 
@@ -60,36 +61,38 @@ const NodeWrapper = defineComponent({
 
     const internalNode = computed(() => getInternalNode(props.id));
 
-    const isDraggable = toRef(() => {
+    const isDraggable = computed(() => {
       const node = internalNode.value;
       return !node || typeof node.draggable === 'undefined' ? store.nodesDraggable : node.draggable;
     });
 
-    const isSelectable = toRef(() => {
+    const isSelectable = computed(() => {
       const node = internalNode.value;
       return !node || typeof node.selectable === 'undefined' ? store.elementsSelectable : node.selectable;
     });
 
-    const isConnectable = toRef(() => {
+    const isConnectable = computed(() => {
       const node = internalNode.value;
       return !node || typeof node.connectable === 'undefined' ? store.nodesConnectable : node.connectable;
     });
 
-    const isFocusable = toRef(() => {
+    const isFocusable = computed(() => {
       const node = internalNode.value;
       return !node || typeof node.focusable === 'undefined' ? store.nodesFocusable : node.focusable;
     });
 
-    const hasPointerEvents = computed(
+    // kept out of `hasPointerEvents`, which depends on the node and so is recomputed every frame;
+    // this value is the same for every node and only changes when a handler is bound
+    const hasPointerListeners = computed(
       () =>
-        isSelectable.value
-        || isDraggable.value
-        || store.hooks.nodeClick.hasListeners()
+        store.hooks.nodeClick.hasListeners()
         || store.hooks.nodeDoubleClick.hasListeners()
         || store.hooks.nodeMouseEnter.hasListeners()
         || store.hooks.nodeMouseMove.hasListeners()
         || store.hooks.nodeMouseLeave.hasListeners(),
     );
+
+    const hasPointerEvents = computed(() => isSelectable.value || isDraggable.value || hasPointerListeners.value);
 
     // a node "has dimensions" once measured OR given explicit width/height OR initialWidth/initialHeight (the
     // SSR fallback, no ResizeObserver) — the visibility gate so sized/SSR nodes render immediately
@@ -103,7 +106,11 @@ const NodeWrapper = defineComponent({
     const nodeCmp = computed(() => {
       const name = internalNode.value?.type || 'default';
 
-      const cmp = resolveTypeComponent(slots?.[`node-${name}`], getNodeTypes.value[name], name, instance);
+      // an unregistered name falls through as a string and resolves against the app's globally
+      // registered components
+      const registered = store.nodeTypes?.[name] ?? defaultNodeTypes[name as keyof typeof defaultNodeTypes] ?? name;
+
+      const cmp = resolveTypeComponent(slots?.[`node-${name}`], registered, name, instance);
 
       if (cmp) {
         return cmp;
@@ -128,9 +135,6 @@ const NodeWrapper = defineComponent({
       },
       onStop(event) {
         emits.nodeDragStop(event);
-      },
-      onClick(event) {
-        onSelectNode(event);
       },
     });
 
@@ -163,7 +167,7 @@ const NodeWrapper = defineComponent({
       return styles;
     });
 
-    const zIndex = toRef(() => Number(internalNode.value?.zIndex ?? getStyle.value.zIndex ?? 0));
+    const zIndex = computed(() => Number(internalNode.value?.zIndex ?? getStyle.value.zIndex ?? 0));
 
     onUpdateNodeInternals((updateIds) => {
       if (updateIds.includes(props.id)) {
@@ -197,6 +201,8 @@ const NodeWrapper = defineComponent({
       { flush: 'post' },
     );
 
+    const renderNode = createChangedPropsRenderer();
+
     return () => {
       const node = internalNode.value;
 
@@ -227,13 +233,13 @@ const NodeWrapper = defineComponent({
       return h(
         'div',
         {
-          'ref': nodeElement,
+          ...captureElement(nodeElement),
           'data-id': node.id,
           'class': [
             'vue-flow__node',
             `vue-flow__node-${nodeCmp.value ? node.type || 'default' : 'default'}`,
+            isDraggable.value ? store.noPanClassName : undefined,
             {
-              [store.noPanClassName]: isDraggable.value,
               dragging: dragging?.value,
               draggable: isDraggable.value,
               selected: node.selected,
@@ -264,9 +270,7 @@ const NodeWrapper = defineComponent({
           'onKeydown': onKeyDown,
           'onFocus': isFocusable.value ? onFocus : undefined,
         },
-        [
-          h(nodeCmp.value ?? (getNodeTypes.value.default as Component), nodeComponentProps),
-        ],
+        [renderNode(nodeCmp.value ?? (defaultNodeTypes.default as Component), nodeComponentProps)],
       );
     };
 
@@ -381,7 +385,7 @@ const NodeWrapper = defineComponent({
         = getNodesInside(
           new Map([[node.id, node]]),
           { x: 0, y: 0, width: store.dimensions.width, height: store.dimensions.height },
-          store.transform,
+          toRaw(store.transform),
           true,
         ).length > 0;
 

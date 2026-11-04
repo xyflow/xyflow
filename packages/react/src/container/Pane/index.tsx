@@ -19,6 +19,9 @@ import {
   rendererPointToPoint,
   XYPosition,
   getSelectionChanges,
+  type Optional,
+  type FinalConnectionState,
+  type ConnectionState,
 } from '@xyflow/system';
 
 import { UserSelection } from '../../components/UserSelection';
@@ -116,7 +119,18 @@ export function Pane({
       return;
     }
 
-    const { resetSelectedElements, nodesSelectionActive } = optionsStore.getState();
+    const { nodesSelectionActive, onClickConnectEnd, resetSelectedElements } = optionsStore.getState();
+    const { connectionClickStartHandle, connection } = connectionStore.getState();
+
+    if (connectionClickStartHandle) {
+      const connectionClone = structuredClone(connection) as Optional<ConnectionState, 'inProgress'>;
+      delete connectionClone.inProgress;
+      connectionClone.toPosition = connectionClone.toHandle ? connectionClone.toHandle.position : null;
+      onClickConnectEnd?.(event.nativeEvent, connectionClone as FinalConnectionState);
+
+      optionsStore.getState().updateConnectionClickStart(null);
+    }
+
     onPaneClick?.(event);
     resetSelectedElements();
     if (nodesSelectionActive) {
@@ -240,7 +254,7 @@ export function Pane({
     }
 
     if (!areSetsEqual(prevSelectedNodeIds, selectedNodeIds.current)) {
-      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current, true);
+      const changes = getSelectionChanges(nodeLookup, selectedNodeIds.current);
       emitNodeChanges(changes);
     }
 

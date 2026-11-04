@@ -15,6 +15,10 @@ export const routes: RouterOptions['routes'] = [
     component: () => import('./src/Basic/Basic.vue'),
   },
   {
+    path: '/drag-threshold',
+    component: () => import('./src/DragThreshold/DragThresholdExample.vue'),
+  },
+  {
     path: '/basic-options-api',
     component: () => import('./src/Basic/BasicOptionsAPI.vue'),
   },
@@ -147,6 +151,11 @@ export const routes: RouterOptions['routes'] = [
 // routes exercised by the Playwright suite (tests/playwright) — kept out of `routes` so they don't
 // clutter the Header's example picker. `/tests/generic/*` renders the generic-tests harness.
 const testRoutes: RouterOptions['routes'] = [
+  {
+    path: '/examples/backgrounds',
+    component: () => import('./src/Backgrounds/BackgroundsExample.vue'),
+    meta: { blank: true },
+  },
   {
     path: '/examples/color-mode',
     component: () => import('./src/ColorMode/ColorModeExample.vue'),

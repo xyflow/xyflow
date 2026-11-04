@@ -1,10 +1,45 @@
-import { type HandleConnection } from '../types';
+import type { ConnectionLookup, HandleType, NodeConnection } from '../types';
+
+/**
+ * Returns the key under which the connections of a node are stored in the connection lookup.
+ * Without a handle type, the key covers all connections of the node. A handle id is only used
+ * together with a handle type, because handle ids are only unique per handle type.
+ *
+ * @internal
+ */
+export function getConnectionLookupKey(nodeId: string, handleType?: HandleType | null, handleId?: string | null) {
+  if (!handleType) {
+    return nodeId;
+  }
+
+  return handleId ? `${nodeId}-${handleType}-${handleId}` : `${nodeId}-${handleType}`;
+}
+
+/**
+ * Returns the connections of a node, optionally filtered by handle type and handle id.
+ *
+ * @internal
+ */
+export function getConnectionsFromLookup(
+  connectionLookup: ConnectionLookup,
+  {
+    nodeId,
+    type,
+    handleId,
+  }: {
+    nodeId: string;
+    type?: HandleType | null;
+    handleId?: string | null;
+  }
+): NodeConnection[] {
+  return Array.from(connectionLookup.get(getConnectionLookupKey(nodeId, type, handleId))?.values() ?? []);
+}
 
 /**
  * @internal
  */
-export function areConnectionMapsEqual(a?: Map<string, HandleConnection>, b?: Map<string, HandleConnection>) {
-  if (!a && !b) {
+export function areConnectionMapsEqual(a?: Map<string, NodeConnection>, b?: Map<string, NodeConnection>) {
+  if (a === b) {
     return true;
   }
 
@@ -16,8 +51,8 @@ export function areConnectionMapsEqual(a?: Map<string, HandleConnection>, b?: Ma
     return true;
   }
 
-  for (const key of a.keys()) {
-    if (!b.has(key)) {
+  for (const [key, connection] of a) {
+    if (b.get(key) !== connection) {
       return false;
     }
   }
@@ -31,18 +66,18 @@ export function areConnectionMapsEqual(a?: Map<string, HandleConnection>, b?: Ma
  * @internal
  */
 export function handleConnectionChange(
-  a: Map<string, HandleConnection>,
-  b: Map<string, HandleConnection>,
-  cb?: (diff: HandleConnection[]) => void
+  a: Map<string, NodeConnection>,
+  b: Map<string, NodeConnection>,
+  cb?: (diff: NodeConnection[]) => void
 ) {
   if (!cb) {
     return;
   }
 
-  const diff: HandleConnection[] = [];
+  const diff: NodeConnection[] = [];
 
   a.forEach((connection, key) => {
-    if (!b?.has(key)) {
+    if (b?.get(key) !== connection) {
       diff.push(connection);
     }
   });

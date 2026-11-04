@@ -2,7 +2,7 @@ import type { Connection, FinalConnectionState, HandleType, IsValidConnection } 
 import type { MaybeRefOrGetter } from 'vue';
 import type { InternalNode, MouseTouchEvent } from '../types';
 import { getEventPosition, getHostForElement, Position, XYHandle } from '@xyflow/system';
-import { toValue } from 'vue';
+import { toRaw, toValue } from 'vue';
 import { useVueFlow } from './useVueFlow';
 import { useVueFlowStore } from './useVueFlowStore';
 
@@ -69,7 +69,7 @@ export function useHandle({
       handleDomNode,
       panBy,
       isValidConnection: getIsValidConnection(),
-      getTransform: () => store.transform,
+      getTransform: () => toRaw(store.transform),
       getFromHandle: () => (store.connection.inProgress ? store.connection.fromHandle : null),
       updateConnection,
       cancelConnection,

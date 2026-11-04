@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { ControlEmits, ControlProps } from './types';
-import { toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import Panel from '../Panel/Panel.vue';
 import ControlButton from './ControlButton.vue';
@@ -20,7 +20,7 @@ const { setInteractive, zoomIn, zoomOut, fitView, viewport } = useVueFlow();
 
 const { nodesDraggable, nodesConnectable, elementsSelectable, minZoom, maxZoom, ariaLabelConfig } = storeToRefs(useVueFlowStore());
 
-const isInteractive = toRef(() => nodesDraggable.value || nodesConnectable.value || elementsSelectable.value);
+const isInteractive = computed(() => nodesDraggable.value || nodesConnectable.value || elementsSelectable.value);
 
 const minZoomReached = toRef(() => viewport.value.zoom <= minZoom.value);
 

@@ -18,13 +18,14 @@ import {
   rendererPointToPoint,
   evaluateAbsolutePosition,
   type HandleType,
-  type HandleConnection,
+  type NodeConnection,
   getNodesBounds,
   type NodeChange,
   type EdgeChange,
   defaultFitViewPadding,
   changeParentNode,
   positionChange
+  getConnectionsFromLookup
 } from '@xyflow/system';
 
 import { useSvelteFlowStore } from '#lib/store/index.js';
@@ -307,22 +308,22 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * @returns the bounds of the given nodes
    */
   getNodesBounds: (nodes: (NodeType | InternalNode<NodeType> | string)[]) => Rect;
-  /** Gets all connections for a given handle belonging to a specific node.
-   *
+  /**
+   * Gets all connections to a node. Can be filtered by handle type and id.
    * @param type - handle type 'source' or 'target'
-   * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
+   * @param handleId - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
    * @param nodeId - the node id the handle belongs to
-   * @returns an array with handle connections
+   * @returns an array with node connections
    */
-  getHandleConnections: ({
+  getNodeConnections: ({
     type,
-    id,
+    handleId,
     nodeId
   }: {
-    type: HandleType;
+    type?: HandleType;
     nodeId: string;
-    id?: string | null;
-  }) => HandleConnection[];
+    handleId?: string | null;
+  }) => NodeConnection[];
 } {
   const store = $derived(useSvelteFlowStore<NodeType, EdgeType>());
 
@@ -345,7 +346,8 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       height: nodeToUse.measured?.height ?? nodeToUse.height
     };
 
-    return nodeToRect(nodeWithPosition);
+    // Child positions already account for the flow origin above.
+    return nodeToRect(nodeWithPosition, nodeToUse.parentId ? undefined : store.nodeOrigin);
   };
 
   function updateNode(
@@ -438,7 +440,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         return false;
       }
 
-      await store.panZoom.setViewport(
+      return store.panZoom.setViewport(
         {
           x: nextViewport.x ?? currentViewport.x,
           y: nextViewport.y ?? currentViewport.y,
@@ -446,8 +448,6 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         },
         options
       );
-
-      return true;
     },
     getViewport: () => $state.snapshot(store.viewport),
     setCenter: async (x, y, options) => store.setCenter(x, y, options),
@@ -466,13 +466,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         options?.padding ?? defaultFitViewPadding
       );
 
-      await store.panZoom.setViewport(viewport, {
+      return store.panZoom.setViewport(viewport, {
         duration: options?.duration,
         ease: options?.ease,
         interpolate: options?.interpolate
       });
-
-      return true;
     },
     /**
      * Partial is defined as "the 2 nodes/areas are intersecting partially".
@@ -673,8 +671,8 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     getNodesBounds: (nodes) => {
       return getNodesBounds(nodes, { nodeLookup: store.nodeLookup, nodeOrigin: store.nodeOrigin });
     },
-    getHandleConnections: ({ type, id, nodeId }) =>
-      Array.from(store.connectionLookup.get(`${nodeId}-${type}-${id ?? null}`)?.values() ?? [])
+    getNodeConnections: ({ type, handleId, nodeId }) =>
+      getConnectionsFromLookup(store.connectionLookup, { nodeId, type, handleId })
   };
 }
 

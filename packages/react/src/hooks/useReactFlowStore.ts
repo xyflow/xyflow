@@ -110,10 +110,17 @@ export function useSelectionStore(selector: (state: SelectionStore) => unknown =
 export { useOptionsStore, useReactFlowStoreApi };
 export { useShallow } from './useShallow';
 
-export function useCustomDiff<S, U>(selector: (state: S) => U, compare: (a: U, b: U) => boolean): (state: S) => U {
+export function useEqualSelector<S, U>(selector: (state: S) => U, isEqual: (a: U, b: U) => boolean): (state: S) => U {
   const prev = useRef<U>();
   return (state) => {
     const next = selector(state);
-    return prev.current && compare(prev.current, next) ? prev.current : (prev.current = next);
+
+    if (prev.current !== undefined && isEqual(prev.current, next)) {
+      return prev.current;
+    }
+
+    prev.current = next;
+
+    return next;
   };
 }

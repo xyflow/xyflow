@@ -33,9 +33,9 @@ const resizeControlRef = shallowRef<HTMLDivElement>();
 // without an explicit `node-id` prop
 const contextNodeId = useNodeId();
 
-const nodeId = toRef(() => (typeof props.nodeId === 'string' ? props.nodeId : contextNodeId || undefined));
+const nodeId = computed(() => (typeof props.nodeId === 'string' ? props.nodeId : contextNodeId || undefined));
 
-const controlPosition = toRef(() => props.position ?? DefaultPositions[props.variant]);
+const controlPosition = computed(() => props.position ?? DefaultPositions[props.variant]);
 
 const positionClassNames = computed(() => controlPosition.value.split('-'));
 

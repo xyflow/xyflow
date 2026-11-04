@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import {
-  useCustomDiff,
+  useEqualSelector,
   useOptionsStore,
   useNodesStore,
   useEdgesStore,
@@ -53,8 +53,8 @@ function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends E
   onSelectionChange,
 }: SelectionListenerProps<NodeType, EdgeType>) {
   const { optionsStore, nodesStore, edgesStore } = useReactFlowStoreApi<NodeType, EdgeType>();
-  const selectedNodes = useNodesStore(useCustomDiff(nodesSelector, areEqual));
-  const selectedEdges = useEdgesStore(useCustomDiff(edgesSelector, areEqual));
+  const selectedNodes = useNodesStore(useEqualSelector(nodesSelector, areEqual));
+  const selectedEdges = useEdgesStore(useEqualSelector(edgesSelector, areEqual));
 
   useEffect(() => {
     // Either membership change should report the current objects from both stores.
@@ -70,7 +70,7 @@ function SelectionListenerInner<NodeType extends Node = Node, EdgeType extends E
   return null;
 }
 
-const changeSelector = (s: ReactFlowState) => !!s.onSelectionChangeHandlers;
+const changeSelector = (s: ReactFlowState) => s.onSelectionChangeHandlers.length > 0;
 
 export function SelectionListener<NodeType extends Node = Node, EdgeType extends Edge = Edge>({
   onSelectionChange,

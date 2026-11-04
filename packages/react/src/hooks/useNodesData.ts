@@ -1,7 +1,7 @@
 import { type DistributivePick, shallowNodeData } from '@xyflow/system';
+import { useSyncExternalStore } from 'react';
 
-import { useCustomDiff } from './useReactFlowStore';
-import { useInternalNodes } from './useNodes';
+import { useEqualSelector, useReactFlowStoreApi, useShallow } from './useReactFlowStore';
 import type { Node } from '../types';
 
 /**
@@ -33,11 +33,23 @@ export function useNodesData<NodeType extends Node = Node>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: string | string[]): any {
   const isSingleId = typeof nodeIds === 'string';
-  const nodes = useInternalNodes(isSingleId ? [nodeIds] : nodeIds);
-  const selector = (nodes: Node[]) => {
-    const data = nodes.map(({ id, type, data }) => ({ id, type, data }));
-    return isSingleId ? (data[0] ?? null) : data;
-  };
+  const { optionsStore, nodesStore } = useReactFlowStoreApi();
+  const ids = useShallow((value: string | string[]) => new Set(typeof value === 'string' ? [value] : value))(nodeIds);
+  const subscribe = (onStoreChange: () => void) => optionsStore.getState().pubSub.subscribeToNodes(ids, onStoreChange);
+  const selectSnapshot = useEqualSelector(() => {
+    const { nodeLookup } = nodesStore.getState();
+    const data: Pick<Node, 'id' | 'type' | 'data'>[] = [];
 
-  return useCustomDiff(selector, shallowNodeData)(nodes);
+    for (const id of ids) {
+      const node = nodeLookup.get(id);
+      if (node) {
+        data.push({ id: node.id, type: node.type, data: node.data });
+      }
+    }
+
+    return isSingleId ? (data[0] ?? null) : data;
+  }, shallowNodeData);
+  const getSnapshot = () => selectSnapshot(undefined);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }

@@ -108,8 +108,8 @@ export function createCommit<NodeType extends Node = Node, EdgeType extends Edge
       hasSelectedNodes,
       updatedNodes,
     } = adoptNodes(nodes, systemNodeLookup, systemParentLookup, state.hooks.error.trigger, {
-      nodeOrigin: state.nodeOrigin,
-      nodeExtent: state.nodeExtent,
+      nodeOrigin: toRaw(state.nodeOrigin),
+      nodeExtent: toRaw(state.nodeExtent),
       elevateNodesOnSelect: state.elevateNodesOnSelect,
       zIndexMode: state.zIndexMode,
       checkEquality,

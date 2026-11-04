@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import type { XYMinimapInstance } from '@xyflow/system';
+import type { Rect, XYMinimapInstance } from '@xyflow/system';
 import type { InternalNode } from '../../types';
 import type { MiniMapEmits, MiniMapNodeFunc, MiniMapProps, MiniMapSlots, ShapeRendering } from './types';
 import { getBoundsOfRects, getConnectedEdges, getNodeDimensions, getNodesBounds, isNumeric, XYMinimap } from '@xyflow/system';
-import { computed, onMounted, onUnmounted, provide, shallowRef, toRef, useAttrs, watch } from 'vue';
+import { computed, onMounted, onUnmounted, provide, shallowRef, useAttrs, watch } from 'vue';
 import { storeToRefs, useVueFlow, useVueFlowStore } from '../../composables';
 import Panel from '../Panel/Panel.vue';
 import MiniMapNode from './MiniMapNode.vue';
@@ -54,9 +54,9 @@ let minimapInstance: XYMinimapInstance | null = null;
 
 const resolvedAriaLabel = computed(() => ariaLabel ?? ariaLabelConfig.value['minimap.ariaLabel']);
 
-const elementWidth = toRef(() => width ?? attrs.style?.width ?? defaultWidth);
+const elementWidth = computed(() => width ?? attrs.style?.width ?? defaultWidth);
 
-const elementHeight = toRef(() => height ?? attrs.style?.height ?? defaultHeight);
+const elementHeight = computed(() => height ?? attrs.style?.height ?? defaultHeight);
 
 const shapeRendering: ShapeRendering = typeof window === 'undefined' || !!window.chrome ? 'crispEdges' : 'geometricPrecision';
 
@@ -68,12 +68,21 @@ const nodeClassNameFunc = computed(() => getAttrFunction(nodeClassName));
 
 const minimapNodes = computed(() => Array.from(nodeLookup.values()));
 
-const bb = computed(() =>
-  getNodesBounds(
+// value-stable: the node bounds are recomputed on every commit (every drag frame) but usually come back
+// numerically identical — a node moving inside the existing bounds doesn't change them. Returning `prev`
+// then keeps `boundingRect`/`viewScale`/`viewBox`/`d` from invalidating and re-writing the whole minimap SVG.
+const bb = computed<Rect>((prev) => {
+  const next = getNodesBounds(
     nodes.value.filter(node => !node.hidden),
     { nodeLookup },
-  ),
-);
+  );
+
+  if (prev && prev.x === next.x && prev.y === next.y && prev.width === next.width && prev.height === next.height) {
+    return prev;
+  }
+
+  return next;
+});
 
 const viewBB = computed(() => ({
   x: -viewport.value.x / viewport.value.zoom,

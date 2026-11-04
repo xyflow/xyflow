@@ -1,5 +1,6 @@
 import type { NodeDragItem, XYPosition } from '@xyflow/system';
 import { calculateNodePosition, getNodeDimensions, snapPosition } from '@xyflow/system';
+import { toRaw } from 'vue';
 import { useVueFlow } from './useVueFlow';
 import { useVueFlowStore } from './useVueFlowStore';
 
@@ -36,15 +37,15 @@ export function useUpdateNodePositions() {
         };
 
         if (store.snapToGrid) {
-          nextPosition = snapPosition(nextPosition, store.snapGrid);
+          nextPosition = snapPosition(nextPosition, toRaw(store.snapGrid));
         }
 
         const { position, positionAbsolute } = calculateNodePosition({
           nodeId: node.id,
           nextPosition,
-          nodeLookup: store.nodeLookup,
-          nodeExtent: store.nodeExtent,
-          nodeOrigin: store.nodeOrigin,
+          nodeLookup: toRaw(store.nodeLookup),
+          nodeExtent: toRaw(store.nodeExtent),
+          nodeOrigin: toRaw(store.nodeOrigin),
         });
 
         nodeUpdates.push({

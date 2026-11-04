@@ -9,7 +9,6 @@ import {
 } from '@xyflow/system';
 
 type ZoomParams = {
-  viewport: Viewport;
   initialViewport: Viewport;
   minZoom: number;
   maxZoom: number;
@@ -84,6 +83,9 @@ export default function zoom(domNode: Element, params: ZoomParams) {
   return {
     update(params: ZoomParams) {
       panZoomInstance.update(params);
+    },
+    destroy() {
+      panZoomInstance.destroy();
     }
   };
 }

@@ -46,7 +46,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         return false;
       }
 
-      await panZoom.setViewport(
+      return panZoom.setViewport(
         {
           x: viewport.x ?? tX,
           y: viewport.y ?? tY,
@@ -54,8 +54,6 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         },
         options
       );
-
-      return true;
     },
     getViewport: () => {
       const [x, y, zoom] = viewportStore.getState().transform;
@@ -80,9 +78,7 @@ const useViewportHelper = (): ViewportHelperFunctions => {
         return false;
       }
 
-      await panZoom.setViewport(viewport, options);
-
-      return true;
+      return panZoom.setViewport(viewport, options);
     },
     screenToFlowPosition: (clientPosition: XYPosition, options: { snapToGrid?: boolean; snapGrid?: SnapGrid } = {}) => {
       const { transform } = viewportStore.getState();

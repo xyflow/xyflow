@@ -10,7 +10,6 @@ export type UseDragParams<NodeType extends Node = Node, EdgeType extends Edge = 
   handleSelector?: string;
   nodeId?: string;
   isSelectable?: boolean;
-  nodeClickDistance?: number;
   onDrag?: OnDrag;
   onDragStart?: OnDrag;
   onDragStop?: OnDrag;
@@ -66,8 +65,7 @@ export default function drag<NodeType extends Node = Node, EdgeType extends Edge
       noDragClassName: params.noDragClass,
       handleSelector: params.handleSelector,
       nodeId: params.nodeId,
-      isSelectable: params.isSelectable,
-      nodeClickDistance: params.nodeClickDistance
+      isSelectable: params.isSelectable
     });
   }
 

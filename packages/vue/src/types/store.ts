@@ -8,14 +8,12 @@ import type {
   ConnectionState,
   CoordinateExtent,
   Dimensions,
-  EdgeChangeset,
   EdgeLookup,
   EdgeMarkerType,
   FitViewOptionsBase,
   HandleBounds,
   HandleType,
   IsValidConnection,
-  NodeChangeset,
   NodeConnection,
   NodeDragItem,
   NodeLookup,
@@ -33,11 +31,10 @@ import type {
 } from '@xyflow/system';
 import type { ComputedRef, CSSProperties } from 'vue';
 import type { ViewportHelper } from '../composables';
-import type { DefaultEdgeTypes, DefaultNodeTypes, EdgeComponent, NodeComponent } from './components';
 import type { DefaultEdgeOptions, Edge, EdgeReconnectable } from './edge';
 import type { ClassValue, FlowExportObject, OnBeforeDelete, VueFlowProps } from './flow';
 import type { FlowHooks, FlowHooksEmit, FlowHooksOn } from './hooks';
-import type { BuiltInNode, InternalNode, Node, NodeOrigin } from './node';
+import type { InternalNode, Node, NodeOrigin } from './node';
 
 export interface UpdateNodeDimensionsParams {
   id: string;
@@ -153,7 +150,6 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   panOnScrollSpeed: number;
   panOnScrollMode: PanOnScrollMode;
   paneClickDistance: number;
-  nodeClickDistance: number;
   zoomOnDoubleClick: boolean;
   preventScrolling: boolean;
   paneDragging: boolean;
@@ -340,10 +336,6 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   updateNodeData: UpdateNodeData<NodeType>;
   /** changes the parent of a node, keeping its absolute position */
   changeParent: (nodeId: string, parentId: string | null) => void;
-  /** applies default edge change handler */
-  applyEdgeChanges: (changes: EdgeChangeset<EdgeType>) => EdgeType[];
-  /** applies default node change handler; returns the resulting user nodes */
-  applyNodeChanges: (changes: NodeChangeset<NodeType>) => NodeType[];
   /** manually select edges and add to state */
   addSelectedEdges: (edges: EdgeType[]) => void;
   /** manually select nodes and add to state */
@@ -391,15 +383,15 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   isNodeIntersecting: IsNodeIntersecting<NodeType>;
   /** get a node's connected edges (accepts any nodes — it matches by id; output is the flow's `EdgeType`) */
   getConnectedEdges: (nodes: Node[]) => EdgeType[];
-  /** get all connections of a handle belonging to a node */
-  getHandleConnections: ({
-    id,
+  /** get all connections of a node, optionally filtered by handle type and handle id */
+  getNodeConnections: ({
     type,
+    handleId,
     nodeId,
   }: {
-    id?: string | null;
-    type: HandleType;
+    type?: HandleType;
     nodeId: string;
+    handleId?: string | null;
   }) => NodeConnection[];
   /** pan the viewport; return indicates if a transform has happened or not */
   panBy: (delta: XYPosition) => Promise<boolean>;
@@ -411,13 +403,9 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
 }
 
 export interface Getters<NodeType extends Node = Node, EdgeType extends Edge = Edge> {
-  /** returns object containing current edge types */
-  getEdgeTypes: Record<keyof DefaultEdgeTypes | string, EdgeComponent<EdgeType>>;
-  /** returns object containing current node types */
-  getNodeTypes: Record<keyof DefaultNodeTypes | string, NodeComponent<NodeType | BuiltInNode>>;
   /** all visible nodes (user-facing `Node`s; use `getInternalNode`/`nodeLookup` for enriched data) */
   getNodes: readonly NodeType[];
-  // returned list is shallow `readonly` — mutate via setNodes/updateNode/applyNodeChanges. Not
+  // returned list is shallow `readonly` — mutate via setNodes/updateNode. Not
   // `DeepReadonly`: it recurses into `Edge.label`'s VNode/Component types and trips TS2589 (#1886).
   /** all visible edges (user-facing `Edge`s) */
   getEdges: readonly EdgeType[];

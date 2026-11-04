@@ -53,11 +53,6 @@ export { NodeId as NodeIdInjection, VueFlow as VueFlowInjection } from './contex
 // Runtime prop-declaration factories for JS users (TS users use `defineProps<NodeProps<T>>()`).
 export { connectionLineProps, edgeProps, nodeProps } from './props-objects.gen';
 export * from './types';
-/**
- * @deprecated Prefer the store instance's `applyChanges`/`applyNodeChanges`/`applyEdgeChanges` (from
- * `useVueFlow`, or the instance received by `onInit`). Kept for the options API.
- */
-export { applyChanges, applyEdgeChanges, applyNodeChanges } from './utils/changes';
 export { defaultEdgeTypes, defaultNodeTypes } from './utils/defaultNodesEdges';
 export { addEdge, reconnectEdge } from './utils/edges';
 export { ErrorCode, isErrorOfType, VueFlowError } from './utils/errors';
@@ -119,7 +114,6 @@ export {
   type FitViewOptionsBase as FitViewOptions,
   type GetViewport,
   type HandleBounds,
-  type HandleConnection,
   type HandleType,
   type IsValidConnection,
   type MarkerProps,
