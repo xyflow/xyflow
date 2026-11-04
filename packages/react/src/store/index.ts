@@ -88,7 +88,9 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
      * it as their input becomes ready, so whichever finishes last fires the fit.
      */
     function resolveFitViewIfReady() {
-      const { fitViewQueued, nodesInitialized, width, height, panZoom } = get();
+      const { fitViewQueued, panZoom } = get();
+      const { nodesInitialized } = nodesStore.getState();
+      const { width, height } = viewportStore.getState();
 
       if (fitViewQueued && nodesInitialized && width && height && panZoom) {
         resolveFitView();
@@ -100,15 +102,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
       ...initialState.optionsStore,
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, parentLookup } = nodesStore.getState();
-        const {
-          nodeOrigin,
-          nodeExtent,
-          elevateNodesOnSelect,
-          fitViewQueued,
-          zIndexMode,
-          nodesSelectionActive,
-          pubSub,
-        } = get();
+        const { nodeOrigin, nodeExtent, elevateNodesOnSelect, zIndexMode, nodesSelectionActive, pubSub } = get();
 
         /*
          * setNodes() is called exclusively in response to user actions:
@@ -131,6 +125,11 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
 
         nodesStore.setState({ nodes, nodesInitialized });
         pubSub.publishNodes(updatedNodes);
+
+        if (nodesSelectionActive !== nextNodesSelectionActive) {
+          set({ nodesSelectionActive: nextNodesSelectionActive });
+        }
+
         resolveFitViewIfReady();
       },
       resolveFitViewIfReady,
@@ -163,7 +162,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         const { emitNodeChanges, domNode, nodeOrigin, nodeExtent, fitViewQueued, zIndexMode, pubSub, panZoom } = get();
         const { nodeLookup, parentLookup } = nodesStore.getState();
         const { width, height } = viewportStore.getState();
-        
+
         const { changes, updatedInternals, updatedNodes } = updateNodeInternalsSystem(
           updates,
           nodeLookup,

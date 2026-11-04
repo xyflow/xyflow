@@ -27,9 +27,9 @@ export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null
       viewportStore.setState({ width: size.width || 500, height: size.height || 500 });
 
       // container is measured now, resolve a fitView that was queued before we had dimensions
-      if (store.getState().fitViewQueued) {
+      if (optionsStore.getState().fitViewQueued) {
         cancelAnimationFrame(fitViewRaf);
-        fitViewRaf = requestAnimationFrame(() => store.getState().resolveFitViewIfReady());
+        fitViewRaf = requestAnimationFrame(() => optionsStore.getState().resolveFitViewIfReady());
       }
     };
 
