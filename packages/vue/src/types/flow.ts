@@ -384,11 +384,6 @@ export interface VueFlowProps<NodeType extends Node = Node, EdgeType extends Edg
    */
   paneClickDistance?: number;
   /**
-   * Distance that the mouse can move between mousedown/up on a node that will trigger a click
-   * @default 0
-   */
-  nodeClickDistance?: number;
-  /**
    * Controls if the viewport should zoom by double-clicking somewhere on the flow.
    * @default true
    */

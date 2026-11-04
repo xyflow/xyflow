@@ -8,7 +8,6 @@
 
   let {
     store = $bindable(),
-    nodeClickDistance,
     onnodeclick,
     onnodecontextmenu,
     onnodepointerenter,
@@ -19,7 +18,6 @@
     onnodedragstop
   }: {
     store: SvelteFlowStore<NodeType, EdgeType>;
-    nodeClickDistance?: number;
   } & NodeEvents<NodeType> = $props();
 
   const resizeObserver: ResizeObserver | null =
@@ -53,7 +51,6 @@
       bind:store
       {node}
       {resizeObserver}
-      {nodeClickDistance}
       {onnodeclick}
       {onnodepointerenter}
       {onnodepointermove}

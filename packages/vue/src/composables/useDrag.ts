@@ -11,7 +11,6 @@ interface UseDragParams {
   onStart: (event: NodeDragEvent) => void;
   onDrag: (event: NodeDragEvent) => void;
   onStop: (event: NodeDragEvent) => void;
-  onClick?: (event: PointerEvent) => void;
   el: Ref<HTMLDivElement | null>;
   disabled?: MaybeRefOrGetter<boolean>;
   selectable?: MaybeRefOrGetter<boolean>;
@@ -35,7 +34,7 @@ export function useDrag(params: UseDragParams) {
 
   const nodesSelectionActive = toRef(store, 'nodesSelectionActive');
 
-  const { onStart, onDrag, onStop, onClick, el, disabled, id, selectable, dragHandle } = params;
+  const { onStart, onDrag, onStop, el, disabled, id, selectable, dragHandle } = params;
 
   const dragging = shallowRef(false);
 
@@ -53,9 +52,6 @@ export function useDrag(params: UseDragParams) {
     if (!nodeEl || toValue(disabled)) {
       return;
     }
-
-    let dragFired = false;
-    let pointerDownPos = { x: 0, y: 0 };
 
     // XYDrag drives `updateNodePositions` from BOTH the pointermove handler and the autoPan rAF loop, and
     // `autoPan` awaits `panBy` (a d3 transition) before updating nodes. Vue flushes on a microtask, so those
@@ -158,7 +154,6 @@ export function useDrag(params: UseDragParams) {
         );
       },
       onDragStart: (event, _dragItems, node, nodes) => {
-        dragFired = true;
         dragging.value = true;
         onStart({ event, node, nodes });
       },
@@ -174,35 +169,10 @@ export function useDrag(params: UseDragParams) {
 
     dragInstance.value = instance;
 
-    // Handle the "moved slightly but within threshold" click: XYDrag won't fire drag events for
-    // sub-threshold movement and d3 suppresses the native click, so detect it with pointer listeners.
-    const handlePointerDown = (e: PointerEvent) => {
-      dragFired = false;
-      pointerDownPos = { x: e.clientX, y: e.clientY };
-    };
-
-    const handlePointerUp = (e: PointerEvent) => {
-      if (!dragFired && onClick) {
-        const dx = e.clientX - pointerDownPos.x;
-        const dy = e.clientY - pointerDownPos.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist > 0 && dist <= store.nodeDragThreshold) {
-          onClick(e);
-        }
-      }
-    };
-
-    const target = nodeEl;
-    target.addEventListener('pointerdown', handlePointerDown);
-    target.addEventListener('pointerup', handlePointerUp);
-
     onCleanup(() => {
       flushPending();
       instance.destroy();
       dragInstance.value = undefined;
-      target.removeEventListener('pointerdown', handlePointerDown);
-      target.removeEventListener('pointerup', handlePointerUp);
     });
   }, { flush: 'post' });
 
@@ -212,16 +182,15 @@ export function useDrag(params: UseDragParams) {
       () => store.noDragClassName,
       () => toValue(dragHandle),
       () => toValue(selectable),
-      () => store.nodeClickDistance,
       () => toValue(disabled),
       el,
     ],
-    ([instance, noDragClassName, handleSelector, isSelectable, nodeClickDistance, isDisabled, nodeEl]) => {
+    ([instance, noDragClassName, handleSelector, isSelectable, isDisabled, nodeEl]) => {
       if (isDisabled || !nodeEl || !instance) {
         return;
       }
 
-      instance.update({ noDragClassName, handleSelector, isSelectable, nodeId: id, domNode: nodeEl, nodeClickDistance });
+      instance.update({ noDragClassName, handleSelector, isSelectable, nodeId: id, domNode: nodeEl });
     },
     { immediate: true, flush: 'post' },
   );

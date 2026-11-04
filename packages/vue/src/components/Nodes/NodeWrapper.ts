@@ -136,9 +136,6 @@ const NodeWrapper = defineComponent({
       onStop(event) {
         emits.nodeDragStop(event);
       },
-      onClick(event) {
-        onSelectNode(event);
-      },
     });
 
     const getStyle = computed(() => {

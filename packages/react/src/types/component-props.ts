@@ -262,11 +262,6 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    */
   paneClickDistance?: number;
   /**
-   * Distance that the mouse can move between mousedown/up that will trigger a click.
-   * @default 0
-   */
-  nodeClickDistance?: number;
-  /**
    * This handler is called before nodes or edges are deleted, allowing the deletion to be aborted
    * by returning `false` or modified by returning updated nodes and edges.
    */

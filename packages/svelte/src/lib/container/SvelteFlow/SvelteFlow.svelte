@@ -30,7 +30,6 @@
     multiSelectionKey,
     zoomActivationKey,
     paneClickDistance = 1,
-    nodeClickDistance = 1,
     onmovestart,
     onmoveend,
     onmove,
@@ -200,7 +199,6 @@
         />
         <NodeRenderer
           bind:store
-          {nodeClickDistance}
           {onnodeclick}
           {onnodecontextmenu}
           {onnodepointerenter}

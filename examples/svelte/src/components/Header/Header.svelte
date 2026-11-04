@@ -12,6 +12,7 @@
 		'dagre',
 		'detached-handle',
 		'drag-n-drop',
+		'drag-threshold',
 		'edges',
 		'edge-toolbar',
 		'figma',

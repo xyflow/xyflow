@@ -23,7 +23,6 @@ export type NodeRendererProps<NodeType extends Node> = Pick<
   | 'disableKeyboardA11y'
   | 'nodeExtent'
   | 'nodeTypes'
-  | 'nodeClickDistance'
   | 'nodesDraggable'
 >;
 
@@ -85,7 +84,6 @@ function NodeRendererComponent<NodeType extends Node>(props: NodeRendererProps<N
             nodesConnectable={nodesConnectable}
             nodesFocusable={nodesFocusable}
             elementsSelectable={elementsSelectable}
-            nodeClickDistance={props.nodeClickDistance}
             onError={onError}
           />
         );

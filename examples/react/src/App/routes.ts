@@ -13,6 +13,7 @@ import DefaultEdgeOverwrite from '../examples/DefaultEdgeOverwrite';
 import DefaultNodeOverwrite from '../examples/DefaultNodeOverwrite';
 import DefaultNodes from '../examples/DefaultNodes';
 import DragHandle from '../examples/DragHandle';
+import DragThreshold from '../examples/DragThreshold';
 import DragNDrop from '../examples/DragNDrop';
 import EasyConnect from '../examples/EasyConnect';
 import Edges from '../examples/Edges';
@@ -167,6 +168,11 @@ const routes: IRoute[] = [
     name: 'Drag Handle',
     path: 'draghandle',
     component: DragHandle,
+  },
+  {
+    name: 'Drag Threshold',
+    path: 'drag-threshold',
+    component: DragThreshold,
   },
   {
     name: 'Drag and Drop',

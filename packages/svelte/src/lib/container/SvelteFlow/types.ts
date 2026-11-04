@@ -170,10 +170,6 @@ export type SvelteFlowProps<
      * @default 0
      */
     paneClickDistance?: number;
-    /** Distance that the mouse can move between mousedown/up that will trigger a click
-     * @default 0
-     */
-    nodeClickDistance?: number;
     /**
      * The threshold in pixels that the mouse must move before a connection line starts to drag.
      * This is useful to prevent accidental connections when clicking on a handle.
