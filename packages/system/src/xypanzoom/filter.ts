@@ -34,8 +34,14 @@ export function createFilter({
     const zoomScroll = zoomActivationKeyPressed || zoomOnScroll;
     const pinchZoom = zoomOnPinch && event.ctrlKey;
     const isWheelEvent = event.type === 'wheel';
+    const middleMousePanAllowed = panOnDrag === true || (Array.isArray(panOnDrag) && panOnDrag.includes(1));
 
+    /*
+     * nodes, edges and selections are marked as nopan, but we still want to allow
+     * panning with the middle mouse button on them — as long as panOnDrag allows it
+     */
     if (
+      middleMousePanAllowed &&
       isMouseEvent(event) &&
       event.button === 1 &&
       event.type === 'mousedown' &&
