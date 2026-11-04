@@ -11,6 +11,9 @@ import {
   type ZoomInOut,
   type Rect,
   getViewportForBounds,
+  dataChange,
+  replaceChange,
+  updateChange,
   getElementsToRemove,
   rendererPointToPoint,
   evaluateAbsolutePosition,
@@ -18,8 +21,10 @@ import {
   type NodeConnection,
   getNodesBounds,
   type NodeChange,
+  type EdgeChange,
   defaultFitViewPadding,
   changeParentNode,
+  positionChange,
   getConnectionsFromLookup
 } from '@xyflow/system';
 
@@ -223,16 +228,24 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    *
    * @param id - id of the node to update
    * @param dataUpdate - the data update as an object or a function that receives the current data and returns the data update
-   * @param options.replace - if true, the data is replaced with the data update, otherwise the changes get merged
+   * @param options.replace - if true, the data is replaced with the data update, otherwise the changes get merged.
+   * When replacing, the data update has to be complete.
    *
    * @example
    * updateNodeData('node-1', { label: 'A new label' });
    */
-  updateNodeData: (
-    id: string,
-    dataUpdate: Partial<NodeType['data']> | ((node: NodeType) => Partial<NodeType['data']>),
-    options?: { replace: boolean }
-  ) => void;
+  updateNodeData: {
+    (
+      id: string,
+      dataUpdate: Partial<NodeType['data']> | ((node: NodeType) => Partial<NodeType['data']>),
+      options?: { replace?: false }
+    ): void;
+    (
+      id: string,
+      dataUpdate: NodeType['data'] | ((node: NodeType) => NodeType['data']),
+      options?: { replace?: boolean }
+    ): void;
+  };
   /**
    * Changes the parent of a node.
    *
@@ -255,6 +268,32 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options?: { replace: boolean }
   ) => void;
+  /**
+   * Updates the data attribute of an edge.
+   *
+   * @param id - id of the edge to update
+   * @param dataUpdate - the data update as an object or a function that receives the current edge and returns the data update
+   * @param options.replace - if true, the data is replaced with the data update, otherwise the changes get merged.
+   * When replacing, the data update has to be complete.
+   *
+   * @example
+   * updateEdgeData('edge-1', { label: 'A new label' });
+   */
+  updateEdgeData: {
+    (
+      id: string,
+      dataUpdate:
+        | Partial<NonNullable<EdgeType['data']>>
+        | ((edge: EdgeType) => Partial<NonNullable<EdgeType['data']>>),
+      options?: { replace?: false }
+    ): void;
+    (
+      id: string,
+      dataUpdate:
+        NonNullable<EdgeType['data']> | ((edge: EdgeType) => NonNullable<EdgeType['data']>),
+      options?: { replace?: boolean }
+    ): void;
+  };
   /**
    * Returns the nodes, edges and the viewport as a JSON object.
    *
@@ -324,13 +363,27 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
 
     const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
 
-    store.queueNodeChanges([
-      {
-        id,
-        type: 'replace',
-        item: options?.replace && isNode<NodeType>(nextNode) ? nextNode : { ...node, ...nextNode }
+    const changes: NodeChange<NodeType>[] = [];
+
+    if (options.replace && isNode<NodeType>(nextNode)) {
+      changes.push(replaceChange(nextNode));
+    } else {
+      const { position, data, ...rest } = nextNode;
+
+      if (position && (position.x !== node.position.x || position.y !== node.position.y)) {
+        changes.push(positionChange(id, position));
       }
-    ]);
+
+      if (data && data !== node.data) {
+        changes.push(dataChange(id, data, true));
+      }
+
+      if (Object.keys(rest).length > 0) {
+        changes.push(updateChange<NodeType>(id, rest as Partial<NodeType>));
+      }
+    }
+
+    store.queueNodeChanges(changes);
   }
 
   function updateEdge(
@@ -346,13 +399,23 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
 
     const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
 
-    store.queueEdgeChanges([
-      {
-        id,
-        type: 'replace',
-        item: options?.replace && isEdge<EdgeType>(nextEdge) ? nextEdge : { ...edge, ...nextEdge }
+    const changes: EdgeChange<EdgeType>[] = [];
+
+    if (options.replace && isEdge<EdgeType>(nextEdge)) {
+      changes.push(replaceChange(nextEdge));
+    } else {
+      const { data, ...rest } = nextEdge;
+
+      if (data && data !== edge.data) {
+        changes.push(dataChange(id, data, true));
       }
-    ]);
+
+      if (Object.keys(rest).length > 0) {
+        changes.push(updateChange<EdgeType>(id, rest as Partial<EdgeType>));
+      }
+    }
+
+    store.queueEdgeChanges(changes);
   }
 
   const getInternalNode = (id: string) => store.nodeLookup.get(id);
@@ -557,7 +620,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       });
     },
     updateNode,
-    updateNodeData: (id, dataUpdate, options) => {
+    updateNodeData: (
+      id: string,
+      dataUpdate: NodeType['data'] | ((node: NodeType) => NodeType['data']),
+      options?: { replace?: boolean }
+    ) => {
       const node = store.nodeLookup.get(id)?.internals.userNode;
 
       if (!node) {
@@ -565,10 +632,9 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       }
 
       const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
-      updateNode(id, (node) => ({
-        ...node,
-        data: options?.replace ? nextData : { ...node.data, ...nextData }
-      }));
+      store.queueNodeChanges([
+        options?.replace ? dataChange(id, nextData, true) : dataChange(id, nextData)
+      ]);
     },
     changeParent: (nodeId: string, parentId: string | null) => {
       changeParentNode(
@@ -585,6 +651,23 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       );
     },
     updateEdge,
+    updateEdgeData: (
+      id: string,
+      dataUpdate:
+        NonNullable<EdgeType['data']> | ((edge: EdgeType) => NonNullable<EdgeType['data']>),
+      options?: { replace?: boolean }
+    ) => {
+      const edge = store.edgeLookup.get(id);
+
+      if (!edge) {
+        return;
+      }
+
+      const nextData = typeof dataUpdate === 'function' ? dataUpdate(edge) : dataUpdate;
+      store.queueEdgeChanges([
+        options?.replace ? dataChange(id, nextData, true) : dataChange(id, nextData)
+      ]);
+    },
     getNodesBounds: (nodes) => {
       return getNodesBounds(nodes, { nodeLookup: store.nodeLookup, nodeOrigin: store.nodeOrigin });
     },

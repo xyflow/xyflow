@@ -86,7 +86,13 @@
 	]);
 </script>
 
-<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView>
+<SvelteFlow
+	bind:nodes
+	bind:edges
+	{nodeTypes}
+	fitView
+	onnodeschange={(changes) => console.log('onnodeschange', changes)}
+>
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />
