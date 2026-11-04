@@ -24,7 +24,7 @@ import {
   type EdgeChange,
   defaultFitViewPadding,
   changeParentNode,
-  positionChange
+  positionChange,
   getConnectionsFromLookup
 } from '@xyflow/system';
 
