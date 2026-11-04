@@ -575,7 +575,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * @example
    * @default '4.5%'
    * const fitViewOptions = {
-   *  padding: 10%,
+   *  padding: '10%',
    *  includeHiddenNodes: false,
    *  minZoom: 0.1,
    *  maxZoom: 1,
