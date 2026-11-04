@@ -2,4 +2,4 @@
 "@xyflow/system": patch
 ---
 
-Keep `useNodeConnections` results and callbacks up to date when connections change. Preserve previous connection snapshots and retain connections when edges exchange endpoints or replace an edge with a new ID.
+Call `onConnect` and `onDisconnect` of `useNodeConnections` reliably and keep its result up to date when edges are added, removed, reconnected or replaced.
