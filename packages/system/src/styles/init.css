@@ -37,6 +37,15 @@
   color-scheme: light;
 }
 
+/* forceColorMode: these must come last to override the theme */
+.xy-flow.dark {
+  color-scheme: dark;
+}
+
+.xy-flow.light {
+  color-scheme: light;
+}
+
 .xy-flow {
   background-color: var(--xy-background-color, var(--xy-background-color-default));
 }

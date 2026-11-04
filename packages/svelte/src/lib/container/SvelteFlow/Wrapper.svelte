@@ -8,7 +8,6 @@
   let {
     width,
     height,
-    forceColorMode,
     domNode = $bindable(),
     clientWidth = $bindable(),
     clientHeight = $bindable(),
@@ -17,7 +16,6 @@
   }: {
     width?: number;
     height?: number;
-    forceColorMode?: string;
     domNode: HTMLDivElement | null;
     clientWidth?: number;
     clientHeight?: number;
@@ -34,7 +32,7 @@
     class: className,
     nodeTypes,
     edgeTypes,
-    forceColorMode: _forceColorMode,
+    forceColorMode,
     isValidConnection,
     onmove,
     onmovestart,
