@@ -217,6 +217,7 @@ function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
       const { inProgress, ...connectionState } = previousConnection;
       const finalConnectionState = {
         ...connectionState,
+        to: pointToRendererPoint(previousConnection.to, getTransform()),
         toPosition: previousConnection.toHandle ? previousConnection.toPosition : null,
       };
 
