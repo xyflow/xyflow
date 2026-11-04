@@ -10,16 +10,16 @@ import {
   ConnectionMode,
   Position,
   oppositePosition,
-  ConnectionInProgress,
-  type Handle,
+  type ConnectionInProgress,
+  type HandleBounds,
   type Connection,
-  NodeBase,
-  EdgeBase,
-  InternalNodeBase,
+  type NodeBase,
+  type EdgeBase,
+  type InternalNodeBase,
 } from '../types';
 
 import { getClosestHandle, isConnectionValid, getHandleType, getHandle } from './utils';
-import { IsValidParams, OnPointerDownParams, Result, XYHandleInstance } from './types';
+import { type IsValidParams, type OnPointerDownParams, type Result, type XYHandleInstance } from './types';
 
 const alwaysValid = () => true;
 
@@ -55,7 +55,7 @@ function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
   // when xyflow is used inside a shadow root we can't use document
   const doc = getHostForElement(event.target);
   let autoPanId = 0;
-  let closestHandle: Handle | null;
+  let closestHandle: HandleBounds | null;
 
   const { x, y } = getEventPosition(event);
   const handleType = getHandleType(edgeUpdaterType, handleDomNode);
@@ -84,12 +84,12 @@ function onPointerDown<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
     }
     const [x, y] = calcAutoPan(position, containerBounds, autoPanSpeed);
 
-    panBy({ x, y });
+    void panBy({ x, y });
     autoPanId = requestAnimationFrame(autoPan);
   }
 
   // Stays the same for all consecutive pointermove events
-  const fromHandle: Handle = {
+  const fromHandle: HandleBounds = {
     ...fromHandleInternal,
     nodeId,
     type: handleType,

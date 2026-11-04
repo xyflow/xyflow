@@ -1,9 +1,9 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { type PanZoomInstance, type Transform } from '@xyflow/system';
 
-  import zoom from '$lib/actions/zoom/index.js';
+  import zoom from '#lib/actions/zoom/index.js';
   import type { ZoomProps } from './types.js';
-  import type { Node, Edge } from '$lib/types/index.js';
+  import type { Node, Edge } from '#lib/types/index.js';
 
   let {
     store = $bindable(),
@@ -42,7 +42,6 @@
 <div
   class="svelte-flow__zoom svelte-flow__container"
   use:zoom={{
-    viewport: store.viewport,
     minZoom: store.minZoom,
     maxZoom: store.maxZoom,
     initialViewport,

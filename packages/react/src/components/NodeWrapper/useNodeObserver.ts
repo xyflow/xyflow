@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import type { InternalNode } from '../../types';
-import { useStoreApi } from '../../hooks/useStore';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 
 /**
  * Hook to handle the resize observation + internal updates for the passed node.
@@ -20,7 +20,7 @@ export function useNodeObserver({
   hasDimensions: boolean;
   resizeObserver: ResizeObserver | null;
 }) {
-  const store = useStoreApi();
+  const { optionsStore } = useReactFlowStoreApi();
   const nodeRef = useRef<HTMLDivElement | null>(null);
   const observedNode = useRef<HTMLDivElement | null>(null);
   const prevSourcePosition = useRef(node.sourcePosition);
@@ -28,6 +28,9 @@ export function useNodeObserver({
   const prevType = useRef(nodeType);
   const isInitialized = hasDimensions && !!node.internals.handleBounds;
 
+  // A controlled update can clear handle bounds while the dimensions change
+  // is still being applied. isInitialized stays false in that case, so retry
+  // observation when the measured dimensions arrive, even with explicit sizes.
   useEffect(() => {
     if (nodeRef.current && !node.hidden && (!isInitialized || observedNode.current !== nodeRef.current)) {
       if (observedNode.current) {
@@ -36,7 +39,7 @@ export function useNodeObserver({
       resizeObserver?.observe(nodeRef.current);
       observedNode.current = nodeRef.current;
     }
-  }, [isInitialized, node.hidden]);
+  }, [isInitialized, node.hidden, node.measured.width, node.measured.height]);
 
   useEffect(() => {
     return () => {
@@ -62,7 +65,7 @@ export function useNodeObserver({
         prevSourcePosition.current = node.sourcePosition;
         prevTargetPosition.current = node.targetPosition;
 
-        store
+        optionsStore
           .getState()
           .updateNodeInternals(new Map([[node.id, { id: node.id, nodeElement: nodeRef.current, force: true }]]));
       }

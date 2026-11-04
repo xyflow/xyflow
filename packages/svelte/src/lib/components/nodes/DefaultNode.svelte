@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Position } from '@xyflow/system';
 
-  import { Handle } from '$lib/components/Handle/index.js';
-  import type { NodeProps } from '$lib/types/index.js';
+  import { Handle } from '#lib/components/Handle/index.js';
+  import type { NodeProps } from '#lib/types/index.js';
 
   let {
     data,

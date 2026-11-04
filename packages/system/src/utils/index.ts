@@ -1,6 +1,7 @@
 export * from './attribution';
 export * from './connections';
 export * from './dom';
+export * from './events';
 export * from './edges';
 export * from './graph';
 export * from './general';
@@ -10,3 +11,4 @@ export * from './edge-toolbar';
 export * from './store';
 export * from './types';
 export * from './shallow-node-data';
+export * from './subflows';

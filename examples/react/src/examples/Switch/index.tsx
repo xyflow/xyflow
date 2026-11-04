@@ -1,5 +1,5 @@
 import { MouseEvent, useCallback } from 'react';
-import { ReactFlow, addEdge, Node, Connection, Edge, useNodesState, useEdgesState } from '@xyflow/react';
+import { ReactFlow, addEdge, Node, Connection, Edge, useNodesState, useEdgesState, OnNodeDrag } from '@xyflow/react';
 
 const nodesA: Node[] = [
   {
@@ -80,9 +80,9 @@ const edgesB: Edge[] = [
   { id: 'e4b', source: 'inputb', target: '4b' },
 ];
 
-const onNodeDragStart = (_: MouseEvent, node: Node) => console.log('drag start', node);
-const onNodeDrag = (_: MouseEvent, node: Node) => console.log('drag', node.position);
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDragStart: OnNodeDrag = (_, node) => console.log('drag start', node);
+const onNodeDrag: OnNodeDrag = (_, node) => console.log('drag', node.position);
+const onNodeDragStop: OnNodeDrag = (_, node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 
 const BasicFlow = () => {

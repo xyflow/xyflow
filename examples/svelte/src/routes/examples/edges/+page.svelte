@@ -10,7 +10,7 @@
 		type EdgeTypes
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 	import ButtonEdge from './ButtonEdge.svelte';
 	import CustomBezierEdge from './CustomBezierEdge.svelte';
 

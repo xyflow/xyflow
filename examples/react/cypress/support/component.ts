@@ -8,7 +8,7 @@ import 'cypress-real-events/support';
 import { mount } from 'cypress/react18';
 import { XYPosition } from '@xyflow/react';
 
-import '@xyflow/react/dist/style.css';
+import '@xyflow/react/style.css';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

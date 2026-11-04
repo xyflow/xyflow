@@ -1,5 +1,12 @@
 import { getHandlePosition, getOverlappingArea, nodeToRect } from '../utils';
-import type { HandleType, XYPosition, Handle, InternalNodeBase, NodeLookup, ConnectionMode } from '../types';
+import {
+  ConnectionMode,
+  type HandleType,
+  type XYPosition,
+  type HandleBounds,
+  type InternalNodeBase,
+  type NodeLookup,
+} from '../types';
 
 function getNodesWithinDistance(position: XYPosition, nodeLookup: NodeLookup, distance: number): InternalNodeBase[] {
   const nodes: InternalNodeBase[] = [];
@@ -30,8 +37,8 @@ export function getClosestHandle(
   connectionRadius: number,
   nodeLookup: NodeLookup,
   fromHandle: { nodeId: string; type: HandleType; id?: string | null }
-): Handle | null {
-  let closestHandles: Handle[] = [];
+): HandleBounds | null {
+  let closestHandles: HandleBounds[] = [];
   let minDistance = Infinity;
 
   const closeNodes = getNodesWithinDistance(position, nodeLookup, connectionRadius + ADDITIONAL_DISTANCE);
@@ -82,14 +89,14 @@ export function getHandle(
   nodeLookup: NodeLookup,
   connectionMode: ConnectionMode,
   withAbsolutePosition = false
-): Handle | null {
+): HandleBounds | null {
   const node = nodeLookup.get(nodeId);
   if (!node) {
     return null;
   }
 
   const handles =
-    connectionMode === 'strict'
+    connectionMode === ConnectionMode.Strict
       ? node.internals.handleBounds?.[handleType]
       : [...(node.internals.handleBounds?.source ?? []), ...(node.internals.handleBounds?.target ?? [])];
   const handle = (handleId ? handles?.find((h) => h.id === handleId) : handles?.[0]) ?? null;

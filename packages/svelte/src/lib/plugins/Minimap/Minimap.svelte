@@ -8,8 +8,8 @@
 <script lang="ts">
   import { getBoundsOfRects, getInternalNodesBounds, nodeHasDimensions } from '@xyflow/system';
 
-  import { useStore } from '$lib/store/index.js';
-  import { Panel } from '$lib/container/Panel/index.js';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import { Panel } from '#lib/container/Panel/index.js';
   import MinimapNode from './MinimapNode.svelte';
   import interactive from './interactive.js';
   import type { GetMiniMapNodeAttribute, MiniMapProps } from './types.js';
@@ -37,7 +37,7 @@
     ...rest
   }: MiniMapProps = $props();
 
-  let store = $derived(useStore());
+  let store = $derived(useSvelteFlowStore());
   let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
   const shapeRendering =

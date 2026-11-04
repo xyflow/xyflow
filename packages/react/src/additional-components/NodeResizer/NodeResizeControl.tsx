@@ -1,6 +1,5 @@
-import { useRef, useEffect, memo, useCallback } from 'react';
+import { memo, useRef, useEffect } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import {
   XYResizer,
   ResizeControlVariant,
@@ -8,22 +7,19 @@ import {
   type XYResizerChange,
   type XYResizerChildChange,
   type NodeChange,
-  type NodeDimensionChange,
-  type NodePositionChange,
+  type DimensionChange,
   handleExpandParent,
   evaluateAbsolutePosition,
   ParentExpandChild,
-  XYPosition,
   ControlPosition,
+  positionChange,
+  type PositionChange,
+  XYPosition,
 } from '@xyflow/system';
 
-import { useStoreApi, useStore } from '../../hooks/useStore';
+import { useReactFlowStoreApi, useViewportStore } from '../../hooks/useReactFlowStore';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
-import { ReactFlowState } from '../../types';
-
-const scaleSelector = (calculateScale: boolean) => (store: ReactFlowState) =>
-  calculateScale ? `${Math.max(1 / store.transform[2], 1)}` : undefined;
 
 const defaultPositions: Record<ResizeControlVariant, ControlPosition> = {
   [ResizeControlVariant.Line]: 'right',
@@ -52,13 +48,14 @@ function ResizeControl({
 }: ResizeControlProps) {
   const contextNodeId = useNodeId();
   const id = typeof nodeId === 'string' ? nodeId : contextNodeId;
-  const store = useStoreApi();
+  const { optionsStore, viewportStore, nodesStore } = useReactFlowStoreApi();
   const resizeControlRef = useRef<HTMLDivElement>(null);
   const isHandleControl = variant === ResizeControlVariant.Handle;
-  const scale = useStore(
-    useCallback(scaleSelector(isHandleControl && autoScale), [isHandleControl, autoScale]),
-    shallow
+
+  const scale = useViewportStore((s) =>
+    isHandleControl && autoScale ? `${Math.max(1 / s.transform[2], 1)}` : undefined
   );
+
   const resizer = useRef<XYResizerInstance | null>(null);
   const controlPosition = position ?? defaultPositions[variant];
 
@@ -72,7 +69,9 @@ function ResizeControl({
         domNode: resizeControlRef.current,
         nodeId: id,
         getStoreItems: () => {
-          const { nodeLookup, transform, snapGrid, snapToGrid, nodeOrigin, domNode } = store.getState();
+          const { nodeLookup } = nodesStore.getState();
+          const { transform } = viewportStore.getState();
+          const { snapGrid, snapToGrid, nodeOrigin, domNode } = optionsStore.getState();
           return {
             nodeLookup,
             transform,
@@ -83,7 +82,8 @@ function ResizeControl({
           };
         },
         onChange: (change: XYResizerChange, childChanges: XYResizerChildChange[]) => {
-          const { triggerNodeChanges, nodeLookup, parentLookup, nodeOrigin } = store.getState();
+          const { emitNodeChanges, nodeOrigin } = optionsStore.getState();
+          const { nodeLookup, parentLookup } = nodesStore.getState();
           const changes: NodeChange[] = [];
           const nextPosition = { x: change.x, y: change.y };
           const node = nodeLookup.get(id);
@@ -124,17 +124,12 @@ function ResizeControl({
           }
 
           if (nextPosition.x !== undefined && nextPosition.y !== undefined) {
-            const positionChange: NodePositionChange = {
-              id,
-              type: 'position',
-              position: { ...(nextPosition as XYPosition) },
-            };
-            changes.push(positionChange);
+            changes.push(positionChange(id, nextPosition as XYPosition));
           }
 
           if (change.width !== undefined && change.height !== undefined) {
             const setAttributes = !resizeDirection ? true : resizeDirection === 'horizontal' ? 'width' : 'height';
-            const dimensionChange: NodeDimensionChange = {
+            const dimensionChange: DimensionChange = {
               id,
               type: 'dimensions',
               resizing: true,
@@ -149,18 +144,18 @@ function ResizeControl({
           }
 
           for (const childChange of childChanges) {
-            const positionChange: NodePositionChange = {
+            const _positionChange: PositionChange = {
               ...childChange,
               type: 'position',
             };
 
-            changes.push(positionChange);
+            changes.push(_positionChange);
           }
 
-          triggerNodeChanges(changes);
+          emitNodeChanges(changes);
         },
         onEnd: ({ width, height }) => {
-          const dimensionChange: NodeDimensionChange = {
+          const _dimensionChange: DimensionChange = {
             id: id,
             type: 'dimensions',
             resizing: false,
@@ -169,7 +164,7 @@ function ResizeControl({
               height,
             },
           };
-          store.getState().triggerNodeChanges([dimensionChange]);
+          optionsStore.getState().emitNodeChanges([_dimensionChange]);
         },
       });
     }
@@ -204,9 +199,15 @@ function ResizeControl({
     onResize,
     onResizeEnd,
     shouldResize,
+    id,
+    resizeDirection,
+    optionsStore,
+    nodesStore,
+    viewportStore,
   ]);
 
   const positionClassNames = controlPosition.split('-');
+  const colorProperty = isHandleControl ? 'backgroundColor' : 'borderColor';
 
   return (
     <div
@@ -215,7 +216,7 @@ function ResizeControl({
       style={{
         ...style,
         scale,
-        ...(color && { [isHandleControl ? 'backgroundColor' : 'borderColor']: color }),
+        ...(color && { [colorProperty]: color }),
       }}
     >
       {children}

@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
-import { DistributivePick, shallowNodeData } from '@xyflow/system';
+import { type DistributivePick, shallowNodeData } from '@xyflow/system';
+import { useSyncExternalStore } from 'react';
 
-import { useStore } from '../hooks/useStore';
+import { useEqualSelector, useReactFlowStoreApi, useShallow } from './useReactFlowStore';
 import type { Node } from '../types';
 
 /**
@@ -31,31 +31,25 @@ export function useNodesData<NodeType extends Node = Node>(
   nodeIds: string[]
 ): DistributivePick<NodeType, 'id' | 'type' | 'data'>[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useNodesData(nodeIds: any): any {
-  const nodesData = useStore(
-    useCallback(
-      (s) => {
-        const data = [];
-        const isArrayOfIds = Array.isArray(nodeIds);
-        const _nodeIds = isArrayOfIds ? nodeIds : [nodeIds];
+export function useNodesData(nodeIds: string | string[]): any {
+  const isSingleId = typeof nodeIds === 'string';
+  const { optionsStore, nodesStore } = useReactFlowStoreApi();
+  const ids = useShallow((value: string | string[]) => new Set(typeof value === 'string' ? [value] : value))(nodeIds);
+  const subscribe = (onStoreChange: () => void) => optionsStore.getState().pubSub.subscribeToNodes(ids, onStoreChange);
+  const selectSnapshot = useEqualSelector(() => {
+    const { nodeLookup } = nodesStore.getState();
+    const data: Pick<Node, 'id' | 'type' | 'data'>[] = [];
 
-        for (const nodeId of _nodeIds) {
-          const node = s.nodeLookup.get(nodeId);
-          if (node) {
-            data.push({
-              id: node.id,
-              type: node.type,
-              data: node.data,
-            });
-          }
-        }
+    for (const id of ids) {
+      const node = nodeLookup.get(id);
+      if (node) {
+        data.push({ id: node.id, type: node.type, data: node.data });
+      }
+    }
 
-        return isArrayOfIds ? data : data[0] ?? null;
-      },
-      [nodeIds]
-    ),
-    shallowNodeData
-  );
+    return isSingleId ? (data[0] ?? null) : data;
+  }, shallowNodeData);
+  const getSnapshot = () => selectSnapshot(undefined);
 
-  return nodesData;
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }
