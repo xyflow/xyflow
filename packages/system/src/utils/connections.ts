@@ -38,7 +38,7 @@ export function getConnectionsFromLookup(
 /**
  * @internal
  */
-export function areConnectionMapsEqual(a?: Map<string, HandleConnection>, b?: Map<string, HandleConnection>) {
+export function areConnectionMapsEqual(a?: Map<string, NodeConnection>, b?: Map<string, NodeConnection>) {
   if (a === b) {
     return true;
   }
