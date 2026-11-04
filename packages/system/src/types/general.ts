@@ -329,7 +329,7 @@ export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNod
    * or `false`, otherwise `null`.
    */
   isValid: boolean | null;
-  /** Returns the xy start position or `null` if no connection is in progress. */
+  /** Returns the xy start position in flow coordinates or `null` if no connection is in progress. */
   from: XYPosition;
   /** Returns the start handle or `null` if no connection is in progress. */
   fromHandle: HandleBounds;
@@ -337,7 +337,7 @@ export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNod
   fromPosition: Position;
   /** Returns the start node or `null` if no connection is in progress. */
   fromNode: NodeType;
-  /** Returns the xy end position or `null` if no connection is in progress. */
+  /** Returns the xy end position in flow coordinates or `null` if no connection is in progress. */
   to: XYPosition;
   /** Returns the end handle or `null` if no connection is in progress. */
   toHandle: HandleBounds | null;
@@ -345,7 +345,10 @@ export type ConnectionInProgress<NodeType extends InternalNodeBase = InternalNod
   toPosition: Position;
   /** Returns the end node or `null` if no connection is in progress. */
   toNode: NodeType | null;
-  /** Returns the pointer position or `null` if no connection is in progress. */
+  /**
+   * Returns the pointer position relative to the pane, in screen coordinates, or `null` if no
+   * connection is in progress.
+   */
   pointer: XYPosition;
 };
 
