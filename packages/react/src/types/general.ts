@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import {
+import type {
   FitViewParamsBase,
   FitViewOptionsBase,
   ZoomInOut,
@@ -12,9 +12,9 @@ import {
   XYPosition,
   OnBeforeDeleteBase,
   Connection,
-  NodeChange,
-  EdgeChange,
   SnapGrid,
+  NodeChangeset,
+  EdgeChangeset,
 } from '@xyflow/system';
 
 import type { Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
@@ -28,11 +28,11 @@ import type { Node, Edge, ReactFlowInstance, EdgeProps, NodeProps } from '.';
  *
  * ```ts
  * const onNodesChange: OnNodesChange<MyNodeType> = useCallback((changes) => {
- *  setNodes((nodes) => applyNodeChanges(nodes, changes));
+ *  setNodes((nodes) => changes.applyTo(nodes));
  * },[]);
  * ```
  */
-export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<NodeType>[]) => void;
+export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChangeset<NodeType>) => void;
 
 /**
  * This type can be used to type the `onEdgesChange` function with a custom edge type.
@@ -43,11 +43,11 @@ export type OnNodesChange<NodeType extends Node = Node> = (changes: NodeChange<N
  *
  * ```ts
  * const onEdgesChange: OnEdgesChange<MyEdgeType> = useCallback((changes) => {
- *  setEdges((edges) => applyEdgeChanges(edges, changes));
+ *  setEdges((edges) => changes.applyTo(edges));
  * },[]);
  * ```
  */
-export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChange<EdgeType>[]) => void;
+export type OnEdgesChange<EdgeType extends Edge = Edge> = (changes: EdgeChangeset<EdgeType>) => void;
 
 export type OnNodesDelete<NodeType extends Node = Node> = (nodes: NodeType[]) => void;
 export type OnEdgesDelete<EdgeType extends Edge = Edge> = (edges: EdgeType[]) => void;
@@ -230,3 +230,13 @@ export type OnBeforeDelete<NodeType extends Node = Node, EdgeType extends Edge =
  *  If the function returns `true`, the connection is valid and can be created.
  */
 export type IsValidConnection<EdgeType extends Edge = Edge> = (edge: EdgeType | Connection) => boolean;
+
+/**
+ * React Flow is independent and entirely funded by its users.
+ * If you hide the attribution, please support our work by subscribing to React Flow Pro: https://reactflow.dev/remove-attribution
+ * */
+export type ProOptions = {
+  account?: string;
+  /** If you hide the attribution, please support our work with a subscription. */
+  hideAttribution: boolean;
+};

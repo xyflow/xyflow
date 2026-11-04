@@ -16,6 +16,7 @@ import {
   useUpdateNodeInternals,
   ReactFlowProvider,
   CoordinateExtent,
+  useReactFlow,
 } from '@xyflow/react';
 
 import DebugNode from './DebugNode';
@@ -86,6 +87,7 @@ const initialNodes: Node[] = [
     position: { x: 40, y: 20 },
     className: 'light',
     parentId: '4b',
+    origin: [0.5, 0.5],
   },
   {
     id: '4b2',
@@ -134,9 +136,8 @@ const initialNodes: Node[] = [
     data: { label: 'Node 3' },
     position: { x: 400, y: 100 },
     className: 'light',
-    extent: 'parent',
   },
-];
+].reverse();
 
 const initialEdges: Edge[] = [
   {
@@ -173,6 +174,7 @@ const Subflow = () => {
   const updateNodeInternals = useUpdateNodeInternals();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { changeParent } = useReactFlow();
 
   const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge(connection, eds)), [setEdges]);
   const onInit = useCallback((reactFlowInstance: ReactFlowInstance) => setRfInstance(reactFlowInstance), []);
@@ -237,7 +239,7 @@ const Subflow = () => {
       nodeTypes={nodeTypes}
       fitView
       nodeOrigin={[0, 0]}
-      nodeExtent={nodeExtent}
+      // nodeExtent={nodeExtent}
     >
       <MiniMap />
       <Controls />
@@ -251,6 +253,7 @@ const Subflow = () => {
         <button onClick={logToObject}>toObject</button>
         <button onClick={() => setNodes(initialNodes)}>setNodes</button>
         <button onClick={() => updateNodeInternals(nodes.map((node) => node.id))}>updateNodeInternals</button>
+        <button onClick={() => changeParent('4b1', '5')}>changeParent</button>
       </Panel>
     </ReactFlow>
   );

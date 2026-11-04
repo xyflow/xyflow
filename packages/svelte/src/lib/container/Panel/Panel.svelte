@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { PanelProps } from './types';
+  import type { PanelProps } from './types.js';
 
   let { position = 'top-right', style, class: className, children, ...rest }: PanelProps = $props();
 

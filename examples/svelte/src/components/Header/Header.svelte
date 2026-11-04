@@ -21,6 +21,7 @@
 		'node-toolbar',
 		'node-resizer',
 		'overview',
+		'setnodes-batching',
 		'stress',
 		'subflows',
 		'two-way-viewport',
@@ -28,7 +29,8 @@
 		'usesvelteflow',
 		'useupdatenodeinternals',
 		'validation',
-		'reset'
+		'reset',
+		'unmount'
 	];
 
 	const onChange = (event: Event) => {
@@ -40,7 +42,7 @@
 <header>
 	<div class="logo">Svelte Flow</div>
 	<select onchange={onChange} value={page.route.id}>
-		{#each routes as route}
+		{#each routes as route (route)}
 			<option value={`/examples/${route}`}>{route}</option>
 		{/each}
 	</select>

@@ -1,4 +1,4 @@
-import { MouseEvent, CSSProperties, useCallback, useState } from 'react';
+import { MouseEvent, useCallback, useState } from 'react';
 
 import {
   ReactFlow,
@@ -15,11 +15,12 @@ import {
   useEdgesState,
   useNodesState,
   Panel,
+  OnNodeDrag,
 } from '@xyflow/react';
 
 const onInit = (reactFlowInstance: ReactFlowInstance) => console.log('flow loaded:', reactFlowInstance);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDragStop: OnNodeDrag = (_, node) => console.log('drag stop', node);
 
 const CustomMiniMapNode = ({ x, y, width, height }: MiniMapNodeProps) => {
   return <circle cx={x} cy={y} r={Math.max(width, height) / 2} fill="#ffcc00" />;
@@ -46,10 +47,10 @@ const CustomMiniMapNodeFlow = () => {
   };
 
   const toggleHideAllNodes = () => {
-    setHideAllNodes(prev => {
+    setHideAllNodes((prev) => {
       const next = !prev;
-      setNodes(nds => nds.map(n => ({ ...n, hidden: next })));
-      setEdges(eds => eds.map(e => ({ ...e, hidden: next })));
+      setNodes((nds) => nds.map((n) => ({ ...n, hidden: next })));
+      setEdges((eds) => eds.map((e) => ({ ...e, hidden: next })));
       return next;
     });
   };

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { BaseEdgeProps } from '../../types';
+  import type { BaseEdgeProps } from '../../types/index.js';
   import EdgeLabel from '../EdgeLabel/EdgeLabel.svelte';
 
   let {

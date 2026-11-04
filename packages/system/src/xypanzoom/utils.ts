@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ZoomTransform, zoomIdentity } from 'd3-zoom';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { transition } from 'd3-transition';
 
 import { type D3SelectionInstance, type Viewport } from '../types';
 import { isMacOs } from '../utils';
+import { type D3ZoomInputEvent } from '../utils/events';
 
 export const transformToViewport = (transform: ZoomTransform): Viewport => ({
   x: transform.x,
@@ -15,7 +15,15 @@ export const transformToViewport = (transform: ZoomTransform): Viewport => ({
 export const viewportToTransform = ({ x, y, zoom }: Viewport): ZoomTransform =>
   zoomIdentity.translate(x, y).scale(zoom);
 
-export const isWrappedWithClass = (event: any, className: string | undefined) => event.target.closest(`.${className}`);
+export const isWrappedWithClass = (event: D3ZoomInputEvent, className: string | undefined) => {
+  if (!className) {
+    return false;
+  }
+
+  const target = event.target;
+
+  return target instanceof Element && !!target.closest(`.${className}`);
+};
 
 export const isRightClickPan = (panOnDrag: boolean | number[], usedButton: number) =>
   usedButton === 2 && Array.isArray(panOnDrag) && panOnDrag.includes(2);
@@ -23,17 +31,33 @@ export const isRightClickPan = (panOnDrag: boolean | number[], usedButton: numbe
 // taken from d3-ease: https://github.com/d3/d3-ease/blob/main/src/cubic.js
 const defaultEase = (t: number) => ((t *= 2) <= 1 ? t * t * t : (t -= 2) * t * t + 2) / 2;
 
-export const getD3Transition = (selection: D3SelectionInstance, duration = 0, ease = defaultEase, onEnd = () => {}) => {
+export const getD3Transition = (
+  selection: D3SelectionInstance,
+  duration = 0,
+  ease = defaultEase,
+  onEnd: (ended: boolean) => void = () => {}
+) => {
   const hasDuration = typeof duration === 'number' && duration > 0;
 
   if (!hasDuration) {
-    onEnd();
+    onEnd(true);
   }
 
-  return hasDuration ? selection.transition().duration(duration).ease(ease).on('end', onEnd) : selection;
+  /*
+   * A user gesture or another viewport update stops a running transition with "interrupt"
+   * (or with "cancel" if it has not started yet) and the transition never sends "end"
+   */
+  return hasDuration
+    ? selection
+        .transition()
+        .duration(duration)
+        .ease(ease)
+        .on('end', () => onEnd(true))
+        .on('interrupt cancel', () => onEnd(false))
+    : selection;
 };
 
-export const wheelDelta = (event: any) => {
+export const wheelDelta = (event: WheelEvent) => {
   const factor = event.ctrlKey && isMacOs() ? 10 : 1;
 
   return -event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002) * factor;

@@ -5,19 +5,20 @@
     isMouseEvent,
     areConnectionMapsEqual,
     handleConnectionChange,
+    getConnectionLookupKey,
     ConnectionMode,
     getHostForElement,
-    type HandleConnection,
+    type NodeConnection,
     type Optional,
     type ConnectionState,
     type FinalConnectionState,
     type Connection
   } from '@xyflow/system';
 
-  import { useStore } from '$lib/store';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
 
-  import type { HandleProps } from './types';
-  import { getNodeConnectableContext, getNodeIdContext } from '$lib/store/context';
+  import type { HandleProps } from './types.js';
+  import { getNodeConnectableContext, getNodeIdContext } from '#lib/store/context.js';
 
   let {
     id: handleId = null,
@@ -45,18 +46,16 @@
     isConnectableProp !== undefined ? isConnectableProp : isConnectableContext.value
   );
 
-  let store = useStore();
+  let store = useSvelteFlowStore();
   let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
-  let prevConnections: Map<string, HandleConnection> | null = null;
+  let prevConnections: Map<string, NodeConnection> | null = null;
   $effect.pre(() => {
     if (onconnect || ondisconnect) {
       // connectionLookup is not reactive, so we use edges to get notified about updates
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       store.edges;
-      let connections = store.connectionLookup.get(
-        `${nodeId}-${type}${handleId ? `-${handleId}` : ''}`
-      );
+      let connections = store.connectionLookup.get(getConnectionLookupKey(nodeId, type, handleId));
 
       if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
         const _connections = connections ?? new Map();

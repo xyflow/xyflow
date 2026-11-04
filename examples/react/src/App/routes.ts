@@ -63,6 +63,8 @@ import DetachedHandle from '../examples/DetachedHandle';
 import ZIndexMode from '../examples/ZIndexMode';
 import Middlewares from '../examples/Middlewares';
 import NodeSelectionBug from '../examples/NodeSelectionBug';
+import Remount from '../examples/Remount';
+import MeasurementRace from '../examples/MeasurementRace';
 
 export interface IRoute {
   name: string;
@@ -242,6 +244,11 @@ const routes: IRoute[] = [
     component: Layouting,
   },
   {
+    name: 'Measurement Race',
+    path: 'measurement-race',
+    component: MeasurementRace,
+  },
+  {
     name: 'Middlewares',
     path: 'middlewares',
     component: Middlewares,
@@ -290,6 +297,11 @@ const routes: IRoute[] = [
     name: 'Provider',
     path: 'provider',
     component: Provider,
+  },
+  {
+    name: 'Remount',
+    path: 'remount',
+    component: Remount,
   },
   {
     name: 'Save/Restore',

@@ -8,6 +8,7 @@ import {
   getNodeDimensions,
   nodeToBox,
 } from './general';
+import { defaultFitViewPadding } from './constants';
 import {
   type Transform,
   type XYPosition,
@@ -17,14 +18,14 @@ import {
   type EdgeBase,
   type FitViewParamsBase,
   type FitViewOptionsBase,
-  CoordinateExtent,
-  OnError,
-  OnBeforeDeleteBase,
-  NodeLookup,
-  InternalNodeBase,
-  NodeDragItem,
+  type CoordinateExtent,
+  type OnError,
+  type OnBeforeDeleteBase,
+  type NodeLookup,
+  type InternalNodeBase,
+  type NodeDragItem,
 } from '../types';
-import { errorMessages } from '../constants';
+import { errorMessages } from './constants';
 
 /**
  * Test whether an object is usable as an Edge
@@ -203,6 +204,7 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
     return { x: 0, y: 0, width: 0, height: 0 };
   }
 
+  let hasNode = false;
   const box = nodes.reduce(
     (currBox, nodeOrId) => {
       const isId = typeof nodeOrId === 'string';
@@ -212,17 +214,26 @@ export const getNodesBounds = <NodeType extends NodeBase = NodeBase>(
         currentNode = isId
           ? params.nodeLookup.get(nodeOrId)
           : !isInternalNodeBase(nodeOrId)
-          ? params.nodeLookup.get(nodeOrId.id)
-          : nodeOrId;
+            ? params.nodeLookup.get(nodeOrId.id)
+            : nodeOrId;
       }
 
-      const nodeBox = currentNode ? nodeToBox(currentNode, params.nodeOrigin) : { x: 0, y: 0, x2: 0, y2: 0 };
-      return getBoundsOfBoxes(currBox, nodeBox);
+      /*
+       * Skip ids/nodes that can't be resolved (e.g. a stale or already-removed id).
+       * Merging a phantom box at the origin would stretch the bounds to include
+       * (0, 0). This mirrors getInternalNodesBounds, which skips unmatched nodes.
+       */
+      if (!currentNode) {
+        return currBox;
+      }
+
+      hasNode = true;
+      return getBoundsOfBoxes(currBox, nodeToBox(currentNode, params.nodeOrigin));
     },
     { x: Infinity, y: Infinity, x2: -Infinity, y2: -Infinity }
   );
 
-  return boxToRect(box);
+  return hasNode ? boxToRect(box) : { x: 0, y: 0, width: 0, height: 0 };
 };
 
 export type GetInternalNodesBoundsParams<NodeType> = {
@@ -333,7 +344,7 @@ export const getConnectedEdges = <NodeType extends NodeBase = NodeBase, EdgeType
 
 function getFitViewNodes<
   Params extends NodeLookup<InternalNodeBase<NodeBase>>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(nodeLookup: Params, options?: Options) {
   const fitViewNodes: NodeLookup = new Map();
   const optionNodeIds = options?.nodes ? new Set(options.nodes.map((node) => node.id)) : null;
@@ -364,7 +375,7 @@ function getFitViewNodes<
 
 export async function fitViewport<
   Params extends FitViewParamsBase<NodeBase>,
-  Options extends FitViewOptionsBase<NodeBase>
+  Options extends FitViewOptionsBase<NodeBase>,
 >(
   { nodes, width, height, panZoom, minZoom, maxZoom }: Params,
   options?: Omit<Options, 'nodes' | 'includeHiddenNodes'>
@@ -383,16 +394,14 @@ export async function fitViewport<
     height,
     options?.minZoom ?? minZoom,
     options?.maxZoom ?? maxZoom,
-    options?.padding ?? 0.1
+    options?.padding ?? defaultFitViewPadding
   );
 
-  await panZoom.setViewport(viewport, {
+  return panZoom.setViewport(viewport, {
     duration: options?.duration,
     ease: options?.ease,
     interpolate: options?.interpolate,
   });
-
-  return true;
 }
 
 /**
@@ -427,8 +436,7 @@ export function calculateNodePosition<NodeType extends NodeBase>({
     if (!parentNode) {
       onError?.('005', errorMessages['error005']());
     } else {
-      const parentWidth = parentNode.measured.width;
-      const parentHeight = parentNode.measured.height;
+      const { width: parentWidth, height: parentHeight } = getNodeDimensions(parentNode);
 
       if (parentWidth && parentHeight) {
         extent = [
@@ -488,33 +496,55 @@ export async function getElementsToRemove<NodeType extends NodeBase = NodeBase, 
   edges: EdgeType[];
 }> {
   const nodeIds = new Set(nodesToRemove.map((node) => node.id));
-  const matchingNodes: NodeType[] = [];
+  const matchingNodeMap = new Map<string, NodeType>();
+  const children = new Map<string, NodeType[]>();
 
   for (const node of nodes) {
     if (node.deletable === false) {
       continue;
     }
 
-    const isIncluded = nodeIds.has(node.id);
-    const parentHit = !isIncluded && node.parentId && matchingNodes.find((n) => n.id === node.parentId);
+    if (nodeIds.has(node.id)) {
+      matchingNodeMap.set(node.id, node);
+    }
 
-    if (isIncluded || parentHit) {
-      matchingNodes.push(node);
+    if (node.parentId) {
+      const siblings = children.get(node.parentId) ?? [];
+      siblings.push(node);
+      children.set(node.parentId, siblings);
+    }
+  }
+
+  const queue = [...matchingNodeMap.keys()];
+  for (let index = 0; index < queue.length; index++) {
+    for (const child of children.get(queue[index]) ?? []) {
+      if (!matchingNodeMap.has(child.id)) {
+        matchingNodeMap.set(child.id, child);
+        queue.push(child.id);
+      }
     }
   }
 
   const edgeIds = new Set(edgesToRemove.map((edge) => edge.id));
-  const deletableEdges = edges.filter((edge) => edge.deletable !== false);
-  const connectedEdges = getConnectedEdges(matchingNodes, deletableEdges);
-  const matchingEdges: EdgeType[] = connectedEdges;
+  const matchingEdgeMap = new Map<string, EdgeType>();
 
-  for (const edge of deletableEdges) {
-    const isIncluded = edgeIds.has(edge.id);
-
-    if (isIncluded && !matchingEdges.find((e) => e.id === edge.id)) {
-      matchingEdges.push(edge);
+  for (const edge of edges) {
+    if (
+      edge.deletable !== false &&
+      (matchingNodeMap.has(edge.source) || matchingNodeMap.has(edge.target))
+    ) {
+      matchingEdgeMap.set(edge.id, edge);
     }
   }
+
+  for (const edge of edges) {
+    if (edge.deletable !== false && edgeIds.has(edge.id) && !matchingEdgeMap.has(edge.id)) {
+      matchingEdgeMap.set(edge.id, edge);
+    }
+  }
+
+  const matchingNodes = nodes.filter((node) => matchingNodeMap.has(node.id));
+  const matchingEdges = Array.from(matchingEdgeMap.values());
 
   if (!onBeforeDelete) {
     return {

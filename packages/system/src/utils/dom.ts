@@ -1,4 +1,5 @@
-import type { Transform, XYPosition, SnapGrid, Dimensions, Position, Handle } from '../types';
+import type { Transform, XYPosition, SnapGrid, Dimensions, Position, HandleBounds } from '../types';
+import { isMouseEvent } from './events';
 import { snapPosition, pointToRendererPoint } from './general';
 
 export type GetPointerPositionParams = {
@@ -47,8 +48,6 @@ export function isInputDOMNode(event: KeyboardEvent): boolean {
   return isInput || !!target.closest('.nokey');
 }
 
-export const isMouseEvent = (event: MouseEvent | TouchEvent): event is MouseEvent => 'clientX' in event;
-
 export const getEventPosition = (event: MouseEvent | TouchEvent, bounds?: DOMRect) => {
   const isMouse = isMouseEvent(event);
   const evtX = isMouse ? event.clientX : event.touches?.[0].clientX;
@@ -71,14 +70,14 @@ export const getHandleBounds = (
   nodeBounds: DOMRect,
   zoom: number,
   nodeId: string
-): Handle[] | null => {
+): HandleBounds[] | null => {
   const handles = nodeElement.querySelectorAll(`.${type}`);
 
   if (!handles || !handles.length) {
     return null;
   }
 
-  return Array.from(handles).map((handle): Handle => {
+  return Array.from(handles).map((handle): HandleBounds => {
     const handleBounds = handle.getBoundingClientRect();
 
     return {

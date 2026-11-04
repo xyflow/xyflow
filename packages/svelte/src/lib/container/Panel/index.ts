@@ -1,2 +1,2 @@
 export { default as Panel } from './Panel.svelte';
-export * from './types';
+export * from './types.js';

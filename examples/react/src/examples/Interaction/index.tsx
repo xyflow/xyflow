@@ -11,6 +11,7 @@ import {
   useEdgesState,
   Controls,
   MiniMap,
+  OnNodeDrag,
 } from '@xyflow/react';
 
 const initialNodes: Node[] = [
@@ -30,8 +31,8 @@ const initialEdges: Edge[] = [
   { id: 'e1-3', source: '1', target: '3' },
 ];
 
-const onNodeDragStart = (_: ReactMouseEvent, node: Node) => console.log('drag start', node);
-const onNodeDragStop = (_: ReactMouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDragStart: OnNodeDrag = (_, node) => console.log('drag start', node);
+const onNodeDragStop: OnNodeDrag = (_, node) => console.log('drag stop', node);
 const onNodeClick = (_: ReactMouseEvent, node: Node) => console.log('click', node);
 const onEdgeClick = (_: ReactMouseEvent, edge: Edge) => console.log('click', edge);
 const onPaneClick = (event: ReactMouseEvent) => console.log('onPaneClick', event);

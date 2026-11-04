@@ -11,18 +11,6 @@
     };
   }
 
-  export function toggleSelected<Item extends Node | Edge>(ids: Set<string>) {
-    return (item: Item) => {
-      const isSelected = ids.has(item.id);
-
-      if (!!item.selected !== isSelected) {
-        return { ...item, selected: isSelected };
-      }
-
-      return item;
-    };
-  }
-
   function isSetEqual(a: Set<string>, b: Set<string>) {
     if (a.size !== b.size) {
       return false;
@@ -47,11 +35,15 @@
     calcAutoPan,
     pointToRendererPoint,
     rendererPointToPoint,
-    type XYPosition
+    getSelectionChanges,
+    type XYPosition,
+    type ConnectionState,
+    type FinalConnectionState,
+    type Optional
   } from '@xyflow/system';
 
-  import type { Node, Edge } from '$lib/types';
-  import type { PaneProps } from './types';
+  import type { Node, Edge } from '#lib/types/index.js';
+  import type { PaneProps } from './types.js';
 
   let {
     store = $bindable(),
@@ -96,6 +88,12 @@
 
   // We start the selection process when the user clicks down on the pane
   function onPointerDownCapture(event: PointerEvent) {
+    // Mouse button arrays only restrict mouse input. Let touch panning handle this gesture
+    // unless the user explicitly activated selection with the selection key.
+    if (event.pointerType === 'touch' && panOnDragActive !== false && !store.selectionKeyPressed) {
+      return;
+    }
+
     containerBounds = container?.getBoundingClientRect();
     if (!containerBounds) return;
 
@@ -197,11 +195,11 @@
 
     // this prevents unnecessary updates while updating the selection rectangle
     if (!isSetEqual(prevSelectedNodeIds, selectedNodeIds)) {
-      store.nodes = store.nodes.map(toggleSelected(selectedNodeIds));
+      store.queueNodeChanges(getSelectionChanges(store.nodeLookup, selectedNodeIds));
     }
 
     if (!isSetEqual(prevSelectedEdgeIds, selectedEdgeIds)) {
-      store.edges = store.edges.map(toggleSelected(selectedEdgeIds));
+      store.queueEdgeChanges(getSelectionChanges(store.edgeLookup, selectedEdgeIds));
     }
 
     store.selectionRectMode = 'user';
@@ -333,6 +331,20 @@
       selectionInProgress = false;
       connectionEndedOnPane = false;
       return;
+    }
+
+    if (store.clickConnectStartHandle) {
+      const connectionClone = structuredClone($state.snapshot(store.connection)) as Optional<
+        ConnectionState,
+        'inProgress'
+      >;
+      delete connectionClone.inProgress;
+      connectionClone.toPosition = connectionClone.toHandle
+        ? connectionClone.toHandle.position
+        : null;
+      store.onclickconnectend?.(event, connectionClone as FinalConnectionState);
+
+      store.clickConnectStartHandle = null;
     }
 
     onpaneclick?.({ event });

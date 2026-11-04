@@ -1,7 +1,5 @@
-import { Node, ReactFlow, useNodesState } from '@xyflow/react';
-
-import '@xyflow/react/dist/style.css';
 import { useRef } from 'react';
+import { Node, ReactFlow, useNodesState } from '@xyflow/react';
 
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([

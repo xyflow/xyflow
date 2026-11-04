@@ -1,5 +1,5 @@
-import type { Edge } from './edges';
-import type { Node } from './nodes';
+import type { Edge } from './edges.js';
+import type { Node } from './nodes.js';
 
 export type NodeEventWithPointer<T = PointerEvent, NodeType extends Node = Node> = ({
   node,
@@ -72,6 +72,6 @@ export type EdgeEvents<EdgeType extends Edge = Edge> = {
 };
 
 export type OnSelectionDrag<NodeType extends Node = Node> = (
-  event: MouseEvent,
+  event: MouseEvent | TouchEvent,
   nodes: NodeType[]
 ) => void;
