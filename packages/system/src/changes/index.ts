@@ -13,12 +13,7 @@ type ApplyChangesFn<ElementType extends NodeBase | EdgeBase, ChangeType extends 
 ) => ElementType[];
 
 /**
- * Tracks element changes for easy access and modification.
- * Prevents mistakes: You can't add elements that exist and
- * can't remove or change elements that don't exist.
- * TODO: upsert?
- * TODO: automatically minify changes?
- * TODO: warn if something is invalid? (it was just ignored before when applying)
+ * Tracks a batch of changes to be applied to either edges or nodes
  * TODO: include a way to split ephemeral dimension changes to split
  *
  * @example
@@ -31,8 +26,8 @@ type ApplyChangesFn<ElementType extends NodeBase | EdgeBase, ChangeType extends 
 export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType extends ElementChangeType<ElementType>> {
   private changeTypes: Partial<Record<ChangeType['type'], boolean>> = {};
   private changeMap: Map<string, ChangeType[]> = new Map();
-  private newElementIds: Set<string> = new Set();
-  private _version: number = 0;
+  /** add changes are tracked separately, there can only be one per element */
+  private addChanges: Map<string, ChangeOfType<ChangeType, 'add'>> = new Map();
 
   constructor(private applyChanges: ApplyChangesFn<ElementType, ChangeType>) {}
 
@@ -41,28 +36,21 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
    *
    * @example
    * ```ts
-   * // TODO: maybe use examples with helper function
-   * changes.add({ id: '1', type: 'select', selected: true });
-   * changes.add({ id: '1', type: 'position', position: { x: 0, y: 0 } });
+   * changes.add(selectionChange('1', true));
+   * changes.add(positionChnage('1', { x: 0, y: 0 }));
    * ```
    */
   add(change: ChangeType | ChangeType[]): void {
     const newChanges = Array.isArray(change) ? change : [change];
     for (const change of newChanges) {
-      this._version++;
       this.changeTypes[change.type as ChangeType['type']] = true;
       if (change.type === 'add') {
-        this.newElementIds.add(change.id);
+        this.addChanges.set(change.id, change as ChangeOfType<ChangeType, 'add'>);
+        continue;
       }
       const changes = this.changeMap.get(change.id);
       if (changes) {
-        // 'remove' and 'add' (in that order) should always be in front
-        if (change.type === 'remove' || (change.type === 'add' && changes[0]?.type !== 'remove')) {
-          // we want "add" changes to be in the front
-          changes.unshift(change);
-        } else {
-          changes.push(change);
-        }
+        changes.push(change);
       } else {
         this.changeMap.set(change.id, [change]);
       }
@@ -80,26 +68,29 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
    * ```
    */
   remove(change: ChangeType): void {
-    const changes = this.changeMap.get(change.id);
-    if (!changes) {
-      // TODO: change not found, warn?
+    if (change.type === 'add') {
+      if (this.addChanges.get(change.id) === change) {
+        this.addChanges.delete(change.id);
+      }
       return;
     }
 
-    if (changes.length === 1) {
-      this.changeMap.delete(change.id);
-      this._version++;
+    const changes = this.changeMap.get(change.id);
+    if (!changes) {
       return;
     }
 
     const index = changes.indexOf(change);
     if (index < 0) {
-      // TODO: change not found, warn?
+      return;
+    }
+
+    if (changes.length === 1) {
+      this.changeMap.delete(change.id);
       return;
     }
 
     changes.splice(index, 1);
-    this._version++;
   }
 
   /**
@@ -124,7 +115,35 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
    */
   removeForElement(elementId: string): void {
     this.changeMap.delete(elementId);
-    this._version++;
+    this.addChanges.delete(elementId);
+  }
+
+  /**
+   * Clears all queued changes.
+   *
+   * @example
+   * ```ts
+   * changes.clear();
+   * ```
+   */
+  clear(): void {
+    this.changeTypes = {};
+    this.changeMap.clear();
+    this.addChanges.clear();
+  }
+
+  /**
+   * Returns true if there are no queued changes.
+   *
+   * @example
+   * ```ts
+   * if (changes.isEmpty()) return;
+   * ```
+   */
+  isEmpty(): boolean {
+    // entries are deleted as soon as their last change is removed,
+    // so the map never holds empty arrays
+    return this.changeMap.size === 0 && this.addChanges.size === 0;
   }
 
   /**
@@ -138,9 +157,26 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
    * ```
    */
   *[Symbol.iterator](): Iterator<ChangeType> {
+    yield* this.addChanges.values();
     for (const changes of this.changeMap.values()) {
       yield* changes;
     }
+  }
+
+  /**
+   * Returns all elements that are added by this changeset.
+   *
+   * @example
+   * ```ts
+   * const newElements = changes.getNewElements();
+   * ```
+   */
+  getNewElements(): ElementType[] {
+    const newElements: ElementType[] = [];
+    for (const change of this.addChanges.values()) {
+      newElements.push(change.item);
+    }
+    return newElements;
   }
 
   /**
@@ -153,6 +189,9 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
    */
   toArray() {
     const array: ChangeType[] = [];
+    for (const change of this.addChanges.values()) {
+      array.push(change);
+    }
     for (const changes of this.changeMap.values()) {
       for (const change of changes) {
         array.push(change);
@@ -169,22 +208,14 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
    * const positionChanges = changes.getByType('position');
    * ```
    */
-  // TODO: support filtering for multiple types at once?
   getByType<T extends ChangeType['type']>(changeType: T): ChangeOfType<ChangeType, T>[] {
     if (this.changeTypes[changeType]) {
-      const changesOfType: ChangeOfType<ChangeType, T>[] = [];
-
       // Optimized path for add changes
       if (changeType === 'add') {
-        for (const elementId of this.newElementIds) {
-          const changes = this.changeMap.get(elementId);
-          // We made sure that first change is an add change
-          // TODO: double check? Possible to add remove before add
-          if (changes?.[0]) changesOfType.push(changes[0] as ChangeOfType<ChangeType, T>);
-        }
-        return changesOfType;
+        return Array.from(this.addChanges.values()) as unknown as ChangeOfType<ChangeType, T>[];
       }
 
+      const changesOfType: ChangeOfType<ChangeType, T>[] = [];
       for (const changes of this.changeMap.values()) {
         for (const change of changes) {
           if (change.type === changeType) {
@@ -208,18 +239,10 @@ export class Changeset<ElementType extends NodeBase | EdgeBase, ChangeType exten
   applyTo(elements: ElementType[]): ElementType[] {
     return this.applyChanges(elements, this);
   }
-
-  get size(): number {
-    return this.changeMap.size;
-  }
-
-  get version(): number {
-    return this._version ?? 0;
-  }
 }
 
 /**
- * Tracks node changes for easy access and modification.
+ * Defines a batch of changes to be applied to nodes
  *
  * @example
  * ```ts
@@ -260,10 +283,22 @@ export class NodeChangeset<NodeType extends NodeBase = NodeBase> extends Changes
   removeForNode(nodeId: string): void {
     this.removeForElement(nodeId);
   }
+
+  /**
+   * Returns all nodes that are added by this changeset.
+   *
+   * @example
+   * ```ts
+   * const newNodes = changes.getNewNodes();
+   * ```
+   */
+  getNewNodes(): NodeType[] {
+    return this.getNewElements();
+  }
 }
 
 /**
- * Tracks edge changes for easy access and modification.
+ * Defines a batch of changes to be applied to the edges
  *
  * @example
  * ```ts
@@ -303,5 +338,17 @@ export class EdgeChangeset<EdgeType extends EdgeBase = EdgeBase> extends Changes
    */
   removeForEdge(edgeId: string): void {
     this.removeForElement(edgeId);
+  }
+
+  /**
+   * Returns all edges that are added by this changeset.
+   *
+   * @example
+   * ```ts
+   * const newEdges = changes.getNewEdges();
+   * ```
+   */
+  getNewEdges(): EdgeType[] {
+    return this.getNewElements();
   }
 }
