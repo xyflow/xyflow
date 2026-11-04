@@ -39,7 +39,7 @@ export function getConnectionsFromLookup(
  * @internal
  */
 export function areConnectionMapsEqual(a?: Map<string, NodeConnection>, b?: Map<string, NodeConnection>) {
-  if (!a && !b) {
+  if (a === b) {
     return true;
   }
 
@@ -51,8 +51,8 @@ export function areConnectionMapsEqual(a?: Map<string, NodeConnection>, b?: Map<
     return true;
   }
 
-  for (const key of a.keys()) {
-    if (!b.has(key)) {
+  for (const [key, connection] of a) {
+    if (b.get(key) !== connection) {
       return false;
     }
   }
@@ -77,7 +77,7 @@ export function handleConnectionChange(
   const diff: NodeConnection[] = [];
 
   a.forEach((connection, key) => {
-    if (!b?.has(key)) {
+    if (b?.get(key) !== connection) {
       diff.push(connection);
     }
   });
