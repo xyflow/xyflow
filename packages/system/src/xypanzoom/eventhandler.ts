@@ -167,28 +167,45 @@ export function createZoomOnScrollHandler({ noWheelClassName, preventScrolling, 
 }
 
 function startMove(zoomPanValues: ZoomPanValues, sourceEvent: Event | null, onPanZoomStart?: OnPanZoom) {
-  const mouseDrag = zoomPanValues.mouseDrag;
-  if (!mouseDrag || mouseDrag.moveStarted) {
+  const pointerDrag = zoomPanValues.pointerDrag;
+  if (!pointerDrag || pointerDrag.moveStarted) {
     return;
   }
 
-  mouseDrag.moveStarted = true;
-  onPanZoomStart?.(sourceEvent as MouseEvent | null, zoomPanValues.prevViewport);
+  pointerDrag.moveStarted = true;
+  onPanZoomStart?.(sourceEvent as MouseEvent | TouchEvent | null, zoomPanValues.prevViewport);
 }
 
-function startMouseDrag(
+function startPointerDrag(
   zoomPanValues: ZoomPanValues,
-  sourceEvent: MouseEvent,
+  sourceEvent: Event,
   onDraggingChange: OnDraggingChange,
   onPanZoomStart?: OnPanZoom
 ) {
-  if (!zoomPanValues.mouseDrag) {
+  const pointerDrag = zoomPanValues.pointerDrag;
+  if (!pointerDrag) {
     return;
   }
 
   startMove(zoomPanValues, sourceEvent, onPanZoomStart);
-  zoomPanValues.mouseDrag.dragging = true;
-  onDraggingChange(true);
+  pointerDrag.dragging = true;
+
+  // touch gestures never toggled the dragging state
+  if (!pointerDrag.isTouch) {
+    onDraggingChange(true);
+  }
+}
+
+function isPointerMove(sourceEvent: Event | null): sourceEvent is MouseEvent | TouchEvent {
+  return sourceEvent?.type === 'mousemove' || sourceEvent?.type === 'touchmove';
+}
+
+function getPointerPosition(sourceEvent: MouseEvent | TouchEvent, touchId: number | null) {
+  if (!('touches' in sourceEvent)) {
+    return sourceEvent;
+  }
+
+  return Array.from(sourceEvent.touches).find((touch) => touch.identifier === touchId) ?? null;
 }
 
 export function createPanZoomStartHandler({
@@ -210,22 +227,28 @@ export function createPanZoomStartHandler({
     zoomPanValues.mouseButton = 'button' in sourceEvent ? sourceEvent.button : 0;
     zoomPanValues.isZoomingOrPanning = true;
     zoomPanValues.prevViewport = viewport;
-    zoomPanValues.mouseDrag = null;
+    zoomPanValues.pointerDrag = null;
 
-    if (sourceEvent.type === 'mousedown') {
-      const mouseEvent = sourceEvent as MouseEvent;
-      zoomPanValues.mouseDrag = {
-        startX: mouseEvent.clientX,
-        startY: mouseEvent.clientY,
+    const isTouch = sourceEvent.type === 'touchstart';
+
+    if (sourceEvent.type === 'mousedown' || isTouch) {
+      const touch = isTouch ? (sourceEvent as TouchEvent).touches[0] : null;
+      const { clientX, clientY } = touch ?? (sourceEvent as MouseEvent);
+
+      zoomPanValues.pointerDrag = {
+        isTouch,
+        touchId: touch?.identifier ?? null,
+        startX: clientX,
+        startY: clientY,
         startTransform: event.transform,
         thresholdCrossed: false,
-        lastMouseMove: null,
+        lastMove: null,
         moveStarted: false,
         dragging: false,
       };
 
       if (paneDragThreshold === 0) {
-        startMouseDrag(zoomPanValues, mouseEvent, onDraggingChange, onPanZoomStart);
+        startPointerDrag(zoomPanValues, sourceEvent, onDraggingChange, onPanZoomStart);
       }
 
       return;
@@ -246,35 +269,42 @@ export function createPanZoomHandler({
 }: PanZoomParams) {
   return (event: D3ZoomEvent<HTMLDivElement, unknown>) => {
     const sourceEvent = event.sourceEvent as XYFlowSourceEvent | null;
-    const mouseDrag = zoomPanValues.mouseDrag;
+    const pointerDrag = zoomPanValues.pointerDrag;
 
-    if (mouseDrag) {
-      const isMouseMove = sourceEvent?.type === 'mousemove' && sourceEvent !== mouseDrag.lastMouseMove;
+    if (pointerDrag) {
+      const isMove = isPointerMove(sourceEvent) && sourceEvent !== pointerDrag.lastMove;
 
-      if (isMouseMove) {
-        mouseDrag.lastMouseMove = sourceEvent as MouseEvent;
+      if (isMove) {
+        pointerDrag.lastMove = sourceEvent;
       }
 
-      if (isMouseMove && !mouseDrag.thresholdCrossed) {
-        const { clientX, clientY } = sourceEvent as MouseEvent;
-        const dx = clientX - mouseDrag.startX;
-        const dy = clientY - mouseDrag.startY;
-        // same check as d3-zoom's clickDistance, so a gesture is either a click or a drag
-        mouseDrag.thresholdCrossed = dx * dx + dy * dy > paneDragThreshold * paneDragThreshold;
+      if (isMove && !pointerDrag.thresholdCrossed) {
+        const position = getPointerPosition(sourceEvent, pointerDrag.touchId);
+        // a pinch (more than one touch) or a lost first touch always starts the gesture
+        const isMultiTouch = 'touches' in sourceEvent && sourceEvent.touches.length > 1;
+
+        if (!position || isMultiTouch) {
+          pointerDrag.thresholdCrossed = true;
+        } else {
+          const dx = position.clientX - pointerDrag.startX;
+          const dy = position.clientY - pointerDrag.startY;
+          // same check as d3-zoom's clickDistance, so a gesture is either a click or a drag
+          pointerDrag.thresholdCrossed = dx * dx + dy * dy > paneDragThreshold * paneDragThreshold;
+        }
       }
 
-      if (!mouseDrag.dragging) {
-        if (!isMouseMove) {
-          // e.g. wheel zoom or setViewport while the button is pressed: accept it as the new resting transform
-          mouseDrag.startTransform = event.transform;
+      if (!pointerDrag.dragging) {
+        if (!isMove) {
+          // e.g. wheel zoom or setViewport while the pointer is pressed: accept it as the new resting transform
+          pointerDrag.startTransform = event.transform;
           if (!sourceEvent?.internal) {
             startMove(zoomPanValues, sourceEvent, onPanZoomStart);
           }
-        } else if (mouseDrag.thresholdCrossed) {
-          startMouseDrag(zoomPanValues, sourceEvent as MouseEvent, onDraggingChange, onPanZoomStart);
+        } else if (pointerDrag.thresholdCrossed) {
+          startPointerDrag(zoomPanValues, sourceEvent, onDraggingChange, onPanZoomStart);
         } else {
           // below the threshold: undo the transform d3-zoom already stored, so it stays in sync with the viewport
-          d3Selection.property('__zoom', mouseDrag.startTransform);
+          d3Selection.property('__zoom', pointerDrag.startTransform);
           return;
         }
       }
@@ -284,7 +314,7 @@ export function createPanZoomHandler({
       onTransformChange([event.transform.x, event.transform.y, event.transform.k]);
     }
 
-    if (onPanZoom && !sourceEvent?.internal && (!mouseDrag || mouseDrag.moveStarted)) {
+    if (onPanZoom && !sourceEvent?.internal && (!pointerDrag || pointerDrag.moveStarted)) {
       onPanZoom?.(event.sourceEvent as MouseEvent | TouchEvent, transformToViewport(event.transform));
     }
   };
@@ -307,21 +337,21 @@ export function createPanZoomEndHandler({
 
     zoomPanValues.isZoomingOrPanning = false;
 
-    const mouseDrag = zoomPanValues.mouseDrag;
-    zoomPanValues.mouseDrag = null;
+    const pointerDrag = zoomPanValues.pointerDrag;
+    zoomPanValues.pointerDrag = null;
 
     // with right-click panning the native contextmenu event is prevented by the pane, so we emit it here
     if (
       onPaneContextMenu &&
       isRightClickPan(panOnDrag, zoomPanValues.mouseButton ?? 0) &&
-      !mouseDrag?.thresholdCrossed &&
+      !pointerDrag?.thresholdCrossed &&
       event.sourceEvent
     ) {
       onPaneContextMenu(event.sourceEvent as MouseEvent);
     }
 
-    // nothing moved during the mouse gesture, so this was a click
-    if (mouseDrag && !mouseDrag.moveStarted) {
+    // nothing moved during the mouse or touch gesture, so this was a click or tap
+    if (pointerDrag && !pointerDrag.moveStarted) {
       return;
     }
 

@@ -30,14 +30,17 @@ export type ZoomPanValues = {
   timerId: ReturnType<typeof setTimeout> | undefined;
   panScrollTimeout: ReturnType<typeof setTimeout> | undefined;
   isPanScrolling: boolean;
-  // only set for mouse drags; the drag starts once the pointer moved further than paneDragThreshold
-  mouseDrag: {
+  // only set for mouse and touch drags; the drag starts once the pointer moved further than paneDragThreshold
+  pointerDrag: {
+    isTouch: boolean;
+    // identifier of the first touch, used to measure the distance of touch drags
+    touchId: number | null;
     startX: number;
     startY: number;
     startTransform: ZoomTransform;
     thresholdCrossed: boolean;
-    // d3-zoom reuses the last mousemove as sourceEvent for programmatic changes during the gesture
-    lastMouseMove: MouseEvent | null;
+    // d3-zoom reuses the last move event as sourceEvent for programmatic changes during the gesture
+    lastMove: Event | null;
     // onPanZoomStart was called (can happen before the threshold is crossed, e.g. by a wheel zoom)
     moveStarted: boolean;
     dragging: boolean;
@@ -62,7 +65,7 @@ export function XYPanZoom({
     timerId: undefined,
     panScrollTimeout: undefined,
     isPanScrolling: false,
-    mouseDrag: null,
+    pointerDrag: null,
   };
   const bbox = domNode.getBoundingClientRect();
 
