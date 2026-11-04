@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import {
   areConnectionMapsEqual,
   errorMessages,
+  getConnectionLookupKey,
   handleConnectionChange,
   type NodeConnection,
   type UseNodeConnectionsParams,
@@ -52,9 +53,7 @@ export function useNodeConnections({
   const prevConnections = useRef<Map<string, NodeConnection> | null>(null);
 
   const selector = (state: EdgesStore) => {
-    return state.connectionLookup.get(
-      `${currentNodeId}${handleType ? (handleId ? `-${handleType}-${handleId}` : `-${handleType}`) : ''}`
-    );
+    return state.connectionLookup.get(getConnectionLookupKey(currentNodeId, handleType, handleId));
   };
 
   const connections = useEdgesStore(useEqualSelector(selector, areConnectionMapsEqual));

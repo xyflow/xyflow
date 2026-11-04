@@ -5,9 +5,10 @@
     isMouseEvent,
     areConnectionMapsEqual,
     handleConnectionChange,
+    getConnectionLookupKey,
     ConnectionMode,
     getHostForElement,
-    type HandleConnection,
+    type NodeConnection,
     type Optional,
     type ConnectionState,
     type FinalConnectionState,
@@ -48,15 +49,13 @@
   let store = useSvelteFlowStore();
   let ariaLabelConfig = $derived(store.ariaLabelConfig);
 
-  let prevConnections: Map<string, HandleConnection> | null = null;
+  let prevConnections: Map<string, NodeConnection> | null = null;
   $effect.pre(() => {
     if (onconnect || ondisconnect) {
       // connectionLookup is not reactive, so we use edges to get notified about updates
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       store.edges;
-      let connections = store.connectionLookup.get(
-        `${nodeId}-${type}${handleId ? `-${handleId}` : ''}`
-      );
+      let connections = store.connectionLookup.get(getConnectionLookupKey(nodeId, type, handleId));
 
       if (prevConnections && !areConnectionMapsEqual(connections, prevConnections)) {
         const _connections = connections ?? new Map();

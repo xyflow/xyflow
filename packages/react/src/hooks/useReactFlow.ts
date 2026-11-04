@@ -10,6 +10,7 @@ import {
   changeParentNode,
   type Rect,
   removeChange,
+  getConnectionsFromLookup,
 } from '@xyflow/system';
 
 import useViewportHelper from './useViewportHelper';
@@ -289,20 +290,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       const { nodeOrigin } = optionsStore.getState();
       return getNodesBounds(nodes, { nodeLookup, nodeOrigin });
     },
-    getHandleConnections: ({ type, id, nodeId }) =>
-      Array.from(
-        edgesStore
-          .getState()
-          .connectionLookup.get(`${nodeId}-${type}${id ? `-${id}` : ''}`)
-          ?.values() ?? []
-      ),
     getNodeConnections: ({ type, handleId, nodeId }) =>
-      Array.from(
-        edgesStore
-          .getState()
-          .connectionLookup.get(`${nodeId}${type ? (handleId ? `-${type}-${handleId}` : `-${type}`) : ''}`)
-          ?.values() ?? []
-      ),
+      getConnectionsFromLookup(edgesStore.getState().connectionLookup, { nodeId, type, handleId }),
     fitView: async (options: FitViewOptions<NodeType> | undefined) => {
       // We either create a new Promise or reuse the existing one
       // Even if fitView is called multiple times in a row, we only end up with a single Promise

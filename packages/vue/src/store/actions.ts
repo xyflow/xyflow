@@ -12,6 +12,7 @@ import {
   changeParentNode,
   EdgeChangeset,
   getConnectedEdges as getConnectedEdgesBase,
+  getConnectionsFromLookup,
   getElementsToRemove,
   getOverlappingArea,
   getSelectionChanges,
@@ -59,9 +60,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     return getConnectedEdgesBase(nodes, state.edges);
   };
 
-  const getHandleConnections: Actions['getHandleConnections'] = ({ id, type, nodeId }) => {
-    const handleSuffix = id ? `-${type}-${id}` : `-${type}`;
-    return Array.from(state.connectionLookup.get(`${nodeId}${handleSuffix}`)?.values() ?? []);
+  const getNodeConnections: Actions['getNodeConnections'] = ({ type, handleId, nodeId }) => {
+    return getConnectionsFromLookup(state.connectionLookup, { nodeId, type, handleId });
   };
 
   const getNode: Actions<NodeType>['getNode'] = (id) => {
@@ -756,7 +756,7 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
     setState,
     getIntersectingNodes,
     getConnectedEdges,
-    getHandleConnections,
+    getNodeConnections,
     isNodeIntersecting,
     panBy,
     fitView: params => viewportHelper.value.fitView(params),
