@@ -29,7 +29,8 @@
 		'usesvelteflow',
 		'useupdatenodeinternals',
 		'validation',
-		'reset'
+		'reset',
+		'unmount'
 	];
 
 	const onChange = (event: Event) => {

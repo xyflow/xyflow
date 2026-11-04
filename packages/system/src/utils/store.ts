@@ -1,7 +1,6 @@
 import {
   dimensionChange,
   DimensionChange,
-  type HandleConnection,
   infiniteExtent,
   positionChange,
   PositionChange,
@@ -24,6 +23,7 @@ import {
   type NodeLookup,
   type Rect,
   type ParentLookup,
+  type NodeConnection,
 } from '../types';
 import { getDimensions, getHandleBounds } from './dom';
 import {
@@ -686,7 +686,7 @@ export async function panBy({
  */
 function addConnectionToLookup(
   type: 'source' | 'target',
-  connection: HandleConnection,
+  connection: NodeConnection,
   connectionKey: string,
   connectionLookup: ConnectionLookup,
   nodeId: string,

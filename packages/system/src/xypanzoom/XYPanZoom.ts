@@ -58,9 +58,8 @@ export function XYPanZoom({
   /*
    * Cache the pane extent and refresh it from a ResizeObserver. Otherwise d3-zoom falls back to its
    * defaultExtent, which reads clientWidth/clientHeight and forces a synchronous layout while panning
-   * and pinching. The observer is never disconnected on purpose: destroy() also runs to pause zooming
-   * during a user selection, so disconnecting there would leave the cache stale. It becomes unreachable
-   * and is garbage collected with the pane on unmount.
+   * and pinching. The observer stays connected while zooming is paused during a user selection, so the
+   * cache stays fresh, and is disconnected in destroy().
    */
   let cachedExtent: CoordinateExtent = [
     [0, 0],
@@ -70,7 +69,8 @@ export function XYPanZoom({
     typeof ResizeObserver !== 'undefined'
       ? new ResizeObserver((entries) => {
           const entry = entries[0];
-          if (entry) {
+          // test mocks may call back without contentRect
+          if (entry?.contentRect) {
             cachedExtent = [
               [0, 0],
               [entry.contentRect.width, entry.contentRect.height],
@@ -106,10 +106,9 @@ export function XYPanZoom({
   async function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).transform(
-          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
-          transform
-        );
+        d3ZoomInstance
+          ?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom)
+          .transform(getD3Transition(d3Selection, options?.duration, options?.ease, resolve), transform);
       });
     }
 
@@ -139,7 +138,8 @@ export function XYPanZoom({
     selectionOnDrag,
   }: PanZoomUpdateOptions) {
     if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
-      destroy();
+      // pause zooming during a user selection
+      d3ZoomInstance.on('zoom', null);
     }
 
     const isPanOnScroll = panOnScroll && !zoomActivationKeyPressed && !userSelectionActive;
@@ -228,6 +228,7 @@ export function XYPanZoom({
 
   function destroy() {
     d3ZoomInstance.on('zoom', null);
+    extentResizeObserver?.disconnect();
   }
 
   async function setViewportConstrained(
@@ -248,9 +249,7 @@ export function XYPanZoom({
   async function setViewport(viewport: Viewport, options?: PanZoomTransformOptions) {
     const nextTransform = viewportToTransform(viewport);
 
-    await setTransform(nextTransform, options);
-
-    return nextTransform;
+    return setTransform(nextTransform, options);
   }
 
   function syncViewport(viewport: Viewport) {
@@ -278,10 +277,9 @@ export function XYPanZoom({
   async function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleTo(
-          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
-          zoom
-        );
+        d3ZoomInstance
+          ?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom)
+          .scaleTo(getD3Transition(d3Selection, options?.duration, options?.ease, resolve), zoom);
       });
     }
 
@@ -291,10 +289,9 @@ export function XYPanZoom({
   async function scaleBy(factor: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleBy(
-          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
-          factor
-        );
+        d3ZoomInstance
+          ?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom)
+          .scaleBy(getD3Transition(d3Selection, options?.duration, options?.ease, resolve), factor);
       });
     }
 

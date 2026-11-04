@@ -1,5 +1,62 @@
 # @xyflow/svelte
 
+## 1.7.1
+### Patch Changes
+
+
+
+- [#6106](https://github.com/xyflow/xyflow/pull/6106) [`b65d451`](https://github.com/xyflow/xyflow/commit/b65d451fdb2dc0039de30024b93044e1a38070c0) - Prevent excessive repainting of nodes during pan & zoom
+
+
+
+- [#6068](https://github.com/xyflow/xyflow/pull/6068) [`7813eeb`](https://github.com/xyflow/xyflow/commit/7813eebf06ca22dadbeb7bb919ff8cd8388adcab) - Cancel a pending click connection when clicking the pane and call `onClickConnectEnd` / `onclickconnectend`
+
+
+
+- [#6090](https://github.com/xyflow/xyflow/pull/6090) [`b235ea0`](https://github.com/xyflow/xyflow/commit/b235ea03677fa500b9474aedf0bdd35abaf76b78) - Respect `nodeOrigin` in `isNodeIntersecting` and `getIntersectingNodes` when you pass a node object instead of `{ id }`
+
+
+
+- [#6054](https://github.com/xyflow/xyflow/pull/6054) [`c7d0fcb`](https://github.com/xyflow/xyflow/commit/c7d0fcb3372e234c33d2c87bec8d4c8394abab74) - Disconnect the `ResizeObserver`s when a flow unmounts
+
+- Updated dependencies [[`d150c38`](https://github.com/xyflow/xyflow/commit/d150c38a46c4e6ded900676f4eafbbae60e37a4c), [`8483a2f`](https://github.com/xyflow/xyflow/commit/8483a2f27d6f856ff595be4239cf736b118318c0), [`c7d0fcb`](https://github.com/xyflow/xyflow/commit/c7d0fcb3372e234c33d2c87bec8d4c8394abab74), [`9dcbd29`](https://github.com/xyflow/xyflow/commit/9dcbd29a8e597b6f4cd26ebf64f755d2fb96332b), [`cba335d`](https://github.com/xyflow/xyflow/commit/cba335d7cdb809fe274591985bfa377ca2e21bcf)]:
+  - @xyflow/system@0.0.84
+
+## 1.7.0
+### Minor Changes
+
+
+
+- [#5998](https://github.com/xyflow/xyflow/pull/5998) [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423) - Always fire onresizeend after onresizestart
+
+
+### Patch Changes
+
+
+
+- [#5998](https://github.com/xyflow/xyflow/pull/5998) [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423) - Fix incorrect values during resize when shouldResize returns false
+
+- Updated dependencies [[`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423), [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423)]:
+  - @xyflow/system@0.0.83
+
+## 1.6.6
+### Patch Changes
+
+
+
+- [#5994](https://github.com/xyflow/xyflow/pull/5994) [`17d3792`](https://github.com/xyflow/xyflow/commit/17d3792673d0e6b3df26b4739c287329fd74df16) - Reset all properties in provider store when unmounting flow
+
+
+
+- [#5977](https://github.com/xyflow/xyflow/pull/5977) [`b7d99a5`](https://github.com/xyflow/xyflow/commit/b7d99a53ff4c60435ce93a17277811db34232588) - Hide edge if connected node is hidden
+
+
+
+- [#5997](https://github.com/xyflow/xyflow/pull/5997) [`0117cc9`](https://github.com/xyflow/xyflow/commit/0117cc9447b082369f238243d15327a5ac9c3dc3) - Prevent attribution warning when pane is not rendered either
+
+- Updated dependencies [[`0117cc9`](https://github.com/xyflow/xyflow/commit/0117cc9447b082369f238243d15327a5ac9c3dc3)]:
+  - @xyflow/system@0.0.82
+
 ## 1.6.5
 ### Patch Changes
 

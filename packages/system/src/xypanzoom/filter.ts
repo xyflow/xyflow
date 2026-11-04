@@ -94,8 +94,17 @@ export function createFilter({
       return false;
     }
 
-    // if the pane is only movable using allowed clicks
-    if (Array.isArray(panOnDrag) && isMouseEvent(event) && !panOnDrag.includes(event.button)) {
+    /*
+     * if the pane is only movable using allowed clicks
+     * the type check is needed: wheel and dblclick events are MouseEvents too (button 0)
+     * and would otherwise be rejected, which breaks zooming
+     */
+    if (
+      Array.isArray(panOnDrag) &&
+      isMouseEvent(event) &&
+      event.type === 'mousedown' &&
+      !panOnDrag.includes(event.button)
+    ) {
       return false;
     }
 

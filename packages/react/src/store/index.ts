@@ -40,6 +40,8 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
   const selectionStore = createZustandStore<SelectionStore>(() => initialState.selectionStore);
 
   const optionsStore = createZustandStore<ReactFlowState>((set, get) => {
+    let latestFitViewId = 0;
+
     async function resolveFitView() {
       const { nodeLookup } = nodesStore.getState();
       const { panZoom, fitViewOptions, fitViewResolver, minZoom, maxZoom } = get();
@@ -49,7 +51,9 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         return;
       }
 
-      await fitViewport(
+      const fitViewId = ++latestFitViewId;
+
+      const ended = await fitViewport(
         {
           nodes: nodeLookup,
           width,
@@ -61,12 +65,21 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         fitViewOptions
       );
 
-      fitViewResolver?.resolve(true);
+      /*
+       * A newer fitView started while this one was running and settles the shared promise instead
+       */
+      if (fitViewId !== latestFitViewId) {
+        return;
+      }
+
+      fitViewResolver?.resolve(ended);
       /**
        * wait for the fitViewport to resolve before deleting the resolver,
        * we want to reuse the old resolver if the user calls fitView again in the mean time
        */
-      set({ fitViewResolver: null });
+      if (get().fitViewResolver === fitViewResolver) {
+        set({ fitViewResolver: null });
+      }
     }
 
     return {
@@ -276,7 +289,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
           return;
         }
 
-        emitNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds]), true));
+        emitNodeChanges(getSelectionChanges(nodeLookup, new Set([...selectedNodeIds])));
         emitEdgeChanges(getSelectionChanges(edgeLookup));
       },
       addSelectedEdges: (selectedEdgeIds) => {
@@ -291,11 +304,11 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         }
 
         emitEdgeChanges(getSelectionChanges(edgeLookup, new Set([...selectedEdgeIds])));
-        emitNodeChanges(getSelectionChanges(nodeLookup, new Set(), true));
+        emitNodeChanges(getSelectionChanges(nodeLookup, new Set()));
       },
       unselectNodesAndEdges: ({ nodes, edges }: UnselectNodesAndEdgesParams = {}) => {
         const { edges: storeEdges } = edgesStore.getState();
-        const { nodes: storeNodes, nodeLookup } = nodesStore.getState();
+        const { nodes: storeNodes } = nodesStore.getState();
         const { emitNodeChanges, emitEdgeChanges } = get();
         const nodesToUnselect = nodes ? nodes : storeNodes;
         const edgesToUnselect = edges ? edges : storeEdges;
@@ -305,16 +318,6 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         for (const node of nodesToUnselect) {
           if (!node.selected) {
             continue; // skip changing nodes that are not selected
-          }
-
-          const internalNode = nodeLookup.get(node.id);
-
-          if (internalNode) {
-            /*
-             * we need to unselect the internal node that was selected previously before we
-             * send the change to the user to prevent it to be selected while dragging the new node
-             */
-            internalNode.selected = false;
           }
 
           nodeChanges.push(selectionChange(node.id, false));
@@ -412,7 +415,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
 
         const nextZoom = typeof options?.zoom !== 'undefined' ? options.zoom : maxZoom;
 
-        await panZoom.setViewport(
+        return panZoom.setViewport(
           {
             x: width / 2 - x * nextZoom,
             y: height / 2 - y * nextZoom,
@@ -420,8 +423,6 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
           },
           { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
         );
-
-        return true;
       },
       cancelConnection: () => {
         const { connection: previousConnection } = connectionStore.getState();

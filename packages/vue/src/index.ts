@@ -114,7 +114,6 @@ export {
   type FitViewOptionsBase as FitViewOptions,
   type GetViewport,
   type HandleBounds,
-  type HandleConnection,
   type HandleType,
   type IsValidConnection,
   type MarkerProps,
