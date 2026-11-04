@@ -16,6 +16,9 @@ import {
   SelectionChange,
   NodeChangeset,
   EdgeChangeset,
+  pointToRendererPoint,
+  type ConnectionState,
+  type Transform,
 } from '@xyflow/system';
 
 import getInitialState from './initialState';
@@ -28,6 +31,7 @@ import type {
   SelectionStore,
   Node,
   Edge,
+  InternalNode,
   UnselectNodesAndEdgesParams,
 } from '../types';
 
@@ -38,6 +42,33 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
   const nodesStore = createZustandStore<NodesStore>(() => initialState.nodesStore);
   const edgesStore = createZustandStore<EdgesStore>(() => initialState.edgesStore);
   const selectionStore = createZustandStore<SelectionStore>(() => initialState.selectionStore);
+
+  /*
+   * XYHandle reports `to` in screen coordinates. We keep that raw connection internally and
+   * derive the stored connection from it, with `to` in flow coordinates. The derived connection
+   * is recalculated whenever the raw connection or the viewport changes.
+   */
+  let rawConnection: ConnectionState<InternalNode> = initialConnection;
+
+  function deriveConnection(transform: Transform): ConnectionState<InternalNode> {
+    return rawConnection.inProgress
+      ? { ...rawConnection, to: pointToRendererPoint(rawConnection.to, transform) }
+      : rawConnection;
+  }
+
+  function setRawConnection(connection: ConnectionState<InternalNode>) {
+    const { connection: previousConnection } = connectionStore.getState();
+    rawConnection = connection;
+    const nextConnection = deriveConnection(viewportStore.getState().transform);
+    connectionStore.setState({ connection: nextConnection });
+    optionsStore.getState().pubSub.publishConnection(previousConnection, nextConnection);
+  }
+
+  viewportStore.subscribe(({ transform }, prevState) => {
+    if (transform !== prevState.transform && rawConnection.inProgress) {
+      connectionStore.setState({ connection: deriveConnection(transform) });
+    }
+  });
 
   const optionsStore = createZustandStore<ReactFlowState>((set, get) => {
     let latestFitViewId = 0;
@@ -182,8 +213,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
         const parentExpandChildren: ParentExpandChild[] = [];
         let changes = [];
         const { nodeLookup } = nodesStore.getState();
-        const { emitNodeChanges, updateConnection, onNodesChangeMiddlewareMap } = get();
-        const { connection } = connectionStore.getState();
+        const { emitNodeChanges, onNodesChangeMiddlewareMap } = get();
 
         for (const [id, dragItem] of nodeDragItems) {
           // we are using the nodelookup to be sure to use the current expandParent and parentId value
@@ -202,9 +232,9 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
             dragging,
           };
 
-          if (node && connection.inProgress && connection.fromNode.id === node.id) {
-            const updatedFrom = getHandlePosition(node, connection.fromHandle, Position.Left, true);
-            updateConnection({ ...connection, from: updatedFrom });
+          if (node && rawConnection.inProgress && rawConnection.fromNode.id === node.id) {
+            const updatedFrom = getHandlePosition(node, rawConnection.fromHandle, Position.Left, true);
+            setRawConnection({ ...rawConnection, from: updatedFrom });
           }
 
           if (expandParent && node.parentId) {
@@ -424,16 +454,8 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
           { duration: options?.duration, ease: options?.ease, interpolate: options?.interpolate }
         );
       },
-      cancelConnection: () => {
-        const { connection: previousConnection } = connectionStore.getState();
-        connectionStore.setState({ connection: initialConnection });
-        get().pubSub.publishConnection(previousConnection, initialConnection);
-      },
-      updateConnection: (connection) => {
-        const { connection: previousConnection } = connectionStore.getState();
-        connectionStore.setState({ connection });
-        get().pubSub.publishConnection(previousConnection, connection);
-      },
+      cancelConnection: () => setRawConnection(initialConnection),
+      updateConnection: (connection) => setRawConnection(connection),
       updateConnectionClickStart: (connectionClickStartHandle) => {
         connectionStore.setState({ connectionClickStartHandle });
         get().pubSub.publishConnectionClickStart();
@@ -442,6 +464,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
       reset: () => {
         const initialState = getInitialState();
         viewportStore.setState(initialState.viewportStore);
+        rawConnection = initialConnection;
         connectionStore.setState(initialState.connectionStore);
         nodesStore.setState(initialState.nodesStore);
         edgesStore.setState(initialState.edgesStore);

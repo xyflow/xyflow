@@ -1,12 +1,9 @@
-import { type ConnectionState, HandleType, pointToRendererPoint } from '@xyflow/system';
-
-import { useConnectionStore, useViewportStore, useShallow, useReactFlowStoreApi } from './useReactFlowStore';
-import type { InternalNode, Node, ConnectionStore, ViewportStore } from '../types';
 import { useSyncExternalStore } from 'react';
+import { type ConnectionState, HandleType } from '@xyflow/system';
 
-function toSelector(s: ViewportStore, connection: ConnectionStore['connection']) {
-  return connection.inProgress ? pointToRendererPoint(connection.to, s.transform) : undefined;
-}
+import { useConnectionStore, useShallow, useReactFlowStoreApi } from './useReactFlowStore';
+import type { InternalNode, Node } from '../types';
+
 /**
  * The `useConnection` hook returns the current connection when there is an active
  * connection interaction. If no connection interaction is active, it returns null
@@ -39,12 +36,14 @@ function toSelector(s: ViewportStore, connection: ConnectionStore['connection'])
 export function useConnection<NodeType extends Node = Node, SelectorReturn = ConnectionState<InternalNode<NodeType>>>(
   connectionSelector?: (connection: ConnectionState<InternalNode<NodeType>>) => SelectorReturn
 ): SelectorReturn {
-  const { connection: connectionStore } = useConnectionStore();
-  const to = useViewportStore(useShallow((s) => toSelector(s, connectionStore)));
-
-  const connection = { ...connectionStore, to } as ConnectionState<InternalNode<NodeType>>;
-
-  return connectionSelector ? connectionSelector(connection) : (connection as SelectorReturn);
+  // The store keeps `connection.to` in flow coordinates, also when the viewport changes.
+  return useConnectionStore(
+    useShallow(({ connection }) => {
+      return connectionSelector
+        ? connectionSelector(connection as ConnectionState<InternalNode<NodeType>>)
+        : (connection as SelectorReturn);
+    })
+  );
 }
 
 export function useConnectionStateForHandle(handle: { nodeId: string; type: HandleType; id: string | null }) {
