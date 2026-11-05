@@ -167,6 +167,27 @@ function getPoints({
           targetGapOffset[dirAccessor] = (targetGapped[dirAccessor] > target[dirAccessor] ? -1 : 1) * gapOffset;
         }
       }
+
+      // when the handles sit on the same side and the nodes are aligned along the handle axis
+      // (e.g. two nodes on the same y connected right to right), the single corner point collapses
+      // onto a gapped point and the path reverses on itself with a sharp corner that cannot be
+      // rounded. To keep the path orthogonal we route a small perpendicular detour instead
+      const dirAccessorOpposite = dirAccessor === 'x' ? 'y' : 'x';
+      if (diff > 0 && offset > 0 && sourceGapped[dirAccessorOpposite] === targetGapped[dirAccessorOpposite]) {
+        const detourDir = dirAccessor === 'x' ? -sourceDir.x : sourceDir.y;
+        const detour = sourceGapped[dirAccessorOpposite] + detourDir * offset;
+
+        points =
+          dirAccessor === 'x'
+            ? [
+                { x: sourceGapped.x + sourceGapOffset.x, y: detour },
+                { x: targetGapped.x + targetGapOffset.x, y: detour },
+              ]
+            : [
+                { x: detour, y: sourceGapped.y + sourceGapOffset.y },
+                { x: detour, y: targetGapped.y + targetGapOffset.y },
+              ];
+      }
     }
 
     // these are conditions for handling mixed handle positions like Right -> Bottom for example
@@ -189,8 +210,11 @@ function getPoints({
     const maxXDistance = Math.max(Math.abs(sourceGapPoint.x - points[0].x), Math.abs(targetGapPoint.x - points[0].x));
     const maxYDistance = Math.max(Math.abs(sourceGapPoint.y - points[0].y), Math.abs(targetGapPoint.y - points[0].y));
 
-    // we want to place the label on the longest segment of the edge
-    if (maxXDistance >= maxYDistance) {
+    // place labels on the detour, or the longest segment for a single corner
+    if (points.length === 2) {
+      centerX = (points[0].x + points[1].x) / 2;
+      centerY = (points[0].y + points[1].y) / 2;
+    } else if (maxXDistance >= maxYDistance) {
       centerX = (sourceGapPoint.x + targetGapPoint.x) / 2;
       centerY = points[0].y;
     } else {
