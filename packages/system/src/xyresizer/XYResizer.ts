@@ -80,17 +80,19 @@ export type XYResizerInstance = {
   destroy: () => void;
 };
 
-function nodeToChildExtent(child: NodeBase, parent: NodeBase, nodeOrigin: NodeOrigin): CoordinateExtent {
-  const x = parent.position.x + child.position.x;
-  const y = parent.position.y + child.position.y;
-  const width = child.measured!.width! ?? 0;
-  const height = child.measured!.height! ?? 0;
-  const originOffsetX = nodeOrigin[0] * width;
-  const originOffsetY = nodeOrigin[1] * height;
+function nodeToChildExtent(
+  child: InternalNodeBase,
+  parent: InternalNodeBase,
+  parentPosition: XYPosition
+): CoordinateExtent {
+  const x = parentPosition.x + child.internals.positionAbsolute.x - parent.internals.positionAbsolute.x;
+  const y = parentPosition.y + child.internals.positionAbsolute.y - parent.internals.positionAbsolute.y;
+  const width = child.measured.width ?? 0;
+  const height = child.measured.height ?? 0;
 
   return [
-    [x - originOffsetX, y - originOffsetY],
-    [x + width - originOffsetX, y + height - originOffsetY],
+    [x, y],
+    [x + width, y + height],
   ];
 }
 
@@ -158,9 +160,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
         const width = node.measured.width ?? 0;
         const height = node.measured.height ?? 0;
         const origin = node.origin ?? nodeOrigin;
-        const parentPosition = node.parentId
-          ? nodeLookup.get(node.parentId)?.internals.positionAbsolute
-          : undefined;
+        const parentPosition = node.parentId ? nodeLookup.get(node.parentId)?.internals.positionAbsolute : undefined;
 
         // node.position can lie outside of the node's extent, but the node is drawn at the clamped
         // positionAbsolute. We derive the start position from it, so the resizer works with the
@@ -210,7 +210,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
             });
 
             if (child.extent === 'parent' || child.expandParent) {
-              const extent = nodeToChildExtent(child, node, child.origin ?? nodeOrigin);
+              const extent = nodeToChildExtent(child, node, prevValues);
 
               if (childExtent) {
                 childExtent = [
