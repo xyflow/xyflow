@@ -14,6 +14,7 @@
     "test:svelte:ui": "pnpm --filter=playwright run test:svelte:ui",
     "test:react": "pnpm --filter=playwright run test:react",
     "test:react:ui": "pnpm --filter=playwright run test:react:ui",
+    "test:system": "node --test tests/regression/*.test.mjs",
     "build:all": "turbo run build",
     "build": "turbo run build --filter=./packages/**",
     "lint": "turbo run lint --filter=./packages/**",
