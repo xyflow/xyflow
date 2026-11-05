@@ -80,17 +80,19 @@ export type XYResizerInstance = {
   destroy: () => void;
 };
 
-function nodeToChildExtent(child: NodeBase, parent: NodeBase, nodeOrigin: NodeOrigin): CoordinateExtent {
-  const x = parent.position.x + child.position.x;
-  const y = parent.position.y + child.position.y;
-  const width = child.measured!.width! ?? 0;
-  const height = child.measured!.height! ?? 0;
-  const originOffsetX = nodeOrigin[0] * width;
-  const originOffsetY = nodeOrigin[1] * height;
+function nodeToChildExtent(
+  child: InternalNodeBase,
+  parent: InternalNodeBase,
+  parentPosition: XYPosition
+): CoordinateExtent {
+  const x = parentPosition.x + child.internals.positionAbsolute.x - parent.internals.positionAbsolute.x;
+  const y = parentPosition.y + child.internals.positionAbsolute.y - parent.internals.positionAbsolute.y;
+  const width = child.measured.width ?? 0;
+  const height = child.measured.height ?? 0;
 
   return [
-    [x - originOffsetX, y - originOffsetY],
-    [x + width - originOffsetX, y + height - originOffsetY],
+    [x, y],
+    [x + width, y + height],
   ];
 }
 
@@ -153,11 +155,19 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
           containerBounds,
         });
 
+        const width = node.measured.width ?? 0;
+        const height = node.measured.height ?? 0;
+        const origin = node.origin ?? nodeOrigin;
+        const parentPosition = node.parentId ? nodeLookup.get(node.parentId)?.internals.positionAbsolute : undefined;
+
+        // node.position can lie outside of the node's extent, but the node is drawn at the clamped
+        // positionAbsolute. We derive the start position from it, so the resizer works with the
+        // position the user actually sees.
         prevValues = {
-          width: node.measured.width ?? 0,
-          height: node.measured.height ?? 0,
-          x: node.position.x ?? 0,
-          y: node.position.y ?? 0,
+          width,
+          height,
+          x: node.internals.positionAbsolute.x - (parentPosition?.x ?? 0) + origin[0] * width,
+          y: node.internals.positionAbsolute.y - (parentPosition?.y ?? 0) + origin[1] * height,
         };
 
         startValues = {
@@ -198,7 +208,7 @@ export function XYResizer({ domNode, nodeId, getStoreItems, onChange, onEnd }: X
             });
 
             if (child.extent === 'parent' || child.expandParent) {
-              const extent = nodeToChildExtent(child, node, child.origin ?? nodeOrigin);
+              const extent = nodeToChildExtent(child, node, prevValues);
 
               if (childExtent) {
                 childExtent = [
