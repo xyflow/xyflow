@@ -17,6 +17,7 @@
     "test:react:ui": "pnpm --filter=playwright run test:react:ui",
     "test:vue": "pnpm --filter=playwright run test:vue",
     "test:vue:ui": "pnpm --filter=playwright run test:vue:ui",
+    "test:system": "node --test tests/regression/*.test.mjs",
     "build:all": "turbo run build",
     "build": "turbo run build --filter=./packages/**",
     "format": "turbo run format --filter=./packages/**",
