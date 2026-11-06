@@ -1,4 +1,5 @@
 import DragHandleNode from './components/DragHandleNode.svelte';
+import UpdateNodeInternalsNode from './components/UpdateNodeInternalsNode.svelte';
 
 export default {
 	flowProps: {
@@ -8,7 +9,8 @@ export default {
 		autoPanOnNodeDrag: false,
 		deleteKey: 'd',
 		nodeTypes: {
-			DragHandleNode
+			DragHandleNode,
+			UpdateNodeInternalsNode
 		},
 		nodes: [
 			{
@@ -73,6 +75,12 @@ export default {
 				data: { label: 'hidden' },
 				position: { x: 0, y: 700 },
 				hidden: true
+			},
+			{
+				id: 'update-internals',
+				data: { label: 'Update Internals' },
+				position: { x: 300, y: 0 },
+				type: 'UpdateNodeInternalsNode'
 			}
 		],
 		edges: [
