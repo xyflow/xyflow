@@ -8,7 +8,7 @@
 		type OnConnectEnd
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	const initialNodes: Node[] = [
 		{
@@ -29,7 +29,7 @@
 
 	const { screenToFlowPosition, flowToScreenPosition } = useSvelteFlow();
 
-	const connections = useNodeConnections({ id: '0', handleType: 'source' });
+	const connections = useNodeConnections(() => ({ id: '0', handleType: 'source' }));
 
 	$inspect(connections.current);
 

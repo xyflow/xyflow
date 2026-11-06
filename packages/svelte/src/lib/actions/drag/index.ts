@@ -1,7 +1,7 @@
 import { XYDrag, type NodeBase, type OnDrag } from '@xyflow/system';
 
-import type { SvelteFlowStore } from '$lib/store/types.js';
-import type { Node, Edge } from '$lib/types/index.js';
+import type { SvelteFlowStore } from '#lib/store/types.js';
+import type { Node, Edge } from '#lib/types/index.js';
 
 export type UseDragParams<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   store: SvelteFlowStore<NodeType, EdgeType>;
@@ -10,7 +10,6 @@ export type UseDragParams<NodeType extends Node = Node, EdgeType extends Edge = 
   handleSelector?: string;
   nodeId?: string;
   isSelectable?: boolean;
-  nodeClickDistance?: number;
   onDrag?: OnDrag;
   onDragStart?: OnDrag;
   onDragStop?: OnDrag;
@@ -66,8 +65,7 @@ export default function drag<NodeType extends Node = Node, EdgeType extends Edge
       noDragClassName: params.noDragClass,
       handleSelector: params.handleSelector,
       nodeId: params.nodeId,
-      isSelectable: params.isSelectable,
-      nodeClickDistance: params.nodeClickDistance
+      isSelectable: params.isSelectable
     });
   }
 

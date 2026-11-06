@@ -1,28 +1,9 @@
-import { shallow } from 'zustand/shallow';
-import { ConnectionState, pointToRendererPoint } from '@xyflow/system';
+import { useSyncExternalStore } from 'react';
+import { type ConnectionState, HandleType } from '@xyflow/system';
 
-import { useStore } from './useStore';
-import type { InternalNode, Node, ReactFlowStore } from '../types';
+import { useConnectionStore, useShallow, useReactFlowStoreApi } from './useReactFlowStore';
+import type { InternalNode, Node } from '../types';
 
-function storeSelector(s: ReactFlowStore) {
-  return s.connection.inProgress
-    ? { ...s.connection, to: pointToRendererPoint(s.connection.to, s.transform) }
-    : { ...s.connection };
-}
-
-function getSelector<NodeType extends Node = Node, SelectorReturn = ConnectionState<InternalNode<NodeType>>>(
-  connectionSelector?: (connection: ConnectionState<InternalNode<NodeType>>) => SelectorReturn
-): (s: ReactFlowStore) => SelectorReturn | ConnectionState<InternalNode> {
-  if (connectionSelector) {
-    const combinedSelector = (s: ReactFlowStore) => {
-      const connection = storeSelector(s) as ConnectionState<InternalNode<NodeType>>;
-      return connectionSelector(connection);
-    };
-    return combinedSelector;
-  }
-
-  return storeSelector;
-}
 /**
  * The `useConnection` hook returns the current connection when there is an active
  * connection interaction. If no connection interaction is active, it returns null
@@ -55,6 +36,23 @@ function getSelector<NodeType extends Node = Node, SelectorReturn = ConnectionSt
 export function useConnection<NodeType extends Node = Node, SelectorReturn = ConnectionState<InternalNode<NodeType>>>(
   connectionSelector?: (connection: ConnectionState<InternalNode<NodeType>>) => SelectorReturn
 ): SelectorReturn {
-  const combinedSelector = getSelector<NodeType, SelectorReturn>(connectionSelector);
-  return useStore(combinedSelector, shallow) as SelectorReturn;
+  // The store keeps `connection.to` in flow coordinates, also when the viewport changes.
+  return useConnectionStore(
+    useShallow(({ connection }) => {
+      return connectionSelector
+        ? connectionSelector(connection as ConnectionState<InternalNode<NodeType>>)
+        : (connection as SelectorReturn);
+    })
+  );
+}
+
+export function useConnectionStateForHandle(handle: { nodeId: string; type: HandleType; id: string | null }) {
+  const { optionsStore, connectionStore } = useReactFlowStoreApi();
+
+  const subscribe = (onStoreChange: () => void) =>
+    optionsStore.getState().pubSub.subscribeToConnectionForHandle(handle, onStoreChange);
+
+  const getSnapshot = () => connectionStore.getState();
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }

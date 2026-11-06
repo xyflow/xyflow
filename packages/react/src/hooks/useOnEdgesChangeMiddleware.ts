@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { EdgeChange } from '@xyflow/system';
 
-import { useStoreApi } from './useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 import type { Edge, Node } from '../types';
 
 /**
@@ -13,16 +13,16 @@ import type { Edge, Node } from '../types';
 export function experimental_useOnEdgesChangeMiddleware<EdgeType extends Edge = Edge>(
   fn: (changes: EdgeChange<EdgeType>[]) => EdgeChange<EdgeType>[]
 ) {
-  const store = useStoreApi<Node, EdgeType>();
+  const { optionsStore } = useReactFlowStoreApi<Node, EdgeType>();
   const [symbol] = useState(() => Symbol());
 
   useEffect(() => {
-    const { onEdgesChangeMiddlewareMap } = store.getState();
+    const { onEdgesChangeMiddlewareMap } = optionsStore.getState();
     onEdgesChangeMiddlewareMap.set(symbol, fn);
   }, [fn]);
 
   useEffect(() => {
-    const { onEdgesChangeMiddlewareMap } = store.getState();
+    const { onEdgesChangeMiddlewareMap } = optionsStore.getState();
     return () => {
       onEdgesChangeMiddlewareMap.delete(symbol);
     };

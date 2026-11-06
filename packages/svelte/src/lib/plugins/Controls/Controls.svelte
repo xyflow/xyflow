@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { useStore } from '$lib/store/index.js';
-  import Panel from '$lib/container/Panel/Panel.svelte';
+  import { useSvelteFlowStore } from '#lib/store/index.js';
+  import Panel from '#lib/container/Panel/Panel.svelte';
   import ControlButton from './ControlButton.svelte';
   import PlusIcon from './Icons/Plus.svelte';
   import MinusIcon from './Icons/Minus.svelte';
@@ -30,7 +30,7 @@
     ...rest
   }: ControlsProps = $props();
 
-  let store = $derived(useStore());
+  let store = $derived(useSvelteFlowStore());
 
   const buttonProps = $derived({
     bgColor: buttonBgColor,
