@@ -113,19 +113,27 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
       }
     }
 
+    /*
+     * Resolve a queued init fitView once all of its inputs are ready: nodes initialized, the
+     * container measured, and panZoom created. setNodes, useResizeHandler and ZoomPane each call
+     * it as their input becomes ready, so whichever finishes last fires the fit.
+     */
+    function resolveFitViewIfReady() {
+      const { fitViewQueued, panZoom } = get();
+      const { nodesInitialized } = nodesStore.getState();
+      const { width, height } = viewportStore.getState();
+
+      if (fitViewQueued && nodesInitialized && width && height && panZoom) {
+        resolveFitView();
+        set({ fitViewQueued: false, fitViewOptions: undefined });
+      }
+    }
+
     return {
       ...initialState.optionsStore,
       setNodes: (nodes: Node[]) => {
         const { nodeLookup, parentLookup } = nodesStore.getState();
-        const {
-          nodeOrigin,
-          nodeExtent,
-          elevateNodesOnSelect,
-          fitViewQueued,
-          zIndexMode,
-          nodesSelectionActive,
-          pubSub,
-        } = get();
+        const { nodeOrigin, nodeExtent, elevateNodesOnSelect, zIndexMode, nodesSelectionActive, pubSub } = get();
 
         /*
          * setNodes() is called exclusively in response to user actions:
@@ -146,16 +154,16 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
 
         const nextNodesSelectionActive = nodesSelectionActive && hasSelectedNodes;
 
-        if (fitViewQueued && nodesInitialized) {
-          void resolveFitView();
-          set({ fitViewQueued: false, fitViewOptions: undefined, nodesSelectionActive: nextNodesSelectionActive });
-        } else if (nodesSelectionActive !== nextNodesSelectionActive) {
+        nodesStore.setState({ nodes, nodesInitialized });
+        pubSub.publishNodes(updatedNodes);
+
+        if (nodesSelectionActive !== nextNodesSelectionActive) {
           set({ nodesSelectionActive: nextNodesSelectionActive });
         }
 
-        nodesStore.setState({ nodes, nodesInitialized });
-        pubSub.publishNodes(updatedNodes);
+        resolveFitViewIfReady();
       },
+      resolveFitViewIfReady,
       setEdges: (edges: Edge[]) => {
         const { connectionLookup, edgeLookup } = edgesStore.getState();
 
@@ -182,8 +190,9 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
        * new dimensions and update the nodes.
        */
       updateNodeInternals: (updates) => {
-        const { emitNodeChanges, domNode, nodeOrigin, nodeExtent, fitViewQueued, zIndexMode, pubSub } = get();
+        const { emitNodeChanges, domNode, nodeOrigin, nodeExtent, fitViewQueued, zIndexMode, pubSub, panZoom } = get();
         const { nodeLookup, parentLookup } = nodesStore.getState();
+        const { width, height } = viewportStore.getState();
 
         const { changes, updatedInternals, updatedNodes } = updateNodeInternalsSystem(
           updates,
@@ -199,7 +208,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
           return;
         }
 
-        if (fitViewQueued) {
+        if (fitViewQueued && width && height && panZoom) {
           void resolveFitView();
           set({ fitViewQueued: false, fitViewOptions: undefined });
         }
