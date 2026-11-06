@@ -10,7 +10,18 @@
 	]);
 	let edges = $state.raw([]);
 
+	const panOnDragOptions: Record<string, boolean | number[]> = {
+		true: true,
+		false: false,
+		'[1, 2]': [1, 2],
+		'[0, 1, 2]': [0, 1, 2],
+		'[2]': [2]
+	};
+
 	let dragThreshold = $state(1);
+	let paneDragThreshold = $state(1);
+	let selectionOnDrag = $state(true);
+	let panOnDrag = $state('[1, 2]');
 	let snapGridSize = $state(0);
 	let messages = $state<string[]>([]);
 	let clickCount = 0;
@@ -22,6 +33,14 @@
 
 	const onnodeclick = ({ node }: { node: Node }) => log(`node click: node ${node.id}`);
 	const onpaneclick = () => log('pane click');
+	const onpanecontextmenu = ({ event }: { event: MouseEvent }) => {
+		event.preventDefault();
+		log('pane context menu');
+	};
+	const onmovestart = () => log('move start');
+	const onmoveend = () => log('move end');
+	const onselectionstart = () => log('selection start');
+	const onselectionend = () => log('selection end');
 </script>
 
 <SvelteFlow
@@ -29,8 +48,16 @@
 	bind:edges
 	{onnodeclick}
 	{onpaneclick}
+	{onpanecontextmenu}
+	{onmovestart}
+	{onmoveend}
+	{onselectionstart}
+	{onselectionend}
 	nodeDragThreshold={dragThreshold}
+	{paneDragThreshold}
 	snapGrid={snapGridSize > 0 ? [snapGridSize, snapGridSize] : undefined}
+	{selectionOnDrag}
+	panOnDrag={panOnDragOptions[panOnDrag]}
 	fitView
 >
 	<Background gap={snapGridSize > 0 ? snapGridSize : undefined} />
@@ -39,6 +66,28 @@
 			<label>
 				nodeDragThreshold
 				<input type="number" min="0" bind:value={dragThreshold} />
+			</label>
+		</div>
+		<div>
+			<label>
+				paneDragThreshold
+				<input type="number" min="0" bind:value={paneDragThreshold} />
+			</label>
+		</div>
+		<div>
+			<label>
+				panOnDrag
+				<select bind:value={panOnDrag}>
+					{#each Object.keys(panOnDragOptions) as option (option)}
+						<option value={option}>{option}</option>
+					{/each}
+				</select>
+			</label>
+		</div>
+		<div>
+			<label>
+				selectionOnDrag
+				<input type="checkbox" bind:checked={selectionOnDrag} />
 			</label>
 		</div>
 		<div>

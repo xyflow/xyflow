@@ -15,8 +15,8 @@
     panOnDrag,
     panOnScroll,
     panOnScrollSpeed,
-    paneClickDistance,
-    selectionOnDrag,
+    paneDragThreshold,
+    onpanecontextmenu,
     onmovestart,
     onmove,
     onmoveend,
@@ -54,6 +54,9 @@
     onPanZoomStart: onmovestart,
     onPanZoom: onmove,
     onPanZoomEnd: onmoveend,
+    onPaneContextMenu: onpanecontextmenu
+      ? (event: MouseEvent) => onpanecontextmenu({ event })
+      : undefined,
     zoomOnScroll,
     zoomOnDoubleClick,
     zoomOnPinch,
@@ -69,8 +72,7 @@
     userSelectionActive: !!store.selectionRect,
     translateExtent: store.translateExtent,
     lib: 'svelte',
-    paneClickDistance,
-    selectionOnDrag,
+    paneDragThreshold,
     onTransformChange: (transform: Transform) => {
       store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
     },
