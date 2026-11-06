@@ -87,6 +87,12 @@
   }
 }
 
+.xy-flow__node-input,
+.xy-flow__node-default,
+.xy-flow__node-output {
+  width: 150px;
+}
+
 .xy-flow__node-group {
   background-color: var(--xy-theme-group-background-color);
   border-color: var(--xy-theme-group-border-color);
