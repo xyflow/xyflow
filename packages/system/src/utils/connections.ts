@@ -61,6 +61,22 @@ export function areConnectionMapsEqual(a?: Map<string, NodeConnection>, b?: Map<
 }
 
 /**
+ * Connections get recreated whenever the connection lookup is rebuilt (e.g. after the store
+ * was reset in React StrictMode), so we compare them by value instead of by reference.
+ */
+function isSameConnection(a: NodeConnection, b?: NodeConnection) {
+  return (
+    a === b ||
+    (!!b &&
+      a.edgeId === b.edgeId &&
+      a.source === b.source &&
+      a.target === b.target &&
+      a.sourceHandle == b.sourceHandle &&
+      a.targetHandle == b.targetHandle)
+  );
+}
+
+/**
  * We call the callback for all connections in a that are not in b
  *
  * @internal
@@ -77,7 +93,7 @@ export function handleConnectionChange(
   const diff: NodeConnection[] = [];
 
   a.forEach((connection, key) => {
-    if (b?.get(key) !== connection) {
+    if (!isSameConnection(connection, b?.get(key))) {
       diff.push(connection);
     }
   });
