@@ -64,6 +64,7 @@ import ZIndexMode from '../examples/ZIndexMode';
 import Middlewares from '../examples/Middlewares';
 import NodeSelectionBug from '../examples/NodeSelectionBug';
 import Remount from '../examples/Remount';
+import Popout from '../examples/Popout';
 
 export interface IRoute {
   name: string;
@@ -72,6 +73,11 @@ export interface IRoute {
 }
 
 const routes: IRoute[] = [
+  {
+    name: 'Popout',
+    path: 'popout',
+    component: Popout,
+  },
   {
     name: 'Add Node on edge Drop',
     path: 'add-node-edge-drop',
