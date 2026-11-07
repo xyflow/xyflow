@@ -22,6 +22,7 @@ const selector = (s: ReactFlowState) => ({
   userSelectionActive: s.userSelectionActive,
   lib: s.lib,
   connectionInProgress: s.connection.inProgress,
+  ownerDocument: s.domNode?.ownerDocument,
 });
 
 export function ZoomPane({
@@ -50,8 +51,8 @@ export function ZoomPane({
 }: ZoomPaneProps) {
   const store = useStoreApi();
   const zoomPane = useRef<HTMLDivElement>(null);
-  const { userSelectionActive, lib, connectionInProgress } = useStore(selector, shallow);
-  const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode);
+  const { userSelectionActive, lib, connectionInProgress, ownerDocument } = useStore(selector, shallow);
+  const zoomActivationKeyPressed = useKeyPress(zoomActivationKeyCode, { target: ownerDocument });
   const panZoom = useRef<PanZoomInstance>();
 
   useResizeHandler(zoomPane);

@@ -29,10 +29,12 @@ export type FlowRendererProps<NodeType extends Node = Node> = Omit<
   children: ReactNode;
 };
 
-const win = typeof window !== 'undefined' ? window : undefined;
-
 const selector = (s: ReactFlowState) => {
-  return { nodesSelectionActive: s.nodesSelectionActive, userSelectionActive: s.userSelectionActive };
+  return {
+    nodesSelectionActive: s.nodesSelectionActive,
+    userSelectionActive: s.userSelectionActive,
+    ownerDocument: s.domNode?.ownerDocument,
+  };
 };
 
 function FlowRendererComponent<NodeType extends Node = Node>({
@@ -74,7 +76,8 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onViewportChange,
   isControlledViewport,
 }: FlowRendererProps<NodeType>) {
-  const { nodesSelectionActive, userSelectionActive } = useStore(selector, shallow);
+  const { nodesSelectionActive, userSelectionActive, ownerDocument } = useStore(selector, shallow);
+  const win = ownerDocument?.defaultView;
   const selectionKeyPressed = useKeyPress(selectionKeyCode, { target: win });
   const panActivationKeyPressed = useKeyPress(panActivationKeyCode, { target: win });
 

@@ -62,6 +62,9 @@ export function useKeyPress(
   options: UseKeyPressOptions = { target: defaultDoc, actInsideInputWithModifier: true }
 ): boolean {
   const [keyPressed, setKeyPressed] = useState(false);
+  const target = options?.target ?? defaultDoc;
+  const actInsideInputWithModifier = options?.actInsideInputWithModifier ?? true;
+  const preventDefault = options?.preventDefault ?? true;
 
   // we need to remember if a modifier key is pressed in order to track it
   const modifierPressed = useRef(false);
@@ -97,8 +100,13 @@ export function useKeyPress(
   }, [keyCode]);
 
   useEffect(() => {
-    const target = options?.target ?? defaultDoc;
-    const actInsideInputWithModifier = options?.actInsideInputWithModifier ?? true;
+    // Avoid instanceof checks: the target may belong to another window.
+    const targetWindow =
+      target && 'window' in target
+        ? target
+        : target && 'defaultView' in target
+          ? target.defaultView
+          : target?.ownerDocument?.defaultView;
 
     if (keyCode !== null) {
       const downHandler = (event: KeyboardEvent) => {
@@ -117,7 +125,7 @@ export function useKeyPress(
           const target = (event.composedPath?.()?.[0] || event.target) as Element | null;
           const isInteractiveElement = target?.nodeName === 'BUTTON' || target?.nodeName === 'A';
 
-          if (options.preventDefault !== false && (modifierPressed.current || !isInteractiveElement)) {
+          if (preventDefault && (modifierPressed.current || !isInteractiveElement)) {
             event.preventDefault();
           }
 
@@ -145,22 +153,24 @@ export function useKeyPress(
 
       const resetHandler = () => {
         pressedKeys.current.clear();
+        modifierPressed.current = false;
         setKeyPressed(false);
       };
 
       target?.addEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
       target?.addEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
-      window.addEventListener('blur', resetHandler);
-      window.addEventListener('contextmenu', resetHandler);
+      targetWindow?.addEventListener('blur', resetHandler);
+      targetWindow?.addEventListener('contextmenu', resetHandler);
 
       return () => {
         target?.removeEventListener('keydown', downHandler as EventListenerOrEventListenerObject);
         target?.removeEventListener('keyup', upHandler as EventListenerOrEventListenerObject);
-        window.removeEventListener('blur', resetHandler);
-        window.removeEventListener('contextmenu', resetHandler);
+        targetWindow?.removeEventListener('blur', resetHandler);
+        targetWindow?.removeEventListener('contextmenu', resetHandler);
+        resetHandler();
       };
     }
-  }, [keyCode, setKeyPressed]);
+  }, [keyCode, target, actInsideInputWithModifier, preventDefault]);
 
   return keyPressed;
 }
