@@ -9,4 +9,14 @@
     --xy-theme-primary: #ff4000;
     --xy-theme-selected: #ff4000;
   }
+
+  .svelte-flow__edge-label {
+    padding: 2px;
+    font-size: 10px;
+    color: var(--xy-edge-label-color, var(--xy-edge-label-color-default));
+    background: var(
+      --xy-edge-label-background-color,
+      var(--xy-edge-label-background-color-default)
+    );
+  }
 }

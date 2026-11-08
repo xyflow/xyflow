@@ -93,6 +93,22 @@
   width: 150px;
 }
 
+.xy-flow__edge-text {
+  font-size: 10px;
+  fill: var(--xy-edge-label-color, var(--xy-edge-label-color-default));
+}
+
+.xy-flow__edge.updating .xy-flow__edge-path {
+  stroke: #777;
+}
+
+.xy-flow__node.selectable:focus,
+.xy-flow__node.selectable:focus-visible,
+.xy-flow__selection:focus,
+.xy-flow__selection:focus-visible {
+  outline: none;
+}
+
 .xy-flow__node-group {
   background-color: var(--xy-theme-group-background-color);
   border-color: var(--xy-theme-group-border-color);

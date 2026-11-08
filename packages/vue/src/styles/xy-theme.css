@@ -9,4 +9,8 @@
     --xy-theme-primary: #16a34a;
     --xy-theme-selected: #16a34a;
   }
+
+  .vue-flow__edge-textbg {
+    fill: var(--xy-edge-label-background-color, var(--xy-edge-label-background-color-default));
+  }
 }

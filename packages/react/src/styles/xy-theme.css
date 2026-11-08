@@ -9,4 +9,8 @@
     --xy-theme-primary: #ff0073;
     --xy-theme-selected: #f57dbd;
   }
+
+  .react-flow__edge-textbg {
+    fill: var(--xy-edge-label-background-color, var(--xy-edge-label-background-color-default));
+  }
 }
