@@ -113,7 +113,7 @@ export function useKeyPress(
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
         pressedKeys.current.add(event[keyOrCode]);
 
-        if (isMatchingKey(keyCodes, pressedKeys.current, false)) {
+        if (isMatchingKey(keyCodes, pressedKeys.current)) {
           const target = (event.composedPath?.()?.[0] || event.target) as Element | null;
           const isInteractiveElement = target?.nodeName === 'BUTTON' || target?.nodeName === 'A';
 
@@ -128,19 +128,15 @@ export function useKeyPress(
       const upHandler = (event: KeyboardEvent) => {
         const keyOrCode = useKeyOrCode(event.code, keysToWatch);
 
-        if (isMatchingKey(keyCodes, pressedKeys.current, true)) {
-          setKeyPressed(false);
-          pressedKeys.current.clear();
-        } else {
-          pressedKeys.current.delete(event[keyOrCode]);
-        }
+        pressedKeys.current.delete(event[keyOrCode]);
 
         // fix for Mac: when cmd key is pressed, keyup is not triggered for any other key, see: https://stackoverflow.com/questions/27380018/when-cmd-key-is-kept-pressed-keyup-is-not-triggered-for-any-other-key
         if (event.key === 'Meta') {
           pressedKeys.current.clear();
         }
 
-        modifierPressed.current = false;
+        setKeyPressed(isMatchingKey(keyCodes, pressedKeys.current));
+        modifierPressed.current = event.ctrlKey || event.metaKey || event.shiftKey || event.altKey;
       };
 
       const resetHandler = () => {
@@ -167,15 +163,14 @@ export function useKeyPress(
 
 // utils
 
-function isMatchingKey(keyCodes: Array<Keys>, pressedKeys: PressedKeys, isUp: boolean): boolean {
+function isMatchingKey(keyCodes: Array<Keys>, pressedKeys: PressedKeys): boolean {
   return (
     keyCodes
       /*
-       * we only want to compare same sizes of keyCode definitions
-       * and pressed keys. When the user specified 'Meta' as a key somewhere
-       * this would also be truthy without this filter when user presses 'Meta' + 'r'
+       * Only compare combinations with the same number of keys:
+       * a single Meta key must not match Meta+r.
        */
-      .filter((keys) => isUp || keys.length === pressedKeys.size)
+      .filter((keys) => keys.length === pressedKeys.size)
       /*
        * since we want to support multiple possibilities only one of the
        * combinations need to be part of the pressed keys
