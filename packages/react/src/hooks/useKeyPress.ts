@@ -167,8 +167,8 @@ function isMatchingKey(keyCodes: Array<Keys>, pressedKeys: PressedKeys): boolean
   return (
     keyCodes
       /*
-       * Сравниваем только сочетания с тем же количеством клавиш:
-       * одиночная Meta не должна совпадать с Meta+r.
+       * Only compare combinations with the same number of keys:
+       * a single Meta key must not match Meta+r.
        */
       .filter((keys) => keys.length === pressedKeys.size)
       /*

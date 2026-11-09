@@ -15,7 +15,7 @@ const UseKeyPressComponent = () => {
       <KeyState name="code" combination="Control+KeyZ" />
       <KeyState name="plain" combination="a+s" />
       <KeyState name="input" combination="Control+z" insideInput={false} />
-      <input aria-label="Поле для проверки сочетаний клавиш" />
+      <input aria-label="Keyboard shortcut test input" />
     </div>
   );
 };

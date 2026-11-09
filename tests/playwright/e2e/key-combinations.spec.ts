@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { FRAMEWORK } from './constants';
 
-test.describe('Повторные сочетания клавиш', () => {
-  test.skip(FRAMEWORK !== 'react', 'Проверяется React-хук useKeyPress');
+test.describe('Repeated key combinations', () => {
+  test.skip(FRAMEWORK !== 'react', 'Tests the React useKeyPress hook');
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/examples/use-key-press');
@@ -13,7 +13,7 @@ test.describe('Повторные сочетания клавиш', () => {
     ['Control', 'control'],
     ['Meta', 'meta'],
   ] as const) {
-    test(`сохраняет ${modifier} между повторными нажатиями Z`, async ({ page }) => {
+    test(`preserves ${modifier} between repeated Z presses`, async ({ page }) => {
       const output = page.getByTestId(name);
       await page.keyboard.down(modifier);
       for (let count = 1; count <= 3; count++) {
@@ -28,7 +28,7 @@ test.describe('Повторные сочетания клавиш', () => {
     });
   }
 
-  test('поддерживает повторные сочетания с event.code', async ({ page }) => {
+  test('supports repeated combinations using event.code', async ({ page }) => {
     await page.keyboard.down('Control');
     await page.keyboard.press('z');
     await expect(page.getByTestId('code')).toHaveText('1');
@@ -37,7 +37,7 @@ test.describe('Повторные сочетания клавиш', () => {
     await page.keyboard.up('Control');
   });
 
-  test('сохраняет первую обычную клавишу после отпускания второй', async ({ page }) => {
+  test('preserves the first non-modifier key when the second is released', async ({ page }) => {
     await page.keyboard.down('a');
     await page.keyboard.press('s');
     await expect(page.getByTestId('plain')).toHaveText('1');
@@ -46,7 +46,7 @@ test.describe('Повторные сочетания клавиш', () => {
     await page.keyboard.up('a');
   });
 
-  test('сбрасывает пропущенный keyup при отпускании Meta', async ({ page }) => {
+  test('clears a missed keyup when Meta is released', async ({ page }) => {
     const output = page.getByTestId('meta');
     await page.evaluate(() => {
       document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Meta', code: 'MetaLeft', metaKey: true }));
@@ -61,7 +61,7 @@ test.describe('Повторные сочетания клавиш', () => {
     await expect(output).toHaveText('2');
   });
 
-  test('сбрасывает сочетание при потере фокуса', async ({ page }) => {
+  test('resets the combination on blur', async ({ page }) => {
     await page.keyboard.down('Control');
     await page.keyboard.down('z');
     await expect(page.getByTestId('control')).toHaveAttribute('data-pressed', 'true');
@@ -73,7 +73,7 @@ test.describe('Повторные сочетания клавиш', () => {
     await expect(page.getByTestId('control')).toHaveText('2');
   });
 
-  test('учитывает запрет сочетаний внутри поля ввода', async ({ page }) => {
+  test('respects disabled shortcuts inside an input', async ({ page }) => {
     await page.getByRole('textbox').focus();
     await page.keyboard.press('Control+z');
     await expect(page.getByTestId('input')).toHaveText('0');
