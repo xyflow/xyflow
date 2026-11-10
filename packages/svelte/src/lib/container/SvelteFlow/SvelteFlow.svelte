@@ -29,7 +29,7 @@
     panActivationKey,
     multiSelectionKey,
     zoomActivationKey,
-    paneClickDistance = 1,
+    paneDragThreshold = 1,
     onmovestart,
     onmoveend,
     onmove,
@@ -162,8 +162,8 @@
     {panOnScroll}
     {panOnScrollSpeed}
     {panOnDrag}
-    {paneClickDistance}
-    {selectionOnDrag}
+    {paneDragThreshold}
+    {onpanecontextmenu}
     {onmovestart}
     {onmove}
     {onmoveend}
@@ -176,7 +176,7 @@
       {onselectionstart}
       {onselectionend}
       {panOnDrag}
-      {paneClickDistance}
+      {paneDragThreshold}
       {selectionOnDrag}
       {autoPanOnSelection}
     >

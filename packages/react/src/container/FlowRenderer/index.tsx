@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { isLeftClickPan } from '@xyflow/system';
 
 import { useOptionsStore } from '../../hooks/useReactFlowStore';
 import { useGlobalKeyHandler } from '../../hooks/useGlobalKeyHandler';
@@ -37,7 +38,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
   onPaneMouseLeave,
   onPaneContextMenu,
   onPaneScroll,
-  paneClickDistance,
+  paneDragThreshold,
   deleteKeyCode,
   selectionKeyCode,
   selectionOnDrag,
@@ -76,7 +77,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
 
   const panOnDrag = panActivationKeyPressed || _panOnDrag;
   const panOnScroll = panActivationKeyPressed || _panOnScroll;
-  const _selectionOnDrag = selectionOnDrag && panOnDrag !== true;
+  const _selectionOnDrag = selectionOnDrag && !isLeftClickPan(panOnDrag ?? true);
   const isSelecting = selectionKeyPressed || userSelectionActive || _selectionOnDrag;
 
   useGlobalKeyHandler({ deleteKeyCode, multiSelectionKeyCode });
@@ -103,8 +104,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
       noPanClassName={noPanClassName}
       onViewportChange={onViewportChange}
       isControlledViewport={isControlledViewport}
-      paneClickDistance={paneClickDistance}
-      selectionOnDrag={_selectionOnDrag}
+      paneDragThreshold={paneDragThreshold}
     >
       <Pane
         onSelectionStart={onSelectionStart}
@@ -120,7 +120,7 @@ function FlowRendererComponent<NodeType extends Node = Node>({
         isSelecting={!!isSelecting}
         selectionMode={selectionMode}
         selectionKeyPressed={selectionKeyPressed}
-        paneClickDistance={paneClickDistance}
+        paneDragThreshold={paneDragThreshold}
         selectionOnDrag={_selectionOnDrag}
       >
         {children}

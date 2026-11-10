@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type MouseEvent as ReactMouseEvent } from 'react';
 import { ReactFlow, Background, Panel, useNodesState, Node, NodeMouseHandler } from '@xyflow/react';
 
 const initNodes: Node[] = [
@@ -7,11 +7,22 @@ const initNodes: Node[] = [
   { id: '3', data: { label: 'Node 3' }, position: { x: 0, y: 200 } },
 ];
 
+const panOnDragOptions: Record<string, boolean | number[]> = {
+  true: true,
+  false: false,
+  '[1, 2]': [1, 2],
+  '[0, 1, 2]': [0, 1, 2],
+  '[2]': [2],
+};
+
 let clickCount = 0;
 
 const DragThreshold = () => {
   const [nodes, , onNodesChange] = useNodesState(initNodes);
   const [dragThreshold, setDragThreshold] = useState(1);
+  const [paneDragThreshold, setPaneDragThreshold] = useState(1);
+  const [selectionOnDrag, setSelectionOnDrag] = useState(true);
+  const [panOnDrag, setPanOnDrag] = useState('[1, 2]');
   const [snapGridSize, setSnapGridSize] = useState(0);
   const [messages, setMessages] = useState<string[]>([]);
 
@@ -22,6 +33,17 @@ const DragThreshold = () => {
 
   const onNodeClick: NodeMouseHandler = useCallback((_, node) => log(`node click: node ${node.id}`), [log]);
   const onPaneClick = useCallback(() => log('pane click'), [log]);
+  const onPaneContextMenu = useCallback(
+    (event: ReactMouseEvent | MouseEvent) => {
+      event.preventDefault();
+      log('pane context menu');
+    },
+    [log]
+  );
+  const onMoveStart = useCallback(() => log('move start'), [log]);
+  const onMoveEnd = useCallback(() => log('move end'), [log]);
+  const onSelectionStart = useCallback(() => log('selection start'), [log]);
+  const onSelectionEnd = useCallback(() => log('selection end'), [log]);
 
   const snapToGrid = snapGridSize > 0;
 
@@ -31,9 +53,17 @@ const DragThreshold = () => {
       onNodesChange={onNodesChange}
       onNodeClick={onNodeClick}
       onPaneClick={onPaneClick}
+      onPaneContextMenu={onPaneContextMenu}
+      onMoveStart={onMoveStart}
+      onMoveEnd={onMoveEnd}
+      onSelectionStart={onSelectionStart}
+      onSelectionEnd={onSelectionEnd}
       nodeDragThreshold={dragThreshold}
+      paneDragThreshold={paneDragThreshold}
       snapToGrid={snapToGrid}
       snapGrid={snapToGrid ? [snapGridSize, snapGridSize] : undefined}
+      selectionOnDrag={selectionOnDrag}
+      panOnDrag={panOnDragOptions[panOnDrag]}
       fitView
     >
       <Background gap={snapToGrid ? snapGridSize : undefined} />
@@ -58,6 +88,39 @@ const DragThreshold = () => {
               min={0}
               value={dragThreshold}
               onChange={(evt) => setDragThreshold(+evt.target.value)}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            paneDragThreshold{' '}
+            <input
+              type="number"
+              min={0}
+              value={paneDragThreshold}
+              onChange={(evt) => setPaneDragThreshold(+evt.target.value)}
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            panOnDrag{' '}
+            <select value={panOnDrag} onChange={(evt) => setPanOnDrag(evt.target.value)}>
+              {Object.keys(panOnDragOptions).map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div>
+          <label>
+            selectionOnDrag{' '}
+            <input
+              type="checkbox"
+              checked={selectionOnDrag}
+              onChange={(evt) => setSelectionOnDrag(evt.target.checked)}
             />
           </label>
         </div>

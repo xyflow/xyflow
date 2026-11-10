@@ -149,7 +149,7 @@ export interface State<NodeType extends Node = Node, EdgeType extends Edge = Edg
   panOnScroll: boolean;
   panOnScrollSpeed: number;
   panOnScrollMode: PanOnScrollMode;
-  paneClickDistance: number;
+  paneDragThreshold: number;
   zoomOnDoubleClick: boolean;
   preventScrolling: boolean;
   paneDragging: boolean;
@@ -358,7 +358,7 @@ export interface Actions<NodeType extends Node = Node, EdgeType extends Edge = E
   setTranslateExtent: (translateExtent: CoordinateExtent) => void;
   /** apply extent to nodes */
   setNodeExtent: (nodeExtent: CoordinateExtent) => void;
-  setPaneClickDistance: (distance: number) => void;
+  setPaneDragThreshold: (paneDragThreshold: number) => void;
   /** enable/disable node interaction (dragging, selecting etc) */
   setInteractive: (isInteractive: boolean) => void;
   /** set new state */

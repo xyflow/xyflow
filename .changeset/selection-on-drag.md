@@ -13,4 +13,4 @@ Drawing a selection box on a plain pane drag (no key held) used to be expressed 
 <VueFlow :selection-on-drag="true" :pan-on-drag="false" />
 ```
 
-`selectionKeyCode` is once again just the key you hold to select (default `'Shift'`). As part of this, `selectionOnDrag` is threaded to the pan/zoom instance so `paneClick` fires while selecting on drag (it was previously swallowed by d3-zoom's click handling — xyflow/react #5572).
+`selectionKeyCode` is once again just the key you hold to select (default `'Shift'`). `paneClick` also fires while selecting on drag (it was previously swallowed by d3-zoom's click handling).

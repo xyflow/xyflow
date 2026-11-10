@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { XYPanZoom } from '@xyflow/system';
+import { isLeftClickPan, XYPanZoom } from '@xyflow/system';
 import { computed, markRaw, onMounted, onUnmounted, toRef, watch } from 'vue';
 import ConnectionLine from '../../components/ConnectionLine';
 import { storeToRefs, useKeyPress, useVueFlow, useVueFlowStore } from '../../composables';
@@ -36,7 +36,7 @@ const {
   panActivationKeyCode,
   selectionKeyCode,
   selectionOnDrag,
-  paneClickDistance,
+  paneDragThreshold,
   connection,
 } = storeToRefs(useVueFlowStore());
 
@@ -51,7 +51,7 @@ const shouldPanOnDrag = computed(() => !selectionKeyPressed.value && (panKeyPres
 const shouldPanOnScroll = toRef(() => panKeyPressed.value || panOnScroll.value);
 
 // selection-on-drag is active when the user opted in AND a left-drag wouldn't pan (so it selects instead)
-const selectionOnDragActive = computed(() => selectionOnDrag.value === true && shouldPanOnDrag.value !== true);
+const selectionOnDragActive = computed(() => selectionOnDrag.value === true && !isLeftClickPan(shouldPanOnDrag.value));
 
 const isSelecting = toRef(() => selectionKeyPressed.value || selectionOnDragActive.value);
 
@@ -105,8 +105,7 @@ onMounted(() => {
         noPanClassName,
         userSelectionActive,
         noWheelClassName,
-        paneClickDistance,
-        selectionOnDragActive,
+        paneDragThreshold,
         connection,
       ],
       () => {
@@ -124,10 +123,8 @@ onMounted(() => {
           noPanClassName: noPanClassName.value,
           userSelectionActive: userSelectionActive.value,
           noWheelClassName: noWheelClassName.value,
-          paneClickDistance: paneClickDistance.value,
-          // when selecting on drag, d3-zoom's click distance is set to Infinity so it never swallows the
-          // gesture as a click — letting `paneClick` fire (xyflow/react #5572)
-          selectionOnDrag: selectionOnDragActive.value,
+          paneDragThreshold: paneDragThreshold.value,
+          onPaneContextMenu: event => emits.paneContextMenu(event),
           onTransformChange: (nextTransform) => {
             emits.viewportChange({ x: nextTransform[0], y: nextTransform[1], zoom: nextTransform[2] });
             transform.value = nextTransform;
