@@ -1,11 +1,4 @@
-import {
-  dimensionChange,
-  DimensionChange,
-  infiniteExtent,
-  positionChange,
-  PositionChange,
-  type ZIndexMode,
-} from '..';
+import { dimensionChange, DimensionChange, infiniteExtent, positionChange, PositionChange, type ZIndexMode } from '..';
 import {
   type NodeBase,
   type CoordinateExtent,
@@ -66,6 +59,16 @@ function mergeObjects<T extends Record<string, unknown>>(base: T, incoming?: Par
   return result;
 }
 
+function getPositionAbsolute(
+  node: NodeBase,
+  nodeOrigin?: NodeOrigin,
+  nodeExtent: CoordinateExtent = infiniteExtent
+): XYPosition {
+  const positionWithOrigin = getNodePositionWithOrigin(node, nodeOrigin);
+  const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
+  return clampPosition(positionWithOrigin, extent, getNodeDimensions(node));
+}
+
 export function updateAbsolutePositions<NodeType extends NodeBase>(
   nodeLookup: NodeLookup<InternalNodeBase<NodeType>>,
   parentLookup: ParentLookup<InternalNodeBase<NodeType>>,
@@ -76,10 +79,7 @@ export function updateAbsolutePositions<NodeType extends NodeBase>(
     if (node.parentId) {
       updateChildNode(node, nodeLookup, parentLookup, _options);
     } else {
-      const positionWithOrigin = getNodePositionWithOrigin(node, _options.nodeOrigin);
-      const extent = isCoordinateExtent(node.extent) ? node.extent : _options.nodeExtent;
-      const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(node));
-      node.internals.positionAbsolute = clampedPosition;
+      node.internals.positionAbsolute = getPositionAbsolute(node, _options.nodeOrigin, _options.nodeExtent);
     }
   }
 }
@@ -195,10 +195,6 @@ export function adoptUserNodes<NodeType extends NodeBase>(
     if (_options.checkEquality && userNode === internalNode?.internals.userNode) {
       nodeLookup.set(userNode.id, internalNode);
     } else {
-      const positionWithOrigin = getNodePositionWithOrigin(userNode, _options.nodeOrigin);
-      const extent = isCoordinateExtent(userNode.extent) ? userNode.extent : _options.nodeExtent;
-      const clampedPosition = clampPosition(positionWithOrigin, extent, getNodeDimensions(userNode));
-
       internalNode = {
         ..._options.defaults,
         ...userNode,
@@ -207,7 +203,7 @@ export function adoptUserNodes<NodeType extends NodeBase>(
           height: userNode.measured?.height,
         },
         internals: {
-          positionAbsolute: clampedPosition,
+          positionAbsolute: getPositionAbsolute(userNode, _options.nodeOrigin, _options.nodeExtent),
           // if user re-initializes the node or removes `measured` for whatever reason, we reset the handleBounds so that the node gets re-measured
           handleBounds: parseHandles(userNode, internalNode),
           z: calculateZ(userNode, selectedNodeZ, _options.zIndexMode),
@@ -548,6 +544,7 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
   const { m22: zoom } = new window.DOMMatrixReadOnly(style.transform);
   // in this array we collect nodes, that might trigger changes (like expanding parent)
   const parentExpandChildren: ParentExpandChild[] = [];
+  const expandParentIds: string[] = [];
 
   for (const update of updates.values()) {
     const node = nodeLookup.get(update.id);
@@ -577,24 +574,15 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
 
     if (doUpdate) {
       const nodeBounds = update.nodeElement.getBoundingClientRect();
-      const extent = isCoordinateExtent(node.extent) ? node.extent : nodeExtent;
-      let { positionAbsolute } = node.internals;
-
-      if (node.parentId && node.extent === 'parent') {
-        const parentNode = nodeLookup.get(node.parentId);
-        if (parentNode) {
-          positionAbsolute = clampPositionToParent(positionAbsolute, dimensions, parentNode);
-        }
-      } else if (extent) {
-        positionAbsolute = clampPosition(positionAbsolute, extent, dimensions);
-      }
+      const measuredNode = { ...node, measured: dimensions };
 
       const newNode = {
-        ...node,
-        measured: dimensions,
+        ...measuredNode,
         internals: {
           ...node.internals,
-          positionAbsolute,
+          positionAbsolute: node.parentId
+            ? node.internals.positionAbsolute
+            : getPositionAbsolute(measuredNode, nodeOrigin, nodeExtent),
           handleBounds: {
             source: getHandleBounds('source', update.nodeElement, nodeBounds, zoom, node.id),
             target: getHandleBounds('target', update.nodeElement, nodeBounds, zoom, node.id),
@@ -603,28 +591,35 @@ export function updateNodeInternals<NodeType extends InternalNodeBase>(
       };
 
       updateNode(newNode);
-
-      if (node.parentId) {
-        updateChildNode(newNode, nodeLookup, parentLookup, { nodeOrigin, zIndexMode }, undefined, (node) => {
-          nodeLookup.set(node.id, node as NodeType);
-          updatedNodes.add(node.id);
-        });
-      }
-
       updatedInternals = true;
 
       if (dimensionChanged) {
         changes.push(dimensionChange(node.id, dimensions));
 
         if (node.expandParent && node.parentId) {
-          parentExpandChildren.push({
-            id: node.id,
-            parentId: node.parentId,
-            rect: nodeToRect(newNode, nodeOrigin),
-          });
+          expandParentIds.push(node.id);
         }
       }
     }
+  }
+
+  if (updatedInternals) {
+    const childOptions = { nodeOrigin, nodeExtent, zIndexMode };
+    for (const childNodes of parentLookup.values()) {
+      for (const childId of childNodes.keys()) {
+        const childNode = nodeLookup.get(childId);
+        if (childNode) {
+          updateChildNode(childNode, nodeLookup, parentLookup, childOptions, undefined, (node) =>
+            updateNode(node as NodeType)
+          );
+        }
+      }
+    }
+  }
+
+  for (const id of expandParentIds) {
+    const node = nodeLookup.get(id)!;
+    parentExpandChildren.push({ id, parentId: node.parentId!, rect: nodeToRect(node, nodeOrigin) });
   }
 
   if (parentExpandChildren.length > 0) {
