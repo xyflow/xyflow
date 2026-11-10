@@ -10,6 +10,7 @@ export { BaseEdge } from './components/Edges/BaseEdge';
 export { ReactFlowProvider } from './components/ReactFlowProvider';
 export { Panel, type PanelProps } from './components/Panel';
 export { EdgeLabelRenderer, type EdgeLabelRendererProps } from './components/EdgeLabelRenderer';
+export { EdgeReconnectAnchor, type EdgeReconnectAnchorProps } from './components/EdgeReconnectAnchor';
 export { ViewportPortal } from './components/ViewportPortal';
 
 export { useReactFlow } from './hooks/useReactFlow';

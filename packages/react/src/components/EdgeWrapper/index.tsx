@@ -7,11 +7,13 @@ import {
   getEdgePosition,
   errorMessages,
   getElevatedEdgeZIndex,
+  XYHandle,
 } from '@xyflow/system';
 
 import { useStoreApi, useStore } from '../../hooks/useStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
+import { EdgeReconnectContext, type EdgeReconnectHandler } from '../../contexts/EdgeReconnectContext';
 import { EdgeUpdateAnchors } from './EdgeUpdateAnchors';
 import type { Edge, EdgeWrapperProps } from '../../types';
 
@@ -180,6 +182,95 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
     }
   };
 
+  const startReconnect: EdgeReconnectHandler = (event, type, dragThreshold) => {
+    if (event.button !== 0) {
+      return;
+    }
+
+    const {
+      autoPanOnConnect,
+      domNode,
+      connectionMode,
+      connectionRadius,
+      lib,
+      onConnectStart,
+      cancelConnection,
+      nodeLookup,
+      rfId: flowId,
+      panBy,
+      updateConnection,
+      connectionDragThreshold,
+    } = store.getState();
+    const isTarget = type === 'source';
+    const oppositeType = isTarget ? 'target' : 'source';
+
+    XYHandle.onPointerDown(event.nativeEvent, {
+      autoPanOnConnect,
+      connectionMode,
+      connectionRadius,
+      domNode,
+      handleId: (isTarget ? edge.targetHandle : edge.sourceHandle) ?? null,
+      nodeId: isTarget ? edge.target : edge.source,
+      nodeLookup,
+      isTarget,
+      edgeUpdaterType: oppositeType,
+      lib,
+      flowId,
+      cancelConnection,
+      panBy,
+      isValidConnection: (...args) => store.getState().isValidConnection?.(...args) ?? true,
+      onConnect: (connection) => onReconnect?.(edge, connection),
+      onConnectStart: (evt, params) => {
+        setReconnecting(true);
+        onReconnectStart?.(event, edge, oppositeType);
+        onConnectStart?.(evt, params);
+      },
+      onConnectEnd: (...args) => store.getState().onConnectEnd?.(...args),
+      onReconnectEnd: (evt, connectionState) => {
+        setReconnecting(false);
+        onReconnectEnd?.(evt, edge, oppositeType, connectionState);
+      },
+      updateConnection,
+      getTransform: () => store.getState().transform,
+      getFromHandle: () => store.getState().connection.fromHandle,
+      dragThreshold: dragThreshold ?? connectionDragThreshold,
+      handleDomNode: event.currentTarget,
+    });
+  };
+
+  const edgeElement = !reconnecting && (
+    <EdgeComponent
+      id={id}
+      source={edge.source}
+      target={edge.target}
+      type={edge.type}
+      selected={edge.selected}
+      animated={edge.animated}
+      selectable={isSelectable}
+      deletable={edge.deletable ?? true}
+      label={edge.label}
+      labelStyle={edge.labelStyle}
+      labelShowBg={edge.labelShowBg}
+      labelBgStyle={edge.labelBgStyle}
+      labelBgPadding={edge.labelBgPadding}
+      labelBgBorderRadius={edge.labelBgBorderRadius}
+      sourceX={sourceX}
+      sourceY={sourceY}
+      targetX={targetX}
+      targetY={targetY}
+      sourcePosition={sourcePosition}
+      targetPosition={targetPosition}
+      data={edge.data}
+      style={edge.style}
+      sourceHandleId={edge.sourceHandle}
+      targetHandleId={edge.targetHandle}
+      markerStart={markerStartUrl}
+      markerEnd={markerEndUrl}
+      pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
+      interactionWidth={edge.interactionWidth}
+    />
+  );
+
   return (
     <svg style={{ zIndex }}>
       <g
@@ -215,46 +306,18 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
         ref={edgeRef}
         {...edge.domAttributes}
       >
-        {!reconnecting && (
-          <EdgeComponent
-            id={id}
-            source={edge.source}
-            target={edge.target}
-            type={edge.type}
-            selected={edge.selected}
-            animated={edge.animated}
-            selectable={isSelectable}
-            deletable={edge.deletable ?? true}
-            label={edge.label}
-            labelStyle={edge.labelStyle}
-            labelShowBg={edge.labelShowBg}
-            labelBgStyle={edge.labelBgStyle}
-            labelBgPadding={edge.labelBgPadding}
-            labelBgBorderRadius={edge.labelBgBorderRadius}
-            sourceX={sourceX}
-            sourceY={sourceY}
-            targetX={targetX}
-            targetY={targetY}
-            sourcePosition={sourcePosition}
-            targetPosition={targetPosition}
-            data={edge.data}
-            style={edge.style}
-            sourceHandleId={edge.sourceHandle}
-            targetHandleId={edge.targetHandle}
-            markerStart={markerStartUrl}
-            markerEnd={markerEndUrl}
-            pathOptions={'pathOptions' in edge ? edge.pathOptions : undefined}
-            interactionWidth={edge.interactionWidth}
-          />
+        {edgeTypes?.[edgeType] ? (
+          <EdgeReconnectContext.Provider value={{ isReconnectable, noPanClassName, startReconnect }}>
+            {edgeElement}
+          </EdgeReconnectContext.Provider>
+        ) : (
+          edgeElement
         )}
         {isReconnectable && (
-          <EdgeUpdateAnchors<EdgeType>
-            edge={edge}
+          <EdgeUpdateAnchors
             isReconnectable={isReconnectable}
             reconnectRadius={reconnectRadius}
-            onReconnect={onReconnect}
-            onReconnectStart={onReconnectStart}
-            onReconnectEnd={onReconnectEnd}
+            startReconnect={startReconnect}
             sourceX={sourceX}
             sourceY={sourceY}
             targetX={targetX}
@@ -262,7 +325,6 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
             sourcePosition={sourcePosition}
             targetPosition={targetPosition}
             setUpdateHover={setUpdateHover}
-            setReconnecting={setReconnecting}
           />
         )}
       </g>
