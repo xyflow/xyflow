@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Handle, Position, type NodeProps, NodeResizeControl, type Node } from '@xyflow/svelte';
+	import { Handle, Position, type NodeProps, NodeResizeControl } from '@xyflow/svelte';
 	import type { ResizeNode } from './types';
 	import { store } from './store.svelte';
 

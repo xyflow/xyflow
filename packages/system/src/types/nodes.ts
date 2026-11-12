@@ -112,18 +112,22 @@ export type InternalNodeBase<NodeType extends NodeBase = NodeBase> = Omit<NodeTy
  *
  * @public
  */
-export type NodeProps<NodeType extends NodeBase> = Pick<
-  NodeType,
-  'id' | 'data' | 'width' | 'height' | 'sourcePosition' | 'targetPosition' | 'dragHandle' | 'parentId'
-> &
-  Required<Pick<NodeType, 'type' | 'dragging' | 'zIndex' | 'selectable' | 'deletable' | 'selected' | 'draggable'>> & {
-    /** Whether a node is connectable or not. */
-    isConnectable: boolean;
-    /** Position absolute x value. */
-    positionAbsoluteX: number;
-    /** Position absolute y value. */
-    positionAbsoluteY: number;
-  };
+export type NodeProps<NodeType extends NodeBase> = NodeType extends unknown
+  ? Pick<
+      NodeType,
+      'id' | 'data' | 'width' | 'height' | 'sourcePosition' | 'targetPosition' | 'dragHandle' | 'parentId'
+    > &
+      Required<
+        Pick<NodeType, 'type' | 'dragging' | 'zIndex' | 'selectable' | 'deletable' | 'selected' | 'draggable'>
+      > & {
+        /** Whether a node is connectable or not. */
+        isConnectable: boolean;
+        /** Position absolute x value. */
+        positionAbsoluteX: number;
+        /** Position absolute y value. */
+        positionAbsoluteY: number;
+      }
+  : never;
 
 /**
  * Measured {@link HandleBounds} for a node, grouped by handle type.
