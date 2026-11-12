@@ -12,6 +12,8 @@ export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null
   const { optionsStore, viewportStore } = useReactFlowStoreApi();
 
   useEffect(() => {
+    let fitViewRaf = 0;
+
     const updateDimensions = () => {
       if (!domNode.current || !(domNode.current.checkVisibility?.() ?? true)) {
         return false;
@@ -23,6 +25,12 @@ export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null
       }
 
       viewportStore.setState({ width: size.width || 500, height: size.height || 500 });
+
+      // container is measured now, resolve a fitView that was queued before we had dimensions
+      if (optionsStore.getState().fitViewQueued) {
+        cancelAnimationFrame(fitViewRaf);
+        fitViewRaf = requestAnimationFrame(() => optionsStore.getState().resolveFitViewIfReady());
+      }
     };
 
     if (domNode.current) {
@@ -33,6 +41,7 @@ export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null
       resizeObserver.observe(domNode.current);
 
       return () => {
+        cancelAnimationFrame(fitViewRaf);
         window.removeEventListener('resize', updateDimensions);
         resizeObserver.disconnect();
       };
