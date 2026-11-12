@@ -4,5 +4,4 @@
 "@xyflow/react": patch
 ---
 
-Make `NodeProps` distributive.
-  
+Narrow `data` by `type` when `NodeProps` receives a union of node types.  
