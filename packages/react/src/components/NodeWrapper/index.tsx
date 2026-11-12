@@ -135,19 +135,22 @@ function NodeWrapper<NodeType extends Node>({
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
 
+      moveSelectedNodes({
+        direction: arrowKeyDiffs[event.key],
+        factor: event.shiftKey ? 4 : 1,
+      });
+
+      // announce the position after the move, including snapping and extent clamping
       const { ariaLabelConfig } = optionsStore.getState();
+      const { nodeLookup } = nodesStore.getState();
+      const positionAbsolute = nodeLookup.get(id)?.internals.positionAbsolute ?? internals.positionAbsolute;
 
       optionsStore.setState({
         ariaLiveMessage: ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
           direction: event.key.replace('Arrow', '').toLowerCase(),
-          x: ~~internals.positionAbsolute.x,
-          y: ~~internals.positionAbsolute.y,
+          x: ~~positionAbsolute.x,
+          y: ~~positionAbsolute.y,
         }),
-      });
-
-      moveSelectedNodes({
-        direction: arrowKeyDiffs[event.key],
-        factor: event.shiftKey ? 4 : 1,
       });
     }
   };

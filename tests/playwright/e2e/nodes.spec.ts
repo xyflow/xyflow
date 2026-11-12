@@ -170,6 +170,23 @@ test.describe('Nodes', () => {
     });
   });
 
+  test.describe('keyboard', () => {
+    test('moving a selected node with arrow keys announces its new position', async ({ page }) => {
+      const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="Node-1"]'));
+      const liveRegion = page.locator(`[id^="${FRAMEWORK}-flow__aria-live"]`);
+
+      await node.focus();
+      await page.keyboard.press('Enter');
+      await expect(node).toHaveClass(/selected/);
+
+      await page.keyboard.press('ArrowRight');
+      await expect(liveRegion).toHaveText('Moved selected node right. New position, x: 5, y: 0');
+
+      await page.keyboard.press('ArrowDown');
+      await expect(liveRegion).toHaveText('Moved selected node down. New position, x: 5, y: 5');
+    });
+  });
+
   test.describe('deleting', () => {
     test('deleting a node and its edges', async ({ page }) => {
       const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="Node-1"]'));

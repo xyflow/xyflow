@@ -191,12 +191,15 @@
     ) {
       // prevent default scrolling behavior on arrow key press when node is moved
       event.preventDefault();
+      store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
+      // announce the position after the move, including snapping and extent clamping
+      const positionAbsolute =
+        store.nodeLookup.get(id)?.internals.positionAbsolute ?? node.internals.positionAbsolute;
       store.ariaLiveMessage = ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
         direction: event.key.replace('Arrow', '').toLowerCase(),
-        x: ~~node.internals.positionAbsolute.x,
-        y: ~~node.internals.positionAbsolute.y
+        x: ~~positionAbsolute.x,
+        y: ~~positionAbsolute.y
       });
-      store.moveSelectedNodes(arrowKeyDiffs[event.key], event.shiftKey ? 4 : 1);
     }
   }
 
