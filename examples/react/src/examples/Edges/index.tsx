@@ -12,13 +12,14 @@ import {
   Node,
   useEdgesState,
   useNodesState,
+  OnNodeDrag,
 } from '@xyflow/react';
 
 import CustomEdge from './CustomEdge';
 import CustomEdge2 from './CustomEdge2';
 import CustomEdge3 from './CustomEdge3';
 
-const onNodeDragStop = (_: MouseEvent, node: Node) => console.log('drag stop', node);
+const onNodeDragStop: OnNodeDrag = (_, node) => console.log('drag stop', node);
 const onNodeClick = (_: MouseEvent, node: Node) => console.log('click', node);
 const onEdgeClick = (_: MouseEvent, edge: Edge) => console.log('click', edge);
 const onEdgeDoubleClick = (_: MouseEvent, edge: Edge) => console.log('dblclick', edge);

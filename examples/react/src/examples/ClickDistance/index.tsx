@@ -39,9 +39,9 @@ const initEdges: Edge[] = [
 const onPaneClick = () => console.log('pane click');
 
 const BasicFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initNodes);
+  const [nodes, , onNodesChange] = useNodesState(initNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
-  const [paneClickDistance, setPaneClickDistance] = useState(0);
+  const [paneDragThreshold, setPaneDragThreshold] = useState(0);
 
   const onConnect = useCallback((params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
@@ -52,7 +52,7 @@ const BasicFlow = () => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      paneClickDistance={paneClickDistance}
+      paneDragThreshold={paneDragThreshold}
       onPaneClick={onPaneClick}
     >
       <Panel position="top-right">
@@ -60,10 +60,10 @@ const BasicFlow = () => {
           type="range"
           min={0}
           max={100}
-          value={paneClickDistance}
-          onChange={(evt) => setPaneClickDistance(+evt.target.value)}
+          value={paneDragThreshold}
+          onChange={(evt) => setPaneDragThreshold(+evt.target.value)}
         />
-        click distance: {paneClickDistance}
+        pane drag threshold: {paneDragThreshold}
       </Panel>
     </ReactFlow>
   );

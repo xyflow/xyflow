@@ -14,26 +14,33 @@ export { ViewportPortal } from './components/ViewportPortal';
 
 export { useReactFlow } from './hooks/useReactFlow';
 export { useUpdateNodeInternals } from './hooks/useUpdateNodeInternals';
-export { useNodes } from './hooks/useNodes';
-export { useEdges } from './hooks/useEdges';
 export { useViewport } from './hooks/useViewport';
 export { useKeyPress } from './hooks/useKeyPress';
 export { useNodesState, useEdgesState } from './hooks/useNodesEdgesState';
-export { useStore, useStoreApi } from './hooks/useStore';
+export {
+  useOptionsStore,
+  useReactFlowStoreApi,
+  useViewportStore,
+  useConnectionStore,
+  useNodesStore,
+  useEdgesStore,
+  useSelectionStore,
+  useShallow,
+  useEqualSelector,
+} from './hooks/useReactFlowStore';
 export { useOnViewportChange, type UseOnViewportChangeOptions } from './hooks/useOnViewportChange';
 export { useOnSelectionChange, type UseOnSelectionChangeOptions } from './hooks/useOnSelectionChange';
 export { useNodesInitialized, type UseNodesInitializedOptions } from './hooks/useNodesInitialized';
-export { useHandleConnections } from './hooks/useHandleConnections';
 export { useNodeConnections } from './hooks/useNodeConnections';
 export { useNodesData } from './hooks/useNodesData';
 export { useConnection } from './hooks/useConnection';
-export { useInternalNode } from './hooks/useInternalNode';
 export { useNodeId } from './contexts/NodeIdContext';
+export { useNodes, useNode, useInternalNode, useInternalNodes } from './hooks/useNodes';
+export { useEdges, useEdge } from './hooks/useEdges';
 
 export { experimental_useOnNodesChangeMiddleware } from './hooks/useOnNodesChangeMiddleware';
 export { experimental_useOnEdgesChangeMiddleware } from './hooks/useOnEdgesChangeMiddleware';
 
-export { applyNodeChanges, applyEdgeChanges } from './utils/changes';
 export { isNode, isEdge } from './utils/general';
 
 export * from './additional-components';
@@ -79,8 +86,8 @@ export {
   type Transform,
   type CoordinateExtent,
   type ColorMode,
-  type ColorModeClass,
   type HandleType,
+  type HandleBounds,
   type ShouldResize,
   type OnResizeStart,
   type OnResize,
@@ -92,17 +99,13 @@ export {
   type ResizeParamsWithDirection,
   type ResizeDragEvent,
   type NodeChange,
-  type NodeDimensionChange,
-  type NodePositionChange,
-  type NodeSelectionChange,
-  type NodeRemoveChange,
-  type NodeAddChange,
-  type NodeReplaceChange,
+  type DimensionChange,
+  type PositionChange,
+  type SelectionChange,
+  type RemoveChange,
+  type AddChange,
+  type ReplaceChange,
   type EdgeChange,
-  type EdgeSelectionChange,
-  type EdgeRemoveChange,
-  type EdgeAddChange,
-  type EdgeReplaceChange,
   type KeyCode,
   type ConnectionState,
   type FinalConnectionState,
@@ -114,15 +117,12 @@ export {
   type SetCenter,
   type SetViewport,
   type FitBounds,
-  type HandleConnection,
   type ZIndexMode,
   type NodeHandle,
   type UseNodeConnectionsParams,
+  NodeChangeset,
+  EdgeChangeset,
 } from '@xyflow/system';
-
-// we need this workaround to prevent a duplicate identifier error
-import { type Handle as HandleBound } from '@xyflow/system';
-export type Handle = HandleBound;
 
 // system utils
 export {

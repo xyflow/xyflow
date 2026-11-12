@@ -8,7 +8,7 @@
 		type SvelteFlowProps
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	let { flowConfig }: { flowConfig: FlowConfig } = $props();
 

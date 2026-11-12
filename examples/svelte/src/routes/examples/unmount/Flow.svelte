@@ -7,7 +7,7 @@
 		MiniMap,
 		type Node,
 		type Edge,
-		useStore
+		useSvelteFlowStore
 	} from '@xyflow/svelte';
 
 	import '@xyflow/svelte/dist/style.css';
@@ -52,7 +52,7 @@
 	let _firstMount = true;
 	const firstMount = $derived(mounted && _firstMount);
 
-	let store = $derived(useStore());
+	let store = $derived(useSvelteFlowStore());
 
 	$effect(() => {
 		console.log(store.onconnect);

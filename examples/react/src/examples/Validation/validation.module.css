@@ -16,23 +16,97 @@
   border: 1px solid #ddd;
 }
 
-.validationflow :global .react-flow__node-custominput .react-flow__handle {
-  background: #e6e6e9;
-}
-
 .validationflow :global .react-flow__node-custominput {
   background: #fff;
 }
 
-.validationflow :global .connectingto {
+/* Keep each class visible in the label, including when multiple states overlap. */
+.validationflow :global .react-flow__handle {
+  --handle-type: '';
+  --connectable: '';
+  --connectable-start: '';
+  --connectable-end: '';
+  --click-connecting: '';
+  --connecting-from: '';
+  --connecting-to: '';
+  --valid: '';
+  --connection-indicator: '';
+  width: 12px;
+  height: 12px;
+  background: #94a3b8;
+  border: 2px solid #475569;
+}
+
+.validationflow :global .react-flow__handle::after {
+  content: var(--handle-type) var(--connectable) var(--connectable-start) var(--connectable-end)
+    var(--click-connecting) var(--connecting-from) var(--connecting-to) var(--valid) var(--connection-indicator);
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 170px;
+  padding: 4px;
+  border-radius: 4px;
+  background: #fff;
+  color: #334155;
+  font: 9px/1.4 monospace;
+  text-align: center;
+  pointer-events: none;
+}
+
+.validationflow :global .react-flow__handle.source {
+  --handle-type: 'source ';
+  border-radius: 50%;
+}
+
+.validationflow :global .react-flow__handle.target {
+  --handle-type: 'target ';
+  border-radius: 2px;
+}
+
+.validationflow :global .react-flow__handle.target::after {
+  top: auto;
+  bottom: 18px;
+}
+
+.validationflow :global .react-flow__handle.connectable {
+  --connectable: 'connectable ';
+  border-color: #0f172a;
+}
+
+.validationflow :global .react-flow__handle.connectablestart {
+  --connectable-start: 'connectablestart ';
+  border-left-color: #2563eb;
+}
+
+.validationflow :global .react-flow__handle.connectableend {
+  --connectable-end: 'connectableend ';
+  border-right-color: #d97706;
+}
+
+.validationflow :global .react-flow__handle.connectionindicator {
+  --connection-indicator: 'connectionindicator ';
+  outline: 2px solid #06b6d4;
+  outline-offset: 3px;
+}
+
+.validationflow :global .react-flow__handle.clickconnecting {
+  --click-connecting: 'clickconnecting ';
+  box-shadow: 0 0 0 7px #c4b5fd;
+}
+
+.validationflow :global .react-flow__handle.connectingfrom {
+  --connecting-from: 'connectingfrom ';
+  background: #3b82f6;
+}
+
+.validationflow :global .react-flow__handle.connectingto {
+  --connecting-to: 'connectingto ';
   background: #ff6060;
 }
 
-.validationflow :global .react-flow__node-custominput .connectingfrom {
-  background: #55dd99;
-}
-
-.validationflow :global .valid {
+.validationflow :global .react-flow__handle.valid {
+  --valid: 'valid ';
   background: #55dd99;
 }
 

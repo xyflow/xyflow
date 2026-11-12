@@ -38,8 +38,10 @@ import type {
   IsValidConnection,
   OnBeforeReconnect,
   OnSelectionChange,
+  OnNodesChange,
+  OnEdgesChange,
   ProOptions
-} from '$lib/types/index.js';
+} from '#lib/types/index.js';
 
 import type { Component } from 'svelte';
 import type {
@@ -48,7 +50,7 @@ import type {
   NodeSelectionEvents,
   OnSelectionDrag,
   PaneEvents
-} from '$lib/types/events.js';
+} from '#lib/types/events.js';
 
 export type SvelteFlowProps<
   NodeType extends Node = Node,
@@ -136,9 +138,10 @@ export type SvelteFlowProps<
     fitView?: boolean;
     /**
      * Options to be used in combination with fitView
+     * @default { padding: '5%' }
      * @example
      * const fitViewOptions = {
-     *  padding: 0.1,
+     *  padding: '5%',
      *  includeHiddenNodes: false,
      *  minZoom: 0.1,
      *  maxZoom: 1,
@@ -163,14 +166,13 @@ export type SvelteFlowProps<
      */
     nodeDragThreshold?: number;
     /**
-     * Distance that the mouse can move between mousedown/up that will trigger a click
-     * @default 0
+     * Distance in pixels the pointer has to move before dragging the pane starts panning or a selection.
+     * If the pointer moves less, the gesture is treated as a click: `onpaneclick` (or `onpanecontextmenu`
+     * when panning with the right mouse button) is called and the viewport does not move.
+     * This applies to every mouse button that is enabled via `panOnDrag` and to `selectionOnDrag`.
+     * @default 1
      */
-    paneClickDistance?: number;
-    /** Distance that the mouse can move between mousedown/up that will trigger a click
-     * @default 0
-     */
-    nodeClickDistance?: number;
+    paneDragThreshold?: number;
     /**
      * The threshold in pixels that the mouse must move before a connection line starts to drag.
      * This is useful to prevent accidental connections when clicking on a handle.
@@ -335,6 +337,7 @@ export type SvelteFlowProps<
     panOnDrag?: boolean | number[];
     /**
      * Select multiple elements with a selection box, without pressing down selectionKey.
+     * Has no effect when the left mouse button pans the viewport (`panOnDrag` is `true` or includes `0`).
      * @default false
      */
     selectionOnDrag?: boolean;
@@ -371,13 +374,10 @@ export type SvelteFlowProps<
      */
     defaultEdgeOptions?: DefaultEdgeOptions;
     /**
-     * Controls color scheme used for styling the flow
-     * @default 'system'
-     * @example 'system' | 'light' | 'dark'
+     * Forces a color scheme on the flow container via class name, overriding the system default.
+     * Page-level theming is typically done by setting `data-theme` on `<html>`.
      */
-    colorMode?: ColorMode;
-    /** Fallback color mode for SSR if colorMode is set to 'system' */
-    colorModeSSR?: Omit<ColorMode, 'system'>;
+    forceColorMode?: ColorMode;
     /** Class to be applied to the flow container */
     class?: ClassValue;
     /** Styles to be applied to the flow container */
@@ -490,6 +490,22 @@ export type SvelteFlowProps<
     onclickconnectend?: OnConnectEnd;
     /** This handler gets called when the flow is finished initializing */
     oninit?: () => void;
+    /** This handler gets called before Svelte Flow updates nodes and can be used to modify the changes.
+     * Usually this happens, after initial measuring and when selecting, dragging or deleting nodes.
+     * @example
+     * onnodeschange={changes => {
+     *  // TODO: better example
+     * }}
+     */
+    onnodeschange?: OnNodesChange<NodeType>;
+    /** This handler gets called before Svelte Flow updates edges and can be used to modify the changes.
+     * Usually this happens when selecting, connecting or deleting edges.
+     * @example
+     * onedgeschange={changes => {
+     *  // TODO: better example
+     * }}
+     */
+    onedgeschange?: OnEdgesChange<EdgeType>;
     /** This event handler gets called when the selected nodes & edges change */
     onselectionchange?: OnSelectionChange<NodeType, EdgeType>;
     /** This event handler gets called when a user starts to drag a selection box. */

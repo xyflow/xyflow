@@ -1,14 +1,11 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, type ReactPortal } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useStore } from '../../hooks/useStore';
-import type { ReactFlowState } from '../../types';
-
-const selector = (s: ReactFlowState) => s.domNode?.querySelector('.react-flow__edgelabel-renderer');
+import { useOptionsStore } from '../../hooks/useReactFlowStore';
 
 export type EdgeLabelRendererProps = {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 /**
  * Edges are SVG-based. If you want to render more complex labels you can use the
@@ -51,8 +48,9 @@ export type EdgeLabelRendererProps = {
  * add mouse interactions you need to set the style `pointerEvents: all` and add
  * the `nopan` class on the label or the element you want to interact with.
  */
-export function EdgeLabelRenderer({ children }: EdgeLabelRendererProps) {
-  const edgeLabelRenderer = useStore(selector);
+export function EdgeLabelRenderer({ children }: EdgeLabelRendererProps): ReactPortal | null {
+  const domNode = useOptionsStore((s) => s.domNode);
+  const edgeLabelRenderer = domNode?.querySelector('.react-flow__edgelabel-renderer');
 
   if (!edgeLabelRenderer) {
     return null;

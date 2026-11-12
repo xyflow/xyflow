@@ -18,8 +18,8 @@ import type {
   EdgeTypes,
   FitViewOptions,
   InternalNode
-} from '$lib/types/index.js';
-import type { SvelteFlowProps } from '$lib/container/SvelteFlow/index.js';
+} from '#lib/types/index.js';
+import type { SvelteFlowProps } from '#lib/container/SvelteFlow/index.js';
 
 export type SvelteFlowStoreActions<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
   setNodeTypes: (nodeTypes: NodeTypes) => void;
@@ -57,8 +57,7 @@ export type SvelteFlowRestProps<NodeType extends Node = Node, EdgeType extends E
   | 'panActivationKey'
   | 'multiSelectionKey'
   | 'zoomActivationKey'
-  | 'paneClickDistance'
-  | 'nodeClickDistance'
+  | 'paneDragThreshold'
   | 'onMoveStart'
   | 'onMoveEnd'
   | 'onMove'
