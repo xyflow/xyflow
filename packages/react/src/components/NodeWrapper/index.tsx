@@ -141,7 +141,8 @@ function NodeWrapper<NodeType extends Node>({
       });
 
       // announce the position after the move, including snapping and extent clamping
-      const { ariaLabelConfig, nodeLookup } = optionsStore.getState();
+      const { ariaLabelConfig } = optionsStore.getState();
+      const { nodeLookup } = nodesStore.getState();
       const positionAbsolute = nodeLookup.get(id)?.internals.positionAbsolute ?? internals.positionAbsolute;
 
       optionsStore.setState({
