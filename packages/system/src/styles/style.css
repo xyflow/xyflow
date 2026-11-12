@@ -1,52 +1,27 @@
 .xy-flow {
-  --xy-node-color-default: inherit;
-  --xy-node-border-default: 1px solid #1a192b;
-  --xy-node-background-color-default: #fff;
+  --xy-node-color-default: light-dark(CanvasText, #f8f8f8);
+  --xy-node-border-default: 1px solid light-dark(#1a192b, #3c3c3c);
+  --xy-node-background-color-default: light-dark(#fff, #1e1e1e);
   --xy-node-group-background-color-default: rgba(240, 240, 240, 0.25);
-  --xy-node-boxshadow-hover-default: 0 1px 4px 1px rgba(0, 0, 0, 0.08);
-  --xy-node-boxshadow-selected-default: 0 0 0 0.5px #1a192b;
+  --xy-node-boxshadow-hover-default: 0 1px 4px 1px light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08));
+  --xy-node-boxshadow-selected-default: 0 0 0 0.5px light-dark(#1a192b, #999);
   --xy-node-border-radius-default: 3px;
 
-  --xy-handle-background-color-default: #1a192b;
-  --xy-handle-border-color-default: #fff;
+  --xy-handle-background-color-default: light-dark(#1a192b, #bebebe);
+  --xy-handle-border-color-default: light-dark(#fff, #1e1e1e);
 
-  --xy-selection-background-color-default: rgba(0, 89, 220, 0.08);
-  --xy-selection-border-default: 1px dotted rgba(0, 89, 220, 0.8);
+  --xy-selection-background-color-default: light-dark(rgba(0, 89, 220, 0.08), rgba(200, 200, 220, 0.08));
+  --xy-selection-border-default: 1px dotted light-dark(rgba(0, 89, 220, 0.8), rgba(200, 200, 220, 0.8));
 
-  --xy-controls-button-background-color-default: #fefefe;
-  --xy-controls-button-background-color-hover-default: #f4f4f4;
-  --xy-controls-button-color-default: inherit;
-  --xy-controls-button-color-hover-default: inherit;
-  --xy-controls-button-border-color-default: #eee;
+  --xy-controls-button-background-color-default: light-dark(#fefefe, #2b2b2b);
+  --xy-controls-button-background-color-hover-default: light-dark(#f4f4f4, #3e3e3e);
+  --xy-controls-button-color-default: light-dark(CanvasText, #f8f8f8);
+  --xy-controls-button-color-hover-default: light-dark(CanvasText, #fff);
+  --xy-controls-button-border-color-default: light-dark(#eee, #5b5b5b);
   --xy-controls-box-shadow-default: 0 0 2px 1px rgba(0, 0, 0, 0.08);
 
-  --xy-edge-label-background-color-default: #ffffff;
-  --xy-edge-label-color-default: inherit;
-}
-
-.xy-flow.dark {
-  --xy-node-color-default: #f8f8f8;
-  --xy-node-border-default: 1px solid #3c3c3c;
-  --xy-node-background-color-default: #1e1e1e;
-  --xy-node-group-background-color-default: rgba(240, 240, 240, 0.25);
-  --xy-node-boxshadow-hover-default: 0 1px 4px 1px rgba(255, 255, 255, 0.08);
-  --xy-node-boxshadow-selected-default: 0 0 0 0.5px #999;
-
-  --xy-handle-background-color-default: #bebebe;
-  --xy-handle-border-color-default: #1e1e1e;
-
-  --xy-selection-background-color-default: rgba(200, 200, 220, 0.08);
-  --xy-selection-border-default: 1px dotted rgba(200, 200, 220, 0.8);
-
-  --xy-controls-button-background-color-default: #2b2b2b;
-  --xy-controls-button-background-color-hover-default: #3e3e3e;
-  --xy-controls-button-color-default: #f8f8f8;
-  --xy-controls-button-color-hover-default: #fff;
-  --xy-controls-button-border-color-default: #5b5b5b;
-  --xy-controls-box-shadow-default: 0 0 2px 1px rgba(0, 0, 0, 0.08);
-
-  --xy-edge-label-background-color-default: #141414;
-  --xy-edge-label-color-default: #f8f8f8;
+  --xy-edge-label-background-color-default: light-dark(#ffffff, #141414);
+  --xy-edge-label-color-default: light-dark(CanvasText, #f8f8f8);
 }
 
 .xy-flow__edge {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { SvelteFlow, Controls, Background, BackgroundVariant, type Node, type Edge } from '@xyflow/svelte';
 
-  import '@xyflow/svelte/dist/style.css';
+  import '@xyflow/svelte/style.css';
   import CustomNode from './CustomNode.svelte';
 
   let nodes = $state.raw<Node[]>([

@@ -1,0 +1,65 @@
+import type { FitViewOptionsBase, PanelPosition } from '@xyflow/system';
+import type { Node } from '../../types';
+
+export interface ControlProps {
+  /**
+   * Show the zoom control buttons (zoom-in and zoom-out)
+   *
+   * @default true
+   */
+  showZoom?: boolean;
+  /**
+   * Show the fit view control button
+   *
+   * @default true
+   */
+  showFitView?: boolean;
+  /**
+   * Show the interactivity toggle control button
+   *
+   * @default true
+   */
+  showInteractive?: boolean;
+  /**
+   * {@link FitViewOptionsBase Options} to use when the fit view control button is pressed
+   *
+   * @default undefined
+   */
+  fitViewOptions?: FitViewOptionsBase<Node>;
+  /**
+   * The {@link PanelPosition position} of the `<Controls>` panel
+   *
+   * @default 'bottom-left'
+   */
+  position?: PanelPosition;
+  /**
+   * Accessible label for the controls panel; falls back to `ariaLabelConfig['controls.ariaLabel']`.
+   *
+   * @default 'Control Panel'
+   */
+  ariaLabel?: string | null;
+  /**
+   * The direction the control buttons are laid out in
+   *
+   * @default 'vertical'
+   */
+  orientation?: 'horizontal' | 'vertical';
+}
+
+export interface ControlButtonProps {
+  /** Whether the button is disabled. */
+  disabled?: boolean;
+  /** Accessible label for the button, used as both `aria-label` and `title`. */
+  label?: string;
+}
+
+export interface ControlButtonEmits {
+  click: [event: MouseEvent];
+}
+
+export interface ControlEmits {
+  zoomIn: [];
+  zoomOut: [];
+  fitView: [];
+  interactionChange: [isInteractive: boolean];
+}

@@ -5,7 +5,7 @@
 	import CustomNode from './CustomNode.svelte';
 	import ConnectionLine from './ConnectionLine.svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	const nodeTypes = {
 		custom: CustomNode

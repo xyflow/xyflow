@@ -11,7 +11,6 @@ import {
   Background,
   OnNodeDrag,
   OnInit,
-  applyNodeChanges,
   OnNodesChange,
   OnConnect,
   OnBeforeDelete,
@@ -50,11 +49,7 @@ const CustomNodeFlow = () => {
   const ref = useRef(null);
   const [nodes, setNodes] = useState<MyNode[]>([]);
   const onNodesChange: OnNodesChange<MyNode> = useCallback(
-    (changes) =>
-      setNodes((nds) => {
-        const nextNodes = applyNodeChanges(changes, nds);
-        return nextNodes;
-      }),
+    (changes) => setNodes((nds) => changes.applyTo(nds)),
     [setNodes]
   );
 
@@ -80,7 +75,7 @@ const CustomNodeFlow = () => {
               ...node.data,
               color,
             },
-          };
+          } as ColorSelectorNode;
         })
       );
     };

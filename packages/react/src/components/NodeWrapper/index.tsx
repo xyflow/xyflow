@@ -1,6 +1,5 @@
 import { type MouseEvent, type KeyboardEvent, memo } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import {
   elementSelectionKeys,
   errorMessages,
@@ -10,7 +9,8 @@ import {
   getNodesInside,
 } from '@xyflow/system';
 
-import { useStore, useStoreApi } from '../../hooks/useStore';
+import { useInternalNode } from '../../hooks/useNodes';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { Provider } from '../../contexts/NodeIdContext';
 import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions';
 import { useDrag } from '../../hooks/useDrag';
@@ -18,7 +18,7 @@ import { useMoveSelectedNodes } from '../../hooks/useMoveSelectedNodes';
 import { handleNodeClick } from '../Nodes/utils';
 import { arrowKeyDiffs, builtinNodeTypes, getNodeInlineStyleDimensions } from './utils';
 import { useNodeObserver } from './useNodeObserver';
-import type { InternalNode, Node, NodeWrapperProps } from '../../types';
+import type { Node, NodeWrapperProps } from '../../types';
 
 function NodeWrapper<NodeType extends Node>({
   id,
@@ -38,19 +38,10 @@ function NodeWrapper<NodeType extends Node>({
   disableKeyboardA11y,
   rfId,
   nodeTypes,
-  nodeClickDistance,
   onError,
 }: NodeWrapperProps<NodeType>) {
-  const { node, internals, isParent } = useStore((s) => {
-    const node = s.nodeLookup.get(id)! as InternalNode<NodeType>;
-    const isParent = s.parentLookup.has(id);
-
-    return {
-      node,
-      internals: node.internals,
-      isParent,
-    };
-  }, shallow);
+  const node = useInternalNode<NodeType>(id)!;
+  const { internals } = node;
 
   let nodeType = node.type || 'default';
   let NodeComponent = nodeTypes?.[nodeType] || builtinNodeTypes[nodeType];
@@ -66,7 +57,7 @@ function NodeWrapper<NodeType extends Node>({
   const isConnectable = !!(node.connectable || (nodesConnectable && typeof node.connectable === 'undefined'));
   const isFocusable = !!(node.focusable || (nodesFocusable && typeof node.focusable === 'undefined'));
 
-  const store = useStoreApi();
+  const { optionsStore, viewportStore, nodesStore } = useReactFlowStoreApi();
   const hasDimensions = nodeHasDimensions(node);
   const nodeRef = useNodeObserver({ node, nodeType, hasDimensions, resizeObserver });
   const dragging = useDrag({
@@ -76,7 +67,6 @@ function NodeWrapper<NodeType extends Node>({
     handleSelector: node.dragHandle,
     nodeId: id,
     isSelectable,
-    nodeClickDistance,
   });
   const moveSelectedNodes = useMoveSelectedNodes();
 
@@ -106,7 +96,7 @@ function NodeWrapper<NodeType extends Node>({
     : undefined;
 
   const onSelectNodeHandler = (event: MouseEvent) => {
-    const { selectNodesOnDrag, nodeDragThreshold } = store.getState();
+    const { selectNodesOnDrag, nodeDragThreshold } = optionsStore.getState();
 
     if (isSelectable && (!selectNodesOnDrag || !isDraggable || nodeDragThreshold > 0)) {
       /*
@@ -115,7 +105,8 @@ function NodeWrapper<NodeType extends Node>({
        */
       handleNodeClick({
         id,
-        store,
+        optionsStore,
+        nodesStore,
         nodeRef,
       });
     }
@@ -135,7 +126,8 @@ function NodeWrapper<NodeType extends Node>({
 
       handleNodeClick({
         id,
-        store,
+        optionsStore,
+        nodesStore,
         unselect,
         nodeRef,
       });
@@ -149,10 +141,10 @@ function NodeWrapper<NodeType extends Node>({
       });
 
       // announce the position after the move, including snapping and extent clamping
-      const { ariaLabelConfig, nodeLookup } = store.getState();
+      const { ariaLabelConfig, nodeLookup } = optionsStore.getState();
       const positionAbsolute = nodeLookup.get(id)?.internals.positionAbsolute ?? internals.positionAbsolute;
 
-      store.setState({
+      optionsStore.setState({
         ariaLiveMessage: ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
           direction: event.key.replace('Arrow', '').toLowerCase(),
           x: ~~positionAbsolute.x,
@@ -167,7 +159,8 @@ function NodeWrapper<NodeType extends Node>({
       return;
     }
 
-    const { transform, width, height, autoPanOnNodeFocus, setCenter } = store.getState();
+    const { transform, width, height } = viewportStore.getState();
+    const { autoPanOnNodeFocus, setCenter } = optionsStore.getState();
 
     if (!autoPanOnNodeFocus) {
       return;
@@ -177,7 +170,7 @@ function NodeWrapper<NodeType extends Node>({
       getNodesInside(new Map([[id, node]]), { x: 0, y: 0, width, height }, transform, true).length > 0;
 
     if (!withinViewport) {
-      setCenter(node.position.x + nodeDimensions.width / 2, node.position.y + nodeDimensions.height / 2, {
+      void setCenter(node.position.x + nodeDimensions.width / 2, node.position.y + nodeDimensions.height / 2, {
         zoom: transform[2],
       });
     }
@@ -196,7 +189,7 @@ function NodeWrapper<NodeType extends Node>({
         {
           selected: node.selected,
           selectable: isSelectable,
-          parent: isParent,
+          parent: internals.isParent,
           draggable: isDraggable,
           dragging,
         },
@@ -252,4 +245,5 @@ function NodeWrapper<NodeType extends Node>({
   );
 }
 
+// The compiler caches the nodes list as a whole. Keep per-node bailouts when that list changes.
 export default memo(NodeWrapper) as typeof NodeWrapper;

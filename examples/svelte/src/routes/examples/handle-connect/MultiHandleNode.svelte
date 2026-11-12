@@ -25,7 +25,7 @@
 		console.log('disconnect source', handleId, connection);
 	}
 
-	const connections = useNodeConnections({
+	const connections = useNodeConnections(() => ({
 		id: id,
 		handleType: 'target',
 		onConnect: (connections) => {
@@ -34,7 +34,7 @@
 		onDisconnect: (connections) => {
 			console.log('onDisconnect', connections);
 		}
-	});
+	}));
 
 	$inspect(connections.current);
 </script>
