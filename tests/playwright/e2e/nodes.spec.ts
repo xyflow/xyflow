@@ -113,6 +113,46 @@ test.describe('Nodes', () => {
       expect(transformBeforeMove).not.toMatch(transformAfterMove);
     });
 
+    test('stops auto-panning when the dragged node is deleted', async ({ page }) => {
+      await page.goto('/tests/generic/nodes/auto-pan');
+      const node = page.locator(`.${FRAMEWORK}-flow__node[data-id="dragged"]`);
+      const viewport = page.locator(`.${FRAMEWORK}-flow__viewport`);
+      const pane = page.locator(`.${FRAMEWORK}-flow__pane`);
+      await expect(node).toHaveCSS('visibility', 'visible');
+      await node.click();
+      await expect(node).toHaveClass(/selected/);
+
+      const initialTransform = await viewport.evaluate((element) => element.style.transform);
+      const bounds = (await pane.boundingBox())!;
+      const edgeX = bounds.x + bounds.width - 4;
+      const middleY = bounds.y + bounds.height / 2;
+      await node.hover();
+      await page.mouse.down();
+      await page.mouse.move(edgeX, middleY, { steps: 4 });
+      await expect.poll(() => viewport.evaluate((element) => element.style.transform)).not.toBe(initialTransform);
+
+      await page.keyboard.press('Backspace');
+      await expect(node).toHaveCount(0);
+
+      const expectStationaryViewport = async () => {
+        const transforms = await viewport.evaluate(async (element) => {
+          const nextFrame = () => new Promise<number>((resolve) => requestAnimationFrame(resolve));
+          await nextFrame();
+          const before = element.style.transform;
+          for (let frame = 0; frame < 8; frame++) {
+            await nextFrame();
+          }
+          return { before, after: element.style.transform };
+        });
+        expect(transforms.after).toBe(transforms.before);
+      };
+
+      await expectStationaryViewport();
+      await page.mouse.move(edgeX, middleY + 1);
+      await page.mouse.up();
+      await expectStationaryViewport();
+    });
+
     test('draggable=false prevents dragging', async ({ page }) => {
       const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="notDraggable"]'));
       await expect(node).toHaveCSS('visibility', 'visible');
