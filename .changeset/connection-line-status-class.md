@@ -2,4 +2,4 @@
 "@xyflow/vue": major
 ---
 
-The connection status is now applied to the connection line's group rather than its path.
+The connection status is now applied to the group of the connection line rather than its path.

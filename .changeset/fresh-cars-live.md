@@ -2,4 +2,4 @@
 "@xyflow/vue": minor
 ---
 
-Move `Controls` component into core pkg.
+Move `Background`, `Controls`, `MiniMap`, `NodeResizer`, `NodeResizeControl`, and `NodeToolbar` components into core pkg.

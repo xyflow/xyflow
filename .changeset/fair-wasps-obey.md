@@ -2,5 +2,4 @@
 "@xyflow/svelte": major
 ---
 
-Removed useColorMode hook
-  
+Removed `useColorMode` hook.

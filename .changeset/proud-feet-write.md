@@ -5,4 +5,3 @@
 ---
 
 Prevent jumping nodes when origin node option is used
-  

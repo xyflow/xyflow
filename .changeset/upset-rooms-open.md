@@ -3,4 +3,3 @@
 ---
 
 Rename `useStore` to `useSvelteFlowStore`
-  

@@ -5,4 +5,3 @@
 ---
 
 Remove requirement of parent nodes to appear before child nodes in the nodes array
-  

@@ -3,4 +3,3 @@
 ---
 
 Add `useEqualSelector` hook
-  

@@ -2,9 +2,11 @@
 "@xyflow/vue": major
 ---
 
-Remove a second batch of deprecated APIs (2.0). Each has a drop-in replacement; internal usage was migrated first.
+Remove the deprecated `useHandleConnections` composable. Use `useNodeConnections` instead: `type` → `handleType`, `id` → `handleId` and `nodeId` → `id`.
 
-- **`useHandleConnections` removed** — use `useNodeConnections` (params: `type` → `handleType` (now optional), `id` → `handleId`).
-- **`HandleConnection` type removed** — use `NodeConnection` (identical shape, `Connection & { edgeId: string }`). The `getHandleConnections` store action was replaced by `getNodeConnections`.
-- **`connectionLineType` / `connectionLineStyle` props (and store state) removed** — use `connectionLineOptions.type` / `connectionLineOptions.style`.
-- **`PanelPosition` enum removed** — use the `PanelPositionType` string-literal union (e.g. `'top-left'`).
+```ts
+// before
+useHandleConnections({ type: "target", id: "a", nodeId: "1" })
+// after
+useNodeConnections({ handleType: "target", handleId: "a", id: "1" })
+```

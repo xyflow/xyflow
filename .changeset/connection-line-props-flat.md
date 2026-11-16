@@ -2,7 +2,7 @@
 "@xyflow/vue": major
 ---
 
-`<VueFlow>`'s `connectionLineOptions` object is replaced by individual props.
+The `connectionLineOptions` object of `<VueFlow>` is replaced by individual props.
 
 | before                              | after                       |
 |-------------------------------------|-----------------------------|

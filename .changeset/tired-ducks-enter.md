@@ -2,4 +2,4 @@
 '@xyflow/react': major
 ---
 
-Removed UMD build
+Remove UMD build.

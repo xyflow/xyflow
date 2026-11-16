@@ -4,7 +4,7 @@
 
 Add an explicit `selectionOnDrag` prop and drop the `selectionKeyCode={true}` overload.
 
-Drawing a selection box on a plain pane drag (no key held) used to be expressed by setting `selectionKeyCode` to `true`, which overloaded the key-code prop. It's now its own boolean prop:
+Drawing a selection box on a plain pane drag (no key held) used to be expressed by setting `selectionKeyCode` to `true`, which overloaded the key-code prop. It is now its own boolean prop:
 
 ```vue
 <!-- before -->
@@ -13,4 +13,4 @@ Drawing a selection box on a plain pane drag (no key held) used to be expressed 
 <VueFlow :selection-on-drag="true" :pan-on-drag="false" />
 ```
 
-`selectionKeyCode` is once again just the key you hold to select (default `'Shift'`). `paneClick` also fires while selecting on drag (it was previously swallowed by d3-zoom's click handling).
+`selectionKeyCode` is once again just the key you hold to select (default `"Shift"`). `paneClick` also fires while selecting on drag (it was previously swallowed by the d3-zoom click handling).

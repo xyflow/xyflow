@@ -4,4 +4,4 @@
 "@xyflow/react": patch
 ---
 
-Narrow `data` by `type` when `NodeProps` receives a union of node types.  
+Narrow `data` by `type` when `NodeProps` receives a union of node types.

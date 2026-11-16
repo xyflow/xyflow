@@ -1,5 +1,5 @@
 ---
-'@xyflow/react': minor
+"@xyflow/react": minor
 ---
 
-Elevate selected edges by default (`elevateEdgesOnSelect` now defaults to `true`), enabling reconnection of overlapping edges by selecting them first
+Elevate selected edges by default (`elevateEdgesOnSelect` now defaults to `true`), so overlapping edges can be reconnected by selecting them first.

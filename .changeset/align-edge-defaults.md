@@ -1,5 +1,5 @@
 ---
-"@xyflow/vue": minor
+"@xyflow/vue": major
 ---
 
 `edgesReconnectable` and `elevateEdgesOnSelect` now default to `true`.
