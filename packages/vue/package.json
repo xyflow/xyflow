@@ -65,8 +65,6 @@
     "css": "postcss src/styles/{base,style,xy-theme}.css --dir dist",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint .",
-    "prepublishOnly": "shx cp ../../README.md .",
-    "postpublish": "shx rm README.md",
     "test": "pnpm codegen:check"
   },
   "peerDependencies": {
