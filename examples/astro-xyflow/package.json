@@ -13,7 +13,7 @@
   "dependencies": {
     "astro": "^6.1.10",
     "@astrojs/react": "^5.0.4",
-    "@astrojs/svelte": "^8.1.0",
+    "@astrojs/svelte": "^9.1.2",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@xyflow/react": "workspace:^",
