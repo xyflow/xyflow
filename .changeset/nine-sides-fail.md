@@ -4,5 +4,5 @@
 "@xyflow/react": patch
 ---
 
-Fix resizing nodes with a fixed extent & a non-default origin
+Fix resizing nodes with a fixed extent & a non-default origin.
   
