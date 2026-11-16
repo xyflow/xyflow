@@ -2,5 +2,4 @@
 "@xyflow/react": major
 ---
 
-useStore is now a Zustand 5 store. Use useShallow instead of passing equalityFunction parameter
-  
+Replace `useStore` with `useNodesStore`, `useEdgesStore`, `useViewportStore`, `useOptionsStore`, `useConnectionStore` and `useSelectionStore`. They no longer accept an equality function, use `useShallow` instead.
