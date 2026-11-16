@@ -3,5 +3,5 @@
 "@xyflow/react": major
 ---
 
-Use system color mode by default, add `forceColorMode` to opt-out
+Use system color mode by default, add `forceColorMode` to opt-out.
   

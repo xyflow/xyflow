@@ -2,5 +2,5 @@
 "@xyflow/react": major
 ---
 
-Remove lib from store
+Remove lib ("react") entry from store.
   

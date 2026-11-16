@@ -10,7 +10,7 @@ Edges are now stored as your plain `Edge` objects — the same model nodes alrea
 
 - `GraphEdge` and `isGraphEdge` are **removed**. Use `Edge`.
 - `getEdges`/`getEdge`/`getSelectedEdges`/`v-model:edges` return your `Edge` objects (typed `DeepReadonly`); reading `edge.sourceNode`/`edge.targetNode`/`edge.sourceX` no longer works — resolve nodes with `useInternalNode(() => props.source)` and read positions from `EdgeProps`.
-- In-place edge mutation is no longer reactive. Update edges with `updateEdge`/`updateEdgeData`/`setEdges`/`applyEdgeChanges`, or reassign the `v-model` array immutably.
+- In-place edge mutation is no longer reactive. Update edges with `updateEdge`/`updateEdgeData`/`setEdges` or reassign the `v-model` array immutably.
 - `EdgeProps` no longer carries `sourceNode`/`targetNode`; it gains `selectable`/`deletable` and exposes handles as `sourceHandleId`/`targetHandleId`. `type`/`data` are optional.
 - `useEdge().edge` is now a `ComputedRef`.
 - `defaultEdgeOptions` are applied at connection-creation and at render, never stamped onto stored edges (a runtime change to `defaultEdgeOptions` is now reflected immediately).

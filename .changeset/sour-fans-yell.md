@@ -3,5 +3,5 @@
 "@xyflow/react": major
 ---
 
-Pass NodeChangeset/EdgeChangeset class to onNodesChange/onEdgesChange
+Pass `NodeChangeset`/`EdgeChangeset` class to `onNodesChange`/`onEdgesChange` or `onnodeschange`/`onedgeschange`.
   

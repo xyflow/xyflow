@@ -4,7 +4,7 @@
 
 Align the initial-fit and node-origin props with `xyflow/react` + `xyflow/svelte`.
 
-- **`fitViewOnInit` → `fitView`.** The prop that fits the view on the first render is now named `fitView` (boolean), matching react/svelte. A companion `fitViewOptions` prop forwards the initial fit's options (`padding`, `minZoom`, `maxZoom`, `duration`, `nodes`, `includeHiddenNodes`). The internal one-shot flag keeps its own name, so the `fitView()` action is unaffected.
+- **`fitViewOnInit` → `fitView`.** The prop that fits the view on the first render is now named `fitView` (boolean), matching react/svelte. A companion `fitViewOptions` prop forwards the initial fit's options (`padding`, `minZoom`, `maxZoom`, `duration`, `nodes`, `includeHiddenNodes`).
 - **`nodeOrigin` is now forwarded.** The prop existed on the type but was ignored — absolute-position computation, expand-parent, and the resize control all hard-coded `[0, 0]`. They now honor the configured `nodeOrigin` (default `[0, 0]`, unchanged).
 
 | Old | New |
