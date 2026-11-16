@@ -1,5 +1,5 @@
 ---
-"@xyflow/vue": minor
+"@xyflow/vue": major
 ---
 
 Expose the raw pointer position during a connection:

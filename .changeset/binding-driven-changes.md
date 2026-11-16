@@ -1,5 +1,5 @@
 ---
-"@xyflow/vue": minor
+"@xyflow/vue": major
 ---
 
 The `nodes`/`edges` binding now determines how changes are handled, and the `applyDefault` prop is removed.

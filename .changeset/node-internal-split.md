@@ -14,7 +14,7 @@ Internally, vue-flow now hands your nodes straight to `@xyflow/system`'s `adoptU
 
 **Breaking changes:**
 
-- **Direct in-place node mutation is no longer reactive.** `node.position = …`, `node.data.x = …`, `node.selected = …` on a node you got from `getNode`/`getNodes`/`v-model` will not re-render. Use the store helpers (`updateNode`, `updateNodeData`, `applyNodeChanges`, `setNodes`) or reassign the bound `v-model` array. This is what lets the store skip deep-reactifying every node — a deliberate performance trade.
+- **Direct in-place node mutation is no longer reactive.** `node.position = …`, `node.data.x = …`, `node.selected = …` on a node you got from `getNode`/`getNodes`/`v-model` will not re-render. Use the store helpers (`updateNode`, `updateNodeData`, `setNodes`) or reassign the bound `v-model` array.
 - **`getNode`/`getNodes`/`v-model:nodes` no longer carry `internals`/`computedPosition`.** Read absolute position, z-index, handle bounds and measured dimensions via `getInternalNode(id)` / `useInternalNode(id)` / `nodeLookup`. Custom node components are unaffected — they still receive position/dimensions through their props.
 - **Node defaults are no longer force-stamped** (parity with xyflow): a node you pass without `data` keeps `data: undefined` (previously `{}`), and `selected`/`dragging` stay `undefined` until set. Guard optional reads (`data?.label`).
 
