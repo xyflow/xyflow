@@ -2,4 +2,4 @@
 "@xyflow/vue": patch
 ---
 
-Fix `fitView`'s `includeHiddenNodes` option being ignored.
+Fix the `includeHiddenNodes` option of `fitView` being ignored.

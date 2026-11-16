@@ -2,4 +2,4 @@
 "@xyflow/vue": minor
 ---
 
-Add an `orientation` prop to `<Controls>` (`'vertical' | 'horizontal'`, default `'vertical'`).
+Add an `orientation` prop to `<Controls>` (`"vertical" | "horizontal"`, default `"vertical"`).

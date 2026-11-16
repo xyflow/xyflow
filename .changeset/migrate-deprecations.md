@@ -6,7 +6,7 @@ Remove the deprecated `useHandleConnections` composable. Use `useNodeConnections
 
 ```ts
 // before
-useHandleConnections({ type: 'target', id: 'a', nodeId: '1' })
+useHandleConnections({ type: "target", id: "a", nodeId: "1" })
 // after
-useNodeConnections({ handleType: 'target', handleId: 'a', id: '1' })
+useNodeConnections({ handleType: "target", handleId: "a", id: "1" })
 ```

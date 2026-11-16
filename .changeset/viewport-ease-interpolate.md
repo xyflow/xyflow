@@ -2,9 +2,9 @@
 "@xyflow/vue": major
 ---
 
-Add `ease` and `interpolate` options to every viewport function. `fitView`, `setViewport`, `setCenter`, `fitBounds`, `zoomTo`, `zoomIn` and `zoomOut` now accept `ease?: (t: number) => number` and `interpolate?: 'smooth' | 'linear'` alongside `duration` to control the transition curve.
+Add `ease` and `interpolate` options to every viewport function. `fitView`, `setViewport`, `setCenter`, `fitBounds`, `zoomTo`, `zoomIn` and `zoomOut` now accept `ease?: (t: number) => number` and `interpolate?: "smooth" | "linear"` alongside `duration` to control the transition curve.
 
 The viewport option types now come from `@xyflow/system`:
 
-- `FitViewParams` → `FitViewOptions` (= system's `FitViewOptionsBase`). Its `nodes` option takes node objects instead of ids — `nodes?: string[]` → `nodes?: (Node | { id: string })[]` — and the vestigial `offset` option is removed (superseded by `padding`).
+- `FitViewParams` → `FitViewOptions` (`FitViewOptionsBase` from `@xyflow/system`). Its `nodes` option takes node objects instead of ids — `nodes?: string[]` → `nodes?: (Node | { id: string })[]` — and the vestigial `offset` option is removed (superseded by `padding`).
 - `TransitionOptions` → `ViewportHelperFunctionOptions`.

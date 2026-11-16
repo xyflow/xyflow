@@ -10,7 +10,7 @@ Remove `useVueFlow().fromObject()` and the `FlowImportObject` type.
 const { setNodes, setEdges, setViewport, onInit } = useVueFlow()
 
 onInit(() => {
-  const flow = JSON.parse(localStorage.getItem('flow') ?? 'null')
+  const flow = JSON.parse(localStorage.getItem("flow") ?? "null")
   if (!flow) {
     return
   }
