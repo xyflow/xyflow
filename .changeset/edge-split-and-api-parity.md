@@ -2,46 +2,24 @@
 "@xyflow/vue": major
 ---
 
-Bring edges to the same model as the 2.0 node split and align the accessor / connection / reconnect API with `@xyflow/system` (the engine behind `xyflow/react` and `xyflow/svelte`).
+Edges are stored as your plain `Edge` objects and the edge, connection and viewport APIs are aligned with `@xyflow/react` and `@xyflow/svelte`.
 
-### Edges are stored verbatim (no more `GraphEdge`)
-
-Edges are now stored as your plain `Edge` objects — the same model nodes already use. There is no enriched edge representation anymore.
-
-- `GraphEdge` and `isGraphEdge` are **removed**. Use `Edge`.
-- `getEdges`/`getEdge`/`getSelectedEdges`/`v-model:edges` return your `Edge` objects (typed `DeepReadonly`); reading `edge.sourceNode`/`edge.targetNode`/`edge.sourceX` no longer works — resolve nodes with `useInternalNode(() => props.source)` and read positions from `EdgeProps`.
-- In-place edge mutation is no longer reactive. Update edges with `updateEdge`/`updateEdgeData`/`setEdges` or reassign the `v-model` array immutably.
-- `EdgeProps` no longer carries `sourceNode`/`targetNode`; it gains `selectable`/`deletable` and exposes handles as `sourceHandleId`/`targetHandleId`. `type`/`data` are optional.
+- `GraphEdge` and `isGraphEdge` are removed. `getEdges`/`getEdge`/`v-model:edges` return plain `Edge`s, so `edge.sourceNode`, `edge.targetNode` and `edge.sourceX` are gone. Use `useInternalNode(() => props.source)` and the positions from `EdgeProps`.
+- In-place edge mutation is no longer reactive. Use `updateEdge`, `updateEdgeData` or `setEdges`.
+- `EdgeProps` drops `sourceNode`/`targetNode`, adds `selectable`/`deletable` and exposes `sourceHandleId`/`targetHandleId`.
 - `useEdge().edge` is now a `ComputedRef`.
-- `defaultEdgeOptions` are applied at connection-creation and at render, never stamped onto stored edges (a runtime change to `defaultEdgeOptions` is now reflected immediately).
+- `defaultEdgeOptions` are applied when rendering instead of being written onto stored edges.
+- `useConnection()` returns a `ComputedRef<ConnectionState>` (`inProgress`, `isValid`, `from*`, `to*`, `pointer`).
+- `connectionMode` defaults to `strict`. Set `connection-mode="loose"` for the old behavior.
 
-### Accessor renames
+| Old | New |
+|---|---|
+| `findNode` / `findEdge` | `getNode` / `getEdge` |
+| `screenToFlowCoordinate` / `flowToScreenCoordinate` | `screenToFlowPosition` / `flowToScreenPosition` |
+| `project` | `screenToFlowPosition` |
+| `updateEdge(oldEdge, connection)` | `reconnectEdge(oldEdge, connection)` |
+| `@edge-update-start` / `@edge-update` / `@edge-update-end` | `@reconnect-start` / `@reconnect` / `@reconnect-end` |
+| `edgeUpdaterRadius` / `edgesUpdatable` / `edge.updatable` | `reconnectRadius` / `edgesReconnectable` / `edge.reconnectable` |
+| `EdgeUpdatable` / `EdgeUpdateEvent` | `EdgeReconnectable` / `EdgeReconnectEvent` |
 
-- `findNode` → `getNode`, `findEdge` → `getEdge`.
-
-### Viewport coordinate helpers
-
-- `screenToFlowCoordinate` → `screenToFlowPosition`, `flowToScreenCoordinate` → `flowToScreenPosition`.
-- `project` is **removed** — use `screenToFlowPosition` (it handles the container offset for you).
-
-### Edge reconnect vocabulary
-
-The "edge update" vocabulary becomes "reconnect":
-
-- `updateEdge(oldEdge, connection)` → `reconnectEdge(oldEdge, connection)`.
-- events `edgeUpdateStart`/`edgeUpdate`/`edgeUpdateEnd` → `reconnectStart`/`reconnect`/`reconnectEnd` (`@edge-update*` → `@reconnect*`).
-- `edgeUpdaterRadius` → `reconnectRadius`, `edgesUpdatable` → `edgesReconnectable`, `edge.updatable` → `edge.reconnectable`.
-- `EdgeUpdatable` → `EdgeReconnectable`, `EdgeUpdateEvent` → `EdgeReconnectEvent`.
-
-### `useConnection` shape
-
-`useConnection()` now returns a `ComputedRef<ConnectionState>` — `{ inProgress, isValid, from, fromHandle, fromPosition, fromNode, to, toHandle, toPosition, toNode, pointer }` — instead of `{ startHandle, endHandle, status, position }`.
-
-### `connectionMode` defaults to `strict`
-
-In `strict` mode a source handle only connects to a target handle. Set `connection-mode="loose"` to restore the previous default (every handle treated as a source).
-
-### New
-
-- `updateEdge(id, edgeUpdate, { replace? })` — partial edge update (the edge analogue of `updateNode`); accepts an object or an updater function.
-- `useInternalNode` is now exported.
+New: `updateEdge(id, edgeUpdate, { replace? })` for partial edge updates, and `useInternalNode` is exported.
