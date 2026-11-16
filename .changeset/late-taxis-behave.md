@@ -2,5 +2,5 @@
 "@xyflow/svelte": patch
 ---
 
-Add missing `addNode` and `addEdge` utils.
+Add missing `addNodes` and `addEdges` utils.
   

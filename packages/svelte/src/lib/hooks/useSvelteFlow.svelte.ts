@@ -210,18 +210,18 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * @param payload - a node or an array of nodes to add
    *
    * @example
-   * addNode({ id: 'node-1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } });
+   * addNodes({ id: 'node-1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } });
    */
-  addNode: (payload: NodeType | NodeType[]) => void;
+  addNodes: (payload: NodeType | NodeType[]) => void;
   /**
    * Adds one or more edges.
    *
    * @param payload - an edge or an array of edges to add
    *
    * @example
-   * addEdge({ id: 'e1-2', source: 'node-1', target: 'node-2' });
+   * addEdges({ id: 'e1-2', source: 'node-1', target: 'node-2' });
    */
-  addEdge: (payload: EdgeType | EdgeType[]) => void;
+  addEdges: (payload: EdgeType | EdgeType[]) => void;
   /**
    * Updates a node.
    *
@@ -638,11 +638,11 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         viewport: { ...store.viewport }
       });
     },
-    addNode: (payload) => {
+    addNodes: (payload) => {
       const nodes = Array.isArray(payload) ? payload : [payload];
       store.queueNodeChanges(nodes.map((node) => addChange(node)));
     },
-    addEdge: (payload) => {
+    addEdges: (payload) => {
       const edges = Array.isArray(payload) ? payload : [payload];
       store.queueEdgeChanges(edges.map((edge) => addChange(edge)));
     },
