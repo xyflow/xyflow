@@ -15,7 +15,7 @@
     "test-e2e": "start-server-and-test 'pnpm serve' http-get://localhost:3000 'pnpm test-e2e-cypress'"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^2.11.2",
+    "@reduxjs/toolkit": "^2.14.0",
     "@xyflow/react": "workspace:*",
     "@xyflow/system": "workspace:*",
     "classcat": "^5.0.5",
@@ -23,8 +23,8 @@
     "localforage": "^1.10.0",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-redux": "^9.2.0",
-    "react-router-dom": "^6.30.3",
+    "react-redux": "^9.3.1",
+    "react-router-dom": "^6.30.6",
     "redux": "^5.0.1",
     "zustand": "^4.5.7"
   },

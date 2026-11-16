@@ -74,7 +74,7 @@
     "@sveltejs/adapter-auto": "catalog:",
     "@sveltejs/kit": "catalog:",
     "@sveltejs/load-config": "catalog:",
-    "@sveltejs/package": "^3.0.1",
+    "@sveltejs/package": "^3.0.2",
     "@sveltejs/vite-plugin-svelte": "catalog:",
     "@types/node": "catalog:",
     "@xyflow/eslint": "workspace:*",
