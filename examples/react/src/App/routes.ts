@@ -1,3 +1,4 @@
+import ViewportResize from '../examples/ViewportResize';
 import A11y from '../examples/A11y';
 import Basic from '../examples/Basic';
 import Backgrounds from '../examples/Backgrounds';
@@ -72,6 +73,11 @@ export interface IRoute {
 }
 
 const routes: IRoute[] = [
+  {
+    name: 'Viewport Resize',
+    path: 'viewport-resize',
+    component: ViewportResize,
+  },
   {
     name: 'Add Node on edge Drop',
     path: 'add-node-edge-drop',

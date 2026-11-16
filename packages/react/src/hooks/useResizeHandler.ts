@@ -22,19 +22,39 @@ export function useResizeHandler(domNode: MutableRefObject<HTMLDivElement | null
         store.getState().onError?.('004', errorMessages['error004']());
       }
 
-      store.setState({ width: size.width || 500, height: size.height || 500 });
+      const width = size.width || 500;
+      const height = size.height || 500;
+      const current = store.getState();
+      if (current.width !== width || current.height !== height) {
+        store.setState({ width, height });
+      }
+    };
+
+    // External-store updates can synchronously flush React and resize other
+    // observed elements. Publish after the current ResizeObserver delivery.
+    let resizeFrame: number | null = null;
+    const scheduleUpdateDimensions = () => {
+      if (resizeFrame === null) {
+        resizeFrame = requestAnimationFrame(() => {
+          resizeFrame = null;
+          updateDimensions();
+        });
+      }
     };
 
     if (domNode.current) {
       updateDimensions();
-      window.addEventListener('resize', updateDimensions);
+      window.addEventListener('resize', scheduleUpdateDimensions);
 
-      const resizeObserver = new ResizeObserver(() => updateDimensions());
+      const resizeObserver = new ResizeObserver(scheduleUpdateDimensions);
       resizeObserver.observe(domNode.current);
 
       return () => {
-        window.removeEventListener('resize', updateDimensions);
+        window.removeEventListener('resize', scheduleUpdateDimensions);
         resizeObserver.disconnect();
+        if (resizeFrame !== null) {
+          cancelAnimationFrame(resizeFrame);
+        }
       };
     }
   }, []);
