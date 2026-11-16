@@ -1,5 +1,12 @@
 # @xyflow/react
 
+## 13.0.1
+### Patch Changes
+
+
+
+- [#6142](https://github.com/xyflow/xyflow/pull/6142) [`270f947`](https://github.com/xyflow/xyflow/commit/270f94798db59a2e175906f8805e8ecc4fa1c6ed) - Show a nicer readme on npm :)
+
 ## 13.0.0
 ### Major Changes
 

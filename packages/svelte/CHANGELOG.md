@@ -1,5 +1,16 @@
 # @xyflow/svelte
 
+## 2.0.1
+### Patch Changes
+
+
+
+- [#6142](https://github.com/xyflow/xyflow/pull/6142) [`270f947`](https://github.com/xyflow/xyflow/commit/270f94798db59a2e175906f8805e8ecc4fa1c6ed) - Show a nicer readme on npm :)
+
+
+
+- [#6144](https://github.com/xyflow/xyflow/pull/6144) [`40affcd`](https://github.com/xyflow/xyflow/commit/40affcd1b5f09063c971d1af2ec86b0c618009b9) - Add missing `addNodes` and `addEdges` utils.
+
 ## 2.0.0
 ### Major Changes
 
