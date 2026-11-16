@@ -15,6 +15,7 @@ import DefaultNodes from '../examples/DefaultNodes';
 import DragHandle from '../examples/DragHandle';
 import DragNDrop from '../examples/DragNDrop';
 import EasyConnect from '../examples/EasyConnect';
+import DottedEdges from '../examples/DottedEdges';
 import Edges from '../examples/Edges';
 import EdgeRenderer from '../examples/EdgeRenderer';
 import EdgeTypes from '../examples/EdgeTypes';
@@ -176,6 +177,11 @@ const routes: IRoute[] = [
     name: 'EasyConnect',
     path: 'easy-connect',
     component: EasyConnect,
+  },
+  {
+    name: 'Dotted Edges',
+    path: 'dotted-edges',
+    component: DottedEdges,
   },
   {
     name: 'Edges',
