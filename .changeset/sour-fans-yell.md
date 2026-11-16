@@ -4,4 +4,3 @@
 ---
 
 Pass `NodeChangeset`/`EdgeChangeset` class to `onNodesChange`/`onEdgesChange` or `onnodeschange`/`onedgeschange`.
-  

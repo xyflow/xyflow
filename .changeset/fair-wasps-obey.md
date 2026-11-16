@@ -3,4 +3,3 @@
 ---
 
 Removed `useColorMode` hook.
-  

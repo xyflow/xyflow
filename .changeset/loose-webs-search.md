@@ -3,4 +3,3 @@
 ---
 
 Remove deprecated `useHandleConnections` hook.
-  

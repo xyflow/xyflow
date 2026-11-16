@@ -5,4 +5,3 @@
 ---
 
 Exported styles now live in `@layer xyflow`.
-  

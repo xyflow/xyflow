@@ -3,4 +3,3 @@
 ---
 
 Remove lib ("react") entry from store.
-  

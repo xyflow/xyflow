@@ -5,4 +5,3 @@
 ---
 
 Fix resizing nodes with a fixed extent & a non-default origin.
-  
