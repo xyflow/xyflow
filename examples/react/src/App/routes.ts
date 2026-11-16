@@ -66,6 +66,7 @@ import Middlewares from '../examples/Middlewares';
 import NodeSelectionBug from '../examples/NodeSelectionBug';
 import Remount from '../examples/Remount';
 import MeasurementRace from '../examples/MeasurementRace';
+import ViewportResize from '../examples/ViewportResize';
 
 export interface IRoute {
   name: string;
@@ -74,6 +75,11 @@ export interface IRoute {
 }
 
 const routes: IRoute[] = [
+  {
+    name: 'Viewport Resize',
+    path: 'viewport-resize',
+    component: ViewportResize,
+  },
   {
     name: 'Add Node on edge Drop',
     path: 'add-node-edge-drop',
