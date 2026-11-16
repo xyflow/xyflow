@@ -2,5 +2,5 @@
 "@xyflow/react": major
 ---
 
-Remove deprecated useHandleConnections hook
+Remove deprecated `useHandleConnections` hook.
   
