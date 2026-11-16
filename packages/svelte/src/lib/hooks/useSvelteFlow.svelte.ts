@@ -369,12 +369,27 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     return nodeToRect(nodeWithPosition, nodeToUse.parentId ? undefined : store.nodeOrigin);
   };
 
+  // Read earlier queued changes before evaluating the next update.
+  function getNodeForUpdate(id: string) {
+    const node = store.nodeLookup.get(id)?.internals.userNode;
+    return store.pendingNodeChanges
+      ? store.pendingNodeChanges.applyTo(node ? [node] : []).find((node) => node.id === id)
+      : node;
+  }
+
+  function getEdgeForUpdate(id: string) {
+    const edge = store.edgeLookup.get(id);
+    return store.pendingEdgeChanges
+      ? store.pendingEdgeChanges.applyTo(edge ? [edge] : []).find((edge) => edge.id === id)
+      : edge;
+  }
+
   function updateNode(
     id: string,
     nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
     options: { replace: boolean } = { replace: false }
   ) {
-    const node = store.nodeLookup.get(id)?.internals.userNode;
+    const node = getNodeForUpdate(id);
 
     if (!node) {
       return;
@@ -410,7 +425,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options: { replace: boolean } = { replace: false }
   ) {
-    const edge = store.edgeLookup.get(id);
+    const edge = getEdgeForUpdate(id);
 
     if (!edge) {
       return;
@@ -652,7 +667,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       dataUpdate: NodeType['data'] | ((node: NodeType) => NodeType['data']),
       options?: { replace?: boolean }
     ) => {
-      const node = store.nodeLookup.get(id)?.internals.userNode;
+      const node = getNodeForUpdate(id);
 
       if (!node) {
         return;
@@ -684,7 +699,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         NonNullable<EdgeType['data']> | ((edge: EdgeType) => NonNullable<EdgeType['data']>),
       options?: { replace?: boolean }
     ) => {
-      const edge = store.edgeLookup.get(id);
+      const edge = getEdgeForUpdate(id);
 
       if (!edge) {
         return;
