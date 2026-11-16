@@ -3,17 +3,15 @@ import {
   ReactFlow,
   Edge,
   Node,
-  NodeChange,
-  applyNodeChanges,
   Connection,
   addEdge,
-  applyEdgeChanges,
-  EdgeChange,
   Controls,
   Background,
   Panel,
   ReactFlowProvider,
   useReactFlow,
+  NodeChangeset,
+  EdgeChangeset,
 } from '@xyflow/react';
 
 import { getNodesAndEdges } from './utils';
@@ -210,12 +208,12 @@ const StressFlow = () => {
     setEdges(initialElements.edges);
   };
 
-  const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((ns) => applyNodeChanges(changes, ns));
+  const onNodesChange = useCallback((changes: NodeChangeset) => {
+    setNodes((ns) => changes.applyTo(ns));
   }, []);
 
-  const onEdgeChange = useCallback((changes: EdgeChange[]) => {
-    setEdges((es) => applyEdgeChanges(changes, es));
+  const onEdgeChange = useCallback((changes: EdgeChangeset) => {
+    setEdges((es) => changes.applyTo(es));
   }, []);
 
   return (

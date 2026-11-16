@@ -9,21 +9,20 @@
     getNodesInside
   } from '@xyflow/system';
 
-  import drag from '$lib/actions/drag/index.js';
-  import { setNodeConnectableContext, setNodeIdContext } from '$lib/store/context.js';
-  import { arrowKeyDiffs, toPxString } from '$lib/utils/index.js';
+  import drag from '#lib/actions/drag/index.js';
+  import { setNodeConnectableContext, setNodeIdContext } from '#lib/store/context.js';
+  import { arrowKeyDiffs, toPxString } from '#lib/utils/index.js';
   import { ARIA_NODE_DESC_KEY } from '../A11yDescriptions/index.js';
 
-  import type { Node, Edge, NodeEvents } from '$lib/types/index.js';
+  import type { Node, Edge, NodeEvents } from '#lib/types/index.js';
   import type { ConnectableContext, NodeWrapperProps } from './types.js';
 
-  import DefaultNode from '$lib/components/nodes/DefaultNode.svelte';
+  import DefaultNode from '#lib/components/nodes/DefaultNode.svelte';
 
   let {
     store = $bindable(),
     node,
     resizeObserver,
-    nodeClickDistance,
     onnodeclick,
     onnodedrag,
     onnodedragstart,
@@ -59,7 +58,8 @@
     internals: {
       z: zIndex = 0,
       positionAbsolute: { x: positionX, y: positionY },
-      userNode
+      userNode,
+      isParent
     }
   } = $derived(node);
 
@@ -74,12 +74,6 @@
   let hasHandleBounds = $derived(!!node.internals.handleBounds);
   let isInitialized = $derived(hasDimensions && hasHandleBounds);
   let focusable = $derived(_focusable ?? store.nodesFocusable);
-
-  function isInParentLookup(id: string) {
-    return store.parentLookup.has(id);
-  }
-
-  let isParent = $derived(isInParentLookup(id));
 
   let nodeRef: HTMLDivElement | null = $state(null);
   let prevNodeRef: HTMLDivElement | null = null;
@@ -243,7 +237,6 @@
       disabled: !draggable,
       handleSelector: dragHandle,
       noDragClass: store.noDragClass,
-      nodeClickDistance,
       onNodeMouseDown: store.handleNodeSelection,
       onDrag: (event, _, targetNode, nodes) => {
         onnodedrag?.({ event, targetNode: targetNode as NodeType, nodes: nodes as NodeType[] });

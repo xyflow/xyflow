@@ -10,6 +10,7 @@ import {
   Node,
   Edge,
   CoordinateExtent,
+  NodeOrigin,
 } from '@xyflow/react';
 
 import DefaultResizer from './DefaultResizer';
@@ -41,7 +42,7 @@ const extent: CoordinateExtent = [
 
 const initialEdges: Edge[] = [];
 
-const initialNodes: Node[] = [
+const initialNodes = [
   {
     id: '1',
     type: 'defaultResizer',
@@ -190,11 +191,11 @@ const initialNodes: Node[] = [
     position: { x: 500, y: 350 },
     extent,
   },
-];
+].reverse();
 
 const CustomNodeFlow = () => {
   const [snapToGrid, setSnapToGrid] = useState(false);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(

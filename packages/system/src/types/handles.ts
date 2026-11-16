@@ -5,7 +5,12 @@ import type { Position, IsValidConnection } from '.';
  */
 export type HandleType = 'source' | 'target';
 
-export type Handle = {
+/**
+ * Measured position and size of a handle relative to the node
+ *
+ * @public
+ */
+export type HandleBounds = {
   id?: string | null;
   nodeId: string;
   x: number;
