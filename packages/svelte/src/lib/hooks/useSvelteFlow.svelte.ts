@@ -14,6 +14,7 @@ import {
   dataChange,
   replaceChange,
   updateChange,
+  addChange,
   getElementsToRemove,
   rendererPointToPoint,
   evaluateAbsolutePosition,
@@ -203,6 +204,24 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * const clientPosition = flowToScreenPosition({ x: node.position.x, y: node.position.y })
    */
   flowToScreenPosition: (flowPosition: XYPosition) => XYPosition;
+  /**
+   * Adds one or more nodes.
+   *
+   * @param payload - a node or an array of nodes to add
+   *
+   * @example
+   * addNodes({ id: 'node-1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } });
+   */
+  addNodes: (payload: NodeType | NodeType[]) => void;
+  /**
+   * Adds one or more edges.
+   *
+   * @param payload - an edge or an array of edges to add
+   *
+   * @example
+   * addEdges({ id: 'e1-2', source: 'node-1', target: 'node-2' });
+   */
+  addEdges: (payload: EdgeType | EdgeType[]) => void;
   /**
    * Updates a node.
    *
@@ -618,6 +637,14 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         edges: [...store.edges],
         viewport: { ...store.viewport }
       });
+    },
+    addNodes: (payload) => {
+      const nodes = Array.isArray(payload) ? payload : [payload];
+      store.queueNodeChanges(nodes.map((node) => addChange(node)));
+    },
+    addEdges: (payload) => {
+      const edges = Array.isArray(payload) ? payload : [payload];
+      store.queueEdgeChanges(edges.map((edge) => addChange(edge)));
     },
     updateNode,
     updateNodeData: (
