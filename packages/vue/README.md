@@ -1,4 +1,7 @@
-# Vue Flow
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/xyflow/xyflow/main/packages/vue/assets/readme-header-dark.svg">
+  <img alt="Vue Flow" src="https://raw.githubusercontent.com/xyflow/xyflow/main/packages/vue/assets/readme-header.svg">
+</picture>
 
 <div align="center">
 
