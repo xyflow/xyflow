@@ -6,6 +6,7 @@ import { useVueFlowStore } from './useVueFlowStore';
 
 /**
  * Composable for updating the position of nodes.
+ * Returns the computed drag items (including snapped and extent-clamped positions).
  *
  * @internal
  */
@@ -13,7 +14,7 @@ export function useUpdateNodePositions() {
   const { getSelectedNodes, updateNodePositions, getInternalNode } = useVueFlow();
   const store = useVueFlowStore();
 
-  return (positionDiff: XYPosition, isShiftPressed = false) => {
+  return (positionDiff: XYPosition, isShiftPressed = false): NodeDragItem[] => {
     // by default a node moves 5px on each key press, or 20px if shift is pressed
     // if snap grid is enabled, we use that for the velocity.
     const xVelo = store.snapToGrid ? store.snapGrid[0] : 5;
@@ -59,5 +60,7 @@ export function useUpdateNodePositions() {
     }
 
     updateNodePositions(nodeUpdates, true, false);
+
+    return nodeUpdates;
   };
 }
