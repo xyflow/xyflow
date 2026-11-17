@@ -386,6 +386,10 @@ export async function fitViewport<
 
   const nodesToFit = getFitViewNodes(nodes, options);
 
+  if (nodesToFit.size === 0) {
+    return true;
+  }
+
   const bounds = getInternalNodesBounds(nodesToFit);
 
   const viewport = getViewportForBounds(
