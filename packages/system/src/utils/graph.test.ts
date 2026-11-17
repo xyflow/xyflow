@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import type { EdgeBase, NodeBase } from '../types';
-import { getElementsToRemove } from './graph';
+import type { EdgeBase, InternalNodeBase, NodeBase, PanZoomInstance } from '../types';
+import { fitViewport, getElementsToRemove } from './graph';
 
 const parent: NodeBase = { id: 'parent', data: {}, position: { x: 0, y: 0 } };
 const child: NodeBase = { ...parent, id: 'child', parentId: 'parent' };
@@ -46,5 +46,55 @@ describe('getElementsToRemove', () => {
     });
     expect(onBeforeDelete).toHaveBeenCalledWith({ nodes, edges: [edge] });
     expect(result).toEqual({ nodes: [], edges: [] });
+  });
+});
+
+describe('fitViewport', () => {
+  function createInternalNode(id: string, x: number, y: number, hidden = false): InternalNodeBase {
+    return {
+      id,
+      data: {},
+      position: { x, y },
+      hidden,
+      measured: { width: 100, height: 50 },
+      internals: { positionAbsolute: { x, y }, z: 0, isParent: false, userNode: { id, data: {}, position: { x, y } } },
+    };
+  }
+
+  function setup() {
+    const nodes = new Map<string, InternalNodeBase>([
+      ['a', createInternalNode('a', 0, 0)],
+      ['b', createInternalNode('b', 400, 300)],
+      ['hidden', createInternalNode('hidden', 800, 600, true)],
+    ]);
+    const setViewport = vi.fn().mockResolvedValue(true);
+    const panZoom = { setViewport } as unknown as PanZoomInstance;
+
+    // `nodes` is read from the fit view options at runtime (React Flow passes its `fitViewOptions`)
+    const fit = (options: { nodes: { id: string }[] }) =>
+      fitViewport(
+        { nodes, width: 1000, height: 800, panZoom, minZoom: 0.5, maxZoom: 2 },
+        options as Parameters<typeof fitViewport>[1]
+      );
+
+    return { fit, setViewport };
+  }
+
+  it('fits the given nodes', async () => {
+    const { fit, setViewport } = setup();
+
+    await expect(fit({ nodes: [{ id: 'a' }] })).resolves.toBe(true);
+    expect(setViewport).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ['an empty nodes array', []],
+    ['ids that do not exist', [{ id: 'missing' }]],
+    ['hidden nodes only', [{ id: 'hidden' }]],
+  ])('keeps the current viewport when %s is passed', async (_, nodesToFit) => {
+    const { fit, setViewport } = setup();
+
+    await expect(fit({ nodes: nodesToFit })).resolves.toBe(true);
+    expect(setViewport).not.toHaveBeenCalled();
   });
 });
