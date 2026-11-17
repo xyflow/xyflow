@@ -359,19 +359,26 @@ const NodeWrapper = defineComponent({
         // prevent page scrolling
         event.preventDefault();
 
-        store.ariaLiveMessage = store.ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
-          direction: event.key.replace('Arrow', '').toLowerCase(),
-          x: ~~node.position.x,
-          y: ~~node.position.y,
-        });
-
-        updateNodePositions(
+        const nodeUpdates = updateNodePositions(
           {
             x: arrowKeyDiffs[event.key].x,
             y: arrowKeyDiffs[event.key].y,
           },
           event.shiftKey,
         );
+
+        // announce the position after the move, including snapping and extent clamping
+        const positionAbsolute = nodeUpdates.find(update => update.id === node.id)?.internals.positionAbsolute;
+
+        if (!positionAbsolute) {
+          return;
+        }
+
+        store.ariaLiveMessage = store.ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
+          direction: event.key.replace('Arrow', '').toLowerCase(),
+          x: ~~positionAbsolute.x,
+          y: ~~positionAbsolute.y,
+        });
       }
     }
 
