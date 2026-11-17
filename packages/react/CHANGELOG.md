@@ -1,5 +1,16 @@
 # @xyflow/react
 
+## 13.0.2
+### Patch Changes
+
+
+
+- [#6130](https://github.com/xyflow/xyflow/pull/6130) [`d0d3fd7`](https://github.com/xyflow/xyflow/commit/d0d3fd70a575866a2434f87d3088e3a0649cc7c6) - Announce the new position, instead of the previous one, when moving a selected node with the arrow keys.
+
+
+
+- [#6155](https://github.com/xyflow/xyflow/pull/6155) [`f7b8546`](https://github.com/xyflow/xyflow/commit/f7b854607084a7d900ae87330eb11108c9a4b354) - EdgeToolbar: use the elevated `zIndex` so the toolbar stacks with its edge
+
 ## 13.0.1
 ### Patch Changes
 

@@ -1,5 +1,16 @@
 # @xyflow/svelte
 
+## 2.0.2
+### Patch Changes
+
+
+
+- [#6130](https://github.com/xyflow/xyflow/pull/6130) [`d0d3fd7`](https://github.com/xyflow/xyflow/commit/d0d3fd70a575866a2434f87d3088e3a0649cc7c6) - Announce the new position, instead of the previous one, when moving a selected node with the arrow keys.
+
+
+
+- [#6151](https://github.com/xyflow/xyflow/pull/6151) [`3a587bf`](https://github.com/xyflow/xyflow/commit/3a587bff92284b2382f6e4e622cc80c589eb2d1d) - Fix effect-on-teardown error. Reuse initial store when Svelte Flow unmounts within a provider.
+
 ## 2.0.1
 ### Patch Changes
 
