@@ -1,4 +1,4 @@
-import type { EdgeLookup, NodeLookup } from '@xyflow/system';
+import type { Dimensions, EdgeLookup, NodeLookup, Transform } from '@xyflow/system';
 import type { WithAutoApply } from '../context';
 import type { Edge, InternalNode, Node, VueFlowInstance, VueFlowProps, VueFlowState, VueFlowStoreHandle } from '../types';
 import { mergeAriaLabelConfig } from '@xyflow/system';
@@ -7,6 +7,7 @@ import { AUTO_APPLY } from '../context';
 import { defineControlled } from '../utils';
 import { useActions } from './actions';
 import { createCommit } from './commit';
+import { getInitialTransform } from './fitView';
 import { useGetters } from './getters';
 import { useState } from './state';
 
@@ -85,6 +86,18 @@ export function createVueFlowStore<NodeType extends Node = Node, EdgeType extend
     if (initialEdges !== undefined) {
       actions.setEdges(initialEdges);
     }
+
+    const { width, height } = initialState;
+
+    const seed = state as { dimensions: Dimensions; transform: Transform };
+
+    if (width && height) {
+      seed.dimensions = { width, height };
+    }
+
+    seed.transform = getInitialTransform(state, nodeLookup, width, height);
+    // that fit IS the initial fit, so `<Viewport>` mustn't keep the pane hidden waiting for one
+    state.fitViewOnInitDone = Boolean(state.fitViewOnInit && width && height);
   }
 
   // `autoApply` is internal

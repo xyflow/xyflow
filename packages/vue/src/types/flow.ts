@@ -298,6 +298,16 @@ export interface VueFlowProps<NodeType extends Node = Node, EdgeType extends Edg
    */
   maxZoom?: number;
   /**
+   * The width to assume for the flow until it has been measured. Doesn't size the element, it gives
+   * the initial `fitView` a frame to fit into, which is what makes it work during server side rendering.
+   */
+  width?: number;
+  /**
+   * The height to assume for the flow until it has been measured. Doesn't size the element, it gives
+   * the initial `fitView` a frame to fit into, which is what makes it work during server side rendering.
+   */
+  height?: number;
+  /**
    * Sets the initial position and zoom of the viewport. If a default viewport is provided but `fitView`
    * is enabled, the default viewport will be ignored.
    * @default { x: 0, y: 0, zoom: 1 }

@@ -344,7 +344,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       }
     }
 
-    // recursively collect all nested children
     function createChildrenRemovalChanges(id: string) {
       const children: NodeType[] = [];
       for (const node of state.nodes) {
@@ -446,8 +445,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       state.hooks.delete.trigger({ nodes: matchingNodes, edges: matchingEdges });
     }
 
-    // `matchingNodes`/`matchingEdges` already include children + connected edges (post-`onBeforeDelete`),
-    // so tell `removeNodes` not to re-expand them — that would bypass an `onBeforeDelete` that kept some.
     if (matchingNodes.length) {
       removeNodes(matchingNodes, false, false);
     }
@@ -470,8 +467,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       return false;
     }
 
-    // resolve by id, not identity — callers commonly pass stale references (e.g. an edge captured in an
-    // event payload before an immutable change replaced the stored object)
     const prevEdgeIndex = state.edges.findIndex(edge => edge.id === oldEdge.id);
 
     const newEdge = reconnectEdgeAction(
@@ -538,7 +533,6 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
   };
 
   const applyNodeChanges: AutoApplyHandlers<NodeType, EdgeType>['nodes'] = (changes) => {
-    // apply changes immutably (new array, new objects only for changed nodes), then re-adopt via `commitNodes`
     commitNodes(changes.applyTo(state.nodes));
   };
 
@@ -675,6 +669,8 @@ export function useActions<NodeType extends Node = Node, EdgeType extends Edge =
       'fitViewOnInitDone',
       'viewportRef',
       'vueFlowRef',
+      'width',
+      'height',
       'dimensions',
       'hooks',
     ]);
