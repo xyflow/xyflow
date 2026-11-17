@@ -1,5 +1,20 @@
 # @xyflow/vue
 
+## 2.0.2
+### Patch Changes
+
+
+
+- [#6130](https://github.com/xyflow/xyflow/pull/6130) [`d0d3fd7`](https://github.com/xyflow/xyflow/commit/d0d3fd70a575866a2434f87d3088e3a0649cc7c6) - Announce the new position, instead of the previous one, when moving a selected node with the arrow keys.
+
+
+
+- [#6153](https://github.com/xyflow/xyflow/pull/6153) [`22a91e3`](https://github.com/xyflow/xyflow/commit/22a91e3c4656015cc1320a77e4f09e8e3f62e848) - Render nodes during server-side rendering. Server-rendered markup previously contained edges but no nodes.
+
+
+
+- [#6153](https://github.com/xyflow/xyflow/pull/6153) [`cc15269`](https://github.com/xyflow/xyflow/commit/cc15269191667caaf1a45cb8cf325b19f6d9177b) - Add `width` and `height` props to `<VueFlow>`. They tell the flow what size to assume until it has been measured, which lets the initial `fitView` be computed during server side rendering. `defaultViewport` now seeds the initial transform too.
+
 ## 2.0.1
 ### Patch Changes
 
