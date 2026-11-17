@@ -6,7 +6,7 @@ import { useVueFlowStore } from './useVueFlowStore';
 
 /**
  * Composable for updating the position of nodes.
- * Returns the computed drag items (including snapped and extent-clamped positions).
+ * Returns the computed drag items (including snapped and extent-clamped positions), keyed by node id.
  *
  * @internal
  */
@@ -14,7 +14,7 @@ export function useUpdateNodePositions() {
   const { getSelectedNodes, updateNodePositions, getInternalNode } = useVueFlow();
   const store = useVueFlowStore();
 
-  return (positionDiff: XYPosition, isShiftPressed = false): NodeDragItem[] => {
+  return (positionDiff: XYPosition, isShiftPressed = false): Map<string, NodeDragItem> => {
     // by default a node moves 5px on each key press, or 20px if shift is pressed
     // if snap grid is enabled, we use that for the velocity.
     const xVelo = store.snapToGrid ? store.snapGrid[0] : 5;
@@ -24,7 +24,7 @@ export function useUpdateNodePositions() {
     const positionDiffX = positionDiff.x * xVelo * factor;
     const positionDiffY = positionDiff.y * yVelo * factor;
 
-    const nodeUpdates: NodeDragItem[] = [];
+    const nodeUpdates = new Map<string, NodeDragItem>();
     for (const node of getSelectedNodes.value) {
       if (node.draggable || (store.nodesDraggable && typeof node.draggable === 'undefined')) {
         const internalNode = getInternalNode(node.id);
@@ -49,7 +49,7 @@ export function useUpdateNodePositions() {
           nodeOrigin: toRaw(store.nodeOrigin),
         });
 
-        nodeUpdates.push({
+        nodeUpdates.set(node.id, {
           id: node.id,
           position,
           distance: { x: positionDiff.x, y: positionDiff.y },
@@ -59,7 +59,7 @@ export function useUpdateNodePositions() {
       }
     }
 
-    updateNodePositions(nodeUpdates, true, false);
+    updateNodePositions([...nodeUpdates.values()], true, false);
 
     return nodeUpdates;
   };
