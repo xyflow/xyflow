@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
+import { computed, onBeforeUnmount, watch } from 'vue';
 import { NodeWrapper } from '../../components';
 import { useVueFlow, useVueFlowStore } from '../../composables';
 import { useNodesInitialized } from '../../composables/useNodesInitialized';
@@ -10,7 +10,22 @@ const { nodeLookup } = useVueFlowStore();
 
 const nodesInitialized = useNodesInitialized();
 
-const resizeObserver = shallowRef<ResizeObserver>();
+// null on the server, where nodes still have to render so the markup survives hydration
+const resizeObserver = typeof ResizeObserver === 'undefined'
+  ? null
+  : new ResizeObserver((entries) => {
+      const updates = entries.map((entry) => {
+        const id = entry.target.getAttribute('data-id') as string;
+
+        return {
+          id,
+          nodeElement: entry.target as HTMLDivElement,
+          forceUpdate: true,
+        };
+      });
+
+      updateNodeDimensions(updates);
+    });
 
 // iterate a value-stable id list so this v-for only re-runs on node *membership* changes, not every commit
 // (each update replaces the whole `nodes` array). A moved node still re-renders via its own lookup-backed
@@ -45,23 +60,7 @@ watch(
   { immediate: true, flush: 'post' },
 );
 
-onMounted(() => {
-  resizeObserver.value = new ResizeObserver((entries) => {
-    const updates = entries.map((entry) => {
-      const id = entry.target.getAttribute('data-id') as string;
-
-      return {
-        id,
-        nodeElement: entry.target as HTMLDivElement,
-        forceUpdate: true,
-      };
-    });
-
-    updateNodeDimensions(updates);
-  });
-});
-
-onBeforeUnmount(() => resizeObserver.value?.disconnect());
+onBeforeUnmount(() => resizeObserver?.disconnect());
 </script>
 
 <script lang="ts">
@@ -73,8 +72,6 @@ export default {
 
 <template>
   <div class="vue-flow__nodes vue-flow__container">
-    <template v-if="resizeObserver">
-      <NodeWrapper v-for="id of nodeIds" :id="id" :key="id" v-memo="[id]" :resize-observer="resizeObserver" />
-    </template>
+    <NodeWrapper v-for="id of nodeIds" :id="id" :key="id" v-memo="[id]" :resize-observer="resizeObserver" />
   </div>
 </template>

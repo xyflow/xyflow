@@ -23,6 +23,7 @@ const {
   maxZoom,
   translateExtent,
   defaultViewport,
+  fitViewOnInitDone,
   zoomOnScroll,
   zoomOnPinch,
   panOnScroll,
@@ -69,7 +70,9 @@ onMounted(() => {
       minZoom: minZoom.value,
       maxZoom: maxZoom.value,
       translateExtent: translateExtent.value,
-      viewport: { x: transform.value[0], y: transform.value[1], zoom: transform.value[2], ...defaultViewport.value },
+      viewport: fitViewOnInitDone.value
+        ? { x: transform.value[0], y: transform.value[1], zoom: transform.value[2] }
+        : { x: transform.value[0], y: transform.value[1], zoom: transform.value[2], ...defaultViewport.value },
       onDraggingChange: isDraggingPane => (paneDragging.value = isDraggingPane),
       onPanZoomStart: (event, viewport) => {
         emits.moveStart({ event, viewport });

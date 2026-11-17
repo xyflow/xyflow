@@ -26,7 +26,7 @@ import { defaultNodeTypes } from '../../utils/defaultNodesEdges';
 
 interface Props {
   id: string;
-  resizeObserver: ResizeObserver;
+  resizeObserver: ResizeObserver | null;
 }
 
 const NodeWrapper = defineComponent({
@@ -180,11 +180,11 @@ const NodeWrapper = defineComponent({
         [() => internalNode.value?.hidden, isInitialized],
         ([isHidden = false], _, onCleanup) => {
           if (!isHidden && nodeElement.value) {
-            props.resizeObserver.observe(nodeElement.value);
+            props.resizeObserver?.observe(nodeElement.value);
 
             onCleanup(() => {
               if (nodeElement.value) {
-                props.resizeObserver.unobserve(nodeElement.value);
+                props.resizeObserver?.unobserve(nodeElement.value);
               }
             });
           }
