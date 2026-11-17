@@ -8,21 +8,21 @@
 
   let { children }: SvelteFlowProviderProps = $props();
 
-  let store = $state.raw(
-    createStore<NodeType, EdgeType>({
-      props: {},
-      nodes: [],
-      edges: []
-    })
-  );
+  const initialStore = createStore<NodeType, EdgeType>({
+    props: {},
+    nodes: [],
+    edges: []
+  });
+
+  let store = $state.raw(initialStore);
 
   setContext(key, {
     provider: true,
     getStore() {
       return store;
     },
-    setStore: (newStore: SvelteFlowStore<NodeType, EdgeType>) => {
-      store = newStore;
+    setStore: (newStore: SvelteFlowStore<NodeType, EdgeType> | null) => {
+      store = newStore ?? initialStore;
     }
   } satisfies ProviderContext<NodeType, EdgeType>);
 
