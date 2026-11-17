@@ -493,16 +493,46 @@ export type SvelteFlowProps<
     /** This handler gets called before Svelte Flow updates nodes and can be used to modify the changes.
      * Usually this happens, after initial measuring and when selecting, dragging or deleting nodes.
      * @example
-     * onnodeschange={changes => {
-     *  // TODO: better example
+     * onnodeschange={(changes) => {
+     *   // get all changes for a specific node
+     *   const nodeChanges = changes.getForNode('node-1');
+     *
+     *   // get all changes of a specific type
+     *   const positionChanges = changes.getByType('position');
+     *
+     *   // remove any changes
+     *    changes.remove(positionChanges);
+     *
+     *   // drop every change for a specific node
+     *   changes.removeForNode('node-2');
+     *
+     *   // apply the changes to your nodes for full control
+     *    changes.applyTo(nodes)
+     *   // and clear changeset after applying, so they don't get applied automatically
+     *   changes.clear();
      * }}
      */
     onnodeschange?: OnNodesChange<NodeType>;
     /** This handler gets called before Svelte Flow updates edges and can be used to modify the changes.
      * Usually this happens when selecting, connecting or deleting edges.
      * @example
-     * onedgeschange={changes => {
-     *  // TODO: better example
+     * onedgeschange={(changes) => {
+     *   // get all changes for a specific edge
+     *   const edgeChanges = changes.getForEdge('edge-1');
+     *
+     *   // get all changes of a specific type
+     *   const selectChanges = changes.getByType('select');
+     *
+     *   // remove any changes
+     *   selectChanges.forEach((change) => changes.remove(change));
+     *
+     *   // drop every change for a specific edge
+     *   changes.removeForEdge('edge-2');
+     *
+     *   // apply the changes to your edges for full control
+     *   edges = changes.applyTo(edges);
+     *   // and clear changeset after applying, so they don't get applied automatically
+     *   changes.clear();
      * }}
      */
     onedgeschange?: OnEdgesChange<EdgeType>;

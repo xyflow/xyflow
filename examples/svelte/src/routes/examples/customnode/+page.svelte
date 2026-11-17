@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	// TODO: Is this the best way?
 	class background {
 		color: string = $state('#1A192B');
 	}
