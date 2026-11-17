@@ -1,10 +1,12 @@
 import cc from 'classcat';
-import { getEdgeToolbarTransform } from '@xyflow/system';
+import { getEdgeToolbarTransform, getElevatedEdgeZIndex } from '@xyflow/system';
 
 import { EdgeLabelRenderer } from '../../components/EdgeLabelRenderer';
-import { useViewportStore } from '../../hooks/useReactFlowStore';
-import type { EdgeToolbarProps } from './types';
+import { useOptionsStore, useViewportStore } from '../../hooks/useReactFlowStore';
 import { useEdge } from '../../hooks/useEdges';
+import { useInternalNode } from '../../hooks/useNodes';
+import type { Edge } from '../../types';
+import type { EdgeToolbarProps } from './types';
 
 /**
  * This component can render a toolbar or tooltip to one side of a custom edge. This
@@ -22,36 +24,64 @@ import { useEdge } from '../../hooks/useEdges';
  *     <>
  *       <BaseEdge id={id} path={edgePath} />
  *       <EdgeToolbar edgeId={id} x={centerX} y={centerY} isVisible>
- *         <button onClick={() => console.log('edge', id, 'click')}}>Click me</button>
+ *         <button onClick={() => console.log('edge', id, 'click')}>Click me</button>
  *       </EdgeToolbar>
  *     </>
  *   );
  * }
  * ```
  */
-export function EdgeToolbar({
-  edgeId,
+export function EdgeToolbar({ edgeId, isVisible, ...rest }: EdgeToolbarProps) {
+  const edge = useEdge(edgeId);
+  const isActive = typeof isVisible === 'boolean' ? isVisible : edge?.selected;
+
+  if (!isActive || !edge) {
+    return null;
+  }
+
+  return <EdgeToolbarInner edge={edge} {...rest} />;
+}
+
+type EdgeToolbarInnerProps = Omit<EdgeToolbarProps, 'edgeId' | 'isVisible'> & {
+  edge: Edge;
+};
+
+/*
+ * Only mounted while the toolbar is visible, so hidden toolbars don't subscribe
+ * to the viewport or to the source/target nodes.
+ */
+function EdgeToolbarInner({
+  edge,
   x,
   y,
   children,
   className,
   style,
-  isVisible,
   alignX = 'center',
   alignY = 'center',
   ...rest
-}: EdgeToolbarProps) {
-  const edge = useEdge(edgeId);
-  const isActive = typeof isVisible === 'boolean' ? isVisible : edge?.selected;
-  const {
-    transform: [, , zoom],
-  } = useViewportStore();
+}: EdgeToolbarInnerProps) {
+  const zoom = useViewportStore((s) => s.transform[2]);
+  const elevateEdgesOnSelect = useOptionsStore((s) => s.elevateEdgesOnSelect);
+  const zIndexMode = useOptionsStore((s) => s.zIndexMode);
+  const sourceNode = useInternalNode(edge.source);
+  const targetNode = useInternalNode(edge.target);
 
-  if (!isActive) {
-    return null;
-  }
+  // same z-index as the edge (incl. elevation on select and parent nodes).
+  // The label renderer comes after the edges in the DOM, so the toolbar is drawn above
+  // its edge, and nodes on the same level stay above the toolbar.
+  const zIndex =
+    sourceNode && targetNode
+      ? getElevatedEdgeZIndex({
+          selected: edge.selected,
+          zIndex: edge.zIndex,
+          sourceNode,
+          targetNode,
+          elevateOnSelect: elevateEdgesOnSelect,
+          zIndexMode,
+        })
+      : (edge.zIndex ?? 0);
 
-  const zIndex = (edge?.zIndex ?? 0) + 1;
   const transform = getEdgeToolbarTransform(x, y, zoom, alignX, alignY);
 
   return (
@@ -66,7 +96,7 @@ export function EdgeToolbar({
           ...style,
         }}
         className={cc(['react-flow__edge-toolbar', className])}
-        data-id={edge?.id ?? ''}
+        data-id={edge.id}
         {...rest}
       >
         {children}
