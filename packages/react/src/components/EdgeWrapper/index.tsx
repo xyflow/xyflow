@@ -184,7 +184,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
           'react-flow__edge',
           `react-flow__edge-${edgeType}`,
           edge.className,
-          noPanClassName,
+          !edge.pannable && noPanClassName,
           {
             selected: edge.selected,
             animated: edge.animated,
@@ -247,6 +247,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
         {isReconnectable && (
           <EdgeUpdateAnchors<EdgeType>
             edge={edge}
+            noPanClassName={noPanClassName}
             isReconnectable={isReconnectable}
             reconnectRadius={reconnectRadius}
             onReconnect={onReconnect}

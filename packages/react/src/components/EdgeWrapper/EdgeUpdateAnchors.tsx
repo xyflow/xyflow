@@ -16,6 +16,7 @@ type EdgeUpdateAnchorsProps<EdgeType extends Edge = Edge> = {
   edge: EdgeType;
   isReconnectable: boolean | 'source' | 'target';
   reconnectRadius: EdgeWrapperProps['reconnectRadius'];
+  noPanClassName: EdgeWrapperProps['noPanClassName'];
   onReconnect: EdgeWrapperProps<EdgeType>['onReconnect'];
   onReconnectStart: EdgeWrapperProps<EdgeType>['onReconnectStart'];
   onReconnectEnd: EdgeWrapperProps<EdgeType>['onReconnectEnd'];
@@ -26,6 +27,7 @@ type EdgeUpdateAnchorsProps<EdgeType extends Edge = Edge> = {
 export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
   isReconnectable,
   reconnectRadius,
+  noPanClassName,
   edge,
   sourceX,
   sourceY,
@@ -114,6 +116,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
     <>
       {(isReconnectable === true || isReconnectable === 'source') && (
         <EdgeAnchor
+          className={noPanClassName}
           position={sourcePosition}
           centerX={sourceX}
           centerY={sourceY}
@@ -126,6 +129,7 @@ export function EdgeUpdateAnchors<EdgeType extends Edge = Edge>({
       )}
       {(isReconnectable === true || isReconnectable === 'target') && (
         <EdgeAnchor
+          className={noPanClassName}
           position={targetPosition}
           centerX={targetX}
           centerY={targetY}
