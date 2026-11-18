@@ -89,7 +89,7 @@ export type MiniMapProps<NodeType extends Node = Node> = Omit<HTMLAttributes<SVG
   inversePan?: boolean;
   /**
    * Step size for zooming in/out on minimap.
-   * @default 10
+   * @default 1
    */
   zoomStep?: number;
   /**
