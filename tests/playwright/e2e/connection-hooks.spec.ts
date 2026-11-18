@@ -18,4 +18,17 @@ test.describe('React hooks', () => {
     await expect(page.getByTestId('connections')).toBeEmpty();
     await expect(page.getByTestId('connection-events')).toHaveText('connect:ac,disconnect:ab,disconnect:ac');
   });
+
+  test('does not report connection changes when switching to another node', async ({ page }) => {
+    await page.goto('/tests/generic/nodes/observed-node-connections');
+    await expect(page.getByTestId('observed-connections')).toHaveText('ab');
+
+    await page.getByRole('button', { name: 'Observe node c', exact: true }).click();
+    await expect(page.getByTestId('observed-connections')).toHaveText('bc');
+    await expect(page.getByTestId('observed-connection-events')).toBeEmpty();
+
+    await page.getByRole('button', { name: 'Connect a and c', exact: true }).click();
+    await expect(page.getByTestId('observed-connections')).toHaveText('bc,ac');
+    await expect(page.getByTestId('observed-connection-events')).toHaveText('connect:ac');
+  });
 });
