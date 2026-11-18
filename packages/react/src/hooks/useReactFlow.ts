@@ -29,6 +29,12 @@ import type {
 
 const selector = (s: ReactFlowState) => !!s.panZoom;
 
+// a rect without an area (e.g. a hidden or not yet measured node) can't be covered by an overlap
+const isFullyOverlapped = (overlappingArea: number, rect: Rect) => {
+  const area = rect.width * rect.height;
+  return area > 0 && overlappingArea >= area;
+};
+
 /**
  * This hook returns a ReactFlowInstance that can be used to update nodes and edges, manipulate the viewport, or query the current state of the flow.
  *
@@ -227,8 +233,8 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
 
         return (
           partiallyVisible ||
-          overlappingArea >= currNodeRect.width * currNodeRect.height ||
-          overlappingArea >= nodeRect.width * nodeRect.height
+          isFullyOverlapped(overlappingArea, currNodeRect) ||
+          isFullyOverlapped(overlappingArea, nodeRect)
         );
       }) as NodeType[];
     },
@@ -244,9 +250,7 @@ export function useReactFlow<NodeType extends Node = Node, EdgeType extends Edge
       const partiallyVisible = partially && overlappingArea > 0;
 
       return (
-        partiallyVisible ||
-        overlappingArea >= area.width * area.height ||
-        overlappingArea >= nodeRect.width * nodeRect.height
+        partiallyVisible || isFullyOverlapped(overlappingArea, area) || isFullyOverlapped(overlappingArea, nodeRect)
       );
     },
     updateNode,
