@@ -70,7 +70,7 @@ function BackgroundComponent({
         width={scaledGap[0]}
         height={scaledGap[1]}
         patternUnits="userSpaceOnUse"
-        patternTransform={`translate(-${scaledOffset[0]},-${scaledOffset[1]})`}
+        patternTransform={`translate(${-scaledOffset[0]},${-scaledOffset[1]})`}
       >
         {isDots ? (
           <DotPattern radius={scaledSize / 2} className={patternClassName} />
