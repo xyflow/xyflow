@@ -50,24 +50,28 @@ export function useNodeConnections({
     throw new Error(error014);
   }
 
+  const lookupKey = getConnectionLookupKey(currentNodeId, handleType, handleId);
   const prevConnections = useRef<Map<string, NodeConnection> | null>(null);
+  const prevLookupKey = useRef(lookupKey);
 
   const selector = (state: EdgesStore) => {
-    return state.connectionLookup.get(getConnectionLookupKey(currentNodeId, handleType, handleId));
+    return state.connectionLookup.get(lookupKey);
   };
 
   const connections = useEdgesStore(useEqualSelector(selector, areConnectionMapsEqual));
 
   useEffect(() => {
     // @todo discuss if onConnect/onDisconnect should be called when the component mounts/unmounts
-    if (prevConnections.current && prevConnections.current !== connections) {
+    // switching to another node or handle is not a connection change, so the callbacks are not called then either
+    if (prevConnections.current && prevLookupKey.current === lookupKey && prevConnections.current !== connections) {
       const _connections = connections ?? new Map<string, NodeConnection>();
       handleConnectionChange(prevConnections.current, _connections, onDisconnect);
       handleConnectionChange(_connections, prevConnections.current, onConnect);
     }
 
     prevConnections.current = connections ?? new Map<string, NodeConnection>();
-  }, [connections, onConnect, onDisconnect]);
+    prevLookupKey.current = lookupKey;
+  }, [connections, lookupKey, onConnect, onDisconnect]);
 
   return Array.from(connections?.values() ?? []);
 }
