@@ -20,6 +20,17 @@ import type { MiniMapProps } from './types';
 const defaultWidth = 200;
 const defaultHeight = 150;
 
+// the minimap needs the size as a number to calculate its viewBox, so `style` values like '250px' are parsed
+function getDimension(value: CSSProperties['width'], fallback: number): number {
+  if (typeof value === 'number') {
+    return value;
+  }
+
+  const match = typeof value === 'string' ? /^\s*(\d*\.?\d+)(px)?\s*$/.exec(value) : null;
+
+  return match ? Number(match[1]) : fallback;
+}
+
 const filterHidden = (node: Node) => !node.hidden;
 
 const viewportSelector = ({ transform, width, height }: ViewportStore) => ({ transform, width, height });
@@ -111,8 +122,8 @@ function MiniMapComponent<NodeType extends Node = Node>({
     )
   );
 
-  const elementWidth = (style?.width as number) ?? defaultWidth;
-  const elementHeight = (style?.height as number) ?? defaultHeight;
+  const elementWidth = getDimension(style?.width, defaultWidth);
+  const elementHeight = getDimension(style?.height, defaultHeight);
   const scaledWidth = boundingRect.width / elementWidth;
   const scaledHeight = boundingRect.height / elementHeight;
   const viewScale = Math.max(scaledWidth, scaledHeight);
