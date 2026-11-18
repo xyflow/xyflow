@@ -1,6 +1,6 @@
 import type { ZoomTransform } from 'd3-zoom';
 
-import { PanOnScrollMode, type CoordinateExtent, type Transform, type Viewport } from './';
+import { type PanOnScrollMode, type CoordinateExtent, type Transform, type Viewport } from './';
 
 export type OnDraggingChange = (dragging: boolean) => void;
 export type OnTransformChange = (transform: Transform) => void;
@@ -43,15 +43,14 @@ export type PanZoomUpdateOptions = {
   lib: string;
   onTransformChange: OnTransformChange;
   connectionInProgress: boolean;
-  paneClickDistance: number;
-  selectionOnDrag?: boolean;
+  paneDragThreshold: number;
 };
 
 export type PanZoomInstance = {
   update: (params: PanZoomUpdateOptions) => void;
   destroy: () => void;
   getViewport: () => Viewport;
-  setViewport: (viewport: Viewport, options?: PanZoomTransformOptions) => Promise<ZoomTransform | undefined>;
+  setViewport: (viewport: Viewport, options?: PanZoomTransformOptions) => Promise<boolean>;
   setViewportConstrained: (
     viewport: Viewport,
     extent: CoordinateExtent,
@@ -62,5 +61,4 @@ export type PanZoomInstance = {
   scaleTo: (scale: number, options?: PanZoomTransformOptions) => Promise<boolean>;
   scaleBy: (factor: number, options?: PanZoomTransformOptions) => Promise<boolean>;
   syncViewport: (viewport: Viewport) => void;
-  setClickDistance: (distance: number) => void;
 };

@@ -1,5 +1,124 @@
 # @xyflow/system
 
+## 1.0.0
+### Major Changes
+
+
+
+- [#6114](https://github.com/xyflow/xyflow/pull/6114) [`dff4dad`](https://github.com/xyflow/xyflow/commit/dff4dad7e654ac42e49771b3523e703196f72b15) - Align the connection APIs across all frameworks on `NodeConnection`.
+  
+  - Remove `getHandleConnections`. Use `getNodeConnections({ nodeId, type, handleId })` instead: `id` is renamed to `handleId` and `type` is optional.
+  - Add `getNodeConnections` to `useSvelteFlow`.
+  - `HandleConnection` type removed: use `NodeConnection` instead.
+
+
+- [#6117](https://github.com/xyflow/xyflow/pull/6117) [`dae45aa`](https://github.com/xyflow/xyflow/commit/dae45aa8273e6a55ab7e0bed21b5653cf4682e05) - `onConnectEnd` and `onReconnectEnd` now receive `to` in flow coordinates instead of screen coordinates
+
+
+
+- [#6115](https://github.com/xyflow/xyflow/pull/6115) [`b1ad016`](https://github.com/xyflow/xyflow/commit/b1ad01664671544df26b3acc7815626369c33a93) - Replace `paneClickDistance` with `paneDragThreshold` (default `1`). Like `nodeDragThreshold`, the pane only starts panning or selecting once the pointer has moved further than the threshold; otherwise it counts as a click. Works with every mouse button.
+
+
+
+- [#6064](https://github.com/xyflow/xyflow/pull/6064) [`de1e4c5`](https://github.com/xyflow/xyflow/commit/de1e4c5eff3c0961f510df9406919df2a1378da3) - Resolve `PanZoomInstance.setViewport` with `true` when the transition finishes and `false` when it gets interrupted.
+
+
+
+- [#5556](https://github.com/xyflow/xyflow/pull/5556) [`9fcddb8`](https://github.com/xyflow/xyflow/commit/9fcddb8684d094aaa160bd8f3371261cf36bc754) - Remove `nodeClickDistance`. Whether a click on a node fires is now determined solely by whether a drag actually moved the node: clicks are suppressed only after a drag changed node positions. Use `nodeDragThreshold` (and `snapGrid`) to control this.
+
+
+
+- [#5987](https://github.com/xyflow/xyflow/pull/5987) [`615c5f6`](https://github.com/xyflow/xyflow/commit/615c5f6a41340b6474e5a9a8b415ca62233e1ee8) - Rename the measured handle geometry type from `Handle` to `HandleBounds` so it no longer collides with the `<Handle />` component.
+
+
+### Patch Changes
+
+
+
+- [#6109](https://github.com/xyflow/xyflow/pull/6109) [`13bf20a`](https://github.com/xyflow/xyflow/commit/13bf20a596a51580f60457a3069c9c65e779df38) - Call `onConnect` and `onDisconnect` of `useNodeConnections` reliably and keep its result up to date when edges are added, removed, reconnected or replaced.
+
+
+
+- [#6074](https://github.com/xyflow/xyflow/pull/6074) [`5d448e9`](https://github.com/xyflow/xyflow/commit/5d448e9a5b5eb14b1ff2083d642bd38fc4eb250f) - Improve deletion performance for large graphs.
+
+
+
+- [#6119](https://github.com/xyflow/xyflow/pull/6119) [`fbe2ba5`](https://github.com/xyflow/xyflow/commit/fbe2ba54064e443360925eaa4481992435b70fec) - Respect `panOnDrag` when panning with the middle mouse button on nodes, edges and selections.
+
+
+
+- [#5915](https://github.com/xyflow/xyflow/pull/5915) [`96b196f`](https://github.com/xyflow/xyflow/commit/96b196f39a0fd7c94a2f9178c1bd4589375e6b32) - Remove requirement of parent nodes to appear before child nodes in the nodes array
+
+
+
+- [#5927](https://github.com/xyflow/xyflow/pull/5927) [`69dc311`](https://github.com/xyflow/xyflow/commit/69dc31137917e7f09b09d8f769300ec32b709251) - Use 5% as new default padding for `fitView`, and `fitBounds`.
+
+
+
+- [#6029](https://github.com/xyflow/xyflow/pull/6029) [`b872a5b`](https://github.com/xyflow/xyflow/commit/b872a5b38575bfcb754ae7975f648aa62a0835f8) - Improve panning performance by avoiding a full style recalculation when the pane cursor changes.
+
+
+
+- [#6084](https://github.com/xyflow/xyflow/pull/6084) [`1d9b9cd`](https://github.com/xyflow/xyflow/commit/1d9b9cd8b1464e159089355d3864e2d437396ff5) - Fix resizing nodes with a fixed extent & a non-default origin.
+
+
+
+- [#5989](https://github.com/xyflow/xyflow/pull/5989) [`bf27626`](https://github.com/xyflow/xyflow/commit/bf2762661eb8f39168be89727951819ee72a8317) - Prevent jumping nodes when origin node option is used
+
+
+
+- [#6111](https://github.com/xyflow/xyflow/pull/6111) [`5161767`](https://github.com/xyflow/xyflow/commit/5161767ec4593ad24b52cd4502fb1946e2859e7d) - Delete all descendants of a parent node, regardless of their order in `nodes`
+
+
+
+- [#6064](https://github.com/xyflow/xyflow/pull/6064) [`de1e4c5`](https://github.com/xyflow/xyflow/commit/de1e4c5eff3c0961f510df9406919df2a1378da3) - Resolve the promises of animated viewport functions like `fitView` and `setCenter` with `false` when a user interaction or another viewport change interrupts the animation, instead of leaving them pending
+
+
+
+- [#6131](https://github.com/xyflow/xyflow/pull/6131) [`8849014`](https://github.com/xyflow/xyflow/commit/8849014eafa7349d178cd9632d7cba33b7927184) - Narrow `data` by `type` when `NodeProps` receives a union of node types.
+
+
+
+- [#5927](https://github.com/xyflow/xyflow/pull/5927) [`7b52b50`](https://github.com/xyflow/xyflow/commit/7b52b50fe929d41318f0598537bb7a289d577ef2) - Numbers passed to `fitViewOptions.padding` are interpreted as pixel values instead of legacy units. Use percentage values instead (0.1 ≈ 4.5%, 0.5 ≈ 16.7%, 1 ≈ 25%, 2 ≈ 33%)
+
+
+
+- [#5996](https://github.com/xyflow/xyflow/pull/5996) [`885ac9e`](https://github.com/xyflow/xyflow/commit/885ac9e9875075428d71bcf92c3ce3abea85a112) - Performance: Optimize processing of nodes & edges
+
+## 0.0.84
+### Patch Changes
+
+
+
+- [#6097](https://github.com/xyflow/xyflow/pull/6097) [`d150c38`](https://github.com/xyflow/xyflow/commit/d150c38a46c4e6ded900676f4eafbbae60e37a4c) - Don't mutate the internal selection state
+
+
+
+- [#6108](https://github.com/xyflow/xyflow/pull/6108) [`8483a2f`](https://github.com/xyflow/xyflow/commit/8483a2f27d6f856ff595be4239cf736b118318c0) - Ignore `ResizeObserver` entries without a `contentRect` in the zoom pane extent cache, so test setups no longer crash
+
+
+
+- [#6054](https://github.com/xyflow/xyflow/pull/6054) [`c7d0fcb`](https://github.com/xyflow/xyflow/commit/c7d0fcb3372e234c33d2c87bec8d4c8394abab74) - Disconnect the `ResizeObserver`s when a flow unmounts
+
+
+
+- [#6055](https://github.com/xyflow/xyflow/pull/6055) [`9dcbd29`](https://github.com/xyflow/xyflow/commit/9dcbd29a8e597b6f4cd26ebf64f755d2fb96332b) - Keep `reconnectEdge` id replacement when other options are passed
+
+
+
+- [#6036](https://github.com/xyflow/xyflow/pull/6036) [`cba335d`](https://github.com/xyflow/xyflow/commit/cba335d7cdb809fe274591985bfa377ca2e21bcf) - Fix `getSmoothStepPath` bends that render sharper than `borderRadius` when nodes are close to each other
+
+## 0.0.83
+### Patch Changes
+
+
+
+- [#5998](https://github.com/xyflow/xyflow/pull/5998) [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423) - Always fire onResizeEnd after onResizeStart
+
+
+
+- [#5998](https://github.com/xyflow/xyflow/pull/5998) [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423) - Fix incorrect values during resize when shouldResize returns false
+
 ## 0.0.82
 ### Patch Changes
 

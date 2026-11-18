@@ -43,12 +43,7 @@ export type Node<
   >;
 };
 
-// @todo: currently generics for nodes are not really supported
-// let's fix `type: any` when we migrate to Svelte 5
-export type NodeProps<NodeType extends Node = Node> = NodePropsBase<NodeType> & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  type: any;
-};
+export type NodeProps<NodeType extends Node = Node> = NodePropsBase<NodeType>;
 
 export type NodeTypes = Record<
   string,

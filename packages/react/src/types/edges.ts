@@ -16,13 +16,15 @@ import type {
   DefaultEdgeOptionsBase,
   HandleType,
   ConnectionLineType,
-  Handle,
+  HandleBounds,
   EdgePosition,
   StepPathOptions,
   OnError,
   OnReconnect,
   FinalConnectionState,
   XYPosition,
+  ConnectionMode,
+  ZIndexMode,
 } from '@xyflow/system';
 
 import { EdgeTypes, InternalNode, Node } from '.';
@@ -53,7 +55,7 @@ export type EdgeLabelOptions = {
  */
 export type Edge<
   EdgeData extends Record<string, unknown> = Record<string, unknown>,
-  EdgeType extends string | undefined = string | undefined
+  EdgeType extends string | undefined = string | undefined,
 > = EdgeBase<EdgeData, EdgeType> &
   EdgeLabelOptions & {
     style?: CSSProperties;
@@ -96,6 +98,8 @@ type StepEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>
 
 type StraightEdge<EdgeData extends Record<string, unknown> = Record<string, unknown>> = Edge<EdgeData, 'straight'>;
 
+type InferPathOptions<E extends Edge> = E extends { pathOptions?: infer P } ? P : any;
+
 export type BuiltInEdge = SmoothStepEdge | BezierEdge | StepEdge | StraightEdge;
 
 export type EdgeMouseHandler<EdgeType extends Edge = Edge> = (event: ReactMouseEvent, edge: EdgeType) => void;
@@ -125,6 +129,10 @@ export type EdgeWrapperProps<EdgeType extends Edge = Edge> = {
   edgeTypes?: EdgeTypes;
   onError?: OnError;
   disableKeyboardA11y?: boolean;
+  connectionMode: ConnectionMode;
+  elevateEdgesOnSelect: boolean;
+  zIndexMode: ZIndexMode;
+  defaultEdgeOptions?: DefaultEdgeOptions;
 };
 
 /**
@@ -158,8 +166,7 @@ export type EdgeProps<EdgeType extends Edge = Edge> = Pick<
     targetHandleId?: string | null;
     markerStart?: string;
     markerEnd?: string;
-    // @TODO: how can we get better types for pathOptions?
-    pathOptions?: any;
+    pathOptions?: InferPathOptions<EdgeType>;
     interactionWidth?: number;
   };
 
@@ -266,7 +273,7 @@ export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
   /** The node the connection line originates from. */
   fromNode: InternalNode<NodeType>;
   /** The handle on the `fromNode` that the connection line originates from. */
-  fromHandle: Handle;
+  fromHandle: HandleBounds;
   fromX: number;
   fromY: number;
   toX: number;
@@ -279,7 +286,7 @@ export type ConnectionLineComponentProps<NodeType extends Node = Node> = {
    */
   connectionStatus: 'valid' | 'invalid' | null;
   toNode: InternalNode<NodeType> | null;
-  toHandle: Handle | null;
+  toHandle: HandleBounds | null;
   pointer: XYPosition;
 };
 

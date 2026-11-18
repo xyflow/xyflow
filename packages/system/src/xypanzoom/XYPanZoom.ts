@@ -5,10 +5,10 @@ import { interpolateZoom, interpolate } from 'd3-interpolate';
 import {
   type CoordinateExtent,
   type Viewport,
-  PanZoomTransformOptions,
-  PanZoomUpdateOptions,
-  PanZoomParams,
-  PanZoomInstance,
+  type PanZoomTransformOptions,
+  type PanZoomUpdateOptions,
+  type PanZoomParams,
+  type PanZoomInstance,
 } from '../types';
 import { clamp, isNumeric } from '../utils';
 import { getD3Transition, viewportToTransform, wheelDelta } from './utils';
@@ -25,12 +25,26 @@ import { transition } from 'd3-transition';
 
 export type ZoomPanValues = {
   isZoomingOrPanning: boolean;
-  usedRightMouseButton: boolean;
   prevViewport: Viewport;
   mouseButton: number;
   timerId: ReturnType<typeof setTimeout> | undefined;
   panScrollTimeout: ReturnType<typeof setTimeout> | undefined;
   isPanScrolling: boolean;
+  // only set for mouse and touch drags; the drag starts once the pointer moved further than paneDragThreshold
+  pointerDrag: {
+    isTouch: boolean;
+    // identifier of the first touch, used to measure the distance of touch drags
+    touchId: number | null;
+    startX: number;
+    startY: number;
+    startTransform: ZoomTransform;
+    thresholdCrossed: boolean;
+    // d3-zoom reuses the last move event as sourceEvent for programmatic changes during the gesture
+    lastMove: Event | null;
+    // onPanZoomStart was called (can happen before the threshold is crossed, e.g. by a wheel zoom)
+    moveStarted: boolean;
+    dragging: boolean;
+  } | null;
 };
 
 export function XYPanZoom({
@@ -46,21 +60,20 @@ export function XYPanZoom({
 }: PanZoomParams): PanZoomInstance {
   const zoomPanValues: ZoomPanValues = {
     isZoomingOrPanning: false,
-    usedRightMouseButton: false,
     prevViewport: { x: 0, y: 0, zoom: 0 },
     mouseButton: 0,
     timerId: undefined,
     panScrollTimeout: undefined,
     isPanScrolling: false,
+    pointerDrag: null,
   };
   const bbox = domNode.getBoundingClientRect();
 
   /*
    * Cache the pane extent and refresh it from a ResizeObserver. Otherwise d3-zoom falls back to its
    * defaultExtent, which reads clientWidth/clientHeight and forces a synchronous layout while panning
-   * and pinching. The observer is never disconnected on purpose: destroy() also runs to pause zooming
-   * during a user selection, so disconnecting there would leave the cache stale. It becomes unreachable
-   * and is garbage collected with the pane on unmount.
+   * and pinching. The observer stays connected while zooming is paused during a user selection, so the
+   * cache stays fresh, and is disconnected in destroy().
    */
   let cachedExtent: CoordinateExtent = [
     [0, 0],
@@ -70,7 +83,8 @@ export function XYPanZoom({
     typeof ResizeObserver !== 'undefined'
       ? new ResizeObserver((entries) => {
           const entry = entries[0];
-          if (entry) {
+          // test mocks may call back without contentRect
+          if (entry?.contentRect) {
             cachedExtent = [
               [0, 0],
               [entry.contentRect.width, entry.contentRect.height],
@@ -86,7 +100,7 @@ export function XYPanZoom({
     .translateExtent(translateExtent);
   const d3Selection = select(domNode).call(d3ZoomInstance);
 
-  setViewportConstrained(
+  void setViewportConstrained(
     {
       x: viewport.x,
       y: viewport.y,
@@ -106,10 +120,9 @@ export function XYPanZoom({
   async function setTransform(transform: ZoomTransform, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).transform(
-          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
-          transform
-        );
+        d3ZoomInstance
+          ?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom)
+          .transform(getD3Transition(d3Selection, options?.duration, options?.ease, resolve), transform);
       });
     }
 
@@ -135,18 +148,17 @@ export function XYPanZoom({
     lib,
     onTransformChange,
     connectionInProgress,
-    paneClickDistance,
-    selectionOnDrag,
+    paneDragThreshold,
   }: PanZoomUpdateOptions) {
     if (userSelectionActive && !zoomPanValues.isZoomingOrPanning) {
-      destroy();
+      // pause zooming during a user selection
+      d3ZoomInstance.on('zoom', null);
     }
 
     const isPanOnScroll = panOnScroll && !zoomActivationKeyPressed && !userSelectionActive;
 
-    d3ZoomInstance.clickDistance(
-      selectionOnDrag ? Infinity : !isNumeric(paneClickDistance) || paneClickDistance < 0 ? 0 : paneClickDistance
-    );
+    const dragThreshold = isNumeric(paneDragThreshold) && paneDragThreshold > 0 ? paneDragThreshold : 0;
+    d3ZoomInstance.clickDistance(dragThreshold);
 
     const wheelHandler = isPanOnScroll
       ? createPanOnScrollHandler({
@@ -172,6 +184,7 @@ export function XYPanZoom({
     // pan zoom start
     const startHandler = createPanZoomStartHandler({
       zoomPanValues,
+      paneDragThreshold: dragThreshold,
       onDraggingChange,
       onPanZoomStart,
     });
@@ -180,9 +193,11 @@ export function XYPanZoom({
     // pan zoom
     const panZoomHandler = createPanZoomHandler({
       zoomPanValues,
-      panOnDrag,
-      onPaneContextMenu: !!onPaneContextMenu,
+      d3Selection,
+      paneDragThreshold: dragThreshold,
+      onPanZoomStart,
       onPanZoom,
+      onDraggingChange,
       onTransformChange,
     });
     d3ZoomInstance.on('zoom', panZoomHandler);
@@ -228,6 +243,7 @@ export function XYPanZoom({
 
   function destroy() {
     d3ZoomInstance.on('zoom', null);
+    extentResizeObserver?.disconnect();
   }
 
   async function setViewportConstrained(
@@ -248,15 +264,13 @@ export function XYPanZoom({
   async function setViewport(viewport: Viewport, options?: PanZoomTransformOptions) {
     const nextTransform = viewportToTransform(viewport);
 
-    await setTransform(nextTransform, options);
-
-    return nextTransform;
+    return setTransform(nextTransform, options);
   }
 
   function syncViewport(viewport: Viewport) {
     if (d3Selection) {
       const nextTransform = viewportToTransform(viewport);
-      const currentTransform = d3Selection.property('__zoom');
+      const currentTransform = d3Selection.property('__zoom') as ZoomTransform;
 
       if (
         currentTransform.k !== viewport.zoom ||
@@ -278,10 +292,9 @@ export function XYPanZoom({
   async function scaleTo(zoom: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleTo(
-          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
-          zoom
-        );
+        d3ZoomInstance
+          ?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom)
+          .scaleTo(getD3Transition(d3Selection, options?.duration, options?.ease, resolve), zoom);
       });
     }
 
@@ -291,10 +304,9 @@ export function XYPanZoom({
   async function scaleBy(factor: number, options?: PanZoomTransformOptions) {
     if (d3Selection) {
       return new Promise<boolean>((resolve) => {
-        d3ZoomInstance?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom).scaleBy(
-          getD3Transition(d3Selection, options?.duration, options?.ease, () => resolve(true)),
-          factor
-        );
+        d3ZoomInstance
+          ?.interpolate(options?.interpolate === 'linear' ? interpolate : interpolateZoom)
+          .scaleBy(getD3Transition(d3Selection, options?.duration, options?.ease, resolve), factor);
       });
     }
 
@@ -309,11 +321,6 @@ export function XYPanZoom({
     d3ZoomInstance?.translateExtent(translateExtent);
   }
 
-  function setClickDistance(distance: number) {
-    const validDistance = !isNumeric(distance) || distance < 0 ? 0 : distance;
-    d3ZoomInstance?.clickDistance(validDistance);
-  }
-
   return {
     update,
     destroy,
@@ -325,6 +332,5 @@ export function XYPanZoom({
     setScaleExtent,
     setTranslateExtent,
     syncViewport,
-    setClickDistance,
   };
 }

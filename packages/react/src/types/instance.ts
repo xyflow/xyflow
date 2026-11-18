@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-namespace */
-import type { HandleConnection, HandleType, NodeConnection, Rect, Viewport } from '@xyflow/system';
+import type { HandleType, NodeConnection, Rect, Viewport } from '@xyflow/system';
 import type { Node, Edge, ViewportHelperFunctions, InternalNode, FitView } from '.';
 
 export type ReactFlowJsonObject<NodeType extends Node = Node, EdgeType extends Edge = Edge> = {
@@ -157,6 +156,13 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
     options?: { replace: boolean }
   ) => void;
   /**
+   * Changes the parent of a node.
+   *
+   * @param nodeId - id of the node to change the parent of
+   * @param parentId - id of the new parent
+   */
+  changeParent: (nodeId: string, parentId: string | null) => void;
+  /**
    * Updates an edge.
    *
    * @param id - id of the edge to update
@@ -194,24 +200,6 @@ export type GeneralHelpers<NodeType extends Node = Node, EdgeType extends Edge =
    * @returns the bounds of the given nodes
    */
   getNodesBounds: (nodes: (NodeType | InternalNode | string)[]) => Rect;
-  /**
-   * Get all the connections of a handle belonging to a specific node. The type parameter be either
-   * `'source'` or `'target'`.
-   * @deprecated
-   * @param type - handle type 'source' or 'target'
-   * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
-   * @param nodeId - the node id the handle belongs to
-   * @returns an array with handle connections
-   */
-  getHandleConnections: ({
-    type,
-    id,
-    nodeId,
-  }: {
-    type: HandleType;
-    nodeId: string;
-    id?: string | null;
-  }) => HandleConnection[];
   /**
    * Gets all connections to a node. Can be filtered by handle type and id.
    * @param type - handle type 'source' or 'target'

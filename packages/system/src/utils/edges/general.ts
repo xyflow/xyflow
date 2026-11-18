@@ -1,5 +1,13 @@
-import { Connection, InternalNodeBase, Transform, errorMessages, isEdgeBase, EdgeBase, ZIndexMode } from '../..';
-import type { OnError } from '../../types/general';
+import {
+  type Connection,
+  type InternalNodeBase,
+  type Transform,
+  errorMessages,
+  isEdgeBase,
+  type EdgeBase,
+  type ZIndexMode,
+  OnError,
+} from '../..';
 import { getOverlappingArea, boxToRect, nodeToBox, getBoundsOfBoxes } from '../general';
 
 // this is used for straight edges and simple smoothstep edges (LTR, RTL, BTT, TTB)
@@ -229,11 +237,12 @@ export const reconnectEdge = <EdgeType extends EdgeBase>(
   }
 
   const edgeIdGenerator = options.getEdgeId || getEdgeId;
+  const shouldReplaceId = options.shouldReplaceId ?? true;
 
   // Remove old edge and create the new edge with parameters of old edge.
   const edge = {
     ...rest,
-    id: options.shouldReplaceId ? edgeIdGenerator(newConnection) : oldEdgeId,
+    id: shouldReplaceId ? edgeIdGenerator(newConnection) : oldEdgeId,
     source: newConnection.source,
     target: newConnection.target,
     sourceHandle: newConnection.sourceHandle,

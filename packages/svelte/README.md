@@ -1,5 +1,7 @@
-![readme-header](https://user-images.githubusercontent.com/2857535/279691030-dd853bef-88c5-433b-a51a-10294dc82d2b.svg#gh-light-mode-only)
-![readme-header-dark](https://user-images.githubusercontent.com/2857535/279691048-accf12e0-da89-4c79-8d66-dee0c43585cd.svg#gh-dark-mode-only)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/2857535/279691048-accf12e0-da89-4c79-8d66-dee0c43585cd.svg">
+  <img alt="Svelte Flow" src="https://user-images.githubusercontent.com/2857535/279691030-dd853bef-88c5-433b-a51a-10294dc82d2b.svg">
+</picture>
 
 <div align="center">
 
@@ -7,8 +9,6 @@
 ![npm downloads](https://img.shields.io/npm/dt/@xyflow/svelte?color=%23FF0072&label=downloads)
 
 Svelte Flow is a highly customizable component for building interactive graphs and node-based editors, built by the creators of React Flow.
-
-☣️ **Svelte Flow is still alpha and currently under heavy development. The API is relatively stable but some things might change.** ☣️
 
 [🚀 Getting Started](https://svelteflow.dev/learn) | [📖 Documentation](https://svelteflow.dev/api-reference/svelte-flow) | [📺 Examples](https://svelteflow.dev/examples/overview) | [☎️ Discord](https://discord.gg/RVmnytFmGW)
 
@@ -42,7 +42,7 @@ You only need a few lines to get a fully interactive (e.g. select and drag nodes
 
   // you need to import the styles for Svelte Flow to work
   // if you just want to load the basic styleds, you can import '@xyflow/svelte/dist/base.css'
-  import '@xyflow/svelte/dist/style.css';
+  import '@xyflow/svelte/style.css';
 
   // We are using writables for the nodes and edges to sync them easily. When a user drags a node for example, Svelte Flow updates its position. This also makes it easier to update nodes in user land.
   const nodes = writable([
@@ -104,12 +104,6 @@ You can now access the examples under http://127.0.0.1:5173
 ## Maintainers
 
 Svelte Flow is maintained by the team behind [xyflow](https://xyflow.com). If you need help or want to talk to us about a collaboration, reach out through our [contact form](https://xyflow.com/contact) or by joining our [Discord Server](https://discord.gg/Bqt6xrs).
-
-- Christopher • [Twitter](https://twitter.com/chrtze) • [Github](https://github.com/chrtze)
-- Hayleigh • [Twitter](https://twitter.com/hayleighdotdev) • [Github](https://github.com/hayleigh-dot-dev)
-- John • [Website](https://johnrobbdesign.com/) • [Mastodon](https://mastodon.social/@johnrobbjr)
-- Moritz • [Twitter](https://twitter.com/moklick) • [Github](https://github.com/moklick)
-- Peter • [Github](https://github.com/peterkogo)
 
 # License
 

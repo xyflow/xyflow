@@ -1,28 +1,28 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { onDestroy, setContext } from 'svelte';
 
-  import { createStore, key } from '$lib/store/index.js';
+  import { createStore, key } from '#lib/store/index.js';
   import type { SvelteFlowProviderProps } from './types.js';
-  import type { ProviderContext, SvelteFlowStore } from '$lib/store/types.js';
-  import type { Node, Edge } from '$lib/types/index.js';
+  import type { ProviderContext, SvelteFlowStore } from '#lib/store/types.js';
+  import type { Node, Edge } from '#lib/types/index.js';
 
   let { children }: SvelteFlowProviderProps = $props();
 
-  let store = $state.raw(
-    createStore<NodeType, EdgeType>({
-      props: {},
-      nodes: [],
-      edges: []
-    })
-  );
+  const initialStore = createStore<NodeType, EdgeType>({
+    props: {},
+    nodes: [],
+    edges: []
+  });
+
+  let store = $state.raw(initialStore);
 
   setContext(key, {
     provider: true,
     getStore() {
       return store;
     },
-    setStore: (newStore: SvelteFlowStore<NodeType, EdgeType>) => {
-      store = newStore;
+    setStore: (newStore: SvelteFlowStore<NodeType, EdgeType> | null) => {
+      store = newStore ?? initialStore;
     }
   } satisfies ProviderContext<NodeType, EdgeType>);
 

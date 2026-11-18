@@ -2,9 +2,11 @@ import type { ShortcutModifierDefinition } from '@svelte-put/shortcut';
 import type {
   FitViewOptionsBase,
   XYPosition,
-  Handle,
+  HandleBounds,
   Connection,
-  OnBeforeDeleteBase
+  OnBeforeDeleteBase,
+  EdgeChangeset,
+  NodeChangeset
 } from '@xyflow/system';
 
 import type { Node } from './nodes.js';
@@ -16,8 +18,8 @@ export type KeyDefinition = string | KeyDefinitionObject;
 
 export type ConnectionData = {
   connectionPosition: XYPosition | null;
-  connectionStartHandle: Handle | null;
-  connectionEndHandle: Handle | null;
+  connectionStartHandle: HandleBounds | null;
+  connectionEndHandle: HandleBounds | null;
   connectionStatus: string | null;
 };
 
@@ -60,6 +62,14 @@ export type OnSelectionChange<
   NodeType extends Node = Node,
   EdgeType extends Edge = Edge
 > = (params: { nodes: NodeType[]; edges: EdgeType[] }) => void;
+
+export type OnNodesChange<NodeType extends Node = Node> = (
+  changes: NodeChangeset<NodeType>
+) => void;
+
+export type OnEdgesChange<EdgeType extends Edge = Edge> = (
+  changes: EdgeChangeset<EdgeType>
+) => void;
 
 /**
  * Svelte Flow is independent and entirely funded by its users.

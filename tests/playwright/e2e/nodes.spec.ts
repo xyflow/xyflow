@@ -18,10 +18,12 @@ test.describe('Nodes', () => {
     });
 
     test('selecting multiple nodes with shift drag', async ({ page }) => {
-      let nodeSelection = page.locator(
-        FRAMEWORK === 'react' ? '.react-flow__nodesselection' : '.svelte-flow__selection'
+      const nodeSelection = page.locator(
+        FRAMEWORK === 'svelte' ? '.svelte-flow__selection' : `.${FRAMEWORK}-flow__nodesselection`,
       );
-      let selection = page.locator(FRAMEWORK === 'react' ? '.react-flow__selection' : '.svelte-flow__selection');
+      const selection = page.locator(
+        FRAMEWORK === 'svelte' ? '.svelte-flow__selection' : `.${FRAMEWORK}-flow__selection`,
+      );
 
       const nodes = page.locator(`.${FRAMEWORK}-flow__node`);
 
@@ -165,6 +167,23 @@ test.describe('Nodes', () => {
       });
 
       expect(transformBeforeMove).not.toMatch(transformAfterDragHandleMove);
+    });
+  });
+
+  test.describe('keyboard', () => {
+    test('moving a selected node with arrow keys announces its new position', async ({ page }) => {
+      const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="Node-1"]'));
+      const liveRegion = page.locator(`[id^="${FRAMEWORK}-flow__aria-live"]`);
+
+      await node.focus();
+      await page.keyboard.press('Enter');
+      await expect(node).toHaveClass(/selected/);
+
+      await page.keyboard.press('ArrowRight');
+      await expect(liveRegion).toHaveText('Moved selected node right. New position, x: 5, y: 0');
+
+      await page.keyboard.press('ArrowDown');
+      await expect(liveRegion).toHaveText('Moved selected node down. New position, x: 5, y: 5');
     });
   });
 

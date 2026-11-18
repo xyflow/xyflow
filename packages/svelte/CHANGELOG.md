@@ -1,5 +1,197 @@
 # @xyflow/svelte
 
+## 2.0.2
+### Patch Changes
+
+
+
+- [#6130](https://github.com/xyflow/xyflow/pull/6130) [`d0d3fd7`](https://github.com/xyflow/xyflow/commit/d0d3fd70a575866a2434f87d3088e3a0649cc7c6) - Announce the new position, instead of the previous one, when moving a selected node with the arrow keys.
+
+
+
+- [#6151](https://github.com/xyflow/xyflow/pull/6151) [`3a587bf`](https://github.com/xyflow/xyflow/commit/3a587bff92284b2382f6e4e622cc80c589eb2d1d) - Fix effect-on-teardown error. Reuse initial store when Svelte Flow unmounts within a provider.
+
+## 2.0.1
+### Patch Changes
+
+
+
+- [#6142](https://github.com/xyflow/xyflow/pull/6142) [`270f947`](https://github.com/xyflow/xyflow/commit/270f94798db59a2e175906f8805e8ecc4fa1c6ed) - Show a nicer readme on npm :)
+
+
+
+- [#6144](https://github.com/xyflow/xyflow/pull/6144) [`40affcd`](https://github.com/xyflow/xyflow/commit/40affcd1b5f09063c971d1af2ec86b0c618009b9) - Add missing `addNodes` and `addEdges` utils.
+
+## 2.0.0
+### Major Changes
+
+
+
+- [#6114](https://github.com/xyflow/xyflow/pull/6114) [`dff4dad`](https://github.com/xyflow/xyflow/commit/dff4dad7e654ac42e49771b3523e703196f72b15) - Align the connection APIs across all frameworks on `NodeConnection`.
+  
+  - Remove `getHandleConnections`. Use `getNodeConnections({ nodeId, type, handleId })` instead: `id` is renamed to `handleId` and `type` is optional.
+  - Add `getNodeConnections` to `useSvelteFlow`.
+  - `HandleConnection` type removed: use `NodeConnection` instead.
+
+
+- [#6082](https://github.com/xyflow/xyflow/pull/6082) [`70615a3`](https://github.com/xyflow/xyflow/commit/70615a3baf95a70f53f76b98ea3e9d401f75e019) - Removed setters from `useNodes` and `useEdges` in favor of better change handling via `updateNode` & `updateEdge` in `useSvelteFlow`.
+
+
+
+- [#6117](https://github.com/xyflow/xyflow/pull/6117) [`dae45aa`](https://github.com/xyflow/xyflow/commit/dae45aa8273e6a55ab7e0bed21b5653cf4682e05) - `onConnectEnd` and `onReconnectEnd` now receive `to` in flow coordinates instead of screen coordinates
+
+
+
+- [#5965](https://github.com/xyflow/xyflow/pull/5965) [`14093fa`](https://github.com/xyflow/xyflow/commit/14093fa3c6bc6d70d567e83989a01fe1409f8dfd) - Removed `useColorMode` hook.
+
+
+
+- [#5915](https://github.com/xyflow/xyflow/pull/5915) [`96b196f`](https://github.com/xyflow/xyflow/commit/96b196f39a0fd7c94a2f9178c1bd4589375e6b32) - Remove requirement of parent nodes to appear before child nodes in the nodes array
+
+
+
+- [#5927](https://github.com/xyflow/xyflow/pull/5927) [`69dc311`](https://github.com/xyflow/xyflow/commit/69dc31137917e7f09b09d8f769300ec32b709251) - Use 5% as new default padding for `fitView`, and `fitBounds`.
+
+
+
+- [#6115](https://github.com/xyflow/xyflow/pull/6115) [`b1ad016`](https://github.com/xyflow/xyflow/commit/b1ad01664671544df26b3acc7815626369c33a93) - Replace `paneClickDistance` with `paneDragThreshold` (default `1`). Like `nodeDragThreshold`, the pane only starts panning or selecting once the pointer has moved further than the threshold; otherwise it counts as a click. Works with every mouse button.
+
+
+
+- [#5843](https://github.com/xyflow/xyflow/pull/5843) [`9eb6929`](https://github.com/xyflow/xyflow/commit/9eb692981e9aab4f32a658e30655bd39169f0d35) - Use system color mode by default, add `forceColorMode` to opt-out.
+
+
+
+- [#5556](https://github.com/xyflow/xyflow/pull/5556) [`9fcddb8`](https://github.com/xyflow/xyflow/commit/9fcddb8684d094aaa160bd8f3371261cf36bc754) - Remove `nodeClickDistance`. Whether a click on a node fires is now determined solely by whether a drag actually moved the node: clicks are suppressed only after a drag changed node positions. Use `nodeDragThreshold` (and `snapGrid`) to control this.
+
+
+
+- [#5987](https://github.com/xyflow/xyflow/pull/5987) [`615c5f6`](https://github.com/xyflow/xyflow/commit/615c5f6a41340b6474e5a9a8b415ca62233e1ee8) - Rename the measured handle geometry type from `Handle` to `HandleBounds` so it no longer collides with the `<Handle />` component.
+
+
+
+- [#5927](https://github.com/xyflow/xyflow/pull/5927) [`7b52b50`](https://github.com/xyflow/xyflow/commit/7b52b50fe929d41318f0598537bb7a289d577ef2) - Numbers passed to `fitViewOptions.padding` are interpreted as pixel values instead of legacy units. Use percentage values instead (0.1 ≈ 4.5%, 0.5 ≈ 16.7%, 1 ≈ 25%, 2 ≈ 33%)
+
+
+
+- [#5944](https://github.com/xyflow/xyflow/pull/5944) [`5ff09ef`](https://github.com/xyflow/xyflow/commit/5ff09ef7773bc577f05d4d785da13ea080ecfed0) - Pass `NodeChangeset`/`EdgeChangeset` class to `onNodesChange`/`onEdgesChange` or `onnodeschange`/`onedgeschange`.
+
+
+
+- [#5967](https://github.com/xyflow/xyflow/pull/5967) [`257d5d7`](https://github.com/xyflow/xyflow/commit/257d5d77732ab3cf5540b81d8013cc258edf2010) - Rename `useStore` to `useSvelteFlowStore`
+
+
+
+- [#5842](https://github.com/xyflow/xyflow/pull/5842) [`968d801`](https://github.com/xyflow/xyflow/commit/968d8014e245422f7dce397522bc8ac5bd9b8d69) - Hooks do not require to be $derived anymore and accept a function parameter instead.
+
+
+### Minor Changes
+
+
+
+- [#5866](https://github.com/xyflow/xyflow/pull/5866) [`1a77ebf`](https://github.com/xyflow/xyflow/commit/1a77ebf95a824b130eba0f8e6395ba83fe085d40) - Add style import from `@xyflow/svelte/style.css`.
+
+
+
+- [#5939](https://github.com/xyflow/xyflow/pull/5939) [`621f5d9`](https://github.com/xyflow/xyflow/commit/621f5d9d3d95c7514edfe699465ece508e89780a) - Add `changeParent` to `useReactFlow`, `useSvelteFlow` and `useVueFlow`, to easily change the parent of a node without calculating a new position.
+
+
+
+- [#6082](https://github.com/xyflow/xyflow/pull/6082) [`4bdeda0`](https://github.com/xyflow/xyflow/commit/4bdeda01733f337a1ae23053ebd3e9e6e22c08bb) - Control and monitor any changes to your nodes & edges via `onnodeschange` & `onedgeschange`.
+  Clearing a changeset with `changes.clear()` in `onnodeschange` prevents automatic application of changes. Use it to manually manage changes to nodes & edges.
+
+
+- [#5844](https://github.com/xyflow/xyflow/pull/5844) [`861a6be`](https://github.com/xyflow/xyflow/commit/861a6be8fff691b071d808ebb62bc9135d2eb70b) - Exported styles now live in `@layer xyflow`.
+
+
+
+- [#6029](https://github.com/xyflow/xyflow/pull/6029) [`b872a5b`](https://github.com/xyflow/xyflow/commit/b872a5b38575bfcb754ae7975f648aa62a0835f8) - Improve panning performance by avoiding a full style recalculation when the pane cursor changes.
+
+
+
+- [#5993](https://github.com/xyflow/xyflow/pull/5993) [`901b0e4`](https://github.com/xyflow/xyflow/commit/901b0e4ccbcfdd4921c5875dd9e43bdec2d06935) - Add `xy-theme.css` stylesheet (`@xyflow/<lib>/xy-theme.css`) that ships the xyflow default theme on top of `base.css`.
+
+
+
+- [#5939](https://github.com/xyflow/xyflow/pull/5939) [`846d686`](https://github.com/xyflow/xyflow/commit/846d68663f1ba7447fbe87d08a41a1fd742d0e25) - Add `useNode` and `useEdge` hooks for subscribing to changes to specific nodes & edges
+
+
+### Patch Changes
+
+
+
+- [#5866](https://github.com/xyflow/xyflow/pull/5866) [`7da73f2`](https://github.com/xyflow/xyflow/commit/7da73f24b6d695b2ec83a36ad2c834075b046f21) - Include source maps and src folder in package. "Go to definition" now links to the source code instead of the generated types
+
+
+
+- [#6064](https://github.com/xyflow/xyflow/pull/6064) [`de1e4c5`](https://github.com/xyflow/xyflow/commit/de1e4c5eff3c0961f510df9406919df2a1378da3) - Stop an interrupted animated `fitView` from running again on every later nodes change, for example while dragging a node
+
+
+
+- [#6084](https://github.com/xyflow/xyflow/pull/6084) [`1d9b9cd`](https://github.com/xyflow/xyflow/commit/1d9b9cd8b1464e159089355d3864e2d437396ff5) - Fix resizing nodes with a fixed extent & a non-default origin.
+
+
+
+- [#6115](https://github.com/xyflow/xyflow/pull/6115) [`b1ad016`](https://github.com/xyflow/xyflow/commit/b1ad01664671544df26b3acc7815626369c33a93) - Fire the pane context menu event when right-click panning is enabled (`panOnDrag` includes `2`).
+
+
+
+- [#5989](https://github.com/xyflow/xyflow/pull/5989) [`bf27626`](https://github.com/xyflow/xyflow/commit/bf2762661eb8f39168be89727951819ee72a8317) - Prevent jumping nodes when origin node option is used
+
+
+
+- [#6064](https://github.com/xyflow/xyflow/pull/6064) [`de1e4c5`](https://github.com/xyflow/xyflow/commit/de1e4c5eff3c0961f510df9406919df2a1378da3) - Resolve the promises of animated viewport functions like `fitView` and `setCenter` with `false` when a user interaction or another viewport change interrupts the animation, instead of leaving them pending
+
+
+
+- [#6131](https://github.com/xyflow/xyflow/pull/6131) [`8849014`](https://github.com/xyflow/xyflow/commit/8849014eafa7349d178cd9632d7cba33b7927184) - Narrow `data` by `type` when `NodeProps` receives a union of node types.
+
+
+
+- [#5996](https://github.com/xyflow/xyflow/pull/5996) [`885ac9e`](https://github.com/xyflow/xyflow/commit/885ac9e9875075428d71bcf92c3ce3abea85a112) - Performance: Optimize processing of nodes & edges
+
+- Updated dependencies [[`dff4dad`](https://github.com/xyflow/xyflow/commit/dff4dad7e654ac42e49771b3523e703196f72b15), [`dae45aa`](https://github.com/xyflow/xyflow/commit/dae45aa8273e6a55ab7e0bed21b5653cf4682e05), [`13bf20a`](https://github.com/xyflow/xyflow/commit/13bf20a596a51580f60457a3069c9c65e779df38), [`5d448e9`](https://github.com/xyflow/xyflow/commit/5d448e9a5b5eb14b1ff2083d642bd38fc4eb250f), [`fbe2ba5`](https://github.com/xyflow/xyflow/commit/fbe2ba54064e443360925eaa4481992435b70fec), [`96b196f`](https://github.com/xyflow/xyflow/commit/96b196f39a0fd7c94a2f9178c1bd4589375e6b32), [`69dc311`](https://github.com/xyflow/xyflow/commit/69dc31137917e7f09b09d8f769300ec32b709251), [`b872a5b`](https://github.com/xyflow/xyflow/commit/b872a5b38575bfcb754ae7975f648aa62a0835f8), [`1d9b9cd`](https://github.com/xyflow/xyflow/commit/1d9b9cd8b1464e159089355d3864e2d437396ff5), [`b1ad016`](https://github.com/xyflow/xyflow/commit/b1ad01664671544df26b3acc7815626369c33a93), [`de1e4c5`](https://github.com/xyflow/xyflow/commit/de1e4c5eff3c0961f510df9406919df2a1378da3), [`bf27626`](https://github.com/xyflow/xyflow/commit/bf2762661eb8f39168be89727951819ee72a8317), [`9fcddb8`](https://github.com/xyflow/xyflow/commit/9fcddb8684d094aaa160bd8f3371261cf36bc754), [`5161767`](https://github.com/xyflow/xyflow/commit/5161767ec4593ad24b52cd4502fb1946e2859e7d), [`615c5f6`](https://github.com/xyflow/xyflow/commit/615c5f6a41340b6474e5a9a8b415ca62233e1ee8), [`de1e4c5`](https://github.com/xyflow/xyflow/commit/de1e4c5eff3c0961f510df9406919df2a1378da3), [`8849014`](https://github.com/xyflow/xyflow/commit/8849014eafa7349d178cd9632d7cba33b7927184), [`7b52b50`](https://github.com/xyflow/xyflow/commit/7b52b50fe929d41318f0598537bb7a289d577ef2), [`885ac9e`](https://github.com/xyflow/xyflow/commit/885ac9e9875075428d71bcf92c3ce3abea85a112)]:
+  - @xyflow/system@1.0.0
+
+## 1.7.1
+### Patch Changes
+
+
+
+- [#6106](https://github.com/xyflow/xyflow/pull/6106) [`b65d451`](https://github.com/xyflow/xyflow/commit/b65d451fdb2dc0039de30024b93044e1a38070c0) - Prevent excessive repainting of nodes during pan & zoom
+
+
+
+- [#6068](https://github.com/xyflow/xyflow/pull/6068) [`7813eeb`](https://github.com/xyflow/xyflow/commit/7813eebf06ca22dadbeb7bb919ff8cd8388adcab) - Cancel a pending click connection when clicking the pane and call `onClickConnectEnd` / `onclickconnectend`
+
+
+
+- [#6090](https://github.com/xyflow/xyflow/pull/6090) [`b235ea0`](https://github.com/xyflow/xyflow/commit/b235ea03677fa500b9474aedf0bdd35abaf76b78) - Respect `nodeOrigin` in `isNodeIntersecting` and `getIntersectingNodes` when you pass a node object instead of `{ id }`
+
+
+
+- [#6054](https://github.com/xyflow/xyflow/pull/6054) [`c7d0fcb`](https://github.com/xyflow/xyflow/commit/c7d0fcb3372e234c33d2c87bec8d4c8394abab74) - Disconnect the `ResizeObserver`s when a flow unmounts
+
+- Updated dependencies [[`d150c38`](https://github.com/xyflow/xyflow/commit/d150c38a46c4e6ded900676f4eafbbae60e37a4c), [`8483a2f`](https://github.com/xyflow/xyflow/commit/8483a2f27d6f856ff595be4239cf736b118318c0), [`c7d0fcb`](https://github.com/xyflow/xyflow/commit/c7d0fcb3372e234c33d2c87bec8d4c8394abab74), [`9dcbd29`](https://github.com/xyflow/xyflow/commit/9dcbd29a8e597b6f4cd26ebf64f755d2fb96332b), [`cba335d`](https://github.com/xyflow/xyflow/commit/cba335d7cdb809fe274591985bfa377ca2e21bcf)]:
+  - @xyflow/system@0.0.84
+
+## 1.7.0
+### Minor Changes
+
+
+
+- [#5998](https://github.com/xyflow/xyflow/pull/5998) [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423) - Always fire onresizeend after onresizestart
+
+
+### Patch Changes
+
+
+
+- [#5998](https://github.com/xyflow/xyflow/pull/5998) [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423) - Fix incorrect values during resize when shouldResize returns false
+
+- Updated dependencies [[`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423), [`91a4adf`](https://github.com/xyflow/xyflow/commit/91a4adf4f901d2c59ed77486bc0d3ec6d3843423)]:
+  - @xyflow/system@0.0.83
+
 ## 1.6.6
 ### Patch Changes
 

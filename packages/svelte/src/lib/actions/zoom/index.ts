@@ -9,7 +9,6 @@ import {
 } from '@xyflow/system';
 
 type ZoomParams = {
-  viewport: Viewport;
   initialViewport: Viewport;
   minZoom: number;
   maxZoom: number;
@@ -35,8 +34,7 @@ type ZoomParams = {
   noWheelClassName: string;
   userSelectionActive: boolean;
   lib: string;
-  paneClickDistance: number;
-  selectionOnDrag?: boolean;
+  paneDragThreshold: number;
   onTransformChange: (transform: Transform) => void;
   onDraggingChange: (dragging: boolean) => void;
   connectionInProgress: boolean;
@@ -84,6 +82,9 @@ export default function zoom(domNode: Element, params: ZoomParams) {
   return {
     update(params: ZoomParams) {
       panZoomInstance.update(params);
+    },
+    destroy() {
+      panZoomInstance.destroy();
     }
   };
 }

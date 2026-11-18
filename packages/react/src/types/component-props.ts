@@ -257,15 +257,13 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /** This event handler gets called when mouse leaves the pane. */
   onPaneMouseLeave?: (event: ReactMouseEvent) => void;
   /**
-   * Distance that the mouse can move between mousedown/up that will trigger a click.
-   * @default 0
+   * Distance in pixels the pointer has to move before dragging the pane starts panning or a selection.
+   * If the pointer moves less, the gesture is treated as a click: `onPaneClick` (or `onPaneContextMenu`
+   * when panning with the right mouse button) is called and the viewport does not move.
+   * This applies to every mouse button that is enabled via `panOnDrag` and to `selectionOnDrag`.
+   * @default 1
    */
-  paneClickDistance?: number;
-  /**
-   * Distance that the mouse can move between mousedown/up that will trigger a click.
-   * @default 0
-   */
-  nodeClickDistance?: number;
+  paneDragThreshold?: number;
   /**
    * This handler is called before nodes or edges are deleted, allowing the deletion to be aborted
    * by returning `false` or modified by returning updated nodes and edges.
@@ -340,6 +338,7 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   selectionKeyCode?: KeyCode | null;
   /**
    * Select multiple elements with a selection box, without pressing down `selectionKey`.
+   * Has no effect when the left mouse button pans the viewport (`panOnDrag` is `true` or includes `0`).
    * @default false
    */
   selectionOnDrag?: boolean;
@@ -573,9 +572,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
    * When you typically call `fitView` on a `ReactFlowInstance`, you can provide an object of
    * options to customize its behavior. This prop lets you do the same for the initial `fitView`
    * call.
+   * @default { padding: '5%' }
    * @example
    * const fitViewOptions = {
-   *  padding: 0.1,
+   *  padding: '5%',
    *  includeHiddenNodes: false,
    *  minZoom: 0.1,
    *  maxZoom: 1,
@@ -615,7 +615,9 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   elevateNodesOnSelect?: boolean;
   /**
    * Enabling this option will raise the z-index of edges when they are selected.
-   * @default false
+   * This also ensures that, when multiple reconnectable edges share a handle,
+   * the selected edge's repoint anchor is the one that receives the drag.
+   * @default true
    */
   elevateEdgesOnSelect?: boolean;
   /**
@@ -685,11 +687,10 @@ export interface ReactFlowProps<NodeType extends Node = Node, EdgeType extends E
   /** Sets a fixed height for the flow. */
   height?: number;
   /**
-   * Controls color scheme used for styling the flow.
-   * @default 'light'
-   * @example 'system' | 'light' | 'dark'
+   * Forces a color scheme on the flow container via class name, overriding the system default.
+   * Page-level theming is typically done by setting `data-theme` on `<html>`.
    */
-  colorMode?: ColorMode;
+  forceColorMode?: ColorMode;
   /**
    * If set `true`, some debug information will be logged to the console like which events are fired.
    * @default false
