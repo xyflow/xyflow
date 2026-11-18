@@ -1,0 +1,126 @@
+.keyboard-outline {
+  display: grid;
+  grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+  color: #111;
+  background: #fff;
+}
+
+.keyboard-outline__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  border-right: 1px solid #eee;
+  overflow: auto;
+}
+
+.keyboard-outline h1,
+.keyboard-outline h2,
+.keyboard-outline h3,
+.keyboard-outline p {
+  margin: 0;
+}
+
+.keyboard-outline h1 {
+  font-size: 20px;
+}
+.keyboard-outline h2 {
+  font-size: 16px;
+}
+.keyboard-outline h3 {
+  font-size: 13px;
+}
+.keyboard-outline p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.keyboard-outline__sidebar > div:first-child {
+  display: grid;
+  gap: 8px;
+}
+.keyboard-outline__steps {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+  margin: 0;
+}
+.keyboard-outline__connections {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.keyboard-outline__details {
+  display: grid;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+.keyboard-outline__demo-controls {
+  display: grid;
+  gap: 8px;
+}
+.keyboard-outline__canvas {
+  min-width: 0;
+  min-height: 420px;
+}
+
+/* Matches the default nodes' quiet surface, border, and radius. The canvas uses
+   @xyflow/react/dist/style.css, with its built-in Controls and Background. */
+.keyboard-outline__button {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #b1b1b7;
+  border-radius: 3px;
+  color: inherit;
+  background: #fff;
+  text-align: left;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.keyboard-outline__button:hover {
+  background: #f8f8f8;
+}
+.keyboard-outline__button[aria-pressed='true'] {
+  border-color: #1a192b;
+  box-shadow: 0 0 0 1px #1a192b;
+  font-weight: 600;
+}
+.keyboard-outline__button:focus-visible,
+.keyboard-outline .react-flow__node:focus-visible {
+  outline: 2px solid #0041d0;
+  outline-offset: 3px;
+}
+.keyboard-outline__button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.keyboard-outline__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .keyboard-outline {
+    grid-template-columns: minmax(0, 1fr);
+    overflow: auto;
+  }
+  .keyboard-outline__sidebar {
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid #eee;
+  }
+  .keyboard-outline__canvas {
+    height: 460px;
+  }
+}
