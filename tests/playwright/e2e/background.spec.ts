@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+import { FRAMEWORK } from './constants';
+
 test.describe('Background', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/examples/backgrounds');
@@ -20,5 +22,17 @@ test.describe('Background', () => {
     const pattern = page.locator('#pattern-flow-d1');
 
     await expect(pattern).toHaveAttribute('patternTransform', 'translate(-52,-52)');
+  });
+});
+
+test.describe('Background with a negative offset', () => {
+  test.skip(FRAMEWORK !== 'react', 'React generic test');
+
+  test('creates a valid pattern transform', async ({ page }) => {
+    await page.goto('/tests/generic/background/negative-offset');
+    // gap=20, offset=-25 at zoom 1: offset + half the gap = -25 + 10 = -15
+    const pattern = page.locator(`.${FRAMEWORK}-flow__background pattern`);
+
+    await expect(pattern).toHaveAttribute('patternTransform', 'translate(15,15)');
   });
 });
