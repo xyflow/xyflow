@@ -1,4 +1,5 @@
-import type { HandleBounds, Position, XYPosition } from '@xyflow/system';
+import type { ConnectionLineType, HandleBounds, Position, XYPosition } from '@xyflow/system';
+import type { CSSProperties } from 'vue';
 import type { InternalNode, Node } from './node';
 
 export type ConnectionStatus = 'valid' | 'invalid';
@@ -28,6 +29,10 @@ export interface ConnectionLineProps<NodeType extends Node = Node> {
   toNode: InternalNode<NodeType> | null;
   /** the handle the connection currently ends on (not the DOM element), or `null` */
   toHandle: HandleBounds | null;
+  /** the `connectionLineStyle` passed to `<VueFlow>` */
+  connectionLineStyle?: CSSProperties;
+  /** the `connectionLineType` passed to `<VueFlow>` */
+  connectionLineType: ConnectionLineType;
   /** marker url */
   markerStart?: string;
   /** marker url */
