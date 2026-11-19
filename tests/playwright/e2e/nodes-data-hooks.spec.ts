@@ -23,4 +23,10 @@ test.describe('useNodesData', () => {
     await expect(page.getByTestId('node-data')).toHaveText('updated');
     await expect(page.getByTestId('nodes-data')).toHaveText('a:updated,b:');
   });
+
+  test('returns null when there is no node id to look up', async ({ page }) => {
+    await page.goto('/tests/generic/nodes/data-updates');
+    await expect(page.getByTestId('node-data')).toHaveText('initial');
+    await expect(page.getByTestId('source-node-data')).toHaveText('null');
+  });
 });
