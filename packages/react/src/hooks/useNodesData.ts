@@ -32,7 +32,7 @@ export function useNodesData<NodeType extends Node = Node>(
 ): DistributivePick<NodeType, 'id' | 'type' | 'data'>[];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useNodesData(nodeIds: string | string[]): any {
-  const isSingleId = typeof nodeIds === 'string';
+  const isSingleId = !Array.isArray(nodeIds);
   const { optionsStore, nodesStore } = useReactFlowStoreApi();
   const ids = useShallow((value: string | string[]) => new Set(typeof value === 'string' ? [value] : value))(nodeIds);
   const subscribe = (onStoreChange: () => void) => optionsStore.getState().pubSub.subscribeToNodes(ids, onStoreChange);
