@@ -216,8 +216,22 @@ function getPoints({
   return [pathPoints, centerX, centerY, defaultOffsetX, defaultOffsetY];
 }
 
-function getBend(a: XYPosition, b: XYPosition, c: XYPosition, size: number): string {
-  const bendSize = Math.min(distance(a, b) / 2, distance(b, c) / 2, size);
+/*
+ * A segment between two bends is shared by both of them, so each bend may only use half of it.
+ * A segment that ends in the source or target point belongs to this bend alone and can be used completely,
+ * otherwise the radius would shrink with the distance between the nodes instead of matching borderRadius.
+ */
+function getBend(
+  a: XYPosition,
+  b: XYPosition,
+  c: XYPosition,
+  size: number,
+  aIsEndpoint = false,
+  cIsEndpoint = false
+): string {
+  const maxBendA = aIsEndpoint ? distance(a, b) : distance(a, b) / 2;
+  const maxBendC = cIsEndpoint ? distance(b, c) : distance(b, c) / 2;
+  const bendSize = Math.min(maxBendA, maxBendC, size);
   const { x, y } = b;
 
   // no bend
@@ -294,7 +308,7 @@ export function getSmoothStepPath({
   let path = `M${points[0].x} ${points[0].y}`;
 
   for (let i = 1; i < points.length - 1; i++) {
-    path += getBend(points[i - 1], points[i], points[i + 1], borderRadius);
+    path += getBend(points[i - 1], points[i], points[i + 1], borderRadius, i === 1, i === points.length - 2);
   }
 
   path += `L${points[points.length - 1].x} ${points[points.length - 1].y}`;
