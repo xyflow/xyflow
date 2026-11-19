@@ -115,6 +115,35 @@ test.describe('Nodes', () => {
       expect(transformBeforeMove).not.toMatch(transformAfterMove);
     });
 
+    test('dragging one node of a selection moves the whole selection', async ({ page }) => {
+      const nodes = page.locator(`.${FRAMEWORK}-flow__node`);
+      await expect(nodes.first()).toHaveCSS('visibility', 'visible');
+      const nodeBox = (await nodes.first().boundingBox())!;
+
+      await page.keyboard.down('Shift');
+      await page.mouse.move(nodeBox.x - 150, nodeBox.y - 25);
+      await page.mouse.down();
+      await page.mouse.move(nodeBox.x + 275, nodeBox.y + 200);
+      await page.mouse.up();
+      await page.keyboard.up('Shift');
+
+      await expect(nodes.first()).toHaveClass(/selected/);
+      await expect(nodes.nth(1)).toHaveClass(/selected/);
+
+      const transforms = () => nodes.evaluateAll((elements: HTMLElement[]) => elements.map((element) => element.style.transform));
+      const transformsBeforeMove = await transforms();
+
+      await page.mouse.move(nodeBox.x + nodeBox.width / 2, nodeBox.y + nodeBox.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(nodeBox.x + nodeBox.width / 2 + 80, nodeBox.y + nodeBox.height / 2 + 60, { steps: 5 });
+      await page.mouse.up();
+
+      const transformsAfterMove = await transforms();
+      const moved = transformsBeforeMove.filter((transform, index) => transform !== transformsAfterMove[index]);
+
+      expect(moved.length).toBeGreaterThan(1);
+    });
+
     test.describe('touch', () => {
       test.use({ hasTouch: true });
 
