@@ -115,6 +115,40 @@ test.describe('Nodes', () => {
       expect(transformBeforeMove).not.toMatch(transformAfterMove);
     });
 
+    test.describe('touch', () => {
+      test.use({ hasTouch: true });
+
+      test('dragging a node with a touch gesture', async ({ page, context, browserName }) => {
+        test.skip(browserName !== 'chromium', 'touch gestures are dispatched through CDP');
+
+        const node = page.locator(`.${FRAMEWORK}-flow__node`).first();
+        await expect(node).toHaveCSS('visibility', 'visible');
+
+        const transformBeforeMove = await node.evaluate((element) => element.style.transform);
+
+        const box = (await node.boundingBox())!;
+        const x = box.x + box.width / 2;
+        const y = box.y + box.height / 2;
+
+        const cdp = await context.newCDPSession(page);
+        const touch = (type: string, pointerX: number, pointerY: number) =>
+          cdp.send('Input.dispatchTouchEvent', {
+            type,
+            touchPoints: type === 'touchEnd' ? [] : [{ x: pointerX, y: pointerY, id: 1, radiusX: 10, radiusY: 10, force: 1 }],
+          });
+
+        await touch('touchStart', x, y);
+        for (let step = 1; step <= 6; step++) {
+          await touch('touchMove', x + step * 12, y + step * 8);
+        }
+        await touch('touchEnd', x + 72, y + 48);
+
+        const transformAfterMove = await node.evaluate((element) => element.style.transform);
+
+        expect(transformBeforeMove).not.toMatch(transformAfterMove);
+      });
+    });
+
     test('draggable=false prevents dragging', async ({ page }) => {
       const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="notDraggable"]'));
       await expect(node).toHaveCSS('visibility', 'visible');

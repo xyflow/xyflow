@@ -178,12 +178,15 @@ export function useDrag(params: UseDragParams) {
 
   watch(
     [
-      dragInstance,
+      // getters, not the refs themselves: a shallow ref source makes `watch` fire on every trigger even
+      // when the value is unchanged, and re-binding mid-gesture drops an in-flight touch drag (d3 keeps
+      // touch listeners on the element, mouse listeners on the window, so only touch notices)
+      () => dragInstance.value,
       () => store.noDragClassName,
       () => toValue(dragHandle),
       () => toValue(selectable),
       () => toValue(disabled),
-      el,
+      () => el.value,
     ],
     ([instance, noDragClassName, handleSelector, isSelectable, isDisabled, nodeEl]) => {
       if (isDisabled || !nodeEl || !instance) {
