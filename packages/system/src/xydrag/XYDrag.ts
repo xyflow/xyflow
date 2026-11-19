@@ -465,6 +465,8 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
 
   function destroy() {
     d3Selection?.on('.drag', null);
+    d3Selection = null;
+    domNode = undefined;
   }
 
   return {
