@@ -17,6 +17,7 @@ import {
   NodeChangeset,
   EdgeChangeset,
   pointToRendererPoint,
+  areSetsEqual,
   type ConnectionState,
   type Transform,
 } from '@xyflow/system';
@@ -136,6 +137,16 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
          * relevant for internal React Flow operations.
          */
 
+        let prevSelectedNodeIds: Set<string> | null = null;
+        if (nodesSelectionActive) {
+          prevSelectedNodeIds = new Set();
+          for (const [id, node] of nodeLookup) {
+            if (node.selected) {
+              prevSelectedNodeIds.add(id);
+            }
+          }
+        }
+
         const { nodesInitialized, hasSelectedNodes, updatedNodes } = adoptUserNodes(nodes, nodeLookup, parentLookup, {
           nodeOrigin,
           nodeExtent,
@@ -144,7 +155,20 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
           zIndexMode,
         });
 
-        const nextNodesSelectionActive = nodesSelectionActive && hasSelectedNodes;
+        let nextNodesSelectionActive = nodesSelectionActive && hasSelectedNodes;
+
+        if (nextNodesSelectionActive && prevSelectedNodeIds) {
+          const nextSelectedNodeIds = new Set<string>();
+          for (const userNode of nodes) {
+            if (userNode.selected) {
+              nextSelectedNodeIds.add(userNode.id);
+            }
+          }
+
+          if (!areSetsEqual(prevSelectedNodeIds, nextSelectedNodeIds)) {
+            nextNodesSelectionActive = false;
+          }
+        }
 
         if (fitViewQueued && nodesInitialized) {
           void resolveFitView();
