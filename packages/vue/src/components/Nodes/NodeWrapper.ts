@@ -368,7 +368,7 @@ const NodeWrapper = defineComponent({
         );
 
         // announce the position after the move, including snapping and extent clamping
-        const positionAbsolute = nodeUpdates.find(update => update.id === node.id)?.internals.positionAbsolute;
+        const positionAbsolute = nodeUpdates.get(node.id)?.internals.positionAbsolute;
 
         if (!positionAbsolute) {
           return;
