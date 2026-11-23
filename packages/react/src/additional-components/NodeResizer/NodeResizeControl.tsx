@@ -18,6 +18,7 @@ import {
 } from '@xyflow/system';
 
 import { useReactFlowStoreApi, useViewportStore } from '../../hooks/useReactFlowStore';
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect';
 import { useNodeId } from '../../contexts/NodeIdContext';
 import type { ResizeControlProps, ResizeControlLineProps } from './types';
 
@@ -58,6 +59,12 @@ function ResizeControl({
 
   const resizer = useRef<XYResizerInstance | null>(null);
   const controlPosition = position ?? defaultPositions[variant];
+  const callbacks = useRef({ onResizeStart, onResize, onResizeEnd, shouldResize });
+
+  // Rebinding the D3 drag listeners would interrupt an active touch gesture.
+  useIsomorphicLayoutEffect(() => {
+    callbacks.current = { onResizeStart, onResize, onResizeEnd, shouldResize };
+  }, [onResizeStart, onResize, onResizeEnd, shouldResize]);
 
   useEffect(() => {
     if (!resizeControlRef.current || !id) {
@@ -179,10 +186,10 @@ function ResizeControl({
       },
       keepAspectRatio,
       resizeDirection,
-      onResizeStart,
-      onResize,
-      onResizeEnd,
-      shouldResize,
+      onResizeStart: (...args) => callbacks.current.onResizeStart?.(...args),
+      onResize: (...args) => callbacks.current.onResize?.(...args),
+      onResizeEnd: (...args) => callbacks.current.onResizeEnd?.(...args),
+      shouldResize: (...args) => callbacks.current.shouldResize?.(...args) ?? true,
     });
 
     return () => {
@@ -195,10 +202,6 @@ function ResizeControl({
     maxWidth,
     maxHeight,
     keepAspectRatio,
-    onResizeStart,
-    onResize,
-    onResizeEnd,
-    shouldResize,
     id,
     resizeDirection,
     optionsStore,
