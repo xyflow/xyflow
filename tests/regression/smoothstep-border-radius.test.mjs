@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { getSmoothStepPath, Position } from '../../packages/system/dist/esm/index.mjs';
+import { getSmoothStepPath, Position } from '../../packages/system/dist/index.js';
 
 const BORDER_RADIUS = 20;
 const OFFSET = 40;
