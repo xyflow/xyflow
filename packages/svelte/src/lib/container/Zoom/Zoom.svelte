@@ -37,6 +37,10 @@
       onInitCalled = true;
     }
   });
+
+  $effect(() => {
+    store.panZoom?.syncViewport(store.viewport);
+  });
 </script>
 
 <div
