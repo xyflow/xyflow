@@ -156,7 +156,7 @@ test.describe('Nodes', () => {
       await node.press('ArrowRight');
       await expect(page.locator('body')).not.toHaveAttribute('data-node-move-event');
     });
-    
+
     test('keyboard movement does not fire after the focused node is deselected', async ({ page }) => {
       test.skip(FRAMEWORK !== 'react', 'onNodeMove is a React Flow callback');
       const node = page.locator('.react-flow__node[data-id="Node-1"]');
