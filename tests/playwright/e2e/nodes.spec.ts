@@ -91,6 +91,97 @@ test.describe('Nodes', () => {
 
       await expect(locator).not.toHaveClass(/selected/);
     });
+
+    test('selection box remains active while dragging the selected nodes', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'react', 'The React selection rectangle has its own drag handler');
+
+      const nodes = page.locator('.react-flow__node');
+      const selection = page.locator('.react-flow__nodesselection-rect');
+
+      await expect(nodes.first()).toBeVisible();
+      const nodeBox = await nodes.first().boundingBox();
+      expect(nodeBox).not.toBeNull();
+
+      // 1. Marquee select multiple nodes
+      await page.keyboard.down('Shift');
+      await page.mouse.move(nodeBox!.x - 150, nodeBox!.y - 25);
+      await page.mouse.down();
+      await page.mouse.move(nodeBox!.x + 275, nodeBox!.y + 200);
+      await page.mouse.up();
+      await page.keyboard.up('Shift');
+
+      await expect(nodes.first()).toHaveClass(/selected/);
+      await expect(nodes.nth(1)).toHaveClass(/selected/);
+      await expect(selection).toBeVisible();
+
+      const boxBeforeDrag = await selection.boundingBox();
+      expect(boxBeforeDrag).not.toBeNull();
+
+      const selectionCenter = {
+        x: boxBeforeDrag!.x + boxBeforeDrag!.width / 2,
+        y: boxBeforeDrag!.y + boxBeforeDrag!.height / 2,
+      };
+
+      // 2. Drag the selection box
+      await page.mouse.move(selectionCenter.x, selectionCenter.y);
+      await page.mouse.down();
+      await page.mouse.move(selectionCenter.x + 80, selectionCenter.y + 60);
+
+      // 3. Verify selection box remains visible and mounted during active drag
+      await expect(selection).toBeVisible();
+      const boxDuringDrag = await selection.boundingBox();
+      expect(boxDuringDrag).not.toBeNull();
+      expect(boxDuringDrag!.x).toBeGreaterThan(boxBeforeDrag!.x);
+      expect(boxDuringDrag!.y).toBeGreaterThan(boxBeforeDrag!.y);
+
+      // 4. Release drag and verify selection box remains visible at final position
+      await page.mouse.up();
+      await expect(selection).toBeVisible();
+      const boxAfterDrag = await selection.boundingBox();
+      expect(boxAfterDrag).not.toBeNull();
+      expect(boxAfterDrag!.x).toBeGreaterThan(boxBeforeDrag!.x);
+      expect(boxAfterDrag!.y).toBeGreaterThan(boxBeforeDrag!.y);
+    });
+
+    test('resets stale selection bounding box when selected nodes are replaced programmatically (#6156)', async ({
+      page,
+    }) => {
+      test.skip(FRAMEWORK !== 'react', 'Issue #6156 specific to React Flow NodesSelection bounding box');
+
+      await page.goto('/examples/node-selection-bug');
+
+      const initialNode = page.locator('.react-flow__node').first();
+      await expect(initialNode).toBeVisible();
+
+      const box = await initialNode.boundingBox();
+      expect(box).not.toBeNull();
+
+      // 1. Marquee select initial node
+      await page.keyboard.down('Shift');
+      await page.mouse.move(box!.x - 50, box!.y - 50);
+      await page.mouse.down();
+      await page.mouse.move(box!.x + box!.width + 50, box!.y + box!.height + 50);
+      await page.mouse.up();
+      await page.keyboard.up('Shift');
+
+      await expect(initialNode).toHaveClass(/selected/);
+      const selectionRect = page.locator('.react-flow__nodesselection-rect');
+      await expect(selectionRect).toBeVisible();
+
+      // 2. Programmatically replace selected nodes with newly pasted nodes (without canvas click)
+      await page.getByRole('button', { name: 'Click me to add nodes that are already selected.' }).click();
+
+      // 3. Verify new nodes are added and marked selected
+      const nodes = page.locator('.react-flow__node');
+      await expect(nodes).toHaveCount(3);
+      await expect(nodes.nth(1)).toHaveClass(/selected/);
+      await expect(nodes.nth(2)).toHaveClass(/selected/);
+      await expect(nodes.first()).not.toHaveClass(/selected/);
+
+      // 4. Verify selection bounding box no longer exists around new nodes (#6156)
+      await expect(selectionRect).not.toBeVisible();
+      await expect(selectionRect).toHaveCount(0);
+    });
   });
 
   test.describe('dragging', () => {
