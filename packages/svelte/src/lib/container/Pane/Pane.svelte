@@ -11,18 +11,6 @@
     };
   }
 
-  export function toggleSelected<Item extends Node | Edge>(ids: Set<string>) {
-    return (item: Item) => {
-      const isSelected = ids.has(item.id);
-
-      if (!!item.selected !== isSelected) {
-        return { ...item, selected: isSelected };
-      }
-
-      return item;
-    };
-  }
-
   function isSetEqual(a: Set<string>, b: Set<string>) {
     if (a.size !== b.size) {
       return false;
@@ -47,19 +35,21 @@
     calcAutoPan,
     pointToRendererPoint,
     rendererPointToPoint,
+    getSelectionChanges,
+    isLeftClickPan,
     type XYPosition,
     type ConnectionState,
     type FinalConnectionState,
     type Optional
   } from '@xyflow/system';
 
-  import type { Node, Edge } from '$lib/types/index.js';
+  import type { Node, Edge } from '#lib/types/index.js';
   import type { PaneProps } from './types.js';
 
   let {
     store = $bindable(),
     panOnDrag = true,
-    paneClickDistance = 1,
+    paneDragThreshold = 1,
     selectionOnDrag,
     autoPanOnSelection = true,
     onpaneclick,
@@ -80,10 +70,9 @@
   /* eslint-enable svelte/prefer-svelte-reactivity */
 
   let panOnDragActive = $derived(store.panActivationKeyPressed || panOnDrag);
+  let selectionOnDragActive = $derived(!!selectionOnDrag && !isLeftClickPan(panOnDragActive));
   let isSelecting = $derived(
-    store.selectionKeyPressed ||
-      !!store.selectionRect ||
-      (selectionOnDrag && panOnDragActive !== true)
+    store.selectionKeyPressed || !!store.selectionRect || selectionOnDragActive
   );
   let isSelectionEnabled = $derived(
     store.elementsSelectable && (isSelecting || store.selectionRectMode === 'user')
@@ -114,7 +103,7 @@
       !eventTargetIsContainer && !!(event.target as HTMLElement).closest('.nokey');
 
     const isSelectionActive =
-      (selectionOnDrag && eventTargetIsContainer) || store.selectionKeyPressed;
+      (selectionOnDragActive && eventTargetIsContainer) || store.selectionKeyPressed;
 
     if (
       isNoKeyEvent ||
@@ -206,11 +195,11 @@
 
     // this prevents unnecessary updates while updating the selection rectangle
     if (!isSetEqual(prevSelectedNodeIds, selectedNodeIds)) {
-      store.nodes = store.nodes.map(toggleSelected(selectedNodeIds));
+      store.queueNodeChanges(getSelectionChanges(store.nodeLookup, selectedNodeIds));
     }
 
     if (!isSetEqual(prevSelectedEdgeIds, selectedEdgeIds)) {
-      store.edges = store.edges.map(toggleSelected(selectedEdgeIds));
+      store.queueEdgeChanges(getSelectionChanges(store.edgeLookup, selectedEdgeIds));
     }
 
     store.selectionRectMode = 'user';
@@ -261,7 +250,7 @@
     ]);
 
     if (!selectionInProgress) {
-      const requiredDistance = store.selectionKeyPressed ? 0 : paneClickDistance;
+      const requiredDistance = store.selectionKeyPressed ? 0 : paneDragThreshold;
       const distance = Math.hypot(mousePos.x - screenStart.x, mousePos.y - screenStart.y);
       if (distance <= requiredDistance) {
         return;

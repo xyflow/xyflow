@@ -9,7 +9,7 @@
 		type Edge
 	} from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 	import CustomMiniMapNode from './CustomMiniMapNode.svelte';
 
 	let nodes = $state.raw<Node[]>([]);

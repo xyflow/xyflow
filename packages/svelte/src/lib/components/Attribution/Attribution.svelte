@@ -1,7 +1,7 @@
 <script lang="ts">
   import { handleAttributionWarning } from '@xyflow/system';
 
-  import { Panel } from '$lib/container/Panel/index.js';
+  import { Panel } from '#lib/container/Panel/index.js';
   import type { AttributionProps } from './types.js';
 
   let { proOptions, position = 'bottom-right' }: AttributionProps = $props();

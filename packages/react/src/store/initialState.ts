@@ -11,12 +11,29 @@ import {
   initialConnection,
   CoordinateExtent,
   defaultAriaLabelConfig,
+  defaultFitViewPadding,
   ZIndexMode,
+  type ConnectionLookup,
+  type EdgeLookup,
+  type ParentLookup,
 } from '@xyflow/system';
 
 const devWarn = createDevWarn('React Flow', 'https://reactflow.dev/');
 
-import type { Edge, FitViewOptions, InternalNode, Node, ReactFlowStore } from '../types';
+import type {
+  Edge,
+  FitViewOptions,
+  InternalNode,
+  Node,
+  ReactFlowStore,
+  ViewportStore,
+  ConnectionStore,
+  NodesStore,
+  EdgesStore,
+  SelectionStore,
+} from '../types';
+
+import { PubSub } from './pubsub';
 
 const getInitialState = ({
   nodes,
@@ -46,11 +63,18 @@ const getInitialState = ({
   nodeOrigin?: NodeOrigin;
   nodeExtent?: CoordinateExtent;
   zIndexMode?: ZIndexMode;
-} = {}): ReactFlowStore => {
+} = {}): {
+  optionsStore: ReactFlowStore;
+  viewportStore: ViewportStore;
+  connectionStore: ConnectionStore;
+  nodesStore: NodesStore;
+  edgesStore: EdgesStore;
+  selectionStore: SelectionStore;
+} => {
   const nodeLookup = new Map<string, InternalNode>();
-  const parentLookup = new Map();
-  const connectionLookup = new Map();
-  const edgeLookup = new Map();
+  const parentLookup: ParentLookup<InternalNode> = new Map();
+  const connectionLookup: ConnectionLookup = new Map();
+  const edgeLookup: EdgeLookup<Edge> = new Map();
 
   const storeEdges = defaultEdges ?? edges ?? [];
   const storeNodes = defaultNodes ?? nodes ?? [];
@@ -77,113 +101,117 @@ const getInitialState = ({
       height,
       minZoom,
       maxZoom,
-      fitViewOptions?.padding ?? 0.1
+      fitViewOptions?.padding ?? defaultFitViewPadding
     );
     transform = [x, y, zoom];
   }
 
   return {
-    rfId: '1',
-    width: width ?? 0,
-    height: height ?? 0,
-    transform,
-    nodes: storeNodes,
-    nodesInitialized,
-    nodeLookup,
-    parentLookup,
-    edges: storeEdges,
-    edgeLookup,
-    connectionLookup,
-    onNodesChange: null,
-    onEdgesChange: null,
-    hasDefaultNodes: defaultNodes !== undefined,
-    hasDefaultEdges: defaultEdges !== undefined,
-    panZoom: null,
-    minZoom,
-    maxZoom,
-    translateExtent: infiniteExtent,
-    nodeExtent: storeNodeExtent,
-    nodesSelectionActive: false,
-    userSelectionActive: false,
-    userSelectionRect: null,
-    connectionMode: ConnectionMode.Strict,
-    domNode: null,
-    paneDragging: false,
-    noPanClassName: 'nopan',
-    nodeOrigin: storeNodeOrigin,
-    nodeDragThreshold: 1,
-    connectionDragThreshold: 1,
+    optionsStore: {
+      rfId: '1',
+      onNodesChange: null,
+      onEdgesChange: null,
+      hasDefaultNodes: defaultNodes !== undefined,
+      hasDefaultEdges: defaultEdges !== undefined,
+      panZoom: null,
+      minZoom,
+      maxZoom,
+      translateExtent: infiniteExtent,
+      nodeExtent: storeNodeExtent,
+      nodesSelectionActive: false,
+      userSelectionActive: false,
+      connectionMode: ConnectionMode.Strict,
+      domNode: null,
+      noPanClassName: 'nopan',
+      nodeOrigin: storeNodeOrigin,
+      nodeDragThreshold: 1,
+      connectionDragThreshold: 1,
+      snapGrid: [15, 15],
+      snapToGrid: false,
+      nodesDraggable: true,
+      nodesConnectable: true,
+      nodesFocusable: true,
+      edgesFocusable: true,
+      edgesReconnectable: true,
+      elementsSelectable: true,
+      elevateNodesOnSelect: true,
+      elevateEdgesOnSelect: true,
+      selectNodesOnDrag: true,
+      multiSelectionActive: false,
+      fitViewQueued: fitView ?? false,
+      fitViewOptions,
+      fitViewResolver: null,
+      connectOnClick: true,
+      ariaLiveMessage: '',
+      autoPanOnConnect: true,
+      autoPanOnNodeDrag: true,
+      autoPanOnNodeFocus: true,
+      autoPanSpeed: 15,
+      connectionRadius: 20,
+      onError: devWarn,
+      isValidConnection: undefined,
+      onSelectionChangeHandlers: [],
+      debug: false,
+      ariaLabelConfig: defaultAriaLabelConfig,
+      zIndexMode,
+      onNodesChangeMiddlewareMap: new Map(),
+      onEdgesChangeMiddlewareMap: new Map(),
+      pubSub: new PubSub(),
 
-    snapGrid: [15, 15],
-    snapToGrid: false,
+      defaultEdgeOptions: undefined,
 
-    nodesDraggable: true,
-    nodesConnectable: true,
-    nodesFocusable: true,
-    edgesFocusable: true,
-    edgesReconnectable: true,
-    elementsSelectable: true,
-    elevateNodesOnSelect: true,
-    elevateEdgesOnSelect: true,
-    selectNodesOnDrag: true,
+      onNodesDelete: undefined,
+      onEdgesDelete: undefined,
+      onDelete: undefined,
+      onBeforeDelete: undefined,
 
-    multiSelectionActive: false,
+      onViewportChangeStart: undefined,
+      onViewportChange: undefined,
+      onViewportChangeEnd: undefined,
 
-    fitViewQueued: fitView ?? false,
-    fitViewOptions,
-    fitViewResolver: null,
+      onNodeDragStart: undefined,
+      onNodeDrag: undefined,
+      onNodeDragStop: undefined,
 
-    connection: { ...initialConnection },
-    connectionClickStartHandle: null,
-    connectOnClick: true,
+      onSelectionDragStart: undefined,
+      onSelectionDrag: undefined,
+      onSelectionDragStop: undefined,
 
-    ariaLiveMessage: '',
-    autoPanOnConnect: true,
-    autoPanOnNodeDrag: true,
-    autoPanOnNodeFocus: true,
-    autoPanSpeed: 15,
+      onMoveStart: undefined,
+      onMove: undefined,
+      onMoveEnd: undefined,
 
-    connectionRadius: 20,
-    onError: devWarn,
-    isValidConnection: undefined,
-    onSelectionChangeHandlers: [],
+      onConnect: undefined,
+      onConnectStart: undefined,
+      onConnectEnd: undefined,
 
-    lib: 'react',
-    debug: false,
-    ariaLabelConfig: defaultAriaLabelConfig,
-    zIndexMode,
-    defaultEdgeOptions: undefined,
-
-    onNodesChangeMiddlewareMap: new Map(),
-    onEdgesChangeMiddlewareMap: new Map(),
-
-    onNodesDelete: undefined,
-    onEdgesDelete: undefined,
-    onDelete: undefined,
-    onBeforeDelete: undefined,
-
-    onViewportChangeStart: undefined,
-    onViewportChange: undefined,
-    onViewportChangeEnd: undefined,
-
-    onNodeDragStart: undefined,
-    onNodeDrag: undefined,
-    onNodeDragStop: undefined,
-
-    onSelectionDragStart: undefined,
-    onSelectionDrag: undefined,
-    onSelectionDragStop: undefined,
-
-    onMoveStart: undefined,
-    onMove: undefined,
-    onMoveEnd: undefined,
-
-    onConnect: undefined,
-    onConnectStart: undefined,
-    onConnectEnd: undefined,
-
-    onClickConnectStart: undefined,
-    onClickConnectEnd: undefined,
+      onClickConnectStart: undefined,
+      onClickConnectEnd: undefined,
+    },
+    viewportStore: {
+      paneDragging: false,
+      width: width ?? 0,
+      height: height ?? 0,
+      transform,
+    },
+    connectionStore: {
+      connection: { ...initialConnection },
+      connectionClickStartHandle: null,
+    },
+    nodesStore: {
+      nodes: storeNodes,
+      nodesInitialized,
+      nodeLookup,
+      parentLookup,
+    },
+    edgesStore: {
+      edges: storeEdges,
+      edgeLookup,
+      connectionLookup,
+    },
+    selectionStore: {
+      userSelectionRect: null,
+    },
   };
 };
 

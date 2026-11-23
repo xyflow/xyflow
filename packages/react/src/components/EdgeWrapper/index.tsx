@@ -1,6 +1,5 @@
-import { useState, useMemo, useRef, type KeyboardEvent, useCallback, JSX, memo } from 'react';
+import { useState, useRef, useMemo, type KeyboardEvent, JSX, memo } from 'react';
 import cc from 'classcat';
-import { shallow } from 'zustand/shallow';
 import {
   getMarkerId,
   elementSelectionKeys,
@@ -10,7 +9,9 @@ import {
   XYHandle,
 } from '@xyflow/system';
 
-import { useStoreApi, useStore } from '../../hooks/useStore';
+import { useInternalNode } from '../../hooks/useNodes';
+import { useEdge } from '../../hooks/useEdges';
+import { useReactFlowStoreApi } from '../../hooks/useReactFlowStore';
 import { ARIA_EDGE_DESC_KEY } from '../A11yDescriptions';
 import { builtinEdgeTypes, nullPosition } from './utils';
 import { EdgeReconnectContext, type EdgeReconnectHandler } from '../../contexts/EdgeReconnectContext';
@@ -37,9 +38,13 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   noPanClassName,
   onError,
   disableKeyboardA11y,
+  connectionMode,
+  elevateEdgesOnSelect,
+  zIndexMode,
+  defaultEdgeOptions,
 }: EdgeWrapperProps<EdgeType>): JSX.Element | null {
-  let edge = useStore((s) => s.edgeLookup.get(id)!) as EdgeType;
-  const defaultEdgeOptions = useStore((s) => s.defaultEdgeOptions);
+  let edge = useEdge<EdgeType>(id)!;
+
   edge = defaultEdgeOptions ? { ...defaultEdgeOptions, ...edge } : edge;
 
   let edgeType = edge.type || 'default';
@@ -60,74 +65,66 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   const edgeRef = useRef<SVGGElement>(null);
   const [updateHover, setUpdateHover] = useState<boolean>(false);
   const [reconnecting, setReconnecting] = useState<boolean>(false);
-  const store = useStoreApi();
+  const { optionsStore, viewportStore, connectionStore, nodesStore } = useReactFlowStoreApi();
 
+  const sourceNode = useInternalNode(edge.source);
+  const targetNode = useInternalNode(edge.target);
+
+  const defaultZIndex = edge.zIndex;
   const {
-    zIndex = edge.zIndex,
+    zIndex = defaultZIndex,
     sourceX,
     sourceY,
     targetX,
     targetY,
     sourcePosition,
     targetPosition,
-  } = useStore(
-    useCallback(
-      (store) => {
-        const sourceNode = store.nodeLookup.get(edge.source);
-        const targetNode = store.nodeLookup.get(edge.target);
+  } = useMemo(() => {
+    if (!sourceNode || !targetNode) {
+      return nullPosition;
+    }
 
-        if (!sourceNode || !targetNode) {
-          return nullPosition;
-        }
+    const edgePosition = getEdgePosition({
+      id,
+      sourceNode,
+      targetNode,
+      sourceHandle: edge.sourceHandle || null,
+      targetHandle: edge.targetHandle || null,
+      connectionMode,
+      onError,
+    });
 
-        const edgePosition = getEdgePosition({
-          id,
-          sourceNode,
-          targetNode,
-          sourceHandle: edge.sourceHandle || null,
-          targetHandle: edge.targetHandle || null,
-          connectionMode: store.connectionMode,
-          onError,
-        });
+    const zIndex = getElevatedEdgeZIndex({
+      selected: edge.selected,
+      zIndex: edge.zIndex,
+      sourceNode,
+      targetNode,
+      elevateOnSelect: elevateEdgesOnSelect,
+      zIndexMode,
+    });
 
-        const zIndex = getElevatedEdgeZIndex({
-          selected: edge.selected,
-          zIndex: edge.zIndex,
-          sourceNode,
-          targetNode,
-          elevateOnSelect: store.elevateEdgesOnSelect,
-          zIndexMode: store.zIndexMode,
-        });
+    return {
+      ...(edgePosition || nullPosition),
+      zIndex,
+    };
+  }, [sourceNode, targetNode, edge, id, onError, connectionMode, elevateEdgesOnSelect, zIndexMode]);
 
-        return {
-          ...(edgePosition || nullPosition),
-          zIndex,
-        };
-      },
-      [edge.source, edge.target, edge.sourceHandle, edge.targetHandle, edge.selected, edge.zIndex, onError]
-    ),
-    shallow
-  );
+  const markerStartUrl = edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId)}')` : undefined;
 
-  const markerStartUrl = useMemo(
-    () => (edge.markerStart ? `url('#${getMarkerId(edge.markerStart, rfId)}')` : undefined),
-    [edge.markerStart, rfId]
-  );
-
-  const markerEndUrl = useMemo(
-    () => (edge.markerEnd ? `url('#${getMarkerId(edge.markerEnd, rfId)}')` : undefined),
-    [edge.markerEnd, rfId]
-  );
+  const markerEndUrl = edge.markerEnd ? `url('#${getMarkerId(edge.markerEnd, rfId)}')` : undefined;
 
   if (edge.hidden || sourceX === null || sourceY === null || targetX === null || targetY === null) {
     return null;
   }
 
   const onEdgeClick = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-    const { addSelectedEdges, unselectNodesAndEdges, multiSelectionActive } = store.getState();
+    const { addSelectedEdges, unselectNodesAndEdges, multiSelectionActive, nodesSelectionActive } =
+      optionsStore.getState();
 
     if (isSelectable) {
-      store.setState({ nodesSelectionActive: false });
+      if (nodesSelectionActive) {
+        optionsStore.setState({ nodesSelectionActive: false });
+      }
 
       if (edge.selected && multiSelectionActive) {
         unselectNodesAndEdges({ nodes: [], edges: [edge] });
@@ -170,7 +167,7 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (!disableKeyboardA11y && elementSelectionKeys.includes(event.key) && isSelectable) {
-      const { unselectNodesAndEdges, addSelectedEdges } = store.getState();
+      const { unselectNodesAndEdges, addSelectedEdges } = optionsStore.getState();
       const unselect = event.key === 'Escape';
 
       if (unselect) {
@@ -192,15 +189,14 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
       domNode,
       connectionMode,
       connectionRadius,
-      lib,
       onConnectStart,
       cancelConnection,
-      nodeLookup,
       rfId: flowId,
       panBy,
       updateConnection,
       connectionDragThreshold,
-    } = store.getState();
+    } = optionsStore.getState();
+    const { nodeLookup } = nodesStore.getState();
     const isTarget = type === 'source';
     const oppositeType = isTarget ? 'target' : 'source';
 
@@ -214,25 +210,25 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
       nodeLookup,
       isTarget,
       edgeUpdaterType: oppositeType,
-      lib,
+      lib: 'react',
       flowId,
       cancelConnection,
       panBy,
-      isValidConnection: (...args) => store.getState().isValidConnection?.(...args) ?? true,
+      isValidConnection: (...args) => optionsStore.getState().isValidConnection?.(...args) ?? true,
       onConnect: (connection) => onReconnect?.(edge, connection),
       onConnectStart: (evt, params) => {
         setReconnecting(true);
         onReconnectStart?.(event, edge, oppositeType);
         onConnectStart?.(evt, params);
       },
-      onConnectEnd: (...args) => store.getState().onConnectEnd?.(...args),
+      onConnectEnd: (...args) => optionsStore.getState().onConnectEnd?.(...args),
       onReconnectEnd: (evt, connectionState) => {
         setReconnecting(false);
         onReconnectEnd?.(evt, edge, oppositeType, connectionState);
       },
       updateConnection,
-      getTransform: () => store.getState().transform,
-      getFromHandle: () => store.getState().connection.fromHandle,
+      getTransform: () => viewportStore.getState().transform,
+      getFromHandle: () => connectionStore.getState().connection.fromHandle,
       dragThreshold: dragThreshold ?? connectionDragThreshold,
       handleDomNode: event.currentTarget,
     });
@@ -332,4 +328,5 @@ function EdgeWrapper<EdgeType extends Edge = Edge>({
   );
 }
 
+// The compiler caches the edges list as a whole. Keep per-edge bailouts when that list changes.
 export default memo(EdgeWrapper) as typeof EdgeWrapper;

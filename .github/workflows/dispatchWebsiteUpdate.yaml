@@ -7,7 +7,7 @@ on:
 
 jobs:
   dispatch_website_update:
-    if: ${{ contains(github.event.release.tag_name, 'svelte') || contains(github.event.release.tag_name, 'react') }}
+    if: ${{ contains(github.event.release.tag_name, 'svelte') || contains(github.event.release.tag_name, 'react') || contains(github.event.release.tag_name, 'vue') }}
     runs-on: ubuntu-latest
     steps:
       # Github Actions is not able to escape JSON strings with certain characters in them
