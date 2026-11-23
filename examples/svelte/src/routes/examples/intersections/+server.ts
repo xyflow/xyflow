@@ -2,8 +2,6 @@
 // No need to edit these inside /src/routes/**
 // Will be overwritten by "pnpm run create:endpoints"
 
-import { json } from '@sveltejs/kit';
-
 export function POST() {
   const files = import.meta.glob(['./*.js', './*.ts', './*.svelte', './*css', '!**/+server.ts'], {
     as: 'raw',
@@ -25,5 +23,5 @@ export function POST() {
     {}
   );
 
-  return json(filesClean);
+  return Response.json(filesClean);
 }

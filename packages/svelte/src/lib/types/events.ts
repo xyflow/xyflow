@@ -72,6 +72,6 @@ export type EdgeEvents<EdgeType extends Edge = Edge> = {
 };
 
 export type OnSelectionDrag<NodeType extends Node = Node> = (
-  event: MouseEvent,
+  event: MouseEvent | TouchEvent,
   nodes: NodeType[]
 ) => void;

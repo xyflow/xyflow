@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Background, Position, SvelteFlow, type Edge, type Node } from '@xyflow/svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	import CustomEdge from './CustomEdge.svelte';
 

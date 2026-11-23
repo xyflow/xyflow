@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 import { XYDrag, type XYDragInstance } from '@xyflow/system';
 
 import { handleNodeClick } from '../components/Nodes/utils';
-import { useStoreApi } from './useStore';
+import { useReactFlowStoreApi } from './useReactFlowStore';
 
 type UseDragParams = {
   nodeRef: RefObject<HTMLDivElement>;
@@ -11,7 +11,6 @@ type UseDragParams = {
   handleSelector?: string;
   nodeId?: string;
   isSelectable?: boolean;
-  nodeClickDistance?: number;
 };
 
 /**
@@ -26,9 +25,8 @@ export function useDrag({
   handleSelector,
   nodeId,
   isSelectable,
-  nodeClickDistance,
 }: UseDragParams) {
-  const store = useStoreApi();
+  const { optionsStore, viewportStore, nodesStore, edgesStore } = useReactFlowStoreApi();
   const [dragging, setDragging] = useState<boolean>(false);
   const xyDrag = useRef<XYDragInstance>();
 
@@ -38,11 +36,17 @@ export function useDrag({
     }
 
     xyDrag.current = XYDrag({
-      getStoreItems: () => store.getState(),
+      getStoreItems: () => {
+        const { nodes, nodeLookup } = nodesStore.getState();
+        const { edges } = edgesStore.getState();
+        const { transform } = viewportStore.getState();
+        return { ...optionsStore.getState(), nodes, nodeLookup, edges, transform };
+      },
       onNodeMouseDown: (id: string) => {
         handleNodeClick({
           id,
-          store,
+          optionsStore,
+          nodesStore,
           nodeRef,
         });
       },
@@ -58,7 +62,7 @@ export function useDrag({
       xyDrag.current?.destroy();
       xyDrag.current = undefined;
     };
-  }, [disabled, store, nodeRef]);
+  }, [disabled, optionsStore, viewportStore, nodesStore, edgesStore, nodeRef]);
 
   useEffect(() => {
     if (disabled || !nodeRef.current || !xyDrag.current) {
@@ -71,9 +75,8 @@ export function useDrag({
       domNode: nodeRef.current,
       isSelectable,
       nodeId,
-      nodeClickDistance,
     });
-  }, [noDragClassName, handleSelector, disabled, isSelectable, nodeRef, nodeId, nodeClickDistance]);
+  }, [noDragClassName, handleSelector, disabled, isSelectable, nodeRef, nodeId]);
 
   return dragging;
 }

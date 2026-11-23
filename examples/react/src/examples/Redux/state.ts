@@ -1,5 +1,4 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit';
-import { applyNodeChanges, applyEdgeChanges } from '@xyflow/react';
 import { nodes, edges } from './initial-elements';
 
 const initialState = {
@@ -18,12 +17,12 @@ const setEdgesReducer = (state, action) => {
 };
 
 const onNodesChangeReducer = (state, action) => {
-  const a = applyNodeChanges(action.payload, state.nodes);
+  const a = action.payload.applyTo(state.nodes);
   state.nodes = a;
 };
 
 const onEdgesChangeReducer = (state, action) => {
-  const a = applyEdgeChanges(action.payload, state.edges);
+  const a = action.payload.applyTo(state.edges);
   state.edges = a;
 };
 

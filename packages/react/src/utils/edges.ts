@@ -6,6 +6,7 @@ import {
   type Connection,
   type EdgeBase,
   type ReconnectEdgeOptions,
+  type OnError,
 } from '@xyflow/system';
 
 const defaultOnError = createDevWarn('React Flow', 'https://reactflow.dev/');
@@ -17,7 +18,7 @@ export function addEdge<EdgeType extends EdgeBase>(
 ): EdgeType[] {
   return addEdgeSystem(edgeParams, edges, {
     ...options,
-    onError: options.onError ?? defaultOnError,
+    onError: (options.onError as OnError) ?? defaultOnError,
   });
 }
 
@@ -29,6 +30,6 @@ export function reconnectEdge<EdgeType extends EdgeBase>(
 ): EdgeType[] {
   return reconnectEdgeSystem(oldEdge, newConnection, edges, {
     ...options,
-    onError: options.onError ?? defaultOnError,
+    onError: (options.onError as OnError) ?? defaultOnError,
   });
 }
