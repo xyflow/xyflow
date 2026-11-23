@@ -2,7 +2,7 @@ import type { EdgeBase, NodeBase, NodeDragItem } from '@xyflow/system';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 import type { NodeDragEvent } from '../types';
 import { infiniteExtent, isCoordinateExtent, XYDrag } from '@xyflow/system';
-import { shallowRef, toRaw, toRef, toValue, watch, watchEffect } from 'vue';
+import { shallowRef, toRaw, toRef, toValue, watch } from 'vue';
 import { handleNodeClick } from '../utils';
 import { useVueFlow } from './useVueFlow';
 import { useVueFlowStore } from './useVueFlowStore';
@@ -38,18 +38,24 @@ export function useDrag(params: UseDragParams) {
 
   const dragging = shallowRef(false);
 
-  // Reactive so the update watcher below re-runs (and re-binds) whenever a new instance is created.
-  // The creating effect re-runs whenever `el` is reassigned, so without this dependency a create that lands after
-  // the update watcher last ran would leave the live instance with no d3 listeners and node dragging silently stops.
-  const dragInstance = shallowRef<ReturnType<typeof XYDrag>>();
+  let dragInstance: ReturnType<typeof XYDrag> | undefined;
 
+  function bind(instance: ReturnType<typeof XYDrag>, nodeEl: HTMLDivElement) {
+    instance.update({
+      noDragClassName: store.noDragClassName,
+      handleSelector: toValue(dragHandle),
+      isSelectable: toValue(selectable),
+      nodeId: id,
+      domNode: nodeEl,
+    });
+  }
+
+  // explicit sources, so the options `bind` reads don't become reasons to create another instance.
   // post-flush: a pre-flush effect queues one scheduler job per node per commit, and Vue rescans
   // that queue on every parent-driven child update, so its length costs quadratically. The element
   // read below only exists after render anyway.
-  watchEffect((onCleanup) => {
-    const nodeEl = el.value;
-
-    if (!nodeEl || toValue(disabled)) {
+  watch([() => el.value, () => toValue(disabled)], ([nodeEl, isDisabled], _prev, onCleanup) => {
+    if (!nodeEl || isDisabled) {
       return;
     }
 
@@ -167,32 +173,26 @@ export function useDrag(params: UseDragParams) {
       },
     });
 
-    dragInstance.value = instance;
+    dragInstance = instance;
+    bind(instance, nodeEl);
 
     onCleanup(() => {
       flushPending();
       instance.destroy();
-      dragInstance.value = undefined;
+      dragInstance = undefined;
     });
-  }, { flush: 'post' });
+  }, { immediate: true, flush: 'post' });
 
   watch(
-    [
-      dragInstance,
-      () => store.noDragClassName,
-      () => toValue(dragHandle),
-      () => toValue(selectable),
-      () => toValue(disabled),
-      el,
-    ],
-    ([instance, noDragClassName, handleSelector, isSelectable, isDisabled, nodeEl]) => {
-      if (isDisabled || !nodeEl || !instance) {
+    [() => store.noDragClassName, () => toValue(dragHandle), () => toValue(selectable), () => toValue(disabled), () => el.value],
+    ([, , , isDisabled, nodeEl]) => {
+      if (isDisabled || !nodeEl || !dragInstance) {
         return;
       }
 
-      instance.update({ noDragClassName, handleSelector, isSelectable, nodeId: id, domNode: nodeEl });
+      bind(dragInstance, nodeEl);
     },
-    { immediate: true, flush: 'post' },
+    { flush: 'post' },
   );
 
   return dragging;
