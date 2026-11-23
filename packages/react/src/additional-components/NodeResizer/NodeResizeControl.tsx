@@ -119,8 +119,8 @@ function ResizeControl({
              * when the parent was expanded by the child node, its position will be clamped at
              * 0,0 when node origin is 0,0 and to width, height if it's 1,1
              */
-            nextPosition.x = change.x ? Math.max(origin[0] * width, change.x) : undefined;
-            nextPosition.y = change.y ? Math.max(origin[1] * height, change.y) : undefined;
+            nextPosition.x = change.x !== undefined ? Math.max(origin[0] * width, change.x) : undefined;
+            nextPosition.y = change.y !== undefined ? Math.max(origin[1] * height, change.y) : undefined;
           }
 
           if (nextPosition.x !== undefined && nextPosition.y !== undefined) {
