@@ -155,6 +155,8 @@ const ConnectionLine = defineComponent({
                 markerStart: markerStart.value,
                 connectionStatus,
                 pointer: pointer.value,
+                connectionLineStyle: connectionLineStyle.value,
+                connectionLineType: type,
               })
             : h('path', {
                 'd': dAttr,

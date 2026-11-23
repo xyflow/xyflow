@@ -68,6 +68,8 @@ export function edgeProps<EdgeType extends Edge = Edge>() {
 
 export function connectionLineProps<NodeType extends Node = Node>() {
   return {
+    connectionLineStyle: propOf<ConnectionLineProps<NodeType>['connectionLineStyle']>(),
+    connectionLineType: propOf<ConnectionLineProps<NodeType>['connectionLineType']>(true),
     connectionStatus: propOf<ConnectionLineProps<NodeType>['connectionStatus']>(true),
     fromHandle: propOf<ConnectionLineProps<NodeType>['fromHandle']>(true),
     fromNode: propOf<ConnectionLineProps<NodeType>['fromNode']>(true),
