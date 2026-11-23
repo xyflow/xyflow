@@ -156,6 +156,17 @@ test.describe('Nodes', () => {
       await node.press('ArrowRight');
       await expect(page.locator('body')).not.toHaveAttribute('data-node-move-event');
     });
+    
+    test('keyboard movement does not fire after the focused node is deselected', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'react', 'onNodeMove is a React Flow callback');
+      const node = page.locator('.react-flow__node[data-id="Node-1"]');
+      await node.click();
+      await expect(node).toHaveClass(/selected/);
+      await node.press('Escape');
+      await expect(node).not.toHaveClass(/selected/);
+      await node.press('ArrowRight');
+      await expect(page.locator('body')).not.toHaveAttribute('data-node-move-event');
+    });
 
     test('dragging a node', async ({ page }) => {
       const node = page.locator(`.${FRAMEWORK}-flow__node`).first();
