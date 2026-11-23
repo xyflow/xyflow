@@ -168,6 +168,35 @@ test.describe('Nodes', () => {
       await expect(page.locator('body')).not.toHaveAttribute('data-node-move-event');
     });
 
+    test('keyboard movement after deselecting the focused node moves remaining selected nodes', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'react', 'onNodeMove is a React Flow callback');
+      const first = page.locator('.react-flow__node[data-id="Node-1"]');
+      const second = page.locator('.react-flow__node[data-id="Node-2"]');
+
+      await first.click();
+      await page.keyboard.down('s');
+      await second.click();
+      await page.keyboard.up('s');
+      await expect(first).toHaveClass(/selected/);
+      await expect(second).toHaveClass(/selected/);
+
+      await page.keyboard.down('s');
+      await first.click();
+      await page.keyboard.up('s');
+      await expect(first).not.toHaveClass(/selected/);
+      await expect(second).toHaveClass(/selected/);
+
+      await first.press('ArrowRight');
+      await expect(page.locator('body')).toHaveAttribute(
+        'data-node-move-event',
+        JSON.stringify({
+          key: 'ArrowRight',
+          node: { id: 'Node-2', position: { x: -95, y: 100 } },
+          nodes: [{ id: 'Node-2', position: { x: -95, y: 100 } }],
+        })
+      );
+    });
+
     test('dragging a node', async ({ page }) => {
       const node = page.locator(`.${FRAMEWORK}-flow__node`).first();
 
