@@ -1,5 +1,23 @@
 # @xyflow/vue
 
+## 2.0.3
+### Patch Changes
+
+
+
+- [#6166](https://github.com/xyflow/xyflow/pull/6166) [`a3f002c`](https://github.com/xyflow/xyflow/commit/a3f002c507fd5e1b89a0e7b83a8774cccf574f2f) - Pass `connectionLineStyle` and `connectionLineType` to a custom `connection-line` component.
+
+
+
+- [#6168](https://github.com/xyflow/xyflow/pull/6168) [`c7d2e07`](https://github.com/xyflow/xyflow/commit/c7d2e072d5e0c17b18b3eba9c21f168c7f8c2a25) - Fix node dragging on touch devices. Re-rendering a node re-bound its drag behaviour, which dropped the in-flight touch gesture.
+
+
+
+- [#6168](https://github.com/xyflow/xyflow/pull/6168) [`853c44a`](https://github.com/xyflow/xyflow/commit/853c44a46290b5a40953b959edbcf2081019d3ac) - Keep dragging a node on touch devices when the node re-renders mid-drag.
+
+- Updated dependencies [[`6bb426c`](https://github.com/xyflow/xyflow/commit/6bb426c5090601dc37ff743cb6f0a9a5de1f6755), [`853c44a`](https://github.com/xyflow/xyflow/commit/853c44a46290b5a40953b959edbcf2081019d3ac)]:
+  - @xyflow/system@1.0.1
+
 ## 2.0.2
 ### Patch Changes
 

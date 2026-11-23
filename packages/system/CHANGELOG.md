@@ -1,5 +1,16 @@
 # @xyflow/system
 
+## 1.0.1
+### Patch Changes
+
+
+
+- [#6158](https://github.com/xyflow/xyflow/pull/6158) [`6bb426c`](https://github.com/xyflow/xyflow/commit/6bb426c5090601dc37ff743cb6f0a9a5de1f6755) - Keep the current viewport when `fitView` has no nodes to fit instead of zooming to `maxZoom`.
+
+
+
+- [#6168](https://github.com/xyflow/xyflow/pull/6168) [`853c44a`](https://github.com/xyflow/xyflow/commit/853c44a46290b5a40953b959edbcf2081019d3ac) - Keep dragging a node on touch devices when the node re-renders mid-drag.
+
 ## 1.0.0
 ### Major Changes
 

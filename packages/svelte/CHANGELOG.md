@@ -1,5 +1,15 @@
 # @xyflow/svelte
 
+## 2.0.3
+### Patch Changes
+
+
+
+- [#6172](https://github.com/xyflow/xyflow/pull/6172) [`b0166b6`](https://github.com/xyflow/xyflow/commit/b0166b65219fb7024832629ab648c413522c26ee) - Fix viewport not syncing correctly after programmatically updating via `bind:viewport`.
+
+- Updated dependencies [[`6bb426c`](https://github.com/xyflow/xyflow/commit/6bb426c5090601dc37ff743cb6f0a9a5de1f6755), [`853c44a`](https://github.com/xyflow/xyflow/commit/853c44a46290b5a40953b959edbcf2081019d3ac)]:
+  - @xyflow/system@1.0.1
+
 ## 2.0.2
 ### Patch Changes
 

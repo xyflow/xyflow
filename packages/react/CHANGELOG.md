@@ -1,5 +1,15 @@
 # @xyflow/react
 
+## 13.0.3
+### Patch Changes
+
+
+
+- [#6167](https://github.com/xyflow/xyflow/pull/6167) [`b7bc2ac`](https://github.com/xyflow/xyflow/commit/b7bc2ac24ac1b09e9f78e7f62caa7188c4a44d90) - Fix the documented default of the MiniMap `zoomStep` prop: it is 1, not 10.
+
+- Updated dependencies [[`6bb426c`](https://github.com/xyflow/xyflow/commit/6bb426c5090601dc37ff743cb6f0a9a5de1f6755), [`853c44a`](https://github.com/xyflow/xyflow/commit/853c44a46290b5a40953b959edbcf2081019d3ac)]:
+  - @xyflow/system@1.0.1
+
 ## 13.0.2
 ### Patch Changes
 
