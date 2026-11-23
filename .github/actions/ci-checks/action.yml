@@ -10,3 +10,6 @@ runs:
     - name: Typecheck
       run: pnpm typecheck
       shell: bash
+    - name: System regression tests
+      run: pnpm test:system
+      shell: bash
