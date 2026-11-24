@@ -3,6 +3,8 @@ import { select, type Selection } from 'd3-selection';
 
 import {
   calcAutoPan,
+  clampPositionToParent,
+  getNodeDimensions,
   getEventPosition,
   getPointerPosition,
   isTouchEvent,
@@ -243,12 +245,56 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
     }
   }
 
+  function constrainAutoPan(movement: number[], zoom: number, nodeLookup: Map<string, InternalNodeBase<NodeType>>) {
+    const [xMovement, yMovement] = movement;
+    if (!xMovement && !yMovement) {
+      return movement;
+    }
+
+    let canPanX = !xMovement;
+    let canPanY = !yMovement;
+
+    for (const [id, dragItem] of dragItems) {
+      const node = nodeLookup.get(id);
+      if (!node) {
+        continue;
+      }
+
+      const parent = node.parentId ? nodeLookup.get(node.parentId) : undefined;
+      if (node.extent !== 'parent' || node.expandParent || !parent) {
+        return movement;
+      }
+
+      const { width, height } = getNodeDimensions(parent);
+      if (!width || !height) {
+        return movement;
+      }
+
+      const { x, y } = dragItem.internals.positionAbsolute;
+      const next = clampPositionToParent(
+        { x: x - xMovement / zoom, y: y - yMovement / zoom },
+        getNodeDimensions(node),
+        parent
+      );
+
+      // A viewport pan moves a dragged node in the opposite direction in flow coordinates.
+      canPanX ||= xMovement * (x - next.x) > 0;
+      canPanY ||= yMovement * (y - next.y) > 0;
+
+      if (canPanX && canPanY) {
+        return movement;
+      }
+    }
+
+    return [canPanX ? xMovement : 0, canPanY ? yMovement : 0];
+  }
+
   async function autoPan() {
     if (!containerBounds) {
       return;
     }
 
-    const { transform, panBy, autoPanSpeed, autoPanOnNodeDrag } = getStoreItems();
+    const { transform, panBy, autoPanSpeed, autoPanOnNodeDrag, nodeLookup } = getStoreItems();
 
     if (!autoPanOnNodeDrag) {
       autoPanStarted = false;
@@ -256,7 +302,11 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
       return;
     }
 
-    const [xMovement, yMovement] = calcAutoPan(mousePosition, containerBounds, autoPanSpeed);
+    const [xMovement, yMovement] = constrainAutoPan(
+      calcAutoPan(mousePosition, containerBounds, autoPanSpeed),
+      transform[2],
+      nodeLookup
+    );
 
     if (xMovement !== 0 || yMovement !== 0) {
       lastPos.x = (lastPos.x ?? 0) - xMovement / transform[2];
