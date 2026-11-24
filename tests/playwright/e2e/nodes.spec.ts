@@ -157,6 +157,29 @@ test.describe('Nodes', () => {
       await expect(page.locator('body')).not.toHaveAttribute('data-node-move-event');
     });
 
+    test('keyboard movement works from a focused non-draggable node when another node remains selected', async ({ page }) => {
+      test.skip(FRAMEWORK !== 'react', 'onNodeMove is a React Flow callback');
+      const draggable = page.locator('.react-flow__node[data-id="Node-1"]');
+      const nonDraggable = page.locator('.react-flow__node[data-id="notDraggable"]');
+
+      await draggable.click();
+      await page.keyboard.down('s');
+      await nonDraggable.click();
+      await page.keyboard.up('s');
+      await expect(draggable).toHaveClass(/selected/);
+      await expect(nonDraggable).toHaveClass(/selected/);
+
+      await nonDraggable.press('ArrowRight');
+      await expect(page.locator('body')).toHaveAttribute(
+        'data-node-move-event',
+        JSON.stringify({
+          key: 'ArrowRight',
+          node: { id: 'Node-1', position: { x: 5, y: 0 } },
+          nodes: [{ id: 'Node-1', position: { x: 5, y: 0 } }],
+        })
+      );
+    });
+
     test('keyboard movement does not fire after the focused node is deselected', async ({ page }) => {
       test.skip(FRAMEWORK !== 'react', 'onNodeMove is a React Flow callback');
       const node = page.locator('.react-flow__node[data-id="Node-1"]');
