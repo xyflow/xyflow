@@ -139,7 +139,7 @@ function NodeWrapper<NodeType extends Node>({
         unselect,
         nodeRef,
       });
-    } else if (isDraggable && Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
+    } else if (Object.prototype.hasOwnProperty.call(arrowKeyDiffs, event.key)) {
       const { ariaLabelConfig, nodeLookup, nodesDraggable } = store.getState();
       const selectedDraggableNode = Array.from(nodeLookup.values()).find(
         (selectedNode) =>
@@ -147,14 +147,14 @@ function NodeWrapper<NodeType extends Node>({
           (selectedNode.draggable || (nodesDraggable && typeof selectedNode.draggable === 'undefined'))
       );
 
-      if (!node.selected && !selectedDraggableNode) {
+      if (!selectedDraggableNode) {
         return;
       }
 
       // prevent default scrolling behavior on arrow key press when selected nodes are moved
       event.preventDefault();
 
-      const nodeToAnnounce = node.selected ? node : selectedDraggableNode ?? node;
+      const nodeToAnnounce = node.selected && isDraggable ? node : selectedDraggableNode;
 
       store.setState({
         ariaLiveMessage: ariaLabelConfig['node.a11yDescription.ariaLiveMessage']({
