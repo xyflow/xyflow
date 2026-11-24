@@ -5,60 +5,60 @@ import { BaseEdge } from './BaseEdge';
 import type { BezierEdgeProps } from '../../types';
 
 function createBezierEdge(params: { isInternal: boolean }) {
-  // eslint-disable-next-line react/display-name
-  return memo(
-    ({
-      id,
+  function BezierEdgeComponent({
+    id,
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourcePosition = Position.Bottom,
+    targetPosition = Position.Top,
+    label,
+    labelStyle,
+    labelShowBg,
+    labelBgStyle,
+    labelBgPadding,
+    labelBgBorderRadius,
+    style,
+    markerEnd,
+    markerStart,
+    pathOptions,
+    interactionWidth,
+  }: BezierEdgeProps) {
+    const [path, labelX, labelY] = getBezierPath({
       sourceX,
       sourceY,
+      sourcePosition,
       targetX,
       targetY,
-      sourcePosition = Position.Bottom,
-      targetPosition = Position.Top,
-      label,
-      labelStyle,
-      labelShowBg,
-      labelBgStyle,
-      labelBgPadding,
-      labelBgBorderRadius,
-      style,
-      markerEnd,
-      markerStart,
-      pathOptions,
-      interactionWidth,
-    }: BezierEdgeProps) => {
-      const [path, labelX, labelY] = getBezierPath({
-        sourceX,
-        sourceY,
-        sourcePosition,
-        targetX,
-        targetY,
-        targetPosition,
-        curvature: pathOptions?.curvature,
-      });
+      targetPosition,
+      curvature: pathOptions?.curvature,
+    });
 
-      const _id = params.isInternal ? undefined : id;
+    const _id = params.isInternal ? undefined : id;
 
-      return (
-        <BaseEdge
-          id={_id}
-          path={path}
-          labelX={labelX}
-          labelY={labelY}
-          label={label}
-          labelStyle={labelStyle}
-          labelShowBg={labelShowBg}
-          labelBgStyle={labelBgStyle}
-          labelBgPadding={labelBgPadding}
-          labelBgBorderRadius={labelBgBorderRadius}
-          style={style}
-          markerEnd={markerEnd}
-          markerStart={markerStart}
-          interactionWidth={interactionWidth}
-        />
-      );
-    }
-  );
+    return (
+      <BaseEdge
+        id={_id}
+        path={path}
+        labelX={labelX}
+        labelY={labelY}
+        label={label}
+        labelStyle={labelStyle}
+        labelShowBg={labelShowBg}
+        labelBgStyle={labelBgStyle}
+        labelBgPadding={labelBgPadding}
+        labelBgBorderRadius={labelBgBorderRadius}
+        style={style}
+        markerEnd={markerEnd}
+        markerStart={markerStart}
+        interactionWidth={interactionWidth}
+      />
+    );
+  }
+
+  BezierEdgeComponent.displayName = params.isInternal ? 'BezierEdgeInternal' : 'BezierEdge';
+  return memo(BezierEdgeComponent);
 }
 
 /**
@@ -90,8 +90,5 @@ const BezierEdge = createBezierEdge({ isInternal: false });
  * @internal
  */
 const BezierEdgeInternal = createBezierEdge({ isInternal: true });
-
-BezierEdge.displayName = 'BezierEdge';
-BezierEdgeInternal.displayName = 'BezierEdgeInternal';
 
 export { BezierEdge, BezierEdgeInternal };

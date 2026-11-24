@@ -172,6 +172,7 @@ const UseZoomPanHelperFlow = () => {
       onPaneClick={onPaneClick}
       fitView
       maxZoom={Infinity}
+      debug
     >
       <Panel position="top-right">
         <button

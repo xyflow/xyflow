@@ -11,18 +11,27 @@ import {
   type ZoomInOut,
   type Rect,
   getViewportForBounds,
+  dataChange,
+  replaceChange,
+  updateChange,
+  addChange,
   getElementsToRemove,
   rendererPointToPoint,
   evaluateAbsolutePosition,
   type HandleType,
-  type HandleConnection,
-  getNodesBounds
+  type NodeConnection,
+  getNodesBounds,
+  type NodeChange,
+  type EdgeChange,
+  defaultFitViewPadding,
+  changeParentNode,
+  positionChange,
+  getConnectionsFromLookup
 } from '@xyflow/system';
 
-import { useStore } from '$lib/store/index.js';
-import type { Edge, FitViewOptions, InternalNode, Node } from '$lib/types/index.js';
-import { isEdge, isNode } from '$lib/utils/index.js';
-import { untrack } from 'svelte';
+import { useSvelteFlowStore } from '#lib/store/index.js';
+import type { Edge, FitViewOptions, InternalNode, Node } from '#lib/types/index.js';
+import { isEdge, isNode } from '#lib/utils/index.js';
 
 /**
  * Hook for accessing the SvelteFlow instance.
@@ -196,6 +205,24 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    */
   flowToScreenPosition: (flowPosition: XYPosition) => XYPosition;
   /**
+   * Adds one or more nodes.
+   *
+   * @param payload - a node or an array of nodes to add
+   *
+   * @example
+   * addNodes({ id: 'node-1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } });
+   */
+  addNodes: (payload: NodeType | NodeType[]) => void;
+  /**
+   * Adds one or more edges.
+   *
+   * @param payload - an edge or an array of edges to add
+   *
+   * @example
+   * addEdges({ id: 'e1-2', source: 'node-1', target: 'node-2' });
+   */
+  addEdges: (payload: EdgeType | EdgeType[]) => void;
+  /**
    * Updates a node.
    *
    * @param id - id of the node to update
@@ -220,21 +247,31 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    *
    * @param id - id of the node to update
    * @param dataUpdate - the data update as an object or a function that receives the current data and returns the data update
-   * @param options.replace - if true, the data is replaced with the data update, otherwise the changes get merged
+   * @param options.replace - if true, the data is replaced with the data update, otherwise the changes get merged.
+   * When replacing, the data update has to be complete.
    *
    * @example
    * updateNodeData('node-1', { label: 'A new label' });
    */
-  updateNodeData: (
-    id: string,
-    dataUpdate: Partial<NodeType['data']> | ((node: NodeType) => Partial<NodeType['data']>),
-    options?: { replace: boolean }
-  ) => void;
+  updateNodeData: {
+    (
+      id: string,
+      dataUpdate: Partial<NodeType['data']> | ((node: NodeType) => Partial<NodeType['data']>),
+      options?: { replace?: false }
+    ): void;
+    (
+      id: string,
+      dataUpdate: NodeType['data'] | ((node: NodeType) => NodeType['data']),
+      options?: { replace?: boolean }
+    ): void;
+  };
   /**
-   * Returns the nodes, edges and the viewport as a JSON object.
+   * Changes the parent of a node.
    *
-   * @returns the nodes, edges and the viewport as a JSON object
+   * @param nodeId - id of the node to change the parent of
+   * @param parentId - id of the new parent
    */
+  changeParent: (nodeId: string, parentId: string | null) => void;
   /**
    * Updates an edge.
    *
@@ -250,6 +287,37 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options?: { replace: boolean }
   ) => void;
+  /**
+   * Updates the data attribute of an edge.
+   *
+   * @param id - id of the edge to update
+   * @param dataUpdate - the data update as an object or a function that receives the current edge and returns the data update
+   * @param options.replace - if true, the data is replaced with the data update, otherwise the changes get merged.
+   * When replacing, the data update has to be complete.
+   *
+   * @example
+   * updateEdgeData('edge-1', { label: 'A new label' });
+   */
+  updateEdgeData: {
+    (
+      id: string,
+      dataUpdate:
+        | Partial<NonNullable<EdgeType['data']>>
+        | ((edge: EdgeType) => Partial<NonNullable<EdgeType['data']>>),
+      options?: { replace?: false }
+    ): void;
+    (
+      id: string,
+      dataUpdate:
+        NonNullable<EdgeType['data']> | ((edge: EdgeType) => NonNullable<EdgeType['data']>),
+      options?: { replace?: boolean }
+    ): void;
+  };
+  /**
+   * Returns the nodes, edges and the viewport as a JSON object.
+   *
+   * @returns the nodes, edges and the viewport as a JSON object
+   */
   toObject: () => { nodes: NodeType[]; edges: EdgeType[]; viewport: Viewport };
   /**
    * Returns the bounds of the given nodes or node ids.
@@ -259,24 +327,24 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
    * @returns the bounds of the given nodes
    */
   getNodesBounds: (nodes: (NodeType | InternalNode<NodeType> | string)[]) => Rect;
-  /** Gets all connections for a given handle belonging to a specific node.
-   *
+  /**
+   * Gets all connections to a node. Can be filtered by handle type and id.
    * @param type - handle type 'source' or 'target'
-   * @param id - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
+   * @param handleId - the handle id (this is only needed if you have multiple handles of the same type, meaning you have to provide a unique id for each handle)
    * @param nodeId - the node id the handle belongs to
-   * @returns an array with handle connections
+   * @returns an array with node connections
    */
-  getHandleConnections: ({
+  getNodeConnections: ({
     type,
-    id,
+    handleId,
     nodeId
   }: {
-    type: HandleType;
+    type?: HandleType;
     nodeId: string;
-    id?: string | null;
-  }) => HandleConnection[];
+    handleId?: string | null;
+  }) => NodeConnection[];
 } {
-  const store = $derived(useStore<NodeType, EdgeType>());
+  const store = $derived(useSvelteFlowStore<NodeType, EdgeType>());
 
   const getNodeRect = (node: NodeType | { id: NodeType['id'] }): Rect | null => {
     const nodeToUse = isNode(node) ? node : store.nodeLookup.get(node.id)!;
@@ -306,14 +374,35 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     nodeUpdate: Partial<NodeType> | ((node: NodeType) => Partial<NodeType>),
     options: { replace: boolean } = { replace: false }
   ) {
-    store.nodes = untrack(() => store.nodes).map((node) => {
-      if (node.id === id) {
-        const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
-        return options?.replace && isNode<NodeType>(nextNode) ? nextNode : { ...node, ...nextNode };
+    const node = store.nodeLookup.get(id)?.internals.userNode;
+
+    if (!node) {
+      return;
+    }
+
+    const nextNode = typeof nodeUpdate === 'function' ? nodeUpdate(node) : nodeUpdate;
+
+    const changes: NodeChange<NodeType>[] = [];
+
+    if (options.replace && isNode<NodeType>(nextNode)) {
+      changes.push(replaceChange(nextNode));
+    } else {
+      const { position, data, ...rest } = nextNode;
+
+      if (position && (position.x !== node.position.x || position.y !== node.position.y)) {
+        changes.push(positionChange(id, position));
       }
 
-      return node;
-    });
+      if (data && data !== node.data) {
+        changes.push(dataChange(id, data, true));
+      }
+
+      if (Object.keys(rest).length > 0) {
+        changes.push(updateChange<NodeType>(id, rest as Partial<NodeType>));
+      }
+    }
+
+    store.queueNodeChanges(changes);
   }
 
   function updateEdge(
@@ -321,14 +410,31 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
     edgeUpdate: Partial<EdgeType> | ((edge: EdgeType) => Partial<EdgeType>),
     options: { replace: boolean } = { replace: false }
   ) {
-    store.edges = untrack(() => store.edges).map((edge) => {
-      if (edge.id === id) {
-        const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
-        return options.replace && isEdge<EdgeType>(nextEdge) ? nextEdge : { ...edge, ...nextEdge };
+    const edge = store.edgeLookup.get(id);
+
+    if (!edge) {
+      return;
+    }
+
+    const nextEdge = typeof edgeUpdate === 'function' ? edgeUpdate(edge) : edgeUpdate;
+
+    const changes: EdgeChange<EdgeType>[] = [];
+
+    if (options.replace && isEdge<EdgeType>(nextEdge)) {
+      changes.push(replaceChange(nextEdge));
+    } else {
+      const { data, ...rest } = nextEdge;
+
+      if (data && data !== edge.data) {
+        changes.push(dataChange(id, data, true));
       }
 
-      return edge;
-    });
+      if (Object.keys(rest).length > 0) {
+        changes.push(updateChange<EdgeType>(id, rest as Partial<EdgeType>));
+      }
+    }
+
+    store.queueEdgeChanges(changes);
   }
 
   const getInternalNode = (id: string) => store.nodeLookup.get(id);
@@ -353,7 +459,7 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         return false;
       }
 
-      await store.panZoom.setViewport(
+      return store.panZoom.setViewport(
         {
           x: nextViewport.x ?? currentViewport.x,
           y: nextViewport.y ?? currentViewport.y,
@@ -361,8 +467,6 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         },
         options
       );
-
-      return true;
     },
     getViewport: () => $state.snapshot(store.viewport),
     setCenter: async (x, y, options) => store.setCenter(x, y, options),
@@ -378,16 +482,14 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         store.height,
         store.minZoom,
         store.maxZoom,
-        options?.padding ?? 0.1
+        options?.padding ?? defaultFitViewPadding
       );
 
-      await store.panZoom.setViewport(viewport, {
+      return store.panZoom.setViewport(viewport, {
         duration: options?.duration,
         ease: options?.ease,
         interpolate: options?.interpolate
       });
-
-      return true;
     },
     /**
      * Partial is defined as "the 2 nodes/areas are intersecting partially".
@@ -456,16 +558,22 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         onBeforeDelete: store.onbeforedelete
       });
 
-      if (matchingNodes) {
-        store.nodes = untrack(() => store.nodes).filter(
-          (node) => !matchingNodes.some(({ id }) => id === node.id)
-        );
+      if (matchingNodes.length > 0) {
+        const nodeChanges: NodeChange<NodeType>[] = matchingNodes.map((node) => ({
+          id: node.id,
+          type: 'remove'
+        }));
+
+        store.queueNodeChanges(nodeChanges);
       }
 
-      if (matchingEdges) {
-        store.edges = untrack(() => store.edges).filter(
-          (edge) => !matchingEdges.some(({ id }) => id === edge.id)
-        );
+      if (matchingEdges.length > 0) {
+        const edgeChanges = matchingEdges.map((edge) => ({
+          id: edge.id,
+          type: 'remove' as const
+        }));
+
+        store.queueEdgeChanges(edgeChanges);
       }
 
       if (matchingNodes.length > 0 || matchingEdges.length > 0) {
@@ -530,8 +638,20 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
         viewport: { ...store.viewport }
       });
     },
+    addNodes: (payload) => {
+      const nodes = Array.isArray(payload) ? payload : [payload];
+      store.queueNodeChanges(nodes.map((node) => addChange(node)));
+    },
+    addEdges: (payload) => {
+      const edges = Array.isArray(payload) ? payload : [payload];
+      store.queueEdgeChanges(edges.map((edge) => addChange(edge)));
+    },
     updateNode,
-    updateNodeData: (id, dataUpdate, options) => {
+    updateNodeData: (
+      id: string,
+      dataUpdate: NodeType['data'] | ((node: NodeType) => NodeType['data']),
+      options?: { replace?: boolean }
+    ) => {
       const node = store.nodeLookup.get(id)?.internals.userNode;
 
       if (!node) {
@@ -539,17 +659,47 @@ export function useSvelteFlow<NodeType extends Node = Node, EdgeType extends Edg
       }
 
       const nextData = typeof dataUpdate === 'function' ? dataUpdate(node) : dataUpdate;
-      updateNode(id, (node) => ({
-        ...node,
-        data: options?.replace ? nextData : { ...node.data, ...nextData }
-      }));
+      store.queueNodeChanges([
+        options?.replace ? dataChange(id, nextData, true) : dataChange(id, nextData)
+      ]);
+    },
+    changeParent: (nodeId: string, parentId: string | null) => {
+      changeParentNode(
+        nodeId,
+        store.nodeLookup,
+        parentId,
+        store.nodeOrigin,
+        ({ nodeId, parentId, x, y }) => {
+          updateNode(nodeId, {
+            parentId: parentId ?? undefined,
+            position: { x, y }
+          } as Partial<NodeType>);
+        }
+      );
     },
     updateEdge,
+    updateEdgeData: (
+      id: string,
+      dataUpdate:
+        NonNullable<EdgeType['data']> | ((edge: EdgeType) => NonNullable<EdgeType['data']>),
+      options?: { replace?: boolean }
+    ) => {
+      const edge = store.edgeLookup.get(id);
+
+      if (!edge) {
+        return;
+      }
+
+      const nextData = typeof dataUpdate === 'function' ? dataUpdate(edge) : dataUpdate;
+      store.queueEdgeChanges([
+        options?.replace ? dataChange(id, nextData, true) : dataChange(id, nextData)
+      ]);
+    },
     getNodesBounds: (nodes) => {
       return getNodesBounds(nodes, { nodeLookup: store.nodeLookup, nodeOrigin: store.nodeOrigin });
     },
-    getHandleConnections: ({ type, id, nodeId }) =>
-      Array.from(store.connectionLookup.get(`${nodeId}-${type}-${id ?? null}`)?.values() ?? [])
+    getNodeConnections: ({ type, handleId, nodeId }) =>
+      getConnectionsFromLookup(store.connectionLookup, { nodeId, type, handleId })
   };
 }
 

@@ -1,4 +1,5 @@
 .xy-flow {
+  --xy-node-color-default: light-dark(CanvasText, #f8f8f8);
   --xy-node-border-default: 1px solid #bbb;
   --xy-node-border-selected-default: 1px solid #555;
 
@@ -6,10 +7,6 @@
 
   --xy-selection-background-color-default: rgba(150, 150, 180, 0.1);
   --xy-selection-border-default: 1px dotted rgba(155, 155, 155, 0.8);
-}
-
-.xy-flow.dark {
-  --xy-node-color-default: #f8f8f8;
 }
 
 .xy-flow__handle {

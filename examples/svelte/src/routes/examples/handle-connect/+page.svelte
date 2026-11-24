@@ -12,7 +12,7 @@
 	import SingleHandleNode from './SingleHandleNode.svelte';
 	import MultiHandleNode from './MultiHandleNode.svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	const nodeTypes: NodeTypes = {
 		single: SingleHandleNode,
@@ -86,7 +86,7 @@
 	]);
 </script>
 
-<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView colorMode="dark">
+<SvelteFlow bind:nodes bind:edges {nodeTypes} fitView forceColorMode="dark">
 	<Controls />
 	<Background variant={BackgroundVariant.Dots} />
 	<MiniMap />

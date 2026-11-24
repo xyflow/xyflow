@@ -1,0 +1,35 @@
+.validationflow .vue-flow__node {
+  width: 150px;
+  border-radius: 5px;
+  padding: 10px;
+  color: #555;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 12px;
+}
+
+.validationflow .vue-flow__node-customnode {
+  background: #e6e6e9;
+  border: 1px solid #ddd;
+}
+
+.vue-flow__node-custominput .vue-flow__handle {
+  background: #e6e6e9;
+}
+
+.validationflow .vue-flow__node-custominput {
+  background: #fff;
+
+}
+
+.validationflow .vue-flow__handle.connectingto {
+  background: #ff6060;
+}
+
+.validationflow .vue-flow__handle.connectingfrom {
+  background: #55dd99;
+}
+
+.validationflow .vue-flow__handle.valid {
+  background: #55dd99;
+}

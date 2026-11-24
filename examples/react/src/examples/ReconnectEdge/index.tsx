@@ -4,14 +4,12 @@ import {
   Controls,
   reconnectEdge,
   addEdge,
-  applyNodeChanges,
-  applyEdgeChanges,
   Connection,
   Edge,
   Node,
-  NodeChange,
-  EdgeChange,
   HandleType,
+  OnNodesChange,
+  OnEdgesChange,
 } from '@xyflow/react';
 
 const initialNodes: Node[] = [
@@ -108,12 +106,12 @@ const ReconnectEdge = () => {
     setEdges((els) => reconnectEdge(oldEdge, newConnection, els));
   const onConnect = (connection: Connection) => setEdges((els) => addEdge(connection, els));
 
-  const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((ns) => applyNodeChanges(changes, ns));
+  const onNodesChange: OnNodesChange = useCallback((changes) => {
+    setNodes((ns) => changes.applyTo(ns));
   }, []);
 
-  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
-    setEdges((es) => applyEdgeChanges(changes, es));
+  const onEdgesChange: OnEdgesChange = useCallback((changes) => {
+    setEdges((es) => changes.applyTo(es));
   }, []);
 
   return (

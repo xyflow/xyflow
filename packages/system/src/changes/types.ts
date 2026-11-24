@@ -1,0 +1,88 @@
+import type { Dimensions, EdgeBase, NodeBase, XYPosition } from '../types';
+
+export type NodeChange<NodeType extends NodeBase = NodeBase> =
+  | DimensionChange
+  | PositionChange
+  | SelectionChange
+  | RemoveChange
+  | AddChange<NodeType>
+  | ReplaceChange<NodeType>
+  | UpdateChange<NodeType>
+  | DataChange<NodeType['data']>;
+
+export type EdgeChange<EdgeType extends EdgeBase = EdgeBase> =
+  | SelectionChange
+  | RemoveChange
+  | AddChange<EdgeType>
+  | ReplaceChange<EdgeType>
+  | UpdateChange<EdgeType>
+  | DataChange<NonNullable<EdgeType['data']>>;
+
+// Narrow down change type based on the element type (Node -> NodeChange, Edge -> EdgeChange)
+export type ElementChangeType<ElementType extends NodeBase | EdgeBase> =
+  | NodeChange<ElementType & NodeBase>
+  | EdgeChange<ElementType & EdgeBase>;
+
+export type DimensionChange = {
+  id: string;
+  type: 'dimensions';
+  dimensions?: Dimensions;
+  /* if this is true, the node is currently being resized via the NodeResizer */
+  resizing?: boolean;
+  /* if this is true, we will set width and height of the node and not just the measured dimensions */
+  setAttributes?: boolean | 'width' | 'height';
+};
+
+export type PositionChange = {
+  id: string;
+  type: 'position';
+  position?: XYPosition;
+  positionAbsolute?: XYPosition;
+  dragging?: boolean;
+};
+
+export type SelectionChange = {
+  id: string;
+  type: 'select';
+  selected: boolean;
+};
+
+export type RemoveChange = {
+  id: string;
+  type: 'remove';
+};
+
+export type AddChange<NodeOrEdge> = {
+  id: string;
+  item: NodeOrEdge;
+  type: 'add';
+  index?: number;
+};
+
+export type ReplaceChange<NodeOrEdge> = {
+  id: string;
+  item: NodeOrEdge;
+  type: 'replace';
+};
+
+export type UpdateChange<NodeOrEdge> = {
+  id: string;
+  item: Partial<NodeOrEdge>;
+  type: 'update';
+};
+
+export type DataChange<Data = Record<string, unknown>> =
+  | {
+      id: string;
+      type: 'data';
+      /* the data gets merged into the existing data */
+      data: Partial<Data>;
+      replace?: false;
+    }
+  | {
+      id: string;
+      type: 'data';
+      /* the data replaces the existing data, so it has to be complete */
+      data: Data;
+      replace: true;
+    };

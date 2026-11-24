@@ -1,5 +1,4 @@
 <script lang="ts" module>
-	// TODO: Is this the best way?
 	class background {
 		color: string = $state('#1A192B');
 	}
@@ -22,7 +21,7 @@
 	} from '@xyflow/svelte';
 	import CustomNode from './CustomNode.svelte';
 
-	import '@xyflow/svelte/dist/style.css';
+	import '@xyflow/svelte/style.css';
 
 	const nodeTypes: NodeTypes = {
 		colorNode: CustomNode
