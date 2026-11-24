@@ -39,13 +39,31 @@ export function useOnViewportChange({ onStart, onChange, onEnd }: UseOnViewportC
 
   useEffect(() => {
     optionsStore.setState({ onViewportChangeStart: onStart });
+
+    return () => {
+      if (optionsStore.getState().onViewportChangeStart === onStart) {
+        optionsStore.setState({ onViewportChangeStart: undefined });
+      }
+    };
   }, [onStart]);
 
   useEffect(() => {
     optionsStore.setState({ onViewportChange: onChange });
+
+    return () => {
+      if (optionsStore.getState().onViewportChange === onChange) {
+        optionsStore.setState({ onViewportChange: undefined });
+      }
+    };
   }, [onChange]);
 
   useEffect(() => {
     optionsStore.setState({ onViewportChangeEnd: onEnd });
+
+    return () => {
+      if (optionsStore.getState().onViewportChangeEnd === onEnd) {
+        optionsStore.setState({ onViewportChangeEnd: undefined });
+      }
+    };
   }, [onEnd]);
 }
