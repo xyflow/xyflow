@@ -1,14 +1,13 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { onDestroy } from 'svelte';
 
-  import { NodeWrapper } from '$lib/components/NodeWrapper/index.js';
+  import { NodeWrapper } from '#lib/components/NodeWrapper/index.js';
 
-  import type { Node, Edge, NodeEvents } from '$lib/types/index.js';
-  import type { SvelteFlowStore } from '$lib/store/types.js';
+  import type { Node, Edge, NodeEvents } from '#lib/types/index.js';
+  import type { SvelteFlowStore } from '#lib/store/types.js';
 
   let {
     store = $bindable(),
-    nodeClickDistance,
     onnodeclick,
     onnodecontextmenu,
     onnodepointerenter,
@@ -19,7 +18,6 @@
     onnodedragstop
   }: {
     store: SvelteFlowStore<NodeType, EdgeType>;
-    nodeClickDistance?: number;
   } & NodeEvents<NodeType> = $props();
 
   const resizeObserver: ResizeObserver | null =
@@ -53,7 +51,6 @@
       bind:store
       {node}
       {resizeObserver}
-      {nodeClickDistance}
       {onnodeclick}
       {onnodepointerenter}
       {onnodepointermove}

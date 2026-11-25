@@ -1,0 +1,59 @@
+import type { Viewport } from '@xyflow/system';
+import type { Ref } from 'vue';
+import type { Edge, Node, VueFlowState } from '../types';
+import { watch } from 'vue';
+import { storeToRefs } from './storeToRefs';
+import { useVueFlowStore } from './useVueFlowStore';
+
+function sameViewport(a: Viewport | undefined, b: Viewport | undefined) {
+  return !!a && !!b && a.x === b.x && a.y === b.y && a.zoom === b.zoom;
+}
+
+/**
+ * Two-way binds the `viewport` v-model to the store's canonical `transform`.
+ *
+ * - **in** (model → store): applies an externally-set `viewport` via `syncViewport` (no pan/zoom events)
+ *   and mirrors it onto `transform`. Re-runs once the panzoom mounts so it wins over `ZoomPane`'s seed.
+ * - **out** (store → model): writes `transform` changes back to the model.
+ *
+ * Equality guards on both sides stop the round-trip from looping.
+ *
+ * @internal
+ */
+export function useViewportSync<NodeType extends Node = Node, EdgeType extends Edge = Edge>(
+  model: Ref<Viewport | undefined>,
+  state: VueFlowState<NodeType, EdgeType> = useVueFlowStore<NodeType, EdgeType>(),
+) {
+  const { transform, panZoom } = storeToRefs(state);
+
+  // also keyed on `panZoom` so the controlled value is re-applied once the instance mounts (its initial
+  // `defaultViewport` seed would otherwise clobber a transform set before mount)
+  watch(
+    [model, panZoom],
+    ([viewport]) => {
+      if (!viewport) {
+        return;
+      }
+
+      const current = { x: transform.value[0], y: transform.value[1], zoom: transform.value[2] };
+      if (sameViewport(viewport, current)) {
+        return;
+      }
+
+      panZoom.value?.syncViewport(viewport);
+      transform.value = [viewport.x, viewport.y, viewport.zoom];
+    },
+    { immediate: true },
+  );
+
+  // `flush: 'sync'` so the `viewport` v-model ref mirrors a `transform` change on the same tick as the
+  // store's synchronous `viewport` getter — else reading it right after a programmatic change lags.
+  watch(transform, (next) => {
+    const viewport = { x: next[0], y: next[1], zoom: next[2] };
+    if (sameViewport(viewport, model.value)) {
+      return;
+    }
+
+    model.value = viewport;
+  }, { flush: 'sync' });
+}

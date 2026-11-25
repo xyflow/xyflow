@@ -34,7 +34,7 @@ const BasicFlow = () => {
       selectionMode={SelectionMode.Partial}
       panOnDrag={panOnDrag}
       panOnScroll
-      paneClickDistance={100}
+      paneDragThreshold={100}
       zoomActivationKeyCode="Meta"
       multiSelectionKeyCode={MULTI_SELECT_KEY}
       onPaneContextMenu={onPaneContextMenu}

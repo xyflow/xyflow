@@ -1,9 +1,9 @@
 <script lang="ts" generics="NodeType extends Node = Node, EdgeType extends Edge = Edge">
   import { type PanZoomInstance, type Transform } from '@xyflow/system';
 
-  import zoom from '$lib/actions/zoom/index.js';
+  import zoom from '#lib/actions/zoom/index.js';
   import type { ZoomProps } from './types.js';
-  import type { Node, Edge } from '$lib/types/index.js';
+  import type { Node, Edge } from '#lib/types/index.js';
 
   let {
     store = $bindable(),
@@ -15,8 +15,8 @@
     panOnDrag,
     panOnScroll,
     panOnScrollSpeed,
-    paneClickDistance,
-    selectionOnDrag,
+    paneDragThreshold,
+    onpanecontextmenu,
     onmovestart,
     onmove,
     onmoveend,
@@ -37,6 +37,10 @@
       onInitCalled = true;
     }
   });
+
+  $effect(() => {
+    store.panZoom?.syncViewport(store.viewport);
+  });
 </script>
 
 <div
@@ -54,6 +58,9 @@
     onPanZoomStart: onmovestart,
     onPanZoom: onmove,
     onPanZoomEnd: onmoveend,
+    onPaneContextMenu: onpanecontextmenu
+      ? (event: MouseEvent) => onpanecontextmenu({ event })
+      : undefined,
     zoomOnScroll,
     zoomOnDoubleClick,
     zoomOnPinch,
@@ -69,8 +76,7 @@
     userSelectionActive: !!store.selectionRect,
     translateExtent: store.translateExtent,
     lib: 'svelte',
-    paneClickDistance,
-    selectionOnDrag,
+    paneDragThreshold,
     onTransformChange: (transform: Transform) => {
       store.viewport = { x: transform[0], y: transform[1], zoom: transform[2] };
     },

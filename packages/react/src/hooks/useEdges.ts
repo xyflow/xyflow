@@ -1,9 +1,7 @@
-import { shallow } from 'zustand/shallow';
+import { useSyncExternalStore } from 'react';
 
-import { useStore } from '../hooks/useStore';
-import type { Edge, ReactFlowState } from '../types';
-
-const edgesSelector = (state: ReactFlowState) => state.edges;
+import { useEdgesStore, useReactFlowStoreApi } from './useReactFlowStore';
+import type { Edge } from '../types';
 
 /**
  * This hook returns an array of the current edges. Components that use this hook
@@ -24,7 +22,36 @@ const edgesSelector = (state: ReactFlowState) => state.edges;
  *```
  */
 export function useEdges<EdgeType extends Edge = Edge>(): EdgeType[] {
-  const edges = useStore(edgesSelector, shallow) as EdgeType[];
+  const { edges } = useEdgesStore();
 
-  return edges;
+  return edges as EdgeType[];
+}
+
+/**
+ * This hook returns the edge with the given id. Components that use this hook
+ * will re-render **whenever the edge changes**.
+ *
+ * @public
+ * @param id - The id of the edge to return.
+ * @returns The edge with the given id.
+ *
+ * @example
+ * ```tsx
+ *import { useEdge } from '@xyflow/react';
+ *
+ *export default function () {
+ *  const edge = useEdge('1');
+ *
+ *  return <div>Edge: {edge?.data.label}</div>;
+ *}
+ *```
+ */
+export function useEdge<EdgeType extends Edge = Edge>(id: string): EdgeType | undefined {
+  const { optionsStore, edgesStore } = useReactFlowStoreApi();
+
+  const subscribe = (onStoreChange: () => void) => optionsStore.getState().pubSub.subscribeToEdge(id, onStoreChange);
+
+  const getSnapshot = () => edgesStore.getState().edgeLookup.get(id) as EdgeType | undefined;
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }

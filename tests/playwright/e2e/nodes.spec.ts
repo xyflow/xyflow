@@ -18,10 +18,12 @@ test.describe('Nodes', () => {
     });
 
     test('selecting multiple nodes with shift drag', async ({ page }) => {
-      let nodeSelection = page.locator(
-        FRAMEWORK === 'react' ? '.react-flow__nodesselection' : '.svelte-flow__selection'
+      const nodeSelection = page.locator(
+        FRAMEWORK === 'svelte' ? '.svelte-flow__selection' : `.${FRAMEWORK}-flow__nodesselection`,
       );
-      let selection = page.locator(FRAMEWORK === 'react' ? '.react-flow__selection' : '.svelte-flow__selection');
+      const selection = page.locator(
+        FRAMEWORK === 'svelte' ? '.svelte-flow__selection' : `.${FRAMEWORK}-flow__selection`,
+      );
 
       const nodes = page.locator(`.${FRAMEWORK}-flow__node`);
 
@@ -153,6 +155,69 @@ test.describe('Nodes', () => {
       await expectStationaryViewport();
     });
 
+    test('dragging one node of a selection moves the whole selection', async ({ page }) => {
+      const nodes = page.locator(`.${FRAMEWORK}-flow__node`);
+      await expect(nodes.first()).toHaveCSS('visibility', 'visible');
+      const nodeBox = (await nodes.first().boundingBox())!;
+
+      await page.keyboard.down('Shift');
+      await page.mouse.move(nodeBox.x - 150, nodeBox.y - 25);
+      await page.mouse.down();
+      await page.mouse.move(nodeBox.x + 275, nodeBox.y + 200);
+      await page.mouse.up();
+      await page.keyboard.up('Shift');
+
+      await expect(nodes.first()).toHaveClass(/selected/);
+      await expect(nodes.nth(1)).toHaveClass(/selected/);
+
+      const transforms = () => nodes.evaluateAll((elements: HTMLElement[]) => elements.map((element) => element.style.transform));
+      const transformsBeforeMove = await transforms();
+
+      await page.mouse.move(nodeBox.x + nodeBox.width / 2, nodeBox.y + nodeBox.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(nodeBox.x + nodeBox.width / 2 + 80, nodeBox.y + nodeBox.height / 2 + 60, { steps: 5 });
+      await page.mouse.up();
+
+      const transformsAfterMove = await transforms();
+      const moved = transformsBeforeMove.filter((transform, index) => transform !== transformsAfterMove[index]);
+
+      expect(moved.length).toBeGreaterThan(1);
+    });
+
+    test.describe('touch', () => {
+      test.use({ hasTouch: true });
+
+      test('dragging a node with a touch gesture', async ({ page, context, browserName }) => {
+        test.skip(browserName !== 'chromium', 'touch gestures are dispatched through CDP');
+
+        const node = page.locator(`.${FRAMEWORK}-flow__node`).first();
+        await expect(node).toHaveCSS('visibility', 'visible');
+
+        const transformBeforeMove = await node.evaluate((element) => element.style.transform);
+
+        const box = (await node.boundingBox())!;
+        const x = box.x + box.width / 2;
+        const y = box.y + box.height / 2;
+
+        const cdp = await context.newCDPSession(page);
+        const touch = (type: string, pointerX: number, pointerY: number) =>
+          cdp.send('Input.dispatchTouchEvent', {
+            type,
+            touchPoints: type === 'touchEnd' ? [] : [{ x: pointerX, y: pointerY, id: 1, radiusX: 10, radiusY: 10, force: 1 }],
+          });
+
+        await touch('touchStart', x, y);
+        for (let step = 1; step <= 6; step++) {
+          await touch('touchMove', x + step * 12, y + step * 8);
+        }
+        await touch('touchEnd', x + 72, y + 48);
+
+        const transformAfterMove = await node.evaluate((element) => element.style.transform);
+
+        expect(transformBeforeMove).not.toMatch(transformAfterMove);
+      });
+    });
+
     test('draggable=false prevents dragging', async ({ page }) => {
       const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="notDraggable"]'));
       await expect(node).toHaveCSS('visibility', 'visible');
@@ -205,6 +270,23 @@ test.describe('Nodes', () => {
       });
 
       expect(transformBeforeMove).not.toMatch(transformAfterDragHandleMove);
+    });
+  });
+
+  test.describe('keyboard', () => {
+    test('moving a selected node with arrow keys announces its new position', async ({ page }) => {
+      const node = page.locator(`.${FRAMEWORK}-flow__node`).and(page.locator('[data-id="Node-1"]'));
+      const liveRegion = page.locator(`[id^="${FRAMEWORK}-flow__aria-live"]`);
+
+      await node.focus();
+      await page.keyboard.press('Enter');
+      await expect(node).toHaveClass(/selected/);
+
+      await page.keyboard.press('ArrowRight');
+      await expect(liveRegion).toHaveText('Moved selected node right. New position, x: 5, y: 0');
+
+      await page.keyboard.press('ArrowDown');
+      await expect(liveRegion).toHaveText('Moved selected node down. New position, x: 5, y: 5');
     });
   });
 

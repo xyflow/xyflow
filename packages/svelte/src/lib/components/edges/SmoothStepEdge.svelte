@@ -2,7 +2,7 @@
   import { getSmoothStepPath } from '@xyflow/system';
 
   import BaseEdge from './BaseEdge.svelte';
-  import type { SmoothStepEdgeProps } from '$lib/types/index.js';
+  import type { SmoothStepEdgeProps } from '#lib/types/index.js';
 
   let {
     id,
