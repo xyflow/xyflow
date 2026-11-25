@@ -1,0 +1,36 @@
+import { test, expect } from '@playwright/test';
+import { FRAMEWORK } from './constants';
+
+test('setNodes and setEdges preserve order, subflows and selection', async ({ page }) => {
+  test.skip(FRAMEWORK !== 'react', 'Regression for the useReactFlow helpers');
+  await page.goto('/tests/generic/nodes/reorder');
+  const nodes = page.locator('.react-flow__node');
+  const edges = page.locator('.react-flow__edge');
+  const child = page.locator('.react-flow__node[data-id="child"]');
+  await expect(child).toBeVisible();
+  const childTransform = await child.evaluate((element) => element.style.transform);
+  await page.getByRole('button', { name: 'Reorder', exact: true }).click();
+  await expect(nodes).toHaveCount(3);
+  await expect(nodes.nth(0)).toHaveAttribute('data-id', 'other');
+  await expect(nodes.nth(1)).toHaveAttribute('data-id', 'parent');
+  await expect(nodes.nth(2)).toHaveAttribute('data-id', 'child');
+  await expect(edges).toHaveCount(2);
+  await expect(edges.first()).toHaveAttribute('data-id', 'second');
+  await expect(page.locator('.react-flow__node[data-id="parent"]')).toHaveClass(/selected/);
+  expect(await child.evaluate((element) => element.style.transform)).toBe(childTransform);
+  await child.click();
+  await expect(child).toHaveClass(/selected/);
+  const before = await child.boundingBox();
+  await page.mouse.move(before!.x + 40, before!.y + 20);
+  await page.mouse.down();
+  await page.mouse.move(before!.x + 70, before!.y + 50, { steps: 5 });
+  await page.mouse.up();
+  await expect.poll(() => child.evaluate((element) => element.style.transform)).not.toBe(childTransform);
+  await expect(edges).toHaveCount(2);
+  await page.getByRole('button', { name: 'Reorder', exact: true }).click();
+  await expect(nodes.nth(0)).toHaveAttribute('data-id', 'parent');
+  await expect(nodes.nth(1)).toHaveAttribute('data-id', 'child');
+  await expect(nodes.nth(2)).toHaveAttribute('data-id', 'other');
+  await expect(edges.first()).toHaveAttribute('data-id', 'first');
+  await expect(child).toHaveClass(/selected/);
+});
