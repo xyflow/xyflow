@@ -324,4 +324,59 @@ test.describe('Nodes', () => {
 
     await expect(node).toHaveCSS('background-color', 'rgb(255, 0, 0)');
   });
+
+  test.describe('updateNodeInternals', () => {
+    test('awaiting updateNodeInternals returns a resolved value and updates measured dimensions', async ({ page }) => {
+      const node = page
+        .locator(`.${FRAMEWORK}-flow__node`)
+        .and(page.locator('[data-id="update-internals"]'));
+      await expect(node).toHaveCSS('visibility', 'visible');
+
+      await page.waitForFunction(() => !!(window as any).__updateNodeInternals);
+
+      const initialMeasured = await page.evaluate(
+        () => (window as any).__getInternalNode((window as any).__nodeId)?.measured
+      );
+
+      const result = await page.evaluate(async () => {
+        const w = window as any;
+        w.__expandContainer();
+        const ret = await w.__updateNodeInternals(w.__nodeId);
+        const measured = w.__getInternalNode(w.__nodeId)?.measured;
+        return { isPromise: ret instanceof Promise, height: measured?.height ?? 0 };
+      });
+
+      // After awaiting, the return value is not a Promise (it resolved to undefined).
+      expect(result.isPromise).toBe(false);
+      // The store's measured dimensions now reflect the expanded DOM (150px taller).
+      expect(result.height).toBe(initialMeasured.height + 150);
+    });
+
+    test('not awaiting updateNodeInternals leaves measured dimensions stale', async ({ page }) => {
+      const node = page
+        .locator(`.${FRAMEWORK}-flow__node`)
+        .and(page.locator('[data-id="update-internals"]'));
+      await expect(node).toHaveCSS('visibility', 'visible');
+
+      await page.waitForFunction(() => !!(window as any).__updateNodeInternals);
+
+      const initialMeasured = await page.evaluate(
+        () => (window as any).__getInternalNode((window as any).__nodeId)?.measured
+      );
+
+      const result = await page.evaluate(() => {
+        const w = window as any;
+        w.__expandContainer();
+        // Call updateNodeInternals but do NOT await it.
+        const ret = w.__updateNodeInternals(w.__nodeId);
+        const measured = w.__getInternalNode(w.__nodeId)?.measured;
+        return { isPromise: ret instanceof Promise, height: measured?.height ?? 0 };
+      });
+
+      // The return value is a Promise (it was not awaited).
+      expect(result.isPromise).toBe(true);
+      // The store's measured dimensions are stale — unchanged from the collapsed size.
+      expect(result.height).toBe(initialMeasured.height);
+    });
+  });
 });
