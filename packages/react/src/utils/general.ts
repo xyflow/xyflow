@@ -1,4 +1,4 @@
-import { type Ref, type RefAttributes, forwardRef, JSX, PropsWithoutRef } from 'react';
+import { type Ref, type RefAttributes, forwardRef, JSX, PropsWithoutRef, SyntheticEvent } from 'react';
 import { isNodeBase, isEdgeBase } from '@xyflow/system';
 
 import type { Edge, Node } from '../types';
@@ -56,4 +56,14 @@ export function fixedForwardRef<T, P = {}>(
   render: (props: PropsWithoutRef<P>, ref: Ref<T>) => JSX.Element
 ): (props: P & RefAttributes<T>) => JSX.Element {
   return forwardRef(render) as (props: P & RefAttributes<T>) => JSX.Element;
+}
+
+export function isEventTargetInPortal(event: SyntheticEvent) {
+  if (
+    // The target is not a descendan of current target (e.g. it was rendered somewhere else in DOM like in a portal)
+    !event.currentTarget.contains(event.target as Element)
+  ) {
+    return true;
+  }
+  return false;
 }
