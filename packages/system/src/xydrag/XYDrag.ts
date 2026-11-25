@@ -97,6 +97,8 @@ export type DragUpdateParams = {
   domNode: Element;
 };
 
+type AutoPanState = { frameId?: number };
+
 export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends EdgeBase = EdgeBase>({
   onNodeMouseDown,
   getStoreItems,
@@ -105,9 +107,8 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
   onDragStop,
 }: XYDragParams<NodeType, EdgeType>): XYDragInstance {
   let lastPos: { x: number | null; y: number | null } = { x: null, y: null };
-  let autoPanId = 0;
   let dragItems = new Map<string, NodeDragItem>();
-  let autoPanStarted = false;
+  let autoPanState: AutoPanState | null = null;
   let mousePosition: XYPosition = { x: 0, y: 0 };
   let initialMousePosition: XYPosition = { x: 0, y: 0 };
   let containerBounds: DOMRect | null = null;
@@ -123,6 +124,13 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
   let isSelectable: boolean | undefined;
   let nodeId: string | undefined;
   let domNode: Element | undefined;
+
+  function stopAutoPan() {
+    if (autoPanState?.frameId !== undefined) {
+      cancelAnimationFrame(autoPanState.frameId);
+    }
+    autoPanState = null;
+  }
 
   /*
    * Suppresses the click that the browser dispatches right after a drag that moved nodes.
@@ -243,16 +251,11 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
     }
   }
 
-  async function autoPan() {
-    if (!containerBounds) {
-      return;
-    }
-
+  async function autoPan(state: AutoPanState) {
     const { transform, panBy, autoPanSpeed, autoPanOnNodeDrag } = getStoreItems();
 
-    if (!autoPanOnNodeDrag) {
-      autoPanStarted = false;
-      cancelAnimationFrame(autoPanId);
+    if (!containerBounds || !autoPanOnNodeDrag) {
+      stopAutoPan();
       return;
     }
 
@@ -262,14 +265,16 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
       lastPos.x = (lastPos.x ?? 0) - xMovement / transform[2];
       lastPos.y = (lastPos.y ?? 0) - yMovement / transform[2];
 
-      if (await panBy({ x: xMovement, y: yMovement })) {
+      if ((await panBy({ x: xMovement, y: yMovement })) && autoPanState === state) {
         updateNodes(lastPos as XYPosition);
       }
     }
 
-    autoPanId = requestAnimationFrame(() => {
-      void autoPan();
-    });
+    if (autoPanState === state) {
+      state.frameId = requestAnimationFrame(() => {
+        void autoPan(state);
+      });
+    }
   }
 
   function startDrag(event: UseDragEvent) {
@@ -333,7 +338,7 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
       const { domNode, nodeDragThreshold, transform, snapGrid, snapToGrid } = getStoreItems();
       containerBounds = domNode?.getBoundingClientRect() || null;
       dragStarted = false;
-      autoPanStarted = false;
+      stopAutoPan();
       abortDrag = false;
       nodePositionsChanged = false;
       dragEvent = event.sourceEvent;
@@ -361,12 +366,13 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
       }
 
       if (abortDrag) {
+        stopAutoPan();
         return;
       }
 
-      if (!autoPanStarted && autoPanOnNodeDrag && dragStarted) {
-        autoPanStarted = true;
-        void autoPan();
+      if (!autoPanState && autoPanOnNodeDrag && dragStarted) {
+        autoPanState = {};
+        void autoPan(autoPanState);
       }
 
       if (!dragStarted) {
@@ -395,14 +401,17 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
         preventNextClick(event.sourceEvent);
       }
 
-      if (!dragStarted || abortDrag) {
-        if (abortDrag && dragItems.size > 0) {
+      const wasDragging = dragStarted;
+      dragStarted = false;
+      stopAutoPan();
+
+      const canceled = abortDrag || (wasDragging && !!nodeId && !getStoreItems().nodeLookup.has(nodeId));
+      if (!wasDragging || canceled) {
+        if (canceled && dragItems.size > 0) {
           getStoreItems().updateNodePositions(dragItems, false);
         }
         return;
       }
-
-      cancelAnimationFrame(autoPanId);
 
       if (dragItems.size > 0) {
         const { nodeLookup, updateNodePositions, onNodeDragStop, onSelectionDragStop } = getStoreItems();
@@ -458,12 +467,18 @@ export function XYDrag<NodeType extends NodeBase = NodeBase, EdgeType extends Ed
     }
 
     domNode = params.domNode;
-    d3Selection?.on('.drag', null);
+    if (d3Selection) {
+      abortDrag = true;
+      stopAutoPan();
+      d3Selection.on('.drag', null);
+    }
     d3Selection = select(domNode);
     d3Selection.call(d3DragInstance);
   }
 
   function destroy() {
+    abortDrag = true;
+    stopAutoPan();
     d3Selection?.on('.drag', null);
     d3Selection = null;
     domNode = undefined;
