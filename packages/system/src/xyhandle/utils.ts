@@ -95,10 +95,15 @@ export function getHandle(
     return null;
   }
 
+  const handleBounds = node.internals.handleBounds;
   const handles =
     connectionMode === ConnectionMode.Strict
-      ? node.internals.handleBounds?.[handleType]
-      : [...(node.internals.handleBounds?.source ?? []), ...(node.internals.handleBounds?.target ?? [])];
+      ? handleBounds?.[handleType]
+      : // in loose mode a handle of the other type can match too, but the requested type comes first
+        [
+          ...(handleBounds?.[handleType] ?? []),
+          ...(handleBounds?.[handleType === 'source' ? 'target' : 'source'] ?? []),
+        ];
   const handle = (handleId ? handles?.find((h) => h.id === handleId) : handles?.[0]) ?? null;
 
   return handle && withAbsolutePosition
