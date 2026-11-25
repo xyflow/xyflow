@@ -103,7 +103,15 @@ export function ZoomPane({
       });
       viewportStore.setState({ transform: [x, y, zoom] });
 
+      // panZoom exists now, resolve a fitView that was queued before it; next frame, so the
+      // sibling effect below has wired onTransformChange and the fit syncs back to the store
+      let fitViewRaf = 0;
+      if (store.getState().fitViewQueued) {
+        fitViewRaf = requestAnimationFrame(() => store.getState().resolveFitViewIfReady());
+      }
+
       return () => {
+        cancelAnimationFrame(fitViewRaf);
         panZoom.current?.destroy();
       };
     }
