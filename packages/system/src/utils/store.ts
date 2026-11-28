@@ -14,7 +14,6 @@ import {
   type EdgeLookup,
   type InternalNodeBase,
   type NodeLookup,
-  type Rect,
   type ParentLookup,
   type NodeConnection,
 } from '../types';
@@ -441,78 +440,68 @@ export function handleExpandParent(
   nodeOrigin: NodeOrigin = [0, 0]
 ): (DimensionChange | PositionChange)[] {
   const changes: (DimensionChange | PositionChange)[] = [];
-  const parentExpansions = new Map<string, { expandedRect: Rect; parent: InternalNodeBase }>();
+  // Keep absolute bounds until every opted-in ancestor has its final rectangle.
+  const rectangles = new Map(children.map((child) => [child.id, child.rect]));
+  const expanded = new Set<string>();
+  const pending = [...children];
 
-  // determine the expanded rectangle the child nodes would take for each parent
-  for (const child of children) {
+  for (let index = 0; index < pending.length; index++) {
+    const child = pending[index];
     const parent = nodeLookup.get(child.parentId);
     if (!parent) {
       continue;
     }
 
-    const parentRect = parentExpansions.get(child.parentId)?.expandedRect ?? nodeToRect(parent);
-    const expandedRect = getBoundsOfRects(parentRect, child.rect);
+    const previous = rectangles.get(parent.id) ?? nodeToRect(parent);
+    const rect = getBoundsOfRects(previous, child.rect);
+    if (
+      rect.x === previous.x &&
+      rect.y === previous.y &&
+      rect.width === previous.width &&
+      rect.height === previous.height
+    ) {
+      continue;
+    }
 
-    parentExpansions.set(child.parentId, { expandedRect, parent });
+    // Round outward so a subsequent integer DOM measurement cannot shrink the bounds.
+    rect.width = Math.ceil(rect.width);
+    rect.height = Math.ceil(rect.height);
+    rectangles.set(parent.id, rect);
+    expanded.add(parent.id);
+    if (parent.expandParent && parent.parentId) {
+      pending.push({ id: parent.id, parentId: parent.parentId, rect });
+    }
   }
 
-  if (parentExpansions.size > 0) {
-    parentExpansions.forEach(({ expandedRect, parent }, parentId) => {
-      // determine the position & dimensions of the parent
-      const positionAbsolute = parent.internals.positionAbsolute;
-      const dimensions = getNodeDimensions(parent);
-      const origin = parent.origin ?? nodeOrigin;
+  const affected = new Set(rectangles.keys());
+  for (const id of expanded) {
+    parentLookup.get(id)?.forEach((child) => affected.add(child.id));
+  }
 
-      // determine how much the parent expands in width and position
-      const xChange =
-        expandedRect.x < positionAbsolute.x ? Math.round(Math.abs(positionAbsolute.x - expandedRect.x)) : 0;
-      const yChange =
-        expandedRect.y < positionAbsolute.y ? Math.round(Math.abs(positionAbsolute.y - expandedRect.y)) : 0;
-
-      const newWidth = Math.max(dimensions.width, Math.round(expandedRect.width));
-      const newHeight = Math.max(dimensions.height, Math.round(expandedRect.height));
-
-      const widthChange = (newWidth - dimensions.width) * origin[0];
-      const heightChange = (newHeight - dimensions.height) * origin[1];
-
-      // We need to correct the position of the parent node if the origin is not [0,0]
-      if (xChange > 0 || yChange > 0 || widthChange || heightChange) {
-        changes.push(
-          positionChange(parentId, {
-            x: parent.position.x - xChange + widthChange,
-            y: parent.position.y - yChange + heightChange,
-          })
-        );
-
-        /*
-         * We move all child nodes in the oppsite direction
-         * so the x,y changes of the parent do not move the children
-         */
-        parentLookup.get(parentId)?.forEach((childNode) => {
-          if (!children.some((child) => child.id === childNode.id)) {
-            changes.push(
-              positionChange(childNode.id, {
-                x: childNode.position.x + xChange,
-                y: childNode.position.y + yChange,
-              })
-            );
-          }
-        });
-      }
-
-      // We need to correct the dimensions of the parent node if the origin is not [0,0]
-      if (dimensions.width < expandedRect.width || dimensions.height < expandedRect.height || xChange || yChange) {
-        changes.push({
-          id: parentId,
-          type: 'dimensions',
-          setAttributes: true,
-          dimensions: {
-            width: newWidth + (xChange ? origin[0] * xChange - widthChange : 0),
-            height: newHeight + (yChange ? origin[1] * yChange - heightChange : 0),
-          },
-        });
-      }
-    });
+  // Resolve relative coordinates once, including compensation for stationary siblings.
+  for (const id of affected) {
+    const node = nodeLookup.get(id);
+    if (!node) {
+      continue;
+    }
+    const rect = rectangles.get(id) ?? nodeToRect(node);
+    const parent = node.parentId ? nodeLookup.get(node.parentId) : undefined;
+    const parentRect = parent ? (rectangles.get(parent.id) ?? nodeToRect(parent)) : { x: 0, y: 0 };
+    const origin = node.origin ?? nodeOrigin;
+    changes.push(
+      positionChange(id, {
+        x: rect.x - parentRect.x + rect.width * origin[0],
+        y: rect.y - parentRect.y + rect.height * origin[1],
+      })
+    );
+    if (expanded.has(id)) {
+      changes.push({
+        id,
+        type: 'dimensions',
+        setAttributes: true,
+        dimensions: { width: rect.width, height: rect.height },
+      });
+    }
   }
 
   return changes;

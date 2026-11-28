@@ -223,12 +223,7 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
           const change: NodeChange = {
             id,
             type: 'position',
-            position: expandParent
-              ? {
-                  x: Math.max(0, dragItem.position.x),
-                  y: Math.max(0, dragItem.position.y),
-                }
-              : dragItem.position,
+            position: dragItem.position,
             dragging,
           };
 
@@ -256,6 +251,13 @@ const createStore = (options: Parameters<typeof getInitialState>[0]) => {
           const { parentLookup } = nodesStore.getState();
           const { nodeOrigin } = get();
           const parentExpandChanges = handleExpandParent(parentExpandChildren, nodeLookup, parentLookup, nodeOrigin);
+          // Release must use the same final parent coordinates as the last drag frame.
+          for (const change of parentExpandChanges) {
+            const dragItem = nodeDragItems.get(change.id);
+            if (dragItem && change.type === 'position' && change.position) {
+              dragItem.position = change.position;
+            }
+          }
           changes.push(...parentExpandChanges);
         }
 
